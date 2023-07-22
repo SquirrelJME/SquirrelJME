@@ -3,11 +3,17 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
 #include "squirreljme.h"
+
+// The class to forward to
+#define DEBUGSHELF_CLASSNAME "cc/squirreljme/emulator/EmulatedDebugShelf"
+
+#define DEBUGSHELF_POINTCLASS_DESC "(Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;)Ljava/lang/String;"
+#define DEBUGSHELF_TRACESTACK_DESC "()[Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;"
 
 JNIEXPORT jobjectArray JNICALL Impl_mle_DebugShelf_getThrowableTrace(
 	JNIEnv* env, jclass classy, jobject thrown)
@@ -16,11 +22,18 @@ JNIEXPORT jobjectArray JNICALL Impl_mle_DebugShelf_getThrowableTrace(
 		"cc/squirreljme/jvm/mle/brackets/TracePointBracket"), NULL);
 }
 
-JNIEXPORT jobjectArray JNICALL Impl_mle_DebugShelf_traceStack(
+JNIEXPORT jobject JNICALL Impl_mle_DebugShelf_pointClass(
+	JNIEnv* env, jclass classy, jobject trace)
+{
+	return forwardCallStaticObject(env, DEBUGSHELF_CLASSNAME,
+		"pointClass", DEBUGSHELF_POINTCLASS_DESC, trace);
+}
+
+JNIEXPORT jobject JNICALL Impl_mle_DebugShelf_traceStack(
 	JNIEnv* env, jclass classy)
 {
-	return env->NewObjectArray(0, env->FindClass(
-		"cc/squirreljme/jvm/mle/brackets/TracePointBracket"), NULL);
+	return forwardCallStaticObject(env, DEBUGSHELF_CLASSNAME,
+		"traceStack", DEBUGSHELF_TRACESTACK_DESC);
 }
 
 JNIEXPORT jint JNICALL Impl_mle_DebugShelf_verbose(
@@ -40,8 +53,8 @@ static const JNINativeMethod mleDebugMethods[] =
 {
 	{"getThrowableTrace", "(Ljava/lang/Throwable;)[Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;",
 		(void*)Impl_mle_DebugShelf_getThrowableTrace},
-	{"traceStack", "()[Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;",
-		(void*)Impl_mle_DebugShelf_traceStack},
+	{"pointClass", DEBUGSHELF_POINTCLASS_DESC, (void*)Impl_mle_DebugShelf_pointClass},
+	{"traceStack", DEBUGSHELF_TRACESTACK_DESC, (void*)Impl_mle_DebugShelf_traceStack},
 	{"verbose", "(I)I",
 		(void*)Impl_mle_DebugShelf_verbose},
 	{"verboseInternalThread", "(I)I",

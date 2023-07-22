@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -11,6 +11,7 @@ package cc.squirreljme.jdwp;
 
 import cc.squirreljme.jdwp.views.JDWPViewType;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import net.multiphasicapps.classfile.MethodDescriptor;
 
 /**
  * Method command set.
@@ -217,9 +218,41 @@ public enum CommandSetMethod
 		if (!viewType.isValidMethod(classy, methodId))
 			throw ErrorType.INVALID_METHOD_ID.toss(classy, methodId);
 		
-		// TODO: Implement VariableTable/WithGeneric.
-		Debugging.todoNote("Implement VariableTable/WithGeneric.");
-		return __controller.__reply(
-			__packet.id(), ErrorType.ABSENT_INFORMATION);
+		// Get the variable table, if missing then ignore it
+		JDWPLocalVariable[] variables = viewType.methodVariableTable(classy,
+			methodId);
+		if (variables == null || variables.length <= 0)
+			return __controller.__reply(
+				__packet.id(), ErrorType.ABSENT_INFORMATION);
+		
+		// Setup packet
+		JDWPPacket rv = __controller.__reply(
+			__packet.id(), ErrorType.NO_ERROR);
+		
+		// Write down the number of argument slots
+		MethodDescriptor desc = new MethodDescriptor(
+			viewType.methodSignature(classy, methodId));
+		rv.writeInt(desc.argumentSlotCount());
+		
+		// Write down everything we know
+		int count = variables.length;
+		rv.writeInt(count);
+		for (int i = 0; i < count; i++)
+		{
+			JDWPLocalVariable variable = variables[i];
+			
+			rv.writeLong(variable.startPc);
+			rv.writeString(variable.variableName);
+			rv.writeString(variable.fieldDescriptor);
+			
+			// No generics are used
+			if (__generic)
+				rv.writeString("");
+			
+			rv.writeInt(variable.length);
+			rv.writeInt(variable.localSlot);
+		}
+		
+		return rv;
 	}
 }

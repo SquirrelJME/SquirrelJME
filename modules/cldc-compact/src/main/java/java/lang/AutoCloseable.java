@@ -3,11 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.lang;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This interface is used with the classes which are initialized in the
@@ -40,6 +42,7 @@ package java.lang;
  *
  * @since 2015/03/23
  */
+@Api
 public interface AutoCloseable
 {
 	/**
@@ -60,6 +63,7 @@ public interface AutoCloseable
 	 * @throws Exception If there was an error closing the specified object.
 	 * @since 2015/03/23
 	 */
+	@Api
 	void close()
 		throws Exception;
 }

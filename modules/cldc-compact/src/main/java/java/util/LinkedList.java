@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 
 /**
@@ -29,6 +30,7 @@ import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
  */
 @ImplementationNote("For simplicity this uses base anchor nodes for the " +
 	"head and tail of the list.")
+@Api
 public class LinkedList<E>
 	extends AbstractSequentialList<E>
 	implements List<E>, Deque<E>, Cloneable
@@ -49,6 +51,7 @@ public class LinkedList<E>
 	 *
 	 * @since 2016/09/05
 	 */
+	@Api
 	public LinkedList()
 	{
 	}
@@ -61,6 +64,7 @@ public class LinkedList<E>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/05
 	 */
+	@Api
 	public LinkedList(Collection<? extends E> __a)
 		throws NullPointerException
 	{
@@ -153,8 +157,8 @@ public class LinkedList<E>
 	public E getFirst()
 		throws NoSuchElementException
 	{
-		// {@squirreljme.error ZZ2s Cannot get the first element because the
-		// linked list is empty.}
+		/* {@squirreljme.error ZZ2s Cannot get the first element because the
+		linked list is empty.} */
 		if (this._size == 0)
 			throw new NoSuchElementException("ZZ2s");
 		
@@ -169,8 +173,8 @@ public class LinkedList<E>
 	@Override
 	public E getLast()
 	{
-		// {@squirreljme.error ZZ2t Cannot get the last element because the
-		// linked list is empty.}
+		/* {@squirreljme.error ZZ2t Cannot get the last element because the
+		linked list is empty.} */
 		int sz;
 		if ((sz = this._size) == 0)
 			throw new NoSuchElementException("ZZ2t");

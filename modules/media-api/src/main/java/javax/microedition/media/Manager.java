@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package javax.microedition.media;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.io.MarkableInputStream;
 import cc.squirreljme.runtime.media.NullPlayer;
@@ -20,14 +21,17 @@ import java.io.InputStream;
 import javax.microedition.media.control.MIDIControl;
 import javax.microedition.media.protocol.DataSource;
 
+@Api
 public final class Manager
 {
 	/**
 	 * Special player which is used to allow access to a {@link MIDIControl}.
 	 */
+	@Api
 	public static final String MIDI_DEVICE_LOCATOR =
 		"device://midi";
 	
+	@Api
 	public static final String TONE_DEVICE_LOCATOR =
 		"device://tone";
 	
@@ -44,6 +48,7 @@ public final class Manager
 	{
 	}
 	
+	@Api
 	public static Player createPlayer(InputStream __in, String __contentType)
 		throws IOException, MediaException, NullPointerException
 	{
@@ -81,6 +86,7 @@ public final class Manager
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static Player createPlayer(String __locator)
 		throws IOException, MediaException, NullPointerException
 	{
@@ -106,6 +112,7 @@ public final class Manager
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static Player createPlayer(DataSource __a)
 		throws IOException, MediaException
 	{
@@ -120,12 +127,14 @@ public final class Manager
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static String[] getSupportedContentTypes(String __a)
 	{
 		Debugging.debugNote("getSupportedContentTypes(%s)%n", __a);
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static String[] getSupportedProtocols(String __a)
 	{
 		Debugging.debugNote("getSupportedProtocols(%s)%n", __a);
@@ -138,11 +147,13 @@ public final class Manager
 	 * @return The default timebase.
 	 * @since 2019/04/15
 	 */
+	@Api
 	public static TimeBase getSystemTimeBase()
 	{
 		return Manager._SYSTEM_TIME_BASE;
 	}
 	
+	@Api
 	public static void playTone(int __note, int __duration, int __volume)
 		throws IllegalArgumentException, MediaException
 	{

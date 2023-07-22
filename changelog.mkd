@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.4.0
+## 0.4.0 (September 29, 2023)
 
 This release is dedicated to Emily, the developer of Mu, she was a close and
 dear friend of mine. Rest in piece, you will not be forgotten.
@@ -13,7 +13,7 @@ RatufaCoat which is written in C and is capable of using the SquirrelJME
 Runtime.
 
 _Note that this is a work in progress and not everything will run, due to_
-_the implementation being incomplete. However it does work and is proven to_
+_the implementation being incomplete. However, it does work and is proven to_
 _work, which means progress can continue as such. Later releases of_
 _SquirrelJME will always be an improvement over the older versions._
 
@@ -21,7 +21,9 @@ More detailed changes:
 
  * Modernized the build system to Gradle!
    * This will make it much easier to develop and allow for contributions!
- * Programs and Libraries
+ * Modules
+   * `bluetooth`
+     * Stubbed.
    * `cldc-compact`
      * Added a rehash indicator for the internal `__BucketMap__` so that
        `java.util.Hashtable` knows when a reorder was performed.
@@ -46,25 +48,51 @@ More detailed changes:
        games use the wrong class when looking up resources. Note that the
        current suite will always be searched first to maintain the correct
        behavior.
-     * Implemented `java.io.DataInputStream`.
-     * Implemented `java.io.InputStream`.
-     * Implemented `java.io.PrintStream`.
-     * Implemented `java.util.EventObject`.
-     * Implemented `java.util.Hashtable`.
-     * Implemented `java.util.LinkedHashMap`.
-     * Implemented `java.util.LinkedList`.
+     * Implemented `java.lang`, `java.io`, and `java.util` classes.
      * Made the stack trace printed by `Throwable` much cleaner so that it
        takes up less screen space and is formatted a bit better.
      * Removed `GuestDepth`, it is no longer a concept.
      * Return values for `line.separator`, `microedition.encoding`,
        `microedition.configuration`, and `microedition.locale`.
+   * `collections`
+     * Various fixes, implementation, and cleaning up.
+   * `debug-jdwp`
+     * Implemented JDWP protocol, this is used for debugging.
    * `demo-hello`
      * Made the system properties array `final`.
-   * `jblend-api`
-     * Added API Stubs.
+   * `dio`
+     * Stubs.
+   * `dio-adc`
+     * Stubs.
+   * `dio-atcmd`
+     * Stubs.
+   * `dio-counter`
+     * Stubs.
+   * `dio-dac`
+     * Stubs.
+   * `dio-generic`
+     * Stubs.
+   * `dio-gpio`
+     * Stubs.
+   * `dio-i2cbus`
+     * Stubs.
+   * `dio-mmio`
+     * Stubs.
+   * `dio-modem`
+     * Stubs.
+   * `dio-pwm`
+     * Stubs.
+   * `dio-spibus`
+     * Stubs.
+   * `dio-uart`
+     * Stubs.
+   * `dio-watchdog`
+     * Stubs.
    * `io`
      * Fixed bug in `ByteDeque` if an attempt was made to read from an
        empty deque.
+   * `jblend-api`
+       * Added API Stubs.
    * `launcher`
      * Added the system property `cc.squirreljme.autolaunch` to automatically
        launch a program once the program list is read.

@@ -16,7 +16,9 @@ version: 2.1
 executors:
   build-on-linux-amd64:
     docker:
-      - image: cimg/openjdk:11.0
+      # As of 2023/07/19 it appears .19 is broken since 2023/04/19, so use
+      # older .18 here
+      - image: cimg/openjdk:11.0.18
     resource_class: medium
     environment:
       # Allow Gradle to be fully cached
@@ -42,7 +44,7 @@ executors:
 
   build-on-macos:
     macos:
-      xcode: 13.2.1
+      xcode: 13.4.1
     resource_class: macos.x86.medium.gen2
     environment:
       # Do not auto-update brew as this takes forever, and we really just want
@@ -71,12 +73,12 @@ parameters:
   # Options to be used for any Gradle command, is faster this way
   standard-gradle-options:
     type: string
-    default: --console plain --continue --parallel --no-daemon
+    default: --console plain --continue --parallel --no-daemon --stacktrace
 
   # Standard build for systems
   standard-build-options:
     type: string
-    default: build testHosted -x testSpringCoat -x javadoc -x javadocJar -x sourcesJar -x markdownJavaDoc
+    default: build testHosted -x testSpringCoat -x testSpringCoatRelease -x testSpringCoatDebug -x javadoc -x javadocJar -x sourcesJar -x markdownJavaDoc
 
 # Commands that are used by almost everything
 commands:
@@ -118,22 +120,22 @@ commands:
           shell: <<parameters.shell>>
           name: Save test results
           command: |
-            mkdir -p "<<parameters.home>>/test-results/junit-<<parameters.os>>/"
-            <<parameters.find>> . -type f -regex '.*/'"<<parameters.where>>"'/junit/.*\.xml' -exec cp {} "<<parameters.home>>/test-results/junit-<<parameters.os>>/" \;
+            mkdir -p "<<parameters.home>>/test-results/junit-<<parameters.os>>-<<parameters.where>>/"
+            <<parameters.find>> . -type f -regex '.*/'"<<parameters.where>>"'/junit/.*\.xml' -exec cp {} "<<parameters.home>>/test-results/junit-<<parameters.os>>-<<parameters.where>>/" \;
           when: always
       - run:
           shell: <<parameters.shell>>
           name: Save test results
           command: |
-            mkdir -p "<<parameters.home>>/test-results/csv-<<parameters.os>>/"
-            <<parameters.find>> . -type f -regex '.*/'"<<parameters.where>>"'/csv/.*\.csv' -exec cp {} "<<parameters.home>>/test-results/csv-<<parameters.os>>/" \;
+            mkdir -p "<<parameters.home>>/test-results/csv-<<parameters.os>>-<<parameters.where>>/"
+            <<parameters.find>> . -type f -regex '.*/'"<<parameters.where>>"'/csv/.*\.csv' -exec cp {} "<<parameters.home>>/test-results/csv-<<parameters.os>>-<<parameters.where>>/" \;
           when: always
       - run:
           shell: <<parameters.shell>>
           name: Save snapshots
           command: |
-            mkdir -p "<<parameters.home>>/test-results/nps-<<parameters.vm>>-<<parameters.os>>/"
-            <<parameters.find>> . -type f -regex '.*/'"<<parameters.where>>"'/nps/.*\.nps' -exec cp {} "<<parameters.home>>/test-results/nps-<<parameters.vm>>-<<parameters.os>>/" \;
+            mkdir -p "<<parameters.home>>/test-results/nps-<<parameters.vm>>-<<parameters.os>>-<<parameters.where>>/"
+            <<parameters.find>> . -type f -regex '.*/'"<<parameters.where>>"'/nps/.*\.nps' -exec cp {} "<<parameters.home>>/test-results/nps-<<parameters.vm>>-<<parameters.os>>-<<parameters.where>>/" \;
           when: always
       - store_test_results:
           path: <<parameters.store-home>>/test-results
@@ -169,10 +171,19 @@ jobs:
           # According to documentation, Gradle on Windows has trouble and tries
           # to make way too many workers which causes extreme resource.
           # contention --max-workers=2
-          command: gradlew <<pipeline.parameters.standard-build-options >> <<pipeline.parameters.standard-gradle-options >>
+          command: gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 45m
       - persist-gradle
       - save-test-results:
-          where: "vm-test-hosted"
+          where: "vm-test-hosted-debug"
+          os: "windows"
+          vm: "hosted"
+          shell: bash.exe
+          find: /usr/bin/find
+          home: "/c/users/circleci/"
+          store-home: "c:/users/circleci/"
+      - save-test-results:
+          where: "vm-test-hosted-release"
           os: "windows"
           vm: "hosted"
           shell: bash.exe
@@ -248,13 +259,18 @@ jobs:
           # Only OpenJDK is required, Gradle always uses Gradle wrapper so
           # we do not need that
           name: Install OpenJDK 11
-          command: brew install openjdk@11
+          command: brew install openjdk@11 coreutils
       - run:
           name: Gradle Build and Test
-          command: ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          command: timeout --foreground 45m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 45m
       - persist-gradle
       - save-test-results:
-          where: "vm-test-hosted"
+          where: "vm-test-hosted-debug"
+          os: "macosx"
+          vm: "hosted"
+      - save-test-results:
+          where: "vm-test-hosted-release"
           os: "macosx"
           vm: "hosted"
   build_macosx_m1:
@@ -263,10 +279,15 @@ jobs:
       - checkout
       - run:
           name: Gradle Build and Test
-          command: ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          command: timeout --foreground 45m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 45m
       - persist-gradle
       - save-test-results:
-          where: "vm-test-hosted"
+          where: "vm-test-hosted-debug"
+          os: "macosx-m1"
+          vm: "hosted"
+      - save-test-results:
+          where: "vm-test-hosted-release"
           os: "macosx-m1"
           vm: "hosted"
 
@@ -278,7 +299,7 @@ jobs:
           # Only OpenJDK is required, Gradle always uses Gradle wrapper so
           # we do not need that
           name: Install OpenJDK 11
-          command: brew install openjdk@11
+          command: brew install openjdk@11 coreutils
       - attach_workspace:
           at: .
       - run:
@@ -312,7 +333,7 @@ jobs:
       - checkout
       - run:
           name: Install CMake
-          command: brew install cmake
+          command: brew install cmake coreutils
       - attach_workspace:
           at: .
       - run:
@@ -335,9 +356,14 @@ jobs:
       - linux-install-required
       - run:
           name: Gradle Build and Test
-          command: ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          command: timeout --foreground 45m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 45m
       - save-test-results:
-          where: "vm-test-hosted"
+          where: "vm-test-hosted-debug"
+          os: "linux-amd64"
+          vm: "hosted"
+      - save-test-results:
+          where: "vm-test-hosted-release"
           os: "linux-amd64"
           vm: "hosted"
       - persist-gradle
@@ -365,9 +391,14 @@ jobs:
       - linux-install-required
       - run:
           name: Gradle Build and Test
-          command: ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          command: timeout --foreground 45m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 45m
       - save-test-results:
-          where: "vm-test-hosted"
+          where: "vm-test-hosted-debug"
+          os: "linux-arm64"
+          vm: "hosted"
+      - save-test-results:
+          where: "vm-test-hosted-release"
           os: "linux-arm64"
           vm: "hosted"
       - persist-gradle
@@ -421,7 +452,7 @@ jobs:
           destination: SquirrelJME
 
   ### SpringCoat
-  test_springcoat:
+  test_springcoat_debug:
     executor: build-on-linux-amd64
     steps:
       - checkout
@@ -430,12 +461,28 @@ jobs:
           at: .
       - run:
           name: SpringCoat Tests
-          command: timeout --foreground 17m ./gradlew testSpringCoat <<pipeline.parameters.standard-gradle-options>>
-          no_output_timeout: 17m
+          command: timeout --foreground 45m ./gradlew testSpringCoatDebug <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 45m
       - save-test-results:
-          where: "vm-test-springcoat"
+          where: "vm-test-springcoat-debug"
           os: "linux"
           vm: "springcoat"
+  test_springcoat_release:
+    executor: build-on-linux-amd64
+    steps:
+      - checkout
+      - linux-install-required
+      - attach_workspace:
+          at: .
+      - run:
+          name: SpringCoat Tests
+          command: timeout --foreground 45m ./gradlew testSpringCoatRelease <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 45m
+      - save-test-results:
+          where: "vm-test-springcoat-release"
+          os: "linux"
+          vm: "springcoat"
+
   test_summercoat:
     executor: build-on-linux-amd64
     steps:
@@ -445,10 +492,14 @@ jobs:
           at: .
       - run:
           name: SummerCoat Tests
-          command: timeout --foreground 15m ./gradlew testSummerCoat <<pipeline.parameters.standard-gradle-options>>
-          no_output_timeout: 15m
+          command: timeout --foreground 45m ./gradlew testSummerCoat <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 45m
       - save-test-results:
-          where: "vm-test-summercoat"
+          where: "vm-test-summercoat-debug"
+          os: "linux"
+          vm: "summercoat"
+      - save-test-results:
+          where: "vm-test-summercoat-release"
           os: "linux"
           vm: "summercoat"
 
@@ -557,7 +608,10 @@ workflows:
       ############################# STANDARD TESTS ############################
       - build_linux_amd64
 #      - build_linux_arm64
-      - test_springcoat:
+      - test_springcoat_debug:
+          requires:
+            - construct_testJars
+      - test_springcoat_release:
           requires:
             - construct_testJars
 #      - test_summercoat:

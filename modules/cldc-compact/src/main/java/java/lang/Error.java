@@ -3,17 +3,20 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.lang;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This is the base class for non-checked errors.
  *
  * @since 2016/02/26
  */
+@Api
 public class Error
 	extends Throwable
 {
@@ -22,6 +25,7 @@ public class Error
 	 *
 	 * @since 2018/09/16
 	 */
+	@Api
 	public Error()
 	{
 	}
@@ -32,6 +36,7 @@ public class Error
 	 * @param __m The message to use.
 	 * @since 2018/09/16
 	 */
+	@Api
 	public Error(String __m)
 	{
 		super(__m);
@@ -44,6 +49,7 @@ public class Error
 	 * @param __t The cause of this error.
 	 * @since 2018/09/16
 	 */
+	@Api
 	public Error(String __m, Throwable __t)
 	{
 		super(__m);
@@ -55,6 +61,7 @@ public class Error
 	 * @param __t The cause of this error.
 	 * @since 2018/09/16
 	 */
+	@Api
 	public Error(Throwable __t)
 	{
 		super(__t);

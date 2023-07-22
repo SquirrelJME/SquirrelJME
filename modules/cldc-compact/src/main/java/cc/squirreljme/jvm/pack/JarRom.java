@@ -3,7 +3,7 @@
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -112,7 +112,7 @@ public class JarRom
 		try (ReadableMemoryInputStream in =
 			new ReadableMemoryInputStream(this.data))
 		{
-			// {@squirreljme.error ZZ5d Invalid JAR magic number.}
+			/* {@squirreljme.error ZZ5d Invalid JAR magic number.} */
 			rv = HeaderStruct.decode(in, JarProperty.NUM_JAR_PROPERTIES);
 			if (rv.magicNumber() != ClassInfoConstants.JAR_MAGIC_NUMBER)
 				throw new InvalidRomException("ZZ5d");
@@ -120,7 +120,7 @@ public class JarRom
 			this._header = rv;
 		}
 		
-		// {@squirreljme.error ZZ56 The JAR header is corrupt.}
+		/* {@squirreljme.error ZZ56 The JAR header is corrupt.} */
 		catch (IOException e)
 		{
 			throw new InvalidRomException("ZZ56", e);
@@ -180,7 +180,7 @@ public class JarRom
 	public final ReadableMemory openResourceAsMemory(int __dx)
 		throws IndexOutOfBoundsException
 	{
-		// {@squirreljme.error ZZ59 Jar index out of bounds. (The index)}
+		/* {@squirreljme.error ZZ59 Jar index out of bounds. (The index)} */
 		TableOfContents toc = this.__toc();
 		if (__dx < 0 || __dx >= toc.count())
 			throw new IndexOutOfBoundsException("ZZ59 " + __dx);

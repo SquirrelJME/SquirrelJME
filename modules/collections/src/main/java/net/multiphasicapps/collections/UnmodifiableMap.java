@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -16,6 +16,7 @@ import java.util.AbstractSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import org.jetbrains.annotations.UnmodifiableView;
 
 /**
  * This is a map which cannot be modified.
@@ -24,6 +25,7 @@ import java.util.Set;
  * @param <V> Value type to store.
  * @since 2016/02/29
  */
+@UnmodifiableView
 public final class UnmodifiableMap<K, V>
 	extends AbstractMap<K, V>
 {

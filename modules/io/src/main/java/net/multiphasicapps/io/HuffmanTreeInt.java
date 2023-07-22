@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -72,13 +72,13 @@ public class HuffmanTreeInt
 		int ibm = Integer.bitCount(__mask);
 		
 		// Check mask and representation
-		// {@squirreljme.error BD13 The symbol exceeds the range of the mask.
-		// (The value; The mask)}
+		/* {@squirreljme.error BD13 The symbol exceeds the range of the mask.
+		(The value; The mask)} */
 		if ((__sym & (~__mask)) != 0)
 			throw new IllegalArgumentException(String.format("BD13 %x %x",
 				__sym, __mask));
-		// {@squirreljme.error BD14 The mask has a zero gap between bits or
-		// at the least significant end. (The value; The mask)}
+		/* {@squirreljme.error BD14 The mask has a zero gap between bits or
+		at the least significant end. (The value; The mask)} */
 		if (ibm != (32 - Integer.numberOfLeadingZeros(__mask)) ||
 			(__mask & 1) == 0)
 			throw new IllegalArgumentException(String.format("BD14 %x %x",
@@ -258,7 +258,7 @@ public class HuffmanTreeInt
 			if (at < 0)
 				return this._values[(-at) - 1];
 			
-			// {@squirreljme.error BD15 Key not found in tree.}
+			/* {@squirreljme.error BD15 Key not found in tree.} */
 			else if (at == Integer.MAX_VALUE)
 				throw new NoSuchElementException("BD15");
 			

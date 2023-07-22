@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package com.oracle.json.stream;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import com.oracle.json.JsonArray;
 import com.oracle.json.JsonException;
 import com.oracle.json.JsonObject;
@@ -20,6 +21,8 @@ import java.util.Map;
 /**
  * @since 2014/07/25
  */
+@SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
+@Api
 public interface JsonParserFactory
 {
 	/**
@@ -31,6 +34,7 @@ public interface JsonParserFactory
 	 * @throws JsonException If the encoding could not be specified.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonParser createParser(InputStream __i);
 	
 	/**
@@ -42,6 +46,7 @@ public interface JsonParserFactory
 	 * @return A parser for JSON.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonParser createParser(InputStream __i, String __charSet)
 		throws UnsupportedEncodingException;
 	
@@ -53,6 +58,7 @@ public interface JsonParserFactory
 	 * @return A parser for JSON.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonParser createParser(JsonArray __a);
 	
 	/**
@@ -63,6 +69,7 @@ public interface JsonParserFactory
 	 * @return A parser for JSON.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonParser createParser(JsonObject __o);
 	
 	/**
@@ -73,6 +80,7 @@ public interface JsonParserFactory
 	 * @return A parser for JSON.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonParser createParser(Reader __r);
 	
 	/**
@@ -83,6 +91,7 @@ public interface JsonParserFactory
 	 * empty but must never be {@code null}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	Map<String, ?> getConfigInUse();
 }
 

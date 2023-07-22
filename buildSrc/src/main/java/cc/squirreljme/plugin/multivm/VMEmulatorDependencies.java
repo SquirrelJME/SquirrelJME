@@ -3,12 +3,14 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
+import cc.squirreljme.plugin.multivm.ident.TargetClassifier;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -28,28 +30,28 @@ public final class VMEmulatorDependencies
 	implements Callable<Iterable<Task>>
 {
 	/** The task referencing this. */
-	protected final Task task;
+	protected final VMBaseTask task;
 	
-	/** The virtual machine type. */
-	protected final VMSpecifier vmType;
+	/** The target classifier used. */
+	protected final TargetClassifier targetClassifier;
 	
 	/**
 	 * Initializes the dependencies.
 	 * 
 	 * @param __task The task to reference.
-	 * @param __vmType The virtual machine type.
+	 * @param __classifier The classifier used.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/16
 	 */
-	public VMEmulatorDependencies(VMExecutableTask __task,
-		VMSpecifier __vmType)
+	public VMEmulatorDependencies(VMBaseTask __task,
+		TargetClassifier __classifier)
 		throws NullPointerException
 	{
-		if (__task == null || __vmType == null)
+		if (__task == null || __classifier == null)
 			throw new NullPointerException("NARG");
 		
 		this.task = __task;
-		this.vmType = __vmType;
+		this.targetClassifier = __classifier;
 	}
 	
 	/**
@@ -62,31 +64,37 @@ public final class VMEmulatorDependencies
 	{
 		Project root = this.task.getProject().getRootProject();
 		
-		Project emuProject = root.project(this.vmType.emulatorProject());
-		TaskContainer emuTasks = emuProject.getTasks();
-		TaskContainer emuBase = root.project(":emulators:emulator-base")
-			.getTasks();
-		
-		// Build projects that are needed to run the emulator
+		// Need tasks for all the source emulators
 		Set<Task> rv = new LinkedHashSet<>();
-		for (ProjectAndTaskName task : VMHelpers.runClassTasks(emuProject,
-			SourceSet.MAIN_SOURCE_SET_NAME, VMType.HOSTED))
+		for (String emulatorProject : this.targetClassifier.getVmType()
+			.emulatorProjects(this.targetClassifier.getBangletVariant()))
 		{
-			Project taskProject = root.project(task.project);
+			Project emuProject = root.project(emulatorProject);
+			TaskContainer emuTasks = emuProject.getTasks();
+			TaskContainer emuBase =
+				root.project(":emulators:emulator-base").getTasks();
 			
-			// We need to depend on the classes and JAR for the emulator
-			// projects
-			rv.add(taskProject.getTasks().getByName("classes"));
-			rv.add(taskProject.getTasks().getByName("jar"));
+			// Build projects that are needed to run the emulator
+			for (ProjectAndTaskName task : VMHelpers.runClassTasks(emuProject,
+				new SourceTargetClassifier(SourceSet.MAIN_SOURCE_SET_NAME,
+				this.targetClassifier)))
+			{
+				Project taskProject = root.project(task.project);
+				
+				// We need to depend on the classes and JAR for the emulator
+				// projects
+				rv.add(taskProject.getTasks().getByName("classes"));
+				rv.add(taskProject.getTasks().getByName("jar"));
+			}
+			
+			// Add base emulator projects and such, so that they are forced
+			rv.add(emuTasks.getByName("jar"));
+			rv.add(emuTasks.getByName("assemble"));
+			rv.add(emuBase.getByName("jar"));
+			rv.add(emuBase.getByName("assemble"));
+			rv.add(emuBase.getByName("assembleDebug"));
+			rv.add(emuBase.getByName("assembleRelease"));
 		}
-		
-		// Add base emulator projects and such, so that they are forced
-		rv.add(emuTasks.getByName("jar"));
-		rv.add(emuTasks.getByName("assemble"));
-		rv.add(emuBase.getByName("jar"));
-		rv.add(emuBase.getByName("assemble"));
-		rv.add(emuBase.getByName("assembleDebug"));
-		rv.add(emuBase.getByName("assembleRelease"));
 		
 		return new ArrayList<>(rv);
 	}

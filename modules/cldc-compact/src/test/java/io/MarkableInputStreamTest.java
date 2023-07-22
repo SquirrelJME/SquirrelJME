@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -26,7 +26,7 @@ import net.multiphasicapps.tac.TestRunnable;
  */
 public class MarkableInputStreamTest
 	extends TestRunnable
-	implements RandomAccess, cc.squirreljme.jvm.Framebuffer
+	implements RandomAccess
 {
 	/** Byte message to read. */
 	private static final byte[] _BYTES =

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -90,7 +90,7 @@ public final class EnumTypeMap<E extends Enum<E>, V>
 	@Override
 	public V put(E __key, V __value)
 	{
-		// {@squirreljme.error ZZ1i Cannot store key into map.} 
+		/* {@squirreljme.error ZZ1i Cannot store key into map.} */ 
 		if (!this.type.isInstance(__key))
 			throw new IllegalArgumentException("ZZ1i");
 		

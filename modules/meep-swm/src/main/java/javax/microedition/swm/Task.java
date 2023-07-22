@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package javax.microedition.swm;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Objects;
 
@@ -20,6 +21,7 @@ import java.util.Objects;
  *
  * @since 2016/06/24
  */
+@Api
 public final class Task
 {
 	/** The ID of the task. */
@@ -81,6 +83,7 @@ public final class Task
 	 * @return The number of bytes the task is estimated to be using.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public int getHeapUse()
 	{
 		throw Debugging.todo();
@@ -101,6 +104,7 @@ public final class Task
 	 * @return The name of the task, system tasks always return {@code null}.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public String getName()
 	{
 		// System tasks have no name
@@ -116,6 +120,7 @@ public final class Task
 	 * @return The task priority.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public TaskPriority getPriority()
 	{
 		throw Debugging.todo();
@@ -135,6 +140,7 @@ public final class Task
 	 * @return The task status.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public TaskStatus getStatus()
 	{
 		// If the TID is negative then it failed to start
@@ -151,6 +157,7 @@ public final class Task
 	 * @return The owning suite.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public Suite getSuite()
 	{
 		// All system tasks are hidden behind the system suite
@@ -180,6 +187,7 @@ public final class Task
 	 * @return {@code true} if a system task.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public boolean isSystemTask()
 	{
 		// System task is always zero

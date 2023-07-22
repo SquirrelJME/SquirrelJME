@@ -3,13 +3,15 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.jvm.mle;
 
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
+import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -20,6 +22,7 @@ import java.io.InputStream;
  *
  * @since 2022/03/04
  */
+@SquirrelJMEVendorApi
 public class RawJarPackageBracketInputStream
 	extends InputStream
 {
@@ -45,6 +48,7 @@ public class RawJarPackageBracketInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/03/04
 	 */
+	@SquirrelJMEVendorApi
 	public RawJarPackageBracketInputStream(JarPackageBracket __jar)
 		throws IOException, NullPointerException
 	{
@@ -62,6 +66,7 @@ public class RawJarPackageBracketInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/04/09
 	 */
+	@SquirrelJMEVendorApi
 	public RawJarPackageBracketInputStream(JarPackageBracket __jar,
 		int __offset)
 		throws IndexOutOfBoundsException, IOException, NullPointerException
@@ -69,14 +74,14 @@ public class RawJarPackageBracketInputStream
 		if (__jar == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ3u The specified JAR cannot be accessed
-		// directly. (The JAR path)}
+		/* {@squirreljme.error ZZ3u The specified JAR cannot be accessed
+		directly. (The JAR path)} */
 		int jarSize = JarPackageShelf.rawSize(__jar);
 		if (jarSize < 0)
 			throw new IOException("ZZ3u " +
 				JarPackageShelf.libraryPath(__jar));
 		
-		// {@squirreljme.error ZZ4j Invalid offset into direct JAR.}
+		/* {@squirreljme.error ZZ4j Invalid offset into direct JAR.} */
 		if (__offset < 0 || __offset > jarSize)
 			throw new IndexOutOfBoundsException("ZZ4j");
 		

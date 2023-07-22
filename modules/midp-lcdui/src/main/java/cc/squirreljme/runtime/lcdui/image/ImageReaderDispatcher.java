@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -134,8 +134,8 @@ public class ImageReaderDispatcher
 			return new XPMReader(__is).parse();
 		}
 		
-		// {@squirreljme.error EB0s Could not detect the image format used
-		// specified by the starting byte. (The magic number; The first byte)}
+		/* {@squirreljme.error EB0s Could not detect the image format used
+		specified by the starting byte. (The magic number; The first byte)} */
 		else
 			throw new IOException(String.format("EB0s %08x %02x", magic,
 				first));
@@ -167,12 +167,12 @@ public class ImageReaderDispatcher
 			imageData = PencilShelf.nativeImageLoadRGBA(__type,
 				rawData, 0, rawData.length);
 			
-			// {@squirreljme.error EB3r Could not load the native image.}
+			/* {@squirreljme.error EB3r Could not load the native image.} */
 			if (imageData == null)
 				throw new IOException("EB3r");
 		}
 		
-		// {@squirreljme.error EB3q Could not load the native image.}
+		/* {@squirreljme.error EB3q Could not load the native image.} */
 		catch (MLECallError __e)
 		{
 			throw new IOException("EB3q", __e);
@@ -216,7 +216,7 @@ public class ImageReaderDispatcher
 			}
 		}
 		
-		// {@squirreljme.error EB3s Image has invalid parameters.}
+		/* {@squirreljme.error EB3s Image has invalid parameters.} */
 		if (imageWidth <= 0 || imageHeight <= 0)
 			throw new IOException("EB3s");
 		

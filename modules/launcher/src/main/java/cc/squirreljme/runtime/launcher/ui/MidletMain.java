@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -68,7 +68,7 @@ public class MidletMain
 		new __ActiveTask__();
 	
 	/** The suites which are mapped to the list. */
-	private final ArrayList<Application> _listedSuites =
+	final ArrayList<Application> _listedSuites =
 		new ArrayList<>();
 	
 	/** The current refresh state. */
@@ -82,7 +82,7 @@ public class MidletMain
 	private volatile String _autoLaunch;
 	
 	/** Lock for loading. */
-	private volatile boolean _refreshLock;
+	volatile boolean _refreshLock;
 	
 	{
 		// Do not crash if we cannot read properties
@@ -152,7 +152,7 @@ public class MidletMain
 					__refreshCanvas, refreshState, mainDisplay);
 			}
 			
-			// Scan all of the available suites for launching
+			// Scan all the available suites for launching
 			SuiteScanner.scanSuites(handler);
 			
 			// All done so, return the title back
@@ -168,37 +168,41 @@ public class MidletMain
 			}
 		}
 		
-		// If the program list started too quickly then wait until the splash
-		// time has expired so it is always shown for a fixed amount of time
-		// This is intended for branding and showing credit
-		long endTime = this._endTime;
-		for (long nowTime = System.nanoTime(); nowTime < endTime;
-			nowTime = System.nanoTime())
-			try
-			{
-				Debugging.debugNote("Stalling...");
-				Thread.sleep((endTime - nowTime) / 1_000_000L);
-			}
-			catch (InterruptedException ignored)
-			{
-			}
-		
-		// Make sure the program list is showing
-		Displayable current = mainDisplay.getCurrent();
-		if (current == null || (current instanceof SplashScreen))
-			mainDisplay.setCurrent(this.programList);
-		
-		// Automatically launch a program?
-		String autoLaunch = this._autoLaunch;
-		if (autoLaunch != null)
+		// This only works if this is on the main display
+		if (mainDisplay != null)
 		{
-			// Do not try auto-launching whenever there is a refresh since we
-			// may just get stuck in a loop here
-			this._autoLaunch = null;
+			// If the program list started too quickly then wait until the
+			// splash time has expired so it is always shown for a fixed amount
+			// of time This is intended for branding and showing credit
+			long endTime = this._endTime;
+			for (long nowTime = System.nanoTime(); nowTime < endTime;
+				nowTime = System.nanoTime())
+				try
+				{
+					Debugging.debugNote("Stalling...");
+					Thread.sleep((endTime - nowTime) / 1_000_000L);
+				}
+				catch (InterruptedException ignored)
+				{
+				}
 			
-			// Launch it
-			System.err.println("Auto-launching " + autoLaunch + "...");
-			this.__launch(autoLaunch);
+			// Make sure the program list is showing
+			Displayable current = mainDisplay.getCurrent();
+			if (current == null || (current instanceof SplashScreen))
+				mainDisplay.setCurrent(this.programList);
+			
+			// Automatically launch a program?
+			String autoLaunch = this._autoLaunch;
+			if (autoLaunch != null)
+			{
+				// Do not try auto-launching whenever there is a refresh since we
+				// may just get stuck in a loop here
+				this._autoLaunch = null;
+				
+				// Launch it
+				System.err.println("Auto-launching " + autoLaunch + "...");
+				this.__launch(autoLaunch);
+			}
 		}
 	}
 	

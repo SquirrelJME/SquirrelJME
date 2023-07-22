@@ -3,11 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package com.oracle.json;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This is a builder which is able to generate {@link JsonObject}s, it also
@@ -18,6 +20,8 @@ package com.oracle.json;
  *
  * @since 2014/07/25
  */
+@Api
+@SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
 public interface JsonObjectBuilder
 {
 	/**
@@ -32,6 +36,7 @@ public interface JsonObjectBuilder
 	 * @throws NullPointerException If {@code __n} is {@code null}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonObjectBuilder add(String __n, boolean __v);
 	
 	/**
@@ -46,6 +51,7 @@ public interface JsonObjectBuilder
 	 * @throws NullPointerException If {@code __n} is {@code null}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonObjectBuilder add(String __n, double __v);
 	
 	/**
@@ -60,6 +66,7 @@ public interface JsonObjectBuilder
 	 * @throws NullPointerException If {@code __n} is {@code null}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonObjectBuilder add(String __n, int __v);
 	
 	/**
@@ -75,6 +82,7 @@ public interface JsonObjectBuilder
 	 * {@code null}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonObjectBuilder add(String __n, JsonArrayBuilder __v);
 	
 	/**
@@ -90,6 +98,7 @@ public interface JsonObjectBuilder
 	 * {@code null}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonObjectBuilder add(String __n, JsonObjectBuilder __v);
 	
 	/**
@@ -104,6 +113,7 @@ public interface JsonObjectBuilder
 	 * {@code null}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonObjectBuilder add(String __n, JsonValue __v);
 	
 	/**
@@ -118,6 +128,7 @@ public interface JsonObjectBuilder
 	 * @throws NullPointerException If {@code __n} is {@code null}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonObjectBuilder add(String __n, long __v);
 	
 	/**
@@ -133,6 +144,7 @@ public interface JsonObjectBuilder
 	 * {@code null}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonObjectBuilder add(String __n, String __v);
 	
 	/**
@@ -145,6 +157,7 @@ public interface JsonObjectBuilder
 	 * @throws NullPointerException If {@code __n} is {@code null}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonObjectBuilder addNull(String __n);
 	
 	/**
@@ -154,6 +167,7 @@ public interface JsonObjectBuilder
 	 * @return The built Json object.
 	 * @since 2014/07/24
 	 */
+	@Api
 	JsonObject build();
 }
 

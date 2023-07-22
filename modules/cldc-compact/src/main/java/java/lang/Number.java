@@ -3,11 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.lang;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * A number represents any kind of number which may be transformed to other
@@ -19,6 +21,7 @@ package java.lang;
  *
  * @since 2018/09/23
  */
+@Api
 public abstract class Number
 {
 	
@@ -28,6 +31,7 @@ public abstract class Number
 	 * @return The converted value of this number.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public abstract double doubleValue();
 	
 	/**
@@ -36,6 +40,7 @@ public abstract class Number
 	 * @return The converted value of this number.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public abstract float floatValue();
 	
 	/**
@@ -44,6 +49,7 @@ public abstract class Number
 	 * @return The converted value of this number.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public abstract int intValue();
 	
 	/**
@@ -52,6 +58,7 @@ public abstract class Number
 	 * @return The converted value of this number.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public abstract long longValue();
 	
 	/**
@@ -60,6 +67,7 @@ public abstract class Number
 	 * @return The converted value of this number.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public byte byteValue()
 	{
 		return (byte)this.intValue();
@@ -71,6 +79,7 @@ public abstract class Number
 	 * @return The converted value of this number.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public short shortValue()
 	{
 		return (short)this.intValue();

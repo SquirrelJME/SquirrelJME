@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -48,8 +48,8 @@ class __BlockAccessorRegionInputStream__
 		if (__ba == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error BF0r The start position and length cannot be
-		// negative.}
+		/* {@squirreljme.error BF0r The start position and length cannot be
+		negative.} */
 		if (__start < 0 || __len < 0)
 			throw new IllegalArgumentException("BF0r");
 		

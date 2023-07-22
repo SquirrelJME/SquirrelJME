@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.util.Arrays;
 
 /**
@@ -16,6 +17,7 @@ import java.util.Arrays;
  *
  * @since 2018/11/06
  */
+@Api
 public class ByteArrayOutputStream
 	extends OutputStream
 {
@@ -24,9 +26,11 @@ public class ByteArrayOutputStream
 		32;
 	
 	/** The bytes in the buffer. */
+	@Api
 	protected byte[] buf;
 	
 	/** The number of valid bytes in the buffer. */
+	@Api
 	protected int count;
 	
 	/**
@@ -34,6 +38,7 @@ public class ByteArrayOutputStream
 	 *
 	 * @since 2018/11/06
 	 */
+	@Api
 	public ByteArrayOutputStream()
 	{
 		this(ByteArrayOutputStream._CAPACITY);
@@ -46,11 +51,12 @@ public class ByteArrayOutputStream
 	 * @throws IllegalArgumentException If the capacity is negative.
 	 * @since 2018/11/06
 	 */
+	@Api
 	public ByteArrayOutputStream(int __cap)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error ZZ0i Cannot initialize output stream using a
-		// negative capacity.}
+		/* {@squirreljme.error ZZ0i Cannot initialize output stream using a
+		negative capacity.} */
 		if (__cap < 0)
 			throw new IllegalArgumentException("ZZ0i");
 		
@@ -73,6 +79,7 @@ public class ByteArrayOutputStream
 	 *
 	 * @since 2018/11/06
 	 */
+	@Api
 	public void reset()
 	{
 		synchronized (this)
@@ -87,6 +94,7 @@ public class ByteArrayOutputStream
 	 * @return The number of bytes that are valid in the internal buffer.
 	 * @since 2018/11/06
 	 */
+	@Api
 	public int size()
 	{
 		synchronized (this)
@@ -101,6 +109,7 @@ public class ByteArrayOutputStream
 	 * @return A copy of the byte array.
 	 * @since 2018/11/06
 	 */
+	@Api
 	public byte[] toByteArray()
 	{
 		synchronized (this)
@@ -185,6 +194,7 @@ public class ByteArrayOutputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/06
 	 */
+	@Api
 	public void writeTo(OutputStream __os)
 		throws IOException, NullPointerException
 	{

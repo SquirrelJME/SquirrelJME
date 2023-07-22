@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -75,8 +75,8 @@ public final class JDWPState
 		view = this.__binding().debuggerView(__type, __kind,
 			new WeakReference<>(this));
 		
-		// {@squirreljme.error AG0m The binding does not know about this kind
-		// of view? (The kind)}
+		/* {@squirreljme.error AG0m The binding does not know about this kind
+		of view? (The kind)} */
 		if (view == null)
 			throw new IllegalStateException("AG0m " + __kind);
 		
@@ -95,7 +95,7 @@ public final class JDWPState
 	final JDWPBinding __binding()
 		throws IllegalStateException
 	{
-		// {@squirreljme.error AG0l The Binding was GCed.}
+		/* {@squirreljme.error AG0l The Binding was GCed.} */
 		JDWPBinding rv = this._binding.get();
 		if (rv == null)
 			throw new IllegalStateException("AG0l");

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -41,10 +41,12 @@ public enum CompressionLevel
 	;
 	
 	/** The default compression level. */
-	public static final CompressionLevel DEFAULT = CompressionLevel.SLOW;
+	public static final CompressionLevel DEFAULT =
+		CompressionLevel.SLOW;
 	
 	/** The best compression level. */
-	public static final CompressionLevel BEST = CompressionLevel.SLOWEST;
+	public static final CompressionLevel BEST =
+		CompressionLevel.SLOWEST;
 	
 	/**
 	 * The number of symbols to look at as a single unit with a given

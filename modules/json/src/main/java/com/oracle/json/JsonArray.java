@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package com.oracle.json;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.util.List;
 
 /**
@@ -18,6 +19,7 @@ import java.util.List;
  *
  * @since 2014/07/25
  */
+@Api
 public interface JsonArray
 	extends JsonStructure, List<JsonValue>
 {
@@ -33,6 +35,7 @@ public interface JsonArray
 	 * {@link JsonValue#TRUE} or {@link JsonValue#FALSE}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	boolean getBoolean(int __i);
 	
 	/**
@@ -45,6 +48,7 @@ public interface JsonArray
 	 * @throws IndexOutOfBoundsException If the index is out of range.
 	 * @since 2014/07/25
 	 */
+	@Api
 	boolean getBoolean(int __i, boolean __def);
 	
 	/**
@@ -57,6 +61,7 @@ public interface JsonArray
 	 * {@link JsonNumber}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	int getInt(int __i);
 	
 	/**
@@ -69,6 +74,7 @@ public interface JsonArray
 	 * @throws IndexOutOfBoundsException If the index is out of range.
 	 * @since 2014/07/25
 	 */
+	@Api
 	int getInt(int __i, int __def);
 	
 	/**
@@ -80,6 +86,7 @@ public interface JsonArray
 	 * {@link JsonArray}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonArray getArray(int __i);
 	
 	/**
@@ -91,6 +98,7 @@ public interface JsonArray
 	 * {@link JsonNumber}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonNumber getNumber(int __i);
 	
 	/**
@@ -102,6 +110,7 @@ public interface JsonArray
 	 * {@link JsonObject}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonObject getObject(int __i);
 	
 	/**
@@ -113,6 +122,7 @@ public interface JsonArray
 	 * {@link JsonString}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonString getJsonString(int __i);
 	
 	/**
@@ -124,6 +134,7 @@ public interface JsonArray
 	 * {@link JsonString}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	String getString(int __i);
 	
 	/**
@@ -136,6 +147,7 @@ public interface JsonArray
 	 * @throws IndexOutOfBoundsException If the index is out of range.
 	 * @since 2014/07/25
 	 */
+	@Api
 	String getString(int __i, String __def);
 	
 	/**
@@ -148,6 +160,7 @@ public interface JsonArray
 	 * @return {@link List} view of the specified array.
 	 * @since 2014/07/25
 	 */
+	@Api
 	<T extends JsonValue> List<T> getValueAs(Class<T> __cl);
 	
 	/**
@@ -157,6 +170,7 @@ public interface JsonArray
 	 * @throws IndexOutOfBoundsException If the index is out of range.
 	 * @since 2014/07/25
 	 */
+	@Api
 	boolean isNull(int __i);
 }
 

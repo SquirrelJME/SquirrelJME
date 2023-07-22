@@ -3,13 +3,12 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.jvm.aot;
 
-import cc.squirreljme.runtime.cldc.Poking;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.vm.JarClassLibrary;
 import cc.squirreljme.vm.SummerCoatJarLibrary;
@@ -56,8 +55,8 @@ public class Main
 			if (__compiler.equals(backend.name()))
 				return backend;
 		
-		// {@squirreljme.error AE04 The given compiler does not exist.
-		// (The compiler)}
+		/* {@squirreljme.error AE04 The given compiler does not exist.
+		(The compiler)} */
 		throw new IllegalArgumentException("AE04 " + __compiler);
 	}
 	
@@ -71,9 +70,6 @@ public class Main
 	public static void main(String... __args)
 		throws IOException
 	{
-		// Make sure the VM stuff is alive here
-		Poking.poke();
-		
 		// Push all arguments to the queue
 		Deque<String> args = new LinkedList<>(Arrays.asList(__args));
 		
@@ -102,12 +98,12 @@ public class Main
 				break;
 			}
 			
-			// {@squirreljme.error AE01 Unknown argument. (The argument)}
+			/* {@squirreljme.error AE01 Unknown argument. (The argument)} */
 			else
 				throw new IllegalArgumentException("AE01 " + arg);
 		}
 		
-		// {@squirreljme.error AE03 Mode was not specified.}
+		/* {@squirreljme.error AE03 Mode was not specified.} */
 		if (mode == null)
 			throw new IllegalArgumentException("AE03");
 		
@@ -136,7 +132,7 @@ public class Main
 					Main.mainRom(backend, out, args);
 					break;
 				
-				// {@squirreljme.error AE02 Unknown mode. (The mode)}
+				/* {@squirreljme.error AE02 Unknown mode. (The mode)} */
 				default:
 					throw new IllegalArgumentException("AE02 " + mode);
 			}
@@ -286,7 +282,7 @@ public class Main
 			libs.add(lib);
 		}
 		
-		// {@squirreljme.error AE08 No libraries specified to link together.}
+		/* {@squirreljme.error AE08 No libraries specified to link together.} */
 		if (libs.isEmpty())
 			throw new IllegalArgumentException("AE08");
 		

@@ -3,11 +3,14 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package net.multiphasicapps.tac;
+
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import org.junit.Test;
 
 /**
  * This is a test which takes two parameters and produces no result.
@@ -16,6 +19,7 @@ package net.multiphasicapps.tac;
  * @param <B> The second argument type.
  * @since 2018/10/06
  */
+@SquirrelJMEVendorApi
 public abstract class TestBiConsumer<A, B>
 	extends __CoreTest__
 {
@@ -27,6 +31,8 @@ public abstract class TestBiConsumer<A, B>
 	 * @throws Throwable On any thrown exception.
 	 * @since 2018/10/06
 	 */
+	@Test
+	@SquirrelJMEVendorApi
 	public abstract void test(A __a, B __b)
 		throws Throwable;
 	
@@ -36,10 +42,11 @@ public abstract class TestBiConsumer<A, B>
 	 */
 	@Override
 	@SuppressWarnings({"unchecked"})
+	@SquirrelJMEVendorApi
 	final Object __runTest(Object... __args)
 		throws Throwable
 	{
-		// {@squirreljme.error BU03 Test takes two parameters.}
+		/* {@squirreljme.error BU03 Test takes two parameters.} */
 		if (__args.length != 2)
 			throw new InvalidTestParameterException("BU03");
 		

@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.io.IOException;
 
 /**
@@ -17,6 +18,7 @@ import java.io.IOException;
  *
  * @since 2018/12/07
  */
+@Api
 public interface Appendable
 {
 	/**
@@ -27,6 +29,7 @@ public interface Appendable
 	 * @throws IOException On write errors.
 	 * @since 2018/12/07
 	 */
+	@Api
 	Appendable append(CharSequence __c)
 		throws IOException;
 	
@@ -42,6 +45,7 @@ public interface Appendable
 	 * @throws IOException On write errors.
 	 * @since 2018/12/07
 	 */
+	@Api
 	Appendable append(CharSequence __c, int __s, int __e)
 		throws IndexOutOfBoundsException, IOException;
 	
@@ -53,6 +57,7 @@ public interface Appendable
 	 * @throws IOException On write errors.
 	 * @since 2018/12/07
 	 */
+	@Api
 	Appendable append(char __c)
 		throws IOException;
 }

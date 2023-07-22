@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -184,7 +184,7 @@ public enum JDWPValueTag
 			throw new NullPointerException("NARG");
 		
 		// If null, assume an object type
-		if (__value == null)
+		if (__value == null || __controller.viewObject().isNullObject(__value))
 			return JDWPValueTag.OBJECT;
 		
 		// If this a valid object, try to get it from its type

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -52,8 +52,8 @@ public final class IBM437CodePage
 	public static char byteToChar(int __b)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error BF01 Byte index is not within bounds.
-		// (The byte)}
+		/* {@squirreljme.error BF01 Byte index is not within bounds.
+		(The byte)} */
 		if (__b < 0 || __b > 255)
 			throw new IllegalArgumentException(String.format("BF01 %d", __b));
 		

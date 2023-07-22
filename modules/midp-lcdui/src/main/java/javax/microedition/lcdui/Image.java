@@ -3,13 +3,14 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package javax.microedition.lcdui;
 
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.image.AccessibleImage;
 import cc.squirreljme.runtime.lcdui.image.ImageReaderDispatcher;
@@ -19,6 +20,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+@Api
 public class Image
 	extends AccessibleImage
 {
@@ -72,6 +74,7 @@ public class Image
 				__data[i] |= 0xFF_000000;
 	}
 	
+	@Api
 	public final void getARGB16(short[] __data, int __off, int __scanlen,
 		int __x, int __y, int __w, int __h)
 	{
@@ -97,11 +100,12 @@ public class Image
 	 * @throws IllegalStateException If the image is not mutable.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public final Graphics getGraphics()
 		throws IllegalStateException
 	{
-		// {@squirreljme.error EB28 Cannot get mutable graphic operations for
-		// an immutable image.}
+		/* {@squirreljme.error EB28 Cannot get mutable graphic operations for
+		an immutable image.} */
 		if (!this.isMutable())
 			throw new IllegalStateException("EB28");
 		
@@ -120,6 +124,7 @@ public class Image
 	 * @return The height of the image.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public final int getHeight()
 	{
 		return this._height;
@@ -151,6 +156,7 @@ public class Image
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/11
 	 */
+	@Api
 	public final void getRGB(int[] __b, int __o, int __sl, int __x, int __y,
 		int __w, int __h)
 		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
@@ -168,25 +174,25 @@ public class Image
 		if (__b == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB29 The source coordinates are negative.}
+		/* {@squirreljme.error EB29 The source coordinates are negative.} */
 		if (__x < 0 || __y < 0)
 			throw new IllegalArgumentException("EB29");
 	
-		// {@squirreljme.error EB2a The absolute value of the scanline length
-		// exceeds the read width.}
+		/* {@squirreljme.error EB2a The absolute value of the scanline length
+		exceeds the read width.} */
 		int scanLen = Math.abs(__sl);
 		if (scanLen < __w)
 			throw new IllegalArgumentException("EB2a");
 		
-		// {@squirreljme.error EB2b Reading of RGB data would exceed the bounds
-		// out the output array.}
+		/* {@squirreljme.error EB2b Reading of RGB data would exceed the bounds
+		out the output array.} */
 		int areaPix = __w * __h;
 		int areaScan = __sl * __h;
 		if (__o < 0 || (__o + areaScan) > __b.length || (__o + areaScan) < 0)
 			throw new ArrayIndexOutOfBoundsException("EB2b");
 		
-		// {@squirreljme.error EB2c The area to read exceeds the bounds of the
-		// image.}
+		/* {@squirreljme.error EB2c The area to read exceeds the bounds of the
+		image.} */
 		int ex = __x + __w,
 			ey = __y + __h;
 		int iw = this._width,
@@ -221,6 +227,7 @@ public class Image
 		}
 	}
 	
+	@Api
 	public final void getRGB16(short[] __data, int __off, int __scanlen,
 		int __x, int __y, int __w, int __h)
 	{
@@ -233,6 +240,7 @@ public class Image
 	 * @return The width of the image.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public final int getWidth()
 	{
 		return this._width;
@@ -244,6 +252,7 @@ public class Image
 	 * @return {@code true} if this image has an alpha channel.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public final boolean hasAlpha()
 	{
 		return this._alpha;
@@ -255,6 +264,7 @@ public class Image
 	 * @return {@code true} if this image is animated.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public final boolean isAnimated()
 	{
 		return (this instanceof AnimatedImage);
@@ -266,6 +276,7 @@ public class Image
 	 * @return {@code true} if this image is mutable.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public final boolean isMutable()
 	{
 		return this._mutable && !this.isAnimated() && !this.isScalable();
@@ -277,6 +288,7 @@ public class Image
 	 * @return {@code true} if this image is scalable.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public final boolean isScalable()
 	{
 		return (this instanceof ScalableImage);
@@ -341,6 +353,7 @@ public class Image
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/28
 	 */
+	@Api
 	public static Image createImage(byte[] __b, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
 			NullPointerException
@@ -355,7 +368,7 @@ public class Image
 			return Image.createImage(new ByteArrayInputStream(__b, __o, __l));
 		}
 		
-		// {@squirreljme.error EB2d Could not load the image data.}
+		/* {@squirreljme.error EB2d Could not load the image data.} */
 		catch (IOException e)
 		{
 			throw new IllegalArgumentException("EB2d", e);
@@ -372,6 +385,7 @@ public class Image
 	 * or negative dimension.
 	 * @since 2017/02/11
 	 */
+	@Api
 	public static Image createImage(int __w, int __h)
 		throws IllegalArgumentException
 	{
@@ -390,10 +404,11 @@ public class Image
 	 * or negative dimension.
 	 * @since 2017/02/11
 	 */
+	@Api
 	public static Image createImage(int __w, int __h, boolean __alpha, int __c)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB2e Zero or negative image size requested.}
+		/* {@squirreljme.error EB2e Zero or negative image size requested.} */
 		if (__w <= 0 || __h <= 0)
 			throw new IllegalArgumentException("EB2e");
 		
@@ -420,6 +435,7 @@ public class Image
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/28
 	 */
+	@Api
 	public static Image createImage(InputStream __is)
 		throws IOException, NullPointerException
 	{
@@ -441,6 +457,7 @@ public class Image
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/28
 	 */
+	@Api
 	public static Image createImage(String __s)
 		throws IOException, NullPointerException
 	{
@@ -452,8 +469,8 @@ public class Image
 		try (InputStream is = ActiveMidlet.get().getClass().
 			getResourceAsStream(__s))
 		{
-			// {@squirreljme.error EB2f The specified resource does not
-			// exist. (The resource name)}
+			/* {@squirreljme.error EB2f The specified resource does not
+			exist. (The resource name)} */
 			if (is == null)
 				throw new IOException(String.format("EB2f %s", __s));
 			
@@ -472,6 +489,7 @@ public class Image
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/06/24
 	 */
+	@Api
 	public static Image createImage(Image __i)
 		throws NullPointerException
 	{
@@ -491,6 +509,7 @@ public class Image
 			false, __i._alpha);
 	}
 	
+	@Api
 	public static Image createImage(Image __i, int __x, int __y,
 		int __w, int __h, int __trans)
 	{
@@ -498,6 +517,7 @@ public class Image
 			__i.getWidth(), __i.getHeight());
 	}
 	
+	@Api
 	public static Image createImage(Image __i, int __x, int __y, int __w,
 		int __h, int __trans, int __iw, int __ih)
 	{
@@ -518,6 +538,7 @@ public class Image
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public static Image createRGBImage(int[] __rgb, int __w, int __h, boolean 
 		__alpha)
 		throws IllegalArgumentException, IndexOutOfBoundsException,
@@ -527,15 +548,15 @@ public class Image
 		if (__rgb == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB2g Invalid image size. (The width;
-		// The height)}
+		/* {@squirreljme.error EB2g Invalid image size. (The width;
+		The height)} */
 		int area = __w * __h;
 		if (__w <= 0 || __h <= 0 || area <= 0)
 			throw new IllegalArgumentException(String.format("EB2g %d %d",
 				__w, __h));
 		
-		// {@squirreljme.error EB2h The input integer buffer is shorter than
-		// the specified image area.}
+		/* {@squirreljme.error EB2h The input integer buffer is shorter than
+		the specified image area.} */
 		int rgbLen = __rgb.length;
 		if (rgbLen < area)
 			throw new IndexOutOfBoundsException(String.format(

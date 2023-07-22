@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -14,6 +14,7 @@ import java.io.DataOutput;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 
 /**
  * This is an extended output stream which is better suited to writing
@@ -72,10 +73,10 @@ public class ExtendedDataOutputStream
 	public void align(int __n)
 		throws IndexOutOfBoundsException, IOException
 	{
-		// {@squirreljme.error BD0x Cannot align to zero or a negative
-		// amount.}
+		/* {@squirreljme.error BD0x Cannot align to zero or a negative
+		amount.} */
 		if (__n <= 0)
-			throw new IndexOutOfBoundsException("BD0x");
+			throw new IndexOutOfBoundsException(__error__(1234));
 		
 		// Pad
 		while ((this.size() % __n) != 0)
@@ -226,7 +227,7 @@ public class ExtendedDataOutputStream
 	public final void writeByteExact(int __v)
 		throws IOException
 	{
-		// {@squirreljme.error BD0y Byte value out of range.}
+		/* {@squirreljme.error BD0y Byte value out of range.} */
 		if (__v < -128 || __v > 127)
 			throw new IOException("BD0y");
 		
@@ -402,7 +403,7 @@ public class ExtendedDataOutputStream
 	public final void writeShortExact(int __v)
 		throws IOException
 	{
-		// {@squirreljme.error BD0z Short value out of range.}
+		/* {@squirreljme.error BD0z Short value out of range.} */
 		if (__v < -32768 || __v > 32767)
 			throw new IOException("BD0z");
 		
@@ -420,7 +421,7 @@ public class ExtendedDataOutputStream
 	public final void writeUnsignedByteExact(int __v)
 		throws IOException
 	{
-		// {@squirreljme.error BD10 Unsigned byte value out of range.}
+		/* {@squirreljme.error BD10 Unsigned byte value out of range.} */
 		if (__v < 0 || __v > 255)
 			throw new IOException("BD10");
 		
@@ -438,7 +439,7 @@ public class ExtendedDataOutputStream
 	public final void writeUnsignedShortExact(int __v)
 		throws IOException
 	{
-		// {@squirreljme.error BD11 Unsigned short value out of range.}
+		/* {@squirreljme.error BD11 Unsigned short value out of range.} */
 		if (__v < 0 || __v > 65535)
 			throw new IOException("BD11");
 		

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -42,7 +42,7 @@ public class RepaintTimer
 		if (__c == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AW01 The timer cannot be zero or negative.}
+		/* {@squirreljme.error AW01 The timer cannot be zero or negative.} */
 		if (__ms <= 0)
 			throw new IllegalArgumentException("AW01");
 		

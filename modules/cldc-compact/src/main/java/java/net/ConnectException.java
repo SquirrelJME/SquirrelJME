@@ -3,17 +3,20 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.net;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This is thrown when a connection could not be made to a remote host.
  *
  * @since 2018/12/08
  */
+@Api
 public class ConnectException
 	extends SocketException
 {
@@ -22,6 +25,7 @@ public class ConnectException
 	 *
 	 * @since 2018/12/08
 	 */
+	@Api
 	public ConnectException()
 	{
 	}
@@ -32,6 +36,7 @@ public class ConnectException
 	 * @param __m The message.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public ConnectException(String __m)
 	{
 		super(__m);

@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -23,6 +24,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  * @see Vector
  * @since 2018/09/15
  */
+@Api
 public class ArrayList<E>
 	extends AbstractList<E>
 	implements List<E>, RandomAccess, Cloneable
@@ -42,6 +44,7 @@ public class ArrayList<E>
 	 *
 	 * @since 2018/09/15
 	 */
+	@Api
 	public ArrayList()
 	{
 		this(10);
@@ -58,8 +61,8 @@ public class ArrayList<E>
 	public ArrayList(int __cap)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error ZZ2e Attempt to initialize array list with
-		// a negative capacity. (The capacity)}
+		/* {@squirreljme.error ZZ2e Attempt to initialize array list with
+		a negative capacity. (The capacity)} */
 		if (__cap < 0)
 			throw new IllegalArgumentException(
 				String.format("ZZ2e %d", __cap));
@@ -177,6 +180,7 @@ public class ArrayList<E>
 	 * @param __n The number of elements.
 	 * @since 2019/05/14
 	 */
+	@Api
 	@SuppressWarnings({"unchecked"})
 	public void ensureCapacity(int __n)
 	{
@@ -283,6 +287,7 @@ public class ArrayList<E>
 		return this._size;
 	}
 	
+	@Api
 	public void trimToSize()
 	{
 		throw Debugging.todo();

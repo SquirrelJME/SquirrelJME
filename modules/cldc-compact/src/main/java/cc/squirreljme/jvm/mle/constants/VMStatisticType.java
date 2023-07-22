@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -32,7 +32,15 @@ public interface VMStatisticType
 	byte MEM_USED =
 		3;
 	
+	/**
+	 * The number of possible threads, if the virtual machine is
+	 * {@link ThreadModelType#SINGLE_COOP_THREAD} then this should always
+	 * return 1.
+	 */
+	byte CPU_THREAD_COUNT =
+		4;
+	
 	/** The number of statistics. */
 	byte NUM_STATISTICS =
-		4;
+		5;
 }

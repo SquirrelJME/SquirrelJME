@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -175,15 +175,15 @@ public class ClassFlags
 		// Interface?
 		if (this.isInterface())
 		{
-			// {@squirreljme.error JC2f An interface must also be abstract.
-			// (The class flags)}
+			/* {@squirreljme.error JC2f An interface must also be abstract.
+			(The class flags)} */
 			if (!this.isAbstract())
 				throw new InvalidClassFormatException(
 					String.format("JC2f %s", this));
 			
-			// {@squirreljme.error JC2g An interface cannot be {@code final} or
-			// {@code enum} and it must not have the special flag set. (The
-			// class flags)}
+			/* {@squirreljme.error JC2g An interface cannot be {@code final} or
+			{@code enum} and it must not have the special flag set. (The
+			class flags)} */
 			if (this.isFinal() || this.isSpecialInvokeSpecial() || this.isEnum())
 				throw new InvalidClassFormatException(
 					String.format("JC2g %s", this));
@@ -192,13 +192,13 @@ public class ClassFlags
 		// Normal class
 		else
 		{
-			// {@squirreljme.error JC2h Annotations must be interfaces. (The
-			// class flags)}
+			/* {@squirreljme.error JC2h Annotations must be interfaces. (The
+			class flags)} */
 			if (this.isAnnotation())
 				throw new InvalidClassFormatException(
 					String.format("JC2h %s", this));
 				
-			// {@squirreljme.error JC2i A class cannot be both {@code abstract}
+			/* {@squirreljme.error JC2i A class cannot be both {@code abstract} */
 			// and {@code final}. (The class flags)}
 			if (this.isAbstract() && this.isFinal())
 				throw new InvalidClassFormatException(

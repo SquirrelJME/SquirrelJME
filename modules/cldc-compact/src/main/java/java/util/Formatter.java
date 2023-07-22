@@ -3,18 +3,20 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.Writer;
+import org.intellij.lang.annotations.PrintFormat;
 
 /**
  * This class implements C-style {@code printf()} formatted for text, it is
@@ -65,6 +67,7 @@ import java.io.Writer;
  * @since 2018/09/23
  */
 @SuppressWarnings("OverlyComplexClass")
+@Api
 public final class Formatter
 	implements Closeable
 {
@@ -108,6 +111,7 @@ public final class Formatter
 	 *
 	 * @since 2018/09/23
 	 */
+	@Api
 	public Formatter()
 	{
 		this(new StringBuilder());
@@ -120,6 +124,7 @@ public final class Formatter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public Formatter(Appendable __a)
 		throws NullPointerException
 	{
@@ -141,6 +146,7 @@ public final class Formatter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public Formatter(PrintStream __ps)
 		throws NullPointerException
 	{
@@ -180,10 +186,11 @@ public final class Formatter
 	 * @throws IllegalStateException If this formatter was closed.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public void flush()
 		throws IllegalStateException
 	{
-		// {@squirreljme.error ZZ2i The formatter has been closed.}
+		/* {@squirreljme.error ZZ2i The formatter has been closed.} */
 		if (this._closed)
 			throw new IllegalStateException("ZZ2i");
 		
@@ -198,7 +205,7 @@ public final class Formatter
 				((Writer)out).flush();
 		}
 		
-		// {@squirreljme.error ZZ2j Could not flush the formatter.}
+		/* {@squirreljme.error ZZ2j Could not flush the formatter.} */
 		catch (IOException e)
 		{
 			throw new RuntimeException("ZZ2j", e);
@@ -217,14 +224,15 @@ public final class Formatter
 	 * @throws NullPointerException If no format was specified.
 	 * @since 2018/09/23
 	 */
-	public Formatter format(String __fmt, Object... __args)
+	@Api
+	public Formatter format(@PrintFormat String __fmt, Object... __args)
 		throws IllegalArgumentException, IllegalStateException,
 			NullPointerException
 	{
 		if (__fmt == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ2k This formatter has been closed.}
+		/* {@squirreljme.error ZZ2k This formatter has been closed.} */
 		if (this._closed)
 			throw new IllegalStateException("ZZ2k");
 		
@@ -292,6 +300,7 @@ public final class Formatter
 	 * thrown.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public IOException ioException()
 	{
 		return this._ioe;
@@ -304,10 +313,11 @@ public final class Formatter
 	 * @throws IllegalStateException If this formatter was closed.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public Appendable out()
 		throws IllegalStateException
 	{
-		// {@squirreljme.error ZZ2l The formatter has been closed.}
+		/* {@squirreljme.error ZZ2l The formatter has been closed.} */
 		if (this._closed)
 			throw new IllegalStateException("ZZ2l");
 		
@@ -326,7 +336,7 @@ public final class Formatter
 	public String toString()
 		throws IllegalStateException
 	{
-		// {@squirreljme.error ZZ2m The formatter has been closed.}
+		/* {@squirreljme.error ZZ2m The formatter has been closed.} */
 		if (this._closed)
 			throw new IllegalStateException("ZZ2m");
 		
@@ -352,8 +362,8 @@ public final class Formatter
 		if (__n == null)
 			return null;
 		
-		// {@squirreljme.error ZZ3s Decimal integers cannot have an
-		// alternative form.}
+		/* {@squirreljme.error ZZ3s Decimal integers cannot have an
+		alternative form.} */
 		if (__pf.__hasFlag(__PrintFFlag__.ALTERNATIVE_FORM))
 			throw new IllegalArgumentException("ZZ3s");
 		
@@ -419,8 +429,8 @@ public final class Formatter
 		if (__pf == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ3t Invalid flag specified for unsigned
-		// formatted value.}
+		/* {@squirreljme.error ZZ3t Invalid flag specified for unsigned
+		formatted value.} */
 		if (__pf.__hasFlag(__PrintFFlag__.LOCALE_GROUPING) ||
 			__pf.__hasFlag(__PrintFFlag__.NEGATIVE_PARENTHESIS) ||
 			__pf.__hasFlag(__PrintFFlag__.ALWAYS_SIGNED) ||
@@ -587,8 +597,8 @@ public final class Formatter
 				append = "%";
 				break;
 			
-				// {@squirreljme.error ZZ2n Unimplemented conversion.
-				// (The conversion)}
+				/* {@squirreljme.error ZZ2n Unimplemented conversion.
+				(The conversion)} */
 			default:
 				throw Debugging.todo("ZZ2n " + conv);
 		}
@@ -737,8 +747,8 @@ public final class Formatter
 			at++;
 		}
 		
-		// {@squirreljme.error ZZ2o Could not parse the format specifier
-		// properly. (The string with the specifier sequence)}
+		/* {@squirreljme.error ZZ2o Could not parse the format specifier
+		properly. (The string with the specifier sequence)} */
 		catch (IndexOutOfBoundsException|NumberFormatException e)
 		{
 			throw new IllegalArgumentException("ZZ2o " +

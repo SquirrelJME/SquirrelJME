@@ -3,11 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.lang;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This interface is used to set two classes as being comparable to other
@@ -26,6 +28,7 @@ package java.lang;
  * @param <T> The type to compare.
  * @since 2018/09/19
  */
+@Api
 public interface Comparable<T>
 {
 	/**
@@ -40,6 +43,7 @@ public interface Comparable<T>
 	 * mean {@code this > __b}.
 	 * @since 2018/09/19
 	 */
+	@Api
 	int compareTo(T __b);
 }
 

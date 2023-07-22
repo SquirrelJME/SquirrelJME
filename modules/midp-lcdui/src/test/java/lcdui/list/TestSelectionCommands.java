@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -68,17 +68,24 @@ public class TestSelectionCommands
 			// Send event and wait for it to be flushed out
 			backend.injector().propertyChange(form, item,
 				UIWidgetProperty.INT_LIST_ITEM_SELECTED, i, 0, 1);
-			backend.injector().eventKey(form, item,
+			backend.injector().eventKey(item,
 				UIKeyEventType.COMMAND_ACTIVATED, i, 0);
 			backend.flushEvents();
 			
-			// Make sure it was selected
+			synchronized (listener)
+			{
+				this.secondary("last-" + i,
+					listener.lastSelected == i);
+			}
+		}
+		
+		// Make sure they were selected
+		for (int i = 0; i < TestSelectionCommands.NUM_ITEMS; i++)
+		{
 			synchronized (listener)
 			{
 				this.secondary("selected-" + i,
 					listener.selectedItems.contains(i)); 
-				this.secondary("last-" + i,
-					listener.lastSelected == i);
 			}
 		}
 	}

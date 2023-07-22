@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package com.oracle.json;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
@@ -20,6 +21,8 @@ import java.util.Map;
  *
  * @since 2014/07/25
  */
+@Api
+@SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
 public interface JsonReaderFactory
 {
 	/**
@@ -31,6 +34,7 @@ public interface JsonReaderFactory
 	 * @return A JSON reader.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonReader createReader(InputStream __i);
 	
 	/**
@@ -44,6 +48,7 @@ public interface JsonReaderFactory
 	 * supported.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonReader createReader(InputStream __i, String __cs)
 		throws UnsupportedEncodingException;
 
@@ -55,6 +60,7 @@ public interface JsonReaderFactory
 	 * @return A JSON reader.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonReader createReader(Reader __r);
 
 	/**
@@ -65,6 +71,7 @@ public interface JsonReaderFactory
 	 * empty but must never be {@code null}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	Map<String, ?> getConfigInUse();
 }
 

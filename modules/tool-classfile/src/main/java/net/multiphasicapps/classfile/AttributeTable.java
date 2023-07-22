@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -171,8 +171,8 @@ public final class AttributeTable
 			String name = __pool.<UTFConstantEntry>require(
 				UTFConstantEntry.class, __in.readUnsignedShort()).toString();
 			
-			// {@squirreljme.error JC1x Attributes with a size larger than two
-			// gigabytes are not supported.}
+			/* {@squirreljme.error JC1x Attributes with a size larger than two
+			gigabytes are not supported.} */
 			int len = __in.readInt();
 			if (len < 0)
 				throw new InvalidClassFormatException("JC1x");

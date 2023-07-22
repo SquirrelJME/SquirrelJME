@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -27,6 +27,15 @@ public interface JDWPViewObject
 	 * @since 2021/04/11
 	 */
 	int arrayLength(Object __which);
+	
+	/**
+	 * Is this a null object?
+	 *
+	 * @param __value The object to check.
+	 * @return If it is {@code null} or not.
+	 * @since 2022/09/21
+	 */
+	boolean isNullObject(Object __value);
 	
 	/**
 	 * Reads the value of an array index within the object.

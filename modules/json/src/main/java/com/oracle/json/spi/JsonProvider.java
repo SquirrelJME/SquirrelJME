@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package com.oracle.json.spi;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import com.oracle.json.JsonArray;
 import com.oracle.json.JsonArrayBuilder;
 import com.oracle.json.JsonBuilderFactory;
@@ -42,6 +43,7 @@ import java.util.ServiceLoader;
  *
  * @since 2014/07/26
  */
+@Api
 public abstract class JsonProvider
 {
 	/** Default provider for JSR353. */
@@ -56,6 +58,7 @@ public abstract class JsonProvider
 	 *
 	 * @since 2014/07/26
 	 */
+	@Api
 	protected JsonProvider()
 	{
 	}
@@ -66,6 +69,7 @@ public abstract class JsonProvider
 	 * @return A new array builder.
 	 * @since 2014/07/26
 	 */
+	@Api
 	public abstract JsonArrayBuilder createArrayBuilder();
 	
 	/**
@@ -79,6 +83,7 @@ public abstract class JsonProvider
 	 * @return A new builder factory.
 	 * @since 2014/07/26
 	 */
+	@Api
 	public abstract JsonBuilderFactory createBuilderFactory(
 		Map<String, ?> __cnf);
 	
@@ -89,6 +94,7 @@ public abstract class JsonProvider
 	 * @return A new generator.
 	 * @since 2014/07/26
 	 */
+	@Api
 	public abstract JsonGenerator createGenerator(OutputStream __o);
 	
 	/**
@@ -98,6 +104,7 @@ public abstract class JsonProvider
 	 * @return A new generator.
 	 * @since 2014/07/26
 	 */
+	@Api
 	public abstract JsonGenerator createGenerator(Writer __w);
 	
 	/**
@@ -110,6 +117,7 @@ public abstract class JsonProvider
 	 * @return A new generator factory.
 	 * @since 2014/07/26
 	 */
+	@Api
 	public abstract JsonGeneratorFactory createGeneratorFactory(
 		Map<String, ?> __cnf);
 	
@@ -119,6 +127,7 @@ public abstract class JsonProvider
 	 * @return A new builder.
 	 * @since 2014/07/26
 	 */
+	@Api
 	public abstract JsonObjectBuilder createObjectBuilder();
 	
 	/**
@@ -129,6 +138,7 @@ public abstract class JsonProvider
 	 * @return A new parser.
 	 * @since 2014/07/26
 	 */
+	@Api
 	public abstract JsonParser createParser(InputStream __i);
 	
 	/**
@@ -139,6 +149,7 @@ public abstract class JsonProvider
 	 * @return A new parser.
 	 * @since 2014/07/26
 	 */
+	@Api
 	public abstract JsonParser createParser(Reader __r);
 	
 	/**
@@ -152,6 +163,7 @@ public abstract class JsonProvider
 	 * @return A new factory for creating parsers.
 	 * @since 2014/07/26
 	 */
+	@Api
 	public abstract JsonParserFactory createParserFactory(
 		Map<String, ?> __cnf);
 	
@@ -163,6 +175,7 @@ public abstract class JsonProvider
 	 * @return A new JSON reader.
 	 * @since 2014/07/26
 	 */
+	@Api
 	public abstract JsonReader createReader(InputStream __i);
 	
 	/**
@@ -172,6 +185,7 @@ public abstract class JsonProvider
 	 * @return A new JSON reader.
 	 * @since 2014/07/26
 	 */
+	@Api
 	public abstract JsonReader createReader(Reader __r);
 	
 	/**
@@ -184,6 +198,7 @@ public abstract class JsonProvider
 	 * @return A new JSON reader factory.
 	 * @since 2014/07/26
 	 */
+	@Api
 	public abstract JsonReaderFactory createReaderFactory(
 		Map<String, ?> __cnf);
 	
@@ -195,6 +210,7 @@ public abstract class JsonProvider
 	 * @return A new JSON writer.
 	 * @since 2014/07/26
 	 */
+	@Api
 	public abstract JsonWriter createWriter(OutputStream __o);
 	
 	/**
@@ -205,6 +221,7 @@ public abstract class JsonProvider
 	 * @return A new JSON writer.
 	 * @since 2014/07/26
 	 */
+	@Api
 	public abstract JsonWriter createWriter(Writer __w);
 	
 	/**
@@ -217,6 +234,7 @@ public abstract class JsonProvider
 	 * @return A new factory for creating JSON writers.
 	 * @since 2014/07/26
 	 */
+	@Api
 	public abstract JsonWriterFactory createWriterFactory(
 		Map<String, ?> __cnf);
 	
@@ -227,6 +245,7 @@ public abstract class JsonProvider
 	 * @return A provider for the JSON implementation.
 	 * @since 2014/07/26
 	 */
+	@Api
 	public static JsonProvider provider()
 	{
 		synchronized (JsonProvider.class)

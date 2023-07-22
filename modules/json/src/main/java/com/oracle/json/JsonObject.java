@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package com.oracle.json;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.util.Map;
 
 /**
@@ -23,6 +24,8 @@ import java.util.Map;
  *
  * @since 2014/07/25
  */
+@SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
+@Api
 public interface JsonObject
 	extends JsonStructure, Map<String, JsonValue>
 {
@@ -35,6 +38,7 @@ public interface JsonObject
 	 * @throws ClassCastException If the value is not a boolean.
 	 * @since 2014/07/25
 	 */
+	@Api
 	boolean getBoolean(String __n);
 	
 	/**
@@ -46,6 +50,7 @@ public interface JsonObject
 	 * @return The specified value.
 	 * @since 2014/07/25
 	 */
+	@Api
 	boolean getBoolean(String __n, boolean __def);
 	
 	/**
@@ -57,6 +62,7 @@ public interface JsonObject
 	 * @throws ClassCastException If the value is not an int.
 	 * @since 2014/07/25
 	 */
+	@Api
 	int getInt(String __n);
 	
 	/**
@@ -68,6 +74,7 @@ public interface JsonObject
 	 * @return The specified value.
 	 * @since 2014/07/25
 	 */
+	@Api
 	int getInt(String __n, int __def);
 	
 	/**
@@ -78,6 +85,7 @@ public interface JsonObject
 	 * @throws ClassCastException If the key does not have an array value.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonArray getJsonArray(String __n);
 	
 	/**
@@ -88,6 +96,7 @@ public interface JsonObject
 	 * @throws ClassCastException If the key does not have a number value.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonNumber getJsonNumber(String __n);
 	
 	/**
@@ -98,6 +107,7 @@ public interface JsonObject
 	 * @throws ClassCastException If the key does not have an object value.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonObject getJsonObject(String __n);
 	
 	/**
@@ -108,6 +118,7 @@ public interface JsonObject
 	 * @throws ClassCastException If the key does not have a string value.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonString getJsonString(String __n);
 	
 	/**
@@ -120,6 +131,7 @@ public interface JsonObject
 	 * {@link JsonString}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	String getString(String __n);
 	
 	/**
@@ -131,6 +143,7 @@ public interface JsonObject
 	 * @param __def The value to return if this is not a string.
 	 * @since 2014/07/25
 	 */
+	@Api
 	String getString(String __n, String __def);
 	
 	/**
@@ -141,6 +154,7 @@ public interface JsonObject
 	 * @throws NullPointerException If the name has no mapping.
 	 * @since 2014/07/25
 	 */
+	@Api
 	boolean isNull(String __n);
 }
 

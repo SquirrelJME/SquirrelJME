@@ -3,11 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package javax.microedition.swm;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This interface is called when a suite has been installed, is being
@@ -15,6 +17,7 @@ package javax.microedition.swm;
  *
  * @since 2016/06/24
  */
+@Api
 public interface SuiteListener
 {
 	/**
@@ -31,6 +34,7 @@ public interface SuiteListener
 	 * @param __state The new state of the suite.
 	 * @since 2016/06/24
 	 */
+	@Api
 	void notifySuiteStateChanged(SuiteManagementTracker __track,
 		SuiteState __state);
 }

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -17,10 +17,11 @@ import cc.squirreljme.jvm.mle.constants.UIInputFlag;
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
-import cc.squirreljme.runtime.cldc.Poking;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.common.CommonColors;
+import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
@@ -30,9 +31,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.microedition.midlet.MIDlet;
+import org.jetbrains.annotations.Async;
+import org.jetbrains.annotations.NonBlocking;
 
 @SuppressWarnings("OverlyComplexClass")
+@Api
 public class Display
+	implements DisplayWidget
 {
 	/** The soft-key for the left command. */
 	static final int _SOFTKEY_LEFT_COMMAND =
@@ -42,173 +47,224 @@ public class Display
 	static final int _SOFTKEY_RIGHT_COMMAND =
 		Display.SOFTKEY_BOTTOM + 2;
 	
+	@Api
 	public static final int ALERT =
 		3;
 
+	@Api
 	public static final int CHOICE_GROUP_ELEMENT =
 		2;
 
+	@Api
 	public static final int COLOR_BACKGROUND =
 		0;
 
+	@Api
 	public static final int COLOR_BORDER =
 		4;
 
+	@Api
 	public static final int COLOR_FOREGROUND =
 		1;
 
+	@Api
 	public static final int COLOR_HIGHLIGHTED_BACKGROUND =
 		2;
 
+	@Api
 	public static final int COLOR_HIGHLIGHTED_BORDER =
 		5;
 
+	@Api
 	public static final int COLOR_HIGHLIGHTED_FOREGROUND =
 		3;
 
+	@Api
 	public static final int COLOR_IDLE_BACKGROUND =
 		6;
 
+	@Api
 	public static final int COLOR_IDLE_FOREGROUND =
 		7;
 
+	@Api
 	@SuppressWarnings("FieldNamingConvention")
 	public static final int COLOR_IDLE_HIGHLIGHTED_BACKGROUND =
 		8;
 
+	@Api
 	@SuppressWarnings("FieldNamingConvention")
 	public static final int COLOR_IDLE_HIGHLIGHTED_FOREGROUND =
 		9;
 
+	@Api
 	public static final int COMMAND =
 		5;
 
+	@Api
 	public static final int DISPLAY_HARDWARE_ABSENT =
 		2;
 
+	@Api
 	public static final int DISPLAY_HARDWARE_DISABLED =
 		1;
-
+	
+	@Api
 	public static final int DISPLAY_HARDWARE_ENABLED =
 		0;
 
+	@Api
 	public static final int LIST_ELEMENT =
 		1;
 
+	@Api
 	public static final int MENU =
 		7;
 
 	/** This is the activity mode that enables power saving inhibition. */
+	@Api
 	public static final int MODE_ACTIVE =
 		1;
 	
 	/** This is the activity mode that is the default behavior. */
+	@Api
 	public static final int MODE_NORMAL =
 		0;
 
+	@Api
 	public static final int NOTIFICATION =
 		6;
 
+	@Api
 	public static final int ORIENTATION_LANDSCAPE =
 		2;
 
+	@Api
 	public static final int ORIENTATION_LANDSCAPE_180 =
 		8;
 
+	@Api
 	public static final int ORIENTATION_PORTRAIT =
 		1;
 
+	@Api
 	public static final int ORIENTATION_PORTRAIT_180 =
 		4;
 
 	/** The mask and number of items that are permitted for soft-key items. */
+	@Api
 	public static final int SOFTKEY_INDEX_MASK =
 		15;
 
 	/** Displayed at the bottom of the screen. */
+	@Api
 	public static final int SOFTKEY_BOTTOM =
 		800;
 
 	/** Displayed on the left side of the screen. */
+	@Api
 	public static final int SOFTKEY_LEFT =
 		820;
 
 	/** Displayed at the top of the screen. */
+	@Api
 	public static final int SOFTKEY_TOP =
 		840;
 
 	/** Displayed on the right side of the screen. */
+	@Api
 	public static final int SOFTKEY_RIGHT =
 		860;
 
 	/** Displayed off-screen, using physical hardware buttons. */
+	@Api
 	public static final int SOFTKEY_OFFSCREEN =
 		880;
 
+	@Api
 	public static final int STATE_BACKGROUND =
 		0;
 
+	@Api
 	public static final int STATE_FOREGROUND =
 		2;
 
+	@Api
 	public static final int STATE_VISIBLE =
 		1;
 
+	@Api
 	public static final int SUPPORTS_ALERTS =
 		32;
 
+	@Api
 	public static final int SUPPORTS_COMMANDS =
 		2;
 
+	@Api
 	public static final int SUPPORTS_FILESELECTORS =
 		512;
 
+	@Api
 	public static final int SUPPORTS_FORMS =
 		4;
 
+	@Api
 	public static final int SUPPORTS_IDLEITEM =
 		2048;
 
 	/** This specifies that the display supports user input. */
+	@Api
 	public static final int SUPPORTS_INPUT_EVENTS =
 		1;
 
+	@Api
 	public static final int SUPPORTS_LISTS =
 		64;
 
+	@Api
 	public static final int SUPPORTS_MENUS =
 		1024;
 
+	@Api
 	public static final int SUPPORTS_ORIENTATION_LANDSCAPE =
 		8192;
 
+	@Api
 	@SuppressWarnings("FieldNamingConvention")
 	public static final int SUPPORTS_ORIENTATION_LANDSCAPE180 =
 		32768;
 
+	@Api
 	public static final int SUPPORTS_ORIENTATION_PORTRAIT =
 		4096;
 
+	@Api
 	public static final int SUPPORTS_ORIENTATION_PORTRAIT180 =
 		16384;
 
+	@Api
 	public static final int SUPPORTS_TABBEDPANES =
 		256;
 
+	@Api
 	public static final int SUPPORTS_TEXTBOXES =
 		128;
 
+	@Api
 	public static final int SUPPORTS_TICKER =
 		8;
 
+	@Api
 	public static final int SUPPORTS_TITLE =
 		16;
 
+	@Api
 	public static final int TAB =
 		4;
 	
-	/** Serial runs of this method. */
-	static final Map<Integer, Runnable> _SERIAL_RUNS =
+	/** Serial runs of a given method for this display. */
+	final Map<Integer, Runnable> _serialRuns =
 		new LinkedHashMap<>();
 	
 	/** The number of times there has been a non-unique serial run. */
@@ -260,8 +316,12 @@ public class Display
 				bgThread.start();
 			}
 			
+			// Register this object for the native display
+			UIDisplayBracket uiDisplay = this._uiDisplay;
+			StaticDisplayState.register(this, uiDisplay);
+			
 			// Register the display for callbacks
-			UIBackendFactory.getInstance(true).callback(this,
+			UIBackendFactory.getInstance(true).callback(uiDisplay,
 				(UIDisplayCallback)StaticDisplayState.callback());
 		}
 	}
@@ -279,31 +339,14 @@ public class Display
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/10/03
 	 */
+	@Api
+	@NonBlocking
+	@Async.Schedule
 	public void callSerially(Runnable __run)
 		throws NullPointerException
 	{
-		// Perform the serialization call
-		synchronized (Display.class)
-		{
-			int idRunner = this.__queueSerialRunner(__run, false);
-			
-			// Constantly loop waiting for the call to be gone
-			/*
-			for (Map<Integer, Runnable> serialRuns = Display._SERIAL_RUNS;;)
-				try
-				{
-					// If this disappeared from the map then it was invoked
-					if (!serialRuns.containsKey(idRunner))
-						break;
-					
-					// Wait for trigger or timeout
-					Display.class.wait(1_000L);
-				}
-				catch (InterruptedException ignored)
-				{
-				}
-			 */
-		}
+		// Enqueue serialized call
+		this.__queueSerialRunner(__run);
 	}
 	
 	/**
@@ -318,10 +361,11 @@ public class Display
 	 * and the display is in the foreground, otherwise {@code false}.
 	 * @since 2019/10/05
 	 */
+	@Api
 	public boolean flashBacklight(int __ms)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB30 Cannot blink for a negative duration.}
+		/* {@squirreljme.error EB30 Cannot blink for a negative duration.} */
 		if (__ms < 0)
 			throw new IllegalArgumentException("EB30");
 		
@@ -347,6 +391,7 @@ public class Display
 	 * @return Either {@link #MODE_ACTIVE} or {@link #MODE_NORMAL}.
 	 * @since 2016/10/08
 	 */
+	@Api
 	public int getActivityMode()
 	{
 		throw Debugging.todo();
@@ -370,6 +415,7 @@ public class Display
 	 * @throws IllegalArgumentException On null arguments.
 	 * @since 2016/10/14
 	 */
+	@Api
 	public int getBestImageHeight(int __a)
 		throws IllegalArgumentException
 	{
@@ -394,12 +440,14 @@ public class Display
 	 * @throws IllegalArgumentException On null arguments.
 	 * @since 2016/10/14
 	 */
+	@Api
 	public int getBestImageWidth(int __a)
 		throws IllegalArgumentException
 	{
 		return this.__bestImageSize(__a, false);
 	}
 	
+	@Api
 	public int getBorderStyle(boolean __a)
 	{
 		throw Debugging.todo();
@@ -416,6 +464,7 @@ public class Display
 	 * {@code 0} is returned then only a {@link Canvas} is supported.
 	 * @since 2016/10/08
 	 */
+	@Api
 	public int getCapabilities()
 	{
 		// These are all standard and expected to always be supported
@@ -424,7 +473,7 @@ public class Display
 		UIBackend backend = UIBackendFactory.getInstance(true);
 		
 		// Supports any kind of input?
-		if (0 != backend.metric(UIMetricType.INPUT_FLAGS))
+		if (0 != backend.metric(_uiDisplay, UIMetricType.INPUT_FLAGS))
 			rv |= Display.SUPPORTS_INPUT_EVENTS;
 		
 		return rv;
@@ -451,6 +500,7 @@ public class Display
 	 * @throws IllegalArgumentException If the specified color is not valid.
 	 * @since 2016/10/14
 	 */
+	@Api
 	public int getColor(int __c)
 		throws IllegalArgumentException
 	{
@@ -485,8 +535,8 @@ public class Display
 				rv = CommonColors.HIGHLIGHTED_FOREGROUND;
 				break;
 		
-				// {@squirreljme.error EB1h Unknown color specifier. (The
-				// color specifier)}
+				/* {@squirreljme.error EB1h Unknown color specifier. (The
+				color specifier)} */
 			default:
 				throw new IllegalArgumentException("EB1h " + __c);
 		}
@@ -502,6 +552,7 @@ public class Display
 	 * @return The current command layout policy, may be {@code null}.
 	 * @since 2020/09/27
 	 */
+	@Api
 	public CommandLayoutPolicy getCommandLayoutPolicy()
 	{
 		return this._layoutPolicy;
@@ -515,10 +566,11 @@ public class Display
 	 * @throws IllegalArgumentException If the command type is not valid.
 	 * @since 2020/09/27
 	 */
+	@Api
 	public int[] getCommandPreferredPlacements(int __ct)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB3l Invalid command type. (The type)}
+		/* {@squirreljme.error EB3l Invalid command type. (The type)} */
 		if (__ct < Command.SCREEN || __ct > Command.ITEM)
 			throw new IllegalArgumentException("EB3l " + __ct);
 		
@@ -532,11 +584,13 @@ public class Display
 	 * @return The current displayable or {@code null} if it is not set.
 	 * @since 2016/10/08
 	 */
+	@Api
 	public Displayable getCurrent()
 	{
 		return this._current;
 	}
 	
+	@Api
 	public int getDisplayState()
 	{
 		throw Debugging.todo();
@@ -552,6 +606,7 @@ public class Display
 	 * @return The dot pitch in microns.
 	 * @since 2016/10/14
 	 */
+	@Api
 	public int getDotPitch()
 	{
 		throw Debugging.todo();
@@ -578,6 +633,7 @@ public class Display
 	 * @throws IllegalArgumentException If the border is not valid.
 	 * @since 2020/09/27
 	 */
+	@Api
 	public int[] getExactPlacementPositions(int __b)
 		throws IllegalArgumentException
 	{
@@ -600,7 +656,7 @@ public class Display
 					this.__layoutProject(Display.SOFTKEY_BOTTOM + 1),
 					this.__layoutProject(Display.SOFTKEY_BOTTOM + 2)};
 			
-				// {@squirreljme.error EB1p Invalid border. (The border)}
+				/* {@squirreljme.error EB1p Invalid border. (The border)} */
 			default:
 				throw new IllegalArgumentException("EB1p " + __b);
 		}
@@ -612,6 +668,7 @@ public class Display
 	 * @return The hardware state.
 	 * @since 2018/12/10
 	 */
+	@Api
 	public int getHardwareState()
 	{
 		throw Debugging.todo();
@@ -628,12 +685,14 @@ public class Display
 	 * @return The maximum display height.
 	 * @since 2016/10/14
 	 */
+	@Api
 	public int getHeight()
 	{
 		return UIBackendFactory.getInstance(true)
-			.metric(UIMetricType.DISPLAY_MAX_HEIGHT);
+			.metric(_uiDisplay, UIMetricType.DISPLAY_MAX_HEIGHT);
 	}
 	
+	@Api
 	public IdleItem getIdleItem()
 	{
 		throw Debugging.todo();
@@ -645,6 +704,7 @@ public class Display
 	 * @return The preferred placements or {@code null} if there are none.
 	 * @since 2020/09/27
 	 */
+	@Api
 	public int[] getMenuPreferredPlacements()
 	{
 		// The preferred placements for menus are the same as the supported
@@ -658,6 +718,7 @@ public class Display
 	 * @return The list of supported menu item placements.
 	 * @since 2020/09/27
 	 */
+	@Api
 	public int[] getMenuSupportedPlacements()
 	{
 		// In SquirrelJME, commands and menus can only be placed along the
@@ -671,6 +732,7 @@ public class Display
 	 * @return The display orientation.
 	 * @since 2017/10/27
 	 */
+	@Api
 	public int getOrientation()
 	{
 		int width, height;
@@ -703,10 +765,11 @@ public class Display
 	 * @return The maximum display width.
 	 * @since 2016/10/14
 	 */
+	@Api
 	public int getWidth()
 	{
 		return UIBackendFactory.getInstance(true)
-			.metric(UIMetricType.DISPLAY_MAX_WIDTH);
+			.metric(_uiDisplay, UIMetricType.DISPLAY_MAX_WIDTH);
 	}
 	
 	/**
@@ -715,9 +778,10 @@ public class Display
 	 * @return {@code true} if they are supported.
 	 * @since 2016/10/14
 	 */
+	@Api
 	public boolean hasPointerEvents()
 	{
-		return (UIBackendFactory.getInstance(true).metric(
+		return (UIBackendFactory.getInstance(true).metric(_uiDisplay,
 			UIMetricType.INPUT_FLAGS) & UIInputFlag.POINTER) ==
 			(UIInputFlag.POINTER);
 	}
@@ -728,9 +792,10 @@ public class Display
 	 * @return {@code true} if they are supported.
 	 * @since 2016/10/14
 	 */
+	@Api
 	public boolean hasPointerMotionEvents()
 	{
-		return (UIBackendFactory.getInstance(true).metric(
+		return (UIBackendFactory.getInstance(true).metric(_uiDisplay,
 			UIMetricType.INPUT_FLAGS) &
 			(UIInputFlag.POINTER | UIInputFlag.POINTER_MOTION)) ==
 			(UIInputFlag.POINTER | UIInputFlag.POINTER_MOTION);
@@ -742,6 +807,7 @@ public class Display
 	 * @return {@code true} if it is built-in.
 	 * @since 2016/10/14
 	 */
+	@Api
 	public boolean isBuiltIn()
 	{
 		throw Debugging.todo();
@@ -753,9 +819,10 @@ public class Display
 	 * @return {@code true} if color is supported.
 	 * @since 2016/10/14
 	 */
+	@Api
 	public boolean isColor()
 	{
-		return UIBackendFactory.getInstance(true).metric(
+		return UIBackendFactory.getInstance(true).metric(_uiDisplay,
 			UIMetricType.DISPLAY_MONOCHROMATIC) == 0;
 	}
 	
@@ -769,10 +836,11 @@ public class Display
 	 * @return The alpha transparency levels.
 	 * @since 2016/10/14
 	 */
+	@Api
 	@SuppressWarnings({"MagicNumber", "SwitchStatementWithTooFewBranches"})
 	public int numAlphaLevels()
 	{
-		switch (UIBackendFactory.getInstance(true).metric(
+		switch (UIBackendFactory.getInstance(true).metric(_uiDisplay,
 			UIMetricType.DISPLAY_PIXEL_FORMAT))
 		{
 				// If the display format is 16-bit, just use this here
@@ -796,11 +864,12 @@ public class Display
 	 * @return The number of available colors.
 	 * @since 2016/10/14
 	 */
+	@Api
 	@SuppressWarnings("MagicNumber")
 	public int numColors()
 	{
 		int pf;
-		switch ((pf = UIBackendFactory.getInstance(true).metric(
+		switch ((pf = UIBackendFactory.getInstance(true).metric(_uiDisplay,
 			UIMetricType.DISPLAY_PIXEL_FORMAT)))
 		{
 			case UIPixelFormat.INT_RGB888:
@@ -828,7 +897,7 @@ public class Display
 			case UIPixelFormat.PACKED_INDEXED1:
 				return 2;
 			
-				// {@squirreljme.error EB3j Unhandled pixel format. (Format)}.
+				/* {@squirreljme.error EB3j Unhandled pixel format. (Format)} */
 			default:
 				throw Debugging.oops("EB3j", pf);
 		}
@@ -839,6 +908,7 @@ public class Display
 	 * 
 	 * @since 2020/10/04
 	 */
+	@Api
 	public void removeCurrent()
 	{
 		// Just performs the internal hiding logic
@@ -854,6 +924,7 @@ public class Display
 	 * @throws IllegalArgumentException If the specified mode is not valid.
 	 * @since 2016/10/08
 	 */
+	@Api
 	public void setActivityMode(int __m)
 		throws IllegalArgumentException
 	{
@@ -865,11 +936,12 @@ public class Display
 		else if (__m == Display.MODE_NORMAL)
 			throw Debugging.todo();
 	
-		// {@squirreljme.error EB1i Unknown activity mode specified.}
+		/* {@squirreljme.error EB1i Unknown activity mode specified.} */
 		else
 			throw new IllegalArgumentException("EB1i");
 	}
 	
+	@Api
 	public void setCommandLayoutPolicy(CommandLayoutPolicy __clp)
 	{
 		throw Debugging.todo();
@@ -892,12 +964,13 @@ public class Display
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/08
 	 */
+	@Api
 	public void setCurrent(Alert __show, Displayable __exit)
 		throws DisplayCapabilityException, IllegalStateException,
 			NullPointerException
 	{
-		// {@squirreljme.error EB1j Cannot show another alert when the alert
-		// to show is cleared.}
+		/* {@squirreljme.error EB1j Cannot show another alert when the alert
+		to show is cleared.} */
 		if (__exit instanceof Alert)
 			throw new IllegalStateException("EB1j");
 		
@@ -905,8 +978,8 @@ public class Display
 		if (__show == null || __exit == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB1k The displayable to show on exit after
-		// showing an alert cannot be an alert.}
+		/* {@squirreljme.error EB1k The displayable to show on exit after
+		showing an alert cannot be an alert.} */
 		if (__exit instanceof Alert)
 			throw new IllegalStateException("EB1k");
 		
@@ -932,8 +1005,8 @@ public class Display
 			this._heldexit = __exit;
 		}
 		
-		// {@squirreljme.error EB1l Could not set the alert and its exit
-		// displayable because it is already set on a display.}
+		/* {@squirreljme.error EB1l Could not set the alert and its exit
+		displayable because it is already set on a display.} * /
 		catch (LcdWidgetOwnedException e)
 		{
 			throw new IllegalStateException("EB1l", e);
@@ -959,6 +1032,7 @@ public class Display
 	 * the displayable is associated with another display or tab pane.
 	 * @since 2016/10/08
 	 */
+	@Api
 	public void setCurrent(Displayable __show)
 		throws DisplayCapabilityException, IllegalStateException
 	{
@@ -988,8 +1062,8 @@ public class Display
 			return;
 		}
 		
-		// {@squirreljme.error EB1m The displayable to be displayed is already
-		// being displayed.}
+		/* {@squirreljme.error EB1m The displayable to be displayed is already
+		being displayed.} */
 		if (__show._display != null)
 			throw new IllegalStateException("EB1m");
 		
@@ -998,16 +1072,19 @@ public class Display
 		this.__doShowCurrent(__show);
 	}
 	
+	@Api
 	public void setCurrentItem(Item __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void setIdleItem(IdleItem __i)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void setPreferredOrientation(int __o)
 	{
 		throw Debugging.todo();
@@ -1033,6 +1110,7 @@ public class Display
 	 * @throws IllegalArgumentException If the duration is negative.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public boolean vibrate(int __d)
 		throws IllegalArgumentException
 	{
@@ -1069,14 +1147,14 @@ public class Display
 				throw Debugging.todo();
 				
 			case Display.LIST_ELEMENT:
-				return backend.metric(UIMetricType.LIST_ITEM_HEIGHT);
+				return backend.metric(_uiDisplay, UIMetricType.LIST_ITEM_HEIGHT);
 				
 			case Display.MENU:
 			case Display.COMMAND:
-				return backend.metric(UIMetricType.COMMAND_BAR_HEIGHT);
+				return backend.metric(_uiDisplay, UIMetricType.COMMAND_BAR_HEIGHT);
 				
-				// {@squirreljme.error EB1o Cannot get the best image size of
-				// the specified element. (The element specifier)}
+				/* {@squirreljme.error EB1o Cannot get the best image size of
+				the specified element. (The element specifier)} */
 			default:
 				throw new IllegalArgumentException(String.format("EB1o %d",
 					__e));
@@ -1137,22 +1215,25 @@ public class Display
 		synchronized (StaticDisplayState.class)
 		{
 			// Set callback for the displayed form so it can receive events
-			backend.callback(__show._uiForm,
+			backend.callback(
+				__show.__state(Displayable.__DisplayableState__.class)._uiForm,
 				StaticDisplayState.callback());
 		}
 		
 		// Show the form on the display, as long as it is not already on there
 		UIDisplayBracket uiDisplay = this._uiDisplay;
 		UIFormBracket wasForm = backend.displayCurrent(uiDisplay);
-		if (wasForm == null || !backend.equals(__show._uiForm, wasForm))
-			backend.displayShow(uiDisplay, __show._uiForm);
+		if (wasForm == null || !backend.equals(
+			__show.__state(Displayable.__DisplayableState__.class)._uiForm, wasForm))
+			backend.displayShow(uiDisplay,
+				__show.__state(Displayable.__DisplayableState__.class)._uiForm);
 		
 		// Set new parent
 		__show._display = this;
 		this._current = __show;
 		
 		// Notify that it was shown
-		this.__queueSerialRunner(new __NotifyShow__(__show), false);
+		this.__queueSerialRunner(new __NotifyShow__(__show));
 	}
 	
 	/**
@@ -1199,8 +1280,8 @@ public class Display
 					case Display.SOFTKEY_RIGHT:
 						return Display.SOFTKEY_LEFT + position;
 					
-						// {@squirreljme.error EB3k Invalid border position.
-						// (The border position).
+						/* {@squirreljme.error EB3k Invalid border position.
+						(The border position).} */
 					default:
 						throw new IllegalArgumentException("EB3k " + border);
 				}
@@ -1213,41 +1294,78 @@ public class Display
 	
 	/**
 	 * Queues the serial runner.
-	 * 
+	 *
 	 * @param __run The method to run.
-	 * @param __unique Is this a unique runner that can only be called only
-	 * once?
 	 * @return The identifier for the runner item.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/27
 	 */
 	@SuppressWarnings({"WrapperTypeMayBePrimitive"})
-	final int __queueSerialRunner(Runnable __run, boolean __unique)
+	final int __queueSerialRunner(Runnable __run)
 		throws NullPointerException
 	{
 		if (__run == null)
 			throw new NullPointerException("NARG");
 		
-		// Get the identifiers for this display and the run call
-		int idDisplay = System.identityHashCode(StaticDisplayState.callback());
+		// Get next ID to use.
 		Integer idRunner;
-		
-		// Perform the serialization call
 		synchronized (Display.class)
 		{
-			idRunner = (__unique ? System.identityHashCode(__run) :
-				(++Display._NON_UNIQUE_SERIAL_RUNS));
-			
-			// Store into the serial runner
-			Map<Integer, Runnable> serialRuns = Display._SERIAL_RUNS;
-			serialRuns.put(idRunner, __run);
-			
-			// Perform the call so it is done later
-			UIBackendFactory.getInstance(true).later(idDisplay, idRunner);
+			idRunner = (++Display._NON_UNIQUE_SERIAL_RUNS);
 		}
+		
+		// Perform the serialization call
+		synchronized (this)
+		{
+			// Store into the serial runner
+			Map<Integer, Runnable> serialRuns = this._serialRuns;
+			serialRuns.put(idRunner, __run);
+		}
+		
+		// Perform the call so it is done later
+		UIBackendFactory.getInstance(true)
+			.later(this._uiDisplay, idRunner);
 		
 		// This is the ID used to refer to this runner
 		return idRunner;
+	}
+	
+	/**
+	 * Performs a serial run.
+	 * 
+	 * @param __serialId The serial run ID.
+	 * @since 2023/01/14
+	 */
+	@SerializedEvent
+	@Async.Execute
+	protected void __serialRun(int __serialId)
+	{
+		// Look to see if it is a valid call
+		Integer key = __serialId;
+		Runnable runner;
+		synchronized (this)
+		{
+			// Locate the runner
+			runner = this._serialRuns.get(key);
+		}
+		
+		// Run it
+		try
+		{
+			if (runner != null)
+				runner.run();
+		}
+		finally
+		{
+			synchronized (this)
+			{
+				// Always clear it, even with failures
+				this._serialRuns.remove(key);
+				
+				// Notify all the display threads that something happened
+				this.notifyAll();
+			}
+		}
 	}
 	
 	/**
@@ -1260,6 +1378,7 @@ public class Display
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/24
 	 */
+	@Api
 	public static void addDisplayListener(DisplayListener __dl)
 		throws NullPointerException
 	{
@@ -1274,6 +1393,7 @@ public class Display
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/08
 	 */
+	@Api
 	public static Display getDisplay(MIDlet __m)
 		throws NullPointerException
 	{
@@ -1289,8 +1409,8 @@ public class Display
 		if (all.length > 0)
 			return all[0];
 		
-		// {@squirreljme.error EB1p Could not get the display for the specified
-		// MIDlet because no displays are available.}
+		/* {@squirreljme.error EB1p Could not get the display for the specified
+		MIDlet because no displays are available.} */
 		throw new IllegalStateException("EB1p");
 	}
 	
@@ -1305,6 +1425,7 @@ public class Display
 	 * @throws IllegalStateException If there are no compatible displays.
 	 * @since 2016/10/08
 	 */
+	@Api
 	public static Display[] getDisplays(int __caps)
 		throws IllegalStateException
 	{
@@ -1312,10 +1433,6 @@ public class Display
 		Display[] all = StaticDisplayState.DISPLAYS;
 		if (all == null)
 		{
-			// Poke the VM to initialize things potentially, this is just
-			// needed by the native emulator bindings
-			Poking.poke();
-			
 			// Get the displays that are attached to the system
 			UIDisplayBracket[] uiDisplays =
 				UIBackendFactory.getInstance(true).displays();
@@ -1346,7 +1463,7 @@ public class Display
 			if ((potential.getCapabilities() & __caps) == __caps)
 				possible.add(potential);
 		
-		// {@squirreljme.error EB1q No displays are available.}
+		/* {@squirreljme.error EB1q No displays are available.} */
 		if (possible.isEmpty())
 			throw new IllegalStateException("EB1q");
 		
@@ -1362,6 +1479,7 @@ public class Display
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/24
 	 */
+	@Api
 	public static void removeDisplayListener(DisplayListener __dl)
 		throws IllegalStateException, NullPointerException
 	{

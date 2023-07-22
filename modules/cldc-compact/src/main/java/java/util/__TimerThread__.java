@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -77,7 +77,7 @@ final class __TimerThread__
 					if (tasks.isEmpty())
 						this.wait();
 					
-					// Otherwise see how long we need to wait
+					// Otherwise, see how long we need to wait
 					else
 					{
 						// Need to determine if we are running this task
@@ -216,8 +216,8 @@ final class __TimerThread__
 			nowtime = System.currentTimeMillis(),
 			diff = datemilli - nowtime;
 		
-		// {@squirreljme.error ZZ3m Cannot use a date which is far into the
-		// past.}
+		/* {@squirreljme.error ZZ3m Cannot use a date which is far into the
+		past.} */
 		if (datemilli < 0)
 			throw new IllegalArgumentException("ZZ3m");
 		
@@ -252,11 +252,11 @@ final class __TimerThread__
 		if (__task == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ3n The delay cannot be negative.}
+		/* {@squirreljme.error ZZ3n The delay cannot be negative.} */
 		if (__delay < 0)
 			throw new IllegalArgumentException("ZZ3n");
 		
-		// {@squirreljme.error ZZ3o The period cannot be zero or negative.}
+		/* {@squirreljme.error ZZ3o The period cannot be zero or negative.} */
 		if (__rep && __period <= 0)
 			throw new IllegalArgumentException("ZZ3o");
 		
@@ -268,8 +268,8 @@ final class __TimerThread__
 		List<TimerTask> tasks = this._tasks;
 		synchronized (this)
 		{
-			// {@squirreljme.error ZZ3p Cannot add a task to a timer which
-			// was cancelled or a task which was cancelled.}
+			/* {@squirreljme.error ZZ3p Cannot add a task to a timer which
+			was cancelled or a task which was cancelled.} */
 			if (this._cancel || __task._cancel)
 				throw new IllegalStateException("ZZ3p");
 			

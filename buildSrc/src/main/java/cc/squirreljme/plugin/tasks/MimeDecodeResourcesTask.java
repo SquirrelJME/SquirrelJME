@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -72,7 +72,7 @@ public class MimeDecodeResourcesTask
 				
 				// Copy decoded MIME data to the output file
 				try (MIMEFileDecoder in = new MIMEFileDecoder(
-					Files.newInputStream(output.input.absolute,
+					Files.newInputStream(output.input.getAbsolute(),
 							StandardOpenOption.READ));
 					OutputStream out = Files.newOutputStream(outPath,
 							StandardOpenOption.CREATE,

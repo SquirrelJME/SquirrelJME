@@ -3,11 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package javax.microedition.rms;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This is an interface which defines a method for comparing records in an
@@ -26,17 +28,21 @@ package javax.microedition.rms;
  * @see RecordFilter
  * @since 2017/02/26
  */
+@Api
 public interface RecordComparator
 {
 	/** This represents two equal records. */
+	@Api
 	int EQUIVALENT =
 		0;
 	
 	/** This represents a record that follows another. */
+	@Api
 	int FOLLOWS =
 		1;
 	
 	/** This represents a record that precedes another. */
+	@Api
 	int PRECEDES =
 		-1;
 	
@@ -51,6 +57,7 @@ public interface RecordComparator
 	 * {@link #FOLLOWS}, or {@link #PRECEDES}.
 	 * @since 2017/02/26
 	 */
+	@Api
 	int compare(byte[] __a, byte[] __b);
 }
 

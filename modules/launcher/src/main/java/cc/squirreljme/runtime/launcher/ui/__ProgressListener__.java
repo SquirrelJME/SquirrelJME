@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -19,6 +19,7 @@ import java.util.Comparator;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.List;
+import org.freedesktop.tango.TangoIconLoader;
 
 /**
  * This listens for when suites have been detected by the scanner.
@@ -54,6 +55,9 @@ final class __ProgressListener__
 	
 	/** The current refresh state. */
 	protected final __RefreshState__ refreshState;
+	
+	/** The default application icon, if one is missing. */
+	protected volatile Image _defaultIcon;
 	
 	/**
 	 * Initializes the progress listener.
@@ -100,26 +104,32 @@ final class __ProgressListener__
 		// Update title to reflect this discovery
 		String updateMessage = String.format(
 			"Querying Suites (Found %d of %d)...", __dx + 1, __total);
-		programList.setTitle(updateMessage);
+		synchronized (programList)
+		{
+			programList.setTitle(updateMessage);
+		}
 		
 		// Update splash screen
-		refreshState.set(updateMessage, __dx + 1, __total);
-		if (refreshCanvas != null)
-			refreshCanvas.requestRepaint();
-		
-		// Determine where this should go and remember the suite
-		int at = Collections.binarySearch(listedSuites, __app,
-			this._comparator);
-		if (at < 0)
-			at = -(at + 1);
-		listedSuites.add(at, __app);
+		synchronized (refreshState)
+		{
+			refreshState.set(updateMessage, __dx + 1, __total);
+			if (refreshCanvas != null)
+				synchronized (refreshCanvas)
+				{
+					refreshCanvas.requestRepaint();
+				}
+		}
 		
 		// Try to load the image for the application
+		// Do this first, so we can keep the application list update
+		// synchronized nicely...
 		Image icon = null;
 		try (InputStream iconData = __app.iconStream())
 		{
 			if (iconData != null)
 				icon = Image.createImage(iconData);
+			else
+				icon = this.__defaultIcon();
 		}
 		catch (IOException e)
 		{
@@ -131,16 +141,40 @@ final class __ProgressListener__
 		{
 			// Get the preferred icon size
 			Display mainDisplay = this.mainDisplay;
-			int prefW = mainDisplay.getBestImageWidth(Display.LIST_ELEMENT);
-			int prefH = mainDisplay.getBestImageHeight(Display.LIST_ELEMENT);
+			if (mainDisplay == null)
+				try
+				{
+					mainDisplay = Display.getDisplays(0)[0];
+				}
+				catch (IllegalStateException ignored)
+				{
+					mainDisplay = null;
+				}
+			
+			int prefW;
+			int prefH;
+			if (mainDisplay != null)
+			{
+				prefW = mainDisplay.getBestImageWidth(Display.LIST_ELEMENT);
+				prefH = mainDisplay.getBestImageHeight(Display.LIST_ELEMENT);
+			}
+			else
+				prefW = prefH = 16;
 			
 			// Scale the icon
 			if (icon.getWidth() > prefW ||
 				icon.getHeight() > prefH)
 				try
 				{
+					// If this is the default icon, we scale it only once!
+					boolean isDefault = (icon == this._defaultIcon);
+					
 					icon = __ProgressListener__.__scaleIcon(
 						icon, prefW, prefH);
+					
+					// Use new default if we did scale
+					if (isDefault)
+						this._defaultIcon = icon;
 				}
 				catch (IndexOutOfBoundsException e)
 				{
@@ -148,8 +182,48 @@ final class __ProgressListener__
 				}
 		}
 		
-		// Add entry to the list
-		programList.insert(at, __app.displayName(), icon);
+		// Determine where this should go and remember the suite
+		synchronized (listedSuites)
+		{
+			int at = Collections.binarySearch(listedSuites, __app,
+				this._comparator);
+			if (at < 0)
+				at = -(at + 1);
+			listedSuites.add(at, __app);
+			
+			// Add entry to the list
+			synchronized (programList)
+			{
+				programList.insert(at, __app.displayName(), icon);
+			}
+		}
+	}
+	
+	/**
+	 * Loads the default icon.
+	 * 
+	 * @return The default icon.
+	 * @throws IOException On read errors.
+	 * @since 2022/10/03
+	 */
+	private Image __defaultIcon()
+		throws IOException
+	{
+		// Already loaded?
+		Image defaultIcon = this._defaultIcon;
+		if (defaultIcon != null)
+			return defaultIcon;
+		
+		try (InputStream in = TangoIconLoader.loadIcon(
+			16, "application-x-executable"))
+		{
+			if (in == null)
+				return null;
+			
+			defaultIcon = Image.createImage(in);
+			this._defaultIcon = defaultIcon;
+			return defaultIcon;
+		}
 	}
 	
 	/**

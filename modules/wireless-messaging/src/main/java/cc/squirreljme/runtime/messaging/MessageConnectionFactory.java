@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.runtime.messaging;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.gcf.CustomConnectionFactory;
 import java.io.IOException;
@@ -20,6 +21,7 @@ import javax.microedition.io.ConnectionOption;
  *
  * @since 2022/02/27
  */
+@Api
 public class MessageConnectionFactory
 	implements CustomConnectionFactory
 {

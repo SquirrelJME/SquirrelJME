@@ -3,17 +3,19 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.emulator;
 
+import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.TaskShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.brackets.TaskBracket;
 import cc.squirreljme.jvm.mle.constants.TaskPipeRedirectType;
 import cc.squirreljme.jvm.mle.constants.TaskStatusType;
+import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.File;
@@ -59,6 +61,15 @@ public final class EmulatedTaskShelf
 	public static final String ORIGINAL_PROP_PREFIX =
 		"squirreljme.orig.";
 	
+	/** Are we on Windows? */
+	private static final boolean _ON_WINDOWS;
+	
+	static
+	{
+		String osName = System.getProperty("os.name");
+		_ON_WINDOWS = osName.toLowerCase().contains("windows");
+	}
+	
 	/**
 	 * As {@link TaskShelf#start(JarPackageBracket[], String, String[],
 	 * String[], int, int)}. 
@@ -95,9 +106,10 @@ public final class EmulatedTaskShelf
 		ProcessBuilder builder = new ProcessBuilder();
 		List<String> args = new LinkedList<>();
 		
-		// We will be calling the Java executable
-		// TODO: This is somewhere in "java.home"
-		args.add("java");
+		// We will be calling the Java executable, if we cannot find one then
+		// assume it is just "java"
+		args.add(Objects.toString(RuntimeShelf.vmDescription(
+			VMDescriptionType.EXECUTABLE_PATH), "java"));
 		
 		// Determine which system properties we inherit from
 		Map<String, String> sysProps = new LinkedHashMap<>();
@@ -173,8 +185,15 @@ public final class EmulatedTaskShelf
 		// Use all declared system properties to ensure that they are properly
 		// inherited from the host virtual machine
 		for (Map.Entry<String, String> e : sysProps.entrySet())
-			args.add(String.format("-D%s=%s",
-				e.getKey(), e.getValue()));
+			args.add(EmulatedTaskShelf.__escape(String.format("-D%s=%s",
+				e.getKey(), e.getValue())));
+		
+		
+		// Use special main handler which handles loading the required
+		// methods for the hosted environment to work correctly with
+		// SquirrelJME... our sub-tasks need to have this in order to properly
+		// work
+		args.add("cc.squirreljme.emulator.NativeBinding");
 		
 		// The main class is our direct main class, we do not need special
 		// handling for it at all
@@ -321,5 +340,37 @@ public final class EmulatedTaskShelf
 			result.add(Paths.get(split));
 		
 		return result.<Path>toArray(new Path[result.size()]);
+	}
+	
+	/**
+	 * Escapes the given string.
+	 * 
+	 * @param __s The string to escape.
+	 * @return The escaped string.
+	 * @since 2023/04/13
+	 */
+	static String __escape(String __s)
+	{
+		// Do not escape outside of Windows
+		if (!EmulatedTaskShelf._ON_WINDOWS)
+			return __s;
+		
+		// No quotes to escape?
+		if (__s.indexOf('"') < 0)
+			return __s;
+		
+		// Process each character and look for quotes
+		StringBuilder result = new StringBuilder();
+		for (int i = 0, n = __s.length(); i < n; i++)
+		{
+			char c = __s.charAt(i);
+			
+			// Escape quote if found
+			if (c == '"')
+				result.append('\\');
+			result.append(c);
+		}
+		
+		return result.toString();
 	}
 }

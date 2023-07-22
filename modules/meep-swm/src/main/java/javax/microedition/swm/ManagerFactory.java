@@ -3,11 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package javax.microedition.swm;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This class provides static methods for obtaining the application suite and
@@ -15,6 +17,7 @@ package javax.microedition.swm;
  *
  * @since 2016/06/24
  */
+@Api
 public class ManagerFactory
 {
 	/** Lock for initialization. */
@@ -38,6 +41,7 @@ public class ManagerFactory
 	 * "manageSuite")} permission is not permitted.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public static SuiteManager getSuiteManager()
 		throws SecurityException
 	{
@@ -63,6 +67,7 @@ public class ManagerFactory
 	 * "manageTask")} permission is not permitted.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public static TaskManager getTaskManager()
 		throws SecurityException
 	{

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -48,8 +48,8 @@ public class CloseableList<T extends Closeable>
 				count++;
 			}
 		
-		// {@squirreljme.error AC01 There was at least one exception which
-		// occurred while closing the list. (The number of exceptions thrown)}
+		/* {@squirreljme.error AC01 There was at least one exception which
+		occurred while closing the list. (The number of exceptions thrown)} */
 		if (defer != null)
 			throw new IOException(String.format("AC01 %d", count), defer);
 	}

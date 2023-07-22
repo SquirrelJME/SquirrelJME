@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -179,8 +179,8 @@ public final class ZipBlockEntry
 	public InputStream open()
 		throws IOException, ZipException
 	{
-		// {@squirreljme.error BF0a Cannot open the entry because it is a
-		// directory. (The name of the entry)}
+		/* {@squirreljme.error BF0a Cannot open the entry because it is a
+		directory. (The name of the entry)} */
 		String s;
 		if (this.isDirectory())
 			throw new ZipException(String.format("BF0a %s", this.toString()));
@@ -189,8 +189,8 @@ public final class ZipBlockEntry
 		BlockAccessor accessor = this.accessor;
 		long position = this.position;
 		
-		// {@squirreljme.error BF0b Could not read the central
-		// directory data.}
+		/* {@squirreljme.error BF0b Could not read the central
+		directory data.} */
 		byte[] data = new byte[ZipBlockEntry._CENTRAL_DIRECTORY_MIN_LENGTH];
 		if (ZipBlockEntry._CENTRAL_DIRECTORY_MIN_LENGTH != accessor.read(position,
 			data, 0, ZipBlockEntry._CENTRAL_DIRECTORY_MIN_LENGTH))
@@ -206,8 +206,8 @@ public final class ZipBlockEntry
 		if ((ver & 0xFF00) != 0 && (made & 0xFF00) == (ver & 0xFF00))
 			ver &= 0xFF;
 		
-		// {@squirreljme.error BF0c Cannot open the entry because it uses
-		// too new of a version. (The version number)}
+		/* {@squirreljme.error BF0c Cannot open the entry because it uses
+		too new of a version. (The version number)} */
 		if (ZipBlockEntry._MAX_CENTRAL_DIR_VERSION < ver)
 			throw new ZipException(String.format("BF0c %d", ver));
 		
@@ -228,15 +228,15 @@ public final class ZipBlockEntry
 		long lhoffset = owner._zipbaseaddr + __ArrayData__.readUnsignedInt(
 			ZipBlockEntry._CENTRAL_DIRECTORY_LOCAL_HEADER_OFFSET, data);
 		
-		// {@squirreljme.error BF0d Could not read the local file header from
-		// the ZIP file.}
+		/* {@squirreljme.error BF0d Could not read the local file header from
+		the ZIP file.} */
 		byte[] header = new byte[ZipBlockEntry._LOCAL_HEADER_MIN_LENGTH];
 		if (ZipBlockEntry._LOCAL_HEADER_MIN_LENGTH != accessor.read(lhoffset, header, 0,
 			ZipBlockEntry._LOCAL_HEADER_MIN_LENGTH))
 			throw new ZipException("BF0d");
 		
-		// {@squirreljme.error BF0e The magic number for the local file header
-		// is not valid.}
+		/* {@squirreljme.error BF0e The magic number for the local file header
+		is not valid.} */
 		if (__ArrayData__.readSignedInt(0, header) != ZipBlockEntry._LOCAL_HEADER_MAGIC_NUMBER)
 			throw new ZipException("BF0e");
 		
@@ -254,8 +254,8 @@ public final class ZipBlockEntry
 		InputStream base = new __BlockAccessorRegionInputStream__(accessor,
 			database, compressed);
 		
-		// {@squirreljme.error BF0f Unknown compression method for entry. (The
-		// method identifier)}
+		/* {@squirreljme.error BF0f Unknown compression method for entry. (The
+		method identifier)} */
 		ZipCompressionType ztype = ZipCompressionType.forMethod(method);
 		if (ztype == null)
 			throw new ZipException(String.format("BF0f %d", method));
@@ -279,8 +279,8 @@ public final class ZipBlockEntry
 			return this.__internalToString();
 		}
 			
-		// {@squirreljme.error BF0g Could not read the name of the
-		// entry.}
+		/* {@squirreljme.error BF0g Could not read the name of the
+		entry.} */
 		catch (IOException e)
 		{
 			throw new RuntimeException("BF0g", e);
@@ -307,8 +307,8 @@ public final class ZipBlockEntry
 			BlockAccessor accessor = this.accessor;
 			long position = this.position;
 			
-			// {@squirreljme.error BF0h Could not read the central
-			// directory data.}
+			/* {@squirreljme.error BF0h Could not read the central
+			directory data.} */
 			byte[] data = new byte[ZipBlockEntry._CENTRAL_DIRECTORY_MIN_LENGTH];
 			if (ZipBlockEntry._CENTRAL_DIRECTORY_MIN_LENGTH != accessor.read(position,
 				data, 0, ZipBlockEntry._CENTRAL_DIRECTORY_MIN_LENGTH))
@@ -318,7 +318,7 @@ public final class ZipBlockEntry
 			int fnl = __ArrayData__.readUnsignedShort(
 				ZipBlockEntry._CENTRAL_DIRECTORY_NAME_LENGTH_OFFSET, data);
 			
-			// {@squirreljme.error BF0i Could not read the file name.}
+			/* {@squirreljme.error BF0i Could not read the file name.} */
 			byte[] rawname = new byte[fnl];
 			if (fnl != accessor.read(
 				position + ZipBlockEntry._CENTRAL_DIRECTORY_MIN_LENGTH, rawname, 0, fnl))

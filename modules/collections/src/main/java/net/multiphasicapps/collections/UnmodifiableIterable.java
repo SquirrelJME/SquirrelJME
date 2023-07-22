@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -11,6 +11,7 @@ package net.multiphasicapps.collections;
 
 import cc.squirreljme.runtime.cldc.util.UnmodifiableIterator;
 import java.util.Iterator;
+import org.jetbrains.annotations.UnmodifiableView;
 
 /**
  * Wraps an iterable which makes it not able to be modified.
@@ -18,6 +19,7 @@ import java.util.Iterator;
  * @param <T> The type to iterate through.
  * @since 2021/04/25
  */
+@UnmodifiableView
 public final class UnmodifiableIterable<T>
 	implements Iterable<T>
 {

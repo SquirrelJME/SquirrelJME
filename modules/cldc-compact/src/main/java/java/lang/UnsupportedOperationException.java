@@ -3,12 +3,15 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
+@Api
 public class UnsupportedOperationException
 	extends RuntimeException
 {
@@ -17,6 +20,7 @@ public class UnsupportedOperationException
 	 *
 	 * @since 2018/12/04
 	 */
+	@Api
 	public UnsupportedOperationException()
 	{
 	}
@@ -27,6 +31,7 @@ public class UnsupportedOperationException
 	 * @param __m The message.
 	 * @since 2018/12/04
 	 */
+	@Api
 	public UnsupportedOperationException(String __m)
 	{
 		super(__m);
@@ -39,6 +44,7 @@ public class UnsupportedOperationException
 	 * @param __t The cause.
 	 * @since 2018/12/04
 	 */
+	@Api
 	public UnsupportedOperationException(String __m, Throwable __t)
 	{
 		super(__m, __t);
@@ -50,6 +56,7 @@ public class UnsupportedOperationException
 	 * @param __t The cause.
 	 * @since 2018/12/04
 	 */
+	@Api
 	public UnsupportedOperationException(Throwable __t)
 	{
 		super(__t);

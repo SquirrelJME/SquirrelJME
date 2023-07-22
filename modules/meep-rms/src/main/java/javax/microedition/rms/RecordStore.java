@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package javax.microedition.rms;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
@@ -39,14 +40,18 @@ import net.multiphasicapps.collections.IdentityLinkedHashSet;
  *
  * @since 2017/02/26
  */
+@Api
+@SuppressWarnings("DuplicateThrows")
 public class RecordStore
 	implements AutoCloseable
 {
 	/** Specifies that any suite may access the records. */
+	@Api
 	public static final int AUTHMODE_ANY =
 		1;
 	
 	/** Specifies that only record store creator may access the records. */
+	@Api
 	public static final int AUTHMODE_PRIVATE =
 		0;
 	
@@ -112,6 +117,7 @@ public class RecordStore
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/14
 	 */
+	@Api
 	private RecordStore(int __vid, String __name, boolean __w)
 		throws NullPointerException
 	{
@@ -142,6 +148,7 @@ public class RecordStore
 	 * the data.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public int addRecord(byte[] __b, int __o, int __l, int __tag)
 		throws ArrayIndexOutOfBoundsException, NullPointerException,
 			RecordStoreNotOpenException, RecordStoreException,
@@ -152,7 +159,7 @@ public class RecordStore
 		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
-		// {@squirreljme.error DC01 Cannot write record to read-only store.}
+		/* {@squirreljme.error DC01 Cannot write record to read-only store.} */
 		if (!this._write)
 			throw new RecordStoreException("DC01");
 		
@@ -192,6 +199,7 @@ public class RecordStore
 	 * @throws RecordStoreFullException As forwarded.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public int addRecord(byte[] __b, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, NullPointerException,
 			RecordStoreNotOpenException, RecordStoreException,
@@ -210,6 +218,7 @@ public class RecordStore
 	 * already been added will not be added a second time.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public void addRecordListener(RecordListener __l)
 	{
 		// Ignore
@@ -256,6 +265,7 @@ public class RecordStore
 	 * @throws RecordStoreException If there was an issue closing it.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public void closeRecordStore()
 		throws RecordStoreNotOpenException, RecordStoreException
 	{
@@ -283,6 +293,7 @@ public class RecordStore
 	 * @throws SecurityException If the record cannot be deleted.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public void deleteRecord(int __id)
 		throws InvalidRecordIDException, RecordStoreNotOpenException,
 			RecordStoreException, SecurityException
@@ -325,6 +336,7 @@ public class RecordStore
 	 * @throws RecordStoreNotOpenException If this record store is not open.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public RecordEnumeration enumerateRecords(RecordFilter __f,
 		RecordComparator __c, boolean __ku, int[] __tags)
 		throws RecordStoreNotOpenException
@@ -351,6 +363,7 @@ public class RecordStore
 	 * @throws RecordStoreNotOpenException As forwarded.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public RecordEnumeration enumerateRecords(RecordFilter __f,
 		RecordComparator __c, boolean __ku)
 		throws RecordStoreNotOpenException
@@ -365,6 +378,7 @@ public class RecordStore
 	 * @throws RecordStoreNotOpenException If this record store is not open.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public long getLastModified()
 		throws RecordStoreNotOpenException
 	{
@@ -390,8 +404,8 @@ public class RecordStore
 				if (e instanceof RecordStoreNotOpenException)
 					throw (RecordStoreNotOpenException)e;
 				
-				// {@squirreljme.error DC02 Could not get the record store
-				// time.}
+				/* {@squirreljme.error DC02 Could not get the record store
+				time.} */
 				throw new RuntimeException("DC02", e);
 			}
 			
@@ -406,6 +420,7 @@ public class RecordStore
 	 * @throws RecordStoreNotOpenException If this record store is not open.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public String getName()
 		throws RecordStoreNotOpenException
 	{
@@ -428,6 +443,7 @@ public class RecordStore
 	 * @throws RecordStoreNotOpenException If this record store is not open.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public int getNextRecordID()
 		throws RecordStoreException, RecordStoreNotOpenException
 	{
@@ -453,6 +469,7 @@ public class RecordStore
 	 * @throws RecordStoreNotOpenException If the record store is not open.
 	 * @since 2019/05/09
 	 */
+	@Api
 	public int getNumRecords()
 		throws RecordStoreNotOpenException
 	{
@@ -478,8 +495,8 @@ public class RecordStore
 				}
 				catch (RecordStoreException e)
 				{
-					// {@squirreljme.error DC03 Error getting list of
-					// records.}
+					/* {@squirreljme.error DC03 Error getting list of
+					records.} */
 					RecordStoreNotOpenException t =
 						new RecordStoreNotOpenException("DC03");
 					t.initCause(e);
@@ -503,6 +520,7 @@ public class RecordStore
 	 * @throws RecordStoreNotOpenException If this record store is not open.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public byte[] getRecord(int __id)
 		throws InvalidRecordIDException, RecordStoreException,
 			RecordStoreNotOpenException
@@ -549,6 +567,7 @@ public class RecordStore
 	 * @throws RecordStoreNotOpenException If the record store is not open.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public int getRecord(int __id, byte[] __b, int __o)
 		throws ArrayIndexOutOfBoundsException, InvalidRecordIDException,
 			NullPointerException, RecordStoreException,
@@ -573,8 +592,8 @@ public class RecordStore
 			int size = vinyl.pageSize(vid, __id);
 			RecordStore.__checkError(size);
 			
-			// {@squirreljme.error DC04 The record does not fit into the
-			// output.}
+			/* {@squirreljme.error DC04 The record does not fit into the
+			output.} */
 			if (size < 0 || (__o + size) > __b.length)
 				throw new ArrayIndexOutOfBoundsException("DC04");
 			
@@ -598,6 +617,7 @@ public class RecordStore
 	 * @throws RecordStoreNotOpenException If the record store is not open.
 	 * @since 2016/02/26
 	 */
+	@Api
 	public int getRecordSize(int __id)
 		throws InvalidRecordIDException, RecordStoreException,
 			RecordStoreNotOpenException
@@ -625,6 +645,7 @@ public class RecordStore
 	 * @throws RecordStoreNotOpenException If the record store is not open.
 	 * @since 2016/02/26
 	 */
+	@Api
 	public RecordStoreInfo getRecordStoreInfo()
 		throws RecordStoreNotOpenException
 	{
@@ -642,6 +663,7 @@ public class RecordStore
 	 * @throws RecordStoreNotOpenException If the record store is not open.
 	 * @since 2016/02/26
 	 */
+	@Api
 	@ApiDefinedDeprecated
 	public int getSize()
 		throws RecordStoreNotOpenException
@@ -658,6 +680,7 @@ public class RecordStore
 	 * @throws RecordStoreNotOpenException If the record store is not open.
 	 * @since 2016/02/26
 	 */
+	@Api
 	@ApiDefinedDeprecated
 	public int getSizeAvailable()
 		throws RecordStoreNotOpenException
@@ -677,6 +700,7 @@ public class RecordStore
 	 * @throws RecordStoreNotOpenException If the record store is not open.
 	 * @since 2016/02/26
 	 */
+	@Api
 	public int getTag(int __id)
 		throws InvalidRecordIDException, RecordStoreException,
 			RecordStoreNotOpenException
@@ -704,6 +728,7 @@ public class RecordStore
 	 * @throws RecordStoreNotOpenException If the record store is not open.
 	 * @since 2016/02/26
 	 */
+	@Api
 	public int getVersion()
 		throws RecordStoreNotOpenException
 	{
@@ -725,8 +750,8 @@ public class RecordStore
 				if (e instanceof RecordStoreNotOpenException)
 					throw (RecordStoreNotOpenException)e;
 				
-				// {@squirreljme.error DC05 Could not get the record store
-				// version.}
+				/* {@squirreljme.error DC05 Could not get the record store
+				version.} */
 				throw new RuntimeException("DC05", e);
 			}
 			
@@ -741,6 +766,7 @@ public class RecordStore
 	 * @param __l The record listener to remove.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public void removeRecordListener(RecordListener __l)
 	{
 		// Ignore
@@ -782,6 +808,7 @@ public class RecordStore
 	 * @throws SecurityException If changing the mode is not permitted.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public void setMode(int __auth, boolean __write)
 		throws IllegalArgumentException, IllegalStateException,
 			RecordStoreException, SecurityException
@@ -813,6 +840,7 @@ public class RecordStore
 	 * @throws RecordStoreNotOpenException If the record store is not open.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public void setRecord(int __id, byte[] __b, int __o, int __l, int __tag)
 		throws ArrayIndexOutOfBoundsException, InvalidRecordIDException,
 			NullPointerException, RecordStoreException,
@@ -823,7 +851,7 @@ public class RecordStore
 		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
-		// {@squirreljme.error DC06 Cannot write record to read-only store.}
+		/* {@squirreljme.error DC06 Cannot write record to read-only store.} */
 		if (!this._write)
 			throw new RecordStoreException("DC06");
 		
@@ -862,6 +890,7 @@ public class RecordStore
 	 * @throws RecordStoreNotOpenException As forwarded.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public void setRecord(int __id, byte[] __b, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, InvalidRecordIDException,
 			NullPointerException, RecordStoreException,
@@ -879,7 +908,7 @@ public class RecordStore
 	private void __checkOpen()
 		throws RecordStoreNotOpenException
 	{
-		// {@squirreljme.error DC07 This record store is not open.
+		/* {@squirreljme.error DC07 This record store is not open.} */
 		if (this._opens <= 0)
 			throw new RecordStoreNotOpenException("DC07");
 	}
@@ -933,6 +962,7 @@ public class RecordStore
 	 * found.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public static void deleteRecordStore(String __n)
 		throws NullPointerException, RecordStoreException,
 			RecordStoreNotFoundException
@@ -963,8 +993,8 @@ public class RecordStore
 				}
 			}
 			
-			// {@squirreljme.error DC08 Cannot delete the specified record
-			// store because it does not exist. (The name of the store)}
+			/* {@squirreljme.error DC08 Cannot delete the specified record
+			store because it does not exist. (The name of the store)} */
 			if (got == -1)
 				throw new RecordStoreNotFoundException("DC08 " + __n);
 			
@@ -981,6 +1011,7 @@ public class RecordStore
 	 * will be returned.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public static String[] listRecordStores()
 	{
 		// Our suite identifier to find our own records
@@ -1042,6 +1073,7 @@ public class RecordStore
 	 * match an existing password.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public static RecordStore openRecordStore(String __n, boolean __create,
 		int __auth, boolean __write, String __pass)
 		throws IllegalArgumentException, RecordStoreException,
@@ -1069,6 +1101,7 @@ public class RecordStore
 	 * @throws SecurityException As forwarded.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public static RecordStore openRecordStore(String __n, boolean __create,
 		int __auth, boolean __write)
 		throws IllegalArgumentException, RecordStoreException,
@@ -1093,6 +1126,7 @@ public class RecordStore
 	 * @throws SecurityException As forwarded.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public static RecordStore openRecordStore(String __n, boolean __create)
 		throws IllegalArgumentException, RecordStoreException,
 			RecordStoreFullException, RecordStoreNotFoundException,
@@ -1132,6 +1166,7 @@ public class RecordStore
 	 * match an existing password.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public static RecordStore openRecordStore(String __n, String __vend,
 		String __suite, String __pass)
 		throws IllegalArgumentException, RecordStoreException,
@@ -1156,6 +1191,7 @@ public class RecordStore
 	 * @throws SecurityException As forwarded.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public static RecordStore openRecordStore(String __n, String __vend,
 		String __suite)
 		throws IllegalArgumentException, RecordStoreException,
@@ -1178,20 +1214,20 @@ public class RecordStore
 		// Error was detected
 		if (__id < 0)
 		{
-			// {@squirreljme.error DC09 Could not add the record, there might
-			// not be enough free space available.}
+			/* {@squirreljme.error DC09 Could not add the record, there might
+			not be enough free space available.} */
 			if (__id == VinylRecord.ERROR_NO_MEMORY)
 				throw new RecordStoreFullException("DC09");
 			
-			// {@squirreljme.error DC0a No such record store exists.}
+			/* {@squirreljme.error DC0a No such record store exists.} */
 			if (__id == VinylRecord.ERROR_NO_VOLUME)
 				throw new RecordStoreNotFoundException("DC0a");
 			
-			// {@squirreljme.error DC0b No such record exists.}
+			/* {@squirreljme.error DC0b No such record exists.} */
 			if (__id == VinylRecord.ERROR_NO_PAGE)
 				throw new InvalidRecordIDException("DC0b");
 			
-			// {@squirreljme.error DC0c Unknown record store error. (Error)}
+			/* {@squirreljme.error DC0c Unknown record store error. (Error)} */
 			throw new RecordStoreException("DC0c " + __id);
 		}
 	}
@@ -1243,7 +1279,7 @@ public class RecordStore
 		if (__name == null || __vend == null || __suite == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error DC0d The name is not valid.}
+		/* {@squirreljme.error DC0d The name is not valid.} */
 		int namelen = __name.length();
 		if (namelen < 1 || namelen > 32)
 			throw new IllegalArgumentException("DC0d " + __name);
@@ -1287,14 +1323,14 @@ public class RecordStore
 				return rs;
 			}
 			
-			// {@squirreljme.error DC0e Could not find the specified record
-			// store. (The name; The vendor; The suite)}
+			/* {@squirreljme.error DC0e Could not find the specified record
+			store. (The name; The vendor; The suite)} */
 			if (!__create)
 				throw new RecordStoreNotFoundException(
 					String.format("DC0e %s %s %s", __name, __vend, __suite));
 			
-			// {@squirreljme.error DC0f Could not create the record, it is
-			// likely that there is not enough space remaining.}
+			/* {@squirreljme.error DC0f Could not create the record, it is
+			likely that there is not enough space remaining.} */
 			rv = vinyl.volumeCreate(sid, __name, __write);
 			if (rv < 0)
 				throw new RecordStoreFullException("DC0f");

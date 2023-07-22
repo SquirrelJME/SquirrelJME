@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -33,7 +33,8 @@ public interface NativeImageLoadType
 		8;
 	
 	/** All types. */
-	int ALL_TYPES = NativeImageLoadType.LOAD_PNG |
+	int ALL_TYPES =
+		NativeImageLoadType.LOAD_PNG |
 		NativeImageLoadType.LOAD_GIF | NativeImageLoadType.LOAD_JPEG |
 		NativeImageLoadType.LOAD_XPM;
 }

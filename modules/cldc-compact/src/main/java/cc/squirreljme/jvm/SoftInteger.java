@@ -3,12 +3,14 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.jvm;
 
+import cc.squirreljme.jvm.mle.MathShelf;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -16,6 +18,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2019/05/27
  */
+@SquirrelJMEVendorApi
 @SuppressWarnings("MagicNumber")
 public final class SoftInteger
 {
@@ -35,9 +38,9 @@ public final class SoftInteger
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
+	@SquirrelJMEVendorApi
 	public static double toDouble(int __a)
 	{
-		Assembly.breakpoint();
 		throw Debugging.todo();
 	}
 	
@@ -48,6 +51,7 @@ public final class SoftInteger
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
+	@SquirrelJMEVendorApi
 	public static float toFloat(int __a)
 	{
 		boolean sign = (__a < 0);
@@ -75,16 +79,17 @@ public final class SoftInteger
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
+	@SquirrelJMEVendorApi
 	public static long toLong(int __a)
 	{
 		// If the integer has the sign bit, then it will be sign extended
 		// meaning all the upper bits get set
 		if ((__a & 0x80000000) != 0)
-			return Assembly.longPack(__a, 0xFFFFFFFF);
+			return MathShelf.longPack(__a, 0xFFFFFFFF);
 		
 		// Otherwise, the top is just zero
 		else
-			return Assembly.longPack(__a, 0);
+			return MathShelf.longPack(__a, 0);
 	}
 }
 

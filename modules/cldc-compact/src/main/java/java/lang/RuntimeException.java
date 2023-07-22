@@ -3,11 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.lang;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This and all of its sub-classes represents exceptions which are unchecked
@@ -15,6 +17,7 @@ package java.lang;
  *
  * @since 2018/09/16
  */
+@Api
 public class RuntimeException
 	extends Exception
 {
@@ -23,6 +26,7 @@ public class RuntimeException
 	 *
 	 * @since 2018/09/16
 	 */
+	@Api
 	public RuntimeException()
 	{
 	}
@@ -33,6 +37,7 @@ public class RuntimeException
 	 * @param __m The message.
 	 * @since 2018/09/16
 	 */
+	@Api
 	public RuntimeException(String __m)
 	{
 		super(__m);
@@ -45,6 +50,7 @@ public class RuntimeException
 	 * @param __t The cause.
 	 * @since 2018/09/16
 	 */
+	@Api
 	public RuntimeException(String __m, Throwable __t)
 	{
 		super(__m, __t);
@@ -56,6 +62,7 @@ public class RuntimeException
 	 * @param __t The cause.
 	 * @since 2018/09/16
 	 */
+	@Api
 	public RuntimeException(Throwable __t)
 	{
 		super(__t);

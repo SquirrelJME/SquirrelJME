@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -31,9 +31,9 @@ public final class SplashScreen
 	/** The copyright string. */
 	public static final String COPYRIGHT =
 		"https://squirreljme.cc/\n" +
-		"(C) 2013-2022 Stephanie Gawroriski\n" +
-		"TM  2016-2022 Stephanie Gawroriski\n" +
-		"Licensed under the GPLv3!\n" +
+		"(C) 2013-2023 Stephanie Gawroriski\n" +
+		"TM  2016-2023 Stephanie Gawroriski\n" +
+		"License: Mozilla Public License 2.0!\n" +
 		"Donate to me on Patreon:\n" +
 		"*** https://www.patreon.com/SquirrelJME! ***";
 	

@@ -3,11 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package com.oracle.json.stream;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * Provides location information on the source of the JSON data when an
@@ -16,6 +18,7 @@ package com.oracle.json.stream;
  *
  * @since 2014/07/25
  */
+@Api
 public interface JsonLocation
 {
 	/**
@@ -25,6 +28,7 @@ public interface JsonLocation
 	 * @return Column number or {@code -1}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	long getColumnNumber();
 	
 	/**
@@ -34,6 +38,7 @@ public interface JsonLocation
 	 * @return Line number or {@code -1}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	long getLineNumber();
 	
 	/**
@@ -43,6 +48,7 @@ public interface JsonLocation
 	 * @return Stream offset or {@code -1}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	long getStreamOffset();
 }
 

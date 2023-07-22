@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
@@ -16,9 +16,11 @@
 jint JNICALL mleDebugInit(JNIEnv* env, jclass classy);
 jint JNICALL mleFormInit(JNIEnv* env, jclass classy);
 jint JNICALL mleJarInit(JNIEnv* env, jclass classy);
+jint JNICALL mleMathInit(JNIEnv* env, jclass classy);
 jint JNICALL mleMidiInit(JNIEnv* env, jclass classy);
 jint JNICALL mleObjectInit(JNIEnv* env, jclass classy);
 jint JNICALL mlePencilInit(JNIEnv* env, jclass classy);
+jint JNICALL mleReflectionInit(JNIEnv* env, jclass classy);
 jint JNICALL mleRuntimeInit(JNIEnv* env, jclass classy);
 jint JNICALL mleTaskInit(JNIEnv* env, jclass classy);
 jint JNICALL mleTerminalInit(JNIEnv* env, jclass classy);
@@ -42,6 +44,9 @@ void JNICALL forwardCallStaticVoid(JNIEnv* env,
 	const char* const classy, const char* const name, const char* const type,
 	...);
 jint JNICALL forwardCallStaticInteger(JNIEnv* env,
+	const char* const classy, const char* const name, const char* const type,
+	...);
+jlong JNICALL forwardCallStaticLong(JNIEnv* env,
 	const char* const classy, const char* const name, const char* const type,
 	...);
 jobject JNICALL forwardCallStaticObject(JNIEnv* env,

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -12,6 +12,7 @@ package java.lang;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.constants.MemoryProfileType;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
@@ -22,23 +23,28 @@ import java.lang.ref.WeakReference;
  *
  * @since 2019/05/11
  */
+@Api
 public final class Integer
 	extends Number
 	implements Comparable<Integer>
 {
 	/** The maximum value. */
+	@Api
 	public static final int MAX_VALUE =
 		2147483647;
 	
 	/** The minimum value. */
+	@Api
 	public static final int MIN_VALUE =
 		-2147483648;
 	
 	/** The number of bits this uses. */
+	@Api
 	public static final int SIZE =
 		32;
 	
 	/** The class type representing the primitive type. */
+	@Api
 	public static final Class<Integer> TYPE =
 		TypeShelf.<Integer>typeToClass(TypeShelf.typeOfInteger());
 	
@@ -54,6 +60,7 @@ public final class Integer
 	 * @param __v The value to use.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public Integer(int __v)
 	{
 		this._value = __v;
@@ -68,6 +75,7 @@ public final class Integer
 	 * @throws NumberFormatException If the number is not valid.
 	 * @since 2019/05/11
 	 */
+	@Api
 	public Integer(String __v)
 		throws NullPointerException, NumberFormatException
 	{
@@ -211,6 +219,7 @@ public final class Integer
 	 * @return The number of bits set in the value.
 	 * @since 2018/11/11
 	 */
+	@Api
 	@SuppressWarnings("MagicNumber")
 	public static int bitCount(int __v)
 	{
@@ -235,13 +244,14 @@ public final class Integer
 	 * @throws NumberFormatException If the string is of an incorrect value.
 	 * @since 2018/11/11
 	 */
+	@Api
 	public static Integer decode(String __s)
 		throws NullPointerException, NumberFormatException
 	{
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ16 Cannot decode an empty string.}
+		/* {@squirreljme.error ZZ16 Cannot decode an empty string.} */
 		if (__s.isEmpty())
 			throw new NumberFormatException("ZZ16");
 		
@@ -277,7 +287,7 @@ public final class Integer
 		else
 			radix = 10;
 		
-		// {@squirreljme.error ZZ17 Misplaced sign. (The input string)}
+		/* {@squirreljme.error ZZ17 Misplaced sign. (The input string)} */
 		if (__s.startsWith("-") || __s.startsWith("+"))
 			throw new NumberFormatException("ZZ2p " + orig);
 		
@@ -287,7 +297,7 @@ public final class Integer
 			return Integer.parseInt(sign + __s, radix);
 		}
 		
-		// {@squirreljme.error ZZ18 Could not parse number. (The input string)}
+		/* {@squirreljme.error ZZ18 Could not parse number. (The input string)} */
 		catch (NumberFormatException e)
 		{
 			RuntimeException t = new NumberFormatException("ZZ18 " + orig);
@@ -306,6 +316,7 @@ public final class Integer
 	 * @throws SecurityException If access to the property is denied.
 	 * @since 2018/11/11
 	 */
+	@Api
 	public static Integer getInteger(String __key)
 		throws NumberFormatException, SecurityException
 	{
@@ -323,6 +334,7 @@ public final class Integer
 	 * @throws SecurityException If access to the property is denied.
 	 * @since 2018/11/11
 	 */
+	@Api
 	public static Integer getInteger(String __key, int __def)
 		throws NumberFormatException, SecurityException
 	{
@@ -343,6 +355,7 @@ public final class Integer
 	 * @throws SecurityException If access to the property is denied.
 	 * @since 2018/11/11
 	 */
+	@Api
 	public static Integer getInteger(String __key, Integer __def)
 		throws NumberFormatException, SecurityException
 	{
@@ -365,6 +378,7 @@ public final class Integer
 	 * @return The highest one bit of the given number.
 	 * @since 2020/10/29
 	 */
+	@Api
 	@SuppressWarnings({"DuplicatedCode", "MagicNumber"})
 	public static int highestOneBit(int __v)
 	{
@@ -384,6 +398,7 @@ public final class Integer
 	 * @return The lowest single bit of the given integer.
 	 * @since 2020/10/29
 	 */
+	@Api
 	@SuppressWarnings({"DuplicatedCode", "MagicNumber"})
 	public static int lowestOneBit(int __v)
 	{
@@ -403,6 +418,7 @@ public final class Integer
 	 * @return The number of leading zeros.
 	 * @since 2019/04/14
 	 */
+	@Api
 	@SuppressWarnings({"MagicNumber", "DuplicatedCode"})
 	public static int numberOfLeadingZeros(int __v)
 	{
@@ -423,6 +439,7 @@ public final class Integer
 	 * @return The number of trailing zeros.
 	 * @since 2018/11/11
 	 */
+	@Api
 	@SuppressWarnings("MagicNumber")
 	public static int numberOfTrailingZeros(int __v)
 	{
@@ -461,17 +478,18 @@ public final class Integer
 	 * is outside of the valid bounds.
 	 * @since 2018/10/12
 	 */
+	@Api
 	public static int parseInt(String __v, int __r)
 		throws NumberFormatException
 	{
-		// {@squirreljme.error ZZ19 The radix is out of bounds. (The radix)}
+		/* {@squirreljme.error ZZ19 The radix is out of bounds. (The radix)} */
 		if (__r < Character.MIN_RADIX || __r > Character.MAX_RADIX)
 			throw new NumberFormatException("ZZ19 " + __r);
 			
 		if (__v == null)
 			throw new NumberFormatException("ZZ1a");
 		
-		// {@squirreljme.error ZZ1a String is null or has zero length.}
+		/* {@squirreljme.error ZZ1a String is null or has zero length.} */
 		int n = __v.length();
 		if (n <= 0)
 			throw new NumberFormatException("ZZ1a");
@@ -493,13 +511,13 @@ public final class Integer
 			// Convert to digit
 			int dig = Character.digit(c, __r);
 			
-			// {@squirreljme.error ZZ1b Character out of range of radix.
-			// (The input string; The out of range character)}
+			/* {@squirreljme.error ZZ1b Character out of range of radix.
+			(The input string; The out of range character)} */
 			if (dig < 0)
 				throw new NumberFormatException("ZZ1b " + __v + " " + c);
 			
-			// {@squirreljme.error ZZ1c Input integer out of range of 32-bit
-			// integer. (The input string)}
+			/* {@squirreljme.error ZZ1c Input integer out of range of 32-bit
+			integer. (The input string)} */
 			int prod = rv * __r;
 			if (rv != 0 && (neg ? (prod > rv) : (prod < rv)))
 				throw new NumberFormatException("ZZ1c " + __v);
@@ -522,6 +540,7 @@ public final class Integer
 	 * @throws NumberFormatException If the string is not valid.
 	 * @since 2018/10/12
 	 */
+	@Api
 	public static int parseInt(String __v)
 		throws NumberFormatException
 	{
@@ -535,6 +554,7 @@ public final class Integer
 	 * @return The integer but with the bits reversed.
 	 * @since 2018/11/11
 	 */
+	@Api
 	@SuppressWarnings("MagicNumber")
 	@ImplementationNote("Taken from " +
 		"<http://aggregate.org/MAGIC/#Bit%20Reversal>.")
@@ -555,6 +575,7 @@ public final class Integer
 	 * @return The reversed bytes.
 	 * @since 2021/02/03
 	 */
+	@Api
 	public static int reverseBytes(int __i)
 	{
 		// 0xAABBCCDD -> 0xBBAADDCC
@@ -564,11 +585,13 @@ public final class Integer
 		return (__i >>> 16) | (__i << 16);
 	}
 	
+	@Api
 	public static int rotateLeft(int __i, int __d)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static int rotateRight(int __i, int __d)
 	{
 		throw Debugging.todo();
@@ -583,6 +606,7 @@ public final class Integer
 	 * @return The sign of the given value.
 	 * @since 2019/05/11
 	 */
+	@Api
 	public static int signum(int __v)
 	{
 		if (__v < 0)
@@ -593,16 +617,19 @@ public final class Integer
 			return 0;
 	}
 	
+	@Api
 	public static String toBinaryString(int __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static String toHexString(int __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static String toOctalString(int __a)
 	{
 		throw Debugging.todo();
@@ -617,6 +644,7 @@ public final class Integer
 	 * @return The resulting string.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public static String toString(int __v, int __r)
 	{
 		// This is effectively the same code as the long version, so to reduce
@@ -632,6 +660,7 @@ public final class Integer
 	 * @return The resulting string.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public static String toString(int __v)
 	{
 		return Integer.toString(__v, 10);
@@ -647,6 +676,7 @@ public final class Integer
 	 * is outside of the valid bounds.
 	 * @since 2018/10/12
 	 */
+	@Api
 	public static Integer valueOf(String __v, int __r)
 		throws NumberFormatException
 	{
@@ -661,6 +691,7 @@ public final class Integer
 	 * @throws NumberFormatException If the string is not valid.
 	 * @since 2018/10/12
 	 */
+	@Api
 	public static Integer valueOf(String __v)
 		throws NumberFormatException
 	{
@@ -674,6 +705,7 @@ public final class Integer
 	 * @return The boxed value.
 	 * @since 2018/09/23
 	 */
+	@Api
 	@ImplementationNote("This is not cached.")
 	public static Integer valueOf(int __v)
 	{

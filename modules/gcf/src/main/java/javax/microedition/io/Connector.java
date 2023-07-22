@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package javax.microedition.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.gcf.CustomConnectionFactory;
 import cc.squirreljme.runtime.gcf.HTTPAddress;
@@ -30,17 +31,21 @@ import java.util.ServiceLoader;
  *
  * @since 2016/10/12
  */
+@Api
 public class Connector
 {
 	/** Access mode to allow reading from the connection stream. */
+	@Api
 	public static final int READ =
 		1;
 	
 	/** Access mode to allow for writing to the connection stream. */
+	@Api
 	public static final int WRITE =
 		2;
 	
 	/** Access mode to allow for read and writing from/to the stream. */
+	@Api
 	public static final int READ_WRITE = Connector.READ | Connector.WRITE;
 	
 	/** Services support. */
@@ -56,6 +61,7 @@ public class Connector
 	{
 	}
 	
+	@Api
 	public static long getBytesRead(Connection __a)
 		throws IOException
 	{
@@ -64,6 +70,7 @@ public class Connector
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static long getBytesWritten(Connection __a)
 		throws IOException
 	{
@@ -83,6 +90,7 @@ public class Connector
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/12
 	 */
+	@Api
 	public static boolean isProtocolSupported(String __uri, boolean __server)
 		throws NullPointerException
 	{
@@ -138,6 +146,7 @@ public class Connector
 	 * @throws IOException As forwarded.
 	 * @since 2016/10/12
 	 */
+	@Api
 	public static Connection open(String __uri)
 		throws IOException
 	{
@@ -154,6 +163,7 @@ public class Connector
 	 * @throws IOException As forwarded.
 	 * @since 2016/10/12
 	 */
+	@Api
 	public static Connection open(String __uri, ConnectionOption<?>... __opts)
 		throws IOException
 	{
@@ -170,6 +180,7 @@ public class Connector
 	 * @throws IOException As forwarded.
 	 * @since 2016/10/12
 	 */
+	@Api
 	public static Connection open(String __uri, int __mode)
 		throws IOException
 	{
@@ -187,6 +198,7 @@ public class Connector
 	 * @throws IOException As forwarded.
 	 * @since 2016/10/12
 	 */
+	@Api
 	public static Connection open(String __uri, int __mode,
 		ConnectionOption<?>... __opts)
 		throws IOException
@@ -205,10 +217,12 @@ public class Connector
 	 * @throws IOException As forwarded.
 	 * @since 2016/10/12
 	 */
+	@Api
 	public static Connection open(String __uri, int __mode, boolean __timeouts)
 		throws IOException
 	{
-		return Connector.open(__uri, __mode, __timeouts, (ConnectionOption<?>[])null);
+		return Connector.open(__uri, __mode, __timeouts,
+			(ConnectionOption<?>[])null);
 	}
 	
 	/**
@@ -230,6 +244,7 @@ public class Connector
 	 * @throws SecurityException If access to the protocol is not permitted.
 	 * @since 2016/10/12
 	 */
+	@Api
 	public static Connection open(String __uri, int __mode, boolean __timeouts,
 		ConnectionOption<?>... __opts)
 		throws ConnectionNotFoundException, IllegalArgumentException,
@@ -262,6 +277,7 @@ public class Connector
 	 * @throws IOException As forwarded.
 	 * @since 2016/10/12
 	 */
+	@Api
 	public static DataInputStream openDataInputStream(String __uri)
 		throws IOException
 	{
@@ -276,6 +292,7 @@ public class Connector
 	 * @throws IOException As forwarded.
 	 * @since 2016/10/12
 	 */
+	@Api
 	public static DataOutputStream openDataOutputStream(String __uri)
 		throws IOException
 	{
@@ -293,14 +310,15 @@ public class Connector
 	 * @throws IOException On open errors.
 	 * @since 2016/10/12
 	 */
+	@Api
 	public static InputStream openInputStream(String __uri)
 		throws IllegalArgumentException, IOException
 	{
 		// Open it, then close it
 		try (Connection c = Connector.open(__uri))
 		{
-			// {@squirreljme.error EC0z The specified URI is not an input
-			// connection. (The URI)}
+			/* {@squirreljme.error EC0z The specified URI is not an input
+			connection. (The URI)} */
 			if (!(c instanceof InputConnection))
 				throw new IllegalArgumentException(String.format("EC0z %s",
 					__uri));
@@ -321,14 +339,15 @@ public class Connector
 	 * @throws IOException On open errors.
 	 * @since 2016/10/12
 	 */
+	@Api
 	public static OutputStream openOutputStream(String __uri)
 		throws IllegalArgumentException, IOException
 	{
 		// Open it, then close it
 		try (Connection c = Connector.open(__uri))
 		{
-			// {@squirreljme.error EC10 The specified URI is not an output
-			// connection. (The URI)}
+			/* {@squirreljme.error EC10 The specified URI is not an output
+			connection. (The URI)} */
 			if (!(c instanceof OutputConnection))
 				throw new IllegalArgumentException(String.format("EC10 %s",
 					__uri));
@@ -356,6 +375,7 @@ public class Connector
 	 * @throws SecurityException If access to the protocol is not permitted.
 	 * @since 2016/10/12
 	 */
+	@Api
 	private static Connection __open(String __uri, int __mode,
 		boolean __timeouts, ConnectionOption<?>... __opts)
 		throws ConnectionNotFoundException, IllegalArgumentException,
@@ -369,7 +389,7 @@ public class Connector
 		if (__opts == null)
 			__opts = new ConnectionOption<?>[0];
 		
-		// {@squirreljme.error EC11 The URI does not have a scheme. (The URI)}
+		/* {@squirreljme.error EC11 The URI does not have a scheme. (The URI)} */
 		int fc = __uri.indexOf(':');
 		if (fc < 0)
 			throw new IllegalArgumentException(String.format("EC11 %s",
@@ -398,7 +418,7 @@ public class Connector
 				
 				// HTTP
 			case "http":
-				return HTTPClientConnection.connect(
+				return HTTPClientConnection.connectDefault(
 					HTTPAddress.fromUriPart(part));
 				
 				// HTTPS
@@ -444,7 +464,7 @@ public class Connector
 					return custom.connect(part, __mode, __timeouts, __opts);
 		}
 		
-		// {@squirreljme.error EC12 Unhandled URI protocol. (The URI)}.
+		/* {@squirreljme.error EC12 Unhandled URI protocol. (The URI)} */
 		throw new ConnectionNotFoundException(String.format("EC12 %s",
 			__uri));
 	}

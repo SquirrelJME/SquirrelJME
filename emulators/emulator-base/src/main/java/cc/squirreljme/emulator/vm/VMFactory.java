@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -11,7 +11,6 @@ package cc.squirreljme.emulator.vm;
 
 import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 import cc.squirreljme.jdwp.JDWPFactory;
-import cc.squirreljme.runtime.cldc.Poking;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.DataContainerLibrary;
 import cc.squirreljme.vm.JarClassLibrary;
@@ -134,9 +133,6 @@ public abstract class VMFactory
 	 */
 	public static void main(String... __args)
 	{
-		// Poke the VM to initialize some probably important parts of it
-		Poking.poke();
-		
 		// Default settings
 		String vmName = "springcoat";
 		Path snapshotPath = null;
@@ -486,8 +482,8 @@ public abstract class VMFactory
 			}
 		}
 		
-		// {@squirreljme.error AK03 The specified virtual machine does not
-		// exist. (The virtual machine name)}
+		/* {@squirreljme.error AK03 The specified virtual machine does not
+		exist. (The virtual machine name)} */
 		if (factory == null)
 			throw new VMException("AK03 " + __vm);
 		

@@ -3,11 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.util;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This is an old class which duplicates the functionality of {@link Iterator}
@@ -22,6 +24,7 @@ package java.util;
  * @see Iterator
  * @since 2016/04/12
  */
+@Api
 public interface Enumeration<E>
 {
 	/**
@@ -30,6 +33,7 @@ public interface Enumeration<E>
 	 * @return {@code true} if there are more elements available.
 	 * @since 2016/04/12
 	 */
+	@Api
 	boolean hasMoreElements();
 	
 	/**
@@ -39,6 +43,7 @@ public interface Enumeration<E>
 	 * @throws NoSuchElementException If no more elements remain.
 	 * @since 2016/04/12
 	 */
+	@Api
 	E nextElement()
 		throws NoSuchElementException;
 }

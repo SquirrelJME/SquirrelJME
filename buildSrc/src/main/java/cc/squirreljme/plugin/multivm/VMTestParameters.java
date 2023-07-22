@@ -3,14 +3,14 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.plugin.multivm;
 
+import java.io.Serializable;
 import org.gradle.api.file.RegularFileProperty;
-import org.gradle.api.logging.Logger;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.workers.WorkParameters;
@@ -49,7 +49,7 @@ public interface VMTestParameters
 	RegularFileProperty getResultFile();
 	
 	/**
-	 * The test to be ran.
+	 * The test to be run.
 	 * 
 	 * @return The test to be ran.
 	 * @since 2020/09/06

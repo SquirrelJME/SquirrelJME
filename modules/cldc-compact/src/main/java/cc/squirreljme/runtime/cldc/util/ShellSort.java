@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -41,8 +41,8 @@ public class ShellSort
 	public static int[] gaps(int __n)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error ZZ5e Request of gaps with a negative list
-		// size.}
+		/* {@squirreljme.error ZZ5e Request of gaps with a negative list
+		size.} */
 		if (__n < 0)
 			throw new IllegalArgumentException("ZZ5e");
 		

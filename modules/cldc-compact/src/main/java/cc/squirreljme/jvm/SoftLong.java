@@ -3,12 +3,14 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.jvm;
 
+import cc.squirreljme.jvm.mle.MathShelf;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -16,6 +18,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2019/05/24
  */
+@SquirrelJMEVendorApi
 @SuppressWarnings("MagicNumber")
 public final class SoftLong
 {
@@ -38,6 +41,7 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
+	@SquirrelJMEVendorApi
 	public static long add(int __al, int __ah, int __bl, int __bh)
 	{
 		// Add the higher/lower parts
@@ -50,7 +54,7 @@ public final class SoftLong
 			ch++;
 		
 		// Return result
-		return Assembly.longPack(cl, ch);
+		return MathShelf.longPack(cl, ch);
 	}
 	
 	/**
@@ -63,9 +67,10 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
+	@SquirrelJMEVendorApi
 	public static long and(int __al, int __ah, int __bl, int __bh)
 	{
-		return Assembly.longPack(__al & __bl, __ah & __bh);
+		return MathShelf.longPack(__al & __bl, __ah & __bh);
 	}
 	
 	/**
@@ -78,6 +83,7 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
+	@SquirrelJMEVendorApi
 	public static int cmp(int __al, int __ah, int __bl, int __bh)
 	{
 		// Compare high values firsts
@@ -106,6 +112,7 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
+	@SquirrelJMEVendorApi
 	public static long div(int __al, int __ah, int __bl, int __bh)
 	{
 		// Dividing by zero?
@@ -125,6 +132,7 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
+	@SquirrelJMEVendorApi
 	public static long mul(int __al, int __ah, int __bl, int __bh)
 	{
 		// Are both sides negative?
@@ -158,6 +166,7 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
+	@SquirrelJMEVendorApi
 	public static long neg(int __al, int __ah)
 	{
 		// Negate and check for overflow
@@ -167,7 +176,7 @@ public final class SoftLong
 			__ah++;
 		
 		// Return result
-		return Assembly.longPack(__al, __ah);
+		return MathShelf.longPack(__al, __ah);
 	}
 	
 	/**
@@ -180,9 +189,10 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
+	@SquirrelJMEVendorApi
 	public static long or(int __al, int __ah, int __bl, int __bh)
 	{
-		return Assembly.longPack(__al | __bl, __ah | __bh);
+		return MathShelf.longPack(__al | __bl, __ah | __bh);
 	}
 	
 	/**
@@ -195,6 +205,7 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
+	@SquirrelJMEVendorApi
 	public static long rem(int __al, int __ah, int __bl, int __bh)
 	{
 		// Dividing by zero?
@@ -213,6 +224,7 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
+	@SquirrelJMEVendorApi
 	public static long shl(int __al, int __ah, int __s)
 	{
 		// Mask the shift amount
@@ -220,14 +232,14 @@ public final class SoftLong
 		
 		// Doing nothing?
 		if (__s == 0)
-			return Assembly.longPack(__al, __ah);
+			return MathShelf.longPack(__al, __ah);
 		
 		// Shifting all the low bits to the high bits
 		else if (__s >= 32)
-			return Assembly.longPack(0, __al << (__s - 32));
+			return MathShelf.longPack(0, __al << (__s - 32));
 		
 		// Merge of bits (shift in range of 1-31)
-		return Assembly.longPack((__al << __s),
+		return MathShelf.longPack((__al << __s),
 			(__ah << __s) | (__al >>> (32 - __s)));
 	}
 	
@@ -240,6 +252,7 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
+	@SquirrelJMEVendorApi
 	public static long shr(int __al, int __ah, int __s)
 	{
 		// Mask the shift amount
@@ -247,15 +260,15 @@ public final class SoftLong
 		
 		// Doing nothing?
 		if (__s == 0)
-			return Assembly.longPack(__al, __ah);
+			return MathShelf.longPack(__al, __ah);
 		
 		// Shifting all the high bits low
 		else if (__s >= 32)
-			return Assembly.longPack(__ah >> (__s - 32),
+			return MathShelf.longPack(__ah >> (__s - 32),
 				(__ah & 0x80000000) >> 31);
 		
 		// Merge of bits (shift in range of 1-31)
-		return Assembly.longPack((__ah << (32 - __s)) | (__al >>> __s),
+		return MathShelf.longPack((__ah << (32 - __s)) | (__al >>> __s),
 			(__ah >> __s));
 	}
 	
@@ -269,6 +282,7 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
+	@SquirrelJMEVendorApi
 	public static long sub(int __al, int __ah, int __bl, int __bh)
 	{
 		// The same as add, but the second operand is negated
@@ -288,7 +302,7 @@ public final class SoftLong
 			ch++;
 		
 		// Return result
-		return Assembly.longPack(cl, ch);
+		return MathShelf.longPack(cl, ch);
 	}
 	
 	/**
@@ -299,9 +313,9 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
+	@SquirrelJMEVendorApi
 	public static double toDouble(int __al, int __ah)
 	{
-		Assembly.breakpoint();
 		throw Debugging.todo();
 	}
 	
@@ -313,9 +327,9 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
+	@SquirrelJMEVendorApi
 	public static float toFloat(int __al, int __ah)
 	{
-		Assembly.breakpoint();
 		throw Debugging.todo();
 	}
 	
@@ -327,6 +341,7 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
+	@SquirrelJMEVendorApi
 	public static int toInteger(int __al, @SuppressWarnings("unused") int __ah)
 	{
 		// Just return the low order bits
@@ -342,6 +357,7 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
+	@SquirrelJMEVendorApi
 	public static long ushr(int __al, int __ah, int __s)
 	{
 		// Mask the shift amount
@@ -349,14 +365,14 @@ public final class SoftLong
 		
 		// Doing nothing?
 		if (__s == 0)
-			return Assembly.longPack(__al, __ah);
+			return MathShelf.longPack(__al, __ah);
 		
 		// Shifting all the high bits low
 		else if (__s >= 32)
-			return Assembly.longPack(__ah >>> (__s - 32), 0);
+			return MathShelf.longPack(__ah >>> (__s - 32), 0);
 		
 		// Merge of bits (shift in range of 1-31)
-		return Assembly.longPack((__ah << (32 - __s)) | (__al >>> __s),
+		return MathShelf.longPack((__ah << (32 - __s)) | (__al >>> __s),
 			(__ah >>> __s));
 	}
 	
@@ -370,9 +386,10 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
+	@SquirrelJMEVendorApi
 	public static long xor(int __al, int __ah, int __bl, int __bh)
 	{
-		return Assembly.longPack(__al ^ __bl, __ah ^ __bh);
+		return MathShelf.longPack(__al ^ __bl, __ah ^ __bh);
 	}
 	
 	/**
@@ -390,7 +407,7 @@ public final class SoftLong
 	private static long __div(boolean __doRem, int __nl, int __nh,
 		int __dl, int __dh)
 	{
-		// {@squirreljme.error ZZ4z Divide by zero.}
+		/* {@squirreljme.error ZZ4z Divide by zero.} */
 		if (__dl == 0 && __dh == 0)
 			throw new ArithmeticException("ZZ4z");
 		
@@ -512,10 +529,10 @@ public final class SoftLong
 		// if the numerator is negative
 		if (__doRem)
 			return (negNum ? SoftLong.neg(rl, rh) :
-				Assembly.longPack(rl, rh));
+				MathShelf.longPack(rl, rh));
 		
 		// Return, normalize negative if needed
-		return (isNeg ? SoftLong.neg(ql, qh) : Assembly.longPack(ql, qh));
+		return (isNeg ? SoftLong.neg(ql, qh) : MathShelf.longPack(ql, qh));
 	}
 	
 	/**
@@ -588,7 +605,7 @@ public final class SoftLong
 		int m = over + (d * w) + (c * x) + (b * y) + (a * z);
 		
 		// Combine the resultant parts
-		return Assembly.longPack((o << 16) | (p & 0xFFFF),
+		return MathShelf.longPack((o << 16) | (p & 0xFFFF),
 			(m << 16) | (n & 0xFFFF));
 	}
 }

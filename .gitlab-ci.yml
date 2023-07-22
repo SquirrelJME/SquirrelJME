@@ -2,7 +2,7 @@
 # SquirrelJME
 #     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 # ---------------------------------------------------------------------------
-# SquirrelJME is under the GNU General Public License v3+, or later.
+# SquirrelJME is under the Mozilla Public License Version 2.0.
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 # DESCRIPTION: GitLab CI/CD for libRetro
@@ -54,6 +54,14 @@ include:
   # iOS 9
   - project: 'libretro-infrastructure/ci-templates'
     file: '/ios9.yml'
+
+  # iOS arm64
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/ios-arm64.yml'
+
+  # tvOS
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/tvos-arm64.yml'
 
   ################################## CONSOLES ################################
   # Dingux (GCW Zero)
@@ -169,6 +177,18 @@ android-x86:
 libretro-build-ios9:
   extends:
     - .libretro-ios9-make-default
+    - .core-defs
+
+# iOS arm64
+libretro-build-ios-arm64:
+  extends:
+    - .libretro-ios-arm64-make-default
+    - .core-defs
+
+# tvOS arm64
+libretro-build-tvos-arm64:
+  extends:
+    - .libretro-tvos-arm64-make-default
     - .core-defs
 
 ################################### CONSOLES #################################

@@ -9,6 +9,7 @@
 
 package javax.microedition.media.control;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import javax.microedition.media.Control;
 import javax.microedition.media.Manager;
 import javax.microedition.media.MediaException;
@@ -25,14 +26,17 @@ import javax.microedition.media.Player;
  * 
  * @since 2022/04/23
  */
+@Api
 public interface MIDIControl
 	extends Control
 {
 	/** The control change event. */
+	@Api
 	int CONTROL_CHANGE =
 		0b1011_0000;
 	
 	/** The note on event. */
+	@Api
 	int NOTE_ON =
 		144;
 	
@@ -50,6 +54,7 @@ public interface MIDIControl
 	 * {@code false}.
 	 * @since 2022/04/23
 	 */
+	@Api
 	int[] getBankList(boolean __custom)
 		throws IllegalStateException, MediaException;
 	
@@ -65,6 +70,7 @@ public interface MIDIControl
 	 * {@link Player#PREFETCHED}.
 	 * @since 2022/04/23
 	 */
+	@Api
 	int getChannelVolume(int __channel)
 		throws IllegalArgumentException, IllegalStateException;
 	
@@ -85,6 +91,7 @@ public interface MIDIControl
 	 * or if {@link #isBankQuerySupported()} is {@code false}.
 	 * @since 2022/04/23
 	 */
+	@Api
 	String getKeyName(int __bank, int __prog, int __key)
 		throws IllegalArgumentException, IllegalStateException, MediaException;
 	
@@ -103,26 +110,34 @@ public interface MIDIControl
 	 * {@code false}.
 	 * @since 2022/04/23
 	 */
+	@Api
 	int[] getProgram(int __channel)
 		throws IllegalArgumentException, IllegalStateException, MediaException;
 	
+	@Api
 	int[] getProgramList(int __bank)
 		throws IllegalArgumentException, IllegalStateException, MediaException;
 	
+	@Api
 	String getProgramName(int __bank, int __program)
 		throws IllegalArgumentException, IllegalStateException, MediaException;
 	
+	@Api
 	boolean isBankQuerySupported();
 	
+	@Api
 	int longMidiEvent(byte[] __b, int __o, int __l)
 		throws IllegalArgumentException, IllegalStateException;
 	
+	@Api
 	void setChannelVolume(int __channel, int __volume)
 		throws IllegalArgumentException, IllegalStateException;
 	
+	@Api
 	void setProgram(int __channel, int __bank, int __program)
 		throws IllegalArgumentException, IllegalStateException;
 	
+	@Api
 	void shortMidiEvent(int __type, int __data1, int __data2)
 		throws IllegalArgumentException, IllegalStateException;
 }

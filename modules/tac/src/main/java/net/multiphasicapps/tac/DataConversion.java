@@ -3,17 +3,20 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package net.multiphasicapps.tac;
+
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
  * This class contains helpers for data conversion.
  *
  * @since 2019/01/20
  */
+@SquirrelJMEVendorApi
 public final class DataConversion
 {
 	/**
@@ -24,6 +27,7 @@ public final class DataConversion
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/20
 	 */
+	@SquirrelJMEVendorApi
 	public static char[] arrayCharacterToChar(Character[] __a)
 		throws NullPointerException
 	{
@@ -45,6 +49,7 @@ public final class DataConversion
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/20
 	 */
+	@SquirrelJMEVendorApi
 	public static byte[] arrayNumberToByte(Number[] __a)
 		throws NullPointerException
 	{
@@ -66,6 +71,7 @@ public final class DataConversion
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/20
 	 */
+	@SquirrelJMEVendorApi
 	public static double[] arrayNumberToDouble(Number[] __a)
 		throws NullPointerException
 	{
@@ -87,6 +93,7 @@ public final class DataConversion
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/20
 	 */
+	@SquirrelJMEVendorApi
 	public static float[] arrayNumberToFloat(Number[] __a)
 		throws NullPointerException
 	{
@@ -108,6 +115,7 @@ public final class DataConversion
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/20
 	 */
+	@SquirrelJMEVendorApi
 	public static int[] arrayNumberToInt(Number[] __a)
 		throws NullPointerException
 	{
@@ -129,6 +137,7 @@ public final class DataConversion
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/20
 	 */
+	@SquirrelJMEVendorApi
 	public static long[] arrayNumberToLong(Number[] __a)
 		throws NullPointerException
 	{
@@ -150,6 +159,7 @@ public final class DataConversion
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/20
 	 */
+	@SquirrelJMEVendorApi
 	public static short[] arrayNumberToShort(Number[] __a)
 		throws NullPointerException
 	{

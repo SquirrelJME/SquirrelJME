@@ -3,13 +3,14 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
+import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import cc.squirreljme.plugin.util.UnassistedLaunchEntry;
 import java.io.File;
 import java.io.IOException;
@@ -32,29 +33,23 @@ import org.gradle.api.Task;
 public class VMRomTaskAction
 	implements Action<Task>
 {
-	/** The source set used. */
-	protected final String sourceSet;
-	
-	/** The virtual machine to generate for. */
-	protected final VMSpecifier vmType;
+	/** The classifier used. */
+	protected final SourceTargetClassifier classifier;
 	
 	/**
 	 * Initializes the task.
 	 * 
-	 * @param __sourceSet The source set used.
-	 * @param __vmType The VM to make a ROM for.
+	 * @param __classifier The classifier used.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/23
 	 */
-	public VMRomTaskAction(String __sourceSet,
-		VMSpecifier __vmType)
+	public VMRomTaskAction(SourceTargetClassifier __classifier)
 		throws NullPointerException
 	{
-		if (__sourceSet == null || __vmType == null)
+		if (__classifier == null)
 			throw new NullPointerException("NARG");
 		
-		this.sourceSet = __sourceSet;
-		this.vmType = __vmType;
+		this.classifier = __classifier;
 	}
 	
 	/**
@@ -65,15 +60,15 @@ public class VMRomTaskAction
 	public void execute(Task __task)
 		throws NullPointerException
 	{
-		String sourceSet = this.sourceSet;
-		VMSpecifier vmType = this.vmType;
+		String sourceSet = this.classifier.getSourceSet();
+		VMSpecifier vmType = this.classifier.getVmType();
 		
 		Path tempFile = null;
 		try
 		{
 			// We need somewhere safe to store the file
 			tempFile = Files.createTempFile(
-				this.vmType.vmName(VMNameFormat.LOWERCASE), sourceSet);
+				vmType.vmName(VMNameFormat.LOWERCASE), sourceSet);
 			
 			// ROM building parameters
 			RomBuildParameters build = new RomBuildParameters();
@@ -84,7 +79,7 @@ public class VMRomTaskAction
 			// Get all of the libraries to translate
 			Set<Path> normalPaths = new LinkedHashSet<>();
 			for (VMLibraryTask task : VMRomDependencies.libraries(__task,
-				sourceSet, vmType))
+				this.classifier))
 			{
 				// Determine the path set
 				Set<Path> pathSet = new LinkedHashSet<>();
@@ -116,7 +111,7 @@ public class VMRomTaskAction
 					build.launcherMainClass = entry.mainClass;
 					build.launcherArgs = entry.args();
 					build.launcherClassPath = VMHelpers.runClassPath(
-						task, sourceSet, vmType);
+						task, this.classifier);
 				}
 				
 				// Add to the correct set of paths
@@ -137,7 +132,8 @@ public class VMRomTaskAction
 				StandardOpenOption.CREATE))
 			{
 				// Run the ROM processing
-				this.vmType.processRom(__task, out, build,
+				vmType.processRom((VMBaseTask)__task,
+					this.classifier.getBangletVariant(), out, build,
 					new ArrayList<>(libPaths));
 			}
 			

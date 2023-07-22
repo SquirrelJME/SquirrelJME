@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -106,12 +106,14 @@ public final class JDWPLinker<T>
 			if (ref == null || ref.get() == null)
 				ref = links.put(id, new WeakReference<>(__t));
 			
-			// Did this change?
+			// Did this change? This should not normally happen unless two
+			// objects share the same identity hash code but are not the
+			// same objects... maybe the VM reallocated?
 			if (ref != null)
 			{
 				T val = ref.get();
 				if (val != null && val != __t)
-					throw Debugging.oops(String.format(
+					Debugging.debugNote(String.format(
 						"Change of reference: %s -> %s",
 						val, __t));
 			}

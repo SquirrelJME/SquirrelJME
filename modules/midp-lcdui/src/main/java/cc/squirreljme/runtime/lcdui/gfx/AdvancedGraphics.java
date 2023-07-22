@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -179,17 +179,17 @@ public class AdvancedGraphics
 		if (__buf == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB0b Invalid width and/or height specified.}
+		/* {@squirreljme.error EB0b Invalid width and/or height specified.} */
 		if (__w <= 0 || __h <= 0)
 			throw new IllegalArgumentException("EB0b");
 		
-		// {@squirreljme.error EB0c The pitch is less than the width.}
+		/* {@squirreljme.error EB0c The pitch is less than the width.} */
 		if (__p < __w)
 			throw new IllegalArgumentException("EB0c");
 		
-		// {@squirreljme.error EB0d The specified parameters exceed the bounds
-		// of the array. (The width; The height; The offset; The pitch;
-		// The array length; The number of elements in the image)}
+		/* {@squirreljme.error EB0d The specified parameters exceed the bounds
+		of the array. (The width; The height; The offset; The pitch;
+		The array length; The number of elements in the image)} */
 		int numelements = (__p * __h),
 			lastelement = __o + numelements,
 			buflen = __buf.length;
@@ -335,8 +335,8 @@ public class AdvancedGraphics
 			dex = __dx + __w,
 			dey = __dx + __h;
 		
-		// {@squirreljme.error EB0e Source region for area copy is out of
-		// bounds.}
+		/* {@squirreljme.error EB0e Source region for area copy is out of
+		bounds.} */
 		if (__sx < 0 || __sy < 0 || sex > iw || sey > ih)
 			throw new IllegalArgumentException("EB0e");
 		
@@ -348,8 +348,8 @@ public class AdvancedGraphics
 	 * @since 2019/03/24
 	 */
 	@Override
-	public void drawArc(int __x, int __y, int __w, int __h, int __sa,
-		int __aa)
+	public void drawArc(int __x, int __y, int __w, int __h, int __startAngle,
+		int __arcAngle)
 	{
 		this.__unimplemented(__x, __y, "drawArc");
 	}
@@ -641,6 +641,10 @@ public class AdvancedGraphics
 	@Override
 	public void drawRect(int __x, int __y, int __w, int __h)
 	{
+		// Do nothing if less than zero
+		if (__w < 0 || __h < 0)
+			return;
+		
 		// The width and height are increased by a single pixel
 		__w += 1;
 		__h += 1;
@@ -748,8 +752,8 @@ public class AdvancedGraphics
 	 * @since 2019/03/24
 	 */
 	@Override
-	public void fillArc(int __x, int __y, int __w, int __h, int __sa,
-		int __aa)
+	public void fillArc(int __x, int __y, int __w, int __h, int __startAngle,
+		int __arcAngle)
 	{
 		this.__unimplemented(__x, __y, "fillArc");
 	}
@@ -761,6 +765,10 @@ public class AdvancedGraphics
 	@Override
 	public void fillRect(int __x, int __y, int __w, int __h)
 	{
+		// Do nothing if less than zero
+		if (__w < 0 || __h < 0)
+			return;
+		
 		// Get actual end points
 		int ex = __x + __w,
 			ey = __y + __h;
@@ -837,6 +845,9 @@ public class AdvancedGraphics
 		int __x3, int __y3)
 	{
 		this.__unimplemented(__x1, __y1, "fillTriangle");
+		this.drawLine(__x1, __y1, __x2, __y2);
+		this.drawLine(__x2, __y2, __x3, __y3);
+		this.drawLine(__x3, __y3, __x1, __y1);
 	}
 	
 	/**
@@ -1122,8 +1133,8 @@ public class AdvancedGraphics
 	public void setAlphaColor(int __a, int __r, int __g, int __b)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB0f Color out of range. (Alpha; Red; Green;
-		// Blue)}
+		/* {@squirreljme.error EB0f Color out of range. (Alpha; Red; Green;
+		Blue)} */
 		if (__a < 0 || __a > 255 || __r < 0 || __r > 255 ||
 			__g < 0 || __g > 255 || __b < 0 || __b > 255)
 			throw new IllegalArgumentException(String.format(
@@ -1147,8 +1158,8 @@ public class AdvancedGraphics
 		// Just use source pixels
 		if (__m == Graphics.SRC)
 		{
-			// {@squirreljme.error EB0g Cannot set the overlay blending mode
-			// because this graphics context does not have the alpha channel.}
+			/* {@squirreljme.error EB0g Cannot set the overlay blending mode
+			because this graphics context does not have the alpha channel.} */
 			if (!this.hasalphachannel)
 				throw new IllegalArgumentException("EB0g");
 			
@@ -1161,7 +1172,7 @@ public class AdvancedGraphics
 			candoblending = true;
 		}
 		
-		// {@squirreljme.error EB0h Unknown blending mode.}
+		/* {@squirreljme.error EB0h Unknown blending mode.} */
 		else
 			throw new IllegalArgumentException("EB0h");
 		
@@ -1288,7 +1299,7 @@ public class AdvancedGraphics
 	public void setStrokeStyle(int __style)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB0i Illegal stroke style.}
+		/* {@squirreljme.error EB0i Illegal stroke style.} */
 		if (__style != Graphics.SOLID && __style != Graphics.DOTTED)
 			throw new IllegalArgumentException("EB0i");
 		

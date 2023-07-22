@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -65,14 +65,14 @@ public class JasminAssembleTask
 			{
 				// Assemble input file
 				try (InputStream in = Files.newInputStream(
-					output.input.absolute, StandardOpenOption.READ))
+					output.input.getAbsolute(), StandardOpenOption.READ))
 				{
 					// Assemble source
 					ClassFile jasClass = new ClassFile();
 					try
 					{
 						jasClass.readJasmin(new BufferedInputStream(in),
-							output.input.relative.getFileName().toString(),
+							output.input.getRelative().getFileName().toString(),
 							true);
 					}
 					
@@ -81,7 +81,7 @@ public class JasminAssembleTask
 					{
 						throw new RuntimeException(String.format(
 							"Error assembling: %s (%d errors): %s",
-							output.input.absolute, jasClass.errorCount(),
+							output.input.getAbsolute(), jasClass.errorCount(),
 							e.getMessage()));
 					}
 					
@@ -89,7 +89,7 @@ public class JasminAssembleTask
 					if (jasClass.errorCount() > 0)
 						throw new RuntimeException(String.format(
 							"Error assembling: %s (%d errors)",
-							output.input.absolute, jasClass.errorCount()));
+							output.input.getAbsolute(), jasClass.errorCount()));
 					
 					// Write class file
 					jasClass.write(target);
@@ -112,7 +112,7 @@ public class JasminAssembleTask
 					throw (RuntimeException)e;
 				
 				throw new RuntimeException(String.format(
-					"Could not assemble %s: %s", output.input.absolute,
+					"Could not assemble %s: %s", output.input.getAbsolute(),
 					e.getMessage()), e);
 			}
 	}

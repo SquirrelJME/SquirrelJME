@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -13,6 +13,8 @@ import cc.squirreljme.jdwp.JDWPState;
 import cc.squirreljme.jdwp.JDWPStepTracker;
 import cc.squirreljme.jdwp.JDWPThreadSuspension;
 import cc.squirreljme.jdwp.views.JDWPViewThread;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.vm.springcoat.brackets.VMThreadObject;
 import java.lang.ref.Reference;
 import java.util.Arrays;
 import java.util.Collections;
@@ -79,6 +81,16 @@ public class DebugViewThread
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2022/09/24
+	 */
+	@Override
+	public Object fromBracket(Object __bracket)
+	{
+		return ((VMThreadObject)__bracket).getThread();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2021/04/18
 	 */
 	@Override
@@ -102,6 +114,16 @@ public class DebugViewThread
 	public void interrupt(Object __which)
 	{
 		((SpringThread)__which).hardInterrupt();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/09/23
+	 */
+	@Override
+	public boolean isDebugCallback(Object __thread)
+	{
+		return ((SpringThread)__thread).noDebugSuspend;
 	}
 	
 	/**

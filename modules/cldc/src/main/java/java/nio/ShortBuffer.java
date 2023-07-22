@@ -3,14 +3,16 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.nio;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public abstract class ShortBuffer
 	extends Buffer
 	implements Comparable<ShortBuffer>
@@ -20,28 +22,34 @@ public abstract class ShortBuffer
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public abstract short get();
 	
+	@Api
 	public abstract short get(int __a);
 	
-	@SuppressWarnings({"AbstractMethodOverridesAbstractMethod", "override"})
+	@Api
 	public abstract boolean isDirect();
 	
+	@Api
 	public abstract ByteOrder order();
 	
+	@Api
 	public abstract ShortBuffer put(short __a);
 	
+	@Api
 	public abstract ShortBuffer put(int __a, short __b);
 	
+	@Api
 	public abstract ShortBuffer slice();
 	
-	@SuppressWarnings({"override"})
+	@Api
 	public final short[] array()
 	{
 		throw Debugging.todo();
 	}
 	
-	@SuppressWarnings({"override"})
+	@Api
 	public final int arrayOffset()
 	{
 		throw Debugging.todo();
@@ -59,17 +67,19 @@ public abstract class ShortBuffer
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public ShortBuffer get(short[] __a, int __b, int __c)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public ShortBuffer get(short[] __a)
 	{
 		throw Debugging.todo();
 	}
 	
-	@SuppressWarnings({"override"})
+	@Api
 	public final boolean hasArray()
 	{
 		throw Debugging.todo();
@@ -81,16 +91,19 @@ public abstract class ShortBuffer
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public ShortBuffer put(ShortBuffer __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public ShortBuffer put(short[] __a, int __b, int __c)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public final ShortBuffer put(short[] __a)
 	{
 		throw Debugging.todo();
@@ -102,11 +115,13 @@ public abstract class ShortBuffer
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static ShortBuffer wrap(short[] __a, int __b, int __c)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static ShortBuffer wrap(short[] __a)
 	{
 		throw Debugging.todo();

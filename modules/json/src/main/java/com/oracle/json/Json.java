@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package com.oracle.json;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import com.oracle.json.spi.JsonProvider;
 import com.oracle.json.stream.JsonGenerator;
 import com.oracle.json.stream.JsonGeneratorFactory;
@@ -27,6 +28,7 @@ import java.util.Map;
  * @see JsonProvider
  * @since 2014/07/25
  */
+@Api
 public class Json
 {
 	/**
@@ -35,6 +37,7 @@ public class Json
 	 * @return A new array builder.
 	 * @since 2014/07/25
 	 */
+	@Api
 	public static JsonArrayBuilder createArrayBuilder()
 	{
 		return JsonProvider.provider().createArrayBuilder();
@@ -51,6 +54,7 @@ public class Json
 	 * @return A new builder factory.
 	 * @since 2014/07/25
 	 */
+	@Api
 	public static JsonBuilderFactory createBuilderFactory(Map<String, ?> __cnf)
 	{
 		return JsonProvider.provider().createBuilderFactory(__cnf);
@@ -63,6 +67,7 @@ public class Json
 	 * @return A new generator.
 	 * @since 2014/07/25
 	 */
+	@Api
 	public static JsonGenerator createGenerator(OutputStream __o)
 	{
 		return JsonProvider.provider().createGenerator(__o);
@@ -75,6 +80,7 @@ public class Json
 	 * @return A new generator.
 	 * @since 2014/07/25
 	 */
+	@Api
 	public static JsonGenerator createGenerator(Writer __w)
 	{
 		return JsonProvider.provider().createGenerator(__w);
@@ -90,6 +96,7 @@ public class Json
 	 * @return A new generator factory.
 	 * @since 2014/07/25
 	 */
+	@Api
 	public static JsonGeneratorFactory createGeneratorFactory(
 		Map<String, ?> __cnf)
 	{
@@ -102,6 +109,7 @@ public class Json
 	 * @return A new builder.
 	 * @since 2014/07/25
 	 */
+	@Api
 	public static JsonObjectBuilder createObjectBuilder()
 	{
 		return JsonProvider.provider().createObjectBuilder();
@@ -115,6 +123,7 @@ public class Json
 	 * @return A new parser.
 	 * @since 2014/07/25
 	 */
+	@Api
 	public static JsonParser createParser(InputStream __i)
 	{
 		return JsonProvider.provider().createParser(__i);
@@ -128,6 +137,7 @@ public class Json
 	 * @return A new parser.
 	 * @since 2014/07/25
 	 */
+	@Api
 	public static JsonParser createParser(Reader __r)
 	{
 		return JsonProvider.provider().createParser(__r);
@@ -144,6 +154,7 @@ public class Json
 	 * @return A new factory for creating parsers.
 	 * @since 2014/07/25
 	 */
+	@Api
 	public static JsonParserFactory createParserFactor(Map<String, ?> __cnf)
 	{
 		return JsonProvider.provider().createParserFactory(__cnf);
@@ -157,6 +168,7 @@ public class Json
 	 * @return A new JSON reader.
 	 * @since 2014/07/25
 	 */
+	@Api
 	public static JsonReader createReader(InputStream __i)
 	{
 		return JsonProvider.provider().createReader(__i);
@@ -169,6 +181,7 @@ public class Json
 	 * @return A new JSON reader.
 	 * @since 2014/07/25
 	 */
+	@Api
 	public static JsonReader createReader(Reader __r)
 	{
 		return JsonProvider.provider().createReader(__r);
@@ -184,6 +197,7 @@ public class Json
 	 * @return A new JSON reader factory.
 	 * @since 2014/07/25
 	 */
+	@Api
 	public static JsonReaderFactory createReaderFactory(Map<String, ?> __cnf)
 	{
 		return JsonProvider.provider().createReaderFactory(__cnf);
@@ -197,6 +211,7 @@ public class Json
 	 * @return A new JSON writer.
 	 * @since 2014/07/25
 	 */
+	@Api
 	public static JsonWriter createWriter(OutputStream __o)
 	{
 		return JsonProvider.provider().createWriter(__o);
@@ -210,6 +225,7 @@ public class Json
 	 * @return A new JSON writer.
 	 * @since 2014/07/25
 	 */
+	@Api
 	public static JsonWriter createWriter(Writer __w)
 	{
 		return JsonProvider.provider().createWriter(__w);
@@ -225,6 +241,7 @@ public class Json
 	 * @return A new factory for creating JSON writers.
 	 * @since 2014/07/25
 	 */
+	@Api
 	public static JsonWriterFactory createWriterFactory(Map<String, ?> __cnf)
 	{
 		return JsonProvider.provider().createWriterFactory(__cnf);

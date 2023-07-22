@@ -1,0 +1,25 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+import org.iban4j.CountryCode
+
+description = "Implements support for the SprintPCS 2.2 API."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "AJ"
+	swmType = JavaMEMidletType.API
+	swmName = "SprintPCS 2.2 API"
+	swmVendor = "Stephanie Gawroriski"
+	originalApiVendor = "Sprint Corporation (T-Mobile)"
+	originalApiVendorUrl = "https://www.sprint.com/"
+	originalApiVendorCountry = CountryCode.US
+	tags += "sprint"
+}
+
+dependencies
+{
+	api project(":modules:cldc-compact")
+
+	api project(":modules:media-api")
+	api project(":modules:midp-lcdui")
+}

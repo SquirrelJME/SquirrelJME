@@ -3,19 +3,16 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.jvm.mle.constants;
 
-import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
-import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 
 /**
- * Mouse event for {@link UIFormCallback#eventMouse(UIFormBracket,
- * UIItemBracket, int, int, int, int, int)}.
+ * Mouse event for {@link UIFormCallback#eventMouse(cc.squirreljme.jvm.mle.brackets.UIDrawableBracket, int, int, int, int, int)}.
  *
  * @since 2020/07/19
  */

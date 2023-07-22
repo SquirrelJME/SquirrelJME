@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -32,18 +32,17 @@ public enum CommandSetStackFrame
 			throws JDWPException
 		{
 			// Ignore the thread but check it, then read the frame
-			__packet.readThread(__controller, false);
+			__packet.readThread(__controller);
 			Object frame = __packet.readFrame(__controller, false);
 			
 			// Read in the slot table
 			int numSlots = __packet.readInt();
 			int[] wantSlot = new int[numSlots];
+			byte[] wantTag = new byte[numSlots];
 			for (int i = 0; i < numSlots; i++)
 			{
 				wantSlot[i] = __packet.readInt();
-				
-				// Ignore the type that was requested
-				__packet.readByte();
+				wantTag[i] = __packet.readByte();
 			}
 			
 			// Always reply with the same number of slots
@@ -87,7 +86,7 @@ public enum CommandSetStackFrame
 			throws JDWPException
 		{
 			// Ignore the thread but check it, then read the frame
-			__packet.readThread(__controller, false);
+			__packet.readThread(__controller);
 			Object frame = __packet.readFrame(__controller, false);
 			
 			// Where is this frame located?

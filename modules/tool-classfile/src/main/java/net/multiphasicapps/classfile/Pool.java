@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -121,16 +121,16 @@ public final class Pool
 		if (__i == 0)
 			return null;
 		
-		// {@squirreljme.error JC3o The specified index is not within the bounds
-		// of the constant pool. (The index of the entry)}
+		/* {@squirreljme.error JC3o The specified index is not within the bounds
+		of the constant pool. (The index of the entry)} */
 		Object[] entries = this._entries;
 		if (__i < 0 || __i >= entries.length)
 			throw new InvalidClassFormatException(
 				String.format("JC3o %d", __i));
 		
-		// {@squirreljme.error JC3p The specified entry's class is not of the
-		// expected class. (The index of the entry; The class the entry is; The
-		// expected class)}
+		/* {@squirreljme.error JC3p The specified entry's class is not of the
+		expected class. (The index of the entry; The class the entry is; The
+		expected class)} */
 		Object val = entries[__i];
 		if (val != null && !__cl.isInstance(val))
 			throw new InvalidClassFormatException(
@@ -155,8 +155,8 @@ public final class Pool
 	public <C> C require(Class<C> __cl, int __i)
 		throws InvalidClassFormatException, NullPointerException
 	{
-		// {@squirreljme.error JC3q Expected the specified constant pool entry
-		// to not be the null entry. (The index; The expected class)}
+		/* {@squirreljme.error JC3q Expected the specified constant pool entry
+		to not be the null entry. (The index; The expected class)} */
 		C rv = this.<C>get(__cl, __i);
 		if (rv == null)
 			throw new InvalidClassFormatException(
@@ -207,8 +207,8 @@ public final class Pool
 						data = new UTFConstantEntry(__in.readUTF());
 					}
 					
-					// {@squirreljme.error JC3r Modified UTF-8 data is not in
-					// the correct format.}
+					/* {@squirreljme.error JC3r Modified UTF-8 data is not in
+					the correct format.} */
 					catch (UTFDataFormatException e)
 					{
 						throw new InvalidClassFormatException("JC3r", e);
@@ -254,16 +254,16 @@ public final class Pool
 						Double.valueOf(__in.readDouble()));
 					break;
 					
-					// {@squirreljme.error JC3s Java ME does not support
-					// dynamic invocation (such as method handles or lambda
-					// expressions).}
+					/* {@squirreljme.error JC3s Java ME does not support
+					dynamic invocation (such as method handles or lambda
+					expressions).} */
 				case Pool.TAG_METHODHANDLE:
 				case Pool.TAG_METHODTYPE:
 				case Pool.TAG_INVOKEDYNAMIC:
 					throw new InvalidClassFormatException("JC3s");
 				
-					// {@squirreljme.error JC3t Unknown tag type in the
-					// constant pool. (The constant pool tag)}
+					/* {@squirreljme.error JC3t Unknown tag type in the
+					constant pool. (The constant pool tag)} */
 				default:
 					throw new InvalidClassFormatException(
 						String.format("JC3t %d", tag));
@@ -286,7 +286,7 @@ public final class Pool
 			Pool.__initializeEntries(entries, tags, rawdata);
 		}
 		
-		// {@squirreljme.error JC3u The constant pool is not valid.}
+		/* {@squirreljme.error JC3u The constant pool is not valid.} */
 		catch (ClassCastException|IndexOutOfBoundsException|
 			NullPointerException e)
 		{

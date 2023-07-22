@@ -3,33 +3,43 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
+@Api
 @SuppressWarnings("UnusedReturnValue")
 public interface Choice
 {
+	@Api
 	int EXCLUSIVE =
 		1;
 	
+	@Api
 	int IMPLICIT =
 		3;
 	
+	@Api
 	int MULTIPLE =
 		2;
 	
+	@Api
 	int POPUP =
 		4;
 	
+	@Api
 	int TEXT_WRAP_DEFAULT =
 		0;
 	
+	@Api
 	int TEXT_WRAP_OFF =
 		2;
 	
+	@Api
 	int TEXT_WRAP_ON =
 		1;
 	
@@ -42,6 +52,7 @@ public interface Choice
 	 * @throws NullPointerException If no {@code __label} was set.
 	 * @since 2020/10/18
 	 */
+	@Api
 	int append(String __label, Image __icon)
 		throws NullPointerException;
 	
@@ -52,15 +63,20 @@ public interface Choice
 	 * @throws IndexOutOfBoundsException If the index is not within bounds.
 	 * @since 2020/11/21
 	 */
+	@Api
 	void delete(int __dx)
 		throws IndexOutOfBoundsException;
 	
+	@Api
 	void deleteAll();
 	
+	@Api
 	int getFitPolicy();
 	
+	@Api
 	Font getFont(int __a);
 	
+	@Api
 	Image getImage(int __a);
 	
 	/**
@@ -75,6 +91,7 @@ public interface Choice
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/10/31
 	 */
+	@Api
 	int getSelectedFlags(boolean[] __result)
 		throws IllegalArgumentException, NullPointerException;
 	
@@ -88,8 +105,10 @@ public interface Choice
 	 * value.
 	 * @since 2020/10/31
 	 */
+	@Api
 	int getSelectedIndex();
 	
+	@Api
 	String getString(int __a);
 	
 	/**
@@ -102,11 +121,14 @@ public interface Choice
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/15
 	 */
+	@Api
 	void insert(int __at, String __str, Image __icon)
 		throws IndexOutOfBoundsException, NullPointerException;
 	
+	@Api
 	boolean isEnabled(int __i);
 	
+	@Api
 	boolean isSelected(int __a);
 	
 	/**
@@ -119,13 +141,17 @@ public interface Choice
 	 * @throws NullPointerException If no label was specified.
 	 * @since 2020/11/14
 	 */
+	@Api
 	void set(int __i, String __label, Image __icon)
 		throws IndexOutOfBoundsException, NullPointerException;
 	
+	@Api
 	void setEnabled(int __i, boolean __e);
 	
+	@Api
 	void setFitPolicy(int __a);
 	
+	@Api
 	void setFont(int __a, Font __b);
 	
 	/**
@@ -138,11 +164,14 @@ public interface Choice
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/20
 	 */
+	@Api
 	void setSelectedFlags(boolean[] __flags)
 		throws IllegalArgumentException, NullPointerException;
 	
+	@Api
 	void setSelectedIndex(int __a, boolean __b);
 	
+	@Api
 	int size();
 }
 

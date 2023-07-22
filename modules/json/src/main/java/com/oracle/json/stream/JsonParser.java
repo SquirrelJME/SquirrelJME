@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package com.oracle.json.stream;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import com.oracle.json.JsonException;
 import java.io.Closeable;
 import java.io.IOException;
@@ -22,6 +23,7 @@ import java.io.IOException;
  *
  * @since 2014/07/25
  */
+@Api
 public interface JsonParser
 	extends Closeable
 {
@@ -46,6 +48,7 @@ public interface JsonParser
 	 * {@link Event#VALUE_NUMBER}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	int getInt();
 	
 	/**
@@ -56,6 +59,7 @@ public interface JsonParser
 	 * @return A non-{@code null} location matching the current parser state.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonLocation getLocation();
 	
 	/**
@@ -68,6 +72,7 @@ public interface JsonParser
 	 * {@link Event#VALUE_NUMBER}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	long getLong();
 	
 	/**
@@ -80,6 +85,7 @@ public interface JsonParser
 	 * {@link Event#KEY_NAME}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	String getString();
 	
 	/**
@@ -91,6 +97,7 @@ public interface JsonParser
 	 * @throws JsonParsingException Invalid JSON data was detected.
 	 * @since 2014/07/25
 	 */
+	@Api
 	boolean hasNext();
 	
 	/**
@@ -102,6 +109,7 @@ public interface JsonParser
 	 * {@link Event#VALUE_NUMBER}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	boolean isIntegralNumber();
 	
 	/**
@@ -113,6 +121,7 @@ public interface JsonParser
 	 * @throws java.util.NoSuchElementException If there is nothing left.
 	 * @since 2014/07/25
 	 */
+	@Api
 	Event next();
 	
 	/**
@@ -121,24 +130,29 @@ public interface JsonParser
 	 *
 	 * @since 2014/07/25
 	 */
+	@Api
 	enum Event
 	{
 		/** The start of an array, the parser sits after the '['. */
+		@Api
 		START_ARRAY,
 		
 		/** The start of an object, the parser sits after the '{'. */
+		@Api
 		START_OBJECT,
 		
 		/**
 		 * The name of an object key, the parser sits after the name,
 		 * to obtain the key use {@link JsonParser#getString()}.
 		 */
+		@Api
 		KEY_NAME,
 		
 		/**
 		 * The value of an object (a string), the parser sits after the value,
 		 * to obtain the value use {@link JsonParser#getString()}.
 		 */
+		@Api
 		VALUE_STRING,
 		
 		/**
@@ -146,21 +160,27 @@ public interface JsonParser
 		 * to obtain the value use {@link JsonParser#getInt()} or
 		 * {@link JsonParser#getLong()}.
 		 */
+		@Api
 		VALUE_NUMBER,
 		
 		/** The value is {@code true}, the parser sits after the literal. */
+		@Api
 		VALUE_TRUE,
 		
 		/** The value is {@code false}, the parser sits after the literal. */
+		@Api
 		VALUE_FALSE,
 		
 		/** The value is {@code null}, the parser sits after the literal. */
+		@Api
 		VALUE_NULL,
 		
 		/** End of an object, the parser sits after the '}'. */
+		@Api
 		END_OBJECT,
 		
 		/** End of an array, the parser sits after the ']'. */
+		@Api
 		END_ARRAY,
 		
 		/** End. */

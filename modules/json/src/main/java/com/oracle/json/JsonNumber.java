@@ -3,17 +3,21 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package com.oracle.json;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This is an immutable numerical value.
  *
  * @since 2014/07/25
  */
+@SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
+@Api
 public interface JsonNumber
 	extends JsonValue
 {
@@ -24,6 +28,7 @@ public interface JsonNumber
 	 * @return A {@code double}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	double doubleValue();
 	
 	/**
@@ -51,6 +56,7 @@ public interface JsonNumber
 	 * @return An integer value.
 	 * @since 2014/07/25
 	 */
+	@Api
 	int intValue();
 	
 	/**
@@ -61,6 +67,7 @@ public interface JsonNumber
 	 * fit within an int.
 	 * @since 2014/07/25
 	 */
+	@Api
 	int intValueExact();
 	
 	/**
@@ -71,6 +78,7 @@ public interface JsonNumber
 	 * @return {@code true} if this is an integer.
 	 * @since 2014/07/25
 	 */
+	@Api
 	boolean isIntegral();
 	
 	/**
@@ -79,6 +87,7 @@ public interface JsonNumber
 	 * @return The value that represents this number.
 	 * @since 2022/07/12
 	 */
+	@Api
 	Number numberValue();
 	
 	/**
@@ -87,6 +96,7 @@ public interface JsonNumber
 	 * @return The long value.
 	 * @since 2014/07/25
 	 */
+	@Api
 	long longValue();
 	
 	/**
@@ -97,6 +107,7 @@ public interface JsonNumber
 	 * fit within a long.
 	 * @since 2014/07/25
 	 */
+	@Api
 	long longValueExact();
 	
 	/**

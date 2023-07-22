@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -11,6 +11,7 @@ package java.security;
 
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -37,6 +38,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2018/09/18
  */
+@Api
 public final class AccessController
 {
 	/**
@@ -57,6 +59,7 @@ public final class AccessController
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/18
 	 */
+	@Api
 	public static void checkPermission(Permission __p)
 		throws AccessControlException, NullPointerException
 	{

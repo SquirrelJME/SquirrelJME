@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -59,54 +59,51 @@ public class UIFormCallbackProxy
 		switch (__method.toString())
 		{
 			case "eventKey:(Lcc/squirreljme/jvm/mle/brackets/" +
-				"UIFormBracket;Lcc/squirreljme/jvm/mle/brackets/" +
-				"UIItemBracket;III)V":
+				"UIDrawableBracket;III)V":
 				this.callback.eventKey(
-					MLEUIForm.__form(__args[0]).form,
-					MLEUIForm.__item(__args[1]).item,
+					MLEUIForm.__drawable(__args[0]),
+					(int)__args[1],
 					(int)__args[2],
-					(int)__args[3],
-					(int)__args[4]);
+					(int)__args[3]);
 				return null;
 				
 			case "eventMouse:(Lcc/squirreljme/jvm/mle/brackets/" +
-				"UIFormBracket;Lcc/squirreljme/jvm/mle/brackets/" +
-				"UIItemBracket;IIIII)V":
+				"UIDrawableBracket;IIIII)V":
 				this.callback.eventMouse(
-					MLEUIForm.__form(__args[0]).form,
-					MLEUIForm.__item(__args[1]).item,
+					MLEUIForm.__drawable(__args[0]),
+					(int)__args[1],
 					(int)__args[2],
 					(int)__args[3],
 					(int)__args[4],
-					(int)__args[5],
-					(int)__args[6]);
+					(int)__args[5]);
 				return null;
 				
 			case "exitRequest:(Lcc/squirreljme/jvm/mle/brackets/" +
-				"UIFormBracket;)V":
+				"UIDrawableBracket;)V":
 				this.callback.exitRequest(
-					MLEUIForm.__form(__args[0]).form);
+					MLEUIForm.__drawable(__args[0]));
 				return null;
 				
 			case "paint:(Lcc/squirreljme/jvm/mle/brackets/" +
-				"UIFormBracket;Lcc/squirreljme/jvm/mle/brackets/" +
-				"UIItemBracket;IIILjava/lang/Object;I[IIIIII)V":
-				SpringArrayObjectInteger pal =
-					(SpringArrayObjectInteger)__args[7];
-				this.callback.paint(
-					MLEUIForm.__form(__args[0]).form,
-					MLEUIForm.__item(__args[1]).item,
-					(int)__args[2],
-					(int)__args[3],
-					(int)__args[4],
-					((SpringArrayObject)__args[5]).array(),
-					(int)__args[6],
-					(pal == null ? null : pal.array()),
-					(int)__args[8],
-					(int)__args[9],
-					(int)__args[10],
-					(int)__args[11],
-					(int)__args[12]);
+				"UIDrawableBracket;" +
+				"IIILjava/lang/Object;I[IIIIII)V":
+				{
+					SpringArrayObjectInteger pal =
+						(SpringArrayObjectInteger)__args[6];
+					this.callback.paint(
+						MLEUIForm.__drawable(__args[0]),
+						(int)__args[1],
+						(int)__args[2],
+						(int)__args[3],
+						((SpringArrayObject)__args[4]).array(),
+						(int)__args[5],
+						(pal == null ? null : pal.array()),
+						(int)__args[7],
+						(int)__args[8],
+						(int)__args[9],
+						(int)__args[10],
+						(int)__args[11]);
+				}
 				return null;
 				
 			case "propertyChange:(Lcc/squirreljme/jvm/mle/brackets/" +

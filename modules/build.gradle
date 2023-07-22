@@ -73,6 +73,10 @@ subprojects {
 
 		// Emit deprecation errors
 		compileJava.options.deprecation = true
+		
+		// Maximize debugging
+		compileJava.options.debug = true
+		compileJava.options.debugOptions.setDebugLevel("source,lines,vars")
 
 		// Copy to tests
 		compileTestJava.sourceCompatibility = compileJava.sourceCompatibility
@@ -80,6 +84,8 @@ subprojects {
 		compileTestJava.options.encoding = compileJava.options.encoding
 		compileTestJava.options.verbose = compileJava.options.verbose
 		compileTestJava.options.deprecation = compileJava.options.deprecation
+		compileTestJava.options.debug = compileJava.options.debug
+		compileTestJava.options.debugOptions = compileJava.options.debugOptions
 
 		// Copy to JavaDoc
 		javadoc.options.source = "1.7"
@@ -223,6 +229,18 @@ subprojects {
 					username = findProperty("ossrhUser") ?: "ossrh_user_unset!"
 					password = findProperty("ossrhPassword") ?: "ossrh_pass_unset!"
 				}
+			}
+		}
+		
+		// IntelliJ adjustments
+		idea {
+			module {
+				// Make testFixtures as part of tests so that in search and
+				// otherwise they appear as such
+				testSourceDirs += project.projectDir.toPath().resolve("src")
+					.resolve("testFixtures").resolve("java").toFile()
+				testResourceDirs += project.projectDir.toPath().resolve("src")
+					.resolve("testFixtures").resolve("resources").toFile()
 			}
 		}
 	}

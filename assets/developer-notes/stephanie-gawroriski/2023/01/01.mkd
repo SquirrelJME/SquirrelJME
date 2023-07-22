@@ -1,0 +1,10 @@
+# 2023/01/01
+
+## 11:18
+
+Happy New Year! Hopefully this year I can get something released at some point,
+I have rather often just tossed what I had written previously most of the time
+since it was not good at all. Hopefully this year things are simpler and less
+complicated. I still am really liking the dual state kind of things for classes
+and whatnot, that should be much simpler! I can just build on top of something
+I already have.

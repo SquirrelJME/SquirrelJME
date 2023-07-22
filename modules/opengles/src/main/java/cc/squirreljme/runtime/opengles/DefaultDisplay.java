@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.runtime.opengles;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.CanvasItem;
@@ -18,6 +19,7 @@ import javax.microedition.lcdui.CanvasItem;
  *
  * @since 2016/10/10
  */
+@Api
 public class DefaultDisplay
 	extends EGLDisplay
 {
@@ -36,6 +38,7 @@ public class DefaultDisplay
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/10
 	 */
+	@Api
 	public DefaultDisplay(Object __nd)
 		throws IllegalArgumentException, NullPointerException
 	{
@@ -43,8 +46,8 @@ public class DefaultDisplay
 		if (__nd == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EJ01 The specified class type cannot be used
-		// as a display for OpenGL ES graphics. (The class type)}
+		/* {@squirreljme.error EJ01 The specified class type cannot be used
+		as a display for OpenGL ES graphics. (The class type)} */
 		if (!(__nd instanceof Canvas || __nd instanceof CanvasItem))
 			throw new IllegalArgumentException(String.format("EJ01 %s",
 				__nd.getClass()));

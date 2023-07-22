@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -13,7 +13,7 @@ import cc.squirreljme.jvm.mle.UIFormShelf;
 
 /**
  * This contains information on UI metrics used by
- * {@link UIFormShelf#metric(int)}.
+ * {@link UIFormShelf#metric(cc.squirreljme.jvm.mle.brackets.UIDisplayBracket, int)}.
  *
  * @since 2020/06/30
  */

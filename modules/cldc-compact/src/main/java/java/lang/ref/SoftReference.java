@@ -3,11 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.lang.ref;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * In SquirrelJME this is just a {@link WeakReference}, note that this is not
@@ -18,6 +20,7 @@ package java.lang.ref;
  * @since 2022/06/19
  */
 @Deprecated
+@Api
 public class SoftReference<T>
 	extends WeakReference<T>
 {
@@ -29,6 +32,7 @@ public class SoftReference<T>
 	 * @since 2022/06/19
 	 */
 	@Deprecated
+	@Api
 	public SoftReference(T __v)
 	{
 		super(__v, null);
@@ -47,6 +51,7 @@ public class SoftReference<T>
 	 * @since 2022/06/19
 	 */
 	@Deprecated
+	@Api
 	public SoftReference(T __v, ReferenceQueue<? super T> __q)
 	{
 		super(__v, __q);

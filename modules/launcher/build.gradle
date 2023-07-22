@@ -18,6 +18,28 @@ squirreljme
 		"cc.squirreljme.runtime.launcher.ui.MidletMain")
 	tags += "j2me"
 	tags += "medium"
+	
+	// Keep these around for testing
+	proGuardOptions += ["-keep",
+		"class", "cc.squirreljme.runtime.launcher.ui.MidletMain"]
+	proGuardOptions += ["-keepclassmembers",
+		"class", "cc.squirreljme.runtime.launcher.ui.MidletMain", "{",
+				"boolean", "_refreshLock", ";",
+				"java.util.ArrayList", "_listedSuites", ";",
+			"}"]
+	proGuardOptions += ["-keepclassmembernames",
+		"class", "cc.squirreljme.runtime.launcher.ui.MidletMain", "{",
+				"boolean", "_refreshLock", ";",
+				"java.util.ArrayList", "_listedSuites", ";",
+			"}"]
+	
+	// Ignore warnings here, since things just break?
+	proGuardOptionsTest += ["-ignorewarnings"]
+	
+	// Optional dependencies for testing, so that these two projects appear
+	// on the list of applications
+	optionalDependenciesTest += project(':modules:demo-hello')
+	optionalDependenciesTest += project(':modules:lcdui-demo')
 }
 
 dependencies
@@ -28,4 +50,5 @@ dependencies
 	api project(":modules:meep-lui")
 	api project(":modules:meep-midlet")
 	api project(":modules:meep-swm")
+	api project(":modules:tango-icon-theme")
 }

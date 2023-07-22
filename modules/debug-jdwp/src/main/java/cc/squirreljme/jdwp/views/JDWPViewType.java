@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.jdwp.views;
 
+import cc.squirreljme.jdwp.JDWPLocalVariable;
 import cc.squirreljme.jdwp.JDWPValue;
 import cc.squirreljme.jdwp.trips.JDWPTripBreakpoint;
 
@@ -18,7 +19,7 @@ import cc.squirreljme.jdwp.trips.JDWPTripBreakpoint;
  * @since 2021/04/10
  */
 public interface JDWPViewType
-	extends JDWPViewValidObject
+	extends JDWPViewHasInstance, JDWPViewValidObject
 {
 	/**
 	 * Checks if this type can cast to the other type.
@@ -147,6 +148,7 @@ public interface JDWPViewType
 	 * @return The {@link Class} object instance.
 	 * @since 2021/04/19
 	 */
+	@Override
 	Object instance(Object __which);
 	
 	/**
@@ -233,6 +235,17 @@ public interface JDWPViewType
 	 * @since 2021/04/14
 	 */
 	String methodSignature(Object __which, int __methodDx);
+	
+	/**
+	 * Returns the local variable table for the method.
+	 * 
+	 * @param __which Which class to get from?
+	 * @param __methodDx The method index.
+	 * @return The local variable table, if {@code null} or empty then it
+	 * is not considered valid.
+	 * @since 2022/09/21
+	 */
+	JDWPLocalVariable[] methodVariableTable(Object __which, int __methodDx);
 	
 	/**
 	 * Reads the value of an static field within the class.

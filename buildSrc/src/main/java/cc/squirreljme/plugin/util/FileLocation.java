@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.plugin.util;
 
+import java.io.Serializable;
 import java.nio.file.Path;
 
 /**
@@ -17,12 +18,13 @@ import java.nio.file.Path;
  * @since 2020/02/28
  */
 public final class FileLocation
+	implements Serializable
 {
 	/** The absolute path. */
-	public final Path absolute;
+	private final SerializedPath absolute;
 	
 	/** The relative path. */
-	public final Path relative;
+	private final SerializedPath relative;
 	
 	/**
 	 * Initializes the file information.
@@ -38,8 +40,8 @@ public final class FileLocation
 		if (__absolute == null || __relative == null)
 			throw new NullPointerException();
 		
-		this.absolute = __absolute;
-		this.relative = __relative;
+		this.absolute = new SerializedPath(__absolute);
+		this.relative = new SerializedPath(__relative);
 	}
 	
 	/**
@@ -56,8 +58,30 @@ public final class FileLocation
 			return false;
 		
 		FileLocation o = (FileLocation)__o;
-		return this.relative.equals(o.relative) &&
-			this.absolute.equals(o.absolute);
+		return this.getRelative().equals(o.getRelative()) &&
+			this.getAbsolute().equals(o.getAbsolute());
+	}
+	
+	/**
+	 * Returns the absolute path.
+	 * 
+	 * @return The absolute path.
+	 * @since 2022/09/11
+	 */
+	public Path getAbsolute()
+	{
+		return this.absolute.path;
+	}
+	
+	/**
+	 * Returns the relative path.
+	 * 
+	 * @return The relative path.
+	 * @since 2022/09/11
+	 */
+	public Path getRelative()
+	{
+		return this.relative.path;
 	}
 	
 	/**
@@ -67,7 +91,7 @@ public final class FileLocation
 	@Override
 	public final int hashCode()
 	{
-		return this.absolute.hashCode() ^ this.relative.hashCode();
+		return this.getAbsolute().hashCode() ^ this.getRelative().hashCode();
 	}
 	
 	/**
@@ -77,7 +101,7 @@ public final class FileLocation
 	@Override
 	public final String toString()
 	{
-		return String.format("{absolute=%s, relative=%s}",
-			this.absolute, this.relative);
+		return String.format("{absolute=%s, relative=%s}", this.getAbsolute(),
+			this.getRelative());
 	}
 }

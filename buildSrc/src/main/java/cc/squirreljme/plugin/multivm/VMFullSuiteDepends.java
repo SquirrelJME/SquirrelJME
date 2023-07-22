@@ -3,13 +3,14 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
+import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -31,30 +32,25 @@ public class VMFullSuiteDepends
 	/** The task to execute for. */
 	protected final Task task;
 	
-	/** The source set used. */
-	protected final String sourceSet;
-	
-	/** The virtual machine creating for. */
-	protected final VMSpecifier vmType;
+	/** The classifier target used. */
+	protected final SourceTargetClassifier classifier;
 	
 	/**
 	 * Initializes the dependency grabber.
 	 * 
 	 * @param __task The task to run off.
-	 * @param __vmType The virtual machine type.
+	 * @param __classifier The classifier used.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/10/17
 	 */
-	public VMFullSuiteDepends(Task __task, String __sourceSet,
-		VMSpecifier __vmType)
+	public VMFullSuiteDepends(Task __task, SourceTargetClassifier __classifier)
 		throws NullPointerException
 	{
-		if (__task == null || __sourceSet == null || __vmType == null)
+		if (__task == null || __classifier == null)
 			throw new NullPointerException("NARG");
 		
 		this.task = __task;
-		this.sourceSet = __sourceSet;
-		this.vmType = __vmType;
+		this.classifier = __classifier;
 	}
 	
 	/**
@@ -69,18 +65,23 @@ public class VMFullSuiteDepends
 		
 		// We need the emulator to be built and working before we can actually
 		// run our full suite accordingly
-		Task emulJar = root.project(this.vmType.emulatorProject()).getTasks()
-			.findByName("jar");
-		if (emulJar != null)
-			tasks.add(emulJar);
+		for (String emulatorProject : this.classifier.getVmType()
+			.emulatorProjects(this.classifier.getBangletVariant()))
+		{
+			Task emulJar = root.project(emulatorProject).getTasks()
+				.findByName("jar");
+			if (emulJar != null)
+				tasks.add(emulJar);
+		}
 		
 		// Which source sets should be used
 		List<String> sourceSets;
-		if (!this.sourceSet.equals(SourceSet.MAIN_SOURCE_SET_NAME))
+		if (!this.classifier.isMainSourceSet())
 			sourceSets = Arrays.asList(SourceSet.MAIN_SOURCE_SET_NAME,
-				this.sourceSet);
+				this.classifier.getSourceSet());
 		else
-			sourceSets = Collections.singletonList(this.sourceSet);
+			sourceSets = Collections.singletonList(
+				this.classifier.getSourceSet());
 		
 		// Go through every single project, and try to use it as a dependency
 		for (Project project : root.getAllprojects())
@@ -96,15 +97,16 @@ public class VMFullSuiteDepends
 			{
 				// Find the associated library task
 				Task libTask = project.getTasks().findByName(TaskInitialization
-					.task("lib", sourceSet,
-						this.vmType));
+					.task("lib",
+						this.classifier.withSourceSet(sourceSet)));
 				if (libTask == null)
 					continue;
 				
 				// Use all of their dependencies, if not yet added
 				for (VMLibraryTask subDep : new VMRunDependencies(
-					(VMExecutableTask)libTask, sourceSet,
-					this.vmType).call())
+					(VMExecutableTask)libTask,
+						this.classifier.withSourceSet(sourceSet))
+					.call())
 					tasks.add(subDep);
 			}
 		}

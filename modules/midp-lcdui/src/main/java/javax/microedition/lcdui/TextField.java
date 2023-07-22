@@ -3,14 +3,17 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.common.EditableText;
+import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
+import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 
 /**
  * This represents a field of editable or read-only text which may be placed
@@ -22,10 +25,12 @@ import cc.squirreljme.runtime.lcdui.common.EditableText;
  *
  * @since 2017/08/20
  */
+@Api
 public class TextField
 	extends Item
 {
 	/** This is a constraint which has no limitations. */
+	@Api
 	public static final int ANY =
 		0;
 	
@@ -33,6 +38,7 @@ public class TextField
 	 * This mask is used to split the constraint between the type and any
 	 * flags which may be used.
 	 */
+	@Api
 	public static final int CONSTRAINT_MASK =
 		65535;
 	
@@ -43,6 +49,7 @@ public class TextField
 	 *
 	 * Value requirements are exactly the same as {@link #DECIMAL}.
 	 */
+	@Api
 	public static final int CURRENCY =
 		6;
 	
@@ -56,12 +63,15 @@ public class TextField
 	 * When rendering the value, the number will be formatted to the current
 	 * system's locale.
 	 */
+	@Api
 	public static final int DECIMAL =
 		5;
 	
 	/**
 	 * A constraint which specifies that an e-mail address is being entered.
 	 */
+	@SuppressWarnings("SpellCheckingInspection")
+	@Api
 	public static final int EMAILADDR =
 		1;
 	
@@ -69,6 +79,7 @@ public class TextField
 	 * This is a constraint flag which hints that the start of a sentence
 	 * should start with a capital letter.
 	 */
+	@Api
 	public static final int INITIAL_CAPS_SENTENCE =
 		2097152;
 	
@@ -76,6 +87,7 @@ public class TextField
 	 * This is a constraint flag which hints that the start of every word
 	 * should be capitalized.
 	 */
+	@Api
 	public static final int INITIAL_CAPS_WORD =
 		1048576;
 	
@@ -86,6 +98,7 @@ public class TextField
 	 * An example usage for this, would be user names for accounts which might
 	 * not match dictionary words.
 	 */
+	@Api
 	public static final int NON_PREDICTIVE =
 		524288;
 	
@@ -96,6 +109,7 @@ public class TextField
 	 *
 	 * The value will be presented in the system's current locale.
 	 */
+	@Api
 	public static final int NUMERIC =
 		2;
 	
@@ -108,6 +122,7 @@ public class TextField
 	 * implicitely set along with {@link #INITIAL_CAPS_SENTENCE} and
 	 * {@link #INITIAL_CAPS_WORD} are impliticely cleared.
 	 */
+	@Api
 	public static final int PASSWORD =
 		65536;
 	
@@ -120,6 +135,8 @@ public class TextField
 	 * When rendered the value may be represented in a more friendly fashion
 	 * depending on the phone number.
 	 */
+	@SuppressWarnings("SpellCheckingInspection")
+	@Api
 	public static final int PHONENUMBER =
 		3;
 	
@@ -133,6 +150,7 @@ public class TextField
 	 * the dictionary will often add them to the dictionary so that they can
 	 * become available to learn new words. This prevents this behavior.
 	 */
+	@Api
 	public static final int SENSITIVE =
 		262144;
 	
@@ -140,10 +158,12 @@ public class TextField
 	 * This is a constraint flag which specifies that the text field cannot
 	 * be edited.
 	 */
+	@Api
 	public static final int UNEDITABLE =
 		131072;
 	
 	/** This is a consraint which specifies that a URL is being inserted. */
+	@Api
 	public static final int URL =
 		4;
 	
@@ -170,6 +190,7 @@ public class TextField
 	 * exceeds the maximum specified characters.
 	 * @since 2017/08/19
 	 */
+	@Api
 	public TextField(String __l, String __t, int __ms, int __c)
 		throws IllegalArgumentException
 	{
@@ -180,51 +201,61 @@ public class TextField
 		this._editabletext.initialize(__t, __ms, __c);
 	}
 	
+	@Api
 	public void delete(int __a, int __b)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int getCaretPosition()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int getChars(char[] __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int getConstraints()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int getMaxSize()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public String getString()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void insert(char[] __a, int __b, int __c, int __d)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void insert(String __a, int __b)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void setCaret(int __i)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void setChars(char[] __a, int __b, int __c)
 	{
 		throw Debugging.todo();
@@ -240,17 +271,20 @@ public class TextField
 	 * valid.
 	 * @since 2017/08/20
 	 */
+	@Api
 	public void setConstraints(int __c)
 		throws IllegalArgumentException
 	{
 		this._editabletext.setConstraints(__c);
 	}
 	
+	@Api
 	public void setHighlight(int __i, int __l)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void setInitialInputMode(String __a)
 	{
 		throw Debugging.todo();
@@ -268,6 +302,7 @@ public class TextField
 	 * constraints are used.
 	 * @since 2017/08/19
 	 */
+	@Api
 	public int setMaxSize(int __ms)
 		throws IllegalArgumentException
 	{
@@ -283,15 +318,49 @@ public class TextField
 	 * the constraints or character count limitations.
 	 * @since 2017/08/20
 	 */
+	@Api
 	public void setString(String __s)
 		throws IllegalArgumentException
 	{
 		this._editabletext.setString(__s);
 	}
 	
+	@Api
 	public int size()
 	{
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/01/14
+	 */
+	@Override
+	__CommonState__ __stateInit(UIBackend __backend)
+		throws NullPointerException
+	{
+		return new __TextFieldState__(__backend, this);
+	}
+	
+	/**
+	 * Text field state.
+	 * 
+	 * @since 2023/01/14
+	 */
+	static class __TextFieldState__
+		extends Item.__ItemState__
+	{
+		/**
+		 * Initializes the backend state.
+		 *
+		 * @param __backend The backend used.
+		 * @param __self Self widget.
+		 * @since 2023/01/14
+		 */
+		__TextFieldState__(UIBackend __backend, DisplayWidget __self)
+		{
+			super(__backend, __self);
+		}
 	}
 }
 

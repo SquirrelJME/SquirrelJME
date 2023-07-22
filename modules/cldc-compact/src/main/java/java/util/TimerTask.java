@@ -3,17 +3,20 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.util;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This represents a tasks which can be run within a timer.
  *
  * @since 2018/12/11
  */
+@Api
 public abstract class TimerTask
 	implements Runnable
 {
@@ -48,6 +51,7 @@ public abstract class TimerTask
 	 *
 	 * @since 2018/12/11
 	 */
+	@Api
 	protected TimerTask()
 	{
 	}
@@ -58,6 +62,7 @@ public abstract class TimerTask
 	 * @return This will return true if a future execution was canceled.
 	 * @since 2018/12/11
 	 */
+	@Api
 	public boolean cancel()
 	{
 		// Was already canceled
@@ -76,7 +81,8 @@ public abstract class TimerTask
 	 * @return The scheduled execution time.
 	 * @since 2018/12/11
 	 */
-	public long scheduledExcutionTime()
+	@Api
+	public long scheduledExecutionTime()
 	{
 		if (this._inrun)
 			return this._lastrun;

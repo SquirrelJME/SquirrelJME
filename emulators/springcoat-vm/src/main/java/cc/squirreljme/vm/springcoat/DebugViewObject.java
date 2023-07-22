@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -12,6 +12,7 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.jdwp.JDWPState;
 import cc.squirreljme.jdwp.JDWPValue;
 import cc.squirreljme.jdwp.views.JDWPViewObject;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 
 /**
@@ -61,6 +62,16 @@ public class DebugViewObject
 		if (__which instanceof SpringArrayObject)
 			return ((SpringArrayObject)__which).length;
 		return -1;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/09/21
+	 */
+	@Override
+	public boolean isNullObject(Object __value)
+	{
+		return (__value == null || __value == SpringNullObject.NULL);
 	}
 	
 	/**

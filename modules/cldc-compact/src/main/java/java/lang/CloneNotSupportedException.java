@@ -3,17 +3,20 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.lang;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This is thrown when cloning is not supported for the given object.
  *
  * @since 2018/12/04
  */
+@Api
 public class CloneNotSupportedException
 	extends Exception
 {
@@ -22,6 +25,7 @@ public class CloneNotSupportedException
 	 *
 	 * @since 2018/12/04
 	 */
+	@Api
 	public CloneNotSupportedException()
 	{
 	}
@@ -32,6 +36,7 @@ public class CloneNotSupportedException
 	 * @param __m The message.
 	 * @since 2018/12/04
 	 */
+	@Api
 	public CloneNotSupportedException(String __m)
 	{
 		super(__m);

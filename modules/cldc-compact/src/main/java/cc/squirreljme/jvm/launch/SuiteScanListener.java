@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -11,6 +11,9 @@ package cc.squirreljme.jvm.launch;
 
 /**
  * This is a listener which specifies when a suite has been scanned in.
+ * 
+ * Implementations must be thread safe as this may use multiple threads
+ * accordingly to speed up scanning on slower multi-CPU systems.
  *
  * @since 2020/12/29
  */

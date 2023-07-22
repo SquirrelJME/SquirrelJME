@@ -73,7 +73,7 @@ Information:
  * [User Guide](assets/user-guide/readme.mkd)
  * [Code of Conduct](code-of-conduct.mkd)
  * [License](license.mkd)
-   * _Source_: GNU General Public License, Version 3 or later
+   * _Source_: Mozilla Public License 2.0
    * _Assets_: Creative Commons CC-BY-SA 4.0
    * _Fonts_ : SIL Open Font License Version 1.1
    * [Third Party Licenses](third-party.mkd)
@@ -140,6 +140,8 @@ Information:
  * Front facing social media:
    * [YouTube](https://www.youtube.com/channel/UCbmC7qQjeXUEUyE5XfDX5RA/)
    * [Twitter](https://twitter.com/SquirrelJME)
+   * [Cohost](https://cohost.org/SquirrelJME)
+   * [Mastodon (mastodon.online)](https://mastodon.online/@SquirrelJME)
  * [Docker Hub](https://hub.docker.com/r/xerthesquirrel/squirreljme)
  * [SourceForge](https://sourceforge.net/p/squirreljme/)
  * Personal Accounts (If you wish to contact me this way)
@@ -148,6 +150,7 @@ Information:
    * [LinkedIn](https://www.linkedin.com/in/xerthesquirrel/)
    * [Mastodon (awoo.space)](https://awoo.space/@XerTheSquirrel)
    * [Twitter](https://twitter.com/XerShadowTail)
+   * [Cohost](https://cohost.org/XerShadowTail)
    * [YouTube (Personal)](
      https://www.youtube.com/channel/UCJ4QrvbDhjtd7u6EpfBQ__g)
    * E-Mail: <xer@multiphasicapps.net>

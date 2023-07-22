@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import java.lang.ref.WeakReference;
 
@@ -18,10 +19,12 @@ import java.lang.ref.WeakReference;
  * 
  * @since 2022/07/12
  */
+@Api
 public abstract class Writer
 	implements Appendable, Closeable
 {
 	/** The object to lock onto for streams. */
+	@Api
 	@ImplementationNote("This may cause a never-free.")
 	protected Object lock;
 	
@@ -30,6 +33,7 @@ public abstract class Writer
 	 * 
 	 * @since 2022/07/12
 	 */
+	@Api
 	@ImplementationNote("The lock should be initialized to this, however " +
 		"this would result in the reader itself never able to be freed " +
 		"because it refers to itself.")
@@ -45,6 +49,7 @@ public abstract class Writer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/07/12
 	 */
+	@Api
 	protected Writer(Object __lock)
 		throws NullPointerException
 	{
@@ -60,6 +65,7 @@ public abstract class Writer
 	 * @throws IOException If this could not be flushed.
 	 * @since 2022/07/12
 	 */
+	@Api
 	public abstract void flush()
 		throws IOException;
 	
@@ -75,6 +81,7 @@ public abstract class Writer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/07/12
 	 */
+	@Api
 	public abstract void write(char[] __c, int __o, int __l)
 		throws IndexOutOfBoundsException, IOException, NullPointerException;
 	
@@ -119,6 +126,7 @@ public abstract class Writer
 	 * {@inheritDoc}
 	 * @since 2022/07/12
 	 */
+	@Api
 	public void write(int __c)
 		throws IOException
 	{
@@ -129,6 +137,7 @@ public abstract class Writer
 	 * {@inheritDoc}
 	 * @since 2022/07/12
 	 */
+	@Api
 	public void write(char[] __c)
 		throws IOException
 	{
@@ -139,6 +148,7 @@ public abstract class Writer
 	 * {@inheritDoc}
 	 * @since 2022/07/12
 	 */
+	@Api
 	public void write(String __str)
 		throws IOException
 	{
@@ -149,6 +159,7 @@ public abstract class Writer
 	 * {@inheritDoc}
 	 * @since 2022/07/12
 	 */
+	@Api
 	public void write(String __str, int __off, int __len)
 		throws IndexOutOfBoundsException, IOException, NullPointerException
 	{
