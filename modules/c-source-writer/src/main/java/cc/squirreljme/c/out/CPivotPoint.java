@@ -48,6 +48,12 @@ public enum CPivotPoint
 	/** Set of array member. */
 	ARRAY_MEMBER_SET,
 	
+	/** Line comment. */
+	LINE_COMMENT,
+	
+	/** Preprocessor statement. */
+	PREPROCESSOR_STATEMENT,
+	
 	/* End. */
 	;
 }

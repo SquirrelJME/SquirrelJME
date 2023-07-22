@@ -9,6 +9,7 @@
 
 package cc.squirreljme.c;
 
+import cc.squirreljme.c.out.CPivotPoint;
 import cc.squirreljme.c.std.CFunctionProvider;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
@@ -398,6 +399,18 @@ abstract class __CFileProxy__
 		throws IOException, NullPointerException
 	{
 		this.__file().number(__type, __number);
+		return this;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/07/22
+	 */
+	@Override
+	public CSourceWriter pivot(CPivotPoint __pivot)
+		throws IOException, NullPointerException
+	{
+		this.__file().pivot(__pivot);
 		return this;
 	}
 	

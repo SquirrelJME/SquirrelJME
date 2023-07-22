@@ -9,6 +9,7 @@
 
 package cc.squirreljme.c;
 
+import cc.squirreljme.c.out.CPivotPoint;
 import cc.squirreljme.c.out.CTokenOutput;
 import cc.squirreljme.c.std.CFunctionProvider;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -547,6 +548,21 @@ public class CFile
 		CExpressionBuilder.__builder(this)
 			.number(__type, __number)
 			.build();
+		return this;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/07/22
+	 */
+	@Override
+	public CSourceWriter pivot(CPivotPoint __pivot)
+		throws IOException, NullPointerException
+	{
+		if (__pivot == null)
+			throw new NullPointerException("NARG");
+		
+		this.out.pivot(__pivot);
 		return this;
 	}
 	

@@ -79,6 +79,18 @@ public class EchoCTokenOutput
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2023/07/22
+	 */
+	@Override
+	public void pivot(CPivotPoint __pivot)
+		throws IOException, NullPointerException
+	{
+		// Just forward it
+		this.out.pivot(__pivot);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2023/06/25
 	 */
 	@Override

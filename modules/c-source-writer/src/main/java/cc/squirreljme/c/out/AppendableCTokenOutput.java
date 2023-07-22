@@ -9,6 +9,7 @@
 
 package cc.squirreljme.c.out;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.Closeable;
 import java.io.IOException;
 
@@ -82,6 +83,17 @@ public class AppendableCTokenOutput
 	{
 		// Always outputs a newline
 		this.out.append("\n");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/07/22
+	 */
+	@Override
+	public void pivot(CPivotPoint __pivot)
+		throws IOException, NullPointerException
+	{
+		// Ignore, not used here
 	}
 	
 	/**

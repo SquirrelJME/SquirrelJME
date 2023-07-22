@@ -40,6 +40,18 @@ public interface CTokenOutput
 		throws IOException;
 	
 	/**
+	 * This is called to indicate what is about to be output so that the
+	 * token output can handle that accordingly if needed.
+	 *
+	 * @param __pivot The pivot to use.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/22
+	 */
+	void pivot(CPivotPoint __pivot)
+		throws IOException, NullPointerException;
+	
+	/**
 	 * Emits a space.
 	 * 
 	 * @throws IOException On write errors.

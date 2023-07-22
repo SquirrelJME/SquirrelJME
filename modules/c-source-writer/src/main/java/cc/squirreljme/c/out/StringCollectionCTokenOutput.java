@@ -9,6 +9,7 @@
 
 package cc.squirreljme.c.out;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.util.Collection;
 
@@ -88,6 +89,17 @@ public class StringCollectionCTokenOutput
 		// Only if whitespace is to be recorded
 		else if (this.whitespace)
 			this.out.add("\n");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/07/22
+	 */
+	@Override
+	public void pivot(CPivotPoint __pivot)
+		throws IOException, NullPointerException
+	{
+		// Ignore
 	}
 	
 	/**

@@ -9,6 +9,7 @@
 
 package cc.squirreljme.c.out;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 
 /**
@@ -87,6 +88,18 @@ abstract class __FormattedCTokenOutput__
 			// We are back to zero
 			this.column = 0;
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/07/22
+	 */
+	@Override
+	public void pivot(CPivotPoint __pivot)
+		throws IOException, NullPointerException
+	{
+		// Forward by default
+		this.out.pivot(__pivot);
 	}
 	
 	/**

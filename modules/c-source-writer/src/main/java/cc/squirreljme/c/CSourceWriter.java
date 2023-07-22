@@ -9,6 +9,7 @@
 
 package cc.squirreljme.c;
 
+import cc.squirreljme.c.out.CPivotPoint;
 import cc.squirreljme.c.std.CFunctionProvider;
 import java.io.IOException;
 import java.util.List;
@@ -357,6 +358,19 @@ public interface CSourceWriter
 	 * @since 2023/05/29
 	 */
 	CSourceWriter number(CNumberType __type, Number __number)
+		throws IOException, NullPointerException;
+	
+	/**
+	 * This is called to indicate what is about to be output so that the
+	 * token output can handle that accordingly if needed.
+	 *
+	 * @param __pivot The pivot to use.
+	 * @return {@code this}.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/22
+	 */
+	CSourceWriter pivot(CPivotPoint __pivot)
 		throws IOException, NullPointerException;
 	
 	/**
