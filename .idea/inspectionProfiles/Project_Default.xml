@@ -315,7 +315,7 @@
       <option name="ignoreOverridingMethods" value="true" />
     </inspection_tool>
     <inspection_tool class="MethodMayBeStatic" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="Java API Packages (Include)" level="WARNING" enabled="true">
+      <scope name="Java API Packages (Include)" level="WARNING" enabled="false">
         <option name="m_onlyPrivateOrFinal" value="true" />
         <option name="m_ignoreEmptyMethods" value="true" />
       </scope>
