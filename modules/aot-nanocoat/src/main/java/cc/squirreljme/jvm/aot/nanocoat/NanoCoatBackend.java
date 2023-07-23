@@ -22,12 +22,14 @@ import cc.squirreljme.jvm.aot.RomSettings;
 import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.SortedTreeSet;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.Set;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
@@ -68,13 +70,17 @@ public class NanoCoatBackend
 		// Write header output
 		processor.processHeader(glob.headerOut);
 		
+		// Record the added file, keeping it sorted
+		String baseName = Utils.basicFileName(__name + ".c");
+		glob.outputFiles.add(baseName);
+		
 		// Process source code in single file
 		try (OutputStream out = glob.zip.nextEntry(
-			glob.inDirectory(Utils.basicFileName(__name + ".c")));
+			glob.inDirectory(baseName));
 			 CFile sourceOut = Utils.cFile(out))
 		{
 			// Write header
-			Utils.header(sourceOut);
+			Utils.headerC(sourceOut);
 			
 			// Process source code
 			processor.processSource(sourceOut);
@@ -190,23 +196,57 @@ public class NanoCoatBackend
 		// each library to... since NanoCoat is a collection of source code
 		try (ZipStreamWriter zip = new ZipStreamWriter(__out))
 		{
+			// Directory set for CMakeLists.txt files
+			Set<String> cmakeFiles = new SortedTreeSet<>();
+			
+			// Write each library
 			for (VMClassLibrary library : __libs)
 				for (String file : library.listResources())
 				{
 					// Ticker for debugging, there is lots
 					System.err.print(".");
 					
+					// If this is a CMake file, add it
+					if (file.endsWith("/CMakeLists.txt"))
+						cmakeFiles.add(file);
+					
 					// Do the actual copy
 					try (InputStream data = library.resourceAsStream(
 							file); 
 						OutputStream entry = zip.nextEntry(file))
 					{
+						// Copy data
 						StreamUtils.copy(data, entry);
 						
 						// Make sure entry is written
 						entry.flush();
 					}
 				}
+			
+			// Output the CMake file accordingly
+			try (OutputStream rawCMake =
+					 zip.nextEntry("CMakeLists.txt");
+				PrintStream cmake = new PrintStream(rawCMake, true,
+					"utf-8"))
+			{
+				// Start with header
+				Utils.headerCMake(cmake);
+				
+				// Add all subdirectories
+				for (String sub : cmakeFiles)
+				{
+					int ls = sub.indexOf('/');
+					cmake.printf("add_subdirectory(%s)",
+						(ls < 0 ? sub : sub.substring(0, ls)));
+					cmake.println();
+				}
+				
+				// Spacer
+				cmake.println();
+				
+				// Make sure ZIP entry is written
+				cmake.flush();
+			}
 			
 			// Make sure this is flushed
 			zip.flush();

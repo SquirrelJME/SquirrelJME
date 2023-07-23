@@ -103,9 +103,8 @@ cmake_install.cmake
 cmake-build-debug
 nanocoat/cmake-build-debug
 *.tmp
-nanocoat/rom/*.c
-nanocoat/rom/*.h
-nanocoat/rom/CMakeLists.txt
+nanocoat/rom/NanoCoatDebug
+nanocoat/rom/NanoCoatRelease
 
 # Fossil files
 _FOSSIL_

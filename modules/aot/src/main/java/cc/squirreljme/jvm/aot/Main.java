@@ -203,8 +203,8 @@ public class Main
 			glob.initialize();
 			
 			// Read input JAR and perform inline compilation
-			try (InputStream in = __inZip; ZipStreamReader zip =
-				new ZipStreamReader(in))
+			try (InputStream in = __inZip;
+				 ZipStreamReader zip = new ZipStreamReader(in))
 			{
 				// Process JAR entries and compile them into individual class
 				// fragments

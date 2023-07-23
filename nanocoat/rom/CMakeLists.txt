@@ -5,16 +5,18 @@
 # SquirrelJME is under the Mozilla Public License Version 2.0.
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
-# DESCRIPTION: Easier include directives
 
-# Non-optional include
-macro(squirreljme_include what)
-	include("${CMAKE_SOURCE_DIR}/cmake/${what}"
-		NO_POLICY_SCOPE)
-endmacro()
+# Try to see if there are ROM directories
+file(GLOB potentialRomDirs
+	LIST_DIRECTORIES true
+	"*/")
+foreach(potentialRomDir ${potentialRomDirs})
+	# If it is a directory and it has a CMakeLists.txt in it, then include
+	# it for processing...
+	if(IS_DIRECTORY "${potentialRomDir}" AND
+		EXISTS "${potentialRomDir}/CMakeLists.txt")
+		message("Adding ROM ${potentialRomDir}...")
 
-# Optional include
-macro(squirreljme_include_optional what)
-	include("${CMAKE_SOURCE_DIR}/cmake/${what}"
-		OPTIONAL NO_POLICY_SCOPE)
-endmacro()
+		add_subdirectory(${potentialRomDir})
+	endif()
+endforeach()

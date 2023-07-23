@@ -35,9 +35,25 @@ public final class Utils
 	private static final int _FILENAME_LENGTH_LIMIT =
 		24;
 	
+	/** Header for CMake files. */
+	@Language("CMake")
+	private static final String[] CMAKE_HEADER =
+		new String[]{
+			"# -----------------------------------------------------------" +
+				"----------------",
+			"# SquirrelJME",
+			"#     Copyright (C) Stephanie Gawroriski " +
+				"<xer@multiphasicapps.net>",
+			"# -----------------------------------------------------------" +
+				"----------------",
+			"# SquirrelJME is under the Mozilla Public License Version 2.0.",
+			"# See license.mkd for licensing and copyright information.",
+			"# -----------------------------------------------------------" +
+				"----------------"};
+	
 	/** Source file header for branding and otherwise. */
 	@Language("C")
-	private static final String[] _HEADER =
+	private static final String[] C_HEADER =
 		new String[]{"/* -*- Mode: C; indent-tabs-mode: t; tab-width: 4 -*-",
 			"// -----------------------------------------------------------" +
 				"----------------",
@@ -169,25 +185,47 @@ public final class Utils
 	}
 	
 	/**
-	 * Writes the output file header.
+	 * Writes the output file C header.
 	 *
 	 * @param __out The stream to write to.
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/07/19
 	 */
-	public static void header(CSourceWriter __out)
+	public static void headerC(CSourceWriter __out)
 		throws IOException, NullPointerException
 	{
 		if (__out == null)
 			throw new NullPointerException("NARG");
 		
 		// Always use enforced newlines for the header
-		for (String line : Utils._HEADER)
+		for (String line : Utils.C_HEADER)
 			__out.token(line, true);
 		
 		// Always have an extra space with enforced newline
 		__out.newLine(true);
+	}
+	
+	/**
+	 * Writes the output file CMake header.
+	 *
+	 * @param __out The stream to write to.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/23
+	 */
+	public static void headerCMake(PrintStream __out)
+		throws IOException, NullPointerException
+	{
+		if (__out == null)
+			throw new NullPointerException("NARG");
+		
+		// Always use enforced newlines for the header
+		for (String line : Utils.CMAKE_HEADER)
+			__out.println(line);
+		
+		// Always have an extra space with enforced newline
+		__out.println();
 	}
 	
 	/**

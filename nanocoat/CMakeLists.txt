@@ -40,3 +40,10 @@ endif()
 
 # To Emily and Near...
 squirreljme_include("i-miss-you.cmake")
+
+# Everything is C99
+set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_STANDARD_REQUIRED True)
+
+# Directory where the ROM compiled sources exist
+add_subdirectory(rom)
