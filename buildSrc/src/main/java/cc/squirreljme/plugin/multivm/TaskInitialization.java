@@ -734,7 +734,13 @@ public final class TaskInitialization
 					"clean" + TaskInitialization.uppercaseFirst(taskName),
 					Delete.class);
 				cleanTask.delete(__project.provider(() -> 
-					nativeTask.getOutputs().getFiles().getFiles()));
+					nativeTask.getOutputs().getFiles().getSingleFile()));
+				
+				// The clean task is up-to-date if the files were already
+				// deleted or do not exist
+				cleanTask.getOutputs().upToDateWhen((__task) -> 
+					!nativeTask.getOutputs().getFiles().getSingleFile()
+						.exists());
 				
 				// Must run after clean
 				nativeTask.mustRunAfter(cleanTask);
