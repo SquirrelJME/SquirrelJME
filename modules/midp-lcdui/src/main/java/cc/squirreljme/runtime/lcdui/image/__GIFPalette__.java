@@ -42,10 +42,11 @@ final class __GIFPalette__
 	 * Parses the global color table.
 	 * 
 	 * @param __in The stream to read from.
-	 * @param __size
-	 * @return
-	 * @throws IOException
-	 * @throws NullPointerException
+	 * @param __size The size of the table.
+	 * @return The GIF palette.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/06/26
 	 */
 	static __GIFPalette__ __parseGlobal(ExtendedDataInputStream __in,
 		int __size)
