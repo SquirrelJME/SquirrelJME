@@ -62,9 +62,15 @@ public class NanoCoatBuiltInTaskAction
 		Path output = __task.getOutputs().getFiles().getSingleFile().toPath();
 		
 		// This could fail to write
+		Path sourceTemp = null;
 		try
 		{
-			// Make sure the target directories exist first
+			// We will be writing to a file then moving it over, so we only
+			// need a single temporary file for everything
+			sourceTemp = Files.createTempFile("source", ".x");
+			
+			// Make sure the target directories exist first, since we just
+			// deleted them
 			Files.createDirectories(output);
 			
 			// The ROM is just a ZIP of sources which get copied over
@@ -101,44 +107,36 @@ public class NanoCoatBuiltInTaskAction
 					Files.createDirectories(targetParent);
 					
 					// Which file are we writing to?
-					Path targetFile = targetParent.resolve(
-						fragments[numFragments - 1]);
+					String baseName = fragments[numFragments - 1];
+					Path targetFile = targetParent.resolve(baseName);
 					
-					// Dump everything into a temporary file first
-					Path tempFile = null;
+					// Dump all the input into the output
+					try (OutputStream out = Files.newOutputStream(
+						sourceTemp, StandardOpenOption.TRUNCATE_EXISTING,
+						StandardOpenOption.WRITE,
+						StandardOpenOption.CREATE))
+					{
+						VMHelpers.copy(zip, out);
+					}
+					
+					// Move over to target, replace if it exists since
+					// we want to update it
+					Files.move(sourceTemp, targetFile,
+						StandardCopyOption.REPLACE_EXISTING);
+				}
+			}
+					
+			// Cleanup after this
+			finally
+			{
+				if (sourceTemp != null)
 					try
 					{
-						// Create target file to write to
-						tempFile = Files.createTempFile("source",
-							".x");
-						
-						// Dump all the input into the output
-						try (OutputStream out = Files.newOutputStream(tempFile,
-							StandardOpenOption.TRUNCATE_EXISTING,
-							StandardOpenOption.WRITE,
-							StandardOpenOption.CREATE))
-						{
-							VMHelpers.copy(zip, out);
-						}
-						
-						// Copy over to target
-						Files.move(tempFile, targetFile,
-							StandardCopyOption.REPLACE_EXISTING);
+						Files.delete(sourceTemp);
 					}
-					
-					// Cleanup after this
-					finally
+					catch (IOException ignored)
 					{
-						if (tempFile != null)
-							try
-							{
-								Files.delete(tempFile);
-							}
-							catch (IOException ignored)
-							{
-							}
 					}
-				}
 			}
 		}
 		

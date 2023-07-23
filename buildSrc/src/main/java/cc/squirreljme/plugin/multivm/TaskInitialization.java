@@ -32,6 +32,7 @@ import org.gradle.api.file.FileCollection;
 import org.gradle.api.internal.AbstractTask;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.provider.Provider;
+import org.gradle.api.tasks.Delete;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.bundling.AbstractArchiveTask;
@@ -703,18 +704,45 @@ public final class TaskInitialization
 			// Which native ports are supported?
 			for (NativePortSupport nativePort :
 				__classifier.getVmType().hasNativePortSupport())
+			{
+				Task nativeTask;
+				String taskName;
 				switch (nativePort)
 				{
 					case RATUFACOAT:
-						__project.getTasks().create(baseName + "RatufaCoat",
-							RatufaCoatBuiltInTask.class,  __classifier, rom);
+						taskName = baseName + "RatufaCoat";
+						nativeTask = tasks.create(
+							taskName,
+							RatufaCoatBuiltInTask.class, __classifier, rom);
+						break;
+					
+					case NANOCOAT:
+						// Create task
+						taskName = baseName + "NanoCoat";
+						nativeTask = tasks.create(
+							taskName,
+							NanoCoatBuiltInTask.class,
+							__classifier, rom);
 						break;
 						
-					case NANOCOAT:
-						__project.getTasks().create(baseName + "NanoCoat",
-							NanoCoatBuiltInTask.class,  __classifier, rom);
-						break;
+					default:
+						throw new Error(nativePort.toString());
 				}
+				
+				// Setup clean task from the output of the ROM task
+				Delete cleanTask = tasks.create(
+					"clean" + TaskInitialization.uppercaseFirst(taskName),
+					Delete.class);
+				cleanTask.delete(__project.provider(() -> 
+					nativeTask.getOutputs().getFiles().getFiles()));
+				
+				// Must run after clean
+				nativeTask.mustRunAfter(cleanTask);
+				
+				// Special case for NanoCoat, always clean the inputs
+				if (nativePort == NativePortSupport.NANOCOAT)
+					nativeTask.dependsOn(cleanTask);
+			}
 		}
 	}
 	

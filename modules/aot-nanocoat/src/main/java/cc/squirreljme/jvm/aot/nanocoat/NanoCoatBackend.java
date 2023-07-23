@@ -70,8 +70,8 @@ public class NanoCoatBackend
 		
 		// Process source code in single file
 		try (OutputStream out = glob.zip.nextEntry(
-			glob.inDirectory(Utils.dosFileName(__name + ".c")));
-			CFile sourceOut = Utils.cFile(out))
+			glob.inDirectory(Utils.basicFileName(__name + ".c")));
+			 CFile sourceOut = Utils.cFile(out))
 		{
 			// Write header
 			Utils.header(sourceOut);

@@ -12,7 +12,6 @@ package cc.squirreljme.jvm.aot.nanocoat;
 import cc.squirreljme.c.CFile;
 import cc.squirreljme.c.CSourceWriter;
 import cc.squirreljme.c.out.AppendableCTokenOutput;
-import cc.squirreljme.c.out.CompactCTokenOutput;
 import cc.squirreljme.c.out.EchoCTokenOutput;
 import cc.squirreljme.c.out.PrettyCTokenOutput;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -32,6 +31,10 @@ import org.intellij.lang.annotations.Language;
  */
 public final class Utils
 {
+	/** File name length limit. */
+	private static final int _FILENAME_LENGTH_LIMIT =
+		24;
+	
 	/** Source file header for branding and otherwise. */
 	@Language("C")
 	private static final String[] _HEADER =
@@ -80,18 +83,34 @@ public final class Utils
 	}
 	
 	/**
-	 * Determines a DOS compatible file name.
+	 * Determines a basic compatible file name.
+	 * 
+	 * @param __in The input name.
+	 * @return The DOS compatible file name.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/23
+	 */
+	public static final String basicFileName(String __in)
+		throws NullPointerException
+	{
+		return Utils.basicFileName(__in, Utils._FILENAME_LENGTH_LIMIT);
+	}
+	
+	/**
+	 * Determines a basic compatible file name.
 	 * 
 	 * @param __in The input name.
 	 * @return The DOS compatible file name.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/28
 	 */
-	public static final String dosFileName(String __in)
-		throws NullPointerException
+	public static final String basicFileName(String __in, int __lenLimit)
+		throws IllegalArgumentException, NullPointerException
 	{
 		if (__in == null)
 			throw new NullPointerException("NARG");
+		if (__lenLimit < 8)
+			throw new NullPointerException("NLEN");
 		
 		// Extract extension if there is one
 		int lastDot = __in.lastIndexOf('.');
@@ -104,7 +123,10 @@ public final class Utils
 		{
 			char c = __in.charAt(i);
 			
-			if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
+			// Force all names to lowercase
+			if (c >= 'A' && c <= 'Z')
+				base.append(Character.toLowerCase(c));
+			else if ((c >= 'a' && c <= 'z') ||
 				(c >= '0' && c <= '9') || c == '_')
 				base.append(c);
 			else
@@ -112,26 +134,34 @@ public final class Utils
 		}
 		
 		// Long file name?
-		if (base.length() > 8)
+		int baseLen = base.length();
+		if (baseLen > __lenLimit)
 		{
 			// Determine the hash of the name
-			String temp = base.toString().toLowerCase();
+			String temp = base.toString();
 			int hash = temp.hashCode();
 			if (hash < 0)
 				hash = -hash;
 			
 			// Convert to a max radix number which will have part of the name
 			String code = Long.toString(hash & 0xFFFFFFFFL,
-				Character.MAX_RADIX);
+				Character.MAX_RADIX).toLowerCase();
 			
-			// This will be [1, 7] characters, so clear out to fit the code
-			// with 8 characters
+			// Need this to determine how much to take off
 			int codeLen = code.length();
-			int baseLen = 8 - codeLen;
-			base.delete(baseLen, base.length());
 			
-			// Append the code, which is the compactified hashcode
-			base.append(code);
+			// Determine the pivot point where the hash will be inserted
+			// accordingly, splitting into thirds will make it so the second
+			// half has more character use while the left loses them
+			int pivotBase = __lenLimit / 3;
+			
+			// Remove characters to fit everything
+			int sizeGap = __lenLimit - codeLen;
+			while (base.length() > sizeGap)
+				base.deleteCharAt(pivotBase);
+			
+			// Insert the code directly at the pivot point
+			base.insert(pivotBase, code);
 		}
 		
 		// Build name

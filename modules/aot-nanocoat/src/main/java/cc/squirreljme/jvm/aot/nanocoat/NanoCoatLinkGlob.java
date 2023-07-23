@@ -14,16 +14,11 @@ import cc.squirreljme.c.CFile;
 import cc.squirreljme.c.CFileName;
 import cc.squirreljme.c.CPPBlock;
 import cc.squirreljme.c.CSourceWriter;
-import cc.squirreljme.c.out.AppendableCTokenOutput;
-import cc.squirreljme.c.out.CompactCTokenOutput;
-import cc.squirreljme.c.out.EchoCTokenOutput;
 import cc.squirreljme.jvm.aot.LinkGlob;
 import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
-import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
 /**
@@ -68,7 +63,7 @@ public class NanoCoatLinkGlob
 		
 		// Determine output names
 		this.name = __name;
-		this.baseName = Utils.dosFileName(__name);
+		this.baseName = Utils.basicFileName(__name);
 		this.headerFileName = CFileName.of(this.baseName + ".h");
 		
 		// Setup ZIP output
