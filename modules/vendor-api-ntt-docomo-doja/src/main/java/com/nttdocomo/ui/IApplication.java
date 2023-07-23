@@ -12,6 +12,7 @@ package com.nttdocomo.ui;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.nttdocomo.io.SquirrelJMEWebRootConnectionFactory;
+import org.intellij.lang.annotations.Language;
 
 @Api
 public abstract class IApplication
@@ -69,6 +70,7 @@ public abstract class IApplication
 	 * @since 2022/10/07
 	 */
 	@Api
+	@Language("http-url-reference")
 	@SuppressWarnings("MethodNamesDifferingOnlyByCase")
 	public final String getSourceUrl()
 	{
@@ -85,6 +87,7 @@ public abstract class IApplication
 	 * @since 2023/07/21
 	 */
 	@Api
+	@Language("http-url-reference")
 	@SuppressWarnings("MethodNamesDifferingOnlyByCase")
 	public final String getSourceURL()
 	{

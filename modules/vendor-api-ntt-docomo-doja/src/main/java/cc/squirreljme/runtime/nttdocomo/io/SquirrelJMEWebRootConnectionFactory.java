@@ -19,6 +19,7 @@ import java.io.IOException;
 import javax.microedition.io.Connection;
 import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.io.ConnectionOption;
+import org.intellij.lang.annotations.Language;
 
 /**
  * This is a factory that creates an HTTP connection which
@@ -32,6 +33,7 @@ public class SquirrelJMEWebRootConnectionFactory
 	implements CustomConnectionFactory
 {
 	/** The base scheme for this connection. */
+	@Language("http-url-reference")
 	public static final String URI_SCHEME =
 		"squirreljme+doja";
 	
