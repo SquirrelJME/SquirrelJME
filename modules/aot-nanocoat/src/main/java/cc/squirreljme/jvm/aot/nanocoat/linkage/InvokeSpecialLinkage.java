@@ -9,6 +9,10 @@
 
 package cc.squirreljme.jvm.aot.nanocoat.linkage;
 
+import cc.squirreljme.c.CBasicExpression;
+import cc.squirreljme.c.CStructVariableBlock;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.io.IOException;
 import net.multiphasicapps.classfile.MethodNameAndType;
 import net.multiphasicapps.classfile.MethodReference;
 
@@ -77,5 +81,30 @@ public final class InvokeSpecialLinkage
 	public int hashCode()
 	{
 		return this.source.hashCode() ^ this.target.hashCode();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/07/25
+	 */
+	@Override
+	public void write(CStructVariableBlock __output)
+		throws IOException, NullPointerException
+	{
+		try (CStructVariableBlock struct =
+			 __output.memberStructSet("invokeSpecial"))
+		{
+			struct.memberSet("sourceMethodName",
+				CBasicExpression.string(this.source.name().toString()));
+			struct.memberSet("sourceMethodType",
+				CBasicExpression.string(this.source.type().toString()));
+			
+			struct.memberSet("targetClass",
+				CBasicExpression.string(this.target.className().toString()));
+			struct.memberSet("targetMethodName",
+				CBasicExpression.string(this.target.memberName().toString()));
+			struct.memberSet("targetMethodType",
+				CBasicExpression.string(this.target.memberType().toString()));
+		}
 	}
 }

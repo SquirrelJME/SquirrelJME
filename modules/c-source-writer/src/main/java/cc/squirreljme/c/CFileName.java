@@ -62,7 +62,7 @@ public final class CFileName
 			else if (!((c >= 'a' && c <= 'z') ||
 				(c >= 'A' && c <= 'Z') ||
 				(c >= '0' && c <= '9') ||
-				c == '_'))
+				c == '_' || c == '/'))
 				throw new IllegalArgumentException("CW09 " + __fileName);
 		}
 		

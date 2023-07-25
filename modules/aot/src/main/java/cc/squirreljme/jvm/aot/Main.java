@@ -13,8 +13,6 @@ import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.vm.JarClassLibrary;
 import cc.squirreljme.vm.SummerCoatJarLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -77,6 +75,7 @@ public class Main
 		String compiler = null;
 		String name = "undefined";
 		String mode = null;
+		String clutterLevel = null;
 		
 		// Parse input arguments
 		while (!args.isEmpty())
@@ -90,6 +89,10 @@ public class Main
 			// The name of the JAR being compiled
 			else if (arg.startsWith("-Xname:"))
 				name = arg.substring("-Xname:".length());
+			
+			// The current clutter level
+			else if (arg.startsWith("-XclutterLevel"))
+				clutterLevel = arg.substring("-XclutterLevel:".length());
 			
 			// End of switches
 			else if (!arg.startsWith("-"))
@@ -110,6 +113,12 @@ public class Main
 		// Find the backend to use
 		Backend backend = Main.findBackend(compiler);
 		
+		// Store into settings
+		AOTSettings aotSettings = new AOTSettings(compiler,
+			name,
+			mode,
+			clutterLevel);
+		
 		// Use explicit input/output
 		try (InputStream in = new StandardInputStream();
 			OutputStream out = System.out)
@@ -119,17 +128,17 @@ public class Main
 			{
 					// Compile code
 				case "compile":
-					Main.mainCompile(backend, in, out, name, args);
+					Main.mainCompile(aotSettings, backend, in, out, args);
 					break;
 					
 					// Dump the result of "compile"
 				case "dumpCompile":
-					Main.dumpCompile(backend, in, out, name);
+					Main.dumpCompile(aotSettings, backend, in, out);
 					break;
 					
 					// Link multiple libraries into one
 				case "rom":
-					Main.mainRom(backend, out, args);
+					Main.mainRom(aotSettings, backend, out, args);
 					break;
 				
 				/* {@squirreljme.error AE02 Unknown mode. (The mode)} */
@@ -142,21 +151,22 @@ public class Main
 	/**
 	 * Dumps the result of the compilation to a readable text format used
 	 * for debugging.
-	 * 
+	 *
+	 * @param __aotSettings AOT settings.
 	 * @param __backend The backend to use.
 	 * @param __inGlob The input glob.
 	 * @param __out Where to write the output.
-	 * @param __name The name of the Glob.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/05/16
 	 */
-	private static void dumpCompile(Backend __backend, InputStream __inGlob,
-		OutputStream __out, String __name)
+	private static void dumpCompile(AOTSettings __aotSettings,
+		Backend __backend, InputStream __inGlob,
+		OutputStream __out)
 		throws IOException, NullPointerException
 	{
 		if (__backend == null || __inGlob == null || __out == null ||
-			__name == null)
+			__aotSettings == null)
 			throw new NullPointerException("NARG");
 		
 		// Read in the entire contents of the data
@@ -169,27 +179,28 @@ public class Main
 		// Dump the output
 		try (PrintStream out = new PrintStream(__out, true))
 		{
-			__backend.dumpGlob(dump, __name, out);
+			__backend.dumpGlob(__aotSettings, dump, out);
 		}
 	}
 	
 	/**
 	 * Handles the main compilation stage.
-	 * 
+	 *
+	 * @param __aotSettings AOT settings.
 	 * @param __backend The backend to use.
 	 * @param __inZip The input stream of the input ZIP.
 	 * @param __outGlob The output stream of the Glob.
-	 * @param __name The name of the library.
 	 * @param __args The arguments to use.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/22
 	 */
-	private static void mainCompile(Backend __backend, InputStream __inZip,
-		OutputStream __outGlob, String __name, Deque<String> __args)
+	private static void mainCompile(AOTSettings __aotSettings,
+		Backend __backend, InputStream __inZip,
+		OutputStream __outGlob, Deque<String> __args)
 		throws IOException, NullPointerException
 	{
-		if (__backend == null || __name == null || __args == null ||
+		if (__backend == null || __aotSettings == null || __args == null ||
 			__inZip == null || __outGlob == null)
 			throw new NullPointerException("NARG");
 		
@@ -197,7 +208,8 @@ public class Main
 		CompileSettings settings = CompileSettings.parse(__args);
 		
 		// Setup glob for final linking
-		try (LinkGlob glob = __backend.linkGlob(settings, __name, __outGlob))
+		try (LinkGlob glob = __backend.linkGlob(__aotSettings, settings,
+			__outGlob))
 		{
 			// Starting linking
 			glob.initialize();
@@ -241,7 +253,8 @@ public class Main
 	
 	/**
 	 * Links the ROM together as one.
-	 * 
+	 *
+	 * @param __aotSettings AOT settings.
 	 * @param __backend The backend to use.
 	 * @param __out Where the resultant ROM is to be written.
 	 * @param __args The arguments to the ROM linking.
@@ -249,7 +262,8 @@ public class Main
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/27
 	 */
-	public static void mainRom(Backend __backend, OutputStream __out,
+	public static void mainRom(AOTSettings __aotSettings, Backend __backend,
+		OutputStream __out,
 		Deque<String> __args)
 		throws IOException, NullPointerException
 	{
@@ -284,7 +298,7 @@ public class Main
 			new VMClassLibrary[libs.size()]);
 		
 		// Perform combined linking
-		__backend.rom(settings, __out, vmLibs);
+		__backend.rom(__aotSettings, settings, __out, vmLibs);
 	}
 	
 	/**

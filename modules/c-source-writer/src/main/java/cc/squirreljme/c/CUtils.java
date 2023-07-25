@@ -34,7 +34,7 @@ public final class CUtils
 	 * @return The input as a quoted string.
 	 * @since 2023/05/31
 	 */
-	public static String quotedString(Object __input)
+	public static String quotedString(CharSequence __input)
 	{
 		if (__input == null)
 			return null;
@@ -53,12 +53,16 @@ public final class CUtils
 					sb.append("\\r");
 				else if (b == '\n')
 					sb.append("\\n");
+				else if (b == '\\')
+					sb.append("\\\\");
+				else if (b == '\"')
+					sb.append("\\\"");
 				else if (b >= 0x20 && b < 0x7F)
 					sb.append((char)b);
 				
 				// This is really the only most consistent here
 				else
-					sb.append(String.format("\\x%03o", b & 0xFF));
+					sb.append(String.format("\\%03o", b & 0xFF));
 			}
 		}
 		catch (IOException __e)

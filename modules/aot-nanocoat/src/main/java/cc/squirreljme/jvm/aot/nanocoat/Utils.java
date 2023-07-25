@@ -347,7 +347,8 @@ public final class Utils
 		if (__module == null || __in == null)
 			throw new NullPointerException("NARG");
 		
-		return "sjmeCl__" + __module.baseName + "__" + Utils.mangle(__in);
+		return "sj_" + __module.aotSettings.clutterLevel + "__" +
+			__module.baseName + "__" + Utils.mangle(__in);
 	}
 	
 	/**
@@ -366,7 +367,8 @@ public final class Utils
 		if (__module == null || __in == null)
 			throw new NullPointerException("NARG");
 		
-		return "sjmeRc__" + __module.baseName + "__" + Utils.mangle(__in);
+		return "rc_" + __module.aotSettings.clutterLevel + "__" +
+			__module.baseName + "__" + Utils.mangle(__in);
 	}
 	
 	/**
@@ -385,7 +387,7 @@ public final class Utils
 		if (__module == null || __method == null)
 			throw new NullPointerException("NARG");
 		
-		return "sjmeMt__" + __module.baseName + "__" +
+		return "mt_" + __module.baseName + "__" +
 			Utils.mangle(__method.inClass()) + "__" +
 			Utils.mangle(__method.name()) + "__" + __method.methodIndex();
 	}

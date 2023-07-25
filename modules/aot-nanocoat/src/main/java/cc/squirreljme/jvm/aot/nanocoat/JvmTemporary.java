@@ -115,7 +115,7 @@ public class JvmTemporary
 			.identifier(JvmTypes.VMFRAME.type(CStructType.class)
 				.member("tempStack"))
 			.arrayAccess(this.tempIndex())
-			.expression(JvmTemporary.__viaType(true, __type))
+			.expression(JvmTemporary.__viaType(false, __type))
 			.build();
 	}
 	

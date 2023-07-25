@@ -48,6 +48,9 @@ public class __StaticCodeVariables__
 	/** Return value storage. */
 	private static volatile Reference<CExpression> _returnValue;
 	
+	/** The current linkage. */
+	private static volatile Reference<CVariable> _linkage;
+	
 	/**
 	 * Returns the reference to current class being executed.
 	 *
@@ -135,6 +138,26 @@ public class __StaticCodeVariables__
 			rv = JvmFunctions.METHOD_CODE.function()
 				.argument("currentThread");
 			__StaticCodeVariables__._currentThread = new WeakReference<>(rv);
+		}
+		
+		return rv;
+	}
+	
+	/**
+	 * Returns the current linkage.
+	 *
+	 * @return The current linkage.
+	 * @since 2023/07/25
+	 */
+	public static CVariable linkage()
+	{
+		Reference<CVariable> ref = __StaticCodeVariables__._linkage;
+		CVariable rv;
+		if (ref == null || (rv = ref.get()) == null)
+		{
+			rv = CVariable.of(JvmTypes.DYNAMIC_LINKAGE.pointerType(),
+				"linkage");
+			__StaticCodeVariables__._linkage = new WeakReference<>(rv);
 		}
 		
 		return rv;

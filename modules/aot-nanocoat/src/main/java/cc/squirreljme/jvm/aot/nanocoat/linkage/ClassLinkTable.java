@@ -9,7 +9,10 @@
 
 package cc.squirreljme.jvm.aot.nanocoat.linkage;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.UnmodifiableIterator;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +20,7 @@ import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.FieldReference;
 import net.multiphasicapps.classfile.MethodNameAndType;
 import net.multiphasicapps.classfile.MethodReference;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents the class linkage table.
@@ -24,6 +28,7 @@ import net.multiphasicapps.classfile.MethodReference;
  * @since 2023/06/03
  */
 public class ClassLinkTable
+	implements Iterable<Linkage>
 {
 	/** Linkage table map. */
 	private final Map<Linkage, Integer> _indexMap =
@@ -143,6 +148,16 @@ public class ClassLinkTable
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2023/07/25
+	 */
+	@Override
+	public Iterator<Linkage> iterator()
+	{
+		return UnmodifiableIterator.of(this._table);
+	}
+	
+	/**
 	 * Puts the input into the linkage map if it does not yet exist, otherwise
 	 * returns the already contained linkage.
 	 * 
@@ -173,6 +188,17 @@ public class ClassLinkTable
 		
 		// Setup container
 		return new Container<>(index, __type.cast(table.get(index)));
+	}
+	
+	/**
+	 * Returns the number of linkages.
+	 *
+	 * @return The number of linkages.
+	 * @since 2023/07/25
+	 */
+	public int size()
+	{
+		return this._table.size();
 	}
 	
 	/**

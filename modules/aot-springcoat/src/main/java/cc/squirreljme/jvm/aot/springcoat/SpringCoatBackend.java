@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.aot.springcoat;
 
+import cc.squirreljme.jvm.aot.AOTSettings;
 import cc.squirreljme.jvm.aot.Backend;
 import cc.squirreljme.jvm.aot.CompileSettings;
 import cc.squirreljme.jvm.aot.LinkGlob;
@@ -22,7 +23,6 @@ import cc.squirreljme.jvm.pack.constants.ClassInfoConstants;
 import cc.squirreljme.jvm.pack.constants.PackFlag;
 import cc.squirreljme.jvm.pack.constants.PackProperty;
 import cc.squirreljme.jvm.pack.constants.PackTocProperty;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.DataContainerLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.io.IOException;
@@ -71,7 +71,7 @@ public class SpringCoatBackend
 	 * @since 2021/08/21
 	 */
 	@Override
-	public void dumpGlob(byte[] __inGlob, String __name, PrintStream __out)
+	public void dumpGlob(AOTSettings __inGlob, byte[] __name, PrintStream __out)
 		throws IOException, NullPointerException
 	{
 		throw new IllegalArgumentException("AI01");
@@ -82,7 +82,7 @@ public class SpringCoatBackend
 	 * @since 2021/08/21
 	 */
 	@Override
-	public LinkGlob linkGlob(CompileSettings __settings, String __name,
+	public LinkGlob linkGlob(AOTSettings __settings, CompileSettings __name,
 		OutputStream __out)
 		throws IOException, NullPointerException
 	{
@@ -104,7 +104,7 @@ public class SpringCoatBackend
 	 * @since 2021/08/21
 	 */
 	@Override
-	public void rom(RomSettings __settings, OutputStream __out,
+	public void rom(AOTSettings __aotSettings, RomSettings __settings, OutputStream __out,
 		VMClassLibrary... __libs)
 		throws IOException, NullPointerException
 	{

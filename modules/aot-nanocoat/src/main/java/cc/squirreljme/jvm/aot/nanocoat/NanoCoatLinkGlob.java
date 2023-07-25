@@ -9,18 +9,28 @@
 
 package cc.squirreljme.jvm.aot.nanocoat;
 
+import cc.squirreljme.c.CArrayBlock;
+import cc.squirreljme.c.CBasicExpression;
+import cc.squirreljme.c.CBlock;
 import cc.squirreljme.c.CExpressionBuilder;
 import cc.squirreljme.c.CFile;
 import cc.squirreljme.c.CFileName;
+import cc.squirreljme.c.CIdentifier;
 import cc.squirreljme.c.CPPBlock;
 import cc.squirreljme.c.CSourceWriter;
+import cc.squirreljme.c.CStructVariableBlock;
+import cc.squirreljme.c.CVariable;
+import cc.squirreljme.jvm.aot.AOTSettings;
 import cc.squirreljme.jvm.aot.LinkGlob;
 import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
+import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
+import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import cc.squirreljme.runtime.cldc.util.SortedTreeSet;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
@@ -63,25 +73,66 @@ public class NanoCoatLinkGlob
 	protected final Set<String> outputFiles =
 		new SortedTreeSet<>();
 	
+	/** Identifiers to resources. */
+	protected final Map<String, CIdentifier> resourceIdentifiers =
+		new SortedTreeMap<>(new QuickSearchComparator());
+	
+	/** Identifiers to classes. */
+	protected final Map<String, CIdentifier> classIdentifiers =
+		new SortedTreeMap<>(new QuickSearchComparator());
+	
+	/** Library information. */
+	protected final CVariable libraryInfo;
+	
+	/** Library classes. */
+	protected final CVariable libraryClasses;
+	
+	/** Library resources. */
+	protected final CVariable libraryResources;
+	
+	/** Header guard used. */
+	protected final CIdentifier headerGuard;
+	
+	/** The settings used for the AOT call. */
+	protected final AOTSettings aotSettings;
+	
+	/** The C header block. */
+	volatile CBlock _headerBlock;
+	
 	/**
 	 * Initializes the link glob.
 	 * 
-	 * @param __name The name of the glob.
+	 * @param __aotSettings The name of the glob.
 	 * @param __headerOut The final output file.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/28
 	 */
-	public NanoCoatLinkGlob(String __name, OutputStream __headerOut)
+	public NanoCoatLinkGlob(AOTSettings __aotSettings,
+		OutputStream __headerOut)
 		throws NullPointerException
 	{
-		if (__name == null || __headerOut == null)
+		if (__aotSettings == null || __headerOut == null)
 			throw new NullPointerException("NARG");
 		
 		// Determine output names
-		this.name = __name;
-		this.baseName = Utils.basicFileName(__name);
+		this.aotSettings = __aotSettings;
+		this.name = __aotSettings.name;
+		this.baseName = Utils.basicFileName(this.name);
 		this.headerFileName = CFileName.of(this.baseName + ".h");
 		this.rootSourceFileName = CFileName.of(this.baseName + ".c");
+		this.headerGuard = CIdentifier.of("SJME_ROM_" +
+			this.baseName.toUpperCase() + "_H");
+		
+		// Library information
+		this.libraryInfo = CVariable.of(JvmTypes.STATIC_LIBRARY
+				.type().constType(),
+			this.baseName + "__library");
+		this.libraryClasses = CVariable.of(JvmTypes.STATIC_LIBRARY_CLASSES
+				.type().constType(),
+			this.baseName + "__classes");
+		this.libraryResources = CVariable.of(JvmTypes.STATIC_LIBRARY_RESOURCES
+				.type().constType(),
+			this.baseName + "__resources");
 		
 		// Setup ZIP output
 		ZipStreamWriter zip = new ZipStreamWriter(__headerOut);
@@ -130,6 +181,12 @@ public class NanoCoatLinkGlob
 		try (OutputStream out = zip.nextEntry(
 			this.inDirectory(this.headerFileName)))
 		{
+			// Finish header block
+			CBlock block = this._headerBlock;
+			
+			// Close block
+			block.close();
+			
 			// Close out the header entry before we write it fully
 			this.headerOut.flush();
 			this.headerOut.close();
@@ -140,12 +197,66 @@ public class NanoCoatLinkGlob
 		}
 		
 		// Write root source as well
+		CFile rootSourceOut = this.rootSourceOut;
 		try (OutputStream out = zip.nextEntry(
 			this.inDirectory(this.rootSourceFileName)))
 		{
+			// Write resources
+			try (CStructVariableBlock struct = rootSourceOut.define(
+				CStructVariableBlock.class, this.libraryResources))
+			{
+				Map<String, CIdentifier> ids = this.resourceIdentifiers;
+				
+				// Store count
+				struct.memberSet("count",
+					CBasicExpression.number(ids.size()));
+				
+				// Write references to each identifier
+				try (CArrayBlock array = struct.memberArraySet(
+					"resources"))
+				{
+					for (CIdentifier id : ids.values())
+						array.value(CBasicExpression.reference(id));
+				}
+			}
+			
+			// Write classes
+			try (CStructVariableBlock struct = rootSourceOut.define(
+				CStructVariableBlock.class, this.libraryClasses))
+			{
+				Map<String, CIdentifier> ids = this.classIdentifiers;
+				
+				// Store count
+				struct.memberSet("count",
+					CBasicExpression.number(ids.size()));
+				
+				// Write references to each identifier
+				try (CArrayBlock array = struct.memberArraySet(
+					"classes"))
+				{
+					for (CIdentifier id : ids.values())
+						array.value(CBasicExpression.reference(id));
+				}
+			}
+			
+			// Write library info
+			try (CStructVariableBlock struct = rootSourceOut.define(
+				CStructVariableBlock.class, this.libraryInfo))
+			{
+				struct.memberSet("name",
+					CBasicExpression.string(this.name));
+				struct.memberSet("nameHash",
+					CBasicExpression.number(this.name.hashCode()));
+				
+				struct.memberSet("resources",
+					CBasicExpression.reference(this.libraryResources));
+				struct.memberSet("classes",
+					CBasicExpression.reference(this.libraryClasses));
+			}
+			
 			// Close out the header entry before we write it fully
-			this.rootSourceOut.flush();
-			this.rootSourceOut.close();
+			rootSourceOut.flush();
+			rootSourceOut.close();
 			
 			// Copy to the ZIP
 			out.write(this.rawRootSourceOut.toByteArray());
@@ -166,8 +277,12 @@ public class NanoCoatLinkGlob
 				"rom-macros-and-functions.cmake\"\n\tNO_POLICY_SCOPE)");
 			cmake.println();
 			
+			// The true library name
+			String libName = this.aotSettings.clutterLevel + "_" +
+				this.baseName;
+			
 			// Generate list of files
-			cmake.printf("set(%sFiles", this.baseName);
+			cmake.printf("set(%sFiles", libName);
 			cmake.println();
 			for (String outputFile : this.outputFiles)
 			{
@@ -179,7 +294,7 @@ public class NanoCoatLinkGlob
 			
 			// Use macro for all the files
 			cmake.printf("squirreljme_romLibrary(%s \"${%sFiles}\")",
-				this.baseName, this.baseName);
+				libName, libName);
 			cmake.println();
 			cmake.println();
 			
@@ -237,28 +352,32 @@ public class NanoCoatLinkGlob
 		Utils.headerC(headerOut);
 		Utils.headerC(rootSourceOut);
 		
+		// Include library header
+		rootSourceOut.preprocessorInclude(this.headerFileName);
+		
 		// Make sure the output files has the actual root source
 		this.outputFiles.add(this.rootSourceFileName.toString());
 		
 		// If we are compiling source, include ourselves via the header
-		try (CPPBlock block = headerOut.preprocessorIf(
+		CPPBlock block = headerOut.preprocessorIf(
 				CExpressionBuilder.builder()
 					.not()
-					.preprocessorDefined(Constants.CODE_GUARD)
-					.build()))
-		{
-			// Do not do this again
-			headerOut.preprocessorDefine(Constants.CODE_GUARD,
-				CExpressionBuilder.builder()
-					.number(1)
-				.build());
+					.preprocessorDefined(this.headerGuard)
+					.build());
+		this._headerBlock = block;
+		
+		// Do not do this again
+		block.preprocessorDefine(this.headerGuard,
+			CExpressionBuilder.builder()
+				.number(1)
+			.build());
 			
-			// Do the actual include of ourselves
-			headerOut.preprocessorInclude(Constants.SJME_JNI_HEADER);
-			headerOut.preprocessorInclude(this.headerFileName);
-			
-			// Stop doing this, so we can continue back to normal source code
-			headerOut.preprocessorUndefine(Constants.CODE_GUARD);
-		}
+		// Include NanoCoat definitions
+		block.preprocessorInclude(Constants.SJME_NVM_HEADER);
+		
+		// Declare library variables
+		block.declare(this.libraryInfo.extern());
+		block.declare(this.libraryClasses.extern());
+		block.declare(this.libraryResources.extern());
 	}
 }

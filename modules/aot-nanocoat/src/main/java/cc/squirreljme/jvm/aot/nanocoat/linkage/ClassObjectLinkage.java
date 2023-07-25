@@ -9,7 +9,10 @@
 
 package cc.squirreljme.jvm.aot.nanocoat.linkage;
 
+import cc.squirreljme.c.CBasicExpression;
+import cc.squirreljme.c.CStructVariableBlock;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.io.IOException;
 import net.multiphasicapps.classfile.ClassName;
 
 /**
@@ -55,5 +58,21 @@ public class ClassObjectLinkage
 	public int hashCode()
 	{
 		return this.className.hashCode();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/07/25
+	 */
+	@Override
+	public void write(CStructVariableBlock __output)
+		throws IOException, NullPointerException
+	{
+		try (CStructVariableBlock struct =
+			 __output.memberStructSet("classObject"))
+		{
+			struct.memberSet("className",
+				CBasicExpression.string(this.className.toString()));
+		}
 	}
 }

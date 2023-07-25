@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.aot.nanocoat;
 
 import cc.squirreljme.c.CArrayBlock;
+import cc.squirreljme.c.CBasicExpression;
 import cc.squirreljme.c.CExpressionBuilder;
 import cc.squirreljme.c.CFile;
 import cc.squirreljme.c.CIdentifier;
@@ -20,10 +21,13 @@ import cc.squirreljme.c.CVariable;
 import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassLinkTable;
+import cc.squirreljme.jvm.aot.nanocoat.linkage.Linkage;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import net.multiphasicapps.classfile.ClassFile;
+import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.ClassNames;
 import net.multiphasicapps.classfile.Field;
 import net.multiphasicapps.classfile.FieldNameAndType;
 import net.multiphasicapps.classfile.Method;
@@ -50,6 +54,12 @@ public class ClassProcessor
 	
 	/** Methods variable for the class. */
 	protected final CVariable classMethods;
+	
+	/** Interfaces for the class. */
+	protected final CVariable classInterfaces;
+	
+	/** Class linkages. */
+	protected final CVariable classLinkages;
 	
 	/** Class information table for the class. */
 	protected final CVariable classInfo;
@@ -89,12 +99,20 @@ public class ClassProcessor
 		this.classInfo = CVariable.of(
 			JvmTypes.STATIC_CLASS_INFO.type(CStructType.class).constType(),
 			CIdentifier.of(this.classIdentifier + "__info"));
+		this.classInterfaces = CVariable.of(
+				JvmTypes.STATIC_CLASS_INTERFACES.type(CStructType.class)
+					.constType(),
+				CIdentifier.of(this.classIdentifier +
+					"__interfaces"));
 		this.classFields = CVariable.of(
 			JvmTypes.STATIC_CLASS_FIELDS.type(CStructType.class).constType(),
 			CIdentifier.of(this.classIdentifier + "__fields"));
 		this.classMethods = CVariable.of(
 			JvmTypes.STATIC_CLASS_METHODS.type(CStructType.class).constType(),
 			CIdentifier.of(this.classIdentifier + "__methods"));
+		this.classLinkages = CVariable.of(
+			JvmTypes.STATIC_LINKAGES.type(CStructType.class).constType(),
+			CIdentifier.of(this.classIdentifier + "__linkages"));
 		
 		// Create processors for each field
 		Map<FieldNameAndType, FieldProcessor> fields = this._fields;
@@ -186,6 +204,69 @@ public class ClassProcessor
 			}
 		}
 		
+		// Interfaces?
+		ClassNames interfaceNames = classFile.interfaceNames();
+		if (interfaceNames != null && !interfaceNames.isEmpty())
+			try (CStructVariableBlock struct = __out.define(
+				CStructVariableBlock.class, this.classInterfaces))
+			{
+				// Interface count
+				struct.memberSet("count",
+					CExpressionBuilder.builder()
+						.number(Constants.JINT_C, interfaceNames.size())
+						.build());
+				
+				// Then the actual interfaces
+				try (CArrayBlock array =
+					 struct.memberArraySet("interfaces"))
+				{
+					for (ClassName interfaceName : interfaceNames)
+						try (CStructVariableBlock interfaceStruct =
+							 array.struct())
+						{
+							interfaceStruct.memberSet(
+								"interfaceName",
+								CBasicExpression.string(
+									interfaceName.binaryName().toString()));
+						}
+				}
+			}
+		
+		// Write linkages
+		try (CStructVariableBlock struct = __out.define(
+			CStructVariableBlock.class, this.classLinkages))
+		{
+			// Linkage count
+			struct.memberSet("count",
+				CExpressionBuilder.builder()
+					.number(Constants.JINT_C, this.linkTable.size())
+					.build());
+			
+			// Then the actual linkages themselves
+			try (CArrayBlock array =
+				 struct.memberArraySet("linkages"))
+			{
+				for (Linkage linkage : this.linkTable)
+					try (CStructVariableBlock linkStruct = array.struct())
+					{
+						// Set type
+						linkStruct.memberSet("type",
+							CBasicExpression.number(0));
+						
+						// Ignore null
+						if (linkage == null)
+							continue;
+						
+						// Write individual linkage data
+						try (CStructVariableBlock dataStruct =
+							 linkStruct.memberStructSet("data"))
+						{
+							linkage.write(dataStruct);
+						}
+					}
+			}
+		}
+		
 		// Open class details
 		try (CStructVariableBlock struct = __out.define(
 			CStructVariableBlock.class, this.classInfo))
@@ -195,11 +276,27 @@ public class ClassProcessor
 				CExpressionBuilder.builder()
 					.string(classFile.thisName().toString())
 					.build());
+			struct.memberSet("thisNameHash",
+				CBasicExpression.number(classFile.thisName().hashCode()));
+			
 			if (classFile.superName() != null)
 				struct.memberSet("superName",
 					CExpressionBuilder.builder()
 						.string(classFile.superName().toString())
 						.build());
+			else
+				struct.memberSet("superName",
+					CVariable.NULL);
+			
+			if (interfaceNames != null && !interfaceNames.isEmpty())
+				struct.memberSet("interfaceNames",
+					CExpressionBuilder.builder()
+						.reference(this.classInterfaces)
+						.build());
+			else
+				struct.memberSet("interfaceNames",
+					CVariable.NULL);
+			
 			struct.memberSet("flags",
 				CExpressionBuilder.builder()
 					.number(Constants.JINT_C, classFile.flags().toJavaBits())
@@ -208,13 +305,19 @@ public class ClassProcessor
 			// Fields
 			struct.memberSet("fields",
 				CExpressionBuilder.builder()
-					.identifier(this.classFields)
+					.reference(this.classFields)
 					.build());
 			
 			// Methods
 			struct.memberSet("methods",
 				CExpressionBuilder.builder()
-					.identifier(this.classMethods)
+					.reference(this.classMethods)
+					.build());
+			
+			// Linkages
+			struct.memberSet("linkages",
+				CExpressionBuilder.builder()
+					.reference(this.classLinkages)
 					.build());
 		}
 	}

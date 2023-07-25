@@ -936,6 +936,11 @@ public enum VMType
 		// The name of this JAR
 		args.add("-Xname:" + __task.getProject().getName());
 		
+		// The current clutter level
+		args.add("-XclutterLevel:" +
+			__task.getClassifier().getTargetClassifier()
+				.getClutterLevel());
+		
 		// Our run command and any additional arguments
 		args.add(__command);
 		if (__args != null)

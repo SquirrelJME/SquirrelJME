@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.aot.nanocoat;
 
 import cc.squirreljme.c.CArrayBlock;
+import cc.squirreljme.c.CBasicExpression;
 import cc.squirreljme.c.CExpressionBuilder;
 import cc.squirreljme.c.CSourceWriter;
 import cc.squirreljme.c.CStructVariableBlock;
@@ -122,29 +123,46 @@ public class FieldProcessor
 							break;
 							
 						case LONG:
-							valueStruct.memberSet("jlong",
-								CExpressionBuilder.builder()
-									.number(Constants.JLONG_C,
-										(Long)value.boxedValue())
-									.build());
+							try (CStructVariableBlock bits =
+								 valueStruct.memberStructSet(
+									 "jlong"))
+							{
+								long unboxed = (Long)value.boxedValue();
+								bits.memberSet("hi",
+									CBasicExpression.number(
+										(int)(unboxed >>> 32)));
+								bits.memberSet("lo",
+									CBasicExpression.number(
+										(int)unboxed));
+							}
 							break;
 							
 						case FLOAT:
-							valueStruct.memberSet("jfloat",
-								CExpressionBuilder.builder()
-									.number(Constants.JINT_C,
-										Float.floatToRawIntBits(
-											(Float)value.boxedValue()))
-									.build());
+							try (CStructVariableBlock bits =
+								 valueStruct.memberStructSet(
+									 "jfloat"))
+							{
+								int unboxed = Float.floatToRawIntBits(
+									(Float)value.boxedValue());
+								bits.memberSet("value",
+									CBasicExpression.number(unboxed));
+							}
 							break;
 							
 						case DOUBLE:
-							valueStruct.memberSet("jdouble",
-								CExpressionBuilder.builder()
-									.number(Constants.JLONG_C,
-										Double.doubleToRawLongBits(
-											(Double)value.boxedValue()))
-									.build());
+							try (CStructVariableBlock bits =
+								 valueStruct.memberStructSet(
+									 "jdouble"))
+							{
+								long unboxed = Double.doubleToRawLongBits(
+									(Double)value.boxedValue());
+								bits.memberSet("hi",
+									CBasicExpression.number(
+										(int)(unboxed >>> 32)));
+								bits.memberSet("lo",
+									CBasicExpression.number(
+										(int)unboxed));
+							}
 							break;
 							
 						case STRING:

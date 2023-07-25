@@ -11,10 +11,8 @@ package cc.squirreljme.jvm.aot.nanocoat.common;
 
 import cc.squirreljme.c.CBasicExpression;
 import cc.squirreljme.c.CExpression;
-import cc.squirreljme.c.CExpressionBuilder;
 import cc.squirreljme.c.CFileName;
 import cc.squirreljme.c.CIdentifier;
-import cc.squirreljme.c.CVariable;
 import cc.squirreljme.c.std.CStdIntNumberType;
 
 /**
@@ -25,12 +23,8 @@ import cc.squirreljme.c.std.CStdIntNumberType;
 public interface Constants
 {
 	/** JNI header file. */
-	CFileName SJME_JNI_HEADER =
-		CFileName.of("sjmejni.h");
-	
-	/** Guard for header/source code. */
-	CIdentifier CODE_GUARD =
-		CIdentifier.of("SJME_C_CH");
+	CFileName SJME_NVM_HEADER =
+		CFileName.of("sjme/nvm.h");
 	
 	/** {@code jint} conversion. */
 	CStdIntNumberType JINT_C =

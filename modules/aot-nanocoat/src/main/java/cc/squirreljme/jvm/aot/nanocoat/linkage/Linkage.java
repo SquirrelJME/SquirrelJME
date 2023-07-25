@@ -9,6 +9,9 @@
 
 package cc.squirreljme.jvm.aot.nanocoat.linkage;
 
+import cc.squirreljme.c.CStructVariableBlock;
+import java.io.IOException;
+
 /**
  * This is the base interface for anything that represents a linkage.
  *
@@ -16,4 +19,14 @@ package cc.squirreljme.jvm.aot.nanocoat.linkage;
  */
 public interface Linkage
 {
+	/**
+	 * Writes to the output the C code to define the structure linkage.
+	 *
+	 * @param __output The output to write to.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/25
+	 */
+	void write(CStructVariableBlock __output)
+		throws IOException, NullPointerException;
 }

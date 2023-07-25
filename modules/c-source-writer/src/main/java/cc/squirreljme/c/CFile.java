@@ -297,18 +297,20 @@ public class CFile
 		
 		// Get the root type we are using
 		CType type = __var.type();
+		CType subType = null;
 		if (type instanceof CModifiedType)
-			type = ((CModifiedType)type).type;
+			subType = ((CModifiedType)type).type;
+		else
+			subType = type;
 		
 		// Structure type
-		if (type instanceof CStructType)
+		if (subType instanceof CStructType)
 		{
-			CStructType struct = (CStructType)type;
+			CStructType struct = (CStructType)subType;
 			
 			// Open struct
-			this.tokens(struct.declareTokens(null),
-				__var.name,
-				"{");
+			this.tokens(type.declareTokens(null),
+				__var.name, "=", "{");
 			
 			// Setup block
 			CStructVariableBlock rv = new CStructVariableBlock(

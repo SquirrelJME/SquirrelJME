@@ -11,6 +11,7 @@ package cc.squirreljme.jvm.aot.nanocoat.common;
 
 import cc.squirreljme.c.CPrimitiveType;
 import cc.squirreljme.c.CStructKind;
+import cc.squirreljme.c.CStructType;
 import cc.squirreljme.c.CStructTypeBuilder;
 import cc.squirreljme.c.CType;
 import cc.squirreljme.c.CTypeDefType;
@@ -40,7 +41,7 @@ public enum JvmTypes
 		{
 			return CStructTypeBuilder.builder(CStructKind.STRUCT,
 				"sjme_any")
-				.member(JvmTypes.JINT, "type")
+				.member(JvmTypes.BASIC_TYPE_ID, "type")
 				.member(JvmTypes.ANY_DATA, "data")
 				.build();
 		}
@@ -60,7 +61,7 @@ public enum JvmTypes
 				"sjme_anyData")
 				.member(JvmTypes.JINT,
 					"jint")
-				.member(JvmTypes.JOBJECT.pointerType(),
+				.member(JvmTypes.JOBJECT,
 					"jobject")
 				.member(JvmTypes.TEMP_INDEX,
 					"tempIndex")
@@ -80,6 +81,135 @@ public enum JvmTypes
 		{
 			return CTypeDefType.of(JvmTypes.JINT.type(),
 				"sjme_basicTypeId");
+		}
+	},
+	
+	/** Dynamic Linkage. */
+	DYNAMIC_LINKAGE
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/25
+		 */
+		@Override
+		CType __build()
+		{
+			return CStructTypeBuilder.builder(CStructKind.STRUCT,
+				"sjme_dynamic_linkage")
+				.member(JvmTypes.STATIC_LINKAGE_TYPE, "type")
+				.member(JvmTypes.DYNAMIC_LINKAGE_DATA, "data")
+				.build();
+		}
+	},
+	
+	/** Data for the dynamic linkage table. */
+	DYNAMIC_LINKAGE_DATA
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/25
+		 */
+		@Override
+		CType __build()
+		{
+			return CStructTypeBuilder.builder(CStructKind.UNION,
+				"sjme_dynamic_linkageData")
+				.member(JvmTypes.DYNAMIC_LINKAGE_DATA_CLASS_OBJECT,
+					"classObject")
+				.member(JvmTypes.DYNAMIC_LINKAGE_DATA_FIELD_ACCESS,
+					"fieldAccess")
+				.member(JvmTypes.DYNAMIC_LINKAGE_DATA_INVOKE_SPECIAL,
+					"invokeSpecial")
+				.member(JvmTypes.DYNAMIC_LINKAGE_DATA_INVOKE_NORMAL,
+					"invokeNormal")
+				.member(JvmTypes.DYNAMIC_LINKAGE_DATA_STRING_OBJECT,
+					"stringObject")
+				.build();
+		}
+	},
+	
+	/** A class object reference. */
+	DYNAMIC_LINKAGE_DATA_CLASS_OBJECT
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/25
+		 */
+		@Override
+		CType __build()
+		{
+			return CStructTypeBuilder.builder(CStructKind.STRUCT,
+				"sjme_dynamic_linkage_data_classObject")
+				.member(JvmTypes.JINT,"todo")
+				.build();
+		}
+	},
+	
+	/** Field access. */
+	DYNAMIC_LINKAGE_DATA_FIELD_ACCESS
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/25
+		 */
+		@Override
+		CType __build()
+		{
+			return CStructTypeBuilder.builder(CStructKind.STRUCT,
+				"sjme_dynamic_linkage_data_fieldAccess")
+				.member(JvmTypes.JINT,"todo")
+				.build();
+		}
+	},
+	
+	/** Invoke normal linkage data. */
+	DYNAMIC_LINKAGE_DATA_INVOKE_NORMAL
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/25
+		 */
+		@Override
+		CType __build()
+		{
+			return CStructTypeBuilder.builder(CStructKind.STRUCT,
+				"sjme_dynamic_linkage_data_invokeNormal")
+				.member(JvmTypes.JINT,"todo")
+				.build();
+		}
+	},
+	
+	/** Invoke special linkage data. */
+	DYNAMIC_LINKAGE_DATA_INVOKE_SPECIAL
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/25
+		 */
+		@Override
+		CType __build()
+		{
+			return CStructTypeBuilder.builder(CStructKind.STRUCT,
+				"sjme_dynamic_linkage_data_invokeSpecial")
+				.member(JvmTypes.JINT,"todo")
+				.build();
+		}
+	},
+	
+	/** A string reference. */
+	DYNAMIC_LINKAGE_DATA_STRING_OBJECT
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/25
+		 */
+		@Override
+		CType __build()
+		{
+			return CStructTypeBuilder.builder(CStructKind.STRUCT,
+				"sjme_dynamic_linkage_data_stringObject")
+				.member(JvmTypes.JINT,"todo")
+				.build();
 		}
 	},
 	
@@ -153,8 +283,11 @@ public enum JvmTypes
 		@Override
 		CType __build()
 		{
-			return CTypeDefType.of(JvmTypes.JINT.type().arrayType(2),
-				"jfloat");
+			return CStructTypeBuilder.builder(CStructKind.STRUCT,
+				"jdouble")
+				.member(JvmTypes.JINT, "hi")
+				.member(JvmTypes.JINT, "lo")
+				.build();
 		}
 	},
 	
@@ -182,7 +315,10 @@ public enum JvmTypes
 		@Override
 		CType __build()
 		{
-			return CTypeDefType.of(JvmTypes.JINT.type(), "jfloat");
+			return CStructTypeBuilder.builder(CStructKind.STRUCT,
+				"jfloat")
+				.member(JvmTypes.JINT, "value")
+				.build();
 		}
 	},
 	
@@ -211,8 +347,11 @@ public enum JvmTypes
 		@Override
 		CType __build()
 		{
-			return CTypeDefType.of(JvmTypes.JINT.type().arrayType(2),
-				"jlong");
+			return CStructTypeBuilder.builder(CStructKind.STRUCT,
+				"jlong")
+				.member(JvmTypes.JINT, "hi")
+				.member(JvmTypes.JINT, "lo")
+				.build();
 		}
 	},
 	
@@ -230,6 +369,22 @@ public enum JvmTypes
 		}
 	},
 	
+	/** Object base. */
+	JOBJECT_BASE
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/06/06
+		 */
+		@Override
+		CType __build()
+		{
+			return CStructTypeBuilder.builder(
+				CStructKind.STRUCT, "sjme_jobjectBase")
+				.build();
+		}
+	},
+	
 	/** Object. */
 	JOBJECT
 	{
@@ -240,9 +395,8 @@ public enum JvmTypes
 		@Override
 		CType __build()
 		{
-			return CStructTypeBuilder.builder(
-				CStructKind.STRUCT, "jobject")
-				.build();
+			return CTypeDefType.of(JvmTypes.JOBJECT_BASE.pointerType(),
+				"jobject");
 		}
 	},
 	
@@ -291,25 +445,18 @@ public enum JvmTypes
 		}
 	},
 	
-	/** Constant value union. */
-	STATIC_CLASS_CVALUE
+	/** Program counter address. */
+	PC_ADDR
 	{
 		/**
 		 * {@inheritDoc}
-		 * @since 2023/06/24
+		 * @since 2023/07/25
 		 */
 		@Override
 		CType __build()
 		{
-			return CStructTypeBuilder.builder(CStructKind.UNION,
-				"sjme_static_constValue")
-				.member(JvmTypes.JINT, "jint")
-				.member(JvmTypes.JLONG, "jlong")
-				.member(JvmTypes.JFLOAT, "jfloat")
-				.member(JvmTypes.JDOUBLE, "jdouble")
-				.member(CPrimitiveType.CONST_CHAR_STAR, "jstring")
-				.member(CPrimitiveType.CONST_CHAR_STAR, "jclass")
-				.build();	
+			return CTypeDefType.of(JvmTypes.JINT.type(),
+				"sjme_pcAddr");
 		}
 	},
 	
@@ -328,8 +475,8 @@ public enum JvmTypes
 				.member(CPrimitiveType.CONST_CHAR_STAR, "name")
 				.member(CPrimitiveType.CONST_CHAR_STAR, "type")
 				.member(JvmTypes.JINT.type().constType(), "flags")
-				.member(JvmTypes.JINT, "valueType")
-				.member(JvmTypes.STATIC_CLASS_CVALUE,
+				.member(JvmTypes.BASIC_TYPE_ID, "valueType")
+				.member(JvmTypes.STATIC_CONST_VALUE,
 					"value")
 				.build();
 		}
@@ -350,6 +497,42 @@ public enum JvmTypes
 				.member(JvmTypes.JINT, "count")
 				.member(JvmTypes.STATIC_CLASS_FIELD.type()
 					.arrayType(0), "fields")
+				.build();
+		}
+	},
+	
+	/** Class interface. */
+	STATIC_CLASS_INTERFACE
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/25
+		 */
+		@Override
+		CType __build()
+		{
+			return CStructTypeBuilder.builder(CStructKind.STRUCT,
+				"sjme_static_classInterface")
+				.member(CPrimitiveType.CONST_CHAR_STAR, "interfaceName")
+				.build();
+		}
+	},
+	
+	/** Class interfaces. */
+	STATIC_CLASS_INTERFACES
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/25
+		 */
+		@Override
+		CType __build()
+		{
+			return CStructTypeBuilder.builder(CStructKind.STRUCT,
+				"sjme_static_classInterfaces")
+				.member(JvmTypes.JINT, "count")
+				.member(JvmTypes.STATIC_CLASS_INTERFACE.type()
+					.arrayType(0), "interfaces")
 				.build();
 		}
 	},
@@ -409,14 +592,104 @@ public enum JvmTypes
 					"sjme_static_classInfo")
 				.member(CPrimitiveType.CONST_CHAR_STAR,
 					"thisName")
+				.member(JvmTypes.JINT,
+					"thisNameHash")
 				.member(CPrimitiveType.CONST_CHAR_STAR,
 					"superName")
+				.member(JvmTypes.STATIC_CLASS_INTERFACES.type()
+					.constType().pointerType(), "interfaceNames")
 				.member(JvmTypes.JINT,
 					"flags")
 				.member(JvmTypes.STATIC_CLASS_FIELDS.type()
 					.constType().pointerType(), "fields")
 				.member(JvmTypes.STATIC_CLASS_METHODS.type()
 					.constType().pointerType(), "methods")
+				.member(JvmTypes.STATIC_LINKAGES.type()
+					.constType().pointerType(), "linkages")
+				.build();
+		}
+	},
+	
+	/** Constant value union. */
+	STATIC_CONST_VALUE
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/06/24
+		 */
+		@Override
+		CType __build()
+		{
+			return CStructTypeBuilder.builder(CStructKind.UNION,
+				"sjme_static_constValue")
+				.member(JvmTypes.JINT, "jint")
+				.member(JvmTypes.JLONG, "jlong")
+				.member(JvmTypes.JFLOAT, "jfloat")
+				.member(JvmTypes.JDOUBLE, "jdouble")
+				.member(CPrimitiveType.CONST_CHAR_STAR, "jstring")
+				.member(CPrimitiveType.CONST_CHAR_STAR, "jclass")
+				.build();	
+		}
+	},
+	
+	/** Static library. */
+	STATIC_LIBRARY
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/06/25
+		 */
+		@Override
+		CType __build()
+		{
+			return CStructTypeBuilder.builder(CStructKind.STRUCT,
+					"sjme_static_library")
+				.member(CPrimitiveType.CONST_CHAR_STAR,
+					"name")
+				.member(JvmTypes.JINT,
+					"nameHash")
+				.member(JvmTypes.STATIC_LIBRARY_CLASSES
+					.type().constType().pointerType(), "classes")
+				.member(JvmTypes.STATIC_LIBRARY_RESOURCES
+					.type().constType().pointerType(), "resources")
+				.build();
+		}
+	},
+	
+	/** Static library classes. */
+	STATIC_LIBRARY_CLASSES
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/06/25
+		 */
+		@Override
+		CType __build()
+		{
+			return CStructTypeBuilder.builder(CStructKind.STRUCT,
+					"sjme_static_library_classes")
+				.member(JvmTypes.JINT, "count")
+				.member(JvmTypes.STATIC_CLASS_INFO.type().constType()
+					.pointerType().pointerType(), "classes")
+				.build();
+		}
+	},
+	
+	/** Static library resources. */
+	STATIC_LIBRARY_RESOURCES
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/06/25
+		 */
+		@Override
+		CType __build()
+		{
+			return CStructTypeBuilder.builder(CStructKind.STRUCT,
+					"sjme_static_library_resources")
+				.member(JvmTypes.JINT, "count")
+				.member(JvmTypes.STATIC_RESOURCE.type().constType()
+					.pointerType().pointerType(), "resources")
 				.build();
 		}
 	},
@@ -433,6 +706,7 @@ public enum JvmTypes
 		{
 			return CStructTypeBuilder.builder(CStructKind.STRUCT,
 				"sjme_static_linkage")
+				.member(JvmTypes.STATIC_LINKAGE_TYPE, "type")
 				.member(JvmTypes.STATIC_LINKAGE_DATA, "data")
 				.build();
 		}
@@ -450,16 +724,16 @@ public enum JvmTypes
 		{
 			return CStructTypeBuilder.builder(CStructKind.UNION,
 				"sjme_static_linkageData")
+				.member(JvmTypes.STATIC_LINKAGE_DATA_CLASS_OBJECT,
+					"classObject")
+				.member(JvmTypes.STATIC_LINKAGE_DATA_FIELD_ACCESS,
+					"fieldAccess")
 				.member(JvmTypes.STATIC_LINKAGE_DATA_INVOKE_SPECIAL,
 					"invokeSpecial")
 				.member(JvmTypes.STATIC_LINKAGE_DATA_INVOKE_NORMAL,
 					"invokeNormal")
-				.member(JvmTypes.STATIC_LINKAGE_DATA_FIELD_ACCESS,
-					"fieldAccess")
-				.member(JvmTypes.STATIC_LINKAGE_DATA_STRING,
-					"string")
-				.member(JvmTypes.STATIC_LINKAGE_DATA_CLASS_OBJECT,
-					"classObject")
+				.member(JvmTypes.STATIC_LINKAGE_DATA_STRING_OBJECT,
+					"stringObject")
 				.build();
 		}
 	},
@@ -475,8 +749,9 @@ public enum JvmTypes
 		CType __build()
 		{
 			return CStructTypeBuilder.builder(CStructKind.STRUCT,
-				"sjme_static_linkageData_classObject")
-				.member(JvmTypes.JINT,"todo")
+				"sjme_static_linkage_data_classObject")
+				.member(CPrimitiveType.CONST_CHAR_STAR,
+					"className")
 				.build();
 		}
 	},
@@ -492,8 +767,21 @@ public enum JvmTypes
 		CType __build()
 		{
 			return CStructTypeBuilder.builder(CStructKind.STRUCT,
-				"sjme_static_linkageData_fieldAccess")
-				.member(JvmTypes.JINT,"todo")
+				"sjme_static_linkage_data_fieldAccess")
+				.member(JvmTypes.JBOOLEAN,
+					"isStatic")
+				.member(JvmTypes.JBOOLEAN,
+					"isStore")
+				.member(CPrimitiveType.CONST_CHAR_STAR,
+					"sourceMethodName")
+				.member(CPrimitiveType.CONST_CHAR_STAR,
+					"sourceMethodType")
+				.member(CPrimitiveType.CONST_CHAR_STAR,
+					"targetClass")
+				.member(CPrimitiveType.CONST_CHAR_STAR,
+					"targetFieldName")
+				.member(CPrimitiveType.CONST_CHAR_STAR,
+					"targetFieldType")
 				.build();
 		}
 	},
@@ -509,8 +797,19 @@ public enum JvmTypes
 		CType __build()
 		{
 			return CStructTypeBuilder.builder(CStructKind.STRUCT,
-				"sjme_static_linkageData_invokeNormal")
-				.member(JvmTypes.JINT,"todo")
+				"sjme_static_linkage_data_invokeNormal")
+				.member(JvmTypes.JBOOLEAN,
+					"isStatic")
+				.member(CPrimitiveType.CONST_CHAR_STAR,
+					"sourceMethodName")
+				.member(CPrimitiveType.CONST_CHAR_STAR,
+					"sourceMethodType")
+				.member(CPrimitiveType.CONST_CHAR_STAR,
+					"targetClass")
+				.member(CPrimitiveType.CONST_CHAR_STAR,
+					"targetMethodName")
+				.member(CPrimitiveType.CONST_CHAR_STAR,
+					"targetMethodType")
 				.build();
 		}
 	},
@@ -526,14 +825,23 @@ public enum JvmTypes
 		CType __build()
 		{
 			return CStructTypeBuilder.builder(CStructKind.STRUCT,
-				"sjme_static_linkageData_invokeSpecial")
-				.member(JvmTypes.JINT,"todo")
+				"sjme_static_linkage_data_invokeSpecial")
+				.member(CPrimitiveType.CONST_CHAR_STAR,
+					"sourceMethodName")
+				.member(CPrimitiveType.CONST_CHAR_STAR,
+					"sourceMethodType")
+				.member(CPrimitiveType.CONST_CHAR_STAR,
+					"targetClass")
+				.member(CPrimitiveType.CONST_CHAR_STAR,
+					"targetMethodName")
+				.member(CPrimitiveType.CONST_CHAR_STAR,
+					"targetMethodType")
 				.build();
 		}
 	},
 	
 	/** A string reference. */
-	STATIC_LINKAGE_DATA_STRING
+	STATIC_LINKAGE_DATA_STRING_OBJECT
 	{
 		/**
 		 * {@inheritDoc}
@@ -543,8 +851,43 @@ public enum JvmTypes
 		CType __build()
 		{
 			return CStructTypeBuilder.builder(CStructKind.STRUCT,
-				"sjme_static_linkageData_string")
-				.member(JvmTypes.JINT,"todo")
+				"sjme_static_linkage_data_stringObject")
+				.member(CPrimitiveType.CONST_CHAR_STAR,
+					"string")
+				.build();
+		}
+	},
+	
+	/** Static linkage type identifier. */
+	STATIC_LINKAGE_TYPE
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/25
+		 */
+		@Override
+		CType __build()
+		{
+			return CTypeDefType.of(JvmTypes.JINT.type(),
+				"sjme_staticLinkageType");
+		}
+	},
+	
+	/** Static linkages table. */
+	STATIC_LINKAGES
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/25
+		 */
+		@Override
+		CType __build()
+		{
+			return CStructTypeBuilder.builder(CStructKind.STRUCT,
+				"sjme_static_linkages")
+				.member(JvmTypes.JINT, "count")
+				.member(JvmTypes.STATIC_LINKAGE.type()
+					.arrayType(0), "linkages")
 				.build();
 		}
 	},
@@ -562,9 +905,31 @@ public enum JvmTypes
 			return CStructTypeBuilder.builder(
 				CStructKind.STRUCT, "sjme_static_resource")
 				.member(CPrimitiveType.CHAR.pointerType(), "path")
+				.member(JvmTypes.JINT, "pathHash")
 				.member(JvmTypes.JINT, "size")
 				.member(CStdIntType.UINT8.type().constType().pointerType(),
 					"data")
+				.build();
+		}
+	},
+	
+	/** Static ROM. */
+	STATIC_ROM
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/25
+		 */
+		@Override
+		CType __build()
+		{
+			return CStructTypeBuilder.builder(CStructKind.STRUCT,
+					"sjme_static_rom")
+				.member(CPrimitiveType.CONST_CHAR_STAR, "name")
+				.member(JvmTypes.JINT, "count")
+				.member(JvmTypes.STATIC_LIBRARY.type()
+					.constType().pointerType().pointerType(),
+					"libraries")
 				.build();
 		}
 	},
@@ -596,8 +961,8 @@ public enum JvmTypes
 		{
 			return CStructTypeBuilder.builder(
 				CStructKind.STRUCT, "sjme_nvm_frame")
-				.member(JvmTypes.JINT, "groupIndex")
-				.member(JvmTypes.STATIC_LINKAGE.type().pointerType(),
+				.member(JvmTypes.PC_ADDR, "pc")
+				.member(JvmTypes.DYNAMIC_LINKAGE.type().pointerType(),
 					"linkage")
 				.member(JvmTypes.JTHROWABLE.type().pointerType(),
 					"waitingThrown")
@@ -605,7 +970,7 @@ public enum JvmTypes
 					"returnValue")
 				.member(JvmTypes.ANY.type().pointerType().pointerType(),
 					"tempStack")
-				.member(JvmTypes.JOBJECT.type().pointerType(),
+				.member(JvmTypes.JOBJECT,
 					"thisRef")
 				.member(JvmTypes.JCLASS.pointerType(),
 					"classObjectRef")

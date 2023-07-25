@@ -74,4 +74,30 @@ public class CArrayBlock
 		// Push it to the writer
 		return this.__file().__pushBlock(rv, false);
 	}
+	
+	/**
+	 * Writes an array value. 
+	 *
+	 * @param __expression The expression to store.
+	 * @return {@code this}.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/25
+	 */
+	public CArrayBlock value(CExpression __expression)
+		throws IOException, NullPointerException
+	{
+		if (__expression == null)
+			throw new NullPointerException("NARG");
+		
+		// Prefix element with comma?
+		int index = this._index;
+		if (index > 0)
+			this.token(",");
+		this._index = index + 1;
+		
+		this.token(__expression);
+		
+		return this;
+	}
 }

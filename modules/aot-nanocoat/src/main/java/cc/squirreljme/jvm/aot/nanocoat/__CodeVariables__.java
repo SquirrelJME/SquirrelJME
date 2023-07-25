@@ -109,6 +109,17 @@ public final class __CodeVariables__
 	}
 	
 	/**
+	 * Returns the current linkage.
+	 *
+	 * @return The current linkage.
+	 * @since 2023/07/25
+	 */
+	public CVariable linkage()
+	{
+		return __StaticCodeVariables__.linkage();
+	}
+	
+	/**
 	 * Creates a linkage reference.
 	 * 
 	 * @param __linkage The linkage to refer to.
@@ -127,16 +138,13 @@ public final class __CodeVariables__
 		
 		return CExpressionBuilder.builder()
 			.reference(CExpressionBuilder.builder()
-				.identifier(this.currentFrame())
-				.dereferenceStruct()
-				.identifier(JvmTypes.VMFRAME
-					.type(CStructType.class).member("linkage"))
+				.identifier(this.linkage())
 				.arrayAccess(__linkage.index())
-				.dereferenceStruct()
-				.identifier(JvmTypes.STATIC_LINKAGE
+				.structAccess()
+				.identifier(JvmTypes.DYNAMIC_LINKAGE
 					.type(CStructType.class).member("data"))
 				.structAccess()
-				.identifier(JvmTypes.STATIC_LINKAGE
+				.identifier(JvmTypes.DYNAMIC_LINKAGE
 					.type(CStructType.class).member("data")
 					.type(CStructType.class).member(__what))
 			.build()).build();

@@ -353,13 +353,26 @@ public class ByteCodeProcessor
 				// about pushing or popping
 				initVars.declare(codeVars.currentFrame());
 				
-				// Set known variables
+				// Declare linkage variable
+				initVars.declare(codeVars.linkage());
+				
+				// Set top variable
 				initVars.variableSet(codeVars.currentFrame(),
 					CExpressionBuilder.builder()
 						.identifier(codeVars.currentThread())
 						.dereferenceStruct()
 						.identifier(JvmTypes.VMTHREAD.type(CStructType.class)
 							.member("top"))
+						.build());
+				
+				// Set linkage variable
+				initVars.variableSet(codeVars.linkage(),
+					CExpressionBuilder.builder()
+						.identifier(codeVars.currentFrame())
+						.dereferenceStruct()
+						.identifier(JvmTypes.VMFRAME
+							.type(CStructType.class)
+							.member("linkage"))
 						.build());
 			}
 			
@@ -374,7 +387,7 @@ public class ByteCodeProcessor
 						.identifier(codeVars.currentFrame())
 						.dereferenceStruct()
 						.identifier(JvmTypes.VMFRAME.type(CStructType.class)
-							.member("groupIndex"))
+							.member("pc"))
 						.build()))
 				{
 					// Start of function call, initializes accordingly
@@ -1000,7 +1013,7 @@ public class ByteCodeProcessor
 			__block.functionCall(JvmFunctions.NVM_ARRAY_STORE,
 				codeVars.currentFrame(),
 				CBasicExpression.number(__type.ordinal()),
-				instance.accessTemp(JvmTypes.JOBJECT.pointerType()),
+				instance.accessTemp(JvmTypes.JOBJECT),
 				index,
 				value.referenceTemp(JvmTypes.ANY));
 		}
@@ -1012,7 +1025,7 @@ public class ByteCodeProcessor
 				JvmFunctions.NVM_ARRAY_LOAD_INTO_TEMP,
 				codeVars.currentFrame(),
 				CBasicExpression.number(__type.ordinal()),
-				instance.accessTemp(JvmTypes.JOBJECT.pointerType()),
+				instance.accessTemp(JvmTypes.JOBJECT),
 				index);
 			__block.functionCall(JvmFunctions.NVM_STACK_PUSH_ANY_FROM_TEMP,
 				codeVars.currentFrame(),
@@ -1048,7 +1061,7 @@ public class ByteCodeProcessor
 		__block.variableSetViaFunction(length,
 			JvmFunctions.NVM_ARRAY_LENGTH,
 			codeVars.currentFrame(),
-			instance.accessTemp(JvmTypes.JOBJECT.pointerType()));
+			instance.accessTemp(JvmTypes.JOBJECT));
 		
 		// Push to the stack
 		__block.functionCall(JvmFunctions.NVM_STACK_PUSH_INTEGER,
@@ -1107,7 +1120,7 @@ public class ByteCodeProcessor
 		__block.functionCall(
 			JvmFunctions.NVM_CHECK_CAST,
 			codeVars.currentFrame(),
-			instance.referenceTemp(JvmTypes.JOBJECT.pointerType()),
+			instance.referenceTemp(JvmTypes.JOBJECT),
 			codeVars.linkageReference(this.linkTable.classObject(
 				__class), "classObject"));
 		
@@ -1118,7 +1131,7 @@ public class ByteCodeProcessor
 		__block.functionCall(
 			JvmFunctions.NVM_STACK_PUSH_REFERENCE,
 			codeVars.currentFrame(),
-			instance.accessTemp(JvmTypes.JOBJECT.pointerType()));
+			instance.accessTemp(JvmTypes.JOBJECT));
 	}
 	
 	/**
@@ -1264,12 +1277,12 @@ public class ByteCodeProcessor
 			__block.functionCall(JvmFunctions.NVM_FIELD_PUT,
 				codeVars.currentFrame(),
 				(instance != null ?
-					instance.accessTemp(JvmTypes.JOBJECT.pointerType()) :
+					instance.accessTemp(JvmTypes.JOBJECT) :
 					CVariable.NULL),
 				codeVars.linkageReference(this.linkTable.fieldAccess(
 					this.method.nameAndType(), __static, __field,
 					true), "fieldAccess"),
-				value.accessTemp(JvmTypes.ANY));
+				value.referenceTemp(JvmTypes.ANY));
 		}
 		
 		// Call get handler
@@ -1279,7 +1292,7 @@ public class ByteCodeProcessor
 				JvmFunctions.NVM_FIELD_GET_TO_TEMP,
 				codeVars.currentFrame(),
 				(instance != null ?
-					instance.accessTemp(JvmTypes.JOBJECT.pointerType()) :
+					instance.accessTemp(JvmTypes.JOBJECT) :
 					CVariable.NULL),
 				codeVars.linkageReference(
 					this.linkTable.fieldAccess(this.method.nameAndType(),
@@ -1390,8 +1403,8 @@ public class ByteCodeProcessor
 		
 		// Compare value
 		this.__doIf(__block, __compare, __targetGroupId,
-			a.accessTemp(JvmTypes.JOBJECT.pointerType()),
-			b.accessTemp(JvmTypes.JOBJECT.pointerType()));
+			a.accessTemp(JvmTypes.JOBJECT),
+			b.accessTemp(JvmTypes.JOBJECT));
 	}
 	
 	/**
@@ -1453,8 +1466,7 @@ public class ByteCodeProcessor
 		// Perform check on object, if NULL or not
 		try (CIfBlock iffy = __block.branchIf(
 			CExpressionBuilder.builder()
-				.compare(object.referenceTemp(JvmTypes.JOBJECT.type()
-						.pointerType()),
+				.compare(object.referenceTemp(JvmTypes.JOBJECT),
 					(__null ? CComparison.EQUALS : CComparison.NOT_EQUALS),
 					CVariable.NULL)
 			.build()))
@@ -1528,7 +1540,7 @@ public class ByteCodeProcessor
 		__block.functionCall(
 			JvmFunctions.NVM_STACK_PUSH_INTEGER_IS_INSTANCE_OF,
 			codeVars.currentFrame(),
-			instance.referenceTemp(JvmTypes.JOBJECT.pointerType()),
+			instance.referenceTemp(JvmTypes.JOBJECT),
 			codeVars.linkageReference(this.linkTable.classObject(
 				__class), "classObject"));
 	}
@@ -1560,8 +1572,7 @@ public class ByteCodeProcessor
 		// Just perform the function handler call, it will accordingly
 		// put things on the stack and otherwise
 		__block.functionCall(__funcHandler,
-			codeVars.currentState(),
-			codeVars.currentThread(),
+			codeVars.currentFrame(),
 			codeVars.linkageReference(__linkage, __linkWhat));
 	}
 	
@@ -1745,14 +1756,14 @@ public class ByteCodeProcessor
 				if (__value.type() == ConstantValueType.STRING)
 					__block.variableSetViaFunction(temp.tempIndex(),
 						JvmFunctions.NVM_LOOKUP_STRING_INTO_TEMP,
-						codeVars.currentThread(),
+						codeVars.currentFrame(),
 						codeVars.linkageReference(this.linkTable.string(
 							__value.boxedValue().toString()), 
-							"string"));
+							"stringObject"));
 				else
 					__block.variableSetViaFunction(temp.tempIndex(),
 						JvmFunctions.NVM_LOOKUP_CLASS_OBJECT_INTO_TEMP,
-						codeVars.currentThread(),
+						codeVars.currentFrame(),
 						codeVars.linkageReference(this.linkTable.classObject(
 							__value.boxedValue().toString()),
 							"classObject"));
@@ -1858,7 +1869,7 @@ public class ByteCodeProcessor
 		
 		// Perform monitor logic
 		this.__monitor(__block, __enter,
-			instance.accessTemp(JvmTypes.JOBJECT.pointerType()));
+			instance.accessTemp(JvmTypes.JOBJECT));
 	}
 	
 	/**
@@ -1934,7 +1945,7 @@ public class ByteCodeProcessor
 		JvmTemporary object = codeVars.temporary(0);
 		__block.variableSetViaFunction(object.tempIndex(),
 			JvmFunctions.NVM_NEW_INSTANCE_INTO_TEMP,
-			codeVars.currentThread(),
+			codeVars.currentFrame(),
 			codeVars.linkageReference(this.linkTable.classObject(
 				__what), "classObject"));
 		
@@ -1976,7 +1987,7 @@ public class ByteCodeProcessor
 		JvmTemporary object = codeVars.temporary(1);
 		__block.variableSetViaFunction(object.tempIndex(),
 			JvmFunctions.NVM_NEW_ARRAY_INTO_TEMP,
-			codeVars.currentThread(),
+			codeVars.currentFrame(),
 			codeVars.linkageReference(this.linkTable.classObject(
 				__componentType), "classObject"),
 			length);
@@ -2125,9 +2136,8 @@ public class ByteCodeProcessor
 		
 		// Do actual return
 		__block.functionCall(JvmFunctions.NVM_RETURN_FROM_METHOD,
-			CExpressionBuilder.builder()
-				.identifier(codeVars.currentState())
-				.build());
+			codeVars.currentFrame(),
+			CVariable.NULL);
 		
 		// Jump to the outro directly
 		__block.gotoLabel(Constants.OUTRO_LABEL);
@@ -2157,6 +2167,7 @@ public class ByteCodeProcessor
 		
 		// Do actual return
 		__block.functionCall(JvmFunctions.NVM_RETURN_FROM_METHOD,
+			codeVars.currentFrame(),
 			value.referenceTemp(JvmTypes.ANY));
 		
 		// Jump to the outro directly
@@ -2296,7 +2307,7 @@ public class ByteCodeProcessor
 			// Push back from the source slot
 			__block.functionCall(JvmFunctions.NVM_STACK_PUSH_ANY,
 				codeVars.currentFrame(),
-				in[sourceSlot].accessTemp(JvmTypes.ANY));
+				in[sourceSlot].referenceTemp(JvmTypes.ANY));
 		}
 	}
 	
@@ -2343,7 +2354,7 @@ public class ByteCodeProcessor
 				.identifier(codeVariables.currentFrame()
 					.type(CPointerType.class)
 					.dereferenceType(CStructType.class)
-					.member("groupIndex"))
+					.member("pc"))
 			.build(),
 			CExpressionBuilder.builder()
 					.number(__targetGroupId)

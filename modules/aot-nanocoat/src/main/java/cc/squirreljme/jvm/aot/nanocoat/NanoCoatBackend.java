@@ -9,12 +9,18 @@
 
 package cc.squirreljme.jvm.aot.nanocoat;
 
+import cc.squirreljme.c.CArrayBlock;
+import cc.squirreljme.c.CArrayType;
+import cc.squirreljme.c.CBasicExpression;
 import cc.squirreljme.c.CExpressionBuilder;
 import cc.squirreljme.c.CFile;
+import cc.squirreljme.c.CFileName;
+import cc.squirreljme.c.CIdentifier;
 import cc.squirreljme.c.CPPBlock;
 import cc.squirreljme.c.CSourceWriter;
 import cc.squirreljme.c.CStructVariableBlock;
 import cc.squirreljme.c.CVariable;
+import cc.squirreljme.jvm.aot.AOTSettings;
 import cc.squirreljme.jvm.aot.Backend;
 import cc.squirreljme.jvm.aot.CompileSettings;
 import cc.squirreljme.jvm.aot.LinkGlob;
@@ -56,7 +62,6 @@ public class NanoCoatBackend
 			throw new NullPointerException("NARG");
 		
 		NanoCoatLinkGlob glob = (NanoCoatLinkGlob)__glob;
-		CSourceWriter headerOut = glob.headerOut;
 		
 		// Load input class
 		/* {@squirreljme.error NC01 Mismatched class name.} */
@@ -67,11 +72,16 @@ public class NanoCoatBackend
 		// Setup and perform class processing, with state
 		ClassProcessor processor = new ClassProcessor(glob, classFile);
 		
+		// Store identifier for later usage
+		glob.classIdentifiers.put(classFile.thisName().toString(),
+			processor.classInfo.name);
+		
 		// Write header output
-		processor.processHeader(glob.headerOut);
+		processor.processHeader(glob._headerBlock);
 		
 		// Record the added file, keeping it sorted
-		String baseName = Utils.basicFileName(__name + ".c");
+		String baseName = Utils.basicFileName(
+			processor.classIdentifier + ".c");
 		glob.outputFiles.add(baseName);
 		
 		// Process source code in single file
@@ -81,6 +91,10 @@ public class NanoCoatBackend
 		{
 			// Write header
 			Utils.headerC(sourceOut);
+			
+			// Do the actual include of ourselves
+			sourceOut.preprocessorInclude(Constants.SJME_NVM_HEADER);
+			sourceOut.preprocessorInclude(glob.headerFileName);
 			
 			// Process source code
 			processor.processSource(sourceOut);
@@ -101,36 +115,50 @@ public class NanoCoatBackend
 			throw new NullPointerException("NARG");
 		
 		NanoCoatLinkGlob glob = (NanoCoatLinkGlob)__glob;
-		CSourceWriter out = glob.headerOut;
 		
-		// Mangle path of this resource to name it
+		// Mangle path of this resource to name it and build type from it
 		String rcIdentifier = Utils.symbolResourcePath(glob, __path);
+		CVariable rcVar = CVariable.of(
+			JvmTypes.STATIC_RESOURCE.type().constType(),
+			rcIdentifier);
 		
-		// Start of header
-		try (CPPBlock block = out.preprocessorIf(CExpressionBuilder.builder()
-			.preprocessorDefined(Constants.CODE_GUARD)
-			.build()))
+		// Store identifier for later usage
+		glob.resourceIdentifiers.put(__path,
+			CIdentifier.of(rcIdentifier));
+		
+		// Define in the header
+		CSourceWriter headerOut = glob._headerBlock;
+		headerOut.declare(rcVar.extern());
+		
+		// Record the added file, keeping it sorted
+		String rcFileName = Utils.basicFileName(rcIdentifier + ".c");
+		glob.outputFiles.add(rcFileName);
+		
+		// Process source code in single file
+		try (OutputStream out = glob.zip.nextEntry(
+			glob.inDirectory(rcFileName));
+			 CFile sourceOut = Utils.cFile(out))
 		{
-			// Write identifier reference
-			CVariable rcVar = CVariable.of(
-				JvmTypes.STATIC_RESOURCE.type().constType(),
-				rcIdentifier);
-			out.declare(rcVar.extern());
+			// Write header
+			Utils.headerC(sourceOut);
 			
-			// Else for source code
-			block.preprocessorElse();
+			// Do the actual include of ourselves
+			sourceOut.preprocessorInclude(Constants.SJME_NVM_HEADER);
+			sourceOut.preprocessorInclude(glob.headerFileName);
 			
 			// Load in byte values
 			byte[] data = StreamUtils.readAll(__in);
 			
 			// Write values for the resource data
-			try (CStructVariableBlock struct = out.define(
+			try (CStructVariableBlock struct = sourceOut.define(
 				CStructVariableBlock.class, rcVar))
 			{
 				struct.memberSet("path",
 					CExpressionBuilder.builder()
 						.string(__path)
 						.build());
+				struct.memberSet("pathHash",
+					CBasicExpression.number(__path.hashCode()));
 				struct.memberSet("size",
 					CExpressionBuilder.builder()
 						.number(Constants.JINT_C, data.length)
@@ -148,7 +176,8 @@ public class NanoCoatBackend
 	 * @since 2023/05/28
 	 */
 	@Override
-	public void dumpGlob(byte[] __inGlob, String __name, PrintStream __out)
+	public void dumpGlob(AOTSettings __inGlob, byte[] __name,
+		PrintStream __out)
 		throws IOException, NullPointerException
 	{
 		throw Debugging.todo();
@@ -159,14 +188,14 @@ public class NanoCoatBackend
 	 * @since 2023/05/28
 	 */
 	@Override
-	public LinkGlob linkGlob(CompileSettings __settings, String __name,
-		OutputStream __out)
+	public LinkGlob linkGlob(AOTSettings __aotSettings,
+		CompileSettings __settings, OutputStream __out)
 		throws IOException, NullPointerException
 	{
-		if (__settings == null || __name == null || __out == null)
+		if (__aotSettings == null || __settings == null || __out == null)
 			throw new NullPointerException("NARG");
 		
-		return new NanoCoatLinkGlob(__name, __out);
+		return new NanoCoatLinkGlob(__aotSettings, __out);
 	}
 	
 	/**
@@ -184,8 +213,8 @@ public class NanoCoatBackend
 	 * @since 2023/05/28
 	 */
 	@Override
-	public void rom(RomSettings __settings, OutputStream __out,
-		VMClassLibrary... __libs)
+	public void rom(AOTSettings __aotSettings, RomSettings __settings,
+		OutputStream __out, VMClassLibrary... __libs)
 		throws IOException, NullPointerException
 	{
 		if (__settings == null || __out == null || __libs == null ||
@@ -198,6 +227,7 @@ public class NanoCoatBackend
 		{
 			// Directory set for CMakeLists.txt files
 			Set<String> cmakeFiles = new SortedTreeSet<>();
+			Set<String> libFiles = new SortedTreeSet<>();
 			
 			// Write each library
 			for (VMClassLibrary library : __libs)
@@ -209,6 +239,14 @@ public class NanoCoatBackend
 					// If this is a CMake file, add it
 					if (file.endsWith("/CMakeLists.txt"))
 						cmakeFiles.add(file);
+					
+					// Record library files, they are the same name as the
+					// parent directory
+					int sl = file.indexOf('/');
+					int ld = file.lastIndexOf('.');
+					if (sl >= 0 && ld > sl && file.substring(0, sl)
+						.equals(file.substring(sl + 1, ld)))
+						libFiles.add(file.substring(0, sl));
 					
 					// Do the actual copy
 					try (InputStream data = library.resourceAsStream(
@@ -223,6 +261,85 @@ public class NanoCoatBackend
 					}
 				}
 			
+			// What is this ROM called?
+			String romBaseName = "rom" + __aotSettings.clutterLevel;
+			
+			// Variable the ROM is defined under
+			CVariable romVar = CVariable.of(JvmTypes.STATIC_ROM
+				.type().constType(), romBaseName);
+			
+			// Setup ROM header, for inclusion
+			CFileName romHeader = CFileName.of(romBaseName + ".h");
+			
+			// Write header that gives ROM info
+			try (OutputStream rawRom =
+					 zip.nextEntry(romHeader.toString()); 
+				 CFile cFile = Utils.cFile(rawRom))
+			{
+				// Start with header
+				Utils.headerC(cFile);
+				
+				// Header guard
+				CIdentifier guard = CIdentifier.of("SJME_ROM_" +
+					romBaseName.toUpperCase() + "_H");
+				try (CPPBlock cpp = cFile.preprocessorIf(
+					CExpressionBuilder.builder()
+						.not(guard)
+						.build()))
+				{
+					// Define it as included once
+					cpp.preprocessorDefine(guard,
+						CBasicExpression.number(1));
+				}
+				
+				// Include main header
+				cFile.preprocessorInclude(Constants.SJME_NVM_HEADER);
+				
+				// Declare the ROM variable
+				cFile.declare(romVar.extern());
+			}
+			
+			// Write root ROM file that refers to every library within
+			try (OutputStream rawRom =
+					 zip.nextEntry(romBaseName + ".c"); 
+				 CFile cFile = Utils.cFile(rawRom))
+			{
+				// Start with header
+				Utils.headerC(cFile);
+				
+				// Include headers accordingly
+				cFile.preprocessorInclude(Constants.SJME_NVM_HEADER);
+				cFile.preprocessorInclude(romHeader);
+				
+				// Include headers for all the libraries
+				for (String lib : libFiles)
+					cFile.preprocessorInclude(CFileName.of(
+						String.format("%s/%s.h", lib, lib)));
+				
+				// Write ROM structure
+				try (CStructVariableBlock struct = cFile.define(
+					CStructVariableBlock.class, romVar))
+				{
+					// ROM name
+					struct.memberSet("name",
+						CBasicExpression.string(__aotSettings.clutterLevel));
+					
+					// The number of libraries within
+					struct.memberSet("count",
+						CBasicExpression.number(libFiles.size()));
+					
+					// And links to all the libraries
+					try (CArrayBlock array = struct.memberArraySet(
+						"libraries"))
+					{
+						for (String lib : libFiles)
+							array.value(CBasicExpression.reference(
+								CIdentifier.of(lib +
+									"__library")));
+					}
+				}
+			}
+			
 			// Output the CMake file accordingly
 			try (OutputStream rawCMake =
 					 zip.nextEntry("CMakeLists.txt");
@@ -232,6 +349,11 @@ public class NanoCoatBackend
 				// Start with header
 				Utils.headerCMake(cmake);
 				
+				// Include functions and macros header
+				cmake.println("include(\"${CMAKE_SOURCE_DIR}/cmake/" +
+					"rom-macros-and-functions.cmake\"\n\tNO_POLICY_SCOPE)");
+				cmake.println();
+				
 				// Add all subdirectories
 				for (String sub : cmakeFiles)
 				{
@@ -240,6 +362,26 @@ public class NanoCoatBackend
 						(ls < 0 ? sub : sub.substring(0, ls)));
 					cmake.println();
 				}
+				cmake.println();
+				
+				// Build generator expression for all the libraries within
+				cmake.printf("set(%sRomObjects",
+					romBaseName);
+				cmake.println();
+				for (String lib : libFiles)
+				{
+					cmake.printf("\t\"$<TARGET_OBJECTS:" +
+						"SquirrelJMEROM%s_%sObject>\"",
+						__aotSettings.clutterLevel, lib);
+					cmake.println();
+				}
+				cmake.println("\t)");
+				cmake.println();
+				
+				// Define ROM
+				cmake.printf("squirreljme_rom(%s ${%sRomObjects})",
+					romBaseName, romBaseName);
+				cmake.println();
 				
 				// Spacer
 				cmake.println();

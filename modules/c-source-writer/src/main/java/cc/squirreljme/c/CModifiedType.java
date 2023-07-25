@@ -92,7 +92,7 @@ public final class CModifiedType
 			}
 		}
 		
-		// Otherwise normal modification
+		// Otherwise normal modification, on left side
 		else
 		{
 			result.addAll(this.modifier.tokens());

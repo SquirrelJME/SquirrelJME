@@ -83,4 +83,24 @@ public class CBasicExpression
 			.reference(__value)
 			.build();
 	}
+	
+	/**
+	 * Returns a string expression.
+	 * 
+	 * @param __value The value to use.
+	 * @return The expression for the number.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/25
+	 */
+	public static CExpression string(String __value)
+		throws IOException, NullPointerException
+	{
+		if (__value == null)
+			throw new NullPointerException("NARG");
+	
+		return CExpressionBuilder.builder()
+			.string(__value)
+			.build();
+	}
 }

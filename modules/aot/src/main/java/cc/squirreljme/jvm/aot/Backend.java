@@ -70,7 +70,7 @@ public interface Backend
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/05/16
 	 */
-	void dumpGlob(byte[] __inGlob, String __name, PrintStream __out)
+	void dumpGlob(AOTSettings __inGlob, byte[] __name, PrintStream __out)
 		throws IOException, NullPointerException;
 	
 	/**
@@ -84,7 +84,7 @@ public interface Backend
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/22
 	 */
-	LinkGlob linkGlob(CompileSettings __settings, String __name,
+	LinkGlob linkGlob(AOTSettings __settings, CompileSettings __name,
 		OutputStream __out)
 		throws IOException, NullPointerException;
 	
@@ -98,7 +98,8 @@ public interface Backend
 	
 	/**
 	 * Links together the ROM.
-	 * 
+	 *
+	 * @param __aotSettings The AOT settings.
 	 * @param __settings ROM settings.
 	 * @param __out The stream to write to.
 	 * @param __libs The libraries to be combined, the first library should
@@ -107,7 +108,7 @@ public interface Backend
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/27
 	 */
-	void rom(RomSettings __settings, OutputStream __out,
-		VMClassLibrary... __libs)
+	void rom(AOTSettings __aotSettings, RomSettings __settings,
+		OutputStream __out, VMClassLibrary... __libs)
 		throws IOException, NullPointerException;
 }

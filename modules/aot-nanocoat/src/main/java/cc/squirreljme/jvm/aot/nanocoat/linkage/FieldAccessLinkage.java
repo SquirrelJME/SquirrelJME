@@ -9,6 +9,11 @@
 
 package cc.squirreljme.jvm.aot.nanocoat.linkage;
 
+import cc.squirreljme.c.CBasicExpression;
+import cc.squirreljme.c.CStructVariableBlock;
+import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.io.IOException;
 import net.multiphasicapps.classfile.FieldReference;
 import net.multiphasicapps.classfile.MethodNameAndType;
 
@@ -85,5 +90,35 @@ public final class FieldAccessLinkage
 			this.target.hashCode() +
 			(this.isStatic ? 1 : 0) +
 			(this.isStore ? 2 : 0);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/07/25
+	 */
+	@Override
+	public void write(CStructVariableBlock __output)
+		throws IOException, NullPointerException
+	{
+		try (CStructVariableBlock struct =
+			 __output.memberStructSet("fieldAccess"))
+		{
+			struct.memberSet("isStatic",
+				(this.isStatic ? Constants.TRUE : Constants.FALSE));
+			struct.memberSet("isStore",
+				(this.isStore ? Constants.TRUE : Constants.FALSE));
+			
+			struct.memberSet("sourceMethodName",
+				CBasicExpression.string(this.source.name().toString()));
+			struct.memberSet("sourceMethodType",
+				CBasicExpression.string(this.source.type().toString()));
+			
+			struct.memberSet("targetClass",
+				CBasicExpression.string(this.target.className().toString()));
+			struct.memberSet("targetFieldName",
+				CBasicExpression.string(this.target.memberName().toString()));
+			struct.memberSet("targetFieldType",
+				CBasicExpression.string(this.target.memberType().toString()));
+		}
 	}
 }

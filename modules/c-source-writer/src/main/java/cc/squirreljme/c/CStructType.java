@@ -75,9 +75,15 @@ public class CStructType
 	public List<String> declareTokens(CIdentifier __name)
 	{
 		// This is just "struct/union whatever"
-		return UnmodifiableList.of(Arrays.asList(
-			(this.kind == CStructKind.STRUCT ? "struct" : "union"),
-			(__name == null ? this.name.identifier : __name.identifier)));
+		List<String> result = new ArrayList<>(3);
+		result.add((this.kind == CStructKind.STRUCT ? "struct" : "union"));
+		result.add(this.name.identifier);
+		
+		// Is there an identifier?
+		if (__name != null)
+			result.add(__name.identifier);
+			
+		return UnmodifiableList.of(result);
 	}
 	
 	/**
@@ -186,7 +192,8 @@ public class CStructType
 			if (__identifier.equals(member.name))
 				return member;
 		
-		throw new NoSuchElementException("NSEE " + __identifier);
+		throw new NoSuchElementException(
+			String.format("NSEE %s in %s", __identifier, this.name));
 	}
 	
 	/**

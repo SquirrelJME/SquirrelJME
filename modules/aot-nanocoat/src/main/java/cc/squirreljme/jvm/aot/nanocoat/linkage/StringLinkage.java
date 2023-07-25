@@ -9,7 +9,10 @@
 
 package cc.squirreljme.jvm.aot.nanocoat.linkage;
 
+import cc.squirreljme.c.CBasicExpression;
+import cc.squirreljme.c.CStructVariableBlock;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.io.IOException;
 
 /**
  * Linkage for a single string.
@@ -61,5 +64,21 @@ public final class StringLinkage
 	public int hashCode()
 	{
 		return this.string.hashCode();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/07/25
+	 */
+	@Override
+	public void write(CStructVariableBlock __output)
+		throws IOException, NullPointerException
+	{
+		try (CStructVariableBlock struct =
+			 __output.memberStructSet("stringObject"))
+		{
+			struct.memberSet("string",
+				CBasicExpression.string(this.string));
+		}
 	}
 }

@@ -35,7 +35,7 @@ public enum JvmFunctions
 		@Override
 		CFunctionType __build()
 		{
-			return CFunctionType.of("methodCode",
+			return CFunctionType.of("sjme_methodCodeFunction",
 				JvmTypes.JBOOLEAN,
 				CVariable.of(JvmTypes.VMSTATE.pointerType(),
 					"currentState"),
@@ -58,7 +58,7 @@ public enum JvmFunctions
 				JvmTypes.JINT,
 				CVariable.of(JvmTypes.VMFRAME.pointerType(),
 					"frame"),
-				CVariable.of(JvmTypes.JOBJECT.pointerType(),
+				CVariable.of(JvmTypes.JOBJECT,
 					"arrayInstance"));
 		}
 	},
@@ -79,8 +79,8 @@ public enum JvmFunctions
 					"frame"),
 				CVariable.of(JvmTypes.BASIC_TYPE_ID,
 					"primitiveType"),
-				CVariable.of(JvmTypes.JOBJECT.pointerType(),
-					"reference"),
+				CVariable.of(JvmTypes.JOBJECT,
+					"arrayInstance"),
 				CVariable.of(JvmTypes.JINT,
 					"index"));
 		}
@@ -102,7 +102,7 @@ public enum JvmFunctions
 					"frame"),
 				CVariable.of(JvmTypes.BASIC_TYPE_ID,
 					"type"),
-				CVariable.of(JvmTypes.JOBJECT.pointerType(),
+				CVariable.of(JvmTypes.JOBJECT,
 					"reference"),
 				CVariable.of(JvmTypes.JINT,
 					"index"),
@@ -123,12 +123,12 @@ public enum JvmFunctions
 		{
 			return CFunctionType.of("sjme_nvm_checkCast",
 				JvmTypes.JBOOLEAN,
-				CVariable.of(JvmTypes.VMSTATE.pointerType(),
-					"state"),
-				CVariable.of(JvmTypes.JOBJECT.pointerType(),
+				CVariable.of(JvmTypes.VMFRAME.pointerType(),
+					"frame"),
+				CVariable.of(JvmTypes.JOBJECT,
 					"instance"),
 				JvmFunctions.__linkage("classObject",
-					"linkage"));
+					"type"));
 		}
 	},
 	
@@ -144,9 +144,9 @@ public enum JvmFunctions
 		{
 			return CFunctionType.of("sjme_nvm_countReferenceDown",
 				JvmTypes.JBOOLEAN,
-				CVariable.of(JvmTypes.VMSTATE.pointerType(),
-					"state"),
-				CVariable.of(JvmTypes.JOBJECT.pointerType(),
+				CVariable.of(JvmTypes.VMFRAME.pointerType(),
+					"frame"),
+				CVariable.of(JvmTypes.JOBJECT,
 					"instance"));
 		}
 	},
@@ -165,10 +165,10 @@ public enum JvmFunctions
 				JvmTypes.TEMP_INDEX.type(),
 				CVariable.of(JvmTypes.VMFRAME.pointerType(),
 					"frame"),
-				CVariable.of(JvmTypes.JOBJECT.pointerType(),
+				CVariable.of(JvmTypes.JOBJECT,
 					"instance"),
 				JvmFunctions.__linkage("fieldAccess",
-					"linkage"));
+					"field"));
 		}
 	},
 	
@@ -186,10 +186,10 @@ public enum JvmFunctions
 				JvmTypes.JBOOLEAN,
 				CVariable.of(JvmTypes.VMFRAME.pointerType(),
 					"frame"),
-				CVariable.of(JvmTypes.JOBJECT.pointerType(),
+				CVariable.of(JvmTypes.JOBJECT,
 					"instance"),
 				JvmFunctions.__linkage("fieldAccess",
-					"linkage"),
+					"field"),
 				CVariable.of(JvmTypes.ANY.type().pointerType(),
 					"value"));
 		}
@@ -207,12 +207,10 @@ public enum JvmFunctions
 		{
 			return CFunctionType.of("sjme_nvm_invokeNormal",
 				JvmTypes.JBOOLEAN,
-				CVariable.of(JvmTypes.VMSTATE.pointerType(),
-					"state"),
-				CVariable.of(JvmTypes.VMTHREAD.pointerType(),
-					"thread"),
+				CVariable.of(JvmTypes.VMFRAME.pointerType(),
+					"frame"),
 				JvmFunctions.__linkage("invokeNormal",
-					"linkage"));
+					"method"));
 		}
 	},
 	
@@ -228,12 +226,10 @@ public enum JvmFunctions
 		{
 			return CFunctionType.of("sjme_nvm_invokeSpecial",
 				JvmTypes.JBOOLEAN,
-				CVariable.of(JvmTypes.VMSTATE.pointerType(),
-					"state"),
-				CVariable.of(JvmTypes.VMTHREAD.pointerType(),
-					"thread"),
+				CVariable.of(JvmTypes.VMFRAME.pointerType(),
+					"frame"),
 				JvmFunctions.__linkage("invokeSpecial",
-					"linkage"));
+					"method"));
 		}
 	},
 	
@@ -399,28 +395,6 @@ public enum JvmFunctions
 		}
 	},
 	
-	/** Push to the stack whether this is an instance of the class or not. */
-	NVM_STACK_PUSH_INTEGER_IS_INSTANCE_OF
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2023/07/16
-		 */
-		@Override
-		CFunctionType __build()
-		{
-			return CFunctionType.of(
-				"sjme_nvm_localPushIntegerIsInstanceOf",
-				JvmTypes.JBOOLEAN,
-				CVariable.of(JvmTypes.VMFRAME.pointerType(),
-					"frame"),
-				CVariable.of(JvmTypes.JOBJECT.pointerType(),
-					"instance"),
-				JvmFunctions.__linkage("classObject",
-					"linkage"));
-		}
-	},
-	
 	/** Push long value from local variable. */
 	NVM_LOCAL_PUSH_LONG
 	{
@@ -489,10 +463,10 @@ public enum JvmFunctions
 			return CFunctionType.of(
 				"sjme_nvm_lookupClassObjectIntoTemp",
 				JvmTypes.TEMP_INDEX.type(),
-				CVariable.of(JvmTypes.VMTHREAD.pointerType(),
-					"thread"),
+				CVariable.of(JvmTypes.VMFRAME.pointerType(),
+					"frame"),
 				JvmFunctions.__linkage("classObject",
-					"linkage"));
+					"classObjectLinkage"));
 		}
 	},
 	
@@ -508,10 +482,10 @@ public enum JvmFunctions
 		{
 			return CFunctionType.of("sjme_nvm_lookupStringIntoTemp",
 				JvmTypes.TEMP_INDEX.type(),
-				CVariable.of(JvmTypes.VMTHREAD.pointerType(),
-					"thread"),
-				JvmFunctions.__linkage("string",
-					"linkage"));
+				CVariable.of(JvmTypes.VMFRAME.pointerType(),
+					"frame"),
+				JvmFunctions.__linkage("stringObject",
+					"stringLinkage"));
 		}
 	},
 	
@@ -526,10 +500,10 @@ public enum JvmFunctions
 		CFunctionType __build()
 		{
 			return CFunctionType.of("sjme_nvm_monitor",
-				JvmTypes.TEMP_INDEX.type(),
+				JvmTypes.JBOOLEAN.type(),
 				CVariable.of(JvmTypes.VMFRAME.pointerType(),
 					"frame"),
-				CVariable.of(JvmTypes.JOBJECT.pointerType(),
+				CVariable.of(JvmTypes.JOBJECT,
 					"instance"),
 				CVariable.of(JvmTypes.JBOOLEAN,
 					"isEnter"));
@@ -548,8 +522,8 @@ public enum JvmFunctions
 		{
 			return CFunctionType.of("sjme_nvm_newArrayIntoTemp",
 				JvmTypes.TEMP_INDEX.type(),
-				CVariable.of(JvmTypes.VMTHREAD.pointerType(),
-					"thread"),
+				CVariable.of(JvmTypes.VMFRAME.pointerType(),
+					"frame"),
 				JvmFunctions.__linkage("classObject",
 					"componentType"),
 				CVariable.of(JvmTypes.JINT,
@@ -569,8 +543,8 @@ public enum JvmFunctions
 		{
 			return CFunctionType.of("sjme_nvm_newInstanceIntoTemp",
 				JvmTypes.TEMP_INDEX.type(),
-				CVariable.of(JvmTypes.VMTHREAD.pointerType(),
-					"thread"),
+				CVariable.of(JvmTypes.VMFRAME.pointerType(),
+					"frame"),
 				JvmFunctions.__linkage("classObject",
 					"linkage"));
 		}
@@ -588,8 +562,10 @@ public enum JvmFunctions
 		{
 			return CFunctionType.of("sjme_nvm_returnFromMethod",
 				JvmTypes.JBOOLEAN,
-				CVariable.of(JvmTypes.VMSTATE.pointerType(),
-					"state"));
+				CVariable.of(JvmTypes.VMFRAME.pointerType(),
+					"frame"),
+				CVariable.of(JvmTypes.ANY.pointerType(),
+					"value"));
 		}
 	},
 	
@@ -657,7 +633,7 @@ public enum JvmFunctions
 		CFunctionType __build()
 		{
 			return CFunctionType.of("sjme_nvm_stackPopReference",
-				JvmTypes.JOBJECT.pointerType(),
+				JvmTypes.JOBJECT,
 				CVariable.of(JvmTypes.VMFRAME.pointerType(),
 					"frame"));
 		}
@@ -772,7 +748,7 @@ public enum JvmFunctions
 				CVariable.of(JvmTypes.VMFRAME.pointerType(),
 					"frame"),
 				CVariable.of(JvmTypes.JINT,
-					"value"));
+					"rawValue"));
 		}
 	},
 	
@@ -792,6 +768,28 @@ public enum JvmFunctions
 					"frame"),
 				CVariable.of(JvmTypes.JINT,
 					"value"));
+		}
+	},
+	
+	/** Push to the stack whether this is an instance of the class or not. */
+	NVM_STACK_PUSH_INTEGER_IS_INSTANCE_OF
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/16
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of(
+				"sjme_nvm_stackPushIntegerIsInstanceOf",
+				JvmTypes.JBOOLEAN,
+				CVariable.of(JvmTypes.VMFRAME.pointerType(),
+					"frame"),
+				CVariable.of(JvmTypes.JOBJECT,
+					"instance"),
+				JvmFunctions.__linkage("classObject",
+					"type"));
 		}
 	},
 	
@@ -830,7 +828,7 @@ public enum JvmFunctions
 				JvmTypes.JBOOLEAN,
 				CVariable.of(JvmTypes.VMFRAME.pointerType(),
 					"frame"),
-				CVariable.of(JvmTypes.JOBJECT.pointerType(),
+				CVariable.of(JvmTypes.JOBJECT,
 					"instance"));
 		}
 	},
