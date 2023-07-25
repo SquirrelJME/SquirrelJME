@@ -925,7 +925,10 @@ public enum JvmTypes
 		{
 			return CStructTypeBuilder.builder(CStructKind.STRUCT,
 					"sjme_static_rom")
-				.member(CPrimitiveType.CONST_CHAR_STAR, "name")
+				.member(CPrimitiveType.CONST_CHAR_STAR,
+					"sourceSet")
+				.member(CPrimitiveType.CONST_CHAR_STAR,
+					"clutterLevel")
 				.member(JvmTypes.JINT, "count")
 				.member(JvmTypes.STATIC_LIBRARY.type()
 					.constType().pointerType().pointerType(),

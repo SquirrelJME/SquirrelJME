@@ -321,8 +321,10 @@ public class NanoCoatBackend
 				try (CStructVariableBlock struct = cFile.define(
 					CStructVariableBlock.class, romVar))
 				{
-					// ROM name
-					struct.memberSet("name",
+					// ROM details
+					struct.memberSet("sourceSet",
+						CBasicExpression.string(__aotSettings.clutterLevel));
+					struct.memberSet("clutterLevel",
 						CBasicExpression.string(__aotSettings.clutterLevel));
 					
 					// The number of libraries within
