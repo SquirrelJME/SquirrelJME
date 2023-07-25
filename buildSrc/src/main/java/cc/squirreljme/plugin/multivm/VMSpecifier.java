@@ -107,6 +107,17 @@ public interface VMSpecifier
 	boolean hasRom(BangletVariant __variant);
 	
 	/**
+	 * If the ROM contains only members of its own source set, then this
+	 * will be {@code true}. This means that there will be {@code main},
+	 * {@code testFixtures}, and {@code test} ROMs.
+	 *
+	 * @param __variant The banglet variant.
+	 * @return If this is a single source set or not.
+	 * @since 2023/07/25
+	 */
+	boolean isSingleSourceSetRom(BangletVariant __variant);
+	
+	/**
 	 * Returns the name of the project that is used to run this using the
 	 * emulator.
 	 * 

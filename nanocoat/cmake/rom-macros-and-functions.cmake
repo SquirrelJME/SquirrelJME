@@ -13,7 +13,7 @@
 # depend on libraries
 function(squirreljme_rom romName objectLibs)
 	# Add base object library
-	add_library("SquirrelJMEROM${romName}Object" OBJECT
+	add_library("ROM_${romName}_Object" OBJECT
 		${objectLibs})
 endfunction()
 
@@ -21,18 +21,18 @@ endfunction()
 # Remaining argv are sources
 function(squirreljme_romLibrary libNameStr filesList)
 	# Add object library which includes all the output object files
-	add_library("SquirrelJMEROM${libNameStr}Object" OBJECT
+	add_library("ROMLib_${libNameStr}_Object" OBJECT
 		${filesList})
 
 	# Include main headers
-	target_include_directories("SquirrelJMEROM${libNameStr}Object" PUBLIC
+	target_include_directories("ROMLib_${libNameStr}_Object" PUBLIC
 		"${CMAKE_SOURCE_DIR}/include")
 
 	# Define static library for linking
 	#add_library("SquirrelJMEROM${libNameStr}Static" STATIC
-	#	$<TARGET_OBJECTS:SquirrelJMEROM${libNameStr}Object>)
+	#	$<TARGET_OBJECTS:ROMLib_${libNameStr}_Object>)
 
 	# Define dynamic library for dynamic linking
 	#add_library("SquirrelJMEROM${libNameStr}Shared" SHARED
-	#	$<TARGET_OBJECTS:SquirrelJMEROM${libNameStr}Object>)
+	#	$<TARGET_OBJECTS:ROMLib_${libNameStr}_Object>)
 endfunction()

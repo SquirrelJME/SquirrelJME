@@ -438,6 +438,17 @@ public enum VMType
 		{
 			return false;
 		}
+	
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/25
+		 */
+		@Override
+		public boolean isSingleSourceSetRom(BangletVariant __variant)
+		{
+			// NanoCoat is this special case
+			return true;
+		}
 		
 		/**
 		 * {@inheritDoc}
@@ -613,6 +624,17 @@ public enum VMType
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2023/07/25
+	 */
+	@Override
+	public boolean isSingleSourceSetRom(BangletVariant __variant)
+	{
+		// False by default
+		return false;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2020/08/07
 	 */
 	@Override
@@ -718,6 +740,12 @@ public enum VMType
 		for (int i = 0, n = __libs.size(); i < n; i++)
 			libIndex.put(__libs.get(i), i);
 		
+		// Is this a single source set ROM?
+		boolean isSingleSourceSet = this.isSingleSourceSetRom(__variant);
+		boolean bootLoaderEnabled = !isSingleSourceSet ||
+			(isSingleSourceSet &&
+				SourceSet.MAIN_SOURCE_SET_NAME.equals(__task.getSourceSet()));
+		
 		// Setup arguments for packing the ROM
 		List<String> args = new ArrayList<>();
 		
@@ -726,27 +754,32 @@ public enum VMType
 			args.add("-XbootLoaderMainClass:" + __build.bootLoaderMainClass);
 		
 		// Boot loader class path
-		if (__build.bootLoaderClassPath != null)
-			args.add("-XbootLoaderClassPath:" +
-				VMType.__pathIndexList(libIndex, __build.bootLoaderClassPath));
-			
-		// Launcher main class
-		if (__build.launcherMainClass != null)
-			args.add("-XlauncherMainClass:" + __build.launcherMainClass);
-		
-		// Launcher arguments, these are a bit special
-		if (__build.launcherArgs != null)
+		if (bootLoaderEnabled)
 		{
-			String[] launcherArgs = __build.launcherArgs;
-			for (int i = 0, n = launcherArgs.length; i < n; i++)
-				args.add(String.format("-XlauncherArgs:%d:%s",
-					i, launcherArgs[i]));
+			if (__build.bootLoaderClassPath != null)
+				args.add("-XbootLoaderClassPath:" +
+					VMType.__pathIndexList(libIndex,
+					__build.bootLoaderClassPath));
+			
+			// Launcher main class
+			if (__build.launcherMainClass != null)
+				args.add("-XlauncherMainClass:" + __build.launcherMainClass);
+			
+			// Launcher arguments, these are a bit special
+			if (__build.launcherArgs != null)
+			{
+				String[] launcherArgs = __build.launcherArgs;
+				for (int i = 0, n = launcherArgs.length; i < n; i++)
+					args.add(String.format("-XlauncherArgs:%d:%s", i,
+						launcherArgs[i]));
+			}
+			
+			// Launcher class path
+			if (__build.launcherClassPath != null)
+				args.add("-XlauncherClassPath:" +
+					VMType.__pathIndexList(libIndex,
+					__build.launcherClassPath));
 		}
-		
-		// Launcher class path
-		if (__build.launcherClassPath != null)
-			args.add("-XlauncherClassPath:" +
-				VMType.__pathIndexList(libIndex, __build.launcherClassPath));
 		
 		// Put down paths to libraries to link together
 		for (Path path : __libs)

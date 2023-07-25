@@ -367,16 +367,21 @@ public class NanoCoatBackend
 				}
 				cmake.println();
 				
+				String taskName = String.format("%s_%s",
+					__aotSettings.sourceSet,
+					__aotSettings.clutterLevel);
+				
 				// Build generator expression for all the libraries within
 				cmake.printf("set(%sRomObjects",
-					romBaseName);
+					taskName);
 				cmake.println();
 				for (String lib : libFiles)
 				{
 					cmake.printf("\t\"$<TARGET_OBJECTS:" +
-						"SquirrelJMEROM%s_%s_%sObject>\"",
+						"ROMLib_%s_%s_%s_Object>\"",
 						__aotSettings.sourceSet,
-						__aotSettings.clutterLevel, lib);
+						__aotSettings.clutterLevel,
+						lib);
 					cmake.println();
 				}
 				cmake.println("\t)");
@@ -384,7 +389,7 @@ public class NanoCoatBackend
 				
 				// Define ROM
 				cmake.printf("squirreljme_rom(%s \"${%sRomObjects}\")",
-					romBaseName, romBaseName);
+					taskName, taskName);
 				cmake.println();
 				
 				// Spacer

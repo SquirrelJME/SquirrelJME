@@ -105,6 +105,12 @@ nanocoat/cmake-build-debug
 *.tmp
 nanocoat/rom/NanoCoatDebug
 nanocoat/rom/NanoCoatRelease
+nanocoat/rom/main_debug
+nanocoat/rom/testFixtures_debug
+nanocoat/rom/test_debug
+nanocoat/rom/main_release
+nanocoat/rom/testFixtures_release
+nanocoat/rom/test_release
 
 # Fossil files
 _FOSSIL_

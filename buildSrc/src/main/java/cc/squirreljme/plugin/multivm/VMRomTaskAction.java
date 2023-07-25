@@ -24,6 +24,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
+import org.gradle.api.tasks.SourceSet;
 
 /**
  * This performs the actual work that is needed to build the ROM.
@@ -63,6 +64,13 @@ public class VMRomTaskAction
 		String sourceSet = this.classifier.getSourceSet();
 		VMSpecifier vmType = this.classifier.getVmType();
 		
+		// Is this a single source set ROM?
+		boolean isSingleSourceSet = vmType.isSingleSourceSetRom(
+			this.classifier.getBangletVariant());
+		boolean bootLoaderEnabled = !isSingleSourceSet ||
+			(isSingleSourceSet &&
+				SourceSet.MAIN_SOURCE_SET_NAME.equals(sourceSet));
+		
 		Path tempFile = null;
 		try
 		{
@@ -81,6 +89,12 @@ public class VMRomTaskAction
 			for (VMLibraryTask task : VMRomDependencies.libraries(__task,
 				this.classifier))
 			{
+				// If we are single source set and this library is another
+				// source set, then do not include it here
+				if (isSingleSourceSet &&
+					!sourceSet.equals(task.getSourceSet()))
+					continue;
+				
 				// Determine the path set
 				Set<Path> pathSet = new LinkedHashSet<>();
 				for (File f : task.getOutputs().getFiles().getFiles())
@@ -123,7 +137,8 @@ public class VMRomTaskAction
 			
 			// Make sure the boot libraries are always first
 			Set<Path> libPaths = new LinkedHashSet<>();
-			libPaths.addAll(bootPaths);
+			if (bootLoaderEnabled)
+				libPaths.addAll(bootPaths);
 			libPaths.addAll(normalPaths);
 			
 			// Setup output file for writing

@@ -460,8 +460,16 @@ public final class TaskInitialization
 		if (__project == null || __classifier == null)
 			throw new NullPointerException("NARG");
 		
+		// Is this a single source set ROM?
+		VMSpecifier vmType = __classifier.getVmType();
+		boolean isSingleSourceSetRom = vmType.isSingleSourceSetRom(
+			__classifier.getBangletVariant());
+		
 		// Running the full ROM in the emulator, only for ones with emulators
-		if (__classifier.getVmType().hasEmulator())
+		// Do not include test fixtures as a full option since it does not
+		// make sense here... unless we are a single source set ROM
+		if (__classifier.getVmType().hasEmulator() &&
+			(isSingleSourceSetRom || !__classifier.isTestFixturesSourceSet()))
 			__project.getTasks().create(
 				TaskInitialization.task("full", __classifier),
 				VMFullSuite.class, __classifier);
@@ -689,12 +697,16 @@ public final class TaskInitialization
 		// Everything will be working on these tasks
 		TaskContainer tasks = __project.getTasks();
 		
+		// Determine if this is a single source set ROM
+		VMSpecifier vmType = __classifier.getVmType();
+		boolean isSingleSourceSetRom = vmType.isSingleSourceSetRom(
+			__classifier.getBangletVariant());
+		
 		// Does the VM utilize ROMs?
 		// Test fixtures are just for testing, so there is no test fixtures
-		// ROM variant...
-		if (__classifier.getVmType()
-			.hasRom(__classifier.getBangletVariant()) &&
-			!__classifier.isTestFixturesSourceSet())
+		// ROM variant... unless we are a single source set ROM variant
+		if (vmType.hasRom(__classifier.getBangletVariant()) &&
+			(isSingleSourceSetRom || !__classifier.isTestFixturesSourceSet()))
 		{
 			String baseName = TaskInitialization.task("rom",
 				__classifier);

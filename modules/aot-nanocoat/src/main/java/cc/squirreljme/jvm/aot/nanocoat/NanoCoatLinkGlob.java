@@ -116,7 +116,11 @@ public class NanoCoatLinkGlob
 		
 		// Determine output names
 		this.aotSettings = __aotSettings;
-		this.name = __aotSettings.name;
+		
+		if (!"main".equals(this.aotSettings.sourceSet))
+			this.name = __aotSettings.name + "_" + this.aotSettings.sourceSet;
+		else
+			this.name = __aotSettings.name;
 		this.baseName = Utils.basicFileName(this.name);
 		this.headerFileName = CFileName.of(this.baseName + ".h");
 		this.rootSourceFileName = CFileName.of(this.baseName + ".c");

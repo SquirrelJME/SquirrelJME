@@ -47,3 +47,6 @@ set(CMAKE_C_STANDARD_REQUIRED True)
 
 # Directory where the ROM compiled sources exist
 add_subdirectory(rom)
+
+# Sources
+add_subdirectory(src)
