@@ -620,6 +620,12 @@ sjme_tempIndex sjme_nvm_arrayLoadIntoTemp(sjme_nvm_frame* frame,
 	jobject arrayInstance,
 	jint index);
 	
+jboolean sjme_nvm_arrayStore(sjme_nvm_frame* frame,
+	sjme_basicTypeId primitiveType,
+	jobject arrayInstance,
+	jint index,
+	sjme_any* value);
+	
 jboolean sjme_nvm_checkCast(sjme_nvm_frame* frame,
 	jobject instance,
 	sjme_dynamic_linkage_data_classObject* type);

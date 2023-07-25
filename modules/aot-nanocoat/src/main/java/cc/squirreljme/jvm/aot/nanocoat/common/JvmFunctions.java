@@ -103,7 +103,7 @@ public enum JvmFunctions
 				CVariable.of(JvmTypes.BASIC_TYPE_ID,
 					"type"),
 				CVariable.of(JvmTypes.JOBJECT,
-					"reference"),
+					"arrayInstance"),
 				CVariable.of(JvmTypes.JINT,
 					"index"),
 				CVariable.of(JvmTypes.ANY.pointerType(),

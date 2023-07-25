@@ -57,6 +57,8 @@ public final class CUtils
 					sb.append("\\\\");
 				else if (b == '\"')
 					sb.append("\\\"");
+				else if (b == '?')
+					sb.append("\\?");
 				else if (b >= 0x20 && b < 0x7F)
 					sb.append((char)b);
 				

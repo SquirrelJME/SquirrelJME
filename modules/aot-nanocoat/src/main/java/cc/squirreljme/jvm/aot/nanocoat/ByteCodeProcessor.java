@@ -1120,7 +1120,7 @@ public class ByteCodeProcessor
 		__block.functionCall(
 			JvmFunctions.NVM_CHECK_CAST,
 			codeVars.currentFrame(),
-			instance.referenceTemp(JvmTypes.JOBJECT),
+			instance.accessTemp(JvmTypes.JOBJECT),
 			codeVars.linkageReference(this.linkTable.classObject(
 				__class), "classObject"));
 		
@@ -1466,7 +1466,7 @@ public class ByteCodeProcessor
 		// Perform check on object, if NULL or not
 		try (CIfBlock iffy = __block.branchIf(
 			CExpressionBuilder.builder()
-				.compare(object.referenceTemp(JvmTypes.JOBJECT),
+				.compare(object.accessTemp(JvmTypes.JOBJECT),
 					(__null ? CComparison.EQUALS : CComparison.NOT_EQUALS),
 					CVariable.NULL)
 			.build()))
@@ -1540,7 +1540,7 @@ public class ByteCodeProcessor
 		__block.functionCall(
 			JvmFunctions.NVM_STACK_PUSH_INTEGER_IS_INSTANCE_OF,
 			codeVars.currentFrame(),
-			instance.referenceTemp(JvmTypes.JOBJECT),
+			instance.accessTemp(JvmTypes.JOBJECT),
 			codeVars.linkageReference(this.linkTable.classObject(
 				__class), "classObject"));
 	}
@@ -2024,7 +2024,7 @@ public class ByteCodeProcessor
 		JvmTemporary classObject = codeVars.temporary(0);
 		__block.variableSetViaFunction(classObject.tempIndex(),
 			JvmFunctions.NVM_LOOKUP_CLASS_OBJECT_INTO_TEMP,
-			codeVars.currentThread(),
+			codeVars.currentFrame(),
 			codeVars.linkageReference(this.linkTable.classObject(
 				__type), "classObject"));
 		
