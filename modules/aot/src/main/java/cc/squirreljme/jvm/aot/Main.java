@@ -76,6 +76,7 @@ public class Main
 		String name = "undefined";
 		String mode = null;
 		String clutterLevel = null;
+		String sourceSet = null;
 		
 		// Parse input arguments
 		while (!args.isEmpty())
@@ -93,6 +94,10 @@ public class Main
 			// The current clutter level
 			else if (arg.startsWith("-XclutterLevel"))
 				clutterLevel = arg.substring("-XclutterLevel:".length());
+			
+			// The source set being compiled
+			else if (arg.startsWith("-XsourceSet"))
+				sourceSet = arg.substring("-XsourceSet:".length());
 			
 			// End of switches
 			else if (!arg.startsWith("-"))
@@ -115,9 +120,7 @@ public class Main
 		
 		// Store into settings
 		AOTSettings aotSettings = new AOTSettings(compiler,
-			name,
-			mode,
-			clutterLevel);
+			name, mode, sourceSet, clutterLevel);
 		
 		// Use explicit input/output
 		try (InputStream in = new StandardInputStream();

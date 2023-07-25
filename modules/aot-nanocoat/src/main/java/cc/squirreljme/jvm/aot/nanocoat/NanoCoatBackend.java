@@ -262,7 +262,8 @@ public class NanoCoatBackend
 				}
 			
 			// What is this ROM called?
-			String romBaseName = "rom" + __aotSettings.clutterLevel;
+			String romBaseName = "rom_" + __aotSettings.sourceSet + "_" +
+				__aotSettings.clutterLevel;
 			
 			// Variable the ROM is defined under
 			CVariable romVar = CVariable.of(JvmTypes.STATIC_ROM
@@ -371,7 +372,8 @@ public class NanoCoatBackend
 				for (String lib : libFiles)
 				{
 					cmake.printf("\t\"$<TARGET_OBJECTS:" +
-						"SquirrelJMEROM%s_%sObject>\"",
+						"SquirrelJMEROM%s_%s_%sObject>\"",
+						__aotSettings.sourceSet,
 						__aotSettings.clutterLevel, lib);
 					cmake.println();
 				}
@@ -379,7 +381,7 @@ public class NanoCoatBackend
 				cmake.println();
 				
 				// Define ROM
-				cmake.printf("squirreljme_rom(%s ${%sRomObjects})",
+				cmake.printf("squirreljme_rom(%s \"${%sRomObjects}\")",
 					romBaseName, romBaseName);
 				cmake.println();
 				

@@ -25,6 +25,9 @@ public final class AOTSettings
 	/** The mode. */
 	public final String mode;
 	
+	/** The source set being used. */
+	public final String sourceSet;
+	
 	/** The clutter level currently used. */
 	public final String clutterLevel;
 	
@@ -34,15 +37,17 @@ public final class AOTSettings
 	 * @param __compiler The compiler used.
 	 * @param __name The name.
 	 * @param __mode The mode.
+	 * @param __sourceSet The source set to use.
 	 * @param __clutterLevel The current clutter level.
 	 * @since 2023/07/25
 	 */
 	public AOTSettings(String __compiler, String __name, String __mode,
-		String __clutterLevel)
+		String __sourceSet, String __clutterLevel)
 	{
 		this.compiler = __compiler;
 		this.name = __name;
 		this.mode = __mode;
+		this.sourceSet = __sourceSet;
 		this.clutterLevel = __clutterLevel;
 	}
 }

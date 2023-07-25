@@ -278,8 +278,8 @@ public class NanoCoatLinkGlob
 			cmake.println();
 			
 			// The true library name
-			String libName = this.aotSettings.clutterLevel + "_" +
-				this.baseName;
+			String libName = this.aotSettings.sourceSet + "_" +
+				this.aotSettings.clutterLevel + "_" + this.baseName;
 			
 			// Generate list of files
 			cmake.printf("set(%sFiles", libName);

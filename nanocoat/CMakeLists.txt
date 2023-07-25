@@ -5,7 +5,7 @@
 # SquirrelJME is under the Mozilla Public License Version 2.0.
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
-# Define the project and the versioning info
+# DESCRIPTION: Defines the base project and the versioning info
 
 # Easier includes
 include("${CMAKE_SOURCE_DIR}/cmake/easier-includes.cmake" NO_POLICY_SCOPE)

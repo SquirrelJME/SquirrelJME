@@ -941,6 +941,10 @@ public enum VMType
 			__task.getClassifier().getTargetClassifier()
 				.getClutterLevel());
 		
+		// Add source set
+		args.add("-XsourceSet:" +
+			__task.getSourceSet());
+		
 		// Our run command and any additional arguments
 		args.add(__command);
 		if (__args != null)

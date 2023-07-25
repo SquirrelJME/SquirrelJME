@@ -87,6 +87,7 @@ public class NanoCoatBuiltInTask
 	{
 		return this.getProject().provider(() -> this.getProject().getRootDir()
 			.toPath().resolve("nanocoat").resolve("rom")
-			.resolve(TaskInitialization.task("", this.classifier)));
+			.resolve(String.format("%s_%s", this.classifier.getSourceSet(),
+				this.classifier.getTargetClassifier().getClutterLevel())));
 	}
 }
