@@ -9,10 +9,12 @@
 
 package cc.squirreljme.jvm.aot;
 
+import cc.squirreljme.jvm.manifest.JavaManifest;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.vm.JarClassLibrary;
 import cc.squirreljme.vm.SummerCoatJarLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -237,8 +239,41 @@ public class Main
 						
 						// Compile resource file?
 						if (!Main.__isValidClass(name))
-							__backend.compileResource(settings, glob,
-								name, entry);
+						{
+							// If not the manifest, do not keep a copy of it
+							InputStream actual;
+							boolean isManifest =
+								name.equals("META-INF/MANIFEST.MF");
+							boolean isTestList =
+								name.equals("META-INF/services/net." +
+									"multiphasicapps.tac.TestInterface");
+							if (!isManifest && !isTestList)
+								actual = entry;
+							
+							// Otherwise do make a copy of it
+							else
+							{
+								// Load this into the glob, if it cares
+								byte[] data = StreamUtils.readAll(entry);
+								try (InputStream rawIn =
+									 new ByteArrayInputStream(data))
+								{
+									if (isManifest)
+										glob.rememberManifest(
+											new JavaManifest(rawIn));
+									else
+										glob.rememberTests(
+											StreamUtils.readAllLines(rawIn,
+												"utf-8"));
+								}
+								
+								// Use this for the resource read
+								actual = new ByteArrayInputStream(data);
+							}
+							
+							__backend.compileResource(settings, glob, name,
+								actual);
+						}
 						
 						// Compile class file?
 						else

@@ -11,11 +11,15 @@ package cc.squirreljme.runtime.cldc.util;
 
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.MemoryProfileType;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * General utilities for streams.
@@ -185,6 +189,46 @@ public final class StreamUtils
 			// All done!
 			return baos.toByteArray();
 		}
+	}
+	
+	/**
+	 * Reads every line within the input stream.
+	 * 
+	 * @param __in The stream to read from.
+	 * @param __charset The character set to use.
+	 * @return A list of all the lines.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/25
+	 */
+	public static List<String> readAllLines(InputStream __in, String __charset)
+		throws IOException, NullPointerException
+	{
+		if (__in == null || __charset == null)
+			throw new NullPointerException("NARG");
+		
+		BufferedReader in = new BufferedReader(
+			new InputStreamReader(__in, __charset));
+		
+		// Read all lines
+		List<String> result = new ArrayList<>();
+		for (;;)
+		{
+			// Stop on EOF
+			String ln = in.readLine();
+			if (ln == null)
+				break;
+			
+			// Ignore blank lines
+			ln = ln.trim();
+			if (ln.isEmpty())
+				continue;
+			
+			// Store as read
+			result.add(ln);
+		}
+		
+		return result;
 	}
 	
 	/**

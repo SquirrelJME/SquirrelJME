@@ -6,3 +6,7 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Testing framework for the main library
+
+# Setup main test execution wrapper
+add_executable(TestExecutor
+	main.c)

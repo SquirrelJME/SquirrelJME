@@ -13,6 +13,8 @@ modules/*/build/squirreljme
 modules/*/build/tmp
 build/squirreljme/vm-main-*/squirreljme.zip
 build/squirreljme/vm-test-*/squirreljme.zip
+build/squirreljme/vm-test-*-debug/squirreljme-test.zip
+build/squirreljme/vm-testFixtures-*-debug/squirreljme-testFixtures.zip
 
 # VSCode Files
 *~

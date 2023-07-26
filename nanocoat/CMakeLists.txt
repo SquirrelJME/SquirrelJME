@@ -52,6 +52,9 @@ set(CMAKE_C_STANDARD_REQUIRED True)
 # > Therefore, this command should be in the source directory root.
 enable_testing()
 
+# Tests first since we add to these
+add_subdirectory(tests)
+
 # Directory where the ROM compiled sources exist
 add_subdirectory(rom)
 

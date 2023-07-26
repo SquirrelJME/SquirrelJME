@@ -9,9 +9,11 @@
 
 package cc.squirreljme.jvm.aot;
 
+import cc.squirreljme.jvm.manifest.JavaManifest;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * Base interface which describes a glob of linked binary.
@@ -39,4 +41,20 @@ public interface LinkGlob
 	 */
 	void initialize()
 		throws IOException;
+	
+	/**
+	 * Potentially remembers the main manifest, if this is important.
+	 *
+	 * @param __manifest The manifest to remember.
+	 * @since 2023/07/25
+	 */
+	void rememberManifest(JavaManifest __manifest);
+	
+	/**
+	 * Remembers the lists of tests.
+	 *
+	 * @param __tests The list of tests.
+	 * @since 2023/07/25
+	 */
+	void rememberTests(List<String> __tests);
 }

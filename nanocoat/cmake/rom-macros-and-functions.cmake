@@ -30,5 +30,24 @@ function(squirreljme_romLibrary libNameStr filesList)
 endfunction()
 
 # Defines a test for a ROM library entry
-function(squirreljme_romLibraryTest libNameStr testName)
+function(squirreljme_romLibraryTest libNameStr testName
+	testClassPath)
+	# Register test
+	message("Adding test ${testName} in ${libNameStr}...")
+	add_test(NAME "${libNameStr}:${testName}"
+		COMMAND TestExecutor
+			"-classpath" "${testClassPath}"
+			"${testName}")
+
+	# Code for skipped tests
+	set_property(TEST "${libNameStr}:${testName}"
+		PROPERTY SKIP_RETURN_CODE 42)
+	set_tests_properties("${libNameStr}:${testName}"
+		PROPERTIES SKIP_RETURN_CODE 42)
+
+	# Test timeout (to prevent infinite loops)
+	set_property(TEST "${libNameStr}:${testName}"
+		PROPERTY TIMEOUT 180)
+	set_tests_properties("${libNameStr}:${testName}"
+		PROPERTIES TIMEOUT 180)
 endfunction()

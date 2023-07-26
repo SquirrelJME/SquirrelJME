@@ -24,12 +24,16 @@ import cc.squirreljme.jvm.aot.AOTSettings;
 import cc.squirreljme.jvm.aot.LinkGlob;
 import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
+import cc.squirreljme.jvm.manifest.JavaManifest;
+import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import cc.squirreljme.runtime.cldc.util.SortedTreeSet;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
@@ -98,6 +102,12 @@ public class NanoCoatLinkGlob
 	
 	/** The C header block. */
 	volatile CBlock _headerBlock;
+	
+	/** The manifest for later handling. */
+	private volatile JavaManifest _manifest;
+	
+	/** The list of tests. */
+	private volatile List<String> _tests;
 	
 	/**
 	 * Initializes the link glob.
@@ -267,7 +277,7 @@ public class NanoCoatLinkGlob
 			out.flush();
 		}
 		
-		// Output the CMake file accordingly
+		// Output the CMake build file accordingly
 		try (OutputStream rawCMake = zip.nextEntry(
 			this.inDirectory("CMakeLists.txt"));
 			PrintStream cmake = new PrintStream(rawCMake, true,
@@ -301,6 +311,32 @@ public class NanoCoatLinkGlob
 				libName, libName);
 			cmake.println();
 			cmake.println();
+			
+			// If these are tests, we need to add every test
+			JavaManifest manifest = this._manifest;
+			List<String> tests = this._tests;
+			if ("test".equals(this.aotSettings.sourceSet) &&
+				manifest != null && tests != null && !tests.isEmpty())
+			{
+				JavaManifestAttributes attrs =
+					manifest.getMainAttributes();
+				
+				// Store class path in variable for later setting
+				cmake.printf("set(%sClassPath \"%s\")", libName,
+					attrs.getValue("X-SquirrelJME-Tests-ClassPath"));
+				cmake.println();
+				
+				// Register tests
+				for (String test : tests)
+				{
+					cmake.printf("squirreljme_romLibraryTest(" +
+						"\"%s\" \"%s\" \"%sClassPath\")",
+						this.aotSettings.name,
+						test,
+						libName);
+					cmake.println();
+				}
+			}
 			
 			// Make sure ZIP entry is written
 			cmake.flush();
@@ -383,5 +419,25 @@ public class NanoCoatLinkGlob
 		block.declare(this.libraryInfo.extern());
 		block.declare(this.libraryClasses.extern());
 		block.declare(this.libraryResources.extern());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/07/25
+	 */
+	@Override
+	public void rememberManifest(JavaManifest __manifest)
+	{
+		this._manifest = __manifest;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/07/25
+	 */
+	@Override
+	public void rememberTests(List<String> __tests)
+	{
+		this._tests = __tests;
 	}
 }
