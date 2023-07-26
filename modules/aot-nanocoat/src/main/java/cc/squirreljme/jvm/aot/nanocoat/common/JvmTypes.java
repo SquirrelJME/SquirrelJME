@@ -648,6 +648,8 @@ public enum JvmTypes
 					"name")
 				.member(JvmTypes.JINT,
 					"nameHash")
+				.member(CPrimitiveType.CONST_CHAR_STAR,
+					"originalLibHash")
 				.member(JvmTypes.STATIC_LIBRARY_CLASSES
 					.type().constType().pointerType(), "classes")
 				.member(JvmTypes.STATIC_LIBRARY_RESOURCES

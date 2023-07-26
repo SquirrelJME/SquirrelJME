@@ -79,6 +79,7 @@ public class Main
 		String mode = null;
 		String clutterLevel = null;
 		String sourceSet = null;
+		String originalLibHash = null;
 		
 		// Parse input arguments
 		while (!args.isEmpty())
@@ -101,6 +102,10 @@ public class Main
 			else if (arg.startsWith("-XsourceSet"))
 				sourceSet = arg.substring("-XsourceSet:".length());
 			
+			// Original library hash code
+			else if (arg.startsWith("-XoriginalLibHash:"))
+				originalLibHash = arg.substring("-XoriginalLibHash:".length());
+			
 			// End of switches
 			else if (!arg.startsWith("-"))
 			{
@@ -122,7 +127,7 @@ public class Main
 		
 		// Store into settings
 		AOTSettings aotSettings = new AOTSettings(compiler,
-			name, mode, sourceSet, clutterLevel);
+			name, mode, sourceSet, clutterLevel, originalLibHash);
 		
 		// Use explicit input/output
 		try (InputStream in = new StandardInputStream();

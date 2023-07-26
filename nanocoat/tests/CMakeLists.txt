@@ -9,4 +9,9 @@
 
 # Setup main test execution wrapper
 add_executable(TestExecutor
-	main.c)
+	main.c
+	"$<TARGET_OBJECTS:Core>")
+
+# Make sure we have our headers included accordingly
+target_include_directories(TestExecutor PUBLIC
+	"${CMAKE_SOURCE_DIR}/include")

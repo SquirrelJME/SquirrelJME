@@ -262,6 +262,11 @@ public class NanoCoatLinkGlob
 				struct.memberSet("nameHash",
 					CBasicExpression.number(this.name.hashCode()));
 				
+				if (this.aotSettings.originalLibHash != null)
+					struct.memberSet("originalLibHash",
+						CBasicExpression.string(this.aotSettings
+							.originalLibHash));
+				
 				struct.memberSet("resources",
 					CBasicExpression.reference(this.libraryResources));
 				struct.memberSet("classes",

@@ -487,6 +487,9 @@ typedef struct sjme_static_library
 	/** Hashcode for the name. */
 	jint nameHash;
 	
+	/** The hash of the original library, to detect changes. */
+	const char* originalLibHash;
+	
 	/** Resources. */
 	const sjme_static_library_resources* resources;
 	

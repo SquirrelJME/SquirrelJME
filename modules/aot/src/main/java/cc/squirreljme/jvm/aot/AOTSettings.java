@@ -31,6 +31,9 @@ public final class AOTSettings
 	/** The clutter level currently used. */
 	public final String clutterLevel;
 	
+	/** The original library hash. */
+	public final String originalLibHash;
+	
 	/**
 	 * Initializes the settings.
 	 *
@@ -39,15 +42,17 @@ public final class AOTSettings
 	 * @param __mode The mode.
 	 * @param __sourceSet The source set to use.
 	 * @param __clutterLevel The current clutter level.
+	 * @param __originalLibHash The original library hash.
 	 * @since 2023/07/25
 	 */
 	public AOTSettings(String __compiler, String __name, String __mode,
-		String __sourceSet, String __clutterLevel)
+		String __sourceSet, String __clutterLevel, String __originalLibHash)
 	{
 		this.compiler = __compiler;
 		this.name = __name;
 		this.mode = __mode;
 		this.sourceSet = __sourceSet;
 		this.clutterLevel = __clutterLevel;
+		this.originalLibHash = __originalLibHash;
 	}
 }

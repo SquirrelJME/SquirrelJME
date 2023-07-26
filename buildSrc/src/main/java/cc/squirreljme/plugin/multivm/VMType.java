@@ -14,6 +14,7 @@ import cc.squirreljme.plugin.multivm.ident.TargetClassifier;
 import cc.squirreljme.plugin.util.GradleJavaExecSpecFiller;
 import cc.squirreljme.plugin.util.GuardedOutputStream;
 import cc.squirreljme.plugin.util.JavaExecSpecFiller;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,8 +22,11 @@ import java.io.OutputStream;
 import java.lang.management.ManagementFactory;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -30,12 +34,15 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import org.apache.tools.ant.util.StreamUtils;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.SourceSet;
+import org.gradle.internal.impldep.org.apache.commons.codec.digest.DigestUtils;
 import org.gradle.process.ExecResult;
 
 /**
@@ -462,9 +469,29 @@ public enum VMType
 			if (__in == null || __out == null)
 				throw new NullPointerException("NARG");
 			
+			// Determine checksum sum of the library, used to detect changes
+			// in the ROM for example with checkpointing/save states
+			// This is not used for security purposes, just to make sure
+			// that a resume does not completely break the VM
+			byte[] data = VMHelpers.readAll(__in);
+			String hex;
+			try
+			{
+				hex = Base64.getEncoder().encodeToString(
+					MessageDigest.getInstance("sha-1").digest(data));
+			}
+			catch (NoSuchAlgorithmException ignored)
+			{
+				hex = Integer.toHexString(Arrays.hashCode(data));
+			}
+			
 			// Run compilation task
-			this.__aotCommand(__task, __in, __out,
-				"compile", Collections.emptyList());
+			try (InputStream in = new ByteArrayInputStream(data))
+			{
+				this.__aotCommand(__task, __in, __out,
+					Arrays.asList("-XoriginalLibHash:" + hex),
+					"compile", Collections.emptyList());
+			}
 		}
 		
 		/**
@@ -787,7 +814,7 @@ public enum VMType
 			
 		// Run the specified command
 		this.__aotCommand(__task, null, __out,
-			"rom", args);
+			null, "rom", args);
 	}
 	
 	/**
@@ -940,13 +967,14 @@ public enum VMType
 	 * @param __task The task being run for.
 	 * @param __in The input source (optional).
 	 * @param __out The output source (optional).
+	 * @param __preArgs Pre command arguments.
 	 * @param __command The name of the ROM.
 	 * @param __args The arguments for the AOT command.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/05/16
 	 */
 	void __aotCommand(VMBaseTask __task, InputStream __in, OutputStream __out,
-		String __command, Iterable<String> __args)
+		Iterable<String> __preArgs, String __command, Iterable<String> __args)
 		throws NullPointerException
 	{
 		if (__task == null || __command == null)
@@ -977,6 +1005,11 @@ public enum VMType
 		// Add source set
 		args.add("-XsourceSet:" +
 			__task.getSourceSet());
+		
+		// Arguments before the command
+		if (__preArgs != null)
+			for (String arg : __preArgs)
+				args.add(arg);
 		
 		// Our run command and any additional arguments
 		args.add(__command);
