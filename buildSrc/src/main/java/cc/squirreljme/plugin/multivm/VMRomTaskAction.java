@@ -91,8 +91,9 @@ public class VMRomTaskAction
 			{
 				// If we are single source set and this library is another
 				// source set, then do not include it here
+				String taskSourceSet = task.getSourceSet();
 				if (isSingleSourceSet &&
-					!sourceSet.equals(task.getSourceSet()))
+					!sourceSet.equals(taskSourceSet))
 					continue;
 				
 				// Determine the path set
@@ -104,32 +105,38 @@ public class VMRomTaskAction
 				SquirrelJMEPluginConfiguration config =
 					SquirrelJMEPluginConfiguration.configurationOrNull(
 						task.getProject());
-				boolean isBootLoader = (config != null && config.isBootLoader);
-				boolean isMainLauncher = (config != null &&
+				boolean isMain = SourceSet.MAIN_SOURCE_SET_NAME
+					.equals(taskSourceSet);
+				boolean isBootLoader = (isMain && config != null &&
+					config.isBootLoader);
+				boolean isMainLauncher = (isMain && config != null &&
 					config.isMainLauncher);
 				
 				// If this is the boot loader, add our paths
-				if (isBootLoader)
+				if (bootLoaderEnabled)
 				{
-					build.bootLoaderMainClass = config.bootLoaderMainClass;
-					build.bootLoaderClassPath = pathSet.toArray(
-						new Path[pathSet.size()]);
-				}
-				
-				// If this is the launcher, set the information needed to
-				// make sure it can actually be launched properly
-				if (isMainLauncher)
-				{
-					UnassistedLaunchEntry entry = config.primaryEntry();
+					if (isBootLoader)
+					{
+						build.bootLoaderMainClass = config.bootLoaderMainClass;
+						build.bootLoaderClassPath = pathSet.toArray(
+							new Path[pathSet.size()]);
+					}
 					
-					build.launcherMainClass = entry.mainClass;
-					build.launcherArgs = entry.args();
-					build.launcherClassPath = VMHelpers.runClassPath(
-						task, this.classifier);
+					// If this is the launcher, set the information needed to
+					// make sure it can actually be launched properly
+					if (isMainLauncher)
+					{
+						UnassistedLaunchEntry entry = config.primaryEntry();
+						
+						build.launcherMainClass = entry.mainClass;
+						build.launcherArgs = entry.args();
+						build.launcherClassPath = VMHelpers.runClassPath(task,
+							this.classifier);
+					}
 				}
 				
 				// Add to the correct set of paths
-				if (isBootLoader)
+				if (bootLoaderEnabled && isBootLoader)
 					bootPaths.addAll(pathSet);
 				else
 					normalPaths.addAll(pathSet);
