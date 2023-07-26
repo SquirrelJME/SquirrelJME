@@ -45,6 +45,13 @@ squirreljme_include("i-miss-you.cmake")
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED True)
 
+# Enable support for testing, this is needed here otherwise testing will not
+# work at all! Major headache this has caused...
+# From: https://cmake.org/cmake/help/v3.13/command/enable_testing.html
+# > Note that ctest expects to find a test file in the build directory root.
+# > Therefore, this command should be in the source directory root.
+enable_testing()
+
 # Directory where the ROM compiled sources exist
 add_subdirectory(rom)
 

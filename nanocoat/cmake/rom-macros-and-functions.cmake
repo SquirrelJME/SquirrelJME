@@ -27,12 +27,8 @@ function(squirreljme_romLibrary libNameStr filesList)
 	# Include main headers
 	target_include_directories("ROMLib_${libNameStr}_Object" PUBLIC
 		"${CMAKE_SOURCE_DIR}/include")
+endfunction()
 
-	# Define static library for linking
-	#add_library("SquirrelJMEROM${libNameStr}Static" STATIC
-	#	$<TARGET_OBJECTS:ROMLib_${libNameStr}_Object>)
-
-	# Define dynamic library for dynamic linking
-	#add_library("SquirrelJMEROM${libNameStr}Shared" SHARED
-	#	$<TARGET_OBJECTS:ROMLib_${libNameStr}_Object>)
+# Defines a test for a ROM library entry
+function(squirreljme_romLibraryTest libNameStr testName)
 endfunction()

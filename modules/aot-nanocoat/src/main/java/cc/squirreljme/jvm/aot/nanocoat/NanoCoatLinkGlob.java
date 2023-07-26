@@ -118,7 +118,7 @@ public class NanoCoatLinkGlob
 		this.aotSettings = __aotSettings;
 		
 		if (!"main".equals(this.aotSettings.sourceSet))
-			this.name = __aotSettings.name + "_" + this.aotSettings.sourceSet;
+			this.name = __aotSettings.name + "-" + this.aotSettings.sourceSet;
 		else
 			this.name = __aotSettings.name;
 		this.baseName = Utils.basicFileName(this.name);
@@ -248,7 +248,7 @@ public class NanoCoatLinkGlob
 				CStructVariableBlock.class, this.libraryInfo))
 			{
 				struct.memberSet("name",
-					CBasicExpression.string(this.name));
+					CBasicExpression.string(this.name + ".jar"));
 				struct.memberSet("nameHash",
 					CBasicExpression.number(this.name.hashCode()));
 				

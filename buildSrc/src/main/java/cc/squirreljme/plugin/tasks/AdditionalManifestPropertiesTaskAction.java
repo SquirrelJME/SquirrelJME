@@ -10,8 +10,13 @@
 package cc.squirreljme.plugin.tasks;
 
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
+import cc.squirreljme.plugin.multivm.BangletVariant;
+import cc.squirreljme.plugin.multivm.ClutterLevel;
 import cc.squirreljme.plugin.multivm.TaskInitialization;
 import cc.squirreljme.plugin.multivm.VMHelpers;
+import cc.squirreljme.plugin.multivm.VMType;
+import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
+import cc.squirreljme.plugin.multivm.ident.TargetClassifier;
 import cc.squirreljme.plugin.swm.JavaMEConfiguration;
 import cc.squirreljme.plugin.swm.JavaMEMidlet;
 import cc.squirreljme.plugin.swm.JavaMEMidletType;
@@ -134,6 +139,19 @@ public class AdditionalManifestPropertiesTaskAction
 				// Main entry point is always the TAC test runner
 				attributes.putValue("Main-Class",
 					"net.multiphasicapps.tac.MainSuiteRunner");
+				
+				// Add class path needed to run the test
+				attributes.putValue("X-SquirrelJME-Tests-ClassPath",
+					VMHelpers.runClassPathAsInternalClassPath(
+						__task.getProject(),
+						SourceTargetClassifier.builder()
+							.sourceSet(SourceSet.TEST_SOURCE_SET_NAME)
+							.targetClassifier(TargetClassifier.builder()
+								.bangletVariant(BangletVariant.NONE)
+								.vmType(VMType.HOSTED)
+								.clutterLevel(ClutterLevel.DEBUG)
+								.build())
+							.build(), true));
 			}
 			
 			// Normal application
