@@ -113,6 +113,7 @@ nanocoat/rom/test_debug
 nanocoat/rom/main_release
 nanocoat/rom/testFixtures_release
 nanocoat/rom/test_release
+nanocoat/cmake-build-*
 
 # Fossil files
 _FOSSIL_

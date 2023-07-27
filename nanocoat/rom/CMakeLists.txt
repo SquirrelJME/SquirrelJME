@@ -6,17 +6,23 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 
-# Try to see if there are ROM directories
-file(GLOB potentialRomDirs
-	LIST_DIRECTORIES true
-	"*/")
-foreach(potentialRomDir ${potentialRomDirs})
-	# If it is a directory and it has a CMakeLists.txt in it, then include
-	# it for processing...
-	if(IS_DIRECTORY "${potentialRomDir}" AND
-		EXISTS "${potentialRomDir}/CMakeLists.txt")
-		message("Adding ROM ${potentialRomDir}...")
+# Look for default ROM configurations in a basic order
+foreach(checkClutterLevel "debug" "release")
+	foreach(checkSourceSet "main" "testFixtures" "test")
+		set(base "${checkSourceSet}_${checkClutterLevel}")
+		set(baseDir
+			"${CMAKE_CURRENT_SOURCE_DIR}/${base}")
 
-		add_subdirectory(${potentialRomDir})
-	endif()
+		# Does it actually exist and contains a CMakeLists?
+		if(IS_DIRECTORY "${baseDir}" AND
+			EXISTS "${baseDir}/CMakeLists.txt")
+			# Indicate found
+			message("Adding ROM ${base}...")
+
+			# Add it
+			add_subdirectory("${baseDir}")
+		else()
+			message("Did not find ROM ${base}...")
+		endif()
+	endforeach()
 endforeach()

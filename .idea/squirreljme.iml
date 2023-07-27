@@ -1,2 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module type="JAVA_MODULE" version="4" />
+<module type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/nanocoat/cmake-build-debug" />
+      <excludeFolder url="file://$MODULE_DIR$/nanocoat/cmake-build-debugmsvc" />
+      <excludeFolder url="file://$MODULE_DIR$/nanocoat/rom" />
+    </content>
+  </component>
+</module>

@@ -291,13 +291,13 @@ public class NanoCoatBackend
 					// Define it as included once
 					cpp.preprocessorDefine(guard,
 						CBasicExpression.number(1));
+				
+					// Include main header
+					cpp.preprocessorInclude(Constants.SJME_NVM_HEADER);
+					
+					// Declare the ROM variable
+					cpp.declare(romVar.extern());
 				}
-				
-				// Include main header
-				cFile.preprocessorInclude(Constants.SJME_NVM_HEADER);
-				
-				// Declare the ROM variable
-				cFile.declare(romVar.extern());
 			}
 			
 			// Write root ROM file that refers to every library within
@@ -388,8 +388,11 @@ public class NanoCoatBackend
 				cmake.println();
 				
 				// Define ROM
-				cmake.printf("squirreljme_rom(%s \"${%sRomObjects}\")",
-					taskName, taskName);
+				cmake.printf(
+					"squirreljme_rom(\"%s\" \"%s\" \"${%sRomObjects}\")",
+					__aotSettings.sourceSet,
+					__aotSettings.clutterLevel,
+					taskName);
 				cmake.println();
 				
 				// Spacer

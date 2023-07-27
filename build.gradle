@@ -121,3 +121,8 @@ allprojects {
 		cleanEclipseJdt.finalizedBy(cleanEclipseFixBuild)
 	}
 }
+
+// Generic root clean task, does nothing by default and just depends on
+// others
+task clean {
+}

@@ -81,6 +81,17 @@ typedef struct sjme_treeFindFunc
 } sjme_treeFindFunc;
 
 /**
+ * Decodes the given UTF-8 character.
+ * 
+ * @param at The character sequence to decode.
+ * @param stringP Adjustable pointer to the string, when the character is
+ * decoded then this will increment accordingly.
+ * @return The decoded character.
+ * @since 2023/07/27
+ */
+jchar sjme_decodeUtfChar(const char* at, const char** stringP);
+
+/**
  * Hashes the given string in accordance to @c String::hashCode() .
  * 
  * @param string The string to hash.

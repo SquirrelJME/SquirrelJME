@@ -163,46 +163,48 @@ public class ClassProcessor
 		ClassFile classFile = this.classFile;
 		
 		// Process field source details outside the class struct
-		try (CStructVariableBlock struct = __out.define(
-			CStructVariableBlock.class, this.classFields))
-		{
-			// Field count
-			struct.memberSet("count",
-				CExpressionBuilder.builder()
-					.number(Constants.JINT_C, this._fields.size())
-					.build());
-			
-			// Then the actual members
-			try (CArrayBlock array =
-				 struct.memberArraySet("fields"))
+		if (!this._fields.isEmpty())
+			try (CStructVariableBlock struct = __out.define(
+				CStructVariableBlock.class, this.classFields))
 			{
-				for (FieldProcessor field : this._fields.values())
-					field.processInFieldsStruct(array);
+				// Field count
+				struct.memberSet("count",
+					CExpressionBuilder.builder()
+						.number(Constants.JINT_C, this._fields.size())
+						.build());
+				
+				// Then the actual members
+				try (CArrayBlock array =
+					 struct.memberArraySet("fields"))
+				{
+					for (FieldProcessor field : this._fields.values())
+						field.processInFieldsStruct(array);
+				}
 			}
-		}
 		
 		// Process method source details outside the class struct
 		for (MethodProcessor method : this._methods.values())
 			method.processSourceOutside(__out);
 		
 		// Process method details for method structure
-		try (CStructVariableBlock struct = __out.define(
-			CStructVariableBlock.class, this.classMethods))
-		{
-			// Method count
-			struct.memberSet("count",
-				CExpressionBuilder.builder()
-					.number(Constants.JINT_C, this._methods.size())
-					.build());
-			
-			// Then the actual members
-			try (CArrayBlock array =
-				 struct.memberArraySet("methods"))
+		if (!this._methods.isEmpty())
+			try (CStructVariableBlock struct = __out.define(
+				CStructVariableBlock.class, this.classMethods))
 			{
-				for (MethodProcessor method : this._methods.values())
-					method.processInMethodsStruct(array);
+				// Method count
+				struct.memberSet("count",
+					CExpressionBuilder.builder()
+						.number(Constants.JINT_C, this._methods.size())
+						.build());
+				
+				// Then the actual members
+				try (CArrayBlock array =
+					 struct.memberArraySet("methods"))
+				{
+					for (MethodProcessor method : this._methods.values())
+						method.processInMethodsStruct(array);
+				}
 			}
-		}
 		
 		// Interfaces?
 		ClassNames interfaceNames = classFile.interfaceNames();
@@ -233,39 +235,41 @@ public class ClassProcessor
 			}
 		
 		// Write linkages
-		try (CStructVariableBlock struct = __out.define(
-			CStructVariableBlock.class, this.classLinkages))
-		{
-			// Linkage count
-			struct.memberSet("count",
-				CExpressionBuilder.builder()
-					.number(Constants.JINT_C, this.linkTable.size())
-					.build());
-			
-			// Then the actual linkages themselves
-			try (CArrayBlock array =
-				 struct.memberArraySet("linkages"))
+		if (this.linkTable.size() > 0)
+			try (CStructVariableBlock struct = __out.define(
+				CStructVariableBlock.class, this.classLinkages))
 			{
-				for (Linkage linkage : this.linkTable)
-					try (CStructVariableBlock linkStruct = array.struct())
-					{
-						// Set type
-						linkStruct.memberSet("type",
-							CBasicExpression.number(0));
-						
-						// Ignore null
-						if (linkage == null)
-							continue;
-						
-						// Write individual linkage data
-						try (CStructVariableBlock dataStruct =
-							 linkStruct.memberStructSet("data"))
+				// Linkage count
+				struct.memberSet("count",
+					CExpressionBuilder.builder()
+						.number(Constants.JINT_C, this.linkTable.size())
+						.build());
+				
+				// Then the actual linkages themselves
+				try (CArrayBlock array =
+					 struct.memberArraySet("linkages"))
+				{
+					for (Linkage linkage : this.linkTable)
+						try (CStructVariableBlock linkStruct = array.struct())
 						{
-							linkage.write(dataStruct);
+							// Set type
+							linkStruct.memberSet("type",
+								CBasicExpression.number(0));
+							
+							// Ignore null
+							if (linkage == null)
+								continue;
+							
+							// Write individual linkage data
+							try (CStructVariableBlock dataStruct =
+								 linkStruct.memberStructSet(
+									 "data"))
+							{
+								linkage.write(dataStruct);
+							}
 						}
-					}
+				}
 			}
-		}
 		
 		// Open class details
 		try (CStructVariableBlock struct = __out.define(
@@ -303,22 +307,31 @@ public class ClassProcessor
 					.build());
 			
 			// Fields
-			struct.memberSet("fields",
-				CExpressionBuilder.builder()
-					.reference(this.classFields)
-					.build());
+			if (this._fields.isEmpty())
+				struct.memberSet("fields", CVariable.NULL);
+			else
+				struct.memberSet("fields",
+					CExpressionBuilder.builder()
+						.reference(this.classFields)
+						.build());
 			
 			// Methods
-			struct.memberSet("methods",
-				CExpressionBuilder.builder()
-					.reference(this.classMethods)
-					.build());
+			if (this._methods.isEmpty())
+				struct.memberSet("methods", CVariable.NULL);
+			else
+				struct.memberSet("methods",
+					CExpressionBuilder.builder()
+						.reference(this.classMethods)
+						.build());
 			
 			// Linkages
-			struct.memberSet("linkages",
-				CExpressionBuilder.builder()
-					.reference(this.classLinkages)
-					.build());
+			if (this.linkTable.size() <= 0)
+				struct.memberSet("linkages", CVariable.NULL);
+			else
+				struct.memberSet("linkages",
+					CExpressionBuilder.builder()
+						.reference(this.classLinkages)
+						.build());
 		}
 	}
 }

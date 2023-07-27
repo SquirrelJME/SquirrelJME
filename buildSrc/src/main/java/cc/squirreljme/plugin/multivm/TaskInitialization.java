@@ -745,6 +745,9 @@ public final class TaskInitialization
 				Delete cleanTask = tasks.create(
 					"clean" + TaskInitialization.uppercaseFirst(taskName),
 					Delete.class);
+				cleanTask.setGroup("squirreljmegeneral");
+				cleanTask.setDescription("Cleans the ROM output from " +
+					taskName + ".");
 				cleanTask.delete(__project.provider(() -> 
 					nativeTask.getOutputs().getFiles().getSingleFile()));
 				
@@ -756,6 +759,11 @@ public final class TaskInitialization
 				
 				// Must run after clean
 				nativeTask.mustRunAfter(cleanTask);
+				
+				// Clean should call these accordingly
+				__project.afterEvaluate((__p) ->
+					cleanTask.getProject().getTasks().getByName("clean")
+						.dependsOn(cleanTask));
 				
 				// Special case for NanoCoat, always clean the inputs
 				if (nativePort == NativePortSupport.NANOCOAT)

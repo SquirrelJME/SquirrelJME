@@ -488,7 +488,7 @@ public enum VMType
 			// Run compilation task
 			try (InputStream in = new ByteArrayInputStream(data))
 			{
-				this.__aotCommand(__task, __in, __out,
+				this.__aotCommand(__task, in, __out,
 					Arrays.asList("-XoriginalLibHash:" + hex),
 					"compile", Collections.emptyList());
 			}

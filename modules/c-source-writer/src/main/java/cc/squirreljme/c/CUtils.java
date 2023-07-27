@@ -47,7 +47,16 @@ public final class CUtils
 		{
 			for (byte b : __input.toString().getBytes("utf-8"))
 			{
-				if (b == '\t')
+				// C will treat NUL as the end of string, so it has to be
+				// modified with modified UTF
+				if (b == '\0')
+				{
+					sb.append((char)0b110_00000);
+					sb.append((char)0b10_000000);
+				}
+					
+				// As normal
+				else if (b == '\t')
 					sb.append("\\t");
 				else if (b == '\r')
 					sb.append("\\r");

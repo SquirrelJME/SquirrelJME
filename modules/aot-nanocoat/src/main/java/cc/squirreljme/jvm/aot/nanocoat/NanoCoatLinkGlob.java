@@ -216,42 +216,44 @@ public class NanoCoatLinkGlob
 			this.inDirectory(this.rootSourceFileName)))
 		{
 			// Write resources
-			try (CStructVariableBlock struct = rootSourceOut.define(
-				CStructVariableBlock.class, this.libraryResources))
-			{
-				Map<String, CIdentifier> ids = this.resourceIdentifiers;
-				
-				// Store count
-				struct.memberSet("count",
-					CBasicExpression.number(ids.size()));
-				
-				// Write references to each identifier
-				try (CArrayBlock array = struct.memberArraySet(
-					"resources"))
+			if (!this.resourceIdentifiers.isEmpty())
+				try (CStructVariableBlock struct = rootSourceOut.define(
+					CStructVariableBlock.class, this.libraryResources))
 				{
-					for (CIdentifier id : ids.values())
-						array.value(CBasicExpression.reference(id));
+					Map<String, CIdentifier> ids = this.resourceIdentifiers;
+					
+					// Store count
+					struct.memberSet("count",
+						CBasicExpression.number(ids.size()));
+					
+					// Write references to each identifier
+					try (CArrayBlock array = struct.memberArraySet(
+						"resources"))
+					{
+						for (CIdentifier id : ids.values())
+							array.value(CBasicExpression.reference(id));
+					}
 				}
-			}
 			
 			// Write classes
-			try (CStructVariableBlock struct = rootSourceOut.define(
-				CStructVariableBlock.class, this.libraryClasses))
-			{
-				Map<String, CIdentifier> ids = this.classIdentifiers;
-				
-				// Store count
-				struct.memberSet("count",
-					CBasicExpression.number(ids.size()));
-				
-				// Write references to each identifier
-				try (CArrayBlock array = struct.memberArraySet(
-					"classes"))
+			if (!this.classIdentifiers.isEmpty())
+				try (CStructVariableBlock struct = rootSourceOut.define(
+					CStructVariableBlock.class, this.libraryClasses))
 				{
-					for (CIdentifier id : ids.values())
-						array.value(CBasicExpression.reference(id));
+					Map<String, CIdentifier> ids = this.classIdentifiers;
+					
+					// Store count
+					struct.memberSet("count",
+						CBasicExpression.number(ids.size()));
+					
+					// Write references to each identifier
+					try (CArrayBlock array = struct.memberArraySet(
+						"classes"))
+					{
+						for (CIdentifier id : ids.values())
+							array.value(CBasicExpression.reference(id));
+					}
 				}
-			}
 			
 			// Write library info
 			try (CStructVariableBlock struct = rootSourceOut.define(
@@ -262,15 +264,26 @@ public class NanoCoatLinkGlob
 				struct.memberSet("nameHash",
 					CBasicExpression.number(this.name.hashCode()));
 				
-				if (this.aotSettings.originalLibHash != null)
+				if (this.aotSettings.originalLibHash == null ||
+					this.aotSettings.originalLibHash.isEmpty())
+					struct.memberSet("originalLibHash",
+						CVariable.NULL);
+				else
 					struct.memberSet("originalLibHash",
 						CBasicExpression.string(this.aotSettings
 							.originalLibHash));
 				
-				struct.memberSet("resources",
-					CBasicExpression.reference(this.libraryResources));
-				struct.memberSet("classes",
-					CBasicExpression.reference(this.libraryClasses));
+				if (this.resourceIdentifiers.isEmpty())
+					struct.memberSet("resources", CVariable.NULL);
+				else
+					struct.memberSet("resources",
+						CBasicExpression.reference(this.libraryResources));
+				
+				if (this.classIdentifiers.isEmpty())
+					struct.memberSet("classes", CVariable.NULL);
+				else
+					struct.memberSet("classes",
+						CBasicExpression.reference(this.libraryClasses));
 			}
 			
 			// Close out the header entry before we write it fully
@@ -312,8 +325,12 @@ public class NanoCoatLinkGlob
 			cmake.println();
 			
 			// Use macro for all the files
-			cmake.printf("squirreljme_romLibrary(%s \"${%sFiles}\")",
-				libName, libName);
+			cmake.printf(
+				"squirreljme_romLibrary(\"%s\" \"%s\" \"%s\" \"${%sFiles}\")",
+				this.aotSettings.sourceSet,
+				this.aotSettings.clutterLevel,
+				this.baseName,
+				libName);
 			cmake.println();
 			cmake.println();
 			
@@ -335,8 +352,10 @@ public class NanoCoatLinkGlob
 				for (String test : tests)
 				{
 					cmake.printf("squirreljme_romLibraryTest(" +
-						"\"%s\" \"%s\" \"%sClassPath\")",
+						"\"%s\" \"%s\" \"%s\" \"%s\" \"${%sClassPath}\")",
 						this.aotSettings.name,
+						this.aotSettings.sourceSet,
+						this.aotSettings.clutterLevel,
 						test,
 						libName);
 					cmake.println();

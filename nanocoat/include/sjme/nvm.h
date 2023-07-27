@@ -18,6 +18,8 @@
 
 #include <stdint.h>
 
+#include "sjme/config.h"
+
 /* Anti-C++. */
 #ifdef __cplusplus
 	#ifndef SJME_CXX_IS_EXTERNED
@@ -137,6 +139,7 @@ typedef jint sjme_staticLinkageType;
  */
 typedef struct sjme_jobjectBase
 {
+	int todo;
 } sjme_jobjectBase;
 
 /**
@@ -183,6 +186,7 @@ typedef struct sjme_any
 
 typedef struct sjme_nvm_state
 {
+	int todo;
 } sjme_nvm_state;
 
 /**
@@ -499,22 +503,27 @@ typedef struct sjme_static_library
 
 typedef struct sjme_dynamic_linkage_data_classObject
 {
+	int todo;
 } sjme_dynamic_linkage_data_classObject;
 
 typedef struct sjme_dynamic_linkage_data_fieldAccess
 {
+	int todo;
 } sjme_dynamic_linkage_data_fieldAccess;
 
 typedef struct sjme_dynamic_linkage_data_invokeSpecial
 {
+	int todo;
 } sjme_dynamic_linkage_data_invokeSpecial;
 
 typedef struct sjme_dynamic_linkage_data_invokeNormal
 {
+	int todo;
 } sjme_dynamic_linkage_data_invokeNormal;
 
 typedef struct sjme_dynamic_linkage_data_stringObject
 {
+	int todo;
 } sjme_dynamic_linkage_data_stringObject;
 
 typedef union sjme_dynamic_linkage_data
@@ -588,6 +597,16 @@ typedef struct sjme_static_rom
 } sjme_static_rom;
 
 /**
+ * Boot configuration for NanoCoat.
+ * 
+ * @since 2023/07/27
+ */
+typedef struct sjme_nvm_bootConfig
+{
+	int todo;
+} sjme_nvm_bootConfig;
+
+/**
  * True value.
  * 
  * @since 2023/07/25
@@ -628,6 +647,17 @@ jboolean sjme_nvm_arrayStore(sjme_nvm_frame* frame,
 	jobject arrayInstance,
 	jint index,
 	sjme_any* value);
+	
+/**
+ * Boots the virtual machine.
+ * 
+ * @param config The configuration to use.
+ * @param outState The output state of the virtual machine.
+ * @return The booted virtual machine.
+ * @since 2023/07/27
+ */
+jboolean sjme_nvm_boot(const sjme_nvm_bootConfig* config,
+	sjme_nvm_state** outState);
 	
 jboolean sjme_nvm_checkCast(sjme_nvm_frame* frame,
 	jobject instance,
