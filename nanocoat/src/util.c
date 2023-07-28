@@ -13,6 +13,9 @@
 
 jchar sjme_decodeUtfChar(const char* at, const char** stringP)
 {
+	if (at == NULL)
+		return -1;
+	
 	sjme_todo("sjme_decodeUtfChar()");
 	return -1;
 }
@@ -22,6 +25,9 @@ jint sjme_hashString(const char* string)
 	jint result;
 	jchar c;
 	const char* p;
+	
+	if (string == NULL)
+		return 0;
 	
 	/* Initial result. */
 	result = 0;
@@ -44,6 +50,9 @@ jint sjme_hashString(const char* string)
 jint sjme_treeFind(void* in, void* what,
 	const sjme_treeFindFunc* functions)
 {
+	if (in == NULL || functions == NULL)
+		return -1;
+	
 	sjme_todo("sjme_decodeUtfChar()");
 	return -1;
 }
