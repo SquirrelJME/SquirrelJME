@@ -8,10 +8,13 @@
 # DESCRIPTION: Testing framework for the main library
 
 # Setup main test execution wrapper which runs within TAC
-add_library(TACTestExecutorCore OBJECT
-	tac.c
-	"$<TARGET_OBJECTS:Core>")
+add_library(TACTestExecutorCore STATIC
+	tac.c)
 
 # Make sure we have our headers included accordingly
 target_include_directories(TACTestExecutorCore PUBLIC
 	"${CMAKE_SOURCE_DIR}/include")
+
+# Depend on the core
+target_link_libraries(TACTestExecutorCore PUBLIC
+	Core)

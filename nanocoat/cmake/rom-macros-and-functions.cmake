@@ -14,10 +14,10 @@
 function(squirreljme_rom sourceSet clutterLevel
 	objectLibs)
 	# Name of the ROM
-	set(romTask "ROM_${sourceSet}_${clutterLevel}_Object")
+	set(romTask "ROM_${sourceSet}_${clutterLevel}")
 
 	# Add base object library
-	add_library("${romTask}" OBJECT
+	add_library("${romTask}" STATIC
 		${objectLibs})
 
 	# If this is a test ROM, we need to actually link it in with the
@@ -28,11 +28,7 @@ function(squirreljme_rom sourceSet clutterLevel
 
 		# Define executable which uses this ROM and the others
 		add_executable("${romTacTask}"
-			"${CMAKE_SOURCE_DIR}/tests/tacPayload.c"
-			"$<TARGET_OBJECTS:TACTestExecutorCore>"
-			"$<TARGET_OBJECTS:ROM_main_${clutterLevel}_Object>"
-			"$<TARGET_OBJECTS:ROM_testFixtures_${clutterLevel}_Object>"
-			"$<TARGET_OBJECTS:ROM_${sourceSet}_${clutterLevel}_Object>")
+			"${CMAKE_SOURCE_DIR}/tests/tacPayload.c")
 
 		# Need to include our headers and such
 		target_include_directories("${romTacTask}"
@@ -40,6 +36,13 @@ function(squirreljme_rom sourceSet clutterLevel
 			PUBLIC "${CMAKE_SOURCE_DIR}/rom/main_${clutterLevel}"
 			PUBLIC "${CMAKE_SOURCE_DIR}/rom/testFixtures_${clutterLevel}"
 			PUBLIC "${CMAKE_SOURCE_DIR}/rom/${sourceSet}_${clutterLevel}")
+
+		# Include the libraries needed to run the ROM
+		target_link_libraries("${romTacTask}" PUBLIC
+			"TACTestExecutorCore"
+			"ROM_main_${clutterLevel}"
+			"ROM_testFixtures_${clutterLevel}"
+			"ROM_${sourceSet}_${clutterLevel}")
 
 		# Define ROMs available for use
 		target_compile_definitions("${romTacTask}"
@@ -73,25 +76,26 @@ endfunction()
 function(squirreljme_romLibraryTest libNameStr sourceSet
 	clutterLevel testName testClassPath)
 	# Determine name for the actual test
-	set(testName "${clutterLevel}:${libNameStr}:${testName}")
+	set(longName "${clutterLevel}:${libNameStr}:${testName}")
 
 	# Register test
 	message("Adding test ${testName} in ${libNameStr}...")
 	set(romTacTask "TACTestExecutor_${clutterLevel}")
-	add_test(NAME "${testName}"
+	add_test(NAME "${longName}"
 		COMMAND "${romTacTask}"
 			"-classpath" "${testClassPath}"
+			"net.multiphasicapps.tac.MainSingleRunner"
 			"${testName}")
 
 	# Code for skipped tests
-	set_property(TEST "${testName}"
-		PROPERTY SKIP_RETURN_CODE 42)
-	set_tests_properties("${testName}"
-		PROPERTIES SKIP_RETURN_CODE 42)
+	set_property(TEST "${longName}"
+		PROPERTY SKIP_RETURN_CODE 2)
+	set_tests_properties("${longName}"
+		PROPERTIES SKIP_RETURN_CODE 2)
 
 	# Test timeout (to prevent infinite loops)
-	set_property(TEST "${testName}"
+	set_property(TEST "${longName}"
 		PROPERTY TIMEOUT 180)
-	set_tests_properties("${testName}"
+	set_tests_properties("${longName}"
 		PROPERTIES TIMEOUT 180)
 endfunction()

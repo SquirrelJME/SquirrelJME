@@ -10,15 +10,8 @@
 #include "sjme/nvm.h"
 #include "sjme/debug.h"
 
-jboolean sjme_nvm_boot(const sjme_nvm_bootConfig* config,
-	sjme_nvm_state** outState, int argc, char** argv)
+jboolean sjme_nvm_tick(sjme_nvm_state* state, jint maxTics)
 {
-	sjme_todo("sjme_nvm_boot()");
-	return JNI_FALSE;
-}
-
-jboolean sjme_nvm_destroy(sjme_nvm_state* state, jint* exitCode)
-{
-	sjme_todo("sjme_nvm_destroy()");
+	sjme_todo("sjme_nvm_tick()");
 	return JNI_FALSE;
 }

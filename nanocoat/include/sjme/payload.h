@@ -39,11 +39,11 @@ extern "C" {
  * 
  * @since 2023/07/27
  */
-typedef struct sjme_static_payload
+struct sjme_static_payload
 {
 	/** ROMs that are available built-in. */
 	const sjme_static_rom* roms[SJME_NVM_PAYLOAD_MAX_ROMS];
-} sjme_static_payload;
+};
 
 /** The static payload configuration. */
 extern const sjme_static_payload sjme_static_payload_data;

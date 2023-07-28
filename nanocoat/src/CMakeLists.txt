@@ -7,9 +7,10 @@
 # ---------------------------------------------------------------------------
 
 # THe core library contains the main logic for the virtual machine
-add_library(Core OBJECT
+add_library(Core STATIC
 	boot.c
 	debug.c
+	loop.c
 	util.c)
 
 # Include main headers
