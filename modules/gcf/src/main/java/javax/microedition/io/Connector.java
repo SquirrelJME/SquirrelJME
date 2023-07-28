@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.io.OutputStream;
 import java.util.ServiceLoader;
+import org.intellij.lang.annotations.Language;
 
 /**
  * This class is used to create new connections via the generic connection
@@ -91,7 +92,8 @@ public class Connector
 	 * @since 2016/10/12
 	 */
 	@Api
-	public static boolean isProtocolSupported(String __uri, boolean __server)
+	public static boolean isProtocolSupported(
+		@Language("http-url-reference") String __uri, boolean __server)
 		throws NullPointerException
 	{
 		// Check
@@ -147,10 +149,11 @@ public class Connector
 	 * @since 2016/10/12
 	 */
 	@Api
-	public static Connection open(String __uri)
+	public static Connection open(@Language("http-url-reference") String __uri)
 		throws IOException
 	{
-		return Connector.open(__uri, Connector.READ_WRITE, false, (ConnectionOption<?>[])null);
+		return Connector.open(__uri, Connector.READ_WRITE, false,
+			(ConnectionOption<?>[])null);
 	}
 	
 	/**
@@ -164,10 +167,12 @@ public class Connector
 	 * @since 2016/10/12
 	 */
 	@Api
-	public static Connection open(String __uri, ConnectionOption<?>... __opts)
+	public static Connection open(@Language("http-url-reference") String __uri,
+		ConnectionOption<?>... __opts)
 		throws IOException
 	{
-		return Connector.open(__uri, Connector.READ_WRITE, false, __opts);
+		return Connector.open(__uri, Connector.READ_WRITE,
+			false, __opts);
 	}
 	
 	/**
@@ -181,10 +186,12 @@ public class Connector
 	 * @since 2016/10/12
 	 */
 	@Api
-	public static Connection open(String __uri, int __mode)
+	public static Connection open(@Language("http-url-reference") String __uri,
+		int __mode)
 		throws IOException
 	{
-		return Connector.open(__uri, __mode, false, (ConnectionOption<?>[])null);
+		return Connector.open(__uri, __mode, false,
+			(ConnectionOption<?>[])null);
 	}
 	
 	/**
@@ -199,8 +206,8 @@ public class Connector
 	 * @since 2016/10/12
 	 */
 	@Api
-	public static Connection open(String __uri, int __mode,
-		ConnectionOption<?>... __opts)
+	public static Connection open(@Language("http-url-reference") String __uri,
+		int __mode, ConnectionOption<?>... __opts)
 		throws IOException
 	{
 		return Connector.open(__uri, __mode, false, __opts);
@@ -218,7 +225,8 @@ public class Connector
 	 * @since 2016/10/12
 	 */
 	@Api
-	public static Connection open(String __uri, int __mode, boolean __timeouts)
+	public static Connection open(@Language("http-url-reference") String __uri,
+		int __mode, boolean __timeouts)
 		throws IOException
 	{
 		return Connector.open(__uri, __mode, __timeouts,
@@ -245,8 +253,8 @@ public class Connector
 	 * @since 2016/10/12
 	 */
 	@Api
-	public static Connection open(String __uri, int __mode, boolean __timeouts,
-		ConnectionOption<?>... __opts)
+	public static Connection open(@Language("http-url-reference") String __uri,
+		int __mode, boolean __timeouts, ConnectionOption<?>... __opts)
 		throws ConnectionNotFoundException, IllegalArgumentException,
 			IOException, NullPointerException, SecurityException
 	{
@@ -278,7 +286,8 @@ public class Connector
 	 * @since 2016/10/12
 	 */
 	@Api
-	public static DataInputStream openDataInputStream(String __uri)
+	public static DataInputStream openDataInputStream(
+		@Language("http-url-reference") String __uri)
 		throws IOException
 	{
 		return new DataInputStream(Connector.openInputStream(__uri));
@@ -293,7 +302,8 @@ public class Connector
 	 * @since 2016/10/12
 	 */
 	@Api
-	public static DataOutputStream openDataOutputStream(String __uri)
+	public static DataOutputStream openDataOutputStream(
+		@Language("http-url-reference") String __uri)
 		throws IOException
 	{
 		return new DataOutputStream(Connector.openOutputStream(__uri));
@@ -311,7 +321,8 @@ public class Connector
 	 * @since 2016/10/12
 	 */
 	@Api
-	public static InputStream openInputStream(String __uri)
+	public static InputStream openInputStream(
+		@Language("http-url-reference") String __uri)
 		throws IllegalArgumentException, IOException
 	{
 		// Open it, then close it
@@ -340,7 +351,8 @@ public class Connector
 	 * @since 2016/10/12
 	 */
 	@Api
-	public static OutputStream openOutputStream(String __uri)
+	public static OutputStream openOutputStream(
+		@Language("http-url-reference") String __uri)
 		throws IllegalArgumentException, IOException
 	{
 		// Open it, then close it
@@ -376,7 +388,8 @@ public class Connector
 	 * @since 2016/10/12
 	 */
 	@Api
-	private static Connection __open(String __uri, int __mode,
+	private static Connection __open(
+		@Language("http-url-reference") String __uri, int __mode,
 		boolean __timeouts, ConnectionOption<?>... __opts)
 		throws ConnectionNotFoundException, IllegalArgumentException,
 			IOException, NullPointerException, SecurityException
@@ -394,8 +407,9 @@ public class Connector
 		if (fc < 0)
 			throw new IllegalArgumentException(String.format("EC11 %s",
 				__uri));
-		String scheme = __uri.substring(0, fc),
-			part = __uri.substring(fc + 1);
+		
+		String scheme = __uri.substring(0, fc);
+		String part = __uri.substring(fc + 1);
 		
 		// Sockets of a given protocol must be of a given class type
 		switch (scheme)
