@@ -98,7 +98,16 @@ jchar sjme_decodeUtfChar(const char* at, const char** stringP);
  * @return The hashcode of the given string.
  * @since 2023/07/26
  */
-jint sjme_hashString(const char* string);
+jint sjme_stringHash(const char* string);
+
+/**
+ * Returns the length of the string in accordance to @c String::length() .
+ * 
+ * @param string The string to get the length of.
+ * @return The string length.
+ * @since 2023/07/29
+ */
+jint sjme_stringLength(const char* string);
 
 /**
  * Locates an item within a tree.
