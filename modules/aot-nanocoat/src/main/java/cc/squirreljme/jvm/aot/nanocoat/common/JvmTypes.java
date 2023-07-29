@@ -632,6 +632,26 @@ public enum JvmTypes
 		}
 	},
 	
+	/** Static libraries. */
+	STATIC_LIBRARIES
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/28
+		 */
+		@Override
+		CType __build()
+		{
+			return CStructTypeBuilder.builder(CStructKind.STRUCT,
+				"sjme_static_libraries")
+				.member(JvmTypes.JINT, "count")
+				.member(JvmTypes.STATIC_LIBRARY.type()
+					.constType().pointerType()
+					.arrayType(0), "libraries")
+				.build();
+		}
+	},
+	
 	/** Static library. */
 	STATIC_LIBRARY
 	{
@@ -931,10 +951,8 @@ public enum JvmTypes
 					"sourceSet")
 				.member(CPrimitiveType.CONST_CHAR_STAR,
 					"clutterLevel")
-				.member(JvmTypes.JINT, "count")
-				.member(JvmTypes.STATIC_LIBRARY.type()
-					.constType().pointerType().pointerType(),
-					"libraries")
+				.member(JvmTypes.STATIC_LIBRARIES.type()
+					.constType(), "libraries")
 				.build();
 		}
 	},

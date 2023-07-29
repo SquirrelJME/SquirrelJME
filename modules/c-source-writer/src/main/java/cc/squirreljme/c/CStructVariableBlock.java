@@ -181,10 +181,22 @@ public class CStructVariableBlock
 		this.__startMember(__memberName);
 		this.token("{");
 		
+		// Remove modified types
+		CType type = member.type;
+		for (;;)
+		{
+			if (type instanceof CModifiedType)
+				type = ((CModifiedType)type).type;
+			else if (type instanceof CPointerType)
+				type = ((CPointerType)type).pointedType;
+			else
+				break;
+		}
+		
 		// Open block
 		return this.__file().__pushBlock(
 			new CStructVariableBlock(this,
-				member.type(CStructType.class),
+				(CStructType)type,
 				"}"),
 			true);
 	}

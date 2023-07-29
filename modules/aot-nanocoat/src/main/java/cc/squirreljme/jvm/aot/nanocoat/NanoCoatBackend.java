@@ -317,16 +317,13 @@ public class NanoCoatBackend
 					cFile.preprocessorInclude(CFileName.of(
 						String.format("%s/%s.h", lib, lib)));
 				
-				// Write ROM structure
+				// ROM libraries
+				CVariable romLibs = CVariable.of(JvmTypes.STATIC_LIBRARIES,
+					romBaseName + "__libraries");
+				
 				try (CStructVariableBlock struct = cFile.define(
-					CStructVariableBlock.class, romVar))
+					CStructVariableBlock.class, romLibs))
 				{
-					// ROM details
-					struct.memberSet("sourceSet",
-						CBasicExpression.string(__aotSettings.clutterLevel));
-					struct.memberSet("clutterLevel",
-						CBasicExpression.string(__aotSettings.clutterLevel));
-					
 					// The number of libraries within
 					struct.memberSet("count",
 						CBasicExpression.number(libFiles.size()));
@@ -337,9 +334,22 @@ public class NanoCoatBackend
 					{
 						for (String lib : libFiles)
 							array.value(CBasicExpression.reference(
-								CIdentifier.of(lib +
-									"__library")));
+								CIdentifier.of(
+									lib + "__library")));
 					}
+				}
+				
+				// Write ROM structure
+				try (CStructVariableBlock struct = cFile.define(
+					CStructVariableBlock.class, romVar))
+				{
+					// ROM details
+					struct.memberSet("sourceSet",
+						CBasicExpression.string(__aotSettings.sourceSet));
+					struct.memberSet("clutterLevel",
+						CBasicExpression.string(__aotSettings.clutterLevel));
+					struct.memberSet("libraries",
+						CBasicExpression.reference(romLibs.name));
 				}
 			}
 			

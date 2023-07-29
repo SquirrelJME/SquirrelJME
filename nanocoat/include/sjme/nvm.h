@@ -185,10 +185,12 @@ typedef struct sjme_any
 	sjme_anyData data;
 } sjme_any;
 
-typedef struct sjme_nvm_state
-{
-	int todo;
-} sjme_nvm_state;
+/**
+ * Represents the virtual machine state.
+ * 
+ * @since 2023/07/28
+ */
+typedef struct sjme_nvm_state sjme_nvm_state;
 
 /**
  * Frame of execution within a thread.
@@ -580,6 +582,15 @@ struct sjme_nvm_frame
 	jclass classObjectRef;
 };
 
+typedef struct sjme_static_libraries
+{
+	/** The number of libraries. */
+	jint count;
+	
+	/** The libraries. */
+	const sjme_static_library* libraries[];
+} sjme_static_libraries;
+
 /**
  * ROM file.
  * 
@@ -587,14 +598,14 @@ struct sjme_nvm_frame
  */
 typedef struct sjme_static_rom
 {
-	/** The name of the ROM. */
-	const char* name;
+	/** The ROM source set. */
+	const char* sourceSet;
 	
-	/** The number of libraries in the ROM. */
-	jint count;
+	/** The ROM clutter level. */
+	const char* clutterLevel;
 	
-	/** The ROM libraries. */
-	const sjme_static_library* libraries[];
+	/** The ROM libraries, is always last. */
+	const sjme_static_libraries* libraries;
 } sjme_static_rom;
 
 /**
@@ -614,6 +625,20 @@ typedef struct sjme_nvm_bootConfig
 	/** The payload to use for booting the virtual machine. */
 	const sjme_static_payload* payload;
 } sjme_nvm_bootConfig;
+
+/**
+ * Represents the virtual machine state.
+ * 
+ * @since 2023/07/28
+ */
+struct sjme_nvm_state
+{
+	/** The copy of the boot config. */
+	sjme_nvm_bootConfig bootConfig;
+	
+	/** Combined library set. */
+	sjme_static_libraries* libraries;
+};
 
 /**
  * True value.
