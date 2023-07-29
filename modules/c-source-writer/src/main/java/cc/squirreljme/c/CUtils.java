@@ -48,12 +48,9 @@ public final class CUtils
 			for (byte b : __input.toString().getBytes("utf-8"))
 			{
 				// C will treat NUL as the end of string, so it has to be
-				// modified with modified UTF
+				// modified with modified UTF [0b110_00000, 0b10_000000]
 				if (b == '\0')
-				{
-					sb.append((char)0b110_00000);
-					sb.append((char)0b10_000000);
-				}
+					sb.append("\\300\\200");
 					
 				// As normal
 				else if (b == '\t')
