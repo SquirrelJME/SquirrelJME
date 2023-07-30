@@ -82,6 +82,7 @@ function(squirreljme_romLibraryTest libNameStr sourceSet
 	message("Adding test ${testName} in ${libNameStr}...")
 	set(romTacTask "TACTestExecutor_${clutterLevel}")
 	add_test(NAME "${longName}"
+		WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
 		COMMAND "${romTacTask}"
 			"-classpath" "${testClassPath}"
 			"net.multiphasicapps.tac.MainSingleRunner"

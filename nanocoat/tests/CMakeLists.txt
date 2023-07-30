@@ -56,6 +56,7 @@ foreach(basicTestSource ${basicTestSources})
 
 	# Add test for this
 	add_test(NAME "${basicTestLongName}"
+		WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
 		COMMAND "$<TARGET_FILE:BasicTest>" ${basicTestName})
 
 	# Code for skipped tests
