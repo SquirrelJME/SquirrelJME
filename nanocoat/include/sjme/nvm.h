@@ -682,34 +682,12 @@ jboolean sjme_nvm_arrayStore(sjme_nvm_frame* frame,
 	jint index,
 	sjme_any* value);
 	
-/**
- * Boots the virtual machine.
- * 
- * @param config The configuration to use.
- * @param outState The output state of the virtual machine.
- * @param argc The number of arguments passed to the executable.
- * @param argv The command line arguments passed to the executable.
- * @return The booted virtual machine.
- * @since 2023/07/27
- */
-jboolean sjme_nvm_boot(const sjme_nvm_bootConfig* config,
-	sjme_nvm_state** outState, int argc, char** argv);
-	
 jboolean sjme_nvm_checkCast(sjme_nvm_frame* frame,
 	jobject instance,
 	sjme_dynamic_linkage_data_classObject* type);
 	
 jboolean sjme_nvm_countReferenceDown(sjme_nvm_frame* frame,
 	jobject instance);
-
-/**
- * Destroys the virtual machine.
- * 
- * @param state The state to destroy.
- * @return If destruction was successful.
- * @since 2023/07/27
- */
-jboolean sjme_nvm_destroy(sjme_nvm_state* state, jint* exitCode);
 	
 sjme_tempIndex sjme_nvm_fieldGetToTemp(sjme_nvm_frame* frame,
 	jobject instance,

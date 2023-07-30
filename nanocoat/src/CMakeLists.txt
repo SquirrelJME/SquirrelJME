@@ -11,6 +11,9 @@ add_library(Core STATIC
 	boot.c
 	debug.c
 	loop.c
+	native.c
+	nvm.c
+	task.c
 	util.c)
 
 # Include main headers

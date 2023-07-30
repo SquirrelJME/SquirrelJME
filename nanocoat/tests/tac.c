@@ -10,6 +10,7 @@
 #include <string.h>
 
 #include "sjme/nvm.h"
+#include "sjme/boot.h"
 #include "sjme/payload.h"
 
 int main(int argc, char** argv)
