@@ -22,5 +22,5 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok:1.18.26'
 	
 	// Country codes
-	implementation 'org.iban4j:iban4j:3.2.4-RELEASE'
+	implementation 'org.iban4j:iban4j:3.2.6-RELEASE'
 }
