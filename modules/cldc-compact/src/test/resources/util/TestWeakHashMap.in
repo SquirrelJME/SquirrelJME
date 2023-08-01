@@ -1,3 +1,5 @@
 Manifest-Version: 1.0
 secondary-hasanothersize: Drop
 secondary-removesize: Drop
+secondary-hashcode: Drop
+secondary-dumpsize: Drop
