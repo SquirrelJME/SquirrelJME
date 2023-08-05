@@ -59,7 +59,9 @@ public enum JvmFunctions
 				CVariable.of(JvmTypes.VMFRAME.pointerType(),
 					"frame"),
 				CVariable.of(JvmTypes.JOBJECT,
-					"arrayInstance"));
+					"arrayInstance"),
+				CVariable.of(JvmTypes.JINT.pointerType(),
+					"outLen"));
 		}
 	},
 	

@@ -43,6 +43,7 @@ extern "C" {
 	#define SJME_ONLY_IN_DEBUG(expr) expr
 #endif
 
+#if defined(SJME_CONFIG_DEBUG)
 /**
  * Prints a debug message.
  * 
@@ -53,8 +54,11 @@ extern "C" {
  * @param ... Any @c printf style arguments.
  * @since 2021/10/31
  */
-void sjme_messageR(const char* file, int line,
-	const char* func, const char* message, ...);
+void sjme_messageR(sjme_attrInNullable const char* file,
+	sjme_attrInValue int line,
+	sjme_attrInNullable const char* func,
+	sjme_attrInNullable const char* message, ...) sjme_attrFormat(3, 4);
+#endif
 	
 /**
  * Prints a debug message
@@ -77,8 +81,11 @@ void sjme_messageR(const char* file, int line,
  * @return Never returns.
  * @since 2021/02/28 
  */
-void sjme_todoR(const char* file, int line,
-	const char* func, const char* message, ...);
+void sjme_todoR(sjme_attrInNullable const char* file,
+	sjme_attrInValue int line,
+	sjme_attrInNullable const char* func,
+	sjme_attrInNullable const char* message, ...)
+	sjme_attrReturnNever sjme_attrFormat(3, 4);
 
 /**
  * Indicates a To-Do and then terminates the program.

@@ -18,6 +18,7 @@
 /** Debug buffer size for messages. */
 #define DEBUG_BUF 512
 
+#if defined(SJME_CONFIG_DEBUG)
 void sjme_messageR(const char* file, int line,
 	const char* func, const char* message, ...)
 {
@@ -25,10 +26,15 @@ void sjme_messageR(const char* file, int line,
 	va_list args;
 	
 	/* Load message buffer. */
-	va_start(args, message);
-	memset(buf, 0, sizeof(buf));
-	vsnprintf(buf, DEBUG_BUF, message, args);
-	va_end(args);
+	if (message == NULL)
+		strncpy(buf, "No message", DEBUG_BUF);
+	else
+	{
+		va_start(args, message);
+		memset(buf, 0, sizeof(buf));
+		vsnprintf(buf, DEBUG_BUF, message, args);
+		va_end(args);
+	}
 	
 	/* Print output message. */
 	if (file != NULL || line > 0 || func != NULL) 
@@ -41,6 +47,7 @@ void sjme_messageR(const char* file, int line,
 	/* Make sure it gets written. */
 	fflush(stderr);
 }
+#endif
 
 void sjme_todoR(const char* file, int line,
 	const char* func, const char* message, ...)
@@ -49,10 +56,15 @@ void sjme_todoR(const char* file, int line,
 	va_list args;
 
 	/* Load message buffer. */
-	va_start(args, message);
-	memset(buf, 0, sizeof(buf));
-	vsnprintf(buf, DEBUG_BUF, message, args);
-	va_end(args);
+	if (message == NULL)
+		strncpy(buf, "No message", DEBUG_BUF);
+	else
+	{
+		va_start(args, message);
+		memset(buf, 0, sizeof(buf));
+		vsnprintf(buf, DEBUG_BUF, message, args);
+		va_end(args);
+	}
 	
 	/* Print output message. */
 	if (file != NULL || line > 0 || func != NULL)

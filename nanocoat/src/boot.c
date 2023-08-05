@@ -23,8 +23,9 @@
  * @return If this was successful.
  * @since 2023/07/28
  */
-static jboolean sjme_nvm_bootCombineRom(const sjme_nvm_bootConfig* config,
-	sjme_static_libraries** outLibraries)
+static sjme_attrCheckReturn jboolean sjme_nvm_bootCombineRom(
+	sjme_attrInNotNull const sjme_nvm_bootConfig* config,
+	sjme_attrOutNotNull sjme_static_libraries** outLibraries)
 {
 	if (config == NULL || outLibraries == NULL)
 		return JNI_FALSE;

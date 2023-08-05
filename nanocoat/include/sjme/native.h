@@ -30,14 +30,50 @@ extern "C" {
 /*--------------------------------------------------------------------------*/
 
 /**
+ * Returns the current time in milliseconds as per the Java
+ * method @c System::currentTimeMillis() .
+ * 
+ * @param state The virtual machine state.
+ * @param result The resultant time.
+ * @return If the operation was successful.
+ * @since 2023/05/23
+ */
+typedef jboolean (*sjme_nal_currentTimeMillisFunc)(sjme_nvm_state* state,
+	jlong* result);
+
+/**
+ * Reads from the system environment a variable.
+ * 
+ * @param state The virtual machine state.
+ * @param buf The output buffer.
+ * @param off The offset into the buffer.
+ * @param len The length of the buffer.
+ * @param resultLen The resultant length of the original environment variable.
+ * @since 2023/08/05
+ */
+typedef jboolean (*sjme_nal_getEnv)(sjme_nvm_state* state,
+	jbyte* buf, jint off, jint len, jint* resultLen); 
+
+/**
+ * Returns the current nanosecond monotonic class as per the Java
+ * method @c System::nanoTime() .
+ * 
+ * @param state The virtual machine state.
+ * @param result The resultant time.
+ * @return If the operation was successful.
+ * @since 2023/05/23
+ */
+typedef jboolean (*sjme_nal_nanoTime)(sjme_nvm_state* state, jlong* result);
+
+/**
  * Native Abstraction Layer functions.
  * 
  * @since 2023/07/29
  */
-typedef struct sjme_nalFunctions
+typedef struct sjme_nal
 {
 	int todo;
-} sjme_nalFunctions;
+} sjme_nal;
 
 /*--------------------------------------------------------------------------*/
 

@@ -1056,17 +1056,16 @@ public class ByteCodeProcessor
 			codeVars.currentFrame());
 		
 		// Get length of it
-		CExpression length = codeVars.temporary(1)
-			.access(JvmTypes.JINT);
-		__block.variableSetViaFunction(length,
-			JvmFunctions.NVM_ARRAY_LENGTH,
+		JvmTemporary len = codeVars.temporary(1);
+		__block.functionCall(JvmFunctions.NVM_ARRAY_LENGTH,
 			codeVars.currentFrame(),
-			instance.accessTemp(JvmTypes.JOBJECT));
+			instance.accessTemp(JvmTypes.JOBJECT),
+			len.referenceTemp(JvmTypes.JINT));
 		
 		// Push to the stack
 		__block.functionCall(JvmFunctions.NVM_STACK_PUSH_INTEGER,
 			codeVars.currentFrame(),
-			length);
+			len.accessTemp(JvmTypes.JINT));
 	}
 	
 	/**
