@@ -1060,12 +1060,12 @@ public class ByteCodeProcessor
 		__block.functionCall(JvmFunctions.NVM_ARRAY_LENGTH,
 			codeVars.currentFrame(),
 			instance.accessTemp(JvmTypes.JOBJECT),
-			len.referenceTemp(JvmTypes.JINT));
+			len.reference(JvmTypes.JINT));
 		
 		// Push to the stack
 		__block.functionCall(JvmFunctions.NVM_STACK_PUSH_INTEGER,
 			codeVars.currentFrame(),
-			len.accessTemp(JvmTypes.JINT));
+			len.access(JvmTypes.JINT));
 	}
 	
 	/**

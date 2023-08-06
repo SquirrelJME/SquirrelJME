@@ -70,6 +70,16 @@ function(squirreljme_romLibrary sourceSet clutterLevel
 	# Include main headers
 	target_include_directories("${libTask}" PUBLIC
 		"${CMAKE_SOURCE_DIR}/include")
+
+	# Disable warnings, since it gets extremely noisy when compiling libraries
+	if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
+		target_compile_options("${libTask}" PRIVATE
+			"/W0")
+	elseif(CMAKE_C_COMPILER_ID STREQUAL "GNU" OR
+		CMAKE_C_COMPILER_ID STREQUAL "Clang")
+		target_compile_options("${libTask}" PRIVATE
+			"-w")
+	endif()
 endfunction()
 
 # Defines a test for a ROM library entry using the TAC framework

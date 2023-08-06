@@ -197,11 +197,6 @@ extern "C" {
 	 */
 	#define sjme_attrFormatOuter(formatIndex, vaIndex) \
 		__attribute__((format(__printf__, formatIndex + 1, vaIndex + 1)))
-
-	#if !defined(sjme_attrInNotNull)
-		/** Input cannot be null. */
-		#define sjme_attrInNotNull __attribute__((nonnull))
-	#endif
 	
 	/** Indicates a callback. */
 	#define sjme_attrCallback __attribute__((callback))

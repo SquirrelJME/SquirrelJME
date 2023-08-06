@@ -10,8 +10,8 @@
 #include "sjme/nvm.h"
 #include "sjme/debug.h"
 
-jint sjme_nvm_arrayLength(sjme_nvm_frame* frame,
-	jobject arrayInstance)
+jboolean sjme_nvm_arrayLength(sjme_nvm_frame* frame,
+	jobject arrayInstance, jint* outLen)
 {
 	sjme_todo("Implement");
 	return -1;
