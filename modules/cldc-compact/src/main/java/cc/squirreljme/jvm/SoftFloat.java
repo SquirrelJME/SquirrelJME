@@ -23,7 +23,8 @@ import cc.squirreljme.runtime.cldc.util.UnsignedInteger;
  * @since 2019/05/24
  */
 @SquirrelJMEVendorApi
-@SuppressWarnings({"CommentedOutCode", "MagicNumber", "OverlyComplexClass"})
+@SuppressWarnings({"CommentedOutCode", "MagicNumber", "OverlyComplexClass",
+	"SpellCheckingInspection"})
 public final class SoftFloat
 {
 	/** The sign mask. */
@@ -95,6 +96,21 @@ public final class SoftFloat
 	}
 	
 	/**
+	 * Adds two values.
+	 *
+	 * @param __a A.
+	 * @param __b B.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static float add(float __a, float __b)
+	{
+		return SoftFloat.add(MathShelf.rawFloatToInt(__a),
+			MathShelf.rawFloatToInt(__b));
+	}
+	
+	/**
 	 * Compares two values, NaN returns {@code -1}.
 	 *
 	 * @param __a A.
@@ -113,6 +129,21 @@ public final class SoftFloat
 	}
 	
 	/**
+	 * Compares two values, NaN returns {@code -1}.
+	 *
+	 * @param __a A.
+	 * @param __b B.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static int cmpl(float __a, float __b)
+	{
+		return SoftFloat.cmpl(MathShelf.rawFloatToInt(__a),
+			MathShelf.rawFloatToInt(__b));
+	}
+	
+	/**
 	 * Compares two values, NaN returns {@code 1}.
 	 *
 	 * @param __a A.
@@ -121,13 +152,27 @@ public final class SoftFloat
 	 * @since 2019/05/24
 	 */
 	@SquirrelJMEVendorApi
-	@SuppressWarnings("SpellCheckingInspection")
 	public static int cmpg(int __a, int __b)
 	{
 		if (SoftFloat.isNaN(__a) || SoftFloat.isNaN(__b))
 			return 1;
 		
 		return SoftFloat.__cmp(__a, __b);
+	}
+	
+	/**
+	 * Compares two values, NaN returns {@code 1}.
+	 *
+	 * @param __a A.
+	 * @param __b B.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static int cmpg(float __a, float __b)
+	{
+		return SoftFloat.cmpg(MathShelf.rawFloatToInt(__a),
+			MathShelf.rawFloatToInt(__b));
 	}
 	
 	/**
@@ -145,6 +190,21 @@ public final class SoftFloat
 	}
 	
 	/**
+	 * Divides two values.
+	 *
+	 * @param __a A.
+	 * @param __b B.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static float div(float __a, float __b)
+	{
+		return SoftFloat.div(MathShelf.rawFloatToInt(__a),
+			MathShelf.rawFloatToInt(__b));
+	}
+	
+	/**
 	 * Is this Not a Number?
 	 * 
 	 * @param __a The value to check.
@@ -155,6 +215,19 @@ public final class SoftFloat
 	public static boolean isNaN(int __a)
 	{
 		return SoftFloat.NAN_MASK == (__a & SoftFloat.NAN_MASK);
+	}
+	
+	/**
+	 * Is this Not a Number?
+	 * 
+	 * @param __a The value to check.
+	 * @return If this is not a number.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static boolean isNaN(float __a)
+	{
+		return SoftFloat.isNaN(MathShelf.rawFloatToInt(__a));
 	}
 	
 	/**
@@ -262,6 +335,21 @@ public final class SoftFloat
 	}
 	
 	/**
+	 * Multiplies two values.
+	 *
+	 * @param __a A.
+	 * @param __b B.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static float mul(float __a, float __b)
+	{
+		return SoftFloat.mul(MathShelf.rawFloatToInt(__a),
+			MathShelf.rawFloatToInt(__b));
+	}
+	
+	/**
 	 * Negates a value.
 	 *
 	 * @param __a A.
@@ -272,6 +360,19 @@ public final class SoftFloat
 	public static float neg(int __a)
 	{
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Negates a value.
+	 *
+	 * @param __a A.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static float neg(float __a)
+	{
+		return SoftFloat.neg(MathShelf.rawFloatToInt(__a));
 	}
 	
 	/**
@@ -289,6 +390,21 @@ public final class SoftFloat
 	}
 	
 	/**
+	 * Ors a value, used for constant loading.
+	 *
+	 * @param __a A.
+	 * @param __b B.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static float or(float __a, float __b)
+	{
+		return SoftFloat.or(MathShelf.rawFloatToInt(__a),
+			MathShelf.rawFloatToInt(__b));
+	}
+	
+	/**
 	 * Remainders a value.
 	 *
 	 * @param __a A.
@@ -300,6 +416,21 @@ public final class SoftFloat
 	public static float rem(int __a, int __b)
 	{
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Remainders a value.
+	 *
+	 * @param __a A.
+	 * @param __b B.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static float rem(float __a, float __b)
+	{
+		return SoftFloat.rem(MathShelf.rawFloatToInt(__a),
+			MathShelf.rawFloatToInt(__b));
 	}
 	
 	/**
@@ -317,6 +448,21 @@ public final class SoftFloat
 	}
 	
 	/**
+	 * Subtracts values.
+	 *
+	 * @param __a A.
+	 * @param __b B.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static float sub(float __a, float __b)
+	{
+		return SoftFloat.sub(MathShelf.rawFloatToInt(__a),
+			MathShelf.rawFloatToInt(__b));
+	}
+	
+	/**
 	 * Converts to double.
 	 *
 	 * @param __a A.
@@ -327,6 +473,19 @@ public final class SoftFloat
 	public static double toDouble(int __a)
 	{
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Converts to double.
+	 *
+	 * @param __a A.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static double toDouble(float __a)
+	{
+		return SoftFloat.toDouble(MathShelf.rawFloatToInt(__a));
 	}
 	
 	/**
@@ -357,6 +516,19 @@ public final class SoftFloat
 	}
 	
 	/**
+	 * Converts to integer.
+	 *
+	 * @param __a A.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static int toInteger(float __a)
+	{
+		return SoftFloat.toInteger(MathShelf.rawFloatToInt(__a));
+	}
+	
+	/**
 	 * Converts to long.
 	 *
 	 * @param __a A.
@@ -367,6 +539,19 @@ public final class SoftFloat
 	public static long toLong(int __a)
 	{
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Converts to long.
+	 *
+	 * @param __a A.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static long toLong(float __a)
+	{
+		return SoftFloat.toLong(MathShelf.rawFloatToInt(__a));
 	}
 	
 	/**
