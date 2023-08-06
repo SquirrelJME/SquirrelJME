@@ -124,10 +124,13 @@ extern "C" {
 	#include <sal.h>
 	
 	/** Return value must be checked. */
-	#define sjme_attrCheckReturn _Check_return_
+	#define sjme_attrCheckReturn _Must_inspect_result_
 	
 	/** Deprecated. */
 	#define sjme_attrDeprecated __declspec(deprecated)
+	
+	/** Formatted string argument. */
+	#define sjme_attrFormatArg _Printf_format_string_ 
 	
 	/** Input cannot be null. */
 	#define sjme_attrInNotNull _In_opt_
@@ -137,6 +140,9 @@ extern "C" {
 	
 	/** Takes input and produces output. */
 	#define sjme_attrInOutNotNull _InOut_
+	
+	/** Input value range. */
+	#define sjme_attrInRange(lo, hi) _In_range_((lo), (hi))
 	
 	/** Method takes input. */
 	#define sjme_attrInValue _In_
@@ -186,7 +192,7 @@ extern "C" {
 	 * @param vaIndex The index of @c ... or @c va_list .
 	 * @since 2023/08/05
 	 */
-	#define sjme_attrFormat(formatIndex, vaIndex) \
+	#define sjme_attrFormatOuter(formatIndex, vaIndex) \
 		__attribute__((format(__printf__, formatIndex + 1, vaIndex + 1)))
 
 	#if !defined(sjme_attrInNotNull)
@@ -218,7 +224,12 @@ extern "C" {
 	#define sjme_attrDeprecated
 #endif
 
-#if !defined(sjme_attrFormat)
+#if !defined(sjme_attrFormatArg)
+	/** Formatted string argument. */
+	#define sjme_attrFormatArg
+#endif
+
+#if !defined(sjme_attrFormatOuter)
 	/**
 	 * Formatted string.
 	 * 
@@ -226,12 +237,17 @@ extern "C" {
 	 * The index of @c ... or @c va_list .
 	 * @since 2023/08/05
 	 */
-	#define sjme_attrFormat(formatIndex, vaIndex)
+	#define sjme_attrFormatOuter(formatIndex, vaIndex)
 #endif
 
 #if !defined(sjme_attrInValue)
 	/** Method takes input. */
 	#define sjme_attrInValue
+#endif
+
+#if !defined(sjme_attrInRange)
+	/** Input value range. */
+	#define sjme_attrInRange(lo, hi)
 #endif
 
 #if !defined(sjme_attrReturnNever)
@@ -278,6 +294,12 @@ extern "C" {
 	/** Output to buffer. */
 	#define sjme_attrOutNotNullBuf(lenArg) sjme_attrOutNotNull
 #endif
+
+/** Positive value. */
+#define sjme_attrInPositive sjme_attrInRange(0, INT32_MAX)
+
+/** Non-zero positive value. */
+#define sjme_attrInPositiveNonZero sjme_attrInRange(1, INT32_MAX)
 
 /*--------------------------------------------------------------------------*/
 

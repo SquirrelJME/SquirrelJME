@@ -677,13 +677,13 @@ sjme_tempIndex sjme_nvm_arrayLoadIntoTemp(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
 	sjme_attrInValue sjme_basicTypeId primitiveType,
 	sjme_attrInNullable jobject arrayInstance,
-	sjme_attrInValue jint index);
+	sjme_attrInValue sjme_attrInPositive jint index);
 	
 jboolean sjme_nvm_arrayStore(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
 	sjme_attrInValue sjme_basicTypeId primitiveType,
 	sjme_attrInNullable jobject arrayInstance,
-	sjme_attrInValue jint index,
+	sjme_attrInValue sjme_attrInPositive jint index,
 	sjme_attrInNotNull sjme_any* value) sjme_attrCheckReturn;
 	
 jboolean sjme_nvm_checkCast(
@@ -699,78 +699,80 @@ jboolean sjme_nvm_countReferenceDown(
 sjme_tempIndex sjme_nvm_fieldGetToTemp(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
 	jobject instance,
-	sjme_dynamic_linkage_data_fieldAccess* field);
+	sjme_attrInNotNull sjme_dynamic_linkage_data_fieldAccess* field);
 
 jboolean sjme_nvm_fieldPut(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
 	jobject instance,
-	sjme_dynamic_linkage_data_fieldAccess* field,
-	sjme_any* value) sjme_attrCheckReturn;
+	sjme_attrInNotNull sjme_dynamic_linkage_data_fieldAccess* field,
+	sjme_attrInNotNull sjme_any* value) sjme_attrCheckReturn;
 
 jboolean sjme_nvm_invokeNormal(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_dynamic_linkage_data_invokeNormal* method) sjme_attrCheckReturn;
+	sjme_attrInNotNull sjme_dynamic_linkage_data_invokeNormal* method)
+	sjme_attrCheckReturn;
 
 jboolean sjme_nvm_invokeSpecial(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_dynamic_linkage_data_invokeSpecial* method) sjme_attrCheckReturn;
+	sjme_attrInNotNull sjme_dynamic_linkage_data_invokeSpecial* method)
+	sjme_attrCheckReturn;
 	
 jint sjme_nvm_localLoadInteger(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	jint index);
+	sjme_attrInValue sjme_attrInPositive jint index);
 
 jboolean sjme_nvm_localPopDouble(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	jint index) sjme_attrCheckReturn;
+	sjme_attrInValue sjme_attrInPositive jint index) sjme_attrCheckReturn;
 
 jboolean sjme_nvm_localPopFloat(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	jint index) sjme_attrCheckReturn;
+	sjme_attrInValue sjme_attrInPositive jint index) sjme_attrCheckReturn;
 
 jboolean sjme_nvm_localPopInteger(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	jint index) sjme_attrCheckReturn;
+	sjme_attrInValue sjme_attrInPositive jint index) sjme_attrCheckReturn;
 
 jboolean sjme_nvm_localPopLong(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	jint index) sjme_attrCheckReturn;
+	sjme_attrInValue sjme_attrInPositive jint index) sjme_attrCheckReturn;
 
 jboolean sjme_nvm_localPopReference(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	jint index) sjme_attrCheckReturn;
+	sjme_attrInValue sjme_attrInPositive jint index) sjme_attrCheckReturn;
 
 jboolean sjme_nvm_localPushDouble(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	jint index) sjme_attrCheckReturn;
+	sjme_attrInValue sjme_attrInPositive jint index) sjme_attrCheckReturn;
 
 jboolean sjme_nvm_localPushFloat(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	jint index) sjme_attrCheckReturn;
+	sjme_attrInValue sjme_attrInPositive jint index) sjme_attrCheckReturn;
 
 jboolean sjme_nvm_localPushInteger(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	jint index) sjme_attrCheckReturn;
+	sjme_attrInValue sjme_attrInPositive jint index) sjme_attrCheckReturn;
 
 jboolean sjme_nvm_localPushLong(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	jint index) sjme_attrCheckReturn;
+	sjme_attrInValue sjme_attrInPositive jint index) sjme_attrCheckReturn;
 
 jboolean sjme_nvm_localPushReference(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	jint index) sjme_attrCheckReturn;
+	sjme_attrInValue sjme_attrInPositive jint index) sjme_attrCheckReturn;
 	
 jboolean sjme_nvm_localStoreInteger(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	jint index,
-	jint value) sjme_attrCheckReturn;
+	sjme_attrInValue sjme_attrInPositive jint index,
+	sjme_attrInValue jint value) sjme_attrCheckReturn;
 
 sjme_tempIndex sjme_nvm_lookupClassObjectIntoTemp(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_dynamic_linkage_data_classObject* classObjectLinkage);
+	sjme_attrInNotNull sjme_dynamic_linkage_data_classObject* classLinkage);
 	
 sjme_tempIndex sjme_nvm_lookupStringIntoTemp(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_dynamic_linkage_data_stringObject* stringObjectLinkage);
+	sjme_attrInNotNull sjme_dynamic_linkage_data_stringObject* stringLinkage);
 
 jboolean sjme_nvm_monitor(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
@@ -779,20 +781,20 @@ jboolean sjme_nvm_monitor(
 
 sjme_tempIndex sjme_nvm_newArrayIntoTemp(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_dynamic_linkage_data_classObject* componentType,
-	jint length);
+	sjme_attrInNotNull sjme_dynamic_linkage_data_classObject* componentType,
+	sjme_attrInValue sjme_attrInPositive jint length);
 
 sjme_tempIndex sjme_nvm_newInstanceIntoTemp(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_dynamic_linkage_data_classObject* linkage);
+	sjme_attrInNotNull sjme_dynamic_linkage_data_classObject* linkage);
 	
 jboolean sjme_nvm_returnFromMethod(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_any* value) sjme_attrCheckReturn;
+	sjme_attrInNotNull sjme_any* value) sjme_attrCheckReturn;
 
 jboolean sjme_nvm_stackPopAny(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_any* output) sjme_attrCheckReturn;
+	sjme_attrOutNotNull sjme_any* output) sjme_attrCheckReturn;
 
 sjme_tempIndex sjme_nvm_stackPopAnyToTemp(
 	sjme_attrInNotNull sjme_nvm_frame* frame);
@@ -812,7 +814,7 @@ sjme_tempIndex sjme_nvm_stackPopReferenceToTemp(
 
 jboolean sjme_nvm_stackPushAny(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_any* input) sjme_attrCheckReturn;
+	sjme_attrInNotNull sjme_any* input) sjme_attrCheckReturn;
 
 jboolean sjme_nvm_stackPushAnyFromTemp(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
@@ -820,16 +822,16 @@ jboolean sjme_nvm_stackPushAnyFromTemp(
 
 jboolean sjme_nvm_stackPushDoubleParts(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	jint hi,
-	jint lo) sjme_attrCheckReturn;
+	sjme_attrInValue jint hi,
+	sjme_attrInValue jint lo) sjme_attrCheckReturn;
 
 jboolean sjme_nvm_stackPushFloatRaw(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	jint rawValue) sjme_attrCheckReturn;
+	sjme_attrInValue jint rawValue) sjme_attrCheckReturn;
 
 jboolean sjme_nvm_stackPushInteger(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	jint value) sjme_attrCheckReturn;
+	sjme_attrInValue jint value) sjme_attrCheckReturn;
 
 jboolean sjme_nvm_stackPushIntegerIsInstanceOf(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
@@ -838,10 +840,11 @@ jboolean sjme_nvm_stackPushIntegerIsInstanceOf(
 
 jboolean sjme_nvm_stackPushLongParts(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	jint hi,
-	jint lo) sjme_attrCheckReturn;
+	sjme_attrInValue jint hi,
+	sjme_attrInValue jint lo) sjme_attrCheckReturn;
 	
-jboolean sjme_nvm_stackPushReference(sjme_nvm_frame* frame,
+jboolean sjme_nvm_stackPushReference(
+	sjme_attrInNotNull sjme_nvm_frame* frame,
 	jobject instance) sjme_attrCheckReturn;
 
 jboolean sjme_nvm_stackPushReferenceFromTemp(
@@ -865,7 +868,8 @@ jboolean sjme_nvm_throwExecute(
  * @since 2023/07/27
  */
 jboolean sjme_nvm_tick(sjme_attrInNotNull sjme_nvm_state* state,
-	sjme_attrInValue jint maxTics) sjme_attrCheckReturn;
+	sjme_attrInValue sjme_attrInPositive jint maxTics)
+	sjme_attrCheckReturn;
 
 /*--------------------------------------------------------------------------*/
 

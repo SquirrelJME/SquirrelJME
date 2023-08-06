@@ -57,7 +57,8 @@ extern "C" {
 void sjme_messageR(sjme_attrInNullable const char* file,
 	sjme_attrInValue int line,
 	sjme_attrInNullable const char* func,
-	sjme_attrInNullable const char* message, ...) sjme_attrFormat(3, 4);
+	sjme_attrInNullable sjme_attrFormatArg const char* message, ...)
+	sjme_attrFormatOuter(3, 4);
 #endif
 	
 /**
@@ -84,8 +85,8 @@ void sjme_messageR(sjme_attrInNullable const char* file,
 void sjme_todoR(sjme_attrInNullable const char* file,
 	sjme_attrInValue int line,
 	sjme_attrInNullable const char* func,
-	sjme_attrInNullable const char* message, ...)
-	sjme_attrReturnNever sjme_attrFormat(3, 4);
+	sjme_attrInNullable sjme_attrFormatArg const char* message, ...)
+	sjme_attrReturnNever sjme_attrFormatOuter(3, 4);
 
 /**
  * Indicates a To-Do and then terminates the program.
