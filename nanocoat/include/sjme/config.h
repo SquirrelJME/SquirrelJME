@@ -161,6 +161,9 @@ extern "C" {
 
 	/** Output to buffer. */
 	#define sjme_attrOutNotNullBuf(lenArg) _Out_writes_(lenArg)
+	
+	/** Output value range. */
+	#define sjme_attrOutRange(lo, hi) _Out_range_((lo), (hi))
 #elif defined(__clang__) || defined(__GNUC__)
 	/* Clang has special analyzer stuff, but also same as GCC otherwise. */
 	#if defined(__clang__)
@@ -295,11 +298,28 @@ extern "C" {
 	#define sjme_attrOutNotNullBuf(lenArg) sjme_attrOutNotNull
 #endif
 
+#if !defined(sjme_attrOutRange)
+	/** Output value range. */
+	#define sjme_attrOutRange(lo, hi)
+#endif
+
 /** Positive value. */
 #define sjme_attrInPositive sjme_attrInRange(0, INT32_MAX)
 
 /** Non-zero positive value. */
 #define sjme_attrInPositiveNonZero sjme_attrInRange(1, INT32_MAX)
+
+/** Negative one to positive. */
+#define sjme_attrInNegativeOnePositive sjme_attrInRange(-1, INT32_MAX)
+
+/** Positive value. */
+#define sjme_attrOutPositive sjme_attrOutRange(0, INT32_MAX)
+
+/** Non-zero positive value. */
+#define sjme_attrOutPositiveNonZero sjme_attrOutRange(1, INT32_MAX)
+
+/** Negative one to positive. */
+#define sjme_attrOutNegativeOnePositive sjme_attrOutRange(-1, INT32_MAX)
 
 /*--------------------------------------------------------------------------*/
 

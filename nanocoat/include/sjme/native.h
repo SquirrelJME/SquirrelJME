@@ -38,7 +38,8 @@ extern "C" {
  * @since 2023/05/23
  */
 typedef jboolean (*sjme_nal_currentTimeMillisFunc)(
-	sjme_attrOutNotNull jlong* result) sjme_attrCheckReturn;
+	sjme_attrOutNotNull jlong* result)
+	sjme_attrCheckReturn;
 
 /**
  * Reads from the system environment a variable.
@@ -64,7 +65,8 @@ typedef jboolean (*sjme_nal_getEnv)(
  * @since 2023/05/23
  */
 typedef jboolean (*sjme_nal_nanoTime)(
-	sjme_attrOutNotNull jlong* result) sjme_attrCheckReturn;
+	sjme_attrOutNotNull jlong* result)
+	sjme_attrCheckReturn;
 
 /**
  * Native Abstraction Layer functions.
