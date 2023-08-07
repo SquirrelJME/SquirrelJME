@@ -3825,7 +3825,8 @@ public final class SpringThreadWorker
 		
 		/* {@squirreljme.error BK36 Cannot call private method that is not
 		in the same class. (The method reference; Our current class)} */
-		else if ((isPrivate || (isPackagePrivate && !isInit)) && !inSameClass)
+		else if ((isPrivate || (isPackagePrivate && !isInit)) &&
+			!inSameClass && !inSuper)
 			throw new SpringIncompatibleClassChangeException(
 				String.format("BK36 %s %s", ref, currentClass));
 		
