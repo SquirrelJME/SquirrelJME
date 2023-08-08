@@ -10,7 +10,6 @@
 package cc.squirreljme.c;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -101,7 +100,7 @@ public class CStructVariableBlock
 		
 		// Setup block
 		CArrayBlock rv = new CArrayBlock(this, elementType);
-		return this.__file().__pushBlock(rv, false);
+		return this._file.__pushBlock(rv, false);
 	}
 	
 	/**
@@ -194,7 +193,7 @@ public class CStructVariableBlock
 		}
 		
 		// Open block
-		return this.__file().__pushBlock(
+		return this._file.__pushBlock(
 			new CStructVariableBlock(this,
 				(CStructType)type,
 				"}"),

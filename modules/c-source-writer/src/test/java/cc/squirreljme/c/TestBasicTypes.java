@@ -28,7 +28,7 @@ public class TestBasicTypes
 	public void test()
 		throws IOException
 	{
-		try (__Spool__ spool = new __Spool__(false))
+		try (__Spool__ spool = __Spool__.__init(false))
 		{
 			spool.declare(
 				CVariable.of(CPrimitiveType.SIGNED_INTEGER, "foo"));

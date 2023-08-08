@@ -19,7 +19,7 @@ import java.io.IOException;
  * @since 2023/05/29
  */
 public class CBlock
-	extends __CFileProxy__
+	extends CFileProxy
 	implements Closeable
 {
 	/** Extra indentation that was performed here. */
@@ -52,7 +52,7 @@ public class CBlock
 	public void close()
 		throws IOException
 	{
-		this.__file().__close(this);
+		this._file.__close(this);
 	}
 	
 	/**

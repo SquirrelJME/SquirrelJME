@@ -13,6 +13,7 @@ import cc.squirreljme.c.out.StringCollectionCTokenOutput;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import net.multiphasicapps.tac.TestRunnable;
 
 /**
@@ -22,25 +23,28 @@ import net.multiphasicapps.tac.TestRunnable;
  * @since 2023/06/19
  */
 final class __Spool__
-	extends __CFileProxy__
+	extends CFileProxy
 	implements AutoCloseable
 {
+	/** The CFile we are writing to. */
+	private final CFile _cFile;
+	
 	/** The resultant list. */
 	private final Collection<String> _list;
 	
 	/**
 	 * Initializes the spool.
 	 * 
-	 * @param __whitespace Is whitespace important for this?
-	 * @since 2023/06/22
+	 * @param __result The resultant list where tokens go.
+	 * @param __cFile The file we are wrting to.
+	 * @since 2023/08/08
 	 */
-	__Spool__(boolean __whitespace)
+	public __Spool__(List<String> __result, CFile __cFile)
 	{
-		super(new CFile(new StringCollectionCTokenOutput(
-			new ArrayList<String>(), __whitespace)));
+		super(__cFile);
 		
-		this._list = ((StringCollectionCTokenOutput)super.__file().out)
-			.output();
+		this._list = __result;
+		this._cFile = __cFile;
 	}
 	
 	/**
@@ -51,7 +55,7 @@ final class __Spool__
 	public void close()
 		throws IOException
 	{
-		this.__file().close();
+		this._cFile.close();
 	}
 	
 	/**
@@ -64,5 +68,25 @@ final class __Spool__
 	{
 		Collection<String> list = this._list;
 		return list.toArray(new String[list.size()]);
+	}
+	
+	/**
+	 * Initializes the spool.
+	 * 
+	 * @param __whitespace Is whitespace important for this?
+	 * @since 2023/08/08
+	 */
+	static __Spool__ __init(boolean __whitespace)
+	{
+		// Setup output
+		ArrayList<String> result = new ArrayList<>();
+		StringCollectionCTokenOutput output =
+			new StringCollectionCTokenOutput(result, __whitespace);
+		
+		// Setup CFile
+		CFile cFile = new CFile(output);
+		
+		// Pass everything to the spool
+		return new __Spool__(result, cFile);
 	}
 }

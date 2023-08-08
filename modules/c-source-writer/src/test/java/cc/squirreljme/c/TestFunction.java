@@ -36,7 +36,7 @@ public class TestFunction
 				"boop"));
 		
 		// Declare function
-		try (__Spool__ spool = new __Spool__(false))
+		try (__Spool__ spool = __Spool__.__init(false))
 		{
 			spool.declare(function);
 			
@@ -44,7 +44,7 @@ public class TestFunction
 		}
 		
 		// Define function
-		try (__Spool__ spool = new __Spool__(false))
+		try (__Spool__ spool = __Spool__.__init(false))
 		{
 			try (CFunctionBlock ignored = spool.define(function))
 			{

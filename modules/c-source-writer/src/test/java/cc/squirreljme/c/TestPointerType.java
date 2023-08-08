@@ -29,7 +29,7 @@ public class TestPointerType
 	public void test()
 		throws IOException
 	{
-		try (__Spool__ spool = new __Spool__(false))
+		try (__Spool__ spool = __Spool__.__init(false))
 		{
 			spool.declare(
 				CVariable.of(CPrimitiveType.SIGNED_INTEGER.pointerType(),
@@ -38,7 +38,7 @@ public class TestPointerType
 			this.secondary("int", spool.tokens());
 		}
 		
-		try (__Spool__ spool = new __Spool__(false))
+		try (__Spool__ spool = __Spool__.__init(false))
 		{
 			spool.declare(
 				CVariable.of(CPrimitiveType.SIGNED_INTEGER
@@ -48,7 +48,7 @@ public class TestPointerType
 			this.secondary("intfar", spool.tokens());
 		}
 		
-		try (__Spool__ spool = new __Spool__(false))
+		try (__Spool__ spool = __Spool__.__init(false))
 		{
 			spool.declare(
 				CVariable.of(CPrimitiveType.SIGNED_INTEGER
@@ -58,7 +58,7 @@ public class TestPointerType
 			this.secondary("inthuge", spool.tokens());
 		}
 		
-		try (__Spool__ spool = new __Spool__(false))
+		try (__Spool__ spool = __Spool__.__init(false))
 		{
 			spool.declare(
 				CVariable.of(CPrimitiveType.SIGNED_INTEGER

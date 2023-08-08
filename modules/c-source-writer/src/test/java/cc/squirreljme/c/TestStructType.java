@@ -35,7 +35,7 @@ public class TestStructType
 				.build();
 		
 		// Declare struct
-		try (__Spool__ spool = new __Spool__(false))
+		try (__Spool__ spool = __Spool__.__init(false))
 		{
 			spool.declare(CVariable.of(struct, "foo"));
 			
@@ -43,7 +43,7 @@ public class TestStructType
 		}
 		
 		// Define struct
-		try (__Spool__ spool = new __Spool__(false))
+		try (__Spool__ spool = __Spool__.__init(false))
 		{
 			spool.define(struct);
 			

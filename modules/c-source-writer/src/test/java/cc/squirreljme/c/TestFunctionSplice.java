@@ -27,7 +27,7 @@ public class TestFunctionSplice
 	public void test()
 		throws Throwable
 	{
-		try (__Spool__ spool = new __Spool__(false))
+		try (__Spool__ spool = __Spool__.__init(false))
 		{
 			// Start function
 			try (CFunctionBlock outer = spool.define(CFunctionType.of(

@@ -34,7 +34,7 @@ public class TestConstType
 		
 		// const int
 		CType constInt = CModifiedType.of(CConstModifier.CONST, intType);
-		try (__Spool__ spool = new __Spool__(false))
+		try (__Spool__ spool = __Spool__.__init(false))
 		{
 			spool.declare(CVariable.of(constInt, "foo"));
 			
@@ -43,7 +43,7 @@ public class TestConstType
 		
 		// pointer to const int
 		CType ptrConstInt = constInt.pointerType();
-		try (__Spool__ spool = new __Spool__(false))
+		try (__Spool__ spool = __Spool__.__init(false))
 		{
 			spool.declare(CVariable.of(ptrConstInt, "foo"));
 		
@@ -53,7 +53,7 @@ public class TestConstType
 		// const pointer to int
 		CType constPointerInt = CModifiedType.of(CConstModifier.CONST,
 			intType.pointerType());
-		try (__Spool__ spool = new __Spool__(false))
+		try (__Spool__ spool = __Spool__.__init(false))
 		{
 			spool.declare(CVariable.of(constPointerInt, "foo"));
 		
@@ -63,7 +63,7 @@ public class TestConstType
 		// const pointer to const int
 		CType constPointerConstInt = CModifiedType.of(CConstModifier.CONST,
 			constInt.pointerType());
-		try (__Spool__ spool = new __Spool__(false))
+		try (__Spool__ spool = __Spool__.__init(false))
 		{
 			spool.declare(CVariable.of(constPointerConstInt, "foo"));
 		
@@ -73,7 +73,7 @@ public class TestConstType
 		// pointer to const pointer to const int
 		// const int * const *var
 		CType pTcpTci = constPointerConstInt.pointerType();
-		try (__Spool__ spool = new __Spool__(false))
+		try (__Spool__ spool = __Spool__.__init(false))
 		{
 			spool.declare(CVariable.of(pTcpTci, "foo"));
 		
@@ -83,7 +83,7 @@ public class TestConstType
 		// pointer to pointer to const pointer to const int
 		// const int * const **var
 		CType ppTcpTci = pTcpTci.pointerType();
-		try (__Spool__ spool = new __Spool__(false))
+		try (__Spool__ spool = __Spool__.__init(false))
 		{
 			spool.declare(CVariable.of(ppTcpTci, "foo"));
 		

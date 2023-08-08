@@ -9,7 +9,6 @@
 
 package cc.squirreljme.c;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 
 /**
@@ -72,7 +71,7 @@ public class CArrayBlock
 		this.token("{");
 		
 		// Push it to the writer
-		return this.__file().__pushBlock(rv, false);
+		return this._file.__pushBlock(rv, false);
 	}
 	
 	/**

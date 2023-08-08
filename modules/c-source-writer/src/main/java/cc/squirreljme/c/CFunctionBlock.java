@@ -68,7 +68,7 @@ public class CFunctionBlock
 		
 		// Push
 		CIfBlock rv = new CIfBlock(this);
-		return this.__file().__pushBlock(rv, true);
+		return this._file.__pushBlock(rv, true);
 	}
 	
 	/**
@@ -128,6 +128,6 @@ public class CFunctionBlock
 		
 		// Push
 		CSwitchBlock rv = new CSwitchBlock(this);
-		return this.__file().__pushBlock(rv, true);
+		return this._file.__pushBlock(rv, true);
 	}
 }
