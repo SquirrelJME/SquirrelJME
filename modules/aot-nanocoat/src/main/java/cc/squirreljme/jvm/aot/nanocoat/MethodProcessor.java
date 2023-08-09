@@ -187,7 +187,6 @@ public final class MethodProcessor
 		try (CStructVariableBlock struct = __out.define(
 			CStructVariableBlock.class, this.codeInfoVar))
 		{
-			
 			// Max variable counts for each type
 			VariablePlacementMap varMap = processor.variablePlacements;
 			
@@ -203,9 +202,7 @@ public final class MethodProcessor
 				
 			// Code for the method?
 			struct.memberSet("code",
-				CExpressionBuilder.builder()
-					.identifier(this.function.name)
-					.build());
+				this.function.name);
 		}
 	}
 }
