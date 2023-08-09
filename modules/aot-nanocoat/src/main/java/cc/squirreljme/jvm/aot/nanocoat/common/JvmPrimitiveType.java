@@ -10,13 +10,15 @@
 package cc.squirreljme.jvm.aot.nanocoat.common;
 
 import cc.squirreljme.c.CMathOperator;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.Arrays;
+import java.util.List;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.FieldDescriptor;
 import net.multiphasicapps.classfile.JavaType;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodName;
 import net.multiphasicapps.classfile.MethodReference;
+import net.multiphasicapps.collections.UnmodifiableList;
 
 /**
  * Primitive types within the virtual machine.
@@ -25,15 +27,6 @@ import net.multiphasicapps.classfile.MethodReference;
  */
 public enum JvmPrimitiveType
 {
-	/** Boolean or byte. */
-	BOOLEAN_OR_BYTE,
-	
-	/** Short. */
-	SHORT,
-	
-	/** Character. */
-	CHARACTER,
-	
 	/** Integer. */
 	INTEGER,
 	
@@ -49,8 +42,29 @@ public enum JvmPrimitiveType
 	/** Object. */
 	OBJECT,
 	
+	/** Boolean or byte. */
+	BOOLEAN_OR_BYTE,
+	
+	/** Short. */
+	SHORT,
+	
+	/** Character. */
+	CHARACTER,
+	
 	/* End. */
 	;
+	
+	/** The Java Types available. */
+	public static final List<JvmPrimitiveType> JAVA_TYPES =
+		UnmodifiableList.of(Arrays.asList(JvmPrimitiveType.INTEGER,
+			JvmPrimitiveType.LONG,
+			JvmPrimitiveType.FLOAT,
+			JvmPrimitiveType.DOUBLE,
+			JvmPrimitiveType.OBJECT));
+	
+	/** The maximum number of Java Types. */
+	public static final int NUM_JAVA_TYPES =
+		JvmPrimitiveType.JAVA_TYPES.size();
 	
 	/**
 	 * Returns the descriptor to use for this type.

@@ -228,7 +228,7 @@ public enum JvmTypes
 		}
 	},
 	
-	/** Boolean. */
+	/** Byte. */
 	JBYTE
 	{
 		/**
@@ -445,6 +445,21 @@ public enum JvmTypes
 		}
 	},
 	
+	/** Unsigned Byte. */
+	JUBYTE
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/08/09
+		 */
+		@Override
+		CType __build()
+		{
+			return CTypeDefType.of(CStdIntType.UINT8.type(),
+				"jubyte");
+		}
+	},
+	
 	/** Program counter address. */
 	PC_ADDR
 	{
@@ -551,9 +566,18 @@ public enum JvmTypes
 				"sjme_static_classMethod")
 				.member(CPrimitiveType.CONST_CHAR_STAR, "name")
 				.member(CPrimitiveType.CONST_CHAR_STAR, "type")
-				.member(JvmTypes.JINT.type().constType(), "flags")
-				.member(JvmTypes.JINT, "rValSlots")
-				.member(JvmTypes.JINT, "argSlots")
+				.member(JvmTypes.JINT, "flags")
+				.member(JvmTypes.JUBYTE.type()
+						.arrayType(JvmPrimitiveType.NUM_JAVA_TYPES),
+					"argCount")
+				.member(JvmTypes.BASIC_TYPE_ID,
+					"rValType")
+				.member(JvmTypes.JUBYTE.type()
+						.arrayType(JvmPrimitiveType.NUM_JAVA_TYPES),
+					"maxLocals")
+				.member(JvmTypes.JUBYTE.type()
+						.arrayType(JvmPrimitiveType.NUM_JAVA_TYPES),
+					"maxStack")
 				.member(JvmFunctions.METHOD_CODE.function(), "code")
 				.build();
 		}

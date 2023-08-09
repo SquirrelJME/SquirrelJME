@@ -47,6 +47,13 @@ typedef uint8_t jboolean;
 typedef int8_t jbyte;
 
 /**
+ * Unsigned byte type.
+ * 
+ * @since 2023/08/09
+ */
+typedef uint8_t jubyte;
+
+/**
  * Short type.
  * 
  * @since 2023/07/25
@@ -117,7 +124,53 @@ typedef jint sjme_tempIndex;
  * 
  * @since 2023/07/25
  */
-typedef jint sjme_basicTypeId;
+typedef enum sjme_basicTypeId
+{
+	/** Integer. */
+	BASIC_TYPE_ID_INTEGER = 0,
+	
+	/** Integer. */
+	JAVA_TYPE_ID_INTEGER = BASIC_TYPE_ID_INTEGER,
+	
+	/** Long. */
+	BASIC_TYPE_ID_LONG = 1,
+	
+	/** Long. */
+	JAVA_TYPE_ID_LONG = BASIC_TYPE_ID_LONG,
+	
+	/** Float. */
+	BASIC_TYPE_ID_FLOAT = 2,
+	
+	/** Float. */
+	JAVA_TYPE_ID_FLOAT = BASIC_TYPE_ID_FLOAT,
+	
+	/** Double. */
+	BASIC_TYPE_ID_DOUBLE = 3,
+	
+	/** Double. */
+	JAVA_TYPE_ID_DOUBLE = BASIC_TYPE_ID_DOUBLE,
+	
+	/** Object. */
+	BASIC_TYPE_ID_OBJECT = 4,
+	
+	/** Object. */
+	JAVA_TYPE_ID_OBJECT = BASIC_TYPE_ID_OBJECT,
+	
+	/** Boolean or byte. */
+	BASIC_TYPE_ID_BOOLEAN_OR_BYTE = 5,
+	
+	/** The number of Java type IDs. */
+	SJME_NUM_JAVA_TYPE_IDS = BASIC_TYPE_ID_BOOLEAN_OR_BYTE,
+	
+	/** Short. */
+	BASIC_TYPE_ID_SHORT = 6,
+	
+	/** Character. */
+	BASIC_TYPE_ID_CHARACTER = 7,
+	
+	/** Number of basic type IDs. */
+	SJME_NUM_BASIC_TYPE_IDS = 8
+} sjme_basicTypeId;
 
 /**
  * Program counter address.
@@ -277,11 +330,17 @@ typedef struct sjme_static_classMethod
 	/** Flags. */
 	jint flags;
 	
-	/** Argument slots, how many it takes up for calls. */
-	jint argSlots;
+	/** A @c sjme_basicTypeId map of slots for a given argument type. */
+	jubyte argCount[SJME_NUM_JAVA_TYPE_IDS];
 	
-	/** The number of slots the return value takes up. */
-	jint rValSlots;
+	/** The type of return value this returns. */
+	sjme_basicTypeId rValType;
+	
+	/** The maximum number of @c sjme_basicTypeId local variables. */
+	jubyte maxLocals[SJME_NUM_JAVA_TYPE_IDS];
+	
+	/** The maximum number of @c sjme_basicTypeId stack variables. */
+	jubyte maxStack[SJME_NUM_JAVA_TYPE_IDS];
 	
 	/** Method code. */
 	sjme_methodCodeFunction code;
