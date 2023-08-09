@@ -9,6 +9,8 @@
 
 package net.multiphasicapps.classfile;
 
+import cc.squirreljme.runtime.cldc.util.IntegerArrays;
+import cc.squirreljme.runtime.cldc.util.IntegerIntegerArray;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.util.Map;
 import net.multiphasicapps.collections.UnmodifiableMap;
@@ -54,6 +56,17 @@ public final class StackMapTablePairs
 	}
 	
 	/**
+	 * Returns all the available addresses.
+	 *
+	 * @return The resultant addresses within the stack map.
+	 * @since 2023/08/09
+	 */
+	public int[] addresses()
+	{
+		return IntegerArrays.toIntArray(this._pairs.keySet());
+	}
+	
+	/**
 	 * Gets the pair at the given address.
 	 * 
 	 * @param __address The address to get.
@@ -69,5 +82,16 @@ public final class StackMapTablePairs
 		if (rv == null)
 			throw new IllegalArgumentException("IOOB");
 		return rv;
+	}
+	
+	/**
+	 * Returns the number of pairs.
+	 *
+	 * @return The number of pairs.
+	 * @since 2023/08/09
+	 */
+	public int size()
+	{
+		return this._pairs.size();
 	}
 }

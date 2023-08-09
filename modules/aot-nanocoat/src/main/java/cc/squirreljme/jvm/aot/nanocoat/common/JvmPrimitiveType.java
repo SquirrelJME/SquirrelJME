@@ -18,6 +18,7 @@ import net.multiphasicapps.classfile.JavaType;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodName;
 import net.multiphasicapps.classfile.MethodReference;
+import net.multiphasicapps.classfile.PrimitiveType;
 import net.multiphasicapps.collections.UnmodifiableList;
 
 /**
@@ -92,6 +93,25 @@ public enum JvmPrimitiveType
 			default:
 				throw new IllegalArgumentException("NCa3");
 		}
+	}
+	
+	/**
+	 * Returns the Java primitive type. 
+	 *
+	 * @return The Java primitive type.
+	 * @since 2023/08/09
+	 */
+	public JvmPrimitiveType javaType()
+	{
+		switch (this)
+		{
+			case BOOLEAN_OR_BYTE:
+			case SHORT:
+			case CHARACTER:
+				return JvmPrimitiveType.INTEGER;
+		}
+		
+		return this;
 	}
 	
 	/**
@@ -379,5 +399,68 @@ public enum JvmPrimitiveType
 			MethodDescriptor.ofArguments(self,
 				self, FieldDescriptor.INTEGER),
 			false);
+	}
+	
+	/**
+	 * Returns the primitive type associated with the given field.
+	 *
+	 * @param __fieldType The field type.
+	 * @return The primitive type that is used.
+	 * @throws IllegalArgumentException If the type is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/09
+	 */
+	public static JvmPrimitiveType of(FieldDescriptor __fieldType)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__fieldType == null)
+			throw new NullPointerException("NARG");
+		
+		if (__fieldType.isPrimitive())
+			return JvmPrimitiveType.of(__fieldType.primitiveType());
+		return JvmPrimitiveType.OBJECT;
+	}
+	
+	/**
+	 * Returns the primitive type associated with the primitive type.
+	 *
+	 * @param __primitiveType The primitive type.
+	 * @return The primitive type that is used.
+	 * @throws IllegalArgumentException If the type is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/09
+	 */
+	private static JvmPrimitiveType of(PrimitiveType __primitiveType)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__primitiveType == null)
+			throw new NullPointerException("NARG");
+		
+		switch (__primitiveType)
+		{
+			case BYTE:
+			case BOOLEAN:
+				return JvmPrimitiveType.BOOLEAN_OR_BYTE;
+				
+			case SHORT:
+				return JvmPrimitiveType.SHORT;
+				
+			case CHARACTER:
+				return JvmPrimitiveType.CHARACTER;
+				
+			case INTEGER:
+				return JvmPrimitiveType.INTEGER;
+				
+			case LONG:
+				return JvmPrimitiveType.LONG;
+				
+			case FLOAT:
+				return JvmPrimitiveType.FLOAT;
+				
+			case DOUBLE:
+				return JvmPrimitiveType.DOUBLE;
+		}
+		
+		throw new IllegalArgumentException("IARG " + __primitiveType);
 	}
 }

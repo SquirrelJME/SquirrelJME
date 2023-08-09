@@ -574,10 +574,9 @@ public enum JvmTypes
 					"rValType")
 				.member(JvmTypes.JUBYTE.type()
 						.arrayType(JvmPrimitiveType.NUM_JAVA_TYPES),
-					"maxLocals")
-				.member(JvmTypes.JUBYTE.type()
-						.arrayType(JvmPrimitiveType.NUM_JAVA_TYPES),
-					"maxStack")
+					"maxVariables")
+				.member(JvmTypes.JSHORT,
+					"thrownVarIndex")
 				.member(JvmFunctions.METHOD_CODE.function(), "code")
 				.build();
 		}

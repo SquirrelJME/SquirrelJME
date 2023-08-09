@@ -173,6 +173,20 @@ typedef enum sjme_basicTypeId
 } sjme_basicTypeId;
 
 /**
+ * Represents multiple type IDs.
+ * 
+ * @since 2023/08/09
+ */
+typedef struct sjme_basicTypeIds
+{
+	/** The number of IDs. */
+	jint count;
+	
+	/** The IDs. */
+	sjme_basicTypeId ids[];
+} sjme_basicTypeIds;
+
+/**
  * Program counter address.
  * 
  * @since 2023/07/25
@@ -330,17 +344,17 @@ typedef struct sjme_static_classMethod
 	/** Flags. */
 	jint flags;
 	
-	/** A @c sjme_basicTypeId map of slots for a given argument type. */
-	jubyte argCount[SJME_NUM_JAVA_TYPE_IDS];
+	/** The argument type mapping table this method uses. */
+	const sjme_basicTypeIds* argTypes;
 	
 	/** The type of return value this returns. */
 	sjme_basicTypeId rValType;
 	
-	/** The maximum number of @c sjme_basicTypeId local variables. */
-	jubyte maxLocals[SJME_NUM_JAVA_TYPE_IDS];
+	/** The maximum number of @c sjme_basicTypeId local/stack variables. */
+	jubyte maxVariables[SJME_NUM_JAVA_TYPE_IDS];
 	
-	/** The maximum number of @c sjme_basicTypeId stack variables. */
-	jubyte maxStack[SJME_NUM_JAVA_TYPE_IDS];
+	/** The index where thrown objects are placed. */
+	jshort thrownVarIndex;
 	
 	/** Method code. */
 	sjme_methodCodeFunction code;

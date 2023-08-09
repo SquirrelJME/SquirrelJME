@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.aot.nanocoat;
 
 import cc.squirreljme.c.CArrayBlock;
+import cc.squirreljme.c.CBasicExpression;
 import cc.squirreljme.c.CExpressionBuilder;
 import cc.squirreljme.c.CFunctionType;
 import cc.squirreljme.c.CFunctionBlock;
@@ -17,12 +18,15 @@ import cc.squirreljme.c.CSourceWriter;
 import cc.squirreljme.c.CStructVariableBlock;
 import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmFunctions;
+import cc.squirreljme.jvm.aot.nanocoat.common.JvmPrimitiveType;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassLinkTable;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.FieldDescriptor;
 import net.multiphasicapps.classfile.Method;
+import net.multiphasicapps.classfile.MethodDescriptor;
 
 /**
  * This processes methods.
@@ -48,6 +52,9 @@ public final class MethodProcessor
 	
 	/** The link table for the class. */
 	protected final ClassLinkTable linkTable;
+	
+	/** The variable placement. */
+	private volatile VariablePlacementMap _variablePlacements;
 	
 	/**
 	 * Initializes the method processor.
@@ -110,6 +117,8 @@ public final class MethodProcessor
 		Method method = this.method;
 		try (CStructVariableBlock struct = __array.struct())
 		{
+			MethodDescriptor type = method.type();
+			
 			// Method details
 			struct.memberSet("name",
 				CExpressionBuilder.builder()
@@ -117,26 +126,45 @@ public final class MethodProcessor
 					.build());
 			struct.memberSet("type",
 				CExpressionBuilder.builder()
-					.string(method.type().toString())
+					.string(type.toString())
 					.build());
 			struct.memberSet("flags",
 				CExpressionBuilder.builder()
 					.number(Constants.JINT_C, method.flags().toJavaBits())
 					.build());
 			
-			// Slots of return value
-			FieldDescriptor rVal = method.type().returnValue();
-			if (rVal != null)
-				struct.memberSet("rValSlots",
-					CExpressionBuilder.builder()
-						.number(Constants.JINT_C, rVal.stackWidth())
-						.build());
+			// Argument counts, instance methods get this indicated here so
+			// that every method is effectively static
+			int argCount[] = new int[JvmPrimitiveType.NUM_JAVA_TYPES];
+			if (!method.flags().isStatic())
+				argCount[JvmPrimitiveType.OBJECT.ordinal()]++;
 			
-			// Argument slots
-			struct.memberSet("argSlots",
-				CExpressionBuilder.builder()
-					.number(Constants.JINT_C, method.argumentSlotCount())
-					.build());
+			// Calculate argument counts
+			for (int i = 0, n = type.argumentCount(); i < n; i++)
+				argCount[JvmPrimitiveType.of(type.argument(i))
+					.javaType().ordinal()]++;
+			
+			// Write argument type mapping
+			if (true)
+				throw Debugging.todo();
+			
+			// Return value type
+			FieldDescriptor rVal = type.returnValue();
+			struct.memberSet("rValType",
+				CBasicExpression.number((rVal == null ? -1 :
+					JvmPrimitiveType.of(rVal).javaType().ordinal())));
+			
+			// Max variable counts for each type
+			VariablePlacementMap varPlacement =
+				this._variablePlacements;
+			if (true)
+				throw Debugging.todo();
+			
+			// Thrown variable index
+			if (varPlacement != null)
+				struct.memberSet("thrownVarIndex",
+					CBasicExpression.number(
+						varPlacement.thrownVariableIndex()));
 			
 			// Code for the method?
 			ByteCode code = method.byteCode();
@@ -170,5 +198,8 @@ public final class MethodProcessor
 		{
 			processor.process(function);
 		}
+		
+		// Grab some details from it
+		this._variablePlacements = processor.variablePlacements;
 	}
 }

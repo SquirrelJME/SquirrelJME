@@ -86,6 +86,9 @@ public class ByteCodeProcessor
 	/** Is this static? */
 	protected final boolean isStatic;
 	
+	/** Variable placement mappings. */
+	protected final VariablePlacementMap variablePlacements;
+	
 	/** Basic block mappings. */
 	private final Map<Integer, BasicBlock> _basicBlocks =
 		new SortedTreeMap<>();
@@ -120,6 +123,9 @@ public class ByteCodeProcessor
 		this.linkTable = __method.linkTable;
 		this.stackMap = __code.stackMapTableFull();
 		this.isStatic = __method.method.flags().isStatic();
+		this.variablePlacements = new VariablePlacementMap(
+			!__code.isInstance(), __code.type(), __code.maxLocals(),
+			__code.maxStack(), this.stackMap);
 		
 		// Reverse jump targets for instructions
 		Map<Integer, InstructionJumpTargets> reverseJumpsTable =
