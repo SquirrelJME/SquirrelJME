@@ -333,6 +333,35 @@ typedef jboolean (*sjme_methodCodeFunction)(
 	struct sjme_nvm_state* currentState,
 	struct sjme_nvm_thread* currentThread);
 
+/**
+ * The variable mapping and setup for any given method.
+ * 
+ * @since 2023/08/09
+ */
+typedef struct sjme_static_classCodeLimits
+{
+	/** The maximum number of @c sjme_basicTypeId local/stack variables. */
+	jubyte maxVariables[SJME_NUM_JAVA_TYPE_IDS];
+} sjme_static_classCodeLimits;
+
+/**
+ * Contains information about method code and how variables should be placed
+ * on execution and stack handling.
+ * 
+ * @since 2023/08/09
+ */
+typedef struct sjme_static_classCode
+{
+	/** The variable count and thrown index count used. */
+	const sjme_static_classCodeLimits* limits;
+	
+	/** The index where thrown objects are placed. */
+	jshort thrownVarIndex;
+	
+	/** The method code. */
+	sjme_methodCodeFunction code;
+} sjme_static_classCode;
+
 typedef struct sjme_static_classMethod
 {
 	/** Method name. */
@@ -350,14 +379,8 @@ typedef struct sjme_static_classMethod
 	/** The type of return value this returns. */
 	sjme_basicTypeId rValType;
 	
-	/** The maximum number of @c sjme_basicTypeId local/stack variables. */
-	jubyte maxVariables[SJME_NUM_JAVA_TYPE_IDS];
-	
-	/** The index where thrown objects are placed. */
-	jshort thrownVarIndex;
-	
-	/** Method code. */
-	sjme_methodCodeFunction code;
+	/** Method code and any pertaining information. */
+	const sjme_static_classCode* code;
 } sjme_static_classMethod;
 
 typedef struct sjme_static_classMethods

@@ -16,9 +16,11 @@ import cc.squirreljme.c.CFunctionType;
 import cc.squirreljme.c.CFunctionBlock;
 import cc.squirreljme.c.CSourceWriter;
 import cc.squirreljme.c.CStructVariableBlock;
+import cc.squirreljme.c.CVariable;
 import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmFunctions;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmPrimitiveType;
+import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassLinkTable;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
@@ -47,14 +49,14 @@ public final class MethodProcessor
 	/** The method identifier in C. */
 	protected final String methodIdentifier;
 	
+	/** The identifier used for the method code. */
+	protected final CVariable codeInfoVar;
+	
 	/** The method being processed. */
 	protected final Method method;
 	
 	/** The link table for the class. */
 	protected final ClassLinkTable linkTable;
-	
-	/** The variable placement. */
-	private volatile VariablePlacementMap _variablePlacements;
 	
 	/**
 	 * Initializes the method processor.
@@ -81,6 +83,10 @@ public final class MethodProcessor
 		// Determine the identifier used for this class
 		this.methodIdentifier = Utils.symbolMethodName(__glob,
 			__method);
+		
+		// Determine the identifier for the code information
+		this.codeInfoVar = CVariable.of(JvmTypes.STATIC_CLASS_CODE,
+			this.methodIdentifier + "__code");
 		
 		// Build common function
 		this.function = JvmFunctions.METHOD_CODE.function()
@@ -133,20 +139,13 @@ public final class MethodProcessor
 					.number(Constants.JINT_C, method.flags().toJavaBits())
 					.build());
 			
-			// Argument counts, instance methods get this indicated here so
-			// that every method is effectively static
-			int argCount[] = new int[JvmPrimitiveType.NUM_JAVA_TYPES];
-			if (!method.flags().isStatic())
-				argCount[JvmPrimitiveType.OBJECT.ordinal()]++;
-			
-			// Calculate argument counts
-			for (int i = 0, n = type.argumentCount(); i < n; i++)
-				argCount[JvmPrimitiveType.of(type.argument(i))
-					.javaType().ordinal()]++;
-			
-			// Write argument type mapping
-			if (true)
-				throw Debugging.todo();
+			// Write argument type mapping, since many methods in a library
+			// will use the same set of arguments, this is reduced accordingly
+			// by combining and sharing them
+			struct.memberSet("argTypes",
+				CBasicExpression.reference(this.glob.processArgumentTypes(
+					VariablePlacementMap.methodTypes(
+						method.flags().isStatic(), type))));
 			
 			// Return value type
 			FieldDescriptor rVal = type.returnValue();
@@ -154,25 +153,10 @@ public final class MethodProcessor
 				CBasicExpression.number((rVal == null ? -1 :
 					JvmPrimitiveType.of(rVal).javaType().ordinal())));
 			
-			// Max variable counts for each type
-			VariablePlacementMap varPlacement =
-				this._variablePlacements;
-			if (true)
-				throw Debugging.todo();
-			
-			// Thrown variable index
-			if (varPlacement != null)
-				struct.memberSet("thrownVarIndex",
-					CBasicExpression.number(
-						varPlacement.thrownVariableIndex()));
-			
-			// Code for the method?
-			ByteCode code = method.byteCode();
-			if (code != null)
+			// If there is code, refer to it
+			if (this.method.byteCode() != null)
 				struct.memberSet("code",
-					CExpressionBuilder.builder()
-						.identifier(this.function.name)
-						.build());
+					CBasicExpression.reference(this.codeInfoVar));
 		}
 	}
 	
@@ -199,7 +183,29 @@ public final class MethodProcessor
 			processor.process(function);
 		}
 		
-		// Grab some details from it
-		this._variablePlacements = processor.variablePlacements;
+		// Write code information details
+		try (CStructVariableBlock struct = __out.define(
+			CStructVariableBlock.class, this.codeInfoVar))
+		{
+			
+			// Max variable counts for each type
+			VariablePlacementMap varMap = processor.variablePlacements;
+			
+			// Cached limits to share where possible
+			struct.memberSet("limits",
+				CBasicExpression.reference(this.glob.processVariableLimits(
+					varMap.limits())));
+			
+			// The thrown instance variable index location
+			struct.memberSet("thrownVarIndex",
+				CBasicExpression.number(
+					varMap.thrownVariableIndex()));
+				
+			// Code for the method?
+			struct.memberSet("code",
+				CExpressionBuilder.builder()
+					.identifier(this.function.name)
+					.build());
+		}
 	}
 }

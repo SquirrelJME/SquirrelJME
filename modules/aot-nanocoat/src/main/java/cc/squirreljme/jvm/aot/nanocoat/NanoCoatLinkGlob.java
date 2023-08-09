@@ -12,6 +12,7 @@ package cc.squirreljme.jvm.aot.nanocoat;
 import cc.squirreljme.c.CArrayBlock;
 import cc.squirreljme.c.CBasicExpression;
 import cc.squirreljme.c.CBlock;
+import cc.squirreljme.c.CExpression;
 import cc.squirreljme.c.CExpressionBuilder;
 import cc.squirreljme.c.CFile;
 import cc.squirreljme.c.CFileName;
@@ -23,6 +24,7 @@ import cc.squirreljme.c.CVariable;
 import cc.squirreljme.jvm.aot.AOTSettings;
 import cc.squirreljme.jvm.aot.LinkGlob;
 import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
+import cc.squirreljme.jvm.aot.nanocoat.common.JvmPrimitiveType;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
 import cc.squirreljme.jvm.manifest.JavaManifest;
 import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
@@ -443,6 +445,42 @@ public class NanoCoatLinkGlob
 		block.declare(this.libraryInfo.extern());
 		block.declare(this.libraryClasses.extern());
 		block.declare(this.libraryResources.extern());
+	}
+	
+	/**
+	 * Processes the argument types and tries to find a cached set of
+	 * arguments.
+	 *
+	 * @param __types The argument types.
+	 * @return The identifier used to refer to the argument types.
+	 * @throws NullPointerException
+	 * @since 2023/08/09
+	 */
+	public CIdentifier processArgumentTypes(
+		List<JvmPrimitiveType> __types)
+		throws NullPointerException
+	{
+		if (__types == null)
+			throw new NullPointerException("NARG");
+		
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Processes variable limits, sharing them if possible.
+	 *
+	 * @param __limits The limits used.
+	 * @return The identifier for the set of limits.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/09
+	 */
+	public CIdentifier processVariableLimits(VariableLimits __limits)
+		throws NullPointerException
+	{
+		if (__limits == null)
+			throw new NullPointerException("NARG");
+		
+		throw Debugging.todo();
 	}
 	
 	/**

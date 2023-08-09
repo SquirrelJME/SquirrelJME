@@ -84,6 +84,20 @@ public enum JvmTypes
 		}
 	},
 	
+	/** Multiple basic type IDs. */
+	BASIC_TYPE_IDS
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/08/09
+		 */
+		@Override
+		CType __build()
+		{
+			throw Debugging.todo();
+		}
+	},
+	
 	/** Dynamic Linkage. */
 	DYNAMIC_LINKAGE
 	{
@@ -475,6 +489,41 @@ public enum JvmTypes
 		}
 	},
 	
+	/** Code information. */
+	STATIC_CLASS_CODE
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/08/09
+		 */
+		@Override
+		CType __build()
+		{
+			return CStructTypeBuilder.builder(CStructKind.STRUCT,
+					"sjme_static_classCode")
+				.member(JvmTypes.STATIC_CLASS_CODE_LIMITS.type().constType()
+					.pointerType(), "limits")
+				.member(JvmTypes.JSHORT,
+					"thrownVarIndex")
+				.member(JvmFunctions.METHOD_CODE.function(), "code")
+				.build();
+		}
+	},
+	
+	/** Class code limits. */
+	STATIC_CLASS_CODE_LIMITS
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/08/09
+		 */
+		@Override
+		CType __build()
+		{
+			throw Debugging.todo();
+		}
+	},
+	
 	/** Field information. */
 	STATIC_CLASS_FIELD
 	{
@@ -567,17 +616,12 @@ public enum JvmTypes
 				.member(CPrimitiveType.CONST_CHAR_STAR, "name")
 				.member(CPrimitiveType.CONST_CHAR_STAR, "type")
 				.member(JvmTypes.JINT, "flags")
-				.member(JvmTypes.JUBYTE.type()
-						.arrayType(JvmPrimitiveType.NUM_JAVA_TYPES),
-					"argCount")
+				.member(JvmTypes.BASIC_TYPE_IDS.type().constType()
+						.pointerType(), "argTypes")
 				.member(JvmTypes.BASIC_TYPE_ID,
 					"rValType")
-				.member(JvmTypes.JUBYTE.type()
-						.arrayType(JvmPrimitiveType.NUM_JAVA_TYPES),
-					"maxVariables")
-				.member(JvmTypes.JSHORT,
-					"thrownVarIndex")
-				.member(JvmFunctions.METHOD_CODE.function(), "code")
+				.member(JvmTypes.STATIC_CLASS_CODE.type().constType()
+					.pointerType(), "code")
 				.build();
 		}
 	},

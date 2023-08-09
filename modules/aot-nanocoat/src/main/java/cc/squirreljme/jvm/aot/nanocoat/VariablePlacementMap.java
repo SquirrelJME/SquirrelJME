@@ -9,7 +9,9 @@
 
 package cc.squirreljme.jvm.aot.nanocoat;
 
+import cc.squirreljme.jvm.aot.nanocoat.common.JvmPrimitiveType;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.List;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.StackMapTablePairs;
 
@@ -45,8 +47,15 @@ public class VariablePlacementMap
 		int maxTotal = __maxLocals + __maxStack;
 		VariablePlacement[] placements = new VariablePlacement[maxTotal];
 		
-		// The first reference is always the thrown variable, even if the
-		// method throws nothing and has a zero-size stack
+		// If this is a non-static method, then the first argument is always
+		// implicitly an object, which then means that all invocations are
+		// treated as if they were static
+		if (true)
+			throw Debugging.todo();
+		
+		// The first reference after any argument is always the thrown
+		// variable, even if the method throws nothing and has a zero-size
+		// stack
 		if (true)
 			throw Debugging.todo();
 		  
@@ -56,6 +65,12 @@ public class VariablePlacementMap
 			throw Debugging.todo();
 		}
 		
+		// Store mapping
+		throw Debugging.todo();
+	}
+	
+	public VariableLimits limits()
+	{
 		throw Debugging.todo();
 	}
 	
@@ -67,6 +82,25 @@ public class VariablePlacementMap
 	 */
 	public int thrownVariableIndex()
 	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Calculates the type order that the method uses.
+	 *
+	 * @param __isStatic Is this a static method?
+	 * @param __type The method argument type.
+	 * @return The primitive types that make up the method.
+	 * @throws NullPointerException
+	 * @since 2023/08/09
+	 */
+	public static List<JvmPrimitiveType> methodTypes(boolean __isStatic,
+		MethodDescriptor __type)
+		throws NullPointerException
+	{
+		if (__type == null)
+			throw new NullPointerException("NARG");
+		
 		throw Debugging.todo();
 	}
 }
