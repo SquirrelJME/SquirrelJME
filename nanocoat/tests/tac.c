@@ -12,6 +12,7 @@
 #include "sjme/nvm.h"
 #include "sjme/boot.h"
 #include "sjme/payload.h"
+#include "test.h"
 
 int main(int argc, char** argv)
 {

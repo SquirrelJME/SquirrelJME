@@ -13,7 +13,8 @@ add_library(TACTestExecutorCore STATIC
 
 # Make sure we have our headers included accordingly
 target_include_directories(TACTestExecutorCore PUBLIC
-	"${CMAKE_SOURCE_DIR}/include")
+	"${CMAKE_SOURCE_DIR}/include"
+	"${CMAKE_SOURCE_DIR}/tests/include")
 
 # Depend on the core
 target_link_libraries(TACTestExecutorCore PUBLIC
@@ -25,6 +26,14 @@ file(GLOB basicTestSources
 	"test*.cxx")
 list(SORT basicTestSources)
 
+# Setup base files for auto-generated test launching and method linking
+set(outTestProtosH "${CMAKE_CURRENT_BINARY_DIR}/proto.h")
+set(outTestStructH "${CMAKE_CURRENT_BINARY_DIR}/struct.h")
+configure_file("${CMAKE_SOURCE_DIR}/cmake/blank.in.h"
+	"${outTestProtosH}")
+configure_file("${CMAKE_SOURCE_DIR}/cmake/blank.in.h"
+	"${outTestStructH}")
+
 # Initialize executable for basic tests, which contains everything
 add_executable(BasicTest
 	basic.c
@@ -32,7 +41,9 @@ add_executable(BasicTest
 
 # Make sure we have our headers included accordingly
 target_include_directories(BasicTest PUBLIC
-	"${CMAKE_SOURCE_DIR}/include")
+	"${CMAKE_SOURCE_DIR}/include"
+	"${CMAKE_CURRENT_SOURCE_DIR}/include"
+	"${CMAKE_CURRENT_BINARY_DIR}")
 
 # Depend on the core
 target_link_libraries(BasicTest PUBLIC
@@ -70,4 +81,10 @@ foreach(basicTestSource ${basicTestSources})
 		PROPERTY TIMEOUT 180)
 	set_tests_properties("${basicTestLongName}"
 		PROPERTIES TIMEOUT 180)
+
+	# Add prototype and structures for test
+	file(APPEND "${outTestProtosH}"
+		"sjme_testResult ${basicTestName}(sjme_test* test);\n")
+	file(APPEND "${outTestStructH}"
+		"{\"${basicTestName}\", ${basicTestName}},\n")
 endforeach()

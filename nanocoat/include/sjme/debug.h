@@ -69,7 +69,7 @@ void sjme_messageR(sjme_attrInNullable const char* file,
  * @since 2021/10/31 
  */
 #define sjme_message(...) SJME_ONLY_IN_DEBUG( \
-	sjme_messageR(SJME_DEBUG_FILE_LINE_FUNC, __VA_ARGS__)
+	sjme_messageR(SJME_DEBUG_FILE_LINE_FUNC, __VA_ARGS__))
 
 /**
  * Indicates a To-Do and then terminates the program.
