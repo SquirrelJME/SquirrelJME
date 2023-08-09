@@ -12,6 +12,7 @@
 
 sjme_testResult testNvmReturnFromMethod(sjme_test* test)
 {
+	sjme_todo("Implement %s", __func__);
 	return SJME_TEST_RESULT_FAIL;
 }
 

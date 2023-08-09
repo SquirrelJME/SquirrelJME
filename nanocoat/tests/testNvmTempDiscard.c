@@ -12,6 +12,7 @@
 
 sjme_testResult testNvmTempDiscard(sjme_test* test)
 {
+	sjme_todo("Implement %s", __func__);
 	return SJME_TEST_RESULT_FAIL;
 }
 

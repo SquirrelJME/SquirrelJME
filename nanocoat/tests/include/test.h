@@ -17,6 +17,7 @@
 #define SQUIRRELJME_TEST_H
 
 #include "sjme/nvm.h"
+#include "sjme/debug.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -53,6 +54,7 @@ typedef enum sjme_testResult
  */
 typedef struct sjme_test
 {
+	int todo;
 } sjme_test;
 
 /**
