@@ -22,6 +22,7 @@ import cc.squirreljme.jvm.aot.nanocoat.common.JvmFunctions;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmPrimitiveType;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassLinkTable;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassFile;
@@ -94,7 +95,7 @@ public final class MethodProcessor
 			this.methodIdentifier + "__code");
 		
 		// Argument types
-		this.argTypesVar = CVariable.of(JvmTypes.STATIC_CLASS_METHOD_)
+		this.argTypesVar = Debugging.todoObject();
 		
 		// Build common function
 		this.function = JvmFunctions.METHOD_CODE.function()
@@ -215,9 +216,11 @@ public final class MethodProcessor
 		// Determine code fingerprint
 		CVariable duplicateOf = this.duplicateOf;
 		
-		CBasicExpression.reference(this.glob.processArgumentTypes(
+		if (true)
+			throw Debugging.todo();
+		/*CBasicExpression.reference(this.glob.processArgumentTypes(
 							VariablePlacementMap.methodArguments(
-								method.flags().isStatic(), type)))
+								method.flags().isStatic(), type)))*/
 		
 		// Duplicate code, ignore everything following this
 		if (duplicateOf != null)
