@@ -170,11 +170,10 @@ public final class MethodProcessor
 			// Write argument type mapping, since many methods in a library
 			// will use the same set of arguments, this is reduced accordingly
 			// by combining and sharing them
-			if (false)
-				struct.memberSet("argTypes",
-					CBasicExpression.reference(this.glob.processArgumentTypes(
-						VariablePlacementMap.methodTypes(
-							method.flags().isStatic(), type))));
+			struct.memberSet("argTypes",
+				CBasicExpression.reference(this.glob.processArgumentTypes(
+					VariablePlacementMap.methodTypes(
+						method.flags().isStatic(), type))));
 			
 			// Return value type
 			FieldDescriptor rVal = type.returnValue();
