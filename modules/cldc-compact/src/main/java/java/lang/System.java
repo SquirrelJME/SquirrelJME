@@ -119,7 +119,7 @@ public final class System
 				"ZZ1y %s %s", __src, __dest));
 		
 		// If we are copying nothing then we need not even bother with anything
-		// else and we do not have to check the array types as well.
+		// else, and we do not have to check the array types as well.
 		if (__copyLen == 0)
 			return;
 		

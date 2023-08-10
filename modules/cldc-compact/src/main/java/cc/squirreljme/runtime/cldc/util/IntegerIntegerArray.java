@@ -9,6 +9,8 @@
 
 package cc.squirreljme.runtime.cldc.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * Wraps an integer array for access.
  *
@@ -61,6 +63,39 @@ public final class IntegerIntegerArray
 		this.array = __a;
 		this.offset = __o;
 		this.length = __l;
+	}
+	
+	/**
+	 * Equivalent to {@link System#arraycopy(Object, int, Object, int, int)}
+	 * for faster copy speed.
+	 *
+	 * @param __srcOff The source offset of this array.
+	 * @param __dest The destination array.
+	 * @param __destOff The destination offset.
+	 * @param __len The number of values to copy.
+	 * @throws IndexOutOfBoundsException If the offsets are out of bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/09
+	 */
+	public void copyFrom(int __srcOff,
+		int[] __dest, int __destOff, int __len)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		if (__dest == null)
+			throw new NullPointerException("NARG");
+		
+		// Check to make sure offsets are valid
+		int srcLen = this.length;
+		int destLen = __dest.length;
+		if (__srcOff < 0 || (__srcOff + __len) < 0 ||
+				(__srcOff + __len) > srcLen ||
+			__destOff < 0 || (__destOff + __len) < 0 ||
+				(__destOff + __len) > destLen)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Forward to system copy method
+		System.arraycopy(this.array, this.offset + __srcOff,
+			__dest, __destOff, __len);
 	}
 	
 	/**
