@@ -33,9 +33,17 @@ which outputs to tables and C source code.
    * `tyfi/` -- Field type information.
    * `tyme/` -- Method type information.
    * `valn/` -- Locals/Stack variable limit tables.
- * `lib/` -- Library code. 
-   * `$MODULE_NAME/` -- The name of the library module, for example this
-     will be _cldc-compact_ or _cldc-compact-test_.
+ * `lib/` -- Library code root.
+   * `$CLUTTER_LEVEL/` -- The clutter level of the library.
+     * `$SOURCE_SET/` -- The source set for the library, will be one of
+       _main_, _test_, or _testFixtures_. 
+       * `$MODULE_NAME/` -- The name of the library module, for example this
+         will be _cldc-compact_.
+         * `classes/` -- Classes within the library
+           * `$CLASS.c` -- Individual class information files, these do not
+             contain any code but instead link to shared fragments.
+         * `$MODULE_NAME.c` -- Module library information file.
+         * `CMakeLists.txt` -- CMake Build file for the library.
 
 ## ROMs
 
@@ -43,5 +51,9 @@ ROMs are a collection of libraries, which their file structure layout
 is the same as libraries however they have been flattened from multiple
 libraries into a single set of files.
 
- * `rom/` -- ROM code.
+ * `rom/` -- ROM code root.
    * `$CLUTTER_LEVEL/` -- The name of the ROM, which is the clutter level. 
+     * `$SOURCE_SET/` -- The ROM source set, will be one of _main_, _test_,
+       or _testFixtures_. 
+       * `$SOURCE_SET.c` -- ROM information source.
+       * `CMakeLists.txt` -- CMake Build file for the ROM. 
