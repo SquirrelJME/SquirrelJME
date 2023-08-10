@@ -13,7 +13,11 @@ import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.util.IntegerArray;
+import cc.squirreljme.runtime.cldc.util.IntegerIntegerArray;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * This method contains the code which is able to initialize multi-dimensional
@@ -361,6 +365,110 @@ public final class ArrayUtils
 		
 		/* {@squirreljme.error ZZ0d Invalid array type. (The type)} */
 		throw new IllegalArgumentException("ZZ0d " + __a.getClass().getName());
+	}
+	
+	/**
+	 * Flattens all the specified arrays into a new array. 
+	 *
+	 * @param __arrays The arrays to flatten.
+	 * @return The flattened arrays.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/09
+	 */
+	public static int[] flatten(int[]... __arrays)
+		throws NullPointerException
+	{
+		if (__arrays == null)
+			throw new NullPointerException("NARG");
+		
+		// Simpler operations?
+		int n = __arrays.length;
+		if (n == 0)
+			return null;
+		else if (n == 1)
+			return __arrays[0].clone();
+		
+		// Wrap all the arrays accordingly
+		List<IntegerArray> wrapped = new ArrayList<>(n);
+		for (int i = 0; i < n; i++)
+			wrapped.set(i, new IntegerIntegerArray(__arrays[i]));
+		
+		return ArrayUtils.flatten(wrapped);
+	}
+	
+	/**
+	 * Flattens all the specified arrays into a new array. 
+	 *
+	 * @param __arrays The arrays to flatten.
+	 * @return The flattened arrays.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/09
+	 */
+	public static int[] flatten(IntegerArray... __arrays)
+		throws NullPointerException
+	{
+		if (__arrays == null)
+			throw new NullPointerException("NARG");
+		
+		return ArrayUtils.flatten(Arrays.asList(__arrays));
+	}
+	
+	/**
+	 * Flattens all the specified arrays into a new array. 
+	 *
+	 * @param __arrays The arrays to flatten.
+	 * @return The flattened arrays.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/09
+	 */
+	public static int[] flatten(List<IntegerArray> __arrays)
+		throws NullPointerException
+	{
+		if (__arrays == null)
+			throw new NullPointerException("NARG");
+	
+		// Determine the total size of the arrays
+		int total = 0;
+		int lastTotal;
+		for (IntegerArray array : __arrays)
+		{
+			lastTotal = total;
+			total += array.size();
+			
+			// Hopefully does not occur
+			if (total < 0 || total < lastTotal)
+				throw new IllegalStateException("OOPS");
+		}
+		
+		// Create a giant array as the result, then copy into each one
+		int[] result = new int[total];
+		for (int i = 0, n = __arrays.size(), off = 0; i < n; i++)
+		{
+			// Get source array to copy from
+			IntegerArray source = __arrays.get(i);
+			int sourceLen = source.size();
+			
+			// Is there a faster more direct copy?
+			if (source instanceof IntegerIntegerArray)
+			{
+				// Use direct copy
+				((IntegerIntegerArray)source).copyFrom(0,
+					result, off, sourceLen);
+			
+				// Move output up in a single chunk
+				off += sourceLen;
+			}
+				
+			// Otherwise, slow copy
+			else
+			{
+				for (int j = 0; j < sourceLen; j++)
+					result[off++] = source.get(j);
+			}
+		}
+		
+		// Return resultant array
+		return result;
 	}
 	
 	/**
