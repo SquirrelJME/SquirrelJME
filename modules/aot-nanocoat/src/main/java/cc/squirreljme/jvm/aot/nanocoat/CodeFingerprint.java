@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.aot.nanocoat;
 
+import cc.squirreljme.jvm.aot.nanocoat.common.JvmPrimitiveType;
 import cc.squirreljme.runtime.cldc.lang.ArrayUtils;
 import cc.squirreljme.runtime.cldc.util.IntegerIntegerArray;
 import cc.squirreljme.runtime.cldc.util.IntegerList;
@@ -20,7 +21,11 @@ import java.util.Set;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
+import net.multiphasicapps.classfile.JavaStackShuffleType;
+import net.multiphasicapps.classfile.JavaType;
 import net.multiphasicapps.classfile.Pool;
+import net.multiphasicapps.classfile.StackMapTablePairs;
+import net.multiphasicapps.classfile.StackMapTableState;
 
 /**
  * Represents the fingerprint of a method to determine whether two methods
@@ -66,6 +71,7 @@ public final class CodeFingerprint
 		
 		// And the constant pool
 		Pool pool = __code.pool();
+		StackMapTablePairs stackMapPairs = __code.stackMapTableFull();
 		
 		// Process each tag within the pool to determine if we care about it
 		int[] poolTags = pool.tags();
@@ -136,6 +142,38 @@ public final class CodeFingerprint
 			// using rawArgs
 			switch (opCode)
 			{
+					// For stack shuffle operations, because of the nature
+					// of long/double and such, along with references, and
+					// also as well types being in their own operand stack,
+					// we need to record the fingerprint for these
+				case InstructionIndex.POP:
+				case InstructionIndex.POP2:
+				case InstructionIndex.DUP:
+				case InstructionIndex.DUP_X1:
+				case InstructionIndex.DUP_X2:
+				case InstructionIndex.DUP2:
+				case InstructionIndex.DUP2_X1:
+				case InstructionIndex.DUP2_X2:
+				case InstructionIndex.SWAP:
+					{
+						// Need to find the details of the input and such
+						StackMapTableState input = stackMapPairs.get(
+							instruction.address()).input;
+						JavaStackShuffleType shuffle =
+							JavaStackShuffleType.ofOperation(opCode);
+						JavaStackShuffleType.Function function =
+							shuffle.findShuffleFunction(input);
+						
+						// Map to Java types on the given stack
+						JavaType[] types = function.in.javaTypes(input);
+						int n = types.length;
+						rawArgs = new int[n];
+						for (int i = 0; i < n; i++)
+							rawArgs[i] = JvmPrimitiveType.of(types[i])
+								.ordinal();
+					}
+					break;
+					
 				case InstructionIndex.ANEWARRAY:
 				case InstructionIndex.CHECKCAST:
 				case InstructionIndex.GETFIELD:

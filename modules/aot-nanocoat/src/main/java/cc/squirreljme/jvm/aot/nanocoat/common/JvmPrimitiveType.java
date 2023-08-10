@@ -463,4 +463,36 @@ public enum JvmPrimitiveType
 		
 		throw new IllegalArgumentException("IARG " + __primitiveType);
 	}
+	
+	/**
+	 * Maps the Class file Java Type to the primitive type used by NanoCoat
+	 *
+	 * @param __type The type to map.
+	 * @return The resultant primitive type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/10
+	 */
+	public static JvmPrimitiveType of(JavaType __type)
+		throws NullPointerException
+	{
+		if (__type == null)
+			throw new NullPointerException("NARG");
+		
+		/* {@squirreljme.error NC02 Cannot map nothing or top type.}. */ 
+		if (__type.isNothing() || __type.isTop())
+			throw new IllegalArgumentException("NC02");
+		
+		// Basic types
+		if (JavaType.INTEGER.equals(__type))
+			return JvmPrimitiveType.INTEGER;
+		else if (JavaType.LONG.equals(__type))
+			return JvmPrimitiveType.LONG;
+		else if (JavaType.FLOAT.equals(__type))
+			return JvmPrimitiveType.FLOAT;
+		else if (JavaType.DOUBLE.equals(__type))
+			return JvmPrimitiveType.DOUBLE;
+		
+		// Assume object otherwise
+		return JvmPrimitiveType.OBJECT;
+	}
 }

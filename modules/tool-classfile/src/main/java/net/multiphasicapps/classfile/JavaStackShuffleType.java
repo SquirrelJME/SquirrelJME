@@ -441,6 +441,32 @@ public enum JavaStackShuffleType
 		}
 		
 		/**
+		 * Mpas the slots for the given stack map. 
+		 *
+		 * @param __stackMap The stack map to use.
+		 * @return The mapped Java types.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2023/08/10
+		 */
+		public JavaType[] javaTypes(StackMapTableState __stackMap)
+			throws NullPointerException
+		{
+			if (__stackMap == null)
+				throw new NullPointerException("NARG");
+			
+			// The result is always the logical maximum
+			int logicalMax = this.logicalMax;
+			JavaType[] result = new JavaType[logicalMax];
+			
+			// Fill in slots accordingly
+			for (int i = 0; i < logicalMax; i++)
+				result[(logicalMax - 1) - i] =
+					__stackMap.getStackFromLogicalTop(i).type;
+			
+			return result;
+		}
+		
+		/**
 		 * Returns the logical slot for the index.
 		 * 
 		 * @param __dx The index.

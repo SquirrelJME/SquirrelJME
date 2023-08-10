@@ -60,6 +60,9 @@ public final class MethodProcessor
 	/** Possibly a duplicate. */
 	protected final CVariable duplicateOf;
 	
+	/** Argument types variable. */
+	protected final CVariable argTypesVar;
+	
 	/**
 	 * Initializes the method processor.
 	 *
@@ -89,6 +92,9 @@ public final class MethodProcessor
 		// Determine the identifier for the code information
 		this.codeInfoVar = CVariable.of(JvmTypes.STATIC_CLASS_CODE,
 			this.methodIdentifier + "__code");
+		
+		// Argument types
+		this.argTypesVar = CVariable.of(JvmTypes.STATIC_CLASS_METHOD_)
 		
 		// Build common function
 		this.function = JvmFunctions.METHOD_CODE.function()
@@ -172,7 +178,7 @@ public final class MethodProcessor
 			// by combining and sharing them
 			struct.memberSet("argTypes",
 				CBasicExpression.reference(this.glob.processArgumentTypes(
-					VariablePlacementMap.methodTypes(
+					VariablePlacementMap.methodArguments(
 						method.flags().isStatic(), type))));
 			
 			// Return value type
@@ -209,7 +215,11 @@ public final class MethodProcessor
 		// Determine code fingerprint
 		CVariable duplicateOf = this.duplicateOf;
 		
-		// Duplicate code
+		CBasicExpression.reference(this.glob.processArgumentTypes(
+							VariablePlacementMap.methodArguments(
+								method.flags().isStatic(), type)))
+		
+		// Duplicate code, ignore everything following this
 		if (duplicateOf != null)
 			return;
 		
@@ -228,18 +238,15 @@ public final class MethodProcessor
 			// Max variable counts for each type
 			VariablePlacementMap varMap = processor.variablePlacements;
 			
-			if (false)
-			{
-				// Cached limits to share where possible
-				struct.memberSet("limits",
-					CBasicExpression.reference(glob.processVariableLimits(
-						varMap.limits())));
-				
-				// The thrown instance variable index location
-				struct.memberSet("thrownVarIndex",
-					CBasicExpression.number(
-						varMap.thrownVariableIndex()));
-			}
+			// Cached limits to share where possible
+			struct.memberSet("limits",
+				CBasicExpression.reference(glob.processVariableLimits(
+					varMap.limits())));
+			
+			// The thrown instance variable index location
+			struct.memberSet("thrownVarIndex",
+				CBasicExpression.number(
+					varMap.thrownVariableIndex()));
 				
 			// Code for the method?
 			struct.memberSet("code",

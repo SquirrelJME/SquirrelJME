@@ -293,13 +293,30 @@ typedef struct sjme_static_constValue
 	const char* jclass;
 } sjme_static_constValue;
 
+/**
+ * Represents a field type.
+ * 
+ * @since 2023/08/10
+ */
+typedef struct sjme_static_fieldType
+{
+	/** The hash code for the field type. */
+	jint hashCode;
+	
+	/** The field descriptor. */
+	const char* descriptor;
+} sjme_static_fieldType;
+
 typedef struct sjme_static_classField
 {
 	/** Field name. */
 	const char* name;
 	
-	/** Field type. */
-	const char* type;
+	/** The field type. */
+	const sjme_static_fieldType* type;
+	
+	/** The basic field type. */
+	sjme_basicTypeId basicType;
 	
 	/** Flags. */
 	jint flags;
@@ -362,22 +379,60 @@ typedef struct sjme_static_classCode
 	sjme_methodCodeFunction code;
 } sjme_static_classCode;
 
+/**
+ * Represents a standard Java method type, using field descriptors.
+ * 
+ * @since 2023/08/10
+ */
+typedef struct sjme_static_methodType
+{
+	/** The hash code for the method type. */
+	jint hashCode;
+	
+	/** The return type. */
+	const sjme_static_fieldType* returnType;
+	
+	/** The number of arguments. */
+	jint argCount;
+	
+	/** The arguments to the method. */
+	const sjme_static_fieldType* argTypes[0];
+} sjme_static_methodType;
+
+/**
+ * Represents basic method types, which is used by the code execution system
+ * to determine how a method is called.
+ * 
+ * @since 2023/08/10
+ */
+typedef struct sjme_static_methodBasicType
+{
+	/** The hash code for the basic method type. */
+	jint hashCode;
+	
+	/** The return type of the method. */
+	sjme_basicTypeId returnType;
+	
+	/** The number of arguments. */
+	jint argCount;
+	
+	/** The arguments to the method. */
+	sjme_basicTypeId argTypes[0];
+} sjme_static_methodBasicType;
+
 typedef struct sjme_static_classMethod
 {
 	/** Method name. */
 	const char* name;
 	
-	/** Method type. */
-	const char* type;
-	
 	/** Flags. */
 	jint flags;
 	
-	/** The argument type mapping table this method uses. */
-	const sjme_basicTypeIds* argTypes;
+	/** Name typed. */
+	const sjme_static_methodType* type;
 	
-	/** The type of return value this returns. */
-	sjme_basicTypeId rValType;
+	/** Basic method type. */
+	const sjme_static_methodBasicType* basicType;
 	
 	/** Method code and any pertaining information. */
 	const sjme_static_classCode* code;

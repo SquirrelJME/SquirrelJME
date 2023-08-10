@@ -11,9 +11,12 @@ package cc.squirreljme.jvm.aot.nanocoat;
 
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmPrimitiveType;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.ArrayList;
 import java.util.List;
+import net.multiphasicapps.classfile.FieldDescriptor;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.StackMapTablePairs;
+import net.multiphasicapps.collections.UnmodifiableList;
 
 /**
  * This maps multiple {@link VariablePlacement} for each instruction address
@@ -94,13 +97,24 @@ public class VariablePlacementMap
 	 * @throws NullPointerException
 	 * @since 2023/08/09
 	 */
-	public static List<JvmPrimitiveType> methodTypes(boolean __isStatic,
+	public static List<JvmPrimitiveType> methodArguments(boolean __isStatic,
 		MethodDescriptor __type)
 		throws NullPointerException
 	{
 		if (__type == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		List<JvmPrimitiveType> result = new ArrayList<>(
+			(__isStatic ? 1 : 0) + __type.argumentCount());
+		
+		// Non-static includes this
+		if (!__isStatic)
+			result.add(JvmPrimitiveType.OBJECT);
+		
+		// Process arguments
+		for (FieldDescriptor arg : __type.arguments())
+			result.add(JvmPrimitiveType.of(arg));
+		
+		return UnmodifiableList.of(result);
 	}
 }

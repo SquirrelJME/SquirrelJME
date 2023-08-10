@@ -496,7 +496,7 @@ public class NanoCoatLinkGlob
 	 *
 	 * @param __types The argument types.
 	 * @return The identifier used to refer to the argument types.
-	 * @throws NullPointerException
+	 * @throws NullPointerException On null arguments.
 	 * @since 2023/08/09
 	 */
 	public CIdentifier processArgumentTypes(
