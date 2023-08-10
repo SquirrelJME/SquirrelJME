@@ -11,9 +11,12 @@ package cc.squirreljme.jvm.aot.nanocoat;
 
 import cc.squirreljme.runtime.cldc.lang.ArrayUtils;
 import cc.squirreljme.runtime.cldc.util.IntegerIntegerArray;
+import cc.squirreljme.runtime.cldc.util.IntegerList;
+import cc.squirreljme.runtime.cldc.util.SortedTreeSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
@@ -98,23 +101,16 @@ public final class CodeFingerprint
 				poolTags[i] = tag;
 		}
 		
-		// We could have a bunch of trailing tags we do not care about, so
-		// to handle this we just trim them off the end because they will
-		// never get used by the processor and as such will never be valid
-		while (poolSize > 0 && poolTags[poolSize - 1] == 0)
-			poolSize--;
-			
-		// Need to resize?
-		if (poolTags.length != poolSize)
-			poolTags = Arrays.copyOf(poolTags, poolSize);
-		
-		// Store to the fingerprint
-		fingerprint.add(poolTags);
-		
 		// Setup opcodes and store to the fingerprint
 		int logicalLen = __code.instructionCount();
 		int[] opCodes = new int[logicalLen];
 		fingerprint.add(opCodes);
+		
+		// Which pool entries are actually used?
+		Set<Integer> usedPool = new SortedTreeSet<>();
+		
+		// Forgetting raw arguments
+		int[] forgetRawArgs = new int[0];
 		
 		// Now we go through the logical normalized code indexes, we use the
 		// normalized instructions so that similar instructions such as
@@ -135,8 +131,47 @@ public final class CodeFingerprint
 			
 			// The fingerprinting only cares about logical instructions, so
 			// map raw arguments for jumps accordingly...
+			// Additionally, for any instructions which utilize pool entries,
+			// set up a list of the ones that are actually used instead of
+			// using rawArgs
 			switch (opCode)
 			{
+				case InstructionIndex.ANEWARRAY:
+				case InstructionIndex.CHECKCAST:
+				case InstructionIndex.GETFIELD:
+				case InstructionIndex.GETSTATIC:
+				case InstructionIndex.INSTANCEOF:
+				case InstructionIndex.INVOKEINTERFACE:
+				case InstructionIndex.INVOKESPECIAL:
+				case InstructionIndex.INVOKESTATIC:
+				case InstructionIndex.INVOKEVIRTUAL:
+				case InstructionIndex.LDC2_W:
+				case InstructionIndex.LDC:
+				case InstructionIndex.LDC_W:
+				case InstructionIndex.NEW:
+				case InstructionIndex.PUTFIELD:
+				case InstructionIndex.PUTSTATIC:
+					// We can use the raw arguments here directly because they
+					// do match with the pool
+					for (int rawArg : rawArgs)
+						usedPool.add(rawArg);
+					
+					// Forget raw arguments because they have no effect here,
+					// and we only care about pool entries
+					rawArgs = forgetRawArgs;
+					break;
+					
+					// This is the only one that is special
+				case InstructionIndex.MULTIANEWARRAY:
+					// Before we forget the argument, store it into the used
+					// entries
+					usedPool.add(rawArgs[0]);
+					
+					// Clear first argument, because that is the pool index and
+					// we do not exactly need that right now
+					rawArgs[0] = 0;
+					break;
+					
 				case InstructionIndex.GOTO_W:
 					rawArgs[0] = __code.addressToIndex(rawArgs[0]);
 					break;
@@ -167,6 +202,22 @@ public final class CodeFingerprint
 			// Store to the fingerprint
 			fingerprint.add(rawArgs);
 		}
+		
+		// Determine the number of pool entries we will be keeping
+		int keepPool = usedPool.size();
+		
+		// Setup base pool tag list
+		int[] useTags = new int[keepPool + 1];
+		useTags[0] = useTags.length;
+		
+		// Copy in the tag set
+		int[] usedPoolInt = new IntegerList(usedPool).toIntegerArray();
+		for (int i = 0, n = keepPool; i < n; i++)
+			useTags[1 + i] = usedPoolInt[i];
+		
+		// Store to the fingerprint, always first because this one is very
+		// important as a baseline setup
+		fingerprint.add(0, usedPoolInt);
 		
 		// The fingerprint is the combined integer array with everything
 		// in it, and as such becomes its signature

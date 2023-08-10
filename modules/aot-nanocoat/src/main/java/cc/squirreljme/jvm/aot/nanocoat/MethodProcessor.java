@@ -57,8 +57,8 @@ public final class MethodProcessor
 	/** The link table for the class. */
 	protected final ClassLinkTable linkTable;
 	
-	/** Possibly duplicate. */
-	private volatile CVariable _duplicateOf;
+	/** Possibly a duplicate. */
+	protected final CVariable duplicateOf;
 	
 	/**
 	 * Initializes the method processor.
@@ -93,6 +93,17 @@ public final class MethodProcessor
 		// Build common function
 		this.function = JvmFunctions.METHOD_CODE.function()
 			.rename(this.methodIdentifier);
+		
+		// Determine code fingerprint
+		if (__method.byteCode() == null)
+			this.duplicateOf = null;
+		else
+		{
+			CodeFingerprint fingerprint = new CodeFingerprint(
+				__method.byteCode());
+			this.duplicateOf = __glob.checkCodeFingerprint(fingerprint,
+				this.codeInfoVar);
+		}
 	}
 	
 	/**
@@ -104,8 +115,21 @@ public final class MethodProcessor
 	public void processHeader(CSourceWriter __out)
 		throws IOException
 	{
-		// Write out the prototype
-		__out.declare(this.function);
+		// Write out the prototype, if not a duplicate
+		if (this.duplicateOf == null)
+			__out.declare(this.function);
+		
+		// Otherwise, write the code info this is duplicated by
+		else
+		{
+			// Only once!
+			if (this.glob._headerDups.contains(this.duplicateOf.name))
+				return;
+			this.glob._headerDups.add(this.duplicateOf.name);
+			
+			// Declare as extern so we can pull it in
+			__out.declare(this.duplicateOf.extern());
+		}
 	}
 	
 	/**
@@ -138,16 +162,19 @@ public final class MethodProcessor
 					.build());
 			struct.memberSet("flags",
 				CExpressionBuilder.builder()
-					.number(Constants.JINT_C, method.flags().toJavaBits())
+					.number(Constants.JINT_C,
+						method.flags().toJavaBits() |
+							(this.duplicateOf == null ? 0 : 0x8000_0000))
 					.build());
 			
 			// Write argument type mapping, since many methods in a library
 			// will use the same set of arguments, this is reduced accordingly
 			// by combining and sharing them
-			struct.memberSet("argTypes",
-				CBasicExpression.reference(this.glob.processArgumentTypes(
-					VariablePlacementMap.methodTypes(
-						method.flags().isStatic(), type))));
+			if (false)
+				struct.memberSet("argTypes",
+					CBasicExpression.reference(this.glob.processArgumentTypes(
+						VariablePlacementMap.methodTypes(
+							method.flags().isStatic(), type))));
 			
 			// Return value type
 			FieldDescriptor rVal = type.returnValue();
@@ -158,8 +185,8 @@ public final class MethodProcessor
 			// If there is code, refer to it
 			if (this.method.byteCode() != null)
 				struct.memberSet("code",
-					CBasicExpression.reference((this._duplicateOf == null ?
-						this.codeInfoVar : this._duplicateOf)));
+					CBasicExpression.reference((this.duplicateOf == null ?
+						this.codeInfoVar : this.duplicateOf)));
 		}
 	}
 	
@@ -181,13 +208,10 @@ public final class MethodProcessor
 			return;
 		
 		// Determine code fingerprint
-		CodeFingerprint fingerprint = new CodeFingerprint(code);
-		CVariable realCodeInfo = glob.checkCodeFingerprint(fingerprint,
-			this.codeInfoVar);
-		this._duplicateOf = realCodeInfo;
+		CVariable duplicateOf = this.duplicateOf;
 		
 		// Duplicate code
-		if (realCodeInfo != null)
+		if (duplicateOf != null)
 			return;
 		
 		// Write function code
@@ -205,15 +229,18 @@ public final class MethodProcessor
 			// Max variable counts for each type
 			VariablePlacementMap varMap = processor.variablePlacements;
 			
-			// Cached limits to share where possible
-			struct.memberSet("limits",
-				CBasicExpression.reference(glob.processVariableLimits(
-					varMap.limits())));
-			
-			// The thrown instance variable index location
-			struct.memberSet("thrownVarIndex",
-				CBasicExpression.number(
-					varMap.thrownVariableIndex()));
+			if (false)
+			{
+				// Cached limits to share where possible
+				struct.memberSet("limits",
+					CBasicExpression.reference(glob.processVariableLimits(
+						varMap.limits())));
+				
+				// The thrown instance variable index location
+				struct.memberSet("thrownVarIndex",
+					CBasicExpression.number(
+						varMap.thrownVariableIndex()));
+			}
 				
 			// Code for the method?
 			struct.memberSet("code",

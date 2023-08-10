@@ -255,7 +255,8 @@ public class CPointerType
 				at = ((CModifiedType)at).type;
 				
 				// Debug
-				Debugging.debugNote("at (modified): %s", at);
+				if (false)
+					Debugging.debugNote("at (modified): %s", at);
 			}
 			else if (at instanceof CPointerType)
 			{
@@ -263,7 +264,8 @@ public class CPointerType
 				at = ((CPointerType)at).pointedType;
 				
 				// Debug
-				Debugging.debugNote("at (pointer): %s", at);
+				if (false)
+					Debugging.debugNote("at (pointer): %s", at);
 			}
 			else if (at instanceof CArrayType)
 			{
@@ -271,7 +273,8 @@ public class CPointerType
 				at = ((CArrayType)at).elementType;
 				
 				// Debug
-				Debugging.debugNote("at (array): %s", at);
+				if (false)
+					Debugging.debugNote("at (array): %s", at);
 			}
 			
 			// Is function pointer?

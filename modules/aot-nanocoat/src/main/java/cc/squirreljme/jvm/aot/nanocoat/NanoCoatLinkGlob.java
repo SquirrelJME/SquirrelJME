@@ -35,6 +35,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -106,6 +107,10 @@ public class NanoCoatLinkGlob
 	/** Fingerprints for method code, to remove duplicates. */
 	private final Map<CodeFingerprint, CVariable> _fingerprints =
 		new LinkedHashMap<>();
+	
+	/** Header duplicates. */
+	final Set<CIdentifier> _headerDups =
+		new HashSet<>();
 	
 	/** The C header block. */
 	volatile CBlock _headerBlock;
@@ -201,6 +206,7 @@ public class NanoCoatLinkGlob
 		{
 			Debugging.debugNote("Duplicate method %s = %s",
 				__codeInfo, existing);
+			return existing;
 		}
 		
 		// Register it and just return the input, null flags original method

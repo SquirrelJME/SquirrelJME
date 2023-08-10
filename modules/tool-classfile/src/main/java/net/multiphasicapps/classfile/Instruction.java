@@ -905,7 +905,7 @@ public final class Instruction
 							-1 + (op - InstructionIndex.ICONST_M1))
 					};
 					normalizeRaw = new int[]{
-						-logAddr
+						Instruction.__specialRaw(Pool.TAG_INTEGER, logAddr)
 					};
 					break;
 					
@@ -917,7 +917,7 @@ public final class Instruction
 						new ConstantValueInteger((Integer)normalizeArgs[0])
 					};
 					normalizeRaw = new int[]{
-						-logAddr
+						Instruction.__specialRaw(Pool.TAG_INTEGER, logAddr)
 					};
 					break;
 					
@@ -930,7 +930,7 @@ public final class Instruction
 							(op - InstructionIndex.LCONST_0))
 					};
 					normalizeRaw = new int[]{
-						-logAddr
+						Instruction.__specialRaw(Pool.TAG_LONG, logAddr)
 					};
 					break;
 					
@@ -944,7 +944,7 @@ public final class Instruction
 							(op - InstructionIndex.FCONST_0))
 					};
 					normalizeRaw = new int[]{
-						-logAddr
+						Instruction.__specialRaw(Pool.TAG_FLOAT, logAddr)
 					};
 					break;
 					
@@ -957,7 +957,7 @@ public final class Instruction
 							(op - InstructionIndex.DCONST_0))
 					};
 					normalizeRaw = new int[]{
-						-logAddr
+						Instruction.__specialRaw(Pool.TAG_DOUBLE, logAddr)
 					};
 					break;
 					
@@ -1315,6 +1315,19 @@ public final class Instruction
 				String.format("JC3a %d %d", __o, __a.length));
 		
 		return ((__a[__o] & 0xFF) << 8) | (__a[__o + 1] & 0xFF);
+	}
+	
+	/**
+	 * Returns a special raw tag.
+	 *
+	 * @param __tag The tag to use.
+	 * @param __logAddr The logical address.
+	 * @return The special tag.
+	 * @since 2023/08/09
+	 */
+	private static int __specialRaw(int __tag, int __logAddr)
+	{
+		return 0x8000_0000 | ((__tag & 0xF) << 23) | __logAddr;
 	}
 }
 
