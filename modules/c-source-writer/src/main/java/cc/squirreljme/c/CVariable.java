@@ -200,6 +200,16 @@ public class CVariable
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2023/08/09
+	 */
+	@Override
+	public String toString()
+	{
+		return this.tokens().toString();
+	}
+	
+	/**
 	 * Returns the type used.
 	 * 
 	 * @return The type.

@@ -22,7 +22,6 @@ import cc.squirreljme.jvm.aot.nanocoat.common.JvmFunctions;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmPrimitiveType;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassLinkTable;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassFile;
@@ -57,6 +56,9 @@ public final class MethodProcessor
 	
 	/** The link table for the class. */
 	protected final ClassLinkTable linkTable;
+	
+	/** Possibly duplicate. */
+	private volatile CVariable _duplicateOf;
 	
 	/**
 	 * Initializes the method processor.
@@ -156,7 +158,8 @@ public final class MethodProcessor
 			// If there is code, refer to it
 			if (this.method.byteCode() != null)
 				struct.memberSet("code",
-					CBasicExpression.reference(this.codeInfoVar));
+					CBasicExpression.reference((this._duplicateOf == null ?
+						this.codeInfoVar : this._duplicateOf)));
 		}
 	}
 	
@@ -179,7 +182,13 @@ public final class MethodProcessor
 		
 		// Determine code fingerprint
 		CodeFingerprint fingerprint = new CodeFingerprint(code);
-		glob.checkCodeFingerprint(fingerprint, this.function);
+		CVariable realCodeInfo = glob.checkCodeFingerprint(fingerprint,
+			this.codeInfoVar);
+		this._duplicateOf = realCodeInfo;
+		
+		// Duplicate code
+		if (realCodeInfo != null)
+			return;
 		
 		// Write function code
 		ByteCodeProcessor processor = new ByteCodeProcessor(

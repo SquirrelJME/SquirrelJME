@@ -123,9 +123,9 @@ public class ByteCodeProcessor
 		this.linkTable = __method.linkTable;
 		this.stackMap = __code.stackMapTableFull();
 		this.isStatic = __method.method.flags().isStatic();
-		this.variablePlacements = new VariablePlacementMap(
+		this.variablePlacements = null;/*new VariablePlacementMap(
 			!__code.isInstance(), __code.type(), __code.maxLocals(),
-			__code.maxStack(), this.stackMap);
+			__code.maxStack(), this.stackMap);*/
 		
 		// Reverse jump targets for instructions
 		Map<Integer, InstructionJumpTargets> reverseJumpsTable =

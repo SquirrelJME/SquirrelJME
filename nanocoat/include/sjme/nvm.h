@@ -183,7 +183,7 @@ typedef struct sjme_basicTypeIds
 	jint count;
 	
 	/** The IDs. */
-	sjme_basicTypeId ids[];
+	const sjme_basicTypeId ids[];
 } sjme_basicTypeIds;
 
 /**
@@ -341,7 +341,7 @@ typedef jboolean (*sjme_methodCodeFunction)(
 typedef struct sjme_static_classCodeLimits
 {
 	/** The maximum number of @c sjme_basicTypeId local/stack variables. */
-	jubyte maxVariables[SJME_NUM_JAVA_TYPE_IDS];
+	const jubyte maxVariables[SJME_NUM_JAVA_TYPE_IDS];
 } sjme_static_classCodeLimits;
 
 /**

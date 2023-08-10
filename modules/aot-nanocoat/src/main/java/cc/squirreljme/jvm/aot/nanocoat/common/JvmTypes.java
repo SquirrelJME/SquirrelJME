@@ -94,7 +94,12 @@ public enum JvmTypes
 		@Override
 		CType __build()
 		{
-			throw Debugging.todo();
+			return CStructTypeBuilder.builder(CStructKind.STRUCT,
+					"sjme_basicTypeIds")
+				.member(JvmTypes.JINT, "count")
+				.member(JvmTypes.BASIC_TYPE_ID.type().constType()
+					.arrayType(0), "ids")
+				.build();
 		}
 	},
 	
@@ -520,7 +525,12 @@ public enum JvmTypes
 		@Override
 		CType __build()
 		{
-			throw Debugging.todo();
+			return CStructTypeBuilder.builder(CStructKind.STRUCT,
+				"sjme_static_classCodeLimits")
+				.member(JvmTypes.JUBYTE.type().constType()
+					.arrayType(JvmPrimitiveType.NUM_JAVA_TYPES),
+					"maxVariables")
+				.build();
 		}
 	},
 	

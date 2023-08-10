@@ -240,7 +240,8 @@ public class CPointerType
 		for (CType at = __start;;)
 		{
 			// Debug
-			Debugging.debugNote("at: %s", at);
+			if (false)
+				Debugging.debugNote("at: %s", at);
 			
 			// Add type to all of them, only if the type was not modified
 			if (!lastModified)
@@ -294,7 +295,8 @@ public class CPointerType
 		}
 		
 		// Debug
-		Debugging.debugNote("All: %s", allTypes);
+		if (false)
+			Debugging.debugNote("All: %s", allTypes);
 		
 		// Return type, if a function? Also need to handle ending arrays
 		List<CArrayType> endArrays = new ArrayList<>();
@@ -392,7 +394,8 @@ public class CPointerType
 		}
 		
 		// Debug
-		Debugging.debugNote("Layers: %s", layers);
+		if (false)
+			Debugging.debugNote("Layers: %s", layers);
 		
 		// Clamped value in the middle
 		List<String> clamped = new ArrayList<>();
