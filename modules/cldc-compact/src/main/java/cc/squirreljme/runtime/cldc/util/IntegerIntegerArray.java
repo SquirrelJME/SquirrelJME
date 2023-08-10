@@ -20,6 +20,12 @@ public final class IntegerIntegerArray
 	/** The backed array. */
 	protected final int[] array;
 	
+	/** The offset. */
+	protected final int offset;
+	
+	/** The length. */
+	protected final int length;
+	
 	/**
 	 * Initializes the array wrapper.
 	 *
@@ -30,10 +36,31 @@ public final class IntegerIntegerArray
 	public IntegerIntegerArray(int[] __a)
 		throws NullPointerException
 	{
+		this(__a, 0, __a.length);
+	}
+	
+	/**
+	 * Initializes the integer array.
+	 *
+	 * @param __a The array used.
+	 * @param __o The offset into the array.
+	 * @param __l The length of the array.
+	 * @throws IndexOutOfBoundsException If the offset and/or length are
+	 * negative or exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/09
+	 */
+	public IntegerIntegerArray(int[] __a, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
 		if (__a == null)
 			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __a.length)
+			throw new IndexOutOfBoundsException("IOOB");
 		
 		this.array = __a;
+		this.offset = __o;
+		this.length = __l;
 	}
 	
 	/**
@@ -43,7 +70,10 @@ public final class IntegerIntegerArray
 	@Override
 	public final int get(int __i)
 	{
-		return this.array[__i];
+		if (__i < 0 || __i >= this.length)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		return this.array[this.offset + __i];
 	}
 	
 	/**
@@ -53,7 +83,10 @@ public final class IntegerIntegerArray
 	@Override
 	public final void set(int __i, int __v)
 	{
-		this.array[__i] = __v;
+		if (__i < 0 || __i >= this.length)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		this.array[this.offset + __i] = __v;
 	}
 	
 	/**
@@ -63,7 +96,7 @@ public final class IntegerIntegerArray
 	@Override
 	public final int size()
 	{
-		return this.array.length;
+		return this.length;
 	}
 }
 
