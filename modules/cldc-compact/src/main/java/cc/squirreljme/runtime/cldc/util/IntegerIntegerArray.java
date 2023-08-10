@@ -15,7 +15,7 @@ package cc.squirreljme.runtime.cldc.util;
  * @since 2018/10/28
  */
 public final class IntegerIntegerArray
-	implements IntegerArray
+	extends AbstractIntegerArray
 {
 	/** The backed array. */
 	protected final int[] array;
