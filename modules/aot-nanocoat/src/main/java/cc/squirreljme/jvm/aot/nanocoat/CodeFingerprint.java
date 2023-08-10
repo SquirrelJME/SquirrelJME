@@ -13,6 +13,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Arrays;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.Instruction;
+import net.multiphasicapps.classfile.InstructionIndex;
 import net.multiphasicapps.classfile.Method;
 import net.multiphasicapps.classfile.Pool;
 
@@ -117,6 +118,37 @@ public final class CodeFingerprint
 				.normalize();
 			int opCode = instruction.operation();
 			int[] rawArgs = instruction.rawArguments();
+			
+			// The fingerprinting only cares about logical instructions, so
+			// map raw arguments for jumps accordingly...
+			switch (opCode)
+			{
+				case InstructionIndex.GOTO_W:
+					rawArgs[0] = code.addressToIndex(rawArgs[0]);
+					break;
+						
+				case InstructionIndex.LOOKUPSWITCH:
+					for (int i = 0, n = rawArgs.length; i < n; i++)
+					{
+						// Skip number of pairs and key slots
+						if (i == 1 || (i >= 2 && ((i - 2) % 2) == 0))
+							continue;
+						
+						rawArgs[i] = code.addressToIndex(rawArgs[i]);
+					}
+					break;
+					
+				case InstructionIndex.TABLESWITCH:
+					for (int i = 0, n = rawArgs.length; i < n; i++)
+					{
+						// Skip low and hi
+						if (i == 1 || i == 2)
+							continue;
+						
+						rawArgs[i] = code.addressToIndex(rawArgs[i]);
+					}
+					break;
+			}
 			
 			throw Debugging.todo();
 		}
