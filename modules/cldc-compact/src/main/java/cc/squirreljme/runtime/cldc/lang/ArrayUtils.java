@@ -391,7 +391,7 @@ public final class ArrayUtils
 		// Wrap all the arrays accordingly
 		List<IntegerArray> wrapped = new ArrayList<>(n);
 		for (int i = 0; i < n; i++)
-			wrapped.set(i, new IntegerIntegerArray(__arrays[i]));
+			wrapped.add(i, new IntegerIntegerArray(__arrays[i]));
 		
 		return ArrayUtils.flatten(wrapped);
 	}
