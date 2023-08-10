@@ -37,8 +37,14 @@ public final class Instruction
 	/** Jump targets. */
 	protected final InstructionJumpTargets jumptargets;
 	
+	/** The logical function address. */
+	protected final int logicalAddress;
+	
 	/** Instruction arguments. */
 	private final Object[] _args;
+	
+	/** Raw instruction arguments, usually an address or index. */
+	private final int[] _rawArgs;
 	
 	/** String representation of the operation. */
 	private Reference<String> _string;
@@ -54,19 +60,23 @@ public final class Instruction
 	 * @param __naturalflow Is this natural flow?
 	 * @param __smtstate The SMT state.
 	 * @param __jumptargets The jump targets.
-	 * @param ___args Arguments.
+	 * @param __args Arguments.
+	 * @param __rawArgs Raw arguments.
+	 * @param __logicalAddr The logical instruction address.
 	 * @since 2023/07/03
 	 */
 	private Instruction(int __address, int __op, boolean __naturalflow,
 		StackMapTableState __smtstate, InstructionJumpTargets __jumptargets,
-		Object[] ___args)
+		Object[] __args, int[] __rawArgs, int __logicalAddr)
 	{
 		this.address = __address;
 		this.op = __op;
 		this.naturalflow = __naturalflow;
 		this.smtstate = __smtstate;
 		this.jumptargets = __jumptargets;
-		this._args = ___args;
+		this._args = __args;
+		this._rawArgs = __rawArgs;
+		this.logicalAddress = __logicalAddr;
 	}
 	
 	/**
@@ -78,12 +88,14 @@ public final class Instruction
 	 * @param __eh Exception handler table.
 	 * @param __smt The stack map table data.
 	 * @param __af Address of the instruction which follows this.
+	 * @param __logicalAddr The logical instruction address.
 	 * @throws InvalidClassFormatException If the instruction is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/05/18
 	 */
 	Instruction(byte[] __code, Pool __pool, int __a,
-		ExceptionHandlerTable __eh, StackMapTable __smt, int __af)
+		ExceptionHandlerTable __eh, StackMapTable __smt, int __af,
+		int __logicalAddr)
 		throws InvalidClassFormatException, NullPointerException
 	{
 		// Check
@@ -106,9 +118,13 @@ public final class Instruction
 		}
 		this.op = op;
 		this.address = __a;
+		this.logicalAddress = __logicalAddr;
+		
+		// Arguments for this instruction
+		int[] rawArgs;
+		Object[] args;
 		
 		// Depends on the operation
-		Object[] args;
 		boolean naturalflow;
 		switch (op)
 		{
@@ -121,6 +137,7 @@ public final class Instruction
 			case InstructionIndex.LRETURN:
 			case InstructionIndex.RETURN:
 				args = new Object[0];
+				rawArgs = new int[0];
 				naturalflow = false;
 				break;
 			
@@ -266,6 +283,7 @@ public final class Instruction
 			case InstructionIndex.SASTORE:
 			case InstructionIndex.SWAP:
 				args = new Object[0];
+				rawArgs = new int[0];
 				naturalflow = true;
 				break;
 				
@@ -275,15 +293,21 @@ public final class Instruction
 			case InstructionIndex.INSTANCEOF:
 			case InstructionIndex.NEW:
 				naturalflow = true;
+				rawArgs = new int[]{
+					Instruction.__readUnsignedShort(__code, argbase)
+				};
 				args = new Object[]{__pool.<ClassName>require(ClassName.class,
-					Instruction.__readUnsignedShort(__code, argbase))};
+					rawArgs[0])};
 				break;
 				
 				// First value is a signed byte
 			case InstructionIndex.BIPUSH:
 				naturalflow = true;
+				rawArgs = new int[]{
+					Instruction.__readByte(__code, argbase)
+				};
 				args = new Object[]{
-					Instruction.__readByte(__code, argbase)};
+					rawArgs[0]};
 				break;
 				
 				// First value is an unsigned byte
@@ -298,15 +322,21 @@ public final class Instruction
 			case InstructionIndex.FSTORE:
 			case InstructionIndex.DSTORE:
 				naturalflow = true;
+				rawArgs = new int[]{
+					Instruction.__readUnsignedByte(__code, argbase)
+				};
 				args = new Object[]{
-					Instruction.__readUnsignedByte(__code, argbase)};
+					rawArgs[0]};
 				break;
 				
 				// First value is a signed short
 			case InstructionIndex.SIPUSH:
 				naturalflow = true;
+				rawArgs = new int[]{
+					Instruction.__readShort(__code, argbase)
+				};
 				args = new Object[]{
-					Instruction.__readShort(__code, argbase)};
+					rawArgs[0]};
 				break;
 				
 				// Read or write of a field
@@ -315,32 +345,46 @@ public final class Instruction
 			case InstructionIndex.GETFIELD:
 			case InstructionIndex.PUTFIELD:
 				naturalflow = true;
+				rawArgs = new int[]{
+					Instruction.__readUnsignedShort(__code, argbase)
+				};
 				args = new Object[]{__pool.<FieldReference>require(
 					FieldReference.class,
-					Instruction.__readUnsignedShort(__code, argbase))};
+					rawArgs[0])};
 				break;
 				
 				// Goto
 			case InstructionIndex.GOTO:
 				naturalflow = false;
+				rawArgs = new int[]{
+					__a + Instruction.__readShort(__code, argbase)
+				};
 				args = new Object[]{new InstructionJumpTarget(
-					__a + Instruction.__readShort(__code, argbase))};
+					rawArgs[0])};
 				break;
 				
 				// Increment local variable
 			case InstructionIndex.IINC:
 				naturalflow = true;
-				args = new Object[]{
+				rawArgs = new int[]{
 					Instruction.__readUnsignedByte(__code, argbase),
-					Instruction.__readByte(__code, argbase + 1)};
+					Instruction.__readByte(__code, argbase + 1),
+				};
+				args = new Object[]{
+					rawArgs[0],
+					rawArgs[1]};
 				break;
 				
 				// Increment local variable (wide)
 			case InstructionIndex.WIDE_IINC:
 				naturalflow = true;
-				args = new Object[]{
+				rawArgs = new int[]{
 					Instruction.__readUnsignedShort(__code, argbase),
-					Instruction.__readShort(__code, argbase + 2)};
+					Instruction.__readShort(__code, argbase + 2)
+				};
+				args = new Object[]{
+					rawArgs[0],
+					rawArgs[1]};
 				break;
 				
 				// Branches
@@ -361,8 +405,11 @@ public final class Instruction
 			case InstructionIndex.IFGT:
 			case InstructionIndex.IFLE:
 				naturalflow = true;
+				rawArgs = new int[]{
+					__a + Instruction.__readShort(__code, argbase)
+				};
 				args = new Object[]{new InstructionJumpTarget(
-					__a + Instruction.__readShort(__code, argbase))};
+					rawArgs[0])};
 				break;
 				
 				// Method invocations
@@ -373,9 +420,12 @@ public final class Instruction
 				naturalflow = true;
 				
 				// Reference is in the constant pool
+				rawArgs = new int[]{
+					Instruction.__readUnsignedShort(__code, argbase)
+				};
 				MethodReference mr = __pool.<MethodReference>require(
 					MethodReference.class,
-					Instruction.__readUnsignedShort(__code, argbase));
+					rawArgs[0]);
 				
 				/* {@squirreljme.error JC31 Invocation of method did not
 				have the matching interface/not-interface attribute.
@@ -394,10 +444,13 @@ public final class Instruction
 				naturalflow = true;
 				
 				// Could vary in type
-				Object ldcv = __pool.<Object>require(Object.class,
+				rawArgs = new int[]{
 					(op == InstructionIndex.LDC_W ?
-					Instruction.__readUnsignedShort(__code, argbase) :
-					Instruction.__readUnsignedByte(__code, argbase)));
+						Instruction.__readUnsignedShort(__code, argbase) :
+						Instruction.__readUnsignedByte(__code, argbase))
+				};
+				Object ldcv = __pool.<Object>require(Object.class,
+					rawArgs[0]);
 				
 				// Turn into a class value
 				ConstantValue cvalue;
@@ -422,9 +475,12 @@ public final class Instruction
 				naturalflow = true;
 				
 				// Just will be a constant value type
+				rawArgs = new int[]{
+					Instruction.__readUnsignedShort(__code, argbase)
+				};
 				cvalue = __pool.<ConstantValue>require(
 					ConstantValue.class,
-					Instruction.__readUnsignedShort(__code, argbase));
+					rawArgs[0]);
 				
 				/* {@squirreljme.error JC33 Cannot load a constant value which
 				is not of a wide type. (The operation; The address;
@@ -440,11 +496,14 @@ public final class Instruction
 				// Allocate array of primitive type
 			case InstructionIndex.NEWARRAY:
 				naturalflow = true;
+				rawArgs = new int[]{
+					Instruction.__readUnsignedByte(__code, argbase)
+				};
 				
 				// The primitive type depends
 				PrimitiveType pt;
 				int pd;
-				switch ((pd = Instruction.__readUnsignedByte(__code, argbase)))
+				switch ((pd = rawArgs[0]))
 				{
 					case 4:		pt = PrimitiveType.BOOLEAN; break;
 					case 5:		pt = PrimitiveType.CHARACTER; break;
@@ -469,10 +528,14 @@ public final class Instruction
 			case InstructionIndex.MULTIANEWARRAY:
 				naturalflow = true;
 				
+				rawArgs = new int[]{
+					Instruction.__readUnsignedShort(__code, argbase),
+					Instruction.__readUnsignedByte(__code, argbase + 2)
+				};
+				
 				ClassName cname = __pool.<ClassName>require(ClassName.class,
-					Instruction.__readUnsignedShort(__code, argbase));
-				int dims = Instruction.__readUnsignedByte(__code,
-					argbase + 2);
+					rawArgs[0]);
+				int dims = rawArgs[1];
 				
 				/* {@squirreljme.error JC35 Dimensions represented in type
 				is smaller than the represented dimensions.
@@ -491,8 +554,9 @@ public final class Instruction
 					int pa = ((aa + 4) & (~3));
 					
 					// Read in the default
+					int rawDef = __a + Instruction.__readInt(__code, pa);
 					InstructionJumpTarget def = new InstructionJumpTarget(
-						__a + Instruction.__readInt(__code, pa));
+						rawDef);
 					
 					/* {@squirreljme.error JC36 Pair count for lookup switch
 					is negative. (The opcode; The address; The after padded
@@ -504,6 +568,7 @@ public final class Instruction
 					
 					// Setup
 					int[] keys = new int[n];
+					int[] rawJumps = new int[n];
 					InstructionJumpTarget[] jumps =
 						new InstructionJumpTarget[n];
 					
@@ -512,11 +577,21 @@ public final class Instruction
 					{
 						int key = Instruction.__readInt(__code, ra);
 						keys[i] = key;
+						rawJumps[i] = __a + Instruction.__readInt(__code,
+							ra + 4);
 						jumps[i] = new InstructionJumpTarget(
-							__a + Instruction.__readInt(__code,
-								ra + 4),
+							rawJumps[i],
 							key);
 					}
+					
+					// This setup is a bit more complicated
+					rawArgs = new int[2 + (n * 2)];
+					rawArgs[0] = rawDef;
+					rawArgs[1] = n;
+					System.arraycopy(keys, 0,
+						rawArgs, 2, n);
+					System.arraycopy(rawJumps, 0,
+						rawArgs, 2 + n, n);
 					
 					// Setup instruction properties
 					naturalflow = true;
@@ -531,23 +606,35 @@ public final class Instruction
 					int pa = ((aa + 4) & (~3));
 					
 					// Read in the default
+					int rawDef = __a + Instruction.__readInt(__code, pa);
 					InstructionJumpTarget def = new InstructionJumpTarget(
-						__a + Instruction.__readInt(__code, pa));
+						rawDef);
 					
 					// Read in low and high
-					int lo = Instruction.__readInt(__code, pa + 4),
-						hi = Instruction.__readInt(__code, pa + 8);
+					int lo = Instruction.__readInt(__code, pa + 4);
+					int hi = Instruction.__readInt(__code, pa + 8);
 					
 					// Read jump targets
 					int n = (hi - lo) + 1;
+					int[] rawJumps = new int[n];
 					InstructionJumpTarget[] jumps =
 						new InstructionJumpTarget[n];
 					
 					// Load in tables
 					for (int i = 0, ra = pa + 12; i < n; i++, ra += 4)
+					{
+						rawJumps[i] = __a + Instruction.__readInt(__code, ra);
 						jumps[i] = new InstructionJumpTarget(
-							__a + Instruction.__readInt(__code, ra),
-							lo + i);
+							rawJumps[i], lo + i);
+					}
+					
+					// A bit complex to combine
+					rawArgs = new int[3 + n];
+					rawArgs[0] = rawDef;
+					rawArgs[1] = lo;
+					rawArgs[2] = hi;
+					System.arraycopy(rawJumps, 0,
+						rawArgs, 3, n);
 					
 					// Setup instruction properties
 					naturalflow = true;
@@ -565,6 +652,7 @@ public final class Instruction
 		
 		// Set
 		this._args = args;
+		this._rawArgs = rawArgs;
 		this.naturalflow = naturalflow;
 		
 		// Figure out normal jump targets
@@ -636,7 +724,7 @@ public final class Instruction
 	}
 	
 	/**
-	 * Returns all of the arguments.
+	 * Returns all the arguments.
 	 *
 	 * @return The arguments.
 	 * @since 2019/04/03
@@ -735,9 +823,13 @@ public final class Instruction
 		
 		if (ref == null || (rv = ref.get()) == null)
 		{
+			// The logical address of this function
+			int logAddr = this.logicalAddress;
+			
 			// Base normalization state
 			int normalizeTo = -1;
 			Object[] normalizeArgs = this._args;
+			int[] normalizeRaw = this._rawArgs;
 			
 			// Normalization depends on the input operation
 			int op = this.op;
@@ -812,6 +904,9 @@ public final class Instruction
 						new ConstantValueInteger(
 							-1 + (op - InstructionIndex.ICONST_M1))
 					};
+					normalizeRaw = new int[]{
+						-logAddr
+					};
 					break;
 					
 					// Becomes LDC integer
@@ -820,6 +915,9 @@ public final class Instruction
 					normalizeTo = InstructionIndex.LDC_W;
 					normalizeArgs = new Object[]{
 						new ConstantValueInteger((Integer)normalizeArgs[0])
+					};
+					normalizeRaw = new int[]{
+						-logAddr
 					};
 					break;
 					
@@ -830,6 +928,9 @@ public final class Instruction
 					normalizeArgs = new Object[]{
 						new ConstantValueLong(
 							(op - InstructionIndex.LCONST_0))
+					};
+					normalizeRaw = new int[]{
+						-logAddr
 					};
 					break;
 					
@@ -842,6 +943,9 @@ public final class Instruction
 						new ConstantValueFloat(
 							(op - InstructionIndex.FCONST_0))
 					};
+					normalizeRaw = new int[]{
+						-logAddr
+					};
 					break;
 					
 					// Load double
@@ -851,6 +955,9 @@ public final class Instruction
 					normalizeArgs = new Object[]{
 						new ConstantValueDouble(
 							(op - InstructionIndex.DCONST_0))
+					};
+					normalizeRaw = new int[]{
+						-logAddr
 					};
 					break;
 					
@@ -863,6 +970,9 @@ public final class Instruction
 					normalizeArgs = new Object[]{
 						op - InstructionIndex.ILOAD_0
 					};
+					normalizeRaw = new int[]{
+						op - InstructionIndex.ILOAD_0
+					};
 					break;
 					
 				case InstructionIndex.LLOAD_0:
@@ -871,6 +981,9 @@ public final class Instruction
 				case InstructionIndex.LLOAD_3:
 					normalizeTo = InstructionIndex.WIDE_LLOAD;
 					normalizeArgs = new Object[]{
+						op - InstructionIndex.LLOAD_0
+					};
+					normalizeRaw = new int[]{
 						op - InstructionIndex.LLOAD_0
 					};
 					break;
@@ -883,6 +996,9 @@ public final class Instruction
 					normalizeArgs = new Object[]{
 						op - InstructionIndex.FLOAD_0
 					};
+					normalizeRaw = new int[]{
+						op - InstructionIndex.FLOAD_0
+					};
 					break;
 					
 				case InstructionIndex.DLOAD_0:
@@ -891,6 +1007,9 @@ public final class Instruction
 				case InstructionIndex.DLOAD_3:
 					normalizeTo = InstructionIndex.WIDE_DLOAD;
 					normalizeArgs = new Object[]{
+						op - InstructionIndex.DLOAD_0
+					};
+					normalizeRaw = new int[]{
 						op - InstructionIndex.DLOAD_0
 					};
 					break;
@@ -903,6 +1022,9 @@ public final class Instruction
 					normalizeArgs = new Object[]{
 						op - InstructionIndex.ALOAD_0
 					};
+					normalizeRaw = new int[]{
+						op - InstructionIndex.ALOAD_0
+					};
 					break;
 					
 				case InstructionIndex.ISTORE_0:
@@ -911,6 +1033,9 @@ public final class Instruction
 				case InstructionIndex.ISTORE_3:
 					normalizeTo = InstructionIndex.WIDE_ISTORE;
 					normalizeArgs = new Object[]{
+						op - InstructionIndex.ISTORE_0
+					};
+					normalizeRaw = new int[]{
 						op - InstructionIndex.ISTORE_0
 					};
 					break;
@@ -923,6 +1048,9 @@ public final class Instruction
 					normalizeArgs = new Object[]{
 						op - InstructionIndex.LSTORE_0
 					};
+					normalizeRaw = new int[]{
+						op - InstructionIndex.LSTORE_0
+					};
 					break;
 					
 				case InstructionIndex.FSTORE_0:
@@ -931,6 +1059,9 @@ public final class Instruction
 				case InstructionIndex.FSTORE_3:
 					normalizeTo = InstructionIndex.WIDE_FSTORE;
 					normalizeArgs = new Object[]{
+						op - InstructionIndex.FSTORE_0
+					};
+					normalizeRaw = new int[]{
 						op - InstructionIndex.FSTORE_0
 					};
 					break;
@@ -943,6 +1074,9 @@ public final class Instruction
 					normalizeArgs = new Object[]{
 						op - InstructionIndex.DSTORE_0
 					};
+					normalizeRaw = new int[]{
+						op - InstructionIndex.DSTORE_0
+					};
 					break;
 					
 				case InstructionIndex.ASTORE_0:
@@ -953,6 +1087,9 @@ public final class Instruction
 					normalizeArgs = new Object[]{
 						op - InstructionIndex.ASTORE_0
 					};
+					normalizeRaw = new int[]{
+						op - InstructionIndex.ASTORE_0
+					};
 					break;
 			}
 			
@@ -960,7 +1097,7 @@ public final class Instruction
 			if (normalizeTo >= 0)
 				rv = new Instruction(this.address, normalizeTo,
 					this.naturalflow, this.smtstate, this.jumptargets,
-					normalizeArgs);
+					normalizeArgs, normalizeRaw, this.logicalAddress);
 			else
 				rv = this;
 			this._normalized = new WeakReference<>(rv);
@@ -979,6 +1116,18 @@ public final class Instruction
 	public int operation()
 	{
 		return this.op;
+	}
+	
+	/**
+	 * Returns the raw arguments for this function, which is just the number
+	 * values.
+	 *
+	 * @return The raw instruction arguments.
+	 * @since 2023/08/09
+	 */
+	public int[] rawArguments()
+	{
+		return this._rawArgs.clone();
 	}
 	
 	/**

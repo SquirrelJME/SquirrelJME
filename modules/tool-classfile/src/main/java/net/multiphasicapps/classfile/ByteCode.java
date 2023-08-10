@@ -373,7 +373,8 @@ public final class ByteCode
 		if (ref == null || null == (rv = ref.get()))
 			icache[__a] = new SoftReference<>((rv = new Instruction(
 				this._rawByteCode, this.pool, __a, this.exceptions,
-				this.stackMapTable(), this.addressFollowing(__a))));
+				this.stackMapTable(), this.addressFollowing(__a),
+				this.addressToIndex(__a))));
 		
 		return rv;
 	}

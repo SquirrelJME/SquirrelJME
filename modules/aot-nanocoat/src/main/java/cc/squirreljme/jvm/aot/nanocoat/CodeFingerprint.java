@@ -112,8 +112,11 @@ public final class CodeFingerprint
 		int logicalLen = code.instructionCount();
 		for (int logicalAddr = 0; logicalAddr < logicalLen; logicalAddr++)
 		{
-			// Get the normalized instruction
-			Instruction instruction = code.getByIndex(logicalAddr).normalize();
+			// Get the normalized instruction and its raw details
+			Instruction instruction = code.getByIndex(logicalAddr)
+				.normalize();
+			int opCode = instruction.operation();
+			int[] rawArgs = instruction.rawArguments();
 			
 			throw Debugging.todo();
 		}
