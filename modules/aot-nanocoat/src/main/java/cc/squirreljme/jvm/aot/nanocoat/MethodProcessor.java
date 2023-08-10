@@ -170,10 +170,16 @@ public final class MethodProcessor
 	public void processSourceOutside(CSourceWriter __out)
 		throws IOException
 	{
+		NanoCoatLinkGlob glob = this.glob;
+		
 		// Only write byte code of the method if there is actual byte code
 		ByteCode code = this.method.byteCode();
 		if (code == null)
 			return;
+		
+		// Determine code fingerprint
+		CodeFingerprint fingerprint = new CodeFingerprint(code);
+		glob.checkCodeFingerprint(fingerprint, this.function);
 		
 		// Write function code
 		ByteCodeProcessor processor = new ByteCodeProcessor(
@@ -192,7 +198,7 @@ public final class MethodProcessor
 			
 			// Cached limits to share where possible
 			struct.memberSet("limits",
-				CBasicExpression.reference(this.glob.processVariableLimits(
+				CBasicExpression.reference(glob.processVariableLimits(
 					varMap.limits())));
 			
 			// The thrown instance variable index location

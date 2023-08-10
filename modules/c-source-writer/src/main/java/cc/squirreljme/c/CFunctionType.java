@@ -236,6 +236,16 @@ public class CFunctionType
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2023/08/09
+	 */
+	@Override
+	public String toString()
+	{
+		return this.declareTokens(null).toString();
+	}
+	
+	/**
 	 * Initializes the C function.
 	 * 
 	 * @param __name The function name.

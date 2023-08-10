@@ -9,12 +9,14 @@
 
 package cc.squirreljme.jvm.aot.nanocoat;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.lang.ArrayUtils;
+import cc.squirreljme.runtime.cldc.util.IntegerIntegerArray;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
-import net.multiphasicapps.classfile.Method;
 import net.multiphasicapps.classfile.Pool;
 
 /**
@@ -37,29 +39,30 @@ public final class CodeFingerprint
 		(1 << Pool.TAG_FIELDREF) |
 		(1 << Pool.TAG_METHODREF);
 	
+	/** The fingerprint array. */
+	private final int[] _fingerprint;
+	
 	/** The calculated hash code, since this can be heavy. */
 	volatile int _hashCode;
 	
 	/**
 	 * Determines the code fingerprint for the given method. 
 	 *
-	 * @param __method The method used.
+	 * @param __code The method used.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/08/09
 	 */
-	public CodeFingerprint(Method __method)
+	public CodeFingerprint(ByteCode __code)
 		throws NullPointerException
 	{
-		if (__method == null)
+		if (__code == null)
 			throw new NullPointerException("NARG");
 		
-		// Need the byte code
-		ByteCode code = __method.byteCode();
-		if (code == null)
-			throw new NullPointerException("NARG");
+		// The fingerprint consists of all the arrays
+		List<int[]> fingerprint = new ArrayList<>();
 		
 		// And the constant pool
-		Pool pool = code.pool();
+		Pool pool = __code.pool();
 		
 		// Process each tag within the pool to determine if we care about it
 		int[] poolTags = pool.tags();
@@ -105,26 +108,37 @@ public final class CodeFingerprint
 		if (poolTags.length != poolSize)
 			poolTags = Arrays.copyOf(poolTags, poolSize);
 		
+		// Store to the fingerprint
+		fingerprint.add(poolTags);
+		
+		// Setup opcodes and store to the fingerprint
+		int logicalLen = __code.instructionCount();
+		int[] opCodes = new int[logicalLen];
+		fingerprint.add(opCodes);
+		
 		// Now we go through the logical normalized code indexes, we use the
 		// normalized instructions so that similar instructions such as
 		// ALOAD_0 and ALOAD 0 are mapped to the same instruction, as it
 		// happens in the processor. So this means if the only difference
-		// between one method and another is that it uses 
-		int logicalLen = code.instructionCount();
+		// between one method and another is that it uses LDC and another
+		// uses LDC_W or LDC2_W, it is treated the same
 		for (int logicalAddr = 0; logicalAddr < logicalLen; logicalAddr++)
 		{
 			// Get the normalized instruction and its raw details
-			Instruction instruction = code.getByIndex(logicalAddr)
+			Instruction instruction = __code.getByIndex(logicalAddr)
 				.normalize();
 			int opCode = instruction.operation();
 			int[] rawArgs = instruction.rawArguments();
+			
+			// Store opcode for fingerprinting
+			opCodes[logicalAddr] = opCode;
 			
 			// The fingerprinting only cares about logical instructions, so
 			// map raw arguments for jumps accordingly...
 			switch (opCode)
 			{
 				case InstructionIndex.GOTO_W:
-					rawArgs[0] = code.addressToIndex(rawArgs[0]);
+					rawArgs[0] = __code.addressToIndex(rawArgs[0]);
 					break;
 						
 				case InstructionIndex.LOOKUPSWITCH:
@@ -134,7 +148,7 @@ public final class CodeFingerprint
 						if (i == 1 || (i >= 2 && ((i - 2) % 2) == 0))
 							continue;
 						
-						rawArgs[i] = code.addressToIndex(rawArgs[i]);
+						rawArgs[i] = __code.addressToIndex(rawArgs[i]);
 					}
 					break;
 					
@@ -145,15 +159,18 @@ public final class CodeFingerprint
 						if (i == 1 || i == 2)
 							continue;
 						
-						rawArgs[i] = code.addressToIndex(rawArgs[i]);
+						rawArgs[i] = __code.addressToIndex(rawArgs[i]);
 					}
 					break;
 			}
 			
-			throw Debugging.todo();
+			// Store to the fingerprint
+			fingerprint.add(rawArgs);
 		}
 		
-		throw Debugging.todo();
+		// The fingerprint is the combined integer array with everything
+		// in it, and as such becomes its signature
+		this._fingerprint = ArrayUtils.flattenPrimitive(fingerprint);
 	}
 	
 	/**
@@ -174,7 +191,8 @@ public final class CodeFingerprint
 		if (this.hashCode() != o.hashCode())
 			return false;
 		
-		throw Debugging.todo();
+		// The two arrays must be equal
+		return Arrays.equals(this._fingerprint, o._fingerprint);
 	}
 	
 	/**
@@ -188,6 +206,9 @@ public final class CodeFingerprint
 		if (result != 0)
 			return result;
 		
-		throw Debugging.todo();
+		// Calculate standard hash code
+		result = new IntegerIntegerArray(this._fingerprint).hashCode();
+		this._hashCode = result;
+		return result;
 	}
 }

@@ -375,35 +375,6 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/08/09
 	 */
-	public static int[] flatten(int[]... __arrays)
-		throws NullPointerException
-	{
-		if (__arrays == null)
-			throw new NullPointerException("NARG");
-		
-		// Simpler operations?
-		int n = __arrays.length;
-		if (n == 0)
-			return null;
-		else if (n == 1)
-			return __arrays[0].clone();
-		
-		// Wrap all the arrays accordingly
-		List<IntegerArray> wrapped = new ArrayList<>(n);
-		for (int i = 0; i < n; i++)
-			wrapped.add(i, new IntegerIntegerArray(__arrays[i]));
-		
-		return ArrayUtils.flatten(wrapped);
-	}
-	
-	/**
-	 * Flattens all the specified arrays into a new array. 
-	 *
-	 * @param __arrays The arrays to flatten.
-	 * @return The flattened arrays.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/08/09
-	 */
 	public static int[] flatten(IntegerArray... __arrays)
 		throws NullPointerException
 	{
@@ -469,6 +440,64 @@ public final class ArrayUtils
 		
 		// Return resultant array
 		return result;
+	}
+	
+	/**
+	 * Flattens all the specified arrays into a new array. 
+	 *
+	 * @param __arrays The arrays to flatten.
+	 * @return The flattened arrays.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/09
+	 */
+	public static int[] flattenPrimitive(int[]... __arrays)
+		throws NullPointerException
+	{
+		if (__arrays == null)
+			throw new NullPointerException("NARG");
+		
+		// Simpler operations?
+		int n = __arrays.length;
+		if (n == 0)
+			return null;
+		else if (n == 1)
+			return __arrays[0].clone();
+		
+		// Wrap all the arrays accordingly
+		List<IntegerArray> wrapped = new ArrayList<>(n);
+		for (int i = 0; i < n; i++)
+			wrapped.add(i, new IntegerIntegerArray(__arrays[i]));
+		
+		return ArrayUtils.flatten(wrapped);
+	}
+	
+	/**
+	 * Flattens all the specified arrays into a new array. 
+	 *
+	 * @param __arrays The arrays to flatten.
+	 * @return The flattened arrays.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/09
+	 */
+	public static int[] flattenPrimitive(List<int[]> __arrays)
+		throws NullPointerException
+	{
+		if (__arrays == null)
+			throw new NullPointerException("NARG");
+		
+		// Simpler operations?
+		int n = __arrays.size();
+		if (n == 0)
+			return null;
+		else if (n == 1)
+			return __arrays.get(0).clone();
+		
+		// Wrap arrays
+		List<IntegerArray> wrapped = new ArrayList<>(n);
+		for (int i = 0; i < n; i++)
+			wrapped.add(i, new IntegerIntegerArray(__arrays.get(i)));
+		
+		return ArrayUtils.flatten(wrapped);
 	}
 	
 	/**

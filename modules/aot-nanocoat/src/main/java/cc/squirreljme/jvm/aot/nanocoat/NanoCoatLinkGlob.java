@@ -12,10 +12,10 @@ package cc.squirreljme.jvm.aot.nanocoat;
 import cc.squirreljme.c.CArrayBlock;
 import cc.squirreljme.c.CBasicExpression;
 import cc.squirreljme.c.CBlock;
-import cc.squirreljme.c.CExpression;
 import cc.squirreljme.c.CExpressionBuilder;
 import cc.squirreljme.c.CFile;
 import cc.squirreljme.c.CFileName;
+import cc.squirreljme.c.CFunctionType;
 import cc.squirreljme.c.CIdentifier;
 import cc.squirreljme.c.CPPBlock;
 import cc.squirreljme.c.CSourceWriter;
@@ -35,6 +35,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -101,6 +102,10 @@ public class NanoCoatLinkGlob
 	
 	/** The settings used for the AOT call. */
 	protected final AOTSettings aotSettings;
+	
+	/** Fingerprints for method code, to remove duplicates. */
+	private final Map<CodeFingerprint, CFunctionType> _fingerprints =
+		new LinkedHashMap<>();
 	
 	/** The C header block. */
 	volatile CBlock _headerBlock;
@@ -169,6 +174,36 @@ public class NanoCoatLinkGlob
 		{
 			throw new RuntimeException(__e);
 		}
+	}
+	
+	/**
+	 * Checks for a duplicate code fingerprint in the glob.
+	 *
+	 * @param __fingerprint The fingerprint to check.
+	 * @param __function The function being checked, and potentially registered
+	 * if one does not exist already.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/09
+	 */
+	public CFunctionType checkCodeFingerprint(CodeFingerprint __fingerprint,
+		CFunctionType __function)
+		throws NullPointerException
+	{
+		if (__fingerprint == null || __function == null)
+			throw new NullPointerException("NARG");
+		
+		// Check if a fingerprint already exists
+		Map<CodeFingerprint, CFunctionType> fingerprints = this._fingerprints;
+		CFunctionType existing = fingerprints.get(__fingerprint);
+		if (existing != null)
+		{
+			Debugging.debugNote("Duplicate method %s = %s",
+				__function, existing);
+		}
+		
+		// Register it and just return the input
+		fingerprints.put(__fingerprint, __function);
+		return __function;
 	}
 	
 	/**
