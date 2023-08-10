@@ -560,7 +560,7 @@ typedef struct sjme_static_classInfo
 	/** Methods. */
 	const sjme_static_classMethods* methods;
 	
-	/** Linkages. */
+	/** Linkages, effectively the constant pool. */
 	const sjme_static_linkages* linkages;
 } sjme_static_classInfo;
 
