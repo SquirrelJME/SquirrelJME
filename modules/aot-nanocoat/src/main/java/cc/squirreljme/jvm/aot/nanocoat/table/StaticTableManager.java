@@ -27,6 +27,9 @@ public class StaticTableManager
 	/** Static table outputs. */
 	protected final Map<StaticTableType, StaticTable<?>> tables;
 	
+	/** The archive to write to. */
+	protected final ArchiveOutputQueue archive;
+	
 	/**
 	 * Initializes the table group.
 	 *
@@ -50,6 +53,7 @@ public class StaticTableManager
 		
 		// Store all tables
 		this.tables = UnmodifiableMap.of(tables);
+		this.archive = __archive;
 	}
 	
 	/**

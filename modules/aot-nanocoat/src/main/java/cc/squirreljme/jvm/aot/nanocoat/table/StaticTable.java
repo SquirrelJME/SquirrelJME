@@ -10,9 +10,14 @@
 package cc.squirreljme.jvm.aot.nanocoat.table;
 
 import cc.squirreljme.c.CIdentifier;
+import cc.squirreljme.c.CVariable;
+import cc.squirreljme.jvm.aot.nanocoat.ArchiveOutputQueue;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
+import cc.squirreljme.runtime.cldc.util.SortedTreeSet;
+import java.io.IOException;
 import java.lang.ref.Reference;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * This represents a static table which will output in a format similar to TSV
@@ -27,11 +32,12 @@ import java.util.Map;
  */
 public abstract class StaticTable<E>
 {
-	/** The length that prefixes must be. */
-	private static final int _PREFIX_LENGTH = 4;
-	
 	/** Entries within the static table. */
-	protected final Map<CIdentifier, E> entries = new SortedTreeMap<>();
+	protected final Map<E, CVariable> entries = new SortedTreeMap<>();
+	
+	/** Variable identifiers, used to check for collisions. */
+	protected final Set<CIdentifier> identifiers =
+		new SortedTreeSet<>();
 	
 	/** The type of table this is. */
 	protected final StaticTableType type;
@@ -54,5 +60,49 @@ public abstract class StaticTable<E>
 		
 		this._group = __group;
 		this.type = __type;
+	}
+	
+	/**
+	 * Returns the identifier to use for the entry.
+	 *
+	 * @param __entry The entry to identify.
+	 * @return The identifier to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/12
+	 */
+	protected abstract CIdentifier identify(E __entry)
+		throws NullPointerException;
+	
+	/**
+	 * Writes a table entry to the archive output.
+	 *
+	 * @param __archive The archive to write to.
+	 * @param __variable The variable being written.
+	 * @param __entry The entry to write.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/12
+	 */
+	protected abstract void writeEntry(ArchiveOutputQueue __archive,
+		CVariable __variable, E __entry)
+		throws IOException, NullPointerException;
+	
+	/**
+	 * Puts an entry into the table if it does not exist, and returns the
+	 * variable designated for it.
+	 *
+	 * @param __entry The entry to put in.
+	 * @return The resultant variable.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/12
+	 */
+	public final CVariable put(E __entry)
+		throws IOException, NullPointerException
+	{
+		if (__entry == null)
+			throw new NullPointerException("NARG");
+		
+		throw new NullPointerException("NARG");
 	}
 }

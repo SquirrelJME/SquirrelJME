@@ -177,6 +177,9 @@ public enum StaticTableType
 		
 		switch (this)
 		{
+			case STRINGS:
+				return new StringStaticTable(__group);
+			
 			default:
 				throw Debugging.todo(this);
 		}
