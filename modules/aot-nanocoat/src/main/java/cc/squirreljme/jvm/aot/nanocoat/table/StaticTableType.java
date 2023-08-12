@@ -12,6 +12,7 @@ package cc.squirreljme.jvm.aot.nanocoat.table;
 import cc.squirreljme.c.CPrimitiveType;
 import cc.squirreljme.c.CType;
 import cc.squirreljme.c.std.CTypeProvider;
+import cc.squirreljme.jvm.aot.nanocoat.ClassInterfaces;
 import cc.squirreljme.jvm.aot.nanocoat.CodeFingerprint;
 import cc.squirreljme.jvm.aot.nanocoat.VariableLimits;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
@@ -42,28 +43,28 @@ public enum StaticTableType
 	
 	/** Class interfaces. */
 	CLASS_INTERFACES("ints",
-		byte.class,
+		ClassInterfaces.class,
 		JvmTypes.STATIC_CLASS_INTERFACES),
 	
 	/** Class object linkages. */
 	LINKAGE_CLASS("lncl",
 		ClassObjectLinkage.class,
-		CPrimitiveType.VOID),
+		JvmTypes.STATIC_LINKAGE_DATA_CLASS_OBJECT),
 	
 	/** Field access linkages. */
 	LINKAGE_FIELD_ACCESS("lnfa",
 		FieldAccessLinkage.class,
-		CPrimitiveType.VOID),
+		JvmTypes.STATIC_LINKAGE_DATA_FIELD_ACCESS),
 	
 	/** Method invocation linkages. */
 	LINKAGE_METHOD_INVOKE("lnmi",
 		byte.class,
-		CPrimitiveType.VOID),
+		JvmTypes.STATIC_LINKAGE_DATA_INVOKE_NORMAL),
 	
 	/** String reference linkages. */
 	LINKAGE_STRING("lnst",
 		byte.class,
-		CPrimitiveType.VOID),
+		JvmTypes.STATIC_LINKAGE_DATA_STRING_OBJECT),
 	
 	/** Integer value linkages. */
 	LINKAGE_INTEGER("lnvi",
@@ -182,6 +183,45 @@ public enum StaticTableType
 				
 			case CODE:
 				return new CodeStaticTable(__group);
+				
+			case CLASS_INTERFACES:
+				return new ClassInterfacesStaticTable(__group);
+			
+			case LINKAGE_CLASS:
+				throw Debugging.todo();
+				
+			case LINKAGE_FIELD_ACCESS:
+				throw Debugging.todo();
+			
+			case LINKAGE_METHOD_INVOKE:
+				throw Debugging.todo();
+				
+			case LINKAGE_STRING:
+				throw Debugging.todo();
+			
+			case LINKAGE_INTEGER:
+				throw Debugging.todo();
+			
+			case LINKAGE_LONG:
+				throw Debugging.todo();
+			
+			case LINKAGE_FLOAT:
+				throw Debugging.todo();
+			
+			case LINKAGE_DOUBLE:
+				throw Debugging.todo();
+			
+			case RESOURCE:
+				throw Debugging.todo();
+			
+			case FIELD_TYPE:
+				throw Debugging.todo();
+			
+			case METHOD_TYPE:
+				throw Debugging.todo();
+			
+			case LOCALS_STACK_LIMITS:
+				throw Debugging.todo();
 			
 			default:
 				throw Debugging.todo(this);

@@ -914,6 +914,7 @@ public enum JvmTypes
 	},
 	
 	/** Invoke special linkage data. */
+	@Deprecated
 	STATIC_LINKAGE_DATA_INVOKE_SPECIAL
 	{
 		/**
