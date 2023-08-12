@@ -30,22 +30,28 @@ final class __QueuedOutput__
 	/** The owning queue. */
 	protected final Reference<ArchiveOutputQueue> owner;
 	
+	/** The name of the entry. */
+	protected final String name;
+	
 	/** Has this been closed? */
 	private volatile boolean _isClosed;
 	
 	/**
 	 * Initializes the data queue.
 	 *
-	 * @param __owner The owner of this, where the data is written to on close.
+	 * @param __owner The owner of this, where the data is written to on 
+	 * close.
+	 * @param __name The name of the entry.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/08/12
 	 */
-	__QueuedOutput__(Reference<ArchiveOutputQueue> __owner)
+	__QueuedOutput__(Reference<ArchiveOutputQueue> __owner, String __name)
 		throws NullPointerException
 	{
-		if (__owner == null)
+		if (__owner == null || __name == null)
 			throw new NullPointerException("NARG");
 		
+		this.name = __name;
 		this.owner = __owner;
 	}
 	

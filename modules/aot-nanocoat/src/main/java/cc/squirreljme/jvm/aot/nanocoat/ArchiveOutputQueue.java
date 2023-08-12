@@ -11,14 +11,14 @@ package cc.squirreljme.jvm.aot.nanocoat;
 
 import cc.squirreljme.c.CFile;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.cldc.util.SortedTreeSet;
+import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import java.util.Set;
+import java.util.Map;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
 /**
@@ -34,13 +34,16 @@ public class ArchiveOutputQueue
 	/** The Zip to write to. */
 	protected final ZipStreamWriter zip;
 	
-	/** Files which have been output to this archive. */
-	protected final Set<String> outputFiles =
-		new SortedTreeSet<>();
+	/** Files which have been output to this archive and their CRC. */
+	protected final Map<String, Integer> outputFiles =
+		new SortedTreeMap<>();
 	
 	/** Self reference, to lower object creation. */
 	private final Reference<ArchiveOutputQueue> _self =
 		new WeakReference<>(this);
+	
+	/** Already closed? */
+	private volatile boolean _isClosed;
 	
 	/**
 	 * Initializes the archive output.
@@ -66,6 +69,17 @@ public class ArchiveOutputQueue
 	public void close()
 		throws IOException
 	{
+		// Already closed?
+		if (this._isClosed)
+			return;
+		this._isClosed = true;
+		
+		/* {@squirreljme.error NC04 An entry is currently being written and
+		has not yet been closed.} */
+		for (Map.Entry<String, Integer> entry : this.outputFiles.entrySet())
+			if (entry.getValue() == null)
+				throw new IOException("NC04");
+		
 		throw Debugging.todo();
 	}
 	
@@ -89,7 +103,7 @@ public class ArchiveOutputQueue
 	 *
 	 * @param __name The name of the file to write.
 	 * @return The stream to write the file.
-	 * @throws IOException On write errors.
+	 * @throws IOException If an entry with the given name already exists.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/08/12
 	 */
@@ -99,8 +113,14 @@ public class ArchiveOutputQueue
 		if (__name == null)
 			throw new NullPointerException("NARG");
 		
+		/* {@squirreljme.error NC03 Duplicate outut file.} */
+		Map<String, Integer> outputFiles = this.outputFiles;
+		if (outputFiles.containsKey(__name))
+			throw new IOException("NC03");
+		outputFiles.put(__name, null);
+		
 		// Setup new entry
-		return new __QueuedOutput__(this._self);
+		return new __QueuedOutput__(this._self, __name);
 	}
 	
 	/**
