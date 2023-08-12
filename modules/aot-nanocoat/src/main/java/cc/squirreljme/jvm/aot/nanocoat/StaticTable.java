@@ -27,13 +27,27 @@ import java.util.Map;
 public class StaticTable<E>
 {
 	/** The length that prefixes must be. */
-	private static final int _PREFIX_LENGTH =
-		4;
+	private static final int _PREFIX_LENGTH = 4;
 	
 	/** Entries within the static table. */
-	protected final Map<CIdentifier, E> entries =
-		new SortedTreeMap<>();
+	protected final Map<CIdentifier, E> entries = new SortedTreeMap<>();
 	
-	/** The prefix for the table. */
-	protected final CIdentifier prefix;
+	/** The type of table this is. */
+	protected final StaticTableType type;
+	
+	/**
+	 * Initializes the static table.
+	 *
+	 * @param __type The type of table this is.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/11
+	 */
+	public StaticTable(StaticTableType __type)
+		throws NullPointerException
+	{
+		if (__type == null)
+			throw new NullPointerException("NARG");
+		
+		this.type = __type;
+	}
 }
