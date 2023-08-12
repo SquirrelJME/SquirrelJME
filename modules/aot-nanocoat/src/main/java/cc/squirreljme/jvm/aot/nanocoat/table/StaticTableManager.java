@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.aot.nanocoat.table;
 
 import cc.squirreljme.jvm.aot.nanocoat.ArchiveOutputQueue;
+import cc.squirreljme.jvm.aot.nanocoat.CodeFingerprint;
 import cc.squirreljme.runtime.cldc.util.EnumTypeMap;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -57,15 +58,27 @@ public class StaticTableManager
 	}
 	
 	/**
+	 * Returns the code table.
+	 *
+	 * @return The code table.
+	 * @since 2023/08/12
+	 */
+	public CodeStaticTable code()
+	{
+		return (CodeStaticTable)this.table(CodeFingerprint.class,
+			StaticTableType.CODE);
+	}
+	
+	/**
 	 * Returns the string table.
 	 *
 	 * @return The string table.
 	 * @since 2023/08/12
 	 */
-	public StringStaticTable strings()
+	public StringStaticTable string()
 	{
 		return (StringStaticTable)this.table(String.class,
-			StaticTableType.STRINGS);
+			StaticTableType.STRING);
 	}
 	
 	/**

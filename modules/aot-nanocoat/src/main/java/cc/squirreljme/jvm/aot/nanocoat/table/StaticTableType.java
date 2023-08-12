@@ -31,7 +31,7 @@ import net.multiphasicapps.collections.UnmodifiableList;
 public enum StaticTableType
 {
 	/** Strings. */
-	STRINGS("char",
+	STRING("char",
 		String.class,
 		CPrimitiveType.CONST_CHAR_STAR.constType()),
 	
@@ -177,8 +177,11 @@ public enum StaticTableType
 		
 		switch (this)
 		{
-			case STRINGS:
+			case STRING:
 				return new StringStaticTable(__group);
+				
+			case CODE:
+				return new CodeStaticTable(__group);
 			
 			default:
 				throw Debugging.todo(this);

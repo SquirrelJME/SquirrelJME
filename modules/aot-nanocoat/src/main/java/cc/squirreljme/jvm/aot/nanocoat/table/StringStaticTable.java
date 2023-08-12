@@ -16,7 +16,6 @@ import cc.squirreljme.c.CIdentifier;
 import cc.squirreljme.c.CPPBlock;
 import cc.squirreljme.c.CVariable;
 import cc.squirreljme.jvm.aot.nanocoat.ArchiveOutputQueue;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import net.multiphasicapps.io.CRC32Calculator;
@@ -39,7 +38,7 @@ public class StringStaticTable
 	StringStaticTable(Reference<StaticTableManager> __group)
 		throws NullPointerException
 	{
-		super(__group, StaticTableType.STRINGS);
+		super(__group, StaticTableType.STRING);
 	}
 	
 	/**
