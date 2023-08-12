@@ -16,8 +16,8 @@ import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassObjectLinkage;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.FieldAccessLinkage;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+import net.multiphasicapps.collections.UnmodifiableList;
 
 /**
  * Represents the type of static table this is.
@@ -28,7 +28,7 @@ public enum StaticTableType
 {
 	/** Strings. */
 	STRINGS("char",
-		void.class,
+		byte.class,
 		CPrimitiveType.CONST_CHAR_STAR),
 	
 	/** Method code. */
@@ -38,7 +38,7 @@ public enum StaticTableType
 	
 	/** Class interfaces. */
 	CLASS_INTERFACES("ints",
-		void.class,
+		byte.class,
 		JvmTypes.STATIC_CLASS_INTERFACES),
 	
 	/** Class object linkages. */
@@ -53,47 +53,47 @@ public enum StaticTableType
 	
 	/** Method invocation linkages. */
 	LINKAGE_METHOD_INVOKE("lnmi",
-		void.class,
+		byte.class,
 		CPrimitiveType.VOID),
 	
 	/** String reference linkages. */
 	LINKAGE_STRING("lnst",
-		void.class,
+		byte.class,
 		CPrimitiveType.VOID),
 	
 	/** Integer value linkages. */
 	LINKAGE_INTEGER("lnvi",
-		void.class,
+		byte.class,
 		CPrimitiveType.VOID),
 	
 	/** Long value linkages. */
 	LINKAGE_LONG("lnvj",
-		void.class,
+		byte.class,
 		CPrimitiveType.VOID),
 	
 	/** Float value linkages. */
 	LINKAGE_FLOAT("lnvf",
-		void.class,
+		byte.class,
 		CPrimitiveType.VOID),
 	
 	/** Double value linkages. */
 	LINKAGE_DOUBLE("lnvd",
-		void.class,
+		byte.class,
 		CPrimitiveType.VOID),
 	
 	/** Library resource. */
 	RESOURCE("rsrc",
-		void.class,
+		byte.class,
 		JvmTypes.STATIC_RESOURCE),
 	
 	/** Field type information. */
 	FIELD_TYPE("tyme",
-		void.class,
+		byte.class,
 		CPrimitiveType.VOID),
 	
 	/** Method type information. */
 	METHOD_TYPE("tyme",
-		void.class,
+		byte.class,
 		CPrimitiveType.VOID),
 	
 	/** Locals/stack variable limit information. */
@@ -106,7 +106,7 @@ public enum StaticTableType
 	
 	/** The static table types available. */
 	public static final List<StaticTableType> TYPES =
-		Collections.unmodifiableList(Arrays.asList(StaticTableType.values()));
+		UnmodifiableList.of(Arrays.asList(StaticTableType.values()));
 	
 	/** The number of types available. */
 	public static final int NUM_TYPES =
