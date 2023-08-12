@@ -9,6 +9,10 @@
 
 package cc.squirreljme.jvm.aot.nanocoat;
 
+import cc.squirreljme.c.CPrimitiveType;
+import cc.squirreljme.c.CType;
+import cc.squirreljme.c.std.CTypeProvider;
+import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassObjectLinkage;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.FieldAccessLinkage;
 import java.util.Arrays;
@@ -23,49 +27,79 @@ import java.util.List;
 public enum StaticTableType
 {
 	/** Strings. */
-	STRINGS("char", void.class),
+	STRINGS("char",
+		void.class,
+		CPrimitiveType.CONST_CHAR_STAR),
 	
 	/** Method code. */
-	CODE("code", CodeFingerprint.class),
+	CODE("code",
+		CodeFingerprint.class,
+		JvmTypes.STATIC_CLASS_CODE),
 	
 	/** Class interfaces. */
-	CLASS_INTERFACES("ints", void.class),
+	CLASS_INTERFACES("ints",
+		void.class,
+		JvmTypes.STATIC_CLASS_INTERFACES),
 	
 	/** Class object linkages. */
-	LINKAGE_CLASS("lncl", ClassObjectLinkage.class),
+	LINKAGE_CLASS("lncl",
+		ClassObjectLinkage.class,
+		CPrimitiveType.VOID),
 	
 	/** Field access linkages. */
-	LINKAGE_FIELD_ACCESS("lnfa", FieldAccessLinkage.class),
+	LINKAGE_FIELD_ACCESS("lnfa",
+		FieldAccessLinkage.class,
+		CPrimitiveType.VOID),
 	
 	/** Method invocation linkages. */
-	LINKAGE_METHOD_INVOKE("lnmi", void.class),
+	LINKAGE_METHOD_INVOKE("lnmi",
+		void.class,
+		CPrimitiveType.VOID),
 	
 	/** String reference linkages. */
-	LINKAGE_STRING("lnst", void.class),
+	LINKAGE_STRING("lnst",
+		void.class,
+		CPrimitiveType.VOID),
 	
 	/** Integer value linkages. */
-	LINKAGE_INTEGER("lnvi", void.class),
+	LINKAGE_INTEGER("lnvi",
+		void.class,
+		CPrimitiveType.VOID),
 	
 	/** Long value linkages. */
-	LINKAGE_LONG("lnvj", void.class),
+	LINKAGE_LONG("lnvj",
+		void.class,
+		CPrimitiveType.VOID),
 	
 	/** Float value linkages. */
-	LINKAGE_FLOAT("lnvf", void.class),
+	LINKAGE_FLOAT("lnvf",
+		void.class,
+		CPrimitiveType.VOID),
 	
 	/** Double value linkages. */
-	LINKAGE_DOUBLE("lnvd", void.class),
+	LINKAGE_DOUBLE("lnvd",
+		void.class,
+		CPrimitiveType.VOID),
 	
 	/** Library resource. */
-	RESOURCE("rsrc", void.class),
+	RESOURCE("rsrc",
+		void.class,
+		JvmTypes.STATIC_RESOURCE),
 	
 	/** Field type information. */
-	FIELD_TYPE("tyme", void.class),
+	FIELD_TYPE("tyme",
+		void.class,
+		CPrimitiveType.VOID),
 	
 	/** Method type information. */
-	METHOD_TYPE("tyme", void.class),
+	METHOD_TYPE("tyme",
+		void.class,
+		CPrimitiveType.VOID),
 	
 	/** Locals/stack variable limit information. */
-	LOCALS_STACK_LIMITS("valn", VariableLimits.class),
+	LOCALS_STACK_LIMITS("valn",
+		VariableLimits.class,
+		JvmTypes.STATIC_CLASS_CODE_LIMITS),
 	
 	/* End. */
 	;
@@ -84,21 +118,42 @@ public enum StaticTableType
 	/** The type of elements the table stores. */
 	public final Class<?> elementType;
 	
+	/** The C type to store for the table entry. */
+	public final CType cType;
+	
 	/**
 	 * Initializes the table type.
 	 *
 	 * @param __prefix The prefix used.
 	 * @param __elementType The element type.
+	 * @param __cType The type to store.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/08/11
 	 */
-	StaticTableType(String __prefix, Class<?> __elementType)
+	StaticTableType(String __prefix, Class<?> __elementType,
+		CTypeProvider __cType)
 		throws NullPointerException
 	{
-		if (__prefix == null || __elementType == null)
+		this(__prefix, __elementType, __cType.type());
+	}
+	
+	/**
+	 * Initializes the table type.
+	 *
+	 * @param __prefix The prefix used.
+	 * @param __elementType The element type.
+	 * @param __cType The type to store.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/11
+	 */
+	StaticTableType(String __prefix, Class<?> __elementType, CType __cType)
+		throws NullPointerException
+	{
+		if (__prefix == null || __elementType == null || __cType == null)
 			throw new NullPointerException("NARG");
 		
 		this.prefix = __prefix;
 		this.elementType = __elementType;
+		this.cType = __cType;
 	}
 }
