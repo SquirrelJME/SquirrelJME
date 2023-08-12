@@ -25,7 +25,7 @@ import java.util.Map;
  * @param <E> The type of entries to store.
  * @since 2023/08/10
  */
-public class StaticTable<E>
+public abstract class StaticTable<E>
 {
 	/** The length that prefixes must be. */
 	private static final int _PREFIX_LENGTH = 4;

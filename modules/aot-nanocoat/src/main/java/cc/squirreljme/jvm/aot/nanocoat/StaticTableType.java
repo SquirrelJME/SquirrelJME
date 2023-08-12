@@ -15,6 +15,8 @@ import cc.squirreljme.c.std.CTypeProvider;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassObjectLinkage;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.FieldAccessLinkage;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.lang.ref.Reference;
 import java.util.Arrays;
 import java.util.List;
 import net.multiphasicapps.collections.UnmodifiableList;
@@ -155,5 +157,26 @@ public enum StaticTableType
 		this.prefix = __prefix;
 		this.elementType = __elementType;
 		this.cType = __cType;
+	}
+	
+	/**
+	 * Initializes a new table.
+	 *
+	 * @param __group The group this is under.
+	 * @return The created table.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/12
+	 */
+	final StaticTable<?> __newTable(Reference<StaticTableGroup> __group)
+		throws NullPointerException
+	{
+		if (__group == null)
+			throw new NullPointerException("NARG");
+		
+		switch (this)
+		{
+			default:
+				throw Debugging.todo(this);
+		}
 	}
 }

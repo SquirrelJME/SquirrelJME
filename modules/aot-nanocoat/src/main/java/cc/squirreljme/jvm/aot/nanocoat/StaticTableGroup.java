@@ -39,7 +39,7 @@ public class StaticTableGroup
 				StaticTableType.class, StaticTableType.values());
 		Reference<StaticTableGroup> self = new WeakReference<>(this);
 		for (StaticTableType type : StaticTableType.TYPES)
-			tables.put(type, new StaticTable<>(self, type));
+			tables.put(type, type.__newTable(self));
 		
 		// Store all tables
 		this.tables = UnmodifiableMap.of(tables);
