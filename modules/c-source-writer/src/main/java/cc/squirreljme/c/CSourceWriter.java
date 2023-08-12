@@ -191,13 +191,28 @@ public interface CSourceWriter
 	/**
 	 * Defines a function.
 	 *
-	 * @param __function@return The block for writing functions.
+	 * @param __function The function to define.
+	 * @return The block for writing functions.
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException If no name was specified.
 	 * @since 2023/05/30
 	 */
 	CFunctionBlock define(CFunctionType __function)
 		throws IOException, NullPointerException;
+	
+	/**
+	 * Defines a variable to a value.
+	 *
+	 * @param __variable The variable to define.
+	 * @param __expression The expression to set it to.
+	 * @return {@code this}.
+	 * @throws IllegalArgumentException If the variable is not valid.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/12
+	 */
+	CSourceWriter define(CVariable __variable, CExpression __expression)
+		throws IllegalArgumentException, IOException, NullPointerException;
 	
 	/**
 	 * Defines a variable block that assigned a variable value.
@@ -286,6 +301,31 @@ public interface CSourceWriter
 	 * @since 2023/07/15
 	 */
 	CSourceWriter gotoLabel(CIdentifier __target)
+		throws IOException, NullPointerException;
+	
+	/**
+	 * Writes a header guard.
+	 *
+	 * @param __fileName The file name to write.
+	 * @return The block within the header.
+	 * @throws IllegalArgumentException If the file name is not valid.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/12
+	 */
+	CPPBlock headerGuard(String __fileName)
+		throws IllegalArgumentException, IOException, NullPointerException;
+	
+	/**
+	 * Writes a header guard.
+	 *
+	 * @param __fileName The file name to write.
+	 * @return The block within the header.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/12
+	 */
+	CPPBlock headerGuard(CFileName __fileName)
 		throws IOException, NullPointerException;
 	
 	/**

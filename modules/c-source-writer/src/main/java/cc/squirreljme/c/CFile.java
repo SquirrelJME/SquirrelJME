@@ -369,6 +369,22 @@ public class CFile
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2023/08/12
+	 */
+	@Override
+	public CSourceWriter define(CVariable __variable,
+		CExpression __expression)
+		throws IllegalArgumentException, IOException, NullPointerException
+	{
+		if (__variable == null || __expression == null)
+			throw new NullPointerException("NARG");
+		
+		return this.tokens(__variable.declareTokens(), "=",
+			__expression, ";");
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2023/06/24
 	 */
 	@Override
@@ -474,6 +490,65 @@ public class CFile
 			throw new NullPointerException("NARG");
 		
 		return this.tokens("goto", __target, ";");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/08/12
+	 */
+	@Override
+	public CPPBlock headerGuard(String __fileName)
+		throws IllegalArgumentException, IOException, NullPointerException
+	{
+		return this.headerGuard(CFileName.of(__fileName));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/08/12
+	 */
+	@Override
+	public CPPBlock headerGuard(CFileName __fileName)
+		throws IOException, NullPointerException
+	{
+		if (__fileName == null)
+			throw new NullPointerException("NARG");
+		
+		// Determine how the header guard should be named
+		StringBuilder builder = new StringBuilder(__fileName.fileName);
+		builder.insert(0, "SJME_HG_");
+		for (int i = 0, n = builder.length(); i < n; i++)
+		{
+			char c = builder.charAt(i);
+			
+			// Capitalize letters
+			if (c >= 'a' && c <= 'z')
+				c = (char)('A' + (c - 'a'));
+			
+			// Turn slashes and dots to underscores
+			else if (c == '/' || c == '_')
+				c = '.';
+			
+			// Ignore otherwise
+			else
+				continue;
+			
+			// Replace
+			builder.setCharAt(i, c);
+		}
+		
+		// Create identifier
+		CIdentifier identifier = CIdentifier.of(builder.toString());
+		
+		// Define the guard to prevent future use of this header
+		CPPBlock block = this.preprocessorIf(CExpressionBuilder.builder()
+			.not()
+			.preprocessorDefined(identifier)
+			.build());
+		block.preprocessorDefine(identifier, null);
+			
+		// Return block for writing
+		return block;
 	}
 	
 	/**

@@ -11,6 +11,7 @@ package cc.squirreljme.c;
 
 import cc.squirreljme.c.out.CPivotPoint;
 import cc.squirreljme.c.std.CFunctionProvider;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.util.List;
 
@@ -258,6 +259,22 @@ public abstract class CFileProxy
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2023/08/12
+	 */
+	@Override
+	public CSourceWriter define(CVariable __variable,
+		CExpression __expression)
+		throws IllegalArgumentException, IOException, NullPointerException
+	{
+		if (__variable == null || __expression == null)
+			throw new NullPointerException("NARG");
+		
+		this._file.define(__variable, __expression);
+		return this;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2023/06/24
 	 */
 	@Override
@@ -328,6 +345,28 @@ public abstract class CFileProxy
 	{
 		this._file.gotoLabel(__target);
 		return this;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/08/12
+	 */
+	@Override
+	public CPPBlock headerGuard(String __fileName)
+		throws IllegalArgumentException, IOException, NullPointerException
+	{
+		return this._file.headerGuard(__fileName);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/08/12
+	 */
+	@Override
+	public CPPBlock headerGuard(CFileName __fileName)
+		throws IOException, NullPointerException
+	{
+		return this._file.headerGuard(__fileName);
 	}
 	
 	/**

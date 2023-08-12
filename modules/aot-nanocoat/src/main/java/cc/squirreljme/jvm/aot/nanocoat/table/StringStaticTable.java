@@ -9,7 +9,11 @@
 
 package cc.squirreljme.jvm.aot.nanocoat.table;
 
+import cc.squirreljme.c.CBasicExpression;
+import cc.squirreljme.c.CFile;
+import cc.squirreljme.c.CFileName;
 import cc.squirreljme.c.CIdentifier;
+import cc.squirreljme.c.CPPBlock;
 import cc.squirreljme.c.CVariable;
 import cc.squirreljme.jvm.aot.nanocoat.ArchiveOutputQueue;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -75,13 +79,33 @@ public class StringStaticTable
 	 * @since 2023/08/12
 	 */
 	@Override
-	protected void writeEntry(ArchiveOutputQueue __archive,
+	protected void writeEntry(ArchiveOutputQueue __archive, String __fileName,
 		CVariable __variable, String __entry)
 		throws IOException, NullPointerException
 	{
-		if (__archive == null || __variable == null || __entry == null)
+		if (__archive == null || __fileName == null ||
+			__variable == null || __entry == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		// Header to declare extern to the string
+		CFileName headerName = CFileName.of(__fileName + ".h");
+		try (CFile header = __archive.nextCFile(headerName.toString()))
+		{
+			try (CPPBlock ignored = header.headerGuard(headerName))
+			{
+				header.declare(__variable.extern());
+			}
+		}
+		
+		// Source which actually defines the string
+		try (CFile source = __archive.nextCFile(__fileName + ".c"))
+		{
+			// Include header
+			source.preprocessorInclude(headerName);
+			
+			// Define the actual variable
+			source.define(__variable,
+				CBasicExpression.string(__entry));
+		}
 	}
 }

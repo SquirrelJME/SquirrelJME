@@ -95,7 +95,11 @@ public class ArchiveOutputQueue
 	public CFile nextCFile(String __name)
 		throws IOException, NullPointerException
 	{
-		return Utils.cFile(this.nextEntry(__name));
+		// Setup new C file and make sure it has a standard header
+		CFile result = Utils.cFile(this.nextEntry(__name));
+		Utils.headerC(result);
+		
+		return result;
 	}
 	
 	/**

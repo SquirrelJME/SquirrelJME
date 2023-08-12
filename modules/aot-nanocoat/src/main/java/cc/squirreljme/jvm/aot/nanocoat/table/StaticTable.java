@@ -77,6 +77,7 @@ public abstract class StaticTable<E>
 	 * Writes a table entry to the archive output.
 	 *
 	 * @param __archive The archive to write to.
+	 * @param __fileName The suggested file name.
 	 * @param __variable The variable being written.
 	 * @param __entry The entry to write.
 	 * @throws IOException On write errors.
@@ -84,7 +85,7 @@ public abstract class StaticTable<E>
 	 * @since 2023/08/12
 	 */
 	protected abstract void writeEntry(ArchiveOutputQueue __archive,
-		CVariable __variable, E __entry)
+		String __fileName, CVariable __variable, E __entry)
 		throws IOException, NullPointerException;
 	
 	/**

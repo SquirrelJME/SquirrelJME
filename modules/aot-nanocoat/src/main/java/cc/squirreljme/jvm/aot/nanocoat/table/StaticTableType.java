@@ -32,8 +32,8 @@ public enum StaticTableType
 {
 	/** Strings. */
 	STRINGS("char",
-		byte.class,
-		CPrimitiveType.CONST_CHAR_STAR),
+		String.class,
+		CPrimitiveType.CONST_CHAR_STAR.constType()),
 	
 	/** Method code. */
 	CODE("code",
