@@ -7,11 +7,13 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.aot.nanocoat;
+package cc.squirreljme.jvm.aot.nanocoat.table;
 
 import cc.squirreljme.c.CPrimitiveType;
 import cc.squirreljme.c.CType;
 import cc.squirreljme.c.std.CTypeProvider;
+import cc.squirreljme.jvm.aot.nanocoat.CodeFingerprint;
+import cc.squirreljme.jvm.aot.nanocoat.VariableLimits;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassObjectLinkage;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.FieldAccessLinkage;

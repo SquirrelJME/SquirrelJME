@@ -15,7 +15,6 @@ import cc.squirreljme.c.CBlock;
 import cc.squirreljme.c.CExpressionBuilder;
 import cc.squirreljme.c.CFile;
 import cc.squirreljme.c.CFileName;
-import cc.squirreljme.c.CFunctionType;
 import cc.squirreljme.c.CIdentifier;
 import cc.squirreljme.c.CPPBlock;
 import cc.squirreljme.c.CSourceWriter;
@@ -26,10 +25,10 @@ import cc.squirreljme.jvm.aot.LinkGlob;
 import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmPrimitiveType;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
+import cc.squirreljme.jvm.aot.nanocoat.table.StaticTableGroup;
 import cc.squirreljme.jvm.manifest.JavaManifest;
 import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.cldc.util.EnumTypeMap;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import cc.squirreljme.runtime.cldc.util.SortedTreeSet;
 import java.io.ByteArrayOutputStream;
@@ -41,7 +40,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import net.multiphasicapps.collections.UnmodifiableMap;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
 /**

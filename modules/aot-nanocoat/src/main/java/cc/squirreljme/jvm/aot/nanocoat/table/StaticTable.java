@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.aot.nanocoat;
+package cc.squirreljme.jvm.aot.nanocoat.table;
 
 import cc.squirreljme.c.CIdentifier;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
