@@ -21,7 +21,7 @@ import net.multiphasicapps.collections.UnmodifiableMap;
  * @see StaticTable
  * @since 2023/08/12
  */
-public class StaticTableGroup
+public class StaticTableManager
 {
 	/** Static table outputs. */
 	protected final Map<StaticTableType, StaticTable<?>> tables;
@@ -31,13 +31,13 @@ public class StaticTableGroup
 	 *
 	 * @since 2023/08/12
 	 */
-	public StaticTableGroup()
+	public StaticTableManager()
 	{
 		// Initialize tables
 		Map<StaticTableType, StaticTable<?>> tables =
 			new EnumTypeMap<StaticTableType, StaticTable<?>>(
 				StaticTableType.class, StaticTableType.values());
-		Reference<StaticTableGroup> self = new WeakReference<>(this);
+		Reference<StaticTableManager> self = new WeakReference<>(this);
 		for (StaticTableType type : StaticTableType.TYPES)
 			tables.put(type, type.__newTable(self));
 		

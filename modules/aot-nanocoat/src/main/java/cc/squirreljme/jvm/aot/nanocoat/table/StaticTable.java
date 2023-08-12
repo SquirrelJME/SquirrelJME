@@ -37,7 +37,7 @@ public abstract class StaticTable<E>
 	protected final StaticTableType type;
 	
 	/** The group which owns this table. */
-	private final Reference<StaticTableGroup> _group;
+	private final Reference<StaticTableManager> _group;
 	
 	/**
 	 * Initializes the static table.
@@ -46,7 +46,7 @@ public abstract class StaticTable<E>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/08/11
 	 */
-	StaticTable(Reference<StaticTableGroup> __group, StaticTableType __type)
+	StaticTable(Reference<StaticTableManager> __group, StaticTableType __type)
 		throws NullPointerException
 	{
 		if (__group == null || __type == null)

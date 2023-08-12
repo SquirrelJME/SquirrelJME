@@ -25,7 +25,7 @@ import cc.squirreljme.jvm.aot.LinkGlob;
 import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmPrimitiveType;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
-import cc.squirreljme.jvm.aot.nanocoat.table.StaticTableGroup;
+import cc.squirreljme.jvm.aot.nanocoat.table.StaticTableManager;
 import cc.squirreljme.jvm.manifest.JavaManifest;
 import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -82,8 +82,8 @@ public class NanoCoatLinkGlob
 		new SortedTreeSet<>();
 	
 	/** Static tables. */
-	protected final StaticTableGroup tables =
-		new StaticTableGroup();
+	protected final StaticTableManager tables =
+		new StaticTableManager();
 	
 	/** Identifiers to resources. */
 	@Deprecated

@@ -169,7 +169,7 @@ public enum StaticTableType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/08/12
 	 */
-	final StaticTable<?> __newTable(Reference<StaticTableGroup> __group)
+	final StaticTable<?> __newTable(Reference<StaticTableManager> __group)
 		throws NullPointerException
 	{
 		if (__group == null)
