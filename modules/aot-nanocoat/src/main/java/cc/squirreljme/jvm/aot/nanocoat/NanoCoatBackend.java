@@ -82,12 +82,10 @@ public class NanoCoatBackend
 		// Record the added file, keeping it sorted
 		String baseName = Utils.basicFileName(
 			processor.classIdentifier + ".c");
-		glob.outputFiles.add(baseName);
 		
 		// Process source code in single file
-		try (OutputStream out = glob.zip.nextEntry(
-			glob.inDirectory(baseName));
-			 CFile sourceOut = Utils.cFile(out))
+		try (CFile sourceOut = glob.archiveQueue.nextCFile(
+			glob.inDirectory(baseName)))
 		{
 			// Write header
 			Utils.headerC(sourceOut);
@@ -130,14 +128,10 @@ public class NanoCoatBackend
 		CSourceWriter headerOut = glob._headerBlock;
 		headerOut.declare(rcVar.extern());
 		
-		// Record the added file, keeping it sorted
-		String rcFileName = Utils.basicFileName(rcIdentifier + ".c");
-		glob.outputFiles.add(rcFileName);
-		
 		// Process source code in single file
-		try (OutputStream out = glob.zip.nextEntry(
-			glob.inDirectory(rcFileName));
-			 CFile sourceOut = Utils.cFile(out))
+		String rcFileName = Utils.basicFileName(rcIdentifier + ".c");
+		try (CFile sourceOut = glob.archiveQueue.nextCFile(
+			glob.inDirectory(rcFileName)))
 		{
 			// Write header
 			Utils.headerC(sourceOut);
