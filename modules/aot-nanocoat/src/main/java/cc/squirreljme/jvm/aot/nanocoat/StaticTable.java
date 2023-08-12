@@ -11,6 +11,7 @@ package cc.squirreljme.jvm.aot.nanocoat;
 
 import cc.squirreljme.c.CIdentifier;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
+import java.lang.ref.Reference;
 import java.util.Map;
 
 /**
@@ -35,6 +36,9 @@ public class StaticTable<E>
 	/** The type of table this is. */
 	protected final StaticTableType type;
 	
+	/** The group which owns this table. */
+	private final Reference<StaticTableGroup> _group;
+	
 	/**
 	 * Initializes the static table.
 	 *
@@ -42,12 +46,13 @@ public class StaticTable<E>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/08/11
 	 */
-	public StaticTable(StaticTableType __type)
+	StaticTable(Reference<StaticTableGroup> __group, StaticTableType __type)
 		throws NullPointerException
 	{
-		if (__type == null)
+		if (__group == null || __type == null)
 			throw new NullPointerException("NARG");
 		
+		this._group = __group;
 		this.type = __type;
 	}
 }

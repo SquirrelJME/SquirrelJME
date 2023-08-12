@@ -83,10 +83,9 @@ public class NanoCoatLinkGlob
 	protected final Set<String> outputFiles =
 		new SortedTreeSet<>();
 	
-	/** Static table outputs. */
-	protected final Map<StaticTableType, StaticTable<?>> tables =
-		UnmodifiableMap.of(new EnumTypeMap<StaticTableType, StaticTable<?>>(
-			StaticTableType.class, StaticTableType.values()));
+	/** Static tables. */
+	protected final StaticTableGroup tables =
+		new StaticTableGroup();
 	
 	/** Identifiers to resources. */
 	@Deprecated
@@ -555,42 +554,5 @@ public class NanoCoatLinkGlob
 	public void rememberTests(List<String> __tests)
 	{
 		this._tests = __tests;
-	}
-	
-	/**
-	 * Returns the table for the given type. 
-	 *
-	 * @param <E> The element type to store.
-	 * @param __elementType The element type to store.
-	 * @param __type The type of table to get.
-	 * @return The table for the given type.
-	 * @throws ClassCastException If the element type is not correct.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/08/12
-	 */
-	@SuppressWarnings("unchecked")
-	public <E> StaticTable<E> table(Class<E> __elementType,
-		StaticTableType __type)
-		throws ClassCastException, NullPointerException
-	{
-		if (__type == null)
-			throw new NullPointerException("NARG");
-		
-		Map<StaticTableType, StaticTable<?>> tables = this.tables;
-		StaticTable<?> rv = tables.get(__type);
-		
-		// Need to create it?
-		if (rv == null)
-		{
-			rv = new StaticTable<>(__type);
-			tables.put(__type, rv);
-		}
-		
-		// Check type
-		if (!rv.type.elementType.isAssignableFrom(__elementType))
-			throw new ClassCastException("CLCL");
-		
-		// Use it
-		return (StaticTable<E>)rv;
 	}
 }
