@@ -67,7 +67,7 @@ public class StringStaticTable
 		}
 		
 		// Build string identity
-		return CIdentifier.of(String.format("str_%d_%s_%s",
+		return CIdentifier.of(String.format("char_%d_%s_%s",
 			__entry.length(),
 			Long.toString(__entry.hashCode() & 0xFFFFFFFFL, 36),
 			Long.toString(crc & 0xFFFFFFFFL, 36)));
