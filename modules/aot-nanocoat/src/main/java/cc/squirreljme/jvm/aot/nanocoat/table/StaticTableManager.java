@@ -57,6 +57,18 @@ public class StaticTableManager
 	}
 	
 	/**
+	 * Returns the string table.
+	 *
+	 * @return The string table.
+	 * @since 2023/08/12
+	 */
+	public StringStaticTable strings()
+	{
+		return (StringStaticTable)this.table(String.class,
+			StaticTableType.STRINGS);
+	}
+	
+	/**
 	 * Returns the table for the given type. 
 	 *
 	 * @param <E> The element type to store.

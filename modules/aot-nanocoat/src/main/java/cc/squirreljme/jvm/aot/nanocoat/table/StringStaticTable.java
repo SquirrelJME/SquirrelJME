@@ -15,6 +15,7 @@ import cc.squirreljme.jvm.aot.nanocoat.ArchiveOutputQueue;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.lang.ref.Reference;
+import net.multiphasicapps.io.CRC32Calculator;
 
 /**
  * Static table for strings.
@@ -48,7 +49,25 @@ public class StringStaticTable
 		if (__entry == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		// Java's normal hashCode for String can have many collisions, so
+		// calculate the CRC of the String's UTF-8 data to attempt to obtain
+		// a longer identifier to use for the string
+		int crc;
+		try
+		{
+			crc = CRC32Calculator.calculateZip(
+				__entry.getBytes("utf-8"));
+		}
+		catch (IOException __e)
+		{
+			throw new IllegalArgumentException(__e);
+		}
+		
+		// Build string identity
+		return CIdentifier.of(String.format("str_%d_%s_%s",
+			__entry.length(),
+			Long.toString(__entry.hashCode() & 0xFFFFFFFFL, 36),
+			Long.toString(crc & 0xFFFFFFFFL, 36)));
 	}
 	
 	/**
