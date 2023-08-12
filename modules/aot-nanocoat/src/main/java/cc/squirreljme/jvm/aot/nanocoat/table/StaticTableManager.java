@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.aot.nanocoat.table;
 
+import cc.squirreljme.jvm.aot.nanocoat.ArchiveOutputQueue;
 import cc.squirreljme.runtime.cldc.util.EnumTypeMap;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -29,10 +30,16 @@ public class StaticTableManager
 	/**
 	 * Initializes the table group.
 	 *
+	 * @param __archive The archive to write to.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2023/08/12
 	 */
-	public StaticTableManager()
+	public StaticTableManager(ArchiveOutputQueue __archive)
+		throws NullPointerException
 	{
+		if (__archive == null)
+			throw new NullPointerException("NARG");
+		
 		// Initialize tables
 		Map<StaticTableType, StaticTable<?>> tables =
 			new EnumTypeMap<StaticTableType, StaticTable<?>>(

@@ -9,10 +9,16 @@
 
 package cc.squirreljme.jvm.aot.nanocoat;
 
+import cc.squirreljme.c.CFile;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.SortedTreeSet;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintStream;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.Set;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
 /**
@@ -27,6 +33,14 @@ public class ArchiveOutputQueue
 {
 	/** The Zip to write to. */
 	protected final ZipStreamWriter zip;
+	
+	/** Files which have been output to this archive. */
+	protected final Set<String> outputFiles =
+		new SortedTreeSet<>();
+	
+	/** Self reference, to lower object creation. */
+	private final Reference<ArchiveOutputQueue> _self =
+		new WeakReference<>(this);
 	
 	/**
 	 * Initializes the archive output.
@@ -56,6 +70,21 @@ public class ArchiveOutputQueue
 	}
 	
 	/**
+	 * Builds a new C File for output.
+	 *
+	 * @param __name The name of the file.
+	 * @return The resultant C File.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/12
+	 */
+	public CFile nextCFile(String __name)
+		throws IOException, NullPointerException
+	{
+		return Utils.cFile(this.nextEntry(__name));
+	}
+	
+	/**
 	 * Creates a new entry to write data to.
 	 *
 	 * @param __name The name of the file to write.
@@ -70,6 +99,24 @@ public class ArchiveOutputQueue
 		if (__name == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		// Setup new entry
+		return new __QueuedOutput__(this._self);
+	}
+	
+	/**
+	 * Creates a new {@link PrintStream} output.
+	 *
+	 * @param __name The name of the file.
+	 * @return The print stream to write to the file.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/12
+	 */
+	public PrintStream nextPrintStream(String __name)
+		throws IOException, NullPointerException
+	{
+		return new PrintStream(this.nextEntry(__name),
+			true,
+			"utf-8");
 	}
 }

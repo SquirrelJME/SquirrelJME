@@ -78,12 +78,12 @@ public class NanoCoatLinkGlob
 	protected final CFile rootSourceOut;
 	
 	/** Files which have been output. */
+	@Deprecated
 	protected final Set<String> outputFiles =
 		new SortedTreeSet<>();
 	
 	/** Static tables. */
-	protected final StaticTableManager tables =
-		new StaticTableManager();
+	protected final StaticTableManager tables;
 	
 	/** Identifiers to resources. */
 	@Deprecated
@@ -120,6 +120,9 @@ public class NanoCoatLinkGlob
 	final Set<CIdentifier> _headerDups =
 		new HashSet<>();
 	
+	/** The archive queue. */
+	protected final ArchiveOutputQueue archiveQueue;
+	
 	/** The C header block. */
 	volatile CBlock _headerBlock;
 	
@@ -133,16 +136,24 @@ public class NanoCoatLinkGlob
 	 * Initializes the link glob.
 	 * 
 	 * @param __aotSettings The name of the glob.
-	 * @param __headerOut The final output file.
+	 * @param __out The final output file.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/28
 	 */
 	public NanoCoatLinkGlob(AOTSettings __aotSettings,
-		OutputStream __headerOut)
+		OutputStream __out)
 		throws NullPointerException
 	{
-		if (__aotSettings == null || __headerOut == null)
+		if (__aotSettings == null || __out == null)
 			throw new NullPointerException("NARG");
+		
+		// Setup Zip output
+		ZipStreamWriter zip = new ZipStreamWriter(__out);
+		this.zip = zip;
+		
+		// Archive writer uses the Zip
+		this.archiveQueue = new ArchiveOutputQueue(zip);
+		this.tables = new StaticTableManager(this.archiveQueue);
 		
 		// Determine output names
 		this.aotSettings = __aotSettings;
@@ -167,10 +178,6 @@ public class NanoCoatLinkGlob
 		this.libraryResources = CVariable.of(JvmTypes.STATIC_LIBRARY_RESOURCES
 				.type().constType(),
 			this.baseName + "__resources");
-		
-		// Setup ZIP output
-		ZipStreamWriter zip = new ZipStreamWriter(__headerOut);
-		this.zip = zip;
 		
 		// Setup output
 		try
