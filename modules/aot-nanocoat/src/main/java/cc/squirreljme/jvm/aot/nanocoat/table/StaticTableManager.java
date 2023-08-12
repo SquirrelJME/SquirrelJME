@@ -15,7 +15,6 @@ import cc.squirreljme.runtime.cldc.util.EnumTypeMap;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Map;
-import net.multiphasicapps.collections.UnmodifiableMap;
 
 /**
  * A group of static tables.
@@ -25,11 +24,15 @@ import net.multiphasicapps.collections.UnmodifiableMap;
  */
 public class StaticTableManager
 {
-	/** Static table outputs. */
-	protected final Map<StaticTableType, StaticTable<?>> tables;
-	
 	/** The archive to write to. */
 	protected final ArchiveOutputQueue archive;
+	
+	/** Static table outputs. */
+	private final Map<StaticTableType, StaticTable<?>> _tables;
+	
+	/** Self reference. */
+	private final Reference<StaticTableManager> _self =
+		new WeakReference<>(this);
 	
 	/**
 	 * Initializes the table group.
@@ -45,15 +48,10 @@ public class StaticTableManager
 			throw new NullPointerException("NARG");
 		
 		// Initialize tables
-		Map<StaticTableType, StaticTable<?>> tables =
-			new EnumTypeMap<StaticTableType, StaticTable<?>>(
+		this._tables = new EnumTypeMap<StaticTableType, StaticTable<?>>(
 				StaticTableType.class, StaticTableType.values());
-		Reference<StaticTableManager> self = new WeakReference<>(this);
-		for (StaticTableType type : StaticTableType.TYPES)
-			tables.put(type, type.__newTable(self));
 		
 		// Store all tables
-		this.tables = UnmodifiableMap.of(tables);
 		this.archive = __archive;
 	}
 	
@@ -100,8 +98,17 @@ public class StaticTableManager
 		if (__type == null)
 			throw new NullPointerException("NARG");
 		
+		// Get and create table if it is missing, lazy initialization since
+		// for some libraries not all tables might be used
+		Map<StaticTableType, StaticTable<?>> tables = this._tables;
+		StaticTable<?> rv = tables.get(__type);
+		if (rv == null)
+		{
+			rv = __type.__newTable(this._self);
+			tables.put(__type, rv);
+		}
+		
 		// Check type of requested table
-		StaticTable<?> rv = this.tables.get(__type);
 		if (!rv.type.elementType.isAssignableFrom(__elementType))
 			throw new ClassCastException("CLCL");
 		
