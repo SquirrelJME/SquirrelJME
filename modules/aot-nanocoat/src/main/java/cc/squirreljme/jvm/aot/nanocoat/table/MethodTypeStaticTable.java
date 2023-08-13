@@ -51,7 +51,7 @@ public class MethodTypeStaticTable
 			throw new NullPointerException("NARG");
 		
 		// Make method descriptors similar to strings
-		StringStaticTable string = this.__manager().string();
+		StringStaticTable string = this.__manager().strings();
 		return String.format("%d_%s",
 			__key.argumentCount(),
 			string.put(__key.toString()).name);
@@ -72,12 +72,16 @@ public class MethodTypeStaticTable
 			throw new NullPointerException("NARG");
 		
 		// Define the type information
+		StringStaticTable strings = this.__manager().strings();
 		FieldTypeStaticTable fields = this.__manager().fieldType();
 		try (CStructVariableBlock struct = __sourceFile.define(
 			CStructVariableBlock.class, __variable))
 		{
 			struct.memberSet("hashCode",
 				CBasicExpression.number(__key.hashCode()));
+			
+			struct.memberSet("descriptor",
+				CBasicExpression.reference(strings.put(__key.toString())));
 			
 			// Return value
 			FieldDescriptor rVal = __key.returnValue();

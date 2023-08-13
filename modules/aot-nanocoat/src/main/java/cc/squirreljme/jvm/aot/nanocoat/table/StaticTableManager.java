@@ -100,7 +100,7 @@ public class StaticTableManager
 	 * @return The string table.
 	 * @since 2023/08/12
 	 */
-	public StringStaticTable string()
+	public StringStaticTable strings()
 	{
 		return (StringStaticTable)this.table(String.class,
 			StaticTableType.STRING);

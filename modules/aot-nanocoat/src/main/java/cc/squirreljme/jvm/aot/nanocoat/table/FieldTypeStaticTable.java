@@ -14,7 +14,6 @@ import cc.squirreljme.c.CFile;
 import cc.squirreljme.c.CStructVariableBlock;
 import cc.squirreljme.c.CVariable;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmPrimitiveType;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import net.multiphasicapps.classfile.FieldDescriptor;
@@ -50,7 +49,7 @@ public class FieldTypeStaticTable
 			throw new NullPointerException("NARG");
 		
 		// Make field descriptors similar to strings
-		StringStaticTable string = this.__manager().string();
+		StringStaticTable string = this.__manager().strings();
 		return String.format("%s",
 			string.put(__key.toString()).name);
 	}
@@ -68,7 +67,7 @@ public class FieldTypeStaticTable
 			__key == null)
 			throw new NullPointerException("NARG");
 		
-		StringStaticTable strings = this.__manager().string();
+		StringStaticTable strings = this.__manager().strings();
 		try (CStructVariableBlock struct = __sourceFile.define(
 			CStructVariableBlock.class, __variable))
 		{
@@ -76,7 +75,7 @@ public class FieldTypeStaticTable
 				CBasicExpression.number(__key.hashCode()));
 			
 			struct.memberSet("descriptor",
-				strings.put(__key.toString()));
+				CBasicExpression.reference(strings.put(__key.toString())));
 			
 			struct.memberSet("basicType",
 				CBasicExpression.number(JvmPrimitiveType.of(__key).ordinal()));

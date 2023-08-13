@@ -1023,6 +1023,7 @@ public enum JvmTypes
 			return CStructTypeBuilder.builder(CStructKind.STRUCT,
 				"sjme_static_methodType")
 				.member(JvmTypes.JINT, "hashCode")
+				.member(CPrimitiveType.CONST_CHAR_STAR, "descriptor")
 				.member(JvmTypes.STATIC_FIELD_TYPE.type().constType()
 					.pointerType(), "returnType")
 				.member(JvmTypes.JINT, "argCount")

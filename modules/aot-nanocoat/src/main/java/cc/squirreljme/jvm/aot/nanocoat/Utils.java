@@ -92,9 +92,10 @@ public final class Utils
 			throw new NullPointerException("NARG");
 		
 		return new CFile(new PrettyCTokenOutput(
+			new EchoCTokenOutput(System.err,
 			new AppendableCTokenOutput(
 			new PrintStream(__out, true,
-				"utf-8"))));
+				"utf-8")))));
 	}
 	
 	/**

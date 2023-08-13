@@ -392,6 +392,9 @@ typedef struct sjme_static_methodType
 	/** The hash code for the method type. */
 	jint hashCode;
 	
+	/** The descriptor for the method type. */
+	const char* descriptor;
+	
 	/** The return type. */
 	const sjme_static_fieldType* returnType;
 	
