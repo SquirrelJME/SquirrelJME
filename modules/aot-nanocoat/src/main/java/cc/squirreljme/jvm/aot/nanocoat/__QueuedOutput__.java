@@ -10,10 +10,12 @@
 package cc.squirreljme.jvm.aot.nanocoat;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.ref.Reference;
+import net.multiphasicapps.io.CRC32Calculator;
 
 /**
  * Handles storing the file buffer for file output.
@@ -63,7 +65,33 @@ final class __QueuedOutput__
 	public void close()
 		throws IOException
 	{
-		throw Debugging.todo();
+		// Close once
+		if (this._isClosed)
+			return;
+		this._isClosed = true;
+		
+		// Get owning archive
+		ArchiveOutputQueue archive = this.owner.get();
+		if (archive == null)
+			throw new IllegalStateException("GCGC");
+		
+		// Setup entry within the archive to write to
+		int checksum;
+		try (OutputStream out = archive.nextEntry(this.name))
+		{
+			// Write all the written data
+			byte[] bytes = this.data.toByteArray();
+			out.write(bytes, 0, bytes.length);
+			
+			// Make sure the output is flushed properly
+			out.flush();
+			
+			// Calculate data checksum, for file clashing
+			checksum = CRC32Calculator.calculateZip(bytes);
+		}
+		
+		// Make a record of the entry
+		archive.outputFiles.put(this.name, checksum);
 	}
 	
 	/**
@@ -74,7 +102,10 @@ final class __QueuedOutput__
 	public void write(int __b)
 		throws IOException
 	{
-		throw Debugging.todo();
+		if (this._isClosed)
+			throw new IOException("CLSD");
+		
+		this.data.write(__b);
 	}
 	
 	/**
@@ -83,9 +114,15 @@ final class __QueuedOutput__
 	 */
 	@Override
 	public void write(byte[] __b)
-		throws IOException
+		throws IOException, NullPointerException
 	{
-		throw Debugging.todo();
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
+		if (this._isClosed)
+			throw new IOException("CLSD");
+	
+		this.data.write(__b);
 	}
 	
 	/**
@@ -94,8 +131,14 @@ final class __QueuedOutput__
 	 */
 	@Override
 	public void write(byte[] __b, int __o, int __l)
-		throws IOException
+		throws IndexOutOfBoundsException, IOException, NullPointerException
 	{
-		throw Debugging.todo();
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
+		if (this._isClosed)
+			throw new IOException("CLSD");
+	
+		this.data.write(__b, __o, __l);
 	}
 }
