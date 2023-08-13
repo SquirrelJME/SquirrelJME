@@ -249,6 +249,10 @@ public final class MethodDescriptor
 				return compare;
 		}
 		
+		// Shorter list comes first
+		if (aLen != bLen)
+			return bLen - aLen;
+		
 		// Compare return types
 		FieldDescriptor aReturn = this.rvalue;
 		FieldDescriptor bReturn = __other.rvalue;
@@ -264,14 +268,10 @@ public final class MethodDescriptor
 		
 		// Do the compare if neither are null
 		if (aReturn != null)
-		{
-			int compare = aReturn.compareTo(bReturn);
-			if (compare != 0)
-				return compare;
-		}
+			return aReturn.compareTo(bReturn);
 		
-		// Shorter lists come first
-		return bLen - aLen;
+		// These are equal
+		return 0;
 	}
 	
 	/**
