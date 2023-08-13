@@ -188,14 +188,13 @@ public abstract class StaticTable<K, V>
 		identifiers.put(identity, __key);
 		identifiersTrace.put(identity, new Throwable(__key.toString()));
 		
-		// We need the table manager from this point on
-		StaticTableManager manager = this.__manager();
-		
-		// Setup variable and store into the map
+		// Build variable
 		StaticTableType type = this.type;
-		keys.put(__key, null);
 		CVariable result = CVariable.of(type.cType, identity);
 		keys.put(__key, result);
+		
+		// We need the table manager from this point on
+		StaticTableManager manager = this.__manager();
 		
 		// Since we just put the key in, generate the needed sources
 		String sourceFile = String.format("shared/%s/%s.c",

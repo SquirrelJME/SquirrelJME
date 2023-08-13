@@ -282,6 +282,8 @@ public final class MethodDescriptor
 	public boolean equals(Object __o)
 	{
 		// Check
+		if (__o == this)
+			return true;
 		if (!(__o instanceof MethodDescriptor))
 			return false;
 		

@@ -22,7 +22,7 @@ public final class CIdentifier
 	implements Comparable<CIdentifier>, CExpression, CTokenizable
 {
 	/** The string identifier. */
-	protected String identifier;
+	protected final String identifier;
 	
 	/**
 	 * Initializes the C identifier.
