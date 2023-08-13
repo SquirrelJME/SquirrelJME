@@ -216,6 +216,33 @@ public class VMCompactLibraryTaskAction
 						"java.lang.String", ",",
 						"java.lang.Object[]", ")", ";",
 				"}",
+			
+			// Disable some DebugShelf methods
+			"-assumevalues",
+				"class", "cc.squirreljme.jvm.mle.DebugShelf", "{",
+					"int", "verbose", "(",
+						"int", ")", "=", "0", ";",
+					"int", "verboseInternalThread", "(",
+						"int", ")", "=", "0", ";",
+				"}",
+			"-assumenosideeffects",
+				"class", "cc.squirreljme.jvm.mle.DebugShelf", "{",
+					"int", "verbose", "(",
+						"int", ")", ";",
+					"int", "verboseInternalThread", "(",
+						"int", ")", ";",
+					"void", "verboseStop", "(",
+						"int", ")", ";",
+				"}",
+			"-assumenoexternalsideeffects",
+				"class", "cc.squirreljme.jvm.mle.DebugShelf", "{",
+					"int", "verbose", "(",
+						"int", ")", ";",
+					"int", "verboseInternalThread", "(",
+						"int", ")", ";",
+					"void", "verboseStop", "(",
+						"int", ")", ";",
+				"}",
 		};
 	
 	/** Settings for tests. */
