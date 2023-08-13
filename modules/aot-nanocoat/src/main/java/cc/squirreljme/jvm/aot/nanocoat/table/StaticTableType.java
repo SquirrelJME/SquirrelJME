@@ -14,7 +14,6 @@ import cc.squirreljme.c.CType;
 import cc.squirreljme.c.std.CTypeProvider;
 import cc.squirreljme.jvm.aot.nanocoat.ClassInterfaces;
 import cc.squirreljme.jvm.aot.nanocoat.CodeFingerprint;
-import cc.squirreljme.jvm.aot.nanocoat.CodeInformation;
 import cc.squirreljme.jvm.aot.nanocoat.VariableLimits;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassObjectLinkage;
@@ -23,6 +22,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.util.Arrays;
 import java.util.List;
+import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.FieldDescriptor;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.collections.UnmodifiableList;
@@ -43,7 +43,7 @@ public enum StaticTableType
 	/** Method code. */
 	CODE("code",
 		CodeFingerprint.class,
-		CodeInformation.class,
+		ByteCode.class,
 		JvmTypes.STATIC_CLASS_CODE),
 	
 	/** Class interfaces. */

@@ -10,12 +10,17 @@
 package cc.squirreljme.jvm.aot.nanocoat.table;
 
 import cc.squirreljme.c.CFile;
+import cc.squirreljme.c.CFunctionBlock;
+import cc.squirreljme.c.CIdentifier;
+import cc.squirreljme.c.CStructVariableBlock;
 import cc.squirreljme.c.CVariable;
+import cc.squirreljme.jvm.aot.nanocoat.ByteCodeProcessor;
 import cc.squirreljme.jvm.aot.nanocoat.CodeFingerprint;
-import cc.squirreljme.jvm.aot.nanocoat.CodeInformation;
+import cc.squirreljme.jvm.aot.nanocoat.common.JvmFunctions;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.lang.ref.Reference;
+import net.multiphasicapps.classfile.ByteCode;
 
 /**
  * Table for method code.
@@ -23,7 +28,7 @@ import java.lang.ref.Reference;
  * @since 2023/08/12
  */
 public class CodeStaticTable
-	extends StaticTable<CodeFingerprint, CodeInformation>
+	extends StaticTable<CodeFingerprint, ByteCode>
 {
 	/**
 	 * Initializes the code table.
@@ -60,13 +65,37 @@ public class CodeStaticTable
 	 */
 	@Override
 	protected void writeSource(CFile __sourceFile, String __fileName,
-		CVariable __variable, CodeFingerprint __key, CodeInformation __value)
+		CVariable __variable, CodeFingerprint __key, ByteCode __value)
 		throws IOException, NullPointerException
 	{
 		if (__sourceFile == null || __fileName == null || __variable == null ||
 			__key == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		// Function code name
+		CIdentifier functionName = CIdentifier.of(
+			__variable.name + "__code");
+		
+		// Write source code of the method byte code
+		ByteCodeProcessor processor = new ByteCodeProcessor(
+			this.__manager(), __value);
+		try (CFunctionBlock function = __sourceFile.define(
+			JvmFunctions.METHOD_CODE.function().rename(functionName)))
+		{
+			processor.process(function);
+		}
+		
+		// Write struct that defines the information on the code
+		try (CStructVariableBlock struct = __sourceFile.define(
+			CStructVariableBlock.class, __variable))
+		{
+			struct.memberSet("code",
+				functionName);
+			
+			if (true)
+				throw Debugging.todo();
+			/* "limits" */
+			/* "thrownVarIndex" */
+		}
 	}
 }

@@ -119,7 +119,7 @@ public final class MethodProcessor
 			if (this.method.byteCode() != null)
 				struct.memberSet("code",
 					CBasicExpression.reference(glob.tables.code()
-						.identify(this.codeFingerprint)));
+						.put(this.codeFingerprint, this.method.byteCode())));
 		}
 	}
 	

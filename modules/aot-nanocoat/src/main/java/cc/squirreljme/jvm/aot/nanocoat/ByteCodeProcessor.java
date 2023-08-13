@@ -33,11 +33,10 @@ import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassLinkTable;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.Container;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.Linkage;
+import cc.squirreljme.jvm.aot.nanocoat.table.StaticTableManager;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.io.IOException;
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +53,6 @@ import net.multiphasicapps.classfile.InstructionJumpTarget;
 import net.multiphasicapps.classfile.InstructionJumpTargets;
 import net.multiphasicapps.classfile.IntMatchingJumpTable;
 import net.multiphasicapps.classfile.JavaStackShuffleType;
-import net.multiphasicapps.classfile.Method;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodReference;
 import net.multiphasicapps.classfile.PrimitiveType;
@@ -71,12 +69,6 @@ public class ByteCodeProcessor
 	/** The method code. */
 	protected final ByteCode code;
 	
-	/** The processor this is in. */
-	protected final Reference<MethodProcessor> methodProcessor;
-	
-	/** The method being processed. */
-	protected final Method method;
-	
 	/** The link table for the class. */
 	@Deprecated
 	protected final ClassLinkTable linkTable =
@@ -90,6 +82,9 @@ public class ByteCodeProcessor
 	
 	/** Variable placement mappings. */
 	protected final VariablePlacementMap variablePlacements;
+	
+	/** The table manager. */
+	protected final StaticTableManager tables;
 	
 	/** Basic block mappings. */
 	private final Map<Integer, BasicBlock> _basicBlocks =
@@ -107,26 +102,26 @@ public class ByteCodeProcessor
 	
 	/**
 	 * Initializes the byte code processor.
-	 * 
-	 * @param __method The method processor.
+	 *
+	 * @param __tables Table manager.
 	 * @param __code The code being processed.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/31
 	 */
-	public ByteCodeProcessor(MethodProcessor __method, ByteCode __code)
+	public ByteCodeProcessor(StaticTableManager __tables,
+		ByteCode __code)
 		throws NullPointerException
 	{
-		if (__method == null || __code == null)
+		if (__tables == null || __code == null)
 			throw new NullPointerException("NARG");
 		
-		this.methodProcessor = new WeakReference<>(__method);
+		this.tables = __tables;
 		this.code = __code;
-		this.method = __method.method;
 		this.stackMap = __code.stackMapTableFull();
-		this.isStatic = __method.method.flags().isStatic();
-		this.variablePlacements = null;/*new VariablePlacementMap(
+		this.isStatic = !__code.isInstance();
+		this.variablePlacements = new VariablePlacementMap(
 			!__code.isInstance(), __code.type(), __code.maxLocals(),
-			__code.maxStack(), this.stackMap);*/
+			__code.maxStack(), this.stackMap);
 		
 		// Reverse jump targets for instructions
 		Map<Integer, InstructionJumpTargets> reverseJumpsTable =
@@ -400,12 +395,6 @@ public class ByteCodeProcessor
 					// Start of function call, initializes accordingly
 					cases.nextCase(Constants.SJME_NANOCOAT_START_CALL);
 					
-					// If synchronized, lock on monitor implicitly here
-					Method method = this.method;
-					if (method.flags().isSynchronized())
-						this.__monitor(body, true, (this.isStatic ?
-							codeVars.classObjectRef() : codeVars.thisRef()));
-					
 					// --- Initialization ---
 					// Return here so the initialization does get complete
 					body.returnValue(Constants.TRUE);
@@ -414,11 +403,6 @@ public class ByteCodeProcessor
 					cases.nextCase(Constants.SJME_NANOCOAT_END_CALL);
 				
 					// --- Exit ---
-					// If synchronized, unlock on monitor implicitly here
-					if (method.flags().isSynchronized())
-						this.__monitor(body, false, (this.isStatic ?
-							codeVars.classObjectRef() : codeVars.thisRef()));
-					
 					// Now return
 					body.returnValue(Constants.FALSE);
 					
@@ -1279,6 +1263,9 @@ public class ByteCodeProcessor
 		// Call put handler
 		if (__store)
 		{
+			if (true)
+				throw Debugging.todo();
+			/*
 			// Call put handler
 			__block.functionCall(JvmFunctions.NVM_FIELD_PUT,
 				codeVars.currentFrame(),
@@ -1289,11 +1276,16 @@ public class ByteCodeProcessor
 					this.method.nameAndType(), __static, __field,
 					true), "fieldAccess"),
 				value.referenceTemp(JvmTypes.ANY));
+				
+			 */
 		}
 		
 		// Call get handler
 		else
 		{
+			if (true)
+				throw Debugging.todo();
+			/*
 			__block.variableSetViaFunction(value.tempIndex(),
 				JvmFunctions.NVM_FIELD_GET_TO_TEMP,
 				codeVars.currentFrame(),
@@ -1303,7 +1295,7 @@ public class ByteCodeProcessor
 				codeVars.linkageReference(
 					this.linkTable.fieldAccess(this.method.nameAndType(),
 						__static, __field,
-						false), "fieldAccess"));
+						false), "fieldAccess"));*/
 			
 			// Push value
 			__block.functionCall(JvmFunctions.NVM_STACK_PUSH_ANY_FROM_TEMP,
@@ -1599,6 +1591,9 @@ public class ByteCodeProcessor
 		if (__block == null || __method == null)
 			throw new NullPointerException("NARG");
 		
+		if (true)
+			throw Debugging.todo();
+		/*
 		// Forward call
 		this.__doInvokeGeneric(__block,
 			this.linkTable.invokeNormal(this.method.nameAndType(),
@@ -1606,6 +1601,8 @@ public class ByteCodeProcessor
 			__method,
 			JvmFunctions.NVM_INVOKE_NORMAL,
 			"invokeNormal");
+			
+		 */
 	}
 	
 	/**
@@ -1624,12 +1621,18 @@ public class ByteCodeProcessor
 		if (__block == null || __method == null)
 			throw new NullPointerException("NARG");
 		
+		if (true)
+			throw Debugging.todo();
+		
 		// Forward call
+		/*
 		this.__doInvokeGeneric(__block,
 			this.linkTable.invokeSpecial(this.method.nameAndType(), __method),
 			__method,
 			JvmFunctions.NVM_INVOKE_SPECIAL,
 			"invokeSpecial");
+			
+		 */
 	}
 	
 	/**

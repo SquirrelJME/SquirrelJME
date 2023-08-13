@@ -11,11 +11,11 @@ package cc.squirreljme.jvm.aot.nanocoat.table;
 
 import cc.squirreljme.jvm.aot.nanocoat.ArchiveOutputQueue;
 import cc.squirreljme.jvm.aot.nanocoat.CodeFingerprint;
-import cc.squirreljme.jvm.aot.nanocoat.CodeInformation;
 import cc.squirreljme.runtime.cldc.util.EnumTypeMap;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Map;
+import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.FieldDescriptor;
 import net.multiphasicapps.classfile.MethodDescriptor;
 
@@ -67,7 +67,7 @@ public class StaticTableManager
 	public CodeStaticTable code()
 	{
 		return (CodeStaticTable)this.table(CodeFingerprint.class,
-			CodeInformation.class, StaticTableType.CODE);
+			ByteCode.class, StaticTableType.CODE);
 	}
 	
 	/**
