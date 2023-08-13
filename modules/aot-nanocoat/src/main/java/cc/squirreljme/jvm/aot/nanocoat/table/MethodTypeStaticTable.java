@@ -9,14 +9,12 @@
 
 package cc.squirreljme.jvm.aot.nanocoat.table;
 
-import cc.squirreljme.c.CIdentifier;
 import cc.squirreljme.c.CVariable;
 import cc.squirreljme.jvm.aot.nanocoat.ArchiveOutputQueue;
-import cc.squirreljme.jvm.aot.nanocoat.ClassInterfaces;
-import cc.squirreljme.jvm.aot.nanocoat.MethodTypeInformation;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.lang.ref.Reference;
+import net.multiphasicapps.classfile.MethodDescriptor;
 
 /**
  * Contains method type information.
@@ -24,7 +22,7 @@ import java.lang.ref.Reference;
  * @since 2023/08/13
  */
 public class MethodTypeStaticTable
-	extends StaticTable<MethodTypeInformation, MethodTypeInformation>
+	extends StaticTable<MethodDescriptor, MethodDescriptor>
 {
 	/**
 	 * Initializes the method type table.
@@ -34,18 +32,19 @@ public class MethodTypeStaticTable
 	 */
 	public MethodTypeStaticTable(Reference<StaticTableManager> __group)
 	{
-		super(__group, StaticTableType.CLASS_INTERFACES);
+		super(__group, StaticTableType.METHOD_TYPE);
 	}
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2023/08/12
 	 */
 	@Override
-	protected CIdentifier buildIdentity(MethodTypeInformation __entry)
+	protected String buildIdentity(MethodDescriptor __key)
 		throws NullPointerException
 	{
-		if (__entry == null)
+		if (__key == null)
 			throw new NullPointerException("NARG");
 		
 		throw Debugging.todo();
@@ -57,7 +56,8 @@ public class MethodTypeStaticTable
 	 */
 	@Override
 	protected void writeEntry(ArchiveOutputQueue __archive, String __fileName,
-		CVariable __variable, MethodTypeInformation __entry)
+		CVariable __variable, MethodDescriptor __entry,
+		MethodDescriptor __value)
 		throws IOException, NullPointerException
 	{
 		if (__archive == null || __fileName == null || __variable == null ||

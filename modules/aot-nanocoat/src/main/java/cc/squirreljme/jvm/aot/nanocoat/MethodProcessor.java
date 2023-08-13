@@ -123,7 +123,7 @@ public final class MethodProcessor
 			// by combining and sharing them
 			struct.memberSet("argTypes",
 				CBasicExpression.reference(methodTypeTable.put(
-					new MethodTypeInformation(method.type()))));
+					method.type())));
 			
 			// If there is code, refer to it
 			if (this.method.byteCode() != null)

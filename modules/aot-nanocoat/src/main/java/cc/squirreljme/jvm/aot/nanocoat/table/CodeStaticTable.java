@@ -9,7 +9,6 @@
 
 package cc.squirreljme.jvm.aot.nanocoat.table;
 
-import cc.squirreljme.c.CIdentifier;
 import cc.squirreljme.c.CVariable;
 import cc.squirreljme.jvm.aot.nanocoat.ArchiveOutputQueue;
 import cc.squirreljme.jvm.aot.nanocoat.CodeFingerprint;
@@ -39,13 +38,14 @@ public class CodeStaticTable
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2023/08/12
 	 */
 	@Override
-	protected CIdentifier buildIdentity(CodeFingerprint __entry)
+	protected String buildIdentity(CodeFingerprint __key)
 		throws NullPointerException
 	{
-		if (__entry == null)
+		if (__key == null)
 			throw new NullPointerException("NARG");
 		
 		throw Debugging.todo();
@@ -57,7 +57,7 @@ public class CodeStaticTable
 	 */
 	@Override
 	protected void writeEntry(ArchiveOutputQueue __archive, String __fileName,
-		CVariable __variable, CodeFingerprint __entry)
+		CVariable __variable, CodeFingerprint __entry, CodeInformation __value)
 		throws IOException, NullPointerException
 	{
 		if (__archive == null || __fileName == null || __variable == null ||

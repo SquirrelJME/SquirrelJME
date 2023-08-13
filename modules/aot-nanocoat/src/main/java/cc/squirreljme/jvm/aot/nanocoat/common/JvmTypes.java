@@ -11,7 +11,6 @@ package cc.squirreljme.jvm.aot.nanocoat.common;
 
 import cc.squirreljme.c.CPrimitiveType;
 import cc.squirreljme.c.CStructKind;
-import cc.squirreljme.c.CStructType;
 import cc.squirreljme.c.CStructTypeBuilder;
 import cc.squirreljme.c.CType;
 import cc.squirreljme.c.CTypeDefType;
@@ -709,6 +708,25 @@ public enum JvmTypes
 		}
 	},
 	
+	/** The field type. */
+	STATIC_FIELD_TYPE
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/08/13
+		 */
+		@Override
+		CType __build()
+		{
+			return CStructTypeBuilder.builder(CStructKind.STRUCT,
+					"sjme_static_fieldType")
+				.member(JvmTypes.JINT, "hashCode")
+				.member(CPrimitiveType.CONST_CHAR_STAR, "descriptor")
+				.member(JvmTypes.BASIC_TYPE_ID, "basicType")
+				.build();
+		}
+	},
+	
 	/** Static libraries. */
 	STATIC_LIBRARIES
 	{
@@ -1002,7 +1020,16 @@ public enum JvmTypes
 		@Override
 		CType __build()
 		{
-			throw Debugging.todo();
+			return CStructTypeBuilder.builder(CStructKind.STRUCT,
+				"sjme_static_methodType")
+				.member(JvmTypes.JINT, "hashCode")
+				.member(JvmTypes.STATIC_FIELD_TYPE.type().constType()
+					.pointerType(), "returnType")
+				.member(JvmTypes.BASIC_TYPE_ID, "returnBasicType")
+				.member(JvmTypes.JINT, "argCount")
+				.member(JvmTypes.STATIC_FIELD_TYPE.type().constType()
+					.pointerType().arrayType(0), "argTypes")
+				.build();
 		}
 	},
 	

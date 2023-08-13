@@ -78,7 +78,9 @@ public class ByteCodeProcessor
 	protected final Method method;
 	
 	/** The link table for the class. */
-	protected final ClassLinkTable linkTable;
+	@Deprecated
+	protected final ClassLinkTable linkTable =
+		null;
 	
 	/** The stack map table at runtime. */
 	protected final StackMapTablePairs stackMap;

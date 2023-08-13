@@ -24,6 +24,7 @@ import net.multiphasicapps.classfile.InstructionIndex;
 import net.multiphasicapps.classfile.JavaStackShuffleType;
 import net.multiphasicapps.classfile.JavaType;
 import net.multiphasicapps.classfile.Pool;
+import net.multiphasicapps.classfile.StackMapTableEntry;
 import net.multiphasicapps.classfile.StackMapTablePairs;
 import net.multiphasicapps.classfile.StackMapTableState;
 
@@ -72,6 +73,32 @@ public final class CodeFingerprint
 		// And the constant pool
 		Pool pool = __code.pool();
 		StackMapTablePairs stackMapPairs = __code.stackMapTableFull();
+		
+		// Record the entry type local variables
+		StackMapTableState initLocals = stackMapPairs.get(0).input;
+		int usedLocals;
+		int maxLocals = initLocals.maxLocals();
+		int[] localTypes = new int[maxLocals];
+		for (usedLocals = 0; usedLocals < maxLocals; usedLocals++)
+		{
+			StackMapTableEntry local = initLocals.getLocal(usedLocals);
+			
+			// Stop at nothing, no pun intended
+			if (local.type().isNothing())
+				break;
+			
+			// Skip top types
+			if (local.type().isTop())
+				continue;
+			
+			// Record the used primitive type here
+			localTypes[usedLocals] = JvmPrimitiveType.of(
+				local.type()).ordinal();
+		}
+		
+		// Add initial locals, which is from method arguments
+		fingerprint.add((usedLocals == maxLocals ? localTypes :
+			Arrays.copyOf(localTypes, usedLocals)));
 		
 		// Process each tag within the pool to determine if we care about it
 		int[] poolTags = pool.tags();

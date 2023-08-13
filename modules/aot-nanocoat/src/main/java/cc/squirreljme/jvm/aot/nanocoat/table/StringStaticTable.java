@@ -43,13 +43,14 @@ public class StringStaticTable
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2023/08/12
 	 */
 	@Override
-	protected CIdentifier buildIdentity(String __entry)
+	protected String buildIdentity(String __key)
 		throws NullPointerException
 	{
-		if (__entry == null)
+		if (__key == null)
 			throw new NullPointerException("NARG");
 		
 		// Java's normal hashCode for String can have many collisions, so
@@ -59,7 +60,7 @@ public class StringStaticTable
 		try
 		{
 			crc = CRC32Calculator.calculateZip(
-				__entry.getBytes("utf-8"));
+				__key.getBytes("utf-8"));
 		}
 		catch (IOException __e)
 		{
@@ -67,10 +68,10 @@ public class StringStaticTable
 		}
 		
 		// Build string identity
-		return CIdentifier.of(String.format("char_%d_%s_%s",
-			__entry.length(),
-			Long.toString(__entry.hashCode() & 0xFFFFFFFFL, 36),
-			Long.toString(crc & 0xFFFFFFFFL, 36)));
+		return String.format("%d_%s_%s",
+			__key.length(),
+			Long.toString(__key.hashCode() & 0xFFFFFFFFL, 36),
+			Long.toString(crc & 0xFFFFFFFFL, 36));
 	}
 	
 	/**
@@ -79,7 +80,7 @@ public class StringStaticTable
 	 */
 	@Override
 	protected void writeEntry(ArchiveOutputQueue __archive, String __fileName,
-		CVariable __variable, String __entry)
+		CVariable __variable, String __entry, String __value)
 		throws IOException, NullPointerException
 	{
 		if (__archive == null || __fileName == null ||

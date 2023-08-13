@@ -15,16 +15,15 @@ import cc.squirreljme.c.std.CTypeProvider;
 import cc.squirreljme.jvm.aot.nanocoat.ClassInterfaces;
 import cc.squirreljme.jvm.aot.nanocoat.CodeFingerprint;
 import cc.squirreljme.jvm.aot.nanocoat.CodeInformation;
-import cc.squirreljme.jvm.aot.nanocoat.MethodTypeInformation;
 import cc.squirreljme.jvm.aot.nanocoat.VariableLimits;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassObjectLinkage;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.FieldAccessLinkage;
-import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.util.Arrays;
 import java.util.List;
+import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.collections.UnmodifiableList;
 
 /**
@@ -114,8 +113,8 @@ public enum StaticTableType
 	
 	/** Method type information. */
 	METHOD_TYPE("tyme",
-		MethodTypeInformation.class,
-		MethodTypeInformation.class,
+		MethodDescriptor.class,
+		MethodDescriptor.class,
 		JvmTypes.STATIC_METHOD_TYPE),
 	
 	/** Locals/stack variable limit information. */
@@ -244,7 +243,7 @@ public enum StaticTableType
 				throw Debugging.todo();
 			
 			case METHOD_TYPE:
-				throw Debugging.todo();
+				return new MethodTypeStaticTable(__group);
 			
 			case LOCALS_STACK_LIMITS:
 				throw Debugging.todo();

@@ -12,11 +12,11 @@ package cc.squirreljme.jvm.aot.nanocoat.table;
 import cc.squirreljme.jvm.aot.nanocoat.ArchiveOutputQueue;
 import cc.squirreljme.jvm.aot.nanocoat.CodeFingerprint;
 import cc.squirreljme.jvm.aot.nanocoat.CodeInformation;
-import cc.squirreljme.jvm.aot.nanocoat.MethodTypeInformation;
 import cc.squirreljme.runtime.cldc.util.EnumTypeMap;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Map;
+import net.multiphasicapps.classfile.MethodDescriptor;
 
 /**
  * A group of static tables.
@@ -77,7 +77,7 @@ public class StaticTableManager
 	 */
 	public MethodTypeStaticTable methodType()
 	{
-		return (MethodTypeStaticTable)this.table(MethodTypeInformation.class,
+		return (MethodTypeStaticTable)this.table(MethodDescriptor.class,
 			StaticTableType.METHOD_TYPE);
 	}
 	

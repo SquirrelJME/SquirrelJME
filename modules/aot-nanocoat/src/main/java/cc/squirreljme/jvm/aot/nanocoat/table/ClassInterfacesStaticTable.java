@@ -9,7 +9,6 @@
 
 package cc.squirreljme.jvm.aot.nanocoat.table;
 
-import cc.squirreljme.c.CIdentifier;
 import cc.squirreljme.c.CVariable;
 import cc.squirreljme.jvm.aot.nanocoat.ArchiveOutputQueue;
 import cc.squirreljme.jvm.aot.nanocoat.ClassInterfaces;
@@ -38,13 +37,14 @@ public class ClassInterfacesStaticTable
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2023/08/12
 	 */
 	@Override
-	protected CIdentifier buildIdentity(ClassInterfaces __entry)
+	protected String buildIdentity(ClassInterfaces __key)
 		throws NullPointerException
 	{
-		if (__entry == null)
+		if (__key == null)
 			throw new NullPointerException("NARG");
 		
 		throw Debugging.todo();
@@ -56,7 +56,7 @@ public class ClassInterfacesStaticTable
 	 */
 	@Override
 	protected void writeEntry(ArchiveOutputQueue __archive, String __fileName,
-		CVariable __variable, ClassInterfaces __entry)
+		CVariable __variable, ClassInterfaces __entry, ClassInterfaces __value)
 		throws IOException, NullPointerException
 	{
 		if (__archive == null || __fileName == null || __variable == null ||

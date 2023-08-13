@@ -12,7 +12,6 @@ package cc.squirreljme.jvm.aot.nanocoat.table;
 import cc.squirreljme.c.CIdentifier;
 import cc.squirreljme.c.CVariable;
 import cc.squirreljme.jvm.aot.nanocoat.ArchiveOutputQueue;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import cc.squirreljme.runtime.cldc.util.SortedTreeSet;
 import java.io.IOException;
@@ -35,7 +34,8 @@ import java.util.Set;
 public abstract class StaticTable<K, V>
 {
 	/** Entries within the static table. */
-	protected final Map<K, CVariable> keys = new SortedTreeMap<>();
+	protected final Map<K, CVariable> keys =
+		new SortedTreeMap<>();
 	
 	/** Variable identifiers, used to check for collisions. */
 	protected final Set<CIdentifier> identifiers =
@@ -67,12 +67,12 @@ public abstract class StaticTable<K, V>
 	/**
 	 * Returns the identifier to use for the entry.
 	 *
-	 * @param __entry The entry to identify.
+	 * @param __key The entry to identify.
 	 * @return The identifier to use.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/08/12
 	 */
-	protected abstract CIdentifier buildIdentity(K __entry)
+	protected abstract String buildIdentity(K __key)
 		throws NullPointerException;
 	
 	/**
@@ -82,47 +82,95 @@ public abstract class StaticTable<K, V>
 	 * @param __fileName The suggested file name.
 	 * @param __variable The variable being written.
 	 * @param __entry The entry to write.
+	 * @param __value The value to write.
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/08/12
 	 */
 	protected abstract void writeEntry(ArchiveOutputQueue __archive,
-		String __fileName, CVariable __variable, K __entry)
+		String __fileName, CVariable __variable, K __entry, V __value)
 		throws IOException, NullPointerException;
 	
 	/**
 	 * Returns the identifier to use for the entry.
 	 *
-	 * @param __entry The entry to identify.
+	 * @param __key The entry to identify.
 	 * @return The identifier to use.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/08/13
 	 */
-	public final CIdentifier identify(K __entry)
+	public final CIdentifier identify(K __key)
 		throws NullPointerException
 	{
-		if (__entry == null)
+		if (__key == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		// Use already cached name
+		Map<K, CVariable> keys = this.keys;
+		if (keys.containsKey(__key))
+			return keys.get(__key).name;
+		
+		// Otherwise build the identity
+		return CIdentifier.of(String.format("%s_%s", this.type.prefix,
+			this.buildIdentity(__key).toLowerCase())); 
 	}
 	
 	/**
 	 * Puts an entry into the table if it does not exist, and returns the
 	 * variable designated for it.
 	 *
-	 * @param __entry The entry to put in.
+	 * @param __key The entry to put in.
 	 * @return The resultant variable.
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/08/12
 	 */
-	public final CVariable put(K __entry)
+	@SuppressWarnings("unchecked")
+	public final CVariable put(K __key)
 		throws IOException, NullPointerException
 	{
-		if (__entry == null)
+		return this.put(__key, (V)__key);
+	}
+	
+	/**
+	 * Puts an entry into the table if it does not exist, and returns the
+	 * variable designated for it.
+	 *
+	 * @param __key The entry to put in.
+	 * @return The resultant variable.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/13
+	 */
+	public final CVariable put(K __key, V __value)
+		throws IOException, NullPointerException
+	{
+		if (__key == null || __value == null)
 			throw new NullPointerException("NARG");
 		
-		throw new NullPointerException("NARG");
+		// Already in the map?
+		Map<K, CVariable> keys = this.keys;
+		if (keys.containsKey(__key))
+			return keys.get(__key);
+		
+		// We need the table manager from this point on
+		StaticTableManager manager = this._group.get();
+		if (manager == null)
+			throw new IllegalStateException("GCGC");
+		
+		// Setup variable and store into the map
+		StaticTableType type = this.type;
+		CVariable result = CVariable.of(type.cType,
+			this.identify(__key));
+		keys.put(__key, result);
+		
+		// Since we just put the key in, generate the needed sources
+		String baseFile = String.format("shared/%s/%s",
+			type.prefix,
+			result.name);
+		this.writeEntry(manager.archive, baseFile, result, __key, __value);
+		
+		// Use the new variable
+		return result;
 	}
 }
