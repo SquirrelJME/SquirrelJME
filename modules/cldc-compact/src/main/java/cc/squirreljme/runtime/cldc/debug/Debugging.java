@@ -38,6 +38,12 @@ import org.jetbrains.annotations.Contract;
 @SquirrelJMEVendorApi
 public final class Debugging
 {
+	/** Is debugging enabled? */
+	@SuppressWarnings({"noinspection", "ConstantValue", "UnnecessaryUnboxing",
+		"unused"})
+	public static boolean ENABLED =
+		Boolean.valueOf(true).booleanValue();
+	
 	/** Only bytes up to this value are permitted in the output. */
 	private static final int _BYTE_LIMIT =
 		0x7E;
