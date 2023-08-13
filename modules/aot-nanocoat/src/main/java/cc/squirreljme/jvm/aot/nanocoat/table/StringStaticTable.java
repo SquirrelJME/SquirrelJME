@@ -26,7 +26,7 @@ import net.multiphasicapps.io.CRC32Calculator;
  * @since 2023/08/12
  */
 public class StringStaticTable
-	extends StaticTable<String>
+	extends StaticTable<String, String>
 {
 	/**
 	 * Initializes the string table.
@@ -46,7 +46,7 @@ public class StringStaticTable
 	 * @since 2023/08/12
 	 */
 	@Override
-	protected CIdentifier identify(String __entry)
+	protected CIdentifier buildIdentity(String __entry)
 		throws NullPointerException
 	{
 		if (__entry == null)

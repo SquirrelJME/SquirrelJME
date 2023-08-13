@@ -992,6 +992,20 @@ public enum JvmTypes
 		}
 	},
 	
+	/** Static method type. */
+	STATIC_METHOD_TYPE
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/08/13
+		 */
+		@Override
+		CType __build()
+		{
+			throw Debugging.todo();
+		}
+	},
+	
 	/** A NanoCoat resource. */
 	STATIC_RESOURCE
 	{

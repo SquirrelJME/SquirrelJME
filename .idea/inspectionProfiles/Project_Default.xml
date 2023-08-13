@@ -560,6 +560,23 @@
     <inspection_tool class="RedundantTypeArguments" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="ReplaceNullCheck" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="SSBasedInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <replaceConfiguration name="C Source Writer: Expression can be simplified" description="Expression can be simplified to use a basic expression wrapper." suppressId="squirreljme_cSourceWriter_simplify" problemDescriptor="Expression can be simplified to use a basic expression wrapper." text="cc.squirreljme.c.CExpressionBuilder.builder().string($expr$).build()" recursive="false" caseInsensitive="false" type="JAVA" pattern_context="default" reformatAccordingToStyle="false" shortenFQN="true" replacement="cc.squirreljme.c.CBasicExpression.string($expr$)">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="expr" within="" contains="" />
+      </replaceConfiguration>
+      <replaceConfiguration name="C Source Writer: Expression can be simplified" text="cc.squirreljme.c.CExpressionBuilder.builder().reference($expr$).build()" recursive="false" caseInsensitive="false" type="JAVA" pattern_context="default" reformatAccordingToStyle="false" shortenFQN="true" replacement="cc.squirreljme.c.CBasicExpression.reference($expr$)">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="expr" within="" contains="" />
+      </replaceConfiguration>
+      <replaceConfiguration name="C Source Writer: Expression can be simplified" text="cc.squirreljme.c.CExpressionBuilder.builder().number($expr$).build()" recursive="false" caseInsensitive="false" type="JAVA" pattern_context="default" reformatAccordingToStyle="false" shortenFQN="true" replacement="cc.squirreljme.c.CBasicExpression.number($expr$)">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="expr" within="" contains="" />
+      </replaceConfiguration>
+      <replaceConfiguration name="C Source Writer: Expression can be simplified" text="cc.squirreljme.c.CExpressionBuilder.builder().number($type$, $expr$).build()" recursive="false" caseInsensitive="false" type="JAVA" pattern_context="default" reformatAccordingToStyle="false" shortenFQN="true" replacement="cc.squirreljme.c.CBasicExpression.number($type$, $expr$)">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="expr" within="" contains="" />
+        <constraint name="type" within="" contains="" />
+      </replaceConfiguration>
       <replaceConfiguration name="SquirrelJME: __error__ is qualified." description="__error__ is the only special&#10;static import, for error code&#10;composition." suppressId="squirreljme_qualifiedError" problemDescriptor="SquirrelJME: __error__ is qualified." text="$errorCodeClass$.__error__($args$)" recursive="false" caseInsensitive="true" type="JAVA" pattern_context="default" reformatAccordingToStyle="false" shortenFQN="true" useStaticImport="true" replacement="ErrorCode.__error__($args$)">
         <constraint name="__context__" within="" contains="" />
         <constraint name="args" minCount="0" maxCount="2147483647" within="" contains="" />
@@ -732,6 +749,10 @@
     <inspection_tool class="UnconstructableTestCase" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="UnnecessaryConstructor" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="UnnecessaryFinalOnLocalVariableOrParameter" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="UnnecessaryFullyQualifiedName" enabled="true" level="TYPO" enabled_by_default="true" editorAttributes="TYPO">
+      <option name="m_ignoreJavadoc" value="false" />
+      <option name="ignoreInModuleStatements" value="true" />
+    </inspection_tool>
     <inspection_tool class="UnnecessarySuperConstructor" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="UnqualifiedFieldAccess" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="UnqualifiedInnerClassAccess" enabled="true" level="WARNING" enabled_by_default="true">
@@ -771,6 +792,7 @@
     </inspection_tool>
     <inspection_tool class="VariableTypeCanBeExplicit" enabled="false" level="INFORMATION" enabled_by_default="false" />
     <inspection_tool class="WaitNotifyNotInSynchronizedContext" enabled="true" level="WEAK WARNING" enabled_by_default="true" editorAttributes="INFO_ATTRIBUTES" />
+    <inspection_tool class="afc0d42c-d857-31e4-b122-e9899ca87eb5" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="ced03fc8-111a-390f-8655-ed7465debd5f" enabled="true" level="GRAMMAR_ERROR" enabled_by_default="true" editorAttributes="TEXT_STYLE_ERROR" />
     <inspection_tool class="unused" enabled="true" level="WARNING" enabled_by_default="true" checkParameterExcludingHierarchy="false" test_entries="false">
       <option name="LOCAL_VARIABLE" value="true" />

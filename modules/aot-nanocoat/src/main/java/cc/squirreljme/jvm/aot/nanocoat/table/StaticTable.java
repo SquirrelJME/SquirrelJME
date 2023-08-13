@@ -12,6 +12,7 @@ package cc.squirreljme.jvm.aot.nanocoat.table;
 import cc.squirreljme.c.CIdentifier;
 import cc.squirreljme.c.CVariable;
 import cc.squirreljme.jvm.aot.nanocoat.ArchiveOutputQueue;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import cc.squirreljme.runtime.cldc.util.SortedTreeSet;
 import java.io.IOException;
@@ -27,13 +28,14 @@ import java.util.Set;
  * These static tables are essentially used for everything and are ultimately
  * merged in the very end.
  *
- * @param <E> The type of entries to store.
+ * @param <K> The key type for entries.
+ * @param <V> The type of values to store, may be the same as keys. 
  * @since 2023/08/10
  */
-public abstract class StaticTable<E>
+public abstract class StaticTable<K, V>
 {
 	/** Entries within the static table. */
-	protected final Map<E, CVariable> entries = new SortedTreeMap<>();
+	protected final Map<K, CVariable> keys = new SortedTreeMap<>();
 	
 	/** Variable identifiers, used to check for collisions. */
 	protected final Set<CIdentifier> identifiers =
@@ -70,7 +72,7 @@ public abstract class StaticTable<E>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/08/12
 	 */
-	protected abstract CIdentifier identify(E __entry)
+	protected abstract CIdentifier buildIdentity(K __entry)
 		throws NullPointerException;
 	
 	/**
@@ -85,8 +87,25 @@ public abstract class StaticTable<E>
 	 * @since 2023/08/12
 	 */
 	protected abstract void writeEntry(ArchiveOutputQueue __archive,
-		String __fileName, CVariable __variable, E __entry)
+		String __fileName, CVariable __variable, K __entry)
 		throws IOException, NullPointerException;
+	
+	/**
+	 * Returns the identifier to use for the entry.
+	 *
+	 * @param __entry The entry to identify.
+	 * @return The identifier to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/13
+	 */
+	public final CIdentifier identify(K __entry)
+		throws NullPointerException
+	{
+		if (__entry == null)
+			throw new NullPointerException("NARG");
+		
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Puts an entry into the table if it does not exist, and returns the
@@ -98,7 +117,7 @@ public abstract class StaticTable<E>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/08/12
 	 */
-	public final CVariable put(E __entry)
+	public final CVariable put(K __entry)
 		throws IOException, NullPointerException
 	{
 		if (__entry == null)

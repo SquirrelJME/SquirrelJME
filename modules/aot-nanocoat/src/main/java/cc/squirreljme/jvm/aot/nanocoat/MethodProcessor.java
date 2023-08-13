@@ -11,27 +11,21 @@ package cc.squirreljme.jvm.aot.nanocoat;
 
 import cc.squirreljme.c.CArrayBlock;
 import cc.squirreljme.c.CBasicExpression;
-import cc.squirreljme.c.CExpressionBuilder;
-import cc.squirreljme.c.CFunctionType;
 import cc.squirreljme.c.CFunctionBlock;
 import cc.squirreljme.c.CSourceWriter;
 import cc.squirreljme.c.CStructVariableBlock;
 import cc.squirreljme.c.CVariable;
 import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
-import cc.squirreljme.jvm.aot.nanocoat.common.JvmFunctions;
-import cc.squirreljme.jvm.aot.nanocoat.common.JvmPrimitiveType;
-import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
-import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassLinkTable;
+import cc.squirreljme.jvm.aot.nanocoat.table.MethodTypeStaticTable;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassFile;
-import net.multiphasicapps.classfile.FieldDescriptor;
 import net.multiphasicapps.classfile.Method;
 import net.multiphasicapps.classfile.MethodDescriptor;
 
 /**
- * This processes methods.
+ * This processes single methods.
  *
  * @since 2023/05/31
  */
@@ -43,26 +37,11 @@ public final class MethodProcessor
 	/** The glob this is being processed under. */
 	protected final NanoCoatLinkGlob glob;
 	
-	/** The function for this method. */
-	protected final CFunctionType function;
-	
-	/** The method identifier in C. */
-	protected final String methodIdentifier;
-	
-	/** The identifier used for the method code. */
-	protected final CVariable codeInfoVar;
-	
 	/** The method being processed. */
 	protected final Method method;
 	
-	/** The link table for the class. */
-	protected final ClassLinkTable linkTable;
-	
-	/** Possibly a duplicate. */
-	protected final CVariable duplicateOf;
-	
-	/** Argument types variable. */
-	protected final CVariable argTypesVar;
+	/** The code fingerprint. */
+	protected final CodeFingerprint codeFingerprint;
 	
 	/**
 	 * Initializes the method processor.
@@ -84,33 +63,13 @@ public final class MethodProcessor
 		this.glob = __glob;
 		this.classFile = __classProcessor.classFile;
 		this.method = __method;
-		this.linkTable = __classProcessor.linkTable;
 		
-		// Determine the identifier used for this class
-		this.methodIdentifier = Utils.symbolMethodName(__glob,
-			__method);
-		
-		// Determine the identifier for the code information
-		this.codeInfoVar = CVariable.of(JvmTypes.STATIC_CLASS_CODE,
-			this.methodIdentifier + "__code");
-		
-		// Argument types
-		this.argTypesVar = Debugging.todoObject();
-		
-		// Build common function
-		this.function = JvmFunctions.METHOD_CODE.function()
-			.rename(this.methodIdentifier);
-		
-		// Determine code fingerprint
+		// Determine the code fingerprint, which determines if this is a
+		// duplicate method or not
 		if (__method.byteCode() == null)
-			this.duplicateOf = null;
+			this.codeFingerprint = null;
 		else
-		{
-			CodeFingerprint fingerprint = new CodeFingerprint(
-				__method.byteCode());
-			this.duplicateOf = __glob.checkCodeFingerprint(fingerprint,
-				this.codeInfoVar);
-		}
+			this.codeFingerprint = new CodeFingerprint(__method.byteCode());
 	}
 	
 	/**
@@ -122,21 +81,7 @@ public final class MethodProcessor
 	public void processHeader(CSourceWriter __out)
 		throws IOException
 	{
-		// Write out the prototype, if not a duplicate
-		if (this.duplicateOf == null)
-			__out.declare(this.function);
-		
-		// Otherwise, write the code info this is duplicated by
-		else
-		{
-			// Only once!
-			if (this.glob._headerDups.contains(this.duplicateOf.name))
-				return;
-			this.glob._headerDups.add(this.duplicateOf.name);
-			
-			// Declare as extern so we can pull it in
-			__out.declare(this.duplicateOf.extern());
-		}
+		// Nothing needs to be done
 	}
 	
 	/**
@@ -153,46 +98,38 @@ public final class MethodProcessor
 		if (__array == null)
 			throw new NullPointerException("NARG");
 		
+		NanoCoatLinkGlob glob = this.glob;
 		Method method = this.method;
+		
 		try (CStructVariableBlock struct = __array.struct())
 		{
 			MethodDescriptor type = method.type();
 			
 			// Method details
 			struct.memberSet("name",
-				CExpressionBuilder.builder()
-					.string(method.name().toString())
-					.build());
+				CBasicExpression.string(method.name().toString()));
 			struct.memberSet("type",
-				CExpressionBuilder.builder()
-					.string(type.toString())
-					.build());
+				CBasicExpression.string(type.toString()));
 			struct.memberSet("flags",
-				CExpressionBuilder.builder()
-					.number(Constants.JINT_C,
-						method.flags().toJavaBits() |
-							(this.duplicateOf == null ? 0 : 0x8000_0000))
-					.build());
+				CBasicExpression.number(Constants.JINT_C,
+					method.flags().toJavaBits()));
+			
+			// Write reference to method argument types
+			MethodTypeStaticTable methodTypeTable =
+				glob.tables.methodType();
 			
 			// Write argument type mapping, since many methods in a library
 			// will use the same set of arguments, this is reduced accordingly
 			// by combining and sharing them
 			struct.memberSet("argTypes",
-				CBasicExpression.reference(this.glob.processArgumentTypes(
-					VariablePlacementMap.methodArguments(
-						method.flags().isStatic(), type))));
-			
-			// Return value type
-			FieldDescriptor rVal = type.returnValue();
-			struct.memberSet("rValType",
-				CBasicExpression.number((rVal == null ? -1 :
-					JvmPrimitiveType.of(rVal).javaType().ordinal())));
+				CBasicExpression.reference(methodTypeTable.put(
+					new MethodTypeInformation(method.type()))));
 			
 			// If there is code, refer to it
 			if (this.method.byteCode() != null)
 				struct.memberSet("code",
-					CBasicExpression.reference((this.duplicateOf == null ?
-						this.codeInfoVar : this.duplicateOf)));
+					CBasicExpression.reference(glob.tables.code()
+						.identify(this.codeFingerprint)));
 		}
 	}
 	
@@ -206,24 +143,15 @@ public final class MethodProcessor
 	public void processSourceOutside(CSourceWriter __out)
 		throws IOException
 	{
-		NanoCoatLinkGlob glob = this.glob;
+		// Nothing needs to be done here
 		
-		// Only write byte code of the method if there is actual byte code
-		ByteCode code = this.method.byteCode();
-		if (code == null)
-			return;
 		
-		// Determine code fingerprint
-		CVariable duplicateOf = this.duplicateOf;
-		
-		if (true)
-			throw Debugging.todo();
 		/*CBasicExpression.reference(this.glob.processArgumentTypes(
 							VariablePlacementMap.methodArguments(
 								method.flags().isStatic(), type)))*/
 		
 		// Duplicate code, ignore everything following this
-		if (duplicateOf != null)
+		/*if (duplicateOf != null)
 			return;
 		
 		// Write function code
@@ -254,6 +182,6 @@ public final class MethodProcessor
 			// Code for the method?
 			struct.memberSet("code",
 				this.function.name);
-		}
+		}*/
 	}
 }

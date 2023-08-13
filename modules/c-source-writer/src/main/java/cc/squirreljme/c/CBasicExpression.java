@@ -41,6 +41,7 @@ public class CBasicExpression
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/07/16
 	 */
+	@SuppressWarnings("squirreljme_cSourceWriter_simplify")
 	public static CExpression number(Number __value)
 		throws IOException, NullPointerException
 	{
@@ -49,6 +50,28 @@ public class CBasicExpression
 	
 		return CExpressionBuilder.builder()
 			.number(__value)
+			.build();
+	}
+	
+	/**
+	 * Returns a number expression.
+	 * 
+	 * @param __type The number type.
+	 * @param __value The value to use.
+	 * @return The expression for the number.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/13
+	 */
+	@SuppressWarnings("squirreljme_cSourceWriter_simplify")
+	public static CExpression number(CNumberType __type, Number __value)
+		throws IOException, NullPointerException
+	{
+		if (__value == null)
+			throw new NullPointerException("NARG");
+	
+		return CExpressionBuilder.builder()
+			.number(__type,  __value)
 			.build();
 	}
 	
@@ -73,6 +96,7 @@ public class CBasicExpression
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/07/15
 	 */
+	@SuppressWarnings("squirreljme_cSourceWriter_simplify")
 	public static CExpression reference(CExpression __value)
 		throws IOException, NullPointerException
 	{
@@ -93,6 +117,7 @@ public class CBasicExpression
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/07/25
 	 */
+	@SuppressWarnings("squirreljme_cSourceWriter_simplify")
 	public static CExpression string(String __value)
 		throws IOException, NullPointerException
 	{

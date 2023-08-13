@@ -23,7 +23,7 @@ import java.lang.ref.Reference;
  * @since 2023/08/12
  */
 public class ClassInterfacesStaticTable
-	extends StaticTable<ClassInterfaces>
+	extends StaticTable<ClassInterfaces, ClassInterfaces>
 {
 	/**
 	 * Initializes the interfaces table.
@@ -41,7 +41,7 @@ public class ClassInterfacesStaticTable
 	 * @since 2023/08/12
 	 */
 	@Override
-	protected CIdentifier identify(ClassInterfaces __entry)
+	protected CIdentifier buildIdentity(ClassInterfaces __entry)
 		throws NullPointerException
 	{
 		if (__entry == null)

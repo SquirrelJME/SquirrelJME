@@ -14,10 +14,13 @@ import cc.squirreljme.c.CType;
 import cc.squirreljme.c.std.CTypeProvider;
 import cc.squirreljme.jvm.aot.nanocoat.ClassInterfaces;
 import cc.squirreljme.jvm.aot.nanocoat.CodeFingerprint;
+import cc.squirreljme.jvm.aot.nanocoat.CodeInformation;
+import cc.squirreljme.jvm.aot.nanocoat.MethodTypeInformation;
 import cc.squirreljme.jvm.aot.nanocoat.VariableLimits;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassObjectLinkage;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.FieldAccessLinkage;
+import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.util.Arrays;
@@ -34,76 +37,91 @@ public enum StaticTableType
 	/** Strings. */
 	STRING("char",
 		String.class,
+		String.class,
 		CPrimitiveType.CONST_CHAR_STAR.constType()),
 	
 	/** Method code. */
 	CODE("code",
 		CodeFingerprint.class,
+		CodeInformation.class,
 		JvmTypes.STATIC_CLASS_CODE),
 	
 	/** Class interfaces. */
 	CLASS_INTERFACES("ints",
+		ClassInterfaces.class,
 		ClassInterfaces.class,
 		JvmTypes.STATIC_CLASS_INTERFACES),
 	
 	/** Class object linkages. */
 	LINKAGE_CLASS("lncl",
 		ClassObjectLinkage.class,
+		ClassObjectLinkage.class,
 		JvmTypes.STATIC_LINKAGE_DATA_CLASS_OBJECT),
 	
 	/** Field access linkages. */
 	LINKAGE_FIELD_ACCESS("lnfa",
+		FieldAccessLinkage.class,
 		FieldAccessLinkage.class,
 		JvmTypes.STATIC_LINKAGE_DATA_FIELD_ACCESS),
 	
 	/** Method invocation linkages. */
 	LINKAGE_METHOD_INVOKE("lnmi",
 		byte.class,
+		byte.class,
 		JvmTypes.STATIC_LINKAGE_DATA_INVOKE_NORMAL),
 	
 	/** String reference linkages. */
 	LINKAGE_STRING("lnst",
+		byte.class,
 		byte.class,
 		JvmTypes.STATIC_LINKAGE_DATA_STRING_OBJECT),
 	
 	/** Integer value linkages. */
 	LINKAGE_INTEGER("lnvi",
 		byte.class,
+		byte.class,
 		CPrimitiveType.VOID),
 	
 	/** Long value linkages. */
 	LINKAGE_LONG("lnvj",
+		byte.class,
 		byte.class,
 		CPrimitiveType.VOID),
 	
 	/** Float value linkages. */
 	LINKAGE_FLOAT("lnvf",
 		byte.class,
+		byte.class,
 		CPrimitiveType.VOID),
 	
 	/** Double value linkages. */
 	LINKAGE_DOUBLE("lnvd",
+		byte.class,
 		byte.class,
 		CPrimitiveType.VOID),
 	
 	/** Library resource. */
 	RESOURCE("rsrc",
 		byte.class,
+		byte.class,
 		JvmTypes.STATIC_RESOURCE),
 	
 	/** Field type information. */
 	FIELD_TYPE("tyme",
 		byte.class,
+		byte.class,
 		CPrimitiveType.VOID),
 	
 	/** Method type information. */
 	METHOD_TYPE("tyme",
-		byte.class,
-		CPrimitiveType.VOID),
+		MethodTypeInformation.class,
+		MethodTypeInformation.class,
+		JvmTypes.STATIC_METHOD_TYPE),
 	
 	/** Locals/stack variable limit information. */
 	LOCALS_STACK_LIMITS("valn",
 		VariableLimits.class,
+		byte.class,
 		JvmTypes.STATIC_CLASS_CODE_LIMITS),
 	
 	/* End. */
@@ -121,7 +139,10 @@ public enum StaticTableType
 	public final String prefix;
 	
 	/** The type of elements the table stores. */
-	public final Class<?> elementType;
+	public final Class<?> keyType;
+	
+	/** The value type. */
+	protected final Class<?> valueType;
 	
 	/** The C type to store for the table entry. */
 	public final CType cType;
@@ -130,35 +151,40 @@ public enum StaticTableType
 	 * Initializes the table type.
 	 *
 	 * @param __prefix The prefix used.
-	 * @param __elementType The element type.
+	 * @param __keyType The element type.
+	 * @param __valueType The value type.
 	 * @param __cType The type to store.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/08/11
 	 */
-	StaticTableType(String __prefix, Class<?> __elementType,
+	StaticTableType(String __prefix, Class<?> __keyType, Class<?> __valueType,
 		CTypeProvider __cType)
 		throws NullPointerException
 	{
-		this(__prefix, __elementType, __cType.type());
+		this(__prefix, __keyType, __valueType, __cType.type());
 	}
 	
 	/**
 	 * Initializes the table type.
 	 *
 	 * @param __prefix The prefix used.
-	 * @param __elementType The element type.
+	 * @param __keyType The element type.
+	 * @param __valueType The value type.
 	 * @param __cType The type to store.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/08/11
 	 */
-	StaticTableType(String __prefix, Class<?> __elementType, CType __cType)
+	StaticTableType(String __prefix, Class<?> __keyType, Class<?> __valueType,
+		CType __cType)
 		throws NullPointerException
 	{
-		if (__prefix == null || __elementType == null || __cType == null)
+		if (__prefix == null || __keyType == null || __valueType == null ||
+			__cType == null)
 			throw new NullPointerException("NARG");
 		
 		this.prefix = __prefix;
-		this.elementType = __elementType;
+		this.keyType = __keyType;
+		this.valueType = __valueType;
 		this.cType = __cType;
 	}
 	
@@ -170,7 +196,7 @@ public enum StaticTableType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/08/12
 	 */
-	final StaticTable<?> __newTable(Reference<StaticTableManager> __group)
+	final StaticTable<?, ?> __newTable(Reference<StaticTableManager> __group)
 		throws NullPointerException
 	{
 		if (__group == null)

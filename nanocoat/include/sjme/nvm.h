@@ -305,6 +305,9 @@ typedef struct sjme_static_fieldType
 	
 	/** The field descriptor. */
 	const char* descriptor;
+	
+	/** The basic type. */
+	sjme_basicTypeId basicType;
 } sjme_static_fieldType;
 
 typedef struct sjme_static_classField
@@ -392,33 +395,15 @@ typedef struct sjme_static_methodType
 	/** The return type. */
 	const sjme_static_fieldType* returnType;
 	
+	/** The return type of the method. */
+	sjme_basicTypeId returnBasicType;
+	
 	/** The number of arguments. */
 	jint argCount;
 	
 	/** The arguments to the method. */
 	const sjme_static_fieldType* argTypes[0];
 } sjme_static_methodType;
-
-/**
- * Represents basic method types, which is used by the code execution system
- * to determine how a method is called.
- * 
- * @since 2023/08/10
- */
-typedef struct sjme_static_methodBasicType
-{
-	/** The hash code for the basic method type. */
-	jint hashCode;
-	
-	/** The return type of the method. */
-	sjme_basicTypeId returnType;
-	
-	/** The number of arguments. */
-	jint argCount;
-	
-	/** The arguments to the method. */
-	sjme_basicTypeId argTypes[0];
-} sjme_static_methodBasicType;
 
 typedef struct sjme_static_classMethod
 {
@@ -430,9 +415,6 @@ typedef struct sjme_static_classMethod
 	
 	/** Name typed. */
 	const sjme_static_methodType* type;
-	
-	/** Basic method type. */
-	const sjme_static_methodBasicType* basicType;
 	
 	/** Method code and any pertaining information. */
 	const sjme_static_classCode* code;

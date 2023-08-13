@@ -12,29 +12,29 @@ package cc.squirreljme.jvm.aot.nanocoat.table;
 import cc.squirreljme.c.CIdentifier;
 import cc.squirreljme.c.CVariable;
 import cc.squirreljme.jvm.aot.nanocoat.ArchiveOutputQueue;
-import cc.squirreljme.jvm.aot.nanocoat.CodeFingerprint;
-import cc.squirreljme.jvm.aot.nanocoat.CodeInformation;
+import cc.squirreljme.jvm.aot.nanocoat.ClassInterfaces;
+import cc.squirreljme.jvm.aot.nanocoat.MethodTypeInformation;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.lang.ref.Reference;
 
 /**
- * Table for method code.
+ * Contains method type information.
  *
- * @since 2023/08/12
+ * @since 2023/08/13
  */
-public class CodeStaticTable
-	extends StaticTable<CodeFingerprint, CodeInformation>
+public class MethodTypeStaticTable
+	extends StaticTable<MethodTypeInformation, MethodTypeInformation>
 {
 	/**
-	 * Initializes the code table.
+	 * Initializes the method type table.
 	 *
-	 * @param __group The owning group.
+	 * @param __group The group this is under.
 	 * @since 2023/08/12
 	 */
-	public CodeStaticTable(Reference<StaticTableManager> __group)
+	public MethodTypeStaticTable(Reference<StaticTableManager> __group)
 	{
-		super(__group, StaticTableType.CODE);
+		super(__group, StaticTableType.CLASS_INTERFACES);
 	}
 	
 	/**
@@ -42,7 +42,7 @@ public class CodeStaticTable
 	 * @since 2023/08/12
 	 */
 	@Override
-	protected CIdentifier buildIdentity(CodeFingerprint __entry)
+	protected CIdentifier buildIdentity(MethodTypeInformation __entry)
 		throws NullPointerException
 	{
 		if (__entry == null)
@@ -57,7 +57,7 @@ public class CodeStaticTable
 	 */
 	@Override
 	protected void writeEntry(ArchiveOutputQueue __archive, String __fileName,
-		CVariable __variable, CodeFingerprint __entry)
+		CVariable __variable, MethodTypeInformation __entry)
 		throws IOException, NullPointerException
 	{
 		if (__archive == null || __fileName == null || __variable == null ||

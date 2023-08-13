@@ -120,7 +120,6 @@ public class ByteCodeProcessor
 		this.methodProcessor = new WeakReference<>(__method);
 		this.code = __code;
 		this.method = __method.method;
-		this.linkTable = __method.linkTable;
 		this.stackMap = __code.stackMapTableFull();
 		this.isStatic = __method.method.flags().isStatic();
 		this.variablePlacements = null;/*new VariablePlacementMap(

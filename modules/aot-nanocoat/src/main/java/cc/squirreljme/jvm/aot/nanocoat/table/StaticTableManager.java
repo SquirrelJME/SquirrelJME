@@ -11,6 +11,8 @@ package cc.squirreljme.jvm.aot.nanocoat.table;
 
 import cc.squirreljme.jvm.aot.nanocoat.ArchiveOutputQueue;
 import cc.squirreljme.jvm.aot.nanocoat.CodeFingerprint;
+import cc.squirreljme.jvm.aot.nanocoat.CodeInformation;
+import cc.squirreljme.jvm.aot.nanocoat.MethodTypeInformation;
 import cc.squirreljme.runtime.cldc.util.EnumTypeMap;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -28,7 +30,7 @@ public class StaticTableManager
 	protected final ArchiveOutputQueue archive;
 	
 	/** Static table outputs. */
-	private final Map<StaticTableType, StaticTable<?>> _tables;
+	private final Map<StaticTableType, StaticTable<?, ?>> _tables;
 	
 	/** Self reference. */
 	private final Reference<StaticTableManager> _self =
@@ -48,7 +50,7 @@ public class StaticTableManager
 			throw new NullPointerException("NARG");
 		
 		// Initialize tables
-		this._tables = new EnumTypeMap<StaticTableType, StaticTable<?>>(
+		this._tables = new EnumTypeMap<StaticTableType, StaticTable<?, ?>>(
 				StaticTableType.class, StaticTableType.values());
 		
 		// Store all tables
@@ -64,7 +66,19 @@ public class StaticTableManager
 	public CodeStaticTable code()
 	{
 		return (CodeStaticTable)this.table(CodeFingerprint.class,
-			StaticTableType.CODE);
+			CodeInformation.class, StaticTableType.CODE);
+	}
+	
+	/**
+	 * The method type table.
+	 *
+	 * @return The method type table.
+	 * @since 2023/08/13
+	 */
+	public MethodTypeStaticTable methodType()
+	{
+		return (MethodTypeStaticTable)this.table(MethodTypeInformation.class,
+			StaticTableType.METHOD_TYPE);
 	}
 	
 	/**
@@ -80,10 +94,30 @@ public class StaticTableManager
 	}
 	
 	/**
-	 * Returns the table for the given type. 
+	 * Returns the table for the given type.
 	 *
-	 * @param <E> The element type to store.
-	 * @param __elementType The element type to store.
+	 * @param <K> The element type to store.
+	 * @param __keyType The key type to store.
+	 * @param __type The type of table to get.
+	 * @return The table for the given type.
+	 * @throws ClassCastException If the element type is not correct.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/13
+	 */
+	public <K> StaticTable<K, K> table(Class<K> __keyType,
+		StaticTableType __type)
+		throws ClassCastException, NullPointerException
+	{
+		return this.table(__keyType, __keyType, __type);
+	}
+	
+	/**
+	 * Returns the table for the given type.
+	 *
+	 * @param <K> The element type to store.
+	 * @param <V> The value type.
+	 * @param __keyType The key type to store.
+	 * @param __valueType The value type used.
 	 * @param __type The type of table to get.
 	 * @return The table for the given type.
 	 * @throws ClassCastException If the element type is not correct.
@@ -91,17 +125,17 @@ public class StaticTableManager
 	 * @since 2023/08/12
 	 */
 	@SuppressWarnings("unchecked")
-	public <E> StaticTable<E> table(Class<E> __elementType,
-		StaticTableType __type)
+	public <K, V> StaticTable<K, V> table(Class<K> __keyType,
+		Class<V> __valueType, StaticTableType __type)
 		throws ClassCastException, NullPointerException
 	{
-		if (__type == null)
+		if (__keyType == null || __valueType == null || __type == null)
 			throw new NullPointerException("NARG");
 		
 		// Get and create table if it is missing, lazy initialization since
 		// for some libraries not all tables might be used
-		Map<StaticTableType, StaticTable<?>> tables = this._tables;
-		StaticTable<?> rv = tables.get(__type);
+		Map<StaticTableType, StaticTable<?, ?>> tables = this._tables;
+		StaticTable<?, ?> rv = tables.get(__type);
 		if (rv == null)
 		{
 			rv = __type.__newTable(this._self);
@@ -109,10 +143,12 @@ public class StaticTableManager
 		}
 		
 		// Check type of requested table
-		if (!rv.type.elementType.isAssignableFrom(__elementType))
+		if (!rv.type.keyType.isAssignableFrom(__keyType))
+			throw new ClassCastException("CLCL");
+		if (!rv.type.valueType.isAssignableFrom(__valueType))
 			throw new ClassCastException("CLCL");
 		
 		// Use it
-		return (StaticTable<E>)rv;
+		return (StaticTable<K, V>)rv;
 	}
 }

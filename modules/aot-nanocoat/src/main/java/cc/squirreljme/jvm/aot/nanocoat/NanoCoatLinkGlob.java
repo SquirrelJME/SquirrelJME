@@ -207,6 +207,7 @@ public class NanoCoatLinkGlob
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/08/09
 	 */
+	@Deprecated
 	public CVariable checkCodeFingerprint(CodeFingerprint __fingerprint,
 		CVariable __codeInfo)
 		throws NullPointerException
@@ -503,25 +504,6 @@ public class NanoCoatLinkGlob
 		block.declare(this.libraryInfo.extern());
 		block.declare(this.libraryClasses.extern());
 		block.declare(this.libraryResources.extern());
-	}
-	
-	/**
-	 * Processes the argument types and tries to find a cached set of
-	 * arguments.
-	 *
-	 * @param __types The argument types.
-	 * @return The identifier used to refer to the argument types.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/08/09
-	 */
-	public CIdentifier processArgumentTypes(
-		List<JvmPrimitiveType> __types)
-		throws NullPointerException
-	{
-		if (__types == null)
-			throw new NullPointerException("NARG");
-		
-		throw Debugging.todo();
 	}
 	
 	/**
