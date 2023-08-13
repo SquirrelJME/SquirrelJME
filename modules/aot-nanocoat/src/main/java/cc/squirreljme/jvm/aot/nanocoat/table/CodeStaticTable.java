@@ -47,7 +47,11 @@ public class CodeStaticTable
 		if (__key == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		// Use a format similar to string to hopefully make it unique enough
+		return String.format("%d_%s_%s",
+			__key.length(),
+			Long.toString(__key.hashCode() & 0xFFFFFFFFL, 36),
+			Long.toString(__key.checkSum() & 0xFFFFFFFFL, 36));
 	}
 	
 	/**

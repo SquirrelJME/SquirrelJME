@@ -11,9 +11,13 @@ package cc.squirreljme.jvm.aot.nanocoat;
 
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmPrimitiveType;
 import cc.squirreljme.runtime.cldc.lang.ArrayUtils;
+import cc.squirreljme.runtime.cldc.util.ByteArrayList;
 import cc.squirreljme.runtime.cldc.util.IntegerIntegerArray;
 import cc.squirreljme.runtime.cldc.util.IntegerList;
 import cc.squirreljme.runtime.cldc.util.SortedTreeSet;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,6 +31,7 @@ import net.multiphasicapps.classfile.Pool;
 import net.multiphasicapps.classfile.StackMapTableEntry;
 import net.multiphasicapps.classfile.StackMapTablePairs;
 import net.multiphasicapps.classfile.StackMapTableState;
+import net.multiphasicapps.io.CRC32Calculator;
 
 /**
  * Represents the fingerprint of a method to determine whether two methods
@@ -53,6 +58,9 @@ public final class CodeFingerprint
 	
 	/** The calculated hash code, since this can be heavy. */
 	volatile int _hashCode;
+	
+	/** The checksum of the fingerprint. */
+	volatile int _checkSum;
 	
 	/**
 	 * Determines the code fingerprint for the given method. 
@@ -290,6 +298,40 @@ public final class CodeFingerprint
 	}
 	
 	/**
+	 * Returns the checksum of the code fingerprint.
+	 *
+	 * @return The fingerprint checksum.
+	 * @since 2023/08/13
+	 */
+	public int checkSum()
+	{
+		int result = this._checkSum;
+		if (result != 0)
+			return result;
+		
+		// Need to load this into a byte array for calculation
+		int[] fingerprint = this._fingerprint;
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(
+			4 * fingerprint.length);
+			 DataOutputStream dos = new DataOutputStream(baos))
+		{
+			// Write fingerprint data
+			for (int i : fingerprint)
+				dos.writeInt(i);
+			dos.flush();
+			
+			// Calculate standard checksum
+			result = CRC32Calculator.calculateZip(baos.toByteArray());
+			this._checkSum = result;
+			return result;
+		}
+		catch (IOException __e)
+		{
+			throw new IllegalStateException(__e);
+		}
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2023/08/09
 	 */
@@ -326,5 +368,16 @@ public final class CodeFingerprint
 		result = new IntegerIntegerArray(this._fingerprint).hashCode();
 		this._hashCode = result;
 		return result;
+	}
+	
+	/**
+	 * The fingerprint length.
+	 *
+	 * @return The fingerprint length.
+	 * @since 2023/08/13
+	 */
+	public int length()
+	{
+		return this._fingerprint.length;
 	}
 }
