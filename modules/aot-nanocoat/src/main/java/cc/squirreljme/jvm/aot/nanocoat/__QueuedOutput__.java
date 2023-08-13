@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.ref.Reference;
 import net.multiphasicapps.io.CRC32Calculator;
+import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
 /**
  * Handles storing the file buffer for file output.
@@ -75,23 +76,24 @@ final class __QueuedOutput__
 		if (archive == null)
 			throw new IllegalStateException("GCGC");
 		
+		// Calculate data checksum, for file clashing
+		byte[] bytes = this.data.toByteArray();
+		archive.outputFiles.put(this.name,
+			CRC32Calculator.calculateZip(bytes));
+		
 		// Setup entry within the archive to write to
-		try (OutputStream out = archive.nextEntry(this.name))
+		ZipStreamWriter zip = archive.zip;
+		try (OutputStream out = zip.nextEntry(this.name))
 		{
 			// Write all the written data
-			byte[] bytes = this.data.toByteArray();
 			out.write(bytes, 0, bytes.length);
 			
 			// Make sure the output is flushed properly
 			out.flush();
-			
-			// Calculate data checksum, for file clashing
-			archive.outputFiles.put(this.name,
-				CRC32Calculator.calculateZip(bytes));
 		}
 		
 		// Make sure this Zip entry is written
-		archive.zip.flush();
+		zip.flush();
 	}
 	
 	/**
