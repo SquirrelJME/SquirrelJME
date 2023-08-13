@@ -12,6 +12,7 @@ package cc.squirreljme.jvm.aot.nanocoat;
 import cc.squirreljme.c.CFile;
 import cc.squirreljme.c.CSourceWriter;
 import cc.squirreljme.c.out.AppendableCTokenOutput;
+import cc.squirreljme.c.out.CTokenOutput;
 import cc.squirreljme.c.out.EchoCTokenOutput;
 import cc.squirreljme.c.out.PrettyCTokenOutput;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -91,11 +92,19 @@ public final class Utils
 		if (__out == null)
 			throw new NullPointerException("NARG");
 		
-		return new CFile(new PrettyCTokenOutput(
-			new EchoCTokenOutput(System.err,
-			new AppendableCTokenOutput(
-			new PrintStream(__out, true,
-				"utf-8")))));
+		// Base output
+		CTokenOutput base = new AppendableCTokenOutput(
+			new PrintStream(__out, true, "utf-8"));
+		
+		// Is debugging used?
+		CTokenOutput wrapped;
+		if (Debugging.ENABLED)
+			wrapped = new EchoCTokenOutput(System.err, base);
+		else
+			wrapped = base;
+		
+		// Setup C output
+		return new CFile(new PrettyCTokenOutput(wrapped));
 	}
 	
 	/**

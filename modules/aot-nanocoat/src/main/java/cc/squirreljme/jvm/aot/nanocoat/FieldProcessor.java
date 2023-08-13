@@ -89,26 +89,19 @@ public class FieldProcessor
 		try (CStructVariableBlock struct = __array.struct())
 		{
 			struct.memberSet("name",
-				CExpressionBuilder.builder()
-					.string(field.name().toString())
-					.build());
+				CBasicExpression.string(field.name().toString()));
 			struct.memberSet("type",
-				CExpressionBuilder.builder()
-					.string(field.type().toString())
-					.build());
+				CBasicExpression.string(field.type().toString()));
 			struct.memberSet("flags",
-				CExpressionBuilder.builder()
-					.number(Constants.JINT_C, field.flags().toJavaBits())
-					.build());
+				CBasicExpression.number(Constants.JINT_C,
+					field.flags().toJavaBits()));
 			
 			// Constant value?
 			ConstantValue value = field.constantValue();
 			if (value != null)
 			{
 				struct.memberSet("valueType",
-					CExpressionBuilder.builder()
-						.number(value.type().ordinal())
-						.build());
+					CBasicExpression.number(value.type().ordinal()));
 				try (CStructVariableBlock valueStruct = struct.memberStructSet(
 					"value"))
 				{

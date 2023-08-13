@@ -76,12 +76,8 @@ final class __QueuedOutput__
 		if (archive == null)
 			throw new IllegalStateException("GCGC");
 		
-		// Calculate data checksum, for file clashing
-		byte[] bytes = this.data.toByteArray();
-		archive.outputFiles.put(this.name,
-			CRC32Calculator.calculateZip(bytes));
-		
 		// Setup entry within the archive to write to
+		byte[] bytes = this.data.toByteArray();
 		ZipStreamWriter zip = archive.zip;
 		try (OutputStream out = zip.nextEntry(this.name))
 		{
@@ -94,6 +90,10 @@ final class __QueuedOutput__
 		
 		// Make sure this Zip entry is written
 		zip.flush();
+		
+		// Calculate data checksum, for file clashing
+		archive.outputFiles.put(this.name,
+			CRC32Calculator.calculateZip(bytes));
 	}
 	
 	/**

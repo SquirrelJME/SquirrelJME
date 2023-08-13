@@ -15,6 +15,7 @@ import cc.squirreljme.c.CIdentifier;
 import cc.squirreljme.c.CPPBlock;
 import cc.squirreljme.c.CVariable;
 import cc.squirreljme.jvm.aot.nanocoat.ArchiveOutputQueue;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import cc.squirreljme.runtime.cldc.util.SortedTreeSet;
 import java.io.IOException;
@@ -173,7 +174,6 @@ public abstract class StaticTable<K, V>
 		
 		// Setup variable and store into the map
 		StaticTableType type = this.type;
-		keys.put(__key, null);
 		CVariable result = CVariable.of(type.cType,
 			this.identify(__key));
 		keys.put(__key, result);
