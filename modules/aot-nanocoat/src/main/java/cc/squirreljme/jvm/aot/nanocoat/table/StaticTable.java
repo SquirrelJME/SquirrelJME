@@ -45,6 +45,10 @@ public abstract class StaticTable<K, V>
 	protected final Map<CIdentifier, K> identifiers =
 		new SortedTreeMap<>();
 	
+	/** Identifier tracing. */
+	protected final Map<CIdentifier, Throwable> identifiersTrace =
+		new SortedTreeMap<>();
+	
 	/** The type of table this is. */
 	protected final StaticTableType type;
 	
@@ -174,12 +178,15 @@ public abstract class StaticTable<K, V>
 		
 		/* {@squirreljme.error NC05 Duplicate identifier. (The identifier)} */
 		Map<CIdentifier, K> identifiers = this.identifiers;
+		Map<CIdentifier, Throwable> identifiersTrace = this.identifiersTrace;
 		if (identifiers.containsKey(identity))
 			throw new IllegalStateException(String.format("NC05 %s %s != %s",
-				identity, __key, identifiers.get(identity)));
+				identity, __key, identifiers.get(identity)),
+				identifiersTrace.get(identity));
 		
 		// Record mapping accordingly, for duplication check
 		identifiers.put(identity, __key);
+		identifiersTrace.put(identity, new Throwable(__key.toString()));
 		
 		// We need the table manager from this point on
 		StaticTableManager manager = this.__manager();
@@ -202,25 +209,23 @@ public abstract class StaticTable<K, V>
 		
 		// Header to declare extern
 		CFileName headerName = CFileName.of(headerFile);
-		if (!archive.hasOutput(headerFile))
-			try (CFile header = archive.nextCFile(headerName))
+		try (CFile header = archive.nextCFile(headerName))
+		{
+			try (CPPBlock ignored = header.headerGuard(headerName))
 			{
-				try (CPPBlock ignored = header.headerGuard(headerName))
-				{
-					header.declare(result.extern());
-				}
+				header.declare(result.extern());
 			}
+		}
 		
 		// Source which actually defines the string
-		if (!archive.hasOutput(sourceFile))
-			try (CFile source = archive.nextCFile(sourceFile))
-			{
-				// Include header
-				source.preprocessorInclude(headerName);
-				
-				// Write source
-				this.writeSource(source, sourceFile, result, __key, __value);
-			}
+		try (CFile source = archive.nextCFile(sourceFile))
+		{
+			// Include header
+			source.preprocessorInclude(headerName);
+			
+			// Write source
+			this.writeSource(source, sourceFile, result, __key, __value);
+		}
 		
 		// Use the new variable
 		return result;
