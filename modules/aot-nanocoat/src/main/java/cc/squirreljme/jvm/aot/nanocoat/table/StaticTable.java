@@ -173,6 +173,8 @@ public abstract class StaticTable<K, V>
 		if (keys.containsKey(__key))
 			return keys.get(__key);
 		
+		Debugging.debugNote(">>> INJECT %s", __key);
+		
 		// Identify the key first, to check for collision
 		CIdentifier identity = this.identify(__key);
 		
@@ -180,18 +182,28 @@ public abstract class StaticTable<K, V>
 		Map<CIdentifier, K> identifiers = this.identifiers;
 		Map<CIdentifier, Throwable> identifiersTrace = this.identifiersTrace;
 		if (identifiers.containsKey(identity))
-			throw new IllegalStateException(String.format("NC05 %s %s != %s",
-				identity, __key, identifiers.get(identity)),
+			throw new IllegalStateException(String.format(
+				"NC05 %s %s != %s %s %s %d",
+				identity, __key, identifiers.get(identity),
+				__key == identifiers.get(identity),
+				__key.equals(identifiers.get(identity)),
+				((Comparable)__key).compareTo(identifiers.get(identity))),
 				identifiersTrace.get(identity));
+		
+		Debugging.debugNote(">>> BEFORE ID PUT %s", __key);
 		
 		// Record mapping accordingly, for duplication check
 		identifiers.put(identity, __key);
 		identifiersTrace.put(identity, new Throwable(__key.toString()));
 		
+		Debugging.debugNote(">>> AFTER ID PUT %s", __key);
+		
 		// Build variable
 		StaticTableType type = this.type;
 		CVariable result = CVariable.of(type.cType, identity);
 		keys.put(__key, result);
+		
+		Debugging.debugNote(">>> AFTER KEYS PUT %s", __key);
 		
 		// We need the table manager from this point on
 		StaticTableManager manager = this.__manager();

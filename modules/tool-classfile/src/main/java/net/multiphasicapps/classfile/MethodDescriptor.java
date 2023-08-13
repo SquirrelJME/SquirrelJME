@@ -231,6 +231,8 @@ public final class MethodDescriptor
 	{
 		if (__other == null)
 			throw new NullPointerException("NARG");
+		if (__other == this)
+			return 0;
 		
 		FieldDescriptor[] aList = this._args;
 		FieldDescriptor[] bList = __other._args;
@@ -249,6 +251,10 @@ public final class MethodDescriptor
 				return compare;
 		}
 		
+		// Shorter list comes first
+		if (aLen != bLen)
+			return bLen - aLen;
+		
 		// Compare return types
 		FieldDescriptor aReturn = this.rvalue;
 		FieldDescriptor bReturn = __other.rvalue;
@@ -264,14 +270,10 @@ public final class MethodDescriptor
 		
 		// Do the compare if neither are null
 		if (aReturn != null)
-		{
-			int compare = aReturn.compareTo(bReturn);
-			if (compare != 0)
-				return compare;
-		}
+			return aReturn.compareTo(bReturn);
 		
-		// Shorter lists come first
-		return bLen - aLen;
+		// These are equal
+		return 0;
 	}
 	
 	/**
