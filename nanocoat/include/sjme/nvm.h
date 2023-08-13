@@ -395,9 +395,6 @@ typedef struct sjme_static_methodType
 	/** The return type. */
 	const sjme_static_fieldType* returnType;
 	
-	/** The return type of the method. */
-	sjme_basicTypeId returnBasicType;
-	
 	/** The number of arguments. */
 	jint argCount;
 	

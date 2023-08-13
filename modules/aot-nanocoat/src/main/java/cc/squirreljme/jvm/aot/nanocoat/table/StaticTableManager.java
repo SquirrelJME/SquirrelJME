@@ -16,6 +16,7 @@ import cc.squirreljme.runtime.cldc.util.EnumTypeMap;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Map;
+import net.multiphasicapps.classfile.FieldDescriptor;
 import net.multiphasicapps.classfile.MethodDescriptor;
 
 /**
@@ -67,6 +68,18 @@ public class StaticTableManager
 	{
 		return (CodeStaticTable)this.table(CodeFingerprint.class,
 			CodeInformation.class, StaticTableType.CODE);
+	}
+	
+	/**
+	 * Returns the field type table.
+	 *
+	 * @return The field type table.
+	 * @since 2023/08/13
+	 */
+	public FieldTypeStaticTable fieldType()
+	{
+		return (FieldTypeStaticTable)this.table(FieldDescriptor.class,
+			StaticTableType.FIELD_TYPE);
 	}
 	
 	/**

@@ -9,96 +9,77 @@
 
 package cc.squirreljme.jvm.aot.nanocoat.table;
 
-import cc.squirreljme.c.CArrayBlock;
 import cc.squirreljme.c.CBasicExpression;
 import cc.squirreljme.c.CFile;
 import cc.squirreljme.c.CStructVariableBlock;
 import cc.squirreljme.c.CVariable;
+import cc.squirreljme.jvm.aot.nanocoat.common.JvmPrimitiveType;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import net.multiphasicapps.classfile.FieldDescriptor;
-import net.multiphasicapps.classfile.MethodDescriptor;
 
 /**
- * Contains method type information.
+ * Field type static table.
  *
  * @since 2023/08/13
  */
-public class MethodTypeStaticTable
-	extends StaticTable<MethodDescriptor, MethodDescriptor>
+public class FieldTypeStaticTable
+	extends StaticTable<FieldDescriptor, FieldDescriptor>
 {
 	/**
-	 * Initializes the method type table.
+	 * Initializes the code table.
 	 *
-	 * @param __group The group this is under.
-	 * @since 2023/08/12
+	 * @param __group The owning group.
+	 * @since 2023/08/13
 	 */
-	public MethodTypeStaticTable(Reference<StaticTableManager> __group)
+	public FieldTypeStaticTable(Reference<StaticTableManager> __group)
 	{
-		super(__group, StaticTableType.METHOD_TYPE);
+		super(__group, StaticTableType.FIELD_TYPE);
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 *
-	 * @since 2023/08/12
+	 * @since 2023/08/13
 	 */
 	@Override
-	protected String buildIdentity(MethodDescriptor __key)
+	protected String buildIdentity(FieldDescriptor __key)
 		throws IOException, NullPointerException
 	{
 		if (__key == null)
 			throw new NullPointerException("NARG");
 		
-		// Make method descriptors similar to strings
+		// Make field descriptors similar to strings
 		StringStaticTable string = this.__manager().string();
-		return String.format("%d_%s",
-			__key.argumentCount(),
+		return String.format("%s",
 			string.put(__key.toString()).name);
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2023/08/12
+	 * @since 2023/08/13
 	 */
 	@Override
 	protected void writeSource(CFile __sourceFile, String __fileName,
-		CVariable __variable, MethodDescriptor __key,
-		MethodDescriptor __value)
+		CVariable __variable, FieldDescriptor __key, FieldDescriptor __value)
 		throws IOException, NullPointerException
 	{
 		if (__sourceFile == null || __fileName == null || __variable == null ||
 			__key == null)
 			throw new NullPointerException("NARG");
 		
-		// Define the type information
-		FieldTypeStaticTable fields = this.__manager().fieldType();
+		StringStaticTable strings = this.__manager().string();
 		try (CStructVariableBlock struct = __sourceFile.define(
 			CStructVariableBlock.class, __variable))
 		{
 			struct.memberSet("hashCode",
 				CBasicExpression.number(__key.hashCode()));
 			
-			// Return value
-			FieldDescriptor rVal = __key.returnValue();
-			if (rVal == null)
-				struct.memberSet("returnType",
-					CVariable.NULL);
-			else
-				struct.memberSet("returnType",
-					CBasicExpression.reference(fields.put(rVal)));
+			struct.memberSet("descriptor",
+				strings.put(__key.toString()));
 			
-			// Arguments
-			int n = __key.argumentCount();
-			struct.memberSet("argCount",
-				CBasicExpression.number(n));
-			try (CArrayBlock array = struct.memberArraySet(
-				"argTypes"))
-			{
-				for (int i = 0; i < n; i++)
-					array.value(CBasicExpression.reference(
-						fields.put(__key.argument(i))));
-			}
+			struct.memberSet("basicType",
+				CBasicExpression.number(JvmPrimitiveType.of(__key).ordinal()));
 		}
 	}
 }

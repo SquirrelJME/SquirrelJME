@@ -1025,7 +1025,6 @@ public enum JvmTypes
 				.member(JvmTypes.JINT, "hashCode")
 				.member(JvmTypes.STATIC_FIELD_TYPE.type().constType()
 					.pointerType(), "returnType")
-				.member(JvmTypes.BASIC_TYPE_ID, "returnBasicType")
 				.member(JvmTypes.JINT, "argCount")
 				.member(JvmTypes.STATIC_FIELD_TYPE.type().constType()
 					.pointerType().arrayType(0), "argTypes")

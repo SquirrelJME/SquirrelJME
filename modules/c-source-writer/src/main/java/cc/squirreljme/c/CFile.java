@@ -526,8 +526,8 @@ public class CFile
 				c = (char)('A' + (c - 'a'));
 			
 			// Turn slashes and dots to underscores
-			else if (c == '/' || c == '_')
-				c = '.';
+			else if (c == '/' || c == '.')
+				c = '_';
 			
 			// Ignore otherwise
 			else

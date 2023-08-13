@@ -11,11 +11,7 @@ package cc.squirreljme.jvm.aot.nanocoat.table;
 
 import cc.squirreljme.c.CBasicExpression;
 import cc.squirreljme.c.CFile;
-import cc.squirreljme.c.CFileName;
-import cc.squirreljme.c.CIdentifier;
-import cc.squirreljme.c.CPPBlock;
 import cc.squirreljme.c.CVariable;
-import cc.squirreljme.jvm.aot.nanocoat.ArchiveOutputQueue;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import net.multiphasicapps.io.CRC32Calculator;
@@ -48,7 +44,7 @@ public class StringStaticTable
 	 */
 	@Override
 	protected String buildIdentity(String __key)
-		throws NullPointerException
+		throws IOException, NullPointerException
 	{
 		if (__key == null)
 			throw new NullPointerException("NARG");
@@ -79,33 +75,16 @@ public class StringStaticTable
 	 * @since 2023/08/12
 	 */
 	@Override
-	protected void writeEntry(ArchiveOutputQueue __archive, String __fileName,
-		CVariable __variable, String __entry, String __value)
+	protected void writeSource(CFile __sourceFile, String __fileName,
+		CVariable __variable, String __key, String __value)
 		throws IOException, NullPointerException
 	{
-		if (__archive == null || __fileName == null ||
-			__variable == null || __entry == null)
+		if (__sourceFile == null || __fileName == null ||
+			__variable == null || __key == null)
 			throw new NullPointerException("NARG");
 		
-		// Header to declare extern to the string
-		CFileName headerName = CFileName.of(__fileName + ".h");
-		try (CFile header = __archive.nextCFile(headerName.toString()))
-		{
-			try (CPPBlock ignored = header.headerGuard(headerName))
-			{
-				header.declare(__variable.extern());
-			}
-		}
-		
-		// Source which actually defines the string
-		try (CFile source = __archive.nextCFile(__fileName + ".c"))
-		{
-			// Include header
-			source.preprocessorInclude(headerName);
-			
-			// Define the actual variable
-			source.define(__variable,
-				CBasicExpression.string(__entry));
-		}
+		// Define the actual variable
+		__sourceFile.define(__variable,
+			CBasicExpression.string(__key));
 	}
 }

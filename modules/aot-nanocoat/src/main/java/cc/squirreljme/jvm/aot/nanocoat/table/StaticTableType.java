@@ -23,6 +23,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.util.Arrays;
 import java.util.List;
+import net.multiphasicapps.classfile.FieldDescriptor;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.collections.UnmodifiableList;
 
@@ -106,10 +107,10 @@ public enum StaticTableType
 		JvmTypes.STATIC_RESOURCE),
 	
 	/** Field type information. */
-	FIELD_TYPE("tyme",
-		byte.class,
-		byte.class,
-		CPrimitiveType.VOID),
+	FIELD_TYPE("tyfi",
+		FieldDescriptor.class,
+		FieldDescriptor.class,
+		JvmTypes.STATIC_FIELD_TYPE),
 	
 	/** Method type information. */
 	METHOD_TYPE("tyme",
@@ -240,7 +241,7 @@ public enum StaticTableType
 				throw Debugging.todo();
 			
 			case FIELD_TYPE:
-				throw Debugging.todo();
+				return new FieldTypeStaticTable(__group);
 			
 			case METHOD_TYPE:
 				return new MethodTypeStaticTable(__group);

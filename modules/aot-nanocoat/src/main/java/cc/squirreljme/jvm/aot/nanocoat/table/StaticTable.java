@@ -9,7 +9,10 @@
 
 package cc.squirreljme.jvm.aot.nanocoat.table;
 
+import cc.squirreljme.c.CFile;
+import cc.squirreljme.c.CFileName;
 import cc.squirreljme.c.CIdentifier;
+import cc.squirreljme.c.CPPBlock;
 import cc.squirreljme.c.CVariable;
 import cc.squirreljme.jvm.aot.nanocoat.ArchiveOutputQueue;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
@@ -45,7 +48,7 @@ public abstract class StaticTable<K, V>
 	protected final StaticTableType type;
 	
 	/** The group which owns this table. */
-	private final Reference<StaticTableManager> _group;
+	private final Reference<StaticTableManager> _manager;
 	
 	/**
 	 * Initializes the static table.
@@ -60,7 +63,7 @@ public abstract class StaticTable<K, V>
 		if (__group == null || __type == null)
 			throw new NullPointerException("NARG");
 		
-		this._group = __group;
+		this._manager = __group;
 		this.type = __type;
 	}
 	
@@ -69,26 +72,27 @@ public abstract class StaticTable<K, V>
 	 *
 	 * @param __key The entry to identify.
 	 * @return The identifier to use.
+	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/08/12
 	 */
 	protected abstract String buildIdentity(K __key)
-		throws NullPointerException;
+		throws IOException, NullPointerException;
 	
 	/**
 	 * Writes a table entry to the archive output.
 	 *
-	 * @param __archive The archive to write to.
+	 * @param __sourceFile The archive to write to.
 	 * @param __fileName The suggested file name.
 	 * @param __variable The variable being written.
-	 * @param __entry The entry to write.
+	 * @param __key The entry to write.
 	 * @param __value The value to write.
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/08/12
 	 */
-	protected abstract void writeEntry(ArchiveOutputQueue __archive,
-		String __fileName, CVariable __variable, K __entry, V __value)
+	protected abstract void writeSource(CFile __sourceFile,
+		String __fileName, CVariable __variable, K __key, V __value)
 		throws IOException, NullPointerException;
 	
 	/**
@@ -111,8 +115,15 @@ public abstract class StaticTable<K, V>
 			return keys.get(__key).name;
 		
 		// Otherwise build the identity
-		return CIdentifier.of(String.format("%s_%s", this.type.prefix,
-			this.buildIdentity(__key).toLowerCase())); 
+		try
+		{
+			return CIdentifier.of(String.format("%s_%s", this.type.prefix,
+				this.buildIdentity(__key).toLowerCase()));
+		}
+		catch (IOException __e)
+		{
+			throw new IllegalArgumentException(__e);
+		}
 	}
 	
 	/**
@@ -154,9 +165,7 @@ public abstract class StaticTable<K, V>
 			return keys.get(__key);
 		
 		// We need the table manager from this point on
-		StaticTableManager manager = this._group.get();
-		if (manager == null)
-			throw new IllegalStateException("GCGC");
+		StaticTableManager manager = this.__manager();
 		
 		// Setup variable and store into the map
 		StaticTableType type = this.type;
@@ -168,9 +177,46 @@ public abstract class StaticTable<K, V>
 		String baseFile = String.format("shared/%s/%s",
 			type.prefix,
 			result.name);
-		this.writeEntry(manager.archive, baseFile, result, __key, __value);
+		
+		// Header to declare extern
+		ArchiveOutputQueue archive = manager.archive;
+		CFileName headerName = CFileName.of(baseFile + ".h");
+		try (CFile header = archive.nextCFile(headerName.toString()))
+		{
+			try (CPPBlock ignored = header.headerGuard(headerName))
+			{
+				header.declare(result.extern());
+			}
+		}
+		
+		// Source which actually defines the string
+		try (CFile source = archive.nextCFile(baseFile + ".c"))
+		{
+			// Include header
+			source.preprocessorInclude(headerName);
+			
+			// Write source
+			this.writeSource(source, baseFile, result, __key, __value);
+		}
 		
 		// Use the new variable
 		return result;
+	}
+	
+	/**
+	 * Returns the manager.
+	 *
+	 * @return The manager.
+	 * @throws IllegalStateException If it has been garbage collected.
+	 * @since 2023/08/13
+	 */
+	final StaticTableManager __manager()
+		throws IllegalStateException
+	{
+		StaticTableManager manager = this._manager.get();
+		if (manager == null)
+			throw new IllegalStateException("GCGC");
+		
+		return manager;
 	}
 }
