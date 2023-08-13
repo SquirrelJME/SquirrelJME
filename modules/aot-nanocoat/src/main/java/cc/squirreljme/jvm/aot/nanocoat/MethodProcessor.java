@@ -101,6 +101,7 @@ public final class MethodProcessor
 		NanoCoatLinkGlob glob = this.glob;
 		Method method = this.method;
 		
+		MethodTypeStaticTable methodTypes = glob.tables.methodType();
 		try (CStructVariableBlock struct = __array.struct())
 		{
 			MethodDescriptor type = method.type();
@@ -109,21 +110,10 @@ public final class MethodProcessor
 			struct.memberSet("name",
 				CBasicExpression.string(method.name().toString()));
 			struct.memberSet("type",
-				CBasicExpression.string(type.toString()));
+				CBasicExpression.reference(methodTypes.put(type)));
 			struct.memberSet("flags",
 				CBasicExpression.number(Constants.JINT_C,
 					method.flags().toJavaBits()));
-			
-			// Write reference to method argument types
-			MethodTypeStaticTable methodTypeTable =
-				glob.tables.methodType();
-			
-			// Write argument type mapping, since many methods in a library
-			// will use the same set of arguments, this is reduced accordingly
-			// by combining and sharing them
-			struct.memberSet("argTypes",
-				CBasicExpression.reference(methodTypeTable.identify(
-					method.type())));
 			
 			// If there is code, refer to it
 			if (this.method.byteCode() != null)

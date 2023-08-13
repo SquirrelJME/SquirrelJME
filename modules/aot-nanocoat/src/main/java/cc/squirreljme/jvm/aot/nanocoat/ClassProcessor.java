@@ -169,9 +169,8 @@ public class ClassProcessor
 			{
 				// Field count
 				struct.memberSet("count",
-					CExpressionBuilder.builder()
-						.number(Constants.JINT_C, this._fields.size())
-						.build());
+					CBasicExpression.number(Constants.JINT_C,
+						this._fields.size()));
 				
 				// Then the actual members
 				try (CArrayBlock array =
@@ -193,9 +192,8 @@ public class ClassProcessor
 			{
 				// Method count
 				struct.memberSet("count",
-					CExpressionBuilder.builder()
-						.number(Constants.JINT_C, this._methods.size())
-						.build());
+					CBasicExpression.number(Constants.JINT_C,
+						this._methods.size()));
 				
 				// Then the actual members
 				try (CArrayBlock array =
@@ -214,9 +212,8 @@ public class ClassProcessor
 			{
 				// Interface count
 				struct.memberSet("count",
-					CExpressionBuilder.builder()
-						.number(Constants.JINT_C, interfaceNames.size())
-						.build());
+					CBasicExpression.number(Constants.JINT_C,
+						interfaceNames.size()));
 				
 				// Then the actual interfaces
 				try (CArrayBlock array =
@@ -241,9 +238,8 @@ public class ClassProcessor
 			{
 				// Linkage count
 				struct.memberSet("count",
-					CExpressionBuilder.builder()
-						.number(Constants.JINT_C, this.linkTable.size())
-						.build());
+					CBasicExpression.number(Constants.JINT_C,
+						this.linkTable.size()));
 				
 				// Then the actual linkages themselves
 				try (CArrayBlock array =
@@ -277,61 +273,48 @@ public class ClassProcessor
 		{
 			// Class details
 			struct.memberSet("thisName",
-				CExpressionBuilder.builder()
-					.string(classFile.thisName().toString())
-					.build());
+				CBasicExpression.string(classFile.thisName().toString()));
 			struct.memberSet("thisNameHash",
 				CBasicExpression.number(classFile.thisName().hashCode()));
 			
 			if (classFile.superName() != null)
 				struct.memberSet("superName",
-					CExpressionBuilder.builder()
-						.string(classFile.superName().toString())
-						.build());
+					CBasicExpression.string(classFile.superName().toString()));
 			else
 				struct.memberSet("superName",
 					CVariable.NULL);
 			
 			if (interfaceNames != null && !interfaceNames.isEmpty())
 				struct.memberSet("interfaceNames",
-					CExpressionBuilder.builder()
-						.reference(this.classInterfaces)
-						.build());
+					CBasicExpression.reference(this.classInterfaces));
 			else
 				struct.memberSet("interfaceNames",
 					CVariable.NULL);
 			
 			struct.memberSet("flags",
-				CExpressionBuilder.builder()
-					.number(Constants.JINT_C, classFile.flags().toJavaBits())
-					.build());
+				CBasicExpression.number(Constants.JINT_C,
+					classFile.flags().toJavaBits()));
 			
 			// Fields
 			if (this._fields.isEmpty())
 				struct.memberSet("fields", CVariable.NULL);
 			else
 				struct.memberSet("fields",
-					CExpressionBuilder.builder()
-						.reference(this.classFields)
-						.build());
+					CBasicExpression.reference(this.classFields));
 			
 			// Methods
 			if (this._methods.isEmpty())
 				struct.memberSet("methods", CVariable.NULL);
 			else
 				struct.memberSet("methods",
-					CExpressionBuilder.builder()
-						.reference(this.classMethods)
-						.build());
+					CBasicExpression.reference(this.classMethods));
 			
 			// Linkages
 			if (this.linkTable.size() <= 0)
 				struct.memberSet("linkages", CVariable.NULL);
 			else
 				struct.memberSet("linkages",
-					CExpressionBuilder.builder()
-						.reference(this.classLinkages)
-						.build());
+					CBasicExpression.reference(this.classLinkages));
 		}
 	}
 }

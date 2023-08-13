@@ -23,23 +23,17 @@ import cc.squirreljme.c.CVariable;
 import cc.squirreljme.jvm.aot.AOTSettings;
 import cc.squirreljme.jvm.aot.LinkGlob;
 import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
-import cc.squirreljme.jvm.aot.nanocoat.common.JvmPrimitiveType;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
 import cc.squirreljme.jvm.aot.nanocoat.table.StaticTableManager;
 import cc.squirreljme.jvm.manifest.JavaManifest;
 import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
-import cc.squirreljme.runtime.cldc.util.SortedTreeSet;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
 /**
@@ -100,7 +94,7 @@ public class NanoCoatLinkGlob
 	protected final AOTSettings aotSettings;
 	
 	/** The archive queue. */
-	protected final ArchiveOutputQueue archiveQueue;
+	protected final ArchiveOutputQueue archive;
 	
 	/** The C header block. */
 	volatile CBlock _headerBlock;
@@ -132,8 +126,8 @@ public class NanoCoatLinkGlob
 		
 		// Archive writer uses the Zip
 		ArchiveOutputQueue archive = new ArchiveOutputQueue(zip);
-		this.archiveQueue = archive;
-		this.tables = new StaticTableManager(this.archiveQueue);
+		this.archive = archive;
+		this.tables = new StaticTableManager(this.archive);
 		
 		// Determine output names
 		this.aotSettings = __aotSettings;
@@ -183,8 +177,7 @@ public class NanoCoatLinkGlob
 		throws IOException
 	{
 		// Close out ZIP
-		this.zip.flush();
-		this.zip.close();
+		this.archive.close();
 	}
 	
 	/**
@@ -196,7 +189,7 @@ public class NanoCoatLinkGlob
 		throws IOException
 	{
 		// Need to write final stuff to the archive
-		ArchiveOutputQueue archive = this.archiveQueue;
+		ArchiveOutputQueue archive = this.archive;
 		
 		// Finish the header output
 		try (CFile headerOut = this.headerOut)
@@ -401,10 +394,6 @@ public class NanoCoatLinkGlob
 	{
 		CSourceWriter headerOut = this.headerOut;
 		CSourceWriter rootSourceOut = this.rootSourceOut;
-		
-		// Write headers
-		Utils.headerC(headerOut);
-		Utils.headerC(rootSourceOut);
 		
 		// Include library header
 		rootSourceOut.preprocessorInclude(this.headerFileName);

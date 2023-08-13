@@ -546,7 +546,8 @@ public enum JvmTypes
 			return CStructTypeBuilder.builder(CStructKind.STRUCT,
 				"sjme_static_classField")
 				.member(CPrimitiveType.CONST_CHAR_STAR, "name")
-				.member(CPrimitiveType.CONST_CHAR_STAR, "type")
+				.member(JvmTypes.STATIC_FIELD_TYPE.type().constType()
+					.pointerType(), "type")
 				.member(JvmTypes.JINT.type().constType(), "flags")
 				.member(JvmTypes.BASIC_TYPE_ID, "valueType")
 				.member(JvmTypes.STATIC_CONST_VALUE,

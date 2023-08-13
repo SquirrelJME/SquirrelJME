@@ -318,9 +318,6 @@ typedef struct sjme_static_classField
 	/** The field type. */
 	const sjme_static_fieldType* type;
 	
-	/** The basic field type. */
-	sjme_basicTypeId basicType;
-	
 	/** Flags. */
 	jint flags;
 	

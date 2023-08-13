@@ -10,7 +10,6 @@
 package cc.squirreljme.jvm.aot.nanocoat;
 
 import cc.squirreljme.c.CArrayBlock;
-import cc.squirreljme.c.CArrayType;
 import cc.squirreljme.c.CBasicExpression;
 import cc.squirreljme.c.CExpressionBuilder;
 import cc.squirreljme.c.CFile;
@@ -84,12 +83,9 @@ public class NanoCoatBackend
 			processor.classIdentifier + ".c");
 		
 		// Process source code in single file
-		try (CFile sourceOut = glob.archiveQueue.nextCFile(
+		try (CFile sourceOut = glob.archive.nextCFile(
 			glob.inDirectory(baseName)))
 		{
-			// Write header
-			Utils.headerC(sourceOut);
-			
 			// Do the actual include of ourselves
 			sourceOut.preprocessorInclude(Constants.SJME_NVM_HEADER);
 			sourceOut.preprocessorInclude(glob.headerFileName);
@@ -130,12 +126,9 @@ public class NanoCoatBackend
 		
 		// Process source code in single file
 		String rcFileName = Utils.basicFileName(rcIdentifier + ".c");
-		try (CFile sourceOut = glob.archiveQueue.nextCFile(
+		try (CFile sourceOut = glob.archive.nextCFile(
 			glob.inDirectory(rcFileName)))
 		{
-			// Write header
-			Utils.headerC(sourceOut);
-			
 			// Do the actual include of ourselves
 			sourceOut.preprocessorInclude(Constants.SJME_NVM_HEADER);
 			sourceOut.preprocessorInclude(glob.headerFileName);
@@ -271,9 +264,6 @@ public class NanoCoatBackend
 					 zip.nextEntry(romHeader.toString()); 
 				 CFile cFile = Utils.cFile(rawRom))
 			{
-				// Start with header
-				Utils.headerC(cFile);
-				
 				// Header guard
 				CIdentifier guard = CIdentifier.of("SJME_ROM_" +
 					romBaseName.toUpperCase() + "_H");

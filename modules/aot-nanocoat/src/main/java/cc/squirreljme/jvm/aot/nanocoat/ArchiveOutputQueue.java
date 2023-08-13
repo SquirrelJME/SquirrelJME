@@ -89,6 +89,23 @@ public class ArchiveOutputQueue
 	}
 	
 	/**
+	 * Has this file been output?
+	 *
+	 * @param __file The file to check.
+	 * @return If it has been output already.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/13
+	 */
+	public boolean hasOutput(String __file)
+		throws NullPointerException
+	{
+		if (__file == null)
+			throw new NullPointerException("NARG");
+		
+		return this.outputFiles.containsKey(__file);
+	}
+	
+	/**
 	 * Builds a new C File for output.
 	 *
 	 * @param __name The name of the file.
@@ -140,11 +157,11 @@ public class ArchiveOutputQueue
 		if (__name == null)
 			throw new NullPointerException("NARG");
 		
-		/* {@squirreljme.error NC03 Duplicate outut file. (The file)} */
+		/* {@squirreljme.error NC03 Duplicate output file with different
+		content. (The file)} */
 		Map<String, Integer> outputFiles = this.outputFiles;
 		if (outputFiles.containsKey(__name))
 			throw new IOException("NC03 " + __name);
-		outputFiles.put(__name, null);
 		
 		// Setup new entry
 		return new __QueuedOutput__(this._self, __name);

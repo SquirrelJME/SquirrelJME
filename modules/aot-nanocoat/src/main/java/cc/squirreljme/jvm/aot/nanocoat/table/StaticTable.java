@@ -42,8 +42,8 @@ public abstract class StaticTable<K, V>
 		new SortedTreeMap<>();
 	
 	/** Variable identifiers, used to check for collisions. */
-	protected final Set<CIdentifier> identifiers =
-		new SortedTreeSet<>();
+	protected final Map<CIdentifier, K> identifiers =
+		new SortedTreeMap<>();
 	
 	/** The type of table this is. */
 	protected final StaticTableType type;
@@ -169,40 +169,58 @@ public abstract class StaticTable<K, V>
 		if (keys.containsKey(__key))
 			return keys.get(__key);
 		
+		// Identify the key first, to check for collision
+		CIdentifier identity = this.identify(__key);
+		
+		/* {@squirreljme.error NC05 Duplicate identifier. (The identifier)} */
+		Map<CIdentifier, K> identifiers = this.identifiers;
+		if (identifiers.containsKey(identity))
+			throw new IllegalStateException(String.format("NC05 %s %s != %s",
+				identity, __key, identifiers.get(identity)));
+		
+		// Record mapping accordingly, for duplication check
+		identifiers.put(identity, __key);
+		
 		// We need the table manager from this point on
 		StaticTableManager manager = this.__manager();
 		
 		// Setup variable and store into the map
 		StaticTableType type = this.type;
-		CVariable result = CVariable.of(type.cType,
-			this.identify(__key));
+		keys.put(__key, null);
+		CVariable result = CVariable.of(type.cType, identity);
 		keys.put(__key, result);
 		
 		// Since we just put the key in, generate the needed sources
-		String baseFile = String.format("shared/%s/%s",
+		String sourceFile = String.format("shared/%s/%s.c",
+			type.prefix,
+			result.name);
+		String headerFile = String.format("shared/%s/include/%s.h",
 			type.prefix,
 			result.name);
 		
-		// Header to declare extern
 		ArchiveOutputQueue archive = manager.archive;
-		CFileName headerName = CFileName.of(baseFile + ".h");
-		try (CFile header = archive.nextCFile(headerName.toString()))
-		{
-			try (CPPBlock ignored = header.headerGuard(headerName))
+		
+		// Header to declare extern
+		CFileName headerName = CFileName.of(headerFile);
+		if (!archive.hasOutput(headerFile))
+			try (CFile header = archive.nextCFile(headerName))
 			{
-				header.declare(result.extern());
+				try (CPPBlock ignored = header.headerGuard(headerName))
+				{
+					header.declare(result.extern());
+				}
 			}
-		}
 		
 		// Source which actually defines the string
-		try (CFile source = archive.nextCFile(baseFile + ".c"))
-		{
-			// Include header
-			source.preprocessorInclude(headerName);
-			
-			// Write source
-			this.writeSource(source, baseFile, result, __key, __value);
-		}
+		if (!archive.hasOutput(sourceFile))
+			try (CFile source = archive.nextCFile(sourceFile))
+			{
+				// Include header
+				source.preprocessorInclude(headerName);
+				
+				// Write source
+				this.writeSource(source, sourceFile, result, __key, __value);
+			}
 		
 		// Use the new variable
 		return result;

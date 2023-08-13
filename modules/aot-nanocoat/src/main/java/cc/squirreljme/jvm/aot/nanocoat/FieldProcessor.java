@@ -15,6 +15,7 @@ import cc.squirreljme.c.CExpressionBuilder;
 import cc.squirreljme.c.CSourceWriter;
 import cc.squirreljme.c.CStructVariableBlock;
 import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
+import cc.squirreljme.jvm.aot.nanocoat.table.FieldTypeStaticTable;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import net.multiphasicapps.classfile.ClassFile;
@@ -85,13 +86,16 @@ public class FieldProcessor
 		if (__array == null)
 			throw new NullPointerException("NARG");
 		
+		NanoCoatLinkGlob glob = this.glob;
+		
 		Field field = this.field;
+		FieldTypeStaticTable fieldTypes = glob.tables.fieldType();
 		try (CStructVariableBlock struct = __array.struct())
 		{
 			struct.memberSet("name",
 				CBasicExpression.string(field.name().toString()));
 			struct.memberSet("type",
-				CBasicExpression.string(field.type().toString()));
+				CBasicExpression.reference(fieldTypes.put(field.type())));
 			struct.memberSet("flags",
 				CBasicExpression.number(Constants.JINT_C,
 					field.flags().toJavaBits()));
