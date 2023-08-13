@@ -276,6 +276,7 @@ public class Main
 								actual = new ByteArrayInputStream(data);
 							}
 							
+							// Build the resource
 							__backend.compileResource(settings, glob, name,
 								actual);
 						}
@@ -287,10 +288,10 @@ public class Main
 									name.length() - ".class".length()),
 								entry);
 					}
-				
-				// Linking stage is finished
-				glob.finish();
 			}
+			
+			// Linking stage is finished
+			glob.finish();
 		}
 	}
 	

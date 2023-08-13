@@ -9,7 +9,6 @@
 
 package cc.squirreljme.c.out;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.Closeable;
 import java.io.IOException;
 
@@ -59,6 +58,8 @@ public class AppendableCTokenOutput
 			}
 			catch (Exception __e)
 			{
+				if (__e instanceof RuntimeException)
+					throw (RuntimeException)__e;
 				throw new IOException(__e);
 			}
 	}

@@ -54,7 +54,7 @@ public class MethodTypeStaticTable
 		StringStaticTable string = this.__manager().strings();
 		return String.format("%d_%s",
 			__key.argumentCount(),
-			string.put(__key.toString()).name);
+			string.identify(__key.toString()));
 	}
 	
 	/**

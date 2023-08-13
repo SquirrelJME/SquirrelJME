@@ -76,7 +76,6 @@ final class __QueuedOutput__
 			throw new IllegalStateException("GCGC");
 		
 		// Setup entry within the archive to write to
-		int checksum;
 		try (OutputStream out = archive.nextEntry(this.name))
 		{
 			// Write all the written data
@@ -87,11 +86,12 @@ final class __QueuedOutput__
 			out.flush();
 			
 			// Calculate data checksum, for file clashing
-			checksum = CRC32Calculator.calculateZip(bytes);
+			archive.outputFiles.put(this.name,
+				CRC32Calculator.calculateZip(bytes));
 		}
 		
-		// Make a record of the entry
-		archive.outputFiles.put(this.name, checksum);
+		// Make sure this Zip entry is written
+		archive.zip.flush();
 	}
 	
 	/**

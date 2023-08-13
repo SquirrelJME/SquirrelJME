@@ -51,7 +51,7 @@ public class FieldTypeStaticTable
 		// Make field descriptors similar to strings
 		StringStaticTable string = this.__manager().strings();
 		return String.format("%s",
-			string.put(__key.toString()).name);
+			string.identify(__key.toString()));
 	}
 	
 	/**

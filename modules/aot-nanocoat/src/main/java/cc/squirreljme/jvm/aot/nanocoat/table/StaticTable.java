@@ -112,7 +112,11 @@ public abstract class StaticTable<K, V>
 		// Use already cached name
 		Map<K, CVariable> keys = this.keys;
 		if (keys.containsKey(__key))
-			return keys.get(__key).name;
+		{
+			CVariable var = keys.get(__key);
+			if (var != null)
+				return var.name;
+		}
 		
 		// Otherwise build the identity
 		try
@@ -169,6 +173,7 @@ public abstract class StaticTable<K, V>
 		
 		// Setup variable and store into the map
 		StaticTableType type = this.type;
+		keys.put(__key, null);
 		CVariable result = CVariable.of(type.cType,
 			this.identify(__key));
 		keys.put(__key, result);

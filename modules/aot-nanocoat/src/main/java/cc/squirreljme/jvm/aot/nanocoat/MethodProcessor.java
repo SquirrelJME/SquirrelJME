@@ -122,7 +122,7 @@ public final class MethodProcessor
 			// will use the same set of arguments, this is reduced accordingly
 			// by combining and sharing them
 			struct.memberSet("argTypes",
-				CBasicExpression.reference(methodTypeTable.put(
+				CBasicExpression.reference(methodTypeTable.identify(
 					method.type())));
 			
 			// If there is code, refer to it

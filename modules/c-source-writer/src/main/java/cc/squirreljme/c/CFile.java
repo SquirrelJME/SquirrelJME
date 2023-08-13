@@ -220,17 +220,8 @@ public class CFile
 	public void close()
 		throws IOException
 	{
-		if (this.out instanceof AutoCloseable)
-			try
-			{
-				((AutoCloseable)this.out).close();
-			}
-			catch (Exception __e)
-			{
-				if (__e instanceof RuntimeException)
-					throw (RuntimeException)__e;
-				throw new IOException("CLOS", __e);
-			}
+		// Close the output
+		this.out.close();
 	}
 	
 	/**

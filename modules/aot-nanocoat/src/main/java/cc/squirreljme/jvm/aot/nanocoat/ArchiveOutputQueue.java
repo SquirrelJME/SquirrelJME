@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.aot.nanocoat;
 
 import cc.squirreljme.c.CFile;
+import cc.squirreljme.c.CFileName;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.io.Closeable;
@@ -75,12 +76,16 @@ public class ArchiveOutputQueue
 		this._isClosed = true;
 		
 		/* {@squirreljme.error NC04 An entry is currently being written and
-		has not yet been closed.} */
+		has not yet been closed. (The file being written)} */
 		for (Map.Entry<String, Integer> entry : this.outputFiles.entrySet())
 			if (entry.getValue() == null)
-				throw new IOException("NC04");
+				throw new IOException("NC04 " + entry.getKey());
 		
-		throw Debugging.todo();
+		// Finish the Zip off
+		ZipStreamWriter zip = this.zip;
+		zip.flush();
+		zip.close();
+		zip.flush();
 	}
 	
 	/**
@@ -103,6 +108,24 @@ public class ArchiveOutputQueue
 	}
 	
 	/**
+	 * Builds a new C File for output.
+	 *
+	 * @param __name The name of the file.
+	 * @return The resultant C File.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/13
+	 */
+	public CFile nextCFile(CFileName __name)
+		throws IOException, NullPointerException
+	{
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		return this.nextCFile(__name.toString());
+	}
+	
+	/**
 	 * Creates a new entry to write data to.
 	 *
 	 * @param __name The name of the file to write.
@@ -117,10 +140,10 @@ public class ArchiveOutputQueue
 		if (__name == null)
 			throw new NullPointerException("NARG");
 		
-		/* {@squirreljme.error NC03 Duplicate outut file.} */
+		/* {@squirreljme.error NC03 Duplicate outut file. (The file)} */
 		Map<String, Integer> outputFiles = this.outputFiles;
 		if (outputFiles.containsKey(__name))
-			throw new IOException("NC03");
+			throw new IOException("NC03 " + __name);
 		outputFiles.put(__name, null);
 		
 		// Setup new entry

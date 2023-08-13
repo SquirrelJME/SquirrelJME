@@ -65,22 +65,11 @@ public class NanoCoatLinkGlob
 	/** The wrapped ZIP file. */
 	protected final ZipStreamWriter zip;
 	
-	/** Raw header output data. */
-	protected final ByteArrayOutputStream rawHeaderOut;
-	
 	/** The output for the C header. */
 	protected final CFile headerOut;
 	
-	/** Raw root source output data. */
-	protected final ByteArrayOutputStream rawRootSourceOut;
-	
 	/** The output for the C source root. */
 	protected final CFile rootSourceOut;
-	
-	/** Files which have been output. */
-	@Deprecated
-	protected final Set<String> outputFiles =
-		new SortedTreeSet<>();
 	
 	/** Static tables. */
 	protected final StaticTableManager tables;
@@ -109,16 +98,6 @@ public class NanoCoatLinkGlob
 	
 	/** The settings used for the AOT call. */
 	protected final AOTSettings aotSettings;
-	
-	/** Fingerprints for method code, to remove duplicates. */
-	@Deprecated
-	private final Map<CodeFingerprint, CVariable> _fingerprints =
-		new LinkedHashMap<>();
-	
-	/** Header duplicates. */
-	@Deprecated
-	final Set<CIdentifier> _headerDups =
-		new HashSet<>();
 	
 	/** The archive queue. */
 	protected final ArchiveOutputQueue archiveQueue;
@@ -152,7 +131,8 @@ public class NanoCoatLinkGlob
 		this.zip = zip;
 		
 		// Archive writer uses the Zip
-		this.archiveQueue = new ArchiveOutputQueue(zip);
+		ArchiveOutputQueue archive = new ArchiveOutputQueue(zip);
+		this.archiveQueue = archive;
 		this.tables = new StaticTableManager(this.archiveQueue);
 		
 		// Determine output names
@@ -183,51 +163,15 @@ public class NanoCoatLinkGlob
 		try
 		{
 			// Setup header writing
-			this.rawHeaderOut = new ByteArrayOutputStream();
-			this.headerOut = Utils.cFile(this.rawHeaderOut);
+			this.headerOut = archive.nextCFile(this.headerFileName);
 			
 			// Setup source root writing
-			this.rawRootSourceOut = new ByteArrayOutputStream();
-			this.rootSourceOut = Utils.cFile(this.rawRootSourceOut);
+			this.rootSourceOut = archive.nextCFile(this.rootSourceFileName);
 		}
 		catch (IOException __e)
 		{
 			throw new RuntimeException(__e);
 		}
-	}
-	
-	/**
-	 * Checks for a duplicate code fingerprint in the glob.
-	 *
-	 * @param __fingerprint The fingerprint to check.
-	 * @param __codeInfo The function being checked, and potentially registered
-	 * if one does not exist already.
-	 * @return The variable if the code is duplicated, otherwise {@code null}
-	 * if it is original.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/08/09
-	 */
-	@Deprecated
-	public CVariable checkCodeFingerprint(CodeFingerprint __fingerprint,
-		CVariable __codeInfo)
-		throws NullPointerException
-	{
-		if (__fingerprint == null || __codeInfo == null)
-			throw new NullPointerException("NARG");
-		
-		// Check if a fingerprint already exists
-		Map<CodeFingerprint, CVariable> fingerprints = this._fingerprints;
-		CVariable existing = fingerprints.get(__fingerprint);
-		if (existing != null)
-		{
-			Debugging.debugNote("Duplicate method %s = %s",
-				__codeInfo, existing);
-			return existing;
-		}
-		
-		// Register it and just return the input, null flags original method
-		fingerprints.put(__fingerprint, __codeInfo);
-		return null;
 	}
 	
 	/**
@@ -251,30 +195,18 @@ public class NanoCoatLinkGlob
 	public void finish()
 		throws IOException
 	{
-		// Need to write the raw header output for this class
-		ZipStreamWriter zip = this.zip;
-		try (OutputStream out = zip.nextEntry(
-			this.inDirectory(this.headerFileName)))
+		// Need to write final stuff to the archive
+		ArchiveOutputQueue archive = this.archiveQueue;
+		
+		// Finish the header output
+		try (CFile headerOut = this.headerOut)
 		{
-			// Finish header block
-			CBlock block = this._headerBlock;
-			
-			// Close block
-			block.close();
-			
-			// Close out the header entry before we write it fully
-			this.headerOut.flush();
-			this.headerOut.close();
-			
-			// Copy to the ZIP
-			out.write(this.rawHeaderOut.toByteArray());
-			out.flush();
+			// Make sure it is written
+			headerOut.flush();
 		}
 		
-		// Write root source as well
-		CFile rootSourceOut = this.rootSourceOut;
-		try (OutputStream out = zip.nextEntry(
-			this.inDirectory(this.rootSourceFileName)))
+		// Finish the root source output
+		try (CFile rootSourceOut = this.rootSourceOut)
 		{
 			// Write resources
 			if (!this.resourceIdentifiers.isEmpty())
@@ -347,20 +279,13 @@ public class NanoCoatLinkGlob
 						CBasicExpression.reference(this.libraryClasses));
 			}
 			
-			// Close out the header entry before we write it fully
+			// Make sure it is written
 			rootSourceOut.flush();
-			rootSourceOut.close();
-			
-			// Copy to the ZIP
-			out.write(this.rawRootSourceOut.toByteArray());
-			out.flush();
 		}
 		
 		// Output the CMake build file accordingly
-		try (OutputStream rawCMake = zip.nextEntry(
-			this.inDirectory("CMakeLists.txt"));
-			PrintStream cmake = new PrintStream(rawCMake, true,
-				"utf-8"))
+		try (PrintStream cmake = archive.nextPrintStream(
+			this.inDirectory("CMakeLists.txt")))
 		{
 			// Start with header
 			Utils.headerCMake(cmake);
@@ -377,11 +302,12 @@ public class NanoCoatLinkGlob
 			// Generate list of files
 			cmake.printf("set(%sFiles", libName);
 			cmake.println();
-			for (String outputFile : this.outputFiles)
+			Debugging.todoNote("Write source files.");
+			/*for (String outputFile : this.outputFiles)
 			{
 				cmake.printf("\t\"%s\"", outputFile);
 				cmake.println();
-			}
+			}*/
 			cmake.println("\t)");
 			cmake.println();
 			
@@ -426,6 +352,9 @@ public class NanoCoatLinkGlob
 			// Make sure ZIP entry is written
 			cmake.flush();
 		}
+		
+		// Finish the archive
+		archive.close();
 	}
 	
 	/**
@@ -480,9 +409,6 @@ public class NanoCoatLinkGlob
 		// Include library header
 		rootSourceOut.preprocessorInclude(this.headerFileName);
 		
-		// Make sure the output files has the actual root source
-		this.outputFiles.add(this.rootSourceFileName.toString());
-		
 		// If we are compiling source, include ourselves via the header
 		CPPBlock block = headerOut.preprocessorIf(
 				CExpressionBuilder.builder()
@@ -493,9 +419,7 @@ public class NanoCoatLinkGlob
 		
 		// Do not do this again
 		block.preprocessorDefine(this.headerGuard,
-			CExpressionBuilder.builder()
-				.number(1)
-			.build());
+			CBasicExpression.number(1));
 			
 		// Include NanoCoat definitions
 		block.preprocessorInclude(Constants.SJME_NVM_HEADER);
@@ -504,23 +428,6 @@ public class NanoCoatLinkGlob
 		block.declare(this.libraryInfo.extern());
 		block.declare(this.libraryClasses.extern());
 		block.declare(this.libraryResources.extern());
-	}
-	
-	/**
-	 * Processes variable limits, sharing them if possible.
-	 *
-	 * @param __limits The limits used.
-	 * @return The identifier for the set of limits.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/08/09
-	 */
-	public CIdentifier processVariableLimits(VariableLimits __limits)
-		throws NullPointerException
-	{
-		if (__limits == null)
-			throw new NullPointerException("NARG");
-		
-		throw Debugging.todo();
 	}
 	
 	/**
