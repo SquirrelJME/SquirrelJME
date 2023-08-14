@@ -560,6 +560,10 @@
     <inspection_tool class="RedundantTypeArguments" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="ReplaceNullCheck" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="SSBasedInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <searchConfiguration name="Java ME: There is no Arrays.hashCode()" description="Java ME: There is no Arrays.hashCode()." suppressId="squirrejme_javaMe_noArraysHashCode" problemDescriptor="Java ME: There is no Arrays.hashCode()" text="java.util.Arrays.hashCode($expr$)" recursive="true" caseInsensitive="false" type="JAVA" pattern_context="default">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="expr" within="" contains="" />
+      </searchConfiguration>
       <replaceConfiguration name="SquirrelJME: __error__ is qualified." description="__error__ is the only special&#10;static import, for error code&#10;composition." suppressId="squirreljme_qualifiedError" problemDescriptor="SquirrelJME: __error__ is qualified." text="$errorCodeClass$.__error__($args$)" recursive="false" caseInsensitive="true" type="JAVA" pattern_context="default" reformatAccordingToStyle="false" shortenFQN="true" useStaticImport="true" replacement="ErrorCode.__error__($args$)">
         <constraint name="__context__" within="" contains="" />
         <constraint name="args" minCount="0" maxCount="2147483647" within="" contains="" />
@@ -772,6 +776,7 @@
     <inspection_tool class="VariableTypeCanBeExplicit" enabled="false" level="INFORMATION" enabled_by_default="false" />
     <inspection_tool class="WaitNotifyNotInSynchronizedContext" enabled="true" level="WEAK WARNING" enabled_by_default="true" editorAttributes="INFO_ATTRIBUTES" />
     <inspection_tool class="ced03fc8-111a-390f-8655-ed7465debd5f" enabled="true" level="GRAMMAR_ERROR" enabled_by_default="true" editorAttributes="TEXT_STYLE_ERROR" />
+    <inspection_tool class="f93a96c1-2c44-3074-aa46-c5bbec2c6b07" enabled="true" level="ERROR" enabled_by_default="true" editorAttributes="ERRORS_ATTRIBUTES" />
     <inspection_tool class="unused" enabled="true" level="WARNING" enabled_by_default="true" checkParameterExcludingHierarchy="false" test_entries="false">
       <option name="LOCAL_VARIABLE" value="true" />
       <option name="FIELD" value="true" />
