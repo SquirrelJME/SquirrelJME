@@ -35,11 +35,12 @@ public class VariablePlacementMap
 	/** Placements for variables. */
 	protected final Map<VariablePlacement, VariablePlacement> toNano;
 	
-	/** Counts for maximums. */
-	private final int[] _typeCounts;
+	/** Variable limits. */
+	protected final VariableLimits limits;
 	
 	/** The thrown variable index. */
 	protected final int thrownVariableIndex;
+	
 	
 	/**
 	 * Initializes the variable placements.
@@ -110,7 +111,7 @@ public class VariablePlacementMap
 		
 		// Store placements
 		this.toNano = UnmodifiableMap.of(placements);
-		this._typeCounts = typeCounts;
+		this.limits = new VariableLimits(typeCounts);
 	}
 	
 	/**
@@ -140,7 +141,7 @@ public class VariablePlacementMap
 	 */
 	public VariableLimits limits()
 	{
-		throw Debugging.todo();
+		return this.limits;
 	}
 	
 	/**
