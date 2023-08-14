@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.aot.nanocoat.table;
 
+import cc.squirreljme.c.CBasicExpression;
 import cc.squirreljme.c.CFile;
 import cc.squirreljme.c.CFunctionBlock;
 import cc.squirreljme.c.CIdentifier;
@@ -16,6 +17,7 @@ import cc.squirreljme.c.CStructVariableBlock;
 import cc.squirreljme.c.CVariable;
 import cc.squirreljme.jvm.aot.nanocoat.ByteCodeProcessor;
 import cc.squirreljme.jvm.aot.nanocoat.CodeFingerprint;
+import cc.squirreljme.jvm.aot.nanocoat.VariablePlacementMap;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmFunctions;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
@@ -86,16 +88,25 @@ public class CodeStaticTable
 		}
 		
 		// Write struct that defines the information on the code
+		VariableLimitsStaticTable limitsTable =
+			this.__manager().variableLimits();
 		try (CStructVariableBlock struct = __sourceFile.define(
 			CStructVariableBlock.class, __variable))
 		{
+			// Code function
 			struct.memberSet("code",
 				functionName);
 			
-			if (true)
-				throw Debugging.todo();
-			/* "limits" */
-			/* "thrownVarIndex" */
+			// Limits for the variables
+			VariablePlacementMap placements =
+				processor.variablePlacements();
+			struct.memberSet("limits",
+				CBasicExpression.reference(
+					limitsTable.put(placements.limits())));
+			
+			// Thrown variable index
+			struct.memberSet("thrownVarIndex",
+				CBasicExpression.number(placements.thrownVariableIndex()));
 		}
 	}
 }

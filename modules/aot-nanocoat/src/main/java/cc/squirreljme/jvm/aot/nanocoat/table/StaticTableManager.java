@@ -11,6 +11,7 @@ package cc.squirreljme.jvm.aot.nanocoat.table;
 
 import cc.squirreljme.jvm.aot.nanocoat.ArchiveOutputQueue;
 import cc.squirreljme.jvm.aot.nanocoat.CodeFingerprint;
+import cc.squirreljme.jvm.aot.nanocoat.VariableLimits;
 import cc.squirreljme.runtime.cldc.util.EnumTypeMap;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -163,5 +164,17 @@ public class StaticTableManager
 		
 		// Use it
 		return (StaticTable<K, V>)rv;
+	}
+	
+	/**
+	 * Returns the variable limits table.
+	 *
+	 * @return The variable limits table.
+	 * @since 2023/08/13
+	 */
+	public VariableLimitsStaticTable variableLimits()
+	{
+		return (VariableLimitsStaticTable)this.table(VariableLimits.class,
+			StaticTableType.VARIABLE_LIMITS);
 	}
 }

@@ -839,6 +839,17 @@ public class ByteCodeProcessor
 	}
 	
 	/**
+	 * Returns the variable placement map.
+	 *
+	 * @return The variable placement map.
+	 * @since 2023/08/13
+	 */
+	public VariablePlacementMap variablePlacements()
+	{
+		return this.variablePlacements;
+	}
+	
+	/**
 	 * Returns a group ID for the given instruction jump table.
 	 * 
 	 * @param __instruction The target instruction.

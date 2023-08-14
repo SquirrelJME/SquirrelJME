@@ -119,9 +119,9 @@ public enum StaticTableType
 		JvmTypes.STATIC_METHOD_TYPE),
 	
 	/** Locals/stack variable limit information. */
-	LOCALS_STACK_LIMITS("valn",
+	VARIABLE_LIMITS("valn",
 		VariableLimits.class,
-		byte.class,
+		VariableLimits.class,
 		JvmTypes.STATIC_CLASS_CODE_LIMITS),
 	
 	/* End. */
@@ -246,8 +246,8 @@ public enum StaticTableType
 			case METHOD_TYPE:
 				return new MethodTypeStaticTable(__group);
 			
-			case LOCALS_STACK_LIMITS:
-				throw Debugging.todo();
+			case VARIABLE_LIMITS:
+				return new VariableLimitsStaticTable(__group);
 			
 			default:
 				throw Debugging.todo(this);
