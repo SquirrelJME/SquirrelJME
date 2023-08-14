@@ -9,12 +9,18 @@
 
 package net.multiphasicapps.classfile;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.UnmodifiableIterator;
+import java.util.Iterator;
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Represents a pair of stack map tables, for input and output.
  *
  * @since 2023/07/03
  */
 public final class StackMapTablePair
+	implements Iterable<StackMapTableState>
 {
 	/** The input table. */
 	public final StackMapTableState input;
@@ -39,5 +45,15 @@ public final class StackMapTablePair
 		
 		this.input = __input;
 		this.output = __output;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/08/13
+	 */
+	@Override
+	public Iterator<StackMapTableState> iterator()
+	{
+		return UnmodifiableIterator.of(this.input, this.output);
 	}
 }

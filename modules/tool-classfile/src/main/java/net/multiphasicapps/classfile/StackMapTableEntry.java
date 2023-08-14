@@ -160,6 +160,17 @@ public final class StackMapTableEntry
 	}
 	
 	/**
+	 * Is this the nothing type?
+	 *
+	 * @return If this is the nothing type.
+	 * @since 2023/08/13
+	 */
+	public boolean isNothing()
+	{
+		return this.type.isNothing();
+	}
+	
+	/**
 	 * Is this a top type?
 	 *
 	 * @return If this is a top type.

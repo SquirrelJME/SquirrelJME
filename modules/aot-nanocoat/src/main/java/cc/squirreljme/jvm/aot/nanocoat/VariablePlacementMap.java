@@ -12,22 +12,35 @@ package cc.squirreljme.jvm.aot.nanocoat;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmPrimitiveType;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import net.multiphasicapps.classfile.FieldDescriptor;
 import net.multiphasicapps.classfile.MethodDescriptor;
+import net.multiphasicapps.classfile.StackMapTableEntry;
 import net.multiphasicapps.classfile.StackMapTablePairs;
+import net.multiphasicapps.classfile.StackMapTableState;
 import net.multiphasicapps.collections.UnmodifiableList;
+import net.multiphasicapps.collections.UnmodifiableMap;
 
 /**
  * This maps multiple {@link VariablePlacement} for each instruction address
  * to individual mappings.
  *
  * @see VariablePlacement
- * @see VariablePlacements
  * @since 2023/08/09
  */
 public class VariablePlacementMap
 {
+	/** Placements for variables. */
+	protected final Map<VariablePlacement, VariablePlacement> toNano;
+	
+	/** Counts for maximums. */
+	private final int[] _typeCounts;
+	
+	/** The thrown variable index. */
+	protected final int thrownVariableIndex;
+	
 	/**
 	 * Initializes the variable placements.
 	 *
@@ -47,31 +60,84 @@ public class VariablePlacementMap
 			throw new NullPointerException("NARG");
 		
 		// Setup array with maximum total number of entries
-		int maxTotal = __maxLocals + __maxStack;
-		VariablePlacement[] placements = new VariablePlacement[maxTotal];
+		Map<VariablePlacement, VariablePlacement> placements =
+			new LinkedHashMap<>();
+		int[] typeCounts = new int[JvmPrimitiveType.NUM_JAVA_TYPES];
 		
 		// If this is a non-static method, then the first argument is always
 		// implicitly an object, which then means that all invocations are
 		// treated as if they were static
-		if (true)
-			throw Debugging.todo();
+		int usedLocals = 0;
+		if (!__isStatic)
+			VariablePlacementMap.__seed(placements, typeCounts,
+				JvmPrimitiveType.OBJECT, usedLocals++);
+		
+		// Load in arguments following
+		int numArgs = __type.argumentCount();
+		for (int i = 0; i < numArgs; i++)
+			VariablePlacementMap.__seed(placements, typeCounts,
+				JvmPrimitiveType.of(__type.argument(i)), usedLocals++);
 		
 		// The first reference after any argument is always the thrown
 		// variable, even if the method throws nothing and has a zero-size
 		// stack
-		if (true)
-			throw Debugging.todo();
+		this.thrownVariableIndex = VariablePlacementMap.__seed(placements,
+			typeCounts, JvmPrimitiveType.OBJECT,
+			__maxLocals + __maxStack).index;
 		  
-		// Need to map for each address
+		// Need to map for each address all the possible stack states, both
+		// input and output
 		for (int address : __stackMap.addresses())
-		{
-			throw Debugging.todo();
-		}
+			for (StackMapTableState state : __stackMap.get(address))
+			{
+				int maxTotal = __maxLocals + state.depth();
+				for (int i = 0; i < maxTotal; i++)
+				{
+					// Get entry
+					StackMapTableEntry entry = (i < __maxLocals ?
+						state.getLocal(i) :
+						state.getStack(i - __maxLocals));
+					
+					// Ignore nothing and top variables
+					if (entry.isTop() || entry.isNothing())
+						continue;
+					
+					// Load it in
+					VariablePlacementMap.__seed(placements, typeCounts,
+						JvmPrimitiveType.of(entry.type()), i);
+				}
+			}
 		
-		// Store mapping
+		// Store placements
+		this.toNano = UnmodifiableMap.of(placements);
+		this._typeCounts = typeCounts;
+	}
+	
+	/**
+	 * Returns a placement from Java. 
+	 *
+	 * @param __type The type used.
+	 * @param __index The index of the local.
+	 * @return The NanoCoat placement.
+	 * @throws IndexOutOfBoundsException If the index is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/13
+	 */
+	public VariablePlacement toNano(JvmPrimitiveType __type, int __index)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		if (__type == null)
+			throw new NullPointerException("NARG");
+		
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * Returns the limits for this placement map.
+	 *
+	 * @return The placement map limits.
+	 * @since 2023/08/13
+	 */
 	public VariableLimits limits()
 	{
 		throw Debugging.todo();
@@ -85,36 +151,48 @@ public class VariablePlacementMap
 	 */
 	public int thrownVariableIndex()
 	{
-		throw Debugging.todo();
+		return this.thrownVariableIndex;
 	}
 	
 	/**
-	 * Calculates the type order that the method uses.
+	 * Returns a placement from Java.
 	 *
-	 * @param __isStatic Is this a static method?
-	 * @param __type The method argument type.
-	 * @return The primitive types that make up the method.
-	 * @throws NullPointerException
-	 * @since 2023/08/09
+	 * @param __placements The target placements.
+	 * @param __typeCounts The current type counts.
+	 * @param __type The type used.
+	 * @param __index The index of the local.
+	 * @return The NanoCoat placement.
+	 * @throws IndexOutOfBoundsException If the index is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/13
 	 */
-	public static List<JvmPrimitiveType> methodArguments(boolean __isStatic,
-		MethodDescriptor __type)
-		throws NullPointerException
+	private static VariablePlacement __seed(
+		Map<VariablePlacement, VariablePlacement> __placements,
+		int[] __typeCounts, JvmPrimitiveType __type, int __index)
+		throws IndexOutOfBoundsException, NullPointerException
 	{
-		if (__type == null)
+		if (__placements == null || __typeCounts == null || __type == null)
 			throw new NullPointerException("NARG");
+		if (__index < 0)
+			throw new IndexOutOfBoundsException("NEGV");
 		
-		List<JvmPrimitiveType> result = new ArrayList<>(
-			(__isStatic ? 1 : 0) + __type.argumentCount());
+		// Build key
+		VariablePlacement key = new VariablePlacement(__type, __index);
 		
-		// Non-static includes this
-		if (!__isStatic)
-			result.add(JvmPrimitiveType.OBJECT);
+		// Has this already been determined?
+		VariablePlacement result = __placements.get(key);
+		if (result != null)
+			return result;
 		
-		// Process arguments
-		for (FieldDescriptor arg : __type.arguments())
-			result.add(JvmPrimitiveType.of(arg));
+		// Setup target mapping
+		result = new VariablePlacement(__type,
+			__typeCounts[__type.ordinal()]++);
+		__placements.put(key, result);
 		
-		return UnmodifiableList.of(result);
+		// Debug
+		Debugging.debugNote("VarMap %s -> %s", key, result);
+		
+		// Use target result
+		return result;
 	}
 }
