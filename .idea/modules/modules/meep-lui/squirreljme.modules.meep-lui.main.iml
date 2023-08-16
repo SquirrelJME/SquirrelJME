@@ -6,8 +6,8 @@
     <content url="file://$MODULE_DIR$/../../../../modules/meep-lui/src/main">
       <sourceFolder url="file://$MODULE_DIR$/../../../../modules/meep-lui/src/main/java" isTestSource="false" />
     </content>
-    <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
     <orderEntry type="module" module-name="squirreljme.modules.gcf.main" />
     <orderEntry type="module" module-name="squirreljme.modules.collections.main" />
     <orderEntry type="module" module-name="squirreljme.modules.meep-key.main" />

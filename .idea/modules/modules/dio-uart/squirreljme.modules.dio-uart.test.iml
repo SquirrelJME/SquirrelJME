@@ -4,8 +4,8 @@
     <output-test url="file://$MODULE_DIR$/../../../../modules/dio-uart/build/classes/java/test" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../../../modules/dio-uart/src/test" />
-    <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
     <orderEntry type="module" module-name="squirreljme.modules.dio-uart.testFixtures" production-on-test="" />
     <orderEntry type="module" module-name="squirreljme.modules.dio-modem.main" />
     <orderEntry type="module" module-name="squirreljme.modules.dio.main" />

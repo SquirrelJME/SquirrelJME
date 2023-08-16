@@ -4,8 +4,8 @@
     <output url="file://$MODULE_DIR$/../../../../modules/meep-event/build/classes/java/main" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../../../modules/meep-event/src/main" />
-    <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
     <orderEntry type="module" module-name="squirreljme.modules.cldc-compact.main" />
     <orderEntry type="library" name="Gradle: org.jetbrains:annotations:24.0.1" level="project" />
   </component>

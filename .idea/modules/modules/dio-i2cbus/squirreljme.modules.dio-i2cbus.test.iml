@@ -4,8 +4,8 @@
     <output-test url="file://$MODULE_DIR$/../../../../modules/dio-i2cbus/build/classes/java/test" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../../../modules/dio-i2cbus/src/test" />
-    <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
     <orderEntry type="module" module-name="squirreljme.modules.dio-i2cbus.testFixtures" production-on-test="" />
     <orderEntry type="module" module-name="squirreljme.modules.dio.main" />
     <orderEntry type="module" module-name="squirreljme.modules.tac.main" />

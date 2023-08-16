@@ -4,8 +4,8 @@
     <output-test url="file://$MODULE_DIR$/../../../../modules/aot-springcoat/build/classes/java/test" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../../../modules/aot-springcoat/src/test" />
-    <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
     <orderEntry type="module" module-name="squirreljme.modules.aot-springcoat.testFixtures" production-on-test="" />
     <orderEntry type="module" module-name="squirreljme.modules.aot.main" />
     <orderEntry type="module" module-name="squirreljme.modules.tac.main" />

@@ -6,6 +6,7 @@
     <content url="file://$MODULE_DIR$/../../buildSrc/src/test" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="Stephanie Gawroriski.squirreljme.buildSrc.main" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>

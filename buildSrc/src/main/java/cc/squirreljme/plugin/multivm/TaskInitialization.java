@@ -450,7 +450,18 @@ public final class TaskInitialization
 		if (__project == null || __classifier == null)
 			throw new NullPointerException("NARG");
 		
-		// Standard ROM
+		// Standard run everything as one, only allow main and test source
+		// sets to be a candidate for full
+		if (!__classifier.isMainSourceSet() && !__classifier.isTestSourceSet())
+			return;
+		
+		// If this is a debug only target and the requested clutter level is
+		// not debugging, then do not make such a task
+		if (__classifier.getVmType().allowOnlyDebug() &&
+			!__classifier.getTargetClassifier().getClutterLevel().isDebug())
+			return;
+		
+		// Create task
 		__project.getTasks().create(
 			TaskInitialization.task("full", __classifier),
 			VMFullSuite.class, __classifier);

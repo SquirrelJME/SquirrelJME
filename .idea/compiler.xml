@@ -8,6 +8,7 @@
         <processorPath useClasspath="false">
           <entry name="$PROJECT_DIR$/../.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.28/a2ff5da8bcd8b1b26f36b806ced63213362c6dcc/lombok-1.18.28.jar" />
         </processorPath>
+        <module name="Stephanie Gawroriski.squirreljme.buildSrc.main" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
@@ -28,6 +29,7 @@
       <module name="squirreljme.tools.txt-to-pbm" target="11" />
       <module name="squirreljme.tools.txt-to-pbm.main" target="11" />
       <module name="squirreljme.tools.txt-to-pbm.test" target="11" />
+      <module name="Stephanie Gawroriski.squirreljme.buildSrc.main" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>

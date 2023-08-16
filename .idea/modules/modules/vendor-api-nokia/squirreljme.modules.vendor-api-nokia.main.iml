@@ -7,8 +7,8 @@
       <sourceFolder url="file://$MODULE_DIR$/../../../../modules/vendor-api-nokia/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../../../modules/vendor-api-nokia/src/main/resources" type="java-resource" />
     </content>
-    <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
     <orderEntry type="module" module-name="squirreljme.modules.media-api.main" />
     <orderEntry type="module" module-name="squirreljme.modules.midp-lcdui.main" />
     <orderEntry type="module" module-name="squirreljme.modules.cldc-compact.main" />

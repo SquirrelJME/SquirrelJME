@@ -4,8 +4,8 @@
     <output url="file://$MODULE_DIR$/../../../../modules/profile-meep/build/classes/java/main" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../../../modules/profile-meep/src/main" />
-    <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
     <orderEntry type="module" module-name="squirreljme.modules.meep-midlet.main" />
     <orderEntry type="module" module-name="squirreljme.modules.cldc-compact.main" />
     <orderEntry type="module" module-name="squirreljme.modules.collections.main" />
