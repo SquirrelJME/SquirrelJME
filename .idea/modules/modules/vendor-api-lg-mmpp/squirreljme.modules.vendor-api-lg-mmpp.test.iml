@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module external.linked.project.id=":modules:vendor-api-lg-mmpp:test" external.linked.project.path="$MODULE_DIR$/../../../../modules/vendor-api-lg-mmpp" external.root.project.path="$MODULE_DIR$/../../../.." external.system.id="GRADLE" external.system.module.group="squirreljme.modules" external.system.module.type="sourceSet" external.system.module.version="0.3.0" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_7">
+    <output-test url="file://$MODULE_DIR$/../../../../modules/vendor-api-lg-mmpp/build/classes/java/test" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/../../../../modules/vendor-api-lg-mmpp/src/test" />
+    <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="squirreljme.modules.vendor-api-lg-mmpp.testFixtures" production-on-test="" />
+    <orderEntry type="module" module-name="squirreljme.modules.tac.main" />
+    <orderEntry type="module" module-name="squirreljme.modules.cldc-compact.main" />
+    <orderEntry type="module" module-name="squirreljme.emulators.emulator-base.main" />
+    <orderEntry type="module" module-name="squirreljme.modules.vendor-api-lg-mmpp.main" />
+    <orderEntry type="module" module-name="squirreljme.modules.common-vm.main" />
+    <orderEntry type="module" module-name="squirreljme.modules.io.main" />
+    <orderEntry type="module" module-name="squirreljme.modules.meep-midlet.main" />
+    <orderEntry type="module" module-name="squirreljme.modules.tool-manifest-writer.main" />
+    <orderEntry type="module" module-name="squirreljme.modules.collections.main" />
+    <orderEntry type="library" name="Gradle: org.jetbrains:annotations:24.0.1" level="project" />
+    <orderEntry type="module" module-name="squirreljme.modules.midp-lcdui.main" />
+    <orderEntry type="module" module-name="squirreljme.modules.zip.main" />
+    <orderEntry type="module" module-name="squirreljme.modules.meep-swm.main" />
+    <orderEntry type="module" module-name="squirreljme.modules.cldc.main" />
+    <orderEntry type="module" module-name="squirreljme.modules.gcf.main" />
+  </component>
+  <component name="TestModuleProperties" production-module="squirreljme.modules.vendor-api-lg-mmpp.main" />
+</module>

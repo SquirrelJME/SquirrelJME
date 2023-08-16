@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module external.linked.project.id=":tools:txt-to-pbm" external.linked.project.path="$MODULE_DIR$/../../../../tools/txt-to-pbm" external.root.project.path="$MODULE_DIR$/../../../.." external.system.id="GRADLE" external.system.module.group="squirreljme.tools" external.system.module.version="0.3.0" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_11" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/../../../../tools/txt-to-pbm">
+      <excludeFolder url="file://$MODULE_DIR$/../../../../tools/txt-to-pbm/.gradle" />
+      <excludeFolder url="file://$MODULE_DIR$/../../../../tools/txt-to-pbm/build" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module external.linked.project.id=":tools:txt-to-pbm:test" external.linked.project.path="$MODULE_DIR$/../../../../tools/txt-to-pbm" external.root.project.path="$MODULE_DIR$/../../../.." external.system.id="GRADLE" external.system.module.group="squirreljme.tools" external.system.module.type="sourceSet" external.system.module.version="0.3.0" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_11">
+    <output-test url="file://$MODULE_DIR$/../../../../tools/txt-to-pbm/build/classes/java/test" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/../../../../tools/txt-to-pbm/src/test" />
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="squirreljme.tools.txt-to-pbm.main" />
+    <orderEntry type="module" module-name="squirreljme.modules.midp-lcdui.main" />
+    <orderEntry type="module" module-name="squirreljme.modules.gcf.main" />
+    <orderEntry type="module" module-name="squirreljme.modules.meep-midlet.main" />
+    <orderEntry type="module" module-name="squirreljme.modules.io.main" />
+    <orderEntry type="module" module-name="squirreljme.modules.collections.main" />
+    <orderEntry type="module" module-name="squirreljme.modules.cldc-compact.main" />
+    <orderEntry type="library" name="Gradle: org.jetbrains:annotations:24.0.1" level="project" />
+  </component>
+  <component name="TestModuleProperties" production-module="squirreljme.tools.txt-to-pbm.main" />
+</module>
