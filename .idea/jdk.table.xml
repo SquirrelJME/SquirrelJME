@@ -20,9 +20,11 @@
 					<root type="composite" />
 				</javadocPath>
 				<sourcePath>
-					<root
-						url="file:///$PROJECT_DIR$/modules/cldc-compact/src/main/java"
-						type="simple" />
+					<root type="composite">
+						<root
+							url="file://$PROJECT_DIR$/modules/cldc-compact/src/main/java"
+							type="simple" />
+					</root>
 				</sourcePath>
 			</roots>
 			<additional/>
