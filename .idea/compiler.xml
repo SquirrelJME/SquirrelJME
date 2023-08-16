@@ -28,7 +28,6 @@
       <module name="squirreljme.tools.txt-to-pbm" target="11" />
       <module name="squirreljme.tools.txt-to-pbm.main" target="11" />
       <module name="squirreljme.tools.txt-to-pbm.test" target="11" />
-      <module name="stephanie.squirreljme.buildSrc.main" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>
