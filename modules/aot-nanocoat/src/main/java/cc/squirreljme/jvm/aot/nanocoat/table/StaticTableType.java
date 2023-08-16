@@ -68,7 +68,7 @@ public enum StaticTableType
 	LINKAGE_METHOD_INVOKE("lnmi",
 		byte.class,
 		byte.class,
-		JvmTypes.STATIC_LINKAGE_DATA_INVOKE_NORMAL),
+		JvmTypes.STATIC_LINKAGE_DATA_INVOKE),
 	
 	/** String reference linkages. */
 	LINKAGE_STRING("lnst",

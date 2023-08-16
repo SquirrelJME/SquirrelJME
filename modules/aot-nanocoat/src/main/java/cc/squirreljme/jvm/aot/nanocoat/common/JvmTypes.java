@@ -231,6 +231,21 @@ public enum JvmTypes
 		}
 	},
 	
+	/** Invocation type. */
+	INVOKE_TYPE
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/08/15
+		 */
+		@Override
+		CType __build()
+		{
+			return CTypeDefType.of(JvmTypes.JINT.type(),
+				"sjme_invokeType");
+		}
+	},
+	
 	/** Boolean. */
 	JBOOLEAN
 	{
@@ -846,9 +861,9 @@ public enum JvmTypes
 					"classObject")
 				.member(JvmTypes.STATIC_LINKAGE_DATA_FIELD_ACCESS,
 					"fieldAccess")
-				.member(JvmTypes.STATIC_LINKAGE_DATA_INVOKE_SPECIAL,
+				.member(JvmTypes.STATIC_LINKAGE_DATA_INVOKE,
 					"invokeSpecial")
-				.member(JvmTypes.STATIC_LINKAGE_DATA_INVOKE_NORMAL,
+				.member(JvmTypes.STATIC_LINKAGE_DATA_INVOKE,
 					"invokeNormal")
 				.member(JvmTypes.STATIC_LINKAGE_DATA_STRING_OBJECT,
 					"stringObject")
@@ -905,7 +920,7 @@ public enum JvmTypes
 	},
 	
 	/** Invoke normal linkage data. */
-	STATIC_LINKAGE_DATA_INVOKE_NORMAL
+	STATIC_LINKAGE_DATA_INVOKE
 	{
 		/**
 		 * {@inheritDoc}
@@ -915,40 +930,9 @@ public enum JvmTypes
 		CType __build()
 		{
 			return CStructTypeBuilder.builder(CStructKind.STRUCT,
-				"sjme_static_linkage_data_invokeNormal")
-				.member(JvmTypes.JBOOLEAN,
-					"isStatic")
-				.member(CPrimitiveType.CONST_CHAR_STAR,
-					"sourceMethodName")
-				.member(CPrimitiveType.CONST_CHAR_STAR,
-					"sourceMethodType")
-				.member(CPrimitiveType.CONST_CHAR_STAR,
-					"targetClass")
-				.member(CPrimitiveType.CONST_CHAR_STAR,
-					"targetMethodName")
-				.member(CPrimitiveType.CONST_CHAR_STAR,
-					"targetMethodType")
-				.build();
-		}
-	},
-	
-	/** Invoke special linkage data. */
-	@Deprecated
-	STATIC_LINKAGE_DATA_INVOKE_SPECIAL
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2023/06/25
-		 */
-		@Override
-		CType __build()
-		{
-			return CStructTypeBuilder.builder(CStructKind.STRUCT,
-				"sjme_static_linkage_data_invokeSpecial")
-				.member(CPrimitiveType.CONST_CHAR_STAR,
-					"sourceMethodName")
-				.member(CPrimitiveType.CONST_CHAR_STAR,
-					"sourceMethodType")
+				"sjme_static_linkage_data_invoke")
+				.member(JvmTypes.INVOKE_TYPE,
+					"invokeType")
 				.member(CPrimitiveType.CONST_CHAR_STAR,
 					"targetClass")
 				.member(CPrimitiveType.CONST_CHAR_STAR,
