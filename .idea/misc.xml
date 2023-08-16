@@ -9,7 +9,6 @@
     <pattern value="com.nttdocomo.ui.IApplication" hierarchically="true" method="start" />
     <pattern value="com.docomostar.StarApplication" hierarchically="true" method="started" />
   </component>
-  <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$" />
   </component>
