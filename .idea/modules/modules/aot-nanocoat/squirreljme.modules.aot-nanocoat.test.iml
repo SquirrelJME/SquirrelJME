@@ -4,8 +4,8 @@
     <output-test url="file://$MODULE_DIR$/../../../../modules/aot-nanocoat/build/classes/java/test" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../../../modules/aot-nanocoat/src/test" />
-    <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
     <orderEntry type="module" module-name="squirreljme.modules.aot-nanocoat.testFixtures" production-on-test="" />
     <orderEntry type="module" module-name="squirreljme.modules.aot.main" />
     <orderEntry type="module" module-name="squirreljme.modules.tool-classfile.main" />
@@ -26,4 +26,5 @@
     <orderEntry type="module" module-name="squirreljme.modules.meep-swm.main" />
     <orderEntry type="module" module-name="squirreljme.modules.gcf.main" />
   </component>
+  <component name="TestModuleProperties" production-module="squirreljme.modules.aot-nanocoat.main" />
 </module>
