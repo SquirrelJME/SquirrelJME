@@ -4,8 +4,8 @@
     <output-test url="file://$MODULE_DIR$/../../../../modules/meep-swm/build/classes/java/test" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../../../modules/meep-swm/src/test" />
-    <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
     <orderEntry type="module" module-name="squirreljme.modules.tac.main" />
     <orderEntry type="module" module-name="squirreljme.modules.meep-swm.testFixtures" production-on-test="" />
     <orderEntry type="module" module-name="squirreljme.modules.meep-midlet.main" />

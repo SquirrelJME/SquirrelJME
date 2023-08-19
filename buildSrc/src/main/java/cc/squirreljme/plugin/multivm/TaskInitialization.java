@@ -465,14 +465,25 @@ public final class TaskInitialization
 		boolean isSingleSourceSetRom = vmType.isSingleSourceSetRom(
 			__classifier.getBangletVariant());
 		
-		// Running the full ROM in the emulator, only for ones with emulators
-		// Do not include test fixtures as a full option since it does not
-		// make sense here... unless we are a single source set ROM
-		if (__classifier.getVmType().hasEmulator() &&
-			(isSingleSourceSetRom || !__classifier.isTestFixturesSourceSet()))
-			__project.getTasks().create(
-				TaskInitialization.task("full", __classifier),
-				VMFullSuite.class, __classifier);
+		// Do not run if there is no emulator
+		if (!__classifier.getVmType().hasEmulator())
+			return;
+		
+		// Standard run everything as one, only allow main and test source
+		// sets to be a candidate for full
+		if (!__classifier.isMainSourceSet() && !__classifier.isTestSourceSet())
+			return;
+		
+		// If this is a debug only target and the requested clutter level is
+		// not debugging, then do not make such a task
+		if (__classifier.getVmType().allowOnlyDebug() &&
+			!__classifier.getTargetClassifier().getClutterLevel().isDebug())
+			return;
+		
+		// Create task
+		__project.getTasks().create(
+			TaskInitialization.task("full", __classifier),
+			VMFullSuite.class, __classifier);
 	}
 	
 	/**

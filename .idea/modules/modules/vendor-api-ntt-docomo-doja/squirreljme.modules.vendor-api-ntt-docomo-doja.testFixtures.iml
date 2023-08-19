@@ -4,8 +4,8 @@
     <output-test url="file://$MODULE_DIR$/../../../../modules/vendor-api-ntt-docomo-doja/build/classes/java/testFixtures" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../../../modules/vendor-api-ntt-docomo-doja/src/testFixtures" />
-    <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
     <orderEntry type="module" module-name="squirreljme.modules.vendor-api-ntt-docomo-doja.main" />
     <orderEntry type="module" module-name="squirreljme.modules.meep-rms.main" />
     <orderEntry type="module" module-name="squirreljme.modules.midp-lcdui.main" />

@@ -4,8 +4,8 @@
     <output-test url="file://$MODULE_DIR$/../../../../modules/midp-lcdui/build/classes/java/testFixtures" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../../../modules/midp-lcdui/src/testFixtures" />
-    <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
     <orderEntry type="module" module-name="squirreljme.modules.midp-lcdui.main" />
     <orderEntry type="module" module-name="squirreljme.modules.gcf.main" />
     <orderEntry type="module" module-name="squirreljme.modules.meep-midlet.main" />

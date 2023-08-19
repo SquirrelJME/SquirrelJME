@@ -768,7 +768,9 @@
       <option name="m_ignoreStaticMethodCalls" value="false" />
       <option name="m_ignoreStaticAccessFromStaticContext" value="false" />
     </inspection_tool>
-    <inspection_tool class="UnstableApiUsage" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="UnstableApiUsage" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <scope name="Java API Packages (Include)" level="WEAK WARNING" enabled="false" />
+    </inspection_tool>
     <inspection_tool class="UpperCaseFieldNameNotConstant" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="UseCompareMethod" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="UseOfAWTPeerClass" enabled="true" level="ERROR" enabled_by_default="true" />

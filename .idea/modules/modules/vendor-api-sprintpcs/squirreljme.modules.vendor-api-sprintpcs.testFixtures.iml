@@ -4,8 +4,8 @@
     <output-test url="file://$MODULE_DIR$/../../../../modules/vendor-api-sprintpcs/build/classes/java/testFixtures" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../../../modules/vendor-api-sprintpcs/src/testFixtures" />
-    <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
     <orderEntry type="module" module-name="squirreljme.modules.vendor-api-sprintpcs.main" />
     <orderEntry type="module" module-name="squirreljme.modules.media-api.main" />
     <orderEntry type="module" module-name="squirreljme.modules.midp-lcdui.main" />
