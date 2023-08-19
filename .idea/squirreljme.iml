@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="JAVA_MODULE" version="4">
-  <component name="NewModuleRootManager">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
     <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/nanocoat/rom" />
       <excludeFolder url="file://$MODULE_DIR$/nanocoat/cmake-build-debug" />
       <excludeFolder url="file://$MODULE_DIR$/nanocoat/cmake-build-debugmsvc" />
-      <excludeFolder url="file://$MODULE_DIR$/nanocoat/rom" />
     </content>
+    <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>
