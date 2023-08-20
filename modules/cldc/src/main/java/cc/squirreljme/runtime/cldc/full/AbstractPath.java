@@ -28,6 +28,18 @@ public abstract class AbstractPath
 	/** Is the root known to be null? */
 	private volatile boolean _isNullRoot;
 	
+	/** The cached name count. */
+	private volatile int _nameCount =
+		-1;
+	
+	/**
+	 * Returns the name count of the path.
+	 *
+	 * @return The path name count.
+	 * @since 2023/08/20
+	 */
+	protected abstract int getInternalNameCount();
+	
 	/**
 	 * Returns the root of this path.
 	 *
@@ -35,6 +47,24 @@ public abstract class AbstractPath
 	 * @since 2023/08/20
 	 */
 	protected abstract Path getInternalRoot();
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/08/20
+	 */
+	@Override
+	public final int getNameCount()
+	{
+		// Check for cached value
+		int result = this._nameCount;
+		if (result < 0)
+		{
+			result = this.getInternalNameCount();
+			this._nameCount = result;
+		}
+		
+		return result;
+	}
 	
 	/**
 	 * {@inheritDoc}

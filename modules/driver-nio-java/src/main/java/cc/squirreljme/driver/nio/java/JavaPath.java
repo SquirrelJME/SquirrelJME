@@ -100,6 +100,16 @@ public class JavaPath
 	 * @since 2023/08/20
 	 */
 	@Override
+	protected int getInternalNameCount()
+	{
+		return JavaNioShelf.getNameCount(this._path);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/08/20
+	 */
+	@Override
 	protected Path getInternalRoot()
 	{
 		// Obtain the root
@@ -117,16 +127,6 @@ public class JavaPath
 	 */
 	@Override
 	public Path getName(int __a)
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/08/20
-	 */
-	@Override
-	public int getNameCount()
 	{
 		throw Debugging.todo();
 	}

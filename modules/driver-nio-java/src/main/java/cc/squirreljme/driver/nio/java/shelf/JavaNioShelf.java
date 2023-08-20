@@ -35,6 +35,18 @@ public final class JavaNioShelf
 	}
 	
 	/**
+	 * Returns the name count of the given path.
+	 *
+	 * @param __path The path to get the name count of.
+	 * @return The number of names in the path.
+	 * @throws MLECallError On null arguments.
+	 * @since 2023/08/20
+	 */
+	@SquirrelJMEVendorApi
+	public static native int getNameCount(JavaPathBracket __path)
+		throws MLECallError;
+	
+	/**
 	 * Obtains the bracket for the given path.
 	 *
 	 * @param __path The path to obtain.
