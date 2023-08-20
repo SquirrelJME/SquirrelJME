@@ -42,6 +42,12 @@ public interface Path
 	@Api
 	Path getParent();
 	
+	/**
+	 * Returns the root path if there is one, otherwise {@code null}.
+	 *
+	 * @return The root of the given path.
+	 * @since 2023/08/20
+	 */
 	@Api
 	Path getRoot();
 	

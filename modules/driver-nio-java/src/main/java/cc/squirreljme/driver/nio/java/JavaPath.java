@@ -9,8 +9,10 @@
 
 package cc.squirreljme.driver.nio.java;
 
+import cc.squirreljme.driver.nio.java.shelf.JavaNioShelf;
 import cc.squirreljme.driver.nio.java.shelf.JavaPathBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.full.AbstractPath;
 import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.LinkOption;
@@ -23,7 +25,7 @@ import java.util.Iterator;
  * @since 2023/08/20
  */
 public class JavaPath
-	implements Path
+	extends AbstractPath
 {
 	/** The internal path. */
 	final JavaPathBracket _path;
@@ -98,6 +100,22 @@ public class JavaPath
 	 * @since 2023/08/20
 	 */
 	@Override
+	protected Path getInternalRoot()
+	{
+		// Obtain the root
+		JavaPathBracket result = JavaNioShelf.getRoot(this._path);
+		
+		// Do we return something?
+		if (result == null)
+			return null;
+		return new JavaPath(result);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/08/20
+	 */
+	@Override
 	public Path getName(int __a)
 	{
 		throw Debugging.todo();
@@ -119,16 +137,6 @@ public class JavaPath
 	 */
 	@Override
 	public Path getParent()
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/08/20
-	 */
-	@Override
-	public Path getRoot()
 	{
 		throw Debugging.todo();
 	}

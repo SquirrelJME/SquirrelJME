@@ -10,11 +10,14 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.driver.nio.java.shelf.JavaNioShelf;
+import cc.squirreljme.driver.nio.java.shelf.JavaPathBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.vm.springcoat.brackets.JarPackageObject;
 import cc.squirreljme.vm.springcoat.brackets.JavaPathObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import java.nio.file.FileSystems;
 import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
 
 /**
  * Java native I/O Shelf which provides {@link JavaNioShelf}.
@@ -36,9 +39,8 @@ public enum MLEJavaNioShelf
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			String path = __thread.asNativeObject(String.class, __args[0]);
-			SpringArrayObjectInteger failingSegment =
-				__thread.asNativeObject(SpringArrayObjectInteger.class,
-					__args[1]);
+			int[] failingSegment =
+				__thread.asNativeObject(int[].class, __args[1]);
 			
 			// This must be passed
 			if (path == null)
@@ -54,10 +56,31 @@ public enum MLEJavaNioShelf
 			{
 				// Set failing index, if known
 				if (failingSegment != null && failingSegment.length > 0)
-					failingSegment.array()[0] = __e.getIndex();
+					failingSegment[0] = __e.getIndex();
 				
 				throw new SpringMLECallError("Invalid path");
 			}
+		}
+	},
+	
+	/** {@link JavaNioShelf#getRoot(JavaPathBracket)}. */
+	GET_ROOT("getRoot:(Lcc/squirreljme/driver/nio/java/shelf/" +
+		"JavaPathBracket;)" +
+		"Lcc/squirreljme/driver/nio/java/shelf/JavaPathBracket;")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/08/20
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			JavaPathObject path = MLEJavaNioShelf.__pathObject(__args[0]);
+			
+			Path root = path.path.getRoot();
+			if (root == null)
+				return SpringNullObject.NULL;
+			return new JavaPathObject(__thread.machine, root);
 		}
 	},
 	
@@ -106,5 +129,21 @@ public enum MLEJavaNioShelf
 	public String key()
 	{
 		return this.key;
+	}
+	/**
+	 * Checks if this is a {@link JavaPathObject}.
+	 * 
+	 * @param __object The object to check.
+	 * @return As a path if this is one.
+	 * @throws SpringMLECallError If this is not a path.
+	 * @since 2023/08/20
+	 */
+	static JavaPathObject __pathObject(Object __object)
+		throws SpringMLECallError
+	{
+		if (!(__object instanceof JavaPathObject))
+			throw new SpringMLECallError("Not a JavaPathObject.");
+		
+		return (JavaPathObject)__object; 
 	}
 }

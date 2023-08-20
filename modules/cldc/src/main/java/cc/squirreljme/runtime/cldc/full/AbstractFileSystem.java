@@ -18,8 +18,10 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.file.FileSystem;
 import java.nio.file.InvalidPathException;
+import java.nio.file.LinkOption;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileAttribute;
 import java.util.Set;
 
@@ -78,6 +80,28 @@ public abstract class AbstractFileSystem
 		throws IllegalArgumentException, IOException, SecurityException,
 			UnsupportedOperationException;
 	
+	/**
+	 * Reads file attributes.
+	 * 
+	 * All implementations are required to implement
+	 * {@link BasicFileAttributes}, so this must never fail.
+	 *
+	 * @param <A> The attribute type to read.
+	 * @param __path The path to read the attributes for.
+	 * @param __attributeType The attribute type to read.
+	 * @param __linkOptions The options for symbolic links.
+	 * @return The given attribute
+	 * @throws IOException On read errors or if the attributes could not
+	 * be read.
+	 * @throws SecurityException If the operation is not permitted.
+	 * @throws UnsupportedOperationException If the given attribute is not
+	 * valid for the given filesystem.
+	 * @since 2023/08/20
+	 */
+	@SquirrelJMEVendorApi
+	public abstract <A extends BasicFileAttributes> A readAttributes(
+		Path __path, Class<A> __attributeType, LinkOption... __linkOptions)
+		throws IOException, SecurityException, UnsupportedOperationException;
 	
 	/**
 	 * {@inheritDoc}

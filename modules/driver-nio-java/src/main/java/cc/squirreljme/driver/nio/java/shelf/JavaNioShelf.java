@@ -50,6 +50,19 @@ public final class JavaNioShelf
 		throws MLECallError;
 	
 	/**
+	 * Returns the root of the given path.
+	 *
+	 * @param __path The path's root.
+	 * @return The root or {@code null} if there is none.
+	 * @throws MLECallError On null arguments.
+	 * @since 2023/08/20
+	 */
+	@SquirrelJMEVendorApi
+	@CheckReturnValue
+	public static native JavaPathBracket getRoot(JavaPathBracket __path)
+		throws MLECallError;
+	
+	/**
 	 * The separator for files.
 	 *
 	 * @return The separator used for files.

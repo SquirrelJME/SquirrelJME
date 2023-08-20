@@ -14,8 +14,10 @@ import cc.squirreljme.runtime.cldc.full.AbstractFileSystem;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.file.FileStore;
+import java.nio.file.LinkOption;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileAttribute;
 import java.util.Set;
 
@@ -53,7 +55,17 @@ public class UnixFileSystem
 	 * @since 2023/08/20
 	 */
 	@Override
-	public Path getPath(String __path, String... __more)
+	public Path getPath(String __path)
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/08/20
+	 */
+	@Override
+	protected String getSeparatorInternal()
 	{
 		throw Debugging.todo();
 	}
@@ -107,6 +119,18 @@ public class UnixFileSystem
 		FileAttribute<?>... __attribs)
 		throws IllegalArgumentException, IOException, SecurityException,
 		UnsupportedOperationException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/08/20
+	 */
+	@Override
+	public <A extends BasicFileAttributes> A readAttributes(Path __path,
+		Class<A> __attributeType, LinkOption... __linkOptions)
+		throws IOException, SecurityException, UnsupportedOperationException
 	{
 		throw Debugging.todo();
 	}

@@ -11,6 +11,7 @@ package java.nio.file;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.full.AbstractFileSystem;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -38,13 +39,67 @@ public final class Files
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * Creates directories for the entire specified path with the given
+	 * attributes.
+	 *
+	 * @param __path The path to create directories for.
+	 * @param __attribs The attributes to use for the new directories.
+	 * @return {@code __path}.
+	 * @throws FileAlreadyExistsException If a segment in the path exists
+	 * however it is not a directory or directory-like such a non-directory
+	 * symlink.
+	 * @throws IOException If a directory could not be created.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SecurityException If creating a directory is not permitted.
+	 * @throws UnsupportedOperationException If creating a directory is not
+	 * possible on the given filesystem or a file system attribute cannot be
+	 * applied atomically.
+	 * @since 2023/08/20
+	 */
 	@Api
-	public static Path createDirectories(Path __a, FileAttribute<?>... __b)
-		throws IOException
+	public static Path createDirectories(Path __path,
+		FileAttribute<?>... __attribs)
+		throws FileAlreadyExistsException, IOException, NullPointerException,
+			SecurityException, UnsupportedOperationException
 	{
-		if (false)
-			throw new IOException();
-		throw Debugging.todo();
+		if (__path == null)
+			throw new NullPointerException("NARG");
+		
+		// Start at the root directory, if applicable
+		Path rover = __path.getRoot();
+		
+		// Go through and process each directory
+		int count = __path.getNameCount();
+		for (int at = 0; at < count; at++)
+		{
+			Path segment = __path.getName(at);
+			
+			// Determine which directory from the root we are working on
+			if (rover == null)
+				rover = segment;
+			else
+				rover = rover.resolve(segment);
+			
+			// If the file exists, check its type first
+			if (Files.exists(rover))
+			{
+				BasicFileAttributes attrs = Files.readAttributes(
+					rover, BasicFileAttributes.class);
+				
+				/* {@squirreljme.error ZY03 Cannot create directory because
+				a non-directory already exists. (The path) */
+				if (!attrs.isDirectory())
+					throw new FileAlreadyExistsException("ZY03 " + rover);
+			}
+			
+			// Create otherwise
+			else
+				Files.createDirectory(rover, __attribs);
+		}
+		
+		// Return the originally created path
+		return __path;
 	}
 	
 	@Api
@@ -123,10 +178,38 @@ public final class Files
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * Checks whether the given path exists.
+	 *
+	 * @param __path The path to check.
+	 * @param __linkOptions The symbolic link follow options.
+	 * @return If the path exists or not.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SecurityException If this is not permitted by the current
+	 * security policy.
+	 * @since 2023/08/20
+	 */
 	@Api
-	public static boolean exists(Path __a, LinkOption... __b)
+	public static boolean exists(Path __path, LinkOption... __linkOptions)
+		throws NullPointerException, SecurityException
 	{
-		throw Debugging.todo();
+		if (__path == null)
+			throw new NullPointerException("NARG");
+		
+		// Just try to read the file attributes for this path, it will fail
+		// if the file is not found
+		try
+		{
+			Files.readAttributes(__path, BasicFileAttributes.class);
+			return true;
+		}
+		
+		// If there are any read errors, then it is just assumed to not exist
+		// even though it technically is not correct
+		catch (IOException ignored)
+		{
+			return false;
+		}
 	}
 	
 	@Api
@@ -281,24 +364,39 @@ public final class Files
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * Reads file attributes.
+	 * 
+	 * All implementations are required to implement
+	 * {@link BasicFileAttributes}, so this must never fail.
+	 *
+	 * @param <A> The attribute type to read.
+	 * @param __path The path to read the attributes for.
+	 * @param __attributeType The attribute type to read.
+	 * @param __linkOptions The options for symbolic links.
+	 * @return The given attribute
+	 * @throws IOException On read errors or if the attributes could not
+	 * be read.
+	 * @throws SecurityException If the operation is not permitted.
+	 * @throws UnsupportedOperationException If the given attribute is not
+	 * valid for the given filesystem.
+	 * @since 2023/08/20
+	 */
 	@Api
-	public static <A extends BasicFileAttributes> A readAttributes(Path __a,
-		Class<A> __b, LinkOption... __c)
-		throws IOException
+	public static <A extends BasicFileAttributes> A readAttributes(Path __path,
+		Class<A> __attributeType, LinkOption... __linkOptions)
+		throws IOException, SecurityException, UnsupportedOperationException
 	{
-		if (false)
-			throw new IOException();
-		throw Debugging.todo();
-	}
-	
-	@Api
-	public static Map<String, Object> readAttributes(Path __a, String __b,
-		LinkOption... __c)
-		throws IOException
-	{
-		if (false)
-			throw new IOException();
-		throw Debugging.todo();
+		if (__path == null || __attributeType == null)
+			throw new NullPointerException("NARG");
+		
+		// Get the SquirrelJME filesystem base
+		AbstractFileSystem fileSystem =
+			(AbstractFileSystem)__path.getFileSystem();
+		
+		// Read the attributes from it
+		return fileSystem.readAttributes(__path, __attributeType,
+			__linkOptions);
 	}
 	
 	@Api
