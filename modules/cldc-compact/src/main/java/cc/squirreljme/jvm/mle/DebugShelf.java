@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.mle;
 
+import cc.squirreljme.jvm.mle.annotation.SquirrelJMENativeShelf;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.runtime.cldc.annotation.Api;
@@ -27,6 +28,7 @@ import org.jetbrains.annotations.TestOnly;
  * @since 2020/06/11
  */
 @SquirrelJMEVendorApi
+@SquirrelJMENativeShelf
 public final class DebugShelf
 {
 	/** Verbose ID for internal threads. */

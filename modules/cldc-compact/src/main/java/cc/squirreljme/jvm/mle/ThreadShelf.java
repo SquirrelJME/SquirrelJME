@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.mle;
 
+import cc.squirreljme.jvm.mle.annotation.SquirrelJMENativeShelf;
 import cc.squirreljme.jvm.mle.brackets.TaskBracket;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
@@ -31,6 +32,7 @@ import org.jetbrains.annotations.Range;
  */
 @SuppressWarnings("UnstableApiUsage")
 @SquirrelJMEVendorApi
+@SquirrelJMENativeShelf
 public final class ThreadShelf
 {
 	/**

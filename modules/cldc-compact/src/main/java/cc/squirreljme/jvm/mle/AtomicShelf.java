@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.mle;
 
+import cc.squirreljme.jvm.mle.annotation.SquirrelJMENativeShelf;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
@@ -18,6 +19,7 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  */
 @SuppressWarnings("UnstableApiUsage")
 @SquirrelJMEVendorApi
+@SquirrelJMENativeShelf
 public final class AtomicShelf
 {
 	/**

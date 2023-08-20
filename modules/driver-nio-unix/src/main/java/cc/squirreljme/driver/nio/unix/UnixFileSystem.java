@@ -1,0 +1,107 @@
+// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
+// ---------------------------------------------------------------------------
+// Multi-Phasic Applications: SquirrelJME
+//     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+// ---------------------------------------------------------------------------
+// SquirrelJME is under the Mozilla Public License Version 2.0.
+// See license.mkd for licensing and copyright information.
+// ---------------------------------------------------------------------------
+
+package cc.squirreljme.driver.nio.unix;
+
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.io.IOException;
+import java.nio.file.FileStore;
+import java.nio.file.FileSystem;
+import java.nio.file.Path;
+import java.util.Set;
+
+/**
+ * Provides support for access to Unix based filesystems.
+ *
+ * @since 2023/08/20
+ */
+public class UnixFileSystem
+	extends FileSystem
+{
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/08/20
+	 */
+	@Override
+	public void close()
+		throws IOException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/08/20
+	 */
+	@Override
+	public Iterable<FileStore> getFileStores()
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/08/20
+	 */
+	@Override
+	public Path getPath(String __a, String... __b)
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/08/20
+	 */
+	@Override
+	public Iterable<Path> getRootDirectories()
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/08/20
+	 */
+	@Override
+	public String getSeparator()
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/08/20
+	 */
+	@Override
+	public boolean isOpen()
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/08/20
+	 */
+	@Override
+	public boolean isReadOnly()
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/08/20
+	 */
+	@Override
+	public Set<String> supportedFileAttributeViews()
+	{
+		throw Debugging.todo();
+	}
+}
