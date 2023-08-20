@@ -15,5 +15,5 @@
  * @since 2018/11/10
  */
 
-package cc.squirreljme.emulator.profiler;
+package cc.squirreljme.profiler;
 

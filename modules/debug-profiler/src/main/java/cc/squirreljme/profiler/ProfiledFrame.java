@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.emulator.profiler;
+package cc.squirreljme.profiler;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

@@ -10,6 +10,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="squirreljme.modules.tac.main" />
     <orderEntry type="module" module-name="squirreljme.modules.common-vm.main" />
+    <orderEntry type="module" module-name="squirreljme.modules.debug-profiler.main" />
     <orderEntry type="module" module-name="squirreljme.modules.zip.main" />
     <orderEntry type="module" module-name="squirreljme.modules.debug-jdwp.main" />
     <orderEntry type="module" module-name="squirreljme.modules.io.main" />
