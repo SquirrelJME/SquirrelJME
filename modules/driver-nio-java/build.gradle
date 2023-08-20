@@ -1,0 +1,18 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+
+description = "Native I/O Driver on top of Java."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "NU"
+	swmType = JavaMEMidletType.API
+	swmName = "Java Native I/O Driver"
+	swmVendor = "Stephanie Gawroriski"
+	tags += "squirreljme"
+}
+
+dependencies
+{
+	api project(":modules:cldc")
+}
