@@ -1245,17 +1245,17 @@ public final class VMHelpers
 	 * @param __classifier The classifier used.
 	 * @return The path provider to the test result directory.
 	 * @throws NullPointerException On null arguments.
+	 * @deprecated Use {@link #testResultsDir(Project, SourceTargetClassifier,
+	 * String)} instead.
 	 * @since 2020/09/06
 	 */
+	@Deprecated
 	public static Provider<Path> testResultXmlDir(Project __project,
 		SourceTargetClassifier __classifier)
 		throws NullPointerException
 	{
-		if (__project == null || __classifier == null)
-			throw new NullPointerException("NARG");
-		
-		return __project.provider(() -> VMHelpers.cacheDir(__project,
-			__classifier).get().resolve("junit"));
+		return VMHelpers.testResultsDir(__project, __classifier,
+			"junit");
 	}
 	
 	/**
@@ -1284,17 +1284,16 @@ public final class VMHelpers
 	 * @param __classifier The classifier used.
 	 * @return The path provider to the test result directory.
 	 * @throws NullPointerException On null arguments.
+	 * @deprecated Use {@link #testResultsDir(Project, SourceTargetClassifier,
+	 * String)} instead.
 	 * @since 2020/11/26
 	 */
+	@Deprecated
 	public static Provider<Path> testResultsCsvDir(Project __project,
 		SourceTargetClassifier __classifier)
 		throws NullPointerException
 	{
-		if (__project == null || __classifier == null)
-			throw new NullPointerException("NARG");
-		
-		return __project.provider(() -> VMHelpers.cacheDir(
-			__project, __classifier).get().resolve("csv"));
+		return VMHelpers.testResultsDir(__project, __classifier, "csv");
 	}
 	
 	/**
@@ -1312,6 +1311,27 @@ public final class VMHelpers
 			throw new NullPointerException("NARG");
 		
 		return Paths.get("RESULTS-" + __project.getName() + ".csv");
+	}
+	
+	/**
+	 * Returns the directory where test results go.
+	 * 
+	 * @param __project The project to get the cache directory of.
+	 * @param __classifier The classifier used.
+	 * @param __name The subdirectory name.
+	 * @return The path provider to the test result directory.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/20
+	 */
+	public static Provider<Path> testResultsDir(Project __project,
+		SourceTargetClassifier __classifier, String __name)
+		throws NullPointerException
+	{
+		if (__project == null || __classifier == null || __name == null)
+			throw new NullPointerException("NARG");
+		
+		return __project.provider(() -> VMHelpers.cacheDir(
+			__project, __classifier).get().resolve(__name));
 	}
 	
 	/**

@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// SquirrelJME
+// Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the Mozilla Public License Version 2.0.
@@ -17,12 +17,11 @@ import java.util.concurrent.Callable;
 import org.gradle.api.Project;
 
 /**
- * This calculates all the test outputs for a given test, so that it can
- * be used to determine if it should run or run again.
+ * Output test directories.
  *
- * @since 2020/09/06
+ * @since 2023/08/20
  */
-public class VMTestOutputs
+public class VMTestOutputDirs
 	implements Callable<Iterable<Path>>
 {
 	/** The task executing under. */
@@ -37,9 +36,9 @@ public class VMTestOutputs
 	 * @param __task The task testing under.
 	 * @param __classifier The classifier used.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2020/09/06
+	 * @since 2023/08/20
 	 */
-	public VMTestOutputs(VMExecutableTask __task,
+	public VMTestOutputDirs(VMExecutableTask __task,
 		SourceTargetClassifier __classifier)
 		throws NullPointerException
 	{
@@ -52,7 +51,7 @@ public class VMTestOutputs
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2020/09/06
+	 * @since 2023/08/20
 	 */
 	@Override
 	public Iterable<Path> call()
@@ -60,21 +59,10 @@ public class VMTestOutputs
 		Collection<Path> result = new LinkedHashSet<>();
 		
 		Project project = this.task.getProject();
-		String sourceSet = this.classifier.getSourceSet();
 		
-		// Determine the root test result directory
-		Path resultRoot = VMHelpers.testResultXmlDir(
-			project, this.classifier).get();
-		
-		// The output of the task will be the test results
-		for (String testName : VMHelpers.runningTests(project, sourceSet)
-			.tests.keySet())
-			result.add(resultRoot.resolve(
-				VMHelpers.testResultXmlName(testName)));
-		
-		// Result CSV file that contains a summary on all the tests
-		result.add(VMHelpers.testResultsCsvDir(project, this.classifier)
-			.get().resolve(VMHelpers.testResultsCsvName(project)));
+		// Manual test outputs
+		result.add(VMHelpers.testResultsDir(project, this.classifier,
+			"manual").get());
 		
 		return result;
 	}
