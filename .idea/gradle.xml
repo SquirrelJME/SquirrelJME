@@ -26,6 +26,7 @@
             <option value="$PROJECT_DIR$/modules/collections" />
             <option value="$PROJECT_DIR$/modules/common-vm" />
             <option value="$PROJECT_DIR$/modules/debug-jdwp" />
+            <option value="$PROJECT_DIR$/modules/debug-profiler" />
             <option value="$PROJECT_DIR$/modules/demo-hello" />
             <option value="$PROJECT_DIR$/modules/dio" />
             <option value="$PROJECT_DIR$/modules/dio-adc" />
