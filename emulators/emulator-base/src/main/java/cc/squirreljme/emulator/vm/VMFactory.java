@@ -9,8 +9,8 @@
 
 package cc.squirreljme.emulator.vm;
 
-import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 import cc.squirreljme.jdwp.JDWPFactory;
+import cc.squirreljme.profiler.ProfilerSnapshot;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.DataContainerLibrary;
 import cc.squirreljme.vm.JarClassLibrary;

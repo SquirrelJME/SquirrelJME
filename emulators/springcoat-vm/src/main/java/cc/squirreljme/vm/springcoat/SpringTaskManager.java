@@ -9,7 +9,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
+import cc.squirreljme.profiler.ProfilerSnapshot;
 import cc.squirreljme.emulator.terminal.TerminalPipeManager;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.jdwp.JDWPBinding;

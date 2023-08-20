@@ -9,7 +9,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.emulator.profiler.ProfiledFrame;
+import cc.squirreljme.profiler.ProfiledFrame;
 import cc.squirreljme.jdwp.EventKind;
 import cc.squirreljme.jdwp.JDWPClassStatus;
 import cc.squirreljme.jdwp.JDWPController;
