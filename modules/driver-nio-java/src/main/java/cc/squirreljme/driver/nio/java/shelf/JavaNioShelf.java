@@ -26,7 +26,7 @@ public final class JavaNioShelf
 	 * 
 	 * @since 2023/08/20
 	 */
-	private UnixNioShelf()
+	private JavaNioShelf()
 	{
 	}
 }
