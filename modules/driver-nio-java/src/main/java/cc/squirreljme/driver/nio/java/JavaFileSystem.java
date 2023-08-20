@@ -9,12 +9,16 @@
 
 package cc.squirreljme.driver.nio.java;
 
+import cc.squirreljme.driver.nio.java.shelf.JavaNioShelf;
+import cc.squirreljme.driver.nio.java.shelf.JavaPathBracket;
+import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.full.AbstractFileSystem;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.file.FileStore;
-import java.nio.file.FileSystem;
+import java.nio.file.InvalidPathException;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileAttribute;
@@ -54,9 +58,34 @@ public class JavaFileSystem
 	 * @since 2023/08/20
 	 */
 	@Override
-	public Path getPath(String __a, String... __b)
+	public Path getPath(String __path)
+		throws InvalidPathException, NullPointerException
 	{
-		throw Debugging.todo();
+		if (__path == null)
+			throw new NullPointerException("NARG");
+		
+		// The failing segment, if applicable
+		int[] failSegment = new int[]{-1};
+		
+		// Get the native path
+		JavaPathBracket bracket;
+		try
+		{
+			bracket = JavaNioShelf.getPath(__path, failSegment);
+		}
+		catch (MLECallError __e)
+		{
+			/* {@squirreljme.error NU01 Invalid path requested.} */
+			InvalidPathException t = new InvalidPathException(__path, "NU01",
+				failSegment[0]);
+			
+			t.initCause(__e);
+			
+			throw t;
+		}
+		
+		// Wrap it
+		return new JavaPath(bracket);
 	}
 	
 	/**
@@ -74,9 +103,9 @@ public class JavaFileSystem
 	 * @since 2023/08/20
 	 */
 	@Override
-	public String getSeparator()
+	protected String getSeparatorInternal()
 	{
-		throw Debugging.todo();
+		return JavaNioShelf.getSeparator();
 	}
 	
 	/**

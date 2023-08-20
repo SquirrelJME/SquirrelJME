@@ -14,7 +14,6 @@ import cc.squirreljme.runtime.cldc.full.AbstractFileSystem;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.file.FileStore;
-import java.nio.file.FileSystem;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileAttribute;
@@ -54,7 +53,7 @@ public class UnixFileSystem
 	 * @since 2023/08/20
 	 */
 	@Override
-	public Path getPath(String __a, String... __b)
+	public Path getPath(String __path, String... __more)
 	{
 		throw Debugging.todo();
 	}

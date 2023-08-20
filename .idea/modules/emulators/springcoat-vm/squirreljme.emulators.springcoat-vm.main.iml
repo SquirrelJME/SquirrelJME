@@ -14,6 +14,7 @@
     <orderEntry type="module" module-name="squirreljme.modules.meep-swm.main" />
     <orderEntry type="module" module-name="squirreljme.modules.debug-jdwp.main" />
     <orderEntry type="module" module-name="squirreljme.modules.tool-classfile.main" />
+    <orderEntry type="module" module-name="squirreljme.modules.driver-nio-java.main" />
     <orderEntry type="module" module-name="squirreljme.modules.cldc-compact.main" />
     <orderEntry type="module" module-name="squirreljme.modules.zip.main" />
     <orderEntry type="module" module-name="squirreljme.modules.cldc.main" />

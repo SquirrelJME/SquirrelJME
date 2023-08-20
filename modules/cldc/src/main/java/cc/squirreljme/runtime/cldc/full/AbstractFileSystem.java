@@ -9,10 +9,15 @@
 
 package cc.squirreljme.runtime.cldc.full;
 
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.CharSequenceUtils;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.file.FileSystem;
+import java.nio.file.InvalidPathException;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileAttribute;
@@ -27,6 +32,32 @@ import java.util.Set;
 public abstract class AbstractFileSystem
 	extends FileSystem
 {
+	/** Cached separator for this filesystem. */
+	private volatile String _separator;
+	
+	/**
+	 * Returns a path which is associated with the current filesystem.
+	 *
+	 * @param __path The first part of the path.
+	 * @return The path.
+	 * @throws InvalidPathException If the path is not valid for this
+	 * file system.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/20
+	 */
+	@SquirrelJMEVendorApi
+	public abstract Path getPath(String __path)
+		throws InvalidPathException, NullPointerException;
+	
+	/**
+	 * Returns the path separator.
+	 *
+	 * @return The path separator.
+	 * @since 2023/08/20
+	 */
+	@SquirrelJMEVendorApi
+	protected abstract String getSeparatorInternal();
+	
 	/**
 	 * Opens a channel to the file's data.
 	 *
@@ -41,8 +72,63 @@ public abstract class AbstractFileSystem
 	 * support opening the specific file.
 	 * @since 2023/08/20
 	 */
+	@SquirrelJMEVendorApi
 	public abstract FileChannel open(Path __path,
 		Set<? extends OpenOption> __options, FileAttribute<?>... __attribs)
 		throws IllegalArgumentException, IOException, SecurityException,
 			UnsupportedOperationException;
+	
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/08/20
+	 */
+	@Override
+	public String getSeparator()
+	{
+		String result = this._separator;
+		if (result == null)
+		{
+			result = this.getSeparatorInternal();
+			this._separator = result;
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/08/20
+	 */
+	@Override
+	public final Path getPath(String __path, String... __more)
+	{
+		if (__path == null || __more == null)
+			throw new NullPointerException("NARG");
+		
+		// Separator which is used to build a full path
+		String separator = this.getSeparator();
+		
+		// Build full target string with separators
+		StringBuilder sb = new StringBuilder(__path);
+		for (String segment : __more)
+		{
+			if (segment == null)
+				throw new NullPointerException("NARG");
+			
+			// Does this start with the path separator?
+			boolean startSep = segment.startsWith(separator);
+			
+			// Only add separator if the first added segment was not blank or
+			// the current segment starts with the separator already
+			if (sb.length() > 0 && !startSep)
+				sb.append(separator);
+			
+			// Append segment otherwise
+			sb.append(segment);
+		}
+		
+		// Forward to internal handler
+		return this.getPath(sb.toString());
+	}
 }

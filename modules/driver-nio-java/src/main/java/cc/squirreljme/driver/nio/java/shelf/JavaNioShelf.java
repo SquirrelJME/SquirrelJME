@@ -10,7 +10,11 @@
 package cc.squirreljme.driver.nio.java.shelf;
 
 import cc.squirreljme.jvm.mle.annotation.SquirrelJMENativeShelf;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import org.jetbrains.annotations.CheckReturnValue;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Native shelf interface for Java File access.
@@ -29,4 +33,29 @@ public final class JavaNioShelf
 	private JavaNioShelf()
 	{
 	}
+	
+	/**
+	 * Obtains the bracket for the given path.
+	 *
+	 * @param __path The path to obtain.
+	 * @param __failSegment The failing segment, written to if it is known.
+	 * @return The path.
+	 * @throws MLECallError On null arguments or if the path is not valid.
+	 * @since 2023/08/20
+	 */
+	@SquirrelJMEVendorApi
+	@CheckReturnValue
+	public static native JavaPathBracket getPath(@NotNull String __path,
+		@Nullable int[] __failSegment)
+		throws MLECallError;
+	
+	/**
+	 * The separator for files.
+	 *
+	 * @return The separator used for files.
+	 * @since 2023/08/20
+	 */
+	@SquirrelJMEVendorApi
+	@CheckReturnValue
+	public static native String getSeparator();
 }

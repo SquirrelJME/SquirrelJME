@@ -1100,12 +1100,6 @@ public final class SpringThreadWorker
 				"Old-SpringCoat native call: %s:%s %s", __class, __method,
 				Arrays.asList(__args)));
 		
-		// Only allow mid-level native calls
-		if (!__class.toString().startsWith("cc/squirreljme/jvm/mle/"))
-			throw new SpringVirtualMachineException(String.format(
-				"Non-MLE native call: %s:%s %s", __class, __method,
-				Arrays.asList(__args)));
-		
 		// Debug
 		/*Debugging.debugNote("Call native %s::%s %s", __class, __method,
 			Arrays.asList(__args));*/

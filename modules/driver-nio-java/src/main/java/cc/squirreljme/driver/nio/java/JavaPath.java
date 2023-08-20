@@ -9,6 +9,7 @@
 
 package cc.squirreljme.driver.nio.java;
 
+import cc.squirreljme.driver.nio.java.shelf.JavaPathBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.nio.file.FileSystem;
@@ -17,13 +18,31 @@ import java.nio.file.Path;
 import java.util.Iterator;
 
 /**
- * Not Described.
+ * Directly bridged host virtual machine's version of {@link Path}.
  *
  * @since 2023/08/20
  */
 public class JavaPath
 	implements Path
 {
+	/** The internal path. */
+	final JavaPathBracket _path;
+	
+	/**
+	 * Initializes the internal path.
+	 * 
+	 * @param __path The external path.
+	 * @since 2023/08/20
+	 */
+	JavaPath(JavaPathBracket __path)
+		throws NullPointerException
+	{
+		if (__path == null)
+			throw new NullPointerException("NARG");
+		
+		this._path = __path;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2023/08/20
