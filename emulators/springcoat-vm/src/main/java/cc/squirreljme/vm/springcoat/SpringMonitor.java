@@ -9,9 +9,9 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.emulator.profiler.ProfiledFrame;
 import cc.squirreljme.jvm.mle.constants.MonitorResultType;
 import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
+import cc.squirreljme.profiler.ProfiledFrame;
 import cc.squirreljme.vm.springcoat.exceptions.SpringIllegalMonitorStateException;
 
 /**

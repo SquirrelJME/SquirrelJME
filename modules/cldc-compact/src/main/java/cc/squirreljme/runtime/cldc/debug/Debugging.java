@@ -243,7 +243,8 @@ public final class Debugging
 			// because the SquirrelJME trace support may be missing
 			if (RuntimeShelf.vmType() == VMType.JAVA_SE)
 			{
-				new Throwable("INCOMPLETE CODE").printStackTrace(System.err);
+				new Throwable("INCOMPLETE CODE")
+					.printStackTrace(System.err);
 			}
 			
 			// Use SquirrelJME's method

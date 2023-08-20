@@ -11,7 +11,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="file://$USER_HOME$/.jdks/liberica-11.0.20/jmods/jdk.javadoc.jmod" />
+          <root url="file:///usr/lib/jvm/java-17-openjdk-amd64/jmods/jdk.javadoc.jmod" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

@@ -9,7 +9,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.emulator.profiler.ProfiledFrame;
+import cc.squirreljme.profiler.ProfiledFrame;
 import cc.squirreljme.jdwp.JDWPController;
 import cc.squirreljme.jdwp.trips.JDWPGlobalTrip;
 import cc.squirreljme.jdwp.trips.JDWPTripThread;

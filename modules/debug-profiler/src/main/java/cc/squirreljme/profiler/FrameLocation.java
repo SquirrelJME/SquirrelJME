@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.emulator.profiler;
+package cc.squirreljme.profiler;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;

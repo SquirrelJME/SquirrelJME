@@ -16,6 +16,7 @@ dependencies
 	api project(":modules:meep-swm")
 	api project(":modules:tool-classfile")
 	api project(":modules:debug-jdwp")
+	api project(":modules:debug-profiler")
 }
 
 

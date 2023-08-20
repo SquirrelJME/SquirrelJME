@@ -731,9 +731,12 @@ public enum VMType
 		String profilerClass = (__mainClass.equals(
 			VMHelpers.SINGLE_TEST_RUNNER) && __args.length > 0 ?
 			__args[0] : (__commonName != null ? __commonName : __mainClass));
-		vmArgs.add("-Xsnapshot:" + profilerDir.resolve(
+		vmArgs.add("-Xsnapshot:nps:" + profilerDir.resolve(
 			__task.getProject().getName() + "_" +
 			profilerClass.replace('.', '-') + ".nps"));
+		vmArgs.add("-Xsnapshot:jfr:" + profilerDir.resolve(
+			__task.getProject().getName() + "_" +
+			profilerClass.replace('.', '-') + ".jfr"));
 		
 		// Class path for the target program to launch
 		vmArgs.add("-classpath");

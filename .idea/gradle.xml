@@ -8,7 +8,6 @@
         <option name="testRunner" value="GRADLE" />
         <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="gradleJvm" value="liberica-11" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
@@ -26,6 +25,7 @@
             <option value="$PROJECT_DIR$/modules/collections" />
             <option value="$PROJECT_DIR$/modules/common-vm" />
             <option value="$PROJECT_DIR$/modules/debug-jdwp" />
+            <option value="$PROJECT_DIR$/modules/debug-profiler" />
             <option value="$PROJECT_DIR$/modules/demo-hello" />
             <option value="$PROJECT_DIR$/modules/dio" />
             <option value="$PROJECT_DIR$/modules/dio-adc" />
