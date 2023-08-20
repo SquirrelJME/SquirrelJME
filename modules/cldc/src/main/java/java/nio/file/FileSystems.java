@@ -9,9 +9,12 @@
 
 package java.nio.file;
 
+import cc.squirreljme.jvm.DriverFactory;
+import cc.squirreljme.jvm.DriverLoader;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.full.NullFileSystem;
+import java.util.NoSuchElementException;
 
 /**
  * This contains a static method which is used to obtain the default filesystem
@@ -22,6 +25,9 @@ import cc.squirreljme.runtime.cldc.full.NullFileSystem;
 @Api
 public final class FileSystems
 {
+	/** Instance of the file system driver. */
+	private static volatile FileSystem _INSTANCE;
+	
 	/**
 	 * Not used.
 	 *
@@ -41,8 +47,27 @@ public final class FileSystems
 	@Api
 	public static FileSystem getDefault()
 	{
-		Debugging.debugNote("Implement FileSystem support!", new Object[] {});
-		return NullFileSystem.INSTANCE;
+		// Already loaded?
+		FileSystem instance = FileSystems._INSTANCE;
+		if (instance != null)
+			return instance;
+		
+		// Load in the driver
+		try
+		{
+			instance = DriverLoader.loadBest(FileSystem.class);
+		}
+		catch (NoSuchElementException ignored)
+		{
+		}
+		
+		// If no driver was found, setup blank no-op filesystem
+		if (instance == null)
+			instance = NullFileSystem.INSTANCE;
+		
+		// Cache for later and use it now
+		FileSystems._INSTANCE = instance;
+		return instance;
 	}
 }
 
