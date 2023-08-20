@@ -10,30 +10,23 @@
 package cc.squirreljme.driver.nio.unix;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.cldc.full.AbstractFileSystem;
 import java.io.IOException;
-import java.nio.channels.FileChannel;
 import java.nio.file.FileStore;
-import java.nio.file.FileSystem;
-import java.nio.file.OpenOption;
-import java.nio.file.Path;
-import java.nio.file.attribute.FileAttribute;
-import java.util.Set;
 
 /**
- * Provides support for access to Unix based filesystems.
+ * Not Described.
  *
  * @since 2023/08/20
  */
-public class UnixFileSystem
-	extends AbstractFileSystem
+public class UnixFileStore
+	extends FileStore
 {
 	/**
 	 * {@inheritDoc}
 	 * @since 2023/08/20
 	 */
 	@Override
-	public void close()
+	public Object getAttribute(String __a)
 		throws IOException
 	{
 		throw Debugging.todo();
@@ -44,7 +37,8 @@ public class UnixFileSystem
 	 * @since 2023/08/20
 	 */
 	@Override
-	public Iterable<FileStore> getFileStores()
+	public long getTotalSpace()
+		throws IOException
 	{
 		throw Debugging.todo();
 	}
@@ -54,7 +48,8 @@ public class UnixFileSystem
 	 * @since 2023/08/20
 	 */
 	@Override
-	public Path getPath(String __a, String... __b)
+	public long getUnallocatedSpace()
+		throws IOException
 	{
 		throw Debugging.todo();
 	}
@@ -64,27 +59,8 @@ public class UnixFileSystem
 	 * @since 2023/08/20
 	 */
 	@Override
-	public Iterable<Path> getRootDirectories()
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/08/20
-	 */
-	@Override
-	public String getSeparator()
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/08/20
-	 */
-	@Override
-	public boolean isOpen()
+	public long getUsableSpace()
+		throws IOException
 	{
 		throw Debugging.todo();
 	}
@@ -104,10 +80,7 @@ public class UnixFileSystem
 	 * @since 2023/08/20
 	 */
 	@Override
-	public FileChannel open(Path __path, Set<? extends OpenOption> __options,
-		FileAttribute<?>... __attribs)
-		throws IllegalArgumentException, IOException, SecurityException,
-		UnsupportedOperationException
+	public String name()
 	{
 		throw Debugging.todo();
 	}
@@ -117,7 +90,17 @@ public class UnixFileSystem
 	 * @since 2023/08/20
 	 */
 	@Override
-	public Set<String> supportedFileAttributeViews()
+	public boolean supportsFileAttributeView(String __a)
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/08/20
+	 */
+	@Override
+	public String type()
 	{
 		throw Debugging.todo();
 	}
