@@ -84,7 +84,7 @@ public final class ProfiledThread
 	 * @param __cl The name of the class.
 	 * @param __mn The name of the method.
 	 * @param __md The type of the method.
-	 * @param __ns The The starting time in nanoseconds.
+	 * @param __ns The starting time in nanoseconds.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/10
 	 */

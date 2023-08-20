@@ -3,7 +3,12 @@
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_7">
     <output-test url="file://$MODULE_DIR$/../../../../modules/debug-profiler/build/classes/java/test" />
     <exclude-output />
-    <content url="file://$MODULE_DIR$/../../../../modules/debug-profiler/src/test" />
+    <content url="file://$MODULE_DIR$/../../../../modules/debug-profiler/src/test">
+      <sourceFolder url="file://$MODULE_DIR$/../../../../modules/debug-profiler/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../../modules/debug-profiler/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../../modules/debug-profiler/src/test/resources" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../../modules/debug-profiler/src/test/resources" type="java-test-resource" />
+    </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
     <orderEntry type="module" module-name="squirreljme.modules.debug-profiler.testFixtures" production-on-test="" />

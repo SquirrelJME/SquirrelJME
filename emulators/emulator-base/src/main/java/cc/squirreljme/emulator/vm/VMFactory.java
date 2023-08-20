@@ -11,6 +11,7 @@ package cc.squirreljme.emulator.vm;
 
 import cc.squirreljme.jdwp.JDWPFactory;
 import cc.squirreljme.profiler.ProfilerSnapshot;
+import cc.squirreljme.profiler.SnapshotFormat;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.DataContainerLibrary;
 import cc.squirreljme.vm.JarClassLibrary;
@@ -22,9 +23,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -135,7 +138,7 @@ public abstract class VMFactory
 	{
 		// Default settings
 		String vmName = "springcoat";
-		Path snapshotPath = null;
+		Map<SnapshotFormat, Path> snapshotPath = new LinkedHashMap<>();
 		Collection<String> libraries = new LinkedList<>();
 		Collection<String> suiteClasspath = new LinkedList<>();
 		Map<String, String> systemProperties = new LinkedHashMap<>();
@@ -166,7 +169,7 @@ public abstract class VMFactory
 		
 		// Command line format is:
 		// -Xemulator:(vm)
-		// -Xsnapshot:(path-to-nps)
+		// -Xsnapshot:(nps|jfr):(path)
 		// -Xlibraries:(class:path:...)
 		// -Xjdwp:[hostname]:port
 		// -Xthread:(single|coop|multi|smt)
@@ -211,10 +214,26 @@ public abstract class VMFactory
 			else if (item.startsWith("-Xemulator:"))
 				vmName = item.substring("-Xemulator:".length());
 			
-			// VisualVM Snapshot Dump path
+			// Snapshot Dump path
 			else if (item.startsWith("-Xsnapshot:"))
-				snapshotPath = Paths.get(
-					item.substring("-Xsnapshot:".length()));
+			{
+				int fd = item.indexOf(':');
+				int ld = item.lastIndexOf(':');
+				
+				// Need these
+				if (fd < 0 || ld < 0 || fd == ld)
+					throw new IllegalArgumentException(
+						"-Xsnapshot:(nps|jfr):path is not valid.");
+				
+				// Determine type and format
+				SnapshotFormat format = SnapshotFormat.of(
+					item.substring(fd + 1, ld));
+				Path path = Paths.get(
+					item.substring(ld + 1));
+				
+				// Store it
+				snapshotPath.put(format, path); 
+			}
 			
 			// System property
 			else if (item.startsWith("-D"))
@@ -387,28 +406,53 @@ public abstract class VMFactory
 		// Always write the snapshot file
 		finally
 		{
-			if (snapshotPath != null)
+			for (Map.Entry<SnapshotFormat, Path> entry :
+				snapshotPath.entrySet())
 			{
+				// Get parameters
+				SnapshotFormat format = entry.getKey();
+				Path path = entry.getValue();
+				
 				// Create directory where it goes
+				Path tempPath = null;
 				try
 				{
-					Files.createDirectories(snapshotPath.getParent());
+					// Create target output
+					Files.createDirectories(path.getParent());
+					
+					// Setup temporary file
+					tempPath = Files.createTempFile(format.toString(),
+						"profiler");
+					
+					// Write file
+					try (OutputStream out = Files.newOutputStream(tempPath,
+						StandardOpenOption.WRITE, StandardOpenOption.CREATE,
+						StandardOpenOption.TRUNCATE_EXISTING))
+					{
+						// Create and write to the output
+						format.writer(profilerSnapshot, out).write();
+					}
+					
+					// Move to the output
+					Files.move(tempPath, path,
+						StandardCopyOption.REPLACE_EXISTING);
 				}
 				catch (IOException e)
 				{
-					// Ignore
+					e.printStackTrace(System.err);
+					System.err.flush();
 				}
-				
-				// Write file
-				try (OutputStream out = Files.newOutputStream(snapshotPath,
-					StandardOpenOption.WRITE, StandardOpenOption.CREATE,
-					StandardOpenOption.TRUNCATE_EXISTING))
+				finally
 				{
-					profilerSnapshot.writeTo(out);
-				}
-				catch (IOException e)
-				{
-					// Ignore
+					// Delete temporary file
+					if (tempPath != null)
+						try
+						{
+							Files.delete(tempPath);
+						}
+						catch (IOException __e)
+						{
+						}
 				}
 			}
 		}
