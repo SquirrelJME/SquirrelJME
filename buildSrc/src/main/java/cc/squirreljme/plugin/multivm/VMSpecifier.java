@@ -50,6 +50,14 @@ public interface VMSpecifier
 	Set<BangletVariant> banglets();
 	
 	/**
+	 * Drivers needed to run the virtual machine.
+	 * 
+	 * @return The list of driver Jars.
+	 * @since 2023/08/20
+	 */
+	String[] drivers();
+	
+	/**
 	 * Dumps the library.
 	 * 
 	 * @param __task The task running this, may be used to launch a VM.

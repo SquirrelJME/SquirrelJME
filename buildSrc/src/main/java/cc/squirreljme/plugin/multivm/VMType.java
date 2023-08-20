@@ -325,6 +325,18 @@ public enum VMType
 	{
 		/**
 		 * {@inheritDoc}
+		 * @since 2023/08/20
+		 */
+		@Override
+		public String[] drivers()
+		{
+			return new String[]{
+				"driver-nio-java.jar"
+			};
+		}
+		
+		/**
+		 * {@inheritDoc}
 		 * @since 2021/05/16
 		 */
 		@Override
@@ -455,6 +467,16 @@ public enum VMType
 	{
 		// Defaults to none
 		return Collections.unmodifiableSet(EnumSet.of(BangletVariant.NONE));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/08/20
+	 */
+	@Override
+	public String[] drivers()
+	{
+		return new String[0];
 	}
 	
 	/**

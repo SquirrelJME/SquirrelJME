@@ -41,6 +41,15 @@ public final class JarPackageShelf
 	public static native JarPackageBracket[] classPath();
 	
 	/**
+	 * Returns the drivers for the current virtual machine.
+	 *
+	 * @return The drivers for the virtual machine.
+	 * @since 2023/08/20
+	 */
+	@SquirrelJMEVendorApi
+	public static native JarPackageBracket[] drivers();
+	
+	/**
 	 * Checks if the given brackets refer to the same JAR.
 	 * 
 	 * @param __a The first JAR.

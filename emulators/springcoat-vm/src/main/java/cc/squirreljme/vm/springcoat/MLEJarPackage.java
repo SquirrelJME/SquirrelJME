@@ -62,6 +62,33 @@ public enum MLEJarPackage
 		}
 	},
 	
+	/** {@link JarPackageShelf#drivers()}. */
+	DRIVERS("drivers:()[Lcc/squirreljme/jvm/mle/brackets/" +
+		"JarPackageBracket;")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/08/20
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			VMSuiteManager suites = __thread.machine.suites;
+			
+			// Hardcoded drivers to load for SpringCoat
+			SpringObject[] rv = new SpringObject[]
+				{
+					new JarPackageObject(__thread.machine,
+						suites.loadLibrary("driver-nio-java.jar"))
+				};
+			
+			// Wrap
+			return __thread.asVMObjectArray(__thread.resolveClass(
+				"[Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;"),
+				rv);
+		}
+	},
+	
 	/** {@link JarPackageShelf#equals(JarPackageBracket, JarPackageBracket)}.*/ 
 	EQUALS("equals:(Lcc/squirreljme/jvm/mle/brackets/" +
 		"JarPackageBracket;Lcc/squirreljme/jvm/mle/brackets/" +

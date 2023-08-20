@@ -1163,6 +1163,25 @@ public final class VMHelpers
 						.withVmByEmulatedJit(),
 						true, __did));
 		
+		// Add any needed drivers, if not already added
+		for (String driverJar : __classifier.getVmType().drivers())
+		{
+			// Determine the actual module name
+			String moduleName;
+			if (driverJar.endsWith(".jar"))
+				moduleName = driverJar.substring(0, driverJar.length() - 4);
+			else
+				moduleName = driverJar;
+			
+			// Depend on module, ignore optional dependencies, make sure it
+			// is the main source set as well
+			result.addAll(VMHelpers.runClassTasks(
+				__project.findProject(":modules:" + moduleName),
+				__classifier.withSourceSet(SourceSet.MAIN_SOURCE_SET_NAME)
+					.withVmByEmulatedJit(),
+				false, __did));
+		}
+		
 		// Debug as needed
 		__project.getLogger().debug("Run Depends: {}", result);
 		

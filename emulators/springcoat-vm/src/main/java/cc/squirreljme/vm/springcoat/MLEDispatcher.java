@@ -32,7 +32,7 @@ import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodNameAndType;
 
 /**
- * Not Described.
+ * Dispatches the shelf used for the shelf API.
  *
  * @since 2020/06/18
  */
