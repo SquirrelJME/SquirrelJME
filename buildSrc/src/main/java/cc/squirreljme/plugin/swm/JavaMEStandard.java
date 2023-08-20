@@ -218,5 +218,24 @@ public final class JavaMEStandard
 	{
 		return this.version;
 	}
+	
+	/**
+	 * Initializes a driver standard.
+	 *
+	 * @param __class The class this provides.
+	 * @param __key The driver key.
+	 * @return The driver identifier.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/20
+	 */
+	public static JavaMEStandard driver(String __class, String __key)
+		throws NullPointerException
+	{
+		if (__class == null || __key == null)
+			throw new NullPointerException("NARG");
+		
+		return new JavaMEStandard(String.format(
+			"%s,%s;cc.squirreljme.driver;", __class, __key));
+	}
 }
 

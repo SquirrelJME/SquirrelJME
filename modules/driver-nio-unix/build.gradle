@@ -1,4 +1,5 @@
 import cc.squirreljme.plugin.swm.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEStandard
 
 description = "Native I/O Driver for UNIX Systems."
 version = rootProject.version
@@ -9,6 +10,8 @@ squirreljme
 	swmType = JavaMEMidletType.API
 	swmName = "UNIX Native I/O Driver"
 	swmVendor = "Stephanie Gawroriski"
+	definedStandards += JavaMEStandard.driver(
+		"java.nio.file.FileSystem", "unix")
 	tags += "squirreljme"
 }
 
