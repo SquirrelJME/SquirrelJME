@@ -41,6 +41,7 @@
             <option value="$PROJECT_DIR$/modules/dio-spibus" />
             <option value="$PROJECT_DIR$/modules/dio-uart" />
             <option value="$PROJECT_DIR$/modules/dio-watchdog" />
+            <option value="$PROJECT_DIR$/modules/driver-nio-unix" />
             <option value="$PROJECT_DIR$/modules/gcf" />
             <option value="$PROJECT_DIR$/modules/io" />
             <option value="$PROJECT_DIR$/modules/io-file" />
