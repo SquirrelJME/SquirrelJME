@@ -25,12 +25,26 @@ public abstract class AbstractPath
 	/** The cached root. */
 	private volatile Reference<Path> _root;
 	
+	/** Cached name lists. */
+	private volatile Reference<Path>[] _names;
+	
 	/** Is the root known to be null? */
 	private volatile boolean _isNullRoot;
 	
 	/** The cached name count. */
 	private volatile int _nameCount =
 		-1;
+	
+	/**
+	 * Returns the name at the given index. 
+	 *
+	 * @param __dx The index to get the name from.
+	 * @return The name at the index.
+	 * @throws IllegalArgumentException If the index is not valid.
+	 * @since 2023/08/20
+	 */
+	protected abstract Path getInternalName(int __dx)
+		throws IllegalArgumentException;
 	
 	/**
 	 * Returns the name count of the path.
@@ -47,6 +61,42 @@ public abstract class AbstractPath
 	 * @since 2023/08/20
 	 */
 	protected abstract Path getInternalRoot();
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/08/20
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public final Path getName(int __dx)
+		throws IllegalArgumentException
+	{
+		/* {@squirreljme.error ZY05 Path index is out of bounds.}. */
+		int count = this.getNameCount();
+		if (__dx < 0 || __dx >= count)
+			throw new IllegalArgumentException("ZY05");
+		
+		// Need to create the name cache?
+		Reference<Path>[] names = this._names;
+		if (names == null)
+		{
+			names = (Reference<Path>[])new Reference[count];
+			this._names = names;
+		}
+		
+		Reference<Path> ref = names[__dx];
+		Path result;
+		
+		// If not cached, cache it
+		if (ref == null || (result = ref.get()) == null)
+		{
+			result = this.getInternalName(__dx);
+			names[__dx] = new WeakReference<>(result);
+		}
+		
+		// Use result
+		return result;
+	}
 	
 	/**
 	 * {@inheritDoc}

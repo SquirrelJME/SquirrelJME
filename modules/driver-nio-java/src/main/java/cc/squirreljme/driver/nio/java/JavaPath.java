@@ -100,6 +100,17 @@ public class JavaPath
 	 * @since 2023/08/20
 	 */
 	@Override
+	protected Path getInternalName(int __dx)
+		throws IllegalArgumentException
+	{
+		return new JavaPath(JavaNioShelf.getName(this._path, __dx));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/08/20
+	 */
+	@Override
 	protected int getInternalNameCount()
 	{
 		return JavaNioShelf.getNameCount(this._path);
@@ -119,16 +130,6 @@ public class JavaPath
 		if (result == null)
 			return null;
 		return new JavaPath(result);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/08/20
-	 */
-	@Override
-	public Path getName(int __a)
-	{
-		throw Debugging.todo();
 	}
 	
 	/**

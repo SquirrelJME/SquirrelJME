@@ -12,6 +12,7 @@ package cc.squirreljme.driver.nio.java.shelf;
 import cc.squirreljme.jvm.mle.annotation.SquirrelJMENativeShelf;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import java.nio.file.Path;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -33,6 +34,19 @@ public final class JavaNioShelf
 	private JavaNioShelf()
 	{
 	}
+	
+	/**
+	 * Gets the path index from the given path.
+	 *
+	 * @param __path The path to get the name from.
+	 * @param __dx The path index.
+	 * @return The path for the given index from the given path.
+	 * @throws MLECallError On null arguments or the index is not valid.
+	 * @since 2023/08/20
+	 */
+	public static native JavaPathBracket getName(JavaPathBracket __path,
+		int __dx)
+		throws MLECallError;
 	
 	/**
 	 * Returns the name count of the given path.

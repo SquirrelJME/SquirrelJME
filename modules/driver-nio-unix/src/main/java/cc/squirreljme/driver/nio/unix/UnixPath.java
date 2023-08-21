@@ -79,7 +79,8 @@ public class UnixPath
 	 * @since 2023/08/20
 	 */
 	@Override
-	public Path getName(int __a)
+	public Path getName(int __dx)
+		throws IllegalArgumentException
 	{
 		throw Debugging.todo();
 	}

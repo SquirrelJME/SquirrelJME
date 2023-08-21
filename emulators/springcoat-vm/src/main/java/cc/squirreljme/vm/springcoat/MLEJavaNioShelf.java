@@ -27,6 +27,35 @@ import java.nio.file.Path;
 public enum MLEJavaNioShelf
 	implements MLEFunction
 {
+	/** {@link JavaNioShelf#getName(JavaPathBracket, int)}. */
+	GET_NAME("getName:(Lcc/squirreljme/driver/nio/java/shelf/" +
+		"JavaPathBracket;I)" +
+		"Lcc/squirreljme/driver/nio/java/shelf/JavaPathBracket;")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/08/20
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			try
+			{
+				Path result = MLEJavaNioShelf.__pathObject(__args[0]).path
+					.getName((Integer)__args[1]);
+				
+				if (result == null)
+					return SpringNullObject.NULL;
+				return new JavaPathObject(__thread.machine, result);
+			}
+			catch (IllegalArgumentException|IndexOutOfBoundsException|
+				   NullPointerException|ClassCastException __e)
+			{
+				throw new SpringMLECallError(__e);
+			}
+		}
+	},
+	
 	/** {@link JavaNioShelf#getNameCount(JavaPathBracket)}. */
 	GET_NAME_COUNT("getNameCount:" +
 		"(Lcc/squirreljme/driver/nio/java/shelf/JavaPathBracket;)I")

@@ -97,7 +97,8 @@ public class NullPath
 	 * @since 2019/12/22
 	 */
 	@Override
-	public final Path getName(int __a)
+	public final Path getName(int __dx)
+		throws IllegalArgumentException
 	{
 		throw Debugging.todo();
 	}

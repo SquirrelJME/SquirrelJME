@@ -34,7 +34,8 @@ public interface Path
 	FileSystem getFileSystem();
 	
 	@Api
-	Path getName(int __a);
+	Path getName(int __dx)
+		throws IllegalArgumentException;
 	
 	@Api
 	int getNameCount();
