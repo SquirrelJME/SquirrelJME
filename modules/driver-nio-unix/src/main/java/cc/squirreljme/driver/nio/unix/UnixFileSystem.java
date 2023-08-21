@@ -42,6 +42,16 @@ public class UnixFileSystem
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2023/08/21
+	 */
+	@Override
+	protected int compare(Path __a, Path __b)
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2023/08/20
 	 */
 	@Override
@@ -55,7 +65,7 @@ public class UnixFileSystem
 	 * @since 2023/08/20
 	 */
 	@Override
-	public Path getPath(String __path)
+	protected Path getPath(String __path)
 	{
 		throw Debugging.todo();
 	}

@@ -9,11 +9,7 @@
 
 package cc.squirreljme.runtime.cldc.full;
 
-import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.cldc.util.CharSequenceUtils;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.file.FileSystem;
@@ -38,6 +34,17 @@ public abstract class AbstractFileSystem
 	private volatile String _separator;
 	
 	/**
+	 * Compares two path components.
+	 *
+	 * @param __a The first path.
+	 * @param __b The second path.
+	 * @return The comparison of these.
+	 * @since 2023/08/21
+	 */
+	@SquirrelJMEVendorApi
+	protected abstract int compare(Path __a, Path __b);
+	
+	/**
 	 * Returns a path which is associated with the current filesystem.
 	 *
 	 * @param __path The first part of the path.
@@ -48,7 +55,7 @@ public abstract class AbstractFileSystem
 	 * @since 2023/08/20
 	 */
 	@SquirrelJMEVendorApi
-	public abstract Path getPath(String __path)
+	protected abstract Path getPath(String __path)
 		throws InvalidPathException, NullPointerException;
 	
 	/**

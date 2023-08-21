@@ -11,7 +11,6 @@ package cc.squirreljme.driver.nio.java;
 
 import cc.squirreljme.driver.nio.java.shelf.JavaNioShelf;
 import cc.squirreljme.driver.nio.java.shelf.JavaPathBracket;
-import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.full.AbstractFileSystem;
@@ -47,6 +46,16 @@ public class JavaFileSystem
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2023/08/21
+	 */
+	@Override
+	protected int compare(Path __a, Path __b)
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2023/08/20
 	 */
 	@Override
@@ -60,7 +69,7 @@ public class JavaFileSystem
 	 * @since 2023/08/20
 	 */
 	@Override
-	public Path getPath(String __path)
+	protected Path getPath(String __path)
 		throws InvalidPathException, NullPointerException
 	{
 		if (__path == null)
@@ -87,7 +96,7 @@ public class JavaFileSystem
 		}
 		
 		// Wrap it
-		return new JavaPath(bracket);
+		return new JavaPath(this, bracket);
 	}
 	
 	/**

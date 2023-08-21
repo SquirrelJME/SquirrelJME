@@ -12,6 +12,7 @@ package cc.squirreljme.runtime.cldc.full;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.nio.file.FileSystem;
+import java.nio.file.InvalidPathException;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.util.Iterator;
@@ -188,7 +189,8 @@ public class NullPath
 	 * @since 2019/12/22
 	 */
 	@Override
-	public final Path resolve(Path __a)
+	public final Path resolve(Path __target)
+		throws InvalidPathException, NullPointerException
 	{
 		throw Debugging.todo();
 	}
@@ -198,7 +200,8 @@ public class NullPath
 	 * @since 2019/12/22
 	 */
 	@Override
-	public final Path resolve(String __a)
+	public final Path resolve(String __target)
+		throws InvalidPathException, NullPointerException
 	{
 		throw Debugging.todo();
 	}

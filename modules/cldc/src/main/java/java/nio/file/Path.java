@@ -16,6 +16,23 @@ import java.io.IOException;
 public interface Path
 	extends Comparable<Path>, Iterable<Path>
 {
+	/**
+	 * Compares this path against another lexicographically, it must take into
+	 * consideration if the file system is case-sensitive or not and how
+	 * characters should compare to each other.
+	 * 
+	 * Two paths that are part of different filesystem providers may not be
+	 * compared.
+	 * 
+	 * @param __b The path to compare against.
+	 * @return The comparison between the two.
+	 * @throws ClassCastException If the filesystem providers are different.
+	 * @since 2023/08/21
+	 */
+	@Override
+	@Api
+	int compareTo(Path __b)
+		throws ClassCastException;
 	
 	@Api
 	boolean endsWith(Path __a);
@@ -27,9 +44,22 @@ public interface Path
 	@Override
 	boolean equals(Object __a);
 	
+	/**
+	 * Returns the name of the file this represents, which will be the last
+	 * name component or {@code null} if this is an empty path.
+	 *
+	 * @return The name of the file
+	 * @since 2023/08/21
+	 */
 	@Api
 	Path getFileName();
 	
+	/**
+	 * Returns the file system which is bound to this path.
+	 *
+	 * @return The filesystem path.
+	 * @since 2023/08/21
+	 */
 	@Api
 	FileSystem getFileSystem();
 	
@@ -40,6 +70,12 @@ public interface Path
 	@Api
 	int getNameCount();
 	
+	/**
+	 * Returns the parent of this path.
+	 *
+	 * @return The parent path.
+	 * @since 2023/08/21
+	 */
 	@Api
 	Path getParent();
 	
@@ -61,11 +97,37 @@ public interface Path
 	@Api
 	Path relativize(Path __a);
 	
+	/**
+	 * If {@code __target} is absolute then that path is returned, if
+	 * {@code __target} is a blank path then this returns {@code this},
+	 * otherwise the current path will be treated as a directory and the
+	 * path will be a child of that path.
+	 *
+	 * @param __target The target path.
+	 * @return The resultant path.
+	 * @throws InvalidPathException If the resultant path would not be valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/21
+	 */
 	@Api
-	Path resolve(Path __a);
+	Path resolve(Path __target)
+		throws InvalidPathException, NullPointerException;
 	
+	/**
+	 * If {@code __target} is absolute then that path is returned, if
+	 * {@code __target} is a blank path then this returns {@code this},
+	 * otherwise the current path will be treated as a directory and the
+	 * path will be a child of that path.
+	 *
+	 * @param __target The target path.
+	 * @return The resultant path.
+	 * @throws InvalidPathException If the resultant path would not be valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/21
+	 */
 	@Api
-	Path resolve(String __a);
+	Path resolve(String __target)
+		throws InvalidPathException, NullPointerException;
 	
 	@Api
 	Path resolveSibling(Path __a);

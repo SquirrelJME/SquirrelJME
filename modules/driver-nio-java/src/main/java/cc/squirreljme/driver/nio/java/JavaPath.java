@@ -14,7 +14,6 @@ import cc.squirreljme.driver.nio.java.shelf.JavaPathBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.full.AbstractPath;
 import java.io.IOException;
-import java.nio.file.FileSystem;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.util.Iterator;
@@ -25,34 +24,27 @@ import java.util.Iterator;
  * @since 2023/08/20
  */
 public class JavaPath
-	extends AbstractPath
+	extends AbstractPath<JavaFileSystem>
 {
 	/** The internal path. */
 	final JavaPathBracket _path;
 	
 	/**
 	 * Initializes the internal path.
-	 * 
+	 *
+	 * @param __fs The Java filesystem creating this.
 	 * @param __path The external path.
 	 * @since 2023/08/20
 	 */
-	JavaPath(JavaPathBracket __path)
+	JavaPath(JavaFileSystem __fs, JavaPathBracket __path)
 		throws NullPointerException
 	{
+		super(__fs);
+		
 		if (__path == null)
 			throw new NullPointerException("NARG");
 		
 		this._path = __path;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/08/20
-	 */
-	@Override
-	public int compareTo(Path __b)
-	{
-		throw Debugging.todo();
 	}
 	
 	/**
@@ -80,30 +72,11 @@ public class JavaPath
 	 * @since 2023/08/20
 	 */
 	@Override
-	public Path getFileName()
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/08/20
-	 */
-	@Override
-	public FileSystem getFileSystem()
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/08/20
-	 */
-	@Override
 	protected Path getInternalName(int __dx)
 		throws IllegalArgumentException
 	{
-		return new JavaPath(JavaNioShelf.getName(this._path, __dx));
+		return new JavaPath(this.fileSystem,
+			JavaNioShelf.getName(this._path, __dx));
 	}
 	
 	/**
@@ -129,27 +102,7 @@ public class JavaPath
 		// Do we return something?
 		if (result == null)
 			return null;
-		return new JavaPath(result);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/08/20
-	 */
-	@Override
-	public Path getParent()
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/08/20
-	 */
-	@Override
-	public boolean isAbsolute()
-	{
-		throw Debugging.todo();
+		return new JavaPath(this.fileSystem, result);
 	}
 	
 	/**
@@ -178,26 +131,6 @@ public class JavaPath
 	 */
 	@Override
 	public Path relativize(Path __a)
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/08/20
-	 */
-	@Override
-	public Path resolve(Path __a)
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/08/20
-	 */
-	@Override
-	public Path resolve(String __a)
 	{
 		throw Debugging.todo();
 	}
