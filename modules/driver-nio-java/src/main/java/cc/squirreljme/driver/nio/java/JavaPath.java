@@ -76,7 +76,7 @@ public class JavaPath
 		throws IllegalArgumentException
 	{
 		return new JavaPath(this.fileSystem,
-			JavaNioShelf.getName(this._path, __dx));
+			JavaNioShelf.pathName(this._path, __dx));
 	}
 	
 	/**
@@ -86,7 +86,7 @@ public class JavaPath
 	@Override
 	protected int getInternalNameCount()
 	{
-		return JavaNioShelf.getNameCount(this._path);
+		return JavaNioShelf.pathNameCount(this._path);
 	}
 	
 	/**
@@ -97,12 +97,22 @@ public class JavaPath
 	protected Path getInternalRoot()
 	{
 		// Obtain the root
-		JavaPathBracket result = JavaNioShelf.getRoot(this._path);
+		JavaPathBracket result = JavaNioShelf.pathRoot(this._path);
 		
 		// Do we return something?
 		if (result == null)
 			return null;
 		return new JavaPath(this.fileSystem, result);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/08/21
+	 */
+	@Override
+	protected String internalString()
+	{
+		return JavaNioShelf.pathString(this._path);
 	}
 	
 	/**

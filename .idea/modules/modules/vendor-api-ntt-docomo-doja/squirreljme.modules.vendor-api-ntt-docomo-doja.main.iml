@@ -15,8 +15,8 @@
     <orderEntry type="module" module-name="squirreljme.modules.zip.main" />
     <orderEntry type="module" module-name="squirreljme.modules.cldc-compact.main" />
     <orderEntry type="module" module-name="squirreljme.modules.meep-swm.main" />
-    <orderEntry type="module" module-name="squirreljme.modules.collections.main" />
     <orderEntry type="module" module-name="squirreljme.modules.cldc.main" />
+    <orderEntry type="module" module-name="squirreljme.modules.collections.main" />
     <orderEntry type="module" module-name="squirreljme.modules.tool-manifest-writer.main" />
     <orderEntry type="module" module-name="squirreljme.modules.gcf.main" />
     <orderEntry type="module" module-name="squirreljme.modules.io.main" />

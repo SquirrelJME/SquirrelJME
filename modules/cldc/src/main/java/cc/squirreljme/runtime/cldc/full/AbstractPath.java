@@ -101,6 +101,14 @@ public abstract class AbstractPath<FS extends AbstractFileSystem>
 	protected abstract Path getInternalRoot();
 	
 	/**
+	 * Returns the string representation of this path.
+	 *
+	 * @return The string representation of the path.
+	 * @since 2023/08/21
+	 */
+	protected abstract String internalString();
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2023/08/21
 	 */
@@ -273,7 +281,18 @@ public abstract class AbstractPath<FS extends AbstractFileSystem>
 			// Otherwise, we need to calculate it
 			else
 			{
-				throw Debugging.todo();
+				// Copy segments for the path around
+				int targetCount = count - 1;
+				String[] segments = new String[targetCount];
+				for (int i = 0; i < targetCount; i++)
+					segments[i] = this.getName(i).toString();
+				
+				// Is there a root?
+				Path root = this.getRoot();
+				
+				// Determine new path using the segments and the potential root
+				rv = this.fileSystem.getPath((root == null ? "" :
+					root.toString()), segments);
 			}
 			
 			// If there is no parent, set as such, otherwise cache it
@@ -367,10 +386,19 @@ public abstract class AbstractPath<FS extends AbstractFileSystem>
 			return this;
 		
 		// Root component, which determines name resolution 
-		Path thisRoot = this.getRoot();
-		int thisCount = -1;
+		Path root = this.getRoot();
+		int thisCount = this.getNameCount();
 		
-		throw Debugging.todo();
+		// Fill in segments accordingly
+		int targetCount = thisCount + 1;
+		String[] segments = new String[targetCount];
+		for (int i = 0; i < thisCount; i++)
+			segments[i] = this.getName(i).toString();
+		segments[thisCount] = __target.toString();
+		
+		// Get the target path
+		return this.fileSystem.getPath((root == null ? "" :
+			root.toString()), segments);
 	}
 	
 	/**
@@ -399,7 +427,8 @@ public abstract class AbstractPath<FS extends AbstractFileSystem>
 		
 		if (ref == null || (rv = ref.get()) == null)
 		{
-			throw Debugging.todo();
+			rv = this.internalString();
+			this._string = new WeakReference<>(rv);
 		}
 		
 		return rv;

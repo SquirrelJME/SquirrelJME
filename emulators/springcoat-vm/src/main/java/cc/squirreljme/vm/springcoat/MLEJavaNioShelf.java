@@ -12,7 +12,6 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.driver.nio.java.shelf.JavaNioShelf;
 import cc.squirreljme.driver.nio.java.shelf.JavaPathBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.vm.springcoat.brackets.JarPackageObject;
 import cc.squirreljme.vm.springcoat.brackets.JavaPathObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import java.nio.file.FileSystems;
@@ -27,53 +26,8 @@ import java.nio.file.Path;
 public enum MLEJavaNioShelf
 	implements MLEFunction
 {
-	/** {@link JavaNioShelf#getName(JavaPathBracket, int)}. */
-	GET_NAME("getName:(Lcc/squirreljme/driver/nio/java/shelf/" +
-		"JavaPathBracket;I)" +
-		"Lcc/squirreljme/driver/nio/java/shelf/JavaPathBracket;")
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2023/08/20
-		 */
-		@Override
-		public Object handle(SpringThreadWorker __thread, Object... __args)
-		{
-			try
-			{
-				Path result = MLEJavaNioShelf.__pathObject(__args[0]).path
-					.getName((Integer)__args[1]);
-				
-				if (result == null)
-					return SpringNullObject.NULL;
-				return new JavaPathObject(__thread.machine, result);
-			}
-			catch (IllegalArgumentException|IndexOutOfBoundsException|
-				   NullPointerException|ClassCastException __e)
-			{
-				throw new SpringMLECallError(__e);
-			}
-		}
-	},
-	
-	/** {@link JavaNioShelf#getNameCount(JavaPathBracket)}. */
-	GET_NAME_COUNT("getNameCount:" +
-		"(Lcc/squirreljme/driver/nio/java/shelf/JavaPathBracket;)I")
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2023/08/20
-		 */
-		@Override
-		public Object handle(SpringThreadWorker __thread, Object... __args)
-		{
-			return MLEJavaNioShelf.__pathObject(__args[0])
-				.path.getNameCount();
-		}
-	},
-	
-	/** {@link JavaNioShelf#getPath(String, int[])}. */
-	GET_PATH("getPath:(Ljava/lang/String;[I)" +
+	/** {@link JavaNioShelf#fsPath(String, int[])}. */
+	FS_PATH("fsPath:(Ljava/lang/String;[I)" +
 		"Lcc/squirreljme/driver/nio/java/shelf/JavaPathBracket;")
 	{
 		/**
@@ -108,8 +62,83 @@ public enum MLEJavaNioShelf
 		}
 	},
 	
-	/** {@link JavaNioShelf#getRoot(JavaPathBracket)}. */
-	GET_ROOT("getRoot:(Lcc/squirreljme/driver/nio/java/shelf/" +
+	/** {@link JavaNioShelf#fsReadAttributes(Path, boolean)}. */
+	FS_READ_ATTRIBUTES("fsReadAttributes:(Ljava/nio/file/Path;Z)" +
+		"Lcc/squirreljme/driver/nio/java/shelf/JavaFileAttributesBracket;")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/08/21
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			throw Debugging.todo();
+		}
+	},
+	
+	/** {@link JavaNioShelf#fsSeparator()}. */
+	FS_SEPARATOR("fsSeparator:()Ljava/lang/String;")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/08/20
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			return __thread.asVMObject(
+				FileSystems.getDefault().getSeparator());
+		}
+	},
+	
+	/** {@link JavaNioShelf#pathName(JavaPathBracket, int)}. */
+	PATH_NAME("pathName:(Lcc/squirreljme/driver/nio/java/shelf/" +
+		"JavaPathBracket;I)" +
+		"Lcc/squirreljme/driver/nio/java/shelf/JavaPathBracket;")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/08/20
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			try
+			{
+				Path result = MLEJavaNioShelf.__pathObject(__args[0]).path
+					.getName((Integer)__args[1]);
+				
+				if (result == null)
+					return SpringNullObject.NULL;
+				return new JavaPathObject(__thread.machine, result);
+			}
+			catch (IllegalArgumentException|IndexOutOfBoundsException|
+				   NullPointerException|ClassCastException __e)
+			{
+				throw new SpringMLECallError(__e);
+			}
+		}
+	},
+	
+	/** {@link JavaNioShelf#pathNameCount(JavaPathBracket)}. */
+	PATH_NAME_COUNT("pathNameCount:" +
+		"(Lcc/squirreljme/driver/nio/java/shelf/JavaPathBracket;)I")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/08/20
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			return MLEJavaNioShelf.__pathObject(__args[0])
+				.path.getNameCount();
+		}
+	},
+	
+	/** {@link JavaNioShelf#pathRoot(JavaPathBracket)}. */
+	PATH_ROOT("pathRoot:(Lcc/squirreljme/driver/nio/java/shelf/" +
 		"JavaPathBracket;)" +
 		"Lcc/squirreljme/driver/nio/java/shelf/JavaPathBracket;")
 	{
@@ -129,18 +158,19 @@ public enum MLEJavaNioShelf
 		}
 	},
 	
-	/** {@link JavaNioShelf#getSeparator()}. */
-	GET_SEPARATOR("getSeparator:()Ljava/lang/String;")
+	/** {@link JavaNioShelf#pathString(JavaPathBracket)}. */
+	PATH_STRING("pathString:(Lcc/squirreljme/driver/nio/java/shelf/" +
+		"JavaPathBracket;)Ljava/lang/String;")
 	{
 		/**
 		 * {@inheritDoc}
-		 * @since 2023/08/20
+		 * @since 2023/08/21
 		 */
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return __thread.asVMObject(
-				FileSystems.getDefault().getSeparator());
+			return __thread.asVMObject(MLEJavaNioShelf.__pathObject(__args[0])
+				.path.toString());
 		}
 	},
 	

@@ -15,8 +15,8 @@
     <orderEntry type="module" module-name="squirreljme.emulators.emulator-base.main" />
     <orderEntry type="module" module-name="squirreljme.modules.vendor-api-ntt-docomo-star.main" />
     <orderEntry type="module" module-name="squirreljme.modules.meep-swm.main" />
-    <orderEntry type="module" module-name="squirreljme.modules.collections.main" />
     <orderEntry type="module" module-name="squirreljme.modules.cldc.main" />
+    <orderEntry type="module" module-name="squirreljme.modules.collections.main" />
     <orderEntry type="module" module-name="squirreljme.modules.tool-manifest-writer.main" />
     <orderEntry type="module" module-name="squirreljme.modules.common-vm.main" />
     <orderEntry type="module" module-name="squirreljme.modules.io.main" />

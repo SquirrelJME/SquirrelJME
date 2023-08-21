@@ -9,6 +9,7 @@
 
 package cc.squirreljme.driver.nio.java;
 
+import cc.squirreljme.driver.nio.java.shelf.JavaFileAttributesBracket;
 import cc.squirreljme.driver.nio.java.shelf.JavaNioShelf;
 import cc.squirreljme.driver.nio.java.shelf.JavaPathBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
@@ -19,6 +20,7 @@ import java.nio.channels.FileChannel;
 import java.nio.file.FileStore;
 import java.nio.file.InvalidPathException;
 import java.nio.file.LinkOption;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -41,7 +43,7 @@ public class JavaFileSystem
 	public void close()
 		throws IOException
 	{
-		throw Debugging.todo();
+		// Does nothing, cannot be closed
 	}
 	
 	/**
@@ -82,7 +84,7 @@ public class JavaFileSystem
 		JavaPathBracket bracket;
 		try
 		{
-			bracket = JavaNioShelf.getPath(__path, failSegment);
+			bracket = JavaNioShelf.fsPath(__path, failSegment);
 		}
 		catch (MLECallError __e)
 		{
@@ -116,7 +118,7 @@ public class JavaFileSystem
 	@Override
 	protected String getSeparatorInternal()
 	{
-		return JavaNioShelf.getSeparator();
+		return JavaNioShelf.fsSeparator();
 	}
 	
 	/**
@@ -126,7 +128,8 @@ public class JavaFileSystem
 	@Override
 	public boolean isOpen()
 	{
-		throw Debugging.todo();
+		// Filesystem is always considered open
+		return true;
 	}
 	
 	/**
@@ -164,16 +167,40 @@ public class JavaFileSystem
 		if (__path == null || __attributeType == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/08/20
-	 */
-	@Override
-	public Set<String> supportedFileAttributeViews()
-	{
-		throw Debugging.todo();
+		/* {@squirreljme.error ZY07 The attribute class is not supported.} */
+		if (__attributeType != BasicFileAttributes.class &&
+			__attributeType != JavaFileAttributes.class)
+			throw new UnsupportedOperationException("ZY07");
+		
+		// Do not follow symlinks?
+		boolean noFollow = false;
+		if (__linkOptions != null)
+			for (LinkOption linkOption : __linkOptions)
+				if (linkOption == LinkOption.NOFOLLOW_LINKS)
+				{
+					noFollow = true;
+					break;
+				}
+		
+		// Read in attribute
+		JavaFileAttributesBracket attrib;
+		try
+		{
+			// Read in attributes
+			attrib = JavaNioShelf.fsReadAttributes(__path, noFollow);
+			
+			/* {@squirreljme.error ZY08 The specified file does not exist.
+			(The file) */
+			if (attrib == null)
+				throw new NoSuchFileException("ZY08 " + __path);
+		}
+		catch (MLECallError __e)
+		{
+			/* {@squirreljme.error ZY09 Could not read file attributes. */
+			throw new IOException("ZY09", __e);
+		}
+		
+		// Wrap attributes
+		return __attributeType.cast(new JavaBasicFileAttributes(attrib));
 	}
 }

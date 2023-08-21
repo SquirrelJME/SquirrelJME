@@ -10,6 +10,7 @@
 package cc.squirreljme.runtime.cldc.full;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.file.FileSystem;
@@ -20,6 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileAttribute;
 import java.util.Set;
+import net.multiphasicapps.collections.UnmodifiableSet;
 
 /**
  * Base file system to add additional methods needed by SquirrelJME.
@@ -30,6 +32,10 @@ import java.util.Set;
 public abstract class AbstractFileSystem
 	extends FileSystem
 {
+	/** Default file system view. */
+	private static final Set<String> _DEFAULT_VIEW =
+		UnmodifiableSet.singleton("basic");
+	
 	/** Cached separator for this filesystem. */
 	private volatile String _separator;
 	
@@ -161,5 +167,16 @@ public abstract class AbstractFileSystem
 		
 		// Forward to internal handler
 		return this.getPath(sb.toString());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/08/21
+	 */
+	@Override
+	public Set<String> supportedFileAttributeViews()
+	{
+		// By default, always returns basic, a filesystem can always add more
+		return AbstractFileSystem._DEFAULT_VIEW;
 	}
 }

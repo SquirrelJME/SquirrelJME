@@ -253,7 +253,7 @@ public class VMCompactLibraryTaskAction
 			
 			// This keeps everything about tests but will use pre-existing
 			// mappings and otherwise if we are using obfuscated classes
-			// This is the only thing I have found that works
+			// This is the only thing we have found that works
 			"-keep", "class", "*",
 			"-keepnames", "class", "*",
 			"-keepclassmembers", "class", "*", "{",

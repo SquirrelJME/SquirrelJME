@@ -240,7 +240,7 @@ public final class Files
 	}
 	
 	@Api
-	public static boolean isDirectory(Path __a, LinkOption... __b)
+	public static boolean isDirectory(Path __path, LinkOption... __linkOptions)
 	{
 		throw Debugging.todo();
 	}

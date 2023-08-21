@@ -9,6 +9,7 @@
     <orderEntry type="module" module-name="squirreljme.modules.dio.main" />
     <orderEntry type="module" module-name="squirreljme.modules.cldc.main" />
     <orderEntry type="module" module-name="squirreljme.modules.cldc-compact.main" />
+    <orderEntry type="module" module-name="squirreljme.modules.collections.main" />
     <orderEntry type="library" name="Gradle: org.jetbrains:annotations:24.0.1" level="project" />
   </component>
 </module>

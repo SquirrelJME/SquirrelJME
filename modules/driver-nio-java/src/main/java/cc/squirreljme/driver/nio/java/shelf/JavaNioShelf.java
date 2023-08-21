@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 /**
  * Native shelf interface for Java File access.
@@ -36,6 +37,48 @@ public final class JavaNioShelf
 	}
 	
 	/**
+	 * Obtains the bracket for the given path.
+	 *
+	 * @param __path The path to obtain.
+	 * @param __failSegment The failing segment, written to if it is known.
+	 * @return The path.
+	 * @throws MLECallError On null arguments or if the path is not valid.
+	 * @since 2023/08/20
+	 */
+	@SquirrelJMEVendorApi
+	@CheckReturnValue
+	@NotNull
+	public static native JavaPathBracket fsPath(@NotNull String __path,
+		@Nullable int[] __failSegment)
+		throws MLECallError;
+	
+	/**
+	 * Reads the filesystem attributes at the given path.
+	 *
+	 * @param __path The path to get the attributes from.
+	 * @param __noFollow Should symlinks not be followed?
+	 * @return The attributes or {@code null} if the file does not exist.
+	 * @throws MLECallError On read errors.
+	 * @since 2023/08/21
+	 */
+	@SquirrelJMEVendorApi
+	@Nullable
+	public static native JavaFileAttributesBracket fsReadAttributes(
+		@NotNull Path __path, boolean __noFollow)
+		throws MLECallError;
+	
+	/**
+	 * The separator for files.
+	 *
+	 * @return The separator used for files.
+	 * @since 2023/08/20
+	 */
+	@SquirrelJMEVendorApi
+	@CheckReturnValue
+	@NotNull
+	public static native String fsSeparator();
+	
+	/**
 	 * Gets the path index from the given path.
 	 *
 	 * @param __path The path to get the name from.
@@ -44,8 +87,10 @@ public final class JavaNioShelf
 	 * @throws MLECallError On null arguments or the index is not valid.
 	 * @since 2023/08/20
 	 */
-	public static native JavaPathBracket getName(JavaPathBracket __path,
-		int __dx)
+	@NotNull
+	public static native JavaPathBracket pathName(
+		@NotNull JavaPathBracket __path,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __dx)
 		throws MLECallError;
 	
 	/**
@@ -57,22 +102,8 @@ public final class JavaNioShelf
 	 * @since 2023/08/20
 	 */
 	@SquirrelJMEVendorApi
-	public static native int getNameCount(JavaPathBracket __path)
-		throws MLECallError;
-	
-	/**
-	 * Obtains the bracket for the given path.
-	 *
-	 * @param __path The path to obtain.
-	 * @param __failSegment The failing segment, written to if it is known.
-	 * @return The path.
-	 * @throws MLECallError On null arguments or if the path is not valid.
-	 * @since 2023/08/20
-	 */
-	@SquirrelJMEVendorApi
-	@CheckReturnValue
-	public static native JavaPathBracket getPath(@NotNull String __path,
-		@Nullable int[] __failSegment)
+	@Range(from = 0, to = Integer.MAX_VALUE)
+	public static native int pathNameCount(@NotNull JavaPathBracket __path)
 		throws MLECallError;
 	
 	/**
@@ -85,16 +116,21 @@ public final class JavaNioShelf
 	 */
 	@SquirrelJMEVendorApi
 	@CheckReturnValue
-	public static native JavaPathBracket getRoot(JavaPathBracket __path)
+	@Nullable
+	public static native JavaPathBracket pathRoot(
+		@NotNull JavaPathBracket __path)
 		throws MLECallError;
 	
 	/**
-	 * The separator for files.
+	 * Returns the string representation of the path.
 	 *
-	 * @return The separator used for files.
-	 * @since 2023/08/20
+	 * @param __path The path to get the representation of.
+	 * @return The string that represents the path.
+	 * @throws MLECallError On null arguments.
+	 * @since 2023/08/21
 	 */
 	@SquirrelJMEVendorApi
-	@CheckReturnValue
-	public static native String getSeparator();
+	@NotNull
+	public static native String pathString(@NotNull JavaPathBracket __path)
+		throws MLECallError;
 }

@@ -19,4 +19,5 @@ squirreljme
 dependencies
 {
 	api project(":modules:cldc-compact")
+	api project(":modules:collections")
 }

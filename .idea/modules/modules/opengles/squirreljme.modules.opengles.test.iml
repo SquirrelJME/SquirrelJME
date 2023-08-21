@@ -15,8 +15,8 @@
     <orderEntry type="module" module-name="squirreljme.modules.opengles.main" />
     <orderEntry type="module" module-name="squirreljme.modules.common-vm.main" />
     <orderEntry type="module" module-name="squirreljme.modules.meep-midlet.main" />
-    <orderEntry type="module" module-name="squirreljme.modules.io.main" />
     <orderEntry type="module" module-name="squirreljme.modules.collections.main" />
+    <orderEntry type="module" module-name="squirreljme.modules.io.main" />
     <orderEntry type="module" module-name="squirreljme.modules.tool-manifest-writer.main" />
     <orderEntry type="module" module-name="squirreljme.modules.gcf.main" />
     <orderEntry type="library" name="Gradle: org.jetbrains:annotations:24.0.1" level="project" />
