@@ -58,6 +58,20 @@ public class JavaFileSystem
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2023/08/23
+	 */
+	@Override
+	public void createDirectory(Path __path, FileAttribute<?>... __attribs)
+		throws IOException, NullPointerException, UnsupportedOperationException
+	{
+		if (__path == null)
+			throw new NullPointerException("NARG");
+		
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2023/08/20
 	 */
 	@Override

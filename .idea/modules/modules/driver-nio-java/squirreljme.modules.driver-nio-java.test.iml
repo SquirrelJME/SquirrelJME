@@ -3,10 +3,7 @@
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_7">
     <output-test url="file://$MODULE_DIR$/../../../../modules/driver-nio-java/build/classes/java/test" />
     <exclude-output />
-    <content url="file://$MODULE_DIR$/../../../../modules/driver-nio-java/src/test">
-      <sourceFolder url="file://$MODULE_DIR$/../../../../modules/driver-nio-java/src/test/java" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/../../../../modules/driver-nio-java/src/test/resources" type="java-test-resource" />
-    </content>
+    <content url="file://$MODULE_DIR$/../../../../modules/driver-nio-java/src/test" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
     <orderEntry type="module" module-name="squirreljme.modules.driver-nio-java.testFixtures" production-on-test="" />

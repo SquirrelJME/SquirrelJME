@@ -12,11 +12,17 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.driver.nio.java.shelf.JavaNioShelf;
 import cc.squirreljme.driver.nio.java.shelf.JavaPathBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.vm.springcoat.brackets.JavaFileAttributesObject;
 import cc.squirreljme.vm.springcoat.brackets.JavaPathObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
+import java.io.IOException;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
+import java.nio.file.LinkOption;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
 
 /**
  * Java native I/O Shelf which provides {@link JavaNioShelf}.
@@ -73,7 +79,26 @@ public enum MLEJavaNioShelf
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			throw Debugging.todo();
+			Path path = MLEJavaNioShelf.__pathObject(__args[0]).path;
+			boolean noFollow = ((Integer)(__args[1])) != 0;
+			
+			try
+			{
+				return new JavaFileAttributesObject(__thread.machine,
+					Files.readAttributes(path, BasicFileAttributes.class,
+						(noFollow ?
+							new LinkOption[]{LinkOption.NOFOLLOW_LINKS} :
+							new LinkOption[0])));
+			}
+			catch (NoSuchFileException ignored)
+			{
+				return SpringNullObject.NULL;
+			}
+			catch (IOException __e)
+			{
+				throw new SpringMLECallError("Could not read attributes",
+					__e);
+			}
 		}
 	},
 	

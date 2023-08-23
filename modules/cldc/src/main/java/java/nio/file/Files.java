@@ -101,13 +101,62 @@ public final class Files
 		return __path;
 	}
 	
+	/**
+	 * Creates a new directory if one does not already exist.
+	 *
+	 * @param __path The path to create the directory at.
+	 * @param __attribs The attributes for the directory.
+	 * @return {@code __path}.
+	 * @throws FileAlreadyExistsException If a non-directory exists at the
+	 * given path, or a symbolic link points to a non-directory.
+	 * @throws IOException If it could not be created or the filesystem could
+	 * not be read.
+	 * @throws NullPointerException On null arguments.
+	 * @throws UnsupportedOperationException If creating directories is not
+	 * supported for the given path.
+	 * @since 2023/08/23
+	 */
 	@Api
-	public static Path createDirectory(Path __a, FileAttribute<?>... __b)
-		throws IOException
+	public static Path createDirectory(Path __path,
+		FileAttribute<?>... __attribs)
+		throws FileAlreadyExistsException, IOException, NullPointerException,
+			UnsupportedOperationException
 	{
-		if (false)
-			throw new IOException();
-		throw Debugging.todo();
+		if (__path == null)
+			throw new NullPointerException("NARG");
+		
+		// Only SquirrelJME filesystem backends are supported
+		AbstractFileSystem fileSystem;
+		try
+		{
+			fileSystem = (AbstractFileSystem)__path.getFileSystem();
+		}
+		catch (ClassCastException __e)
+		{
+			/* {@squirreljme.error ZY07 Only SquirrelJME filesystems are
+			supported.} */
+			throw new UnsupportedOperationException("ZY07", __e);
+		}
+		
+		// If the path already exists, make sure it is an actual directory
+		try
+		{
+			// Get attributes, will be checked if directory or not
+			BasicFileAttributes attrib =
+				fileSystem.readAttributes(__path, BasicFileAttributes.class);
+			
+			// Do nothing if it is already a directory
+			if (attrib.isDirectory())
+				return __path;
+		}
+		catch (NoSuchFileException ignored)
+		{
+			// Does not exist, so we do nothing
+		}
+		
+		// Forward to the filesystem to create it
+		fileSystem.createDirectory(__path, __attribs);
+		return __path;
 	}
 	
 	@Api
@@ -390,8 +439,17 @@ public final class Files
 			throw new NullPointerException("NARG");
 		
 		// Get the SquirrelJME filesystem base
-		AbstractFileSystem fileSystem =
-			(AbstractFileSystem)__path.getFileSystem();
+		AbstractFileSystem fileSystem;
+		try
+		{
+			fileSystem = (AbstractFileSystem)__path.getFileSystem();
+		}
+		catch (ClassCastException __e)
+		{
+			/* {@squirreljme.error ZY08 Only SquirrelJME filesystems are
+			supported.} */
+			throw new UnsupportedOperationException("ZY08", __e);
+		}
 		
 		// Read the attributes from it
 		return fileSystem.readAttributes(__path, __attributeType,

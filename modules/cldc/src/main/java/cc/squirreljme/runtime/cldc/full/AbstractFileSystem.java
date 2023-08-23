@@ -51,6 +51,23 @@ public abstract class AbstractFileSystem
 	protected abstract int compare(Path __a, Path __b);
 	
 	/**
+	 * Creates a directory at the given path with the given attributes. 
+	 *
+	 * @param __path The path to create the directory at.
+	 * @param __attribs The attributes to create the directory with.
+	 * @throws IOException If the directory could not be created.
+	 * @throws NullPointerException On null arguments.
+	 * @throws UnsupportedOperationException If the filesystem does not
+	 * support creating directories at the given path or if the attributes
+	 * are not supported.
+	 * @since 2023/08/23
+	 */
+	public abstract void createDirectory(Path __path,
+		FileAttribute<?>... __attribs)
+		throws IOException, NullPointerException,
+			UnsupportedOperationException;
+	
+	/**
 	 * Returns a path which is associated with the current filesystem.
 	 *
 	 * @param __path The first part of the path.

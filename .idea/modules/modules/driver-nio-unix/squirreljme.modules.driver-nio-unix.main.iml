@@ -5,8 +5,6 @@
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../../../modules/driver-nio-unix/src/main">
       <sourceFolder url="file://$MODULE_DIR$/../../../../modules/driver-nio-unix/src/main/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../../../modules/driver-nio-unix/src/main/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../../../modules/driver-nio-unix/src/main/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/../../../../modules/driver-nio-unix/src/main/resources" type="java-resource" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
