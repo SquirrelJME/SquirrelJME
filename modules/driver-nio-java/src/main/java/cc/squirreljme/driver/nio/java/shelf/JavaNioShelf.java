@@ -64,7 +64,7 @@ public final class JavaNioShelf
 	@SquirrelJMEVendorApi
 	@Nullable
 	public static native JavaFileAttributesBracket fsReadAttributes(
-		@NotNull Path __path, boolean __noFollow)
+		@NotNull JavaPathBracket __path, boolean __noFollow)
 		throws MLECallError;
 	
 	/**

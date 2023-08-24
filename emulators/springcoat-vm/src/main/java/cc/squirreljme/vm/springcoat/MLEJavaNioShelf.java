@@ -68,8 +68,9 @@ public enum MLEJavaNioShelf
 		}
 	},
 	
-	/** {@link JavaNioShelf#fsReadAttributes(Path, boolean)}. */
-	FS_READ_ATTRIBUTES("fsReadAttributes:(Ljava/nio/file/Path;Z)" +
+	/** {@link JavaNioShelf#fsReadAttributes(JavaPathBracket, boolean)}. */
+	FS_READ_ATTRIBUTES("fsReadAttributes:(" +
+		"Lcc/squirreljme/driver/nio/java/shelf/JavaPathBracket;Z)" +
 		"Lcc/squirreljme/driver/nio/java/shelf/JavaFileAttributesBracket;")
 	{
 		/**

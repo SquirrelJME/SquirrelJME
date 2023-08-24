@@ -201,7 +201,8 @@ public class JavaFileSystem
 		try
 		{
 			// Read in attributes
-			attrib = JavaNioShelf.fsReadAttributes(__path, noFollow);
+			attrib = JavaNioShelf.fsReadAttributes(
+				((JavaPath)__path)._path, noFollow);
 			
 			/* {@squirreljme.error ZY08 The specified file does not exist.
 			(The file) */
