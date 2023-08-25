@@ -27,6 +27,7 @@ import cc.squirreljme.c.std.CTypeProvider;
 import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmCompareOp;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmFunctions;
+import cc.squirreljme.jvm.aot.nanocoat.common.JvmInvokeType;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmPrimitiveType;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmShiftOp;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
@@ -589,15 +590,22 @@ public class ByteCodeProcessor
 				break;
 				
 			case InstructionIndex.INVOKESPECIAL:
-				this.__doInvokeSpecial(__block,
+				this.__doInvoke(__block, JvmInvokeType.SPECIAL,
 					__instruction.argument(0, MethodReference.class));
 				break;
 				
 			case InstructionIndex.INVOKEINTERFACE:
+				this.__doInvoke(__block, JvmInvokeType.INTERFACE,
+					__instruction.argument(0, MethodReference.class));
+				break;
+				
 			case InstructionIndex.INVOKESTATIC:
+				this.__doInvoke(__block, JvmInvokeType.STATIC,
+					__instruction.argument(0, MethodReference.class));
+				break;
+				
 			case InstructionIndex.INVOKEVIRTUAL:
-				this.__doInvokeNormal(__block,
-					op == InstructionIndex.INVOKESTATIC,
+				this.__doInvoke(__block, JvmInvokeType.VIRTUAL,
 					__instruction.argument(0, MethodReference.class));
 				break;
 				
@@ -1153,7 +1161,7 @@ public class ByteCodeProcessor
 			throw new NullPointerException("NARG");
 		
 		// Just do a completely normal invocation here!
-		this.__doInvokeNormal(__block, true,
+		this.__doInvoke(__block, JvmInvokeType.STATIC,
 			__type.softCompare(__op));
 	}
 	
@@ -1228,7 +1236,7 @@ public class ByteCodeProcessor
 			throw new NullPointerException("NARG");
 		
 		// Just do a completely normal invocation here!
-		this.__doInvokeNormal(__block, true,
+		this.__doInvoke(__block, JvmInvokeType.STATIC,
 			__from.softConvert(__to));
 	}
 	
@@ -1564,8 +1572,11 @@ public class ByteCodeProcessor
 	 * @param __linkWhat What is being referred to in the link table?
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
+	 * @deprecated Use {@link #__doInvoke(CFunctionBlock, JvmInvokeType,
+	 * MethodReference)}.
 	 * @since 2023/07/04
 	 */
+	@Deprecated
 	private void __doInvokeGeneric(CFunctionBlock __block,
 		Container<? extends Linkage> __linkage,
 		MethodReference __method, JvmFunctions __funcHandler,
@@ -1589,13 +1600,13 @@ public class ByteCodeProcessor
 	 * Invokes a "normal" method.
 	 *
 	 * @param __block The output block.
-	 * @param __static Is this a static invocation?
+	 * @param __type Is this a static invocation?
 	 * @param __method The method being invoked.
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/07/04
 	 */
-	private void __doInvokeNormal(CFunctionBlock __block, boolean __static,
+	private void __doInvoke(CFunctionBlock __block, JvmInvokeType __type,
 		MethodReference __method)
 		throws IOException, NullPointerException
 	{
@@ -1612,36 +1623,6 @@ public class ByteCodeProcessor
 			__method,
 			JvmFunctions.NVM_INVOKE_NORMAL,
 			"invokeNormal");
-			
-		 */
-	}
-	
-	/**
-	 * Invokes a special method.
-	 * 
-	 * @param __block The output block.
-	 * @param __method The method being invoked.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/05/31
-	 */
-	private void __doInvokeSpecial(CFunctionBlock __block,
-		MethodReference __method)
-		throws IOException, NullPointerException
-	{
-		if (__block == null || __method == null)
-			throw new NullPointerException("NARG");
-		
-		if (true)
-			throw Debugging.todo();
-		
-		// Forward call
-		/*
-		this.__doInvokeGeneric(__block,
-			this.linkTable.invokeSpecial(this.method.nameAndType(), __method),
-			__method,
-			JvmFunctions.NVM_INVOKE_SPECIAL,
-			"invokeSpecial");
 			
 		 */
 	}
@@ -1860,7 +1841,7 @@ public class ByteCodeProcessor
 			throw new NullPointerException("NARG");
 		
 		// Just do a completely normal invocation here!
-		this.__doInvokeNormal(__block, true,
+		this.__doInvoke(__block, JvmInvokeType.STATIC,
 			__type.softMath(__mathOp));
 	}
 	
@@ -1940,7 +1921,7 @@ public class ByteCodeProcessor
 			throw new NullPointerException("NARG");
 		
 		// Just do a completely normal invocation here!
-		this.__doInvokeNormal(__block, true,
+		this.__doInvoke(__block, JvmInvokeType.STATIC,
 			__type.softNegative());
 	}
 	
@@ -2057,7 +2038,7 @@ public class ByteCodeProcessor
 		// Just do a completely normal invocation here!
 		MethodDescriptor descriptor = new MethodDescriptor(
 			__type.field().addDimensions(__dimensions), args);
-		this.__doInvokeNormal(__block, true,
+		this.__doInvoke(__block, JvmInvokeType.STATIC,
 			new MethodReference(
 				"cc/squirreljme/runtime/cldc/lang/ArrayUtils",
 				"multiANewArray",
@@ -2280,7 +2261,7 @@ public class ByteCodeProcessor
 			throw new NullPointerException("NARG");
 		
 		// Just do a completely normal invocation here!
-		this.__doInvokeNormal(__block, true,
+		this.__doInvoke(__block, JvmInvokeType.STATIC,
 			__type.softShift(__op));
 	}
 	
