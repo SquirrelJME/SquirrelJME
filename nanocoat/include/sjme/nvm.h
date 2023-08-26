@@ -843,14 +843,9 @@ jboolean sjme_nvm_fieldPut(
 	sjme_attrInNotNull sjme_any* value)
 	sjme_attrCheckReturn;
 
-jboolean sjme_nvm_invokeNormal(
+jboolean sjme_nvm_invoke(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
 	sjme_attrInNotNull sjme_dynamic_linkage_data_invokeNormal* method)
-	sjme_attrCheckReturn;
-
-jboolean sjme_nvm_invokeSpecial(
-	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_attrInNotNull sjme_dynamic_linkage_data_invokeSpecial* method)
 	sjme_attrCheckReturn;
 	
 jint sjme_nvm_localLoadInteger(

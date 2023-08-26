@@ -10,7 +10,6 @@
 package cc.squirreljme.jvm.aot.nanocoat.common;
 
 import cc.squirreljme.c.CFunctionType;
-import cc.squirreljme.c.CPrimitiveType;
 import cc.squirreljme.c.CStructType;
 import cc.squirreljme.c.CVariable;
 import cc.squirreljme.c.std.CFunctionProvider;
@@ -198,7 +197,7 @@ public enum JvmFunctions
 	},
 	
 	/** Invoke normal method. */
-	NVM_INVOKE_NORMAL
+	NVM_INVOKE
 	{
 		/**
 		 * {@inheritDoc}
@@ -211,7 +210,7 @@ public enum JvmFunctions
 				JvmTypes.JBOOLEAN,
 				CVariable.of(JvmTypes.VMFRAME.pointerType(),
 					"frame"),
-				JvmFunctions.__linkage("invokeNormal",
+				JvmFunctions.__linkage("invoke",
 					"method"));
 		}
 	},

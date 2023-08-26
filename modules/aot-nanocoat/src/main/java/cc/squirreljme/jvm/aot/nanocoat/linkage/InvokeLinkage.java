@@ -11,10 +11,8 @@ package cc.squirreljme.jvm.aot.nanocoat.linkage;
 
 import cc.squirreljme.c.CBasicExpression;
 import cc.squirreljme.c.CStructVariableBlock;
-import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.jvm.aot.nanocoat.common.JvmInvokeType;
 import java.io.IOException;
-import net.multiphasicapps.classfile.MethodNameAndType;
 import net.multiphasicapps.classfile.MethodReference;
 
 /**
@@ -22,36 +20,30 @@ import net.multiphasicapps.classfile.MethodReference;
  *
  * @since 2023/07/04
  */
-public final class InvokeNormalLinkage
+public final class InvokeLinkage
 	implements Linkage
 {
-	/** Is this static? */
-	protected final boolean isStatic;
-	
-	/** The source method. */
-	protected final MethodNameAndType source;
+	/** The type of invocation. */
+	protected final JvmInvokeType type;
 	
 	/** The target method. */
 	protected final MethodReference target;
 	
 	/**
-	 * Initializes the normal linkage.
-	 * 
-	 * @param __source The source method name and type.
-	 * @param __static Is this static?
+	 * Initializes the invocation linkage.
+	 *
+	 * @param __type The type of invocation.
 	 * @param __target The target method.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/07/04
 	 */
-	public InvokeNormalLinkage(MethodNameAndType __source, boolean __static,
-		MethodReference __target)
+	public InvokeLinkage(JvmInvokeType __type, MethodReference __target)
 		throws NullPointerException
 	{
-		if (__source == null || __target == null)
+		if (__type == null || __target == null)
 			throw new NullPointerException("NARG");
 		
-		this.source = __source;
-		this.isStatic = __static;
+		this.type = __type;
 		this.target = __target;
 	}
 	
@@ -64,13 +56,12 @@ public final class InvokeNormalLinkage
 	{
 		if (__o == this)
 			return true;
-		if (!(__o instanceof InvokeNormalLinkage))
+		if (!(__o instanceof InvokeLinkage))
 			return false;
 		
-		InvokeNormalLinkage o = (InvokeNormalLinkage)__o;
-		return this.source.equals(o.source) &&
-			this.target.equals(o.target) &&
-			this.isStatic == o.isStatic;
+		InvokeLinkage o = (InvokeLinkage)__o;
+		return this.target.equals(o.target) &&
+			this.type == o.type;
 	}
 	
 	/**
@@ -80,8 +71,7 @@ public final class InvokeNormalLinkage
 	@Override
 	public int hashCode()
 	{
-		return this.source.hashCode() ^ this.target.hashCode() +
-			(this.isStatic ? 1 : 0);
+		return this.type.hashCode() ^ this.target.hashCode();
 	}
 	
 	/**
@@ -95,13 +85,8 @@ public final class InvokeNormalLinkage
 		try (CStructVariableBlock struct =
 			 __output.memberStructSet("invokeNormal"))
 		{
-			struct.memberSet("isStatic",
-				(this.isStatic ? Constants.TRUE : Constants.FALSE));
-			
-			struct.memberSet("sourceMethodName",
-				CBasicExpression.string(this.source.name().toString()));
-			struct.memberSet("sourceMethodType",
-				CBasicExpression.string(this.source.type().toString()));
+			struct.memberSet("type",
+				CBasicExpression.number(this.type.ordinal()));
 			
 			struct.memberSet("targetClass",
 				CBasicExpression.string(this.target.className().toString()));

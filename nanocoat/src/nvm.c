@@ -68,20 +68,13 @@ jboolean sjme_nvm_fieldPut(sjme_nvm_frame* frame,
 	return JNI_FALSE;
 }
 
-jboolean sjme_nvm_invokeNormal(sjme_nvm_frame* frame,
+jboolean sjme_nvm_invoke(sjme_nvm_frame* frame,
 	sjme_dynamic_linkage_data_invokeNormal* method)
 {
 	sjme_todo("Implement");
 	return JNI_FALSE;
 }
 
-jboolean sjme_nvm_invokeSpecial(sjme_nvm_frame* frame,
-	sjme_dynamic_linkage_data_invokeSpecial* method)
-{
-	sjme_todo("Implement");
-	return JNI_FALSE;
-}
-	
 jint sjme_nvm_localLoadInteger(sjme_nvm_frame* frame,
 	jint index)
 {

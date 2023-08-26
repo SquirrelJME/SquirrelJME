@@ -9,7 +9,7 @@
 
 package cc.squirreljme.jvm.aot.nanocoat.linkage;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.jvm.aot.nanocoat.common.JvmInvokeType;
 import cc.squirreljme.runtime.cldc.util.UnmodifiableIterator;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -20,7 +20,6 @@ import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.FieldReference;
 import net.multiphasicapps.classfile.MethodNameAndType;
 import net.multiphasicapps.classfile.MethodReference;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents the class linkage table.
@@ -105,46 +104,24 @@ public class ClassLinkTable
 	}
 	
 	/**
-	 * Potentially creates or returns a pre-existing normal method invocation.
-	 * 
-	 * @param __source The source method.
-	 * @param __static Is this a static invocation?
+	 * Potentially creates or returns a pre-existing method invocation.
+	 *
+	 * @param __type The type of invocation.
 	 * @param __target The target method.
 	 * @return The normal linkage.
 	 * @throws IllegalArgumentException If the invocation is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/07/04
 	 */
-	public Container<InvokeNormalLinkage> invokeNormal(
-		MethodNameAndType __source, boolean __static, MethodReference __target)
+	public Container<InvokeLinkage> invoke(
+		JvmInvokeType __type, MethodReference __target)
 		throws IllegalArgumentException, NullPointerException
 	{
-		if (__source == null || __target == null)
+		if (__type == null || __target == null)
 			throw new NullPointerException("NARG");
 		
-		return this.put(InvokeNormalLinkage.class,
-			new InvokeNormalLinkage(__source, __static, __target));
-	}
-	
-	/**
-	 * Obtains a linkage for special invocations.
-	 * 
-	 * @param __source The source method performing the call.
-	 * @param __target The target method.
-	 * @return The special linkage.
-	 * @throws IllegalArgumentException If the target is an interface.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/06/30
-	 */
-	public Container<InvokeSpecialLinkage> invokeSpecial(
-		MethodNameAndType __source, MethodReference __target)
-		throws IllegalArgumentException, NullPointerException
-	{
-		if (__source == null || __target == null)
-			throw new NullPointerException("NARG");
-		
-		return this.put(InvokeSpecialLinkage.class,
-			new InvokeSpecialLinkage(__source, __target));
+		return this.put(InvokeLinkage.class,
+			new InvokeLinkage(__type, __target));
 	}
 	
 	/**

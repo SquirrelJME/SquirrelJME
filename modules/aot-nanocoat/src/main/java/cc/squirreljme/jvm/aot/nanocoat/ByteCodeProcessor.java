@@ -1587,13 +1587,6 @@ public class ByteCodeProcessor
 			__funcHandler == null || __linkWhat == null)
 			throw new NullPointerException("NARG");
 		
-		__CodeVariables__ codeVars = this.__codeVars();
-		
-		// Just perform the function handler call, it will accordingly
-		// put things on the stack and otherwise
-		__block.functionCall(__funcHandler,
-			codeVars.currentFrame(),
-			codeVars.linkageReference(__linkage, __linkWhat));
 	}
 	
 	/**
@@ -1610,21 +1603,17 @@ public class ByteCodeProcessor
 		MethodReference __method)
 		throws IOException, NullPointerException
 	{
-		if (__block == null || __method == null)
+		if (__block == null || __type == null || __method == null)
 			throw new NullPointerException("NARG");
 		
-		if (true)
-			throw Debugging.todo();
-		/*
-		// Forward call
-		this.__doInvokeGeneric(__block,
-			this.linkTable.invokeNormal(this.method.nameAndType(),
-				__static, __method),
-			__method,
-			JvmFunctions.NVM_INVOKE_NORMAL,
-			"invokeNormal");
-			
-		 */
+		__CodeVariables__ codeVars = this.__codeVars();
+		
+		// Just perform the function handler call, it will accordingly
+		// put things on the stack and otherwise
+		__block.functionCall(JvmFunctions.NVM_INVOKE,
+			codeVars.currentFrame(),
+			codeVars.linkageReference(
+				this.linkTable.invoke(__type, __method), "invoke"));
 	}
 	
 	/**

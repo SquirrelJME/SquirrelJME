@@ -862,9 +862,7 @@ public enum JvmTypes
 				.member(JvmTypes.STATIC_LINKAGE_DATA_FIELD_ACCESS,
 					"fieldAccess")
 				.member(JvmTypes.STATIC_LINKAGE_DATA_INVOKE,
-					"invokeSpecial")
-				.member(JvmTypes.STATIC_LINKAGE_DATA_INVOKE,
-					"invokeNormal")
+					"invoke")
 				.member(JvmTypes.STATIC_LINKAGE_DATA_STRING_OBJECT,
 					"stringObject")
 				.build();
