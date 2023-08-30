@@ -9,6 +9,7 @@
 
 package cc.squirreljme.c;
 
+import cc.squirreljme.c.std.CFunctionProvider;
 import cc.squirreljme.c.std.CTypeProvider;
 import cc.squirreljme.runtime.cldc.util.BooleanArrayList;
 import cc.squirreljme.runtime.cldc.util.ByteArrayList;
@@ -346,6 +347,27 @@ public abstract class CExpressionBuilder
 		this.__add(__expression.tokens());
 		
 		return this.__this();
+	}
+	
+	/**
+	 * Performs a function call in the expression.
+	 * 
+	 * @param __function The function to call.
+	 * @param __args The function arguments.
+	 * @return {@code this}.
+	 * @throws IllegalArgumentException If the number of arguments to
+	 * the function call is not correct.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/29
+	 */
+	public B functionCall(CFunctionProvider __function,
+		CExpression... __args)
+		throws IOException, IllegalArgumentException, NullPointerException
+	{
+		if (__function == null)
+			throw new NullPointerException("NARG");
+		
+		return this.functionCall(__function.function(), __args);
 	}
 	
 	/**

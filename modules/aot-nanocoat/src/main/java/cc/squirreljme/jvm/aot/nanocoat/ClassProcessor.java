@@ -11,8 +11,6 @@ package cc.squirreljme.jvm.aot.nanocoat;
 
 import cc.squirreljme.c.CArrayBlock;
 import cc.squirreljme.c.CBasicExpression;
-import cc.squirreljme.c.CExpressionBuilder;
-import cc.squirreljme.c.CFile;
 import cc.squirreljme.c.CIdentifier;
 import cc.squirreljme.c.CSourceWriter;
 import cc.squirreljme.c.CStructType;
@@ -20,8 +18,9 @@ import cc.squirreljme.c.CStructVariableBlock;
 import cc.squirreljme.c.CVariable;
 import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
-import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassLinkTable;
+import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassLinkBuilder;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.Linkage;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -58,15 +57,8 @@ public class ClassProcessor
 	/** Interfaces for the class. */
 	protected final CVariable classInterfaces;
 	
-	/** Class linkages. */
-	protected final CVariable classLinkages;
-	
 	/** Class information table for the class. */
 	protected final CVariable classInfo;
-	
-	/** The link table for the class. */
-	protected final ClassLinkTable linkTable =
-		new ClassLinkTable();
 	
 	/** Field processing. */
 	private final Map<FieldNameAndType, FieldProcessor> _fields =
@@ -110,9 +102,6 @@ public class ClassProcessor
 		this.classMethods = CVariable.of(
 			JvmTypes.STATIC_CLASS_METHODS.type(CStructType.class).constType(),
 			CIdentifier.of(this.classIdentifier + "__methods"));
-		this.classLinkages = CVariable.of(
-			JvmTypes.STATIC_LINKAGES.type(CStructType.class).constType(),
-			CIdentifier.of(this.classIdentifier + "__linkages"));
 		
 		// Create processors for each field
 		Map<FieldNameAndType, FieldProcessor> fields = this._fields;
@@ -232,40 +221,8 @@ public class ClassProcessor
 			}
 		
 		// Write linkages
-		if (this.linkTable.size() > 0)
-			try (CStructVariableBlock struct = __out.define(
-				CStructVariableBlock.class, this.classLinkages))
-			{
-				// Linkage count
-				struct.memberSet("count",
-					CBasicExpression.number(Constants.JINT_C,
-						this.linkTable.size()));
-				
-				// Then the actual linkages themselves
-				try (CArrayBlock array =
-					 struct.memberArraySet("linkages"))
-				{
-					for (Linkage linkage : this.linkTable)
-						try (CStructVariableBlock linkStruct = array.struct())
-						{
-							// Set type
-							linkStruct.memberSet("type",
-								CBasicExpression.number(0));
-							
-							// Ignore null
-							if (linkage == null)
-								continue;
-							
-							// Write individual linkage data
-							try (CStructVariableBlock dataStruct =
-								 linkStruct.memberStructSet(
-									 "data"))
-							{
-								linkage.write(dataStruct);
-							}
-						}
-				}
-			}
+		if (true)
+			throw Debugging.todo();
 		
 		// Open class details
 		try (CStructVariableBlock struct = __out.define(
@@ -310,11 +267,15 @@ public class ClassProcessor
 					CBasicExpression.reference(this.classMethods));
 			
 			// Linkages
+			if (true)
+				throw Debugging.todo();
+			/*
 			if (this.linkTable.size() <= 0)
 				struct.memberSet("linkages", CVariable.NULL);
 			else
 				struct.memberSet("linkages",
 					CBasicExpression.reference(this.classLinkages));
+			 */
 		}
 	}
 }

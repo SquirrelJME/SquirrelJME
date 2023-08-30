@@ -14,14 +14,11 @@ import cc.squirreljme.c.CExpression;
 import cc.squirreljme.c.CExpressionBuilder;
 import cc.squirreljme.c.CFunctionBlock;
 import cc.squirreljme.c.CStructType;
-import cc.squirreljme.c.CType;
-import cc.squirreljme.c.CTypeDefType;
 import cc.squirreljme.c.CVariable;
-import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
+import cc.squirreljme.jvm.aot.nanocoat.common.JvmFunctions;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.Container;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.Linkage;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -137,17 +134,10 @@ public final class __CodeVariables__
 			throw new NullPointerException("NARG");
 		
 		return CExpressionBuilder.builder()
-			.reference(CExpressionBuilder.builder()
-				.identifier(this.linkage())
-				.arrayAccess(__linkage.index())
-				.structAccess()
-				.identifier(JvmTypes.DYNAMIC_LINKAGE
-					.type(CStructType.class).member("data"))
-				.structAccess()
-				.identifier(JvmTypes.DYNAMIC_LINKAGE
-					.type(CStructType.class).member("data")
-					.type(CStructType.class).member(__what))
-			.build()).build();
+			.functionCall(JvmFunctions.NVM_LOOKUP_REFERENCE,
+				this.currentFrame(),
+				CBasicExpression.number(__linkage.index()))
+			.build();
 	}
 	
 	/**

@@ -524,6 +524,8 @@ public enum JvmTypes
 					.pointerType(), "limits")
 				.member(JvmTypes.JSHORT,
 					"thrownVarIndex")
+				.member(JvmTypes.STATIC_LINKAGE.type().constType()
+					.pointerType(), "linkage")
 				.member(JvmFunctions.METHOD_CODE.function(), "code")
 				.build();
 		}

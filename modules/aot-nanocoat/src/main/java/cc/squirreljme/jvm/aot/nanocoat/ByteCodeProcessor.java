@@ -31,7 +31,7 @@ import cc.squirreljme.jvm.aot.nanocoat.common.JvmInvokeType;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmPrimitiveType;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmShiftOp;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
-import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassLinkTable;
+import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassLinkBuilder;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.Container;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.Linkage;
 import cc.squirreljme.jvm.aot.nanocoat.table.StaticTableManager;
@@ -71,9 +71,8 @@ public class ByteCodeProcessor
 	protected final ByteCode code;
 	
 	/** The link table for the class. */
-	@Deprecated
-	protected final ClassLinkTable linkTable =
-		null;
+	protected final ClassLinkBuilder linkTable =
+		new ClassLinkBuilder();
 	
 	/** The stack map table at runtime. */
 	protected final StackMapTablePairs stackMap;

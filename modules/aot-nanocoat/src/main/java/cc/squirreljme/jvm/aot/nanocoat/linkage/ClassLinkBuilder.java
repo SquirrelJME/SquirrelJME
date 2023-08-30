@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.aot.nanocoat.linkage;
 
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmInvokeType;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.UnmodifiableIterator;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -26,7 +27,7 @@ import net.multiphasicapps.classfile.MethodReference;
  * 
  * @since 2023/06/03
  */
-public class ClassLinkTable
+public class ClassLinkBuilder
 	implements Iterable<Linkage>
 {
 	/** Linkage table map. */
@@ -34,7 +35,7 @@ public class ClassLinkTable
 		new LinkedHashMap<>();
 	
 	/** Linkage values. */
-	private List<Linkage> _table =
+	private final List<Linkage> _table =
 		new ArrayList<>();
 	
 	/**
@@ -42,10 +43,21 @@ public class ClassLinkTable
 	 * 
 	 * @since 2023/06/03
 	 */
-	public ClassLinkTable()
+	public ClassLinkBuilder()
 	{
 		// Zero is an invalid entry
 		this._table.add(null);
+	}
+	
+	/**
+	 * Builds the class link.
+	 *
+	 * @return The resultant class link.
+	 * @since 2023/08/29
+	 */
+	public ClassLink build()
+	{
+		throw Debugging.todo();
 	}
 	
 	/**

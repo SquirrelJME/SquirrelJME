@@ -16,6 +16,7 @@ import cc.squirreljme.jvm.aot.nanocoat.ClassInterfaces;
 import cc.squirreljme.jvm.aot.nanocoat.CodeFingerprint;
 import cc.squirreljme.jvm.aot.nanocoat.VariableLimits;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
+import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassLink;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassObjectLinkage;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.FieldAccessLinkage;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -51,6 +52,12 @@ public enum StaticTableType
 		ClassInterfaces.class,
 		ClassInterfaces.class,
 		JvmTypes.STATIC_CLASS_INTERFACES),
+	
+	/** Class linkage tables. */
+	CLASS_LINK("clln",
+		ClassLink.class,
+		ClassLink.class,
+		JvmTypes.STATIC_LINKAGES),
 	
 	/** Class object linkages. */
 	LINKAGE_CLASS("lncl",

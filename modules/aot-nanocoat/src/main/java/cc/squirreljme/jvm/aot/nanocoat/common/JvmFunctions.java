@@ -13,6 +13,7 @@ import cc.squirreljme.c.CFunctionType;
 import cc.squirreljme.c.CStructType;
 import cc.squirreljme.c.CVariable;
 import cc.squirreljme.c.std.CFunctionProvider;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
@@ -468,6 +469,24 @@ public enum JvmFunctions
 					"frame"),
 				JvmFunctions.__linkage("classObject",
 					"classObjectLinkage"));
+		}
+	},
+	
+	/** Lookup a reference. */
+	NVM_LOOKUP_REFERENCE
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/08/29
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("sjme_nvm_lookupReference",
+				JvmTypes.DYNAMIC_LINKAGE.type().pointerType(),
+				CVariable.of(JvmTypes.VMFRAME.pointerType(),
+					"frame"),
+				CVariable.of(JvmTypes.JINT, "index"));
 		}
 	},
 	
