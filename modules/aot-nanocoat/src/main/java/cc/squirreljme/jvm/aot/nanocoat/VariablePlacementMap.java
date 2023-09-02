@@ -77,7 +77,8 @@ public class VariablePlacementMap
 		int numArgs = __type.argumentCount();
 		for (int i = 0; i < numArgs; i++)
 			VariablePlacementMap.__seed(placements, typeCounts,
-				JvmPrimitiveType.of(__type.argument(i)), usedLocals++);
+				JvmPrimitiveType.of(__type.argument(i)).javaType(),
+				usedLocals++);
 		
 		// The first reference after any argument is always the thrown
 		// variable, even if the method throws nothing and has a zero-size
@@ -105,7 +106,7 @@ public class VariablePlacementMap
 					
 					// Load it in
 					VariablePlacementMap.__seed(placements, typeCounts,
-						JvmPrimitiveType.of(entry.type()), i);
+						JvmPrimitiveType.of(entry.type()).javaType(), i);
 				}
 			}
 		

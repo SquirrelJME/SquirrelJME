@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.aot.nanocoat;
 
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmPrimitiveType;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.lang.ArrayUtils;
 import cc.squirreljme.runtime.cldc.util.ByteArrayList;
 import cc.squirreljme.runtime.cldc.util.IntegerIntegerArray;
@@ -20,6 +21,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import net.multiphasicapps.classfile.ByteCode;
@@ -41,6 +43,7 @@ import net.multiphasicapps.io.CRC32Calculator;
  * @since 2023/08/09
  */
 public final class CodeFingerprint
+	implements Comparable<CodeFingerprint>
 {
 	/** We only care about the given set of tags, the rest are irrelevant. */
 	private static final int _POOL_TAG_BITS =
@@ -329,6 +332,34 @@ public final class CodeFingerprint
 		{
 			throw new IllegalStateException(__e);
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/09/02
+	 */
+	@Override
+	public int compareTo(CodeFingerprint __b)
+	{
+		int[] a = this._fingerprint;
+		int[] b = __b._fingerprint;
+		
+		// Compare lengths first
+		int len = a.length;
+		int result = len - b.length;
+		if (result != 0)
+			return result;
+		
+		// The individual elements
+		for (int i = 0; i < len; i++)
+		{
+			result = a[i] - b[i];
+			if (result != 0)
+				return result;
+		}
+		
+		// Is equal
+		return 0;
 	}
 	
 	/**

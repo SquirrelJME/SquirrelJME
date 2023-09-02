@@ -12,7 +12,6 @@ package cc.squirreljme.jvm.aot.nanocoat.linkage;
 import cc.squirreljme.c.CBasicExpression;
 import cc.squirreljme.c.CStructVariableBlock;
 import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import net.multiphasicapps.classfile.FieldReference;
 import net.multiphasicapps.classfile.MethodNameAndType;
@@ -28,9 +27,6 @@ public final class FieldAccessLinkage
 	/** Is this static? */
 	protected final boolean isStatic;
 	
-	/** The source method. */
-	protected final MethodNameAndType source;
-	
 	/** The target method. */
 	protected final FieldReference target;
 	
@@ -39,22 +35,20 @@ public final class FieldAccessLinkage
 	
 	/**
 	 * Initializes the linkage.
-	 * 
-	 * @param __source The source method.
+	 *
 	 * @param __static Is the access static?
 	 * @param __target The target field being access.
 	 * @param __store Is the access writing the value?
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/07/16
 	 */
-	public FieldAccessLinkage(MethodNameAndType __source, boolean __static,
+	public FieldAccessLinkage(boolean __static,
 		FieldReference __target, boolean __store)
 		throws NullPointerException
 	{
-		if (__source == null || __target == null)
+		if (__target == null)
 			throw new NullPointerException("NARG");
 		
-		this.source = __source;
 		this.isStatic = __static;
 		this.target = __target;
 		this.isStore = __store;
@@ -75,7 +69,6 @@ public final class FieldAccessLinkage
 		FieldAccessLinkage o = (FieldAccessLinkage)__o;
 		return this.isStatic == o.isStatic &&
 			this.isStore == o.isStore &&
-			this.source.equals(o.source) &&
 			this.target.equals(o.target);
 	}
 	
@@ -86,8 +79,7 @@ public final class FieldAccessLinkage
 	@Override
 	public int hashCode()
 	{
-		return this.source.hashCode() ^
-			this.target.hashCode() +
+		return this.target.hashCode() +
 			(this.isStatic ? 1 : 0) +
 			(this.isStore ? 2 : 0);
 	}
@@ -107,11 +99,6 @@ public final class FieldAccessLinkage
 				(this.isStatic ? Constants.TRUE : Constants.FALSE));
 			struct.memberSet("isStore",
 				(this.isStore ? Constants.TRUE : Constants.FALSE));
-			
-			struct.memberSet("sourceMethodName",
-				CBasicExpression.string(this.source.name().toString()));
-			struct.memberSet("sourceMethodType",
-				CBasicExpression.string(this.source.type().toString()));
 			
 			struct.memberSet("targetClass",
 				CBasicExpression.string(this.target.className().toString()));

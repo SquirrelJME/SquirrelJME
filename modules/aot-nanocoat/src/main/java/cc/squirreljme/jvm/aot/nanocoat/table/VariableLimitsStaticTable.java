@@ -9,10 +9,16 @@
 
 package cc.squirreljme.jvm.aot.nanocoat.table;
 
+import cc.squirreljme.c.CArrayBlock;
+import cc.squirreljme.c.CBasicExpression;
 import cc.squirreljme.c.CFile;
+import cc.squirreljme.c.CStructType;
+import cc.squirreljme.c.CStructVariableBlock;
 import cc.squirreljme.c.CVariable;
 import cc.squirreljme.jvm.aot.nanocoat.ClassInterfaces;
 import cc.squirreljme.jvm.aot.nanocoat.VariableLimits;
+import cc.squirreljme.jvm.aot.nanocoat.common.JvmPrimitiveType;
+import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.lang.ref.Reference;
@@ -47,7 +53,17 @@ public class VariableLimitsStaticTable
 		if (__key == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		// Just build the type counts in
+		StringBuilder sb = new StringBuilder();
+		for (JvmPrimitiveType type : JvmPrimitiveType.JAVA_TYPES)
+		{
+			if (sb.length() > 0)
+				sb.append("_");
+			sb.append(type.name().charAt(0));
+			sb.append(__key.count(type));
+		}
+		
+		return sb.toString();
 	}
 	
 	/**
@@ -63,7 +79,16 @@ public class VariableLimitsStaticTable
 			__key == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		try (CStructVariableBlock struct = __sourceFile.define(
+			CStructVariableBlock.class, __variable))
+		{
+			try (CArrayBlock array = struct.memberArraySet(
+				"maxVariables"))
+			{
+				for (JvmPrimitiveType type : JvmPrimitiveType.JAVA_TYPES)
+					array.value(CBasicExpression.number(__value.count(type)));
+			}
+		}
 	}
 }
 

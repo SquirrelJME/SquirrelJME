@@ -1245,7 +1245,7 @@ public class ByteCodeProcessor
 	 * @param __block The block to write to.
 	 * @param __static Is this a static access?
 	 * @param __field The field to get from.
-	 * @param __store Is this a write to the field?
+	 * @param __store Is the field being written to?
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/07/16
@@ -1281,9 +1281,6 @@ public class ByteCodeProcessor
 		// Call put handler
 		if (__store)
 		{
-			if (true)
-				throw Debugging.todo();
-			/*
 			// Call put handler
 			__block.functionCall(JvmFunctions.NVM_FIELD_PUT,
 				codeVars.currentFrame(),
@@ -1291,19 +1288,13 @@ public class ByteCodeProcessor
 					instance.accessTemp(JvmTypes.JOBJECT) :
 					CVariable.NULL),
 				codeVars.linkageReference(this.linkTable.fieldAccess(
-					this.method.nameAndType(), __static, __field,
-					true), "fieldAccess"),
+					__static, __field, true), "fieldAccess"),
 				value.referenceTemp(JvmTypes.ANY));
-				
-			 */
 		}
 		
 		// Call get handler
 		else
 		{
-			if (true)
-				throw Debugging.todo();
-			/*
 			__block.variableSetViaFunction(value.tempIndex(),
 				JvmFunctions.NVM_FIELD_GET_TO_TEMP,
 				codeVars.currentFrame(),
@@ -1311,9 +1302,8 @@ public class ByteCodeProcessor
 					instance.accessTemp(JvmTypes.JOBJECT) :
 					CVariable.NULL),
 				codeVars.linkageReference(
-					this.linkTable.fieldAccess(this.method.nameAndType(),
-						__static, __field,
-						false), "fieldAccess"));*/
+					this.linkTable.fieldAccess(__static, __field,
+						false), "fieldAccess"));
 			
 			// Push value
 			__block.functionCall(JvmFunctions.NVM_STACK_PUSH_ANY_FROM_TEMP,

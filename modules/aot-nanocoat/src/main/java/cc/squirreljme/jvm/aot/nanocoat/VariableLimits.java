@@ -10,8 +10,10 @@
 package cc.squirreljme.jvm.aot.nanocoat;
 
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmPrimitiveType;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.IntegerIntegerArray;
 import java.util.Arrays;
+import java.util.Comparator;
 
 /**
  * Contains basic information on the limit of variables.
@@ -19,6 +21,7 @@ import java.util.Arrays;
  * @since 2023/08/09
  */
 public class VariableLimits
+	implements Comparable<VariableLimits>
 {
 	/** The type counts used. */
 	private final int[] _typeCounts;
@@ -51,6 +54,57 @@ public class VariableLimits
 		// Store
 		this._typeCounts = __typeCounts;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/09/02
+	 */
+	@Override
+	public int compareTo(VariableLimits __b)
+	{
+		int[] a = this._typeCounts;
+		int[] b = __b._typeCounts;
+		
+		// Compare lengths first
+		int len = a.length;
+		int result = len - b.length;
+		if (result != 0)
+			return result;
+		
+		// Then individual values
+		for (int i = 0; i < len; i++)
+		{
+			result = a[i] - b[i];
+			if (result != 0)
+				return result;
+		}
+		
+		// Is the same
+		return 0;
+	}
+	
+	/**
+	 * Returns the count for the given Java type.
+	 *
+	 * @param __type The Java type to use.
+	 * @return The count of the variables.
+	 * @throws IllegalArgumentException If the type is not a valid Java type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/09/02
+	 */
+	public int count(JvmPrimitiveType __type)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__type == null)
+			throw new NullPointerException("NARG");
+		
+		/* {@squirreljme.error NC08 Invalid Java type.} */
+		if (__type.ordinal() >= JvmPrimitiveType.NUM_JAVA_TYPES)
+			throw new IllegalArgumentException("NC08");
+		
+		return this._typeCounts[__type.ordinal()];
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2023/08/13
