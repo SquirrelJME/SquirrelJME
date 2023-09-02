@@ -6,7 +6,7 @@
     <content url="file://$MODULE_DIR$/../../buildSrc/src/test" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="Stephanie Gawroriski.squirreljme.buildSrc.main" />
+    <orderEntry type="module" module-name="stephanie.squirreljme.buildSrc.main" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
@@ -198,14 +198,14 @@
     </orderEntry>
     <orderEntry type="library" name="Gradle: ca.mcgill.sable:jasmin:3.0.3" level="project" />
     <orderEntry type="library" name="Gradle: com.guardsquare:proguard-base:7.3.2" level="project" />
-    <orderEntry type="library" name="Gradle: com.guardsquare:proguard-core:9.0.10" level="project" />
+    <orderEntry type="library" name="Gradle: com.guardsquare:proguard-core:9.1.0" level="project" />
     <orderEntry type="library" name="Gradle: org.projectlombok:lombok:1.18.28" level="project" />
     <orderEntry type="library" name="Gradle: org.iban4j:iban4j:3.2.6-RELEASE" level="project" />
     <orderEntry type="library" name="Gradle: ca.mcgill.sable:java_cup:0.9.2" level="project" />
     <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.20" level="project" />
     <orderEntry type="library" name="Gradle: org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.6.0" level="project" />
-    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.8.0" level="project" />
-    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-common:1.8.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.8.20" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-common:1.8.20" level="project" />
     <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.7.20" level="project" />
     <orderEntry type="library" name="Gradle: org.jetbrains:annotations:13.0" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: com.google.code.gson:gson:2.9.0" level="project" />
