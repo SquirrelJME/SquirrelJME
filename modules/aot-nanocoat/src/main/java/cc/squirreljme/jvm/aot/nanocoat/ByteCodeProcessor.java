@@ -1562,33 +1562,6 @@ public class ByteCodeProcessor
 	}
 	
 	/**
-	 * Invokes a method in generic terms.
-	 *
-	 * @param __block The output block.
-	 * @param __linkage The method linkage.
-	 * @param __method The method being invoked.
-	 * @param __funcHandler The function handler.
-	 * @param __linkWhat What is being referred to in the link table?
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @deprecated Use {@link #__doInvoke(CFunctionBlock, JvmInvokeType,
-	 * MethodReference)}.
-	 * @since 2023/07/04
-	 */
-	@Deprecated
-	private void __doInvokeGeneric(CFunctionBlock __block,
-		Container<? extends Linkage> __linkage,
-		MethodReference __method, JvmFunctions __funcHandler,
-		String __linkWhat)
-		throws IOException, NullPointerException
-	{
-		if (__block == null || __linkage == null || __method == null ||
-			__funcHandler == null || __linkWhat == null)
-			throw new NullPointerException("NARG");
-		
-	}
-	
-	/**
 	 * Invokes a "normal" method.
 	 *
 	 * @param __block The output block.
