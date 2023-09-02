@@ -84,7 +84,7 @@ public class NanoCoatBackend
 		
 		// Process source code in single file
 		try (CFile sourceOut = glob.archive.nextCFile(
-			glob.inDirectory(baseName)))
+			glob.inModuleDirectory(baseName)))
 		{
 			// Do the actual include of ourselves
 			sourceOut.preprocessorInclude(Constants.SJME_NVM_HEADER);
@@ -127,7 +127,7 @@ public class NanoCoatBackend
 		// Process source code in single file
 		String rcFileName = Utils.basicFileName(rcIdentifier + ".c");
 		try (CFile sourceOut = glob.archive.nextCFile(
-			glob.inDirectory(rcFileName)))
+			glob.inModuleDirectory(rcFileName)))
 		{
 			// Do the actual include of ourselves
 			sourceOut.preprocessorInclude(Constants.SJME_NVM_HEADER);

@@ -74,7 +74,6 @@ public class NanoCoatLinkGlob
 		new SortedTreeMap<>(new QuickSearchComparator());
 	
 	/** Identifiers to classes. */
-	@Deprecated
 	protected final Map<String, CIdentifier> classIdentifiers =
 		new SortedTreeMap<>(new QuickSearchComparator());
 	
@@ -157,10 +156,12 @@ public class NanoCoatLinkGlob
 		try
 		{
 			// Setup header writing
-			this.headerOut = archive.nextCFile(this.headerFileName);
+			this.headerOut = archive.nextCFile(
+				this.inModuleDirectory(this.headerFileName));
 			
 			// Setup source root writing
-			this.rootSourceOut = archive.nextCFile(this.rootSourceFileName);
+			this.rootSourceOut = archive.nextCFile(
+				this.inModuleDirectory(this.rootSourceFileName));
 		}
 		catch (IOException __e)
 		{
@@ -278,7 +279,7 @@ public class NanoCoatLinkGlob
 		
 		// Output the CMake build file accordingly
 		try (PrintStream cmake = archive.nextPrintStream(
-			this.inDirectory("CMakeLists.txt")))
+			this.inModuleDirectory("CMakeLists.txt")))
 		{
 			// Start with header
 			Utils.headerCMake(cmake);
@@ -358,13 +359,13 @@ public class NanoCoatLinkGlob
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/07/17
 	 */
-	public String inDirectory(CFileName __file)
+	public String inModuleDirectory(CFileName __file)
 		throws NullPointerException
 	{
 		if (__file == null)
 			throw new NullPointerException("NARG");
 		
-		return this.inDirectory(__file.toString());
+		return this.inModuleDirectory(__file.toString());
 	}
 	
 	/**
@@ -375,13 +376,13 @@ public class NanoCoatLinkGlob
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/07/17
 	 */
-	public String inDirectory(String __file)
+	public String inModuleDirectory(String __file)
 		throws NullPointerException
 	{
 		if (__file == null)
 			throw new NullPointerException("NARG");
 		
-		return String.format("%s/%s", this.baseName, __file);
+		return String.format("modules/%s/%s", this.baseName, __file);
 	}
 	
 	/**
