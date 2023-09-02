@@ -220,10 +220,6 @@ public class ClassProcessor
 				}
 			}
 		
-		// Write linkages
-		if (true)
-			throw Debugging.todo();
-		
 		// Open class details
 		try (CStructVariableBlock struct = __out.define(
 			CStructVariableBlock.class, this.classInfo))
@@ -265,17 +261,6 @@ public class ClassProcessor
 			else
 				struct.memberSet("methods",
 					CBasicExpression.reference(this.classMethods));
-			
-			// Linkages
-			if (true)
-				throw Debugging.todo();
-			/*
-			if (this.linkTable.size() <= 0)
-				struct.memberSet("linkages", CVariable.NULL);
-			else
-				struct.memberSet("linkages",
-					CBasicExpression.reference(this.classLinkages));
-			 */
 		}
 	}
 }
