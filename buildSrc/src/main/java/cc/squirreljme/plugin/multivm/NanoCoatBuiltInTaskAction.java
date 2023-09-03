@@ -57,14 +57,15 @@ public class NanoCoatBuiltInTaskAction
 	@Override
 	public void execute(Task __task)
 	{
+		NanoCoatBuiltInTask task = (NanoCoatBuiltInTask)__task;
+		
 		// Where is the ROM going?
 		Path input = __task.getInputs().getFiles().getSingleFile().toPath();
 		Path output = __task.getOutputs().getFiles().getSingleFile().toPath();
 		
 		// Shared file output
-		Path moduleOutput = output.getParent().resolve("specific")
-			.resolve(output.getFileName());
-		Path sharedOutput = output.getParent();
+		Path moduleOutput = task.specificPath().get();
+		Path sharedOutput = task.sharedPath().get();
 		
 		// This could fail to write
 		Path sourceTemp = null;

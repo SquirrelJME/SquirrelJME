@@ -752,33 +752,17 @@ public final class TaskInitialization
 						throw new Error(nativePort.toString());
 				}
 				
-				// Setup clean task from the output of the ROM task
-				Delete cleanTask = tasks.create(
-					"clean" + TaskInitialization.uppercaseFirst(taskName),
-					Delete.class);
-				cleanTask.setGroup("squirreljmegeneral");
-				cleanTask.setDescription("Cleans the ROM output from " +
-					taskName + ".");
-				cleanTask.delete(__project.provider(() -> 
-					nativeTask.getOutputs().getFiles().getSingleFile()));
-				
-				// The clean task is up-to-date if the files were already
-				// deleted or do not exist
-				cleanTask.getOutputs().upToDateWhen((__task) -> 
-					!nativeTask.getOutputs().getFiles().getSingleFile()
-						.exists());
-				
-				// Must run after clean
-				nativeTask.mustRunAfter(cleanTask);
+				// Setup cleaning task
+				Task cleanTask = nativePort.cleanTask(nativeTask,
+					__classifier);
 				
 				// Clean should call these accordingly
 				__project.afterEvaluate((__p) ->
-					cleanTask.getProject().getTasks().getByName("clean")
-						.dependsOn(cleanTask));
+					cleanTask.getProject().getRootProject().getTasks()
+						.getByName("clean").dependsOn(cleanTask));
 				
-				// Special case for NanoCoat, always clean the inputs
-				if (nativePort == NativePortSupport.NANOCOAT)
-					nativeTask.dependsOn(cleanTask);
+				// Clean, if it occurs, must happen before
+				nativeTask.mustRunAfter(cleanTask);
 			}
 		}
 	}

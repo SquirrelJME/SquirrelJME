@@ -124,5 +124,5 @@ allprojects {
 
 // Generic root clean task, does nothing by default and just depends on
 // others
-task clean {
+tasks.register('clean') {
 }

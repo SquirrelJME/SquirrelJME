@@ -20,8 +20,10 @@ import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import cc.squirreljme.runtime.cldc.util.SortedTreeSet;
 import java.io.IOException;
 import java.lang.ref.Reference;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import net.multiphasicapps.collections.UnmodifiableSet;
 
 /**
  * This represents a static table which will output in a format similar to TSV
@@ -99,6 +101,17 @@ public abstract class StaticTable<K, V>
 	protected abstract void writeSource(CFile __sourceFile,
 		String __fileName, CVariable __variable, K __key, V __value)
 		throws IOException, NullPointerException;
+	
+	/**
+	 * Returns the identifiers in the static table.
+	 *
+	 * @return The static table identifiers.
+	 * @since 2023/09/03
+	 */
+	public final Set<CIdentifier> identifiers()
+	{
+		return UnmodifiableSet.of(this.identifiers.keySet());
+	}
 	
 	/**
 	 * Returns the identifier to use for the entry.

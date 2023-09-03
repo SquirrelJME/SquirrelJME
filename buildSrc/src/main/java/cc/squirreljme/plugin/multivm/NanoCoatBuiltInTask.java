@@ -30,7 +30,7 @@ public class NanoCoatBuiltInTask
 	private final SourceTargetClassifier classifier;
 	
 	/**
-	 * Initializes the full suite task.
+	 * Initializes the NanoCoat built-in setup.
 	 * 
 	 * @param __classifier The classifier used.
 	 * @param __romTask The task used to create the ROM.
@@ -58,9 +58,11 @@ public class NanoCoatBuiltInTask
 		this.getInputs().file(this.inputPath(__romTask));
 		
 		// And the output is a primary single file for the ROM
-		this.getOutputs().dir(this.outputPath());
+		this.getOutputs().dirs(this.specificPath(),
+			this.sharedPath());
 		
 		// Actual running of everything
+		this.doFirst(new NanoCoatBuiltInCleanTaskAction(__classifier));
 		this.doLast(new NanoCoatBuiltInTaskAction(__classifier));
 	}
 	
@@ -78,16 +80,40 @@ public class NanoCoatBuiltInTask
 	}
 	
 	/**
-	 * Returns the output path of the C file. 
-	 * 
-	 * @return The output path.
-	 * @since 2023/05/31
+	 * Returns the base ROM path.
+	 *
+	 * @return The base ROM path.
+	 * @since 2023/09/03
 	 */
-	public final Provider<Path> outputPath()
+	public final Provider<Path> romBasePath()
 	{
 		return this.getProject().provider(() -> this.getProject().getRootDir()
-			.toPath().resolve("nanocoat").resolve("rom")
-			.resolve(String.format("%s_%s", this.classifier.getSourceSet(),
-				this.classifier.getTargetClassifier().getClutterLevel())));
+			.toPath().resolve("nanocoat").resolve("rom"));
+	}
+	
+	/**
+	 * Returns the shared output path.
+	 *
+	 * @return The shared output path.
+	 * @since 2023/09/03
+	 */
+	public final Provider<Path> sharedPath()
+	{
+		return this.getProject().provider(() ->
+			this.romBasePath().get().resolve("shared"));
+	}
+	
+	/**
+	 * Returns the shared specific path.
+	 *
+	 * @return The shared specific path.
+	 * @since 2023/09/03
+	 */
+	public final Provider<Path> specificPath()
+	{
+		return this.getProject().provider(() ->
+			this.romBasePath().get().resolve("specific").
+				resolve(String.format("%s_%s", this.classifier.getSourceSet(),
+					this.classifier.getTargetClassifier().getClutterLevel())));
 	}
 }

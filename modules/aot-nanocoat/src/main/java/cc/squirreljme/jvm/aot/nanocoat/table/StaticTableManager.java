@@ -9,16 +9,21 @@
 
 package cc.squirreljme.jvm.aot.nanocoat.table;
 
+import cc.squirreljme.c.CIdentifier;
 import cc.squirreljme.jvm.aot.nanocoat.ArchiveOutputQueue;
 import cc.squirreljme.jvm.aot.nanocoat.CodeFingerprint;
 import cc.squirreljme.jvm.aot.nanocoat.VariableLimits;
 import cc.squirreljme.runtime.cldc.util.EnumTypeMap;
+import cc.squirreljme.runtime.cldc.util.SortedTreeSet;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.FieldDescriptor;
 import net.multiphasicapps.classfile.MethodDescriptor;
+import net.multiphasicapps.collections.UnmodifiableSet;
 
 /**
  * A group of static tables.
@@ -81,6 +86,21 @@ public class StaticTableManager
 	{
 		return (FieldTypeStaticTable)this.table(FieldDescriptor.class,
 			StaticTableType.FIELD_TYPE);
+	}
+	
+	/**
+	 * Returns the identifiers in every static table.
+	 *
+	 * @return The static table identifiers within every table.
+	 * @since 2023/09/03
+	 */
+	public final Set<CIdentifier> identifiers()
+	{
+		SortedTreeSet<CIdentifier> result = new SortedTreeSet<>();
+		for (StaticTable<?, ?> table : this._tables.values())
+			result.addAll(table.identifiers());
+		
+		return UnmodifiableSet.of(result);
 	}
 	
 	/**

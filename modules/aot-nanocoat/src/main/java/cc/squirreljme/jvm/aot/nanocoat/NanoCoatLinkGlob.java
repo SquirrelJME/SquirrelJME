@@ -192,6 +192,14 @@ public class NanoCoatLinkGlob
 		// Need to write final stuff to the archive
 		ArchiveOutputQueue archive = this.archive;
 		
+		// Write all the shared inputs
+		try (PrintStream ps = archive.nextPrintStream(
+			this.inModuleDirectory("imports.csv")))
+		{
+			for (CIdentifier identifier : this.tables.identifiers())
+				ps.println(identifier);
+		}
+		
 		// Finish the header output
 		try (CFile headerOut = this.headerOut)
 		{
@@ -307,7 +315,8 @@ public class NanoCoatLinkGlob
 			
 			// Use macro for all the files
 			cmake.printf(
-				"squirreljme_romLibrary(\"%s\" \"%s\" \"%s\" \"${%sFiles}\")",
+				"squirreljme_romLibrary(\"%s\" \"%s\" \"%s\" " +
+					"\"${%sFiles}\")",
 				this.aotSettings.sourceSet,
 				this.aotSettings.clutterLevel,
 				this.baseName,
