@@ -62,7 +62,8 @@ public class NanoCoatBuiltInTaskAction
 		Path output = __task.getOutputs().getFiles().getSingleFile().toPath();
 		
 		// Shared file output
-		Path moduleOutput = output.resolve("specific");
+		Path moduleOutput = output.getParent().resolve("specific")
+			.resolve(output.getFileName());
 		Path sharedOutput = output.getParent();
 		
 		// This could fail to write
