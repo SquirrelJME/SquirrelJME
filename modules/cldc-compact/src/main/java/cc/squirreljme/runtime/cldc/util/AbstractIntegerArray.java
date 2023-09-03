@@ -58,7 +58,7 @@ public abstract class AbstractIntegerArray
 		
 		// Same as ArrayList, note hashCode of Integer is its own value
 		for (int i = 0, n = this.size(); i < n; i++)
-			rv = 31 * rv + i;
+			rv = 31 * rv + this.get(i);
 		
 		return rv;
 	}

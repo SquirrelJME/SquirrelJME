@@ -61,6 +61,10 @@ public class NanoCoatBuiltInTaskAction
 		Path input = __task.getInputs().getFiles().getSingleFile().toPath();
 		Path output = __task.getOutputs().getFiles().getSingleFile().toPath();
 		
+		// Shared file output
+		Path moduleOutput = output.resolve("specific");
+		Path sharedOutput = output.getParent();
+		
 		// This could fail to write
 		Path sourceTemp = null;
 		try
@@ -71,7 +75,8 @@ public class NanoCoatBuiltInTaskAction
 			
 			// Make sure the target directories exist first, since we just
 			// deleted them
-			Files.createDirectories(output);
+			Files.createDirectories(moduleOutput);
+			Files.createDirectories(sharedOutput);
 			
 			// The ROM is just a ZIP of sources which get copied over
 			try (InputStream in = Files.newInputStream(input,
@@ -94,12 +99,16 @@ public class NanoCoatBuiltInTaskAction
 					System.err.print(".");
 					
 					// Split as slashes to get directories and whatnot
-					String[] fragments = entry.getName().split(
-						Pattern.quote("/"));
+					String name = entry.getName();
+					String[] fragments = name.split(Pattern.quote("/"));
 					int numFragments = fragments.length;
 					
+					// Is this shared data?
+					boolean isShared = name.startsWith("shared/");
+					
 					// Determine what our file is called and whatnot
-					Path targetParent = output;
+					Path targetParent = (isShared ? sharedOutput :
+						moduleOutput);
 					for (int i = 0; i < numFragments - 1; i++)
 						targetParent = targetParent.resolve(fragments[i]);
 					

@@ -220,25 +220,42 @@ public class NanoCoatBackend
 			for (VMClassLibrary library : __libs)
 				for (String file : library.listResources())
 				{
-					// Ticker for debugging, there is lots
+					// Ticker for debugging, there are lots of files
 					System.err.print(".");
 					
 					// If this is a CMake file, add it
 					if (file.endsWith("/CMakeLists.txt"))
 						cmakeFiles.add(file);
 					
-					// Record library files, they are the same name as the
-					// parent directory
-					int sl = file.indexOf('/');
-					int ld = file.lastIndexOf('.');
-					if (sl >= 0 && ld > sl && file.substring(0, sl)
-						.equals(file.substring(sl + 1, ld)))
-						libFiles.add(file.substring(0, sl));
+					// Is this a module or shared object?
+					boolean isModule = file.startsWith("modules/");
+					boolean isShared = file.startsWith("shared/");
+					
+					// Is this a module?
+					String useName;
+					if (isModule)
+					{
+						// Keep the same name
+						useName = file;
+						
+						// Record library files, they are the same name as the
+						// parent directory
+						int sf = file.indexOf('/');
+						int sl = file.lastIndexOf('/');
+						int ld = file.lastIndexOf('.');
+						if (sf >= 0 && sl >= 0 && sl > sf && ld > sl &&
+							file.substring(sf, sl).equals(
+							file.substring(sl + 1, ld)))
+							libFiles.add(file.substring(sf, sl));
+					}
+					
+					// Normal file
+					else
+						useName = file;
 					
 					// Do the actual copy
-					try (InputStream data = library.resourceAsStream(
-							file); 
-						OutputStream entry = zip.nextEntry(file))
+					try (InputStream data = library.resourceAsStream(file);
+						OutputStream entry = zip.nextEntry(useName))
 					{
 						// Copy data
 						StreamUtils.copy(data, entry);
