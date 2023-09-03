@@ -20,6 +20,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import org.apache.tools.ant.util.StreamUtils;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
 
@@ -63,6 +64,7 @@ public class NanoCoatBuiltInTaskAction
 		Path input = __task.getInputs().getFiles().getSingleFile().toPath();
 		
 		// Shared file output
+		Path romOutput = task.romBasePath().get();
 		Path moduleOutput = task.specificPath().get();
 		Path sharedOutput = task.sharedPath().get();
 		
@@ -84,7 +86,6 @@ public class NanoCoatBuiltInTaskAction
 					StandardOpenOption.READ);
 				ZipInputStream zip = new ZipInputStream(in))
 			{
-				byte[] buf = new byte[65536];
 				for (;;)
 				{
 					// Load in next entry
@@ -96,30 +97,6 @@ public class NanoCoatBuiltInTaskAction
 					if (entry.isDirectory())
 						continue;
 					
-					// Debug ticker
-					System.err.print(".");
-					
-					// Split as slashes to get directories and whatnot
-					String name = entry.getName();
-					String[] fragments = name.split(Pattern.quote("/"));
-					int numFragments = fragments.length;
-					
-					// Is this shared data?
-					boolean isShared = name.startsWith("shared/");
-					
-					// Determine what our file is called and whatnot
-					Path targetParent = (isShared ? sharedOutput :
-						moduleOutput);
-					for (int i = 0; i < numFragments - 1; i++)
-						targetParent = targetParent.resolve(fragments[i]);
-					
-					// Make sure directories exist
-					Files.createDirectories(targetParent);
-					
-					// Which file are we writing to?
-					String baseName = fragments[numFragments - 1];
-					Path targetFile = targetParent.resolve(baseName);
-					
 					// Dump all the input into the output
 					try (OutputStream out = Files.newOutputStream(
 						sourceTemp, StandardOpenOption.TRUNCATE_EXISTING,
@@ -129,9 +106,16 @@ public class NanoCoatBuiltInTaskAction
 						VMHelpers.copy(zip, out);
 					}
 					
+					// Determine the target output file
+					Path target = romOutput.resolve(
+						VMHelpers.stringToPath(entry.getName()));
+					
+					// Make sure the parent directories exist
+					Files.createDirectories(target.getParent());
+					
 					// Move over to target, replace if it exists since
 					// we want to update it
-					Files.move(sourceTemp, targetFile,
+					Files.move(sourceTemp, target,
 						StandardCopyOption.REPLACE_EXISTING);
 				}
 			}

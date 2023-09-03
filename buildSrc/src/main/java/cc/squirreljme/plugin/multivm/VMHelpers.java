@@ -1284,6 +1284,23 @@ public final class VMHelpers
 	}
 	
 	/**
+	 * Translates a path to a string.
+	 *
+	 * @param __name The input string file name.
+	 * @return The resultant path.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/09/03
+	 */
+	public static Path stringToPath(String __name)
+		throws NullPointerException
+	{
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		return Paths.get("", __name.split(Pattern.quote("/")));
+	}
+	
+	/**
 	 * Strips the extension from the path.
 	 * 
 	 * @param __path The path to strip the extension from.
