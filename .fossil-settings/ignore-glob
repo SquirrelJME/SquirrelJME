@@ -93,6 +93,9 @@ cmake_install.cmake
 *.dylib
 cmake-build-debug
 *.tmp
+nanocoat/rom/shared
+nanocoat/rom/specific
+nanocoat/cmake-build*
 
 # Fossil files
 _FOSSIL_
