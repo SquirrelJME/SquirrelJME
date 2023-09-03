@@ -98,7 +98,8 @@ public class StaticTableManager
 	{
 		SortedTreeSet<CIdentifier> result = new SortedTreeSet<>();
 		for (StaticTable<?, ?> table : this._tables.values())
-			result.addAll(table.identifiers());
+			if (table != null)
+				result.addAll(table.identifiers());
 		
 		return UnmodifiableSet.of(result);
 	}

@@ -62,7 +62,8 @@ public class NanoCoatBuiltInTask
 			this.sharedPath());
 		
 		// Actual running of everything
-		this.doFirst(new NanoCoatBuiltInCleanTaskAction(__classifier));
+		this.doFirst(new NanoCoatBuiltInCleanTaskAction(__classifier,
+			this.romBasePath(), this.specificPath(), this.sharedPath()));
 		this.doLast(new NanoCoatBuiltInTaskAction(__classifier));
 	}
 	

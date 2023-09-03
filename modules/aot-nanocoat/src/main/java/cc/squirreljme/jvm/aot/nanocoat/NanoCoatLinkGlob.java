@@ -196,8 +196,10 @@ public class NanoCoatLinkGlob
 		try (PrintStream ps = archive.nextPrintStream(
 			this.inModuleDirectory("imports.csv")))
 		{
+			ps.println("identifier");
 			for (CIdentifier identifier : this.tables.identifiers())
 				ps.println(identifier);
+			ps.flush();
 		}
 		
 		// Finish the header output

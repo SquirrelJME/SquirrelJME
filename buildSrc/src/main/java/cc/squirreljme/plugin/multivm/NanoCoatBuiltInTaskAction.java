@@ -61,7 +61,6 @@ public class NanoCoatBuiltInTaskAction
 		
 		// Where is the ROM going?
 		Path input = __task.getInputs().getFiles().getSingleFile().toPath();
-		Path output = __task.getOutputs().getFiles().getSingleFile().toPath();
 		
 		// Shared file output
 		Path moduleOutput = task.specificPath().get();
@@ -154,7 +153,7 @@ public class NanoCoatBuiltInTaskAction
 		// It did fail to write
 		catch (IOException e)
 		{
-			throw new RuntimeException("Could not copy ROM: " + output, e);
+			throw new RuntimeException("Could not extract ROM.", e);
 		}
 	}
 }

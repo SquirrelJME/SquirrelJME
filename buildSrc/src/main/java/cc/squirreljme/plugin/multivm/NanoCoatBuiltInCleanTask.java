@@ -51,7 +51,9 @@ public class NanoCoatBuiltInCleanTask
 			__builtInTask.getName()));
 		
 		// Performs the cleaning accordingly
-		this.doLast(new NanoCoatBuiltInCleanTaskAction(__classifier));
+		this.doLast(new NanoCoatBuiltInCleanTaskAction(__classifier,
+			__builtInTask.romBasePath(), __builtInTask.specificPath(),
+			__builtInTask.sharedPath()));
 	}
 	
 	/**

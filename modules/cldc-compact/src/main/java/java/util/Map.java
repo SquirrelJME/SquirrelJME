@@ -79,7 +79,7 @@ public interface Map<K, V>
 		int hashCode();
 		
 		@Api
-		V setValue(V __a);
+		V setValue(V __v);
 	}
 }
 
