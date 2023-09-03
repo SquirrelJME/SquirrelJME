@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.aot.nanocoat.table;
 
+import cc.squirreljme.c.CArrayBlock;
 import cc.squirreljme.c.CBasicExpression;
 import cc.squirreljme.c.CFile;
 import cc.squirreljme.c.CFunctionBlock;

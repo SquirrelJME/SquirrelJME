@@ -377,11 +377,23 @@ public final class CodeFingerprint
 		// Quickly compare by hash first, if it was previously calculated this
 		// will cause future calculations to go much quicker
 		CodeFingerprint o = (CodeFingerprint)__o;
-		if (this.hashCode() != o.hashCode())
+		if (this.hashCode() != o.hashCode() ||
+			this.checkSum() != o.checkSum())
 			return false;
 		
 		// The two arrays must be equal
 		return Arrays.equals(this._fingerprint, o._fingerprint);
+	}
+	
+	/**
+	 * Returns the fingerprint data.
+	 *
+	 * @return The fingerprint data.
+	 * @since 2023/09/03
+	 */
+	public int[] fingerprint()
+	{
+		return this._fingerprint.clone();
 	}
 	
 	/**
