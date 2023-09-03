@@ -192,6 +192,20 @@ public class NanoCoatLinkGlob
 		// Need to write final stuff to the archive
 		ArchiveOutputQueue archive = this.archive;
 		
+		// Module information
+		try (PrintStream ps = archive.nextPrintStream(
+			this.inModuleDirectory("modules.csv")))
+		{
+			ps.println("name,identifier,header,source");
+			ps.print(this.name);
+			ps.print(',');
+			ps.print(this.baseName);
+			ps.print(',');
+			ps.print(this.headerFileName);
+			ps.print(',');
+			ps.println(this.rootSourceFileName);
+		}
+		
 		// Write all the shared inputs
 		try (PrintStream ps = archive.nextPrintStream(
 			this.inModuleDirectory("imports.csv")))
@@ -199,6 +213,22 @@ public class NanoCoatLinkGlob
 			ps.println("identifier");
 			for (CIdentifier identifier : this.tables.identifiers())
 				ps.println(identifier);
+			ps.flush();
+		}
+		
+		// Write class identifiers
+		try (PrintStream ps = archive.nextPrintStream(
+			this.inModuleDirectory("classes.csv")))
+		{
+			ps.println("class,identifier");
+			for (Map.Entry<String, CIdentifier> entry :
+				this.classIdentifiers.entrySet())
+			{
+				ps.print(entry.getKey());
+				ps.print(',');
+				ps.println(entry.getValue());
+			}
+			
 			ps.flush();
 		}
 		
@@ -271,13 +301,15 @@ public class NanoCoatLinkGlob
 							.originalLibHash));
 				
 				if (this.resourceIdentifiers.isEmpty())
-					struct.memberSet("resources", CVariable.NULL);
+					struct.memberSet("resources",
+						CVariable.NULL);
 				else
 					struct.memberSet("resources",
 						CBasicExpression.reference(this.libraryResources));
 				
 				if (this.classIdentifiers.isEmpty())
-					struct.memberSet("classes", CVariable.NULL);
+					struct.memberSet("classes",
+						CVariable.NULL);
 				else
 					struct.memberSet("classes",
 						CBasicExpression.reference(this.libraryClasses));
@@ -285,77 +317,6 @@ public class NanoCoatLinkGlob
 			
 			// Make sure it is written
 			rootSourceOut.flush();
-		}
-		
-		// Output the CMake build file accordingly
-		try (PrintStream cmake = archive.nextPrintStream(
-			this.inModuleDirectory("CMakeLists.txt")))
-		{
-			// Start with header
-			Utils.headerCMake(cmake);
-			
-			// Include functions and macros header
-			cmake.println("include(\"${CMAKE_SOURCE_DIR}/cmake/" +
-				"rom-macros-and-functions.cmake\"\n\tNO_POLICY_SCOPE)");
-			cmake.println();
-			
-			// The true library name
-			String libName = this.aotSettings.sourceSet + "_" +
-				this.aotSettings.clutterLevel + "_" + this.baseName;
-			
-			// Generate list of files
-			cmake.printf("set(%sFiles", libName);
-			cmake.println();
-			Debugging.todoNote("Write source files.");
-			/*for (String outputFile : this.outputFiles)
-			{
-				cmake.printf("\t\"%s\"", outputFile);
-				cmake.println();
-			}*/
-			cmake.println("\t)");
-			cmake.println();
-			
-			// Use macro for all the files
-			cmake.printf(
-				"squirreljme_romLibrary(\"%s\" \"%s\" \"%s\" " +
-					"\"${%sFiles}\")",
-				this.aotSettings.sourceSet,
-				this.aotSettings.clutterLevel,
-				this.baseName,
-				libName);
-			cmake.println();
-			cmake.println();
-			
-			// If these are tests, we need to add every test
-			JavaManifest manifest = this._manifest;
-			List<String> tests = this._tests;
-			if ("test".equals(this.aotSettings.sourceSet) &&
-				manifest != null && tests != null && !tests.isEmpty())
-			{
-				JavaManifestAttributes attrs =
-					manifest.getMainAttributes();
-				
-				// Store class path in variable for later setting
-				cmake.printf("set(%sClassPath \"%s\")", libName,
-					attrs.getValue("X-SquirrelJME-Tests-ClassPath"));
-				cmake.println();
-				
-				// Register tests
-				for (String test : tests)
-				{
-					cmake.printf("squirreljme_romLibraryTest(" +
-						"\"%s\" \"%s\" \"%s\" \"%s\" \"${%sClassPath}\")",
-						this.aotSettings.name,
-						this.aotSettings.sourceSet,
-						this.aotSettings.clutterLevel,
-						test,
-						libName);
-					cmake.println();
-				}
-			}
-			
-			// Make sure ZIP entry is written
-			cmake.flush();
 		}
 		
 		// Finish the archive

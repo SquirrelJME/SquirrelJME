@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
@@ -208,216 +209,115 @@ public class NanoCoatBackend
 			__libs.length == 0)
 			throw new NullPointerException("NARG");
 		
+		// Target module strings
+		Set<String> modulesCsv = new LinkedHashSet<>();
+		Set<String> importsCsv = new LinkedHashSet<>();
+		Set<String> classesCsv = new LinkedHashSet<>();
+		Set<String> rcsDataCsv = new LinkedHashSet<>();
+			
+		// The root directory name of the ROM
+		String romDir = String.format("specific/%s_%s/",
+			__aotSettings.sourceSet,
+			__aotSettings.clutterLevel);
+		
 		// The output is just a ZIP where we copy all the input entries for
 		// each library to... since NanoCoat is a collection of source code
-		try (ZipStreamWriter zip = new ZipStreamWriter(__out))
+		try (ZipStreamWriter zip = new ZipStreamWriter(__out); 
+			ArchiveOutputQueue archive = new ArchiveOutputQueue(zip))
 		{
-			// Directory set for CMakeLists.txt files
-			Set<String> cmakeFiles = new SortedTreeSet<>();
-			Set<String> libFiles = new SortedTreeSet<>();
-			
-			// Write each library
+			// Process each table
 			for (VMClassLibrary library : __libs)
 				for (String file : library.listResources())
-				{
-					// Ticker for debugging, there are lots of files
-					System.err.print(".");
-					
-					// If this is a CMake file, add it
-					if (file.endsWith("/CMakeLists.txt"))
-						cmakeFiles.add(file);
-					
-					// Is this a module or shared object?
-					boolean isModule = file.startsWith("modules/");
-					boolean isShared = file.startsWith("shared/");
-					
-					// Is this a module?
-					String useName;
-					if (isModule)
+					try (InputStream data = library.resourceAsStream(file))
 					{
-						// Keep the same name
-						useName = file;
+						// Merge CSV tables
+						if (file.endsWith(".csv"))
+						{
+							Set<String> targetCsv;
+							if (file.endsWith("/modules.csv"))
+								targetCsv = modulesCsv;
+							else if (file.endsWith("/imports.csv"))
+								targetCsv = importsCsv;
+							else if (file.endsWith("/classes.csv"))
+								targetCsv = classesCsv;
+							else if (file.endsWith("/resources.csv"))
+								targetCsv = rcsDataCsv;
+							else
+								continue;
+							
+							// Combine in all lines
+							targetCsv.addAll(StreamUtils.readAllLines(data,
+								"utf-8"));
+							
+							// Do no more processing
+							continue;
+						}
 						
-						// Record library files, they are the same name as the
-						// parent directory
-						int sf = file.indexOf('/');
-						int sl = file.lastIndexOf('/');
-						int ld = file.lastIndexOf('.');
-						if (sf >= 0 && sl >= 0 && sl > sf && ld > sl &&
-							file.substring(sf, sl).equals(
-							file.substring(sl + 1, ld)))
-							libFiles.add(file.substring(sf, sl));
-					}
-					
-					// Normal file
-					else
-						useName = file;
-					
-					// Do the actual copy
-					try (InputStream data = library.resourceAsStream(file);
-						OutputStream entry = zip.nextEntry(useName))
-					{
-						// Copy data
-						StreamUtils.copy(data, entry);
+						// Shared files are copied to the output root and
+						// are later merged together
+						String outPath;
+						if (file.startsWith("shared/"))
+						{
+							outPath = file;
+							
+							// Ignore duplicate shared files
+							if (archive.hasOutput(outPath))
+								continue;
+						}
 						
-						// Make sure entry is written
-						entry.flush();
+						// In specific, note that it is already in the form
+						// of "modules/module_name/whatever.c" so it just
+						// needs a modified prefix
+						else
+							outPath = romDir + file;
+						
+						// Write to the output
+						try (OutputStream out = archive.nextEntry(outPath))
+						{
+							StreamUtils.copy(data, out);
+						}
 					}
-				}
 			
-			// What is this ROM called?
-			String romBaseName = "rom_" + __aotSettings.sourceSet + "_" +
-				__aotSettings.clutterLevel;
-			
-			// Variable the ROM is defined under
-			CVariable romVar = CVariable.of(JvmTypes.STATIC_ROM
-				.type().constType(), romBaseName);
-			
-			// Setup ROM header, for inclusion
-			CFileName romHeader = CFileName.of(romBaseName + ".h");
-			
-			// Write header that gives ROM info
-			try (OutputStream rawRom =
-					 zip.nextEntry(romHeader.toString()); 
-				 CFile cFile = Utils.cFile(rawRom))
-			{
-				// Header guard
-				CIdentifier guard = CIdentifier.of("SJME_ROM_" +
-					romBaseName.toUpperCase() + "_H");
-				try (CPPBlock cpp = cFile.preprocessorIf(
-					CExpressionBuilder.builder()
-						.not(guard)
-						.build()))
-				{
-					// Define it as included once
-					cpp.preprocessorDefine(guard,
-						CBasicExpression.number(1));
-				
-					// Include main header
-					cpp.preprocessorInclude(Constants.SJME_NVM_HEADER);
-					
-					// Declare the ROM variable
-					cpp.declare(romVar.extern());
-				}
-			}
-			
-			// Write root ROM file that refers to every library within
-			try (OutputStream rawRom =
-					 zip.nextEntry(romBaseName + ".c"); 
-				 CFile cFile = Utils.cFile(rawRom))
-			{
-				// Start with header
-				Utils.headerC(cFile);
-				
-				// Include headers accordingly
-				cFile.preprocessorInclude(Constants.SJME_NVM_HEADER);
-				cFile.preprocessorInclude(romHeader);
-				
-				// Include headers for all the libraries
-				for (String lib : libFiles)
-					cFile.preprocessorInclude(CFileName.of(
-						String.format("%s/%s.h", lib, lib)));
-				
-				// ROM libraries
-				CVariable romLibs = CVariable.of(JvmTypes.STATIC_LIBRARIES,
-					romBaseName + "__libraries");
-				
-				try (CStructVariableBlock struct = cFile.define(
-					CStructVariableBlock.class, romLibs))
-				{
-					// The number of libraries within
-					struct.memberSet("count",
-						CBasicExpression.number(libFiles.size()));
-					
-					// And links to all the libraries
-					try (CArrayBlock array = struct.memberArraySet(
-						"libraries"))
-					{
-						for (String lib : libFiles)
-							array.value(CBasicExpression.reference(
-								CIdentifier.of(
-									lib + "__library")));
-					}
-				}
-				
-				// Write ROM structure
-				try (CStructVariableBlock struct = cFile.define(
-					CStructVariableBlock.class, romVar))
-				{
-					// ROM details
-					struct.memberSet("sourceSet",
-						CBasicExpression.string(__aotSettings.sourceSet));
-					struct.memberSet("clutterLevel",
-						CBasicExpression.string(__aotSettings.clutterLevel));
-					struct.memberSet("libraries",
-						CBasicExpression.reference(romLibs.name));
-				}
-			}
-			
-			// Output the CMake file accordingly
-			try (OutputStream rawCMake =
-					 zip.nextEntry("CMakeLists.txt");
-				PrintStream cmake = new PrintStream(rawCMake, true,
-					"utf-8"))
-			{
-				// Start with header
-				Utils.headerCMake(cmake);
-				
-				// Include functions and macros header
-				cmake.println("include(\"${CMAKE_SOURCE_DIR}/cmake/" +
-					"rom-macros-and-functions.cmake\"\n\tNO_POLICY_SCOPE)");
-				cmake.println();
-				
-				// Add all subdirectories
-				for (String sub : cmakeFiles)
-				{
-					int ls = sub.indexOf('/');
-					cmake.printf("add_subdirectory(%s)",
-						(ls < 0 ? sub : sub.substring(0, ls)));
-					cmake.println();
-				}
-				cmake.println();
-				
-				String taskName = String.format("%s_%s",
-					__aotSettings.sourceSet,
-					__aotSettings.clutterLevel);
-				
-				// Build generator expression for all the libraries within
-				cmake.printf("set(%sRomObjects",
-					taskName);
-				cmake.println();
-				for (String lib : libFiles)
-				{
-					cmake.printf("\t\"$<TARGET_OBJECTS:" +
-						"ROMLib_%s_%s_%s_Object>\"",
-						__aotSettings.sourceSet,
-						__aotSettings.clutterLevel,
-						lib);
-					cmake.println();
-				}
-				cmake.println("\t)");
-				cmake.println();
-				
-				// Define ROM
-				cmake.printf(
-					"squirreljme_rom(\"%s\" \"%s\" \"${%sRomObjects}\")",
-					__aotSettings.sourceSet,
-					__aotSettings.clutterLevel,
-					taskName);
-				cmake.println();
-				
-				// Spacer
-				cmake.println();
-				
-				// Make sure ZIP entry is written
-				cmake.flush();
-			}
-			
-			// Make sure this is flushed
-			zip.flush();
+			// Write merged tables
+			NanoCoatBackend.__writeRomCsv(archive, modulesCsv,
+				romDir + "modules.csv");
+			NanoCoatBackend.__writeRomCsv(archive, importsCsv,
+				romDir + "imports.csv");
+			NanoCoatBackend.__writeRomCsv(archive, classesCsv,
+				romDir + "classes.csv");
+			NanoCoatBackend.__writeRomCsv(archive, rcsDataCsv,
+				romDir + "resources.csv");
 		}
 		
 		// And make sure the output is truly flushed
 		__out.flush();
+	}
+	
+	/**
+	 * Writes the ROM CSV.
+	 *
+	 * @param __archive The archive to write to.
+	 * @param __csv The CSV target.
+	 * @param __fileName The name of the file.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/09/03
+	 */
+	private static void __writeRomCsv(ArchiveOutputQueue __archive,
+		Set<String> __csv, String __fileName)
+		throws IOException, NullPointerException
+	{
+		if (__archive == null || __csv == null || __fileName == null)
+			throw new NullPointerException("NARG");
+		
+		// Just write all target lines
+		try (PrintStream ps = __archive.nextPrintStream(__fileName))
+		{
+			for (String string : __csv)
+				ps.println(string);
+			
+			ps.println();
+			ps.flush();
+		}
 	}
 }
