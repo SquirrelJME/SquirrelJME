@@ -10,6 +10,7 @@
 package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import javax.inject.Inject;
 import lombok.Getter;

@@ -98,7 +98,7 @@ public final class Utils
 		
 		// Is debugging used?
 		CTokenOutput wrapped;
-		if (Debugging.ENABLED)
+		if (false && Debugging.ENABLED)
 			wrapped = new EchoCTokenOutput(System.err, base);
 		else
 			wrapped = base;

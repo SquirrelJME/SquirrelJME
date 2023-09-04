@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.lang.ref.Reference;
 
 /**
- * Not Described.
+ * Table for class linkages.
  *
  * @since 2023/08/29
  */

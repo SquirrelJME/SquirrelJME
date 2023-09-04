@@ -681,13 +681,19 @@ public final class TaskInitialization
 			throw new NullPointerException("NARG");
 			
 		// Initialize or both main classes and such
-		for (ClutterLevel clutterLevel : ClutterLevel.values())
-			for (String sourceSet : TaskInitialization._SOURCE_SETS)
-				for (VMType vmType : VMType.values())
+		for (VMType vmType : VMType.values())
+		{
+			// Sequential clean storage?
+			List<Task> sequentialClean = new ArrayList<>();
+			
+			// Process for each possible combination
+			for (ClutterLevel clutterLevel : ClutterLevel.values())
+				for (String sourceSet : TaskInitialization._SOURCE_SETS)
 					for (BangletVariant variant : vmType.banglets())
 						TaskInitialization.romTasks(__project,
 							new SourceTargetClassifier(sourceSet, vmType,
-								variant, clutterLevel));
+								variant, clutterLevel), sequentialClean);
+		}
 	}
 	
 	/**
@@ -695,14 +701,16 @@ public final class TaskInitialization
 	 * 
 	 * @param __project The root project.
 	 * @param __classifier The classifier used.
+	 * @param __sequentialClean Sequential clean list.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/23
 	 */
 	private static void romTasks(Project __project,
-		SourceTargetClassifier __classifier)
+		SourceTargetClassifier __classifier, List<Task> __sequentialClean)
 		throws NullPointerException
 	{
-		if (__project == null || __classifier == null)
+		if (__project == null || __classifier == null ||
+			__sequentialClean == null)
 			throw new NullPointerException("NARG");
 			
 		// Everything will be working on these tasks
@@ -760,6 +768,22 @@ public final class TaskInitialization
 				__project.afterEvaluate((__p) ->
 					cleanTask.getProject().getRootProject().getTasks()
 						.getByName("clean").dependsOn(cleanTask));
+				
+				// Does clean have to be done sequentially and not in
+				// parallel? This means the clean task is quite complicated
+				// and not easily determined, probably because it looks at
+				// all the ROM files.
+				if (isSingleSourceSetRom || nativePort.isSequentialClean())
+				{
+					// Have this task run after the previous clean task that
+					// was generated
+					if (!__sequentialClean.isEmpty())
+						cleanTask.mustRunAfter(__sequentialClean.get(
+							__sequentialClean.size() - 1));
+					
+					// Add self to the sequential clean list
+					__sequentialClean.add(cleanTask);
+				}
 				
 				// Clean, if it occurs, must happen before
 				nativeTask.mustRunAfter(cleanTask);

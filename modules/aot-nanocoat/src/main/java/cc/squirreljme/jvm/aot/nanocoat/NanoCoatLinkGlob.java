@@ -24,7 +24,9 @@ import cc.squirreljme.jvm.aot.AOTSettings;
 import cc.squirreljme.jvm.aot.LinkGlob;
 import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
+import cc.squirreljme.jvm.aot.nanocoat.table.StaticTable;
 import cc.squirreljme.jvm.aot.nanocoat.table.StaticTableManager;
+import cc.squirreljme.jvm.aot.nanocoat.table.StaticTableType;
 import cc.squirreljme.jvm.manifest.JavaManifest;
 import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -206,13 +208,51 @@ public class NanoCoatLinkGlob
 			ps.println(this.rootSourceFileName);
 		}
 		
-		// Write all the shared inputs
+		// Write all the shared input tables
+		StaticTableManager tables = this.tables;
 		try (PrintStream ps = archive.nextPrintStream(
-			this.inModuleDirectory("imports.csv")))
+			this.inModuleDirectory("shared.csv")))
 		{
-			ps.println("identifier");
-			for (CIdentifier identifier : this.tables.identifiers())
-				ps.println(identifier);
+			// Write all table types
+			ps.println("prefix,identifier,header,source");
+			for (StaticTableType type : StaticTableType.values())
+			{
+				// Skip empty tables
+				if (!tables.hasEntries(type))
+					continue;
+				
+				// Get table
+				StaticTable<?, ?> table = tables.table(type.keyType,
+					type.valueType, type);
+				
+				// Write prefix and table info
+				String prefix = type.prefix;
+				for (CIdentifier identifier : table.identifiers())
+				{
+					ps.print(prefix);
+					ps.print(',');
+					ps.print(identifier);
+					
+					// Header
+					ps.print(',');
+					ps.print("shared/");
+					ps.print(prefix);
+					ps.print("/include/");
+					ps.print(identifier);
+					ps.print(".h");
+					
+					// Source
+					ps.print(',');
+					ps.print("shared/");
+					ps.print(prefix);
+					ps.print("/");
+					ps.print(identifier);
+					ps.print(".c");
+					
+					// Done
+					ps.println();
+				}
+			}
 			ps.flush();
 		}
 		

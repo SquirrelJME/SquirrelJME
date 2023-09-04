@@ -149,7 +149,7 @@ public enum StaticTableType
 	public final Class<?> keyType;
 	
 	/** The value type. */
-	protected final Class<?> valueType;
+	public final Class<?> valueType;
 	
 	/** The C type to store for the table entry. */
 	public final CType cType;
@@ -220,6 +220,9 @@ public enum StaticTableType
 			case CLASS_INTERFACES:
 				return new ClassInterfacesStaticTable(__group);
 			
+			case CLASS_LINK:
+				throw Debugging.todo();
+				
 			case LINKAGE_CLASS:
 				throw Debugging.todo();
 				

@@ -72,6 +72,17 @@ public enum NativePortSupport
 	}
 	
 	/**
+	 * Is sequential clean required for this?
+	 *
+	 * @return If sequential clean is required.
+	 * @since 2023/09/03
+	 */
+	public boolean isSequentialClean()
+	{
+		return this == NativePortSupport.NANOCOAT;
+	}
+	
+	/**
 	 * Initializes a task to clean the ROM output.
 	 *
 	 * @param __nativeTask The native task for output.

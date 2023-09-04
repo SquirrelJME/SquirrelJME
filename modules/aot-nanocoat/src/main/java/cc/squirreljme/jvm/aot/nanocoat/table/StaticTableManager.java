@@ -89,6 +89,27 @@ public class StaticTableManager
 	}
 	
 	/**
+	 * Does the static table manager have entries for this?
+	 *
+	 * @param __type The type of table to check.
+	 * @return If there are entries for this.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/09/03
+	 */
+	public boolean hasEntries(StaticTableType __type)
+		throws NullPointerException
+	{
+		if (__type == null)
+			throw new NullPointerException("NARG");
+		
+		StaticTable<?, ?> table = this._tables.get(__type);
+		if (table == null || table.identifiers().isEmpty())
+			return false;
+		
+		return true;
+	}
+	
+	/**
 	 * Returns the identifiers in every static table.
 	 *
 	 * @return The static table identifiers within every table.

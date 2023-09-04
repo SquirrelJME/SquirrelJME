@@ -10,6 +10,8 @@
 package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
+import java.io.IOException;
+import java.nio.file.Files;
 import javax.inject.Inject;
 import lombok.Getter;
 import org.gradle.api.DefaultTask;
@@ -49,6 +51,12 @@ public class NanoCoatBuiltInCleanTask
 		this.setGroup("squirreljmeGeneral");
 		this.setDescription(String.format("Cleans the built-in outputs of %s.",
 			__builtInTask.getName()));
+		
+		// This is up-to-date if the target directory is missing 
+		this.getOutputs().upToDateWhen((__task) ->
+			{
+				return !Files.exists(__builtInTask.specificPath().get());
+			});
 		
 		// Performs the cleaning accordingly
 		this.doLast(new NanoCoatBuiltInCleanTaskAction(__classifier,

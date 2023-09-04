@@ -23,4 +23,7 @@ dependencies {
 	
 	// Country codes
 	implementation 'org.iban4j:iban4j:3.2.6-RELEASE'
+	
+	// CSV parsing, for NanoCoat generation
+	implementation 'com.opencsv:opencsv:5.8'
 }

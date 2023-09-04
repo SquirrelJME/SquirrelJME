@@ -211,7 +211,7 @@ public class NanoCoatBackend
 		
 		// Target module strings
 		Set<String> modulesCsv = new LinkedHashSet<>();
-		Set<String> importsCsv = new LinkedHashSet<>();
+		Set<String> sharedCsv = new LinkedHashSet<>();
 		Set<String> classesCsv = new LinkedHashSet<>();
 		Set<String> rcsDataCsv = new LinkedHashSet<>();
 			
@@ -236,8 +236,8 @@ public class NanoCoatBackend
 							Set<String> targetCsv;
 							if (file.endsWith("/modules.csv"))
 								targetCsv = modulesCsv;
-							else if (file.endsWith("/imports.csv"))
-								targetCsv = importsCsv;
+							else if (file.endsWith("/shared.csv"))
+								targetCsv = sharedCsv;
 							else if (file.endsWith("/classes.csv"))
 								targetCsv = classesCsv;
 							else if (file.endsWith("/resources.csv"))
@@ -281,8 +281,8 @@ public class NanoCoatBackend
 			// Write merged tables
 			NanoCoatBackend.__writeRomCsv(archive, modulesCsv,
 				romDir + "modules.csv");
-			NanoCoatBackend.__writeRomCsv(archive, importsCsv,
-				romDir + "imports.csv");
+			NanoCoatBackend.__writeRomCsv(archive, sharedCsv,
+				romDir + "shared.csv");
 			NanoCoatBackend.__writeRomCsv(archive, classesCsv,
 				romDir + "classes.csv");
 			NanoCoatBackend.__writeRomCsv(archive, rcsDataCsv,
