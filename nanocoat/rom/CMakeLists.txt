@@ -11,7 +11,7 @@ foreach(checkClutterLevel "debug" "release")
 	foreach(checkSourceSet "main" "testFixtures" "test")
 		set(base "${checkSourceSet}_${checkClutterLevel}")
 		set(baseDir
-			"${CMAKE_CURRENT_SOURCE_DIR}/${base}")
+			"${CMAKE_CURRENT_SOURCE_DIR}/specific/${base}")
 
 		# Does it actually exist and contains a CMakeLists?
 		if(IS_DIRECTORY "${baseDir}" AND
