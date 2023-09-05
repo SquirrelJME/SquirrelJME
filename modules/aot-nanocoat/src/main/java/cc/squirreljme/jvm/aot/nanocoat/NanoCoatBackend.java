@@ -30,6 +30,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeSet;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.vm.VMClassLibrary;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -230,6 +231,8 @@ public class NanoCoatBackend
 				for (String file : library.listResources())
 					try (InputStream data = library.resourceAsStream(file))
 					{
+						byte[] copy = null;
+						
 						// Merge CSV tables
 						if (file.endsWith(".csv"))
 						{
@@ -245,12 +248,16 @@ public class NanoCoatBackend
 							else
 								continue;
 							
-							// Combine in all lines
-							targetCsv.addAll(StreamUtils.readAllLines(data,
-								"utf-8"));
+							// Load in copied data
+							copy = StreamUtils.readAll(data);
 							
-							// Do no more processing
-							continue;
+							// Combine in all lines
+							try (ByteArrayInputStream in =
+								 new ByteArrayInputStream(copy))
+							{
+								targetCsv.addAll(StreamUtils.readAllLines(
+									in, "utf-8"));
+							}
 						}
 						
 						// Shared files are copied to the output root and
@@ -274,7 +281,10 @@ public class NanoCoatBackend
 						// Write to the output
 						try (OutputStream out = archive.nextEntry(outPath))
 						{
-							StreamUtils.copy(data, out);
+							if (copy != null)
+								out.write(copy, 0, copy.length);
+							else
+								StreamUtils.copy(data, out);
 						}
 					}
 			
