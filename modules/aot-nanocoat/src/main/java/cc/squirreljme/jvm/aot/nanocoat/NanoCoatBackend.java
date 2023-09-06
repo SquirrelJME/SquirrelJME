@@ -36,6 +36,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
@@ -83,10 +84,21 @@ public class NanoCoatBackend
 		// Record the added file, keeping it sorted
 		String baseName = Utils.basicFileName(
 			processor.classIdentifier + ".c");
+		String sourcePath = glob.inModuleDirectory(baseName);
+		
+		// Write class identifiers
+		PrintStream classesCsv = glob._classesCsv;
+		classesCsv.print(classFile.thisName());
+		classesCsv.print(',');
+		classesCsv.print(processor.classInfo.name);
+		classesCsv.print(',');
+		classesCsv.print(glob.headerFilePath);
+		classesCsv.print(',');
+		classesCsv.print(sourcePath);
+		classesCsv.println();
 		
 		// Process source code in single file
-		try (CFile sourceOut = glob.archive.nextCFile(
-			glob.inModuleDirectory(baseName)))
+		try (CFile sourceOut = glob.archive.nextCFile(sourcePath))
 		{
 			// Do the actual include of ourselves
 			sourceOut.preprocessorInclude(Constants.SJME_NVM_HEADER);

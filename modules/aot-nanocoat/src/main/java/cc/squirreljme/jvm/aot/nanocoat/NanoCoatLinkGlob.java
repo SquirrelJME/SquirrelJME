@@ -76,6 +76,7 @@ public class NanoCoatLinkGlob
 		new SortedTreeMap<>(new QuickSearchComparator());
 	
 	/** Identifiers to classes. */
+	@Deprecated
 	protected final Map<String, CIdentifier> classIdentifiers =
 		new SortedTreeMap<>(new QuickSearchComparator());
 	
@@ -96,6 +97,12 @@ public class NanoCoatLinkGlob
 	
 	/** The archive queue. */
 	protected final ArchiveOutputQueue archive;
+	
+	/** The path to the header file. */
+	protected final String headerFilePath;
+	
+	/** The class output CSV. */
+	final PrintStream _classesCsv;
 	
 	/** The C header block. */
 	volatile CBlock _headerBlock;
@@ -139,6 +146,7 @@ public class NanoCoatLinkGlob
 			this.name = __aotSettings.name;
 		this.baseName = Utils.basicFileName(this.name);
 		this.headerFileName = CFileName.of(this.baseName + ".h");
+		this.headerFilePath = this.inModuleDirectory(this.headerFileName);
 		this.rootSourceFileName = CFileName.of(this.baseName + ".c");
 		this.headerGuard = CIdentifier.of("SJME_ROM_" +
 			this.baseName.toUpperCase() + "_H");
@@ -158,12 +166,16 @@ public class NanoCoatLinkGlob
 		try
 		{
 			// Setup header writing
-			this.headerOut = archive.nextCFile(
-				this.inModuleDirectory(this.headerFileName));
+			this.headerOut = archive.nextCFile(this.headerFilePath);
 			
 			// Setup source root writing
 			this.rootSourceOut = archive.nextCFile(
 				this.inModuleDirectory(this.rootSourceFileName));
+			
+			// Class list
+			this._classesCsv = archive.nextPrintStream(
+					this.inModuleDirectory("classes.csv"));
+			this._classesCsv.println("class,identifier,header,source");
 		}
 		catch (IOException __e)
 		{
@@ -256,19 +268,9 @@ public class NanoCoatLinkGlob
 			ps.flush();
 		}
 		
-		// Write class identifiers
-		try (PrintStream ps = archive.nextPrintStream(
-			this.inModuleDirectory("classes.csv")))
+		// Finish off the class CSV
+		try (PrintStream ps = this._classesCsv)
 		{
-			ps.println("class,identifier");
-			for (Map.Entry<String, CIdentifier> entry :
-				this.classIdentifiers.entrySet())
-			{
-				ps.print(entry.getKey());
-				ps.print(',');
-				ps.println(entry.getValue());
-			}
-			
 			ps.flush();
 		}
 		
