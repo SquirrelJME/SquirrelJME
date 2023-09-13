@@ -11,7 +11,9 @@ package cc.squirreljme.csv;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
@@ -52,14 +54,29 @@ public final class CsvReader<T>
 	}
 	
 	/**
+	 * Reads all entries into a list.
+	 *
+	 * @return The resultant list.
+	 * @throws IOException On read errors.
+	 * @since 2023/09/12
+	 */
+	public List<T> readAll()
+		throws IOException
+	{
+		return this.readAll(new ArrayList<T>());
+	}
+	
+	/**
 	 * Reads all the values into the given collection.
 	 *
+	 * @param <C> The collection type.
 	 * @param __into The collection to write into.
+	 * @return {@code __into}.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/09/12
 	 */
-	public void readAll(Collection<T> __into)
+	public <C extends Collection<? extends T>> C readAll(C __into)
 		throws IOException, NullPointerException
 	{
 		throw Debugging.todo();
