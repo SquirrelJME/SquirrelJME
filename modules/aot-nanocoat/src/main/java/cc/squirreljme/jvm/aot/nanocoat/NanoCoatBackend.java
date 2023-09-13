@@ -9,13 +9,10 @@
 
 package cc.squirreljme.jvm.aot.nanocoat;
 
-import cc.squirreljme.c.CArrayBlock;
 import cc.squirreljme.c.CBasicExpression;
 import cc.squirreljme.c.CExpressionBuilder;
 import cc.squirreljme.c.CFile;
-import cc.squirreljme.c.CFileName;
 import cc.squirreljme.c.CIdentifier;
-import cc.squirreljme.c.CPPBlock;
 import cc.squirreljme.c.CSourceWriter;
 import cc.squirreljme.c.CStructVariableBlock;
 import cc.squirreljme.c.CVariable;
@@ -26,9 +23,10 @@ import cc.squirreljme.jvm.aot.LinkGlob;
 import cc.squirreljme.jvm.aot.RomSettings;
 import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
+import cc.squirreljme.jvm.aot.nanocoat.csv.ModuleCsvEntry;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.cldc.util.SortedTreeSet;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
+import cc.squirreljme.runtime.cldc.util.StringUtils;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -36,7 +34,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.LinkedHashSet;
-import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
@@ -74,10 +71,6 @@ public class NanoCoatBackend
 		// Setup and perform class processing, with state
 		ClassProcessor processor = new ClassProcessor(glob, classFile);
 		
-		// Store identifier for later usage
-		glob.classIdentifiers.put(classFile.thisName().toString(),
-			processor.classInfo.name);
-		
 		// Write header output
 		processor.processHeader(glob._headerBlock);
 		
@@ -87,15 +80,8 @@ public class NanoCoatBackend
 		String sourcePath = glob.inModuleDirectory(baseName);
 		
 		// Write class identifiers
-		PrintStream classesCsv = glob._classesCsv;
-		classesCsv.print(classFile.thisName());
-		classesCsv.print(',');
-		classesCsv.print(processor.classInfo.name);
-		classesCsv.print(',');
-		classesCsv.print(glob.headerFilePath);
-		classesCsv.print(',');
-		classesCsv.print(sourcePath);
-		classesCsv.println();
+		glob.registerClass(classFile.thisName(), processor.classInfo.name,
+			glob.headerFilePath, sourcePath);
 		
 		// Process source code in single file
 		try (CFile sourceOut = glob.archive.nextCFile(sourcePath))
@@ -155,15 +141,11 @@ public class NanoCoatBackend
 				CStructVariableBlock.class, rcVar))
 			{
 				struct.memberSet("path",
-					CExpressionBuilder.builder()
-						.string(__path)
-						.build());
+					CBasicExpression.string(__path));
 				struct.memberSet("pathHash",
 					CBasicExpression.number(__path.hashCode()));
 				struct.memberSet("size",
-					CExpressionBuilder.builder()
-						.number(Constants.JINT_C, data.length)
-						.build());
+					CBasicExpression.number(Constants.JINT_C, data.length));
 				struct.memberSet("data",
 					CExpressionBuilder.builder()
 						.array(data)
@@ -300,6 +282,19 @@ public class NanoCoatBackend
 						}
 					}
 			
+			// Parse modules
+			Set<ModuleCsvEntry> modules = ModuleCsvEntry.fromCsv(modulesCsv);
+			
+			// Write ROM source
+			String romSource = String.format("%s_%s.c",
+				__aotSettings.sourceSet,
+				__aotSettings.clutterLevel);
+			try (CFile out = archive.nextCFile(romSource))
+			{
+				NanoCoatBackend.__writeRomC(__aotSettings, __settings,
+					modules);
+			}
+			
 			// Write merged tables
 			NanoCoatBackend.__writeRomCsv(archive, modulesCsv,
 				romDir + "modules.csv");
@@ -309,10 +304,103 @@ public class NanoCoatBackend
 				romDir + "classes.csv");
 			NanoCoatBackend.__writeRomCsv(archive, rcsDataCsv,
 				romDir + "resources.csv");
+			
+			// Write CMake file to bridge everything together
+			NanoCoatBackend.__writeRomCMake(__aotSettings, __settings,
+				archive, modules, romDir + "CMakeLists.txt",
+				romSource);
 		}
 		
 		// And make sure the output is truly flushed
 		__out.flush();
+	}
+	
+	/**
+	 * Writes the ROM C file.
+	 *
+	 * @param __aotSettings The AOT settings.
+	 * @param __settings The ROM settings.
+	 * @param __modulesCsv The modules to use.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/09/12
+	 */
+	private static void __writeRomC(AOTSettings __aotSettings,
+		RomSettings __settings, Set<ModuleCsvEntry> __modulesCsv)
+		throws IOException, NullPointerException
+	{
+		if (__aotSettings == null || __settings == null ||
+			__modulesCsv == null)
+			throw new NullPointerException("NARG");
+		
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Writes the ROM {@code CMakeLists.txt} file.
+	 *
+	 * @param __aotSettings Ahead of time settings.
+	 * @param __settings ROM settings.
+	 * @param __archive The archive to write to.
+	 * @param __csv The input CSV data.
+	 * @param __fileName The file name to write to.
+	 * @param __romSource The ROM source file.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/09/12
+	 */
+	private static void __writeRomCMake(AOTSettings __aotSettings,
+		RomSettings __settings, ArchiveOutputQueue __archive,
+		Set<ModuleCsvEntry> __csv, String __fileName, String __romSource)
+		throws IOException, NullPointerException
+	{
+		if (__aotSettings == null || __settings == null ||
+			__archive == null || __csv == null || __fileName == null ||
+			__romSource == null)
+			throw new NullPointerException("NARG");
+		
+		// Setup output to write
+		try (PrintStream out = __archive.nextPrintStream(__fileName))
+		{
+			// Write header
+			Utils.headerCMake(out);
+			
+			// Include desired macros accordingly
+			out.printf("include(\"%s/%s/%s\")",
+				"${CMAKE_SOURCE_DIR}",
+				"cmake",
+				"rom-macros-and-functions.cmake");
+			out.println();
+			
+			// Build ROM file list
+			boolean first = true;
+			for (ModuleCsvEntry entry : __csv)
+			{
+				// name,identifier,header,source
+				String[] values = StringUtils.basicSplit(',', entry);
+				
+				// Skip first line
+				if (first)
+				{
+					first = false;
+					continue;
+				}
+				
+				// Write result
+				out.printf("squirreljme_romLibrary_include(" +
+					"\"%s\" \"%s\" \"%s\" \"%s\")",
+					__aotSettings.sourceSet,
+					__aotSettings.clutterLevel,
+					entry.name, entry.identifier);
+				out.println();
+			}
+			
+			// Write 
+			out.printf("squirreljme_rom(\"%s\" \"%s\" \"%s\")",
+				__aotSettings.sourceSet, __aotSettings.clutterLevel,
+				__romSource);
+			out.println();
+		}
 	}
 	
 	/**

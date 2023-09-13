@@ -24,18 +24,18 @@ import cc.squirreljme.jvm.aot.AOTSettings;
 import cc.squirreljme.jvm.aot.LinkGlob;
 import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
+import cc.squirreljme.jvm.aot.nanocoat.csv.ClassCsvEntry;
 import cc.squirreljme.jvm.aot.nanocoat.table.StaticTable;
 import cc.squirreljme.jvm.aot.nanocoat.table.StaticTableManager;
 import cc.squirreljme.jvm.aot.nanocoat.table.StaticTableType;
 import cc.squirreljme.jvm.manifest.JavaManifest;
-import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.List;
 import java.util.Map;
+import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
 /**
@@ -76,8 +76,7 @@ public class NanoCoatLinkGlob
 		new SortedTreeMap<>(new QuickSearchComparator());
 	
 	/** Identifiers to classes. */
-	@Deprecated
-	protected final Map<String, CIdentifier> classIdentifiers =
+	protected final Map<String, ClassCsvEntry> classes =
 		new SortedTreeMap<>(new QuickSearchComparator());
 	
 	/** Library information. */
@@ -271,6 +270,14 @@ public class NanoCoatLinkGlob
 		// Finish off the class CSV
 		try (PrintStream ps = this._classesCsv)
 		{
+			for (ClassCsvEntry entry : this.classes.values())
+			{
+				ps.printf("%s,%s,%s,%s",
+					entry.thisName, entry.identifier,
+					entry.headerPath, entry.sourcePath);
+				ps.println();
+			}
+			
 			ps.flush();
 		}
 		
@@ -305,11 +312,11 @@ public class NanoCoatLinkGlob
 				}
 			
 			// Write classes
-			if (!this.classIdentifiers.isEmpty())
+			if (!this.classes.isEmpty())
 				try (CStructVariableBlock struct = rootSourceOut.define(
 					CStructVariableBlock.class, this.libraryClasses))
 				{
-					Map<String, CIdentifier> ids = this.classIdentifiers;
+					Map<String, ClassCsvEntry> ids = this.classes;
 					
 					// Store count
 					struct.memberSet("count",
@@ -319,8 +326,9 @@ public class NanoCoatLinkGlob
 					try (CArrayBlock array = struct.memberArraySet(
 						"classes"))
 					{
-						for (CIdentifier id : ids.values())
-							array.value(CBasicExpression.reference(id));
+						for (ClassCsvEntry id : ids.values())
+							array.value(CBasicExpression.reference(
+								id.identifier));
 					}
 				}
 			
@@ -349,7 +357,7 @@ public class NanoCoatLinkGlob
 					struct.memberSet("resources",
 						CBasicExpression.reference(this.libraryResources));
 				
-				if (this.classIdentifiers.isEmpty())
+				if (this.classes.isEmpty())
 					struct.memberSet("classes",
 						CVariable.NULL);
 				else
@@ -432,6 +440,29 @@ public class NanoCoatLinkGlob
 		block.declare(this.libraryInfo.extern());
 		block.declare(this.libraryClasses.extern());
 		block.declare(this.libraryResources.extern());
+	}
+	
+	/**
+	 * Registers the given class.
+	 *
+	 * @param __thisName The name of this class.
+	 * @param __identifier The identifier to the class.
+	 * @param __headerPath The class header file.
+	 * @param __sourcePath The class source file.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/09/12
+	 */
+	public void registerClass(ClassName __thisName,
+		CIdentifier __identifier, String __headerPath, String __sourcePath)
+		throws NullPointerException
+	{
+		if (__thisName == null || __identifier == null ||
+			__headerPath == null || __sourcePath == null)
+			throw new NullPointerException("NARG");
+		
+		// Store for later
+		this.classes.put(__thisName.toString(), new ClassCsvEntry(
+			__thisName, __identifier, __headerPath, __sourcePath));
 	}
 	
 	/**

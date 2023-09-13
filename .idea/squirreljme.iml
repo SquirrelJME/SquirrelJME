@@ -58,6 +58,9 @@
       <excludeFolder url="file://$MODULE_DIR$/modules/common-vm/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/modules/common-vm/bin" />
       <excludeFolder url="file://$MODULE_DIR$/modules/common-vm/out" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/csv/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/csv/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/csv/out" />
       <excludeFolder url="file://$MODULE_DIR$/modules/debug-jdwp/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/modules/debug-jdwp/bin" />
       <excludeFolder url="file://$MODULE_DIR$/modules/debug-jdwp/out" />

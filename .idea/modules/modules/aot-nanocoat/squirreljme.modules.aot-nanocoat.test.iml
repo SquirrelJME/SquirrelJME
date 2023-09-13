@@ -10,6 +10,7 @@
     <orderEntry type="module" module-name="squirreljme.modules.aot.main" />
     <orderEntry type="module" module-name="squirreljme.modules.tool-classfile.main" />
     <orderEntry type="module" module-name="squirreljme.modules.c-source-writer.main" />
+    <orderEntry type="module" module-name="squirreljme.modules.csv.main" />
     <orderEntry type="module" module-name="squirreljme.modules.tac.main" />
     <orderEntry type="module" module-name="squirreljme.modules.cldc-compact.main" />
     <orderEntry type="module" module-name="squirreljme.emulators.emulator-base.main" />

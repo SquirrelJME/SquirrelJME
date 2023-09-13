@@ -18,7 +18,7 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.provider.Provider;
 
 /**
- * This task is used to generate a built-in RatufaCoat ROm.
+ * This task is used to generate a built-in RatufaCoat Rom.
  *
  * @since 2023/05/31
  */

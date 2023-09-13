@@ -11,14 +11,13 @@
 
 # Initializes the structure and otherwise for ROMs themselves which
 # depend on libraries
-function(squirreljme_rom sourceSet clutterLevel
-	objectLibs)
+function(squirreljme_rom sourceSet clutterLevel)
 	# Name of the ROM
 	set(romTask "ROM_${sourceSet}_${clutterLevel}")
 
 	# Add base object library
 	add_library("${romTask}" STATIC
-		${objectLibs})
+		${squirreljme_dynamic_objLibs})
 
 	# If this is a test ROM, we need to actually link it in with the
 	# TAC test execution core
@@ -55,10 +54,30 @@ function(squirreljme_rom sourceSet clutterLevel
 	endif()
 endfunction()
 
+# Include a previous instance of squirreljme_romLibrary
+macro(squirreljme_romLibrary_include sourceSet
+	clutterLevel libName libIdentifier)
+	# Include directory where the module exists
+	add_subdirectory("modules/${libIdentifier}")
+
+	# Used for later inclusion
+	list(APPEND squirreljme_dynamic_objLibs
+		"$<$<TARGET_OBJECTS:${sourceSet}_${clutterLevel}_${libIdentifier}>>")
+endmacro()
+
+# Declares a class for a library
+macro(squirreljme_romLibrary_class sourceSet clutterLevel
+	libName libIdentifier className
+	classIdentifier classHeader classSource)
+	list(APPEND squirreljme_dynamic_classesFiles
+		"${classSource}")
+endmacro()
+
 # Initializes the structure and otherwise needed for ROM libraries
 # Remaining argv are sources
 function(squirreljme_romLibrary sourceSet clutterLevel
-	libName filesList)
+	libName libIdentifier libHeader libSource
+	classes)
 	# Library task for simplicity
 	set(libTask
 		"ROMLib_${sourceSet}_${clutterLevel}_${libName}_Object")
