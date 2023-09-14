@@ -10,24 +10,38 @@
 package cc.squirreljme.csv;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import java.io.IOException;
+import java.util.Map;
 
 /**
- * Input stream for CSVs based on {@code Iterable}.
+ * Example serialization handler.
  *
- * @since 2023/09/12
+ * @since 2023/09/14
  */
-public class CsvIterableInputStream
-	implements CsvInputStream
+final class __ExampleSerialization__
+	implements CsvDeserializerSerializer<String[]>
 {
 	/**
-	 * Initializes the input stream.
-	 *
-	 * @param __it The iterable to source from.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/09/12
+	 * {@inheritDoc}
+	 * @since 2023/09/14
 	 */
-	public CsvIterableInputStream(Iterable<String> __it)
+	@Override
+	public String[] deserialize(Map<String, String> __values)
+		throws NullPointerException
+	{
+		return new String[]{
+			__values.get("first"),
+			__values.get("second"),
+			__values.get("third"),
+			__values.get("fourth")
+		};
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/09/14
+	 */
+	@Override
+	public void serialize(String[] __input, CsvSerializerResult __result)
 		throws NullPointerException
 	{
 		throw Debugging.todo();
@@ -38,18 +52,8 @@ public class CsvIterableInputStream
 	 * @since 2023/09/14
 	 */
 	@Override
-	public void close()
-	{
-		// Does nothing
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/09/12
-	 */
-	@Override
-	public boolean next(StringBuilder __line)
-		throws IOException, NullPointerException
+	public void serializeHeaders(CsvSerializerResult __result)
+		throws NullPointerException
 	{
 		throw Debugging.todo();
 	}

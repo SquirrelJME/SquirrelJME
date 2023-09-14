@@ -18,13 +18,16 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 
 /**
- * Not Described.
+ * Input stream for reading CSV data.
  *
  * @since 2023/09/12
  */
 public class CsvReaderInputStream
 	implements CsvInputStream
 {
+	/** The input reader. */
+	public final Reader in;
+	
 	/**
 	 * Initializes the reader.
 	 *
@@ -89,7 +92,21 @@ public class CsvReaderInputStream
 	public CsvReaderInputStream(Reader __in)
 		throws NullPointerException
 	{
-		throw Debugging.todo();
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		this.in = __in;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/09/14
+	 */
+	@Override
+	public void close()
+		throws IOException
+	{
+		this.in.close();
 	}
 	
 	/**
@@ -100,7 +117,28 @@ public class CsvReaderInputStream
 	public boolean next(StringBuilder __line)
 		throws IOException, NullPointerException
 	{
-		throw Debugging.todo();
+		if (__line == null)
+			throw new NullPointerException("NARG");
+		
+		Reader in = this.in;
+		for (boolean readChar = false;;)
+		{
+			int c = in.read();
+			
+			// EOF?
+			if (c < 0)
+				return readChar;
+			
+			// Stop at end of line
+			if (c == '\r' || c == '\n')
+				break;
+			
+			// Add in character otherwise
+			__line.append((char)c);
+		}
+		
+		// Not EOF
+		return true;
 	}
 	
 	/**

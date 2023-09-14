@@ -7,6 +7,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
     <orderEntry type="module" module-name="squirreljme.modules.csv.main" />
+    <orderEntry type="module" module-name="squirreljme.modules.collections.main" />
     <orderEntry type="module" module-name="squirreljme.modules.cldc-compact.main" />
     <orderEntry type="library" name="Gradle: org.jetbrains:annotations:24.0.1" level="project" />
   </component>

@@ -9,6 +9,7 @@
 
 package cc.squirreljme.csv;
 
+import java.io.Closeable;
 import java.io.IOException;
 
 /**
@@ -17,6 +18,7 @@ import java.io.IOException;
  * @since 2023/09/12
  */
 public interface CsvInputStream
+	extends Closeable
 {
 	/**
 	 * Returns the next line.
