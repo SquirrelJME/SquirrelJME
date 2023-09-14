@@ -55,6 +55,6 @@ final class __ExampleSerialization__
 	public void serializeHeaders(CsvSerializerResult __result)
 		throws NullPointerException
 	{
-		throw Debugging.todo();
+		__result.headers("first", "second", "third", "fourth");
 	}
 }
