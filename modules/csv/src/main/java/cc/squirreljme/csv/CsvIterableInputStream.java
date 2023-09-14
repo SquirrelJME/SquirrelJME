@@ -9,8 +9,9 @@
 
 package cc.squirreljme.csv;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * Input stream for CSVs based on {@code Iterable}.
@@ -20,6 +21,9 @@ import java.io.IOException;
 public class CsvIterableInputStream
 	implements CsvInputStream
 {
+	/** The iterator used for accessing lines. */
+	protected final Iterator<? super CharSequence> iterator;
+	
 	/**
 	 * Initializes the input stream.
 	 *
@@ -27,10 +31,26 @@ public class CsvIterableInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/09/12
 	 */
-	public CsvIterableInputStream(Iterable<String> __it)
+	public CsvIterableInputStream(Iterable<? super CharSequence> __it)
 		throws NullPointerException
 	{
-		throw Debugging.todo();
+		this(__it.iterator());
+	}
+	
+	/**
+	 * Initializes the input stream.
+	 *
+	 * @param __it The iterable to source from.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/09/14
+	 */
+	public CsvIterableInputStream(Iterator<? super CharSequence> __it)
+		throws NullPointerException
+	{
+		if (__it == null)
+			throw new NullPointerException("NARG");
+		
+		this.iterator = __it;
 	}
 	
 	/**
@@ -51,6 +71,24 @@ public class CsvIterableInputStream
 	public boolean next(StringBuilder __line)
 		throws IOException, NullPointerException
 	{
-		throw Debugging.todo();
+		if (__line == null)
+			throw new NullPointerException("NARG");
+		
+		Iterator<? super CharSequence> iterator = this.iterator;
+		
+		try
+		{
+			CharSequence from = (CharSequence)iterator.next();
+			
+			// Just grab the entire line, if there is one
+			if (from != null)
+				__line.append(from);
+			
+			return true;
+		}
+		catch (NoSuchElementException __ignored)
+		{
+			return false;
+		}
 	}
 }
