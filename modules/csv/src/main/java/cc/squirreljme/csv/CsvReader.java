@@ -199,12 +199,13 @@ public final class CsvReader<T>
 				// Load into a map
 				else
 				{
-					// Fill in columns for the entire map
+					// Fill in columns for the entire map, default to empty
+					// string if there is no value there
 					int max = workColumns.size();
 					Map<String, String> workMap = this._workMap;
 					for (int i = 0, n = headerMap.size(); i < n; i++)
 						workMap.put(headerMap.get(i),
-							(i < max ? workColumns.get(i) : null));
+							(i < max ? workColumns.get(i) : ""));
 					
 					// Process with deserializer
 					return this.deserializer.deserialize(this._workRoMap);

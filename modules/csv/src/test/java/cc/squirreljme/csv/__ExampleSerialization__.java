@@ -44,7 +44,20 @@ final class __ExampleSerialization__
 	public void serialize(String[] __input, CsvSerializerResult __result)
 		throws NullPointerException
 	{
-		throw Debugging.todo();
+		int n = __input.length;
+		
+		// Store values
+		if (n > 0)
+			__result.value("first", __input[0]);
+		if (n > 1)
+			__result.value("second", __input[1]);
+		if (n > 2)
+			__result.value("third", __input[2]);
+		if (n > 3)
+			__result.value("fourth", __input[3]);
+		
+		// Finish
+		__result.endRow();
 	}
 	
 	/**

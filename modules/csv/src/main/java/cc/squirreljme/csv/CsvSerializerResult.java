@@ -19,7 +19,13 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 public final class CsvSerializerResult
 {
 	/** The headers used. */
-	volatile CharSequence[] _headers;
+	volatile String[] _headers;
+	
+	/** The currently loaded in values. */
+	volatile String[] _values;
+	
+	/** Was the row ended? */
+	volatile boolean _endRow;
 	
 	/**
 	 * Initializes the headers used for output.
@@ -41,21 +47,29 @@ public final class CsvSerializerResult
 		
 		// Copy over
 		int n = __headers.length;
-		CharSequence[] headers = new CharSequence[n];
+		String[] headers = new String[n];
 		for (int i = 0; i < n; i++)
 			headers[i] = __headers[i];
 		
 		this._headers = headers;
+		this._values = new String[n];
 	}
 	
 	/**
 	 * Indicates the end of a row. 
 	 *
+	 * @throws IllegalStateException If this was already called.
 	 * @since 2023/09/12
 	 */
 	public void endRow()
+		throws IllegalStateException
 	{
-		throw Debugging.todo();
+		/* {@squirreljme.error CS07 End of row already called.} */
+		if (this._endRow)
+			throw new IllegalStateException("CS07");
+		
+		// Just set the flag
+		this._endRow = true;
 	}
 	
 	/**
@@ -64,7 +78,8 @@ public final class CsvSerializerResult
 	 * @param __key The key used.
 	 * @param __value The value set.
 	 * @throws IllegalArgumentException If the key is not valid.
-	 * @throws IllegalStateException If headers were not yet set.
+	 * @throws IllegalStateException If headers were not yet set or the end
+	 * of row was called.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/09/12
 	 */
@@ -72,15 +87,23 @@ public final class CsvSerializerResult
 		throws IllegalArgumentException, IllegalStateException,
 			NullPointerException
 	{
-		if (__key == null || __value == null)
+		if (__key == null)
 			throw new NullPointerException("NARG");
 		
 		/* {@squirreljme.error CS02 Headers not yet set.} */
-		CharSequence[] headers = this._headers;
-		if (headers != null)
+		String[] headers = this._headers;
+		if (headers == null)
 			throw new IllegalStateException("CS02");
 		
-		throw Debugging.todo();
+		/* {@squirreljme.error CS06 End of row already called.} */
+		if (this._endRow)
+			throw new IllegalStateException("CS06");
+		
+		// Find header that contains the value and store it there
+		String[] values = this._values;
+		for (int i = 0, n = headers.length; i < n; i++)
+			if (__key.equals(headers[i]))
+				values[i] = __value;
 	}
 	
 	/**
@@ -90,6 +113,13 @@ public final class CsvSerializerResult
 	 */
 	void __reset()
 	{
-		throw Debugging.todo();
+		// Clear all values
+		String[] values = this._values;
+		if (values != null)
+			for (int i = 0, n = values.length; i < n; i++)
+				values[i] = null;
+		
+		// Clear end of row
+		this._endRow = false;
 	}
 }
