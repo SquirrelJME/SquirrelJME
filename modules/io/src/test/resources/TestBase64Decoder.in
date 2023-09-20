@@ -3,5 +3,5 @@ argument-2: string:SSBsb3ZlIExlYWggYW5kIEppbmV0dGUsIEkgcmVhbGx5IGRvIQ==
 result: NoResult
 thrown: NoExceptionThrown
 secondary-a: string:I\_love\_squirrels!
-secondary-b: string:I\_love\_Leah\_and\_Jinette,\_I\_really\_do!
+secondary-b: string:I\_love\_Leah\_and\_Jinette\c\_I\_really\_do!
 
