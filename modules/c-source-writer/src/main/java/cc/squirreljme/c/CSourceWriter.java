@@ -156,7 +156,7 @@ public interface CSourceWriter
 	 * Declares the given function and returns a block for writing a function.
 	 *
 	 * @param __function The function to be declared.
-	 * @return {@link this}.
+	 * @return {@code this}.
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/06/04
