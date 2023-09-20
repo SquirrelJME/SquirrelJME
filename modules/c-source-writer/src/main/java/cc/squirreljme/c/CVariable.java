@@ -77,7 +77,7 @@ public class CVariable
 	
 	/**
 	 * {@inheritDoc}
-	 * @isnce 2023/05/30
+	 * @since 2023/05/30
 	 */
 	@Override
 	public boolean equals(Object __o)
@@ -111,7 +111,7 @@ public class CVariable
 	
 	/**
 	 * {@inheritDoc}
-	 * @isnce 2023/05/30
+	 * @since 2023/05/30
 	 */
 	@Override
 	public int hashCode()

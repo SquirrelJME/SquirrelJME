@@ -377,7 +377,9 @@ public class NanoCoatBackend
 			for (ModuleCsvEntry entry : __csv)
 			{
 				// name,identifier,header,source
-				String[] values = StringUtils.basicSplit(',', entry);
+				if (true)
+					throw Debugging.todo();
+				/*String[] values = StringUtils.basicSplit(',', entry);
 				
 				// Skip first line
 				if (first)
@@ -392,7 +394,7 @@ public class NanoCoatBackend
 					__aotSettings.sourceSet,
 					__aotSettings.clutterLevel,
 					entry.name, entry.identifier);
-				out.println();
+				out.println();*/
 			}
 			
 			// Write 
