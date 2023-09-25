@@ -22,7 +22,7 @@ public class CsvIterableInputStream
 	implements CsvInputStream
 {
 	/** The iterator used for accessing lines. */
-	protected final Iterator<? super CharSequence> iterator;
+	protected final Iterator<? extends CharSequence> iterator;
 	
 	/**
 	 * Initializes the input stream.
@@ -31,7 +31,7 @@ public class CsvIterableInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/09/12
 	 */
-	public CsvIterableInputStream(Iterable<? super CharSequence> __it)
+	public CsvIterableInputStream(Iterable<? extends CharSequence> __it)
 		throws NullPointerException
 	{
 		this(__it.iterator());
@@ -44,7 +44,7 @@ public class CsvIterableInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/09/14
 	 */
-	public CsvIterableInputStream(Iterator<? super CharSequence> __it)
+	public CsvIterableInputStream(Iterator<? extends CharSequence> __it)
 		throws NullPointerException
 	{
 		if (__it == null)
@@ -74,7 +74,7 @@ public class CsvIterableInputStream
 		if (__line == null)
 			throw new NullPointerException("NARG");
 		
-		Iterator<? super CharSequence> iterator = this.iterator;
+		Iterator<? extends CharSequence> iterator = this.iterator;
 		
 		try
 		{

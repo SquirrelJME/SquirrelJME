@@ -16,6 +16,10 @@ import cc.squirreljme.c.CIdentifier;
 import cc.squirreljme.c.CSourceWriter;
 import cc.squirreljme.c.CStructVariableBlock;
 import cc.squirreljme.c.CVariable;
+import cc.squirreljme.csv.CsvIterableInputStream;
+import cc.squirreljme.csv.CsvReader;
+import cc.squirreljme.csv.CsvReaderInputStream;
+import cc.squirreljme.csv.CsvWriter;
 import cc.squirreljme.jvm.aot.AOTSettings;
 import cc.squirreljme.jvm.aot.Backend;
 import cc.squirreljme.jvm.aot.CompileSettings;
@@ -23,17 +27,20 @@ import cc.squirreljme.jvm.aot.LinkGlob;
 import cc.squirreljme.jvm.aot.RomSettings;
 import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
+import cc.squirreljme.jvm.aot.nanocoat.csv.CsvType;
 import cc.squirreljme.jvm.aot.nanocoat.csv.ModuleCsvEntry;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.SortedTreeSet;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
-import cc.squirreljme.runtime.cldc.util.StringUtils;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
@@ -204,11 +211,10 @@ public class NanoCoatBackend
 			__libs.length == 0)
 			throw new NullPointerException("NARG");
 		
-		// Target module strings
-		Set<String> modulesCsv = new LinkedHashSet<>();
-		Set<String> sharedCsv = new LinkedHashSet<>();
-		Set<String> classesCsv = new LinkedHashSet<>();
-		Set<String> rcsDataCsv = new LinkedHashSet<>();
+		// Target CSV data
+		Map<CsvType, Set<Object>> csv = new LinkedHashMap<>();
+		for (CsvType type : CsvType.VALUES)
+			csv.put(type, new SortedTreeSet<>());
 			
 		// The root directory name of the ROM
 		String romDir = String.format("specific/%s_%s/",
@@ -230,27 +236,29 @@ public class NanoCoatBackend
 						// Merge CSV tables
 						if (file.endsWith(".csv"))
 						{
-							Set<String> targetCsv;
-							if (file.endsWith("/modules.csv"))
-								targetCsv = modulesCsv;
-							else if (file.endsWith("/shared.csv"))
-								targetCsv = sharedCsv;
-							else if (file.endsWith("/classes.csv"))
-								targetCsv = classesCsv;
-							else if (file.endsWith("/resources.csv"))
-								targetCsv = rcsDataCsv;
-							else
+							// Find the CSV to parse for
+							CsvType targetCsv = null;
+							for (CsvType csvType : CsvType.VALUES)
+								if (file.endsWith(csvType.rootedFileName))
+								{
+									targetCsv = csvType;
+									break;
+								}
+							
+							// Skip unknown CSVs
+							if (targetCsv == null)
 								continue;
 							
 							// Load in copied data
 							copy = StreamUtils.readAll(data);
 							
-							// Combine in all lines
+							// Combine CSV entries to the global table
 							try (ByteArrayInputStream in =
-								 new ByteArrayInputStream(copy))
+								 new ByteArrayInputStream(copy);
+								CsvReader<Object> reader = new CsvReader<>(
+									targetCsv, new CsvReaderInputStream(in)))
 							{
-								targetCsv.addAll(StreamUtils.readAllLines(
-									in, "utf-8"));
+								csv.get(targetCsv).addAll(reader.readAll());
 							}
 						}
 						
@@ -282,9 +290,6 @@ public class NanoCoatBackend
 						}
 					}
 			
-			// Parse modules
-			Set<ModuleCsvEntry> modules = ModuleCsvEntry.fromCsv(modulesCsv);
-			
 			// Write ROM source
 			String romSource = String.format("%s_%s.c",
 				__aotSettings.sourceSet,
@@ -292,22 +297,20 @@ public class NanoCoatBackend
 			try (CFile out = archive.nextCFile(romSource))
 			{
 				NanoCoatBackend.__writeRomC(__aotSettings, __settings,
-					modules);
+					out, (Set<ModuleCsvEntry>)(
+						(Object)csv.get(CsvType.MODULE)));
 			}
 			
-			// Write merged tables
-			NanoCoatBackend.__writeRomCsv(archive, modulesCsv,
-				romDir + "modules.csv");
-			NanoCoatBackend.__writeRomCsv(archive, sharedCsv,
-				romDir + "shared.csv");
-			NanoCoatBackend.__writeRomCsv(archive, classesCsv,
-				romDir + "classes.csv");
-			NanoCoatBackend.__writeRomCsv(archive, rcsDataCsv,
-				romDir + "resources.csv");
+			// Write merged CSV tables
+			for (CsvType csvType : CsvType.VALUES)
+				NanoCoatBackend.__writeRomCsv(archive, csv.get(csvType),
+					romDir + csvType.fileName, csvType);
 			
 			// Write CMake file to bridge everything together
 			NanoCoatBackend.__writeRomCMake(__aotSettings, __settings,
-				archive, modules, romDir + "CMakeLists.txt",
+				archive, (Set<ModuleCsvEntry>)(
+					(Object)csv.get(CsvType.MODULE)),
+				romDir + "CMakeLists.txt",
 				romSource);
 		}
 		
@@ -320,13 +323,14 @@ public class NanoCoatBackend
 	 *
 	 * @param __aotSettings The AOT settings.
 	 * @param __settings The ROM settings.
+	 * @param __out The output file to write to.
 	 * @param __modulesCsv The modules to use.
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/09/12
 	 */
 	private static void __writeRomC(AOTSettings __aotSettings,
-		RomSettings __settings, Set<ModuleCsvEntry> __modulesCsv)
+		RomSettings __settings, CFile __out, Set<ModuleCsvEntry> __modulesCsv)
 		throws IOException, NullPointerException
 	{
 		if (__aotSettings == null || __settings == null ||
@@ -411,25 +415,24 @@ public class NanoCoatBackend
 	 * @param __archive The archive to write to.
 	 * @param __csv The CSV target.
 	 * @param __fileName The name of the file.
+	 * @param __csvType The type of CSV to write.
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/09/03
 	 */
 	private static void __writeRomCsv(ArchiveOutputQueue __archive,
-		Set<String> __csv, String __fileName)
+		Set<Object> __csv, String __fileName, CsvType __csvType)
 		throws IOException, NullPointerException
 	{
-		if (__archive == null || __csv == null || __fileName == null)
+		if (__archive == null || __csv == null || __fileName == null ||
+			__csvType == null)
 			throw new NullPointerException("NARG");
 		
 		// Just write all target lines
-		try (PrintStream ps = __archive.nextPrintStream(__fileName))
+		try (PrintStream ps = __archive.nextPrintStream(__fileName);
+			 CsvWriter<Object> writer = new CsvWriter(__csvType, ps))
 		{
-			for (String string : __csv)
-				ps.println(string);
-			
-			ps.println();
-			ps.flush();
+			writer.writeAll(__csv);
 		}
 	}
 }
