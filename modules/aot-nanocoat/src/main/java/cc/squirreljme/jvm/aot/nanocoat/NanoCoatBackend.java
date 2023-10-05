@@ -297,8 +297,8 @@ public class NanoCoatBackend
 			try (CFile out = archive.nextCFile(romSource))
 			{
 				NanoCoatBackend.__writeRomC(__aotSettings, __settings,
-					out, (Set<ModuleCsvEntry>)(
-						(Object)csv.get(CsvType.MODULE)));
+					out, CsvType.MODULE.cast(ModuleCsvEntry.class,
+						csv.get(CsvType.MODULE)));
 			}
 			
 			// Write merged CSV tables
@@ -308,10 +308,9 @@ public class NanoCoatBackend
 			
 			// Write CMake file to bridge everything together
 			NanoCoatBackend.__writeRomCMake(__aotSettings, __settings,
-				archive, (Set<ModuleCsvEntry>)(
-					(Object)csv.get(CsvType.MODULE)),
-				romDir + "CMakeLists.txt",
-				romSource);
+				archive, CsvType.MODULE.cast(ModuleCsvEntry.class,
+					csv.get(CsvType.MODULE)),
+				romDir + "CMakeLists.txt", romSource);
 		}
 		
 		// And make sure the output is truly flushed

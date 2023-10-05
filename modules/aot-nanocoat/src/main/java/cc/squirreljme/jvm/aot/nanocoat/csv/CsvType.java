@@ -15,6 +15,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import net.multiphasicapps.collections.UnmodifiableList;
 
 /**
@@ -245,4 +246,28 @@ public enum CsvType
 		this.rootedFileName = "/" + __fileName;
 		this.entryType = __entry;
 	}
+	
+	/**
+	 * Casts the given set.
+	 *
+	 * @param <T> The type of set to cast to.
+	 * @param __type The type of set to cast to.
+	 * @param __in The input set.
+	 * @return The cast type.
+	 * @throws ClassCastException If the type is not valid for this type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/09/25
+	 */
+	@SuppressWarnings("unchecked")
+	public final <T> Set<T> cast(Class<T> __type, Set<?> __in)
+		throws ClassCastException, NullPointerException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		if (!__type.isAssignableFrom(this.entryType))
+			throw new ClassCastException("CLCL");
+		
+		return (Set<T>)((Object)__in);
+	}	
 }
