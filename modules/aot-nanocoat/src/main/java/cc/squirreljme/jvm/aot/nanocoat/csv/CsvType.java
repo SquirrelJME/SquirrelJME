@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.aot.nanocoat.csv;
 
+import cc.squirreljme.c.CIdentifier;
 import cc.squirreljme.csv.CsvDeserializerSerializer;
 import cc.squirreljme.csv.CsvSerializerResult;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -16,6 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.collections.UnmodifiableList;
 
 /**
@@ -40,7 +42,19 @@ public enum CsvType
 			if (__input == null || __result == null)
 				throw new NullPointerException("NARG");
 			
-			throw Debugging.todo();
+			ClassCsvEntry entry = (ClassCsvEntry)__input;
+			
+			__result.value("thisName",
+				entry.thisName.toString());
+			__result.value("identifier",
+				entry.identifier.toString());
+			__result.value("headerPath",
+				entry.headerPath);
+			__result.value("sourcePath",
+				entry.sourcePath);
+			
+			// End of row
+			__result.endRow();
 		}
 		
 		/**
@@ -54,7 +68,10 @@ public enum CsvType
 			if (__result == null)
 				throw new NullPointerException("NARG");
 			
-			throw Debugging.todo();
+			__result.headers("class",
+				"identifier",
+				"header",
+				"source");
 		}
 		
 		/**
@@ -68,7 +85,11 @@ public enum CsvType
 			if (__values == null)
 				throw new NullPointerException("NARG");
 			
-			throw Debugging.todo();
+			return new ClassCsvEntry(
+				new ClassName(__values.get("class")),
+				CIdentifier.of(__values.get("identifier")),
+				__values.get("header"),
+				__values.get("source"));
 		}
 	},
 	

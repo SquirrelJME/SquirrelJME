@@ -64,7 +64,19 @@ public class ClassCsvEntry
 	@Override
 	public int compareTo(ClassCsvEntry __b)
 	{
-		throw Debugging.todo();
+		int rv = this.thisName.compareTo(__b.thisName);
+		if (rv != 0)
+			return rv;
+		
+		rv = this.identifier.compareTo(__b.identifier);
+		if (rv != 0)
+			return rv;
+		
+		rv = this.headerPath.compareTo(__b.headerPath);
+		if (rv != 0)
+			return rv;
+		
+		return this.sourcePath.compareTo(__b.sourcePath);
 	}
 	
 	/**
