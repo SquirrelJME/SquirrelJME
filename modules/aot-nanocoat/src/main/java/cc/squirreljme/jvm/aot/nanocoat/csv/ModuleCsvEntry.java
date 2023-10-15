@@ -64,7 +64,19 @@ public class ModuleCsvEntry
 	@Override
 	public int compareTo(ModuleCsvEntry __b)
 	{
-		throw Debugging.todo();
+		int rv = this.name.compareTo(__b.name);
+		if (rv != 0)
+			return rv;
+		
+		rv = this.identifier.compareTo(__b.identifier);
+		if (rv != 0)
+			return rv;
+		
+		rv = this.header.compareTo(__b.header);
+		if (rv != 0)
+			return rv;
+		
+		return this.source.compareTo(__b.source);
 	}
 	
 	/**

@@ -19,6 +19,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  * @since 2023/09/25
  */
 public final class SharedCsvEntry
+	implements Comparable<SharedCsvEntry>
 {
 	/** The prefix of the entry. */
 	public final String prefix;
@@ -54,6 +55,28 @@ public final class SharedCsvEntry
 		this.identifier = __identifier;
 		this.header = __header;
 		this.source = __source;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/10/15
+	 */
+	@Override
+	public int compareTo(SharedCsvEntry __b)
+	{
+		int rv = this.prefix.compareTo(__b.prefix);
+		if (rv != 0)
+			return rv;
+		
+		rv = this.identifier.compareTo(__b.identifier);
+		if (rv != 0)
+			return rv;
+		
+		rv = this.header.compareTo(__b.header);
+		if (rv != 0)
+			return rv;
+		
+		return this.source.compareTo(__b.source);
 	}
 	
 	/**
