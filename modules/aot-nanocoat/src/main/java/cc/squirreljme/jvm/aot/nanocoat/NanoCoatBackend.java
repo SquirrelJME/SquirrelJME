@@ -335,7 +335,7 @@ public class NanoCoatBackend
 			__modulesCsv == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		/*throw Debugging.todo();*/
 	}
 	
 	/**
@@ -379,8 +379,8 @@ public class NanoCoatBackend
 			for (ModuleCsvEntry entry : __csv)
 			{
 				// name,identifier,header,source
-				if (true)
-					throw Debugging.todo();
+				/*if (true)
+					throw Debugging.todo();*/
 				/*String[] values = StringUtils.basicSplit(',', entry);
 				
 				// Skip first line
