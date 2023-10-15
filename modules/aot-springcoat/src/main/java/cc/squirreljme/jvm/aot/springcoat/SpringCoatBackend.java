@@ -82,7 +82,7 @@ public class SpringCoatBackend
 	 * @since 2021/08/21
 	 */
 	@Override
-	public LinkGlob linkGlob(AOTSettings __settings, CompileSettings __name,
+	public LinkGlob linkGlob(AOTSettings __aotSettings, CompileSettings __compileSettings,
 		OutputStream __out)
 		throws IOException, NullPointerException
 	{

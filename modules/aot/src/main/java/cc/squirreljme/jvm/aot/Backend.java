@@ -75,17 +75,17 @@ public interface Backend
 	
 	/**
 	 * Creates a glob that is used for linking compiled classes together.
-	 * 
-	 * @param __settings The settings for compilation.
-	 * @param __name The name of the glob.
+	 *
+	 * @param __aotSettings The settings for compilation.
+	 * @param __compileSettings The name of the glob.
 	 * @param __out The destination output.
 	 * @return The glob for linking.
 	 * @throws IOException On any read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/22
 	 */
-	LinkGlob linkGlob(AOTSettings __settings, CompileSettings __name,
-		OutputStream __out)
+	LinkGlob linkGlob(AOTSettings __aotSettings,
+		CompileSettings __compileSettings, OutputStream __out)
 		throws IOException, NullPointerException;
 	
 	/**

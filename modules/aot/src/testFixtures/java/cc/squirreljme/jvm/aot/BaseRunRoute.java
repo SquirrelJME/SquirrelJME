@@ -11,9 +11,14 @@ package cc.squirreljme.jvm.aot;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -21,6 +26,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import net.multiphasicapps.tac.TestConsumer;
 import net.multiphasicapps.tac.TestRunnable;
+import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
 /**
  * Base class for running compile tests.
@@ -35,6 +41,18 @@ public abstract class BaseRunRoute
 		3;
 	
 	/**
+	 * Allows for a different backend selection.
+	 *
+	 * @param __compiler The compiler to use.
+	 * @return The returned compiler.
+	 * @since 2023/10/15
+	 */
+	protected Backend backend(String __compiler)
+	{
+		return Main.findBackend(__compiler);
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2023/10/14
 	 */
@@ -43,7 +61,7 @@ public abstract class BaseRunRoute
 		throws IOException
 	{
 		// Find backend to use
-		Backend backend = Main.findBackend(__compiler);
+		Backend backend = this.backend(__compiler);
 		
 		// Temporary files are created for the JARs for the ROM stage
 		Path[] tempFiles = new Path[BaseRunRoute._NUM_LIBRARIES];
@@ -61,7 +79,7 @@ public abstract class BaseRunRoute
 					__compiler,
 					"test" + i,
 					"compile",
-					"main",
+					(i == 1 ? "test" : "main"),
 					"debug",
 					"hash" + i);
 				
@@ -69,21 +87,66 @@ public abstract class BaseRunRoute
 				Deque<String> args = new ArrayDeque<>();
 				
 				// Build ZIP of entries
-				if (true)
-					throw Debugging.todo();
+				byte[] rawZip;
+				try (InputStream rawList = BaseRunRoute.class.
+						getResourceAsStream(
+							String.format("v-lib/%d.list", i));
+					 Reader rawListReader = new InputStreamReader(rawList,
+						 "utf-8");
+					 BufferedReader list = new BufferedReader(rawListReader);
+					 ByteArrayOutputStream zipBaos =
+						 new ByteArrayOutputStream();
+					 ZipStreamWriter zip = new ZipStreamWriter(zipBaos))
+				{
+					// Handle all files in the list
+					for (;;)
+					{
+						String ln = list.readLine();
+						
+						// EOF?
+						if (ln == null)
+							break;
+						
+						// Ignore blank lines
+						ln = ln.trim();
+						if (ln.isEmpty())
+							continue;
+						
+						// Copy entry into the ZIP
+						try (InputStream from = BaseRunRoute.class.
+							getResourceAsStream(
+								String.format("v-lib/%d/%s", i, ln));
+							OutputStream into = zip.nextEntry(ln))
+						{
+							StreamUtils.copy(from, into);
+						}
+					}
+					
+					// Ensure the ZIP is actually finished
+					zip.close();
+					zip.flush();
+					
+					// Get the output ZIP data
+					rawZip = zipBaos.toByteArray();
+				}
 				
 				// Run compilation step
 				try (OutputStream out = Files.newOutputStream(tempFiles[i],
-					StandardOpenOption.CREATE_NEW,
+					StandardOpenOption.CREATE,
 					StandardOpenOption.WRITE,
-					StandardOpenOption.TRUNCATE_EXISTING))
+					StandardOpenOption.TRUNCATE_EXISTING);
+					InputStream zip = new ByteArrayInputStream(rawZip))
 				{
 					// Run compilation step
 					Main.mainCompile(aotSettings,
 						backend,
-						null/*zip*/,
+						zip,
 						out,
 						args);
+					
+					// Note
+					this.secondary(String.format("compile-%d", i),
+						Files.size(tempFiles[i]) > 0);
 				}
 			}
 			
