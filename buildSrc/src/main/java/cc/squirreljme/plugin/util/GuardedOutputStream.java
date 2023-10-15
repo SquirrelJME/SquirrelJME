@@ -104,6 +104,7 @@ public final class GuardedOutputStream
 			throw new IOException("Stream is closed.");
 		
 		this.out.write(__b);
+		this.out.flush();
 	}
 	
 	/**
@@ -118,5 +119,6 @@ public final class GuardedOutputStream
 			throw new IOException("Stream is closed.");
 		
 		this.out.write(__b, __o, __l);
+		this.out.flush();
 	}
 }

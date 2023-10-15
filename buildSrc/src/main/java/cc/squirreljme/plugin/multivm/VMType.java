@@ -1030,7 +1030,7 @@ public enum VMType
 					classPath,
 					args.toArray(new String[args.size()]));
 				
-				// Use the error stream directory
+				// Use the error stream directly
 				__spec.setErrorOutput(new GuardedOutputStream(System.err));
 				
 				// Use the given input

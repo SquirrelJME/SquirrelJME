@@ -44,7 +44,7 @@ public class Main
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/22
 	 */
-	private static Backend findBackend(String __compiler)
+	public static Backend findBackend(String __compiler)
 		throws IllegalArgumentException, NullPointerException
 	{
 		if (__compiler == null)
@@ -64,10 +64,35 @@ public class Main
 	 * Main entry point for the compiler interface.
 	 * 
 	 * @param __args Arguments to the main class.
+	 * @throws Throwable On any exception.
+	 * @since 2023/10/14
+	 */
+	public static void main(String... __args)
+		throws Throwable
+	{
+		try
+		{
+			Main.mainWrapped(__args);
+		}
+		catch (Throwable t)
+		{
+			t.printStackTrace(System.err);
+			
+			if (t instanceof Error)
+				throw (Error)t;
+			
+			throw t;
+		}
+	}
+	
+	/**
+	 * Main entry point for the compiler interface.
+	 * 
+	 * @param __args Arguments to the main class.
 	 * @throws IOException On read errors.
 	 * @since 2020/11/21
 	 */
-	public static void main(String... __args)
+	public static void mainWrapped(String... __args)
 		throws IOException
 	{
 		// Push all arguments to the queue
@@ -170,7 +195,7 @@ public class Main
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/05/16
 	 */
-	private static void dumpCompile(AOTSettings __aotSettings,
+	public static void dumpCompile(AOTSettings __aotSettings,
 		Backend __backend, InputStream __inGlob,
 		OutputStream __out)
 		throws IOException, NullPointerException
@@ -205,7 +230,7 @@ public class Main
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/22
 	 */
-	private static void mainCompile(AOTSettings __aotSettings,
+	public static void mainCompile(AOTSettings __aotSettings,
 		Backend __backend, InputStream __inZip,
 		OutputStream __outGlob, Deque<String> __args)
 		throws IOException, NullPointerException
@@ -307,8 +332,7 @@ public class Main
 	 * @since 2020/11/27
 	 */
 	public static void mainRom(AOTSettings __aotSettings, Backend __backend,
-		OutputStream __out,
-		Deque<String> __args)
+		OutputStream __out, Deque<String> __args)
 		throws IOException, NullPointerException
 	{
 		if (__backend == null || __args == null || __out == null)

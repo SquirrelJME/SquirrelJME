@@ -20,4 +20,6 @@ dependencies
 	api project(":modules:common-vm")
 	api project(":modules:io")
 	api project(":modules:collections")
+	
+	testFixturesApi project(":modules:tac")
 }

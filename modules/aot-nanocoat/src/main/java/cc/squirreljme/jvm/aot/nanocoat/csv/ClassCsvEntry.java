@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.aot.nanocoat.csv;
 
+import cc.squirreljme.c.CFileName;
 import cc.squirreljme.c.CIdentifier;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import net.multiphasicapps.classfile.ClassName;
@@ -28,33 +29,33 @@ public class ClassCsvEntry
 	public final CIdentifier identifier;
 	
 	/** The header path. */
-	public final String headerPath;
+	public final CFileName header;
 	
 	/** The source path. */
-	public final String sourcePath;
+	public final CFileName source;
 	
 	/**
 	 * Registers the CSV entry.
 	 *
 	 * @param __thisName The name of this class.
 	 * @param __identifier The identifier to the class.
-	 * @param __headerPath The class header file.
-	 * @param __sourcePath The class source file.
+	 * @param __header The class header file.
+	 * @param __source The class source file.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/09/12
 	 */
 	public ClassCsvEntry(ClassName __thisName, CIdentifier __identifier,
-		String __headerPath, String __sourcePath)
+		CFileName __header, CFileName __source)
 		throws NullPointerException
 	{
 		if (__thisName == null || __identifier == null ||
-			__headerPath == null || __sourcePath == null)
+			__header == null || __source == null)
 			throw new NullPointerException("NARG");
 		
 		this.thisName = __thisName;
 		this.identifier = __identifier;
-		this.headerPath = __headerPath;
-		this.sourcePath = __sourcePath;
+		this.header = __header;
+		this.source = __source;
 	}
 	
 	/**
@@ -72,11 +73,11 @@ public class ClassCsvEntry
 		if (rv != 0)
 			return rv;
 		
-		rv = this.headerPath.compareTo(__b.headerPath);
+		rv = this.header.compareTo(__b.header);
 		if (rv != 0)
 			return rv;
 		
-		return this.sourcePath.compareTo(__b.sourcePath);
+		return this.source.compareTo(__b.source);
 	}
 	
 	/**

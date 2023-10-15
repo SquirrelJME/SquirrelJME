@@ -3,11 +3,17 @@
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_7">
     <output-test url="file://$MODULE_DIR$/../../../../modules/aot-nanocoat/build/classes/java/test" />
     <exclude-output />
-    <content url="file://$MODULE_DIR$/../../../../modules/aot-nanocoat/src/test" />
+    <content url="file://$MODULE_DIR$/../../../../modules/aot-nanocoat/src/test">
+      <sourceFolder url="file://$MODULE_DIR$/../../../../modules/aot-nanocoat/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../../modules/aot-nanocoat/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../../modules/aot-nanocoat/src/test/resources" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../../modules/aot-nanocoat/src/test/resources" type="java-test-resource" />
+    </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
     <orderEntry type="module" module-name="squirreljme.modules.aot-nanocoat.testFixtures" production-on-test="" />
     <orderEntry type="module" module-name="squirreljme.modules.aot.main" />
+    <orderEntry type="module" module-name="squirreljme.modules.aot.testFixtures" production-on-test="" />
     <orderEntry type="module" module-name="squirreljme.modules.tool-classfile.main" />
     <orderEntry type="module" module-name="squirreljme.modules.c-source-writer.main" />
     <orderEntry type="module" module-name="squirreljme.modules.csv.main" />

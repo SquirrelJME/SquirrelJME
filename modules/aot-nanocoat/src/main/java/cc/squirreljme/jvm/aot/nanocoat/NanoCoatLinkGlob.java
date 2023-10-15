@@ -98,7 +98,7 @@ public class NanoCoatLinkGlob
 	protected final ArchiveOutputQueue archive;
 	
 	/** The path to the header file. */
-	protected final String headerFilePath;
+	protected final CFileName headerFilePath;
 	
 	/** The class output CSV. */
 	final PrintStream _classesCsv;
@@ -145,7 +145,8 @@ public class NanoCoatLinkGlob
 			this.name = __aotSettings.name;
 		this.baseName = Utils.basicFileName(this.name);
 		this.headerFileName = CFileName.of(this.baseName + ".h");
-		this.headerFilePath = this.inModuleDirectory(this.headerFileName);
+		this.headerFilePath = CFileName.of(
+			this.inModuleDirectory(this.headerFileName));
 		this.rootSourceFileName = CFileName.of(this.baseName + ".c");
 		this.headerGuard = CIdentifier.of("SJME_ROM_" +
 			this.baseName.toUpperCase() + "_H");
@@ -274,7 +275,7 @@ public class NanoCoatLinkGlob
 			{
 				ps.printf("%s,%s,%s,%s",
 					entry.thisName, entry.identifier,
-					entry.headerPath, entry.sourcePath);
+					entry.header, entry.source);
 				ps.println();
 			}
 			
@@ -453,7 +454,8 @@ public class NanoCoatLinkGlob
 	 * @since 2023/09/12
 	 */
 	public void registerClass(ClassName __thisName,
-		CIdentifier __identifier, String __headerPath, String __sourcePath)
+		CIdentifier __identifier, CFileName __headerPath,
+		CFileName __sourcePath)
 		throws NullPointerException
 	{
 		if (__thisName == null || __identifier == null ||

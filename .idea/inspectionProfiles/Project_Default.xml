@@ -16,7 +16,9 @@
     <inspection_tool class="64b983f1-24ea-3e21-ab1a-d1f799d73f9b" enabled="true" level="INFORMATION" enabled_by_default="true" editorAttributes="WRONG_REFERENCES_ATTRIBUTES" />
     <inspection_tool class="65a552e9-f62d-3bdb-a825-d751c50c4ba6" enabled="true" level="INFORMATION" enabled_by_default="true" editorAttributes="DEPRECATED_ATTRIBUTES" />
     <inspection_tool class="9be1bd10-89f8-3737-88e5-9b5e0640e57e" enabled="true" level="ERROR" enabled_by_default="true" editorAttributes="ERRORS_ATTRIBUTES" />
-    <inspection_tool class="AbstractClassWithOnlyOneDirectInheritor" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="AbstractClassWithOnlyOneDirectInheritor" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Tests" level="WARNING" enabled="false" />
+    </inspection_tool>
     <inspection_tool class="AbstractMethodOverridesAbstractMethod" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="ignoreJavaDoc" value="true" />
     </inspection_tool>
@@ -75,6 +77,9 @@
     </inspection_tool>
     <inspection_tool class="ClassInheritanceDepth" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="Java API Packages (Include)" level="WARNING" enabled="false">
+        <option name="m_limit" value="2" />
+      </scope>
+      <scope name="Tests" level="WARNING" enabled="false">
         <option name="m_limit" value="2" />
       </scope>
       <option name="m_limit" value="2" />
@@ -415,6 +420,7 @@
     </inspection_tool>
     <inspection_tool class="MisspelledHeader" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <option name="CUSTOM_HEADERS">
+        <header value="argument-1" />
         <header value="multi-parameters" />
         <header value="result" />
         <header value="secondary-key" />
@@ -814,6 +820,7 @@
       <option name="ADD_APPLET_TO_ENTRIES" value="true" />
       <option name="ADD_SERVLET_TO_ENTRIES" value="true" />
       <option name="ADD_NONJAVA_TO_ENTRIES" value="true" />
+      <option name="selected" value="true" />
     </inspection_tool>
   </profile>
 </component>

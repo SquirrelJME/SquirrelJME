@@ -9,11 +9,70 @@
 
 package cc.squirreljme.jvm.aot.nanocoat.csv;
 
+import cc.squirreljme.c.CFileName;
+import cc.squirreljme.c.CIdentifier;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
- * Not Described.
+ * Represents a shared entry.
  *
  * @since 2023/09/25
  */
-public class SharedCsvEntry
+public final class SharedCsvEntry
 {
+	/** The prefix of the entry. */
+	public final String prefix;
+	
+	/** The identifier of the entry. */
+	public final CIdentifier identifier;
+	
+	/** The source file. */
+	public final CFileName source;
+	
+	/** The header this is in. */
+	public final CFileName header;
+	
+	/**
+	 * Initializes the entry.
+	 *
+	 * @param __prefix The prefix of the entry.
+	 * @param __identifier The identifier that this uses.
+	 * @param __header The header for inclusion.
+	 * @param __source The source containing the shared code.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/10/14
+	 */
+	public SharedCsvEntry(String __prefix, CIdentifier __identifier,
+		CFileName __header, CFileName __source)
+		throws NullPointerException
+	{
+		if (__prefix == null || __identifier == null ||
+			__header == null || __source == null)
+			throw new NullPointerException("NARG");
+		
+		this.prefix = __prefix;
+		this.identifier = __identifier;
+		this.header = __header;
+		this.source = __source;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/10/14
+	 */
+	@Override
+	public boolean equals(Object __o)
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/10/14
+	 */
+	@Override
+	public int hashCode()
+	{
+		throw Debugging.todo();
+	}
 }

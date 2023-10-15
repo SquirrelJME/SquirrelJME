@@ -12,6 +12,7 @@ package cc.squirreljme.jvm.aot.nanocoat;
 import cc.squirreljme.c.CBasicExpression;
 import cc.squirreljme.c.CExpressionBuilder;
 import cc.squirreljme.c.CFile;
+import cc.squirreljme.c.CFileName;
 import cc.squirreljme.c.CIdentifier;
 import cc.squirreljme.c.CSourceWriter;
 import cc.squirreljme.c.CStructVariableBlock;
@@ -84,7 +85,7 @@ public class NanoCoatBackend
 		// Record the added file, keeping it sorted
 		String baseName = Utils.basicFileName(
 			processor.classIdentifier + ".c");
-		String sourcePath = glob.inModuleDirectory(baseName);
+		CFileName sourcePath = CFileName.of(glob.inModuleDirectory(baseName));
 		
 		// Write class identifiers
 		glob.registerClass(classFile.thisName(), processor.classInfo.name,

@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm.aot.nanocoat.csv;
 
+import cc.squirreljme.c.CFile;
+import cc.squirreljme.c.CFileName;
 import cc.squirreljme.c.CIdentifier;
 import cc.squirreljme.csv.CsvDeserializerSerializer;
 import cc.squirreljme.csv.CsvSerializerResult;
@@ -36,6 +38,24 @@ public enum CsvType
 		 * @since 2023/09/25
 		 */
 		@Override
+		public ClassCsvEntry deserialize(Map<String, String> __values)
+			throws NullPointerException
+		{
+			if (__values == null)
+				throw new NullPointerException("NARG");
+			
+			return new ClassCsvEntry(
+				new ClassName(__values.get("class")),
+				CIdentifier.of(__values.get("identifier")),
+				CFileName.of(__values.get("header")),
+				CFileName.of(__values.get("source")));
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/09/25
+		 */
+		@Override
 		public void serialize(Object __input, CsvSerializerResult __result)
 			throws NullPointerException
 		{
@@ -48,10 +68,10 @@ public enum CsvType
 				entry.thisName.toString());
 			__result.value("identifier",
 				entry.identifier.toString());
-			__result.value("headerPath",
-				entry.headerPath);
-			__result.value("sourcePath",
-				entry.sourcePath);
+			__result.value("header",
+				entry.header.toString());
+			__result.value("source",
+				entry.source.toString());
 			
 			// End of row
 			__result.endRow();
@@ -73,24 +93,6 @@ public enum CsvType
 				"header",
 				"source");
 		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2023/09/25
-		 */
-		@Override
-		public Object deserialize(Map<String, String> __values)
-			throws NullPointerException
-		{
-			if (__values == null)
-				throw new NullPointerException("NARG");
-			
-			return new ClassCsvEntry(
-				new ClassName(__values.get("class")),
-				CIdentifier.of(__values.get("identifier")),
-				__values.get("header"),
-				__values.get("source"));
-		}
 	},
 	
 	/** Modules. */
@@ -107,7 +109,11 @@ public enum CsvType
 			if (__values == null)
 				throw new NullPointerException("NARG");
 			
-			throw Debugging.todo();
+			return new ModuleCsvEntry(
+				__values.get("name"),
+				CIdentifier.of(__values.get("identifier")),
+				CFileName.of(__values.get("header")),
+				CFileName.of(__values.get("source")));
 		}
 		
 		/**
@@ -123,7 +129,16 @@ public enum CsvType
 			
 			ModuleCsvEntry entry = (ModuleCsvEntry)__input;
 			
-			throw Debugging.todo();
+			__result.value("name",
+				entry.name);
+			__result.value("identifier",
+				entry.identifier.toString());
+			__result.value("header",
+				entry.header.toString());
+			__result.value("source",
+				entry.source.toString());
+			
+			__result.endRow();
 		}
 		
 		/**
@@ -137,7 +152,10 @@ public enum CsvType
 			if (__result == null)
 				throw new NullPointerException("NARG");
 			
-			throw Debugging.todo();
+			__result.headers("name",
+				"identifier",
+				"header",
+				"source");
 		}
 	},
 	
@@ -149,13 +167,42 @@ public enum CsvType
 		 * @since 2023/09/25
 		 */
 		@Override
+		public SharedCsvEntry deserialize(Map<String, String> __values)
+			throws NullPointerException
+		{
+			if (__values == null)
+				throw new NullPointerException("NARG");
+			
+			return new SharedCsvEntry(
+				__values.get("prefix"),
+				CIdentifier.of(__values.get("identifier")),
+				CFileName.of(__values.get("header")),
+				CFileName.of(__values.get("source")));
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/09/25
+		 */
+		@Override
 		public void serialize(Object __input, CsvSerializerResult __result)
 			throws NullPointerException
 		{
 			if (__input == null || __result == null)
 				throw new NullPointerException("NARG");
 			
-			throw Debugging.todo();
+			SharedCsvEntry input = (SharedCsvEntry)__input;
+			
+			__result.value("prefix",
+				input.prefix);
+			__result.value("identifier",
+				input.identifier.toString());
+			__result.value("header",
+				input.header.toString());
+			__result.value("source",
+				input.source.toString());
+			
+			__result.endRow();
 		}
 		
 		/**
@@ -169,27 +216,31 @@ public enum CsvType
 			if (__result == null)
 				throw new NullPointerException("NARG");
 			
-			throw Debugging.todo();
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2023/09/25
-		 */
-		@Override
-		public Object deserialize(Map<String, String> __values)
-			throws NullPointerException
-		{
-			if (__values == null)
-				throw new NullPointerException("NARG");
-			
-			throw Debugging.todo();
+			__result.headers("prefix",
+				"identifier",
+				"header",
+				"source");
 		}
 	},
 	
 	/** Resources. */
 	RESOURCES("resources.csv", ResourceCsvEntry.class)
 	{
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/09/25
+		 */
+		@Override
+		public ResourceCsvEntry deserialize(Map<String, String> __values)
+			throws NullPointerException
+		{
+			if (__values == null)
+				throw new NullPointerException("NARG");
+			
+			throw Debugging.todo();
+		}
+		
 		/**
 		 * {@inheritDoc}
 		 * @since 2023/09/25
@@ -213,20 +264,6 @@ public enum CsvType
 			throws NullPointerException
 		{
 			if (__result == null)
-				throw new NullPointerException("NARG");
-			
-			throw Debugging.todo();
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2023/09/25
-		 */
-		@Override
-		public Object deserialize(Map<String, String> __values)
-			throws NullPointerException
-		{
-			if (__values == null)
 				throw new NullPointerException("NARG");
 			
 			throw Debugging.todo();

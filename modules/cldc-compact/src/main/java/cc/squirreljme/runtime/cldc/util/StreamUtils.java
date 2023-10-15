@@ -12,6 +12,7 @@ package cc.squirreljme.runtime.cldc.util;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.MemoryProfileType;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -98,6 +99,28 @@ public final class StreamUtils
 		
 		// Use this size
 		return allocSize;
+	}
+	
+	/**
+	 * Copies the given byte array to the given output stream, the stream
+	 * is not closed by this method.
+	 * 
+	 * @param __in The input byte array.
+	 * @param __out The output stream.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/10/14
+	 */
+	public static void copy(byte[] __in, OutputStream __out)
+		throws IOException, NullPointerException
+	{
+		if (__in == null || __out == null)
+			throw new NullPointerException("NARG");
+		
+		try (ByteArrayInputStream in = new ByteArrayInputStream(__in))
+		{
+			StreamUtils.copy(in, __out, StreamUtils.buffer(null));
+		}
 	}
 	
 	/**

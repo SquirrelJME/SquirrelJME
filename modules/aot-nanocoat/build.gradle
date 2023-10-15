@@ -29,4 +29,6 @@ dependencies
 	api project(":modules:tool-classfile")
 	api project(":modules:c-source-writer")
 	api project(":modules:csv")
+	
+	testImplementation(testFixtures(project(":modules:aot")))
 }

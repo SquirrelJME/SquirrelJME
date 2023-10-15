@@ -109,6 +109,7 @@ abstract class __CoreTest__
 					case "javase":		vmType = VMType.JAVA_SE; break;
 					case "springcoat":	vmType = VMType.SPRINGCOAT; break;
 					case "summercoat":	vmType = VMType.SUMMERCOAT; break;
+					case "nanocoat":	vmType = VMType.NANOCOAT; break;
 					case "anycoat":		vmType = __CoreTest__._ANYCOAT; break;
 				}
 			

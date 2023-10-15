@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm.aot.nanocoat.csv;
 
+import cc.squirreljme.c.CFileName;
+import cc.squirreljme.c.CIdentifier;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -23,13 +25,13 @@ public class ModuleCsvEntry
 	public final String name;
 	
 	/** The module identifier. */
-	public final String identifier;
+	public final CIdentifier identifier;
 	
 	/** The header file. */
-	public final String header;
+	public final CFileName header;
 	
 	/** The source file. */
-	public final String source;
+	public final CFileName source;
 	
 	/**
 	 * Initializes the module entry.
@@ -38,11 +40,11 @@ public class ModuleCsvEntry
 	 * @param __identifier The module identifier.
 	 * @param __header The module header.
 	 * @param __source The module source.
-	 * @throws NullPointerException
+	 * @throws NullPointerException On null arguments.
 	 * @since 2023/09/25
 	 */
-	public ModuleCsvEntry(String __name, String __identifier, String __header,
-		String __source)
+	public ModuleCsvEntry(String __name, CIdentifier __identifier,
+		CFileName __header, CFileName __source)
 		throws NullPointerException
 	{
 		if (__name == null || __identifier == null || __header == null ||
