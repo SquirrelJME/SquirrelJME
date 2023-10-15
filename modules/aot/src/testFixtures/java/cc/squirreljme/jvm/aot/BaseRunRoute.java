@@ -73,7 +73,10 @@ public abstract class BaseRunRoute
 					throw Debugging.todo();
 				
 				// Run compilation step
-				try (ByteArrayOutputStream out = new ByteArrayOutputStream())
+				try (OutputStream out = Files.newOutputStream(tempFiles[i],
+					StandardOpenOption.CREATE_NEW,
+					StandardOpenOption.WRITE,
+					StandardOpenOption.TRUNCATE_EXISTING))
 				{
 					// Run compilation step
 					Main.mainCompile(aotSettings,
@@ -81,22 +84,6 @@ public abstract class BaseRunRoute
 						null/*zip*/,
 						out,
 						args);
-					
-					// Store output for later ROM linking step
-					byte[] libOut = out.toByteArray();
-					
-					// Should be positive size and not be blank
-					this.secondary("compile-" + i, libOut.length > 0);
-					
-					// Write to target file
-					try (OutputStream dump = Files.newOutputStream(
-						tempFiles[i],
-						StandardOpenOption.WRITE,
-						StandardOpenOption.CREATE_NEW,
-						StandardOpenOption.TRUNCATE_EXISTING))
-					{
-						StreamUtils.copy(libOut, dump);
-					}
 				}
 			}
 			
