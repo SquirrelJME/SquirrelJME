@@ -375,28 +375,15 @@ public class NanoCoatBackend
 			out.println();
 			
 			// Build ROM file list
-			boolean first = true;
 			for (ModuleCsvEntry entry : __csv)
 			{
-				// name,identifier,header,source
-				/*if (true)
-					throw Debugging.todo();*/
-				/*String[] values = StringUtils.basicSplit(',', entry);
-				
-				// Skip first line
-				if (first)
-				{
-					first = false;
-					continue;
-				}
-				
 				// Write result
 				out.printf("squirreljme_romLibrary_include(" +
 					"\"%s\" \"%s\" \"%s\" \"%s\")",
 					__aotSettings.sourceSet,
 					__aotSettings.clutterLevel,
 					entry.name, entry.identifier);
-				out.println();*/
+				out.println();
 			}
 			
 			// Write 
