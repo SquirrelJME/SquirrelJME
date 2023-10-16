@@ -9,6 +9,9 @@
 
 package cc.squirreljme.c;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+
 /**
  * Represents a file name in C.
  *
@@ -18,7 +21,10 @@ public final class CFileName
 	implements Comparable<CFileName>
 {
 	/** The file name. */
-	protected String fileName;
+	protected final String fileName;
+	
+	/** Basename cache. */
+	private volatile Reference<CFileName> _baseName;
 	
 	/**
 	 * Initializes the C file name.
@@ -68,6 +74,34 @@ public final class CFileName
 		
 		// Is fine
 		this.fileName = __fileName;
+	}
+	
+	/**
+	 * Returns the base name of this file.
+	 *
+	 * @return The base name.
+	 * @since 2023/10/15
+	 */
+	public CFileName baseName()
+	{
+		Reference<CFileName> ref = this._baseName;
+		CFileName rv;
+		
+		if (ref == null || (rv = ref.get()) == null)
+		{
+			String fileName = this.fileName;
+			int lastSlash = fileName.lastIndexOf('/');
+			
+			// Only if there is a slash component may the basename be different
+			if (lastSlash >= 0)
+				rv = new CFileName(fileName.substring(lastSlash + 1));
+			else
+				rv = this;
+			
+			this._baseName = new WeakReference<>(rv);
+		}
+		
+		return rv;
 	}
 	
 	/**

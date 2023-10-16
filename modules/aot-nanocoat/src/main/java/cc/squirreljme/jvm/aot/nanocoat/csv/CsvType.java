@@ -13,6 +13,7 @@ import cc.squirreljme.c.CFile;
 import cc.squirreljme.c.CFileName;
 import cc.squirreljme.c.CIdentifier;
 import cc.squirreljme.csv.CsvDeserializerSerializer;
+import cc.squirreljme.csv.CsvSerializer;
 import cc.squirreljme.csv.CsvSerializerResult;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Arrays;
@@ -330,5 +331,25 @@ public enum CsvType
 			throw new ClassCastException("CLCL");
 		
 		return (Set<T>)((Object)__in);
-	}	
+	}
+	
+	/**
+	 * Casts the serializer accordingly to the given type.
+	 *
+	 * @param <T> The type to cast to.
+	 * @param __type The type to cast to.
+	 * @return The cast type.
+	 * @throws ClassCastException If the type is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/10/15
+	 */
+	@SuppressWarnings("unchecked")
+	public final <T> CsvSerializer<T> serializer(Class<T> __type)
+		throws ClassCastException, NullPointerException
+	{
+		if (!__type.isAssignableFrom(this.entryType))
+			throw new ClassCastException("CAST");
+		
+		return (CsvSerializer<T>)((Object)this);
+	}
 }

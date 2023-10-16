@@ -15,14 +15,17 @@ import cc.squirreljme.c.CIdentifier;
 import cc.squirreljme.c.CPPBlock;
 import cc.squirreljme.c.CVariable;
 import cc.squirreljme.jvm.aot.nanocoat.ArchiveOutputQueue;
+import cc.squirreljme.jvm.aot.nanocoat.csv.SharedCsvEntry;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import cc.squirreljme.runtime.cldc.util.SortedTreeSet;
 import java.io.IOException;
 import java.lang.ref.Reference;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import net.multiphasicapps.collections.UnmodifiableList;
 import net.multiphasicapps.collections.UnmodifiableSet;
 
 /**
@@ -40,7 +43,7 @@ import net.multiphasicapps.collections.UnmodifiableSet;
 public abstract class StaticTable<K, V>
 {
 	/** Entries within the static table. */
-	protected final Map<K, CVariable> keys =
+	protected final Map<K, __TableEntry__> keys =
 		new SortedTreeMap<>();
 	
 	/** Variable identifiers, used to check for collisions. */
@@ -103,6 +106,27 @@ public abstract class StaticTable<K, V>
 		throws IOException, NullPointerException;
 	
 	/**
+	 * Returns all the CSV entries in this table.
+	 *
+	 * @return The CSV entries in this table.
+	 * @since 2023/10/15
+	 */
+	public Iterable<SharedCsvEntry> csvEntries()
+	{
+		Map<K, __TableEntry__> keys = this.keys;
+		
+		// Setup table with a predetermined size
+		int n = keys.size();
+		List<SharedCsvEntry> rv = new ArrayList<>(n);
+		
+		// Load in table
+		for (__TableEntry__ entry : keys.values())
+			rv.add(entry.csvEntry);
+		
+		return UnmodifiableList.of(rv);
+	}
+	
+	/**
 	 * Returns the identifiers in the static table.
 	 *
 	 * @return The static table identifiers.
@@ -128,12 +152,12 @@ public abstract class StaticTable<K, V>
 			throw new NullPointerException("NARG");
 		
 		// Use already cached name
-		Map<K, CVariable> keys = this.keys;
+		Map<K, __TableEntry__> keys = this.keys;
 		if (keys.containsKey(__key))
 		{
-			CVariable var = keys.get(__key);
+			__TableEntry__ var = keys.get(__key);
 			if (var != null)
-				return var.name;
+				return var.variable.name;
 		}
 		
 		// Otherwise build the identity
@@ -182,9 +206,9 @@ public abstract class StaticTable<K, V>
 			throw new NullPointerException("NARG");
 		
 		// Already in the map?
-		Map<K, CVariable> keys = this.keys;
+		Map<K, __TableEntry__> keys = this.keys;
 		if (keys.containsKey(__key))
-			return keys.get(__key);
+			return keys.get(__key).variable;
 		
 		// Identify the key first, to check for collision
 		CIdentifier identity = this.identify(__key);
@@ -208,7 +232,6 @@ public abstract class StaticTable<K, V>
 		// Build variable
 		StaticTableType type = this.type;
 		CVariable result = CVariable.of(type.cType, identity);
-		keys.put(__key, result);
 		
 		// We need the table manager from this point on
 		StaticTableManager manager = this.__manager();
@@ -220,6 +243,12 @@ public abstract class StaticTable<K, V>
 		String headerFile = String.format("shared/%s/include/%s.h",
 			type.prefix,
 			result.name);
+		
+		keys.put(__key, new __TableEntry__(result,
+			new SharedCsvEntry(type.prefix,
+				result.name,
+				CFileName.of(headerFile),
+				CFileName.of(sourceFile))));
 		
 		ArchiveOutputQueue archive = manager.archive;
 		

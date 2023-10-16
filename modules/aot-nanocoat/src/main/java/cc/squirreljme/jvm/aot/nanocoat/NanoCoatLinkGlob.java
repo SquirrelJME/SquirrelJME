@@ -20,11 +20,15 @@ import cc.squirreljme.c.CPPBlock;
 import cc.squirreljme.c.CSourceWriter;
 import cc.squirreljme.c.CStructVariableBlock;
 import cc.squirreljme.c.CVariable;
+import cc.squirreljme.csv.CsvWriter;
 import cc.squirreljme.jvm.aot.AOTSettings;
 import cc.squirreljme.jvm.aot.LinkGlob;
 import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
 import cc.squirreljme.jvm.aot.nanocoat.csv.ClassCsvEntry;
+import cc.squirreljme.jvm.aot.nanocoat.csv.CsvType;
+import cc.squirreljme.jvm.aot.nanocoat.csv.ModuleCsvEntry;
+import cc.squirreljme.jvm.aot.nanocoat.csv.SharedCsvEntry;
 import cc.squirreljme.jvm.aot.nanocoat.table.StaticTable;
 import cc.squirreljme.jvm.aot.nanocoat.table.StaticTableManager;
 import cc.squirreljme.jvm.aot.nanocoat.table.StaticTableType;
@@ -46,6 +50,9 @@ import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 public class NanoCoatLinkGlob
 	implements LinkGlob
 {
+	/** The module information. */
+	protected final ModuleCsvEntry moduleEntry;
+	
 	/** The name of this glob. */
 	protected final String name;
 	
@@ -100,9 +107,6 @@ public class NanoCoatLinkGlob
 	/** The path to the header file. */
 	protected final CFileName headerFilePath;
 	
-	/** The class output CSV. */
-	final PrintStream _classesCsv;
-	
 	/** The C header block. */
 	volatile CBlock _headerBlock;
 	
@@ -143,6 +147,7 @@ public class NanoCoatLinkGlob
 			this.name = __aotSettings.name + "-" + this.aotSettings.sourceSet;
 		else
 			this.name = __aotSettings.name;
+		
 		this.baseName = Utils.basicFileName(this.name);
 		this.headerFileName = CFileName.of(this.baseName + ".h");
 		this.headerFilePath = CFileName.of(
@@ -162,6 +167,12 @@ public class NanoCoatLinkGlob
 				.type().constType(),
 			this.baseName + "__resources");
 		
+		// Initialize module information
+		this.moduleEntry = new ModuleCsvEntry(this.name,
+			this.libraryInfo.name,
+			this.headerFilePath.baseName(),
+			this.rootSourceFileName.baseName());
+		
 		// Setup output
 		try
 		{
@@ -171,11 +182,6 @@ public class NanoCoatLinkGlob
 			// Setup source root writing
 			this.rootSourceOut = archive.nextCFile(
 				this.inModuleDirectory(this.rootSourceFileName));
-			
-			// Class list
-			this._classesCsv = archive.nextPrintStream(
-					this.inModuleDirectory("classes.csv"));
-			this._classesCsv.println("class,identifier,header,source");
 		}
 		catch (IOException __e)
 		{
@@ -208,22 +214,19 @@ public class NanoCoatLinkGlob
 		
 		// Module information
 		try (PrintStream ps = archive.nextPrintStream(
-			this.inModuleDirectory("modules.csv")))
+			this.inModuleDirectory("modules.csv")); 
+			CsvWriter<ModuleCsvEntry> csv = new CsvWriter<ModuleCsvEntry>(
+				CsvType.MODULE.serializer(ModuleCsvEntry.class), ps))
 		{
-			ps.println("name,identifier,header,source");
-			ps.print(this.name);
-			ps.print(',');
-			ps.print(this.baseName);
-			ps.print(',');
-			ps.print(this.headerFileName);
-			ps.print(',');
-			ps.println(this.rootSourceFileName);
+			csv.writeAll(this.moduleEntry);
 		}
 		
 		// Write all the shared input tables
 		StaticTableManager tables = this.tables;
 		try (PrintStream ps = archive.nextPrintStream(
-			this.inModuleDirectory("shared.csv")))
+			this.inModuleDirectory("shared.csv"));
+			CsvWriter<SharedCsvEntry> csv = new CsvWriter<>(
+				CsvType.SHARED.serializer(SharedCsvEntry.class), ps))
 		{
 			// Write all table types
 			ps.println("prefix,identifier,header,source");
@@ -237,49 +240,18 @@ public class NanoCoatLinkGlob
 				StaticTable<?, ?> table = tables.table(type.keyType,
 					type.valueType, type);
 				
-				// Write prefix and table info
-				String prefix = type.prefix;
-				for (CIdentifier identifier : table.identifiers())
-				{
-					ps.print(prefix);
-					ps.print(',');
-					ps.print(identifier);
-					
-					// Header
-					ps.print(',');
-					ps.print("shared/");
-					ps.print(prefix);
-					ps.print("/include/");
-					ps.print(identifier);
-					ps.print(".h");
-					
-					// Source
-					ps.print(',');
-					ps.print("shared/");
-					ps.print(prefix);
-					ps.print("/");
-					ps.print(identifier);
-					ps.print(".c");
-					
-					// Done
-					ps.println();
-				}
+				// Write table information
+				csv.writeAll(table.csvEntries());
 			}
-			ps.flush();
 		}
 		
 		// Finish off the class CSV
-		try (PrintStream ps = this._classesCsv)
+		try (PrintStream ps = archive.nextPrintStream(
+			this.inModuleDirectory("classes.csv"));
+			CsvWriter<ClassCsvEntry> csv = new CsvWriter<>(
+				CsvType.CLASSES.serializer(ClassCsvEntry.class), ps))
 		{
-			for (ClassCsvEntry entry : this.classes.values())
-			{
-				ps.printf("%s,%s,%s,%s",
-					entry.thisName, entry.identifier,
-					entry.header, entry.source);
-				ps.println();
-			}
-			
-			ps.flush();
+			csv.writeAll(this.classes.values());
 		}
 		
 		// Finish the header output
