@@ -57,7 +57,7 @@ public class NanoCoatLinkGlob
 	protected final String name;
 	
 	/** The base name of the source file. */
-	protected final String baseName;
+	protected final CIdentifier baseName;
 	
 	/** The name of this root source output file. */
 	protected final CFileName rootSourceFileName;
@@ -148,13 +148,13 @@ public class NanoCoatLinkGlob
 		else
 			this.name = __aotSettings.name;
 		
-		this.baseName = Utils.basicFileName(this.name);
+		this.baseName = CIdentifier.of(Utils.basicFileName(this.name));
 		this.headerFileName = CFileName.of(this.baseName + ".h");
 		this.headerFilePath = CFileName.of(
 			this.inModuleDirectory(this.headerFileName));
 		this.rootSourceFileName = CFileName.of(this.baseName + ".c");
 		this.headerGuard = CIdentifier.of("SJME_ROM_" +
-			this.baseName.toUpperCase() + "_H");
+			this.baseName.toString().toUpperCase() + "_H");
 		
 		// Library information
 		this.libraryInfo = CVariable.of(JvmTypes.STATIC_LIBRARY
@@ -169,7 +169,7 @@ public class NanoCoatLinkGlob
 		
 		// Initialize module information
 		this.moduleEntry = new ModuleCsvEntry(this.name,
-			this.libraryInfo.name,
+			this.baseName,
 			this.headerFilePath.baseName(),
 			this.rootSourceFileName.baseName());
 		
