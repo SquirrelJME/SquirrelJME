@@ -14,7 +14,7 @@ dependencies {
 	implementation "ca.mcgill.sable:jasmin:3.0.3"
 	
 	// ProGuard, minification
-	implementation "com.guardsquare:proguard-base:7.3.2"
+	implementation "com.guardsquare:proguard-base:7.4.0"
 	implementation "com.guardsquare:proguard-core:9.1.0"
 	
 	// Lombok for simpler getters/setters
