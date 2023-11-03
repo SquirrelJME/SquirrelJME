@@ -8,7 +8,21 @@
 // -------------------------------------------------------------------------*/
 
 #include "test.h"
+#include "elevator.h"
 #include "proto.h"
+
+/** Elevator set for test. */
+static const sjme_elevatorSet elevatorNvmLocalPopInteger[] =
+{
+	0,
+	{
+			{
+				beep,
+			},
+			{
+			}
+	}
+};
 
 sjme_testResult testNvmLocalPopInteger(sjme_test* test)
 {
@@ -16,3 +30,5 @@ sjme_testResult testNvmLocalPopInteger(sjme_test* test)
 	return SJME_TEST_RESULT_FAIL;
 }
 
+
+#pragma clang diagnostic pop

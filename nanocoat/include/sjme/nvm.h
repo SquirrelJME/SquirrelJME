@@ -183,7 +183,7 @@ typedef struct sjme_basicTypeIds
 	jint count;
 	
 	/** The IDs. */
-	const sjme_basicTypeId ids[];
+	const sjme_basicTypeId ids[sjme_flexibleArrayCount];
 } sjme_basicTypeIds;
 
 /**
@@ -334,7 +334,7 @@ typedef struct sjme_static_classFields
 	jint count;
 	
 	/** Fields. */
-	sjme_static_classField fields[];
+	sjme_static_classField fields[sjme_flexibleArrayCount];
 } sjme_static_classFields;
 
 /**
@@ -423,7 +423,7 @@ typedef struct sjme_static_classMethods
 	jint count;
 	
 	/** Methods. */
-	sjme_static_classMethod methods[];
+	sjme_static_classMethod methods[sjme_flexibleArrayCount];
 } sjme_static_classMethods;
 
 typedef struct sjme_static_classInterface
@@ -437,7 +437,7 @@ typedef struct sjme_static_classInterfaces
 	jint count;
 	
 	/** Interfaces. */
-	sjme_static_classInterface interfaces[];
+	sjme_static_classInterface interfaces[sjme_flexibleArrayCount];
 } sjme_static_classInterfaces;
 
 typedef struct sjme_static_resource
@@ -452,7 +452,7 @@ typedef struct sjme_static_resource
 	jint size;
 	
 	/** The resource data. */
-	const jbyte data[];
+	const jbyte data[sjme_flexibleArrayCount];
 } sjme_static_resource;
 
 typedef struct sjme_static_linkage_data_classObject
@@ -568,7 +568,7 @@ typedef struct sjme_static_linkages
 	jint count;
 	
 	/** The define linkages. */
-	sjme_static_linkage linkages[];
+	sjme_static_linkage linkages[sjme_flexibleArrayCount];
 } sjme_static_linkages;
 
 typedef struct sjme_static_classInfo
@@ -604,7 +604,7 @@ typedef struct sjme_static_library_classes
 	jint count;
 	
 	/** Class set. */
-	const struct sjme_static_classInfo* classes[];
+	const struct sjme_static_classInfo* classes[sjme_flexibleArrayCount];
 } sjme_static_library_classes;
 
 typedef struct sjme_static_library_resources
@@ -613,7 +613,7 @@ typedef struct sjme_static_library_resources
 	jint count;
 	
 	/** Resource set. */
-	const struct sjme_static_resource* resources[];
+	const struct sjme_static_resource* resources[sjme_flexibleArrayCount];
 } sjme_static_library_resources;
 
 typedef struct sjme_static_library
@@ -718,7 +718,7 @@ typedef struct sjme_static_libraries
 	jint count;
 	
 	/** The libraries. */
-	const sjme_static_library* libraries[];
+	const sjme_static_library* libraries[sjme_flexibleArrayCount];
 } sjme_static_libraries;
 
 /**

@@ -120,6 +120,7 @@ extern "C" {
 	#define SJME_CONFIG_ROM9_ADDR NULL
 #endif
 
+/* Visual C++. */
 #if defined(_MSC_VER)
 	#include <sal.h>
 	
@@ -164,6 +165,9 @@ extern "C" {
 	
 	/** Output value range. */
 	#define sjme_attrOutRange(lo, hi) _Out_range_((lo), (hi))
+
+	/** Flexible array count, MSVC assumes blank. */
+	#define sjme_flexibleArrayCount
 #elif defined(__clang__) || defined(__GNUC__)
 	/* Clang has special analyzer stuff, but also same as GCC otherwise. */
 	#if defined(__clang__)
@@ -315,6 +319,11 @@ extern "C" {
 
 /** Negative one to positive. */
 #define sjme_attrOutNegativeOnePositive sjme_attrOutRange(-1, INT32_MAX)
+
+#if !defined(sjme_flexibleArrayCount)
+	/** Flexible array count, zero by default. */
+	#define sjme_flexibleArrayCount 0
+#endif
 
 /*--------------------------------------------------------------------------*/
 
