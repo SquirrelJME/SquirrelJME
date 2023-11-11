@@ -60,7 +60,7 @@ void sjme_messageR(sjme_attrInNullable const char* file,
 	sjme_attrInNullable sjme_attrFormatArg const char* message, ...)
 	sjme_attrFormatOuter(3, 4);
 #endif
-	
+
 /**
  * Prints a debug message
  * 
@@ -70,6 +70,33 @@ void sjme_messageR(sjme_attrInNullable const char* file,
  */
 #define sjme_message(...) SJME_ONLY_IN_DEBUG( \
 	sjme_messageR(SJME_DEBUG_FILE_LINE_FUNC, __VA_ARGS__))
+
+/**
+ * Indicates a fatal error and exits the program.
+ * 
+ * @param file The file printing from.
+ * @param line The line printing from.
+ * @param func The function printing from.
+ * @param message The @c printf style message.
+ * @param ... Any @c printf style arguments.
+ * @return Never returns.
+ * @since 2023/11/11 
+ */
+void sjme_dieR(sjme_attrInNullable const char* file,
+	sjme_attrInValue int line,
+	sjme_attrInNullable const char* func,
+	sjme_attrInNullable sjme_attrFormatArg const char* message, ...)
+	sjme_attrReturnNever sjme_attrFormatOuter(3, 4);
+
+/**
+ * Indicates a fatal error and exits the program.
+ * 
+ * @param message The @c printf style message.
+ * @param ... Any @c printf style arguments.
+ * @return Never returns.
+ * @since 2023/11/11 
+ */
+#define sjme_die(...) sjme_dieR(SJME_DEBUG_FILE_LINE_FUNC, __VA_ARGS__)
 
 /**
  * Indicates a To-Do and then terminates the program.

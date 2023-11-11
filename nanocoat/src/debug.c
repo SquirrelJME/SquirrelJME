@@ -49,6 +49,40 @@ void sjme_messageR(const char* file, int line,
 }
 #endif
 
+void sjme_dieR(const char* file, int line,
+	const char* func, const char* message, ...)
+{
+	char buf[DEBUG_BUF];
+	va_list args;
+	
+	/* Load message buffer. */
+	if (message == NULL)
+		strncpy(buf, "No message", DEBUG_BUF);
+	else
+	{
+		va_start(args, message);
+		memset(buf, 0, sizeof(buf));
+		vsnprintf(buf, DEBUG_BUF, message, args);
+		va_end(args);
+	}
+	
+	/* Print output message. */
+	if (file != NULL || line > 0 || func != NULL)
+		fprintf(stderr, "FATAL (%s:%d in %s()): %s\n",
+			file, line, func, buf);
+	else
+		fprintf(stderr, "DATA: %s\n",
+			buf);
+	
+	/* Exit and stop. */
+#if !defined(SJME_CONFIG_RELEASE)
+	abort();
+#endif
+	
+	/* Exit after abort happens, it can be ignored in debugging. */
+	exit(EXIT_FAILURE);
+}
+
 void sjme_todoR(const char* file, int line,
 	const char* func, const char* message, ...)
 {

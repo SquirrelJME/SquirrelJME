@@ -31,6 +31,23 @@ extern "C" {
 /*--------------------------------------------------------------------------*/
 
 /**
+ * The elevator instruction type.
+ * 
+ * @since 2023/11/11
+ */
+typedef enum sjme_elevatorDoType
+{
+	/** Unknown. */
+	SJME_ELEVATOR_DO_TYPE_UNKNOWN,
+	
+	/** Initialize. */
+	SJME_ELEVATOR_DO_TYPE_INIT,
+
+	/** The number of do types. */
+	SJME_NUM_ELEVATOR_DO_TYPES
+} sjme_elevatorDoType;
+
+/**
  * Represents the state of the elevator.
  * 
  * @since 2023/11/03
@@ -40,11 +57,44 @@ typedef struct sjme_elevatorState
 } sjme_elevatorState;
 
 /**
- * A single set entry and parameters for configuration.
+ * The current run item in the elevator.
+ * 
+ * @since 2023/11/11
+ */
+typedef struct sjme_elevatorRunCurrent
+{
+	/** The current index of all. */
+	jint indexAll;
+	
+	/** The current index of this type. */
+	jint indexType;
+	
+	/** The current type. */
+	sjme_elevatorDoType type;
+} sjme_elevatorRunCurrent;
+
+/**
+ * Data for the entire elevator un.
  * 
  * @since 2023/11/03
  */
-typedef struct sjme_elevatorSetEntry sjme_elevatorSetEntry;
+typedef struct sjme_elevatorRunData
+{
+	/** The index type counts. */
+	jint indexTypeCount[SJME_NUM_ELEVATOR_DO_TYPES];
+} sjme_elevatorRunData;
+
+/**
+ * Configuration function for the elevator.
+ * 
+ * @param inState The input state.
+ * @param inCurrent The current run item for the elevator.
+ * @return Returns @c JNI_TRUE when successful.
+ * @since 2023/11/11
+ */
+typedef jboolean (*sjme_elevatorConfigFunc)(
+	sjme_attrInNotNull sjme_elevatorState* inState,
+	sjme_attrInNotNull const sjme_elevatorRunCurrent* inCurrent);
 
 /**
  * Represents an elevator initialization function.
@@ -52,15 +102,9 @@ typedef struct sjme_elevatorSetEntry sjme_elevatorSetEntry;
  * @return Will return @c JNI_TRUE when successful.
  * @since 2023/11/03
  */
-typedef jboolean (*sjme_elevatorFunc)(
+typedef jboolean (*sjme_elevatorDoFunc)(
 	sjme_attrInNotNull sjme_elevatorState* inState,
-	sjme_attrInNotNull sjme_elevatorSetEntry* inEntry);
-
-struct sjme_elevatorSetEntry
-{
-	/** The function to call for initialization. */
-	sjme_elevatorFunc function;
-};
+	sjme_attrInNotNull sjme_elevatorRunData* inData);
 
 /**
  * Structure which contains the elevator instructions to use for initializing
@@ -70,24 +114,39 @@ struct sjme_elevatorSetEntry
  */
 typedef struct sjme_elevatorSet
 {
+	/** The configuration function. */
+	sjme_elevatorConfigFunc config;
+
 	/** Flags for elevator. */
 	jint flags;
 	
 	/** Elevator function order. */
-	sjme_elevatorSetEntry order[sjme_flexibleArrayCount];
+	sjme_elevatorDoFunc order[sjme_flexibleArrayCount];
 } sjme_elevatorSet;
+
+/**
+ * Performs the elevator action.
+ * 
+ * @param inState The input state.
+ * @param inSet The set to act on.
+ * @return Returns @c JNI_TRUE on success.
+ * @since 2023/1/111
+ */
+jboolean sjme_elevatorAct(
+	sjme_attrInNotNull sjme_elevatorState* inState,
+	sjme_attrInNotNull const sjme_elevatorSet* inSet);
 
 /**
  * Initial virtual machine initialization state.
  * 
  * @param inState The elevator state.
- * @param inEntry The entry currently being processed.
+ * @param inData The data currently being processed.
  * @return If this was successful.
  * @since 2023/11/03
  */
 jboolean sjme_elevatorDoInit(
 	sjme_attrInNotNull sjme_elevatorState* inState,
-	sjme_attrInNotNull sjme_elevatorSetEntry* inEntry);
+	sjme_attrInNotNull sjme_elevatorRunData* inData);
 
 /*--------------------------------------------------------------------------*/
 
