@@ -16,6 +16,8 @@
 #ifndef SQUIRRELJME_TEST_H
 #define SQUIRRELJME_TEST_H
 
+#include <setjmp.h>
+
 #include "sjme/nvm.h"
 #include "sjme/debug.h"
 
@@ -54,7 +56,8 @@ typedef enum sjme_testResult
  */
 typedef struct sjme_test
 {
-	int todo;
+	/** Base jump point for short circuits. */
+	jmp_buf jumpPoint;
 } sjme_test;
 
 /**

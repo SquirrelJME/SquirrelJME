@@ -16,6 +16,8 @@
 #ifndef SQUIRRELJME_DEBUG_H
 #define SQUIRRELJME_DEBUG_H
 
+#include <stdarg.h>
+
 #include "sjme/nvm.h"
 
 /* Anti-C++. */
@@ -28,6 +30,11 @@ extern "C" {
 #endif     /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
+
+#define SJME_DEBUG_DECL_FILE_LINE_FUNC \
+	sjme_attrInNullable const char* file, \
+	sjme_attrInValue int line, \
+	sjme_attrInNullable const char* func
 
 #if defined(SJME_CONFIG_RELEASE)
 	/** File, line, and function. */
@@ -54,11 +61,23 @@ extern "C" {
  * @param ... Any @c printf style arguments.
  * @since 2021/10/31
  */
-void sjme_messageR(sjme_attrInNullable const char* file,
-	sjme_attrInValue int line,
-	sjme_attrInNullable const char* func,
+void sjme_messageR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_attrInNullable sjme_attrFormatArg const char* message, ...)
 	sjme_attrFormatOuter(3, 4);
+
+/**
+ * Prints a debug message.
+ * 
+ * @param file The file printing from.
+ * @param line The line printing from.
+ * @param func The function printing from.
+ * @param message The @c printf style message.
+ * @param args Any @c printf style arguments.
+ * @since 2023/11/11
+ */
+void sjme_messageV(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_attrInNullable sjme_attrFormatArg const char* message,
+	va_list args);
 #endif
 
 /**
@@ -82,9 +101,7 @@ void sjme_messageR(sjme_attrInNullable const char* file,
  * @return Never returns.
  * @since 2023/11/11 
  */
-jboolean sjme_dieR(sjme_attrInNullable const char* file,
-	sjme_attrInValue int line,
-	sjme_attrInNullable const char* func,
+jboolean sjme_dieR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_attrInNullable sjme_attrFormatArg const char* message, ...)
 	sjme_attrReturnNever sjme_attrFormatOuter(3, 4);
 
@@ -120,9 +137,7 @@ jboolean sjme_dieR(sjme_attrInNullable const char* file,
  * @return Never returns.
  * @since 2021/02/28 
  */
-void sjme_todoR(sjme_attrInNullable const char* file,
-	sjme_attrInValue int line,
-	sjme_attrInNullable const char* func,
+void sjme_todoR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_attrInNullable sjme_attrFormatArg const char* message, ...)
 	sjme_attrReturnNever sjme_attrFormatOuter(3, 4);
 

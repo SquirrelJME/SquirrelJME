@@ -129,3 +129,19 @@ jboolean sjme_elevatorDoInit(
 	
 	sjme_todo("Implement this?");
 }
+
+
+jboolean sjme_elevatorDoMakeFrame(
+	sjme_attrInNotNull sjme_elevatorState* inState,
+	sjme_attrInNotNull sjme_elevatorRunData* inData)
+{
+	sjme_todo("Implement this?");
+}
+
+
+jboolean sjme_elevatorDoMakeThread(
+	sjme_attrInNotNull sjme_elevatorState* inState,
+	sjme_attrInNotNull sjme_elevatorRunData* inData)
+{
+	sjme_todo("Implement this?");
+}

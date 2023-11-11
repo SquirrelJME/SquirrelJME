@@ -47,6 +47,9 @@ typedef enum sjme_elevatorDoType
 	SJME_NUM_ELEVATOR_DO_TYPES
 } sjme_elevatorDoType;
 
+/** The maximum number of threads supported in the elevator for testing. */
+#define SJME_ELEVATOR_MAX_THREADS 16
+
 /**
  * Represents the state of the elevator.
  * 
@@ -56,6 +59,19 @@ typedef struct sjme_elevatorState
 {
 	/** The virtual machine state. */
 	sjme_nvm_state* nvmState;
+	
+	/** The number of active threads. */
+	jint numThreads;
+	
+	/** Set of threads. */
+	struct
+	{
+		/** The actual native thread. */
+		sjme_nvm_thread* nvmThread;
+		
+		/** The top most frame. */
+		sjme_nvm_frame* nvmTopFrame;
+	} threads[SJME_ELEVATOR_MAX_THREADS];
 } sjme_elevatorState;
 
 /**
@@ -160,6 +176,30 @@ void* sjme_elevatorAlloc(
  * @since 2023/11/03
  */
 jboolean sjme_elevatorDoInit(
+	sjme_attrInNotNull sjme_elevatorState* inState,
+	sjme_attrInNotNull sjme_elevatorRunData* inData);
+	
+/**
+ * Makes a frame within the virtual machine.
+ * 
+ * @param inState The elevator state.
+ * @param inData The data currently being processed.
+ * @return If this was successful.
+ * @since 2023/11/11
+ */
+jboolean sjme_elevatorDoMakeFrame(
+	sjme_attrInNotNull sjme_elevatorState* inState,
+	sjme_attrInNotNull sjme_elevatorRunData* inData);
+
+/**
+ * Makes a thread within the virtual machine.
+ * 
+ * @param inState The elevator state.
+ * @param inData The data currently being processed.
+ * @return If this was successful.
+ * @since 2023/11/11
+ */
+jboolean sjme_elevatorDoMakeThread(
 	sjme_attrInNotNull sjme_elevatorState* inState,
 	sjme_attrInNotNull sjme_elevatorRunData* inData);
 

@@ -318,3 +318,11 @@ jboolean sjme_nvm_throwExecute(sjme_nvm_frame* frame)
 	sjme_todo("Implement");
 	return JNI_FALSE;
 }
+
+jboolean sjme_nvm_topFrame(
+	sjme_attrInNotNull sjme_nvm_thread* inThread,
+	sjme_attrOutNotNull sjme_nvm_frame* outFrame)
+{
+	sjme_todo("Implement");
+	return JNI_FALSE;
+}

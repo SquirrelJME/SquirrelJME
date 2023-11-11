@@ -38,6 +38,7 @@ configure_file("${CMAKE_SOURCE_DIR}/cmake/blank.in.h"
 add_executable(BasicTest
 	basic.c
 	elevator.c
+	unit.c
 	${basicTestSources})
 
 # Make sure we have our headers included accordingly

@@ -710,6 +710,9 @@ struct sjme_nvm_frame
 	
 	/** Class reference. */
 	jclass classObjectRef;
+	
+	/** Number of items in the stack. */
+	jint numInStack;
 };
 
 typedef struct sjme_static_libraries
@@ -1020,6 +1023,20 @@ jboolean sjme_nvm_tempDiscard(
 
 jboolean sjme_nvm_throwExecute(
 	sjme_attrInNotNull sjme_nvm_frame* frame)
+	sjme_attrCheckReturn;
+
+/**
+ * Returns the top-most frame in the thread.
+ * 
+ * @param inThread The thread to get the top frame from. 
+ * @param outFrame The top most frame.
+ * @return Returns @c JNI_TRUE on success where the thread is valid and it
+ * has at least one frame.
+ * @since 2023/11/11
+ */
+jboolean sjme_nvm_topFrame(
+	sjme_attrInNotNull sjme_nvm_thread* inThread,
+	sjme_attrOutNotNull sjme_nvm_frame* outFrame)
 	sjme_attrCheckReturn;
 
 /**

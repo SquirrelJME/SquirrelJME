@@ -18,61 +18,74 @@
 /** Debug buffer size for messages. */
 #define DEBUG_BUF 512
 
+static void sjme_genericMessage(const char* file, int line,
+	const char* func, const char* prefix, const char* format, va_list args)
+{
+	va_list copy;
+	char buf[DEBUG_BUF];
+
+	/* Need to copy because this works differently on other arches. */
+	va_copy(copy, args);
+	
+	/* Load message buffer. */
+	if (format == NULL)
+		strncpy(buf, "No message", DEBUG_BUF);
+	else
+	{
+		memset(buf, 0, sizeof(buf));
+		vsnprintf(buf, DEBUG_BUF, format, copy);
+	}
+	
+	/* Cleanup the copy. */
+	va_end(copy);
+	
+	/* Print output message. */
+	if (file != NULL || line > 0 || func != NULL) 
+		fprintf(stderr, "%s (%s:%d in %s()): %s\n",
+			prefix, file, line, func, buf);
+	else
+		fprintf(stderr, "%s %s\n",
+			prefix, buf);
+	
+	/* Make sure it gets written. */
+	fflush(stderr);
+}
+
 #if defined(SJME_CONFIG_DEBUG)
 void sjme_messageR(const char* file, int line,
 	const char* func, const char* message, ...)
 {
-	char buf[DEBUG_BUF];
-	va_list args;
+	va_list list;
 	
-	/* Load message buffer. */
-	if (message == NULL)
-		strncpy(buf, "No message", DEBUG_BUF);
-	else
-	{
-		va_start(args, message);
-		memset(buf, 0, sizeof(buf));
-		vsnprintf(buf, DEBUG_BUF, message, args);
-		va_end(args);
-	}
+	va_start(list, message);
 	
-	/* Print output message. */
-	if (file != NULL || line > 0 || func != NULL) 
-		fprintf(stderr, "DB: (%s:%d in %s()): %s\n",
-			file, line, func, buf);
-	else
-		fprintf(stderr, "DB: %s\n",
-			buf);
+	sjme_genericMessage(file, line, func, "DB", message,
+		list);
+		
+	va_end(list);
+}
 
-	/* Make sure it gets written. */
-	fflush(stderr);
+void sjme_messageV(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_attrInNullable sjme_attrFormatArg const char* message,
+	va_list args)
+{
+	sjme_genericMessage(file, line, func, "DB", message,
+		args);
 }
 #endif
 
 jboolean sjme_dieR(const char* file, int line,
 	const char* func, const char* message, ...)
 {
-	char buf[DEBUG_BUF];
-	va_list args;
+	va_list list;
+	va_list copy;
 	
-	/* Load message buffer. */
-	if (message == NULL)
-		strncpy(buf, "No message", DEBUG_BUF);
-	else
-	{
-		va_start(args, message);
-		memset(buf, 0, sizeof(buf));
-		vsnprintf(buf, DEBUG_BUF, message, args);
-		va_end(args);
-	}
+	va_start(list, message);
 	
-	/* Print output message. */
-	if (file != NULL || line > 0 || func != NULL)
-		fprintf(stderr, "FATAL (%s:%d in %s()): %s\n",
-			file, line, func, buf);
-	else
-		fprintf(stderr, "DATA: %s\n",
-			buf);
+	sjme_genericMessage(file, line, func, "FATAL", message,
+		list);
+		
+	va_end(list);
 	
 	/* Exit and stop. */
 #if !defined(SJME_CONFIG_RELEASE)
@@ -89,27 +102,14 @@ jboolean sjme_dieR(const char* file, int line,
 void sjme_todoR(const char* file, int line,
 	const char* func, const char* message, ...)
 {
-	char buf[DEBUG_BUF];
-	va_list args;
-
-	/* Load message buffer. */
-	if (message == NULL)
-		strncpy(buf, "No message", DEBUG_BUF);
-	else
-	{
-		va_start(args, message);
-		memset(buf, 0, sizeof(buf));
-		vsnprintf(buf, DEBUG_BUF, message, args);
-		va_end(args);
-	}
+	va_list list;
 	
-	/* Print output message. */
-	if (file != NULL || line > 0 || func != NULL)
-		fprintf(stderr, "TD: TODO Hit (%s:%d in %s()): %s\n",
-			file, line, func, buf);
-	else
-		fprintf(stderr, "TD: TODO Hit: %s\n",
-			buf);
+	va_start(list, message);
+	
+	sjme_genericMessage(file, line, func, "TD TODO HIT", message,
+		list);
+		
+	va_end(list);
 	
 	/* Exit and stop. */
 #if !defined(SJME_CONFIG_RELEASE)
