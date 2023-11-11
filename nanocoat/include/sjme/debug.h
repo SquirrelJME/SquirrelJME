@@ -82,7 +82,7 @@ void sjme_messageR(sjme_attrInNullable const char* file,
  * @return Never returns.
  * @since 2023/11/11 
  */
-void sjme_dieR(sjme_attrInNullable const char* file,
+jboolean sjme_dieR(sjme_attrInNullable const char* file,
 	sjme_attrInValue int line,
 	sjme_attrInNullable const char* func,
 	sjme_attrInNullable sjme_attrFormatArg const char* message, ...)

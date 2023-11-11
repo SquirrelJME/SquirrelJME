@@ -49,7 +49,7 @@ void sjme_messageR(const char* file, int line,
 }
 #endif
 
-void sjme_dieR(const char* file, int line,
+jboolean sjme_dieR(const char* file, int line,
 	const char* func, const char* message, ...)
 {
 	char buf[DEBUG_BUF];
@@ -81,6 +81,9 @@ void sjme_dieR(const char* file, int line,
 	
 	/* Exit after abort happens, it can be ignored in debugging. */
 	exit(EXIT_FAILURE);
+	
+	/* Never reaches, but returns false naturally. */
+	return JNI_FALSE;
 }
 
 void sjme_todoR(const char* file, int line,

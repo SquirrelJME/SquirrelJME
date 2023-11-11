@@ -16,6 +16,8 @@
 #ifndef SQUIRRELJME_CONFIG_H
 #define SQUIRRELJME_CONFIG_H
 
+#include <stddef.h>
+
 /* Anti-C++. */
 #ifdef __cplusplus
 	#ifndef SJME_CXX_IS_EXTERNED
@@ -192,6 +194,13 @@ extern "C" {
 
 		/** Returns nullable value. */
 		#define sjme_attrReturnNullable _Nullable_result
+	#endif
+	
+	#if !defined(sjme_attrReturnNever)
+		#if defined(__builtin_unreachable)
+			/** Function never returns. */
+			#define sjme_attrReturnNever (__builtin_unreachable())
+		#endif
 	#endif
 	
 	/** Check return value. */

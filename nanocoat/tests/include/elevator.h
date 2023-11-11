@@ -71,6 +71,11 @@ typedef struct sjme_elevatorRunCurrent
 	
 	/** The current type. */
 	sjme_elevatorDoType type;
+	
+	/** Data for the initialization step. */
+	union
+	{
+	} data;
 } sjme_elevatorRunCurrent;
 
 /**
@@ -78,11 +83,7 @@ typedef struct sjme_elevatorRunCurrent
  * 
  * @since 2023/11/03
  */
-typedef struct sjme_elevatorRunData
-{
-	/** The index type counts. */
-	jint indexTypeCount[SJME_NUM_ELEVATOR_DO_TYPES];
-} sjme_elevatorRunData;
+typedef struct sjme_elevatorRunData sjme_elevatorRunData;
 
 /**
  * Configuration function for the elevator.
