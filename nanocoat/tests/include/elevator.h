@@ -54,6 +54,8 @@ typedef enum sjme_elevatorDoType
  */
 typedef struct sjme_elevatorState
 {
+	/** The virtual machine state. */
+	sjme_nvm_state* nvmState;
 } sjme_elevatorState;
 
 /**
@@ -95,7 +97,7 @@ typedef struct sjme_elevatorRunData sjme_elevatorRunData;
  */
 typedef jboolean (*sjme_elevatorConfigFunc)(
 	sjme_attrInNotNull sjme_elevatorState* inState,
-	sjme_attrInNotNull const sjme_elevatorRunCurrent* inCurrent);
+	sjme_attrInNotNull sjme_elevatorRunCurrent* inCurrent);
 
 /**
  * Represents an elevator initialization function.
@@ -136,6 +138,18 @@ typedef struct sjme_elevatorSet
 jboolean sjme_elevatorAct(
 	sjme_attrInNotNull sjme_elevatorState* inState,
 	sjme_attrInNotNull const sjme_elevatorSet* inSet);
+
+/**
+ * Allocates memory
+ * 
+ * @param inState The input state. 
+ * @param inLen The number of bytes to allocate.
+ * @return The allocated buffer, returns @c NULL if allocation failed.
+ * @since 2023/11/11
+ */
+void* sjme_elevatorAlloc(
+	sjme_attrInNotNull sjme_elevatorState* inState,
+	sjme_attrInPositiveNonZero size_t inLen);
 
 /**
  * Initial virtual machine initialization state.

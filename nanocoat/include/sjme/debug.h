@@ -99,6 +99,17 @@ jboolean sjme_dieR(sjme_attrInNullable const char* file,
 #define sjme_die(...) sjme_dieR(SJME_DEBUG_FILE_LINE_FUNC, __VA_ARGS__)
 
 /**
+ * Indicates a fatal error and exits the program.
+ * 
+ * @param message The @c printf style message.
+ * @param ... Any @c printf style arguments.
+ * @return Never returns.
+ * @since 2023/11/11 
+ */
+#define sjme_dieP(...) ((void*)((intptr_t)sjme_dieR(\
+	SJME_DEBUG_FILE_LINE_FUNC, __VA_ARGS__)))
+
+/**
  * Indicates a To-Do and then terminates the program.
  * 
  * @param file The file printing from.

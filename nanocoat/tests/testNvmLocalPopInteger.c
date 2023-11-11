@@ -15,9 +15,18 @@
 
 jboolean configNvmLocalPopInteger(
 	sjme_attrInNotNull sjme_elevatorState* inState,
-	sjme_attrInNotNull const sjme_elevatorRunCurrent* inCurrent)
+	sjme_attrInNotNull sjme_elevatorRunCurrent* inCurrent)
 {
-	sjme_todo("Implement this?");
+	/* Check. */
+	if (inState == NULL || inCurrent == NULL)
+		return JNI_FALSE;
+	
+	/* Configure. */
+	switch (inCurrent->indexAll)
+	{
+	}
+	
+	return JNI_TRUE;
 }
 
 /** Elevator set for test. */

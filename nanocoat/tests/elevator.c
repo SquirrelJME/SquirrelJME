@@ -45,7 +45,7 @@ jboolean sjme_elevatorAct(
 	
 	/* Check. */
 	if (inState == NULL || inSet == NULL)
-		return JNI_FALSE;
+		return sjme_die("Null arguments.");
 	
 	/* Confirm that the set is valid. */
 	if (inSet->config == NULL)
@@ -85,7 +85,7 @@ jboolean sjme_elevatorAct(
 			return sjme_die("Configuration step failed at %d.", dx);
 		
 		/* Call do function to perform whatever test initialization. */
-		if (!inSet->order[dx](inState, &data.current))
+		if (!inSet->order[dx](inState, &data))
 			return sjme_die("Do failed at %d.", dx);
 	}
 	
@@ -93,12 +93,39 @@ jboolean sjme_elevatorAct(
 	return JNI_TRUE;
 }
 
+void* sjme_elevatorAlloc(
+	sjme_attrInNotNull sjme_elevatorState* inState,
+	sjme_attrInPositiveNonZero size_t inLen)
+{
+	void* rv;
+	
+	/* Check. */
+	if (inState == NULL)
+		return sjme_dieP("No input state.");
+		
+	if (inLen <= 0)
+		return sjme_dieP("Invalid length: %d.", (jint)inLen);
+	
+	/* Attempt allocation. */
+	rv = malloc(inLen);
+	if (rv == NULL)
+		return sjme_dieP("Failed to allocate %d bytes.", (jint)inLen);
+	
+	/* Initialize memory then return. */
+	memset(rv, 0, inLen);
+	return rv;
+}
+
 jboolean sjme_elevatorDoInit(
 	sjme_attrInNotNull sjme_elevatorState* inState,
 	sjme_attrInNotNull sjme_elevatorRunData* inData)
 {
 	if (inState == NULL || inData == NULL)
-		return JNI_FALSE;
-
+		return sjme_die("Null arguments.");
+	
+	/* Allocate virtual machine state. */
+	inState->nvmState = sjme_elevatorAlloc(inState,
+		sizeof(*inState->nvmState));
+	
 	sjme_todo("Implement this?");
 }
