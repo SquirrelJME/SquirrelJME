@@ -16,6 +16,7 @@ import java.io.IOException;
 /**
  * This is the base class for all connection types.
  *
+ * @see Connector
  * @since 2019/05/06
  */
 @Api
