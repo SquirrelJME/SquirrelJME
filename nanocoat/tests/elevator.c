@@ -145,10 +145,38 @@ jboolean sjme_elevatorDoMakeFrame(
 	sjme_attrInNotNull sjme_elevatorState* inState,
 	sjme_attrInNotNull sjme_elevatorRunData* inData)
 {
+	jint threadIndex;
+	sjme_nvm_thread* thread;
+	sjme_nvm_frame* newFrame;
+	
 	if (inState == NULL || inData == NULL)
 		return sjme_die("Null arguments.");
 	
-	sjme_todo("Implement this?");
+	/* Make sure the requested thread index is valid. */
+	threadIndex = inData->current.data.frame.threadIndex;
+	if (threadIndex < 0 || threadIndex >= SJME_ELEVATOR_MAX_THREADS ||
+		inState->threads[threadIndex].nvmThread == NULL)
+		return sjme_die("Invalid thread index %d.", threadIndex);
+	
+	/* Get the actual thread. */
+	thread = inState->threads[threadIndex].nvmThread;
+	
+	/* Allocate new frame. */
+	newFrame = sjme_elevatorAlloc(inState, sizeof(*newFrame));
+	if (newFrame == NULL)
+		return sjme_die("Could not allocate frame.");
+	
+	/* Correlate the frame index to the thread. */
+	newFrame->frameIndex = thread->numFrames;
+	thread->numFrames++;
+	
+	/* Link in frame to the thread. */
+	newFrame->inThread = thread;
+	newFrame->parent = thread->top;
+	thread->top = newFrame;
+	
+	/* Done. */
+	return JNI_TRUE;
 }
 
 jboolean sjme_elevatorDoMakeThread(
@@ -156,7 +184,7 @@ jboolean sjme_elevatorDoMakeThread(
 	sjme_attrInNotNull sjme_elevatorRunData* inData)
 {
 	jint threadIndex;
-	sjme_nvm_thread* thread;
+	sjme_nvm_thread* newThread;
 	
 	if (inState == NULL || inData == NULL)
 		return sjme_die("Null arguments.");
@@ -167,13 +195,13 @@ jboolean sjme_elevatorDoMakeThread(
 		return sjme_die("Too make elevator threads.");
 	
 	/* Allocate thread. */
-	thread = sjme_elevatorAlloc(inState, sizeof(*thread));
-	if (thread == NULL)
+	newThread = sjme_elevatorAlloc(inState, sizeof(*newThread));
+	if (newThread == NULL)
 		return sjme_die("Could not allocate thread.");
 	
 	/* Store in thread and bump up. */
-	thread->threadId = ++inData->nextThreadId;
-	inState->threads[threadIndex].nvmThread = thread;
+	newThread->threadId = ++inData->nextThreadId;
+	inState->threads[threadIndex].nvmThread = newThread;
 	
 	/* Done. */
 	return JNI_TRUE;

@@ -74,9 +74,6 @@ typedef struct sjme_elevatorState
 	{
 		/** The actual native thread. */
 		sjme_nvm_thread* nvmThread;
-		
-		/** The top most frame. */
-		sjme_nvm_frame* nvmTopFrame;
 	} threads[SJME_ELEVATOR_MAX_THREADS];
 } sjme_elevatorState;
 
@@ -99,6 +96,12 @@ typedef struct sjme_elevatorRunCurrent
 	/** Data for the initialization step. */
 	union
 	{
+		/** Frame creation information. */
+		struct
+		{
+			/** The thread index to create the frame in. */
+			jint threadIndex;
+		} frame;
 	} data;
 } sjme_elevatorRunCurrent;
 

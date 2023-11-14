@@ -273,6 +273,9 @@ typedef struct sjme_nvm_thread
 	
 	/** The top of the stack. */
 	sjme_nvm_frame* top;
+	
+	/** The number of frames. */
+	jint numFrames;
 } sjme_nvm_thread;
 
 typedef struct sjme_static_constValue
@@ -696,6 +699,15 @@ typedef struct sjme_dynamic_linkage
 
 struct sjme_nvm_frame
 {
+	/** The thread this frame is in. */
+	sjme_nvm_thread* inThread;
+	
+	/** The parent frame. */
+	sjme_nvm_frame* parent;
+	
+	/** The frame index in the thread. */
+	jint frameIndex;
+	
 	/** The current program counter. */
 	sjme_pcAddr pc;
 	

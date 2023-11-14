@@ -57,7 +57,7 @@ sjme_testResult testNvmLocalPopInteger(sjme_test* test)
 		sjme_die("Invalid elevator");
 		
 	/* Get initialize frame size. */
-	frame = state.threads[0].nvmTopFrame;
+	frame = state.threads[0].nvmThread->top;
 	oldNumStack = frame->numInStack;
 
 	/* Pop integer from the stack to the first local. */
