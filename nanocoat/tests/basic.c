@@ -79,6 +79,7 @@ int main(int argc, char** argv)
 	}
 	
 	/* Cleanup after test. */
+	sjme_message("TODO: Test cleanup?");
 	
 	/* Handle result. */
 	if (result == SJME_TEST_RESULT_SKIP)
