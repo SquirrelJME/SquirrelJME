@@ -84,6 +84,12 @@ foreach(basicTestSource ${basicTestSources})
 	set_tests_properties("${basicTestLongName}"
 		PROPERTIES TIMEOUT 180)
 
+	# Label, name of test, used for filtering
+	set_property(TEST "${basicTestLongName}"
+		PROPERTY LABEL "${basicTestSource}")
+	set_tests_properties("${basicTestLongName}"
+		PROPERTIES LABEL "${basicTestSource}")
+
 	# Add prototype and structures for test
 	file(APPEND "${outTestProtosH}"
 		"sjme_testResult ${basicTestName}(sjme_test* test);\n")
