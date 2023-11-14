@@ -49,7 +49,7 @@ sjme_testResult testNvmLocalPopInteger(sjme_test* test)
 {
 	sjme_elevatorState state;
 	sjme_nvm_frame* frame;
-	jint oldNumStack;
+	jint oldNumStack, intVal;
 	
 	/* Perform the elevator. */
 	memset(&state, 0, sizeof(state));
@@ -58,9 +58,14 @@ sjme_testResult testNvmLocalPopInteger(sjme_test* test)
 		
 	/* Get initialize frame size. */
 	frame = state.threads[0].nvmThread->top;
-	oldNumStack = frame->numInStack;
-
+	
+	/* Setup integer value. */
+	frame->numInStack = 1;
+	if (JNI_TRUE)
+		sjme_todo("Implement set of first stack value??");
+	
 	/* Pop integer from the stack to the first local. */
+	oldNumStack = frame->numInStack;
 	if (!sjme_nvm_localPopInteger(frame, 0))
 		return sjme_unitFail(test, "Failed to pop local integer.");
 	
@@ -68,7 +73,13 @@ sjme_testResult testNvmLocalPopInteger(sjme_test* test)
 	sjme_unitEqualI(test, frame->numInStack, oldNumStack - 1,
 		"Items in stack not lower?");
 	
-	sjme_todo("Implement %s", __func__);
+	/* Read in value. */
+	intVal = -1;
+	if (!sjme_nvm_localReadInteger(frame, 0, &intVal))
+		return sjme_unitFail(test, "Could not read value from stack.");
+	sjme_unitEqualI(test, 1234, intVal,
+		"Popped stack into local was not the correct value.");
 	
-	return SJME_TEST_RESULT_FAIL;
+	/* Success! */
+	return SJME_TEST_RESULT_PASS;
 }

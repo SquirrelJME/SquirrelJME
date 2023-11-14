@@ -99,6 +99,10 @@ jboolean sjme_nvm_localPopFloat(sjme_nvm_frame* frame,
 jboolean sjme_nvm_localPopInteger(sjme_nvm_frame* frame,
 	jint index)
 {
+	if (frame == NULL || index < 0 || index >= frame->numInLocals ||
+		frame->numInStack <= 0)
+		return JNI_FALSE;
+	
 	sjme_todo("Implement");
 	return JNI_FALSE;
 }
@@ -147,6 +151,15 @@ jboolean sjme_nvm_localPushLong(sjme_nvm_frame* frame,
 
 jboolean sjme_nvm_localPushReference(sjme_nvm_frame* frame,
 	jint index)
+{
+	sjme_todo("Implement");
+	return JNI_FALSE;
+}
+
+jboolean sjme_nvm_localReadInteger(
+	sjme_attrInNotNull sjme_nvm_frame* frame,
+	sjme_attrInValue sjme_attrInPositive jint index,
+	sjme_attrOutNotNull jint* outValue)
 {
 	sjme_todo("Implement");
 	return JNI_FALSE;

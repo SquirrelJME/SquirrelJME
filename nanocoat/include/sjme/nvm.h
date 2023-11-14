@@ -728,6 +728,9 @@ struct sjme_nvm_frame
 	
 	/** Number of items in the stack. */
 	jint numInStack;
+	
+	/** Number of items in local variables. */
+	jint numInLocals;
 };
 
 typedef struct sjme_static_libraries
@@ -919,6 +922,12 @@ jboolean sjme_nvm_localPushLong(
 jboolean sjme_nvm_localPushReference(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
 	sjme_attrInValue sjme_attrInPositive jint index)
+	sjme_attrCheckReturn;
+
+jboolean sjme_nvm_localReadInteger(
+	sjme_attrInNotNull sjme_nvm_frame* frame,
+	sjme_attrInValue sjme_attrInPositive jint index,
+	sjme_attrOutNotNull jint* outValue)
 	sjme_attrCheckReturn;
 	
 jboolean sjme_nvm_localStoreInteger(
