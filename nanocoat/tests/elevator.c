@@ -18,6 +18,9 @@ struct sjme_elevatorRunData
 	
 	/** The current run. */
 	sjme_elevatorRunCurrent current;
+	
+	/** The next thread ID. */
+	jint nextThreadId;
 };
 
 /**
@@ -134,7 +137,7 @@ jboolean sjme_elevatorDoInit(
 	inState->nvmState = sjme_elevatorAlloc(inState,
 		sizeof(*inState->nvmState));
 	
-	/* Is okay. */
+	/* Done. */
 	return JNI_TRUE;
 }
 
@@ -152,15 +155,26 @@ jboolean sjme_elevatorDoMakeThread(
 	sjme_attrInNotNull sjme_elevatorState* inState,
 	sjme_attrInNotNull sjme_elevatorRunData* inData)
 {
-	jint threadId;
+	jint threadIndex;
+	sjme_nvm_thread* thread;
 	
 	if (inState == NULL || inData == NULL)
 		return sjme_die("Null arguments.");
 	
-	/* Elevator has limited set of threads for testing purposes. */
-	threadId = inState->numThreads;
-	if (threadId >= SJME_ELEVATOR_MAX_THREADS)
+	/* Elevator has a limited set of threads for testing purposes. */
+	threadIndex = inState->numThreads;
+	if (threadIndex >= SJME_ELEVATOR_MAX_THREADS)
 		return sjme_die("Too make elevator threads.");
 	
-	sjme_todo("Implement this?");
+	/* Allocate thread. */
+	thread = sjme_elevatorAlloc(inState, sizeof(*thread));
+	if (thread == NULL)
+		return sjme_die("Could not allocate thread.");
+	
+	/* Store in thread and bump up. */
+	thread->threadId = ++inData->nextThreadId;
+	inState->threads[threadIndex].nvmThread = thread;
+	
+	/* Done. */
+	return JNI_TRUE;
 }

@@ -268,6 +268,9 @@ typedef struct sjme_nvm_frame sjme_nvm_frame;
 
 typedef struct sjme_nvm_thread
 {
+	/** The thread ID. */
+	jint threadId;
+	
 	/** The top of the stack. */
 	sjme_nvm_frame* top;
 } sjme_nvm_thread;
