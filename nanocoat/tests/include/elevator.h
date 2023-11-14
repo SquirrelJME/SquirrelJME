@@ -42,6 +42,12 @@ typedef enum sjme_elevatorDoType
 	
 	/** Initialize. */
 	SJME_ELEVATOR_DO_TYPE_INIT,
+	
+	/** Make thread. */
+	SJME_ELEVATOR_DO_TYPE_MAKE_THREAD,
+	
+	/** Make frame. */
+	SJME_ELEVATOR_DO_TYPE_MAKE_FRAME,
 
 	/** The number of do types. */
 	SJME_NUM_ELEVATOR_DO_TYPES

@@ -31,7 +31,14 @@ struct
 	sjme_elevatorDoType type;
 } sjme_elevatorFuncToType[SJME_NUM_ELEVATOR_DO_TYPES] =
 {
-	{sjme_elevatorDoInit, SJME_ELEVATOR_DO_TYPE_INIT},
+	{sjme_elevatorDoInit,
+		SJME_ELEVATOR_DO_TYPE_INIT},
+	{sjme_elevatorDoMakeThread,
+		SJME_ELEVATOR_DO_TYPE_MAKE_THREAD},
+	{sjme_elevatorDoMakeFrame,
+		SJME_ELEVATOR_DO_TYPE_MAKE_FRAME},
+		
+	/* End. */
 	{NULL, SJME_ELEVATOR_DO_TYPE_UNKNOWN}
 };
 
@@ -127,21 +134,33 @@ jboolean sjme_elevatorDoInit(
 	inState->nvmState = sjme_elevatorAlloc(inState,
 		sizeof(*inState->nvmState));
 	
-	sjme_todo("Implement this?");
+	/* Is okay. */
+	return JNI_TRUE;
 }
-
 
 jboolean sjme_elevatorDoMakeFrame(
 	sjme_attrInNotNull sjme_elevatorState* inState,
 	sjme_attrInNotNull sjme_elevatorRunData* inData)
 {
+	if (inState == NULL || inData == NULL)
+		return sjme_die("Null arguments.");
+	
 	sjme_todo("Implement this?");
 }
-
 
 jboolean sjme_elevatorDoMakeThread(
 	sjme_attrInNotNull sjme_elevatorState* inState,
 	sjme_attrInNotNull sjme_elevatorRunData* inData)
 {
+	jint threadId;
+	
+	if (inState == NULL || inData == NULL)
+		return sjme_die("Null arguments.");
+	
+	/* Elevator has limited set of threads for testing purposes. */
+	threadId = inState->numThreads;
+	if (threadId >= SJME_ELEVATOR_MAX_THREADS)
+		return sjme_die("Too make elevator threads.");
+	
 	sjme_todo("Implement this?");
 }
