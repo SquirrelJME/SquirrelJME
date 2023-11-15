@@ -9,6 +9,7 @@
 
 #include "sjme/nvm.h"
 #include "sjme/debug.h"
+#include "sjme/except.h"
 
 jboolean sjme_nvm_arrayLength(sjme_nvm_frame* frame,
 	jobject arrayInstance, jint* outLen)
@@ -99,12 +100,24 @@ jboolean sjme_nvm_localPopFloat(sjme_nvm_frame* frame,
 jboolean sjme_nvm_localPopInteger(sjme_nvm_frame* frame,
 	jint index)
 {
-	if (frame == NULL || index < 0 || index >= frame->numInLocals ||
-		frame->numInStack <= 0)
-		return JNI_FALSE;
+	SJME_EXCEPT_VDEF;
+	int x;
+	
+SJME_EXCEPT_WITH:
+	if (frame == NULL)
+		SJME_EXCEPT_TOSS(SJME_ERROR_CODE_NULL_ARGUMENTS);
+	
+	if (index < 0 || index >= frame->numInLocals)
+		SJME_EXCEPT_TOSS(SJME_ERROR_CODE_LOCAL_INDEX_INVALID);
+		
+	if (frame->numInStack <= 0)
+		SJME_EXCEPT_TOSS(SJME_ERROR_CODE_STACK_UNDERFLOW);
 	
 	sjme_todo("Implement");
 	return JNI_FALSE;
+	
+SJME_EXCEPT_FAIL:
+	return sjme_except_gracefulDeath(NULL);
 }
 
 jboolean sjme_nvm_localPopLong(sjme_nvm_frame* frame,

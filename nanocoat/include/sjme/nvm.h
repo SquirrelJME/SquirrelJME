@@ -18,6 +18,7 @@
 
 #include <stdlib.h>
 #include <stdint.h>
+#include <setjmp.h>
 
 #include "sjme/config.h"
 
@@ -731,6 +732,9 @@ struct sjme_nvm_frame
 	
 	/** Number of items in local variables. */
 	jint numInLocals;
+	
+	/** Current exception handler go back. */
+	jmp_buf exceptionPoint;
 };
 
 typedef struct sjme_static_libraries
@@ -818,6 +822,35 @@ struct sjme_nvm_state
  * @since 2023/07/25
  */
 #define SJME_NANOCOAT_END_CALL ((sjme_pcAddr)-2)
+
+/**
+ * Error codes.
+ * 
+ * @since 2023/11/14
+ */
+typedef enum sjme_errorCode
+{
+	/** No error. */
+	SJME_ERROR_CODE_NONE = 0,
+	
+	/** Null arguments. */
+	SJME_ERROR_CODE_NULL_ARGUMENTS = -1,
+	
+	/** Local variable out of bounds. */
+	SJME_ERROR_CODE_LOCAL_INDEX_INVALID = -2,
+	
+	/** Stack variable out of bounds. */
+	SJME_ERROR_CODE_STACK_INDEX_INVALID = -3,
+	
+	/** Stack underflow. */
+	SJME_ERROR_CODE_STACK_UNDERFLOW = -4,
+	
+	/** Stack overflow. */
+	SJME_ERROR_CODE_STACK_OVERFLOW = -5,
+	
+	/** The number of error codes. */
+	SJME_NUM_ERROR_CODES = -6
+} sjme_errorCode;
 
 jboolean sjme_nvm_arrayLength(
 	sjme_attrInNotNull sjme_nvm_frame* frame,

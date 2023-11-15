@@ -10,6 +10,7 @@
 add_library(Core STATIC
 	boot.c
 	debug.c
+	except.c
 	loop.c
 	native.c
 	nvm.c

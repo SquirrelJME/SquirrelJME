@@ -222,6 +222,9 @@ extern "C" {
 	/** Indicates a callback. */
 	#define sjme_attrCallback __attribute__((callback))
 	
+	/** Not used. */
+	#define sjme_attrUnused __attribute__((unused))
+	
 	#if !defined(sjme_attrReturnNever)
 		/** Method does not return. */
 		#define sjme_attrReturnNever __attribute__((noreturn))
@@ -345,6 +348,11 @@ extern "C" {
 #if !defined(sjme_flexibleArrayCount)
 	/** Flexible array count, zero by default. */
 	#define sjme_flexibleArrayCount 0
+#endif
+
+#if !defined(sjme_attrUnused)
+	/** Unused value. */
+	#define sjme_attrUnused
 #endif
 
 /*--------------------------------------------------------------------------*/
