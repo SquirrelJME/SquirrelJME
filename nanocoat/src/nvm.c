@@ -131,7 +131,10 @@ SJME_EXCEPT_WITH:
 		SJME_EXCEPT_TOSS(SJME_ERROR_CODE_TOP_NOT_INTEGER);
 	
 	/* Get the value to copy. */
-	copyValue = tread->values.jints[tread->count];
+	copyValue = tread->values.jints[tread->count - 1];
+	
+	/* Clear old value. */
+	tread->values.jints[tread->count - 1] = 0;
 	
 	/* Clear and reduce stack counts. */
 	stack->order[stack->count] = 0;

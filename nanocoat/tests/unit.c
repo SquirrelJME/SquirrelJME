@@ -36,6 +36,9 @@ static jboolean sjme_unitShortingEmit(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 		
 	/* Emit message. */
 	sjme_messageV(file, line, func, format, vaArgs);
+	
+	/* Hit abort for debugging. */
+	abort();
 
 	/* Jump back to the outer code. */
 	longjmp(test->jumpPoint, type);
