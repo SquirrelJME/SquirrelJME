@@ -50,6 +50,7 @@ sjme_testResult testNvmLocalPopInteger(sjme_test* test)
 	sjme_elevatorState state;
 	sjme_nvm_frame* frame;
 	jint oldNumStack, intVal;
+	sjme_nvm_frameTread* intsTread;
 	
 	/* Perform the elevator. */
 	memset(&state, 0, sizeof(state));
@@ -59,10 +60,16 @@ sjme_testResult testNvmLocalPopInteger(sjme_test* test)
 	/* Get initialize frame size. */
 	frame = state.threads[0].nvmThread->top;
 	
-	/* Setup integer value. */
+	/* Setup integer values. */
+	frame->maxLocals = 1;
 	frame->numInStack = 1;
-	if (JNI_TRUE)
-		sjme_todo("Implement set of first stack value??");
+	intsTread = sjme_elevatorAlloc(&state,
+		SJME_SIZEOF_FRAME_TREAD(jint, 1));
+	frame->treads[SJME_BASIC_TYPE_ID_INTEGER] = intsTread; 
+	intsTread->max = 2;
+	intsTread->total = 2;
+	intsTread->stackBaseIndex = 1;
+	intsTread->values.jints[1] = 1234;
 	
 	/* Pop integer from the stack to the first local. */
 	oldNumStack = frame->numInStack;

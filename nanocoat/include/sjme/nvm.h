@@ -128,46 +128,46 @@ typedef jint sjme_tempIndex;
 typedef enum sjme_basicTypeId
 {
 	/** Integer. */
-	BASIC_TYPE_ID_INTEGER = 0,
+	SJME_BASIC_TYPE_ID_INTEGER = 0,
 	
 	/** Integer. */
-	JAVA_TYPE_ID_INTEGER = BASIC_TYPE_ID_INTEGER,
+	SJME_JAVA_TYPE_ID_INTEGER = SJME_BASIC_TYPE_ID_INTEGER,
 	
 	/** Long. */
-	BASIC_TYPE_ID_LONG = 1,
+	SJME_BASIC_TYPE_ID_LONG = 1,
 	
 	/** Long. */
-	JAVA_TYPE_ID_LONG = BASIC_TYPE_ID_LONG,
+	SJME_JAVA_TYPE_ID_LONG = SJME_BASIC_TYPE_ID_LONG,
 	
 	/** Float. */
-	BASIC_TYPE_ID_FLOAT = 2,
+	SJME_BASIC_TYPE_ID_FLOAT = 2,
 	
 	/** Float. */
-	JAVA_TYPE_ID_FLOAT = BASIC_TYPE_ID_FLOAT,
+	SJME_JAVA_TYPE_ID_FLOAT = SJME_BASIC_TYPE_ID_FLOAT,
 	
 	/** Double. */
-	BASIC_TYPE_ID_DOUBLE = 3,
+	SJME_BASIC_TYPE_ID_DOUBLE = 3,
 	
 	/** Double. */
-	JAVA_TYPE_ID_DOUBLE = BASIC_TYPE_ID_DOUBLE,
+	SJME_JAVA_TYPE_ID_DOUBLE = SJME_BASIC_TYPE_ID_DOUBLE,
 	
 	/** Object. */
-	BASIC_TYPE_ID_OBJECT = 4,
+	SJME_BASIC_TYPE_ID_OBJECT = 4,
 	
 	/** Object. */
-	JAVA_TYPE_ID_OBJECT = BASIC_TYPE_ID_OBJECT,
+	SJME_JAVA_TYPE_ID_OBJECT = SJME_BASIC_TYPE_ID_OBJECT,
 	
 	/** Boolean or byte. */
-	BASIC_TYPE_ID_BOOLEAN_OR_BYTE = 5,
+	SJME_BASIC_TYPE_ID_BOOLEAN_OR_BYTE = 5,
 	
 	/** The number of Java type IDs. */
-	SJME_NUM_JAVA_TYPE_IDS = BASIC_TYPE_ID_BOOLEAN_OR_BYTE,
+	SJME_NUM_JAVA_TYPE_IDS = SJME_BASIC_TYPE_ID_BOOLEAN_OR_BYTE,
 	
 	/** Short. */
-	BASIC_TYPE_ID_SHORT = 6,
+	SJME_BASIC_TYPE_ID_SHORT = 6,
 	
 	/** Character. */
-	BASIC_TYPE_ID_CHARACTER = 7,
+	SJME_BASIC_TYPE_ID_CHARACTER = 7,
 	
 	/** Number of basic type IDs. */
 	SJME_NUM_BASIC_TYPE_IDS = 8
@@ -721,21 +721,45 @@ typedef struct sjme_nvm_frameTread
 	union
 	{
 		/** Integer values. */
-		jint ints[sjme_flexibleArrayCountUnion];
+		jint jints[sjme_flexibleArrayCountUnion];
 		
 		/** Long values. */
-		jlong longs[sjme_flexibleArrayCountUnion];
+		jlong jlongs[sjme_flexibleArrayCountUnion];
 		
 		/** Float values. */
-		jfloat floats[sjme_flexibleArrayCountUnion];
+		jfloat jfloats[sjme_flexibleArrayCountUnion];
 		
 		/** Double values. */
-		jdouble doubles[sjme_flexibleArrayCountUnion];
+		jdouble jdoubles[sjme_flexibleArrayCountUnion];
 		
 		/** Object references. */
-		jobject objects[sjme_flexibleArrayCountUnion];
+		jobject jobjects[sjme_flexibleArrayCountUnion];
 	} values;
 } sjme_nvm_frameTread;
+
+/**
+ * Posts two tokens together.
+ * 
+ * @param a The first token.
+ * @param b The second token.
+ * @since 2023/11/15
+ */
+#define SJME_TOKEN_PASTE(a, b) a##b
+
+/**
+ * Calculates the size of a frame tread for a given type.
+ * 
+ * @param type The type to get the size for.
+ * @param count The number if items to store.
+ * @return The size in bytes for the tread.
+ * @since 2023/11/15
+ */
+#define SJME_SIZEOF_FRAME_TREAD(type, count) \
+	(sizeof(sjme_nvm_frameTread) + \
+    /* Need to handle cases where values could be aligned up... */ \
+	(offsetof(sjme_nvm_frameTread, values.SJME_TOKEN_PASTE(type,s)[0]) - \
+		offsetof(sjme_nvm_frameTread, values)) + \
+	(sizeof(type) * (size_t)(count)))
 
 struct sjme_nvm_frame
 {
@@ -766,11 +790,14 @@ struct sjme_nvm_frame
 	/** Class reference. */
 	jclass classObjectRef;
 	
-	/** Number of items in the stack. */
+	/** Number of items in the stack, of everything. */
 	jint numInStack;
 	
-	/** Number of items in local variables. */
-	jint numInLocals;
+	/** Number of items in local variables, of everything. */
+	jint maxLocals;
+	
+	/** Treads for the stack and locals. */
+	sjme_nvm_frameTread* treads[SJME_NUM_BASIC_TYPE_IDS];
 	
 	/** Current exception handler go back. */
 	jmp_buf exceptionPoint;

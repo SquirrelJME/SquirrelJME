@@ -107,7 +107,7 @@ SJME_EXCEPT_WITH:
 	if (frame == NULL)
 		SJME_EXCEPT_TOSS(SJME_ERROR_CODE_NULL_ARGUMENTS);
 	
-	if (index < 0 || index >= frame->numInLocals)
+	if (index < 0 || index >= frame->maxLocals)
 		SJME_EXCEPT_TOSS(SJME_ERROR_CODE_LOCAL_INDEX_INVALID);
 		
 	if (frame->numInStack <= 0)
@@ -117,7 +117,7 @@ SJME_EXCEPT_WITH:
 	return JNI_FALSE;
 	
 SJME_EXCEPT_FAIL:
-	return sjme_except_gracefulDeath(NULL);
+	return sjme_except_gracefulDeath("Invalid int pop into %d.", (int)index);
 }
 
 jboolean sjme_nvm_localPopLong(sjme_nvm_frame* frame,
