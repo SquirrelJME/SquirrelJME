@@ -147,12 +147,14 @@ jboolean sjme_elevatorDoMakeFrame(
 	sjme_attrInNotNull sjme_elevatorRunData* inData)
 {
 	jint threadIndex, treadMax, tallyLocals, stackBase, desireMaxLocals;
-	jint tallyStack, desireMaxStack;
+	jint tallyStack, desireMaxStack, localIndex;
 	sjme_nvm_thread* thread;
 	sjme_nvm_frame* newFrame;
 	sjme_basicTypeId typeId;
 	sjme_nvm_frameTread* tread;
 	sjme_nvm_frameStack* stack;
+	sjme_nvm_frameLocalMap* localMap;
+	jbyte baseLocalAt[SJME_NUM_JAVA_TYPE_IDS];
 	
 	if (inState == NULL || inData == NULL)
 		return sjme_die("Null arguments.");
@@ -184,6 +186,18 @@ jboolean sjme_elevatorDoMakeFrame(
 	tallyLocals = 0;
 	tallyStack = 0;
 	
+	/* Setup locals mapping. */
+	desireMaxLocals = inData->current.data.frame.maxLocals;
+	localMap = sjme_elevatorAlloc(inState,
+		SJME_SIZEOF_FRAME_LOCAL_MAP(desireMaxLocals));
+	localMap->max = desireMaxLocals;
+	
+	/* Remember to set the local mapping in the frame. */
+	newFrame->localMap = localMap;
+	
+	/* Clear base local map set trackers. */
+	memset(baseLocalAt, 0, sizeof(baseLocalAt));
+	
 	/* Need to initialize frame locals and stack? */
 	for (typeId = 0; typeId < SJME_NUM_BASIC_TYPE_IDS; typeId++)
 	{
@@ -213,10 +227,13 @@ jboolean sjme_elevatorDoMakeFrame(
 		tread->stackBaseIndex = stackBase;
 		tread->count = stackBase;
 		tread->max = treadMax;
+		
+		/* Fill in local mappings for a given tread. */
+		for (localIndex = 0; localIndex < stackBase; localIndex++)
+			localMap->maps[typeId].to[typeId] = (jbyte)localIndex;
 	}
 	
 	/* Consistency check. */
-	desireMaxLocals = inData->current.data.frame.maxLocals;
 	if (tallyLocals != desireMaxLocals)
 		return sjme_die("Calculated and desired locals invalid: %d != %d.",
 			tallyLocals, desireMaxLocals);
@@ -231,9 +248,6 @@ jboolean sjme_elevatorDoMakeFrame(
 		SJME_SIZEOF_FRAME_STACK(tallyStack));
 	newFrame->stack = stack;
 	stack->limit = tallyStack;
-	
-	/* Set actual local maximum. */
-	newFrame->maxLocals = desireMaxLocals;
 	
 	/* Done. */
 	return JNI_TRUE;

@@ -98,24 +98,28 @@ jboolean sjme_nvm_localPopFloat(sjme_nvm_frame* frame,
 }
 
 jboolean sjme_nvm_localPopInteger(sjme_nvm_frame* frame,
-	jint index)
+	volatile jint localIndex)
 {
 	SJME_EXCEPT_VDEF;
 	int x;
 	sjme_basicTypeId topType;
 	sjme_nvm_frameStack* stack;
 	sjme_nvm_frameTread* tread;
+	const sjme_nvm_frameLocalMap* localMap;
+	jint copyValue;
 	
 SJME_EXCEPT_WITH:
 	if (frame == NULL)
 		SJME_EXCEPT_TOSS(SJME_ERROR_CODE_NULL_ARGUMENTS);
-		
+	
+	/* These must exist. */
 	tread = frame->treads[SJME_JAVA_TYPE_ID_INTEGER];
 	stack = frame->stack;
-	if (stack == NULL || tread == NULL)
+	localMap = frame->localMap;
+	if (stack == NULL || tread == NULL || localMap == NULL)
 		SJME_EXCEPT_TOSS(SJME_ERROR_FRAME_MISSING_STACK_TREADS);
 	
-	if (index < 0 || index >= frame->maxLocals)
+	if (localIndex < 0 || localIndex >= localMap->max)
 		SJME_EXCEPT_TOSS(SJME_ERROR_CODE_LOCAL_INDEX_INVALID);
 		
 	if (stack->count <= 0 || tread->count <= tread->stackBaseIndex)
@@ -126,15 +130,29 @@ SJME_EXCEPT_WITH:
 	if (topType != SJME_JAVA_TYPE_ID_INTEGER)
 		SJME_EXCEPT_TOSS(SJME_ERROR_CODE_TOP_NOT_INTEGER);
 	
-	sjme_todo("Implement");
-	return JNI_FALSE;
+	/* Get the value to copy. */
+	copyValue = tread->values.jints[tread->count];
+	
+	/* Clear and reduce stack counts. */
+	stack->order[stack->count] = 0;
+	stack->count--;
+	tread->count--;
+	
+	/* Copy to local variable storage. */
+	tread->values.jints[localMap->maps[localIndex]
+		.to[SJME_JAVA_TYPE_ID_INTEGER]] = copyValue;
+	
+	/* Done. */
+	return JNI_TRUE;
 	
 SJME_EXCEPT_FAIL:
 	return sjme_except_gracefulDeath(
 		"Invalid int pop into %d within l:[0, %d] s:[0, %d].",
-		(int)index,
-		(frame == NULL ? -1 : frame->maxLocals),
-		(frame == NULL ? -1 : frame->stack->count));
+		(int)localIndex,
+		(frame == NULL || frame->localMap == NULL ? -1 :
+			frame->localMap->max),
+		(frame == NULL || frame->stack == NULL ? -1 :
+			frame->stack->count));
 }
 
 jboolean sjme_nvm_localPopLong(sjme_nvm_frame* frame,

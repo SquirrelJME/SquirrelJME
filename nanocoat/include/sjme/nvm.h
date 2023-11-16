@@ -43,6 +43,17 @@ extern "C" {
 #define SJME_TOKEN_PASTE(a, b) a##b
 
 /**
+ * Calculates the size of a struct member.
+ * 
+ * @param type The type of the struct.
+ * @param member The member to check.
+ * @return The size of the given member.
+ * @since 2023/11/16
+ */
+#define SJME_SIZEOF_STRUCT_MEMBER(type, member) \
+	(sizeof((*((type*)0)).member))
+
+/**
  * Boolean type.
  * 
  * @since 2023/07/25
@@ -789,6 +800,29 @@ typedef struct sjme_nvm_frameStack
 	(sizeof(sjme_nvm_frameStack) + \
 	(sizeof(sjme_javaTypeId) * (size_t)(count)))
 
+typedef struct sjme_nvm_frameLocalMap
+{
+	/** The maximum number of locals. */
+	int max;
+	
+	/** Mapping of a specific variable to a given type index. */
+	union
+	{
+		jbyte to[SJME_NUM_JAVA_TYPE_IDS];
+	} maps[sjme_flexibleArrayCount];
+} sjme_nvm_frameLocalMap;
+
+/**
+ * Calculates the size of the frame local variable map.
+ * 
+ * @param count The number of items in the mapping.
+ * @return The size in bytes of the local mapping.
+ * @since 2023/11/26
+ */
+#define SJME_SIZEOF_FRAME_LOCAL_MAP(count) \
+	(sizeof(sjme_nvm_frameLocalMap) + \
+	(SJME_SIZEOF_STRUCT_MEMBER(sjme_nvm_frameLocalMap, maps[0]) * (count)))
+
 struct sjme_nvm_frame
 {
 	/** The thread this frame is in. */
@@ -818,14 +852,14 @@ struct sjme_nvm_frame
 	/** Class reference. */
 	jclass classObjectRef;
 	
-	/** Number of items in local variables, of everything. */
-	jint maxLocals;
-	
 	/** The current stack information. */
 	sjme_nvm_frameStack* stack;
 	
 	/** Treads for the stack and locals. */
 	sjme_nvm_frameTread* treads[SJME_NUM_BASIC_TYPE_IDS];
+	
+	/** Mapping of local variables to the tread indexes per type. */
+	const sjme_nvm_frameLocalMap* localMap;
 	
 	/** Current exception handler go back. */
 	jmp_buf exceptionPoint;
@@ -1031,7 +1065,7 @@ jboolean sjme_nvm_localPopFloat(
 
 jboolean sjme_nvm_localPopInteger(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_attrInValue sjme_attrInPositive jint index)
+	sjme_attrInValue sjme_attrInPositive jint localIndex)
 	sjme_attrCheckReturn;
 
 jboolean sjme_nvm_localPopLong(
