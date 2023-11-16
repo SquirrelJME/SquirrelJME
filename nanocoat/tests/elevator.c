@@ -145,9 +145,11 @@ jboolean sjme_elevatorDoMakeFrame(
 	sjme_attrInNotNull sjme_elevatorState* inState,
 	sjme_attrInNotNull sjme_elevatorRunData* inData)
 {
-	jint threadIndex;
+	jint threadIndex, treadMax, tallyLocals, stackBase, desireMaxLocals;
 	sjme_nvm_thread* thread;
 	sjme_nvm_frame* newFrame;
+	sjme_basicTypeId typeId;
+	sjme_nvm_frameTread* tread;
 	
 	if (inState == NULL || inData == NULL)
 		return sjme_die("Null arguments.");
@@ -174,6 +176,46 @@ jboolean sjme_elevatorDoMakeFrame(
 	newFrame->inThread = thread;
 	newFrame->parent = thread->top;
 	thread->top = newFrame;
+	
+	/* Track tally of locals for consistency. */
+	tallyLocals = 0;
+	
+	/* Need to initialize frame locals and stack? */
+	for (typeId = 0; typeId < SJME_NUM_BASIC_TYPE_IDS; typeId++)
+	{
+		/* Ignore if empty. */
+		treadMax = inData->current.data.frame.treads[typeId].max;
+		if (treadMax <= 0)
+			continue;
+		
+		/* Allocate target tread. */
+		tread = sjme_elevatorAlloc(inState,
+			SJME_SIZEOF_FRAME_TREAD(jint, treadMax));
+		newFrame->treads[typeId] = tread;
+		
+		/* Setup stack base. */
+		stackBase = inData->current.data.frame.treads[typeId].stackBaseIndex;
+		if (stackBase < 0 || stackBase > treadMax)
+			return sjme_die("Invalid test stack base %d, outside range %d.",
+				stackBase, treadMax);
+		
+		/* Local tally goes up by the stack base. */
+		tallyLocals += stackBase;
+		
+		/* Setup other tread details. */
+		tread->stackBaseIndex = stackBase;
+		tread->count = stackBase;
+		tread->max = treadMax;
+	}
+	
+	/* Consistency check. */
+	desireMaxLocals = inData->current.data.frame.maxLocals;
+	if (tallyLocals != desireMaxLocals)
+		return sjme_die("Calculated and desired locals invalid: %d != %d.",
+			tallyLocals, desireMaxLocals);
+	
+	/* Set actual local maximum. */
+	newFrame->maxLocals = desireMaxLocals;
 	
 	/* Done. */
 	return JNI_TRUE;

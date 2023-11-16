@@ -23,8 +23,15 @@ jboolean configNvmLocalPopInteger(
 		return JNI_FALSE;
 	
 	/* Configure. */
-	switch (inCurrent->indexAll)
+	switch (inCurrent->type)
 	{
+		case SJME_ELEVATOR_DO_TYPE_MAKE_FRAME:
+			inCurrent->data.frame.maxLocals = 1;
+			inCurrent->data.frame.treads[SJME_BASIC_TYPE_ID_INTEGER]
+				.max = 2;
+			inCurrent->data.frame.treads[SJME_BASIC_TYPE_ID_INTEGER]
+				.stackBaseIndex = 1;
+			break;
 	}
 	
 	return JNI_TRUE;
@@ -61,15 +68,10 @@ sjme_testResult testNvmLocalPopInteger(sjme_test* test)
 	frame = state.threads[0].nvmThread->top;
 	
 	/* Setup integer values. */
-	frame->maxLocals = 1;
-	frame->numInStack = 1;
-	intsTread = sjme_elevatorAlloc(&state,
-		SJME_SIZEOF_FRAME_TREAD(jint, 1));
-	frame->treads[SJME_BASIC_TYPE_ID_INTEGER] = intsTread; 
-	intsTread->max = 2;
-	intsTread->total = 2;
-	intsTread->stackBaseIndex = 1;
+	intsTread = frame->treads[SJME_BASIC_TYPE_ID_INTEGER];
 	intsTread->values.jints[1] = 1234;
+	intsTread->count = intsTread->stackBaseIndex + 1;
+	frame->numInStack = 1;
 	
 	/* Pop integer from the stack to the first local. */
 	oldNumStack = frame->numInStack;
@@ -80,12 +82,13 @@ sjme_testResult testNvmLocalPopInteger(sjme_test* test)
 	sjme_unitEqualI(test, frame->numInStack, oldNumStack - 1,
 		"Items in stack not lower?");
 	
-	/* Read in value. */
-	intVal = -1;
-	if (!sjme_nvm_localReadInteger(frame, 0, &intVal))
-		return sjme_unitFail(test, "Could not read value from stack.");
-	sjme_unitEqualI(test, 1234, intVal,
+	/* Check that the value was moved over. */
+	sjme_unitEqualI(test, 1234, intsTread->values.jints[0],
 		"Popped stack into local was not the correct value.");
+		
+	/* And the stack value was cleared. */
+	sjme_unitEqualI(test, 0, intsTread->values.jints[1],
+		"Stack value did not get cleared.");
 	
 	/* Success! */
 	return SJME_TEST_RESULT_PASS;

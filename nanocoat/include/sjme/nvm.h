@@ -709,7 +709,7 @@ typedef struct sjme_dynamic_linkage
 typedef struct sjme_nvm_frameTread
 {
 	/** The number of items in this tread. */
-	jint total;
+	jint count;
 	
 	/** The base index for the stack index. */
 	jint stackBaseIndex;

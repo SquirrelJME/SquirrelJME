@@ -101,6 +101,19 @@ typedef struct sjme_elevatorRunCurrent
 		{
 			/** The thread index to create the frame in. */
 			jint threadIndex;
+			
+			/** The maximum number of locals. */
+			jint maxLocals;
+			
+			/** The treads within the frame. */
+			struct
+			{
+				/** Maximum size of this tread. */
+				jint max;
+				
+				/** The stack pivot point. */
+				jint stackBaseIndex;
+			} treads[SJME_NUM_BASIC_TYPE_IDS];
 		} frame;
 	} data;
 } sjme_elevatorRunCurrent;

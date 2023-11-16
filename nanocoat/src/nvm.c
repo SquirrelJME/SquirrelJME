@@ -117,7 +117,11 @@ SJME_EXCEPT_WITH:
 	return JNI_FALSE;
 	
 SJME_EXCEPT_FAIL:
-	return sjme_except_gracefulDeath("Invalid int pop into %d.", (int)index);
+	return sjme_except_gracefulDeath(
+		"Invalid int pop into %d within l:[0, %d] s:[0, %d].",
+		(int)index,
+		(frame == NULL ? -1 : frame->maxLocals),
+		(frame == NULL ? -1 : frame->numInStack));
 }
 
 jboolean sjme_nvm_localPopLong(sjme_nvm_frame* frame,
