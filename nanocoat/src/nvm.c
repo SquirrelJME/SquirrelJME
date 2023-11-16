@@ -112,7 +112,7 @@ SJME_EXCEPT_WITH:
 		
 	tread = frame->treads[SJME_JAVA_TYPE_ID_INTEGER];
 	stack = frame->stack;
-	if (stack == NULL || frame == NULL)
+	if (stack == NULL || tread == NULL)
 		SJME_EXCEPT_TOSS(SJME_ERROR_FRAME_MISSING_STACK_TREADS);
 	
 	if (index < 0 || index >= frame->maxLocals)
