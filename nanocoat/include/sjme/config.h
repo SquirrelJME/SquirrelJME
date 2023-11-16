@@ -355,6 +355,9 @@ extern "C" {
 	#define sjme_attrUnused
 #endif
 
+/** Flexible array count but for unions. */
+#define sjme_flexibleArrayCountUnion 0
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

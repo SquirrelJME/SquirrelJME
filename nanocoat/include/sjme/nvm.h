@@ -173,6 +173,9 @@ typedef enum sjme_basicTypeId
 	SJME_NUM_BASIC_TYPE_IDS = 8
 } sjme_basicTypeId;
 
+/** The Java type ID. */
+typedef sjme_basicTypeId sjme_javaTypeId;
+
 /**
  * Represents multiple type IDs.
  * 
@@ -697,6 +700,42 @@ typedef struct sjme_dynamic_linkage
 	/** Linkage data. */
 	sjme_dynamic_linkage_data data;
 } sjme_dynamic_linkage;
+
+/**
+ * Represents the frame of a stack tread.
+ * 
+ * @since 2023/11/15
+ */
+typedef struct sjme_nvm_frameTread
+{
+	/** The number of items in this tread. */
+	jint total;
+	
+	/** The base index for the stack index. */
+	jint stackBaseIndex;
+	
+	/** The maximum size this tread can be. */
+	jint max;
+	
+	/** Values within the tread. */
+	union
+	{
+		/** Integer values. */
+		jint ints[sjme_flexibleArrayCountUnion];
+		
+		/** Long values. */
+		jlong longs[sjme_flexibleArrayCountUnion];
+		
+		/** Float values. */
+		jfloat floats[sjme_flexibleArrayCountUnion];
+		
+		/** Double values. */
+		jdouble doubles[sjme_flexibleArrayCountUnion];
+		
+		/** Object references. */
+		jobject objects[sjme_flexibleArrayCountUnion];
+	} values;
+} sjme_nvm_frameTread;
 
 struct sjme_nvm_frame
 {

@@ -14,6 +14,7 @@ add_library(Core STATIC
 	loop.c
 	native.c
 	nvm.c
+	recycle.c
 	task.c
 	util.c)
 
