@@ -10,6 +10,69 @@
 #include "sjme/nvm.h"
 #include "sjme/debug.h"
 #include "sjme/except.h"
+#include "sjme/tread.h"
+
+static jboolean sjme_nvm_localPopGeneric(sjme_nvm_frame* frame,
+	volatile jint localIndex, const sjme_nvm_frameTreadAccessor* accessor)
+{
+	SJME_EXCEPT_VDEF;
+	int x;
+	sjme_basicTypeId topType;
+	sjme_nvm_frameStack* stack;
+	sjme_nvm_frameTread* tread;
+	const sjme_nvm_frameLocalMap* localMap;
+	jint copyValue;
+	
+SJME_EXCEPT_WITH:
+	if (frame == NULL)
+		SJME_EXCEPT_TOSS(SJME_ERROR_CODE_NULL_ARGUMENTS);
+	
+	/* These must exist. */
+	tread = frame->treads[SJME_JAVA_TYPE_ID_INTEGER];
+	stack = frame->stack;
+	localMap = frame->localMap;
+	if (stack == NULL || tread == NULL || localMap == NULL)
+		SJME_EXCEPT_TOSS(SJME_ERROR_FRAME_MISSING_STACK_TREADS);
+	
+	if (localIndex < 0 || localIndex >= localMap->max)
+		SJME_EXCEPT_TOSS(SJME_ERROR_CODE_LOCAL_INDEX_INVALID);
+		
+	if (stack->count <= 0 || tread->count <= tread->stackBaseIndex)
+		SJME_EXCEPT_TOSS(SJME_ERROR_CODE_STACK_UNDERFLOW);
+	
+	/* Get the type at the top to check if it is valid. */
+	topType = stack->order[stack->count];
+	if (topType != SJME_JAVA_TYPE_ID_INTEGER)
+		SJME_EXCEPT_TOSS(SJME_ERROR_CODE_TOP_NOT_INTEGER);
+	
+	/* Get the value to copy. */
+	copyValue = tread->values.jints[tread->count - 1];
+	
+	/* Clear old value. */
+	tread->values.jints[tread->count - 1] = 0;
+	
+	/* Clear and reduce stack counts. */
+	stack->order[stack->count] = 0;
+	stack->count--;
+	tread->count--;
+	
+	/* Copy to local variable storage. */
+	tread->values.jints[localMap->maps[localIndex]
+		.to[SJME_JAVA_TYPE_ID_INTEGER]] = copyValue;
+	
+	/* Done. */
+	return JNI_TRUE;
+	
+SJME_EXCEPT_FAIL:
+	return sjme_except_gracefulDeath(
+		"Invalid %s pop into %d within l:[0, %d] s:[0, %d].",
+		"jint",
+		(int)localIndex,
+		(frame == NULL || frame->localMap == NULL ? -1 :
+			frame->localMap->max),
+		(frame == NULL || frame->stack == NULL ? -1 :
+			frame->stack->count));
+}
 
 jboolean sjme_nvm_arrayLength(sjme_nvm_frame* frame,
 	jobject arrayInstance, jint* outLen)

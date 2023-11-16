@@ -16,6 +16,7 @@ add_library(Core STATIC
 	nvm.c
 	recycle.c
 	task.c
+	tread.c
 	util.c)
 
 # Include main headers
