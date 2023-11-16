@@ -1094,12 +1094,12 @@ jint sjme_nvm_localLoadInteger(
 
 jboolean sjme_nvm_localPopDouble(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_attrInValue sjme_attrInPositive jint index)
+	sjme_attrInValue sjme_attrInPositive jint localIndex)
 	sjme_attrCheckReturn;
 
 jboolean sjme_nvm_localPopFloat(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_attrInValue sjme_attrInPositive jint index)
+	sjme_attrInValue sjme_attrInPositive jint localIndex)
 	sjme_attrCheckReturn;
 
 jboolean sjme_nvm_localPopInteger(
@@ -1109,12 +1109,12 @@ jboolean sjme_nvm_localPopInteger(
 
 jboolean sjme_nvm_localPopLong(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_attrInValue sjme_attrInPositive jint index)
+	sjme_attrInValue sjme_attrInPositive jint localIndex)
 	sjme_attrCheckReturn;
 
 jboolean sjme_nvm_localPopReference(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_attrInValue sjme_attrInPositive jint index)
+	sjme_attrInValue sjme_attrInPositive jint localIndex)
 	sjme_attrCheckReturn;
 
 jboolean sjme_nvm_localPushDouble(

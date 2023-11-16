@@ -30,6 +30,22 @@ extern "C" {
 /*--------------------------------------------------------------------------*/
 
 /**
+ * Returns the address of a given index on the tread.
+ * 
+ * @param frame The frame the access is in.
+ * @param tread The tread to read from.
+ * @param treadIndex The index to access.
+ * @param outAddress The output address.
+ * @return Returns @c JNI_TRUE if successful.
+ * @since 2023/11/16
+ */
+typedef jboolean (*sjme_nvm_frameTreadAccessorAddress)(
+	sjme_attrInNotNull sjme_nvm_frame* frame,
+	sjme_attrInNotNull sjme_nvm_frameTread* tread,
+	sjme_attrInPositive jint treadIndex,
+	sjme_attrOutNotNull void** outAddress);
+
+/**
  * Reads from a tread.
  * 
  * @param frame The frame the access is in.
@@ -73,6 +89,9 @@ typedef struct sjme_nvm_frameTreadAccessor
 	
 	/** The name of the type. */
 	const char* name;
+	
+	/** Address function. */
+	sjme_nvm_frameTreadAccessorAddress address;
 	
 	/** Read function. */
 	sjme_nvm_frameTreadAccessorRead read;

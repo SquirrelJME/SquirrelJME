@@ -17,6 +17,7 @@ static const sjme_nvm_frameTreadAccessor sjme_nvm_constFrameTreadAccessor[
 		sizeof(jint),
 		"jint",
 		NULL,
+		NULL,
 		NULL
 	},
 	
@@ -24,6 +25,7 @@ static const sjme_nvm_frameTreadAccessor sjme_nvm_constFrameTreadAccessor[
 	{
 		sizeof(jlong),
 		"jlong",
+		NULL,
 		NULL,
 		NULL
 	},
@@ -33,6 +35,7 @@ static const sjme_nvm_frameTreadAccessor sjme_nvm_constFrameTreadAccessor[
 		sizeof(jfloat),
 		"jfloat",
 		NULL,
+		NULL,
 		NULL
 	},
 	
@@ -41,6 +44,7 @@ static const sjme_nvm_frameTreadAccessor sjme_nvm_constFrameTreadAccessor[
 		sizeof(jdouble),
 		"jdouble",
 		NULL,
+		NULL,
 		NULL
 	},
 	
@@ -48,6 +52,7 @@ static const sjme_nvm_frameTreadAccessor sjme_nvm_constFrameTreadAccessor[
 	{
 		sizeof(jobject),
 		"jobject",
+		NULL,
 		NULL,
 		NULL
 	}
