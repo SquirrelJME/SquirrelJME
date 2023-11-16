@@ -116,7 +116,7 @@ typedef struct sjme_elevatorRunCurrent
 				
 				/** The stack pivot point. */
 				jint stackBaseIndex;
-			} treads[SJME_NUM_BASIC_TYPE_IDS];
+			} treads[SJME_NUM_JAVA_TYPE_IDS];
 		} frame;
 	} data;
 } sjme_elevatorRunCurrent;

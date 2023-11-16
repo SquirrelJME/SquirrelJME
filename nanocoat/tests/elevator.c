@@ -199,7 +199,7 @@ jboolean sjme_elevatorDoMakeFrame(
 	memset(baseLocalAt, 0, sizeof(baseLocalAt));
 	
 	/* Need to initialize frame locals and stack? */
-	for (typeId = 0; typeId < SJME_NUM_BASIC_TYPE_IDS; typeId++)
+	for (typeId = 0; typeId < SJME_NUM_JAVA_TYPE_IDS; typeId++)
 	{
 		/* Ignore if empty. */
 		treadMax = inData->current.data.frame.treads[typeId].max;
@@ -230,7 +230,7 @@ jboolean sjme_elevatorDoMakeFrame(
 		
 		/* Fill in local mappings for a given tread. */
 		for (localIndex = 0; localIndex < stackBase; localIndex++)
-			localMap->maps[typeId].to[typeId] = (jbyte)localIndex;
+			localMap->maps[localIndex].to[typeId] = (jbyte)localIndex;
 	}
 	
 	/* Consistency check. */
