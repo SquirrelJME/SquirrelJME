@@ -43,6 +43,15 @@ extern "C" {
 #define SJME_TOKEN_PASTE(a, b) a##b
 
 /**
+ * Pasting two tokens but with preprocessing.
+ * 
+ * @param a The first token.
+ * @param b The second token.
+ * @since 2023/11/16
+ */
+#define SJME_TOKEN_PASTE_PP(a, b) SJME_TOKEN_PASTE(a, b)
+
+/**
  * Calculates the size of a struct member.
  * 
  * @param type The type of the struct.
@@ -771,6 +780,36 @@ typedef struct sjme_nvm_frameTread
 	(offsetof(sjme_nvm_frameTread, values.SJME_TOKEN_PASTE(type,s)[0]) - \
 		offsetof(sjme_nvm_frameTread, values)) + \
 	(sizeof(type) * (size_t)(count)))
+
+/**
+ * Calculates the size of a frame tread for a given type via variable.
+ * 
+ * @param typeId The type to get the size for.
+ * @param count The number if items to store.
+ * @return The size in bytes for the tread.
+ * @since 2023/11/15
+ */
+static inline size_t SJME_SIZEOF_FRAME_TREAD_VAR(sjme_javaTypeId typeId,
+	jint count)
+{
+	switch (typeId)
+	{
+		case SJME_JAVA_TYPE_ID_INTEGER:
+			return SJME_SIZEOF_FRAME_TREAD(jint, count);
+		
+		case SJME_JAVA_TYPE_ID_LONG:
+			return SJME_SIZEOF_FRAME_TREAD(jlong, count);
+			
+		case SJME_JAVA_TYPE_ID_FLOAT:
+			return SJME_SIZEOF_FRAME_TREAD(jfloat, count);
+			
+		case SJME_JAVA_TYPE_ID_DOUBLE:
+			return SJME_SIZEOF_FRAME_TREAD(jdouble, count);
+	}
+	
+	/* Invalid. */
+	return 0;
+}
 
 /**
  * Represents information on a frame's stack storage.

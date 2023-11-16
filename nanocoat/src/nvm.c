@@ -150,7 +150,8 @@ SJME_EXCEPT_WITH:
 	
 SJME_EXCEPT_FAIL:
 	return sjme_except_gracefulDeath(
-		"Invalid int pop into %d within l:[0, %d] s:[0, %d].",
+		"Invalid %s pop into %d within l:[0, %d] s:[0, %d].",
+		"jint",
 		(int)localIndex,
 		(frame == NULL || frame->localMap == NULL ? -1 :
 			frame->localMap->max),

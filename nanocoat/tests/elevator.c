@@ -208,7 +208,7 @@ jboolean sjme_elevatorDoMakeFrame(
 		
 		/* Allocate target tread. */
 		tread = sjme_elevatorAlloc(inState,
-			SJME_SIZEOF_FRAME_TREAD(jint, treadMax));
+			SJME_SIZEOF_FRAME_TREAD_VAR(typeId, treadMax));
 		newFrame->treads[typeId] = tread;
 		
 		/* Setup stack base. */
