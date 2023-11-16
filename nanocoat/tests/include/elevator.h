@@ -105,6 +105,9 @@ typedef struct sjme_elevatorRunCurrent
 			/** The maximum number of locals. */
 			jint maxLocals;
 			
+			/** The maximum number of stack entries. */
+			jint maxStack;
+			
 			/** The treads within the frame. */
 			struct
 			{

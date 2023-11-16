@@ -34,6 +34,15 @@ extern "C" {
 /*--------------------------------------------------------------------------*/
 
 /**
+ * Posts two tokens together.
+ * 
+ * @param a The first token.
+ * @param b The second token.
+ * @since 2023/11/15
+ */
+#define SJME_TOKEN_PASTE(a, b) a##b
+
+/**
  * Boolean type.
  * 
  * @since 2023/07/25
@@ -187,7 +196,7 @@ typedef struct sjme_basicTypeIds
 	jint count;
 	
 	/** The IDs. */
-	const sjme_basicTypeId ids[sjme_flexibleArrayCount];
+	const sjme_javaTypeId ids[sjme_flexibleArrayCount];
 } sjme_basicTypeIds;
 
 /**
@@ -738,15 +747,6 @@ typedef struct sjme_nvm_frameTread
 } sjme_nvm_frameTread;
 
 /**
- * Posts two tokens together.
- * 
- * @param a The first token.
- * @param b The second token.
- * @since 2023/11/15
- */
-#define SJME_TOKEN_PASTE(a, b) a##b
-
-/**
  * Calculates the size of a frame tread for a given type.
  * 
  * @param type The type to get the size for.
@@ -760,6 +760,34 @@ typedef struct sjme_nvm_frameTread
 	(offsetof(sjme_nvm_frameTread, values.SJME_TOKEN_PASTE(type,s)[0]) - \
 		offsetof(sjme_nvm_frameTread, values)) + \
 	(sizeof(type) * (size_t)(count)))
+
+/**
+ * Represents information on a frame's stack storage.
+ * 
+ * @since 2023/11/16
+ */
+typedef struct sjme_nvm_frameStack
+{
+	/** The number of items in the stack. */
+	jint count;
+	
+	/** The current limit of this structure. */
+	jint limit;
+	
+	/** The stack order. */
+	sjme_javaTypeId order[sjme_flexibleArrayCount];
+} sjme_nvm_frameStack;
+
+/**
+ * Calculates the size of a frame stack.
+ * 
+ * @param count The number if items to store.
+ * @return The size in bytes for the tread.
+ * @since 2023/11/16
+ */
+#define SJME_SIZEOF_FRAME_STACK(count) \
+	(sizeof(sjme_nvm_frameStack) + \
+	(sizeof(sjme_javaTypeId) * (size_t)(count)))
 
 struct sjme_nvm_frame
 {
@@ -790,11 +818,11 @@ struct sjme_nvm_frame
 	/** Class reference. */
 	jclass classObjectRef;
 	
-	/** Number of items in the stack, of everything. */
-	jint numInStack;
-	
 	/** Number of items in local variables, of everything. */
 	jint maxLocals;
+	
+	/** The current stack information. */
+	sjme_nvm_frameStack* stack;
 	
 	/** Treads for the stack and locals. */
 	sjme_nvm_frameTread* treads[SJME_NUM_BASIC_TYPE_IDS];
@@ -914,8 +942,26 @@ typedef enum sjme_errorCode
 	/** Stack overflow. */
 	SJME_ERROR_CODE_STACK_OVERFLOW = -5,
 	
+	/** Top is not an integer type. */
+	SJME_ERROR_CODE_TOP_NOT_INTEGER = -6,
+	
+	/** Top is not a long type. */
+	SJME_ERROR_CODE_TOP_NOT_LONG = -7,
+	
+	/** Top is not a float type. */
+	SJME_ERROR_CODE_TOP_NOT_FLOAT = -8,
+	
+	/** Top is not a double type. */
+	SJME_ERROR_CODE_TOP_NOT_DOUBLE = -9,
+	
+	/** Top is not a object type. */
+	SJME_ERROR_CODE_TOP_NOT_OBJECT = -10,
+	
+	/** Frame is missing stack treads. */
+	SJME_ERROR_FRAME_MISSING_STACK_TREADS = -11,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -6
+	SJME_NUM_ERROR_CODES = -12
 } sjme_errorCode;
 
 jboolean sjme_nvm_arrayLength(

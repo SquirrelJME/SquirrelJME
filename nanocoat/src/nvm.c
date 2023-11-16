@@ -102,16 +102,29 @@ jboolean sjme_nvm_localPopInteger(sjme_nvm_frame* frame,
 {
 	SJME_EXCEPT_VDEF;
 	int x;
+	sjme_basicTypeId topType;
+	sjme_nvm_frameStack* stack;
+	sjme_nvm_frameTread* tread;
 	
 SJME_EXCEPT_WITH:
 	if (frame == NULL)
 		SJME_EXCEPT_TOSS(SJME_ERROR_CODE_NULL_ARGUMENTS);
+		
+	tread = frame->treads[SJME_JAVA_TYPE_ID_INTEGER];
+	stack = frame->stack;
+	if (stack == NULL || frame == NULL)
+		SJME_EXCEPT_TOSS(SJME_ERROR_FRAME_MISSING_STACK_TREADS);
 	
 	if (index < 0 || index >= frame->maxLocals)
 		SJME_EXCEPT_TOSS(SJME_ERROR_CODE_LOCAL_INDEX_INVALID);
 		
-	if (frame->numInStack <= 0)
+	if (stack->count <= 0 || tread->count <= tread->stackBaseIndex)
 		SJME_EXCEPT_TOSS(SJME_ERROR_CODE_STACK_UNDERFLOW);
+	
+	/* Get the type at the top to check if it is valid. */
+	topType = stack->order[stack->count];
+	if (topType != SJME_JAVA_TYPE_ID_INTEGER)
+		SJME_EXCEPT_TOSS(SJME_ERROR_CODE_TOP_NOT_INTEGER);
 	
 	sjme_todo("Implement");
 	return JNI_FALSE;
@@ -121,7 +134,7 @@ SJME_EXCEPT_FAIL:
 		"Invalid int pop into %d within l:[0, %d] s:[0, %d].",
 		(int)index,
 		(frame == NULL ? -1 : frame->maxLocals),
-		(frame == NULL ? -1 : frame->numInStack));
+		(frame == NULL ? -1 : frame->stack->count));
 }
 
 jboolean sjme_nvm_localPopLong(sjme_nvm_frame* frame,

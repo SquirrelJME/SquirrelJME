@@ -27,9 +27,10 @@ jboolean configNvmLocalPopInteger(
 	{
 		case SJME_ELEVATOR_DO_TYPE_MAKE_FRAME:
 			inCurrent->data.frame.maxLocals = 1;
-			inCurrent->data.frame.treads[SJME_BASIC_TYPE_ID_INTEGER]
+			inCurrent->data.frame.maxStack = 1;
+			inCurrent->data.frame.treads[SJME_JAVA_TYPE_ID_INTEGER]
 				.max = 2;
-			inCurrent->data.frame.treads[SJME_BASIC_TYPE_ID_INTEGER]
+			inCurrent->data.frame.treads[SJME_JAVA_TYPE_ID_INTEGER]
 				.stackBaseIndex = 1;
 			break;
 	}
@@ -58,6 +59,7 @@ sjme_testResult testNvmLocalPopInteger(sjme_test* test)
 	sjme_nvm_frame* frame;
 	jint oldNumStack, intVal;
 	sjme_nvm_frameTread* intsTread;
+	sjme_nvm_frameStack* stack;
 	
 	/* Perform the elevator. */
 	memset(&state, 0, sizeof(state));
@@ -68,18 +70,20 @@ sjme_testResult testNvmLocalPopInteger(sjme_test* test)
 	frame = state.threads[0].nvmThread->top;
 	
 	/* Setup integer values. */
-	intsTread = frame->treads[SJME_BASIC_TYPE_ID_INTEGER];
+	intsTread = frame->treads[SJME_JAVA_TYPE_ID_INTEGER];
+	stack = frame->stack;
 	intsTread->values.jints[1] = 1234;
 	intsTread->count = intsTread->stackBaseIndex + 1;
-	frame->numInStack = 1;
+	stack->count = 1;
+	stack->order[0] = SJME_JAVA_TYPE_ID_INTEGER;
 	
 	/* Pop integer from the stack to the first local. */
-	oldNumStack = frame->numInStack;
+	oldNumStack = stack->count;
 	if (!sjme_nvm_localPopInteger(frame, 0))
 		return sjme_unitFail(test, "Failed to pop local integer.");
 	
 	/* New stack should be lower. */
-	sjme_unitEqualI(test, frame->numInStack, oldNumStack - 1,
+	sjme_unitEqualI(test, stack->count, oldNumStack - 1,
 		"Items in stack not lower?");
 	
 	/* Check that the value was moved over. */

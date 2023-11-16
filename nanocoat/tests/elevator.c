@@ -9,6 +9,7 @@
 
 #include <string.h>
 
+#include "sjme/except.h"
 #include "elevator.h"
 
 struct sjme_elevatorRunData
@@ -146,10 +147,12 @@ jboolean sjme_elevatorDoMakeFrame(
 	sjme_attrInNotNull sjme_elevatorRunData* inData)
 {
 	jint threadIndex, treadMax, tallyLocals, stackBase, desireMaxLocals;
+	jint tallyStack, desireMaxStack;
 	sjme_nvm_thread* thread;
 	sjme_nvm_frame* newFrame;
 	sjme_basicTypeId typeId;
 	sjme_nvm_frameTread* tread;
+	sjme_nvm_frameStack* stack;
 	
 	if (inState == NULL || inData == NULL)
 		return sjme_die("Null arguments.");
@@ -177,8 +180,9 @@ jboolean sjme_elevatorDoMakeFrame(
 	newFrame->parent = thread->top;
 	thread->top = newFrame;
 	
-	/* Track tally of locals for consistency. */
+	/* Track tally of locals and stack for consistency. */
 	tallyLocals = 0;
+	tallyStack = 0;
 	
 	/* Need to initialize frame locals and stack? */
 	for (typeId = 0; typeId < SJME_NUM_BASIC_TYPE_IDS; typeId++)
@@ -202,6 +206,9 @@ jboolean sjme_elevatorDoMakeFrame(
 		/* Local tally goes up by the stack base. */
 		tallyLocals += stackBase;
 		
+		/* Tally number of stack items. */
+		tallyStack += treadMax - stackBase;
+		
 		/* Setup other tread details. */
 		tread->stackBaseIndex = stackBase;
 		tread->count = stackBase;
@@ -213,6 +220,17 @@ jboolean sjme_elevatorDoMakeFrame(
 	if (tallyLocals != desireMaxLocals)
 		return sjme_die("Calculated and desired locals invalid: %d != %d.",
 			tallyLocals, desireMaxLocals);
+	
+	desireMaxStack = inData->current.data.frame.maxStack;
+	if (tallyStack != desireMaxStack)
+		return sjme_die("Calculated and desired stack invalid: %d != %d.",
+			tallyStack, desireMaxStack);
+	
+	/* Setup stack information. */
+	stack = sjme_elevatorAlloc(inState,
+		SJME_SIZEOF_FRAME_STACK(tallyStack));
+	newFrame->stack = stack;
+	stack->limit = tallyStack;
 	
 	/* Set actual local maximum. */
 	newFrame->maxLocals = desireMaxLocals;
