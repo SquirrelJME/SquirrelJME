@@ -236,8 +236,10 @@ SJME_EXCEPT_WITH:
 			&oldLocalValue, &stackValue))
 		SJME_EXCEPT_TOSS(SJME_ERROR_INVALID_REFERENCE_POP);
 	
-	/* Need to refcount the old stack value? Only if it differs */
-	if (oldLocalValue != NULL && oldLocalValue != stackValue)
+	/* Need to refcount the old stack value? */
+	/* Always happens, even if they are the same reference because now there */
+	/* is none there. */
+	if (oldLocalValue != NULL)
 		sjme_todo("Refcount old local.");
 	
 	/* Success! */
