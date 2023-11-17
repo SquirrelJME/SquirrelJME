@@ -249,7 +249,8 @@ typedef jint sjme_staticLinkageType;
  */
 typedef struct sjme_jobjectBase
 {
-	int todo;
+	/** The reference count of this object, zero it becomes GCed. */
+	jint refCount;
 } sjme_jobjectBase;
 
 /**
@@ -814,6 +815,9 @@ static inline size_t SJME_SIZEOF_FRAME_TREAD_VAR(sjme_javaTypeId typeId,
 			
 		case SJME_JAVA_TYPE_ID_DOUBLE:
 			return SJME_SIZEOF_FRAME_TREAD(jdouble, count);
+			
+		case SJME_JAVA_TYPE_ID_OBJECT:
+			return SJME_SIZEOF_FRAME_TREAD(jobject, count);
 	}
 	
 	/* Invalid. */

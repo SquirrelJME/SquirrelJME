@@ -18,6 +18,7 @@
 
 #include "sjme/nvm.h"
 #include "sjme/debug.h"
+#include "test.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -46,6 +47,9 @@ typedef enum sjme_elevatorDoType
 	/** Make thread. */
 	SJME_ELEVATOR_DO_TYPE_MAKE_THREAD,
 	
+	/** Make Object. */
+	SJME_ELEVATOR_DO_TYPE_MAKE_OBJECT,
+	
 	/** Make frame. */
 	SJME_ELEVATOR_DO_TYPE_MAKE_FRAME,
 
@@ -55,6 +59,9 @@ typedef enum sjme_elevatorDoType
 
 /** The maximum number of threads supported in the elevator for testing. */
 #define SJME_ELEVATOR_MAX_THREADS 16
+
+/** The maximum number of objects that can be created. */
+#define SJME_ELEVATOR_MAX_OBJECTS 32
 
 /**
  * Represents the state of the elevator.
@@ -75,6 +82,12 @@ typedef struct sjme_elevatorState
 		/** The actual native thread. */
 		sjme_nvm_thread* nvmThread;
 	} threads[SJME_ELEVATOR_MAX_THREADS];
+	
+	/** The number of objects which were created. */
+	jint numObjects;
+	
+	/** Objects that were created. */
+	jobject objects[SJME_ELEVATOR_MAX_OBJECTS];
 } sjme_elevatorState;
 
 /**
@@ -121,6 +134,13 @@ typedef struct sjme_elevatorRunCurrent
 				jint stackBaseIndex;
 			} treads[SJME_NUM_JAVA_TYPE_IDS];
 		} frame;
+		
+		/** Object information. */
+		struct
+		{
+			/** Implement. */
+			int todo;
+		} object;
 	} data;
 } sjme_elevatorRunCurrent;
 
@@ -218,6 +238,18 @@ jboolean sjme_elevatorDoInit(
  * @since 2023/11/11
  */
 jboolean sjme_elevatorDoMakeFrame(
+	sjme_attrInNotNull sjme_elevatorState* inState,
+	sjme_attrInNotNull sjme_elevatorRunData* inData);
+
+/**
+ * Creates a new object.
+ * 
+ * @param inState The input state.
+ * @param inData The input data.
+ * @return Returns @c JNI_TRUE on success.
+ * @since 2023/11/17 
+ */
+jboolean sjme_elevatorDoMakeObject(
 	sjme_attrInNotNull sjme_elevatorState* inState,
 	sjme_attrInNotNull sjme_elevatorRunData* inData);
 

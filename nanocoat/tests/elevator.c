@@ -39,6 +39,8 @@ struct
 		SJME_ELEVATOR_DO_TYPE_INIT},
 	{sjme_elevatorDoMakeThread,
 		SJME_ELEVATOR_DO_TYPE_MAKE_THREAD},
+	{sjme_elevatorDoMakeObject,
+		SJME_ELEVATOR_DO_TYPE_MAKE_OBJECT},
 	{sjme_elevatorDoMakeFrame,
 		SJME_ELEVATOR_DO_TYPE_MAKE_FRAME},
 		
@@ -256,6 +258,30 @@ jboolean sjme_elevatorDoMakeFrame(
 			tallyStack, desireMaxStack);
 	
 	/* Done. */
+	return JNI_TRUE;
+}
+
+jboolean sjme_elevatorDoMakeObject(
+	sjme_attrInNotNull sjme_elevatorState* inState,
+	sjme_attrInNotNull sjme_elevatorRunData* inData)
+{
+	jobject newObject;
+	
+	if (inState == NULL || inData == NULL)
+		return sjme_die("Null arguments.");
+	
+	/* Too many objects? */
+	if (inState->numObjects >= SJME_ELEVATOR_MAX_OBJECTS)
+		sjme_die("Too many elevator objects.");
+	
+	/* Allocate new object. */
+	newObject = sjme_elevatorAlloc(inState, sizeof(*newObject));
+	inState->objects[inState->numObjects++] = newObject;
+	
+	/* Initialize object details. */
+	newObject->refCount = 1;
+	
+	/* Success. */
 	return JNI_TRUE;
 }
 

@@ -35,6 +35,10 @@ configure_file("${CMAKE_SOURCE_DIR}/cmake/blank.in.h"
 configure_file("${CMAKE_SOURCE_DIR}/cmake/blank.in.h"
 	"${outTestStructH}")
 
+# Include test header in the prototypes file
+file(APPEND "${outTestProtosH}"
+	"#include \"test.h\"\n")
+
 # Initialize executable for basic tests, which contains everything
 add_executable(BasicTest
 	basic.c
