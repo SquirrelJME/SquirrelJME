@@ -14,8 +14,23 @@
 #include "sjme/except.h"
 #include "sjme/tread.h"
 
-static jboolean sjme_nvm_localPopGeneric(sjme_nvm_frame* frame,
-	volatile jint localIndex, const sjme_nvm_frameTreadAccessor* accessor)
+/**
+ * Pops a generic value from the stack into a local variable.
+ * 
+ * @param frame The frame to pop from.
+ * @param localIndex The local index to store to.
+ * @param accessor The accessor used.
+ * @param outOldLocalValue Optional output old local value.
+ * @param outStackValue Optional output stack value.
+ * @return Returns @c JNI_TRUE on success.
+ * @since 2023/11/16
+ */
+static jboolean sjme_nvm_localPopGeneric(
+	sjme_attrInNotNull sjme_nvm_frame* frame,
+	sjme_attrInPositive volatile jint localIndex,
+	sjme_attrInNotNull const sjme_nvm_frameTreadAccessor* accessor,
+	sjme_attrOutNullable void* outOldLocalValue,
+	sjme_attrOutNullable void* outStackValue)
 {
 	SJME_EXCEPT_VDEF;
 	sjme_javaTypeId topType;
@@ -57,6 +72,16 @@ SJME_EXCEPT_WITH:
 	if (!accessor->address(frame, accessor, tread, tread->count - 1,
 		&valueAddr) || valueAddr == NULL)
 		SJME_EXCEPT_TOSS(SJME_ERROR_CODE_STACK_INVALID_READ);
+	
+	/* Store the old value in the local variable. */
+	if (outOldLocalValue != NULL)
+		if (!accessor->read(frame, accessor, tread, indexMapTo,
+				outOldLocalValue))
+			SJME_EXCEPT_TOSS(SJME_ERROR_CODE_LOCAL_INVALID_READ);
+	
+	/* Store the output stack value, if requested. */
+	if (outStackValue != NULL)
+		memmove(outStackValue, valueAddr, accessor->size);
 	
 	/* Write value directly from stack source address. */
 	if (!accessor->write(frame, accessor, tread, indexMapTo, valueAddr))
@@ -164,7 +189,8 @@ jboolean sjme_nvm_localPopDouble(sjme_nvm_frame* frame,
 {
 	return sjme_nvm_localPopGeneric(frame, localIndex,
 		sjme_nvm_frameTreadAccessorByType(
-			SJME_JAVA_TYPE_ID_DOUBLE));
+			SJME_JAVA_TYPE_ID_DOUBLE),
+			NULL, NULL);
 }
 
 jboolean sjme_nvm_localPopFloat(sjme_nvm_frame* frame,
@@ -172,7 +198,8 @@ jboolean sjme_nvm_localPopFloat(sjme_nvm_frame* frame,
 {
 	return sjme_nvm_localPopGeneric(frame, localIndex,
 		sjme_nvm_frameTreadAccessorByType(
-			SJME_JAVA_TYPE_ID_FLOAT));
+			SJME_JAVA_TYPE_ID_FLOAT),
+			NULL, NULL);
 }
 
 jboolean sjme_nvm_localPopInteger(sjme_nvm_frame* frame,
@@ -180,7 +207,8 @@ jboolean sjme_nvm_localPopInteger(sjme_nvm_frame* frame,
 {
 	return sjme_nvm_localPopGeneric(frame, localIndex,
 		sjme_nvm_frameTreadAccessorByType(
-			SJME_JAVA_TYPE_ID_INTEGER));
+			SJME_JAVA_TYPE_ID_INTEGER),
+			NULL, NULL);
 }
 
 jboolean sjme_nvm_localPopLong(sjme_nvm_frame* frame,
@@ -188,14 +216,35 @@ jboolean sjme_nvm_localPopLong(sjme_nvm_frame* frame,
 {
 	return sjme_nvm_localPopGeneric(frame, localIndex,
 		sjme_nvm_frameTreadAccessorByType(
-			SJME_JAVA_TYPE_ID_LONG));
+			SJME_JAVA_TYPE_ID_LONG),
+			NULL, NULL);
 }
 
 jboolean sjme_nvm_localPopReference(sjme_nvm_frame* frame,
 	jint localIndex)
 {
-	sjme_todo("Implement");
-	return JNI_FALSE;
+	SJME_EXCEPT_VDEF;
+	jobject oldLocalValue, stackValue;
+
+SJME_EXCEPT_WITH:
+	/* Read in the stack values. */
+	oldLocalValue = NULL;
+	stackValue = NULL;
+	if (!sjme_nvm_localPopGeneric(frame, localIndex,
+		sjme_nvm_frameTreadAccessorByType(
+			SJME_JAVA_TYPE_ID_OBJECT),
+			&oldLocalValue, &stackValue))
+		SJME_EXCEPT_TOSS(SJME_ERROR_INVALID_REFERENCE_POP);
+	
+	/* Need to refcount the old stack value? Only if it differs */
+	if (oldLocalValue != NULL && oldLocalValue != stackValue)
+		sjme_todo("Refcount old local.");
+	
+	/* Success! */
+	return JNI_TRUE;
+
+SJME_EXCEPT_FAIL:
+	return sjme_except_gracefulDeath("Could not refcount objects.");
 }
 
 jboolean sjme_nvm_localPushDouble(sjme_nvm_frame* frame,

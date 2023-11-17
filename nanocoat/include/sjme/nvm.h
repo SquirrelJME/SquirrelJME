@@ -1054,8 +1054,14 @@ typedef enum sjme_errorCode
 	/** Invalid write of stack. */
 	SJME_ERROR_CODE_LOCAL_INVALID_WRITE = -15,
 	
+	/** Invalid reference pop. */
+	SJME_ERROR_INVALID_REFERENCE_POP = -16,
+	
+	/** Invalid reference push. */
+	SJME_ERROR_INVALID_REFERENCE_PUSH = -17,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -16
+	SJME_NUM_ERROR_CODES = -18
 } sjme_errorCode;
 
 jboolean sjme_nvm_arrayLength(
