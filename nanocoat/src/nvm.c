@@ -7,6 +7,8 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <string.h>
+
 #include "sjme/nvm.h"
 #include "sjme/debug.h"
 #include "sjme/except.h"
@@ -16,19 +18,23 @@ static jboolean sjme_nvm_localPopGeneric(sjme_nvm_frame* frame,
 	volatile jint localIndex, const sjme_nvm_frameTreadAccessor* accessor)
 {
 	SJME_EXCEPT_VDEF;
-	int x;
-	sjme_basicTypeId topType;
+	sjme_javaTypeId topType;
 	sjme_nvm_frameStack* stack;
 	sjme_nvm_frameTread* tread;
 	const sjme_nvm_frameLocalMap* localMap;
-	jint copyValue;
+	jbyte indexMapTo;
+	void* valueAddr;
 	
 SJME_EXCEPT_WITH:
-	if (frame == NULL)
+	if (frame == NULL || accessor == NULL)
 		SJME_EXCEPT_TOSS(SJME_ERROR_CODE_NULL_ARGUMENTS);
 	
-	/* These must exist. */
-	tread = frame->treads[SJME_JAVA_TYPE_ID_INTEGER];
+	/* Obtain the tread to access. */
+	tread = NULL;
+	if (!accessor->getTread(frame, accessor, &tread) || tread == NULL)
+		SJME_EXCEPT_TOSS(SJME_ERROR_FRAME_MISSING_STACK_TREADS);
+	
+	/* Check to make sure they exist. */
 	stack = frame->stack;
 	localMap = frame->localMap;
 	if (stack == NULL || tread == NULL || localMap == NULL)
@@ -42,23 +48,30 @@ SJME_EXCEPT_WITH:
 	
 	/* Get the type at the top to check if it is valid. */
 	topType = stack->order[stack->count];
-	if (topType != SJME_JAVA_TYPE_ID_INTEGER)
-		SJME_EXCEPT_TOSS(SJME_ERROR_CODE_TOP_NOT_INTEGER);
+	if (topType != accessor->typeId)
+		SJME_EXCEPT_TOSS(accessor->errorInvalidTop);
 	
-	/* Get the value to copy. */
-	copyValue = tread->values.jints[tread->count - 1];
+	/* Copy the stack value to the local. */
+	indexMapTo = localMap->maps[localIndex].to[SJME_JAVA_TYPE_ID_INTEGER];
+	valueAddr = NULL;
+	if (!accessor->address(frame, accessor, tread, tread->count - 1,
+		&valueAddr) || valueAddr == NULL)
+		SJME_EXCEPT_TOSS(SJME_ERROR_CODE_STACK_INVALID_READ);
 	
-	/* Clear old value. */
-	tread->values.jints[tread->count - 1] = 0;
+	/* Write value directly from stack source address. */
+	if (!accessor->write(frame, accessor, tread, indexMapTo, valueAddr))
+		SJME_EXCEPT_TOSS(SJME_ERROR_CODE_LOCAL_INVALID_WRITE);
+	
+	/* Clear old stack value with zero value. */
+	valueAddr = alloca(accessor->size);
+	memset(valueAddr, 0, accessor->size);
+	if (!accessor->write(frame, accessor, tread, tread->count - 1, valueAddr))
+		SJME_EXCEPT_TOSS(SJME_ERROR_CODE_STACK_INVALID_WRITE);
 	
 	/* Clear and reduce stack counts. */
 	stack->order[stack->count] = 0;
 	stack->count--;
 	tread->count--;
-	
-	/* Copy to local variable storage. */
-	tread->values.jints[localMap->maps[localIndex]
-		.to[SJME_JAVA_TYPE_ID_INTEGER]] = copyValue;
 	
 	/* Done. */
 	return JNI_TRUE;
@@ -66,7 +79,7 @@ SJME_EXCEPT_WITH:
 SJME_EXCEPT_FAIL:
 	return sjme_except_gracefulDeath(
 		"Invalid %s pop into %d within l:[0, %d] s:[0, %d].",
-		"jint",
+		accessor->name,
 		(int)localIndex,
 		(frame == NULL || frame->localMap == NULL ? -1 :
 			frame->localMap->max),

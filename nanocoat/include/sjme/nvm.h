@@ -49,6 +49,15 @@ extern "C" {
  * @param b The second token.
  * @since 2023/11/16
  */
+//#define SJME_TOKEN_PASTE_PP_TWO(a, b) SJME_TOKEN_PASTE(a, b)
+
+/**
+ * Pasting two tokens but with preprocessing.
+ * 
+ * @param a The first token.
+ * @param b The second token.
+ * @since 2023/11/16
+ */
 #define SJME_TOKEN_PASTE_PP(a, b) SJME_TOKEN_PASTE(a, b)
 
 /**
@@ -1033,8 +1042,20 @@ typedef enum sjme_errorCode
 	/** Frame is missing stack treads. */
 	SJME_ERROR_FRAME_MISSING_STACK_TREADS = -11,
 	
+	/** Invalid read of stack. */
+	SJME_ERROR_CODE_STACK_INVALID_READ = -12,
+	
+	/** Invalid write of stack. */
+	SJME_ERROR_CODE_STACK_INVALID_WRITE = -13,
+	
+	/** Invalid read of stack. */
+	SJME_ERROR_CODE_LOCAL_INVALID_READ = -14,
+	
+	/** Invalid write of stack. */
+	SJME_ERROR_CODE_LOCAL_INVALID_WRITE = -15,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -12
+	SJME_NUM_ERROR_CODES = -16
 } sjme_errorCode;
 
 jboolean sjme_nvm_arrayLength(
