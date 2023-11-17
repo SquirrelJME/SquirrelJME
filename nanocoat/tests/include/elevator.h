@@ -93,6 +93,9 @@ typedef struct sjme_elevatorRunCurrent
 	/** The current type. */
 	sjme_elevatorDoType type;
 	
+	/** Special value, for alternative configuration potentially. */
+	jint special;
+	
 	/** Data for the initialization step. */
 	union
 	{
@@ -173,12 +176,14 @@ typedef struct sjme_elevatorSet
  * 
  * @param inState The input state.
  * @param inSet The set to act on.
+ * @param special Special value, optional.
  * @return Returns @c JNI_TRUE on success.
  * @since 2023/1/111
  */
 jboolean sjme_elevatorAct(
 	sjme_attrInNotNull sjme_elevatorState* inState,
-	sjme_attrInNotNull const sjme_elevatorSet* inSet);
+	sjme_attrInNotNull const sjme_elevatorSet* inSet,
+	sjme_attrInValue jint special);
 
 /**
  * Allocates memory

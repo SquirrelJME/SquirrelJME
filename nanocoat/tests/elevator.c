@@ -48,7 +48,8 @@ struct
 
 jboolean sjme_elevatorAct(
 	sjme_attrInNotNull sjme_elevatorState* inState,
-	sjme_attrInNotNull const sjme_elevatorSet* inSet)
+	sjme_attrInNotNull const sjme_elevatorSet* inSet,
+	sjme_attrInValue jint special)
 {
 	jint dx, i;
 	sjme_elevatorRunData data;
@@ -90,6 +91,7 @@ jboolean sjme_elevatorAct(
 		/* Increment up the index for this. */
 		data.current.type = doType;
 		data.current.indexType = data.indexTypeCount[doType]++;
+		data.current.special = special;
 		
 		/* Run configuration function to initialize the data set. */
 		if (!inSet->config(inState, &data.current))

@@ -58,6 +58,10 @@ int main(int argc, char** argv)
 		return EXIT_FAILURE;
 	}
 	
+	/* Note where it is. */
+	if (argc >= 3)
+		sjme_message("Test is at %s:1.", argv[2]);
+	
 	/* Setup test. */
 	memset(&test, 0, sizeof(test));
 

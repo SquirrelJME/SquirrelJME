@@ -56,6 +56,7 @@ target_link_libraries(BasicTest PUBLIC
 foreach(basicTestSource ${basicTestSources})
 	# We need to do this because on Windows, CLion+CMake just gives the full
 	# path which we really do not want as it will mess up with tests
+	set(initialBasicTestSource "${basicTestSource}")
 	get_filename_component(basicTestSource
 		"${basicTestSource}" NAME)
 
@@ -68,10 +69,15 @@ foreach(basicTestSource ${basicTestSources})
 	# Long name of the test
 	set(basicTestLongName "basic:${basicTestName}")
 
+	# Full path, for message output
+	get_filename_component(basicTestFullPath
+		"${initialBasicTestSource}" ABSOLUTE)
+
 	# Add test for this
 	add_test(NAME "${basicTestLongName}"
 		WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
-		COMMAND "$<TARGET_FILE:BasicTest>" ${basicTestName})
+		COMMAND "$<TARGET_FILE:BasicTest>" "${basicTestName}"
+			"${basicTestFullPath}")
 
 	# Code for skipped tests
 	set_property(TEST "${basicTestLongName}"

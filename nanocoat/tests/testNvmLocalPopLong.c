@@ -64,7 +64,8 @@ sjme_attrUnused sjme_testResult testNvmLocalPopLong(sjme_test* test)
 	
 	/* Perform the elevator. */
 	memset(&state, 0, sizeof(state));
-	if (!sjme_elevatorAct(&state, &elevatorNvmLocalPopLong))
+	if (!sjme_elevatorAct(&state,
+		&elevatorNvmLocalPopLong, 0))
 		sjme_die("Invalid elevator");
 		
 	/* Get initialize frame size. */
