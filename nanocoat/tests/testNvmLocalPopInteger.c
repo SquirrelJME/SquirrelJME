@@ -10,6 +10,7 @@
 #include <string.h>
 
 #include "test.h"
+#include "proto.h"
 #include "elevator.h"
 #include "proto.h"
 #include "unit.h"
@@ -53,7 +54,7 @@ static const sjme_elevatorSet elevatorNvmLocalPopInteger =
 	}
 };
 
-sjme_testResult testNvmLocalPopInteger(sjme_test* test)
+sjme_attrUnused sjme_testResult testNvmLocalPopInteger(sjme_test* test)
 {
 	sjme_elevatorState state;
 	sjme_nvm_frame* frame;

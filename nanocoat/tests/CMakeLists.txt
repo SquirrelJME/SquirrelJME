@@ -24,7 +24,8 @@ target_link_libraries(TACTestExecutorCore PUBLIC
 file(GLOB basicTestSources
 	"test*.c"
 	"test*.cxx")
-list(SORT basicTestSources)
+list(SORT basicTestSources
+	COMPARE FILE_BASENAME)
 
 # Setup base files for auto-generated test launching and method linking
 set(outTestProtosH "${CMAKE_CURRENT_BINARY_DIR}/proto.h")

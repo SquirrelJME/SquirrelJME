@@ -47,12 +47,12 @@ SJME_EXCEPT_WITH:
 		SJME_EXCEPT_TOSS(SJME_ERROR_CODE_STACK_UNDERFLOW);
 	
 	/* Get the type at the top to check if it is valid. */
-	topType = stack->order[stack->count];
+	topType = stack->order[stack->count - 1];
 	if (topType != accessor->typeId)
 		SJME_EXCEPT_TOSS(accessor->errorInvalidTop);
 	
 	/* Copy the stack value to the local. */
-	indexMapTo = localMap->maps[localIndex].to[SJME_JAVA_TYPE_ID_INTEGER];
+	indexMapTo = localMap->maps[localIndex].to[accessor->typeId];
 	valueAddr = NULL;
 	if (!accessor->address(frame, accessor, tread, tread->count - 1,
 		&valueAddr) || valueAddr == NULL)
