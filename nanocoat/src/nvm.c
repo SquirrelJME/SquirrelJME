@@ -194,9 +194,8 @@ jboolean sjme_nvm_localPopLong(sjme_nvm_frame* frame,
 jboolean sjme_nvm_localPopReference(sjme_nvm_frame* frame,
 	jint localIndex)
 {
-	return sjme_nvm_localPopGeneric(frame, localIndex,
-		sjme_nvm_frameTreadAccessorByType(
-			SJME_JAVA_TYPE_ID_OBJECT));
+	sjme_todo("Implement");
+	return JNI_FALSE;
 }
 
 jboolean sjme_nvm_localPushDouble(sjme_nvm_frame* frame,
