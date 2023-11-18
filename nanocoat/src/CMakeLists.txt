@@ -9,6 +9,7 @@
 # THe core library contains the main logic for the virtual machine
 add_library(Core STATIC
 	boot.c
+	bytecode.c
 	debug.c
 	except.c
 	loop.c
