@@ -1,8 +1,13 @@
 #parse("C File Header.h")
 
 #[[#include]]# "tests.h"
+#[[#include]]# "proto.h"
 
-SJME_TEST_PROTOTYPE(${NAME})
+#include "test.h"
+#include "proto.h"
+
+sjme_testResult ${NAME}(sjme_test* test)
 {
-	return FAIL_TEST(1);
+	sjme_todo("Implement %s", __func__);
+	return SJME_TEST_RESULT_FAIL;
 }
