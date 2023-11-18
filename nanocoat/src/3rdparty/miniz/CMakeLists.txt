@@ -6,4 +6,9 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 
-add_subdirectory(miniz)
+add_library(3rdPartyMiniZ OBJECT
+	miniz.c)
+
+# Include main headers
+target_include_directories(3rdPartyMiniZ PUBLIC
+	"${CMAKE_SOURCE_DIR}/include")
