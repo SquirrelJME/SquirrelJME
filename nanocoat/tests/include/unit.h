@@ -32,7 +32,7 @@ extern "C" {
 /*--------------------------------------------------------------------------*/
 
 /**
- * Checks equality between the two values.
+ * Checks equality between the two integer values.
  * 
  * @param test The test data.
  * @param a The first value.
@@ -49,7 +49,7 @@ sjme_testResult sjme_unitEqualIR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_attrFormatOuter(6, 7);
 
 /**
- * Checks equality between the two values.
+ * Checks equality between the two integer values.
  * 
  * @param test The test data.
  * @param a The first value.
@@ -60,6 +60,37 @@ sjme_testResult sjme_unitEqualIR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * @since 2023/11/11
  */
 #define sjme_unitEqualI(...) sjme_unitEqualIR(SJME_DEBUG_FILE_LINE_FUNC, \
+	__VA_ARGS__)
+
+/**
+ * Checks equality between the two object values.
+ * 
+ * @param test The test data.
+ * @param a The first value.
+ * @param b The second value.
+ * @param format The message.
+ * @param ... The message parameters.
+ * @return The assertion state.
+ * @since 2023/11/17
+ */
+sjme_testResult sjme_unitEqualLR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_test* test,
+	jobject a, jobject b,
+	sjme_attrInNullable sjme_attrFormatArg const char* format, ...)
+	sjme_attrFormatOuter(6, 7);
+
+/**
+ * Checks equality between the two object values.
+ * 
+ * @param test The test data.
+ * @param a The first value.
+ * @param b The second value.
+ * @param format The message.
+ * @param ... The message parameters.
+ * @return The assertion state.
+ * @since 2023/11/17
+ */
+#define sjme_unitEqualL(...) sjme_unitEqualLR(SJME_DEBUG_FILE_LINE_FUNC, \
 	__VA_ARGS__)
 
 /**

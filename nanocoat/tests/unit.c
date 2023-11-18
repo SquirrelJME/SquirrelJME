@@ -62,6 +62,22 @@ sjme_testResult sjme_unitEqualIR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	return SJME_TEST_RESULT_PASS;
 }
 
+sjme_testResult sjme_unitEqualLR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_test* test,
+	jobject a, jobject b,
+	sjme_attrInNullable sjme_attrFormatArg const char* format, ...)
+{
+	SJME_VA_DEF;
+	
+	if (a != b)
+	{
+		sjme_messageR(file, line, func, "ASSERT: %p != %p", a, b);
+		SJME_VA_SHORT(SJME_TEST_RESULT_FAIL);
+	}
+	
+	return SJME_TEST_RESULT_PASS;
+}
+
 sjme_testResult sjme_unitFailR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_test* test,
 	sjme_attrInNullable sjme_attrFormatArg const char* format, ...)

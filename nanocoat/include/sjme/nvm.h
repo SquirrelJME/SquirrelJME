@@ -311,6 +311,9 @@ typedef struct sjme_nvm_frame sjme_nvm_frame;
 
 typedef struct sjme_nvm_thread
 {
+	/** The VM state this thread is in. */
+	sjme_nvm_state* inState;
+	
 	/** The thread ID. */
 	jint threadId;
 	
@@ -962,6 +965,28 @@ typedef struct sjme_nvm_bootConfig
 } sjme_nvm_bootConfig;
 
 /**
+ * Hook for garbage collection detection and/or cancel capability.
+ * 
+ * @param frame The frame this is garbage collecting in.
+ * @param gcWhat what is being garbage collected?
+ * @return Returns @c JNI_TRUE if garbage collection should continue.
+ * @since 2023/11/17
+ */
+typedef jboolean (*sjme_nvm_StateHookGc)(sjme_nvm_frame* frame,
+	jobject gcWhat);
+
+/**
+ * Hooks for alternative function.
+ * 
+ * @since 2023/11/17
+ */
+typedef struct sjme_nvm_stateHooks
+{
+	/** Garbage collection. */
+	sjme_nvm_StateHookGc gc;
+} sjme_nvm_stateHooks;
+
+/**
  * Represents the virtual machine state.
  * 
  * @since 2023/07/28
@@ -973,6 +998,12 @@ struct sjme_nvm_state
 	
 	/** Combined library set. */
 	sjme_static_libraries* libraries;
+	
+	/** Special value, is optional and front-end specific. */
+	void* special;
+	
+	/** Hooks for the state. */
+	const sjme_nvm_stateHooks* hooks;
 };
 
 /**
@@ -1064,8 +1095,17 @@ typedef enum sjme_errorCode
 	/** Invalid reference push. */
 	SJME_ERROR_INVALID_REFERENCE_PUSH = -17,
 	
+	/** Failed to garbage collect object. */
+	SJME_ERROR_COULD_NOT_GC_OBJECT = -18,
+	
+	/** Object reference count is not zero. */
+	SJME_ERROR_OBJECT_REFCOUNT_NOT_ZERO = -19,
+	
+	/** Garbage collection of object cancelled. */
+	SJME_ERROR_OBJECT_GC_CANCELLED = -20,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -18
+	SJME_NUM_ERROR_CODES = -21
 } sjme_errorCode;
 
 jboolean sjme_nvm_arrayLength(
@@ -1111,6 +1151,19 @@ jboolean sjme_nvm_fieldPut(
 	sjme_attrInNullable jobject instance,
 	sjme_attrInNotNull sjme_dynamic_linkage_data_fieldAccess* field,
 	sjme_attrInNotNull sjme_any* value)
+	sjme_attrCheckReturn;
+
+/**
+ * Garbage collects an object.
+ * 
+ * @param frame The frame this is collecting in. 
+ * @param instance The instance to be garbage collected.
+ * @return Returns @c JNI_TRUE on success.
+ * @since 2023/11/17
+ */
+jboolean sjme_nvm_gcObject(
+	sjme_attrInNotNull sjme_nvm_frame* frame,
+	sjme_attrInNullable jobject instance)
 	sjme_attrCheckReturn;
 
 jboolean sjme_nvm_invoke(

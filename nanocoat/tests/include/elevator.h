@@ -88,6 +88,9 @@ typedef struct sjme_elevatorState
 	
 	/** Objects that were created. */
 	jobject objects[SJME_ELEVATOR_MAX_OBJECTS];
+	
+	/** Special data, if needed. */
+	void* special;
 } sjme_elevatorState;
 
 /**
@@ -112,6 +115,13 @@ typedef struct sjme_elevatorRunCurrent
 	/** Data for the initialization step. */
 	union
 	{
+		/** State information. */
+		struct
+		{
+			/** State hooks to use. */
+			const sjme_nvm_stateHooks* hooks;
+		} state;
+		
 		/** Frame creation information. */
 		struct
 		{

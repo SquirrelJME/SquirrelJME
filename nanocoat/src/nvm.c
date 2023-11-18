@@ -170,6 +170,38 @@ jboolean sjme_nvm_fieldPut(sjme_nvm_frame* frame,
 	return JNI_FALSE;
 }
 
+jboolean sjme_nvm_gcObject(
+	sjme_attrInNotNull sjme_nvm_frame* frame,
+	sjme_attrInNullable jobject instance)
+{
+	SJME_EXCEPT_VDEF;
+	sjme_nvm_state* state;
+
+SJME_EXCEPT_WITH:
+	if (frame == NULL || instance == NULL)
+		SJME_EXCEPT_TOSS(SJME_ERROR_CODE_NULL_ARGUMENTS);
+	
+	/* Must be zero! */
+	if (instance->refCount != 0)
+		SJME_EXCEPT_TOSS(SJME_ERROR_OBJECT_REFCOUNT_NOT_ZERO);
+	
+	/* Call GC hook, if any. */
+	state = frame->inThread->inState;
+	if (state->hooks != NULL && state->hooks->gc != NULL)
+		if (!state->hooks->gc(frame, instance))
+			SJME_EXCEPT_TOSS(SJME_ERROR_OBJECT_GC_CANCELLED);
+	
+	/* TODO: Implement actual GC... */
+	sjme_message("Actually implement object GC of %p...", instance);
+	
+	/* Success! */
+	return JNI_TRUE;
+
+SJME_EXCEPT_FAIL:
+	return sjme_except_gracefulDeath("Could not GC %p.",
+		instance);
+}
+
 jboolean sjme_nvm_invoke(sjme_nvm_frame* frame,
 	sjme_dynamic_linkage_data_invokeNormal* method)
 {
@@ -240,7 +272,9 @@ SJME_EXCEPT_WITH:
 	/* Always happens, even if they are the same reference because now there */
 	/* is none there. */
 	if (oldLocalValue != NULL)
-		sjme_todo("Refcount old local.");
+		if (--oldLocalValue->refCount <= 0)
+			if (!sjme_nvm_gcObject(frame, oldLocalValue))
+				SJME_EXCEPT_TOSS(SJME_ERROR_COULD_NOT_GC_OBJECT);
 	
 	/* Success! */
 	return JNI_TRUE;

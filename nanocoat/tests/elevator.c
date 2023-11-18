@@ -135,12 +135,22 @@ jboolean sjme_elevatorDoInit(
 	sjme_attrInNotNull sjme_elevatorState* inState,
 	sjme_attrInNotNull sjme_elevatorRunData* inData)
 {
+	sjme_nvm_state* newState;
+	
 	if (inState == NULL || inData == NULL)
 		return sjme_die("Null arguments.");
 	
 	/* Allocate virtual machine state. */
-	inState->nvmState = sjme_elevatorAlloc(inState,
+	newState = sjme_elevatorAlloc(inState,
 		sizeof(*inState->nvmState));
+	inState->nvmState = newState;
+	
+	/* Store test state, as required for some tests. */
+	newState->special = inState;
+	
+	/* Register any hooks? */
+	if (inData->current.data.state.hooks != NULL)
+		newState->hooks = inData->current.data.state.hooks;
 	
 	/* Done. */
 	return JNI_TRUE;
@@ -243,9 +253,11 @@ jboolean sjme_elevatorDoMakeFrame(
 		for (localIndex = 0; localIndex < stackBase; localIndex++)
 			localMap->maps[localIndex].to[typeId] = (jbyte)localIndex;
 		
+#if 0
 		/* Store the type onto the stack. */
-		/*stack->order[stack->count] = typeId;
-		stack->count++;*/
+		stack->order[stack->count] = typeId;
+		stack->count++;
+#endif
 	}
 	
 	/* Consistency check. */
@@ -307,6 +319,7 @@ jboolean sjme_elevatorDoMakeThread(
 	
 	/* Store in thread and bump up. */
 	newThread->threadId = ++inData->nextThreadId;
+	newThread->inState = inState->nvmState;
 	inState->threads[threadIndex].nvmThread = newThread;
 	
 	/* Done. */
