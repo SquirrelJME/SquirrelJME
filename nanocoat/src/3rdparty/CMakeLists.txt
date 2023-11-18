@@ -6,4 +6,8 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 
+# Lua implementation
+add_subdirectory(lua)
+
+# Mini Zip implementation
 add_subdirectory(miniz)
