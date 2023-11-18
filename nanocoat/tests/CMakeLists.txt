@@ -154,7 +154,7 @@ foreach(SQUIRRELJME_BLOB_FILE ${SQUIRRELJME_BLOB_FILES})
 
 	# Start C struct
 	file(APPEND "${BLOB_TARGET_FILE}"
-		"#include \"sjmerc.h\"\n")
+		"#include \"sjme/nvm.h\"\n")
 	file(APPEND "${BLOB_TARGET_FILE}"
 		"static const uint8_t blob_${BLOB_BASENAME}[] = {\n")
 

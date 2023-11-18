@@ -10,7 +10,7 @@
 #include "test.h"
 #include "proto.h"
 
-sjme_testResult testNvmLocalLoadInteger(sjme_test* test)
+sjme_testResult testNvmLocalReadInteger(sjme_test* test)
 {
 	sjme_todo("Implement %s", __func__);
 	return SJME_TEST_RESULT_FAIL;

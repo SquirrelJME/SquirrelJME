@@ -1170,11 +1170,6 @@ jboolean sjme_nvm_invoke(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
 	sjme_attrInNotNull sjme_dynamic_linkage_data_invokeNormal* method)
 	sjme_attrCheckReturn;
-	
-jint sjme_nvm_localLoadInteger(
-	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_attrInValue sjme_attrInPositive jint index)
-	sjme_attrCheckReturn;
 
 jboolean sjme_nvm_localPopDouble(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
@@ -1232,7 +1227,7 @@ jboolean sjme_nvm_localReadInteger(
 	sjme_attrOutNotNull jint* outValue)
 	sjme_attrCheckReturn;
 	
-jboolean sjme_nvm_localStoreInteger(
+jboolean sjme_nvm_localWriteInteger(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
 	sjme_attrInValue sjme_attrInPositive jint index,
 	sjme_attrInValue jint value)

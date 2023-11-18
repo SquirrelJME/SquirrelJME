@@ -209,13 +209,6 @@ jboolean sjme_nvm_invoke(sjme_nvm_frame* frame,
 	return JNI_FALSE;
 }
 
-jint sjme_nvm_localLoadInteger(sjme_nvm_frame* frame,
-	jint index)
-{
-	sjme_todo("Implement");
-	return -1;
-}
-
 jboolean sjme_nvm_localPopDouble(sjme_nvm_frame* frame,
 	jint localIndex)
 {
