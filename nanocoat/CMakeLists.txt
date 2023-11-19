@@ -45,6 +45,20 @@ squirreljme_include("i-miss-you.cmake")
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED True)
 
+# Valgrind Support on UNIX OSes, if debugging
+if(ANDROID OR APPLE OR BSD OR LINUX OR
+	CMAKE_SYSTEM_NAME STREQUAL "Linux" OR
+	CMAKE_SYSTEM_NAME STREQUAL "Solaris" OR
+	CMAKE_SYSTEM_NAME STREQUAL "Darwin" OR
+	CMAKE_SYSTEM_NAME STREQUAL "FreeBSD" OR
+	CMAKE_SYSTEM_NAME STREQUAL "OpenBSD" OR
+	CMAKE_SYSTEM_NAME STREQUAL "NetBSD")
+	if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR
+		CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+		squirreljme_include("valgrind.cmake")
+	endif()
+endif()
+
 # Enable support for testing, this is needed here otherwise testing will not
 # work at all! Major headache this has caused...
 # From: https://cmake.org/cmake/help/v3.13/command/enable_testing.html

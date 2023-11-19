@@ -18,7 +18,8 @@ target_include_directories(TACTestExecutorCore PUBLIC
 
 # Depend on the core
 target_link_libraries(TACTestExecutorCore PUBLIC
-	Core)
+	Core
+	${SQUIRRELJME_EXEC_LINK_LIBRARIES})
 
 # Get a list of tests that are not TAC tests, but more general tests
 file(GLOB basicTestSources
