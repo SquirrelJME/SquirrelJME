@@ -117,3 +117,18 @@ jboolean sjme_allocFree(
 	sjme_todo("Implement this?");
 	return JNI_FALSE;
 }
+
+jboolean sjme_allocLink(
+	sjme_attrInNotNull void* addr,
+	sjme_attrOutNotNull sjme_alloc_link** outLink)
+{
+	if (addr == NULL || outLink == NULL)
+		return JNI_FALSE;
+	
+	/* Just need to do some reversing math. */
+	*outLink = (sjme_alloc_link*)(((uintptr_t)addr) -
+		offsetof(sjme_alloc_link, block));
+	
+	/* Success! */
+	return JNI_TRUE;
+}

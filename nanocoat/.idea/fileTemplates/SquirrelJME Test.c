@@ -1,10 +1,7 @@
 #parse("C File Header.h")
 
-#[[#include]]# "tests.h"
+#[[#include]]# "test.h"
 #[[#include]]# "proto.h"
-
-#include "test.h"
-#include "proto.h"
 
 sjme_testResult ${NAME}(sjme_test* test)
 {

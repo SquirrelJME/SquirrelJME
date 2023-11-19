@@ -43,8 +43,9 @@ extern "C" {
  * @since 2023/11/11
  */
 sjme_testResult sjme_unitEqualIR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
-	sjme_test* test,
-	jint a, jint b,
+	sjme_attrInNotNull sjme_test* test,
+	sjme_attrInValue jint a,
+	sjme_attrInValue jint b,
 	sjme_attrInNullable sjme_attrFormatArg const char* format, ...)
 	sjme_attrFormatOuter(6, 7);
 
@@ -74,8 +75,9 @@ sjme_testResult sjme_unitEqualIR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * @since 2023/11/17
  */
 sjme_testResult sjme_unitEqualLR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
-	sjme_test* test,
-	jobject a, jobject b,
+	sjme_attrInNotNull sjme_test* test,
+	sjme_attrInNullable jobject a,
+	sjme_attrInNullable jobject b,
 	sjme_attrInNullable sjme_attrFormatArg const char* format, ...)
 	sjme_attrFormatOuter(6, 7);
 
@@ -103,9 +105,42 @@ sjme_testResult sjme_unitEqualLR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * @since 2023/11/11
  */
 sjme_testResult sjme_unitFailR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
-	sjme_test* test,
+	sjme_attrInNotNull sjme_test* test,
 	sjme_attrInNullable sjme_attrFormatArg const char* format, ...)
 	sjme_attrFormatOuter(4, 5);
+
+
+/**
+ * Checks equality between the two pointer values.
+ * 
+ * @param test The test data.
+ * @param a The first value.
+ * @param b The second value.
+ * @param format The message.
+ * @param ... The message parameters.
+ * @return The assertion state.
+ * @since 2023/11/19
+ */
+sjme_testResult sjme_unitEqualPR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_attrInNotNull sjme_test* test,
+	sjme_attrInNullable void* a,
+	sjme_attrInNullable void* b,
+	sjme_attrInNullable sjme_attrFormatArg const char* format, ...)
+	sjme_attrFormatOuter(6, 7);
+
+/**
+ * Checks equality between the two pointer values.
+ * 
+ * @param test The test data.
+ * @param a The first value.
+ * @param b The second value.
+ * @param format The message.
+ * @param ... The message parameters.
+ * @return The assertion state.
+ * @since 2023/11/19
+ */
+#define sjme_unitEqualP(...) sjme_unitEqualPR(SJME_DEBUG_FILE_LINE_FUNC, \
+	__VA_ARGS__)
 
 /**
  * Unit test just fails.
@@ -117,6 +152,32 @@ sjme_testResult sjme_unitFailR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * @since 2023/11/11
  */
 #define sjme_unitFail(...) sjme_unitFailR(SJME_DEBUG_FILE_LINE_FUNC, \
+	__VA_ARGS__)
+
+/**
+ * Skips the test and stops execution.
+ * 
+ * @param test The test data.
+ * @param format The message. 
+ * @param ... The formatted string arguments.
+ * @return The test result, which is skip.
+ * @since 2023/11/19
+ */
+sjme_testResult sjme_unitSkipR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_attrInNotNull sjme_test* test,
+	sjme_attrInNullable sjme_attrFormatArg const char* format, ...)
+	sjme_attrFormatOuter(4, 5);
+
+/**
+ * Skips the test and stops execution.
+ * 
+ * @param test The test data.
+ * @param format The message. 
+ * @param ... The formatted string arguments.
+ * @return The test result, which is skip.
+ * @since 2023/11/19
+ */
+#define sjme_unitSkip(...) sjme_unitSkipR(SJME_DEBUG_FILE_LINE_FUNC, \
 	__VA_ARGS__)
 
 /*--------------------------------------------------------------------------*/

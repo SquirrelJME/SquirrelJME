@@ -157,13 +157,41 @@ jboolean sjme_alloc_poolStatic(
 	sjme_attrInNotNull void* baseAddr,
 	sjme_attrInPositive jint size);
 
+/**
+ * Allocates memory within the given pool.
+ * 
+ * @param pool The pool to allocate within.
+ * @param size The number of bytes to allocate.
+ * @param outAddr The output address.
+ * @return Returns @c JNI_TRUE on success.
+ * @since 2023/11/19
+ */
 jboolean sjme_alloc(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrInPositive jint size,
 	sjme_attrOutNotNull void** outAddr); 
 
+/**
+ * Frees memory.
+ * 
+ * @param addr The memory to free. 
+ * @return Returns @c JNI_TRUE on success.
+ * @since 2023/11/19
+ */
 jboolean sjme_allocFree(
 	sjme_attrInNotNull void* addr);
+	
+/**
+ * Returns the link of the given memory block
+ * 
+ * @param addr The pointer to get the link from.
+ * @param outLink The resultant link.
+ * @return Returns @c JNI_TRUE on success.
+ * @since 2023/11/19
+ */
+jboolean sjme_allocLink(
+	sjme_attrInNotNull void* addr,
+	sjme_attrOutNotNull sjme_alloc_link** outLink);
 
 /*--------------------------------------------------------------------------*/
 
