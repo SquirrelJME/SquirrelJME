@@ -18,7 +18,9 @@
 #include "sjme/alloc.h"
 #include "sjme/debug.h"
 
-#define SJME_ALLOC_MIN_SIZE 16383
+/** The minimum size permitted for allocation pools. */
+#define SJME_ALLOC_MIN_SIZE (((SJME_SIZEOF_ALLOC_POOL(0) + \
+	(SJME_SIZEOF_ALLOC_LINK(0) * 3)) | 0x1FF))
 
 jboolean sjme_alloc_poolMalloc(
 	sjme_attrOutNotNull sjme_alloc_pool** outPool,
@@ -60,9 +62,6 @@ jboolean sjme_alloc_poolStatic(
 	/* Setup initial pool structure. */
 	result = baseAddr;
 	result->size = size & (~7);
-#if 0
-	result->space = size - offsetof(sjme_alloc_pool, block);
-#endif
 	
 	/* Setup front link. */
 	frontLink = (void*)&result->block[0];

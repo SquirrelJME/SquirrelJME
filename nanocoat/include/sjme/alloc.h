@@ -131,10 +131,27 @@ struct sjme_alloc_pool
 #define SJME_SIZEOF_ALLOC_POOL(size) \
 	(sizeof(sjme_alloc_pool) + (((size_t)(size)) * sizeof(jubyte)))
 
+/**
+ * Allocates a pool that is based on @c malloc() .
+ * 
+ * @param outPool The resultant pool. 
+ * @param size The requested pool size.
+ * @return Returns @c JNI_TRUE on success.
+ * @since 2023/11/18
+ */
 jboolean sjme_alloc_poolMalloc(
 	sjme_attrOutNotNull sjme_alloc_pool** outPool,
 	sjme_attrInPositive jint size);
 
+/**
+ * Allocates a pool that is based on a static region of memory.
+ * 
+ * @param outPool The resultant pool.
+ * @param baseAddr The base address of the block. 
+ * @param size The size of the block.
+ * @return Returns @c JNI_TRUE on success.
+ * @since 2023/11/18
+ */
 jboolean sjme_alloc_poolStatic(
 	sjme_attrOutNotNull sjme_alloc_pool** outPool,
 	sjme_attrInNotNull void* baseAddr,
