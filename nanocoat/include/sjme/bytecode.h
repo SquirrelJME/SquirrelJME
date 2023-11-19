@@ -29,7 +29,6 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
-
 /**
  * Enumeration for byte code instructions.
  *
@@ -707,6 +706,41 @@ typedef enum sjme_byteCode_instruction
 		(SJME_BYTECODE_INSTRUCTION_WIDE << 8) |
 		SJME_BYTECODE_INSTRUCTION_IINC,
 } sjme_byteCode_instruction;
+
+/**
+ * Function type for byte code execution.
+ * 
+ * @param frame The frame to execute under.
+ * @return Returns @c JNI_TRUE on success.
+ * @since 2023/11/18
+ */
+typedef jboolean (*sjme_byteCode_function)(sjme_nvm_frame* frame);
+
+/**
+ * Contains a mapping of a byte code instruction to an actual operation.
+ * 
+ * @since 2023/11/18
+ */
+typedef struct sjme_byteCode_functionMap
+{
+	/** The instruction this maps. */
+	sjme_byteCode_instruction instruction;
+	
+	/** The function to execute. */
+	sjme_byteCode_function function;
+} sjme_byteCode_functionMap;
+
+/**
+ * Maps a specific bytecode to the mapping for later execution.
+ * 
+ * @param inInstruction The instruction to map.
+ * @param outMapping The output mapping.
+ * @return Returns @c JNI_TRUE if the instruction is valid and mappable.
+ * @since 2023/11/18
+ */
+jboolean sjme_byteCode_map(
+	sjme_attrInValue sjme_byteCode_instruction inInstruction,
+	sjme_attrOutNotNull const sjme_byteCode_functionMap** outMapping);
 
 /*--------------------------------------------------------------------------*/
 
