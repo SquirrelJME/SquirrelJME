@@ -8,6 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 #include <stdarg.h>
+#include <string.h>
 
 #include "unit.h"
 
@@ -25,7 +26,142 @@
 	va_start(inputVa, format); \
     sjme_unitShortingEmit(file, line, func, test, (type), format, inputVa); \
     va_end(inputVa); \
-	} while(JNI_FALSE);
+	} while(JNI_FALSE)
+
+/**
+ * Operator comparison function.
+ * 
+ * @param size The size of the values.
+ * @param a The first value.
+ * @param b The second value.
+ * @return Returns what the comparison is.
+ * @since 2023/11/20
+ */
+typedef jboolean (*sjme_unitOperatorFunc)(size_t size, void* a, void* b);
+
+/**
+ * Operator comparison information.
+ * 
+ * @since 2023/11/20
+ */
+typedef struct sjme_unitOperatorInfo
+{
+	/** The operator symbol. */
+	const char* symbol;
+	
+	/** The function for comparison. */
+	sjme_unitOperatorFunc function;
+} sjme_unitOperatorInfo;
+
+static jboolean sjme_unitOperatorEqual(size_t size, void* a, void* b)
+{
+	return memcmp(a, b, size) == 0;
+}
+
+static jboolean sjme_unitOperatorNotEqual(size_t size, void* a, void* b)
+{
+	return memcmp(a, b, size) != 0;
+}
+
+static jboolean sjme_unitOperatorLessThan(size_t size, void* a, void* b)
+{
+	jlong *ja;
+	jlong *jb;
+	
+	if (size == sizeof(jint))
+		return *((jint*)a) < *((jint*)b);
+	
+	ja = a;
+	jb = b;
+	if (ja->hi <= jb->hi)
+		return ja->lo < jb->lo;
+	return JNI_FALSE;  
+}
+
+static jboolean sjme_unitOperatorLessEqual(size_t size, void* a, void* b)
+{
+	jlong *ja;
+	jlong *jb;
+	
+	if (size == sizeof(jint))
+		return *((jint*)a) <= *((jint*)b);
+	
+	ja = a;
+	jb = b;
+	if (ja->hi <= jb->hi)
+		return ja->lo <= jb->lo;
+	return JNI_FALSE;
+}
+
+static jboolean sjme_unitOperatorGreaterThan(size_t size, void* a, void* b)
+{
+	jlong *ja;
+	jlong *jb;
+	
+	if (size == sizeof(jint))
+		return *((jint*)a) > *((jint*)b);
+	
+	ja = a;
+	jb = b;
+	if (ja->hi >= jb->hi)
+		return ja->lo > jb->lo;
+	return JNI_FALSE;
+}
+
+static jboolean sjme_unitOperatorGreaterEqual(size_t size, void* a, void* b)
+{
+	jlong *ja;
+	jlong *jb;
+	
+	if (size == sizeof(jint))
+		return *((jint*)a) >= *((jint*)b);
+	
+	ja = a;
+	jb = b;
+	if (ja->hi >= jb->hi)
+		return ja->lo >= jb->lo;
+	return JNI_FALSE;
+}
+
+/** Operator information. */
+const sjme_unitOperatorInfo sjme_unitOperatorInfos[SJME_NUM_UNIT_OPERATORS] =
+{
+	/* SJME_UNIT_OPERATOR_EQUAL. */
+	{
+		"==",
+		sjme_unitOperatorEqual
+	},
+
+	/* SJME_UNIT_OPERATOR_NOT_EQUAL. */
+	{
+		"!=",
+		sjme_unitOperatorNotEqual
+	},
+
+	/* SJME_UNIT_OPERATOR_LESS_THAN. */
+	{
+		"<",
+		sjme_unitOperatorLessThan
+	},
+
+	/* SJME_UNIT_OPERATOR_LESS_EQUAL. */
+	{
+		"<=",
+		sjme_unitOperatorLessEqual
+	},
+
+	/* SJME_UNIT_OPERATOR_GREATER_THAN. */
+	{
+		">",
+		sjme_unitOperatorGreaterThan
+	},
+
+	/* SJME_UNIT_OPERATOR_GREATER_EQUAL. */
+	{
+		">=",
+		sjme_unitOperatorGreaterEqual
+	},
+};
 
 static jboolean sjme_unitShortingEmit(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_attrInNotNull sjme_test* test,
@@ -49,77 +185,72 @@ static jboolean sjme_unitShortingEmit(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	return (type == SJME_TEST_RESULT_PASS);
 }
 
-/**
- * Comparison check for equality/inequality.
- * 
- * @param inverted Is the check inverted?
- * @param a The first value.
- * @param b The second value.
- * @since 2023/11/20
- */
-#define SJME_TEST_EQUALITY_COMPARE(inverted, a, b) \
-	((!inverted && a != b) || (inverted && a == b)) 
-
-/**
- * Symbol used for the equality check.
- * 
- * @param inverted Is the check inverted?
- * @since 2023/11/20
- */
-#define SJME_TEST_EQUALITY_SYMBOL(inverted) \
-	(!inverted ? "!=" : "==")
-
-sjme_testResult sjme_unitEqualIR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
-	sjme_attrInValue jboolean inverted,
+sjme_testResult sjme_unitOperatorIR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_attrInValue sjme_unitOperator operator,
 	sjme_attrInNotNull sjme_test* test,
 	sjme_attrInValue jint a,
 	sjme_attrInValue jint b,
 	sjme_attrInNullable sjme_attrFormatArg const char* format, ...)
 {
 	SJME_VA_DEF;
+	const sjme_unitOperatorInfo* opInfo;
 	
-	if (SJME_TEST_EQUALITY_COMPARE(inverted, a, b))
+	if (operator < 0 || operator >= SJME_NUM_UNIT_OPERATORS)
+		SJME_VA_SHORT(SJME_TEST_RESULT_FAIL);
+	opInfo = &sjme_unitOperatorInfos[operator];
+	
+	if (!opInfo->function(sizeof(jint), &a, &b))
 	{
 		sjme_messageR(file, line, func, "ASSERT: %d %s %d",
-			a, SJME_TEST_EQUALITY_SYMBOL(inverted), b);
+			a, opInfo->symbol, b);
 		SJME_VA_SHORT(SJME_TEST_RESULT_FAIL);
 	}
 	
 	return SJME_TEST_RESULT_PASS;
 }
 
-sjme_testResult sjme_unitEqualLR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
-	sjme_attrInValue jboolean inverted,
+sjme_testResult sjme_unitOperatorLR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_attrInValue sjme_unitOperator operator,
 	sjme_attrInNotNull sjme_test* test,
 	sjme_attrInNullable jobject a,
 	sjme_attrInNullable jobject b,
 	sjme_attrInNullable sjme_attrFormatArg const char* format, ...)
 {
 	SJME_VA_DEF;
+	const sjme_unitOperatorInfo* opInfo;
 	
-	if (SJME_TEST_EQUALITY_COMPARE(inverted, a, b))
+	if (operator < 0 || operator >= SJME_NUM_UNIT_OPERATORS)
+		SJME_VA_SHORT(SJME_TEST_RESULT_FAIL);
+	opInfo = &sjme_unitOperatorInfos[operator];
+	
+	if (!opInfo->function(sizeof(jobject), &a, &b))
 	{
 		sjme_messageR(file, line, func, "ASSERT: %p %s %p",
-			a, SJME_TEST_EQUALITY_SYMBOL(inverted), b);
+			a, opInfo->symbol, b);
 		SJME_VA_SHORT(SJME_TEST_RESULT_FAIL);
 	}
 	
 	return SJME_TEST_RESULT_PASS;
 }
 
-sjme_testResult sjme_unitEqualPR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
-	sjme_attrInValue jboolean inverted,
+sjme_testResult sjme_unitOperatorPR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_attrInValue sjme_unitOperator operator,
 	sjme_attrInNotNull sjme_test* test,
 	sjme_attrInNullable void* a,
 	sjme_attrInNullable void* b,
 	sjme_attrInNullable sjme_attrFormatArg const char* format, ...)
 {
 	SJME_VA_DEF;
+	const sjme_unitOperatorInfo* opInfo;
 	
-	if (SJME_TEST_EQUALITY_COMPARE(inverted, a, b))
+	if (operator < 0 || operator >= SJME_NUM_UNIT_OPERATORS)
+		SJME_VA_SHORT(SJME_TEST_RESULT_FAIL);
+	opInfo = &sjme_unitOperatorInfos[operator];
+	
+	if (!opInfo->function(sizeof(void*), &a, &b))
 	{
 		sjme_messageR(file, line, func, "ASSERT: %p %s %p",
-			a, SJME_TEST_EQUALITY_SYMBOL(inverted), b);
+			a, opInfo->symbol, b);
 		SJME_VA_SHORT(SJME_TEST_RESULT_FAIL);
 	}
 	

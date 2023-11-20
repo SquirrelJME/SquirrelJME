@@ -80,6 +80,9 @@ struct sjme_alloc_link
 	/** The next free link. */
 	sjme_alloc_link* freeNext;
 	
+	/** The allocation size of the link, @code{allocSize <= blockSize}. */
+	jint allocSize;
+	
 	/** The size of the data area of this block. */
 	jint blockSize;
 	

@@ -12,7 +12,7 @@
 #include "unit.h"
 #include "sjme/alloc.h"
 
-#define TEST_BLOCK_SIZE 1024
+#define TEST_BLOCK_SIZE 1033
 
 sjme_testResult testAlloc(sjme_test* test)
 {
@@ -47,6 +47,14 @@ sjme_testResult testAlloc(sjme_test* test)
 	link = NULL;
 	if (!sjme_allocLink(block, &link) || link == NULL)
 		return sjme_unitFail(test, "Could not obtain block link?");
+	
+	/* The allocation size should be of the requested size. */
+	sjme_unitEqualI(test, link->allocSize, TEST_BLOCK_SIZE,
+		"Allocation size is different?");
+	
+	/* The allocation size should be the same or lower always. */
+	sjme_unitLessEqualI(test, link->allocSize, link->blockSize,
+		"Allocation size bigger than block size?"); 
 	
 	/* There should be no free prev and next. */
 	sjme_unitEqualP(test, link->freeNext, NULL, "Free next not cleared?");

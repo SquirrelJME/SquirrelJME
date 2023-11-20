@@ -32,6 +32,35 @@ extern "C" {
 /*--------------------------------------------------------------------------*/
 
 /**
+ * The operator for test comparisons.
+ * 
+ * @since 2023/11/20
+ */
+typedef enum sjme_unitOperator
+{
+	/** Equality, @c ==. */
+	SJME_UNIT_OPERATOR_EQUAL,
+	
+	/** Inequality, @c !=. */
+	SJME_UNIT_OPERATOR_NOT_EQUAL,
+	
+	/** Less than, @c <. */
+	SJME_UNIT_OPERATOR_LESS_THAN,
+	
+	/** Less than or equal, @c <=. */
+	SJME_UNIT_OPERATOR_LESS_EQUAL,
+	
+	/** Greater than, @c >. */
+	SJME_UNIT_OPERATOR_GREATER_THAN,
+	
+	/** Greater than or equal, @c >=. */
+	SJME_UNIT_OPERATOR_GREATER_EQUAL,
+	
+	/** The number of unit operators. */
+	SJME_NUM_UNIT_OPERATORS
+} sjme_unitOperator;
+
+/**
  * Checks equality between the two integer values.
  * 
  * @param inverted Is the check inverted?
@@ -43,8 +72,8 @@ extern "C" {
  * @return The assertion state.
  * @since 2023/11/11
  */
-sjme_testResult sjme_unitEqualIR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
-	sjme_attrInValue jboolean inverted,
+sjme_testResult sjme_unitOperatorIR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_attrInValue sjme_unitOperator operator,
 	sjme_attrInNotNull sjme_test* test,
 	sjme_attrInValue jint a,
 	sjme_attrInValue jint b,
@@ -62,8 +91,24 @@ sjme_testResult sjme_unitEqualIR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * @return The assertion state.
  * @since 2023/11/11
  */
-#define sjme_unitEqualI(...) sjme_unitEqualIR(SJME_DEBUG_FILE_LINE_FUNC, \
-	JNI_FALSE, __VA_ARGS__)
+#define sjme_unitEqualI(...) \
+	sjme_unitOperatorIR(SJME_DEBUG_FILE_LINE_FUNC, \
+		SJME_UNIT_OPERATOR_EQUAL, __VA_ARGS__)
+
+/**
+ * Checks less than or equal between the two integer values.
+ * 
+ * @param test The test data.
+ * @param a The first value.
+ * @param b The second value.
+ * @param format The message.
+ * @param ... The message parameters.
+ * @return The assertion state.
+ * @since 2023/11/11
+ */
+#define sjme_unitLessEqualI(...) \
+	sjme_unitOperatorIR(SJME_DEBUG_FILE_LINE_FUNC, \
+		SJME_UNIT_OPERATOR_LESS_EQUAL, __VA_ARGS__)
 
 /**
  * Checks inequality between the two integer values.
@@ -76,8 +121,9 @@ sjme_testResult sjme_unitEqualIR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * @return The assertion state.
  * @since 2023/11/20
  */
-#define sjme_unitNotEqualI(...) sjme_unitEqualIR(SJME_DEBUG_FILE_LINE_FUNC, \
-	JNI_TRUE, __VA_ARGS__)
+#define sjme_unitNotEqualI(...) \
+	sjme_unitOperatorIR(SJME_DEBUG_FILE_LINE_FUNC, \
+		SJME_UNIT_OPERATOR_NOT_EQUAL, __VA_ARGS__)
 
 /**
  * Checks equality between the two object values.
@@ -91,8 +137,8 @@ sjme_testResult sjme_unitEqualIR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * @return The assertion state.
  * @since 2023/11/17
  */
-sjme_testResult sjme_unitEqualLR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
-	sjme_attrInValue jboolean inverted,
+sjme_testResult sjme_unitOperatorLR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_attrInValue sjme_unitOperator operator,
 	sjme_attrInNotNull sjme_test* test,
 	sjme_attrInNullable jobject a,
 	sjme_attrInNullable jobject b,
@@ -110,8 +156,9 @@ sjme_testResult sjme_unitEqualLR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * @return The assertion state.
  * @since 2023/11/17
  */
-#define sjme_unitEqualL(...) sjme_unitEqualLR(SJME_DEBUG_FILE_LINE_FUNC, \
-	JNI_FALSE, __VA_ARGS__)
+#define sjme_unitEqualL(...) \
+	sjme_unitOperatorLR(SJME_DEBUG_FILE_LINE_FUNC, \
+		SJME_UNIT_OPERATOR_EQUAL, __VA_ARGS__)
 
 /**
  * Checks inequality between the two object values.
@@ -124,8 +171,9 @@ sjme_testResult sjme_unitEqualLR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * @return The assertion state.
  * @since 2023/11/20
  */
-#define sjme_unitNotEqualL(...) sjme_unitEqualLR(SJME_DEBUG_FILE_LINE_FUNC, \
-	JNI_TRUE, __VA_ARGS__)
+#define sjme_unitNotEqualL(...) \
+	sjme_unitOperatorLR(SJME_DEBUG_FILE_LINE_FUNC, \
+		SJME_UNIT_OPERATOR_NOT_EQUAL, __VA_ARGS__)
 
 /**
  * Checks equality between the two pointer values.
@@ -139,8 +187,8 @@ sjme_testResult sjme_unitEqualLR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * @return The assertion state.
  * @since 2023/11/19
  */
-sjme_testResult sjme_unitEqualPR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
-	sjme_attrInValue jboolean inverted,
+sjme_testResult sjme_unitOperatorPR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_attrInValue sjme_unitOperator operator,
 	sjme_attrInNotNull sjme_test* test,
 	sjme_attrInNullable void* a,
 	sjme_attrInNullable void* b,
@@ -158,8 +206,9 @@ sjme_testResult sjme_unitEqualPR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * @return The assertion state.
  * @since 2023/11/19
  */
-#define sjme_unitEqualP(...) sjme_unitEqualPR(SJME_DEBUG_FILE_LINE_FUNC, \
-	JNI_FALSE, __VA_ARGS__)
+#define sjme_unitEqualP(...) \
+	sjme_unitOperatorPR(SJME_DEBUG_FILE_LINE_FUNC, \
+		SJME_UNIT_OPERATOR_EQUAL, __VA_ARGS__)
 
 /**
  * Checks inequality between the two pointer values.
@@ -172,8 +221,9 @@ sjme_testResult sjme_unitEqualPR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * @return The assertion state.
  * @since 2023/11/20
  */
-#define sjme_unitNotEqualP(...) sjme_unitEqualPR(SJME_DEBUG_FILE_LINE_FUNC, \
-	JNI_TRUE, __VA_ARGS__)
+#define sjme_unitNotEqualP(...) \
+	sjme_unitOperatorPR(SJME_DEBUG_FILE_LINE_FUNC, \
+		SJME_UNIT_OPERATOR_NOT_EQUAL, __VA_ARGS__)
 
 /**
  * Unit test just fails.

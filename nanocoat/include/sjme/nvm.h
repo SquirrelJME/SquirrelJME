@@ -114,6 +114,13 @@ typedef uint16_t jchar;
 typedef int32_t jint;
 
 /**
+ * Unsigned integer type.
+ * 
+ * @since 2023/11/20
+ */
+typedef uint32_t juint;
+
+/**
  * Long value.
  * 
  * @since 2023/07/25
@@ -124,7 +131,7 @@ typedef struct jlong
 	jint hi;
 	
 	/** Low value. */
-	jint lo;
+	juint lo;
 } jlong;
 
 /**
@@ -145,10 +152,10 @@ typedef struct jfloat
 typedef struct jdouble
 {
 	/** High value. */
-	jint hi;
+	juint hi;
 	
 	/** Low value. */
-	jint lo;
+	juint lo;
 } jdouble;
 
 /**

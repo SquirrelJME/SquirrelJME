@@ -22,6 +22,9 @@
 #define SJME_ALLOC_MIN_SIZE (((SJME_SIZEOF_ALLOC_POOL(0) + \
 	(SJME_SIZEOF_ALLOC_LINK(0) * 3)) | 0x1FF))
 
+/** The minimum size for splits. */
+#define SJME_ALLOC_SPLIT_MIN_SIZE 64
+
 jboolean sjme_alloc_poolMalloc(
 	sjme_attrOutNotNull sjme_alloc_pool** outPool,
 	sjme_attrInPositive jint size)
@@ -81,6 +84,10 @@ jboolean sjme_alloc_poolStatic(
 	/* Determine size of the middle link, which is free space. */
 	midLink->blockSize = (jint)((uintptr_t)backLink -
 		(uintptr_t)&midLink->block[0]);
+		
+	/* The front and back links are in the "invalid" space. */
+	frontLink->space = SJME_NUM_ALLOC_POOL_SPACE;
+	backLink->space = SJME_NUM_ALLOC_POOL_SPACE;
 	
 	/* Determine size that can and cannot be used. */
 	result->space[SJME_ALLOC_POOL_SPACE_FREE].reserved =
@@ -115,9 +122,46 @@ jboolean sjme_alloc(
 	sjme_attrInPositive jint size,
 	sjme_attrOutNotNull void** outAddr)
 {
+	sjme_alloc_link* scanLink;
+	jint splitMinSize, roundSize;
+	jboolean splitBlock;
+	
 	if (pool == NULL || size <= 0 || outAddr == NULL)
 		return JNI_FALSE;
 	
+	/* Determine the size this will actually take up, which includes the */
+	/* link to be created following this. */
+	roundSize = (((size & 7) != 0) ? ((size | 7) + 1) : size);
+	splitMinSize = roundSize +
+		(jint)SJME_SIZEOF_ALLOC_LINK(SJME_ALLOC_SPLIT_MIN_SIZE);
+	if (size > splitMinSize || splitMinSize < 0)
+		return JNI_FALSE;
+	
+	/* Find the first free link that this fits in. */
+	scanLink = NULL;
+	splitBlock = JNI_FALSE;
+	for (scanLink = pool->freeFirstLink;
+		scanLink != NULL; scanLink = scanLink->freeNext)
+	{
+		/** Block is in the "invalid" space, skip it. */
+		if (scanLink->space == SJME_NUM_ALLOC_POOL_SPACE)
+			continue;
+		
+		/* Block fits perfectly here, without needing a split? */
+		if (scanLink->blockSize == roundSize)
+			break;
+		
+		/* Block fits here when split, try to not split ridiculously small. */
+		if (scanLink->blockSize >= splitMinSize)
+		{
+			splitBlock = JNI_TRUE;
+			break;
+		}
+	}
+	
+	/* Out of memory. */
+	if (scanLink == NULL)
+		return JNI_FALSE;
 	
 	sjme_todo("Implement this?");
 	return JNI_FALSE;
