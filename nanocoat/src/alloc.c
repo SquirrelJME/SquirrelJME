@@ -107,6 +107,9 @@ jboolean sjme_alloc(
 	sjme_attrInPositive jint size,
 	sjme_attrOutNotNull void** outAddr)
 {
+	if (pool == NULL || size <= 0 || outAddr == NULL)
+		return JNI_FALSE;
+	
 	sjme_todo("Implement this?");
 	return JNI_FALSE;
 }
@@ -114,6 +117,9 @@ jboolean sjme_alloc(
 jboolean sjme_allocFree(
 	sjme_attrInNotNull void* addr)
 {
+	if (addr == NULL)
+		return JNI_FALSE;
+	
 	sjme_todo("Implement this?");
 	return JNI_FALSE;
 }
