@@ -74,6 +74,12 @@ struct sjme_alloc_link
 	/** The space this is in. */
 	sjme_alloc_poolSpace space;
 	
+	/** The previous free link. */
+	sjme_alloc_link* freePrev;
+	
+	/** The next free link. */
+	sjme_alloc_link* freeNext;
+	
 	/** The size of the data area of this block. */
 	jint blockSize;
 	
@@ -116,6 +122,12 @@ struct sjme_alloc_pool
 	
 	/** The back chain link. */
 	sjme_alloc_link* backLink;
+		
+	/** The first free link in the chain. */
+	sjme_alloc_link* freeFirstLink;
+		
+	/** The last free link in the chain. */
+	sjme_alloc_link* freeLastLink;
 	
 	/** The memory block. */
 	jubyte block[sjme_flexibleArrayCount];

@@ -49,7 +49,28 @@ static jboolean sjme_unitShortingEmit(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	return (type == SJME_TEST_RESULT_PASS);
 }
 
+/**
+ * Comparison check for equality/inequality.
+ * 
+ * @param inverted Is the check inverted?
+ * @param a The first value.
+ * @param b The second value.
+ * @since 2023/11/20
+ */
+#define SJME_TEST_EQUALITY_COMPARE(inverted, a, b) \
+	((!inverted && a != b) || (inverted && a == b)) 
+
+/**
+ * Symbol used for the equality check.
+ * 
+ * @param inverted Is the check inverted?
+ * @since 2023/11/20
+ */
+#define SJME_TEST_EQUALITY_SYMBOL(inverted) \
+	(!inverted ? "!=" : "==")
+
 sjme_testResult sjme_unitEqualIR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_attrInValue jboolean inverted,
 	sjme_attrInNotNull sjme_test* test,
 	sjme_attrInValue jint a,
 	sjme_attrInValue jint b,
@@ -57,9 +78,10 @@ sjme_testResult sjme_unitEqualIR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 {
 	SJME_VA_DEF;
 	
-	if (a != b)
+	if (SJME_TEST_EQUALITY_COMPARE(inverted, a, b))
 	{
-		sjme_messageR(file, line, func, "ASSERT: %d != %d", a, b);
+		sjme_messageR(file, line, func, "ASSERT: %d %s %d",
+			a, SJME_TEST_EQUALITY_SYMBOL(inverted), b);
 		SJME_VA_SHORT(SJME_TEST_RESULT_FAIL);
 	}
 	
@@ -67,6 +89,7 @@ sjme_testResult sjme_unitEqualIR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 }
 
 sjme_testResult sjme_unitEqualLR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_attrInValue jboolean inverted,
 	sjme_attrInNotNull sjme_test* test,
 	sjme_attrInNullable jobject a,
 	sjme_attrInNullable jobject b,
@@ -74,9 +97,10 @@ sjme_testResult sjme_unitEqualLR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 {
 	SJME_VA_DEF;
 	
-	if (a != b)
+	if (SJME_TEST_EQUALITY_COMPARE(inverted, a, b))
 	{
-		sjme_messageR(file, line, func, "ASSERT: %p != %p", a, b);
+		sjme_messageR(file, line, func, "ASSERT: %p %s %p",
+			a, SJME_TEST_EQUALITY_SYMBOL(inverted), b);
 		SJME_VA_SHORT(SJME_TEST_RESULT_FAIL);
 	}
 	
@@ -84,6 +108,7 @@ sjme_testResult sjme_unitEqualLR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 }
 
 sjme_testResult sjme_unitEqualPR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_attrInValue jboolean inverted,
 	sjme_attrInNotNull sjme_test* test,
 	sjme_attrInNullable void* a,
 	sjme_attrInNullable void* b,
@@ -91,9 +116,10 @@ sjme_testResult sjme_unitEqualPR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 {
 	SJME_VA_DEF;
 	
-	if (a != b)
+	if (SJME_TEST_EQUALITY_COMPARE(inverted, a, b))
 	{
-		sjme_messageR(file, line, func, "ASSERT: %p != %p", a, b);
+		sjme_messageR(file, line, func, "ASSERT: %p %s %p",
+			a, SJME_TEST_EQUALITY_SYMBOL(inverted), b);
 		SJME_VA_SHORT(SJME_TEST_RESULT_FAIL);
 	}
 	

@@ -87,6 +87,14 @@ jboolean sjme_alloc_poolStatic(
 		(SJME_SIZEOF_ALLOC_LINK(0) * 3);
 	result->space[SJME_ALLOC_POOL_SPACE_FREE].usable = midLink->blockSize;
 	
+	/* Link in the first and last actual blocks for the free chain. */
+	result->freeFirstLink = frontLink;
+	frontLink->freeNext = midLink;
+	midLink->freePrev = frontLink;
+	result->freeLastLink = backLink;
+	backLink->freePrev = midLink;
+	midLink->freeNext = backLink;
+	
 #if defined(SJME_CONFIG_HAS_VALGRIND)
 	/* Reserve front side in Valgrind. */
 	VALGRIND_MAKE_MEM_NOACCESS(baseAddr,
@@ -109,6 +117,7 @@ jboolean sjme_alloc(
 {
 	if (pool == NULL || size <= 0 || outAddr == NULL)
 		return JNI_FALSE;
+	
 	
 	sjme_todo("Implement this?");
 	return JNI_FALSE;

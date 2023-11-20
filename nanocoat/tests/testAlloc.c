@@ -47,6 +47,10 @@ sjme_testResult testAlloc(sjme_test* test)
 	link = NULL;
 	if (!sjme_allocLink(block, &link) || link == NULL)
 		return sjme_unitFail(test, "Could not obtain block link?");
+	
+	/* There should be no free prev and next. */
+	sjme_unitEqualP(test, link->freeNext, NULL, "Free next not cleared?");
+	sjme_unitEqualP(test, link->freePrev, NULL, "Free prev not cleared?");
 		
 	/* Link should be marked used. */
 	sjme_unitEqualI(test, link->space, SJME_ALLOC_POOL_SPACE_USED,
@@ -57,7 +61,7 @@ sjme_testResult testAlloc(sjme_test* test)
 	
 	/* Next link should be the backlink's previous. */
 	sjme_unitEqualP(test, link->next, pool->backLink->prev,
-		"Back link previous is not the next free block?"); 
+		"Back link previous is not the next free block?");
 	
 	/* Free the block. */
 	if (!sjme_allocFree(block))
@@ -66,6 +70,10 @@ sjme_testResult testAlloc(sjme_test* test)
 	/* Link should be marked free. */
 	sjme_unitEqualI(test, link->space, SJME_ALLOC_POOL_SPACE_FREE,
 		"Pool space not marked as free?");
+	
+	/* There should be a previous and next free link. */
+	sjme_unitNotEqualP(test, link->freeNext, NULL, "Free next not reset?");
+	sjme_unitNotEqualP(test, link->freePrev, NULL, "Free prev not reset?");
 	
 	/* Next block should be the tail, for merging back in. */
 	sjme_unitEqualP(test, link->next, pool->backLink,
