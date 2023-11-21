@@ -47,6 +47,9 @@ add_executable(BasicTest
 	unit.c
 	${basicTestSources})
 
+# Make it static
+squirreljme_static_executable(BasicTest)
+
 # Make sure we have our headers included accordingly
 target_include_directories(BasicTest PUBLIC
 	"${CMAKE_SOURCE_DIR}/include"

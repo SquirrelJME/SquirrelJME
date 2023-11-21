@@ -24,6 +24,9 @@ endif()
 # Determine version information
 squirreljme_include("identify-squirreljme-version.cmake")
 
+# Fixes and otherwise for compatibility
+squirreljme_include("fixes.cmake")
+
 # Define project
 if(${CMAKE_VERSION} VERSION_LESS "3.12")
 	project(SquirrelJME
