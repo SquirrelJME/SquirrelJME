@@ -9,7 +9,14 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+
+#if defined(_MSC_VER)
+	typedef unsigned __int8 uint8_t;
+#else
+	#include <stdint.h>
+#endif
+
+#define BUF_SIZE 1024
 
 /**
  * Main entry point.
@@ -21,14 +28,57 @@
  */
 int main(int argc, char** argv)
 {
-	const char* sourcePath;
-	const char* destPath;
+	uint8_t buf[BUF_SIZE];
+	uint8_t out;
+	int len, i, c, of, rawBit;
 	
-	if (argc < 2)
+	/* Constant buffer reading loop. */
+	for (of = 0;;)
 	{
-		fprintf(stderr, "Missing arguments.\n");
-		return EXIT_FAILURE;
+		/* Read in. */
+		len = fread(buf, sizeof(buf[0]), BUF_SIZE, stdin);
+		
+		/* EOF? */
+		if (len <= 0 && feof(stdin))
+			break;
+		
+		/* Go through and handle characters accordingly. */
+		for (i = 0; i < len; i++)
+		{
+			/* Read in next character. */
+			c = buf[i];
+			
+			/* How is it mapped? */
+			if (c >= 'a' && c <= 'f')
+				rawBit = (c - 'a') + 10;
+			else if (c >= 'A' && c <= 'F')
+				rawBit = (c - 'A') + 10;
+			else if (c >= '0' && c <= '9')
+				rawBit = c - '0';
+				
+			/* Invalid character? Ignore. */
+			else
+				continue;
+			
+			/* How is this output? */
+			if ((of++) == 0)
+				out = (rawBit << 4);
+			else
+			{
+				out |= rawBit;
+				
+				/* Output. */
+				fwrite(&out, sizeof(char), 1, stdout);
+				
+				/* Reset. */
+				of = 0;
+			}
+		}
 	}
 	
-	return EXIT_FAILURE;
+	/* Flush output before stopping. */
+	fflush(stdout);
+	
+	/* Okay! */
+	return EXIT_SUCCESS;
 }
