@@ -10,7 +10,7 @@
 #include "test.h"
 #include "proto.h"
 
-sjme_testResult testNvmTempDiscard(sjme_test* test)
+SJME_TEST_DECLARE(testNvmTempDiscard)
 {
 	sjme_todo("Implement %s", __func__);
 	return SJME_TEST_RESULT_FAIL;

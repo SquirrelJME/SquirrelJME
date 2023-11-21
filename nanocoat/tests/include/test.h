@@ -83,6 +83,15 @@ typedef struct sjme_availableTest
 	sjme_basicTestFunc function;
 } sjme_availableTest;
 
+/**
+ * Declares a test.
+ * 
+ * @param name The name of the test.
+ * @since 2023/11/21
+ */
+#define SJME_TEST_DECLARE(name) \
+	sjme_attrUnused sjme_testResult name(sjme_test* test)
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

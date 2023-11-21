@@ -10,7 +10,7 @@
 #include "test.h"
 #include "proto.h"
 
-sjme_testResult testNvmStackPopInteger(sjme_test* test)
+SJME_TEST_DECLARE(testNvmStackPopInteger)
 {
 	sjme_todo("Implement %s", __func__);
 	return SJME_TEST_RESULT_FAIL;

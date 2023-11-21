@@ -14,7 +14,7 @@
 
 #define TEST_BLOCK_SIZE 1033
 
-sjme_testResult testAlloc(sjme_test* test)
+SJME_TEST_DECLARE(testAlloc)
 {
 	void* chunk;
 	jint chunkLen;

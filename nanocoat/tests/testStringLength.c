@@ -10,7 +10,7 @@
 #include "test.h"
 #include "proto.h"
 
-sjme_testResult testStringLength(sjme_test* test)
+SJME_TEST_DECLARE(testStringLength)
 {
 	sjme_todo("Implement %s", __func__);
 	return SJME_TEST_RESULT_FAIL;

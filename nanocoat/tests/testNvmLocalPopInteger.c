@@ -54,7 +54,7 @@ static const sjme_elevatorSet elevatorNvmLocalPopInteger =
 	}
 };
 
-sjme_attrUnused sjme_testResult testNvmLocalPopInteger(sjme_test* test)
+sjme_attrUnused SJME_TEST_DECLARE(testNvmLocalPopInteger)
 {
 	sjme_elevatorState state;
 	sjme_nvm_frame* frame;

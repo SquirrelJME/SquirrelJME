@@ -103,7 +103,7 @@ static const sjme_elevatorSet elevatorNvmLocalPopReference =
 		}
 };
 
-sjme_testResult testNvmLocalPopReference(sjme_test* test)
+SJME_TEST_DECLARE(testNvmLocalPopReference)
 {
 	jbyte firstId, secondId;
 	sjme_elevatorState state;

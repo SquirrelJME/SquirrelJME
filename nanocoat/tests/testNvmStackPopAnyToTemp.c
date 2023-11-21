@@ -10,7 +10,7 @@
 #include "test.h"
 #include "proto.h"
 
-sjme_testResult testNvmStackPopAnyToTemp(sjme_test* test)
+SJME_TEST_DECLARE(testNvmStackPopAnyToTemp)
 {
 	sjme_todo("Implement %s", __func__);
 	return SJME_TEST_RESULT_FAIL;

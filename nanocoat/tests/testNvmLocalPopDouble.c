@@ -54,7 +54,7 @@ static const sjme_elevatorSet elevatorNvmLocalPopDouble =
 		}
 };
 
-sjme_attrUnused sjme_testResult testNvmLocalPopDouble(sjme_test* test)
+sjme_attrUnused SJME_TEST_DECLARE(testNvmLocalPopDouble)
 {
 	sjme_elevatorState state;
 	sjme_nvm_frame* frame;

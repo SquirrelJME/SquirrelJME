@@ -54,7 +54,7 @@ static const sjme_elevatorSet elevatorNvmLocalPopFloat =
 		}
 };
 
-sjme_attrUnused sjme_testResult testNvmLocalPopFloat(sjme_test* test)
+sjme_attrUnused SJME_TEST_DECLARE(testNvmLocalPopFloat)
 {
 	sjme_elevatorState state;
 	sjme_nvm_frame* frame;

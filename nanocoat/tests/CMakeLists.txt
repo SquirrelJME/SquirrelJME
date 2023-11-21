@@ -107,7 +107,7 @@ foreach(basicTestSource ${basicTestSources})
 
 	# Add prototype and structures for test
 	file(APPEND "${outTestProtosH}"
-		"sjme_testResult ${basicTestName}(sjme_test* test);\n")
+		"SJME_TEST_DECLARE(${basicTestName});\n")
 	file(APPEND "${outTestStructH}"
 		"{\"${basicTestName}\", ${basicTestName}},\n")
 endforeach()

@@ -10,7 +10,7 @@
 #include "test.h"
 #include "proto.h"
 
-sjme_testResult testNvmFieldGetToTemp(sjme_test* test)
+SJME_TEST_DECLARE(testNvmFieldGetToTemp)
 {
 	sjme_todo("Implement %s", __func__);
 	return SJME_TEST_RESULT_FAIL;
