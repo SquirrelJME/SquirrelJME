@@ -9,6 +9,7 @@
 
 # Setup main test execution wrapper which runs within TAC
 add_library(TACTestExecutorCore STATIC
+	$<TARGET_OBJECTS:Core>
 	tac.c)
 
 # Make sure we have our headers included accordingly
@@ -18,7 +19,6 @@ target_include_directories(TACTestExecutorCore PUBLIC
 
 # Depend on the core
 target_link_libraries(TACTestExecutorCore PUBLIC
-	Core
 	${SQUIRRELJME_EXEC_LINK_LIBRARIES})
 
 # Get a list of tests that are not TAC tests, but more general tests

@@ -72,9 +72,15 @@ endif()
 # > Therefore, this command should be in the source directory root.
 enable_testing()
 
+# CPack for installing
+squirreljme_include("packing.cmake")
+
 # Include the base core first because it is completely standalone and it
 # uses nothing else
 add_subdirectory(src)
+
+# Front ends
+add_subdirectory(frontend)
 
 # Tests first since we add to these and when the ROMs register themselves
 # they will get their tests added accordingly
@@ -82,6 +88,3 @@ add_subdirectory(tests)
 
 # Directory where the ROM compiled sources exist
 add_subdirectory(rom)
-
-# CPack for installing
-squirreljme_include("packing.cmake")
