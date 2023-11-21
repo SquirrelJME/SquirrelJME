@@ -185,12 +185,6 @@ extern "C" {
 			/** Method does not return. */
 			#define sjme_attrReturnNever __attribute__((analyzer_noreturn))
 		#endif
-		
-		/** Input cannot be null. */
-		#define sjme_attrInNotNull _Nonnull
-
-		/** Input can be null. */
-		#define sjme_attrInNullable _Nullable
 
 		/** Returns nullable value. */
 		#define sjme_attrReturnNullable _Nullable_result
