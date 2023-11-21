@@ -27,6 +27,9 @@ squirreljme_include("identify-squirreljme-version.cmake")
 # Fixes and otherwise for compatibility
 squirreljme_include("fixes.cmake")
 
+# CMake Utilities, compiled and used during build
+squirreljme_include("utils.cmake")
+
 # Define project
 if(${CMAKE_VERSION} VERSION_LESS "3.12")
 	project(SquirrelJME
@@ -79,3 +82,6 @@ add_subdirectory(tests)
 
 # Directory where the ROM compiled sources exist
 add_subdirectory(rom)
+
+# CPack for installing
+squirreljme_include("packing.cmake")

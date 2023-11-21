@@ -169,7 +169,8 @@ foreach(SQUIRRELJME_BLOB_FILE ${SQUIRRELJME_BLOB_FILES})
 	set(BLOB_AT 0)
 	while(BLOB_AT LESS BLOB_HEX_LEN)
 		# Determine snippet to record
-		string(SUBSTRING "${BLOB_HEX}" ${BLOB_AT} 2 BLOB_SNIP)
+		string(SUBSTRING "${BLOB_HEX}" ${BLOB_AT}
+			2 BLOB_SNIP)
 
 		# Add snippet
 		file(APPEND "${BLOB_TARGET_FILE}"
