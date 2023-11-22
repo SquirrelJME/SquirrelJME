@@ -249,12 +249,12 @@ libretro-build-windows-x64:
     - .core-nanocoat
 
 # windows-cmake-msvc19.yml
-libretro-build-windows-msvc19-i686: # TODO: What should this be called?
-  extends:
-    - .libretro-windows-msvc19-cmake-x86
-    - .core-nanocoat
+#libretro-build-windows-msvc19-i686: # TODO: What should this be called?
+#  extends:
+#    - .libretro-windows-msvc19-cmake-x86
+#    - .core-nanocoat
 
-libretro-build-windows-msvc19-x64: # TODO: What should this be called?
-  extends:
-    - .libretro-windows-msvc19-cmake-x64
-    - .core-nanocoat
+#libretro-build-windows-msvc19-x64: # TODO: What should this be called?
+#  extends:
+#    - .libretro-windows-msvc19-cmake-x64
+#    - .core-nanocoat
