@@ -20,7 +20,7 @@ else()
 endif()
 
 # Declare library
-add_library(LibRetro ${libRetroBuildType}
+add_library(squirreljme_libretro ${libRetroBuildType}
 	${libRetroCoreObjects}
 	audio.c
 	boot.c
@@ -31,15 +31,15 @@ add_library(LibRetro ${libRetroBuildType}
 	video.c)
 
 # The base SquirrelJME core needs to be built
-add_dependencies(LibRetro
+add_dependencies(squirreljme_libretro
 	${libRetroCore})
 
 # Name must be specifically set for RetroArch for it to work properly
-set_target_properties(LibRetro PROPERTIES
+set_target_properties(squirreljme_libretro PROPERTIES
 	LIBRARY_OUTPUT_NAME "squirreljme_libretro${LIBRETRO_SUFFIX}")
 
 # Include main headers
-target_include_directories(LibRetro PUBLIC
+target_include_directories(squirreljme_libretro PUBLIC
 	"${CMAKE_SOURCE_DIR}/include")
 
 # Allow running the binary, as long as it is not static and we are on the
@@ -50,11 +50,11 @@ if(RETROARCH AND NOT libRetroIsStatic AND
 	# Add target to run accordingly
 	add_custom_target(LibRetroRun
 		COMMAND "${RETROARCH}"
-			"-L" "$<TARGET_FILE:LibRetro>"
+			"-L" "$<TARGET_FILE:squirreljme_libretro>"
 			"--no-patch"
 			"--appendconfig=${CMAKE_CURRENT_SOURCE_DIR}/test.config"
 			"--log-file=${CMAKE_CURRENT_BIN}/libretro.log"
-		DEPENDS LibRetro
+		DEPENDS squirreljme_libretro
 		USES_TERMINAL)
 
 	# Do not try running this
@@ -67,7 +67,7 @@ endif()
 cpack_add_component(LIBRETRO
 	DISPLAY_NAME "SquirrelJME LibRetro"
 	DESCRIPTION "SquirrelJME running on LibRetro.")
-install(TARGETS LibRetro
+install(TARGETS squirreljme_libretro
 	LIBRARY)
 set(CPACK_DEBIAN_LIBRETRO_PACKAGE_DEPENDS
 	"retroarch | libretro-frontend")
