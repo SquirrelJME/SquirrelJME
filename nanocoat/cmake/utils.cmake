@@ -13,6 +13,9 @@ get_filename_component(SQUIRRELJME_UTIL_SOURCE_DIR
 get_filename_component(SQUIRRELJME_UTIL_DIR
 	"${CMAKE_BINARY_DIR}/utils" ABSOLUTE)
 
+# Make sure the directory exists
+file(MAKE_DIRECTORY "${SQUIRRELJME_UTIL_DIR}")
+
 # Run nested CMake to build the utilities
 message("Bootstrapping utils into "
 	"${SQUIRRELJME_UTIL_DIR}...")
