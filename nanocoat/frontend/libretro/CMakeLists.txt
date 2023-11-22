@@ -53,6 +53,10 @@ endif()
 set_target_properties(squirreljme_libretro PROPERTIES
 	LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
 
+# RetroArch does not use any prefixes like "lib" for the cores
+set_target_properties(squirreljme_libretro PROPERTIES
+	PREFIX "")
+
 # Include main headers
 target_include_directories(squirreljme_libretro PUBLIC
 	"${CMAKE_SOURCE_DIR}/include")
