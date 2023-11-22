@@ -9,8 +9,12 @@
 # RetroArch/LibRetro
 add_subdirectory(libretro)
 
-# SDL1
-add_subdirectory(sdl1)
+# Not doing a special build for RetroArch only...
+if(NOT DEFINED ENV{SQUIRRELJME_SPECIAL_BUILD_LIBRETRO} OR
+	NOT ENV{SQUIRRELJME_SPECIAL_BUILD_LIBRETRO})
+	# SDL1
+	add_subdirectory(sdl1)
 
-# SDL2
-add_subdirectory(sdl2)
+	# SDL2
+	add_subdirectory(sdl2)
+endif()

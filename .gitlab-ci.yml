@@ -16,6 +16,7 @@
   variables:
     CORENAME: squirreljme
     CMAKE_SOURCE_ROOT: nanocoat
+    SQUIRRELJME_SPECIAL_BUILD_LIBRETRO: 1
 
 # Inclusion templates, required for the build to work
 include:

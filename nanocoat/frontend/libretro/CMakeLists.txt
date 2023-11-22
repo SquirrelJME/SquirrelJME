@@ -6,8 +6,15 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 
+# Which type of build is being used?
+if(DEFINED LIBRETRO_STATIC AND LIBRETRO_STATIC)
+	set(libRetroBuildType STATIC)
+else()
+	set(libRetroBuildType SHARED)
+endif()
+
 # Declare library
-add_library(LibRetro SHARED
+add_library(LibRetro ${libRetroBuildType}
 	$<TARGET_OBJECTS:CorePIC>
 	audio.c
 	boot.c
@@ -19,7 +26,7 @@ add_library(LibRetro SHARED
 
 # Name must be specifically set for RetroArch for it to work properly
 set_target_properties(LibRetro PROPERTIES
-	LIBRARY_OUTPUT_NAME "squirreljme_libretro")
+	LIBRARY_OUTPUT_NAME "squirreljme_libretro${LIBRETRO_SUFFIX}")
 
 # Include main headers
 target_include_directories(LibRetro PUBLIC
