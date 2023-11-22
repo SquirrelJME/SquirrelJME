@@ -97,7 +97,7 @@ android-x86_64:
 # ctr-static-cmake.yml
 libretro-build-ctr:
   extends:
-    - .libretro-ctr-static-cmake
+    - .libretro-ctr-static-cmake-retroarch-master
     - .core-nanocoat
 
 # dingux-cmake.yml
@@ -129,13 +129,13 @@ libretro-build-rs90-odbeta-mips32:
 # djgpp-static-cmake.yml
 libretro-build-djgpp: # TODO: What should this be called?
   extends:
-    - .libretro-djgpp-static-cmake
+    - .libretro-djgpp-static-cmake-retroarch-master
     - .core-nanocoat
 
 # emscripten-static-cmake.yml
 libretro-build-emscripten:
   extends:
-    - .libretro-emscripten-static-cmake
+    - .libretro-emscripten-static-cmake-retroarch-master
     - .core-nanocoat
 
 # ios-cmake.yml
@@ -152,7 +152,7 @@ libretro-build-ios9:
 # libnx-static-cmake.yml
 libretro-build-libnx:
   extends:
-    - .libretro-libnx-static-cmake
+    - .libretro-libnx-static-cmake-retroarch-master
     - .core-nanocoat
 
 # linux-cmake.yml
@@ -169,13 +169,13 @@ libretro-build-linux-x64:
 # ngc-static-cmake.yml
 libretro-build-ngc:
   extends:
-    - .libretro-ngc-static-cmake
+    - .libretro-ngc-static-cmake-retroarch-master
     - .core-nanocoat
 
 # orbis-static-cmake.yml
 libretro-build-orbis:
   extends:
-    - .libretro-orbis-static-cmake
+    - .libretro-orbis-static-cmake-retroarch-master
     - .core-nanocoat
 
 # osx-cmake-arm64.yml
@@ -204,13 +204,13 @@ libretro-build-osx-x64:
 # ps2-static-cmake.yml
 libretro-build-ps2:
   extends:
-    - .libretro-ps2-static-cmake
+    - .libretro-ps2-static-cmake-retroarch-master
     - .core-nanocoat
 
 # psp-static-cmake.yml
 libretro-build-psp:
   extends:
-    - .libretro-psp-static-cmake
+    - .libretro-psp-static-cmake-retroarch-master
     - .core-nanocoat
 
 # tvos-cmake.yml
@@ -222,19 +222,19 @@ libretro-build-tvos-arm64:
 # vita-static-cmake.yml
 libretro-build-vita:
   extends:
-    - .libretro-vita-static-cmake
+    - .libretro-vita-static-cmake-retroarch-master
     - .core-nanocoat
 
 # wii-static-cmake.yml
 libretro-build-wii:
   extends:
-    - .libretro-wii-static-cmake
+    - .libretro-wii-static-cmake-retroarch-master
     - .core-nanocoat
 
 # wiiu-static-cmake.yml
 libretro-build-wiiu:
   extends:
-    - .libretro-wiiu-static-cmake
+    - .libretro-wiiu-static-cmake-retroarch-master
     - .core-nanocoat
 
 # windows-cmake-mingw.yml
