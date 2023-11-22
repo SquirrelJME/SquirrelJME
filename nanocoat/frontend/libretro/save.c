@@ -11,7 +11,29 @@
 #include "sjme/debug.h"
 #include "3rdparty/libretro/libretro.h"
 
-sjme_attrUnused RETRO_API void retro_run(void)
+sjme_attrUnused RETRO_API size_t retro_serialize_size(void)
 {
 	sjme_todo("Implement this?");
 }
+
+sjme_attrUnused RETRO_API bool retro_serialize(void *data, size_t size)
+{
+	sjme_todo("Implement this?");
+}
+
+sjme_attrUnused RETRO_API bool retro_unserialize(const void *data,
+	size_t size)
+{
+	sjme_todo("Implement this?");
+}
+
+sjme_attrUnused RETRO_API void *retro_get_memory_data(unsigned id)
+{
+	sjme_todo("Implement this?");
+}
+
+sjme_attrUnused RETRO_API size_t retro_get_memory_size(unsigned id)
+{
+	sjme_todo("Implement this?");
+}
+

@@ -6,8 +6,7 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 
-# THe core library contains the main logic for the virtual machine
-add_library(Core STATIC
+list(APPEND coreSources
 	alloc.c
 	boot.c
 	bytecode.c
@@ -21,8 +20,22 @@ add_library(Core STATIC
 	tread.c
 	util.c)
 
+# The core library contains the main logic for the virtual machine
+# For non-PIC:
+add_library(Core STATIC
+	${coreSources})
+# For PIC:
+add_library(CorePIC STATIC
+	${coreSources})
+
+# Needs to be position independent when included in other parts
+set_property(TARGET CorePIC
+	PROPERTY POSITION_INDEPENDENT_CODE ON)
+
 # Include main headers
 target_include_directories(Core PUBLIC
+	"${CMAKE_SOURCE_DIR}/include")
+target_include_directories(CorePIC PUBLIC
 	"${CMAKE_SOURCE_DIR}/include")
 
 # Third party support libraries

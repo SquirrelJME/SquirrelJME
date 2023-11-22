@@ -11,7 +11,14 @@
 #include "sjme/debug.h"
 #include "3rdparty/libretro/libretro.h"
 
-sjme_attrUnused RETRO_API void retro_run(void)
+sjme_attrUnused RETRO_API void retro_get_system_av_info(
+	struct retro_system_av_info *info)
+{
+	sjme_todo("Implement this?");
+}
+
+sjme_attrUnused RETRO_API void retro_set_video_refresh(
+	retro_video_refresh_t refresh)
 {
 	sjme_todo("Implement this?");
 }

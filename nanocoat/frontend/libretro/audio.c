@@ -11,7 +11,14 @@
 #include "sjme/debug.h"
 #include "3rdparty/libretro/libretro.h"
 
-sjme_attrUnused RETRO_API void retro_run(void)
+sjme_attrUnused RETRO_API void retro_set_audio_sample(
+	retro_audio_sample_t sample)
+{
+	sjme_todo("Implement this?");
+}
+
+sjme_attrUnused RETRO_API void retro_set_audio_sample_batch(
+	retro_audio_sample_batch_t sampleBatch)
 {
 	sjme_todo("Implement this?");
 }
