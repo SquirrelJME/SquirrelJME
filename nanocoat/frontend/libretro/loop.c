@@ -14,6 +14,7 @@
 
 sjme_attrUnused RETRO_API void retro_run(void)
 {
+	static jint tick;
 	uint32_t buf[240*320];
 	int i;
 	
@@ -21,8 +22,7 @@ sjme_attrUnused RETRO_API void retro_run(void)
 	if (!(trigger++))
 		sjme_message("Implement this?");
 	
-	for (i = 0; i < 240; i++)
-		buf[i] = rand();
+	sjme_libretro_modelessStars(buf, 240, 320, 240, tick++);
 	sjme_libretro_videoRefreshCallback(
-		buf, 240, 320, 240);
+		buf, 240, 320, 240 * 4);
 }
