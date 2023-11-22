@@ -10,6 +10,7 @@
 #include "sjme/nvm.h"
 #include "sjme/debug.h"
 #include "3rdparty/libretro/libretro.h"
+#include "frontend/libretro/shared.h"
 
 sjme_attrUnused RETRO_API unsigned retro_api_version(void)
 {
@@ -18,17 +19,19 @@ sjme_attrUnused RETRO_API unsigned retro_api_version(void)
 
 sjme_attrUnused RETRO_API void retro_deinit(void)
 {
-	sjme_todo("Implement this?");
 }
 
 sjme_attrUnused RETRO_API void retro_init(void)
 {
-	sjme_todo("Implement this?");
 }
 
 sjme_attrUnused RETRO_API bool retro_load_game(
-	const struct retro_game_info *game)
+	const struct retro_game_info* game)
 {
+	/* If we requested no game then we do not really care do we? */
+	if (game == NULL)
+		return true;
+		
 	sjme_todo("Implement this?");
 }
 

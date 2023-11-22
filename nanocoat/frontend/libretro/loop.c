@@ -10,8 +10,19 @@
 #include "sjme/nvm.h"
 #include "sjme/debug.h"
 #include "3rdparty/libretro/libretro.h"
+#include "frontend/libretro/shared.h"
 
 sjme_attrUnused RETRO_API void retro_run(void)
 {
-	sjme_todo("Implement this?");
+	uint32_t buf[240*320];
+	int i;
+	
+	static jint trigger;
+	if (!(trigger++))
+		sjme_message("Implement this?");
+	
+	for (i = 0; i < 240; i++)
+		buf[i] = rand();
+	sjme_libretro_videoRefreshCallback(
+		buf, 240, 320, 240);
 }

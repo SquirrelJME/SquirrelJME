@@ -13,13 +13,17 @@
 
 sjme_attrUnused RETRO_API void retro_set_input_poll(retro_input_poll_t poll)
 {
-	sjme_todo("Implement this?");
+	static jint trigger;
+	if (!(trigger++))
+		sjme_message("Implement this?");
 }
 
 sjme_attrUnused RETRO_API void retro_set_input_state(
 	retro_input_state_t state)
 {
-	sjme_todo("Implement this?");
+	static jint trigger;
+	if (!(trigger++))
+		sjme_message("Implement this?");
 }
 
 sjme_attrUnused RETRO_API void retro_set_controller_port_device(

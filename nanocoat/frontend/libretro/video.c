@@ -10,15 +10,31 @@
 #include "sjme/nvm.h"
 #include "sjme/debug.h"
 #include "3rdparty/libretro/libretro.h"
+#include "frontend/libretro/shared.h"
 
 sjme_attrUnused RETRO_API void retro_get_system_av_info(
-	struct retro_system_av_info *info)
+	struct retro_system_av_info* info)
 {
-	sjme_todo("Implement this?");
+	/* Base size. */
+	info->geometry.base_width = 240;
+	info->geometry.base_height = 320;
+	
+	/* Maximum permitted size. */
+	info->geometry.max_width = 640;
+	info->geometry.max_height = 640;
+	
+	/* Always square pixels. */
+	info->geometry.aspect_ratio = 1.0F;
+	
+	/* Always target 60 FPS. */
+	info->timing.fps = 60;
+	
+	/* Use a standard audio format here. */
+	info->timing.sample_rate = 22050;
 }
 
 sjme_attrUnused RETRO_API void retro_set_video_refresh(
 	retro_video_refresh_t refresh)
 {
-	sjme_todo("Implement this?");
+	sjme_libretro_videoRefreshCallback = refresh;
 }

@@ -25,9 +25,11 @@ add_library(squirreljme_libretro ${libRetroBuildType}
 	audio.c
 	boot.c
 	env.c
+	ext.c
 	input.c
 	loop.c
 	save.c
+	shared.c
 	video.c)
 
 # The base SquirrelJME core needs to be built

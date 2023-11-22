@@ -10,30 +10,20 @@
 #include "sjme/nvm.h"
 #include "sjme/debug.h"
 #include "3rdparty/libretro/libretro.h"
+#include "frontend/libretro/shared.h"
 
-sjme_attrUnused RETRO_API size_t retro_serialize_size(void)
-{
-	sjme_todo("Implement this?");
-}
-
-sjme_attrUnused RETRO_API bool retro_serialize(void *data, size_t size)
-{
-	sjme_todo("Implement this?");
-}
-
-sjme_attrUnused RETRO_API bool retro_unserialize(const void *data,
-	size_t size)
-{
-	sjme_todo("Implement this?");
-}
-
-sjme_attrUnused RETRO_API void *retro_get_memory_data(unsigned id)
+static retro_proc_address_t RETRO_CALLCONV sjme_libretro_extLookup(
+	const char* sym)
 {
 	return NULL;
 }
 
-sjme_attrUnused RETRO_API size_t retro_get_memory_size(unsigned id)
+const struct retro_get_proc_address_interface sjme_libretro_extInterfaceDef =
 {
-	return 0;
-}
+	.get_proc_address = sjme_libretro_extLookup,
+};
 
+const struct retro_get_proc_address_interface* sjme_libretro_extInterface(void)
+{
+	return &sjme_libretro_extInterfaceDef;
+}

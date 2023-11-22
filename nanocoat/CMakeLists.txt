@@ -51,6 +51,10 @@ squirreljme_include("i-miss-you.cmake")
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED True)
 
+# Declare Version
+add_compile_definitions(
+	SQUIRRELJME_VERSION="${SQUIRRELJME_VERSION}")
+
 # Valgrind Support on UNIX OSes, if debugging
 if(ANDROID OR APPLE OR BSD OR LINUX OR
 	CMAKE_SYSTEM_NAME STREQUAL "Linux" OR

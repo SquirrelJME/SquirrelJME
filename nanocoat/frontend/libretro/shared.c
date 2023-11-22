@@ -10,30 +10,8 @@
 #include "sjme/nvm.h"
 #include "sjme/debug.h"
 #include "3rdparty/libretro/libretro.h"
+#include "frontend/libretro/shared.h"
 
-sjme_attrUnused RETRO_API size_t retro_serialize_size(void)
-{
-	sjme_todo("Implement this?");
-}
+retro_environment_t sjme_libretro_envCallback = NULL;
 
-sjme_attrUnused RETRO_API bool retro_serialize(void *data, size_t size)
-{
-	sjme_todo("Implement this?");
-}
-
-sjme_attrUnused RETRO_API bool retro_unserialize(const void *data,
-	size_t size)
-{
-	sjme_todo("Implement this?");
-}
-
-sjme_attrUnused RETRO_API void *retro_get_memory_data(unsigned id)
-{
-	return NULL;
-}
-
-sjme_attrUnused RETRO_API size_t retro_get_memory_size(unsigned id)
-{
-	return 0;
-}
-
+retro_video_refresh_t sjme_libretro_videoRefreshCallback = NULL;
