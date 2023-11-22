@@ -37,8 +37,16 @@ add_dependencies(squirreljme_libretro
 	${libRetroCore})
 
 # Name must be specifically set for RetroArch for it to work properly
-set_target_properties(squirreljme_libretro PROPERTIES
-	LIBRARY_OUTPUT_NAME "squirreljme_libretro${LIBRETRO_SUFFIX}")
+if(ANDROID OR
+	(DEFINED ANDROID_PLATFORM AND ANDROID_PLATFORM))
+		set_target_properties(squirreljme_libretro PROPERTIES
+			LIBRARY_OUTPUT_NAME
+				"squirreljme_libretro_android")
+	else()
+		set_target_properties(squirreljme_libretro PROPERTIES
+			LIBRARY_OUTPUT_NAME
+				"squirreljme_libretro${LIBRETRO_SUFFIX}")
+endif()
 
 # Library location must be placed in the build output for the RetroArch
 # build system to pick up the library
