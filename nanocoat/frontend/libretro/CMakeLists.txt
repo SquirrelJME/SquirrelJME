@@ -8,14 +8,20 @@
 
 # Which type of build is being used?
 if(DEFINED LIBRETRO_STATIC AND LIBRETRO_STATIC)
+	set(libRetroIsStatic ON)
 	set(libRetroBuildType STATIC)
+	set(libRetroCore Core)
+	set(libRetroCoreObjects $<TARGET_OBJECTS:Core>)
 else()
+	set(libRetroIsStatic OFF)
 	set(libRetroBuildType SHARED)
+	set(libRetroCore CorePIC)
+	set(libRetroCoreObjects $<TARGET_OBJECTS:CorePIC>)
 endif()
 
 # Declare library
 add_library(LibRetro ${libRetroBuildType}
-	$<TARGET_OBJECTS:CorePIC>
+	${libRetroCoreObjects}
 	audio.c
 	boot.c
 	env.c
@@ -23,6 +29,10 @@ add_library(LibRetro ${libRetroBuildType}
 	loop.c
 	save.c
 	video.c)
+
+# The base SquirrelJME core needs to be built
+add_dependencies(LibRetro
+	${libRetroCore})
 
 # Name must be specifically set for RetroArch for it to work properly
 set_target_properties(LibRetro PROPERTIES
@@ -32,8 +42,11 @@ set_target_properties(LibRetro PROPERTIES
 target_include_directories(LibRetro PUBLIC
 	"${CMAKE_SOURCE_DIR}/include")
 
+# Allow running the binary, as long as it is not static and we are on the
+# same system...
 find_program(RETROARCH "retroarch")
-if(RETROARCH)
+if(RETROARCH AND NOT libRetroIsStatic AND
+	"${CMAKE_HOST_SYSTEM_NAME}" STREQUAL "${CMAKE_SYSTEM_NAME}")
 	# Add target to run accordingly
 	add_custom_target(LibRetroRun
 		COMMAND "${RETROARCH}"
