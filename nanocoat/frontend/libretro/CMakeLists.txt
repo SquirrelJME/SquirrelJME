@@ -39,19 +39,24 @@ add_dependencies(squirreljme_libretro
 # Name must be specifically set for RetroArch for it to work properly
 if(ANDROID OR
 	(DEFINED ANDROID_PLATFORM AND ANDROID_PLATFORM))
-		set_target_properties(squirreljme_libretro PROPERTIES
-			LIBRARY_OUTPUT_NAME
-				"squirreljme_libretro_android")
-	else()
-		set_target_properties(squirreljme_libretro PROPERTIES
-			LIBRARY_OUTPUT_NAME
-				"squirreljme_libretro${LIBRETRO_SUFFIX}")
+	set_target_properties(squirreljme_libretro PROPERTIES
+		LIBRARY_OUTPUT_NAME
+			"squirreljme_libretro_android"
+		ARCHIVE_OUTPUT_NAME
+			"squirreljme_libretro_android")
+else()
+	set_target_properties(squirreljme_libretro PROPERTIES
+		LIBRARY_OUTPUT_NAME
+			"squirreljme_libretro${LIBRETRO_SUFFIX}"
+		ARCHIVE_OUTPUT_NAME
+			"squirreljme_libretro${LIBRETRO_SUFFIX}")
 endif()
 
 # Library location must be placed in the build output for the RetroArch
 # build system to pick up the library
 set_target_properties(squirreljme_libretro PROPERTIES
-	LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
+	LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+	ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
 
 # RetroArch does not use any prefixes like "lib" for the cores
 set_target_properties(squirreljme_libretro PROPERTIES
