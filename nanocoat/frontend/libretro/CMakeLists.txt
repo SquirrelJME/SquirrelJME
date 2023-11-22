@@ -40,6 +40,11 @@ add_dependencies(squirreljme_libretro
 set_target_properties(squirreljme_libretro PROPERTIES
 	LIBRARY_OUTPUT_NAME "squirreljme_libretro${LIBRETRO_SUFFIX}")
 
+# Library location must be placed in the build output for the RetroArch
+# build system to pick up the library
+set_target_properties(squirreljme_libretro PROPERTIES
+	LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
+
 # Include main headers
 target_include_directories(squirreljme_libretro PUBLIC
 	"${CMAKE_SOURCE_DIR}/include")
