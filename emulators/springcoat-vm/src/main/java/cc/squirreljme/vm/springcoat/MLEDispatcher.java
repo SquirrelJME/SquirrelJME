@@ -9,6 +9,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.driver.nio.java.shelf.JavaNioShelf;
 import cc.squirreljme.jvm.mle.AtomicShelf;
 import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
@@ -32,7 +33,7 @@ import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodNameAndType;
 
 /**
- * Not Described.
+ * Dispatches the shelf used for the shelf API.
  *
  * @since 2020/06/18
  */
@@ -94,6 +95,10 @@ public enum MLEDispatcher
 	/** {@link UIFormShelf}. */
 	UI_FORM("cc/squirreljme/jvm/mle/UIFormShelf",
 		MLEUIForm.values()),
+	
+	/** {@link JavaNioShelf}. */
+	JAVA_NIO_SHELF("cc/squirreljme/driver/nio/java/shelf/JavaNioShelf",
+		MLEJavaNioShelf.values()),
 	
 	/* End. */
 	;

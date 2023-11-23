@@ -24,7 +24,7 @@ import org.gradle.workers.WorkerExecutor;
  */
 public class VMLegacyTestTask
 	extends DefaultTask
-	implements VMBaseTask, VMExecutableTask
+	implements VMBaseTask, VMExecutableTask, VMBaseTestTask
 {
 	/** Property for running single test. */
 	public static final String SINGLE_TEST_PROPERTY =
@@ -82,6 +82,8 @@ public class VMLegacyTestTask
 		// All the test results that are created
 		this.getOutputs().files(this.getProject().provider(
 			new VMTestOutputs(this, __classifier)));
+		this.getOutputs().dirs(this.getProject().provider(
+			new VMTestOutputDirs(this, __classifier)));
 		
 		// Add additional testing to see if our test run will not be up-to-
 		// date when we run these. Also, this is never up-to-date if

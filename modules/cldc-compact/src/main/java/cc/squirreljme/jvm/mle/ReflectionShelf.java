@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.mle;
 
+import cc.squirreljme.jvm.mle.annotation.SquirrelJMENativeShelf;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
@@ -21,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
  * @since 2022/09/07
  */
 @SquirrelJMEVendorApi
+@SquirrelJMENativeShelf
 public final class ReflectionShelf
 {
 	/**

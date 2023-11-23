@@ -163,7 +163,7 @@ public class VMTestTaskAction
 			// Calculate test running parameters
 			CandidateTestFiles candidate = tests.get(testName);
 			TestRunParameters runTest = VMTestTaskAction.runTest(
-				(VMBaseTask)__task, this.classifier, runSuite, testName,
+				(VMBaseTestTask)__task, this.classifier, runSuite, testName,
 				candidate);
 			
 			// Where will the results be read from?
@@ -503,7 +503,7 @@ public class VMTestTaskAction
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/09/11
 	 */
-	public static TestRunParameters runTest(VMBaseTask __task,
+	public static TestRunParameters runTest(VMBaseTestTask __task,
 		SourceTargetClassifier __classifier,
 		SuiteRunParameters __runSuite, String __testName,
 		CandidateTestFiles __candidate)
@@ -537,6 +537,11 @@ public class VMTestTaskAction
 			__candidate.expectedValues.get("test-vm-target")))
 			sysProps.put("cc.squirreljme.test.vm",
 				__classifier.getBangletVariant().banglet);
+		
+		// Manual test output directory
+		sysProps.put("cc.squirreljme.test.manualDir",
+			VMHelpers.testResultsDir(__task.getProject(), __classifier,
+				"manual").get().toAbsolutePath().toString());
 		
 		// Print test result manifest?
 		if (Boolean.getBoolean(VMTestTaskAction.PRINT_TEST_MANIFEST) ||

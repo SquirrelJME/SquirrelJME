@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.mle;
 
+import cc.squirreljme.jvm.mle.annotation.SquirrelJMENativeShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIDrawableBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
@@ -39,6 +40,7 @@ import org.jetbrains.annotations.NotNull;
  * @since 2020/06/30
  */
 @SquirrelJMEVendorApi
+@SquirrelJMENativeShelf
 public final class UIFormShelf
 {
 	/**

@@ -25,10 +25,12 @@ import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -180,9 +182,29 @@ public final class SpringTaskManager
 		pipes.registerByType(StandardPipeType.STDOUT, __stdOutMode);
 		pipes.registerByType(StandardPipeType.STDERR, __stdErrMode);
 		
+		// Determine actual classpath to use, with drivers
+		Map<String, VMClassLibrary> actualClasspath = new LinkedHashMap<>();
+		VMSuiteManager suites = this.suites;
+		
+		// Put in CLDC compact first
+		actualClasspath.put("cldc-compact.jar",
+			suites.loadLibrary("cldc-compact.jar"));
+		
+		// Then the drivers needed by SpringCoat
+		actualClasspath.put("driver-nio-java.jar",
+			suites.loadLibrary("driver-nio-java.jar"));
+		
+		// Then everything else
+		for (VMClassLibrary lib : __classpath)
+			actualClasspath.put(lib.name(), lib);
+		
+		// Extract to array
+		VMClassLibrary[] useClasspath = actualClasspath.values()
+			.toArray(new VMClassLibrary[actualClasspath.size()]);
+		
 		// Spawn the machine
-		SpringClassLoader classloader = new SpringClassLoader(__classpath);
-		SpringMachine machine = new SpringMachine(this.suites,
+		SpringClassLoader classloader = new SpringClassLoader(useClasspath);
+		SpringMachine machine = new SpringMachine(suites,
 			classloader, this, __mainClass,
 			this.profiler, new LinkedHashMap<>(__sysProps), this.globalState,
 			pipes, __rootVm, __mainArgs);

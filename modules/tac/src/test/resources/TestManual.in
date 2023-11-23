@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+result: NoResult
+thrown: NoExceptionThrown
+secondary-array: byte[5]:97,114,114,97,121
+secondary-baos: byte[4]:98,97,111,115
+secondary-is: byte[2]:105,110

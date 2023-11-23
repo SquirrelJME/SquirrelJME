@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.mle;
 
+import cc.squirreljme.jvm.mle.annotation.SquirrelJMENativeShelf;
 import cc.squirreljme.jvm.mle.brackets.PipeBracket;
 import cc.squirreljme.jvm.mle.constants.PipeErrorType;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
@@ -29,6 +30,7 @@ import org.jetbrains.annotations.Range;
  */
 @SuppressWarnings("UnstableApiUsage")
 @SquirrelJMEVendorApi
+@SquirrelJMENativeShelf
 public final class TerminalShelf
 {
 	/**

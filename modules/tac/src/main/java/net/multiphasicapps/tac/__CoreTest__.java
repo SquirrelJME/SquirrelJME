@@ -15,8 +15,17 @@ import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.VMType;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.StreamUtils;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +43,10 @@ import org.junit.Test;
 abstract class __CoreTest__
 	implements TestInterface
 {
+	/** Manual test output directory. */
+	private static final String _MANUAL_TEST_PROPERTY =
+		"cc.squirreljme.test.manualDir";
+	
 	/** Special value for any virtual machine. */
 	private static final byte _ANYCOAT =
 		-89;
@@ -41,6 +54,9 @@ abstract class __CoreTest__
 	/** Final result of the test, used during the test. */
 	final TestResultBuilder _runResult =
 		new TestResultBuilder();
+	
+	/** Manual test directory. */
+	private volatile Path _manualDir;
 	
 	/**
 	 * Runs the given test with the given arguments and resulting in the
@@ -179,6 +195,111 @@ abstract class __CoreTest__
 		
 		// Return the result
 		return new TestExecution(status, self, result, expected, thrown);
+	}
+	
+	/**
+	 * Writes a file for future manual testing.
+	 *
+	 * @param __name The name of the file.
+	 * @param __in The input data.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/20
+	 */
+	public final void manual(String __name, ByteArrayOutputStream __in)
+		throws IOException, NullPointerException
+	{
+		if (__name == null || __in == null)
+			throw new NullPointerException("NARG");
+		
+		this.manual(__name, __in.toByteArray());
+	}
+	
+	/**
+	 * Writes a file for future manual testing.
+	 *
+	 * @param __name The name of the file.
+	 * @param __in The input data.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/20
+	 */
+	public final void manual(String __name, byte[] __in)
+		throws IOException, NullPointerException
+	{
+		if (__name == null || __in == null)
+			throw new NullPointerException("NARG");
+		
+		try (InputStream in = new ByteArrayInputStream(__in))
+		{
+			this.manual(__name, in);
+		}
+	}
+	
+	/**
+	 * Writes a file for future manual testing.
+	 *
+	 * @param __name The name of the file.
+	 * @param __in The input data.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/20
+	 */
+	public final void manual(String __name, InputStream __in)
+		throws IOException, NullPointerException
+	{
+		if (__name == null || __in == null)
+			throw new NullPointerException("NARG");
+		
+		// If not setup, initialize it
+		Path manualDir = this._manualDir;
+		if (manualDir == null)
+		{
+			manualDir = Paths.get(System.getProperty(
+				__CoreTest__._MANUAL_TEST_PROPERTY));
+			this._manualDir = manualDir;
+		}
+		
+		// Make sure target exists
+		Files.createDirectories(manualDir);
+		
+		// Write to a temporary file first
+		Path tempFile = null;
+		try
+		{
+			// Get temporary file
+			tempFile = Files.createTempFile("manual", __name);
+			
+			// Write all bytes to the output
+			try (OutputStream out = Files.newOutputStream(tempFile,
+				StandardOpenOption.CREATE,
+				StandardOpenOption.TRUNCATE_EXISTING,
+				StandardOpenOption.WRITE))
+			{
+				// Read in all data
+				byte[] data = StreamUtils.readAll(__in);
+				
+				// Write all of it
+				out.write(data, 0, data.length);
+			}
+			
+			// Move over
+			Files.move(tempFile, manualDir.resolve(__name),
+				StandardCopyOption.REPLACE_EXISTING);
+		}
+		finally
+		{
+			// Cleanup temporary file
+			if (tempFile != null)
+				try
+				{
+					Files.deleteIfExists(tempFile);
+				}
+				catch (IOException __ignored)
+				{
+					// Ignored
+				}
+		}
 	}
 	
 	/**

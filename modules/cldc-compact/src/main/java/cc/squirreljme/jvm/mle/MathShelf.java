@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.mle;
 
+import cc.squirreljme.jvm.mle.annotation.SquirrelJMENativeShelf;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
@@ -17,6 +18,7 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  * @since 2020/06/18
  */
 @SquirrelJMEVendorApi
+@SquirrelJMENativeShelf
 public final class MathShelf
 {
 	/**

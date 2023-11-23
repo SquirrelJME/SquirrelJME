@@ -136,5 +136,18 @@ public final class UnmodifiableSet<T>
 		// Otherwise create a new one
 		return new UnmodifiableSet<T>(__s);
 	}
+	
+	/**
+	 * Creates an unmodifiable singleton set.
+	 *
+	 * @param <T> The type to store.
+	 * @param __value The single value.
+	 * @return The singleton set.
+	 * @since 2023/08/21
+	 */
+	public static <T> Set<T> singleton(T __value)
+	{
+		return new __SingletonSet__<T>(__value);
+	}
 }
 

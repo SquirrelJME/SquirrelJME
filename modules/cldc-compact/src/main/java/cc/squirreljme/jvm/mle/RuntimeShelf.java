@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.mle;
 
+import cc.squirreljme.jvm.mle.annotation.SquirrelJMENativeShelf;
 import cc.squirreljme.jvm.mle.constants.BuiltInEncodingType;
 import cc.squirreljme.jvm.mle.constants.BuiltInLocaleType;
 import cc.squirreljme.jvm.mle.constants.ByteOrderType;
@@ -32,6 +33,7 @@ import org.jetbrains.annotations.NotNull;
  * @since 2020/06/09
  */
 @SquirrelJMEVendorApi
+@SquirrelJMENativeShelf
 public final class RuntimeShelf
 {
 	/**

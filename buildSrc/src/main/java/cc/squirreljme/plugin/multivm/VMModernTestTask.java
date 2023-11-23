@@ -25,7 +25,7 @@ import org.gradle.workers.WorkerExecutor;
  */
 public class VMModernTestTask
 	extends Test
-	implements VMBaseTask, VMExecutableTask
+	implements VMBaseTask, VMExecutableTask, VMBaseTestTask
 {
 	/** The classifier used. */
 	@Internal
@@ -79,6 +79,8 @@ public class VMModernTestTask
 		// All the test results that are created
 		this.getOutputs().files(this.getProject().provider(
 			new VMTestOutputs(this, __classifier)));
+		this.getOutputs().dirs(this.getProject().provider(
+			new VMTestOutputDirs(this, __classifier)));
 		
 		// Add additional testing to see if our test run will not be up-to-
 		// date when we run these. Also, this is never up-to-date if
