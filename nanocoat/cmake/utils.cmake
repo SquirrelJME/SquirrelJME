@@ -13,26 +13,33 @@ get_filename_component(SQUIRRELJME_UTIL_SOURCE_DIR
 get_filename_component(SQUIRRELJME_UTIL_DIR
 	"${CMAKE_BINARY_DIR}/utils" ABSOLUTE)
 
-# Make sure the directory exists
-file(MAKE_DIRECTORY "${SQUIRRELJME_UTIL_DIR}")
+# Only run this if the directory does not exist, because there might be a
+# cache from a previous run?
+if(NOT EXISTS "${SQUIRRELJME_UTIL_DIR}")
+	# Make sure the directory exists
+	file(MAKE_DIRECTORY "${SQUIRRELJME_UTIL_DIR}")
 
-# Run nested CMake to build the utilities
-message("Bootstrapping utils into "
-	"${SQUIRRELJME_UTIL_DIR}...")
-execute_process(
-	COMMAND "${CMAKE_COMMAND}"
-		"-DCMAKE_BUILD_TYPE=Debug"
-		"-B" "${SQUIRRELJME_UTIL_DIR}"
-		"-S" "${SQUIRRELJME_UTIL_SOURCE_DIR}"
-	RESULT_VARIABLE cmakeUtilBuildResult)
+	# Run nested CMake to build the utilities
+	message("Bootstrapping utils into "
+		"${SQUIRRELJME_UTIL_DIR}...")
+	execute_process(
+		COMMAND "${CMAKE_COMMAND}"
+			"-DCMAKE_BUILD_TYPE=Debug"
+			"-B" "${SQUIRRELJME_UTIL_DIR}"
+			"-S" "${SQUIRRELJME_UTIL_SOURCE_DIR}"
+		RESULT_VARIABLE cmakeUtilBuildResult)
 
-# Did this fail?
-if(cmakeUtilBuildResult)
-	message(FATAL_ERROR
-		"Cannot configure utils: ${cmakeUtilBuildResult}...")
+	# Did this fail?
+	if(cmakeUtilBuildResult)
+		message(FATAL_ERROR
+			"Cannot configure utils: ${cmakeUtilBuildResult}...")
+	endif()
+else()
+	message("No need to configure utilities, already there...")
 endif()
 
-# Build the utilities
+# Build the utilities, just in case it is out of date
+message("Building utilities, if out of date...")
 execute_process(
 	COMMAND "${CMAKE_COMMAND}"
 		"--build" "${SQUIRRELJME_UTIL_DIR}"
