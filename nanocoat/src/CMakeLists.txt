@@ -12,6 +12,7 @@ list(APPEND coreSources
 	bytecode.c
 	debug.c
 	except.c
+	gfx.c
 	loop.c
 	native.c
 	nvm.c
