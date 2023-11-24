@@ -7,11 +7,11 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Various utilities (backwards compatible make)
 
-OUTPUT_DIR ?= .
+OUTPUT_DIR      ?= .
+HOST_EXE_SUFFIX ?=
 
-decode:		decode.c
-			$(CC) -o "${OUTPUT_DIR}/$@" $<
+decode${HOST_EXE_SUFFIX}:		decode.c
+								$(CC) -o "${OUTPUT_DIR}/$@" $<
 
-all:		decode
-
+all:							decode
 
