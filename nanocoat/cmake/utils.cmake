@@ -77,12 +77,12 @@ if(cmakeUtilBuildResult)
 		RESULT_VARIABLE makeUtilBuildResult
 		WORKING_DIRECTORY "${SQUIRRELJME_UTIL_SOURCE_DIR}")
 
-		# This failed too...
-		if(makeUtilBuildResult)
-			message(FATAL_ERROR
-				"Cannot build utils (Make): "
-					"${makeUtilBuildResult}...")
-		endif()
+	# This failed too...
+	if(makeUtilBuildResult)
+		message(FATAL_ERROR
+			"Cannot build utils (Make): "
+				"${makeUtilBuildResult}...")
+	endif()
 endif()
 
 # Determine executable suffix
