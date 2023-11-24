@@ -64,7 +64,7 @@ execute_process(
 	WORKING_DIRECTORY "${SQUIRRELJME_UTIL_DIR}")
 
 # Did this fail?
-if(TRUE OR cmakeUtilBuildResult)
+if(cmakeUtilBuildResult)
 	# Ignore for now
 	message("Cannot build utils (CMake): "
 		"${cmakeUtilBuildResult}...")

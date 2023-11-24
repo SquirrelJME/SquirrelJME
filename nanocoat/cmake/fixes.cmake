@@ -22,3 +22,10 @@ macro(squirreljme_static_executable target)
 			"/MT")
 	endif()
 endmacro()
+
+# Add compile definitions, for older CMake
+if(${CMAKE_VERSION} VERSION_LESS "3.12")
+	macro(add_compile_definitions varVal)
+		add_definitions("-D${varVal}")
+	endmacro()
+endif()
