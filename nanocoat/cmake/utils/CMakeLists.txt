@@ -5,6 +5,7 @@
 # SquirrelJME is under the Mozilla Public License Version 2.0.
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
+# DESCRIPTION: Various utilities
 
 # Just allow a very early 3.0 release so all utilities work regardless
 cmake_minimum_required(VERSION 3.0)

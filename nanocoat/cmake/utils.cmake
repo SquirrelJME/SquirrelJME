@@ -64,9 +64,24 @@ execute_process(
 	WORKING_DIRECTORY "${SQUIRRELJME_UTIL_DIR}")
 
 # Did this fail?
-if(cmakeUtilBuildResult)
-	message(FATAL_ERROR
-		"Cannot build utils: ${cmakeUtilBuildResult}...")
+if(TRUE OR cmakeUtilBuildResult)
+	# Ignore for now
+	message("Cannot build utils (CMake): "
+		"${cmakeUtilBuildResult}...")
+
+	# Fallback to regular make, maybe it will work
+	execute_process(
+		COMMAND "make" "all"
+			"OUTPUT_DIR=${SQUIRRELJME_UTIL_DIR}"
+		RESULT_VARIABLE makeUtilBuildResult
+		WORKING_DIRECTORY "${SQUIRRELJME_UTIL_SOURCE_DIR}")
+
+		# This failed too...
+		if(makeUtilBuildResult)
+			message(FATAL_ERROR
+				"Cannot build utils (Make): "
+					"${makeUtilBuildResult}...")
+		endif()
 endif()
 
 # Determine executable suffix
