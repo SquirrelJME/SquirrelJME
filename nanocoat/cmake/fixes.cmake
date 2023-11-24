@@ -7,6 +7,42 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: CMake related fixes
 
+# String joining
+if(${CMAKE_VERSION} VERSION_LESS_EQUAL "3.11")
+	macro(squirreljme_string_join sjGlue sjOut
+		sjList)
+		# Setup initial blank output
+		set(sjResult "")
+
+		# Go through list
+		list(LENGTH "${sjList}" sjListLen)
+		set(sjAt "0")
+		while("${sjAt}" LESS "${sjListLen}")
+			# Get list item
+			set(sjTemp "")
+			list(GET "${sjList}" "${sjAt}" sjTemp)
+
+			# Append joiner
+			string(APPEND sjResult "${sjGlue}")
+
+			# Append string
+			string(APPEND sjResult "${sjTemp}")
+
+			# Move up
+			math(EXPR sjAt "${sjAt} + 1")
+		endwhile()
+
+		# Set output
+		set(${sjOut} "${sjResult}")
+	endmacro()
+else()
+	macro(squirreljme_string_join sjGlue sjOut
+		sjList)
+		string(JOIN "${sjGlue}" ${sjOut}
+			"${sjList}")
+	endmacro()
+endif()
+
 # CMake 3.13 added many things!
 if(${CMAKE_VERSION} VERSION_LESS_EQUAL "3.12")
 	# Additional compiler settings
@@ -57,7 +93,7 @@ if(${CMAKE_VERSION} VERSION_LESS_EQUAL "3.12")
 		# Get old link options to add in the list...
 		get_target_property(tloOldLinkOpt ${tloTarget}
 			LINK_FLAGS)
-		string(JOIN " " tloStrOpt "${tloFlags}")
+		squirreljme_string_join(" " tloStrOpt "${tloFlags}")
 		if(tloBefore)
 			set_target_properties(${tloTarget} PROPERTIES
 				LINK_FLAGS "${tloStrOpt} ${tloOldLinkOpt}")
