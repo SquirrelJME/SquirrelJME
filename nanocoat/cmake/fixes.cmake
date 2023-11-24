@@ -7,6 +7,67 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: CMake related fixes
 
+# CMake 3.13 added many things!
+if(${CMAKE_VERSION} VERSION_LESS_EQUAL "3.12")
+	# Additional compiler settings
+	macro(add_compile_definitions varVal)
+		add_definitions("-D${varVal}")
+	endmacro()
+
+	# Additional linker options
+	macro(target_link_options)
+		# The target we are interested in...
+		list(GET "${ARGV}" 0 tloTarget)
+
+		# Is there a before?
+		set(GET "${ARGV}" 1 tloMaybeBefore)
+		if(tloMaybeBefore STREQUAL "BEFORE")
+			# Mark as before
+			set(tloBefore YES)
+
+			# Start pivot point
+			set(tloPivot 2)
+		else()
+			# Mark as not before
+			set(tloBefore No)
+
+			# Start pivot point
+			set(tloPivot 1)
+		endif()
+
+		# Handle the remaining number of items
+		set(tloAt "${tloPivot}")
+		set(tloFlags)
+		while(tloAt LESS ARGC)
+			# Determine indexes
+			math(EXPR tloAtI "${tloAt} + 0")
+			math(EXPR tloAtL "${tloAt} + 1")
+
+			# Extract sub-parameters
+			list(GET "${ARGV}" "${tloAtI}" tloInstance)
+			list(GET "${ARGV}" "${tloAtL}" tloFlag)
+
+			# Add library, ignore the instance for it
+			list(APPEND tloFlags "${tloFlag}")
+
+			# Move indexes up for the next items
+			math(EXPR tloAt "${tloAt} + 2")
+		endwhile()
+
+		# Get old link options to add in the list...
+		get_target_property(tloOldLinkOpt ${tloTarget}
+			LINK_FLAGS)
+		string(JOIN " " tloStrOpt "${tloFlags}")
+		if(tloBefore)
+			set_target_properties(${tloTarget} PROPERTIES
+				LINK_FLAGS "${tloStrOpt} ${tloOldLinkOpt}")
+		else()
+			set_target_properties(${tloTarget} PROPERTIES
+				LINK_FLAGS "${tloOldLinkOpt} ${tloStrOpt}")
+		endif()
+	endmacro()
+endif()
+
 # Make static executable
 macro(squirreljme_static_executable target)
 	if(CMAKE_COMPILER_IS_GNUCC OR
@@ -22,10 +83,3 @@ macro(squirreljme_static_executable target)
 			"/MT")
 	endif()
 endmacro()
-
-# Add compile definitions, for older CMake
-if(${CMAKE_VERSION} VERSION_LESS "3.12")
-	macro(add_compile_definitions varVal)
-		add_definitions("-D${varVal}")
-	endmacro()
-endif()
