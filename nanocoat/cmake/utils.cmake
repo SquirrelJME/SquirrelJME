@@ -7,6 +7,9 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Defines the base project and the versioning info
 
+# Echo commands accordingly
+set(CMAKE_EXECUTE_PROCESS_COMMAND_ECHO STDERR)
+
 # The directory where the utilities should exist
 get_filename_component(SQUIRRELJME_UTIL_SOURCE_DIR
 	"${CMAKE_SOURCE_DIR}/cmake/utils" ABSOLUTE)
@@ -25,8 +28,8 @@ if(NOT EXISTS "${SQUIRRELJME_UTIL_DIR}")
 	execute_process(
 		COMMAND "${CMAKE_COMMAND}"
 			"-DCMAKE_BUILD_TYPE=Debug"
-			"-B" "${SQUIRRELJME_UTIL_DIR}"
 			"-S" "${SQUIRRELJME_UTIL_SOURCE_DIR}"
+			"-B" "${SQUIRRELJME_UTIL_DIR}"
 		RESULT_VARIABLE cmakeUtilBuildResult)
 
 	# Did this fail?
