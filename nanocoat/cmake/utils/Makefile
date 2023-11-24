@@ -13,5 +13,5 @@ HOST_EXE_SUFFIX ?=
 decode${HOST_EXE_SUFFIX}:		decode.c
 								$(CC) -o "${OUTPUT_DIR}/$@" $<
 
-all:							decode
+all:							decode${HOST_EXE_SUFFIX}
 
