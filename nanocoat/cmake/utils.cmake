@@ -22,15 +22,29 @@ if(NOT EXISTS "${SQUIRRELJME_UTIL_DIR}")
 	# Make sure the directory exists
 	file(MAKE_DIRECTORY "${SQUIRRELJME_UTIL_DIR}")
 
-	# Run nested CMake to build the utilities
+	# Note
 	message("Bootstrapping utils into "
 		"${SQUIRRELJME_UTIL_DIR}...")
-	execute_process(
-		COMMAND "${CMAKE_COMMAND}"
+
+	# Run nested CMake to build the utilities
+	if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.13")
+		# CMake 3.13 added the -S and -B switches
+		execute_process(
+			COMMAND "${CMAKE_COMMAND}"
+				"-DCMAKE_BUILD_TYPE=Debug"
+				"-S" "${SQUIRRELJME_UTIL_SOURCE_DIR}"
+				"-B" "${SQUIRRELJME_UTIL_DIR}"
+			RESULT_VARIABLE cmakeUtilBuildResult)
+	else()
+		# Need to initialize the project the old way, by just being in
+		# a different working directory and referring to the source
+		execute_process(
+			COMMAND "${CMAKE_COMMAND}"
 			"-DCMAKE_BUILD_TYPE=Debug"
-			"-S" "${SQUIRRELJME_UTIL_SOURCE_DIR}"
-			"-B" "${SQUIRRELJME_UTIL_DIR}"
-		RESULT_VARIABLE cmakeUtilBuildResult)
+			"${SQUIRRELJME_UTIL_SOURCE_DIR}"
+			WORKING_DIRECTORY "${SQUIRRELJME_UTIL_DIR}"
+			RESULT_VARIABLE cmakeUtilBuildResult)
+	endif()
 
 	# Did this fail?
 	if(cmakeUtilBuildResult)
@@ -46,7 +60,8 @@ message("Building utilities, if out of date...")
 execute_process(
 	COMMAND "${CMAKE_COMMAND}"
 		"--build" "${SQUIRRELJME_UTIL_DIR}"
-	RESULT_VARIABLE cmakeUtilBuildResult)
+	RESULT_VARIABLE cmakeUtilBuildResult
+	WORKING_DIRECTORY "${SQUIRRELJME_UTIL_DIR}")
 
 # Did this fail?
 if(cmakeUtilBuildResult)
