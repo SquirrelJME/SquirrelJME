@@ -7,16 +7,20 @@
 # ---------------------------------------------------------------------------
 
 # Which type of build is being used?
-if(NOT EMSCRIPTEN AND LIBRETRO_STATIC)
-	set(libRetroIsStatic ON)
-	set(libRetroBuildType STATIC)
-	set(libRetroCore Core)
-	set(libRetroCoreObjects $<TARGET_OBJECTS:Core>)
-else()
+if(EMSCRIPTEN OR NOT LIBRETRO_STATIC)
+	message("LibRetro is not static.")
+
 	set(libRetroIsStatic OFF)
 	set(libRetroBuildType SHARED)
 	set(libRetroCore CorePIC)
 	set(libRetroCoreObjects $<TARGET_OBJECTS:CorePIC>)
+else()
+	message("LibRetro is static.")
+
+	set(libRetroIsStatic ON)
+	set(libRetroBuildType STATIC)
+	set(libRetroCore Core)
+	set(libRetroCoreObjects $<TARGET_OBJECTS:Core>)
 endif()
 
 # Declare library
