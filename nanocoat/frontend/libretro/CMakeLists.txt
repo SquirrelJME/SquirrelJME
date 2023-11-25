@@ -7,8 +7,7 @@
 # ---------------------------------------------------------------------------
 
 # Which type of build is being used?
-if(DEFINED LIBRETRO_STATIC AND LIBRETRO_STATIC AND
-	NOT EMSCRIPTEN)
+if(NOT EMSCRIPTEN AND LIBRETRO_STATIC)
 	set(libRetroIsStatic ON)
 	set(libRetroBuildType STATIC)
 	set(libRetroCore Core)
