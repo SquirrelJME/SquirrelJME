@@ -55,6 +55,7 @@ endif()
 # Library location must be placed in the build output for the RetroArch
 # build system to pick up the library
 set_target_properties(squirreljme_libretro PROPERTIES
+	RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
 	LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
 	ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
 
