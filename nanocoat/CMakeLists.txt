@@ -28,14 +28,14 @@ squirreljme_include("identify-squirreljme-version.cmake")
 if(${CMAKE_VERSION} VERSION_LESS "3.12")
 	project(SquirrelJME
 		VERSION ${SQUIRRELJME_VERSION}
-		LANGUAGES C )#CXX)
+		LANGUAGES C)
 else()
 	project(SquirrelJME
 		VERSION ${SQUIRRELJME_VERSION}
 		DESCRIPTION "SquirrelJME is a Java ME 8 \
 Virtual Machine for embedded and Internet of Things devices."
 		HOMEPAGE_URL https://squirreljme.cc/
-		LANGUAGES C )#CXX)
+		LANGUAGES C)
 endif()
 
 # Fixes and otherwise for compatibility

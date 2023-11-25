@@ -8,10 +8,17 @@
 # DESCRIPTION: CMake related fixes
 
 # If we cannot run the code we are building then we cannot actually test code
-include(CheckCSourceRuns)
-check_c_source_runs("${CMAKE_SOURCE_DIR}/cmake/simple.c"
-	SQUIRRELJME_SIMPLE_SOURCE_RUNS)
-if(NOT SQUIRRELJME_SIMPLE_SOURCE_RUNS)
+if("${CMAKE_HOST_SYSTEM_NAME}" STREQUAL "${CMAKE_SYSTEM_NAME}")
+	include(CheckCSourceRuns)
+	set(CMAKE_REQUIRED_QUIET ON)
+	check_c_source_runs("${CMAKE_SOURCE_DIR}/cmake/simple.c"
+		SQUIRRELJME_SIMPLE_SOURCE_RUNS
+		)
+	if(NOT SQUIRRELJME_SIMPLE_SOURCE_RUNS)
+		set(SQUIRRELJME_ENABLE_TESTING OFF)
+	endif()
+else()
+	# Different host, assume we cannot run the target code
 	set(SQUIRRELJME_ENABLE_TESTING OFF)
 endif()
 
