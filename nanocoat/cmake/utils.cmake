@@ -16,6 +16,12 @@ get_filename_component(SQUIRRELJME_UTIL_SOURCE_DIR
 get_filename_component(SQUIRRELJME_UTIL_DIR
 	"${CMAKE_BINARY_DIR}/utils" ABSOLUTE)
 
+# Add macro to determine the path of a utility
+macro(squirreljme_util var what)
+	set(${var}
+		"${SQUIRRELJME_UTIL_DIR}/${what}${SQUIRRELJME_HOST_EXE_SUFFIX}")
+endmacro()
+
 # Only run this if the directory does not exist, because there might be a
 # cache from a previous run?
 if(NOT EXISTS "${SQUIRRELJME_UTIL_DIR}")
@@ -95,10 +101,25 @@ execute_process(
 	RESULT_VARIABLE cmakeUtilBuildResult
 	WORKING_DIRECTORY "${SQUIRRELJME_UTIL_DIR}")
 
+# Make sure the executable actually runs since it might have built
+if(NOT cmakeUtilBuildResult)
+	# Determine path where simple exists
+	squirreljme_util(cmakeSimpleExe simple)
+
+	# Execute it and check if it works
+	execute_process(COMMAND cmakeSimpleExe
+		RESULT_VARIABLE cmakeUtilBuildResult
+		WORKING_DIRECTORY "${SQUIRRELJME_UTIL_DIR}")
+
+	if(cmakeUtilBuildResult)
+		message("Failed to run simple test utility.")
+	endif()
+endif()
+
 # Did this fail?
 if(cmakeUtilBuildResult)
 	# Ignore for now
-	message("Cannot build utils (CMake): "
+	message("Cannot build and run utils (CMake): "
 		"${cmakeUtilBuildResult}...")
 
 	# Try to find a compiler
@@ -137,8 +158,3 @@ file(STRINGS "${SQUIRRELJME_UTIL_DIR}/suffix"
 message("Host executable suffix is "
 	"'${SQUIRRELJME_HOST_EXE_SUFFIX}'.")
 
-# Add macro to determine the name of the utility
-macro(squirreljme_util var what)
-	set(${var}
-		"${SQUIRRELJME_UTIL_DIR}/${what}${SQUIRRELJME_HOST_EXE_SUFFIX}")
-endmacro()

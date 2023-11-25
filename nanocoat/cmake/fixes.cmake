@@ -11,7 +11,7 @@
 if("${CMAKE_HOST_SYSTEM_NAME}" STREQUAL "${CMAKE_SYSTEM_NAME}")
 	include(CheckCSourceRuns)
 	set(CMAKE_REQUIRED_QUIET ON)
-	check_c_source_runs("${CMAKE_SOURCE_DIR}/cmake/simple.c"
+	check_c_source_runs("${CMAKE_SOURCE_DIR}/cmake/utils/simple.c"
 		SQUIRRELJME_SIMPLE_SOURCE_RUNS
 		)
 	if(NOT SQUIRRELJME_SIMPLE_SOURCE_RUNS)

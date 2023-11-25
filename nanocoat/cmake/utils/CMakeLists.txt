@@ -25,3 +25,7 @@ file(WRITE "${CMAKE_BINARY_DIR}/suffix"
 # Hex decoding to binary
 add_executable(decode
 	decode.c)
+
+# Simple test binary
+add_executable(simple
+	simple.c)
