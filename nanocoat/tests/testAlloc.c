@@ -20,7 +20,6 @@ SJME_TEST_DECLARE(testAlloc)
 	jint chunkLen;
 	sjme_alloc_pool* pool;
 	void* block;
-	void* newBlock;
 	sjme_alloc_link* link;
 	
 	/* Allocate data on the stack so it gets cleared. */
@@ -54,7 +53,19 @@ SJME_TEST_DECLARE(testAlloc)
 	
 	/* The allocation size should be the same or lower always. */
 	sjme_unitLessEqualI(test, link->allocSize, link->blockSize,
-		"Allocation size bigger than block size?"); 
+		"Allocation size bigger than block size?");
+	
+	/* Should always be rounded! */
+	sjme_unitEqualI(test, (link->allocSize & 7), 0,
+		"Allocation size not divisible by 8?");
+	
+	/* The edge of the block should be the right side. */
+	sjme_unitEqualP(test, &link->block[link->allocSize], link->next,
+		"Block to the right not at the edge of this one?");
+	
+	/* The left edge should be the same as well. */
+	sjme_unitEqualP(test, &link->prev->block[link->prev->blockSize], link,
+		"This block on at the edge of the left side block?");
 	
 	/* There should be no free prev and next. */
 	sjme_unitEqualP(test, link->freeNext, NULL, "Free next not cleared?");
