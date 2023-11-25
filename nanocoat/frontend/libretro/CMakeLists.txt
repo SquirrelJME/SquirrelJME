@@ -7,20 +7,16 @@
 # ---------------------------------------------------------------------------
 
 # Which type of build is being used?
-if(EMSCRIPTEN OR NOT LIBRETRO_STATIC)
-	message("LibRetro is not static.")
-
-	set(libRetroIsStatic OFF)
-	set(libRetroBuildType SHARED)
-	set(libRetroCore CorePIC)
-	set(libRetroCoreObjects $<TARGET_OBJECTS:CorePIC>)
-else()
-	message("LibRetro is static.")
-
+if(DEFINED LIBRETRO_STATIC AND LIBRETRO_STATIC)
 	set(libRetroIsStatic ON)
 	set(libRetroBuildType STATIC)
 	set(libRetroCore Core)
 	set(libRetroCoreObjects $<TARGET_OBJECTS:Core>)
+else()
+	set(libRetroIsStatic OFF)
+	set(libRetroBuildType SHARED)
+	set(libRetroCore CorePIC)
+	set(libRetroCoreObjects $<TARGET_OBJECTS:CorePIC>)
 endif()
 
 # Declare library
@@ -73,6 +69,17 @@ set_target_properties(squirreljme_libretro PROPERTIES
 # Include main headers
 target_include_directories(squirreljme_libretro PUBLIC
 	"${CMAKE_SOURCE_DIR}/include")
+
+# Copy library over for emscripten build
+if(EMSCRIPTEN)
+	get_filename_component(libretroLibFile
+		"$<TARGET_FILE:squirreljme_libretro>" NAME_WE)
+	add_custom_command(TARGET squirreljme_libretro
+		POST_BUILD
+		COMMAND "${CMAKE_COMMAND}" "-E"
+			"copy" "$<TARGET_FILE:squirreljme_libretro>"
+			"${CMAKE_BINARY_DIR}/${libretroLibFile}.bc")
+endif()
 
 # Allow running the binary, as long as it is not static and we are on the
 # same system...
