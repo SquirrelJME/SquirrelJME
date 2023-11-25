@@ -69,9 +69,16 @@ if(cmakeUtilBuildResult)
 	message("Cannot build utils (CMake): "
 		"${cmakeUtilBuildResult}...")
 
+	# Try to find a compiler
+	find_program(HOST_CC "cc")
+	if(NOT HOST_CC)
+		find_program(HOST_CC "gcc")
+	endif()
+
 	# Fallback to regular make, maybe it will work
 	execute_process(
 		COMMAND "make" "all"
+			"CC=${HOST_CC}"
 			"OUTPUT_DIR=${SQUIRRELJME_UTIL_DIR}"
 			"HOST_EXE_SUFFIX=${SQUIRRELJME_HOST_EXE_SUFFIX}"
 		RESULT_VARIABLE makeUtilBuildResult
