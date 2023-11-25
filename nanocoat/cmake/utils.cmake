@@ -31,6 +31,21 @@ if(NOT EXISTS "${SQUIRRELJME_UTIL_DIR}")
 		# CMake 3.13 added the -S and -B switches
 		execute_process(
 			COMMAND "${CMAKE_COMMAND}"
+				"-E" "env"
+				"--unset=CMAKE_TOOLCHAIN_FILE"
+				"--unset=CMAKE_SOURCE_ROOT"
+				"--unset=CMAKE_FRAMEWORK_PATH"
+				"--unset=CMAKE_INCLUDE_PATH"
+				"--unset=CMAKE_LIBRARY_PATH"
+				"--unset=CMAKE_PROGRAM_PATH"
+				"--unset=CMAKE_BUILD_TYPE"
+				"--unset=CMAKE_GENERATOR"
+				"--unset=CMAKE_GENERATOR_INSTANCE"
+				"--unset=CMAKE_GENERATOR_PLATFORM"
+				"--unset=CMAKE_GENERATOR_TOOLSET"
+				"--unset=CMAKE_C_COMPILER_LAUNCHER"
+				"--unset=CMAKE_C_LINKER_LAUNCHER"
+				"${CMAKE_COMMAND}"
 				"-DCMAKE_BUILD_TYPE=Debug"
 				"-S" "${SQUIRRELJME_UTIL_SOURCE_DIR}"
 				"-B" "${SQUIRRELJME_UTIL_DIR}"
@@ -40,8 +55,23 @@ if(NOT EXISTS "${SQUIRRELJME_UTIL_DIR}")
 		# a different working directory and referring to the source
 		execute_process(
 			COMMAND "${CMAKE_COMMAND}"
-			"-DCMAKE_BUILD_TYPE=Debug"
-			"${SQUIRRELJME_UTIL_SOURCE_DIR}"
+				"-E" "env"
+				"--unset=CMAKE_TOOLCHAIN_FILE"
+				"--unset=CMAKE_SOURCE_ROOT"
+				"--unset=CMAKE_FRAMEWORK_PATH"
+				"--unset=CMAKE_INCLUDE_PATH"
+				"--unset=CMAKE_LIBRARY_PATH"
+				"--unset=CMAKE_PROGRAM_PATH"
+				"--unset=CMAKE_BUILD_TYPE"
+				"--unset=CMAKE_GENERATOR"
+				"--unset=CMAKE_GENERATOR_INSTANCE"
+				"--unset=CMAKE_GENERATOR_PLATFORM"
+				"--unset=CMAKE_GENERATOR_TOOLSET"
+				"--unset=CMAKE_C_COMPILER_LAUNCHER"
+				"--unset=CMAKE_C_LINKER_LAUNCHER"
+				"${CMAKE_COMMAND}"
+				"-DCMAKE_BUILD_TYPE=Debug"
+				"${SQUIRRELJME_UTIL_SOURCE_DIR}"
 			WORKING_DIRECTORY "${SQUIRRELJME_UTIL_DIR}"
 			RESULT_VARIABLE cmakeUtilBuildResult)
 	endif()
@@ -77,8 +107,14 @@ if(cmakeUtilBuildResult)
 
 	# Fallback to regular make, maybe it will work
 	execute_process(
-		COMMAND "make" "all"
-			"CC=${HOST_CC}"
+		COMMAND "${CMAKE_COMMAND}"
+			"-E" "env"
+			"--unset=CC"
+			"--unset=CXX"
+			"--unset=CPP"
+			"--unset=LD"
+			"make" "all"
+			#"CC=${HOST_CC}"
 			"OUTPUT_DIR=${SQUIRRELJME_UTIL_DIR}"
 			"HOST_EXE_SUFFIX=${SQUIRRELJME_HOST_EXE_SUFFIX}"
 		RESULT_VARIABLE makeUtilBuildResult
