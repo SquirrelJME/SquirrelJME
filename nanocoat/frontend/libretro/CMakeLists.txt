@@ -7,7 +7,8 @@
 # ---------------------------------------------------------------------------
 
 # Which type of build is being used?
-if(DEFINED LIBRETRO_STATIC AND LIBRETRO_STATIC)
+if(DEFINED LIBRETRO_STATIC AND LIBRETRO_STATIC AND
+	NOT EMSCRIPTEN)
 	set(libRetroIsStatic ON)
 	set(libRetroBuildType STATIC)
 	set(libRetroCore Core)
@@ -54,6 +55,9 @@ endif()
 
 # Library location must be placed in the build output for the RetroArch
 # build system to pick up the library
+# Note that RUNTIME_OUTPUT_DIRECTORY is needed for the Windows build to output
+# directories since .DLL files are output there and not where shared libraries
+# go??? No idea really.
 set_target_properties(squirreljme_libretro PROPERTIES
 	RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
 	LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"

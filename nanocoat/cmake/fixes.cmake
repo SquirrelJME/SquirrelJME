@@ -137,6 +137,3 @@ macro(squirreljme_static_executable target)
 			"/MT")
 	endif()
 endmacro()
-
-# For Emscripten, always generate bitcode when doing static libraries
-set(EMSCRIPTEN_GENERATE_BITCODE_STATIC_LIBRARIES ON)
