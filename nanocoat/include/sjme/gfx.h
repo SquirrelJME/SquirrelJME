@@ -30,7 +30,8 @@ extern "C" {
 /*--------------------------------------------------------------------------*/
 
 /**
- * Frame buffer related storage and information within SquirrelJME.
+ * Frame buffer related storage and information within SquirrelJME, this must
+ * be compatible with @c PencilShelf in SquirrelJME.
  * 
  * @since 2023/11/24
  */
