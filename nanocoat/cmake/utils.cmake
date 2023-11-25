@@ -81,39 +81,44 @@ if(NOT EXISTS "${SQUIRRELJME_UTIL_DIR}")
 				"-DCMAKE_BUILD_TYPE=Debug"
 				"${SQUIRRELJME_UTIL_SOURCE_DIR}"
 			WORKING_DIRECTORY "${SQUIRRELJME_UTIL_DIR}"
-			RESULT_VARIABLE cmakeUtilBuildResult)
+			RESULT_VARIABLE cmakeUtilConfigResult)
 	endif()
 
 	# Did this fail?
-	if(cmakeUtilBuildResult)
+	if(cmakeUtilConfigResult)
 		message(FATAL_ERROR
-			"Cannot configure utils: ${cmakeUtilBuildResult}...")
+			"Cannot configure utils: ${cmakeUtilConfigResult}...")
 	endif()
 else()
 	message("No need to configure utilities, already there...")
+	set(cmakeUtilConfigResult 0)
 endif()
 
-# Build the utilities, just in case it is out of date
-message("Building utilities, if out of date...")
-execute_process(
-	COMMAND "${CMAKE_COMMAND}"
-		"--build" "${SQUIRRELJME_UTIL_DIR}"
-	RESULT_VARIABLE cmakeUtilBuildResult
-	WORKING_DIRECTORY "${SQUIRRELJME_UTIL_DIR}")
-
-# Make sure the executable actually runs since it might have built
-if(NOT cmakeUtilBuildResult)
-	# Determine path where simple exists
-	squirreljme_util(cmakeSimpleExe simple)
-
-	# Execute it and check if it works
-	execute_process(COMMAND cmakeSimpleExe
+if (NOT cmakeUtilConfigResult)
+	# Build the utilities, just in case it is out of date
+	message("Building utilities, if out of date...")
+	execute_process(
+		COMMAND "${CMAKE_COMMAND}"
+			"--build" "${SQUIRRELJME_UTIL_DIR}"
 		RESULT_VARIABLE cmakeUtilBuildResult
 		WORKING_DIRECTORY "${SQUIRRELJME_UTIL_DIR}")
 
-	if(cmakeUtilBuildResult)
-		message("Failed to run simple test utility.")
+	# Make sure the executable actually runs since it might have built
+	if(NOT cmakeUtilBuildResult)
+		# Determine path where simple exists
+		squirreljme_util(cmakeSimpleExe simple)
+
+		# Execute it and check if it works
+		execute_process(COMMAND cmakeSimpleExe
+			RESULT_VARIABLE cmakeUtilBuildResult
+			WORKING_DIRECTORY "${SQUIRRELJME_UTIL_DIR}")
+
+		if(cmakeUtilBuildResult)
+			message("Failed to run simple test utility.")
+		endif()
 	endif()
+else()
+	set(cmakeUtilBuildResult 1)
 endif()
 
 # Did this fail?
