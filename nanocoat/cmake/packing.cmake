@@ -25,7 +25,7 @@ foreach(assetHexFile ${SQUIRRELJME_ASSET_FILES})
 		"${assetHexFile}" NAME)
 	string(REPLACE ".__hex" ""
 		assetFileBase
-		${assetFileBase})
+		"${assetFileBase}")
 
 	# Make sure the target directory exists first
 	file(MAKE_DIRECTORY "${SQUIRRELJME_ASSET_BIN}")
@@ -63,8 +63,8 @@ foreach(assetHexFile ${SQUIRRELJME_ASSET_FILES})
 
 		# Failed
 		if(conversionExitCode)
-			message(FATAL_ERROR "Conversion failed: "
-				"${conversionExitCode}.")
+			message(FATAL_ERROR
+				"Conversion failed: ${conversionExitCode}.")
 		endif()
 
 		# Store checksum

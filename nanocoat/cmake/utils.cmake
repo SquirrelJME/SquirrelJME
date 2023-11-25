@@ -114,7 +114,6 @@ if(cmakeUtilBuildResult)
 			"--unset=CPP"
 			"--unset=LD"
 			"make" "all"
-			#"CC=${HOST_CC}"
 			"OUTPUT_DIR=${SQUIRRELJME_UTIL_DIR}"
 			"HOST_EXE_SUFFIX=${SQUIRRELJME_HOST_EXE_SUFFIX}"
 		RESULT_VARIABLE makeUtilBuildResult
