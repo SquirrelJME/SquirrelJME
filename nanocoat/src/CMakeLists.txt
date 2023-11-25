@@ -23,10 +23,10 @@ list(APPEND coreSources
 
 # The core library contains the main logic for the virtual machine
 # For non-PIC:
-add_library(Core STATIC
+add_library(Core OBJECT
 	${coreSources})
 # For PIC:
-add_library(CorePIC STATIC
+add_library(CorePIC OBJECT
 	${coreSources})
 
 # Needs to be position independent when included in other parts

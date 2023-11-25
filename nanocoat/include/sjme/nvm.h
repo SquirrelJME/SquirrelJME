@@ -49,16 +49,26 @@ extern "C" {
  * @param b The second token.
  * @since 2023/11/16
  */
-//#define SJME_TOKEN_PASTE_PP_TWO(a, b) SJME_TOKEN_PASTE(a, b)
+#define SJME_TOKEN_PASTE_PP(a, b) SJME_TOKEN_PASTE(a, b)
 
 /**
- * Pasting two tokens but with preprocessing.
+ * Stringifies the given token.
  * 
- * @param a The first token.
- * @param b The second token.
- * @since 2023/11/16
+ * @param s The token to stringify.
+ * @since 2023/11/24
  */
-#define SJME_TOKEN_PASTE_PP(a, b) SJME_TOKEN_PASTE(a, b)
+#define SJME_TOKEN_STRING(s) #s
+
+/**
+ * Stringifies the given token.
+ * 
+ * @param s The token to stringify.
+ * @since 2023/11/24
+ */
+#define SJME_TOKEN_STRING_PP(s) SJME_TOKEN_STRING(s)
+
+/** SquirrelJME version string. */
+#define SQUIRRELJME_VERSION SJME_TOKEN_STRING_PP(SQUIRRELJME_VERSION_TRIM)
 
 /**
  * Calculates the size of a struct member.

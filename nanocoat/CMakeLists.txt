@@ -53,7 +53,7 @@ set(CMAKE_C_STANDARD_REQUIRED True)
 
 # Declare Version
 add_compile_definitions(
-	SQUIRRELJME_VERSION="${SQUIRRELJME_VERSION}")
+	SQUIRRELJME_VERSION_TRIM=${SQUIRRELJME_VERSION})
 
 # Valgrind Support on UNIX OSes, if debugging
 if(ANDROID OR APPLE OR BSD OR LINUX OR
@@ -74,10 +74,14 @@ endif()
 # From: https://cmake.org/cmake/help/v3.13/command/enable_testing.html
 # > Note that ctest expects to find a test file in the build directory root.
 # > Therefore, this command should be in the source directory root.
-enable_testing()
+if(SQUIRRELJME_ENABLE_TESTING)
+	enable_testing()
+endif()
 
 # CPack for installing
-squirreljme_include("packing.cmake")
+if(SQUIRRELJME_ENABLE_PACKING)
+	squirreljme_include("packing.cmake")
+endif()
 
 # Include the base core first because it is completely standalone and it
 # uses nothing else
@@ -88,7 +92,9 @@ add_subdirectory(frontend)
 
 # Tests first since we add to these and when the ROMs register themselves
 # they will get their tests added accordingly
-add_subdirectory(tests)
+if(SQUIRRELJME_ENABLE_TESTING)
+	add_subdirectory(tests)
+endif()
 
 # Directory where the ROM compiled sources exist
 add_subdirectory(rom)

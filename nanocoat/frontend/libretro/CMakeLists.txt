@@ -88,12 +88,14 @@ if(RETROARCH AND NOT libRetroIsStatic AND
 endif()
 
 # CPack
-cpack_add_component(LIBRETRO
-	DISPLAY_NAME "SquirrelJME LibRetro"
-	DESCRIPTION "SquirrelJME running on LibRetro.")
-install(TARGETS squirreljme_libretro
-	LIBRARY)
-set(CPACK_DEBIAN_LIBRETRO_PACKAGE_DEPENDS
-	"retroarch | libretro-frontend")
-set(CPACK_DEBIAN_PACKAGE_SUGGESTS
-	"retroarch")
+if(SQUIRRELJME_ENABLE_PACKING)
+	cpack_add_component(LIBRETRO
+		DISPLAY_NAME "SquirrelJME LibRetro"
+		DESCRIPTION "SquirrelJME running on LibRetro.")
+	install(TARGETS squirreljme_libretro
+		LIBRARY)
+	set(CPACK_DEBIAN_LIBRETRO_PACKAGE_DEPENDS
+		"retroarch | libretro-frontend")
+	set(CPACK_DEBIAN_PACKAGE_SUGGESTS
+		"retroarch")
+endif()

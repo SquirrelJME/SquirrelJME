@@ -45,6 +45,11 @@ endif()
 
 # CMake 3.13 added many things!
 if(${CMAKE_VERSION} VERSION_LESS_EQUAL "3.12")
+	# Sort list of files
+	macro(squirreljme_list_file_sort lfsList)
+		list(SORT ${lfsList})
+	endmacro()
+
 	# Additional compiler settings
 	macro(add_compile_definitions varVal)
 		add_definitions("-D${varVal}")
@@ -101,6 +106,19 @@ if(${CMAKE_VERSION} VERSION_LESS_EQUAL "3.12")
 			set_target_properties(${tloTarget} PROPERTIES
 				LINK_FLAGS "${tloOldLinkOpt} ${tloStrOpt}")
 		endif()
+	endmacro()
+
+	# Disable CPacking and Testing
+	set(SQUIRRELJME_ENABLE_TESTING OFF)
+	set(SQUIRRELJME_ENABLE_PACKING OFF)
+else()
+	# Enable CPacking and Testing
+	set(SQUIRRELJME_ENABLE_TESTING ON)
+	set(SQUIRRELJME_ENABLE_PACKING ON)
+
+	# Sorting file list
+	macro(squirreljme_list_file_sort lfsList)
+		list(SORT ${lfsList} COMPARE FILE_BASENAME)
 	endmacro()
 endif()
 

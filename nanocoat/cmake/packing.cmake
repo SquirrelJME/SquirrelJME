@@ -58,7 +58,6 @@ foreach(assetHexFile ${SQUIRRELJME_ASSET_FILES})
 		execute_process(COMMAND "${SQUIRRELJME_DECODE_EXE}"
 			INPUT_FILE "${assetHexFileAbs}"
 			OUTPUT_FILE "${assetOutFileAbs}"
-			ENCODING NONE
 			RESULT_VARIABLE conversionExitCode
 			TIMEOUT 16)
 
