@@ -38,7 +38,7 @@ extern "C" {
 
 #if defined(SJME_CONFIG_RELEASE)
 	/** File, line, and function. */
-	#define SJME_DEBUG_FILE_LINE_FUNC NULL, NULL, NULL
+	#define SJME_DEBUG_FILE_LINE_FUNC NULL, -1, NULL
 
 	/** Only emitted in debugging. */
 	#define SJME_ONLY_IN_DEBUG(expr)
