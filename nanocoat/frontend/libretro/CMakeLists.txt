@@ -85,7 +85,7 @@ if(EMSCRIPTEN)
 		DEPENDS squirreljme_libretroBase
 		BYPRODUCTS "${CMAKE_BINARY_DIR}/${libretroLibFile}.bc"
 		COMMAND "${CMAKE_COMMAND}" "-E"
-		"copy" "$<TARGET_FILE:squirreljme_libretro>"
+		"copy" "$<TARGET_FILE:squirreljme_libretroBase>"
 		"${CMAKE_BINARY_DIR}/${libretroLibFile}.bc")
 endif()
 
