@@ -24,12 +24,6 @@ endif()
 # Determine version information
 squirreljme_include("identify-squirreljme-version.cmake")
 
-# Fixes and otherwise for compatibility
-squirreljme_include("fixes.cmake")
-
-# CMake Utilities, compiled and used during build
-squirreljme_include("utils.cmake")
-
 # Define project
 if(${CMAKE_VERSION} VERSION_LESS "3.12")
 	project(SquirrelJME
@@ -43,6 +37,12 @@ Virtual Machine for embedded and Internet of Things devices."
 		HOMEPAGE_URL https://squirreljme.cc/
 		LANGUAGES C )#CXX)
 endif()
+
+# Fixes and otherwise for compatibility
+squirreljme_include("fixes.cmake")
+
+# CMake Utilities, compiled and used during build
+squirreljme_include("utils.cmake")
 
 # To Emily and Near...
 squirreljme_include("i-miss-you.cmake")

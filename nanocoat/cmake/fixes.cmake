@@ -7,6 +7,14 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: CMake related fixes
 
+# If we cannot run the code we are building then we cannot actually test code
+include(CheckCSourceRuns)
+check_c_source_runs("${CMAKE_SOURCE_DIR}/cmake/simple.c"
+	SQUIRRELJME_SIMPLE_SOURCE_RUNS)
+if(NOT SQUIRRELJME_SIMPLE_SOURCE_RUNS)
+	set(SQUIRRELJME_ENABLE_TESTING OFF)
+endif()
+
 # String joining
 if(${CMAKE_VERSION} VERSION_LESS_EQUAL "3.11")
 	macro(squirreljme_string_join sjGlue sjOut
@@ -108,13 +116,25 @@ if(${CMAKE_VERSION} VERSION_LESS_EQUAL "3.12")
 		endif()
 	endmacro()
 
-	# Disable CPacking and Testing
-	set(SQUIRRELJME_ENABLE_TESTING OFF)
-	set(SQUIRRELJME_ENABLE_PACKING OFF)
+	# Disable Testing
+	if(NOT DEFINED SQUIRRELJME_ENABLE_TESTING)
+		set(SQUIRRELJME_ENABLE_TESTING OFF)
+	endif()
+
+	# Disable CPacking
+	if(NOT DEFINED SQUIRRELJME_ENABLE_PACKING)
+		set(SQUIRRELJME_ENABLE_PACKING OFF)
+	endif()
 else()
-	# Enable CPacking and Testing
-	set(SQUIRRELJME_ENABLE_TESTING ON)
-	set(SQUIRRELJME_ENABLE_PACKING ON)
+	# Enable Testing
+	if(NOT DEFINED SQUIRRELJME_ENABLE_TESTING)
+		set(SQUIRRELJME_ENABLE_TESTING ON)
+	endif()
+
+	# Enable CPacking and
+	if(NOT DEFINED SQUIRRELJME_ENABLE_PACKING)
+		set(SQUIRRELJME_ENABLE_PACKING ON)
+	endif()
 
 	# Sorting file list
 	macro(squirreljme_list_file_sort lfsList)
