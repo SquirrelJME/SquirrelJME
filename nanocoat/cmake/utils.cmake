@@ -88,6 +88,14 @@ if(NOT EXISTS "${SQUIRRELJME_UTIL_DIR}")
 	if(cmakeUtilConfigResult)
 		message("Cannot configure utils: "
 			"${cmakeUtilConfigResult}...")
+	else()
+		# Determine executable suffix
+		if(EXISTS "${SQUIRRELJME_UTIL_DIR}/suffix")
+			file(STRINGS "${SQUIRRELJME_UTIL_DIR}/suffix"
+				SQUIRRELJME_HOST_EXE_SUFFIX)
+			message("Host executable suffix is "
+				"'${SQUIRRELJME_HOST_EXE_SUFFIX}'.")
+		endif()
 	endif()
 else()
 	message("No need to configure utilities, already there...")
@@ -157,9 +165,8 @@ if(cmakeUtilBuildResult)
 	endif()
 endif()
 
-# Determine executable suffix
-file(STRINGS "${SQUIRRELJME_UTIL_DIR}/suffix"
-	SQUIRRELJME_HOST_EXE_SUFFIX)
-message("Host executable suffix is "
-	"'${SQUIRRELJME_HOST_EXE_SUFFIX}'.")
-
+# If there is no suffix and we are on Windows, assume .exe
+if(NOT DEFINED SQUIRRELJME_HOST_EXE_SUFFIX AND
+	CMAKE_HOST_SYSTEM_NAME STREQUAL "Windows")
+	set(SQUIRRELJME_HOST_EXE_SUFFIX ".exe")
+endif()
