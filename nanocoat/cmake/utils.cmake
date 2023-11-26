@@ -86,8 +86,8 @@ if(NOT EXISTS "${SQUIRRELJME_UTIL_DIR}")
 
 	# Did this fail?
 	if(cmakeUtilConfigResult)
-		message(FATAL_ERROR
-			"Cannot configure utils: ${cmakeUtilConfigResult}...")
+		message("Cannot configure utils: "
+			"${cmakeUtilConfigResult}...")
 	endif()
 else()
 	message("No need to configure utilities, already there...")
