@@ -83,10 +83,14 @@ if(EMSCRIPTEN)
 		"$<TARGET_FILE:squirreljme_libretroBase>" NAME_WE)
 	add_custom_target(squirreljme_libretro
 		DEPENDS squirreljme_libretroBase
+		SOURCES "$<TARGET_FILE:squirreljme_libretroBase>"
 		BYPRODUCTS "${CMAKE_BINARY_DIR}/${libretroLibFile}.bc"
+		COMMAND_EXPAND_LISTS
 		COMMAND "${CMAKE_COMMAND}" "-E"
-		"copy" "$<TARGET_FILE:squirreljme_libretroBase>"
-		"${CMAKE_BINARY_DIR}/${libretroLibFile}.bc")
+			"copy" "$<TARGET_FILE:squirreljme_libretroBase>"
+			"${CMAKE_BINARY_DIR}/${libretroLibFile}.bc")
+	add_dependencies(squirreljme_libretro
+		squirreljme_libretroBase)
 endif()
 
 # Allow running the binary, as long as it is not static and we are on the
