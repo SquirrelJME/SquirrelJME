@@ -94,7 +94,8 @@ add_subdirectory(frontend)
 
 # Tests first since we add to these and when the ROMs register themselves
 # they will get their tests added accordingly
-if(SQUIRRELJME_ENABLE_TESTING)
+if(SQUIRRELJME_ENABLE_TESTING OR
+	NOT DEFINED SQUIRRELJME_ENABLE_TESTING)
 	add_subdirectory(tests)
 endif()
 
