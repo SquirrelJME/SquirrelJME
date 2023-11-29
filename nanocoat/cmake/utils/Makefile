@@ -13,12 +13,12 @@ HOST_EXE_SUFFIX ?=
 decode${HOST_EXE_SUFFIX}:		decode.c
 								$(CC) -o "${OUTPUT_DIR}/$@" $<
 
-decode:							decode${HOST_EXE_SUFFIX}
+decode.sqk:						decode${HOST_EXE_SUFFIX}
 
 simple${HOST_EXE_SUFFIX}:		simple.c
 								$(CC) -o "${OUTPUT_DIR}/$@" $<
 
-simple:							simple${HOST_EXE_SUFFIX}
+simple.sqk:						simple${HOST_EXE_SUFFIX}
 
-all:							decode simple
+all:							decode.sqk simple.sqk
 
