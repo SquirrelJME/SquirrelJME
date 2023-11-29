@@ -83,7 +83,6 @@ if(EMSCRIPTEN)
 		"$<TARGET_FILE:squirreljme_libretroBase>" NAME_WE)
 	add_custom_target(squirreljme_libretro
 		DEPENDS squirreljme_libretroBase
-		SOURCES "$<TARGET_FILE:squirreljme_libretroBase>"
 		BYPRODUCTS "${CMAKE_BINARY_DIR}/${libretroLibFile}.bc"
 		COMMAND_EXPAND_LISTS
 		COMMAND "${CMAKE_COMMAND}" "-E"
