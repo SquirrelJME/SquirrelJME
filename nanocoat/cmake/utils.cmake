@@ -173,3 +173,30 @@ if(NOT DEFINED SQUIRRELJME_HOST_EXE_SUFFIX AND
 	CMAKE_HOST_SYSTEM_NAME STREQUAL "Windows")
 	set(SQUIRRELJME_HOST_EXE_SUFFIX ".exe")
 endif()
+
+# Decodes the given file
+function(squirreljme_decode_file how
+	inputPath outputPath)
+	# Should be HEX or BASE64
+	if(NOT how STREQUAL "HEX" AND
+		NOT how STREQUAL "BASE64")
+		message(FATAL_ERROR "squirreljme_decode_file() takes "
+			"either HEX or BASE64")
+	endif()
+
+	# Where is the decoder?
+	squirreljme_util(decodeExePath decode)
+
+	# Run the command
+	execute_process(COMMAND "${decodeExePath}" "${how}"
+		INPUT_FILE "${inputPath}"
+		OUTPUT_FILE "${outputPath}"
+		RESULT_VARIABLE conversionExitCode
+		TIMEOUT 16)
+
+	# Failed
+	if(conversionExitCode)
+		message(FATAL_ERROR
+			"Conversion failed: ${conversionExitCode}.")
+	endif()
+endfunction()

@@ -51,6 +51,9 @@ squirreljme_include("i-miss-you.cmake")
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED True)
 
+# Assets and otherwise, such as icons, etc.
+squirreljme_include("assets.cmake")
+
 # Declare Version
 add_compile_definitions(
 	SQUIRRELJME_VERSION_TRIM=${SQUIRRELJME_VERSION})

@@ -10,6 +10,8 @@
 OUTPUT_DIR      ?= .
 HOST_EXE_SUFFIX ?=
 
+all:							decode.sqk simple.sqk
+
 decode${HOST_EXE_SUFFIX}:		decode.c
 								$(CC) -o "${OUTPUT_DIR}/$@" $<
 
@@ -19,6 +21,3 @@ simple${HOST_EXE_SUFFIX}:		simple.c
 								$(CC) -o "${OUTPUT_DIR}/$@" $<
 
 simple.sqk:						simple${HOST_EXE_SUFFIX}
-
-all:							decode.sqk simple.sqk
-
