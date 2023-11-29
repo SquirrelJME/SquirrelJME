@@ -10,7 +10,7 @@
 # Setup main test execution wrapper which runs within TAC
 add_library(TACTestExecutorCore STATIC
 	$<TARGET_OBJECTS:Core>
-	tac.c)
+	src/tac.c)
 
 # Make sure we have our headers included accordingly
 target_include_directories(TACTestExecutorCore PUBLIC
@@ -41,9 +41,9 @@ file(APPEND "${outTestProtosH}"
 
 # Initialize executable for basic tests, which contains everything
 add_executable(BasicTest
-	basic.c
-	elevator.c
-	unit.c
+	src/basic.c
+	src/elevator.c
+	src/unit.c
 	${basicTestSources})
 
 # Make it static
