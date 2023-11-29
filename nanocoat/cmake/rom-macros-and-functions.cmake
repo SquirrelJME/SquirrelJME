@@ -108,7 +108,8 @@ function(squirreljme_romLibraryTest libNameStr sourceSet
 	set(longName "${clutterLevel}:${libNameStr}:${testName}")
 
 	# Register test
-	message("Adding test ${testName} in ${libNameStr}...")
+	message(STATUS
+		"Adding test ${testName} in ${libNameStr}...")
 	set(romTacTask "TACTestExecutor_${clutterLevel}")
 	add_test(NAME "${longName}"
 		WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"

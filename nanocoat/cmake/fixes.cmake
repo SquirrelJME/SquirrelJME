@@ -8,24 +8,24 @@
 # DESCRIPTION: CMake related fixes
 
 # If we cannot run the code we are building then we cannot actually test code
-if("${CMAKE_HOST_SYSTEM_NAME}" STREQUAL "${CMAKE_SYSTEM_NAME}")
-	include(CheckCSourceRuns)
-	set(CMAKE_REQUIRED_QUIET ON)
-	check_c_source_runs("${CMAKE_SOURCE_DIR}/cmake/utils/simple.c"
-		SQUIRRELJME_SIMPLE_SOURCE_RUNS)
-	if(NOT SQUIRRELJME_SIMPLE_SOURCE_RUNS)
-		# Note
-		message(WARNING
-			"Could not run simple utility ("
-			"${SQUIRRELJME_SIMPLE_SOURCE_RUNS}), disabling tests.")
-
-		# Disable testing
-		set(SQUIRRELJME_ENABLE_TESTING OFF)
-	endif()
-else()
-	# Different host, assume we cannot run the target code
-	set(SQUIRRELJME_ENABLE_TESTING OFF)
-endif()
+#if("${CMAKE_HOST_SYSTEM_NAME}" STREQUAL "${CMAKE_SYSTEM_NAME}")
+#	include(CheckCSourceRuns)
+#	set(CMAKE_REQUIRED_QUIET ON)
+#	check_c_source_runs("${CMAKE_SOURCE_DIR}/cmake/utils/simple.c"
+#		SQUIRRELJME_SIMPLE_SOURCE_RUNS)
+#	if(NOT SQUIRRELJME_SIMPLE_SOURCE_RUNS)
+#		# Note
+#		message(WARNING
+#			"Could not run simple utility ("
+#			"${SQUIRRELJME_SIMPLE_SOURCE_RUNS}), disabling tests.")
+#
+#		# Disable testing
+#		set(SQUIRRELJME_ENABLE_TESTING OFF)
+#	endif()
+#else()
+#	# Different host, assume we cannot run the target code
+#	set(SQUIRRELJME_ENABLE_TESTING OFF)
+#endif()
 
 # String joining
 if(${CMAKE_VERSION} VERSION_LESS_EQUAL "3.11")
@@ -130,21 +130,29 @@ if(${CMAKE_VERSION} VERSION_LESS_EQUAL "3.12")
 
 	# Disable Testing
 	if(NOT DEFINED SQUIRRELJME_ENABLE_TESTING)
+		message(WARNING "Disabling testing due to old CMake.")
+
 		set(SQUIRRELJME_ENABLE_TESTING OFF)
 	endif()
 
 	# Disable CPacking
 	if(NOT DEFINED SQUIRRELJME_ENABLE_PACKING)
+		message(WARNING "Disabling packing due to old CMake.")
+
 		set(SQUIRRELJME_ENABLE_PACKING OFF)
 	endif()
 else()
 	# Enable Testing
 	if(NOT DEFINED SQUIRRELJME_ENABLE_TESTING)
+		message(STATUS "Enabling testing...")
+
 		set(SQUIRRELJME_ENABLE_TESTING ON)
 	endif()
 
 	# Enable CPacking and
 	if(NOT DEFINED SQUIRRELJME_ENABLE_PACKING)
+		message(STATUS "Enabling packing...")
+
 		set(SQUIRRELJME_ENABLE_PACKING ON)
 	endif()
 

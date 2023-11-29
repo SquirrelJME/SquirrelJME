@@ -60,6 +60,7 @@ target_link_libraries(BasicTest PUBLIC
 	Core)
 
 # Process each individual test accordingly
+message(DEBUG "Looking for tests...")
 foreach(basicTestSource ${basicTestSources})
 	# We need to do this because on Windows, CLion+CMake just gives the full
 	# path which we really do not want as it will mess up with tests
@@ -81,6 +82,7 @@ foreach(basicTestSource ${basicTestSources})
 		"${initialBasicTestSource}" ABSOLUTE)
 
 	# Add test for this
+	message(STATUS "Registering test ${basicTestLongName}...")
 	add_test(NAME "${basicTestLongName}"
 		WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
 		COMMAND "$<TARGET_FILE:BasicTest>" "${basicTestName}"

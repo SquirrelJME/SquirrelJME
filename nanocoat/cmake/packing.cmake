@@ -52,7 +52,8 @@ foreach(assetHexFile ${SQUIRRELJME_ASSET_FILES})
 		NOT EXISTS "${assetOutFileAbs}" OR
 		NOT "${assetHexHash}" STREQUAL "${assetHexHashLast}")
 		# Run decoding sequence
-		message("Decoding ${assetHexFileAbs} to "
+		message(STATUS
+			"Decoding ${assetHexFileAbs} to "
 			"${assetOutFileAbs}...")
 		file(REMOVE "${assetOutFileAbs}")
 		execute_process(COMMAND "${SQUIRRELJME_DECODE_EXE}"
@@ -71,7 +72,8 @@ foreach(assetHexFile ${SQUIRRELJME_ASSET_FILES})
 		file(WRITE "${assetOutFileAbs}.checksum"
 			"${assetHexHash}")
 	else()
-		message("File ${assetOutFileAbs} already decoded...")
+		message(STATUS
+			"File ${assetOutFileAbs} already decoded...")
 	endif()
 endforeach()
 

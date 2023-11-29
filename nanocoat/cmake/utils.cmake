@@ -29,7 +29,7 @@ if(NOT EXISTS "${SQUIRRELJME_UTIL_DIR}")
 	file(MAKE_DIRECTORY "${SQUIRRELJME_UTIL_DIR}")
 
 	# Note
-	message("Bootstrapping utils into "
+	message(STATUS "Bootstrapping utils into "
 		"${SQUIRRELJME_UTIL_DIR}...")
 
 	# Run nested CMake to build the utilities
@@ -86,25 +86,26 @@ if(NOT EXISTS "${SQUIRRELJME_UTIL_DIR}")
 
 	# Did this fail?
 	if(cmakeUtilConfigResult)
-		message("Cannot configure utils: "
+		message(WARNING "Cannot configure utils: "
 			"${cmakeUtilConfigResult}...")
 	else()
 		# Determine executable suffix
 		if(EXISTS "${SQUIRRELJME_UTIL_DIR}/suffix")
 			file(STRINGS "${SQUIRRELJME_UTIL_DIR}/suffix"
 				SQUIRRELJME_HOST_EXE_SUFFIX)
-			message("Host executable suffix is "
+			message(DEBUG "Host executable suffix is "
 				"'${SQUIRRELJME_HOST_EXE_SUFFIX}'.")
 		endif()
 	endif()
 else()
-	message("No need to configure utilities, already there...")
+	message(STATUS
+		"No need to configure utilities, already there...")
 	set(cmakeUtilConfigResult 0)
 endif()
 
 if (NOT cmakeUtilConfigResult)
 	# Build the utilities, just in case it is out of date
-	message("Building utilities, if out of date...")
+	message(STATUS "Building utilities, if out of date...")
 	execute_process(
 		COMMAND "${CMAKE_COMMAND}"
 			"--build" "${SQUIRRELJME_UTIL_DIR}"
@@ -122,9 +123,9 @@ if (NOT cmakeUtilConfigResult)
 			WORKING_DIRECTORY "${SQUIRRELJME_UTIL_DIR}")
 
 		if(cmakeUtilBuildResult)
-			message("Failed to run simple test utility.")
+			message(WARNING "Failed to run simple test utility.")
 		else()
-			message("Simple test ran okay.")
+			message(STATUS "Simple test ran okay.")
 		endif()
 	endif()
 else()
@@ -134,7 +135,7 @@ endif()
 # Did this fail?
 if(cmakeUtilBuildResult)
 	# Ignore for now
-	message("Cannot build and run utils (CMake): "
+	message(WARNING "Cannot build and run utils (CMake): "
 		"${cmakeUtilBuildResult}...")
 
 	# Try to find a compiler

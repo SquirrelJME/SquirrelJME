@@ -18,7 +18,7 @@ if(PKG_CONFIG_FOUND)
 	# Was Valgrind found?
 	if(VALGRIND_FOUND)
 		# Notice
-		message("Found Valgrind, including it!")
+		message(STATUS "Found Valgrind, including it!")
 
 		# Valgrind is available
 		add_compile_definitions(SJME_CONFIG_HAS_VALGRIND=1)

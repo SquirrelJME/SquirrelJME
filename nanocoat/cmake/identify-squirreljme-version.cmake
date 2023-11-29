@@ -10,7 +10,8 @@
 # Load version number
 file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/squirreljme-version"
 	SQUIRRELJME_VERSION LIMIT_COUNT 1)
-message("Building for SquirrelJME ${SQUIRRELJME_VERSION}!")
+message(STATUS
+	"Building for SquirrelJME ${SQUIRRELJME_VERSION}!")
 
 # Make Windows compatible version
 set(SQUIRRELJME_VERSION_WINDOWS "${SQUIRRELJME_VERSION}.0")
@@ -19,7 +20,8 @@ string(REGEX REPLACE "\\." "," SQUIRRELJME_VERSION_WINDOWS_RC
 
 # Put down the configure time
 string(TIMESTAMP SQUIRRELJME_VERSION_ID_TIME "%Y-%m-%dT%H:%M:%SZ" UTC)
-message("Configure time is ${SQUIRRELJME_VERSION_ID_TIME}.")
+message(STATUS
+	"Configure time is ${SQUIRRELJME_VERSION_ID_TIME}.")
 
 # Load Fossil manifest, if possible
 if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../manifest.uuid" AND
@@ -46,4 +48,5 @@ else()
 endif()
 
 # Show ID version
-message("Version ID: ${SQUIRRELJME_VERSION_ID}")
+message(STATUS
+	"Version ID: ${SQUIRRELJME_VERSION_ID}")

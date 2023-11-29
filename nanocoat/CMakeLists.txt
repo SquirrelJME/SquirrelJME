@@ -12,12 +12,12 @@ include("${CMAKE_SOURCE_DIR}/cmake/easier-includes.cmake" NO_POLICY_SCOPE)
 
 # Needed for some ancient RetroArch toolchains
 if(${CMAKE_VERSION} VERSION_LESS "3.13")
-	message("Ancient CMake has been detected (${CMAKE_VERSION})")
+	message(STATUS "Ancient CMake has been detected (${CMAKE_VERSION})")
 	cmake_minimum_required(VERSION 3.7)
 
 	# Needs to be this or newer
 else()
-	message("Detected CMake (${CMAKE_VERSION})")
+	message(STATUS "Detected CMake (${CMAKE_VERSION})")
 	cmake_minimum_required(VERSION 3.13)
 endif()
 
@@ -77,6 +77,9 @@ endif()
 if(SQUIRRELJME_ENABLE_TESTING OR
 	NOT DEFINED SQUIRRELJME_ENABLE_TESTING)
 	enable_testing()
+else()
+	message(WARNING "Testing was disabled "
+		"(${SQUIRRELJME_ENABLE_TESTING})...")
 endif()
 
 # CPack for installing
@@ -97,6 +100,9 @@ add_subdirectory(frontend)
 if(SQUIRRELJME_ENABLE_TESTING OR
 	NOT DEFINED SQUIRRELJME_ENABLE_TESTING)
 	add_subdirectory(tests)
+else()
+	message(WARNING "Testing was disabled "
+		"(${SQUIRRELJME_ENABLE_TESTING})...")
 endif()
 
 # Directory where the ROM compiled sources exist
