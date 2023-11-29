@@ -14,6 +14,7 @@ list(APPEND coreSources
 	except.c
 	gfx.c
 	loop.c
+	modelessStars.c
 	native.c
 	nvm.c
 	recycle.c

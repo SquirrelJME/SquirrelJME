@@ -9,11 +9,13 @@
 
 #include "sjme/nvm.h"
 #include "sjme/debug.h"
+#include "sjme/modelessStars.h"
 #include "3rdparty/libretro/libretro.h"
 #include "frontend/libretro/shared.h"
 
 sjme_attrUnused RETRO_API void retro_run(void)
 {
+	static sjme_modelessStarState modelessStarState;
 	static jint tick;
 	uint32_t buf[240*320];
 	int i;
@@ -22,7 +24,8 @@ sjme_attrUnused RETRO_API void retro_run(void)
 	if (!(trigger++))
 		sjme_message("Implement this?");
 	
-	sjme_libretro_modelessStars(buf, 240, 320, 240, tick++);
+	sjme_modelessStars(&modelessStarState, buf,
+		240, 320, 240, tick++);
 	sjme_libretro_videoRefreshCallback(
 		buf, 240, 320, 240 * 4);
 }

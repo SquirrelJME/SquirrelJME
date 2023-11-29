@@ -59,23 +59,6 @@ extern retro_video_refresh_t sjme_libretro_videoRefreshCallback;
 const struct retro_get_proc_address_interface* sjme_libretro_extInterface(
 	void);
 
-/**
- * Draws modeless stars into the buffer.
- * 
- * @param buf The buffer to draw into. 
- * @param width The width of the buffer.
- * @param height The height of the buffer.
- * @param pitch The pitch of the buffer.
- * @param tick The current tick.
- * @since 2023/11/22
- */
-void sjme_libretro_modelessStars(
-	sjme_attrInNotNull uint32_t* buf,
-	sjme_attrInPositiveNonZero jint width,
-	sjme_attrInPositiveNonZero jint height,
-	sjme_attrInPositiveNonZero jint pitch,
-	sjme_attrInValue jint tick);
-
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
