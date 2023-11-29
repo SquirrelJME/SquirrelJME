@@ -74,12 +74,14 @@ endif()
 # From: https://cmake.org/cmake/help/v3.13/command/enable_testing.html
 # > Note that ctest expects to find a test file in the build directory root.
 # > Therefore, this command should be in the source directory root.
-if(SQUIRRELJME_ENABLE_TESTING)
+if(SQUIRRELJME_ENABLE_TESTING OR
+	NOT DEFINED SQUIRRELJME_ENABLE_TESTING)
 	enable_testing()
 endif()
 
 # CPack for installing
-if(SQUIRRELJME_ENABLE_PACKING)
+if(SQUIRRELJME_ENABLE_PACKING OR
+	NOT DEFINED SQUIRRELJME_ENABLE_PACKING)
 	squirreljme_include("packing.cmake")
 endif()
 
