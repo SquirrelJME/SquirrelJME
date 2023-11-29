@@ -11,11 +11,12 @@
 #include "test.h"
 
 /**
- * Tests merging of allocation blocks when freeing them accordingly.
+ * Tests reallocation of block data, with potential resize accordingly if
+ * applicable.
  * 
- * @since 2023/11/25
+ * @since 2023/11/28
  */
-SJME_TEST_DECLARE(testAllocFreeMerge)
+SJME_TEST_DECLARE(testAllocRealloc)
 {
 	sjme_todo("Implement %s", __func__);
 	return SJME_TEST_RESULT_FAIL;

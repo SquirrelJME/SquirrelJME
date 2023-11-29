@@ -119,7 +119,7 @@ jboolean sjme_alloc_poolStatic(
 
 jboolean sjme_alloc(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
-	sjme_attrInPositive jint size,
+	sjme_attrInPositiveNonZero jint size,
 	sjme_attrOutNotNull void** outAddr)
 {
 	sjme_alloc_link* scanLink;
@@ -190,4 +190,12 @@ jboolean sjme_allocLink(
 	
 	/* Success! */
 	return JNI_TRUE;
+}
+
+jboolean sjme_allocRealloc(
+	sjme_attrInOutNotNull void** inOutAddr,
+	sjme_attrInPositive jint newSize)
+{
+	sjme_todo("Implement this?");
+	return JNI_FALSE;
 }

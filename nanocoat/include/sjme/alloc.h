@@ -183,7 +183,7 @@ jboolean sjme_alloc_poolStatic(
  */
 jboolean sjme_alloc(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
-	sjme_attrInPositive jint size,
+	sjme_attrInPositiveNonZero jint size,
 	sjme_attrOutNotNull void** outAddr); 
 
 /**
@@ -207,6 +207,20 @@ jboolean sjme_allocFree(
 jboolean sjme_allocLink(
 	sjme_attrInNotNull void* addr,
 	sjme_attrOutNotNull sjme_alloc_link** outLink);
+
+/**
+ * Reallocates memory, either growing it or shrinking... the pointer will be
+ * adjusted accordingly.
+ * 
+ * @param inOutAddr The address to reallocate.
+ * @param newSize The new size of the allocation, if @c 0 then the pointer
+ * is freed instead.
+ * @return Returns @c JNI_TRUE on success.
+ * @since 2023/11/28
+ */
+jboolean sjme_allocRealloc(
+	sjme_attrInOutNotNull void** inOutAddr,
+	sjme_attrInPositive jint newSize);
 
 /*--------------------------------------------------------------------------*/
 
