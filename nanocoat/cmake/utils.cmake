@@ -117,12 +117,14 @@ if (NOT cmakeUtilConfigResult)
 		squirreljme_util(cmakeSimpleExe simple)
 
 		# Execute it and check if it works
-		execute_process(COMMAND cmakeSimpleExe
+		execute_process(COMMAND "${cmakeSimpleExe}"
 			RESULT_VARIABLE cmakeUtilBuildResult
 			WORKING_DIRECTORY "${SQUIRRELJME_UTIL_DIR}")
 
 		if(cmakeUtilBuildResult)
 			message("Failed to run simple test utility.")
+		else()
+			message("Simple test ran okay.")
 		endif()
 	endif()
 else()
