@@ -143,7 +143,7 @@ jboolean sjme_modelessStars(
 		/* Move star to the left. */
 		modelessStar->x -= modelessStar->speed;
 		
-		/* Did the star fall of the screen? */
+		/* Did the star fall off the screen? */
 		if (modelessStar->x < 0)
 		{
 			modelessStar->shining = JNI_FALSE;
