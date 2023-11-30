@@ -10,12 +10,7 @@
 #include "proto.h"
 #include "test.h"
 
-/**    
- * Tests object references via the mechanism to be used for @c Reference.
- * 
- * @since 2023/11/29
- */
-SJME_TEST_DECLARE(testObjectReference)
+SJME_TEST_DECLARE(testByteCodeIOr)
 {
 	sjme_todo("Implement %s", __func__);
 	return SJME_TEST_RESULT_FAIL;
