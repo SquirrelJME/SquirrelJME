@@ -200,3 +200,83 @@ function(squirreljme_decode_file how
 			"Conversion failed: ${conversionExitCode}.")
 	endif()
 endfunction()
+
+# Decodes a directory of encoded files
+function(squirreljme_decode_dir inputDir outputDir)
+	# Decode all files accordingly
+	file(GLOB dirFiles
+		"${inputDir}/*.__hex"
+		"${inputDir}/*.__mime")
+	foreach(dirFile ${dirFiles})
+		# Determine the base name of the file
+		get_filename_component(baseName
+			"${dirFile}" NAME)
+
+		# Is this Hex or MIME?
+		string(FIND "${baseName}" ".__hex"
+			isHexFile)
+
+		# Remove extension from it
+		string(REPLACE ".__hex" ""
+			baseName
+			"${baseName}")
+		string(REPLACE ".__mime" ""
+			baseName
+			"${baseName}")
+
+		# Make sure the target directory exists first
+		file(MAKE_DIRECTORY "${outputDir}")
+
+		# Determine input and output
+		get_filename_component(dirFileAbs
+			"${dirFile}" ABSOLUTE)
+		get_filename_component(outFileAbsPath
+			"${outputDir}/${baseName}" ABSOLUTE)
+
+		# Get hash of input file
+		file(SHA1 "${dirFileAbs}" cacheHash)
+
+		# Get last checksum, if any
+		if(EXISTS "${outFileAbsPath}.checksum")
+			file(STRINGS "${outFileAbsPath}.checksum"
+				cacheHashLast)
+		else()
+			set(cacheHashLast "")
+		endif()
+
+		# Does decoding need to be rerun?
+		if(NOT EXISTS "${outFileAbsPath}.checksum" OR
+			NOT EXISTS "${outFileAbsPath}" OR
+			NOT "${cacheHash}" STREQUAL "${cacheHashLast}")
+			# Run decoding sequence
+			message(STATUS
+				"Decoding ${dirFileAbs} to "
+				"${outFileAbsPath}...")
+			file(REMOVE "${outFileAbsPath}")
+			if(isHexFile LESS 0)
+				squirreljme_decode_file(BASE64
+					"${dirFileAbs}" "${outFileAbsPath}")
+			else()
+				squirreljme_decode_file(HEX
+					"${dirFileAbs}" "${outFileAbsPath}")
+			endif()
+
+			# Store checksum
+			file(WRITE "${outFileAbsPath}.checksum"
+				"${cacheHash}")
+		else()
+			message(STATUS
+				"File ${outFileAbsPath} already decoded...")
+		endif()
+	endforeach()
+endfunction()
+
+# Sourceize a single file
+function(squirreljme_sourceize_file inputFile outputFile)
+	message(DEBUG "TODO: squirreljme_sourceize_file")
+endfunction()
+
+# Sourceize an entire directory
+function(squirreljme_sourceize_dir inputDir outputDir)
+	message(DEBUG "TODO: squirreljme_sourceize_dir")
+endfunction()
