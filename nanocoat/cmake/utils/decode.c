@@ -11,15 +11,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#if defined(_MSC_VER)
-	typedef unsigned __int8 uint8_t;
-	typedef signed __int32 int32_t; 
-#else
-	#include <stdint.h>
-#endif
+#include "sjmeint.h"
 
 /** Buffer size. */
-#define BUF_SIZE 1024
+#define BUF_SIZE 4096
 	
 /** Base64 alphabet size. */
 #define BASE64_ALPHABET_SIZE 64
@@ -239,7 +234,7 @@ int main(int argc, char** argv)
 	/* Needs HEX or BASE64. */
 	if (argc <= 1)
 	{
-		fprintf(stderr, "Expected decoding type.\n");
+		fprintf(stderr, "Usage: %s BASE64|HEX\n", argv[0]);
 		return EXIT_FAILURE;
 	}
 	

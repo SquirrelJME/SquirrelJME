@@ -7,17 +7,19 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Various utilities (backwards compatible make)
 
-OUTPUT_DIR      ?= .
-HOST_EXE_SUFFIX ?=
+all:							decode.sqk simple.sqk sourceize.sqk
 
-all:							decode.sqk simple.sqk
+decode$(HOST_EXE_SUFFIX):		decode.c
+								$(CC) -o "$(OUTPUT_DIR)/$@" $<
 
-decode${HOST_EXE_SUFFIX}:		decode.c
-								$(CC) -o "${OUTPUT_DIR}/$@" $<
+decode.sqk:						decode$(HOST_EXE_SUFFIX)
 
-decode.sqk:						decode${HOST_EXE_SUFFIX}
+simple$(HOST_EXE_SUFFIX):		simple.c
+								$(CC) -o "$(OUTPUT_DIR)/$@" $<
 
-simple${HOST_EXE_SUFFIX}:		simple.c
-								$(CC) -o "${OUTPUT_DIR}/$@" $<
+simple.sqk:						simple$(HOST_EXE_SUFFIX)
 
-simple.sqk:						simple${HOST_EXE_SUFFIX}
+sourceize$(HOST_EXE_SUFFIX):	sourceize.c
+								$(CC) -o "$(OUTPUT_DIR)/$@" $<
+
+sourceize.sqk:					sourceize$(HOST_EXE_SUFFIX)

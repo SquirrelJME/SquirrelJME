@@ -7,18 +7,20 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "proto.h"
-#include "test.h"
-
-#include "squeak.zip.c"
-
 /**
- * Tests access of ZIP files.
+ * Standard int sizes.
  * 
- * @since 2023/11/29
+ * @since 2023/12/01
  */
-SJME_TEST_DECLARE(testZipAccess)
-{
-	sjme_todo("Implement %s", __func__);
-	return SJME_TEST_RESULT_FAIL;
-}
+
+#ifndef SQUIRRELJME_SJMEINT_H
+#define SQUIRRELJME_SJMEINT_H
+
+#if defined(_MSC_VER)
+	typedef unsigned __int8 uint8_t;
+	typedef signed __int32 int32_t; 
+#else
+	#include <stdint.h>
+#endif
+
+#endif /* SQUIRRELJME_SJMEINT_H */

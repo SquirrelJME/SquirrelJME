@@ -174,6 +174,41 @@ if(NOT DEFINED SQUIRRELJME_HOST_EXE_SUFFIX AND
 	set(SQUIRRELJME_HOST_EXE_SUFFIX ".exe")
 endif()
 
+# Checks if a given file is out of date according to a checksum
+function(squirreljme_check_file_checksum upToDateVar
+	inputFile outputPath)
+	# Get hash of input file
+	file(SHA1 "${inputFile}" cacheHash)
+
+	# Get last checksum, if any
+	if(EXISTS "${outputPath}.checksum")
+		file(STRINGS "${outputPath}.checksum"
+			cacheHashLast)
+	else()
+		set(cacheHashLast "")
+	endif()
+
+	# Is the checksum out of date?
+	if(NOT EXISTS "${outputPath}.checksum" OR
+		NOT EXISTS "${outputPath}" OR
+		NOT "${cacheHash}" STREQUAL "${cacheHashLast}")
+		set(${upToDateVar} 0 PARENT_SCOPE)
+	else()
+		set(${upToDateVar} 1 PARENT_SCOPE)
+	endif()
+endfunction()
+
+# Writes the checksum of the input file to the output
+function(squirreljme_write_file_checksum inputFile
+	outputPath)
+	# Get hash of input file
+	file(SHA1 "${inputFile}" cacheHash)
+
+	# Store checksum
+	file(WRITE "${outputPath}.checksum"
+		"${cacheHash}")
+endfunction()
+
 # Decodes the given file
 function(squirreljme_decode_file how
 	inputPath outputPath)
@@ -204,13 +239,13 @@ endfunction()
 # Decodes a directory of encoded files
 function(squirreljme_decode_dir inputDir outputDir)
 	# Decode all files accordingly
-	file(GLOB dirFiles
+	file(GLOB inFiles
 		"${inputDir}/*.__hex"
 		"${inputDir}/*.__mime")
-	foreach(dirFile ${dirFiles})
+	foreach(inFile ${inFiles})
 		# Determine the base name of the file
 		get_filename_component(baseName
-			"${dirFile}" NAME)
+			"${inFile}" NAME)
 
 		# Is this Hex or MIME?
 		string(FIND "${baseName}" ".__hex"
@@ -228,42 +263,33 @@ function(squirreljme_decode_dir inputDir outputDir)
 		file(MAKE_DIRECTORY "${outputDir}")
 
 		# Determine input and output
-		get_filename_component(dirFileAbs
-			"${dirFile}" ABSOLUTE)
+		get_filename_component(inFileAbs
+			"${inFile}" ABSOLUTE)
 		get_filename_component(outFileAbsPath
 			"${outputDir}/${baseName}" ABSOLUTE)
 
-		# Get hash of input file
-		file(SHA1 "${dirFileAbs}" cacheHash)
-
-		# Get last checksum, if any
-		if(EXISTS "${outFileAbsPath}.checksum")
-			file(STRINGS "${outFileAbsPath}.checksum"
-				cacheHashLast)
-		else()
-			set(cacheHashLast "")
-		endif()
+		# Check if file is up to date
+		squirreljme_check_file_checksum(upToDate
+			"${inFileAbs}" "${outFileAbsPath}")
 
 		# Does decoding need to be rerun?
-		if(NOT EXISTS "${outFileAbsPath}.checksum" OR
-			NOT EXISTS "${outFileAbsPath}" OR
-			NOT "${cacheHash}" STREQUAL "${cacheHashLast}")
+		if(NOT upToDate)
 			# Run decoding sequence
 			message(STATUS
-				"Decoding ${dirFileAbs} to "
+				"Decoding ${inFileAbs} to "
 				"${outFileAbsPath}...")
 			file(REMOVE "${outFileAbsPath}")
 			if(isHexFile LESS 0)
 				squirreljme_decode_file(BASE64
-					"${dirFileAbs}" "${outFileAbsPath}")
+					"${inFileAbs}" "${outFileAbsPath}")
 			else()
 				squirreljme_decode_file(HEX
-					"${dirFileAbs}" "${outFileAbsPath}")
+					"${inFileAbs}" "${outFileAbsPath}")
 			endif()
 
 			# Store checksum
-			file(WRITE "${outFileAbsPath}.checksum"
-				"${cacheHash}")
+			squirreljme_write_file_checksum(
+				"${inFileAbs}" "${outFileAbsPath}")
 		else()
 			message(STATUS
 				"File ${outFileAbsPath} already decoded...")
@@ -272,11 +298,66 @@ function(squirreljme_decode_dir inputDir outputDir)
 endfunction()
 
 # Sourceize a single file
-function(squirreljme_sourceize_file inputFile outputFile)
-	message(DEBUG "TODO: squirreljme_sourceize_file")
+function(squirreljme_sourceize_file inputPath outputPath)
+	# Get the base name of the input file
+	get_filename_component(inputPathBaseName
+		"${inputPath}" NAME)
+
+	# Where is the encoder?
+	squirreljme_util(sourceizeExePath sourceize)
+
+	# Run the command
+	execute_process(COMMAND "${sourceizeExePath}"
+			"${inputPathBaseName}"
+		INPUT_FILE "${inputPath}"
+		OUTPUT_FILE "${outputPath}"
+		RESULT_VARIABLE sourceizeExitCode
+		TIMEOUT 16)
+
+	# Failed
+	if(sourceizeExitCode)
+		message(FATAL_ERROR
+			"Sourceize failed: ${sourceizeExitCode}.")
+	endif()
 endfunction()
 
 # Sourceize an entire directory
 function(squirreljme_sourceize_dir inputDir outputDir)
-	message(DEBUG "TODO: squirreljme_sourceize_dir")
+	# Encode all file accordingly
+	file(GLOB inFiles "${inputDir}/*")
+	foreach(inFile ${inFiles})
+		# Determine the base name of the file
+		get_filename_component(baseName
+			"${inFile}" NAME)
+
+		# Make sure the target directory exists first
+		file(MAKE_DIRECTORY "${outputDir}")
+
+		# Determine input and output
+		get_filename_component(inFileAbs
+			"${inFile}" ABSOLUTE)
+		get_filename_component(outFileAbsPath
+			"${outputDir}/${baseName}" ABSOLUTE)
+
+		# Check if file is up to date
+		squirreljme_check_file_checksum(upToDate
+			"${inFileAbs}" "${outFileAbsPath}.c")
+
+		# Does decoding need to be rerun?
+		if(NOT upToDate)
+			# Run decoding sequence
+			message(STATUS
+				"Sourceizing ${inFileAbs} to "
+				"${outFileAbsPath}.c...")
+			file(REMOVE "${outFileAbsPath}.c")
+			squirreljme_sourceize_file("${inFileAbs}" "${outFileAbsPath}.c")
+
+			# Store checksum
+			squirreljme_write_file_checksum(
+				"${inFileAbs}" "${outFileAbsPath}.c")
+		else()
+			message(STATUS
+				"File ${outFileAbsPath}.c already sourceized...")
+		endif()
+	endforeach()
 endfunction()

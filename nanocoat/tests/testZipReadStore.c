@@ -13,11 +13,11 @@
 #include "squeak.zip.c"
 
 /**
- * Tests access of ZIP files.
+ * Tests reading of stored entries in ZIPs.
  * 
- * @since 2023/11/29
+ * @since 2023/12/01
  */
-SJME_TEST_DECLARE(testZipAccess)
+SJME_TEST_DECLARE(testZipReadStore)
 {
 	sjme_todo("Implement %s", __func__);
 	return SJME_TEST_RESULT_FAIL;

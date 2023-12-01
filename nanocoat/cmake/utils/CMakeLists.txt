@@ -29,3 +29,7 @@ add_executable(decode
 # Simple test binary
 add_executable(simple
 	simple.c)
+
+# Turn binary file into source code
+add_executable(sourceize
+	sourceize.c)

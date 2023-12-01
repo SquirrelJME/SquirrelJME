@@ -53,6 +53,7 @@ squirreljme_static_executable(BasicTest)
 target_include_directories(BasicTest PUBLIC
 	"${CMAKE_SOURCE_DIR}/include"
 	"${CMAKE_CURRENT_SOURCE_DIR}/include"
+	"${CMAKE_CURRENT_BINARY_DIR}"
 	"${CMAKE_CURRENT_BINARY_DIR}/blobs")
 
 # Depend on the core
