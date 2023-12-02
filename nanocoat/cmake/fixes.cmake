@@ -162,6 +162,18 @@ else()
 	endmacro()
 endif()
 
+# Emscripten should make bitcode instead of static libraries
+if (RETROARCH AND EMSCRIPTEN)
+	set(CMAKE_AR
+		"emcc" CACHE)
+	set(CMAKE_STATIC_LIBRARY_SUFFIX
+		".bc")
+	set(CMAKE_C_CREATE_STATIC_LIBRARY
+		"<CMAKE_AR> -o <TARGET> <LINK_FLAGS> <OBJECTS>")
+	set(CMAKE_CXX_CREATE_STATIC_LIBRARY
+		"<CMAKE_AR> -o <TARGET> <LINK_FLAGS> <OBJECTS>")
+endif()
+
 # Make static executable
 macro(squirreljme_static_executable target)
 	if(CMAKE_COMPILER_IS_GNUCC OR

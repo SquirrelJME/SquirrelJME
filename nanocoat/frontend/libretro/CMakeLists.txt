@@ -19,15 +19,8 @@ else()
 	set(libRetroCoreObjects $<TARGET_OBJECTS:CorePIC>)
 endif()
 
-# Do we use a wrapper around the target?
-if(EMSCRIPTEN)
-	set(LIBRETRO_TARGET squirreljme_libretroBase)
-else()
-	set(LIBRETRO_TARGET squirreljme_libretro)
-endif()
-
 # Declare library
-add_library(${LIBRETRO_TARGET} ${libRetroBuildType}
+add_library(squirreljme_libretro ${libRetroBuildType}
 	${libRetroCoreObjects}
 	audio.c
 	boot.c
@@ -40,19 +33,19 @@ add_library(${LIBRETRO_TARGET} ${libRetroBuildType}
 	video.c)
 
 # The base SquirrelJME core needs to be built
-add_dependencies(${LIBRETRO_TARGET}
+add_dependencies(squirreljme_libretro
 	${libRetroCore})
 
 # Name must be specifically set for RetroArch for it to work properly
 if(ANDROID OR
 	(DEFINED ANDROID_PLATFORM AND ANDROID_PLATFORM))
-	set_target_properties(${LIBRETRO_TARGET} PROPERTIES
+	set_target_properties(squirreljme_libretro PROPERTIES
 		LIBRARY_OUTPUT_NAME
 			"squirreljme_libretro_android"
 		ARCHIVE_OUTPUT_NAME
 			"squirreljme_libretro_android")
 else()
-	set_target_properties(${LIBRETRO_TARGET} PROPERTIES
+	set_target_properties(squirreljme_libretro PROPERTIES
 		LIBRARY_OUTPUT_NAME
 			"squirreljme_libretro${LIBRETRO_SUFFIX}"
 		ARCHIVE_OUTPUT_NAME
@@ -64,33 +57,18 @@ endif()
 # Note that RUNTIME_OUTPUT_DIRECTORY is needed for the Windows build to output
 # directories since .DLL files are output there and not where shared libraries
 # go??? No idea really.
-set_target_properties(${LIBRETRO_TARGET} PROPERTIES
+set_target_properties(squirreljme_libretro PROPERTIES
 	RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
 	LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
 	ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
 
 # RetroArch does not use any prefixes like "lib" for the cores
-set_target_properties(${LIBRETRO_TARGET} PROPERTIES
+set_target_properties(squirreljme_libretro PROPERTIES
 	PREFIX "")
 
 # Include main headers
-target_include_directories(${LIBRETRO_TARGET} PUBLIC
+target_include_directories(squirreljme_libretro PUBLIC
 	"${CMAKE_SOURCE_DIR}/include")
-
-# Copy library over for emscripten build
-if(EMSCRIPTEN)
-	get_filename_component(libretroLibFile
-		"$<TARGET_FILE:squirreljme_libretroBase>" NAME_WE)
-	add_custom_target(squirreljme_libretro
-		DEPENDS squirreljme_libretroBase
-		BYPRODUCTS "${CMAKE_BINARY_DIR}/${libretroLibFile}.bc"
-		COMMAND_EXPAND_LISTS
-		COMMAND "${CMAKE_COMMAND}" "-E"
-			"copy" "$<TARGET_FILE:squirreljme_libretroBase>"
-			"${CMAKE_BINARY_DIR}/${libretroLibFile}.bc")
-	add_dependencies(squirreljme_libretro
-		squirreljme_libretroBase)
-endif()
 
 # Allow running the binary, as long as it is not static and we are on the
 # same system...
