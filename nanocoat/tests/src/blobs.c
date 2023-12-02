@@ -7,18 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "proto.h"
-#include "test.h"
+#include "sjme/nvm.h"
 
 #include "squeak.zip.h"
-
-/**
- * Tests access of ZIP files.
- * 
- * @since 2023/11/29
- */
-SJME_TEST_DECLARE(testZipAccess)
-{
-	sjme_todo("Implement %s", __func__);
-	return SJME_TEST_RESULT_FAIL;
-}
+#include "squeak.zip.c"

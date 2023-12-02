@@ -10,7 +10,7 @@
 #include "proto.h"
 #include "test.h"
 
-#include "squeak.zip.c"
+#include "squeak.zip.h"
 
 /**
  * Tests reading of stored entries in ZIPs.

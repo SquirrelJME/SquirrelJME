@@ -42,6 +42,7 @@ file(APPEND "${outTestProtosH}"
 # Initialize executable for basic tests, which contains everything
 add_executable(BasicTest
 	src/basic.c
+	src/blobs.c
 	src/elevator.c
 	src/unit.c
 	${basicTestSources})
