@@ -20,6 +20,32 @@ jchar sjme_decodeUtfChar(const char* at, const char** stringP)
 	return -1;
 }
 
+/**
+ * Initializes the random number generator.
+ * 
+ * @param outRandom The random state to initialize. 
+ * @param seedHi The high seed value.
+ * @param seedLo The low seed value.
+ * @return Returns @c JNI_TRUE on success.
+ * @since 2023/12/02
+ */
+jboolean sjme_randomInit(
+	sjme_attrInOutNotNull sjme_random* outRandom,
+	sjme_attrInValue jint seedHi,
+	sjme_attrInValue jint seedLo)
+{
+	sjme_todo("Implement this?");
+	return JNI_FALSE;
+}
+
+jboolean sjme_randomInitL(
+	sjme_attrInOutNotNull sjme_random* outRandom,
+	sjme_attrInValue jlong seed)
+{
+	sjme_todo("Implement this?");
+	return JNI_FALSE;
+}
+
 jint sjme_stringHash(const char* string)
 {
 	jint result;

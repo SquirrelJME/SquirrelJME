@@ -63,6 +63,17 @@ typedef jint (*sjme_treeFindCompare)(void* tree, void* what, jint hash,
 	jint withIndex);
 
 /**
+ * Random number state.
+ * 
+ * @since 2023/12/02
+ */
+typedef struct sjme_random
+{
+	/** The current seed value. */
+	jlong seed;
+} sjme_random;
+
+/**
  * Tree finding functions, used with @c sjme_treeFind to determine how to
  * search through a given tree.
  * 
@@ -90,6 +101,32 @@ typedef struct sjme_treeFindFunc
  * @since 2023/07/27
  */
 jchar sjme_decodeUtfChar(const char* at, const char** stringP);
+
+/**
+ * Initializes the random number generator.
+ * 
+ * @param outRandom The random state to initialize. 
+ * @param seedHi The high seed value.
+ * @param seedLo The low seed value.
+ * @return Returns @c JNI_TRUE on success.
+ * @since 2023/12/02
+ */
+jboolean sjme_randomInit(
+	sjme_attrInOutNotNull sjme_random* outRandom,
+	sjme_attrInValue jint seedHi,
+	sjme_attrInValue jint seedLo);
+
+/**
+ * Initializes the random number generator.
+ * 
+ * @param outRandom The random state to initialize. 
+ * @param seed The seed value.
+ * @return Returns @c JNI_TRUE on success.
+ * @since 2023/12/02
+ */
+jboolean sjme_randomInitL(
+	sjme_attrInOutNotNull sjme_random* outRandom,
+	sjme_attrInValue jlong seed);
 
 /**
  * Hashes the given string in accordance to @c String::hashCode() .
