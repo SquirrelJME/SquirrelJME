@@ -64,7 +64,7 @@ SJME_TEST_DECLARE(testAlloc)
 		"Block to the right not at the edge of this one?");
 	
 	/* The left edge should be the same as well. */
-	sjme_unitEqualP(test, &link->prev-	q >block[link->prev->blockSize], link,
+	sjme_unitEqualP(test, &link->prev->block[link->prev->blockSize], link,
 		"This block on at the edge of the left side block?");
 	
 	/* There should be no free prev and next. */
