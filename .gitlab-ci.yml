@@ -172,11 +172,11 @@ libretro-build-ngc:
     - .libretro-ngc-static-cmake-retroarch-master
     - .core-nanocoat
 
-# orbis-static-cmake.yml
-libretro-build-orbis:
-  extends:
-    - .libretro-orbis-static-cmake-retroarch-master
-    - .core-nanocoat
+# orbis-static-cmake.yml (Toolchain is currently broken, no CMake Toolchain)
+#libretro-build-orbis:
+#  extends:
+#    - .libretro-orbis-static-cmake-retroarch-master
+#    - .core-nanocoat
 
 # osx-cmake-arm64.yml
 libretro-build-osx-arm64:
