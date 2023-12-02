@@ -298,7 +298,8 @@ function(squirreljme_decode_dir inputDir outputDir)
 endfunction()
 
 # Sourceize a single file
-function(squirreljme_sourceize_file inputPath outputPath)
+function(squirreljme_sourceize_file inputPath
+	outputCPath outputHPath)
 	# Get the base name of the input file
 	get_filename_component(inputPathBaseName
 		"${inputPath}" NAME)
@@ -308,9 +309,15 @@ function(squirreljme_sourceize_file inputPath outputPath)
 
 	# Run the command
 	execute_process(COMMAND "${sourceizeExePath}"
-			"${inputPathBaseName}"
+			"${inputPathBaseName}" "C"
 		INPUT_FILE "${inputPath}"
-		OUTPUT_FILE "${outputPath}"
+		OUTPUT_FILE "${outputCPath}"
+		RESULT_VARIABLE sourceizeExitCode
+		TIMEOUT 16)
+	execute_process(COMMAND "${sourceizeExePath}"
+		"${inputPathBaseName}" "H"
+		INPUT_FILE "${inputPath}"
+		OUTPUT_FILE "${outputHPath}"
 		RESULT_VARIABLE sourceizeExitCode
 		TIMEOUT 16)
 
@@ -339,18 +346,25 @@ function(squirreljme_sourceize_dir inputDir outputDir)
 		get_filename_component(outFileAbsPath
 			"${outputDir}/${baseName}" ABSOLUTE)
 
-		# Check if file is up to date
+		# Check if source file is up to date
 		squirreljme_check_file_checksum(upToDate
 			"${inFileAbs}" "${outFileAbsPath}.c")
+		if(upToDate)
+			# Do the same for the header file
+			squirreljme_check_file_checksum(upToDate
+				"${inFileAbs}" "${outFileAbsPath}.h")
+		endif()
 
 		# Does decoding need to be rerun?
 		if(NOT upToDate)
 			# Run decoding sequence
 			message(STATUS
 				"Sourceizing ${inFileAbs} to "
-				"${outFileAbsPath}.c...")
+				"${outFileAbsPath}.[ch]...")
 			file(REMOVE "${outFileAbsPath}.c")
-			squirreljme_sourceize_file("${inFileAbs}" "${outFileAbsPath}.c")
+			file(REMOVE "${outFileAbsPath}.h")
+			squirreljme_sourceize_file("${inFileAbs}"
+				"${outFileAbsPath}.c" "${outFileAbsPath}.h")
 
 			# Store checksum
 			squirreljme_write_file_checksum(

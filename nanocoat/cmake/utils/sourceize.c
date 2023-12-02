@@ -16,21 +16,14 @@
 #define BUF_SIZE 4096
 #define EFFICIENT_SYM_SIZE 8
 
-int main(int argc, char** argv)
+static void makeC(const char* properName)
 {
 	char efficientSym[256][EFFICIENT_SYM_SIZE];
-	char properName[BUF_SIZE];
-	char c;
+	char quickBuf[EFFICIENT_SYM_SIZE];
 	uint8_t buf[BUF_SIZE];
 	uint8_t d;
 	int readCount, i, totalSize, charCol;
-	
-	/* Not enough arguments? */
-	if (argc <= 1)
-	{
-		fprintf(stderr, "Usage: %s fileName\n", argv[0]);
-		return EXIT_FAILURE;
-	}
+	const char* uChar;
 	
 	/* Calculate the most efficient symbol that can be used. */
 	for (i = 0; i < 256; i++)
@@ -38,46 +31,28 @@ int main(int argc, char** argv)
 		/* Reset. */
 		memset(efficientSym[i], 0, sizeof(efficientSym[i]));
 		
+		/* Large numbers are treated as unsigned for certain compilers. */
+		uChar = (i >= 128 ? "U" : "");
+		
 		/* Start with normal number. */
-		snprintf(efficientSym[i], EFFICIENT_SYM_SIZE - 1, "%d", i);
+		snprintf(efficientSym[i], EFFICIENT_SYM_SIZE - 1, "%d%s", i, uChar);
 		
 		/* Is octal shorter? */
-		memset(properName, 0, sizeof(properName));
-		snprintf(properName, BUF_SIZE - 1, "0%o", i);
-		if (strlen(properName) < strlen(efficientSym[i]))
-			memmove(efficientSym[i], properName, EFFICIENT_SYM_SIZE);
+		memset(quickBuf, 0, sizeof(quickBuf));
+		snprintf(quickBuf, EFFICIENT_SYM_SIZE - 1, "0%o%s", i, uChar);
+		if (strlen(quickBuf) < strlen(efficientSym[i]))
+			memmove(efficientSym[i], quickBuf, EFFICIENT_SYM_SIZE);
 		
 		/* Is hex shorter? */
-		memset(properName, 0, sizeof(properName));
-		snprintf(properName, BUF_SIZE - 1, "0x%x", i);
-		if (strlen(properName) < strlen(efficientSym[i]))
-			memmove(efficientSym[i], properName, EFFICIENT_SYM_SIZE);
-	}
-	
-	/* Copy the file name. */
-	memset(properName, 0, sizeof(properName));
-	snprintf(properName, BUF_SIZE - 1, "%s", argv[1]);
-	
-	/* Normalize all characters accordingly. */
-	for (i = 0; i < BUF_SIZE; i++)
-	{
-		/* Which character? */
-		c = properName[i];
-		if (c == 0)
-			break;
-		
-		/* Lowercase it. */
-		if (c >= 'A' && c <= 'Z')
-			properName[i] = 'a' + (c - 'A');
-		
-		/* Invalid C identifier characters. */
-		else if (!((c >= 'a' && c <= 'z') || (i > 0 && c >= '0' && c <= '9')))
-			properName[i] = '_';
+		memset(quickBuf, 0, sizeof(quickBuf));
+		snprintf(quickBuf, EFFICIENT_SYM_SIZE - 1, "0x%x%s", i, uChar);
+		if (strlen(quickBuf) < strlen(efficientSym[i]))
+			memmove(efficientSym[i], quickBuf, EFFICIENT_SYM_SIZE);
 	}
 	
 	/* Start header. */
 	fprintf(stdout, "#include <sjme/nvm.h>\n");
-	fprintf(stdout, "static const uint8_t %s__bin[] = {\n", properName);
+	fprintf(stdout, "const uint8_t %s__bin[] = {\n", properName);
 	
 	/* Process all the bytes. */
 	totalSize = 0;
@@ -121,6 +96,59 @@ int main(int argc, char** argv)
 	/* Finish it off and write the size. */
 	fprintf(stdout, "};\n");
 	fprintf(stdout, "const uint32_t %s__len = %d;\n", properName, totalSize);
+}
+
+static void makeH(const char* properName)
+{
+	fprintf(stdout, "#include <sjme/nvm.h>\n");
+	fprintf(stdout, "extern const uint8_t %s__bin[];\n", properName);
+	fprintf(stdout, "extern const uint32_t %s__len;\n", properName);
+}
+
+int main(int argc, char** argv)
+{
+	char c;
+	char properName[BUF_SIZE];
+	int i;
+	
+	/* Not enough arguments? */
+	if (argc <= 2)
+	{
+		fprintf(stderr, "Usage: %s fileName C|H\n", argv[0]);
+		return EXIT_FAILURE;
+	}
+	
+	/* Copy the file name. */
+	memset(properName, 0, sizeof(properName));
+	snprintf(properName, BUF_SIZE - 1, "%s", argv[1]);
+	
+	/* Normalize all characters accordingly. */
+	for (i = 0; i < BUF_SIZE; i++)
+	{
+		/* Which character? */
+		c = properName[i];
+		if (c == 0)
+			break;
+		
+		/* Lowercase it. */
+		if (c >= 'A' && c <= 'Z')
+			properName[i] = 'a' + (c - 'A');
+		
+		/* Invalid C identifier characters. */
+		else if (!((c >= 'a' && c <= 'z') || (i > 0 && c >= '0' && c <= '9')))
+			properName[i] = '_';
+	}
+	
+	/* Which kind of output is used? */
+	if (0 == strcmp(argv[2], "C"))
+		makeC(properName);
+	else if (0 == strcmp(argv[2], "H"))
+		makeH(properName);
+	else
+	{
+		fprintf(stderr, "Invalid file type: %s.\n", argv[2]);
+		return EXIT_FAILURE;
+	}
 	
 	/* Make sure output is written. */
 	fflush(stdout);
