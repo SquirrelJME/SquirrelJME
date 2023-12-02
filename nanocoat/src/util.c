@@ -46,6 +46,23 @@ jboolean sjme_randomInitL(
 	return JNI_FALSE;
 }
 
+jboolean sjme_randomNextInt(
+	sjme_attrInOutNotNull sjme_random* random,
+	sjme_attrOutNotNull jint* outValue)
+{
+	sjme_todo("Implement this?");
+	return JNI_FALSE;
+}
+	
+jboolean sjme_randomNextIntMax(
+	sjme_attrInOutNotNull sjme_random* random,
+	sjme_attrOutNotNull jint* outValue,
+	sjme_attrInPositiveNonZero jint maxValue)
+{
+	sjme_todo("Implement this?");
+	return JNI_FALSE;
+}
+
 jint sjme_stringHash(const char* string)
 {
 	jint result;

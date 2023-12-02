@@ -7,8 +7,11 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <string.h>
+
 #include "proto.h"
 #include "sjme/alloc.h"
+#include "sjme/util.h"
 #include "test.h"
 #include "unit.h"
 
@@ -24,6 +27,7 @@ SJME_TEST_DECLARE(testAllocRandom)
 	uint8_t* block;
 	sjme_alloc_pool* pool;
 	sjme_alloc_link* link;
+	sjme_random random;
 	
 	/* Allocate data on the stack so it gets cleared. */
 	chunkLen = 32768;
@@ -37,6 +41,12 @@ SJME_TEST_DECLARE(testAllocRandom)
 	if (!sjme_alloc_poolStatic(&pool, chunk, chunkLen) ||
 		pool == NULL)
 		return sjme_unitFail(test, "Could not initialize static pool?");
+	
+	/* Setup PRNG. */
+	memset(&random, 0, sizeof(random));
+	if (!sjme_randomInit(&random, 0x12345678,
+		0x7ABCDEF0))
+		return sjme_unitFail(test, "Could not initialize randomness.");
 	
 	sjme_todo("Implement %s", __func__);
 	return SJME_TEST_RESULT_FAIL;

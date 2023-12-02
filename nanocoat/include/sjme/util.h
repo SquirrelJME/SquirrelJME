@@ -127,6 +127,32 @@ jboolean sjme_randomInit(
 jboolean sjme_randomInitL(
 	sjme_attrInOutNotNull sjme_random* outRandom,
 	sjme_attrInValue jlong seed);
+	
+/**
+ * Returns the next random value.
+ * 
+ * @param random The random state.
+ * @param outValue The output value.
+ * @return Returns @c JNI_TRUE on success.
+ * @since 2023/12/02
+ */
+jboolean sjme_randomNextInt(
+	sjme_attrInOutNotNull sjme_random* random,
+	sjme_attrOutNotNull jint* outValue);
+	
+/**
+ * Returns the next random value within the given range.
+ * 
+ * @param random The random state.
+ * @param outValue The output value.
+ * @param maxValue The maximum exclusive value.
+ * @return Returns @c JNI_TRUE on success.
+ * @since 2023/12/02
+ */
+jboolean sjme_randomNextIntMax(
+	sjme_attrInOutNotNull sjme_random* random,
+	sjme_attrOutNotNull jint* outValue,
+	sjme_attrInPositiveNonZero jint maxValue);
 
 /**
  * Hashes the given string in accordance to @c String::hashCode() .
