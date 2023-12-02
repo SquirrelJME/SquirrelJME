@@ -8,7 +8,9 @@
 // -------------------------------------------------------------------------*/
 
 #include "proto.h"
+#include "sjme/alloc.h"
 #include "test.h"
+#include "unit.h"
 
 /**
  * Tests merging of allocation blocks when freeing them accordingly.
@@ -17,6 +19,25 @@
  */
 SJME_TEST_DECLARE(testAllocFreeMerge)
 {
+	void* chunk;
+	jint chunkLen;
+	uint8_t* block;
+	sjme_alloc_pool* pool;
+	sjme_alloc_link* link;
+	
+	/* Allocate data on the stack so it gets cleared. */
+	chunkLen = 32768;
+	chunk = alloca(chunkLen);
+	if (chunk == NULL)
+		return sjme_unitSkip(test, "Could not alloca(%d).",
+			(int)chunkLen);
+	
+	/* Initialize the pool. */
+	pool = NULL;
+	if (!sjme_alloc_poolStatic(&pool, chunk, chunkLen) ||
+		pool == NULL)
+		return sjme_unitFail(test, "Could not initialize static pool?");
+	
 	sjme_todo("Implement %s", __func__);
 	return SJME_TEST_RESULT_FAIL;
 }
