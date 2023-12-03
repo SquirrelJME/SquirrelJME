@@ -5,7 +5,10 @@
 # SquirrelJME is under the Mozilla Public License Version 2.0.
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
-# DESCRIPTION: CMake related fixes
+# DESCRIPTION: CMake related fixes and build system related fixes
+# The major purpose of this file is to make it so the main files are kept
+# clean and pristine and patches are placed here because they affect the
+# entire project.
 
 # Cross-compiling the build?
 if(NOT "${CMAKE_HOST_SYSTEM_NAME}" STREQUAL "${CMAKE_SYSTEM_NAME}" OR
@@ -23,6 +26,26 @@ if(RETROARCH OR ENV{RETROARCH} OR
 	LIBRETRO_SUFFIX OR ENV{LIBRETRO_SUFFIX} OR
 	ENV{LIBRETRO})
 	set(LIBRETRO ON)
+endif()
+
+# LibRetro build for emscripten can never be static
+if(LIBRETRO)
+	if(EMSCRIPTEN)
+		unset(LIBRETRO_REALLY_STATIC)
+		unset(LIBRETRO_REALLY_STATIC CACHE)
+
+		# Linking needs to be fixed here
+		set(CMAKE_STATIC_LIBRARY_SUFFIX
+			".bc")
+		set(CMAKE_C_CREATE_STATIC_LIBRARY
+			"emcc -o <TARGET> -shared <LINK_FLAGS> <OBJECTS>")
+		set(CMAKE_CXX_CREATE_STATIC_LIBRARY
+			"emcc -o <TARGET> -shared <LINK_FLAGS> <OBJECTS>")
+		set(EMSCRIPTEN_GENERATE_BITCODE_STATIC_LIBRARIES
+			ON)
+	elseif(LIBRETRO_STATIC)
+		set(LIBRETRO_REALLY_STATIC ON)
+	endif()
 endif()
 
 # If we cannot run the code we are building then we cannot actually test code
@@ -178,18 +201,6 @@ else()
 	macro(squirreljme_list_file_sort lfsList)
 		list(SORT ${lfsList} COMPARE FILE_BASENAME)
 	endmacro()
-endif()
-
-# Emscripten should make bitcode instead of static libraries
-if (LIBRETRO AND EMSCRIPTEN)
-	set(CMAKE_STATIC_LIBRARY_SUFFIX
-		".bc")
-	set(CMAKE_C_CREATE_STATIC_LIBRARY
-		"emcc -o <TARGET> <LINK_FLAGS> <OBJECTS>")
-	set(CMAKE_CXX_CREATE_STATIC_LIBRARY
-		"emcc -o <TARGET> <LINK_FLAGS> <OBJECTS>")
-	set(EMSCRIPTEN_GENERATE_BITCODE_STATIC_LIBRARIES
-		ON)
 endif()
 
 # Make static executable

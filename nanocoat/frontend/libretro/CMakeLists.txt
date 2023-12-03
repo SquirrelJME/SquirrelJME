@@ -7,7 +7,7 @@
 # ---------------------------------------------------------------------------
 
 # Which type of build is being used?
-if(DEFINED LIBRETRO_STATIC AND LIBRETRO_STATIC)
+if(LIBRETRO_REALLY_STATIC)
 	set(libRetroIsStatic ON)
 	set(libRetroBuildType STATIC)
 	set(libRetroCore Core)
@@ -31,6 +31,12 @@ add_library(squirreljme_libretro ${libRetroBuildType}
 	save.c
 	shared.c
 	video.c)
+
+# Make this PIC if not static
+if(NOT libRetroIsStatic)
+	set_property(TARGET squirreljme_libretro
+		PROPERTY POSITION_INDEPENDENT_CODE ON)
+endif()
 
 # The base SquirrelJME core needs to be built
 add_dependencies(squirreljme_libretro
