@@ -7,19 +7,17 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Various utilities (backwards compatible make)
 
-all:							decode.sqk simple.sqk sourceize.sqk
+$(OUTPUT_DIR)/decode$(HOST_EXE_SUFFIX):		decode.c
+								$(CC) -o "$@" $<
 
-decode$(HOST_EXE_SUFFIX):		decode.c
-								$(CC) -o "$(OUTPUT_DIR)/$@" $<
+$(OUTPUT_DIR)/simple$(HOST_EXE_SUFFIX):		simple.c
+								$(CC) -o "$@" $<
 
-decode.sqk:						decode$(HOST_EXE_SUFFIX)
+$(OUTPUT_DIR)/sourceize$(HOST_EXE_SUFFIX):	sourceize.c
+								$(CC) -o "$@" $<
 
-simple$(HOST_EXE_SUFFIX):		simple.c
-								$(CC) -o "$(OUTPUT_DIR)/$@" $<
+all:							$(OUTPUT_DIR)/decode$(HOST_EXE_SUFFIX) \
+								$(OUTPUT_DIR)/simple$(HOST_EXE_SUFFIX) \
+								$(OUTPUT_DIR)/sourceize$(HOST_EXE_SUFFIX)
 
-simple.sqk:						simple$(HOST_EXE_SUFFIX)
-
-sourceize$(HOST_EXE_SUFFIX):	sourceize.c
-								$(CC) -o "$(OUTPUT_DIR)/$@" $<
-
-sourceize.sqk:					sourceize$(HOST_EXE_SUFFIX)
+.PHONY:							all

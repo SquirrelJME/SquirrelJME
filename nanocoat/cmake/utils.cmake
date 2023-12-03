@@ -28,60 +28,65 @@ if(NOT EXISTS "${SQUIRRELJME_UTIL_DIR}")
 	# Make sure the directory exists
 	file(MAKE_DIRECTORY "${SQUIRRELJME_UTIL_DIR}")
 
-	# Note
-	message(STATUS "Bootstrapping utils into "
-		"${SQUIRRELJME_UTIL_DIR}...")
-
-	# Run nested CMake to build the utilities
-	if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.13")
-		# CMake 3.13 added the -S and -B switches
-		execute_process(
-			COMMAND "${CMAKE_COMMAND}"
-				"-E" "env"
-				"--unset=CMAKE_TOOLCHAIN_FILE"
-				"--unset=CMAKE_SOURCE_ROOT"
-				"--unset=CMAKE_FRAMEWORK_PATH"
-				"--unset=CMAKE_INCLUDE_PATH"
-				"--unset=CMAKE_LIBRARY_PATH"
-				"--unset=CMAKE_PROGRAM_PATH"
-				"--unset=CMAKE_BUILD_TYPE"
-				"--unset=CMAKE_GENERATOR"
-				"--unset=CMAKE_GENERATOR_INSTANCE"
-				"--unset=CMAKE_GENERATOR_PLATFORM"
-				"--unset=CMAKE_GENERATOR_TOOLSET"
-				"--unset=CMAKE_C_COMPILER_LAUNCHER"
-				"--unset=CMAKE_C_LINKER_LAUNCHER"
-				"--unset=LDFLAGS"
-				"${CMAKE_COMMAND}"
-				"-DCMAKE_BUILD_TYPE=Debug"
-				"-S" "${SQUIRRELJME_UTIL_SOURCE_DIR}"
-				"-B" "${SQUIRRELJME_UTIL_DIR}"
-			RESULT_VARIABLE cmakeUtilBuildResult)
+	# Emscripten breaks here, so do not use it with nested CMake
+	if(EMSCRIPTEN)
+		set(cmakeUtilConfigResult 1)
 	else()
-		# Need to initialize the project the old way, by just being in
-		# a different working directory and referring to the source
-		execute_process(
-			COMMAND "${CMAKE_COMMAND}"
-				"-E" "env"
-				"--unset=CMAKE_TOOLCHAIN_FILE"
-				"--unset=CMAKE_SOURCE_ROOT"
-				"--unset=CMAKE_FRAMEWORK_PATH"
-				"--unset=CMAKE_INCLUDE_PATH"
-				"--unset=CMAKE_LIBRARY_PATH"
-				"--unset=CMAKE_PROGRAM_PATH"
-				"--unset=CMAKE_BUILD_TYPE"
-				"--unset=CMAKE_GENERATOR"
-				"--unset=CMAKE_GENERATOR_INSTANCE"
-				"--unset=CMAKE_GENERATOR_PLATFORM"
-				"--unset=CMAKE_GENERATOR_TOOLSET"
-				"--unset=CMAKE_C_COMPILER_LAUNCHER"
-				"--unset=CMAKE_C_LINKER_LAUNCHER"
-				"--unset=LDFLAGS"
-				"${CMAKE_COMMAND}"
-				"-DCMAKE_BUILD_TYPE=Debug"
-				"${SQUIRRELJME_UTIL_SOURCE_DIR}"
-			WORKING_DIRECTORY "${SQUIRRELJME_UTIL_DIR}"
-			RESULT_VARIABLE cmakeUtilConfigResult)
+		# Note
+		message(STATUS "Bootstrapping utils into "
+			"${SQUIRRELJME_UTIL_DIR}...")
+
+		# Run nested CMake to build the utilities
+		if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.13")
+			# CMake 3.13 added the -S and -B switches
+			execute_process(
+				COMMAND "${CMAKE_COMMAND}"
+					"-E" "env"
+					"--unset=CMAKE_TOOLCHAIN_FILE"
+					"--unset=CMAKE_SOURCE_ROOT"
+					"--unset=CMAKE_FRAMEWORK_PATH"
+					"--unset=CMAKE_INCLUDE_PATH"
+					"--unset=CMAKE_LIBRARY_PATH"
+					"--unset=CMAKE_PROGRAM_PATH"
+					"--unset=CMAKE_BUILD_TYPE"
+					"--unset=CMAKE_GENERATOR"
+					"--unset=CMAKE_GENERATOR_INSTANCE"
+					"--unset=CMAKE_GENERATOR_PLATFORM"
+					"--unset=CMAKE_GENERATOR_TOOLSET"
+					"--unset=CMAKE_C_COMPILER_LAUNCHER"
+					"--unset=CMAKE_C_LINKER_LAUNCHER"
+					"--unset=LDFLAGS"
+					"${CMAKE_COMMAND}"
+					"-DCMAKE_BUILD_TYPE=Debug"
+					"-S" "${SQUIRRELJME_UTIL_SOURCE_DIR}"
+					"-B" "${SQUIRRELJME_UTIL_DIR}"
+				RESULT_VARIABLE cmakeUtilBuildResult)
+		else()
+			# Need to initialize the project the old way, by just being in
+			# a different working directory and referring to the source
+			execute_process(
+				COMMAND "${CMAKE_COMMAND}"
+					"-E" "env"
+					"--unset=CMAKE_TOOLCHAIN_FILE"
+					"--unset=CMAKE_SOURCE_ROOT"
+					"--unset=CMAKE_FRAMEWORK_PATH"
+					"--unset=CMAKE_INCLUDE_PATH"
+					"--unset=CMAKE_LIBRARY_PATH"
+					"--unset=CMAKE_PROGRAM_PATH"
+					"--unset=CMAKE_BUILD_TYPE"
+					"--unset=CMAKE_GENERATOR"
+					"--unset=CMAKE_GENERATOR_INSTANCE"
+					"--unset=CMAKE_GENERATOR_PLATFORM"
+					"--unset=CMAKE_GENERATOR_TOOLSET"
+					"--unset=CMAKE_C_COMPILER_LAUNCHER"
+					"--unset=CMAKE_C_LINKER_LAUNCHER"
+					"--unset=LDFLAGS"
+					"${CMAKE_COMMAND}"
+					"-DCMAKE_BUILD_TYPE=Debug"
+					"${SQUIRRELJME_UTIL_SOURCE_DIR}"
+				WORKING_DIRECTORY "${SQUIRRELJME_UTIL_DIR}"
+				RESULT_VARIABLE cmakeUtilConfigResult)
+		endif()
 	endif()
 
 	# Did this fail?
@@ -103,7 +108,8 @@ else()
 	set(cmakeUtilConfigResult 0)
 endif()
 
-if (NOT cmakeUtilConfigResult)
+if (NOT cmakeUtilConfigResult AND
+	NOT EMSCRIPTEN)
 	# Build the utilities, just in case it is out of date
 	message(STATUS "Building utilities, if out of date...")
 	execute_process(
