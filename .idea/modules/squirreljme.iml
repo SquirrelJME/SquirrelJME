@@ -19,6 +19,9 @@
       <excludeFolder url="file://$MODULE_DIR$/../../emulators/emulator-base/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../emulators/emulator-base/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../emulators/emulator-base/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../emulators/nanocoat-vm/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../emulators/nanocoat-vm/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../emulators/nanocoat-vm/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../emulators/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../emulators/springcoat-vm/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../emulators/springcoat-vm/bin" />

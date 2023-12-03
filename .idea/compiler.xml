@@ -16,6 +16,8 @@
       <module name="squirreljme.buildSrc.test" target="11" />
       <module name="squirreljme.emulators.emulator-base" target="11" />
       <module name="squirreljme.emulators.emulator-base.test" target="11" />
+      <module name="squirreljme.emulators.nanocoat-vm" target="11" />
+      <module name="squirreljme.emulators.nanocoat-vm.test" target="11" />
       <module name="squirreljme.emulators.springcoat-vm" target="11" />
       <module name="squirreljme.emulators.springcoat-vm.test" target="11" />
       <module name="squirreljme.emulators.standalone" target="11" />

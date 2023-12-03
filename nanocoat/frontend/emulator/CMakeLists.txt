@@ -5,19 +5,4 @@
 # SquirrelJME is under the Mozilla Public License Version 2.0.
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
-
-# SquirrelJME Java SE Emulator Front-End
-add_subdirectory(emulator)
-
-# RetroArch/LibRetro
-add_subdirectory(libretro)
-
-# Not doing a special build for RetroArch only...
-if(NOT DEFINED ENV{SQUIRRELJME_SPECIAL_BUILD_LIBRETRO} OR
-	NOT ENV{SQUIRRELJME_SPECIAL_BUILD_LIBRETRO})
-	# SDL1
-	add_subdirectory(sdl1)
-
-	# SDL2
-	add_subdirectory(sdl2)
-endif()
+# DESCRIPTION: SquirrelJME emulator interface (Java SE)

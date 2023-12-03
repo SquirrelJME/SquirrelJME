@@ -6,7 +6,7 @@
       <excludeFolder url="file://$MODULE_DIR$/../../../../emulators/standalone/.gradle" />
       <excludeFolder url="file://$MODULE_DIR$/../../../../emulators/standalone/build" />
     </content>
-    <orderEntry type="jdk" jdkName="liberica-1.8" jdkType="JavaSDK" />
+    <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>
