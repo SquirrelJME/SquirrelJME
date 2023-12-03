@@ -31,6 +31,9 @@ public final class NativeBinding
 	public static final String LIB_PRELOAD =
 		"squirreljme.emulator.libpath";
 	
+	/** The path where the library is. */
+	private static volatile Path loadedLibPath;
+	
 	static
 	{
 		long loadNs = System.nanoTime();
@@ -40,6 +43,9 @@ public final class NativeBinding
 			Path libFile = NativeBinding.__checkPreload();
 			if (libFile == null)
 				libFile = NativeBinding.__libFromResources();
+			
+			// Store for later
+			NativeBinding.loadedLibPath = libFile;
 				
 			// Debug
 			System.err.printf("Java Version: %s%n",
@@ -78,6 +84,17 @@ public final class NativeBinding
 	 * @since 2020/02/26
 	 */
 	private static native int __bindMethods();
+	
+	/**
+	 * Returns the loaded library path, if it does exist.
+	 *
+	 * @return The path to the library if it exists, or {@code null} if not.
+	 * @since 2023/12/03
+	 */
+	public static Path loadedLibraryPath()
+	{
+		return NativeBinding.loadedLibPath;
+	}
 	
 	/**
 	 * Main entry point for the hosted emulator.
@@ -153,7 +170,8 @@ public final class NativeBinding
 			libFile = tempDir.resolve(libName);
 			
 			// Debug
-			System.err.printf("Java Over-Layer: Extracting %s...%n", libName);
+			System.err.printf("Java Over-Layer: Extracting %s...%n",
+				libName);
 			
 			// Write to the disk as we can only load there
 			try (OutputStream out = Files.newOutputStream(libFile,

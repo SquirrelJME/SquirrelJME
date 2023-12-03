@@ -67,6 +67,17 @@ public class NameOverrideClassLibrary
 	}
 	
 	/**
+	 * Returns the original base library.
+	 *
+	 * @return The original library.
+	 * @since 2023/12/03
+	 */
+	public VMClassLibrary originalLibrary()
+	{
+		return this.base;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2021/06/13
 	 */
