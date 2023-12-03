@@ -43,10 +43,10 @@ public class NanoCoatFactory
 	 * @since 2023/12/03
 	 */
 	@Override
-	protected VirtualMachine createVM(ProfilerSnapshot __ps,
+	protected VirtualMachine createVM(ProfilerSnapshot __profiler,
 		JDWPFactory __jdwp, VMThreadModel __threadModel,
-		VMSuiteManager __sm, VMClassLibrary[] __cp,
-		String __maincl, Map<String, String> __sprops, String[] __args)
+		VMSuiteManager __suiteManager, VMClassLibrary[] __classpath,
+		String __mainClass, Map<String, String> __sysProps, String[] __args)
 		throws IllegalArgumentException, NullPointerException, VMException
 	{
 		throw Debugging.todo();
