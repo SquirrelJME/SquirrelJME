@@ -16,8 +16,6 @@ $(OUTPUT_DIR)/simple$(HOST_EXE_SUFFIX):		simple.c
 $(OUTPUT_DIR)/sourceize$(HOST_EXE_SUFFIX):	sourceize.c
 								$(CC) -o "$@" $<
 
-all:							$(OUTPUT_DIR)/decode$(HOST_EXE_SUFFIX) \
-								$(OUTPUT_DIR)/simple$(HOST_EXE_SUFFIX) \
-								$(OUTPUT_DIR)/sourceize$(HOST_EXE_SUFFIX)
+all:							$(OUTPUT_DIR)/decode$(HOST_EXE_SUFFIX) $(OUTPUT_DIR)/simple$(HOST_EXE_SUFFIX) $(OUTPUT_DIR)/sourceize$(HOST_EXE_SUFFIX)
 
 .PHONY:							all

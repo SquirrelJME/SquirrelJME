@@ -29,7 +29,9 @@ if(NOT EXISTS "${SQUIRRELJME_UTIL_DIR}")
 	file(MAKE_DIRECTORY "${SQUIRRELJME_UTIL_DIR}")
 
 	# Emscripten breaks here, so do not use it with nested CMake
-	if(EMSCRIPTEN)
+	# Also nested CMake breaks here as well
+	if(EMSCRIPTEN OR
+		NOT "${CMAKE_HOST_SYSTEM_NAME}" STREQUAL "${CMAKE_SYSTEM_NAME}")
 		set(cmakeUtilConfigResult 1)
 	else()
 		# Note
