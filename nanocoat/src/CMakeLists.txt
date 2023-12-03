@@ -21,7 +21,8 @@ list(APPEND coreSources
 	softmmio.c
 	task.c
 	tread.c
-	util.c)
+	util.c
+	vmConfig.c)
 
 # The core library contains the main logic for the virtual machine
 # For non-PIC:
