@@ -7,4 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <jni.h>
+
 static const int boop = 0;
