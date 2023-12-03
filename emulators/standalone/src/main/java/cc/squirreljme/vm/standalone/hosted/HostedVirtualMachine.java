@@ -19,6 +19,7 @@ import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.vm.DirectoryClassLibrary;
+import cc.squirreljme.vm.InMemoryClassLibrary;
 import cc.squirreljme.vm.JarClassLibrary;
 import cc.squirreljme.vm.NameOverrideClassLibrary;
 import cc.squirreljme.vm.ResourceBasedClassLibrary;
@@ -167,18 +168,10 @@ public class HostedVirtualMachine
 					lib instanceof JarClassLibrary)
 					path = lib.path();
 				
-				// These need to be extracted into their own JARs
-				else if (lib instanceof ResourceBasedClassLibrary)
-					path = HostedVirtualMachine.implodeJar(tempJars,
-						(ResourceBasedClassLibrary)lib, actualName);
-					
-				// Unknown, ignore
+				// Anything else gets imploded into their own Jar on disk
 				else
-				{
-					Debugging.debugNote("Unsupported Library: %s %s",
+					path = HostedVirtualMachine.implodeJar(tempJars,
 						lib, actualName);
-					continue;
-				}
 				
 				// Map between the two
 				libPaths.add(path);
@@ -299,7 +292,7 @@ public class HostedVirtualMachine
 	 * @since 2023/12/03
 	 */
 	public static Path implodeJar(Path __tempJars,
-		ResourceBasedClassLibrary __lib, String __libName)
+		VMClassLibrary __lib, String __libName)
 		throws IOException, NullPointerException
 	{
 		if (__tempJars == null || __lib == null || __libName == null)
