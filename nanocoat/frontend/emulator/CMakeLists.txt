@@ -6,3 +6,26 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 # DESCRIPTION: SquirrelJME emulator interface (Java SE)
+
+# Declare library
+add_library(squirreljmeEmulatorLib SHARED
+	$<TARGET_OBJECTS:CorePIC>
+	emu.c)
+
+# Always make this position independent
+set_property(TARGET squirreljmeEmulatorLib
+	PROPERTY POSITION_INDEPENDENT_CODE ON)
+
+# The base SquirrelJME core needs to be built
+add_dependencies(squirreljmeEmulatorLib
+	CorePIC)
+
+# We need to find all of the includes and such
+target_include_directories(squirreljmeEmulatorLib PUBLIC
+	"${CMAKE_SOURCE_DIR}/include")
+
+# It is easier to find this when it is in the build root
+set_target_properties(squirreljmeEmulatorLib PROPERTIES
+	RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+	LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+	ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")

@@ -7,7 +7,9 @@
 # ---------------------------------------------------------------------------
 
 # SquirrelJME Java SE Emulator Front-End
-add_subdirectory(emulator)
+if(NOT EMSCRIPTEN AND NOT SQUIRRELJME_CROSS_BUILD)
+	add_subdirectory(emulator)
+endif()
 
 # RetroArch/LibRetro
 add_subdirectory(libretro)

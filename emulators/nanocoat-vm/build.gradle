@@ -87,7 +87,8 @@ tasks.register("libNativeNanoCoat", (taskIsh) -> {
 		procBuilder = new ProcessBuilder()
 		procBuilder.command(new String[]{
 			cmakeExePath().toAbsolutePath().toString(),
-			"--build", cmakeBuild.toAbsolutePath().toString()
+			"--build", cmakeBuild.toAbsolutePath().toString(),
+			"squirreljmeEmulatorLib"
 		})
 		
 		// We do not care for the output really
