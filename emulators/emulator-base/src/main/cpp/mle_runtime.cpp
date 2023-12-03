@@ -8,6 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 #include <string.h>
+#include <stdlib.h>
 
 #if defined(_WIN32) || defined(_WIN64)
 	#include <windows.h>
@@ -16,6 +17,11 @@
 	#include <mach-o/dyld.h>
 	#include <stdint.h>
 #elif defined(__linux__) || defined(__linux)
+	#include <unistd.h>
+	#include <stdint.h>
+#elif defined(__FreeBSD__)
+	#include <sys/stat.h>
+	#include <sys/sysctl.h>
 	#include <unistd.h>
 	#include <stdint.h>
 #endif
@@ -49,8 +55,15 @@ JNIEXPORT jstring JNICALL Impl_mle_RuntimeShelf_vmDescription(
 {
 #define NATIVE_EXEC_PATH_LEN 768
 	char fileName[NATIVE_EXEC_PATH_LEN];
+	
 #if defined(__APPLE__)
 	uint32_t fileNameLen;
+#elif defined(__FreeBSD__)
+	struct stat* statBuf;
+	int sysCtlInput[4];
+	size_t fileNameLen;
+#elif defined(__sun) || defined(__illumos__)
+	const char* bip;
 #endif
 	
 	// Executable path of the VM binary (EXECUTABLE_PATH)
@@ -59,6 +72,7 @@ JNIEXPORT jstring JNICALL Impl_mle_RuntimeShelf_vmDescription(
 		// Clear buffer
 		memset(fileName, 0, sizeof(fileName));
 		
+		// Use native system APIs to get this information
 #if defined(_WIN32) || defined(_WIN64)
 		GetModuleFileNameA(NULL, fileName, NATIVE_EXEC_PATH_LEN);
 #elif defined(__APPLE__)
@@ -66,6 +80,28 @@ JNIEXPORT jstring JNICALL Impl_mle_RuntimeShelf_vmDescription(
 		_NSGetExecutablePath(fileName, &fileNameLen);
 #elif defined(__linux__) || defined(__linux)
 		readlink("/proc/self/exe", fileName, NATIVE_EXEC_PATH_LEN);
+#elif defined(__NetBSD__) || defined(__DragonFly__)
+		readlink("/proc/curproc/file", fileName, NATIVE_EXEC_PATH_LEN);
+#elif defined(__FreeBSD__)
+		memset(&statBuf, 0, sizeof(statBuf));
+		if (stat("/proc/curproc/file", &statBuf) == 0)
+			readlink("/proc/curproc/file", fileName, NATIVE_EXEC_PATH_LEN);
+		else
+		{
+			// Setup systemctl input
+			sysCtlInput[0] = CTL_KERN;
+			sysCtlInput[1] = KERN_PROC;
+			sysCtlInput[2] = KERN_PROC_PATHNAME;
+			sysCtlInput[3] = -1;
+			
+			// Perform the call
+			fileNameLen = NATIVE_EXEC_PATH_LEN;
+			sysctl(mib, 4, fileName, &fileNameLen, NULL, 0);
+		}
+#elif defined(__sun) || defined(__illumos__)
+		bip = getexecname();
+		if (bip != NULL)
+			strncpy(fileName, bip, NATIVE_EXEC_PATH_LEN - 1);
 #endif
 	
 		// Convert to Java String if Valid

@@ -295,6 +295,9 @@ shadowJar {
 	// Always SquirrelJME
 	archiveBaseName.set("squirreljme-standalone")
 	
+	// Always merge service files, otherwise multiple VMs will just not work
+	mergeServiceFiles()
+	
 	// Set the suffix of the JAR to be the OS name and arch, since there is
 	// a dynamic library within for it
 	archiveClassifier.set(project.provider({ ->

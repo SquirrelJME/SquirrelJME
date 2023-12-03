@@ -7,8 +7,8 @@
       <sourceFolder url="file://$MODULE_DIR$/../../../../emulators/springcoat-vm/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../../../emulators/springcoat-vm/src/main/resources" type="java-resource" />
     </content>
+    <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="jdk" jdkName="liberica-1.8" jdkType="JavaSDK" />
     <orderEntry type="module" module-name="squirreljme.emulators.emulator-base.main" />
     <orderEntry type="module" module-name="squirreljme.modules.common-vm.main" />
     <orderEntry type="module" module-name="squirreljme.modules.meep-swm.main" />

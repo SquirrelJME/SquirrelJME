@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module external.linked.project.id=":tools:pcf-to-sqf:test" external.linked.project.path="$MODULE_DIR$/../../../../tools/pcf-to-sqf" external.root.project.path="$MODULE_DIR$/../../../.." external.system.id="GRADLE" external.system.module.group="squirreljme.tools" external.system.module.type="sourceSet" external.system.module.version="0.3.0" type="JAVA_MODULE" version="4">
-  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_11">
+  <component name="NewModuleRootManager">
     <output-test url="file://$MODULE_DIR$/../../../../tools/pcf-to-sqf/build/classes/java/test" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../../../tools/pcf-to-sqf/src/test" />

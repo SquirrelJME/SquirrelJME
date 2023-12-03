@@ -71,6 +71,49 @@ public final class EmulatedTaskShelf
 	}
 	
 	/**
+	 * Returns the class path as a string.
+	 *
+	 * @param __paths Class paths.
+	 * @return The class path as a string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/08/21
+	 */
+	public static String classpathAsString(Path... __paths)
+		throws NullPointerException
+	{
+		if (__paths == null)
+			throw new NullPointerException("NARG");
+		
+		return EmulatedTaskShelf.classpathAsString(Arrays.asList(__paths));
+	}
+	
+	/**
+	 * Returns the class path as a string.
+	 *
+	 * @param __paths Class paths.
+	 * @return The class path as a string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/02/29
+	 */
+	public static String classpathAsString(Iterable<Path> __paths)
+		throws NullPointerException
+	{
+		if (__paths == null)
+			throw new NullPointerException("NARG");
+		
+		StringBuilder sb = new StringBuilder();
+		
+		for (Path path : __paths)
+		{
+			if (sb.length() > 0)
+				sb.append(File.pathSeparatorChar);
+			sb.append(path);
+		}
+		
+		return sb.toString();
+	}
+	
+	/**
 	 * As {@link TaskShelf#start(JarPackageBracket[], String, String[],
 	 * String[], int, int)}. 
 	 * 
@@ -164,7 +207,7 @@ public final class EmulatedTaskShelf
 		
 		// We need to tell it what our own classpath is, logically
 		sysProps.put(EmulatedTaskShelf.RUN_CLASSPATH,
-			EmulatedTaskShelf.__classpathAsString(runClassPath));
+			EmulatedTaskShelf.classpathAsString(runClassPath));
 		
 		// Combine these two to make the running classpath, this includes the
 		// emulator as well
@@ -173,7 +216,7 @@ public final class EmulatedTaskShelf
 		allLibs.addAll(Arrays.<Path>asList(runClassPath));
 		
 		// Tell the target what classpath we are running under
-		String allLibsStr = EmulatedTaskShelf.__classpathAsString(allLibs);
+		String allLibsStr = EmulatedTaskShelf.classpathAsString(allLibs);
 		sysProps.put(EmulatedTaskShelf.HOSTED_VM_CLASSPATH,
 			allLibsStr);
 		
@@ -276,49 +319,6 @@ public final class EmulatedTaskShelf
 		if (process.isAlive())
 			return TaskStatusType.ALIVE;
 		return TaskStatusType.EXITED;
-	}
-	
-	/**
-	 * Returns the class path as a string.
-	 *
-	 * @param __paths Class paths.
-	 * @return The class path as a string.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2020/08/21
-	 */
-	static String __classpathAsString(Path... __paths)
-		throws NullPointerException
-	{
-		if (__paths == null)
-			throw new NullPointerException("NARG");
-		
-		return EmulatedTaskShelf.__classpathAsString(Arrays.asList(__paths));
-	}
-	
-	/**
-	 * Returns the class path as a string.
-	 *
-	 * @param __paths Class paths.
-	 * @return The class path as a string.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2020/02/29
-	 */
-	static String __classpathAsString(Iterable<Path> __paths)
-		throws NullPointerException
-	{
-		if (__paths == null)
-			throw new NullPointerException("NARG");
-		
-		StringBuilder sb = new StringBuilder();
-		
-		for (Path path : __paths)
-		{
-			if (sb.length() > 0)
-				sb.append(File.pathSeparatorChar);
-			sb.append(path);
-		}
-		
-		return sb.toString();
 	}
 	
 	/**

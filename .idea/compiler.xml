@@ -10,8 +10,16 @@
         </processorPath>
         <module name="stephanie.squirreljme.buildSrc.main" />
       </profile>
+      <profile name="Gradle Imported" enabled="true">
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.28/a2ff5da8bcd8b1b26f36b806ced63213362c6dcc/lombok-1.18.28.jar" />
+        </processorPath>
+        <module name="Projects.squirreljme.buildSrc.main" />
+      </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
+      <module name="Projects.squirreljme.buildSrc.main" target="11" />
       <module name="squirreljme.buildSrc" target="11" />
       <module name="squirreljme.buildSrc.test" target="11" />
       <module name="squirreljme.emulators.emulator-base" target="11" />
