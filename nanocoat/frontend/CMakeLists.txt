@@ -8,7 +8,11 @@
 
 # SquirrelJME Java SE Emulator Front-End
 if(NOT EMSCRIPTEN AND NOT SQUIRRELJME_CROSS_BUILD)
-	add_subdirectory(emulator)
+	find_package(JNI)
+
+	if(JNI_FOUND)
+		add_subdirectory(emulator)
+	endif()
 endif()
 
 # RetroArch/LibRetro

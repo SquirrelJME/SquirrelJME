@@ -43,6 +43,9 @@ java.nio.file.Path cmakeRoot =
 	gradle.rootProject.projectDir.toPath().resolve("nanocoat")
 java.nio.file.Path cmakeBuild =
 	project.buildDir.toPath().resolve("cmake")
+java.nio.file.Path emuLib =
+	cmakeBuild.resolve(Paths.get(
+		System.mapLibraryName("emulator-nanocoat")))
 
 // Compiles the NanoCoat binary library
 tasks.register("libNativeNanoCoat", (taskIsh) -> {
@@ -60,8 +63,7 @@ tasks.register("libNativeNanoCoat", (taskIsh) -> {
 	taskIsh.outputs.dir(cmakeBuild)
 	
 	// The library that is actually created
-	taskIsh.outputs.file(cmakeBuild.resolve(
-		System.mapLibraryName("emulator-nanocoat")))
+	taskIsh.outputs.file(emuLib)
 	
 	// When is this up to date?
 	taskIsh.outputs.upToDateWhen (taskX) -> {
@@ -119,6 +121,10 @@ tasks.register("libNativeNanoCoat", (taskIsh) -> {
 		if (!proc.waitFor(5, TimeUnit.MINUTES) ||
 			proc.exitValue() != 0)
 			throw new RuntimeException("CMake failed to build...")
+		
+		// We need the library for this to even work
+		if (!Files.exists(emuLib))
+			throw new FileNotFoundException("Could not find output library.")
 	}
 })
 
@@ -128,8 +134,7 @@ jar {
 	dependsOn libNativeNanoCoat
 	
 	// Include library into the root
-	from cmakeBuild.resolve(Paths.get(
-		System.mapLibraryName("emulator-nanocoat"))).toFile()
+	from emuLib.toFile()
 	into "/"
 }
 
