@@ -81,14 +81,14 @@ tasks.register("libNativeNanoCoat", (taskIsh) -> {
 		// Wait for it to complete
 		if (!proc.waitFor(5, TimeUnit.MINUTES) ||
 			proc.exitValue() != 0)
-			throw RuntimeException("CMake failed to configure...")
+			throw new RuntimeException("CMake failed to configure...")
 		
 		// Set executable
 		procBuilder = new ProcessBuilder()
 		procBuilder.command(new String[]{
 			cmakeExePath().toAbsolutePath().toString(),
 			"--build", cmakeBuild.toAbsolutePath().toString(),
-			"squirreljmeEmulatorLib"
+			"-t", "squirreljmeEmulatorLib"
 		})
 		
 		// We do not care for the output really
@@ -101,7 +101,7 @@ tasks.register("libNativeNanoCoat", (taskIsh) -> {
 		// Wait for it to complete
 		if (!proc.waitFor(5, TimeUnit.MINUTES) ||
 			proc.exitValue() != 0)
-			throw RuntimeException("CMake failed to build...")
+			throw new RuntimeException("CMake failed to build...")
 	}
 })
 
