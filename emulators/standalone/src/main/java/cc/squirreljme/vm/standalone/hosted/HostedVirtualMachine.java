@@ -10,6 +10,7 @@
 package cc.squirreljme.vm.standalone.hosted;
 
 import cc.squirreljme.emulator.EmulatedTaskShelf;
+import cc.squirreljme.emulator.NativeBinding;
 import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.emulator.vm.VirtualMachine;
@@ -213,6 +214,12 @@ public class HostedVirtualMachine
 				supportPath);
 			actualSysProps.put(EmulatedTaskShelf.RUN_CLASSPATH,
 				classPathString);
+			
+			// Library path for the native binding, to reduce extraction load
+			Path nativeLib = NativeBinding.loadedLibraryPath();
+			if (nativeLib != null)
+				actualSysProps.put(NativeBinding.LIB_PRELOAD,
+					nativeLib.toAbsolutePath().toString());
 			
 			// Build a command line of how we are executing the hosted virtual
 			// machine...

@@ -183,11 +183,22 @@ public final class EmulatedTaskShelf
 					case EmulatedTaskShelf.RUN_CLASSPATH:
 					case EmulatedTaskShelf.HOSTED_VM_CLASSPATH:
 					case EmulatedTaskShelf.HOSTED_VM_SUPPORTPATH:
+					case NativeBinding.LIB_PRELOAD:
 						sysProps.put(key,
 							Objects.toString(e.getValue(), ""));
 						break;
 				}
 			}
+		}
+		
+		// Library preload, if applicable?
+		String preloadLib = sysProps.get(NativeBinding.LIB_PRELOAD);
+		if (preloadLib == null || preloadLib.isEmpty())
+		{
+			Path emulatorLib = NativeBinding.loadedLibraryPath();
+			if (emulatorLib != null)
+				sysProps.put(NativeBinding.LIB_PRELOAD,
+					emulatorLib.toAbsolutePath().toString());
 		}
 		
 		// Load system property pairs
