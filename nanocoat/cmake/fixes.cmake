@@ -7,6 +7,16 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: CMake related fixes
 
+# Cross-compiling the build?
+if(NOT "${CMAKE_HOST_SYSTEM_NAME}" STREQUAL "${CMAKE_SYSTEM_NAME}" OR
+	NOT "${CMAKE_HOST_SYSTEM_PROCESSOR}" STREQUAL "${CMAKE_SYSTEM_PROCESSOR}")
+	set(SQUIRRELJME_CROSS_BUILD ON)
+	message(STATUS "Performing cross-build as "
+		"${CMAKE_HOST_SYSTEM_NAME}/"
+		"${CMAKE_HOST_SYSTEM_PROCESSOR} is not "
+		"${CMAKE_SYSTEM_NAME}/${CMAKE_SYSTEM_PROCESSOR}.")
+endif()
+
 # Is this RetroArch? Any kind of RetroArch build?
 if(RETROARCH OR ENV{RETROARCH} OR
 	LIBRETRO_STATIC OR ENV{LIBRETRO_STATIC} OR
@@ -16,7 +26,7 @@ if(RETROARCH OR ENV{RETROARCH} OR
 endif()
 
 # If we cannot run the code we are building then we cannot actually test code
-#if("${CMAKE_HOST_SYSTEM_NAME}" STREQUAL "${CMAKE_SYSTEM_NAME}")
+#if(NOT SQUIRRELJME_CROSS_BUILD)
 #	include(CheckCSourceRuns)
 #	set(CMAKE_REQUIRED_QUIET ON)
 #	check_c_source_runs("${CMAKE_SOURCE_DIR}/cmake/utils/simple.c"
