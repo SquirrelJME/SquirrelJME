@@ -1,6 +1,7 @@
 import cc.squirreljme.plugin.util.PathUtils
 
 import java.nio.file.Files
+import java.nio.file.Paths
 import java.util.concurrent.TimeUnit
 
 plugins
@@ -14,6 +15,12 @@ description = "This is able to use the NanoCoat shared library to run the " +
 dependencies
 {
 	api project(":emulators:emulator-base")
+	
+	api project(":modules:cldc-compact")
+	api project(":modules:common-vm")
+	api project(":modules:meep-swm")
+	api project(":modules:tool-classfile")
+	api project(":modules:debug-jdwp")
 }
 
 static java.nio.file.Path cmakeExePath(){
@@ -31,6 +38,12 @@ Spec<Task> nanoCoatOnlyIf = (taskIsh) -> {
 	return cmakeExePath() != null
 }
 
+// CMake related files
+java.nio.file.Path cmakeRoot =
+	gradle.rootProject.projectDir.toPath().resolve("nanocoat")
+java.nio.file.Path cmakeBuild =
+	project.buildDir.toPath().resolve("cmake")
+
 // Compiles the NanoCoat binary library
 tasks.register("libNativeNanoCoat", (taskIsh) -> {
 	// Info
@@ -41,14 +54,14 @@ tasks.register("libNativeNanoCoat", (taskIsh) -> {
 	taskIsh.onlyIf = nanoCoatOnlyIf
 	
 	// Where is the CMake root? It depends on it
-	java.nio.file.Path cmakeRoot = gradle.rootProject.projectDir.toPath()
-		.resolve("nanocoat")
 	taskIsh.inputs.dir(cmakeRoot)
 	
 	// Where do the sourced CMake files go?
-	java.nio.file.Path cmakeBuild = project.buildDir.toPath()
-		.resolve("cmake")
 	taskIsh.outputs.dir(cmakeBuild)
+	
+	// The library that is actually created
+	taskIsh.outputs.file(cmakeBuild.resolve(
+		System.mapLibraryName("emulator-nanocoat")))
 	
 	// When is this up to date?
 	taskIsh.outputs.upToDateWhen (taskX) -> {
@@ -71,9 +84,11 @@ tasks.register("libNativeNanoCoat", (taskIsh) -> {
 			"-B", cmakeBuild.toAbsolutePath().toString()
 		})
 		
-		// We do not care for the output really
-		procBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT)
-		procBuilder.redirectError(ProcessBuilder.Redirect.INHERIT)
+		// Log the output somewhere
+		procBuilder.redirectOutput(
+			cmakeBuild.resolve("configure.out").toFile())
+		procBuilder.redirectError(
+			cmakeBuild.resolve("configure.err").toFile())
 		
 		// Start the process
 		Process proc = procBuilder.start()
@@ -92,8 +107,10 @@ tasks.register("libNativeNanoCoat", (taskIsh) -> {
 		})
 		
 		// We do not care for the output really
-		procBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT)
-		procBuilder.redirectError(ProcessBuilder.Redirect.INHERIT)
+		procBuilder.redirectOutput(
+			cmakeBuild.resolve("build.out").toFile())
+		procBuilder.redirectError(
+			cmakeBuild.resolve("build.err").toFile())
 		
 		// Start the process
 		proc = procBuilder.start()
@@ -105,10 +122,15 @@ tasks.register("libNativeNanoCoat", (taskIsh) -> {
 	}
 })
 
-// JAR Building
+// We need to include the native library here so NanoCoat actually works
 jar {
 	// Requires the NanoCoat library
 	dependsOn libNativeNanoCoat
+	
+	// Include library into the root
+	from cmakeBuild.resolve(Paths.get(
+		System.mapLibraryName("emulator-nanocoat"))).toFile()
+	into "/"
 }
 
 // JAR resources

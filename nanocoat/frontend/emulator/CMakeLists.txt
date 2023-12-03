@@ -29,3 +29,10 @@ set_target_properties(squirreljmeEmulatorLib PROPERTIES
 	RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
 	LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
 	ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
+
+# Use a simpler name for the library
+set_target_properties(squirreljmeEmulatorLib PROPERTIES
+	LIBRARY_OUTPUT_NAME
+	"emulator-nanocoat"
+	ARCHIVE_OUTPUT_NAME
+	"emulator-nanocoat")
