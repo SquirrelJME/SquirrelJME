@@ -72,13 +72,13 @@ target_include_directories(squirreljme_libretro PUBLIC
 
 # Allow running the binary, as long as it is not static and we are on the
 # same system...
-find_program(RETROARCH "retroarch")
-if(RETROARCH AND NOT libRetroIsStatic AND
+find_program(retroArchExe "retroarch")
+if(retroArchExe AND NOT libRetroIsStatic AND
 	NOT EMSCRIPTEN AND
 	"${CMAKE_HOST_SYSTEM_NAME}" STREQUAL "${CMAKE_SYSTEM_NAME}")
 	# Add target to run accordingly
 	add_custom_target(LibRetroRun
-		COMMAND "${RETROARCH}"
+		COMMAND "${retroArchExe}"
 			"-L" "$<TARGET_FILE:squirreljme_libretro>"
 			"--no-patch"
 			"--appendconfig=${CMAKE_CURRENT_SOURCE_DIR}/test.config"

@@ -7,9 +7,12 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: CMake related fixes
 
-# Is this RetroArch?
-if(RETROARCH OR ENV{RETROARCH})
-	set(RETROARCH ON)
+# Is this RetroArch? Any kind of RetroArch build?
+if(RETROARCH OR ENV{RETROARCH} OR
+	LIBRETRO_STATIC OR ENV{LIBRETRO_STATIC} OR
+	LIBRETRO_SUFFIX OR ENV{LIBRETRO_SUFFIX} OR
+	ENV{LIBRETRO})
+	set(LIBRETRO ON)
 endif()
 
 # If we cannot run the code we are building then we cannot actually test code
@@ -168,7 +171,7 @@ else()
 endif()
 
 # Emscripten should make bitcode instead of static libraries
-if (RETROARCH AND EMSCRIPTEN)
+if (LIBRETRO AND EMSCRIPTEN)
 	set(CMAKE_STATIC_LIBRARY_SUFFIX
 		".bc")
 	set(CMAKE_C_CREATE_STATIC_LIBRARY
