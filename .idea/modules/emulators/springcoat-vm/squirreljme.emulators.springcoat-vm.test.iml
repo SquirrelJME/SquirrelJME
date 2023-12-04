@@ -7,7 +7,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="squirreljme.emulators.springcoat-vm.main" />
-    <orderEntry type="module" module-name="emulator-base.squirreljme.emulators.emulator-base.main" />
+    <orderEntry type="module" module-name="squirreljme.emulators.emulator-base.main" />
     <orderEntry type="module" module-name="squirreljme.modules.common-vm.main" />
     <orderEntry type="module" module-name="squirreljme.modules.meep-swm.main" />
     <orderEntry type="module" module-name="squirreljme.modules.debug-jdwp.main" />

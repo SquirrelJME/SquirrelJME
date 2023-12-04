@@ -6,7 +6,7 @@
     <content url="file://$MODULE_DIR$/../../../../emulators/emulator-base/src/test" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="emulator-base.squirreljme.emulators.emulator-base.main" />
+    <orderEntry type="module" module-name="squirreljme.emulators.emulator-base.main" />
   </component>
   <component name="TestModuleProperties" production-module="squirreljme.emulators.emulator-base.main" />
 </module>

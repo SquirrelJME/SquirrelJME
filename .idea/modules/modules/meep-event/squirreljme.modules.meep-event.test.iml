@@ -9,7 +9,7 @@
     <orderEntry type="module" module-name="squirreljme.modules.meep-event.testFixtures" production-on-test="" />
     <orderEntry type="module" module-name="squirreljme.modules.tac.main" />
     <orderEntry type="module" module-name="squirreljme.modules.cldc-compact.main" />
-    <orderEntry type="module" module-name="emulator-base.squirreljme.emulators.emulator-base.main" />
+    <orderEntry type="module" module-name="squirreljme.emulators.emulator-base.main" />
     <orderEntry type="module" module-name="squirreljme.modules.meep-event.main" />
     <orderEntry type="module" module-name="squirreljme.modules.common-vm.main" />
     <orderEntry type="module" module-name="squirreljme.modules.io.main" />
