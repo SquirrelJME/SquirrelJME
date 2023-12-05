@@ -8,7 +8,7 @@
 # DESCRIPTION: Attempts to find JNI
 
 # Use standard JNI search
-find_package(JNI)
+find_package(JNI QUIET)
 
 # If JNI was not found, use a local copy as a fallback
 if(NOT JNI_FOUND)
