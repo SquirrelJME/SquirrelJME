@@ -18,12 +18,15 @@
 /** Debug buffer size for messages. */
 #define DEBUG_BUF 512
 
+sjme_danglingMessageFunc sjme_danglingMessage = NULL;
+
 static void sjme_genericMessage(const char* file, int line,
 	const char* func, const char* prefix, const char* format, va_list args)
 {
 	va_list copy;
 	char buf[DEBUG_BUF];
-
+	char fullBuf[DEBUG_BUF];
+	
 	/* Need to copy because this works differently on other arches. */
 	va_copy(copy, args);
 	
@@ -33,19 +36,26 @@ static void sjme_genericMessage(const char* file, int line,
 	else
 	{
 		memset(buf, 0, sizeof(buf));
-		vsnprintf(buf, DEBUG_BUF, format, copy);
+		vsnprintf(buf, DEBUG_BUF - 1, format, copy);
 	}
 	
 	/* Cleanup the copy. */
 	va_end(copy);
 	
 	/* Print output message. */
+	memset(fullBuf, 0, sizeof(fullBuf));
 	if (file != NULL || line > 0 || func != NULL) 
-		fprintf(stderr, "%s (%s:%d in %s()): %s\n",
+		snprintf(fullBuf, DEBUG_BUF - 1,
+			"%s (%s:%d in %s()): %s\n",
 			prefix, file, line, func, buf);
 	else
-		fprintf(stderr, "%s %s\n",
+		snprintf(fullBuf, DEBUG_BUF - 1,
+			"%s %s\n",
 			prefix, buf);
+		
+	/* First try to print to the frontend callback, if any. */
+	if (sjme_danglingMessage == NULL || !sjme_danglingMessage(fullBuf))
+		fprintf(stderr, "%s\n", fullBuf);
 	
 	/* Make sure it gets written. */
 	fflush(stderr);
