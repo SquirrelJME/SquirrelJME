@@ -17,7 +17,7 @@ import cc.squirreljme.jvm.aot.BaseRunRoute;
  * @since 2023/10/14
  */
 @SuppressWarnings("ClassTooDeepInInheritanceTree")
-public class TestNanoCoat
+public class ____NanoCoat
 	extends BaseRunRoute
 {
 }
