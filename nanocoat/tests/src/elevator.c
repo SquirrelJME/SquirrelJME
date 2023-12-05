@@ -65,6 +65,10 @@ jboolean sjme_elevatorAct(
 	if (inSet->config == NULL)
 		return sjme_die("Invalid configuration.");
 		
+	/* Allocate main memory pool. */
+	if (!sjme_alloc_poolMalloc(&inState->allocPool, 1024 * 1024))
+		return sjme_die("Could not allocate main memory pool.");
+	
 	/* Initialize base data. */
 	memset(&data, 0, sizeof(data));
 	
@@ -117,17 +121,11 @@ void* sjme_elevatorAlloc(
 	/* Check. */
 	if (inState == NULL)
 		return sjme_dieP("No input state.");
-		
-	if (inLen <= 0)
-		return sjme_dieP("Invalid length: %d.", (jint)inLen);
 	
-	/* Attempt allocation. */
-	rv = malloc(inLen);
-	if (rv == NULL)
-		return sjme_dieP("Failed to allocate %d bytes.", (jint)inLen);
+	rv = NULL;
+	if (!sjme_alloc(inState->allocPool, inLen, &rv))
+		return sjme_dieP("Could not allocate pointer in test pool.");
 	
-	/* Initialize memory then return. */
-	memset(rv, 0, inLen);
 	return rv;
 }
 

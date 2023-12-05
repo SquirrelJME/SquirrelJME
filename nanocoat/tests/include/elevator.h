@@ -18,6 +18,7 @@
 
 #include "sjme/nvm.h"
 #include "sjme/debug.h"
+#include "sjme/alloc.h"
 #include "test.h"
 
 /* Anti-C++. */
@@ -70,6 +71,9 @@ typedef enum sjme_elevatorDoType
  */
 typedef struct sjme_elevatorState
 {
+	/** Allocated memory pool. */
+	sjme_alloc_pool* allocPool;
+
 	/** The virtual machine state. */
 	sjme_nvm_state* nvmState;
 	
