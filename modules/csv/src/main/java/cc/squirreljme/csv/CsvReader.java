@@ -33,7 +33,7 @@ public final class CsvReader<T>
 	protected final CsvDeserializer<T> deserializer;
 	
 	/** The input stream for CSV lines. */
-	protected final CsvReaderInputStream input;
+	protected final CsvInputStream input;
 	
 	/** Temporary reading buffer. */
 	private final StringBuilder _buffer =
@@ -67,7 +67,7 @@ public final class CsvReader<T>
 	 * @since 2023/09/12
 	 */
 	public CsvReader(CsvDeserializer<T> __deserializer,
-		CsvReaderInputStream __input)
+		CsvInputStream __input)
 		throws NullPointerException
 	{
 		if (__deserializer == null || __input == null)
@@ -100,7 +100,7 @@ public final class CsvReader<T>
 		throws NoSuchElementException, IOException
 	{
 		StringBuilder buffer = this._buffer;
-		CsvReaderInputStream input = this.input;
+		CsvInputStream input = this.input;
 		List<String> headerMap = this._headerMap;
 		
 		// Read in line, loop to handle empty lines, etc.

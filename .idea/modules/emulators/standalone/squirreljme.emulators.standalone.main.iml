@@ -6,11 +6,11 @@
     <content url="file://$MODULE_DIR$/../../../../emulators/standalone/src/main">
       <sourceFolder url="file://$MODULE_DIR$/../../../../emulators/standalone/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../../../emulators/standalone/src/main/resources" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/../../../../emulators/standalone/src/main/resources" type="java-resource" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="squirreljme.emulators.springcoat-vm.main" />
+    <orderEntry type="module" module-name="squirreljme.emulators.nanocoat-vm.main" />
     <orderEntry type="module" module-name="squirreljme.emulators.emulator-base.main" />
     <orderEntry type="module" module-name="squirreljme.modules.common-vm.main" />
     <orderEntry type="module" module-name="squirreljme.modules.meep-swm.main" />

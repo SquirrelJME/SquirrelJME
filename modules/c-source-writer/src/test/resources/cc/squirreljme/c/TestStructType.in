@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+result: NoResult
+thrown: NoExceptionThrown
+secondary-declare: string[4]:struct,foo,foo,;
+secondary-define: string[12]:struct,foo,\(,int,xint,;,
+ void,*,xvoidptr,;,\),;

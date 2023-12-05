@@ -69,6 +69,17 @@ public enum PrimitiveType
 	}
 	
 	/**
+	 * Returns the field descriptor of the given type.
+	 * 
+	 * @return The field descriptor of the primitive type.
+	 * @since 2023/07/03
+	 */
+	public FieldDescriptor field()
+	{
+		return this.toClassName().field();
+	}
+	
+	/**
 	 * Is this a wide type?
 	 *
 	 * @return If this is a wide type.

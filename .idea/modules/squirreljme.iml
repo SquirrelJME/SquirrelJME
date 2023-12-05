@@ -19,6 +19,9 @@
       <excludeFolder url="file://$MODULE_DIR$/../../emulators/emulator-base/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../emulators/emulator-base/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../emulators/emulator-base/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../emulators/nanocoat-vm/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../emulators/nanocoat-vm/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../emulators/nanocoat-vm/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../emulators/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../emulators/springcoat-vm/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../emulators/springcoat-vm/bin" />
@@ -30,6 +33,9 @@
       <excludeFolder url="file://$MODULE_DIR$/../../manifest" />
       <excludeFolder url="file://$MODULE_DIR$/../../manifest.uuid" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/aot-nanocoat/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/aot-nanocoat/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/aot-nanocoat/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/aot-springcoat/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/aot-springcoat/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/aot-springcoat/out" />
@@ -40,6 +46,9 @@
       <excludeFolder url="file://$MODULE_DIR$/../../modules/bluetooth/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/bluetooth/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/bluetooth/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/c-source-writer/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/c-source-writer/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/c-source-writer/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/cldc-compact/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/cldc-compact/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/cldc-compact/out" />

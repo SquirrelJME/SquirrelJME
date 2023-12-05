@@ -9,16 +9,20 @@
 
 package net.multiphasicapps.classfile;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -101,6 +105,9 @@ public final class ByteCode
 	
 	/** The stack map table cache. */
 	private Reference<StackMapTable> _smt;
+	
+	/** Stack map at runtime. */
+	private Reference<StackMapTablePairs> _stackMapRunTime;
 	
 	/**
 	 * Initializes the byte code.
@@ -366,7 +373,8 @@ public final class ByteCode
 		if (ref == null || null == (rv = ref.get()))
 			icache[__a] = new SoftReference<>((rv = new Instruction(
 				this._rawByteCode, this.pool, __a, this.exceptions,
-				this.stackMapTable(), this.addressFollowing(__a))));
+				this.stackMapTable(), this.addressFollowing(__a),
+				this.addressToIndex(__a))));
 		
 		return rv;
 	}
@@ -682,7 +690,7 @@ public final class ByteCode
 		// Get the original jump table
 		Map<Integer, InstructionJumpTargets> jumpmap = this.jumpTargets();
 		
-		// The target jump table has both normals and exceptions so it must
+		// The target jump table has both normals and exceptions, so it must
 		// remember that state accordingly
 		class Working
 		{
@@ -752,6 +760,38 @@ public final class ByteCode
 			this._smt = new SoftReference<>(rv = new __StackMapParser__(
 				this.pool, this.__method(), this._newsmtdata, this._smtdata,
 				this, new JavaType(this.thistype)).get());
+		
+		return rv;
+	}
+	
+	/**
+	 * Returns a fully filled in {@link StackMapTable} for each instruction
+	 * as it would occur at runtime.
+	 * 
+	 * @return The stack map table at runtime.
+	 * @since 2023/07/03
+	 */
+	public StackMapTablePairs stackMapTableFull()
+	{
+		Reference<StackMapTablePairs> ref = this._stackMapRunTime;
+		StackMapTablePairs rv;
+		
+		if (ref == null || (rv = ref.get()) == null)
+			try
+			{
+				rv = this.__calcStackMapTableFull();
+				this._stackMapRunTime = new WeakReference<>(rv);
+			}
+			catch (InvalidClassFormatException __e)
+			{
+				/* {@squirreljme.error JC9a Could not calculate the full stack
+				map in method. (The class; The method)} */
+				Method method = this.__method();
+				throw new InvalidClassFormatException(
+					String.format("JC9a %s %s",
+						method.inClass(),
+						method.nameAndType()), __e);
+			}
 		
 		return rv;
 	}
@@ -919,6 +959,411 @@ public final class ByteCode
 	}
 	
 	/**
+	 * Calculates the full stack map.
+	 * 
+	 * @return The full stack map.
+	 * @since 2023/07/16
+	 */
+	private StackMapTablePairs __calcStackMapTableFull()
+	{
+		// We need to get the base table
+		StackMapTable base = this.stackMapTable();
+		
+		// Resultant tables, will get big!
+		Map<Integer, StackMapTableState> inputs = new SortedTreeMap<>();
+		Map<Integer, StackMapTableState> outputs = new SortedTreeMap<>();
+		
+		// Working pop set
+		List<StackMapTableEntry> popped = new ArrayList<>();
+		
+		// Go through each instruction and build the mapping
+		StackMapTableState current = null;
+		for (int logicalAddr = 0, numAddrs = this.instructionCount();
+			 logicalAddr < numAddrs; logicalAddr++)
+		{
+			int actualAddr = this.indexToAddress(logicalAddr);
+			Instruction instruction = this.getByIndex(logicalAddr)
+				.normalize();
+			
+			// Wipe popped state
+			popped.clear();
+			
+			// Use pre-existing table? At entry point that is
+			if (inputs.containsKey(actualAddr))
+				current = inputs.get(actualAddr);
+			else
+			{
+				StackMapTableState exist = instruction.stackMapTableState();
+				if (exist != null)
+				{
+					current = exist;
+					
+					// Overwrite input with the one from the actual stack map
+					// table
+					inputs.put(actualAddr, current);
+				}
+			}
+			
+			// Debug
+			/*Debugging.debugNote("I### %s: %s -> ...",
+				instruction, current);*/
+			
+			// Should not occur
+			StackMapTableState input = current;
+			if (current == null)
+				throw Debugging.oops();
+			
+			// At an input state currently, if not set already
+			if (!inputs.containsKey(actualAddr))
+				inputs.put(actualAddr, current);
+			
+			// Depends on the instruction what happens
+			try
+			{
+				int op = instruction.op;
+				switch (op)
+				{
+						// No changes to the stack
+					case InstructionIndex.NOP:
+					case InstructionIndex.GOTO:
+					case InstructionIndex.GOTO_W:
+					case InstructionIndex.WIDE_IINC:
+					case InstructionIndex.RETURN:
+						break;
+						
+						// Push null object
+					case InstructionIndex.ACONST_NULL:
+						current = current.deriveStackPush(
+							StackMapTableEntry.INITIALIZED_OBJECT);
+						break;
+						
+						// Load local variables
+					case InstructionIndex.WIDE_ALOAD:
+					case InstructionIndex.WIDE_ILOAD:
+					case InstructionIndex.WIDE_FLOAD:
+					case InstructionIndex.WIDE_LLOAD:
+					case InstructionIndex.WIDE_DLOAD:
+						current = current.deriveLocalLoad(
+							instruction.intArgument(0));
+						break;
+					
+						// Store local variable
+					case InstructionIndex.WIDE_ASTORE:
+					case InstructionIndex.WIDE_ISTORE:
+					case InstructionIndex.WIDE_FSTORE:
+					case InstructionIndex.WIDE_LSTORE:
+					case InstructionIndex.WIDE_DSTORE:
+						current = current.deriveLocalStore(
+							instruction.intArgument(0));
+						break;
+						
+						// Load constant value
+					case InstructionIndex.LDC:
+					case InstructionIndex.LDC_W:
+					case InstructionIndex.LDC2_W:
+						current = current.deriveStackPush(
+							ByteCode.__deriveLdc(instruction));
+						break;
+						
+						// Load from reference array
+					case InstructionIndex.AALOAD:
+						current = current.deriveStackPop(popped, 2);
+						current = current.deriveStackPush(
+							ByteCode.__deriveComponentType(popped.get(0)));
+						break;
+						
+						// Load from array, note that the input could be
+						// Object, so we have to assume it is the right array
+					case InstructionIndex.IALOAD:
+					case InstructionIndex.LALOAD:
+					case InstructionIndex.FALOAD:
+					case InstructionIndex.DALOAD:
+					case InstructionIndex.BALOAD:
+					case InstructionIndex.CALOAD:
+					case InstructionIndex.SALOAD:
+						current = current.deriveStackPop(popped, 2);
+						current = current.deriveStackPush(
+							ByteCode.__deriveComponentTypeViaOp(op));
+						break;
+						
+						// Store into array
+					case InstructionIndex.IASTORE:
+					case InstructionIndex.LASTORE:
+					case InstructionIndex.FASTORE:
+					case InstructionIndex.DASTORE:
+					case InstructionIndex.AASTORE:
+					case InstructionIndex.BASTORE:
+					case InstructionIndex.CASTORE:
+					case InstructionIndex.SASTORE:
+						current = current.deriveStackPop(null,
+							3);
+						break;
+						
+						// Push/pop operations
+					case InstructionIndex.POP:
+					case InstructionIndex.POP2:
+					case InstructionIndex.DUP:
+					case InstructionIndex.DUP_X1:
+					case InstructionIndex.DUP_X2:
+					case InstructionIndex.DUP2:
+					case InstructionIndex.DUP2_X1:
+					case InstructionIndex.DUP2_X2:
+					case InstructionIndex.SWAP:
+						current = current.deriveStackShuffle(
+							JavaStackShuffleType.ofOperation(op));
+						break;
+						
+						// Pop two, push first type
+					case InstructionIndex.IADD:
+					case InstructionIndex.LADD:
+					case InstructionIndex.FADD:
+					case InstructionIndex.DADD:
+					case InstructionIndex.ISUB:
+					case InstructionIndex.LSUB:
+					case InstructionIndex.FSUB:
+					case InstructionIndex.DSUB:
+					case InstructionIndex.IMUL:
+					case InstructionIndex.LMUL:
+					case InstructionIndex.FMUL:
+					case InstructionIndex.DMUL:
+					case InstructionIndex.IDIV:
+					case InstructionIndex.LDIV:
+					case InstructionIndex.FDIV:
+					case InstructionIndex.DDIV:
+					case InstructionIndex.IREM:
+					case InstructionIndex.LREM:
+					case InstructionIndex.FREM:
+					case InstructionIndex.DREM:
+					case InstructionIndex.IAND:
+					case InstructionIndex.LAND:
+					case InstructionIndex.IOR:
+					case InstructionIndex.LOR:
+					case InstructionIndex.IXOR:
+					case InstructionIndex.LXOR:
+					case InstructionIndex.ISHL:
+					case InstructionIndex.LSHL:
+					case InstructionIndex.ISHR:
+					case InstructionIndex.LSHR:
+					case InstructionIndex.IUSHR:
+					case InstructionIndex.LUSHR:
+						current = current.deriveStackPop(popped, 2);
+						current = current.deriveStackPush(popped.get(0));
+						break;
+						
+						// Pop then push same type
+					case InstructionIndex.INEG:
+					case InstructionIndex.LNEG:
+					case InstructionIndex.FNEG:
+					case InstructionIndex.DNEG:
+					case InstructionIndex.CHECKCAST:
+						current = current.deriveStackPop(popped, 1);
+						current = current.deriveStackPush(popped.get(0));
+						break;
+						
+						// Pop one then push integer
+					case InstructionIndex.INSTANCEOF:
+					case InstructionIndex.L2I:
+					case InstructionIndex.F2I:
+					case InstructionIndex.D2I:
+					case InstructionIndex.I2B:
+					case InstructionIndex.I2C:
+					case InstructionIndex.I2S:
+						current = current.deriveStackPop(popped, 1);
+						current = current.deriveStackPush(
+							StackMapTableEntry.INTEGER);
+						break;
+						
+						// Pop two then push integer
+					case InstructionIndex.LCMP:
+					case InstructionIndex.FCMPL:
+					case InstructionIndex.FCMPG:
+					case InstructionIndex.DCMPL:
+					case InstructionIndex.DCMPG:
+						current = current.deriveStackPop(popped, 2);
+						current = current.deriveStackPush(
+							StackMapTableEntry.INTEGER);
+						break;
+					
+					// Pop single value, push nothing
+					case InstructionIndex.IFEQ:
+					case InstructionIndex.IFNE:
+					case InstructionIndex.IFLT:
+					case InstructionIndex.IFGE:
+					case InstructionIndex.IFGT:
+					case InstructionIndex.IFLE:
+					case InstructionIndex.TABLESWITCH:
+					case InstructionIndex.LOOKUPSWITCH:
+					case InstructionIndex.ATHROW:
+					case InstructionIndex.IRETURN:
+					case InstructionIndex.LRETURN:
+					case InstructionIndex.FRETURN:
+					case InstructionIndex.DRETURN:
+					case InstructionIndex.ARETURN:
+					case InstructionIndex.MONITORENTER:
+					case InstructionIndex.MONITOREXIT:
+					case InstructionIndex.IFNULL:
+					case InstructionIndex.IFNONNULL:
+					case InstructionIndex.PUTSTATIC:
+						current = current.deriveStackPop(popped, 1);
+						break;
+						
+						// Pop value, push integer
+					case InstructionIndex.ARRAYLENGTH:
+						current = current.deriveStackPopThenPush(popped,
+							1, StackMapTableEntry.INTEGER);
+						break;
+						
+						// Pop two values, push nothing
+					case InstructionIndex.IF_ICMPEQ:
+					case InstructionIndex.IF_ICMPNE:
+					case InstructionIndex.IF_ICMPLT:
+					case InstructionIndex.IF_ICMPGE:
+					case InstructionIndex.IF_ICMPGT:
+					case InstructionIndex.IF_ICMPLE:
+					case InstructionIndex.IF_ACMPEQ:
+					case InstructionIndex.IF_ACMPNE:
+					case InstructionIndex.PUTFIELD:
+						current = current.deriveStackPop(popped, 2);
+						break;
+						
+						// Method invocation
+					case InstructionIndex.INVOKEVIRTUAL:
+					case InstructionIndex.INVOKESPECIAL:
+					case InstructionIndex.INVOKESTATIC:
+					case InstructionIndex.INVOKEINTERFACE:
+						current = current.deriveMethodCall(
+							op == InstructionIndex.INVOKESTATIC,
+							instruction.argument(0,
+								MethodReference.class));
+						break;
+						
+						// Pop one then push long
+					case InstructionIndex.I2L:
+					case InstructionIndex.F2L:
+					case InstructionIndex.D2L:
+						current = current.deriveStackPop(popped, 1);
+						current = current.deriveStackPush(
+							StackMapTableEntry.LONG);
+						break;
+						
+						// Pop one then push float
+					case InstructionIndex.I2F:
+					case InstructionIndex.L2F:
+					case InstructionIndex.D2F:
+						current = current.deriveStackPop(popped, 1);
+						current = current.deriveStackPush(
+							StackMapTableEntry.FLOAT);
+						break;
+						
+						// Pop one then push double
+					case InstructionIndex.I2D:
+					case InstructionIndex.L2D:
+					case InstructionIndex.F2D:
+						current = current.deriveStackPop(popped, 1);
+						current = current.deriveStackPush(
+							StackMapTableEntry.DOUBLE);
+						break;
+						
+						// Push new object of given type
+					case InstructionIndex.NEW:
+						current = current.deriveStackPush(
+							instruction.argument(0, ClassName.class)
+								.field());
+						break;
+						
+						// Pop one, push specified array
+					case InstructionIndex.ANEWARRAY:
+						current = current.deriveStackPop(null,
+							1);
+						current = current.deriveStackPush(
+							instruction.argument(0, ClassName.class)
+								.field().addDimensions(1));
+						break;
+						
+						// Pop one, push specified array as primitive
+					case InstructionIndex.NEWARRAY:
+						current = current.deriveStackPop(null,
+							1);
+						current = current.deriveStackPush(
+							instruction.argument(0, PrimitiveType.class)
+								.field().addDimensions(1));
+						break;
+						
+						// Pop count in arg 1, push an array
+					case InstructionIndex.MULTIANEWARRAY:
+						current = current.deriveStackPop(null,
+							instruction.intArgument(1));
+						current = current.deriveStackPush(
+							instruction.argument(0, ClassName.class)
+								.field().addDimensions(
+									instruction.intArgument(1)));
+						break;
+						
+						// Push referred reference type
+					case InstructionIndex.GETSTATIC:
+						current = current.deriveStackPush(
+							instruction.argument(0,
+								FieldReference.class).memberType());
+						break;
+						
+						// Pop one, push referred type
+					case InstructionIndex.GETFIELD:
+						current = current.deriveStackPop(null,
+							1);
+						current = current.deriveStackPush(
+							instruction.argument(0,
+								FieldReference.class).memberType());
+						break;
+						
+						// Unhandled?
+					default:
+						throw Debugging.todo(
+							InstructionMnemonics.toString(op));
+				}
+			}
+			catch (InvalidClassFormatException|IllegalArgumentException|
+				IllegalStateException __e)
+			{
+				/* {@squirreljme.error JC9b Could not process for instruction.
+				(The instruction; The input; The output (may be partial)} */
+				throw new InvalidClassFormatException(
+					String.format("JC9b %s L#%d %s ?(%s)?",
+						instruction,
+						this.lineOfAddress(instruction.address()),
+						input,
+						current), __e);
+			}
+			
+			// Debug
+			/*Debugging.debugNote("... -> %s",
+				current);*/
+			
+			// Store output of the instruction
+			if (!outputs.containsKey(actualAddr))
+				outputs.put(actualAddr, current);
+			
+			// Set inputs for all jump targets
+			InstructionJumpTargets jumps = instruction.jumpTargets();
+			for (int i = 0, n = jumps.size(); i < n; i++)
+			{
+				// Get the designated jump target
+				InstructionJumpTarget jump = jumps.get(i);
+				boolean isException = jumps.isException(i);
+				
+				// Set input if it does not exist
+				if (!inputs.containsKey(jump.target))
+				{
+					if (!isException)
+						inputs.put(jump.target, current);
+				}
+			}
+		}
+		
+		// Setup table pair
+		return new StackMapTablePairs(inputs, outputs);
+	}
+	
+	/**
 	 * Returns the method which owns this byte code.
 	 *
 	 * @return The owning method.
@@ -932,6 +1377,94 @@ public final class ByteCode
 		if (rv == null)
 			throw new IllegalStateException("JC24");
 		return rv;
+	}
+	
+	/**
+	 * Derives the component type.
+	 * 
+	 * @param __entry The entry to derive.
+	 * @return The derived type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/03
+	 */
+	private static StackMapTableEntry __deriveComponentType(
+		StackMapTableEntry __entry)
+		throws NullPointerException
+	{
+		if (__entry == null)
+			throw new NullPointerException("NARG");
+		
+		// Get the component type, if it is not found, assume object
+		FieldDescriptor type = __entry.type().type().componentType();
+		if (type == null)
+			return StackMapTableEntry.INITIALIZED_OBJECT;
+		
+		// Promote smaller than int primitives
+		if (type.isPrimitive())
+			switch (type.primitiveType())
+			{
+				case BOOLEAN:
+				case BYTE:
+				case SHORT:
+				case CHARACTER:
+					type = FieldDescriptor.INTEGER;
+					break;
+			}
+		
+		return new StackMapTableEntry(type, true);
+	}
+	
+	/**
+	 * Derives the component type for primitive arrays.
+	 *
+	 * @param __op The operation to check.
+	 * @return The entry for the type.
+	 * @throws InvalidClassFormatException If the operation is not valid.
+	 * @since 2023/07/17
+	 */
+	private static StackMapTableEntry __deriveComponentTypeViaOp(int __op)
+		throws InvalidClassFormatException
+	{
+		switch (__op)
+		{
+			case InstructionIndex.BALOAD:
+			case InstructionIndex.CALOAD:
+			case InstructionIndex.SALOAD:
+			case InstructionIndex.IALOAD:
+				return StackMapTableEntry.INTEGER;
+			
+			case InstructionIndex.LALOAD:
+				return StackMapTableEntry.LONG;
+				
+			case InstructionIndex.FALOAD:
+				return StackMapTableEntry.FLOAT;
+				
+			case InstructionIndex.DALOAD:
+				return StackMapTableEntry.DOUBLE;
+		}
+			
+		/* {@squirreljme.error JCl1 Could not derive primitive type of the
+		array instruction. (The instruction)} */
+		throw new InvalidClassFormatException(
+			String.format("JCl1 %s", InstructionMnemonics.toString(__op)));
+	}
+	
+	/**
+	 * Derives the LDC instruction.
+	 *
+	 * @param __instruction The instruction.
+	 * @return The derived entry.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/03
+	 */
+	private static FieldDescriptor __deriveLdc(Instruction __instruction)
+		throws NullPointerException
+	{
+		if (__instruction == null)
+			throw new NullPointerException("NARG");
+		
+		return __instruction.argument(0, ConstantValue.class)
+			.type.javaType().type;
 	}
 	
 	/**

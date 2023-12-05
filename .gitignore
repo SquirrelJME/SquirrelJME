@@ -5,6 +5,9 @@ build/
 */build/
 out/
 */out/
+build/squirreljme/vm-test-*-debug/squirreljme-test.zip
+build/squirreljme/vm-testFixtures-*-debug/squirreljme-testFixtures.zip
+previous-compilation-data.bin
 
 # VSCode Files
 *~
@@ -38,6 +41,16 @@ ratufacoat/.idea/modules/
 ratufacoat/.idea/shelf/
 ratufacoat/libretro-log.txt
 file-*
+nanocoat/rom/NanoCoatDebug
+nanocoat/rom/NanoCoatRelease
+nanocoat/rom/main_debug
+nanocoat/rom/testFixtures_debug
+nanocoat/rom/test_debug
+nanocoat/rom/main_release
+nanocoat/rom/testFixtures_release
+nanocoat/rom/test_release
+emulators/emulator-base/cmake-build-*
+*.jar
 
 # IntelliJ Dependency Matrix
 emulators/*/out/production/

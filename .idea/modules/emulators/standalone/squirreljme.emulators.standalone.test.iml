@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module external.linked.project.id=":emulators:standalone:test" external.linked.project.path="$MODULE_DIR$/../../../../emulators/standalone" external.root.project.path="$MODULE_DIR$/../../../.." external.system.id="GRADLE" external.system.module.group="squirreljme.emulators" external.system.module.type="sourceSet" external.system.module.version="0.3.0" type="JAVA_MODULE" version="4">
-  <component name="NewModuleRootManager">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_11">
     <output-test url="file://$MODULE_DIR$/../../../../emulators/standalone/build/classes/java/test" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../../../emulators/standalone/src/test" />
@@ -8,6 +8,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="squirreljme.emulators.standalone.main" />
     <orderEntry type="module" module-name="squirreljme.emulators.springcoat-vm.main" />
+    <orderEntry type="module" module-name="squirreljme.emulators.nanocoat-vm.main" />
     <orderEntry type="module" module-name="squirreljme.emulators.emulator-base.main" />
     <orderEntry type="module" module-name="squirreljme.modules.common-vm.main" />
     <orderEntry type="module" module-name="squirreljme.modules.meep-swm.main" />

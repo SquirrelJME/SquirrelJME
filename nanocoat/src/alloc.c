@@ -1,0 +1,201 @@
+/* -*- Mode: C; indent-tabs-mode: t; tab-width: 4 -*-
+// ---------------------------------------------------------------------------
+// SquirrelJME
+//     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+// ---------------------------------------------------------------------------
+// SquirrelJME is under the Mozilla Public License Version 2.0.
+// See license.mkd for licensing and copyright information.
+// -------------------------------------------------------------------------*/
+
+#include <string.h>
+
+/* Include Valgrind if it is available? */
+#if defined(SJME_CONFIG_HAS_VALGRIND)
+	#include <valgrind.h>
+	#include <memcheck.h>
+#endif
+
+#include "sjme/alloc.h"
+#include "sjme/debug.h"
+
+/** The minimum size permitted for allocation pools. */
+#define SJME_ALLOC_MIN_SIZE (((SJME_SIZEOF_ALLOC_POOL(0) + \
+	(SJME_SIZEOF_ALLOC_LINK(0) * 3)) | 0x1FF))
+
+/** The minimum size for splits. */
+#define SJME_ALLOC_SPLIT_MIN_SIZE 64
+
+jboolean sjme_alloc_poolMalloc(
+	sjme_attrOutNotNull sjme_alloc_pool** outPool,
+	sjme_attrInPositive jint size)
+{
+	void* result;
+	jint useSize;
+	
+	useSize = SJME_SIZEOF_ALLOC_POOL(size);
+	if (outPool == NULL || size <= SJME_ALLOC_MIN_SIZE || useSize <= 0 ||
+		size > useSize)
+		return JNI_FALSE;
+	
+	/* Attempt allocation. */
+	result = malloc(useSize);
+	if (!result)
+		return JNI_FALSE;
+	
+	/* Use static pool initializer to setup structures. */
+	return sjme_alloc_poolStatic(outPool, result, useSize);
+}
+
+jboolean sjme_alloc_poolStatic(
+	sjme_attrOutNotNull sjme_alloc_pool** outPool,
+	sjme_attrInNotNull void* baseAddr,
+	sjme_attrInPositive jint size)
+{
+	sjme_alloc_pool* result;
+	sjme_alloc_link* frontLink;
+	sjme_alloc_link* midLink;
+	sjme_alloc_link* backLink;
+	
+	if (outPool == NULL || baseAddr == NULL || size <= SJME_ALLOC_MIN_SIZE)
+		return JNI_FALSE;
+	
+	/* Initialize memory to nothing. */
+	memset(baseAddr, 0, size);
+	
+	/* Setup initial pool structure. */
+	result = baseAddr;
+	result->size = size & (~7);
+	
+	/* Setup front link. */
+	frontLink = (void*)&result->block[0];
+	result->frontLink = frontLink;
+	
+	/* Setup back link. */
+	backLink = (void*)&result->block[result->size - SJME_SIZEOF_ALLOC_LINK(0)];
+	result->backLink = backLink;
+	
+	/* Setup middle link, which is between the two. */
+	midLink = (void*)&frontLink->block[0];
+	midLink->prev = frontLink;
+	frontLink->next = midLink;
+	midLink->next = backLink;
+	backLink->prev = midLink;
+	
+	/* Determine size of the middle link, which is free space. */
+	midLink->blockSize = (jint)((uintptr_t)backLink -
+		(uintptr_t)&midLink->block[0]);
+		
+	/* The front and back links are in the "invalid" space. */
+	frontLink->space = SJME_NUM_ALLOC_POOL_SPACE;
+	backLink->space = SJME_NUM_ALLOC_POOL_SPACE;
+	
+	/* Determine size that can and cannot be used. */
+	result->space[SJME_ALLOC_POOL_SPACE_FREE].reserved =
+		(SJME_SIZEOF_ALLOC_LINK(0) * 3);
+	result->space[SJME_ALLOC_POOL_SPACE_FREE].usable = midLink->blockSize;
+	
+	/* Link in the first and last actual blocks for the free chain. */
+	result->freeFirstLink = frontLink;
+	frontLink->freeNext = midLink;
+	midLink->freePrev = frontLink;
+	result->freeLastLink = backLink;
+	backLink->freePrev = midLink;
+	midLink->freeNext = backLink;
+	
+#if defined(SJME_CONFIG_HAS_VALGRIND)
+	/* Reserve front side in Valgrind. */
+	VALGRIND_MAKE_MEM_NOACCESS(baseAddr,
+		((uintptr_t)&midLink->block[0] - (uintptr_t)baseAddr));
+		
+	/* Reserve back side in Valgrind. */
+	VALGRIND_MAKE_MEM_NOACCESS(backLink,
+		(SJME_SIZEOF_ALLOC_LINK(0)));
+#endif
+	
+	/* Use the pool. */
+	*outPool = result;
+	return JNI_TRUE;
+}
+
+jboolean sjme_alloc(
+	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrInPositiveNonZero jint size,
+	sjme_attrOutNotNull void** outAddr)
+{
+	sjme_alloc_link* scanLink;
+	jint splitMinSize, roundSize;
+	jboolean splitBlock;
+	
+	if (pool == NULL || size <= 0 || outAddr == NULL)
+		return JNI_FALSE;
+	
+	/* Determine the size this will actually take up, which includes the */
+	/* link to be created following this. */
+	roundSize = (((size & 7) != 0) ? ((size | 7) + 1) : size);
+	splitMinSize = roundSize +
+		(jint)SJME_SIZEOF_ALLOC_LINK(SJME_ALLOC_SPLIT_MIN_SIZE);
+	if (size > splitMinSize || splitMinSize < 0)
+		return JNI_FALSE;
+	
+	/* Find the first free link that this fits in. */
+	scanLink = NULL;
+	splitBlock = JNI_FALSE;
+	for (scanLink = pool->freeFirstLink;
+		scanLink != NULL; scanLink = scanLink->freeNext)
+	{
+		/* Block is in the "invalid" space, skip it. */
+		if (scanLink->space == SJME_NUM_ALLOC_POOL_SPACE)
+			continue;
+		
+		/* Block fits perfectly here, without needing a split? */
+		if (scanLink->blockSize == roundSize)
+			break;
+		
+		/* Block fits here when split, try to not split ridiculously small. */
+		if (scanLink->blockSize >= splitMinSize)
+		{
+			splitBlock = JNI_TRUE;
+			break;
+		}
+	}
+	
+	/* Out of memory. */
+	if (scanLink == NULL)
+		return JNI_FALSE;
+	
+	sjme_todo("Implement this?");
+	return JNI_FALSE;
+}
+
+jboolean sjme_allocFree(
+	sjme_attrInNotNull void* addr)
+{
+	if (addr == NULL)
+		return JNI_FALSE;
+	
+	sjme_todo("Implement this?");
+	return JNI_FALSE;
+}
+
+jboolean sjme_allocLink(
+	sjme_attrInNotNull void* addr,
+	sjme_attrOutNotNull sjme_alloc_link** outLink)
+{
+	if (addr == NULL || outLink == NULL)
+		return JNI_FALSE;
+	
+	/* Just need to do some reversing math. */
+	*outLink = (sjme_alloc_link*)(((uintptr_t)addr) -
+		offsetof(sjme_alloc_link, block));
+	
+	/* Success! */
+	return JNI_TRUE;
+}
+
+jboolean sjme_allocRealloc(
+	sjme_attrInOutNotNull void** inOutAddr,
+	sjme_attrInPositive jint newSize)
+{
+	sjme_todo("Implement this?");
+	return JNI_FALSE;
+}

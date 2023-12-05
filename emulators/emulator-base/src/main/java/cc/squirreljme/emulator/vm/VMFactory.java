@@ -105,13 +105,13 @@ public abstract class VMFactory
 	/**
 	 * Creates the virtual machine using the given parameters.
 	 *
-	 * @param __ps The profiler snapshot to write to.
+	 * @param __profiler The profiler snapshot to write to.
 	 * @param __jdwp The debugger to use.
 	 * @param __threadModel The threading model to use.
-	 * @param __sm The suite manager.
-	 * @param __cp The classpath to initialize with.
-	 * @param __maincl The main class to start executing.
-	 * @param __sprops System properties for the running program.
+	 * @param __suiteManager The suite manager.
+	 * @param __classpath The classpath to initialize with.
+	 * @param __mainClass The main class to start executing.
+	 * @param __sysProps System properties for the running program.
 	 * @param __args Arguments for the running program.
 	 * @return An instance of the virtual machine.
 	 * @throws IllegalArgumentException If an input argument is not valid.
@@ -119,10 +119,10 @@ public abstract class VMFactory
 	 * @throws VMException If the virtual machine could not be created.
 	 * @since 2018/11/17
 	 */
-	protected abstract VirtualMachine createVM(ProfilerSnapshot __ps,
-		JDWPFactory __jdwp, VMThreadModel __threadModel, VMSuiteManager __sm,
-		VMClassLibrary[] __cp,
-		String __maincl, Map<String, String> __sprops, String[] __args)
+	protected abstract VirtualMachine createVM(ProfilerSnapshot __profiler,
+		JDWPFactory __jdwp, VMThreadModel __threadModel,
+		VMSuiteManager __suiteManager, VMClassLibrary[] __classpath,
+		String __mainClass, Map<String, String> __sysProps, String[] __args)
 		throws IllegalArgumentException, NullPointerException, VMException;
 	
 	/**

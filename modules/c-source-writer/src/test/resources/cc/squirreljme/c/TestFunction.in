@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+result: NoResult
+thrown: NoExceptionThrown
+secondary-declare: string[8]:int,squeak,(,const,unsigned\_char,boop,),;
+secondary-define: string[9]:int,squeak,(,const,unsigned\_char,boop,),\(,\)

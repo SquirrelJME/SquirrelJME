@@ -231,6 +231,8 @@ public final class MethodDescriptor
 	{
 		if (__other == null)
 			throw new NullPointerException("NARG");
+		if (__other == this)
+			return 0;
 		
 		FieldDescriptor[] aList = this._args;
 		FieldDescriptor[] bList = __other._args;
@@ -282,6 +284,8 @@ public final class MethodDescriptor
 	public boolean equals(Object __o)
 	{
 		// Check
+		if (__o == this)
+			return true;
 		if (!(__o instanceof MethodDescriptor))
 			return false;
 		
@@ -378,6 +382,25 @@ public final class MethodDescriptor
 		
 		return new MethodDescriptor(
 			(__rv == null ? null : new FieldDescriptor(__rv)), args);
+	}
+	
+	/**
+	 * Creates a descriptor from the given input strings.
+	 * 
+	 * @param __rv The return value of the method, may be {@code null}.
+	 * @param __args The arguments of the method.
+	 * @return The descriptor.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	public static MethodDescriptor ofArguments(FieldDescriptor __rv,
+		FieldDescriptor... __args)
+		throws NullPointerException
+	{
+		if (__args == null)
+			throw new NullPointerException("NARG");
+		
+		return new MethodDescriptor(__rv, __args.clone());
 	}
 }
 
