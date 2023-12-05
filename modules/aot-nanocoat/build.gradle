@@ -21,6 +21,16 @@ squirreljme
 	tags += "aot-compiler"
 	tags += "compiler:nanocoat"
 	mainClass = "cc.squirreljme.jvm.aot.Main"
+	
+	// These classes break ProGuard since it tries to pull it in but fails
+	proGuardOptionsTestFixtures += [
+	    "-keep", "class", "**",
+		"-dontwarn", "**"
+	]
+	proGuardOptionsTest += [
+	    "-keep", "class", "**",
+		"-dontwarn", "**"
+	]
 }
 
 dependencies
