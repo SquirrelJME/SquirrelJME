@@ -14,7 +14,7 @@
 sjme_attrUnused RETRO_API void retro_set_audio_sample(
 	retro_audio_sample_t sample)
 {
-	static jint trigger;
+	static sjme_jint trigger;
 	if (!(trigger++))
 		sjme_message("Implement this?");
 }
@@ -22,7 +22,7 @@ sjme_attrUnused RETRO_API void retro_set_audio_sample(
 sjme_attrUnused RETRO_API void retro_set_audio_sample_batch(
 	retro_audio_sample_batch_t sampleBatch)
 {
-	static jint trigger;
+	static sjme_jint trigger;
 	if (!(trigger++))
 		sjme_message("Implement this?");
 }

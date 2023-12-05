@@ -81,117 +81,99 @@ extern "C" {
 #define SJME_SIZEOF_STRUCT_MEMBER(type, member) \
 	(sizeof((*((type*)0)).member))
 
-#if defined(SJME_CONFIG_WRAPPED_TYPES)
-	/**
-	 * Indicates a wrapped type.
-	 * 
-	 * @param x The type input.
-	 * @since 2023/12/05
-	 */
-	#define SJME_WRAPPED(x) sjme_##x
-#else
-	/**
-	 * Indicates a wrapped type.
-	 * 
-	 * @param x The type input.
-	 * @since 2023/12/05
-	 */
-	#define SJME_WRAPPED(x) x
-#endif
-
 /**
  * Boolean type.
  * 
  * @since 2023/07/25
  */
-typedef uint8_t SJME_WRAPPED(jboolean);
+typedef uint8_t sjme_jboolean;
 
 /**
  * Byte type.
  * 
  * @since 2023/07/25
  */
-typedef int8_t SJME_WRAPPED(jbyte);
+typedef int8_t sjme_jbyte;
 
 /**
  * Unsigned byte type.
  * 
  * @since 2023/08/09
  */
-typedef uint8_t SJME_WRAPPED(jubyte);
+typedef uint8_t sjme_jubyte;
 
 /**
  * Short type.
  * 
  * @since 2023/07/25
  */
-typedef int16_t SJME_WRAPPED(jshort);
+typedef int16_t sjme_jshort;
 
 /**
  * Character type.
  * 
  * @since 2023/07/25
  */
-typedef uint16_t SJME_WRAPPED(jchar);
+typedef uint16_t sjme_jchar;
 
 /**
  * Integer type.
  * 
  * @since 2023/07/25
  */
-typedef int32_t SJME_WRAPPED(jint);
+typedef int32_t sjme_jint;
 
 /**
  * Unsigned integer type.
  * 
  * @since 2023/11/20
  */
-typedef uint32_t SJME_WRAPPED(juint);
+typedef uint32_t sjme_juint;
 
 /**
  * Long value.
  * 
  * @since 2023/07/25
  */
-typedef struct SJME_WRAPPED(jlong)
+typedef struct sjme_jlong
 {
 	/** High value. */
-	SJME_WRAPPED(jint) hi;
+	sjme_jint hi;
 	
 	/** Low value. */
-	SJME_WRAPPED(juint) lo;
-} SJME_WRAPPED(jlong);
+	sjme_juint lo;
+} sjme_jlong;
 
 /**
  * Float value.
  * 
  * @sinc 2023/07/25
  */
-typedef struct SJME_WRAPPED(jfloat)
+typedef struct sjme_jfloat
 {
-	SJME_WRAPPED(jint) value;
-} SJME_WRAPPED(jfloat);
+	sjme_jint value;
+} sjme_jfloat;
 
 /**
  * Double value.
  * 
  * @sinc 2023/07/25
  */
-typedef struct SJME_WRAPPED(jdouble)
+typedef struct sjme_jdouble
 {
 	/** High value. */
-	SJME_WRAPPED(juint) hi;
+	sjme_juint hi;
 	
 	/** Low value. */
-	SJME_WRAPPED(juint) lo;
-} SJME_WRAPPED(jdouble);
+	sjme_juint lo;
+} sjme_jdouble;
 
 /**
  * Temporary index.
  * 
  * @since 2023/07/25
  */
-typedef SJME_WRAPPED(jint) sjme_tempIndex;
+typedef sjme_jint sjme_tempIndex;
 
 /**
  * Basic data type identifier.
@@ -257,7 +239,7 @@ typedef sjme_basicTypeId sjme_javaTypeId;
 typedef struct sjme_basicTypeIds
 {
 	/** The number of IDs. */
-	jint count;
+	sjme_jint count;
 	
 	/** The IDs. */
 	const sjme_javaTypeId ids[sjme_flexibleArrayCount];
@@ -268,14 +250,14 @@ typedef struct sjme_basicTypeIds
  * 
  * @since 2023/07/25
  */
-typedef SJME_WRAPPED(jint) sjme_pcAddr;
+typedef sjme_jint sjme_pcAddr;
 
 /**
  * Static linkage type.
  * 
  * @since 2023/07/25
  */
-typedef SJME_WRAPPED(jint) sjme_staticLinkageType;
+typedef sjme_jint sjme_staticLinkageType;
 
 /**
  * Base object information.
@@ -285,7 +267,7 @@ typedef SJME_WRAPPED(jint) sjme_staticLinkageType;
 typedef struct sjme_jobjectBase
 {
 	/** The reference count of this object, zero it becomes GCed. */
-	SJME_WRAPPED(jint) refCount;
+	sjme_jint refCount;
 } sjme_jobjectBase;
 
 /**
@@ -293,29 +275,29 @@ typedef struct sjme_jobjectBase
  * 
  * @since 2023/07/25
  */
-typedef sjme_jobjectBase* SJME_WRAPPED(jobject);
+typedef sjme_jobjectBase* sjme_jobject;
 
 /**
  * Class type.
  * 
  * @since 2023/07/25
  */
-typedef SJME_WRAPPED(jobject) SJME_WRAPPED(jclass);
+typedef sjme_jobject sjme_jclass;
 
 /**
  * Throwable type.
  * 
  * @since 2023/07/25
  */
-typedef SJME_WRAPPED(jobject) SJME_WRAPPED(jthrowable);
+typedef sjme_jobject sjme_jthrowable;
 
 typedef union sjme_anyData
 {
 	/** Integer. */
-	SJME_WRAPPED(jint) jint;
+	sjme_jint sjme_jint;
 	
 	/** Object. */
-	SJME_WRAPPED(jobject) jobject;
+	sjme_jobject sjme_jobject;
 	
 	/** Temporary index. */
 	sjme_tempIndex tempIndex;
@@ -350,34 +332,34 @@ typedef struct sjme_nvm_thread
 	sjme_nvm_state* inState;
 	
 	/** The thread ID. */
-	SJME_WRAPPED(jint) threadId;
+	sjme_jint threadId;
 	
 	/** The top of the stack. */
 	sjme_nvm_frame* top;
 	
 	/** The number of frames. */
-	SJME_WRAPPED(jint) numFrames;
+	sjme_jint numFrames;
 } sjme_nvm_thread;
 
 typedef struct sjme_static_constValue
 {
 	/** Integer value. */
-	SJME_WRAPPED(jint) jint;
+	sjme_jint sjme_jint;
 	
 	/** Long value. */
-	SJME_WRAPPED(jlong) jlong;
+	sjme_jlong sjme_jlong;
 	
 	/** Float value. */
-	SJME_WRAPPED(jfloat) jfloat;
+	sjme_jfloat sjme_jfloat;
 	
 	/** Double value. */
-	SJME_WRAPPED(jdouble) jdouble;
+	sjme_jdouble sjme_jdouble;
 	
 	/** String value. */
-	const char* jstring;
+	const char* sjme_jstring;
 	
 	/** Class name. */
-	const char* jclass;
+	const char* sjme_jclass;
 } sjme_static_constValue;
 
 /**
@@ -388,7 +370,7 @@ typedef struct sjme_static_constValue
 typedef struct sjme_static_fieldType
 {
 	/** The hash code for the field type. */
-	SJME_WRAPPED(jint) hashCode;
+	sjme_jint hashCode;
 	
 	/** The field descriptor. */
 	const char* descriptor;
@@ -406,7 +388,7 @@ typedef struct sjme_static_classField
 	const sjme_static_fieldType* type;
 	
 	/** Flags. */
-	SJME_WRAPPED(jint) flags;
+	sjme_jint flags;
 	
 	/** The constant value type. */
 	sjme_basicTypeId valueType;
@@ -418,7 +400,7 @@ typedef struct sjme_static_classField
 typedef struct sjme_static_classFields
 {
 	/** The number of fields. */
-	SJME_WRAPPED(jint) count;
+	sjme_jint count;
 	
 	/** Fields. */
 	sjme_static_classField fields[sjme_flexibleArrayCount];
@@ -433,7 +415,7 @@ typedef struct sjme_static_classFields
  * a @c Throwable object.
  * @since 2023/07/25
  */
-typedef jboolean (*sjme_methodCodeFunction)(
+typedef sjme_jboolean (*sjme_methodCodeFunction)(
 	struct sjme_nvm_state* currentState,
 	struct sjme_nvm_thread* currentThread);
 
@@ -445,7 +427,7 @@ typedef jboolean (*sjme_methodCodeFunction)(
 typedef struct sjme_static_classCodeLimits
 {
 	/** The maximum number of @c sjme_basicTypeId local/stack variables. */
-	const SJME_WRAPPED(jubyte) maxVariables[SJME_NUM_JAVA_TYPE_IDS];
+	const sjme_jubyte maxVariables[SJME_NUM_JAVA_TYPE_IDS];
 } sjme_static_classCodeLimits;
 
 /**
@@ -460,7 +442,7 @@ typedef struct sjme_static_classCode
 	const sjme_static_classCodeLimits* limits;
 	
 	/** The index where thrown objects are placed. */
-	SJME_WRAPPED(jshort) thrownVarIndex;
+	sjme_jshort thrownVarIndex;
 	
 	/** The method code. */
 	sjme_methodCodeFunction code;
@@ -474,7 +456,7 @@ typedef struct sjme_static_classCode
 typedef struct sjme_static_methodType
 {
 	/** The hash code for the method type. */
-	SJME_WRAPPED(jint) hashCode;
+	sjme_jint hashCode;
 	
 	/** The descriptor for the method type. */
 	const char* descriptor;
@@ -483,7 +465,7 @@ typedef struct sjme_static_methodType
 	const sjme_static_fieldType* returnType;
 	
 	/** The number of arguments. */
-	SJME_WRAPPED(jint) argCount;
+	sjme_jint argCount;
 	
 	/** The arguments to the method. */
 	const sjme_static_fieldType* argTypes[0];
@@ -495,7 +477,7 @@ typedef struct sjme_static_classMethod
 	const char* name;
 	
 	/** Flags. */
-	SJME_WRAPPED(jint) flags;
+	sjme_jint flags;
 	
 	/** Name typed. */
 	const sjme_static_methodType* type;
@@ -507,7 +489,7 @@ typedef struct sjme_static_classMethod
 typedef struct sjme_static_classMethods
 {
 	/** The number of methods. */
-	SJME_WRAPPED(jint) count;
+	sjme_jint count;
 	
 	/** Methods. */
 	sjme_static_classMethod methods[sjme_flexibleArrayCount];
@@ -521,7 +503,7 @@ typedef struct sjme_static_classInterface
 typedef struct sjme_static_classInterfaces
 {
 	/** The number of interfaces. */
-	SJME_WRAPPED(jint) count;
+	sjme_jint count;
 	
 	/** Interfaces. */
 	sjme_static_classInterface interfaces[sjme_flexibleArrayCount];
@@ -533,13 +515,13 @@ typedef struct sjme_static_resource
 	const char* path;
 	
 	/** The hash for the path. */
-	SJME_WRAPPED(jint) pathHash;
+	sjme_jint pathHash;
 	
 	/** The size of the resource. */
-	SJME_WRAPPED(jint) size;
+	sjme_jint size;
 	
 	/** The resource data. */
-	const jbyte data[sjme_flexibleArrayCount];
+	const sjme_jbyte data[sjme_flexibleArrayCount];
 } sjme_static_resource;
 
 typedef struct sjme_static_linkage_data_classObject
@@ -551,10 +533,10 @@ typedef struct sjme_static_linkage_data_classObject
 typedef struct sjme_static_linkage_data_fieldAccess
 {
 	/** Is this static? */
-	SJME_WRAPPED(jboolean) isStatic;
+	sjme_jboolean isStatic;
 	
 	/** Is this a store? */
-	SJME_WRAPPED(jboolean) isStore;
+	sjme_jboolean isStore;
 	
 	/** The source method name. */
 	const char* sourceMethodName;
@@ -593,7 +575,7 @@ typedef struct sjme_static_linkage_data_invokeSpecial
 typedef struct sjme_static_linkage_data_invokeNormal
 {
 	/** Is this a static invocation? */
-	SJME_WRAPPED(jboolean) isStatic;
+	sjme_jboolean isStatic;
 
 	/** The source method name. */
 	const char* sourceMethodName;
@@ -652,7 +634,7 @@ typedef struct sjme_static_linkage
 typedef struct sjme_static_linkages
 {
 	/** The number of linkages. */
-	SJME_WRAPPED(jint) count;
+	sjme_jint count;
 	
 	/** The define linkages. */
 	sjme_static_linkage linkages[sjme_flexibleArrayCount];
@@ -673,7 +655,7 @@ typedef struct sjme_static_classInfo
 	const sjme_static_classInterfaces* interfaceNames;
 	
 	/** Flags. */
-	SJME_WRAPPED(jint) flags;
+	sjme_jint flags;
 	
 	/** Fields. */
 	const sjme_static_classFields* fields;
@@ -688,7 +670,7 @@ typedef struct sjme_static_classInfo
 typedef struct sjme_static_library_classes
 {
 	/** The number of classes. */
-	SJME_WRAPPED(jint) count;
+	sjme_jint count;
 	
 	/** Class set. */
 	const struct sjme_static_classInfo* classes[sjme_flexibleArrayCount];
@@ -697,7 +679,7 @@ typedef struct sjme_static_library_classes
 typedef struct sjme_static_library_resources
 {
 	/** The number of resources. */
-	SJME_WRAPPED(jint) count;
+	sjme_jint count;
 	
 	/** Resource set. */
 	const struct sjme_static_resource* resources[sjme_flexibleArrayCount];
@@ -709,7 +691,7 @@ typedef struct sjme_static_library
 	const char* name;
 	
 	/** Hashcode for the name. */
-	SJME_WRAPPED(jint) nameHash;
+	sjme_jint nameHash;
 	
 	/** The hash of the original library, to detect changes. */
 	const char* originalLibHash;
@@ -786,65 +768,48 @@ typedef struct sjme_dynamic_linkage
 typedef struct sjme_nvm_frameTread
 {
 	/** The number of items in this tread. */
-	SJME_WRAPPED(jint) count;
+	sjme_jint count;
 	
 	/** The base index for the stack index. */
-	SJME_WRAPPED(jint) stackBaseIndex;
+	sjme_jint stackBaseIndex;
 	
 	/** The maximum size this tread can be. */
-	SJME_WRAPPED(jint) max;
+	sjme_jint max;
 	
 	/** Values within the tread. */
 	union
 	{
 		/** Integer values. */
-		SJME_WRAPPED(jint) jints[sjme_flexibleArrayCountUnion];
+		sjme_jint sjme_jints[sjme_flexibleArrayCountUnion];
 		
 		/** Long values. */
-		SJME_WRAPPED(jlong) jlongs[sjme_flexibleArrayCountUnion];
+		sjme_jlong sjme_jlongs[sjme_flexibleArrayCountUnion];
 		
 		/** Float values. */
-		SJME_WRAPPED(jfloat) jfloats[sjme_flexibleArrayCountUnion];
+		sjme_jfloat sjme_jfloats[sjme_flexibleArrayCountUnion];
 		
 		/** Double values. */
-		SJME_WRAPPED(jdouble) jdoubles[sjme_flexibleArrayCountUnion];
+		sjme_jdouble sjme_jdoubles[sjme_flexibleArrayCountUnion];
 		
 		/** Object references. */
-		SJME_WRAPPED(jobject) jobjects[sjme_flexibleArrayCountUnion];
+		sjme_jobject sjme_jobjects[sjme_flexibleArrayCountUnion];
 	} values;
 } sjme_nvm_frameTread;
 
-#if defined(SJME_CONFIG_WRAPPED_TYPES)
-	/**
-	 * Calculates the size of a frame tread for a given type.
-	 * 
-	 * @param type The type to get the size for.
-	 * @param count The number if items to store.
-	 * @return The size in bytes for the tread.
-	 * @since 2023/12/05
-	 */
-	#define SJME_SIZEOF_FRAME_TREAD(type, count) \
-		(sizeof(sjme_nvm_frameTread) + \
-		/* Need to handle cases where values could be aligned up... */ \
-		(offsetof(sjme_nvm_frameTread, values.SJME_TOKEN_PASTE(type,s)[0]) - \
-			offsetof(sjme_nvm_frameTread, values)) + \
-		(sizeof(SJME_TOKEN_PASTE(sjme_,type)) * (size_t)(count)))
-#else
-	/**
-	 * Calculates the size of a frame tread for a given type.
-	 * 
-	 * @param type The type to get the size for.
-	 * @param count The number if items to store.
-	 * @return The size in bytes for the tread.
-	 * @since 2023/11/15
-	 */
-	#define SJME_SIZEOF_FRAME_TREAD(type, count) \
-		(sizeof(sjme_nvm_frameTread) + \
-		/* Need to handle cases where values could be aligned up... */ \
-		(offsetof(sjme_nvm_frameTread, values.SJME_TOKEN_PASTE(type,s)[0]) - \
-			offsetof(sjme_nvm_frameTread, values)) + \
-		(sizeof(type) * (size_t)(count)))
-#endif
+/**
+ * Calculates the size of a frame tread for a given type.
+ * 
+ * @param type The type to get the size for.
+ * @param count The number if items to store.
+ * @return The size in bytes for the tread.
+ * @since 2023/11/15
+ */
+#define SJME_SIZEOF_FRAME_TREAD(type, count) \
+	(sizeof(sjme_nvm_frameTread) + \
+	/* Need to handle cases where values could be aligned up... */ \
+	(offsetof(sjme_nvm_frameTread, values.SJME_TOKEN_PASTE(type,s)[0]) - \
+		offsetof(sjme_nvm_frameTread, values)) + \
+	(sizeof(type) * (size_t)(count)))
 
 /**
  * Calculates the size of a frame tread for a given type via variable.
@@ -855,24 +820,24 @@ typedef struct sjme_nvm_frameTread
  * @since 2023/11/15
  */
 static inline size_t SJME_SIZEOF_FRAME_TREAD_VAR(sjme_javaTypeId typeId,
-	jint count)
+	sjme_jint count)
 {
 	switch (typeId)
 	{
 		case SJME_JAVA_TYPE_ID_INTEGER:
-			return SJME_SIZEOF_FRAME_TREAD(jint, count);
+			return SJME_SIZEOF_FRAME_TREAD(sjme_jint, count);
 		
 		case SJME_JAVA_TYPE_ID_LONG:
-			return SJME_SIZEOF_FRAME_TREAD(jlong, count);
+			return SJME_SIZEOF_FRAME_TREAD(sjme_jlong, count);
 			
 		case SJME_JAVA_TYPE_ID_FLOAT:
-			return SJME_SIZEOF_FRAME_TREAD(jfloat, count);
+			return SJME_SIZEOF_FRAME_TREAD(sjme_jfloat, count);
 			
 		case SJME_JAVA_TYPE_ID_DOUBLE:
-			return SJME_SIZEOF_FRAME_TREAD(jdouble, count);
+			return SJME_SIZEOF_FRAME_TREAD(sjme_jdouble, count);
 			
 		case SJME_JAVA_TYPE_ID_OBJECT:
-			return SJME_SIZEOF_FRAME_TREAD(jobject, count);
+			return SJME_SIZEOF_FRAME_TREAD(sjme_jobject, count);
 	}
 	
 	/* Invalid. */
@@ -887,10 +852,10 @@ static inline size_t SJME_SIZEOF_FRAME_TREAD_VAR(sjme_javaTypeId typeId,
 typedef struct sjme_nvm_frameStack
 {
 	/** The number of items in the stack. */
-	SJME_WRAPPED(jint) count;
+	sjme_jint count;
 	
 	/** The current limit of this structure. */
-	SJME_WRAPPED(jint) limit;
+	sjme_jint limit;
 	
 	/** The stack order. */
 	sjme_javaTypeId order[sjme_flexibleArrayCount];
@@ -910,12 +875,12 @@ typedef struct sjme_nvm_frameStack
 typedef struct sjme_nvm_frameLocalMap
 {
 	/** The maximum number of locals. */
-	SJME_WRAPPED(jint) max;
+	sjme_jint max;
 	
 	/** Mapping of a specific variable to a given type index. */
 	union
 	{
-		SJME_WRAPPED(jbyte) to[SJME_NUM_JAVA_TYPE_IDS];
+		sjme_jbyte to[SJME_NUM_JAVA_TYPE_IDS];
 	} maps[sjme_flexibleArrayCount];
 } sjme_nvm_frameLocalMap;
 
@@ -939,13 +904,13 @@ struct sjme_nvm_frame
 	sjme_nvm_frame* parent;
 	
 	/** The frame index in the thread. */
-	SJME_WRAPPED(jint) frameIndex;
+	sjme_jint frameIndex;
 	
 	/** The current program counter. */
 	sjme_pcAddr pc;
 	
 	/** Object which is waiting to be thrown for exception handling. */
-	SJME_WRAPPED(jobject) waitingThrown;
+	sjme_jobject waitingThrown;
 	
 	/** Frame linkage. */
 	sjme_dynamic_linkage* linkage;
@@ -954,10 +919,10 @@ struct sjme_nvm_frame
 	sjme_any* tempStack;
 	
 	/** Reference to this. */
-	SJME_WRAPPED(jobject) thisRef;
+	sjme_jobject thisRef;
 	
 	/** Class reference. */
-	SJME_WRAPPED(jclass) classObjectRef;
+	sjme_jclass classObjectRef;
 	
 	/** The current stack information. */
 	sjme_nvm_frameStack* stack;
@@ -975,7 +940,7 @@ struct sjme_nvm_frame
 typedef struct sjme_static_libraries
 {
 	/** The number of libraries. */
-	SJME_WRAPPED(jint) count;
+	sjme_jint count;
 	
 	/** The libraries. */
 	const sjme_static_library* libraries[sjme_flexibleArrayCount];
@@ -1021,11 +986,11 @@ typedef struct sjme_nvm_bootConfig
  * 
  * @param frame The frame this is garbage collecting in.
  * @param gcWhat what is being garbage collected?
- * @return Returns @c JNI_TRUE if garbage collection should continue.
+ * @return Returns @c SJME_JNI_TRUE if garbage collection should continue.
  * @since 2023/11/17
  */
-typedef jboolean (*sjme_nvm_StateHookGc)(sjme_nvm_frame* frame,
-	jobject gcWhat);
+typedef sjme_jboolean (*sjme_nvm_StateHookGc)(sjme_nvm_frame* frame,
+	sjme_jobject gcWhat);
 
 /**
  * Hooks for alternative function.
@@ -1058,35 +1023,19 @@ struct sjme_nvm_state
 	const sjme_nvm_stateHooks* hooks;
 };
 
-#if defined(SJME_CONFIG_WRAPPED_TYPES)
-	/**
-	 * True value.
-	 * 
-	 * @since 2023/07/25
-	 */
-	#define SJME_JNI_TRUE ((SJME_WRAPPED(jboolean))1)
-	
-	/**
-	 * False value.
-	 * 
-	 * @since 2023/07/25
-	 */
-	#define SJME_JNI_FALSE ((SJME_WRAPPED(jboolean))0)
-#else
-	/**
-	 * True value.
-	 * 
-	 * @since 2023/07/25
-	 */
-	#define JNI_TRUE ((SJME_WRAPPED(jboolean))1)
-	
-	/**
-	 * False value.
-	 * 
-	 * @since 2023/07/25
-	 */
-	#define JNI_FALSE ((SJME_WRAPPED(jboolean))0)
-#endif
+/**
+ * True value.
+ * 
+ * @since 2023/07/25
+ */
+#define SJME_JNI_TRUE ((sjme_jboolean)1)
+
+/**
+ * False value.
+ * 
+ * @since 2023/07/25
+ */
+#define SJME_JNI_FALSE ((sjme_jboolean)0)
 
 /**
  * Method initialization start.
@@ -1176,47 +1125,47 @@ typedef enum sjme_errorCode
 	SJME_NUM_ERROR_CODES = -21
 } sjme_errorCode;
 
-SJME_WRAPPED(jboolean) sjme_nvm_arrayLength(
+sjme_jboolean sjme_nvm_arrayLength(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_attrInNullable SJME_WRAPPED(jobject) arrayInstance,
-	sjme_attrOutNotNull SJME_WRAPPED(jint)* outLen)
+	sjme_attrInNullable sjme_jobject arrayInstance,
+	sjme_attrOutNotNull sjme_jint* outLen)
 	sjme_attrCheckReturn;
 
 sjme_tempIndex sjme_nvm_arrayLoadIntoTemp(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
 	sjme_attrInValue sjme_basicTypeId primitiveType,
-	sjme_attrInNullable SJME_WRAPPED(jobject) arrayInstance,
-	sjme_attrInValue sjme_attrInPositive SJME_WRAPPED(jint) index)
+	sjme_attrInNullable sjme_jobject arrayInstance,
+	sjme_attrInValue sjme_attrInPositive sjme_jint index)
 	sjme_attrOutNegativeOnePositive sjme_attrCheckReturn;
 	
-SJME_WRAPPED(jboolean) sjme_nvm_arrayStore(
+sjme_jboolean sjme_nvm_arrayStore(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
 	sjme_attrInValue sjme_basicTypeId primitiveType,
-	sjme_attrInNullable SJME_WRAPPED(jobject) arrayInstance,
-	sjme_attrInValue sjme_attrInPositive SJME_WRAPPED(jint) index,
+	sjme_attrInNullable sjme_jobject arrayInstance,
+	sjme_attrInValue sjme_attrInPositive sjme_jint index,
 	sjme_attrInNotNull sjme_any* value)
 	sjme_attrCheckReturn;
 	
-SJME_WRAPPED(jboolean) sjme_nvm_checkCast(
+sjme_jboolean sjme_nvm_checkCast(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_attrInNullable SJME_WRAPPED(jobject) instance,
+	sjme_attrInNullable sjme_jobject instance,
 	sjme_attrInNotNull sjme_dynamic_linkage_data_classObject* type)
 	sjme_attrCheckReturn;
 	
-SJME_WRAPPED(jboolean) sjme_nvm_countReferenceDown(
+sjme_jboolean sjme_nvm_countReferenceDown(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_attrInNullable SJME_WRAPPED(jobject) instance)
+	sjme_attrInNullable sjme_jobject instance)
 	sjme_attrCheckReturn;
 	
 sjme_tempIndex sjme_nvm_fieldGetToTemp(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_attrInNullable SJME_WRAPPED(jobject) instance,
+	sjme_attrInNullable sjme_jobject instance,
 	sjme_attrInNotNull sjme_dynamic_linkage_data_fieldAccess* field)
 	sjme_attrOutNegativeOnePositive sjme_attrCheckReturn;
 
-SJME_WRAPPED(jboolean) sjme_nvm_fieldPut(
+sjme_jboolean sjme_nvm_fieldPut(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_attrInNullable SJME_WRAPPED(jobject) instance,
+	sjme_attrInNullable sjme_jobject instance,
 	sjme_attrInNotNull sjme_dynamic_linkage_data_fieldAccess* field,
 	sjme_attrInNotNull sjme_any* value)
 	sjme_attrCheckReturn;
@@ -1226,79 +1175,79 @@ SJME_WRAPPED(jboolean) sjme_nvm_fieldPut(
  * 
  * @param frame The frame this is collecting in. 
  * @param instance The instance to be garbage collected.
- * @return Returns @c JNI_TRUE on success.
+ * @return Returns @c SJME_JNI_TRUE on success.
  * @since 2023/11/17
  */
-SJME_WRAPPED(jboolean) sjme_nvm_gcObject(
+sjme_jboolean sjme_nvm_gcObject(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_attrInNullable SJME_WRAPPED(jobject) instance)
+	sjme_attrInNullable sjme_jobject instance)
 	sjme_attrCheckReturn;
 
-SJME_WRAPPED(jboolean) sjme_nvm_invoke(
+sjme_jboolean sjme_nvm_invoke(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
 	sjme_attrInNotNull sjme_dynamic_linkage_data_invokeNormal* method)
 	sjme_attrCheckReturn;
 
-SJME_WRAPPED(jboolean) sjme_nvm_localPopDouble(
+sjme_jboolean sjme_nvm_localPopDouble(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_attrInValue sjme_attrInPositive SJME_WRAPPED(jint) localIndex)
+	sjme_attrInValue sjme_attrInPositive sjme_jint localIndex)
 	sjme_attrCheckReturn;
 
-SJME_WRAPPED(jboolean) sjme_nvm_localPopFloat(
+sjme_jboolean sjme_nvm_localPopFloat(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_attrInValue sjme_attrInPositive SJME_WRAPPED(jint) localIndex)
+	sjme_attrInValue sjme_attrInPositive sjme_jint localIndex)
 	sjme_attrCheckReturn;
 
-SJME_WRAPPED(jboolean) sjme_nvm_localPopInteger(
+sjme_jboolean sjme_nvm_localPopInteger(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_attrInValue sjme_attrInPositive SJME_WRAPPED(jint) localIndex)
+	sjme_attrInValue sjme_attrInPositive sjme_jint localIndex)
 	sjme_attrCheckReturn;
 
-SJME_WRAPPED(jboolean) sjme_nvm_localPopLong(
+sjme_jboolean sjme_nvm_localPopLong(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_attrInValue sjme_attrInPositive SJME_WRAPPED(jint) localIndex)
+	sjme_attrInValue sjme_attrInPositive sjme_jint localIndex)
 	sjme_attrCheckReturn;
 
-SJME_WRAPPED(jboolean) sjme_nvm_localPopReference(
+sjme_jboolean sjme_nvm_localPopReference(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_attrInValue sjme_attrInPositive SJME_WRAPPED(jint) localIndex)
+	sjme_attrInValue sjme_attrInPositive sjme_jint localIndex)
 	sjme_attrCheckReturn;
 
-SJME_WRAPPED(jboolean) sjme_nvm_localPushDouble(
+sjme_jboolean sjme_nvm_localPushDouble(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_attrInValue sjme_attrInPositive SJME_WRAPPED(jint) index)
+	sjme_attrInValue sjme_attrInPositive sjme_jint index)
 	sjme_attrCheckReturn;
 
-SJME_WRAPPED(jboolean) sjme_nvm_localPushFloat(
+sjme_jboolean sjme_nvm_localPushFloat(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_attrInValue sjme_attrInPositive SJME_WRAPPED(jint) index)
+	sjme_attrInValue sjme_attrInPositive sjme_jint index)
 	sjme_attrCheckReturn;
 
-SJME_WRAPPED(jboolean) sjme_nvm_localPushInteger(
+sjme_jboolean sjme_nvm_localPushInteger(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_attrInValue sjme_attrInPositive SJME_WRAPPED(jint) index)
+	sjme_attrInValue sjme_attrInPositive sjme_jint index)
 	sjme_attrCheckReturn;
 
-SJME_WRAPPED(jboolean) sjme_nvm_localPushLong(
+sjme_jboolean sjme_nvm_localPushLong(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_attrInValue sjme_attrInPositive SJME_WRAPPED(jint) index)
+	sjme_attrInValue sjme_attrInPositive sjme_jint index)
 	sjme_attrCheckReturn;
 
-SJME_WRAPPED(jboolean) sjme_nvm_localPushReference(
+sjme_jboolean sjme_nvm_localPushReference(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_attrInValue sjme_attrInPositive SJME_WRAPPED(jint) index)
+	sjme_attrInValue sjme_attrInPositive sjme_jint index)
 	sjme_attrCheckReturn;
 
-SJME_WRAPPED(jboolean) sjme_nvm_localReadInteger(
+sjme_jboolean sjme_nvm_localReadInteger(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_attrInValue sjme_attrInPositive SJME_WRAPPED(jint) index,
-	sjme_attrOutNotNull SJME_WRAPPED(jint)* outValue)
+	sjme_attrInValue sjme_attrInPositive sjme_jint index,
+	sjme_attrOutNotNull sjme_jint* outValue)
 	sjme_attrCheckReturn;
 	
-SJME_WRAPPED(jboolean) sjme_nvm_localWriteInteger(
+sjme_jboolean sjme_nvm_localWriteInteger(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_attrInValue sjme_attrInPositive SJME_WRAPPED(jint) index,
-	sjme_attrInValue SJME_WRAPPED(jint) value)
+	sjme_attrInValue sjme_attrInPositive sjme_jint index,
+	sjme_attrInValue sjme_jint value)
 	sjme_attrCheckReturn;
 
 sjme_tempIndex sjme_nvm_lookupClassObjectIntoTemp(
@@ -1311,16 +1260,16 @@ sjme_tempIndex sjme_nvm_lookupStringIntoTemp(
 	sjme_attrInNotNull sjme_dynamic_linkage_data_stringObject* stringLinkage)
 	sjme_attrOutNegativeOnePositive sjme_attrCheckReturn;
 
-SJME_WRAPPED(jboolean) sjme_nvm_monitor(
+sjme_jboolean sjme_nvm_monitor(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_attrInNullable SJME_WRAPPED(jobject) instance,
-	sjme_attrInValue SJME_WRAPPED(jboolean) isEnter)
+	sjme_attrInNullable sjme_jobject instance,
+	sjme_attrInValue sjme_jboolean isEnter)
 	sjme_attrCheckReturn;
 
 sjme_tempIndex sjme_nvm_newArrayIntoTemp(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
 	sjme_attrInNotNull sjme_dynamic_linkage_data_classObject* componentType,
-	sjme_attrInValue sjme_attrInPositive SJME_WRAPPED(jint) length)
+	sjme_attrInValue sjme_attrInPositive sjme_jint length)
 	sjme_attrOutNegativeOnePositive sjme_attrCheckReturn;
 
 sjme_tempIndex sjme_nvm_newInstanceIntoTemp(
@@ -1328,12 +1277,12 @@ sjme_tempIndex sjme_nvm_newInstanceIntoTemp(
 	sjme_attrInNotNull sjme_dynamic_linkage_data_classObject* linkage)
 	sjme_attrOutNegativeOnePositive sjme_attrCheckReturn;
 	
-SJME_WRAPPED(jboolean) sjme_nvm_returnFromMethod(
+sjme_jboolean sjme_nvm_returnFromMethod(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
 	sjme_attrInNotNull sjme_any* value)
 	sjme_attrCheckReturn;
 
-SJME_WRAPPED(jboolean) sjme_nvm_stackPopAny(
+sjme_jboolean sjme_nvm_stackPopAny(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
 	sjme_attrOutNotNull sjme_any* output)
 	sjme_attrCheckReturn;
@@ -1342,15 +1291,15 @@ sjme_tempIndex sjme_nvm_stackPopAnyToTemp(
 	sjme_attrInNotNull sjme_nvm_frame* frame)
 	sjme_attrOutNegativeOnePositive sjme_attrCheckReturn;
 
-SJME_WRAPPED(jint) sjme_nvm_stackPopInteger(
+sjme_jint sjme_nvm_stackPopInteger(
 	sjme_attrInNotNull sjme_nvm_frame* frame)
 	sjme_attrOutNegativeOnePositive;
 
-SJME_WRAPPED(jobject) sjme_nvm_stackPopReference(
+sjme_jobject sjme_nvm_stackPopReference(
 	sjme_attrInNotNull sjme_nvm_frame* frame)
 	sjme_attrOutNullable;
 
-SJME_WRAPPED(jboolean) sjme_nvm_stackPopReferenceThenThrow(
+sjme_jboolean sjme_nvm_stackPopReferenceThenThrow(
 	sjme_attrInNotNull sjme_nvm_frame* frame)
 	sjme_attrCheckReturn;
 
@@ -1358,59 +1307,59 @@ sjme_tempIndex sjme_nvm_stackPopReferenceToTemp(
 	sjme_attrInNotNull sjme_nvm_frame* frame)
 	sjme_attrOutNegativeOnePositive sjme_attrCheckReturn;
 
-SJME_WRAPPED(jboolean) sjme_nvm_stackPushAny(
+sjme_jboolean sjme_nvm_stackPushAny(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
 	sjme_attrInNotNull sjme_any* input)
 	sjme_attrCheckReturn;
 
-SJME_WRAPPED(jboolean) sjme_nvm_stackPushAnyFromTemp(
+sjme_jboolean sjme_nvm_stackPushAnyFromTemp(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
 	sjme_attrInPositive sjme_tempIndex input)
 	sjme_attrCheckReturn;
 
-SJME_WRAPPED(jboolean) sjme_nvm_stackPushDoubleParts(
+sjme_jboolean sjme_nvm_stackPushDoubleParts(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_attrInValue SJME_WRAPPED(jint) hi,
-	sjme_attrInValue SJME_WRAPPED(jint) lo)
+	sjme_attrInValue sjme_jint hi,
+	sjme_attrInValue sjme_jint lo)
 	sjme_attrCheckReturn;
 
-SJME_WRAPPED(jboolean) sjme_nvm_stackPushFloatRaw(
+sjme_jboolean sjme_nvm_stackPushFloatRaw(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_attrInValue SJME_WRAPPED(jint) rawValue)
+	sjme_attrInValue sjme_jint rawValue)
 	sjme_attrCheckReturn;
 
-SJME_WRAPPED(jboolean) sjme_nvm_stackPushInteger(
+sjme_jboolean sjme_nvm_stackPushInteger(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_attrInValue SJME_WRAPPED(jint) value)
+	sjme_attrInValue sjme_jint value)
 	sjme_attrCheckReturn;
 
-SJME_WRAPPED(jboolean) sjme_nvm_stackPushIntegerIsInstanceOf(
+sjme_jboolean sjme_nvm_stackPushIntegerIsInstanceOf(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_attrInNullable SJME_WRAPPED(jobject) instance,
+	sjme_attrInNullable sjme_jobject instance,
 	sjme_attrInNotNull sjme_dynamic_linkage_data_classObject* type)
 	sjme_attrCheckReturn;
 
-SJME_WRAPPED(jboolean) sjme_nvm_stackPushLongParts(
+sjme_jboolean sjme_nvm_stackPushLongParts(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_attrInValue SJME_WRAPPED(jint) hi,
-	sjme_attrInValue SJME_WRAPPED(jint) lo)
+	sjme_attrInValue sjme_jint hi,
+	sjme_attrInValue sjme_jint lo)
 	sjme_attrCheckReturn;
 	
-SJME_WRAPPED(jboolean) sjme_nvm_stackPushReference(
+sjme_jboolean sjme_nvm_stackPushReference(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_attrInNullable SJME_WRAPPED(jobject) instance)
+	sjme_attrInNullable sjme_jobject instance)
 	sjme_attrCheckReturn;
 
-SJME_WRAPPED(jboolean) sjme_nvm_stackPushReferenceFromTemp(
+sjme_jboolean sjme_nvm_stackPushReferenceFromTemp(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
 	sjme_attrInPositive sjme_tempIndex tempIndex)
 	sjme_attrCheckReturn;
 
-SJME_WRAPPED(jboolean) sjme_nvm_tempDiscard(
+sjme_jboolean sjme_nvm_tempDiscard(
 	sjme_attrInNotNull sjme_nvm_frame* frame)
 	sjme_attrCheckReturn;
 
-SJME_WRAPPED(jboolean) sjme_nvm_throwExecute(
+sjme_jboolean sjme_nvm_throwExecute(
 	sjme_attrInNotNull sjme_nvm_frame* frame)
 	sjme_attrCheckReturn;
 
@@ -1419,11 +1368,11 @@ SJME_WRAPPED(jboolean) sjme_nvm_throwExecute(
  * 
  * @param inThread The thread to get the top frame from. 
  * @param outFrame The top most frame.
- * @return Returns @c JNI_TRUE on success where the thread is valid and it
+ * @return Returns @c SJME_JNI_TRUE on success where the thread is valid and it
  * has at least one frame.
  * @since 2023/11/11
  */
-SJME_WRAPPED(jboolean) sjme_nvm_topFrame(
+sjme_jboolean sjme_nvm_topFrame(
 	sjme_attrInNotNull sjme_nvm_thread* inThread,
 	sjme_attrOutNotNull sjme_nvm_frame* outFrame)
 	sjme_attrCheckReturn;
@@ -1433,11 +1382,11 @@ SJME_WRAPPED(jboolean) sjme_nvm_topFrame(
  * 
  * @param state The state to tick, @c -1 means to tick forever.
  * @param maxTics The number of ticks to execute before returning.
- * @return Returns @c JNI_TRUE if the machine is still running.
+ * @return Returns @c SJME_JNI_TRUE if the machine is still running.
  * @since 2023/07/27
  */
-SJME_WRAPPED(jboolean) sjme_nvm_tick(sjme_attrInNotNull sjme_nvm_state* state,
-	sjme_attrInValue sjme_attrInPositive SJME_WRAPPED(jint) maxTics)
+sjme_jboolean sjme_nvm_tick(sjme_attrInNotNull sjme_nvm_state* state,
+	sjme_attrInValue sjme_attrInPositive sjme_jint maxTics)
 	sjme_attrCheckReturn;
 
 /*--------------------------------------------------------------------------*/

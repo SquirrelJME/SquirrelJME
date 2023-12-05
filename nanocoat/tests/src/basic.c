@@ -34,7 +34,7 @@ int main(int argc, char** argv)
 	const sjme_availableTest* found;
 	sjme_testResult result;
 	sjme_test test;
-	jint i, jumpId;
+	sjme_jint i, jumpId;
 	
 	if (argc <= 1)
 	{
@@ -72,14 +72,14 @@ int main(int argc, char** argv)
 		/* Run the test. */
 		sjme_message("Starting test %s...", found->name);
 		result = found->function(&test);
-		sjme_message("Test resulted in %d.", (jint)result);
+		sjme_message("Test resulted in %d.", (sjme_jint)result);
 	}
 	
 	/* Short circuited to fail the test? */
 	else
 	{
 		result = jumpId;
-		sjme_message("Short circuited test: %d.", (jint)result);
+		sjme_message("Short circuited test: %d.", (sjme_jint)result);
 	}
 	
 	/* Cleanup after test. */

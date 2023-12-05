@@ -13,7 +13,7 @@
 
 sjme_attrUnused RETRO_API void retro_set_input_poll(retro_input_poll_t poll)
 {
-	static jint trigger;
+	static sjme_jint trigger;
 	if (!(trigger++))
 		sjme_message("Implement this?");
 }
@@ -21,7 +21,7 @@ sjme_attrUnused RETRO_API void retro_set_input_poll(retro_input_poll_t poll)
 sjme_attrUnused RETRO_API void retro_set_input_state(
 	retro_input_state_t state)
 {
-	static jint trigger;
+	static sjme_jint trigger;
 	if (!(trigger++))
 		sjme_message("Implement this?");
 }

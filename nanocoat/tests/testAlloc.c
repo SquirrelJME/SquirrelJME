@@ -17,7 +17,7 @@
 SJME_TEST_DECLARE(testAlloc)
 {
 	void* chunk;
-	jint chunkLen;
+	sjme_jint chunkLen;
 	sjme_alloc_pool* pool;
 	void* block;
 	sjme_alloc_link* link;

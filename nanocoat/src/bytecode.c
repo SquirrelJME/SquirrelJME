@@ -10,10 +10,10 @@
 #include "sjme/bytecode.h"
 #include "sjme/debug.h"
 
-jboolean sjme_byteCode_map(
+sjme_jboolean sjme_byteCode_map(
 	sjme_attrInValue sjme_byteCode_instruction inInstruction,
 	sjme_attrOutNotNull const sjme_byteCode_functionMap** outMapping)
 {
 	sjme_todo("Implement this?");
-	return JNI_FALSE;
+	return SJME_JNI_FALSE;
 }

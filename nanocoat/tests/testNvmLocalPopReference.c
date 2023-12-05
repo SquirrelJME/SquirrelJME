@@ -20,14 +20,14 @@
 typedef struct testHookResult
 {
 	/** The number of GCed objects. */
-	jint count;
+	sjme_jint count;
 	
 	/** The GCed objects. */
-	jobject gc[SJME_ELEVATOR_MAX_OBJECTS];
+	sjme_jobject gc[SJME_ELEVATOR_MAX_OBJECTS];
 } testHookResult;
 
-static jboolean hookGcNvmLocalPopReference(sjme_nvm_frame* frame,
-	jobject instance)
+static sjme_jboolean hookGcNvmLocalPopReference(sjme_nvm_frame* frame,
+	sjme_jobject instance)
 {
 	sjme_elevatorState* elevator;
 	testHookResult* hookResult;
@@ -38,19 +38,19 @@ static jboolean hookGcNvmLocalPopReference(sjme_nvm_frame* frame,
 	/* Elevator must be set. */
 	elevator = frame->inThread->inState->special;
 	if (elevator == NULL)
-		return JNI_FALSE;
+		return SJME_JNI_FALSE;
 	
 	/* There must be a hook result. */
 	hookResult = elevator->special;
 	if (hookResult == NULL)
-		return JNI_FALSE;
+		return SJME_JNI_FALSE;
 	
 	/* Track it, within reason. */
 	if (hookResult->count < SJME_ELEVATOR_MAX_OBJECTS)
 		hookResult->gc[hookResult->count++] = instance;
 	
 	/* Success! */
-	return JNI_TRUE;
+	return SJME_JNI_TRUE;
 }
  
 const sjme_nvm_stateHooks hooksNvmLocalPopReference =
@@ -58,13 +58,13 @@ const sjme_nvm_stateHooks hooksNvmLocalPopReference =
 	.gc = hookGcNvmLocalPopReference,
 };
 
-jboolean configNvmLocalPopReference(
+sjme_jboolean configNvmLocalPopReference(
 	sjme_attrInNotNull sjme_elevatorState* inState,
 	sjme_attrInNotNull sjme_elevatorRunCurrent* inCurrent)
 {
 	/* Check. */
 	if (inState == NULL || inCurrent == NULL)
-		return JNI_FALSE;
+		return SJME_JNI_FALSE;
 	
 	/* Configure. */
 	switch (inCurrent->type)
@@ -83,7 +83,7 @@ jboolean configNvmLocalPopReference(
 			break;
 	}
 	
-	return JNI_TRUE;
+	return SJME_JNI_TRUE;
 }
 
 /** Elevator set for test. */
@@ -105,10 +105,10 @@ static const sjme_elevatorSet elevatorNvmLocalPopReference =
 
 SJME_TEST_DECLARE(testNvmLocalPopReference)
 {
-	jbyte firstId, secondId;
+	sjme_jbyte firstId, secondId;
 	sjme_elevatorState state;
 	sjme_nvm_frame* frame;
-	jint oldNumStack;
+	sjme_jint oldNumStack;
 	sjme_nvm_frameTread* objectsTread;
 	sjme_nvm_frameStack* stack;
 	testHookResult hookResult;
@@ -135,8 +135,8 @@ SJME_TEST_DECLARE(testNvmLocalPopReference)
 			/* Setup integer values. */
 			objectsTread = frame->treads[SJME_JAVA_TYPE_ID_OBJECT];
 			stack = frame->stack;
-			objectsTread->values.jobjects[0] = state.objects[secondId];
-			objectsTread->values.jobjects[1] = state.objects[firstId];
+			objectsTread->values.sjme_jobjects[0] = state.objects[secondId];
+			objectsTread->values.sjme_jobjects[1] = state.objects[firstId];
 			objectsTread->count = objectsTread->stackBaseIndex + 1;
 			stack->count = 1;
 			stack->order[0] = SJME_JAVA_TYPE_ID_OBJECT;
@@ -165,11 +165,11 @@ SJME_TEST_DECLARE(testNvmLocalPopReference)
 	
 			/* Check that the value was moved over. */
 			sjme_unitEqualL(test, state.objects[firstId],
-				objectsTread->values.jobjects[0],
+				objectsTread->values.sjme_jobjects[0],
 				"Popped stack into local was not the correct value.");
 		
 			/* And the stack value was cleared. */
-			sjme_unitEqualL(test, NULL, objectsTread->values.jobjects[1],
+			sjme_unitEqualL(test, NULL, objectsTread->values.sjme_jobjects[1],
 				"Stack value did not get cleared.");
 		}
 	

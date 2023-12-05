@@ -9,13 +9,13 @@
 
 #include "sjme/modelessStars.h"
 
-jboolean sjme_modelessStars(
+sjme_jboolean sjme_modelessStars(
 	sjme_attrInOutNotNull sjme_modelessStarState* state,
 	sjme_attrInNotNull uint32_t* buf,
-	sjme_attrInPositiveNonZero jint width,
-	sjme_attrInPositiveNonZero jint height,
-	sjme_attrInPositiveNonZero jint pitch,
-	sjme_attrInValue jint tick)
+	sjme_attrInPositiveNonZero sjme_jint width,
+	sjme_attrInPositiveNonZero sjme_jint height,
+	sjme_attrInPositiveNonZero sjme_jint pitch,
+	sjme_attrInValue sjme_jint tick)
 {
 	sjme_modelessStar* modelessStar;
 	uint32_t* bufSlice;
@@ -24,13 +24,13 @@ jboolean sjme_modelessStars(
 	sjme_modelessStarColor* endColor;
 	sjme_modelessStarColor* atColor;
 	sjme_modelessStarColor* sliceColor;
-	jint h, y, x, next;
-	juint rawHex;
+	sjme_jint h, y, x, next;
+	sjme_juint rawHex;
 	
 	/* Make sure input values are fine. */
 	if (state == NULL || buf == NULL || width <= 0 || height <= 0 ||
 		pitch <= 0)
-		return JNI_FALSE;
+		return SJME_JNI_FALSE;
 	
 	/* Easier pointers. */
 	startColor = &colors[SJME_MODELESS_STAR_COLOR_ID_START];
@@ -111,7 +111,7 @@ jboolean sjme_modelessStars(
 		modelessStar = &state->modelessStars[h];
 		
 		/* Does this star need to be initialized? */
-		if (modelessStar->shining == JNI_FALSE)
+		if (modelessStar->shining == SJME_JNI_FALSE)
 		{
 			/* Not creating stars yet, and is not shining. */
 			if (state->lockStarCreation > 0)
@@ -123,7 +123,7 @@ jboolean sjme_modelessStars(
 			}
 			
 			/* Star is shining now. */
-			modelessStar->shining = JNI_TRUE;
+			modelessStar->shining = SJME_JNI_TRUE;
 			
 			/* Set random position on the screen. */
 			if (state->latchedFirstGo)
@@ -146,7 +146,7 @@ jboolean sjme_modelessStars(
 		/* Did the star fall off the screen? */
 		if (modelessStar->x < 0)
 		{
-			modelessStar->shining = JNI_FALSE;
+			modelessStar->shining = SJME_JNI_FALSE;
 			
 			/* Do not draw this star. */
 			continue;
@@ -164,10 +164,10 @@ jboolean sjme_modelessStars(
 			h = -1;
 			
 			/* No longer the first go. */
-			state->latchedFirstGo = JNI_TRUE;
+			state->latchedFirstGo = SJME_JNI_TRUE;
 		}
 	}
 	
 	/* Handled successfully. */
-	return JNI_TRUE;
+	return SJME_JNI_TRUE;
 }

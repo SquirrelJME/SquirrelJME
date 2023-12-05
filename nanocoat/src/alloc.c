@@ -25,31 +25,31 @@
 /** The minimum size for splits. */
 #define SJME_ALLOC_SPLIT_MIN_SIZE 64
 
-jboolean sjme_alloc_poolMalloc(
+sjme_jboolean sjme_alloc_poolMalloc(
 	sjme_attrOutNotNull sjme_alloc_pool** outPool,
-	sjme_attrInPositive jint size)
+	sjme_attrInPositive sjme_jint size)
 {
 	void* result;
-	jint useSize;
+	sjme_jint useSize;
 	
 	useSize = SJME_SIZEOF_ALLOC_POOL(size);
 	if (outPool == NULL || size <= SJME_ALLOC_MIN_SIZE || useSize <= 0 ||
 		size > useSize)
-		return JNI_FALSE;
+		return SJME_JNI_FALSE;
 	
 	/* Attempt allocation. */
 	result = malloc(useSize);
 	if (!result)
-		return JNI_FALSE;
+		return SJME_JNI_FALSE;
 	
 	/* Use static pool initializer to setup structures. */
 	return sjme_alloc_poolStatic(outPool, result, useSize);
 }
 
-jboolean sjme_alloc_poolStatic(
+sjme_jboolean sjme_alloc_poolStatic(
 	sjme_attrOutNotNull sjme_alloc_pool** outPool,
 	sjme_attrInNotNull void* baseAddr,
-	sjme_attrInPositive jint size)
+	sjme_attrInPositive sjme_jint size)
 {
 	sjme_alloc_pool* result;
 	sjme_alloc_link* frontLink;
@@ -57,7 +57,7 @@ jboolean sjme_alloc_poolStatic(
 	sjme_alloc_link* backLink;
 	
 	if (outPool == NULL || baseAddr == NULL || size <= SJME_ALLOC_MIN_SIZE)
-		return JNI_FALSE;
+		return SJME_JNI_FALSE;
 	
 	/* Initialize memory to nothing. */
 	memset(baseAddr, 0, size);
@@ -82,7 +82,7 @@ jboolean sjme_alloc_poolStatic(
 	backLink->prev = midLink;
 	
 	/* Determine size of the middle link, which is free space. */
-	midLink->blockSize = (jint)((uintptr_t)backLink -
+	midLink->blockSize = (sjme_jint)((uintptr_t)backLink -
 		(uintptr_t)&midLink->block[0]);
 		
 	/* The front and back links are in the "invalid" space. */
@@ -114,32 +114,32 @@ jboolean sjme_alloc_poolStatic(
 	
 	/* Use the pool. */
 	*outPool = result;
-	return JNI_TRUE;
+	return SJME_JNI_TRUE;
 }
 
-jboolean sjme_alloc(
+sjme_jboolean sjme_alloc(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
-	sjme_attrInPositiveNonZero jint size,
+	sjme_attrInPositiveNonZero sjme_jint size,
 	sjme_attrOutNotNull void** outAddr)
 {
 	sjme_alloc_link* scanLink;
-	jint splitMinSize, roundSize;
-	jboolean splitBlock;
+	sjme_jint splitMinSize, roundSize;
+	sjme_jboolean splitBlock;
 	
 	if (pool == NULL || size <= 0 || outAddr == NULL)
-		return JNI_FALSE;
+		return SJME_JNI_FALSE;
 	
 	/* Determine the size this will actually take up, which includes the */
 	/* link to be created following this. */
 	roundSize = (((size & 7) != 0) ? ((size | 7) + 1) : size);
 	splitMinSize = roundSize +
-		(jint)SJME_SIZEOF_ALLOC_LINK(SJME_ALLOC_SPLIT_MIN_SIZE);
+		(sjme_jint)SJME_SIZEOF_ALLOC_LINK(SJME_ALLOC_SPLIT_MIN_SIZE);
 	if (size > splitMinSize || splitMinSize < 0)
-		return JNI_FALSE;
+		return SJME_JNI_FALSE;
 	
 	/* Find the first free link that this fits in. */
 	scanLink = NULL;
-	splitBlock = JNI_FALSE;
+	splitBlock = SJME_JNI_FALSE;
 	for (scanLink = pool->freeFirstLink;
 		scanLink != NULL; scanLink = scanLink->freeNext)
 	{
@@ -154,48 +154,48 @@ jboolean sjme_alloc(
 		/* Block fits here when split, try to not split ridiculously small. */
 		if (scanLink->blockSize >= splitMinSize)
 		{
-			splitBlock = JNI_TRUE;
+			splitBlock = SJME_JNI_TRUE;
 			break;
 		}
 	}
 	
 	/* Out of memory. */
 	if (scanLink == NULL)
-		return JNI_FALSE;
+		return SJME_JNI_FALSE;
 	
 	sjme_todo("Implement this?");
-	return JNI_FALSE;
+	return SJME_JNI_FALSE;
 }
 
-jboolean sjme_allocFree(
+sjme_jboolean sjme_allocFree(
 	sjme_attrInNotNull void* addr)
 {
 	if (addr == NULL)
-		return JNI_FALSE;
+		return SJME_JNI_FALSE;
 	
 	sjme_todo("Implement this?");
-	return JNI_FALSE;
+	return SJME_JNI_FALSE;
 }
 
-jboolean sjme_allocLink(
+sjme_jboolean sjme_allocLink(
 	sjme_attrInNotNull void* addr,
 	sjme_attrOutNotNull sjme_alloc_link** outLink)
 {
 	if (addr == NULL || outLink == NULL)
-		return JNI_FALSE;
+		return SJME_JNI_FALSE;
 	
 	/* Just need to do some reversing math. */
 	*outLink = (sjme_alloc_link*)(((uintptr_t)addr) -
 		offsetof(sjme_alloc_link, block));
 	
 	/* Success! */
-	return JNI_TRUE;
+	return SJME_JNI_TRUE;
 }
 
-jboolean sjme_allocRealloc(
+sjme_jboolean sjme_allocRealloc(
 	sjme_attrInOutNotNull void** inOutAddr,
-	sjme_attrInPositive jint newSize)
+	sjme_attrInPositive sjme_jint newSize)
 {
 	sjme_todo("Implement this?");
-	return JNI_FALSE;
+	return SJME_JNI_FALSE;
 }

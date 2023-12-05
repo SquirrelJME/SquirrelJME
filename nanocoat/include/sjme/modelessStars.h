@@ -33,7 +33,7 @@ extern "C" {
 typedef struct sjme_modelessStarColor
 {
 	/** XRGB. */
-	SJME_WRAPPED(jint) xrgb[4];
+	sjme_jint xrgb[4];
 } sjme_modelessStarColor;
 
 /**
@@ -44,16 +44,16 @@ typedef struct sjme_modelessStarColor
 typedef struct sjme_modelessStar
 {
 	/** Is this star shining? */
-	SJME_WRAPPED(jboolean) shining;
+	sjme_jboolean shining;
 	
 	/** The X coordinate. */
-	SJME_WRAPPED(jint) x;
+	sjme_jint x;
 	
 	/** The Y coordinate. */
-	SJME_WRAPPED(jint) y;
+	sjme_jint y;
 	
 	/** The speed of the star. */
-	SJME_WRAPPED(jint) speed;
+	sjme_jint speed;
 } sjme_modelessStar;
 
 /** Color shift. */
@@ -92,13 +92,13 @@ typedef struct sjme_modelessStarState
 	sjme_modelessStar modelessStars[SJME_MODELESS_STAR_COUNT];
 	
 	/** Is star creation locked? */
-	SJME_WRAPPED(jint) lockStarCreation;
+	sjme_jint lockStarCreation;
 	
 	/** The last @c lockStarCreation value. */
-	SJME_WRAPPED(jint) lockStarCreationLast;
+	sjme_jint lockStarCreationLast;
 	
 	/** First go latched? */
-	SJME_WRAPPED(jboolean) latchedFirstGo;
+	sjme_jboolean latchedFirstGo;
 } sjme_modelessStarState;
 
 /**
@@ -110,16 +110,16 @@ typedef struct sjme_modelessStarState
  * @param height The height of the buffer.
  * @param pitch The pitch of the buffer.
  * @param tick The current tick.
- * @return Returns @c JNI_FALSE if there are issues with inputs.
+ * @return Returns @c SJME_JNI_FALSE if there are issues with inputs.
  * @since 2023/11/22
  */
-SJME_WRAPPED(jboolean) sjme_modelessStars(
+sjme_jboolean sjme_modelessStars(
 	sjme_attrInOutNotNull sjme_modelessStarState* state,
 	sjme_attrInNotNull uint32_t* buf,
-	sjme_attrInPositiveNonZero SJME_WRAPPED(jint) width,
-	sjme_attrInPositiveNonZero SJME_WRAPPED(jint) height,
-	sjme_attrInPositiveNonZero SJME_WRAPPED(jint) pitch,
-	sjme_attrInValue SJME_WRAPPED(jint) tick);
+	sjme_attrInPositiveNonZero sjme_jint width,
+	sjme_attrInPositiveNonZero sjme_jint height,
+	sjme_attrInPositiveNonZero sjme_jint pitch,
+	sjme_attrInValue sjme_jint tick);
 
 /*--------------------------------------------------------------------------*/
 

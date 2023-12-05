@@ -39,7 +39,7 @@ struct testLink
 SJME_TEST_DECLARE(testAllocRealloc)
 {
 	void* chunk;
-	jint chunkLen, i, linkLen, desire;
+	sjme_jint chunkLen, i, linkLen, desire;
 	sjme_alloc_pool* pool;
 	sjme_random random;
 	testLink* link;

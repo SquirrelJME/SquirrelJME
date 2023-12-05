@@ -18,7 +18,7 @@ int main(int argc, char** argv)
 {
 	sjme_nvm_bootConfig bootConfig;
 	sjme_nvm_state* state;
-	jint exitCode;
+	sjme_jint exitCode;
 	
 	/* Setup boot configuration. */
 	memset(&bootConfig, 0, sizeof(bootConfig));

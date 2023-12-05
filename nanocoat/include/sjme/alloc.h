@@ -81,13 +81,13 @@ struct sjme_alloc_link
 	sjme_alloc_link* freeNext;
 	
 	/** The allocation size of the link, @code{allocSize <= blockSize}. */
-	SJME_WRAPPED(jint) allocSize;
+	sjme_jint allocSize;
 	
 	/** The size of the data area of this block. */
-	SJME_WRAPPED(jint) blockSize;
+	sjme_jint blockSize;
 	
 	/** The memory block. */
-	SJME_WRAPPED(jubyte) block[sjme_flexibleArrayCount];
+	sjme_jubyte block[sjme_flexibleArrayCount];
 };
 
 /**
@@ -99,7 +99,7 @@ struct sjme_alloc_link
  */
 #define SJME_SIZEOF_ALLOC_LINK(size) \
 	(sizeof(sjme_alloc_link) + (((size_t)(size)) * \
-	sizeof(SJME_WRAPPED(jubyte))))
+	sizeof(sjme_jubyte)))
 
 /**
  * Structure which stores the pooled memory allocator.
@@ -109,16 +109,16 @@ struct sjme_alloc_link
 struct sjme_alloc_pool
 {
 	/** The size of the allocation pool. */
-	SJME_WRAPPED(jint) size;
+	sjme_jint size;
 	
 	/** Free and used space information. */
 	struct
 	{
 		/** Space that can be used. */
-		SJME_WRAPPED(jint) usable;
+		sjme_jint usable;
 		
 		/** Space that is actually reserved due to overhead. */
-		SJME_WRAPPED(jint) reserved;
+		sjme_jint reserved;
 	} space[SJME_NUM_ALLOC_POOL_SPACE];
 	
 	/** The front chain link. */
@@ -134,7 +134,7 @@ struct sjme_alloc_pool
 	sjme_alloc_link* freeLastLink;
 	
 	/** The memory block. */
-	SJME_WRAPPED(jubyte) block[sjme_flexibleArrayCount];
+	sjme_jubyte block[sjme_flexibleArrayCount];
 };
 
 /**
@@ -146,19 +146,19 @@ struct sjme_alloc_pool
  */
 #define SJME_SIZEOF_ALLOC_POOL(size) \
 	(sizeof(sjme_alloc_pool) + (((size_t)(size)) * \
-	sizeof(SJME_WRAPPED(jubyte))))
+	sizeof(sjme_jubyte)))
 
 /**
  * Allocates a pool that is based on @c malloc() .
  * 
  * @param outPool The resultant pool. 
  * @param size The requested pool size.
- * @return Returns @c JNI_TRUE on success.
+ * @return Returns @c SJME_JNI_TRUE on success.
  * @since 2023/11/18
  */
-SJME_WRAPPED(jboolean) sjme_alloc_poolMalloc(
+sjme_jboolean sjme_alloc_poolMalloc(
 	sjme_attrOutNotNull sjme_alloc_pool** outPool,
-	sjme_attrInPositive SJME_WRAPPED(jint) size);
+	sjme_attrInPositive sjme_jint size);
 
 /**
  * Allocates a pool that is based on a static region of memory.
@@ -166,13 +166,13 @@ SJME_WRAPPED(jboolean) sjme_alloc_poolMalloc(
  * @param outPool The resultant pool.
  * @param baseAddr The base address of the block. 
  * @param size The size of the block.
- * @return Returns @c JNI_TRUE on success.
+ * @return Returns @c SJME_JNI_TRUE on success.
  * @since 2023/11/18
  */
-SJME_WRAPPED(jboolean) sjme_alloc_poolStatic(
+sjme_jboolean sjme_alloc_poolStatic(
 	sjme_attrOutNotNull sjme_alloc_pool** outPool,
 	sjme_attrInNotNull void* baseAddr,
-	sjme_attrInPositive SJME_WRAPPED(jint) size);
+	sjme_attrInPositive sjme_jint size);
 
 /**
  * Allocates memory within the given pool.
@@ -180,22 +180,22 @@ SJME_WRAPPED(jboolean) sjme_alloc_poolStatic(
  * @param pool The pool to allocate within.
  * @param size The number of bytes to allocate.
  * @param outAddr The output address.
- * @return Returns @c JNI_TRUE on success.
+ * @return Returns @c SJME_JNI_TRUE on success.
  * @since 2023/11/19
  */
-SJME_WRAPPED(jboolean) sjme_alloc(
+sjme_jboolean sjme_alloc(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
-	sjme_attrInPositiveNonZero SJME_WRAPPED(jint) size,
+	sjme_attrInPositiveNonZero sjme_jint size,
 	sjme_attrOutNotNull void** outAddr); 
 
 /**
  * Frees memory.
  * 
  * @param addr The memory to free. 
- * @return Returns @c JNI_TRUE on success.
+ * @return Returns @c SJME_JNI_TRUE on success.
  * @since 2023/11/19
  */
-SJME_WRAPPED(jboolean) sjme_allocFree(
+sjme_jboolean sjme_allocFree(
 	sjme_attrInNotNull void* addr);
 	
 /**
@@ -203,10 +203,10 @@ SJME_WRAPPED(jboolean) sjme_allocFree(
  * 
  * @param addr The pointer to get the link from.
  * @param outLink The resultant link.
- * @return Returns @c JNI_TRUE on success.
+ * @return Returns @c SJME_JNI_TRUE on success.
  * @since 2023/11/19
  */
-SJME_WRAPPED(jboolean) sjme_allocLink(
+sjme_jboolean sjme_allocLink(
 	sjme_attrInNotNull void* addr,
 	sjme_attrOutNotNull sjme_alloc_link** outLink);
 
@@ -217,12 +217,12 @@ SJME_WRAPPED(jboolean) sjme_allocLink(
  * @param inOutAddr The address to reallocate.
  * @param newSize The new size of the allocation, if @c 0 then the pointer
  * is freed instead.
- * @return Returns @c JNI_TRUE on success.
+ * @return Returns @c SJME_JNI_TRUE on success.
  * @since 2023/11/28
  */
-SJME_WRAPPED(jboolean) sjme_allocRealloc(
+sjme_jboolean sjme_allocRealloc(
 	sjme_attrInOutNotNull void** inOutAddr,
-	sjme_attrInPositive SJME_WRAPPED(jint) newSize);
+	sjme_attrInPositive sjme_jint newSize);
 
 /*--------------------------------------------------------------------------*/
 

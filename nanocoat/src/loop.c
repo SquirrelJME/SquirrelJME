@@ -10,11 +10,11 @@
 #include "sjme/nvm.h"
 #include "sjme/debug.h"
 
-jboolean sjme_nvm_tick(sjme_nvm_state* state, jint maxTics)
+sjme_jboolean sjme_nvm_tick(sjme_nvm_state* state, sjme_jint maxTics)
 {
 	if (state == NULL)
-		return JNI_FALSE;
+		return SJME_JNI_FALSE;
 	
 	sjme_todo("sjme_nvm_tick()");
-	return JNI_FALSE;
+	return SJME_JNI_FALSE;
 }

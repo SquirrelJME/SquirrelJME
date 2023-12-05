@@ -16,11 +16,11 @@
 sjme_attrUnused RETRO_API void retro_run(void)
 {
 	static sjme_modelessStarState modelessStarState;
-	static jint tick;
+	static sjme_jint tick;
 	uint32_t buf[240*320];
 	int i;
 	
-	static jint trigger;
+	static sjme_jint trigger;
 	if (!(trigger++))
 		sjme_message("Implement this?");
 	

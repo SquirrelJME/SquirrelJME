@@ -15,13 +15,13 @@
 #include "proto.h"
 #include "unit.h"
 
-jboolean configNvmLocalPopInteger(
+sjme_jboolean configNvmLocalPopInteger(
 	sjme_attrInNotNull sjme_elevatorState* inState,
 	sjme_attrInNotNull sjme_elevatorRunCurrent* inCurrent)
 {
 	/* Check. */
 	if (inState == NULL || inCurrent == NULL)
-		return JNI_FALSE;
+		return SJME_JNI_FALSE;
 	
 	/* Configure. */
 	switch (inCurrent->type)
@@ -36,7 +36,7 @@ jboolean configNvmLocalPopInteger(
 			break;
 	}
 	
-	return JNI_TRUE;
+	return SJME_JNI_TRUE;
 }
 
 /** Elevator set for test. */
@@ -58,7 +58,7 @@ sjme_attrUnused SJME_TEST_DECLARE(testNvmLocalPopInteger)
 {
 	sjme_elevatorState state;
 	sjme_nvm_frame* frame;
-	jint oldNumStack;
+	sjme_jint oldNumStack;
 	sjme_nvm_frameTread* intsTread;
 	sjme_nvm_frameStack* stack;
 	
@@ -74,7 +74,7 @@ sjme_attrUnused SJME_TEST_DECLARE(testNvmLocalPopInteger)
 	/* Setup integer values. */
 	intsTread = frame->treads[SJME_JAVA_TYPE_ID_INTEGER];
 	stack = frame->stack;
-	intsTread->values.jints[1] = 0x12345678;
+	intsTread->values.sjme_jints[1] = 0x12345678;
 	intsTread->count = intsTread->stackBaseIndex + 1;
 	stack->count = 1;
 	stack->order[0] = SJME_JAVA_TYPE_ID_INTEGER;
@@ -89,11 +89,11 @@ sjme_attrUnused SJME_TEST_DECLARE(testNvmLocalPopInteger)
 		"Items in stack not lower?");
 	
 	/* Check that the value was moved over. */
-	sjme_unitEqualI(test, 0x12345678, intsTread->values.jints[0],
+	sjme_unitEqualI(test, 0x12345678, intsTread->values.sjme_jints[0],
 		"Popped stack into local was not the correct value.");
 		
 	/* And the stack value was cleared. */
-	sjme_unitEqualI(test, 0, intsTread->values.jints[1],
+	sjme_unitEqualI(test, 0, intsTread->values.sjme_jints[1],
 		"Stack value did not get cleared.");
 	
 	/* Success! */

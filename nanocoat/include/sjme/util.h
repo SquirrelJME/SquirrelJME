@@ -36,7 +36,7 @@ extern "C" {
  * @return The number of items in the tree.
  * @since 2023/07/26
  */
-typedef jint (*sjme_treeFindCount)(void* tree);
+typedef sjme_jint (*sjme_treeFindCount)(void* tree);
 
 /**
  * Function for returning the hash of the search item.
@@ -45,7 +45,7 @@ typedef jint (*sjme_treeFindCount)(void* tree);
  * @return The hash of the given search item.
  * @since 2023/07/26
  */
-typedef jint (*sjme_treeFindHash)(void* what);
+typedef sjme_jint (*sjme_treeFindHash)(void* what);
 
 /**
  * Compares an entry in the tree at the given index with the given hash and
@@ -59,8 +59,8 @@ typedef jint (*sjme_treeFindHash)(void* what);
  * greater.
  * @since 2023/07/26
  */
-typedef jint (*sjme_treeFindCompare)(void* tree, void* what, jint hash,
-	jint withIndex);
+typedef sjme_jint (*sjme_treeFindCompare)(void* tree, void* what, sjme_jint hash,
+	sjme_jint withIndex);
 
 /**
  * Random number state.
@@ -70,7 +70,7 @@ typedef jint (*sjme_treeFindCompare)(void* tree, void* what, jint hash,
 typedef struct sjme_random
 {
 	/** The current seed value. */
-	jlong seed;
+	sjme_jlong seed;
 } sjme_random;
 
 /**
@@ -100,7 +100,7 @@ typedef struct sjme_treeFindFunc
  * @return The decoded character.
  * @since 2023/07/27
  */
-jchar sjme_decodeUtfChar(const char* at, const char** stringP);
+sjme_jchar sjme_decodeUtfChar(const char* at, const char** stringP);
 
 /**
  * Initializes the random number generator.
@@ -108,37 +108,37 @@ jchar sjme_decodeUtfChar(const char* at, const char** stringP);
  * @param outRandom The random state to initialize. 
  * @param seedHi The high seed value.
  * @param seedLo The low seed value.
- * @return Returns @c JNI_TRUE on success.
+ * @return Returns @c SJME_JNI_TRUE on success.
  * @since 2023/12/02
  */
-jboolean sjme_randomInit(
+sjme_jboolean sjme_randomInit(
 	sjme_attrInOutNotNull sjme_random* outRandom,
-	sjme_attrInValue jint seedHi,
-	sjme_attrInValue jint seedLo);
+	sjme_attrInValue sjme_jint seedHi,
+	sjme_attrInValue sjme_jint seedLo);
 
 /**
  * Initializes the random number generator.
  * 
  * @param outRandom The random state to initialize. 
  * @param seed The seed value.
- * @return Returns @c JNI_TRUE on success.
+ * @return Returns @c SJME_JNI_TRUE on success.
  * @since 2023/12/02
  */
-jboolean sjme_randomInitL(
+sjme_jboolean sjme_randomInitL(
 	sjme_attrInOutNotNull sjme_random* outRandom,
-	sjme_attrInValue jlong seed);
+	sjme_attrInValue sjme_jlong seed);
 	
 /**
  * Returns the next random value.
  * 
  * @param random The random state.
  * @param outValue The output value.
- * @return Returns @c JNI_TRUE on success.
+ * @return Returns @c SJME_JNI_TRUE on success.
  * @since 2023/12/02
  */
-jboolean sjme_randomNextInt(
+sjme_jboolean sjme_randomNextInt(
 	sjme_attrInOutNotNull sjme_random* random,
-	sjme_attrOutNotNull jint* outValue);
+	sjme_attrOutNotNull sjme_jint* outValue);
 	
 /**
  * Returns the next random value within the given range.
@@ -146,13 +146,13 @@ jboolean sjme_randomNextInt(
  * @param random The random state.
  * @param outValue The output value.
  * @param maxValue The maximum exclusive value.
- * @return Returns @c JNI_TRUE on success.
+ * @return Returns @c SJME_JNI_TRUE on success.
  * @since 2023/12/02
  */
-jboolean sjme_randomNextIntMax(
+sjme_jboolean sjme_randomNextIntMax(
 	sjme_attrInOutNotNull sjme_random* random,
-	sjme_attrOutNotNull jint* outValue,
-	sjme_attrInPositiveNonZero jint maxValue);
+	sjme_attrOutNotNull sjme_jint* outValue,
+	sjme_attrInPositiveNonZero sjme_jint maxValue);
 
 /**
  * Hashes the given string in accordance to @c String::hashCode() .
@@ -161,7 +161,7 @@ jboolean sjme_randomNextIntMax(
  * @return The hashcode of the given string.
  * @since 2023/07/26
  */
-jint sjme_stringHash(const char* string);
+sjme_jint sjme_stringHash(const char* string);
 
 /**
  * Returns the length of the string in accordance to @c String::length() .
@@ -170,7 +170,7 @@ jint sjme_stringHash(const char* string);
  * @return The string length.
  * @since 2023/07/29
  */
-jint sjme_stringLength(const char* string);
+sjme_jint sjme_stringLength(const char* string);
 
 /**
  * Locates an item within a tree.
@@ -181,7 +181,7 @@ jint sjme_stringLength(const char* string);
  * @return The index where the item was found.
  * @since 2023/07/26
  */
-jint sjme_treeFind(void* tree, void* what,
+sjme_jint sjme_treeFind(void* tree, void* what,
 	const sjme_treeFindFunc* functions);
 	
 /*--------------------------------------------------------------------------*/

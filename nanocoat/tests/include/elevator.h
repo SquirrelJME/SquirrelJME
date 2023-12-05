@@ -78,7 +78,7 @@ typedef struct sjme_elevatorState
 	sjme_nvm_state* nvmState;
 	
 	/** The number of active threads. */
-	jint numThreads;
+	sjme_jint numThreads;
 	
 	/** Set of threads. */
 	struct
@@ -88,10 +88,10 @@ typedef struct sjme_elevatorState
 	} threads[SJME_ELEVATOR_MAX_THREADS];
 	
 	/** The number of objects which were created. */
-	jint numObjects;
+	sjme_jint numObjects;
 	
 	/** Objects that were created. */
-	jobject objects[SJME_ELEVATOR_MAX_OBJECTS];
+	sjme_jobject objects[SJME_ELEVATOR_MAX_OBJECTS];
 	
 	/** Special data, if needed. */
 	void* special;
@@ -105,16 +105,16 @@ typedef struct sjme_elevatorState
 typedef struct sjme_elevatorRunCurrent
 {
 	/** The current index of all. */
-	jint indexAll;
+	sjme_jint indexAll;
 	
 	/** The current index of this type. */
-	jint indexType;
+	sjme_jint indexType;
 	
 	/** The current type. */
 	sjme_elevatorDoType type;
 	
 	/** Special value, for alternative configuration potentially. */
-	jint special;
+	sjme_jint special;
 	
 	/** Data for the initialization step. */
 	union
@@ -130,22 +130,22 @@ typedef struct sjme_elevatorRunCurrent
 		struct
 		{
 			/** The thread index to create the frame in. */
-			jint threadIndex;
+			sjme_jint threadIndex;
 			
 			/** The maximum number of locals. */
-			jint maxLocals;
+			sjme_jint maxLocals;
 			
 			/** The maximum number of stack entries. */
-			jint maxStack;
+			sjme_jint maxStack;
 			
 			/** The treads within the frame. */
 			struct
 			{
 				/** Maximum size of this tread. */
-				jint max;
+				sjme_jint max;
 				
 				/** The stack pivot point. */
-				jint stackBaseIndex;
+				sjme_jint stackBaseIndex;
 			} treads[SJME_NUM_JAVA_TYPE_IDS];
 		} frame;
 		
@@ -170,20 +170,20 @@ typedef struct sjme_elevatorRunData sjme_elevatorRunData;
  * 
  * @param inState The input state.
  * @param inCurrent The current run item for the elevator.
- * @return Returns @c JNI_TRUE when successful.
+ * @return Returns @c SJME_JNI_TRUE when successful.
  * @since 2023/11/11
  */
-typedef jboolean (*sjme_elevatorConfigFunc)(
+typedef sjme_jboolean (*sjme_elevatorConfigFunc)(
 	sjme_attrInNotNull sjme_elevatorState* inState,
 	sjme_attrInNotNull sjme_elevatorRunCurrent* inCurrent);
 
 /**
  * Represents an elevator initialization function.
  * 
- * @return Will return @c JNI_TRUE when successful.
+ * @return Will return @c SJME_JNI_TRUE when successful.
  * @since 2023/11/03
  */
-typedef jboolean (*sjme_elevatorDoFunc)(
+typedef sjme_jboolean (*sjme_elevatorDoFunc)(
 	sjme_attrInNotNull sjme_elevatorState* inState,
 	sjme_attrInNotNull sjme_elevatorRunData* inData);
 
@@ -199,7 +199,7 @@ typedef struct sjme_elevatorSet
 	sjme_elevatorConfigFunc config;
 
 	/** Flags for elevator. */
-	jint flags;
+	sjme_jint flags;
 	
 	/** Elevator function order. */
 	sjme_elevatorDoFunc order[sjme_flexibleArrayCount];
@@ -211,13 +211,13 @@ typedef struct sjme_elevatorSet
  * @param inState The input state.
  * @param inSet The set to act on.
  * @param special Special value, optional.
- * @return Returns @c JNI_TRUE on success.
+ * @return Returns @c SJME_JNI_TRUE on success.
  * @since 2023/1/111
  */
-jboolean sjme_elevatorAct(
+sjme_jboolean sjme_elevatorAct(
 	sjme_attrInNotNull sjme_elevatorState* inState,
 	sjme_attrInNotNull const sjme_elevatorSet* inSet,
-	sjme_attrInValue jint special);
+	sjme_attrInValue sjme_jint special);
 
 /**
  * Allocates memory
@@ -239,7 +239,7 @@ void* sjme_elevatorAlloc(
  * @return If this was successful.
  * @since 2023/11/03
  */
-jboolean sjme_elevatorDoInit(
+sjme_jboolean sjme_elevatorDoInit(
 	sjme_attrInNotNull sjme_elevatorState* inState,
 	sjme_attrInNotNull sjme_elevatorRunData* inData);
 	
@@ -251,7 +251,7 @@ jboolean sjme_elevatorDoInit(
  * @return If this was successful.
  * @since 2023/11/11
  */
-jboolean sjme_elevatorDoMakeFrame(
+sjme_jboolean sjme_elevatorDoMakeFrame(
 	sjme_attrInNotNull sjme_elevatorState* inState,
 	sjme_attrInNotNull sjme_elevatorRunData* inData);
 
@@ -260,10 +260,10 @@ jboolean sjme_elevatorDoMakeFrame(
  * 
  * @param inState The input state.
  * @param inData The input data.
- * @return Returns @c JNI_TRUE on success.
+ * @return Returns @c SJME_JNI_TRUE on success.
  * @since 2023/11/17 
  */
-jboolean sjme_elevatorDoMakeObject(
+sjme_jboolean sjme_elevatorDoMakeObject(
 	sjme_attrInNotNull sjme_elevatorState* inState,
 	sjme_attrInNotNull sjme_elevatorRunData* inData);
 
@@ -275,7 +275,7 @@ jboolean sjme_elevatorDoMakeObject(
  * @return If this was successful.
  * @since 2023/11/11
  */
-jboolean sjme_elevatorDoMakeThread(
+sjme_jboolean sjme_elevatorDoMakeThread(
 	sjme_attrInNotNull sjme_elevatorState* inState,
 	sjme_attrInNotNull sjme_elevatorRunData* inData);
 

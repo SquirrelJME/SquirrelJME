@@ -15,13 +15,13 @@
 struct sjme_elevatorRunData
 {
 	/** The index type counts. */
-	jint indexTypeCount[SJME_NUM_ELEVATOR_DO_TYPES];
+	sjme_jint indexTypeCount[SJME_NUM_ELEVATOR_DO_TYPES];
 	
 	/** The current run. */
 	sjme_elevatorRunCurrent current;
 	
 	/** The next thread ID. */
-	jint nextThreadId;
+	sjme_jint nextThreadId;
 };
 
 /**
@@ -48,12 +48,12 @@ struct
 	{NULL, SJME_ELEVATOR_DO_TYPE_UNKNOWN}
 };
 
-jboolean sjme_elevatorAct(
+sjme_jboolean sjme_elevatorAct(
 	sjme_attrInNotNull sjme_elevatorState* inState,
 	sjme_attrInNotNull const sjme_elevatorSet* inSet,
-	sjme_attrInValue jint special)
+	sjme_attrInValue sjme_jint special)
 {
-	jint dx, i;
+	sjme_jint dx, i;
 	sjme_elevatorRunData data;
 	sjme_elevatorDoType doType;
 	
@@ -109,7 +109,7 @@ jboolean sjme_elevatorAct(
 	}
 	
 	/* Successful. */
-	return JNI_TRUE;
+	return SJME_JNI_TRUE;
 }
 
 void* sjme_elevatorAlloc(
@@ -129,7 +129,7 @@ void* sjme_elevatorAlloc(
 	return rv;
 }
 
-jboolean sjme_elevatorDoInit(
+sjme_jboolean sjme_elevatorDoInit(
 	sjme_attrInNotNull sjme_elevatorState* inState,
 	sjme_attrInNotNull sjme_elevatorRunData* inData)
 {
@@ -151,22 +151,22 @@ jboolean sjme_elevatorDoInit(
 		newState->hooks = inData->current.data.state.hooks;
 	
 	/* Done. */
-	return JNI_TRUE;
+	return SJME_JNI_TRUE;
 }
 
-jboolean sjme_elevatorDoMakeFrame(
+sjme_jboolean sjme_elevatorDoMakeFrame(
 	sjme_attrInNotNull sjme_elevatorState* inState,
 	sjme_attrInNotNull sjme_elevatorRunData* inData)
 {
-	jint threadIndex, treadMax, tallyLocals, stackBase, desireMaxLocals;
-	jint tallyStack, desireMaxStack, localIndex;
+	sjme_jint threadIndex, treadMax, tallyLocals, stackBase, desireMaxLocals;
+	sjme_jint tallyStack, desireMaxStack, localIndex;
 	sjme_nvm_thread* thread;
 	sjme_nvm_frame* newFrame;
 	sjme_basicTypeId typeId;
 	sjme_nvm_frameTread* tread;
 	sjme_nvm_frameStack* stack;
 	sjme_nvm_frameLocalMap* localMap;
-	jbyte baseLocalAt[SJME_NUM_JAVA_TYPE_IDS];
+	sjme_jbyte baseLocalAt[SJME_NUM_JAVA_TYPE_IDS];
 	
 	if (inState == NULL || inData == NULL)
 		return sjme_die("Null arguments.");
@@ -249,7 +249,7 @@ jboolean sjme_elevatorDoMakeFrame(
 		
 		/* Fill in local mappings for a given tread. */
 		for (localIndex = 0; localIndex < stackBase; localIndex++)
-			localMap->maps[localIndex].to[typeId] = (jbyte)localIndex;
+			localMap->maps[localIndex].to[typeId] = (sjme_jbyte)localIndex;
 		
 #if 0
 		/* Store the type onto the stack. */
@@ -268,14 +268,14 @@ jboolean sjme_elevatorDoMakeFrame(
 			tallyStack, desireMaxStack);
 	
 	/* Done. */
-	return JNI_TRUE;
+	return SJME_JNI_TRUE;
 }
 
-jboolean sjme_elevatorDoMakeObject(
+sjme_jboolean sjme_elevatorDoMakeObject(
 	sjme_attrInNotNull sjme_elevatorState* inState,
 	sjme_attrInNotNull sjme_elevatorRunData* inData)
 {
-	jobject newObject;
+	sjme_jobject newObject;
 	
 	if (inState == NULL || inData == NULL)
 		return sjme_die("Null arguments.");
@@ -292,14 +292,14 @@ jboolean sjme_elevatorDoMakeObject(
 	newObject->refCount = 1;
 	
 	/* Success. */
-	return JNI_TRUE;
+	return SJME_JNI_TRUE;
 }
 
-jboolean sjme_elevatorDoMakeThread(
+sjme_jboolean sjme_elevatorDoMakeThread(
 	sjme_attrInNotNull sjme_elevatorState* inState,
 	sjme_attrInNotNull sjme_elevatorRunData* inData)
 {
-	jint threadIndex;
+	sjme_jint threadIndex;
 	sjme_nvm_thread* newThread;
 	
 	if (inState == NULL || inData == NULL)
@@ -321,5 +321,5 @@ jboolean sjme_elevatorDoMakeThread(
 	inState->threads[threadIndex].nvmThread = newThread;
 	
 	/* Done. */
-	return JNI_TRUE;
+	return SJME_JNI_TRUE;
 }

@@ -44,14 +44,14 @@ typedef struct sjme_nvm_frameTreadAccessor sjme_nvm_frameTreadAccessor;
  * @param tread The tread to read from.
  * @param treadIndex The index to access.
  * @param outAddress The output address.
- * @return Returns @c JNI_TRUE if successful.
+ * @return Returns @c SJME_JNI_TRUE if successful.
  * @since 2023/11/16
  */
-typedef jboolean (*sjme_nvm_frameTreadAccessorAddress)(
+typedef sjme_jboolean (*sjme_nvm_frameTreadAccessorAddress)(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
 	sjme_attrInNotNull const sjme_nvm_frameTreadAccessor* accessor,
 	sjme_attrInNotNull sjme_nvm_frameTread* tread,
-	sjme_attrInPositive jint treadIndex,
+	sjme_attrInPositive sjme_jint treadIndex,
 	sjme_attrOutNotNull void** outAddress);
 
 /**
@@ -61,7 +61,7 @@ typedef jboolean (*sjme_nvm_frameTreadAccessorAddress)(
  * @param outTread The output tread.
  * @since 2023/11/16
  */
-typedef jboolean (*sjme_nvm_frameTreadAccessorGetTread)(
+typedef sjme_jboolean (*sjme_nvm_frameTreadAccessorGetTread)(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
 	sjme_attrInNotNull const sjme_nvm_frameTreadAccessor* accessor,
 	sjme_attrInOutNotNull sjme_nvm_frameTread** outTread);
@@ -74,14 +74,14 @@ typedef jboolean (*sjme_nvm_frameTreadAccessorGetTread)(
  * @param tread The tread to read from.
  * @param treadIndex The index to access.
  * @param outVal The output value.
- * @return Returns @c JNI_TRUE if successful.
+ * @return Returns @c SJME_JNI_TRUE if successful.
  * @since 2023/11/16
  */
-typedef jboolean (*sjme_nvm_frameTreadAccessorRead)(
+typedef sjme_jboolean (*sjme_nvm_frameTreadAccessorRead)(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
 	sjme_attrInNotNull const sjme_nvm_frameTreadAccessor* accessor,
 	sjme_attrInNotNull const sjme_nvm_frameTread* tread,
-	sjme_attrInPositive jint treadIndex,
+	sjme_attrInPositive sjme_jint treadIndex,
 	sjme_attrOutNotNull void* outVal);
 
 /**
@@ -92,14 +92,14 @@ typedef jboolean (*sjme_nvm_frameTreadAccessorRead)(
  * @param tread The tread to read from.
  * @param treadIndex The index to access.
  * @param outVal The output value.
- * @return Returns @c JNI_TRUE if successful.
+ * @return Returns @c SJME_JNI_TRUE if successful.
  * @since 2023/11/16
  */
-typedef jboolean (*sjme_nvm_frameTreadAccessorWrite)(
+typedef sjme_jboolean (*sjme_nvm_frameTreadAccessorWrite)(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
 	sjme_attrInNotNull const sjme_nvm_frameTreadAccessor* accessor,
 	sjme_attrInNotNull sjme_nvm_frameTread* tread,
-	sjme_attrInPositive jint treadIndex,
+	sjme_attrInPositive sjme_jint treadIndex,
 	sjme_attrInNotNull const void* inVal);
 
 struct sjme_nvm_frameTreadAccessor

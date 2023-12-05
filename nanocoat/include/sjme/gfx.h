@@ -105,23 +105,23 @@ typedef enum sjme_gfx_pixelFormat
  * @param surfaceY Starting surface Y coordinate.
  * @param surfaceWidth Surface width.
  * @param surfaceHeight Surface height.
- * @return Returns @c JNI_TRUE on success.
+ * @return Returns @c SJME_JNI_TRUE on success.
  * @since 2023/11/24
  */
-typedef SJME_WRAPPED(jboolean) (*sjme_gfx_getGraphics)(
+typedef sjme_jboolean (*sjme_gfx_getGraphics)(
 	sjme_attrInNotNull sjme_gfx_framebuffer* framebuffer,
 	sjme_attrInOutNotNull sjme_gfx_graphics* inOutGraphics,
 	sjme_attrInRange(0, SJME_NUM_GFX_PIXEL_FORMATS)
 		sjme_gfx_pixelFormat pixelFormat,
-	sjme_attrInPositiveNonZero SJME_WRAPPED(jint) bufferWidth,
-	sjme_attrInPositiveNonZero SJME_WRAPPED(jint) bufferHeight,
+	sjme_attrInPositiveNonZero sjme_jint bufferWidth,
+	sjme_attrInPositiveNonZero sjme_jint bufferHeight,
 	sjme_attrInNotNull void* buffer,
-	sjme_attrInPositive SJME_WRAPPED(jint) offset,
+	sjme_attrInPositive sjme_jint offset,
 	sjme_attrInNullable void* palette,
-	sjme_attrInValue SJME_WRAPPED(jint) surfaceX,
-	sjme_attrInValue SJME_WRAPPED(jint) surfaceY,
-	sjme_attrInPositiveNonZero SJME_WRAPPED(jint) surfaceWidth,
-	sjme_attrInPositiveNonZero SJME_WRAPPED(jint) surfaceHeight);
+	sjme_attrInValue sjme_jint surfaceX,
+	sjme_attrInValue sjme_jint surfaceY,
+	sjme_attrInPositiveNonZero sjme_jint surfaceWidth,
+	sjme_attrInPositiveNonZero sjme_jint surfaceHeight);
 
 /**
  * Functions for drawing in a given graphics accordingly.
@@ -131,7 +131,7 @@ typedef SJME_WRAPPED(jboolean) (*sjme_gfx_getGraphics)(
 typedef struct sjme_gfx_pencilFunctions
 {
 	/** TODO. */
-	SJME_WRAPPED(jint) todo;
+	sjme_jint todo;
 } sjme_gfx_pencilFunctions;
 
 struct sjme_gfx_graphics
@@ -152,22 +152,22 @@ struct sjme_gfx_framebuffer
 	void* pixels;
 	
 	/** The width of the framebuffer in pixels. */
-	SJME_WRAPPED(jint) width;
+	sjme_jint width;
 	
 	/** The height of the framebuffer in pixels. */
-	SJME_WRAPPED(jint) height;
+	sjme_jint height;
 	
 	/** The scanline length of the framebuffer in pixels. */
-	SJME_WRAPPED(jint) pitch;
+	sjme_jint pitch;
 	
 	/** The true scanline length of the framebuffer in bytes. */
-	SJME_WRAPPED(jint) pitchBytes;
+	sjme_jint pitchBytes;
 	
 	/** Function to get a graphics drawing instance for this framebuffer. */
 	sjme_gfx_getGraphics getGraphics;
 	
 	/** If the framebuffer is allocated extra here, this has room for it. */
-	SJME_WRAPPED(jubyte) rawReservedBuffer[sjme_flexibleArrayCount];
+	sjme_jubyte rawReservedBuffer[sjme_flexibleArrayCount];
 };
 
 /*--------------------------------------------------------------------------*/

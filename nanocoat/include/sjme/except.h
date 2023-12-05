@@ -50,7 +50,7 @@ extern "C" {
 #define SJME_EXCEPT_TOSS(errorCodeId) \
 	do {longjmp(frame->exceptionPoint, (sjme_errorCode)(errorCodeId)); \
 		goto sjme_except_fail;} \
-	while(JNI_FALSE)
+	while(SJME_JNI_FALSE)
 
 /**
  * Fatal virtual machine error, but graceful death.
@@ -61,7 +61,7 @@ extern "C" {
  * @return Never returns technically.
  * @since 2023/11/14
  */
-SJME_WRAPPED(jboolean) sjme_except_gracefulDeathR(
+sjme_jboolean sjme_except_gracefulDeathR(
 	SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_attrInNotNull sjme_nvm_frame* frame,
 	sjme_attrInRange(SJME_NUM_ERROR_CODES, SJME_ERROR_CODE_NONE)

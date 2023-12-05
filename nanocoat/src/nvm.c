@@ -22,12 +22,12 @@
  * @param accessor The accessor used.
  * @param outOldLocalValue Optional output old local value.
  * @param outStackValue Optional output stack value.
- * @return Returns @c JNI_TRUE on success.
+ * @return Returns @c SJME_JNI_TRUE on success.
  * @since 2023/11/16
  */
-static jboolean sjme_nvm_localPopGeneric(
+static sjme_jboolean sjme_nvm_localPopGeneric(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_attrInPositive volatile jint localIndex,
+	sjme_attrInPositive volatile sjme_jint localIndex,
 	sjme_attrInNotNull const sjme_nvm_frameTreadAccessor* accessor,
 	sjme_attrOutNullable void* outOldLocalValue,
 	sjme_attrOutNullable void* outStackValue)
@@ -37,7 +37,7 @@ static jboolean sjme_nvm_localPopGeneric(
 	sjme_nvm_frameStack* stack;
 	sjme_nvm_frameTread* tread;
 	const sjme_nvm_frameLocalMap* localMap;
-	jbyte indexMapTo;
+	sjme_jbyte indexMapTo;
 	void* valueAddr;
 	
 SJME_EXCEPT_WITH:
@@ -99,7 +99,7 @@ SJME_EXCEPT_WITH:
 	tread->count--;
 	
 	/* Done. */
-	return JNI_TRUE;
+	return SJME_JNI_TRUE;
 	
 SJME_EXCEPT_FAIL:
 	return sjme_except_gracefulDeath(
@@ -112,8 +112,8 @@ SJME_EXCEPT_FAIL:
 			frame->stack->count));
 }
 
-jboolean sjme_nvm_arrayLength(sjme_nvm_frame* frame,
-	jobject arrayInstance, jint* outLen)
+sjme_jboolean sjme_nvm_arrayLength(sjme_nvm_frame* frame,
+	sjme_jobject arrayInstance, sjme_jint* outLen)
 {
 	sjme_todo("Implement");
 	return -1;
@@ -121,58 +121,58 @@ jboolean sjme_nvm_arrayLength(sjme_nvm_frame* frame,
 
 sjme_tempIndex sjme_nvm_arrayLoadIntoTemp(sjme_nvm_frame* frame,
 	sjme_basicTypeId primitiveType,
-	jobject arrayInstance,
-	jint index)
+	sjme_jobject arrayInstance,
+	sjme_jint index)
 {
 	sjme_todo("Implement");
 	return -1;
 }
 	
-jboolean sjme_nvm_arrayStore(sjme_nvm_frame* frame,
+sjme_jboolean sjme_nvm_arrayStore(sjme_nvm_frame* frame,
 	sjme_basicTypeId primitiveType,
-	jobject arrayInstance,
-	jint index,
+	sjme_jobject arrayInstance,
+	sjme_jint index,
 	sjme_any* value)
 {
 	sjme_todo("Implement");
-	return JNI_FALSE;
+	return SJME_JNI_FALSE;
 }
 	
-jboolean sjme_nvm_checkCast(sjme_nvm_frame* frame,
-	jobject instance,
+sjme_jboolean sjme_nvm_checkCast(sjme_nvm_frame* frame,
+	sjme_jobject instance,
 	sjme_dynamic_linkage_data_classObject* type)
 {
 	sjme_todo("Implement");
-	return JNI_FALSE;
+	return SJME_JNI_FALSE;
 }
 	
-jboolean sjme_nvm_countReferenceDown(sjme_nvm_frame* frame,
-	jobject instance)
+sjme_jboolean sjme_nvm_countReferenceDown(sjme_nvm_frame* frame,
+	sjme_jobject instance)
 {
 	sjme_todo("Implement");
-	return JNI_FALSE;
+	return SJME_JNI_FALSE;
 }
 	
 sjme_tempIndex sjme_nvm_fieldGetToTemp(sjme_nvm_frame* frame,
-	jobject instance,
+	sjme_jobject instance,
 	sjme_dynamic_linkage_data_fieldAccess* field)
 {
 	sjme_todo("Implement");
 	return -1;
 }
 
-jboolean sjme_nvm_fieldPut(sjme_nvm_frame* frame,
-	jobject instance,
+sjme_jboolean sjme_nvm_fieldPut(sjme_nvm_frame* frame,
+	sjme_jobject instance,
 	sjme_dynamic_linkage_data_fieldAccess* field,
 	sjme_any* value)
 {
 	sjme_todo("Implement");
-	return JNI_FALSE;
+	return SJME_JNI_FALSE;
 }
 
-jboolean sjme_nvm_gcObject(
+sjme_jboolean sjme_nvm_gcObject(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_attrInNullable jobject instance)
+	sjme_attrInNullable sjme_jobject instance)
 {
 	SJME_EXCEPT_VDEF;
 	sjme_nvm_state* state;
@@ -195,22 +195,22 @@ SJME_EXCEPT_WITH:
 	sjme_message("Actually implement object GC of %p...", instance);
 	
 	/* Success! */
-	return JNI_TRUE;
+	return SJME_JNI_TRUE;
 
 SJME_EXCEPT_FAIL:
 	return sjme_except_gracefulDeath("Could not GC %p.",
 		instance);
 }
 
-jboolean sjme_nvm_invoke(sjme_nvm_frame* frame,
+sjme_jboolean sjme_nvm_invoke(sjme_nvm_frame* frame,
 	sjme_dynamic_linkage_data_invokeNormal* method)
 {
 	sjme_todo("Implement");
-	return JNI_FALSE;
+	return SJME_JNI_FALSE;
 }
 
-jboolean sjme_nvm_localPopDouble(sjme_nvm_frame* frame,
-	jint localIndex)
+sjme_jboolean sjme_nvm_localPopDouble(sjme_nvm_frame* frame,
+	sjme_jint localIndex)
 {
 	return sjme_nvm_localPopGeneric(frame, localIndex,
 		sjme_nvm_frameTreadAccessorByType(
@@ -218,8 +218,8 @@ jboolean sjme_nvm_localPopDouble(sjme_nvm_frame* frame,
 			NULL, NULL);
 }
 
-jboolean sjme_nvm_localPopFloat(sjme_nvm_frame* frame,
-	jint localIndex)
+sjme_jboolean sjme_nvm_localPopFloat(sjme_nvm_frame* frame,
+	sjme_jint localIndex)
 {
 	return sjme_nvm_localPopGeneric(frame, localIndex,
 		sjme_nvm_frameTreadAccessorByType(
@@ -227,8 +227,8 @@ jboolean sjme_nvm_localPopFloat(sjme_nvm_frame* frame,
 			NULL, NULL);
 }
 
-jboolean sjme_nvm_localPopInteger(sjme_nvm_frame* frame,
-	volatile jint localIndex)
+sjme_jboolean sjme_nvm_localPopInteger(sjme_nvm_frame* frame,
+	volatile sjme_jint localIndex)
 {
 	return sjme_nvm_localPopGeneric(frame, localIndex,
 		sjme_nvm_frameTreadAccessorByType(
@@ -236,8 +236,8 @@ jboolean sjme_nvm_localPopInteger(sjme_nvm_frame* frame,
 			NULL, NULL);
 }
 
-jboolean sjme_nvm_localPopLong(sjme_nvm_frame* frame,
-	jint localIndex)
+sjme_jboolean sjme_nvm_localPopLong(sjme_nvm_frame* frame,
+	sjme_jint localIndex)
 {
 	return sjme_nvm_localPopGeneric(frame, localIndex,
 		sjme_nvm_frameTreadAccessorByType(
@@ -245,11 +245,11 @@ jboolean sjme_nvm_localPopLong(sjme_nvm_frame* frame,
 			NULL, NULL);
 }
 
-jboolean sjme_nvm_localPopReference(sjme_nvm_frame* frame,
-	jint localIndex)
+sjme_jboolean sjme_nvm_localPopReference(sjme_nvm_frame* frame,
+	sjme_jint localIndex)
 {
 	SJME_EXCEPT_VDEF;
-	jobject oldLocalValue, stackValue;
+	sjme_jobject oldLocalValue, stackValue;
 
 SJME_EXCEPT_WITH:
 	/* Read in the stack values. */
@@ -270,62 +270,62 @@ SJME_EXCEPT_WITH:
 				SJME_EXCEPT_TOSS(SJME_ERROR_COULD_NOT_GC_OBJECT);
 	
 	/* Success! */
-	return JNI_TRUE;
+	return SJME_JNI_TRUE;
 
 SJME_EXCEPT_FAIL:
 	return sjme_except_gracefulDeath("Could not refcount objects.");
 }
 
-jboolean sjme_nvm_localPushDouble(sjme_nvm_frame* frame,
-	jint index)
+sjme_jboolean sjme_nvm_localPushDouble(sjme_nvm_frame* frame,
+	sjme_jint index)
 {
 	sjme_todo("Implement");
-	return JNI_FALSE;
+	return SJME_JNI_FALSE;
 }
 
-jboolean sjme_nvm_localPushFloat(sjme_nvm_frame* frame,
-	jint index)
+sjme_jboolean sjme_nvm_localPushFloat(sjme_nvm_frame* frame,
+	sjme_jint index)
 {
 	sjme_todo("Implement");
-	return JNI_FALSE;
+	return SJME_JNI_FALSE;
 }
 
-jboolean sjme_nvm_localPushInteger(sjme_nvm_frame* frame,
-	jint index)
+sjme_jboolean sjme_nvm_localPushInteger(sjme_nvm_frame* frame,
+	sjme_jint index)
 {
 	sjme_todo("Implement");
-	return JNI_FALSE;
+	return SJME_JNI_FALSE;
 }
 
-jboolean sjme_nvm_localPushLong(sjme_nvm_frame* frame,
-	jint index)
+sjme_jboolean sjme_nvm_localPushLong(sjme_nvm_frame* frame,
+	sjme_jint index)
 {
 	sjme_todo("Implement");
-	return JNI_FALSE;
+	return SJME_JNI_FALSE;
 }
 
-jboolean sjme_nvm_localPushReference(sjme_nvm_frame* frame,
-	jint index)
+sjme_jboolean sjme_nvm_localPushReference(sjme_nvm_frame* frame,
+	sjme_jint index)
 {
 	sjme_todo("Implement");
-	return JNI_FALSE;
+	return SJME_JNI_FALSE;
 }
 
-jboolean sjme_nvm_localReadInteger(
+sjme_jboolean sjme_nvm_localReadInteger(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
-	sjme_attrInValue sjme_attrInPositive jint index,
-	sjme_attrOutNotNull jint* outValue)
+	sjme_attrInValue sjme_attrInPositive sjme_jint index,
+	sjme_attrOutNotNull sjme_jint* outValue)
 {
 	sjme_todo("Implement");
-	return JNI_FALSE;
+	return SJME_JNI_FALSE;
 }
 	
-jboolean sjme_nvm_localStoreInteger(sjme_nvm_frame* frame,
-	jint index,
-	jint value)
+sjme_jboolean sjme_nvm_localStoreInteger(sjme_nvm_frame* frame,
+	sjme_jint index,
+	sjme_jint value)
 {
 	sjme_todo("Implement");
-	return JNI_FALSE;
+	return SJME_JNI_FALSE;
 }
 
 sjme_tempIndex sjme_nvm_lookupClassObjectIntoTemp(sjme_nvm_frame* frame,
@@ -342,17 +342,17 @@ sjme_tempIndex sjme_nvm_lookupStringIntoTemp(sjme_nvm_frame* frame,
 	return -1;
 }
 
-jboolean sjme_nvm_monitor(sjme_nvm_frame* frame,
-	jobject instance,
-	jboolean isEnter)
+sjme_jboolean sjme_nvm_monitor(sjme_nvm_frame* frame,
+	sjme_jobject instance,
+	sjme_jboolean isEnter)
 {
 	sjme_todo("Implement");
-	return JNI_FALSE;
+	return SJME_JNI_FALSE;
 }
 
 sjme_tempIndex sjme_nvm_newArrayIntoTemp(sjme_nvm_frame* frame,
 	sjme_dynamic_linkage_data_classObject* componentType,
-	jint length)
+	sjme_jint length)
 {
 	sjme_todo("Implement");
 	return -1;
@@ -365,18 +365,18 @@ sjme_tempIndex sjme_nvm_newInstanceIntoTemp(sjme_nvm_frame* frame,
 	return -1;
 }
 	
-jboolean sjme_nvm_returnFromMethod(sjme_nvm_frame* frame,
+sjme_jboolean sjme_nvm_returnFromMethod(sjme_nvm_frame* frame,
 	sjme_any* value)
 {
 	sjme_todo("Implement");
-	return JNI_FALSE;
+	return SJME_JNI_FALSE;
 }
 
-jboolean sjme_nvm_stackPopAny(sjme_nvm_frame* frame,
+sjme_jboolean sjme_nvm_stackPopAny(sjme_nvm_frame* frame,
 	sjme_any* output)
 {
 	sjme_todo("Implement");
-	return JNI_FALSE;
+	return SJME_JNI_FALSE;
 }
 
 sjme_tempIndex sjme_nvm_stackPopAnyToTemp(sjme_nvm_frame* frame)
@@ -385,22 +385,22 @@ sjme_tempIndex sjme_nvm_stackPopAnyToTemp(sjme_nvm_frame* frame)
 	return -1;
 }
 
-jint sjme_nvm_stackPopInteger(sjme_nvm_frame* frame)
+sjme_jint sjme_nvm_stackPopInteger(sjme_nvm_frame* frame)
 {
 	sjme_todo("Implement");
 	return -1;
 }
 
-jobject sjme_nvm_stackPopReference(sjme_nvm_frame* frame)
+sjme_jobject sjme_nvm_stackPopReference(sjme_nvm_frame* frame)
 {
 	sjme_todo("Implement");
 	return NULL;
 }
 
-jboolean sjme_nvm_stackPopReferenceThenThrow(sjme_nvm_frame* frame)
+sjme_jboolean sjme_nvm_stackPopReferenceThenThrow(sjme_nvm_frame* frame)
 {
 	sjme_todo("Implement");
-	return JNI_FALSE;
+	return SJME_JNI_FALSE;
 }
 
 sjme_tempIndex sjme_nvm_stackPopReferenceToTemp(sjme_nvm_frame* frame)
@@ -409,88 +409,88 @@ sjme_tempIndex sjme_nvm_stackPopReferenceToTemp(sjme_nvm_frame* frame)
 	return -1;
 }
 
-jboolean sjme_nvm_stackPushAny(sjme_nvm_frame* frame,
+sjme_jboolean sjme_nvm_stackPushAny(sjme_nvm_frame* frame,
 	sjme_any* input)
 {
 	sjme_todo("Implement");
-	return JNI_FALSE;
+	return SJME_JNI_FALSE;
 }
 
-jboolean sjme_nvm_stackPushAnyFromTemp(sjme_nvm_frame* frame,
+sjme_jboolean sjme_nvm_stackPushAnyFromTemp(sjme_nvm_frame* frame,
 	sjme_tempIndex input)
 {
 	sjme_todo("Implement");
-	return JNI_FALSE;
+	return SJME_JNI_FALSE;
 }
 
-jboolean sjme_nvm_stackPushDoubleParts(sjme_nvm_frame* frame,
-	jint hi,
-	jint lo)
+sjme_jboolean sjme_nvm_stackPushDoubleParts(sjme_nvm_frame* frame,
+	sjme_jint hi,
+	sjme_jint lo)
 {
 	sjme_todo("Implement");
-	return JNI_FALSE;
+	return SJME_JNI_FALSE;
 }
 
-jboolean sjme_nvm_stackPushFloatRaw(sjme_nvm_frame* frame,
-	jint rawValue)
+sjme_jboolean sjme_nvm_stackPushFloatRaw(sjme_nvm_frame* frame,
+	sjme_jint rawValue)
 {
 	sjme_todo("Implement");
-	return JNI_FALSE;
+	return SJME_JNI_FALSE;
 }
 
-jboolean sjme_nvm_stackPushInteger(sjme_nvm_frame* frame,
-	jint value)
+sjme_jboolean sjme_nvm_stackPushInteger(sjme_nvm_frame* frame,
+	sjme_jint value)
 {
 	sjme_todo("Implement");
-	return JNI_FALSE;
+	return SJME_JNI_FALSE;
 }
 
-jboolean sjme_nvm_stackPushIntegerIsInstanceOf(sjme_nvm_frame* frame,
-	jobject instance,
+sjme_jboolean sjme_nvm_stackPushIntegerIsInstanceOf(sjme_nvm_frame* frame,
+	sjme_jobject instance,
 	sjme_dynamic_linkage_data_classObject* type)
 {
 	sjme_todo("Implement");
-	return JNI_FALSE;
+	return SJME_JNI_FALSE;
 }
 
-jboolean sjme_nvm_stackPushLongParts(sjme_nvm_frame* frame,
-	jint hi,
-	jint lo)
+sjme_jboolean sjme_nvm_stackPushLongParts(sjme_nvm_frame* frame,
+	sjme_jint hi,
+	sjme_jint lo)
 {
 	sjme_todo("Implement");
-	return JNI_FALSE;
+	return SJME_JNI_FALSE;
 }
 	
-jboolean sjme_nvm_stackPushReference(sjme_nvm_frame* frame,
-	jobject instance)
+sjme_jboolean sjme_nvm_stackPushReference(sjme_nvm_frame* frame,
+	sjme_jobject instance)
 {
 	sjme_todo("Implement");
-	return JNI_FALSE;
+	return SJME_JNI_FALSE;
 }
 
-jboolean sjme_nvm_stackPushReferenceFromTemp(sjme_nvm_frame* frame,
+sjme_jboolean sjme_nvm_stackPushReferenceFromTemp(sjme_nvm_frame* frame,
 	sjme_tempIndex tempIndex)
 {
 	sjme_todo("Implement");
-	return JNI_FALSE;
+	return SJME_JNI_FALSE;
 }
 
-jboolean sjme_nvm_tempDiscard(sjme_nvm_frame* frame)
+sjme_jboolean sjme_nvm_tempDiscard(sjme_nvm_frame* frame)
 {
 	sjme_todo("Implement");
-	return JNI_FALSE;
+	return SJME_JNI_FALSE;
 }
 
-jboolean sjme_nvm_throwExecute(sjme_nvm_frame* frame)
+sjme_jboolean sjme_nvm_throwExecute(sjme_nvm_frame* frame)
 {
 	sjme_todo("Implement");
-	return JNI_FALSE;
+	return SJME_JNI_FALSE;
 }
 
-jboolean sjme_nvm_topFrame(
+sjme_jboolean sjme_nvm_topFrame(
 	sjme_attrInNotNull sjme_nvm_thread* inThread,
 	sjme_attrOutNotNull sjme_nvm_frame* outFrame)
 {
 	sjme_todo("Implement");
-	return JNI_FALSE;
+	return SJME_JNI_FALSE;
 }

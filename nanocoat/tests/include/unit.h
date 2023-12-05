@@ -75,8 +75,8 @@ typedef enum sjme_unitOperator
 sjme_testResult sjme_unitOperatorIR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_attrInValue sjme_unitOperator operator,
 	sjme_attrInNotNull sjme_test* test,
-	sjme_attrInValue jint a,
-	sjme_attrInValue jint b,
+	sjme_attrInValue sjme_jint a,
+	sjme_attrInValue sjme_jint b,
 	sjme_attrInNullable sjme_attrFormatArg const char* format, ...)
 	sjme_attrFormatOuter(7, 8);
 
@@ -140,8 +140,8 @@ sjme_testResult sjme_unitOperatorIR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 sjme_testResult sjme_unitOperatorLR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_attrInValue sjme_unitOperator operator,
 	sjme_attrInNotNull sjme_test* test,
-	sjme_attrInNullable jobject a,
-	sjme_attrInNullable jobject b,
+	sjme_attrInNullable sjme_jobject a,
+	sjme_attrInNullable sjme_jobject b,
 	sjme_attrInNullable sjme_attrFormatArg const char* format, ...)
 	sjme_attrFormatOuter(7, 8);
 

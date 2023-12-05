@@ -9,8 +9,6 @@
 
 #include <jni.h>
 
-#define SJME_CONFIG_WRAPPED_TYPES
-
 #include "sjme/nvm.h"
 #include "sjme/debug.h"
 

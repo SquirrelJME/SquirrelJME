@@ -23,42 +23,42 @@
  * @return If this was successful.
  * @since 2023/07/28
  */
-static sjme_attrCheckReturn jboolean sjme_nvm_bootCombineRom(
+static sjme_attrCheckReturn sjme_jboolean sjme_nvm_bootCombineRom(
 	sjme_attrInNotNull const sjme_nvm_bootConfig* config,
 	sjme_attrOutNotNull sjme_static_libraries** outLibraries)
 {
 	if (config == NULL || outLibraries == NULL)
-		return JNI_FALSE;
+		return SJME_JNI_FALSE;
 		
 	/* Determine the total library count. */
-	if (JNI_TRUE)
+	if (SJME_JNI_TRUE)
 		sjme_todo("sjme_nvm_bootVirtualRom()");
 		
 	/* Allocate output result. */
-	if (JNI_TRUE)
+	if (SJME_JNI_TRUE)
 		sjme_todo("sjme_nvm_bootVirtualRom()");
 	
 	/* Bring in all of the libraries into the output. */
-	if (JNI_TRUE)
+	if (SJME_JNI_TRUE)
 		sjme_todo("sjme_nvm_bootVirtualRom()");
 
 	/* Return the result. */
 	sjme_todo("sjme_nvm_bootVirtualRom()");
-	return JNI_FALSE;
+	return SJME_JNI_FALSE;
 }
 
-jboolean sjme_nvm_boot(const sjme_nvm_bootConfig* config,
+sjme_jboolean sjme_nvm_boot(const sjme_nvm_bootConfig* config,
 	sjme_nvm_state** outState, int argc, char** argv)
 {
 	sjme_nvm_state* result;
 	
 	if (config == NULL || outState == NULL)
-		return JNI_FALSE;
+		return SJME_JNI_FALSE;
 		
 	/* Allocate new result. */
 	result = malloc(sizeof(*result));
 	if (result == NULL)
-		return JNI_FALSE;
+		return SJME_JNI_FALSE;
 	memset(result, 0, sizeof(*result));
 	
 	/* Copy the boot config over. */
@@ -68,40 +68,40 @@ jboolean sjme_nvm_boot(const sjme_nvm_bootConfig* config,
 	if (!sjme_nvm_bootCombineRom(config, &result->libraries))
 	{
 		sjme_nvm_destroy(result, NULL);
-		return JNI_FALSE;
+		return SJME_JNI_FALSE;
 	}
 	
 	/* Parse the command line arguments for options on running the VM. */
-	if (JNI_TRUE)
+	if (SJME_JNI_TRUE)
 		sjme_todo("sjme_nvm_boot()");
 	
 	/* Spawn initial task which uses the main arguments. */
-	if (JNI_TRUE)
+	if (SJME_JNI_TRUE)
 		sjme_todo("sjme_nvm_boot()");
 	
 	/* Return newly created VM. */
 	sjme_todo("sjme_nvm_boot()");
-	return JNI_FALSE;
+	return SJME_JNI_FALSE;
 }
 
-jboolean sjme_nvm_destroy(sjme_nvm_state* state, jint* exitCode)
+sjme_jboolean sjme_nvm_destroy(sjme_nvm_state* state, sjme_jint* exitCode)
 {
 	if (state == NULL)
-		return JNI_FALSE;
+		return SJME_JNI_FALSE;
 	
 	/* Free sub-structures. */
-	if (JNI_TRUE)
+	if (SJME_JNI_TRUE)
 		sjme_todo("sjme_nvm_destroy()");
 		
 	/* Free main structure. */
-	if (JNI_TRUE)
+	if (SJME_JNI_TRUE)
 		sjme_todo("sjme_nvm_destroy()");
 	
 	/* Set exit code, if requested. */
-	if (JNI_TRUE)
+	if (SJME_JNI_TRUE)
 		sjme_todo("sjme_nvm_destroy()");
 	
 	/* Finished. */
 	sjme_todo("sjme_nvm_destroy()");
-	return JNI_FALSE;
+	return SJME_JNI_FALSE;
 }

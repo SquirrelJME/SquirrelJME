@@ -26,7 +26,7 @@
 	va_start(inputVa, format); \
     sjme_unitShortingEmit(file, line, func, test, (type), format, inputVa); \
     va_end(inputVa); \
-	} while(JNI_FALSE)
+	} while(SJME_JNI_FALSE)
 
 /**
  * Operator comparison function.
@@ -37,7 +37,7 @@
  * @return Returns what the comparison is.
  * @since 2023/11/20
  */
-typedef jboolean (*sjme_unitOperatorFunc)(size_t size, void* a, void* b);
+typedef sjme_jboolean (*sjme_unitOperatorFunc)(size_t size, void* a, void* b);
 
 /**
  * Operator comparison information.
@@ -53,74 +53,74 @@ typedef struct sjme_unitOperatorInfo
 	sjme_unitOperatorFunc function;
 } sjme_unitOperatorInfo;
 
-static jboolean sjme_unitOperatorEqual(size_t size, void* a, void* b)
+static sjme_jboolean sjme_unitOperatorEqual(size_t size, void* a, void* b)
 {
 	return memcmp(a, b, size) == 0;
 }
 
-static jboolean sjme_unitOperatorNotEqual(size_t size, void* a, void* b)
+static sjme_jboolean sjme_unitOperatorNotEqual(size_t size, void* a, void* b)
 {
 	return memcmp(a, b, size) != 0;
 }
 
-static jboolean sjme_unitOperatorLessThan(size_t size, void* a, void* b)
+static sjme_jboolean sjme_unitOperatorLessThan(size_t size, void* a, void* b)
 {
-	jlong *ja;
-	jlong *jb;
+	sjme_jlong *ja;
+	sjme_jlong *jb;
 	
-	if (size == sizeof(jint))
-		return *((jint*)a) < *((jint*)b);
+	if (size == sizeof(sjme_jint))
+		return *((sjme_jint*)a) < *((sjme_jint*)b);
 	
 	ja = a;
 	jb = b;
 	if (ja->hi <= jb->hi)
 		return ja->lo < jb->lo;
-	return JNI_FALSE;  
+	return SJME_JNI_FALSE;  
 }
 
-static jboolean sjme_unitOperatorLessEqual(size_t size, void* a, void* b)
+static sjme_jboolean sjme_unitOperatorLessEqual(size_t size, void* a, void* b)
 {
-	jlong *ja;
-	jlong *jb;
+	sjme_jlong *ja;
+	sjme_jlong *jb;
 	
-	if (size == sizeof(jint))
-		return *((jint*)a) <= *((jint*)b);
+	if (size == sizeof(sjme_jint))
+		return *((sjme_jint*)a) <= *((sjme_jint*)b);
 	
 	ja = a;
 	jb = b;
 	if (ja->hi <= jb->hi)
 		return ja->lo <= jb->lo;
-	return JNI_FALSE;
+	return SJME_JNI_FALSE;
 }
 
-static jboolean sjme_unitOperatorGreaterThan(size_t size, void* a, void* b)
+static sjme_jboolean sjme_unitOperatorGreaterThan(size_t size, void* a, void* b)
 {
-	jlong *ja;
-	jlong *jb;
+	sjme_jlong *ja;
+	sjme_jlong *jb;
 	
-	if (size == sizeof(jint))
-		return *((jint*)a) > *((jint*)b);
+	if (size == sizeof(sjme_jint))
+		return *((sjme_jint*)a) > *((sjme_jint*)b);
 	
 	ja = a;
 	jb = b;
 	if (ja->hi >= jb->hi)
 		return ja->lo > jb->lo;
-	return JNI_FALSE;
+	return SJME_JNI_FALSE;
 }
 
-static jboolean sjme_unitOperatorGreaterEqual(size_t size, void* a, void* b)
+static sjme_jboolean sjme_unitOperatorGreaterEqual(size_t size, void* a, void* b)
 {
-	jlong *ja;
-	jlong *jb;
+	sjme_jlong *ja;
+	sjme_jlong *jb;
 	
-	if (size == sizeof(jint))
-		return *((jint*)a) >= *((jint*)b);
+	if (size == sizeof(sjme_jint))
+		return *((sjme_jint*)a) >= *((sjme_jint*)b);
 	
 	ja = a;
 	jb = b;
 	if (ja->hi >= jb->hi)
 		return ja->lo >= jb->lo;
-	return JNI_FALSE;
+	return SJME_JNI_FALSE;
 }
 
 /** Operator information. */
@@ -163,7 +163,7 @@ const sjme_unitOperatorInfo sjme_unitOperatorInfos[SJME_NUM_UNIT_OPERATORS] =
 	},
 };
 
-static jboolean sjme_unitShortingEmit(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+static sjme_jboolean sjme_unitShortingEmit(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_attrInNotNull sjme_test* test,
 	sjme_attrInRange(SJME_TEST_RESULT_PASS, SJME_TEST_RESULT_FAIL)
 		sjme_testResult type,
@@ -188,8 +188,8 @@ static jboolean sjme_unitShortingEmit(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 sjme_testResult sjme_unitOperatorIR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_attrInValue sjme_unitOperator operator,
 	sjme_attrInNotNull sjme_test* test,
-	sjme_attrInValue jint a,
-	sjme_attrInValue jint b,
+	sjme_attrInValue sjme_jint a,
+	sjme_attrInValue sjme_jint b,
 	sjme_attrInNullable sjme_attrFormatArg const char* format, ...)
 {
 	SJME_VA_DEF;
@@ -199,7 +199,7 @@ sjme_testResult sjme_unitOperatorIR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 		SJME_VA_SHORT(SJME_TEST_RESULT_FAIL);
 	opInfo = &sjme_unitOperatorInfos[operator];
 	
-	if (!opInfo->function(sizeof(jint), &a, &b))
+	if (!opInfo->function(sizeof(sjme_jint), &a, &b))
 	{
 		sjme_messageR(file, line, func, "ASSERT: %d %s %d",
 			a, opInfo->symbol, b);
@@ -212,8 +212,8 @@ sjme_testResult sjme_unitOperatorIR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 sjme_testResult sjme_unitOperatorLR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_attrInValue sjme_unitOperator operator,
 	sjme_attrInNotNull sjme_test* test,
-	sjme_attrInNullable jobject a,
-	sjme_attrInNullable jobject b,
+	sjme_attrInNullable sjme_jobject a,
+	sjme_attrInNullable sjme_jobject b,
 	sjme_attrInNullable sjme_attrFormatArg const char* format, ...)
 {
 	SJME_VA_DEF;
@@ -223,7 +223,7 @@ sjme_testResult sjme_unitOperatorLR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 		SJME_VA_SHORT(SJME_TEST_RESULT_FAIL);
 	opInfo = &sjme_unitOperatorInfos[operator];
 	
-	if (!opInfo->function(sizeof(jobject), &a, &b))
+	if (!opInfo->function(sizeof(sjme_jobject), &a, &b))
 	{
 		sjme_messageR(file, line, func, "ASSERT: %p %s %p",
 			a, opInfo->symbol, b);
