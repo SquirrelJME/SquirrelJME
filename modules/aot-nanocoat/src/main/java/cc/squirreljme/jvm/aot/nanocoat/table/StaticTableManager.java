@@ -10,7 +10,6 @@
 package cc.squirreljme.jvm.aot.nanocoat.table;
 
 import cc.squirreljme.c.CIdentifier;
-import cc.squirreljme.jvm.aot.nanocoat.ArchiveOutputQueue;
 import cc.squirreljme.jvm.aot.nanocoat.CArchiveOutputQueue;
 import cc.squirreljme.jvm.aot.nanocoat.CodeFingerprint;
 import cc.squirreljme.jvm.aot.nanocoat.VariableLimits;
@@ -18,7 +17,6 @@ import cc.squirreljme.runtime.cldc.util.EnumTypeMap;
 import cc.squirreljme.runtime.cldc.util.SortedTreeSet;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.classfile.ByteCode;
