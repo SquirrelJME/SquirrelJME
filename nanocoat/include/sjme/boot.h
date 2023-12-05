@@ -39,22 +39,23 @@ extern "C" {
  * @return The booted virtual machine.
  * @since 2023/07/27
  */
-jboolean sjme_nvm_boot(
+SJME_WRAPPED(jboolean) sjme_nvm_boot(
 	sjme_attrInNotNull const sjme_nvm_bootConfig* config,
 	sjme_attrOutNotNull sjme_nvm_state** outState,
 	sjme_attrInValue int argc,
 	sjme_attrInNullable char** argv) sjme_attrCheckReturn;
 	
 /**
-* Destroys the virtual machine.
-* 
-* @param state The state to destroy.
-* @return If destruction was successful.
-* @since 2023/07/27
-*/
-jboolean sjme_nvm_destroy(
+ * Destroys the virtual machine.
+ * 
+ * @param state The state to destroy.
+ * @return If destruction was successful.
+ * @since 2023/07/27
+ */
+SJME_WRAPPED(jboolean) sjme_nvm_destroy(
 	sjme_attrInNotNull sjme_nvm_state* state,
-	sjme_attrOutNullable jint* exitCode) sjme_attrCheckReturn;
+	sjme_attrOutNullable SJME_WRAPPED(jint)* exitCode)
+	sjme_attrCheckReturn;
 
 /*--------------------------------------------------------------------------*/
 

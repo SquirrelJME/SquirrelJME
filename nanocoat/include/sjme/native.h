@@ -37,7 +37,7 @@ extern "C" {
  * @return If the operation was successful.
  * @since 2023/05/23
  */
-typedef jboolean (*sjme_nal_currentTimeMillisFunc)(
+typedef SJME_WRAPPED(jboolean) (*sjme_nal_currentTimeMillisFunc)(
 	sjme_attrOutNotNull jlong* result)
 	sjme_attrCheckReturn;
 
@@ -50,10 +50,10 @@ typedef jboolean (*sjme_nal_currentTimeMillisFunc)(
  * the output is the true length of the returned buffer.
  * @since 2023/08/05
  */
-typedef jboolean (*sjme_nal_getEnv)(
+typedef SJME_WRAPPED(jboolean) (*sjme_nal_getEnv)(
 	sjme_attrInNotNull sjme_attrOutNotNullBuf(len) jbyte* buf,
-	sjme_attrInValue sjme_attrInPositive jint off,
-	sjme_attrInOutNotNull sjme_attrInPositive jint* len)
+	sjme_attrInValue sjme_attrInPositive SJME_WRAPPED(jint) off,
+	sjme_attrInOutNotNull sjme_attrInPositive SJME_WRAPPED(jint)* len)
 	sjme_attrCheckReturn; 
 
 /**
@@ -64,8 +64,8 @@ typedef jboolean (*sjme_nal_getEnv)(
  * @return If the operation was successful.
  * @since 2023/05/23
  */
-typedef jboolean (*sjme_nal_nanoTime)(
-	sjme_attrOutNotNull jlong* result)
+typedef SJME_WRAPPED(jboolean) (*sjme_nal_nanoTime)(
+	sjme_attrOutNotNull SJME_WRAPPED(jlong)* result)
 	sjme_attrCheckReturn;
 
 /**

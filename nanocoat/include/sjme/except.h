@@ -61,7 +61,8 @@ extern "C" {
  * @return Never returns technically.
  * @since 2023/11/14
  */
-jboolean sjme_except_gracefulDeathR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+SJME_WRAPPED(jboolean) sjme_except_gracefulDeathR(
+	SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_attrInNotNull sjme_nvm_frame* frame,
 	sjme_attrInRange(SJME_NUM_ERROR_CODES, SJME_ERROR_CODE_NONE)
 		sjme_errorCode errorCode,

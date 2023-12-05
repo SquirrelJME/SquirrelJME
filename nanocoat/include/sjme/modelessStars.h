@@ -33,7 +33,7 @@ extern "C" {
 typedef struct sjme_modelessStarColor
 {
 	/** XRGB. */
-	jint xrgb[4];
+	SJME_WRAPPED(jint) xrgb[4];
 } sjme_modelessStarColor;
 
 /**
@@ -44,16 +44,16 @@ typedef struct sjme_modelessStarColor
 typedef struct sjme_modelessStar
 {
 	/** Is this star shining? */
-	jboolean shining;
+	SJME_WRAPPED(jboolean) shining;
 	
 	/** The X coordinate. */
-	jint x;
+	SJME_WRAPPED(jint) x;
 	
 	/** The Y coordinate. */
-	jint y;
+	SJME_WRAPPED(jint) y;
 	
 	/** The speed of the star. */
-	jint speed;
+	SJME_WRAPPED(jint) speed;
 } sjme_modelessStar;
 
 /** Color shift. */
@@ -92,13 +92,13 @@ typedef struct sjme_modelessStarState
 	sjme_modelessStar modelessStars[SJME_MODELESS_STAR_COUNT];
 	
 	/** Is star creation locked? */
-	jint lockStarCreation;
+	SJME_WRAPPED(jint) lockStarCreation;
 	
 	/** The last @c lockStarCreation value. */
-	jint lockStarCreationLast;
+	SJME_WRAPPED(jint) lockStarCreationLast;
 	
 	/** First go latched? */
-	jboolean latchedFirstGo;
+	SJME_WRAPPED(jboolean) latchedFirstGo;
 } sjme_modelessStarState;
 
 /**
@@ -113,13 +113,13 @@ typedef struct sjme_modelessStarState
  * @return Returns @c JNI_FALSE if there are issues with inputs.
  * @since 2023/11/22
  */
-jboolean sjme_modelessStars(
+SJME_WRAPPED(jboolean) sjme_modelessStars(
 	sjme_attrInOutNotNull sjme_modelessStarState* state,
 	sjme_attrInNotNull uint32_t* buf,
-	sjme_attrInPositiveNonZero jint width,
-	sjme_attrInPositiveNonZero jint height,
-	sjme_attrInPositiveNonZero jint pitch,
-	sjme_attrInValue jint tick);
+	sjme_attrInPositiveNonZero SJME_WRAPPED(jint) width,
+	sjme_attrInPositiveNonZero SJME_WRAPPED(jint) height,
+	sjme_attrInPositiveNonZero SJME_WRAPPED(jint) pitch,
+	sjme_attrInValue SJME_WRAPPED(jint) tick);
 
 /*--------------------------------------------------------------------------*/
 

@@ -108,20 +108,20 @@ typedef enum sjme_gfx_pixelFormat
  * @return Returns @c JNI_TRUE on success.
  * @since 2023/11/24
  */
-typedef jboolean (*sjme_gfx_getGraphics)(
+typedef SJME_WRAPPED(jboolean) (*sjme_gfx_getGraphics)(
 	sjme_attrInNotNull sjme_gfx_framebuffer* framebuffer,
 	sjme_attrInOutNotNull sjme_gfx_graphics* inOutGraphics,
 	sjme_attrInRange(0, SJME_NUM_GFX_PIXEL_FORMATS)
 		sjme_gfx_pixelFormat pixelFormat,
-	sjme_attrInPositiveNonZero jint bufferWidth,
-	sjme_attrInPositiveNonZero jint bufferHeight,
+	sjme_attrInPositiveNonZero SJME_WRAPPED(jint) bufferWidth,
+	sjme_attrInPositiveNonZero SJME_WRAPPED(jint) bufferHeight,
 	sjme_attrInNotNull void* buffer,
-	sjme_attrInPositive jint offset,
+	sjme_attrInPositive SJME_WRAPPED(jint) offset,
 	sjme_attrInNullable void* palette,
-	sjme_attrInValue jint surfaceX,
-	sjme_attrInValue jint surfaceY,
-	sjme_attrInPositiveNonZero jint surfaceWidth,
-	sjme_attrInPositiveNonZero jint surfaceHeight);
+	sjme_attrInValue SJME_WRAPPED(jint) surfaceX,
+	sjme_attrInValue SJME_WRAPPED(jint) surfaceY,
+	sjme_attrInPositiveNonZero SJME_WRAPPED(jint) surfaceWidth,
+	sjme_attrInPositiveNonZero SJME_WRAPPED(jint) surfaceHeight);
 
 /**
  * Functions for drawing in a given graphics accordingly.
@@ -131,7 +131,7 @@ typedef jboolean (*sjme_gfx_getGraphics)(
 typedef struct sjme_gfx_pencilFunctions
 {
 	/** TODO. */
-	jint todo;
+	SJME_WRAPPED(jint) todo;
 } sjme_gfx_pencilFunctions;
 
 struct sjme_gfx_graphics
@@ -152,22 +152,22 @@ struct sjme_gfx_framebuffer
 	void* pixels;
 	
 	/** The width of the framebuffer in pixels. */
-	jint width;
+	SJME_WRAPPED(jint) width;
 	
 	/** The height of the framebuffer in pixels. */
-	jint height;
+	SJME_WRAPPED(jint) height;
 	
 	/** The scanline length of the framebuffer in pixels. */
-	jint pitch;
+	SJME_WRAPPED(jint) pitch;
 	
 	/** The true scanline length of the framebuffer in bytes. */
-	jint pitchBytes;
+	SJME_WRAPPED(jint) pitchBytes;
 	
 	/** Function to get a graphics drawing instance for this framebuffer. */
 	sjme_gfx_getGraphics getGraphics;
 	
 	/** If the framebuffer is allocated extra here, this has room for it. */
-	jubyte rawReservedBuffer[sjme_flexibleArrayCount];
+	SJME_WRAPPED(jubyte) rawReservedBuffer[sjme_flexibleArrayCount];
 };
 
 /*--------------------------------------------------------------------------*/
