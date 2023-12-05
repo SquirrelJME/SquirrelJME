@@ -17,6 +17,10 @@ squirreljme
 	    "-keep", "class", "**",
 		"-dontwarn", "**"
 	]
+	proGuardOptionsTest += [
+	    "-keep", "class", "**",
+		"-dontwarn", "**"
+	]
 }
 
 dependencies
