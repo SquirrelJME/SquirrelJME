@@ -8,7 +8,7 @@
 # DESCRIPTION: SquirrelJME emulator interface (Java SE)
 
 # We need JNI for this to work
-find_package(JNI)
+squirreljme_include("jni.cmake")
 
 # Declare library
 add_library(squirreljmeEmulatorLib SHARED

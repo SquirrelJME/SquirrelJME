@@ -8,7 +8,7 @@
 
 # SquirrelJME Java SE Emulator Front-End
 if(NOT EMSCRIPTEN AND NOT SQUIRRELJME_CROSS_BUILD)
-	find_package(JNI)
+	squirreljme_include("jni.cmake")
 
 	if(JNI_FOUND)
 		add_subdirectory(emulator)
