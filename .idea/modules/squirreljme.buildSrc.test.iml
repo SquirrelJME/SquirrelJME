@@ -197,10 +197,10 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="Gradle: ca.mcgill.sable:jasmin:3.0.3" level="project" />
-    <orderEntry type="library" name="Gradle: com.guardsquare:proguard-base:7.3.2" level="project" />
-    <orderEntry type="library" name="Gradle: com.guardsquare:proguard-core:9.1.0" level="project" />
-    <orderEntry type="library" name="Gradle: org.projectlombok:lombok:1.18.28" level="project" />
-    <orderEntry type="library" name="Gradle: org.iban4j:iban4j:3.2.6-RELEASE" level="project" />
+    <orderEntry type="library" name="Gradle: com.guardsquare:proguard-base:7.4.1" level="project" />
+    <orderEntry type="library" name="Gradle: com.guardsquare:proguard-core:9.1.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.projectlombok:lombok:1.18.30" level="project" />
+    <orderEntry type="library" name="Gradle: org.iban4j:iban4j:3.2.7-RELEASE" level="project" />
     <orderEntry type="library" name="Gradle: com.opencsv:opencsv:5.8" level="project" />
     <orderEntry type="library" name="Gradle: ca.mcgill.sable:java_cup:0.9.2" level="project" />
     <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.20" level="project" />
