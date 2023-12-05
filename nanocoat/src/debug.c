@@ -20,6 +20,27 @@
 
 sjme_danglingMessageFunc sjme_danglingMessage = NULL;
 
+static const char* sjme_shortenFile(const char* file)
+{
+	sjme_jint i, n;
+	
+	/* There is nothing to shorten. */
+	if (file == NULL)
+		return NULL;
+	
+	/* Try to find nanocoat in there. */
+	n = strlen(file);
+	for (i = (n - 11 >= 0 ? n - 11 : 0); i >= 0; i--)
+	{
+		if (0 == memcmp(&file[i], "/nanocoat/", 10) ||
+			0 == memcmp(&file[i], "\\nanocoat\\", 10))
+			return &file[i + 10];
+	}
+	
+	/* Use the full name regardless. */
+	return file;
+}
+
 static void sjme_genericMessage(const char* file, int line,
 	const char* func, const char* prefix, const char* format, va_list args)
 {
@@ -47,7 +68,7 @@ static void sjme_genericMessage(const char* file, int line,
 	if (file != NULL || line > 0 || func != NULL) 
 		snprintf(fullBuf, DEBUG_BUF - 1,
 			"%s (%s:%d in %s()): %s\n",
-			prefix, file, line, func, buf);
+			prefix, sjme_shortenFile(file), line, func, buf);
 	else
 		snprintf(fullBuf, DEBUG_BUF - 1,
 			"%s %s\n",

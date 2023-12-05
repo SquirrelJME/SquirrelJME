@@ -22,7 +22,7 @@ static sjme_jboolean sjme_libretro_danglingMessage(const char* message)
 	if (sjme_libretro_envCallback != NULL)
 	{
 		/* Setup details. */
-		retroMessage.frames = 60;
+		retroMessage.frames = 120;
 		retroMessage.msg = message;
 	
 		/* Emit message. */
