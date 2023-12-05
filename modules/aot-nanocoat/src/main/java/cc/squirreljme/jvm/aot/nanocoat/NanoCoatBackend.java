@@ -223,7 +223,7 @@ public class NanoCoatBackend
 		// The output is just a ZIP where we copy all the input entries for
 		// each library to... since NanoCoat is a collection of source code
 		try (ZipStreamWriter zip = new ZipStreamWriter(__out); 
-			ArchiveOutputQueue archive = new ArchiveOutputQueue(zip))
+			CArchiveOutputQueue archive = new CArchiveOutputQueue(zip))
 		{
 			// Process each table
 			for (VMClassLibrary library : __libs)

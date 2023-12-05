@@ -102,7 +102,7 @@ public class NanoCoatLinkGlob
 	protected final AOTSettings aotSettings;
 	
 	/** The archive queue. */
-	protected final ArchiveOutputQueue archive;
+	protected final CArchiveOutputQueue archive;
 	
 	/** The path to the header file. */
 	protected final CFileName headerFilePath;
@@ -136,7 +136,7 @@ public class NanoCoatLinkGlob
 		this.zip = zip;
 		
 		// Archive writer uses the Zip
-		ArchiveOutputQueue archive = new ArchiveOutputQueue(zip);
+		CArchiveOutputQueue archive = new CArchiveOutputQueue(zip);
 		this.archive = archive;
 		this.tables = new StaticTableManager(this.archive);
 		

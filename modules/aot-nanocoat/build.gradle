@@ -30,5 +30,7 @@ dependencies
 	api project(":modules:c-source-writer")
 	api project(":modules:csv")
 	
+	api project(":modules:aot-springcoat")
+	
 	testImplementation(testFixtures(project(":modules:aot")))
 }

@@ -12,6 +12,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
     <orderEntry type="module" module-name="squirreljme.modules.aot-nanocoat.testFixtures" production-on-test="" />
+    <orderEntry type="module" module-name="squirreljme.modules.aot-springcoat.main" />
     <orderEntry type="module" module-name="squirreljme.modules.aot.main" />
     <orderEntry type="module" module-name="squirreljme.modules.aot.testFixtures" production-on-test="" />
     <orderEntry type="module" module-name="squirreljme.modules.tool-classfile.main" />

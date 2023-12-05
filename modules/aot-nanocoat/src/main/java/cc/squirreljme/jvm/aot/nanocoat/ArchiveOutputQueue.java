@@ -106,43 +106,6 @@ public class ArchiveOutputQueue
 	}
 	
 	/**
-	 * Builds a new C File for output.
-	 *
-	 * @param __name The name of the file.
-	 * @return The resultant C File.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/08/12
-	 */
-	public CFile nextCFile(String __name)
-		throws IOException, NullPointerException
-	{
-		// Setup new C file and make sure it has a standard header
-		CFile result = Utils.cFile(this.nextEntry(__name));
-		Utils.headerC(result);
-		
-		return result;
-	}
-	
-	/**
-	 * Builds a new C File for output.
-	 *
-	 * @param __name The name of the file.
-	 * @return The resultant C File.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/08/13
-	 */
-	public CFile nextCFile(CFileName __name)
-		throws IOException, NullPointerException
-	{
-		if (__name == null)
-			throw new NullPointerException("NARG");
-		
-		return this.nextCFile(__name.toString());
-	}
-	
-	/**
 	 * Creates a new entry to write data to.
 	 *
 	 * @param __name The name of the file to write.

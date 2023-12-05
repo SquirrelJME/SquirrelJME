@@ -11,6 +11,7 @@ package cc.squirreljme.jvm.aot.nanocoat.table;
 
 import cc.squirreljme.c.CIdentifier;
 import cc.squirreljme.jvm.aot.nanocoat.ArchiveOutputQueue;
+import cc.squirreljme.jvm.aot.nanocoat.CArchiveOutputQueue;
 import cc.squirreljme.jvm.aot.nanocoat.CodeFingerprint;
 import cc.squirreljme.jvm.aot.nanocoat.VariableLimits;
 import cc.squirreljme.runtime.cldc.util.EnumTypeMap;
@@ -34,7 +35,7 @@ import net.multiphasicapps.collections.UnmodifiableSet;
 public class StaticTableManager
 {
 	/** The archive to write to. */
-	protected final ArchiveOutputQueue archive;
+	protected final CArchiveOutputQueue archive;
 	
 	/** Static table outputs. */
 	private final Map<StaticTableType, StaticTable<?, ?>> _tables;
@@ -50,7 +51,7 @@ public class StaticTableManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/08/12
 	 */
-	public StaticTableManager(ArchiveOutputQueue __archive)
+	public StaticTableManager(CArchiveOutputQueue __archive)
 		throws NullPointerException
 	{
 		if (__archive == null)

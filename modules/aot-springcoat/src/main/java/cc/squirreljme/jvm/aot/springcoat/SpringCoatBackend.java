@@ -31,6 +31,7 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import net.multiphasicapps.io.ChunkSection;
 import net.multiphasicapps.io.ChunkWriter;
+import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
 /**
  * Backend for SpringCoat operations.
@@ -104,12 +105,22 @@ public class SpringCoatBackend
 	 * @since 2021/08/21
 	 */
 	@Override
-	public void rom(AOTSettings __aotSettings, RomSettings __settings, OutputStream __out,
-		VMClassLibrary... __libs)
+	public void rom(AOTSettings __aotSettings, RomSettings __settings,
+		OutputStream __out, VMClassLibrary... __libs)
 		throws IOException, NullPointerException
 	{
 		if (__settings == null || __out == null || __libs == null)
 			throw new NullPointerException("NARG");
+		
+		// Just use a special ZIP file
+		try (ZipStreamWriter zip = new ZipStreamWriter(__out))
+		{
+			// Copy each library individually
+			for (VMClassLibrary lib : __libs)
+			{
+				
+			}
+		}
 		
 		// Start the base pack file accordingly
 		StandardPackWriter pack = new StandardPackWriter(

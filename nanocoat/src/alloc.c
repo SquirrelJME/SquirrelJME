@@ -143,7 +143,7 @@ jboolean sjme_alloc(
 	for (scanLink = pool->freeFirstLink;
 		scanLink != NULL; scanLink = scanLink->freeNext)
 	{
-		/** Block is in the "invalid" space, skip it. */
+		/* Block is in the "invalid" space, skip it. */
 		if (scanLink->space == SJME_NUM_ALLOC_POOL_SPACE)
 			continue;
 		

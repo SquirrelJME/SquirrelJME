@@ -14,7 +14,6 @@ import cc.squirreljme.plugin.multivm.ident.TargetClassifier;
 import cc.squirreljme.plugin.util.GradleJavaExecSpecFiller;
 import cc.squirreljme.plugin.util.GuardedOutputStream;
 import cc.squirreljme.plugin.util.JavaExecSpecFiller;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,11 +21,8 @@ import java.io.OutputStream;
 import java.lang.management.ManagementFactory;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -34,15 +30,12 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import org.apache.tools.ant.util.StreamUtils;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.SourceSet;
-import org.gradle.internal.impldep.org.apache.commons.codec.digest.DigestUtils;
 import org.gradle.process.ExecResult;
 
 /**
@@ -399,8 +392,9 @@ public enum VMType
 		}
 	},
 	
-	/** Nanocoat, an even smaller and limited C implemented run-time. */
-	NANOCOAT("NanoCoat", "zip", (String)null)
+	/** Nanocoat, a smaller simpler runtime. */
+	NANOCOAT("NanoCoat", "zip",
+		":emulators:nanocoat-vm")
 	{
 		/**
 		 * {@inheritDoc}
@@ -421,8 +415,8 @@ public enum VMType
 		@Override
 		public boolean hasEmulator()
 		{
-			// Nanocoat is just outputted C code, so nothing happens
-			return false;
+			// This can run on the emulator platform
+			return true;
 		}
 		
 		/**
@@ -432,8 +426,11 @@ public enum VMType
 		@Override
 		public NativePortSupport[] hasNativePortSupport()
 		{
+			// Currently no native port support
+			return new NativePortSupport[]{};
+			
 			// Can be run in NanoCoat
-			return new NativePortSupport[]{NativePortSupport.NANOCOAT};
+			/*return new NativePortSupport[]{NativePortSupport.NANOCOAT};*/
 		}
 		
 		/**
@@ -469,6 +466,10 @@ public enum VMType
 			if (__in == null || __out == null)
 				throw new NullPointerException("NARG");
 			
+			// Is just pure copy of the JAR
+			VMHelpers.copy(__in, __out);
+			
+			/*
 			// Determine checksum sum of the library, used to detect changes
 			// in the ROM for example with checkpointing/save states
 			// This is not used for security purposes, just to make sure
@@ -492,6 +493,21 @@ public enum VMType
 					Arrays.asList("-XoriginalLibHash:" + hex),
 					"compile", Collections.emptyList());
 			}
+			*/
+		}
+	
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/12/04
+		 */
+		@Override
+		public void processRom(VMBaseTask __task, BangletVariant __variant,
+			OutputStream __out, RomBuildParameters __build, List<Path> __libs)
+			throws IOException, NullPointerException
+		{
+			/* Just do what SpringCoat does... */
+			VMType.SPRINGCOAT.processRom(__task, __variant, __out,
+				__build, __libs);
 		}
 		
 		/**
@@ -506,7 +522,11 @@ public enum VMType
 			Path[] __libPath, Path[] __classPath, String... __args)
 			throws NullPointerException
 		{
-			throw new RuntimeException(this.name() + " cannot be spawned.");
+			// Use a common handler to execute the VM as the VMs all have
+			// the same entry point handlers and otherwise
+			this.spawnVmViaFactory(__task, __debugEligible, __execSpec,
+				__mainClass, __commonName, __sysProps, __libPath,
+				__classPath, __args);
 		}
 	},
 	

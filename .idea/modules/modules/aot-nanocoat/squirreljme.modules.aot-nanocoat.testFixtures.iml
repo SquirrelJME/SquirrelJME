@@ -7,6 +7,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
     <orderEntry type="module" module-name="squirreljme.modules.aot-nanocoat.main" />
+    <orderEntry type="module" module-name="squirreljme.modules.aot-springcoat.main" />
     <orderEntry type="module" module-name="squirreljme.modules.aot.main" />
     <orderEntry type="module" module-name="squirreljme.modules.tool-classfile.main" />
     <orderEntry type="module" module-name="squirreljme.modules.c-source-writer.main" />
