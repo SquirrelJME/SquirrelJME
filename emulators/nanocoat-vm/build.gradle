@@ -47,6 +47,15 @@ java.nio.file.Path emuLib =
 	cmakeBuild.resolve(Paths.get(
 		System.mapLibraryName("emulator-nanocoat")))
 
+static void dumpLog(Logger logger, LogLevel level, java.nio.file.Path pathy) {
+	try {
+		for (String ln : Files.readAllLines(pathy))
+			logger.log(level, ln)
+	} catch (Throwable e) {
+		e.printStackTrace()
+	}
+}
+
 // Compiles the NanoCoat binary library
 tasks.register("libNativeNanoCoat", (taskIsh) -> {
 	// Info
@@ -96,9 +105,16 @@ tasks.register("libNativeNanoCoat", (taskIsh) -> {
 		Process proc = procBuilder.start()
 		
 		// Wait for it to complete
-		if (!proc.waitFor(5, TimeUnit.MINUTES) ||
-			proc.exitValue() != 0)
-			throw new RuntimeException("CMake failed to configure...")
+		try {
+			if (!proc.waitFor(5, TimeUnit.MINUTES) ||
+				proc.exitValue() != 0)
+				throw new RuntimeException("CMake failed to configure...")
+		} finally {
+			dumpLog(logger,
+				LogLevel.LIFECYCLE, cmakeBuild.resolve("configure.out"))
+			dumpLog(logger,
+				LogLevel.ERROR, cmakeBuild.resolve("configure.err"))
+		}
 		
 		// Set executable
 		procBuilder = new ProcessBuilder()
@@ -118,9 +134,16 @@ tasks.register("libNativeNanoCoat", (taskIsh) -> {
 		proc = procBuilder.start()
 		
 		// Wait for it to complete
-		if (!proc.waitFor(5, TimeUnit.MINUTES) ||
-			proc.exitValue() != 0)
-			throw new RuntimeException("CMake failed to build...")
+		try {
+			if (!proc.waitFor(5, TimeUnit.MINUTES) ||
+				proc.exitValue() != 0)
+				throw new RuntimeException("CMake failed to build...")
+		} finally {
+			dumpLog(logger, LogLevel.LIFECYCLE,
+				cmakeBuild.resolve("configure.out"))
+			dumpLog(logger, LogLevel.ERROR,
+				cmakeBuild.resolve("configure.err"))
+		}
 		
 		// We need the library for this to even work
 		if (!Files.exists(emuLib))
