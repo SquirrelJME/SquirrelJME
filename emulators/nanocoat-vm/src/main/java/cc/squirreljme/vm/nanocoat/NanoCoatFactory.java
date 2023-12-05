@@ -18,6 +18,7 @@ import cc.squirreljme.emulator.vm.VirtualMachine;
 import cc.squirreljme.jdwp.JDWPFactory;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
+import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -49,6 +50,16 @@ public class NanoCoatFactory
 		String __mainClass, Map<String, String> __sysProps, String[] __args)
 		throws IllegalArgumentException, NullPointerException, VMException
 	{
+		// Make sure the native library is loaded
+		try
+		{
+			__Native__.__loadLibrary();
+		}
+		catch (IOException e)
+		{
+			throw new VMException("Could not load native library.", e);
+		}
+		
 		throw Debugging.todo();
 	}
 }
