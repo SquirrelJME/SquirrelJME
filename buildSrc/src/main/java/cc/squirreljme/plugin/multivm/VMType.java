@@ -393,7 +393,7 @@ public enum VMType
 	},
 	
 	/** Nanocoat, a smaller simpler runtime. */
-	NANOCOAT("NanoCoat", "zip",
+	NANOCOAT("NanoCoat", "jar",
 		":emulators:nanocoat-vm")
 	{
 		/**

@@ -123,6 +123,7 @@ nanocoat/rom/shared
 nanocoat/rom/specific
 nanocoat/cmake-build-*
 emulators/emulator-base/cmake-build-*
+*.jar
 
 # Fossil files
 _FOSSIL_

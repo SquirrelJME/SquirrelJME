@@ -14,6 +14,7 @@ import cc.squirreljme.c.CFileName;
 import cc.squirreljme.c.CIdentifier;
 import cc.squirreljme.c.CPPBlock;
 import cc.squirreljme.c.CVariable;
+import cc.squirreljme.jvm.aot.nanocoat.CArchiveOutputQueue;
 import cc.squirreljme.jvm.aot.queue.ArchiveOutputQueue;
 import cc.squirreljme.jvm.aot.nanocoat.csv.SharedCsvEntry;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
@@ -248,7 +249,7 @@ public abstract class StaticTable<K, V>
 				CFileName.of(headerFile),
 				CFileName.of(sourceFile))));
 		
-		ArchiveOutputQueue archive = manager.archive;
+		CArchiveOutputQueue archive = manager.archive;
 		
 		// Header to declare extern
 		CFileName headerName = CFileName.of(headerFile);

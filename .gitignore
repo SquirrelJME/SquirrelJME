@@ -50,6 +50,7 @@ nanocoat/rom/main_release
 nanocoat/rom/testFixtures_release
 nanocoat/rom/test_release
 emulators/emulator-base/cmake-build-*
+*.jar
 
 # IntelliJ Dependency Matrix
 emulators/*/out/production/

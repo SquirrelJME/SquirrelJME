@@ -19,10 +19,12 @@ import cc.squirreljme.jvm.aot.pack.HeaderStructWriter;
 import cc.squirreljme.jvm.aot.pack.StandardPackWriter;
 import cc.squirreljme.jvm.aot.pack.TableOfContentsEntry;
 import cc.squirreljme.jvm.aot.pack.TableOfContentsWriter;
+import cc.squirreljme.jvm.aot.queue.ArchiveOutputQueue;
 import cc.squirreljme.jvm.pack.constants.ClassInfoConstants;
 import cc.squirreljme.jvm.pack.constants.PackFlag;
 import cc.squirreljme.jvm.pack.constants.PackProperty;
 import cc.squirreljme.jvm.pack.constants.PackTocProperty;
+import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.vm.DataContainerLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.io.IOException;
@@ -113,63 +115,67 @@ public class SpringCoatBackend
 			throw new NullPointerException("NARG");
 		
 		// Just use a special ZIP file
-		try (ZipStreamWriter zip = new ZipStreamWriter(__out))
+		byte[] buf = StreamUtils.buffer(null);
+		try (ZipStreamWriter zip = new ZipStreamWriter(__out);
+			 ArchiveOutputQueue queue = new ArchiveOutputQueue(zip))
 		{
+			// Setup queue for SQC output
+			PrintStream suiteList =
+				queue.nextPrintStream("SQUIRRELJME.SQC/suites.list");
+			
 			// Copy each library individually
 			for (VMClassLibrary lib : __libs)
 			{
+				String libName = lib.name();
 				
+				// Only care about the base name
+				int lastSlash = libName.lastIndexOf('/');
+				if (lastSlash >= 0)
+					libName = libName.substring(lastSlash + 1);
+				
+				// If it does not end in Jar, make it so
+				if (!(libName.endsWith(".jar") || libName.endsWith(".JAR")))
+					libName = libName + ".jar";
+				
+				// Store suite
+				suiteList.println(libName);
+				
+				// Base name for everything within
+				String outBase = "SQUIRRELJME.SQC/" + libName + "/";
+				
+				// Setup resource list
+				PrintStream rcList =
+					queue.nextPrintStream(outBase +
+						"META-INF/squirreljme/resources.list");
+				
+				// Copy all entries over
+				for (String rcName : lib.listResources())
+				{
+					// Ignore directories
+					if (rcName.endsWith("/"))
+						continue;
+					
+					// Record name of entry
+					rcList.println(rcName);
+					
+					// Copy
+					try (InputStream libIn = lib.resourceAsStream(rcName);
+						 OutputStream zipCopy = queue.nextEntry(
+							 outBase + rcName))
+					{
+						StreamUtils.copy(libIn, zipCopy, buf);
+					}
+				}
+				
+				// Finish resources
+				rcList.close();
 			}
+			
+			// Finish the suite list
+			suiteList.close();
 		}
 		
-		// Start the base pack file accordingly
-		StandardPackWriter pack = new StandardPackWriter(
-			ClassInfoConstants.PACK_MAGIC_NUMBER,
-			PackProperty.NUM_PACK_PROPERTIES,
-			PackTocProperty.NUM_PACK_TOC_PROPERTIES);
-		pack.initialize();
-		
-		// Get the used chunks.
-		ChunkWriter mainChunk = pack.mainChunk;
-		ChunkSection tocChunk = pack.tocChunk;
-		
-		// Write header information
-		HeaderStructWriter header = pack.header();
-		ChunkUtils.storeCommonPackHeader(mainChunk, __settings,
-			header);
-		
-		// Our pack consists of regular Java classes
-		header.set(PackProperty.BITFIELD_PACK_FLAGS,
-			PackFlag.IS_SPRINGCOAT);
-		
-		// Process each library
-		TableOfContentsWriter toc = pack.toc();
-		for (VMClassLibrary lib : __libs)
-		{
-			// Setup Jar chunk
-			ChunkSection jarChunk = mainChunk.addSection(
-				ChunkWriter.VARIABLE_SIZE, 8);
-			
-			// Declare new entry
-			TableOfContentsEntry entry = toc.add();
-			ChunkUtils.storeCommonPackTocEntry(entry, lib, mainChunk,
-				jarChunk);
-			
-			// Plain data container?
-			if (lib instanceof DataContainerLibrary)
-				ChunkUtils.copyDataContainer(
-					(DataContainerLibrary)lib, jarChunk, entry);
-			
-			// Copy plain JAR class otherwise
-			else
-				ChunkUtils.copyPlainJarClasses(lib, jarChunk, entry);
-		}
-		
-		// Prepare table of contents
-		ChunkUtils.storeCommonPackToc(toc, tocChunk, header);
-		
-		// Write to wherever our output is going
-		mainChunk.writeTo(__out);
+		// Make sure it is all written
 		__out.flush();
 	}
 }
