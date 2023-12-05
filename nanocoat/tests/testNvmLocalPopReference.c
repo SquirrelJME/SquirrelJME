@@ -135,8 +135,8 @@ SJME_TEST_DECLARE(testNvmLocalPopReference)
 			/* Setup integer values. */
 			objectsTread = frame->treads[SJME_JAVA_TYPE_ID_OBJECT];
 			stack = frame->stack;
-			objectsTread->values.sjme_jobjects[0] = state.objects[secondId];
-			objectsTread->values.sjme_jobjects[1] = state.objects[firstId];
+			objectsTread->values.jobjects[0] = state.objects[secondId];
+			objectsTread->values.jobjects[1] = state.objects[firstId];
 			objectsTread->count = objectsTread->stackBaseIndex + 1;
 			stack->count = 1;
 			stack->order[0] = SJME_JAVA_TYPE_ID_OBJECT;
@@ -165,11 +165,11 @@ SJME_TEST_DECLARE(testNvmLocalPopReference)
 	
 			/* Check that the value was moved over. */
 			sjme_unitEqualL(test, state.objects[firstId],
-				objectsTread->values.sjme_jobjects[0],
+				objectsTread->values.jobjects[0],
 				"Popped stack into local was not the correct value.");
 		
 			/* And the stack value was cleared. */
-			sjme_unitEqualL(test, NULL, objectsTread->values.sjme_jobjects[1],
+			sjme_unitEqualL(test, NULL, objectsTread->values.jobjects[1],
 				"Stack value did not get cleared.");
 		}
 	

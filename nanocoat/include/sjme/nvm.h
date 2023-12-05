@@ -294,10 +294,10 @@ typedef sjme_jobject sjme_jthrowable;
 typedef union sjme_anyData
 {
 	/** Integer. */
-	sjme_jint sjme_jint;
+	sjme_jint jint;
 	
 	/** Object. */
-	sjme_jobject sjme_jobject;
+	sjme_jobject jobject;
 	
 	/** Temporary index. */
 	sjme_tempIndex tempIndex;
@@ -344,22 +344,22 @@ typedef struct sjme_nvm_thread
 typedef struct sjme_static_constValue
 {
 	/** Integer value. */
-	sjme_jint sjme_jint;
+	sjme_jint jint;
 	
 	/** Long value. */
-	sjme_jlong sjme_jlong;
+	sjme_jlong jlong;
 	
 	/** Float value. */
-	sjme_jfloat sjme_jfloat;
+	sjme_jfloat jfloat;
 	
 	/** Double value. */
-	sjme_jdouble sjme_jdouble;
+	sjme_jdouble jdouble;
 	
 	/** String value. */
-	const char* sjme_jstring;
+	const char* jstring;
 	
 	/** Class name. */
-	const char* sjme_jclass;
+	const char* jclass;
 } sjme_static_constValue;
 
 /**
@@ -780,19 +780,19 @@ typedef struct sjme_nvm_frameTread
 	union
 	{
 		/** Integer values. */
-		sjme_jint sjme_jints[sjme_flexibleArrayCountUnion];
+		sjme_jint jints[sjme_flexibleArrayCountUnion];
 		
 		/** Long values. */
-		sjme_jlong sjme_jlongs[sjme_flexibleArrayCountUnion];
+		sjme_jlong jlongs[sjme_flexibleArrayCountUnion];
 		
 		/** Float values. */
-		sjme_jfloat sjme_jfloats[sjme_flexibleArrayCountUnion];
+		sjme_jfloat jfloats[sjme_flexibleArrayCountUnion];
 		
 		/** Double values. */
-		sjme_jdouble sjme_jdoubles[sjme_flexibleArrayCountUnion];
+		sjme_jdouble jdoubles[sjme_flexibleArrayCountUnion];
 		
 		/** Object references. */
-		sjme_jobject sjme_jobjects[sjme_flexibleArrayCountUnion];
+		sjme_jobject jobjects[sjme_flexibleArrayCountUnion];
 	} values;
 } sjme_nvm_frameTread;
 
@@ -804,10 +804,10 @@ typedef struct sjme_nvm_frameTread
  * @return The size in bytes for the tread.
  * @since 2023/11/15
  */
-#define SJME_SIZEOF_FRAME_TREAD(type, count) \
+#define SJME_SIZEOF_FRAME_TREAD(type, count, baseType) \
 	(sizeof(sjme_nvm_frameTread) + \
 	/* Need to handle cases where values could be aligned up... */ \
-	(offsetof(sjme_nvm_frameTread, values.SJME_TOKEN_PASTE(type,s)[0]) - \
+	(offsetof(sjme_nvm_frameTread, values.SJME_TOKEN_PASTE(baseType,s)[0]) - \
 		offsetof(sjme_nvm_frameTread, values)) + \
 	(sizeof(type) * (size_t)(count)))
 
@@ -825,19 +825,19 @@ static inline size_t SJME_SIZEOF_FRAME_TREAD_VAR(sjme_javaTypeId typeId,
 	switch (typeId)
 	{
 		case SJME_JAVA_TYPE_ID_INTEGER:
-			return SJME_SIZEOF_FRAME_TREAD(sjme_jint, count);
+			return SJME_SIZEOF_FRAME_TREAD(sjme_jint, count, jint);
 		
 		case SJME_JAVA_TYPE_ID_LONG:
-			return SJME_SIZEOF_FRAME_TREAD(sjme_jlong, count);
+			return SJME_SIZEOF_FRAME_TREAD(sjme_jlong, count, jlong);
 			
 		case SJME_JAVA_TYPE_ID_FLOAT:
-			return SJME_SIZEOF_FRAME_TREAD(sjme_jfloat, count);
+			return SJME_SIZEOF_FRAME_TREAD(sjme_jfloat, count, jfloat);
 			
 		case SJME_JAVA_TYPE_ID_DOUBLE:
-			return SJME_SIZEOF_FRAME_TREAD(sjme_jdouble, count);
+			return SJME_SIZEOF_FRAME_TREAD(sjme_jdouble, count, jdouble);
 			
 		case SJME_JAVA_TYPE_ID_OBJECT:
-			return SJME_SIZEOF_FRAME_TREAD(sjme_jobject, count);
+			return SJME_SIZEOF_FRAME_TREAD(sjme_jobject, count, jobject);
 	}
 	
 	/* Invalid. */

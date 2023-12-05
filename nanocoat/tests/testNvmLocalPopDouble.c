@@ -74,8 +74,8 @@ sjme_attrUnused SJME_TEST_DECLARE(testNvmLocalPopDouble)
 	/* Setup integer values. */
 	longsTread = frame->treads[SJME_JAVA_TYPE_ID_DOUBLE];
 	stack = frame->stack;
-	longsTread->values.sjme_jdoubles[1].hi = 0x12345678;
-	longsTread->values.sjme_jdoubles[1].lo = 0x9ABCDEF0;
+	longsTread->values.jdoubles[1].hi = 0x12345678;
+	longsTread->values.jdoubles[1].lo = 0x9ABCDEF0;
 	longsTread->count = longsTread->stackBaseIndex + 1;
 	stack->count = 1;
 	stack->order[0] = SJME_JAVA_TYPE_ID_DOUBLE;
@@ -90,15 +90,15 @@ sjme_attrUnused SJME_TEST_DECLARE(testNvmLocalPopDouble)
 		"Items in stack not lower?");
 	
 	/* Check that the value was moved over. */
-	sjme_unitEqualI(test, 0x12345678, longsTread->values.sjme_jdoubles[0].hi,
+	sjme_unitEqualI(test, 0x12345678, longsTread->values.jdoubles[0].hi,
 		"Popped stack into local was not the correct value.");
-	sjme_unitEqualI(test, 0x9ABCDEF0, longsTread->values.sjme_jdoubles[0].lo,
+	sjme_unitEqualI(test, 0x9ABCDEF0, longsTread->values.jdoubles[0].lo,
 		"Popped stack into local was not the correct value.");
 		
 	/* And the stack value was cleared. */
-	sjme_unitEqualI(test, 0, longsTread->values.sjme_jdoubles[1].hi,
+	sjme_unitEqualI(test, 0, longsTread->values.jdoubles[1].hi,
 		"Stack value did not get cleared.");
-	sjme_unitEqualI(test, 0, longsTread->values.sjme_jdoubles[1].lo,
+	sjme_unitEqualI(test, 0, longsTread->values.jdoubles[1].lo,
 		"Stack value did not get cleared.");
 	
 	/* Success! */

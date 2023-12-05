@@ -11,7 +11,7 @@
 
 #include "sjme/tread.h"
 
-#define SJME_NVM_FRAME_TREAD_ACCESSOR_ADDRESS_GENERIC(cType, javaType) \
+#define SJME_NVM_FRAME_TREAD_ACCESSOR_ADDRESS_GENERIC(cType, javaType, jType) \
 	sjme_jboolean SJME_TOKEN_PASTE_PP( \
 			sjme_nvm_frameTreadAccessorAddress, javaType)( \
 		sjme_attrInNotNull sjme_nvm_frame* frame, \
@@ -29,15 +29,15 @@
 		\
 		/* Calculate address. */ \
 		*outAddress = &tread->values. \
-			SJME_TOKEN_PASTE_PP(cType, s)[treadIndex]; \
+			SJME_TOKEN_PASTE_PP(jType, s)[treadIndex]; \
 		return SJME_JNI_TRUE; \
 	}
 	
-SJME_NVM_FRAME_TREAD_ACCESSOR_ADDRESS_GENERIC(sjme_jint, Integer)
-SJME_NVM_FRAME_TREAD_ACCESSOR_ADDRESS_GENERIC(sjme_jlong, Long)
-SJME_NVM_FRAME_TREAD_ACCESSOR_ADDRESS_GENERIC(sjme_jfloat, Float)
-SJME_NVM_FRAME_TREAD_ACCESSOR_ADDRESS_GENERIC(sjme_jdouble, Double)
-SJME_NVM_FRAME_TREAD_ACCESSOR_ADDRESS_GENERIC(sjme_jobject, Object)
+SJME_NVM_FRAME_TREAD_ACCESSOR_ADDRESS_GENERIC(sjme_jint, Integer, jint)
+SJME_NVM_FRAME_TREAD_ACCESSOR_ADDRESS_GENERIC(sjme_jlong, Long, jlong)
+SJME_NVM_FRAME_TREAD_ACCESSOR_ADDRESS_GENERIC(sjme_jfloat, Float, jfloat)
+SJME_NVM_FRAME_TREAD_ACCESSOR_ADDRESS_GENERIC(sjme_jdouble, Double, jdouble)
+SJME_NVM_FRAME_TREAD_ACCESSOR_ADDRESS_GENERIC(sjme_jobject, Object, jobject)
 
 static sjme_jboolean sjme_nvm_frameTreadAccessorGetTreadGeneric(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
