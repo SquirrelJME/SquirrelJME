@@ -13,18 +13,24 @@
 
 sjme_attrUnused RETRO_API size_t retro_serialize_size(void)
 {
-	sjme_todo("Implement this?");
+	static sjme_jint trigger;
+	if (!(trigger++))
+		sjme_message("Impl. %s?", __func__);
 }
 
 sjme_attrUnused RETRO_API bool retro_serialize(void *data, size_t size)
 {
-	sjme_todo("Implement this?");
+	static sjme_jint trigger;
+	if (!(trigger++))
+		sjme_message("Impl. %s?", __func__);
 }
 
 sjme_attrUnused RETRO_API bool retro_unserialize(const void *data,
 	size_t size)
 {
-	sjme_todo("Implement this?");
+	static sjme_jint trigger;
+	if (!(trigger++))
+		sjme_message("Impl. %s?", __func__);
 }
 
 sjme_attrUnused RETRO_API void *retro_get_memory_data(unsigned id)

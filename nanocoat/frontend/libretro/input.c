@@ -15,7 +15,7 @@ sjme_attrUnused RETRO_API void retro_set_input_poll(retro_input_poll_t poll)
 {
 	static sjme_jint trigger;
 	if (!(trigger++))
-		sjme_message("Implement this?");
+		sjme_message("Impl. %s?", __func__);
 }
 
 sjme_attrUnused RETRO_API void retro_set_input_state(
@@ -23,11 +23,13 @@ sjme_attrUnused RETRO_API void retro_set_input_state(
 {
 	static sjme_jint trigger;
 	if (!(trigger++))
-		sjme_message("Implement this?");
+		sjme_message("Impl. %s?", __func__);
 }
 
 sjme_attrUnused RETRO_API void retro_set_controller_port_device(
 	unsigned port, unsigned device)
 {
-	sjme_todo("Implement this?");
+	static sjme_jint trigger;
+	if (!(trigger++))
+		sjme_message("Impl. %s?", __func__);
 }

@@ -56,32 +56,42 @@ sjme_attrUnused RETRO_API void retro_deinit(void)
 
 sjme_attrUnused RETRO_API void retro_init(void)
 {
+	/* Used for log reporting. */
 	sjme_danglingMessage = sjme_libretro_danglingMessage;
 }
 
 sjme_attrUnused RETRO_API bool retro_load_game(
 	const struct retro_game_info* game)
 {
+	static sjme_jint trigger;
+	
 	/* If we requested no game then we do not really care do we? */
 	if (game == NULL)
 		return true;
 		
-	sjme_todo("Implement this?");
+	if (!(trigger++))
+		sjme_message("Impl. %s?", __func__);
 }
 
 sjme_attrUnused RETRO_API bool retro_load_game_special(unsigned game_type,
 	const struct retro_game_info *info, size_t num_info)
 {
-	sjme_todo("Implement this?");
+	static sjme_jint trigger;
+	if (!(trigger++))
+		sjme_message("Impl. %s?", __func__);
 }
 
 sjme_attrUnused RETRO_API void retro_reset(void)
 {
-	sjme_todo("Implement this?");
+	static sjme_jint trigger;
+	if (!(trigger++))
+		sjme_message("Impl. %s?", __func__);
 }
 
 sjme_attrUnused RETRO_API void retro_unload_game(void)
 {
-	sjme_todo("Implement this?");
+	static sjme_jint trigger;
+	if (!(trigger++))
+		sjme_message("Impl. %s?", __func__);
 }
 

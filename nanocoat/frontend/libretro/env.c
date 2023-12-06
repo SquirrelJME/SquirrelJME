@@ -14,18 +14,24 @@
 
 sjme_attrUnused RETRO_API void retro_cheat_reset(void)
 {
-	sjme_todo("Implement this?");
+	static sjme_jint trigger;
+	if (!(trigger++))
+		sjme_message("Impl. %s?", __func__);
 }
 
 sjme_attrUnused RETRO_API void retro_cheat_set(unsigned index, bool enabled,
 	const char *code)
 {
-	sjme_todo("Implement this?");
+	static sjme_jint trigger;
+	if (!(trigger++))
+		sjme_message("Impl. %s?", __func__);
 }
 
 sjme_attrUnused RETRO_API unsigned retro_get_region(void)
 {
-	sjme_todo("Implement this?");
+	static sjme_jint trigger;
+	if (!(trigger++))
+		sjme_message("Impl. %s?", __func__);
 }
 
 sjme_attrUnused RETRO_API void retro_get_system_info(

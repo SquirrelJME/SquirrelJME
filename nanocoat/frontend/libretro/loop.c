@@ -22,7 +22,7 @@ sjme_attrUnused RETRO_API void retro_run(void)
 	
 	static sjme_jint trigger;
 	if (!(trigger++))
-		sjme_message("Implement this?");
+		sjme_message("Impl. %s?", __func__);
 	
 	sjme_modelessStars(&modelessStarState, buf,
 		240, 320, 240, tick++);
