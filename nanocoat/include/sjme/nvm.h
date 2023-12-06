@@ -176,6 +176,14 @@ typedef struct sjme_jdouble
 typedef sjme_jint sjme_tempIndex;
 
 /**
+ * A wrapper used by front ends, which is reserved for use, which stores a
+ * natively bound object accordingly as needed.
+ * 
+ * @since 2023/12/06
+ */
+typedef void* sjme_frontEndWrapper;
+
+/**
  * Basic data type identifier.
  * 
  * @since 2023/07/25
@@ -330,6 +338,9 @@ typedef struct sjme_nvm_thread
 {
 	/** The VM state this thread is in. */
 	sjme_nvm_state* inState;
+	
+	/** The wrapper in the front end. */
+	sjme_frontEndWrapper* frontEndWrapper;
 	
 	/** The thread ID. */
 	sjme_jint threadId;
@@ -900,6 +911,9 @@ struct sjme_nvm_frame
 	/** The thread this frame is in. */
 	sjme_nvm_thread* inThread;
 	
+	/** The wrapper in the front end. */
+	sjme_frontEndWrapper* frontEndWrapper;
+	
 	/** The parent frame. */
 	sjme_nvm_frame* parent;
 	
@@ -1010,6 +1024,9 @@ typedef struct sjme_nvm_stateHooks
  */
 struct sjme_nvm_state
 {
+	/** The wrapper in the front end. */
+	sjme_frontEndWrapper* frontEndWrapper;
+	
 	/** The copy of the boot config. */
 	sjme_nvm_bootConfig bootConfig;
 	

@@ -23,9 +23,6 @@ import java.io.IOException;
 public class NanoCoatVirtualMachine
 	implements VirtualMachine
 {
-	/** Native sjme_nvm pointer address. */
-	private final long _sjmeNvmAddr;
-	
 	/**
 	 * Initializes the base virtual machine.
 	 *
