@@ -17,6 +17,10 @@ project(CMakeUtils)
 # to bother with how things should be found...
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY
 	"${CMAKE_BINARY_DIR}")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG
+	"${CMAKE_BINARY_DIR}")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE
+	"${CMAKE_BINARY_DIR}")
 
 # Dump executable suffix, since target could be different from host
 file(WRITE "${CMAKE_BINARY_DIR}/suffix"
