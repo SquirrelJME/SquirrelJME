@@ -10,6 +10,7 @@
 package cc.squirreljme.vm.nanocoat;
 
 import cc.squirreljme.emulator.NativeBinding;
+import cc.squirreljme.emulator.vm.VMException;
 import java.io.IOException;
 import java.nio.file.Path;
 
@@ -33,24 +34,32 @@ final class __Native__
 	/**
 	 * Loads the native library.
 	 *
-	 * @throws IOException On read/write errors.
+	 * @throws VMException On read/write errors.
 	 * @return The path to the library, where it exists on disk.
 	 * @since 2023/12/05
 	 */
 	static Path __loadLibrary()
-		throws IOException
+		throws VMException
 	{
 		synchronized (__Native__.class)
 		{
 			if (__Native__._libPath == null)
 			{
-				__Native__._libPath = NativeBinding.libFromResources(
-					"emulator-nanocoat");
+				// Load in library accordingly
+				try
+				{
+					__Native__._libPath = NativeBinding.libFromResources(
+						"emulator-nanocoat");
+				}
+				catch (IOException e)
+				{
+					throw new VMException("Could not load library.", e);
+				}
+				
+				// Load and initialize
+				System.load(__Native__._libPath.toAbsolutePath().toString());
+				__Native__.__bindMethods();
 			}
-			
-			// Load and initialize
-			System.load(__Native__._libPath.toAbsolutePath().toString());
-			__Native__.__bindMethods();
 			
 			return __Native__._libPath;
 		}
