@@ -14,7 +14,8 @@
 #include "3rdparty/libretro/libretro.h"
 #include "frontend/libretro/shared.h"
 
-static sjme_jboolean sjme_libretro_danglingMessage(const char* message)
+static sjme_jboolean sjme_libretro_danglingMessage(const char* fullMessage,
+	const char* partMessage)
 {
 	struct retro_message retroMessage;
 	struct retro_log_callback retroLogCallback;
@@ -22,8 +23,8 @@ static sjme_jboolean sjme_libretro_danglingMessage(const char* message)
 	if (sjme_libretro_envCallback != NULL)
 	{
 		/* Setup details. */
-		retroMessage.frames = 120;
-		retroMessage.msg = message;
+		retroMessage.frames = 240;
+		retroMessage.msg = partMessage;
 	
 		/* Emit message. */
 		sjme_libretro_envCallback(RETRO_ENVIRONMENT_SET_MESSAGE,
@@ -34,7 +35,7 @@ static sjme_jboolean sjme_libretro_danglingMessage(const char* message)
 		if (true == sjme_libretro_envCallback(
 			RETRO_ENVIRONMENT_GET_LOG_INTERFACE, &retroLogCallback) &&
 			retroLogCallback.log != NULL)
-			retroLogCallback.log(RETRO_LOG_INFO, "%s", message);
+			retroLogCallback.log(RETRO_LOG_INFO, "%s", fullMessage);
 		
 		/* We handled it here, so SquirrelJME does not have to print it. */
 		return SJME_JNI_TRUE;

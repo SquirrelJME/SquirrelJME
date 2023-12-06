@@ -75,7 +75,7 @@ static void sjme_genericMessage(const char* file, int line,
 			prefix, buf);
 		
 	/* First try to print to the frontend callback, if any. */
-	if (sjme_danglingMessage == NULL || !sjme_danglingMessage(fullBuf))
+	if (sjme_danglingMessage == NULL || !sjme_danglingMessage(fullBuf, buf))
 		fprintf(stderr, "%s\n", fullBuf);
 	
 	/* Make sure it gets written. */

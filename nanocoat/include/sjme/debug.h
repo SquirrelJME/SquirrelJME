@@ -154,12 +154,14 @@ void sjme_todoR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 /**
  * Emits a dangling reference message.
  * 
- * @param message The message to emit. 
+ * @param fullMessage The message to emit. 
+ * @param partMessage Partial message, without any prepend.
  * @return Return @c SJME_JNI_TRUE if the message is handled, otherwise
  * a standard @c fprintf to @c stderr will be used.
  * @since 2023/12/05 
  */
-typedef sjme_jboolean (*sjme_danglingMessageFunc)(const char* message);
+typedef sjme_jboolean (*sjme_danglingMessageFunc)(const char* fullMessage,
+	const char* partMessage);
 
 /** The dangling message implementation to use. */
 extern sjme_danglingMessageFunc sjme_danglingMessage;
