@@ -51,14 +51,7 @@ public class NanoCoatFactory
 		throws IllegalArgumentException, NullPointerException, VMException
 	{
 		// Make sure the native library is loaded
-		try
-		{
-			__Native__.__loadLibrary();
-		}
-		catch (IOException e)
-		{
-			throw new VMException("Could not load native library.", e);
-		}
+		__Native__.__loadLibrary();
 		
 		throw Debugging.todo();
 	}

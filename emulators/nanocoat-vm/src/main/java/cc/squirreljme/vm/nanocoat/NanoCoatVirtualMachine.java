@@ -33,15 +33,7 @@ public class NanoCoatVirtualMachine
 	 */
 	public NanoCoatVirtualMachine()
 	{
-		// Load the native library
-		try
-		{
-			__Native__.__loadLibrary();
-		}
-		catch (IOException e)
-		{
-			throw new VMException("Could not initialize native library.", e);
-		}
+		__Native__.__loadLibrary();
 		
 		// Load native virtual machine
 		throw new Error("TODO");
