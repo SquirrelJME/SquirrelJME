@@ -7,8 +7,8 @@
       <sourceFolder url="file://$MODULE_DIR$/../../../../modules/tango-icon-theme/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../../../modules/tango-icon-theme/src/main/resources" type="java-resource" />
     </content>
-    <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
+    <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="squirreljme.modules.cldc-compact.main" />
     <orderEntry type="library" name="Gradle: org.jetbrains:annotations:24.0.1" level="project" />
   </component>

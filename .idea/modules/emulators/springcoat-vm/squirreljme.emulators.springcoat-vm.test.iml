@@ -8,6 +8,15 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="squirreljme.emulators.springcoat-vm.main" />
     <orderEntry type="module" module-name="squirreljme.emulators.emulator-base.main" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../../../emulators/emulator-base/build/libs/emulator-base-0.3.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
     <orderEntry type="module" module-name="squirreljme.modules.common-vm.main" />
     <orderEntry type="module" module-name="squirreljme.modules.meep-swm.main" />
     <orderEntry type="module" module-name="squirreljme.modules.debug-jdwp.main" />

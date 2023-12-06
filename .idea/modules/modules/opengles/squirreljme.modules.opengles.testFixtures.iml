@@ -4,8 +4,8 @@
     <output-test url="file://$MODULE_DIR$/../../../../modules/opengles/build/classes/java/testFixtures" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../../../modules/opengles/src/testFixtures" />
-    <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
+    <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="squirreljme.modules.opengles.main" />
     <orderEntry type="module" module-name="squirreljme.modules.cldc.main" />
     <orderEntry type="module" module-name="squirreljme.modules.midp-lcdui.main" />

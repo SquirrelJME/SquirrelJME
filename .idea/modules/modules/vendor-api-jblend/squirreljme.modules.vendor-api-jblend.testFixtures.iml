@@ -4,8 +4,8 @@
     <output-test url="file://$MODULE_DIR$/../../../../modules/vendor-api-jblend/build/classes/java/testFixtures" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../../../modules/vendor-api-jblend/src/testFixtures" />
-    <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
+    <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="squirreljme.modules.vendor-api-jblend.main" />
     <orderEntry type="module" module-name="squirreljme.modules.midp-lcdui.main" />
     <orderEntry type="module" module-name="squirreljme.modules.meep-midlet.main" />

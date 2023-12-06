@@ -4,8 +4,8 @@
     <output-test url="file://$MODULE_DIR$/../../../../modules/c-source-writer/build/classes/java/testFixtures" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../../../modules/c-source-writer/src/testFixtures" />
-    <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
+    <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="squirreljme.modules.c-source-writer.main" />
     <orderEntry type="module" module-name="squirreljme.modules.collections.main" />
     <orderEntry type="module" module-name="squirreljme.modules.io.main" />

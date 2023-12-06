@@ -4,8 +4,8 @@
     <output-test url="file://$MODULE_DIR$/../../../../modules/meep-lui-lcdui/build/classes/java/testFixtures" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../../../modules/meep-lui-lcdui/src/testFixtures" />
-    <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
+    <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="squirreljme.modules.meep-lui-lcdui.main" />
     <orderEntry type="module" module-name="squirreljme.modules.meep-lui.main" />
     <orderEntry type="module" module-name="squirreljme.modules.midp-lcdui.main" />

@@ -7,8 +7,8 @@
       <sourceFolder url="file://$MODULE_DIR$/../../../../modules/midp-lcdui/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/../../../../modules/midp-lcdui/src/test/resources" type="java-test-resource" />
     </content>
-    <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
+    <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="squirreljme.modules.tac.main" />
     <orderEntry type="module" module-name="squirreljme.modules.midp-lcdui.testFixtures" production-on-test="" />
     <orderEntry type="module" module-name="squirreljme.modules.gcf.main" />
@@ -17,6 +17,15 @@
     <orderEntry type="module" module-name="squirreljme.modules.collections.main" />
     <orderEntry type="module" module-name="squirreljme.modules.cldc-compact.main" />
     <orderEntry type="module" module-name="squirreljme.emulators.emulator-base.main" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../../../emulators/emulator-base/build/libs/emulator-base-0.3.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
     <orderEntry type="module" module-name="squirreljme.modules.common-vm.main" />
     <orderEntry type="module" module-name="squirreljme.modules.tool-manifest-writer.main" />
     <orderEntry type="module" module-name="squirreljme.modules.midp-lcdui.main" />

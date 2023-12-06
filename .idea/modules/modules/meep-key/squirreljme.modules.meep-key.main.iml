@@ -6,8 +6,8 @@
     <content url="file://$MODULE_DIR$/../../../../modules/meep-key/src/main">
       <sourceFolder url="file://$MODULE_DIR$/../../../../modules/meep-key/src/main/java" isTestSource="false" />
     </content>
-    <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
+    <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="squirreljme.modules.cldc-compact.main" />
     <orderEntry type="library" name="Gradle: org.jetbrains:annotations:24.0.1" level="project" />
   </component>

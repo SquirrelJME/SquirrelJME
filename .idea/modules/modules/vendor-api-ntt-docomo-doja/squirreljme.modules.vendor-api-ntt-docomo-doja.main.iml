@@ -7,8 +7,8 @@
       <sourceFolder url="file://$MODULE_DIR$/../../../../modules/vendor-api-ntt-docomo-doja/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../../../modules/vendor-api-ntt-docomo-doja/src/main/resources" type="java-resource" />
     </content>
-    <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
+    <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="squirreljme.modules.meep-rms.main" />
     <orderEntry type="module" module-name="squirreljme.modules.midp-lcdui.main" />
     <orderEntry type="module" module-name="squirreljme.modules.meep-midlet.main" />

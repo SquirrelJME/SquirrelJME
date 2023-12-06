@@ -6,8 +6,8 @@
     <content url="file://$MODULE_DIR$/../../../../modules/debug-jdwp/src/main">
       <sourceFolder url="file://$MODULE_DIR$/../../../../modules/debug-jdwp/src/main/java" isTestSource="false" />
     </content>
-    <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
+    <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="squirreljme.modules.tool-classfile.main" />
     <orderEntry type="module" module-name="squirreljme.modules.collections.main" />
     <orderEntry type="module" module-name="squirreljme.modules.cldc-compact.main" />

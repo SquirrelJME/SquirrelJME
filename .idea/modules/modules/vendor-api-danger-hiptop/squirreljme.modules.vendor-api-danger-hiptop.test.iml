@@ -4,12 +4,21 @@
     <output-test url="file://$MODULE_DIR$/../../../../modules/vendor-api-danger-hiptop/build/classes/java/test" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../../../modules/vendor-api-danger-hiptop/src/test" />
-    <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
+    <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="squirreljme.modules.vendor-api-danger-hiptop.testFixtures" production-on-test="" />
     <orderEntry type="module" module-name="squirreljme.modules.tac.main" />
     <orderEntry type="module" module-name="squirreljme.modules.cldc-compact.main" />
     <orderEntry type="module" module-name="squirreljme.emulators.emulator-base.main" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../../../emulators/emulator-base/build/libs/emulator-base-0.3.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
     <orderEntry type="module" module-name="squirreljme.modules.vendor-api-danger-hiptop.main" />
     <orderEntry type="module" module-name="squirreljme.modules.common-vm.main" />
     <orderEntry type="module" module-name="squirreljme.modules.io.main" />

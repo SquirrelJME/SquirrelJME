@@ -71,6 +71,8 @@ sjme_attrUnused RETRO_API bool retro_load_game(
 		
 	if (!(trigger++))
 		sjme_message("Impl. %s?", __func__);
+		
+	return false;
 }
 
 sjme_attrUnused RETRO_API bool retro_load_game_special(unsigned game_type,
@@ -79,6 +81,7 @@ sjme_attrUnused RETRO_API bool retro_load_game_special(unsigned game_type,
 	static sjme_jint trigger;
 	if (!(trigger++))
 		sjme_message("Impl. %s?", __func__);
+	return false;
 }
 
 sjme_attrUnused RETRO_API void retro_reset(void)

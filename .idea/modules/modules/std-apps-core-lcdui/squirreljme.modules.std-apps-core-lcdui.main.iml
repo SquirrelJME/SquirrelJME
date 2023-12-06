@@ -4,8 +4,8 @@
     <output url="file://$MODULE_DIR$/../../../../modules/std-apps-core-lcdui/build/classes/java/main" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../../../modules/std-apps-core-lcdui/src/main" />
-    <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
+    <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="squirreljme.modules.std-apps-core.main" />
     <orderEntry type="module" module-name="squirreljme.modules.midp-lcdui.main" />
     <orderEntry type="module" module-name="squirreljme.modules.cldc-compact.main" />

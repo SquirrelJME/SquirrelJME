@@ -6,8 +6,8 @@
     <content url="file://$MODULE_DIR$/../../../../modules/vendor-api-sprintpcs/src/main">
       <sourceFolder url="file://$MODULE_DIR$/../../../../modules/vendor-api-sprintpcs/src/main/java" isTestSource="false" />
     </content>
-    <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
+    <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="squirreljme.modules.media-api.main" />
     <orderEntry type="module" module-name="squirreljme.modules.midp-lcdui.main" />
     <orderEntry type="module" module-name="squirreljme.modules.cldc-compact.main" />

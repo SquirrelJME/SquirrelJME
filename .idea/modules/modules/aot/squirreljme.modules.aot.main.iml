@@ -6,8 +6,8 @@
     <content url="file://$MODULE_DIR$/../../../../modules/aot/src/main">
       <sourceFolder url="file://$MODULE_DIR$/../../../../modules/aot/src/main/java" isTestSource="false" />
     </content>
-    <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="jdk" jdkName="squirreljme-8" jdkType="JavaSDK" />
+    <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="squirreljme.modules.common-vm.main" />
     <orderEntry type="module" module-name="squirreljme.modules.zip.main" />
     <orderEntry type="module" module-name="squirreljme.modules.cldc.main" />
