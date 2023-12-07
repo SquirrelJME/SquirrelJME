@@ -21,7 +21,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 	return JNI_VERSION_1_6;
 }
 
-JNIEXPORT jint JNICALL
+sjme_attrUnused JNIEXPORT jint JNICALL
 	Java_cc_squirreljme_vm_nanocoat__1_1Native_1_1__1_1bindMethods
 	(JNIEnv* env, jclass classy)
 {

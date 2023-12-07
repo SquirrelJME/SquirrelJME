@@ -38,6 +38,16 @@ ratufacoat/src/SquirrelJME.dir
 ratufacoat/x86
 ratufacoat/x64
 ratufacoat/out
+nanocoat/cmake-build-release
+nanocoat/cmake-build-debug
+nanocoat/CMakeFiles
+nanocoat/src/CMakeFiles
+nanocoat/src/Debug
+nanocoat/src/Release
+nanocoat/src/SquirrelJME.dir
+nanocoat/x86
+nanocoat/x64
+nanocoat/out
 *.o
 *.dll
 *.exe
