@@ -24,7 +24,8 @@ endmacro()
 
 # Only run this if the directory does not exist, because there might be a
 # cache from a previous run?
-if(NOT EXISTS "${SQUIRRELJME_UTIL_DIR}")
+if(NOT EXISTS "${SQUIRRELJME_UTIL_DIR}" OR
+	NOT EXISTS "${SQUIRRELJME_UTIL_DIR}/CMakeCache.txt")
 	# Make sure the directory exists
 	file(MAKE_DIRECTORY "${SQUIRRELJME_UTIL_DIR}")
 
