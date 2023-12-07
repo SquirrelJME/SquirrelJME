@@ -38,7 +38,7 @@ static sjme_attrCheckReturn sjme_jboolean sjme_nvm_bootCombineRom(
 	if (SJME_JNI_TRUE)
 		sjme_todo("sjme_nvm_bootVirtualRom()");
 	
-	/* Bring in all of the libraries into the output. */
+	/* Bring in all the libraries into the output. */
 	if (SJME_JNI_TRUE)
 		sjme_todo("sjme_nvm_bootVirtualRom()");
 

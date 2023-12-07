@@ -42,6 +42,8 @@
       <module name="Stephanie Gawroriski.squirreljme.buildSrc.main" target="11" />
       <module name="stephanie.squirreljme.buildSrc.main" target="11" />
       <module name="stephanie.squirreljme.buildSrc.test" target="11" />
+      <module name="stephanie.squirreljme.emulators.nanocoat-vm" target="11" />
+      <module name="stephanie.squirreljme.emulators.nanocoat-vm.test" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>

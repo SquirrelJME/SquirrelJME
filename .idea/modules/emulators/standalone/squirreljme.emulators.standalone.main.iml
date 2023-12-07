@@ -10,7 +10,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="squirreljme.emulators.springcoat-vm.main" />
-    <orderEntry type="module" module-name="squirreljme.emulators.nanocoat-vm.main" />
+    <orderEntry type="module" module-name="stephanie.squirreljme.emulators.nanocoat-vm.main" />
     <orderEntry type="module" module-name="squirreljme.emulators.emulator-base.main" />
     <orderEntry type="module-library">
       <library>
