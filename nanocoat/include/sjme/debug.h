@@ -101,7 +101,7 @@ void sjme_messageV(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * @return Never returns.
  * @since 2023/11/11 
  */
-sjme_jboolean sjme_dieR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+sjme_errorCode sjme_dieR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_attrInNullable sjme_attrFormatArg const char* message, ...)
 	sjme_attrReturnNever sjme_attrFormatOuter(3, 4);
 

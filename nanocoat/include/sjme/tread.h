@@ -44,10 +44,10 @@ typedef struct sjme_nvm_frameTreadAccessor sjme_nvm_frameTreadAccessor;
  * @param tread The tread to read from.
  * @param treadIndex The index to access.
  * @param outAddress The output address.
- * @return Returns @c SJME_JNI_TRUE if successful.
+ * @return Returns an error code, if any.
  * @since 2023/11/16
  */
-typedef sjme_jboolean (*sjme_nvm_frameTreadAccessorAddress)(
+typedef sjme_errorCode (*sjme_nvm_frameTreadAccessorAddress)(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
 	sjme_attrInNotNull const sjme_nvm_frameTreadAccessor* accessor,
 	sjme_attrInNotNull sjme_nvm_frameTread* tread,
@@ -59,9 +59,10 @@ typedef sjme_jboolean (*sjme_nvm_frameTreadAccessorAddress)(
  * 
  * @param frame The frame to access the tread for.
  * @param outTread The output tread.
+ * @return Returns an error code, if any.
  * @since 2023/11/16
  */
-typedef sjme_jboolean (*sjme_nvm_frameTreadAccessorGetTread)(
+typedef sjme_errorCode (*sjme_nvm_frameTreadAccessorGetTread)(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
 	sjme_attrInNotNull const sjme_nvm_frameTreadAccessor* accessor,
 	sjme_attrInOutNotNull sjme_nvm_frameTread** outTread);
@@ -74,10 +75,10 @@ typedef sjme_jboolean (*sjme_nvm_frameTreadAccessorGetTread)(
  * @param tread The tread to read from.
  * @param treadIndex The index to access.
  * @param outVal The output value.
- * @return Returns @c SJME_JNI_TRUE if successful.
+ * @return Returns an error code, if any.
  * @since 2023/11/16
  */
-typedef sjme_jboolean (*sjme_nvm_frameTreadAccessorRead)(
+typedef sjme_errorCode (*sjme_nvm_frameTreadAccessorRead)(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
 	sjme_attrInNotNull const sjme_nvm_frameTreadAccessor* accessor,
 	sjme_attrInNotNull const sjme_nvm_frameTread* tread,
@@ -92,10 +93,10 @@ typedef sjme_jboolean (*sjme_nvm_frameTreadAccessorRead)(
  * @param tread The tread to read from.
  * @param treadIndex The index to access.
  * @param outVal The output value.
- * @return Returns @c SJME_JNI_TRUE if successful.
+ * @return Returns an error code, if any.
  * @since 2023/11/16
  */
-typedef sjme_jboolean (*sjme_nvm_frameTreadAccessorWrite)(
+typedef sjme_errorCode (*sjme_nvm_frameTreadAccessorWrite)(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
 	sjme_attrInNotNull const sjme_nvm_frameTreadAccessor* accessor,
 	sjme_attrInNotNull sjme_nvm_frameTread* tread,

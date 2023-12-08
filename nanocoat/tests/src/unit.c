@@ -53,12 +53,12 @@ typedef struct sjme_unitOperatorInfo
 	sjme_unitOperatorFunc function;
 } sjme_unitOperatorInfo;
 
-static sjme_jboolean sjme_unitOperatorEqual(size_t size, void* a, void* b)
+static sjme_errorCode sjme_unitOperatorEqual(size_t size, void* a, void* b)
 {
 	return memcmp(a, b, size) == 0;
 }
 
-static sjme_jboolean sjme_unitOperatorNotEqual(size_t size, void* a, void* b)
+static sjme_errorCode sjme_unitOperatorNotEqual(size_t size, void* a, void* b)
 {
 	return memcmp(a, b, size) != 0;
 }
@@ -163,7 +163,7 @@ const sjme_unitOperatorInfo sjme_unitOperatorInfos[SJME_NUM_UNIT_OPERATORS] =
 	},
 };
 
-static sjme_jboolean sjme_unitShortingEmit(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+static sjme_errorCode sjme_unitShortingEmit(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_attrInNotNull sjme_test* test,
 	sjme_attrInRange(SJME_TEST_RESULT_PASS, SJME_TEST_RESULT_FAIL)
 		sjme_testResult type,

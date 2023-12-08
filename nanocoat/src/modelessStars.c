@@ -9,7 +9,7 @@
 
 #include "sjme/modelessStars.h"
 
-sjme_jboolean sjme_modelessStars(
+sjme_errorCode sjme_modelessStars(
 	sjme_attrInOutNotNull sjme_modelessStarState* state,
 	sjme_attrInNotNull uint32_t* buf,
 	sjme_attrInPositiveNonZero sjme_jint width,
@@ -30,7 +30,7 @@ sjme_jboolean sjme_modelessStars(
 	/* Make sure input values are fine. */
 	if (state == NULL || buf == NULL || width <= 0 || height <= 0 ||
 		pitch <= 0)
-		return SJME_JNI_FALSE;
+		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* Easier pointers. */
 	startColor = &colors[SJME_MODELESS_STAR_COLOR_ID_START];

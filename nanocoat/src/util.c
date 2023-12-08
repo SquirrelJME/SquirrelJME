@@ -29,38 +29,38 @@ sjme_jchar sjme_decodeUtfChar(const char* at, const char** stringP)
  * @return Returns @c SJME_JNI_TRUE on success.
  * @since 2023/12/02
  */
-sjme_jboolean sjme_randomInit(
+sjme_errorCode sjme_randomInit(
 	sjme_attrInOutNotNull sjme_random* outRandom,
 	sjme_attrInValue sjme_jint seedHi,
 	sjme_attrInValue sjme_jint seedLo)
 {
 	sjme_todo("Implement this?");
-	return SJME_JNI_FALSE;
+	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
-sjme_jboolean sjme_randomInitL(
+sjme_errorCode sjme_randomInitL(
 	sjme_attrInOutNotNull sjme_random* outRandom,
 	sjme_attrInValue sjme_jlong seed)
 {
 	sjme_todo("Implement this?");
-	return SJME_JNI_FALSE;
+	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
-sjme_jboolean sjme_randomNextInt(
+sjme_errorCode sjme_randomNextInt(
 	sjme_attrInOutNotNull sjme_random* random,
 	sjme_attrOutNotNull sjme_jint* outValue)
 {
 	sjme_todo("Implement this?");
-	return SJME_JNI_FALSE;
+	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 	
-sjme_jboolean sjme_randomNextIntMax(
+sjme_errorCode sjme_randomNextIntMax(
 	sjme_attrInOutNotNull sjme_random* random,
 	sjme_attrOutNotNull sjme_jint* outValue,
 	sjme_attrInPositiveNonZero sjme_jint maxValue)
 {
 	sjme_todo("Implement this?");
-	return SJME_JNI_FALSE;
+	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
 sjme_jint sjme_stringHash(const char* string)

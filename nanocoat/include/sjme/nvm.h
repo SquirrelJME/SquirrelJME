@@ -86,7 +86,12 @@ extern "C" {
  * 
  * @since 2023/07/25
  */
-typedef uint8_t sjme_jboolean;
+typedef enum sjme_jboolean
+{
+	SJME_JNI_FALSE = 0,
+
+	SJME_JNI_TRUE = 1
+} sjme_jboolean;
 
 /**
  * Byte type.
@@ -1062,20 +1067,6 @@ struct sjme_nvm_state
 };
 
 /**
- * True value.
- * 
- * @since 2023/07/25
- */
-#define SJME_JNI_TRUE ((sjme_jboolean)1)
-
-/**
- * False value.
- * 
- * @since 2023/07/25
- */
-#define SJME_JNI_FALSE ((sjme_jboolean)0)
-
-/**
  * Method initialization start.
  * 
  * @since 2023/07/25
@@ -1173,9 +1164,18 @@ typedef enum sjme_errorCode
 
 	/** Invalid argument. */
 	SJME_ERROR_INVALID_ARGUMENT = -24,
+
+	/** Not implemented. */
+	SJME_ERROR_NOT_IMPLEMENTED = -25,
+
+	/** Invalid tread read. */
+	SJME_ERROR_TREAD_INVALID_READ = -26,
+
+	/** Invalid tread write. */
+	SJME_ERROR_TREAD_INVALID_WRITE = -27,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -24
+	SJME_NUM_ERROR_CODES = -28
 } sjme_errorCode;
 
 /**

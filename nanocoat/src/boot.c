@@ -23,12 +23,12 @@
  * @return If this was successful.
  * @since 2023/07/28
  */
-static sjme_attrCheckReturn sjme_jboolean sjme_nvm_bootCombineRom(
+static sjme_attrCheckReturn sjme_errorCode sjme_nvm_bootCombineRom(
 	sjme_attrInNotNull const sjme_nvm_bootConfig* config,
 	sjme_attrOutNotNull sjme_static_libraries** outLibraries)
 {
 	if (config == NULL || outLibraries == NULL)
-		return SJME_JNI_FALSE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 		
 	/* Determine the total library count. */
 	if (SJME_JNI_TRUE)
@@ -44,7 +44,7 @@ static sjme_attrCheckReturn sjme_jboolean sjme_nvm_bootCombineRom(
 
 	/* Return the result. */
 	sjme_todo("sjme_nvm_bootVirtualRom()");
-	return SJME_JNI_FALSE;
+	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
 sjme_errorCode sjme_nvm_boot(sjme_alloc_pool* mainPool,
@@ -105,13 +105,13 @@ sjme_errorCode sjme_nvm_boot(sjme_alloc_pool* mainPool,
 	
 	/* Return newly created VM. */
 	sjme_todo("sjme_nvm_boot()");
-	return SJME_JNI_FALSE;
+	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
-sjme_jboolean sjme_nvm_destroy(sjme_nvm_state* state, sjme_jint* exitCode)
+sjme_errorCode sjme_nvm_destroy(sjme_nvm_state* state, sjme_jint* exitCode)
 {
 	if (state == NULL)
-		return SJME_JNI_FALSE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Free sub-structures. */
 	if (SJME_JNI_TRUE)
@@ -127,5 +127,5 @@ sjme_jboolean sjme_nvm_destroy(sjme_nvm_state* state, sjme_jint* exitCode)
 	
 	/* Finished. */
 	sjme_todo("sjme_nvm_destroy()");
-	return SJME_JNI_FALSE;
+	return SJME_ERROR_NOT_IMPLEMENTED;
 }

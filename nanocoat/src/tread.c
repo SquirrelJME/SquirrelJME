@@ -12,7 +12,7 @@
 #include "sjme/tread.h"
 
 #define SJME_NVM_FRAME_TREAD_ACCESSOR_ADDRESS_GENERIC(cType, javaType, jType) \
-	sjme_jboolean SJME_TOKEN_PASTE_PP( \
+	sjme_errorCode SJME_TOKEN_PASTE_PP( \
 			sjme_nvm_frameTreadAccessorAddress, javaType)( \
 		sjme_attrInNotNull sjme_nvm_frame* frame, \
 		sjme_attrInNotNull const sjme_nvm_frameTreadAccessor* accessor, \
@@ -22,15 +22,15 @@
 	{ \
 		if (frame == NULL || accessor == NULL || tread == NULL || \
 			outAddress == NULL) \
-			return SJME_JNI_FALSE; \
+			return SJME_ERROR_NULL_ARGUMENTS; \
 		\
 		if (treadIndex < 0 || treadIndex >= tread->count) \
-			return SJME_JNI_FALSE; \
+			return SJME_ERROR_INVALID_ARGUMENT; \
 		\
 		/* Calculate address. */ \
 		*outAddress = &tread->values. \
 			SJME_TOKEN_PASTE_PP(jType, s)[treadIndex]; \
-		return SJME_JNI_TRUE; \
+		return SJME_ERROR_NONE; \
 	}
 	
 SJME_NVM_FRAME_TREAD_ACCESSOR_ADDRESS_GENERIC(sjme_jint, Integer, jint)
@@ -39,20 +39,20 @@ SJME_NVM_FRAME_TREAD_ACCESSOR_ADDRESS_GENERIC(sjme_jfloat, Float, jfloat)
 SJME_NVM_FRAME_TREAD_ACCESSOR_ADDRESS_GENERIC(sjme_jdouble, Double, jdouble)
 SJME_NVM_FRAME_TREAD_ACCESSOR_ADDRESS_GENERIC(sjme_jobject, Object, jobject)
 
-static sjme_jboolean sjme_nvm_frameTreadAccessorGetTreadGeneric(
+static sjme_errorCode sjme_nvm_frameTreadAccessorGetTreadGeneric(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
 	sjme_attrInNotNull const sjme_nvm_frameTreadAccessor* accessor,
 	sjme_attrInOutNotNull sjme_nvm_frameTread** outTread)
 {
 	if (frame == NULL || accessor == NULL || outTread == NULL)
-		return SJME_JNI_FALSE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Get get the base tread by its type ID. */
+	/* Get the base tread by its type ID. */
 	*outTread = frame->treads[accessor->typeId];
-	return SJME_JNI_TRUE;
+	return SJME_ERROR_NONE;
 }
 
-static sjme_jboolean sjme_nvm_frameTreadAccessorReadGeneric(
+static sjme_errorCode sjme_nvm_frameTreadAccessorReadGeneric(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
 	sjme_attrInNotNull const sjme_nvm_frameTreadAccessor* accessor,
 	sjme_attrInNotNull const sjme_nvm_frameTread* tread,
@@ -62,23 +62,23 @@ static sjme_jboolean sjme_nvm_frameTreadAccessorReadGeneric(
 	void* fromAddr;
 	
 	if (frame == NULL || tread == NULL || outVal == NULL)
-		return SJME_JNI_FALSE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (treadIndex < 0 || treadIndex >= tread->count)
-		return SJME_JNI_FALSE;
+		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* Get the source address. */
 	fromAddr = NULL;
 	if (!accessor->address(frame, accessor, (sjme_nvm_frameTread*)tread,
 		treadIndex, &fromAddr) || fromAddr == NULL)
-		return SJME_JNI_FALSE;
+		return SJME_ERROR_TREAD_INVALID_READ;
 	
 	/* A memory operation can just be used here. */
 	memmove(outVal, fromAddr, accessor->size);
 	return SJME_JNI_TRUE;
 }
 
-static sjme_jboolean sjme_nvm_frameTreadAccessorWriteGeneric(
+static sjme_errorCode sjme_nvm_frameTreadAccessorWriteGeneric(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
 	sjme_attrInNotNull const sjme_nvm_frameTreadAccessor* accessor,
 	sjme_attrInNotNull sjme_nvm_frameTread* tread,
@@ -88,20 +88,20 @@ static sjme_jboolean sjme_nvm_frameTreadAccessorWriteGeneric(
 	void* toAddr;
 	
 	if (frame == NULL || tread == NULL || inVal == NULL)
-		return SJME_JNI_FALSE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (treadIndex < 0 || treadIndex >= tread->count)
-		return SJME_JNI_FALSE;
+		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* Get the target address. */
 	toAddr = NULL;
 	if (!accessor->address(frame, accessor, tread, treadIndex, &toAddr) ||
 		toAddr == NULL)
-		return SJME_JNI_FALSE;
+		return SJME_ERROR_TREAD_INVALID_WRITE;
 	
 	/* A memory operation can just be used here. */
 	memmove(toAddr, inVal, accessor->size);
-	return SJME_JNI_TRUE;
+	return SJME_ERROR_NONE;
 }
 
 static const sjme_nvm_frameTreadAccessor sjme_nvm_constFrameTreadAccessor[

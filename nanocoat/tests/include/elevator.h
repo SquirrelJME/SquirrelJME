@@ -214,7 +214,7 @@ typedef struct sjme_elevatorSet
  * @return Returns @c SJME_JNI_TRUE on success.
  * @since 2023/1/111
  */
-sjme_jboolean sjme_elevatorAct(
+sjme_errorCode sjme_elevatorAct(
 	sjme_attrInNotNull sjme_elevatorState* inState,
 	sjme_attrInNotNull const sjme_elevatorSet* inSet,
 	sjme_attrInValue sjme_jint special);
@@ -239,7 +239,7 @@ void* sjme_elevatorAlloc(
  * @return If this was successful.
  * @since 2023/11/03
  */
-sjme_jboolean sjme_elevatorDoInit(
+sjme_errorCode sjme_elevatorDoInit(
 	sjme_attrInNotNull sjme_elevatorState* inState,
 	sjme_attrInNotNull sjme_elevatorRunData* inData);
 	
@@ -251,7 +251,7 @@ sjme_jboolean sjme_elevatorDoInit(
  * @return If this was successful.
  * @since 2023/11/11
  */
-sjme_jboolean sjme_elevatorDoMakeFrame(
+sjme_errorCode sjme_elevatorDoMakeFrame(
 	sjme_attrInNotNull sjme_elevatorState* inState,
 	sjme_attrInNotNull sjme_elevatorRunData* inData);
 
@@ -263,7 +263,7 @@ sjme_jboolean sjme_elevatorDoMakeFrame(
  * @return Returns @c SJME_JNI_TRUE on success.
  * @since 2023/11/17 
  */
-sjme_jboolean sjme_elevatorDoMakeObject(
+sjme_errorCode sjme_elevatorDoMakeObject(
 	sjme_attrInNotNull sjme_elevatorState* inState,
 	sjme_attrInNotNull sjme_elevatorRunData* inData);
 
@@ -275,7 +275,7 @@ sjme_jboolean sjme_elevatorDoMakeObject(
  * @return If this was successful.
  * @since 2023/11/11
  */
-sjme_jboolean sjme_elevatorDoMakeThread(
+sjme_errorCode sjme_elevatorDoMakeThread(
 	sjme_attrInNotNull sjme_elevatorState* inState,
 	sjme_attrInNotNull sjme_elevatorRunData* inData);
 

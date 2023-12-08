@@ -113,7 +113,7 @@ typedef struct sjme_modelessStarState
  * @return Returns @c SJME_JNI_FALSE if there are issues with inputs.
  * @since 2023/11/22
  */
-sjme_jboolean sjme_modelessStars(
+sjme_errorCode sjme_modelessStars(
 	sjme_attrInOutNotNull sjme_modelessStarState* state,
 	sjme_attrInNotNull uint32_t* buf,
 	sjme_attrInPositiveNonZero sjme_jint width,

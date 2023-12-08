@@ -164,17 +164,17 @@ sjme_errorCode sjme_alloc(
 		return SJME_ERROR_OUT_OF_MEMORY;
 	
 	sjme_todo("Implement this?");
-	return SJME_JNI_FALSE;
+	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
 sjme_errorCode sjme_allocFree(
 	sjme_attrInNotNull void* addr)
 {
 	if (addr == NULL)
-		return SJME_JNI_FALSE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	sjme_todo("Implement this?");
-	return SJME_JNI_FALSE;
+	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
 sjme_errorCode sjme_allocLink(
@@ -182,7 +182,7 @@ sjme_errorCode sjme_allocLink(
 	sjme_attrOutNotNull sjme_alloc_link** outLink)
 {
 	if (addr == NULL || outLink == NULL)
-		return SJME_JNI_FALSE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Just need to do some reversing math. */
 	*outLink = (sjme_alloc_link*)(((uintptr_t)addr) -
@@ -197,5 +197,5 @@ sjme_errorCode sjme_allocRealloc(
 	sjme_attrInPositive sjme_jint newSize)
 {
 	sjme_todo("Implement this?");
-	return SJME_JNI_FALSE;
+	return SJME_ERROR_NOT_IMPLEMENTED;
 }

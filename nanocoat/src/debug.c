@@ -105,7 +105,7 @@ void sjme_messageV(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 }
 #endif
 
-sjme_jboolean sjme_dieR(const char* file, int line,
+sjme_errorCode sjme_dieR(const char* file, int line,
 	const char* func, const char* message, ...)
 {
 	va_list list;
@@ -127,7 +127,7 @@ sjme_jboolean sjme_dieR(const char* file, int line,
 	exit(EXIT_FAILURE);
 	
 	/* Never reaches, but returns false naturally. */
-	return SJME_JNI_FALSE;
+	return SJME_ERROR_UNKNOWN;
 }
 
 void sjme_todoR(const char* file, int line,

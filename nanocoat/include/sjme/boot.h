@@ -55,7 +55,7 @@ sjme_errorCode sjme_nvm_boot(
  * @return If destruction was successful.
  * @since 2023/07/27
  */
-sjme_jboolean sjme_nvm_destroy(
+sjme_errorCode sjme_nvm_destroy(
 	sjme_attrInNotNull sjme_nvm_state* state,
 	sjme_attrOutNullable sjme_jint* exitCode)
 	sjme_attrCheckReturn;

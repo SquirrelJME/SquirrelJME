@@ -21,7 +21,7 @@ sjme_jboolean configNvmLocalPopInteger(
 {
 	/* Check. */
 	if (inState == NULL || inCurrent == NULL)
-		return SJME_JNI_FALSE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Configure. */
 	switch (inCurrent->type)
