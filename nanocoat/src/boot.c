@@ -52,18 +52,35 @@ sjme_jboolean sjme_nvm_boot(sjme_alloc_pool* mainPool,
 	sjme_nvm_state** outState, int argc, char** argv)
 {
 	sjme_nvm_state* result;
+	void* reservedBase;
+	sjme_alloc_pool* reservedPool;
+	sjme_jint reservedSize;
 	
 	if (config == NULL || outState == NULL)
 		return SJME_JNI_FALSE;
-		
-	/* Allocate new result. */
+
+	/* Set up a reserved pool where all the data structures for the VM go... */
+	reservedBase = NULL;
+	reservedSize = 64 * 1024;
+	if (!sjme_alloc(mainPool, reservedSize,
+		(void**)&reservedBase) || reservedBase == NULL)
+		return SJME_JNI_FALSE;
+
+	/* Initialize a reserved pool where all of our own data structures go. */
+	reservedPool = NULL;
+	if (!sjme_alloc_poolStatic(&reservedPool, reservedBase,
+		reservedSize) || reservedPool == NULL)
+		return SJME_JNI_FALSE;
+
+	/* Allocate resultant state. */
 	result = NULL;
-	if (!sjme_alloc(mainPool, sizeof(*result),
+	if (!sjme_alloc(reservedPool, sizeof(*result),
 		(void**)&result) || result == NULL)
 		return SJME_JNI_FALSE;
 
-	/* Set the used pool. */
+	/* Set parameters accordingly. */
 	result->allocPool = mainPool;
+	result->reservedPool = reservedPool;
 	
 	/* Copy the boot config over. */
 	memmove(&result->bootConfig, config, sizeof(*config));

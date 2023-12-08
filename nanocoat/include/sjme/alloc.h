@@ -101,6 +101,9 @@ struct sjme_alloc_link
  */
 struct sjme_alloc_pool
 {
+	/** The front end wrapped type. */
+	sjme_frontEndWrapper* frontEndWrapper;
+
 	/** The size of the allocation pool. */
 	sjme_jint size;
 	

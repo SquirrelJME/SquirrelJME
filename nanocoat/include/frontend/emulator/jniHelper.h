@@ -40,13 +40,23 @@ extern "C" {
 	((jlong)((intptr_t)(pointer)))
 
 /**
+ * Maps a pointer to the given type.
+ *
+ * @param pointer The pointer to unmap.
+ * @return The resultant pointer.
+ * @since 2023/12/08
+ */
+#define SJME_JLONG_TO_POINTER(type, pointer) \
+	((type)((intptr_t)((jlong)(pointer))))
+
+/**
  * Declares a JNI method.
  *
  * @param inClass The class this is in.
  * @param methodName The name of the method.
  * @since 2023/12/08
  */
-#define JNI_METHOD(inClass, methodName) \
+#define SJME_JNI_METHOD(inClass, methodName) \
 	sjme_attrUnused JNIEXPORT JNICALL SJME_TOKEN_PASTE_PP(Java_, \
 	SJME_TOKEN_PASTE_PP(SJME_TOKEN_PASTE_PP(inClass, _), methodName))
 

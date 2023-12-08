@@ -32,9 +32,10 @@ void sjme_jni_throwVMException(JNIEnv* env, sjme_errorCode code)
 	memset(buf, 0, sizeof(buf));
 	snprintf(buf, BUF_SIZE - 1, "Native error: %d",
 		(int)code);
+	buf[BUF_SIZE - 1] = 0;
 
 	/* Throw it. */
-	if (!(*env)->ThrowNew(env, tossingClass, ""))
+	if ((*env)->ThrowNew(env, tossingClass, buf) != 0)
 		sjme_die("Could not throw a new throwable?");
 #undef BUF_SIZE
 }

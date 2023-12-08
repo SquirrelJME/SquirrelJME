@@ -85,7 +85,7 @@ sjme_attrUnused SJME_TEST_DECLARE(testNvmLocalPopLong)
 	if (!sjme_nvm_localPopLong(frame, 0))
 		return sjme_unitFail(test, "Failed to pop local long.");
 	
-	/* New stack should be lower. */
+	/* New stack should be lowered. */
 	sjme_unitEqualI(test, stack->count, oldNumStack - 1,
 		"Items in stack not lower?");
 	

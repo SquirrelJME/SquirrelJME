@@ -11,6 +11,7 @@ package cc.squirreljme.vm.nanocoat;
 
 import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
 /**
@@ -39,7 +40,7 @@ public final class AllocPool
 			throw new IllegalArgumentException("Invalid pool size: " + __size);
 		
 		// Allocate the native pool
-		this._pointer = AllocPool.__poolMalloc(__size);
+		this._pointer = AllocPool.__poolMalloc(__size, this);
 	}
 	
 	/**
@@ -56,11 +57,13 @@ public final class AllocPool
 	 * Allocates a pool via {@code malloc()} and returns the pointer to it.
 	 *
 	 * @param __size The size of the pool.
+	 * @param __wrapper The front end wrapper.
 	 * @return The native pointer to the pool.
 	 * @throws VMException If the pool could not be allocated or initialized.
 	 * @since 2023/12/08
 	 */
 	private static native long __poolMalloc(
-		@Range(from = 1, to = Integer.MAX_VALUE) int __size)
+		@Range(from = 1, to = Integer.MAX_VALUE) int __size,
+		@NotNull AllocPool __wrapper)
 		throws VMException;
 }

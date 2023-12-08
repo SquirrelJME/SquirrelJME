@@ -15,7 +15,10 @@ add_library(squirreljmeEmulatorLib SHARED
 	$<TARGET_OBJECTS:CorePIC>
 	emu.c
 	jniHelper.c
-	nativeAlloc.c)
+	nativeAlloc.c
+	nativeNvmFrame.c
+	nativeNvmState.c
+	nativeNvmThread.c)
 
 # Always make this position independent
 set_property(TARGET squirreljmeEmulatorLib

@@ -184,6 +184,14 @@ typedef sjme_jint sjme_tempIndex;
 typedef void* sjme_frontEndWrapper;
 
 /**
+ * Wraps the given front end pointer.
+ *
+ * @param p The pointer to wrap.
+ * @since 2023/12/08
+ */
+#define SJME_FRONT_END_WRAP(p) ((sjme_frontEndWrapper)(p))
+
+/**
  * Basic data type identifier.
  * 
  * @since 2023/07/25
@@ -1036,6 +1044,9 @@ struct sjme_nvm_state
 
 	/** The memory pool to use for allocations. */
 	sjme_alloc_pool* allocPool;
+
+	/** The reserved memory pool. */
+	sjme_alloc_pool* reservedPool;
 	
 	/** The copy of the boot config. */
 	sjme_nvm_bootConfig bootConfig;
