@@ -26,7 +26,7 @@ int main(int argc, char** argv)
 	
 	/* Boot the virtual machine. */
 	state = NULL;
-	if (!sjme_nvm_boot(&bootConfig, &state, argc, argv))
+	if (!sjme_nvm_boot(NULL, &bootConfig, &state, argc, argv))
 		return EXIT_FAILURE;
 		
 	/* Constantly ticks the virtual machine until it stops. */

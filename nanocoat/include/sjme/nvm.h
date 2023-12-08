@@ -1018,6 +1018,13 @@ typedef struct sjme_nvm_stateHooks
 } sjme_nvm_stateHooks;
 
 /**
+ * Structure which stores the pooled memory allocator.
+ *
+ * @since 2023/11/18
+ */
+typedef struct sjme_alloc_pool sjme_alloc_pool;
+
+/**
  * Represents the virtual machine state.
  * 
  * @since 2023/07/28
@@ -1026,6 +1033,9 @@ struct sjme_nvm_state
 {
 	/** The wrapper in the front end. */
 	sjme_frontEndWrapper* frontEndWrapper;
+
+	/** The memory pool to use for allocations. */
+	sjme_alloc_pool* allocPool;
 	
 	/** The copy of the boot config. */
 	sjme_nvm_bootConfig bootConfig;

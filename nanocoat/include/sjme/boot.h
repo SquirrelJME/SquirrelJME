@@ -17,6 +17,7 @@
 #define SQUIRRELJME_BOOT_H
 
 #include "sjme/nvm.h"
+#include "sjme/alloc.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -31,7 +32,8 @@ extern "C" {
 
 /**
  * Boots the virtual machine.
- * 
+ *
+ * @param mainPool The main pool to be allocated within.
  * @param config The configuration to use.
  * @param outState The output state of the virtual machine.
  * @param argc The number of arguments passed to the executable.
@@ -40,6 +42,7 @@ extern "C" {
  * @since 2023/07/27
  */
 sjme_jboolean sjme_nvm_boot(
+	sjme_attrInNotNull sjme_alloc_pool* mainPool,
 	sjme_attrInNotNull const sjme_nvm_bootConfig* config,
 	sjme_attrOutNotNull sjme_nvm_state** outState,
 	sjme_attrInValue int argc,

@@ -30,13 +30,6 @@ extern "C" {
 /*--------------------------------------------------------------------------*/
 
 /**
- * Structure which stores the pooled memory allocator.
- * 
- * @since 2023/11/18
- */
-typedef struct sjme_alloc_pool sjme_alloc_pool;
-
-/**
  * Allocation link chain, each is a chain between each allocation.
  * 
  * @since 2023/11/18

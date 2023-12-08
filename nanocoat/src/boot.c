@@ -47,7 +47,8 @@ static sjme_attrCheckReturn sjme_jboolean sjme_nvm_bootCombineRom(
 	return SJME_JNI_FALSE;
 }
 
-sjme_jboolean sjme_nvm_boot(const sjme_nvm_bootConfig* config,
+sjme_jboolean sjme_nvm_boot(sjme_alloc_pool* mainPool,
+	const sjme_nvm_bootConfig* config,
 	sjme_nvm_state** outState, int argc, char** argv)
 {
 	sjme_nvm_state* result;
@@ -56,10 +57,13 @@ sjme_jboolean sjme_nvm_boot(const sjme_nvm_bootConfig* config,
 		return SJME_JNI_FALSE;
 		
 	/* Allocate new result. */
-	result = malloc(sizeof(*result));
-	if (result == NULL)
+	result = NULL;
+	if (!sjme_alloc(mainPool, sizeof(*result),
+		(void**)&result) || result == NULL)
 		return SJME_JNI_FALSE;
-	memset(result, 0, sizeof(*result));
+
+	/* Set the used pool. */
+	result->allocPool = mainPool;
 	
 	/* Copy the boot config over. */
 	memmove(&result->bootConfig, config, sizeof(*config));
