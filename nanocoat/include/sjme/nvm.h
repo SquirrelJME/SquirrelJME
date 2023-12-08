@@ -1097,10 +1097,13 @@ struct sjme_nvm_state
 typedef enum sjme_errorCode
 {
 	/** No error. */
-	SJME_ERROR_NONE = 0,
+	SJME_ERROR_NONE = 1,
 
 	/** Generic unknown error. */
-	SJME_ERROR_UNKNOWN = -1,
+	SJME_ERROR_UNKNOWN = 0,
+
+	/** Generic unknown error. */
+	SJME_ERROR_UNKNOWN_NEGATIVE = -1,
 	
 	/** Null arguments. */
 	SJME_ERROR_NULL_ARGUMENTS = -2,
