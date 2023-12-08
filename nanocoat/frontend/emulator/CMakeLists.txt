@@ -13,7 +13,9 @@ squirreljme_include("jni.cmake")
 # Declare library
 add_library(squirreljmeEmulatorLib SHARED
 	$<TARGET_OBJECTS:CorePIC>
-	emu.c)
+	emu.c
+	jniHelper.c
+	nativeAlloc.c)
 
 # Always make this position independent
 set_property(TARGET squirreljmeEmulatorLib

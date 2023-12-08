@@ -58,7 +58,10 @@ final class __Native__
 				
 				// Load and initialize
 				System.load(__Native__._libPath.toAbsolutePath().toString());
-				__Native__.__bindMethods();
+				int err;
+				if ((err = __Native__.__bindMethods()) != 0)
+					throw new VMException(String.format(
+						"Native binding failed: %d.", err));
 			}
 			
 			return __Native__._libPath;

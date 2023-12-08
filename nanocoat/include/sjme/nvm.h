@@ -1077,69 +1077,72 @@ typedef enum sjme_errorCode
 {
 	/** No error. */
 	SJME_ERROR_CODE_NONE = 0,
+
+	/** Generic unknown error. */
+	SJME_ERROR_CODE_UNKNOWN = -1,
 	
 	/** Null arguments. */
-	SJME_ERROR_CODE_NULL_ARGUMENTS = -1,
+	SJME_ERROR_CODE_NULL_ARGUMENTS = -2,
 	
 	/** Local variable out of bounds. */
-	SJME_ERROR_CODE_LOCAL_INDEX_INVALID = -2,
+	SJME_ERROR_CODE_LOCAL_INDEX_INVALID = -3,
 	
 	/** Stack variable out of bounds. */
-	SJME_ERROR_CODE_STACK_INDEX_INVALID = -3,
+	SJME_ERROR_CODE_STACK_INDEX_INVALID = -4,
 	
 	/** Stack underflow. */
-	SJME_ERROR_CODE_STACK_UNDERFLOW = -4,
+	SJME_ERROR_CODE_STACK_UNDERFLOW = -5,
 	
 	/** Stack overflow. */
-	SJME_ERROR_CODE_STACK_OVERFLOW = -5,
+	SJME_ERROR_CODE_STACK_OVERFLOW = -6,
 	
 	/** Top is not an integer type. */
-	SJME_ERROR_CODE_TOP_NOT_INTEGER = -6,
+	SJME_ERROR_CODE_TOP_NOT_INTEGER = -7,
 	
 	/** Top is not a long type. */
-	SJME_ERROR_CODE_TOP_NOT_LONG = -7,
+	SJME_ERROR_CODE_TOP_NOT_LONG = -8,
 	
 	/** Top is not a float type. */
-	SJME_ERROR_CODE_TOP_NOT_FLOAT = -8,
+	SJME_ERROR_CODE_TOP_NOT_FLOAT = -9,
 	
 	/** Top is not a double type. */
-	SJME_ERROR_CODE_TOP_NOT_DOUBLE = -9,
+	SJME_ERROR_CODE_TOP_NOT_DOUBLE = -10,
 	
 	/** Top is not a object type. */
-	SJME_ERROR_CODE_TOP_NOT_OBJECT = -10,
+	SJME_ERROR_CODE_TOP_NOT_OBJECT = -11,
 	
 	/** Frame is missing stack treads. */
-	SJME_ERROR_FRAME_MISSING_STACK_TREADS = -11,
+	SJME_ERROR_FRAME_MISSING_STACK_TREADS = -12,
 	
 	/** Invalid read of stack. */
-	SJME_ERROR_CODE_STACK_INVALID_READ = -12,
+	SJME_ERROR_CODE_STACK_INVALID_READ = -13,
 	
 	/** Invalid write of stack. */
-	SJME_ERROR_CODE_STACK_INVALID_WRITE = -13,
+	SJME_ERROR_CODE_STACK_INVALID_WRITE = -14,
 	
 	/** Invalid read of stack. */
-	SJME_ERROR_CODE_LOCAL_INVALID_READ = -14,
+	SJME_ERROR_CODE_LOCAL_INVALID_READ = -15,
 	
 	/** Invalid write of stack. */
-	SJME_ERROR_CODE_LOCAL_INVALID_WRITE = -15,
+	SJME_ERROR_CODE_LOCAL_INVALID_WRITE = -16,
 	
 	/** Invalid reference pop. */
-	SJME_ERROR_INVALID_REFERENCE_POP = -16,
+	SJME_ERROR_INVALID_REFERENCE_POP = -17,
 	
 	/** Invalid reference push. */
-	SJME_ERROR_INVALID_REFERENCE_PUSH = -17,
+	SJME_ERROR_INVALID_REFERENCE_PUSH = -18,
 	
 	/** Failed to garbage collect object. */
-	SJME_ERROR_COULD_NOT_GC_OBJECT = -18,
+	SJME_ERROR_COULD_NOT_GC_OBJECT = -19,
 	
 	/** Object reference count is not zero. */
-	SJME_ERROR_OBJECT_REFCOUNT_NOT_ZERO = -19,
+	SJME_ERROR_OBJECT_REFCOUNT_NOT_ZERO = -20,
 	
 	/** Garbage collection of object cancelled. */
-	SJME_ERROR_OBJECT_GC_CANCELLED = -20,
+	SJME_ERROR_OBJECT_GC_CANCELLED = -21,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -21
+	SJME_NUM_ERROR_CODES = -22
 } sjme_errorCode;
 
 sjme_jboolean sjme_nvm_arrayLength(

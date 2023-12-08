@@ -53,6 +53,9 @@ public class NanoCoatFactory
 		// Make sure the native library is loaded
 		__Native__.__loadLibrary();
 		
+		// We need an allocation pool to work with everything
+		AllocPool pool = new AllocPool(32 * 1048576);
+		
 		throw Debugging.todo();
 	}
 }

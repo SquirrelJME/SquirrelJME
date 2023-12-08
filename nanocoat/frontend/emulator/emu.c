@@ -11,8 +11,9 @@
 
 #include "sjme/nvm.h"
 #include "sjme/debug.h"
+#include "frontend/emulator/jniHelper.h"
 
-JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
+sjme_attrUnused JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 {
 	// Debug
 	sjme_message("Initial load of NanoCoat JNI library...");
@@ -21,10 +22,16 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 	return JNI_VERSION_1_6;
 }
 
+/**
+ * Binds methods accordingly.
+ *
+ * @param env Java environment.
+ * @param classy The class context this is called from.
+ * @since 2023/12/05
+ */
 sjme_attrUnused JNIEXPORT jint JNICALL
 	Java_cc_squirreljme_vm_nanocoat__1_1Native_1_1__1_1bindMethods
 	(JNIEnv* env, jclass classy)
 {
-	sjme_todo("Implement this?");
 	return 0;
 }
