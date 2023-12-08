@@ -55,28 +55,31 @@ sjme_errorCode sjme_nvm_boot(sjme_alloc_pool* mainPool,
 	void* reservedBase;
 	sjme_alloc_pool* reservedPool;
 	sjme_jint reservedSize;
+	sjme_errorCode error;
 	
 	if (config == NULL || outState == NULL)
-		return SJME_ERROR_CODE_NULL_ARGUMENTS;
+		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Set up a reserved pool where all the data structures for the VM go... */
 	reservedBase = NULL;
 	reservedSize = 64 * 1024;
-	if (!sjme_alloc(mainPool, reservedSize,
-		(void**)&reservedBase) || reservedBase == NULL)
-		return SJME_ERROR_OUT_OF_MEMORY;
+	if (SJME_ERROR_NONE != (error = sjme_alloc(mainPool,
+		reservedSize, (void**)&reservedBase) ||
+		reservedBase == NULL))
+		return error;
 
 	/* Initialize a reserved pool where all of our own data structures go. */
 	reservedPool = NULL;
-	if (!sjme_alloc_poolStatic(&reservedPool, reservedBase,
-		reservedSize) || reservedPool == NULL)
-		return SJME_ERROR_POOL_INIT_FAILED;
+	if (SJME_ERROR_NONE != (error = sjme_alloc_poolStatic(
+		&reservedPool, reservedBase, reservedSize)) ||
+		reservedPool == NULL)
+		return error;
 
 	/* Allocate resultant state. */
 	result = NULL;
-	if (!sjme_alloc(reservedPool, sizeof(*result),
-		(void**)&result) || result == NULL)
-		return SJME_ERROR_OUT_OF_MEMORY;
+	if (SJME_ERROR_NONE != (error = sjme_alloc(reservedPool,
+		sizeof(*result), (void**)&result)) || result == NULL)
+		return error;
 
 	/* Set parameters accordingly. */
 	result->allocPool = mainPool;

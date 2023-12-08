@@ -42,7 +42,7 @@ static sjme_jboolean sjme_nvm_localPopGeneric(
 	
 SJME_EXCEPT_WITH:
 	if (frame == NULL || accessor == NULL)
-		SJME_EXCEPT_TOSS(SJME_ERROR_CODE_NULL_ARGUMENTS);
+		SJME_EXCEPT_TOSS(SJME_ERROR_NULL_ARGUMENTS);
 	
 	/* Obtain the tread to access. */
 	tread = NULL;
@@ -56,10 +56,10 @@ SJME_EXCEPT_WITH:
 		SJME_EXCEPT_TOSS(SJME_ERROR_FRAME_MISSING_STACK_TREADS);
 	
 	if (localIndex < 0 || localIndex >= localMap->max)
-		SJME_EXCEPT_TOSS(SJME_ERROR_CODE_LOCAL_INDEX_INVALID);
+		SJME_EXCEPT_TOSS(SJME_ERROR_LOCAL_INDEX_INVALID);
 		
 	if (stack->count <= 0 || tread->count <= tread->stackBaseIndex)
-		SJME_EXCEPT_TOSS(SJME_ERROR_CODE_STACK_UNDERFLOW);
+		SJME_EXCEPT_TOSS(SJME_ERROR_STACK_UNDERFLOW);
 	
 	/* Get the type at the top to check if it is valid. */
 	topType = stack->order[stack->count - 1];
@@ -71,13 +71,13 @@ SJME_EXCEPT_WITH:
 	valueAddr = NULL;
 	if (!accessor->address(frame, accessor, tread, tread->count - 1,
 		&valueAddr) || valueAddr == NULL)
-		SJME_EXCEPT_TOSS(SJME_ERROR_CODE_STACK_INVALID_READ);
+		SJME_EXCEPT_TOSS(SJME_ERROR_STACK_INVALID_READ);
 	
 	/* Store the old value in the local variable. */
 	if (outOldLocalValue != NULL)
 		if (!accessor->read(frame, accessor, tread, indexMapTo,
 				outOldLocalValue))
-			SJME_EXCEPT_TOSS(SJME_ERROR_CODE_LOCAL_INVALID_READ);
+			SJME_EXCEPT_TOSS(SJME_ERROR_LOCAL_INVALID_READ);
 	
 	/* Store the output stack value, if requested. */
 	if (outStackValue != NULL)
@@ -85,13 +85,13 @@ SJME_EXCEPT_WITH:
 	
 	/* Write value directly from stack source address. */
 	if (!accessor->write(frame, accessor, tread, indexMapTo, valueAddr))
-		SJME_EXCEPT_TOSS(SJME_ERROR_CODE_LOCAL_INVALID_WRITE);
+		SJME_EXCEPT_TOSS(SJME_ERROR_LOCAL_INVALID_WRITE);
 	
 	/* Clear old stack value with zero value. */
 	valueAddr = alloca(accessor->size);
 	memset(valueAddr, 0, accessor->size);
 	if (!accessor->write(frame, accessor, tread, tread->count - 1, valueAddr))
-		SJME_EXCEPT_TOSS(SJME_ERROR_CODE_STACK_INVALID_WRITE);
+		SJME_EXCEPT_TOSS(SJME_ERROR_STACK_INVALID_WRITE);
 	
 	/* Clear and reduce stack counts. */
 	stack->order[stack->count] = 0;
@@ -179,7 +179,7 @@ sjme_jboolean sjme_nvm_gcObject(
 
 SJME_EXCEPT_WITH:
 	if (frame == NULL || instance == NULL)
-		SJME_EXCEPT_TOSS(SJME_ERROR_CODE_NULL_ARGUMENTS);
+		SJME_EXCEPT_TOSS(SJME_ERROR_NULL_ARGUMENTS);
 	
 	/* Must be zero! */
 	if (instance->refCount != 0)

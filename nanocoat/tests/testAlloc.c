@@ -31,20 +31,21 @@ SJME_TEST_DECLARE(testAlloc)
 	
 	/* Initialize the pool. */
 	pool = NULL;
-	if (!sjme_alloc_poolStatic(&pool, chunk, chunkLen) ||
-		pool == NULL)
+	if (SJME_ERROR_NONE != sjme_alloc_poolStatic(&pool, chunk,
+		chunkLen) || pool == NULL)
 		return sjme_unitFail(test, "Could not initialize static pool?");
 	
 	/* Allocate some memory in the pool. */
 	block = NULL;
-	if (!sjme_alloc(pool, TEST_BLOCK_SIZE, &block) ||
-		block == NULL)
+	if (SJME_ERROR_NONE != sjme_alloc(pool, TEST_BLOCK_SIZE,
+		&block) || block == NULL)
 		return sjme_unitFail(test, "Could not allocate %d bytes.",
 			TEST_BLOCK_SIZE);
 	
 	/* Obtain the block link. */
 	link = NULL;
-	if (!sjme_allocLink(block, &link) || link == NULL)
+	if (SJME_ERROR_NONE != sjme_allocLink(block, &link) ||
+		link == NULL)
 		return sjme_unitFail(test, "Could not obtain block link?");
 	
 	/* The allocation size should be of the requested size. */
@@ -83,7 +84,7 @@ SJME_TEST_DECLARE(testAlloc)
 		"Back link previous is not the next free block?");
 	
 	/* Free the block. */
-	if (!sjme_allocFree(block))
+	if (SJME_ERROR_NONE != sjme_allocFree(block))
 		return sjme_unitFail(test, "Could not free block.");
 		
 	/* Link should be marked free. */

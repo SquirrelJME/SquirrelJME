@@ -34,8 +34,8 @@ SJME_TEST_DECLARE(testAllocFreeMerge)
 	
 	/* Initialize the pool. */
 	pool = NULL;
-	if (!sjme_alloc_poolStatic(&pool, chunk, chunkLen) ||
-		pool == NULL)
+	if (SJME_ERROR_NONE != sjme_alloc_poolStatic(&pool,
+		chunk, chunkLen) || pool == NULL)
 		return sjme_unitFail(test, "Could not initialize static pool?");
 	
 	sjme_todo("Implement %s", __func__);

@@ -66,7 +66,8 @@ sjme_jboolean sjme_elevatorAct(
 		return sjme_die("Invalid configuration.");
 		
 	/* Allocate main memory pool. */
-	if (!sjme_alloc_poolMalloc(&inState->allocPool, 1024 * 1024))
+	if (SJME_ERROR_NONE != sjme_alloc_poolMalloc(&inState->allocPool,
+		1024 * 1024))
 		return sjme_die("Could not allocate main memory pool.");
 	
 	/* Initialize base data. */
@@ -123,7 +124,8 @@ void* sjme_elevatorAlloc(
 		return sjme_dieP("No input state.");
 	
 	rv = NULL;
-	if (!sjme_alloc(inState->allocPool, inLen, &rv))
+	if (SJME_ERROR_NONE != sjme_alloc(inState->allocPool, inLen,
+		&rv))
 		return sjme_dieP("Could not allocate pointer in test pool.");
 	
 	return rv;

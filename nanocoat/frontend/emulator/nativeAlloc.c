@@ -28,13 +28,14 @@ jlong SJME_JNI_METHOD(SJME_CLASS_ALLOC_POOL, _1_1poolMalloc)
 	(JNIEnv* env, jclass classy, jint size, jobject wrapper)
 {
 	sjme_alloc_pool* result;
+	sjme_errorCode error;
 
 	/* Attempt pool allocation. */
 	result = NULL;
-	if (!sjme_alloc_poolMalloc(&result, size) ||
-		result == NULL)
+	if (SJME_ERROR_NONE != (error = sjme_alloc_poolMalloc(&result,
+		size)) || result == NULL)
 	{
-		sjme_jni_throwVMException(env, SJME_ERROR_CODE_UNKNOWN);
+		sjme_jni_throwVMException(env, error);
 		return 0L;
 	}
 

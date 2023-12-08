@@ -31,13 +31,13 @@ SJME_TEST_DECLARE(testExceptFail)
 	
 	/* Fail. */
 SJME_EXCEPT_WITH:
-	SJME_EXCEPT_TOSS(SJME_ERROR_CODE_TOP_NOT_LONG);
+	SJME_EXCEPT_TOSS(SJME_ERROR_TOP_NOT_LONG);
 
 	/* Should hopefully not be reached. */
 	sjme_unitFail(test, "Should not be reached here?");
 	
 SJME_EXCEPT_FAIL:
-	sjme_unitEqualI(test, errorCode, SJME_ERROR_CODE_TOP_NOT_LONG,
+	sjme_unitEqualI(test, errorCode, SJME_ERROR_TOP_NOT_LONG,
 		"Error code was not set?");
 	
 	/* Success otherwise. */

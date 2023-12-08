@@ -149,10 +149,10 @@ struct sjme_alloc_pool
  * 
  * @param outPool The resultant pool. 
  * @param size The requested pool size.
- * @return Returns @c SJME_JNI_TRUE on success.
+ * @return Returns an error code.
  * @since 2023/11/18
  */
-sjme_jboolean sjme_alloc_poolMalloc(
+sjme_errorCode sjme_alloc_poolMalloc(
 	sjme_attrOutNotNull sjme_alloc_pool** outPool,
 	sjme_attrInPositive sjme_jint size);
 
@@ -162,10 +162,10 @@ sjme_jboolean sjme_alloc_poolMalloc(
  * @param outPool The resultant pool.
  * @param baseAddr The base address of the block. 
  * @param size The size of the block.
- * @return Returns @c SJME_JNI_TRUE on success.
+ * @return Returns an error code.
  * @since 2023/11/18
  */
-sjme_jboolean sjme_alloc_poolStatic(
+sjme_errorCode sjme_alloc_poolStatic(
 	sjme_attrOutNotNull sjme_alloc_pool** outPool,
 	sjme_attrInNotNull void* baseAddr,
 	sjme_attrInPositive sjme_jint size);
@@ -176,10 +176,10 @@ sjme_jboolean sjme_alloc_poolStatic(
  * @param pool The pool to allocate within.
  * @param size The number of bytes to allocate.
  * @param outAddr The output address.
- * @return Returns @c SJME_JNI_TRUE on success.
+ * @return Returns an error code.
  * @since 2023/11/19
  */
-sjme_jboolean sjme_alloc(
+sjme_errorCode sjme_alloc(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrInPositiveNonZero sjme_jint size,
 	sjme_attrOutNotNull void** outAddr); 
@@ -191,7 +191,7 @@ sjme_jboolean sjme_alloc(
  * @return Returns @c SJME_JNI_TRUE on success.
  * @since 2023/11/19
  */
-sjme_jboolean sjme_allocFree(
+sjme_errorCode sjme_allocFree(
 	sjme_attrInNotNull void* addr);
 	
 /**
@@ -199,10 +199,10 @@ sjme_jboolean sjme_allocFree(
  * 
  * @param addr The pointer to get the link from.
  * @param outLink The resultant link.
- * @return Returns @c SJME_JNI_TRUE on success.
+ * @return Returns an error code.
  * @since 2023/11/19
  */
-sjme_jboolean sjme_allocLink(
+sjme_errorCode sjme_allocLink(
 	sjme_attrInNotNull void* addr,
 	sjme_attrOutNotNull sjme_alloc_link** outLink);
 
@@ -213,10 +213,10 @@ sjme_jboolean sjme_allocLink(
  * @param inOutAddr The address to reallocate.
  * @param newSize The new size of the allocation, if @c 0 then the pointer
  * is freed instead.
- * @return Returns @c SJME_JNI_TRUE on success.
+ * @return Returns an error code.
  * @since 2023/11/28
  */
-sjme_jboolean sjme_allocRealloc(
+sjme_errorCode sjme_allocRealloc(
 	sjme_attrInOutNotNull void** inOutAddr,
 	sjme_attrInPositive sjme_jint newSize);
 

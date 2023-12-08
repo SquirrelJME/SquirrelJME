@@ -25,7 +25,7 @@
 /** The minimum size for splits. */
 #define SJME_ALLOC_SPLIT_MIN_SIZE 64
 
-sjme_jboolean sjme_alloc_poolMalloc(
+sjme_errorCode sjme_alloc_poolMalloc(
 	sjme_attrOutNotNull sjme_alloc_pool** outPool,
 	sjme_attrInPositive sjme_jint size)
 {
@@ -35,18 +35,18 @@ sjme_jboolean sjme_alloc_poolMalloc(
 	useSize = SJME_SIZEOF_ALLOC_POOL(size);
 	if (outPool == NULL || size <= SJME_ALLOC_MIN_SIZE || useSize <= 0 ||
 		size > useSize)
-		return SJME_JNI_FALSE;
+		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* Attempt allocation. */
 	result = malloc(useSize);
 	if (!result)
-		return SJME_JNI_FALSE;
+		return SJME_ERROR_OUT_OF_MEMORY;
 	
-	/* Use static pool initializer to setup structures. */
+	/* Use static pool initializer to set up structures. */
 	return sjme_alloc_poolStatic(outPool, result, useSize);
 }
 
-sjme_jboolean sjme_alloc_poolStatic(
+sjme_errorCode sjme_alloc_poolStatic(
 	sjme_attrOutNotNull sjme_alloc_pool** outPool,
 	sjme_attrInNotNull void* baseAddr,
 	sjme_attrInPositive sjme_jint size)
@@ -57,7 +57,7 @@ sjme_jboolean sjme_alloc_poolStatic(
 	sjme_alloc_link* backLink;
 	
 	if (outPool == NULL || baseAddr == NULL || size <= SJME_ALLOC_MIN_SIZE)
-		return SJME_JNI_FALSE;
+		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* Initialize memory to nothing. */
 	memset(baseAddr, 0, size);
@@ -114,10 +114,10 @@ sjme_jboolean sjme_alloc_poolStatic(
 	
 	/* Use the pool. */
 	*outPool = result;
-	return SJME_JNI_TRUE;
+	return SJME_ERROR_NONE;
 }
 
-sjme_jboolean sjme_alloc(
+sjme_errorCode sjme_alloc(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrInPositiveNonZero sjme_jint size,
 	sjme_attrOutNotNull void** outAddr)
@@ -127,7 +127,7 @@ sjme_jboolean sjme_alloc(
 	sjme_jboolean splitBlock;
 	
 	if (pool == NULL || size <= 0 || outAddr == NULL)
-		return SJME_JNI_FALSE;
+		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Determine the size this will actually take up, which includes the */
 	/* link to be created following this. */
@@ -135,7 +135,7 @@ sjme_jboolean sjme_alloc(
 	splitMinSize = roundSize +
 		(sjme_jint)SJME_SIZEOF_ALLOC_LINK(SJME_ALLOC_SPLIT_MIN_SIZE);
 	if (size > splitMinSize || splitMinSize < 0)
-		return SJME_JNI_FALSE;
+		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* Find the first free link that this fits in. */
 	scanLink = NULL;
@@ -161,13 +161,13 @@ sjme_jboolean sjme_alloc(
 	
 	/* Out of memory. */
 	if (scanLink == NULL)
-		return SJME_JNI_FALSE;
+		return SJME_ERROR_OUT_OF_MEMORY;
 	
 	sjme_todo("Implement this?");
 	return SJME_JNI_FALSE;
 }
 
-sjme_jboolean sjme_allocFree(
+sjme_errorCode sjme_allocFree(
 	sjme_attrInNotNull void* addr)
 {
 	if (addr == NULL)
@@ -177,7 +177,7 @@ sjme_jboolean sjme_allocFree(
 	return SJME_JNI_FALSE;
 }
 
-sjme_jboolean sjme_allocLink(
+sjme_errorCode sjme_allocLink(
 	sjme_attrInNotNull void* addr,
 	sjme_attrOutNotNull sjme_alloc_link** outLink)
 {
@@ -189,10 +189,10 @@ sjme_jboolean sjme_allocLink(
 		offsetof(sjme_alloc_link, block));
 	
 	/* Success! */
-	return SJME_JNI_TRUE;
+	return SJME_ERROR_NONE;
 }
 
-sjme_jboolean sjme_allocRealloc(
+sjme_errorCode sjme_allocRealloc(
 	sjme_attrInOutNotNull void** inOutAddr,
 	sjme_attrInPositive sjme_jint newSize)
 {

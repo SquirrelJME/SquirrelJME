@@ -1097,55 +1097,55 @@ struct sjme_nvm_state
 typedef enum sjme_errorCode
 {
 	/** No error. */
-	SJME_ERROR_CODE_NONE = 0,
+	SJME_ERROR_NONE = 0,
 
 	/** Generic unknown error. */
-	SJME_ERROR_CODE_UNKNOWN = -1,
+	SJME_ERROR_UNKNOWN = -1,
 	
 	/** Null arguments. */
-	SJME_ERROR_CODE_NULL_ARGUMENTS = -2,
+	SJME_ERROR_NULL_ARGUMENTS = -2,
 	
 	/** Local variable out of bounds. */
-	SJME_ERROR_CODE_LOCAL_INDEX_INVALID = -3,
+	SJME_ERROR_LOCAL_INDEX_INVALID = -3,
 	
 	/** Stack variable out of bounds. */
-	SJME_ERROR_CODE_STACK_INDEX_INVALID = -4,
+	SJME_ERROR_STACK_INDEX_INVALID = -4,
 	
 	/** Stack underflow. */
-	SJME_ERROR_CODE_STACK_UNDERFLOW = -5,
+	SJME_ERROR_STACK_UNDERFLOW = -5,
 	
 	/** Stack overflow. */
-	SJME_ERROR_CODE_STACK_OVERFLOW = -6,
+	SJME_ERROR_STACK_OVERFLOW = -6,
 	
 	/** Top is not an integer type. */
-	SJME_ERROR_CODE_TOP_NOT_INTEGER = -7,
+	SJME_ERROR_TOP_NOT_INTEGER = -7,
 	
 	/** Top is not a long type. */
-	SJME_ERROR_CODE_TOP_NOT_LONG = -8,
+	SJME_ERROR_TOP_NOT_LONG = -8,
 	
 	/** Top is not a float type. */
-	SJME_ERROR_CODE_TOP_NOT_FLOAT = -9,
+	SJME_ERROR_TOP_NOT_FLOAT = -9,
 	
 	/** Top is not a double type. */
-	SJME_ERROR_CODE_TOP_NOT_DOUBLE = -10,
+	SJME_ERROR_TOP_NOT_DOUBLE = -10,
 	
 	/** Top is not a object type. */
-	SJME_ERROR_CODE_TOP_NOT_OBJECT = -11,
+	SJME_ERROR_TOP_NOT_OBJECT = -11,
 	
 	/** Frame is missing stack treads. */
 	SJME_ERROR_FRAME_MISSING_STACK_TREADS = -12,
 	
 	/** Invalid read of stack. */
-	SJME_ERROR_CODE_STACK_INVALID_READ = -13,
+	SJME_ERROR_STACK_INVALID_READ = -13,
 	
 	/** Invalid write of stack. */
-	SJME_ERROR_CODE_STACK_INVALID_WRITE = -14,
+	SJME_ERROR_STACK_INVALID_WRITE = -14,
 	
 	/** Invalid read of stack. */
-	SJME_ERROR_CODE_LOCAL_INVALID_READ = -15,
+	SJME_ERROR_LOCAL_INVALID_READ = -15,
 	
 	/** Invalid write of stack. */
-	SJME_ERROR_CODE_LOCAL_INVALID_WRITE = -16,
+	SJME_ERROR_LOCAL_INVALID_WRITE = -16,
 	
 	/** Invalid reference pop. */
 	SJME_ERROR_INVALID_REFERENCE_POP = -17,
@@ -1167,6 +1167,9 @@ typedef enum sjme_errorCode
 
 	/** Pool initialization failed. */
 	SJME_ERROR_POOL_INIT_FAILED = -23,
+
+	/** Invalid argument. */
+	SJME_ERROR_INVALID_ARGUMENT = -24,
 	
 	/** The number of error codes. */
 	SJME_NUM_ERROR_CODES = -24
