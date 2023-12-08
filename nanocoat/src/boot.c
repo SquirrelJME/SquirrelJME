@@ -47,7 +47,7 @@ static sjme_attrCheckReturn sjme_jboolean sjme_nvm_bootCombineRom(
 	return SJME_JNI_FALSE;
 }
 
-sjme_jboolean sjme_nvm_boot(sjme_alloc_pool* mainPool,
+sjme_errorCode sjme_nvm_boot(sjme_alloc_pool* mainPool,
 	const sjme_nvm_bootConfig* config,
 	sjme_nvm_state** outState, int argc, char** argv)
 {
@@ -57,26 +57,26 @@ sjme_jboolean sjme_nvm_boot(sjme_alloc_pool* mainPool,
 	sjme_jint reservedSize;
 	
 	if (config == NULL || outState == NULL)
-		return SJME_JNI_FALSE;
+		return SJME_ERROR_CODE_NULL_ARGUMENTS;
 
 	/* Set up a reserved pool where all the data structures for the VM go... */
 	reservedBase = NULL;
 	reservedSize = 64 * 1024;
 	if (!sjme_alloc(mainPool, reservedSize,
 		(void**)&reservedBase) || reservedBase == NULL)
-		return SJME_JNI_FALSE;
+		return SJME_ERROR_OUT_OF_MEMORY;
 
 	/* Initialize a reserved pool where all of our own data structures go. */
 	reservedPool = NULL;
 	if (!sjme_alloc_poolStatic(&reservedPool, reservedBase,
 		reservedSize) || reservedPool == NULL)
-		return SJME_JNI_FALSE;
+		return SJME_ERROR_POOL_INIT_FAILED;
 
 	/* Allocate resultant state. */
 	result = NULL;
 	if (!sjme_alloc(reservedPool, sizeof(*result),
 		(void**)&result) || result == NULL)
-		return SJME_JNI_FALSE;
+		return SJME_ERROR_OUT_OF_MEMORY;
 
 	/* Set parameters accordingly. */
 	result->allocPool = mainPool;

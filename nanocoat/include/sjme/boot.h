@@ -38,10 +38,10 @@ extern "C" {
  * @param outState The output state of the virtual machine.
  * @param argc The number of arguments passed to the executable.
  * @param argv The command line arguments passed to the executable.
- * @return The booted virtual machine.
+ * @return The error code, if any.
  * @since 2023/07/27
  */
-sjme_jboolean sjme_nvm_boot(
+sjme_errorCode sjme_nvm_boot(
 	sjme_attrInNotNull sjme_alloc_pool* mainPool,
 	sjme_attrInNotNull const sjme_nvm_bootConfig* config,
 	sjme_attrOutNotNull sjme_nvm_state** outState,

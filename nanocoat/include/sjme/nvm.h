@@ -1161,9 +1161,15 @@ typedef enum sjme_errorCode
 	
 	/** Garbage collection of object cancelled. */
 	SJME_ERROR_OBJECT_GC_CANCELLED = -21,
+
+	/** Out of memory. */
+	SJME_ERROR_OUT_OF_MEMORY = -22,
+
+	/** Pool initialization failed. */
+	SJME_ERROR_POOL_INIT_FAILED = -23,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -22
+	SJME_NUM_ERROR_CODES = -24
 } sjme_errorCode;
 
 /*--------------------------------------------------------------------------*/
