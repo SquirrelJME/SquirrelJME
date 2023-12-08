@@ -1178,6 +1178,14 @@ typedef enum sjme_errorCode
 	SJME_NUM_ERROR_CODES = -24
 } sjme_errorCode;
 
+/**
+ * Is this expression considered an error?
+ *
+ * @param x The expression.
+ * @since 2023/12/08
+ */
+#define SJME_IS_ERROR(x) (SJME_ERROR_NONE != (x))
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

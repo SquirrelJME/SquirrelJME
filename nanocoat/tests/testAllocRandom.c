@@ -55,8 +55,8 @@ SJME_TEST_DECLARE(testAllocRandom)
 	
 	/* Initialize the pool. */
 	pool = NULL;
-	if (SJME_ERROR_NONE != sjme_alloc_poolStatic(&pool, chunk,
-		chunkLen) || pool == NULL)
+	if (SJME_IS_ERROR(sjme_alloc_poolStatic(&pool, chunk,
+		chunkLen)) || pool == NULL)
 		return sjme_unitFail(test, "Could not initialize static pool?");
 	
 	/* Initialize the PRNG. */
@@ -77,7 +77,7 @@ SJME_TEST_DECLARE(testAllocRandom)
 		
 		/* Allocate link. */
 		link = NULL;
-		if (SJME_ERROR_NONE != sjme_alloc(pool, linkLen, &link))
+		if (SJME_IS_ERROR(sjme_alloc(pool, linkLen, &link)))
 			return sjme_unitFail(test, "Could not allocate link %d %d.",
 				(int)i, (int)linkLen);
 		
@@ -139,8 +139,8 @@ SJME_TEST_DECLARE(testAllocRandom)
 		linkLen += sizeof(linkLen); 
 		
 		/* Free it. */
-		if (SJME_ERROR_NONE != sjme_allocRealloc((void**)&link,
-			linkLen))
+		if (SJME_IS_ERROR(sjme_allocRealloc((void**)&link,
+			linkLen)))
 			return sjme_unitFail(test, "Could not realloc link %d at %p.",
 				(int)i, link);
 		

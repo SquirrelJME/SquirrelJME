@@ -63,21 +63,21 @@ sjme_errorCode sjme_nvm_boot(sjme_alloc_pool* mainPool,
 	/* Set up a reserved pool where all the data structures for the VM go... */
 	reservedBase = NULL;
 	reservedSize = 64 * 1024;
-	if (SJME_ERROR_NONE != (error = sjme_alloc(mainPool,
+	if (SJME_IS_ERROR(error = sjme_alloc(mainPool,
 		reservedSize, (void**)&reservedBase) ||
 		reservedBase == NULL))
 		return error;
 
 	/* Initialize a reserved pool where all of our own data structures go. */
 	reservedPool = NULL;
-	if (SJME_ERROR_NONE != (error = sjme_alloc_poolStatic(
+	if (SJME_IS_ERROR(error = sjme_alloc_poolStatic(
 		&reservedPool, reservedBase, reservedSize)) ||
 		reservedPool == NULL)
 		return error;
 
 	/* Allocate resultant state. */
 	result = NULL;
-	if (SJME_ERROR_NONE != (error = sjme_alloc(reservedPool,
+	if (SJME_IS_ERROR(error = sjme_alloc(reservedPool,
 		sizeof(*result), (void**)&result)) || result == NULL)
 		return error;
 

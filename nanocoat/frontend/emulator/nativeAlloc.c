@@ -32,7 +32,7 @@ jlong SJME_JNI_METHOD(SJME_CLASS_ALLOC_POOL, _1_1poolMalloc)
 
 	/* Attempt pool allocation. */
 	result = NULL;
-	if (SJME_ERROR_NONE != (error = sjme_alloc_poolMalloc(&result,
+	if (SJME_IS_ERROR(error = sjme_alloc_poolMalloc(&result,
 		size)) || result == NULL)
 	{
 		sjme_jni_throwVMException(env, error);
