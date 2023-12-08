@@ -9,10 +9,10 @@
 
 #include <string.h>
 
-#include "test.h"
-#include "proto.h"
 #include "elevator.h"
 #include "proto.h"
+#include "sjme/nvmFunc.h"
+#include "test.h"
 #include "unit.h"
 
 sjme_jboolean configNvmLocalPopLong(

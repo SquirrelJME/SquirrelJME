@@ -101,17 +101,21 @@ typedef struct sjme_vmConfig_setting
 	/** Flags for the configuration setting. */
 	sjme_vmConfig_flag flags;
 
-	/** The default value, if any. */
-	const sjme_vmConfig_value defaultValue;
+	/** Contains the various values within. */
+	struct
+	{
+		/** The default value, if any. */
+		const sjme_vmConfig_value initial;
 
-	/** The minimum value, if applicable. */
-	const sjme_vmConfig_value minValue;
+		/** The minimum value, if applicable. */
+		const sjme_vmConfig_value min;
 
-	/** The maximum value, if applicable. */
-	const sjme_vmConfig_value maxValue;
+		/** The maximum value, if applicable. */
+		const sjme_vmConfig_value max;
 
-	/** The option tick values that are possible, if applicable. */
-	const sjme_vmConfig_value ticks[sjme_flexibleArrayCount];
+		/** The option tick values that are possible, if applicable. */
+		const sjme_vmConfig_value ticks[sjme_flexibleArrayCount];
+	} value;
 } sjme_vmConfig_setting;
 
 /*--------------------------------------------------------------------------*/

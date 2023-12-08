@@ -54,6 +54,11 @@ set(CMAKE_C_STANDARD_REQUIRED True)
 # Assets and otherwise, such as icons, etc.
 squirreljme_include("assets.cmake")
 
+# Turn some warnings into errors
+if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+	add_compile_options("-Werror=implicit-function-declaration")
+endif()
+
 # Declare Version
 add_compile_definitions(
 	SQUIRRELJME_VERSION_TRIM=${SQUIRRELJME_VERSION})

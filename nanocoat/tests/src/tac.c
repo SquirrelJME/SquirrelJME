@@ -9,8 +9,9 @@
 
 #include <string.h>
 
-#include "sjme/nvm.h"
 #include "sjme/boot.h"
+#include "sjme/nvm.h"
+#include "sjme/nvmFunc.h"
 #include "sjme/payload.h"
 #include "test.h"
 

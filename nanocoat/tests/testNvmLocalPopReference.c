@@ -9,11 +9,12 @@
 
 #include <string.h>
 
-#include "proto.h"
 #include "elevator.h"
+#include "proto.h"
 #include "sjme/debug.h"
-#include "unit.h"
+#include "sjme/nvmFunc.h"
 #include "test.h"
+#include "unit.h"
 
 #define TEST_NUM_OBJECT_IDS 3
 
