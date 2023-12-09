@@ -31,7 +31,8 @@ sjme_errorCode sjme_alloc_poolMalloc(
 {
 	void* result;
 	sjme_jint useSize;
-	
+
+	/* Make sure the size is not wonky. */
 	useSize = SJME_SIZEOF_ALLOC_POOL(size);
 	if (outPool == NULL || size <= SJME_ALLOC_MIN_SIZE || useSize <= 0 ||
 		size > useSize)
@@ -55,8 +56,11 @@ sjme_errorCode sjme_alloc_poolStatic(
 	sjme_alloc_link* frontLink;
 	sjme_alloc_link* midLink;
 	sjme_alloc_link* backLink;
+
+	if (outPool == NULL || baseAddr == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	if (outPool == NULL || baseAddr == NULL || size <= SJME_ALLOC_MIN_SIZE)
+	if (size <= SJME_ALLOC_MIN_SIZE)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* Initialize memory to nothing. */
