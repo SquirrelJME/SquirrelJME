@@ -18,24 +18,27 @@ const char* sjme_shortenFile(const char* file);
 sjme_errorCode sjme_except_printStackTraceR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	volatile sjme_exceptTrace* exceptTrace)
 {
+	volatile sjme_exceptTrace* seeker;
+
 	/* Add notice, similar to Java. */
 	sjme_messageR(file, line, func, SJME_JNI_TRUE,
 		"Exception occurred:");
 
 	/* Go down the stack. */
-	while (exceptTrace != NULL)
+	seeker = exceptTrace;
+	while (seeker != NULL)
 	{
 		/* Print indicators. */
 		sjme_messageR(NULL, -1, NULL, SJME_JNI_TRUE,
 			" |- C %s()",
-			exceptTrace->func);
+			seeker->func);
 		sjme_messageR(NULL, -1, NULL, SJME_JNI_TRUE,
 			" | %s:%d",
-			sjme_shortenFile(exceptTrace->file),
-			exceptTrace->line);
+			sjme_shortenFile(seeker->file),
+			seeker->line);
 
 		/* Go up one. */
-		exceptTrace = exceptTrace->parent;
+		seeker = seeker->parent;
 	}
 
 	/* Always works. */

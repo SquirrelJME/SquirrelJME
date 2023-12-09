@@ -33,14 +33,14 @@ extern "C" {
 
 struct sjme_exceptTrace
 {
+	/** The error code used. */
+	sjme_errorCode error;
+
 	/** Pointer to what is above the trace */
 	volatile sjme_exceptTrace* parent;
 
 	/** The storage for registers using C's @c setjmp and @c longjmp . */
 	jmp_buf jumpBuf;
-
-	/** The error code used. */
-	sjme_errorCode error;
 
 	/** The file. */
 	const char* file;
@@ -79,6 +79,10 @@ struct sjme_exceptTrace
 	{goto sjme_except_fail; goto sjme_except_with;} \
 	sjme_except_with
 
+/** Exception handling with a Java frame. */
+#define SJME_EXCEPT_WITH_FRAME \
+	SJME_EXCEPT_WITH(frame->inThread->except)
+
 /** Block to declare failing code, for cleanup and return. */
 #define SJME_EXCEPT_FAIL \
 	do { \
@@ -97,6 +101,7 @@ struct sjme_exceptTrace
 		exceptTrace_sjme.file = __FILE__; \
         exceptTrace_sjme.line = __LINE__; \
         exceptTrace_sjme.func = __func__; \
+        exceptTrace_sjme.error = (errorCodeId); \
 		longjmp((*((jmp_buf*)(&exceptTrace_sjme.jumpBuf))), \
 			(sjme_errorCode)(errorCodeId)); \
 		goto sjme_except_fail;} \

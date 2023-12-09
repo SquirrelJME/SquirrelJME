@@ -347,6 +347,13 @@ typedef struct sjme_nvm_state sjme_nvm_state;
  */
 typedef struct sjme_nvm_frame sjme_nvm_frame;
 
+/**
+ * Exception stack trace mechanism storage.
+ *
+ * @since 2023/12/08
+ */
+typedef volatile struct sjme_exceptTrace sjme_exceptTrace;
+
 typedef struct sjme_nvm_thread
 {
 	/** The VM state this thread is in. */
@@ -363,6 +370,9 @@ typedef struct sjme_nvm_thread
 	
 	/** The number of frames. */
 	sjme_jint numFrames;
+
+	/** Current exception handler go back. */
+	volatile sjme_exceptTrace* except;
 } sjme_nvm_thread;
 
 typedef struct sjme_static_constValue
@@ -919,13 +929,6 @@ typedef struct sjme_nvm_frameLocalMap
 	(sizeof(sjme_nvm_frameLocalMap) + \
 	(SJME_SIZEOF_STRUCT_MEMBER(sjme_nvm_frameLocalMap, maps[0]) * (count)))
 
-/**
- * Exception stack trace mechanism storage.
- *
- * @since 2023/12/08
- */
-typedef volatile struct sjme_exceptTrace sjme_exceptTrace;
-
 struct sjme_nvm_frame
 {
 	/** The thread this frame is in. */
@@ -966,9 +969,6 @@ struct sjme_nvm_frame
 	
 	/** Mapping of local variables to the tread indexes per type. */
 	const sjme_nvm_frameLocalMap* localMap;
-	
-	/** Current exception handler go back. */
-	sjme_exceptTrace* except;
 };
 
 typedef struct sjme_static_libraries

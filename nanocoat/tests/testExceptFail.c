@@ -22,15 +22,13 @@
 SJME_TEST_DECLARE(testExceptFail)
 {
 	SJME_EXCEPT_VDEF;
-	sjme_nvm_frame xframe;
-	sjme_nvm_frame* frame;
-	
-	/* Exception handler takes frame info. */
-	memset(&xframe, 0, sizeof(xframe));
-	frame = &xframe;
-	
+	volatile sjme_exceptTrace* trace;
+
+	/* Setup test. */
+	trace = NULL;
+
 	/* Fail. */
-SJME_EXCEPT_WITH(frame->except):
+SJME_EXCEPT_WITH(trace):
 	SJME_EXCEPT_TOSS(SJME_ERROR_TOP_NOT_LONG);
 
 	/* Should hopefully not be reached. */

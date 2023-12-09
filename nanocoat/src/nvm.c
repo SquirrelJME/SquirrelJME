@@ -40,7 +40,7 @@ static sjme_errorCode sjme_nvm_localPopGeneric(
 	sjme_jbyte indexMapTo;
 	void* valueAddr;
 	
-SJME_EXCEPT_WITH(frame->except):
+SJME_EXCEPT_WITH_FRAME:
 	if (frame == NULL || accessor == NULL)
 		SJME_EXCEPT_TOSS(SJME_ERROR_NULL_ARGUMENTS);
 	
@@ -179,7 +179,7 @@ sjme_errorCode sjme_nvm_gcObject(
 	SJME_EXCEPT_VDEF;
 	sjme_nvm_state* state;
 
-SJME_EXCEPT_WITH(frame->except):
+SJME_EXCEPT_WITH_FRAME:
 	if (frame == NULL || instance == NULL)
 		SJME_EXCEPT_TOSS(SJME_ERROR_NULL_ARGUMENTS);
 	
@@ -253,7 +253,7 @@ sjme_errorCode sjme_nvm_localPopReference(sjme_nvm_frame* frame,
 	SJME_EXCEPT_VDEF;
 	sjme_jobject oldLocalValue, stackValue;
 
-SJME_EXCEPT_WITH(frame->except):
+SJME_EXCEPT_WITH_FRAME:
 	/* Read in the stack values. */
 	oldLocalValue = NULL;
 	stackValue = NULL;
