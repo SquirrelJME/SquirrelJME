@@ -173,7 +173,8 @@ static sjme_errorCode sjme_unitShortingEmit(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 		return sjme_die("No test structure?");
 		
 	/* Emit message. */
-	sjme_messageV(file, line, func, format, vaArgs);
+	sjme_messageV(file, line, func, SJME_JNI_FALSE,
+		format, vaArgs);
 	
 	/* Hit abort for debugging. */
 	abort();
@@ -201,7 +202,8 @@ sjme_testResult sjme_unitOperatorIR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	
 	if (!opInfo->function(sizeof(sjme_jint), &a, &b))
 	{
-		sjme_messageR(file, line, func, "ASSERT: %d %s %d",
+		sjme_messageR(file, line, func, SJME_JNI_FALSE,
+			"ASSERT: %d %s %d",
 			a, opInfo->symbol, b);
 		SJME_VA_SHORT(SJME_TEST_RESULT_FAIL);
 	}
@@ -225,7 +227,8 @@ sjme_testResult sjme_unitOperatorLR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	
 	if (!opInfo->function(sizeof(sjme_jobject), &a, &b))
 	{
-		sjme_messageR(file, line, func, "ASSERT: %p %s %p",
+		sjme_messageR(file, line, func, SJME_JNI_FALSE,
+			"ASSERT: %p %s %p",
 			a, opInfo->symbol, b);
 		SJME_VA_SHORT(SJME_TEST_RESULT_FAIL);
 	}
@@ -249,7 +252,8 @@ sjme_testResult sjme_unitOperatorPR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	
 	if (!opInfo->function(sizeof(void*), &a, &b))
 	{
-		sjme_messageR(file, line, func, "ASSERT: %p %s %p",
+		sjme_messageR(file, line, func, SJME_JNI_FALSE,
+			"ASSERT: %p %s %p",
 			a, opInfo->symbol, b);
 		SJME_VA_SHORT(SJME_TEST_RESULT_FAIL);
 	}
@@ -264,7 +268,8 @@ sjme_testResult sjme_unitFailR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	SJME_VA_DEF;
 	
 	/* Test always fails. */
-	sjme_messageR(file, line, func, "ASSERT: Fail");
+	sjme_messageR(file, line, func, SJME_JNI_FALSE,
+		"ASSERT: Fail");
 	SJME_VA_SHORT(SJME_TEST_RESULT_FAIL);
 	return SJME_TEST_RESULT_FAIL;
 }
@@ -276,7 +281,8 @@ sjme_testResult sjme_unitSkipR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	SJME_VA_DEF;
 	
 	/* Test always fails. */
-	sjme_messageR(file, line, func, "Skipped test.");
+	sjme_messageR(file, line, func, SJME_JNI_FALSE,
+		"Skipped test.");
 	SJME_VA_SHORT(SJME_TEST_RESULT_SKIP);
 	return SJME_TEST_RESULT_SKIP;
 }

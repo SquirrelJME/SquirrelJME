@@ -57,13 +57,15 @@ extern "C" {
  * @param file The file printing from.
  * @param line The line printing from.
  * @param func The function printing from.
+ * @param isBlank Is this blank?
  * @param message The @c printf style message.
  * @param ... Any @c printf style arguments.
  * @since 2021/10/31
  */
 void sjme_messageR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_attrInValue sjme_jboolean isBlank,
 	sjme_attrInNullable sjme_attrFormatArg const char* message, ...)
-	sjme_attrFormatOuter(3, 4);
+	sjme_attrFormatOuter(4, 5);
 
 /**
  * Prints a debug message.
@@ -71,11 +73,13 @@ void sjme_messageR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * @param file The file printing from.
  * @param line The line printing from.
  * @param func The function printing from.
+ * @param isBlank Is this blank?
  * @param message The @c printf style message.
  * @param args Any @c printf style arguments.
  * @since 2023/11/11
  */
 void sjme_messageV(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_attrInValue sjme_jboolean isBlank,
 	sjme_attrInNullable sjme_attrFormatArg const char* message,
 	va_list args);
 #endif
@@ -88,7 +92,7 @@ void sjme_messageV(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * @since 2021/10/31 
  */
 #define sjme_message(...) SJME_ONLY_IN_DEBUG( \
-	sjme_messageR(SJME_DEBUG_FILE_LINE_FUNC, __VA_ARGS__))
+	sjme_messageR(SJME_DEBUG_FILE_LINE_FUNC, SJME_JNI_FALSE, __VA_ARGS__))
 
 /**
  * Indicates a fatal error and exits the program.

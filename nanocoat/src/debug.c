@@ -20,7 +20,7 @@
 
 sjme_danglingMessageFunc sjme_danglingMessage = NULL;
 
-static const char* sjme_shortenFile(const char* file)
+const char* sjme_shortenFile(const char* file)
 {
 	sjme_jint i, n;
 	
@@ -41,7 +41,7 @@ static const char* sjme_shortenFile(const char* file)
 	return file;
 }
 
-static void sjme_genericMessage(const char* file, int line,
+void sjme_genericMessage(const char* file, int line,
 	const char* func, const char* prefix, const char* format, va_list args)
 {
 	va_list copy;
@@ -65,17 +65,18 @@ static void sjme_genericMessage(const char* file, int line,
 	
 	/* Print output message. */
 	memset(fullBuf, 0, sizeof(fullBuf));
-	if (file != NULL || line > 0 || func != NULL) 
+	if (file != NULL || line > 0 || func != NULL)
 		snprintf(fullBuf, DEBUG_BUF - 1,
-			"%s (%s:%d in %s()): %s\n",
+			"%s (%s:%d in %s()): %s",
 			prefix, sjme_shortenFile(file), line, func, buf);
 	else
 		snprintf(fullBuf, DEBUG_BUF - 1,
-			"%s %s\n",
+			"%s %s",
 			prefix, buf);
 		
 	/* First try to print to the frontend callback, if any. */
-	if (sjme_danglingMessage == NULL || !sjme_danglingMessage(fullBuf, buf))
+	if (sjme_danglingMessage == NULL ||
+		!sjme_danglingMessage(fullBuf, buf))
 		fprintf(stderr, "%s\n", fullBuf);
 	
 	/* Make sure it gets written. */
@@ -84,23 +85,26 @@ static void sjme_genericMessage(const char* file, int line,
 
 #if defined(SJME_CONFIG_DEBUG)
 void sjme_messageR(const char* file, int line,
-	const char* func, const char* message, ...)
+	const char* func, sjme_jboolean isBlank, const char* message, ...)
 {
 	va_list list;
 	
 	va_start(list, message);
 	
-	sjme_genericMessage(file, line, func, "DB", message,
+	sjme_genericMessage(file, line, func,
+		(isBlank ? "" : "DB"), message,
 		list);
 		
 	va_end(list);
 }
 
 void sjme_messageV(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_jboolean isBlank,
 	sjme_attrInNullable sjme_attrFormatArg const char* message,
 	va_list args)
 {
-	sjme_genericMessage(file, line, func, "DB", message,
+	sjme_genericMessage(file, line, func,
+		(isBlank ? "" : "DB"), message,
 		args);
 }
 #endif

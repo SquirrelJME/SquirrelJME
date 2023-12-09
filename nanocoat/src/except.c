@@ -8,6 +8,39 @@
 // -------------------------------------------------------------------------*/
 
 #include "sjme/except.h"
+#include "sjme/debug.h"
+
+void sjme_genericMessage(const char* file, int line,
+	const char* func, const char* prefix, const char* format, va_list args);
+
+const char* sjme_shortenFile(const char* file);
+
+sjme_errorCode sjme_except_printStackTraceR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	volatile sjme_exceptTrace* exceptTrace)
+{
+	/* Add notice, similar to Java. */
+	sjme_messageR(file, line, func, SJME_JNI_TRUE,
+		"Exception occurred:");
+
+	/* Go down the stack. */
+	while (exceptTrace != NULL)
+	{
+		/* Print indicators. */
+		sjme_messageR(NULL, -1, NULL, SJME_JNI_TRUE,
+			" |- C %s()",
+			exceptTrace->func);
+		sjme_messageR(NULL, -1, NULL, SJME_JNI_TRUE,
+			" | %s:%d",
+			sjme_shortenFile(exceptTrace->file),
+			exceptTrace->line);
+
+		/* Go up one. */
+		exceptTrace = exceptTrace->parent;
+	}
+
+	/* Always works. */
+	return SJME_ERROR_NONE;
+}
 
 sjme_errorCode sjme_except_gracefulDeathR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_attrInNotNull sjme_nvm_frame* frame,
@@ -20,7 +53,7 @@ sjme_errorCode sjme_except_gracefulDeathR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 
 	/* Emit debug message. */
 	va_start(args, message);
-	sjme_messageV(file, line, func, message, args);
+	sjme_messageV(file, line, func, SJME_JNI_FALSE, message, args);
 	va_end(args);
 	
 	/* If debugging and not release version, mark to-do to fix issue. */

@@ -31,24 +31,74 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
+struct sjme_exceptTrace
+{
+	/** Pointer to what is above the trace */
+	volatile sjme_exceptTrace* parent;
+
+	/** The storage for registers using C's @c setjmp and @c longjmp . */
+	jmp_buf jumpBuf;
+
+	/** The error code used. */
+	sjme_errorCode error;
+
+	/** The file. */
+	const char* file;
+
+	/** The line. */
+	sjme_jint line;
+
+	/** The function. */
+	const char* func;
+};
+
 /** Declare error variable for the error state. */
 #define SJME_EXCEPT_VDEF \
-	volatile sjme_errorCode errorCode
+	volatile sjme_exceptTrace exceptTrace_sjme; \
+	volatile sjme_exceptTrace* volatile* exceptTraceVl_sjme
 
-/** Block to declare exception handling start. */
-#define SJME_EXCEPT_WITH \
-    errorCode = SJME_ERROR_NONE; \
-    if ((errorCode = setjmp(frame->exceptionPoint)) != 0) \
+/**
+ * Block to declare exception handling start.
+ *
+ * @param x What to act on as a pivot for exception storage.
+ * @since 2023/12/08
+ */
+#define SJME_EXCEPT_WITH(x) \
+    do { \
+		memset((void*)&exceptTrace_sjme, 0, sizeof(exceptTrace_sjme)); \
+		exceptTrace_sjme.error = SJME_ERROR_NONE; \
+		exceptTrace_sjme.file = __FILE__; \
+		exceptTrace_sjme.line = __LINE__; \
+		exceptTrace_sjme.func = __func__; \
+		exceptTrace_sjme.parent = (x); \
+		(x) = &exceptTrace_sjme; \
+		exceptTraceVl_sjme = &(x); \
+    } while(SJME_JNI_FALSE); \
+    if ((exceptTrace_sjme.error = \
+		setjmp((*((jmp_buf*)(&exceptTrace_sjme.jumpBuf)))) != 0)) \
 	{goto sjme_except_fail; goto sjme_except_with;} \
 	sjme_except_with
 
 /** Block to declare failing code, for cleanup and return. */
 #define SJME_EXCEPT_FAIL \
-	sjme_except_fail
+	do { \
+		sjme_except_fail: \
+		sjme_except_printStackTraceR(SJME_DEBUG_FILE_LINE_FUNC, \
+			*exceptTraceVl_sjme); \
+        (*exceptTraceVl_sjme) = (*exceptTraceVl_sjme)->parent; \
+        exceptTraceVl_sjme = NULL; \
+		goto sjme_except_failVl;} \
+    while(SJME_JNI_FALSE); \
+	sjme_except_failVl
 
 /** Fail and jump into exception handler. */
 #define SJME_EXCEPT_TOSS(errorCodeId) \
-	do {longjmp(frame->exceptionPoint, (sjme_errorCode)(errorCodeId)); \
+	do { \
+		exceptTrace_sjme.file = __FILE__; \
+        exceptTrace_sjme.line = __LINE__; \
+        exceptTrace_sjme.func = __func__; \
+		longjmp((*((jmp_buf*)(&exceptTrace_sjme.jumpBuf))), \
+			(sjme_errorCode)(errorCodeId)); \
 		goto sjme_except_fail;} \
 	while(SJME_JNI_FALSE)
 
@@ -79,7 +129,10 @@ sjme_errorCode sjme_except_gracefulDeathR(
  */
 #define sjme_except_gracefulDeath(...) \
 	sjme_except_gracefulDeathR(SJME_DEBUG_FILE_LINE_FUNC, \
-		(frame), (errorCode), __VA_ARGS__)
+		NULL, exceptTrace_sjme.error, __VA_ARGS__)
+
+sjme_errorCode sjme_except_printStackTraceR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	volatile sjme_exceptTrace* exceptTrace);
 
 /*--------------------------------------------------------------------------*/
 
