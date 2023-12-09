@@ -21,7 +21,7 @@ sjme_errorCode sjme_except_printStackTraceR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	volatile sjme_exceptTrace* seeker;
 
 	/* Add notice, similar to Java. */
-	sjme_messageR(file, line, func, SJME_JNI_TRUE,
+	sjme_messageR(NULL, -1, NULL, SJME_JNI_TRUE,
 		"Exception occurred: Error %d",
 		errorCode);
 

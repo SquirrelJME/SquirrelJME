@@ -47,6 +47,9 @@ struct sjme_exceptTrace
 
 	/** The function. */
 	const char* volatile func;
+
+	/** Bring in error code from previous stack. */
+	volatile sjme_errorCode prevError;
 };
 
 /** Declare error variable for the error state. */
@@ -85,9 +88,14 @@ struct sjme_exceptTrace
 /** Block to declare that exception handling is done and no more. */
 #define SJME_EXCEPT_DONE(x) \
 	do { \
-    	; \
+    	if (exceptTrace_sjme.parent != NULL) \
+			exceptTrace_sjme.prevError = exceptTraceE_sjme; \
 	} while(SJME_JNI_FALSE); \
     return x
+
+/** Done, return error code. */
+#define SJME_EXCEPT_DONE_RETURN_ERROR() \
+	SJME_EXCEPT_DONE(exceptTraceE_sjme)
 
 /** Block to declare failing code, for cleanup and return. */
 #define SJME_EXCEPT_FAIL \
@@ -95,6 +103,8 @@ struct sjme_exceptTrace
 	do { \
 		sjme_except_printStackTraceR(SJME_DEBUG_FILE_LINE_FUNC, \
 			exceptTraceE_sjme, *exceptTraceVl_sjme); \
+        if (((*exceptTraceVl_sjme)->parent) != NULL) \
+        	((*exceptTraceVl_sjme)->parent)->prevError = exceptTraceE_sjme; \
         (*exceptTraceVl_sjme) = (*exceptTraceVl_sjme)->parent; \
         exceptTraceVl_sjme = NULL; \
 		goto sjme_except_failVl;} \
@@ -112,6 +122,10 @@ struct sjme_exceptTrace
 			(sjme_errorCode)(errorCodeId)); \
 		goto sjme_except_fail;} \
 	while(SJME_JNI_FALSE)
+
+/** Toss the same error code as before. */
+#define SJME_EXCEPT_TOSS_SAME() \
+	SJME_EXCEPT_TOSS(exceptTrace_sjme.prevError)
 
 /**
  * Fatal virtual machine error, but graceful death.

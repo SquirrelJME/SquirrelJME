@@ -47,6 +47,7 @@ void sjme_genericMessage(const char* file, int line,
 	va_list copy;
 	char buf[DEBUG_BUF];
 	char fullBuf[DEBUG_BUF];
+	int hasPrefix;
 	
 	/* Need to copy because this works differently on other arches. */
 	va_copy(copy, args);
@@ -64,15 +65,17 @@ void sjme_genericMessage(const char* file, int line,
 	va_end(copy);
 	
 	/* Print output message. */
+	hasPrefix = (prefix != NULL && strlen(prefix) > 0);
 	memset(fullBuf, 0, sizeof(fullBuf));
 	if (file != NULL || line > 0 || func != NULL)
 		snprintf(fullBuf, DEBUG_BUF - 1,
-			"%s (%s:%d in %s()): %s",
-			prefix, sjme_shortenFile(file), line, func, buf);
+			"%s%s(%s:%d in %s()): %s",
+			prefix, (hasPrefix ? " " : ""),
+			sjme_shortenFile(file), line, func, buf);
 	else
 		snprintf(fullBuf, DEBUG_BUF - 1,
-			"%s %s",
-			prefix, buf);
+			"%s%s%s",
+			prefix, (hasPrefix ? " " : ""), buf);
 		
 	/* First try to print to the frontend callback, if any. */
 	if (sjme_danglingMessage == NULL ||
