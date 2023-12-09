@@ -34,7 +34,7 @@ extern "C" {
  * Boots the virtual machine.
  *
  * @param mainPool The main pool to be allocated within.
- * @param config The configuration to use.
+ * @param param The configuration to use.
  * @param outState The output state of the virtual machine.
  * @param argc The number of arguments passed to the executable.
  * @param argv The command line arguments passed to the executable.
@@ -43,7 +43,7 @@ extern "C" {
  */
 sjme_errorCode sjme_nvm_boot(
 	sjme_attrInNotNull sjme_alloc_pool* mainPool,
-	sjme_attrInNotNull const sjme_nvm_bootConfig* config,
+	sjme_attrInNotNull const sjme_nvm_bootParam* param,
 	sjme_attrOutNotNull sjme_nvm_state** outState,
 	sjme_attrInValue int argc,
 	sjme_attrInNullable char** argv) sjme_attrCheckReturn;

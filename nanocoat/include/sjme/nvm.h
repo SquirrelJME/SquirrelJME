@@ -1005,15 +1005,15 @@ typedef struct sjme_static_rom
 typedef struct sjme_static_payload sjme_static_payload;
 
 /**
- * Boot configuration for NanoCoat.
+ * Boot parameters for NanoCoat.
  * 
  * @since 2023/07/27
  */
-typedef struct sjme_nvm_bootConfig
+typedef struct sjme_nvm_bootParam
 {
 	/** The payload to use for booting the virtual machine. */
 	const sjme_static_payload* payload;
-} sjme_nvm_bootConfig;
+} sjme_nvm_bootParam;
 
 /**
  * Hook for garbage collection detection and/or cancel capability.
@@ -1023,7 +1023,7 @@ typedef struct sjme_nvm_bootConfig
  * @return Returns @c SJME_JNI_TRUE if garbage collection should continue.
  * @since 2023/11/17
  */
-typedef sjme_jboolean (*sjme_nvm_StateHookGc)(sjme_nvm_frame* frame,
+typedef sjme_jboolean (*sjme_nvm_stateHookGcFunc)(sjme_nvm_frame* frame,
 	sjme_jobject gcWhat);
 
 /**
@@ -1034,7 +1034,7 @@ typedef sjme_jboolean (*sjme_nvm_StateHookGc)(sjme_nvm_frame* frame,
 typedef struct sjme_nvm_stateHooks
 {
 	/** Garbage collection. */
-	sjme_nvm_StateHookGc gc;
+	sjme_nvm_stateHookGcFunc gc;
 } sjme_nvm_stateHooks;
 
 /**
@@ -1061,7 +1061,7 @@ struct sjme_nvm_state
 	sjme_alloc_pool* reservedPool;
 	
 	/** The copy of the boot config. */
-	sjme_nvm_bootConfig bootConfig;
+	sjme_nvm_bootParam bootConfig;
 	
 	/** Combined library set. */
 	sjme_static_libraries* libraries;

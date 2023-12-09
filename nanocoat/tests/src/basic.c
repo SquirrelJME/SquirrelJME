@@ -75,7 +75,7 @@ int main(int argc, char** argv)
 		sjme_message("Test resulted in %d.", (sjme_jint)result);
 	}
 	
-	/* Short circuited to fail the test? */
+	/* Short-circuited to fail the test? */
 	else
 	{
 		result = jumpId;

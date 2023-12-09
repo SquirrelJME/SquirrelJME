@@ -24,7 +24,7 @@
  * @since 2023/07/28
  */
 static sjme_attrCheckReturn sjme_errorCode sjme_nvm_bootCombineRom(
-	sjme_attrInNotNull const sjme_nvm_bootConfig* config,
+	sjme_attrInNotNull const sjme_nvm_bootParam* config,
 	sjme_attrOutNotNull sjme_static_libraries** outLibraries)
 {
 	if (config == NULL || outLibraries == NULL)
@@ -48,7 +48,7 @@ static sjme_attrCheckReturn sjme_errorCode sjme_nvm_bootCombineRom(
 }
 
 sjme_errorCode sjme_nvm_boot(sjme_alloc_pool* mainPool,
-	const sjme_nvm_bootConfig* config,
+	const sjme_nvm_bootParam* param,
 	sjme_nvm_state** outState, int argc, char** argv)
 {
 	sjme_nvm_state* result;
@@ -57,7 +57,7 @@ sjme_errorCode sjme_nvm_boot(sjme_alloc_pool* mainPool,
 	sjme_jint reservedSize;
 	sjme_errorCode error;
 	
-	if (config == NULL || outState == NULL)
+	if (param == NULL || outState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Set up a reserved pool where all the data structures for the VM go... */
@@ -86,10 +86,10 @@ sjme_errorCode sjme_nvm_boot(sjme_alloc_pool* mainPool,
 	result->reservedPool = reservedPool;
 	
 	/* Copy the boot config over. */
-	memmove(&result->bootConfig, config, sizeof(*config));
+	memmove(&result->bootConfig, param, sizeof(*param));
 	
 	/* Combine the input ROMs to a set of libraries. */
-	if (!sjme_nvm_bootCombineRom(config, &result->libraries))
+	if (!sjme_nvm_bootCombineRom(param, &result->libraries))
 	{
 		sjme_nvm_destroy(result, NULL);
 		return SJME_JNI_FALSE;

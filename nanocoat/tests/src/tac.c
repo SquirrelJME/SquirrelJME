@@ -17,7 +17,7 @@
 
 int main(int argc, char** argv)
 {
-	sjme_nvm_bootConfig bootConfig;
+	sjme_nvm_bootParam bootConfig;
 	sjme_nvm_state* state;
 	sjme_jint exitCode;
 	
