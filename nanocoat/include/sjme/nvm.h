@@ -1075,14 +1075,14 @@ struct sjme_nvm_state
 
 /**
  * Method initialization start.
- * 
+ *
  * @since 2023/07/25
  */
 #define SJME_NANOCOAT_START_CALL ((sjme_pcAddr)-1)
 
 /**
  * Method closing end.
- * 
+ *
  * @since 2023/07/25
  */
 #define SJME_NANOCOAT_END_CALL ((sjme_pcAddr)-2)
