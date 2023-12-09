@@ -101,7 +101,7 @@ SJME_EXCEPT_WITH_FRAME:
 	tread->count--;
 	
 	/* Done. */
-	return SJME_ERROR_NONE;
+	SJME_EXCEPT_DONE(SJME_ERROR_NONE);
 	
 SJME_EXCEPT_FAIL:
 	return sjme_except_gracefulDeath(

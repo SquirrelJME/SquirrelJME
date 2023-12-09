@@ -75,7 +75,7 @@ struct sjme_exceptTrace
 			setjmp((*((jmp_buf*)(&exceptTrace_sjme.jumpBuf)))); \
     } while(SJME_JNI_FALSE); \
     if (exceptTraceE_sjme != 0) \
-	{goto sjme_except_fail; goto sjme_except_with; goto sjme_except_done;} \
+	{goto sjme_except_fail; goto sjme_except_with;} \
 	sjme_except_with
 
 /** Exception handling with a Java frame. */
@@ -83,10 +83,11 @@ struct sjme_exceptTrace
 	SJME_EXCEPT_WITH(frame->inThread->except)
 
 /** Block to declare that exception handling is done and no more. */
-#define SJME_EXCEPT_DONE \
+#define SJME_EXCEPT_DONE(x) \
 	do { \
+    	; \
 	} while(SJME_JNI_FALSE); \
-	sjme_except_done
+    return x
 
 /** Block to declare failing code, for cleanup and return. */
 #define SJME_EXCEPT_FAIL \
