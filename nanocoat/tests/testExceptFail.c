@@ -38,7 +38,8 @@ SJME_EXCEPT_WITH(trace):
 SJME_EXCEPT_FAIL:
 	sjme_unitEqualI(test, exceptTraceE_sjme, SJME_ERROR_TOP_NOT_LONG,
 		"Error code was not set?");
-	
+
+SJME_EXCEPT_DONE:
 	/* Success otherwise. */
 	return SJME_TEST_RESULT_PASS;
 }
