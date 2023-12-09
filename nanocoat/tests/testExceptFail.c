@@ -28,6 +28,7 @@ SJME_TEST_DECLARE(testExceptFail)
 	trace = NULL;
 
 	/* Fail. */
+	exceptTraceE_sjme = 666;
 SJME_EXCEPT_WITH(trace):
 	SJME_EXCEPT_TOSS(SJME_ERROR_TOP_NOT_LONG);
 
@@ -35,7 +36,7 @@ SJME_EXCEPT_WITH(trace):
 	sjme_unitFail(test, "Should not be reached here?");
 	
 SJME_EXCEPT_FAIL:
-	sjme_unitEqualI(test, exceptTrace_sjme.error, SJME_ERROR_TOP_NOT_LONG,
+	sjme_unitEqualI(test, exceptTraceE_sjme, SJME_ERROR_TOP_NOT_LONG,
 		"Error code was not set?");
 	
 	/* Success otherwise. */

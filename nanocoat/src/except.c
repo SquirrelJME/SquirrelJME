@@ -16,13 +16,14 @@ void sjme_genericMessage(const char* file, int line,
 const char* sjme_shortenFile(const char* file);
 
 sjme_errorCode sjme_except_printStackTraceR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
-	volatile sjme_exceptTrace* exceptTrace)
+	sjme_errorCode errorCode, volatile sjme_exceptTrace* exceptTrace)
 {
 	volatile sjme_exceptTrace* seeker;
 
 	/* Add notice, similar to Java. */
 	sjme_messageR(file, line, func, SJME_JNI_TRUE,
-		"Exception occurred:");
+		"Exception occurred: Error %d",
+		errorCode);
 
 	/* Go down the stack. */
 	seeker = exceptTrace;
