@@ -48,7 +48,7 @@ struct
 	{NULL, SJME_ELEVATOR_DO_TYPE_UNKNOWN}
 };
 
-sjme_errorCode sjme_elevatorAct(
+sjme_jboolean sjme_elevatorAct(
 	sjme_attrInNotNull sjme_elevatorState* inState,
 	sjme_attrInNotNull const sjme_elevatorSet* inSet,
 	sjme_attrInValue sjme_jint special)
@@ -131,7 +131,7 @@ void* sjme_elevatorAlloc(
 	return rv;
 }
 
-sjme_errorCode sjme_elevatorDoInit(
+sjme_jboolean sjme_elevatorDoInit(
 	sjme_attrInNotNull sjme_elevatorState* inState,
 	sjme_attrInNotNull sjme_elevatorRunData* inData)
 {
@@ -156,7 +156,7 @@ sjme_errorCode sjme_elevatorDoInit(
 	return SJME_JNI_TRUE;
 }
 
-sjme_errorCode sjme_elevatorDoMakeFrame(
+sjme_jboolean sjme_elevatorDoMakeFrame(
 	sjme_attrInNotNull sjme_elevatorState* inState,
 	sjme_attrInNotNull sjme_elevatorRunData* inData)
 {
@@ -273,7 +273,7 @@ sjme_errorCode sjme_elevatorDoMakeFrame(
 	return SJME_JNI_TRUE;
 }
 
-sjme_errorCode sjme_elevatorDoMakeObject(
+sjme_jboolean sjme_elevatorDoMakeObject(
 	sjme_attrInNotNull sjme_elevatorState* inState,
 	sjme_attrInNotNull sjme_elevatorRunData* inData)
 {
@@ -297,7 +297,7 @@ sjme_errorCode sjme_elevatorDoMakeObject(
 	return SJME_JNI_TRUE;
 }
 
-sjme_errorCode sjme_elevatorDoMakeThread(
+sjme_jboolean sjme_elevatorDoMakeThread(
 	sjme_attrInNotNull sjme_elevatorState* inState,
 	sjme_attrInNotNull sjme_elevatorRunData* inData)
 {
