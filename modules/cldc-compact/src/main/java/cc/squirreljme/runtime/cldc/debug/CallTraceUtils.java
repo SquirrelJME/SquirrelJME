@@ -20,6 +20,13 @@ import java.io.IOException;
  * SquirrelJME uses compactified traces which are smaller and easier to read
  * accordingly.
  *
+ * Prints like the following:
+ * {@code
+ * EXCEPTION java.lang.NegativeArraySizeException: BK01 -1101486066
+ *   | IN java.lang.Throwable (Throwable.java)
+ *   |- .<init>:(Ljava/lang/String;)V @0h (:81 INVOKESTATIC@10)
+ * }
+ *
  * @since 2020/06/11
  */
 public final class CallTraceUtils

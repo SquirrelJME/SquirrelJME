@@ -22,7 +22,7 @@ sjme_errorCode sjme_except_printStackTraceR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 
 	/* Add notice, similar to Java. */
 	sjme_messageR(NULL, -1, NULL, SJME_JNI_TRUE,
-		"Exception occurred: Error %d",
+		"EXCEPTION native: Error %d",
 		errorCode);
 
 	/* Go down the stack. */
@@ -30,13 +30,22 @@ sjme_errorCode sjme_except_printStackTraceR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	while (seeker != NULL)
 	{
 		/* Print indicators. */
-		sjme_messageR(NULL, -1, NULL, SJME_JNI_TRUE,
-			" |- C %s()",
-			seeker->func);
-		sjme_messageR(NULL, -1, NULL, SJME_JNI_TRUE,
-			" | %s:%d",
-			sjme_shortenFile(seeker->file),
-			seeker->line);
+		if (seeker->file != NULL)
+			if (seeker->line >= 0)
+				sjme_messageR(NULL, -1, NULL, SJME_JNI_TRUE,
+					" | IN %s() (%s:%d)",
+					seeker->func,
+					sjme_shortenFile(seeker->file),
+					seeker->line);
+			else
+				sjme_messageR(NULL, -1, NULL, SJME_JNI_TRUE,
+					" | IN %s() (%s)",
+					seeker->func,
+					sjme_shortenFile(seeker->file));
+		else
+			sjme_messageR(NULL, -1, NULL, SJME_JNI_TRUE,
+				" | IN %s()",
+				seeker->func);
 
 		/* Go up one. */
 		seeker = seeker->parent;
