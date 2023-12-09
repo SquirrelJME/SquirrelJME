@@ -31,6 +31,7 @@ sjme_errorCode sjme_except_printStackTraceR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	{
 		/* Print indicators. */
 		if (seeker->file != NULL)
+		{
 			if (seeker->line >= 0)
 				sjme_messageR(NULL, -1, NULL, SJME_JNI_TRUE,
 					" | IN %s() (%s:%d)",
@@ -42,10 +43,19 @@ sjme_errorCode sjme_except_printStackTraceR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 					" | IN %s() (%s)",
 					seeker->func,
 					sjme_shortenFile(seeker->file));
+		}
 		else
-			sjme_messageR(NULL, -1, NULL, SJME_JNI_TRUE,
-				" | IN %s()",
-				seeker->func);
+		{
+			if (seeker->line >= 0)
+				sjme_messageR(NULL, -1, NULL, SJME_JNI_TRUE,
+					" | IN %s(:%d)",
+					seeker->func,
+					seeker->line);
+			else
+				sjme_messageR(NULL, -1, NULL, SJME_JNI_TRUE,
+					" | IN %s()",
+					seeker->func);
+		}
 
 		/* Go up one. */
 		seeker = seeker->parent;
