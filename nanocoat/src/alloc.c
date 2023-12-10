@@ -166,6 +166,10 @@ sjme_errorCode sjme_alloc(
 	/* Out of memory. */
 	if (scanLink == NULL)
 		return SJME_ERROR_OUT_OF_MEMORY;
+
+	/* Debug. */
+	sjme_message("Found link at %p which has %d bytes.",
+		scanLink, scanLink->blockSize);
 	
 	sjme_todo("Implement this?");
 	return SJME_ERROR_NOT_IMPLEMENTED;

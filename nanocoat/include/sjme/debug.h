@@ -41,7 +41,7 @@ extern "C" {
 	#define SJME_DEBUG_FILE_LINE_FUNC NULL, -1, NULL
 
 	/** Only emitted in debugging. */
-	#define SJME_ONLY_IN_DEBUG(expr)
+	#define SJME_ONLY_IN_DEBUG(expr) do {} while(0)
 #else
 	/** File, line, and function. */
 	#define SJME_DEBUG_FILE_LINE_FUNC __FILE__, __LINE__, __func__
