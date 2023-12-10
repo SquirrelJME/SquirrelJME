@@ -5,43 +5,34 @@
 # SquirrelJME is under the Mozilla Public License Version 2.0.
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
-# DESCRIPTION: SquirrelJME emulator interface (Java SE)
 
 # We need JNI for this to work
 squirreljme_include("jni.cmake")
 
-# Declare library
-add_library(libEmulator SHARED
+# Docker is used for testing
+squirreljme_include("docker.cmake")
+
+# Define library
+add_library(libJvm SHARED
 	$<TARGET_OBJECTS:CorePIC>
-	emu.c
-	jniHelper.c
-	nativeAlloc.c
-	nativeNvmFrame.c
-	nativeNvmState.c
-	nativeNvmThread.c)
+	revProto.c)
 
 # Always make this position independent
-set_property(TARGET libEmulator
+set_property(TARGET libJvm
 	PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 # The base SquirrelJME core needs to be built
-add_dependencies(libEmulator
+add_dependencies(libJvm
 	CorePIC)
 
 # We need to find all of the includes and such
-target_include_directories(libEmulator PUBLIC
+target_include_directories(libJvm PUBLIC
 	"${CMAKE_SOURCE_DIR}/include"
 	${JNI_INCLUDE_DIRS})
 
-# It is easier to find this when it is in the build root
-set_target_properties(libEmulator PROPERTIES
-	RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
-	LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
-	ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
-
-# Use a simpler name for the library
-set_target_properties(libEmulator PROPERTIES
+# Use a conforming name for the library
+set_target_properties(libJvm PROPERTIES
 	LIBRARY_OUTPUT_NAME
-	"emulator-nanocoat"
+	"jvm"
 	ARCHIVE_OUTPUT_NAME
-	"emulator-nanocoat")
+	"jvm")

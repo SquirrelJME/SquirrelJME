@@ -11,7 +11,11 @@ if(NOT EMSCRIPTEN AND NOT SQUIRRELJME_CROSS_BUILD)
 	squirreljme_include("jni.cmake")
 
 	if(JNI_FOUND)
+		# Emulator front end used by the Java base emulator
 		add_subdirectory(emulator)
+
+		# Native JVM library to use with OpenJDK?
+		add_subdirectory(libjvm)
 	endif()
 endif()
 
