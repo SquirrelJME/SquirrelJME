@@ -16,13 +16,13 @@
 #define NUM_LINKS 3
 
 /** The scenarios available. */
-typedef enum testScenario
+typedef enum testScenarioId
 {
 	/** Left to right. */
 	SCENARIO_LMR,
 
-	/** Right to left. */
-	SCENARIO_RML,
+	/** Left, Right, then middle. */
+	SCENARIO_LRM,
 
 	/** Middle, then left to right. */
 	SCENARIO_MLR,
@@ -30,9 +30,85 @@ typedef enum testScenario
 	/** Middle, then right to left. */
 	SCENARIO_MRL,
 
+	/** Right to left. */
+	SCENARIO_RML,
+
+	/** Right, left, then middle. */
+	SCENARIO_RLM,
+
 	/** The number of scenarios. */
 	NUM_SCENARIO
-} testScenario;
+} testScenarioId;
+
+/** The order of the links. */
+typedef struct testLinkOrderType
+{
+	/** The order used. */
+	sjme_jint order[NUM_LINKS];
+
+	/** How many there should be after being freed. */
+	struct
+	{
+		/** The number of used links. */
+		sjme_jint numUsed;
+
+		/** The number of free links. */
+		sjme_jint numFree;
+	} afterFree[NUM_LINKS];
+} testLinkOrderType;
+
+/** The actual order to use. */
+const testLinkOrderType testLinkOrder[NUM_SCENARIO] =
+{
+	{
+		{0, 1, 2},
+		{
+			{2, 1},
+			{1, 1},
+			{0, 1}
+		}
+	},
+	{
+		{0, 2, 1},
+		{
+			{2, 1},
+			{1, 2},
+			{0, 1}
+		}
+	},
+	{
+		{1, 0, 2},
+		{
+			{2, 1},
+			{1, 1},
+			{0, 1}
+		}
+	},
+	{
+		{1, 2, 0},
+		{
+			{2, 1},
+			{1, 1},
+			{0, 1}
+		}
+	},
+	{
+		{2, 1, 0},
+		{
+			{2, 1},
+			{1, 1},
+			{0, 1}
+		}
+	},
+	{
+		{2, 0, 1},
+		{
+			{2, 1},
+			{1, 2},
+			{0, 1}
+		}
+	}
+};
 
 /**
  * Tests merging of allocation blocks when freeing them accordingly.
@@ -45,9 +121,11 @@ SJME_TEST_DECLARE(testAllocFreeMerge)
 	sjme_jboolean isLast;
 	sjme_jint chunkLen, j, scenario;
 	uint8_t* block;
+	sjme_alloc_link* link;
 	sjme_alloc_pool* pool;
 	void* blocks[NUM_LINKS];
 	sjme_alloc_link* links[NUM_LINKS];
+	const testLinkOrderType* orderData;
 	
 	/* Allocate data on the stack so it gets cleared. */
 	chunkLen = 32768;
@@ -59,6 +137,9 @@ SJME_TEST_DECLARE(testAllocFreeMerge)
 	/* Use multiple scenarios regarding the order of blocks to free. */
 	for (scenario = 0; scenario < NUM_SCENARIO; scenario++)
 	{
+		/* Get the order data. */
+		orderData = &testLinkOrder[scenario];
+
 		/* Initialize the pool. */
 		pool = NULL;
 		if (SJME_IS_ERROR(sjme_alloc_poolInitStatic(&pool,
@@ -94,6 +175,21 @@ SJME_TEST_DECLARE(testAllocFreeMerge)
 				sjme_unitEqualI(test,
 					0, pool->space[SJME_ALLOC_POOL_SPACE_FREE].usable,
 					"All of the free space was not taken?");
+		}
+
+		/* Free the links in the specified order and test the result. */
+		for (j = 0; j < NUM_LINKS; j++)
+		{
+			/* Which link is this? */
+			block = blocks[orderData->order[j]];
+			link = links[orderData->order[j]];
+
+			/* Free the link. */
+			if (SJME_IS_ERROR(sjme_allocFree(block)))
+				return sjme_unitFail(test, "Could not free link.");
+
+			sjme_todo("Implement %s", __func__);
+			return SJME_TEST_RESULT_FAIL;
 		}
 
 		sjme_todo("Implement %s", __func__);
