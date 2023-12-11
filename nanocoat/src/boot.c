@@ -70,7 +70,7 @@ sjme_errorCode sjme_nvm_boot(sjme_alloc_pool* mainPool,
 
 	/* Initialize a reserved pool where all of our own data structures go. */
 	reservedPool = NULL;
-	if (SJME_IS_ERROR(error = sjme_alloc_poolStatic(
+	if (SJME_IS_ERROR(error = sjme_alloc_poolInitStatic(
 		&reservedPool, reservedBase, reservedSize)) ||
 		reservedPool == NULL)
 		return error;

@@ -36,7 +36,7 @@ SJME_TEST_DECLARE(testAllocNoFree)
 
 	/* Initialize the pool. */
 	pool = NULL;
-	if (SJME_IS_ERROR(sjme_alloc_poolStatic(&pool, chunk,
+	if (SJME_IS_ERROR(sjme_alloc_poolInitStatic(&pool, chunk,
 			chunkLen)) || pool == NULL)
 		return sjme_unitFail(test, "Could not initialize static pool?");
 

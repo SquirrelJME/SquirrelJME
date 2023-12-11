@@ -152,7 +152,7 @@ struct sjme_alloc_pool
  * @return Returns an error code.
  * @since 2023/11/18
  */
-sjme_errorCode sjme_alloc_poolMalloc(
+sjme_errorCode sjme_alloc_poolInitMalloc(
 	sjme_attrOutNotNull sjme_alloc_pool** outPool,
 	sjme_attrInPositive sjme_jint size);
 
@@ -165,10 +165,28 @@ sjme_errorCode sjme_alloc_poolMalloc(
  * @return Returns an error code.
  * @since 2023/11/18
  */
-sjme_errorCode sjme_alloc_poolStatic(
+sjme_errorCode sjme_alloc_poolInitStatic(
 	sjme_attrOutNotNull sjme_alloc_pool** outPool,
 	sjme_attrInNotNull void* baseAddr,
 	sjme_attrInPositive sjme_jint size);
+
+/**
+ * Returns the total space that is available within the pool, includes both
+ * free and used spaces.
+ *
+ * @param pool The pool to get the information of.
+ * @param outTotal The total space of the pool, will be @c outReserved plus
+ * the value of @c outUsable .
+ * @param outReserved The total reserved space within the pool.
+ * @param outUsable The total usable space within the pool.
+ * @return Any error or otherwise success.
+ * @since 2023/12/11
+ */
+sjme_errorCode sjme_alloc_poolSpaceTotalSize(
+	sjme_attrInNotNull const sjme_alloc_pool* pool,
+	sjme_attrOutNullable sjme_jint* outTotal,
+	sjme_attrOutNullable sjme_jint* outReserved,
+	sjme_attrOutNullable sjme_jint* outUsable);
 
 /**
  * Allocates memory within the given pool.

@@ -25,7 +25,7 @@
 /** The minimum size for splits. */
 #define SJME_ALLOC_SPLIT_MIN_SIZE 64
 
-sjme_errorCode sjme_alloc_poolMalloc(
+sjme_errorCode sjme_alloc_poolInitMalloc(
 	sjme_attrOutNotNull sjme_alloc_pool** outPool,
 	sjme_attrInPositive sjme_jint size)
 {
@@ -44,10 +44,10 @@ sjme_errorCode sjme_alloc_poolMalloc(
 		return SJME_ERROR_OUT_OF_MEMORY;
 	
 	/* Use static pool initializer to set up structures. */
-	return sjme_alloc_poolStatic(outPool, result, useSize);
+	return sjme_alloc_poolInitStatic(outPool, result, useSize);
 }
 
-sjme_errorCode sjme_alloc_poolStatic(
+sjme_errorCode sjme_alloc_poolInitStatic(
 	sjme_attrOutNotNull sjme_alloc_pool** outPool,
 	sjme_attrInNotNull void* baseAddr,
 	sjme_attrInPositive sjme_jint size)
@@ -118,6 +118,46 @@ sjme_errorCode sjme_alloc_poolStatic(
 	
 	/* Use the pool. */
 	*outPool = result;
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_alloc_poolSpaceTotalSize(
+	sjme_attrInNotNull const sjme_alloc_pool* pool,
+	sjme_attrOutNullable sjme_jint* outTotal,
+	sjme_attrOutNullable sjme_jint* outReserved,
+	sjme_attrOutNullable sjme_jint* outUsable)
+{
+	sjme_jint total, i;
+	sjme_jint reserved;
+	sjme_jint usable;
+
+	if (pool == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (outTotal == NULL && outReserved == NULL && outUsable == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Run through and tally values for each space. */
+	reserved = 0;
+	usable = 0;
+	for (i = 0; i < SJME_NUM_ALLOC_POOL_SPACE; i++)
+	{
+		reserved += pool->space[i].reserved;
+		usable += pool->space[i].usable;
+	}
+
+	/* Total space is both. */
+	total = reserved + usable;
+
+	/* Store output values. */
+	if (outTotal != NULL)
+		*outTotal = total;
+	if (outReserved != NULL)
+		*outReserved = reserved;
+	if (outUsable != NULL)
+		*outUsable = usable;
+
+	/* Success! */
 	return SJME_ERROR_NONE;
 }
 

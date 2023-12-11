@@ -28,8 +28,8 @@ SJME_TEST_DECLARE(testAllocSplit)
 	sjme_alloc_link* initLink;
 	sjme_alloc_link* link;
 	sjme_alloc_link* next;
-	sjme_alloc_link* prev;
-	sjme_jint oldInitLinkBlockSize, oldInitTotal, i, newTotal;
+	sjme_jint oldInitLinkBlockSize, initTotal, newTotal;
+	sjme_jint initReserved, newReserved;
 
 	/* Allocate data on the stack so it gets cleared. */
 	chunkLen = 32768;
@@ -40,7 +40,7 @@ SJME_TEST_DECLARE(testAllocSplit)
 
 	/* Initialize the pool. */
 	pool = NULL;
-	if (SJME_IS_ERROR(sjme_alloc_poolStatic(&pool, chunk,
+	if (SJME_IS_ERROR(sjme_alloc_poolInitStatic(&pool, chunk,
 			chunkLen)) || pool == NULL)
 		return sjme_unitFail(test, "Could not initialize static pool?");
 
@@ -70,12 +70,12 @@ SJME_TEST_DECLARE(testAllocSplit)
 	oldInitLinkBlockSize = initLink->blockSize;
 
 	/* Determine the old initial total space. */
-	oldInitTotal = 0;
-	for (i = 0; i < SJME_NUM_ALLOC_POOL_SPACE; i++)
-	{
-		oldInitTotal += pool->space[i].usable;
-		oldInitTotal += pool->space[i].reserved;
-	}
+	initTotal = 0;
+	initReserved = 0;
+	sjme_alloc_poolSpaceTotalSize(pool,
+		&initTotal, &initReserved, NULL);
+	sjme_unitNotEqualI(test, initTotal, 0,
+		"Pool indicates that it has zero space usage?");
 
 	/* Allocate some memory in the pool. */
 	block = NULL;
@@ -116,14 +116,16 @@ SJME_TEST_DECLARE(testAllocSplit)
 
 	/* Determine the new total space. */
 	newTotal = 0;
-	for (i = 0; i < SJME_NUM_ALLOC_POOL_SPACE; i++)
-	{
-		newTotal += pool->space[i].usable;
-		newTotal += pool->space[i].reserved;
-	}
+	newReserved = 0;
+	sjme_alloc_poolSpaceTotalSize(pool,
+		&newTotal, &newReserved, NULL);
+
+	/* Since a new link was created, the reserved size should differ. */
+	sjme_unitNotEqualI(test, initReserved, newReserved,
+		"Reserved space did not change at all?");
 
 	/* These total sizes should add up the same. */
-	sjme_unitEqualI(test, oldInitTotal, newTotal,
+	sjme_unitEqualI(test, initTotal, newTotal,
 		"Total sizes are different?");
 
 	/* Success! */

@@ -24,6 +24,8 @@ SJME_TEST_DECLARE(testAllocRealloc)
 	void* chunk;
 	sjme_jint chunkLen;
 	sjme_alloc_pool* pool;
+	void* block;
+	sjme_alloc_link* link;
 	
 	/* Allocate data on the stack so it gets cleared. */
 	chunkLen = 32768;
@@ -34,7 +36,7 @@ SJME_TEST_DECLARE(testAllocRealloc)
 	
 	/* Initialize the pool. */
 	pool = NULL;
-	if (SJME_IS_ERROR(sjme_alloc_poolStatic(&pool,
+	if (SJME_IS_ERROR(sjme_alloc_poolInitStatic(&pool,
 		chunk, chunkLen)) || pool == NULL)
 		return sjme_unitFail(test, "Could not initialize static pool?");
 

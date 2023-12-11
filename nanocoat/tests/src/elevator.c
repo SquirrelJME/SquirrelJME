@@ -66,7 +66,7 @@ sjme_jboolean sjme_elevatorAct(
 		return sjme_die("Invalid configuration.");
 		
 	/* Allocate main memory pool. */
-	if (SJME_IS_ERROR(sjme_alloc_poolMalloc(&inState->allocPool,
+	if (SJME_IS_ERROR(sjme_alloc_poolInitMalloc(&inState->allocPool,
 		1024 * 1024)))
 		return sjme_die("Could not allocate main memory pool.");
 	
