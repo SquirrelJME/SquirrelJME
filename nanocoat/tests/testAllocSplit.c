@@ -77,6 +77,10 @@ SJME_TEST_DECLARE(testAllocSplit)
 	sjme_unitNotEqualI(test, initTotal, 0,
 		"Pool indicates that it has zero space usage?");
 
+	/* Debug. */
+	sjme_message("Initial size is: %d (reserved %d)",
+		(int)initTotal, (int)initReserved);
+
 	/* Allocate some memory in the pool. */
 	block = NULL;
 	if (SJME_IS_ERROR(sjme_alloc(pool, TEST_BLOCK_SIZE,
@@ -119,6 +123,10 @@ SJME_TEST_DECLARE(testAllocSplit)
 	newReserved = 0;
 	sjme_alloc_poolSpaceTotalSize(pool,
 		&newTotal, &newReserved, NULL);
+
+	/* Debug. */
+	sjme_message("New size is: %d (reserved %d)",
+		(int)newTotal, (int)newReserved);
 
 	/* Since a new link was created, the reserved size should differ. */
 	sjme_unitNotEqualI(test, initReserved, newReserved,

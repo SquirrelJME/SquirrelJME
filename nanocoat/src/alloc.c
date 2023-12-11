@@ -52,7 +52,7 @@ sjme_errorCode sjme_alloc_poolInitStatic(
 	sjme_attrInNotNull void* baseAddr,
 	sjme_attrInPositive sjme_jint size)
 {
-	sjme_alloc_pool* result;
+	sjme_alloc_pool* pool;
 	sjme_alloc_link* frontLink;
 	sjme_alloc_link* midLink;
 	sjme_alloc_link* backLink;
@@ -67,16 +67,16 @@ sjme_errorCode sjme_alloc_poolInitStatic(
 	memset(baseAddr, 0, size);
 	
 	/* Setup initial pool structure. */
-	result = baseAddr;
-	result->size = size & (~7);
+	pool = baseAddr;
+	pool->size = (size & (~7)) - SJME_SIZEOF_ALLOC_POOL(0);
 	
 	/* Setup front link. */
-	frontLink = (void*)&result->block[0];
-	result->frontLink = frontLink;
+	frontLink = (void*)&pool->block[0];
+	pool->frontLink = frontLink;
 	
 	/* Setup back link. */
-	backLink = (void*)&result->block[result->size - SJME_SIZEOF_ALLOC_LINK(0)];
-	result->backLink = backLink;
+	backLink = (void*)&pool->block[pool->size - SJME_SIZEOF_ALLOC_LINK(0)];
+	pool->backLink = backLink;
 	
 	/* Setup middle link, which is between the two. */
 	midLink = (void*)&frontLink->block[0];
@@ -94,15 +94,15 @@ sjme_errorCode sjme_alloc_poolInitStatic(
 	backLink->space = SJME_NUM_ALLOC_POOL_SPACE;
 	
 	/* Determine size that can and cannot be used. */
-	result->space[SJME_ALLOC_POOL_SPACE_FREE].reserved =
-		(SJME_SIZEOF_ALLOC_LINK(0) * 3);
-	result->space[SJME_ALLOC_POOL_SPACE_FREE].usable = midLink->blockSize;
+	pool->space[SJME_ALLOC_POOL_SPACE_FREE].reserved =
+		SJME_SIZEOF_ALLOC_LINK(0);
+	pool->space[SJME_ALLOC_POOL_SPACE_FREE].usable = midLink->blockSize;
 	
 	/* Link in the first and last actual blocks for the free chain. */
-	result->freeFirstLink = frontLink;
+	pool->freeFirstLink = frontLink;
 	frontLink->freeNext = midLink;
 	midLink->freePrev = frontLink;
-	result->freeLastLink = backLink;
+	pool->freeLastLink = backLink;
 	backLink->freePrev = midLink;
 	midLink->freeNext = backLink;
 	
@@ -117,7 +117,7 @@ sjme_errorCode sjme_alloc_poolInitStatic(
 #endif
 	
 	/* Use the pool. */
-	*outPool = result;
+	*outPool = pool;
 	return SJME_ERROR_NONE;
 }
 
@@ -219,6 +219,12 @@ sjme_errorCode sjme_alloc(
 		/* Make it so this block can actually fit in here. */
 		rightLink = (sjme_alloc_link*)&scanLink->block[roundSize];
 
+		/* Initialize block to remove any old data. */
+		memset(rightLink, 0, sizeof(*rightLink));
+
+		/* Make sure this block is marked as free. */
+		rightLink->space = SJME_ALLOC_POOL_SPACE_FREE;
+
 		/* Set size of the right link. */
 		rightLink->blockSize =
 			(sjme_jint)((intptr_t)&scanLink->block[scanLink->blockSize] -
@@ -239,6 +245,12 @@ sjme_errorCode sjme_alloc(
 		/* Set size of the left block. */
 		scanLink->blockSize =
 			(sjme_jint)((intptr_t)rightLink - (intptr_t)&scanLink->block[0]);
+
+		/* Adjust reserved and usable space. */
+		pool->space[SJME_ALLOC_POOL_SPACE_FREE].reserved +=
+			SJME_SIZEOF_ALLOC_LINK(0);
+		pool->space[SJME_ALLOC_POOL_SPACE_FREE].usable -=
+			SJME_SIZEOF_ALLOC_LINK(0);
 	}
 
 	/* Setup block information. */
