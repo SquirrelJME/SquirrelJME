@@ -127,6 +127,7 @@ sjme_errorCode sjme_alloc(
 	sjme_attrOutNotNull void** outAddr)
 {
 	sjme_alloc_link* scanLink;
+	sjme_alloc_link* rightLink;
 	sjme_jint splitMinSize, roundSize;
 	sjme_jboolean splitBlock;
 	
@@ -137,7 +138,8 @@ sjme_errorCode sjme_alloc(
 	/* link to be created following this. */
 	roundSize = (((size & 7) != 0) ? ((size | 7) + 1) : size);
 	splitMinSize = roundSize +
-		(sjme_jint)SJME_SIZEOF_ALLOC_LINK(SJME_ALLOC_SPLIT_MIN_SIZE);
+		(sjme_jint)SJME_SIZEOF_ALLOC_LINK(SJME_ALLOC_SPLIT_MIN_SIZE) +
+		(sjme_jint)SJME_SIZEOF_ALLOC_LINK(0);
 	if (size > splitMinSize || splitMinSize < 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
@@ -168,11 +170,64 @@ sjme_errorCode sjme_alloc(
 		return SJME_ERROR_OUT_OF_MEMORY;
 
 	/* Debug. */
-	sjme_message("Found link at %p which has %d bytes.",
-		scanLink, scanLink->blockSize);
-	
-	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	sjme_message("Found link at %p: %d bytes, we need %d with split %d.",
+		scanLink, (int)scanLink->blockSize, (int)roundSize, (int)splitBlock);
+
+	/* Does this block need to be split? */
+	if (splitBlock)
+	{
+		/* Make it so this block can actually fit in here. */
+		rightLink = (sjme_alloc_link*)&scanLink->block[roundSize];
+
+		/* Set size of the right link. */
+		rightLink->blockSize =
+			(sjme_jint)((intptr_t)&scanLink->block[scanLink->blockSize] -
+				(intptr_t)&rightLink->block[0]);
+
+		/* Link in physical links. */
+		rightLink->next = scanLink->next;
+		rightLink->next->prev = rightLink;
+		scanLink->next = rightLink;
+		rightLink->prev = scanLink;
+
+		/* Link in free links. */
+		rightLink->freeNext = scanLink->freeNext;
+		rightLink->freeNext->freePrev = rightLink;
+		scanLink->freeNext = rightLink;
+		rightLink->freePrev = scanLink;
+
+		/* Set size of the left block. */
+		scanLink->blockSize =
+			(sjme_jint)((intptr_t)rightLink - (intptr_t)&scanLink->block[0]);
+	}
+
+	/* Setup block information. */
+	scanLink->space = SJME_ALLOC_POOL_SPACE_USED;
+
+	/* Unlink from free links. */
+	if (scanLink->freeNext != NULL)
+		scanLink->freeNext->freePrev = scanLink->freePrev;
+	if (scanLink->freePrev != NULL)
+		scanLink->freePrev->freeNext = scanLink->freeNext;
+	scanLink->freePrev = NULL;
+	scanLink->freeNext = NULL;
+
+	/* Use our given allocation size. */
+	scanLink->allocSize = size;
+
+	/* Adjust space that can actually be used for data. */
+	pool->space[SJME_ALLOC_POOL_SPACE_FREE].usable -= scanLink->blockSize;
+	pool->space[SJME_ALLOC_POOL_SPACE_USED].usable += scanLink->blockSize;
+
+	/* Since this block is claimed, the reserved space moves over. */
+	pool->space[SJME_ALLOC_POOL_SPACE_FREE].reserved -=
+		SJME_SIZEOF_ALLOC_LINK(0);
+	pool->space[SJME_ALLOC_POOL_SPACE_USED].reserved +=
+		SJME_SIZEOF_ALLOC_LINK(0);
+
+	/* Use the given link. */
+	*outAddr = &scanLink->block[0];
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_allocFree(
