@@ -218,6 +218,9 @@ extern "C" {
 	
 	/** Not used. */
 	#define sjme_attrUnused __attribute__((unused))
+
+	/** Not used enum constant. */
+	#define sjme_attrUnusedEnum(x) x sjme_attrUnused
 	
 	#if !defined(sjme_attrReturnNever)
 		/** Method does not return. */
@@ -347,6 +350,11 @@ extern "C" {
 #if !defined(sjme_attrUnused)
 	/** Unused value. */
 	#define sjme_attrUnused
+#endif
+
+#if !defined(sjme_attrUnusedEnum)
+	/** Unused enumeration element. */
+	#define sjme_attrUnusedEnum(x) x
 #endif
 
 /** Flexible array count but for unions. */

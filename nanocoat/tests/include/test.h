@@ -90,7 +90,7 @@ typedef struct sjme_availableTest
  * @since 2023/11/21
  */
 #define SJME_TEST_DECLARE(name) \
-	sjme_attrUnused sjme_testResult name(sjme_test* test)
+	sjme_attrUnused sjme_testResult name(sjme_attrUnused sjme_test* test)
 
 /*--------------------------------------------------------------------------*/
 

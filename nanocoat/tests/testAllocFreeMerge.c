@@ -37,22 +37,22 @@
 typedef enum testScenarioId
 {
 	/** Left to right. */
-	SCENARIO_LMR,
+	sjme_attrUnusedEnum(SCENARIO_LMR),
 
 	/** Left, Right, then middle. */
-	SCENARIO_LRM,
+	sjme_attrUnusedEnum(SCENARIO_LRM),
 
 	/** Middle, then left to right. */
-	SCENARIO_MLR,
+	sjme_attrUnusedEnum(SCENARIO_MLR),
 
 	/** Middle, then right to left. */
-	SCENARIO_MRL,
+	sjme_attrUnusedEnum(SCENARIO_MRL),
 
 	/** Right to left. */
-	SCENARIO_RML,
+	sjme_attrUnusedEnum(SCENARIO_RML),
 
 	/** Right, left, then middle. */
-	SCENARIO_RLM,
+	sjme_attrUnusedEnum(SCENARIO_RLM),
 
 	/** The number of scenarios. */
 	NUM_SCENARIO
