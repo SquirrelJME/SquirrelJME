@@ -29,6 +29,9 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
+/** The NanoCoat virtual machine package. */
+#define SJME_PACKAGE_NANOCOAT cc_squirreljme_vm_nanocoat
+
 /**
  * Maps a pointer to the @c jlong type.
  *
@@ -48,6 +51,16 @@ extern "C" {
  */
 #define SJME_JLONG_TO_POINTER(type, pointer) \
 	((type)((intptr_t)((jlong)(pointer))))
+
+/**
+ * Declares a JNI class.
+ *
+ * @param inPackage The package of the class.
+ * @param className The name of the class.
+ * @since 2023/12/12
+ */
+#define SJME_JNI_CLASS(inPackage, className) \
+	SJME_TOKEN_PASTE_PP(SJME_TOKEN_PASTE_PP(inPackage, _), className)
 
 /**
  * Declares a JNI method.

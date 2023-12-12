@@ -11,5 +11,6 @@
 
 #include "frontend/emulator/jniHelper.h"
 
-#define SJME_CLASS_NVM_FRAME cc_squirreljme_vm_nanocoat_NvmFrame
+/** The frame class. */
+#define SJME_CLASS_NVM_FRAME SJME_JNI_CLASS(SJME_PACKAGE_NANOCOAT, NvmFrame)
 

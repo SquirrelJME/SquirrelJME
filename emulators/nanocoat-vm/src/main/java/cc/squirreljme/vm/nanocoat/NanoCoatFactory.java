@@ -56,8 +56,11 @@ public class NanoCoatFactory
 		// We need an allocation pool to work with everything
 		AllocPool pool = new AllocPool(32 * 1048576);
 		
+		// Initialize boot parameters
+		NvmBootParam param = new NvmBootParam(pool);
+		
 		// Setup main virtual machine
-		NvmState state = new NvmState(pool);
+		NvmState state = new NvmState(pool, null);
 		
 		throw Debugging.todo();
 	}

@@ -32,19 +32,20 @@ public final class NvmState
 	 * Initializes the new virtual machine state.
 	 *
 	 * @param __pool The allocation pool to use.
+	 * @param __param Parameters for starting the virtual machine.
 	 * @throws NullPointerException On null arguments.
 	 * @throws VMException If the virtual machine could not be initialized.
 	 * @since 2023/12/08
 	 */
-	public NvmState(AllocPool __pool)
+	public NvmState(AllocPool __pool, NvmBootParam __param)
 		throws NullPointerException, VMException
 	{
-		if (__pool == null)
+		if (__pool == null || __param == null)
 			throw new NullPointerException("NARG");
 		
 		// Initialize state.
 		this._pointer = NvmState.__nvmBoot(__pool.pointerAddress(),
-			this);
+			this, __param.pointerAddress());
 	}
 	
 	/**
@@ -62,11 +63,12 @@ public final class NvmState
 	 *
 	 * @param __poolPtr The pool this allocates within.
 	 * @param __wrapper The wrapper for this reference.
+	 * @param __paramPtr The pointer to the parameters.
 	 * @return The pointer to the virtual machine state.
 	 * @throws VMException If it could not be initialized.
 	 * @since 2023/12/08
 	 */
 	private static native long __nvmBoot(long __poolPtr,
-		NvmState __wrapper)
+		NvmState __wrapper, long __paramPtr)
 		throws VMException;
 }

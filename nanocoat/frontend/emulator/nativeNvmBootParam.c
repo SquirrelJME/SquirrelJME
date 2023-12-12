@@ -10,7 +10,8 @@
 #include <jni.h>
 
 #include "frontend/emulator/jniHelper.h"
+#include "sjme/boot.h"
 
-/** The thread class. */
-#define SJME_CLASS_NVM_THREAD SJME_JNI_CLASS(SJME_PACKAGE_NANOCOAT, NvmThread)
-
+/** The boot parameter class. */
+#define SJME_CLASS_NVM_BOOT_PARAM \
+	SJME_JNI_CLASS(SJME_PACKAGE_NANOCOAT, NvmBootParam)
