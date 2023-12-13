@@ -18,6 +18,7 @@
 
 #include "sjme/nvm.h"
 #include "sjme/alloc.h"
+#include "sjme/rom.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -29,6 +30,20 @@ extern "C" {
 #endif     /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
+
+/**
+ * Boot parameters for NanoCoat.
+ *
+ * @since 2023/07/27
+ */
+typedef struct sjme_nvm_bootParam
+{
+	/** The payload to use for booting the virtual machine. */
+	const sjme_static_payload* payload;
+
+	/** Provides the ability to have a virtual suite. */
+	sjme_rom_suiteFunctions virtualSuite;
+} sjme_nvm_bootParam;
 
 /**
  * Boots the virtual machine.

@@ -84,10 +84,7 @@ sjme_errorCode sjme_nvm_boot(sjme_alloc_pool* mainPool,
 	/* Set parameters accordingly. */
 	result->allocPool = mainPool;
 	result->reservedPool = reservedPool;
-	
-	/* Copy the boot config over. */
-	memmove(&result->bootConfig, param, sizeof(*param));
-	
+
 	/* Combine the input ROMs to a set of libraries. */
 	if (!sjme_nvm_bootCombineRom(param, &result->libraries))
 	{

@@ -1005,17 +1005,6 @@ typedef struct sjme_static_rom
 typedef struct sjme_static_payload sjme_static_payload;
 
 /**
- * Boot parameters for NanoCoat.
- * 
- * @since 2023/07/27
- */
-typedef struct sjme_nvm_bootParam
-{
-	/** The payload to use for booting the virtual machine. */
-	const sjme_static_payload* payload;
-} sjme_nvm_bootParam;
-
-/**
  * Hook for garbage collection detection and/or cancel capability.
  * 
  * @param frame The frame this is garbage collecting in.
@@ -1059,9 +1048,6 @@ struct sjme_nvm_state
 
 	/** The reserved memory pool. */
 	sjme_alloc_pool* reservedPool;
-	
-	/** The copy of the boot config. */
-	sjme_nvm_bootParam bootConfig;
 	
 	/** Combined library set. */
 	sjme_static_libraries* libraries;

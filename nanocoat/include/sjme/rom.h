@@ -67,7 +67,9 @@ typedef sjme_errorCode (*sjme_rom_libraryResourceDirectFunc)();
 
 typedef sjme_errorCode (*sjme_rom_librarySizeFunc)();
 
-typedef sjme_errorCode (*sjme_rom_suiteLibrariesFunc)();
+typedef sjme_errorCode (*sjme_rom_suiteListLibrariesFunc)();
+
+typedef sjme_errorCode (*sjme_rom_suiteLoadLibraryFunc)();
 
 /**
  * Functions used to access a single library.
@@ -99,8 +101,11 @@ typedef struct sjme_rom_libraryFunctions
  */
 typedef struct sjme_rom_suiteFunctions
 {
-	/** Access the libraries for the suite. */
-	sjme_rom_suiteLibrariesFunc libraries;
+	/** Lists the libraries in the suite. */
+	sjme_rom_suiteListLibrariesFunc list;
+
+	/** Loads a single library. */
+	sjme_rom_suiteLoadLibraryFunc libraries;
 } sjme_rom_suiteFunctions;
 
 struct sjme_rom_library
