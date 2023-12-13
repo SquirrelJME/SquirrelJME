@@ -18,6 +18,7 @@ list(APPEND coreSources
 	native.c
 	nvm.c
 	recycle.c
+	rom.c
 	softmmio.c
 	task.c
 	tread.c
