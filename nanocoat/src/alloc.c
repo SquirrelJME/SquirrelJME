@@ -282,7 +282,34 @@ sjme_errorCode sjme_alloc(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_allocFree(
+sjme_errorCode sjme_alloc_copy(
+	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrInPositiveNonZero sjme_jint size,
+	sjme_attrOutNotNull void** outAddr,
+	sjme_attrInNotNull void* inAddr)
+{
+	sjme_errorCode error;
+	void* dest;
+
+	if (pool == NULL || outAddr == NULL || inAddr == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Allocate new copy first. */
+	dest = NULL;
+	error = SJME_ERROR_UNKNOWN;
+	if (SJME_IS_ERROR(error = sjme_alloc(pool, size, &dest)) ||
+		dest == NULL)
+		return error;
+
+	/* Copy over. */
+	memmove(dest, inAddr, size);
+	*outAddr = dest;
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_alloc_free(
 	sjme_attrInNotNull void* addr)
 {
 	if (addr == NULL)
@@ -292,7 +319,7 @@ sjme_errorCode sjme_allocFree(
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
-sjme_errorCode sjme_allocLink(
+sjme_errorCode sjme_alloc_getLink(
 	sjme_attrInNotNull void* addr,
 	sjme_attrOutNotNull sjme_alloc_link** outLink)
 {
@@ -307,7 +334,7 @@ sjme_errorCode sjme_allocLink(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_allocRealloc(
+sjme_errorCode sjme_alloc_realloc(
 	sjme_attrInOutNotNull void** inOutAddr,
 	sjme_attrInPositive sjme_jint newSize)
 {

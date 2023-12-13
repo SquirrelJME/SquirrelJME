@@ -59,7 +59,7 @@ SJME_TEST_DECLARE(testAllocRealloc)
 
 	/* Get the link of this block. */
 	link = NULL;
-	if (SJME_IS_ERROR(sjme_allocLink(block, &link)) ||
+	if (SJME_IS_ERROR(sjme_alloc_getLink(block, &link)) ||
 		link == NULL)
 		return sjme_unitFail(test, "Could not get link of block?");
 
@@ -74,7 +74,7 @@ SJME_TEST_DECLARE(testAllocRealloc)
 
 		/* Reallocate to the small size. */
 		oldBlockP = block;
-		if (SJME_IS_ERROR(sjme_allocRealloc(&block,
+		if (SJME_IS_ERROR(sjme_alloc_realloc(&block,
 			newLen)))
 			return sjme_unitFail(test, "Could not reallocate link?");
 

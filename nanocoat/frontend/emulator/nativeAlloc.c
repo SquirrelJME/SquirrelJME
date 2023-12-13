@@ -12,9 +12,6 @@
 #include "sjme/alloc.h"
 #include "frontend/emulator/jniHelper.h"
 
-/** The Java allocation pool class. */
-#define SJME_CLASS_ALLOC_POOL cc_squirreljme_vm_nanocoat_AllocPool
-
 /**
  * Allocates a pool via @c malloc() and returns the pointer to it.
  *

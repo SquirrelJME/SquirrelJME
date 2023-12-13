@@ -9,11 +9,28 @@
 
 package cc.squirreljme.vm.nanocoat;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * Provides a virtual library.
  *
  * @since 2023/12/12
  */
-public class VirtualLibrary
+public final class VirtualLibrary
+	implements Pointer
 {
+	static
+	{
+		__Native__.__loadLibrary();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/12/13
+	 */
+	@Override
+	public long pointerAddress()
+	{
+		throw Debugging.todo();
+	}
 }

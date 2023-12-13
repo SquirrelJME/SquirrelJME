@@ -139,7 +139,7 @@ SJME_TEST_DECLARE(testAllocRandom)
 		linkLen += sizeof(linkLen); 
 		
 		/* Free it. */
-		if (SJME_IS_ERROR(sjme_allocRealloc((void**)&link,
+		if (SJME_IS_ERROR(sjme_alloc_realloc((void**)&link,
 			linkLen)))
 			return sjme_unitFail(test, "Could not realloc link %d at %p.",
 				(int)i, link);

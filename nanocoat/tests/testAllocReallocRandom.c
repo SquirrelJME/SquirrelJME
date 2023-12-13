@@ -135,7 +135,7 @@ SJME_TEST_DECLARE(testAllocReallocRandom)
 		link->next = NULL;
 
 		/* Free it. */
-		if (SJME_IS_ERROR(sjme_allocFree(link)))
+		if (SJME_IS_ERROR(sjme_alloc_free(link)))
 			return sjme_unitFail(test, "Could not free link %d at %p.",
 				(int)i, link);
 	}

@@ -13,10 +13,6 @@
 #include "sjme/boot.h"
 #include "sjme/alloc.h"
 
-/** The boot parameter class. */
-#define SJME_CLASS_NVM_BOOT_PARAM \
-	SJME_JNI_CLASS(SJME_PACKAGE_NANOCOAT, NvmBootParam)
-
 jlong SJME_JNI_METHOD(SJME_CLASS_NVM_BOOT_PARAM, _1_1allocBootParam)
 	(JNIEnv* env, jclass classy, jlong poolPtr)
 {

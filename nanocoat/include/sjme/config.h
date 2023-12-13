@@ -131,6 +131,9 @@ extern "C" {
 /* Visual C++. */
 #if defined(_MSC_VER)
 	#include <sal.h>
+
+	/** Allocator function. */
+	#define sjme_attrAllocator __declspec(allocator)
 	
 	/** Return value must be checked. */
 	#define sjme_attrCheckReturn _Must_inspect_result_
@@ -196,6 +199,9 @@ extern "C" {
 			#define sjme_attrReturnNever (__builtin_unreachable())
 		#endif
 	#endif
+
+	/** Artificial function. */
+	#define sjme_attrArtificial __attribute__((artificial))
 	
 	/** Check return value. */
 	#define sjme_attrCheckReturn __attribute__((warn_unused_result))
@@ -352,9 +358,19 @@ extern "C" {
 	#define sjme_attrUnused
 #endif
 
+#if !defined(sjme_attrAllocator)
+	/** Allocator function. */
+	#define sjme_attrAllocator
+#endif
+
 #if !defined(sjme_attrUnusedEnum)
 	/** Unused enumeration element. */
 	#define sjme_attrUnusedEnum(x) x
+#endif
+
+#if !defined(sjme_attrArtificial)
+	/** Artificial function. */
+	#define sjme_attrArtificial
 #endif
 
 /** Flexible array count but for unions. */

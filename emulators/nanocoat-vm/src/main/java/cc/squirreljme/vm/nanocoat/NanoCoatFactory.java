@@ -59,6 +59,12 @@ public class NanoCoatFactory
 		// Initialize boot parameters
 		NvmBootParam param = new NvmBootParam(pool);
 		
+		// Setup virtual suite manager
+		VirtualSuite suite = new VirtualSuite(pool, __suiteManager);
+		
+		// Set the used suite pool
+		param.setSuite(suite);
+		
 		// Setup main virtual machine
 		NvmState state = new NvmState(pool, param);
 		

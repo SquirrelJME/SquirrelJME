@@ -12,9 +12,6 @@
 #include "frontend/emulator/jniHelper.h"
 #include "sjme/boot.h"
 
-/** The state class. */
-#define SJME_CLASS_NVM_STATE SJME_JNI_CLASS(SJME_PACKAGE_NANOCOAT, NvmState)
-
 jlong SJME_JNI_METHOD(SJME_CLASS_NVM_STATE, _1_1nvmBoot)
 	(JNIEnv* env, jclass classy, jlong poolPtr, jobject wrapper,
 		jlong paramPtr)

@@ -81,6 +81,13 @@ sjme_errorCode sjme_nvm_boot(sjme_alloc_pool* mainPool,
 		sizeof(*result), (void**)&result)) || result == NULL)
 		return error;
 
+	/* Make a defensive copy of the boot parameters. */
+	if (SJME_IS_ERROR(error = sjme_alloc_copy(reservedPool,
+		sizeof(sjme_nvm_bootParam),
+		(void**)&result->bootParamCopy, param)) ||
+		result == NULL)
+		return error;
+
 	/* Set parameters accordingly. */
 	result->allocPool = mainPool;
 	result->reservedPool = reservedPool;

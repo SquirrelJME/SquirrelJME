@@ -19,7 +19,9 @@ add_library(libEmulator SHARED
 	nativeNvmBootParam.c
 	nativeNvmFrame.c
 	nativeNvmState.c
-	nativeNvmThread.c)
+	nativeNvmThread.c
+	nativeVirtualLibrary.c
+	nativeVirtualSuite.c)
 
 # Always make this position independent
 set_property(TARGET libEmulator

@@ -229,7 +229,7 @@ SJME_TEST_DECLARE(testAllocFreeMerge)
 
 			/* Get the link. */
 			links[linkNum] = NULL;
-			if (SJME_IS_ERROR(sjme_allocLink(blocks[linkNum],
+			if (SJME_IS_ERROR(sjme_alloc_getLink(blocks[linkNum],
 				&links[linkNum])) || links[linkNum] == NULL)
 				return sjme_unitFail(test, "Could not get link?");
 
@@ -255,7 +255,7 @@ SJME_TEST_DECLARE(testAllocFreeMerge)
 			link = links[order->order[linkNum]];
 
 			/* Free the link. */
-			if (SJME_IS_ERROR(sjme_allocFree(block)))
+			if (SJME_IS_ERROR(sjme_alloc_free(block)))
 				return sjme_unitFail(test, "Could not free link.");
 
 			/* Go through the entire chain. */

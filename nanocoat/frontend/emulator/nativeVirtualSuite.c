@@ -10,4 +10,3 @@
 #include <jni.h>
 
 #include "frontend/emulator/jniHelper.h"
-

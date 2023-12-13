@@ -90,7 +90,7 @@ SJME_TEST_DECLARE(testAllocSplit)
 
 	/* Obtain the block link. */
 	link = NULL;
-	if (SJME_IS_ERROR(sjme_allocLink(block, &link)) ||
+	if (SJME_IS_ERROR(sjme_alloc_getLink(block, &link)) ||
 		link == NULL)
 		return sjme_unitFail(test, "Could not obtain block link?");
 

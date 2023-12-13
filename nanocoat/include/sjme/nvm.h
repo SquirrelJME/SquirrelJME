@@ -853,8 +853,8 @@ typedef struct sjme_nvm_frameTread
  * @return The size in bytes for the tread.
  * @since 2023/11/15
  */
-static inline size_t SJME_SIZEOF_FRAME_TREAD_VAR(sjme_javaTypeId typeId,
-	sjme_jint count)
+static inline sjme_attrArtificial size_t SJME_SIZEOF_FRAME_TREAD_VAR(
+	sjme_javaTypeId typeId, sjme_jint count)
 {
 	switch (typeId)
 	{
@@ -1034,6 +1034,13 @@ typedef struct sjme_nvm_stateHooks
 typedef struct sjme_alloc_pool sjme_alloc_pool;
 
 /**
+ * Boot parameters for NanoCoat.
+ *
+ * @since 2023/07/27
+ */
+typedef struct sjme_nvm_bootParam sjme_nvm_bootParam;
+
+/**
  * Represents the virtual machine state.
  * 
  * @since 2023/07/28
@@ -1048,6 +1055,9 @@ struct sjme_nvm_state
 
 	/** The reserved memory pool. */
 	sjme_alloc_pool* reservedPool;
+
+	/** The copy of the input boot parameters. */
+	const sjme_nvm_bootParam* bootParamCopy;
 	
 	/** Combined library set. */
 	sjme_static_libraries* libraries;

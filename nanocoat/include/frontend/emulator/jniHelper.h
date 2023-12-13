@@ -73,6 +73,30 @@ extern "C" {
 	sjme_attrUnused JNIEXPORT JNICALL SJME_TOKEN_PASTE_PP(Java_, \
 	SJME_TOKEN_PASTE_PP(SJME_TOKEN_PASTE_PP(inClass, _), methodName))
 
+/** The Java allocation pool class. */
+#define SJME_CLASS_ALLOC_POOL SJME_JNI_CLASS(SJME_PACKAGE_NANOCOAT, AllocPool)
+
+/** The frame class. */
+#define SJME_CLASS_NVM_FRAME SJME_JNI_CLASS(SJME_PACKAGE_NANOCOAT, NvmFrame)
+
+/** The state class. */
+#define SJME_CLASS_NVM_STATE SJME_JNI_CLASS(SJME_PACKAGE_NANOCOAT, NvmState)
+
+/** The thread class. */
+#define SJME_CLASS_NVM_THREAD SJME_JNI_CLASS(SJME_PACKAGE_NANOCOAT, NvmThread)
+
+/** The library class. */
+#define SJME_CLASS_VIRTUAL_LIBRARY SJME_JNI_CLASS(SJME_PACKAGE_NANOCOAT, \
+	VirtualLibrary)
+
+/** The suite class. */
+#define SJME_CLASS_VIRTUAL_SUITE SJME_JNI_CLASS(SJME_PACKAGE_NANOCOAT, \
+	VirtualSuite)
+
+/** The boot parameter class. */
+#define SJME_CLASS_NVM_BOOT_PARAM \
+	SJME_JNI_CLASS(SJME_PACKAGE_NANOCOAT, NvmBootParam)
+
 /**
  * Throws a @c VMException .
  *

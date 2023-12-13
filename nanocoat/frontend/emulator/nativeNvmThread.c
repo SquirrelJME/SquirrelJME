@@ -11,6 +11,3 @@
 
 #include "frontend/emulator/jniHelper.h"
 
-/** The thread class. */
-#define SJME_CLASS_NVM_THREAD SJME_JNI_CLASS(SJME_PACKAGE_NANOCOAT, NvmThread)
-

@@ -200,7 +200,25 @@ sjme_errorCode sjme_alloc_poolSpaceTotalSize(
 sjme_errorCode sjme_alloc(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrInPositiveNonZero sjme_jint size,
-	sjme_attrOutNotNull void** outAddr); 
+	sjme_attrOutNotNull void** outAddr)
+	sjme_attrAllocator;
+
+/**
+ * Allocates a copy of the given data.
+ *
+ * @param pool The pool to allocate within.
+ * @param size The allocation size.
+ * @param outAddr The output address.
+ * @param inAddr The input address.
+ * @return Returns an error code.
+ * @since 2023/12/13
+ */
+sjme_errorCode sjme_alloc_copy(
+	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrInPositiveNonZero sjme_jint size,
+	sjme_attrOutNotNull void** outAddr,
+	sjme_attrInNotNull void* inAddr)
+	sjme_attrAllocator;
 
 /**
  * Frees memory.
@@ -209,7 +227,7 @@ sjme_errorCode sjme_alloc(
  * @return Returns @c SJME_JNI_TRUE on success.
  * @since 2023/11/19
  */
-sjme_errorCode sjme_allocFree(
+sjme_errorCode sjme_alloc_free(
 	sjme_attrInNotNull void* addr);
 	
 /**
@@ -220,7 +238,7 @@ sjme_errorCode sjme_allocFree(
  * @return Returns an error code.
  * @since 2023/11/19
  */
-sjme_errorCode sjme_allocLink(
+sjme_errorCode sjme_alloc_getLink(
 	sjme_attrInNotNull void* addr,
 	sjme_attrOutNotNull sjme_alloc_link** outLink);
 
@@ -234,7 +252,7 @@ sjme_errorCode sjme_allocLink(
  * @return Returns an error code.
  * @since 2023/11/28
  */
-sjme_errorCode sjme_allocRealloc(
+sjme_errorCode sjme_alloc_realloc(
 	sjme_attrInOutNotNull void** inOutAddr,
 	sjme_attrInPositive sjme_jint newSize);
 

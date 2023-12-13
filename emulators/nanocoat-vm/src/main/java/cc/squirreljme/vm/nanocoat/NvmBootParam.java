@@ -10,6 +10,7 @@
 package cc.squirreljme.vm.nanocoat;
 
 import cc.squirreljme.emulator.vm.VMException;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * Boot parameters for the virtual machine.
@@ -51,6 +52,19 @@ public final class NvmBootParam
 	public long pointerAddress()
 	{
 		return this._pointer;
+	}
+	
+	/**
+	 * Sets the suite handler.
+	 *
+	 * @param __suite The suites to use.
+	 * @throws VMException If it could not be set.
+	 * @since 2023/12/13
+	 */
+	public void setSuite(VirtualSuite __suite)
+		throws VMException
+	{
+		throw Debugging.todo();
 	}
 	
 	/**

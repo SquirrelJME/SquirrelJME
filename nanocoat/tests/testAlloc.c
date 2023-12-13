@@ -44,7 +44,7 @@ SJME_TEST_DECLARE(testAlloc)
 	
 	/* Obtain the block link. */
 	link = NULL;
-	if (SJME_IS_ERROR(sjme_allocLink(block, &link)) ||
+	if (SJME_IS_ERROR(sjme_alloc_getLink(block, &link)) ||
 		link == NULL)
 		return sjme_unitFail(test, "Could not obtain block link?");
 	
@@ -84,7 +84,7 @@ SJME_TEST_DECLARE(testAlloc)
 		"Back link previous is not the next free block?");
 	
 	/* Free the block. */
-	if (SJME_IS_ERROR(sjme_allocFree(block)))
+	if (SJME_IS_ERROR(sjme_alloc_free(block)))
 		return sjme_unitFail(test, "Could not free block.");
 		
 	/* Link should be marked free. */
