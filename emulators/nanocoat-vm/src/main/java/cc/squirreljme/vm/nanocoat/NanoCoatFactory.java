@@ -60,7 +60,7 @@ public class NanoCoatFactory
 		NvmBootParam param = new NvmBootParam(pool);
 		
 		// Setup main virtual machine
-		NvmState state = new NvmState(pool, null);
+		NvmState state = new NvmState(pool, param);
 		
 		throw Debugging.todo();
 	}

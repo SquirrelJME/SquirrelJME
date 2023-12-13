@@ -16,6 +16,7 @@ add_library(libEmulator SHARED
 	emu.c
 	jniHelper.c
 	nativeAlloc.c
+	nativeNvmBootParam.c
 	nativeNvmFrame.c
 	nativeNvmState.c
 	nativeNvmThread.c)

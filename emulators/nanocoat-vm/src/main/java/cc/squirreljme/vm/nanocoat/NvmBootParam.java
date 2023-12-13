@@ -9,7 +9,7 @@
 
 package cc.squirreljme.vm.nanocoat;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.emulator.vm.VMException;
 
 /**
  * Boot parameters for the virtual machine.
@@ -19,6 +19,14 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 public final class NvmBootParam
 	implements Pointer
 {
+	/** The pointer where the parameters are stored. */
+	private final long _pointer;
+	
+	static
+	{
+		__Native__.__loadLibrary();
+	}
+	
 	/**
 	 * Initializes the base boot parameters.
 	 *
@@ -32,7 +40,7 @@ public final class NvmBootParam
 		if (__pool == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		this._pointer = NvmBootParam.__allocBootParam(__pool.pointerAddress());
 	}
 	
 	/**
@@ -42,6 +50,17 @@ public final class NvmBootParam
 	@Override
 	public long pointerAddress()
 	{
-		throw Debugging.todo();
+		return this._pointer;
 	}
+	
+	/**
+	 * Allocates the boot parameters. 
+	 *
+	 * @param __poolPtr The pointer to the memory pool.
+	 * @return The pointer to the allocated memory.
+	 * @throws VMException If allocation failed.
+	 * @since 2023/12/12
+	 */
+	private static native long __allocBootParam(long __poolPtr)
+		throws VMException;
 }
