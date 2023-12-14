@@ -189,6 +189,27 @@ typedef sjme_jint sjme_tempIndex;
 typedef void* sjme_frontEndWrapper;
 
 /**
+ * Any data that is needed by the front end, which is reserved for use.
+ *
+ * @since 2023/12/14
+ */
+typedef void* sjme_frontEndData;
+
+/**
+ * This structure stores any front end data as needed.
+ *
+ * @since 2023/12/14
+ */
+typedef struct sjme_frontEnd
+{
+	/** Any wrapper as needed. */
+	sjme_frontEndWrapper wrapper;
+
+	/** Any data as needed. */
+	sjme_frontEndData data;
+} sjme_frontEnd;
+
+/**
  * Wraps the given front end pointer.
  *
  * @param p The pointer to wrap.
@@ -360,7 +381,7 @@ typedef struct sjme_nvm_thread
 	sjme_nvm_state* inState;
 	
 	/** The wrapper in the front end. */
-	sjme_frontEndWrapper* frontEndWrapper;
+	sjme_frontEnd frontEnd;
 	
 	/** The thread ID. */
 	sjme_jint threadId;
@@ -935,7 +956,7 @@ struct sjme_nvm_frame
 	sjme_nvm_thread* inThread;
 	
 	/** The wrapper in the front end. */
-	sjme_frontEndWrapper* frontEndWrapper;
+	sjme_frontEnd frontEnd;
 	
 	/** The parent frame. */
 	sjme_nvm_frame* parent;
@@ -1048,7 +1069,7 @@ typedef struct sjme_nvm_bootParam sjme_nvm_bootParam;
 struct sjme_nvm_state
 {
 	/** The wrapper in the front end. */
-	sjme_frontEndWrapper* frontEndWrapper;
+	sjme_frontEnd frontEnd;
 
 	/** The memory pool to use for allocations. */
 	sjme_alloc_pool* allocPool;

@@ -13,6 +13,25 @@
 #include "sjme/boot.h"
 #include "sjme/alloc.h"
 
+void SJME_JNI_METHOD(SJME_CLASS_NVM_BOOT_PARAM, _1_1setSuite)
+	(JNIEnv* env, jclass classy, jlong thisPtr, jlong funcsPtr)
+{
+	sjme_nvm_bootParam* param;
+
+	if (thisPtr == 0)
+	{
+		sjme_jni_throwVMException(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+
+	/* Get parameter data. */
+	param = SJME_JLONG_TO_POINTER(sjme_nvm_bootParam*, thisPtr);
+
+	/* Set suite information. */
+	param->virtualSuite =
+		SJME_JLONG_TO_POINTER(const sjme_rom_suiteFunctions*, funcsPtr);
+}
+
 jlong SJME_JNI_METHOD(SJME_CLASS_NVM_BOOT_PARAM, _1_1allocBootParam)
 	(JNIEnv* env, jclass classy, jlong poolPtr)
 {

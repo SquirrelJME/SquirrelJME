@@ -26,6 +26,9 @@ public final class VirtualSuite
 	/** The suite manager. */
 	protected final VMSuiteManager manager;
 	
+	/** The pointer to the suite functions. */
+	private final long _pointer;
+	
 	static
 	{
 		__Native__.__loadLibrary();
@@ -49,7 +52,8 @@ public final class VirtualSuite
 		// Set the manager used to obtain suites
 		this.manager = __suiteManager;
 		
-		throw Debugging.todo();
+		// Initialize
+		this._pointer = this.__init(__pool.pointerAddress(), this);
 	}
 	
 	/**
@@ -59,6 +63,18 @@ public final class VirtualSuite
 	@Override
 	public long pointerAddress()
 	{
-		throw Debugging.todo();
+		return this._pointer;
 	}
+	
+	/**
+	 * Initializes the virtual suite manager native code.
+	 *
+	 * @param __poolPtr The pool to allocate in.
+	 * @param __this This current class, used as context.
+	 * @return The pointer to the suite functions.
+	 * @throws VMException If it could not be initialized.
+	 * @since 2023/12/14
+	 */
+	private native long __init(long __poolPtr, VirtualSuite __this)
+		throws VMException;
 }

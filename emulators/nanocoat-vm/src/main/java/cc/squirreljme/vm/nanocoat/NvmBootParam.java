@@ -64,7 +64,8 @@ public final class NvmBootParam
 	public void setSuite(VirtualSuite __suite)
 		throws VMException
 	{
-		throw Debugging.todo();
+		NvmBootParam.__setSuite(this._pointer,
+			(__suite == null ? 0 : __suite.pointerAddress()));
 	}
 	
 	/**
@@ -76,5 +77,16 @@ public final class NvmBootParam
 	 * @since 2023/12/12
 	 */
 	private static native long __allocBootParam(long __poolPtr)
+		throws VMException;
+	
+	/**
+	 * Sets the suite handler.
+	 *
+	 * @param __thisPtr The structure pointer.
+	 * @param __suitePtr The suite functions pointer.
+	 * @throws VMException If it could not be set.
+	 * @since 2023/12/13
+	 */
+	private static native void __setSuite(long __thisPtr, long __suitePtr)
 		throws VMException;
 }

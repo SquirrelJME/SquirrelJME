@@ -37,7 +37,8 @@ jlong SJME_JNI_METHOD(SJME_CLASS_ALLOC_POOL, _1_1poolMalloc)
 	}
 
 	/* Set self reference object, we need a global reference for it. */
-	result->frontEndWrapper = SJME_FRONT_END_WRAP(
+	result->frontEnd.data = env;
+	result->frontEnd.wrapper = SJME_FRONT_END_WRAP(
 		(*env)->NewGlobalRef(env, wrapper));
 
 	return SJME_POINTER_TO_JLONG(result);

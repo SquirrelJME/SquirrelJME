@@ -12,7 +12,8 @@ package cc.squirreljme.emulator.vm;
 import cc.squirreljme.vm.VMClassLibrary;
 
 /**
- * This is the suite manager which represents the.
+ * This is the suite manager which represents the various libraries that
+ * are available.
  *
  * @since 2018/10/26
  */

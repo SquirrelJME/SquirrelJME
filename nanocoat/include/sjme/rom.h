@@ -78,6 +78,9 @@ typedef sjme_errorCode (*sjme_rom_suiteLoadLibraryFunc)();
  */
 typedef struct sjme_rom_libraryFunctions
 {
+	/** Wrapped object, if applicable. */
+	sjme_frontEnd frontEnd;
+
 	/** Function to get the path of a library. */
 	sjme_rom_libraryPathFunc path;
 
@@ -101,11 +104,14 @@ typedef struct sjme_rom_libraryFunctions
  */
 typedef struct sjme_rom_suiteFunctions
 {
+	/** Wrapped object, if applicable. */
+	sjme_frontEnd frontEnd;
+
 	/** Lists the libraries in the suite. */
 	sjme_rom_suiteListLibrariesFunc list;
 
 	/** Loads a single library. */
-	sjme_rom_suiteLoadLibraryFunc libraries;
+	sjme_rom_suiteLoadLibraryFunc loadLibrary;
 } sjme_rom_suiteFunctions;
 
 struct sjme_rom_library

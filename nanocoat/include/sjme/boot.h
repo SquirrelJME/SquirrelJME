@@ -37,7 +37,7 @@ struct sjme_nvm_bootParam
 	const sjme_static_payload* payload;
 
 	/** Provides the ability to have a virtual suite. */
-	sjme_rom_suiteFunctions virtualSuite;
+	const sjme_rom_suiteFunctions* virtualSuite;
 };
 
 /**
