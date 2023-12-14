@@ -34,7 +34,7 @@ extern "C" {
 struct sjme_nvm_bootParam
 {
 	/** The payload to use for booting the virtual machine. */
-	const sjme_static_payload* payload;
+	const sjme_payload_config* payload;
 
 	/** Provides the ability to have a virtual suite. */
 	const sjme_rom_suiteFunctions* virtualSuite;

@@ -70,7 +70,7 @@ extern "C" {
 	#include SJME_CONFIG_ROM9_HEADER
 #endif
 
-const sjme_static_payload sjme_static_payload_data =
+const sjme_payload_config sjme_payload_config_data =
 {
 	.roms =
 	{

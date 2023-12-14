@@ -37,7 +37,7 @@ static sjme_jboolean hookGcNvmLocalPopReference(sjme_nvm_frame* frame,
 	sjme_message("GC of %p...", instance);
 	
 	/* Elevator must be set. */
-	elevator = frame->inThread->inState->special;
+	elevator = frame->inThread->inState->frontEnd.data;
 	if (elevator == NULL)
 		return SJME_JNI_FALSE;
 	

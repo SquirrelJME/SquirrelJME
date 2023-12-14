@@ -23,7 +23,7 @@ int main(int argc, char** argv)
 	
 	/* Setup boot configuration. */
 	memset(&bootConfig, 0, sizeof(bootConfig));
-	bootConfig.payload = &sjme_static_payload_data;
+	bootConfig.payload = &sjme_payload_config_data;
 	
 	/* Boot the virtual machine. */
 	state = NULL;

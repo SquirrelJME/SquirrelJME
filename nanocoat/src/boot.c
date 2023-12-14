@@ -13,40 +13,6 @@
 #include "sjme/debug.h"
 #include "sjme/nvm.h"
 
-/**
- * Combines all of the input ROMs and provides a virtual ROM that contains
- * all of the libraries, this is so everything is within a single library
- * set.
- * 
- * @param config The input configuration.
- * @param outLibraries The output libraries.
- * @return If this was successful.
- * @since 2023/07/28
- */
-static sjme_attrCheckReturn sjme_errorCode sjme_nvm_bootCombineRom(
-	sjme_attrInNotNull const sjme_nvm_bootParam* config,
-	sjme_attrOutNotNull sjme_static_libraries** outLibraries)
-{
-	if (config == NULL || outLibraries == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-		
-	/* Determine the total library count. */
-	if (SJME_JNI_TRUE)
-		sjme_todo("sjme_nvm_bootVirtualRom()");
-		
-	/* Allocate output result. */
-	if (SJME_JNI_TRUE)
-		sjme_todo("sjme_nvm_bootVirtualRom()");
-	
-	/* Bring in all the libraries into the output. */
-	if (SJME_JNI_TRUE)
-		sjme_todo("sjme_nvm_bootVirtualRom()");
-
-	/* Return the result. */
-	sjme_todo("sjme_nvm_bootVirtualRom()");
-	return SJME_ERROR_NOT_IMPLEMENTED;
-}
-
 sjme_errorCode sjme_nvm_boot(sjme_alloc_pool* mainPool,
 	const sjme_nvm_bootParam* param,
 	sjme_nvm_state** outState, int argc, char** argv)
@@ -92,12 +58,9 @@ sjme_errorCode sjme_nvm_boot(sjme_alloc_pool* mainPool,
 	result->allocPool = mainPool;
 	result->reservedPool = reservedPool;
 
-	/* Combine the input ROMs to a set of libraries. */
-	if (!sjme_nvm_bootCombineRom(param, &result->libraries))
-	{
-		sjme_nvm_destroy(result, NULL);
-		return SJME_JNI_FALSE;
-	}
+	/* Determine the full set of suites that are available for merging. */
+	if (SJME_JNI_TRUE)
+		sjme_todo("sjme_nvm_boot()");
 	
 	/* Parse the command line arguments for options on running the VM. */
 	if (SJME_JNI_TRUE)

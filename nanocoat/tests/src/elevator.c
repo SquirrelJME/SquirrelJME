@@ -146,7 +146,7 @@ sjme_jboolean sjme_elevatorDoInit(
 	inState->nvmState = newState;
 	
 	/* Store test state, as required for some tests. */
-	newState->special = inState;
+	newState->frontEnd.data = inState;
 	
 	/* Register any hooks? */
 	if (inData->current.data.state.hooks != NULL)

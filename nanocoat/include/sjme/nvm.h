@@ -695,69 +695,6 @@ typedef struct sjme_static_linkages
 	sjme_static_linkage linkages[sjme_flexibleArrayCount];
 } sjme_static_linkages;
 
-typedef struct sjme_static_classInfo
-{
-	/** This class name. */
-	const char* thisName;
-	
-	/** Hash of the current class name. */
-	int thisNameHash;
-	
-	/** The super name. */
-	const char* superName;
-	
-	/** Interfaces. */
-	const sjme_static_classInterfaces* interfaceNames;
-	
-	/** Flags. */
-	sjme_jint flags;
-	
-	/** Fields. */
-	const sjme_static_classFields* fields;
-	
-	/** Methods. */
-	const sjme_static_classMethods* methods;
-	
-	/** Linkages, effectively the constant pool. */
-	const sjme_static_linkages* linkages;
-} sjme_static_classInfo;
-
-typedef struct sjme_static_library_classes
-{
-	/** The number of classes. */
-	sjme_jint count;
-	
-	/** Class set. */
-	const struct sjme_static_classInfo* classes[sjme_flexibleArrayCount];
-} sjme_static_library_classes;
-
-typedef struct sjme_static_library_resources
-{
-	/** The number of resources. */
-	sjme_jint count;
-	
-	/** Resource set. */
-	const struct sjme_static_resource* resources[sjme_flexibleArrayCount];
-} sjme_static_library_resources;
-
-typedef struct sjme_static_library
-{
-	/** Library name. */
-	const char* name;
-	
-	/** Hashcode for the name. */
-	sjme_jint nameHash;
-	
-	/** The hash of the original library, to detect changes. */
-	const char* originalLibHash;
-	
-	/** Resources. */
-	const sjme_static_library_resources* resources;
-	
-	/** Classes. */
-	const sjme_static_library_classes* classes;
-} sjme_static_library;
-
 typedef struct sjme_dynamic_linkage_data_classObject
 {
 	int todo;
@@ -992,38 +929,12 @@ struct sjme_nvm_frame
 	const sjme_nvm_frameLocalMap* localMap;
 };
 
-typedef struct sjme_static_libraries
-{
-	/** The number of libraries. */
-	sjme_jint count;
-	
-	/** The libraries. */
-	const sjme_static_library* libraries[sjme_flexibleArrayCount];
-} sjme_static_libraries;
-
-/**
- * ROM file.
- * 
- * @since 2023/07/25
- */
-typedef struct sjme_static_rom
-{
-	/** The ROM source set. */
-	const char* sourceSet;
-	
-	/** The ROM clutter level. */
-	const char* clutterLevel;
-	
-	/** The ROM libraries, is always last. */
-	const sjme_static_libraries* libraries;
-} sjme_static_rom;
-
 /**
  * Contains the payload information.
  * 
  * @since 2023/07/27
  */
-typedef struct sjme_static_payload sjme_static_payload;
+typedef struct sjme_payload_config sjme_payload_config;
 
 /**
  * Hook for garbage collection detection and/or cancel capability.
@@ -1079,12 +990,6 @@ struct sjme_nvm_state
 
 	/** The copy of the input boot parameters. */
 	const sjme_nvm_bootParam* bootParamCopy;
-	
-	/** Combined library set. */
-	sjme_static_libraries* libraries;
-	
-	/** Special value, is optional and front-end specific. */
-	void* special;
 	
 	/** Hooks for the state. */
 	const sjme_nvm_stateHooks* hooks;
