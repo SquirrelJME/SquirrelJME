@@ -14,13 +14,36 @@
 #include "sjme/alloc.h"
 #include "sjme/debug.h"
 
+/**
+ * Cache storage for virtual suites.
+ *
+ * @since 2023/12/15
+ */
+typedef struct sjme_jni_virtualSuite_cache
+{
+	/** Todo. */
+	sjme_jint todo;
+} sjme_jni_virtualSuite_cache;
+
 static sjme_errorCode sjme_jni_virtualSuite_initCache(
 	sjme_attrInNotNull const sjme_rom_suiteFunctions* functions,
 	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrInOutNotNull sjme_rom_suite* targetSuite)
 {
-	sjme_todo("Implement this?");
-	return 0;
+	sjme_errorCode error;
+
+	if (functions == NULL || pool == NULL || targetSuite == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Initialize base structure. */
+	targetSuite->cache = NULL;
+	if (SJME_IS_ERROR(error = sjme_alloc(pool,
+		sizeof(sjme_jni_virtualSuite_cache),
+		(void**)&targetSuite->cache)) || targetSuite->cache == NULL)
+		return error;
+
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_jni_virtualSuite_list()
