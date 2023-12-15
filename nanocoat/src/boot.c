@@ -58,8 +58,8 @@ sjme_errorCode sjme_nvm_boot(sjme_alloc_pool* mainPool,
 	SJME_EXCEPT_VDEF;
 	sjme_errorCode error;
 	sjme_exceptTrace* trace;
-	volatile sjme_nvm_state* result;
-	volatile sjme_rom_suite* mergeSuites[FIXED_SUITE_COUNT];
+	sjme_nvm_state* volatile result;
+	sjme_rom_suite* volatile mergeSuites[FIXED_SUITE_COUNT];
 	volatile sjme_jint numMergeSuites;
 	
 	if (param == NULL || outState == NULL)
@@ -99,14 +99,17 @@ SJME_EXCEPT_WITH(trace):
 
 	/* Process payload suites. */
 	if (result->bootParamCopy->payload != NULL)
+	{
+		/* Scan accordingly. */
 		if (SJME_IS_ERROR(error = sjme_rom_scanPayload(reservedPool,
 			&mergeSuites[numMergeSuites],
 			result->bootParamCopy->payload)))
 			SJME_EXCEPT_TOSS(error);
 
-	/* Was a suite generated? */
-	if (mergeSuites[numMergeSuites] != NULL)
-		numMergeSuites++;
+		/* Was a suite generated? */
+		if (mergeSuites[numMergeSuites] != NULL)
+			numMergeSuites++;
+	}
 
 	/* If there is a virtual suite, move it in. */
 	if (result->bootParamCopy->virtualSuite != NULL)
@@ -122,11 +125,23 @@ SJME_EXCEPT_WITH(trace):
 			numMergeSuites++;
 	}
 
-	/* Merge all the suites together into one. */
-	if (SJME_IS_ERROR(error = sjme_rom_combineSuites(reservedPool,
-		&result->suite, mergeSuites,
-		numMergeSuites)) || result->suite == NULL)
-		SJME_EXCEPT_TOSS(error);
+	/* No suites at all? Running with absolutely nothing??? */
+	if (numMergeSuites <= 0)
+		SJME_EXCEPT_TOSS(SJME_ERROR_NO_SUITES);
+
+	/* Use the single suite only. */
+	else if (numMergeSuites == 1)
+		result->suite = mergeSuites[0];
+
+	/* Merge everything into one. */
+	else
+	{
+		/* Merge all the suites together into one. */
+		if (SJME_IS_ERROR(error = sjme_rom_combineSuites(reservedPool,
+			&result->suite, mergeSuites,
+			numMergeSuites)) || result->suite == NULL)
+			SJME_EXCEPT_TOSS(error);
+	}
 
 	/* Parse the command line arguments for options on running the VM. */
 	if (SJME_JNI_TRUE)

@@ -1112,9 +1112,12 @@ typedef enum sjme_errorCode
 
 	/** Invalid tread write. */
 	SJME_ERROR_TREAD_INVALID_WRITE = -27,
+
+	/** There are no suites available. */
+	SJME_ERROR_NO_SUITES = -28,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -28
+	SJME_NUM_ERROR_CODES = -29
 } sjme_errorCode;
 
 /**
