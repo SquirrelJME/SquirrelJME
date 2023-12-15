@@ -101,7 +101,7 @@ SJME_EXCEPT_WITH(trace):
 	if (result->bootParamCopy->payload != NULL)
 	{
 		/* Scan accordingly. */
-		if (SJME_IS_ERROR(error = sjme_rom_scanPayload(reservedPool,
+		if (SJME_IS_ERROR(error = sjme_rom_fromPayload(reservedPool,
 			&mergeSuites[numMergeSuites],
 			result->bootParamCopy->payload)))
 			SJME_EXCEPT_TOSS(error);
@@ -115,7 +115,7 @@ SJME_EXCEPT_WITH(trace):
 	if (result->bootParamCopy->virtualSuite != NULL)
 	{
 		/* Make a virtual suite for this. */
-		if (SJME_IS_ERROR(error = sjme_rom_makeVirtualSuite(reservedPool,
+		if (SJME_IS_ERROR(error = sjme_rom_newSuite(reservedPool,
 			&mergeSuites[numMergeSuites],
 			result->bootParamCopy->virtualSuite)))
 			SJME_EXCEPT_TOSS(error);
@@ -137,7 +137,7 @@ SJME_EXCEPT_WITH(trace):
 	else
 	{
 		/* Merge all the suites together into one. */
-		if (SJME_IS_ERROR(error = sjme_rom_combineSuites(reservedPool,
+		if (SJME_IS_ERROR(error = sjme_rom_fromMerge(reservedPool,
 			&result->suite, mergeSuites,
 			numMergeSuites)) || result->suite == NULL)
 			SJME_EXCEPT_TOSS(error);

@@ -14,6 +14,15 @@
 #include "sjme/alloc.h"
 #include "sjme/debug.h"
 
+static sjme_errorCode sjme_jni_virtualSuite_initCache(
+	sjme_attrInNotNull const sjme_rom_suiteFunctions* functions,
+	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrInOutNotNull sjme_rom_suite* targetSuite)
+{
+	sjme_todo("Implement this?");
+	return 0;
+}
+
 static sjme_errorCode sjme_jni_virtualSuite_list()
 {
 	sjme_todo("Implement this?");
@@ -41,6 +50,7 @@ jlong SJME_JNI_METHOD(SJME_CLASS_VIRTUAL_SUITE, _1_1init)
 	functions = SJME_JLONG_TO_POINTER(sjme_rom_suiteFunctions*, structPtr);
 
 	/* Set function handlers. */
+	functions->initCache = sjme_jni_virtualSuite_initCache;
 	functions->list = sjme_jni_virtualSuite_list;
 	functions->loadLibrary = sjme_jni_virtualSuite_loadLibrary;
 

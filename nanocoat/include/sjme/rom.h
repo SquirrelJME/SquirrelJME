@@ -44,6 +44,20 @@ typedef struct sjme_rom_library sjme_rom_library;
 typedef struct sjme_rom_libraryCache sjme_rom_libraryCache;
 
 /**
+ * Functions used to access a single library.
+ *
+ * @since 2023/12/12
+ */
+typedef struct sjme_rom_libraryFunctions sjme_rom_libraryFunctions;
+
+/**
+ * Functions used to access a suite, which is an entire ROM.
+ *
+ * @since 2023/12/12
+ */
+typedef struct sjme_rom_suiteFunctions sjme_rom_suiteFunctions;
+
+/**
  * Internal cache for ROM suites.
  *
  * @since 2023/12/12
@@ -60,16 +74,25 @@ typedef sjme_errorCode (*sjme_rom_libraryResourceDirectFunc)();
 
 typedef sjme_errorCode (*sjme_rom_librarySizeFunc)();
 
+/**
+ * Function used to initialize the suite cache.
+ *
+ * @param functions The functions definitions and potential internal state.
+ * @param pool The pool to allocate within, if needed.
+ * @param targetSuite The suite to initialize the cache for.
+ * @return Any error state.
+ * @since 2023/12/15
+ */
+typedef sjme_errorCode (*sjme_rom_suiteInitCacheFunc)(
+	sjme_attrInNotNull const sjme_rom_suiteFunctions* functions,
+	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrInOutNotNull sjme_rom_suite* targetSuite);
+
 typedef sjme_errorCode (*sjme_rom_suiteListLibrariesFunc)();
 
 typedef sjme_errorCode (*sjme_rom_suiteLoadLibraryFunc)();
 
-/**
- * Functions used to access a single library.
- *
- * @since 2023/12/12
- */
-typedef struct sjme_rom_libraryFunctions
+struct sjme_rom_libraryFunctions
 {
 	/** Wrapped object, if applicable. */
 	sjme_frontEnd frontEnd;
@@ -88,24 +111,22 @@ typedef struct sjme_rom_libraryFunctions
 
 	/** Direct resource access, if available. */
 	sjme_rom_libraryResourceDirectFunc resourceDirect;
-} sjme_rom_libraryFunctions;
+};
 
-/**
- * Functions used to access a suite, which is an entire ROM.
- *
- * @since 2023/12/12
- */
-typedef struct sjme_rom_suiteFunctions
+struct sjme_rom_suiteFunctions
 {
 	/** Wrapped object, if applicable. */
 	sjme_frontEnd frontEnd;
+
+	/** Initialize suite cache. */
+	sjme_rom_suiteInitCacheFunc initCache;
 
 	/** Lists the libraries in the suite. */
 	sjme_rom_suiteListLibrariesFunc list;
 
 	/** Loads a single library. */
 	sjme_rom_suiteLoadLibraryFunc loadLibrary;
-} sjme_rom_suiteFunctions;
+};
 
 struct sjme_rom_library
 {
@@ -119,7 +140,7 @@ struct sjme_rom_suite
 	sjme_rom_suiteCache* cache;
 
 	/** Functions. */
-	sjme_rom_suiteFunctions functions;
+	const sjme_rom_suiteFunctions* functions;
 };
 
 /**
@@ -131,25 +152,11 @@ struct sjme_rom_suite
  * @param numInSuites The number of input suites.
  * @return
  */
-sjme_errorCode sjme_rom_combineSuites(
+sjme_errorCode sjme_rom_fromMerge(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrOutNotNull sjme_rom_suite** outSuite,
 	sjme_attrInNotNull sjme_rom_suite** inSuites,
 	sjme_attrInPositive sjme_jint numInSuites);
-
-/**
- * Makes a virtual suite from the given functions.
- *
- * @param pool The pool to allocate within.
- * @param outSuite The output suite.
- * @param inFunctions The functions which define how to access the suite.
- * @return Any error code.
- * @since 2023/12/15
- */
-sjme_errorCode sjme_rom_makeVirtualSuite(
-	sjme_attrInNotNull sjme_alloc_pool* pool,
-	sjme_attrOutNotNull sjme_rom_suite** outSuite,
-	sjme_attrInNotNull const sjme_rom_suiteFunctions* inFunctions);
 
 /**
  * Scans the payload for suites
@@ -161,10 +168,24 @@ sjme_errorCode sjme_rom_makeVirtualSuite(
  * @return Any error status.
  * @since 2023/12/15
  */
-sjme_errorCode sjme_rom_scanPayload(
+sjme_errorCode sjme_rom_fromPayload(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrOutNotNull sjme_rom_suite** outSuite,
 	sjme_attrInNotNull const sjme_payload_config* payloadConfig);
+
+/**
+ * Makes a virtual suite from the given functions.
+ *
+ * @param pool The pool to allocate within.
+ * @param outSuite The output suite.
+ * @param inFunctions The functions which define how to access the suite.
+ * @return Any error code.
+ * @since 2023/12/15
+ */
+sjme_errorCode sjme_rom_newSuite(
+	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrOutNotNull sjme_rom_suite** outSuite,
+	sjme_attrInNotNull const sjme_rom_suiteFunctions* inFunctions);
 
 /*--------------------------------------------------------------------------*/
 
