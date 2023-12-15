@@ -9,6 +9,7 @@
 
 #include "sjme/allocSizeOf.h"
 #include "sjme/rom.h"
+#include "sjme/boot.h"
 
 sjme_errorCode sjme_alloc_sizeOf(
 	sjme_alloc_sizeOfId id, sjme_jint count,
@@ -29,6 +30,10 @@ sjme_errorCode sjme_alloc_sizeOf(
 
 		case SJME_ALLOC_SIZEOF_RESERVED_POOL:
 			*outSize = 64 * 1024;
+			break;
+
+		case SJME_ALLOC_SIZEOF_NVM_BOOT_PARAM:
+			*outSize = sizeof(sjme_nvm_bootParam);
 			break;
 
 		default:

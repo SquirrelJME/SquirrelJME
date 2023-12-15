@@ -21,7 +21,7 @@ public final class NvmBootParam
 	implements Pointer
 {
 	/** The pointer where the parameters are stored. */
-	private final long _pointer;
+	private final AllocLink _link;
 	
 	static
 	{
@@ -41,7 +41,7 @@ public final class NvmBootParam
 		if (__pool == null)
 			throw new NullPointerException("NARG");
 		
-		this._pointer = NvmBootParam.__allocBootParam(__pool.pointerAddress());
+		this._link = __pool.alloc(AllocSizeOf.NVM_BOOT_PARAM);
 	}
 	
 	/**
@@ -51,7 +51,7 @@ public final class NvmBootParam
 	@Override
 	public long pointerAddress()
 	{
-		return this._pointer;
+		return this._link.pointerAddress();
 	}
 	
 	/**
@@ -64,21 +64,9 @@ public final class NvmBootParam
 	public void setSuite(VirtualSuite __suite)
 		throws VMException
 	{
-		NvmBootParam.__setSuite(this._pointer,
+		NvmBootParam.__setSuite(this._link.pointerAddress(),
 			(__suite == null ? 0 : __suite.pointerAddress()));
 	}
-	
-	/**
-	 * Allocates the boot parameters. 
-	 *
-	 * @param __poolPtr The pointer to the memory pool.
-	 * @return The pointer to the allocated memory.
-	 * @throws VMException If allocation failed.
-	 * @since 2023/12/12
-	 */
-	@Deprecated
-	private static native long __allocBootParam(long __poolPtr)
-		throws VMException;
 	
 	/**
 	 * Sets the suite handler.

@@ -24,6 +24,9 @@ public enum AllocSizeOf
 	/** Reserved pool. */
 	RESERVED_POOL(2),
 	
+	/** Virtual machine boot configuration. */
+	NVM_BOOT_PARAM(3),
+	
 	/* End. */
 	;
 	

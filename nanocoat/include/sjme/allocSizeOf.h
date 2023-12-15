@@ -40,6 +40,9 @@ typedef enum sjme_alloc_sizeOfId
 	/** Reserved pool size. */
 	SJME_ALLOC_SIZEOF_RESERVED_POOL = 2,
 
+	/** Virtual machine boot configuration. */
+	SJME_ALLOC_SIZEOF_NVM_BOOT_PARAM = 3,
+
 	/** The number of allocation type sizes. */
 	SJME_NUM_ALLOC_TYPE_SIZEOF
 } sjme_alloc_sizeOfId;
