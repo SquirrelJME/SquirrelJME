@@ -18,7 +18,6 @@ import cc.squirreljme.emulator.vm.VirtualMachine;
 import cc.squirreljme.jdwp.JDWPFactory;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
-import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -54,19 +53,25 @@ public class NanoCoatFactory
 		__Native__.__loadLibrary();
 		
 		// We need an allocation pool to work with everything
-		AllocPool pool = new AllocPool(32 * 1048576);
+		AllocPool mainPool = new AllocPool(32 * 1048576);
+		
+		// Allocate the reserved pool, so we can throw everything in there
+		AllocLink reservedLink = mainPool.alloc(
+			AllocTypeSizeOf.RESERVED_POOL.size());
+		AllocPool reservedPool = new AllocPool(reservedLink.pointerAddress(), 
+			reservedLink.size());
 		
 		// Initialize boot parameters
-		NvmBootParam param = new NvmBootParam(pool);
+		NvmBootParam param = new NvmBootParam(reservedPool);
 		
 		// Setup virtual suite manager
-		VirtualSuite suite = new VirtualSuite(pool, __suiteManager);
+		VirtualSuite suite = new VirtualSuite(reservedPool, __suiteManager);
 		
 		// Set the used suite pool
 		param.setSuite(suite);
 		
 		// Setup main virtual machine
-		NvmState state = new NvmState(pool, param);
+		NvmState state = new NvmState(mainPool, reservedPool, param);
 		
 		throw Debugging.todo();
 	}

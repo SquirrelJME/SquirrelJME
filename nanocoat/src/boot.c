@@ -13,20 +13,19 @@
 #include "sjme/debug.h"
 #include "sjme/nvm.h"
 
-sjme_errorCode sjme_nvm_boot(sjme_alloc_pool* mainPool,
-	const sjme_nvm_bootParam* param,
-	sjme_nvm_state** outState, int argc, char** argv)
+sjme_errorCode sjme_nvm_allocReservedPool(
+	sjme_attrInNotNull sjme_alloc_pool* mainPool,
+	sjme_attrOutNotNull sjme_alloc_pool** outReservedPool)
 {
-	sjme_nvm_state* result;
+	sjme_errorCode error;
 	void* reservedBase;
 	sjme_alloc_pool* reservedPool;
 	sjme_jint reservedSize;
-	sjme_errorCode error;
-	
-	if (param == NULL || outState == NULL)
+
+	if (mainPool == NULL || outReservedPool == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	/* Set up a reserved pool where all the data structures for the VM go... */
+	/* Determine how big the reserved pool should be... */
 	reservedBase = NULL;
 	reservedSize = 64 * 1024;
 	if (SJME_IS_ERROR(error = sjme_alloc(mainPool,
@@ -40,6 +39,28 @@ sjme_errorCode sjme_nvm_boot(sjme_alloc_pool* mainPool,
 		&reservedPool, reservedBase, reservedSize)) ||
 		reservedPool == NULL)
 		return error;
+
+	/* Use the resultant pool. */
+	*outReservedPool = reservedPool;
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_nvm_boot(sjme_alloc_pool* mainPool,
+	sjme_alloc_pool* reservedPool, const sjme_nvm_bootParam* param,
+	sjme_nvm_state** outState, int argc, char** argv)
+{
+	sjme_nvm_state* result;
+	sjme_errorCode error;
+	
+	if (param == NULL || outState == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Set up a reserved pool where all the data structures for the VM go... */
+	/* But only if one does not exist. */
+	if (reservedPool == NULL)
+		if (SJME_IS_ERROR(error = sjme_nvm_allocReservedPool(mainPool,
+			&reservedPool)))
+			return error;
 
 	/* Allocate resultant state. */
 	result = NULL;

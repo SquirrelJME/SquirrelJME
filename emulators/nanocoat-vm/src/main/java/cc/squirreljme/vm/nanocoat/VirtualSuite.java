@@ -12,7 +12,6 @@ package cc.squirreljme.vm.nanocoat;
 import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * Provides virtual access to a suite for {@link JarPackageShelf}, this acts
@@ -43,10 +42,11 @@ public final class VirtualSuite
 	 * @throws VMException If it could not be initialized.
 	 * @since 2023/12/13
 	 */
-	public VirtualSuite(AllocPool __pool, VMSuiteManager __suiteManager)
+	public VirtualSuite(AllocPool __pool,
+		VMSuiteManager __suiteManager)
 		throws NullPointerException, VMException
 	{
-		if (__suiteManager == null)
+		if (__pool == null || __suiteManager == null)
 			throw new NullPointerException("NARG");
 		
 		// Set the manager used to obtain suites

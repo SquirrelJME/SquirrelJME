@@ -41,9 +41,23 @@ struct sjme_nvm_bootParam
 };
 
 /**
+ * Allocates the reserved pool.
+ *
+ * @param mainPool The main pool to allocate within.
+ * @param outReservedPool The output reserved pool.
+ * @return If there is an error or not.
+ * @since 2023/12/14
+ */
+sjme_errorCode sjme_nvm_allocReservedPool(
+	sjme_attrInNotNull sjme_alloc_pool* mainPool,
+	sjme_attrOutNotNull sjme_alloc_pool** outReservedPool);
+
+/**
  * Boots the virtual machine.
  *
  * @param mainPool The main pool to be allocated within.
+ * @param reservedPool An optional reserved pool that can be used, if not
+ * specified then one is initialized.
  * @param param The configuration to use.
  * @param outState The output state of the virtual machine.
  * @param argc The number of arguments passed to the executable.
@@ -53,6 +67,7 @@ struct sjme_nvm_bootParam
  */
 sjme_errorCode sjme_nvm_boot(
 	sjme_attrInNotNull sjme_alloc_pool* mainPool,
+	sjme_attrInNotNull sjme_alloc_pool* reservedPool,
 	sjme_attrInNotNull const sjme_nvm_bootParam* param,
 	sjme_attrOutNotNull sjme_nvm_state** outState,
 	sjme_attrInValue int argc,

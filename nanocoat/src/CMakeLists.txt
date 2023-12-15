@@ -8,6 +8,7 @@
 
 list(APPEND coreSources
 	alloc.c
+	allocSizeOf.c
 	boot.c
 	bytecode.c
 	debug.c

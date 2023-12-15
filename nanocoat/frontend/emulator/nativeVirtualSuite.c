@@ -30,6 +30,7 @@ jlong SJME_JNI_METHOD(SJME_CLASS_VIRTUAL_SUITE, _1_1init)
 	(JNIEnv* env, jclass classy, jlong poolPtr, jobject this)
 {
 	sjme_alloc_pool* pool;
+	sjme_alloc_pool* reserved;
 	sjme_rom_suiteFunctions* result;
 	sjme_errorCode error;
 

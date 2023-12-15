@@ -76,6 +76,7 @@ public final class NvmBootParam
 	 * @throws VMException If allocation failed.
 	 * @since 2023/12/12
 	 */
+	@Deprecated
 	private static native long __allocBootParam(long __poolPtr)
 		throws VMException;
 	
