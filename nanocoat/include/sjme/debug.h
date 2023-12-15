@@ -50,10 +50,9 @@ extern "C" {
 	#define SJME_ONLY_IN_DEBUG(expr) expr
 #endif
 
-#if defined(SJME_CONFIG_DEBUG)
 /**
  * Prints a debug message.
- * 
+ *
  * @param file The file printing from.
  * @param line The line printing from.
  * @param func The function printing from.
@@ -67,6 +66,7 @@ void sjme_messageR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_attrInNullable sjme_attrFormatArg const char* message, ...)
 	sjme_attrFormatOuter(4, 5);
 
+#if defined(SJME_CONFIG_DEBUG)
 /**
  * Prints a debug message.
  * 
