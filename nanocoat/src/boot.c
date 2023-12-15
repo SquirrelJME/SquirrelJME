@@ -9,6 +9,7 @@
 
 #include <string.h>
 
+#include "sjme/allocSizeOf.h"
 #include "sjme/boot.h"
 #include "sjme/debug.h"
 #include "sjme/nvm.h"
@@ -28,6 +29,9 @@ sjme_errorCode sjme_nvm_allocReservedPool(
 	/* Determine how big the reserved pool should be... */
 	reservedBase = NULL;
 	reservedSize = -1;
+	if (SJME_IS_ERROR(error = sjme_alloc_sizeOf(
+		SJME_ALLOC_SIZEOF_RESERVED_POOL, 0, &reservedSize)))
+		return error;
 	if (SJME_IS_ERROR(error = sjme_alloc(mainPool,
 		reservedSize, (void**)&reservedBase) ||
 		reservedBase == NULL))

@@ -26,7 +26,7 @@ public final class VirtualSuite
 	protected final VMSuiteManager manager;
 	
 	/** The pointer to the suite functions. */
-	private final long _pointer;
+	private final AllocLink _structLink;
 	
 	static
 	{
@@ -52,8 +52,12 @@ public final class VirtualSuite
 		// Set the manager used to obtain suites
 		this.manager = __suiteManager;
 		
+		// Allocate data for the suite
+		AllocLink structLink = __pool.alloc(AllocSizeOf.ROM_SUITE_FUNCTIONS);
+		this._structLink = structLink;
+		
 		// Initialize
-		this._pointer = this.__init(__pool.pointerAddress(), this);
+		this.__init(structLink.pointerAddress(), this);
 	}
 	
 	/**
@@ -63,18 +67,17 @@ public final class VirtualSuite
 	@Override
 	public long pointerAddress()
 	{
-		return this._pointer;
+		return this._structLink.pointerAddress();
 	}
 	
 	/**
 	 * Initializes the virtual suite manager native code.
 	 *
-	 * @param __poolPtr The pool to allocate in.
+	 * @param __structPtr The pointer to the data structure.
 	 * @param __this This current class, used as context.
-	 * @return The pointer to the suite functions.
 	 * @throws VMException If it could not be initialized.
 	 * @since 2023/12/14
 	 */
-	private native long __init(long __poolPtr, VirtualSuite __this)
+	private native void __init(long __structPtr, VirtualSuite __this)
 		throws VMException;
 }

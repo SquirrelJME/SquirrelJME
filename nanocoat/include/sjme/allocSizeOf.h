@@ -29,20 +29,35 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
-typedef enum sjme_alloc_typeSize
+typedef enum sjme_alloc_sizeOfId
 {
 	/** Unknown. */
-	SJME_ALLOC_TYPE_SIZEOF_UNKNOWN = 0,
+	SJME_ALLOC_SIZEOF_UNKNOWN = 0,
 
 	/** @c sjme_rom_suiteFunctions . */
-	SJME_ALLOC_TYPE_SIZEOF_ROM_SUITE_FUNCTIONS = 1,
+	SJME_ALLOC_SIZEOF_ROM_SUITE_FUNCTIONS = 1,
 
 	/** Reserved pool size. */
-	SJME_ALLOC_TYPE_SIZEOF_RESERVED_POOL = 2,
+	SJME_ALLOC_SIZEOF_RESERVED_POOL = 2,
 
 	/** The number of allocation type sizes. */
-	SJME_NUM_ALLOC_SIZE
-} sjme_alloc_typeSize;
+	SJME_NUM_ALLOC_TYPE_SIZEOF
+} sjme_alloc_sizeOfId;
+
+/**
+ * Returns the size of the given type.
+ *
+ * @param id The type to get the size of.
+ * @param count The number of elements to count.
+ * @param outSize The output size.
+ * @return If there are any errors.
+ * @since 2023/12/14
+ */
+sjme_errorCode sjme_alloc_sizeOf(
+	sjme_attrInRange(SJME_ALLOC_SIZEOF_ROM_SUITE_FUNCTIONS,
+		SJME_NUM_ALLOC_TYPE_SIZEOF) sjme_alloc_sizeOfId id,
+	sjme_attrInPositive sjme_jint count,
+	sjme_attrOutNotNull sjme_jint* outSize);
 
 /*--------------------------------------------------------------------------*/
 

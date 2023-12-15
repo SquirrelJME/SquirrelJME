@@ -15,7 +15,9 @@ add_library(libEmulator SHARED
 	$<TARGET_OBJECTS:CorePIC>
 	emu.c
 	jniHelper.c
+	nativeAllocLink.c
 	nativeAllocPool.c
+	nativeAllocSizeOf.c
 	nativeNvmBootParam.c
 	nativeNvmFrame.c
 	nativeNvmState.c

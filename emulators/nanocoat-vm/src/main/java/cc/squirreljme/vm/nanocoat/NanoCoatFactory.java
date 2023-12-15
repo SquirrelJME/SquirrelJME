@@ -57,7 +57,7 @@ public class NanoCoatFactory
 		
 		// Allocate the reserved pool, so we can throw everything in there
 		AllocLink reservedLink = mainPool.alloc(
-			AllocTypeSizeOf.RESERVED_POOL.size());
+			AllocSizeOf.RESERVED_POOL.size());
 		AllocPool reservedPool = new AllocPool(reservedLink.pointerAddress(), 
 			reservedLink.size());
 		

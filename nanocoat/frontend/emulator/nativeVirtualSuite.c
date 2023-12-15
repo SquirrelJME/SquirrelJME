@@ -27,41 +27,28 @@ static sjme_errorCode sjme_jni_virtualSuite_loadLibrary()
 }
 
 jlong SJME_JNI_METHOD(SJME_CLASS_VIRTUAL_SUITE, _1_1init)
-	(JNIEnv* env, jclass classy, jlong poolPtr, jobject this)
+	(JNIEnv* env, jclass classy, jlong structPtr, jobject this)
 {
-	sjme_alloc_pool* pool;
-	sjme_alloc_pool* reserved;
-	sjme_rom_suiteFunctions* result;
-	sjme_errorCode error;
+	sjme_rom_suiteFunctions* functions;
 
-	if (poolPtr == 0 || this == NULL)
+	if (structPtr == 0 || this == NULL)
 	{
 		sjme_jni_throwVMException(env, SJME_ERROR_NULL_ARGUMENTS);
 		return 0;
 	}
 
 	/* Get the pool pointer. */
-	pool = SJME_JLONG_TO_POINTER(sjme_alloc_pool*, poolPtr);
-
-	/* Allocate the suite data. */
-	result = NULL;
-	error = SJME_ERROR_UNKNOWN;
-	if (SJME_IS_ERROR(error = sjme_alloc(pool, sizeof(*result),
-		(void**)&result)) || result == NULL)
-	{
-		sjme_jni_throwVMException(env, error);
-		return 0;
-	}
+	functions = SJME_JLONG_TO_POINTER(sjme_rom_suiteFunctions*, structPtr);
 
 	/* Set function handlers. */
-	result->list = sjme_jni_virtualSuite_list;
-	result->loadLibrary = sjme_jni_virtualSuite_loadLibrary;
+	functions->list = sjme_jni_virtualSuite_list;
+	functions->loadLibrary = sjme_jni_virtualSuite_loadLibrary;
 
 	/* Setup wrapper to reference. */
-	result->frontEnd.data = env;
-	result->frontEnd.wrapper = SJME_FRONT_END_WRAP(
+	functions->frontEnd.data = env;
+	functions->frontEnd.wrapper = SJME_FRONT_END_WRAP(
 		(*env)->NewGlobalRef(env, this));
 
 	/* Use the given result. */
-	return SJME_POINTER_TO_JLONG(result);
+	return SJME_POINTER_TO_JLONG(functions);
 }

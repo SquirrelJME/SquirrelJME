@@ -73,8 +73,16 @@ extern "C" {
 	sjme_attrUnused JNIEXPORT JNICALL SJME_TOKEN_PASTE_PP(Java_, \
 	SJME_TOKEN_PASTE_PP(SJME_TOKEN_PASTE_PP(inClass, _), methodName))
 
+/** Allocation link. */
+#define SJME_CLASS_ALLOC_LINK \
+	SJME_JNI_CLASS(SJME_PACKAGE_NANOCOAT, AllocLink)
+
 /** The Java allocation pool class. */
 #define SJME_CLASS_ALLOC_POOL SJME_JNI_CLASS(SJME_PACKAGE_NANOCOAT, AllocPool)
+
+/** Allocation sizeof utility. */
+#define SJME_CLASS_ALLOC_SIZEOF \
+	SJME_JNI_CLASS(SJME_PACKAGE_NANOCOAT, AllocSizeOf)
 
 /** The frame class. */
 #define SJME_CLASS_NVM_FRAME SJME_JNI_CLASS(SJME_PACKAGE_NANOCOAT, NvmFrame)

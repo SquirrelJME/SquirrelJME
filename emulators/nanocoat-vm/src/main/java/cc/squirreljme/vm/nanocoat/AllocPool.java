@@ -94,7 +94,7 @@ public final class AllocPool
 	 * @throws VMException If the allocation could not be performed.
 	 * @since 2023/12/14
 	 */
-	public AllocLink alloc(AllocTypeSizeOf __type)
+	public AllocLink alloc(AllocSizeOf __type)
 		throws NullPointerException, VMException
 	{
 		return this.alloc(__type, 0);
@@ -110,7 +110,7 @@ public final class AllocPool
 	 * @throws VMException If the allocation could not be performed.
 	 * @since 2023/12/14
 	 */
-	public AllocLink alloc(AllocTypeSizeOf __type, int __count)
+	public AllocLink alloc(AllocSizeOf __type, int __count)
 		throws IndexOutOfBoundsException, NullPointerException, VMException
 	{
 		return this.alloc(__type.size(__count));

@@ -12,15 +12,62 @@
 #include "sjme/alloc.h"
 #include "frontend/emulator/jniHelper.h"
 
-/**
- * Allocates a pool via @c malloc() and returns the pointer to it.
- *
- * @param size The size of the pool.
- * @param this The front end wrapper.
- * @return The native pointer to the pool.
- * @throws VMException If the pool could not be allocated or initialized.
- * @since 2023/12/08
- */
+jlong SJME_JNI_METHOD(SJME_CLASS_ALLOC_POOL, _1_1alloc)
+	(JNIEnv* env, jclass classy, jlong poolPtr, jint size)
+{
+	sjme_alloc_pool* pool;
+	sjme_errorCode error;
+	void* result;
+
+	if (poolPtr == 0)
+	{
+		sjme_jni_throwVMException(env, SJME_ERROR_NULL_ARGUMENTS);
+		return 0;
+	}
+
+	/* Get the pool to allocate in. */
+	pool = SJME_JLONG_TO_POINTER(sjme_alloc_pool*, poolPtr);
+
+	/* Attempt allocation. */
+	result = NULL;
+	error = SJME_ERROR_UNKNOWN;
+	if (SJME_IS_ERROR(error = sjme_alloc(pool, size, &result)) ||
+		result == NULL)
+	{
+		sjme_jni_throwVMException(env, error);
+		return 0;
+	}
+
+	/* Return the allocated block. */
+	return SJME_POINTER_TO_JLONG(result);
+}
+
+jlong SJME_JNI_METHOD(SJME_CLASS_ALLOC_POOL, _1_1getLink)
+	(JNIEnv* env, jclass classy, jlong blockPtr)
+{
+	sjme_errorCode error;
+	sjme_alloc_link* result;
+
+	if (blockPtr == 0)
+	{
+		sjme_jni_throwVMException(env, SJME_ERROR_NULL_ARGUMENTS);
+		return 0;
+	}
+
+	/* Get the link. */
+	result = NULL;
+	error = SJME_ERROR_UNKNOWN;
+	if (SJME_IS_ERROR(error = sjme_alloc_getLink(
+		SJME_JLONG_TO_POINTER(void*, blockPtr), &result)) ||
+		result == NULL)
+	{
+		sjme_jni_throwVMException(env, error);
+		return 0;
+	}
+
+	return SJME_POINTER_TO_JLONG(result);
+}
+
 jlong SJME_JNI_METHOD(SJME_CLASS_ALLOC_POOL, _1_1poolMalloc)
 	(JNIEnv* env, jclass classy, jint size, jobject this)
 {
