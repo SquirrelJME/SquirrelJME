@@ -39,6 +39,9 @@ typedef struct sjme_payload_rom
 	/** Is this ROM active? */
 	sjme_jboolean isActive;
 
+	/** Is this a library? If not then it is a ROM. */
+	sjme_jboolean isLibrary;
+
 	/** The address of the ROM data. */
 	void* address;
 

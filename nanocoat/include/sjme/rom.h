@@ -129,6 +129,35 @@ struct sjme_rom_suite
 	sjme_rom_suiteFunctions functions;
 };
 
+/**
+ * Combines multiple suites into one.
+ *
+ * @param pool The pool to allocate within.
+ * @param outSuite The output suite.
+ * @param inSuites The input suites.
+ * @param numInSuites The number of input suites.
+ * @return
+ */
+sjme_errorCode sjme_rom_combineSuites(
+	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrOutNotNull sjme_rom_suite** outSuite,
+	sjme_attrInNotNull sjme_rom_suite** inSuites,
+	sjme_attrInPositive sjme_jint numInSuites);
+
+/**
+ * Scans the payload for suites
+ *
+ * @param pool The pool to allocate within.
+ * @param outSuite The output resultant suite.
+ * @param payloadConfig The payload configuration used.
+ * @return Any error status.
+ * @since 2023/12/15
+ */
+sjme_errorCode sjme_rom_scanPayload(
+	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrOutNotNull sjme_rom_suite** outSuite,
+	sjme_attrInNotNull const sjme_payload_config* payloadConfig);
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
