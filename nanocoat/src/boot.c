@@ -27,7 +27,7 @@ sjme_errorCode sjme_nvm_allocReservedPool(
 
 	/* Determine how big the reserved pool should be... */
 	reservedBase = NULL;
-	reservedSize = 64 * 1024;
+	reservedSize = -1;
 	if (SJME_IS_ERROR(error = sjme_alloc(mainPool,
 		reservedSize, (void**)&reservedBase) ||
 		reservedBase == NULL))
