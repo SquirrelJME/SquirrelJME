@@ -52,7 +52,7 @@ sjme_errorCode sjme_nvm_allocReservedPool(
 
 sjme_errorCode sjme_nvm_boot(sjme_alloc_pool* mainPool,
 	sjme_alloc_pool* reservedPool, const sjme_nvm_bootParam* param,
-	sjme_nvm_state** outState, int argc, char** argv)
+	sjme_nvm_state** outState)
 {
 #define FIXED_SUITE_COUNT 16
 	SJME_EXCEPT_VDEF;
@@ -143,10 +143,6 @@ SJME_EXCEPT_WITH(trace):
 			SJME_EXCEPT_TOSS(error);
 	}
 
-	/* Parse the command line arguments for options on running the VM. */
-	if (SJME_JNI_TRUE)
-		sjme_todo("sjme_nvm_boot()");
-	
 	/* Spawn initial task which uses the main arguments. */
 	if (SJME_JNI_TRUE)
 		sjme_todo("sjme_nvm_boot()");

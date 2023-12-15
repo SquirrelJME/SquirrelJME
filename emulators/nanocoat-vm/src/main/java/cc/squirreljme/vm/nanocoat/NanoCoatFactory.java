@@ -67,8 +67,10 @@ public class NanoCoatFactory
 		// Setup virtual suite manager
 		VirtualSuite suite = new VirtualSuite(reservedPool, __suiteManager);
 		
-		// Set the used suite pool
+		// Configure the virtual machine
 		param.setSuite(suite);
+		param.setMainClass(__mainClass);
+		param.setMainArgs(__args);
 		
 		// Setup main virtual machine
 		NvmState state = new NvmState(mainPool, reservedPool, param);

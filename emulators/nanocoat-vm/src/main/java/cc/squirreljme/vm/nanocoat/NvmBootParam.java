@@ -55,6 +55,28 @@ public final class NvmBootParam
 	}
 	
 	/**
+	 * Sets the main arguments.
+	 *
+	 * @param __args The arguments to use.
+	 * @since 2023/12/15
+	 */
+	public void setMainArgs(String[] __args)
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Sets the main class.
+	 *
+	 * @param __mainClass The main class to use.
+	 * @since 2023/12/15
+	 */
+	public void setMainClass(String __mainClass)
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
 	 * Sets the suite handler.
 	 *
 	 * @param __suite The suites to use.

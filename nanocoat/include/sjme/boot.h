@@ -38,6 +38,15 @@ struct sjme_nvm_bootParam
 
 	/** Provides the ability to have a virtual suite. */
 	const sjme_rom_suiteFunctions* virtualSuite;
+
+	/** Main class to start in. */
+	const char* mainClass;
+
+	/** Main class argument count. */
+	sjme_jint mainArgC;
+
+	/** Main class arguments. */
+	const char** mainArgV;
 };
 
 /**
@@ -69,9 +78,8 @@ sjme_errorCode sjme_nvm_boot(
 	sjme_attrInNotNull sjme_alloc_pool* mainPool,
 	sjme_attrInNotNull sjme_alloc_pool* reservedPool,
 	sjme_attrInNotNull const sjme_nvm_bootParam* param,
-	sjme_attrOutNotNull sjme_nvm_state** outState,
-	sjme_attrInValue int argc,
-	sjme_attrInNullable char** argv) sjme_attrCheckReturn;
+	sjme_attrOutNotNull sjme_nvm_state** outState)
+	sjme_attrCheckReturn;
 	
 /**
  * Destroys the virtual machine.
