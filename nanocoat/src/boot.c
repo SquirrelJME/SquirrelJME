@@ -98,10 +98,11 @@ SJME_EXCEPT_WITH(trace):
 	numMergeSuites = 0;
 
 	/* Process payload suites. */
-	if (SJME_IS_ERROR(error = sjme_rom_scanPayload(reservedPool,
-		&mergeSuites[numMergeSuites],
-		result->bootParamCopy->payload)))
-		SJME_EXCEPT_TOSS(error);
+	if (result->bootParamCopy->payload != NULL)
+		if (SJME_IS_ERROR(error = sjme_rom_scanPayload(reservedPool,
+			&mergeSuites[numMergeSuites],
+			result->bootParamCopy->payload)))
+			SJME_EXCEPT_TOSS(error);
 
 	/* Was a suite generated? */
 	if (mergeSuites[numMergeSuites] != NULL)
