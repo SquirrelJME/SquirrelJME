@@ -61,19 +61,20 @@ struct sjme_exceptTrace
 /**
  * Block to declare exception handling start.
  *
- * @param x What to act on as a pivot for exception storage.
+ * @param exceptionState A @c sjme_exceptTrace to act on as a pivot for
+ * exception storage.
  * @since 2023/12/08
  */
-#define SJME_EXCEPT_WITH(x) \
+#define SJME_EXCEPT_WITH(exceptionState) \
     do { \
 		memset((void*)&exceptTrace_sjme, 0, sizeof(exceptTrace_sjme)); \
 		exceptTraceE_sjme = SJME_NUM_ERROR_CODES; \
 		exceptTrace_sjme.file = __FILE__; \
 		exceptTrace_sjme.line = __LINE__; \
 		exceptTrace_sjme.func = __func__; \
-		exceptTrace_sjme.parent = (x); \
-		(x) = &exceptTrace_sjme; \
-		exceptTraceVl_sjme = &(x);\
+		exceptTrace_sjme.parent = (exceptionState); \
+		(exceptionState) = (sjme_exceptTrace*)&exceptTrace_sjme; \
+		exceptTraceVl_sjme = &(exceptionState);\
         exceptTraceE_sjme = \
 			setjmp((*((jmp_buf*)(&exceptTrace_sjme.jumpBuf)))); \
     } while(SJME_JNI_FALSE); \

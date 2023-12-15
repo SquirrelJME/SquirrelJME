@@ -12,6 +12,7 @@
 #include "sjme/allocSizeOf.h"
 #include "sjme/boot.h"
 #include "sjme/debug.h"
+#include "sjme/except.h"
 #include "sjme/nvm.h"
 
 sjme_errorCode sjme_nvm_allocReservedPool(
@@ -53,40 +54,79 @@ sjme_errorCode sjme_nvm_boot(sjme_alloc_pool* mainPool,
 	sjme_alloc_pool* reservedPool, const sjme_nvm_bootParam* param,
 	sjme_nvm_state** outState, int argc, char** argv)
 {
-	sjme_nvm_state* result;
+#define FIXED_SUITE_COUNT 16
+	SJME_EXCEPT_VDEF;
 	sjme_errorCode error;
+	sjme_exceptTrace* trace;
+	volatile sjme_nvm_state* result;
+	volatile sjme_rom_suite* mergeSuites[FIXED_SUITE_COUNT];
+	volatile sjme_jint numMergeSuites;
 	
 	if (param == NULL || outState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
+	/* Initialize trace. */
+	trace = NULL;
+
+SJME_EXCEPT_WITH(trace):
 	/* Set up a reserved pool where all the data structures for the VM go... */
 	/* But only if one does not exist. */
 	if (reservedPool == NULL)
 		if (SJME_IS_ERROR(error = sjme_nvm_allocReservedPool(mainPool,
 			&reservedPool)))
-			return error;
+			SJME_EXCEPT_TOSS(error);
 
 	/* Allocate resultant state. */
 	result = NULL;
 	if (SJME_IS_ERROR(error = sjme_alloc(reservedPool,
 		sizeof(*result), (void**)&result)) || result == NULL)
-		return error;
+		SJME_EXCEPT_TOSS(error);
 
 	/* Make a defensive copy of the boot parameters. */
 	if (SJME_IS_ERROR(error = sjme_alloc_copy(reservedPool,
 		sizeof(sjme_nvm_bootParam),
 		(void**)&result->bootParamCopy, param)) ||
 		result == NULL)
-		return error;
+		SJME_EXCEPT_TOSS(error);
 
 	/* Set parameters accordingly. */
 	result->allocPool = mainPool;
 	result->reservedPool = reservedPool;
 
-	/* Determine the full set of suites that are available for merging. */
-	if (SJME_JNI_TRUE)
-		sjme_todo("sjme_nvm_boot()");
-	
+	/* Initialize base for suite merging. */
+	memset(mergeSuites, 0, sizeof(mergeSuites));
+	numMergeSuites = 0;
+
+	/* Process payload suites. */
+	if (SJME_IS_ERROR(error = sjme_rom_scanPayload(reservedPool,
+		&mergeSuites[numMergeSuites],
+		result->bootParamCopy->payload)))
+		SJME_EXCEPT_TOSS(error);
+
+	/* Was a suite generated? */
+	if (mergeSuites[numMergeSuites] != NULL)
+		numMergeSuites++;
+
+	/* If there is a virtual suite, move it in. */
+	if (result->bootParamCopy->virtualSuite != NULL)
+	{
+		/* Make a virtual suite for this. */
+		if (SJME_IS_ERROR(error = sjme_rom_makeVirtualSuite(reservedPool,
+			&mergeSuites[numMergeSuites],
+			result->bootParamCopy->virtualSuite)))
+			SJME_EXCEPT_TOSS(error);
+
+		/* Was a suite generated? */
+		if (mergeSuites[numMergeSuites] != NULL)
+			numMergeSuites++;
+	}
+
+	/* Merge all the suites together into one. */
+	if (SJME_IS_ERROR(error = sjme_rom_combineSuites(reservedPool,
+		&result->suite, mergeSuites,
+		numMergeSuites)) || result->suite == NULL)
+		SJME_EXCEPT_TOSS(error);
+
 	/* Parse the command line arguments for options on running the VM. */
 	if (SJME_JNI_TRUE)
 		sjme_todo("sjme_nvm_boot()");
@@ -98,6 +138,12 @@ sjme_errorCode sjme_nvm_boot(sjme_alloc_pool* mainPool,
 	/* Return newly created VM. */
 	sjme_todo("sjme_nvm_boot()");
 	return SJME_ERROR_NOT_IMPLEMENTED;
+
+SJME_EXCEPT_FAIL:
+	sjme_todo("Cleanup after failure.");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+
+#undef FIXED_SUITE_COUNT
 }
 
 sjme_errorCode sjme_nvm_destroy(sjme_nvm_state* state, sjme_jint* exitCode)

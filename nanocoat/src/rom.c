@@ -21,6 +21,15 @@ sjme_errorCode sjme_rom_combineSuites(
 	return SJME_ERROR_UNKNOWN;
 }
 
+sjme_errorCode sjme_rom_makeVirtualSuite(
+	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrOutNotNull sjme_rom_suite** outSuite,
+	sjme_attrInNotNull const sjme_rom_suiteFunctions* inFunctions)
+{
+	sjme_todo("Implement this?");
+	return SJME_ERROR_UNKNOWN;
+}
+
 sjme_errorCode sjme_rom_scanPayload(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrOutNotNull sjme_rom_suite** outSuite,

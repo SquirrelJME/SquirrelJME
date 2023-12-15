@@ -973,6 +973,13 @@ typedef struct sjme_alloc_pool sjme_alloc_pool;
 typedef struct sjme_nvm_bootParam sjme_nvm_bootParam;
 
 /**
+ * Standard Suite structure.
+ *
+ * @since 2023/12/12
+ */
+typedef struct sjme_rom_suite sjme_rom_suite;
+
+/**
  * Represents the virtual machine state.
  * 
  * @since 2023/07/28
@@ -993,6 +1000,9 @@ struct sjme_nvm_state
 	
 	/** Hooks for the state. */
 	const sjme_nvm_stateHooks* hooks;
+
+	/* The suite containing all of the libraries. */
+	sjme_rom_suite* suite;
 };
 
 /**

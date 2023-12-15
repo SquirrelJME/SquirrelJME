@@ -44,13 +44,6 @@ typedef struct sjme_rom_library sjme_rom_library;
 typedef struct sjme_rom_libraryCache sjme_rom_libraryCache;
 
 /**
- * Standard Suite structure.
- *
- * @since 2023/12/12
- */
-typedef struct sjme_rom_suite sjme_rom_suite;
-
-/**
  * Internal cache for ROM suites.
  *
  * @since 2023/12/12
@@ -145,10 +138,25 @@ sjme_errorCode sjme_rom_combineSuites(
 	sjme_attrInPositive sjme_jint numInSuites);
 
 /**
+ * Makes a virtual suite from the given functions.
+ *
+ * @param pool The pool to allocate within.
+ * @param outSuite The output suite.
+ * @param inFunctions The functions which define how to access the suite.
+ * @return Any error code.
+ * @since 2023/12/15
+ */
+sjme_errorCode sjme_rom_makeVirtualSuite(
+	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrOutNotNull sjme_rom_suite** outSuite,
+	sjme_attrInNotNull const sjme_rom_suiteFunctions* inFunctions);
+
+/**
  * Scans the payload for suites
  *
  * @param pool The pool to allocate within.
- * @param outSuite The output resultant suite.
+ * @param outSuite The output resultant suite, if there would be nothing in
+ * here then this outputs @c NULL .
  * @param payloadConfig The payload configuration used.
  * @return Any error status.
  * @since 2023/12/15
