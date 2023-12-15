@@ -18,6 +18,12 @@ sjme_errorCode sjme_rom_combineSuites(
 	sjme_attrInNotNull sjme_rom_suite** inSuites,
 	sjme_attrInPositive sjme_jint numInSuites)
 {
+	if (pool == NULL || outSuite == NULL || inSuites == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (numInSuites < 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
 	sjme_todo("Implement this?");
 	return SJME_ERROR_UNKNOWN;
 }
@@ -27,6 +33,9 @@ sjme_errorCode sjme_rom_makeVirtualSuite(
 	sjme_attrOutNotNull sjme_rom_suite** outSuite,
 	sjme_attrInNotNull const sjme_rom_suiteFunctions* inFunctions)
 {
+	if (pool == NULL || outSuite == NULL || inFunctions == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
 	sjme_todo("Implement this?");
 	return SJME_ERROR_UNKNOWN;
 }
