@@ -31,7 +31,7 @@ jlong SJME_JNI_METHOD(SJME_CLASS_NVM_STATE, _1_1nvmBoot)
 		SJME_JLONG_TO_POINTER(sjme_alloc_pool*, poolPtr),
 		SJME_JLONG_TO_POINTER(sjme_alloc_pool*, reservedPtr),
 		SJME_JLONG_TO_POINTER(const sjme_nvm_bootParam*, paramPtr),
-		&state, 0, NULL)) || state == NULL)
+		&state)) || state == NULL)
 	{
 		sjme_jni_throwVMException(env, error);
 		return 0;
