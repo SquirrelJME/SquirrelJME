@@ -86,7 +86,6 @@ void sjme_genericMessage(const char* file, int line,
 	fflush(stderr);
 }
 
-#if defined(SJME_CONFIG_DEBUG)
 void sjme_messageR(const char* file, int line,
 	const char* func, sjme_jboolean isBlank, const char* message, ...)
 {
@@ -110,7 +109,6 @@ void sjme_messageV(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 		(isBlank ? "" : "DB"), message,
 		args);
 }
-#endif
 
 sjme_errorCode sjme_dieR(const char* file, int line,
 	const char* func, const char* message, ...)
