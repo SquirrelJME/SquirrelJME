@@ -97,10 +97,10 @@ typedef struct sjme_treeFindFunc
  * @param at The character sequence to decode.
  * @param stringP Adjustable pointer to the string, when the character is
  * decoded then this will increment accordingly.
- * @return The decoded character.
+ * @return The decoded character or @c -1 if it is not valid.
  * @since 2023/07/27
  */
-sjme_jchar sjme_decodeUtfChar(const char* at, const char** stringP);
+sjme_jint sjme_decodeUtfChar(const char* at, const char** stringP);
 
 /**
  * Initializes the random number generator.
@@ -155,6 +155,16 @@ sjme_errorCode sjme_randomNextIntMax(
 	sjme_attrInPositiveNonZero sjme_jint maxValue);
 
 /**
+ * Returns the character at the given index.
+ *
+ * @param string The string to get from.
+ * @param index The index within the string.
+ * @return The given character or @c -1 if not valid.
+ * @since 2023/12/16
+ */
+sjme_jint sjme_stringCharAt(const char* string, sjme_jint index);
+
+/**
  * Hashes the given string in accordance to @c String::hashCode() .
  * 
  * @param string The string to hash.
@@ -167,7 +177,7 @@ sjme_jint sjme_stringHash(const char* string);
  * Returns the length of the string in accordance to @c String::length() .
  * 
  * @param string The string to get the length of.
- * @return The string length.
+ * @return The string length or @c -1 if it is not valid.
  * @since 2023/07/29
  */
 sjme_jint sjme_stringLength(const char* string);

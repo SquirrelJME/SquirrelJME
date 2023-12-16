@@ -11,7 +11,7 @@
 #include "sjme/util.h"
 #include "sjme/debug.h"
 
-sjme_jchar sjme_decodeUtfChar(const char* at, const char** stringP)
+sjme_jint sjme_decodeUtfChar(const char* at, const char** stringP)
 {
 	if (at == NULL)
 		return -1;
@@ -90,13 +90,62 @@ sjme_jint sjme_stringHash(const char* string)
 	return result;
 }
 
-sjme_jint sjme_stringLength(const char* string)
+sjme_jint sjme_stringCharAt(const char* string, sjme_jint index)
 {
+	sjme_jint at;
+	sjme_jchar c;
+	const char* p;
+
+	/* Not valid? */
 	if (string == NULL)
 		return -1;
-		
-	sjme_todo("sjme_stringLength()");
+
+	/* Read until end of string. */
+	at = 0;
+	for (p = string; *p != 0;)
+	{
+		/* Decode character. */
+		c = sjme_decodeUtfChar(p, &p);
+
+		/* Not valid? */
+		if (c < 0)
+			return -1;
+
+		/* If this is the desired character then return it. */
+		if ((at++) == index)
+			return c;
+	}
+
+	/* Use whatever length we found. */
 	return -1;
+}
+
+sjme_jint sjme_stringLength(const char* string)
+{
+	sjme_jint result;
+	sjme_jchar c;
+	const char* p;
+
+	if (string == NULL)
+		return -1;
+
+	/* Read until end of string. */
+	result = 0;
+	for (p = string; *p != 0;)
+	{
+		/* Decode character. */
+		c = sjme_decodeUtfChar(p, &p);
+
+		/* Not valid? */
+		if (c < 0)
+			return -1;
+
+		/* Counts as a single character. */
+		result++;
+	}
+
+	/* Use whatever length we found. */
+	return result;
 }
 
 sjme_jint sjme_treeFind(void* in, void* what,
