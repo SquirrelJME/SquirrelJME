@@ -47,6 +47,12 @@ struct sjme_nvm_bootParam
 
 	/** Main class arguments. */
 	const char** mainArgV;
+
+	/** System property count, must be multiple of 2. */
+	sjme_jint sysPropsC;
+
+	/** System properties, must be multiple of 2. */
+	const char** sysPropsV;
 };
 
 /**

@@ -14,6 +14,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOError;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
@@ -189,8 +191,26 @@ public final class AllocPool
 		if (__strings == null)
 			throw new NullPointerException("NARG");
 		
+		return this.strDupArray(Arrays.asList(__strings));
+	}
+	
+	/**
+	 * Duplicates and returns an entire array.
+	 *
+	 * @param __strings The strings to get the array form of.
+	 * @return The resultant duplicated string array.
+	 * @throws NullPointerException On null arguments.
+	 * @throws VMException If it could be created.
+	 * @since 2023/12/16
+	 */
+	public CharStarPointerArray strDupArray(List<String> __strings)
+		throws NullPointerException, VMException
+	{
+		if (__strings == null)
+			throw new NullPointerException("NARG");
+		
 		// The number of strings being written, remember their base offset
-		int count = __strings.length;
+		int count = __strings.size();
 		int[] baseOff = new int[count];
 		
 		// It is optimal to keep the allocated memory a single chunk of bytes
@@ -208,7 +228,7 @@ public final class AllocPool
 			// Write each string accordingly
 			for (int i = 0; i < count; i++)
 			{
-				String string = __strings[i];
+				String string = __strings.get(i);
 				
 				// Skip if null
 				if (string == null)

@@ -18,7 +18,10 @@ import cc.squirreljme.emulator.vm.VirtualMachine;
 import cc.squirreljme.jdwp.JDWPFactory;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Instantiates and initializes the NanoCoat VM.
@@ -71,6 +74,18 @@ public class NanoCoatFactory
 		param.setSuite(suite);
 		param.setMainClass(reservedPool.strDup(__mainClass));
 		param.setMainArgs(reservedPool.strDupArray(__args));
+		
+		// Determine all system properties to copy
+		List<String> rawSysProps = new ArrayList<>(
+			__sysProps.size() * 2);
+		for (Map.Entry<String, String> entry : __sysProps.entrySet())
+		{
+			rawSysProps.add(Objects.toString(entry.getKey(), ""));
+			rawSysProps.add(Objects.toString(entry.getValue(), ""));
+		}
+		
+		// Set all system properties
+		param.setSysProps(reservedPool.strDupArray(rawSysProps));
 		
 		// Setup main virtual machine
 		NvmState state = new NvmState(mainPool, reservedPool, param);
