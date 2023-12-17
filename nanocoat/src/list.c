@@ -9,6 +9,7 @@
 
 #include "sjme/list.h"
 #include "sjme/alloc.h"
+#include "sjme/debug.h"
 
 sjme_errorCode sjme_list_allocR(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
@@ -46,4 +47,52 @@ sjme_errorCode sjme_list_allocR(
 	/* Give the result! */
 	*outList = result;
 	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_list_flattenArgCV(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrOutNotNull sjme_list_sjme_lpcstr** outList,
+	sjme_attrInPositive sjme_jint argC,
+	sjme_attrInNotNull sjme_lpcstr* argV)
+{
+	sjme_todo("Implement this?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+sjme_errorCode sjme_list_flattenR(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInPositive sjme_jint elementSize,
+	sjme_attrInPositive sjme_jint elementOffset,
+	sjme_attrInValue sjme_jint pointerCheck,
+	sjme_attrInNotNull sjme_basicTypeId basicTypeId,
+	sjme_attrInPositive sjme_jint numPointerStars,
+	sjme_attrInPositive sjme_jint length,
+	sjme_attrOutNotNull void** outList,
+	...)
+{
+	sjme_message("sjme_list_flattenVR(%p, %d, %d, %d, %d, %d, %d, %p)",
+		inPool, elementSize, elementOffset, pointerCheck,
+		basicTypeId, numPointerStars, length, outList);
+
+	sjme_todo("Implement this?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+sjme_errorCode sjme_list_flattenVR(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInPositive sjme_jint elementSize,
+	sjme_attrInPositive sjme_jint elementOffset,
+	sjme_attrInValue sjme_jint pointerCheck,
+	sjme_attrInNotNull sjme_basicTypeId basicTypeId,
+	sjme_attrInPositive sjme_jint numPointerStars,
+	sjme_attrInPositive sjme_jint length,
+	sjme_attrOutNotNull void** outList,
+	va_list elements)
+{
+	sjme_message("sjme_list_flattenVR(%p, %d, %d, %d, %d, %d, %d, %p)",
+		inPool, elementSize, elementOffset, pointerCheck,
+		basicTypeId, numPointerStars, length, outList);
+
+	sjme_todo("Implement this?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
 }

@@ -16,6 +16,7 @@
 #ifndef SQUIRRELJME_TASK_H
 #define SQUIRRELJME_TASK_H
 
+#include "list.h"
 #include "sjme/nvm.h"
 #include "sjme/rom.h"
 
@@ -69,17 +70,11 @@ typedef struct sjme_task_startConfig
 	/** Main class to start in. */
 	sjme_lpcstr mainClass;
 
-	/** Main class argument count. */
-	sjme_jint mainArgC;
+	/** Main arguments. */
+	sjme_list_sjme_lpcstr* mainArgs;
 
-	/** Main class arguments. */
-	sjme_lpcstr* mainArgV;
-
-	/** System property count, must be multiple of 2. */
-	sjme_jint sysPropsC;
-
-	/** System properties, must be multiple of 2. */
-	sjme_lpcstr* sysPropsV;
+	/** System properties. */
+	sjme_list_sjme_lpcstr* sysProps;
 } sjme_task_startConfig;
 
 /**

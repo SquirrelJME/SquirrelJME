@@ -19,6 +19,7 @@
 #include "sjme/nvm.h"
 #include "sjme/alloc.h"
 #include "sjme/rom.h"
+#include "sjme/list.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -42,17 +43,11 @@ struct sjme_nvm_bootParam
 	/** Main class to start in. */
 	sjme_lpcstr mainClass;
 
-	/** Main class argument count. */
-	sjme_jint mainArgC;
+	/** Main arguments. */
+	sjme_list_sjme_lpcstr* mainArgs;
 
-	/** Main class arguments. */
-	sjme_lpcstr* mainArgV;
-
-	/** System property count, must be multiple of 2. */
-	sjme_jint sysPropsC;
-
-	/** System properties, must be multiple of 2. */
-	sjme_lpcstr* sysPropsV;
+	/** System properties. */
+	sjme_list_sjme_lpcstr* sysProps;
 };
 
 /**

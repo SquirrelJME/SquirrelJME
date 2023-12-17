@@ -146,37 +146,12 @@ SJME_EXCEPT_WITH(trace):
 			SJME_EXCEPT_TOSS(error);
 	}
 
-#if defined(SJME_CONFIG_DEBUG)
-	/* Debug. */
-	sjme_message("Main class: %s", result->bootParamCopy->mainClass);
-
-	sjme_message("Main arg: %d at %p",
-		result->bootParamCopy->mainArgC,
-		result->bootParamCopy->mainArgV);
-	for (i = 0, n = result->bootParamCopy->mainArgC; i < n; i++)
-	{
-		sjme_message("Main arg[%d] at %p",
-			i, result->bootParamCopy->mainArgV[i]);
-
-		if (result->bootParamCopy->mainArgV[i] != NULL)
-			sjme_message("Main arg[%d]: %s",
-				i, result->bootParamCopy->mainArgV[i]);
-	}
-
-	for (i = 0, n = result->bootParamCopy->sysPropsC & (~1); i < n; i += 2)
-		sjme_message("System Property: %s=%s",
-			result->bootParamCopy->sysPropsV[i],
-			result->bootParamCopy->sysPropsV[i + 1]);
-#endif
-
 	/* Setup task details. */
 	initTaskConfig.stdOut = SJME_TASK_PIPE_REDIRECT_TYPE_TERMINAL;
 	initTaskConfig.stdErr = SJME_TASK_PIPE_REDIRECT_TYPE_TERMINAL;
 	initTaskConfig.mainClass = result->bootParamCopy->mainClass;
-	initTaskConfig.mainArgC = result->bootParamCopy->mainArgC;
-	initTaskConfig.mainArgV = result->bootParamCopy->mainArgV;
-	initTaskConfig.sysPropsC = result->bootParamCopy->sysPropsC;
-	initTaskConfig.sysPropsV = result->bootParamCopy->sysPropsV;
+	initTaskConfig.mainArgs = result->bootParamCopy->mainArgs;
+	initTaskConfig.sysProps = result->bootParamCopy->sysProps;
 
 	/* Spawn initial task which uses the main arguments. */
 	if (SJME_IS_ERROR(error = sjme_task_start(result,

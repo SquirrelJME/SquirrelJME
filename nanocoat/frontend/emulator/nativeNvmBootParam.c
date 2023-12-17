@@ -14,7 +14,7 @@
 #include "sjme/alloc.h"
 
 void SJME_JNI_METHOD(SJME_CLASS_NVM_BOOT_PARAM, _1_1setMainArgs)
-	(JNIEnv* env, jclass classy, jlong thisPtr, jint argc, jlong argvPtr)
+	(JNIEnv* env, jclass classy, jlong thisPtr, jlong listPtr)
 {
 	sjme_nvm_bootParam* param;
 
@@ -28,8 +28,7 @@ void SJME_JNI_METHOD(SJME_CLASS_NVM_BOOT_PARAM, _1_1setMainArgs)
 	param = SJME_JLONG_TO_POINTER(sjme_nvm_bootParam*, thisPtr);
 
 	/* Set main arguments. */
-	param->mainArgC = argc;
-	param->mainArgV = SJME_JLONG_TO_POINTER(sjme_lpcstr*, argvPtr);
+	param->mainArgs = SJME_JLONG_TO_POINTER(sjme_list_sjme_lpcstr*, listPtr);
 }
 
 void SJME_JNI_METHOD(SJME_CLASS_NVM_BOOT_PARAM, _1_1setMainClass)
@@ -70,7 +69,7 @@ void SJME_JNI_METHOD(SJME_CLASS_NVM_BOOT_PARAM, _1_1setSuite)
 }
 
 void SJME_JNI_METHOD(SJME_CLASS_NVM_BOOT_PARAM, _1_1setSysProps)
-	(JNIEnv* env, jclass classy, jlong thisPtr, jint argc, jlong argvPtr)
+	(JNIEnv* env, jclass classy, jlong thisPtr, jlong listPtr)
 {
 	sjme_nvm_bootParam* param;
 
@@ -84,7 +83,6 @@ void SJME_JNI_METHOD(SJME_CLASS_NVM_BOOT_PARAM, _1_1setSysProps)
 	param = SJME_JLONG_TO_POINTER(sjme_nvm_bootParam*, thisPtr);
 
 	/* Set system property chain. */
-	param->sysPropsC = argc;
-	param->sysPropsV = SJME_JLONG_TO_POINTER(sjme_lpcstr*, argvPtr);
+	param->sysProps = SJME_JLONG_TO_POINTER(sjme_list_sjme_lpcstr*, listPtr);
 }
 

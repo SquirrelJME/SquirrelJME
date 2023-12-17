@@ -16,6 +16,8 @@
 #ifndef SQUIRRELJME_LIST_H
 #define SQUIRRELJME_LIST_H
 
+#include <stdarg.h>
+
 #include "sjme/nvm.h"
 
 /* Anti-C++. */
@@ -102,6 +104,9 @@ SJME_LIST_DECLARE(sjme_jint, 0);
 /** List of @c sjme_juint. */
 SJME_LIST_DECLARE(sjme_juint, 0);
 
+/** List of @c sjme_lpstr. */
+SJME_LIST_DECLARE(sjme_lpstr, 0);
+
 /** List of @c sjme_lpcstr. */
 SJME_LIST_DECLARE(sjme_lpcstr, 0);
 
@@ -138,6 +143,114 @@ sjme_errorCode sjme_list_allocR(
 		sizeof(SJME_LIST_ELEMENT_TYPE(type, numPointerStars)), \
 		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
 		sizeof(**(outList)))
+
+/**
+ * Flattens a variadic number of arguments into a list.
+ *
+ * @param inPool The pool to allocate within.
+ * @param elementSize The element size.
+ * @param elementOffset The element offset.
+ * @param pointerCheck Pointer check value.
+ * @param basicTypeId The type code of the input.
+ * @param numPointerStars The number of pointer stars.
+ * @param length The length of the list.
+ * @param outList The resultant list.
+ * @param ... The list elements.
+ * @return Any resultant error code.
+ * @since 2023/12/17
+ */
+sjme_errorCode sjme_list_flattenR(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInPositive sjme_jint elementSize,
+	sjme_attrInPositive sjme_jint elementOffset,
+	sjme_attrInValue sjme_jint pointerCheck,
+	sjme_attrInNotNull sjme_basicTypeId basicTypeId,
+	sjme_attrInPositive sjme_jint numPointerStars,
+	sjme_attrInPositive sjme_jint length,
+	sjme_attrOutNotNull void** outList,
+	...);
+
+/**
+ * Flattens a variadic number of arguments into a list.
+ *
+ * @param inPool The pool to allocate within.
+ * @param type The element type.
+ * @param numPointerStars The number of pointer stars.
+ * @param length The length of the list.
+ * @param outList The resultant list.
+ * @param ... The list elements.
+ * @return Any resultant error code.
+ * @since 2023/12/17
+ */
+#define sjme_list_flatten(inPool, type, numPointerStars, \
+	inLength, outList, ...) \
+	sjme_list_flattenR((inPool), \
+		sizeof(SJME_LIST_ELEMENT_TYPE(type, numPointerStars)), \
+		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
+		sizeof(**(outList)), SJME_BASIC_TYPEOF(type), (numPointerStars), \
+		(inLength), (void**)(outList), __VA_ARGS__)
+
+/**
+ * Flattens a variadic number of arguments into a list.
+ *
+ * @param inPool The pool to allocate within.
+ * @param elementSize The element size.
+ * @param elementOffset The element offset.
+ * @param pointerCheck Pointer check value.
+ * @param basicType The type code of the input.
+ * @param numPointerStars The number of pointer stars.
+ * @param length The length of the list.
+ * @param outList The resultant list.
+ * @param elements The list elements.
+ * @return Any resultant error code.
+ * @since 2023/12/17
+ */
+sjme_errorCode sjme_list_flattenVR(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInPositive sjme_jint elementSize,
+	sjme_attrInPositive sjme_jint elementOffset,
+	sjme_attrInValue sjme_jint pointerCheck,
+	sjme_attrInNotNull sjme_basicTypeId basicType,
+	sjme_attrInPositive sjme_jint numPointerStars,
+	sjme_attrInPositive sjme_jint length,
+	sjme_attrOutNotNull void** outList,
+	va_list elements);
+
+/**
+ * Flattens a variadic number of arguments into a list.
+ *
+ * @param inPool The pool to allocate within.
+ * @param type The element type.
+ * @param numPointerStars The number of pointer stars.
+ * @param length The length of the list.
+ * @param outList The resultant list.
+ * @param elements The list elements.
+ * @return Any resultant error code.
+ * @since 2023/12/17
+ */
+#define sjme_list_flattenV(inPool, type, numPointerStars, \
+	inLength, outList, elements) \
+	sjme_list_flattenVR((inPool), \
+		sizeof(SJME_LIST_ELEMENT_TYPE(type, numPointerStars)), \
+		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
+		sizeof(**(outList)), SJME_BASIC_TYPEOF(type), (numPointerStars), \
+		(inLength), (void**)(outList), (elements))
+
+/**
+ * Flattens argc/argv style lists.
+ *
+ * @param inPool The pool to allocate within.
+ * @param outList The output list.
+ * @param argC The argument count.
+ * @param argV The arguments.
+ * @return Any resultant error.
+ * @since 2023/12/17
+ */
+sjme_errorCode sjme_list_flattenArgCV(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrOutNotNull sjme_list_sjme_lpcstr** outList,
+	sjme_attrInPositive sjme_jint argC,
+	sjme_attrInNotNull sjme_lpcstr* argV);
 
 /*--------------------------------------------------------------------------*/
 

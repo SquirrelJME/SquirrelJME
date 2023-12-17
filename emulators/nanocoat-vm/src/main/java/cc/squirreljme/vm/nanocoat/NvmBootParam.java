@@ -63,7 +63,6 @@ public final class NvmBootParam
 	public void setMainArgs(CharStarPointerArray __args)
 	{
 		NvmBootParam.__setMainArgs(this._link.pointerAddress(),
-			(__args == null ? 0 : __args.size()),
 			(__args == null ? 0 : __args.pointerAddress()));
 	}
 	
@@ -103,7 +102,6 @@ public final class NvmBootParam
 	public void setSysProps(CharStarPointerArray __args)
 	{
 		NvmBootParam.__setSysProps(this._link.pointerAddress(),
-			(__args == null ? 0 : __args.size()),
 			(__args == null ? 0 : __args.pointerAddress()));
 	}
 	
@@ -111,13 +109,11 @@ public final class NvmBootParam
 	 * Sets the main arguments.
 	 *
 	 * @param __thisPtr The structure pointer.
-	 * @param __argC The argument count.
-	 * @param __argVPtr The main arguments string pointers.
+	 * @param __listPtr The main arguments string pointers.
 	 * @throws VMException If it could not be set.
 	 * @since 2023/12/16
 	 */
-	private static native void __setMainArgs(long __thisPtr, int __argC,
-		long __argVPtr)
+	private static native void __setMainArgs(long __thisPtr, long __listPtr)
 		throws VMException;
 	
 	/**
@@ -146,12 +142,10 @@ public final class NvmBootParam
 	 * Sets the system properties.
 	 *
 	 * @param __thisPtr The structure pointer.
-	 * @param __argC The argument count.
-	 * @param __argVPtr The system properties as string pointers.
+	 * @param __listPtr The system properties as string pointers.
 	 * @throws VMException If it could not be set.
 	 * @since 2023/12/16
 	 */
-	private static native void __setSysProps(long __thisPtr, int __argC,
-		long __argVPtr)
+	private static native void __setSysProps(long __thisPtr, long __listPtr)
 		throws VMException;
 }
