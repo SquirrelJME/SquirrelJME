@@ -124,8 +124,10 @@ sjme_errorCode sjme_list_flattenArgCV(
 {
 	sjme_errorCode error;
 	sjme_list_newData newData;
-	sjme_jint extraFill, i;
+	sjme_list_sjme_lpcstr* result;
+	sjme_jint extraFill, i, len;
 	sjme_lpcstr arg;
+	void* destPtr;
 
 	if (inPool == NULL || outList == NULL || argV == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -142,8 +144,11 @@ sjme_errorCode sjme_list_flattenArgCV(
 		if (arg == NULL)
 			continue;
 
-		/* Count string along with null terminator. */
-		extraFill += sjme_stringLength(arg);
+		/* Determine length of string. */
+		/* Use normal string length because we treat everything as a char */
+		/* and we do not want to handle modified UTF-8. */
+		/* Count string along with NUL terminator. */
+		extraFill += strlen(arg) + 1;
 	}
 
 	/* Overflow? */
@@ -151,17 +156,44 @@ sjme_errorCode sjme_list_flattenArgCV(
 		return SJME_ERROR_INVALID_ARGUMENT;
 
 	/* Common initialization of new lists. */
-#if 0
 	error = SJME_ERROR_UNKNOWN;
 	memset(&newData, 0, sizeof(newData));
 	if (SJME_IS_ERROR(error = sjme_list_newInit(&newData,
-		inPool, elementSize, rootElementSize, elementOffset, pointerCheck,
-		basicTypeId, numPointerStars, length, extraFill)))
+		inPool, sizeof(sjme_lpcstr),
+		sizeof(sjme_lpcstr),
+		offsetof(sjme_list_sjme_lpcstr, elements), 4,
+		SJME_BASIC_TYPE_ID_OBJECT, 1, argC,
+		extraFill)))
 		return error;
-#endif
 
-	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Map result. */
+	result = (sjme_list_sjme_lpcstr*)newData.outList;
+
+	/* The destination pointer is at the very end of the element set. */
+	destPtr = &result->elements[argC];
+
+	/* Copy strings into sub-splices. */
+	for (i = 0; i < argC; i++)
+	{
+		/* Get next, skip any NULLs. */
+		arg = argV[i];
+		if (arg == NULL)
+			continue;
+
+		/* Element points to this address. */
+		result->elements[i] = destPtr;
+
+		/* Copy entire string chunk here. */
+		len = strlen(arg) + 1;
+		memmove(destPtr, arg, len);
+
+		/* Move up pointer. */
+		destPtr = (void*)(((intptr_t)destPtr) + len);
+	}
+
+	/* Output resultant list. */
+	*outList = result;
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_list_newAR(

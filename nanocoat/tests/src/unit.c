@@ -207,6 +207,12 @@ sjme_testResult sjme_unitOperatorIR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 			a, opInfo->symbol, b);
 		SJME_VA_SHORT(SJME_TEST_RESULT_FAIL);
 	}
+	else
+	{
+		sjme_messageR(file, line, func, SJME_JNI_FALSE,
+			"PASS: %d %s %d",
+			a, opInfo->symbol, b);
+	}
 	
 	return SJME_TEST_RESULT_PASS;
 }
@@ -231,6 +237,12 @@ sjme_testResult sjme_unitOperatorLR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 			"ASSERT: %p %s %p",
 			a, opInfo->symbol, b);
 		SJME_VA_SHORT(SJME_TEST_RESULT_FAIL);
+	}
+	else
+	{
+		sjme_messageR(file, line, func, SJME_JNI_FALSE,
+			"PASS: %p %s %p",
+			a, opInfo->symbol, b);
 	}
 	
 	return SJME_TEST_RESULT_PASS;
@@ -257,7 +269,86 @@ sjme_testResult sjme_unitOperatorPR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 			a, opInfo->symbol, b);
 		SJME_VA_SHORT(SJME_TEST_RESULT_FAIL);
 	}
+	else
+	{
+		sjme_messageR(file, line, func, SJME_JNI_FALSE,
+			"PASS: %p %s %p",
+			a, opInfo->symbol, b);
+	}
 	
+	return SJME_TEST_RESULT_PASS;
+}
+
+sjme_testResult sjme_unitOperatorSR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_attrInValue sjme_unitOperator operator,
+	sjme_attrInNotNull sjme_test* test,
+	sjme_attrInNullable sjme_lpcstr a,
+	sjme_attrInNullable sjme_lpcstr b,
+	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr format, ...)
+{
+	SJME_VA_DEF;
+	const sjme_unitOperatorInfo* opInfo;
+	sjme_jint lenA, lenB;
+	int abComp;
+
+	/* Strings can only be equal or not equal. */
+	if (operator != SJME_UNIT_OPERATOR_EQUAL &&
+		operator != SJME_UNIT_OPERATOR_NOT_EQUAL)
+		SJME_VA_SHORT(SJME_TEST_RESULT_FAIL);
+	opInfo = &sjme_unitOperatorInfos[operator];
+
+	/* Get length of both. */
+	lenA = (a != NULL ? strlen(a) : -1);
+	lenB = (b != NULL ? strlen(b) : -1);
+
+	/* Compare lengths first. */
+	if (!opInfo->function(sizeof(sjme_jint), &lenA, &lenB))
+	{
+		sjme_messageR(file, line, func, SJME_JNI_FALSE,
+			"ASSERT: len(%s) %s len(%s)",
+			(a != NULL ? a : "NULL"),
+			opInfo->symbol,
+			(b != NULL ? b : "NULL"));
+		SJME_VA_SHORT(SJME_TEST_RESULT_FAIL);
+	}
+	else
+	{
+		sjme_messageR(file, line, func, SJME_JNI_FALSE,
+			"PASS: len(%s) %s len(%s)",
+			(a != NULL ? a : "NULL"),
+			opInfo->symbol,
+			(b != NULL ? b : "NULL"));
+	}
+
+	/* Stop if either are NULL. */
+	if (lenA < 0 || lenB < 0)
+		return SJME_TEST_RESULT_PASS;
+
+	/* Compare the two strings, normalize mismatch to 1. */
+	abComp = strcmp(a, b);
+	if (abComp != 0)
+		abComp = 1;
+
+	/* Did this not match? */
+	if (abComp != (operator == SJME_UNIT_OPERATOR_EQUAL ? 0 : 1))
+	{
+		sjme_messageR(file, line, func, SJME_JNI_FALSE,
+			"ASSERT: %s %s %s",
+			(a != NULL ? a : "NULL"),
+			opInfo->symbol,
+			(b != NULL ? b : "NULL"));
+		SJME_VA_SHORT(SJME_TEST_RESULT_FAIL);
+	}
+	else
+	{
+		sjme_messageR(file, line, func, SJME_JNI_FALSE,
+			"PASS: %s %s %s",
+			(a != NULL ? a : "NULL"),
+			opInfo->symbol,
+			(b != NULL ? b : "NULL"));
+	}
+
+	/* Success! */
 	return SJME_TEST_RESULT_PASS;
 }
 

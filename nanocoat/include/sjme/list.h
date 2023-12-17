@@ -292,7 +292,10 @@ sjme_errorCode sjme_list_newVAR(
 		(inLength), (void**)(outList), (elements))
 
 /**
- * Flattens argc/argv style lists.
+ * Flattens argc/argv style lists into a single allocation where the pointers
+ * to the arguments point within the same allocation link. The main purpose of
+ * this is to have to not have to handle going through the list to free
+ * all the containing pointers accordingly.
  *
  * @param inPool The pool to allocate within.
  * @param outList The output list.
