@@ -79,7 +79,7 @@ typedef union sjme_vmConfig_value
 	sjme_jint jint;
 
 	/** String value. */
-	const char* jstring;
+	sjme_lpcstr jstring;
 } sjme_vmConfig_value;
 
 /**
@@ -93,7 +93,7 @@ typedef struct sjme_vmConfig_setting
 	sjme_vmConfig_categoryType category;
 
 	/** The name of this setting. */
-	const char* name;
+	sjme_lpcstr name;
 
 	/** The type of setting this is. */
 	sjme_vmConfig_settingType type;

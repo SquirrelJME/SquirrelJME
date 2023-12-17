@@ -345,26 +345,26 @@ void JVM_FillInStackTrace(libjvm_re_long param_1, libjvm_re_long* param_2)
 }
 
 libjvm_re_undefined8 JVM_FindClassFromBootLoader(libjvm_re_long param_1,
-	char* param_2)
+	sjme_lpstr param_2)
 {
 	sjme_todo("Impl?");
 }
 
 libjvm_re_undefined8* JVM_FindClassFromCaller(libjvm_re_long param_1,
-	char* param_2, libjvm_re_undefined param_3, libjvm_re_long* param_4,
+	sjme_lpstr param_2, libjvm_re_undefined param_3, libjvm_re_long* param_4,
 	libjvm_re_long* param_5)
 {
 	sjme_todo("Impl?");
 }
 
 libjvm_re_undefined8* JVM_FindClassFromClass(libjvm_re_long param_1,
-	char* param_2, libjvm_re_undefined param_3, libjvm_re_long* param_4)
+	sjme_lpstr param_2, libjvm_re_undefined param_3, libjvm_re_long* param_4)
 {
 	sjme_todo("Impl?");
 }
 
 libjvm_re_undefined8* JVM_FindClassFromClassLoader(libjvm_re_long param_1,
-	char* param_2, libjvm_re_undefined param_3, libjvm_re_undefined8* param_4,
+	sjme_lpstr param_2, libjvm_re_undefined param_3, libjvm_re_undefined8* param_4,
 	char param_5)
 {
 	sjme_todo("Impl?");
@@ -388,7 +388,7 @@ libjvm_re_undefined8 JVM_FindPrimitiveClass(libjvm_re_long param_1,
 	sjme_todo("Impl?");
 }
 
-libjvm_re_undefined4 JVM_FindSignal(char* param_1)
+libjvm_re_undefined4 JVM_FindSignal(sjme_lpstr param_1)
 {
 	sjme_todo("Impl?");
 }
@@ -625,7 +625,7 @@ ushort JVM_GetFieldIxModifiers(libjvm_re_long param_1,
 	sjme_todo("Impl?");
 }
 
-void JVM_GetHostName(char* param_1, libjvm_re_int param_2)
+void JVM_GetHostName(sjme_lpstr param_1, libjvm_re_int param_2)
 {
 	sjme_todo("Impl?");
 }

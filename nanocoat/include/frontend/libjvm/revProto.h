@@ -199,17 +199,17 @@ void JVM_Exit(libjvm_re_int param_1);
 void JVM_FillInStackTrace(libjvm_re_long param_1, libjvm_re_long* param_2);
 
 libjvm_re_undefined8 JVM_FindClassFromBootLoader(libjvm_re_long param_1,
-	char* param_2);
+	sjme_lpstr param_2);
 
 libjvm_re_undefined8* JVM_FindClassFromCaller(libjvm_re_long param_1,
-	char* param_2, libjvm_re_undefined param_3, libjvm_re_long* param_4,
+	sjme_lpstr param_2, libjvm_re_undefined param_3, libjvm_re_long* param_4,
 	libjvm_re_long* param_5);
 
 libjvm_re_undefined8* JVM_FindClassFromClass(libjvm_re_long param_1,
-	char* param_2, libjvm_re_undefined param_3, libjvm_re_long* param_4);
+	sjme_lpstr param_2, libjvm_re_undefined param_3, libjvm_re_long* param_4);
 
 libjvm_re_undefined8* JVM_FindClassFromClassLoader(libjvm_re_long param_1,
-	char* param_2, libjvm_re_undefined param_3, libjvm_re_undefined8* param_4,
+	sjme_lpstr param_2, libjvm_re_undefined param_3, libjvm_re_undefined8* param_4,
 	char param_5);
 
 void JVM_FindLibraryEntry(libjvm_re_undefined8 param_1,
@@ -221,7 +221,7 @@ libjvm_re_undefined8 JVM_FindLoadedClass(libjvm_re_long param_1,
 libjvm_re_undefined8 JVM_FindPrimitiveClass(libjvm_re_long param_1,
 	libjvm_re_undefined8 param_2);
 
-libjvm_re_undefined4 JVM_FindSignal(char* param_1);
+libjvm_re_undefined4 JVM_FindSignal(sjme_lpstr param_1);
 
 libjvm_re_ulong JVM_FreeMemory(void);
 
@@ -338,7 +338,7 @@ libjvm_re_undefined8 JVM_GetFieldAnnotations(libjvm_re_long param_1,
 ushort JVM_GetFieldIxModifiers(libjvm_re_long param_1,
 	libjvm_re_undefined8* param_2, libjvm_re_int param_3);
 
-void JVM_GetHostName(char* param_1, libjvm_re_int param_2);
+void JVM_GetHostName(sjme_lpstr param_1, libjvm_re_int param_2);
 
 libjvm_re_undefined8 JVM_GetInheritedAccessControlContext(
 	libjvm_re_long param_1);

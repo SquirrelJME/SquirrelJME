@@ -11,7 +11,7 @@
 #include "sjme/util.h"
 #include "sjme/debug.h"
 
-sjme_jint sjme_decodeUtfChar(const char* at, const char** stringP)
+sjme_jint sjme_decodeUtfChar(sjme_lpcstr at, sjme_lpcstr* stringP)
 {
 	if (at == NULL)
 		return -1;
@@ -63,11 +63,11 @@ sjme_errorCode sjme_randomNextIntMax(
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
-sjme_jint sjme_stringHash(const char* string)
+sjme_jint sjme_stringHash(sjme_lpcstr string)
 {
 	sjme_jint result;
 	sjme_jchar c;
-	const char* p;
+	sjme_lpcstr p;
 	
 	if (string == NULL)
 		return 0;
@@ -90,11 +90,11 @@ sjme_jint sjme_stringHash(const char* string)
 	return result;
 }
 
-sjme_jint sjme_stringCharAt(const char* string, sjme_jint index)
+sjme_jint sjme_stringCharAt(sjme_lpcstr string, sjme_jint index)
 {
 	sjme_jint at;
 	sjme_jchar c;
-	const char* p;
+	sjme_lpcstr p;
 
 	/* Not valid? */
 	if (string == NULL)
@@ -120,11 +120,11 @@ sjme_jint sjme_stringCharAt(const char* string, sjme_jint index)
 	return -1;
 }
 
-sjme_jint sjme_stringLength(const char* string)
+sjme_jint sjme_stringLength(sjme_lpcstr string)
 {
 	sjme_jint result;
 	sjme_jchar c;
-	const char* p;
+	sjme_lpcstr p;
 
 	if (string == NULL)
 		return -1;

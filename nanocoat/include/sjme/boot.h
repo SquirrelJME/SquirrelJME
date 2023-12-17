@@ -40,19 +40,19 @@ struct sjme_nvm_bootParam
 	const sjme_rom_suiteFunctions* virtualSuite;
 
 	/** Main class to start in. */
-	const char* mainClass;
+	sjme_lpcstr mainClass;
 
 	/** Main class argument count. */
 	sjme_jint mainArgC;
 
 	/** Main class arguments. */
-	const char** mainArgV;
+	sjme_lpcstr* mainArgV;
 
 	/** System property count, must be multiple of 2. */
 	sjme_jint sysPropsC;
 
 	/** System properties, must be multiple of 2. */
-	const char** sysPropsV;
+	sjme_lpcstr* sysPropsV;
 };
 
 /**

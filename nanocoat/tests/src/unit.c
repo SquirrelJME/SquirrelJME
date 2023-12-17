@@ -47,7 +47,7 @@ typedef sjme_jboolean (*sjme_unitOperatorFunc)(size_t size, void* a, void* b);
 typedef struct sjme_unitOperatorInfo
 {
 	/** The operator symbol. */
-	const char* symbol;
+	sjme_lpcstr symbol;
 	
 	/** The function for comparison. */
 	sjme_unitOperatorFunc function;
@@ -167,7 +167,7 @@ static sjme_jboolean sjme_unitShortingEmit(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_attrInNotNull sjme_test* test,
 	sjme_attrInRange(SJME_TEST_RESULT_PASS, SJME_TEST_RESULT_FAIL)
 		sjme_testResult type,
-	sjme_attrInNullable const char* format, va_list vaArgs)
+	sjme_attrInNullable sjme_lpcstr format, va_list vaArgs)
 {
 	if (test == NULL)
 		return sjme_die("No test structure?");
@@ -191,7 +191,7 @@ sjme_testResult sjme_unitOperatorIR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_attrInNotNull sjme_test* test,
 	sjme_attrInValue sjme_jint a,
 	sjme_attrInValue sjme_jint b,
-	sjme_attrInNullable sjme_attrFormatArg const char* format, ...)
+	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr format, ...)
 {
 	SJME_VA_DEF;
 	const sjme_unitOperatorInfo* opInfo;
@@ -216,7 +216,7 @@ sjme_testResult sjme_unitOperatorLR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_attrInNotNull sjme_test* test,
 	sjme_attrInNullable sjme_jobject a,
 	sjme_attrInNullable sjme_jobject b,
-	sjme_attrInNullable sjme_attrFormatArg const char* format, ...)
+	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr format, ...)
 {
 	SJME_VA_DEF;
 	const sjme_unitOperatorInfo* opInfo;
@@ -241,7 +241,7 @@ sjme_testResult sjme_unitOperatorPR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_attrInNotNull sjme_test* test,
 	sjme_attrInNullable void* a,
 	sjme_attrInNullable void* b,
-	sjme_attrInNullable sjme_attrFormatArg const char* format, ...)
+	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr format, ...)
 {
 	SJME_VA_DEF;
 	const sjme_unitOperatorInfo* opInfo;
@@ -263,7 +263,7 @@ sjme_testResult sjme_unitOperatorPR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 
 sjme_testResult sjme_unitFailR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_attrInNotNull sjme_test* test,
-	sjme_attrInNullable sjme_attrFormatArg const char* format, ...)
+	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr format, ...)
 {
 	SJME_VA_DEF;
 	
@@ -276,7 +276,7 @@ sjme_testResult sjme_unitFailR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 
 sjme_testResult sjme_unitSkipR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_attrInNotNull sjme_test* test,
-	sjme_attrInNullable sjme_attrFormatArg const char* format, ...)
+	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr format, ...)
 {
 	SJME_VA_DEF;
 	

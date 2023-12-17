@@ -32,9 +32,9 @@ extern "C" {
 /*--------------------------------------------------------------------------*/
 
 #define SJME_DEBUG_DECL_FILE_LINE_FUNC \
-	sjme_attrInNullable const char* file, \
+	sjme_attrInNullable sjme_lpcstr file, \
 	sjme_attrInValue int line, \
-	sjme_attrInNullable const char* func
+	sjme_attrInNullable sjme_lpcstr func
 
 #if defined(SJME_CONFIG_RELEASE)
 	/** File, line, and function. */
@@ -63,7 +63,7 @@ extern "C" {
  */
 void sjme_messageR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_attrInValue sjme_jboolean isBlank,
-	sjme_attrInNullable sjme_attrFormatArg const char* message, ...)
+	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr message, ...)
 	sjme_attrFormatOuter(4, 5);
 
 #if defined(SJME_CONFIG_DEBUG)
@@ -80,7 +80,7 @@ void sjme_messageR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  */
 void sjme_messageV(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_attrInValue sjme_jboolean isBlank,
-	sjme_attrInNullable sjme_attrFormatArg const char* message,
+	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr message,
 	va_list args);
 #endif
 
@@ -106,7 +106,7 @@ void sjme_messageV(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * @since 2023/11/11 
  */
 sjme_errorCode sjme_dieR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
-	sjme_attrInNullable sjme_attrFormatArg const char* message, ...)
+	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr message, ...)
 	sjme_attrReturnNever sjme_attrFormatOuter(3, 4);
 
 /**
@@ -142,7 +142,7 @@ sjme_errorCode sjme_dieR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * @since 2021/02/28 
  */
 void sjme_todoR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
-	sjme_attrInNullable sjme_attrFormatArg const char* message, ...)
+	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr message, ...)
 	sjme_attrReturnNever sjme_attrFormatOuter(3, 4);
 
 /**
@@ -164,8 +164,8 @@ void sjme_todoR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * a standard @c fprintf to @c stderr will be used.
  * @since 2023/12/05 
  */
-typedef sjme_jboolean (*sjme_danglingMessageFunc)(const char* fullMessage,
-	const char* partMessage);
+typedef sjme_jboolean (*sjme_danglingMessageFunc)(sjme_lpcstr fullMessage,
+	sjme_lpcstr partMessage);
 
 /** The dangling message implementation to use. */
 extern sjme_danglingMessageFunc sjme_danglingMessage;

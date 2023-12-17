@@ -15,7 +15,7 @@
 #include "sjme/payload.h"
 #include "test.h"
 
-int main(int argc, char** argv)
+int main(int argc, sjme_lpstr* argv)
 {
 	sjme_nvm_bootParam bootConfig;
 	sjme_nvm_state* state;

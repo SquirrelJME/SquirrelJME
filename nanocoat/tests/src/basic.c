@@ -29,7 +29,7 @@ const sjme_availableTest sjme_availableTests[] =
  * @return The exit code of the test.
  * @since 2023/08/09
  */
-int main(int argc, char** argv)
+int main(int argc, sjme_lpstr* argv)
 {
 	const sjme_availableTest* found;
 	sjme_testResult result;

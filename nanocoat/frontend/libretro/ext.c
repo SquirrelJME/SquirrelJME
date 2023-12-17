@@ -13,7 +13,7 @@
 #include "frontend/libretro/shared.h"
 
 static retro_proc_address_t RETRO_CALLCONV sjme_libretro_extLookup(
-	const char* sym)
+	sjme_lpcstr sym)
 {
 	return NULL;
 }

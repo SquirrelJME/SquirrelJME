@@ -14,8 +14,8 @@
 #include "3rdparty/libretro/libretro.h"
 #include "frontend/libretro/shared.h"
 
-static sjme_jboolean sjme_libretro_danglingMessage(const char* fullMessage,
-	const char* partMessage)
+static sjme_jboolean sjme_libretro_danglingMessage(sjme_lpcstr fullMessage,
+	sjme_lpcstr partMessage)
 {
 	struct retro_message retroMessage;
 	struct retro_log_callback retroLogCallback;

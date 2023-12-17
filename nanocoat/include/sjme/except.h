@@ -40,13 +40,13 @@ struct sjme_exceptTrace
 	volatile jmp_buf jumpBuf;
 
 	/** The file. */
-	const char* volatile file;
+	sjme_lpcstr volatile file;
 
 	/** The line. */
 	volatile sjme_jint line;
 
 	/** The function. */
-	const char* volatile func;
+	sjme_lpcstr volatile func;
 
 	/** Bring in error code from previous stack. */
 	volatile sjme_errorCode prevError;
@@ -142,7 +142,7 @@ sjme_errorCode sjme_except_gracefulDeathR(
 	sjme_attrInNotNull sjme_nvm_frame* frame,
 	sjme_attrInRange(SJME_NUM_ERROR_CODES, SJME_ERROR_NONE)
 		sjme_errorCode errorCode,
-	sjme_attrInNotNull sjme_attrFormatArg const char* message, ...)
+	sjme_attrInNotNull sjme_attrFormatArg sjme_lpcstr message, ...)
 	sjme_attrReturnNever sjme_attrFormatOuter(5, 6);
 
 /**

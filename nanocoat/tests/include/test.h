@@ -77,7 +77,7 @@ typedef sjme_testResult (*sjme_basicTestFunc)(sjme_test* test);
 typedef struct sjme_availableTest
 {
 	/** The name of the test. */
-	const char* name;
+	sjme_lpcstr name;
 	
 	/** The function which contains the test code. */
 	sjme_basicTestFunc function;

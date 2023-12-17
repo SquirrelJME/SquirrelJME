@@ -20,7 +20,7 @@
 
 sjme_danglingMessageFunc sjme_danglingMessage = NULL;
 
-const char* sjme_shortenFile(const char* file)
+sjme_lpcstr sjme_shortenFile(sjme_lpcstr file)
 {
 	sjme_jint i, n;
 	
@@ -41,8 +41,8 @@ const char* sjme_shortenFile(const char* file)
 	return file;
 }
 
-void sjme_genericMessage(const char* file, int line,
-	const char* func, const char* prefix, const char* format, va_list args)
+void sjme_genericMessage(sjme_lpcstr file, int line,
+	sjme_lpcstr func, sjme_lpcstr prefix, sjme_lpcstr format, va_list args)
 {
 	va_list copy;
 	char buf[DEBUG_BUF];
@@ -86,8 +86,8 @@ void sjme_genericMessage(const char* file, int line,
 	fflush(stderr);
 }
 
-void sjme_messageR(const char* file, int line,
-	const char* func, sjme_jboolean isBlank, const char* message, ...)
+void sjme_messageR(sjme_lpcstr file, int line,
+	sjme_lpcstr func, sjme_jboolean isBlank, sjme_lpcstr message, ...)
 {
 	va_list list;
 	
@@ -102,7 +102,7 @@ void sjme_messageR(const char* file, int line,
 
 void sjme_messageV(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_jboolean isBlank,
-	sjme_attrInNullable sjme_attrFormatArg const char* message,
+	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr message,
 	va_list args)
 {
 	sjme_genericMessage(file, line, func,
@@ -110,8 +110,8 @@ void sjme_messageV(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 		args);
 }
 
-sjme_errorCode sjme_dieR(const char* file, int line,
-	const char* func, const char* message, ...)
+sjme_errorCode sjme_dieR(sjme_lpcstr file, int line,
+	sjme_lpcstr func, sjme_lpcstr message, ...)
 {
 	va_list list;
 	va_list copy;
@@ -135,8 +135,8 @@ sjme_errorCode sjme_dieR(const char* file, int line,
 	return SJME_ERROR_UNKNOWN;
 }
 
-void sjme_todoR(const char* file, int line,
-	const char* func, const char* message, ...)
+void sjme_todoR(sjme_lpcstr file, int line,
+	sjme_lpcstr func, sjme_lpcstr message, ...)
 {
 	va_list list;
 	

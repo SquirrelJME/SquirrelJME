@@ -166,6 +166,13 @@ typedef int32_t sjme_jint;
 typedef uint32_t sjme_juint;
 
 /**
+ * Pointer to C string.
+ *
+ * @since 2023/12/17
+ */
+typedef char* sjme_lpstr;
+
+/**
  * Pointer to constant C string.
  *
  * @since 2023/12/17
@@ -448,10 +455,10 @@ typedef struct sjme_static_constValue
 	sjme_jdouble jdouble;
 	
 	/** String value. */
-	const char* jstring;
+	sjme_lpcstr jstring;
 	
 	/** Class name. */
-	const char* jclass;
+	sjme_lpcstr jclass;
 } sjme_static_constValue;
 
 /**
@@ -465,7 +472,7 @@ typedef struct sjme_static_fieldType
 	sjme_jint hashCode;
 	
 	/** The field descriptor. */
-	const char* descriptor;
+	sjme_lpcstr descriptor;
 	
 	/** The basic type. */
 	sjme_basicTypeId basicType;
@@ -474,7 +481,7 @@ typedef struct sjme_static_fieldType
 typedef struct sjme_static_classField
 {
 	/** Field name. */
-	const char* name;
+	sjme_lpcstr name;
 	
 	/** The field type. */
 	const sjme_static_fieldType* type;
@@ -551,7 +558,7 @@ typedef struct sjme_static_methodType
 	sjme_jint hashCode;
 	
 	/** The descriptor for the method type. */
-	const char* descriptor;
+	sjme_lpcstr descriptor;
 	
 	/** The return type. */
 	const sjme_static_fieldType* returnType;
@@ -566,7 +573,7 @@ typedef struct sjme_static_methodType
 typedef struct sjme_static_classMethod
 {
 	/** Method name. */
-	const char* name;
+	sjme_lpcstr name;
 	
 	/** Flags. */
 	sjme_jint flags;
@@ -589,7 +596,7 @@ typedef struct sjme_static_classMethods
 
 typedef struct sjme_static_classInterface
 {
-	const char* interfaceName;
+	sjme_lpcstr interfaceName;
 } sjme_static_classInterface;
 
 typedef struct sjme_static_classInterfaces
@@ -604,7 +611,7 @@ typedef struct sjme_static_classInterfaces
 typedef struct sjme_static_resource
 {
 	/** The resource path. */
-	const char* path;
+	sjme_lpcstr path;
 	
 	/** The hash for the path. */
 	sjme_jint pathHash;
@@ -619,7 +626,7 @@ typedef struct sjme_static_resource
 typedef struct sjme_static_linkage_data_classObject
 {
 	/** The class name. */
-	const char* className;
+	sjme_lpcstr className;
 } sjme_static_linkage_data_classObject;
 
 typedef struct sjme_static_linkage_data_fieldAccess
@@ -631,37 +638,37 @@ typedef struct sjme_static_linkage_data_fieldAccess
 	sjme_jboolean isStore;
 	
 	/** The source method name. */
-	const char* sourceMethodName;
+	sjme_lpcstr sourceMethodName;
 	
 	/** The source method type. */
-	const char* sourceMethodType;
+	sjme_lpcstr sourceMethodType;
 	
 	/** The target class. */
-	const char* targetClass;
+	sjme_lpcstr targetClass;
 	
 	/** The target field name. */
-	const char* targetFieldName;
+	sjme_lpcstr targetFieldName;
 	
 	/** The target field type. */
-	const char* targetFieldType;
+	sjme_lpcstr targetFieldType;
 } sjme_static_linkage_data_fieldAccess;
 
 typedef struct sjme_static_linkage_data_invokeSpecial
 {
 	/** The source method name. */
-	const char* sourceMethodName;
+	sjme_lpcstr sourceMethodName;
 	
 	/** The source method type. */
-	const char* sourceMethodType;
+	sjme_lpcstr sourceMethodType;
 	
 	/** The target class. */
-	const char* targetClass;
+	sjme_lpcstr targetClass;
 	
 	/** The target method name. */
-	const char* targetMethodName;
+	sjme_lpcstr targetMethodName;
 	
 	/** The target method type. */
-	const char* targetMethodType;
+	sjme_lpcstr targetMethodType;
 } sjme_static_linkage_data_invokeSpecial;
 
 typedef struct sjme_static_linkage_data_invokeNormal
@@ -670,25 +677,25 @@ typedef struct sjme_static_linkage_data_invokeNormal
 	sjme_jboolean isStatic;
 
 	/** The source method name. */
-	const char* sourceMethodName;
+	sjme_lpcstr sourceMethodName;
 	
 	/** The source method type. */
-	const char* sourceMethodType;
+	sjme_lpcstr sourceMethodType;
 	
 	/** The target class. */
-	const char* targetClass;
+	sjme_lpcstr targetClass;
 	
 	/** The target method name. */
-	const char* targetMethodName;
+	sjme_lpcstr targetMethodName;
 	
 	/** The target method type. */
-	const char* targetMethodType;
+	sjme_lpcstr targetMethodType;
 } sjme_static_linkage_data_invokeNormal;
 
 typedef struct sjme_static_linkage_data_stringObject
 {
 	/** The string value. */
-	const char* string;
+	sjme_lpcstr string;
 } sjme_static_linkage_data_stringObject;
 
 typedef union sjme_static_linkage_data

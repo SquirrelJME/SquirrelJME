@@ -112,7 +112,7 @@ struct sjme_nvm_frameTreadAccessor
 	size_t size;
 	
 	/** The name of the type. */
-	const char* name;
+	sjme_lpcstr name;
 	
 	/** The error code when the top type does not match. */
 	sjme_errorCode errorInvalidTop;

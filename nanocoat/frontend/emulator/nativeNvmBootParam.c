@@ -29,7 +29,7 @@ void SJME_JNI_METHOD(SJME_CLASS_NVM_BOOT_PARAM, _1_1setMainArgs)
 
 	/* Set main arguments. */
 	param->mainArgC = argc;
-	param->mainArgV = SJME_JLONG_TO_POINTER(const char**, argvPtr);
+	param->mainArgV = SJME_JLONG_TO_POINTER(sjme_lpcstr*, argvPtr);
 }
 
 void SJME_JNI_METHOD(SJME_CLASS_NVM_BOOT_PARAM, _1_1setMainClass)
@@ -47,7 +47,7 @@ void SJME_JNI_METHOD(SJME_CLASS_NVM_BOOT_PARAM, _1_1setMainClass)
 	param = SJME_JLONG_TO_POINTER(sjme_nvm_bootParam*, thisPtr);
 
 	/* Set main class. */
-	param->mainClass = SJME_JLONG_TO_POINTER(const char*, stringPtr);
+	param->mainClass = SJME_JLONG_TO_POINTER(sjme_lpcstr, stringPtr);
 }
 
 void SJME_JNI_METHOD(SJME_CLASS_NVM_BOOT_PARAM, _1_1setSuite)
@@ -85,6 +85,6 @@ void SJME_JNI_METHOD(SJME_CLASS_NVM_BOOT_PARAM, _1_1setSysProps)
 
 	/* Set system property chain. */
 	param->sysPropsC = argc;
-	param->sysPropsV = SJME_JLONG_TO_POINTER(const char**, argvPtr);
+	param->sysPropsV = SJME_JLONG_TO_POINTER(sjme_lpcstr*, argvPtr);
 }
 
