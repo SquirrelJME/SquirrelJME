@@ -24,8 +24,8 @@ typedef struct sjme_list_newData
 	/** The allocation size of the list. */
 	sjme_jint allocSize;
 
-	/** The resultant pointer. */
-	void** outList;
+	/** The resultant list pointer. */
+	void* outList;
 } sjme_list_newData;
 
 static sjme_errorCode sjme_list_newInit(
@@ -165,6 +165,7 @@ sjme_errorCode sjme_list_newAR(
 {
 	sjme_errorCode error;
 	sjme_list_newData newData;
+	sjme_jint at;
 
 	/* Common initialization of new lists. */
 	error = SJME_ERROR_UNKNOWN;
@@ -174,8 +175,19 @@ sjme_errorCode sjme_list_newAR(
 		basicTypeId, numPointerStars, length, 0)))
 		return error;
 
-	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Store list length. */
+	(*((sjme_jint*)newData.outList)) = length;
+
+	/* Store elements from array argument. */
+	for (at = 0; at < length; at++)
+	{
+		sjme_todo("Implement this?");
+		return SJME_ERROR_NOT_IMPLEMENTED;
+	}
+
+	/* Return resultant list. */
+	*outList = newData.outList;
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_list_newVR(
@@ -218,6 +230,7 @@ sjme_errorCode sjme_list_newVAR(
 {
 	sjme_errorCode error;
 	sjme_list_newData newData;
+	sjme_jint at;
 
 	/* Common initialization of new lists. */
 	error = SJME_ERROR_UNKNOWN;
@@ -227,6 +240,17 @@ sjme_errorCode sjme_list_newVAR(
 		basicTypeId, numPointerStars, length, 0)))
 		return error;
 
-	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Store list length. */
+	(*((sjme_jint*)newData.outList)) = length;
+
+	/* Store elements from variadic arguments. */
+	for (at = 0; at < length; at++)
+	{
+		sjme_todo("Implement this?");
+		return SJME_ERROR_NOT_IMPLEMENTED;
+	}
+
+	/* Return resultant list. */
+	*outList = newData.outList;
+	return SJME_ERROR_NONE;
 }
