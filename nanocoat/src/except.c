@@ -10,10 +10,10 @@
 #include "sjme/except.h"
 #include "sjme/debug.h"
 
-void sjme_genericMessage(const char* file, int line,
-	const char* func, const char* prefix, const char* format, va_list args);
+void sjme_genericMessage(sjme_lpcstr file, int line,
+	sjme_lpcstr func, sjme_lpcstr prefix, sjme_lpcstr format, va_list args);
 
-const char* sjme_shortenFile(const char* file);
+sjme_lpcstr sjme_shortenFile(sjme_lpcstr file);
 
 sjme_errorCode sjme_except_printStackTraceR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_errorCode errorCode, volatile sjme_exceptTrace* exceptTrace)
@@ -69,7 +69,7 @@ sjme_errorCode sjme_except_gracefulDeathR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_attrInNotNull sjme_nvm_frame* frame,
 	sjme_attrInRange(SJME_NUM_ERROR_CODES, SJME_ERROR_NONE)
 		sjme_errorCode errorCode,
-	sjme_attrInNotNull sjme_attrFormatArg const char* message, ...)
+	sjme_attrInNotNull sjme_attrFormatArg sjme_lpcstr message, ...)
 {
 #if defined(SJME_CONFIG_DEBUG)
 	va_list args;
