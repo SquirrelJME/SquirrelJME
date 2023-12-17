@@ -69,6 +69,21 @@ extern "C" {
 			elements[sjme_flexibleArrayCount]; \
 	} SJME_LIST_NAME(type, numPointerStars)
 
+/**
+ * Calculates the static size of a list.
+ *
+ * @param type The element type of the list.
+ * @param numPointerStars The number of pointer stars.
+ * @param count The length of the list.
+ * @return The resultant length of the list.
+ * @since 2023/12/17
+ */
+#define SJME_SIZEOF_LIST(type, numPointerStars, count) \
+	(sizeof(SJME_LIST_NAME(type, numPointerStars)) + \
+	(offsetof(SJME_LIST_NAME(type, numPointerStars), elements) - \
+		offsetof(SJME_LIST_NAME(type, numPointerStars), elements)) + \
+	(sizeof(SJME_LIST_ELEMENT_TYPE(type, numPointerStars)) * (size_t)(count)))
+
 /** List of @c sjme_jbyte. */
 SJME_LIST_DECLARE(sjme_jbyte, 0);
 
@@ -89,6 +104,40 @@ SJME_LIST_DECLARE(sjme_juint, 0);
 
 /** List of @c sjme_lpcstr. */
 SJME_LIST_DECLARE(sjme_lpcstr, 0);
+
+/**
+ * Allocates a given list generically.
+ *
+ * @param inPool The pool to allocate within.
+ * @param inLength The length of the list.
+ * @param outList The output list.
+ * @param elementSize The size of the list elements.
+ * @param elementOffset The offset of elements in the list.
+ * @param pointerCheck A check to see if it is a valid pointer.
+ * @return Any resultant error code, if any.
+ * @since 2023/12/17
+ */
+sjme_errorCode sjme_list_allocR(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInPositive sjme_jint inLength,
+	sjme_attrOutNotNull void** outList,
+	sjme_attrInPositive sjme_jint elementSize,
+	sjme_attrInPositive sjme_jint elementOffset,
+	sjme_attrInValue sjme_jint pointerCheck);
+
+/**
+ * Allocates the given list.
+ *
+ * @param inPool The pool to allocate within.
+ * @return Any error state.
+ * @since 2023/12/17
+ */
+#define sjme_list_alloc(inPool, inLength, outList, type, numPointerStars) \
+	sjme_list_allocR((inPool), (inLength), \
+		(void**)(outList), \
+		sizeof(SJME_LIST_ELEMENT_TYPE(type, numPointerStars)), \
+		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
+		sizeof(**(outList)))
 
 /*--------------------------------------------------------------------------*/
 

@@ -58,6 +58,9 @@ typedef struct sjme_test
 {
 	/** Base jump point for short circuits. */
 	jmp_buf jumpPoint;
+
+	/** Allocation pool for tests, so one not need be setup. */
+	sjme_alloc_pool* pool;
 } sjme_test;
 
 /**

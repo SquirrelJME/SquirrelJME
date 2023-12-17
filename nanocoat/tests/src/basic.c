@@ -10,10 +10,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "sjme/nvm.h"
-#include "sjme/debug.h"
-#include "test.h"
 #include "proto.h"
+#include "sjme/alloc.h"
+#include "sjme/debug.h"
+#include "sjme/nvm.h"
+#include "test.h"
 
 const sjme_availableTest sjme_availableTests[] =
 {
@@ -35,6 +36,8 @@ int main(int argc, sjme_lpstr* argv)
 	sjme_testResult result;
 	sjme_test test;
 	sjme_jint i, jumpId;
+	void* chunk;
+	sjme_jint chunkLen;
 	
 	if (argc <= 1)
 	{
@@ -64,6 +67,17 @@ int main(int argc, sjme_lpstr* argv)
 	
 	/* Setup test. */
 	memset(&test, 0, sizeof(test));
+
+	/* Setup base allocation pool. */
+	chunkLen = 4096;
+	chunk = alloca(chunkLen);
+	if (chunk == NULL)
+		sjme_message("Could not preallocate pool.");
+
+	/* Initialize pool. */
+	if (SJME_IS_ERROR(sjme_alloc_poolInitStatic(&test.pool,
+		chunk, chunkLen)) || test.pool == NULL)
+		sjme_message("Could not initialize pre-allocated pool.");
 
 	/* Set jump point for going back. */
 	jumpId = setjmp(test.jumpPoint);
