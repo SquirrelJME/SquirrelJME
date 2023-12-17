@@ -42,6 +42,7 @@ static sjme_errorCode sjme_list_newInit(
 	sjme_attrInPositive sjme_jint extraFill)
 {
 	sjme_errorCode error;
+	sjme_list_sjme_jint* fakeList;
 
 	if (inPool == NULL || newData == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -72,7 +73,9 @@ static sjme_errorCode sjme_list_newInit(
 		return error;
 
 	/* Store list length. */
-	(*((sjme_jint*)newData->outList)) = length;
+	fakeList = (sjme_list_sjme_jint*)newData->outList;
+	fakeList->length = length;
+	fakeList->elementSize = elementSize;
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -89,6 +92,7 @@ sjme_errorCode sjme_list_allocR(
 	void* result;
 	sjme_errorCode error;
 	sjme_jint size;
+	sjme_list_sjme_jint* fakeList;
 
 	if (inPool == NULL || outList == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -108,8 +112,10 @@ sjme_errorCode sjme_list_allocR(
 		result == NULL)
 		return error;
 
-	/* Set size, it is always at the start. */
-	*((sjme_jint*)result) = inLength;
+	/* Set sizes of the resultant list. */
+	fakeList = (sjme_list_sjme_jint*)result;
+	fakeList->length = inLength;
+	fakeList->elementSize = elementSize;
 
 	/* Give the result! */
 	*outList = result;

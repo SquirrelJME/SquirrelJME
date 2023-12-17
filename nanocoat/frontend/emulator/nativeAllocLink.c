@@ -12,6 +12,15 @@
 #include "sjme/alloc.h"
 #include "frontend/emulator/jniHelper.h"
 
+void SJME_JNI_METHOD(SJME_CLASS_ALLOC_LINK, _1_1read)
+	(JNIEnv* env, jclass classy, jlong blockPtr, jint at,
+		jbyteArray buf, jint off, jint len)
+{
+	/* Use the get operation to "put" the bytes from native memory. */
+	(*env)->SetByteArrayRegion(env, buf, off, len,
+		SJME_JLONG_TO_POINTER(jbyte*, blockPtr + at));
+}
+
 jint SJME_JNI_METHOD(SJME_CLASS_ALLOC_LINK, _1_1size)
 	(JNIEnv* env, jclass classy, jlong linkPtr)
 {

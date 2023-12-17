@@ -60,7 +60,7 @@ public final class NvmBootParam
 	 * @param __args The arguments to use.
 	 * @since 2023/12/15
 	 */
-	public void setMainArgs(CharStarPointerArray __args)
+	public void setMainArgs(FlatList<CharStarPointer> __args)
 	{
 		NvmBootParam.__setMainArgs(this._link.pointerAddress(),
 			(__args == null ? 0 : __args.pointerAddress()));
@@ -99,7 +99,7 @@ public final class NvmBootParam
 	 * @param __args The arguments to use.
 	 * @since 2023/12/16
 	 */
-	public void setSysProps(CharStarPointerArray __args)
+	public void setSysProps(FlatList<CharStarPointer> __args)
 	{
 		NvmBootParam.__setSysProps(this._link.pointerAddress(),
 			(__args == null ? 0 : __args.pointerAddress()));

@@ -46,6 +46,8 @@ SJME_TEST_DECLARE(testList)
 	/* Was the size set? */
 	sjme_unitEqualI(test, ppList->length, 10,
 		"List wrong size?");
+	sjme_unitEqualI(test, ppList->elementSize, sizeof(sjme_jint**),
+		"Wrong element size?");
 
 	/* Check that the link is the correct size. */
 	sjme_unitEqualI(test, link->allocSize,
@@ -60,7 +62,10 @@ SJME_TEST_DECLARE(testList)
 		sjme_unitFail(test, "Could not build variadic list?");
 
 	/* Test resultant list values. */
-	sjme_unitEqualI(test, varList->length, 5, "Length invalid?");
+	sjme_unitEqualI(test, varList->length, 5,
+		"Length invalid?");
+	sjme_unitEqualI(test, varList->elementSize, sizeof(sjme_jint),
+		"Element size invalid?");
 	for (i = 0; i < 5; i++)
 		sjme_unitEqualI(test, varList->elements[i], i + 1,
 			"Variadic element %d not set correctly?", i);
@@ -72,7 +77,10 @@ SJME_TEST_DECLARE(testList)
 		sjme_unitFail(test, "Could not build array list?");
 
 	/* Test resultant list values. */
-	sjme_unitEqualI(test, arrayList->length, 5, "Length invalid?");
+	sjme_unitEqualI(test, arrayList->length, 5,
+		"Length invalid?");
+	sjme_unitEqualI(test, arrayList->elementSize, sizeof(sjme_jint),
+		"Element size invalid?");
 	for (i = 0; i < 5; i++)
 		sjme_unitEqualI(test, arrayList->elements[i], i + 1,
 			"Array element %d not set correctly?", i);

@@ -64,6 +64,7 @@ sjme_errorCode sjme_nvm_boot(sjme_alloc_pool* mainPool,
 	sjme_rom_suite* volatile mergeSuites[FIXED_SUITE_COUNT];
 	volatile sjme_jint numMergeSuites;
 	sjme_task_startConfig initTaskConfig;
+	sjme_nvm_task* initTask;
 	
 	if (param == NULL || outState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -154,8 +155,9 @@ SJME_EXCEPT_WITH(trace):
 	initTaskConfig.sysProps = result->bootParamCopy->sysProps;
 
 	/* Spawn initial task which uses the main arguments. */
+	initTask = NULL;
 	if (SJME_IS_ERROR(error = sjme_task_start(result,
-		&initTaskConfig, NULL)))
+		&initTaskConfig, &initTask)) || initTask == NULL)
 		SJME_EXCEPT_TOSS(error);
 	
 	/* Return newly created VM. */

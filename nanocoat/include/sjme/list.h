@@ -66,6 +66,9 @@ extern "C" {
 		/** The length of this type. */ \
 		sjme_jint length; \
 	 \
+		/** The element size of this type. */ \
+		sjme_jint elementSize; \
+	 \
 		/** The elements in the list. */ \
 		SJME_LIST_ELEMENT_TYPE(type, numPointerStars) \
 			elements[sjme_flexibleArrayCount]; \

@@ -13,51 +13,64 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.AbstractList;
 
 /**
- * An array of pointers to {@link CharStarPointer}.
+ * Represents a flat native list, base class as there can be sub-forms of this
+ * depending on the data that is represented.
  *
- * @since 2023/12/16
+ * @param <E> The type of element that is contained.
+ * @since 2023/12/17
  */
-public final class CharStarPointerArray
-	extends AbstractList<CharStarPointer>
+public abstract class FlatList<E>
+	extends AbstractList<E>
 	implements Pointer
 {
-	/** The size of this list. */
-	protected final int size;
-	
-	/** The data link storing the bytes. */
+	/** The link that contains the list. */
 	protected final AllocLink link;
 	
+	/** Cached list length. */
+	private volatile int _length =
+		-1;
+	
+	/** Cached element size. */
+	private volatile int _elementSize =
+		-1;
+	
 	/**
-	 * Initializes the pointer array.
-	 *
-	 * @param __count The number of entries in the array.
-	 * @param __link The link to the memory of the pointer.
+	 * Initializes the flat list.
+	 * 
+	 * @param __link The link used.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2023/12/16
+	 * @since 2023/12/17
 	 */
-	public CharStarPointerArray(int __count, AllocLink __link)
+	public FlatList(AllocLink __link)
 		throws NullPointerException
 	{
-		if (__link == null)
-			throw new NullPointerException("NARG");
-		
-		this.size = __count;
 		this.link = __link;
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 * @since 2023/12/16
+	 * Returns the size of each element in the list.
+	 *
+	 * @return The element size.
+	 * @since 2023/12/17
 	 */
-	@Override
-	public CharStarPointer get(int __dx)
+	public int elementSize()
 	{
 		throw Debugging.todo();
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2023/12/16
+	 * @since 2023/12/17
+	 */
+	@Override
+	public E get(int __dx)
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/12/17
 	 */
 	@Override
 	public long pointerAddress()
@@ -67,11 +80,21 @@ public final class CharStarPointerArray
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2023/12/16
+	 * @since 2023/12/17
+	 */
+	@Override
+	public E set(int __dx, E __v)
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/12/17
 	 */
 	@Override
 	public int size()
 	{
-		return this.size;
+		throw Debugging.todo();
 	}
 }

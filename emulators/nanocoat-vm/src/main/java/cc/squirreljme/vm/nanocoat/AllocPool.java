@@ -10,9 +10,9 @@
 package cc.squirreljme.vm.nanocoat;
 
 import cc.squirreljme.emulator.vm.VMException;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
-import java.io.IOError;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -123,6 +123,47 @@ public final class AllocPool
 	}
 	
 	/**
+	 * Flattens the given set of strings.
+	 *
+	 * @param __strings The string to flatten.
+	 * @return The resultant flat list.
+	 * @throws NullPointerException On null arguments.
+	 * @throws VMException If the strings could not be flattened.
+	 * @since 2023/12/17
+	 */
+	public FlatList<CharStarPointer> flatten(String... __strings)
+		throws NullPointerException, VMException
+	{
+		if (__strings == null)
+			throw new NullPointerException("NARG");
+		
+		// Flatten natively
+		long blockPtr = AllocPool.__flatten(this._pointer, __strings);
+		
+		// Wrap as list
+		return new CharStarFlatList(
+			new AllocLink(blockPtr, AllocPool.__getLink(blockPtr)));
+	}
+	
+	/**
+	 * Flattens the given set of strings.
+	 *
+	 * @param __strings The string to flatten.
+	 * @return The resultant flat list.
+	 * @throws NullPointerException On null arguments.
+	 * @throws VMException If the strings could not be flattened.
+	 * @since 2023/12/17
+	 */
+	public FlatList<CharStarPointer> flatten(List<String> __strings)
+		throws NullPointerException, VMException
+	{
+		if (__strings == null)
+			throw new NullPointerException("NARG");
+		
+		return this.flatten(__strings.toArray(new String[__strings.size()]));
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2023/12/08
 	 */
@@ -177,102 +218,6 @@ public final class AllocPool
 	}
 	
 	/**
-	 * Duplicates and returns an entire array.
-	 *
-	 * @param __strings The strings to get the array form of.
-	 * @return The resultant duplicated string array.
-	 * @throws NullPointerException On null arguments.
-	 * @throws VMException If it could be created.
-	 * @since 2023/12/16
-	 */
-	public CharStarPointerArray strDupArray(String... __strings)
-		throws NullPointerException, VMException
-	{
-		if (__strings == null)
-			throw new NullPointerException("NARG");
-		
-		return this.strDupArray(Arrays.asList(__strings));
-	}
-	
-	/**
-	 * Duplicates and returns an entire array.
-	 *
-	 * @param __strings The strings to get the array form of.
-	 * @return The resultant duplicated string array.
-	 * @throws NullPointerException On null arguments.
-	 * @throws VMException If it could be created.
-	 * @since 2023/12/16
-	 */
-	public CharStarPointerArray strDupArray(List<String> __strings)
-		throws NullPointerException, VMException
-	{
-		if (__strings == null)
-			throw new NullPointerException("NARG");
-		
-		// The number of strings being written, remember their base offset
-		int count = __strings.size();
-		int[] baseOff = new int[count];
-		
-		// It is optimal to keep the allocated memory a single chunk of bytes
-		// rather than having multiple allocations... so fill in everything
-		// accordingly as such
-		byte[] buf;
-		int pointerSize = Utils.pointerSize();
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); 
-			DataOutputStream dos = new DataOutputStream(baos))
-		{
-			// Reserve space for pointer storage
-			for (int i = 0, n = count * pointerSize; i < n; i++)
-				dos.writeByte(0);
-			
-			// Write each string accordingly
-			for (int i = 0; i < count; i++)
-			{
-				String string = __strings.get(i);
-				
-				// Skip if null
-				if (string == null)
-					continue;
-				
-				// Store address for later, be sure to skip the size
-				baseOff[i] = baos.size() + 2;
-				
-				// Write string in modified UTF form with ending NUL
-				dos.writeUTF(string);
-				dos.writeByte(0);
-			}
-			
-			// Get the final byte array
-			buf = baos.toByteArray();
-		}
-		catch (IOException __e)
-		{
-			throw new VMException(__e);
-		}
-		
-		// Allocate and write into the link directly
-		int bufLen = buf.length;
-		AllocLink link = this.alloc(bufLen);
-		link.write(0, buf, 0, bufLen);
-		
-		// Go back and write in all the pointer base offsets
-		long base = link.pointerAddress();
-		for (int i = 0, p = 0; i < count; i++, p += pointerSize)
-		{
-			int off = baseOff[i];
-			
-			// Write NULL accordingly
-			if (off == 0)
-				link.writePointer(p, 0);
-			else
-				link.writePointer(p, base + off);
-		}
-		
-		// Set list accordingly
-		return new CharStarPointerArray(count, link);
-	}
-	
-	/**
 	 * Allocates memory within the pool.
 	 *
 	 * @param __poolPtr The pool to allocate in.
@@ -282,6 +227,18 @@ public final class AllocPool
 	 * @since 2023/12/14
 	 */
 	private static native long __alloc(long __poolPtr, int __size)
+		throws VMException;
+	
+	/**
+	 * Flattens the given array of strings.
+	 *
+	 * @param __poolPtr The pointer to the allocation pool.
+	 * @param __strings The strings to flatten.
+	 * @return The block pointer of the resultant list.
+	 * @throws VMException If it could not be flattened.
+	 * @since 2023/12/17
+	 */
+	private static native long __flatten(long __poolPtr, String[] __strings)
 		throws VMException;
 	
 	/**

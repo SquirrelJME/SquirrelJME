@@ -62,6 +62,87 @@ public final class AllocLink
 	}
 	
 	/**
+	 * Reads bytes at the given offset.
+	 *
+	 * @param __at The offset to read from.
+	 * @param __b The buffer to read into.
+	 * @throws IndexOutOfBoundsException If the address is not valid or the
+	 * number of bytes exceeds the allocation link size.
+	 * @throws NullPointerException On null arguments.
+	 * @throws VMException If it could not be read.
+	 * @since 2023/12/17
+	 */
+	public void read(int __at, byte[] __b)
+		throws IndexOutOfBoundsException, NullPointerException, VMException
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
+		this.read(__at, __b, 0, __b.length);
+	}
+	
+	/**
+	 * Reads bytes at the given offset.
+	 *
+	 * @param __at The offset to read from.
+	 * @param __b The buffer to read into.
+	 * @param __o The offset into the buffer.
+	 * @param __l The length of the buffer.
+	 * @throws IndexOutOfBoundsException If the address is not valid or the
+	 * number of bytes exceeds the allocation link size; or the offset
+	 * and/or length are negative or exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @throws VMException If it could not be read.
+	 * @since 2023/12/17
+	 */
+	public void read(int __at, byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException, VMException
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
+		// Check size first
+		int size = this.size();
+		if (__at < 0 || __at >= size || (__at + __l) > size ||
+			(__at + __l) < 0 || __o < 0 || __l < 0 ||
+			(__o + __l) > __b.length || (__o + __l) < 0)
+			throw new IndexOutOfBoundsException(
+				String.format("read(%d, %h, %d, %d) in %d from %d",
+					__at, __b, __o, __l, size, __b.length));
+		
+		// Call native read function
+		AllocLink.__read(this._blockPtr, __at, __b, __o, __l);
+	}
+	
+	public int readInt(int __at)
+		throws IndexOutOfBoundsException, VMException
+	{
+		byte[] buf = new byte[4];
+		
+		// Read in bytes.
+		this.read(__at, buf, 0, 4);
+		
+		// Map bytes.
+		int result = 0;
+		if (Utils.isBigEndian())
+		{
+			result |= ((buf[0] << 24) & 0xFF000000);
+			result |= ((buf[1] << 16) & 0xFF0000);
+			result |= ((buf[2] << 8) & 0xFF00);
+			result |= ((buf[3]) & 0xFF);
+		}
+		else
+		{
+			result |= ((buf[0]) & 0xFF);
+			result |= ((buf[1] << 8) & 0xFF00);
+			result |= ((buf[2] << 16) & 0xFF0000);
+			result |= ((buf[3] << 24) & 0xFF000000);
+		}
+		
+		return result;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2023/12/14
 	 */
@@ -249,6 +330,21 @@ public final class AllocLink
 				throw Debugging.todo(pointerSize);
 		}
 	}
+	
+	/**
+	 * Reads bytes at the given offset.
+	 *
+	 * @param __blockPtr The block pointer.
+	 * @param __at The offset to read from.
+	 * @param __b The buffer to read into.
+	 * @param __o The offset into the buffer.
+	 * @param __l The length of the buffer.
+	 * @throws VMException If it could not be read.
+	 * @since 2023/12/17
+	 */
+	private static native void __read(long __blockPtr, int __at,
+		byte[] __b, int __o, int __l)
+		throws VMException;
 	
 	/**
 	 * Returns the size of the allocation pointer. 
