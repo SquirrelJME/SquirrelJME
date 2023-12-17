@@ -70,12 +70,18 @@ sjme_errorCode sjme_list_flattenR(
 	sjme_attrOutNotNull void** outList,
 	...)
 {
-	sjme_message("sjme_list_flattenVR(%p, %d, %d, %d, %d, %d, %d, %p)",
-		inPool, elementSize, elementOffset, pointerCheck,
-		basicTypeId, numPointerStars, length, outList);
+	va_list list;
+	sjme_errorCode result;
 
-	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	va_start(list, outList);
+
+	result = sjme_list_flattenVR(inPool, elementSize, elementOffset,
+		pointerCheck, basicTypeId, numPointerStars, length, outList,
+		list);
+
+	va_end(list);
+
+	return result;
 }
 
 sjme_errorCode sjme_list_flattenVR(
