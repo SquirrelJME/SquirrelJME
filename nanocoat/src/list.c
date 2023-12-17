@@ -95,6 +95,14 @@ sjme_errorCode sjme_list_flattenVR(
 	sjme_attrOutNotNull void** outList,
 	va_list elements)
 {
+	if (inPool == NULL || outList == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (elementSize <= 0 || elementOffset <= 0 || pointerCheck <= 0 ||
+		basicTypeId < 0 || basicTypeId >= SJME_NUM_BASIC_TYPE_IDS ||
+		numPointerStars < 0 || length < 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
 	sjme_message("sjme_list_flattenVR(%p, %d, %d, %d, %d, %d, %d, %p)",
 		inPool, elementSize, elementOffset, pointerCheck,
 		basicTypeId, numPointerStars, length, outList);
