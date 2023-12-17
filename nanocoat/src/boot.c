@@ -143,6 +143,9 @@ SJME_EXCEPT_WITH(trace):
 			SJME_EXCEPT_TOSS(error);
 	}
 
+	/* Debug. */
+	sjme_message("Main class: %s", result->bootParamCopy->mainClass);
+
 	/* Spawn initial task which uses the main arguments. */
 	if (SJME_JNI_TRUE)
 		sjme_todo("sjme_nvm_boot()");

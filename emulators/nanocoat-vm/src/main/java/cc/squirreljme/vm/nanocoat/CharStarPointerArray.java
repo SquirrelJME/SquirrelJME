@@ -10,37 +10,39 @@
 package cc.squirreljme.vm.nanocoat;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import org.jetbrains.annotations.NotNull;
+import java.util.AbstractList;
 
 /**
- * A {@link CharStar} which is backed by a {@link AllocLink}.
+ * An array of pointers to {@link CharStarPointer}.
  *
  * @since 2023/12/16
  */
-public final class LinkedCharStar
-	implements CharStarPointer
+public final class CharStarPointerArray
+	extends AbstractList<CharStarPointer>
+	implements Pointer
 {
-	/** Allocation link. */
+	/** The size of this list. */
+	protected final int size;
+	
+	/** The data link storing the bytes. */
 	protected final AllocLink link;
 	
-	/** Char star. */
-	protected final CharStar charStar;
-	
 	/**
-	 * Initializes a linked {@link CharStar}.
+	 * Initializes the pointer array.
 	 *
-	 * @param __link The allocation link used.
+	 * @param __count The number of entries in the array.
+	 * @param __link The link to the memory of the pointer.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/12/16
 	 */
-	public LinkedCharStar(AllocLink __link)
+	public CharStarPointerArray(int __count, AllocLink __link)
 		throws NullPointerException
 	{
 		if (__link == null)
 			throw new NullPointerException("NARG");
 		
+		this.size = __count;
 		this.link = __link;
-		this.charStar = new CharStar(__link.pointerAddress());
 	}
 	
 	/**
@@ -48,19 +50,9 @@ public final class LinkedCharStar
 	 * @since 2023/12/16
 	 */
 	@Override
-	public char charAt(int __dx)
+	public CharStarPointer get(int __dx)
 	{
-		return this.charStar.charAt(__dx);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/12/16
-	 */
-	@Override
-	public int length()
-	{
-		return this.charStar.length();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -78,8 +70,8 @@ public final class LinkedCharStar
 	 * @since 2023/12/16
 	 */
 	@Override
-	public CharSequence subSequence(int __start, int __end)
+	public int size()
 	{
-		return this.charStar.subSequence(__start, __end);
+		return this.size;
 	}
 }

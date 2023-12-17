@@ -24,3 +24,12 @@ jint SJME_JNI_METHOD(SJME_CLASS_ALLOC_LINK, _1_1size)
 	/* Get the allocation size. */
 	return SJME_JLONG_TO_POINTER(sjme_alloc_link*, linkPtr)->allocSize;
 }
+
+void SJME_JNI_METHOD(SJME_CLASS_ALLOC_LINK, _1_1write)
+	(JNIEnv* env, jclass classy, jlong blockPtr, jint at,
+		jbyteArray buf, jint off, jint len)
+{
+	/* Use the get operation to "get" the bytes into the native memory. */
+	(*env)->GetByteArrayRegion(env, buf, off, len,
+		SJME_JLONG_TO_POINTER(jbyte*, blockPtr + at));
+}

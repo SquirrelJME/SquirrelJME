@@ -43,6 +43,15 @@ typedef enum sjme_alloc_sizeOfId
 	/** Virtual machine boot configuration. */
 	SJME_ALLOC_SIZEOF_NVM_BOOT_PARAM = 3,
 
+	/** Pointer type. */
+	SJME_ALLOC_SIZEOF_POINTER = 4,
+
+	/** Little endian, non-zero if so. */
+	SJME_ALLOC_SIZEOF_IS_LITTLE_ENDIAN = 5,
+
+	/** Big endian, non-zero if so. */
+	SJME_ALLOC_SIZEOF_IS_BIG_ENDIAN = 6,
+
 	/** The number of allocation type sizes. */
 	SJME_NUM_ALLOC_TYPE_SIZEOF
 } sjme_alloc_sizeOfId;

@@ -36,6 +36,28 @@ sjme_errorCode sjme_alloc_sizeOf(
 			*outSize = sizeof(sjme_nvm_bootParam);
 			break;
 
+		case SJME_ALLOC_SIZEOF_POINTER:
+			*outSize = sizeof(void*);
+			break;
+
+#if defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)
+		case SJME_ALLOC_SIZEOF_IS_LITTLE_ENDIAN:
+			*outSize = 1;
+			break;
+
+		case SJME_ALLOC_SIZEOF_IS_BIG_ENDIAN:
+			*outSize = 0;
+			break;
+#elif defined(SJME_CONFIG_HAS_BIG_ENDIAN)
+		case SJME_ALLOC_SIZEOF_IS_LITTLE_ENDIAN:
+			*outSize = 0;
+			break;
+
+		case SJME_ALLOC_SIZEOF_IS_BIG_ENDIAN:
+			*outSize = 1;
+			break;
+#endif
+
 		default:
 			return SJME_ERROR_INVALID_ARGUMENT;
 	}

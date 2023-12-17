@@ -15,7 +15,7 @@ package cc.squirreljme.vm.nanocoat;
  * @since 2023/12/16
  */
 public final class CharStar
-	implements CharSequence, Pointer
+	implements CharStarPointer
 {
 	/** The pointer where this is located. */
 	private final long _pointer;

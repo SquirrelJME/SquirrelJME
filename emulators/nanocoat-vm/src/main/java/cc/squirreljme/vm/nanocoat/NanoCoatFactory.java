@@ -69,8 +69,8 @@ public class NanoCoatFactory
 		
 		// Configure the virtual machine
 		param.setSuite(suite);
-		param.setMainClass(__mainClass);
-		param.setMainArgs(__args);
+		param.setMainClass(reservedPool.strDup(__mainClass));
+		param.setMainArgs(reservedPool.strDupArray(__args));
 		
 		// Setup main virtual machine
 		NvmState state = new NvmState(mainPool, reservedPool, param);

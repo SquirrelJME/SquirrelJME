@@ -27,11 +27,24 @@ public enum AllocSizeOf
 	/** Virtual machine boot configuration. */
 	NVM_BOOT_PARAM(3),
 	
+	/** A pointer. */
+	POINTER(4),
+	
+	/** Little endian. */
+	IS_LITTLE_ENDIAN(5),
+	
+	/** Big endian. */
+	IS_BIG_ENDIAN(6),
+	
 	/* End. */
 	;
 	
 	/** The enumeration ID. */
 	protected final int id;
+	
+	/** Cached size, for zero entries only. */
+	private volatile int _zeroSize =
+		-1;
 	
 	/**
 	 * Initializes the allocation size handler.
@@ -69,6 +82,19 @@ public enum AllocSizeOf
 	{
 		if (__count < 0)
 			throw new IllegalArgumentException("Negative size.");
+		
+		// The zero size is always fixed and is the most common
+		if (__count == 0)
+		{
+			// Use pre-cached value?
+			int result = this._zeroSize;
+			if (result >= 0)
+				return result;
+			
+			// Get the actual size
+			this._zeroSize = (result = AllocSizeOf.__size(this.id, 0));
+			return result;
+		}
 		
 		return AllocSizeOf.__size(this.id, __count);
 	}

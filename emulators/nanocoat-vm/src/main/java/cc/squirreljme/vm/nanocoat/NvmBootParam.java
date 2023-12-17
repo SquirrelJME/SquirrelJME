@@ -60,9 +60,11 @@ public final class NvmBootParam
 	 * @param __args The arguments to use.
 	 * @since 2023/12/15
 	 */
-	public void setMainArgs(String[] __args)
+	public void setMainArgs(CharStarPointerArray __args)
 	{
-		throw Debugging.todo();
+		NvmBootParam.__setMainArgs(this._link.pointerAddress(),
+			(__args == null ? 0 : __args.size()),
+			(__args == null ? 0 : __args.pointerAddress()));
 	}
 	
 	/**
@@ -71,9 +73,11 @@ public final class NvmBootParam
 	 * @param __mainClass The main class to use.
 	 * @since 2023/12/15
 	 */
-	public void setMainClass(String __mainClass)
+	public void setMainClass(CharStarPointer __mainClass)
+		throws VMException
 	{
-		throw Debugging.todo();
+		NvmBootParam.__setMainClass(this._link.pointerAddress(),
+			(__mainClass == null ? 0 : __mainClass.pointerAddress()));
 	}
 	
 	/**
@@ -89,6 +93,30 @@ public final class NvmBootParam
 		NvmBootParam.__setSuite(this._link.pointerAddress(),
 			(__suite == null ? 0 : __suite.pointerAddress()));
 	}
+	
+	/**
+	 * Sets the main arguments.
+	 *
+	 * @param __thisPtr The structure pointer.
+	 * @param __argC The argument count.
+	 * @param __argVPtr The main arguments string pointers.
+	 * @throws VMException If it could not be set.
+	 * @since 2023/12/16
+	 */
+	private static native void __setMainArgs(long __thisPtr, int __argC,
+		long __argVPtr)
+		throws VMException;
+	
+	/**
+	 * Sets the main class.
+	 *
+	 * @param __thisPtr The structure pointer.
+	 * @param __strPtr The main class string pointer.
+	 * @throws VMException If it could not be set.
+	 * @since 2023/12/16
+	 */
+	private static native void __setMainClass(long __thisPtr, long __strPtr)
+		throws VMException;
 	
 	/**
 	 * Sets the suite handler.

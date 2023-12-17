@@ -10,6 +10,10 @@
 package cc.squirreljme.vm.nanocoat;
 
 import cc.squirreljme.emulator.vm.VMException;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOError;
+import java.io.IOException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
@@ -124,6 +128,128 @@ public final class AllocPool
 	public long pointerAddress()
 	{
 		return this._pointer;
+	}
+	
+	/**
+	 * Duplicates the given string and returns a character array backed by
+	 * a link.
+	 *
+	 * @param __string The string to map.
+	 * @return The mapped and translated string.
+	 * @throws NullPointerException On null arguments.
+	 * @throws VMException If it could not be initialized.
+	 * @since 2023/12/16
+	 */
+	public LinkedCharStar strDup(String __string)
+		throws NullPointerException, VMException
+	{
+		if (__string == null)
+			throw new NullPointerException("NARG");
+		
+		// Map string to bytes
+		byte[] buf;
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(
+			2 + (__string.length() * 2)); 
+			DataOutputStream dos = new DataOutputStream(baos))
+		{
+			// Write string in modified UTF form
+			dos.writeUTF(__string);
+			dos.writeByte(0);
+			
+			buf = baos.toByteArray();
+		}
+		catch (IOException __e)
+		{
+			throw new VMException(__e);
+		}
+		
+		// We ignore the starting length and add a NUL
+		int len = buf.length - 2;
+		
+		// Allocate a link to write into
+		AllocLink link = this.alloc(len);
+		link.write(0, buf, 2, len);
+		
+		// Wrap the given link
+		return new LinkedCharStar(link);
+	}
+	
+	/**
+	 * Duplicates and returns an entire array.
+	 *
+	 * @param __strings The strings to get the array form of.
+	 * @return The resultant duplicated string array.
+	 * @throws NullPointerException On null arguments.
+	 * @throws VMException If it could be created.
+	 * @since 2023/12/16
+	 */
+	public CharStarPointerArray strDupArray(String... __strings)
+		throws NullPointerException, VMException
+	{
+		if (__strings == null)
+			throw new NullPointerException("NARG");
+		
+		// The number of strings being written, remember their base offset
+		int count = __strings.length;
+		int[] baseOff = new int[count];
+		
+		// It is optimal to keep the allocated memory a single chunk of bytes
+		// rather than having multiple allocations... so fill in everything
+		// accordingly as such
+		byte[] buf;
+		int pointerSize = Utils.pointerSize();
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); 
+			DataOutputStream dos = new DataOutputStream(baos))
+		{
+			// Reserve space for pointer storage
+			for (int i = 0, n = count * pointerSize; i < n; i++)
+				dos.writeByte(0);
+			
+			// Write each string accordingly
+			for (int i = 0; i < count; i++)
+			{
+				String string = __strings[i];
+				
+				// Skip if null
+				if (string == null)
+					continue;
+				
+				// Store address for later
+				baseOff[i] = baos.size();
+				
+				// Write string in modified UTF form with ending NUL
+				dos.writeUTF(string);
+				dos.writeByte(0);
+			}
+			
+			// Get the final byte array
+			buf = baos.toByteArray();
+		}
+		catch (IOException __e)
+		{
+			throw new VMException(__e);
+		}
+		
+		// Allocate and write into the link directly
+		int bufLen = buf.length;
+		AllocLink link = this.alloc(bufLen);
+		link.write(0, buf, 0, bufLen);
+		
+		// Go back and write in all the pointer base offsets
+		long base = link.pointerAddress();
+		for (int i = 0, p = 0; i < count; i++, p += pointerSize)
+		{
+			int off = baseOff[i];
+			
+			// Write NULL accordingly
+			if (off == 0)
+				link.writePointer(p, 0);
+			else
+				link.writePointer(p, base + off);
+		}
+		
+		// Set list accordingly
+		return new CharStarPointerArray(count, link);
 	}
 	
 	/**

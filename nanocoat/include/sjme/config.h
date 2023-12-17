@@ -42,6 +42,30 @@ extern "C" {
 	#undef SJME_CONFIG_RELEASE
 #endif
 
+/** Possibly detect endianess. */
+#if !defined(SJME_CONFIG_HAS_BIG_ENDIAN) && \
+	!defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)
+	/** Defined by the system? */
+	#if !defined(SJME_CONFIG_HAS_BIG_ENDIAN)
+		#if defined(__BYTE_ORDER__) && \
+			(__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+			#define SJME_CONFIG_HAS_BIG_ENDIAN
+		#endif
+	#endif
+
+	/** Just set little endian if no endianess was defined */
+	#if !defined(SJME_CONFIG_HAS_BIG_ENDIAN) && \
+		!defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)
+		#define SJME_CONFIG_HAS_LITTLE_ENDIAN
+	#endif
+
+	/** If both are defined, just set big endian. */
+	#if defined(SJME_CONFIG_HAS_BIG_ENDIAN) && \
+		defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)
+		#undef SJME_CONFIG_HAS_LITTLE_ENDIAN
+	#endif
+#endif
+
 #if defined(SJME_CONFIG_ROM0)
 	/** ROM 0 Address. */
 	#define SJME_CONFIG_ROM0_ADDR &SJME_CONFIG_ROM0
