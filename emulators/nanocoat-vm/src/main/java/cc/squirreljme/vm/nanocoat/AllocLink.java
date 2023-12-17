@@ -242,7 +242,7 @@ public final class AllocLink
 				return pointerSize;
 				
 			case 8:
-				this.writeLong(__at, (int)__pointer);
+				this.writeLong(__at, __pointer);
 				return pointerSize;
 				
 			default:

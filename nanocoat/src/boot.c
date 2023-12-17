@@ -58,6 +58,7 @@ sjme_errorCode sjme_nvm_boot(sjme_alloc_pool* mainPool,
 	SJME_EXCEPT_VDEF;
 	sjme_errorCode error;
 	sjme_exceptTrace* trace;
+	sjme_jint i, n;
 	sjme_nvm_state* volatile result;
 	sjme_rom_suite* volatile mergeSuites[FIXED_SUITE_COUNT];
 	volatile sjme_jint numMergeSuites;
@@ -143,8 +144,28 @@ SJME_EXCEPT_WITH(trace):
 			SJME_EXCEPT_TOSS(error);
 	}
 
+#if defined(SJME_CONFIG_DEBUG)
 	/* Debug. */
 	sjme_message("Main class: %s", result->bootParamCopy->mainClass);
+
+	sjme_message("Main arg: %d at %p",
+		result->bootParamCopy->mainArgC,
+		result->bootParamCopy->mainArgV);
+	for (i = 0, n = result->bootParamCopy->mainArgC; i < n; i++)
+	{
+		sjme_message("Main arg[%d] at %p",
+			i, result->bootParamCopy->mainArgV[i]);
+
+		if (result->bootParamCopy->mainArgV[i] != NULL)
+			sjme_message("Main arg[%d]: %s",
+				i, result->bootParamCopy->mainArgV[i]);
+	}
+
+	for (i = 0, n = result->bootParamCopy->sysPropsC & (~1); i < n; i += 2)
+		sjme_message("System Property: %s=%s",
+			result->bootParamCopy->sysPropsV[i],
+			result->bootParamCopy->sysPropsV[i + 1]);
+#endif
 
 	/* Spawn initial task which uses the main arguments. */
 	if (SJME_JNI_TRUE)

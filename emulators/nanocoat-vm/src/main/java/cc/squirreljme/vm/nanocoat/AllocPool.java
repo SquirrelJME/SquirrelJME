@@ -234,8 +234,8 @@ public final class AllocPool
 				if (string == null)
 					continue;
 				
-				// Store address for later
-				baseOff[i] = baos.size();
+				// Store address for later, be sure to skip the size
+				baseOff[i] = baos.size() + 2;
 				
 				// Write string in modified UTF form with ending NUL
 				dos.writeUTF(string);
