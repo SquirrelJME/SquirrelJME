@@ -49,7 +49,7 @@ SJME_TEST_DECLARE(testList)
 
 	/* Test variadic load of list. */
 	var = NULL;
-	if (SJME_IS_ERROR(sjme_list_flatten(test->pool, sjme_jint, 0, 5, &var,
+	if (SJME_IS_ERROR(sjme_list_newV(test->pool, sjme_jint, 0, 5, &var,
 		1, 2, 3, 4, 5)) || var == NULL)
 		sjme_unitFail(test, "Could not flatten list.");
 

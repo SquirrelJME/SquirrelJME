@@ -131,7 +131,7 @@ sjme_errorCode sjme_list_allocR(
 	sjme_attrInValue sjme_jint pointerCheck);
 
 /**
- * Allocates the given list.
+ * Allocates the given list without setting any of the values.
  *
  * @param inPool The pool to allocate within.
  * @return Any error state.
@@ -145,10 +145,60 @@ sjme_errorCode sjme_list_allocR(
 		sizeof(**(outList)))
 
 /**
- * Flattens a variadic number of arguments into a list.
+ * Create a new list with the given set of arguments.
  *
  * @param inPool The pool to allocate within.
  * @param elementSize The element size.
+ * @param rootElementSize The root element size.
+ * @param elementOffset The element offset.
+ * @param pointerCheck Pointer check value.
+ * @param basicTypeId The type code of the input.
+ * @param numPointerStars The number of pointer stars.
+ * @param length The length of the list.
+ * @param outList The resultant list.
+ * @param inElements The list elements.
+ * @return Any resultant error code.
+ * @since 2023/12/17
+ */
+sjme_errorCode sjme_list_newAR(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInPositive sjme_jint elementSize,
+	sjme_attrInPositive sjme_jint rootElementSize,
+	sjme_attrInPositive sjme_jint elementOffset,
+	sjme_attrInValue sjme_jint pointerCheck,
+	sjme_attrInNotNull sjme_basicTypeId basicTypeId,
+	sjme_attrInPositive sjme_jint numPointerStars,
+	sjme_attrInPositive sjme_jint length,
+	sjme_attrOutNotNull void** outList,
+	sjme_attrInNotNull void* inElements);
+
+/**
+ * Create a new list with the given set of arguments.
+ *
+ * @param inPool The pool to allocate within.
+ * @param type The element type.
+ * @param numPointerStars The number of pointer stars.
+ * @param length The length of the list.
+ * @param outList The resultant list.
+ * @param inElements The list elements.
+ * @return Any resultant error code.
+ * @since 2023/12/17
+ */
+#define sjme_list_newA(inPool, type, numPointerStars, \
+	inLength, outList, inElements) \
+	sjme_list_newAR((inPool), \
+		sizeof(SJME_LIST_ELEMENT_TYPE(type, numPointerStars)), \
+		sizeof(type), \
+		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
+		sizeof(**(outList)), SJME_BASIC_TYPEOF(type), (numPointerStars), \
+		(inLength), (void**)(outList), (void*)(inElements))
+
+/**
+ * Create a new list with the given set of arguments.
+ *
+ * @param inPool The pool to allocate within.
+ * @param elementSize The element size.
+ * @param rootElementSize The root element size.
  * @param elementOffset The element offset.
  * @param pointerCheck Pointer check value.
  * @param basicTypeId The type code of the input.
@@ -159,9 +209,10 @@ sjme_errorCode sjme_list_allocR(
  * @return Any resultant error code.
  * @since 2023/12/17
  */
-sjme_errorCode sjme_list_flattenR(
+sjme_errorCode sjme_list_newVR(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInPositive sjme_jint elementSize,
+	sjme_attrInPositive sjme_jint rootElementSize,
 	sjme_attrInPositive sjme_jint elementOffset,
 	sjme_attrInValue sjme_jint pointerCheck,
 	sjme_attrInNotNull sjme_basicTypeId basicTypeId,
@@ -171,7 +222,7 @@ sjme_errorCode sjme_list_flattenR(
 	...);
 
 /**
- * Flattens a variadic number of arguments into a list.
+ * Create a new list with the given set of arguments.
  *
  * @param inPool The pool to allocate within.
  * @param type The element type.
@@ -182,19 +233,21 @@ sjme_errorCode sjme_list_flattenR(
  * @return Any resultant error code.
  * @since 2023/12/17
  */
-#define sjme_list_flatten(inPool, type, numPointerStars, \
+#define sjme_list_newV(inPool, type, numPointerStars, \
 	inLength, outList, ...) \
-	sjme_list_flattenR((inPool), \
+	sjme_list_newVR((inPool), \
 		sizeof(SJME_LIST_ELEMENT_TYPE(type, numPointerStars)), \
+		sizeof(type), \
 		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
 		sizeof(**(outList)), SJME_BASIC_TYPEOF(type), (numPointerStars), \
 		(inLength), (void**)(outList), __VA_ARGS__)
 
 /**
- * Flattens a variadic number of arguments into a list.
+ * Create a new list with the given set of arguments.
  *
  * @param inPool The pool to allocate within.
  * @param elementSize The element size.
+ * @param rootElementSize The root element size.
  * @param elementOffset The element offset.
  * @param pointerCheck Pointer check value.
  * @param basicType The type code of the input.
@@ -205,9 +258,10 @@ sjme_errorCode sjme_list_flattenR(
  * @return Any resultant error code.
  * @since 2023/12/17
  */
-sjme_errorCode sjme_list_flattenVR(
+sjme_errorCode sjme_list_newVAR(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInPositive sjme_jint elementSize,
+	sjme_attrInPositive sjme_jint rootElementSize,
 	sjme_attrInPositive sjme_jint elementOffset,
 	sjme_attrInValue sjme_jint pointerCheck,
 	sjme_attrInNotNull sjme_basicTypeId basicType,
@@ -217,7 +271,7 @@ sjme_errorCode sjme_list_flattenVR(
 	va_list elements);
 
 /**
- * Flattens a variadic number of arguments into a list.
+ * Create a new list with the given set of arguments.
  *
  * @param inPool The pool to allocate within.
  * @param type The element type.
@@ -228,10 +282,11 @@ sjme_errorCode sjme_list_flattenVR(
  * @return Any resultant error code.
  * @since 2023/12/17
  */
-#define sjme_list_flattenV(inPool, type, numPointerStars, \
+#define sjme_list_newVA(inPool, type, numPointerStars, \
 	inLength, outList, elements) \
-	sjme_list_flattenVR((inPool), \
-		sizeof(SJME_LIST_ELEMENT_TYPE(type, numPointerStars)), \
+	sjme_list_newVAR((inPool), \
+		sizeof(SJME_LIST_ELEMENT_TYPE(type, numPointerStars)),  \
+		sizeof(type), \
 		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
 		sizeof(**(outList)), SJME_BASIC_TYPEOF(type), (numPointerStars), \
 		(inLength), (void**)(outList), (elements))
