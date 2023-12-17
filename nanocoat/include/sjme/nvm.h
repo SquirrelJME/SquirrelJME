@@ -980,6 +980,13 @@ typedef struct sjme_nvm_bootParam sjme_nvm_bootParam;
 typedef struct sjme_rom_suite sjme_rom_suite;
 
 /**
+ * Structure for a single task.
+ *
+ * @since 2023/12/17
+ */
+typedef struct sjme_nvm_task sjme_nvm_task;
+
+/**
  * Represents the virtual machine state.
  * 
  * @since 2023/07/28
@@ -1001,7 +1008,7 @@ struct sjme_nvm_state
 	/** Hooks for the state. */
 	const sjme_nvm_stateHooks* hooks;
 
-	/* The suite containing all of the libraries. */
+	/* The suite containing all the libraries. */
 	sjme_rom_suite* suite;
 };
 

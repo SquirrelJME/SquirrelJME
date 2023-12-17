@@ -17,6 +17,7 @@
 #define SQUIRRELJME_TASK_H
 
 #include "sjme/nvm.h"
+#include "sjme/rom.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -28,6 +29,72 @@ extern "C" {
 #endif     /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
+
+/**
+ * The type of redirection to use for pipes.
+ *
+ * @since 2023/12/17
+ */
+typedef enum sjme_task_pipeRedirectType
+{
+	/** Discard everything. */
+	SJME_TASK_PIPE_REDIRECT_TYPE_DISCARD = 0,
+
+	/** Store everything into a buffer. */
+	SJME_TASK_PIPE_REDIRECT_TYPE_BUFFER = 1,
+
+	/** Send everything to the terminal. */
+	SJME_TASK_PIPE_REDIRECT_TYPE_TERMINAL = 2,
+
+	/** The number of redirect types. */
+	SJME_NUM_TASK_PIPE_REDIRECT_TYPES
+} sjme_task_pipeRedirectType;
+
+/**
+ * The configuration that stores the information needed for starting the task.
+ *
+ * @since 2023/12/17
+ */
+typedef struct sjme_task_startConfig
+{
+	/** Redirection for standard output. */
+	sjme_task_pipeRedirectType stdOut;
+
+	/** Redirection for standard error. */
+	sjme_task_pipeRedirectType stdErr;
+
+	/** The class path to use. */
+	sjme_rom_library** classPath;
+
+	/** Main class to start in. */
+	const char* mainClass;
+
+	/** Main class argument count. */
+	sjme_jint mainArgC;
+
+	/** Main class arguments. */
+	const char** mainArgV;
+
+	/** System property count, must be multiple of 2. */
+	sjme_jint sysPropsC;
+
+	/** System properties, must be multiple of 2. */
+	const char** sysPropsV;
+} sjme_task_startConfig;
+
+/**
+ * Starts the task.
+ *
+ * @param inState The input state.
+ * @param startConfig The start configuration for this task.
+ * @param outTask The resultant task.
+ * @return Any error state.
+ * @since 2023/12/17
+ */
+sjme_errorCode sjme_task_start(
+	sjme_attrInNotNull sjme_nvm_state* inState,
+	sjme_attrInNotNull const sjme_task_startConfig* startConfig,
+	sjme_attrOutNullable sjme_nvm_task** outTask);
 
 /*--------------------------------------------------------------------------*/
 

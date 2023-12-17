@@ -14,6 +14,7 @@
 #include "sjme/debug.h"
 #include "sjme/except.h"
 #include "sjme/nvm.h"
+#include "sjme/task.h"
 
 sjme_errorCode sjme_nvm_allocReservedPool(
 	sjme_attrInNotNull sjme_alloc_pool* mainPool,
@@ -62,6 +63,7 @@ sjme_errorCode sjme_nvm_boot(sjme_alloc_pool* mainPool,
 	sjme_nvm_state* volatile result;
 	sjme_rom_suite* volatile mergeSuites[FIXED_SUITE_COUNT];
 	volatile sjme_jint numMergeSuites;
+	sjme_task_startConfig initTaskConfig;
 	
 	if (param == NULL || outState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -167,13 +169,23 @@ SJME_EXCEPT_WITH(trace):
 			result->bootParamCopy->sysPropsV[i + 1]);
 #endif
 
+	/* Setup task details. */
+	initTaskConfig.stdOut = SJME_TASK_PIPE_REDIRECT_TYPE_TERMINAL;
+	initTaskConfig.stdErr = SJME_TASK_PIPE_REDIRECT_TYPE_TERMINAL;
+	initTaskConfig.mainClass = result->bootParamCopy->mainClass;
+	initTaskConfig.mainArgC = result->bootParamCopy->mainArgC;
+	initTaskConfig.mainArgV = result->bootParamCopy->mainArgV;
+	initTaskConfig.sysPropsC = result->bootParamCopy->sysPropsC;
+	initTaskConfig.sysPropsV = result->bootParamCopy->sysPropsV;
+
 	/* Spawn initial task which uses the main arguments. */
-	if (SJME_JNI_TRUE)
-		sjme_todo("sjme_nvm_boot()");
+	if (SJME_IS_ERROR(error = sjme_task_start(result,
+		&initTaskConfig, NULL)))
+		SJME_EXCEPT_TOSS(error);
 	
 	/* Return newly created VM. */
-	sjme_todo("sjme_nvm_boot()");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	*outState = result;
+	return SJME_ERROR_NONE;
 
 SJME_EXCEPT_FAIL:
 	sjme_todo("Cleanup after failure.");
