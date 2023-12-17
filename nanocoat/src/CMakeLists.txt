@@ -16,6 +16,7 @@ list(APPEND coreSources
 	gfx.c
 	loop.c
 	modelessStars.c
+	multithread.c
 	native.c
 	nvm.c
 	recycle.c
