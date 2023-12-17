@@ -67,6 +67,36 @@ extern "C" {
  */
 #define SJME_TOKEN_STRING_PP(s) SJME_TOKEN_STRING(s)
 
+/**
+ * Represents a single token.
+ *
+ * @param t The token to resolve.
+ * @since 2023/12/17
+ */
+#define SJME_TOKEN_SINGLE(t) t
+
+#define SJME_TOKEN_STARS_0
+#define SJME_TOKEN_STARS_1 *
+#define SJME_TOKEN_STARS_2 **
+#define SJME_TOKEN_STARS_3 ***
+#define SJME_TOKEN_STARS_4 ****
+#define SJME_TOKEN_STARS_5 *****
+#define SJME_TOKEN_STARS_6 ******
+#define SJME_TOKEN_STARS_7 *******
+#define SJME_TOKEN_STARS_8 ********
+#define SJME_TOKEN_STARS_9 *********
+
+#define SJME_TOKEN_STARS_C0
+#define SJME_TOKEN_STARS_C1 P
+#define SJME_TOKEN_STARS_C2 PP
+#define SJME_TOKEN_STARS_C3 PPP
+#define SJME_TOKEN_STARS_C4 PPPP
+#define SJME_TOKEN_STARS_C5 PPPPP
+#define SJME_TOKEN_STARS_C6 PPPPPP
+#define SJME_TOKEN_STARS_C7 PPPPPPP
+#define SJME_TOKEN_STARS_C8 PPPPPPPP
+#define SJME_TOKEN_STARS_C9 PPPPPPPPP
+
 /** SquirrelJME version string. */
 #define SQUIRRELJME_VERSION SJME_TOKEN_STRING_PP(SQUIRRELJME_VERSION_TRIM)
 
@@ -134,6 +164,13 @@ typedef int32_t sjme_jint;
  * @since 2023/11/20
  */
 typedef uint32_t sjme_juint;
+
+/**
+ * Pointer to constant C string.
+ *
+ * @since 2023/12/17
+ */
+typedef const char* sjme_lpcstr;
 
 /**
  * Long value.

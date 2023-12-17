@@ -14,6 +14,7 @@ list(APPEND coreSources
 	debug.c
 	except.c
 	gfx.c
+	list.c
 	loop.c
 	modelessStars.c
 	multithread.c
