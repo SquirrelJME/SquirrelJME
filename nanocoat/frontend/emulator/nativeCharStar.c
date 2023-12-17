@@ -12,6 +12,13 @@
 #include "frontend/emulator/jniHelper.h"
 #include "sjme/util.h"
 
+jint SJME_JNI_METHOD(SJME_CLASS_CHAR_STAR, _1_1utfCharAt)
+	(JNIEnv* env, jclass* classy, jlong addr, jint index)
+{
+	return sjme_stringCharAt(SJME_JLONG_TO_POINTER(const char*, addr),
+		index);
+}
+
 jint SJME_JNI_METHOD(SJME_CLASS_CHAR_STAR, _1_1utfStrlen)
 	(JNIEnv* env, jclass* classy, jlong addr)
 {
