@@ -65,6 +65,7 @@ sjme_errorCode sjme_nvm_boot(sjme_alloc_pool* mainPool,
 	volatile sjme_jint numMergeSuites;
 	sjme_task_startConfig initTaskConfig;
 	sjme_nvm_task* initTask;
+	sjme_list_sjme_rom_library* volatile classPath;
 	
 	if (param == NULL || outState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -92,6 +93,11 @@ SJME_EXCEPT_WITH(trace):
 		(void**)&result->bootParamCopy, param)) ||
 		result == NULL)
 		SJME_EXCEPT_TOSS(error);
+
+	/* Can only use one or the other to get the class path. */
+	if (result->bootParamCopy->mainClassPathById != NULL &&
+		result->bootParamCopy->mainClassPathByName != NULL)
+		SJME_EXCEPT_TOSS(SJME_ERROR_CLASS_PATH_BY_BOTH);
 
 	/* Set parameters accordingly. */
 	result->allocPool = mainPool;
@@ -147,9 +153,28 @@ SJME_EXCEPT_WITH(trace):
 			SJME_EXCEPT_TOSS(error);
 	}
 
+	/* Resolve class path libraries. */
+	classPath = NULL;
+	error = SJME_ERROR_UNKNOWN;
+	if (result->bootParamCopy->mainClassPathById != NULL)
+		error = sjme_rom_resolveClassPathById(reservedPool,
+			result->suite,
+			result->bootParamCopy->mainClassPathById,
+			&classPath);
+	else
+		error = sjme_rom_resolveClassPathByName(reservedPool,
+			result->suite,
+			result->bootParamCopy->mainClassPathByName,
+			&classPath);
+
+	/* Failed to resolve? */
+	if (SJME_IS_ERROR(error) || classPath == NULL)
+		SJME_EXCEPT_TOSS(error);
+
 	/* Setup task details. */
 	initTaskConfig.stdOut = SJME_TASK_PIPE_REDIRECT_TYPE_TERMINAL;
 	initTaskConfig.stdErr = SJME_TASK_PIPE_REDIRECT_TYPE_TERMINAL;
+	initTaskConfig.classPath = classPath;
 	initTaskConfig.mainClass = result->bootParamCopy->mainClass;
 	initTaskConfig.mainArgs = result->bootParamCopy->mainArgs;
 	initTaskConfig.sysProps = result->bootParamCopy->sysProps;

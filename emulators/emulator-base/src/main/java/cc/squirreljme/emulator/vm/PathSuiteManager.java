@@ -106,6 +106,30 @@ public final class PathSuiteManager
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2023/12/18
+	 */
+	@Override
+	public int libraryId(VMClassLibrary __lib)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__lib == null)
+			throw new NullPointerException("NARG");
+		
+		Map<String, VMClassLibrary> cache = this._cache;
+		synchronized (cache)
+		{
+			// The library must have been previously loaded first
+			if (!cache.values().contains(__lib))
+				throw new IllegalArgumentException(
+					"Unknown library: " + __lib);
+			
+			Path path = __lib.path();
+			return (path != null ? path.hashCode() : __lib.name().hashCode());
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/12/08
 	 */
 	@Override

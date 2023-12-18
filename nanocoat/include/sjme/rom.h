@@ -17,6 +17,7 @@
 #define SQUIRRELJME_ROM_H
 
 #include "sjme/nvm.h"
+#include "sjme/list.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -88,6 +89,22 @@ typedef sjme_errorCode (*sjme_rom_suiteInitCacheFunc)(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrInOutNotNull sjme_rom_suite* targetSuite);
 
+/**
+ * Returns the ID of the library for the given suite.
+ *
+ * @param functions The suite functions.
+ * @param targetSuite The current suite being accessed.
+ * @param targetLibrary The library to get the ID of.
+ * @param outId The output library ID.
+ * @return Any resultant error code.
+ * @since 2023/12/18
+ */
+typedef sjme_errorCode (*sjme_rom_suiteLibraryId)(
+	sjme_attrInNotNull const sjme_rom_suiteFunctions* functions,
+	sjme_attrInNotNull sjme_rom_suite* targetSuite,
+	sjme_attrInNotNull sjme_rom_library* targetLibrary,
+	sjme_attrOutNotNull sjme_jint* outId);
+
 typedef sjme_errorCode (*sjme_rom_suiteListLibrariesFunc)();
 
 typedef sjme_errorCode (*sjme_rom_suiteLoadLibraryFunc)();
@@ -121,6 +138,9 @@ struct sjme_rom_suiteFunctions
 	/** Initialize suite cache. */
 	sjme_rom_suiteInitCacheFunc initCache;
 
+	/** Returns the ID of the given library. */
+	sjme_rom_suiteLibraryId libraryId;
+
 	/** Lists the libraries in the suite. */
 	sjme_rom_suiteListLibrariesFunc list;
 
@@ -142,6 +162,9 @@ struct sjme_rom_suite
 	/** Functions. */
 	const sjme_rom_suiteFunctions* functions;
 };
+
+/** List of ROM libraries. */
+SJME_LIST_DECLARE(sjme_rom_library, 0);
 
 /**
  * Combines multiple suites into one.
@@ -186,6 +209,38 @@ sjme_errorCode sjme_rom_newSuite(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrOutNotNull sjme_rom_suite** outSuite,
 	sjme_attrInNotNull const sjme_rom_suiteFunctions* inFunctions);
+
+/**
+ * Resolves the class path library by their ID.
+ *
+ * @param pool The pool to use for any allocations.
+ * @param inSuite The suite to look within.
+ * @param inIds The IDs to obtain.
+ * @param outLibs The output libraries.
+ * @return Any resultant error state.
+ * @since 2023/12/18
+ */
+sjme_errorCode sjme_rom_resolveClassPathById(
+	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrInNotNull sjme_rom_suite* inSuite,
+	sjme_attrInNotNull const sjme_list_sjme_jint* inIds,
+	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibs);
+
+/**
+ * Resolves the class path library by their name.
+ *
+ * @param pool The pool to use for any allocations.
+ * @param inSuite The suite to look within.
+ * @param inNames The names to obtain.
+ * @param outLibs The output libraries.
+ * @return Any resultant error state.
+ * @since 2023/12/18
+ */
+sjme_errorCode sjme_rom_resolveClassPathByName(
+	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrInNotNull sjme_rom_suite* inSuite,
+	sjme_attrInNotNull const sjme_list_sjme_lpcstr* inNames,
+	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibs);
 
 /*--------------------------------------------------------------------------*/
 

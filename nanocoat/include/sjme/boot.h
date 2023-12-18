@@ -40,6 +40,12 @@ struct sjme_nvm_bootParam
 	/** Provides the ability to have a virtual suite. */
 	const sjme_rom_suiteFunctions* virtualSuite;
 
+	/** The class path for main by library IDs. */
+	sjme_list_sjme_jint* mainClassPathById;
+
+	/** The class path for main by names. */
+	sjme_list_sjme_lpcstr* mainClassPathByName;
+
 	/** Main class to start in. */
 	sjme_lpcstr mainClass;
 

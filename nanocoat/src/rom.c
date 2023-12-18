@@ -104,3 +104,23 @@ sjme_errorCode sjme_rom_newSuite(
 	*outSuite = result;
 	return SJME_ERROR_NONE;
 }
+
+sjme_errorCode sjme_rom_resolveClassPathById(
+	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrInNotNull sjme_rom_suite* inSuite,
+	sjme_attrInNotNull const sjme_list_sjme_jint* inIds,
+	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibs)
+{
+	sjme_todo("Implement this?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+sjme_errorCode sjme_rom_resolveClassPathByName(
+	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrInNotNull sjme_rom_suite* inSuite,
+	sjme_attrInNotNull const sjme_list_sjme_lpcstr* inNames,
+	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibs)
+{
+	sjme_todo("Implement this?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}

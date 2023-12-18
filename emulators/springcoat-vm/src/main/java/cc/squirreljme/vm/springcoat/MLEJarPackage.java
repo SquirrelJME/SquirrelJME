@@ -107,10 +107,30 @@ public enum MLEJarPackage
 		}
 	},
 	
+	/** {@link JarPackageShelf#libraryId(JarPackageBracket)}. */
+	LIBRARY_ID("libraryId:(Lcc/squirreljme/jvm/mle/brackets/" +
+		"JarPackageBracket;)I")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/12/18
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			return __thread.machine.suites.libraryId(
+				MLEJarPackage.__jarObject(__args[0]).library());
+		}
+	},
+	
 	/** {@link JarPackageShelf#libraryPath(JarPackageBracket)}. */ 
 	LIBRARY_PATH("libraryPath:(Lcc/squirreljme/jvm/mle/brackets/" +
 		"JarPackageBracket;)Ljava/lang/String;")
 	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/06/18
+		 */
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{

@@ -97,6 +97,27 @@ public final class EmulatedJarPackageShelf
 	}
 	
 	/**
+	 * Returns the ID of the specific library.
+	 *
+	 * @param __jar The Jar to get the library ID of.
+	 * @return The library ID for the given Jar.
+	 * @throws MLECallError If the library is not valid.
+	 * @since 2023/12/18
+	 */
+	@SquirrelJMEVendorApi
+	public static int libraryId(@NotNull JarPackageBracket __jar)
+		throws MLECallError
+	{
+		if (__jar == null)
+			throw new MLECallError("No JAR.");
+		
+		EmulatedJarPackageBracket jar = (EmulatedJarPackageBracket)__jar;
+		
+		Path path = jar.vmLib.path();
+		return (path != null ? path.hashCode() : jar.vmLib.name().hashCode());
+	}
+	
+	/**
 	 * Returns the path to the given JAR
 	 * 
 	 * @param __jar The JAR to get the path of.

@@ -9,6 +9,7 @@
 
 package cc.squirreljme.emulator.vm;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -59,6 +60,26 @@ public final class ArraySuiteManager
 		for (VMClassLibrary lib : this._libraries)
 			if (lib == null)
 				throw new NullPointerException("NARG");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/12/18
+	 */
+	@Override
+	public int libraryId(VMClassLibrary __lib)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__lib == null)
+			throw new NullPointerException("NARG");
+		
+		// Map libraries to linear IDs
+		VMClassLibrary[] libraries = this._libraries;
+		for (int i = 0, n = libraries.length; i < n; i++)
+			if (libraries[i] == __lib)
+				return 1 + i;
+		
+		throw new IllegalArgumentException("Unknown library: " + __lib);
 	}
 	
 	/**

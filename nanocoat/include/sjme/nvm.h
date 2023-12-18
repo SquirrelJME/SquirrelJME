@@ -1254,9 +1254,12 @@ typedef enum sjme_errorCode
 
 	/** There are no suites available. */
 	SJME_ERROR_NO_SUITES = -28,
+
+	/** Classpath cannot be obtained by both ID and Name. */
+	SJME_ERROR_CLASS_PATH_BY_BOTH = -29,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -29
+	SJME_NUM_ERROR_CODES = -30
 } sjme_errorCode;
 
 /**

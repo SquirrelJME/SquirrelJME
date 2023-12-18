@@ -46,6 +46,16 @@ static sjme_errorCode sjme_jni_virtualSuite_initCache(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_jni_virtualSuite_libraryId(
+	sjme_attrInNotNull const sjme_rom_suiteFunctions* functions,
+	sjme_attrInNotNull sjme_rom_suite* targetSuite,
+	sjme_attrInNotNull sjme_rom_library* targetLibrary,
+	sjme_attrOutNotNull sjme_jint* outId)
+{
+	sjme_todo("Implement this?");
+	return 0;
+}
+
 static sjme_errorCode sjme_jni_virtualSuite_list()
 {
 	sjme_todo("Implement this?");
@@ -74,6 +84,7 @@ jlong SJME_JNI_METHOD(SJME_CLASS_VIRTUAL_SUITE, _1_1init)
 
 	/* Set function handlers. */
 	functions->initCache = sjme_jni_virtualSuite_initCache;
+	functions->libraryId = sjme_jni_virtualSuite_libraryId;
 	functions->list = sjme_jni_virtualSuite_list;
 	functions->loadLibrary = sjme_jni_virtualSuite_loadLibrary;
 

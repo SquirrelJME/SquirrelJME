@@ -65,7 +65,7 @@ typedef struct sjme_task_startConfig
 	sjme_task_pipeRedirectType stdErr;
 
 	/** The class path to use. */
-	sjme_rom_library** classPath;
+	sjme_list_sjme_rom_library* classPath;
 
 	/** Main class to start in. */
 	sjme_lpcstr mainClass;
