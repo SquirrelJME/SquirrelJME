@@ -17,6 +17,7 @@ import cc.squirreljme.emulator.vm.VMThreadModel;
 import cc.squirreljme.emulator.vm.VirtualMachine;
 import cc.squirreljme.jdwp.JDWPFactory;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.IntegerArrayList;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,11 +65,21 @@ public class NanoCoatFactory
 		AllocPool reservedPool = new AllocPool(reservedLink.pointerAddress(), 
 			reservedLink.size());
 		
-		// Initialize boot parameters
-		NvmBootParam param = new NvmBootParam(reservedPool);
-		
 		// Setup virtual suite manager
 		VirtualSuite suite = new VirtualSuite(reservedPool, __suiteManager);
+		
+		// Map the class path to IDs so NanoCoat knows which ones to use
+		int numClassPath = __classpath.length;
+		int[] classPathIds = new int[numClassPath];
+		for (int i = 0; i < numClassPath; i++)
+			classPathIds[i] = suite.manager.libraryId(__classpath[i]);
+		
+		// Debug
+		Debugging.debugNote("Main ClassPath: %s",
+			IntegerArrayList.asList(classPathIds));
+		
+		// Initialize boot parameters
+		NvmBootParam param = new NvmBootParam(reservedPool);
 		
 		// Configure the virtual machine
 		param.setSuite(suite);
