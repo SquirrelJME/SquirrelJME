@@ -10,12 +10,9 @@
 package cc.squirreljme.vm.nanocoat;
 
 import cc.squirreljme.emulator.vm.VMException;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
@@ -123,47 +120,6 @@ public final class AllocPool
 	}
 	
 	/**
-	 * Flattens the given set of strings.
-	 *
-	 * @param __strings The string to flatten.
-	 * @return The resultant flat list.
-	 * @throws NullPointerException On null arguments.
-	 * @throws VMException If the strings could not be flattened.
-	 * @since 2023/12/17
-	 */
-	public FlatList<CharStarPointer> flatten(String... __strings)
-		throws NullPointerException, VMException
-	{
-		if (__strings == null)
-			throw new NullPointerException("NARG");
-		
-		// Flatten natively
-		long blockPtr = AllocPool.__flatten(this._pointer, __strings);
-		
-		// Wrap as list
-		return new CharStarFlatList(
-			new AllocLink(blockPtr, AllocPool.__getLink(blockPtr)));
-	}
-	
-	/**
-	 * Flattens the given set of strings.
-	 *
-	 * @param __strings The string to flatten.
-	 * @return The resultant flat list.
-	 * @throws NullPointerException On null arguments.
-	 * @throws VMException If the strings could not be flattened.
-	 * @since 2023/12/17
-	 */
-	public FlatList<CharStarPointer> flatten(List<String> __strings)
-		throws NullPointerException, VMException
-	{
-		if (__strings == null)
-			throw new NullPointerException("NARG");
-		
-		return this.flatten(__strings.toArray(new String[__strings.size()]));
-	}
-	
-	/**
 	 * {@inheritDoc}
 	 * @since 2023/12/08
 	 */
@@ -230,18 +186,6 @@ public final class AllocPool
 		throws VMException;
 	
 	/**
-	 * Flattens the given array of strings.
-	 *
-	 * @param __poolPtr The pointer to the allocation pool.
-	 * @param __strings The strings to flatten.
-	 * @return The block pointer of the resultant list.
-	 * @throws VMException If it could not be flattened.
-	 * @since 2023/12/17
-	 */
-	private static native long __flatten(long __poolPtr, String[] __strings)
-		throws VMException;
-	
-	/**
 	 * Returns the raw address link for the given block.
 	 *
 	 * @param __blockPtr The block pointer used.
@@ -249,7 +193,7 @@ public final class AllocPool
 	 * @throws VMException If the link could not be obtained.
 	 * @since 2023/12/14
 	 */
-	private static native long __getLink(long __blockPtr)
+	static native long __getLink(long __blockPtr)
 		throws VMException;
 	
 	/**

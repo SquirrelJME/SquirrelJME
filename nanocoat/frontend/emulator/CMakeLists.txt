@@ -18,6 +18,7 @@ add_library(libEmulator SHARED
 	nativeAllocLink.c
 	nativeAllocPool.c
 	nativeAllocSizeOf.c
+	nativeFlatList.c
 	nativeNvmBootParam.c
 	nativeNvmFrame.c
 	nativeNvmState.c

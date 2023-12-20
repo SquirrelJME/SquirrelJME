@@ -84,7 +84,7 @@ public class NanoCoatFactory
 		// Configure the virtual machine
 		param.setSuite(suite);
 		param.setMainClass(reservedPool.strDup(__mainClass));
-		param.setMainArgs(reservedPool.flatten(__args));
+		param.setMainArgs(FlatList.flatten(reservedPool, __args));
 		
 		// Determine all system properties to copy
 		List<String> rawSysProps = new ArrayList<>(
@@ -96,7 +96,7 @@ public class NanoCoatFactory
 		}
 		
 		// Set all system properties
-		param.setSysProps(reservedPool.flatten(rawSysProps));
+		param.setSysProps(FlatList.flatten(reservedPool, rawSysProps));
 		
 		// Setup main virtual machine
 		NvmState state = new NvmState(mainPool, reservedPool, param);

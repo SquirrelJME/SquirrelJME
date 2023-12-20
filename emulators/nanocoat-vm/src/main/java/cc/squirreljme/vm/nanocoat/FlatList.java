@@ -9,8 +9,10 @@
 
 package cc.squirreljme.vm.nanocoat;
 
+import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.AbstractList;
+import java.util.List;
 
 /**
  * Represents a flat native list, base class as there can be sub-forms of this
@@ -97,4 +99,63 @@ public abstract class FlatList<E>
 	{
 		throw Debugging.todo();
 	}
+	
+	/**
+	 * Flattens the given set of strings.
+	 *
+	 * @param __inPool The pool to allocate within.
+	 * @param __strings The string to flatten.
+	 * @return The resultant flat list.
+	 * @throws NullPointerException On null arguments.
+	 * @throws VMException If the strings could not be flattened.
+	 * @since 2023/12/17
+	 */
+	public static FlatList<CharStarPointer> flatten(AllocPool __inPool,
+		List<String> __strings)
+		throws NullPointerException, VMException
+	{
+		if (__inPool == null || __strings == null)
+			throw new NullPointerException("NARG");
+		
+		return FlatList.flatten(__inPool,
+			__strings.toArray(new String[__strings.size()]));
+	}
+	
+	/**
+	 * Flattens the given set of strings.
+	 *
+	 * @param __inPool The pool to allocate within.
+	 * @param __strings The string to flatten.
+	 * @return The resultant flat list.
+	 * @throws NullPointerException On null arguments.
+	 * @throws VMException If the strings could not be flattened.
+	 * @since 2023/12/17
+	 */
+	public static FlatList<CharStarPointer> flatten(AllocPool __inPool,
+		String... __strings)
+		throws NullPointerException, VMException
+	{
+		if (__strings == null)
+			throw new NullPointerException("NARG");
+		
+		// Flatten natively
+		long blockPtr = FlatList.__flatten(
+			__inPool.pointerAddress(), __strings);
+		
+		// Wrap as list
+		return new CharStarFlatList(
+			new AllocLink(blockPtr, AllocPool.__getLink(blockPtr)));
+	}
+	
+	/**
+	 * Flattens the given array of strings.
+	 *
+	 * @param __poolPtr The pointer to the allocation pool.
+	 * @param __strings The strings to flatten.
+	 * @return The block pointer of the resultant list.
+	 * @throws VMException If it could not be flattened.
+	 * @since 2023/12/17
+	 */
+	private static native long __flatten(long __poolPtr, String[] __strings)
+		throws VMException;
 }
