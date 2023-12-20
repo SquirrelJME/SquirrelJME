@@ -19,6 +19,11 @@ if(NOT EMSCRIPTEN AND NOT SQUIRRELJME_CROSS_BUILD)
 	endif()
 endif()
 
+# Netscape Plugin API (NPAPI)
+if(SQUIRRELJME_IS_UNIX OR SQUIRRELJME_IS_WINDOWS)
+	add_subdirectory(npapi)
+endif()
+
 # RetroArch/LibRetro
 add_subdirectory(libretro)
 
