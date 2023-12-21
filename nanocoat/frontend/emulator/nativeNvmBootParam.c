@@ -28,7 +28,8 @@ void SJME_JNI_METHOD(SJME_CLASS_NVM_BOOT_PARAM, _1_1setMainArgs)
 	param = SJME_JLONG_TO_POINTER(sjme_nvm_bootParam*, thisPtr);
 
 	/* Set main arguments. */
-	param->mainArgs = SJME_JLONG_TO_POINTER(sjme_list_sjme_lpcstr*, listPtr);
+	param->mainArgs = SJME_JLONG_TO_POINTER(const sjme_list_sjme_lpcstr*,
+		listPtr);
 }
 
 void SJME_JNI_METHOD(SJME_CLASS_NVM_BOOT_PARAM, _1_1setMainClass)
@@ -47,6 +48,25 @@ void SJME_JNI_METHOD(SJME_CLASS_NVM_BOOT_PARAM, _1_1setMainClass)
 
 	/* Set main class. */
 	param->mainClass = SJME_JLONG_TO_POINTER(sjme_lpcstr, stringPtr);
+}
+
+void SJME_JNI_METHOD(SJME_CLASS_NVM_BOOT_PARAM, _1_1setMainClassPathIds)
+	(JNIEnv* env, jclass classy, jlong thisPtr, jlong idsPtr)
+{
+	sjme_nvm_bootParam* param;
+
+	if (thisPtr == 0)
+	{
+		sjme_jni_throwVMException(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+
+	/* Get parameter data. */
+	param = SJME_JLONG_TO_POINTER(sjme_nvm_bootParam*, thisPtr);
+
+	/* Set suite information. */
+	param->mainClassPathById =
+		SJME_JLONG_TO_POINTER(const sjme_list_sjme_jint*, idsPtr);
 }
 
 void SJME_JNI_METHOD(SJME_CLASS_NVM_BOOT_PARAM, _1_1setSuite)

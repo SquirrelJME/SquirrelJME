@@ -143,8 +143,31 @@ public abstract class FlatList<E>
 			__inPool.pointerAddress(), __strings);
 		
 		// Wrap as list
-		return new CharStarFlatList(
-			new AllocLink(blockPtr, AllocPool.__getLink(blockPtr)));
+		return new CharStarFlatList(AllocLink.ofBlockPtr(blockPtr));
+	}
+	
+	/**
+	 * Initializes the list from the given array.
+	 *
+	 * @param __inPool The pool to allocate within.
+	 * @param __ints The integers to store in the list.
+	 * @return The resultant flat list of integers.
+	 * @throws NullPointerException
+	 * @throws VMException
+	 * @since 2023/12/20
+	 */
+	public static IntegerFlatList fromArray(AllocPool __inPool, int... __ints)
+		throws NullPointerException, VMException
+	{
+		if (__inPool == null || __ints == null)
+			throw new NullPointerException("NARG");
+		
+		// Map natively
+		long blockPtr = FlatList.__fromArrayI(
+			__inPool.pointerAddress(), __ints);
+		
+		// Wrap as list
+		return new IntegerFlatList(AllocLink.ofBlockPtr(blockPtr));
 	}
 	
 	/**
@@ -157,5 +180,17 @@ public abstract class FlatList<E>
 	 * @since 2023/12/17
 	 */
 	private static native long __flatten(long __poolPtr, String[] __strings)
+		throws VMException;
+	
+	/**
+	 * Creates a new list from the given array.
+	 *
+	 * @param __poolPtr The pointer to the pool to allocate within.
+	 * @param __ints The integers to set from.
+	 * @return The pointer to the created list.
+	 * @throws VMException If it could not be initialized.
+	 * @since 2023/12/20
+	 */
+	private static native long __fromArrayI(long __poolPtr, int[] __ints)
 		throws VMException;
 }

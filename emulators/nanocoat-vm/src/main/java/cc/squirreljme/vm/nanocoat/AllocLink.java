@@ -332,6 +332,18 @@ public final class AllocLink
 	}
 	
 	/**
+	 * Initializes a link from the given block pointer.
+	 *
+	 * @param __blockPtr The block pointer.
+	 * @return The resultant link.
+	 * @since 2023/12/20
+	 */
+	public static AllocLink ofBlockPtr(long __blockPtr)
+	{
+		return new AllocLink(__blockPtr, AllocPool.__getLink(__blockPtr));
+	}
+	
+	/**
 	 * Reads bytes at the given offset.
 	 *
 	 * @param __blockPtr The block pointer.

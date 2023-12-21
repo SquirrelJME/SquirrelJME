@@ -83,6 +83,8 @@ public class NanoCoatFactory
 		
 		// Configure the virtual machine
 		param.setSuite(suite);
+		param.setMainClassPathIds(
+			FlatList.fromArray(reservedPool, classPathIds));
 		param.setMainClass(reservedPool.strDup(__mainClass));
 		param.setMainArgs(FlatList.flatten(reservedPool, __args));
 		

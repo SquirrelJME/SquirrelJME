@@ -41,19 +41,19 @@ struct sjme_nvm_bootParam
 	const sjme_rom_suiteFunctions* virtualSuite;
 
 	/** The class path for main by library IDs. */
-	sjme_list_sjme_jint* mainClassPathById;
+	const sjme_list_sjme_jint* mainClassPathById;
 
 	/** The class path for main by names. */
-	sjme_list_sjme_lpcstr* mainClassPathByName;
+	const sjme_list_sjme_lpcstr* mainClassPathByName;
 
 	/** Main class to start in. */
 	sjme_lpcstr mainClass;
 
 	/** Main arguments. */
-	sjme_list_sjme_lpcstr* mainArgs;
+	const sjme_list_sjme_lpcstr* mainArgs;
 
 	/** System properties. */
-	sjme_list_sjme_lpcstr* sysProps;
+	const sjme_list_sjme_lpcstr* sysProps;
 };
 
 /**

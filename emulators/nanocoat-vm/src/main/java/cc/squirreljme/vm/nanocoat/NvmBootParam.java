@@ -80,6 +80,20 @@ public final class NvmBootParam
 	}
 	
 	/**
+	 * Sets the main class path IDs.
+	 *
+	 * @param __ids The IDS to set.
+	 * @throws VMException If it could not be set.
+	 * @since 2023/12/20
+	 */
+	public void setMainClassPathIds(FlatList<Integer> __ids)
+		throws VMException
+	{
+		NvmBootParam.__setMainClassPathIds(this._link.pointerAddress(),
+			(__ids == null ? 0 : __ids.pointerAddress()));
+	}
+	
+	/**
 	 * Sets the suite handler.
 	 *
 	 * @param __suite The suites to use.
@@ -125,6 +139,18 @@ public final class NvmBootParam
 	 * @since 2023/12/16
 	 */
 	private static native void __setMainClass(long __thisPtr, long __strPtr)
+		throws VMException;
+	
+	/**
+	 * Sets the main class path IDs.
+	 *
+	 * @param __thisPtr Pointer to self.
+	 * @param __idsPtr Pointers to the ID list.
+	 * @throws VMException If it could not be set.
+	 * @since 2023/12/20
+	 */
+	private static native void __setMainClassPathIds(long __thisPtr,
+		long __idsPtr)
 		throws VMException;
 	
 	/**
