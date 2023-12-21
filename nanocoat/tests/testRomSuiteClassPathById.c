@@ -11,7 +11,7 @@
 #include "test.h"
 
 /**
- * Tests get of suites by their classpath ID.
+ * Tests get of libraries by their library ID.
  *
  * @since 2023/12/21
  */
