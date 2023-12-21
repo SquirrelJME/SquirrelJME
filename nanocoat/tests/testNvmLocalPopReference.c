@@ -70,7 +70,7 @@ sjme_jboolean configNvmLocalPopReference(
 	/* Configure. */
 	switch (inCurrent->type)
 	{
-		case SJME_MOCK_DO_TYPE_INIT:
+		case SJME_MOCK_DO_TYPE_MAKE_STATE:
 			inCurrent->data.state.hooks = &hooksNvmLocalPopReference;
 			break;
 		
@@ -95,7 +95,7 @@ static const sjme_mockSet mockNvmLocalPopReference =
 
 		/* Mock calls. */
 		{
-			sjme_mockDoInit,
+			sjme_mockDoMakeState,
 			sjme_mockDoMakeThread,
 			sjme_mockDoMakeFrame,
 			sjme_mockDoMakeObject,

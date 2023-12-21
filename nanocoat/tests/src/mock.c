@@ -35,8 +35,8 @@ struct
 	sjme_mockDoType type;
 } sjme_mockFuncToType[SJME_NUM_MOCK_DO_TYPES] =
 {
-	{sjme_mockDoInit,
-		SJME_MOCK_DO_TYPE_INIT},
+	{sjme_mockDoMakeState,
+		SJME_MOCK_DO_TYPE_MAKE_STATE},
 	{sjme_mockDoMakeThread,
 		SJME_MOCK_DO_TYPE_MAKE_THREAD},
 	{sjme_mockDoMakeObject,
@@ -131,7 +131,7 @@ void* sjme_mockAlloc(
 	return rv;
 }
 
-sjme_jboolean sjme_mockDoInit(
+sjme_jboolean sjme_mockDoMakeState(
 	sjme_attrInNotNull sjme_mockState* inState,
 	sjme_attrInNotNull sjme_mockRunData* inData)
 {

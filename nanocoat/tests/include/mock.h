@@ -43,7 +43,7 @@ typedef enum sjme_mockDoType
 	SJME_MOCK_DO_TYPE_UNKNOWN,
 	
 	/** Initialize. */
-	SJME_MOCK_DO_TYPE_INIT,
+	SJME_MOCK_DO_TYPE_MAKE_STATE,
 	
 	/** Make thread. */
 	SJME_MOCK_DO_TYPE_MAKE_THREAD,
@@ -230,18 +230,6 @@ sjme_jboolean sjme_mockAct(
 void* sjme_mockAlloc(
 	sjme_attrInNotNull sjme_mockState* inState,
 	sjme_attrInPositiveNonZero size_t inLen);
-
-/**
- * Initial virtual machine initialization state.
- * 
- * @param inState The mock state.
- * @param inData The data currently being processed.
- * @return If this was successful.
- * @since 2023/11/03
- */
-sjme_jboolean sjme_mockDoInit(
-	sjme_attrInNotNull sjme_mockState* inState,
-	sjme_attrInNotNull sjme_mockRunData* inData);
 	
 /**
  * Makes a frame within the virtual machine.
@@ -264,6 +252,18 @@ sjme_jboolean sjme_mockDoMakeFrame(
  * @since 2023/11/17 
  */
 sjme_jboolean sjme_mockDoMakeObject(
+	sjme_attrInNotNull sjme_mockState* inState,
+	sjme_attrInNotNull sjme_mockRunData* inData);
+
+/**
+ * Initial virtual machine initialization state.
+ *
+ * @param inState The mock state.
+ * @param inData The data currently being processed.
+ * @return If this was successful.
+ * @since 2023/11/03
+ */
+sjme_jboolean sjme_mockDoMakeState(
 	sjme_attrInNotNull sjme_mockState* inState,
 	sjme_attrInNotNull sjme_mockRunData* inData);
 

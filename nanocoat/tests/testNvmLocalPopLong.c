@@ -47,7 +47,7 @@ static const sjme_mockSet mockNvmLocalPopLong =
 
 	/* Mock calls. */
 	{
-		sjme_mockDoInit,
+		sjme_mockDoMakeState,
 		sjme_mockDoMakeThread,
 		sjme_mockDoMakeFrame,
 		NULL
