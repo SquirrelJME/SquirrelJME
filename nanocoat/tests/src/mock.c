@@ -35,14 +35,14 @@ struct
 	sjme_mockDoType type;
 } sjme_mockFuncToType[SJME_NUM_MOCK_DO_TYPES] =
 {
-	{sjme_mockDoMakeState,
-		SJME_MOCK_DO_TYPE_MAKE_STATE},
-	{sjme_mockDoMakeThread,
-		SJME_MOCK_DO_TYPE_MAKE_THREAD},
-	{sjme_mockDoMakeObject,
-		SJME_MOCK_DO_TYPE_MAKE_OBJECT},
-	{sjme_mockDoMakeFrame,
-		SJME_MOCK_DO_TYPE_MAKE_FRAME},
+	{sjme_mockDoNvmFrame,
+		SJME_MOCK_DO_TYPE_NVM_FRAME},
+	{sjme_mockDoNvmObject,
+		SJME_MOCK_DO_TYPE_NVM_OBJECT},
+	{sjme_mockDoNvmState,
+		SJME_MOCK_DO_TYPE_NVM_STATE},
+	{sjme_mockDoNvmThread,
+		SJME_MOCK_DO_TYPE_NVM_THREAD},
 		
 	/* End. */
 	{NULL, SJME_MOCK_DO_TYPE_UNKNOWN}
@@ -131,7 +131,7 @@ void* sjme_mockAlloc(
 	return rv;
 }
 
-sjme_jboolean sjme_mockDoMakeState(
+sjme_jboolean sjme_mockDoNvmState(
 	sjme_attrInNotNull sjme_mockState* inState,
 	sjme_attrInNotNull sjme_mockRunData* inData)
 {
@@ -156,7 +156,7 @@ sjme_jboolean sjme_mockDoMakeState(
 	return SJME_JNI_TRUE;
 }
 
-sjme_jboolean sjme_mockDoMakeFrame(
+sjme_jboolean sjme_mockDoNvmFrame(
 	sjme_attrInNotNull sjme_mockState* inState,
 	sjme_attrInNotNull sjme_mockRunData* inData)
 {
@@ -273,7 +273,7 @@ sjme_jboolean sjme_mockDoMakeFrame(
 	return SJME_JNI_TRUE;
 }
 
-sjme_jboolean sjme_mockDoMakeObject(
+sjme_jboolean sjme_mockDoNvmObject(
 	sjme_attrInNotNull sjme_mockState* inState,
 	sjme_attrInNotNull sjme_mockRunData* inData)
 {
@@ -297,7 +297,7 @@ sjme_jboolean sjme_mockDoMakeObject(
 	return SJME_JNI_TRUE;
 }
 
-sjme_jboolean sjme_mockDoMakeThread(
+sjme_jboolean sjme_mockDoNvmThread(
 	sjme_attrInNotNull sjme_mockState* inState,
 	sjme_attrInNotNull sjme_mockRunData* inData)
 {

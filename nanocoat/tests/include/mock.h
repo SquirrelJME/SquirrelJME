@@ -41,18 +41,18 @@ typedef enum sjme_mockDoType
 {
 	/** Unknown. */
 	SJME_MOCK_DO_TYPE_UNKNOWN,
+
+	/** Make frame. */
+	SJME_MOCK_DO_TYPE_NVM_FRAME,
+
+	/** Make Object. */
+	SJME_MOCK_DO_TYPE_NVM_OBJECT,
 	
 	/** Initialize. */
-	SJME_MOCK_DO_TYPE_MAKE_STATE,
+	SJME_MOCK_DO_TYPE_NVM_STATE,
 	
 	/** Make thread. */
-	SJME_MOCK_DO_TYPE_MAKE_THREAD,
-	
-	/** Make Object. */
-	SJME_MOCK_DO_TYPE_MAKE_OBJECT,
-	
-	/** Make frame. */
-	SJME_MOCK_DO_TYPE_MAKE_FRAME,
+	SJME_MOCK_DO_TYPE_NVM_THREAD,
 
 	/** The number of do types. */
 	SJME_NUM_MOCK_DO_TYPES
@@ -239,7 +239,7 @@ void* sjme_mockAlloc(
  * @return If this was successful.
  * @since 2023/11/11
  */
-sjme_jboolean sjme_mockDoMakeFrame(
+sjme_jboolean sjme_mockDoNvmFrame(
 	sjme_attrInNotNull sjme_mockState* inState,
 	sjme_attrInNotNull sjme_mockRunData* inData);
 
@@ -251,7 +251,7 @@ sjme_jboolean sjme_mockDoMakeFrame(
  * @return Returns @c SJME_JNI_TRUE on success.
  * @since 2023/11/17 
  */
-sjme_jboolean sjme_mockDoMakeObject(
+sjme_jboolean sjme_mockDoNvmObject(
 	sjme_attrInNotNull sjme_mockState* inState,
 	sjme_attrInNotNull sjme_mockRunData* inData);
 
@@ -263,7 +263,7 @@ sjme_jboolean sjme_mockDoMakeObject(
  * @return If this was successful.
  * @since 2023/11/03
  */
-sjme_jboolean sjme_mockDoMakeState(
+sjme_jboolean sjme_mockDoNvmState(
 	sjme_attrInNotNull sjme_mockState* inState,
 	sjme_attrInNotNull sjme_mockRunData* inData);
 
@@ -275,7 +275,7 @@ sjme_jboolean sjme_mockDoMakeState(
  * @return If this was successful.
  * @since 2023/11/11
  */
-sjme_jboolean sjme_mockDoMakeThread(
+sjme_jboolean sjme_mockDoNvmThread(
 	sjme_attrInNotNull sjme_mockState* inState,
 	sjme_attrInNotNull sjme_mockRunData* inData);
 

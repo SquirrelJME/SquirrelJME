@@ -26,7 +26,7 @@ sjme_jboolean configNvmLocalPopDouble(
 	/* Configure. */
 	switch (inCurrent->type)
 	{
-		case SJME_MOCK_DO_TYPE_MAKE_FRAME:
+		case SJME_MOCK_DO_TYPE_NVM_FRAME:
 			inCurrent->data.frame.maxLocals = 1;
 			inCurrent->data.frame.maxStack = 1;
 			inCurrent->data.frame.treads[SJME_JAVA_TYPE_ID_DOUBLE]
@@ -47,9 +47,9 @@ static const sjme_mockSet mockNvmLocalPopDouble =
 
 		/* Mock calls. */
 		{
-			sjme_mockDoMakeState,
-			sjme_mockDoMakeThread,
-			sjme_mockDoMakeFrame,
+			sjme_mockDoNvmState,
+			sjme_mockDoNvmThread,
+			sjme_mockDoNvmFrame,
 			NULL
 		}
 };
