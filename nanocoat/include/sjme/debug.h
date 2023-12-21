@@ -158,9 +158,10 @@ void sjme_todoR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 /**
  * Handles specific debug abort scenarios.
  *
+ * @return Return @c SJME_JNI_TRUE if it was handled.
  * @since 2023/12/21
  */
-typedef void (*sjme_debug_abortHandlerFunc)(void);
+typedef sjme_jboolean (*sjme_debug_abortHandlerFunc)(void);
 
 /** The handler for debug aborts. */
 extern sjme_debug_abortHandlerFunc sjme_debug_abortHandler;
@@ -169,9 +170,10 @@ extern sjme_debug_abortHandlerFunc sjme_debug_abortHandler;
  * Handler for specific debug exit scenarios.
  *
  * @param exitCode The exit code.
+ * @return Return @c SJME_JNI_TRUE if it was handled.
  * @since 2023/12/21
  */
-typedef void (*sjme_debug_exitHandlerFunc)(int exitCode);
+typedef sjme_jboolean (*sjme_debug_exitHandlerFunc)(int exitCode);
 
 /** The handler for debug exits. */
 extern sjme_debug_exitHandlerFunc sjme_debug_exitHandler;

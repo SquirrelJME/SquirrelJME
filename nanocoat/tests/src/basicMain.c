@@ -7,5 +7,9 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-/** Just needs to compile. */
-static const int sjme_testNothingIsHere = 0;
+#include "test.h"
+
+int main(int argc, char** argv)
+{
+	return sjme_test_main(argc, argv);
+}

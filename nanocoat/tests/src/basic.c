@@ -22,6 +22,34 @@ const sjme_availableTest sjme_availableTests[] =
 	{NULL, NULL}
 };
 
+/** The current test being executed. */
+static sjme_test* sjme_test_currentTest;
+
+static sjme_jboolean sjme_test_abortHandler(void)
+{
+	return SJME_JNI_FALSE;
+}
+
+static sjme_jboolean sjme_test_exitHandler(int exitCode)
+{
+	/* Exit out of the test? */
+	if (sjme_test_currentTest != NULL)
+	{
+		/* Note it. */
+		sjme_message("Test exiting with %d, short circuiting out!",
+			exitCode);
+
+		/* Jump back to the debug entry point. */
+		longjmp(sjme_test_currentTest->jumpPoint,
+			SJME_TEST_RESULT_FAIL);
+
+		/* Was handled. */
+		return SJME_JNI_TRUE;
+	}
+
+	return SJME_JNI_FALSE;
+}
+
 /**
  * Main entry point
  * 
@@ -30,7 +58,7 @@ const sjme_availableTest sjme_availableTests[] =
  * @return The exit code of the test.
  * @since 2023/08/09
  */
-int main(int argc, sjme_lpstr* argv)
+int sjme_test_main(int argc, sjme_lpstr* argv)
 {
 	const sjme_availableTest* found;
 	sjme_testResult result;
@@ -68,6 +96,13 @@ int main(int argc, sjme_lpstr* argv)
 	/* Setup test. */
 	memset(&test, 0, sizeof(test));
 
+	/* Store test base. */
+	sjme_test_currentTest = &test;
+
+	/* Use a different exit handler? */
+	if (sjme_debug_exitHandler == NULL)
+		sjme_debug_exitHandler = sjme_test_exitHandler;
+
 	/* Setup base allocation pool. */
 	for (chunkLen = 65536; chunkLen >= 1024; chunkLen /= 2)
 	{
@@ -80,6 +115,9 @@ int main(int argc, sjme_lpstr* argv)
 		if (SJME_IS_ERROR(sjme_alloc_poolInitStatic(&test.pool,
 			chunk, chunkLen)) || test.pool == NULL)
 		{
+			/* No longer testing. */
+			sjme_test_currentTest = NULL;
+
 			sjme_message("Could not initialize pre-allocated pool.");
 			return EXIT_FAILURE;
 		}
@@ -91,6 +129,9 @@ int main(int argc, sjme_lpstr* argv)
 	/* Completely failed to allocate. */
 	if (chunk == NULL)
 	{
+		/* No longer testing. */
+		sjme_test_currentTest = NULL;
+
 		sjme_message("Could not allocate test pool.");
 		return EXIT_FAILURE;
 	}
@@ -113,7 +154,7 @@ int main(int argc, sjme_lpstr* argv)
 	}
 	
 	/* Cleanup after test. */
-	sjme_message("TODO: Test cleanup?");
+	sjme_test_currentTest = NULL;
 	
 	/* Handle result. */
 	if (result == SJME_TEST_RESULT_SKIP)

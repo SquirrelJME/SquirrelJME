@@ -34,11 +34,11 @@ static void sjme_debug_abort(void)
 #if !defined(SJME_CONFIG_RELEASE)
 	/* Use specific abort handler? */
 	if (sjme_debug_abortHandler != NULL)
-		sjme_debug_abortHandler();
+		if (sjme_debug_abortHandler())
+			return;
 
 	/* Otherwise use C abort handler. */
-	else
-		abort();
+	abort();
 #endif
 }
 
@@ -52,7 +52,8 @@ static void sjme_debug_exit(int exitCode)
 {
 	/* Use specific exit handler? */
 	if (sjme_debug_exitHandler != NULL)
-		sjme_debug_exitHandler(exitCode);
+		if (sjme_debug_exitHandler(exitCode))
+			return;
 
 	/* Fallback to normal exit. */
 	exit(exitCode);
