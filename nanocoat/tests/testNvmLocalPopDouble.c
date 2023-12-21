@@ -9,15 +9,15 @@
 
 #include <string.h>
 
-#include "elevator.h"
+#include "mock.h"
 #include "proto.h"
 #include "sjme/nvmFunc.h"
 #include "test.h"
 #include "unit.h"
 
 sjme_jboolean configNvmLocalPopDouble(
-	sjme_attrInNotNull sjme_elevatorState* inState,
-	sjme_attrInNotNull sjme_elevatorRunCurrent* inCurrent)
+	sjme_attrInNotNull sjme_mockState* inState,
+	sjme_attrInNotNull sjme_mockRunCurrent* inCurrent)
 {
 	/* Check. */
 	if (inState == NULL || inCurrent == NULL)
@@ -26,7 +26,7 @@ sjme_jboolean configNvmLocalPopDouble(
 	/* Configure. */
 	switch (inCurrent->type)
 	{
-		case SJME_ELEVATOR_DO_TYPE_MAKE_FRAME:
+		case SJME_MOCK_DO_TYPE_MAKE_FRAME:
 			inCurrent->data.frame.maxLocals = 1;
 			inCurrent->data.frame.maxStack = 1;
 			inCurrent->data.frame.treads[SJME_JAVA_TYPE_ID_DOUBLE]
@@ -39,34 +39,34 @@ sjme_jboolean configNvmLocalPopDouble(
 	return SJME_JNI_TRUE;
 }
 
-/** Elevator set for test. */
-static const sjme_elevatorSet elevatorNvmLocalPopDouble =
+/** Mock set for test. */
+static const sjme_mockSet mockNvmLocalPopDouble =
 	{
 		configNvmLocalPopDouble,
 		0,
 
-		/* Elevator calls. */
+		/* Mock calls. */
 		{
-			sjme_elevatorDoInit,
-			sjme_elevatorDoMakeThread,
-			sjme_elevatorDoMakeFrame,
+			sjme_mockDoInit,
+			sjme_mockDoMakeThread,
+			sjme_mockDoMakeFrame,
 			NULL
 		}
 };
 
 sjme_attrUnused SJME_TEST_DECLARE(testNvmLocalPopDouble)
 {
-	sjme_elevatorState state;
+	sjme_mockState state;
 	sjme_nvm_frame* frame;
 	sjme_jint oldNumStack;
 	sjme_nvm_frameTread* longsTread;
 	sjme_nvm_frameStack* stack;
 	
-	/* Perform the elevator. */
+	/* Perform the mock. */
 	memset(&state, 0, sizeof(state));
-	if (!sjme_elevatorAct(&state,
-		&elevatorNvmLocalPopDouble, 0))
-		sjme_die("Invalid elevator");
+	if (!sjme_mockAct(&state,
+		&mockNvmLocalPopDouble, 0))
+		sjme_die("Invalid mock");
 		
 	/* Get initialize frame size. */
 	frame = state.threads[0].nvmThread->top;

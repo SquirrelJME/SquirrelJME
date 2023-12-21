@@ -8,13 +8,13 @@
 // -------------------------------------------------------------------------*/
 
 /**
- * Test elevator.
+ * Test mock.
  * 
  * @since 2023/11/03
  */
 
-#ifndef SQUIRRELJME_ELEVATOR_H
-#define SQUIRRELJME_ELEVATOR_H
+#ifndef SQUIRRELJME_MOCK_H
+#define SQUIRRELJME_MOCK_H
 
 #include "sjme/nvm.h"
 #include "sjme/debug.h"
@@ -25,7 +25,7 @@
 #ifdef __cplusplus
 	#ifndef SJME_CXX_IS_EXTERNED
 		#define SJME_CXX_IS_EXTERNED
-		#define SJME_CXX_SQUIRRELJME_ELEVATOR_H
+		#define SJME_CXX_SQUIRRELJME_MOCK_H
 extern "C" {
 	#endif /* #ifdef SJME_CXX_IS_EXTERNED */
 #endif     /* #ifdef __cplusplus */
@@ -33,43 +33,43 @@ extern "C" {
 /*--------------------------------------------------------------------------*/
 
 /**
- * The elevator instruction type.
+ * The mock instruction type.
  * 
  * @since 2023/11/11
  */
-typedef enum sjme_elevatorDoType
+typedef enum sjme_mockDoType
 {
 	/** Unknown. */
-	SJME_ELEVATOR_DO_TYPE_UNKNOWN,
+	SJME_MOCK_DO_TYPE_UNKNOWN,
 	
 	/** Initialize. */
-	SJME_ELEVATOR_DO_TYPE_INIT,
+	SJME_MOCK_DO_TYPE_INIT,
 	
 	/** Make thread. */
-	SJME_ELEVATOR_DO_TYPE_MAKE_THREAD,
+	SJME_MOCK_DO_TYPE_MAKE_THREAD,
 	
 	/** Make Object. */
-	SJME_ELEVATOR_DO_TYPE_MAKE_OBJECT,
+	SJME_MOCK_DO_TYPE_MAKE_OBJECT,
 	
 	/** Make frame. */
-	SJME_ELEVATOR_DO_TYPE_MAKE_FRAME,
+	SJME_MOCK_DO_TYPE_MAKE_FRAME,
 
 	/** The number of do types. */
-	SJME_NUM_ELEVATOR_DO_TYPES
-} sjme_elevatorDoType;
+	SJME_NUM_MOCK_DO_TYPES
+} sjme_mockDoType;
 
-/** The maximum number of threads supported in the elevator for testing. */
-#define SJME_ELEVATOR_MAX_THREADS 16
+/** The maximum number of threads supported in the mock for testing. */
+#define SJME_MOCK_MAX_THREADS 16
 
 /** The maximum number of objects that can be created. */
-#define SJME_ELEVATOR_MAX_OBJECTS 32
+#define SJME_MOCK_MAX_OBJECTS 32
 
 /**
- * Represents the state of the elevator.
+ * Represents the state of the mock.
  * 
  * @since 2023/11/03
  */
-typedef struct sjme_elevatorState
+typedef struct sjme_mockState
 {
 	/** Allocated memory pool. */
 	sjme_alloc_pool* allocPool;
@@ -85,24 +85,24 @@ typedef struct sjme_elevatorState
 	{
 		/** The actual native thread. */
 		sjme_nvm_thread* nvmThread;
-	} threads[SJME_ELEVATOR_MAX_THREADS];
+	} threads[SJME_MOCK_MAX_THREADS];
 	
 	/** The number of objects which were created. */
 	sjme_jint numObjects;
 	
 	/** Objects that were created. */
-	sjme_jobject objects[SJME_ELEVATOR_MAX_OBJECTS];
+	sjme_jobject objects[SJME_MOCK_MAX_OBJECTS];
 	
 	/** Special data, if needed. */
 	void* special;
-} sjme_elevatorState;
+} sjme_mockState;
 
 /**
- * The current run item in the elevator.
+ * The current run item in the mock.
  * 
  * @since 2023/11/11
  */
-typedef struct sjme_elevatorRunCurrent
+typedef struct sjme_mockRunCurrent
 {
 	/** The current index of all. */
 	sjme_jint indexAll;
@@ -111,7 +111,7 @@ typedef struct sjme_elevatorRunCurrent
 	sjme_jint indexType;
 	
 	/** The current type. */
-	sjme_elevatorDoType type;
+	sjme_mockDoType type;
 	
 	/** Special value, for alternative configuration potentially. */
 	sjme_jint special;
@@ -156,57 +156,57 @@ typedef struct sjme_elevatorRunCurrent
 			int todo;
 		} object;
 	} data;
-} sjme_elevatorRunCurrent;
+} sjme_mockRunCurrent;
 
 /**
- * Data for the entire elevator un.
+ * Data for the entire mock un.
  * 
  * @since 2023/11/03
  */
-typedef struct sjme_elevatorRunData sjme_elevatorRunData;
+typedef struct sjme_mockRunData sjme_mockRunData;
 
 /**
- * Configuration function for the elevator.
+ * Configuration function for the mock.
  * 
  * @param inState The input state.
- * @param inCurrent The current run item for the elevator.
+ * @param inCurrent The current run item for the mock.
  * @return Returns @c SJME_JNI_TRUE when successful.
  * @since 2023/11/11
  */
-typedef sjme_jboolean (*sjme_elevatorConfigFunc)(
-	sjme_attrInNotNull sjme_elevatorState* inState,
-	sjme_attrInNotNull sjme_elevatorRunCurrent* inCurrent);
+typedef sjme_jboolean (*sjme_mockConfigFunc)(
+	sjme_attrInNotNull sjme_mockState* inState,
+	sjme_attrInNotNull sjme_mockRunCurrent* inCurrent);
 
 /**
- * Represents an elevator initialization function.
+ * Represents an mock initialization function.
  * 
  * @return Will return @c SJME_JNI_TRUE when successful.
  * @since 2023/11/03
  */
-typedef sjme_jboolean (*sjme_elevatorDoFunc)(
-	sjme_attrInNotNull sjme_elevatorState* inState,
-	sjme_attrInNotNull sjme_elevatorRunData* inData);
+typedef sjme_jboolean (*sjme_mockDoFunc)(
+	sjme_attrInNotNull sjme_mockState* inState,
+	sjme_attrInNotNull sjme_mockRunData* inData);
 
 /**
- * Structure which contains the elevator instructions to use for initializing
+ * Structure which contains the mock instructions to use for initializing
  * a test virtual machine.
  * 
  * @since 2023/11/03
  */
-typedef struct sjme_elevatorSet
+typedef struct sjme_mockSet
 {
 	/** The configuration function. */
-	sjme_elevatorConfigFunc config;
+	sjme_mockConfigFunc config;
 
-	/** Flags for elevator. */
+	/** Flags for mock. */
 	sjme_jint flags;
 	
-	/** Elevator function order. */
-	sjme_elevatorDoFunc order[sjme_flexibleArrayCount];
-} sjme_elevatorSet;
+	/** Mock function order. */
+	sjme_mockDoFunc order[sjme_flexibleArrayCount];
+} sjme_mockSet;
 
 /**
- * Performs the elevator action.
+ * Performs the mock action.
  * 
  * @param inState The input state.
  * @param inSet The set to act on.
@@ -214,9 +214,9 @@ typedef struct sjme_elevatorSet
  * @return Returns @c SJME_JNI_TRUE on success.
  * @since 2023/1/111
  */
-sjme_jboolean sjme_elevatorAct(
-	sjme_attrInNotNull sjme_elevatorState* inState,
-	sjme_attrInNotNull const sjme_elevatorSet* inSet,
+sjme_jboolean sjme_mockAct(
+	sjme_attrInNotNull sjme_mockState* inState,
+	sjme_attrInNotNull const sjme_mockSet* inSet,
 	sjme_attrInValue sjme_jint special);
 
 /**
@@ -227,33 +227,33 @@ sjme_jboolean sjme_elevatorAct(
  * @return The allocated buffer, returns @c NULL if allocation failed.
  * @since 2023/11/11
  */
-void* sjme_elevatorAlloc(
-	sjme_attrInNotNull sjme_elevatorState* inState,
+void* sjme_mockAlloc(
+	sjme_attrInNotNull sjme_mockState* inState,
 	sjme_attrInPositiveNonZero size_t inLen);
 
 /**
  * Initial virtual machine initialization state.
  * 
- * @param inState The elevator state.
+ * @param inState The mock state.
  * @param inData The data currently being processed.
  * @return If this was successful.
  * @since 2023/11/03
  */
-sjme_jboolean sjme_elevatorDoInit(
-	sjme_attrInNotNull sjme_elevatorState* inState,
-	sjme_attrInNotNull sjme_elevatorRunData* inData);
+sjme_jboolean sjme_mockDoInit(
+	sjme_attrInNotNull sjme_mockState* inState,
+	sjme_attrInNotNull sjme_mockRunData* inData);
 	
 /**
  * Makes a frame within the virtual machine.
  * 
- * @param inState The elevator state.
+ * @param inState The mock state.
  * @param inData The data currently being processed.
  * @return If this was successful.
  * @since 2023/11/11
  */
-sjme_jboolean sjme_elevatorDoMakeFrame(
-	sjme_attrInNotNull sjme_elevatorState* inState,
-	sjme_attrInNotNull sjme_elevatorRunData* inData);
+sjme_jboolean sjme_mockDoMakeFrame(
+	sjme_attrInNotNull sjme_mockState* inState,
+	sjme_attrInNotNull sjme_mockRunData* inData);
 
 /**
  * Creates a new object.
@@ -263,31 +263,31 @@ sjme_jboolean sjme_elevatorDoMakeFrame(
  * @return Returns @c SJME_JNI_TRUE on success.
  * @since 2023/11/17 
  */
-sjme_jboolean sjme_elevatorDoMakeObject(
-	sjme_attrInNotNull sjme_elevatorState* inState,
-	sjme_attrInNotNull sjme_elevatorRunData* inData);
+sjme_jboolean sjme_mockDoMakeObject(
+	sjme_attrInNotNull sjme_mockState* inState,
+	sjme_attrInNotNull sjme_mockRunData* inData);
 
 /**
  * Makes a thread within the virtual machine.
  * 
- * @param inState The elevator state.
+ * @param inState The mock state.
  * @param inData The data currently being processed.
  * @return If this was successful.
  * @since 2023/11/11
  */
-sjme_jboolean sjme_elevatorDoMakeThread(
-	sjme_attrInNotNull sjme_elevatorState* inState,
-	sjme_attrInNotNull sjme_elevatorRunData* inData);
+sjme_jboolean sjme_mockDoMakeThread(
+	sjme_attrInNotNull sjme_mockState* inState,
+	sjme_attrInNotNull sjme_mockRunData* inData);
 
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
 #ifdef __cplusplus
-	#ifdef SJME_CXX_SQUIRRELJME_ELEVATOR_H
+	#ifdef SJME_CXX_SQUIRRELJME_MOCK_H
 }
-		#undef SJME_CXX_SQUIRRELJME_ELEVATOR_H
+		#undef SJME_CXX_SQUIRRELJME_MOCK_H
 		#undef SJME_CXX_IS_EXTERNED
-	#endif /* #ifdef SJME_CXX_SQUIRRELJME_ELEVATOR_H */
+	#endif /* #ifdef SJME_CXX_SQUIRRELJME_MOCK_H */
 #endif     /* #ifdef __cplusplus */
 
-#endif /* SQUIRRELJME_ELEVATOR_H */
+#endif /* SQUIRRELJME_MOCK_H */

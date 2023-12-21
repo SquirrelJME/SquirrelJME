@@ -10,52 +10,52 @@
 #include <string.h>
 
 #include "sjme/except.h"
-#include "elevator.h"
+#include "mock.h"
 
-struct sjme_elevatorRunData
+struct sjme_mockRunData
 {
 	/** The index type counts. */
-	sjme_jint indexTypeCount[SJME_NUM_ELEVATOR_DO_TYPES];
+	sjme_jint indexTypeCount[SJME_NUM_MOCK_DO_TYPES];
 	
 	/** The current run. */
-	sjme_elevatorRunCurrent current;
+	sjme_mockRunCurrent current;
 	
 	/** The next thread ID. */
 	sjme_jint nextThreadId;
 };
 
 /**
- * Elevator function to do type.
+ * Mock function to do type.
  * 
  * @since 2023/11/11
  */
 struct
 {
-	sjme_elevatorDoFunc func;
-	sjme_elevatorDoType type;
-} sjme_elevatorFuncToType[SJME_NUM_ELEVATOR_DO_TYPES] =
+	sjme_mockDoFunc func;
+	sjme_mockDoType type;
+} sjme_mockFuncToType[SJME_NUM_MOCK_DO_TYPES] =
 {
-	{sjme_elevatorDoInit,
-		SJME_ELEVATOR_DO_TYPE_INIT},
-	{sjme_elevatorDoMakeThread,
-		SJME_ELEVATOR_DO_TYPE_MAKE_THREAD},
-	{sjme_elevatorDoMakeObject,
-		SJME_ELEVATOR_DO_TYPE_MAKE_OBJECT},
-	{sjme_elevatorDoMakeFrame,
-		SJME_ELEVATOR_DO_TYPE_MAKE_FRAME},
+	{sjme_mockDoInit,
+		SJME_MOCK_DO_TYPE_INIT},
+	{sjme_mockDoMakeThread,
+		SJME_MOCK_DO_TYPE_MAKE_THREAD},
+	{sjme_mockDoMakeObject,
+		SJME_MOCK_DO_TYPE_MAKE_OBJECT},
+	{sjme_mockDoMakeFrame,
+		SJME_MOCK_DO_TYPE_MAKE_FRAME},
 		
 	/* End. */
-	{NULL, SJME_ELEVATOR_DO_TYPE_UNKNOWN}
+	{NULL, SJME_MOCK_DO_TYPE_UNKNOWN}
 };
 
-sjme_jboolean sjme_elevatorAct(
-	sjme_attrInNotNull sjme_elevatorState* inState,
-	sjme_attrInNotNull const sjme_elevatorSet* inSet,
+sjme_jboolean sjme_mockAct(
+	sjme_attrInNotNull sjme_mockState* inState,
+	sjme_attrInNotNull const sjme_mockSet* inSet,
 	sjme_attrInValue sjme_jint special)
 {
 	sjme_jint dx, i;
-	sjme_elevatorRunData data;
-	sjme_elevatorDoType doType;
+	sjme_mockRunData data;
+	sjme_mockDoType doType;
 	
 	/* Check. */
 	if (inState == NULL || inSet == NULL)
@@ -83,16 +83,16 @@ sjme_jboolean sjme_elevatorAct(
 		data.current.indexAll = dx;
 		
 		/* Find the type for this function. */
-		doType = SJME_ELEVATOR_DO_TYPE_UNKNOWN;
-		for (i = 0; i < SJME_NUM_ELEVATOR_DO_TYPES; i++)
-			if (inSet->order[dx] == sjme_elevatorFuncToType[i].func)
+		doType = SJME_MOCK_DO_TYPE_UNKNOWN;
+		for (i = 0; i < SJME_NUM_MOCK_DO_TYPES; i++)
+			if (inSet->order[dx] == sjme_mockFuncToType[i].func)
 			{
-				doType = sjme_elevatorFuncToType[i].type;
+				doType = sjme_mockFuncToType[i].type;
 				break;
 			}
 		
 		/* Not found? */
-		if (doType == SJME_ELEVATOR_DO_TYPE_UNKNOWN)
+		if (doType == SJME_MOCK_DO_TYPE_UNKNOWN)
 			return sjme_die("Could not find the type for do function.");
 		
 		/* Increment up the index for this. */
@@ -113,8 +113,8 @@ sjme_jboolean sjme_elevatorAct(
 	return SJME_JNI_TRUE;
 }
 
-void* sjme_elevatorAlloc(
-	sjme_attrInNotNull sjme_elevatorState* inState,
+void* sjme_mockAlloc(
+	sjme_attrInNotNull sjme_mockState* inState,
 	sjme_attrInPositiveNonZero size_t inLen)
 {
 	void* rv;
@@ -131,9 +131,9 @@ void* sjme_elevatorAlloc(
 	return rv;
 }
 
-sjme_jboolean sjme_elevatorDoInit(
-	sjme_attrInNotNull sjme_elevatorState* inState,
-	sjme_attrInNotNull sjme_elevatorRunData* inData)
+sjme_jboolean sjme_mockDoInit(
+	sjme_attrInNotNull sjme_mockState* inState,
+	sjme_attrInNotNull sjme_mockRunData* inData)
 {
 	sjme_nvm_state* newState;
 	
@@ -141,7 +141,7 @@ sjme_jboolean sjme_elevatorDoInit(
 		return sjme_die("Null arguments.");
 	
 	/* Allocate virtual machine state. */
-	newState = sjme_elevatorAlloc(inState,
+	newState = sjme_mockAlloc(inState,
 		sizeof(*inState->nvmState));
 	inState->nvmState = newState;
 	
@@ -156,9 +156,9 @@ sjme_jboolean sjme_elevatorDoInit(
 	return SJME_JNI_TRUE;
 }
 
-sjme_jboolean sjme_elevatorDoMakeFrame(
-	sjme_attrInNotNull sjme_elevatorState* inState,
-	sjme_attrInNotNull sjme_elevatorRunData* inData)
+sjme_jboolean sjme_mockDoMakeFrame(
+	sjme_attrInNotNull sjme_mockState* inState,
+	sjme_attrInNotNull sjme_mockRunData* inData)
 {
 	sjme_jint threadIndex, treadMax, tallyLocals, stackBase, desireMaxLocals;
 	sjme_jint tallyStack, desireMaxStack, localIndex;
@@ -175,7 +175,7 @@ sjme_jboolean sjme_elevatorDoMakeFrame(
 	
 	/* Make sure the requested thread index is valid. */
 	threadIndex = inData->current.data.frame.threadIndex;
-	if (threadIndex < 0 || threadIndex >= SJME_ELEVATOR_MAX_THREADS ||
+	if (threadIndex < 0 || threadIndex >= SJME_MOCK_MAX_THREADS ||
 		inState->threads[threadIndex].nvmThread == NULL)
 		return sjme_die("Invalid thread index %d.", threadIndex);
 	
@@ -183,7 +183,7 @@ sjme_jboolean sjme_elevatorDoMakeFrame(
 	thread = inState->threads[threadIndex].nvmThread;
 	
 	/* Allocate new frame. */
-	newFrame = sjme_elevatorAlloc(inState, sizeof(*newFrame));
+	newFrame = sjme_mockAlloc(inState, sizeof(*newFrame));
 	if (newFrame == NULL)
 		return sjme_die("Could not allocate frame.");
 	
@@ -202,13 +202,13 @@ sjme_jboolean sjme_elevatorDoMakeFrame(
 	
 	/* Setup locals mapping. */
 	desireMaxLocals = inData->current.data.frame.maxLocals;
-	localMap = sjme_elevatorAlloc(inState,
+	localMap = sjme_mockAlloc(inState,
 		SJME_SIZEOF_FRAME_LOCAL_MAP(desireMaxLocals));
 	localMap->max = desireMaxLocals;
 	
 	/* Setup stack information. */
 	desireMaxStack = inData->current.data.frame.maxStack;
-	stack = sjme_elevatorAlloc(inState,
+	stack = sjme_mockAlloc(inState,
 		SJME_SIZEOF_FRAME_STACK(desireMaxStack));
 	newFrame->stack = stack;
 	stack->limit = desireMaxStack;
@@ -228,7 +228,7 @@ sjme_jboolean sjme_elevatorDoMakeFrame(
 			continue;
 		
 		/* Allocate target tread. */
-		tread = sjme_elevatorAlloc(inState,
+		tread = sjme_mockAlloc(inState,
 			SJME_SIZEOF_FRAME_TREAD_VAR(typeId, treadMax));
 		newFrame->treads[typeId] = tread;
 		
@@ -273,9 +273,9 @@ sjme_jboolean sjme_elevatorDoMakeFrame(
 	return SJME_JNI_TRUE;
 }
 
-sjme_jboolean sjme_elevatorDoMakeObject(
-	sjme_attrInNotNull sjme_elevatorState* inState,
-	sjme_attrInNotNull sjme_elevatorRunData* inData)
+sjme_jboolean sjme_mockDoMakeObject(
+	sjme_attrInNotNull sjme_mockState* inState,
+	sjme_attrInNotNull sjme_mockRunData* inData)
 {
 	sjme_jobject newObject;
 	
@@ -283,11 +283,11 @@ sjme_jboolean sjme_elevatorDoMakeObject(
 		return sjme_die("Null arguments.");
 	
 	/* Too many objects? */
-	if (inState->numObjects >= SJME_ELEVATOR_MAX_OBJECTS)
-		sjme_die("Too many elevator objects.");
+	if (inState->numObjects >= SJME_MOCK_MAX_OBJECTS)
+		sjme_die("Too many mock objects.");
 	
 	/* Allocate new object. */
-	newObject = sjme_elevatorAlloc(inState, sizeof(*newObject));
+	newObject = sjme_mockAlloc(inState, sizeof(*newObject));
 	inState->objects[inState->numObjects++] = newObject;
 	
 	/* Initialize object details. */
@@ -297,9 +297,9 @@ sjme_jboolean sjme_elevatorDoMakeObject(
 	return SJME_JNI_TRUE;
 }
 
-sjme_jboolean sjme_elevatorDoMakeThread(
-	sjme_attrInNotNull sjme_elevatorState* inState,
-	sjme_attrInNotNull sjme_elevatorRunData* inData)
+sjme_jboolean sjme_mockDoMakeThread(
+	sjme_attrInNotNull sjme_mockState* inState,
+	sjme_attrInNotNull sjme_mockRunData* inData)
 {
 	sjme_jint threadIndex;
 	sjme_nvm_thread* newThread;
@@ -307,13 +307,13 @@ sjme_jboolean sjme_elevatorDoMakeThread(
 	if (inState == NULL || inData == NULL)
 		return sjme_die("Null arguments.");
 	
-	/* Elevator has a limited set of threads for testing purposes. */
+	/* Mock has a limited set of threads for testing purposes. */
 	threadIndex = inState->numThreads;
-	if (threadIndex >= SJME_ELEVATOR_MAX_THREADS)
-		return sjme_die("Too make elevator threads.");
+	if (threadIndex >= SJME_MOCK_MAX_THREADS)
+		return sjme_die("Too make mock threads.");
 	
 	/* Allocate thread. */
-	newThread = sjme_elevatorAlloc(inState, sizeof(*newThread));
+	newThread = sjme_mockAlloc(inState, sizeof(*newThread));
 	if (newThread == NULL)
 		return sjme_die("Could not allocate thread.");
 	

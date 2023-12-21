@@ -9,7 +9,7 @@
 
 #include <string.h>
 
-#include "elevator.h"
+#include "mock.h"
 #include "proto.h"
 #include "sjme/debug.h"
 #include "sjme/nvmFunc.h"
@@ -24,30 +24,30 @@ typedef struct testHookResult
 	sjme_jint count;
 	
 	/** The GCed objects. */
-	sjme_jobject gc[SJME_ELEVATOR_MAX_OBJECTS];
+	sjme_jobject gc[SJME_MOCK_MAX_OBJECTS];
 } testHookResult;
 
 static sjme_jboolean hookGcNvmLocalPopReference(sjme_nvm_frame* frame,
 	sjme_jobject instance)
 {
-	sjme_elevatorState* elevator;
+	sjme_mockState* mock;
 	testHookResult* hookResult;
 	
 	/* Debug. */
 	sjme_message("GC of %p...", instance);
 	
-	/* Elevator must be set. */
-	elevator = frame->inThread->inState->frontEnd.data;
-	if (elevator == NULL)
+	/* Mock must be set. */
+	mock = frame->inThread->inState->frontEnd.data;
+	if (mock == NULL)
 		return SJME_JNI_FALSE;
 	
 	/* There must be a hook result. */
-	hookResult = elevator->special;
+	hookResult = mock->special;
 	if (hookResult == NULL)
 		return SJME_JNI_FALSE;
 	
 	/* Track it, within reason. */
-	if (hookResult->count < SJME_ELEVATOR_MAX_OBJECTS)
+	if (hookResult->count < SJME_MOCK_MAX_OBJECTS)
 		hookResult->gc[hookResult->count++] = instance;
 	
 	/* Success! */
@@ -60,8 +60,8 @@ const sjme_nvm_stateHooks hooksNvmLocalPopReference =
 };
 
 sjme_jboolean configNvmLocalPopReference(
-	sjme_attrInNotNull sjme_elevatorState* inState,
-	sjme_attrInNotNull sjme_elevatorRunCurrent* inCurrent)
+	sjme_attrInNotNull sjme_mockState* inState,
+	sjme_attrInNotNull sjme_mockRunCurrent* inCurrent)
 {
 	/* Check. */
 	if (inState == NULL || inCurrent == NULL)
@@ -70,11 +70,11 @@ sjme_jboolean configNvmLocalPopReference(
 	/* Configure. */
 	switch (inCurrent->type)
 	{
-		case SJME_ELEVATOR_DO_TYPE_INIT:
+		case SJME_MOCK_DO_TYPE_INIT:
 			inCurrent->data.state.hooks = &hooksNvmLocalPopReference;
 			break;
 		
-		case SJME_ELEVATOR_DO_TYPE_MAKE_FRAME:
+		case SJME_MOCK_DO_TYPE_MAKE_FRAME:
 			inCurrent->data.frame.maxLocals = 1;
 			inCurrent->data.frame.maxStack = 1;
 			inCurrent->data.frame.treads[SJME_JAVA_TYPE_ID_OBJECT]
@@ -87,19 +87,19 @@ sjme_jboolean configNvmLocalPopReference(
 	return SJME_JNI_TRUE;
 }
 
-/** Elevator set for test. */
-static const sjme_elevatorSet elevatorNvmLocalPopReference =
+/** Mock set for test. */
+static const sjme_mockSet mockNvmLocalPopReference =
 	{
 		configNvmLocalPopReference,
 		0,
 
-		/* Elevator calls. */
+		/* Mock calls. */
 		{
-			sjme_elevatorDoInit,
-			sjme_elevatorDoMakeThread,
-			sjme_elevatorDoMakeFrame,
-			sjme_elevatorDoMakeObject,
-			sjme_elevatorDoMakeObject,
+			sjme_mockDoInit,
+			sjme_mockDoMakeThread,
+			sjme_mockDoMakeFrame,
+			sjme_mockDoMakeObject,
+			sjme_mockDoMakeObject,
 			NULL
 		}
 };
@@ -107,7 +107,7 @@ static const sjme_elevatorSet elevatorNvmLocalPopReference =
 SJME_TEST_DECLARE(testNvmLocalPopReference)
 {
 	sjme_jbyte firstId, secondId;
-	sjme_elevatorState state;
+	sjme_mockState state;
 	sjme_nvm_frame* frame;
 	sjme_jint oldNumStack;
 	sjme_nvm_frameTread* objectsTread;
@@ -119,12 +119,12 @@ SJME_TEST_DECLARE(testNvmLocalPopReference)
 	for (firstId = 0; firstId < TEST_NUM_OBJECT_IDS; firstId++)
 		for (secondId = 0; secondId < TEST_NUM_OBJECT_IDS; secondId++)
 		{
-			/* Perform the elevator. */
+			/* Perform the mock. */
 			memset(&state, 0, sizeof(state));
-			if (!sjme_elevatorAct(&state,
-					&elevatorNvmLocalPopReference,
+			if (!sjme_mockAct(&state,
+					&mockNvmLocalPopReference,
 					firstId + (secondId * TEST_NUM_OBJECT_IDS)))
-				sjme_die("Invalid elevator");
+				sjme_die("Invalid mock");
 			
 			/* Set special data for testing. */
 			memset(&hookResult, 0, sizeof(hookResult));

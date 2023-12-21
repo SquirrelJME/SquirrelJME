@@ -43,7 +43,7 @@ file(APPEND "${outTestProtosH}"
 add_executable(BasicTest
 	src/basic.c
 	src/blobs.c
-	src/elevator.c
+	src/mock.c
 	src/unit.c
 	${basicTestSources})
 

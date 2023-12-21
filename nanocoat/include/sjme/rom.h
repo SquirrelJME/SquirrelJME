@@ -31,18 +31,25 @@ extern "C" {
 /*--------------------------------------------------------------------------*/
 
 /**
- * Standard ROM library structure.
- *
- * @since 2023/12/12
- */
-typedef struct sjme_rom_library sjme_rom_library;
-
-/**
  * Internal cache for ROM libraries.
  *
  * @since 2023/12/12
  */
 typedef struct sjme_rom_libraryCache sjme_rom_libraryCache;
+
+/**
+ * Standard ROM library structure.
+ *
+ * @since 2023/12/12
+ */
+typedef struct sjme_rom_library
+{
+	/** Internal cache. */
+	sjme_rom_libraryCache* cache;
+} sjme_rom_library;
+
+/** List of ROM libraries. */
+SJME_LIST_DECLARE(sjme_rom_library, 0);
 
 /**
  * Functions used to access a single library.
@@ -105,7 +112,19 @@ typedef sjme_errorCode (*sjme_rom_suiteLibraryId)(
 	sjme_attrInNotNull sjme_rom_library* targetLibrary,
 	sjme_attrOutNotNull sjme_jint* outId);
 
-typedef sjme_errorCode (*sjme_rom_suiteListLibrariesFunc)();
+/**
+ * Determines the list of libraries within the suite.
+ *
+ * @param function The suite functions.
+ * @param targetSuite The suite the request is being made in.
+ * @param outLibraries The output library list.
+ * @return Any resultant error code.
+ * @since 2023/12/21
+ */
+typedef sjme_errorCode (*sjme_rom_suiteListLibrariesFunc)(
+	sjme_attrInNotNull const sjme_rom_suiteFunctions* functions,
+	sjme_attrInNotNull sjme_rom_suite* targetSuite,
+	sjme_attrOutNotNull sjme_list_sjme_rom_library* outLibraries);
 
 typedef sjme_errorCode (*sjme_rom_suiteLoadLibraryFunc)();
 
@@ -148,12 +167,6 @@ struct sjme_rom_suiteFunctions
 	sjme_rom_suiteLoadLibraryFunc loadLibrary;
 };
 
-struct sjme_rom_library
-{
-	/** Internal cache. */
-	sjme_rom_libraryCache* cache;
-};
-
 struct sjme_rom_suite
 {
 	/** Internal cache. */
@@ -162,9 +175,6 @@ struct sjme_rom_suite
 	/** Functions. */
 	const sjme_rom_suiteFunctions* functions;
 };
-
-/** List of ROM libraries. */
-SJME_LIST_DECLARE(sjme_rom_library, 0);
 
 /**
  * Combines multiple suites into one.
