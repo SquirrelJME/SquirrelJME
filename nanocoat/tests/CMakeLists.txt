@@ -39,19 +39,25 @@ configure_file("${CMAKE_SOURCE_DIR}/cmake/blank.in.h"
 file(APPEND "${outTestProtosH}"
 	"#include \"test.h\"\n")
 
-# Initialize executable for basic tests, which contains everything
-add_executable(BasicTest
+# Basic test library
+add_library(BasicTestLib OBJECT
 	src/basic.c
 	src/blobs.c
 	src/mock.c
 	src/unit.c
 	${basicTestSources})
 
+# Initialize executable for basic tests, which contains everything
+add_executable(BasicTest
+	src/blank.c
+	$<TARGET_OBJECTS:Core>
+	$<TARGET_OBJECTS:BasicTestLib>)
+
 # Make it static
 squirreljme_static_executable(BasicTest)
 
 # Make sure we have our headers included accordingly
-target_include_directories(BasicTest PUBLIC
+target_include_directories(BasicTestLib PUBLIC
 	"${CMAKE_SOURCE_DIR}/include"
 	"${CMAKE_CURRENT_SOURCE_DIR}/include"
 	"${CMAKE_CURRENT_BINARY_DIR}"

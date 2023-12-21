@@ -338,9 +338,12 @@ sjme_jboolean sjme_mockDoRomSuite(
 	if (inState == NULL || inData == NULL)
 		return sjme_die("Null arguments.");
 
+	/* Too many suites declared already? */
 	suiteIndex = inState->numRomSuites;
 	if (suiteIndex >= SJME_MOCK_MAX_ROM_SUITES)
 		return sjme_die("Too many ROM suites.");
+
+	/* . */
 
 	sjme_todo("Implement this?");
 	return SJME_JNI_FALSE;

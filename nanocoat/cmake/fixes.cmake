@@ -40,6 +40,14 @@ else()
 	set(SQUIRRELJME_IS_WINDOWS OFF)
 endif()
 
+# Debugging?
+if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR
+	CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+	set(SQUIRRELJME_IS_DEBUG ON)
+else()
+	set(SQUIRRELJME_IS_DEBUG OFF)
+endif()
+
 # Is this RetroArch? Any kind of RetroArch build?
 if(RETROARCH OR ENV{RETROARCH} OR
 	LIBRETRO_STATIC OR ENV{LIBRETRO_STATIC} OR

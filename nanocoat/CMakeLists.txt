@@ -65,8 +65,7 @@ add_compile_definitions(
 
 # Valgrind Support on UNIX OSes, if debugging
 if(ANDROID OR SQUIRRELJME_IS_UNIX)
-	if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR
-		CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+	if(SQUIRRELJME_IS_DEBUG)
 		squirreljme_include("valgrind.cmake")
 	endif()
 endif()
@@ -94,9 +93,6 @@ endif()
 # uses nothing else
 add_subdirectory(src)
 
-# Front ends
-add_subdirectory(frontend)
-
 # Tests first since we add to these and when the ROMs register themselves
 # they will get their tests added accordingly
 if(SQUIRRELJME_ENABLE_TESTING OR
@@ -106,6 +102,9 @@ else()
 	message(WARNING "Testing was disabled "
 		"(${SQUIRRELJME_ENABLE_TESTING})...")
 endif()
+
+# Front ends
+add_subdirectory(frontend)
 
 # Directory where the ROM compiled sources exist
 add_subdirectory(rom)

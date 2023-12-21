@@ -18,7 +18,45 @@
 /** Debug buffer size for messages. */
 #define DEBUG_BUF 512
 
+sjme_debug_abortHandlerFunc sjme_debug_abortHandler = NULL;
+
+sjme_debug_exitHandlerFunc sjme_debug_exitHandler = NULL;
+
 sjme_danglingMessageFunc sjme_danglingMessage = NULL;
+
+/**
+ * Potentially debug aborts.
+ *
+ * @since 2023/12/21
+ */
+static void sjme_debug_abort(void)
+{
+#if !defined(SJME_CONFIG_RELEASE)
+	/* Use specific abort handler? */
+	if (sjme_debug_abortHandler != NULL)
+		sjme_debug_abortHandler();
+
+	/* Otherwise use C abort handler. */
+	else
+		abort();
+#endif
+}
+
+/**
+ * Potentially debug exits.
+ *
+ * @param exitCode The exit code.
+ * @since 2023/12/21
+ */
+static void sjme_debug_exit(int exitCode)
+{
+	/* Use specific exit handler? */
+	if (sjme_debug_exitHandler != NULL)
+		sjme_debug_exitHandler(exitCode);
+
+	/* Fallback to normal exit. */
+	exit(exitCode);
+}
 
 sjme_lpcstr sjme_shortenFile(sjme_lpcstr file)
 {
@@ -124,12 +162,10 @@ sjme_errorCode sjme_dieR(sjme_lpcstr file, int line,
 	va_end(list);
 	
 	/* Exit and stop. */
-#if !defined(SJME_CONFIG_RELEASE)
-	abort();
-#endif
+	sjme_debug_abort();
 	
 	/* Exit after abort happens, it can be ignored in debugging. */
-	exit(EXIT_FAILURE);
+	sjme_debug_exit(EXIT_FAILURE);
 	
 	/* Never reaches, but returns false naturally. */
 	return SJME_ERROR_UNKNOWN;
@@ -148,11 +184,9 @@ void sjme_todoR(sjme_lpcstr file, int line,
 	va_end(list);
 	
 	/* Exit and stop. */
-#if !defined(SJME_CONFIG_RELEASE)
-	abort();
-#endif
+	sjme_debug_abort();
 	
 	/* Exit after abort happens, it can be ignored in debugging. */
-	exit(EXIT_FAILURE);
+	sjme_debug_exit(EXIT_FAILURE);
 }
 

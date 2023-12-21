@@ -69,15 +69,31 @@ int main(int argc, sjme_lpstr* argv)
 	memset(&test, 0, sizeof(test));
 
 	/* Setup base allocation pool. */
-	chunkLen = 4096;
-	chunk = alloca(chunkLen);
-	if (chunk == NULL)
-		sjme_message("Could not preallocate pool.");
+	for (chunkLen = 65536; chunkLen >= 1024; chunkLen /= 2)
+	{
+		/* Try to alloca everything at once. */
+		chunk = alloca(chunkLen);
+		if (chunk == NULL)
+			continue;
 
-	/* Initialize pool. */
-	if (SJME_IS_ERROR(sjme_alloc_poolInitStatic(&test.pool,
-		chunk, chunkLen)) || test.pool == NULL)
-		sjme_message("Could not initialize pre-allocated pool.");
+		/* Initialize pool. */
+		if (SJME_IS_ERROR(sjme_alloc_poolInitStatic(&test.pool,
+			chunk, chunkLen)) || test.pool == NULL)
+		{
+			sjme_message("Could not initialize pre-allocated pool.");
+			return EXIT_FAILURE;
+		}
+
+		/* Done! */
+		break;
+	}
+
+	/* Completely failed to allocate. */
+	if (chunk == NULL)
+	{
+		sjme_message("Could not allocate test pool.");
+		return EXIT_FAILURE;
+	}
 
 	/* Set jump point for going back. */
 	jumpId = setjmp(test.jumpPoint);
