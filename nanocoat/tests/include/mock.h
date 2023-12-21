@@ -16,9 +16,10 @@
 #ifndef SQUIRRELJME_MOCK_H
 #define SQUIRRELJME_MOCK_H
 
-#include "sjme/nvm.h"
-#include "sjme/debug.h"
 #include "sjme/alloc.h"
+#include "sjme/debug.h"
+#include "sjme/nvm.h"
+#include "sjme/romInternal.h"
 #include "test.h"
 
 /* Anti-C++. */
@@ -165,8 +166,8 @@ typedef struct sjme_mockDataNvmState
  */
 typedef struct sjme_mockDataRomSuite
 {
-	/** Implement. */
-	int todo;
+	/** Functions to utilize for the suite. */
+	sjme_rom_suiteFunctions functions;
 } sjme_mockDataRomSuite;
 
 /**

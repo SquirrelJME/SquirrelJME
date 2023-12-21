@@ -67,7 +67,7 @@ sjme_attrUnused SJME_TEST_DECLARE(testNvmLocalPopInteger)
 	
 	/* Perform the mock. */
 	memset(&state, 0, sizeof(state));
-	if (!sjme_mockAct(&state,
+	if (!sjme_mockAct(test, &state,
 		&mockNvmLocalPopInteger, 0))
 		sjme_die("Invalid mock");
 		

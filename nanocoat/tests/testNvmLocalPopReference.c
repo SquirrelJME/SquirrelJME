@@ -63,24 +63,29 @@ sjme_jboolean configNvmLocalPopReference(
 	sjme_attrInNotNull sjme_mockState* inState,
 	sjme_attrInNotNull sjme_mockRunCurrent* inCurrent)
 {
+	sjme_mockDataNvmState* state;
+	sjme_mockDataNvmFrame* frame;
+	
 	/* Check. */
 	if (inState == NULL || inCurrent == NULL)
 		return SJME_JNI_FALSE;
 	
+	/* Quick access. */
+	state = &inCurrent->data.nvmState;
+	frame = &inCurrent->data.nvmFrame;
+
 	/* Configure. */
 	switch (inCurrent->type)
 	{
 		case SJME_MOCK_DO_TYPE_NVM_STATE:
-			inCurrent->data.state.hooks = &hooksNvmLocalPopReference;
+			state->hooks = &hooksNvmLocalPopReference;
 			break;
 		
 		case SJME_MOCK_DO_TYPE_NVM_FRAME:
-			inCurrent->data.frame.maxLocals = 1;
-			inCurrent->data.frame.maxStack = 1;
-			inCurrent->data.frame.treads[SJME_JAVA_TYPE_ID_OBJECT]
-				.max = 2;
-			inCurrent->data.frame.treads[SJME_JAVA_TYPE_ID_OBJECT]
-				.stackBaseIndex = 1;
+			frame->maxLocals = 1;
+			frame->maxStack = 1;
+			frame->treads[SJME_JAVA_TYPE_ID_OBJECT].max = 2;
+			frame->treads[SJME_JAVA_TYPE_ID_OBJECT].stackBaseIndex = 1;
 			break;
 	}
 	
@@ -121,7 +126,7 @@ SJME_TEST_DECLARE(testNvmLocalPopReference)
 		{
 			/* Perform the mock. */
 			memset(&state, 0, sizeof(state));
-			if (!sjme_mockAct(&state,
+			if (!sjme_mockAct(test, &state,
 					&mockNvmLocalPopReference,
 					firstId + (secondId * TEST_NUM_OBJECT_IDS)))
 				sjme_die("Invalid mock");
