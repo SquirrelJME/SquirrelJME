@@ -61,8 +61,20 @@ struct sjme_rom_suiteCache
 	sjme_list_sjme_rom_library* libraries;
 
 	/** Uncommon cache generic structure. */
-	sjme_jubyte uncommon[sjme_flexibleArrayCount];
+	sjme_jlong uncommon[sjme_flexibleArrayCount];
 };
+
+/**
+ * Determines the size of the suite cache.
+ *
+ * @param uncommonType The uncommon cache type.
+ * @return The suite cache size.
+ * @since 2023/12/21
+ */
+#define SJME_SIZEOF_SUITE_CACHE(uncommonType) \
+	(sizeof(sjme_rom_suiteCache) + (offsetof(sjme_rom_suiteCache, \
+		uncommon[0]) - offsetof(sjme_rom_suiteCache, uncommon)) + \
+		sizeof(uncommonType))
 
 /*--------------------------------------------------------------------------*/
 

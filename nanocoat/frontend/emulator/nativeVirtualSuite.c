@@ -13,6 +13,7 @@
 #include "sjme/rom.h"
 #include "sjme/alloc.h"
 #include "sjme/debug.h"
+#include "sjme/romInternal.h"
 
 /**
  * Cache storage for virtual suites.
@@ -38,7 +39,7 @@ static sjme_errorCode sjme_jni_virtualSuite_initCache(
 	/* Initialize base structure. */
 	targetSuite->cache = NULL;
 	if (SJME_IS_ERROR(error = sjme_alloc(pool,
-		sizeof(sjme_jni_virtualSuite_cache),
+		SJME_SIZEOF_SUITE_CACHE(sjme_jni_virtualSuite_cache),
 		(void**)&targetSuite->cache)) || targetSuite->cache == NULL)
 		return error;
 

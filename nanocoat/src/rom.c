@@ -165,6 +165,8 @@ sjme_errorCode sjme_rom_suiteLibraries(
 	/* Has this been processed already? */
 	if (cache->libraries != NULL)
 	{
+		sjme_message("Using existing cache: %p", cache->libraries);
+
 		*outLibs = cache->libraries;
 		return SJME_ERROR_NONE;
 	}
