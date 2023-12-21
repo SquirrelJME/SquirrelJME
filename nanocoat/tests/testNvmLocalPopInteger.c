@@ -19,20 +19,23 @@ sjme_jboolean configNvmLocalPopInteger(
 	sjme_attrInNotNull sjme_mockState* inState,
 	sjme_attrInNotNull sjme_mockRunCurrent* inCurrent)
 {
+	sjme_mockDataNvmFrame* frame;
+
 	/* Check. */
 	if (inState == NULL || inCurrent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
+
+	/* Quick access. */
+	frame = &inCurrent->data.nvmFrame;
+
 	/* Configure. */
 	switch (inCurrent->type)
 	{
 		case SJME_MOCK_DO_TYPE_NVM_FRAME:
-			inCurrent->data.frame.maxLocals = 1;
-			inCurrent->data.frame.maxStack = 1;
-			inCurrent->data.frame.treads[SJME_JAVA_TYPE_ID_INTEGER]
-				.max = 2;
-			inCurrent->data.frame.treads[SJME_JAVA_TYPE_ID_INTEGER]
-				.stackBaseIndex = 1;
+			frame->maxLocals = 1;
+			frame->maxStack = 1;
+			frame->treads[SJME_JAVA_TYPE_ID_INTEGER].max = 2;
+			frame->treads[SJME_JAVA_TYPE_ID_INTEGER].stackBaseIndex = 1;
 			break;
 	}
 	

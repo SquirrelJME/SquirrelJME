@@ -43,12 +43,15 @@ struct
 		SJME_MOCK_DO_TYPE_NVM_STATE},
 	{sjme_mockDoNvmThread,
 		SJME_MOCK_DO_TYPE_NVM_THREAD},
+	{sjme_mockDoRomSuite,
+		SJME_MOCK_DO_TYPE_ROM_SUITE},
 		
 	/* End. */
 	{NULL, SJME_MOCK_DO_TYPE_UNKNOWN}
 };
 
 sjme_jboolean sjme_mockAct(
+	sjme_attrInNotNull sjme_test* inTest,
 	sjme_attrInNotNull sjme_mockState* inState,
 	sjme_attrInNotNull const sjme_mockSet* inSet,
 	sjme_attrInValue sjme_jint special)
@@ -65,10 +68,8 @@ sjme_jboolean sjme_mockAct(
 	if (inSet->config == NULL)
 		return sjme_die("Invalid configuration.");
 		
-	/* Allocate main memory pool. */
-	if (SJME_IS_ERROR(sjme_alloc_poolInitMalloc(&inState->allocPool,
-		1024 * 1024)))
-		return sjme_die("Could not allocate main memory pool.");
+	/* Use the testing pool. */
+	inState->allocPool = inTest->pool;
 	
 	/* Initialize base data. */
 	memset(&data, 0, sizeof(data));
@@ -149,8 +150,8 @@ sjme_jboolean sjme_mockDoNvmState(
 	newState->frontEnd.data = inState;
 	
 	/* Register any hooks? */
-	if (inData->current.data.state.hooks != NULL)
-		newState->hooks = inData->current.data.state.hooks;
+	if (inData->current.data.nvmState.hooks != NULL)
+		newState->hooks = inData->current.data.nvmState.hooks;
 	
 	/* Done. */
 	return SJME_JNI_TRUE;
@@ -174,7 +175,7 @@ sjme_jboolean sjme_mockDoNvmFrame(
 		return sjme_die("Null arguments.");
 	
 	/* Make sure the requested thread index is valid. */
-	threadIndex = inData->current.data.frame.threadIndex;
+	threadIndex = inData->current.data.nvmFrame.threadIndex;
 	if (threadIndex < 0 || threadIndex >= SJME_MOCK_MAX_THREADS ||
 		inState->threads[threadIndex].nvmThread == NULL)
 		return sjme_die("Invalid thread index %d.", threadIndex);
@@ -201,13 +202,13 @@ sjme_jboolean sjme_mockDoNvmFrame(
 	tallyStack = 0;
 	
 	/* Setup locals mapping. */
-	desireMaxLocals = inData->current.data.frame.maxLocals;
+	desireMaxLocals = inData->current.data.nvmFrame.maxLocals;
 	localMap = sjme_mockAlloc(inState,
 		SJME_SIZEOF_FRAME_LOCAL_MAP(desireMaxLocals));
 	localMap->max = desireMaxLocals;
 	
 	/* Setup stack information. */
-	desireMaxStack = inData->current.data.frame.maxStack;
+	desireMaxStack = inData->current.data.nvmFrame.maxStack;
 	stack = sjme_mockAlloc(inState,
 		SJME_SIZEOF_FRAME_STACK(desireMaxStack));
 	newFrame->stack = stack;
@@ -223,7 +224,7 @@ sjme_jboolean sjme_mockDoNvmFrame(
 	for (typeId = 0; typeId < SJME_NUM_JAVA_TYPE_IDS; typeId++)
 	{
 		/* Ignore if empty. */
-		treadMax = inData->current.data.frame.treads[typeId].max;
+		treadMax = inData->current.data.nvmFrame.treads[typeId].max;
 		if (treadMax <= 0)
 			continue;
 		
@@ -233,7 +234,8 @@ sjme_jboolean sjme_mockDoNvmFrame(
 		newFrame->treads[typeId] = tread;
 		
 		/* Setup stack base. */
-		stackBase = inData->current.data.frame.treads[typeId].stackBaseIndex;
+		stackBase = inData->current.data.nvmFrame.treads[typeId]
+			.stackBaseIndex;
 		if (stackBase < 0 || stackBase > treadMax)
 			return sjme_die("Invalid test stack base %d, outside range %d.",
 				stackBase, treadMax);
@@ -324,4 +326,13 @@ sjme_jboolean sjme_mockDoNvmThread(
 	
 	/* Done. */
 	return SJME_JNI_TRUE;
+}
+
+sjme_jboolean sjme_mockDoRomSuite(
+	sjme_attrInNotNull sjme_mockState* inState,
+	sjme_attrInNotNull sjme_mockRunData* inData)
+{
+	if (inState == NULL || inData == NULL)
+		return sjme_die("Null arguments.");
+
 }

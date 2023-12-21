@@ -54,6 +54,9 @@ typedef enum sjme_mockDoType
 	/** Make thread. */
 	SJME_MOCK_DO_TYPE_NVM_THREAD,
 
+	/** ROM Suite. */
+	SJME_MOCK_DO_TYPE_ROM_SUITE,
+
 	/** The number of do types. */
 	SJME_NUM_MOCK_DO_TYPES
 } sjme_mockDoType;
@@ -63,6 +66,9 @@ typedef enum sjme_mockDoType
 
 /** The maximum number of objects that can be created. */
 #define SJME_MOCK_MAX_OBJECTS 32
+
+/** The maximum number of suites that can be created. */
+#define SJME_MOCK_MAX_ROM_SUITES 4
 
 /**
  * Represents the state of the mock.
@@ -92,10 +98,96 @@ typedef struct sjme_mockState
 	
 	/** Objects that were created. */
 	sjme_jobject objects[SJME_MOCK_MAX_OBJECTS];
+
+	/** The number of created ROM suites. */
+	sjme_jint numRomSuites;
+
+	/** ROM Suites. */
+	sjme_rom_suite* romSuites[SJME_MOCK_MAX_ROM_SUITES];
 	
 	/** Special data, if needed. */
 	void* special;
 } sjme_mockState;
+
+/**
+ * Mocked frame data.
+ *
+ * @since 2023/12/21
+ */
+typedef struct sjme_mockDataNvmFrame
+{
+	/** The thread index to create the frame in. */
+	sjme_jint threadIndex;
+
+	/** The maximum number of locals. */
+	sjme_jint maxLocals;
+
+	/** The maximum number of stack entries. */
+	sjme_jint maxStack;
+
+	/** The treads within the frame. */
+	struct
+	{
+		/** Maximum size of this tread. */
+		sjme_jint max;
+
+		/** The stack pivot point. */
+		sjme_jint stackBaseIndex;
+	} treads[SJME_NUM_JAVA_TYPE_IDS];
+} sjme_mockDataNvmFrame;
+
+/**
+ * Java object mocked data.
+ *
+ * @since 2023/12/21
+ */
+typedef struct sjme_mockDataNvmObject
+{
+	/** Implement. */
+	int todo;
+} sjme_mockDataNvmObject;
+
+/**
+ * Virtual machine state mock data.
+ *
+ * @since 2023/12/21
+ */
+typedef struct sjme_mockDataNvmState
+{
+	/** State hooks to use. */
+	const sjme_nvm_stateHooks* hooks;
+} sjme_mockDataNvmState;
+
+/**
+ * Mocking data for ROM suites.
+ *
+ * @since 2023/12/21
+ */
+typedef struct sjme_mockDataRomSuite
+{
+	/** Implement. */
+	int todo;
+} sjme_mockDataRomSuite;
+
+/**
+ * Data for a given mock.
+ *
+ * @since 2023/12/21
+ */
+typedef union sjme_mockData
+{
+	/** Frame creation information. */
+	sjme_mockDataNvmFrame nvmFrame;
+
+	/** Object information. */
+	sjme_mockDataNvmObject nvmObject;
+
+	/** State information. */
+	sjme_mockDataNvmState nvmState;
+
+	/** ROM suites. */
+	sjme_mockDataRomSuite romSuite;
+} sjme_mockData;
 
 /**
  * The current run item in the mock.
@@ -117,45 +209,7 @@ typedef struct sjme_mockRunCurrent
 	sjme_jint special;
 	
 	/** Data for the initialization step. */
-	union
-	{
-		/** State information. */
-		struct
-		{
-			/** State hooks to use. */
-			const sjme_nvm_stateHooks* hooks;
-		} state;
-		
-		/** Frame creation information. */
-		struct
-		{
-			/** The thread index to create the frame in. */
-			sjme_jint threadIndex;
-			
-			/** The maximum number of locals. */
-			sjme_jint maxLocals;
-			
-			/** The maximum number of stack entries. */
-			sjme_jint maxStack;
-			
-			/** The treads within the frame. */
-			struct
-			{
-				/** Maximum size of this tread. */
-				sjme_jint max;
-				
-				/** The stack pivot point. */
-				sjme_jint stackBaseIndex;
-			} treads[SJME_NUM_JAVA_TYPE_IDS];
-		} frame;
-		
-		/** Object information. */
-		struct
-		{
-			/** Implement. */
-			int todo;
-		} object;
-	} data;
+	sjme_mockData data;
 } sjme_mockRunCurrent;
 
 /**
@@ -207,7 +261,8 @@ typedef struct sjme_mockSet
 
 /**
  * Performs the mock action.
- * 
+ *
+ * @param inTest The test this is in.
  * @param inState The input state.
  * @param inSet The set to act on.
  * @param special Special value, optional.
@@ -215,6 +270,7 @@ typedef struct sjme_mockSet
  * @since 2023/1/111
  */
 sjme_jboolean sjme_mockAct(
+	sjme_attrInNotNull sjme_test* inTest,
 	sjme_attrInNotNull sjme_mockState* inState,
 	sjme_attrInNotNull const sjme_mockSet* inSet,
 	sjme_attrInValue sjme_jint special);
@@ -276,6 +332,18 @@ sjme_jboolean sjme_mockDoNvmState(
  * @since 2023/11/11
  */
 sjme_jboolean sjme_mockDoNvmThread(
+	sjme_attrInNotNull sjme_mockState* inState,
+	sjme_attrInNotNull sjme_mockRunData* inData);
+
+/**
+ * Initializes a ROM suite.
+ *
+ * @param inState The mock state.
+ * @param inData The data currently being processed.
+ * @return If this was successful.
+ * @since 2023/12/21
+ */
+sjme_jboolean sjme_mockDoRomSuite(
 	sjme_attrInNotNull sjme_mockState* inState,
 	sjme_attrInNotNull sjme_mockRunData* inData);
 
