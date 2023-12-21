@@ -66,7 +66,14 @@ tasks.register("libNativeNanoCoat", (taskIsh) -> {
 	taskIsh.onlyIf = nanoCoatOnlyIf
 	
 	// Where is the CMake root? It depends on it
-	taskIsh.inputs.dir(cmakeRoot)
+	taskIsh.inputs.files(
+		cmakeRoot.resolve("CMakeLists.txt"),
+		cmakeRoot.resolve("squirreljme-version"),
+		cmakeRoot.resolve("frontend").resolve("CMakeLists.txt"))
+	taskIsh.inputs.dir(cmakeRoot.resolve("cmake"))
+	taskIsh.inputs.dir(cmakeRoot.resolve("include"))
+	taskIsh.inputs.dir(cmakeRoot.resolve("src"))
+	taskIsh.inputs.dir(cmakeRoot.resolve("frontend").resolve("emulator"))
 	
 	// Where do the sourced CMake files go?
 	taskIsh.outputs.dir(cmakeBuild)
