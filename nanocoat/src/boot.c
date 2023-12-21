@@ -157,13 +157,11 @@ SJME_EXCEPT_WITH(trace):
 	classPath = NULL;
 	error = SJME_ERROR_UNKNOWN;
 	if (result->bootParamCopy->mainClassPathById != NULL)
-		error = sjme_rom_resolveClassPathById(reservedPool,
-			result->suite,
+		error = sjme_rom_resolveClassPathById(result->suite,
 			result->bootParamCopy->mainClassPathById,
 			&classPath);
 	else
-		error = sjme_rom_resolveClassPathByName(reservedPool,
-			result->suite,
+		error = sjme_rom_resolveClassPathByName(result->suite,
 			result->bootParamCopy->mainClassPathByName,
 			&classPath);
 

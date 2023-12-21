@@ -213,7 +213,6 @@ sjme_errorCode sjme_rom_newSuite(
 /**
  * Resolves the class path library by their ID.
  *
- * @param pool The pool to use for any allocations.
  * @param inSuite The suite to look within.
  * @param inIds The IDs to obtain.
  * @param outLibs The output libraries.
@@ -221,7 +220,6 @@ sjme_errorCode sjme_rom_newSuite(
  * @since 2023/12/18
  */
 sjme_errorCode sjme_rom_resolveClassPathById(
-	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrInNotNull sjme_rom_suite* inSuite,
 	sjme_attrInNotNull const sjme_list_sjme_jint* inIds,
 	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibs);
@@ -229,7 +227,6 @@ sjme_errorCode sjme_rom_resolveClassPathById(
 /**
  * Resolves the class path library by their name.
  *
- * @param pool The pool to use for any allocations.
  * @param inSuite The suite to look within.
  * @param inNames The names to obtain.
  * @param outLibs The output libraries.
@@ -237,9 +234,20 @@ sjme_errorCode sjme_rom_resolveClassPathById(
  * @since 2023/12/18
  */
 sjme_errorCode sjme_rom_resolveClassPathByName(
-	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrInNotNull sjme_rom_suite* inSuite,
 	sjme_attrInNotNull const sjme_list_sjme_lpcstr* inNames,
+	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibs);
+
+/**
+ * Returns all of the libraries which are available within this suite.
+ *
+ * @param inSuite The input suite.
+ * @param outLibs The resultant libraries.
+ * @return Any resultant error state.
+ * @since 2023/12/20
+ */
+sjme_errorCode sjme_rom_suiteLibraries(
+	sjme_attrInNotNull sjme_rom_suite* inSuite,
 	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibs);
 
 /*--------------------------------------------------------------------------*/

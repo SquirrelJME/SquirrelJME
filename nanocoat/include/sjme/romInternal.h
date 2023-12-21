@@ -29,14 +29,39 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
+/**
+ * Common cache between suites and libraries.
+ *
+ * @since 2023/12/20
+ */
+typedef struct sjme_rom_cache
+{
+	/** The allocation pool to use. */
+	sjme_alloc_pool* allocPool;
+
+	/** Non-common cache size. */
+	sjme_jint uncommonSize;
+} sjme_rom_cache;
+
 struct sjme_rom_libraryCache
 {
-	int todo;
+	/** Common cache data. */
+	sjme_rom_cache common;
+
+	/** Uncommon cache generic structure. */
+	sjme_jubyte uncommon[sjme_flexibleArrayCount];
 };
 
 struct sjme_rom_suiteCache
 {
-	int todo;
+	/** Common cache data. */
+	sjme_rom_cache common;
+
+	/** Libraries that exist within the suite. */
+	sjme_list_sjme_rom_library* libraries;
+
+	/** Uncommon cache generic structure. */
+	sjme_jubyte uncommon[sjme_flexibleArrayCount];
 };
 
 /*--------------------------------------------------------------------------*/

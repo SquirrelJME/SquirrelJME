@@ -99,6 +99,7 @@ sjme_errorCode sjme_rom_newSuite(
 
 	/* Initialize fields. */
 	result->functions = inFunctions;
+	result->cache->common.allocPool = pool;
 
 	/* Use result. */
 	*outSuite = result;
@@ -106,26 +107,67 @@ sjme_errorCode sjme_rom_newSuite(
 }
 
 sjme_errorCode sjme_rom_resolveClassPathById(
-	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrInNotNull sjme_rom_suite* inSuite,
 	sjme_attrInNotNull const sjme_list_sjme_jint* inIds,
 	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibs)
 {
-	if (pool == NULL || inSuite == NULL || inIds == NULL || outLibs == NULL)
+	sjme_list_sjme_rom_library* suiteLibs;
+	sjme_errorCode error;
+
+	if (inSuite == NULL || inIds == NULL || outLibs == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Obtain the list of libraries within the suite. */
+	suiteLibs = NULL;
+	if (SJME_IS_ERROR(error = sjme_rom_suiteLibraries(inSuite,
+		&suiteLibs) || suiteLibs == NULL))
+		return error;
 
 	sjme_todo("Implement this?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
 sjme_errorCode sjme_rom_resolveClassPathByName(
-	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrInNotNull sjme_rom_suite* inSuite,
 	sjme_attrInNotNull const sjme_list_sjme_lpcstr* inNames,
 	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibs)
 {
-	if (pool == NULL || inSuite == NULL || inNames == NULL || outLibs == NULL)
+	sjme_list_sjme_rom_library* suiteLibs;
+	sjme_errorCode error;
+
+	if (inSuite == NULL || inNames == NULL || outLibs == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Obtain the list of libraries within the suite. */
+	suiteLibs = NULL;
+	if (SJME_IS_ERROR(error = sjme_rom_suiteLibraries(inSuite,
+		&suiteLibs) || suiteLibs == NULL))
+		return error;
+
+	sjme_todo("Implement this?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+sjme_errorCode sjme_rom_suiteLibraries(
+	sjme_attrInNotNull sjme_rom_suite* inSuite,
+	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibs)
+{
+	sjme_rom_suiteCache* cache;
+
+	if (inSuite == NULL || outLibs == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Must be a valid cache. */
+	cache = inSuite->cache;
+	if (cache == NULL || cache->common.allocPool == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* Has this been processed already? */
+	if (cache->libraries != NULL)
+	{
+		*outLibs = cache->libraries;
+		return SJME_ERROR_NONE;
+	}
 
 	sjme_todo("Implement this?");
 	return SJME_ERROR_NOT_IMPLEMENTED;

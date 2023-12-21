@@ -1257,9 +1257,12 @@ typedef enum sjme_errorCode
 
 	/** Classpath cannot be obtained by both ID and Name. */
 	SJME_ERROR_CLASS_PATH_BY_BOTH = -29,
+
+	/** Illegal state. */
+	SJME_ERROR_ILLEGAL_STATE = -30,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -30
+	SJME_NUM_ERROR_CODES = -31
 } sjme_errorCode;
 
 /**
