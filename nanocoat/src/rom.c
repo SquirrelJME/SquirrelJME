@@ -111,6 +111,9 @@ sjme_errorCode sjme_rom_resolveClassPathById(
 	sjme_attrInNotNull const sjme_list_sjme_jint* inIds,
 	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibs)
 {
+	if (pool == NULL || inSuite == NULL || inIds == NULL || outLibs == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
 	sjme_todo("Implement this?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
@@ -121,6 +124,9 @@ sjme_errorCode sjme_rom_resolveClassPathByName(
 	sjme_attrInNotNull const sjme_list_sjme_lpcstr* inNames,
 	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibs)
 {
+	if (pool == NULL || inSuite == NULL || inNames == NULL || outLibs == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
 	sjme_todo("Implement this?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }

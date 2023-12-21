@@ -1268,7 +1268,11 @@ typedef enum sjme_errorCode
  * @param x The expression.
  * @since 2023/12/08
  */
-#define SJME_IS_ERROR(x) (SJME_ERROR_NONE != (x))
+static inline sjme_attrArtificial
+	sjme_jboolean SJME_IS_ERROR(sjme_errorCode error)
+{
+	return error < SJME_ERROR_NONE;
+}
 
 /*--------------------------------------------------------------------------*/
 

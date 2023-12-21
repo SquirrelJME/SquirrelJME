@@ -152,8 +152,8 @@ public abstract class FlatList<E>
 	 * @param __inPool The pool to allocate within.
 	 * @param __ints The integers to store in the list.
 	 * @return The resultant flat list of integers.
-	 * @throws NullPointerException
-	 * @throws VMException
+	 * @throws NullPointerException On null arguments.
+	 * @throws VMException If the list could not be initialized.
 	 * @since 2023/12/20
 	 */
 	public static IntegerFlatList fromArray(AllocPool __inPool, int... __ints)
