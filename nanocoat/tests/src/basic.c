@@ -129,7 +129,7 @@ int sjme_test_main(int argc, sjme_lpstr* argv, sjme_lpcstr* nextTest)
 	for (chunkLen = 65536; chunkLen >= 1024; chunkLen /= 2)
 	{
 		/* Try to alloca everything at once. */
-		chunk = alloca(chunkLen);
+		chunk = sjme_alloca(chunkLen);
 		if (chunk == NULL)
 			continue;
 

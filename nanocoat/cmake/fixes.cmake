@@ -40,14 +40,6 @@ else()
 	set(SQUIRRELJME_IS_WINDOWS OFF)
 endif()
 
-# Debugging?
-if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR
-	CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
-	set(SQUIRRELJME_IS_DEBUG ON)
-else()
-	set(SQUIRRELJME_IS_DEBUG OFF)
-endif()
-
 # Is this RetroArch? Any kind of RetroArch build?
 if(RETROARCH OR ENV{RETROARCH} OR
 	LIBRETRO_STATIC OR ENV{LIBRETRO_STATIC} OR
@@ -242,7 +234,13 @@ macro(squirreljme_static_executable target)
 	elseif(MSVC OR
 		CMAKE_C_COMPILER_ID STREQUAL "MSVC" OR
 		CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-		target_link_options(${target} BEFORE PRIVATE
-			"/MT")
+		# For MSVC, static linking is specified at compile time rather than
+		# at link time, so everything has to be compiled this way to be static
+		#target_compile_options(${target} BEFORE PRIVATE
+		#	"/MT")
+
+		# And as such we cannot specify a library to use here
+		#target_link_options(${target} BEFORE PRIVATE
+		#	"/NODEFAULTLIB:library")
 	endif()
 endmacro()

@@ -156,9 +156,6 @@ extern "C" {
 #if defined(_MSC_VER)
 	#include <sal.h>
 
-	/** Allocator function. */
-	#define sjme_attrAllocator __declspec(allocator)
-	
 	/** Return value must be checked. */
 	#define sjme_attrCheckReturn _Must_inspect_result_
 	
@@ -169,13 +166,13 @@ extern "C" {
 	#define sjme_attrFormatArg _Printf_format_string_ 
 	
 	/** Input cannot be null. */
-	#define sjme_attrInNotNull _In_opt_
+	#define sjme_attrInNotNull _In_
 	
 	/** Input can be null. */
-	#define sjme_attrInNullable _Nullable
+	#define sjme_attrInNullable _In_opt_
 	
 	/** Takes input and produces output. */
-	#define sjme_attrInOutNotNull _InOut_
+	#define sjme_attrInOutNotNull _In_opt_ _Out_opt_
 	
 	/** Input value range. */
 	#define sjme_attrInRange(lo, hi) _In_range_((lo), (hi))
@@ -205,6 +202,9 @@ extern "C" {
 		/** Flexible array count, MSVC assumes blank. */
 		#define sjme_flexibleArrayCount
 	#endif
+
+	/** Allocate on the stack. */
+	#define sjme_alloca(size) _alloca((size))
 #elif defined(__clang__) || defined(__GNUC__)
 	/* Clang has special analyzer stuff, but also same as GCC otherwise. */
 	#if defined(__clang__)
@@ -382,11 +382,6 @@ extern "C" {
 	#define sjme_attrUnused
 #endif
 
-#if !defined(sjme_attrAllocator)
-	/** Allocator function. */
-	#define sjme_attrAllocator
-#endif
-
 #if !defined(sjme_attrUnusedEnum)
 	/** Unused enumeration element. */
 	#define sjme_attrUnusedEnum(x) x
@@ -399,6 +394,11 @@ extern "C" {
 
 /** Flexible array count but for unions. */
 #define sjme_flexibleArrayCountUnion 0
+
+#if !defined(sjme_alloca)
+	/** Allocate on the stack. */
+	#define sjme_alloca(size) alloca((size))
+#endif
 
 /*--------------------------------------------------------------------------*/
 

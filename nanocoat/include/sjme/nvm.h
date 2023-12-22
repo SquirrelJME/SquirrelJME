@@ -525,7 +525,7 @@ typedef struct sjme_nvm_thread
 	sjme_jint numFrames;
 
 	/** Current exception handler go back. */
-	volatile sjme_exceptTrace* except;
+	sjme_exceptTrace* except;
 } sjme_nvm_thread;
 
 typedef struct sjme_static_constValue

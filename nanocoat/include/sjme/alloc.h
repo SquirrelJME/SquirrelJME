@@ -200,8 +200,7 @@ sjme_errorCode sjme_alloc_poolSpaceTotalSize(
 sjme_errorCode sjme_alloc(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrInPositiveNonZero sjme_jint size,
-	sjme_attrOutNotNull void** outAddr)
-	sjme_attrAllocator;
+	sjme_attrOutNotNull void** outAddr);
 
 /**
  * Allocates a copy of the given data.
@@ -217,8 +216,7 @@ sjme_errorCode sjme_alloc_copy(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrInPositiveNonZero sjme_jint size,
 	sjme_attrOutNotNull void** outAddr,
-	sjme_attrInNotNull void* inAddr)
-	sjme_attrAllocator;
+	sjme_attrInNotNull void* inAddr);
 
 /**
  * Frees memory.

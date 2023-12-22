@@ -335,7 +335,7 @@ libjvm_re_undefined8 JVM_GetEnclosingMethodInfo(libjvm_re_long param_1,
 libjvm_re_undefined8 JVM_GetFieldAnnotations(libjvm_re_long param_1,
 	libjvm_re_undefined8* param_2);
 
-ushort JVM_GetFieldIxModifiers(libjvm_re_long param_1,
+libjvm_re_ushort JVM_GetFieldIxModifiers(libjvm_re_long param_1,
 	libjvm_re_undefined8* param_2, libjvm_re_int param_3);
 
 void JVM_GetHostName(sjme_lpstr param_1, libjvm_re_int param_2);

@@ -619,7 +619,7 @@ libjvm_re_undefined8 JVM_GetFieldAnnotations(libjvm_re_long param_1,
 	sjme_todo("Impl?");
 }
 
-ushort JVM_GetFieldIxModifiers(libjvm_re_long param_1,
+libjvm_re_ushort JVM_GetFieldIxModifiers(libjvm_re_long param_1,
 	libjvm_re_undefined8* param_2, libjvm_re_int param_3)
 {
 	sjme_todo("Impl?");

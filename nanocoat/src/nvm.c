@@ -89,7 +89,7 @@ SJME_EXCEPT_WITH_FRAME:
 		SJME_EXCEPT_TOSS(SJME_ERROR_LOCAL_INVALID_WRITE);
 	
 	/* Clear old stack value with zero value. */
-	valueAddr = alloca(accessor->size);
+	valueAddr = sjme_alloca(accessor->size);
 	memset(valueAddr, 0, accessor->size);
 	if (SJME_IS_ERROR(accessor->write(frame, accessor, tread,
 		tread->count - 1, valueAddr)))

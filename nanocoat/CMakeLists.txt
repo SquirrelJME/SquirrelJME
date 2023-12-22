@@ -24,6 +24,9 @@ endif()
 # Determine version information
 squirreljme_include("identify-squirreljme-version.cmake")
 
+# Fixes and otherwise for compatibility
+squirreljme_include("pre-fixes.cmake")
+
 # Define project
 if(${CMAKE_VERSION} VERSION_LESS "3.12")
 	project(SquirrelJME
@@ -57,6 +60,12 @@ squirreljme_include("assets.cmake")
 # Turn some warnings into errors
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
 	add_compile_options("-Werror=implicit-function-declaration")
+endif()
+
+# Visual studio does not like a bunch of standard C functions, even those
+# that take sizes...
+if(MSVC)
+	add_compile_definitions(_CRT_SECURE_NO_WARNINGS=1)
 endif()
 
 # Declare Version

@@ -28,8 +28,8 @@ jlong SJME_JNI_METHOD(SJME_CLASS_FLAT_LIST, _1_1flatten)
 	arrayLen = (*env)->GetArrayLength(env, javaStrings);
 
 	/* Allocate an array that can get the pointers for flattening. */
-	utfStrings = alloca(sizeof(*utfStrings) * arrayLen);
-	isCopies = alloca(sizeof(*isCopies) * arrayLen);
+	utfStrings = sjme_alloca(sizeof(*utfStrings) * arrayLen);
+	isCopies = sjme_alloca(sizeof(*isCopies) * arrayLen);
 
 	/* Fill in string values accordingly. */
 	for (i = 0; i < arrayLen; i++)

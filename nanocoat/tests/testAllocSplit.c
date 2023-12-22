@@ -33,7 +33,7 @@ SJME_TEST_DECLARE(testAllocSplit)
 
 	/* Allocate data on the stack so it gets cleared. */
 	chunkLen = 32768;
-	chunk = alloca(chunkLen);
+	chunk = sjme_alloca(chunkLen);
 	if (chunk == NULL)
 		return sjme_unitSkip(test, "Could not alloca(%d).",
 			(int)chunkLen);

@@ -34,6 +34,11 @@ typedef struct libjvm_re_bool
 	sjme_jint todo;
 } libjvm_re_bool;
 
+typedef struct libjvm_re_ushort
+{
+	sjme_jint todo;
+} libjvm_re_ushort;
+
 typedef struct libjvm_re_int
 {
 	sjme_jint todo;
