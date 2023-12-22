@@ -12,6 +12,10 @@
 #include <stdarg.h>
 #include <string.h>
 
+#if defined(_WIN32)
+	#include <windows.h>
+#endif
+
 #include "sjme/nvm.h"
 #include "sjme/debug.h"
 
@@ -31,6 +35,13 @@ void sjme_debug_abort(void)
 	if (sjme_debug_abortHandler != NULL)
 		if (sjme_debug_abortHandler())
 			return;
+
+#if defined(_WIN32)
+	/* When running tests without a debugger this will pop up about 1000 */
+	/* dialogs saying the program aborted, so only abort on debugging. */
+	if (!IsDebuggerPresent())
+		return;
+#endif
 
 	/* Otherwise use C abort handler. */
 	abort();
