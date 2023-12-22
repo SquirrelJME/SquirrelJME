@@ -334,6 +334,7 @@ sjme_jboolean sjme_mockDoRomSuite(
 {
 	sjme_jint suiteIndex;
 	sjme_rom_suite* suite;
+	sjme_rom_suiteFunctions* writeFunctions;
 
 	if (inState == NULL || inData == NULL)
 		return sjme_die("Null arguments.");
@@ -343,8 +344,36 @@ sjme_jboolean sjme_mockDoRomSuite(
 	if (suiteIndex >= SJME_MOCK_MAX_ROM_SUITES)
 		return sjme_die("Too many ROM suites.");
 
-	/* . */
+	/* Allocate suite. */
+	suite = NULL;
+	if (SJME_IS_ERROR(sjme_alloc(inState->allocPool,
+		sizeof(*suite), &suite)) || suite == NULL)
+		return sjme_die("Could not allocate suite.");
 
-	sjme_todo("Implement this?");
-	return SJME_JNI_FALSE;
+	/* Copy suite functions. */
+	suite->functions = NULL;
+	if (SJME_IS_ERROR(sjme_alloc_copy(inState->allocPool,
+		sizeof(*suite->functions),
+		&suite->functions,
+		&inData->current.data.romSuite.functions)) ||
+		suite->functions == NULL)
+		return sjme_die("Could not copy functions.");
+
+	/* Set front end to the test state. */
+	writeFunctions = (sjme_rom_suiteFunctions*)suite->functions;
+	writeFunctions->frontEnd.data = inState;
+
+	/* If there is no cache init, just initialize it to something... */
+	if (writeFunctions->initCache == NULL)
+	{
+		/* Just allocate one... */
+		suite->cache = NULL;
+		if (SJME_IS_ERROR(sjme_alloc(inState->allocPool,
+				SJME_SIZEOF_SUITE_CACHE(int),
+				(void**)&suite->cache)) || suite->cache == NULL)
+			return sjme_die("Could not fake init cache.");
+	}
+
+	/* Continue on. */
+	return SJME_JNI_TRUE;
 }

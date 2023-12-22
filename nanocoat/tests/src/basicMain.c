@@ -11,5 +11,5 @@
 
 int main(int argc, char** argv)
 {
-	return sjme_test_main(argc, argv);
+	return sjme_test_main(argc, argv, NULL);
 }
