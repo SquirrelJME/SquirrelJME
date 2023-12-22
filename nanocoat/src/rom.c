@@ -153,6 +153,9 @@ sjme_errorCode sjme_rom_suiteLibraries(
 	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibs)
 {
 	sjme_rom_suiteCache* cache;
+	sjme_rom_suiteListLibrariesFunc listFunc;
+	sjme_list_sjme_rom_library* result;
+	sjme_errorCode error;
 
 	if (inSuite == NULL || outLibs == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -171,6 +174,21 @@ sjme_errorCode sjme_rom_suiteLibraries(
 		return SJME_ERROR_NONE;
 	}
 
-	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Check list function. */
+	listFunc = inSuite->functions->list;
+	if (listFunc == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* Call the list function. */
+	result = NULL;
+	if (SJME_IS_ERROR(error = listFunc(inSuite,
+		&result)) || result == NULL)
+		return error;
+
+	/* Store it within the cache. */
+	cache->libraries = result;
+
+	/* Success! */
+	*outLibs = result;
+	return SJME_ERROR_NONE;
 }

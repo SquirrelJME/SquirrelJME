@@ -15,13 +15,19 @@
 #include "test.h"
 #include "unit.h"
 
-static sjme_errorCode testSuiteList(
-	sjme_attrInNotNull const sjme_rom_suiteFunctions* functions,
-	sjme_attrInNotNull sjme_rom_suite* targetSuite,
-	sjme_attrOutNotNull sjme_list_sjme_rom_library* outLibraries)
+/** Just easily returned accordingly. */
+static sjme_list_sjme_rom_library testFakeSuiteList =
 {
-	sjme_todo("Implement this?");
-	return 0;
+	.length = 0,
+	.elementSize = sizeof(sjme_rom_library)
+};
+
+static sjme_errorCode testSuiteList(
+	sjme_attrInNotNull sjme_rom_suite* targetSuite,
+	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibraries)
+{
+	*outLibraries = &testFakeSuiteList;
+	return SJME_ERROR_NONE;
 }
 
 static sjme_jboolean configRomSuiteLibraries(
@@ -60,6 +66,8 @@ SJME_TEST_DECLARE(testRomSuiteLibraries)
 {
 	sjme_mock mockState;
 	sjme_rom_suite* suite;
+	sjme_list_sjme_rom_library* libraries;
+	sjme_errorCode error;
 
 	/* Initialize mocks. */
 	memset(&mockState, 0, sizeof(mockState));
@@ -67,6 +75,23 @@ SJME_TEST_DECLARE(testRomSuiteLibraries)
 		&mockRomSuiteLibraries, 0))
 		return sjme_unitFail(test, "Could not run mocks.");
 
-	sjme_todo("Implement %s", __func__);
-	return SJME_TEST_RESULT_FAIL;
+	/* Get the suite we created. */
+	suite = mockState.romSuites[0];
+
+	/* Call the libraries list. */
+	libraries = NULL;
+	if (SJME_IS_ERROR(error = sjme_rom_suiteLibraries(suite,
+		&libraries)) || libraries == NULL)
+		return sjme_unitFail(test, "Could not get libraries list: %d", error);
+
+	/* The result should be our fake libraries. */
+	sjme_unitEqualP(test, libraries, &testFakeSuiteList,
+		"Different set of libraries returned?");
+
+	/* The cache should get our libraries. */
+	sjme_unitEqualP(test, suite->cache->libraries, &testFakeSuiteList,
+		"Library list was not cached?");
+
+	/* Success! */
+	return SJME_TEST_RESULT_PASS;
 }

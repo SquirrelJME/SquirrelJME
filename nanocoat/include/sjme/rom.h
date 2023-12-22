@@ -115,16 +115,14 @@ typedef sjme_errorCode (*sjme_rom_suiteLibraryId)(
 /**
  * Determines the list of libraries within the suite.
  *
- * @param function The suite functions.
  * @param targetSuite The suite the request is being made in.
  * @param outLibraries The output library list.
  * @return Any resultant error code.
  * @since 2023/12/21
  */
 typedef sjme_errorCode (*sjme_rom_suiteListLibrariesFunc)(
-	sjme_attrInNotNull const sjme_rom_suiteFunctions* functions,
 	sjme_attrInNotNull sjme_rom_suite* targetSuite,
-	sjme_attrOutNotNull sjme_list_sjme_rom_library* outLibraries);
+	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibraries);
 
 typedef sjme_errorCode (*sjme_rom_suiteLoadLibraryFunc)();
 

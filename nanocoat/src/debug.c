@@ -24,12 +24,7 @@ sjme_debug_exitHandlerFunc sjme_debug_exitHandler = NULL;
 
 sjme_danglingMessageFunc sjme_danglingMessage = NULL;
 
-/**
- * Potentially debug aborts.
- *
- * @since 2023/12/21
- */
-static void sjme_debug_abort(void)
+void sjme_debug_abort(void)
 {
 #if !defined(SJME_CONFIG_RELEASE)
 	/* Use specific abort handler? */

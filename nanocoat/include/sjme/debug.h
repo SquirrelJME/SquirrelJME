@@ -156,6 +156,13 @@ void sjme_todoR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 #define sjme_todo(...) sjme_todoR(SJME_DEBUG_FILE_LINE_FUNC, __VA_ARGS__)
 
 /**
+ * Potentially debug aborts.
+ *
+ * @since 2023/12/21
+ */
+void sjme_debug_abort(void);
+
+/**
  * Handles specific debug abort scenarios.
  *
  * @return Return @c SJME_JNI_TRUE if it was handled.
