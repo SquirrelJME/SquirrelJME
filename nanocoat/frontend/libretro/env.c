@@ -15,7 +15,7 @@
 /** Variables to use within the core. */
 static const struct retro_variable sjme_libretro_coreVariables[] =
 {
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG) && defined(SJME_CONFIG_UNIT_TEST)
 	/* Run unit tests? */
 	{
 		SJME_LIBRETRO_CONFIG_UNIT_TESTS,

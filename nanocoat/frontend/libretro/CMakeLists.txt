@@ -20,7 +20,7 @@ else()
 endif()
 
 # Include tests with the build as well?
-if(SQUIRRELJME_IS_DEBUG)
+if(SQUIRRELJME_IS_DEBUG AND SQUIRRELJME_ENABLE_TESTING)
 	if(LIBRETRO_REALLY_STATIC)
 		set(libRetroTestObjects $<TARGET_OBJECTS:BasicTestLib>)
 	else()

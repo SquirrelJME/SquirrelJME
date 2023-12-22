@@ -15,11 +15,11 @@
 #include "3rdparty/libretro/libretro.h"
 #include "frontend/libretro/shared.h"
 
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG) && defined(SJME_CONFIG_UNIT_TEST)
 	#include "sjme/test/externTest.h"
 #endif
 
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG) && defined(SJME_CONFIG_UNIT_TEST)
 
 /** Did we already check that we are running unit tests? */
 static sjme_jboolean sjme_libretro_checkRunUnitTests;
@@ -121,7 +121,7 @@ sjme_attrUnused RETRO_API void retro_run(void)
 	sjme_libretro_videoRefreshCallback(
 		buf, 240, 320, 240 * 4);
 
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG) && defined(SJME_CONFIG_UNIT_TEST)
 	/* Running unit tests? */
 	if (!sjme_libretro_checkRunUnitTests)
 	{
