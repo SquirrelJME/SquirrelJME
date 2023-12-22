@@ -12,13 +12,13 @@
 #include "sjme/except.h"
 #include "mock.h"
 
-struct sjme_mockRunData
+struct sjme_mock_configWorkData
 {
 	/** The index type counts. */
 	sjme_jint indexTypeCount[SJME_NUM_MOCK_DO_TYPES];
 	
 	/** The current run. */
-	sjme_mockRunCurrent current;
+	sjme_mock_configWork current;
 	
 	/** The next thread ID. */
 	sjme_jint nextThreadId;
@@ -31,34 +31,36 @@ struct sjme_mockRunData
  */
 struct
 {
-	sjme_mockDoFunc func;
-	sjme_mockDoType type;
+	sjme_mock_doFunc func;
+	sjme_mock_doType type;
 } sjme_mockFuncToType[SJME_NUM_MOCK_DO_TYPES] =
 {
-	{sjme_mockDoNvmFrame,
+	{sjme_mock_doNvmFrame,
 		SJME_MOCK_DO_TYPE_NVM_FRAME},
-	{sjme_mockDoNvmObject,
+	{sjme_mock_doNvmObject,
 		SJME_MOCK_DO_TYPE_NVM_OBJECT},
-	{sjme_mockDoNvmState,
+	{sjme_mock_doNvmState,
 		SJME_MOCK_DO_TYPE_NVM_STATE},
-	{sjme_mockDoNvmThread,
+	{sjme_mock_doNvmThread,
 		SJME_MOCK_DO_TYPE_NVM_THREAD},
-	{sjme_mockDoRomSuite,
+	{sjme_mock_doRomLibrary,
+		SJME_MOCK_DO_TYPE_ROM_LIBRARY},
+	{sjme_mock_doRomSuite,
 		SJME_MOCK_DO_TYPE_ROM_SUITE},
 		
 	/* End. */
 	{NULL, SJME_MOCK_DO_TYPE_UNKNOWN}
 };
 
-sjme_jboolean sjme_mockAct(
+sjme_jboolean sjme_mock_act(
 	sjme_attrInNotNull sjme_test* inTest,
-	sjme_attrInNotNull sjme_mockState* inState,
-	sjme_attrInNotNull const sjme_mockSet* inSet,
+	sjme_attrInNotNull sjme_mock* inState,
+	sjme_attrInNotNull const sjme_mock_configSet* inSet,
 	sjme_attrInValue sjme_jint special)
 {
 	sjme_jint dx, i;
-	sjme_mockRunData data;
-	sjme_mockDoType doType;
+	sjme_mock_configWorkData data;
+	sjme_mock_doType doType;
 	
 	/* Check. */
 	if (inState == NULL || inSet == NULL)
@@ -114,8 +116,8 @@ sjme_jboolean sjme_mockAct(
 	return SJME_JNI_TRUE;
 }
 
-void* sjme_mockAlloc(
-	sjme_attrInNotNull sjme_mockState* inState,
+void* sjme_mock_alloc(
+	sjme_attrInNotNull sjme_mock* inState,
 	sjme_attrInPositiveNonZero size_t inLen)
 {
 	void* rv;
@@ -132,9 +134,9 @@ void* sjme_mockAlloc(
 	return rv;
 }
 
-sjme_jboolean sjme_mockDoNvmState(
-	sjme_attrInNotNull sjme_mockState* inState,
-	sjme_attrInNotNull sjme_mockRunData* inData)
+sjme_jboolean sjme_mock_doNvmState(
+	sjme_attrInNotNull sjme_mock* inState,
+	sjme_attrInNotNull sjme_mock_configWorkData* inData)
 {
 	sjme_nvm_state* newState;
 	
@@ -142,7 +144,7 @@ sjme_jboolean sjme_mockDoNvmState(
 		return sjme_die("Null arguments.");
 	
 	/* Allocate virtual machine state. */
-	newState = sjme_mockAlloc(inState,
+	newState = sjme_mock_alloc(inState,
 		sizeof(*inState->nvmState));
 	inState->nvmState = newState;
 	
@@ -157,9 +159,9 @@ sjme_jboolean sjme_mockDoNvmState(
 	return SJME_JNI_TRUE;
 }
 
-sjme_jboolean sjme_mockDoNvmFrame(
-	sjme_attrInNotNull sjme_mockState* inState,
-	sjme_attrInNotNull sjme_mockRunData* inData)
+sjme_jboolean sjme_mock_doNvmFrame(
+	sjme_attrInNotNull sjme_mock* inState,
+	sjme_attrInNotNull sjme_mock_configWorkData* inData)
 {
 	sjme_jint threadIndex, treadMax, tallyLocals, stackBase, desireMaxLocals;
 	sjme_jint tallyStack, desireMaxStack, localIndex;
@@ -184,7 +186,7 @@ sjme_jboolean sjme_mockDoNvmFrame(
 	thread = inState->threads[threadIndex].nvmThread;
 	
 	/* Allocate new frame. */
-	newFrame = sjme_mockAlloc(inState, sizeof(*newFrame));
+	newFrame = sjme_mock_alloc(inState, sizeof(*newFrame));
 	if (newFrame == NULL)
 		return sjme_die("Could not allocate frame.");
 	
@@ -203,13 +205,13 @@ sjme_jboolean sjme_mockDoNvmFrame(
 	
 	/* Setup locals mapping. */
 	desireMaxLocals = inData->current.data.nvmFrame.maxLocals;
-	localMap = sjme_mockAlloc(inState,
+	localMap = sjme_mock_alloc(inState,
 		SJME_SIZEOF_FRAME_LOCAL_MAP(desireMaxLocals));
 	localMap->max = desireMaxLocals;
 	
 	/* Setup stack information. */
 	desireMaxStack = inData->current.data.nvmFrame.maxStack;
-	stack = sjme_mockAlloc(inState,
+	stack = sjme_mock_alloc(inState,
 		SJME_SIZEOF_FRAME_STACK(desireMaxStack));
 	newFrame->stack = stack;
 	stack->limit = desireMaxStack;
@@ -229,7 +231,7 @@ sjme_jboolean sjme_mockDoNvmFrame(
 			continue;
 		
 		/* Allocate target tread. */
-		tread = sjme_mockAlloc(inState,
+		tread = sjme_mock_alloc(inState,
 			SJME_SIZEOF_FRAME_TREAD_VAR(typeId, treadMax));
 		newFrame->treads[typeId] = tread;
 		
@@ -275,9 +277,9 @@ sjme_jboolean sjme_mockDoNvmFrame(
 	return SJME_JNI_TRUE;
 }
 
-sjme_jboolean sjme_mockDoNvmObject(
-	sjme_attrInNotNull sjme_mockState* inState,
-	sjme_attrInNotNull sjme_mockRunData* inData)
+sjme_jboolean sjme_mock_doNvmObject(
+	sjme_attrInNotNull sjme_mock* inState,
+	sjme_attrInNotNull sjme_mock_configWorkData* inData)
 {
 	sjme_jobject newObject;
 	
@@ -289,7 +291,7 @@ sjme_jboolean sjme_mockDoNvmObject(
 		sjme_die("Too many mock objects.");
 	
 	/* Allocate new object. */
-	newObject = sjme_mockAlloc(inState, sizeof(*newObject));
+	newObject = sjme_mock_alloc(inState, sizeof(*newObject));
 	inState->objects[inState->numObjects++] = newObject;
 	
 	/* Initialize object details. */
@@ -299,9 +301,9 @@ sjme_jboolean sjme_mockDoNvmObject(
 	return SJME_JNI_TRUE;
 }
 
-sjme_jboolean sjme_mockDoNvmThread(
-	sjme_attrInNotNull sjme_mockState* inState,
-	sjme_attrInNotNull sjme_mockRunData* inData)
+sjme_jboolean sjme_mock_doNvmThread(
+	sjme_attrInNotNull sjme_mock* inState,
+	sjme_attrInNotNull sjme_mock_configWorkData* inData)
 {
 	sjme_jint threadIndex;
 	sjme_nvm_thread* newThread;
@@ -315,7 +317,7 @@ sjme_jboolean sjme_mockDoNvmThread(
 		return sjme_die("Too make mock threads.");
 	
 	/* Allocate thread. */
-	newThread = sjme_mockAlloc(inState, sizeof(*newThread));
+	newThread = sjme_mock_alloc(inState, sizeof(*newThread));
 	if (newThread == NULL)
 		return sjme_die("Could not allocate thread.");
 	
@@ -328,13 +330,25 @@ sjme_jboolean sjme_mockDoNvmThread(
 	return SJME_JNI_TRUE;
 }
 
-sjme_jboolean sjme_mockDoRomSuite(
-	sjme_attrInNotNull sjme_mockState* inState,
-	sjme_attrInNotNull sjme_mockRunData* inData)
+sjme_jboolean sjme_mock_doRomLibrary(
+	sjme_attrInNotNull sjme_mock* inState,
+	sjme_attrInNotNull sjme_mock_configWorkData* inData)
+{
+	if (inState == NULL || inData == NULL)
+		return sjme_die("Null arguments.");
+
+	sjme_todo("Implement this?");
+	return SJME_JNI_FALSE;
+}
+
+sjme_jboolean sjme_mock_doRomSuite(
+	sjme_attrInNotNull sjme_mock* inState,
+	sjme_attrInNotNull sjme_mock_configWorkData* inData)
 {
 	sjme_jint suiteIndex;
 	sjme_rom_suite* suite;
 	sjme_rom_suiteFunctions* writeFunctions;
+	sjme_mock_configDataRomSuite* suiteData;
 
 	if (inState == NULL || inData == NULL)
 		return sjme_die("Null arguments.");
@@ -350,12 +364,15 @@ sjme_jboolean sjme_mockDoRomSuite(
 		sizeof(*suite), &suite)) || suite == NULL)
 		return sjme_die("Could not allocate suite.");
 
+	/* Quicker this way... */
+	suiteData = &inData->current.data.romSuite;
+
 	/* Copy suite functions. */
 	suite->functions = NULL;
 	if (SJME_IS_ERROR(sjme_alloc_copy(inState->allocPool,
 		sizeof(*suite->functions),
 		&suite->functions,
-		&inData->current.data.romSuite.functions)) ||
+		&suiteData->functions)) ||
 		suite->functions == NULL)
 		return sjme_die("Could not copy functions.");
 
@@ -373,6 +390,10 @@ sjme_jboolean sjme_mockDoRomSuite(
 				(void**)&suite->cache)) || suite->cache == NULL)
 			return sjme_die("Could not fake init cache.");
 	}
+
+	/* Is there a pre-cache used for libraries? */
+	if (suiteData->cacheLibraries != NULL)
+		suite->cache->libraries = suiteData->cacheLibraries;
 
 	/* Continue on. */
 	return SJME_JNI_TRUE;

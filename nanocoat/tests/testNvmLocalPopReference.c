@@ -30,7 +30,7 @@ typedef struct testHookResult
 static sjme_jboolean hookGcNvmLocalPopReference(sjme_nvm_frame* frame,
 	sjme_jobject instance)
 {
-	sjme_mockState* mock;
+	sjme_mock* mock;
 	testHookResult* hookResult;
 	
 	/* Debug. */
@@ -60,11 +60,11 @@ const sjme_nvm_stateHooks hooksNvmLocalPopReference =
 };
 
 sjme_jboolean configNvmLocalPopReference(
-	sjme_attrInNotNull sjme_mockState* inState,
-	sjme_attrInNotNull sjme_mockRunCurrent* inCurrent)
+	sjme_attrInNotNull sjme_mock* inState,
+	sjme_attrInNotNull sjme_mock_configWork* inCurrent)
 {
-	sjme_mockDataNvmState* state;
-	sjme_mockDataNvmFrame* frame;
+	sjme_mock_configDataNvmState* state;
+	sjme_mock_configDataNvmFrame* frame;
 	
 	/* Check. */
 	if (inState == NULL || inCurrent == NULL)
@@ -93,18 +93,18 @@ sjme_jboolean configNvmLocalPopReference(
 }
 
 /** Mock set for test. */
-static const sjme_mockSet mockNvmLocalPopReference =
+static const sjme_mock_configSet mockNvmLocalPopReference =
 	{
 		configNvmLocalPopReference,
 		0,
 
 		/* Mock calls. */
 		{
-			sjme_mockDoNvmState,
-			sjme_mockDoNvmThread,
-			sjme_mockDoNvmFrame,
-			sjme_mockDoNvmObject,
-			sjme_mockDoNvmObject,
+			sjme_mock_doNvmState,
+			sjme_mock_doNvmThread,
+			sjme_mock_doNvmFrame,
+			sjme_mock_doNvmObject,
+			sjme_mock_doNvmObject,
 			NULL
 		}
 };
@@ -112,7 +112,7 @@ static const sjme_mockSet mockNvmLocalPopReference =
 SJME_TEST_DECLARE(testNvmLocalPopReference)
 {
 	sjme_jbyte firstId, secondId;
-	sjme_mockState state;
+	sjme_mock state;
 	sjme_nvm_frame* frame;
 	sjme_jint oldNumStack;
 	sjme_nvm_frameTread* objectsTread;
@@ -126,7 +126,7 @@ SJME_TEST_DECLARE(testNvmLocalPopReference)
 		{
 			/* Perform the mock. */
 			memset(&state, 0, sizeof(state));
-			if (!sjme_mockAct(test, &state,
+			if (!sjme_mock_act(test, &state,
 					&mockNvmLocalPopReference,
 					firstId + (secondId * TEST_NUM_OBJECT_IDS)))
 				sjme_die("Invalid mock");

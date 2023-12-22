@@ -16,10 +16,10 @@
 #include "unit.h"
 
 sjme_jboolean configNvmLocalPopLong(
-	sjme_attrInNotNull sjme_mockState* inState,
-	sjme_attrInNotNull sjme_mockRunCurrent* inCurrent)
+	sjme_attrInNotNull sjme_mock* inState,
+	sjme_attrInNotNull sjme_mock_configWork* inCurrent)
 {
-	sjme_mockDataNvmFrame* frame;
+	sjme_mock_configDataNvmFrame* frame;
 
 	/* Check. */
 	if (inState == NULL || inCurrent == NULL)
@@ -43,23 +43,23 @@ sjme_jboolean configNvmLocalPopLong(
 }
 
 /** Mock set for test. */
-static const sjme_mockSet mockNvmLocalPopLong =
+static const sjme_mock_configSet mockNvmLocalPopLong =
 {
 	configNvmLocalPopLong,
 	0,
 
 	/* Mock calls. */
 	{
-		sjme_mockDoNvmState,
-		sjme_mockDoNvmThread,
-		sjme_mockDoNvmFrame,
+		sjme_mock_doNvmState,
+		sjme_mock_doNvmThread,
+		sjme_mock_doNvmFrame,
 		NULL
 	}
 };
 
 sjme_attrUnused SJME_TEST_DECLARE(testNvmLocalPopLong)
 {
-	sjme_mockState state;
+	sjme_mock state;
 	sjme_nvm_frame* frame;
 	sjme_jint oldNumStack;
 	sjme_nvm_frameTread* longsTread;
@@ -67,7 +67,7 @@ sjme_attrUnused SJME_TEST_DECLARE(testNvmLocalPopLong)
 	
 	/* Perform the mock. */
 	memset(&state, 0, sizeof(state));
-	if (!sjme_mockAct(test, &state,
+	if (!sjme_mock_act(test, &state,
 		&mockNvmLocalPopLong, 0))
 		sjme_die("Invalid mock");
 		
