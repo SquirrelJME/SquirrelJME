@@ -59,6 +59,9 @@ extern retro_video_refresh_t sjme_libretro_videoRefreshCallback;
 const struct retro_get_proc_address_interface* sjme_libretro_extInterface(
 	void);
 
+/** Run unit tests? */
+#define SJME_LIBRETRO_CONFIG_UNIT_TESTS "sjme_unit_tests"
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

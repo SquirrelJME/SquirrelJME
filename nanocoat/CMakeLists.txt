@@ -63,6 +63,11 @@ endif()
 add_compile_definitions(
 	SQUIRRELJME_VERSION_TRIM=${SQUIRRELJME_VERSION})
 
+# Debugging?
+if(SQUIRRELJME_IS_DEBUG)
+	add_compile_definitions(SJME_CONFIG_DEBUG=1)
+endif()
+
 # Valgrind Support on UNIX OSes, if debugging
 if(ANDROID OR SQUIRRELJME_IS_UNIX)
 	if(SQUIRRELJME_IS_DEBUG)

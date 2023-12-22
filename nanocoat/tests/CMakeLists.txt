@@ -47,6 +47,14 @@ add_library(BasicTestLib OBJECT
 	src/unit.c
 	${basicTestSources})
 
+# Basic test library
+add_library(BasicTestLibPIC OBJECT
+	src/basic.c
+	src/blobs.c
+	src/mock.c
+	src/unit.c
+	${basicTestSources})
+
 # Initialize executable for basic tests, which contains everything
 add_executable(BasicTest
 	src/basicMain.c
@@ -62,6 +70,15 @@ target_include_directories(BasicTestLib PUBLIC
 	"${CMAKE_CURRENT_SOURCE_DIR}/include"
 	"${CMAKE_CURRENT_BINARY_DIR}"
 	"${CMAKE_CURRENT_BINARY_DIR}/blobs")
+target_include_directories(BasicTestLibPIC PUBLIC
+	"${CMAKE_SOURCE_DIR}/include"
+	"${CMAKE_CURRENT_SOURCE_DIR}/include"
+	"${CMAKE_CURRENT_BINARY_DIR}"
+	"${CMAKE_CURRENT_BINARY_DIR}/blobs")
+
+# Make sure the PIC libraries are position independent!
+set_target_properties(BasicTestLibPIC PROPERTIES
+	POSITION_INDEPENDENT_CODE ON)
 
 # Make sure we have our headers included accordingly
 target_include_directories(BasicTest PUBLIC

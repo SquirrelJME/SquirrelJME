@@ -20,6 +20,7 @@
 
 #include "sjme/nvm.h"
 #include "sjme/debug.h"
+#include "sjme/test/externTest.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -94,16 +95,6 @@ typedef struct sjme_availableTest
  */
 #define SJME_TEST_DECLARE(name) \
 	sjme_attrUnused sjme_testResult name(sjme_attrUnused sjme_test* test)
-
-/**
- * Basic main test entry point.
- *
- * @param argc Argument count.
- * @param argv Program arguments.
- * @return The exit code.
- * @since 2023/12/21
- */
-int sjme_test_main(int argc, sjme_lpstr* argv);
 
 /*--------------------------------------------------------------------------*/
 

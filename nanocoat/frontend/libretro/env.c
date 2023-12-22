@@ -12,6 +12,38 @@
 #include "3rdparty/libretro/libretro.h"
 #include "frontend/libretro/shared.h"
 
+/** Variables to use within the core. */
+static const struct retro_variable sjme_libretro_coreVariables[] =
+{
+#if defined(SJME_CONFIG_DEBUG)
+	/* Run unit tests? */
+	{
+		SJME_LIBRETRO_CONFIG_UNIT_TESTS,
+		"Run Unit Tests; false|true"
+	},
+#endif
+
+	/* End. */
+	{NULL, NULL}
+};
+
+static sjme_jboolean sjme_libretro_exitHandler(int exitCode)
+{
+	/* If there is no environment callback, then do nothing here. */
+	if (sjme_libretro_envCallback == NULL)
+		return SJME_JNI_FALSE;
+
+	/* Tell the front end to stop the core. */
+	sjme_libretro_envCallback(RETRO_ENVIRONMENT_SHUTDOWN, NULL);
+	return SJME_JNI_TRUE;
+}
+
+static sjme_jboolean sjme_libretro_abortHandler(void)
+{
+	/* Forward to the exit handler. */
+	return sjme_libretro_exitHandler(1);
+}
+
 sjme_attrUnused RETRO_API void retro_cheat_reset(void)
 {
 	static sjme_jint trigger;
@@ -59,6 +91,10 @@ sjme_attrUnused RETRO_API void retro_set_environment(
 	
 	/* Store the callback pointer. */
 	sjme_libretro_envCallback = environment;
+
+	/* Set abort and exit handler. */
+	sjme_debug_abortHandler = sjme_libretro_abortHandler;
+	sjme_debug_exitHandler = sjme_libretro_exitHandler;
 	
 	/* Playing with no software is supported. */
 	supportsNoGame = true;
@@ -73,4 +109,8 @@ sjme_attrUnused RETRO_API void retro_set_environment(
 	pixelFormat = RETRO_PIXEL_FORMAT_XRGB8888;
 	sjme_libretro_envCallback(RETRO_ENVIRONMENT_SET_PIXEL_FORMAT,
 		(void*)&pixelFormat);
+
+	/* Core options. */
+	sjme_libretro_envCallback(RETRO_ENVIRONMENT_SET_VARIABLES,
+		(void*)&sjme_libretro_coreVariables);
 }

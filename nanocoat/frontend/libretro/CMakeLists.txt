@@ -19,13 +19,26 @@ else()
 	set(libRetroCoreObjects $<TARGET_OBJECTS:CorePIC>)
 endif()
 
+# Include tests with the build as well?
+if(SQUIRRELJME_IS_DEBUG)
+	if(LIBRETRO_REALLY_STATIC)
+		set(libRetroTestObjects $<TARGET_OBJECTS:BasicTestLib>)
+	else()
+		set(libRetroTestObjects $<TARGET_OBJECTS:BasicTestLibPIC>)
+	endif()
+else()
+	set(libRetroTestObjects)
+endif()
+
 # Declare library
 add_library(squirreljme_libretro ${libRetroBuildType}
 	${libRetroCoreObjects}
+	${libRetroTestObjects}
 	audio.c
 	boot.c
 	env.c
 	ext.c
+	hooks.c
 	input.c
 	loop.c
 	save.c
@@ -88,7 +101,7 @@ if(retroArchExe AND NOT libRetroIsStatic AND
 			"-L" "$<TARGET_FILE:squirreljme_libretro>"
 			"--no-patch"
 			"--appendconfig=${CMAKE_CURRENT_SOURCE_DIR}/test.config"
-			"--log-file=${CMAKE_CURRENT_BIN}/libretro.log"
+			"--log-file=${CMAKE_BINARY_DIR}/libretro.log"
 		DEPENDS squirreljme_libretro
 		USES_TERMINAL)
 

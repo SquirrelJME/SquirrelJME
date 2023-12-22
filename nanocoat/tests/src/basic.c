@@ -50,17 +50,10 @@ static sjme_jboolean sjme_test_exitHandler(int exitCode)
 	return SJME_JNI_FALSE;
 }
 
-/**
- * Main entry point
- * 
- * @param argc Argument count.
- * @param argv Arguments.
- * @return The exit code of the test.
- * @since 2023/08/09
- */
-int sjme_test_main(int argc, sjme_lpstr* argv)
+int sjme_test_main(int argc, sjme_lpstr* argv, sjme_lpcstr* nextTest)
 {
 	const sjme_availableTest* found;
+	const sjme_availableTest* nextFound;
 	sjme_testResult result;
 	sjme_test test;
 	sjme_jint i, jumpId;
@@ -73,14 +66,43 @@ int sjme_test_main(int argc, sjme_lpstr* argv)
 		return EXIT_FAILURE;
 	}
 	
-	/* Search for the given test. */
+	/* Search for the given test, blank just uses first test. */
 	found = NULL;
-	for (i = 0; sjme_availableTests[i].name != NULL; i++)
-		if (strcmp(argv[1], sjme_availableTests[i].name) == 0)
+	nextFound = NULL;
+	if (0 == strcmp("", argv[1]))
+	{
+		/* Default to first. */
+		if (sjme_availableTests[0].name != NULL)
 		{
-			found = &sjme_availableTests[i];
-			break;
+			found = &sjme_availableTests[0];
+
+			/* If next exists, use this for sequential running. */
+			if (sjme_availableTests[1].name != NULL)
+				nextFound = &sjme_availableTests[1];
 		}
+	}
+	else
+	{
+		for (i = 0; sjme_availableTests[i].name != NULL; i++)
+			if (strcmp(argv[1], sjme_availableTests[i].name) == 0)
+			{
+				/* Use this. */
+				found = &sjme_availableTests[i];
+
+				/* Get the next test for sequential running. */
+				if (sjme_availableTests[i + 1].name != NULL)
+					nextFound = &sjme_availableTests[i + 1];
+
+				break;
+			}
+	}
+
+	/* Set next found test accordingly. */
+	if (nextTest != NULL)
+		if (nextFound != NULL)
+			*nextTest = nextFound->name;
+		else
+			*nextTest = NULL;
 	
 	/* Found nothing? */
 	if (found == NULL)
