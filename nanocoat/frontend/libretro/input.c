@@ -7,6 +7,8 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <string.h>
+
 #include "sjme/nvm.h"
 #include "sjme/debug.h"
 #include "3rdparty/libretro/libretro.h"
@@ -24,7 +26,7 @@
  * Y-7   A-3
  *    B-9
  */
-const struct retro_input_descriptor sjme_libretro_descDialPad[] =
+static const struct retro_input_descriptor sjme_libretro_descDialPad[] =
 {
 	/* SOFT LEFT. */
 	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
@@ -94,29 +96,34 @@ const struct retro_input_descriptor sjme_libretro_descDialPad[] =
 	{0, 0, 0, 0, NULL}
 };
 
-const struct retro_input_descriptor sjme_libretro_descGamePad[] =
+/** The number in the dial pad. */
+static const sjme_jint sjme_libretro_numDescDialPad =
+	sizeof(sjme_libretro_descDialPad) / sizeof(*sjme_libretro_descDialPad);
+
+/** Game pad controller. */
+static const struct retro_input_descriptor sjme_libretro_descGamePad[] =
 {
 	/* Shoulders. */
 	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
-		RETRO_DEVICE_ID_JOYPAD_SELECT, "Soft 1 (Left Shoulder)"},
+		RETRO_DEVICE_ID_JOYPAD_SELECT, "Soft 1 (Left Command)"},
 	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
-		RETRO_DEVICE_ID_JOYPAD_START, "Soft 2 (Right Shoulder)"},
+		RETRO_DEVICE_ID_JOYPAD_START, "Soft 2 (Right Command)"},
 	
 	/* Digital pad. */
 	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
-		RETRO_DEVICE_ID_JOYPAD_UP, "Up"},
+		RETRO_DEVICE_ID_JOYPAD_UP, "Digital Up"},
 	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
-		RETRO_DEVICE_ID_JOYPAD_DOWN, "Down"},
+		RETRO_DEVICE_ID_JOYPAD_DOWN, "Digital Down"},
 	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
-		RETRO_DEVICE_ID_JOYPAD_LEFT, "Left"},
+		RETRO_DEVICE_ID_JOYPAD_LEFT, "Digital Left"},
 	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
-		RETRO_DEVICE_ID_JOYPAD_RIGHT, "Right"},
+		RETRO_DEVICE_ID_JOYPAD_RIGHT, "Digital Right"},
 	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
-		RETRO_DEVICE_ID_JOYPAD_L, "Center"},
-	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
-		RETRO_DEVICE_ID_JOYPAD_R, "Fire"},
+		RETRO_DEVICE_ID_JOYPAD_L, "Digital Center"},
 
 	/* Just Game Keys. */
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		RETRO_DEVICE_ID_JOYPAD_R, "Game Fire/Select"},
 	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
 		RETRO_DEVICE_ID_JOYPAD_X, "Game A"},
 	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
@@ -138,6 +145,43 @@ const struct retro_input_descriptor sjme_libretro_descGamePad[] =
 	{0, 0, 0, 0, NULL}
 };
 
+/** The number in the game pad. */
+static const sjme_jint sjme_libretro_numDescGamePad =
+	sizeof(sjme_libretro_descGamePad) / sizeof(*sjme_libretro_descGamePad);
+
+/** Base extra descriptors. */
+static const struct retro_input_descriptor sjme_libretro_descExtra[] =
+{
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		0, "Soft 3 (Middle Command)"},
+
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		1, "Volume Up"},
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		2, "Volume Down"},
+
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		3, "Start Call"},
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		4, "End Call"},
+
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		5, "i-Appli/i-Mode Button"},
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		6, "Camera Button"},
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		7, "Web Browser Button"},
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		8, "Storefront Button"},
+
+	/* End. */
+	{0, 0, 0, 0, NULL}
+};
+
+/** The number in the dial pad. */
+static const sjme_jint sjme_libretro_numDescExtra =
+	sizeof(sjme_libretro_descExtra) / sizeof(*sjme_libretro_descExtra);
+
 sjme_attrUnused RETRO_API void retro_set_input_poll(retro_input_poll_t poll)
 {
 	static sjme_jint trigger;
@@ -156,15 +200,79 @@ sjme_attrUnused RETRO_API void retro_set_input_state(
 sjme_attrUnused RETRO_API void retro_set_controller_port_device(
 	unsigned port, unsigned device)
 {
-	const struct retro_input_descriptor* desc;
+	const struct retro_input_descriptor* baseDesc;
+#if defined(RETRO_ENVIRONMENT_GET_EXTRA_INPUT_ACTIONS)
+	struct retro_input_descriptor* fullDesc;
+	sjme_jint numBaseDesc, numFullDesc, to, from, at, limit;
+	struct retro_get_extra_input_actions extraInput;
+#endif
 
 	/* Which device to use? */
 	if (device == RETRO_DEVICE_JOYPAD)
-		desc = sjme_libretro_descDialPad;
+		baseDesc = sjme_libretro_descDialPad;
 	else
-		desc = sjme_libretro_descGamePad;
+		baseDesc = sjme_libretro_descGamePad;
+
+#if defined(RETRO_ENVIRONMENT_GET_EXTRA_INPUT_ACTIONS)
+	/* Add extra actions to either input class, as needed. */
+	memset(&extraInput, 0, sizeof(extraInput));
+	extraInput.query.device = device;
+	if (sjme_libretro_envCallback(
+			RETRO_ENVIRONMENT_GET_EXTRA_INPUT_ACTIONS,
+			&extraInput) && extraInput.response.known &&
+			extraInput.response.num_extra > 0)
+	{
+		/* Debug. */
+		sjme_message("Extra descriptors being placed in!");
+
+		/* Count the number of base desc items. */
+		numBaseDesc = 0;
+		for (at = 0; baseDesc[at].description != NULL; at++)
+			numBaseDesc++;
+
+		/* Allocate full set of controls. */
+		numFullDesc = numBaseDesc + sjme_libretro_numDescExtra;
+		fullDesc = sjme_alloca(sizeof(*fullDesc) * (numFullDesc));
+		if (fullDesc != NULL)
+		{
+			/* Clear just in case. */
+			memset(fullDesc, 0, sizeof(*fullDesc) * (numFullDesc));
+
+			/* Move in each set of controls. */
+			to = 0;
+			for (from = 0; from < numBaseDesc; from++, to++)
+				memmove(&fullDesc[to], &baseDesc[from],
+					sizeof(fullDesc[to]));
+
+			/* How many can even be moved over? */
+			if (extraInput.response.num_extra < sjme_libretro_numDescExtra)
+				limit = extraInput.response.num_extra;
+			else
+				limit = sjme_libretro_numDescExtra;
+
+			/* Move the extra desc on top. */
+			for (from = 0; from < limit; from++, to++)
+			{
+				/* Copy everything. */
+				memmove(&fullDesc[to], &sjme_libretro_descExtra[from],
+					sizeof(fullDesc[to]));
+
+				/* Realign key. */
+				fullDesc[to].id = extraInput.response.extra_start_id + from;
+			}
+
+			/* Set controls. */
+			sjme_libretro_envCallback(
+				RETRO_ENVIRONMENT_SET_INPUT_DESCRIPTORS,
+				(void*)fullDesc);
+
+			/* Do not set normal controls following this. */
+			return;
+		}
+	}
+#endif
 
 	/* Set controls. */
 	sjme_libretro_envCallback(RETRO_ENVIRONMENT_SET_INPUT_DESCRIPTORS,
-		(void*)desc);
+		(void*)baseDesc);
 }
