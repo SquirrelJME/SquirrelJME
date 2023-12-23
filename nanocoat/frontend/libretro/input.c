@@ -259,6 +259,10 @@ sjme_attrUnused RETRO_API void retro_set_controller_port_device(
 
 				/* Realign key. */
 				fullDesc[to].id = extraInput.response.extra_start_id + from;
+
+				/* Debug. */
+				sjme_message("Assigning extra %s to %d",
+					fullDesc[to].description, fullDesc[to].id);
 			}
 
 			/* Set controls. */
