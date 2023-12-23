@@ -29,6 +29,12 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
+/** The gamepad port. */
+#define SJME_LIBRETRO_JOYPAD_PORT 0
+
+/** The pointer port. */
+#define SJME_LIBRETRO_POINTER_PORT 0
+
 /**
  * Environment callback.
  * 

@@ -10,6 +10,133 @@
 #include "sjme/nvm.h"
 #include "sjme/debug.h"
 #include "3rdparty/libretro/libretro.h"
+#include "frontend/libretro/shared.h"
+
+/** Input descriptions:
+ * [SOFT LEFT] [SOFT RIGHT]
+ * [BACK]
+ * [1  o~o] [2  abc] [3  def]
+ * [4  ghi] [5  jkl] [6  mno]
+ * [7 pqrs] [8  tuv] [9 wxyz]
+ * [*  shf] [0    +] [# spac]
+ * RetroPad looks like so:
+ *    X-1
+ * Y-7   A-3
+ *    B-9
+ */
+const struct retro_input_descriptor sjme_libretro_descDialPad[] =
+{
+	/* SOFT LEFT. */
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		RETRO_DEVICE_ID_JOYPAD_SELECT, "Soft 1 (Left Shoulder)"},
+
+	/* SOFT RIGHT. */
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		RETRO_DEVICE_ID_JOYPAD_START, "Soft 2 (Right Shoulder)"},
+
+	/* [1  o~o] */
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		RETRO_DEVICE_ID_JOYPAD_X, "1 Voicemail (Game A)"},
+
+	/* [2  abc] */
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		RETRO_DEVICE_ID_JOYPAD_UP, "2 ABC (Game Up)"},
+
+	/* [3  def] */
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		RETRO_DEVICE_ID_JOYPAD_A, "3 DEF (Game B)"},
+
+	/* [4  ghi] */
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		RETRO_DEVICE_ID_JOYPAD_LEFT, "4 GHI (Game Left)"},
+
+	/* [5  jkl] */
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		RETRO_DEVICE_ID_JOYPAD_L2, "5 JKL (Game Fire/Select)"},
+
+	/* [6  mno] */
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		RETRO_DEVICE_ID_JOYPAD_RIGHT, "6 MNO (Game Right)"},
+
+	/* [7 pqrs] */
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		RETRO_DEVICE_ID_JOYPAD_Y, "7 PQRS (Game C)"},
+
+	/* [8  tuv] */
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		RETRO_DEVICE_ID_JOYPAD_DOWN, "8 TUV (Game Down)"},
+
+	/* [9 wxyz] */
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		RETRO_DEVICE_ID_JOYPAD_B, "9 WXYZ (Game D)"},
+
+	/* [*  shf] */
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		RETRO_DEVICE_ID_JOYPAD_L, "Star (Shift)"},
+
+	/* [0    +] */
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		RETRO_DEVICE_ID_JOYPAD_R2, "0 Operator (Plus)"},
+
+	/* [# spac] */
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		RETRO_DEVICE_ID_JOYPAD_R, "Pound (Space)"},
+
+	/* Touchscreen (via pointer). */
+	{SJME_LIBRETRO_POINTER_PORT, RETRO_DEVICE_POINTER, 0,
+		RETRO_DEVICE_ID_POINTER_X, "Touchscreen X"},
+	{SJME_LIBRETRO_POINTER_PORT, RETRO_DEVICE_POINTER, 0,
+		RETRO_DEVICE_ID_POINTER_Y, "Touchscreen Y"},
+	{SJME_LIBRETRO_POINTER_PORT, RETRO_DEVICE_POINTER, 0,
+		RETRO_DEVICE_ID_POINTER_PRESSED, "Touchscreen Pressed"},
+
+	/* End. */
+	{0, 0, 0, 0, NULL}
+};
+
+const struct retro_input_descriptor sjme_libretro_descGamePad[] =
+{
+	/* Shoulders. */
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		RETRO_DEVICE_ID_JOYPAD_SELECT, "Soft 1 (Left Shoulder)"},
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		RETRO_DEVICE_ID_JOYPAD_START, "Soft 2 (Right Shoulder)"},
+	
+	/* Digital pad. */
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		RETRO_DEVICE_ID_JOYPAD_UP, "Up"},
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		RETRO_DEVICE_ID_JOYPAD_DOWN, "Down"},
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		RETRO_DEVICE_ID_JOYPAD_LEFT, "Left"},
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		RETRO_DEVICE_ID_JOYPAD_RIGHT, "Right"},
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		RETRO_DEVICE_ID_JOYPAD_L, "Center"},
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		RETRO_DEVICE_ID_JOYPAD_R, "Fire"},
+
+	/* Just Game Keys. */
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		RETRO_DEVICE_ID_JOYPAD_X, "Game A"},
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		RETRO_DEVICE_ID_JOYPAD_A, "Game B"},
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		RETRO_DEVICE_ID_JOYPAD_Y, "Game C"},
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		RETRO_DEVICE_ID_JOYPAD_B, "Game D"},
+
+	/* Touchscreen (via pointer). */
+	{SJME_LIBRETRO_POINTER_PORT, RETRO_DEVICE_POINTER, 0,
+		RETRO_DEVICE_ID_POINTER_X, "Touchscreen X"},
+	{SJME_LIBRETRO_POINTER_PORT, RETRO_DEVICE_POINTER, 0,
+		RETRO_DEVICE_ID_POINTER_Y, "Touchscreen Y"},
+	{SJME_LIBRETRO_POINTER_PORT, RETRO_DEVICE_POINTER, 0,
+		RETRO_DEVICE_ID_POINTER_PRESSED, "Touchscreen Pressed"},
+
+	/* End. */
+	{0, 0, 0, 0, NULL}
+};
 
 sjme_attrUnused RETRO_API void retro_set_input_poll(retro_input_poll_t poll)
 {
@@ -29,7 +156,15 @@ sjme_attrUnused RETRO_API void retro_set_input_state(
 sjme_attrUnused RETRO_API void retro_set_controller_port_device(
 	unsigned port, unsigned device)
 {
-	static sjme_jint trigger;
-	if (!(trigger++))
-		sjme_message("Impl. %s?", __func__);
+	const struct retro_input_descriptor* desc;
+
+	/* Which device to use? */
+	if (device == RETRO_DEVICE_JOYPAD)
+		desc = sjme_libretro_descDialPad;
+	else
+		desc = sjme_libretro_descGamePad;
+
+	/* Set controls. */
+	sjme_libretro_envCallback(RETRO_ENVIRONMENT_SET_INPUT_DESCRIPTORS,
+		(void*)desc);
 }
