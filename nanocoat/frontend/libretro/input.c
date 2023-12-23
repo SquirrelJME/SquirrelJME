@@ -241,15 +241,16 @@ sjme_attrUnused RETRO_API void retro_set_controller_port_device(
 
 		/* Allocate full set of controls. */
 		numFullDesc = numBaseDesc + sjme_libretro_numDescExtra;
-		fullDesc = sjme_alloca(sizeof(*fullDesc) * (numFullDesc));
+		fullDesc = sjme_alloca(sizeof(*fullDesc) * (numFullDesc + 1));
 		if (fullDesc != NULL)
 		{
 			/* Clear just in case. */
-			memset(fullDesc, 0, sizeof(*fullDesc) * (numFullDesc));
+			memset(fullDesc, 0, sizeof(*fullDesc) * (numFullDesc + 1));
 
 			/* Move in each set of controls. */
 			to = 0;
-			for (from = 0; from < numBaseDesc; from++, to++)
+			for (from = 0; from < numBaseDesc &&
+				baseDesc[from].description != NULL; from++, to++)
 				memmove(&fullDesc[to], &baseDesc[from],
 					sizeof(fullDesc[to]));
 
@@ -260,7 +261,9 @@ sjme_attrUnused RETRO_API void retro_set_controller_port_device(
 				limit = sjme_libretro_numDescExtra;
 
 			/* Move the extra desc on top. */
-			for (from = 0; from < limit; from++, to++)
+			for (from = 0; from < limit &&
+				sjme_libretro_descExtra[from].description != NULL;
+				from++, to++)
 			{
 				/* Copy everything. */
 				memmove(&fullDesc[to], &sjme_libretro_descExtra[from],
