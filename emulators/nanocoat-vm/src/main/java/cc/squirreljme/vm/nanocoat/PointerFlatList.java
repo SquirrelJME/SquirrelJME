@@ -28,6 +28,6 @@ public class PointerFlatList<E extends Pointer>
 	public PointerFlatList(AllocLink __link)
 		throws NullPointerException
 	{
-		super(__link);
+		super(__link, true);
 	}
 }

@@ -29,6 +29,9 @@ public final class VirtualSuite
 	/** The pointer to the suite functions. */
 	private final AllocLink _structLink;
 	
+	/** Cached libraries list? */
+	private volatile PointerFlatList<VirtualLibrary> _libraries;
+	
 	static
 	{
 		__Native__.__loadLibrary();
@@ -79,6 +82,11 @@ public final class VirtualSuite
 	 */
 	private long __list()
 	{
+		// Was this determine on a previous run already?
+		PointerFlatList<VirtualLibrary> result = this._libraries;
+		if (result != null)
+			return result.pointerAddress();
+		
 		throw Debugging.todo();
 	}
 	

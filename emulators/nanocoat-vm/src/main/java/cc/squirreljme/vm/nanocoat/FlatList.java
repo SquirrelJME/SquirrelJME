@@ -28,6 +28,9 @@ public abstract class FlatList<E>
 	/** The link that contains the list. */
 	protected final AllocLink link;
 	
+	/** Are elements to be cached? */
+	protected final boolean cacheElements;
+	
 	/** Cached list length. */
 	private volatile int _length =
 		-1;
@@ -40,13 +43,15 @@ public abstract class FlatList<E>
 	 * Initializes the flat list.
 	 * 
 	 * @param __link The link used.
+	 * @param __cacheElements Should elements be cached where possible?
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/12/17
 	 */
-	public FlatList(AllocLink __link)
+	public FlatList(AllocLink __link, boolean __cacheElements)
 		throws NullPointerException
 	{
 		this.link = __link;
+		this.cacheElements = __cacheElements;
 	}
 	
 	/**
