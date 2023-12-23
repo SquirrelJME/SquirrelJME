@@ -94,7 +94,7 @@ SJME_TEST_DECLARE(testRomSuiteClassPathByName)
 			"squirrels.jar", "are.jar", "cute.jar")))
 		return sjme_unitFail(test, "Could not emit forward names?");
 	if (SJME_IS_ERROR(sjme_list_newV(mockState.allocPool,
-			sjme_lpcstr, 0, 3, &forwardNames,
+			sjme_lpcstr, 0, 3, &backwardNames,
 			"cute.jar", "are.jar", "squirrels.jar")))
 		return sjme_unitFail(test, "Could not emit backwards names?");
 

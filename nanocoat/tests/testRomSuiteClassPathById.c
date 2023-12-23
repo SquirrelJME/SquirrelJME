@@ -94,7 +94,7 @@ SJME_TEST_DECLARE(testRomSuiteClassPathById)
 			1, 2, 3)))
 		return sjme_unitFail(test, "Could not emit forward ids?");
 	if (SJME_IS_ERROR(sjme_list_newV(mockState.allocPool,
-			sjme_jint, 0, 3, &forwardIds,
+			sjme_jint, 0, 3, &backwardIds,
 			3, 2, 1)))
 		return sjme_unitFail(test, "Could not emit backwards ids?");
 

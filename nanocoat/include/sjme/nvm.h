@@ -1267,9 +1267,12 @@ typedef enum sjme_errorCode
 
 	/** Illegal state. */
 	SJME_ERROR_ILLEGAL_STATE = -30,
+
+	/** A library was not found. */
+	SJME_ERROR_LIBRARY_NOT_FOUND = -31,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -31
+	SJME_NUM_ERROR_CODES = -32
 } sjme_errorCode;
 
 /**

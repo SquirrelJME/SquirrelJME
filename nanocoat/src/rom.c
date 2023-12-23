@@ -7,11 +7,14 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <string.h>
+
 #include "sjme/rom.h"
 #include "sjme/alloc.h"
 #include "sjme/debug.h"
 #include "sjme/payload.h"
 #include "sjme/romInternal.h"
+#include "sjme/util.h"
 
 sjme_errorCode sjme_rom_fromMerge(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
@@ -113,9 +116,25 @@ sjme_errorCode sjme_rom_resolveClassPathById(
 {
 	sjme_list_sjme_rom_library* suiteLibs;
 	sjme_errorCode error;
+	sjme_jint length, i, numLibs, at, libId;
+	sjme_rom_library* working;
+	sjme_rom_library checkLibrary;
 
 	if (inSuite == NULL || inIds == NULL || outLibs == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* How many are we looking for? */
+	length = inIds->length;
+	if (length < 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Allocate temporary storage on the stack for the libraries we want. */
+	working = alloca(sizeof(*working) * length);
+	if (working == NULL)
+		return SJME_ERROR_OUT_OF_MEMORY;
+
+	/* Make sure it is cleared. */
+	memset(working, 0, sizeof(*working) * length);
 
 	/* Obtain the list of libraries within the suite. */
 	suiteLibs = NULL;
@@ -123,8 +142,32 @@ sjme_errorCode sjme_rom_resolveClassPathById(
 		&suiteLibs) || suiteLibs == NULL))
 		return error;
 
-	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Go through and find the ones with matching IDs. */
+	/* Order by library because there is likely to be more of those. */
+	numLibs = suiteLibs->length;
+	for (i = 0; i < numLibs; i++)
+	{
+		/* Which library is this? */
+		checkLibrary = suiteLibs->elements[i];
+		libId = checkLibrary->id;
+
+		/* Scan through the requested classpath for matches. */
+		for (at = 0; at < length; at++)
+			if (inIds->elements[at] == libId)
+			{
+				working[at] = checkLibrary;
+				break;
+			}
+	}
+
+	/* Scan through and fail if any are null, that is not found. */
+	for (at = 0; at < length; at++)
+		if (working[at] == NULL)
+			return SJME_ERROR_LIBRARY_NOT_FOUND;
+
+	/* Return the libraries which gets placed into a list as a copy. */
+	return sjme_list_newA(inSuite->cache->common.allocPool,
+		sjme_rom_library, 0, length, outLibs, working);
 }
 
 sjme_errorCode sjme_rom_resolveClassPathByName(
@@ -134,15 +177,29 @@ sjme_errorCode sjme_rom_resolveClassPathByName(
 {
 	sjme_list_sjme_rom_library* suiteLibs;
 	sjme_errorCode error;
+	sjme_jint length, i;
+	sjme_rom_library* result;
 
 	if (inSuite == NULL || inNames == NULL || outLibs == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* How many are we looking for? */
+	length = inNames->length;
+	if (length < 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Allocate temporary storage on the stack for the libraries we want. */
+	result = alloca(sizeof(*result) * length);
+	if (result == NULL)
+		return SJME_ERROR_OUT_OF_MEMORY;
 
 	/* Obtain the list of libraries within the suite. */
 	suiteLibs = NULL;
 	if (SJME_IS_ERROR(error = sjme_rom_suiteLibraries(inSuite,
 		&suiteLibs) || suiteLibs == NULL))
 		return error;
+
+	/*sjme_stringHash*/
 
 	sjme_todo("Implement this?");
 	return SJME_ERROR_NOT_IMPLEMENTED;

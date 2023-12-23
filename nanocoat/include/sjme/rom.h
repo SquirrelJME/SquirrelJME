@@ -52,6 +52,9 @@ typedef struct sjme_rom_libraryCore
 
 	/** The library name. */
 	sjme_lpcstr name;
+
+	/** Hash of the library name. */
+	sjme_jint nameHash;
 } sjme_rom_libraryCore;
 
 /** Synthetic library structure. */
