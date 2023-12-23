@@ -80,6 +80,7 @@ public final class VirtualSuite
 	 * @return Pointer to a {@code sjme_list_sjme_rom_library}.
 	 * @since 2023/12/23
 	 */
+	@SuppressWarnings("unused")
 	private long __list()
 	{
 		// Was this determine on a previous run already?
