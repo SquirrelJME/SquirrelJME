@@ -57,10 +57,32 @@ sjme_errorCode sjme_jni_virtualSuite_libraryId(
 	return 0;
 }
 
-static sjme_errorCode sjme_jni_virtualSuite_list()
+static sjme_errorCode sjme_jni_virtualSuite_list(
+	sjme_attrInNotNull sjme_rom_suite targetSuite,
+	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibraries)
 {
-	sjme_todo("Implement this?");
-	return 0;
+	JNIEnv* env;
+	jobject virtualSuite;
+	jmethodID javaListMethod;
+	jclass classy;
+	sjme_list_sjme_rom_library* result;
+
+	if (targetSuite == NULL || outLibraries == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Get instance that we need to call into. */
+	env = targetSuite->functions->frontEnd.data;
+	virtualSuite = targetSuite->functions->frontEnd.wrapper;
+	classy = (*env)->GetObjectClass(env, virtualSuite);
+
+	/* Execute method accordingly. */
+	javaListMethod = (*env)->GetMethodID(env, classy, "__list", "()J");
+	result = SJME_JLONG_TO_POINTER(sjme_list_sjme_rom_library*,
+		(*env)->CallLongMethod(env, virtualSuite, javaListMethod));
+
+	/* Return result of it. */
+	*outLibraries = result;
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_jni_virtualSuite_loadLibrary()

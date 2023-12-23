@@ -12,6 +12,7 @@ package cc.squirreljme.vm.nanocoat;
 import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * Provides virtual access to a suite for {@link JarPackageShelf}, this acts
@@ -68,6 +69,17 @@ public final class VirtualSuite
 	public long pointerAddress()
 	{
 		return this._structLink.pointerAddress();
+	}
+	
+	/**
+	 * Calculates the list of libraries.
+	 *
+	 * @return Pointer to a {@code sjme_list_sjme_rom_library}.
+	 * @since 2023/12/23
+	 */
+	private long __list()
+	{
+		throw Debugging.todo();
 	}
 	
 	/**
