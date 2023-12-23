@@ -153,26 +153,35 @@ static const sjme_jint sjme_libretro_numDescGamePad =
 static const struct retro_input_descriptor sjme_libretro_descExtra[] =
 {
 	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
-		0, "Soft 3 (Middle Command)"},
+		SJME_LIBRETRO_EXTRA_ID_SOFT_THREE,
+		"Soft 3 (Middle Command)"},
 
 	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
-		1, "Volume Up"},
+		SJME_LIBRETRO_EXTRA_ID_VOLUME_UP,
+		"Volume Up"},
 	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
-		2, "Volume Down"},
+		SJME_LIBRETRO_EXTRA_ID_VOLUME_DOWN,
+		"Volume Down"},
 
 	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
-		3, "Start Call"},
+		SJME_LIBRETRO_EXTRA_ID_START_CALL,
+		"Start Call"},
 	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
-		4, "End Call"},
+		SJME_LIBRETRO_EXTRA_ID_END_CALL,
+		"End Call"},
 
 	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
-		5, "i-Appli/i-Mode Button"},
+		SJME_LIBRETRO_EXTRA_ID_IAPPLI,
+		"i-Appli/i-Mode Button"},
 	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
-		6, "Camera Button"},
+		SJME_LIBRETRO_EXTRA_ID_CAMERA,
+		"Camera Button"},
 	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
-		7, "Web Browser Button"},
+		SJME_LIBRETRO_EXTRA_ID_WEB_BROWSER,
+		"Web Browser Button"},
 	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
-		8, "Storefront Button"},
+		SJME_LIBRETRO_EXTRA_ID_STOREFRONT,
+		"Storefront Button"},
 
 	/* End. */
 	{0, 0, 0, 0, NULL}

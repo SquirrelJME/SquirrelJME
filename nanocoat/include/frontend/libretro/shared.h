@@ -35,6 +35,40 @@ extern "C" {
 /** The pointer port. */
 #define SJME_LIBRETRO_POINTER_PORT 0
 
+/** Extra button IDs. */
+typedef enum sjme_libretro_extra_id
+{
+	/** Soft 3 (Middle Command). */
+	SJME_LIBRETRO_EXTRA_ID_SOFT_THREE,
+
+	/** Volume Up. */
+	SJME_LIBRETRO_EXTRA_ID_VOLUME_UP,
+
+	/** Volume Down. */
+	SJME_LIBRETRO_EXTRA_ID_VOLUME_DOWN,
+
+	/** Start Call. */
+	SJME_LIBRETRO_EXTRA_ID_START_CALL,
+
+	/** End Call. */
+	SJME_LIBRETRO_EXTRA_ID_END_CALL,
+
+	/** i-Appli/i-Mode Button. */
+	SJME_LIBRETRO_EXTRA_ID_IAPPLI,
+
+	/** Camera. */
+	SJME_LIBRETRO_EXTRA_ID_CAMERA,
+
+	/** Web Browser. */
+	SJME_LIBRETRO_EXTRA_ID_WEB_BROWSER,
+
+	/** Storefront. */
+	SJME_LIBRETRO_EXTRA_ID_STOREFRONT,
+
+	/** The number of extra IDs. */
+	SJME_NUM_LIBRETRO_EXTRA_ID
+} sjme_libretro_extra_id;
+
 /**
  * Environment callback.
  * 
