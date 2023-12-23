@@ -29,7 +29,7 @@ typedef struct sjme_jni_virtualSuite_cache
 static sjme_errorCode sjme_jni_virtualSuite_initCache(
 	sjme_attrInNotNull const sjme_rom_suiteFunctions* functions,
 	sjme_attrInNotNull sjme_alloc_pool* pool,
-	sjme_attrInOutNotNull sjme_rom_suite* targetSuite)
+	sjme_attrInOutNotNull sjme_rom_suite targetSuite)
 {
 	sjme_errorCode error;
 
@@ -49,8 +49,8 @@ static sjme_errorCode sjme_jni_virtualSuite_initCache(
 
 sjme_errorCode sjme_jni_virtualSuite_libraryId(
 	sjme_attrInNotNull const sjme_rom_suiteFunctions* functions,
-	sjme_attrInNotNull sjme_rom_suite* targetSuite,
-	sjme_attrInNotNull sjme_rom_library* targetLibrary,
+	sjme_attrInNotNull sjme_rom_suite targetSuite,
+	sjme_attrInNotNull sjme_rom_library targetLibrary,
 	sjme_attrOutNotNull sjme_jint* outId)
 {
 	sjme_todo("Implement this?");

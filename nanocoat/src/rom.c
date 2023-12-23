@@ -15,7 +15,7 @@
 
 sjme_errorCode sjme_rom_fromMerge(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
-	sjme_attrOutNotNull sjme_rom_suite** outSuite,
+	sjme_attrOutNotNull sjme_rom_suite* outSuite,
 	sjme_attrInNotNull sjme_rom_suite** inSuites,
 	sjme_attrInPositive sjme_jint numInSuites)
 {
@@ -31,7 +31,7 @@ sjme_errorCode sjme_rom_fromMerge(
 
 sjme_errorCode sjme_rom_fromPayload(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
-	sjme_attrOutNotNull sjme_rom_suite** outSuite,
+	sjme_attrOutNotNull sjme_rom_suite* outSuite,
 	sjme_attrInNotNull const sjme_payload_config* payloadConfig)
 {
 	sjme_jint i, numActive, numLibraries;
@@ -66,11 +66,11 @@ sjme_errorCode sjme_rom_fromPayload(
 
 sjme_errorCode sjme_rom_newSuite(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
-	sjme_attrOutNotNull sjme_rom_suite** outSuite,
+	sjme_attrOutNotNull sjme_rom_suite* outSuite,
 	sjme_attrInNotNull const sjme_rom_suiteFunctions* inFunctions)
 {
 	sjme_rom_suiteInitCacheFunc initCacheFunc;
-	sjme_rom_suite* result;
+	sjme_rom_suite result;
 	sjme_errorCode error;
 
 	if (pool == NULL || outSuite == NULL || inFunctions == NULL)
@@ -107,7 +107,7 @@ sjme_errorCode sjme_rom_newSuite(
 }
 
 sjme_errorCode sjme_rom_resolveClassPathById(
-	sjme_attrInNotNull sjme_rom_suite* inSuite,
+	sjme_attrInNotNull sjme_rom_suite inSuite,
 	sjme_attrInNotNull const sjme_list_sjme_jint* inIds,
 	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibs)
 {
@@ -128,7 +128,7 @@ sjme_errorCode sjme_rom_resolveClassPathById(
 }
 
 sjme_errorCode sjme_rom_resolveClassPathByName(
-	sjme_attrInNotNull sjme_rom_suite* inSuite,
+	sjme_attrInNotNull sjme_rom_suite inSuite,
 	sjme_attrInNotNull const sjme_list_sjme_lpcstr* inNames,
 	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibs)
 {
@@ -149,7 +149,7 @@ sjme_errorCode sjme_rom_resolveClassPathByName(
 }
 
 sjme_errorCode sjme_rom_suiteLibraries(
-	sjme_attrInNotNull sjme_rom_suite* inSuite,
+	sjme_attrInNotNull sjme_rom_suite inSuite,
 	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibs)
 {
 	sjme_rom_suiteCache* cache;

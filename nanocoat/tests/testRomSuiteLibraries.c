@@ -65,7 +65,7 @@ static const sjme_mock_configSet mockRomSuiteLibraries =
 SJME_TEST_DECLARE(testRomSuiteLibraries)
 {
 	sjme_mock mockState;
-	sjme_rom_suite* suite;
+	sjme_rom_suite suite;
 	sjme_list_sjme_rom_library* libraries;
 	sjme_errorCode error;
 

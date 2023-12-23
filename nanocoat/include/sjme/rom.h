@@ -42,14 +42,20 @@ typedef struct sjme_rom_libraryCache sjme_rom_libraryCache;
  *
  * @since 2023/12/12
  */
-typedef struct sjme_rom_library
+typedef struct sjme_rom_libraryCore
 {
 	/** Internal cache. */
 	sjme_rom_libraryCache* cache;
-} sjme_rom_library;
+} sjme_rom_libraryCore;
+
+/** Synthetic library structure. */
+typedef sjme_rom_libraryCore* sjme_rom_library;
 
 /** List of ROM libraries. */
 SJME_LIST_DECLARE(sjme_rom_library, 0);
+
+/** The type ID of ROM libraries. */
+#define SJME_BASIC_TYPEOF_sjme_rom_library SJME_BASIC_TYPE_ID_OBJECT
 
 /**
  * Functions used to access a single library.
@@ -94,7 +100,7 @@ typedef sjme_errorCode (*sjme_rom_librarySizeFunc)();
 typedef sjme_errorCode (*sjme_rom_suiteInitCacheFunc)(
 	sjme_attrInNotNull const sjme_rom_suiteFunctions* functions,
 	sjme_attrInNotNull sjme_alloc_pool* pool,
-	sjme_attrInOutNotNull sjme_rom_suite* targetSuite);
+	sjme_attrInOutNotNull sjme_rom_suite targetSuite);
 
 /**
  * Returns the ID of the library for the given suite.
@@ -108,8 +114,8 @@ typedef sjme_errorCode (*sjme_rom_suiteInitCacheFunc)(
  */
 typedef sjme_errorCode (*sjme_rom_suiteLibraryId)(
 	sjme_attrInNotNull const sjme_rom_suiteFunctions* functions,
-	sjme_attrInNotNull sjme_rom_suite* targetSuite,
-	sjme_attrInNotNull sjme_rom_library* targetLibrary,
+	sjme_attrInNotNull sjme_rom_suite targetSuite,
+	sjme_attrInNotNull sjme_rom_library targetLibrary,
 	sjme_attrOutNotNull sjme_jint* outId);
 
 /**
@@ -121,7 +127,7 @@ typedef sjme_errorCode (*sjme_rom_suiteLibraryId)(
  * @since 2023/12/21
  */
 typedef sjme_errorCode (*sjme_rom_suiteListLibrariesFunc)(
-	sjme_attrInNotNull sjme_rom_suite* targetSuite,
+	sjme_attrInNotNull sjme_rom_suite targetSuite,
 	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibraries);
 
 typedef sjme_errorCode (*sjme_rom_suiteLoadLibraryFunc)();
@@ -165,7 +171,7 @@ struct sjme_rom_suiteFunctions
 	sjme_rom_suiteLoadLibraryFunc loadLibrary;
 };
 
-struct sjme_rom_suite
+struct sjme_rom_suiteCore
 {
 	/** Internal cache. */
 	sjme_rom_suiteCache* cache;
@@ -185,7 +191,7 @@ struct sjme_rom_suite
  */
 sjme_errorCode sjme_rom_fromMerge(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
-	sjme_attrOutNotNull sjme_rom_suite** outSuite,
+	sjme_attrOutNotNull sjme_rom_suite* outSuite,
 	sjme_attrInNotNull sjme_rom_suite** inSuites,
 	sjme_attrInPositive sjme_jint numInSuites);
 
@@ -201,7 +207,7 @@ sjme_errorCode sjme_rom_fromMerge(
  */
 sjme_errorCode sjme_rom_fromPayload(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
-	sjme_attrOutNotNull sjme_rom_suite** outSuite,
+	sjme_attrOutNotNull sjme_rom_suite* outSuite,
 	sjme_attrInNotNull const sjme_payload_config* payloadConfig);
 
 /**
@@ -215,7 +221,7 @@ sjme_errorCode sjme_rom_fromPayload(
  */
 sjme_errorCode sjme_rom_newSuite(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
-	sjme_attrOutNotNull sjme_rom_suite** outSuite,
+	sjme_attrOutNotNull sjme_rom_suite* outSuite,
 	sjme_attrInNotNull const sjme_rom_suiteFunctions* inFunctions);
 
 /**
@@ -228,7 +234,7 @@ sjme_errorCode sjme_rom_newSuite(
  * @since 2023/12/18
  */
 sjme_errorCode sjme_rom_resolveClassPathById(
-	sjme_attrInNotNull sjme_rom_suite* inSuite,
+	sjme_attrInNotNull sjme_rom_suite inSuite,
 	sjme_attrInNotNull const sjme_list_sjme_jint* inIds,
 	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibs);
 
@@ -242,7 +248,7 @@ sjme_errorCode sjme_rom_resolveClassPathById(
  * @since 2023/12/18
  */
 sjme_errorCode sjme_rom_resolveClassPathByName(
-	sjme_attrInNotNull sjme_rom_suite* inSuite,
+	sjme_attrInNotNull sjme_rom_suite inSuite,
 	sjme_attrInNotNull const sjme_list_sjme_lpcstr* inNames,
 	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibs);
 
@@ -255,7 +261,7 @@ sjme_errorCode sjme_rom_resolveClassPathByName(
  * @since 2023/12/20
  */
 sjme_errorCode sjme_rom_suiteLibraries(
-	sjme_attrInNotNull sjme_rom_suite* inSuite,
+	sjme_attrInNotNull sjme_rom_suite inSuite,
 	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibs);
 
 /*--------------------------------------------------------------------------*/

@@ -74,6 +74,9 @@ typedef enum sjme_mock_doType
 /** The maximum number of suites that can be created. */
 #define SJME_MOCK_MAX_ROM_SUITES 4
 
+/** The maximu number of libraries that can be created. */
+#define SJME_MOCK_MAX_ROM_LIBRARIES 8
+
 /**
  * Represents the state of the mock.
  * 
@@ -107,7 +110,13 @@ typedef struct sjme_mock
 	sjme_jint numRomSuites;
 
 	/** ROM Suites. */
-	sjme_rom_suite* romSuites[SJME_MOCK_MAX_ROM_SUITES];
+	sjme_rom_suite romSuites[SJME_MOCK_MAX_ROM_SUITES];
+
+	/** The number of created ROM libraries. */
+	sjme_jint numRomLibraries;
+
+	/** ROM libraries. */
+	sjme_rom_library romLibraries[SJME_MOCK_MAX_ROM_LIBRARIES];
 	
 	/** Special data, if needed. */
 	void* special;
@@ -163,6 +172,20 @@ typedef struct sjme_mock_configDataNvmState
 } sjme_mock_configDataNvmState;
 
 /**
+ * Mocking data for ROM libraries.
+ *
+ * @since 2023/12/21
+ */
+typedef struct sjme_mock_configDataRomLibrary
+{
+	/** The ID of the library. */
+	sjme_jint id;
+
+	/** The name of the library. */
+	sjme_lpcstr name;
+} sjme_mock_configDataRomLibrary;
+
+/**
  * Mocking data for ROM suites.
  *
  * @since 2023/12/21
@@ -191,6 +214,9 @@ typedef union sjme_mock_configData
 
 	/** State information. */
 	sjme_mock_configDataNvmState nvmState;
+
+	/** ROM Library. */
+	sjme_mock_configDataRomLibrary romLibrary;
 
 	/** ROM suites. */
 	sjme_mock_configDataRomSuite romSuite;

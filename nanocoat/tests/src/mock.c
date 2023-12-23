@@ -346,7 +346,7 @@ sjme_jboolean sjme_mock_doRomSuite(
 	sjme_attrInNotNull sjme_mock_configWorkData* inData)
 {
 	sjme_jint suiteIndex;
-	sjme_rom_suite* suite;
+	sjme_rom_suite suite;
 	sjme_rom_suiteFunctions* writeFunctions;
 	sjme_mock_configDataRomSuite* suiteData;
 
