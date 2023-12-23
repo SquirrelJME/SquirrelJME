@@ -334,11 +334,50 @@ sjme_jboolean sjme_mock_doRomLibrary(
 	sjme_attrInNotNull sjme_mock* inState,
 	sjme_attrInNotNull sjme_mock_configWorkData* inData)
 {
+	sjme_jint libraryIndex;
+	sjme_rom_libraryCore* library;
+	sjme_mock_configDataRomLibrary* data;
+
 	if (inState == NULL || inData == NULL)
 		return sjme_die("Null arguments.");
 
-	sjme_todo("Implement this?");
-	return SJME_JNI_FALSE;
+	/* Index of the resultant library. */
+	libraryIndex = inState->numRomLibraries;
+	if (libraryIndex >= SJME_MOCK_MAX_ROM_LIBRARIES)
+		return sjme_die("Too many libraries.");
+
+	/* Allocate library. */
+	library = NULL;
+	if (SJME_IS_ERROR(sjme_alloc(inState->allocPool,
+		sizeof(*library), &library)) || library == NULL)
+		return sjme_die("Could not allocate library.");
+	
+	/* Get details. */
+	data = &inData->current.data.romLibrary;
+
+	/* ID of the library. */
+	if (data->id != 0)
+		library->id = data->id;
+	else
+		library->id = inData->current.indexType + 1;
+
+	/* Name of the library. */
+	if (data->name != NULL)
+		library->name = data->name;
+	else
+	{
+		if (SJME_IS_ERROR(sjme_alloc_format(inState->allocPool,
+			&library->name,
+			"unnamed%d.jar", (int)(inData->current.indexType + 1))) ||
+			library->name == NULL)
+			return sjme_die("Could not set default library name.");
+	}
+
+	/* Store in mock data. */
+	inState->romLibraries[inState->numRomLibraries++] = library;
+
+	/* Success! */
+	return SJME_JNI_TRUE;
 }
 
 sjme_jboolean sjme_mock_doRomSuite(

@@ -46,6 +46,12 @@ typedef struct sjme_rom_libraryCore
 {
 	/** Internal cache. */
 	sjme_rom_libraryCache* cache;
+
+	/** The library ID. */
+	sjme_jint id;
+
+	/** The library name. */
+	sjme_lpcstr name;
 } sjme_rom_libraryCore;
 
 /** Synthetic library structure. */

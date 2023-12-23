@@ -8,6 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 #include <string.h>
+#include <stdio.h>
 
 /* Include Valgrind if it is available? */
 #if defined(SJME_CONFIG_HAS_VALGRIND)
@@ -307,6 +308,42 @@ sjme_errorCode sjme_alloc_copy(
 
 	/* Success! */
 	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_alloc_format(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrOutNotNull sjme_lpstr* outString,
+	sjme_attrInNotNull sjme_attrFormatArg const char* format,
+	...)
+{
+#define BUF_SIZE 512
+	char buf[BUF_SIZE];
+	va_list arg;
+	int len;
+
+	if (inPool == NULL || outString == NULL || format == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Start variable arguments. */
+	va_start(arg, format);
+
+	/* Format string to the buffer. */
+	memset(buf, 0, sizeof(buf));
+	vsnprintf(buf, BUF_SIZE - 1, format, arg);
+
+	/* Force to end with a NUL. */
+	buf[BUF_SIZE - 1] = 0;
+
+	/* End them. */
+	va_end(arg);
+
+	/* Calculate length of string for copying. */
+	len = strlen(buf);
+
+	/* Copy it. */
+	return sjme_alloc_copy(inPool, len + 1,
+		(void**)outString, buf);
+#undef BUF_SIZE
 }
 
 sjme_errorCode sjme_alloc_free(

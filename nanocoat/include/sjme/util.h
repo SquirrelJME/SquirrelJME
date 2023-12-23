@@ -59,8 +59,8 @@ typedef sjme_jint (*sjme_treeFindHash)(void* what);
  * greater.
  * @since 2023/07/26
  */
-typedef sjme_jint (*sjme_treeFindCompare)(void* tree, void* what, sjme_jint hash,
-	sjme_jint withIndex);
+typedef sjme_jint (*sjme_treeFindCompare)(void* tree, void* what,
+	sjme_jint hash, sjme_jint withIndex);
 
 /**
  * Random number state.

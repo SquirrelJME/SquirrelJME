@@ -227,7 +227,23 @@ sjme_errorCode sjme_alloc_copy(
  */
 sjme_errorCode sjme_alloc_free(
 	sjme_attrInNotNull void* addr);
-	
+
+/**
+ * Allocates a formatted string.
+ *
+ * @param inPool The pool to allocate within.
+ * @param outString The output string.
+ * @param format The format string.
+ * @param ...
+ * @return Any resultant error.
+ * @since 2023/12/22
+ */
+sjme_errorCode sjme_alloc_format(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrOutNotNull sjme_lpstr* outString,
+	sjme_attrInNotNull sjme_attrFormatArg const char* format,
+	...) sjme_attrFormatOuter(2, 3);
+
 /**
  * Returns the link of the given memory block
  * 
