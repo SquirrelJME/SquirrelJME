@@ -96,10 +96,6 @@ static const struct retro_input_descriptor sjme_libretro_descDialPad[] =
 	{0, 0, 0, 0, NULL}
 };
 
-/** The number in the dial pad. */
-static const sjme_jint sjme_libretro_numDescDialPad =
-	sizeof(sjme_libretro_descDialPad) / sizeof(*sjme_libretro_descDialPad);
-
 /** Game pad controller. */
 static const struct retro_input_descriptor sjme_libretro_descGamePad[] =
 {
@@ -145,51 +141,57 @@ static const struct retro_input_descriptor sjme_libretro_descGamePad[] =
 	{0, 0, 0, 0, NULL}
 };
 
-/** The number in the game pad. */
-static const sjme_jint sjme_libretro_numDescGamePad =
-	sizeof(sjme_libretro_descGamePad) / sizeof(*sjme_libretro_descGamePad);
-
-/** Base extra descriptors. */
-static const struct retro_input_descriptor sjme_libretro_descExtra[] =
+#if defined(RETRO_ENVIRONMENT_SET_EXTRA_CORE_COMMANDS)
+static void sjme_libretro_extActionCallback(
+	struct retro_extra_core_commands_action* action,
+	unsigned controllerPort)
 {
-	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
-		SJME_LIBRETRO_EXTRA_ID_SOFT_THREE,
-		"Soft 3 (Middle Command)"},
+	/* Debug. */
+	sjme_message("Called back %d (%s) on port %d!",
+		action->id, action->description, controllerPort);
+}
 
-	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
-		SJME_LIBRETRO_EXTRA_ID_VOLUME_UP,
-		"Volume Up"},
-	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
-		SJME_LIBRETRO_EXTRA_ID_VOLUME_DOWN,
-		"Volume Down"},
-
-	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
-		SJME_LIBRETRO_EXTRA_ID_START_CALL,
-		"Start Call"},
-	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
-		SJME_LIBRETRO_EXTRA_ID_END_CALL,
-		"End Call"},
-
-	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
-		SJME_LIBRETRO_EXTRA_ID_IAPPLI,
-		"i-Appli/i-Mode Button"},
-	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
-		SJME_LIBRETRO_EXTRA_ID_CAMERA,
-		"Camera Button"},
-	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
-		SJME_LIBRETRO_EXTRA_ID_WEB_BROWSER,
-		"Web Browser Button"},
-	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
-		SJME_LIBRETRO_EXTRA_ID_STOREFRONT,
-		"Storefront Button"},
+/** Extra core actions. */
+static const struct retro_extra_core_commands_action
+	sjme_libretro_extActions[] =
+{
+	{SJME_LIBRETRO_EXTRA_ID_SOFT_THREE, true,
+		NULL, "Soft 3 (Middle Command)"},
+	{SJME_LIBRETRO_EXTRA_ID_VOLUME_UP, true,
+		NULL, "Volume Up"},
+	{SJME_LIBRETRO_EXTRA_ID_VOLUME_DOWN, true,
+		NULL, "Volume Down"},
+	{SJME_LIBRETRO_EXTRA_ID_START_CALL, true,
+		NULL, "Start Call"},
+	{SJME_LIBRETRO_EXTRA_ID_END_CALL, true,
+		NULL, "End Call"},
+	{SJME_LIBRETRO_EXTRA_ID_IAPPLI, true,
+		NULL, "i-Appli/i-Mode Button"},
+	{SJME_LIBRETRO_EXTRA_ID_CAMERA, true,
+		NULL, "Camera Button"},
+	{SJME_LIBRETRO_EXTRA_ID_WEB_BROWSER, true,
+		NULL, "Web Browser Button"},
+	{SJME_LIBRETRO_EXTRA_ID_STOREFRONT, true,
+		NULL, "Storefront Button"},
 
 	/* End. */
-	{0, 0, 0, 0, NULL}
+	{0, 0, 0, NULL}
 };
 
-/** The number in the dial pad. */
-static const sjme_jint sjme_libretro_numDescExtra =
-	sizeof(sjme_libretro_descExtra) / sizeof(*sjme_libretro_descExtra);
+/** Extra commands. */
+static const struct retro_extra_core_commands sjme_libretro_extraCommands =
+{
+	.callback = sjme_libretro_extActionCallback,
+	.actions = sjme_libretro_extActions
+};
+
+void sjme_libretro_initExtraCommands(void)
+{
+	/* Initialize extra commands accordingly. */
+	sjme_libretro_envCallback(RETRO_ENVIRONMENT_SET_EXTRA_CORE_COMMANDS,
+		(void*)&sjme_libretro_extraCommands);
+}
+#endif
 
 sjme_attrUnused RETRO_API void retro_set_input_poll(retro_input_poll_t poll)
 {
@@ -210,11 +212,7 @@ sjme_attrUnused RETRO_API void retro_set_controller_port_device(
 	unsigned port, unsigned device)
 {
 	const struct retro_input_descriptor* baseDesc;
-#if defined(RETRO_ENVIRONMENT_GET_EXTRA_INPUT_ACTIONS)
-	struct retro_input_descriptor* fullDesc;
-	sjme_jint numBaseDesc, numFullDesc, to, from, at, limit;
-	struct retro_get_extra_input_actions extraInput;
-#endif
+	sjme_jint numBaseDesc, at;
 
 	/* Which device to use? */
 	if (device == RETRO_DEVICE_JOYPAD)
@@ -222,71 +220,10 @@ sjme_attrUnused RETRO_API void retro_set_controller_port_device(
 	else
 		baseDesc = sjme_libretro_descGamePad;
 
-#if defined(RETRO_ENVIRONMENT_GET_EXTRA_INPUT_ACTIONS)
-	/* Add extra actions to either input class, as needed. */
-	memset(&extraInput, 0, sizeof(extraInput));
-	extraInput.query.device = device;
-	if (sjme_libretro_envCallback(
-			RETRO_ENVIRONMENT_GET_EXTRA_INPUT_ACTIONS,
-			&extraInput) && extraInput.response.known &&
-			extraInput.response.num_extra > 0)
-	{
-		/* Debug. */
-		sjme_message("Extra descriptors being placed in!");
-
-		/* Count the number of base desc items. */
-		numBaseDesc = 0;
-		for (at = 0; baseDesc[at].description != NULL; at++)
-			numBaseDesc++;
-
-		/* Allocate full set of controls. */
-		numFullDesc = numBaseDesc + sjme_libretro_numDescExtra;
-		fullDesc = sjme_alloca(sizeof(*fullDesc) * (numFullDesc + 1));
-		if (fullDesc != NULL)
-		{
-			/* Clear just in case. */
-			memset(fullDesc, 0, sizeof(*fullDesc) * (numFullDesc + 1));
-
-			/* Move in each set of controls. */
-			to = 0;
-			for (from = 0; from < numBaseDesc &&
-				baseDesc[from].description != NULL; from++, to++)
-				memmove(&fullDesc[to], &baseDesc[from],
-					sizeof(fullDesc[to]));
-
-			/* How many can even be moved over? */
-			if (extraInput.response.num_extra < sjme_libretro_numDescExtra)
-				limit = extraInput.response.num_extra;
-			else
-				limit = sjme_libretro_numDescExtra;
-
-			/* Move the extra desc on top. */
-			for (from = 0; from < limit &&
-				sjme_libretro_descExtra[from].description != NULL;
-				from++, to++)
-			{
-				/* Copy everything. */
-				memmove(&fullDesc[to], &sjme_libretro_descExtra[from],
-					sizeof(fullDesc[to]));
-
-				/* Realign key. */
-				fullDesc[to].id = extraInput.response.extra_start_id + from;
-
-				/* Debug. */
-				sjme_message("Assigning extra %s to %d",
-					fullDesc[to].description, fullDesc[to].id);
-			}
-
-			/* Set controls. */
-			sjme_libretro_envCallback(
-				RETRO_ENVIRONMENT_SET_INPUT_DESCRIPTORS,
-				(void*)fullDesc);
-
-			/* Do not set normal controls following this. */
-			return;
-		}
-	}
-#endif
+	/* Count the number of base desc items. */
+	numBaseDesc = 0;
+	for (at = 0; baseDesc[at].description != NULL; at++)
+		numBaseDesc++;
 
 	/* Set controls. */
 	sjme_libretro_envCallback(RETRO_ENVIRONMENT_SET_INPUT_DESCRIPTORS,

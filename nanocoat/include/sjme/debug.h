@@ -194,11 +194,11 @@ extern sjme_debug_exitHandlerFunc sjme_debug_exitHandler;
  * a standard @c fprintf to @c stderr will be used.
  * @since 2023/12/05 
  */
-typedef sjme_jboolean (*sjme_danglingMessageFunc)(sjme_lpcstr fullMessage,
+typedef sjme_jboolean (*sjme_debug_messageHandlerFunc)(sjme_lpcstr fullMessage,
 	sjme_lpcstr partMessage);
 
 /** The dangling message implementation to use. */
-extern sjme_danglingMessageFunc sjme_danglingMessage;
+extern sjme_debug_messageHandlerFunc sjme_debug_messageHandler;
 
 /*--------------------------------------------------------------------------*/
 

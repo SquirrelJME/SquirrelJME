@@ -14,7 +14,7 @@
 #include "3rdparty/libretro/libretro.h"
 #include "frontend/libretro/shared.h"
 
-static sjme_jboolean sjme_libretro_danglingMessage(sjme_lpcstr fullMessage,
+static sjme_jboolean sjme_libretro_debugMessageHandler(sjme_lpcstr fullMessage,
 	sjme_lpcstr partMessage)
 {
 	struct retro_message retroMessage;
@@ -35,7 +35,7 @@ static sjme_jboolean sjme_libretro_danglingMessage(sjme_lpcstr fullMessage,
 		if (true == sjme_libretro_envCallback(
 			RETRO_ENVIRONMENT_GET_LOG_INTERFACE, &retroLogCallback) &&
 			retroLogCallback.log != NULL)
-			retroLogCallback.log(RETRO_LOG_INFO, "%s", fullMessage);
+			retroLogCallback.log(RETRO_LOG_INFO, "%s\n", fullMessage);
 		
 		/* We handled it here, so SquirrelJME does not have to print it. */
 		return SJME_JNI_TRUE;
@@ -57,7 +57,7 @@ sjme_attrUnused RETRO_API void retro_deinit(void)
 sjme_attrUnused RETRO_API void retro_init(void)
 {
 	/* Used for log reporting. */
-	sjme_danglingMessage = sjme_libretro_danglingMessage;
+	sjme_debug_messageHandler = sjme_libretro_debugMessageHandler;
 }
 
 sjme_attrUnused RETRO_API bool retro_load_game(

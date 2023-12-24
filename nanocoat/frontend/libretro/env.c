@@ -128,6 +128,11 @@ sjme_attrUnused RETRO_API void retro_set_environment(
 	sjme_libretro_envCallback(RETRO_ENVIRONMENT_SET_VARIABLES,
 		(void*)&sjme_libretro_coreVariables);
 
+#if defined(RETRO_ENVIRONMENT_SET_EXTRA_CORE_COMMANDS)
+	/* Provide extra core commands. */
+	sjme_libretro_initExtraCommands();
+#endif
+
 	/* Control input. */
 	sjme_libretro_envCallback(RETRO_ENVIRONMENT_SET_CONTROLLER_INFO,
 		(void*)&sjme_libretro_inputControllers);

@@ -26,7 +26,7 @@ sjme_debug_abortHandlerFunc sjme_debug_abortHandler = NULL;
 
 sjme_debug_exitHandlerFunc sjme_debug_exitHandler = NULL;
 
-sjme_danglingMessageFunc sjme_danglingMessage = NULL;
+sjme_debug_messageHandlerFunc sjme_debug_messageHandler = NULL;
 
 void sjme_debug_abort(void)
 {
@@ -123,8 +123,8 @@ void sjme_genericMessage(sjme_lpcstr file, int line,
 			prefix, (hasPrefix ? " " : ""), buf);
 		
 	/* First try to print to the frontend callback, if any. */
-	if (sjme_danglingMessage == NULL ||
-		!sjme_danglingMessage(fullBuf, buf))
+	if (sjme_debug_messageHandler == NULL ||
+		!sjme_debug_messageHandler(fullBuf, buf))
 		fprintf(stderr, "%s\n", fullBuf);
 	
 	/* Make sure it gets written. */
