@@ -141,55 +141,57 @@ static const struct retro_input_descriptor sjme_libretro_descGamePad[] =
 	{0, 0, 0, 0, NULL}
 };
 
-#if defined(RETRO_ENVIRONMENT_SET_EXTRA_CORE_COMMANDS)
-static void sjme_libretro_extActionCallback(
-	struct retro_extra_core_commands_action* action,
-	unsigned controllerPort)
+#if defined(RETRO_ENVIRONMENT_SET_EXTENDED_RETROPAD)
+/** Extra core buttons. */
+static const struct retro_core_extended_retropad_button
+	sjme_libretro_descExtPad[] =
 {
-	/* Debug. */
-	sjme_message("Called back %d (%s) on port %d!",
-		action->id, action->description, controllerPort);
-}
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		SJME_LIBRETRO_EXTRA_ID_SOFT_THREE,
+		"Soft 3 (Middle Command)", NULL},
 
-/** Extra core actions. */
-static const struct retro_extra_core_commands_action
-	sjme_libretro_extActions[] =
-{
-	{SJME_LIBRETRO_EXTRA_ID_SOFT_THREE, true,
-		NULL, "Soft 3 (Middle Command)"},
-	{SJME_LIBRETRO_EXTRA_ID_VOLUME_UP, true,
-		NULL, "Volume Up"},
-	{SJME_LIBRETRO_EXTRA_ID_VOLUME_DOWN, true,
-		NULL, "Volume Down"},
-	{SJME_LIBRETRO_EXTRA_ID_START_CALL, true,
-		NULL, "Start Call"},
-	{SJME_LIBRETRO_EXTRA_ID_END_CALL, true,
-		NULL, "End Call"},
-	{SJME_LIBRETRO_EXTRA_ID_IAPPLI, true,
-		NULL, "i-Appli/i-Mode Button"},
-	{SJME_LIBRETRO_EXTRA_ID_CAMERA, true,
-		NULL, "Camera Button"},
-	{SJME_LIBRETRO_EXTRA_ID_WEB_BROWSER, true,
-		NULL, "Web Browser Button"},
-	{SJME_LIBRETRO_EXTRA_ID_STOREFRONT, true,
-		NULL, "Storefront Button"},
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		SJME_LIBRETRO_EXTRA_ID_VOLUME_UP,
+		"Volume Up", NULL},
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		SJME_LIBRETRO_EXTRA_ID_VOLUME_DOWN,
+		"Volume Down", NULL},
+
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		SJME_LIBRETRO_EXTRA_ID_START_CALL,
+		"Start Call", NULL},
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		SJME_LIBRETRO_EXTRA_ID_END_CALL,
+		"End Call", NULL},
+
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		SJME_LIBRETRO_EXTRA_ID_IAPPLI,
+		"i-Appli/i-Mode Button", NULL},
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		SJME_LIBRETRO_EXTRA_ID_CAMERA,
+		"Camera Button", NULL},
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		SJME_LIBRETRO_EXTRA_ID_WEB_BROWSER,
+		"Web Browser Button", NULL},
+	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,
+		SJME_LIBRETRO_EXTRA_ID_STOREFRONT,
+		"Storefront Button", NULL},
 
 	/* End. */
-	{0, 0, 0, NULL}
+	{0, 0, 0, 0, NULL, NULL}
 };
 
-/** Extra commands. */
-static const struct retro_extra_core_commands sjme_libretro_extraCommands =
+static void sjme_libretro_inputSetExtPad(void)
 {
-	.callback = sjme_libretro_extActionCallback,
-	.actions = sjme_libretro_extActions
-};
+	struct retro_core_extended_retropad config;
 
-void sjme_libretro_initExtraCommands(void)
-{
+	/* Setup config. */
+	memset(&config, 0, sizeof(config));
+	config.actions = sjme_libretro_descExtPad;
+
 	/* Initialize extra commands accordingly. */
-	sjme_libretro_envCallback(RETRO_ENVIRONMENT_SET_EXTRA_CORE_COMMANDS,
-		(void*)&sjme_libretro_extraCommands);
+	sjme_libretro_envCallback(RETRO_ENVIRONMENT_SET_EXTENDED_RETROPAD,
+		(void*)&config);
 }
 #endif
 
@@ -225,7 +227,12 @@ sjme_attrUnused RETRO_API void retro_set_controller_port_device(
 	for (at = 0; baseDesc[at].description != NULL; at++)
 		numBaseDesc++;
 
-	/* Set controls. */
+/* Extended controls. */
+#if defined(RETRO_ENVIRONMENT_SET_EXTENDED_RETROPAD)
+	sjme_libretro_inputSetExtPad();
+#endif
+
+	/* Set standardcontrols. */
 	sjme_libretro_envCallback(RETRO_ENVIRONMENT_SET_INPUT_DESCRIPTORS,
 		(void*)baseDesc);
 }

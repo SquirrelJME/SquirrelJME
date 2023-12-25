@@ -99,15 +99,6 @@ extern retro_video_refresh_t sjme_libretro_videoRefreshCallback;
 const struct retro_get_proc_address_interface* sjme_libretro_extInterface(
 	void);
 
-#if defined(RETRO_ENVIRONMENT_SET_EXTRA_CORE_COMMANDS)
-/**
- * Initialize extra core commands?
- *
- * @since 2023/12/23
- */
-void sjme_libretro_initExtraCommands(void);
-#endif
-
 /** Run unit tests? */
 #define SJME_LIBRETRO_CONFIG_UNIT_TESTS "sjme_unit_tests"
 
