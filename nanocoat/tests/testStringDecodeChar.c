@@ -8,14 +8,15 @@
 // -------------------------------------------------------------------------*/
 
 #include "proto.h"
-#include "test.h"
 #include "sjme/util.h"
+#include "test.h"
+#include "unit.h"
 
 /** The max string length. */
 #define MAX_LEN 32
 
 /** The number of strings to test. */
-#define NUM_STRINGS 5
+#define NUM_STRINGS 7
 
 /** The input test strings. */
 typedef struct testString
@@ -54,6 +55,18 @@ static const testString testStrings[NUM_STRINGS] =
 	{
 		{0xe4, 0xbd, 0xa0, 0xe5, 0xa5, 0xbd, 0},
 		{0x4f60, 0x597d, -1}
+	},
+
+	/* Invalid sequence. */
+	{
+		{0x61, 0x80, 0x62, 0},
+		{0x61, -1}
+	},
+
+	/* Invalid sequence. */
+	{
+		{0xbd, 0xa0, 0xe5, 0xa5, 0xbd, 0},
+		{-1}
 	}
 };
 
@@ -65,6 +78,42 @@ static const testString testStrings[NUM_STRINGS] =
  */
 SJME_TEST_DECLARE(testStringDecodeChar)
 {
-	sjme_todo("Implement %s", __func__);
-	return SJME_TEST_RESULT_FAIL;
+	const testString* testing;
+	sjme_jint i, charIndex;
+	sjme_jint c;
+	sjme_lpcstr string;
+	sjme_lpcstr p;
+
+	/* Test all the strings. */
+	for (i = 0; i < NUM_STRINGS; i++)
+	{
+		/* Which string are we testing? */
+		testing = &testStrings[i];
+		string = (sjme_lpcstr)testing->in;
+
+		/* Decode every character and check the input matches. */
+		charIndex = 0;
+		for (p = string; *p != 0; charIndex++)
+		{
+			/* These should never happen. */
+			if (charIndex >= MAX_LEN ||
+				((uintptr_t)p - (uintptr_t)string) >= MAX_LEN)
+				sjme_unitFail(test, "Reading input/output too far in?");
+
+			/* Decode. */
+			c = sjme_string_decodeChar(p, &p);
+
+			/* Must match the character index. */
+			sjme_unitEqualI(test, c, testing->out[charIndex],
+				"For input %d with output #%d, invalid result?",
+				i, charIndex);
+
+			/* End sequence? */
+			if (c == -1)
+				break;
+		}
+	}
+
+	/* Success! */
+	return SJME_TEST_RESULT_PASS;
 }

@@ -15,7 +15,7 @@
  * 
  * @since 2023/11/29
  */
-SJME_TEST_DECLARE(testStringIntern)
+SJME_TEST_DECLARE(testNvmStringIntern)
 {
 	sjme_todo("Implement %s", __func__);
 	return SJME_TEST_RESULT_FAIL;
