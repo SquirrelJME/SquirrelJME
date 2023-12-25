@@ -199,7 +199,7 @@ sjme_errorCode sjme_rom_resolveClassPathByName(
 		&suiteLibs) || suiteLibs == NULL))
 		return error;
 
-	/*sjme_stringHash*/
+	/*sjme_string_hash*/
 
 	sjme_todo("Implement this?");
 	return SJME_ERROR_NOT_IMPLEMENTED;

@@ -36,7 +36,7 @@ extern "C" {
  * @return The number of items in the tree.
  * @since 2023/07/26
  */
-typedef sjme_jint (*sjme_treeFindCount)(void* tree);
+typedef sjme_jint (*sjme_tree_findCount)(void* tree);
 
 /**
  * Function for returning the hash of the search item.
@@ -45,7 +45,7 @@ typedef sjme_jint (*sjme_treeFindCount)(void* tree);
  * @return The hash of the given search item.
  * @since 2023/07/26
  */
-typedef sjme_jint (*sjme_treeFindHash)(void* what);
+typedef sjme_jint (*sjme_tree_findHash)(void* what);
 
 /**
  * Compares an entry in the tree at the given index with the given hash and
@@ -53,13 +53,13 @@ typedef sjme_jint (*sjme_treeFindHash)(void* what);
  * 
  * @param tree The tree to search in.
  * @param what What to being searched for in the tree.
- * @param hash The hash generated from @c sjme_treeFindHash .
+ * @param hash The hash generated from @c sjme_tree_findHash .
  * @param withIndex Compare @c hash and @c what against the given tree.
  * @return A negative value if lower, zero if equal, or a positive value if
  * greater.
  * @since 2023/07/26
  */
-typedef sjme_jint (*sjme_treeFindCompare)(void* tree, void* what,
+typedef sjme_jint (*sjme_tree_findCompare)(void* tree, void* what,
 	sjme_jint hash, sjme_jint withIndex);
 
 /**
@@ -74,33 +74,22 @@ typedef struct sjme_random
 } sjme_random;
 
 /**
- * Tree finding functions, used with @c sjme_treeFind to determine how to
+ * Tree finding functions, used with @c sjme_tree_find to determine how to
  * search through a given tree.
  * 
  * @since 2023/07/26
  */
-typedef struct sjme_treeFindFunc
+typedef struct sjme_tree_findFunc
 {
 	/** Count function. */
-	sjme_treeFindCount count;
+	sjme_tree_findCount count;
 	
 	/** Hash function. */
-	sjme_treeFindHash hash;
+	sjme_tree_findHash hash;
 	
 	/** Compare function. */
-	sjme_treeFindCompare compare;
-} sjme_treeFindFunc;
-
-/**
- * Decodes the given UTF-8 character.
- * 
- * @param at The character sequence to decode.
- * @param stringP Adjustable pointer to the string, when the character is
- * decoded then this will increment accordingly.
- * @return The decoded character or @c -1 if it is not valid.
- * @since 2023/07/27
- */
-sjme_jint sjme_decodeUtfChar(sjme_lpcstr at, sjme_lpcstr* stringP);
+	sjme_tree_findCompare compare;
+} sjme_tree_findFunc;
 
 /**
  * Initializes the random number generator.
@@ -155,6 +144,17 @@ sjme_errorCode sjme_randomNextIntMax(
 	sjme_attrInPositiveNonZero sjme_jint maxValue);
 
 /**
+ * Decodes the given UTF-8 character.
+ *
+ * @param at The character sequence to decode.
+ * @param stringP Adjustable pointer to the string, when the character is
+ * decoded then this will increment accordingly.
+ * @return The decoded character or @c -1 if it is not valid.
+ * @since 2023/07/27
+ */
+sjme_jint sjme_string_decodeChar(sjme_lpcstr at, sjme_lpcstr* stringP);
+
+/**
  * Returns the character at the given index.
  *
  * @param string The string to get from.
@@ -162,7 +162,7 @@ sjme_errorCode sjme_randomNextIntMax(
  * @return The given character or @c -1 if not valid.
  * @since 2023/12/16
  */
-sjme_jint sjme_stringCharAt(sjme_lpcstr string, sjme_jint index);
+sjme_jint sjme_string_charAt(sjme_lpcstr string, sjme_jint index);
 
 /**
  * Hashes the given string in accordance to @c String::hashCode() .
@@ -171,7 +171,7 @@ sjme_jint sjme_stringCharAt(sjme_lpcstr string, sjme_jint index);
  * @return The hashcode of the given string.
  * @since 2023/07/26
  */
-sjme_jint sjme_stringHash(sjme_lpcstr string);
+sjme_jint sjme_string_hash(sjme_lpcstr string);
 
 /**
  * Returns the length of the string in accordance to @c String::length() .
@@ -180,7 +180,7 @@ sjme_jint sjme_stringHash(sjme_lpcstr string);
  * @return The string length or @c -1 if it is not valid.
  * @since 2023/07/29
  */
-sjme_jint sjme_stringLength(sjme_lpcstr string);
+sjme_jint sjme_string_length(sjme_lpcstr string);
 
 /**
  * Locates an item within a tree.
@@ -191,8 +191,8 @@ sjme_jint sjme_stringLength(sjme_lpcstr string);
  * @return The index where the item was found.
  * @since 2023/07/26
  */
-sjme_jint sjme_treeFind(void* tree, void* what,
-	const sjme_treeFindFunc* functions);
+sjme_jint sjme_tree_find(void* tree, void* what,
+	const sjme_tree_findFunc* functions);
 	
 /*--------------------------------------------------------------------------*/
 

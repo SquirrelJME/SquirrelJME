@@ -15,12 +15,12 @@
 jint SJME_JNI_METHOD(SJME_CLASS_CHAR_STAR, _1_1utfCharAt)
 	(JNIEnv* env, jclass* classy, jlong addr, jint index)
 {
-	return sjme_stringCharAt(SJME_JLONG_TO_POINTER(sjme_lpcstr, addr),
+	return sjme_string_charAt(SJME_JLONG_TO_POINTER(sjme_lpcstr, addr),
 		index);
 }
 
 jint SJME_JNI_METHOD(SJME_CLASS_CHAR_STAR, _1_1utfStrlen)
 	(JNIEnv* env, jclass* classy, jlong addr)
 {
-	return sjme_stringLength(SJME_JLONG_TO_POINTER(sjme_lpcstr, addr));
+	return sjme_string_length(SJME_JLONG_TO_POINTER(sjme_lpcstr, addr));
 }

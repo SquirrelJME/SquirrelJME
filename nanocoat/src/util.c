@@ -11,15 +11,6 @@
 #include "sjme/util.h"
 #include "sjme/debug.h"
 
-sjme_jint sjme_decodeUtfChar(sjme_lpcstr at, sjme_lpcstr* stringP)
-{
-	if (at == NULL)
-		return -1;
-	
-	sjme_todo("sjme_decodeUtfChar()");
-	return -1;
-}
-
 /**
  * Initializes the random number generator.
  * 
@@ -63,7 +54,16 @@ sjme_errorCode sjme_randomNextIntMax(
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
-sjme_jint sjme_stringHash(sjme_lpcstr string)
+sjme_jint sjme_string_decodeChar(sjme_lpcstr at, sjme_lpcstr* stringP)
+{
+	if (at == NULL)
+		return -1;
+
+	sjme_todo("sjme_string_decodeChar()");
+	return -1;
+}
+
+sjme_jint sjme_string_hash(sjme_lpcstr string)
 {
 	sjme_jint result;
 	sjme_jchar c;
@@ -79,7 +79,7 @@ sjme_jint sjme_stringHash(sjme_lpcstr string)
 	for (p = string; *p != 0;)
 	{
 		/* Decode character. */
-		c = sjme_decodeUtfChar(p, &p);
+		c = sjme_string_decodeChar(p, &p);
 		
 		/* Calculate the hashCode(), the JavaDoc gives the following formula:
 		// == s[0]*31^(n-1) + s[1]*31^(n-2) + ... + s[n-1] .... yikes! */
@@ -90,7 +90,7 @@ sjme_jint sjme_stringHash(sjme_lpcstr string)
 	return result;
 }
 
-sjme_jint sjme_stringCharAt(sjme_lpcstr string, sjme_jint index)
+sjme_jint sjme_string_charAt(sjme_lpcstr string, sjme_jint index)
 {
 	sjme_jint at;
 	sjme_jchar c;
@@ -105,7 +105,7 @@ sjme_jint sjme_stringCharAt(sjme_lpcstr string, sjme_jint index)
 	for (p = string; *p != 0;)
 	{
 		/* Decode character. */
-		c = sjme_decodeUtfChar(p, &p);
+		c = sjme_string_decodeChar(p, &p);
 
 		/* Not valid? */
 		if (c < 0)
@@ -120,7 +120,7 @@ sjme_jint sjme_stringCharAt(sjme_lpcstr string, sjme_jint index)
 	return -1;
 }
 
-sjme_jint sjme_stringLength(sjme_lpcstr string)
+sjme_jint sjme_string_length(sjme_lpcstr string)
 {
 	sjme_jint result;
 	sjme_jchar c;
@@ -134,7 +134,7 @@ sjme_jint sjme_stringLength(sjme_lpcstr string)
 	for (p = string; *p != 0;)
 	{
 		/* Decode character. */
-		c = sjme_decodeUtfChar(p, &p);
+		c = sjme_string_decodeChar(p, &p);
 
 		/* Not valid? */
 		if (c < 0)
@@ -148,12 +148,12 @@ sjme_jint sjme_stringLength(sjme_lpcstr string)
 	return result;
 }
 
-sjme_jint sjme_treeFind(void* in, void* what,
-	const sjme_treeFindFunc* functions)
+sjme_jint sjme_tree_find(void* in, void* what,
+	const sjme_tree_findFunc* functions)
 {
 	if (in == NULL || functions == NULL)
 		return -1;
 	
-	sjme_todo("sjme_treeFind()");
+	sjme_todo("sjme_tree_find()");
 	return -1;
 }
