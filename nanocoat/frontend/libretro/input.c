@@ -14,6 +14,20 @@
 #include "3rdparty/libretro/libretro.h"
 #include "frontend/libretro/shared.h"
 
+/** The description of input controls. */
+const struct retro_controller_description sjme_libretro_inputControlDesc[] =
+{
+	{"Dial Pad", RETRO_DEVICE_JOYPAD},
+	{"Game Pad", RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_JOYPAD, 1)}
+};
+
+/** Controller information. */
+const struct retro_controller_info sjme_libretro_inputControllers[] =
+{
+	{sjme_libretro_inputControlDesc, 2},
+	{0, 0}
+};
+
 /** Input descriptions:
  * [SOFT LEFT] [SOFT RIGHT]
  * [BACK]
@@ -232,7 +246,11 @@ sjme_attrUnused RETRO_API void retro_set_controller_port_device(
 	sjme_libretro_inputSetExtPad();
 #endif
 
-	/* Set standardcontrols. */
+	/* Set standard controls. */
 	sjme_libretro_envCallback(RETRO_ENVIRONMENT_SET_INPUT_DESCRIPTORS,
 		(void*)baseDesc);
+
+	/* Set input controllers. */
+	sjme_libretro_envCallback(RETRO_ENVIRONMENT_SET_CONTROLLER_INFO,
+		(void*)&sjme_libretro_inputControllers);
 }

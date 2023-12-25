@@ -27,20 +27,6 @@ static const struct retro_variable sjme_libretro_coreVariables[] =
 	{NULL, NULL}
 };
 
-/** The description of input controls. */
-const struct retro_controller_description sjme_libretro_inputControlDesc[] =
-{
-	{"Dial Pad", RETRO_DEVICE_JOYPAD},
-	{"Game Pad", RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_JOYPAD, 1)}
-};
-
-/** Controller information. */
-const struct retro_controller_info sjme_libretro_inputControllers[] =
-{
-	{sjme_libretro_inputControlDesc, 2},
-	{0, 0}
-};
-
 static sjme_jboolean sjme_libretro_exitHandler(int exitCode)
 {
 	/* If there is no environment callback, then do nothing here. */
@@ -109,6 +95,9 @@ sjme_attrUnused RETRO_API void retro_set_environment(
 	/* Set abort and exit handler. */
 	sjme_debug_abortHandler = sjme_libretro_abortHandler;
 	sjme_debug_exitHandler = sjme_libretro_exitHandler;
+
+	/* Control input. */
+	retro_set_controller_port_device(0, 0);
 	
 	/* Playing with no software is supported. */
 	supportsNoGame = true;
@@ -127,9 +116,4 @@ sjme_attrUnused RETRO_API void retro_set_environment(
 	/* Core options. */
 	sjme_libretro_envCallback(RETRO_ENVIRONMENT_SET_VARIABLES,
 		(void*)&sjme_libretro_coreVariables);
-
-	/* Control input. */
-	sjme_libretro_envCallback(RETRO_ENVIRONMENT_SET_CONTROLLER_INFO,
-		(void*)&sjme_libretro_inputControllers);
-	retro_set_controller_port_device(0, 0);
 }
