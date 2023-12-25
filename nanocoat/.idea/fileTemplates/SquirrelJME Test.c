@@ -3,6 +3,11 @@
 #[[#include]]# "test.h"
 #[[#include]]# "proto.h"
 
+/**
+ * DESCRIBE THIS.
+ *  
+ * @since ${YEAR}/${MONTH}/${DAY} 
+ */
 SJME_TEST_DECLARE(${NAME})
 {
 	sjme_todo("Implement %s", __func__);

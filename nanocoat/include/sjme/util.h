@@ -144,17 +144,6 @@ sjme_errorCode sjme_randomNextIntMax(
 	sjme_attrInPositiveNonZero sjme_jint maxValue);
 
 /**
- * Decodes the given UTF-8 character.
- *
- * @param at The character sequence to decode.
- * @param stringP Adjustable pointer to the string, when the character is
- * decoded then this will increment accordingly.
- * @return The decoded character or @c -1 if it is not valid.
- * @since 2023/07/27
- */
-sjme_jint sjme_string_decodeChar(sjme_lpcstr at, sjme_lpcstr* stringP);
-
-/**
  * Returns the character at the given index.
  *
  * @param string The string to get from.
@@ -163,6 +152,18 @@ sjme_jint sjme_string_decodeChar(sjme_lpcstr at, sjme_lpcstr* stringP);
  * @since 2023/12/16
  */
 sjme_jint sjme_string_charAt(sjme_lpcstr string, sjme_jint index);
+
+/**
+ * Decodes the given UTF-8 character.
+ *
+ * @param at The character sequence to decode.
+ * @param stringP Adjustable pointer to the string, when the character is
+ * decoded then this will increment accordingly.
+ * @return The decoded character or @c -1 if
+ * it is not valid.
+ * @since 2023/07/27
+ */
+sjme_jint sjme_string_decodeChar(sjme_lpcstr at, sjme_lpcstr* stringP);
 
 /**
  * Hashes the given string in accordance to @c String::hashCode() .
