@@ -16,7 +16,7 @@
 #define MAX_LEN 32
 
 /** The number of strings to test. */
-#define NUM_STRINGS 7
+#define NUM_STRINGS 5
 
 /** The input test strings. */
 typedef struct testString
@@ -44,6 +44,7 @@ static const testString testStrings[NUM_STRINGS] =
 			0x87, 0},
 		5
 	},
+
 	{
 		{0xe4, 0xbd, 0xa0, 0xe5, 0xa5, 0xbd, 0},
 		2
@@ -59,7 +60,7 @@ static const testString testStrings[NUM_STRINGS] =
 SJME_TEST_DECLARE(testStringLength)
 {
 	const testString* testing;
-	sjme_jint i, hash;
+	sjme_jint i, len;
 	sjme_lpcstr string;
 
 	/* Test all the strings. */
@@ -70,10 +71,10 @@ SJME_TEST_DECLARE(testStringLength)
 		string = (sjme_lpcstr)testing->in;
 
 		/* Calculate hash. */
-		hash = sjme_string_hash(string);
+		len = sjme_string_length(string);
 
 		/* Was it calculated correctly? */
-		sjme_unitEqualI(test, hash, testing->out,
+		sjme_unitEqualI(test, len, testing->out,
 			"Input %d has invalid result?", i);
 	}
 

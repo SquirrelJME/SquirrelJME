@@ -16,7 +16,7 @@
 #define MAX_LEN 32
 
 /** The number of strings to test. */
-#define NUM_STRINGS 7
+#define NUM_STRINGS 10
 
 /** The input test strings. */
 typedef struct testString
@@ -25,7 +25,7 @@ typedef struct testString
 	sjme_jbyte in[MAX_LEN];
 
 	/** The resultant output. */
-	sjme_jchar out[MAX_LEN];
+	sjme_jint out[MAX_LEN];
 } testString;
 
 /** The actual test strings. */
@@ -65,7 +65,25 @@ static const testString testStrings[NUM_STRINGS] =
 
 	/* Invalid sequence. */
 	{
+		{0x61, 0xc0, 0x62, 0},
+		{0x61, -1}
+	},
+
+	/* Invalid sequence. */
+	{
 		{0xbd, 0xa0, 0xe5, 0xa5, 0xbd, 0},
+		{-1}
+	},
+
+	/* Invalid sequence. */
+	{
+		{0xe4, 0xa0, 0xe5, 0xa5, 0xbd, 0},
+		{-1}
+	},
+
+	/* Invalid sequence. */
+	{
+		{0xe4, 0xbd, 0xe5, 0xa5, 0xbd, 0},
 		{-1}
 	}
 };

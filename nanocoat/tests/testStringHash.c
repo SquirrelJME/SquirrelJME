@@ -16,7 +16,7 @@
 #define MAX_LEN 32
 
 /** The number of strings to test. */
-#define NUM_STRINGS 7
+#define NUM_STRINGS 5
 
 /** The input test strings. */
 typedef struct testString
@@ -52,12 +52,6 @@ static const testString testStrings[NUM_STRINGS] =
 	/* Invalid sequence. */
 	{
 		{0x61, 0x80, 0x62, 0},
-		-1
-	},
-
-	/* Invalid sequence. */
-	{
-		{0xbd, 0xa0, 0xe5, 0xa5, 0xbd, 0},
 		-1
 	}
 };

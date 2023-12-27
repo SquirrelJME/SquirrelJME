@@ -86,11 +86,75 @@ sjme_jint sjme_string_charAt(sjme_lpcstr string, sjme_jint index)
 
 sjme_jint sjme_string_decodeChar(sjme_lpcstr at, sjme_lpcstr* stringP)
 {
+	sjme_jubyte c;
+	sjme_jint result;
+
 	if (at == NULL)
 		return -1;
 
-	sjme_todo("sjme_string_decodeChar()");
-	return -1;
+	/* Read first character. */
+	c = (*(at++)) & 0xFF;
+
+	/* Invalid, cannot be this. */
+	if (c == 0)
+		return -1;
+
+	/* Single byte character? */
+	if ((c & 0x80) == 0)
+		result = c;
+
+	/* Double byte character? */
+	else if ((c & 0xE0) == 0xC0)
+	{
+		/* Upper bits. */
+		result = (c & 0x1F) << 6;
+
+		/* Read next. */
+		c = (*(at++)) & 0xFF;
+
+		/* Invalid continuation? */
+		if ((c & 0xC0) != 0x80)
+			return -1;
+
+		/* Lower bits. */
+		result |= (c & 0x3F);
+	}
+
+	/* Triple byte character. */
+	else if ((c & 0xF0) == 0xE0)
+	{
+		/* Upper bits. */
+		result = (c & 0x0F) << 12;
+
+		/* Read next. */
+		c = (*(at++)) & 0xFF;
+
+		/* Invalid continuation? */
+		if ((c & 0xC0) != 0x80)
+			return -1;
+
+		/* Middle bits. */
+		result |= (c & 0x3F) << 6;
+
+		/* Read next. */
+		c = (*(at++)) & 0xFF;
+
+		/* Invalid continuation? */
+		if ((c & 0xC0) != 0x80)
+			return -1;
+
+		/* Lower bits. */
+		result |= (c & 0x3F);
+	}
+
+	/* Invalid sequence. */
+	else
+		return -1;
+
+	/* Return the result. */
+	if (stringP != NULL)
+		*stringP = at;
+	return result;
 }
 
 sjme_jint sjme_string_hash(sjme_lpcstr string)
@@ -127,7 +191,7 @@ sjme_jint sjme_string_hash(sjme_lpcstr string)
 sjme_jint sjme_string_length(sjme_lpcstr string)
 {
 	sjme_jint result;
-	sjme_jchar c;
+	sjme_jint c;
 	sjme_lpcstr p;
 
 	if (string == NULL)
