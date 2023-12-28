@@ -101,6 +101,7 @@ if (JavaVersion.current() >= JavaVersion.VERSION_HIGHER ||
 // Modules and available platforms
 include "modules"
 include "emulators"
+include "sdk"
 include "tools"
 
 // Recursively include all modules

@@ -5,6 +5,7 @@ buildSrc/build
 buildSrc/out
 emulators/[^/]*/build
 modules/[^/]*/build
+sdk/build
 modules/*/build/classes
 modules/*/build/generated
 modules/*/build/libs

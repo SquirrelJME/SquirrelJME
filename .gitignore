@@ -3,6 +3,7 @@
 buildSrc/.gradle/
 build/
 */build/
+sdk/build
 out/
 */out/
 build/squirreljme/vm-test-*-debug/squirreljme-test.zip

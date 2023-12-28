@@ -17,8 +17,9 @@ plugins
 {
 	id "application"
 	id "java"
-	id "com.github.johnrengelman.shadow" version "7.1.2"
 }
+
+apply plugin: "com.github.johnrengelman.shadow"
 
 description = "Standalone SquirrelJME virtual machine on Java."
 mainClassName = "cc.squirreljme.vm.standalone.main.Main"

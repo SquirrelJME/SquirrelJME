@@ -4,9 +4,6 @@
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
-        <option name="delegatedBuild" value="true" />
-        <option name="testRunner" value="GRADLE" />
-        <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="gradleJvm" value="liberica-11" />
         <option name="modules">
@@ -93,6 +90,7 @@
             <option value="$PROJECT_DIR$/modules/vendor-api-vodafone" />
             <option value="$PROJECT_DIR$/modules/wireless-messaging" />
             <option value="$PROJECT_DIR$/modules/zip" />
+            <option value="$PROJECT_DIR$/sdk" />
             <option value="$PROJECT_DIR$/tools" />
             <option value="$PROJECT_DIR$/tools/markdown-javadoc" />
             <option value="$PROJECT_DIR$/tools/pcf-to-sqf" />
