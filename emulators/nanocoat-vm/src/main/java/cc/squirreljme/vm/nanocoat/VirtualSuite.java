@@ -87,26 +87,30 @@ public final class VirtualSuite
 	@SuppressWarnings("unused")
 	private long __list()
 	{
-		// Was this determined on a previous run already?
-		PointerFlatList<VirtualLibrary> result = this._libraries;
-		if (result != null)
+		synchronized (this)
+		{
+			// Was this determined on a previous run already?
+			PointerFlatList<VirtualLibrary> result = this._libraries;
+			if (result != null)
+				return result.pointerAddress();
+			
+			// Get the names of libraries that are available.
+			VMSuiteManager manager = this.manager;
+			AllocPool pool = this.pool;
+			String[] libNames = manager.listLibraryNames();
+			
+			// Load every single one, to make it easier to use.
+			int numLibs = libNames.length;
+			VirtualLibrary[] virtualLibs = new VirtualLibrary[numLibs];
+			for (int i = 0; i < numLibs; i++)
+				virtualLibs[i] = new VirtualLibrary(pool,
+					manager.loadLibrary(libNames[i]));
+			
+			// Store libraries and give it back to NanoCoat
+			result = FlatList.fromArray(pool, virtualLibs);
+			this._libraries = result;
 			return result.pointerAddress();
-		
-		// Get the names of libraries that are available.
-		VMSuiteManager manager = this.manager;
-		AllocPool pool = this.pool;
-		String[] libNames = manager.listLibraryNames();
-		
-		// Load every single one, to make it easier to use.
-		int numLibs = libNames.length;
-		VirtualLibrary[] virtualLibs = new VirtualLibrary[numLibs];
-		for (int i = 0; i < numLibs; i++)
-			virtualLibs[i] = new VirtualLibrary(pool,
-				manager.loadLibrary(libNames[i]));
-		
-		// Store libraries and give it
-		result = FlatList.fromArray(pool, virtualLibs);
-		throw Debugging.todo();
+		}
 	}
 	
 	/**
