@@ -105,7 +105,7 @@ SJME_TEST_DECLARE(testRomSuiteClassPathByName)
 	result = NULL;
 	if (SJME_IS_ERROR(sjme_rom_resolveClassPathByName(suite,
 		forwardNames, &result)) || result == NULL)
-		return sjme_unitFail(test, "Could not resolve reverse names?");
+		return sjme_unitFail(test, "Could not resolve names?");
 
 	/* The libraries must match! */
 	sjme_unitEqualI(test, 3, result->length,
@@ -121,7 +121,7 @@ SJME_TEST_DECLARE(testRomSuiteClassPathByName)
 	result = NULL;
 	if (SJME_IS_ERROR(sjme_rom_resolveClassPathByName(suite,
 			backwardNames, &result)) || result == NULL)
-		return sjme_unitFail(test, "Could not resolve names.");
+		return sjme_unitFail(test, "Could not resolve reverse names?");
 
 	/* The libraries must match! */
 	sjme_unitEqualI(test, 3, result->length,

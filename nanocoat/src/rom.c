@@ -67,6 +67,29 @@ sjme_errorCode sjme_rom_fromPayload(
 	return SJME_ERROR_UNKNOWN;
 }
 
+sjme_errorCode sjme_rom_libraryHash(
+	sjme_attrInNotNull sjme_rom_library library,
+	sjme_attrOutNotNull sjme_jint* outHash)
+{
+	if (library == NULL || outHash == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Does it need to be calculated? */
+	if (library->nameHash == 0)
+	{
+		/* This should always be set. */
+		if (library->name == NULL)
+			return SJME_ERROR_ILLEGAL_STATE;
+
+		/* Calculate the hash. */
+		library->nameHash = sjme_string_hash(library->name);
+	}
+
+	/* Copy it in. */
+	*outHash = library->nameHash;
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_rom_newSuite(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrOutNotNull sjme_rom_suite* outSuite,
@@ -177,8 +200,10 @@ sjme_errorCode sjme_rom_resolveClassPathByName(
 {
 	sjme_list_sjme_rom_library* suiteLibs;
 	sjme_errorCode error;
-	sjme_jint length, i;
-	sjme_rom_library* result;
+	sjme_jint length, i, at, hash, numSuiteLibs;
+	sjme_rom_library* working;
+	sjme_rom_library lib;
+	sjme_jint* inHashes;
 
 	if (inSuite == NULL || inNames == NULL || outLibs == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -188,10 +213,24 @@ sjme_errorCode sjme_rom_resolveClassPathByName(
 	if (length < 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
+	/* Make sure there are no NULL libraries as input. */
+	for (i = 0; i < length; i++)
+		if (inNames->elements[i] == NULL)
+			return SJME_ERROR_NULL_ARGUMENTS;
+
 	/* Allocate temporary storage on the stack for the libraries we want. */
-	result = alloca(sizeof(*result) * length);
-	if (result == NULL)
+	working = sjme_alloca(sizeof(*working) * length);
+	inHashes = sjme_alloca(sizeof(*inHashes) * length);
+	if (working == NULL || inHashes == NULL)
 		return SJME_ERROR_OUT_OF_MEMORY;
+
+	/* Clear memory. */
+	memset(working, 0, sizeof(*working) * length);
+	memset(inHashes, 0, sizeof(*inHashes) * length);
+
+	/* First hash all the input libraries, so we can quickly scan through. */
+	for (i = 0; i < length; i++)
+		inHashes[i] = sjme_string_hash(inNames->elements[i]);
 
 	/* Obtain the list of libraries within the suite. */
 	suiteLibs = NULL;
@@ -199,10 +238,31 @@ sjme_errorCode sjme_rom_resolveClassPathByName(
 		&suiteLibs) || suiteLibs == NULL))
 		return error;
 
-	/*sjme_string_hash*/
+	/* Go through each library and get hash matches. */
+	numSuiteLibs = suiteLibs->length;
+	for (i = 0; i < numSuiteLibs; i++)
+	{
+		/* Get hash of this library. */
+		lib = suiteLibs->elements[i];
+		if (SJME_IS_ERROR(error = sjme_rom_libraryHash(lib,
+			&hash)))
+			return error;
 
-	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+		/* Look for match in output. */
+		for (at = 0; at < length; at++)
+			if (working[at] == NULL && inHashes[at] == hash &&
+				0 == strcmp(inNames->elements[at], lib->name))
+				working[at] = lib;
+	}
+
+	/* Scan through and fail if any are null, that is not found. */
+	for (at = 0; at < length; at++)
+		if (working[at] == NULL)
+			return SJME_ERROR_LIBRARY_NOT_FOUND;
+
+	/* Return the libraries which gets placed into a list as a copy. */
+	return sjme_list_newA(inSuite->cache->common.allocPool,
+		sjme_rom_library, 0, length, outLibs, working);
 }
 
 sjme_errorCode sjme_rom_suiteLibraries(

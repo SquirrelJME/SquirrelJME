@@ -220,6 +220,18 @@ sjme_errorCode sjme_rom_fromPayload(
 	sjme_attrInNotNull const sjme_payload_config* payloadConfig);
 
 /**
+ * Calculates the hash of the given library.
+ *
+ * @param library The library to calculate the hash of.
+ * @param outHash The output hash.
+ * @return On any resultant error.
+ * @since 2023/12/27
+ */
+sjme_errorCode sjme_rom_libraryHash(
+	sjme_attrInNotNull sjme_rom_library library,
+	sjme_attrOutNotNull sjme_jint* outHash);
+
+/**
  * Makes a virtual suite from the given functions.
  *
  * @param pool The pool to allocate within.
