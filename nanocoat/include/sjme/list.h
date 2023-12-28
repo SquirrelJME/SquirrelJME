@@ -113,6 +113,12 @@ SJME_LIST_DECLARE(sjme_lpstr, 0);
 /** List of @c sjme_lpcstr. */
 SJME_LIST_DECLARE(sjme_lpcstr, 0);
 
+/** List of @c sjme_jobject. */
+SJME_LIST_DECLARE(sjme_jobject, 0);
+
+/** List of @c sjme_pointer. */
+SJME_LIST_DECLARE(sjme_pointer, 0);
+
 /**
  * Allocates a given list generically.
  *

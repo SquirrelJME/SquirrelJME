@@ -83,7 +83,7 @@ public final class AllocPool
 		if (__size <= 0)
 			throw new IllegalArgumentException("Zero or negative size.");
 		
-		/** Allocate memory. */
+		// Allocate memory.
 		long block = AllocPool.__alloc(this._pointer, __size);
 		return new AllocLink(block, AllocPool.__getLink(block));
 	}

@@ -25,6 +25,6 @@ public class IntegerFlatList
 	 */
 	public IntegerFlatList(AllocLink __link)
 	{
-		super(__link, false);
+		super(__link, false, (Integer[])null);
 	}
 }

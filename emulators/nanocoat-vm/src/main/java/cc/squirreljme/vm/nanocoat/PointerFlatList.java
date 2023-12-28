@@ -9,6 +9,10 @@
 
 package cc.squirreljme.vm.nanocoat;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * A flat list of pointers.
  *
@@ -28,6 +32,34 @@ public class PointerFlatList<E extends Pointer>
 	public PointerFlatList(AllocLink __link)
 		throws NullPointerException
 	{
-		super(__link, true);
+		super(__link, true, (E[])null);
+	}
+	
+	/**
+	 * Initializes the flat list.
+	 *
+	 * @param __link The link used.
+	 * @param __existing Existing elements.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/12/27
+	 */
+	public PointerFlatList(AllocLink __link, E... __existing)
+		throws NullPointerException
+	{
+		super(__link, true, __existing);
+	}
+	
+	/**
+	 * Initializes the flat list.
+	 *
+	 * @param __link The link used.
+	 * @param __existing Existing elements.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/12/27
+	 */
+	public PointerFlatList(AllocLink __link, List<E> __existing)
+		throws NullPointerException
+	{
+		super(__link, true, __existing);
 	}
 }

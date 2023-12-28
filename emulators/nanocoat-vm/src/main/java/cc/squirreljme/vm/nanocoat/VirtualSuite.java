@@ -26,6 +26,9 @@ public final class VirtualSuite
 	/** The suite manager. */
 	protected final VMSuiteManager manager;
 	
+	/** The memory pool this is allocated within. */
+	protected final AllocPool pool;
+	
 	/** The pointer to the suite functions. */
 	private final AllocLink _structLink;
 	
@@ -57,6 +60,7 @@ public final class VirtualSuite
 		this.manager = __suiteManager;
 		
 		// Allocate data for the suite
+		this.pool = __pool;
 		AllocLink structLink = __pool.alloc(AllocSizeOf.ROM_SUITE_FUNCTIONS);
 		this._structLink = structLink;
 		
@@ -83,11 +87,25 @@ public final class VirtualSuite
 	@SuppressWarnings("unused")
 	private long __list()
 	{
-		// Was this determine on a previous run already?
+		// Was this determined on a previous run already?
 		PointerFlatList<VirtualLibrary> result = this._libraries;
 		if (result != null)
 			return result.pointerAddress();
 		
+		// Get the names of libraries that are available.
+		VMSuiteManager manager = this.manager;
+		AllocPool pool = this.pool;
+		String[] libNames = manager.listLibraryNames();
+		
+		// Load every single one, to make it easier to use.
+		int numLibs = libNames.length;
+		VirtualLibrary[] virtualLibs = new VirtualLibrary[numLibs];
+		for (int i = 0; i < numLibs; i++)
+			virtualLibs[i] = new VirtualLibrary(pool,
+				manager.loadLibrary(libNames[i]));
+		
+		// Store libraries and give it
+		result = FlatList.fromArray(pool, virtualLibs);
 		throw Debugging.todo();
 	}
 	

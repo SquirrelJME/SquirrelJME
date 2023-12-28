@@ -303,6 +303,16 @@ typedef const char* sjme_lpcstr;
 #define SJME_BASIC_TYPEOF_sjme_lpcstr SJME_BASIC_TYPE_ID_OBJECT
 
 /**
+ * Generic pointer.
+ *
+ * @since 2023/12/27
+ */
+typedef const void* sjme_pointer;
+
+/** Basic @c sjme_pointer type identifier. */
+#define SJME_BASIC_TYPEOF_sjme_pointer SJME_BASIC_TYPE_ID_OBJECT
+
+/**
  * Long value.
  * 
  * @since 2023/07/25
