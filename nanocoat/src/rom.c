@@ -109,13 +109,13 @@ sjme_errorCode sjme_rom_newSuite(
 
 	/* Allocate resultant suite. */
 	result = NULL;
-	if (SJME_IS_ERROR(error = sjme_alloc(pool, sizeof(*result),
-		&result)) || result == NULL)
+	if (SJME_IS_ERROR(error = sjme_alloc(pool,
+		SJME_SIZEOF_SUITE_CORE(), &result)) || result == NULL)
 		return error;
 
 	/* Initialize cache. */
 	if (SJME_IS_ERROR(error = initCacheFunc(inFunctions,
-		pool, result)) || result->cache == NULL)
+		pool, result)))
 	{
 		/* Cleanup bad pointer. */
 		sjme_alloc_free(result);
@@ -125,7 +125,7 @@ sjme_errorCode sjme_rom_newSuite(
 
 	/* Initialize fields. */
 	result->functions = inFunctions;
-	result->cache->common.allocPool = pool;
+	result->cache.common.allocPool = pool;
 
 	/* Use result. */
 	*outSuite = result;
@@ -189,7 +189,7 @@ sjme_errorCode sjme_rom_resolveClassPathById(
 			return SJME_ERROR_LIBRARY_NOT_FOUND;
 
 	/* Return the libraries which gets placed into a list as a copy. */
-	return sjme_list_newA(inSuite->cache->common.allocPool,
+	return sjme_list_newA(inSuite->cache.common.allocPool,
 		sjme_rom_library, 0, length, outLibs, working);
 }
 
@@ -261,7 +261,7 @@ sjme_errorCode sjme_rom_resolveClassPathByName(
 			return SJME_ERROR_LIBRARY_NOT_FOUND;
 
 	/* Return the libraries which gets placed into a list as a copy. */
-	return sjme_list_newA(inSuite->cache->common.allocPool,
+	return sjme_list_newA(inSuite->cache.common.allocPool,
 		sjme_rom_library, 0, length, outLibs, working);
 }
 
@@ -278,8 +278,8 @@ sjme_errorCode sjme_rom_suiteLibraries(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Must be a valid cache. */
-	cache = inSuite->cache;
-	if (cache == NULL || cache->common.allocPool == NULL)
+	cache = &inSuite->cache;
+	if (cache->common.allocPool == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 
 	/* Has this been processed already? */

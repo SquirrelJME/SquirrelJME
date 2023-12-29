@@ -421,32 +421,24 @@ sjme_jboolean sjme_mock_doRomSuite(
 
 	/* If there is no cache init, just initialize it to something... */
 	if (writeFunctions->initCache == NULL)
-	{
-		/* Just allocate one... */
-		suite->cache = NULL;
-		if (SJME_IS_ERROR(sjme_alloc(inState->allocPool,
-				SJME_SIZEOF_SUITE_CACHE(int),
-				(void**)&suite->cache)) || suite->cache == NULL)
-			return sjme_die("Could not fake init cache.");
-	}
+		memset(&suite->cache, 0,
+			SJME_SIZEOF_SUITE_CACHE_N(writeFunctions->cacheTypeSize));
 
 	/* Otherwise call the initializer. */
 	else
 	{
-		suite->cache = NULL;
 		if (SJME_IS_ERROR(writeFunctions->initCache(
-			writeFunctions, inState->allocPool, suite)) ||
-			suite->cache == NULL)
+			writeFunctions, inState->allocPool, suite)))
 			return sjme_die("Could not initialize suite via cache init.");
 	}
 
 	/* Set the allocation pool to use if not set. */
-	if (suite->cache->common.allocPool == NULL)
-		suite->cache->common.allocPool = inState->allocPool;
+	if (suite->cache.common.allocPool == NULL)
+		suite->cache.common.allocPool = inState->allocPool;
 
 	/* Is there a pre-cache used for libraries? */
 	if (suiteData->cacheLibraries != NULL)
-		suite->cache->libraries = suiteData->cacheLibraries;
+		suite->cache.libraries = suiteData->cacheLibraries;
 
 	/* Place finalized suite down. */
 	inState->romSuites[inState->numRomSuites] = suite;

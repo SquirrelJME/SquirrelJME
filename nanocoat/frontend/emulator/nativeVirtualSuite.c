@@ -10,6 +10,7 @@
 #include <jni.h>
 
 #include "frontend/emulator/jniHelper.h"
+#include "frontend/emulator/common.h"
 #include "sjme/rom.h"
 #include "sjme/alloc.h"
 #include "sjme/debug.h"
@@ -26,6 +27,17 @@ typedef struct sjme_jni_virtualSuite_cache
 	sjme_jint todo;
 } sjme_jni_virtualSuite_cache;
 
+/**
+ * Caches for libraries.
+ *
+ * @since 2023/12/29
+ */
+typedef struct sjme_jni_virtualLibrary_cache
+{
+	/** Todo. */
+	sjme_jint todo;
+} sjme_jni_virtualLibrary_cache;
+
 static sjme_errorCode sjme_jni_virtualSuite_initCache(
 	sjme_attrInNotNull const sjme_rom_suiteFunctions* functions,
 	sjme_attrInNotNull sjme_alloc_pool* pool,
@@ -35,13 +47,6 @@ static sjme_errorCode sjme_jni_virtualSuite_initCache(
 
 	if (functions == NULL || pool == NULL || targetSuite == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* Initialize base structure. */
-	targetSuite->cache = NULL;
-	if (SJME_IS_ERROR(error = sjme_alloc(pool,
-		SJME_SIZEOF_SUITE_CACHE(sjme_jni_virtualSuite_cache),
-		(void**)&targetSuite->cache)) || targetSuite->cache == NULL)
-		return error;
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -106,6 +111,7 @@ jlong SJME_JNI_METHOD(SJME_CLASS_VIRTUAL_SUITE, _1_1init)
 	functions = SJME_JLONG_TO_POINTER(sjme_rom_suiteFunctions*, structPtr);
 
 	/* Set function handlers. */
+	functions->cacheTypeSize = sizeof(sjme_jni_virtualSuite_cache);
 	functions->initCache = sjme_jni_virtualSuite_initCache;
 	functions->libraryId = sjme_jni_virtualSuite_libraryId;
 	functions->list = sjme_jni_virtualSuite_list;

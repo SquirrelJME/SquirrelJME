@@ -13,6 +13,7 @@ import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.vm.VMClassLibrary;
 
 /**
  * Provides virtual access to a suite for {@link JarPackageShelf}, this acts
@@ -103,8 +104,12 @@ public final class VirtualSuite
 			int numLibs = libNames.length;
 			VirtualLibrary[] virtualLibs = new VirtualLibrary[numLibs];
 			for (int i = 0; i < numLibs; i++)
-				virtualLibs[i] = new VirtualLibrary(pool,
-					manager.loadLibrary(libNames[i]));
+			{
+				VMClassLibrary lib = manager.loadLibrary(
+					libNames[i]);
+				virtualLibs[i] = new VirtualLibrary(pool, lib,
+					manager.libraryId(lib));
+			}
 			
 			// Store libraries and give it back to NanoCoat
 			result = FlatList.fromArray(pool, virtualLibs);

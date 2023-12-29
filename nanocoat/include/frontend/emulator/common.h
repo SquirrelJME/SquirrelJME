@@ -8,21 +8,19 @@
 // -------------------------------------------------------------------------*/
 
 /**
- * Internal ROM structures, definitely do not touch these.
+ * Common emulator defines and functions.
  * 
- * @since 2023/12/12
+ * @since 2023/12/28
  */
 
-#ifndef SQUIRRELJME_ROMINTERNAL_H
-#define SQUIRRELJME_ROMINTERNAL_H
-
-#include "sjme/rom.h"
+#ifndef SQUIRRELJME_COMMON_H
+#define SQUIRRELJME_COMMON_H
 
 /* Anti-C++. */
 #ifdef __cplusplus
 	#ifndef SJME_CXX_IS_EXTERNED
 		#define SJME_CXX_IS_EXTERNED
-		#define SJME_CXX_SQUIRRELJME_ROMINTERNAL_H
+		#define SJME_CXX_SQUIRRELJME_COMMON_H
 extern "C" {
 	#endif /* #ifdef SJME_CXX_IS_EXTERNED */
 #endif     /* #ifdef __cplusplus */
@@ -33,11 +31,11 @@ extern "C" {
 
 /* Anti-C++. */
 #ifdef __cplusplus
-	#ifdef SJME_CXX_SQUIRRELJME_ROMINTERNAL_H
+	#ifdef SJME_CXX_SQUIRRELJME_COMMON_H
 }
-		#undef SJME_CXX_SQUIRRELJME_ROMINTERNAL_H
+		#undef SJME_CXX_SQUIRRELJME_COMMON_H
 		#undef SJME_CXX_IS_EXTERNED
-	#endif /* #ifdef SJME_CXX_SQUIRRELJME_ROMINTERNAL_H */
+	#endif /* #ifdef SJME_CXX_SQUIRRELJME_COMMON_H */
 #endif     /* #ifdef __cplusplus */
 
-#endif /* SQUIRRELJME_ROMINTERNAL_H */
+#endif /* SQUIRRELJME_COMMON_H */

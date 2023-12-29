@@ -18,6 +18,7 @@
 
 #include "sjme/nvm.h"
 #include "sjme/list.h"
+#include "sjme/romInternal.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -31,31 +32,11 @@ extern "C" {
 /*--------------------------------------------------------------------------*/
 
 /**
- * Internal cache for ROM libraries.
- *
- * @since 2023/12/12
- */
-typedef struct sjme_rom_libraryCache sjme_rom_libraryCache;
-
-/**
  * Standard ROM library structure.
  *
  * @since 2023/12/12
  */
-typedef struct sjme_rom_libraryCore
-{
-	/** Internal cache. */
-	sjme_rom_libraryCache* cache;
-
-	/** The library ID. */
-	sjme_jint id;
-
-	/** The library name. */
-	sjme_lpcstr name;
-
-	/** Hash of the library name. */
-	sjme_jint nameHash;
-} sjme_rom_libraryCore;
+typedef struct sjme_rom_libraryCore sjme_rom_libraryCore;
 
 /** Synthetic library structure. */
 typedef sjme_rom_libraryCore* sjme_rom_library;
@@ -67,11 +48,140 @@ SJME_LIST_DECLARE(sjme_rom_library, 0);
 #define SJME_BASIC_TYPEOF_sjme_rom_library SJME_BASIC_TYPE_ID_OBJECT
 
 /**
+ * Common cache between suites and libraries.
+ *
+ * @since 2023/12/20
+ */
+typedef struct sjme_rom_cache
+{
+	/** The allocation pool to use. */
+	sjme_alloc_pool* allocPool;
+
+	/** Non-common cache size. */
+	sjme_jint uncommonSize;
+} sjme_rom_cache;
+
+/**
+ * Internal cache for ROM libraries.
+ *
+ * @since 2023/12/12
+ */
+typedef struct sjme_rom_libraryCache
+{
+	/** Common cache data. */
+	sjme_rom_cache common;
+
+	/** Uncommon cache generic structure. */
+	sjme_jubyte uncommon[sjme_flexibleArrayCount];
+} sjme_rom_libraryCache;
+
+/**
+ * Determines the size of the library cache.
+ *
+ * @param uncommonSize The uncommon cache size.
+ * @return The library cache size.
+ * @since 2023/12/29
+ */
+#define SJME_SIZEOF_LIBRARY_CACHE_N(uncommonSize) \
+	(sizeof(sjme_rom_libraryCache) + (offsetof(sjme_rom_libraryCache, \
+		uncommon[0]) - offsetof(sjme_rom_libraryCache, uncommon)) + \
+		(uncommonSize))
+
+/**
+ * Determines the size of the library cache.
+ *
+ * @param uncommonType The uncommon cache type.
+ * @return The library cache size.
+ * @since 2023/12/29
+ */
+#define SJME_SIZEOF_LIBRARY_CACHE(uncommonType) \
+	SJME_SIZEOF_LIBRARY_CACHE_N(sizeof(uncommonType))
+
+/**
+ * Internal cache for ROM suites.
+ *
+ * @since 2023/12/12
+ */
+typedef struct sjme_rom_suiteCache
+{
+	/** Common cache data. */
+	sjme_rom_cache common;
+
+	/** Libraries that exist within the suite. */
+	sjme_list_sjme_rom_library* libraries;
+
+	/** Uncommon cache generic structure. */
+	sjme_jlong uncommon[sjme_flexibleArrayCount];
+} sjme_rom_suiteCache;
+
+/**
+ * Determines the size of the suite cache.
+ *
+ * @param uncommonSize The uncommon type size.
+ * @return The suite cache size.
+ * @since 2023/12/29
+ */
+#define SJME_SIZEOF_SUITE_CACHE_N(uncommonSize) \
+	(sizeof(sjme_rom_suiteCache) + (offsetof(sjme_rom_suiteCache, \
+		uncommon[0]) - offsetof(sjme_rom_suiteCache, uncommon)) + \
+		(uncommonSize))
+
+/**
+ * Determines the size of the suite cache.
+ *
+ * @param uncommonType The uncommon cache type.
+ * @return The suite cache size.
+ * @since 2023/12/21
+ */
+#define SJME_SIZEOF_SUITE_CACHE(uncommonType) \
+	SJME_SIZEOF_SUITE_CACHE_N(sizeof(uncommonType))
+
+/**
  * Functions used to access a single library.
  *
  * @since 2023/12/12
  */
 typedef struct sjme_rom_libraryFunctions sjme_rom_libraryFunctions;
+
+struct sjme_rom_libraryCore
+{
+	/** Functions used to access library information. */
+	const sjme_rom_libraryFunctions* function;
+
+	/** The library ID. */
+	sjme_jint id;
+
+	/** The library name. */
+	sjme_lpcstr name;
+
+	/** Hash of the library name. */
+	sjme_jint nameHash;
+
+	/** Internal cache, used by internal library functions. */
+	sjme_rom_libraryCache cache;
+};
+
+/**
+ * Determines the size of the library core.
+ *
+ * @param uncommonSize The uncommon cache size.
+ * @return The library core size.
+ * @since 2023/12/29
+ */
+#define SJME_SIZEOF_LIBRARY_CORE_N(uncommonSize) \
+    (sizeof(sjme_rom_libraryCore) + \
+		(SJME_SIZEOF_LIBRARY_CACHE_N(uncommonSize) - \
+		sizeof(sjme_rom_libraryCore)))
+
+/**
+ * Determines the size of the library core.
+ *
+ * @param uncommonType The uncommon cache type.
+ * @return The library core size.
+ * @since 2023/12/29
+ */
+#define SJME_SIZEOF_LIBRARY_CORE(uncommonType) \
+    SJME_SIZEOF_LIBRARY_CORE_N(sizeof(sjme_rom_libraryCore))
 
 /**
  * Functions used to access a suite, which is an entire ROM.
@@ -79,13 +189,6 @@ typedef struct sjme_rom_libraryFunctions sjme_rom_libraryFunctions;
  * @since 2023/12/12
  */
 typedef struct sjme_rom_suiteFunctions sjme_rom_suiteFunctions;
-
-/**
- * Internal cache for ROM suites.
- *
- * @since 2023/12/12
- */
-typedef struct sjme_rom_suiteCache sjme_rom_suiteCache;
 
 typedef sjme_errorCode (*sjme_rom_libraryPathFunc)();
 
@@ -146,6 +249,9 @@ struct sjme_rom_libraryFunctions
 	/** Wrapped object, if applicable. */
 	sjme_frontEnd frontEnd;
 
+	/** Size of the cache type. */
+	sjme_jint cacheTypeSize;
+
 	/** Function to get the path of a library. */
 	sjme_rom_libraryPathFunc path;
 
@@ -167,6 +273,9 @@ struct sjme_rom_suiteFunctions
 	/** Wrapped object, if applicable. */
 	sjme_frontEnd frontEnd;
 
+	/** Size of the cache type. */
+	sjme_jint cacheTypeSize;
+
 	/** Initialize suite cache. */
 	sjme_rom_suiteInitCacheFunc initCache;
 
@@ -182,12 +291,33 @@ struct sjme_rom_suiteFunctions
 
 struct sjme_rom_suiteCore
 {
-	/** Internal cache. */
-	sjme_rom_suiteCache* cache;
-
 	/** Functions. */
 	const sjme_rom_suiteFunctions* functions;
+
+	/** Internal cache, used by suite implementations. */
+	sjme_rom_suiteCache cache;
 };
+
+/**
+ * Determines the size of the suite core.
+ *
+ * @param uncommonSize The uncommon cache size.
+ * @return The suite core size.
+ * @since 2023/12/29
+ */
+#define SJME_SIZEOF_SUITE_CORE_N(uncommonSize) \
+    (sizeof(sjme_rom_suiteCore) + (SJME_SIZEOF_SUITE_CACHE_N(uncommonSize) - \
+		sizeof(sjme_rom_suiteCache)))
+
+/**
+ * Determines the size of the suite core.
+ *
+ * @param uncommonType The uncommon cache type.
+ * @return The suite core size.
+ * @since 2023/12/29
+ */
+#define SJME_SIZEOF_SUITE_CORE(uncommonType) \
+    SJME_SIZEOF_SUITE_CORE_N(sizeof(sjme_rom_suiteCache))
 
 /**
  * Combines multiple suites into one.

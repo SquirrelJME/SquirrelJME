@@ -23,7 +23,7 @@ static sjme_list_sjme_rom_library testFakeSuiteList =
 };
 
 static sjme_errorCode testSuiteList(
-	sjme_attrInNotNull sjme_rom_suite* targetSuite,
+	sjme_attrInNotNull sjme_rom_suite targetSuite,
 	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibraries)
 {
 	*outLibraries = &testFakeSuiteList;
@@ -89,7 +89,7 @@ SJME_TEST_DECLARE(testRomSuiteLibraries)
 		"Different set of libraries returned?");
 
 	/* The cache should get our libraries. */
-	sjme_unitEqualP(test, suite->cache->libraries, &testFakeSuiteList,
+	sjme_unitEqualP(test, suite->cache.libraries, &testFakeSuiteList,
 		"Library list was not cached?");
 
 	/* Success! */
