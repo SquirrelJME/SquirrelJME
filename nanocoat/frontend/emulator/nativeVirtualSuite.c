@@ -39,14 +39,21 @@ typedef struct sjme_jni_virtualLibrary_cache
 } sjme_jni_virtualLibrary_cache;
 
 static sjme_errorCode sjme_jni_virtualSuite_initCache(
-	sjme_attrInNotNull const sjme_rom_suiteFunctions* functions,
-	sjme_attrInNotNull sjme_alloc_pool* pool,
-	sjme_attrInOutNotNull sjme_rom_suite targetSuite)
+	sjme_attrInNotNull sjme_rom_suite inSuite)
 {
-	sjme_errorCode error;
+	JNIEnv* env;
 
-	if (functions == NULL || pool == NULL || targetSuite == NULL)
+	if (inSuite == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Get env back. */
+	env = (JNIEnv*)inSuite->functions->frontEnd.data;
+	
+	/* Setup wrapper to reference, note that there is only ever a single */
+	/* Object since we dynamically allocate the functions accordingly. */
+	inSuite->cache.common.frontEnd.data = env;
+	inSuite->cache.common.frontEnd.wrapper =
+		inSuite->functions->frontEnd.wrapper;
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -76,8 +83,8 @@ static sjme_errorCode sjme_jni_virtualSuite_list(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Get instance that we need to call into. */
-	env = targetSuite->functions->frontEnd.data;
-	virtualSuite = targetSuite->functions->frontEnd.wrapper;
+	env = targetSuite->cache.common.frontEnd.data;
+	virtualSuite = targetSuite->cache.common.frontEnd.wrapper;
 	classy = (*env)->GetObjectClass(env, virtualSuite);
 
 	/* Execute method accordingly. */
@@ -111,13 +118,13 @@ jlong SJME_JNI_METHOD(SJME_CLASS_VIRTUAL_SUITE, _1_1init)
 	functions = SJME_JLONG_TO_POINTER(sjme_rom_suiteFunctions*, structPtr);
 
 	/* Set function handlers. */
-	functions->cacheTypeSize = sizeof(sjme_jni_virtualSuite_cache);
+	functions->uncommonTypeSize = sizeof(sjme_jni_virtualSuite_cache);
 	functions->initCache = sjme_jni_virtualSuite_initCache;
 	functions->libraryId = sjme_jni_virtualSuite_libraryId;
 	functions->list = sjme_jni_virtualSuite_list;
 	functions->loadLibrary = sjme_jni_virtualSuite_loadLibrary;
 
-	/* Setup wrapper to reference. */
+	/* Set environment to call back into Java code. */
 	functions->frontEnd.data = env;
 	functions->frontEnd.wrapper = SJME_FRONT_END_WRAP(
 		(*env)->NewGlobalRef(env, this));

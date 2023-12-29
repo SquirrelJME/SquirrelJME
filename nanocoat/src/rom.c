@@ -110,12 +110,17 @@ sjme_errorCode sjme_rom_newSuite(
 	/* Allocate resultant suite. */
 	result = NULL;
 	if (SJME_IS_ERROR(error = sjme_alloc(pool,
-		SJME_SIZEOF_SUITE_CORE(), &result)) || result == NULL)
+		SJME_SIZEOF_SUITE_CORE_N(inFunctions->uncommonTypeSize),
+		&result)) || result == NULL)
 		return error;
 
+	/* Setup some basic cache details. */
+	result->functions = inFunctions;
+	result->cache.common.allocPool = pool;
+	result->cache.common.uncommonSize = inFunctions->uncommonTypeSize;
+
 	/* Initialize cache. */
-	if (SJME_IS_ERROR(error = initCacheFunc(inFunctions,
-		pool, result)))
+	if (SJME_IS_ERROR(error = initCacheFunc(result)))
 	{
 		/* Cleanup bad pointer. */
 		sjme_alloc_free(result);

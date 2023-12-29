@@ -12,7 +12,6 @@ package cc.squirreljme.vm.nanocoat;
 import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
 
 /**
@@ -31,7 +30,7 @@ public final class VirtualSuite
 	protected final AllocPool pool;
 	
 	/** The pointer to the suite functions. */
-	private final AllocLink _structLink;
+	private final AllocLink _suiteFunctions;
 	
 	/** Cached libraries list? */
 	private volatile PointerFlatList<VirtualLibrary> _libraries;
@@ -63,7 +62,7 @@ public final class VirtualSuite
 		// Allocate data for the suite
 		this.pool = __pool;
 		AllocLink structLink = __pool.alloc(AllocSizeOf.ROM_SUITE_FUNCTIONS);
-		this._structLink = structLink;
+		this._suiteFunctions = structLink;
 		
 		// Initialize
 		this.__init(structLink.pointerAddress(), this);
@@ -76,7 +75,7 @@ public final class VirtualSuite
 	@Override
 	public long pointerAddress()
 	{
-		return this._structLink.pointerAddress();
+		return this._suiteFunctions.pointerAddress();
 	}
 	
 	/**

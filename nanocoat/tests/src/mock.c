@@ -422,13 +422,13 @@ sjme_jboolean sjme_mock_doRomSuite(
 	/* If there is no cache init, just initialize it to something... */
 	if (writeFunctions->initCache == NULL)
 		memset(&suite->cache, 0,
-			SJME_SIZEOF_SUITE_CACHE_N(writeFunctions->cacheTypeSize));
+			SJME_SIZEOF_SUITE_CACHE_N(writeFunctions->uncommonTypeSize));
 
 	/* Otherwise call the initializer. */
 	else
 	{
 		if (SJME_IS_ERROR(writeFunctions->initCache(
-			writeFunctions, inState->allocPool, suite)))
+			suite)))
 			return sjme_die("Could not initialize suite via cache init.");
 	}
 

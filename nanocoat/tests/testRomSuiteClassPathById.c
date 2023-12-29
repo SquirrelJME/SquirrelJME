@@ -16,10 +16,10 @@
 #include "unit.h"
 
 static sjme_lpcstr testRomNames[3] =
-	{
-		"squirrels.jar",
-		"are.jar",
-		"cute.jar"
+{
+	"squirrels.jar",
+	"are.jar",
+	"cute.jar"
 };
 
 static sjme_jboolean configRomSuiteClassPathById(

@@ -57,6 +57,9 @@ typedef struct sjme_rom_cache
 	/** The allocation pool to use. */
 	sjme_alloc_pool* allocPool;
 
+	/** Wrapped object, if applicable. */
+	sjme_frontEnd frontEnd;
+
 	/** Non-common cache size. */
 	sjme_jint uncommonSize;
 } sjme_rom_cache;
@@ -203,16 +206,12 @@ typedef sjme_errorCode (*sjme_rom_librarySizeFunc)();
 /**
  * Function used to initialize the suite cache.
  *
- * @param functions The functions definitions and potential internal state.
- * @param pool The pool to allocate within, if needed.
- * @param targetSuite The suite to initialize the cache for.
+ * @param inSuite The input suite.
  * @return Any error state.
  * @since 2023/12/15
  */
 typedef sjme_errorCode (*sjme_rom_suiteInitCacheFunc)(
-	sjme_attrInNotNull const sjme_rom_suiteFunctions* functions,
-	sjme_attrInNotNull sjme_alloc_pool* pool,
-	sjme_attrInOutNotNull sjme_rom_suite targetSuite);
+	sjme_attrInNotNull sjme_rom_suite inSuite);
 
 /**
  * Returns the ID of the library for the given suite.
@@ -246,11 +245,11 @@ typedef sjme_errorCode (*sjme_rom_suiteLoadLibraryFunc)();
 
 struct sjme_rom_libraryFunctions
 {
-	/** Wrapped object, if applicable. */
-	sjme_frontEnd frontEnd;
-
 	/** Size of the cache type. */
-	sjme_jint cacheTypeSize;
+	sjme_jint uncommonTypeSize;
+
+	/** Data possibly needed by the front end to function. */
+	sjme_frontEnd frontEnd;
 
 	/** Function to get the path of a library. */
 	sjme_rom_libraryPathFunc path;
@@ -270,11 +269,11 @@ struct sjme_rom_libraryFunctions
 
 struct sjme_rom_suiteFunctions
 {
-	/** Wrapped object, if applicable. */
-	sjme_frontEnd frontEnd;
-
 	/** Size of the cache type. */
-	sjme_jint cacheTypeSize;
+	sjme_jint uncommonTypeSize;
+
+	/** Data possibly needed by the front end to function. */
+	sjme_frontEnd frontEnd;
 
 	/** Initialize suite cache. */
 	sjme_rom_suiteInitCacheFunc initCache;
