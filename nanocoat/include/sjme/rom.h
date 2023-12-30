@@ -336,7 +336,7 @@ struct sjme_rom_suiteCore
 sjme_errorCode sjme_rom_fromMerge(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrOutNotNull sjme_rom_suite* outSuite,
-	sjme_attrInNotNull sjme_rom_suite** inSuites,
+	sjme_attrInNotNull sjme_rom_suite* inSuites,
 	sjme_attrInPositive sjme_jint numInSuites);
 
 /**

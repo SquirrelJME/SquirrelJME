@@ -1158,7 +1158,7 @@ struct sjme_nvm_state
 	const sjme_nvm_stateHooks* hooks;
 
 	/* The suite containing all the libraries. */
-	sjme_rom_suite* suite;
+	sjme_rom_suite suite;
 };
 
 /**
@@ -1280,21 +1280,39 @@ typedef enum sjme_errorCode
 
 	/** A library was not found. */
 	SJME_ERROR_LIBRARY_NOT_FOUND = -31,
+
+	/** Boot failure. */
+	SJME_ERROR_BOOT_FAILURE = -32,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -32
+	SJME_NUM_ERROR_CODES = -33
 } sjme_errorCode;
 
 /**
  * Is this expression considered an error?
  *
- * @param x The expression.
+ * @param error The expression.
  * @since 2023/12/08
  */
-static inline sjme_attrArtificial
-	sjme_jboolean SJME_IS_ERROR(sjme_errorCode error)
+static inline sjme_attrArtificial sjme_jboolean SJME_IS_ERROR(
+	sjme_errorCode error)
 {
 	return error < SJME_ERROR_NONE;
+}
+
+/**
+ * Determines the default error code to use.
+ *
+ * @param error The error code.
+ * @return Either @c error or a default error.
+ * @since 2023/12/29
+ */
+static inline sjme_attrArtificial sjme_errorCode SJME_DEFAULT_ERROR(
+	sjme_errorCode error)
+{
+	if (!SJME_IS_ERROR(error))
+		return SJME_ERROR_UNKNOWN;
+	return error;
 }
 
 /*--------------------------------------------------------------------------*/

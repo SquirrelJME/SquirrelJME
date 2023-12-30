@@ -33,18 +33,18 @@ sjme_errorCode sjme_nvm_allocReservedPool(
 	reservedSize = -1;
 	if (SJME_IS_ERROR(error = sjme_alloc_sizeOf(
 		SJME_ALLOC_SIZEOF_RESERVED_POOL, 0, &reservedSize)))
-		return error;
+		return SJME_DEFAULT_ERROR(error);
 	if (SJME_IS_ERROR(error = sjme_alloc(mainPool,
 		reservedSize, (void**)&reservedBase) ||
 		reservedBase == NULL))
-		return error;
+		return SJME_DEFAULT_ERROR(error);
 
 	/* Initialize a reserved pool where all of our own data structures go. */
 	reservedPool = NULL;
 	if (SJME_IS_ERROR(error = sjme_alloc_poolInitStatic(
 		&reservedPool, reservedBase, reservedSize)) ||
 		reservedPool == NULL)
-		return error;
+		return SJME_DEFAULT_ERROR(error);
 
 	/* Use the resultant pool. */
 	*outReservedPool = reservedPool;
@@ -56,48 +56,43 @@ sjme_errorCode sjme_nvm_boot(sjme_alloc_pool* mainPool,
 	sjme_nvm_state** outState)
 {
 #define FIXED_SUITE_COUNT 16
-	SJME_EXCEPT_VDEF;
 	sjme_errorCode error;
 	sjme_exceptTrace* trace;
 	sjme_jint i, n;
-	sjme_nvm_state* volatile result;
-	sjme_rom_suite* volatile mergeSuites[FIXED_SUITE_COUNT];
-	volatile sjme_jint numMergeSuites;
+	sjme_nvm_state* result;
+	sjme_rom_suite mergeSuites[FIXED_SUITE_COUNT];
+	sjme_jint numMergeSuites;
 	sjme_task_startConfig initTaskConfig;
 	sjme_nvm_task* initTask;
-	sjme_list_sjme_rom_library* volatile classPath;
+	sjme_list_sjme_rom_library* classPath;
 	
 	if (param == NULL || outState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	/* Initialize trace. */
-	trace = NULL;
-
-SJME_EXCEPT_WITH(trace):
 	/* Set up a reserved pool where all the data structures for the VM go... */
 	/* But only if one does not exist. */
 	if (reservedPool == NULL)
 		if (SJME_IS_ERROR(error = sjme_nvm_allocReservedPool(mainPool,
 			&reservedPool)))
-			SJME_EXCEPT_TOSS(error);
+			goto fail_reservedPoolAlloc;
 
 	/* Allocate resultant state. */
 	result = NULL;
 	if (SJME_IS_ERROR(error = sjme_alloc(reservedPool,
 		sizeof(*result), (void**)&result)) || result == NULL)
-		SJME_EXCEPT_TOSS(error);
+		goto fail_resultAlloc;
 
 	/* Make a defensive copy of the boot parameters. */
 	if (SJME_IS_ERROR(error = sjme_alloc_copy(reservedPool,
 		sizeof(sjme_nvm_bootParam),
 		(void**)&result->bootParamCopy, param)) ||
 		result == NULL)
-		SJME_EXCEPT_TOSS(error);
+		goto fail_bootParamCopy;
 
 	/* Can only use one or the other to get the class path. */
 	if (result->bootParamCopy->mainClassPathById != NULL &&
 		result->bootParamCopy->mainClassPathByName != NULL)
-		SJME_EXCEPT_TOSS(SJME_ERROR_CLASS_PATH_BY_BOTH);
+		goto fail_bothIdAndName;
 
 	/* Set parameters accordingly. */
 	result->allocPool = mainPool;
@@ -114,7 +109,7 @@ SJME_EXCEPT_WITH(trace):
 		if (SJME_IS_ERROR(error = sjme_rom_fromPayload(reservedPool,
 			&mergeSuites[numMergeSuites],
 			result->bootParamCopy->payload)))
-			SJME_EXCEPT_TOSS(error);
+			goto fail_payloadRom;
 
 		/* Was a suite generated? */
 		if (mergeSuites[numMergeSuites] != NULL)
@@ -123,11 +118,12 @@ SJME_EXCEPT_WITH(trace):
 
 	/* Is there a pre-existing suite to use? */
 	if (result->bootParamCopy->suite != NULL)
-		mergeSuites[numMergeSuites++] = result->bootParamCopy->suite;
+		mergeSuites[numMergeSuites++] =
+			(sjme_rom_suite)result->bootParamCopy->suite;
 
 	/* No suites at all? Running with absolutely nothing??? */
 	if (numMergeSuites <= 0)
-		SJME_EXCEPT_TOSS(SJME_ERROR_NO_SUITES);
+		goto fail_noSuites;
 
 	/* Use the single suite only. */
 	else if (numMergeSuites == 1)
@@ -140,7 +136,7 @@ SJME_EXCEPT_WITH(trace):
 		if (SJME_IS_ERROR(error = sjme_rom_fromMerge(reservedPool,
 			&result->suite, mergeSuites,
 			numMergeSuites)) || result->suite == NULL)
-			SJME_EXCEPT_TOSS(error);
+			goto fail_suiteMerge;
 	}
 
 	/* Resolve class path libraries. */
@@ -157,7 +153,12 @@ SJME_EXCEPT_WITH(trace):
 
 	/* Failed to resolve? */
 	if (SJME_IS_ERROR(error) || classPath == NULL)
-		SJME_EXCEPT_TOSS(error);
+	{
+		/* Debug. */
+		sjme_message("Classpath resolve failure: %d %p", error, classPath);
+
+		goto fail_badClassPath;
+	}
 
 	/* Setup task details. */
 	initTaskConfig.stdOut = SJME_TASK_PIPE_REDIRECT_TYPE_TERMINAL;
@@ -171,17 +172,33 @@ SJME_EXCEPT_WITH(trace):
 	initTask = NULL;
 	if (SJME_IS_ERROR(error = sjme_task_start(result,
 		&initTaskConfig, &initTask)) || initTask == NULL)
-		SJME_EXCEPT_TOSS(error);
+		goto fail_initTask;
 	
 	/* Return newly created VM. */
 	*outState = result;
 	return SJME_ERROR_NONE;
 
-SJME_EXCEPT_FAIL:
-	sjme_todo("Cleanup after failure.");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Failed at specific points... */
+fail_initTask:
+fail_badClassPath:
+fail_suiteMerge:
+fail_noSuites:
+fail_payloadRom:
+fail_bothIdAndName:
+fail_bootParamCopy:
+	if (result != NULL && result->bootParamCopy != NULL)
+		sjme_alloc_free(result->bootParamCopy);
 
-#undef FIXED_SUITE_COUNT
+fail_resultAlloc:
+	if (result != NULL)
+		sjme_alloc_free(result);
+
+fail_reservedPoolAlloc:
+
+	/* Use whatever error code. */
+	if (SJME_IS_ERROR(error))
+		return SJME_DEFAULT_ERROR(error);
+	return SJME_ERROR_BOOT_FAILURE;
 }
 
 sjme_errorCode sjme_nvm_destroy(sjme_nvm_state* state, sjme_jint* exitCode)

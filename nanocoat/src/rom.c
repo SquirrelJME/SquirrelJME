@@ -19,7 +19,7 @@
 sjme_errorCode sjme_rom_fromMerge(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrOutNotNull sjme_rom_suite* outSuite,
-	sjme_attrInNotNull sjme_rom_suite** inSuites,
+	sjme_attrInNotNull sjme_rom_suite* inSuites,
 	sjme_attrInPositive sjme_jint numInSuites)
 {
 	if (pool == NULL || outSuite == NULL || inSuites == NULL)
@@ -113,7 +113,7 @@ sjme_errorCode sjme_rom_newLibrary(
 	if (SJME_IS_ERROR(error = sjme_alloc(pool,
 		SJME_SIZEOF_LIBRARY_CORE_N(inFunctions->uncommonTypeSize),
 		&result)) || result == NULL)
-		return error;
+		return SJME_DEFAULT_ERROR(error);
 
 	/* Setup some basic cache details. */
 	result->functions = inFunctions;
@@ -130,7 +130,7 @@ sjme_errorCode sjme_rom_newLibrary(
 		/* Cleanup bad pointer. */
 		sjme_alloc_free(result);
 
-		return error;
+		return SJME_DEFAULT_ERROR(error);
 	}
 
 	/* Initialize fields. */
@@ -165,7 +165,7 @@ sjme_errorCode sjme_rom_newSuite(
 	if (SJME_IS_ERROR(error = sjme_alloc(pool,
 		SJME_SIZEOF_SUITE_CORE_N(inFunctions->uncommonTypeSize),
 		&result)) || result == NULL)
-		return error;
+		return SJME_DEFAULT_ERROR(error);
 
 	/* Setup some basic cache details. */
 	result->functions = inFunctions;
@@ -182,7 +182,7 @@ sjme_errorCode sjme_rom_newSuite(
 		/* Cleanup bad pointer. */
 		sjme_alloc_free(result);
 
-		return error;
+		return SJME_DEFAULT_ERROR(error);
 	}
 
 	/* Initialize fields. */
@@ -235,7 +235,7 @@ sjme_errorCode sjme_rom_resolveClassPathById(
 	suiteLibs = NULL;
 	if (SJME_IS_ERROR(error = sjme_rom_suiteLibraries(inSuite,
 		&suiteLibs)) || suiteLibs == NULL)
-		return error;
+		return SJME_DEFAULT_ERROR(error);
 
 	/* Debug. */
 	sjme_message("Done: %p!", suiteLibs);
@@ -266,7 +266,7 @@ sjme_errorCode sjme_rom_resolveClassPathById(
 			/* Get the library ID. */
 			if (SJME_IS_ERROR(error = inSuite->functions->libraryId(
 				inSuite, checkLibrary, &libId)))
-				return error;
+				return SJME_DEFAULT_ERROR(error);
 
 			/* Library ID function did not store it? */
 			if (checkLibrary->id == 0)
@@ -335,7 +335,7 @@ sjme_errorCode sjme_rom_resolveClassPathByName(
 	suiteLibs = NULL;
 	if (SJME_IS_ERROR(error = sjme_rom_suiteLibraries(inSuite,
 		&suiteLibs) || suiteLibs == NULL))
-		return error;
+		return SJME_DEFAULT_ERROR(error);
 
 	/* Go through each library and get hash matches. */
 	numSuiteLibs = suiteLibs->length;
@@ -345,7 +345,7 @@ sjme_errorCode sjme_rom_resolveClassPathByName(
 		lib = suiteLibs->elements[i];
 		if (SJME_IS_ERROR(error = sjme_rom_libraryHash(lib,
 			&hash)))
-			return error;
+			return SJME_DEFAULT_ERROR(error);
 
 		/* Look for match in output. */
 		for (at = 0; at < length; at++)
@@ -384,6 +384,7 @@ sjme_errorCode sjme_rom_suiteLibraries(
 	/* Has this been processed already? */
 	if (cache->libraries != NULL)
 	{
+		/* Debug. */
 		sjme_message("Using existing cache: %p", cache->libraries);
 
 		*outLibs = cache->libraries;
@@ -399,7 +400,7 @@ sjme_errorCode sjme_rom_suiteLibraries(
 	result = NULL;
 	if (SJME_IS_ERROR(error = listFunc(inSuite,
 		&result)) || result == NULL)
-		return error;
+		return SJME_DEFAULT_ERROR(error);
 
 	/* Store it within the cache. */
 	cache->libraries = result;

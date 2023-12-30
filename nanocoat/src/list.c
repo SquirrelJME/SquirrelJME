@@ -70,7 +70,7 @@ static sjme_errorCode sjme_list_newInit(
 	/* Allocate list. */
 	if (SJME_IS_ERROR(error = sjme_alloc(inPool, newData->allocSize,
 		&newData->outList)) || newData->outList == NULL)
-		return error;
+		return SJME_DEFAULT_ERROR(error);
 
 	/* Store list length. */
 	fakeList = (sjme_list_sjme_jint*)newData->outList;
@@ -110,7 +110,7 @@ sjme_errorCode sjme_list_allocR(
 	result = NULL;
 	if (SJME_IS_ERROR(error = sjme_alloc(inPool, size, &result)) ||
 		result == NULL)
-		return error;
+		return SJME_DEFAULT_ERROR(error);
 
 	/* Set sizes of the resultant list. */
 	fakeList = (sjme_list_sjme_jint*)result;
@@ -170,7 +170,7 @@ sjme_errorCode sjme_list_flattenArgCV(
 		offsetof(sjme_list_sjme_lpcstr, elements), 4,
 		SJME_BASIC_TYPE_ID_OBJECT, 1, argC,
 		extraFill)))
-		return error;
+		return SJME_DEFAULT_ERROR(error);
 
 	/* Map result. */
 	result = (sjme_list_sjme_lpcstr*)newData.outList;
@@ -226,7 +226,7 @@ sjme_errorCode sjme_list_newAR(
 	if (SJME_IS_ERROR(error = sjme_list_newInit(&newData,
 		inPool, elementSize, rootElementSize, elementOffset, pointerCheck,
 		basicTypeId, numPointerStars, length, 0)))
-		return error;
+		return SJME_DEFAULT_ERROR(error);
 
 	/* Because the input is a sequential "array", we can just copy it all. */
 	/* This can turn out to be a very fast operation. */
@@ -292,7 +292,7 @@ sjme_errorCode sjme_list_newVAR(
 	if (SJME_IS_ERROR(error = sjme_list_newInit(&newData,
 		inPool, elementSize, rootElementSize, elementOffset, pointerCheck,
 		basicTypeId, numPointerStars, length, 0)))
-		return error;
+		return SJME_DEFAULT_ERROR(error);
 
 	/* Store elements from variadic arguments. */
 	for (at = 0, off = elementOffset; at < length; at++, off += elementSize)

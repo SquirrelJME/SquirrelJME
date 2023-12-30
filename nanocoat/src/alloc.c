@@ -300,7 +300,7 @@ sjme_errorCode sjme_alloc_copy(
 	error = SJME_ERROR_UNKNOWN;
 	if (SJME_IS_ERROR(error = sjme_alloc(pool, size, &dest)) ||
 		dest == NULL)
-		return error;
+		return SJME_DEFAULT_ERROR(error);
 
 	/* Copy over. */
 	memmove(dest, inAddr, size);
