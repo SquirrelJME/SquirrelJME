@@ -2,6 +2,8 @@
 
 #[[#include]]# "test.h"
 #[[#include]]# "proto.h"
+#[[#include]]# "mock.h"
+#[[#include]]# "unit.h"
 
 /**
  * DESCRIBE THIS.

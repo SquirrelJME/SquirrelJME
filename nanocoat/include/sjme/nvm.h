@@ -1133,7 +1133,7 @@ typedef struct sjme_rom_suiteCore* sjme_rom_suite;
  *
  * @since 2023/12/17
  */
-typedef struct sjme_nvm_task sjme_nvm_task;
+typedef struct sjme_nvm_taskCore* sjme_nvm_task;
 
 /**
  * Represents the virtual machine state.

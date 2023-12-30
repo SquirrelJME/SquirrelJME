@@ -65,11 +65,7 @@ sjme_jboolean sjme_mock_act(
 	/* Check. */
 	if (inState == NULL || inSet == NULL)
 		return sjme_die("Null arguments.");
-	
-	/* Confirm that the set is valid. */
-	if (inSet->config == NULL)
-		return sjme_die("Invalid configuration.");
-		
+
 	/* Use the testing pool. */
 	inState->allocPool = inTest->pool;
 	
@@ -104,8 +100,9 @@ sjme_jboolean sjme_mock_act(
 		data.current.special = special;
 		
 		/* Run configuration function to initialize the data set. */
-		if (!inSet->config(inState, &data.current))
-			return sjme_die("Configuration step failed at %d.", dx);
+		if (inSet->config != NULL)
+			if (!inSet->config(inState, &data.current))
+				return sjme_die("Configuration step failed at %d.", dx);
 		
 		/* Call do function to perform whatever test initialization. */
 		if (!inSet->order[dx](inState, &data))
@@ -378,6 +375,14 @@ sjme_jboolean sjme_mock_doRomLibrary(
 
 	/* Success! */
 	return SJME_JNI_TRUE;
+}
+
+sjme_jboolean sjme_mock_doRomMockLibrary(
+	sjme_attrInNotNull sjme_mock* inState,
+	sjme_attrInNotNull sjme_mock_configWorkData* inData)
+{
+	sjme_todo("Implement this?");
+	return SJME_JNI_FALSE;
 }
 
 sjme_jboolean sjme_mock_doRomSuite(

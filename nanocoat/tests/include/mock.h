@@ -381,6 +381,19 @@ sjme_jboolean sjme_mock_doRomLibrary(
 	sjme_attrInNotNull sjme_mock_configWorkData* inData);
 
 /**
+ * Initializes a library that contains a basic setup with regards to resources
+ * and otherwise.
+ *
+ * @param inState The input state.
+ * @param inData The data currently being processed.
+ * @return If this was successful.
+ * @since 2023/12/30
+ */
+sjme_jboolean sjme_mock_doRomMockLibrary(
+	sjme_attrInNotNull sjme_mock* inState,
+	sjme_attrInNotNull sjme_mock_configWorkData* inData);
+
+/**
  * Initializes a ROM library.
  *
  * @param inState The mock state.

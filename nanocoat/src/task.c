@@ -14,14 +14,15 @@
 sjme_errorCode sjme_task_start(
 	sjme_attrInNotNull sjme_nvm_state* inState,
 	sjme_attrInNotNull const sjme_task_startConfig* startConfig,
-	sjme_attrOutNullable sjme_nvm_task** outTask)
+	sjme_attrOutNullable sjme_nvm_task* outTask)
 {
 	sjme_jint i;
 
 	if (inState == NULL || startConfig == NULL || outTask == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	if (startConfig->mainClass == NULL)
+	if (startConfig->mainClass == NULL || startConfig->classPath == NULL ||
+		startConfig->classPath->length <= 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
 	/* Debug. */

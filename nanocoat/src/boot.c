@@ -63,7 +63,7 @@ sjme_errorCode sjme_nvm_boot(sjme_alloc_pool* mainPool,
 	sjme_rom_suite mergeSuites[FIXED_SUITE_COUNT];
 	sjme_jint numMergeSuites;
 	sjme_task_startConfig initTaskConfig;
-	sjme_nvm_task* initTask;
+	sjme_nvm_task initTask;
 	sjme_list_sjme_rom_library* classPath;
 	
 	if (param == NULL || outState == NULL)

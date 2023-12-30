@@ -44,17 +44,17 @@ sjme_jboolean configNvmLocalPopDouble(
 
 /** Mock set for test. */
 static const sjme_mock_configSet mockNvmLocalPopDouble =
-	{
-		configNvmLocalPopDouble,
-		0,
+{
+	configNvmLocalPopDouble,
+	0,
 
-		/* Mock calls. */
-		{
-			sjme_mock_doNvmState,
-			sjme_mock_doNvmThread,
-			sjme_mock_doNvmFrame,
-			NULL
-		}
+	/* Mock calls. */
+	{
+		sjme_mock_doNvmState,
+		sjme_mock_doNvmThread,
+		sjme_mock_doNvmFrame,
+		NULL
+	}
 };
 
 sjme_attrUnused SJME_TEST_DECLARE(testNvmLocalPopDouble)
