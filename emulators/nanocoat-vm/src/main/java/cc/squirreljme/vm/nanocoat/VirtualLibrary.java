@@ -80,7 +80,7 @@ public final class VirtualLibrary
 	@Override
 	public long pointerAddress()
 	{
-		throw Debugging.todo();
+		return this.link.pointerAddress();
 	}
 	
 	/**
