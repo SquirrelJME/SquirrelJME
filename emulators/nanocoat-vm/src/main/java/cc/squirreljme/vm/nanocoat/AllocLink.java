@@ -31,10 +31,15 @@ public final class AllocLink
 	 *
 	 * @param __blockPtr The block pointer address.
 	 * @param __linkPtr The link pointer address.
+	 * @throws NullPointerException If either address is null.
 	 * @since 2023/12/14
 	 */
 	AllocLink(long __blockPtr, long __linkPtr)
+		throws NullPointerException
 	{
+		if (__blockPtr == 0 || __linkPtr == 0)
+			throw new NullPointerException("Null AllocLink.");
+		
 		this._blockPtr = __blockPtr;
 		this._linkPtr = __linkPtr;
 	}
@@ -340,6 +345,9 @@ public final class AllocLink
 	 */
 	public static AllocLink ofBlockPtr(long __blockPtr)
 	{
+		if (__blockPtr == 0)
+			return null;
+		
 		return new AllocLink(__blockPtr, AllocPool.__getLink(__blockPtr));
 	}
 	

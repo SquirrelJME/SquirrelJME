@@ -406,6 +406,9 @@ sjme_jboolean sjme_mock_doRomSuite(
 	/* Quicker this way... */
 	suiteData = &inData->current.data.romSuite;
 
+	/* Seed front end data. */
+	suite->cache.common.frontEnd.data = inState;
+
 	/* Copy suite functions. */
 	suite->functions = NULL;
 	if (SJME_IS_ERROR(sjme_alloc_copy(inState->allocPool,
@@ -417,7 +420,6 @@ sjme_jboolean sjme_mock_doRomSuite(
 
 	/* Set front end to the test state. */
 	writeFunctions = (sjme_rom_suiteFunctions*)suite->functions;
-	writeFunctions->frontEnd.data = inState;
 
 	/* If there is no cache init, just initialize it to something... */
 	if (writeFunctions->initCache == NULL)

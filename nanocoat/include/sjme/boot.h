@@ -37,8 +37,8 @@ struct sjme_nvm_bootParam
 	/** The payload to use for booting the virtual machine. */
 	const sjme_payload_config* payload;
 
-	/** Provides the ability to have a virtual suite. */
-	const sjme_rom_suiteFunctions* virtualSuite;
+	/** The suite to use for the library set. */
+	sjme_rom_suite suite;
 
 	/** The class path for main by library IDs. */
 	const sjme_list_sjme_jint* mainClassPathById;

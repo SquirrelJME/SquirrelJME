@@ -90,10 +90,63 @@ sjme_errorCode sjme_rom_libraryHash(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_rom_newLibrary(
+	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrOutNotNull sjme_rom_library* outLibrary,
+	sjme_attrInNotNull const sjme_rom_libraryFunctions* inFunctions,
+	sjme_attrInNullable const sjme_frontEnd* inFrontEnd)
+{
+	sjme_rom_libraryInitCacheFunc initCacheFunc;
+	sjme_rom_library result;
+	sjme_errorCode error;
+
+	if (pool == NULL || outLibrary == NULL || inFunctions == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* There needs to be a cache initializer. */
+	initCacheFunc = inFunctions->initCache;
+	if (initCacheFunc == NULL)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Allocate resultant library. */
+	result = NULL;
+	if (SJME_IS_ERROR(error = sjme_alloc(pool,
+		SJME_SIZEOF_LIBRARY_CORE_N(inFunctions->uncommonTypeSize),
+		&result)) || result == NULL)
+		return error;
+
+	/* Setup some basic cache details. */
+	result->functions = inFunctions;
+	result->cache.common.allocPool = pool;
+	result->cache.common.uncommonSize = inFunctions->uncommonTypeSize;
+
+	/* Seed front end information? */
+	if (inFrontEnd != NULL)
+		result->cache.common.frontEnd = *inFrontEnd;
+
+	/* Initialize cache. */
+	if (SJME_IS_ERROR(error = initCacheFunc(result)))
+	{
+		/* Cleanup bad pointer. */
+		sjme_alloc_free(result);
+
+		return error;
+	}
+
+	/* Initialize fields. */
+	result->functions = inFunctions;
+	result->cache.common.allocPool = pool;
+
+	/* Use result. */
+	*outLibrary = result;
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_rom_newSuite(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrOutNotNull sjme_rom_suite* outSuite,
-	sjme_attrInNotNull const sjme_rom_suiteFunctions* inFunctions)
+	sjme_attrInNotNull const sjme_rom_suiteFunctions* inFunctions,
+	sjme_attrInNullable const sjme_frontEnd* inFrontEnd)
 {
 	sjme_rom_suiteInitCacheFunc initCacheFunc;
 	sjme_rom_suite result;
@@ -118,6 +171,10 @@ sjme_errorCode sjme_rom_newSuite(
 	result->functions = inFunctions;
 	result->cache.common.allocPool = pool;
 	result->cache.common.uncommonSize = inFunctions->uncommonTypeSize;
+
+	/* Seed front end information? */
+	if (inFrontEnd != NULL)
+		result->cache.common.frontEnd = *inFrontEnd;
 
 	/* Initialize cache. */
 	if (SJME_IS_ERROR(error = initCacheFunc(result)))
@@ -151,24 +208,38 @@ sjme_errorCode sjme_rom_resolveClassPathById(
 	if (inSuite == NULL || inIds == NULL || outLibs == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
+	/* Debug. */
+	sjme_message("sjme_rom_resolveClassPathById(%p, %p, %p)",
+		inSuite, inIds, outLibs);
+
 	/* How many are we looking for? */
 	length = inIds->length;
 	if (length < 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
+	/* Debug. */
+	sjme_message("Looking for %d libraries...", length);
+
 	/* Allocate temporary storage on the stack for the libraries we want. */
-	working = alloca(sizeof(*working) * length);
+	working = sjme_alloca(sizeof(*working) * length);
 	if (working == NULL)
 		return SJME_ERROR_OUT_OF_MEMORY;
 
 	/* Make sure it is cleared. */
 	memset(working, 0, sizeof(*working) * length);
 
+	/* Debug. */
+	sjme_message("Getting library list...");
+
 	/* Obtain the list of libraries within the suite. */
 	suiteLibs = NULL;
 	if (SJME_IS_ERROR(error = sjme_rom_suiteLibraries(inSuite,
-		&suiteLibs) || suiteLibs == NULL))
+		&suiteLibs)) || suiteLibs == NULL)
 		return error;
+
+	/* Debug. */
+	sjme_message("Done: %p!", suiteLibs);
+	sjme_message("Found %d libraries.", suiteLibs->length);
 
 	/* Go through and find the ones with matching IDs. */
 	/* Order by library because there is likely to be more of those. */
@@ -177,7 +248,30 @@ sjme_errorCode sjme_rom_resolveClassPathById(
 	{
 		/* Which library is this? */
 		checkLibrary = suiteLibs->elements[i];
+
+#if defined(SJME_CONFIG_DEBUG)
+		/* Debug. */
+		sjme_message("Looking at library #%d: %p",
+			i, checkLibrary);
+#endif
+
+		/* Need to initialize the ID? */
 		libId = checkLibrary->id;
+		if (libId == 0)
+		{
+			/* No function? */
+			if (inSuite->functions->libraryId == NULL)
+				return SJME_ERROR_ILLEGAL_STATE;
+
+			/* Get the library ID. */
+			if (SJME_IS_ERROR(error = inSuite->functions->libraryId(
+				inSuite, checkLibrary, &libId)))
+				return error;
+
+			/* Library ID function did not store it? */
+			if (checkLibrary->id == 0)
+				checkLibrary->id = libId;
+		}
 
 		/* Scan through the requested classpath for matches. */
 		for (at = 0; at < length; at++)

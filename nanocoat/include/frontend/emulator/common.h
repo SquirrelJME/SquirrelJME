@@ -16,6 +16,8 @@
 #ifndef SQUIRRELJME_COMMON_H
 #define SQUIRRELJME_COMMON_H
 
+#include "sjme/nvm.h"
+
 /* Anti-C++. */
 #ifdef __cplusplus
 	#ifndef SJME_CXX_IS_EXTERNED
@@ -26,6 +28,28 @@ extern "C" {
 #endif     /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
+
+/**
+ * Cache storage for virtual suites.
+ *
+ * @since 2023/12/15
+ */
+typedef struct sjme_jni_virtualSuite_cache
+{
+	/** Todo. */
+	sjme_jint todo;
+} sjme_jni_virtualSuite_cache;
+
+/**
+ * Caches for libraries.
+ *
+ * @since 2023/12/29
+ */
+typedef struct sjme_jni_virtualLibrary_cache
+{
+	/** Todo. */
+	sjme_jint todo;
+} sjme_jni_virtualLibrary_cache;
 
 /*--------------------------------------------------------------------------*/
 

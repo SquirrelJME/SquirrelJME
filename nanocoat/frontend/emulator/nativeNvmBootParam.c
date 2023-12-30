@@ -84,8 +84,7 @@ void SJME_JNI_METHOD(SJME_CLASS_NVM_BOOT_PARAM, _1_1setSuite)
 	param = SJME_JLONG_TO_POINTER(sjme_nvm_bootParam*, thisPtr);
 
 	/* Set suite information. */
-	param->virtualSuite =
-		SJME_JLONG_TO_POINTER(const sjme_rom_suiteFunctions*, funcsPtr);
+	param->suite = SJME_JLONG_TO_POINTER(sjme_rom_suite, funcsPtr);
 }
 
 void SJME_JNI_METHOD(SJME_CLASS_NVM_BOOT_PARAM, _1_1setSysProps)

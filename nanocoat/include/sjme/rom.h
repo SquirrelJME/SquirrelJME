@@ -149,7 +149,7 @@ typedef struct sjme_rom_libraryFunctions sjme_rom_libraryFunctions;
 struct sjme_rom_libraryCore
 {
 	/** Functions used to access library information. */
-	const sjme_rom_libraryFunctions* function;
+	const sjme_rom_libraryFunctions* functions;
 
 	/** The library ID. */
 	sjme_jint id;
@@ -193,13 +193,23 @@ struct sjme_rom_libraryCore
  */
 typedef struct sjme_rom_suiteFunctions sjme_rom_suiteFunctions;
 
+/**
+ * Initializes the library cache.
+ *
+ * @param inLibrary The input library.
+ * @return Any resultant error, if any.
+ * @since 2023/12/29
+ */
+typedef sjme_errorCode (*sjme_rom_libraryInitCacheFunc)(
+	sjme_attrInNotNull sjme_rom_library inLibrary);
+
 typedef sjme_errorCode (*sjme_rom_libraryPathFunc)();
 
-typedef sjme_errorCode (*sjme_rom_libraryRawData)();
+typedef sjme_errorCode (*sjme_rom_libraryResourceDirectFunc)();
 
 typedef sjme_errorCode (*sjme_rom_libraryResourceStreamFunc)();
 
-typedef sjme_errorCode (*sjme_rom_libraryResourceDirectFunc)();
+typedef sjme_errorCode (*sjme_rom_libraryRawData)();
 
 typedef sjme_errorCode (*sjme_rom_librarySizeFunc)();
 
@@ -219,12 +229,11 @@ typedef sjme_errorCode (*sjme_rom_suiteInitCacheFunc)(
  * @param functions The suite functions.
  * @param targetSuite The current suite being accessed.
  * @param targetLibrary The library to get the ID of.
- * @param outId The output library ID.
+ * @param outId The output library ID, cannot be zero.
  * @return Any resultant error code.
  * @since 2023/12/18
  */
 typedef sjme_errorCode (*sjme_rom_suiteLibraryId)(
-	sjme_attrInNotNull const sjme_rom_suiteFunctions* functions,
 	sjme_attrInNotNull sjme_rom_suite targetSuite,
 	sjme_attrInNotNull sjme_rom_library targetLibrary,
 	sjme_attrOutNotNull sjme_jint* outId);
@@ -248,32 +257,29 @@ struct sjme_rom_libraryFunctions
 	/** Size of the cache type. */
 	sjme_jint uncommonTypeSize;
 
-	/** Data possibly needed by the front end to function. */
-	sjme_frontEnd frontEnd;
+	/** Initializes the library cache. */
+	sjme_rom_libraryInitCacheFunc initCache;
 
 	/** Function to get the path of a library. */
 	sjme_rom_libraryPathFunc path;
 
-	/** The size of this library. */
-	sjme_rom_librarySizeFunc size;
-
-	/** Access of raw bytes of the input library. */
-	sjme_rom_libraryRawData rawData;
+	/** Direct resource access, if available. */
+	sjme_rom_libraryResourceDirectFunc resourceDirect;
 
 	/** Open resource as a stream. */
 	sjme_rom_libraryResourceStreamFunc resourceStream;
 
-	/** Direct resource access, if available. */
-	sjme_rom_libraryResourceDirectFunc resourceDirect;
+	/** Access of raw bytes of the input library. */
+	sjme_rom_libraryRawData rawData;
+
+	/** The size of this library. */
+	sjme_rom_librarySizeFunc size;
 };
 
 struct sjme_rom_suiteFunctions
 {
 	/** Size of the cache type. */
 	sjme_jint uncommonTypeSize;
-
-	/** Data possibly needed by the front end to function. */
-	sjme_frontEnd frontEnd;
 
 	/** Initialize suite cache. */
 	sjme_rom_suiteInitCacheFunc initCache;
@@ -361,18 +367,36 @@ sjme_errorCode sjme_rom_libraryHash(
 	sjme_attrOutNotNull sjme_jint* outHash);
 
 /**
+ * Makes a virtual library from the given functions.
+ *
+ * @param pool The pool to allocate within.
+ * @param outLibrary The output library.
+ * @param inFunctions The functions which define how to access the library.
+ * @param inFrontEnd Input front end initialization, is optional.
+ * @return Any error code.
+ * @since 2023/12/29
+ */
+sjme_errorCode sjme_rom_newLibrary(
+	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrOutNotNull sjme_rom_library* outLibrary,
+	sjme_attrInNotNull const sjme_rom_libraryFunctions* inFunctions,
+	sjme_attrInNullable const sjme_frontEnd* inFrontEnd);
+
+/**
  * Makes a virtual suite from the given functions.
  *
  * @param pool The pool to allocate within.
  * @param outSuite The output suite.
  * @param inFunctions The functions which define how to access the suite.
+ * @param inFrontEnd Input front end initialization, is optional.
  * @return Any error code.
  * @since 2023/12/15
  */
 sjme_errorCode sjme_rom_newSuite(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrOutNotNull sjme_rom_suite* outSuite,
-	sjme_attrInNotNull const sjme_rom_suiteFunctions* inFunctions);
+	sjme_attrInNotNull const sjme_rom_suiteFunctions* inFunctions,
+	sjme_attrInNullable const sjme_frontEnd* inFrontEnd);
 
 /**
  * Resolves the class path library by their ID.

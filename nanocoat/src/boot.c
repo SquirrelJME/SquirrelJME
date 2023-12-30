@@ -121,19 +121,9 @@ SJME_EXCEPT_WITH(trace):
 			numMergeSuites++;
 	}
 
-	/* If there is a virtual suite, move it in. */
-	if (result->bootParamCopy->virtualSuite != NULL)
-	{
-		/* Make a virtual suite for this. */
-		if (SJME_IS_ERROR(error = sjme_rom_newSuite(reservedPool,
-			&mergeSuites[numMergeSuites],
-			result->bootParamCopy->virtualSuite)))
-			SJME_EXCEPT_TOSS(error);
-
-		/* Was a suite generated? */
-		if (mergeSuites[numMergeSuites] != NULL)
-			numMergeSuites++;
-	}
+	/* Is there a pre-existing suite to use? */
+	if (result->bootParamCopy->suite != NULL)
+		mergeSuites[numMergeSuites++] = result->bootParamCopy->suite;
 
 	/* No suites at all? Running with absolutely nothing??? */
 	if (numMergeSuites <= 0)

@@ -12,6 +12,7 @@ package cc.squirreljme.vm.nanocoat;
 import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
 
 /**
@@ -29,8 +30,8 @@ public final class VirtualSuite
 	/** The memory pool this is allocated within. */
 	protected final AllocPool pool;
 	
-	/** The pointer to the suite functions. */
-	private final AllocLink _suiteFunctions;
+	/** The raw suite access. */
+	private final AllocLink _suite;
 	
 	/** Cached libraries list? */
 	private volatile PointerFlatList<VirtualLibrary> _libraries;
@@ -56,16 +57,13 @@ public final class VirtualSuite
 		if (__pool == null || __suiteManager == null)
 			throw new NullPointerException("NARG");
 		
-		// Set the manager used to obtain suites
+		// Store needed fields
 		this.manager = __suiteManager;
-		
-		// Allocate data for the suite
 		this.pool = __pool;
-		AllocLink structLink = __pool.alloc(AllocSizeOf.ROM_SUITE_FUNCTIONS);
-		this._suiteFunctions = structLink;
 		
-		// Initialize
-		this.__init(structLink.pointerAddress(), this);
+		// Initialize suite
+		this._suite = AllocLink.ofBlockPtr(
+			this.__init(__pool.pointerAddress(), this));
 	}
 	
 	/**
@@ -75,7 +73,7 @@ public final class VirtualSuite
 	@Override
 	public long pointerAddress()
 	{
-		return this._suiteFunctions.pointerAddress();
+		return this._suite.pointerAddress();
 	}
 	
 	/**
@@ -87,6 +85,8 @@ public final class VirtualSuite
 	@SuppressWarnings("unused")
 	private long __list()
 	{
+		Debugging.debugNote("Listing libraries...");
+		
 		synchronized (this)
 		{
 			// Was this determined on a previous run already?
@@ -106,9 +106,12 @@ public final class VirtualSuite
 			{
 				VMClassLibrary lib = manager.loadLibrary(
 					libNames[i]);
-				virtualLibs[i] = new VirtualLibrary(pool, lib,
-					manager.libraryId(lib));
+				virtualLibs[i] = new VirtualLibrary(lib,
+					manager.libraryId(lib), this);
 			}
+			
+			// Debug
+			Debugging.debugNote("Found %d libraries...", numLibs);
 			
 			// Store libraries and give it back to NanoCoat
 			result = FlatList.fromArray(pool, virtualLibs);
@@ -120,11 +123,12 @@ public final class VirtualSuite
 	/**
 	 * Initializes the virtual suite manager native code.
 	 *
-	 * @param __structPtr The pointer to the data structure.
+	 * @param __poolPtr The pool pointer.
 	 * @param __this This current class, used as context.
+	 * @return The resultant suite pointer.
 	 * @throws VMException If it could not be initialized.
 	 * @since 2023/12/14
 	 */
-	private native void __init(long __structPtr, VirtualSuite __this)
+	private native long __init(long __poolPtr, VirtualSuite __this)
 		throws VMException;
 }
