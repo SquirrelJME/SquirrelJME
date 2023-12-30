@@ -134,7 +134,7 @@ jlong SJME_JNI_METHOD(SJME_CLASS_ALLOC_POOL, _1_1strDup)
 
 	/* Copy it. */
 	result = NULL;
-	error = sjme_alloc_copy(pool, strlen(utfChars),
+	error = sjme_alloc_copy(pool, strlen(utfChars) + 1,
 		&result, utfChars);
 
 	/* Cleanup. */
