@@ -953,7 +953,7 @@ typedef struct sjme_nvm_frameTread
  * @return The size in bytes for the tread.
  * @since 2023/11/15
  */
-static inline sjme_attrArtificial size_t SJME_SIZEOF_FRAME_TREAD_VAR(
+static sjme_inline sjme_attrArtificial size_t SJME_SIZEOF_FRAME_TREAD_VAR(
 	sjme_javaTypeId typeId, sjme_jint count)
 {
 	switch (typeId)
@@ -1286,9 +1286,12 @@ typedef enum sjme_errorCode
 
 	/** Generic JNI exception. */
 	SJME_ERROR_JNI_EXCEPTION = -33,
+
+	/** Memory has been corrupted. */
+	SJME_ERROR_MEMORY_CORRUPTION = -34,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -34
+	SJME_NUM_ERROR_CODES = -35
 } sjme_errorCode;
 
 /**
@@ -1297,7 +1300,7 @@ typedef enum sjme_errorCode
  * @param error The expression.
  * @since 2023/12/08
  */
-static inline sjme_attrArtificial sjme_jboolean SJME_IS_ERROR(
+static sjme_inline sjme_attrArtificial sjme_jboolean SJME_IS_ERROR(
 	sjme_errorCode error)
 {
 	return error < SJME_ERROR_NONE;
@@ -1311,7 +1314,7 @@ static inline sjme_attrArtificial sjme_jboolean SJME_IS_ERROR(
  * @return Either @c error or @c otherwise if the former is not valid.
  * @since 2023/12/29
  */
-static inline sjme_attrArtificial sjme_errorCode SJME_DEFAULT_ERROR_OR(
+static sjme_inline sjme_attrArtificial sjme_errorCode SJME_DEFAULT_ERROR_OR(
 	sjme_errorCode error, sjme_errorCode otherwise)
 {
 	if (!SJME_IS_ERROR(error))

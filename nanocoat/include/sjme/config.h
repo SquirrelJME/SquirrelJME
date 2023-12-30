@@ -400,6 +400,11 @@ extern "C" {
 	#define sjme_alloca(size) alloca((size))
 #endif
 
+#if !defined(sjme_inline)
+	/** Inline function. */
+	#define sjme_inline inline
+#endif
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

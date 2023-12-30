@@ -58,6 +58,11 @@ public final class VirtualLibrary
 		if (__lib == null || __suite == null)
 			throw new NullPointerException("NARG");
 		
+		// We need these for the other initialization to be done
+		this.library = __lib;
+		this.suite = __suite;
+		this.id = __id;
+		
 		// Initialize natively
 		long nativePtr = VirtualLibrary.__init(this,
 			__suite.pointerAddress());
@@ -66,9 +71,6 @@ public final class VirtualLibrary
 		
 		// Store information accordingly
 		this.link = AllocLink.ofBlockPtr(nativePtr);
-		this.library = __lib;
-		this.suite = __suite;
-		this.id = __id;
 	}
 	
 	/**

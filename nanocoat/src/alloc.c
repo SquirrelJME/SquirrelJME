@@ -26,6 +26,114 @@
 /** The minimum size for splits. */
 #define SJME_ALLOC_SPLIT_MIN_SIZE 64
 
+static sjme_inline sjme_jboolean sjme_alloc_checkCorruptionRange(
+	uintptr_t poolStart, uintptr_t poolEnd, void* checkPtr)
+{
+	uintptr_t check;
+
+	/* Ignore null pointers. */
+	if (checkPtr == NULL)
+		return SJME_JNI_FALSE;
+
+	/* Nominal address of the check pointer. */
+	check = (uintptr_t)checkPtr;
+
+	/* Must be in range! */
+	if (check < poolStart || check >= poolEnd)
+		return SJME_JNI_TRUE;
+
+	/* Does not appear corrupt. */
+	return SJME_JNI_FALSE;
+}
+
+/**
+ * Checks the integrity of the memory pool.
+ *
+ * @param pool The pool to check in.
+ * @param atLink The link of the pool.
+ * @return If there is corruption or not.
+ * @since 2023/12/29
+ */
+static sjme_jboolean sjme_alloc_checkCorruption(sjme_alloc_pool* pool,
+	sjme_alloc_link* atLink)
+{
+	uintptr_t poolStart, poolEnd;
+
+	if (pool == NULL)
+		return SJME_JNI_TRUE;
+
+	/* If no link is specified, ignore. */
+	if (atLink == NULL)
+		return SJME_JNI_FALSE;
+
+	/* Next link is in the wrong location? */
+	if (atLink->next != NULL && (uintptr_t)atLink->next !=
+		(uintptr_t)&atLink->block[atLink->blockSize])
+		return SJME_JNI_TRUE;
+
+	/* Is front/end link? */
+	if (atLink == pool->frontLink || atLink == pool->backLink)
+	{
+		/* Link space incorrect? */
+		if (atLink->space !=  SJME_NUM_ALLOC_POOL_SPACE)
+			return SJME_JNI_TRUE;
+
+		/* Size is not zero? */
+		if (atLink->blockSize != 0 || atLink->allocSize != 0)
+			return SJME_JNI_TRUE;
+
+		/* Does not appear corrupt. */
+		return SJME_JNI_FALSE;
+	}
+
+	/* Invalid block size? */
+	if (atLink->blockSize <= 0)
+		return SJME_JNI_TRUE;
+
+	/* Used for checking the integrity of pointers. */
+	poolStart = (uintptr_t)pool;
+	poolEnd = (uintptr_t)&pool->block[pool->size];
+
+	/* Free link only. */
+	if (atLink->space == SJME_ALLOC_POOL_SPACE_FREE)
+	{
+		/* Check free links. */
+		if (sjme_alloc_checkCorruptionRange(poolStart, poolEnd,
+				atLink->freePrev))
+			return SJME_JNI_TRUE;
+		if (sjme_alloc_checkCorruptionRange(poolStart, poolEnd,
+				atLink->freeNext))
+			return SJME_JNI_TRUE;
+	}
+
+	/* Used link only. */
+	else if (atLink->space == SJME_ALLOC_POOL_SPACE_USED)
+	{
+		/* Zero or negative size. */
+		if (atLink->allocSize <= 0)
+			return SJME_JNI_TRUE;
+
+		/* Cannot have any free or previous links. */
+		if (atLink->freePrev != NULL || atLink->freeNext != NULL)
+			return SJME_JNI_TRUE;
+	}
+
+	/* Link space incorrect? */
+	else
+		return SJME_JNI_TRUE;
+
+	/* Check common next links. */
+	if (sjme_alloc_checkCorruptionRange(poolStart, poolEnd,
+		atLink->prev))
+		return SJME_JNI_TRUE;
+	if (sjme_alloc_checkCorruptionRange(poolStart, poolEnd,
+		atLink->next))
+		return SJME_JNI_TRUE;
+
+	/* Does not appear corrupt. */
+	return SJME_JNI_FALSE;
+}
+
 sjme_errorCode sjme_alloc_poolInitMalloc(
 	sjme_attrOutNotNull sjme_alloc_pool** outPool,
 	sjme_attrInPositive sjme_jint size)
@@ -190,6 +298,10 @@ sjme_errorCode sjme_alloc(
 	for (scanLink = pool->freeFirstLink;
 		scanLink != NULL; scanLink = scanLink->freeNext)
 	{
+		/* Has memory been corrupted? */
+		if (sjme_alloc_checkCorruption(pool, scanLink))
+			return SJME_ERROR_MEMORY_CORRUPTION;
+
 		/* Block is in the "invalid" space, skip it. */
 		if (scanLink->space == SJME_NUM_ALLOC_POOL_SPACE)
 			continue;
@@ -222,6 +334,13 @@ sjme_errorCode sjme_alloc(
 
 		/* Initialize block to remove any old data. */
 		memset(rightLink, 0, sizeof(*rightLink));
+
+		/* Check for link corruption. */
+		if (sjme_alloc_checkCorruption(pool, scanLink->next) ||
+			sjme_alloc_checkCorruption(pool, scanLink->prev) ||
+			sjme_alloc_checkCorruption(pool, scanLink->freeNext) ||
+			sjme_alloc_checkCorruption(pool, scanLink->freePrev))
+			return SJME_ERROR_MEMORY_CORRUPTION;
 
 		/* Make sure this block is marked as free. */
 		rightLink->space = SJME_ALLOC_POOL_SPACE_FREE;
