@@ -1,0 +1,14 @@
+plugins {
+	id "java"
+	id "application"
+}
+
+apply plugin: "com.github.johnrengelman.shadow"
+
+description = "Extracts ZIP files."
+mainClassName = "cc.squirreljme.unzip.Main"
+
+dependencies {
+	implementation project(":modules:zip")
+	implementation project(":modules:io")
+}

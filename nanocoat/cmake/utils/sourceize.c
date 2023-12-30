@@ -35,24 +35,28 @@ static void makeC(const char* properName)
 		uChar = (i >= 128 ? "U" : "");
 		
 		/* Start with normal number. */
-		snprintf(efficientSym[i], EFFICIENT_SYM_SIZE - 1, "%d%s", i, uChar);
+		snprintf(efficientSym[i], EFFICIENT_SYM_SIZE - 1,
+			"%d%s", i, uChar);
 		
 		/* Is octal shorter? */
 		memset(quickBuf, 0, sizeof(quickBuf));
-		snprintf(quickBuf, EFFICIENT_SYM_SIZE - 1, "0%o%s", i, uChar);
+		snprintf(quickBuf, EFFICIENT_SYM_SIZE - 1,
+			"0%o%s", i, uChar);
 		if (strlen(quickBuf) < strlen(efficientSym[i]))
 			memmove(efficientSym[i], quickBuf, EFFICIENT_SYM_SIZE);
 		
 		/* Is hex shorter? */
 		memset(quickBuf, 0, sizeof(quickBuf));
-		snprintf(quickBuf, EFFICIENT_SYM_SIZE - 1, "0x%x%s", i, uChar);
+		snprintf(quickBuf, EFFICIENT_SYM_SIZE - 1,
+			"0x%x%s", i, uChar);
 		if (strlen(quickBuf) < strlen(efficientSym[i]))
 			memmove(efficientSym[i], quickBuf, EFFICIENT_SYM_SIZE);
 	}
 	
 	/* Start header. */
 	fprintf(stdout, "#include <sjme/nvm.h>\n");
-	fprintf(stdout, "const uint8_t %s__bin[] = {\n", properName);
+	fprintf(stdout, "const sjme_jubyte %s__bin[] = {\n",
+		properName);
 	
 	/* Process all the bytes. */
 	totalSize = 0;
@@ -95,14 +99,17 @@ static void makeC(const char* properName)
 	
 	/* Finish it off and write the size. */
 	fprintf(stdout, "};\n");
-	fprintf(stdout, "const uint32_t %s__len = %d;\n", properName, totalSize);
+	fprintf(stdout, "const sjme_jint %s__len = %d;\n",
+		properName, totalSize);
 }
 
 static void makeH(const char* properName)
 {
 	fprintf(stdout, "#include <sjme/nvm.h>\n");
-	fprintf(stdout, "extern const uint8_t %s__bin[];\n", properName);
-	fprintf(stdout, "extern const uint32_t %s__len;\n", properName);
+	fprintf(stdout, "extern const sjme_jubyte %s__bin[];\n",
+		properName);
+	fprintf(stdout, "extern const sjme_jint %s__len;\n",
+		properName);
 }
 
 int main(int argc, char** argv)

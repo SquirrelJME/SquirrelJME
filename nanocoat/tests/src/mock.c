@@ -45,6 +45,8 @@ struct
 		SJME_MOCK_DO_TYPE_NVM_THREAD},
 	{sjme_mock_doRomLibrary,
 		SJME_MOCK_DO_TYPE_ROM_LIBRARY},
+	{sjme_mock_doRomMockLibrary,
+		SJME_MOCK_DO_TYPE_ROM_MOCK_LIBRARY},
 	{sjme_mock_doRomSuite,
 		SJME_MOCK_DO_TYPE_ROM_SUITE},
 		

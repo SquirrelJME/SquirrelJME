@@ -377,6 +377,8 @@ function(squirreljme_sourceize_dir inputDir outputDir)
 			# Store checksum
 			squirreljme_write_file_checksum(
 				"${inFileAbs}" "${outFileAbsPath}.c")
+			squirreljme_write_file_checksum(
+				"${inFileAbs}" "${outFileAbsPath}.h")
 		else()
 			message(STATUS
 				"File ${outFileAbsPath}.c already sourceized...")

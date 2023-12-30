@@ -7,6 +7,14 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Testing framework for the main library
 
+# Decode all of the blobs to binary
+squirreljme_decode_dir("${CMAKE_CURRENT_SOURCE_DIR}/blobs"
+	"${CMAKE_CURRENT_BINARY_DIR}/blobs/binary")
+
+# Then encode them all to source files, for use within tests
+squirreljme_sourceize_dir("${CMAKE_CURRENT_BINARY_DIR}/blobs/binary"
+	"${CMAKE_CURRENT_BINARY_DIR}/blobs")
+
 # Setup main test execution wrapper which runs within TAC
 add_library(TACTestExecutorCore STATIC
 	$<TARGET_OBJECTS:Core>
@@ -27,6 +35,10 @@ file(GLOB basicTestSources
 	"test*.cxx")
 squirreljme_list_file_sort(SORT basicTestSources)
 
+# Get a list of all the supporting blobs
+file(GLOB basicTestBlobs
+	"${CMAKE_CURRENT_BINARY_DIR}/blobs/*.c")
+
 # Setup base files for auto-generated test launching and method linking
 set(outTestProtosH "${CMAKE_CURRENT_BINARY_DIR}/proto.h")
 set(outTestStructH "${CMAKE_CURRENT_BINARY_DIR}/struct.h")
@@ -45,7 +57,8 @@ add_library(BasicTestLib OBJECT
 	src/blobs.c
 	src/mock.c
 	src/unit.c
-	${basicTestSources})
+	${basicTestSources}
+	${basicTestBlobs})
 
 # Basic test library
 add_library(BasicTestLibPIC OBJECT
@@ -53,7 +66,8 @@ add_library(BasicTestLibPIC OBJECT
 	src/blobs.c
 	src/mock.c
 	src/unit.c
-	${basicTestSources})
+	${basicTestSources}
+	${basicTestBlobs})
 
 # Initialize executable for basic tests, which contains everything
 add_executable(BasicTest
@@ -144,11 +158,3 @@ foreach(basicTestSource ${basicTestSources})
 	file(APPEND "${outTestStructH}"
 		"{\"${basicTestName}\", ${basicTestName}},\n")
 endforeach()
-
-# Decode all of the blobs to binary
-squirreljme_decode_dir("${CMAKE_CURRENT_SOURCE_DIR}/blobs"
-	"${CMAKE_CURRENT_BINARY_DIR}/blobs/binary")
-
-# Then encode them all to source files, for use within tests
-squirreljme_sourceize_dir("${CMAKE_CURRENT_BINARY_DIR}/blobs/binary"
-	"${CMAKE_CURRENT_BINARY_DIR}/blobs")

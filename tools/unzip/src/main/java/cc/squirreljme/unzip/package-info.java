@@ -1,10 +1,16 @@
-/* -*- Mode: C; indent-tabs-mode: t; tab-width: 4 -*-
+// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// SquirrelJME
+// Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
-// -------------------------------------------------------------------------*/
+// ---------------------------------------------------------------------------
 
-#include "sjme/nvm.h"
+/**
+ * This package contains the unzip application.
+ *
+ * @since 2023/12/30
+ */
+
+package cc.squirreljme.unzip;

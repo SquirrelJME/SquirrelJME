@@ -13,9 +13,11 @@ import java.io.IOException;
 import java.util.ServiceLoader;
 import javax.microedition.io.Connection;
 import javax.microedition.io.ConnectionOption;
+import javax.microedition.io.Connector;
 
 /**
- * Factory used to access custom connectors and otherwise.
+ * Factory used to access custom connectors and otherwise with
+ * {@link Connector}.
  * 
  * Used with {@link ServiceLoader}.
  *
