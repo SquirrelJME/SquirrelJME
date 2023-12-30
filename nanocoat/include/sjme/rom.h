@@ -174,7 +174,7 @@ struct sjme_rom_libraryCore
 #define SJME_SIZEOF_LIBRARY_CORE_N(uncommonSize) \
     (sizeof(sjme_rom_libraryCore) + \
 		(SJME_SIZEOF_LIBRARY_CACHE_N(uncommonSize) - \
-		sizeof(sjme_rom_libraryCore)))
+		sizeof(sjme_rom_libraryCache)))
 
 /**
  * Determines the size of the library core.
