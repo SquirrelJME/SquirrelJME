@@ -480,6 +480,10 @@ sjme_errorCode sjme_alloc(
 	pool->space[SJME_ALLOC_POOL_SPACE_USED].reserved +=
 		SJME_SIZEOF_ALLOC_LINK(0);
 
+	/* Make sure we did not cause corruption. */
+	if (sjme_alloc_checkCorruption(pool, scanLink))
+		return SJME_ERROR_MEMORY_CORRUPTION;
+
 	/* Use the given link. */
 	*outAddr = &scanLink->block[0];
 	return SJME_ERROR_NONE;
@@ -499,7 +503,6 @@ sjme_errorCode sjme_alloc_copy(
 
 	/* Allocate new copy first. */
 	dest = NULL;
-	error = SJME_ERROR_UNKNOWN;
 	if (SJME_IS_ERROR(error = sjme_alloc(pool, size, &dest)) ||
 		dest == NULL)
 		return SJME_DEFAULT_ERROR(error);
@@ -551,9 +554,21 @@ sjme_errorCode sjme_alloc_format(
 sjme_errorCode sjme_alloc_free(
 	sjme_attrInNotNull void* addr)
 {
+	sjme_alloc_link* link;
+	sjme_errorCode error;
+
 	if (addr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
+
+	/* Get the link. */
+	link = NULL;
+	if (SJME_IS_ERROR(error = sjme_alloc_getLink(addr, &link)))
+		return SJME_DEFAULT_ERROR(error);
+
+	/* Check the integrity of it. */
+	if (sjme_alloc_checkCorruption(link->pool, link))
+		return SJME_ERROR_MEMORY_CORRUPTION;
+
 	sjme_todo("Implement this?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
