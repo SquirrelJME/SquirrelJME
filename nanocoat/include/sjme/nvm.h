@@ -1318,6 +1318,22 @@ static inline sjme_attrArtificial sjme_errorCode SJME_DEFAULT_ERROR(
 	return error;
 }
 
+/**
+ * Determines the default error code to use.
+ *
+ * @param error The error code.
+ * @param otherwise The other error code rather than @c SJME_ERROR_UNKNOWN.
+ * @return Either @c error or @c otherwise if the former is not valid.
+ * @since 2023/12/29
+ */
+static inline sjme_attrArtificial sjme_errorCode SJME_DEFAULT_ERROR_OR(
+	sjme_errorCode error, sjme_errorCode otherwise)
+{
+	if (!SJME_IS_ERROR(error))
+		return SJME_DEFAULT_ERROR(otherwise);
+	return SJME_DEFAULT_ERROR(error);
+}
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

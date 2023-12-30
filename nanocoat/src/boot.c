@@ -196,9 +196,7 @@ fail_resultAlloc:
 fail_reservedPoolAlloc:
 
 	/* Use whatever error code. */
-	if (SJME_IS_ERROR(error))
-		return SJME_DEFAULT_ERROR(error);
-	return SJME_ERROR_BOOT_FAILURE;
+	return SJME_DEFAULT_ERROR_OR(error, SJME_ERROR_BOOT_FAILURE);
 }
 
 sjme_errorCode sjme_nvm_destroy(sjme_nvm_state* state, sjme_jint* exitCode)
