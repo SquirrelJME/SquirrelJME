@@ -8,10 +8,11 @@
 // -------------------------------------------------------------------------*/
 
 #include <jni.h>
+#include <string.h>
 
+#include "frontend/emulator/jniHelper.h"
 #include "sjme/alloc.h"
 #include "sjme/list.h"
-#include "frontend/emulator/jniHelper.h"
 
 jlong SJME_JNI_METHOD(SJME_CLASS_ALLOC_POOL, _1_1alloc)
 	(JNIEnv* env, jclass classy, jlong poolPtr, jint size)
@@ -112,6 +113,41 @@ jlong SJME_JNI_METHOD(SJME_CLASS_ALLOC_POOL, _1_1poolStatic)
 	result->frontEnd.wrapper = SJME_FRONT_END_WRAP(
 		(*env)->NewGlobalRef(env, this));
 
+	return SJME_POINTER_TO_JLONG(result);
+}
+
+jlong SJME_JNI_METHOD(SJME_CLASS_ALLOC_POOL, _1_1strDup)
+	(JNIEnv* env, jclass classy, jlong poolPtr, jstring javaString)
+{
+	sjme_alloc_pool* pool;
+	sjme_errorCode error;
+	sjme_lpstr result;
+	jboolean wasCopied;
+	const char* utfChars;
+
+	/* Get the pool back. */
+	pool = SJME_JLONG_TO_POINTER(sjme_alloc_pool*, poolPtr);
+
+	/* Get the UTF characters for the given string. */
+	wasCopied = JNI_FALSE;
+	utfChars = (*env)->GetStringUTFChars(env, javaString, &wasCopied);
+
+	/* Copy it. */
+	result = NULL;
+	error = sjme_alloc_copy(pool, strlen(utfChars),
+		&result, utfChars);
+
+	/* Cleanup. */
+	(*env)->ReleaseStringUTFChars(env, javaString, utfChars);
+
+	/* Failed? */
+	if (SJME_IS_ERROR(error) || result == NULL)
+	{
+		sjme_jni_throwVMException(env, error);
+		return 0;
+	}
+
+	/* Return pointer to the string. */
 	return SJME_POINTER_TO_JLONG(result);
 }
 

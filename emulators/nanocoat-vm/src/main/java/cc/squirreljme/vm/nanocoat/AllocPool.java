@@ -145,32 +145,10 @@ public final class AllocPool
 		if (__string == null)
 			throw new NullPointerException("NARG");
 		
-		// Map string to bytes
-		byte[] buf;
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(
-			2 + (__string.length() * 2)); 
-			DataOutputStream dos = new DataOutputStream(baos))
-		{
-			// Write string in modified UTF form
-			dos.writeUTF(__string);
-			dos.writeByte(0);
-			
-			buf = baos.toByteArray();
-		}
-		catch (IOException __e)
-		{
-			throw new VMException(__e);
-		}
-		
-		// We ignore the starting length and add a NUL
-		int len = buf.length - 2;
-		
-		// Allocate a link to write into
-		AllocLink link = this.alloc(len);
-		link.write(0, buf, 2, len);
-		
-		// Wrap the given link
-		return new LinkedCharStar(link);
+		long ptr = AllocPool.__strDup(this._pointer, __string);
+		if (ptr == 0)
+			throw new VMException("Could not duplicate string.");
+		return new LinkedCharStar(AllocLink.ofBlockPtr(ptr));
 	}
 	
 	/**
@@ -222,5 +200,17 @@ public final class AllocPool
 	 */
 	private static native long __poolStatic(long __address, int __size,
 		AllocPool __this)
+		throws VMException;
+	
+	/**
+	 * Duplicates the given string.
+	 *
+	 * @param __poolPtr The pool pointer.
+	 * @param __string The input string.
+	 * @return The resultant string.
+	 * @throws VMException If it could not be duplicated.
+	 * @since 2023/12/29
+	 */
+	private static native long __strDup(long __poolPtr, String __string)
 		throws VMException;
 }
