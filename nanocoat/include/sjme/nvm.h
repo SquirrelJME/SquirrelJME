@@ -1283,9 +1283,12 @@ typedef enum sjme_errorCode
 
 	/** Boot failure. */
 	SJME_ERROR_BOOT_FAILURE = -32,
+
+	/** Generic JNI exception. */
+	SJME_ERROR_JNI_EXCEPTION = -33,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -33
+	SJME_NUM_ERROR_CODES = -34
 } sjme_errorCode;
 
 /**

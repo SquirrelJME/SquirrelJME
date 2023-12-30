@@ -42,10 +42,16 @@ sjme_errorCode sjme_jni_virtualLibrary_initCache(
 		"nameFunc: %p\n",
 		env, self, classy, idFunc, nameFunc);
 
-	/* Pre-seed ID and name. */
+	/* Pre-seed ID. */
 	inLibrary->id = (*env)->CallIntMethod(env, self, idFunc, classy);
+	if (sjme_jni_checkVMException(env))
+		return SJME_ERROR_JNI_EXCEPTION;
+
+	/* Pre-seed name. */
 	inLibrary->name = SJME_JLONG_TO_POINTER(sjme_lpcstr,
 		(*env)->CallObjectMethod(env, self, nameFunc));
+	if (sjme_jni_checkVMException(env))
+		return SJME_ERROR_JNI_EXCEPTION;
 
 	/* Nothing needs to be done here... */
 	return SJME_ERROR_NONE;

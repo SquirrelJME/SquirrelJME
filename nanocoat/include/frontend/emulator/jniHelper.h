@@ -118,6 +118,15 @@ extern "C" {
 	SJME_JNI_CLASS(SJME_PACKAGE_NANOCOAT, NvmBootParam)
 
 /**
+ * Checks to see if a virtual machine call failed.
+ *
+ * @param env The Java environment.
+ * @return If there is an exception.
+ * @since 2023/12/29
+ */
+sjme_jboolean sjme_jni_checkVMException(JNIEnv* env);
+
+/**
  * Throws a @c VMException .
  *
  * @param env The current Java environment.

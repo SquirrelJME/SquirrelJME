@@ -57,6 +57,8 @@ static sjme_errorCode sjme_jni_virtualSuite_list(
 	javaListMethod = (*env)->GetMethodID(env, classy, "__list", "()J");
 	result = SJME_JLONG_TO_POINTER(sjme_list_sjme_rom_library*,
 		(*env)->CallLongMethod(env, virtualSuite, javaListMethod));
+	if (sjme_jni_checkVMException(env))
+		return SJME_ERROR_JNI_EXCEPTION;
 
 	/* Return result of it. */
 	*outLibraries = result;

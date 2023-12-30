@@ -13,6 +13,21 @@
 #include "frontend/emulator/jniHelper.h"
 #include "sjme/debug.h"
 
+sjme_jboolean sjme_jni_checkVMException(JNIEnv* env)
+{
+	/* Was there an exception? */
+	if ((*env)->ExceptionCheck(env))
+	{
+		/* Debug print it. */
+		(*env)->ExceptionDescribe(env);
+
+		/* Did fail! */
+		return SJME_JNI_TRUE;
+	}
+
+	return SJME_JNI_FALSE;
+}
+
 void sjme_jni_throwVMException(JNIEnv* env, sjme_errorCode code)
 {
 #define BUF_SIZE 512
