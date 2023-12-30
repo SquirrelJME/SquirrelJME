@@ -1307,21 +1307,6 @@ static inline sjme_attrArtificial sjme_jboolean SJME_IS_ERROR(
  * Determines the default error code to use.
  *
  * @param error The error code.
- * @return Either @c error or a default error.
- * @since 2023/12/29
- */
-static inline sjme_attrArtificial sjme_errorCode SJME_DEFAULT_ERROR(
-	sjme_errorCode error)
-{
-	if (!SJME_IS_ERROR(error))
-		return SJME_ERROR_UNKNOWN;
-	return error;
-}
-
-/**
- * Determines the default error code to use.
- *
- * @param error The error code.
  * @param otherwise The other error code rather than @c SJME_ERROR_UNKNOWN.
  * @return Either @c error or @c otherwise if the former is not valid.
  * @since 2023/12/29
@@ -1330,9 +1315,25 @@ static inline sjme_attrArtificial sjme_errorCode SJME_DEFAULT_ERROR_OR(
 	sjme_errorCode error, sjme_errorCode otherwise)
 {
 	if (!SJME_IS_ERROR(error))
-		return SJME_DEFAULT_ERROR(otherwise);
-	return SJME_DEFAULT_ERROR(error);
+	{
+		if (!SJME_IS_ERROR(otherwise))
+			return SJME_ERROR_UNKNOWN;
+		else
+			return otherwise;
+	}
+
+	return error;
 }
+
+/**
+ * Determines the default error code to use.
+ *
+ * @param error The error code.
+ * @return Either @c error or a default error.
+ * @since 2023/12/29
+ */
+#define SJME_DEFAULT_ERROR(error) \
+	SJME_DEFAULT_ERROR_OR((error), SJME_ERROR_UNKNOWN)
 
 /*--------------------------------------------------------------------------*/
 
