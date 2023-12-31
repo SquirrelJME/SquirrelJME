@@ -12,13 +12,37 @@
 #include "test.h"
 #include "unit.h"
 
+/** Empty buffer. */
+static const sjme_jubyte emptyBuffer[1] =
+{
+	'x'
+};
+
 /**
  * Tests reading of an empty stream.
- *  
+ *
  * @since 2023/12/31 
  */
 SJME_TEST_DECLARE(testStreamEmpty)
 {
-	sjme_todo("Implement %s", __func__);
-	return SJME_TEST_RESULT_FAIL;
+	sjme_stream_input inputStream;
+	sjme_jint result;
+
+	/* Open stream. */
+	if (SJME_IS_ERROR(sjme_stream_inputOpenMemory(test->pool,
+		&inputStream, emptyBuffer, 0)))
+		return sjme_unitFail(test, "Could not open input stream.");
+
+	/* Try to read a single byte, it should indicate EOS. */
+	result = 999;
+	if (SJME_IS_ERROR(sjme_stream_inputReadSingle(inputStream,
+		&result)))
+		return sjme_unitFail(test, "Could not read single byte.");
+
+	/* Should be EOF. */
+	sjme_unitEqualI(test, -1, result,
+		"Incorrect read byte?");
+
+	/* Success! */
+	return SJME_TEST_RESULT_PASS;
 }

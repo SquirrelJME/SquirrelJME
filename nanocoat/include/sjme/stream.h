@@ -81,14 +81,15 @@ sjme_errorCode sjme_stream_inputClose(
 sjme_errorCode sjme_stream_inputOpenMemory(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrOutNotNull sjme_stream_input* outStream,
-	sjme_attrInNotNull void* buffer,
+	sjme_attrInNotNull const void* buffer,
 	sjme_attrInPositive sjme_jint length);
 
 /**
  * Reads from the given input stream and writes to the destination buffer.
  *
  * @param stream The stream to read from.
- * @param readCount The number of bytes which were read.
+ * @param readCount The number of bytes which were read, if end of stream is
+ * reached this will be @c -1 .
  * @param dest The destination buffer.
  * @param length The number of bytes to read.
  * @return Any resultant error, if any.
@@ -96,7 +97,7 @@ sjme_errorCode sjme_stream_inputOpenMemory(
  */
 sjme_errorCode sjme_stream_inputRead(
 	sjme_attrInNotNull sjme_stream_input stream,
-	sjme_attrOutNotNull sjme_attrOutPositive sjme_jint* readCount,
+	sjme_attrOutNotNull sjme_attrOutNegativeOnePositive sjme_jint* readCount,
 	sjme_attrOutNotNullBuf(length) void* dest,
 	sjme_attrInPositive sjme_jint length);
 
@@ -104,7 +105,8 @@ sjme_errorCode sjme_stream_inputRead(
  * Reads from the given input stream and writes to the destination buffer.
  *
  * @param stream The stream to read from.
- * @param readCount The number of bytes which were read.
+ * @param readCount The number of bytes which were read, if end of stream is
+ * reached this will be @c -1 .
  * @param dest The destination buffer.
  * @param offset The offset into the destination buffer.
  * @param length The number of bytes to read.
@@ -113,10 +115,23 @@ sjme_errorCode sjme_stream_inputRead(
  */
 sjme_errorCode sjme_stream_inputReadIter(
 	sjme_attrInNotNull sjme_stream_input stream,
-	sjme_attrOutNotNull sjme_attrOutPositive sjme_jint* readCount,
+	sjme_attrOutNotNull sjme_attrOutNegativeOnePositive sjme_jint* readCount,
 	sjme_attrOutNotNullBuf(length) void* dest,
 	sjme_attrInPositive sjme_jint offset,
 	sjme_attrInPositive sjme_jint length);
+
+/**
+ * Reads a single byte from the input stream.
+ *
+ * @param stream The stream to read from.
+ * @param result The resultant byte, @c -1 indicates end of stream while
+ * every other value is always positive.
+ * @return Any resultant error, if any.
+ * @since 2023/12/31
+ */
+sjme_errorCode sjme_stream_inputReadSingle(
+	sjme_attrInNotNull sjme_stream_input stream,
+	sjme_attrOutNotNull sjme_attrOutNegativeOnePositive sjme_jint* result);
 
 /**
  * Closes an output stream.
