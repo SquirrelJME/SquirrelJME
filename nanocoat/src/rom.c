@@ -116,6 +116,11 @@ sjme_errorCode sjme_rom_libraryRawReadIter(
 	if (library == NULL || destPtr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
+	/* Do we already know this will not work? */
+	if (library->cache.checkedRawAccess &&
+		!library->cache.validRawAccess)
+		return SJME_ERROR_UNSUPPORTED_OPERATION;
+
 	/* Check all the bounds variants possible, for overflow as well. */
 	rawDestPtr = (uintptr_t)destPtr;
 	if (destOffset < 0 || srcPos < 0 || srcOffset < 0 || length < 0 ||
@@ -163,13 +168,18 @@ sjme_errorCode sjme_rom_libraryRawSize(
 	if (library == NULL || outSize == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
+	/* Do we already know this will not work? */
+	if (library->cache.checkedRawAccess &&
+		!library->cache.validRawAccess)
+		return SJME_ERROR_UNSUPPORTED_OPERATION;
+
 	/* Size was already determined? */
 	if (library->cache.size > 0)
 		return library->cache.size;
 
 	/* Native handler must be valid! */
 	if (library->functions->rawSize == NULL)
-		return SJME_ERROR_UNSUPPORTED_OPERATION;
+		goto fail_unsupported;
 
 	/* Call native handler. */
 	result = -2;
@@ -177,13 +187,24 @@ sjme_errorCode sjme_rom_libraryRawSize(
 		library, &result)) || result < 0)
 	{
 		if (result == -1)
-			return SJME_ERROR_UNSUPPORTED_OPERATION;
+			goto fail_unsupported;
 		return SJME_DEFAULT_ERROR(error);
 	}
 
 	/* Return result. */
 	*outSize = result;
 	return SJME_ERROR_NONE;
+
+fail_unsupported:
+	/* Cache whether this is supported so we need not bother? */
+	if (!library->cache.checkedRawAccess)
+	{
+		library->cache.checkedRawAccess = SJME_JNI_TRUE;
+		library->cache.validRawAccess = SJME_JNI_FALSE;
+	}
+
+	/* Not supported! */
+	return SJME_ERROR_UNSUPPORTED_OPERATION;
 }
 
 sjme_errorCode sjme_rom_newLibrary(

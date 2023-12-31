@@ -160,6 +160,18 @@ sjme_errorCode sjme_jni_virtualLibrary_rawSize(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_jni_virtualLibrary_resourceStream(
+	sjme_attrInNotNull sjme_rom_library inLibrary,
+	sjme_attrInNotNull sjme_lpcstr resourceName,
+	sjme_attrOutNotNull sjme_stream_input* outStream)
+{
+	if (inLibrary == NULL || resourceName == NULL || outStream == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	sjme_todo("Implement this.");
+	return SJME_ERROR_NONE;
+}
+
 /** Functions for JNI accessed libraries. */
 static const sjme_rom_libraryFunctions sjme_jni_virtualLibrary_functions =
 {
@@ -168,6 +180,7 @@ static const sjme_rom_libraryFunctions sjme_jni_virtualLibrary_functions =
 	.path = NULL,
 	.rawData = sjme_jni_virtualLibrary_rawData,
 	.rawSize = sjme_jni_virtualLibrary_rawSize,
+	.resourceStream = sjme_jni_virtualLibrary_resourceStream,
 };
 
 jlong SJME_JNI_METHOD(SJME_CLASS_VIRTUAL_LIBRARY, _1_1init)

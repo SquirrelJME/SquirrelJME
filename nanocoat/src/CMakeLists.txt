@@ -23,6 +23,7 @@ list(APPEND coreSources
 	recycle.c
 	rom.c
 	softmmio.c
+	stream.c
 	task.c
 	tread.c
 	util.c

@@ -16,9 +16,10 @@
 #ifndef SQUIRRELJME_ROM_H
 #define SQUIRRELJME_ROM_H
 
-#include "sjme/nvm.h"
 #include "sjme/list.h"
+#include "sjme/nvm.h"
 #include "sjme/romInternal.h"
+#include "sjme/stream.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -76,6 +77,12 @@ typedef struct sjme_rom_libraryCache
 
 	/** Cached size of the library. */
 	sjme_jint size;
+
+	/** Is raw access checked? */
+	sjme_jboolean checkedRawAccess;
+
+	/** Is raw access valid. */
+	sjme_jboolean validRawAccess;
 
 	/** Uncommon cache generic structure. */
 	sjme_jubyte uncommon[sjme_flexibleArrayCount];
@@ -225,17 +232,33 @@ typedef sjme_errorCode (*sjme_rom_libraryRawData)(
 	sjme_attrInPositive sjme_jint length);
 
 /**
- * Returns the raw size of the library.
+ * Returns the raw size of the library, also can be used to check if raw
+ * access is supported in opaque handlers.
  *
  * @param inLibrary The input library
  * @param outSize The output raw size, if the result is @c -1 then it indicates
- * that this operation is not supported on the given library.
+ * that this operation is not supported on the given library and it should
+ * not try to access resources and otherwise using raw data access.
  * @return Any resultant error code.
  * @since 2023/12/30
  */
 typedef sjme_errorCode (*sjme_rom_libraryRawSizeFunc)(
 	sjme_attrInNotNull sjme_rom_library inLibrary,
 	sjme_attrOutNotNull sjme_jint* outSize);
+
+/**
+ * Opens the given resource as a stream.
+ *
+ * @param inLibrary The library to read the resource from.
+ * @param resourceName The name of the resource.
+ * @param outStream The resultant stream for accessing data.
+ * @return Any resultant error code.
+ * @since 2023/12/30
+ */
+typedef sjme_errorCode (*sjme_rom_libraryResourceStream)(
+	sjme_attrInNotNull sjme_rom_library inLibrary,
+	sjme_attrInNotNull sjme_lpcstr resourceName,
+	sjme_attrOutNotNull sjme_stream_input* outStream);
 
 /**
  * Function used to initialize the suite cache.
@@ -292,6 +315,9 @@ struct sjme_rom_libraryFunctions
 
 	/** The size of this library. */
 	sjme_rom_libraryRawSizeFunc rawSize;
+
+	/** Access a resource as a stream. */
+	sjme_rom_libraryResourceStream resourceStream;
 };
 
 struct sjme_rom_suiteFunctions

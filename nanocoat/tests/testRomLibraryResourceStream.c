@@ -13,7 +13,8 @@
 #include "unit.h"
 
 /**
- * DESCRIBE THIS.
+ * Tests reading a resource a stream using the stream resource function of
+ * a library, for when raw data cannot be accessed.
  *  
  * @since 2023/12/30 
  */
