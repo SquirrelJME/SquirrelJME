@@ -31,9 +31,9 @@ sjme_errorCode sjme_jni_virtualLibrary_initCache(
 	/* Get env and object back. */
 	env = inLibrary->cache.common.frontEnd.data;
 	self = inLibrary->cache.common.frontEnd.wrapper;
+	classy = (*env)->GetObjectClass(env, self);
 
 	/* Find the ID and name functions. */
-	classy = (*env)->GetObjectClass(env, self);
 	idFunc = (*env)->GetMethodID(env, classy, "__id", "()I");
 	nameFunc = (*env)->GetMethodID(env, classy, "__name", "()J");
 
@@ -57,14 +57,117 @@ sjme_errorCode sjme_jni_virtualLibrary_initCache(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_jni_virtualLibrary_rawData(
+	sjme_attrInNotNull sjme_rom_library inLibrary,
+	sjme_attrOutNotNullBuf(length) void* dest,
+	sjme_attrInPositive sjme_jint srcPos,
+	sjme_attrInPositive sjme_jint length)
+{
+	JNIEnv* env;
+	jobject self;
+	jclass classy;
+	jmethodID rawDataFunc;
+	jint result;
+	jobject nioBuf;
+	sjme_errorCode error;
+
+	if (inLibrary == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (srcPos < 0 || length < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	/* Initial setup. */
+	nioBuf = NULL;
+	error = SJME_ERROR_UNKNOWN;
+
+	/* Get env and object back. */
+	env = inLibrary->cache.common.frontEnd.data;
+	self = inLibrary->cache.common.frontEnd.wrapper;
+	classy = (*env)->GetObjectClass(env, self);
+
+	/* It is much faster to use NIO for this! */
+	nioBuf = (*env)->NewDirectByteBuffer(env, dest, length);
+	if (sjme_jni_checkVMException(env))
+	{
+		error = SJME_ERROR_JNI_EXCEPTION;
+		goto fail_cleanupNioBuf;
+	}
+
+	/* Find the raw data function. */
+	rawDataFunc = (*env)->GetMethodID(env, classy,
+		"__rawData", "(ILjava/nio/ByteBuffer;)V");
+	if (sjme_jni_checkVMException(env))
+	{
+		error = SJME_ERROR_JNI_EXCEPTION;
+		goto fail_cleanupNioBuf;
+	}
+
+	/* Call function accordingly. */
+	(*env)->CallVoidMethod(env, self, rawDataFunc, srcPos, nioBuf);
+	if (sjme_jni_checkVMException(env))
+	{
+		error = SJME_ERROR_JNI_EXCEPTION;
+		goto fail_cleanupNioBuf;
+	}
+
+	/* Success! */
+	error = SJME_ERROR_NONE;
+
+	/* Cleanup NIO, just in case. */
+fail_cleanupNioBuf:
+	if (nioBuf != NULL)
+	{
+		(*env)->DeleteLocalRef(env, nioBuf);
+		if (sjme_jni_checkVMException(env))
+			return SJME_ERROR_JNI_EXCEPTION;
+	}
+
+	/* Return whatever error state. */
+	return error;
+}
+
+sjme_errorCode sjme_jni_virtualLibrary_rawSize(
+	sjme_attrInNotNull sjme_rom_library inLibrary,
+	sjme_attrOutNotNull sjme_jint* outSize)
+{
+	JNIEnv* env;
+	jobject self;
+	jclass classy;
+	jmethodID rawSizeFunc;
+	jint result;
+
+	if (inLibrary == NULL || outSize == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Get env and object back. */
+	env = inLibrary->cache.common.frontEnd.data;
+	self = inLibrary->cache.common.frontEnd.wrapper;
+	classy = (*env)->GetObjectClass(env, self);
+
+	/* Find the raw size function. */
+	rawSizeFunc = (*env)->GetMethodID(env, classy, "__rawSize", "()I");
+	if (sjme_jni_checkVMException(env))
+		return SJME_ERROR_JNI_EXCEPTION;
+
+	/* Ask for the raw size of the given library. */
+	result = (*env)->CallIntMethod(env, self, rawSizeFunc);
+	if (sjme_jni_checkVMException(env))
+		return SJME_ERROR_JNI_EXCEPTION;
+
+	/* Store result and success! */
+	*outSize = result;
+	return SJME_ERROR_NONE;
+}
+
 /** Functions for JNI accessed libraries. */
 static const sjme_rom_libraryFunctions sjme_jni_virtualLibrary_functions =
 {
 	.uncommonTypeSize = sizeof(sjme_jni_virtualLibrary_cache),
 	.initCache = sjme_jni_virtualLibrary_initCache,
 	.path = NULL,
-	.rawData = NULL,
-	.rawSize = NULL,
+	.rawData = sjme_jni_virtualLibrary_rawData,
+	.rawSize = sjme_jni_virtualLibrary_rawSize,
 };
 
 jlong SJME_JNI_METHOD(SJME_CLASS_VIRTUAL_LIBRARY, _1_1init)

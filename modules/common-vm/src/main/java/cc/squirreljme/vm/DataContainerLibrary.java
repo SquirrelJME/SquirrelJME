@@ -9,6 +9,7 @@
 
 package cc.squirreljme.vm;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -22,7 +23,7 @@ import java.nio.file.StandardOpenOption;
  * @since 2021/06/13
  */
 public class DataContainerLibrary
-	implements VMClassLibrary
+	implements RawVMClassLibrary
 {
 	/** Data resource name. */
 	public static final String RESOURCE_NAME =
@@ -89,6 +90,63 @@ public class DataContainerLibrary
 	public Path path()
 	{
 		return this.path;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/12/30
+	 */
+	@Override
+	public void rawData(int __jarOffset, byte[] __b, int __o, int __l)
+		throws IllegalStateException, IndexOutOfBoundsException,
+		NullPointerException
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
+		// Check that the size is correct.
+		int bufLen = __b.length;
+		int libLen = this.rawSize();
+		if (__jarOffset < 0 || (__jarOffset + __l) < 0 ||
+			(__jarOffset + __l) > libLen || __o < 0 || __l < 0 ||
+			(__o + __l) < 0 || (__o + __l) > bufLen)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Seek through and find the data
+		try (InputStream in = Files.newInputStream(this.path,
+			StandardOpenOption.READ))
+		{
+			// Seek first, stop if EOF is hit
+			for (int at = 0; at < __jarOffset; at++)
+				if (in.read() < 0)
+					throw new IllegalStateException("FEOF");
+			
+			// Do a standard read here
+			if (in.read(__b, __o, __l) != __l)
+				throw new IllegalStateException("SHRT");
+		}
+		catch (IOException __e)
+		{
+			throw new IllegalStateException(__e);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/12/30
+	 */
+	@Override
+	public int rawSize()
+		throws IllegalStateException
+	{
+		try
+		{
+			return (int)Math.min(Integer.MAX_VALUE, Files.size(this.path));
+		}
+		catch (IOException __e)
+		{
+			throw new IllegalStateException(__e);
+		}
 	}
 	
 	/**

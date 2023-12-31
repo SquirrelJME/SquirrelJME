@@ -228,7 +228,8 @@ typedef sjme_errorCode (*sjme_rom_libraryRawData)(
  * Returns the raw size of the library.
  *
  * @param inLibrary The input library
- * @param outSize The output raw size.
+ * @param outSize The output raw size, if the result is @c -1 then it indicates
+ * that this operation is not supported on the given library.
  * @return Any resultant error code.
  * @since 2023/12/30
  */
@@ -421,6 +422,14 @@ sjme_errorCode sjme_rom_libraryRawReadIter(
 	sjme_attrInPositive sjme_jint srcOffset,
 	sjme_attrInPositive sjme_jint length);
 
+/**
+ * Returns the raw size of the library.
+ *
+ * @param library The library to get the raw size of.
+ * @param outSize The resultant size.
+ * @return Any resultant error code.
+ * @since 2023/12/30
+ */
 sjme_errorCode sjme_rom_libraryRawSize(
 	sjme_attrInNotNull sjme_rom_library library,
 	sjme_attrOutNotNull sjme_jint* outSize);

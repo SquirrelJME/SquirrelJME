@@ -127,10 +127,15 @@ sjme_errorCode sjme_rom_libraryRawReadIter(
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 
 	/* Get the raw size of the target library. */
-	libSize = -1;
+	libSize = -2;
 	if (SJME_IS_ERROR(error = sjme_rom_libraryRawSize(library,
 		&libSize)) || libSize < 0)
+	{
+		if (libSize == -1)
+			return SJME_DEFAULT_ERROR_OR(error,
+				SJME_ERROR_UNSUPPORTED_OPERATION);
 		return SJME_DEFAULT_ERROR(error);
+	}
 
 	/* Check bounds of the size to ensure it is correct. */
 	if (length > libSize || (srcPos + length) > libSize ||
@@ -167,10 +172,14 @@ sjme_errorCode sjme_rom_libraryRawSize(
 		return SJME_ERROR_UNSUPPORTED_OPERATION;
 
 	/* Call native handler. */
-	result = -1;
+	result = -2;
 	if (SJME_IS_ERROR(error = library->functions->rawSize(
 		library, &result)) || result < 0)
+	{
+		if (result == -1)
+			return SJME_ERROR_UNSUPPORTED_OPERATION;
 		return SJME_DEFAULT_ERROR(error);
+	}
 
 	/* Return result. */
 	*outSize = result;

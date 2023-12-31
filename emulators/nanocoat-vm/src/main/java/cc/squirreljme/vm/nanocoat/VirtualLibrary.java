@@ -11,7 +11,9 @@ package cc.squirreljme.vm.nanocoat;
 
 import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.vm.RawVMClassLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
+import java.nio.ByteBuffer;
 
 /**
  * Provides a virtual library.
@@ -113,6 +115,49 @@ public final class VirtualLibrary
 		nameLink = this.suite.pool.strDup(this.library.name());
 		this._nameLink = nameLink;
 		return nameLink.pointerAddress();
+	}
+	
+	/**
+	 * Reads raw data from the library, if possible.
+	 *
+	 * @param __srcPos The source position in the library.
+	 * @param __dest The destination buffer.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/12/30
+	 */
+	@SuppressWarnings("unused")
+	private void __rawData(int __srcPos, ByteBuffer __dest)
+		throws NullPointerException
+	{
+		if (__dest == null)
+			throw new NullPointerException("NARG");
+		
+		/* Not supported here? */
+		VMClassLibrary library = this.library;
+		if (!(library instanceof RawVMClassLibrary))
+			throw new UnsupportedOperationException("NOPE");
+		
+		/* Otherwise the raw size. */
+		((RawVMClassLibrary)library).rawData(
+			__srcPos, __dest.array(), 0, __dest.capacity());
+	}
+	
+	/**
+	 * Reads the raw size of the library.
+	 *
+	 * @return The raw library size.
+	 * @since 2023/12/30
+	 */
+	@SuppressWarnings("unused")
+	private int __rawSize()
+	{
+		/* Not supported here? */
+		VMClassLibrary library = this.library;
+		if (!(library instanceof RawVMClassLibrary))
+			return -1;
+		
+		/* Otherwise the raw size. */
+		return ((RawVMClassLibrary)library).rawSize();
 	}
 	
 	/**
