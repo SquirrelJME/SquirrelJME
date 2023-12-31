@@ -208,10 +208,6 @@ typedef sjme_errorCode (*sjme_rom_libraryInitCacheFunc)(
 
 typedef sjme_errorCode (*sjme_rom_libraryPathFunc)();
 
-typedef sjme_errorCode (*sjme_rom_libraryResourceDirectFunc)();
-
-typedef sjme_errorCode (*sjme_rom_libraryResourceStreamFunc)();
-
 /**
  * Access the direct raw data of a given library.
  *
@@ -289,12 +285,6 @@ struct sjme_rom_libraryFunctions
 
 	/** Function to get the path of a library. */
 	sjme_rom_libraryPathFunc path;
-
-	/** Direct resource access, if available. */
-	sjme_rom_libraryResourceDirectFunc resourceDirect;
-
-	/** Open resource as a stream. */
-	sjme_rom_libraryResourceStreamFunc resourceStream;
 
 	/** Access of raw bytes of the input library. */
 	sjme_rom_libraryRawData rawData;

@@ -63,8 +63,6 @@ static const sjme_rom_libraryFunctions sjme_jni_virtualLibrary_functions =
 	.uncommonTypeSize = sizeof(sjme_jni_virtualLibrary_cache),
 	.initCache = sjme_jni_virtualLibrary_initCache,
 	.path = NULL,
-	.resourceDirect = NULL,
-	.resourceStream = NULL,
 	.rawData = NULL,
 	.rawSize = NULL,
 };
