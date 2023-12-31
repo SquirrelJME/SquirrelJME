@@ -10,6 +10,14 @@
 #include "sjme/stream.h"
 #include "sjme/debug.h"
 
+sjme_errorCode sjme_stream_inputAvailable(
+	sjme_attrInNotNull sjme_stream_input stream,
+	sjme_attrOutNotNull sjme_attrOutNegativeOnePositive sjme_jint* outAvail)
+{
+	sjme_todo("Implement this?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
 sjme_errorCode sjme_stream_inputClose(
 	sjme_attrInNotNull sjme_stream_input stream)
 {

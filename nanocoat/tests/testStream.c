@@ -12,6 +12,8 @@
 #include "test.h"
 #include "unit.h"
 
+#define NUM_BYTES 32
+
 /**
  * Tests that streams work.
  *  
