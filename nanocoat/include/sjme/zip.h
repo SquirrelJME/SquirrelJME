@@ -17,6 +17,7 @@
 #define SQUIRRELJME_ZIP_H
 
 #include "sjme/nvm.h"
+#include "sjme/stream.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -30,11 +31,18 @@ extern "C" {
 /*--------------------------------------------------------------------------*/
 
 /**
- * Opaque ZIP structure.
+ * Opaque Zip structure.
  *
  * @since 2023/12/31
  */
 typedef struct sjme_zipCore* sjme_zip;
+
+/**
+ * Opaque Zip entry structure.
+ *
+ * @since 2023/12/31
+ */
+typedef struct sjme_zip_entryCore* sjme_zip_entry;
 
 /**
  * Zip access information.
@@ -48,6 +56,17 @@ typedef struct sjme_zipCore
 } sjme_zipCore;
 
 /**
+ * Zip entry.
+ *
+ * @since 2023/12/31
+ */
+typedef struct sjme_zip_entryCore
+{
+	/** Todo. */
+	sjme_jint todo;
+} sjme_zip_entryCore;
+
+/**
  * Closes the specified Zip.
  *
  * @param inZip The Zip to close.
@@ -56,6 +75,32 @@ typedef struct sjme_zipCore
  */
 sjme_errorCode sjme_zip_close(
 	sjme_attrInNotNull sjme_zip inZip);
+
+/**
+ * Opens a stream to read the given Zip entry.
+ *
+ * @param inEntry The entry to read from.
+ * @param outStream The resultant stream for reading the data.
+ * @return On any error, if any.
+ * @since 2023/12/31
+ */
+sjme_errorCode sjme_zip_entryRead(
+	sjme_attrInNotNull sjme_zip_entry inEntry,
+	sjme_attrOutNotNull sjme_stream_input* outStream);
+
+/**
+ * Locates an entry within a Zip file.
+ *
+ * @param inZip The Zip to look within.
+ * @param outEntry The resultant entry.
+ * @param entryName The entry to look for.
+ * @return On any error, if any.
+ * @since 2023/12/31
+ */
+sjme_errorCode sjme_zip_locateEntry(
+	sjme_attrInNotNull sjme_zip inZip,
+	sjme_attrOutNotNull sjme_zip_entry* outEntry,
+	sjme_attrInNotNull sjme_lpcstr entryName);
 
 /**
  * Opens a Zip file at the given location.
