@@ -7,18 +7,32 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include "mock.h"
 #include "proto.h"
 #include "test.h"
+#include "unit.h"
 #include "sjme/zip.h"
 #include "mock.jar.h"
 
 /**
- * Tests access of ZIP files.
- * 
- * @since 2023/11/29
+ * Tests the opening and closing of Zip files.
+ *  
+ * @since 2023/12/31 
  */
-SJME_TEST_DECLARE(testZipAccess)
+SJME_TEST_DECLARE(testZipOpenClose)
 {
-	sjme_todo("Implement %s", __func__);
-	return SJME_TEST_RESULT_FAIL;
+	sjme_zip zip;
+
+	/* Attempt open of Zip. */
+	zip = NULL;
+	if (SJME_IS_ERROR(sjme_zip_open(test->pool, &zip,
+		mock_jar__bin, mock_jar__len)) || zip == NULL)
+		return sjme_unitFail(test, "Could not open Zip");
+
+	/* Immediately close it without doing anything. */
+	if (SJME_IS_ERROR(sjme_zip_close(zip)))
+		return sjme_unitFail(test, "Could not close Zip");
+
+	/* Passed! */
+	return SJME_TEST_RESULT_PASS;
 }

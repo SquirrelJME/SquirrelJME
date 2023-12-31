@@ -7,22 +7,28 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include "mock.h"
+#include "proto.h"
+#include "test.h"
+#include "unit.h"
 #include "sjme/zip.h"
-#include "sjme/debug.h"
+#include "mock.jar.h"
 
-sjme_errorCode sjme_zip_close(
-	sjme_attrInNotNull sjme_zip inZip)
+/**
+ * Tests opening of Zip files.
+ *
+ * @since 2023/12/31
+ */
+SJME_TEST_DECLARE(testZipOpen)
 {
-	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
-}
+	sjme_zip zip;
 
-sjme_errorCode sjme_zip_open(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull sjme_zip* outZip,
-	sjme_attrInNotNull void* rawData,
-	sjme_attrInPositive sjme_jint rawSize)
-{
-	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Attempt open of Zip. */
+	zip = NULL;
+	if (SJME_IS_ERROR(sjme_zip_open(test->pool, &zip,
+		mock_jar__bin, mock_jar__len)) || zip == NULL)
+		return sjme_unitFail(test, "Could not open Zip");
+
+	/* Passed! */
+	return SJME_TEST_RESULT_PASS;
 }
