@@ -7,11 +7,22 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <string.h>
+
 #include "hello.txt.h"
 #include "mock.h"
 #include "proto.h"
 #include "test.h"
 #include "unit.h"
+
+#define EXPECTED_SIZE 23
+
+static const sjme_jubyte expectedRawBin[EXPECTED_SIZE] =
+{
+	83, 113, 117, 105, 114, 114, 101, 108, 115,
+	32, 97, 114, 101, 32, 115, 111, 32,
+	99, 117, 116, 101, 10, 116
+};
 
 static sjme_jboolean funcRomLibraryRawData(
 	sjme_attrInNotNull sjme_mock* inState,
@@ -55,6 +66,48 @@ static const sjme_mock_configSet configRomLibraryRawData =
  */
 SJME_TEST_DECLARE(testRomLibraryRawData)
 {
-	sjme_todo("Implement %s", __func__);
-	return SJME_TEST_RESULT_FAIL;
+	sjme_rom_library library;
+	sjme_mock mock;
+	sjme_jint size;
+	sjme_jubyte* raw;
+
+	/* Initialize mocks. */
+	memset(&mock, 0, sizeof(mock));
+	if (!sjme_mock_act(test, &mock,
+		&configRomLibraryRawData, 0))
+		return sjme_unitFail(test, "Could not initialize mocks");
+
+	/* Get the library to access. */
+	library = mock.romLibraries[0];
+
+	/* Get the size of the file. */
+	size = -1;
+	if (SJME_IS_ERROR(sjme_rom_libraryRawSize(library, &size) ||
+		size < 0))
+		return sjme_unitFail(test, "Could not read library size.");
+
+	/* Allocate raw buffer. */
+	raw = sjme_alloca(size);
+	if (raw == NULL)
+		return sjme_unitFail(test, "Could not alloca buffer.");
+
+	/* Make sure it is cleared first, use FFs to check for gaps. */
+	memset(raw, 0xFF, size);
+
+	/* Check that the size matches. */
+	sjme_unitEqualI(test, size, EXPECTED_SIZE,
+		"File size is not as the expected size?");
+
+	/* Read in the raw data. */
+	if (SJME_IS_ERROR(sjme_rom_libraryRawRead(library,
+		raw, 0, size)))
+		return sjme_unitFail(test, "Could not read data.");
+
+	/* Compare all the bytes, must be equal. */
+	sjme_unitEqualI(test,
+		0, memcmp(expectedRawBin, raw, EXPECTED_SIZE),
+		"Data is wrong?");
+
+	/* Success! */
+	return SJME_TEST_RESULT_PASS;
 }

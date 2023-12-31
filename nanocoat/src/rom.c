@@ -90,6 +90,93 @@ sjme_errorCode sjme_rom_libraryHash(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_rom_libraryRawRead(
+	sjme_attrInNotNull sjme_rom_library library,
+	sjme_attrOutNotNullBuf(length) void* destPtr,
+	sjme_attrInPositive sjme_jint srcPos,
+	sjme_attrInPositive sjme_jint length)
+{
+	/* This is just an alias for the other. */
+	return sjme_rom_libraryRawReadIter(
+		library, destPtr, 0, srcPos, 0, length);
+}
+
+sjme_errorCode sjme_rom_libraryRawReadIter(
+	sjme_attrInNotNull sjme_rom_library library,
+	sjme_attrOutNotNullBuf(length) void* destPtr,
+	sjme_attrInPositive sjme_jint destOffset,
+	sjme_attrInPositive sjme_jint srcPos,
+	sjme_attrInPositive sjme_jint srcOffset,
+	sjme_attrInPositive sjme_jint length)
+{
+	uintptr_t rawDestPtr;
+	sjme_errorCode error;
+	sjme_jint libSize;
+
+	if (library == NULL || destPtr == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Check all the bounds variants possible, for overflow as well. */
+	rawDestPtr = (uintptr_t)destPtr;
+	if (destOffset < 0 || srcPos < 0 || srcOffset < 0 || length < 0 ||
+		(destOffset + length) < 0 || (srcPos + length) < 0 ||
+		(srcOffset + length) < 0 || (srcPos + srcOffset + length) < 0 ||
+		(rawDestPtr + destOffset) < rawDestPtr ||
+		(rawDestPtr + length) < rawDestPtr ||
+		(rawDestPtr + destOffset + length) < rawDestPtr)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	/* Get the raw size of the target library. */
+	libSize = -1;
+	if (SJME_IS_ERROR(error = sjme_rom_libraryRawSize(library,
+		&libSize)) || libSize < 0)
+		return SJME_DEFAULT_ERROR(error);
+
+	/* Check bounds of the size to ensure it is correct. */
+	if (length > libSize || (srcPos + length) > libSize ||
+		(srcPos + srcOffset) > libSize ||
+		(srcPos + srcOffset + length) > libSize)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	/* Check native library handler. */
+	if (library->functions->rawData == NULL)
+		return SJME_ERROR_UNSUPPORTED_OPERATION;
+
+	/* Call native library handler, which takes simpler arguments. */
+	return library->functions->rawData(library,
+		(void*)(((uintptr_t)destPtr) + destOffset),
+		srcPos + srcOffset, length);
+}
+
+sjme_errorCode sjme_rom_libraryRawSize(
+	sjme_attrInNotNull sjme_rom_library library,
+	sjme_attrOutNotNull sjme_jint* outSize)
+{
+	sjme_jint result;
+	sjme_errorCode error;
+
+	if (library == NULL || outSize == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Size was already determined? */
+	if (library->cache.size > 0)
+		return library->cache.size;
+
+	/* Native handler must be valid! */
+	if (library->functions->rawSize == NULL)
+		return SJME_ERROR_UNSUPPORTED_OPERATION;
+
+	/* Call native handler. */
+	result = -1;
+	if (SJME_IS_ERROR(error = library->functions->rawSize(
+		library, &result)) || result < 0)
+		return SJME_DEFAULT_ERROR(error);
+
+	/* Return result. */
+	*outSize = result;
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_rom_newLibrary(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrOutNotNull sjme_rom_library* outLibrary,

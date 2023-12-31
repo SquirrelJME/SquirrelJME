@@ -181,6 +181,9 @@ typedef struct sjme_mock_configDataNvmState
  */
 typedef struct sjme_mock_configDataRomLibrary
 {
+	/** Functions to utilize for the library. */
+	sjme_rom_libraryFunctions functions;
+
 	/** The ID of the library. */
 	sjme_jint id;
 

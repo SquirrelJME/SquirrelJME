@@ -65,8 +65,8 @@ static const sjme_rom_libraryFunctions sjme_jni_virtualLibrary_functions =
 	.path = NULL,
 	.resourceDirect = NULL,
 	.resourceStream = NULL,
-	.size = NULL,
 	.rawData = NULL,
+	.rawSize = NULL,
 };
 
 jlong SJME_JNI_METHOD(SJME_CLASS_VIRTUAL_LIBRARY, _1_1init)

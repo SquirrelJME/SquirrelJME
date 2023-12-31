@@ -54,6 +54,53 @@ struct
 	{NULL, SJME_MOCK_DO_TYPE_UNKNOWN}
 };
 
+static sjme_errorCode sjme_mock_defaultRomLibraryRawData(
+	sjme_attrInNotNull sjme_rom_library inLibrary,
+	sjme_attrOutNotNullBuf(length) void* dest,
+	sjme_attrInPositive sjme_jint srcPos,
+	sjme_attrInPositive sjme_jint length)
+{
+	sjme_mock_configDataRomLibrary* mock;
+
+	if (inLibrary == NULL || dest == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (srcPos < 0 || length < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	/* Recover mock. */
+	mock = inLibrary->cache.common.frontEnd.data;
+
+	/* Double check size. */
+	if (srcPos + length < 0 || srcPos + length > mock->length)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	/* There is no actual data here? */
+	if (mock->data == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* Just do a normal copy over. */
+	memmove(dest, (void*)(((uintptr_t)mock->data) + srcPos), length);
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_mock_defaultRomLibraryRawSize(
+	sjme_attrInNotNull sjme_rom_library inLibrary,
+	sjme_attrOutNotNull sjme_jint* outSize)
+{
+	sjme_mock_configDataRomLibrary* mock;
+
+	if (inLibrary == NULL || outSize == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Recover mock. */
+	mock = inLibrary->cache.common.frontEnd.data;
+
+	/* Is a simple set operation. */
+	*outSize = mock->length;
+	return SJME_ERROR_NONE;
+}
+
 sjme_jboolean sjme_mock_act(
 	sjme_attrInNotNull sjme_test* inTest,
 	sjme_attrInNotNull sjme_mock* inState,
@@ -73,7 +120,7 @@ sjme_jboolean sjme_mock_act(
 	
 	/* Initialize base data. */
 	memset(&data, 0, sizeof(data));
-	
+
 	/* Go through each entry, stop at NULl. */
 	for (dx = 0; inSet->order[dx] != NULL; dx++)
 	{
@@ -336,6 +383,7 @@ sjme_jboolean sjme_mock_doRomLibrary(
 	sjme_jint libraryIndex;
 	sjme_rom_libraryCore* library;
 	sjme_mock_configDataRomLibrary* data;
+	sjme_rom_libraryFunctions* functions;
 
 	if (inState == NULL || inData == NULL)
 		return sjme_die("Null arguments.");
@@ -350,9 +398,29 @@ sjme_jboolean sjme_mock_doRomLibrary(
 	if (SJME_IS_ERROR(sjme_alloc(inState->allocPool,
 		sizeof(*library), &library)) || library == NULL)
 		return sjme_die("Could not allocate library.");
-	
-	/* Get details. */
-	data = &inData->current.data.romLibrary;
+
+	/* Make a copy of the input data to be used as front end specific data. */
+	library->cache.common.frontEnd.data = NULL;
+	if (SJME_IS_ERROR(sjme_alloc_copy(inState->allocPool,
+		sizeof(inData->current.data.romLibrary),
+		&library->cache.common.frontEnd.data,
+		&inData->current.data.romLibrary)) ||
+		library->cache.common.frontEnd.data == NULL)
+		return sjme_die("Could not copy data.");
+
+	/* Use the copied data instead. */
+	data = library->cache.common.frontEnd.data;
+
+	/* Setup baseline mock functions, if none are set for some. */
+	library->functions = &data->functions;
+	functions = &data->functions;
+
+	/* Generic raw data access? */
+	if (functions->rawData == NULL || functions->rawSize == NULL)
+	{
+		functions->rawData = sjme_mock_defaultRomLibraryRawData;
+		functions->rawSize = sjme_mock_defaultRomLibraryRawSize;
+	}
 
 	/* ID of the library. */
 	if (data->id != 0)

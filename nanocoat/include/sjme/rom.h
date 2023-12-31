@@ -74,6 +74,9 @@ typedef struct sjme_rom_libraryCache
 	/** Common cache data. */
 	sjme_rom_cache common;
 
+	/** Cached size of the library. */
+	sjme_jint size;
+
 	/** Uncommon cache generic structure. */
 	sjme_jubyte uncommon[sjme_flexibleArrayCount];
 } sjme_rom_libraryCache;
@@ -209,9 +212,33 @@ typedef sjme_errorCode (*sjme_rom_libraryResourceDirectFunc)();
 
 typedef sjme_errorCode (*sjme_rom_libraryResourceStreamFunc)();
 
-typedef sjme_errorCode (*sjme_rom_libraryRawData)();
+/**
+ * Access the direct raw data of a given library.
+ *
+ * @param inLibrary The library to access in a raw fashion.
+ * @param dest The destination buffer.
+ * @param srcPos The source position within the file.
+ * @param length The number of bytes to read.
+ * @return Any resultant error, if any.
+ * @since 2023/12/30
+ */
+typedef sjme_errorCode (*sjme_rom_libraryRawData)(
+	sjme_attrInNotNull sjme_rom_library inLibrary,
+	sjme_attrOutNotNullBuf(length) void* dest,
+	sjme_attrInPositive sjme_jint srcPos,
+	sjme_attrInPositive sjme_jint length);
 
-typedef sjme_errorCode (*sjme_rom_librarySizeFunc)();
+/**
+ * Returns the raw size of the library.
+ *
+ * @param inLibrary The input library
+ * @param outSize The output raw size.
+ * @return Any resultant error code.
+ * @since 2023/12/30
+ */
+typedef sjme_errorCode (*sjme_rom_libraryRawSizeFunc)(
+	sjme_attrInNotNull sjme_rom_library inLibrary,
+	sjme_attrOutNotNull sjme_jint* outSize);
 
 /**
  * Function used to initialize the suite cache.
@@ -273,7 +300,7 @@ struct sjme_rom_libraryFunctions
 	sjme_rom_libraryRawData rawData;
 
 	/** The size of this library. */
-	sjme_rom_librarySizeFunc size;
+	sjme_rom_libraryRawSizeFunc rawSize;
 };
 
 struct sjme_rom_suiteFunctions
@@ -365,6 +392,48 @@ sjme_errorCode sjme_rom_fromPayload(
 sjme_errorCode sjme_rom_libraryHash(
 	sjme_attrInNotNull sjme_rom_library library,
 	sjme_attrOutNotNull sjme_jint* outHash);
+
+/**
+ * Reads from a library directly to access its raw bytes.
+ *
+ * @param library The library to access.
+ * @param destPtr The destination buffer.
+ * @param srcPos The source position.
+ * @param length The number of bytes to read.
+ * @return Any resultant error if any.
+ * @since 2023/12/30
+ */
+sjme_errorCode sjme_rom_libraryRawRead(
+	sjme_attrInNotNull sjme_rom_library library,
+	sjme_attrOutNotNullBuf(length) void* destPtr,
+	sjme_attrInPositive sjme_jint srcPos,
+	sjme_attrInPositive sjme_jint length);
+
+/**
+ * Reads from a library directly to access its raw bytes, this variant of
+ * the function provides more control over offsets so that it can more easily
+ * be used with iterators and such.
+ *
+ * @param library The library to access.
+ * @param destPtr The destination buffer.
+ * @param destOffset The offset into the destination.
+ * @param srcPos The source position.
+ * @param srcOffset The source offset.
+ * @param length The number of bytes to read.
+ * @return Any resultant error if any.
+ * @since 2023/12/30
+ */
+sjme_errorCode sjme_rom_libraryRawReadIter(
+	sjme_attrInNotNull sjme_rom_library library,
+	sjme_attrOutNotNullBuf(length) void* destPtr,
+	sjme_attrInPositive sjme_jint destOffset,
+	sjme_attrInPositive sjme_jint srcPos,
+	sjme_attrInPositive sjme_jint srcOffset,
+	sjme_attrInPositive sjme_jint length);
+
+sjme_errorCode sjme_rom_libraryRawSize(
+	sjme_attrInNotNull sjme_rom_library library,
+	sjme_attrOutNotNull sjme_jint* outSize);
 
 /**
  * Makes a virtual library from the given functions.

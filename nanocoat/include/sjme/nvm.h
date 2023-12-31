@@ -1289,9 +1289,15 @@ typedef enum sjme_errorCode
 
 	/** Memory has been corrupted. */
 	SJME_ERROR_MEMORY_CORRUPTION = -34,
+
+	/** Index out of bounds. */
+	SJME_ERROR_INDEX_OUT_OF_BOUNDS = -35,
+
+	/** Unsupported operation. */
+	SJME_ERROR_UNSUPPORTED_OPERATION = -36,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -35
+	SJME_NUM_ERROR_CODES = -37
 } sjme_errorCode;
 
 /**
