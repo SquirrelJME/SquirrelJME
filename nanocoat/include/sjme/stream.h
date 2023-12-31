@@ -16,6 +16,8 @@
 #ifndef SQUIRRELJME_STREAM_H
 #define SQUIRRELJME_STREAM_H
 
+#include "sjme/nvm.h"
+
 /* Anti-C++. */
 #ifdef __cplusplus
 	#ifndef SJME_CXX_IS_EXTERNED
@@ -40,6 +42,91 @@ typedef struct sjme_stream_inputCore* sjme_stream_input;
  * @since 2023/12/30
  */
 typedef struct sjme_stream_outputCore* sjme_stream_output;
+
+/**
+ * Determines the number of bytes which are quickly available before blocking
+ * takes effect.
+ *
+ * @param stream The stream to read from.
+ * @param outAvail The number of bytes which are available.
+ * @return On any resultant error or {@code null}.
+ * @since 2023/12/31
+ */
+sjme_errorCode sjme_stream_inputAvailable(
+	sjme_attrInNotNull sjme_stream_input stream,
+	sjme_attrOutNotNull sjme_attrOutNegativeOnePositive sjme_jint* outAvail);
+
+/**
+ * Closes an input stream.
+ *
+ * @param stream The stream to close.
+ * @return Any resultant error, if any.
+ * @since 2023/12/31
+ */
+sjme_errorCode sjme_stream_inputClose(
+	sjme_attrInNotNull sjme_stream_input stream);
+
+/**
+ * Creates a stream which reads from the given block of memory.
+ *
+ * Memory based streams are never blocking.
+ *
+ * @param inPool The pool to allocate within.
+ * @param outStream The resultant stream.
+ * @param buffer The buffer to access.
+ * @param length The length of the buffer.
+ * @return On any resultant error, if any.
+ * @since 2023/12/31
+ */
+sjme_errorCode sjme_stream_inputOpenMemory(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrOutNotNull sjme_stream_input* outStream,
+	sjme_attrInNotNull void* buffer,
+	sjme_attrInPositive sjme_jint length);
+
+/**
+ * Reads from the given input stream and writes to the destination buffer.
+ *
+ * @param stream The stream to read from.
+ * @param readCount The number of bytes which were read.
+ * @param dest The destination buffer.
+ * @param length The number of bytes to read.
+ * @return Any resultant error, if any.
+ * @since 2023/12/31
+ */
+sjme_errorCode sjme_stream_inputRead(
+	sjme_attrInNotNull sjme_stream_input stream,
+	sjme_attrOutNotNull sjme_attrOutPositive sjme_jint* readCount,
+	sjme_attrOutNotNullBuf(length) void* dest,
+	sjme_attrInPositive sjme_jint length);
+
+/**
+ * Reads from the given input stream and writes to the destination buffer.
+ *
+ * @param stream The stream to read from.
+ * @param readCount The number of bytes which were read.
+ * @param dest The destination buffer.
+ * @param offset The offset into the destination buffer.
+ * @param length The number of bytes to read.
+ * @return Any resultant error, if any.
+ * @since 2023/12/31
+ */
+sjme_errorCode sjme_stream_inputReadIter(
+	sjme_attrInNotNull sjme_stream_input stream,
+	sjme_attrOutNotNull sjme_attrOutPositive sjme_jint* readCount,
+	sjme_attrOutNotNullBuf(length) void* dest,
+	sjme_attrInPositive sjme_jint offset,
+	sjme_attrInPositive sjme_jint length);
+
+/**
+ * Closes an output stream.
+ *
+ * @param stream The stream to close.
+ * @return Any resultant error, if any.
+ * @since 2023/12/31
+ */
+sjme_errorCode sjme_stream_outputClose(
+	sjme_attrInNotNull sjme_stream_output stream);
 
 /*--------------------------------------------------------------------------*/
 
