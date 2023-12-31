@@ -27,7 +27,8 @@ list(APPEND coreSources
 	task.c
 	tread.c
 	util.c
-	vmConfig.c)
+	vmConfig.c
+	zip.c)
 
 # The core library contains the main logic for the virtual machine
 # For non-PIC:

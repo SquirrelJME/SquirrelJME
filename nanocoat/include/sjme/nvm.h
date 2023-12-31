@@ -1295,9 +1295,12 @@ typedef enum sjme_errorCode
 
 	/** Unsupported operation. */
 	SJME_ERROR_UNSUPPORTED_OPERATION = -36,
+
+	/** Resource not found. */
+	SJME_ERROR_RESOURCE_NOT_FOUND = -37,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -37
+	SJME_NUM_ERROR_CODES = -38
 } sjme_errorCode;
 
 /**

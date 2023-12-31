@@ -207,6 +207,15 @@ fail_unsupported:
 	return SJME_ERROR_UNSUPPORTED_OPERATION;
 }
 
+sjme_errorCode sjme_rom_libraryResourceAsStream(
+	sjme_attrInNotNull sjme_rom_library library,
+	sjme_attrOutNotNull sjme_stream_input* outStream,
+	sjme_attrInNotNull sjme_lpcstr rcName)
+{
+	sjme_todo("Implement this?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
 sjme_errorCode sjme_rom_newLibrary(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrOutNotNull sjme_rom_library* outLibrary,

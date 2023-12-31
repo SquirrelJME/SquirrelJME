@@ -11,6 +11,7 @@
 
 #include "sjme/except.h"
 #include "mock.h"
+#include "mock.jar.h"
 
 struct sjme_mock_configWorkData
 {
@@ -451,8 +452,35 @@ sjme_jboolean sjme_mock_doRomMockLibrary(
 	sjme_attrInNotNull sjme_mock* inState,
 	sjme_attrInNotNull sjme_mock_configWorkData* inData)
 {
-	sjme_todo("Implement this?");
-	return SJME_JNI_FALSE;
+	sjme_mock_configDataRomLibrary* data;
+	sjme_jboolean isJar;
+
+	if (inState == NULL || inData == NULL)
+		return sjme_die("Null arguments.");
+
+	/* Is this a JAR or not? */
+	isJar = inData->current.data.romMockLibrary.isJar;
+
+	/* Clear existing settings. */
+	data = &inData->current.data.romLibrary;
+	memset(data, 0, sizeof(*data));
+
+	/* Setup aliased mock library. */
+	data->name = "mock.jar";
+
+	/* Using an actual JAR file? */
+	if (isJar)
+	{
+		data->data = mock_jar__bin;
+		data->length = mock_jar__len;
+	}
+
+	/* Synthetic resource access. */
+	else
+		sjme_todo("Implement this?");
+
+	/* This is just an alias so call the other accordingly. */
+	return sjme_mock_doRomLibrary(inState, inData);
 }
 
 sjme_jboolean sjme_mock_doRomSuite(
