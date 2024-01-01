@@ -44,6 +44,15 @@ typedef struct sjme_stream_inputCore* sjme_stream_input;
 typedef struct sjme_stream_outputCore* sjme_stream_output;
 
 /**
+ * Functions for input streams.
+ *
+ * @since 2024/01/01
+ */
+typedef struct sjme_stream_inputFunctions
+{
+} sjme_stream_inputFunctions;
+
+/**
  * Determines the number of bytes which are quickly available before blocking
  * takes effect.
  *

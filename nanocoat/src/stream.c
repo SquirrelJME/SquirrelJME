@@ -43,6 +43,8 @@ sjme_errorCode sjme_stream_inputOpenMemory(
 	if (length < 0 || (((uintptr_t)buffer) + length) < ((uintptr_t)buffer))
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 
+
+
 	sjme_todo("Implement this?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
