@@ -14,6 +14,9 @@ sjme_errorCode sjme_stream_inputAvailable(
 	sjme_attrInNotNull sjme_stream_input stream,
 	sjme_attrOutNotNull sjme_attrOutNegativeOnePositive sjme_jint* outAvail)
 {
+	if (stream == NULL || outAvail == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
 	sjme_todo("Implement this?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
@@ -21,6 +24,9 @@ sjme_errorCode sjme_stream_inputAvailable(
 sjme_errorCode sjme_stream_inputClose(
 	sjme_attrInNotNull sjme_stream_input stream)
 {
+	if (stream == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
 	sjme_todo("Implement this?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
@@ -31,6 +37,12 @@ sjme_errorCode sjme_stream_inputOpenMemory(
 	sjme_attrInNotNull const void* buffer,
 	sjme_attrInPositive sjme_jint length)
 {
+	if (inPool == NULL || outStream == NULL || buffer == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (length < 0 || (((uintptr_t)buffer) + length) < ((uintptr_t)buffer))
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
 	sjme_todo("Implement this?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
@@ -74,6 +86,9 @@ sjme_errorCode sjme_stream_inputReadSingle(
 	sjme_jint readCount;
 	sjme_errorCode error;
 
+	if (stream == NULL || result == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
 	/* Constantly try to read a single byte. */
 	for (;;)
 	{
@@ -104,6 +119,9 @@ sjme_errorCode sjme_stream_inputReadSingle(
 sjme_errorCode sjme_stream_outputClose(
 	sjme_attrInNotNull sjme_stream_output stream)
 {
+	if (stream == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
 	sjme_todo("Implement this?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
