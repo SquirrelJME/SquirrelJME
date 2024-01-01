@@ -43,6 +43,10 @@ SJME_TEST_DECLARE(testStreamEmpty)
 	sjme_unitEqualI(test, -1, result,
 		"Incorrect read byte?");
 
+	/* Close the stream. */
+	if (SJME_IS_ERROR(sjme_stream_inputClose(inputStream)))
+		return sjme_unitFail(test, "Could not close stream?");
+
 	/* Success! */
 	return SJME_TEST_RESULT_PASS;
 }

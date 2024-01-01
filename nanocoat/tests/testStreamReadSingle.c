@@ -25,16 +25,16 @@ static const sjme_jubyte testData[NUM_BYTES] =
 };
 
 /**
- * Tests that streams work.
+ * Tests reading a single character.
  *  
- * @since 2023/12/30 
+ * @since 2024/01/01 
  */
-SJME_TEST_DECLARE(testStream)
+SJME_TEST_DECLARE(testStreamReadSingle)
 {
 	sjme_stream_input inputStream;
-	sjme_jint readCount, cycles;
-	sjme_jubyte buf[READ_BUF];
-	sjme_jubyte valAt, i;
+	sjme_jint readCount;
+	sjme_jint single;
+	sjme_juint at;
 
 	/* Setup input stream. */
 	inputStream = NULL;
@@ -44,35 +44,33 @@ SJME_TEST_DECLARE(testStream)
 		return sjme_unitFail(test, "Could not open input stream.");
 
 	/* Read until EOF. */
-	valAt = 2;
-	for (cycles = 0;; cycles++)
+	for (at = 0;; at++)
 	{
-		/* Clear read buffer. */
-		memset(buf, 0, sizeof(buf));
+		/* Read in next byte. */
+		single = -2;
+		if (SJME_IS_ERROR(sjme_stream_inputReadSingle(inputStream,
+			&single)) || single < -1)
+			return sjme_unitFail(test, "Could not read single byte.");
 
-		/* Read in more data. */
-		readCount = -2;
-		if (SJME_IS_ERROR(sjme_stream_inputRead(inputStream,
-			&readCount, buf, READ_BUF)) || readCount < -1)
-			sjme_unitFail(test, "Failed read?");
-
-		/* EOF? */
-		if (readCount == -1)
+		/* EOS? */
+		if (at == NUM_BYTES)
+		{
+			sjme_unitEqualI(test, single, -1,
+				"End of stream not marked?");
 			break;
+		}
 
-		/* Should have read said bytes. */
-		sjme_unitEqualI(test, READ_BUF, readCount,
-			"Did not read correct number of bytes?");
+		/* Should not occur normally. */
+		else if (at > NUM_BYTES)
+		{
+			sjme_unitFail(test, "More bytes in the buffer?");
+			break;
+		}
 
-		/* Values in buffer should match. */
-		for (i = 0; i < READ_BUF; i++)
-			sjme_unitEqualI(test, valAt++, buf[i],
-				"Incorrectly read value?");
+		/* Make sure it matches. */
+		sjme_unitEqualI(test, testData[at], single,
+			"Bytes did not match?");
 	}
-
-	/* There should have been this many cycles. */
-	sjme_unitEqualI(test, cycles, NUM_BYTES / READ_BUF,
-		"Incorrect number of read cycles?");
 
 	/* Close the stream. */
 	if (SJME_IS_ERROR(sjme_stream_inputClose(inputStream)))

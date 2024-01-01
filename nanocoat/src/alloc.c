@@ -555,6 +555,7 @@ sjme_errorCode sjme_alloc_free(
 	sjme_attrInNotNull void* addr)
 {
 	sjme_alloc_link* link;
+	sjme_alloc_pool* pool;
 	sjme_errorCode error;
 
 	if (addr == NULL)
@@ -566,11 +567,23 @@ sjme_errorCode sjme_alloc_free(
 		return SJME_DEFAULT_ERROR(error);
 
 	/* Check the integrity of it. */
-	if (sjme_alloc_checkCorruption(link->pool, link))
+	pool = link->pool;
+	if (sjme_alloc_checkCorruption(pool, link))
 		return SJME_ERROR_MEMORY_CORRUPTION;
 
-	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Mark block as free. */
+	link->space = SJME_ALLOC_POOL_SPACE_FREE;
+
+	/* Link into free block chain. */
+	link->freeNext = pool->freeFirstLink;
+	pool->freeFirstLink->freePrev = link;
+	pool->freeFirstLink = link;
+
+	/* TODO: Implement merging of free blocks. */
+	sjme_message("Implement free merging...");
+
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_alloc_getLink(

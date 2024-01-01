@@ -66,6 +66,10 @@ SJME_TEST_DECLARE(testStreamOverRead)
 	sjme_unitEqualI(test, 0, memcmp(buf, testBytes, readCount),
 		"Read bytes are not correct?");
 
+	/* Close the stream. */
+	if (SJME_IS_ERROR(sjme_stream_inputClose(inputStream)))
+		return sjme_unitFail(test, "Could not close stream?");
+
 	/* Success! */
 	return SJME_TEST_RESULT_PASS;
 }

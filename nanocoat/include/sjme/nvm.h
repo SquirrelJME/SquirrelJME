@@ -125,6 +125,18 @@ extern "C" {
 		(uncommonSize))
 
 /**
+ * Returns the uncommon member.
+ *
+ * @param structType The structure type.
+ * @param uncommonMember The uncommon member.
+ * @param uncommonType The uncommon type.
+ * @param base The base structure pointer to access.
+ * @since 2024/01/01
+ */
+#define SJME_UNCOMMON_MEMBER(structType, uncommonMember, uncommonType, base) \
+	((uncommonType*)(void*)(&((structType*)((base)))->uncommonMember))
+
+/**
  * Basic data type identifier.
  *
  * @since 2023/07/25

@@ -7,28 +7,156 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <string.h>
+
 #include "sjme/stream.h"
+#include "sjme/alloc.h"
 #include "sjme/debug.h"
 
-sjme_errorCode sjme_stream_inputAvailable(
+/**
+ * Contains the state for reading directly from memory.
+ *
+ * @since 2024/01/01
+ */
+typedef struct sjme_stream_inputCacheMemory
+{
+	/** The base address. */
+	const void* base;
+
+	/** The number of bytes in the memory stream. */
+	sjme_jint length;
+} sjme_stream_inputCacheMemory;
+
+/**
+ * Gets the state information from the given input stream.
+ *
+ * @param base The base pointer.
+ * @since 2024/01/01
+ */
+#define SJME_INPUT_MEMORY_UNCOMMON(base) \
+	SJME_INPUT_UNCOMMON(sjme_stream_inputCacheMemory, (base))
+
+sjme_errorCode sjme_stream_inputMemoryAvailable(
 	sjme_attrInNotNull sjme_stream_input stream,
 	sjme_attrOutNotNull sjme_attrOutNegativeOnePositive sjme_jint* outAvail)
 {
-	if (stream == NULL || outAvail == NULL)
+	sjme_stream_inputCacheMemory* cache;
+
+	if (stream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Get cache. */
+	cache = SJME_INPUT_MEMORY_UNCOMMON(stream);
+
+	/* Calculating this is trivial. */
+	*outAvail = cache->length - stream->totalRead;
+	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_stream_inputClose(
+sjme_errorCode sjme_stream_inputMemoryClose(
 	sjme_attrInNotNull sjme_stream_input stream)
 {
 	if (stream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Nothing needs to happen here. */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_stream_inputMemoryRead(
+	sjme_attrInNotNull sjme_stream_input stream,
+	sjme_attrOutNotNull sjme_attrOutNegativeOnePositive sjme_jint* readCount,
+	sjme_attrOutNotNullBuf(length) void* dest,
+	sjme_attrInPositive sjme_jint length)
+{
+	sjme_stream_inputCacheMemory* cache;
+	sjme_jint limit;
+
+	if (stream == NULL || readCount == NULL || dest == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (length < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	/* Get cache. */
+	cache = SJME_INPUT_MEMORY_UNCOMMON(stream);
+
+	/* End of stream? */
+	if (stream->totalRead >= cache->length)
+	{
+		*readCount = -1;
+		return SJME_ERROR_NONE;
+	}
+
+	/* Determine how many bytes we can actually read. */
+	limit = cache->length - stream->totalRead;
+	if (length < limit)
+		limit = length;
+
+	/* Do a direct memory copy. */
+	memmove(dest,
+		(void*)(((uintptr_t)cache->base) + stream->totalRead), limit);
+
+	/* Indicate read count and consider success! */
+	*readCount = limit;
+	return SJME_ERROR_NONE;
+}
+
+/** Input memory functions. */
+static const sjme_stream_inputFunctions sjme_stream_inputMemoryFunctions =
+{
+	.available = sjme_stream_inputMemoryAvailable,
+	.close = sjme_stream_inputMemoryClose,
+	.read = sjme_stream_inputMemoryRead,
+};
+
+sjme_errorCode sjme_stream_inputAvailable(
+	sjme_attrInNotNull sjme_stream_input stream,
+	sjme_attrOutNotNull sjme_attrOutNegativeOnePositive sjme_jint* outAvail)
+{
+	sjme_jint result;
+	sjme_errorCode error;
+
+	if (stream == NULL || outAvail == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Function needs to exist. */
+	if (stream->functions == NULL || stream->functions->available == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* Request the number of available bytes. */
+	result = -1;
+	if (SJME_IS_ERROR(error = stream->functions->available(stream,
+		&result)) || result < 0)
+		return SJME_DEFAULT_ERROR(error);
+
+	/* Return result. */
+	*outAvail = result;
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_stream_inputClose(
+	sjme_attrInNotNull sjme_stream_input stream)
+{
+	sjme_errorCode error;
+
+	if (stream == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Function needs to exist. */
+	if (stream->functions == NULL || stream->functions->close == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* Close the stream. */
+	if (SJME_IS_ERROR(error = stream->functions->close(stream)))
+		return SJME_DEFAULT_ERROR(error);
+
+	/* Cleanup after it. */
+	if (SJME_IS_ERROR(error = sjme_alloc_free(stream)))
+		return SJME_DEFAULT_ERROR(error);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_stream_inputOpenMemory(
@@ -37,14 +165,36 @@ sjme_errorCode sjme_stream_inputOpenMemory(
 	sjme_attrInNotNull const void* buffer,
 	sjme_attrInPositive sjme_jint length)
 {
+	sjme_stream_input result;
+	sjme_stream_inputCacheMemory* cache;
+	sjme_errorCode error;
+
 	if (inPool == NULL || outStream == NULL || buffer == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (length < 0 || (((uintptr_t)buffer) + length) < ((uintptr_t)buffer))
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 
-	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Allocate result. */
+	result = NULL;
+	if (SJME_IS_ERROR(error = sjme_alloc(inPool,
+		SJME_SIZEOF_INPUT_STREAM(sjme_stream_inputCacheMemory),
+		&result)) || result == NULL)
+		return SJME_DEFAULT_ERROR(error);
+
+	/* Set base information. */
+	result->functions = &sjme_stream_inputMemoryFunctions;
+
+	/* Get the cache. */
+	cache = SJME_INPUT_MEMORY_UNCOMMON(result);
+
+	/* Set initial state information. */
+	cache->base = buffer;
+	cache->length = length;
+
+	/* Return result. */
+	*outStream = result;
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_stream_inputRead(
@@ -65,6 +215,9 @@ sjme_errorCode sjme_stream_inputReadIter(
 	sjme_attrInPositive sjme_jint length)
 {
 	uintptr_t rawDest;
+	sjme_jint count, newTotal;
+	sjme_errorCode error;
+	void* trueDest;
 
 	if (stream == NULL || readCount == NULL || dest == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -74,8 +227,31 @@ sjme_errorCode sjme_stream_inputReadIter(
 		(rawDest + length) < rawDest)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 
-	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Function needs to exist. */
+	if (stream->functions == NULL || stream->functions->read == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* Calculate the true target address. */
+	trueDest = (void*)(rawDest + offset);
+
+	/* Read in the data. */
+	count = -2;
+	if ((SJME_IS_ERROR(error = stream->functions->read(stream,
+		&count, trueDest, length))) || count < -1)
+		return SJME_DEFAULT_ERROR(error);
+
+	/* If not EOS, move counters up. */
+	if (count >= 0)
+	{
+		/* Never underflow, just keep it at max int. */
+		newTotal = stream->totalRead + count;
+		if (newTotal > stream->totalRead)
+			stream->totalRead = newTotal;
+	}
+
+	/* Return result. */
+	*readCount = count;
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_stream_inputReadSingle(

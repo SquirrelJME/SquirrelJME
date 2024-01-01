@@ -110,14 +110,28 @@ typedef struct sjme_stream_inputFunctions
 struct sjme_stream_inputCore
 {
 	/** Functions for input. */
-	sjme_stream_inputFunctions functions;
+	const sjme_stream_inputFunctions* functions;
 
 	/** Front end holders. */
 	sjme_frontEnd frontEnd;
 
+	/** The current number of read bytes. */
+	sjme_jint totalRead;
+
 	/** Uncommon stream specific data. */
 	sjme_jlong uncommon[sjme_flexibleArrayCount];
 };
+
+/**
+ * Gets the state information from the given input stream.
+ *
+ * @param uncommonType The uncommon type.
+ * @param base The base pointer.
+ * @since 2024/01/01
+ */
+#define SJME_INPUT_UNCOMMON(uncommonType, base) \
+	SJME_UNCOMMON_MEMBER(sjme_stream_inputCore, uncommon, \
+		uncommonType, (base))
 
 /**
  * Determines the size of the input stream structure.
