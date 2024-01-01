@@ -32,5 +32,5 @@ dependencies {
 	implementation 'com.opencsv:opencsv:5.8'
 	
 	// Shadow Jar, for single Jars
-	implementation 'gradle.plugin.com.github.johnrengelman:shadow:7.1.2'
+	implementation 'gradle.plugin.com.github.johnrengelman:shadow:8.0.0'
 }
