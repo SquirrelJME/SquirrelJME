@@ -34,6 +34,13 @@ extern "C" {
  *
  * @since 2023/12/30
  */
+typedef struct sjme_stream_inputCore sjme_stream_inputCore;
+
+/**
+ * Represents a data stream that can be read from.
+ *
+ * @since 2023/12/30
+ */
 typedef struct sjme_stream_inputCore* sjme_stream_input;
 
 /**
@@ -44,13 +51,93 @@ typedef struct sjme_stream_inputCore* sjme_stream_input;
 typedef struct sjme_stream_outputCore* sjme_stream_output;
 
 /**
+ * Determines the number of bytes which are quickly available before blocking
+ * takes effect.
+ *
+ * @param stream The stream to read from.
+ * @param outAvail The number of bytes which are available.
+ * @return On any resultant error.
+ * @since 2024/01/01
+ */
+typedef sjme_errorCode (*sjme_stream_inputAvailableFunc)(
+	sjme_attrInNotNull sjme_stream_input stream,
+	sjme_attrOutNotNull sjme_attrOutNegativeOnePositive sjme_jint* outAvail);
+
+/**
+ * Closes the given input stream and frees up any resources.
+ *
+ * @param stream The stream to close.
+ * @return On any resultant error.
+ * @since 2024/01/01
+ */
+typedef sjme_errorCode (*sjme_stream_inputCloseFunc)(
+	sjme_attrInNotNull sjme_stream_input stream);
+
+/**
+ * Reads from the given input stream and writes to the destination buffer.
+ *
+ * @param stream The stream to read from.
+ * @param readCount The number of bytes which were read, if end of stream is
+ * reached this will be @c -1 .
+ * @param dest The destination buffer.
+ * @param length The number of bytes to read.
+ * @return Any resultant error, if any.
+ * @since 2024/01/01
+ */
+typedef sjme_errorCode (*sjme_stream_inputReadFunc)(
+	sjme_attrInNotNull sjme_stream_input stream,
+	sjme_attrOutNotNull sjme_attrOutNegativeOnePositive sjme_jint* readCount,
+	sjme_attrOutNotNullBuf(length) void* dest,
+	sjme_attrInPositive sjme_jint length);
+
+/**
  * Functions for input streams.
  *
  * @since 2024/01/01
  */
 typedef struct sjme_stream_inputFunctions
 {
+	/** Number of bytes available. */
+	sjme_stream_inputAvailableFunc available;
+
+	/** Close stream. */
+	sjme_stream_inputCloseFunc close;
+
+	/** Read from stream. */
+	sjme_stream_inputReadFunc read;
 } sjme_stream_inputFunctions;
+
+struct sjme_stream_inputCore
+{
+	/** Functions for input. */
+	sjme_stream_inputFunctions functions;
+
+	/** Front end holders. */
+	sjme_frontEnd frontEnd;
+
+	/** Uncommon stream specific data. */
+	sjme_jlong uncommon[sjme_flexibleArrayCount];
+};
+
+/**
+ * Determines the size of the input stream structure.
+ *
+ * @param uncommonSize The uncommon size.
+ * @return The input stream structure size.
+ * @since 2024/01/01
+ */
+#define SJME_SIZEOF_INPUT_STREAM_N(uncommonSize) \
+    SJME_SIZEOF_UNCOMMON_N(sjme_stream_inputCore, uncommon, uncommonSize)
+
+/**
+ * Determines the size of the input stream structure.
+ *
+ * @param uncommonType The uncommon type.
+ * @return The input stream structure size.
+ * @since 2024/01/01
+ */
+#define SJME_SIZEOF_INPUT_STREAM(uncommonType) \
+	SJME_SIZEOF_INPUT_STREAM_N(sizeof(uncommonType))
 
 /**
  * Determines the number of bytes which are quickly available before blocking

@@ -85,7 +85,7 @@ typedef struct sjme_rom_libraryCache
 	sjme_jboolean validRawAccess;
 
 	/** Uncommon cache generic structure. */
-	sjme_jubyte uncommon[sjme_flexibleArrayCount];
+	sjme_jlong uncommon[sjme_flexibleArrayCount];
 } sjme_rom_libraryCache;
 
 /**
@@ -96,9 +96,7 @@ typedef struct sjme_rom_libraryCache
  * @since 2023/12/29
  */
 #define SJME_SIZEOF_LIBRARY_CACHE_N(uncommonSize) \
-	(sizeof(sjme_rom_libraryCache) + (offsetof(sjme_rom_libraryCache, \
-		uncommon[0]) - offsetof(sjme_rom_libraryCache, uncommon)) + \
-		(uncommonSize))
+    SJME_SIZEOF_UNCOMMON_N(sjme_rom_libraryCache, uncommon, uncommonSize)
 
 /**
  * Determines the size of the library cache.
@@ -135,9 +133,7 @@ typedef struct sjme_rom_suiteCache
  * @since 2023/12/29
  */
 #define SJME_SIZEOF_SUITE_CACHE_N(uncommonSize) \
-	(sizeof(sjme_rom_suiteCache) + (offsetof(sjme_rom_suiteCache, \
-		uncommon[0]) - offsetof(sjme_rom_suiteCache, uncommon)) + \
-		(uncommonSize))
+    SJME_SIZEOF_UNCOMMON_N(sjme_rom_suiteCache, uncommon, uncommonSize)
 
 /**
  * Determines the size of the suite cache.

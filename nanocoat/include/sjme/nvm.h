@@ -112,6 +112,19 @@ extern "C" {
 	(sizeof((*((type*)0)).member))
 
 /**
+ * Uncommon structure size.
+ *
+ * @param structType The structure type.
+ * @param uncommonMember The uncommon member.
+ * @param uncommonSize The uncommon size to use.
+ * @since 2024/01/01
+ */
+#define SJME_SIZEOF_UNCOMMON_N(structType, uncommonMember, uncommonSize) \
+	(sizeof(structType) + (offsetof(structType, \
+		uncommonMember[0]) - offsetof(structType, uncommonMember)) + \
+		(uncommonSize))
+
+/**
  * Basic data type identifier.
  *
  * @since 2023/07/25
