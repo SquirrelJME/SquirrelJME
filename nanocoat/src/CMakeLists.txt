@@ -11,6 +11,7 @@ list(APPEND coreSources
 	allocSizeOf.c
 	boot.c
 	bytecode.c
+	classy.c
 	debug.c
 	except.c
 	gfx.c
