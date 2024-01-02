@@ -212,8 +212,30 @@ sjme_errorCode sjme_rom_libraryResourceAsStream(
 	sjme_attrOutNotNull sjme_stream_input* outStream,
 	sjme_attrInNotNull sjme_lpcstr rcName)
 {
-	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	sjme_rom_libraryResourceStreamFunc resourceFunc;
+	sjme_stream_input result;
+	sjme_errorCode error;
+
+	if (library == NULL || outStream == NULL || rcName == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* These must be set. */
+	if (library->functions == NULL ||
+		library->functions->resourceStream == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* Get the resource function. */
+	resourceFunc = library->functions->resourceStream;
+
+	/* Ask for the resource. */
+	result = NULL;
+	if (SJME_IS_ERROR(error = resourceFunc(library,
+		&result, rcName)) || result == NULL)
+		return SJME_DEFAULT_ERROR(error);
+
+	/* Success! */
+	*outStream = result;
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_rom_newLibrary(

@@ -246,15 +246,15 @@ typedef sjme_errorCode (*sjme_rom_libraryRawSizeFunc)(
  * Opens the given resource as a stream.
  *
  * @param inLibrary The library to read the resource from.
- * @param resourceName The name of the resource.
  * @param outStream The resultant stream for accessing data.
+ * @param resourceName The name of the resource.
  * @return Any resultant error code.
  * @since 2023/12/30
  */
-typedef sjme_errorCode (*sjme_rom_libraryResourceStream)(
+typedef sjme_errorCode (*sjme_rom_libraryResourceStreamFunc)(
 	sjme_attrInNotNull sjme_rom_library inLibrary,
-	sjme_attrInNotNull sjme_lpcstr resourceName,
-	sjme_attrOutNotNull sjme_stream_input* outStream);
+	sjme_attrOutNotNull sjme_stream_input* outStream,
+	sjme_attrInNotNull sjme_lpcstr resourceName);
 
 /**
  * Function used to initialize the suite cache.
@@ -313,7 +313,7 @@ struct sjme_rom_libraryFunctions
 	sjme_rom_libraryRawSizeFunc rawSize;
 
 	/** Access a resource as a stream. */
-	sjme_rom_libraryResourceStream resourceStream;
+	sjme_rom_libraryResourceStreamFunc resourceStream;
 };
 
 struct sjme_rom_suiteFunctions

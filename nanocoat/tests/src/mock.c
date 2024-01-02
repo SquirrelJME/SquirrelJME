@@ -12,6 +12,8 @@
 #include "sjme/except.h"
 #include "mock.h"
 #include "mock.jar.h"
+#include "hello.txt.h"
+#include "MockMain.class.h"
 
 struct sjme_mock_configWorkData
 {
@@ -100,6 +102,45 @@ static sjme_errorCode sjme_mock_defaultRomLibraryRawSize(
 	/* Is a simple set operation. */
 	*outSize = mock->length;
 	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_mock_defaultRomMockLibraryResourceStream(
+	sjme_attrInNotNull sjme_rom_library inLibrary,
+	sjme_attrOutNotNull sjme_stream_input* outStream,
+	sjme_attrInNotNull sjme_lpcstr resourceName)
+{
+	sjme_alloc_pool* pool;
+	const void* data;
+	sjme_jint len;
+
+	if (inLibrary == NULL || resourceName == NULL || outStream == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Which pool to allocate within? */
+	pool = inLibrary->cache.common.allocPool;
+
+	/* Debug. */
+	sjme_message("Looking for resource %s...", resourceName);
+
+	/* Depends on the resource name. */
+	if (0 == strcmp(resourceName, "hello.txt"))
+	{
+		data = hello_txt__bin;
+		len = hello_txt__len;
+	}
+	else if (0 == strcmp(resourceName, "MockMain.class"))
+	{
+		data = mockmain_class__bin;
+		len = mockmain_class__len;
+	}
+	
+	/* Not found. */
+	else
+		return SJME_ERROR_RESOURCE_NOT_FOUND;
+
+	/* Open the stream. */
+	return sjme_stream_inputOpenMemory(pool, outStream,
+		data, len);
 }
 
 sjme_jboolean sjme_mock_act(
@@ -409,6 +450,9 @@ sjme_jboolean sjme_mock_doRomLibrary(
 		library->cache.common.frontEnd.data == NULL)
 		return sjme_die("Could not copy data.");
 
+	/* Make sure the pool is set, otherwise other functions will not work. */
+	library->cache.common.allocPool = inState->allocPool;
+
 	/* Use the copied data instead. */
 	data = library->cache.common.frontEnd.data;
 
@@ -477,7 +521,10 @@ sjme_jboolean sjme_mock_doRomMockLibrary(
 
 	/* Synthetic resource access. */
 	else
-		sjme_todo("Implement this?");
+	{
+		data->functions.resourceStream =
+			sjme_mock_defaultRomMockLibraryResourceStream;
+	}
 
 	/* This is just an alias so call the other accordingly. */
 	return sjme_mock_doRomLibrary(inState, inData);
