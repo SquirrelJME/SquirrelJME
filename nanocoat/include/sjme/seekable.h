@@ -17,6 +17,7 @@
 #define SQUIRRELJME_SEEKABLE_H
 
 #include "sjme/nvm.h"
+#include "sjme/stream.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -98,6 +99,24 @@ typedef enum sjme_seekable_unlockAction
 } sjme_seekable_unlockAction;
 
 /**
+ * Provides an input stream to read data from a seekable, note that
+ * unlike @c sjme_seekable_regionLockAsInputStream there is no locking
+ * involved and as such there may be a performance penalty or otherwise.
+ *
+ * @param seekable The seekable to access.
+ * @param outStream The resultant stream.
+ * @param base The base address within the seekable.
+ * @param length The number of bytes to stream.
+ * @return Any resultant error, if any.
+ * @since 2024/01/01
+ */
+sjme_errorCode sjme_seekable_asInputStream(
+	sjme_attrInNotNull sjme_seekable seekable,
+	sjme_attrOutNotNull sjme_stream_input* outStream,
+	sjme_attrInPositive sjme_jint base,
+	sjme_attrInPositive sjme_jint length);
+
+/**
  * Initializes a seekable from the given memory range.
  *
  * @param inPool The pool to allocate within.
@@ -133,6 +152,23 @@ sjme_errorCode sjme_seekable_fromMemory(
 sjme_errorCode sjme_seekable_regionLock(
 	sjme_attrInNotNull sjme_seekable seekable,
 	sjme_attrOutNotNull sjme_seekable_lock* outLock,
+	sjme_attrInPositive sjme_jint base,
+	sjme_attrInPositive sjme_jint length);
+
+/**
+ * Similar to @c sjme_seekable_regionLock except that instead of returning a
+ * lock it returns a stream.
+ *
+ * @param seekable The seekable to lock within.
+ * @param outStream The resultant stream.
+ * @param base The base address within the seekable to lock.
+ * @param length The number of bytes to lock.
+ * @return Any resultant error, if any.
+ * @since 2024/01/01
+ */
+sjme_errorCode sjme_seekable_regionLockAsInputStream(
+	sjme_attrInNotNull sjme_seekable seekable,
+	sjme_attrOutNotNull sjme_stream_input* outStream,
 	sjme_attrInPositive sjme_jint base,
 	sjme_attrInPositive sjme_jint length);
 
