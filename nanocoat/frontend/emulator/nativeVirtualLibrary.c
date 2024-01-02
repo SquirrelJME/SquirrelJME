@@ -162,10 +162,10 @@ sjme_errorCode sjme_jni_virtualLibrary_rawSize(
 
 static sjme_errorCode sjme_jni_virtualLibrary_resourceStream(
 	sjme_attrInNotNull sjme_rom_library inLibrary,
-	sjme_attrInNotNull sjme_lpcstr resourceName,
-	sjme_attrOutNotNull sjme_stream_input* outStream)
+	sjme_attrOutNotNull sjme_stream_input* outStream,
+	sjme_attrInNotNull sjme_lpcstr resourceName)
 {
-	if (inLibrary == NULL || resourceName == NULL || outStream == NULL)
+	if (inLibrary == NULL || outStream == NULL || resourceName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	sjme_todo("Implement this.");
