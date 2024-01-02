@@ -20,6 +20,7 @@
 #include "sjme/nvm.h"
 #include "sjme/romInternal.h"
 #include "sjme/stream.h"
+#include "sjme/seekable.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -365,34 +366,34 @@ struct sjme_rom_suiteCore
     SJME_SIZEOF_SUITE_CORE_N(sizeof(sjme_rom_suiteCache))
 
 /**
- * Combines multiple suites into one.
+ * Initializes a library from a Zip.
  *
- * @param pool The pool to allocate within.
- * @param outSuite The output suite.
- * @param inSuites The input suites.
- * @param numInSuites The number of input suites.
- * @return
+ * @param pool The pool to use for allocations.
+ * @param outLibrary The resultant library.
+ * @param base The base address where the Zip is.
+ * @param length The length of the Zip.
+ * @return Any resultant error, if any.
+ * @since 2024/01/01
  */
-sjme_errorCode sjme_rom_fromMerge(
+sjme_errorCode sjme_rom_libraryFromZipMemory(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
-	sjme_attrOutNotNull sjme_rom_suite* outSuite,
-	sjme_attrInNotNull sjme_rom_suite* inSuites,
-	sjme_attrInPositive sjme_jint numInSuites);
+	sjme_attrOutNotNull sjme_rom_library* outLibrary,
+	sjme_attrInNotNull const void* base,
+	sjme_attrInPositive sjme_jint length);
 
 /**
- * Scans the payload for suites
+ * Initializes a library from a Zip.
  *
- * @param pool The pool to allocate within.
- * @param outSuite The output resultant suite, if there would be nothing in
- * here then this outputs @c NULL .
- * @param payloadConfig The payload configuration used.
- * @return Any error status.
- * @since 2023/12/15
+ * @param pool The pool to use for allocations.
+ * @param outLibrary The resultant library.
+ * @param seekable The seekable to access the Zip through.
+ * @return Any resultant error, if any.
+ * @since 2024/01/01
  */
-sjme_errorCode sjme_rom_fromPayload(
+sjme_errorCode sjme_rom_libraryFromZipSeekable(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
-	sjme_attrOutNotNull sjme_rom_suite* outSuite,
-	sjme_attrInNotNull const sjme_payload_config* payloadConfig);
+	sjme_attrOutNotNull sjme_rom_library* outLibrary,
+	sjme_attrInNotNull sjme_seekable seekable);
 
 /**
  * Calculates the hash of the given library.
@@ -405,6 +406,22 @@ sjme_errorCode sjme_rom_fromPayload(
 sjme_errorCode sjme_rom_libraryHash(
 	sjme_attrInNotNull sjme_rom_library library,
 	sjme_attrOutNotNull sjme_jint* outHash);
+
+/**
+ * Makes a virtual library from the given functions.
+ *
+ * @param pool The pool to allocate within.
+ * @param outLibrary The output library.
+ * @param inFunctions The functions which define how to access the library.
+ * @param inFrontEnd Input front end initialization, is optional.
+ * @return Any error code.
+ * @since 2023/12/29
+ */
+sjme_errorCode sjme_rom_libraryNew(
+	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrOutNotNull sjme_rom_library* outLibrary,
+	sjme_attrInNotNull const sjme_rom_libraryFunctions* inFunctions,
+	sjme_attrInNullable const sjme_frontEnd* inFrontEnd);
 
 /**
  * Reads from a library directly to access its raw bytes.
@@ -471,38 +488,6 @@ sjme_errorCode sjme_rom_libraryResourceAsStream(
 	sjme_attrInNotNull sjme_lpcstr rcName);
 
 /**
- * Makes a virtual library from the given functions.
- *
- * @param pool The pool to allocate within.
- * @param outLibrary The output library.
- * @param inFunctions The functions which define how to access the library.
- * @param inFrontEnd Input front end initialization, is optional.
- * @return Any error code.
- * @since 2023/12/29
- */
-sjme_errorCode sjme_rom_newLibrary(
-	sjme_attrInNotNull sjme_alloc_pool* pool,
-	sjme_attrOutNotNull sjme_rom_library* outLibrary,
-	sjme_attrInNotNull const sjme_rom_libraryFunctions* inFunctions,
-	sjme_attrInNullable const sjme_frontEnd* inFrontEnd);
-
-/**
- * Makes a virtual suite from the given functions.
- *
- * @param pool The pool to allocate within.
- * @param outSuite The output suite.
- * @param inFunctions The functions which define how to access the suite.
- * @param inFrontEnd Input front end initialization, is optional.
- * @return Any error code.
- * @since 2023/12/15
- */
-sjme_errorCode sjme_rom_newSuite(
-	sjme_attrInNotNull sjme_alloc_pool* pool,
-	sjme_attrOutNotNull sjme_rom_suite* outSuite,
-	sjme_attrInNotNull const sjme_rom_suiteFunctions* inFunctions,
-	sjme_attrInNullable const sjme_frontEnd* inFrontEnd);
-
-/**
  * Resolves the class path library by their ID.
  *
  * @param inSuite The suite to look within.
@@ -531,6 +516,36 @@ sjme_errorCode sjme_rom_resolveClassPathByName(
 	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibs);
 
 /**
+ * Combines multiple suites into one.
+ *
+ * @param pool The pool to allocate within.
+ * @param outSuite The output suite.
+ * @param inSuites The input suites.
+ * @param numInSuites The number of input suites.
+ * @return
+ */
+sjme_errorCode sjme_rom_suiteFromMerge(
+	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrOutNotNull sjme_rom_suite* outSuite,
+	sjme_attrInNotNull sjme_rom_suite* inSuites,
+	sjme_attrInPositive sjme_jint numInSuites);
+
+/**
+ * Scans the payload for suites
+ *
+ * @param pool The pool to allocate within.
+ * @param outSuite The output resultant suite, if there would be nothing in
+ * here then this outputs @c NULL .
+ * @param payloadConfig The payload configuration used.
+ * @return Any error status.
+ * @since 2023/12/15
+ */
+sjme_errorCode sjme_rom_suiteFromPayload(
+	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrOutNotNull sjme_rom_suite* outSuite,
+	sjme_attrInNotNull const sjme_payload_config* payloadConfig);
+
+/**
  * Returns all of the libraries which are available within this suite.
  *
  * @param inSuite The input suite.
@@ -541,6 +556,22 @@ sjme_errorCode sjme_rom_resolveClassPathByName(
 sjme_errorCode sjme_rom_suiteLibraries(
 	sjme_attrInNotNull sjme_rom_suite inSuite,
 	sjme_attrOutNotNull sjme_list_sjme_rom_library** outLibs);
+
+/**
+ * Makes a virtual suite from the given functions.
+ *
+ * @param pool The pool to allocate within.
+ * @param outSuite The output suite.
+ * @param inFunctions The functions which define how to access the suite.
+ * @param inFrontEnd Input front end initialization, is optional.
+ * @return Any error code.
+ * @since 2023/12/15
+ */
+sjme_errorCode sjme_rom_suiteNew(
+	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrOutNotNull sjme_rom_suite* outSuite,
+	sjme_attrInNotNull const sjme_rom_suiteFunctions* inFunctions,
+	sjme_attrInNullable const sjme_frontEnd* inFrontEnd);
 
 /*--------------------------------------------------------------------------*/
 

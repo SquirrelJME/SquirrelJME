@@ -15,56 +15,42 @@
 #include "sjme/payload.h"
 #include "sjme/romInternal.h"
 #include "sjme/util.h"
+#include "sjme/zip.h"
 
-sjme_errorCode sjme_rom_fromMerge(
+sjme_errorCode sjme_rom_libraryFromZipMemory(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
-	sjme_attrOutNotNull sjme_rom_suite* outSuite,
-	sjme_attrInNotNull sjme_rom_suite* inSuites,
-	sjme_attrInPositive sjme_jint numInSuites)
+	sjme_attrOutNotNull sjme_rom_library* outLibrary,
+	sjme_attrInNotNull const void* base,
+	sjme_attrInPositive sjme_jint length)
 {
-	if (pool == NULL || outSuite == NULL || inSuites == NULL)
+	sjme_seekable seekable;
+	sjme_errorCode error;
+
+	if (pool == NULL || outLibrary == NULL || base == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	if (numInSuites < 0)
-		return SJME_ERROR_INVALID_ARGUMENT;
+	if (length < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 
-	sjme_todo("Implement this?");
-	return SJME_ERROR_UNKNOWN;
+	/* Get source seekable. */
+	seekable = NULL;
+	if (SJME_IS_ERROR(error = sjme_seekable_fromMemory(pool,
+		&seekable, base, length)) || seekable == NULL)
+
+	/* This is just an alias for the other function. */
+	return sjme_rom_libraryFromZipSeekable(pool, outLibrary, seekable);
 }
 
-sjme_errorCode sjme_rom_fromPayload(
+sjme_errorCode sjme_rom_libraryFromZipSeekable(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
-	sjme_attrOutNotNull sjme_rom_suite* outSuite,
-	sjme_attrInNotNull const sjme_payload_config* payloadConfig)
+	sjme_attrOutNotNull sjme_rom_library* outLibrary,
+	sjme_attrInNotNull sjme_seekable seekable)
 {
-	sjme_jint i, numActive, numLibraries;
-
-	if (pool == NULL || outSuite == NULL || payloadConfig == NULL)
+	if (pool == NULL || outLibrary == NULL || seekable == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	/* Count the number of active ROMs. */
-	numActive = 0;
-	numLibraries = 0;
-	for (i = 0; i < SJME_NVM_PAYLOAD_MAX_ROMS; i++)
-		if (payloadConfig->roms[i].isActive)
-		{
-			/* Count up! */
-			numActive++;
-
-			/* Anything that is a library we need to build a container. */
-			if (payloadConfig->roms[i].isLibrary)
-				numLibraries++;
-		}
-
-	/* If there is nothing active then nothing needs to be done. */
-	if (numActive == 0)
-	{
-		*outSuite = NULL;
-		return SJME_ERROR_NONE;
-	}
-
 	sjme_todo("Implement this?");
-	return SJME_ERROR_UNKNOWN;
+	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
 sjme_errorCode sjme_rom_libraryHash(
@@ -87,6 +73,58 @@ sjme_errorCode sjme_rom_libraryHash(
 
 	/* Copy it in. */
 	*outHash = library->nameHash;
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_rom_libraryNew(
+	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrOutNotNull sjme_rom_library* outLibrary,
+	sjme_attrInNotNull const sjme_rom_libraryFunctions* inFunctions,
+	sjme_attrInNullable const sjme_frontEnd* inFrontEnd)
+{
+	sjme_rom_libraryInitCacheFunc initCacheFunc;
+	sjme_rom_library result;
+	sjme_errorCode error;
+
+	if (pool == NULL || outLibrary == NULL || inFunctions == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* There needs to be a cache initializer. */
+	initCacheFunc = inFunctions->initCache;
+	if (initCacheFunc == NULL)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Allocate resultant library. */
+	result = NULL;
+	if (SJME_IS_ERROR(error = sjme_alloc(pool,
+		SJME_SIZEOF_LIBRARY_CORE_N(inFunctions->uncommonTypeSize),
+		&result)) || result == NULL)
+		return SJME_DEFAULT_ERROR(error);
+
+	/* Setup some basic cache details. */
+	result->functions = inFunctions;
+	result->cache.common.allocPool = pool;
+	result->cache.common.uncommonSize = inFunctions->uncommonTypeSize;
+
+	/* Seed front end information? */
+	if (inFrontEnd != NULL)
+		result->cache.common.frontEnd = *inFrontEnd;
+
+	/* Initialize cache. */
+	if (SJME_IS_ERROR(error = initCacheFunc(result)))
+	{
+		/* Cleanup bad pointer. */
+		sjme_alloc_free(result);
+
+		return SJME_DEFAULT_ERROR(error);
+	}
+
+	/* Initialize fields. */
+	result->functions = inFunctions;
+	result->cache.common.allocPool = pool;
+
+	/* Use result. */
+	*outLibrary = result;
 	return SJME_ERROR_NONE;
 }
 
@@ -235,110 +273,6 @@ sjme_errorCode sjme_rom_libraryResourceAsStream(
 
 	/* Success! */
 	*outStream = result;
-	return SJME_ERROR_NONE;
-}
-
-sjme_errorCode sjme_rom_newLibrary(
-	sjme_attrInNotNull sjme_alloc_pool* pool,
-	sjme_attrOutNotNull sjme_rom_library* outLibrary,
-	sjme_attrInNotNull const sjme_rom_libraryFunctions* inFunctions,
-	sjme_attrInNullable const sjme_frontEnd* inFrontEnd)
-{
-	sjme_rom_libraryInitCacheFunc initCacheFunc;
-	sjme_rom_library result;
-	sjme_errorCode error;
-
-	if (pool == NULL || outLibrary == NULL || inFunctions == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* There needs to be a cache initializer. */
-	initCacheFunc = inFunctions->initCache;
-	if (initCacheFunc == NULL)
-		return SJME_ERROR_INVALID_ARGUMENT;
-
-	/* Allocate resultant library. */
-	result = NULL;
-	if (SJME_IS_ERROR(error = sjme_alloc(pool,
-		SJME_SIZEOF_LIBRARY_CORE_N(inFunctions->uncommonTypeSize),
-		&result)) || result == NULL)
-		return SJME_DEFAULT_ERROR(error);
-
-	/* Setup some basic cache details. */
-	result->functions = inFunctions;
-	result->cache.common.allocPool = pool;
-	result->cache.common.uncommonSize = inFunctions->uncommonTypeSize;
-
-	/* Seed front end information? */
-	if (inFrontEnd != NULL)
-		result->cache.common.frontEnd = *inFrontEnd;
-
-	/* Initialize cache. */
-	if (SJME_IS_ERROR(error = initCacheFunc(result)))
-	{
-		/* Cleanup bad pointer. */
-		sjme_alloc_free(result);
-
-		return SJME_DEFAULT_ERROR(error);
-	}
-
-	/* Initialize fields. */
-	result->functions = inFunctions;
-	result->cache.common.allocPool = pool;
-
-	/* Use result. */
-	*outLibrary = result;
-	return SJME_ERROR_NONE;
-}
-
-sjme_errorCode sjme_rom_newSuite(
-	sjme_attrInNotNull sjme_alloc_pool* pool,
-	sjme_attrOutNotNull sjme_rom_suite* outSuite,
-	sjme_attrInNotNull const sjme_rom_suiteFunctions* inFunctions,
-	sjme_attrInNullable const sjme_frontEnd* inFrontEnd)
-{
-	sjme_rom_suiteInitCacheFunc initCacheFunc;
-	sjme_rom_suite result;
-	sjme_errorCode error;
-
-	if (pool == NULL || outSuite == NULL || inFunctions == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* There needs to be a cache initializer. */
-	initCacheFunc = inFunctions->initCache;
-	if (initCacheFunc == NULL)
-		return SJME_ERROR_INVALID_ARGUMENT;
-
-	/* Allocate resultant suite. */
-	result = NULL;
-	if (SJME_IS_ERROR(error = sjme_alloc(pool,
-		SJME_SIZEOF_SUITE_CORE_N(inFunctions->uncommonTypeSize),
-		&result)) || result == NULL)
-		return SJME_DEFAULT_ERROR(error);
-
-	/* Setup some basic cache details. */
-	result->functions = inFunctions;
-	result->cache.common.allocPool = pool;
-	result->cache.common.uncommonSize = inFunctions->uncommonTypeSize;
-
-	/* Seed front end information? */
-	if (inFrontEnd != NULL)
-		result->cache.common.frontEnd = *inFrontEnd;
-
-	/* Initialize cache. */
-	if (SJME_IS_ERROR(error = initCacheFunc(result)))
-	{
-		/* Cleanup bad pointer. */
-		sjme_alloc_free(result);
-
-		return SJME_DEFAULT_ERROR(error);
-	}
-
-	/* Initialize fields. */
-	result->functions = inFunctions;
-	result->cache.common.allocPool = pool;
-
-	/* Use result. */
-	*outSuite = result;
 	return SJME_ERROR_NONE;
 }
 
@@ -555,5 +489,107 @@ sjme_errorCode sjme_rom_suiteLibraries(
 
 	/* Success! */
 	*outLibs = result;
+	return SJME_ERROR_NONE;
+}
+sjme_errorCode sjme_rom_suiteFromMerge(
+	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrOutNotNull sjme_rom_suite* outSuite,
+	sjme_attrInNotNull sjme_rom_suite* inSuites,
+	sjme_attrInPositive sjme_jint numInSuites)
+{
+	if (pool == NULL || outSuite == NULL || inSuites == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (numInSuites < 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	sjme_todo("Implement this?");
+	return SJME_ERROR_UNKNOWN;
+}
+
+sjme_errorCode sjme_rom_suiteFromPayload(
+	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrOutNotNull sjme_rom_suite* outSuite,
+	sjme_attrInNotNull const sjme_payload_config* payloadConfig)
+{
+	sjme_jint i, numActive, numLibraries;
+
+	if (pool == NULL || outSuite == NULL || payloadConfig == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Count the number of active ROMs. */
+	numActive = 0;
+	numLibraries = 0;
+	for (i = 0; i < SJME_NVM_PAYLOAD_MAX_ROMS; i++)
+		if (payloadConfig->roms[i].isActive)
+		{
+			/* Count up! */
+			numActive++;
+
+			/* Anything that is a library we need to build a container. */
+			if (payloadConfig->roms[i].isLibrary)
+				numLibraries++;
+		}
+
+	/* If there is nothing active then nothing needs to be done. */
+	if (numActive == 0)
+	{
+		*outSuite = NULL;
+		return SJME_ERROR_NONE;
+	}
+
+	sjme_todo("Implement this?");
+	return SJME_ERROR_UNKNOWN;
+}
+
+sjme_errorCode sjme_rom_suiteNew(
+	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrOutNotNull sjme_rom_suite* outSuite,
+	sjme_attrInNotNull const sjme_rom_suiteFunctions* inFunctions,
+	sjme_attrInNullable const sjme_frontEnd* inFrontEnd)
+{
+	sjme_rom_suiteInitCacheFunc initCacheFunc;
+	sjme_rom_suite result;
+	sjme_errorCode error;
+
+	if (pool == NULL || outSuite == NULL || inFunctions == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* There needs to be a cache initializer. */
+	initCacheFunc = inFunctions->initCache;
+	if (initCacheFunc == NULL)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Allocate resultant suite. */
+	result = NULL;
+	if (SJME_IS_ERROR(error = sjme_alloc(pool,
+		SJME_SIZEOF_SUITE_CORE_N(inFunctions->uncommonTypeSize),
+		&result)) || result == NULL)
+		return SJME_DEFAULT_ERROR(error);
+
+	/* Setup some basic cache details. */
+	result->functions = inFunctions;
+	result->cache.common.allocPool = pool;
+	result->cache.common.uncommonSize = inFunctions->uncommonTypeSize;
+
+	/* Seed front end information? */
+	if (inFrontEnd != NULL)
+		result->cache.common.frontEnd = *inFrontEnd;
+
+	/* Initialize cache. */
+	if (SJME_IS_ERROR(error = initCacheFunc(result)))
+	{
+		/* Cleanup bad pointer. */
+		sjme_alloc_free(result);
+
+		return SJME_DEFAULT_ERROR(error);
+	}
+
+	/* Initialize fields. */
+	result->functions = inFunctions;
+	result->cache.common.allocPool = pool;
+
+	/* Use result. */
+	*outSuite = result;
 	return SJME_ERROR_NONE;
 }

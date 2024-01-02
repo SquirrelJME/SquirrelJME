@@ -106,7 +106,7 @@ sjme_errorCode sjme_nvm_boot(sjme_alloc_pool* mainPool,
 	if (result->bootParamCopy->payload != NULL)
 	{
 		/* Scan accordingly. */
-		if (SJME_IS_ERROR(error = sjme_rom_fromPayload(reservedPool,
+		if (SJME_IS_ERROR(error = sjme_rom_suiteFromPayload(reservedPool,
 			&mergeSuites[numMergeSuites],
 			result->bootParamCopy->payload)))
 			goto fail_payloadRom;
@@ -133,7 +133,7 @@ sjme_errorCode sjme_nvm_boot(sjme_alloc_pool* mainPool,
 	else
 	{
 		/* Merge all the suites together into one. */
-		if (SJME_IS_ERROR(error = sjme_rom_fromMerge(reservedPool,
+		if (SJME_IS_ERROR(error = sjme_rom_suiteFromMerge(reservedPool,
 			&result->suite, mergeSuites,
 			numMergeSuites)) || result->suite == NULL)
 			goto fail_suiteMerge;

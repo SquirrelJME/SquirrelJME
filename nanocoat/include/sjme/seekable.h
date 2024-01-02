@@ -16,6 +16,8 @@
 #ifndef SQUIRRELJME_SEEKABLE_H
 #define SQUIRRELJME_SEEKABLE_H
 
+#include "sjme/nvm.h"
+
 /* Anti-C++. */
 #ifdef __cplusplus
 	#ifndef SJME_CXX_IS_EXTERNED
@@ -26,6 +28,26 @@ extern "C" {
 #endif     /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
+
+/**
+ * Core seekable structure.
+ *
+ * @since 2024/01/01
+ */
+typedef struct sjme_seekableCore sjme_seekableCore;
+
+/**
+ * Opaque seekable data.
+ *
+ * @since 2024/01/01
+ */
+typedef struct sjme_seekableCore* sjme_seekable;
+
+sjme_errorCode sjme_seekable_fromMemory(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrOutNotNull sjme_seekable* outSeekable,
+	sjme_attrInNotNull void* base,
+	sjme_attrInPositive sjme_jint length);
 
 /*--------------------------------------------------------------------------*/
 

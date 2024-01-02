@@ -101,7 +101,7 @@ jlong SJME_JNI_METHOD(SJME_CLASS_VIRTUAL_SUITE, _1_1init)
 		(*env)->NewGlobalRef(env, self));
 
 	/* Initialize new suite. */
-	if (SJME_IS_ERROR(error = sjme_rom_newSuite(
+	if (SJME_IS_ERROR(error = sjme_rom_suiteNew(
 		SJME_JLONG_TO_POINTER(sjme_alloc_pool*, poolPtr),
 		&result, &sjme_jni_virtualSuite_functions,
 		&frontEnd)) ||

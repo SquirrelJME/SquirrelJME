@@ -496,8 +496,10 @@ sjme_jboolean sjme_mock_doRomMockLibrary(
 	sjme_attrInNotNull sjme_mock* inState,
 	sjme_attrInNotNull sjme_mock_configWorkData* inData)
 {
+	sjme_jint libraryIndex;
 	sjme_mock_configDataRomLibrary* data;
 	sjme_jboolean isJar;
+	sjme_rom_library result;
 
 	if (inState == NULL || inData == NULL)
 		return sjme_die("Null arguments.");
@@ -505,29 +507,44 @@ sjme_jboolean sjme_mock_doRomMockLibrary(
 	/* Is this a JAR or not? */
 	isJar = inData->current.data.romMockLibrary.isJar;
 
-	/* Clear existing settings. */
-	data = &inData->current.data.romLibrary;
-	memset(data, 0, sizeof(*data));
-
-	/* Setup aliased mock library. */
-	data->name = "mock.jar";
-
-	/* Using an actual JAR file? */
+	/* Using an actual JAR file? Just open an actual library. */
 	if (isJar)
 	{
-		data->data = mock_jar__bin;
-		data->length = mock_jar__len;
+		/* Index of the resultant library. */
+		libraryIndex = inState->numRomLibraries;
+		if (libraryIndex >= SJME_MOCK_MAX_ROM_LIBRARIES)
+			return sjme_die("Too many libraries.");
+
+		/* Open it. */
+		result = NULL;
+		if (SJME_IS_ERROR(sjme_rom_libraryFromZipMemory(
+			inState->allocPool, &result,
+			mock_jar__bin, mock_jar__len)) || result == NULL)
+			return sjme_die("Could not open library.");
+
+		/* Register it. */
+		inState->romLibraries[inState->numRomLibraries++] = result;
+
+		/* Success! */
+		return SJME_JNI_TRUE;
 	}
 
 	/* Synthetic resource access. */
 	else
 	{
+		/* Clear existing settings. */
+		data = &inData->current.data.romLibrary;
+		memset(data, 0, sizeof(*data));
+
+		/* Setup aliased mock library. */
+		data->name = "mock.jar";
+
 		data->functions.resourceStream =
 			sjme_mock_defaultRomMockLibraryResourceStream;
-	}
 
-	/* This is just an alias so call the other accordingly. */
-	return sjme_mock_doRomLibrary(inState, inData);
+		/* This is just an alias so call the other accordingly. */
+		return sjme_mock_doRomLibrary(inState, inData);
+	}
 }
 
 sjme_jboolean sjme_mock_doRomSuite(
