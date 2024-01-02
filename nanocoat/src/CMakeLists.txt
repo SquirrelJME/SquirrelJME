@@ -22,6 +22,7 @@ list(APPEND coreSources
 	nvm.c
 	recycle.c
 	rom.c
+	seekable.c
 	softmmio.c
 	stream.c
 	task.c
