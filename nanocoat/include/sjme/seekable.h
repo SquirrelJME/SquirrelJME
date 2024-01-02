@@ -133,6 +133,22 @@ sjme_errorCode sjme_seekable_fromMemory(
 	sjme_attrInPositive sjme_jint length);
 
 /**
+ * Wraps a seekable and provides a sub-seekable within this.
+ *
+ * @param inSeekable The input seekable, to get the sub-seekable of.
+ * @param outSeekable The output seekable.
+ * @param base The base address to get.
+ * @param length The length of the seekable range.
+ * @return Any resultant error, if any.
+ * @since 2024/01/01
+ */
+sjme_errorCode sjme_seekable_fromSeekable(
+	sjme_attrInNotNull sjme_seekable inSeekable,
+	sjme_attrOutNotNull sjme_seekable* outSeekable,
+	sjme_attrInPositive sjme_jint base,
+	sjme_attrInPositive sjme_jint length);
+
+/**
  * Locks a region of a seekable so that the data stored there can be accessed
  * directly via memory access. Depending on the seekable implementation, there
  * are multiple possibilities as to what may occur: if the seekable is

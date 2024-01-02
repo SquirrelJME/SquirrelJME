@@ -16,6 +16,8 @@
 #ifndef SQUIRRELJME_CLASSY_H
 #define SQUIRRELJME_CLASSY_H
 
+#include "nvm.h"
+
 /* Anti-C++. */
 #ifdef __cplusplus
 	#ifndef SJME_CXX_IS_EXTERNED
@@ -26,6 +28,26 @@ extern "C" {
 #endif     /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
+
+/**
+ * Core class information structure.
+ *
+ * @since 2024/01/01
+ */
+typedef struct sjme_class_infoCore sjme_class_infoCore;
+
+/**
+ * Opaque class information structure.
+ *
+ * @since 2024/01/01
+ */
+typedef struct sjme_class_infoCore* sjme_class_info;
+
+struct sjme_class_infoCore
+{
+	/** Todo. */
+	sjme_jint todo;
+};
 
 /*--------------------------------------------------------------------------*/
 
