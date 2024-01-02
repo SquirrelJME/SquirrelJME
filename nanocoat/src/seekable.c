@@ -29,3 +29,34 @@ sjme_errorCode sjme_seekable_fromMemory(
 	sjme_todo("Implement this?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
+
+sjme_errorCode sjme_seekable_regionLock(
+	sjme_attrInNotNull sjme_seekable seekable,
+	sjme_attrOutNotNull sjme_seekable_lock* outLock,
+	sjme_attrInPositive sjme_jint base,
+	sjme_attrInPositive sjme_jint length)
+{
+	if (seekable == NULL || outLock == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (base < 0 || length < 0 || (base + length) < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	sjme_todo("Implement this?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+sjme_errorCode sjme_seekable_regionUnlock(
+	sjme_attrInNotNull sjme_seekable_lock inLock,
+	sjme_attrInRange(0, SJME_NUM_SEEKABLE_UNLOCK_ACTION)
+		sjme_seekable_unlockAction action)
+{
+	if (inLock == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (action < 0 || action >= SJME_NUM_SEEKABLE_UNLOCK_ACTION)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	sjme_todo("Implement this?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}

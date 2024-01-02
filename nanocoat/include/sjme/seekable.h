@@ -43,11 +43,113 @@ typedef struct sjme_seekableCore sjme_seekableCore;
  */
 typedef struct sjme_seekableCore* sjme_seekable;
 
+/**
+ * Seekable lock core structure.
+ *
+ * @since 2024/01/01
+ */
+typedef struct sjme_seekable_lockCore sjme_seekable_lockCore;
+
+/**
+ * Opaque locked seekable structure.
+ *
+ * @since 2024/01/01
+ */
+typedef struct sjme_seekable_lockCore* sjme_seekable_lock;
+
+struct sjme_seekable_lockCore
+{
+	/** The owning seekable. */
+	sjme_seekable seekable;
+
+	/**
+	 * The base address pointer.
+	 *
+	 * Depending on the implementation, if the memory within the lock is
+	 * modified it may directly change the resultant memory or file.
+	 */
+	void* base;
+
+	/** The length of the lock. */
+	sjme_jint length;
+};
+
+/**
+ * This is the action that can change what happens when a locked region is
+ * unlocked.
+ *
+ * @since 2024/01/01
+ */
+typedef enum sjme_seekable_unlockAction
+{
+	/** Discard any bytes that were written. */
+	SJME_SEEKABLE_UNLOCK_ACTION_DISCARD,
+
+	/**
+	 * Write the data back to the seekable.
+	 *
+	 * Note that this only has an effect if the buffer in memory is a copy
+	 * of the source seekable, in which case it was not directly mappable.
+	 */
+	SJME_SEEKABLE_UNLOCK_ACTION_WRITE_BACK,
+
+	/** The number of unlock actions. */
+	SJME_NUM_SEEKABLE_UNLOCK_ACTION
+} sjme_seekable_unlockAction;
+
+/**
+ * Initializes a seekable from the given memory range.
+ *
+ * @param inPool The pool to allocate within.
+ * @param outSeekable The resultant seekable.
+ * @param base The base memory address.
+ * @param length The length of memory block.
+ * @return Any resultant error, if any.
+ * @since 2024/01/01
+ */
 sjme_errorCode sjme_seekable_fromMemory(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrOutNotNull sjme_seekable* outSeekable,
 	sjme_attrInNotNull void* base,
 	sjme_attrInPositive sjme_jint length);
+
+/**
+ * Locks a region of a seekable so that the data stored there can be accessed
+ * directly via memory access. Depending on the seekable implementation, there
+ * are multiple possibilities as to what may occur: if the seekable is
+ * directly from memory it will just map to that pointer accordingly, if
+ * the seekable is backed by a file then it will be memory mapped, otherwise
+ * a buffer will be created with a copy of the bytes at the given region and
+ * will stay as such until unlocked. Per the implementation, if the seekable
+ * data is modified in memory it may change that actual memory or file.
+ *
+ * @param seekable The seekable to lock within.
+ * @param outLock The resultant lock.
+ * @param base The base address within the seekable to lock.
+ * @param length The number of bytes to lock.
+ * @return Any resultant error, if any.
+ * @since 2024/01/01
+ */
+sjme_errorCode sjme_seekable_regionLock(
+	sjme_attrInNotNull sjme_seekable seekable,
+	sjme_attrOutNotNull sjme_seekable_lock* outLock,
+	sjme_attrInPositive sjme_jint base,
+	sjme_attrInPositive sjme_jint length);
+
+/**
+ * Unlocks a locked seekable region, the resultant action may or may not
+ * have an effect depending on the implementation.
+ *
+ * @param inLock The lock to unlock.
+ * @param action The action to perform on the unlock.
+ * @return Any resultant error, if any.
+ * @see sjme_seekable_unlockAction
+ * @since 2024/01/01
+ */
+sjme_errorCode sjme_seekable_regionUnlock(
+	sjme_attrInNotNull sjme_seekable_lock inLock,
+	sjme_attrInRange(0, SJME_NUM_SEEKABLE_UNLOCK_ACTION)
+		sjme_seekable_unlockAction action);
 
 /*--------------------------------------------------------------------------*/
 
