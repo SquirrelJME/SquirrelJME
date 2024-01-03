@@ -11,9 +11,11 @@
 #include "proto.h"
 #include "test.h"
 #include "unit.h"
+#include "sjme/seekable.h"
 
 /**
- * DESCRIBE THIS.
+ * Tests locking a seekable and then accessing the locked region as an
+ * input stream.
  *  
  * @since 2024/01/01 
  */

@@ -12,6 +12,7 @@ list(APPEND coreSources
 	boot.c
 	bytecode.c
 	classy.c
+	comparator.c
 	debug.c
 	except.c
 	gfx.c
@@ -27,6 +28,7 @@ list(APPEND coreSources
 	stream.c
 	task.c
 	tread.c
+	tree.c
 	util.c
 	vmConfig.c
 	zip.c)

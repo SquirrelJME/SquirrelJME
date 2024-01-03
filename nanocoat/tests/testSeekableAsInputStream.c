@@ -11,9 +11,10 @@
 #include "proto.h"
 #include "test.h"
 #include "unit.h"
+#include "sjme/seekable.h"
 
 /**
- * DESCRIBE THIS.
+ * Tests accessing a specific portion of a seekable as an input stream.
  *  
  * @since 2024/01/01 
  */

@@ -180,7 +180,7 @@ sjme_jint sjme_string_hash(sjme_lpcstr string)
 			return -1;
 		
 		/* Calculate the hashCode(), the JavaDoc gives the following formula:
-		// == s[0]*31^(n-1) + s[1]*31^(n-2) + ... + s[n-1] .... yikes! */
+		 * == s[0]*31^(n-1) + s[1]*31^(n-2) + ... + s[n-1] .... yikes! */
 		result = ((result << 5) - result) + (sjme_jint)c;
 	}
 	

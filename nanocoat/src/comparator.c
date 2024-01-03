@@ -7,19 +7,19 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "mock.h"
-#include "proto.h"
-#include "test.h"
-#include "unit.h"
-#include "sjme/seekable.h"
+#include "sjme/comparator.h"
+#include "sjme/debug.h"
 
-/**
- * Tests wrapping memory as seekables.
- *  
- * @since 2024/01/01 
- */
-SJME_TEST_DECLARE(testSeekableFromMemory)
+sjme_jint SJME_COMPARATOR(sjme_lpcstr, 0)(const void* a, const void* b,
+	int elementSize)
 {
-	sjme_todo("Implement %s", __func__);
-	return SJME_TEST_RESULT_FAIL;
+	sjme_todo("Implement this?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+sjme_jint SJME_COMPARATOR_INSENSITIVE(sjme_lpcstr, 0)(
+	const void* a, const void* b, int elementSize)
+{
+	sjme_todo("Implement this?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
 }

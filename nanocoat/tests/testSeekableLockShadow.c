@@ -11,9 +11,11 @@
 #include "proto.h"
 #include "test.h"
 #include "unit.h"
+#include "sjme/seekable.h"
 
 /**
- * DESCRIBE THIS.
+ * Tests locking seekable by copying their contents and potentially writing
+ * back.
  *  
  * @since 2024/01/01 
  */

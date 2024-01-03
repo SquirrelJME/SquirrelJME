@@ -11,9 +11,10 @@
 #include "proto.h"
 #include "test.h"
 #include "unit.h"
+#include "sjme/seekable.h"
 
 /**
- * DESCRIBE THIS.
+ * Tests getting a sub-seekable sequence.
  *  
  * @since 2024/01/01 
  */

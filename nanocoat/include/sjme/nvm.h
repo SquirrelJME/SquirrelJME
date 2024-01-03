@@ -34,7 +34,7 @@ extern "C" {
 /*--------------------------------------------------------------------------*/
 
 /**
- * Posts two tokens together.
+ * Pastes two tokens together.
  * 
  * @param a The first token.
  * @param b The second token.
@@ -50,6 +50,72 @@ extern "C" {
  * @since 2023/11/16
  */
 #define SJME_TOKEN_PASTE_PP(a, b) SJME_TOKEN_PASTE(a, b)
+
+/**
+ * Pastes three tokens together.
+ *
+ * @param a The first token.
+ * @param b The second token.
+ * @param c The third token.
+ * @since 2024/01/03
+ */
+#define SJME_TOKEN_PASTE3(a, b, c) a##b##c
+
+/**
+ * Pasting three tokens but with preprocessing.
+ *
+ * @param a The first token.
+ * @param b The second token.
+ * @param c The third token.
+ * @since 2024/01/03
+ */
+#define SJME_TOKEN_PASTE3_PP(a, b, c) SJME_TOKEN_PASTE3(a, b, c)
+
+/**
+ * Pastes four tokens together.
+ *
+ * @param a The first token.
+ * @param b The second token.
+ * @param c The third token.
+ * @param d The fourth token.
+ * @since 2024/01/03
+ */
+#define SJME_TOKEN_PASTE4(a, b, c, d) a##b##c##d
+
+/**
+ * Pasting four tokens but with preprocessing.
+ *
+ * @param a The first token.
+ * @param b The second token.
+ * @param c The third token.
+ * @param d The fourth token.
+ * @since 2024/01/03
+ */
+#define SJME_TOKEN_PASTE4_PP(a, b, c, d) SJME_TOKEN_PASTE4(a, b, c, d)
+
+/**
+ * Pastes five tokens together.
+ *
+ * @param a The first token.
+ * @param b The second token.
+ * @param c The third token.
+ * @param d The fourth token.
+ * @param e The fifth token.
+ * @since 2024/01/03
+ */
+#define SJME_TOKEN_PASTE5(a, b, c, d, e) a##b##c##d##e
+
+/**
+ * Pasting five tokens but with preprocessing.
+ *
+ * @param a The first token.
+ * @param b The second token.
+ * @param c The third token.
+ * @param d The fourth token.
+ * @param e The fifth token.
+ * @since 2024/01/03
+ */
+#define SJME_TOKEN_PASTE5_PP(a, b, c, d, e) SJME_TOKEN_PASTE5(a, b, c, d, e)
 
 /**
  * Stringifies the given token.
@@ -308,11 +374,32 @@ typedef uint32_t sjme_juint;
 #define SJME_JAVA_TYPEOF_sjme_juint SJME_JAVA_TYPE_ID_INTEGER
 
 /**
+ * C Character.
+ *
+ * @since 2024/01/03
+ */
+typedef char sjme_cchar;
+
+#if defined(CHAR_BIT) && (CHAR_BIT == 64)
+	/** Basic @c sjme_cchar type identifier. */
+	#define SJME_BASIC_TYPEOF_sjme_cchar SJME_BASIC_TYPE_ID_LONG
+#elif defined(CHAR_BIT) && (CHAR_BIT == 32)
+	/** Basic @c sjme_cchar type identifier. */
+	#define SJME_BASIC_TYPEOF_sjme_cchar SJME_BASIC_TYPE_ID_INTEGER
+#elif defined(CHAR_BIT) && (CHAR_BIT == 16)
+	/** Basic @c sjme_cchar type identifier. */
+	#define SJME_BASIC_TYPEOF_sjme_cchar SJME_BASIC_TYPE_ID_SHORT
+#else
+	/** Basic @c sjme_cchar type identifier. */
+	#define SJME_BASIC_TYPEOF_sjme_cchar SJME_BASIC_TYPE_ID_BYTE
+#endif
+
+/**
  * Pointer to C string.
  *
  * @since 2023/12/17
  */
-typedef char* sjme_lpstr;
+typedef sjme_cchar* sjme_lpstr;
 
 /** Basic @c sjme_lpstr type identifier. */
 #define SJME_BASIC_TYPEOF_sjme_lpstr SJME_BASIC_TYPE_ID_OBJECT
@@ -322,7 +409,7 @@ typedef char* sjme_lpstr;
  *
  * @since 2023/12/17
  */
-typedef const char* sjme_lpcstr;
+typedef const sjme_cchar* sjme_lpcstr;
 
 /** Basic @c sjme_lpcstr type identifier. */
 #define SJME_BASIC_TYPEOF_sjme_lpcstr SJME_BASIC_TYPE_ID_OBJECT
@@ -399,6 +486,20 @@ typedef struct sjme_jdouble
  * @since 2023/07/25
  */
 typedef sjme_jint sjme_tempIndex;
+
+/**
+ * A range of values.
+ *
+ * @since 2024/01/03
+ */
+typedef struct sjme_range
+{
+	/** Start of the range. */
+	sjme_jint start;
+
+	/** End of the range. */
+	sjme_jint end;
+} sjme_range;
 
 /**
  * A wrapper used by front ends, which is reserved for use, which stores a

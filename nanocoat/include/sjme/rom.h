@@ -80,10 +80,10 @@ typedef struct sjme_rom_libraryCache
 	sjme_jint size;
 
 	/** Is raw access checked? */
-	sjme_jboolean checkedRawAccess;
+	sjme_jboolean checkedRawAccess : 1;
 
 	/** Is raw access valid. */
-	sjme_jboolean validRawAccess;
+	sjme_jboolean validRawAccess : 1;
 
 	/** Uncommon cache generic structure. */
 	sjme_jlong uncommon[sjme_flexibleArrayCount];

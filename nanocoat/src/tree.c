@@ -7,16 +7,4 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "proto.h"
-#include "test.h"
-
-/**
- * Tests loading of classes.
- * 
- * @since 2023/11/29
- */
-SJME_TEST_DECLARE(testClassLoad)
-{
-	sjme_todo("Implement %s", __func__);
-	return SJME_TEST_RESULT_FAIL;
-}
+#include "sjme/tree.h"

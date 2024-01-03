@@ -325,3 +325,41 @@ sjme_errorCode sjme_list_newVAR(
 	return SJME_ERROR_NONE;
 #undef SJME_BLA
 }
+
+sjme_errorCode sjme_list_search(
+	sjme_attrInNotNull void* inList,
+	sjme_attrInNotNull sjme_comparator comparator,
+	sjme_attrInNotNull const void* findWhat,
+	sjme_attrOutNotNull sjme_jint* outIndex)
+{
+	sjme_todo("Implement this?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+sjme_errorCode sjme_list_searchBinary(
+	sjme_attrInNotNull void* inList,
+	sjme_attrInNotNull sjme_comparator comparator,
+	sjme_attrInNotNull const void* findWhat,
+	sjme_attrOutNotNull sjme_jint* outIndex)
+{
+	sjme_todo("Implement this?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+sjme_errorCode sjme_list_searchReverse(
+	sjme_attrInNotNull void* inList,
+	sjme_attrInNotNull sjme_comparator comparator,
+	sjme_attrInNotNull const void* findWhat,
+	sjme_attrOutNotNull sjme_jint* outIndex)
+{
+	sjme_todo("Implement this?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+sjme_errorCode sjme_list_sort(
+	sjme_attrInNotNull void* inList,
+	sjme_attrInNotNull sjme_comparator comparator)
+{
+	sjme_todo("Implement this?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}

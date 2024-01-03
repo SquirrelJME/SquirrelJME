@@ -44,7 +44,7 @@ typedef struct sjme_modelessStarColor
 typedef struct sjme_modelessStar
 {
 	/** Is this star shining? */
-	sjme_jboolean shining;
+	sjme_jboolean shining : 1;
 	
 	/** The X coordinate. */
 	sjme_jint x;
@@ -98,7 +98,7 @@ typedef struct sjme_modelessStarState
 	sjme_jint lockStarCreationLast;
 	
 	/** First go latched? */
-	sjme_jboolean latchedFirstGo;
+	sjme_jboolean latchedFirstGo : 1;
 } sjme_modelessStarState;
 
 /**

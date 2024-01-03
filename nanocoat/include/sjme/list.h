@@ -19,6 +19,7 @@
 #include <stdarg.h>
 
 #include "sjme/nvm.h"
+#include "sjme/comparator.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -118,6 +119,9 @@ SJME_LIST_DECLARE(sjme_jobject, 0);
 
 /** List of @c sjme_pointer. */
 SJME_LIST_DECLARE(sjme_pointer, 0);
+
+/** List of @c sjme_cchar. */
+SJME_LIST_DECLARE(sjme_cchar, 0);
 
 /**
  * Allocates a given list generically.
@@ -318,6 +322,80 @@ sjme_errorCode sjme_list_flattenArgCV(
 	sjme_attrOutNotNull sjme_list_sjme_lpcstr** outList,
 	sjme_attrInPositive sjme_jint argC,
 	sjme_attrInNotNull sjme_lpcstr* argV);
+
+/**
+ * Searches the given list for the given element.
+ *
+ * @param inList The list to look within.
+ * @param comparator The comparator to compare between entries.
+ * @param findWhat The element to search for within the list.
+ * @param outIndex The resultant output index or @c -1 if not found.
+ * @return Any resultant orr, if any.
+ * @since 2024/01/03
+ */
+sjme_errorCode sjme_list_search(
+	sjme_attrInNotNull void* inList,
+	sjme_attrInNotNull sjme_comparator comparator,
+	sjme_attrInNotNull const void* findWhat,
+	sjme_attrOutNotNull sjme_jint* outIndex);
+
+/**
+ * Binary searches the given list, requires that it is sorted.
+ *
+ * @param inList The list to search within.
+ * @param comparator The comparison to use for entries.
+ * @param findWhat The element to search for within the list.
+ * @param outIndex The resultant index if found, or
+ * will be @begincode (-(insertion point) - 1) @endcode if it was not found
+ * in the list.
+ * @return Any resultant error, if any.
+ * @see sjme_list_searchInsertionPoint
+ * @since 2024/01/03
+ */
+sjme_errorCode sjme_list_searchBinary(
+	sjme_attrInNotNull void* inList,
+	sjme_attrInNotNull sjme_comparator comparator,
+	sjme_attrInNotNull const void* findWhat,
+	sjme_attrOutNotNull sjme_jint* outIndex);
+
+/**
+ * Reverses the insertion point operation to either map to one or to get
+ * the insertion point.
+ *
+ * @param index The index to map.
+ * @return The resultant insertion point.
+ * @since 2024/01/03
+ */
+#define sjme_list_searchInsertionPoint(index) \
+	(-(index) - 1)
+
+/**
+ * Searches the given list in reverse for the given element.
+ *
+ * @param inList The list to look within.
+ * @param comparator The comparator to compare between entries.
+ * @param findWhat The element to search for within the list.
+ * @param outIndex The resultant output index or @c -1 if not found.
+ * @return Any resultant orr, if any.
+ * @since 2024/01/03
+ */
+sjme_errorCode sjme_list_searchReverse(
+	sjme_attrInNotNull void* inList,
+	sjme_attrInNotNull sjme_comparator comparator,
+	sjme_attrInNotNull const void* findWhat,
+	sjme_attrOutNotNull sjme_jint* outIndex);
+
+/**
+ * Sorts the elements of the given list.
+ *
+ * @param inList The list of items to search.
+ * @param comparator The comparator to use when comparing entries.
+ * @return Any resultant error, if any.
+ * @since 2024/01/03
+ */
+sjme_errorCode sjme_list_sort(
+	sjme_attrInNotNull void* inList,
+	sjme_attrInNotNull sjme_comparator comparator);
 
 /*--------------------------------------------------------------------------*/
 
