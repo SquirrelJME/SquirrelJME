@@ -51,5 +51,8 @@ target_include_directories(Core PUBLIC
 target_include_directories(CorePIC PUBLIC
 	"${CMAKE_SOURCE_DIR}/include")
 
+# Doxygen
+squirreljme_doxygen(Core)
+
 # Third party support libraries
 add_subdirectory(3rdparty)

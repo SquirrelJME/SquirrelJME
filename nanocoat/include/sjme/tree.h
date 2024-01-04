@@ -144,7 +144,7 @@ extern "C" {
  */
 #define SJME_TREE_DECLARE_RAW(rawTreeName, rawNodeName, rawElementName, \
 	type, numPointerStars) \
-	/** Binary tree node for @c type and @c numPointerStars . */ \
+	/** Binary tree node for @ref type and @ref numPointerStars . */ \
 	typedef struct rawNodeName rawNodeName; \
 	\
 	struct rawNodeName \
@@ -167,6 +167,9 @@ extern "C" {
 	{ \
 		/** The root node. */ \
 		rawNodeName* root; \
+	\
+		/** The size of individual elements within the tree. */\
+		sjme_jint elementSize;\
 	} rawTreeName
 
 /**

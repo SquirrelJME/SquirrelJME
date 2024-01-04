@@ -31,7 +31,7 @@ extern "C" {
 
 /**
  * Returns the current time in milliseconds as per the Java
- * method @c System::currentTimeMillis() .
+ * method @ref System::currentTimeMillis() .
  * 
  * @param result The resultant time.
  * @return If the operation was successful.
@@ -58,7 +58,7 @@ typedef sjme_jboolean (*sjme_nal_getEnv)(
 
 /**
  * Returns the current nanosecond monotonic class as per the Java
- * method @c System::nanoTime() .
+ * method @ref System::nanoTime() .
  * 
  * @param result The resultant time.
  * @return If the operation was successful.

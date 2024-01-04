@@ -47,6 +47,9 @@ squirreljme_include("fixes.cmake")
 # CMake Utilities, compiled and used during build
 squirreljme_include("utils.cmake")
 
+# Doxygen
+squirreljme_include("doxygen.cmake")
+
 # To Emily and Near...
 squirreljme_include("i-miss-you.cmake")
 

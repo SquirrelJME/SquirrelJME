@@ -36,7 +36,7 @@ struct sjme_exceptTrace
 	/** Pointer to what is above the trace */
 	volatile sjme_exceptTrace* parent;
 
-	/** The storage for registers using C's @c setjmp and @c longjmp . */
+	/** The storage for registers using C's @ref setjmp and @ref longjmp . */
 	volatile jmp_buf jumpBuf;
 
 	/** The file. */
@@ -61,7 +61,7 @@ struct sjme_exceptTrace
 /**
  * Block to declare exception handling start.
  *
- * @param exceptionState A @c sjme_exceptTrace to act on as a pivot for
+ * @param exceptionState A @ref sjme_exceptTrace to act on as a pivot for
  * exception storage.
  * @since 2023/12/08
  */

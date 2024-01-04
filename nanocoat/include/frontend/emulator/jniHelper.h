@@ -33,7 +33,7 @@ extern "C" {
 #define SJME_PACKAGE_NANOCOAT cc_squirreljme_vm_nanocoat
 
 /**
- * Maps a pointer to the @c jlong type.
+ * Maps a pointer to the @ref jlong type.
  *
  * @param pointer The pointer to map.
  * @return The resultant pointer.
@@ -127,7 +127,7 @@ extern "C" {
 sjme_jboolean sjme_jni_checkVMException(JNIEnv* env);
 
 /**
- * Throws a @c VMException .
+ * Throws a @ref VMException .
  *
  * @param env The current Java environment.
  * @param code The error code.

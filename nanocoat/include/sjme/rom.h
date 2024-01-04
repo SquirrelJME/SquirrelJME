@@ -8,7 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 /**
- * ROM related structures, this replicates what is in @c JarPackageShelf.
+ * ROM related structures, this replicates what is in @ref JarPackageShelf.
  * 
  * @since 2023/12/12
  */
@@ -535,7 +535,7 @@ sjme_errorCode sjme_rom_suiteFromMerge(
  *
  * @param pool The pool to allocate within.
  * @param outSuite The output resultant suite, if there would be nothing in
- * here then this outputs @c NULL .
+ * here then this outputs @ref NULL .
  * @param payloadConfig The payload configuration used.
  * @return Any error status.
  * @since 2023/12/15

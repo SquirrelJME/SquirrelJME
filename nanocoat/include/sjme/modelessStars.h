@@ -94,7 +94,7 @@ typedef struct sjme_modelessStarState
 	/** Is star creation locked? */
 	sjme_jint lockStarCreation;
 	
-	/** The last @c lockStarCreation value. */
+	/** The last @ref lockStarCreation value. */
 	sjme_jint lockStarCreationLast;
 	
 	/** First go latched? */
@@ -110,7 +110,7 @@ typedef struct sjme_modelessStarState
  * @param height The height of the buffer.
  * @param pitch The pitch of the buffer.
  * @param tick The current tick.
- * @return Returns @c SJME_JNI_FALSE if there are issues with inputs.
+ * @return Returns @ref SJME_JNI_FALSE if there are issues with inputs.
  * @since 2023/11/22
  */
 sjme_errorCode sjme_modelessStars(

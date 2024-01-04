@@ -36,7 +36,7 @@ typedef struct sjme_stream_inputCacheMemory
 #define SJME_INPUT_MEMORY_UNCOMMON(base) \
 	SJME_INPUT_UNCOMMON(sjme_stream_inputCacheMemory, (base))
 
-sjme_errorCode sjme_stream_inputMemoryAvailable(
+static sjme_errorCode sjme_stream_inputMemoryAvailable(
 	sjme_attrInNotNull sjme_stream_input stream,
 	sjme_attrOutNotNull sjme_attrOutNegativeOnePositive sjme_jint* outAvail)
 {
@@ -53,7 +53,7 @@ sjme_errorCode sjme_stream_inputMemoryAvailable(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_stream_inputMemoryClose(
+static sjme_errorCode sjme_stream_inputMemoryClose(
 	sjme_attrInNotNull sjme_stream_input stream)
 {
 	if (stream == NULL)
@@ -63,7 +63,7 @@ sjme_errorCode sjme_stream_inputMemoryClose(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_stream_inputMemoryRead(
+static sjme_errorCode sjme_stream_inputMemoryRead(
 	sjme_attrInNotNull sjme_stream_input stream,
 	sjme_attrOutNotNull sjme_attrOutNegativeOnePositive sjme_jint* readCount,
 	sjme_attrOutNotNullBuf(length) void* dest,
