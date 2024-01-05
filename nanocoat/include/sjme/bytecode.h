@@ -711,7 +711,7 @@ typedef enum sjme_byteCode_instruction
  * Function type for byte code execution.
  * 
  * @param frame The frame to execute under.
- * @return Returns @ref SJME_JNI_TRUE on success.
+ * @return Returns @c SJME_JNI_TRUE on success.
  * @since 2023/11/18
  */
 typedef sjme_jboolean (*sjme_byteCode_function)(sjme_nvm_frame* frame);
@@ -735,7 +735,7 @@ typedef struct sjme_byteCode_functionMap
  * 
  * @param inInstruction The instruction to map.
  * @param outMapping The output mapping.
- * @return Returns @ref SJME_JNI_TRUE if the instruction is valid and mappable.
+ * @return Returns @c SJME_JNI_TRUE if the instruction is valid and mappable.
  * @since 2023/11/18
  */
 sjme_errorCode sjme_byteCode_map(

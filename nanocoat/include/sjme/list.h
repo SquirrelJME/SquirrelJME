@@ -90,37 +90,37 @@ extern "C" {
 		offsetof(SJME_LIST_NAME(type, numPointerStars), elements)) + \
 	(sizeof(SJME_LIST_ELEMENT_TYPE(type, numPointerStars)) * (size_t)(count)))
 
-/** List of @ref sjme_jbyte. */
+/** List of @c sjme_jbyte. */
 SJME_LIST_DECLARE(sjme_jbyte, 0);
 
-/** List of @ref sjme_jubyte. */
+/** List of @c sjme_jubyte. */
 SJME_LIST_DECLARE(sjme_jubyte, 0);
 
-/** List of @ref sjme_jshort. */
+/** List of @c sjme_jshort. */
 SJME_LIST_DECLARE(sjme_jshort, 0);
 
-/** List of @ref sjme_jchar. */
+/** List of @c sjme_jchar. */
 SJME_LIST_DECLARE(sjme_jchar, 0);
 
-/** List of @ref sjme_jint. */
+/** List of @c sjme_jint. */
 SJME_LIST_DECLARE(sjme_jint, 0);
 
-/** List of @ref sjme_juint. */
+/** List of @c sjme_juint. */
 SJME_LIST_DECLARE(sjme_juint, 0);
 
-/** List of @ref sjme_lpstr. */
+/** List of @c sjme_lpstr. */
 SJME_LIST_DECLARE(sjme_lpstr, 0);
 
-/** List of @ref sjme_lpcstr. */
+/** List of @c sjme_lpcstr. */
 SJME_LIST_DECLARE(sjme_lpcstr, 0);
 
-/** List of @ref sjme_jobject. */
+/** List of @c sjme_jobject. */
 SJME_LIST_DECLARE(sjme_jobject, 0);
 
-/** List of @ref sjme_pointer. */
+/** List of @c sjme_pointer. */
 SJME_LIST_DECLARE(sjme_pointer, 0);
 
-/** List of @ref sjme_cchar. */
+/** List of @c sjme_cchar. */
 SJME_LIST_DECLARE(sjme_cchar, 0);
 
 /**

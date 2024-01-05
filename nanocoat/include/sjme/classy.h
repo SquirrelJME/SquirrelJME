@@ -55,7 +55,7 @@ typedef struct sjme_class_fieldDescriptor
  */
 SJME_LIST_DECLARE(sjme_class_fieldDescriptor, 0);
 
-/** The basic type of @ref sjme_class_fieldDescriptor . */
+/** The basic type of @c sjme_class_fieldDescriptor . */
 #define SJME_BASIC_TYPEOF_sjme_class_fieldDescriptor \
 	SJME_BASIC_TYPE_ID_OBJECT
 
@@ -134,7 +134,7 @@ typedef struct sjme_class_methodInfoCore* sjme_class_methodInfo;
  */
 SJME_LIST_DECLARE(sjme_class_methodInfo, 0);
 
-/** The basic type of @ref sjme_class_methodInfo . */
+/** The basic type of @c sjme_class_methodInfo . */
 #define SJME_BASIC_TYPEOF_sjme_class_methodInfo \
 	SJME_BASIC_TYPE_ID_OBJECT
 
@@ -159,7 +159,7 @@ typedef struct sjme_class_fieldInfoCore* sjme_class_fieldInfo;
  */
 SJME_LIST_DECLARE(sjme_class_fieldInfo, 0);
 
-/** The basic type of @ref sjme_class_fieldInfo . */
+/** The basic type of @c sjme_class_fieldInfo . */
 #define SJME_BASIC_TYPEOF_sjme_class_fieldInfo \
 	SJME_BASIC_TYPE_ID_OBJECT
 
@@ -183,7 +183,7 @@ typedef struct sjme_class_exceptionHandler
 /** A list of exceptions. */
 SJME_LIST_DECLARE(sjme_class_exceptionHandler, 0);
 
-/** The basic type of @ref sjme_class_exceptionHandler . */
+/** The basic type of @c sjme_class_exceptionHandler . */
 #define SJME_BASIC_TYPEOF_sjme_class_exceptionHandler \
 	SJME_BASIC_TYPE_ID_OBJECT
 
@@ -388,18 +388,18 @@ typedef enum sjme_class_poolType
 } sjme_class_poolType;
 
 /**
- * A @ref SJME_CLASS_POOL_TYPE_FLOAT which represents a float constant.
+ * A @c SJME_CLASS_POOL_TYPE_CLASS which represents a class or interface.
  *
  * @since 2024/01/04
  */
-typedef struct sjme_class_poolEntryFloat
+typedef struct sjme_class_poolEntryClass
 {
-	/** The constant value. */
-	sjme_jfloat value;
-} sjme_class_poolEntryFloat;
+	/** The descriptor this represents. */
+	sjme_lpcstr descriptor;
+} sjme_class_poolEntryClass;
 
 /**
- * A @ref SJME_CLASS_POOL_TYPE_DOUBLE which represents a double constant.
+ * A @c SJME_CLASS_POOL_TYPE_DOUBLE which represents a double constant.
  *
  * @since 2024/01/04
  */
@@ -410,7 +410,42 @@ typedef struct sjme_class_poolEntryDouble
 } sjme_class_poolEntryDouble;
 
 /**
- * A @ref SJME_CLASS_POOL_TYPE_INTEGER which represents an integer constant.
+ * A @c SJME_CLASS_POOL_TYPE_NAME_AND_TYPE which represents a name and type
+ * of a member without the class.
+ *
+ * @since 2024/01/04
+ */
+typedef struct sjme_class_poolEntryNameAndType sjme_class_poolEntryNameAndType;
+
+/**
+ * Either @c SJME_CLASS_POOL_TYPE_FIELD , @c SJME_CLASS_POOL_TYPE_METHOD ,
+ * or @c SJME_CLASS_POOL_TYPE_INTERFACE_METHOD which represents a reference
+ * to a class member.
+ *
+ * @since 2024/01/04
+ */
+typedef struct sjme_class_poolEntryMember
+{
+	/** The class this refers to. */
+	sjme_lpcstr inClass;
+
+	/** The name and type used. */
+	const sjme_class_poolEntryNameAndType* nameAndType;
+} sjme_class_poolEntryMember;
+
+/**
+ * A @c SJME_CLASS_POOL_TYPE_FLOAT which represents a float constant.
+ *
+ * @since 2024/01/04
+ */
+typedef struct sjme_class_poolEntryFloat
+{
+	/** The constant value. */
+	sjme_jfloat value;
+} sjme_class_poolEntryFloat;
+
+/**
+ * A @c SJME_CLASS_POOL_TYPE_INTEGER which represents an integer constant.
  *
  * @since 2024/01/04
  */
@@ -421,7 +456,7 @@ typedef struct sjme_class_poolEntryInteger
 } sjme_class_poolEntryInteger;
 
 /**
- * A @ref SJME_CLASS_POOL_TYPE_LONG which represents a long constant.
+ * A @c SJME_CLASS_POOL_TYPE_LONG which represents a long constant.
  *
  * @since 2024/01/04
  */
@@ -431,8 +466,17 @@ typedef struct sjme_class_poolEntryLong
 	sjme_jlong value;
 } sjme_class_poolEntryLong;
 
+struct sjme_class_poolEntryNameAndType
+{
+	/** The name. */
+	sjme_lpcstr name;
+
+	/** The type. */
+	sjme_lpcstr type;
+};
+
 /**
- * A @ref SJME_CLASS_POOL_TYPE_UTF which is a modified UTF-8 entry.
+ * A @c SJME_CLASS_POOL_TYPE_UTF which is a modified UTF-8 entry.
  *
  * @since 2024/01/04
  */
@@ -458,6 +502,9 @@ typedef struct sjme_class_poolEntry
 	/** The data for the entry. */
 	union
 	{
+		/** Class. */
+		sjme_class_poolEntryClass classRef;
+
 		/** Double. */
 		sjme_class_poolEntryDouble constDouble;
 
@@ -469,6 +516,12 @@ typedef struct sjme_class_poolEntry
 
 		/** Long. */
 		sjme_class_poolEntryLong constLong;
+
+		/** A class member. */
+		sjme_class_poolEntryMember member;
+
+		/** Name and type. */
+		sjme_class_poolEntryNameAndType nameAndType;
 
 		/** UTF pool entry. */
 		sjme_class_poolEntryUtf utf;

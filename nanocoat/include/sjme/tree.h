@@ -144,7 +144,7 @@ extern "C" {
  */
 #define SJME_TREE_DECLARE_RAW(rawTreeName, rawNodeName, rawElementName, \
 	type, numPointerStars) \
-	/** Binary tree node for @ref type and @ref numPointerStars . */ \
+	/** Binary tree node for @c type and @c numPointerStars . */ \
 	typedef struct rawNodeName rawNodeName; \
 	\
 	struct rawNodeName \

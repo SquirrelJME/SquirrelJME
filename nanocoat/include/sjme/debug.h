@@ -165,7 +165,7 @@ void sjme_debug_abort(void);
 /**
  * Handles specific debug abort scenarios.
  *
- * @return Return @ref SJME_JNI_TRUE if it was handled.
+ * @return Return @c SJME_JNI_TRUE if it was handled.
  * @since 2023/12/21
  */
 typedef sjme_jboolean (*sjme_debug_abortHandlerFunc)(void);
@@ -177,7 +177,7 @@ extern sjme_debug_abortHandlerFunc sjme_debug_abortHandler;
  * Handler for specific debug exit scenarios.
  *
  * @param exitCode The exit code.
- * @return Return @ref SJME_JNI_TRUE if it was handled.
+ * @return Return @c SJME_JNI_TRUE if it was handled.
  * @since 2023/12/21
  */
 typedef sjme_jboolean (*sjme_debug_exitHandlerFunc)(int exitCode);
@@ -190,8 +190,8 @@ extern sjme_debug_exitHandlerFunc sjme_debug_exitHandler;
  * 
  * @param fullMessage The message to emit. 
  * @param partMessage Partial message, without any prepend.
- * @return Return @ref SJME_JNI_TRUE if the message is handled, otherwise
- * a standard @ref fprintf to @ref stderr will be used.
+ * @return Return @c SJME_JNI_TRUE if the message is handled, otherwise
+ * a standard @c fprintf to @c stderr will be used.
  * @since 2023/12/05 
  */
 typedef sjme_jboolean (*sjme_debug_messageHandlerFunc)(sjme_lpcstr fullMessage,

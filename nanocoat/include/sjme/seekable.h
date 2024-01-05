@@ -100,7 +100,7 @@ typedef enum sjme_seekable_unlockAction
 
 /**
  * Provides an input stream to read data from a seekable, note that
- * unlike @ref sjme_seekable_regionLockAsInputStream there is no locking
+ * unlike @c sjme_seekable_regionLockAsInputStream there is no locking
  * involved and as such there may be a performance penalty or otherwise.
  *
  * @param seekable The seekable to access.
@@ -172,7 +172,7 @@ sjme_errorCode sjme_seekable_regionLock(
 	sjme_attrInPositive sjme_jint length);
 
 /**
- * Similar to @ref sjme_seekable_regionLock except that instead of returning a
+ * Similar to @c sjme_seekable_regionLock except that instead of returning a
  * lock it returns a stream.
  *
  * @param seekable The seekable to lock within.

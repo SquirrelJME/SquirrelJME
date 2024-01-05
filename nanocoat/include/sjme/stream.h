@@ -160,7 +160,7 @@ struct sjme_stream_inputCore
  *
  * @param stream The stream to read from.
  * @param outAvail The number of bytes which are available.
- * @return On any resultant error or @ref NULL .
+ * @return On any resultant error or @c NULL .
  * @since 2023/12/31
  */
 sjme_errorCode sjme_stream_inputAvailable(

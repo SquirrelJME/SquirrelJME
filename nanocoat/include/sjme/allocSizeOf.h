@@ -34,7 +34,7 @@ typedef enum sjme_alloc_sizeOfId
 	/** Unknown. */
 	SJME_ALLOC_SIZEOF_UNKNOWN = 0,
 
-	/** @ref sjme_rom_suiteFunctions . */
+	/** @c sjme_rom_suiteFunctions . */
 	SJME_ALLOC_SIZEOF_ROM_SUITE_FUNCTIONS = 1,
 
 	/** Reserved pool size. */

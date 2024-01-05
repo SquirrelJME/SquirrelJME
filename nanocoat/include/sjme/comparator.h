@@ -79,29 +79,29 @@ typedef sjme_jint (*sjme_comparator)(const void* a, const void* b,
 		return (sjme_jint)(*((const type*)b) - *((const type*)a)); \
 	}
 
-/** Generic @ref sjme_jbyte comparator. */
+/** Generic @c sjme_jbyte comparator. */
 SJME_COMPARATOR_GENERIC(sjme_jbyte, 0)
 
-/** Generic @ref sjme_jubyte comparator. */
+/** Generic @c sjme_jubyte comparator. */
 SJME_COMPARATOR_GENERIC(sjme_jubyte, 0)
 
-/** Generic @ref sjme_jshort comparator. */
+/** Generic @c sjme_jshort comparator. */
 SJME_COMPARATOR_GENERIC(sjme_jshort, 0)
 
-/** Generic @ref sjme_jchar comparator. */
+/** Generic @c sjme_jchar comparator. */
 SJME_COMPARATOR_GENERIC(sjme_jchar, 0)
 
-/** Generic @ref sjme_jint comparator. */
+/** Generic @c sjme_jint comparator. */
 SJME_COMPARATOR_GENERIC(sjme_jint, 0)
 
-/** Generic @ref sjme_juint comparator. */
+/** Generic @c sjme_juint comparator. */
 SJME_COMPARATOR_GENERIC(sjme_juint, 0)
 
-/** Generic @ref sjme_cchar comparator. */
+/** Generic @c sjme_cchar comparator. */
 SJME_COMPARATOR_GENERIC(sjme_cchar, 0)
 
 /**
- * Compares two @ref sjme_lpcstr .
+ * Compares two @c sjme_lpcstr .
  *
  * @param a The first item.
  * @param b The second item.
@@ -113,7 +113,7 @@ sjme_jint SJME_COMPARATOR(sjme_lpcstr, 0)(const void* a, const void* b,
 	int elementSize);
 
 /**
- * Compares two @ref sjme_lpcstr without regards to case.
+ * Compares two @c sjme_lpcstr without regards to case.
  *
  * @param a The first item.
  * @param b The second item.

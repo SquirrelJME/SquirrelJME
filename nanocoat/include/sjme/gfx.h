@@ -31,7 +31,7 @@ extern "C" {
 
 /**
  * Frame buffer related storage and information within SquirrelJME, this must
- * be compatible with @ref PencilShelf in SquirrelJME.
+ * be compatible with @c PencilShelf in SquirrelJME.
  * 
  * @since 2023/11/24
  */
@@ -45,43 +45,43 @@ typedef struct sjme_gfx_framebuffer sjme_gfx_framebuffer;
 typedef struct sjme_gfx_graphics sjme_gfx_graphics;
 
 /**
- * The pixel format used for graphics, matches @ref UIPixelFormat.
+ * The pixel format used for graphics, matches @c UIPixelFormat.
  * 
  * @since 2023/11/25
  */
 typedef enum sjme_gfx_pixelFormat
 {
-	/** 32-bit RGBA (@ref uint32_t ) [Java ME Standard]. */
+	/** 32-bit RGBA (@c uint32_t ) [Java ME Standard]. */
 	SJME_GFX_PIXEL_FORMAT_INT_RGBA8888 = 0,
 	
-	/** 32-bit RGB (@ref uint32_t ) [Java ME Standard]. */
+	/** 32-bit RGB (@c uint32_t ) [Java ME Standard]. */
 	SJME_GFX_PIXEL_FORMAT_INT_RGB888 = 1,
 	
-	/** 16-bit RGBA4444. (@ref uint16_t ) [Java ME Standard]. */
+	/** 16-bit RGBA4444. (@c uint16_t ) [Java ME Standard]. */
 	SJME_GFX_PIXEL_FORMAT_SHORT_RGBA4444 = 2,
 	
-	/** 16-bit RGB565. (@ref uint16_t ) [Java ME Standard]. */
+	/** 16-bit RGB565. (@c uint16_t ) [Java ME Standard]. */
 	SJME_GFX_PIXEL_FORMAT_SHORT_RGB565 = 3,
 	
-	/** 16-bit RGB555. (@ref uint16_t ). */
+	/** 16-bit RGB555. (@c uint16_t ). */
 	SJME_GFX_PIXEL_FORMAT_SHORT_RGB555 = 4,
 	
-	/** 16-bit ABGR1555. (@ref uint16_t ) [PlayStation 2]. */
+	/** 16-bit ABGR1555. (@c uint16_t ) [PlayStation 2]. */
 	SJME_GFX_PIXEL_FORMAT_SHORT_ABGR1555 = 5,
 	
-	/** 65536 Colors (@ref uint16_t ). */
+	/** 65536 Colors (@c uint16_t ). */
 	SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536 = 6,
 	
-	/** 256 Colors (@ref uint8_t ). */
+	/** 256 Colors (@c uint8_t ). */
 	SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256 = 7,
 	
-	/** Packed 16 colors (4-bit). (packed @ref uint8_t ) */
+	/** Packed 16 colors (4-bit). (packed @c uint8_t ) */
 	SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4 = 8,
 	
-	/** Packed 4 Colors (2-bit). (packed @ref uint8_t ) */
+	/** Packed 4 Colors (2-bit). (packed @c uint8_t ) */
 	SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2 = 9,
 	
-	/** Packed 2 colors (1-bit). (packed @ref uint8_t ) */
+	/** Packed 2 colors (1-bit). (packed @c uint8_t ) */
 	SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1 = 10,
 	
 	/** The number of pixel formats. */
@@ -93,19 +93,19 @@ typedef enum sjme_gfx_pixelFormat
  * 
  * @param framebuffer The framebuffer to get the graphics from.
  * @param inOutGraphics The output graphics to initialize into.
- * @param pixelFormat The @ref sjme_gfx_pixelFormat used for the draw.
+ * @param pixelFormat The @c sjme_gfx_pixelFormat used for the draw.
  * @param bufferWidth The buffer width, this is the scanline width of the
  * buffer.
  * @param bufferHeight The buffer height.
  * @param buffer The target buffer to draw to, this is cast to the correct
  * buffer format.
  * @param offset The offset to the start of the buffer.
- * @param palette The color palette, may be @ref NULL.
+ * @param palette The color palette, may be @c NULL.
  * @param surfaceX Starting surface X coordinate.
  * @param surfaceY Starting surface Y coordinate.
  * @param surfaceWidth Surface width.
  * @param surfaceHeight Surface height.
- * @return Returns @ref SJME_JNI_TRUE on success.
+ * @return Returns @c SJME_JNI_TRUE on success.
  * @since 2023/11/24
  */
 typedef sjme_jboolean (*sjme_gfx_getGraphics)(
@@ -148,7 +148,7 @@ struct sjme_gfx_graphics
 
 struct sjme_gfx_framebuffer
 {
-	/** The pointer to the framebuffer data, may be @ref NULL if opaque. */
+	/** The pointer to the framebuffer data, may be @c NULL if opaque. */
 	void* pixels;
 	
 	/** The width of the framebuffer in pixels. */

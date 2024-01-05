@@ -79,7 +79,7 @@ sjme_errorCode sjme_nvm_fieldPut(
  *
  * @param frame The frame this is collecting in.
  * @param instance The instance to be garbage collected.
- * @return Returns @ref SJME_JNI_TRUE on success.
+ * @return Returns @c SJME_JNI_TRUE on success.
  * @since 2023/11/17
  */
 sjme_errorCode sjme_nvm_gcObject(
@@ -272,7 +272,7 @@ sjme_errorCode sjme_nvm_throwExecute(
  *
  * @param inThread The thread to get the top frame from.
  * @param outFrame The top most frame.
- * @return Returns @ref SJME_JNI_TRUE on success where the thread is valid and it
+ * @return Returns @c SJME_JNI_TRUE on success where the thread is valid and it
  * has at least one frame.
  * @since 2023/11/11
  */
@@ -286,7 +286,7 @@ sjme_errorCode sjme_nvm_topFrame(
  *
  * @param state The state to tick, @c -1 means to tick forever.
  * @param maxTics The number of ticks to execute before returning.
- * @return Returns @ref SJME_JNI_TRUE if the machine is still running.
+ * @return Returns @c SJME_JNI_TRUE if the machine is still running.
  * @since 2023/07/27
  */
 sjme_errorCode sjme_nvm_tick(sjme_attrInNotNull sjme_nvm_state* state,

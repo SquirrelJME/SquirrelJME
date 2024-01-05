@@ -145,7 +145,7 @@ struct sjme_alloc_pool
 	sizeof(sjme_jubyte)))
 
 /**
- * Allocates a pool that is based on @ref malloc() .
+ * Allocates a pool that is based on @c malloc() .
  * 
  * @param outPool The resultant pool. 
  * @param size The requested pool size.
@@ -175,8 +175,8 @@ sjme_errorCode sjme_alloc_poolInitStatic(
  * free and used spaces.
  *
  * @param pool The pool to get the information of.
- * @param outTotal The total space of the pool, will be @ref outReserved plus
- * the value of @ref outUsable .
+ * @param outTotal The total space of the pool, will be @c outReserved plus
+ * the value of @c outUsable .
  * @param outReserved The total reserved space within the pool.
  * @param outUsable The total usable space within the pool.
  * @return Any error or otherwise success.
@@ -222,7 +222,7 @@ sjme_errorCode sjme_alloc_copy(
  * Frees memory.
  * 
  * @param addr The memory to free. 
- * @return Returns @ref SJME_JNI_TRUE on success.
+ * @return Returns @c SJME_JNI_TRUE on success.
  * @since 2023/11/19
  */
 sjme_errorCode sjme_alloc_free(

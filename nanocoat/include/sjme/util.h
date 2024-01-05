@@ -53,8 +53,8 @@ typedef sjme_jint (*sjme_tree_findHash)(void* what);
  * 
  * @param tree The tree to search in.
  * @param what What to being searched for in the tree.
- * @param hash The hash generated from @ref sjme_tree_findHash .
- * @param withIndex Compare @ref hash and @ref what against the given tree.
+ * @param hash The hash generated from @c sjme_tree_findHash .
+ * @param withIndex Compare @c hash and @c what against the given tree.
  * @return A negative value if lower, zero if equal, or a positive value if
  * greater.
  * @since 2023/07/26
@@ -74,7 +74,7 @@ typedef struct sjme_random
 } sjme_random;
 
 /**
- * Tree finding functions, used with @ref sjme_tree_find to determine how to
+ * Tree finding functions, used with @c sjme_tree_find to determine how to
  * search through a given tree.
  * 
  * @since 2023/07/26
@@ -97,7 +97,7 @@ typedef struct sjme_tree_findFunc
  * @param outRandom The random state to initialize. 
  * @param seedHi The high seed value.
  * @param seedLo The low seed value.
- * @return Returns @ref SJME_JNI_TRUE on success.
+ * @return Returns @c SJME_JNI_TRUE on success.
  * @since 2023/12/02
  */
 sjme_errorCode sjme_randomInit(
@@ -110,7 +110,7 @@ sjme_errorCode sjme_randomInit(
  * 
  * @param outRandom The random state to initialize. 
  * @param seed The seed value.
- * @return Returns @ref SJME_JNI_TRUE on success.
+ * @return Returns @c SJME_JNI_TRUE on success.
  * @since 2023/12/02
  */
 sjme_errorCode sjme_randomInitL(
@@ -122,7 +122,7 @@ sjme_errorCode sjme_randomInitL(
  * 
  * @param random The random state.
  * @param outValue The output value.
- * @return Returns @ref SJME_JNI_TRUE on success.
+ * @return Returns @c SJME_JNI_TRUE on success.
  * @since 2023/12/02
  */
 sjme_errorCode sjme_randomNextInt(
@@ -135,7 +135,7 @@ sjme_errorCode sjme_randomNextInt(
  * @param random The random state.
  * @param outValue The output value.
  * @param maxValue The maximum exclusive value.
- * @return Returns @ref SJME_JNI_TRUE on success.
+ * @return Returns @c SJME_JNI_TRUE on success.
  * @since 2023/12/02
  */
 sjme_errorCode sjme_randomNextIntMax(
@@ -166,7 +166,7 @@ sjme_jint sjme_string_charAt(sjme_lpcstr string, sjme_jint index);
 sjme_jint sjme_string_decodeChar(sjme_lpcstr at, sjme_lpcstr* stringP);
 
 /**
- * Hashes the given string in accordance to @ref String::hashCode() .
+ * Hashes the given string in accordance to @c String::hashCode() .
  * 
  * @param string The string to hash.
  * @return The hashcode of the given string.
@@ -175,7 +175,7 @@ sjme_jint sjme_string_decodeChar(sjme_lpcstr at, sjme_lpcstr* stringP);
 sjme_jint sjme_string_hash(sjme_lpcstr string);
 
 /**
- * Returns the length of the string in accordance to @ref String::length() .
+ * Returns the length of the string in accordance to @c String::length() .
  * 
  * @param string The string to get the length of.
  * @return The string length or @c -1 if it is not valid.
