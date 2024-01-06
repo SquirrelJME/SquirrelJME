@@ -28,6 +28,17 @@ public class DefaultJarPackageShelf
 	 * @since 2024/01/06
 	 */
 	@Override
+	public boolean equals(JarPackageBracket __a, JarPackageBracket __b)
+		throws MLECallError
+	{
+		return JarPackageShelf.equals(__a, __b);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/01/06
+	 */
+	@Override
 	public JarPackageBracket[] libraries()
 	{
 		return JarPackageShelf.libraries();

@@ -50,7 +50,7 @@ public abstract class MIDlet
 	/**
 	 * Signals that the MIDlet is in the destruction state.
 	 *
-	 * @param __uc Is is unconditional?
+	 * @param __uc Is this unconditional?
 	 * @throws MIDletStateChangeException If the destruction might stop.
 	 * @since 2020/02/29
 	 */

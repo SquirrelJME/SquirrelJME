@@ -170,8 +170,8 @@ public final class SuiteScanner
 		// Finalize suite list
 		synchronized (result)
 		{
-			return new AvailableSuites(libs, result
-				.<Application>toArray(new Application[result.size()]));
+			return new AvailableSuites(this.shelf, libs,
+				result.<Application>toArray(new Application[result.size()]));
 		}
 	}
 	

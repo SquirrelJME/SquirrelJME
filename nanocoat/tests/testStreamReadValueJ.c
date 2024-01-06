@@ -36,7 +36,7 @@ static const sjme_jubyte testData[DATA_LEN] =
 SJME_TEST_DECLARE(testStreamReadValueJ)
 {
 	sjme_jvalue value;
-	
+
 	/* dos.writeBoolean(false); */
 	/* dos.writeBoolean(true); */
 	/* dos.writeShort(1234); */

@@ -11,6 +11,7 @@ package cc.squirreljme.emulator.vm;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -111,8 +112,14 @@ public final class ArraySuiteManager
 			throw new NullPointerException("NARG");
 		
 		for (VMClassLibrary lib : this._libraries)
-			if (__s.equals(lib.name()))
+		{
+			// There may be a path
+			Path path = lib.path();
+			
+			if (__s.equals(lib.name()) ||
+				(path != null && __s.equals(path.toString())))
 				return lib;
+		}
 		
 		return null;
 	}

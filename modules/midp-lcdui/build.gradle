@@ -43,6 +43,10 @@ squirreljme
 	// Buggy when these are optimized
 	proGuardOptions += ["-keep,includecode", "class",
 		"javax.microedition.lcdui.__NotifyShow__"]
+	proGuardOptions += ["-keep,includecode",
+		"class", "cc.squirreljme.runtime.lcdui.mle.PencilGraphics", "{",
+			"<methods>", ";",
+		"}"]
 	proGuardOptions += ["-keepclassmembers,includecode",
 		"class", "javax.microedition.lcdui.Displayable", "{",
 			"void", "__showNotify", "(",

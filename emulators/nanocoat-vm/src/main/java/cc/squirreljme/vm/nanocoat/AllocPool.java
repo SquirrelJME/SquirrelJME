@@ -184,8 +184,7 @@ public final class AllocPool
 	 * @since 2023/12/08
 	 */
 	private static native long __poolMalloc(
-		@Range(from = 1, to = Integer.MAX_VALUE) int __size,
-		@NotNull AllocPool __this)
+		int __size, AllocPool __this)
 		throws VMException;
 	
 	/**

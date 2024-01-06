@@ -12,6 +12,7 @@ package cc.squirreljme.jvm.launch;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.InputStream;
 
 /**
@@ -22,6 +23,19 @@ import java.io.InputStream;
  */
 public interface VirtualJarPackageShelf
 {
+	/**
+	 * As {@link JarPackageShelf#equals(JarPackageBracket, JarPackageBracket)}.
+	 * 
+	 * @param __a The first JAR.
+	 * @param __b The second JAR.
+	 * @return If these are equal or not.
+	 * @throws MLECallError If either argument is {@code null}.
+	 * @since 2024/01/06
+	 */
+	boolean equals(
+		JarPackageBracket __a, JarPackageBracket __b)
+		throws MLECallError;
+	
 	/**
 	 * As {@link JarPackageShelf#libraries()}.
 	 * 

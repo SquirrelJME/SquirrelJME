@@ -61,7 +61,8 @@ public final class EntryPoint
 		
 		// This may include an absolute path, however that can be stripped off
 		this.imageResource = (__imgRc == null ? null :
-			(__imgRc.startsWith("/") ? __imgRc.substring(1) : __imgRc));
+			(__imgRc.startsWith("/") ? __imgRc.substring(1) :
+				__imgRc));
 	}
 	
 	/**

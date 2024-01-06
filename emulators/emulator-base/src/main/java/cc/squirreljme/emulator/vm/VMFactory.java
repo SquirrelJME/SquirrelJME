@@ -11,6 +11,11 @@ package cc.squirreljme.emulator.vm;
 
 import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 import cc.squirreljme.jdwp.JDWPFactory;
+import cc.squirreljme.jvm.launch.Application;
+import cc.squirreljme.jvm.launch.AvailableSuites;
+import cc.squirreljme.jvm.launch.SuiteScanner;
+import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
+import cc.squirreljme.jvm.suite.EntryPoint;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.DataContainerLibrary;
 import cc.squirreljme.vm.JarClassLibrary;
@@ -167,10 +172,12 @@ public abstract class VMFactory
 		// Was the -jar switch used?
 		boolean didJar = false;
 		String rawJarPath = null;
+		String rawJarEntry = null;
 		
 		// Command line format is:
 		// -Xemulator:(vm)
 		// -Xsnapshot:(path-to-nps)
+		// -Xentry:id
 		// -Xlibraries:(class:path:...)
 		// -Xjdwp:[hostname]:port
 		// -Xthread:(single|coop|multi|smt)
@@ -254,6 +261,12 @@ public abstract class VMFactory
 					VMFactory.__addPaths(suiteClasspath, entry);
 			}
 			
+			// Jar entry point selection
+			else if (item.equals("-Xentry:"))
+			{
+				rawJarEntry = item.substring("-Xentry:".length());
+			}
+			
 			// Direct Jar launch
 			else if (item.equals("-jar"))
 			{
@@ -279,7 +292,17 @@ public abstract class VMFactory
 		}
 		
 		// Main program arguments
-		Collection<String> mainArgs = new LinkedList<>();
+		List<String> mainArgs = new LinkedList<>();
+		
+		// Default built in libraries, if available?
+		if (metaManifest != null)
+		{
+			String defLib = metaManifest.getMainAttributes().getValue(
+				VMFactory.STANDALONE_LIBRARY);
+			if (defLib != null && !defLib.isEmpty())
+				for (String entry : VMFactory.__unSeparateClassPath(defLib))
+					VMFactory.__addPaths(libraries, entry);
+		}
 		
 		// Did not do -jar, so do normal command line parse
 		String mainClass;
@@ -305,14 +328,6 @@ public abstract class VMFactory
 				if (defCp != null && !defCp.isEmpty())
 					for (String entry : VMFactory.__unSeparateClassPath(defCp))
 						VMFactory.__addPaths(suiteClasspath, entry);
-				
-				// Default library for what is available
-				String defLib = metaManifest.getMainAttributes().getValue(
-					VMFactory.STANDALONE_LIBRARY);
-				if (defLib != null && !defLib.isEmpty())
-					for (String entry : VMFactory.__unSeparateClassPath(
-						defLib))
-						VMFactory.__addPaths(libraries, entry);
 				
 				// Default parameter?
 				String defParam = metaManifest.getMainAttributes().getValue(
@@ -351,6 +366,9 @@ public abstract class VMFactory
 					VMFactory.class, prefix);
 		}
 		
+		// Found Jar library?
+		VMClassLibrary jarLib = null;
+		
 		// Determine any suites that are available in the suite library
 		Map<String, VMClassLibrary> suites = new LinkedHashMap<>();
 		for (String library : libraries)
@@ -386,8 +404,15 @@ public abstract class VMFactory
 			
 			// Place in the class library, but make sure the name matches
 			// the normalized name of the JAR
-			suites.put(normalName,
-				new NameOverrideClassLibrary(place, normalName));
+			VMClassLibrary target =
+				new NameOverrideClassLibrary(place, normalName);
+			suites.put(normalName, target);
+			
+			// Is this a Jar we are launching?
+			if (rawJarPath != null)
+				if (rawJarPath.equals(normalName) ||
+					rawJarPath.equals(library))
+					jarLib = target;
 		}
 		
 		// Go through the class path and normalize the names so that it finds
@@ -401,7 +426,92 @@ public abstract class VMFactory
 		// for the -jar switch
 		if (didJar)
 		{
-			throw Debugging.todo("-jar not yet supported.");
+			// Initialize fake shelf
+			FakeJarPackageShelf fakeShelf = new FakeJarPackageShelf(suites);
+			
+			// No original launching Jar found?
+			if (jarLib == null)
+				throw new IllegalArgumentException(
+					"Could not find the original Jar?");
+			
+			// Map to a fake jar
+			JarPackageBracket fakeJar = new FakeJarPackageBracket(jarLib);
+			
+			// Setup suite scanner to use our fake suite list and combined
+			// libraries accordingly, scan all suites to get available
+			// applications we can potentially launch
+			SuiteScanner scanner = new SuiteScanner(fakeShelf);
+			AvailableSuites available = scanner.scanSuites();
+			
+			// Find applications for our Jar
+			Application[] apps = available.findApplications(fakeJar);
+			if (apps == null || apps.length == 0)
+				throw new IllegalArgumentException("Found no applications " +
+					"within jar: " + rawJarPath);
+			
+			// Debug note them
+			for (int i = 0, n = apps.length; i < n; i++)
+				Debugging.debugNote("Application %d: %s",
+					i, apps[i].entryPoint());
+			
+			// Which index are we launching?
+			int launchIndex;
+			if (rawJarEntry == null)
+				launchIndex = 0;
+			else
+			{
+				// Mappable to integer?
+				try
+				{
+					launchIndex = Integer.parseInt(rawJarEntry);
+				}
+				catch (NumberFormatException ignored)
+				{
+					launchIndex = 0;
+					for (int i = 0, n = apps.length; i < n; i++)
+					{
+						Application app = apps[i];
+						
+						if (rawJarEntry.equals(
+							app.entryPoint().name()) || rawJarEntry.equals(
+							app.entryPoint().entryPoint()))
+						{
+							launchIndex = i;
+							break;
+						}
+					}
+				}
+			}
+			
+			// Fill in launch information accordingly
+			Application app = apps[launchIndex];
+			EntryPoint appEntry = app.entryPoint();
+			
+			// There might need to be a helper for this
+			mainClass = app.loaderEntryClass();
+			if (mainClass == null)
+				mainClass = appEntry.entryPoint();
+			
+			// Do we need special loader arguments to pass before this so
+			// it can correctly launch?
+			String[] loaderArgs = app.loaderEntryArgs();
+			if (loaderArgs != null && loaderArgs.length > 0)
+				mainArgs.addAll(0, Arrays.asList(loaderArgs));
+			
+			// Need to use the classpath to run the jar with
+			classpath.clear();
+			for (JarPackageBracket jar : app.classPath())
+			{
+				// Get the original path
+				String path = fakeShelf.libraryPath(jar);
+				
+				// Debug
+				Debugging.debugNote("Adding into classpath: %s",
+					path);
+				
+				// Add it
+				classpath.add(path);
+			}
 		}
 		
 		// Run the VM, but always make sure we can
