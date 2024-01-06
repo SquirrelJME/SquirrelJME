@@ -139,7 +139,7 @@ public enum ApplicationParser
 			if (binarySto != null)
 				extraSysProps.put(
 					IModeApplication.SEED_SCRATCHPAD_PREFIX + ".0",
-					JarPackageShelf.libraryPath(binarySto));
+					__state.libraryPath(binarySto));
 			
 			// Load the ADF/JAM descriptor that describes this application
 			Map<String, String> adfProps = new LinkedHashMap<>();

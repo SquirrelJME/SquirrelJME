@@ -27,6 +27,9 @@ import java.util.Map;
  */
 public final class SuiteScanner
 {
+	/** The shelf to access. */
+	protected final VirtualJarPackageShelf shelf;
+	
 	/**
 	 * Initializes the base suite scanner.
 	 * 
@@ -34,6 +37,23 @@ public final class SuiteScanner
 	 */
 	public SuiteScanner()
 	{
+		this(new DefaultJarPackageShelf());
+	}
+	
+	/**
+	 * Initializes the suite scanner.
+	 *
+	 * @param __shelf The shelf to initialize from.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/06
+	 */
+	public SuiteScanner(VirtualJarPackageShelf __shelf)
+		throws NullPointerException
+	{
+		if (__shelf == null)
+			throw new NullPointerException("NARG");
+		
+		this.shelf = __shelf;
 	}
 	
 	/**
@@ -60,7 +80,7 @@ public final class SuiteScanner
 	public AvailableSuites scanSuites(SuiteScanListener __listener)
 	{
 		// Get all the available libraries
-		JarPackageBracket[] jars = JarPackageShelf.libraries();
+		JarPackageBracket[] jars = this.shelf.libraries();
 		int numJars = jars.length;
 		
 		// Load the names of all JARs and map to brackets, this is later used
@@ -70,7 +90,7 @@ public final class SuiteScanner
 		{
 			for (JarPackageBracket jar : jars)
 			{
-				String name = JarPackageShelf.libraryPath(jar);
+				String name = this.shelf.libraryPath(jar);
 				if (name != null)
 					nameToJar.put(name, jar);
 			}
@@ -191,7 +211,7 @@ public final class SuiteScanner
 			}
 			
 			// Ignore non-JARs
-			String libPath = JarPackageShelf.libraryPath(jar);
+			String libPath = this.shelf.libraryPath(jar);
 			if (!libPath.endsWith(".jar") && !libPath.endsWith(".JAR") &&
 				!libPath.endsWith(".kjx") && !libPath.endsWith(".KJX"))
 				continue;
@@ -202,7 +222,7 @@ public final class SuiteScanner
 			// Setup parser state
 			ApplicationParserState state = new ApplicationParserState(
 				__listener, __numJars, __libs, __nameToJar, __result,
-				accurateJarIndex, jar);
+				accurateJarIndex, jar, this.shelf);
 			
 			// Scan for all the application types accordingly
 			for (ApplicationParser parser : ApplicationParser.values())

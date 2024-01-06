@@ -36,6 +36,9 @@ public final class ApplicationParserState
 	/** The number of available jars. */
 	protected final int numJars;
 	
+	/** The shelf to use. */
+	protected final VirtualJarPackageShelf shelf;
+	
 	/** Library set. */
 	private final __Libraries__ _libs;
 	
@@ -55,16 +58,18 @@ public final class ApplicationParserState
 	 * @param __result The resultant output for applications.
 	 * @param __accurateJarIndex The accurate index of this specific Jar.
 	 * @param __jar The Jar being parsed.
+	 * @param __shelf The shelf to use.
 	 * @throws NullPointerException
 	 * @since 2024/01/06
 	 */
 	public ApplicationParserState(SuiteScanListener __listener, int __numJars,
 		__Libraries__ __libs, Map<String, JarPackageBracket> __nameToJar,
 		List<Application> __result,
-		int __accurateJarIndex, JarPackageBracket __jar)
+		int __accurateJarIndex, JarPackageBracket __jar,
+		VirtualJarPackageShelf __shelf)
 		throws NullPointerException
 	{
-		if (__libs == null || __nameToJar == null ||
+		if (__libs == null || __nameToJar == null || __shelf == null ||
 			__result == null || __jar == null)
 			throw new NullPointerException("NARG");
 		
@@ -72,6 +77,7 @@ public final class ApplicationParserState
 		this.listener = __listener;
 		this.jarDx = __accurateJarIndex;
 		this.numJars = __numJars;
+		this.shelf = __shelf;
 		this._nameToJar = __nameToJar;
 		this._libs = __libs;
 		this._result = __result;
@@ -149,14 +155,31 @@ public final class ApplicationParserState
 	}
 	
 	/**
-	 * Returns the library path of the given Jar.
+	 * Returns the library path of the current Jar.
 	 *
 	 * @return The resultant path.
 	 * @since 2024/01/06
 	 */
 	public String libraryPath()
 	{
-		return JarPackageShelf.libraryPath(this.jar);
+		return this.shelf.libraryPath(this.jar);
+	}
+	
+	/**
+	 * Returns the library path of the given Jar.
+	 *
+	 * @param __jar The Jar to get the path of.
+	 * @return The resultant path.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/06
+	 */
+	public String libraryPath(JarPackageBracket __jar)
+		throws NullPointerException
+	{
+		if (__jar == null)
+			throw new NullPointerException("NARG");
+		
+		return this.shelf.libraryPath(__jar);
 	}
 	
 	/**
@@ -231,7 +254,7 @@ public final class ApplicationParserState
 		if (__rcName == null)
 			throw new NullPointerException("NARG");
 		
-		return JarPackageShelf.openResource(
+		return this.shelf.openResource(
 			(__inJar == null ? this.jar : __inJar), __rcName);
 	}
 	
