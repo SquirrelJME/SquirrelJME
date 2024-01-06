@@ -431,11 +431,19 @@ typedef const void* sjme_pointer;
  */
 typedef struct sjme_jlong
 {
+#if defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)
+	/** Low value. */
+	sjme_juint lo;
+
+	/** High value. */
+	sjme_jint hi;
+#else
 	/** High value. */
 	sjme_jint hi;
 	
 	/** Low value. */
 	sjme_juint lo;
+#endif
 } sjme_jlong;
 
 /** Basic @c sjme_jlong type identifier. */
@@ -467,11 +475,19 @@ typedef struct sjme_jfloat
  */
 typedef struct sjme_jdouble
 {
+#if defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)
+	/** Low value. */
+	sjme_juint lo;
+
+	/** High value. */
+	sjme_juint hi;
+#else
 	/** High value. */
 	sjme_juint hi;
 	
 	/** Low value. */
 	sjme_juint lo;
+#endif
 } sjme_jdouble;
 
 /** Basic @c sjme_jdouble type identifier. */
@@ -586,6 +602,41 @@ typedef struct sjme_jobjectBase
  * @since 2023/07/25
  */
 typedef sjme_jobjectBase* sjme_jobject;
+
+/**
+ * Generic value union.
+ *
+ * @since 2024/01/05
+ */
+typedef union sjme_jvalue
+{
+	/** Boolean. */
+	sjme_jboolean z;
+
+	/** Byte. */
+	sjme_jbyte b;
+
+	/** Character. */
+	sjme_jchar c;
+
+	/** Short. */
+	sjme_jshort s;
+
+	/** Integer. */
+	sjme_jint i;
+
+	/** Long. */
+	sjme_jlong j;
+
+	/** Float. */
+	sjme_jfloat f;
+
+	/** Double. */
+	sjme_jdouble d;
+
+	/** Object/Reference. */
+	sjme_jobject l;
+} sjme_jvalue;
 
 /**
  * Class type.

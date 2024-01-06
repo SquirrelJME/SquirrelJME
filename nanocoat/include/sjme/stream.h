@@ -245,6 +245,21 @@ sjme_errorCode sjme_stream_inputReadSingle(
 	sjme_attrOutNotNull sjme_attrOutNegativeOnePositive sjme_jint* result);
 
 /**
+ * Reads a Java value from the given stream.
+ *
+ * @param stream The stream to read from.
+ * @param typeId The type to read.
+ * @param outValue The resultant value.
+ * @return On any error, if any.
+ * @since 2024/01/05
+ */
+sjme_errorCode sjme_stream_inputReadValueJ(
+	sjme_attrInNotNull sjme_stream_input stream,
+	sjme_attrInRange(0, SJME_NUM_BASIC_TYPE_IDS)
+		sjme_basicTypeId typeId,
+	sjme_attrOutNotNull sjme_jvalue* outValue);
+
+/**
  * Closes an output stream.
  *
  * @param stream The stream to close.

@@ -184,6 +184,87 @@ sjme_jint sjme_string_hash(sjme_lpcstr string);
 sjme_jint sjme_string_length(sjme_lpcstr string);
 
 /**
+ * Swaps an unsigned integer value.
+ *
+ * @param in The input value.
+ * @return The swapped value.
+ * @since 2024/01/05
+ */
+static sjme_inline sjme_attrArtificial sjme_juint sjme_swap_uint(
+	sjme_juint in)
+{
+	// 0xAABBCCDD -> 0xBBAADDCC
+	in = (((in & 0xFF00FF00) >> 8) | ((in & 0x00FF00FF) << 8));
+
+	// 0xBBAADDCC -> 0xDDCCBBAA
+	return (in >> 16) | (in << 16);
+}
+
+/**
+ * Swaps an integer value.
+ *
+ * @param in The input value.
+ * @return The swapped value.
+ * @since 2024/01/05
+ */
+static sjme_inline sjme_attrArtificial sjme_jint sjme_swap_int(
+	sjme_jint in)
+{
+	return (sjme_jint)sjme_swap_uint((sjme_juint)in);
+}
+
+/**
+ * Swaps a long value.
+ *
+ * @param in The input value.
+ * @return The swapped value.
+ * @since 2024/01/05
+ */
+static sjme_inline sjme_attrArtificial sjme_jlong sjme_swap_long(
+	sjme_jlong in)
+{
+	sjme_juint temp;
+
+	/* Swap high and low first. */
+	temp = in.hi;
+	in.hi = (sjme_jint)in.lo;
+	in.lo = temp;
+
+	/* Then finish swap each side. */
+	in.hi = sjme_swap_int(in.hi);
+	in.lo = sjme_swap_uint(in.lo);
+
+	/* Return the result. */
+	return in;
+}
+
+/**
+ * Swaps an unsigned short value.
+ *
+ * @param in The input value.
+ * @return The swapped value.
+ * @since 2024/01/05
+ */
+static sjme_inline sjme_attrArtificial sjme_jchar sjme_swap_ushort(
+	sjme_jchar in)
+{
+	return ((in >> 8) | (in << 8));
+}
+
+/**
+ * Swaps a short value.
+ *
+ * @param in The input value.
+ * @return The swapped value.
+ * @since 2024/01/05
+ */
+static sjme_inline sjme_attrArtificial sjme_jshort sjme_swap_short(
+	sjme_jshort in)
+{
+	return (sjme_jchar)sjme_swap_ushort((sjme_jchar)in);
+}
+
+/**
  * Locates an item within a tree.
  * 
  * @param tree The tree to search in.

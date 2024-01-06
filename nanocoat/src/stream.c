@@ -12,6 +12,7 @@
 #include "sjme/stream.h"
 #include "sjme/alloc.h"
 #include "sjme/debug.h"
+#include "sjme/util.h"
 
 /**
  * Contains the state for reading directly from memory.
@@ -290,6 +291,76 @@ sjme_errorCode sjme_stream_inputReadSingle(
 		*result = (single & 0xFF);
 		return SJME_ERROR_NONE;
 	}
+}
+
+sjme_errorCode sjme_stream_inputReadValueJ(
+	sjme_attrInNotNull sjme_stream_input stream,
+	sjme_attrInRange(0, SJME_NUM_BASIC_TYPE_IDS)
+		sjme_basicTypeId typeId,
+	sjme_attrOutNotNull sjme_jvalue* outValue)
+{
+	sjme_jint reqCount, readCount;
+	sjme_jvalue temp;
+	sjme_errorCode error;
+
+	if (stream == NULL || outValue == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (typeId < 0 || typeId >= SJME_NUM_BASIC_TYPE_IDS ||
+		typeId == SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE ||
+		typeId == SJME_JAVA_TYPE_ID_OBJECT)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* How many bytes do we need to read? */
+	switch (typeId)
+	{
+		case SJME_BASIC_TYPE_ID_BOOLEAN:
+		case SJME_BASIC_TYPE_ID_BYTE:
+			reqCount = 1;
+			break;
+
+		case SJME_BASIC_TYPE_ID_SHORT:
+		case SJME_BASIC_TYPE_ID_CHARACTER:
+			reqCount = 2;
+			break;
+
+		case SJME_BASIC_TYPE_ID_INTEGER:
+		case SJME_BASIC_TYPE_ID_FLOAT:
+			reqCount = 4;
+			break;
+
+		case SJME_BASIC_TYPE_ID_LONG:
+		case SJME_BASIC_TYPE_ID_DOUBLE:
+			reqCount = 8;
+			break;
+
+		default:
+			return SJME_ERROR_INVALID_ARGUMENT;
+	}
+
+	/* Read into temporary, so we do not alter memory just yet. */
+	memset(&temp, 0, sizeof(temp));
+	readCount = -2;
+	if (SJME_IS_ERROR(error = sjme_stream_inputRead(stream,
+		&readCount, &temp, reqCount)) || readCount != reqCount)
+		return SJME_DEFAULT_ERROR(error);
+
+#if defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)
+	/* Perform byte swap on the data. */
+	if (reqCount > 1)
+	{
+		if (reqCount == 2)
+			temp.s = sjme_swap_short(temp.s);
+		else if (reqCount == 4)
+			temp.i = sjme_swap_int(temp.i);
+		else
+			temp.j = sjme_swap_long(temp.j);
+	}
+#endif
+
+	/* Success! */
+	memmove(outValue, &temp, sizeof(temp));
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_stream_outputClose(
