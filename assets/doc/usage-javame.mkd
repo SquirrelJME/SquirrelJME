@@ -1,9 +1,0 @@
-# JavaME (Shaded) Usage
-
-***THIS DOCUMENTATION IS FOR A JAR WHICH RUNS ON EXISTING JAVA ME SYSTEMS,***
-***IT IS NOT A STANDALONE ROM TO RUN ON SUMMERCOAT/RATUFACOAT.***
-
-SquirrelJME's Shaded JavaME JAR requires a Java ME 8 virtual machine, this
-includes SquirrelJME itself. Installation into existing virtual machine is
-implementation dependent.
-

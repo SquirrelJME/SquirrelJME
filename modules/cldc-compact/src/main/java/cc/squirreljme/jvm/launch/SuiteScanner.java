@@ -97,7 +97,7 @@ public final class SuiteScanner
 		
 		// How many CPUs are available? This is so we can split the suite
 		// loading operations across multiple threads at once for faster
-		// scanning... On SpringCoat scans can take awhile so we want to
+		// scanning... On SpringCoat scans can take a while, so we want to
 		// make it as fast as we can...
 		int numThreads = Math.max(1,
 			(int)RuntimeShelf.vmStatistic(VMStatisticType.CPU_THREAD_COUNT));

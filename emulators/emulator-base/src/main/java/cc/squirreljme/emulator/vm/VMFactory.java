@@ -164,6 +164,10 @@ public abstract class VMFactory
 			e.printStackTrace();
 		}
 		
+		// Was the -jar switch used?
+		boolean didJar = false;
+		String rawJarPath = null;
+		
 		// Command line format is:
 		// -Xemulator:(vm)
 		// -Xsnapshot:(path-to-nps)
@@ -172,6 +176,7 @@ public abstract class VMFactory
 		// -Xthread:(single|coop|multi|smt)
 		// -Dsysprop=value
 		// -classpath (class:path:...)
+		// Optionally `-jar`
 		// Main-class
 		// Arguments...
 		Deque<String> queue = new LinkedList<>(Arrays.<String>asList(__args));
@@ -204,7 +209,8 @@ public abstract class VMFactory
 				
 				// Split hostname and port
 				jdwpHost = hostPort.substring(0, lastCol);
-				jdwpPort = Integer.parseInt(hostPort.substring(lastCol + 1));
+				jdwpPort = Integer.parseInt(
+					hostPort.substring(lastCol + 1));
 			}
 			
 			// Select a VM
@@ -241,11 +247,29 @@ public abstract class VMFactory
 				// Get argument attached to this
 				String strings = queue.pollFirst();
 				if (strings == null)
-					throw new NullPointerException("Classpath missing.");
+					throw new IllegalArgumentException("Classpath missing.");
 				
 				// Extract path elements
 				for (String entry : VMFactory.__unSeparateClassPath(strings))
 					VMFactory.__addPaths(suiteClasspath, entry);
+			}
+			
+			// Direct Jar launch
+			else if (item.equals("-jar"))
+			{
+				// Get Jar attached to this
+				String string = queue.pollFirst();
+				if (string == null)
+					throw new IllegalArgumentException(
+						"Jar argument missing.");
+				
+				// We use this Jar
+				rawJarPath = string;
+				
+				// We stop everything and just parse everything else as a Jar
+				// directly...
+				didJar = true;
+				break;
 			}
 			
 			// Unknown
@@ -257,38 +281,53 @@ public abstract class VMFactory
 		// Main program arguments
 		Collection<String> mainArgs = new LinkedList<>();
 		
-		// Main class is here
-		String mainClass = queue.pollFirst();
-		if (mainClass == null || mainClass.isEmpty())
+		// Did not do -jar, so do normal command line parse
+		String mainClass;
+		if (!didJar)
 		{
-			// Try from the manifest
-			if (metaManifest != null)
-				mainClass = metaManifest.getMainAttributes().getValue(
-					VMFactory.STANDALONE_MAIN_CLASS);
-			
-			// Still failed?
+			// Main class is here
+			mainClass = queue.pollFirst();
 			if (mainClass == null || mainClass.isEmpty())
-				throw new IllegalArgumentException("No main class specified.");
+			{
+				// Try from the manifest
+				if (metaManifest != null)
+					mainClass = metaManifest.getMainAttributes().getValue(
+						VMFactory.STANDALONE_MAIN_CLASS);
+				
+				// Still failed?
+				if (mainClass == null || mainClass.isEmpty())
+					throw new IllegalArgumentException(
+						"No main class specified.");
+				
+				// Default class path for launching
+				String defCp = metaManifest.getMainAttributes().getValue(
+					VMFactory.STANDALONE_CLASSPATH);
+				if (defCp != null && !defCp.isEmpty())
+					for (String entry : VMFactory.__unSeparateClassPath(defCp))
+						VMFactory.__addPaths(suiteClasspath, entry);
+				
+				// Default library for what is available
+				String defLib = metaManifest.getMainAttributes().getValue(
+					VMFactory.STANDALONE_LIBRARY);
+				if (defLib != null && !defLib.isEmpty())
+					for (String entry : VMFactory.__unSeparateClassPath(
+						defLib))
+						VMFactory.__addPaths(libraries, entry);
+				
+				// Default parameter?
+				String defParam = metaManifest.getMainAttributes().getValue(
+					VMFactory.STANDALONE_PARAMETER);
+				if (defParam != null && !defParam.isEmpty())
+					mainArgs.add(defParam);
+			}
+		}
+		else
+		{
+			// Make sure this exists in the library path
+			if (!libraries.contains(rawJarPath))
+				libraries.add(rawJarPath);
 			
-			// Default class path for launching
-			String defCp = metaManifest.getMainAttributes()
-				.getValue(VMFactory.STANDALONE_CLASSPATH);
-			if (defCp != null && !defCp.isEmpty())
-				for (String entry : VMFactory.__unSeparateClassPath(defCp))
-					VMFactory.__addPaths(suiteClasspath, entry);
-			
-			// Default library for what is available
-			String defLib = metaManifest.getMainAttributes()
-				.getValue(VMFactory.STANDALONE_LIBRARY);
-			if (defLib != null && !defLib.isEmpty())
-				for (String entry : VMFactory.__unSeparateClassPath(defLib))
-					VMFactory.__addPaths(libraries, entry);
-			
-			// Default parameter?
-			String defParam = metaManifest.getMainAttributes()
-				.getValue(VMFactory.STANDALONE_PARAMETER);
-			if (defParam != null && !defParam.isEmpty())
-				mainArgs.add(defParam);
+			mainClass = null;
 		}
 		
 		// Fill in the rest with the main argument calls
@@ -357,6 +396,13 @@ public abstract class VMFactory
 		for (String classItem : suiteClasspath)
 			classpath.add(VMFactory.__normalizeName(
 				Paths.get(classItem).getFileName().toString()));
+		
+		// Now that we loaded in all the libraries we can do the resolution
+		// for the -jar switch
+		if (didJar)
+		{
+			throw Debugging.todo("-jar not yet supported.");
+		}
 		
 		// Run the VM, but always make sure we can
 		int exitCode = -1;
