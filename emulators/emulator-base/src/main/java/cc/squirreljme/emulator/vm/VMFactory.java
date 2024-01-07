@@ -16,6 +16,7 @@ import cc.squirreljme.jvm.launch.AvailableSuites;
 import cc.squirreljme.jvm.launch.SuiteScanner;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.suite.EntryPoint;
+import cc.squirreljme.jvm.suite.SuiteUtils;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.DataContainerLibrary;
 import cc.squirreljme.vm.JarClassLibrary;
@@ -793,11 +794,7 @@ public abstract class VMFactory
 			throw new NullPointerException("NARG");
 		
 		// Not a known extension or normalized type
-		if (!(__name.endsWith(".jar") || __name.endsWith(".JAR") ||
-			__name.endsWith(".jad") || __name.endsWith(".JAD") ||
-			__name.endsWith(".jam") || __name.endsWith(".JAM") ||
-			__name.endsWith(".sqc") || __name.endsWith(".SQC") ||
-			__name.endsWith(".kjx") || __name.endsWith(".KJX")))
+		if (!SuiteUtils.isAny(__name))
 			return __name;
 		
 		// Get the base name of the JAR or SQC

@@ -16,6 +16,7 @@ import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.emulator.vm.VirtualMachine;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
+import cc.squirreljme.jvm.suite.SuiteUtils;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.vm.DirectoryClassLibrary;
@@ -300,8 +301,8 @@ public class HostedVirtualMachine
 		
 		// The target path of the output Jar, always end in JAR
 		Path resultPath = __tempJars.resolve(
-			((__libName.endsWith(".jar") || __libName.endsWith(".JAR")) ?
-				__libName : __libName + ".jar"));
+			((SuiteUtils.isAny(__libName) ?
+				__libName : __libName + ".jar")));
 		
 		// Extract library
 		Path temp = null;

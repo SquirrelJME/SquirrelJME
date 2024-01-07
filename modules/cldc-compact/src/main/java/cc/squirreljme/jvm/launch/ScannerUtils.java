@@ -36,17 +36,15 @@ public final class ScannerUtils
 	 */
 	public static String siblingByExt(String __jar, String __ext)
 	{
-		boolean lower = __jar.endsWith(".jar");
-		boolean upper = __jar.endsWith(".JAR");
+		// Get . and /, so we can determine how to handle the name
+		int lastDot = __jar.lastIndexOf('.');
+		int lastSlash = __jar.lastIndexOf('/');
 		
-		// Does not end with it? Just append it
-		if (!lower && !upper)
-			return __jar + __ext;
+		// Is there an actual extension?
+		if (lastDot >= 0 && lastDot > lastSlash)
+			return __jar.substring(0, lastDot) + __ext;
 		
-		// Remove old extension and just append the new one
-		String baseName = __jar.substring(0, __jar.length() - 4);
-		if (upper)
-			return baseName + __ext.toUpperCase();
-		return baseName + __ext;
+		// Just append it otherwise
+		return __jar + __ext;
 	}
 }

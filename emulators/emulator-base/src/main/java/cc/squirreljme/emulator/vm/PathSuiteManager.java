@@ -9,6 +9,7 @@
 
 package cc.squirreljme.emulator.vm;
 
+import cc.squirreljme.jvm.suite.SuiteUtils;
 import cc.squirreljme.vm.InMemoryClassLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.io.IOException;
@@ -78,10 +79,7 @@ public final class PathSuiteManager
 						continue;
 					
 					String fn = p.getFileName().toString();
-					if (fn.endsWith(".jar") || fn.endsWith(".JAR") ||
-						fn.endsWith(".jad") || fn.endsWith(".JAD") ||
-						fn.endsWith(".jam") || fn.endsWith(".JAM") ||
-						fn.endsWith(".kjx") || fn.endsWith(".KJX"))
+					if (SuiteUtils.isAny(fn))
 						rv.add(fn);
 				}
 			}

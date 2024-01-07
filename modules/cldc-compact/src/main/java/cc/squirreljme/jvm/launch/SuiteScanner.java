@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.constants.VMStatisticType;
+import cc.squirreljme.jvm.suite.SuiteUtils;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -212,8 +213,7 @@ public final class SuiteScanner
 			
 			// Ignore non-JARs
 			String libPath = this.shelf.libraryPath(jar);
-			if (!libPath.endsWith(".jar") && !libPath.endsWith(".JAR") &&
-				!libPath.endsWith(".kjx") && !libPath.endsWith(".KJX"))
+			if (!SuiteUtils.isJar(libPath))
 				continue;
 			
 			// Debug

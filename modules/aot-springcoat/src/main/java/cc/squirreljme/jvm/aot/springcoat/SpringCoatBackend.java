@@ -24,6 +24,7 @@ import cc.squirreljme.jvm.pack.constants.ClassInfoConstants;
 import cc.squirreljme.jvm.pack.constants.PackFlag;
 import cc.squirreljme.jvm.pack.constants.PackProperty;
 import cc.squirreljme.jvm.pack.constants.PackTocProperty;
+import cc.squirreljme.jvm.suite.SuiteUtils;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.vm.DataContainerLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
@@ -134,7 +135,7 @@ public class SpringCoatBackend
 					libName = libName.substring(lastSlash + 1);
 				
 				// If it does not end in Jar, make it so
-				if (!(libName.endsWith(".jar") || libName.endsWith(".JAR")))
+				if (!SuiteUtils.isJar(libName))
 					libName = libName + ".jar";
 				
 				// Store suite
