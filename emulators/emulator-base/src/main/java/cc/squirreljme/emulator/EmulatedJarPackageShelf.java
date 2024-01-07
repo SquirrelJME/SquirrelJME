@@ -88,7 +88,7 @@ public final class EmulatedJarPackageShelf
 			EmulatedTaskShelf.AVAILABLE_LIBRARIES);
 		if (paths != null)
 			rv = EmulatedJarPackageShelf.__loadPaths(paths);
-				else
+		else
 			rv = new JarPackageBracket[0];
 		
 		// Store cache for later usages

@@ -26,6 +26,29 @@ public final class SuiteUtils
 	}
 	
 	/**
+	 * Returns the base name of the given file name.
+	 *
+	 * @param __name The name to get the base name of.
+	 * @return The resultant base name.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/06
+	 */
+	public static String baseName(String __name)
+		throws NullPointerException
+	{
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		// Already the base name?
+		int lastSlash = __name.lastIndexOf('/');
+		if (lastSlash < 0)
+			return __name;
+		
+		// Otherwise place it down
+		return __name.substring(lastSlash + 1);
+	}
+	
+	/**
 	 * Is this a Jar or resource?
 	 *
 	 * @param __name The name to check.

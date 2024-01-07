@@ -9,6 +9,7 @@
 
 package cc.squirreljme.vm;
 
+import cc.squirreljme.jvm.suite.SuiteUtils;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.InputStream;
@@ -212,14 +213,11 @@ public class JarClassLibrary
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/06/13
 	 */
+	@Deprecated
 	public static boolean isJar(String __s)
 		throws NullPointerException
 	{
-		if (__s == null)
-			throw new NullPointerException("NARG");
-		
-		return __s.endsWith(".jar") || __s.endsWith(".JAR") ||
-			__s.endsWith(".kjx") || __s.endsWith(".KJX");
+		return SuiteUtils.isJar(__s);
 	}
 	
 	/**

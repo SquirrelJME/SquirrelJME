@@ -19,6 +19,7 @@ import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
 import cc.squirreljme.jvm.suite.SuiteUtils;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
+import cc.squirreljme.vm.DataContainerLibrary;
 import cc.squirreljme.vm.DirectoryClassLibrary;
 import cc.squirreljme.vm.InMemoryClassLibrary;
 import cc.squirreljme.vm.JarClassLibrary;
@@ -304,6 +305,9 @@ public class HostedVirtualMachine
 			((SuiteUtils.isAny(__libName) ?
 				__libName : __libName + ".jar")));
 		
+		// Buffer to use for copying data
+		byte[] tempBuf = new byte[1048576];
+		
 		// Extract library
 		Path temp = null;
 		try
@@ -314,30 +318,45 @@ public class HostedVirtualMachine
 			// Copy all the Zip entries accordingly
 			try (OutputStream out = Files.newOutputStream(temp,
 					StandardOpenOption.CREATE, StandardOpenOption.WRITE,
-					StandardOpenOption.TRUNCATE_EXISTING);
-				 ZipOutputStream zip = new ZipOutputStream(out))
+					StandardOpenOption.TRUNCATE_EXISTING))
 			{
-				// Copy all resource data
-				byte[] tempBuf = new byte[4096];
-				for (String rcName : __lib.listResources())
+				// Just a resource file?
+				String[] rcList = __lib.listResources();
+				if (rcList.length == 1 &&
+					DataContainerLibrary.RESOURCE_NAME.equals(rcList[0]))
 				{
-					// Setup ZIP entry
-					ZipEntry entry = new ZipEntry(rcName);
-					zip.putNextEntry(entry);
-					
-					// Write to it all
-					try (InputStream in = __lib.resourceAsStream(rcName))
+					try (InputStream in = __lib.resourceAsStream(rcList[0]))
 					{
-						StreamUtils.copy(in, zip, tempBuf);
+						StreamUtils.copy(in, out, tempBuf);
 					}
-					
-					// Finish it
-					zip.closeEntry();
 				}
-				
-				// Finish the Zip
-				zip.finish();
-				zip.flush();
+				else
+				{
+					try (ZipOutputStream zip = new ZipOutputStream(out))
+					{
+						// Copy all resource data
+						for (String rcName : rcList)
+						{
+							// Setup ZIP entry
+							ZipEntry entry = new ZipEntry(rcName);
+							zip.putNextEntry(entry);
+							
+							// Write to it all
+							try (InputStream in = __lib.resourceAsStream(
+								rcName))
+							{
+								StreamUtils.copy(in, zip, tempBuf);
+							}
+							
+							// Finish it
+							zip.closeEntry();
+						}
+						
+						// Finish the Zip
+						zip.finish();
+						zip.flush();
+					}
+				}
 			}
 			
 			// Replace the target file

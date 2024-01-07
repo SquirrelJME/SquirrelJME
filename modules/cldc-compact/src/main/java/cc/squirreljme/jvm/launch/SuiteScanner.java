@@ -93,7 +93,13 @@ public final class SuiteScanner
 			{
 				String name = this.shelf.libraryPath(jar);
 				if (name != null)
+				{
+					// Full path
 					nameToJar.put(name, jar);
+					
+					// Short path
+					nameToJar.put(SuiteUtils.baseName(name), jar);
+				}
 			}
 		}
 		

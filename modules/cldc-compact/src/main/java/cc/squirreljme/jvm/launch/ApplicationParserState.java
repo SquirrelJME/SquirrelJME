@@ -13,6 +13,8 @@ import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.suite.EntryPoint;
 import cc.squirreljme.jvm.suite.SuiteInfo;
+import cc.squirreljme.jvm.suite.SuiteUtils;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
@@ -130,7 +132,13 @@ public final class ApplicationParserState
 				JarPackageBracket maybe = nameToJar.get(
 					ScannerUtils.siblingByExt(__jarName, ext));
 				if (maybe != null)
-					return maybe;
+				{
+					// Try with short name instead
+					maybe = nameToJar.get(ScannerUtils.siblingByExt(
+						SuiteUtils.baseName(__jarName), ext));
+					if (maybe != null)
+						return maybe;
+				}
 			}
 		}
 		
@@ -162,7 +170,7 @@ public final class ApplicationParserState
 	 */
 	public String libraryPath()
 	{
-		return this.shelf.libraryPath(this.jar);
+		return this.libraryPath(this.jar);
 	}
 	
 	/**

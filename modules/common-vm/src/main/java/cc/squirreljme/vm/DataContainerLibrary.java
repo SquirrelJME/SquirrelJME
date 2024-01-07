@@ -9,6 +9,7 @@
 
 package cc.squirreljme.vm;
 
+import cc.squirreljme.jvm.launch.ApplicationParser;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,7 +28,7 @@ public class DataContainerLibrary
 {
 	/** Data resource name. */
 	public static final String RESOURCE_NAME =
-		"$DATA$";
+		ApplicationParser.DATA_RESOURCE;
 	
 	/** The path to the ROM. */
 	protected final Path path;

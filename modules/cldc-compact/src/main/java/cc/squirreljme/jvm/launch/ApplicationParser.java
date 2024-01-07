@@ -144,7 +144,7 @@ public enum ApplicationParser
 			// Load the ADF/JAM descriptor that describes this application
 			Map<String, String> adfProps = new LinkedHashMap<>();
 			try (InputStream jamIn = __state.openResource(jam,
-				ApplicationParser._DATA_RESOURCE))
+				ApplicationParser.DATA_RESOURCE))
 			{
 				// Missing? Cannot be an i-mode application
 				if (jamIn == null)
@@ -207,7 +207,7 @@ public enum ApplicationParser
 			// Decode the Binary ADF information
 			Map<String, String> adfProps = new LinkedHashMap<>();
 			try (InputStream binaryAdfIn = __state.openResource(
-				binaryAdf, ApplicationParser._DATA_RESOURCE))
+				binaryAdf, ApplicationParser.DATA_RESOURCE))
 			{
 				// Missing? Cannot be an i-mode application
 				if (binaryAdfIn == null)
@@ -258,7 +258,7 @@ public enum ApplicationParser
 	;
 	
 	/** Data resource name. */
-	static final String _DATA_RESOURCE =
+	public static final String DATA_RESOURCE =
 		"$DATA$";
 	
 	/**
