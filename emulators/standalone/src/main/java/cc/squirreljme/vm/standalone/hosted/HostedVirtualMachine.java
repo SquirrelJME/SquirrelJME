@@ -165,15 +165,13 @@ public class HostedVirtualMachine
 				else
 					actualName = lib.name();
 				
-				// Direct path usage
-				if (lib instanceof DirectoryClassLibrary ||
-					lib instanceof JarClassLibrary)
-					path = lib.path();
-				
-				// Anything else gets imploded into their own Jar on disk
-				else
-					path = HostedVirtualMachine.implodeJar(tempJars,
-						lib, actualName);
+				// Implode everything regardless of what the input is, if
+				// this is not done then extra libraries specified via
+				// -Xlibraries and used with for example i-mode software it
+				// will not be able to find the JAM because it technically
+				// is in the wrong location
+				path = HostedVirtualMachine.implodeJar(tempJars,
+					lib, actualName);
 				
 				// Map between the two
 				libPaths.add(path);

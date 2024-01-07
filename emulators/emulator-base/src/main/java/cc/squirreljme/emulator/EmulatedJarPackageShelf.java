@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.debug.ErrorCode;
 import cc.squirreljme.vm.DataContainerLibrary;
 import cc.squirreljme.vm.JarClassLibrary;
@@ -227,6 +228,10 @@ public final class EmulatedJarPackageShelf
 				vmLib = new JarClassLibrary(segPath);
 			else
 				vmLib = new DataContainerLibrary(segPath);
+			
+			// Debug
+			System.err.printf("Registered %s as a %s.%n",
+				segPath, vmLib.getClass().getName());
 			
 			// Wrap class library container
 			fill.add(new EmulatedJarPackageBracket(vmLib));
