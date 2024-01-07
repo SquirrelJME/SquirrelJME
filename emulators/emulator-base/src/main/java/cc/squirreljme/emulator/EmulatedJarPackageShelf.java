@@ -17,6 +17,7 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.ErrorCode;
 import cc.squirreljme.vm.DataContainerLibrary;
 import cc.squirreljme.vm.JarClassLibrary;
+import cc.squirreljme.vm.RawVMClassLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.io.File;
 import java.io.IOException;
@@ -265,26 +266,16 @@ public final class EmulatedJarPackageShelf
 		
 		// Determine the path to the JAR
 		EmulatedJarPackageBracket emul = (EmulatedJarPackageBracket)__jar;
-		Path path = emul.vmLib.path();
-		if (path == null)
-			throw new MLECallError("JAR is not physically backed.");
 		
-		// Seek through and find the data
-		try (InputStream in = Files.newInputStream(path,
-			StandardOpenOption.READ))
-		{
-			// Seek first, stop if EOF is hit
-			for (int at = 0; at < __jarOffset; at++)
-				if (in.read() < 0)
-					return -1;
-			
-			// Do a standard read here
-			return in.read(__b, __o, __l);
-		}
-		catch (IOException e)
-		{
-			throw new MLECallError("Could not raw read JAR.", e);
-		}
+		// We need to get the raw Jar itself
+		VMClassLibrary vmLib = emul.vmLib;
+		if (!(vmLib instanceof RawVMClassLibrary))
+			throw new MLECallError("JAR is not physically backed.");
+		RawVMClassLibrary rawLib = (RawVMClassLibrary)vmLib;
+		
+		// Read in the data
+		rawLib.rawData(__jarOffset, __b, __o, __l);
+		return __l;
 	}
 	
 	/**
@@ -306,21 +297,14 @@ public final class EmulatedJarPackageShelf
 		// Determine the path to the JAR
 		EmulatedJarPackageBracket emul = (EmulatedJarPackageBracket)__jar;
 		Path path = emul.vmLib.path();
-		if (path == null)
-			return -1;
 		
-		// Use the file size directly
-		try
-		{
-			return (int)Math.min(Integer.MAX_VALUE, Files.size(path));
-		}
+		// We need to get the raw Jar itself
+		VMClassLibrary vmLib = emul.vmLib;
+		if (!(vmLib instanceof RawVMClassLibrary))
+			throw new MLECallError("JAR is not physically backed.");
+		RawVMClassLibrary rawLib = (RawVMClassLibrary)vmLib;
 		
-		// Size is not valid?
-		catch (IOException e)
-		{
-			e.printStackTrace();
-			
-			return -1;
-		}
+		// Return the raw size
+		return rawLib.rawSize();
 	}
 }
