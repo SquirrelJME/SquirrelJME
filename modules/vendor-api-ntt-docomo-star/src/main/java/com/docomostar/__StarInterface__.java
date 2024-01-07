@@ -10,6 +10,7 @@
 package com.docomostar;
 
 import cc.squirreljme.jvm.launch.IModeApplication;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import cc.squirreljme.runtime.midlet.ApplicationInterface;
@@ -21,6 +22,7 @@ import java.util.Objects;
  *
  * @since 2022/02/28
  */
+@SquirrelJMEVendorApi
 final class __StarInterface__
 	implements ApplicationInterface<StarApplication>
 {
@@ -38,7 +40,8 @@ final class __StarInterface__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/02/28
 	 */
-	public __StarInterface__(String __mainClass, String... __args)
+	@SquirrelJMEVendorApi
+	__StarInterface__(String __mainClass, String... __args)
 		throws NullPointerException
 	{
 		if (__mainClass == null)
@@ -53,6 +56,7 @@ final class __StarInterface__
 	 * @since 2022/02/28
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void destroy(StarApplication __instance, Throwable __thrown)
 		throws NullPointerException, Throwable
 	{
@@ -70,6 +74,7 @@ final class __StarInterface__
 	 * @since 2022/02/28
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public StarApplication newInstance()
 		throws Throwable
 	{
@@ -134,6 +139,7 @@ final class __StarInterface__
 	 * @since 2022/02/28
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void startApp(StarApplication __instance)
 		throws NullPointerException, Throwable
 	{
@@ -149,6 +155,7 @@ final class __StarInterface__
 	 * @since 2022/07/21
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public ApplicationType type()
 	{
 		return ApplicationType.NTT_DOCOMO_STAR;
