@@ -60,7 +60,8 @@ public class ScratchPadConnectionFactory
 			// No parameters to the URI?
 			int semi = __part.indexOf(';');
 			if (semi < 0)
-				wantPad = Integer.parseInt(__part.substring(3), 10);
+				wantPad = Integer.parseInt(__part.substring(3),
+					10);
 				
 				// Parameters are given
 			else
@@ -71,7 +72,8 @@ public class ScratchPadConnectionFactory
 				// Handle various parameters
 				String parms = __part.substring(semi + 1);
 				if (!parms.isEmpty())
-					for (String item : StringUtils.basicSplit(',', parms))
+					for (String item : StringUtils.basicSplit(',',
+						parms))
 					{
 						// {@squirreljme.error AH0d Missing equal sign in the
 						// parameter. (The URI part)}
@@ -81,8 +83,8 @@ public class ScratchPadConnectionFactory
 								"AH0d " + __part);
 						
 						// Parse the value
-						int val = Integer.parseInt(item.substring(eq + 1),
-							10);
+						int val = Integer.parseInt(item.substring(
+							eq + 1), 10);
 						
 						// And store it accordingly
 						switch (item.substring(0, eq))

@@ -23,6 +23,12 @@ public class PalettedImage
 		throw Debugging.todo();
 	}
 	
+	public static PalettedImage createPalettedImage(byte[] __in)
+		throws IOException, NullPointerException
+	{
+		throw Debugging.todo();
+	}
+	
 	public static PalettedImage createPalettedImage(InputStream __in)
 		throws IOException, NullPointerException
 	{
