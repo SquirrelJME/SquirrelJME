@@ -186,6 +186,7 @@ public class Graphics
 	 * indicate clockwise direction while positive values are counterclockwise.
 	 * @since 2022/10/07
 	 */
+	@Api
 	public void drawArc(int __x, int __y, int __w, int __h,
 		int __startAngle, int __arcAngle)
 	{
@@ -210,6 +211,7 @@ public class Graphics
 			__i.getWidth(), __i.getHeight());
 	}
 	
+	@Api
 	public void drawImage(Image __i, int __dx, int __dy, int __sx, int __sy,
 		int __w, int __h)
 		throws IllegalArgumentException, NullPointerException, UIException
@@ -290,6 +292,7 @@ public class Graphics
 	 * @see #drawArc(int, int, int, int, int, int)
 	 * @since 2022/10/07
 	 */
+	@Api
 	public void fillArc(int __x, int __y, int __w, int __h,
 		int __startAngle, int __arcAngle)
 	{
@@ -334,6 +337,7 @@ public class Graphics
 	 * @param __h The height.
 	 * @since 2022/10/07
 	 */
+	@Api
 	public void setClip(int __x, int __y, int __w, int __h)
 	{
 		this._graphics.setClip(__x, __y, __w, __h);
@@ -393,6 +397,7 @@ public class Graphics
 	}
 	
 	@SuppressWarnings("MagicNumber")
+	@Api
 	public static int getColorOfName(int __name)
 		throws IllegalArgumentException
 	{
@@ -453,6 +458,7 @@ public class Graphics
 	 * @throws IllegalArgumentException If the values are out of range.
 	 * @since 2022/10/07
 	 */
+	@Api
 	public static int getColorOfRGB(int __r, int __g, int __b, int __a)
 		throws IllegalArgumentException
 	{

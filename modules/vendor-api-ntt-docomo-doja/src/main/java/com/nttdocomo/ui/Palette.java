@@ -15,29 +15,34 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 @Api
 public class Palette
 {
+	@Api
 	public Palette()
 		throws IllegalArgumentException
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public Palette(int[] __colors)
 		throws IllegalArgumentException, NullPointerException
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int getEntry(int __index)
 		throws ArrayIndexOutOfBoundsException
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int getEntryCount()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void setEntry(int __index, int __color)
 		throws ArrayIndexOutOfBoundsException, IllegalArgumentException
 	{

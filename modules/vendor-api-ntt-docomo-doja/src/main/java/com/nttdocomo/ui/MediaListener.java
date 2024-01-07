@@ -9,10 +9,13 @@
 
 package com.nttdocomo.ui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.util.EventListener;
 
+@Api
 public interface MediaListener
 	extends EventListener
 {
+	@Api
 	void mediaAction(MediaPresenter __source, int __type, int __parameter);
 }

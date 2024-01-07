@@ -9,16 +9,24 @@
 
 package com.nttdocomo.ui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
+@Api
 public interface MediaPresenter
 {
+	@Api
 	MediaResource getMediaResource();
 	
+	@Api
 	void play();
 	
+	@Api
 	void setAttribute(int __attribute, int __value);
 	
+	@Api
 	void setMediaListener(MediaListener __listener);
 	
+	@Api
 	void stop();
 	
 }
