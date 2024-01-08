@@ -1475,9 +1475,12 @@ typedef enum sjme_errorCode
 
 	/** Resource not found. */
 	SJME_ERROR_RESOURCE_NOT_FOUND = -37,
+
+	/** Unexpected end of file. */
+	SJME_ERROR_UNEXPECTED_EOF = -38,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -38
+	SJME_NUM_ERROR_CODES = -39
 } sjme_errorCode;
 
 /**

@@ -271,9 +271,9 @@ sjme_errorCode sjme_stream_inputReadSingle(
 	{
 		/* Attempt single byte read. */
 		single = 999;
-		readCount = 0;
+		readCount = -2;
 		if (SJME_IS_ERROR(error = sjme_stream_inputReadIter(stream,
-			&readCount, &single, 0, 1)))
+			&readCount, &single, 0, 1)) || readCount < -1)
 			return SJME_DEFAULT_ERROR(error);
 
 		/* Did not read anything? */
@@ -343,7 +343,12 @@ sjme_errorCode sjme_stream_inputReadValueJ(
 	readCount = -2;
 	if (SJME_IS_ERROR(error = sjme_stream_inputRead(stream,
 		&readCount, &temp, reqCount)) || readCount != reqCount)
-		return SJME_DEFAULT_ERROR(error);
+		return SJME_DEFAULT_ERROR_OR(error,
+			SJME_ERROR_UNEXPECTED_EOF);
+
+	/* Normalize boolean? */
+	if (typeId == SJME_BASIC_TYPE_ID_BOOLEAN)
+		temp.z = (temp.b == 0 ? SJME_JNI_FALSE : SJME_JNI_TRUE);
 
 #if defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)
 	/* Perform byte swap on the data. */
