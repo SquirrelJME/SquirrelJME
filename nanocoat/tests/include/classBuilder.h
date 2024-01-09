@@ -17,6 +17,7 @@
 #define SQUIRRELJME_CLASSBUILDER_H
 
 #include "test.h"
+#include "sjme/stream.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
