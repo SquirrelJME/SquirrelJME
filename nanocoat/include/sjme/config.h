@@ -66,6 +66,43 @@ extern "C" {
 	#endif
 #endif
 
+/* Attempt detection of pointer sizes based on architecture? */
+#if (defined(__SIZEOF_POINTER__) && __SIZEOF_POINTER__ == 4) || \
+	defined(_ILP32) || defined(__ILP32__)
+	/** Pointer size. */
+	#define SJME_CONFIG_HAS_POINTER 32
+#elif (defined(__SIZEOF_POINTER__) && __SIZEOF_POINTER__ == 8) || \
+	defined(_LP64) || defined(_LP64)
+	/** Pointer size. */
+	#define SJME_CONFIG_HAS_POINTER 64
+#else
+	/* 64-bit seeming architecture, common 64-bit ones? */
+	#if defined(__amd64__) || defined(__amd64__) || defined(__x86_64__) || \
+		defined(__x86_64) || defined(_M_X64) || defined(_M_AMD64) || \
+        defined(_M_ARM64) || defined(_M_ARM64EC) || \
+        defined(__aarch64__) || defined(__ia64__) || defined(_IA64) || \
+        defined(__IA64__) || defined(__ia64) || defined(_M_IA64) || \
+        defined(__itanium__) || defined(__powerpc64__) || \
+		defined(__ppc64__) || defined(__PPC64__) || defined(_ARCH_PPC64) || \
+        defined(_WIN64)
+		/** Pointer size. */
+		#define SJME_CONFIG_HAS_POINTER 64
+	#else
+		/** Pointer size. */
+		#define SJME_CONFIG_HAS_POINTER 32
+	#endif
+#endif
+
+#if SJME_CONFIG_HAS_POINTER == 32
+	/** Has 32-bit pointer. */
+	#define SJME_CONFIG_HAS_POINTER32
+#endif
+
+#if SJME_CONFIG_HAS_POINTER == 64
+	/** Has 64-bit pointer. */
+	#define SJME_CONFIG_HAS_POINTER64
+#endif
+
 #if defined(SJME_CONFIG_ROM0)
 	/** ROM 0 Address. */
 	#define SJME_CONFIG_ROM0_ADDR &SJME_CONFIG_ROM0

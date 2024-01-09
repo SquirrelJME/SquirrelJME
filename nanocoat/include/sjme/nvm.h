@@ -185,6 +185,13 @@ extern "C" {
 	type SJME_TOKEN_SINGLE(SJME_TOKEN_STARS_##numPointerStars)
 
 /**
+ * Semicolon token.
+ *
+ * @since 2024/01/09
+ */
+#define SJME_TOKEN_SEMI ;
+
+/**
  * Does this have pointer stars?
  *
  * @param numPointerStars The number of pointer stars.
@@ -368,6 +375,38 @@ typedef enum sjme_basicTypeId
 #define SJME_TYPEOF_IF_NOT_POINTER(type, numPointerStars, snippet) \
     SJME_TOKEN_PASTE_PP(SJME_TYPEOF_IF_POINTER_X, \
 		SJME_TYPEOF_IS_NOT_POINTER(type, numPointerStars))(snippet)
+
+#define SJME_TYPEOF_IF_POINTER_ORX0(snippet, orSnippet) orSnippet
+#define SJME_TYPEOF_IF_POINTER_ORX1(snippet, orSnippet) snippet
+
+/**
+ * If the type is a pointer, place the given snippet.
+ *
+ * @param type The type used.
+ * @param numPointerStars The number of pointer stars
+ * @param snippet The snippet to place.
+ * @param orSnippet The snippet if it is a pointer.
+ * @return Either @c snippet or nothing.
+ * @since 2024/01/09
+ */
+#define SJME_TYPEOF_IF_POINTER_OR(type, numPointerStars, snippet, orSnippet) \
+    SJME_TOKEN_PASTE_PP(SJME_TYPEOF_IF_POINTER_ORX, \
+		SJME_TYPEOF_IS_POINTER(type, numPointerStars))(snippet, orSnippet)
+
+/**
+ * If the type is not a pointer, place the given snippet.
+ *
+ * @param type The type used.
+ * @param numPointerStars The number of pointer stars
+ * @param snippet The snippet to place.
+ * @param orSnippet The snippet if it is a pointer.
+ * @return Either @c snippet or nothing.
+ * @since 2024/01/09
+ */
+#define SJME_TYPEOF_IF_NOT_POINTER_OR(type, numPointerStars, snippet, \
+	orSnippet) \
+    SJME_TOKEN_PASTE_PP(SJME_TYPEOF_IF_POINTER_ORX, \
+		SJME_TYPEOF_IS_NOT_POINTER(type, numPointerStars))(snippet, orSnippet)
 
 /**
  * Boolean type.

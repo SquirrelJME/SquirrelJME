@@ -8,3 +8,109 @@
 // -------------------------------------------------------------------------*/
 
 #include "sjme/atomic.h"
+
+#if 0 /*defined(SJME_CONFIG_HAS_ATOMIC_GCC)*/
+
+	/** Memory order used for GCC. */
+	#define SJME_ATOMIC_GCC_MEMORY_ORDER __ATOMIC_SEQ_CST
+
+	#define SJME_ATOMIC_FUNCTION_COMPARE_SET(type, numPointerStars) \
+		SJME_ATOMIC_PROTOTYPE_COMPARE_SET(type, numPointerStars) \
+		{ \
+			if (__atomic_compare_exchange_n( \
+					SJME_TYPEOF_IF_POINTER(type, numPointerStars, \
+						(volatile void**))&atomic->value, \
+					SJME_TYPEOF_IF_POINTER(type, numPointerStars, \
+						(volatile void**)) &expected, \
+					set, 0, SJME_ATOMIC_GCC_MEMORY_ORDER, \
+						SJME_ATOMIC_GCC_MEMORY_ORDER)) \
+				return SJME_JNI_TRUE; \
+			return SJME_JNI_FALSE; \
+		}
+
+	#define SJME_ATOMIC_FUNCTION_GET_ADD(type, numPointerStars) \
+		SJME_ATOMIC_PROTOTYPE_GET_ADD(type, numPointerStars) \
+		{ \
+			return \
+				__atomic_fetch_add(&atomic->value, \
+				add, \
+				SJME_ATOMIC_GCC_MEMORY_ORDER); \
+		}
+
+#elif defined(SJME_CONFIG_HAS_LITTLE_ENDIAN) /*defined(SJME_CONFIG_HAS_ATOMIC_WIN32)*/
+
+	/** The value type. */
+	#define SJME_ATOMIC_WIN32_TYPE(type, numPointerStars) \
+		SJME_TYPEOF_IF_NOT_POINTER_OR(type, numPointerStars, LONG, PVOID)
+	
+	/** The compare function to use for pointers. */
+	
+	#define SJME_ATOMIC_FUNCTION_COMPARE_SET(type, numPointerStars) \
+		SJME_ATOMIC_PROTOTYPE_COMPARE_SET(type, numPointerStars) \
+		{ \
+			SJME_ATOMIC_WIN32_TYPE(type, numPointerStars) was; \
+			\
+			/* Returns the value that was stored here. */ \
+			was = InterlockedCompareExchange((volatile \
+				SJME_ATOMIC_WIN32_TYPE(type, numPointerStars)*) \
+				&atomic->value, \
+				set, expected); \
+			\
+			if (was == expected) \
+				return SJME_JNI_TRUE; \
+			return SJME_JNI_FALSE; \
+		}
+
+	#define SJME_ATOMIC_FUNCTION_GET_ADD(type, numPointerStars) \
+		SJME_ATOMIC_PROTOTYPE_GET_ADD(type, numPointerStars) \
+		{ \
+	#if SJME_POINTER == 64
+		return (void*)InterlockedAdd64((volatile LONG64*)&atomic->value, 0);
+	#else
+		return (void*)InterlockedAdd((volatile LONG*)&atomic->value, 0);
+	#endif
+			return \
+				__atomic_fetch_add(&atomic->value, \
+				add, \
+				SJME_ATOMIC_GCC_MEMORY_ORDER); \
+		}
+
+#else
+
+#error No atomic access functions.
+
+#endif
+
+/**
+ * Common atomic function sets.
+ *
+ * @param type The type used.
+ * @param numPointerStars The number of pointer stars.
+ * @param hasP Does this have a pointer?
+ * @since 2024/01/09
+ */
+#define SJME_ATOMIC_FUNCTION(type, numPointerStars) \
+	SJME_ATOMIC_FUNCTION_COMPARE_SET(type, numPointerStars) \
+	SJME_ATOMIC_FUNCTION_GET_ADD(type, numPointerStars)
+
+SJME_ATOMIC_FUNCTION(sjme_jbyte, 0)
+
+SJME_ATOMIC_FUNCTION(sjme_jubyte, 0)
+
+SJME_ATOMIC_FUNCTION(sjme_jshort, 0)
+
+SJME_ATOMIC_FUNCTION(sjme_jchar, 0)
+
+SJME_ATOMIC_FUNCTION(sjme_jint, 0)
+
+SJME_ATOMIC_FUNCTION(sjme_juint, 0)
+
+SJME_ATOMIC_FUNCTION(sjme_lpstr, 0)
+
+SJME_ATOMIC_FUNCTION(sjme_lpcstr, 0)
+
+SJME_ATOMIC_FUNCTION(sjme_jobject, 0)
+
+SJME_ATOMIC_FUNCTION(sjme_pointer, 0)
+
+SJME_ATOMIC_FUNCTION(sjme_cchar, 0)

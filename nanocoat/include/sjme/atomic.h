@@ -63,10 +63,9 @@ extern "C" {
  * @since 2024/01/09
  */
 #define SJME_ATOMIC_PROTOTYPE_COMPARE_SET(type, numPointerStars) \
-	static sjme_inline sjme_attrArtificial \
 		sjme_jboolean SJME_ATOMIC_FUNCTION_NAME(type, numPointerStars, \
 			_compareSet) \
-			(struct SJME_ATOMIC_NAME(type, numPointerStars)* atomic, \
+			(SJME_ATOMIC_NAME(type, numPointerStars)* atomic, \
 			SJME_TOKEN_TYPE(type, numPointerStars) expected, \
 			SJME_TOKEN_TYPE(type, numPointerStars) set)
 
@@ -78,58 +77,23 @@ extern "C" {
  * @since 2024/01/09
  */
 #define SJME_ATOMIC_PROTOTYPE_GET_ADD(type, numPointerStars) \
-	static sjme_inline sjme_attrArtificial \
 		SJME_TOKEN_TYPE(type, numPointerStars) \
 			SJME_ATOMIC_FUNCTION_NAME(type, numPointerStars, \
 				_getAdd) \
-			(struct SJME_ATOMIC_NAME(type, numPointerStars)* atomic, \
-			SJME_TOKEN_TYPE(type, numPointerStars) add)
-
-#if defined(SJME_CONFIG_HAS_ATOMIC_GCC)
-	/** Memory order used for GCC. */
-	#define SJME_ATOMIC_GCC_MEMORY_ORDER __ATOMIC_SEQ_CST
-
-#define SJME_ATOMIC_FUNCTION_COMPARE_SET(type, numPointerStars, hasP) \
-	SJME_ATOMIC_PROTOTYPE_COMPARE_SET(type, numPointerStars) \
-	{ \
-		if (__atomic_compare_exchange_n( \
-				SJME_TYPEOF_IF_POINTER(type, numPointerStars, \
-					(volatile void**))&atomic->value, \
-				SJME_TYPEOF_IF_POINTER(type, numPointerStars, \
-					(volatile void**)) &expected, \
-				set, 0, SJME_ATOMIC_GCC_MEMORY_ORDER, \
-					SJME_ATOMIC_GCC_MEMORY_ORDER)) \
-			return SJME_JNI_TRUE; \
-		return SJME_JNI_FALSE; \
-	}
-
-#define SJME_ATOMIC_FUNCTION_GET_ADD(type, numPointerStars, hasP) \
-	SJME_ATOMIC_PROTOTYPE_GET_ADD(type, numPointerStars) \
-	{ \
-		return \
-			__atomic_fetch_add(&atomic->value, \
-			add, \
-			SJME_ATOMIC_GCC_MEMORY_ORDER); \
-	}
-
-#else
-
-#error No atomic access functions.
-
-#endif
+			(SJME_ATOMIC_NAME(type, numPointerStars)* atomic, \
+			SJME_TYPEOF_IF_NOT_POINTER_OR(type, numPointerStars, \
+				SJME_TOKEN_TYPE(type, numPointerStars), intptr_t) add)
 
 /**
  * Common atomic function sets.
  *
  * @param type The type used.
  * @param numPointerStars The number of pointer stars.
- * @param hasP Does this have a pointer?
  * @since 2024/01/09
  */
-#define SJME_ATOMIC_FUNCTION_COMMON(type, numPointerStars, hasP) \
-	SJME_ATOMIC_FUNCTION_COMPARE_SET(type, numPointerStars, hasP) \
-	SJME_TYPEOF_IF_NOT_POINTER(type, numPointerStars, \
-		SJME_ATOMIC_FUNCTION_GET_ADD(type, numPointerStars, hasP))
+#define SJME_ATOMIC_PROTOTYPE_COMMON(type, numPointerStars) \
+	SJME_ATOMIC_PROTOTYPE_COMPARE_SET(type, numPointerStars); \
+	SJME_ATOMIC_PROTOTYPE_GET_ADD(type, numPointerStars)
 
 #if defined(SJME_CONFIG_HAS_ATOMIC_C11)
 
@@ -146,7 +110,7 @@ extern "C" {
 		/** The atomic type. */ \
 		SJME_TOKEN_TYPE(type, numPointerStars) _Atomic value; \
 	} SJME_ATOMIC_NAME(type, numPointerStars); \
-	SJME_ATOMIC_FUNCTION_COMMON(type, numPointerStars)
+	SJME_ATOMIC_PROTOTYPE_COMMON(type, numPointerStars)
 
 #elif defined(SJME_CONFIG_HAS_ATOMIC_WIN32) || \
 	defined(SJME_CONFIG_HAS_ATOMIC_GCC) || \
@@ -160,15 +124,12 @@ extern "C" {
  * @since 2024/01/08
  */
 #define SJME_ATOMIC_DECLARE(type, numPointerStars) \
-	struct SJME_ATOMIC_NAME(type, numPointerStars) \
+	typedef struct SJME_ATOMIC_NAME(type, numPointerStars) \
 	{ \
 		/** The atomic value. */ \
 		SJME_TOKEN_TYPE(type, numPointerStars) volatile value; \
-	}; \
-	SJME_ATOMIC_FUNCTION_COMMON(type, numPointerStars, \
-		SJME_TOKEN_SINGLE(SJME_TOKEN_HAS_STARS(numPointerStars))) \
-	typedef struct SJME_ATOMIC_NAME(type, numPointerStars) \
-		SJME_ATOMIC_NAME(type, numPointerStars)
+	} SJME_ATOMIC_NAME(type, numPointerStars); \
+	SJME_ATOMIC_PROTOTYPE_COMMON(type, numPointerStars)
 
 #else
 
@@ -195,10 +156,10 @@ SJME_ATOMIC_DECLARE(sjme_jint, 0);
 SJME_ATOMIC_DECLARE(sjme_juint, 0);
 
 /** Atomic @c sjme_lpstr. */
-SJME_ATOMIC_DECLARE(sjme_lpstr, 0); /* NOLINT(*-non-const-parameter) */
+SJME_ATOMIC_DECLARE(sjme_lpstr, 0);
 
 /** Atomic @c sjme_lpcstr. */
-SJME_ATOMIC_DECLARE(sjme_lpcstr, 0); /* NOLINT(*-non-const-parameter) */
+SJME_ATOMIC_DECLARE(sjme_lpcstr, 0);
 
 /** Atomic @c sjme_jobject. */
 SJME_ATOMIC_DECLARE(sjme_jobject, 0);
