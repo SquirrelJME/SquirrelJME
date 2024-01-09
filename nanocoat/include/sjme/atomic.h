@@ -137,18 +137,6 @@ extern "C" {
 
 #endif
 
-/** Atomic @c sjme_jbyte. */
-SJME_ATOMIC_DECLARE(sjme_jbyte, 0);
-
-/** Atomic @c sjme_jubyte. */
-SJME_ATOMIC_DECLARE(sjme_jubyte, 0);
-
-/** Atomic @c sjme_jshort. */
-SJME_ATOMIC_DECLARE(sjme_jshort, 0);
-
-/** Atomic @c sjme_jchar. */
-SJME_ATOMIC_DECLARE(sjme_jchar, 0);
-
 /** Atomic @c sjme_jint. */
 SJME_ATOMIC_DECLARE(sjme_jint, 0);
 
@@ -166,9 +154,6 @@ SJME_ATOMIC_DECLARE(sjme_jobject, 0);
 
 /** Atomic @c sjme_pointer. */
 SJME_ATOMIC_DECLARE(sjme_pointer, 0);
-
-/** Atomic @c sjme_cchar. */
-SJME_ATOMIC_DECLARE(sjme_cchar, 0);
 
 /*--------------------------------------------------------------------------*/
 

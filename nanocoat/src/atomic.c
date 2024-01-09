@@ -9,7 +9,7 @@
 
 #include "sjme/atomic.h"
 
-#if 0 /*defined(SJME_CONFIG_HAS_ATOMIC_GCC)*/
+#if 0 defined(SJME_CONFIG_HAS_ATOMIC_GCC)
 
 	/** Memory order used for GCC. */
 	#define SJME_ATOMIC_GCC_MEMORY_ORDER __ATOMIC_SEQ_CST
@@ -37,13 +37,25 @@
 				SJME_ATOMIC_GCC_MEMORY_ORDER); \
 		}
 
-#elif defined(SJME_CONFIG_HAS_LITTLE_ENDIAN) /*defined(SJME_CONFIG_HAS_ATOMIC_WIN32)*/
+#elif defined(SJME_CONFIG_HAS_ATOMIC_WIN32)
 
 	/** The value type. */
 	#define SJME_ATOMIC_WIN32_TYPE(type, numPointerStars) \
 		SJME_TYPEOF_IF_NOT_POINTER_OR(type, numPointerStars, LONG, PVOID)
+		
+	/** The value type for getAdd. */
+	#define SJME_ATOMIC_WIN32_TYPEGA(type, numPointerStars) \
+		SJME_TYPEOF_IF_NOT_POINTER_OR(type, numPointerStars, LONG, LONG64)
 	
 	/** The compare function to use for pointers. */
+	#if SJME_CONFIG_HAS_POINTER == 64
+		#define SJME_ATOMIC_WIN32_IA(type, numPointerStars) \
+			SJME_TYPEOF_IF_NOT_POINTER_OR(type, numPointerStars, \
+				InterlockedAdd, InterlockedAdd64)
+	#else
+		#define SJME_ATOMIC_WIN32_IA(type, numPointerStars) \
+			InterlockedAdd
+	#endif
 	
 	#define SJME_ATOMIC_FUNCTION_COMPARE_SET(type, numPointerStars) \
 		SJME_ATOMIC_PROTOTYPE_COMPARE_SET(type, numPointerStars) \
@@ -64,15 +76,11 @@
 	#define SJME_ATOMIC_FUNCTION_GET_ADD(type, numPointerStars) \
 		SJME_ATOMIC_PROTOTYPE_GET_ADD(type, numPointerStars) \
 		{ \
-	#if SJME_POINTER == 64
-		return (void*)InterlockedAdd64((volatile LONG64*)&atomic->value, 0);
-	#else
-		return (void*)InterlockedAdd((volatile LONG*)&atomic->value, 0);
-	#endif
-			return \
-				__atomic_fetch_add(&atomic->value, \
-				add, \
-				SJME_ATOMIC_GCC_MEMORY_ORDER); \
+			return (SJME_TOKEN_TYPE(type, numPointerStars)) \
+				SJME_ATOMIC_WIN32_IA(type, numPointerStars) \
+				((volatile \
+				SJME_ATOMIC_WIN32_TYPEGA(type, \
+					numPointerStars)*)&atomic->value, 0); \
 		}
 
 #else
@@ -93,14 +101,6 @@
 	SJME_ATOMIC_FUNCTION_COMPARE_SET(type, numPointerStars) \
 	SJME_ATOMIC_FUNCTION_GET_ADD(type, numPointerStars)
 
-SJME_ATOMIC_FUNCTION(sjme_jbyte, 0)
-
-SJME_ATOMIC_FUNCTION(sjme_jubyte, 0)
-
-SJME_ATOMIC_FUNCTION(sjme_jshort, 0)
-
-SJME_ATOMIC_FUNCTION(sjme_jchar, 0)
-
 SJME_ATOMIC_FUNCTION(sjme_jint, 0)
 
 SJME_ATOMIC_FUNCTION(sjme_juint, 0)
@@ -112,5 +112,3 @@ SJME_ATOMIC_FUNCTION(sjme_lpcstr, 0)
 SJME_ATOMIC_FUNCTION(sjme_jobject, 0)
 
 SJME_ATOMIC_FUNCTION(sjme_pointer, 0)
-
-SJME_ATOMIC_FUNCTION(sjme_cchar, 0)
