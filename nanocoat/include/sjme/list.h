@@ -44,16 +44,6 @@ extern "C" {
 		SJME_TOKEN_SINGLE(SJME_TOKEN_STARS_C##numPointerStars)))
 
 /**
- * Determines the element type of the given list.
- *
- * @param type The type used.
- * @param numPointerStars The number of pointer stars.
- * @since 2023/12/17
- */
-#define SJME_LIST_ELEMENT_TYPE(type, numPointerStars) \
-	type SJME_TOKEN_SINGLE(SJME_TOKEN_STARS_##numPointerStars)
-
-/**
  * Declares a list type.
  *
  * @param type The type to use for the list values.
@@ -71,7 +61,7 @@ extern "C" {
 		sjme_jint elementSize; \
 	 \
 		/** The elements in the list. */ \
-		SJME_LIST_ELEMENT_TYPE(type, numPointerStars) \
+		SJME_TOKEN_TYPE(type, numPointerStars) \
 			elements[sjme_flexibleArrayCount]; \
 	} SJME_LIST_NAME(type, numPointerStars)
 
@@ -88,7 +78,7 @@ extern "C" {
 	(sizeof(SJME_LIST_NAME(type, numPointerStars)) + \
 	(offsetof(SJME_LIST_NAME(type, numPointerStars), elements) - \
 		offsetof(SJME_LIST_NAME(type, numPointerStars), elements)) + \
-	(sizeof(SJME_LIST_ELEMENT_TYPE(type, numPointerStars)) * (size_t)(count)))
+	(sizeof(SJME_TOKEN_TYPE(type, numPointerStars)) * (size_t)(count)))
 
 /** List of @c sjme_jbyte. */
 SJME_LIST_DECLARE(sjme_jbyte, 0);
@@ -153,7 +143,7 @@ sjme_errorCode sjme_list_allocR(
 #define sjme_list_alloc(inPool, inLength, outList, type, numPointerStars) \
 	sjme_list_allocR((inPool), (inLength), \
 		(void**)(outList), \
-		sizeof(SJME_LIST_ELEMENT_TYPE(type, numPointerStars)), \
+		sizeof(SJME_TOKEN_TYPE(type, numPointerStars)), \
 		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
 		sizeof(**(outList)))
 
@@ -200,10 +190,10 @@ sjme_errorCode sjme_list_newAR(
 #define sjme_list_newA(inPool, type, numPointerStars, \
 	inLength, outList, inElements) \
 	sjme_list_newAR((inPool), \
-		sizeof(SJME_LIST_ELEMENT_TYPE(type, numPointerStars)), \
+		sizeof(SJME_TOKEN_TYPE(type, numPointerStars)), \
 		sizeof(type), \
 		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
-		sizeof(**(outList)), SJME_BASIC_TYPEOF(type), (numPointerStars), \
+		sizeof(**(outList)), SJME_TYPEOF_BASIC(type), (numPointerStars), \
 		(inLength), (void**)(outList), (void*)(inElements))
 
 /**
@@ -249,10 +239,10 @@ sjme_errorCode sjme_list_newVR(
 #define sjme_list_newV(inPool, type, numPointerStars, \
 	inLength, outList, ...) \
 	sjme_list_newVR((inPool), \
-		sizeof(SJME_LIST_ELEMENT_TYPE(type, numPointerStars)), \
+		sizeof(SJME_TOKEN_TYPE(type, numPointerStars)), \
 		sizeof(type), \
 		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
-		sizeof(**(outList)), SJME_BASIC_TYPEOF(type), (numPointerStars), \
+		sizeof(**(outList)), SJME_TYPEOF_BASIC(type), (numPointerStars), \
 		(inLength), (void**)(outList), __VA_ARGS__)
 
 /**
@@ -298,10 +288,10 @@ sjme_errorCode sjme_list_newVAR(
 #define sjme_list_newVA(inPool, type, numPointerStars, \
 	inLength, outList, elements) \
 	sjme_list_newVAR((inPool), \
-		sizeof(SJME_LIST_ELEMENT_TYPE(type, numPointerStars)),  \
+		sizeof(SJME_TOKEN_TYPE(type, numPointerStars)),  \
 		sizeof(type), \
 		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
-		sizeof(**(outList)), SJME_BASIC_TYPEOF(type), (numPointerStars), \
+		sizeof(**(outList)), SJME_TYPEOF_BASIC(type), (numPointerStars), \
 		(inLength), (void**)(outList), (elements))
 
 /**

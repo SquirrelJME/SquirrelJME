@@ -163,6 +163,36 @@ extern "C" {
 #define SJME_TOKEN_STARS_C8 PPPPPPPP
 #define SJME_TOKEN_STARS_C9 PPPPPPPPP
 
+#define SJME_TOKEN_STARS_H0 0
+#define SJME_TOKEN_STARS_H1 1
+#define SJME_TOKEN_STARS_H2 1
+#define SJME_TOKEN_STARS_H3 1
+#define SJME_TOKEN_STARS_H4 1
+#define SJME_TOKEN_STARS_H5 1
+#define SJME_TOKEN_STARS_H6 1
+#define SJME_TOKEN_STARS_H7 1
+#define SJME_TOKEN_STARS_H8 1
+#define SJME_TOKEN_STARS_H9 1
+
+/**
+ * Generic pointer star types.
+ *
+ * @param type The type used.
+ * @param numPointerStars The number of pointer stars.
+ * @since 2024/01/09
+ */
+#define SJME_TOKEN_TYPE(type, numPointerStars) \
+	type SJME_TOKEN_SINGLE(SJME_TOKEN_STARS_##numPointerStars)
+
+/**
+ * Does this have pointer stars?
+ *
+ * @param numPointerStars The number of pointer stars.
+ * @since 2024/01/09
+ */
+#define SJME_TOKEN_HAS_STARS(numPointerStars) \
+	SJME_TOKEN_SINGLE(SJME_TOKEN_STARS_H##numPointerStars)
+
 /** SquirrelJME version string. */
 #define SQUIRRELJME_VERSION SJME_TOKEN_STRING_PP(SQUIRRELJME_VERSION_TRIM)
 
@@ -267,7 +297,7 @@ typedef enum sjme_basicTypeId
  * @param type The type to get the basic type of.
  * @since 2023/12/17
  */
-#define SJME_BASIC_TYPEOF(type) SJME_TOKEN_PASTE_PP(SJME_BASIC_TYPEOF_, type)
+#define SJME_TYPEOF_BASIC(type) SJME_TOKEN_PASTE_PP(SJME_TYPEOF_BASIC_, type)
 
 /**
  * Returns the java type ID of the given type.
@@ -275,7 +305,69 @@ typedef enum sjme_basicTypeId
  * @param type The type to get the basic type of.
  * @since 2023/12/17
  */
-#define SJME_JAVA_TYPEOF(type) SJME_TOKEN_PASTE_PP(SJME_JAVA_TYPEOF_, type)
+#define SJME_TYPEOF_JAVA(type) SJME_TOKEN_PASTE_PP(SJME_TYPEOF_JAVA_, type)
+
+#define SJME_TYPEOF_IS_POINTER_X00 0
+#define SJME_TYPEOF_IS_POINTER_X10 1
+#define SJME_TYPEOF_IS_POINTER_X01 1
+#define SJME_TYPEOF_IS_POINTER_X11 1
+
+/**
+ * Is the given type a pointer?
+ *
+ * @param type The type used.
+ * @param numPointerStars The number of pointer stars.
+ * @return If this is a pointer or not.
+ * @since 2024/01/09
+ */
+#define SJME_TYPEOF_IS_POINTER(type, numPointerStars) \
+	SJME_TOKEN_SINGLE(SJME_TOKEN_PASTE3_PP(SJME_TYPEOF_IS_POINTER_X, \
+		SJME_TOKEN_PASTE_PP(SJME_TYPEOF_IS_POINTER_, type), \
+		SJME_TOKEN_PASTE_PP(SJME_TOKEN_STARS_H, numPointerStars)))
+
+#define SJME_TYPEOF_IS_NOT_POINTER_X0 1
+#define SJME_TYPEOF_IS_NOT_POINTER_X1 0
+
+/**
+ * Is the given type not a pointer?
+ *
+ * @param type The type used.
+ * @param numPointerStars The number of pointer stars.
+ * @return If this is not a pointer or it is one.
+ * @since 2024/01/09
+ */
+#define SJME_TYPEOF_IS_NOT_POINTER(type, numPointerStars) \
+	SJME_TOKEN_SINGLE(SJME_TOKEN_PASTE_PP(SJME_TYPEOF_IS_NOT_POINTER_X, \
+		SJME_TYPEOF_IS_POINTER(type, numPointerStars)))
+
+#define SJME_TYPEOF_IF_POINTER_X0(snippet)
+#define SJME_TYPEOF_IF_POINTER_X1(snippet) snippet
+
+/**
+ * If the type is a pointer, place the given snippet.
+ *
+ * @param type The type used.
+ * @param numPointerStars The number of pointer stars
+ * @param snippet The snippet to place.
+ * @return Either @c snippet or nothing.
+ * @since 2024/01/09
+ */
+#define SJME_TYPEOF_IF_POINTER(type, numPointerStars, snippet) \
+    SJME_TOKEN_PASTE_PP(SJME_TYPEOF_IF_POINTER_X, \
+		SJME_TYPEOF_IS_POINTER(type, numPointerStars))(snippet)
+
+/**
+ * If the type is not a pointer, place the given snippet.
+ *
+ * @param type The type used.
+ * @param numPointerStars The number of pointer stars
+ * @param snippet The snippet to place.
+ * @return Either @c snippet or nothing.
+ * @since 2024/01/09
+ */
+#define SJME_TYPEOF_IF_NOT_POINTER(type, numPointerStars, snippet) \
+    SJME_TOKEN_PASTE_PP(SJME_TYPEOF_IF_POINTER_X, \
+		SJME_TYPEOF_IS_NOT_POINTER(type, numPointerStars))(snippet)
 
 /**
  * Boolean type.
@@ -290,10 +382,13 @@ typedef enum sjme_jboolean
 } sjme_jboolean;
 
 /** Basic @c sjme_jboolean type identifier. */
-#define SJME_BASIC_TYPEOF_sjme_jboolean SJME_BASIC_TYPE_ID_BOOLEAN
+#define SJME_TYPEOF_BASIC_sjme_jboolean SJME_BASIC_TYPE_ID_BOOLEAN
 
 /** Java @c sjme_jboolean type identifier. */
-#define SJME_JAVA_TYPEOF_sjme_jboolean SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE
+#define SJME_TYPEOF_JAVA_sjme_jboolean SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE
+
+/** Is a pointer for @c sjme_jboolean ? */
+#define SJME_TYPEOF_IS_POINTER_sjme_jboolean 0
 
 /**
  * Byte type.
@@ -303,10 +398,13 @@ typedef enum sjme_jboolean
 typedef int8_t sjme_jbyte;
 
 /** Basic @c sjme_jbyte type identifier. */
-#define SJME_BASIC_TYPEOF_sjme_jbyte SJME_BASIC_TYPE_ID_BYTE
+#define SJME_TYPEOF_BASIC_sjme_jbyte SJME_BASIC_TYPE_ID_BYTE
 
 /** Java @c sjme_jbyte type identifier. */
-#define SJME_JAVA_TYPEOF_sjme_jbyte SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE
+#define SJME_TYPEOF_JAVA_sjme_jbyte SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE
+
+/** Is a pointer for @c sjme_jbyte ? */
+#define SJME_TYPEOF_IS_POINTER_sjme_jbyte 0
 
 /**
  * Unsigned byte type.
@@ -316,10 +414,13 @@ typedef int8_t sjme_jbyte;
 typedef uint8_t sjme_jubyte;
 
 /** Basic @c sjme_jubyte type identifier. */
-#define SJME_BASIC_TYPEOF_sjme_jubyte SJME_BASIC_TYPE_ID_BYTE
+#define SJME_TYPEOF_BASIC_sjme_jubyte SJME_BASIC_TYPE_ID_BYTE
 
 /** Java @c sjme_jubyte type identifier. */
-#define SJME_JAVA_TYPEOF_sjme_jubyte SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE
+#define SJME_TYPEOF_JAVA_sjme_jubyte SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE
+
+/** Is a pointer for @c sjme_jubyte ? */
+#define SJME_TYPEOF_IS_POINTER_sjme_jubyte 0
 
 /**
  * Short type.
@@ -329,10 +430,13 @@ typedef uint8_t sjme_jubyte;
 typedef int16_t sjme_jshort;
 
 /** Basic @c sjme_jshort type identifier. */
-#define SJME_BASIC_TYPEOF_sjme_jshort SJME_BASIC_TYPE_ID_SHORT
+#define SJME_TYPEOF_BASIC_sjme_jshort SJME_BASIC_TYPE_ID_SHORT
 
 /** Java @c sjme_jshort type identifier. */
-#define SJME_JAVA_TYPEOF_sjme_jshort SJME_JAVA_TYPE_ID_INTEGER
+#define SJME_TYPEOF_JAVA_sjme_jshort SJME_JAVA_TYPE_ID_INTEGER
+
+/** Is a pointer for @c sjme_jshort ? */
+#define SJME_TYPEOF_IS_POINTER_sjme_jshort 0
 
 /**
  * Character type.
@@ -342,10 +446,13 @@ typedef int16_t sjme_jshort;
 typedef uint16_t sjme_jchar;
 
 /** Basic @c sjme_jchar type identifier. */
-#define SJME_BASIC_TYPEOF_sjme_jchar SJME_BASIC_TYPE_ID_CHARACTER
+#define SJME_TYPEOF_BASIC_sjme_jchar SJME_BASIC_TYPE_ID_CHARACTER
 
 /** Java @c sjme_jchar type identifier. */
-#define SJME_JAVA_TYPEOF_sjme_jchar SJME_JAVA_TYPE_ID_INTEGER
+#define SJME_TYPEOF_JAVA_sjme_jchar SJME_JAVA_TYPE_ID_INTEGER
+
+/** Is a pointer for @c sjme_jchar ? */
+#define SJME_TYPEOF_IS_POINTER_sjme_jchar 0
 
 /**
  * Integer type.
@@ -355,10 +462,13 @@ typedef uint16_t sjme_jchar;
 typedef int32_t sjme_jint;
 
 /** Basic @c sjme_jint type identifier. */
-#define SJME_BASIC_TYPEOF_sjme_jint SJME_BASIC_TYPE_ID_INTEGER
+#define SJME_TYPEOF_BASIC_sjme_jint SJME_BASIC_TYPE_ID_INTEGER
 
 /** Java @c sjme_jint type identifier. */
-#define SJME_JAVA_TYPEOF_sjme_jint SJME_JAVA_TYPE_ID_INTEGER
+#define SJME_TYPEOF_JAVA_sjme_jint SJME_JAVA_TYPE_ID_INTEGER
+
+/** Is a pointer for @c sjme_jint ? */
+#define SJME_TYPEOF_IS_POINTER_sjme_jint 0
 
 /**
  * Unsigned integer type.
@@ -368,10 +478,13 @@ typedef int32_t sjme_jint;
 typedef uint32_t sjme_juint;
 
 /** Basic @c sjme_juint type identifier. */
-#define SJME_BASIC_TYPEOF_sjme_juint SJME_BASIC_TYPE_ID_INTEGER
+#define SJME_TYPEOF_BASIC_sjme_juint SJME_BASIC_TYPE_ID_INTEGER
 
 /** Java @c sjme_juint type identifier. */
-#define SJME_JAVA_TYPEOF_sjme_juint SJME_JAVA_TYPE_ID_INTEGER
+#define SJME_TYPEOF_JAVA_sjme_juint SJME_JAVA_TYPE_ID_INTEGER
+
+/** Is a pointer for @c sjme_juint ? */
+#define SJME_TYPEOF_IS_POINTER_sjme_juint 0
 
 /**
  * C Character.
@@ -382,17 +495,20 @@ typedef char sjme_cchar;
 
 #if defined(CHAR_BIT) && (CHAR_BIT == 64)
 	/** Basic @c sjme_cchar type identifier. */
-	#define SJME_BASIC_TYPEOF_sjme_cchar SJME_BASIC_TYPE_ID_LONG
+	#define SJME_TYPEOF_BASIC_sjme_cchar SJME_BASIC_TYPE_ID_LONG
 #elif defined(CHAR_BIT) && (CHAR_BIT == 32)
 	/** Basic @c sjme_cchar type identifier. */
-	#define SJME_BASIC_TYPEOF_sjme_cchar SJME_BASIC_TYPE_ID_INTEGER
+	#define SJME_TYPEOF_BASIC_sjme_cchar SJME_BASIC_TYPE_ID_INTEGER
 #elif defined(CHAR_BIT) && (CHAR_BIT == 16)
 	/** Basic @c sjme_cchar type identifier. */
-	#define SJME_BASIC_TYPEOF_sjme_cchar SJME_BASIC_TYPE_ID_SHORT
+	#define SJME_TYPEOF_BASIC_sjme_cchar SJME_BASIC_TYPE_ID_SHORT
 #else
 	/** Basic @c sjme_cchar type identifier. */
-	#define SJME_BASIC_TYPEOF_sjme_cchar SJME_BASIC_TYPE_ID_BYTE
+	#define SJME_TYPEOF_BASIC_sjme_cchar SJME_BASIC_TYPE_ID_BYTE
 #endif
+
+/** Is a pointer for @c sjme_cchar ? */
+#define SJME_TYPEOF_IS_POINTER_sjme_cchar 0
 
 /**
  * Pointer to C string.
@@ -402,7 +518,10 @@ typedef char sjme_cchar;
 typedef sjme_cchar* sjme_lpstr;
 
 /** Basic @c sjme_lpstr type identifier. */
-#define SJME_BASIC_TYPEOF_sjme_lpstr SJME_BASIC_TYPE_ID_OBJECT
+#define SJME_TYPEOF_BASIC_sjme_lpstr SJME_BASIC_TYPE_ID_OBJECT
+
+/** Is a pointer for @c sjme_lpstr ? */
+#define SJME_TYPEOF_IS_POINTER_sjme_lpstr 1
 
 /**
  * Pointer to constant C string.
@@ -412,17 +531,23 @@ typedef sjme_cchar* sjme_lpstr;
 typedef const sjme_cchar* sjme_lpcstr;
 
 /** Basic @c sjme_lpcstr type identifier. */
-#define SJME_BASIC_TYPEOF_sjme_lpcstr SJME_BASIC_TYPE_ID_OBJECT
+#define SJME_TYPEOF_BASIC_sjme_lpcstr SJME_BASIC_TYPE_ID_OBJECT
+
+/** Is a pointer for @c sjme_lpcstr ? */
+#define SJME_TYPEOF_IS_POINTER_sjme_lpcstr 1
 
 /**
  * Generic pointer.
  *
  * @since 2023/12/27
  */
-typedef const void* sjme_pointer;
+typedef void* sjme_pointer;
 
 /** Basic @c sjme_pointer type identifier. */
-#define SJME_BASIC_TYPEOF_sjme_pointer SJME_BASIC_TYPE_ID_OBJECT
+#define SJME_TYPEOF_BASIC_sjme_pointer SJME_BASIC_TYPE_ID_OBJECT
+
+/** Is a pointer for @c sjme_pointer ? */
+#define SJME_TYPEOF_IS_POINTER_sjme_pointer 1
 
 /**
  * Long value.
@@ -447,10 +572,13 @@ typedef struct sjme_jlong
 } sjme_jlong;
 
 /** Basic @c sjme_jlong type identifier. */
-#define SJME_BASIC_TYPEOF_sjme_jlong SJME_BASIC_TYPE_ID_LONG
+#define SJME_TYPEOF_BASIC_sjme_jlong SJME_BASIC_TYPE_ID_LONG
 
 /** Java @c sjme_jlong type identifier. */
-#define SJME_JAVA_TYPEOF_sjme_jlong SJME_JAVA_TYPE_ID_LONG
+#define SJME_TYPEOF_JAVA_sjme_jlong SJME_JAVA_TYPE_ID_LONG
+
+/** Is a pointer for @c sjme_jlong ? */
+#define SJME_TYPEOF_IS_POINTER_sjme_jlong 0
 
 /**
  * Float value.
@@ -463,10 +591,13 @@ typedef struct sjme_jfloat
 } sjme_jfloat;
 
 /** Basic @c sjme_jfloat type identifier. */
-#define SJME_BASIC_TYPEOF_sjme_jfloat SJME_BASIC_TYPE_ID_FLOAT
+#define SJME_TYPEOF_BASIC_sjme_jfloat SJME_BASIC_TYPE_ID_FLOAT
 
 /** Java @c sjme_jfloat type identifier. */
-#define SJME_JAVA_TYPEOF_sjme_jfloat SJME_JAVA_TYPE_ID_FLOAT
+#define SJME_TYPEOF_JAVA_sjme_jfloat SJME_JAVA_TYPE_ID_FLOAT
+
+/** Is a pointer for @c sjme_jfloat ? */
+#define SJME_TYPEOF_IS_POINTER_sjme_jfloat 0
 
 /**
  * Double value.
@@ -491,10 +622,13 @@ typedef struct sjme_jdouble
 } sjme_jdouble;
 
 /** Basic @c sjme_jdouble type identifier. */
-#define SJME_BASIC_TYPEOF_sjme_jdouble SJME_BASIC_TYPE_ID_DOUBLE
+#define SJME_TYPEOF_BASIC_sjme_jdouble SJME_BASIC_TYPE_ID_DOUBLE
 
 /** Java @c sjme_jdouble type identifier. */
-#define SJME_JAVA_TYPEOF_sjme_jdouble SJME_JAVA_TYPE_ID_DOUBLE
+#define SJME_TYPEOF_JAVA_sjme_jdouble SJME_JAVA_TYPE_ID_DOUBLE
+
+/** Is a pointer for @c sjme_jdouble ? */
+#define SJME_TYPEOF_IS_POINTER_sjme_jdouble 0
 
 /**
  * Temporary index.
@@ -644,6 +778,15 @@ typedef union sjme_jvalue
  * @since 2023/07/25
  */
 typedef sjme_jobject sjme_jclass;
+
+/** Basic @c sjme_jobject type identifier. */
+#define SJME_TYPEOF_BASIC_sjme_jobject SJME_BASIC_TYPE_ID_OBJECT
+
+/** Java @c sjme_jobject type identifier. */
+#define SJME_TYPEOF_JAVA_sjme_jobject SJME_BASIC_TYPE_ID_OBJECT
+
+/** Is a pointer for @c sjme_jobject ? */
+#define SJME_TYPEOF_IS_POINTER_sjme_jobject 1
 
 /**
  * Throwable type.

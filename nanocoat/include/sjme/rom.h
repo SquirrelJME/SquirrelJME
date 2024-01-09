@@ -47,7 +47,7 @@ typedef sjme_rom_libraryCore* sjme_rom_library;
 SJME_LIST_DECLARE(sjme_rom_library, 0);
 
 /** The type ID of ROM libraries. */
-#define SJME_BASIC_TYPEOF_sjme_rom_library SJME_BASIC_TYPE_ID_OBJECT
+#define SJME_TYPEOF_BASIC_sjme_rom_library SJME_BASIC_TYPE_ID_OBJECT
 
 /**
  * Common cache between suites and libraries.

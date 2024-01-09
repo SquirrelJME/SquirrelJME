@@ -182,7 +182,7 @@ extern "C" {
 #define SJME_TREE_DECLARE(type, numPointerStars) \
 	SJME_TREE_DECLARE_RAW(SJME_TREE_NAME(type, numPointerStars), \
 		SJME_TREE_NODE_NAME(type, numPointerStars), \
-        SJME_LIST_ELEMENT_TYPE(type, numPointerStars), \
+        SJME_TOKEN_TYPE(type, numPointerStars), \
 		type, numPointerStars)
 
 /**
@@ -200,10 +200,10 @@ extern "C" {
 		valueType, valueNumPointerStars) \
 	{ \
 		/** The key type. */ \
-		SJME_LIST_ELEMENT_TYPE(keyType, keyNumPointerStars) key; \
+		SJME_TOKEN_TYPE(keyType, keyNumPointerStars) key; \
 	\
 		/** The value type. */ \
-		SJME_LIST_ELEMENT_TYPE(valueType, valueNumPointerStars) value; \
+		SJME_TOKEN_TYPE(valueType, valueNumPointerStars) value; \
 	} SJME_TREE_MAP_ENTRY_NAME(keyType, keyNumPointerStars, \
 		valueType, valueNumPointerStars); \
 	\

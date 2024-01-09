@@ -405,6 +405,39 @@ extern "C" {
 	#define sjme_inline inline
 #endif
 
+#if defined(__GNUC__)
+	/** GNU C Compiler. */
+	#define SJME_CONFIG_HAS_GCC
+#endif
+
+#if defined(_WIN32) || defined(__WIN32__) || \
+	defined(__WIN32) || defined(_WINDOWS)
+	/** Supports Windows Atomic Access. */
+	#define SJME_CONFIG_HAS_ATOMIC_WIN32
+#elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L && \
+	!defined(__STDC_NO_ATOMICS__)
+	/** Supports C11 atomics. */
+	#define SJME_CONFIG_HAS_ATOMIC_C11
+#elif defined(SJME_CONFIG_HAS_GCC)
+	/** GCC Atomics. */
+	#define SJME_CONFIG_HAS_ATOMIC_GCC
+#endif
+
+#if !defined(SJME_CONFIG_HAS_ATOMIC)
+	#if defined(SJME_CONFIG_HAS_ATOMIC_WIN32) || \
+		defined(SJME_CONFIG_HAS_ATOMIC_C11) || \
+		defined(SJME_CONFIG_HAS_ATOMIC_GCC)
+		/** Atomics are supported. */
+		#define SJME_CONFIG_HAS_ATOMIC
+	#else
+		/** Use old atomic handling. */
+		#define SJME_CONFIG_HAS_ATOMIC_OLD
+
+		/** Atomics are supported. */
+		#define SJME_CONFIG_HAS_ATOMIC
+	#endif
+#endif
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

@@ -50,6 +50,9 @@ squirreljme_include("utils.cmake")
 # Doxygen
 squirreljme_include("doxygen.cmake")
 
+# Threading and atomics
+squirreljme_include("threads.cmake")
+
 # To Emily and Near...
 squirreljme_include("i-miss-you.cmake")
 

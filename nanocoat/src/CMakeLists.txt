@@ -9,6 +9,7 @@
 list(APPEND coreSources
 	alloc.c
 	allocSizeOf.c
+	atomic.c
 	boot.c
 	bytecode.c
 	classy.c
@@ -23,6 +24,7 @@ list(APPEND coreSources
 	native.c
 	nvm.c
 	recycle.c
+	refcount.c
 	rom.c
 	seekable.c
 	stream.c

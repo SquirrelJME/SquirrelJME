@@ -56,7 +56,7 @@ typedef struct sjme_class_fieldDescriptor
 SJME_LIST_DECLARE(sjme_class_fieldDescriptor, 0);
 
 /** The basic type of @c sjme_class_fieldDescriptor . */
-#define SJME_BASIC_TYPEOF_sjme_class_fieldDescriptor \
+#define SJME_TYPEOF_BASIC_sjme_class_fieldDescriptor \
 	SJME_BASIC_TYPE_ID_OBJECT
 
 /**
@@ -135,7 +135,7 @@ typedef struct sjme_class_methodInfoCore* sjme_class_methodInfo;
 SJME_LIST_DECLARE(sjme_class_methodInfo, 0);
 
 /** The basic type of @c sjme_class_methodInfo . */
-#define SJME_BASIC_TYPEOF_sjme_class_methodInfo \
+#define SJME_TYPEOF_BASIC_sjme_class_methodInfo \
 	SJME_BASIC_TYPE_ID_OBJECT
 
 /**
@@ -160,7 +160,7 @@ typedef struct sjme_class_fieldInfoCore* sjme_class_fieldInfo;
 SJME_LIST_DECLARE(sjme_class_fieldInfo, 0);
 
 /** The basic type of @c sjme_class_fieldInfo . */
-#define SJME_BASIC_TYPEOF_sjme_class_fieldInfo \
+#define SJME_TYPEOF_BASIC_sjme_class_fieldInfo \
 	SJME_BASIC_TYPE_ID_OBJECT
 
 /**
@@ -184,7 +184,7 @@ typedef struct sjme_class_exceptionHandler
 SJME_LIST_DECLARE(sjme_class_exceptionHandler, 0);
 
 /** The basic type of @c sjme_class_exceptionHandler . */
-#define SJME_BASIC_TYPEOF_sjme_class_exceptionHandler \
+#define SJME_TYPEOF_BASIC_sjme_class_exceptionHandler \
 	SJME_BASIC_TYPE_ID_OBJECT
 
 /**
@@ -552,6 +552,27 @@ struct sjme_class_infoCore
 	const sjme_list_sjme_class_methodInfo* methods;
 };
 
+/**
+ * Represents a field's constant value.
+ *
+ * @since 2024/01/08
+ */
+typedef struct sjme_class_fieldConstVal
+{
+	/** The type of value. */
+	sjme_javaTypeId type;
+
+	/** The value of the field. */
+	union
+	{
+		/** The Java value. */
+		sjme_jvalue java;
+
+		/** Constant string. */
+		sjme_lpcstr string;
+	} value;
+} sjme_class_fieldConstVal;
+
 struct sjme_class_fieldInfoCore
 {
 	/** The class which contains this field. */
@@ -561,7 +582,7 @@ struct sjme_class_fieldInfoCore
 	sjme_class_fieldFlags flags;
 
 	/** The constant value, if any. */
-	sjme_jvalue constVal;
+	sjme_class_fieldConstVal constVal;
 };
 
 struct sjme_class_methodInfoCore
@@ -610,7 +631,8 @@ sjme_errorCode sjme_class_parse(
 
 sjme_errorCode sjme_class_parseAttributeCode(
 	sjme_attrInNotNull sjme_stream_input inStream,
-	sjme_attrInNotNull sjme_class_methodInfo inMethod);
+	sjme_attrInNotNull sjme_class_methodInfo inMethod,
+	sjme_attrOutNotNull sjme_class_codeInfo* outCode);
 
 sjme_errorCode sjme_class_parseAttributeConstVal(
 	sjme_attrInNotNull sjme_stream_input inStream,
