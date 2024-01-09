@@ -24,7 +24,7 @@ SJME_TEST_DECLARE(testClassParseInterfaces)
 	sjme_classBuilder builder;
 
 	memset(&builder, 0, sizeof(builder));
-	if (SJME_IS_ERROR(sjme_classBuilder_init(test->pool,
+	if (SJME_IS_ERROR(sjme_classBuilder_build(test->pool,
 		&builder, test)))
 		return sjme_unitFail(test, "Failed to initialize class builder.");
 

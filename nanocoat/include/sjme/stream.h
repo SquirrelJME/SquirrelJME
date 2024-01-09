@@ -483,11 +483,29 @@ sjme_errorCode sjme_stream_outputWriteSingle(
 	sjme_attrInNotNull sjme_stream_output outStream,
 	sjme_attrInRange(0, 256) sjme_jint value);
 
+/**
+ * Writes a Java value to the output stream.
+ *
+ * @param outStream The stream to write to.
+ * @param typeId The type to write.
+ * @param value The value to write.
+ * @return Any resultant error, if any.
+ * @since 2024/01/09
+ */
 sjme_errorCode sjme_stream_outputWriteValueJP(
 	sjme_attrInNotNull sjme_stream_output outStream,
 	sjme_attrInRange(0, SJME_NUM_BASIC_TYPE_IDS) sjme_basicTypeId typeId,
 	sjme_attrInNotNull const sjme_jvalue* value);
 
+/**
+ * Writes a Java value to the output stream.
+ *
+ * @param outStream The stream to write to.
+ * @param typeId The type to write.
+ * @param ... The value to write.
+ * @return Any resultant error, if any.
+ * @since 2024/01/09
+ */
 sjme_errorCode sjme_stream_outputWriteValueJ(
 	sjme_attrInNotNull sjme_stream_output outStream,
 	sjme_attrInRange(0, SJME_NUM_BASIC_TYPE_IDS) sjme_basicTypeId typeId,
