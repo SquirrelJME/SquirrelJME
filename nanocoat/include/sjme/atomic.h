@@ -66,7 +66,7 @@ extern "C" {
 	static sjme_inline sjme_attrArtificial \
 		sjme_jboolean SJME_ATOMIC_FUNCTION_NAME(type, numPointerStars, \
 			_compareSet) \
-			(SJME_ATOMIC_NAME(type, numPointerStars)* atomic, \
+			(struct SJME_ATOMIC_NAME(type, numPointerStars)* atomic, \
 			SJME_TOKEN_TYPE(type, numPointerStars) expected, \
 			SJME_TOKEN_TYPE(type, numPointerStars) set)
 
@@ -82,7 +82,7 @@ extern "C" {
 		SJME_TOKEN_TYPE(type, numPointerStars) \
 			SJME_ATOMIC_FUNCTION_NAME(type, numPointerStars, \
 				_getAdd) \
-			(SJME_ATOMIC_NAME(type, numPointerStars)* atomic, \
+			(struct SJME_ATOMIC_NAME(type, numPointerStars)* atomic, \
 			SJME_TOKEN_TYPE(type, numPointerStars) add)
 
 #if defined(SJME_CONFIG_HAS_ATOMIC_GCC)
@@ -160,13 +160,15 @@ extern "C" {
  * @since 2024/01/08
  */
 #define SJME_ATOMIC_DECLARE(type, numPointerStars) \
-	typedef struct SJME_ATOMIC_NAME(type, numPointerStars) \
+	struct SJME_ATOMIC_NAME(type, numPointerStars) \
 	{ \
 		/** The atomic value. */ \
 		SJME_TOKEN_TYPE(type, numPointerStars) volatile value; \
-	} SJME_ATOMIC_NAME(type, numPointerStars); \
+	}; \
 	SJME_ATOMIC_FUNCTION_COMMON(type, numPointerStars, \
-		SJME_TOKEN_SINGLE(SJME_TOKEN_HAS_STARS(numPointerStars)))
+		SJME_TOKEN_SINGLE(SJME_TOKEN_HAS_STARS(numPointerStars))) \
+	typedef struct SJME_ATOMIC_NAME(type, numPointerStars) \
+		SJME_ATOMIC_NAME(type, numPointerStars)
 
 #else
 
