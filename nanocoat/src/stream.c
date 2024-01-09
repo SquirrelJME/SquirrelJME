@@ -377,3 +377,147 @@ sjme_errorCode sjme_stream_outputClose(
 	sjme_todo("Implement this?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
+
+sjme_errorCode sjme_stream_outputOpenMemory(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrOutNotNull sjme_stream_output* outStream,
+	sjme_attrInNotNull void* base,
+	sjme_attrInPositive sjme_jint length)
+{
+	uintptr_t realBase;
+
+	if (inPool == NULL || outStream == NULL || base == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	realBase = (uintptr_t)base;
+	if (length < 0 || (realBase + length) < realBase)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	sjme_todo("Implement this?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+sjme_errorCode sjme_stream_outputWrite(
+	sjme_attrInNotNull sjme_stream_output outStream,
+	sjme_attrOutNotNullBuf(length) void* src,
+	sjme_attrInPositive sjme_jint length)
+{
+	/* Forwards to iter variant. */
+	return sjme_stream_outputWriteIter(outStream, src, 0, length);
+}
+
+sjme_errorCode sjme_stream_outputWriteIter(
+	sjme_attrInNotNull sjme_stream_output outStream,
+	sjme_attrOutNotNullBuf(length) void* src,
+	sjme_attrInPositive sjme_jint offset,
+	sjme_attrInPositive sjme_jint length)
+{
+	uintptr_t realSrc;
+
+	if (outStream == NULL || src == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	realSrc = (uintptr_t)src;
+	if (offset < 0 || length < 0 || (offset + length) < 0 ||
+		(realSrc + offset) < realSrc || (realSrc + length) < realSrc ||
+		(realSrc + offset + length) < realSrc)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	sjme_todo("Implement this?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+sjme_errorCode sjme_stream_outputWriteSingle(
+	sjme_attrInNotNull sjme_stream_output outStream,
+	sjme_attrInRange(0, 256) sjme_jint value)
+{
+	sjme_jubyte really;
+
+	/* Map down value. */
+	really = (sjme_jubyte)(value & 0xFF);
+
+	/* Forward call. */
+	return sjme_stream_outputWriteIter(outStream,
+		&really, 0, 1);
+}
+
+sjme_errorCode sjme_stream_outputWriteValueJP(
+	sjme_attrInNotNull sjme_stream_output outStream,
+	sjme_attrInRange(0, SJME_NUM_BASIC_TYPE_IDS) sjme_basicTypeId typeId,
+	sjme_attrInNotNull const sjme_jvalue* value)
+{
+	if (outStream == NULL || value == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (typeId < 0 || typeId >= SJME_NUM_BASIC_TYPE_IDS ||
+		typeId == SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE ||
+		typeId == SJME_BASIC_TYPE_ID_OBJECT)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	sjme_todo("Implement this?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+sjme_errorCode sjme_stream_outputWriteValueJ(
+	sjme_attrInNotNull sjme_stream_output outStream,
+	sjme_attrInRange(0, SJME_NUM_BASIC_TYPE_IDS) sjme_basicTypeId typeId,
+	...)
+{
+	va_list va;
+	sjme_jvalue value;
+
+	if (typeId < 0 || typeId >= SJME_NUM_BASIC_TYPE_IDS ||
+		typeId == SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE ||
+		typeId == SJME_BASIC_TYPE_ID_OBJECT)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Clear before reading in. */
+	memset(&value, 0, sizeof(value));
+
+	/* Read in the argument accordingly. */
+	va_start(va, typeId);
+	switch (typeId)
+	{
+		case SJME_BASIC_TYPE_ID_BOOLEAN:
+			value.z = !!va_arg(va, sjme_jboolean);
+			break;
+
+		case SJME_BASIC_TYPE_ID_BYTE:
+			value.b = va_arg(va, sjme_jbyte);
+			break;
+
+		case SJME_BASIC_TYPE_ID_SHORT:
+			value.s = va_arg(va, sjme_jshort);
+			break;
+
+		case SJME_BASIC_TYPE_ID_CHARACTER:
+			value.c = va_arg(va, sjme_jchar);
+			break;
+
+		case SJME_BASIC_TYPE_ID_INTEGER:
+			value.i = va_arg(va, sjme_jint);
+			break;
+
+		case SJME_BASIC_TYPE_ID_LONG:
+			value.j = va_arg(va, sjme_jlong);
+			break;
+
+		case SJME_BASIC_TYPE_ID_FLOAT:
+			value.f = va_arg(va, sjme_jfloat);
+			break;
+
+		case SJME_BASIC_TYPE_ID_DOUBLE:
+			value.d = va_arg(va, sjme_jdouble);
+			break;
+
+		default:
+			return SJME_ERROR_INVALID_ARGUMENT;
+	}
+
+	/* Stop. */
+	va_end(va);
+
+	/* Forward call. */
+	return sjme_stream_outputWriteValueJP(outStream, typeId,
+		&value);
+}

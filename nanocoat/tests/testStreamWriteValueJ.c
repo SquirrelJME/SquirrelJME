@@ -17,7 +17,7 @@
 
 #define DATA_LEN 58
 
-/** Input test data. */
+/** Expected test data. */
 static const sjme_jubyte testData[DATA_LEN] =
 {
 	0x00, 0x01, 0x04, 0xD2, 0x11, 0xD7, 0x00,
@@ -31,40 +31,46 @@ static const sjme_jubyte testData[DATA_LEN] =
 	0x43, 0x21
 };
 
-#define READ_SEQ(type) \
-	memset(&value, 0, sizeof(value)); \
-	if (SJME_IS_ERROR(sjme_stream_inputReadValueJ(stream, \
+#define WRITE_SEQ(type) \
+	if (SJME_IS_ERROR(sjme_stream_outputWriteValueJP(stream, \
 		SJME_TOKEN_PASTE_PP(SJME_BASIC_TYPE_ID_, type), \
 		&value))) \
-		sjme_unitFail(test, "Could not read %s?", #type) \
+		sjme_unitFail(test, "Could not write %s?", #type) \
 
-#define STREAM_SEQ(type, structMember, expected) \
-	READ_SEQ(type); \
-	sjme_unitEqualI(test, value.structMember, (expected), \
-		"Incorrect value for %s?", #type)
+#define STREAM_SEQ(type, structMember, what) \
+	memset(&value, 0, sizeof(value)); \
+	value.structMember = what; \
+	WRITE_SEQ(type)
 
-#define STREAM_SEQ2(type, hiMember, loMember, hiExpected, loExpected) \
-	READ_SEQ(type); \
-	sjme_unitEqualI(test, value.hiMember, (hiExpected), \
-		"Incorrect hi value for %s?", #type); \
-	sjme_unitEqualI(test, value.loMember, (loExpected), \
-		"Incorrect lo value for %s?", #type)
+#define STREAM_SEQ2(type, hiMember, loMember, hiWhat, loWhat) \
+	memset(&value, 0, sizeof(value)); \
+	value.hiMember = hiWhat; \
+	value.loMember = loWhat; \
+	WRITE_SEQ(type)
 
 /**
- * Tests reading of Java values from a stream.
+ * Tests writing Java values to the output.
  *  
- * @since 2024/01/05 
+ * @since 2024/01/09 
  */
-SJME_TEST_DECLARE(testStreamReadValueJ)
+SJME_TEST_DECLARE(testStreamWriteValueJ)
 {
 	sjme_jvalue value;
-	sjme_stream_input stream;
-	sjme_jint single;
+	sjme_stream_output stream;
+	void* buf;
 
-	/* Open stream to the raw binary data. */
+	/* Setup buffer to write to. */
+	buf = sjme_alloca(DATA_LEN);
+	if (buf == NULL)
+		return sjme_unitFail(test, "Could not output buffer.");
+
+	/* Clear buffer. */
+	memset(buf, 0, DATA_LEN);
+
+	/* Open stream to write all the data in. */
 	stream = NULL;
-	if (SJME_IS_ERROR(sjme_stream_inputOpenMemory(test->pool,
-		&stream, testData, DATA_LEN)) ||
+	if (SJME_IS_ERROR(sjme_stream_outputOpenMemory(test->pool,
+		&stream, buf, DATA_LEN)) ||
 		stream == NULL)
 		return sjme_unitFail(test, "Could not open initial stream.");
 
@@ -110,19 +116,19 @@ SJME_TEST_DECLARE(testStreamReadValueJ)
 	/* dos.writeDouble(Double.longBitsToDouble(0x8765432187654321L)); */
 	STREAM_SEQ2(DOUBLE, d.hi, d.lo, 0x87654321, 0x87654321);
 
-	/* EOF. */
-	single = -2;
-	if (SJME_IS_ERROR(sjme_stream_inputReadSingle(stream,
-		&single)) || single < -1)
-		return sjme_unitFail(test, "Could not read final byte?");
+	/* All the buffer bytes should match. */
+	sjme_unitEqualI(test,
+		0, memcmp(buf, testData, DATA_LEN),
+		"Written buffer does not match?");
 
-	/* Must be end of stream. */
-	sjme_unitEqualI(test, single, -1,
-		"End of stream not reached?");
+	/* The write count should be the buffer size. */
+	sjme_unitEqualI(test,
+		DATA_LEN, stream->totalWritten,
+		"Number of written bytes incorrect?");
 
-	/* Close the stream. */
-	if (SJME_IS_ERROR(sjme_stream_inputClose(stream)))
-		return sjme_unitFail(test, "Could not close stream?");
+	/* Close stream. */
+	if (SJME_IS_ERROR(sjme_stream_outputClose(stream)))
+		return sjme_unitFail(test, "Could not close output stream.");
 
 	/* Success! */
 	return SJME_TEST_RESULT_PASS;

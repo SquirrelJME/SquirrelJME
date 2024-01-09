@@ -45,6 +45,13 @@ typedef struct sjme_stream_inputCore sjme_stream_inputCore;
 typedef struct sjme_stream_inputCore* sjme_stream_input;
 
 /**
+ * The core output stream which is written to with data.
+ *
+ * @since 2024/01/09
+ */
+typedef struct sjme_stream_outputCore sjme_stream_outputCore;
+
+/**
  * Represents a data stream that can be written to.
  *
  * @since 2023/12/30
@@ -153,6 +160,90 @@ struct sjme_stream_inputCore
  */
 #define SJME_SIZEOF_INPUT_STREAM(uncommonType) \
 	SJME_SIZEOF_INPUT_STREAM_N(sizeof(uncommonType))
+
+/**
+ * Closes the specified output stream.
+ *
+ * @param outStream The output stream to close.
+ * @return On any resultant error, if any.
+ * @since 2024/01/09
+ */
+typedef sjme_errorCode (*sjme_stream_outputCloseFunc)(
+	sjme_attrInNotNull sjme_stream_output outStream);
+
+/**
+ * Writes to the given output stream.
+ *
+ * @param outStream The stream to write to.
+ * @param buf The bytes to write.
+ * @param length The number of bytes to write.
+ * @return On any resultant error, if any.
+ * @since 2024/01/09
+ */
+typedef sjme_errorCode (*sjme_stream_outputWriteFunc)(
+	sjme_attrInNotNull sjme_stream_output outStream,
+	sjme_attrInNotNull const void* buf,
+	sjme_attrInPositiveNonZero sjme_jint length);
+
+/**
+ * Functions for writing to the output.
+ *
+ * @since 2024/01/09
+ */
+typedef struct sjme_stream_outputFunctions
+{
+	/** Closes the specified stream. */
+	sjme_stream_outputCloseFunc close;
+
+	/** Writes to the given output stream. */
+	sjme_stream_outputWriteFunc write;
+} sjme_stream_outputFunctions;
+
+struct sjme_stream_outputCore
+{
+	/** Functions for output. */
+	const sjme_stream_outputFunctions* functions;
+
+	/** Front end holders. */
+	sjme_frontEnd frontEnd;
+
+	/** The current number of written bytes. */
+	sjme_jint totalWritten;
+
+	/** Uncommon stream specific data. */
+	sjme_jlong uncommon[sjme_flexibleArrayCount];
+};
+
+/**
+ * Gets the state information from the given output stream.
+ *
+ * @param uncommonType The uncommon type.
+ * @param base The base pointer.
+ * @since 2024/01/09
+ */
+#define SJME_OUTPUT_UNCOMMON(uncommonType, base) \
+	SJME_UNCOMMON_MEMBER(sjme_stream_outputCore, uncommon, \
+		uncommonType, (base))
+
+/**
+ * Determines the size of the output stream structure.
+ *
+ * @param uncommonSize The uncommon size.
+ * @return The output stream structure size.
+ * @since 2024/01/09
+ */
+#define SJME_SIZEOF_OUTPUT_STREAM_N(uncommonSize) \
+    SJME_SIZEOF_UNCOMMON_N(sjme_stream_outputCore, uncommon, uncommonSize)
+
+/**
+ * Determines the size of the output stream structure.
+ *
+ * @param uncommonType The uncommon type.
+ * @return The output stream structure size.
+ * @since 2024/01/09
+ */
+#define SJME_SIZEOF_OUTPUT_STREAM(uncommonType) \
+	SJME_SIZEOF_OUTPUT_STREAM_N(sizeof(uncommonType))
 
 /**
  * Determines the number of bytes which are quickly available before blocking
@@ -268,6 +359,75 @@ sjme_errorCode sjme_stream_inputReadValueJ(
  */
 sjme_errorCode sjme_stream_outputClose(
 	sjme_attrInNotNull sjme_stream_output stream);
+
+/**
+ * Opens an output stream which writes to the given block of memory, note that
+ * when it reaches the end of the block it will fail to write following it.
+ *
+ * @param inPool The pool to allocate within.
+ * @param outStream The resultant output stream.
+ * @param base The base memory address to write to.
+ * @param length The length of the memory region.
+ * @return Any resultant error, if any.
+ * @since 2024/01/09
+ */
+sjme_errorCode sjme_stream_outputOpenMemory(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrOutNotNull sjme_stream_output* outStream,
+	sjme_attrInNotNull void* base,
+	sjme_attrInPositive sjme_jint length);
+
+/**
+ * Writes to the given output stream.
+ *
+ * @param outStream The stream to write to.
+ * @param src The source bytes.
+ * @param length The number of bytes to write.
+ * @return Any resultant error, if any.
+ * @since 2024/01/09
+ */
+sjme_errorCode sjme_stream_outputWrite(
+	sjme_attrInNotNull sjme_stream_output outStream,
+	sjme_attrOutNotNullBuf(length) void* src,
+	sjme_attrInPositive sjme_jint length);
+
+/**
+ * Writes to the given output stream.
+ *
+ * @param outStream The stream to write to.
+ * @param src The source bytes.
+ * @param offset The offset into the buffer.
+ * @param length The number of bytes to write.
+ * @return Any resultant error, if any.
+ * @since 2024/01/09
+ */
+sjme_errorCode sjme_stream_outputWriteIter(
+	sjme_attrInNotNull sjme_stream_output outStream,
+	sjme_attrOutNotNullBuf(length) void* src,
+	sjme_attrInPositive sjme_jint offset,
+	sjme_attrInPositive sjme_jint length);
+
+/**
+ * Writes a single byte to the output stream.
+ *
+ * @param outStream The stream to write to.
+ * @param value The value to write, only the lower eight bits are kept.
+ * @return Any resultant error, if any.
+ * @since 2024/01/09
+ */
+sjme_errorCode sjme_stream_outputWriteSingle(
+	sjme_attrInNotNull sjme_stream_output outStream,
+	sjme_attrInRange(0, 256) sjme_jint value);
+
+sjme_errorCode sjme_stream_outputWriteValueJP(
+	sjme_attrInNotNull sjme_stream_output outStream,
+	sjme_attrInRange(0, SJME_NUM_BASIC_TYPE_IDS) sjme_basicTypeId typeId,
+	sjme_attrInNotNull const sjme_jvalue* value);
+
+sjme_errorCode sjme_stream_outputWriteValueJ(
+	sjme_attrInNotNull sjme_stream_output outStream,
+	sjme_attrInRange(0, SJME_NUM_BASIC_TYPE_IDS) sjme_basicTypeId typeId,
+	...);
 
 /*--------------------------------------------------------------------------*/
 
