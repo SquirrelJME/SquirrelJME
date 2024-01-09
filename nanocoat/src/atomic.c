@@ -9,7 +9,7 @@
 
 #include "sjme/atomic.h"
 
-#if 0 defined(SJME_CONFIG_HAS_ATOMIC_GCC)
+#if defined(SJME_CONFIG_HAS_ATOMIC_GCC)
 
 	/** Memory order used for GCC. */
 	#define SJME_ATOMIC_GCC_MEMORY_ORDER __ATOMIC_SEQ_CST
