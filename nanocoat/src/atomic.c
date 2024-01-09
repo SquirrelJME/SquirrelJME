@@ -31,9 +31,20 @@
 	#define SJME_ATOMIC_FUNCTION_GET_ADD(type, numPointerStars) \
 		SJME_ATOMIC_PROTOTYPE_GET_ADD(type, numPointerStars) \
 		{ \
+			if (add == 0) \
+				return __atomic_load_n(&atomic->value, \
+					SJME_ATOMIC_GCC_MEMORY_ORDER); \
 			return \
 				__atomic_fetch_add(&atomic->value, \
 				add, \
+				SJME_ATOMIC_GCC_MEMORY_ORDER); \
+		}
+
+	#define SJME_ATOMIC_FUNCTION_SET(type, numPointerStars) \
+		SJME_ATOMIC_PROTOTYPE_SET(type, numPointerStars) \
+		{ \
+			return __atomic_exchange_n(&atomic->value, \
+				(SJME_TOKEN_TYPE(type, numPointerStars))value, \
 				SJME_ATOMIC_GCC_MEMORY_ORDER); \
 		}
 
@@ -46,15 +57,21 @@
 	/** The value type for getAdd. */
 	#define SJME_ATOMIC_WIN32_TYPEGA(type, numPointerStars) \
 		SJME_TYPEOF_IF_NOT_POINTER_OR(type, numPointerStars, LONG, LONG64)
-	
-	/** The compare function to use for pointers. */
+
 	#if SJME_CONFIG_HAS_POINTER == 64
 		#define SJME_ATOMIC_WIN32_IA(type, numPointerStars) \
 			SJME_TYPEOF_IF_NOT_POINTER_OR(type, numPointerStars, \
 				InterlockedAdd, InterlockedAdd64)
+
+		#define SJME_ATOMIC_WIN32_S(type, numPointerStars) \
+			SJME_TYPEOF_IF_NOT_POINTER_OR(type, numPointerStars, \
+				InterlockedExchange, InterlockedExchange64)
 	#else
 		#define SJME_ATOMIC_WIN32_IA(type, numPointerStars) \
 			InterlockedAdd
+
+		#define SJME_ATOMIC_WIN32_S(type, numPointerStars) \
+			InterlockedExchange
 	#endif
 	
 	#define SJME_ATOMIC_FUNCTION_COMPARE_SET(type, numPointerStars) \
@@ -83,11 +100,27 @@
 					numPointerStars)*)&atomic->value, 0); \
 		}
 
+	#define SJME_ATOMIC_FUNCTION_SET(type, numPointerStars) \
+		SJME_ATOMIC_PROTOTYPE_SET(type, numPointerStars) \
+		{ \
+			return SJME_TOKEN_TYPE(type, numPointerStars) \
+				SJME_ATOMIC_WIN32_S(type, numPointerStars)( \
+				(volatile SJME_ATOMIC_WIN32_TYPEGA(type, numPointerStars)*) \
+					&atomic->value, value); \
+		}
+
 #else
 
 #error No atomic access functions.
 
 #endif
+
+#define SJME_ATOMIC_FUNCTION_GET(type, numPointerStars) \
+	SJME_ATOMIC_PROTOTYPE_GET(type, numPointerStars) \
+	{ \
+		return SJME_ATOMIC_FUNCTION_NAME(type, numPointerStars, _getAdd) \
+			(atomic, 0); \
+	}
 
 /**
  * Common atomic function sets.
@@ -99,15 +132,17 @@
  */
 #define SJME_ATOMIC_FUNCTION(type, numPointerStars) \
 	SJME_ATOMIC_FUNCTION_COMPARE_SET(type, numPointerStars) \
-	SJME_ATOMIC_FUNCTION_GET_ADD(type, numPointerStars)
+	SJME_ATOMIC_FUNCTION_GET_ADD(type, numPointerStars) \
+	SJME_ATOMIC_FUNCTION_SET(type, numPointerStars) \
+	SJME_ATOMIC_FUNCTION_GET(type, numPointerStars)
 
 SJME_ATOMIC_FUNCTION(sjme_jint, 0)
 
 SJME_ATOMIC_FUNCTION(sjme_juint, 0)
 
-SJME_ATOMIC_FUNCTION(sjme_lpstr, 0)
+SJME_ATOMIC_FUNCTION(sjme_lpstr, 0) /* NOLINT(*-non-const-parameter) */
 
-SJME_ATOMIC_FUNCTION(sjme_lpcstr, 0)
+SJME_ATOMIC_FUNCTION(sjme_lpcstr, 0) /* NOLINT(*-non-const-parameter) */
 
 SJME_ATOMIC_FUNCTION(sjme_jobject, 0)
 

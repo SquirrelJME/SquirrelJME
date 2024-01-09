@@ -352,6 +352,38 @@ sjme_testResult sjme_unitOperatorSR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	return SJME_TEST_RESULT_PASS;
 }
 
+sjme_testResult sjme_unitOperatorZR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_attrInValue sjme_unitOperator operator,
+	sjme_attrInNotNull sjme_test* test,
+	sjme_attrInValue sjme_jboolean a,
+	sjme_attrInValue sjme_jboolean b,
+	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr format, ...)
+{
+	SJME_VA_DEF;
+	const sjme_unitOperatorInfo* opInfo;
+
+	if (operator != SJME_UNIT_OPERATOR_EQUAL &&
+		operator != SJME_UNIT_OPERATOR_NOT_EQUAL)
+		SJME_VA_SHORT(SJME_TEST_RESULT_FAIL);
+	opInfo = &sjme_unitOperatorInfos[operator];
+
+	if ((a == b) != (operator == SJME_UNIT_OPERATOR_EQUAL))
+	{
+		sjme_messageR(file, line, func, SJME_JNI_FALSE,
+			"ASSERT: %s %s %s",
+			(a ? "true" : "false"), opInfo->symbol, (b ? "true" : "false"));
+		SJME_VA_SHORT(SJME_TEST_RESULT_FAIL);
+	}
+	else
+	{
+		sjme_messageR(file, line, func, SJME_JNI_FALSE,
+			"PASS: %s %s %s",
+			(a ? "true" : "false"), opInfo->symbol, (b ? "true" : "false"));
+	}
+
+	return SJME_TEST_RESULT_PASS;
+}
+
 sjme_testResult sjme_unitFailR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_attrInNotNull sjme_test* test,
 	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr format, ...)

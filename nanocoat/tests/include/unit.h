@@ -261,6 +261,56 @@ sjme_testResult sjme_unitOperatorSR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 		SJME_UNIT_OPERATOR_EQUAL, __VA_ARGS__)
 
 /**
+ * Checks equality between the two boolean values.
+ *
+ * @param inverted Is the check inverted?
+ * @param test The test data.
+ * @param a The first value.
+ * @param b The second value.
+ * @param format The message.
+ * @param ... The message parameters.
+ * @return The assertion state.
+ * @since 2024/01/09
+ */
+sjme_testResult sjme_unitOperatorZR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_attrInValue sjme_unitOperator operator,
+	sjme_attrInNotNull sjme_test* test,
+	sjme_attrInValue sjme_jboolean a,
+	sjme_attrInValue sjme_jboolean b,
+	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr format, ...)
+	sjme_attrFormatOuter(7, 8);
+
+/**
+ * Checks equality between the two boolean values.
+ *
+ * @param test The test data.
+ * @param a The first value.
+ * @param b The second value.
+ * @param format The message.
+ * @param ... The message parameters.
+ * @return The assertion state.
+ * @since 2024/01/09
+ */
+#define sjme_unitEqualZ(...) \
+	sjme_unitOperatorZR(SJME_DEBUG_FILE_LINE_FUNC, \
+		SJME_UNIT_OPERATOR_EQUAL, __VA_ARGS__)
+
+/**
+ * Checks inequality between the two boolean values.
+ *
+ * @param test The test data.
+ * @param a The first value.
+ * @param b The second value.
+ * @param format The message.
+ * @param ... The message parameters.
+ * @return The assertion state.
+ * @since 2024/01/09
+ */
+#define sjme_unitNotEqualZ(...) \
+	sjme_unitOperatorZR(SJME_DEBUG_FILE_LINE_FUNC, \
+		SJME_UNIT_OPERATOR_NOT_EQUAL, __VA_ARGS__)
+
+/**
  * Unit test just fails.
  * 
  * @param test The test data.

@@ -56,33 +56,60 @@ extern "C" {
 	SJME_TOKEN_PASTE_PP(SJME_ATOMIC_NAME(type, numPointerStars), name)
 
 /**
- * Prototype for the atomic compare and set.
+ * Prototype for the atomic compare and set function.
  *
  * @param type The type used.
  * @param numPointerStars The number of pointer stars.
  * @since 2024/01/09
  */
 #define SJME_ATOMIC_PROTOTYPE_COMPARE_SET(type, numPointerStars) \
-		sjme_jboolean SJME_ATOMIC_FUNCTION_NAME(type, numPointerStars, \
-			_compareSet) \
-			(SJME_ATOMIC_NAME(type, numPointerStars)* atomic, \
-			SJME_TOKEN_TYPE(type, numPointerStars) expected, \
-			SJME_TOKEN_TYPE(type, numPointerStars) set)
+	sjme_jboolean SJME_ATOMIC_FUNCTION_NAME(type, numPointerStars, \
+		_compareSet) \
+		(SJME_ATOMIC_NAME(type, numPointerStars)* atomic, \
+		SJME_TOKEN_TYPE(type, numPointerStars) expected, \
+		SJME_TOKEN_TYPE(type, numPointerStars) set)
 
 /**
- * Prototype for the atomic get then add.
+ * Prototype for the atomic get then add function.
  *
  * @param type The type used.
  * @param numPointerStars The number of pointer stars.
  * @since 2024/01/09
  */
 #define SJME_ATOMIC_PROTOTYPE_GET_ADD(type, numPointerStars) \
-		SJME_TOKEN_TYPE(type, numPointerStars) \
-			SJME_ATOMIC_FUNCTION_NAME(type, numPointerStars, \
-				_getAdd) \
-			(SJME_ATOMIC_NAME(type, numPointerStars)* atomic, \
-			SJME_TYPEOF_IF_NOT_POINTER_OR(type, numPointerStars, \
-				SJME_TOKEN_TYPE(type, numPointerStars), intptr_t) add)
+	SJME_TOKEN_TYPE(type, numPointerStars) \
+		SJME_ATOMIC_FUNCTION_NAME(type, numPointerStars, \
+			_getAdd) \
+		(SJME_ATOMIC_NAME(type, numPointerStars)* atomic, \
+		SJME_TYPEOF_IF_NOT_POINTER_OR(type, numPointerStars, \
+			SJME_TOKEN_TYPE(type, numPointerStars), intptr_t) add)
+
+/**
+ * Prototype for the atomic set function.
+ *
+ * @param type The type used.
+ * @param numPointerStars The number of pointer stars.
+ * @since 2024/01/09
+ */
+#define SJME_ATOMIC_PROTOTYPE_SET(type, numPointerStars) \
+	SJME_TOKEN_TYPE(type, numPointerStars) \
+		SJME_ATOMIC_FUNCTION_NAME(type, numPointerStars, \
+			_set) \
+		(SJME_ATOMIC_NAME(type, numPointerStars)* atomic, \
+		SJME_TOKEN_TYPE(type, numPointerStars) value)
+
+/**
+ * Prototype for the atomic get function.
+ *
+ * @param type The type used.
+ * @param numPointerStars The number of pointer stars.
+ * @since 2024/01/09
+ */
+#define SJME_ATOMIC_PROTOTYPE_GET(type, numPointerStars) \
+	SJME_TOKEN_TYPE(type, numPointerStars) \
+		SJME_ATOMIC_FUNCTION_NAME(type, numPointerStars, \
+			_get) \
+		(SJME_ATOMIC_NAME(type, numPointerStars)* atomic)
 
 /**
  * Common atomic function sets.
@@ -93,7 +120,9 @@ extern "C" {
  */
 #define SJME_ATOMIC_PROTOTYPE_COMMON(type, numPointerStars) \
 	SJME_ATOMIC_PROTOTYPE_COMPARE_SET(type, numPointerStars); \
-	SJME_ATOMIC_PROTOTYPE_GET_ADD(type, numPointerStars)
+	SJME_ATOMIC_PROTOTYPE_GET_ADD(type, numPointerStars); \
+	SJME_ATOMIC_PROTOTYPE_SET(type, numPointerStars); \
+	SJME_ATOMIC_PROTOTYPE_GET(type, numPointerStars)
 
 #if defined(SJME_CONFIG_HAS_ATOMIC_C11)
 
