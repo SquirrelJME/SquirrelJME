@@ -15,11 +15,11 @@
 #include "unit.h"
 
 /**
- * Tests parsing name and type within the constant pool.
+ * Tests parsing of a blank class.
  *  
  * @since 2024/01/01 
  */
-SJME_TEST_DECLARE(testClassParseConstantPoolNameAndType)
+SJME_TEST_DECLARE(testClassParseBlank)
 {
 	sjme_classBuilder builder;
 

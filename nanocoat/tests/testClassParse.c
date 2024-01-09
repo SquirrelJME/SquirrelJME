@@ -7,6 +7,8 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <string.h>
+
 #include "mock.h"
 #include "proto.h"
 #include "test.h"
@@ -19,12 +21,12 @@
  */
 SJME_TEST_DECLARE(testClassParse)
 {
-	sjme_stream_input stream;
+	sjme_classBuilder builder;
 
-#if 0
-	if (SJME_IS_ERROR(sjme_stream_inputOpenMemory()))
-		return sjme_unitFail(test, "Could not open class input stream.");
-#endif
+	memset(&builder, 0, sizeof(builder));
+	if (SJME_IS_ERROR(sjme_classBuilder_init(test->pool,
+		&builder, test)))
+		return sjme_unitFail(test, "Failed to initialize class builder.");
 
 	sjme_todo("Implement %s", __func__);
 	return SJME_TEST_RESULT_FAIL;
