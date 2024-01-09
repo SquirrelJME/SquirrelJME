@@ -19,14 +19,14 @@
  *
  * @since 2024/01/01
  */
-typedef struct sjme_stream_inputCacheMemory
+typedef struct sjme_stream_cacheMemory
 {
 	/** The base address. */
-	const void* base;
+	void* base;
 
 	/** The number of bytes in the memory stream. */
 	sjme_jint length;
-} sjme_stream_inputCacheMemory;
+} sjme_stream_cacheMemory;
 
 /**
  * Gets the state information from the given input stream.
@@ -35,13 +35,22 @@ typedef struct sjme_stream_inputCacheMemory
  * @since 2024/01/01
  */
 #define SJME_INPUT_MEMORY_UNCOMMON(base) \
-	SJME_INPUT_UNCOMMON(sjme_stream_inputCacheMemory, (base))
+	SJME_INPUT_UNCOMMON(sjme_stream_cacheMemory, (base))
+
+/**
+ * Gets the state information from the given output stream.
+ *
+ * @param base The base pointer.
+ * @since 2024/01/09
+ */
+#define SJME_OUTPUT_MEMORY_UNCOMMON(base) \
+	SJME_OUTPUT_UNCOMMON(sjme_stream_cacheMemory, (base))
 
 static sjme_errorCode sjme_stream_inputMemoryAvailable(
 	sjme_attrInNotNull sjme_stream_input stream,
 	sjme_attrOutNotNull sjme_attrOutNegativeOnePositive sjme_jint* outAvail)
 {
-	sjme_stream_inputCacheMemory* cache;
+	sjme_stream_cacheMemory* cache;
 
 	if (stream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -70,7 +79,7 @@ static sjme_errorCode sjme_stream_inputMemoryRead(
 	sjme_attrOutNotNullBuf(length) void* dest,
 	sjme_attrInPositive sjme_jint length)
 {
-	sjme_stream_inputCacheMemory* cache;
+	sjme_stream_cacheMemory* cache;
 	sjme_jint limit;
 
 	if (stream == NULL || readCount == NULL || dest == NULL)
@@ -109,6 +118,54 @@ static const sjme_stream_inputFunctions sjme_stream_inputMemoryFunctions =
 	.available = sjme_stream_inputMemoryAvailable,
 	.close = sjme_stream_inputMemoryClose,
 	.read = sjme_stream_inputMemoryRead,
+};
+
+static sjme_errorCode sjme_stream_outputMemoryClose(
+	sjme_attrInNotNull sjme_stream_output outStream)
+{
+	if (outStream == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Nothing to be done here. */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_stream_outputMemoryWrite(
+	sjme_attrInNotNull sjme_stream_output stream,
+	sjme_attrInNotNull const void* buf,
+	sjme_attrInPositiveNonZero sjme_jint length)
+{
+	uintptr_t realBuf;
+	sjme_stream_cacheMemory* cache;
+	sjme_jint written;
+
+	if (stream == NULL || buf == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	realBuf = (uintptr_t)buf;
+	if (length < 0 || realBuf + length < realBuf)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Get cache. */
+	cache = SJME_INPUT_MEMORY_UNCOMMON(stream);
+
+	/* Overflowing write? */
+	written = stream->totalWritten;
+	if (written < 0 || (written + length) < 0 ||
+		(written + length) > cache->length)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	/* Copy the data directly. */
+	memmove((void*)((uintptr_t)cache->base + written), buf, length);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static const sjme_stream_outputFunctions sjme_stream_outputMemoryFunctions =
+{
+	.close = sjme_stream_outputMemoryClose,
+	.write = sjme_stream_outputMemoryWrite,
 };
 
 sjme_errorCode sjme_stream_inputAvailable(
@@ -163,23 +220,23 @@ sjme_errorCode sjme_stream_inputClose(
 sjme_errorCode sjme_stream_inputOpenMemory(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrOutNotNull sjme_stream_input* outStream,
-	sjme_attrInNotNull const void* buffer,
+	sjme_attrInNotNull const void* base,
 	sjme_attrInPositive sjme_jint length)
 {
 	sjme_stream_input result;
-	sjme_stream_inputCacheMemory* cache;
+	sjme_stream_cacheMemory* cache;
 	sjme_errorCode error;
 
-	if (inPool == NULL || outStream == NULL || buffer == NULL)
+	if (inPool == NULL || outStream == NULL || base == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	if (length < 0 || (((uintptr_t)buffer) + length) < ((uintptr_t)buffer))
+	if (length < 0 || (((uintptr_t)base) + length) < ((uintptr_t)base))
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 
 	/* Allocate result. */
 	result = NULL;
 	if (SJME_IS_ERROR(error = sjme_alloc(inPool,
-		SJME_SIZEOF_INPUT_STREAM(sjme_stream_inputCacheMemory),
+		SJME_SIZEOF_INPUT_STREAM(sjme_stream_cacheMemory),
 		&result)) || result == NULL)
 		return SJME_DEFAULT_ERROR(error);
 
@@ -190,7 +247,7 @@ sjme_errorCode sjme_stream_inputOpenMemory(
 	cache = SJME_INPUT_MEMORY_UNCOMMON(result);
 
 	/* Set initial state information. */
-	cache->base = buffer;
+	cache->base = base;
 	cache->length = length;
 
 	/* Return result. */
@@ -216,7 +273,7 @@ sjme_errorCode sjme_stream_inputReadIter(
 	sjme_attrInPositive sjme_jint length)
 {
 	uintptr_t rawDest;
-	sjme_jint count, newTotal;
+	sjme_jint count, newTotal, totalRead;
 	sjme_errorCode error;
 	void* trueDest;
 
@@ -234,6 +291,11 @@ sjme_errorCode sjme_stream_inputReadIter(
 
 	/* Calculate the true target address. */
 	trueDest = (void*)(rawDest + offset);
+
+	/* Overflowing write? */
+	totalRead = stream->totalRead;
+	if (totalRead < 0 || (totalRead + length) < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 
 	/* Read in the data. */
 	count = -2;
@@ -371,11 +433,25 @@ sjme_errorCode sjme_stream_inputReadValueJ(
 sjme_errorCode sjme_stream_outputClose(
 	sjme_attrInNotNull sjme_stream_output stream)
 {
+	sjme_errorCode error;
+
 	if (stream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Function needs to exist. */
+	if (stream->functions == NULL || stream->functions->close == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* Close the stream. */
+	if (SJME_IS_ERROR(error = stream->functions->close(stream)))
+		return SJME_DEFAULT_ERROR(error);
+
+	/* Cleanup after it. */
+	if (SJME_IS_ERROR(error = sjme_alloc_free(stream)))
+		return SJME_DEFAULT_ERROR(error);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_stream_outputOpenMemory(
@@ -384,7 +460,10 @@ sjme_errorCode sjme_stream_outputOpenMemory(
 	sjme_attrInNotNull void* base,
 	sjme_attrInPositive sjme_jint length)
 {
+	sjme_stream_output result;
 	uintptr_t realBase;
+	sjme_stream_cacheMemory* cache;
+	sjme_errorCode error;
 
 	if (inPool == NULL || outStream == NULL || base == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -393,8 +472,26 @@ sjme_errorCode sjme_stream_outputOpenMemory(
 	if (length < 0 || (realBase + length) < realBase)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 
-	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Allocate result. */
+	result = NULL;
+	if (SJME_IS_ERROR(error = sjme_alloc(inPool,
+		SJME_SIZEOF_OUTPUT_STREAM(sjme_stream_cacheMemory),
+		&result)) || result == NULL)
+		return SJME_DEFAULT_ERROR(error);
+
+	/* Set base information. */
+	result->functions = &sjme_stream_outputMemoryFunctions;
+
+	/* Get the cache. */
+	cache = SJME_OUTPUT_MEMORY_UNCOMMON(result);
+
+	/* Set initial state information. */
+	cache->base = base;
+	cache->length = length;
+
+	/* Return result. */
+	*outStream = result;
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_stream_outputWrite(
@@ -407,14 +504,16 @@ sjme_errorCode sjme_stream_outputWrite(
 }
 
 sjme_errorCode sjme_stream_outputWriteIter(
-	sjme_attrInNotNull sjme_stream_output outStream,
+	sjme_attrInNotNull sjme_stream_output stream,
 	sjme_attrOutNotNullBuf(length) void* src,
 	sjme_attrInPositive sjme_jint offset,
 	sjme_attrInPositive sjme_jint length)
 {
 	uintptr_t realSrc;
+	sjme_errorCode error;
+	sjme_jint written;
 
-	if (outStream == NULL || src == NULL)
+	if (stream == NULL || src == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	realSrc = (uintptr_t)src;
@@ -423,8 +522,25 @@ sjme_errorCode sjme_stream_outputWriteIter(
 		(realSrc + offset + length) < realSrc)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 
-	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Overflowing write? */
+	written = stream->totalWritten;
+	if (written < 0 || (written + length) < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	/* No write function exists? */
+	if (stream->functions->write == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* Forward call. */
+	if (SJME_IS_ERROR(error = stream->functions->write(stream,
+		(void*)(realSrc + offset), length)))
+		return SJME_DEFAULT_ERROR(error);
+
+	/* Increase write count. */
+	stream->totalWritten += length;
+
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_stream_outputWriteSingle(
@@ -446,6 +562,13 @@ sjme_errorCode sjme_stream_outputWriteValueJP(
 	sjme_attrInRange(0, SJME_NUM_BASIC_TYPE_IDS) sjme_basicTypeId typeId,
 	sjme_attrInNotNull const sjme_jvalue* value)
 {
+	sjme_jint reqCount;
+	union
+	{
+		sjme_jvalue value;
+		sjme_jubyte raw[8];
+	} temp;
+
 	if (outStream == NULL || value == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
@@ -454,8 +577,52 @@ sjme_errorCode sjme_stream_outputWriteValueJP(
 		typeId == SJME_BASIC_TYPE_ID_OBJECT)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
-	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* How many bytes do we need to write? */
+	switch (typeId)
+	{
+		case SJME_BASIC_TYPE_ID_BOOLEAN:
+		case SJME_BASIC_TYPE_ID_BYTE:
+			reqCount = 1;
+			break;
+
+		case SJME_BASIC_TYPE_ID_SHORT:
+		case SJME_BASIC_TYPE_ID_CHARACTER:
+			reqCount = 2;
+			break;
+
+		case SJME_BASIC_TYPE_ID_INTEGER:
+		case SJME_BASIC_TYPE_ID_FLOAT:
+			reqCount = 4;
+			break;
+
+		case SJME_BASIC_TYPE_ID_LONG:
+		case SJME_BASIC_TYPE_ID_DOUBLE:
+			reqCount = 8;
+			break;
+
+		default:
+			return SJME_ERROR_INVALID_ARGUMENT;
+	}
+
+	/* Copy value directly. */
+	memmove(&temp, value, sizeof(*value));
+
+#if defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)
+	/* Perform byte swap on the data. */
+	if (reqCount > 1)
+	{
+		if (reqCount == 2)
+			temp.value.s = sjme_swap_short(temp.value.s);
+		else if (reqCount == 4)
+			temp.value.i = sjme_swap_int(temp.value.i);
+		else
+			temp.value.j = sjme_swap_long(temp.value.j);
+	}
+#endif
+
+	/* Forward write. */
+	return sjme_stream_outputWriteIter(outStream,
+		&temp, 0, reqCount);
 }
 
 sjme_errorCode sjme_stream_outputWriteValueJ(

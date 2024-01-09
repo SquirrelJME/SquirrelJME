@@ -164,24 +164,24 @@ struct sjme_stream_inputCore
 /**
  * Closes the specified output stream.
  *
- * @param outStream The output stream to close.
+ * @param stream The output stream to close.
  * @return On any resultant error, if any.
  * @since 2024/01/09
  */
 typedef sjme_errorCode (*sjme_stream_outputCloseFunc)(
-	sjme_attrInNotNull sjme_stream_output outStream);
+	sjme_attrInNotNull sjme_stream_output stream);
 
 /**
  * Writes to the given output stream.
  *
- * @param outStream The stream to write to.
+ * @param stream The stream to write to.
  * @param buf The bytes to write.
  * @param length The number of bytes to write.
  * @return On any resultant error, if any.
  * @since 2024/01/09
  */
 typedef sjme_errorCode (*sjme_stream_outputWriteFunc)(
-	sjme_attrInNotNull sjme_stream_output outStream,
+	sjme_attrInNotNull sjme_stream_output stream,
 	sjme_attrInNotNull const void* buf,
 	sjme_attrInPositiveNonZero sjme_jint length);
 
@@ -275,7 +275,7 @@ sjme_errorCode sjme_stream_inputClose(
  *
  * @param inPool The pool to allocate within.
  * @param outStream The resultant stream.
- * @param buffer The buffer to access.
+ * @param base The buffer to access.
  * @param length The length of the buffer.
  * @return On any resultant error, if any.
  * @since 2023/12/31
@@ -283,7 +283,7 @@ sjme_errorCode sjme_stream_inputClose(
 sjme_errorCode sjme_stream_inputOpenMemory(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrOutNotNull sjme_stream_input* outStream,
-	sjme_attrInNotNull const void* buffer,
+	sjme_attrInNotNull const void* base,
 	sjme_attrInPositive sjme_jint length);
 
 /**
@@ -394,7 +394,7 @@ sjme_errorCode sjme_stream_outputWrite(
 /**
  * Writes to the given output stream.
  *
- * @param outStream The stream to write to.
+ * @param stream The stream to write to.
  * @param src The source bytes.
  * @param offset The offset into the buffer.
  * @param length The number of bytes to write.
@@ -402,7 +402,7 @@ sjme_errorCode sjme_stream_outputWrite(
  * @since 2024/01/09
  */
 sjme_errorCode sjme_stream_outputWriteIter(
-	sjme_attrInNotNull sjme_stream_output outStream,
+	sjme_attrInNotNull sjme_stream_output stream,
 	sjme_attrOutNotNullBuf(length) void* src,
 	sjme_attrInPositive sjme_jint offset,
 	sjme_attrInPositive sjme_jint length);
