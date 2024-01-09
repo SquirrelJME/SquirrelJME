@@ -554,12 +554,21 @@ struct sjme_class_infoCore
 
 struct sjme_class_fieldInfoCore
 {
+	/** The class which contains this field. */
+	sjme_class_info inClass;
+
 	/** Field flags. */
 	sjme_class_fieldFlags flags;
+
+	/** The constant value, if any. */
+	sjme_jvalue constVal;
 };
 
 struct sjme_class_methodInfoCore
 {
+	/** The class which contains this method. */
+	sjme_class_info inClass;
+
 	/** Method flags. */
 	sjme_class_methodFlags flags;
 
@@ -569,6 +578,9 @@ struct sjme_class_methodInfoCore
 
 struct sjme_class_codeInfoCore
 {
+	/** The method which contains this code. */
+	sjme_class_methodInfo inMethod;
+
 	/** Maximum number of locals. */
 	sjme_jint maxLocals;
 
@@ -595,6 +607,42 @@ sjme_errorCode sjme_class_parse(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInNotNull sjme_stream_input inStream,
 	sjme_attrOutNotNull sjme_class_info* outClass);
+
+sjme_errorCode sjme_class_parseAttributeCode(
+	sjme_attrInNotNull sjme_stream_input inStream,
+	sjme_attrInNotNull sjme_class_methodInfo inMethod);
+
+sjme_errorCode sjme_class_parseAttributeConstVal(
+	sjme_attrInNotNull sjme_stream_input inStream,
+	sjme_attrInNotNull sjme_class_fieldInfo inField);
+
+sjme_errorCode sjme_class_parseAttributeStackMapOld(
+	sjme_attrInNotNull sjme_stream_input inStream,
+	sjme_attrOutNotNull sjme_class_codeInfo inCode);
+
+sjme_errorCode sjme_class_parseAttributeStackMapNew(
+	sjme_attrInNotNull sjme_stream_input inStream,
+	sjme_attrOutNotNull sjme_class_codeInfo inCode);
+
+sjme_errorCode sjme_class_parseConstantPool(
+	sjme_attrInNotNull sjme_stream_input inStream,
+	sjme_attrInNotNull sjme_class_info inClass);
+
+sjme_errorCode sjme_class_parseField(
+	sjme_attrInNotNull sjme_stream_input inStream,
+	sjme_attrInOutNotNull sjme_class_fieldInfo* outInfo);
+
+sjme_errorCode sjme_class_parseFields(
+	sjme_attrInNotNull sjme_stream_input inStream,
+	sjme_attrInNotNull sjme_class_info inClass);
+
+sjme_errorCode sjme_class_parseMethod(
+	sjme_attrInNotNull sjme_stream_input inStream,
+	sjme_attrInOutNotNull sjme_class_methodInfo* outInfo);
+
+sjme_errorCode sjme_class_parseMethods(
+	sjme_attrInNotNull sjme_stream_input inStream,
+	sjme_attrInNotNull sjme_class_info inClass);
 
 /*--------------------------------------------------------------------------*/
 
