@@ -48,12 +48,36 @@ static const sjme_jubyte testData[DATA_LEN] =
 	value.loMember = loWhat; \
 	WRITE_SEQ(type)
 
+static sjme_errorCode finishStreamWriteValueJBA(
+	sjme_attrInNotNull sjme_stream_output stream,
+	sjme_attrInNotNull sjme_stream_resultByteArray* result)
+{
+	sjme_jint i;
+	sjme_test* test;
+
+	/* Recover test. */
+	test = (sjme_test*)result->whatever;
+
+	/* The write count should be the buffer size. */
+	sjme_unitEqualI(test,
+		DATA_LEN, result->length,
+		"Number of written bytes incorrect?");
+
+	/* All the buffer bytes should match. */
+	sjme_unitEqualI(test,
+		0, memcmp(result->array, testData, result->length),
+		"Written buffer does not match?");
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 /**
  * Tests writing Java values to the output.
  *  
  * @since 2024/01/09 
  */
-SJME_TEST_DECLARE(testStreamWriteValueJ)
+SJME_TEST_DECLARE(testStreamWriteValueJBA)
 {
 	sjme_jvalue value;
 	sjme_stream_output stream;
@@ -68,11 +92,10 @@ SJME_TEST_DECLARE(testStreamWriteValueJ)
 	memset(buf, 0, DATA_LEN);
 
 	/* Open stream to write all the data in. */
-	stream = NULL;
-	if (SJME_IS_ERROR(sjme_stream_outputOpenMemory(test->pool,
-		&stream, buf, DATA_LEN)) ||
-		stream == NULL)
-		return sjme_unitFail(test, "Could not open initial stream.");
+	if (SJME_IS_ERROR(sjme_stream_outputOpenByteArray(test->pool,
+		&stream, 2, finishStreamWriteValueJBA,
+		test)) || stream == NULL)
+		return sjme_unitFail(test, "Could not open output stream.");
 
 	/* dos.writeBoolean(false); */
 	STREAM_SEQ(BOOLEAN, z, SJME_JNI_FALSE);
@@ -115,16 +138,6 @@ SJME_TEST_DECLARE(testStreamWriteValueJ)
 
 	/* dos.writeDouble(Double.longBitsToDouble(0x8765432187654321L)); */
 	STREAM_SEQ2(DOUBLE, d.hi, d.lo, 0x87654321, 0x87654321);
-
-	/* All the buffer bytes should match. */
-	sjme_unitEqualI(test,
-		0, memcmp(buf, testData, DATA_LEN),
-		"Written buffer does not match?");
-
-	/* The write count should be the buffer size. */
-	sjme_unitEqualI(test,
-		DATA_LEN, stream->totalWritten,
-		"Number of written bytes incorrect?");
 
 	/* Close stream. */
 	if (SJME_IS_ERROR(sjme_stream_outputClose(stream, NULL)))

@@ -20,6 +20,8 @@
 #include "sjme/debug.h"
 #include "sjme/nvm.h"
 #include "sjme/romInternal.h"
+
+#include "classBuilder.h"
 #include "test.h"
 
 /* Anti-C++. */

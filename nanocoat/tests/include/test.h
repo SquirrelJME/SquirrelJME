@@ -62,6 +62,9 @@ typedef struct sjme_test
 
 	/** Allocation pool for tests, so one not need be setup. */
 	sjme_alloc_pool* pool;
+
+	/** Any extra global value that is needed. */
+	void* global;
 } sjme_test;
 
 /**

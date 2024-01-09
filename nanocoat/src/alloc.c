@@ -590,14 +590,20 @@ sjme_errorCode sjme_alloc_getLink(
 	sjme_attrInNotNull void* addr,
 	sjme_attrOutNotNull sjme_alloc_link** outLink)
 {
+	sjme_alloc_link* link;
+
 	if (addr == NULL || outLink == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Just need to do some reversing math. */
-	*outLink = (sjme_alloc_link*)(((uintptr_t)addr) -
+	link = (sjme_alloc_link*)(((uintptr_t)addr) -
 		offsetof(sjme_alloc_link, block));
+
+	/* Check the integrity of the link. */
+	sjme_alloc_checkCorruption(link->pool, link);
 	
 	/* Success! */
+	*outLink = link;
 	return SJME_ERROR_NONE;
 }
 
@@ -605,6 +611,82 @@ sjme_errorCode sjme_alloc_realloc(
 	sjme_attrInOutNotNull void** inOutAddr,
 	sjme_attrInPositive sjme_jint newSize)
 {
-	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	sjme_alloc_link* link;
+	void* result;
+	void* source;
+	sjme_jint limit;
+	sjme_errorCode error;
+
+	if (inOutAddr == NULL || *inOutAddr == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (newSize < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	/* Alias for free. */
+	source = *inOutAddr;
+	if (newSize == 0)
+	{
+		/* Just do a normal free of it since zero was requested. */
+		if (SJME_IS_ERROR(error = sjme_alloc_free(source)))
+			return SJME_DEFAULT_ERROR(error);
+
+		/* Clear pointer. */
+		*inOutAddr = NULL;
+
+		/* Success! */
+		return SJME_ERROR_NULL_ARGUMENTS;
+	}
+
+	/* Recover the link. */
+	link = NULL;
+	if (SJME_IS_ERROR(error = sjme_alloc_getLink(source,
+		&link)) || link == NULL)
+		return SJME_DEFAULT_ERROR(error);
+
+	/* Pointless operation. */
+	if (newSize == link->allocSize)
+		return SJME_ERROR_NONE;
+
+	/* There are some padding bytes we can consume. */
+	else if (newSize > link->allocSize && newSize < link->blockSize)
+	{
+		/* Just set the new allocation size. */
+		link->allocSize = newSize;
+
+		/* Success! */
+		return SJME_ERROR_NONE;
+	}
+
+	/* No space to grow or shrink, move it. */
+	else
+	{
+		/* How much do we actually want to copy? */
+		if (newSize < link->allocSize)
+			limit = newSize;
+		else
+			limit = link->allocSize;
+
+		/* Debug. */
+		sjme_message("Realloc copy %d -> %d (%d)",
+			link->allocSize, newSize, limit);
+
+		/* Allocate new block. */
+		result = NULL;
+		if (SJME_IS_ERROR(error = sjme_alloc(link->pool, newSize,
+			&result)) || result == NULL)
+			return SJME_DEFAULT_ERROR_OR(error,
+				SJME_ERROR_OUT_OF_MEMORY);
+
+		/* Copy all the data over. */
+		memmove(result, source, limit);
+
+		/* Free the old block. */
+		if (SJME_IS_ERROR(error = sjme_alloc_free(source)))
+			return SJME_DEFAULT_ERROR(error);
+
+		/* Success! */
+		*inOutAddr = result;
+		return SJME_ERROR_NONE;
+	}
 }

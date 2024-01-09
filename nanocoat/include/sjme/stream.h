@@ -165,11 +165,13 @@ struct sjme_stream_inputCore
  * Closes the specified output stream.
  *
  * @param stream The output stream to close.
+ * @param optResult Optional output result.
  * @return On any resultant error, if any.
  * @since 2024/01/09
  */
 typedef sjme_errorCode (*sjme_stream_outputCloseFunc)(
-	sjme_attrInNotNull sjme_stream_output stream);
+	sjme_attrInNotNull sjme_stream_output stream,
+	sjme_attrOutNullable void** optResult);
 
 /**
  * Writes to the given output stream.
@@ -354,11 +356,73 @@ sjme_errorCode sjme_stream_inputReadValueJ(
  * Closes an output stream.
  *
  * @param stream The stream to close.
+ * @param optResult Optional resultant output value, if any.
  * @return Any resultant error, if any.
  * @since 2023/12/31
  */
 sjme_errorCode sjme_stream_outputClose(
-	sjme_attrInNotNull sjme_stream_output stream);
+	sjme_attrInNotNull sjme_stream_output stream,
+	sjme_attrOutNullable void** optResult);
+
+/**
+ * Contains the result of the written byte array.
+ *
+ * @since 2024/01/09
+ */
+typedef struct sjme_stream_resultByteArray
+{
+	/** The buffer where the data is. */
+	sjme_jbyte* array;
+
+	/** The length of the array. */
+	sjme_jint length;
+
+	/**
+	 * If this is set to @c SJME_JNI_TRUE , then the close handler for
+	 * the byte array will free the memory contained in the buffer. To prevent
+	 * it from being freed, this should return @c SJME_JNI_FALSE in which case
+	 * the @c optResult value will be written to with the final buffer.
+	 */
+	sjme_jboolean free;
+
+	/** The input whatever value. */
+	void* whatever;
+
+	/** The optional output result. */
+	void** optResult;
+} sjme_stream_resultByteArray;
+
+/**
+ * This function is called back when the output byte array stream has been
+ * closed, which provides the byte array for access.
+ *
+ * @param stream The stream that is finished and is about to be closed.
+ * @param result The result of the array operation.
+ * @return Any resultant error, if any.
+ * @since 2024/01/09
+ */
+typedef sjme_errorCode (*sjme_stream_outputByteArrayFinishFunc)(
+	sjme_attrInNotNull sjme_stream_output stream,
+	sjme_attrInNotNull sjme_stream_resultByteArray* result);
+
+/**
+ * Opens a dynamically resizing output byte array.
+ *
+ * @param inPool The pool to allocate within.
+ * @param outStream The resultant output stream.
+ * @param initialLimit The initial buffer limit.
+ * @param finish The function to call when the stream is closed.
+ * @param whatever Can be used to pass whatever is needed for the finish
+ * processor.
+ * @return On any error, if any.
+ * @since 2024/01/09
+ */
+sjme_errorCode sjme_stream_outputOpenByteArray(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrOutNotNull sjme_stream_output* outStream,
+	sjme_attrInPositive sjme_jint initialLimit,
+	sjme_attrInNotNull sjme_stream_outputByteArrayFinishFunc finish,
+	sjme_attrInNullable void* whatever);
 
 /**
  * Opens an output stream which writes to the given block of memory, note that

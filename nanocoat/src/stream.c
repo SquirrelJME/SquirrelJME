@@ -29,6 +29,26 @@ typedef struct sjme_stream_cacheMemory
 } sjme_stream_cacheMemory;
 
 /**
+ * Contains the specific state for byte array output.
+ *
+ * @since 2024/01/09
+ */
+typedef struct sjme_stream_cacheByteArray
+{
+	/** The byte array data. */
+	void* array;
+
+	/** The current limit. */
+	sjme_jint limit;
+
+	/** Whatever value to store, passed on close. */
+	void* whatever;
+
+	/** The function to call when the output is finished. */
+	sjme_stream_outputByteArrayFinishFunc finish;
+} sjme_stream_cacheByteArray;
+
+/**
  * Gets the state information from the given input stream.
  *
  * @param base The base pointer.
@@ -121,7 +141,8 @@ static const sjme_stream_inputFunctions sjme_stream_inputMemoryFunctions =
 };
 
 static sjme_errorCode sjme_stream_outputMemoryClose(
-	sjme_attrInNotNull sjme_stream_output outStream)
+	sjme_attrInNotNull sjme_stream_output outStream,
+	sjme_attrOutNullable void** optResult)
 {
 	if (outStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -166,6 +187,111 @@ static const sjme_stream_outputFunctions sjme_stream_outputMemoryFunctions =
 {
 	.close = sjme_stream_outputMemoryClose,
 	.write = sjme_stream_outputMemoryWrite,
+};
+
+static sjme_errorCode sjme_stream_outputByteArrayClose(
+	sjme_attrInNotNull sjme_stream_output stream,
+	sjme_attrOutNullable void** optResult)
+{
+	sjme_stream_cacheByteArray* cache;
+	sjme_stream_resultByteArray result;
+	sjme_errorCode error;
+
+	if (stream == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Recover cache. */
+	cache = SJME_OUTPUT_UNCOMMON(sjme_stream_cacheByteArray, stream);
+
+	/* Initialize result. */
+	memset(&result, 0, sizeof(result));
+	result.array = cache->array;
+	result.length = stream->totalWritten;
+	result.free = SJME_JNI_TRUE;
+	result.whatever = cache->whatever;
+	result.optResult = optResult;
+
+	/* No finish function? */
+	if (cache->finish == NULL)
+	{
+		/* Do not free if this was specified, just return it there. */
+		if (optResult != NULL)
+		{
+			*optResult = cache->array;
+			result.free = SJME_JNI_FALSE;
+		}
+	}
+
+	/* Otherwise, call the finish handler. */
+	else
+	{
+		/* Call handler, if it fails just stop. */
+		if (SJME_IS_ERROR(error = cache->finish(stream, &result)))
+			return SJME_DEFAULT_ERROR(error);
+	}
+
+	/* Are we freeing the array? */
+	if (result.free)
+		if (SJME_IS_ERROR(error = sjme_alloc_free(cache->array)))
+			return SJME_DEFAULT_ERROR(error);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_stream_outputByteArrayWrite(
+	sjme_attrInNotNull sjme_stream_output stream,
+	sjme_attrInNotNull const void* buf,
+	sjme_attrInPositiveNonZero sjme_jint length)
+{
+#define GROW_SIZE 32
+	sjme_stream_cacheByteArray* cache;
+	uintptr_t realBuf;
+	sjme_jint available, desireSize;
+	sjme_errorCode error;
+
+	if (stream == NULL || buf == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	realBuf = (uintptr_t)buf;
+	if (length < 0 || (realBuf + length) < realBuf)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	/* Recover cache. */
+	cache = SJME_OUTPUT_UNCOMMON(sjme_stream_cacheByteArray, stream);
+
+	/* Not enough bytes to fit into the array buffer? Need to grow it? */
+	available = cache->limit - stream->totalWritten;
+	if (length > available)
+	{
+		/* Resultant buffer would overflow? Way too big? */
+		desireSize = cache->limit + length + GROW_SIZE;
+		if (desireSize < 0)
+			return SJME_ERROR_OUT_OF_MEMORY;
+
+		/* Reallocate memory here. */
+		if (SJME_IS_ERROR(error = sjme_alloc_realloc(
+			&cache->array, desireSize)))
+			return SJME_DEFAULT_ERROR_OR(error,
+				SJME_ERROR_OUT_OF_MEMORY);
+
+		/* The buffer's limit has now increased. */
+		cache->limit = desireSize;
+	}
+
+	/* Copy directly into the array buffer. */
+	/* Note that the caller increases totalWritten. */
+	memmove(&cache->array[stream->totalWritten], buf, length);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+#undef GROW_SIZE
+}
+
+static const sjme_stream_outputFunctions sjme_stream_outputByteArrayFunctions =
+{
+	.close = sjme_stream_outputByteArrayClose,
+	.write = sjme_stream_outputByteArrayWrite,
 };
 
 sjme_errorCode sjme_stream_inputAvailable(
@@ -431,7 +557,8 @@ sjme_errorCode sjme_stream_inputReadValueJ(
 }
 
 sjme_errorCode sjme_stream_outputClose(
-	sjme_attrInNotNull sjme_stream_output stream)
+	sjme_attrInNotNull sjme_stream_output stream,
+	sjme_attrOutNullable void** optResult)
 {
 	sjme_errorCode error;
 
@@ -443,7 +570,8 @@ sjme_errorCode sjme_stream_outputClose(
 		return SJME_ERROR_ILLEGAL_STATE;
 
 	/* Close the stream. */
-	if (SJME_IS_ERROR(error = stream->functions->close(stream)))
+	if (SJME_IS_ERROR(error = stream->functions->close(stream,
+		optResult)))
 		return SJME_DEFAULT_ERROR(error);
 
 	/* Cleanup after it. */
@@ -452,6 +580,69 @@ sjme_errorCode sjme_stream_outputClose(
 
 	/* Success! */
 	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_stream_outputOpenByteArray(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrOutNotNull sjme_stream_output* outStream,
+	sjme_attrInPositive sjme_jint initialLimit,
+	sjme_attrInNullable sjme_stream_outputByteArrayFinishFunc finish,
+	sjme_attrInNullable void* whatever)
+{
+	sjme_stream_output result;
+	sjme_stream_cacheByteArray* cache;
+	sjme_errorCode error;
+	void* initBuf;
+
+	if (inPool == NULL || outStream == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Fallback to a default initial limit if zero. */
+	if (initialLimit == 0)
+		initialLimit = 32;
+
+	if (initialLimit < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	/* Try to allocate an initial buffer. */
+	initBuf = NULL;
+	if (SJME_IS_ERROR(error = sjme_alloc(inPool,
+		initialLimit, &initBuf)) || initBuf == NULL)
+		goto fail_initBufAlloc;
+
+	/* Allocate result. */
+	result = NULL;
+	if (SJME_IS_ERROR(error = sjme_alloc(inPool,
+		SJME_SIZEOF_OUTPUT_STREAM(sjme_stream_cacheByteArray),
+		&result)) || result == NULL)
+		goto fail_streamAlloc;
+
+	/* Set functions. */
+	result->functions = &sjme_stream_outputByteArrayFunctions;
+
+	/* Get the cache. */
+	cache = SJME_OUTPUT_UNCOMMON(sjme_stream_cacheByteArray, result);
+
+	/* Setup cache. */
+	cache->array = initBuf;
+	cache->finish = finish;
+	cache->whatever = whatever;
+	cache->limit = initialLimit;
+
+	/* Return result. */
+	*outStream = result;
+	return SJME_ERROR_NONE;
+
+	/* Failure cleanup. */
+fail_streamAlloc:
+	if (result != NULL)
+		sjme_alloc_free(result);
+
+fail_initBufAlloc:
+	if (initBuf != NULL)
+		sjme_alloc_free(initBuf);
+
+	return SJME_DEFAULT_ERROR(error);
 }
 
 sjme_errorCode sjme_stream_outputOpenMemory(
