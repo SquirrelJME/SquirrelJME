@@ -7,6 +7,10 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#if defined(SJME_CONFIG_HAS_ATOMIC_WIN32)
+	#include <windows.h>
+#endif
+
 #include "sjme/atomic.h"
 
 #if defined(SJME_CONFIG_HAS_ATOMIC_GCC)
