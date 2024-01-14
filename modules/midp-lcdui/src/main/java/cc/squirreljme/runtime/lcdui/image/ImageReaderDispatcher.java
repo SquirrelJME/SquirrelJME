@@ -29,11 +29,11 @@ import net.multiphasicapps.io.ExtendedDataInputStream;
 public class ImageReaderDispatcher
 {
 	/**
-	 * Not used.
+	 * Initializes the base dispatcher.
 	 *
 	 * @since 2017/02/28
 	 */
-	private ImageReaderDispatcher()
+	public ImageReaderDispatcher()
 	{
 	}
 	
@@ -46,7 +46,7 @@ public class ImageReaderDispatcher
 	 * @throws IOException If it could not be parsed.
 	 * @since 2021/12/04
 	 */
-	public static Image parse(InputStream __is, ImageFactory __factory)
+	public Image parse(InputStream __is, ImageFactory __factory)
 		throws IOException, NullPointerException
 	{
 		// Check
@@ -54,9 +54,8 @@ public class ImageReaderDispatcher
 			throw new NullPointerException("NARG");
 		
 		if (__is.markSupported())
-			return ImageReaderDispatcher.__parse(__is, __factory);
-		return ImageReaderDispatcher.__parse(new MarkableInputStream(__is),
-			__factory);
+			return this.__parse(__is, __factory);
+		return this.__parse(new MarkableInputStream(__is), __factory);
 	}
 	
 	/**
@@ -68,7 +67,7 @@ public class ImageReaderDispatcher
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/02/10
 	 */
-	private static int __determineType(InputStream __is)
+	private int __determineType(InputStream __is)
 		throws IOException, NullPointerException
 	{
 		if (__is == null)
@@ -122,7 +121,7 @@ public class ImageReaderDispatcher
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/12/05
 	 */
-	private static Image __native(int __type, InputStream __in,
+	private Image __native(int __type, InputStream __in,
 		ImageFactory __factory)
 		throws IOException, NullPointerException
 	{
@@ -167,7 +166,7 @@ public class ImageReaderDispatcher
 	 * @return The parsed image data.
 	 * @throws IOException If it could not be parsed.
 	 */
-	private static Image __parse(InputStream __is, ImageFactory __factory)
+	private Image __parse(InputStream __is, ImageFactory __factory)
 		throws IOException, NullPointerException
 	{
 		// Check
@@ -175,7 +174,7 @@ public class ImageReaderDispatcher
 			throw new NullPointerException("NARG");
 		
 		// Determine the image type
-		int loadType = ImageReaderDispatcher.__determineType(__is);
+		int loadType = this.__determineType(__is);
 		
 		/* {@squirreljme.error EB0k Unsupported image type.} */
 		if (loadType == 0 || Integer.bitCount(loadType) != 1)
@@ -185,8 +184,7 @@ public class ImageReaderDispatcher
 		if ((PencilShelf.nativeImageLoadTypes() & loadType) != 0)
 			try
 			{
-				return ImageReaderDispatcher.__native(loadType, __is,
-					__factory);
+				return this.__native(loadType, __is, __factory);
 			}
 			catch (MLECallError __e)
 			{

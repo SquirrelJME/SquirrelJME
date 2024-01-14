@@ -475,7 +475,8 @@ public class Image
 			throw new NullPointerException("NARG");
 		
 		// Parse the image
-		return ImageReaderDispatcher.parse(__is, new __ImageFactory__());
+		return new ImageReaderDispatcher()
+			.parse(__is, new __ImageFactory__());
 	}
 	
 	/**
