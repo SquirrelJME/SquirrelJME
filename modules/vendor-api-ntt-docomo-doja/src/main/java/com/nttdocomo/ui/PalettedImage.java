@@ -173,17 +173,23 @@ public abstract class PalettedImage
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		// Just make a generic image and load into it.
+		__8BitImage__ bitImage = new __8BitImage__();
+		bitImage.changeData(__in);
+		
+		// Return the resultant image
+		return bitImage;
 	}
 	
 	/**
 	 * Creates a blank paletted image which may be drawn onto and a palette
 	 * set accordingly.
 	 *
-	 * @param __w
-	 * @param __h
-	 * @return
-	 * @throws IllegalArgumentException
+	 * @param __w The image width.
+	 * @param __h The image height.
+	 * @return The resultant image.
+	 * @throws IllegalArgumentException If the width and/or height are
+	 * negative or exceed the array bounds.
 	 * @since 2024/01/14
 	 */
 	@Api

@@ -24,11 +24,10 @@ import net.multiphasicapps.io.ExtendedDataInputStream;
 /**
  * This is used to dispatch to the correct parser when loading images.
  *
- * @param <A> Animated image type.
  * @param <S> Still image type.
  * @since 2017/02/28
  */
-public class ImageReaderDispatcher<A extends S, S>
+public class ImageReaderDispatcher<S>
 {
 	/** Native image loader. */
 	protected final NativeImageLoadCallback loader;

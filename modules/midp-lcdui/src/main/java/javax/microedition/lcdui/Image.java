@@ -477,7 +477,7 @@ public class Image
 		
 		// Parse the image
 		__ImageFactory__ factory = new __ImageFactory__();
-		return new ImageReaderDispatcher<AnimatedImage, Image>(
+		return new ImageReaderDispatcher<Image>(
 			new MIDPImageLoadHandler(factory)).parse(__is);
 	}
 	
