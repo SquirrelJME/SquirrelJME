@@ -20,11 +20,7 @@ import cc.squirreljme.jvm.suite.SuiteUtils;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.vm.DataContainerLibrary;
-import cc.squirreljme.vm.DirectoryClassLibrary;
-import cc.squirreljme.vm.InMemoryClassLibrary;
-import cc.squirreljme.vm.JarClassLibrary;
 import cc.squirreljme.vm.NameOverrideClassLibrary;
-import cc.squirreljme.vm.ResourceBasedClassLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.io.File;
 import java.io.IOException;
@@ -277,6 +273,16 @@ public class HostedVirtualMachine
 		{
 			new HostedCleanup(tempJars).run();
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/01/14
+	 */
+	@Override
+	public void setTraceBits(boolean __or, int __bits)
+	{
+		// No effect.
 	}
 	
 	/**

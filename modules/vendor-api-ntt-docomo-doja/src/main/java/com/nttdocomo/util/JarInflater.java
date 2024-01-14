@@ -41,9 +41,6 @@ public class JarInflater
 	/** The wrapped Zip blocks. */
 	private final ZipBlockReader _zip;
 	
-	/** The stream that was wrapped, only used for {@link #close()}. */
-	private final InputStream _stream;
-	
 	/** Is this closed? */
 	private volatile boolean _isClosed;
 	
@@ -77,9 +74,6 @@ public class JarInflater
 			
 			throw toss;
 		}
-		
-		// Not used in this version
-		this._stream = null;
 	}
 	
 	/**
@@ -87,6 +81,10 @@ public class JarInflater
 	 * the stream is not closed at all.
 	 * 
 	 * The stream's position after reading is unspecified.
+	 * 
+	 * The stream is not retained by this class at all, as such it is
+	 * imperative for users of this class to close the passed stream
+	 * accordingly.
 	 *
 	 * @param __in The stream to load the Jar/Zip from, it is unspecified
 	 * whether the next read position is at the end of the Zip's central
@@ -117,31 +115,20 @@ public class JarInflater
 		// Mark closed, do not run multiple times
 		if (!this._isClosed)
 			this._isClosed = true;
-		else
-			return;
 		
-		// Close the stream?? This is dubious and the documentation helpfully
-		// says: "Reading from the input stream already obtained from this
-		// JarInflater is It is not guaranteed." or "Reading from an input
-		// stream already retrieved from this JarInflater is not guaranteed.".
-		InputStream stream = this._stream;
-		if (stream != null)
-			try
-			{
-				Debugging.todoNote(
-					"Close assumption made in JarInflater.close()");
-				
-				stream.close();
-				this._zip.close();
-			}
-			catch (IOException __e)
-			{
-				/* {@squirreljme.error AH12 Closing assumed target stream in
-				   JarInflater, which threw an exception resulted in a dubious
-				   operation.} */
-				throw new DubiousImplementationError(
-					ErrorCode.__error__("AH12"), __e);
-			}
+		// Close the Zip
+		try
+		{
+			this._zip.close();
+		}
+		catch (IOException __e)
+		{
+			/* {@squirreljme.error AH12 Closing array based Zip should not
+			have failed, however there is no definitive source on what
+			happens if closing does fail in the DoJa documentation.} */
+			throw new DubiousImplementationError(
+				ErrorCode.__error__("AH12"), __e);
+		}
 	}
 	
 	/**
@@ -165,6 +152,9 @@ public class JarInflater
 	{
 		if (__name == null)
 			throw new NullPointerException("NARG");
+		
+		if (this._isClosed)
+			throw new IllegalStateException("CLOS");
 		
 		try
 		{
@@ -210,6 +200,9 @@ public class JarInflater
 	{
 		if (__name == null)
 			throw new NullPointerException("NARG");
+		
+		if (this._isClosed)
+			throw new IllegalStateException("CLOS");
 		
 		try
 		{

@@ -26,5 +26,14 @@ public interface VirtualMachine
 	 */
 	int runVm()
 		throws VMException;
+	
+	/**
+	 * Sets the tracing bits for the virtual machine.
+	 *
+	 * @param __or Should the bits be ORed in?
+	 * @param __bits The bits to set.
+	 * @since 2024/01/14
+	 */
+	void setTraceBits(boolean __or, int __bits);
 }
 

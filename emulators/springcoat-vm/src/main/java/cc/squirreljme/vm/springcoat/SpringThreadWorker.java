@@ -10,6 +10,7 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.emulator.profiler.ProfiledFrame;
+import cc.squirreljme.emulator.vm.VMTraceFlagTracker;
 import cc.squirreljme.jdwp.EventKind;
 import cc.squirreljme.jdwp.JDWPClassStatus;
 import cc.squirreljme.jdwp.JDWPController;
@@ -21,7 +22,6 @@ import cc.squirreljme.jdwp.trips.JDWPTripBreakpoint;
 import cc.squirreljme.jdwp.trips.JDWPTripClassStatus;
 import cc.squirreljme.jdwp.trips.JDWPTripField;
 import cc.squirreljme.jdwp.trips.JDWPTripThread;
-import cc.squirreljme.jvm.mle.MathShelf;
 import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.TypeObject;
@@ -42,7 +42,6 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.regex.Pattern;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassFlags;
 import net.multiphasicapps.classfile.ClassName;
@@ -70,16 +69,6 @@ import net.multiphasicapps.classfile.PrimitiveType;
 public final class SpringThreadWorker
 	extends Thread
 {
-	/**
-	 * {@squirreljme.property cc.squirreljme.vm.trace=bool
-	 * Enable tracing within the virtual machine?}
-	 */
-	public static final String TRACING_ENABLED =
-		"cc.squirreljme.vm.trace";
-	
-	/** Bits where tracing is enabled for. */
-	public static final int TRACING_ENABLED_BITS;
-	
 	/** Number of instructions which can be executed before warning. */
 	private static final int _EXECUTION_THRESHOLD =
 		4000000;
@@ -94,29 +83,11 @@ public final class SpringThreadWorker
 	protected final Thread signalinstead;
 	
 	/** The manager for this thread's verbosity output. */
-	private final VerboseManager _verbose =
-		new VerboseManager();
+	private final VMTraceFlagTracker _verbose =
+		new VMTraceFlagTracker();
 	
 	/** The current step count. */
 	private volatile int _stepCount;
-	
-	static
-	{
-		// Decode the tracing flags to see if some bits are enabled
-		String tracing = System.getProperty(
-			SpringThreadWorker.TRACING_ENABLED);
-		int enableBits = 0;
-		if (tracing != null)
-			for (String item : tracing.split(Pattern.quote(",")))
-			{
-				for (VerboseDebugFlagName flag : VerboseDebugFlagName.values())
-					if (flag.names.contains(item))
-						enableBits |= flag.bits;
-			}
-		
-		// Set enabled bits
-		TRACING_ENABLED_BITS = enableBits;
-	}
 	
 	/**
 	 * Initialize the worker.
@@ -1369,7 +1340,7 @@ public final class SpringThreadWorker
 	 * @return The verbose manager.
 	 * @since 2020/07/11
 	 */
-	public final VerboseManager verbose()
+	public final VMTraceFlagTracker verbose()
 	{
 		return this._verbose;
 	}
@@ -1384,7 +1355,7 @@ public final class SpringThreadWorker
 	public boolean verboseCheck(int __flags)
 	{
 		// Was tracing enabled for this flag?
-		if ((SpringThreadWorker.TRACING_ENABLED_BITS & __flags) != 0)
+		if ((this.machine._globalTrace & __flags) != 0)
 			return true;
 		
 		SpringThread.Frame frame = this.thread.currentFrame();
@@ -1404,7 +1375,7 @@ public final class SpringThreadWorker
 		Debugging.debugNote("[%s @ %s] %s",
 			this.thread.toString(),
 			(frame == null ? null : String.format("%s:%d (%d)",
-				frame.method.nameAndType(),
+				(frame.method == null ? "" : frame.method.nameAndType()),
 				frame.pc(),
 				frame.pcSourceLine())),
 			String.format(__format, __args));

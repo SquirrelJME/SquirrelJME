@@ -12,7 +12,6 @@ package cc.squirreljme.vm.nanocoat;
 import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.emulator.vm.VirtualMachine;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import java.io.IOException;
 
 /**
  * This is the NanoCoat virtual machine interface implementation on the
@@ -43,6 +42,16 @@ public class NanoCoatVirtualMachine
 	@Override
 	public int runVm()
 		throws VMException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/01/14
+	 */
+	@Override
+	public void setTraceBits(boolean __or, int __bits)
 	{
 		throw Debugging.todo();
 	}

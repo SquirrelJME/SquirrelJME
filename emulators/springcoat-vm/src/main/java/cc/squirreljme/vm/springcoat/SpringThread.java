@@ -1022,6 +1022,8 @@ public final class SpringThread
 		 */
 		public final int pcSourceLine()
 		{
+			if (this.code == null)
+				return -1;
 			return this.code.lineOfAddress(this._pc);
 		}
 		

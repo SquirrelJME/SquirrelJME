@@ -7,25 +7,80 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.vm.springcoat;
+package cc.squirreljme.emulator.vm;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * Manages the verbosity level.
  *
  * @since 2020/07/11
  */
-public final class VerboseManager
+public final class VMTraceFlagTracker
 {
+	/**
+	 * {@squirreljme.property cc.squirreljme.vm.trace=flags
+	 * Enable tracing within the virtual machine?}
+	 */
+	public static final String TRACING_ENABLED =
+		"cc.squirreljme.vm.trace";
+	
+	/** Tracing bits that are defined by system properties. */
+	public static final int GLOBAL_TRACING_BITS;
+	
 	/** The levels used. */
 	private final Map<Integer, __Level__> _levels =
 		new LinkedHashMap<>();
 	
 	/** The next code. */
 	private int _nextCode;
+	
+	static
+	{
+		// Decode the tracing flags to see if some bits are enabled
+		String tracing = System.getProperty(
+			VMTraceFlagTracker.TRACING_ENABLED);
+		int enableBits = 0;
+		if (tracing != null)
+			enableBits = VMTraceFlagTracker.parseBits(tracing);
+		
+		// Set enabled bits
+		GLOBAL_TRACING_BITS = enableBits;
+	}
+	
+	/**
+	 * Initializes a base blank flag tracker.
+	 * 
+	 * @since 2024/01/14
+	 */
+	public VMTraceFlagTracker()
+	{
+	}
+	
+	/**
+	 * Creates a trace tracker using the specified tracker as a base.
+	 *
+	 * @param __from The source trace tracker.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/14
+	 */
+	public VMTraceFlagTracker(VMTraceFlagTracker __from)
+		throws NullPointerException
+	{
+		if (__from == null)
+			throw new NullPointerException("NARG");
+		
+		this._nextCode = __from._nextCode;
+		
+		// Copy all sub-levels
+		Map<Integer, __Level__> src = __from._levels;
+		Map<Integer, __Level__> dst = this._levels;
+		for (Map.Entry<Integer, __Level__> e : src.entrySet())
+			dst.put(e.getKey(), new __Level__(e.getValue()));
+	}
 	
 	/**
 	 * Returns all the active verbose flags.
@@ -110,6 +165,32 @@ public final class VerboseManager
 	}
 	
 	/**
+	 * Parses the given bits of input.
+	 *
+	 * @param __input The input to parse.
+	 * @return The resultant bit set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/14
+	 */
+	public static int parseBits(String __input)
+		throws NullPointerException
+	{
+		if (__input == null)
+			throw new NullPointerException("NARG");
+		
+		// Set all the bits accordingly
+		int enableBits = 0;
+		for (String item : __input.split(Pattern.quote(",")))
+		{
+			for (VMTraceFlag flag : VMTraceFlag.values())
+				if (flag.names.contains(item))
+					enableBits |= flag.bits;
+		}
+		
+		return enableBits;
+	}
+	
+	/**
 	 * Stores the verbosity level.
 	 * 
 	 * @since 2020/07/11
@@ -133,6 +214,23 @@ public final class VerboseManager
 		{
 			this._numFrames = __numFrames;
 			this._flags = __flags;
+		}
+		
+		/**
+		 * Initializes the level from the given level.
+		 *
+		 * @param __from The source level.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2024/01/14
+		 */
+		__Level__(__Level__ __from)
+			throws NullPointerException
+		{
+			if (__from == null)
+				throw new NullPointerException("NARG");
+			
+			this._flags = __from._flags;
+			this._numFrames = __from._numFrames;
 		}
 	}
 }

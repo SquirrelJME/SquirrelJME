@@ -170,6 +170,9 @@ public abstract class VMFactory
 			e.printStackTrace();
 		}
 		
+		// Initial trace bits
+		int initTraceBits = 0;
+		
 		// Was the -jar switch used?
 		boolean didJar = false;
 		String rawJarPath = null;
@@ -184,6 +187,7 @@ public abstract class VMFactory
 		// -Xthread:(single|coop|multi|smt)
 		// -Dsysprop=value
 		// -classpath (class:path:...)
+		// -Xtrace=(flag|...)
 		// Optionally `-jar`
 		// Main-class
 		// Arguments...
@@ -249,6 +253,19 @@ public abstract class VMFactory
 					VMFactory.__addPaths(libraries, entry);
 			}
 			
+			// Jar entry point selection
+			else if (item.startsWith("-Xentry:"))
+			{
+				rawJarEntry = item.substring("-Xentry:".length());
+			}
+			
+			// Initial trace options
+			else if (item.startsWith("-Xtrace:"))
+			{
+				initTraceBits = VMTraceFlagTracker.parseBits(
+					item.substring("-Xtrace:".length()));
+			}
+			
 			// JARs to load
 			else if (item.equals("-classpath") || item.equals("-cp"))
 			{
@@ -260,12 +277,6 @@ public abstract class VMFactory
 				// Extract path elements
 				for (String entry : VMFactory.__unSeparateClassPath(strings))
 					VMFactory.__addPaths(suiteClasspath, entry);
-			}
-			
-			// Jar entry point selection
-			else if (item.equals("-Xentry:"))
-			{
-				rawJarEntry = item.substring("-Xentry:".length());
 			}
 			
 			// Direct Jar launch
@@ -535,6 +546,16 @@ public abstract class VMFactory
 				mainClass,
 				systemProperties,
 				mainArgs.<String>toArray(new String[mainArgs.size()]));
+			
+			// Set global trace bits for the VM
+			if (VMTraceFlagTracker.GLOBAL_TRACING_BITS != 0)
+				vm.setTraceBits(true,
+					VMTraceFlagTracker.GLOBAL_TRACING_BITS);
+			
+			// Set trace bits for the VM
+			if (initTraceBits != 0)
+				vm.setTraceBits(true,
+					initTraceBits);
 			
 			// Run the virtual machine until it exits, but do not exit yet
 			// because we want the snapshot to be created
