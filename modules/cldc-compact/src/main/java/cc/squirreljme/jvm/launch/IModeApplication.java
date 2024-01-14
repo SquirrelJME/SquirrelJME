@@ -35,7 +35,7 @@ public class IModeApplication
 {
 	/** The prefix for ADF properties. */
 	public static final String ADF_PROPERTY_PREFIX =
-		"cc.squirrlejme.imode.adf";
+		"cc.squirreljme.imode.adf";
 	
 	/** Property for the application name. */
 	public static final String NAME_PROPERTY =

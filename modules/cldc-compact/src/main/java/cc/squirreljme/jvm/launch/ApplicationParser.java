@@ -124,7 +124,7 @@ public enum ApplicationParser
 			
 			// Determine the name of the JAM file to load
 			JarPackageBracket jam = __state.findFirstSibling(jarName,
-				".jam");
+				".jam", ".adf");
 			
 			// If there is no JAM file, this cannot be an i-mode application
 			if (jam == null)
@@ -221,6 +221,10 @@ public enum ApplicationParser
 				e.printStackTrace();
 				return;
 			}
+			
+			// If no class is specified then we cannot launch this
+			if (!adfProps.containsKey(IModeApplication._APP_CLASS))
+				return;
 			
 			// Additional i-mode specific properties?
 			Map<String, String> extraSysProps = new LinkedHashMap<>();
