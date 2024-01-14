@@ -39,9 +39,20 @@ public interface NativeImageLoadCallback
 		boolean __hasAlpha);
 	
 	/**
+	 * Cancel native image loading, this is used if a specific kind of image
+	 * of a given type that is supported is not supported to be read in
+	 * natively.
+	 *
+	 * @since 2024/01/14
+	 */
+	@SquirrelJMEVendorApi
+	void cancel();
+	
+	/**
 	 * Finishes the image and creates the final image.
 	 * 
-	 * @return The final created image.
+	 * @return The final created image, if cancelled this should return
+	 * {@code null}.
 	 * @since 2022/06/28
 	 */
 	@SquirrelJMEVendorApi

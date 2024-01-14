@@ -397,12 +397,14 @@ public final class PencilShelf
 	 * @param __l The length.
 	 * @param __callback The callback that performs the image loading.
 	 * @return The object returned will be passed through the callback from
-	 * the native callback.
+	 * the native callback, should return {@code null} if the load has been
+	 * cancelled.
 	 * @throws MLECallError If the image could not be loaded.
 	 * @see NativeImageLoadCallback
 	 * @since 2021/12/05
 	 */
 	@SquirrelJMEVendorApi
+	@Nullable
 	public static native Object nativeImageLoadRGBA(
 		@MagicConstant(valuesFromClass = NativeImageLoadType.class) int __type,
 		@NotNull byte[] __b,

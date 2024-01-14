@@ -10,6 +10,7 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.callbacks.NativeImageLoadCallback;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodNameAndType;
 
@@ -53,6 +54,17 @@ public class NativeImageLoadCallbackAdapter
 			MethodNameAndType.ofArguments("addImage", null,
 				"[I", "I", "I", "I", "Z"),
 			__buf, __off, __len, __frameDelay, __hasAlpha);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/01/14
+	 */
+	@Override
+	public void cancel()
+	{
+		this.invokeCallback(
+			MethodNameAndType.ofArguments("cancel", null));
 	}
 	
 	/**

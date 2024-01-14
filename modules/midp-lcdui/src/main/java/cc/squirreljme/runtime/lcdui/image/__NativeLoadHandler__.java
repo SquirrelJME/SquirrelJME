@@ -10,6 +10,7 @@
 package cc.squirreljme.runtime.lcdui.image;
 
 import cc.squirreljme.jvm.mle.callbacks.NativeImageLoadCallback;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.IntegerList;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +52,9 @@ final class __NativeLoadHandler__
 	/** Loop count for animated images. */
 	private volatile int _loopCount =
 		-1;
+	
+	/** Canceled? */
+	volatile boolean _canceled;
 	
 	/**
 	 * Initializes the load handler.
@@ -94,6 +98,19 @@ final class __NativeLoadHandler__
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2024/01/14
+	 */
+	@Override
+	public void cancel()
+	{
+		synchronized (this)
+		{
+			this._canceled = true;
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2022/06/28
 	 */
 	@Override
@@ -103,6 +120,9 @@ final class __NativeLoadHandler__
 		IntegerList frameDelay = this._frameDelay;
 		synchronized (this)
 		{
+			if (this._canceled)
+				return null;
+			
 			// Animated image
 			if (this._isAnimated)
 				return this._factory.animatedImage(

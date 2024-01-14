@@ -140,12 +140,16 @@ public class ImageReaderDispatcher
 				rawData, 0, rawData.length,
 				new __NativeLoadHandler__(__factory));
 			
-			// {@squirreljme.error EB3r Could not load the native image.}
+			// Cancelled?
+			if (result == null)
+				throw new __CancelNativeException__();
+			
+			/* {@squirreljme.error EB3r Could not load the native image.} */
 			if (!(result instanceof Image))
 				throw new IOException("EB3r");
 		}
 		
-		// {@squirreljme.error EB3q Could not load the native image.}
+		/* {@squirreljme.error EB3q Could not load the native image.} */
 		catch (MLECallError __e)
 		{
 			throw new IOException("EB3q", __e);
@@ -173,13 +177,20 @@ public class ImageReaderDispatcher
 		// Determine the image type
 		int loadType = ImageReaderDispatcher.__determineType(__is);
 		
-		// {@squirreljme.error EB0k Unsupported image type.}
+		/* {@squirreljme.error EB0k Unsupported image type.} */
 		if (loadType == 0 || Integer.bitCount(loadType) != 1)
 			throw new IOException("EB0k");
 		
 		// Native image load is supported for this image type?
 		if ((PencilShelf.nativeImageLoadTypes() & loadType) != 0)
-			return ImageReaderDispatcher.__native(loadType, __is, __factory);
+			try
+			{
+				return ImageReaderDispatcher.__native(loadType, __is,
+					__factory);
+			}
+			catch (__CancelNativeException__ ignored)
+			{
+			}
 		
 		switch (loadType)
 		{
@@ -206,8 +217,8 @@ public class ImageReaderDispatcher
 				// XPM?
 			case NativeImageLoadType.LOAD_XPM:
 				return new XPMReader(__is, __factory).parse();
-		
-				// {@squirreljme.error EB0s Unsupported image format.}
+			
+				/* {@squirreljme.error EB0s Unsupported image format.} */
 			default:
 				throw new IOException("EB0s");
 		}
