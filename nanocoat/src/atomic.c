@@ -7,11 +7,11 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include "sjme/atomic.h"
+
 #if defined(SJME_CONFIG_HAS_ATOMIC_WIN32)
 	#include <windows.h>
 #endif
-
-#include "sjme/atomic.h"
 
 #if defined(SJME_CONFIG_HAS_ATOMIC_GCC)
 
@@ -56,7 +56,7 @@
 
 	/** The value type. */
 	#define SJME_ATOMIC_WIN32_TYPE(type, numPointerStars) \
-		SJME_TYPEOF_IF_NOT_POINTER_OR(type, numPointerStars, LONG, PVOID)
+		SJME_TYPEOF_IF_NOT_POINTER_OR(type, numPointerStars, LONG, LONG64)
 		
 	/** The value type for getAdd. */
 	#define SJME_ATOMIC_WIN32_TYPEGA(type, numPointerStars) \
@@ -70,12 +70,19 @@
 		#define SJME_ATOMIC_WIN32_S(type, numPointerStars) \
 			SJME_TYPEOF_IF_NOT_POINTER_OR(type, numPointerStars, \
 				InterlockedExchange, InterlockedExchange64)
+		
+		#define SJME_ATOMIC_WIN32_X(type, numPointerStars) \
+			SJME_TYPEOF_IF_NOT_POINTER_OR(type, numPointerStars, \
+				InterlockedCompareExchange, InterlockedCompareExchange64)
 	#else
 		#define SJME_ATOMIC_WIN32_IA(type, numPointerStars) \
 			InterlockedAdd
 
 		#define SJME_ATOMIC_WIN32_S(type, numPointerStars) \
 			InterlockedExchange
+
+		#define SJME_ATOMIC_WIN32_X(type, numPointerStars) \
+        	InterlockedCompareExchange
 	#endif
 	
 	#define SJME_ATOMIC_FUNCTION_COMPARE_SET(type, numPointerStars) \
@@ -84,12 +91,13 @@
 			SJME_ATOMIC_WIN32_TYPE(type, numPointerStars) was; \
 			\
 			/* Returns the value that was stored here. */ \
-			was = InterlockedCompareExchange((volatile \
+			was = SJME_ATOMIC_WIN32_X(type, numPointerStars)((volatile \
 				SJME_ATOMIC_WIN32_TYPE(type, numPointerStars)*) \
 				&atomic->value, \
-				set, expected); \
+				(SJME_ATOMIC_WIN32_TYPE(type, numPointerStars))set, \
+				(SJME_ATOMIC_WIN32_TYPE(type, numPointerStars))expected); \
 			\
-			if (was == expected) \
+			if ((SJME_TOKEN_TYPE(type, numPointerStars))was == expected) \
 				return SJME_JNI_TRUE; \
 			return SJME_JNI_FALSE; \
 		}
@@ -107,10 +115,11 @@
 	#define SJME_ATOMIC_FUNCTION_SET(type, numPointerStars) \
 		SJME_ATOMIC_PROTOTYPE_SET(type, numPointerStars) \
 		{ \
-			return SJME_TOKEN_TYPE(type, numPointerStars) \
+			return (SJME_TOKEN_TYPE(type, numPointerStars)) \
 				SJME_ATOMIC_WIN32_S(type, numPointerStars)( \
 				(volatile SJME_ATOMIC_WIN32_TYPEGA(type, numPointerStars)*) \
-					&atomic->value, value); \
+					&atomic->value, \
+					(SJME_ATOMIC_WIN32_TYPE(type, numPointerStars))value); \
 		}
 
 #else
