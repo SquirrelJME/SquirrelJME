@@ -80,11 +80,24 @@ public class Palette
 		this._colors = colors;
 	}
 	
+	/**
+	 * Returns the color at the given index.
+	 *
+	 * @param __index The index to get.
+	 * @return The resultant color.
+	 * @throws ArrayIndexOutOfBoundsException If the index is not within the
+	 * bounds of the palette.
+	 * @since 2024/01/14
+	 */
 	@Api
 	public int getEntry(int __index)
 		throws ArrayIndexOutOfBoundsException
 	{
-		throw Debugging.todo();
+		int[] colors = this._colors;
+		if (__index < 0 || __index >= colors.length)
+			throw new ArrayIndexOutOfBoundsException("IOOB");
+		
+		return colors[__index];
 	}
 	
 	/**

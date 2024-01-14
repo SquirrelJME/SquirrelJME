@@ -9,25 +9,26 @@
 
 package cc.squirreljme.runtime.nttdocomo.ui;
 
-import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import com.nttdocomo.ui.AudioPresenter;
+import com.nttdocomo.io.ConnectionException;
 import com.nttdocomo.ui.MediaSound;
+import com.nttdocomo.ui.UIException;
 
 /**
- * Nullary audio presenter which generates no sound.
+ * A null sound which does nothing.
  *
  * @since 2024/01/14
  */
-public class NullAudioPresenter
-	extends AudioPresenter
+public class NullMediaSound
+	implements MediaSound
 {
 	/**
 	 * {@inheritDoc}
 	 * @since 2024/01/14
 	 */
 	@Override
-	public void play()
+	public void dispose()
+		throws UIException
 	{
 		// Does nothing
 	}
@@ -37,7 +38,8 @@ public class NullAudioPresenter
 	 * @since 2024/01/14
 	 */
 	@Override
-	public void setAttribute(int __attribute, int __value)
+	public void unuse()
+		throws UIException
 	{
 		// Does nothing
 	}
@@ -47,17 +49,8 @@ public class NullAudioPresenter
 	 * @since 2024/01/14
 	 */
 	@Override
-	public void setSound(MediaSound __data)
-	{
-		// Does nothing
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/01/14
-	 */
-	@Override
-	public void stop()
+	public void use()
+		throws ConnectionException, SecurityException, UIException
 	{
 		// Does nothing
 	}

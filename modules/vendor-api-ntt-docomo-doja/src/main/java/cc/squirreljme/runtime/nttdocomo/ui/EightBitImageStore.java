@@ -109,7 +109,37 @@ public final class EightBitImageStore
 		throws IllegalArgumentException, NullPointerException,
 			IndexOutOfBoundsException
 	{
-		throw Debugging.todo();
+		if (__b == null || __palette == null)
+			throw new NullPointerException("NARG");
+		
+		// How big of an area is being read?
+		int area = __w * __h;
+		
+		// Size of the current store
+		int imgW = this.width;
+		int imgH = this.height;
+		
+		// Check bounds
+		int[] buf = __b;
+		int bufLen = buf.length;
+		if (__o < 0 || __sl < 0 || __x < 0 || __y < 0 ||
+			__w <= 0 || __h <= 0 || __x + __w > imgW || __y + __h > imgH)
+			throw new IllegalArgumentException("IOOB");
+		
+		// Precache palette
+		int[] palCache = new int[256];
+		for (int i = 0, n = __palette.getEntryCount(); i < n; i++)
+			palCache[i] = __palette.getEntry(i);
+		
+		// Translate pixels with palette colors
+		byte[] pix = this._pixels;
+		for (int outY = 0, outBS = __o, inBS = imgW * __y; 
+			outY < __h; outY++, outBS += __sl, inBS += __w)
+			for (int outX = 0, outS = outBS, inS = inBS;
+				outX < __w; outX++, outS++, inS++)
+			{
+				__b[outS] = palCache[pix[inS] & 0xFF];
+			}
 	}
 	
 	/**

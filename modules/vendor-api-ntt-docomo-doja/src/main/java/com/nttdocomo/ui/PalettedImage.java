@@ -175,7 +175,7 @@ public abstract class PalettedImage
 	 */
 	boolean __hasAlpha()
 	{
-		throw Debugging.todo();
+		return false;
 	}
 	
 	/**
