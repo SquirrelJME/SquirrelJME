@@ -11,6 +11,7 @@ package com.nttdocomo.ui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.nttdocomo.ui.EightBitImageStore;
 import com.nttdocomo.opt.ui.Graphics2;
 
 /**
@@ -221,16 +222,41 @@ public class Graphics
 		if (__w < 0 || __h < 0)
 			throw new IllegalArgumentException("ILLA");
 		
-		// What can even be done here?
-		if (!(__i instanceof __MIDPImage__))
-			throw new UIException(UIException.UNSUPPORTED_FORMAT);
+		// Native 32-bit MIDP Image?
+		if (__i instanceof __MIDPImage__)
+		{
+			// Forward base image
+			__MIDPImage__ midpImage = (__MIDPImage__)__i;
+			this._graphics.drawRegion(midpImage.__midpImage(), __sx, __sy,
+				__w, __h, 0, __dx, __dy,
+				javax.microedition.lcdui.Graphics.TOP |
+				javax.microedition.lcdui.Graphics.LEFT);
+		}
 		
-		// Forward base image
-		__MIDPImage__ midpImage = (__MIDPImage__)__i;
-		this._graphics.drawRegion(midpImage.__midpImage(), __sx, __sy,
-			__w, __h, 0, __dx, __dy,
-			javax.microedition.lcdui.Graphics.TOP |
-			javax.microedition.lcdui.Graphics.LEFT);
+		// A 256 color image
+		else if (__i instanceof __8BitImage__)
+		{
+			// Get the actual image to be drawn
+			__8BitImage__ bitImage = (__8BitImage__)__i;
+			EightBitImageStore store = bitImage._store;
+			if (store == null)
+				throw new UIException(UIException.ILLEGAL_STATE);
+			
+			// Setup temporary RGB buffer
+			int a = __w * __h;
+			int[] rgb = new int[a];
+			
+			// Read in RGB data
+			Palette palette = bitImage.getPalette();
+			store.getRGB(rgb, 0, __w, palette, __sx, __sy, __w, __h);
+			
+			// Forward to RGB draw
+			this._graphics.drawRGB(rgb, 0, __w, __dx, __dy, __w, __h,
+				bitImage.__hasAlpha());
+		}
+		
+		// Not supported at all
+		throw new UIException(UIException.UNSUPPORTED_FORMAT);
 	}
 	
 	@Api

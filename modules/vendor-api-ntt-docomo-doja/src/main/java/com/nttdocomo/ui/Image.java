@@ -94,12 +94,35 @@ public abstract class Image
 	
 	@Api
 	public int getHeight()
+		throws UIException
+	{
+		throw Debugging.todo();
+	}
+	
+	@Api
+	public int getTransparentColor()
+		throws UIException
 	{
 		throw Debugging.todo();
 	}
 	
 	@Api
 	public int getWidth()
+		throws UIException
+	{
+		throw Debugging.todo();
+	}
+	
+	@Api
+	public void setTransparentColor(int __color)
+		throws UIException
+	{
+		throw Debugging.todo();
+	}
+	
+	@Api
+	public void setTransparentEnabled(boolean __enable)
+		throws UIException
 	{
 		throw Debugging.todo();
 	}
