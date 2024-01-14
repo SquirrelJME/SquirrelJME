@@ -25,12 +25,13 @@ public class GIFReader
 	
 	/**
 	 * Initializes the GIF reader.
-	 * 
+	 *
 	 * @param __in The stream to read from.
+	 * @param __factory
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/12/04
 	 */
-	public GIFReader(ExtendedDataInputStream __in)
+	public GIFReader(ExtendedDataInputStream __in, ImageFactory __factory)
 		throws NullPointerException
 	{
 		if (__in == null)

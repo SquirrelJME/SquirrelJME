@@ -33,19 +33,24 @@ public class XPMReader
 	/** Source stream. */
 	protected final InputStream in;
 	
+	/** The factory used to create images. */
+	private final ImageFactory factory;
+	
 	/**
 	 * Initializes the XPM image reader.
 	 *
 	 * @param __is The input stream.
+	 * @param __factory The factory used to create images.
 	 * @since 2016/05/08
 	 */
-	public XPMReader(InputStream __is)
+	public XPMReader(InputStream __is, ImageFactory __factory)
 		throws NullPointerException
 	{
 		if (__is == null)
 			throw new NullPointerException("NARG");
 		
 		this.in = __is;
+		this.factory = __factory;
 	}
 	
 	/**
@@ -89,7 +94,8 @@ public class XPMReader
 		this.__readPixels(cs, width, height, data, pxchars, codes, palette);
 		
 		// Create image
-		return Image.createRGBImage(data, width, height, alpha);
+		return this.factory.stillImage(data, 0, data.length,
+			false, alpha, width, height);
 	}
 	
 	/**

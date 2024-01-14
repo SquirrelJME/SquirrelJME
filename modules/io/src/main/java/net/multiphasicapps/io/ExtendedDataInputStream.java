@@ -35,8 +35,7 @@ public class ExtendedDataInputStream
 	protected final boolean canmark;
 	
 	/** The target endianess. */
-	private volatile DataEndianess _endian =
-		DataEndianess.BIG;
+	private volatile DataEndianess _endian;
 	
 	/** The number of bytes read. */
 	private volatile long _count;
@@ -59,14 +58,29 @@ public class ExtendedDataInputStream
 	public ExtendedDataInputStream(InputStream __is)
 		throws NullPointerException
 	{
+		this(__is, DataEndianess.BIG);
+	}
+	
+	/**
+	 * Initializes the extended input stream.
+	 *
+	 * @param __is The stream to read data from.
+	 * @param __endian The endianess to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/07/07
+	 */
+	public ExtendedDataInputStream(InputStream __is, DataEndianess __endian)
+		throws NullPointerException
+	{
 		// Check
-		if (__is == null)
+		if (__is == null || __endian == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		DataInputStream w;
 		this.input = (w = ((__is instanceof DataInputStream) ?
 			(DataInputStream)__is : new DataInputStream(__is)));
+		this._endian = __endian;
 		
 		// Need to know if marking is supported
 		this.canmark = w.markSupported();
@@ -507,7 +521,14 @@ public class ExtendedDataInputStream
 	public int skipBytes(int __n)
 		throws IOException
 	{
-		throw Debugging.todo();
+		// Try to read as many bytes as possible
+		InputStream in = this.input;
+		for (int i = 0; i < __n; i++)
+			if (in.read() < 0)
+				return i;
+		
+		// Read all the bytes
+		return __n;
 	}
 	
 	/**
