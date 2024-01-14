@@ -185,9 +185,19 @@ public class IModeApplication
 		
 		if (appName != null)
 		{
+			// If this contains any non-ISO-8859-1 characters, then append the
+			// Jar name
+			boolean nonIso = false;
+			for (int i = 0, n = appName.length(); i < n; i++)
+				if (appName.charAt(i) > 0xFF)
+				{
+					nonIso = true;
+					break;
+				}
+			
 			// If the application name contains an invalid character then
 			// it is an unsupported character we do not know about
-			if (appName.indexOf(0xFFFD) >= 0)
+			if (nonIso || appName.indexOf(0xFFFD) >= 0)
 				return appName + " (" +
 					JarPackageShelf.libraryPath(this.jar) + ")";
 			
