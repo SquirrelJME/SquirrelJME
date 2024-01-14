@@ -11,9 +11,17 @@ package cc.squirreljme.emulator.uiform;
 
 import cc.squirreljme.jvm.mle.PencilShelf;
 import cc.squirreljme.jvm.mle.brackets.PencilBracket;
+import cc.squirreljme.jvm.mle.callbacks.NativeImageLoadCallback;
+import cc.squirreljme.jvm.mle.constants.NativeImageLoadType;
 import cc.squirreljme.jvm.mle.constants.PencilCapabilities;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
 
 /**
  * Swing implementation of {@link PencilShelf}.
@@ -76,5 +84,73 @@ public final class SwingPencilShelf
 		throws MLECallError
 	{
 		throw new MLECallError("Not supported.");
+	}
+	
+	/**
+	 * As {@link PencilShelf#nativeImageLoadRGBA(int, byte[], int, int,
+	 * NativeImageLoadCallback)}.
+	 * 
+	 * @param __type The {@link NativeImageLoadType} to load.
+	 * @param __b The buffer.
+	 * @param __o The offset.
+	 * @param __l The length.
+	 * @param __callback The callback that performs the image loading.
+	 * @return The object returned will be passed through the callback from
+	 * the native callback, should return {@code null} if the load has been
+	 * cancelled.
+	 * @throws MLECallError If the image could not be loaded.
+	 * @see NativeImageLoadCallback
+	 * @since 2024/01/14
+	 */
+	public static Object nativeImageLoadRGBA(
+		int __type, byte[] __b, int __o, int __l,
+		NativeImageLoadCallback __callback)
+		throws MLECallError
+	{
+		if (__b == null || __callback == null || __b == null)
+			throw new MLECallError("Null arguments.");
+		
+		// Parse the image
+		try (InputStream in = new ByteArrayInputStream(__b, __o, __l))
+		{
+			BufferedImage result = ImageIO.read(in);
+			
+			// Initialize image information
+			int w = result.getWidth();
+			int h = result.getHeight();
+			__callback.initialize(w, h,
+				false,
+				false);
+			
+			// Extract image
+			int totalPixels = w * h;
+			int[] rgb = new int[totalPixels];
+			result.getRGB(0, 0, w, h, rgb, 0, w);
+			
+			// Add image data
+			__callback.addImage(rgb, 0, rgb.length,
+				0, result.getAlphaRaster() != null);
+			
+			// Finish resultant image
+			return __callback.finish();
+		}
+		catch (IOException __e)
+		{
+			throw new MLECallError("Native image load failed.", __e);
+		}
+	}
+	
+	/**
+	 * As {@link PencilShelf#nativeImageLoadTypes()}.
+	 * 
+	 * @return The bit field of {@link NativeImageLoadType} that can be
+	 * natively loaded.
+	 * @since 2024/01/14
+	 */
+	public static int nativeImageLoadTypes()
+	{
+		return NativeImageLoadType.LOAD_JPEG |
+			NativeImageLoadType.LOAD_GIF |
+			NativeImageLoadType.LOAD_PNG;
 	}
 }

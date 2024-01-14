@@ -188,6 +188,10 @@ public class ImageReaderDispatcher
 				return ImageReaderDispatcher.__native(loadType, __is,
 					__factory);
 			}
+			catch (MLECallError __e)
+			{
+				__e.printStackTrace();
+			}
 			catch (__CancelNativeException__ ignored)
 			{
 			}

@@ -419,7 +419,8 @@ public final class System
 			case "microedition.configuration":
 				try
 				{
-					Class<?> file = Class.forName("java.nio.FileSystem");
+					Class<?> file = Class.forName(
+						"java.nio.FileSystem");
 					if (file == null)
 						return "CLDC-1.8-Compact";
 					return "CLDC-1.8";

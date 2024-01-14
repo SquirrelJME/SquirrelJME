@@ -603,6 +603,18 @@ public enum MLEPencil
 				new NativeImageLoadCallbackAdapter(__thread.machine,
 					callbackRaw);
 			
+			// Does the native MLE handler support this?
+			if ((PencilShelf.nativeImageLoadTypes() & type) != 0)
+			{
+				// Forward to MLE handler
+				Object result = PencilShelf.nativeImageLoadRGBA(type,
+					buf.array(), off, len, callback); 
+					
+				// Was this cancelled?
+				if (result == null || result == SpringNullObject.NULL)
+					return SpringNullObject.NULL;
+			}
+			
 			// Read from our image
 			try (InputStream in = new ByteArrayInputStream(
 				buf.array(), off, len))
@@ -646,8 +658,12 @@ public enum MLEPencil
 				else
 					MLEPencil.__addImage(callback, image, -1);
 				
-				// Should finish as a SpringObject
+				// Check if it was cancelled
 				Object finished = callback.finish();
+				if (finished == null || finished == SpringNullObject.NULL)
+					return SpringNullObject.NULL;
+				
+				// Should finish as a SpringObject
 				if (!(finished instanceof SpringObject))
 					throw new SpringMLECallError("Not an object?");
 				return finished;

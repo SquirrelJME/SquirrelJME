@@ -44,6 +44,16 @@ public final class SuiteUtils
 		if (lastSlash < 0)
 			return __name;
 		
+		// Path separator?
+		String fileSep = System.getProperty("file.separator");
+		if (fileSep.length() == 1)
+		{
+			int lastSep = __name.lastIndexOf(fileSep.charAt(0));
+			if (lastSep >= 0 && lastSep >= lastSlash)
+				return __name.substring(lastSep + 1);
+			return __name.substring(lastSlash + 1);
+		}
+		
 		// Otherwise place it down
 		return __name.substring(lastSlash + 1);
 	}
