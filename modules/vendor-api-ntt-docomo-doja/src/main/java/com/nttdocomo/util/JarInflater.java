@@ -13,10 +13,13 @@ import cc.squirreljme.runtime.cldc.DubiousImplementationError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.debug.ErrorCode;
+import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import net.multiphasicapps.zip.blockreader.ZipBlockEntry;
 import net.multiphasicapps.zip.blockreader.ZipBlockReader;
+import net.multiphasicapps.zip.blockreader.ZipEntryNotFoundException;
 
 /**
  * This utility is used to decompress Jar files, or Zip files, from a byte
@@ -45,7 +48,7 @@ public class JarInflater
 	private volatile boolean _isClosed;
 	
 	/**
-	 * Initializes a Jar/Zip inflater around the given byte array.
+	 * Initializes a Jar/Zip accessor around the given byte array.
 	 *
 	 * @param __buffer The buffer to wrap around.
 	 * @throws JarFormatException If the Jar/Zip is not valid.
@@ -66,7 +69,9 @@ public class JarInflater
 		}
 		catch (IOException __e)
 		{
-			JarFormatException toss = new JarFormatException();
+			/* {@squirreljme.error AH17 Malformed Zip file.} */
+			JarFormatException toss = new JarFormatException(
+				ErrorCode.__error__("AH17"));
 			
 			toss.initCause(__e);
 			
@@ -80,20 +85,21 @@ public class JarInflater
 	/**
 	 * Reads all bytes from the input and then loads the Zip from the data,
 	 * the stream is not closed at all.
+	 * 
+	 * The stream's position after reading is unspecified.
 	 *
-	 * @param __in The stream to load the Jar/Zip from
+	 * @param __in The stream to load the Jar/Zip from, it is unspecified
+	 * whether the next read position is at the end of the Zip's central
+	 * directory or at the end of the input stream.
 	 * @throws JarFormatException If the Jar/Zip is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/13
 	 */
 	@Api
 	public JarInflater(InputStream __in)
-		throws IllegalStateException, JarFormatException, NullPointerException
+		throws IOException, JarFormatException, NullPointerException
 	{
-		if (__in == null)
-			throw new NullPointerException("NARG");
-	
-		throw Debugging.todo();
+		this(StreamUtils.readAll(__in));
 	}
 	
 	/**
@@ -108,9 +114,11 @@ public class JarInflater
 	@Api
 	public void close()
 	{
-		// Mark closed
+		// Mark closed, do not run multiple times
 		if (!this._isClosed)
 			this._isClosed = true;
+		else
+			return;
 		
 		// Close the stream?? This is dubious and the documentation helpfully
 		// says: "Reading from the input stream already obtained from this
@@ -124,13 +132,15 @@ public class JarInflater
 					"Close assumption made in JarInflater.close()");
 				
 				stream.close();
+				this._zip.close();
 			}
 			catch (IOException __e)
 			{
 				/* {@squirreljme.error AH12 Closing assumed target stream in
 				   JarInflater, which threw an exception resulted in a dubious
 				   operation.} */
-				throw new DubiousImplementationError("AH12", __e);
+				throw new DubiousImplementationError(
+					ErrorCode.__error__("AH12"), __e);
 			}
 	}
 	
@@ -156,7 +166,27 @@ public class JarInflater
 		if (__name == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		try
+		{
+			ZipBlockEntry entry = this.__entry(__name, true);
+			
+			// Not found, or is a directory? Then just fail
+			if (entry == null || entry.isDirectory())
+				return null;
+			
+			// Return stream to access the file
+			return entry.open();
+		}
+		
+		/* {@squirreljme.error AH15 Could not open the given entry as a
+		stream. (The entry name)} */
+		catch (IOException __e)
+		{
+			JarFormatException toss = new JarFormatException(
+				ErrorCode.__error__("AH15", __name));
+			toss.initCause(__e);
+			throw toss;
+		}
 	}
 	
 	/**
@@ -180,8 +210,32 @@ public class JarInflater
 	{
 		if (__name == null)
 			throw new NullPointerException("NARG");
-	
-		throw Debugging.todo();
+		
+		try
+		{
+			ZipBlockEntry entry = this.__entry(__name, true);
+			
+			// Not found
+			if (entry == null)
+				return -1;
+			
+			// Directories are considered as empty files in terms of size
+			else if (entry.isDirectory())
+				return 0;
+			
+			// Otherwise request the uncompressed size
+			return entry.uncompressedSize();
+		}
+		
+		/* {@squirreljme.error AH16 Could not get the size of the
+		given entry. (The entry name)} */
+		catch (IOException __e)
+		{
+			JarFormatException toss = new JarFormatException(
+				ErrorCode.__error__("AH16", __name));
+			toss.initCause(__e);
+			throw toss;
+		}
 	}
 	
 	/**
@@ -189,17 +243,54 @@ public class JarInflater
 	 * attempt to find a directory if one was not specified.
 	 *
 	 * @param __name The name to this.
+	 * @param __relCheck Check for relative name?
 	 * @return The given entry.
+	 * @throws IllegalArgumentException If the name is not valid, for example
+	 * it contains relative path elements such
+	 * as {@code /./} or {@code '/../'}.
 	 * @throws JarFormatException If the Jar is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/13
 	 */
-	private final ZipBlockEntry __entry(String __name)
-		throws JarFormatException, NullPointerException
+	private final ZipBlockEntry __entry(String __name, boolean __relCheck)
+		throws IllegalArgumentException, JarFormatException,
+			NullPointerException
 	{
 		if (__name == null)
-			throws new NullPointerException("NARG");
+			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		// Requesting a directory?
+		boolean wantDir = __name.endsWith("/");
+		
+		/* {@squirreljme.error AH13 JarInflater path cannot be used to obtain
+		relative directory entries. (The entry name)} */
+		if (wantDir && __relCheck)
+			if (__name.contains("/./") || __name.contains("/../"))
+				throw new IllegalArgumentException(
+					ErrorCode.__error__("AH13", __name));
+		
+		// Obtain the given entry
+		try
+		{
+			return this._zip.get(__name);
+		}
+		catch (ZipEntryNotFoundException ignored)
+		{
+			// Could we potentially be requesting a directory?
+			if (!wantDir)
+				return this.__entry(__name, __relCheck);
+			
+			// Otherwise, not found
+			return null;
+		}
+		catch (IOException __e)
+		{
+			/* {@squirreljme.error AH14 Could not obtain entry from the Zip,
+			it may be corrupted or invalid. (The entry name)} */
+			JarFormatException toss = new JarFormatException(
+				ErrorCode.__error__("AH14", __name));
+			toss.initCause(__e);
+			throw toss;
+		}
 	}
 }
