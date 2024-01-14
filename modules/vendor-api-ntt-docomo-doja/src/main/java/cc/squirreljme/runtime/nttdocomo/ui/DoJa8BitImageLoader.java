@@ -20,11 +20,20 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 public class DoJa8BitImageLoader
 	implements NativeImageLoadCallback
 {
+	/** Does this have alpha to the colors? */
+	private boolean _hasAlpha;
+	
 	/** The image width. */
 	private volatile int _width;
 	
 	/** The image height. */
 	private volatile int _height;
+	
+	/** The image palette. */
+	private volatile int[] _palette;
+	
+	/** 8-bit pixel data. */
+	private volatile byte[] _pixels;
 	
 	/**
 	 * {@inheritDoc}
@@ -34,7 +43,13 @@ public class DoJa8BitImageLoader
 	public void addImage(int[] __buf, int __off, int __len, int __frameDelay,
 		boolean __hasAlpha)
 	{
-		throw Debugging.todo();
+		// Map values down from int to 8-bit
+		byte[] actual = new byte[__len];
+		for (int i = 0, at = __off; i < __len; i++, at++)
+			actual[i] = (byte)__buf[at];
+		
+		// Set raw indexed pixels
+		this._pixels = actual;
 	}
 	
 	/**
@@ -54,7 +69,8 @@ public class DoJa8BitImageLoader
 	@Override
 	public Object finish()
 	{
-		throw Debugging.todo();
+		return new EightBitImageStore(this._pixels, this._width, this._height,
+			this._palette, this._hasAlpha);
 	}
 	
 	/**
@@ -81,12 +97,24 @@ public class DoJa8BitImageLoader
 	
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @return
 	 * @since 2024/01/14
 	 */
 	@Override
-	public void setPalette(int[] __colors, int __off, int __len,
+	public boolean setPalette(int[] __colors, int __off, int __len,
 		boolean __hasAlpha)
 	{
-		throw Debugging.todo();
+		// Copy palette
+		int[] palette = new int[__len];
+		System.arraycopy(__colors, __off,
+			palette, 0, __len);
+		
+		// Store within
+		this._palette = new int[__len];
+		this._hasAlpha = __hasAlpha;
+		
+		// Use indexed mode
+		return true;
 	}
 }

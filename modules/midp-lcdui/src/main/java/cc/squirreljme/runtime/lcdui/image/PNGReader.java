@@ -44,6 +44,9 @@ public class PNGReader
 	/** The image loader to use. */
 	protected final NativeImageLoadCallback loader;
 	
+	/** Are indexed pixels desired? */
+	private boolean _wantIndexed;
+	
 	/** Image width. */
 	private int _width;
 	
@@ -541,7 +544,8 @@ public class PNGReader
 		}
 		
 		// Notify that a palette was set
-		this.loader.setPalette(palette, 0, maxColors, true);
+		this._wantIndexed =
+			this.loader.setPalette(palette, 0, maxColors, true);
 	}
 	
 	/**
@@ -561,14 +565,17 @@ public class PNGReader
 			
 		int[] argb = this._argb;
 		int[] palette = this._palette;
-		int width = this._width,
-			height = this._height,
-			limit = width * height,
-			bitdepth = this._bitDepth,
-			bitmask = (1 << bitdepth) - 1,
-			numpals = (palette != null ? palette.length : 0),
-			hishift = (8 - bitdepth),
-			himask = bitmask << hishift;
+		int width = this._width;
+		int height = this._height;
+		int limit = width * height;
+		int bitdepth = this._bitDepth;
+		int bitmask = (1 << bitdepth) - 1;
+		int numpals = (palette != null ? palette.length : 0);
+		int hishift = (8 - bitdepth);
+		int himask = bitmask << hishift;
+		
+		// Do not translate paletted colors, get their raw index values?
+		boolean wantIndexed = this._wantIndexed;
 		
 		// Read of multiple bits
 		for (int o = 0;;)
@@ -580,7 +587,14 @@ public class PNGReader
 			
 			// Handle each bit
 			for (int b = 0; b < 8 && o < limit; b += bitdepth, v <<= bitdepth)
-				argb[o++] = palette[((v & himask) >>> hishift) % numpals];
+			{
+				int index = ((v & himask) >>> hishift) % numpals;
+				
+				if (wantIndexed)
+					argb[o++] = index;
+				else
+					argb[o++] = palette[index];
+			}
 		}
 	}
 	

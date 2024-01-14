@@ -17,6 +17,8 @@ import cc.squirreljme.jvm.mle.constants.PencilCapabilities;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.IndexColorModel;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -126,6 +128,24 @@ public final class SwingPencilShelf
 			int totalPixels = w * h;
 			int[] rgb = new int[totalPixels];
 			result.getRGB(0, 0, w, h, rgb, 0, w);
+			
+			// If this is indexed or less, then there is a palette
+			ColorModel model = result.getColorModel();
+			if (model instanceof IndexColorModel)
+			{
+				IndexColorModel indexModel = (IndexColorModel)model;
+				
+				// Determine how big the palette is
+				int num = indexModel.getMapSize();
+				
+				// Load in palette
+				int[] palette = new int[num];
+				indexModel.getRGBs(palette);
+				
+				// Send to callback
+				__callback.setPalette(palette, 0, num,
+					indexModel.hasAlpha());
+			}
 			
 			// Add image data
 			__callback.addImage(rgb, 0, rgb.length,

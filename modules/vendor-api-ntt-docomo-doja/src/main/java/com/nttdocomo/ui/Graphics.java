@@ -231,6 +231,9 @@ public class Graphics
 				__w, __h, 0, __dx, __dy,
 				javax.microedition.lcdui.Graphics.TOP |
 				javax.microedition.lcdui.Graphics.LEFT);
+			
+			// Stop
+			return;
 		}
 		
 		// A 256 color image
@@ -253,6 +256,9 @@ public class Graphics
 			// Forward to RGB draw
 			this._graphics.drawRGB(rgb, 0, __w, __dx, __dy, __w, __h,
 				bitImage.__hasAlpha());
+			
+			// Stop
+			return;
 		}
 		
 		// Not supported at all

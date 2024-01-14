@@ -22,6 +22,9 @@ import java.io.InputStream;
 public abstract class PalettedImage
 	extends Image
 {
+	/** The overriding palette. */
+	volatile Palette _paletteOverride;
+	
 	/**
 	 * Only initialized by subclasses.
 	 * 
@@ -62,11 +65,22 @@ public abstract class PalettedImage
 			ErrorCode.__error__("AH18"));
 	}
 	
+	/**
+	 * Returns the palette for this given image.
+	 *
+	 * @return The resultant image palette.
+	 * @throws UIException If the image has been disposed of.
+	 * @since 2024/01/14
+	 */
 	@Api
 	public Palette getPalette()
 		throws UIException
 	{
-		throw Debugging.todo();
+		Palette result = this._paletteOverride;
+		if (result == null)
+			throw new UIException(UIException.ILLEGAL_STATE);
+		
+		return result;
 	}
 	
 	/**
@@ -89,6 +103,38 @@ public abstract class PalettedImage
 		throws UIException
 	{
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Sets the palette of this image.
+	 *
+	 * @param __palette The palette to set.
+	 * @throws IllegalArgumentException If the size of this palette does not
+	 * match the size of the existing palette.
+	 * @throws NullPointerException On null arguments.
+	 * @throws UIException If this has been disposed of.
+	 * @since 2024/01/14
+	 */
+	@Api
+	public void setPalette(Palette __palette)
+		throws IllegalArgumentException, NullPointerException, UIException
+	{
+		if (__palette == null)
+			throw new NullPointerException("NARG");
+		
+		// Was this disposed of?
+		Palette current = this._paletteOverride;
+		if (current == null)
+			throw new UIException(UIException.ILLEGAL_STATE);
+		
+		/* {@squirreljme.error AH1b A palette of the same size must be used
+		in order to override an image's existing palette.} */
+		if (current.getEntryCount() != __palette.getEntryCount())
+			throw new IllegalArgumentException(
+				ErrorCode.__error__("AH1b"));
+		
+		// Set override
+		this._paletteOverride = __palette;
 	}
 	
 	/**

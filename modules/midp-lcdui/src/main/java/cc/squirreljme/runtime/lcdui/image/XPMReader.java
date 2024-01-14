@@ -89,7 +89,8 @@ public class XPMReader
 			cs, codes, palette, numcolors, pxchars);
 		
 		// Set the palette
-		loader.setPalette(palette, 0, numcolors, alpha);
+		boolean wantIndex = loader.setPalette(palette, 0, numcolors,
+			alpha);
 		
 		// Target array
 		int area = width * height;
@@ -99,7 +100,8 @@ public class XPMReader
 		loader.initialize(width, height, false, false);
 		
 		// Read pixels
-		this.__readPixels(cs, width, height, data, pxchars, codes, palette);
+		this.__readPixels(cs, width, height, data, pxchars, codes, palette,
+			wantIndex);
 		
 		// Create image
 		loader.addImage(data, 0, data.length,
@@ -400,11 +402,14 @@ public class XPMReader
 	 * @param __pxchars The characters per pixel.
 	 * @param __codes The character codes.
 	 * @param __palette The color palette.
+	 * @param __wantIndex Do we want indexed colors and not the actual RGB
+	 * color?
 	 * @throws IOException On read errors.
 	 * @since 2016/05/22
 	 */
 	private void __readPixels(Reader __cs, int __width, int __height,
-		int[] __data, int __pxchars, int[] __codes, int[] __palette)
+		int[] __data, int __pxchars, int[] __codes, int[] __palette,
+		boolean __wantIndex)
 		throws IOException
 	{
 		// Read the XPM image data for each rows
@@ -438,10 +443,14 @@ __outer:
 						code |= c << 16;
 				}
 				
+				// Direct index
+				if (__wantIndex)
+					__data[z++] = code;
+				
 				// Used this color just before? In solidly linear areas, this
 				// reduces the need for constant binary searches and increases
 				// the parsing speed slightly.
-				if (code == lastcode)
+				else if (code == lastcode)
 					__data[z++] = lastpall;
 				
 				// Find the code used

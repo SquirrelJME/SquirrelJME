@@ -77,7 +77,9 @@ class __8BitImage__
 		}
 		
 		// Finish loading in the image to the store
-		this._store = (EightBitImageStore)loader.finish();
+		EightBitImageStore store = (EightBitImageStore)loader.finish();
+		this._store = store;
+		this._paletteOverride = store.getPalette();
 	}
 	
 	/**

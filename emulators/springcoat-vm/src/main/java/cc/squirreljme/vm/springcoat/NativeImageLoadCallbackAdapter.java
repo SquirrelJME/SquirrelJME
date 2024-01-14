@@ -107,15 +107,17 @@ public class NativeImageLoadCallbackAdapter
 	
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @return
 	 * @since 2024/01/14
 	 */
 	@Override
-	public void setPalette(int[] __colors, int __off, int __len,
+	public boolean setPalette(int[] __colors, int __off, int __len,
 		boolean __hasAlpha)
 	{
-		this.invokeCallback(
-			MethodNameAndType.ofArguments("setPalette", null,
+		return ((Integer)this.invokeCallback(
+			MethodNameAndType.ofArguments("setPalette", "Z",
 				"[I", "I", "I", "Z"),
-			__colors, __off, __len, __hasAlpha);
+			__colors, __off, __len, __hasAlpha)) != 0;
 	}
 }

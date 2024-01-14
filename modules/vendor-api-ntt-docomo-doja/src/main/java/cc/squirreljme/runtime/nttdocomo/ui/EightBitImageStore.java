@@ -20,6 +20,46 @@ import com.nttdocomo.ui.Palette;
  */
 public final class EightBitImageStore
 {
+	/** The image width. */
+	protected final int width;
+	
+	/** The image height. */
+	protected final int height;
+	
+	/** Is there an alpha channel? */
+	protected final boolean hasAlpha;
+	
+	/** Internal Image palette. */
+	protected final Palette palette;
+	
+	/** Image pixel data. */
+	private final byte[] _pixels;
+	
+	/**
+	 * Initializes the image store.
+	 *
+	 * @param __pixels The pixels to use, this is used directly.
+	 * @param __width The image width.
+	 * @param __height The image height.
+	 * @param __palette The image palette.
+	 * @param __hasAlpha Does this have an alpha channel?
+	 * @throws NullPointerException
+	 * @since 2024/01/14
+	 */
+	EightBitImageStore(byte[] __pixels, int __width, int __height,
+		int[] __palette, boolean __hasAlpha)
+		throws NullPointerException
+	{
+		if (__pixels == null || __palette == null)
+			throw new NullPointerException("NARG");
+		
+		this._pixels = __pixels;
+		this.palette = new Palette(__palette);
+		this.width = __width;
+		this.height = __height;
+		this.hasAlpha = __hasAlpha;
+	}
+	
 	/**
 	 * Returns the height of the image.
 	 *
@@ -29,6 +69,17 @@ public final class EightBitImageStore
 	public int getHeight()
 	{
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Returns the image store's palette.
+	 *
+	 * @return The palette of the image store.
+	 * @since 2024/01/14
+	 */
+	public Palette getPalette()
+	{
+		return this.palette;
 	}
 	
 	/**
