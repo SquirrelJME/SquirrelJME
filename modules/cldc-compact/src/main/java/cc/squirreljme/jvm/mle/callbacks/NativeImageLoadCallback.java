@@ -79,4 +79,16 @@ public interface NativeImageLoadCallback
 	 */
 	@SquirrelJMEVendorApi
 	void setLoopCount(int __loopCount);
+	
+	/**
+	 * Sets the palette of the next resultant image, if it is needed.
+	 *
+	 * @param __colors The colors for the palette.
+	 * @param __off The offset into the buffer.
+	 * @param __len The length of the buffer.
+	 * @param __hasAlpha Is there an alpha channel?
+	 * @since 2024/01/14
+	 */
+	@SquirrelJMEVendorApi
+	void setPalette(int[] __colors, int __off, int __len, boolean __hasAlpha);
 }

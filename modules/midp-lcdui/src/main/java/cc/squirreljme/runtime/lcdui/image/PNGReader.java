@@ -539,6 +539,9 @@ public class PNGReader
 			// Fill in color
 			palette[i] = (r << 16) | (g << 8) | b;
 		}
+		
+		// Notify that a palette was set
+		this.loader.setPalette(palette, 0, maxColors, true);
 	}
 	
 	/**

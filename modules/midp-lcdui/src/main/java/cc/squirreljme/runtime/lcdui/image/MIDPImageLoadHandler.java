@@ -170,4 +170,15 @@ public final class MIDPImageLoadHandler
 			this._loopCount = __loopCount;
 		}
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/01/14
+	 */
+	@Override
+	public void setPalette(int[] __colors, int __off, int __len,
+		boolean __hasAlpha)
+	{
+		// We do not care about palettes in MIDP
+	}
 }

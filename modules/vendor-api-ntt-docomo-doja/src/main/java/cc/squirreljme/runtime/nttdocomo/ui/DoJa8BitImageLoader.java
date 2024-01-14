@@ -78,4 +78,15 @@ public class DoJa8BitImageLoader
 	{
 		throw Debugging.todo();
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/01/14
+	 */
+	@Override
+	public void setPalette(int[] __colors, int __off, int __len,
+		boolean __hasAlpha)
+	{
+		throw Debugging.todo();
+	}
 }

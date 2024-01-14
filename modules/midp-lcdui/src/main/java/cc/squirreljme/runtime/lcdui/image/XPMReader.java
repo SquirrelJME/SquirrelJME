@@ -88,6 +88,9 @@ public class XPMReader
 		boolean alpha = this.__readColorTable(
 			cs, codes, palette, numcolors, pxchars);
 		
+		// Set the palette
+		loader.setPalette(palette, 0, numcolors, alpha);
+		
 		// Target array
 		int area = width * height;
 		int[] data = new int[area];

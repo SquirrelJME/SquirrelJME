@@ -10,7 +10,6 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.callbacks.NativeImageLoadCallback;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodNameAndType;
 
@@ -104,5 +103,19 @@ public class NativeImageLoadCallbackAdapter
 			MethodNameAndType.ofArguments("setLoopCount", null,
 				"I"),
 			__loopCount);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/01/14
+	 */
+	@Override
+	public void setPalette(int[] __colors, int __off, int __len,
+		boolean __hasAlpha)
+	{
+		this.invokeCallback(
+			MethodNameAndType.ofArguments("setPalette", null,
+				"[I", "I", "I", "Z"),
+			__colors, __off, __len, __hasAlpha);
 	}
 }
