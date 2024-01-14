@@ -3,14 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the Mozilla Public License Version 2.0.
+// SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.runtime.lcdui.image;
 
 import cc.squirreljme.jvm.mle.PencilShelf;
-import cc.squirreljme.jvm.mle.constants.NativeImageLoadParameter;
 import cc.squirreljme.jvm.mle.constants.NativeImageLoadType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -18,7 +17,6 @@ import cc.squirreljme.runtime.cldc.io.MarkableInputStream;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import java.io.IOException;
 import java.io.InputStream;
-import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import net.multiphasicapps.io.DataEndianess;
 import net.multiphasicapps.io.ExtendedDataInputStream;
@@ -43,33 +41,36 @@ public class ImageReaderDispatcher
 	 * Parses the image stream.
 	 *
 	 * @param __is The stream to read from.
+	 * @param __factory The factory used to create the final image.
 	 * @return The parsed image data.
 	 * @throws IOException If it could not be parsed.
 	 * @since 2021/12/04
 	 */
-	public static Image parse(InputStream __is)
+	public static Image parse(InputStream __is, ImageFactory __factory)
 		throws IOException, NullPointerException
 	{
 		// Check
-		if (__is == null)
+		if (__is == null || __factory == null)
 			throw new NullPointerException("NARG");
 		
 		if (__is.markSupported())
-			return ImageReaderDispatcher.__parse(__is);
-		return ImageReaderDispatcher.__parse(new MarkableInputStream(__is));
+			return ImageReaderDispatcher.__parse(__is, __factory);
+		return ImageReaderDispatcher.__parse(new MarkableInputStream(__is),
+			__factory);
 	}
 	
 	/**
-	 * Parses the image stream.
-	 *
-	 * @param __is The stream to read from.
-	 * @return The parsed image data.
-	 * @throws IOException If it could not be parsed.
+	 * Determines the type of image this is.
+	 * 
+	 * @param __is The stream to check.
+	 * @return The type of image that is here.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/02/10
 	 */
-	private static Image __parse(InputStream __is)
+	private static int __determineType(InputStream __is)
 		throws IOException, NullPointerException
 	{
-		// Check
 		if (__is == null)
 			throw new NullPointerException("NARG");
 		
@@ -86,72 +87,43 @@ public class ImageReaderDispatcher
 		// Reset for future read
 		__is.reset();
 		
-		// Which types of images are supported?
-		int nativeLoad = PencilShelf.nativeImageLoadTypes();
-		
 		// GIF? (GIF8)
 		if (magic == 0x47494638)
-		{
-			if ((nativeLoad & NativeImageLoadType.LOAD_GIF) != 0)
-				return ImageReaderDispatcher.__native(
-					NativeImageLoadType.LOAD_GIF, __is);
-			
-			ExtendedDataInputStream in =
-				new ExtendedDataInputStream(__is);
-			in.setEndianess(DataEndianess.LITTLE);
-			
-			return new GIFReader(in).parse();
-		}
+			return NativeImageLoadType.LOAD_GIF;
 		
 		// PNG?
 		else if (magic == 0x89504E47)
-		{
-			if ((nativeLoad & NativeImageLoadType.LOAD_PNG) != 0)
-				return ImageReaderDispatcher.__native(
-					NativeImageLoadType.LOAD_PNG, __is);
-			return new PNGReader(__is).parse();
-		}
+			return NativeImageLoadType.LOAD_PNG;
 		
 		// JPEG?
 		else if ((magic & 0xFFFFFF00) == 0xFFD8FF00)
-		{
-			if ((nativeLoad & NativeImageLoadType.LOAD_JPEG) != 0)
-				return ImageReaderDispatcher.__native(
-					NativeImageLoadType.LOAD_JPEG, __is);
-			return new JPEGReader(__is).parse();
-		}
+			return NativeImageLoadType.LOAD_JPEG;
 		
 		// SVG?
 		else if (first == '<')
-			throw Debugging.todo();
+			return NativeImageLoadType.LOAD_SVG;
 		
 		// XPM?
 		else if (first == '/')
-		{
-			if ((nativeLoad & NativeImageLoadType.LOAD_XPM) != 0)
-				return ImageReaderDispatcher.__native(
-					NativeImageLoadType.LOAD_XPM, __is);
-			return new XPMReader(__is).parse();
-		}
+			return NativeImageLoadType.LOAD_XPM;
 		
-		/* {@squirreljme.error EB0s Could not detect the image format used
-		specified by the starting byte. (The magic number; The first byte)} */
-		else
-			throw new IOException(String.format("EB0s %08x %02x", magic,
-				first));
+		// Unknown
+		return 0;
 	}
 	
 	/**
 	 * Handles loading of native images.
-	 * 
+	 *
 	 * @param __type The type of image to load.
 	 * @param __in The stream to read from.
+	 * @param __factory The factory used for image creation.
 	 * @return The image that came from the native data.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/12/05
 	 */
-	private static Image __native(int __type, InputStream __in)
+	private static Image __native(int __type, InputStream __in,
+		ImageFactory __factory)
 		throws IOException, NullPointerException
 	{
 		if (__in == null)
@@ -161,96 +133,83 @@ public class ImageReaderDispatcher
 		byte[] rawData = StreamUtils.readAll(__in);
 		
 		// Do the native image load
-		int[] imageData;
+		Object result;
 		try
 		{
-			imageData = PencilShelf.nativeImageLoadRGBA(__type,
-				rawData, 0, rawData.length);
+			result = PencilShelf.nativeImageLoadRGBA(__type,
+				rawData, 0, rawData.length,
+				new __NativeLoadHandler__(__factory));
 			
-			/* {@squirreljme.error EB3r Could not load the native image.} */
-			if (imageData == null)
+			// {@squirreljme.error EB3r Could not load the native image.}
+			if (!(result instanceof Image))
 				throw new IOException("EB3r");
 		}
 		
-		/* {@squirreljme.error EB3q Could not load the native image.} */
+		// {@squirreljme.error EB3q Could not load the native image.}
 		catch (MLECallError __e)
 		{
 			throw new IOException("EB3q", __e);
 		}
 		
-		// Load image parameters
-		int numParameters = imageData[0];
-		boolean useAlpha = false;
-		int imageWidth = -1;
-		int imageHeight = -1;
-		int scanLength = -1;
-		for (int i = 0; i < numParameters; i++)
+		// Use the resultant decoded image
+		return (Image)result;
+	}
+	
+	/**
+	 * Parses the image stream.
+	 *
+	 * @param __is The stream to read from.
+	 * @param __factory The factory used for creating images.
+	 * @return The parsed image data.
+	 * @throws IOException If it could not be parsed.
+	 */
+	private static Image __parse(InputStream __is, ImageFactory __factory)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__is == null || __factory == null)
+			throw new NullPointerException("NARG");
+		
+		// Determine the image type
+		int loadType = ImageReaderDispatcher.__determineType(__is);
+		
+		// {@squirreljme.error EB0k Unsupported image type.}
+		if (loadType == 0 || Integer.bitCount(loadType) != 1)
+			throw new IOException("EB0k");
+		
+		// Native image load is supported for this image type?
+		if ((PencilShelf.nativeImageLoadTypes() & loadType) != 0)
+			return ImageReaderDispatcher.__native(loadType, __is, __factory);
+		
+		switch (loadType)
 		{
-			int value = imageData[i];
-			switch (i)
-			{
-					// Does nothing but is used above
-				case NativeImageLoadParameter.STORED_PARAMETER_COUNT:
-					break;
+				// GIF? (GIF8)
+			case NativeImageLoadType.LOAD_GIF:
+				ExtendedDataInputStream in =
+					new ExtendedDataInputStream(__is);
+				in.setEndianess(DataEndianess.LITTLE);
 				
-				case NativeImageLoadParameter.USE_ALPHA:
-					useAlpha = (value != 0);
-					break;
-				
-				case NativeImageLoadParameter.WIDTH:
-					imageWidth = value;
-					break;
-				
-				case NativeImageLoadParameter.HEIGHT:
-					imageHeight = value;
-					break;
-				
-				case NativeImageLoadParameter.SCAN_LENGTH:
-					scanLength = value;
-					break;
-				
-				default:
-					Debugging.debugNote("Native image param %d = %d?",
-						i, value);
-					break;
-			}
-		}
+				return new GIFReader(in, __factory).parse();
 		
-		/* {@squirreljme.error EB3s Image has invalid parameters.} */
-		if (imageWidth <= 0 || imageHeight <= 0)
-			throw new IOException("EB3s");
+				// PNG?
+			case NativeImageLoadType.LOAD_PNG:
+				return new PNGReader(__is, __factory).parse();
 		
-		// The scan length needs to at least be the image width
-		if (scanLength < imageWidth)
-			scanLength = imageWidth;
+				// JPEG?
+			case NativeImageLoadType.LOAD_JPEG:
+				return new JPEGReader(__is).parse();
 		
-		// Copy image data to a new buffer if the scan is the same size
-		if (scanLength == imageWidth)
-		{
-			int rgbArea = scanLength * imageHeight;
-			int[] rgbData = new int[rgbArea];
-			System.arraycopy(imageData, numParameters,
-				rgbData, 0, rgbArea);
-			
-			return Image.createRGBImage(rgbData,
-				imageWidth, imageHeight, useAlpha);
-		}
+				// SVG?
+			case NativeImageLoadType.LOAD_SVG:
+				throw Debugging.todo();
 		
-		// Otherwise, we need to unscan it so we can use our native drawing
-		// functions for this process
-		else
-		{
-			Image mutImage = Image.createImage(imageWidth, imageHeight,
-				useAlpha, 0);
-				
-			// Draw the RGB data directly onto a mutable image
-			Graphics g = mutImage.getGraphics();
-			g.setBlendingMode(Graphics.SRC);
-			g.drawRGB(imageData, numParameters, scanLength,
-				0, 0, imageWidth, imageHeight, useAlpha);
-			
-			// Make it immutable
-			return Image.createImage(mutImage);
+				// XPM?
+			case NativeImageLoadType.LOAD_XPM:
+				return new XPMReader(__is, __factory).parse();
+		
+				// {@squirreljme.error EB0s Unsupported image format.}
+			default:
+				throw new IOException("EB0s");
 		}
 	}
 }
