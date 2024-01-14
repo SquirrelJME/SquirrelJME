@@ -1,0 +1,46 @@
+// ---------------------------------------------------------------------------
+// Multi-Phasic Applications: SquirrelJME
+//     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+// ---------------------------------------------------------------------------
+// SquirrelJME is under the Mozilla Public License Version 2.0.
+// See license.mkd for licensing and copyright information.
+// ---------------------------------------------------------------------------
+
+import cc.squirreljme.plugin.swm.JavaMEConfiguration
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+
+version = "1.8.$squirreljmeVMVersion"
+description = "NanoCoat compiler and packaging."
+
+squirreljme
+{
+	javaDocErrorCode = "NC"
+	swmType = JavaMEMidletType.API
+	swmName = "NanoCoat AOT"
+	swmVendor = "Stephanie Gawroriski"
+	tags += "aot-compiler"
+	tags += "compiler:nanocoat"
+	mainClass = "cc.squirreljme.jvm.aot.Main"
+	
+	// These classes break ProGuard since it tries to pull it in but fails
+	proGuardOptionsTestFixtures += [
+	    "-keep", "class", "**",
+		"-dontwarn", "**"
+	]
+	proGuardOptionsTest += [
+	    "-keep", "class", "**",
+		"-dontwarn", "**"
+	]
+}
+
+dependencies
+{
+	api project(":modules:aot")
+	api project(":modules:tool-classfile")
+	api project(":modules:c-source-writer")
+	api project(":modules:csv")
+	
+	api project(":modules:aot-springcoat")
+	
+	testImplementation(testFixtures(project(":modules:aot")))
+}

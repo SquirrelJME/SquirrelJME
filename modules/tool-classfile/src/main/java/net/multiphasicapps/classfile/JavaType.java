@@ -244,6 +244,17 @@ public final class JavaType
 	}
 	
 	/**
+	 * Returns the simple storage type of this type.
+	 * 
+	 * @return The simple storage type.
+	 * @since 2023/07/03
+	 */
+	public final SimpleStorageType simpleStorageType()
+	{
+		return this.type.simpleStorageType();
+	}
+	
+	/**
 	 * Returns the type that is used for the top type.
 	 *
 	 * @return The associated top type used for this type or {@code null} if

@@ -1,0 +1,68 @@
+/* -*- Mode: C; indent-tabs-mode: t; tab-width: 4 -*-
+// ---------------------------------------------------------------------------
+// SquirrelJME
+//     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+// ---------------------------------------------------------------------------
+// SquirrelJME is under the Mozilla Public License Version 2.0.
+// See license.mkd for licensing and copyright information.
+// -------------------------------------------------------------------------*/
+
+#include <string.h>
+
+#include "mock.h"
+#include "proto.h"
+#include "test.h"
+#include "unit.h"
+#include "sjme/stream.h"
+
+static sjme_errorCode finishStreamWriteSingleBA(
+	sjme_attrInNotNull sjme_stream_output stream,
+	sjme_attrInNotNull sjme_stream_resultByteArray* result)
+{
+	sjme_jint i;
+	sjme_test* test;
+
+	/* Recover test. */
+	test = (sjme_test*)result->whatever;
+
+	/* The write count should be the buffer size. */
+	sjme_unitEqualI(test,
+		1, result->length,
+		"Number of written bytes incorrect?");
+
+	/* Was this value written? */
+	sjme_unitEqualI(test, 123, result->array[0],
+		"Value was not written?");
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+/**
+ * Tests writing a single byte to the output.
+ *  
+ * @since 2024/01/09 
+ */
+SJME_TEST_DECLARE(testStreamWriteSingleBA)
+{
+	sjme_stream_output stream;
+
+	/* Setup output stream. */
+	stream = NULL;
+	if (SJME_IS_ERROR(sjme_stream_outputOpenByteArray(test->pool,
+		&stream, 2, finishStreamWriteSingleBA,
+		test)) || stream == NULL)
+		return sjme_unitFail(test, "Could not open output stream.");
+
+	/* Write single value. */
+	if (SJME_IS_ERROR(sjme_stream_outputWriteSingle(stream,
+		123)))
+		return sjme_unitFail(test, "Could not write output value.");
+
+	/* Close stream. */
+	if (SJME_IS_ERROR(sjme_stream_outputClose(stream, NULL)))
+		return sjme_unitFail(test, "Could not close output stream.");
+
+	/* Success! */
+	return SJME_TEST_RESULT_PASS;
+}

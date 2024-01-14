@@ -1,6 +1,6 @@
 import cc.squirreljme.plugin.swm.JavaMEMidletType
 
-description = "This class contains various collections " +
+description = "This module contains various collections " +
 	"which can be used to store objects."
 version = rootProject.version
 

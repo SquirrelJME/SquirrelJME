@@ -20,6 +20,7 @@ import cc.squirreljme.jvm.suite.EntryPoint;
 import cc.squirreljme.jvm.suite.InvalidSuiteException;
 import cc.squirreljme.jvm.suite.MarkedDependency;
 import cc.squirreljme.jvm.suite.Profile;
+import cc.squirreljme.jvm.suite.SuiteUtils;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -35,7 +36,7 @@ public class IModeApplication
 {
 	/** The prefix for ADF properties. */
 	public static final String ADF_PROPERTY_PREFIX =
-		"cc.squirrlejme.imode.adf";
+		"cc.squirreljme.imode.adf";
 	
 	/** Property for the application name. */
 	public static final String NAME_PROPERTY =
@@ -185,11 +186,24 @@ public class IModeApplication
 		
 		if (appName != null)
 		{
+			// If this contains any non-ISO-8859-1 characters, then append the
+			// Jar name
+			boolean nonIso = false;
+			for (int i = 0, n = appName.length(); i < n; i++)
+				if (appName.charAt(i) > 0xFF)
+				{
+					nonIso = true;
+					break;
+				}
+			
 			// If the application name contains an invalid character then
 			// it is an unsupported character we do not know about
-			if (appName.indexOf(0xFFFD) >= 0)
-				return appName + " (" +
-					JarPackageShelf.libraryPath(this.jar) + ")";
+			if (nonIso || appName.indexOf(0xFFFD) >= 0)
+			{
+				String jarPath = JarPackageShelf.libraryPath(this.jar);
+				if (jarPath != null)
+					return appName + " (" + SuiteUtils.baseName(jarPath) + ")";
+			}
 			
 			return appName;
 		}

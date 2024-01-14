@@ -6,8 +6,9 @@ import java.nio.file.Paths
 plugins {
 	id "java-library"
 	id "idea"
-	id "com.github.johnrengelman.shadow" version "7.1.2"
 }
+
+apply plugin: "com.github.johnrengelman.shadow"
 
 // Say this is a Java 8 project
 sourceCompatibility = JavaVersion.VERSION_1_8

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SharedFileColors">
+    <fileColor scope="BuildUtils" color="Yellow" />
+    <fileColor scope="3rdParty" color="Blue" />
+    <fileColor scope="CMake Generated" color="Yellow" />
+    <fileColor scope="Tests" color="Green" />
+    <fileColor scope="ROM" color="Rose" />
+  </component>
+</project>

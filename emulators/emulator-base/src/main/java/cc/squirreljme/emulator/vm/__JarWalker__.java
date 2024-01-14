@@ -9,6 +9,7 @@
 
 package cc.squirreljme.emulator.vm;
 
+import cc.squirreljme.jvm.suite.SuiteUtils;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Path;
@@ -51,12 +52,9 @@ public final class __JarWalker__
 	public FileVisitResult visitFile(Path __path, BasicFileAttributes __attrib)
 		throws IOException
 	{
-		// If this is a JAR, we will grab it
+		// If this is a Jar or resource, we will grab it
 		String fn = __path.getFileName().toString();
-		if (fn.endsWith(".jar") || fn.endsWith(".JAR") ||
-			fn.endsWith(".jad") || fn.endsWith(".JAD") ||
-			fn.endsWith(".jam") || fn.endsWith(".JAM") ||
-			fn.endsWith(".kjx") || fn.endsWith(".KJX"))
+		if (SuiteUtils.isAny(fn))
 			this._files.add(__path.toString());
 		
 		// The default way is to just handle it

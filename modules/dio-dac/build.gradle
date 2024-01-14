@@ -6,7 +6,7 @@ version = rootProject.version
 
 squirreljme
 {
-	javaDocErrorCode = "CW"
+	javaDocErrorCode = "DY"
 	swmType = JavaMEMidletType.API
 	swmName = "JavaME 8 Device I/O (DAC)"
 	swmVendor = "Stephanie Gawroriski"

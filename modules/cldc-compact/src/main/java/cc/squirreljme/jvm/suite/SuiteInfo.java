@@ -16,7 +16,7 @@ import java.lang.ref.WeakReference;
 import java.util.Objects;
 
 /**
- * This contains all of the information which is provided by a suite.
+ * This contains all the information which is provided by a suite.
  *
  * @since 2017/11/30
  */

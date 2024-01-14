@@ -9,8 +9,6 @@
 
 package java.util;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-
 /**
  * Wraps weak hash map entry keys.
  *

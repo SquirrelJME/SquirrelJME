@@ -9,6 +9,9 @@
 
 package com.nttdocomo.opt.ui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
+@Api
 public abstract class Graphics2
 {
 }

@@ -133,10 +133,17 @@ public class Font
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * Returns the descent of the font, this is the distance from the baseline
+	 * to the bottom edge of the font.
+	 *
+	 * @return The descent of the font in pixels.
+	 * @since 2024/01/06
+	 */
 	@Api
 	public int getDescent()
 	{
-		throw Debugging.todo();
+		return this._midpFont.getDescent();
 	}
 	
 	@Api
@@ -151,10 +158,22 @@ public class Font
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * Returns the width of the string for the given font.
+	 *
+	 * @param __s The string to get the width of.
+	 * @return The resultant string width in pixels.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/06
+	 */
 	@Api
 	public int stringWidth(String __s)
+		throws NullPointerException
 	{
-		throw Debugging.todo();
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		return this._midpFont.stringWidth(__s);
 	}
 	
 	@Api

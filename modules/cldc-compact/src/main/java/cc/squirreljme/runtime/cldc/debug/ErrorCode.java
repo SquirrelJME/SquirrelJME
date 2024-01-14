@@ -82,7 +82,7 @@ public final class ErrorCode
 		"squirreljme_qualifiedError"})
 	public static String __error__(@Range(from = -1, to = 1296) int __idCode)
 	{
-		return ErrorCode.__error__(__idCode, (Object)null);
+		return ErrorCode.__error__(__idCode, (Object[])null);
 	}
 	
 	/**

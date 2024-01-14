@@ -9,20 +9,31 @@
 
 package com.nttdocomo.ui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.InputStream;
 
 @SuppressWarnings("SpellCheckingInspection")
+@Api
 public class PalettedImage
 	extends Image
 {
 	@Override
+	@Api
 	public void dispose()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
+	public static PalettedImage createPalettedImage(byte[] __in)
+		throws IOException, NullPointerException
+	{
+		throw Debugging.todo();
+	}
+	
+	@Api
 	public static PalettedImage createPalettedImage(InputStream __in)
 		throws IOException, NullPointerException
 	{

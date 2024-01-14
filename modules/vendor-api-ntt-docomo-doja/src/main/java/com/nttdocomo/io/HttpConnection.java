@@ -9,29 +9,40 @@
 
 package com.nttdocomo.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.io.IOException;
 import javax.microedition.io.ContentConnection;
 
+@Api
 public interface HttpConnection
 	extends ContentConnection
 {
+	@Api
 	void connect()
 		throws IOException;
 	
+	@Api
 	long getDate();
 	
+	@Api
 	long getExpiration();
 	
+	@Api
 	String getHeaderField();
 	
+	@Api
 	long getLastModified();
 	
+	@Api
 	int getResponseCode();
 	
+	@Api
 	String getResponseMessage();
 	
+	@Api
 	void getURL();
 	
+	@Api
 	void setIfModifiedState(long __ifModifiedSince);
 	
 	/**
@@ -44,9 +55,11 @@ public interface HttpConnection
 	 * @throws NullPointerException If no method was specified.
 	 * @since 2022/10/11
 	 */
+	@Api
 	void setRequestMethod(String __method)
 		throws IllegalArgumentException, IOException, NullPointerException;
 	
+	@Api
 	void setRequestProperty(String __key, String __value)
 		throws IOException;
 }

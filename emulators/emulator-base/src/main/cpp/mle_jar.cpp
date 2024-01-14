@@ -14,6 +14,7 @@
 
 #define JARSHELF_CLASSPATH_DESC "()[Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;"
 #define JARSHELF_LIBRARIES_DESC "()[Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;"
+#define JARSHELF_LIBRARYID_DESC "(Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;)I"
 #define JARSHELF_LIBRARYPATH_DESC "(Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;)Ljava/lang/String;"
 #define JARSHELF_OPENRESOURCE_DESC "(Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;Ljava/lang/String;)Ljava/io/InputStream;"
 #define JARSHELF_PREFIXCODE_DESC "(Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;)I"
@@ -32,6 +33,14 @@ JNIEXPORT jobject JNICALL Impl_mle_JarShelf_libraries(JNIEnv* env,
 {
 	return forwardCallStaticObject(env, JARSHELF_CLASSNAME,
 		"libraries", JARSHELF_LIBRARIES_DESC);
+}
+
+JNIEXPORT jint JNICALL Impl_mle_JarShelf_libraryId(JNIEnv* env,
+	jclass classy, jobject jar)
+{
+	return forwardCallStaticInteger(env, JARSHELF_CLASSNAME,
+		"libraryId", JARSHELF_LIBRARYID_DESC,
+		jar);
 }
 
 JNIEXPORT jobject JNICALL Impl_mle_JarShelf_libraryPath(JNIEnv* env,
@@ -79,6 +88,7 @@ static const JNINativeMethod mleJarMethods[] =
 {
 	{"classPath", JARSHELF_CLASSPATH_DESC, (void*)Impl_mle_JarShelf_classPath},
 	{"libraries", JARSHELF_LIBRARIES_DESC, (void*)Impl_mle_JarShelf_libraries},
+	{"libraryId", JARSHELF_LIBRARYID_DESC, (void*)Impl_mle_JarShelf_libraryId},
 	{"libraryPath", JARSHELF_LIBRARYPATH_DESC, (void*)Impl_mle_JarShelf_libraryPath},
 	{"openResource", JARSHELF_OPENRESOURCE_DESC, (void*)Impl_mle_JarShelf_openResource},
 	{"prefixCode", JARSHELF_PREFIXCODE_DESC, (void*)Impl_mle_JarShelf_prefixCode},

@@ -153,7 +153,7 @@ public class MidletMain
 			}
 			
 			// Scan all the available suites for launching
-			SuiteScanner.scanSuites(handler);
+			new SuiteScanner().scanSuites(handler);
 			
 			// All done so, return the title back
 			programList.setTitle("SquirrelJME Launcher");

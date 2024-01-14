@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+result: NoResult
+thrown: NoExceptionThrown
+secondary-constint: string[4]:const,int,foo,;
+secondary-ptrtoconstint: string[5]:const,int,*,foo,;
+secondary-constpointertoint: string[5]:int,*,const,foo,;
+secondary-constpointertoconstint: string[6]:const,int,*,const,foo,;
+secondary-pTcpTci: string[7]:const,int,*,const,*,foo,;
+secondary-ppTcpTci: string[8]:const,int,*,const,*,*,foo,;

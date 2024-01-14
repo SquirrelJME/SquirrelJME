@@ -4,9 +4,6 @@
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
-        <option name="delegatedBuild" value="true" />
-        <option name="testRunner" value="GRADLE" />
-        <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="gradleJvm" value="liberica-11" />
         <option name="modules">
@@ -15,16 +12,20 @@
             <option value="$PROJECT_DIR$/buildSrc" />
             <option value="$PROJECT_DIR$/emulators" />
             <option value="$PROJECT_DIR$/emulators/emulator-base" />
+            <option value="$PROJECT_DIR$/emulators/nanocoat-vm" />
             <option value="$PROJECT_DIR$/emulators/springcoat-vm" />
             <option value="$PROJECT_DIR$/emulators/standalone" />
             <option value="$PROJECT_DIR$/modules" />
             <option value="$PROJECT_DIR$/modules/aot" />
+            <option value="$PROJECT_DIR$/modules/aot-nanocoat" />
             <option value="$PROJECT_DIR$/modules/aot-springcoat" />
             <option value="$PROJECT_DIR$/modules/bluetooth" />
+            <option value="$PROJECT_DIR$/modules/c-source-writer" />
             <option value="$PROJECT_DIR$/modules/cldc" />
             <option value="$PROJECT_DIR$/modules/cldc-compact" />
             <option value="$PROJECT_DIR$/modules/collections" />
             <option value="$PROJECT_DIR$/modules/common-vm" />
+            <option value="$PROJECT_DIR$/modules/csv" />
             <option value="$PROJECT_DIR$/modules/debug-jdwp" />
             <option value="$PROJECT_DIR$/modules/demo-hello" />
             <option value="$PROJECT_DIR$/modules/dio" />
@@ -89,11 +90,13 @@
             <option value="$PROJECT_DIR$/modules/vendor-api-vodafone" />
             <option value="$PROJECT_DIR$/modules/wireless-messaging" />
             <option value="$PROJECT_DIR$/modules/zip" />
+            <option value="$PROJECT_DIR$/sdk" />
             <option value="$PROJECT_DIR$/tools" />
             <option value="$PROJECT_DIR$/tools/markdown-javadoc" />
             <option value="$PROJECT_DIR$/tools/pcf-to-sqf" />
             <option value="$PROJECT_DIR$/tools/sqf-to-c" />
             <option value="$PROJECT_DIR$/tools/txt-to-pbm" />
+            <option value="$PROJECT_DIR$/tools/unzip" />
           </set>
         </option>
       </GradleProjectSettings>

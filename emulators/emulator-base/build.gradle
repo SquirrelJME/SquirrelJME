@@ -19,8 +19,11 @@ description = "This library provides the base support for testing and " +
 // so that the C compiler is found and things link... We technically are not
 // on x86_64 but it really does not matter anyway as long as it passes
 // -m64 correctly when on Android.
-if (project.hasProperty("squirreljmeTermuxCompiler") &&
-	project.squirreljmeTermuxCompiler) {
+// The same is the case for other architectures as well
+if ((project.hasProperty("squirreljmeTermuxCompiler") &&
+		project.squirreljmeTermuxCompiler) ||
+	(project.hasProperty("squirreljmeClaimX8664") &&
+		project.squirreljmeClaimX8664)) {
 	library {
 			targetMachines.add(machines.linux.x86_64)
 	}

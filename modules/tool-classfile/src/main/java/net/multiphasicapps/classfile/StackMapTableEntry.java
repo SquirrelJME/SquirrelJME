@@ -52,6 +52,10 @@ public final class StackMapTableEntry
 	public static final StackMapTableEntry DOUBLE =
 		new StackMapTableEntry(JavaType.DOUBLE, true);
 	
+	/** Initialized object. */
+	public static final StackMapTableEntry INITIALIZED_OBJECT =
+		new StackMapTableEntry(JavaType.OBJECT, true);
+	
 	/** The type. */
 	protected final JavaType type;
 	
@@ -60,6 +64,22 @@ public final class StackMapTableEntry
 	
 	/** String representation. */
 	private Reference<String> _string;
+	
+	/**
+	 * Initializes the stack map entry.
+	 *
+	 * @param __t The type of variable to store.
+	 * @param __init If {@code true} this variable is initialized.
+	 * @throws InvalidClassFormatException If a non-object is set as not
+	 * initialized.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/03
+	 */
+	public StackMapTableEntry(FieldDescriptor __t, boolean __init)
+		throws InvalidClassFormatException, NullPointerException
+	{
+		this(new JavaType(__t), __init);
+	}
 	
 	/**
 	 * Initializes the stack map entry.
@@ -137,6 +157,17 @@ public final class StackMapTableEntry
 	public boolean isInitialized()
 	{
 		return this.isinitialized;
+	}
+	
+	/**
+	 * Is this the nothing type?
+	 *
+	 * @return If this is the nothing type.
+	 * @since 2023/08/13
+	 */
+	public boolean isNothing()
+	{
+		return this.type.isNothing();
 	}
 	
 	/**

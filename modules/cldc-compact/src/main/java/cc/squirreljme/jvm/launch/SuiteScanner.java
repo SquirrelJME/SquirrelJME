@@ -9,21 +9,13 @@
 
 package cc.squirreljme.jvm.launch;
 
-import cc.squirreljme.jvm.manifest.JavaManifest;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.constants.VMStatisticType;
-import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.jvm.suite.EntryPoint;
-import cc.squirreljme.jvm.suite.EntryPoints;
-import cc.squirreljme.jvm.suite.InvalidSuiteException;
-import cc.squirreljme.jvm.suite.SuiteInfo;
+import cc.squirreljme.jvm.suite.SuiteUtils;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -36,17 +28,33 @@ import java.util.Map;
  */
 public final class SuiteScanner
 {
-	/** Data resource name. */
-	private static final String _DATA_RESOURCE =
-		"$DATA$";
+	/** The shelf to access. */
+	protected final VirtualJarPackageShelf shelf;
 	
 	/**
-	 * Not used.
+	 * Initializes the base suite scanner.
 	 * 
 	 * @since 2020/12/28
 	 */
-	private SuiteScanner()
+	public SuiteScanner()
 	{
+		this(new DefaultJarPackageShelf());
+	}
+	
+	/**
+	 * Initializes the suite scanner.
+	 *
+	 * @param __shelf The shelf to initialize from.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/06
+	 */
+	public SuiteScanner(VirtualJarPackageShelf __shelf)
+		throws NullPointerException
+	{
+		if (__shelf == null)
+			throw new NullPointerException("NARG");
+		
+		this.shelf = __shelf;
 	}
 	
 	/**
@@ -56,9 +64,9 @@ public final class SuiteScanner
 	 * @return The state of scanned suites.
 	 * @since 2020/12/28
 	 */
-	public static AvailableSuites scanSuites()
+	public AvailableSuites scanSuites()
 	{
-		return SuiteScanner.scanSuites(null);
+		return this.scanSuites(null);
 	}
 	
 	/**
@@ -70,10 +78,10 @@ public final class SuiteScanner
 	 * @return The state of scanned suites.
 	 * @since 2020/12/29
 	 */
-	public static AvailableSuites scanSuites(SuiteScanListener __listener)
+	public AvailableSuites scanSuites(SuiteScanListener __listener)
 	{
 		// Get all the available libraries
-		JarPackageBracket[] jars = JarPackageShelf.libraries();
+		JarPackageBracket[] jars = this.shelf.libraries();
 		int numJars = jars.length;
 		
 		// Load the names of all JARs and map to brackets, this is later used
@@ -83,9 +91,15 @@ public final class SuiteScanner
 		{
 			for (JarPackageBracket jar : jars)
 			{
-				String name = JarPackageShelf.libraryPath(jar);
+				String name = this.shelf.libraryPath(jar);
 				if (name != null)
+				{
+					// Full path
 					nameToJar.put(name, jar);
+					
+					// Short path
+					nameToJar.put(SuiteUtils.baseName(name), jar);
+				}
 			}
 		}
 		
@@ -97,7 +111,7 @@ public final class SuiteScanner
 		
 		// How many CPUs are available? This is so we can split the suite
 		// loading operations across multiple threads at once for faster
-		// scanning... On SpringCoat scans can take awhile so we want to
+		// scanning... On SpringCoat scans can take a while, so we want to
 		// make it as fast as we can...
 		int numThreads = Math.max(1,
 			(int)RuntimeShelf.vmStatistic(VMStatisticType.CPU_THREAD_COUNT));
@@ -106,7 +120,7 @@ public final class SuiteScanner
 		// need to anything more complex
 		__SuiteScannerCounter__ jarIndexCount = new __SuiteScannerCounter__();
 		if (numThreads <= 1)
-			SuiteScanner.__loadStripe(__listener, jars, numJars, nameToJar,
+			this.__loadStripe(__listener, jars, numJars, nameToJar,
 				libs, result, 0, numJars, jarIndexCount);
 		
 		// Stripe loads to each CPU that is available
@@ -131,13 +145,14 @@ public final class SuiteScanner
 				// Setup thread and start it
 				Thread thread = new Thread(new __SuiteScannerStripe__(done,
 					__listener, jars, numJars, nameToJar, libs, result, at,
-					Math.min(numJars, at + baseSplitLen), jarIndexCount),
+					Math.min(numJars, at + baseSplitLen), jarIndexCount,
+					this),
 					"SquirrelJMESuiteScanStripe-" + stripe);
 				thread.start();
 			}
 			
 			// Run our first stripe in this thread, so we do not waste it
-			SuiteScanner.__loadStripe(__listener, jars, numJars, nameToJar,
+			this.__loadStripe(__listener, jars, numJars, nameToJar,
 				libs, result, 0, baseSplitLen, jarIndexCount);
 			
 			// Wait until everything is done
@@ -162,8 +177,8 @@ public final class SuiteScanner
 		// Finalize suite list
 		synchronized (result)
 		{
-			return new AvailableSuites(libs, result
-				.<Application>toArray(new Application[result.size()]));
+			return new AvailableSuites(this.shelf, libs,
+				result.<Application>toArray(new Application[result.size()]));
 		}
 	}
 	
@@ -182,7 +197,7 @@ public final class SuiteScanner
 	 * accuracy in the totals.
 	 * @since 2022/10/03
 	 */
-	static void __loadStripe(SuiteScanListener __listener,
+	void __loadStripe(SuiteScanListener __listener,
 		JarPackageBracket[] __jars, int __numJars,
 		Map<String, JarPackageBracket> __nameToJar, __Libraries__ __libs,
 		List<Application> __result, int __startPos, int __endPos,
@@ -203,320 +218,22 @@ public final class SuiteScanner
 			}
 			
 			// Ignore non-JARs
-			String libPath = JarPackageShelf.libraryPath(jar);
-			if (!libPath.endsWith(".jar") && !libPath.endsWith(".JAR") &&
-				!libPath.endsWith(".kjx") && !libPath.endsWith(".KJX"))
+			String libPath = this.shelf.libraryPath(jar);
+			if (!SuiteUtils.isJar(libPath))
 				continue;
 			
 			// Debug
 			Debugging.debugNote("Checking %s...", libPath);
 			
-			// Scan for multiple application types, since it is very possible
-			// for an application to be in hybrid form (such as MIDP/i-mode)
-			SuiteScanner.__scanJava(__listener, __numJars, __libs, __result,
-				accurateJarIndex, jar);
-			SuiteScanner.__scanIMode(__listener, __numJars, __libs,
-				__nameToJar, __result, accurateJarIndex, jar);
-			SuiteScanner.__scanIModeJVLite2(__listener, __numJars, __libs,
-				__nameToJar, __result, accurateJarIndex, jar);
-		}
-	}
-	
-	/**
-	 * Scans for an i-mode application and loads them.
-	 * 
-	 * @param __listener The listener used for load events.
-	 * @param __nameToJar The name to JAR mapping, used to find the JAM file.
-	 * @param __result The target applications.
-	 * @param __jarDx The JAR index.
-	 * @param __jar The JAR to check.
-	 * @since 2021/06/013
-	 */
-	private static void __scanIMode(SuiteScanListener __listener,
-		int __numJars, __Libraries__ __libs,
-		Map<String, JarPackageBracket> __nameToJar,
-		List<Application> __result,
-		int __jarDx, JarPackageBracket __jar)
-	{
-		// Try to determine what our JAM would be called
-		String jarName = JarPackageShelf.libraryPath(__jar);
-		String jamName = SuiteScanner.__siblingByExt(jarName, ".jam");
-		
-		// Determine the name of the JAM file to load
-		JarPackageBracket jam;
-		synchronized (__nameToJar)
-		{
-			jam = __nameToJar.get(jamName);
-		}
-		
-		// If there is no JAM file, this cannot be an i-mode application
-		if (jam == null)
-			return;
-		
-		// Try to locate the scratchpad seed archive
-		JarPackageBracket binarySto;
-		synchronized (__nameToJar)
-		{
-			binarySto = SuiteScanner.__scanIModeScratchPad(__nameToJar,
-				jarName);
-		}
-		
-		// Store where the scratchpad seed should be found
-		Map<String, String> extraSysProps = new LinkedHashMap<>();
-		if (binarySto != null)
-			extraSysProps.put(
-				IModeApplication.SEED_SCRATCHPAD_PREFIX + ".0",
-				JarPackageShelf.libraryPath(binarySto));
-		
-		// Load the ADF/JAM descriptor that describes this application
-		Map<String, String> adfProps = new LinkedHashMap<>();
-		try (InputStream jamIn = JarPackageShelf.openResource(jam,
-			SuiteScanner._DATA_RESOURCE))
-		{
-			// Missing? Cannot be an i-mode application
-			if (jamIn == null)
-				return;
+			// Setup parser state
+			ApplicationParserState state = new ApplicationParserState(
+				__listener, __numJars, __libs, __nameToJar, __result,
+				accurateJarIndex, jar, this.shelf);
 			
-			// Parse by text
-			__AdfUtils__.__parseAdfText(adfProps, jamIn);
+			// Scan for all the application types accordingly
+			for (ApplicationParser parser : ApplicationParser.values())
+				parser.parse(state);
 		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-			return;
-		}
-		
-		// Load application
-		try
-		{
-			Application app = new IModeApplication(__jar, __libs, adfProps,
-				extraSysProps);
-			synchronized (app)
-			{
-				__result.add(app);
-			}
-			
-			// Indicate that it was scanned
-			if (__listener != null)
-				__listener.scanned(app, __jarDx, __numJars);
-		}
-		catch (InvalidSuiteException e)
-		{
-			e.printStackTrace();
-		}
-	}
-	
-	/**
-	 * Scans for a JV-Lite2 i-Mode application, which is in binary form.
-	 * 
-	 * @param __listener The listener used for load events.
-	 * @param __nameToJar The name to JAR mapping, used to find the JAM file.
-	 * @param __result The target applications.
-	 * @param __jarDx The JAR index.
-	 * @param __jar The JAR to check.
-	 * @since 2023/04/10
-	 */
-	private static void __scanIModeJVLite2(SuiteScanListener __listener,
-		int __numJars, __Libraries__ __libs,
-		Map<String, JarPackageBracket> __nameToJar,
-		List<Application> __result,
-		int __jarDx, JarPackageBracket __jar)
-	{
-		// We need to locate the binary form of the ADF
-		String jarName = JarPackageShelf.libraryPath(__jar);
-		String adfName = SuiteScanner.__siblingByExt(jarName, ".adf");
-		
-		// Determine the name of the JAM file to load
-		JarPackageBracket binaryAdf;
-		synchronized (__nameToJar)
-		{
-			binaryAdf = __nameToJar.get(adfName);
-		}
-		
-		// If there is no ADF file, this cannot be an i-mode application
-		if (binaryAdf == null)
-			return;
-		
-		// Decode the Binary ADF information
-		Map<String, String> adfProps = new LinkedHashMap<>();
-		try (InputStream binaryAdfIn = JarPackageShelf.openResource(binaryAdf,
-			SuiteScanner._DATA_RESOURCE))
-		{
-			// Missing? Cannot be an i-mode application
-			if (binaryAdfIn == null)
-				return;
-			
-			// Parse using binary format
-			__AdfUtils__.__parseAdfBinary(adfProps, binaryAdfIn);
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-			return;
-		}
-		
-		// Additional i-mode specific properties?
-		Map<String, String> extraSysProps = new LinkedHashMap<>();
-		
-		// Try to locate the scratchpad seed archive
-		JarPackageBracket binarySto;
-		synchronized (__nameToJar)
-		{
-			binarySto = SuiteScanner.__scanIModeScratchPad(__nameToJar,
-				jarName);
-		}
-		
-		// Store where the scratchpad seed should be found
-		if (binarySto != null)
-			extraSysProps.put(
-				IModeApplication.SEED_SCRATCHPAD_PREFIX + ".0",
-				JarPackageShelf.libraryPath(binarySto));
-		
-		// Load application
-		try
-		{
-			Application app = new IModeApplication(__jar, __libs, adfProps,
-				extraSysProps);
-			synchronized (app)
-			{
-				__result.add(app);
-			}
-			
-			// Indicate that it was scanned
-			if (__listener != null)
-				__listener.scanned(app, __jarDx, __numJars);
-		}
-		catch (InvalidSuiteException e)
-		{
-			e.printStackTrace();
-		}
-	}
-	
-	/**
-	 * Attempts to locate the scratch pad binary. 
-	 *
-	 * @param __nameToJar The name to Jar mapping.
-	 * @param __jarName The Jar name.
-	 * @return The found scratch pad binary, if found.
-	 * @since 2023/07/21
-	 */
-	private static JarPackageBracket __scanIModeScratchPad(
-		Map<String, JarPackageBracket> __nameToJar, String __jarName)
-		throws NullPointerException
-	{
-		if (__nameToJar == null || __jarName == null)
-			throw new NullPointerException("NARG");
-		
-		// Try this one first...
-		JarPackageBracket maybe = __nameToJar.get(
-			SuiteScanner.__siblingByExt(__jarName, ".sto"));
-		if (maybe != null)
-			return maybe;
-		
-		// Then alternative extension
-		return __nameToJar.get(
-			SuiteScanner.__siblingByExt(__jarName, ".sp"));
-	}
-	
-	/**
-	 * Scans for Java applications in the given JAR.
-	 * 
-	 * @param __listener The listener used.
-	 * @param __numJars The number of JARs.
-	 * @param __libs The available support libraries.
-	 * @param __result Where applications go.
-	 * @param __jarDx The Jar Index.
-	 * @param __jar The JAR to check.
-	 * @since 2021/06/13
-	 */
-	private static void __scanJava(SuiteScanListener __listener,
-		int __numJars, __Libraries__ __libs, List<Application> __result,
-		int __jarDx, JarPackageBracket __jar)
-	{
-		// Try to read the manifest from the given JAR and process the
-		// suite information
-		SuiteInfo info;
-		JavaManifest man;
-		try (InputStream rc = JarPackageShelf.openResource(__jar,
-			"META-INF/MANIFEST.MF"))
-		{
-			// If no manifest exists, might not be a JAR
-			if (rc == null)
-			{
-				Debugging.debugNote("No META-INF/MANIFEST.MF in %s...",
-					JarPackageShelf.libraryPath(__jar));
-				
-				return;
-			}
-			
-			man = new JavaManifest(rc);
-			info = new SuiteInfo(man);
-		}
-		
-		// Prevent bad JARs and files from messing things up
-		catch (IOException|InvalidSuiteException|MLECallError e)
-		{
-			e.printStackTrace();
-			return;
-		}
-		
-		switch (info.type())
-		{
-			// Handle library
-			case LIBLET:
-			case SQUIRRELJME_API:
-				__libs.__register(info, __jar);
-				return;
-			
-			// Handle application
-			case MIDLET:
-				// Setup application information for all possible entry
-				// points
-				for (EntryPoint e : new EntryPoints(man))
-				{
-					// Load application
-					JavaApplication app =
-						new JavaApplication(info, __jar, __libs, e);
-					synchronized (__result)
-					{
-						__result.add(app);
-					}
-					
-					// Indicate that it was scanned
-					if (__listener != null)
-						__listener.scanned(app, __jarDx, __numJars);
-				}
-				return;
-			
-			// Unknown?
-			default:
-				throw Debugging.oops();
-		}
-	}
-	
-	/**
-	 * Returns a sibling file with the same base name but a differing
-	 * extension.
-	 * 
-	 * @param __jar The other Jar to check.
-	 * @param __ext The extension to map to.
-	 * @return The sibling file based on the extension.
-	 * @since 2023/04/10
-	 */
-	private static String __siblingByExt(String __jar, String __ext)
-	{
-		boolean lower = __jar.endsWith(".jar");
-		boolean upper = __jar.endsWith(".JAR");
-		
-		// Does not end with it? Just append it
-		if (!lower && !upper)
-			return __jar + __ext;
-		
-		// Remove old extension and just append the new one
-		String baseName = __jar.substring(0, __jar.length() - 4);
-		if (upper)
-			return baseName + __ext.toUpperCase();
-		return baseName + __ext;
 	}
 }
 

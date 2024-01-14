@@ -51,9 +51,12 @@ final class __SuiteScannerStripe__
 	/** The start position of the scan. */
 	private final int _startPos;
 	
+	/** The suite scanner this is under. */
+	private final SuiteScanner _suiteScanner;
+	
 	/**
 	 * Initializes the stripe runner settings.
-	 * 
+	 *
 	 * @param __listener The listener used.
 	 * @param __jars The jars to load.
 	 * @param __numJars The number of maximum JARs.
@@ -64,13 +67,15 @@ final class __SuiteScannerStripe__
 	 * @param __endPos The end position, exclusive.
 	 * @param __jarIndexCount The JAR index counter, for a more accurate count
 	 * when multithreaded.
+	 * @param __suiteScanner The suite scanner this is under.
 	 * @since 2022/10/03
 	 */
 	public __SuiteScannerStripe__(__SuiteScannerCounter__ __done,
 		SuiteScanListener __listener, JarPackageBracket[] __jars,
 		int __numJars, Map<String, JarPackageBracket> __nameToJar,
 		__Libraries__ __libs, List<Application> __result, int __startPos,
-		int __endPos, __SuiteScannerCounter__ __jarIndexCount)
+		int __endPos, __SuiteScannerCounter__ __jarIndexCount,
+		SuiteScanner __suiteScanner)
 	{
 		this._done = __done;
 		this._listener = __listener;
@@ -82,6 +87,7 @@ final class __SuiteScannerStripe__
 		this._startPos = __startPos;
 		this._endPos = __endPos;
 		this._jarIndexCount = __jarIndexCount;
+		this._suiteScanner = __suiteScanner;
 	}
 	
 	/**
@@ -94,7 +100,7 @@ final class __SuiteScannerStripe__
 		try
 		{
 			// Forward to stripe loader
-			SuiteScanner.__loadStripe(this._listener, this._jars,
+			this._suiteScanner.__loadStripe(this._listener, this._jars,
 				this._numJars, this._nameToJar, this._libs, this._result,
 				this._startPos, this._endPos, this._jarIndexCount);
 		}

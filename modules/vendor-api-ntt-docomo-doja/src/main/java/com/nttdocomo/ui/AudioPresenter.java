@@ -9,6 +9,7 @@
 
 package com.nttdocomo.ui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -16,49 +17,58 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2022/10/07
  */
+@Api
 public class AudioPresenter
 	implements MediaPresenter
 {
+	@Api
 	@Override
 	public MediaResource getMediaResource()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@Override
 	public void play()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@Override
 	public void setAttribute(int __attribute, int __value)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void setData(MediaData __data)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@Override
 	public void setMediaListener(MediaListener __listener)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void setSound(MediaSound __data)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@Override
 	public void stop()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static AudioPresenter getAudioPresenter()
 	{
 		throw Debugging.todo();

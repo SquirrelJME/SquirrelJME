@@ -47,9 +47,24 @@ def osArch = System.getProperty("os.arch")
 if (osName.equalsIgnoreCase('Mac OS X') &&
 	(osArch.equalsIgnoreCase('aarch64') || osArch.equalsIgnoreCase('arm64') ||
 	osArch.equalsIgnoreCase('arm64-v8'))) {
+	logger.warn("Faking x86_64 for M1 Macs...")
 	
 	gradle.beforeProject({proj ->
 		proj.ext.squirreljmeMacOsArmCpp = true
+	})
+}
+
+if (osArch.equalsIgnoreCase("ppc") ||
+	osArch.equalsIgnoreCase("powerpc") ||
+	osArch.equalsIgnoreCase("ppc64") ||
+	osArch.equalsIgnoreCase("ppc64le") ||
+	osArch.equalsIgnoreCase("riscv") ||
+	osArch.equalsIgnoreCase("riscv32") ||
+	osArch.equalsIgnoreCase("riscv64")) {
+	logger.warn("Faking x86_64 for other architectures...")
+	
+	gradle.beforeProject({proj ->
+		proj.ext.squirreljmeClaimX8664 = true
 	})
 }
 
@@ -86,6 +101,7 @@ if (JavaVersion.current() >= JavaVersion.VERSION_HIGHER ||
 // Modules and available platforms
 include "modules"
 include "emulators"
+include "sdk"
 include "tools"
 
 // Recursively include all modules

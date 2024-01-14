@@ -83,4 +83,8 @@ public interface VerboseDebugFlag
 	/** Implicit exceptions being generated. */
 	int IMPLICIT_EXCEPTION =
 		0x8000;
+	
+	/** Method with many execution cycles. */
+	int METHOD_CYCLES =
+		0x1_0000;
 }

@@ -24,6 +24,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
+import org.gradle.api.tasks.SourceSet;
 
 /**
  * This performs the actual work that is needed to build the ROM.
@@ -63,6 +64,13 @@ public class VMRomTaskAction
 		String sourceSet = this.classifier.getSourceSet();
 		VMSpecifier vmType = this.classifier.getVmType();
 		
+		// Is this a single source set ROM?
+		boolean isSingleSourceSet = vmType.isSingleSourceSetRom(
+			this.classifier.getBangletVariant());
+		boolean bootLoaderEnabled = !isSingleSourceSet ||
+			(isSingleSourceSet &&
+				SourceSet.MAIN_SOURCE_SET_NAME.equals(sourceSet));
+		
 		Path tempFile = null;
 		try
 		{
@@ -81,6 +89,13 @@ public class VMRomTaskAction
 			for (VMLibraryTask task : VMRomDependencies.libraries(__task,
 				this.classifier))
 			{
+				// If we are single source set and this library is another
+				// source set, then do not include it here
+				String taskSourceSet = task.getSourceSet();
+				if (isSingleSourceSet &&
+					!sourceSet.equals(taskSourceSet))
+					continue;
+				
 				// Determine the path set
 				Set<Path> pathSet = new LinkedHashSet<>();
 				for (File f : task.getOutputs().getFiles().getFiles())
@@ -90,32 +105,38 @@ public class VMRomTaskAction
 				SquirrelJMEPluginConfiguration config =
 					SquirrelJMEPluginConfiguration.configurationOrNull(
 						task.getProject());
-				boolean isBootLoader = (config != null && config.isBootLoader);
-				boolean isMainLauncher = (config != null &&
+				boolean isMain = SourceSet.MAIN_SOURCE_SET_NAME
+					.equals(taskSourceSet);
+				boolean isBootLoader = (isMain && config != null &&
+					config.isBootLoader);
+				boolean isMainLauncher = (isMain && config != null &&
 					config.isMainLauncher);
 				
 				// If this is the boot loader, add our paths
-				if (isBootLoader)
+				if (bootLoaderEnabled)
 				{
-					build.bootLoaderMainClass = config.bootLoaderMainClass;
-					build.bootLoaderClassPath = pathSet.toArray(
-						new Path[pathSet.size()]);
-				}
-				
-				// If this is the launcher, set the information needed to
-				// make sure it can actually be launched properly
-				if (isMainLauncher)
-				{
-					UnassistedLaunchEntry entry = config.primaryEntry();
+					if (isBootLoader)
+					{
+						build.bootLoaderMainClass = config.bootLoaderMainClass;
+						build.bootLoaderClassPath = pathSet.toArray(
+							new Path[pathSet.size()]);
+					}
 					
-					build.launcherMainClass = entry.mainClass;
-					build.launcherArgs = entry.args();
-					build.launcherClassPath = VMHelpers.runClassPath(
-						task, this.classifier);
+					// If this is the launcher, set the information needed to
+					// make sure it can actually be launched properly
+					if (isMainLauncher)
+					{
+						UnassistedLaunchEntry entry = config.primaryEntry();
+						
+						build.launcherMainClass = entry.mainClass;
+						build.launcherArgs = entry.args();
+						build.launcherClassPath = VMHelpers.runClassPath(task,
+							this.classifier);
+					}
 				}
 				
 				// Add to the correct set of paths
-				if (isBootLoader)
+				if (bootLoaderEnabled && isBootLoader)
 					bootPaths.addAll(pathSet);
 				else
 					normalPaths.addAll(pathSet);
@@ -123,7 +144,8 @@ public class VMRomTaskAction
 			
 			// Make sure the boot libraries are always first
 			Set<Path> libPaths = new LinkedHashSet<>();
-			libPaths.addAll(bootPaths);
+			if (bootLoaderEnabled)
+				libPaths.addAll(bootPaths);
 			libPaths.addAll(normalPaths);
 			
 			// Setup output file for writing

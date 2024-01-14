@@ -17,14 +17,16 @@ plugins
 {
 	id "application"
 	id "java"
-	id "com.github.johnrengelman.shadow" version "7.1.2"
 }
+
+apply plugin: "com.github.johnrengelman.shadow"
 
 description = "Standalone SquirrelJME virtual machine on Java."
 mainClassName = "cc.squirreljme.vm.standalone.main.Main"
 
 dependencies {
 	implementation project(":emulators:springcoat-vm")
+	implementation project(":emulators:nanocoat-vm")
 }
 
 java {
@@ -294,6 +296,9 @@ shadowJar {
 	
 	// Always SquirrelJME
 	archiveBaseName.set("squirreljme-standalone")
+	
+	// Always merge service files, otherwise multiple VMs will just not work
+	mergeServiceFiles()
 	
 	// Set the suffix of the JAR to be the OS name and arch, since there is
 	// a dynamic library within for it

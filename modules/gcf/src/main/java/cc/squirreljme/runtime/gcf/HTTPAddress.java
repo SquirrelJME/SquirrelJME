@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import net.multiphasicapps.collections.EmptyList;
 import net.multiphasicapps.collections.UnmodifiableList;
+import org.intellij.lang.annotations.Language;
 
 /**
  * This represents an IP address.
@@ -114,7 +115,8 @@ public final class HTTPAddress
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/06
 	 */
-	public static HTTPAddress fromUriPart(String __p)
+	public static HTTPAddress fromUriPart(
+		@Language("http-url-reference") String __p)
 		throws IllegalArgumentException, NullPointerException
 	{
 		if (__p == null)

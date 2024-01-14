@@ -15,8 +15,8 @@ execution.
 Additionally, there is a port of SquirrelJME to RetroArch which enables the
 ability to play older J2ME software and games designed for flip-phones.
 
- * Copyright (C) 2013-2022 Stephanie Gawroriski <xer@multiphasicapps.net>
- * "SquirrelJME" and "Lex" are trademarked by Stephanie Gawroriski 2016-2022
+ * Copyright (C) 2013-2024 Stephanie Gawroriski <xer@multiphasicapps.net>
+ * "SquirrelJME" and "Lex" are trademarked by Stephanie Gawroriski 2016-2024
  * _Lex_ and The _SquirrelJME_ Logo were illustrated by...
    * Kat Adam-MacEwen
    * Kat@CMYKat Designs & Illustrations <http://www.cmykat-designs.com/>
@@ -29,6 +29,9 @@ Rest in peace.
 
 Dedicated to _Near_ (1983-2021), the developer of Higan, Ares, etc., may
 your soul rest in peace. You will not be forgotten.
+
+_I am currently searching for employment! Check out my_
+_[LinkedIn](https://www.linkedin.com/in/xerthesquirrel/)!_
 
 Badges:
 
@@ -128,6 +131,7 @@ Information:
 
  * [My Portfolio](https://shadowtail.dev/)
  * [My Public PGP Key](public-key.gpg.mkd)
+ * [SquirrelJME BlueSky](https://bsky.app/profile/squirreljme.bsky.social)
  * [SquirrelJME Twitter](https://twitter.com/SquirrelJME)
  * [SquirrelJME Mastodon](https://mastodon.online/@SquirrelJME)
  * Locations where you can get support:
@@ -138,17 +142,18 @@ Information:
      * [##squirreljme](ircs://irc.libera.chat:6697/#squirreljme) -- Off-Topic
    * [Reddit](https://reddit.com/r/SquirrelJME)
  * Front facing social media:
+   * [BlueSky](https://bsky.app/profile/squirreljme.bsky.social)
+   * [Mastodon (mastodon.online)](https://mastodon.online/@SquirrelJME)
    * [YouTube](https://www.youtube.com/channel/UCbmC7qQjeXUEUyE5XfDX5RA/)
    * [Twitter](https://twitter.com/SquirrelJME)
-   * [Cohost](https://cohost.org/SquirrelJME)
-   * [Mastodon (mastodon.online)](https://mastodon.online/@SquirrelJME)
  * [Docker Hub](https://hub.docker.com/r/xerthesquirrel/squirreljme)
  * [SourceForge](https://sourceforge.net/p/squirreljme/)
  * Personal Accounts (If you wish to contact me this way)
    * [GitHub](https://github.com/XerTheSquirrel/)
    * [Keybase](https://keybase.io/xerthesquirrel)
    * [LinkedIn](https://www.linkedin.com/in/xerthesquirrel/)
-   * [Mastodon (awoo.space)](https://awoo.space/@XerTheSquirrel)
+   * [Mastodon (chitter.xyz)](https://chitter.xyz/@XerShadowTail)
+   * [BlueSky](https://bsky.app/profile/xershadowtail.bsky.social)
    * [Twitter](https://twitter.com/XerShadowTail)
    * [Cohost](https://cohost.org/XerShadowTail)
    * [YouTube (Personal)](

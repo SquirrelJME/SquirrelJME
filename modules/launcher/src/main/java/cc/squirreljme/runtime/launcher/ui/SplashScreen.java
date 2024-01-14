@@ -31,8 +31,8 @@ public final class SplashScreen
 	/** The copyright string. */
 	public static final String COPYRIGHT =
 		"https://squirreljme.cc/\n" +
-		"(C) 2013-2023 Stephanie Gawroriski\n" +
-		"TM  2016-2023 Stephanie Gawroriski\n" +
+		"(C) 2013-2024 Stephanie Gawroriski\n" +
+		"TM  2016-2024 Stephanie Gawroriski\n" +
 		"License: Mozilla Public License 2.0!\n" +
 		"Donate to me on Patreon:\n" +
 		"*** https://www.patreon.com/SquirrelJME! ***";

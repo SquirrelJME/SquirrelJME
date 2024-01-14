@@ -86,14 +86,19 @@ public final class Pool
 	/** Entries within the constant pool. */
 	private final Object[] _entries;
 	
+	/** The constant pool tags. */
+	private final int[] _tags;
+	
 	/**
 	 * Parses and initializes the constant pool structures.
 	 *
+	 * @param __tags The pool tags.
 	 * @param __e The entries which make up the pool, this is used directly.
 	 * @since 2017/06/08
 	 */
-	Pool(Object... __e)
+	Pool(int[] __tags, Object... __e)
 	{
+		this._tags = __tags;
 		this._entries = (__e == null ? new Object[0] : __e);
 	}
 	
@@ -162,6 +167,28 @@ public final class Pool
 			throw new InvalidClassFormatException(
 				String.format("JC3q %d %s", __i, __cl));
 		return rv;
+	}
+	
+	/**
+	 * Returns the size of the constant pool.
+	 *
+	 * @return The constant pool size.
+	 * @since 2023/08/09
+	 */
+	public int size()
+	{
+		return this._entries.length;
+	}
+	
+	/**
+	 * Returns the constant pool tags.
+	 *
+	 * @return The tags used for the constant pool.
+	 * @since 2023/08/09
+	 */
+	public int[] tags()
+	{
+		return this._tags.clone();
 	}
 	
 	/**
@@ -294,7 +321,7 @@ public final class Pool
 		}
 		
 		// Setup
-		return new Pool(entries);
+		return new Pool(tags, entries);
 	}
 	
 	/**
@@ -324,8 +351,8 @@ public final class Pool
 		int[] order = new int[count];
 		for (int i = 0; i < count; i++)
 		{
-			int tag = __tags[i],
-				sequence;
+			int tag = __tags[i];
+			int sequence;
 			
 			// Determine the sequence based on the tag
 			switch (tag)
@@ -368,12 +395,12 @@ public final class Pool
 		// sequence order is known.
 		for (int j = 0; j < count; j++)
 		{
-			int i = order[j] & 0xFFFF,
-				tag = __tags[i];
+			int i = order[j] & 0xFFFF;
+			int tag = __tags[i];
 			
 			// Process tags
-			Object in = __rawdata[i],
-				out;
+			Object in = __rawdata[i];
+			Object out;
 			switch (tag)
 			{
 					// These are copied directly

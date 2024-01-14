@@ -78,6 +78,7 @@ public final class RomSettings
 		String launcherMainClass = null;
 		List<String> launcherArgs = null;
 		List<Integer> launcherClassPath = null;
+		String clutterLevel = null;
 		
 		// Handle arguments
 		while (!__args.isEmpty())

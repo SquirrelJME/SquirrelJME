@@ -165,6 +165,12 @@ public final class DataSerialization
 					c = ')';
 					break;
 					
+					// Comma
+				case ',':
+					escape = true;
+					c = 'c';
+					break;
+					
 					// Delete
 				case 0x7F:
 					escape = true;
