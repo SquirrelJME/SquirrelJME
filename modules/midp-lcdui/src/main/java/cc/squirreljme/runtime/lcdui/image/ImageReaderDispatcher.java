@@ -10,6 +10,7 @@
 package cc.squirreljme.runtime.lcdui.image;
 
 import cc.squirreljme.jvm.mle.PencilShelf;
+import cc.squirreljme.jvm.mle.callbacks.NativeImageLoadCallback;
 import cc.squirreljme.jvm.mle.constants.NativeImageLoadType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -17,45 +18,55 @@ import cc.squirreljme.runtime.cldc.io.MarkableInputStream;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import java.io.IOException;
 import java.io.InputStream;
-import javax.microedition.lcdui.Image;
 import net.multiphasicapps.io.DataEndianess;
 import net.multiphasicapps.io.ExtendedDataInputStream;
 
 /**
  * This is used to dispatch to the correct parser when loading images.
  *
+ * @param <A> Animated image type.
+ * @param <S> Still image type.
  * @since 2017/02/28
  */
-public class ImageReaderDispatcher
+public class ImageReaderDispatcher<A extends S, S>
 {
+	/** Native image loader. */
+	protected final NativeImageLoadCallback loader;
+	
 	/**
 	 * Initializes the base dispatcher.
 	 *
+	 * @param __native The callback to use for native image load.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/28
 	 */
-	public ImageReaderDispatcher()
+	public ImageReaderDispatcher(NativeImageLoadCallback __native)
+		throws NullPointerException
 	{
+		if (__native == null)
+			throw new NullPointerException("NARG");
+		
+		this.loader = __native;
 	}
 	
 	/**
 	 * Parses the image stream.
 	 *
 	 * @param __is The stream to read from.
-	 * @param __factory The factory used to create the final image.
 	 * @return The parsed image data.
 	 * @throws IOException If it could not be parsed.
 	 * @since 2021/12/04
 	 */
-	public Image parse(InputStream __is, ImageFactory __factory)
+	public S parse(InputStream __is)
 		throws IOException, NullPointerException
 	{
 		// Check
-		if (__is == null || __factory == null)
+		if (__is == null)
 			throw new NullPointerException("NARG");
 		
 		if (__is.markSupported())
-			return this.__parse(__is, __factory);
-		return this.__parse(new MarkableInputStream(__is), __factory);
+			return this.__parse(__is);
+		return this.__parse(new MarkableInputStream(__is));
 	}
 	
 	/**
@@ -115,14 +126,12 @@ public class ImageReaderDispatcher
 	 *
 	 * @param __type The type of image to load.
 	 * @param __in The stream to read from.
-	 * @param __factory The factory used for image creation.
 	 * @return The image that came from the native data.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/12/05
 	 */
-	private Image __native(int __type, InputStream __in,
-		ImageFactory __factory)
+	private S __native(int __type, InputStream __in)
 		throws IOException, NullPointerException
 	{
 		if (__in == null)
@@ -136,16 +145,11 @@ public class ImageReaderDispatcher
 		try
 		{
 			result = PencilShelf.nativeImageLoadRGBA(__type,
-				rawData, 0, rawData.length,
-				new __NativeLoadHandler__(__factory));
+				rawData, 0, rawData.length, this.loader);
 			
 			// Cancelled?
 			if (result == null)
 				throw new __CancelNativeException__();
-			
-			/* {@squirreljme.error EB3r Could not load the native image.} */
-			if (!(result instanceof Image))
-				throw new IOException("EB3r");
 		}
 		
 		/* {@squirreljme.error EB3q Could not load the native image.} */
@@ -155,23 +159,24 @@ public class ImageReaderDispatcher
 		}
 		
 		// Use the resultant decoded image
-		return (Image)result;
+		return (S)result;
 	}
 	
 	/**
 	 * Parses the image stream.
 	 *
 	 * @param __is The stream to read from.
-	 * @param __factory The factory used for creating images.
 	 * @return The parsed image data.
 	 * @throws IOException If it could not be parsed.
 	 */
-	private Image __parse(InputStream __is, ImageFactory __factory)
+	private S __parse(InputStream __is)
 		throws IOException, NullPointerException
 	{
 		// Check
-		if (__is == null || __factory == null)
+		if (__is == null)
 			throw new NullPointerException("NARG");
+		
+		NativeImageLoadCallback loader = this.loader;
 		
 		// Determine the image type
 		int loadType = this.__determineType(__is);
@@ -184,7 +189,7 @@ public class ImageReaderDispatcher
 		if ((PencilShelf.nativeImageLoadTypes() & loadType) != 0)
 			try
 			{
-				return this.__native(loadType, __is, __factory);
+				return this.__native(loadType, __is);
 			}
 			catch (MLECallError __e)
 			{
@@ -194,6 +199,8 @@ public class ImageReaderDispatcher
 			{
 			}
 		
+		// Otherwise load it in software
+		ImageReader reader;
 		switch (loadType)
 		{
 				// GIF? (GIF8)
@@ -202,15 +209,18 @@ public class ImageReaderDispatcher
 					new ExtendedDataInputStream(__is);
 				in.setEndianess(DataEndianess.LITTLE);
 				
-				return new GIFReader(in, __factory).parse();
+				reader = new GIFReader(in, loader);
+				break;
 		
 				// PNG?
 			case NativeImageLoadType.LOAD_PNG:
-				return new PNGReader(__is, __factory).parse();
+				reader = new PNGReader(__is, loader);
+				break;
 		
 				// JPEG?
 			case NativeImageLoadType.LOAD_JPEG:
-				return new JPEGReader(__is).parse();
+				reader = new JPEGReader(__is, loader);
+				break;
 		
 				// SVG?
 			case NativeImageLoadType.LOAD_SVG:
@@ -218,12 +228,19 @@ public class ImageReaderDispatcher
 		
 				// XPM?
 			case NativeImageLoadType.LOAD_XPM:
-				return new XPMReader(__is, __factory).parse();
+				reader = new XPMReader(__is, loader);
+				break;
 			
 				/* {@squirreljme.error EB0s Unsupported image format.} */
 			default:
 				throw new IOException("EB0s");
 		}
+		
+		// Parse image data
+		reader.parse();
+		
+		// Finish loading of the image data
+		return (S)loader.finish();
 	}
 }
 

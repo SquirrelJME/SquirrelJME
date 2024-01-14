@@ -17,7 +17,7 @@ import cc.squirreljme.runtime.lcdui.image.ImageFactory;
  * @since 2022/02/10
  */
 final class __ImageFactory__
-	implements ImageFactory
+	implements ImageFactory<AnimatedImage, Image>
 {
 	/**
 	 * {@inheritDoc}

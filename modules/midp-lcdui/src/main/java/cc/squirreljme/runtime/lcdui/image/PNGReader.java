@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.lcdui.image;
 
+import cc.squirreljme.jvm.mle.callbacks.NativeImageLoadCallback;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import java.io.ByteArrayInputStream;
@@ -35,12 +36,13 @@ import net.multiphasicapps.io.ZLibDecompressor;
  * @since 2017/02/28
  */
 public class PNGReader
+	implements ImageReader
 {
 	/** The input source. */
 	protected final DataInputStream in;
 	
-	/** The factory used to create the final image. */
-	private final ImageFactory factory;
+	/** The image loader to use. */
+	protected final NativeImageLoadCallback loader;
 	
 	/** Image width. */
 	private int _width;
@@ -85,20 +87,20 @@ public class PNGReader
 	 * Initializes the PNG parser.
 	 *
 	 * @param __in The input stream.
-	 * @param __factory
+	 * @param __loader The loader to use.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/28
 	 */
-	public PNGReader(InputStream __in, ImageFactory __factory)
+	public PNGReader(InputStream __in, NativeImageLoadCallback __loader)
 		throws NullPointerException
 	{
 		// Check
-		if (__in == null)
+		if (__in == null || __loader == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.in = new DataInputStream(__in);
-		this.factory = __factory;
+		this.loader = __loader;
 	}
 	
 	/**
@@ -108,10 +110,11 @@ public class PNGReader
 	 * @throws IOException On read errors.
 	 * @since 2017/02/28
 	 */
-	public Image parse()
+	public void parse()
 		throws IOException
 	{
 		DataInputStream in = this.in;
+		NativeImageLoadCallback loader = this.loader;
 		
 		/* {@squirreljme.error EB0t Illegal PNG magic number.} */
 		if (in.readUnsignedByte() != 137 ||
@@ -272,8 +275,10 @@ public class PNGReader
 		}
 		
 		// Create image
-		return this.factory.stillImage(argb, 0, argb.length,
-			false, this._hasalpha, this._width, this._height);
+		loader.initialize(this._width, this._height,
+			false, false);
+		loader.addImage(argb, 0, argb.length,
+			0, this._hasalpha);
 	}
 	
 	/**

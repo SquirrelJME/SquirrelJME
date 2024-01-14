@@ -9,12 +9,12 @@
 
 package cc.squirreljme.runtime.lcdui.image;
 
+import cc.squirreljme.jvm.mle.callbacks.NativeImageLoadCallback;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Arrays;
-import javax.microedition.lcdui.Image;
 
 /**
  * This class is able to read XPM images.
@@ -29,41 +29,43 @@ import javax.microedition.lcdui.Image;
  * @since 2016/05/08
  */
 public class XPMReader
+	implements ImageReader
 {
 	/** Source stream. */
 	protected final InputStream in;
 	
 	/** The factory used to create images. */
-	private final ImageFactory factory;
+	private final NativeImageLoadCallback loader;
 	
 	/**
 	 * Initializes the XPM image reader.
 	 *
 	 * @param __is The input stream.
-	 * @param __factory The factory used to create images.
+	 * @param __loader The callback used to create images.
 	 * @since 2016/05/08
 	 */
-	public XPMReader(InputStream __is, ImageFactory __factory)
+	public XPMReader(InputStream __is, NativeImageLoadCallback __loader)
 		throws NullPointerException
 	{
 		if (__is == null)
 			throw new NullPointerException("NARG");
 		
 		this.in = __is;
-		this.factory = __factory;
+		this.loader = __loader;
 	}
 	
 	/**
 	 * Reads the XPM image data from the specified input stream.
 	 *
-	 * @return The read image data.
 	 * @throws IOException If the XPM is not valid.
 	 * @since 2017/02/10
 	 */
-	public Image parse()
+	@Override
+	public void parse()
 		throws IOException
 	{
 		InputStream in = this.in;
+		NativeImageLoadCallback loader = this.loader;
 		
 		// Create character stripper
 		__CharStripper__ cs = new __CharStripper__(new InputStreamReader(in,
@@ -90,12 +92,15 @@ public class XPMReader
 		int area = width * height;
 		int[] data = new int[area];
 		
+		// Initialize
+		loader.initialize(width, height, false, false);
+		
 		// Read pixels
 		this.__readPixels(cs, width, height, data, pxchars, codes, palette);
 		
 		// Create image
-		return this.factory.stillImage(data, 0, data.length,
-			false, alpha, width, height);
+		loader.addImage(data, 0, data.length,
+			0, alpha);
 	}
 	
 	/**

@@ -14,9 +14,11 @@ import javax.microedition.lcdui.Image;
 /**
  * This factory is used for creating images.
  *
+ * @param <A> The animated image type.
+ * @param <S> The still image type.
  * @since 2022/02/10
  */
-public interface ImageFactory
+public interface ImageFactory<A extends S, S>
 {
 	/**
 	 * Initializes a new animated image.
@@ -30,7 +32,7 @@ public interface ImageFactory
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/02/10
 	 */
-	AnimatedImage animatedImage(Image[] __images,
+	A animatedImage(S[] __images,
 		int[] __frameTime, int __loopCount)
 		throws IllegalArgumentException, NullPointerException;
 	
@@ -54,7 +56,7 @@ public interface ImageFactory
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/02/10
 	 */
-	Image stillImage(int[] __b, int __o, int __l,
+	S stillImage(int[] __b, int __o, int __l,
 		boolean __mut, boolean __alpha, int __w, int __h)
 		throws IllegalArgumentException, IndexOutOfBoundsException,
 			NullPointerException;

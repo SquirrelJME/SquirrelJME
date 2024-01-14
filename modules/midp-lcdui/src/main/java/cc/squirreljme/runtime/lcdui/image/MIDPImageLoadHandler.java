@@ -10,10 +10,10 @@
 package cc.squirreljme.runtime.lcdui.image;
 
 import cc.squirreljme.jvm.mle.callbacks.NativeImageLoadCallback;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.IntegerList;
 import java.util.ArrayList;
 import java.util.List;
+import javax.microedition.lcdui.AnimatedImage;
 import javax.microedition.lcdui.Image;
 
 /**
@@ -21,11 +21,11 @@ import javax.microedition.lcdui.Image;
  *
  * @since 2022/06/28
  */
-final class __NativeLoadHandler__
+public final class MIDPImageLoadHandler
 	implements NativeImageLoadCallback
 {
 	/** The factory used to create images. */
-	private final ImageFactory _factory;
+	private final ImageFactory<AnimatedImage, Image> _factory;
 	
 	/** The images that have been added. */
 	private final List<Image> _images =
@@ -63,7 +63,7 @@ final class __NativeLoadHandler__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/06/28
 	 */
-	__NativeLoadHandler__(ImageFactory __factory)
+	public MIDPImageLoadHandler(ImageFactory<AnimatedImage, Image> __factory)
 		throws NullPointerException
 	{
 		if (__factory == null)

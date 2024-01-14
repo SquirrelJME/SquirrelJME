@@ -14,6 +14,7 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.image.AccessibleImage;
 import cc.squirreljme.runtime.lcdui.image.ImageReaderDispatcher;
+import cc.squirreljme.runtime.lcdui.image.MIDPImageLoadHandler;
 import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
 import java.io.ByteArrayInputStream;
@@ -475,8 +476,9 @@ public class Image
 			throw new NullPointerException("NARG");
 		
 		// Parse the image
-		return new ImageReaderDispatcher()
-			.parse(__is, new __ImageFactory__());
+		__ImageFactory__ factory = new __ImageFactory__();
+		return new ImageReaderDispatcher<AnimatedImage, Image>(
+			new MIDPImageLoadHandler(factory)).parse(__is);
 	}
 	
 	/**
