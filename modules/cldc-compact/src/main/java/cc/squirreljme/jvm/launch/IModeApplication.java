@@ -20,6 +20,7 @@ import cc.squirreljme.jvm.suite.EntryPoint;
 import cc.squirreljme.jvm.suite.InvalidSuiteException;
 import cc.squirreljme.jvm.suite.MarkedDependency;
 import cc.squirreljme.jvm.suite.Profile;
+import cc.squirreljme.jvm.suite.SuiteUtils;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -198,8 +199,11 @@ public class IModeApplication
 			// If the application name contains an invalid character then
 			// it is an unsupported character we do not know about
 			if (nonIso || appName.indexOf(0xFFFD) >= 0)
-				return appName + " (" +
-					JarPackageShelf.libraryPath(this.jar) + ")";
+			{
+				String jarPath = JarPackageShelf.libraryPath(this.jar);
+				if (jarPath != null)
+					return appName + " (" + SuiteUtils.baseName(jarPath) + ")";
+			}
 			
 			return appName;
 		}
