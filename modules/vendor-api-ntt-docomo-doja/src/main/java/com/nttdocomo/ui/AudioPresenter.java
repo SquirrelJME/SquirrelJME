@@ -11,12 +11,8 @@ package com.nttdocomo.ui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.nttdocomo.ui.NullAudioPresenter;
 
-/**
- * Not Described.
- *
- * @since 2022/10/07
- */
 @Api
 public class AudioPresenter
 	implements MediaPresenter
@@ -71,6 +67,14 @@ public class AudioPresenter
 	@Api
 	public static AudioPresenter getAudioPresenter()
 	{
-		throw Debugging.todo();
+		Debugging.todoNote("Implement DoJa sound.");
+		return new NullAudioPresenter();
+	}
+	
+	@Api
+	public static AudioPresenter getAudioPresenter(int __port)
+	{
+		Debugging.todoNote("Implement DoJa sound.");
+		return new NullAudioPresenter();
 	}
 }
