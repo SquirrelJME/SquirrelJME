@@ -87,11 +87,12 @@ public interface NativeImageLoadCallback
 	 * @param __off The offset into the buffer.
 	 * @param __len The length of the buffer.
 	 * @param __hasAlpha Is there an alpha channel?
+	 * @param __transDx The transparent color index.
 	 * @return If any subsequent calls should use the indexed variant of
 	 * adding an image.
 	 * @since 2024/01/14
 	 */
 	@SquirrelJMEVendorApi
 	boolean setPalette(int[] __colors, int __off, int __len,
-		boolean __hasAlpha);
+		boolean __hasAlpha, int __transDx);
 }

@@ -251,11 +251,13 @@ public class Graphics
 			
 			// Read in RGB data
 			Palette palette = bitImage.getPalette();
-			store.getRGB(rgb, 0, __w, palette, __sx, __sy, __w, __h);
+			int transDx = bitImage.getTransparentIndex();
+			store.getRGB(rgb, 0, __w, palette, __sx, __sy, __w, __h,
+				transDx);
 			
 			// Forward to RGB draw
 			this._graphics.drawRGB(rgb, 0, __w, __dx, __dy, __w, __h,
-				bitImage.__hasAlpha());
+				bitImage.__hasAlpha() || transDx >= 0);
 			
 			// Stop
 			return;

@@ -179,7 +179,7 @@ public final class MIDPImageLoadHandler
 	 */
 	@Override
 	public boolean setPalette(int[] __colors, int __off, int __len,
-		boolean __hasAlpha)
+		boolean __hasAlpha, int __transDx)
 	{
 		// We do not care about palettes in MIDP
 		return false;

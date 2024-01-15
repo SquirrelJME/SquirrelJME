@@ -25,6 +25,10 @@ public abstract class PalettedImage
 	/** The overriding palette. */
 	volatile Palette _paletteOverride;
 	
+	/** Override transparent index? */
+	volatile int _overrideTransDx =
+		-1;
+	
 	/**
 	 * Only initialized by subclasses.
 	 * 
@@ -98,11 +102,24 @@ public abstract class PalettedImage
 			ErrorCode.__error__("AH19"));
 	}
 	
+	/**
+	 * Returns the index used for transparency.
+	 *
+	 * @return The transparency index, if not set then {@code 0} is returned.
+	 * @throws UIException If the image has been disposed.
+	 * @since 2024/01/15
+	 */
 	@Api
 	public int getTransparentIndex()
 		throws UIException
 	{
-		throw Debugging.todo();
+		// Has it been overridden
+		int result = this._overrideTransDx;
+		if (result >= 0)
+			return result;
+		
+		// Not possible
+		throw new UIException(UIException.ILLEGAL_STATE);
 	}
 	
 	/**
@@ -160,11 +177,37 @@ public abstract class PalettedImage
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * Sets the transparent index.
+	 *
+	 * @param __index The index to set.
+	 * @throws ArrayIndexOutOfBoundsException If the index is out of bounds
+	 * of the palette.
+	 * @throws UIException If the image has been disposed an illegal state is
+	 * thrown.
+	 * @since 2024/01/15
+	 */
 	@Api
-	public void setTransparentIndex(int __color)
-		throws UIException
+	public void setTransparentIndex(int __index)
+		throws ArrayIndexOutOfBoundsException, UIException
 	{
-		throw Debugging.todo();
+		/* {@squirreljme.error AH1d The transparent index is not valid.} */
+		if (__index < 0 || __index >= 256)
+			throw new ArrayIndexOutOfBoundsException(
+				ErrorCode.__error__("AH1d"));
+		
+		// Must be within the palette bounds
+		Palette palette = this.getPalette();
+		if (palette != null)
+		{
+			/* {@squirreljme.error AH1e The transparent index is not valid.} */
+			if (__index >= palette.getEntryCount())
+				throw new ArrayIndexOutOfBoundsException(
+					ErrorCode.__error__("AH1e"));
+		}
+		
+		// Set
+		this._overrideTransDx = __index;
 	}
 	
 	/**

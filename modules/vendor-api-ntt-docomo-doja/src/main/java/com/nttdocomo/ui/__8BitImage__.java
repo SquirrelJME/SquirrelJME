@@ -91,4 +91,28 @@ class __8BitImage__
 	{
 		throw Debugging.todo();
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/01/15
+	 */
+	@Override
+	public int getTransparentIndex()
+		throws UIException
+	{
+		EightBitImageStore store = this._store;
+		if (store == null)
+			throw new UIException(UIException.ILLEGAL_STATE);
+		
+		// Try the super method first
+		try
+		{
+			return super.getTransparentIndex();
+		}
+		catch (UIException ignored)
+		{
+			// Use the color from the store
+			return store.getTransparentIndex();
+		}
+	}
 }

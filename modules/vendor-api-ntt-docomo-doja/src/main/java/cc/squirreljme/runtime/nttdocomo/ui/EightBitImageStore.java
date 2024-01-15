@@ -11,6 +11,7 @@ package cc.squirreljme.runtime.nttdocomo.ui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.IntegerArrayList;
 import com.nttdocomo.ui.Palette;
 
 /**
@@ -32,6 +33,9 @@ public final class EightBitImageStore
 	/** Internal Image palette. */
 	protected final Palette palette;
 	
+	/** The transparent index, if any. */
+	protected final int transparentIndex;
+	
 	/** Image pixel data. */
 	private final byte[] _pixels;
 	
@@ -43,11 +47,12 @@ public final class EightBitImageStore
 	 * @param __height The image height.
 	 * @param __palette The image palette.
 	 * @param __hasAlpha Does this have an alpha channel?
-	 * @throws NullPointerException
+	 * @param __transIndex The transparent color index.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/14
 	 */
 	EightBitImageStore(byte[] __pixels, int __width, int __height,
-		int[] __palette, boolean __hasAlpha)
+		int[] __palette, boolean __hasAlpha, int __transIndex)
 		throws NullPointerException
 	{
 		if (__pixels == null || __palette == null)
@@ -58,6 +63,8 @@ public final class EightBitImageStore
 		this.width = __width;
 		this.height = __height;
 		this.hasAlpha = __hasAlpha;
+		this.transparentIndex = (__transIndex >= __palette.length ? -1 :
+			__transIndex);
 	}
 	
 	/**
@@ -68,7 +75,7 @@ public final class EightBitImageStore
 	 */
 	public int getHeight()
 	{
-		throw Debugging.todo();
+		return this.height;
 	}
 	
 	/**
@@ -95,6 +102,7 @@ public final class EightBitImageStore
 	 * @param __y The source Y position.
 	 * @param __w The width to copy, if this is zero nothing is copied.
 	 * @param __h The height to copy, if this is zero nothing is copied.
+	 * @param __transparentIndex The transparent color index, if any.
 	 * @throws ArrayIndexOutOfBoundsException If writing to the destination
 	 * buffer would result in a write that exceeds the bounds of the array.
 	 * @throws IllegalArgumentException If the source X or Y position is
@@ -105,7 +113,7 @@ public final class EightBitImageStore
 	 */
 	@Api
 	public void getRGB(int[] __b, int __o, int __sl, Palette __palette,
-		int __x, int __y, int __w, int __h)
+		int __x, int __y, int __w, int __h, int __transparentIndex)
 		throws IllegalArgumentException, NullPointerException,
 			IndexOutOfBoundsException
 	{
@@ -131,6 +139,12 @@ public final class EightBitImageStore
 		for (int i = 0, n = __palette.getEntryCount(); i < n; i++)
 			palCache[i] = __palette.getEntry(i);
 		
+		// Set transparent color
+		if (__transparentIndex < 0)
+			__transparentIndex = this.transparentIndex;
+		if (__transparentIndex >= 0 && __transparentIndex < 256)
+			palCache[__transparentIndex] = 0x00_000000;
+		
 		// Translate pixels with palette colors
 		byte[] pix = this._pixels;
 		for (int outY = 0, outBS = __o, inBS = imgW * __y; 
@@ -143,6 +157,17 @@ public final class EightBitImageStore
 	}
 	
 	/**
+	 * Returns the transparent color index.
+	 *
+	 * @return The transparent color image or {@code -1} if not valid.
+	 * @since 2024/01/15
+	 */
+	public int getTransparentIndex()
+	{
+		return this.transparentIndex;
+	}
+	
+	/**
 	 * Returns the width of the image.
 	 *
 	 * @return The image width.
@@ -150,6 +175,6 @@ public final class EightBitImageStore
 	 */
 	public int getWidth()
 	{
-		throw Debugging.todo();
+		return this.width;
 	}
 }

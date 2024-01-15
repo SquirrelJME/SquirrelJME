@@ -35,6 +35,10 @@ public class DoJa8BitImageLoader
 	/** 8-bit pixel data. */
 	private volatile byte[] _pixels;
 	
+	/** Transparent index. */
+	private volatile int _transIndex =
+		-1;
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2024/01/14
@@ -70,7 +74,7 @@ public class DoJa8BitImageLoader
 	public Object finish()
 	{
 		return new EightBitImageStore(this._pixels, this._width, this._height,
-			this._palette, this._hasAlpha);
+			this._palette, this._hasAlpha, this._transIndex);
 	}
 	
 	/**
@@ -103,7 +107,7 @@ public class DoJa8BitImageLoader
 	 */
 	@Override
 	public boolean setPalette(int[] __colors, int __off, int __len,
-		boolean __hasAlpha)
+		boolean __hasAlpha, int __transDx)
 	{
 		// Copy palette
 		int[] palette = new int[__len];
@@ -111,8 +115,9 @@ public class DoJa8BitImageLoader
 			palette, 0, __len);
 		
 		// Store within
-		this._palette = new int[__len];
-		this._hasAlpha = __hasAlpha;
+		this._palette = palette;
+		this._hasAlpha = __hasAlpha || __transDx >= 0;
+		this._transIndex = __transDx;
 		
 		// Use indexed mode
 		return true;

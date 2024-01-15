@@ -68,7 +68,7 @@ public class Palette
 			numColors = 256;
 		
 		// Cannot have a zero sized palette
-		if (numColors == 0)
+		else if (numColors == 0)
 			throw new IllegalArgumentException("NEGV");
 		
 		// Copy colors
@@ -97,7 +97,7 @@ public class Palette
 		if (__index < 0 || __index >= colors.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
-		return colors[__index];
+		return colors[__index] | 0xFF_000000;
 	}
 	
 	/**

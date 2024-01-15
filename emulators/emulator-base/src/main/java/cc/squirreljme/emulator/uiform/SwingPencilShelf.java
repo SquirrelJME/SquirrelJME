@@ -16,14 +16,19 @@ import cc.squirreljme.jvm.mle.constants.NativeImageLoadType;
 import cc.squirreljme.jvm.mle.constants.PencilCapabilities;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.IntegerArrayList;
+import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.IndexColorModel;
+import java.awt.image.PackedColorModel;
+import java.awt.image.Raster;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Random;
 import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
 
 /**
  * Swing implementation of {@link PencilShelf}.
@@ -126,12 +131,15 @@ public final class SwingPencilShelf
 			
 			// Extract image
 			int totalPixels = w * h;
-			int[] rgb = new int[totalPixels];
-			result.getRGB(0, 0, w, h, rgb, 0, w);
+			int[] rgb;
 			
-			// If this is indexed or less, then there is a palette
+			// Is there an alpha channel?
 			ColorModel model = result.getColorModel();
-			if (model instanceof IndexColorModel)
+			boolean hasAlpha = (result.getAlphaRaster() != null);
+			
+			// If this is indexed, then there is a palette
+			if (model instanceof IndexColorModel ||
+				result.getType() == BufferedImage.TYPE_BYTE_INDEXED)
 			{
 				IndexColorModel indexModel = (IndexColorModel)model;
 				
@@ -142,14 +150,72 @@ public final class SwingPencilShelf
 				int[] palette = new int[num];
 				indexModel.getRGBs(palette);
 				
+				// Read indexed values
+				Raster raster = result.getRaster();
+				rgb = raster.getPixels(0, 0, w, h,
+					new int[totalPixels]);
+				
+				// Which transparency is used?
+				int transDx = -1;
+				switch (indexModel.getTransparency())
+				{
+						// Completely opaque
+					case Transparency.OPAQUE:
+						hasAlpha = false;
+						break;
+						
+						// Either fully opaque or transparent
+					case Transparency.BITMASK:
+						transDx = indexModel.getTransparentPixel();
+						if (transDx < 0)
+							hasAlpha = false;
+						else
+						{
+							// Get color value of this pixel
+							int px = indexModel.getRGB(transDx) & 0xFFFFFF;
+						
+							// We need to find the transparent index manually
+							transDx = -1;
+							for (int i = 0, n = palette.length;
+								 i < n; i++)
+								if ((palette[i] & 0xFFFFFF) == px)
+								{
+									transDx = i;
+									break;
+								}
+							
+							// Always has alpha as long as we found an index
+							hasAlpha = (transDx >= 0);
+						}
+						break;
+						
+						// Arbitrary alpha values (such as PNG)
+					case Transparency.TRANSLUCENT:
+						hasAlpha = true;
+						break;
+				}
+				
 				// Send to callback
-				__callback.setPalette(palette, 0, num,
-					indexModel.hasAlpha());
+				if (!__callback.setPalette(palette, 0, num,
+					hasAlpha, transDx))
+				{
+					// Image handler does not support indexed mode so fall
+					// back to RGB
+					rgb = new int[totalPixels];
+					result.getRGB(0, 0, w, h, rgb, 0, w);
+				}
+			}
+			
+			// RGB Data
+			else
+			{
+				rgb = new int[totalPixels];
+				result.getRGB(0, 0, w, h, rgb, 0, w);
 			}
 			
 			// Add image data
 			__callback.addImage(rgb, 0, rgb.length,
-				0, result.getAlphaRaster() != null);
+				0, hasAlpha);
 			
 			// Finish resultant image
 			return __callback.finish();

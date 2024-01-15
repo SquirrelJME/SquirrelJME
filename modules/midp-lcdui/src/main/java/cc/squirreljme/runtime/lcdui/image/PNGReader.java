@@ -17,7 +17,6 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
-import javax.microedition.lcdui.Image;
 import net.multiphasicapps.io.ByteDeque;
 import net.multiphasicapps.io.CRC32Calculator;
 import net.multiphasicapps.io.ChecksumInputStream;
@@ -545,7 +544,7 @@ public class PNGReader
 		
 		// Notify that a palette was set
 		this._wantIndexed =
-			this.loader.setPalette(palette, 0, maxColors, true);
+			this.loader.setPalette(palette, 0, maxColors, true, -1);
 	}
 	
 	/**

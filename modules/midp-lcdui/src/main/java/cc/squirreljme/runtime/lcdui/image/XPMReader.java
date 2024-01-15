@@ -90,7 +90,7 @@ public class XPMReader
 		
 		// Set the palette
 		boolean wantIndex = loader.setPalette(palette, 0, numcolors,
-			alpha);
+			alpha, -1);
 		
 		// Target array
 		int area = width * height;
