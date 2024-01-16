@@ -129,6 +129,66 @@ typedef struct sjme_classBuilder
 } sjme_classBuilder;
 
 /**
+ * Adds an attribute to the class, field, method, or code attribute.
+ * 
+ * @param builder The class being built.
+ * @param inNameIndex The index to the name of the attribute.
+ * @param inData The attribute data.
+ * @param inLength The attribute length.
+ * @return On any resultant errors, if any.
+ * @since 2024/01/16
+ */
+sjme_errorCode sjme_classBuilder_addAttribute(
+	sjme_attrInNotNull sjme_classBuilder* builder,
+	sjme_attrInPositiveNonZero sjme_jint inNameIndex,
+	sjme_attrInNotNull void* inData,
+	sjme_attrInPositive sjme_jint inLength);
+
+/**
+ * Adds a @c ConstantValue attribute to the current field being built.
+ * 
+ * @param builder The class builder.
+ * @param inValueIndex The index to the constant value.
+ * @return On any errors, if any.
+ * @since 2024/01/16 
+ */
+sjme_errorCode sjme_classBuilder_addAttributeConstantValue(
+	sjme_attrInNotNull sjme_classBuilder* builder,
+	sjme_attrInPositiveNonZero sjme_jint inValueIndex);
+
+/**
+ * Adds a field member.
+ * 
+ * @param builder The class being built.
+ * @param flags The field flags.
+ * @param inNameIndex The index to the name of the field.
+ * @param inTypeIndex The index to the type of the field.
+ * @return On any resultant errors, if any.
+ * @since 2024/01/16
+ */
+sjme_errorCode sjme_classBuilder_addField(
+	sjme_attrInNotNull sjme_classBuilder* builder,
+	sjme_attrInValue sjme_jint flags,
+	sjme_attrInPositiveNonZero sjme_jint inNameIndex,
+	sjme_attrInPositiveNonZero sjme_jint inTypeIndex);
+
+/**
+ * Adds a method member.
+ * 
+ * @param builder The class being built.
+ * @param flags The method flags.
+ * @param inNameIndex The index to the name of the method.
+ * @param inTypeIndex The index to the type of the method.
+ * @return On any resultant errors, if any.
+ * @since 2024/01/16
+ */
+sjme_errorCode sjme_classBuilder_addMethod(
+	sjme_attrInNotNull sjme_classBuilder* builder,
+	sjme_attrInValue sjme_jint flags,
+	sjme_attrInPositiveNonZero sjme_jint inNameIndex,
+	sjme_attrInPositiveNonZero sjme_jint inTypeIndex);
+
+/**
  * Adds a constant pool to the class.
  * 
  * @param builder The builder to add to.
@@ -250,6 +310,64 @@ sjme_errorCode sjme_classBuilder_build(
 	sjme_attrInNullable void* whatever);
 
 /**
+ * Declares the primary class information.
+ * 
+ * @param builder The class being built.
+ * @param classFlags The flags for the class.
+ * @param inClassName The index to the class name.
+ * @param inSuperName The index to the super class name, may be @c 0 .
+ * @param numInterfaceNames The number of interface names.
+ * @param inInterfaceNameIndexes An array of interface names.
+ * @return On any errors, if any.
+ * @since 2024/01/16
+ */
+sjme_errorCode sjme_classBuilder_declareClassA(
+	sjme_attrInNotNull sjme_classBuilder* builder,
+	sjme_attrInValue sjme_jint classFlags,
+	sjme_attrInPositive sjme_jint inClassNameIndex,
+	sjme_attrInPositive sjme_jint inSuperNameIndex,
+	sjme_attrInPositive sjme_jint numInterfaceNames,
+	sjme_attrInNotNull sjme_jint* inInterfaceNameIndexes);
+
+/**
+ * Declares the primary class information.
+ * 
+ * @param builder The class being built.
+ * @param classFlags The flags for the class.
+ * @param inClassName The index to the class name.
+ * @param inSuperName The index to the super class name, may be @c 0 .
+ * @param inInterfaceNameIndexes The list of interface names.
+ * @return On any errors, if any.
+ * @since 2024/01/16
+ */
+sjme_errorCode sjme_classBuilder_declareClassL(
+	sjme_attrInNotNull sjme_classBuilder* builder,
+	sjme_attrInValue sjme_jint classFlags,
+	sjme_attrInPositive sjme_jint inClassNameIndex,
+	sjme_attrInPositive sjme_jint inSuperNameIndex,
+	sjme_attrInNotNull sjme_list_sjme_jint* inInterfaceNameIndexes);
+
+/**
+ * Declares the primary class information.
+ * 
+ * @param builder The class being built.
+ * @param classFlags The flags for the class.
+ * @param inClassName The index to the class name.
+ * @param inSuperName The index to the super class name, may be @c 0 .
+ * @param numInterfaceNames The number of interface names.
+ * @param ... The indexes to the interface names.
+ * @return On any errors, if any.
+ * @since 2024/01/16
+ */
+sjme_errorCode sjme_classBuilder_declareClassV(
+	sjme_attrInNotNull sjme_classBuilder* builder,
+	sjme_attrInValue sjme_jint classFlags,
+	sjme_attrInPositive sjme_jint inClassNameIndex,
+	sjme_attrInPositive sjme_jint inSuperNameIndex,
+	sjme_attrInPositive sjme_jint numInterfaceNames,
+	...);
+
+/**
  * Finishes the construction of the raw class.
  *
  * @param builder The input class builder state.
@@ -260,6 +378,26 @@ sjme_errorCode sjme_classBuilder_build(
 sjme_errorCode sjme_classBuilder_finish(
 	sjme_attrInNotNull sjme_classBuilder* builder,
 	sjme_attrOutNotNull void** rawClass);
+
+/**
+ * Finishes the current attribute and moves onto the next. 
+ * 
+ * @param builder The class currently being built.
+ * @return On any resultant errors, if any.
+ * @since 2024/01/16 
+ */
+sjme_errorCode sjme_classBuilder_nextAttribute(
+	sjme_attrInNotNull sjme_classBuilder* builder);
+	
+/**
+ * Finishes the current member and moves onto the next. 
+ * 
+ * @param builder The class currently being built.
+ * @return On any resultant errors, if any.
+ * @since 2024/01/16 
+ */
+sjme_errorCode sjme_classBuilder_nextMember(
+	sjme_attrInNotNull sjme_classBuilder* builder);
 
 /*--------------------------------------------------------------------------*/
 

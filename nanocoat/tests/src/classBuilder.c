@@ -9,6 +9,44 @@
 
 #include "classBuilder.h"
 
+sjme_errorCode sjme_classBuilder_addAttribute(
+	sjme_attrInNotNull sjme_classBuilder* builder,
+	sjme_attrInPositiveNonZero sjme_jint inNameIndex,
+	sjme_attrInNotNull void* inData,
+	sjme_attrInPositive sjme_jint inLength)
+{
+	sjme_todo("Implement this?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+sjme_errorCode sjme_classBuilder_addAttributeConstantValue(
+	sjme_attrInNotNull sjme_classBuilder* builder,
+	sjme_attrInPositiveNonZero sjme_jint inValueIndex)
+{
+	sjme_todo("Implement this?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+sjme_errorCode sjme_classBuilder_addField(
+	sjme_attrInNotNull sjme_classBuilder* builder,
+	sjme_attrInValue sjme_jint flags,
+	sjme_attrInPositiveNonZero sjme_jint inNameIndex,
+	sjme_attrInPositiveNonZero sjme_jint inTypeIndex)
+{
+	sjme_todo("Implement this?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+sjme_errorCode sjme_classBuilder_addMethod(
+	sjme_attrInNotNull sjme_classBuilder* builder,
+	sjme_attrInValue sjme_jint flags,
+	sjme_attrInPositiveNonZero sjme_jint inNameIndex,
+	sjme_attrInPositiveNonZero sjme_jint inTypeIndex)
+{
+	sjme_todo("Implement this?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
 sjme_errorCode sjme_classBuilder_addPool(
 	sjme_attrInNotNull sjme_classBuilder* builder,
 	sjme_attrInPositiveNonZero sjme_jint poolSize)
@@ -89,6 +127,47 @@ sjme_errorCode sjme_classBuilder_build(
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
+sjme_errorCode sjme_classBuilder_declareClassA(
+	sjme_attrInNotNull sjme_classBuilder* builder,
+	sjme_attrInValue sjme_jint classFlags,
+	sjme_attrInPositive sjme_jint inClassNameIndex,
+	sjme_attrInPositive sjme_jint inSuperNameIndex,
+	sjme_attrInPositive sjme_jint numInterfaceNames,
+	sjme_attrInNotNull sjme_jint* inInterfaceNameIndexes)
+{
+	sjme_todo("Implement this?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+	
+sjme_errorCode sjme_classBuilder_declareClassL(
+	sjme_attrInNotNull sjme_classBuilder* builder,
+	sjme_attrInValue sjme_jint classFlags,
+	sjme_attrInPositive sjme_jint inClassNameIndex,
+	sjme_attrInPositive sjme_jint inSuperNameIndex,
+	sjme_attrInNotNull sjme_list_sjme_jint* inInterfaceNameIndexes)
+{
+	if (inInterfaceNameIndexes == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Forward. */
+	return sjme_classBuilder_declareClassA(
+		builder, classFlags, inClassNameIndex, inSuperNameIndex,
+		inInterfaceNameIndexes->length,
+		inInterfaceNameIndexes->elements);
+}
+
+sjme_errorCode sjme_classBuilder_declareClassV(
+	sjme_attrInNotNull sjme_classBuilder* builder,
+	sjme_attrInValue sjme_jint classFlags,
+	sjme_attrInPositive sjme_jint inClassNameIndex,
+	sjme_attrInPositive sjme_jint inSuperNameIndex,
+	sjme_attrInPositive sjme_jint numInterfaceNames,
+	...)
+{
+	sjme_todo("Implement this?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
 sjme_errorCode sjme_classBuilder_finish(
 	sjme_attrInNotNull sjme_classBuilder* builder,
 	sjme_attrOutNotNull void** rawClass)
@@ -96,6 +175,20 @@ sjme_errorCode sjme_classBuilder_finish(
 	if (builder == NULL || rawClass == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
+	sjme_todo("Implement this?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+sjme_errorCode sjme_classBuilder_nextAttribute(
+	sjme_attrInNotNull sjme_classBuilder* builder)
+{
+	sjme_todo("Implement this?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+sjme_errorCode sjme_classBuilder_nextMember(
+	sjme_attrInNotNull sjme_classBuilder* builder)
+{
 	sjme_todo("Implement this?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
