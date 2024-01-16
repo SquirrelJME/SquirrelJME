@@ -16,9 +16,10 @@
 #ifndef SQUIRRELJME_CLASSBUILDER_H
 #define SQUIRRELJME_CLASSBUILDER_H
 
-#include "test.h"
-#include "sjme/stream.h"
+#include "sjme/classy.h"
 #include "sjme/list.h"
+#include "sjme/stream.h"
+#include "test.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -128,29 +129,136 @@ typedef struct sjme_classBuilder
 } sjme_classBuilder;
 
 /**
+ * Adds a constant pool to the class.
+ * 
+ * @param builder The builder to add to.
+ * @param poolSize The number of entries in the pool
+ * @return On any resultant error, if any.
+ * @since 2024/01/16
+ */
+sjme_errorCode sjme_classBuilder_addPool(
+	sjme_attrInNotNull sjme_classBuilder* builder,
+	sjme_attrInPositiveNonZero sjme_jint poolSize);
+
+/**
+ * Adds a class info entry into the constant pool of the class being built.
+ * 
+ * @param builder The builder to add to.
+ * @param outIndex The resultant index of the entry.
+ * @param inUtfIndex The index of the Utf entry to use for the class info. 
+ * @return On any errors, if any.
+ * @since 2024/01/16
+ */
+sjme_errorCode sjme_classBuilder_addPoolEntryClass(
+	sjme_attrInNotNull sjme_classBuilder* builder,
+	sjme_attrOutNullable sjme_jint* outIndex,
+	sjme_attrInPositiveNonZero sjme_jint inUtfIndex);
+
+/**
+ * Adds a constant value to the constant pool of the class being built.
+ * 
+ * @param builder The builder to add to.
+ * @param outIndex The resultant index of this entry.
+ * @param javaType The type of value to add.
+ * @param value The value of the given type.
+ * @return On any resultant errors, if any.
+ * @since 2024/01/16
+ */
+sjme_errorCode sjme_classBuilder_addPoolEntryConstVal(
+	sjme_attrInNotNull sjme_classBuilder* builder,
+	sjme_attrOutNullable sjme_jint* outIndex,
+	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId javaType,
+	sjme_attrInValue sjme_jvalue value);
+
+/**
+ * Adds a member reference to the constant pool.
+ * 
+ * @param builder The class builder to add.
+ * @param outIndex The resultant index of this entry.
+ * @param type The type of entry to add.
+ * @param inClassIndex The index of the constant pool entry to the class.
+ * @param inNameAndTypeIndex The index of the constant pool entry to the name
+ * and type.
+ * @return On any resultant error, if any.
+ * @since 2024/01/16
+ */
+sjme_errorCode sjme_classBuilder_addPoolEntryMemberRef(
+	sjme_attrInNotNull sjme_classBuilder* builder,
+	sjme_attrOutNullable sjme_jint* outIndex,
+	sjme_attrInRange(SJME_CLASS_POOL_ENTRY_MEMBER_TYPE_FIELD,
+		SJME_NUM_CLASS_POOL_ENTRY_MEMBER_TYPE)
+			sjme_class_poolEntryMemberType type,
+	sjme_attrInPositiveNonZero sjme_jint inClassIndex,
+	sjme_attrInPositiveNonZero sjme_jint inNameAndTypeIndex);
+
+/**
+ * Adds a name and type entry to the constant pool.
+ * 
+ * @param builder The class builder to add it. 
+ * @param outIndex The resultant index of the added entry.
+ * @param inNameUtfIndex The index to the UTF entry for the member name.
+ * @param inTypeUtfIndex The index to the UTF entry for the member type.
+ * @return On any resultant errors, if any.
+ * @since 2024/01/16
+ */
+sjme_errorCode sjme_classBuilder_addPoolEntryNameAndType(
+	sjme_attrInNotNull sjme_classBuilder* builder,
+	sjme_attrOutNullable sjme_jint* outIndex,
+	sjme_attrInPositiveNonZero sjme_jint inNameUtfIndex,
+	sjme_attrInPositiveNonZero sjme_jint inTypeUtfIndex);
+
+/**
+ * Adds a string entry to the constant pool.
+ * 
+ * @param builder The class to add the entry to.
+ * @param outIndex The resultant index of the added entry.
+ * @param utfIndex The entry to the UTF entry.
+ * @return On any errors, if any.
+ * @since 2024/01/16
+ */
+sjme_errorCode sjme_classBuilder_addPoolEntryString(
+	sjme_attrInNotNull sjme_classBuilder* builder,
+	sjme_attrOutNullable sjme_jint* outIndex,
+	sjme_attrInPositiveNonZero sjme_jint inUtfIndex);
+
+/**
+ * Adds a single UTF constant pool entry.
+ * 
+ * @param builder The builder to add to.
+ * @param outIndex The resultant index of the added entry.
+ * @param inUtf The string to store into the pool.
+ * @return On any errors, if any.
+ * @since 2024/01/16
+ */
+sjme_errorCode sjme_classBuilder_addPoolEntryUtf(
+	sjme_attrInNotNull sjme_classBuilder* builder,
+	sjme_attrOutNullable sjme_jint* outIndex,
+	sjme_attrInNotNull sjme_lpcstr inUtf);
+
+/**
  * Initializes the class builder.
  *
  * @param inPool The pool to allocate within.
- * @param outState The output state of the class builder.
+ * @param outBuilder The output state of the class builder.
  * @param whatever Whatever data is needed, this is optional.
  * @return Any resultant error, if any.
  * @since 2024/01/09
  */
 sjme_errorCode sjme_classBuilder_build(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull sjme_classBuilder* outState,
+	sjme_attrOutNotNull sjme_classBuilder* outBuilder,
 	sjme_attrInNullable void* whatever);
 
 /**
  * Finishes the construction of the raw class.
  *
- * @param inState The input class builder state.
+ * @param builder The input class builder state.
  * @param rawClass The resultant raw class bytes to be parsed.
  * @return On any resultant error, if any.
  * @since 2024/01/09
  */
 sjme_errorCode sjme_classBuilder_finish(
-	sjme_attrOutNotNull sjme_classBuilder* inState,
+	sjme_attrInNotNull sjme_classBuilder* builder,
 	sjme_attrOutNotNull void** rawClass);
 
 /*--------------------------------------------------------------------------*/

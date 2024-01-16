@@ -418,6 +418,26 @@ typedef struct sjme_class_poolEntryDouble
 typedef struct sjme_class_poolEntryNameAndType sjme_class_poolEntryNameAndType;
 
 /**
+ * The type of entry 
+ * 
+ * @since 2024/01/16
+ */
+typedef enum sjme_class_poolEntryMemberType
+{
+	/** Reference to field member. */
+	SJME_CLASS_POOL_ENTRY_MEMBER_TYPE_FIELD,
+	
+	/** Reference to method member. */
+	SJME_CLASS_POOL_ENTRY_MEMBER_TYPE_METHOD,
+	
+	/** Reference to interface method member. */
+	SJME_CLASS_POOL_ENTRY_MEMBER_TYPE_INTERFACE_METHOD,
+	
+	/** The number of member types. */
+	SJME_NUM_CLASS_POOL_ENTRY_MEMBER_TYPE
+} sjme_class_poolEntryMemberType;
+
+/**
  * Either @c SJME_CLASS_POOL_TYPE_FIELD , @c SJME_CLASS_POOL_TYPE_METHOD ,
  * or @c SJME_CLASS_POOL_TYPE_INTERFACE_METHOD which represents a reference
  * to a class member.
@@ -426,6 +446,9 @@ typedef struct sjme_class_poolEntryNameAndType sjme_class_poolEntryNameAndType;
  */
 typedef struct sjme_class_poolEntryMember
 {
+	/** The type of entry this. */
+	sjme_class_poolEntryMemberType type;
+
 	/** The class this refers to. */
 	sjme_lpcstr inClass;
 
