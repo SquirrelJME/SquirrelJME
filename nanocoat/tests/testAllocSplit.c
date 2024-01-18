@@ -40,7 +40,7 @@ SJME_TEST_DECLARE(testAllocSplit)
 
 	/* Initialize the pool. */
 	pool = NULL;
-	if (SJME_IS_ERROR(sjme_alloc_poolInitStatic(&pool, chunk,
+	if (sjme_error_is(sjme_alloc_poolInitStatic(&pool, chunk,
 			chunkLen)) || pool == NULL)
 		return sjme_unitFail(test, "Could not initialize static pool?");
 
@@ -83,14 +83,14 @@ SJME_TEST_DECLARE(testAllocSplit)
 
 	/* Allocate some memory in the pool. */
 	block = NULL;
-	if (SJME_IS_ERROR(sjme_alloc(pool, TEST_BLOCK_SIZE,
+	if (sjme_error_is(sjme_alloc(pool, TEST_BLOCK_SIZE,
 			&block)) || block == NULL)
 		return sjme_unitFail(test, "Could not allocate %d bytes.",
 			TEST_BLOCK_SIZE);
 
 	/* Obtain the block link. */
 	link = NULL;
-	if (SJME_IS_ERROR(sjme_alloc_getLink(block, &link)) ||
+	if (sjme_error_is(sjme_alloc_getLink(block, &link)) ||
 		link == NULL)
 		return sjme_unitFail(test, "Could not obtain block link?");
 

@@ -37,13 +37,13 @@ SJME_TEST_DECLARE(testStreamOverRead)
 	sjme_jubyte buf[READ_BYTES];
 
 	/* Open stream. */
-	if (SJME_IS_ERROR(sjme_stream_inputOpenMemory(test->pool,
+	if (sjme_error_is(sjme_stream_inputOpenMemory(test->pool,
 			&inputStream, testBytes, NUM_BYTES)))
 		return sjme_unitFail(test, "Could not open input stream.");
 
 	/* Get available bytes. */
 	available = -2;
-	if (SJME_IS_ERROR(sjme_stream_inputAvailable(inputStream,
+	if (sjme_error_is(sjme_stream_inputAvailable(inputStream,
 		&available)) || available < 0)
 		return sjme_unitFail(test, "Could not get available bytes?");
 
@@ -54,7 +54,7 @@ SJME_TEST_DECLARE(testStreamOverRead)
 	/* Read way too many bytes. */
 	memset(buf, 0, sizeof(buf));
 	readCount = -2;
-	if (SJME_IS_ERROR(sjme_stream_inputRead(inputStream,
+	if (sjme_error_is(sjme_stream_inputRead(inputStream,
 		&readCount, buf, READ_BYTES)))
 		return sjme_unitFail(test, "Failed to read bytes?");
 
@@ -67,7 +67,7 @@ SJME_TEST_DECLARE(testStreamOverRead)
 		"Read bytes are not correct?");
 
 	/* Close the stream. */
-	if (SJME_IS_ERROR(sjme_stream_inputClose(inputStream)))
+	if (sjme_error_is(sjme_stream_inputClose(inputStream)))
 		return sjme_unitFail(test, "Could not close stream?");
 
 	/* Success! */

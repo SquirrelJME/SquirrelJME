@@ -34,13 +34,13 @@ SJME_TEST_DECLARE(testList)
 
 	/* Allocate list. */
 	ppList = NULL;
-	if (SJME_IS_ERROR(sjme_list_alloc(test->pool, 10, &ppList,
+	if (sjme_error_is(sjme_list_alloc(test->pool, 10, &ppList,
 		sjme_jint, 2)) || ppList == NULL)
 		sjme_unitFail(test, "Could not allocate list.");
 
 	/* Get the allocation link. */
 	link = NULL;
-	if (SJME_IS_ERROR(sjme_alloc_getLink(ppList, &link)))
+	if (sjme_error_is(sjme_alloc_getLink(ppList, &link)))
 		sjme_unitFail(test, "Could not obtain link.");
 
 	/* Was the size set? */
@@ -56,7 +56,7 @@ SJME_TEST_DECLARE(testList)
 
 	/* Test variadic load of list. */
 	varList = NULL;
-	if (SJME_IS_ERROR(sjme_list_newV(test->pool, sjme_jint, 0, 5, &varList,
+	if (sjme_error_is(sjme_list_newV(test->pool, sjme_jint, 0, 5, &varList,
 		1, 2, 3, 4, 5)) ||
 		varList == NULL)
 		sjme_unitFail(test, "Could not build variadic list?");
@@ -72,7 +72,7 @@ SJME_TEST_DECLARE(testList)
 
 	/* Test array load of list. */
 	arrayList = NULL;
-	if (SJME_IS_ERROR(sjme_list_newA(test->pool, sjme_jint, 0, 5, &arrayList,
+	if (sjme_error_is(sjme_list_newA(test->pool, sjme_jint, 0, 5, &arrayList,
 		testListElems)) || arrayList == NULL)
 		sjme_unitFail(test, "Could not build array list?");
 

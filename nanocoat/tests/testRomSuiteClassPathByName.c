@@ -40,7 +40,7 @@ static sjme_jboolean configRomSuiteClassPathByName(
 			break;
 
 		case SJME_MOCK_DO_TYPE_ROM_SUITE:
-			if (SJME_IS_ERROR(sjme_list_newV(
+			if (sjme_error_is(sjme_list_newV(
 				inState->allocPool, sjme_rom_library, 0, 3,
 				&romSuite->cacheLibraries,
 				inState->romLibraries[0],
@@ -89,11 +89,11 @@ SJME_TEST_DECLARE(testRomSuiteClassPathByName)
 		return sjme_unitFail(test, "Could not run mocks.");
 
 	/* Calculate both forwards and backwards names. */
-	if (SJME_IS_ERROR(sjme_list_newV(mockState.allocPool,
+	if (sjme_error_is(sjme_list_newV(mockState.allocPool,
 			sjme_lpcstr, 0, 3, &forwardNames,
 			"squirrels.jar", "are.jar", "cute.jar")))
 		return sjme_unitFail(test, "Could not emit forward names?");
-	if (SJME_IS_ERROR(sjme_list_newV(mockState.allocPool,
+	if (sjme_error_is(sjme_list_newV(mockState.allocPool,
 			sjme_lpcstr, 0, 3, &backwardNames,
 			"cute.jar", "are.jar", "squirrels.jar")))
 		return sjme_unitFail(test, "Could not emit backwards names?");
@@ -103,7 +103,7 @@ SJME_TEST_DECLARE(testRomSuiteClassPathByName)
 
 	/* Resolve forward names first. */
 	result = NULL;
-	if (SJME_IS_ERROR(sjme_rom_resolveClassPathByName(suite,
+	if (sjme_error_is(sjme_rom_resolveClassPathByName(suite,
 		forwardNames, &result)) || result == NULL)
 		return sjme_unitFail(test, "Could not resolve names?");
 
@@ -119,7 +119,7 @@ SJME_TEST_DECLARE(testRomSuiteClassPathByName)
 
 	/* Resolve backwards names last. */
 	result = NULL;
-	if (SJME_IS_ERROR(sjme_rom_resolveClassPathByName(suite,
+	if (sjme_error_is(sjme_rom_resolveClassPathByName(suite,
 			backwardNames, &result)) || result == NULL)
 		return sjme_unitFail(test, "Could not resolve reverse names?");
 

@@ -134,7 +134,7 @@ int sjme_test_main(int argc, sjme_lpstr* argv, sjme_lpcstr* nextTest)
 			continue;
 
 		/* Initialize pool. */
-		if (SJME_IS_ERROR(sjme_alloc_poolInitStatic(&test.pool,
+		if (sjme_error_is(sjme_alloc_poolInitStatic(&test.pool,
 			chunk, chunkLen)) || test.pool == NULL)
 		{
 			/* No longer testing. */

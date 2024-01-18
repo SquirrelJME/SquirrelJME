@@ -27,7 +27,7 @@ int main(int argc, sjme_lpstr* argv)
 	
 	/* Boot the virtual machine. */
 	state = NULL;
-	if (SJME_IS_ERROR(sjme_nvm_boot(NULL, NULL, &bootConfig,
+	if (sjme_error_is(sjme_nvm_boot(NULL, NULL, &bootConfig,
 		&state)))
 		return EXIT_FAILURE;
 		

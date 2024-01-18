@@ -38,7 +38,7 @@ SJME_TEST_DECLARE(testStream)
 
 	/* Setup input stream. */
 	inputStream = NULL;
-	if (SJME_IS_ERROR(sjme_stream_inputOpenMemory(test->pool,
+	if (sjme_error_is(sjme_stream_inputOpenMemory(test->pool,
 		&inputStream, testData, NUM_BYTES)) ||
 		inputStream == NULL)
 		return sjme_unitFail(test, "Could not open input stream.");
@@ -52,7 +52,7 @@ SJME_TEST_DECLARE(testStream)
 
 		/* Read in more data. */
 		readCount = -2;
-		if (SJME_IS_ERROR(sjme_stream_inputRead(inputStream,
+		if (sjme_error_is(sjme_stream_inputRead(inputStream,
 			&readCount, buf, READ_BUF)) || readCount < -1)
 			sjme_unitFail(test, "Failed read?");
 
@@ -75,7 +75,7 @@ SJME_TEST_DECLARE(testStream)
 		"Incorrect number of read cycles?");
 
 	/* Close the stream. */
-	if (SJME_IS_ERROR(sjme_stream_inputClose(inputStream)))
+	if (sjme_error_is(sjme_stream_inputClose(inputStream)))
 		return sjme_unitFail(test, "Could not close stream?");
 
 	/* Success! */

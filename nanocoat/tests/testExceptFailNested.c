@@ -49,7 +49,7 @@ SJME_TEST_DECLARE(testExceptFailNested)
 	/* Fail. */
 	exceptTraceE_sjme = 666;
 SJME_EXCEPT_WITH(trace):
-	if (SJME_IS_ERROR(nestedExcept(test, trace)))
+	if (sjme_error_is(nestedExcept(test, trace)))
 		SJME_EXCEPT_TOSS_SAME();
 
 	/* Should hopefully not be reached. */

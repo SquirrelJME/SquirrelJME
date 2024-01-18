@@ -54,7 +54,7 @@ SJME_TEST_DECLARE(testAllocReallocRandom)
 
 	/* Initialize the pool. */
 	pool = NULL;
-	if (SJME_IS_ERROR(sjme_alloc_poolInitStatic(&pool,
+	if (sjme_error_is(sjme_alloc_poolInitStatic(&pool,
 			chunk, chunkLen)) || pool == NULL)
 		return sjme_unitFail(test, "Could not initialize static pool?");
 
@@ -76,7 +76,7 @@ SJME_TEST_DECLARE(testAllocReallocRandom)
 
 		/* Allocate link. */
 		link = NULL;
-		if (SJME_IS_ERROR(sjme_alloc(pool, linkLen, &link)))
+		if (sjme_error_is(sjme_alloc(pool, linkLen, &link)))
 			return sjme_unitFail(test, "Could not allocate link %d %d.",
 				(int)i, (int)linkLen);
 
@@ -135,7 +135,7 @@ SJME_TEST_DECLARE(testAllocReallocRandom)
 		link->next = NULL;
 
 		/* Free it. */
-		if (SJME_IS_ERROR(sjme_alloc_free(link)))
+		if (sjme_error_is(sjme_alloc_free(link)))
 			return sjme_unitFail(test, "Could not free link %d at %p.",
 				(int)i, link);
 	}

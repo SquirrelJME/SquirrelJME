@@ -32,7 +32,7 @@ static const sjme_jubyte testData[DATA_LEN] =
 };
 
 #define WRITE_SEQ(type) \
-	if (SJME_IS_ERROR(sjme_stream_outputWriteValueJP(stream, \
+	if (sjme_error_is(sjme_stream_outputWriteValueJP(stream, \
 		SJME_TOKEN_PASTE_PP(SJME_BASIC_TYPE_ID_, type), \
 		&value))) \
 		sjme_unitFail(test, "Could not write %s?", #type) \
@@ -69,7 +69,7 @@ SJME_TEST_DECLARE(testStreamWriteValueJ)
 
 	/* Open stream to write all the data in. */
 	stream = NULL;
-	if (SJME_IS_ERROR(sjme_stream_outputOpenMemory(test->pool,
+	if (sjme_error_is(sjme_stream_outputOpenMemory(test->pool,
 		&stream, buf, DATA_LEN)) ||
 		stream == NULL)
 		return sjme_unitFail(test, "Could not open initial stream.");
@@ -127,7 +127,7 @@ SJME_TEST_DECLARE(testStreamWriteValueJ)
 		"Number of written bytes incorrect?");
 
 	/* Close stream. */
-	if (SJME_IS_ERROR(sjme_stream_outputClose(stream, NULL)))
+	if (sjme_error_is(sjme_stream_outputClose(stream, NULL)))
 		return sjme_unitFail(test, "Could not close output stream.");
 
 	/* Success! */

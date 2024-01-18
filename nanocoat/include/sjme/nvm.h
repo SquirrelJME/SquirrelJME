@@ -1666,16 +1666,55 @@ typedef enum sjme_errorCode
 } sjme_errorCode;
 
 /**
+ * Propagates an error code which allows others to run accordingly.
+ * 
+ * @param error The current error code.
+ * @param expression The result from the expression.
+ * @return If @c expression is an error, that will be returned otherwise
+ * the value in @c error provided @c error is not an error.
+ * @since 2024/01/18
+ */
+sjme_errorCode sjme_error_also(
+	sjme_errorCode error, sjme_errorCode expression);
+
+/**
+ * Similar to @c sjme_error_also except this allows multiple error expressions
+ * to be passed until the final is done via @c sjme_error_alsoVEnd() .
+ * 
+ * @param error The current error state.
+ * @param ... All of the expressions, ends on @c sjme_error_alsoVEnd() .
+ * @return The resultant error code.
+ * @since 2024/01/18
+ */
+sjme_errorCode sjme_error_alsoV(
+	sjme_errorCode error, ...);
+
+/**
+ * The end expression for @c sjme_error_alsoV() .
+ * 
+ * @return The ending sequence for error codes.
+ * @since 2024/01/18 
+ */
+sjme_errorCode sjme_error_alsoVEnd(void);
+
+/**
  * Is this expression considered an error?
  *
  * @param error The expression.
  * @since 2023/12/08
  */
-static sjme_inline sjme_attrArtificial sjme_jboolean SJME_IS_ERROR(
-	sjme_errorCode error)
-{
-	return error < SJME_ERROR_NONE;
-}
+sjme_jboolean sjme_error_is(
+	sjme_errorCode error);
+
+/**
+ * Determines the default error code to use.
+ *
+ * @param error The error code.
+ * @return Either @c error or a default error.
+ * @since 2023/12/29
+ */
+sjme_errorCode sjme_error_default(
+	sjme_errorCode error);
 
 /**
  * Determines the default error code to use.
@@ -1685,29 +1724,8 @@ static sjme_inline sjme_attrArtificial sjme_jboolean SJME_IS_ERROR(
  * @return Either @c error or @c otherwise if the former is not valid.
  * @since 2023/12/29
  */
-static sjme_inline sjme_attrArtificial sjme_errorCode SJME_DEFAULT_ERROR_OR(
-	sjme_errorCode error, sjme_errorCode otherwise)
-{
-	if (!SJME_IS_ERROR(error))
-	{
-		if (!SJME_IS_ERROR(otherwise))
-			return SJME_ERROR_UNKNOWN;
-		else
-			return otherwise;
-	}
-
-	return error;
-}
-
-/**
- * Determines the default error code to use.
- *
- * @param error The error code.
- * @return Either @c error or a default error.
- * @since 2023/12/29
- */
-#define SJME_DEFAULT_ERROR(error) \
-	SJME_DEFAULT_ERROR_OR((error), SJME_ERROR_UNKNOWN)
+sjme_errorCode sjme_error_defaultOr(
+	sjme_errorCode error, sjme_errorCode otherwise);
 
 /*--------------------------------------------------------------------------*/
 

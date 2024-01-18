@@ -25,12 +25,12 @@ SJME_TEST_DECLARE(testZipOpenClose)
 
 	/* Attempt open of Zip. */
 	zip = NULL;
-	if (SJME_IS_ERROR(sjme_zip_open(test->pool, &zip,
+	if (sjme_error_is(sjme_zip_open(test->pool, &zip,
 		mock_jar__bin, mock_jar__len)) || zip == NULL)
 		return sjme_unitFail(test, "Could not open Zip");
 
 	/* Immediately close it without doing anything. */
-	if (SJME_IS_ERROR(sjme_zip_close(zip)))
+	if (sjme_error_is(sjme_zip_close(zip)))
 		return sjme_unitFail(test, "Could not close Zip");
 
 	/* Passed! */

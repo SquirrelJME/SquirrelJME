@@ -226,14 +226,14 @@ static sjme_errorCode sjme_stream_outputByteArrayClose(
 	else
 	{
 		/* Call handler, if it fails just stop. */
-		if (SJME_IS_ERROR(error = cache->finish(stream, &result)))
-			return SJME_DEFAULT_ERROR(error);
+		if (sjme_error_is(error = cache->finish(stream, &result)))
+			return sjme_error_default(error);
 	}
 
 	/* Are we freeing the array? */
 	if (result.free)
-		if (SJME_IS_ERROR(error = sjme_alloc_free(cache->array)))
-			return SJME_DEFAULT_ERROR(error);
+		if (sjme_error_is(error = sjme_alloc_free(cache->array)))
+			return sjme_error_default(error);
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -270,9 +270,9 @@ static sjme_errorCode sjme_stream_outputByteArrayWrite(
 			return SJME_ERROR_OUT_OF_MEMORY;
 
 		/* Reallocate memory here. */
-		if (SJME_IS_ERROR(error = sjme_alloc_realloc(
+		if (sjme_error_is(error = sjme_alloc_realloc(
 			&cache->array, desireSize)))
-			return SJME_DEFAULT_ERROR_OR(error,
+			return sjme_error_defaultOr(error,
 				SJME_ERROR_OUT_OF_MEMORY);
 
 		/* The buffer's limit has now increased. */
@@ -310,9 +310,9 @@ sjme_errorCode sjme_stream_inputAvailable(
 
 	/* Request the number of available bytes. */
 	result = -1;
-	if (SJME_IS_ERROR(error = stream->functions->available(stream,
+	if (sjme_error_is(error = stream->functions->available(stream,
 		&result)) || result < 0)
-		return SJME_DEFAULT_ERROR(error);
+		return sjme_error_default(error);
 
 	/* Return result. */
 	*outAvail = result;
@@ -332,12 +332,12 @@ sjme_errorCode sjme_stream_inputClose(
 		return SJME_ERROR_ILLEGAL_STATE;
 
 	/* Close the stream. */
-	if (SJME_IS_ERROR(error = stream->functions->close(stream)))
-		return SJME_DEFAULT_ERROR(error);
+	if (sjme_error_is(error = stream->functions->close(stream)))
+		return sjme_error_default(error);
 
 	/* Cleanup after it. */
-	if (SJME_IS_ERROR(error = sjme_alloc_free(stream)))
-		return SJME_DEFAULT_ERROR(error);
+	if (sjme_error_is(error = sjme_alloc_free(stream)))
+		return sjme_error_default(error);
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -361,10 +361,10 @@ sjme_errorCode sjme_stream_inputOpenMemory(
 
 	/* Allocate result. */
 	result = NULL;
-	if (SJME_IS_ERROR(error = sjme_alloc(inPool,
+	if (sjme_error_is(error = sjme_alloc(inPool,
 		SJME_SIZEOF_INPUT_STREAM(sjme_stream_cacheMemory),
 		&result)) || result == NULL)
-		return SJME_DEFAULT_ERROR(error);
+		return sjme_error_default(error);
 
 	/* Set base information. */
 	result->functions = &sjme_stream_inputMemoryFunctions;
@@ -425,9 +425,9 @@ sjme_errorCode sjme_stream_inputReadIter(
 
 	/* Read in the data. */
 	count = -2;
-	if ((SJME_IS_ERROR(error = stream->functions->read(stream,
+	if ((sjme_error_is(error = stream->functions->read(stream,
 		&count, trueDest, length))) || count < -1)
-		return SJME_DEFAULT_ERROR(error);
+		return sjme_error_default(error);
 
 	/* If not EOS, move counters up. */
 	if (count >= 0)
@@ -460,9 +460,9 @@ sjme_errorCode sjme_stream_inputReadSingle(
 		/* Attempt single byte read. */
 		single = 999;
 		readCount = -2;
-		if (SJME_IS_ERROR(error = sjme_stream_inputReadIter(stream,
+		if (sjme_error_is(error = sjme_stream_inputReadIter(stream,
 			&readCount, &single, 0, 1)) || readCount < -1)
-			return SJME_DEFAULT_ERROR(error);
+			return sjme_error_default(error);
 
 		/* Did not read anything? */
 		if (readCount == 0)
@@ -529,9 +529,9 @@ sjme_errorCode sjme_stream_inputReadValueJ(
 	/* Read into temporary, so we do not alter memory just yet. */
 	memset(&temp, 0, sizeof(temp));
 	readCount = -2;
-	if (SJME_IS_ERROR(error = sjme_stream_inputRead(stream,
+	if (sjme_error_is(error = sjme_stream_inputRead(stream,
 		&readCount, &temp, reqCount)) || readCount != reqCount)
-		return SJME_DEFAULT_ERROR_OR(error,
+		return sjme_error_defaultOr(error,
 			SJME_ERROR_UNEXPECTED_EOF);
 
 	/* Normalize boolean? */
@@ -570,13 +570,13 @@ sjme_errorCode sjme_stream_outputClose(
 		return SJME_ERROR_ILLEGAL_STATE;
 
 	/* Close the stream. */
-	if (SJME_IS_ERROR(error = stream->functions->close(stream,
+	if (sjme_error_is(error = stream->functions->close(stream,
 		optResult)))
-		return SJME_DEFAULT_ERROR(error);
+		return sjme_error_default(error);
 
 	/* Cleanup after it. */
-	if (SJME_IS_ERROR(error = sjme_alloc_free(stream)))
-		return SJME_DEFAULT_ERROR(error);
+	if (sjme_error_is(error = sjme_alloc_free(stream)))
+		return sjme_error_default(error);
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -606,13 +606,13 @@ sjme_errorCode sjme_stream_outputOpenByteArray(
 
 	/* Try to allocate an initial buffer. */
 	initBuf = NULL;
-	if (SJME_IS_ERROR(error = sjme_alloc(inPool,
+	if (sjme_error_is(error = sjme_alloc(inPool,
 		initialLimit, &initBuf)) || initBuf == NULL)
 		goto fail_initBufAlloc;
 
 	/* Allocate result. */
 	result = NULL;
-	if (SJME_IS_ERROR(error = sjme_alloc(inPool,
+	if (sjme_error_is(error = sjme_alloc(inPool,
 		SJME_SIZEOF_OUTPUT_STREAM(sjme_stream_cacheByteArray),
 		&result)) || result == NULL)
 		goto fail_streamAlloc;
@@ -642,7 +642,7 @@ fail_initBufAlloc:
 	if (initBuf != NULL)
 		sjme_alloc_free(initBuf);
 
-	return SJME_DEFAULT_ERROR(error);
+	return sjme_error_default(error);
 }
 
 sjme_errorCode sjme_stream_outputOpenMemory(
@@ -665,10 +665,10 @@ sjme_errorCode sjme_stream_outputOpenMemory(
 
 	/* Allocate result. */
 	result = NULL;
-	if (SJME_IS_ERROR(error = sjme_alloc(inPool,
+	if (sjme_error_is(error = sjme_alloc(inPool,
 		SJME_SIZEOF_OUTPUT_STREAM(sjme_stream_cacheMemory),
 		&result)) || result == NULL)
-		return SJME_DEFAULT_ERROR(error);
+		return sjme_error_default(error);
 
 	/* Set base information. */
 	result->functions = &sjme_stream_outputMemoryFunctions;
@@ -723,9 +723,9 @@ sjme_errorCode sjme_stream_outputWriteIter(
 		return SJME_ERROR_ILLEGAL_STATE;
 
 	/* Forward call. */
-	if (SJME_IS_ERROR(error = stream->functions->write(stream,
+	if (sjme_error_is(error = stream->functions->write(stream,
 		(void*)(realSrc + offset), length)))
-		return SJME_DEFAULT_ERROR(error);
+		return sjme_error_default(error);
 
 	/* Increase write count. */
 	stream->totalWritten += length;

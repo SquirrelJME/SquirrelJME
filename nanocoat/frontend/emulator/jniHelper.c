@@ -46,7 +46,7 @@ void sjme_jni_throwVMException(JNIEnv* env, sjme_errorCode code)
 	/* Generate a message accordingly. */
 	memset(buf, 0, sizeof(buf));
 	snprintf(buf, BUF_SIZE - 1, "Native error: %d",
-		(int)SJME_DEFAULT_ERROR(code));
+		(int)sjme_error_default(code));
 	buf[BUF_SIZE - 1] = 0;
 
 	/* Throw it. */

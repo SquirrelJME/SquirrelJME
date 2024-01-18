@@ -65,7 +65,7 @@ jlong SJME_JNI_METHOD(SJME_CLASS_FLAT_LIST, _1_1flatten)
 	}
 
 	/* Fail? */
-	if (SJME_IS_ERROR(error) || result == NULL)
+	if (sjme_error_is(error) || result == NULL)
 	{
 		sjme_jni_throwVMException(env, error);
 		return 0;
@@ -101,7 +101,7 @@ jlong SJME_JNI_METHOD(SJME_CLASS_FLAT_LIST, _1_1fromArrayI)
 	(*env)->ReleaseIntArrayElements(env, javaInts, primitiveInts, JNI_ABORT);
 	
 	/* Failed? */
-	if (SJME_IS_ERROR(error))
+	if (sjme_error_is(error))
 		sjme_jni_throwVMException(env, error);
 	
 	/* Use the given result. */
@@ -141,7 +141,7 @@ jlong SJME_JNI_METHOD(SJME_CLASS_FLAT_LIST, _1_1fromArrayP)
 		sjme_pointer, 0, arrayLen, &result, primPtrs);
 
 	/* Failed? */
-	if (SJME_IS_ERROR(error))
+	if (sjme_error_is(error))
 		sjme_jni_throwVMException(env, error);
 
 	/* Use the given result. */

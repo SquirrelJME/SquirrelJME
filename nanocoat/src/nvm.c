@@ -84,14 +84,14 @@ SJME_EXCEPT_WITH_FRAME:
 		memmove(outStackValue, valueAddr, accessor->size);
 	
 	/* Write value directly from stack source address. */
-	if (SJME_IS_ERROR(accessor->write(frame, accessor, tread,
+	if (sjme_error_is(accessor->write(frame, accessor, tread,
 		indexMapTo, valueAddr)))
 		SJME_EXCEPT_TOSS(SJME_ERROR_LOCAL_INVALID_WRITE);
 	
 	/* Clear old stack value with zero value. */
 	valueAddr = sjme_alloca(accessor->size);
 	memset(valueAddr, 0, accessor->size);
-	if (SJME_IS_ERROR(accessor->write(frame, accessor, tread,
+	if (sjme_error_is(accessor->write(frame, accessor, tread,
 		tread->count - 1, valueAddr)))
 		SJME_EXCEPT_TOSS(SJME_ERROR_STACK_INVALID_WRITE);
 	
@@ -257,7 +257,7 @@ SJME_EXCEPT_WITH_FRAME:
 	/* Read in the stack values. */
 	oldLocalValue = NULL;
 	stackValue = NULL;
-	if (SJME_IS_ERROR(sjme_nvm_localPopGeneric(frame, localIndex,
+	if (sjme_error_is(sjme_nvm_localPopGeneric(frame, localIndex,
 		sjme_nvm_frameTreadAccessorByType(
 			SJME_JAVA_TYPE_ID_OBJECT),
 			&oldLocalValue, &stackValue)))
@@ -268,7 +268,7 @@ SJME_EXCEPT_WITH_FRAME:
 	/* is none there. */
 	if (oldLocalValue != NULL)
 		if (--oldLocalValue->refCount <= 0)
-			if (SJME_IS_ERROR(sjme_nvm_gcObject(frame, oldLocalValue)))
+			if (sjme_error_is(sjme_nvm_gcObject(frame, oldLocalValue)))
 				SJME_EXCEPT_TOSS(SJME_ERROR_COULD_NOT_GC_OBJECT);
 	
 	/* Success! */

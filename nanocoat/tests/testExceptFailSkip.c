@@ -39,7 +39,7 @@ static sjme_errorCode nestedExcept(sjme_test* test,
 	SJME_EXCEPT_VDEF;
 
 SJME_EXCEPT_WITH(trace):
-	if (SJME_IS_ERROR(skippedExcept(test, trace)))
+	if (sjme_error_is(skippedExcept(test, trace)))
 		SJME_EXCEPT_TOSS_SAME();
 
 	sjme_unitFail(test, "Nested point should not be reached.");
@@ -69,7 +69,7 @@ SJME_TEST_DECLARE(testExceptFailSkip)
 	/* Fail. */
 	exceptTraceE_sjme = 666;
 SJME_EXCEPT_WITH(trace):
-	if (SJME_IS_ERROR(nestedExcept(test, trace)))
+	if (sjme_error_is(nestedExcept(test, trace)))
 		SJME_EXCEPT_TOSS_SAME();
 
 	/* Should hopefully not be reached. */

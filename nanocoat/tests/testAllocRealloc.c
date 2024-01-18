@@ -47,19 +47,19 @@ SJME_TEST_DECLARE(testAllocRealloc)
 	
 	/* Initialize the pool. */
 	pool = NULL;
-	if (SJME_IS_ERROR(sjme_alloc_poolInitStatic(&pool,
+	if (sjme_error_is(sjme_alloc_poolInitStatic(&pool,
 		chunk, chunkLen)) || pool == NULL)
 		return sjme_unitFail(test, "Could not initialize static pool?");
 
 	/* Start with a medium-sized block. */
 	block = NULL;
-	if (SJME_IS_ERROR(sjme_alloc(pool, MEDIUM_SIZE, &block)) ||
+	if (sjme_error_is(sjme_alloc(pool, MEDIUM_SIZE, &block)) ||
 		block == NULL)
 		return sjme_unitFail(test, "Could not allocate medium block?");
 
 	/* Get the link of this block. */
 	link = NULL;
-	if (SJME_IS_ERROR(sjme_alloc_getLink(block, &link)) ||
+	if (sjme_error_is(sjme_alloc_getLink(block, &link)) ||
 		link == NULL)
 		return sjme_unitFail(test, "Could not get link of block?");
 
@@ -74,7 +74,7 @@ SJME_TEST_DECLARE(testAllocRealloc)
 
 		/* Reallocate to the small size. */
 		oldBlockP = block;
-		if (SJME_IS_ERROR(sjme_alloc_realloc(&block,
+		if (sjme_error_is(sjme_alloc_realloc(&block,
 			newLen)))
 			return sjme_unitFail(test, "Could not reallocate link?");
 

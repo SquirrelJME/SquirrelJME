@@ -38,7 +38,7 @@ SJME_TEST_DECLARE(testStreamReadSingle)
 
 	/* Setup input stream. */
 	inputStream = NULL;
-	if (SJME_IS_ERROR(sjme_stream_inputOpenMemory(test->pool,
+	if (sjme_error_is(sjme_stream_inputOpenMemory(test->pool,
 		&inputStream, testData, NUM_BYTES)) ||
 		inputStream == NULL)
 		return sjme_unitFail(test, "Could not open input stream.");
@@ -48,7 +48,7 @@ SJME_TEST_DECLARE(testStreamReadSingle)
 	{
 		/* Read in next byte. */
 		single = -2;
-		if (SJME_IS_ERROR(sjme_stream_inputReadSingle(inputStream,
+		if (sjme_error_is(sjme_stream_inputReadSingle(inputStream,
 			&single)) || single < -1)
 			return sjme_unitFail(test, "Could not read single byte.");
 
@@ -73,7 +73,7 @@ SJME_TEST_DECLARE(testStreamReadSingle)
 	}
 
 	/* Close the stream. */
-	if (SJME_IS_ERROR(sjme_stream_inputClose(inputStream)))
+	if (sjme_error_is(sjme_stream_inputClose(inputStream)))
 		return sjme_unitFail(test, "Could not close stream?");
 
 	/* Success! */

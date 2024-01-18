@@ -31,20 +31,20 @@ sjme_errorCode sjme_nvm_allocReservedPool(
 	/* Determine how big the reserved pool should be... */
 	reservedBase = NULL;
 	reservedSize = -1;
-	if (SJME_IS_ERROR(error = sjme_alloc_sizeOf(
+	if (sjme_error_is(error = sjme_alloc_sizeOf(
 		SJME_ALLOC_SIZEOF_RESERVED_POOL, 0, &reservedSize)))
-		return SJME_DEFAULT_ERROR(error);
-	if (SJME_IS_ERROR(error = sjme_alloc(mainPool,
+		return sjme_error_default(error);
+	if (sjme_error_is(error = sjme_alloc(mainPool,
 		reservedSize, (void**)&reservedBase) ||
 		reservedBase == NULL))
-		return SJME_DEFAULT_ERROR(error);
+		return sjme_error_default(error);
 
 	/* Initialize a reserved pool where all of our own data structures go. */
 	reservedPool = NULL;
-	if (SJME_IS_ERROR(error = sjme_alloc_poolInitStatic(
+	if (sjme_error_is(error = sjme_alloc_poolInitStatic(
 		&reservedPool, reservedBase, reservedSize)) ||
 		reservedPool == NULL)
-		return SJME_DEFAULT_ERROR(error);
+		return sjme_error_default(error);
 
 	/* Use the resultant pool. */
 	*outReservedPool = reservedPool;
@@ -72,18 +72,18 @@ sjme_errorCode sjme_nvm_boot(sjme_alloc_pool* mainPool,
 	/* Set up a reserved pool where all the data structures for the VM go... */
 	/* But only if one does not exist. */
 	if (reservedPool == NULL)
-		if (SJME_IS_ERROR(error = sjme_nvm_allocReservedPool(mainPool,
+		if (sjme_error_is(error = sjme_nvm_allocReservedPool(mainPool,
 			&reservedPool)))
 			goto fail_reservedPoolAlloc;
 
 	/* Allocate resultant state. */
 	result = NULL;
-	if (SJME_IS_ERROR(error = sjme_alloc(reservedPool,
+	if (sjme_error_is(error = sjme_alloc(reservedPool,
 		sizeof(*result), (void**)&result)) || result == NULL)
 		goto fail_resultAlloc;
 
 	/* Make a defensive copy of the boot parameters. */
-	if (SJME_IS_ERROR(error = sjme_alloc_copy(reservedPool,
+	if (sjme_error_is(error = sjme_alloc_copy(reservedPool,
 		sizeof(sjme_nvm_bootParam),
 		(void**)&result->bootParamCopy, param)) ||
 		result == NULL)
@@ -106,7 +106,7 @@ sjme_errorCode sjme_nvm_boot(sjme_alloc_pool* mainPool,
 	if (result->bootParamCopy->payload != NULL)
 	{
 		/* Scan accordingly. */
-		if (SJME_IS_ERROR(error = sjme_rom_suiteFromPayload(reservedPool,
+		if (sjme_error_is(error = sjme_rom_suiteFromPayload(reservedPool,
 			&mergeSuites[numMergeSuites],
 			result->bootParamCopy->payload)))
 			goto fail_payloadRom;
@@ -133,7 +133,7 @@ sjme_errorCode sjme_nvm_boot(sjme_alloc_pool* mainPool,
 	else
 	{
 		/* Merge all the suites together into one. */
-		if (SJME_IS_ERROR(error = sjme_rom_suiteFromMerge(reservedPool,
+		if (sjme_error_is(error = sjme_rom_suiteFromMerge(reservedPool,
 			&result->suite, mergeSuites,
 			numMergeSuites)) || result->suite == NULL)
 			goto fail_suiteMerge;
@@ -152,7 +152,7 @@ sjme_errorCode sjme_nvm_boot(sjme_alloc_pool* mainPool,
 			&classPath);
 
 	/* Failed to resolve? */
-	if (SJME_IS_ERROR(error) || classPath == NULL)
+	if (sjme_error_is(error) || classPath == NULL)
 	{
 		/* Debug. */
 		sjme_message("Classpath resolve failure: %d %p", error, classPath);
@@ -170,7 +170,7 @@ sjme_errorCode sjme_nvm_boot(sjme_alloc_pool* mainPool,
 
 	/* Spawn initial task which uses the main arguments. */
 	initTask = NULL;
-	if (SJME_IS_ERROR(error = sjme_task_start(result,
+	if (sjme_error_is(error = sjme_task_start(result,
 		&initTaskConfig, &initTask)) || initTask == NULL)
 		goto fail_initTask;
 	
@@ -196,7 +196,7 @@ fail_resultAlloc:
 fail_reservedPoolAlloc:
 
 	/* Use whatever error code. */
-	return SJME_DEFAULT_ERROR_OR(error, SJME_ERROR_BOOT_FAILURE);
+	return sjme_error_defaultOr(error, SJME_ERROR_BOOT_FAILURE);
 }
 
 sjme_errorCode sjme_nvm_destroy(sjme_nvm_state* state, sjme_jint* exitCode)

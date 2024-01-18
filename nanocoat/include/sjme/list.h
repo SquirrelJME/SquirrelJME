@@ -95,6 +95,9 @@ SJME_LIST_DECLARE(sjme_jchar, 0);
 /** List of @c sjme_jint. */
 SJME_LIST_DECLARE(sjme_jint, 0);
 
+/** List of @c sjme_jint* . */
+SJME_LIST_DECLARE(sjme_jint, 1);
+
 /** List of @c sjme_juint. */
 SJME_LIST_DECLARE(sjme_juint, 0);
 

@@ -80,7 +80,7 @@ SJME_TEST_DECLARE(testRomSuiteLibraries)
 
 	/* Call the libraries list. */
 	libraries = NULL;
-	if (SJME_IS_ERROR(error = sjme_rom_suiteLibraries(suite,
+	if (sjme_error_is(error = sjme_rom_suiteLibraries(suite,
 		&libraries)) || libraries == NULL)
 		return sjme_unitFail(test, "Could not get libraries list: %d", error);
 

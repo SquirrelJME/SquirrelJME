@@ -51,7 +51,7 @@ SJME_TEST_DECLARE(testTaskSpawn)
 
 	/* Start task. */
 	task = NULL;
-	if (SJME_IS_ERROR(sjme_task_start(mock.nvmState,
+	if (sjme_error_is(sjme_task_start(mock.nvmState,
 		&startConfig, &task)) || task == NULL)
 		return sjme_unitFail(test, "Could not start task.");
 

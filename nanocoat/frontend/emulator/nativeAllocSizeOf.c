@@ -20,7 +20,7 @@ jint SJME_JNI_METHOD(SJME_CLASS_ALLOC_SIZEOF, _1_1size)
 
 	/* Calculate the size. */
 	result = -1;
-	if (SJME_IS_ERROR(error = sjme_alloc_sizeOf(id, count, &result)) ||
+	if (sjme_error_is(error = sjme_alloc_sizeOf(id, count, &result)) ||
 		id < 0)
 	{
 		sjme_jni_throwVMException(env, error);

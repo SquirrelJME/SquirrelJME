@@ -204,7 +204,7 @@ jlong SJME_JNI_METHOD(SJME_CLASS_VIRTUAL_LIBRARY, _1_1init)
 
 	/* Setup resultant library. */
 	result = NULL;
-	if (SJME_IS_ERROR(error = sjme_rom_libraryNew(pool,
+	if (sjme_error_is(error = sjme_rom_libraryNew(pool,
 		&result, &sjme_jni_virtualLibrary_functions,
 		&frontEnd)) || result == NULL)
 	{

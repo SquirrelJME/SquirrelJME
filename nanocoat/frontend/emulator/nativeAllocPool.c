@@ -33,7 +33,7 @@ jlong SJME_JNI_METHOD(SJME_CLASS_ALLOC_POOL, _1_1alloc)
 	/* Attempt allocation. */
 	result = NULL;
 	error = SJME_ERROR_UNKNOWN;
-	if (SJME_IS_ERROR(error = sjme_alloc(pool, size, &result)) ||
+	if (sjme_error_is(error = sjme_alloc(pool, size, &result)) ||
 		result == NULL)
 	{
 		sjme_jni_throwVMException(env, error);
@@ -59,7 +59,7 @@ jlong SJME_JNI_METHOD(SJME_CLASS_ALLOC_POOL, _1_1getLink)
 	/* Get the link. */
 	result = NULL;
 	error = SJME_ERROR_UNKNOWN;
-	if (SJME_IS_ERROR(error = sjme_alloc_getLink(
+	if (sjme_error_is(error = sjme_alloc_getLink(
 		SJME_JLONG_TO_POINTER(void*, blockPtr), &result)) ||
 		result == NULL)
 	{
@@ -78,7 +78,7 @@ jlong SJME_JNI_METHOD(SJME_CLASS_ALLOC_POOL, _1_1poolMalloc)
 
 	/* Attempt pool allocation. */
 	result = NULL;
-	if (SJME_IS_ERROR(error = sjme_alloc_poolInitMalloc(&result,
+	if (sjme_error_is(error = sjme_alloc_poolInitMalloc(&result,
 		size)) || result == NULL)
 	{
 		sjme_jni_throwVMException(env, error);
@@ -101,7 +101,7 @@ jlong SJME_JNI_METHOD(SJME_CLASS_ALLOC_POOL, _1_1poolStatic)
 
 	/* Attempt pool initialize. */
 	result = NULL;
-	if (SJME_IS_ERROR(error = sjme_alloc_poolInitStatic(&result,
+	if (sjme_error_is(error = sjme_alloc_poolInitStatic(&result,
 	  SJME_JLONG_TO_POINTER(void*, addrPtr), size)) || result == NULL)
 	{
 		sjme_jni_throwVMException(env, error);
@@ -141,7 +141,7 @@ jlong SJME_JNI_METHOD(SJME_CLASS_ALLOC_POOL, _1_1strDup)
 	(*env)->ReleaseStringUTFChars(env, javaString, utfChars);
 
 	/* Failed? */
-	if (SJME_IS_ERROR(error) || result == NULL)
+	if (sjme_error_is(error) || result == NULL)
 	{
 		sjme_jni_throwVMException(env, error);
 		return 0;

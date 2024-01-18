@@ -34,7 +34,7 @@ sjme_errorCode sjme_rom_libraryFromZipMemory(
 
 	/* Get source seekable. */
 	seekable = NULL;
-	if (SJME_IS_ERROR(error = sjme_seekable_fromMemory(pool,
+	if (sjme_error_is(error = sjme_seekable_fromMemory(pool,
 		&seekable, base, length)) || seekable == NULL)
 
 	/* This is just an alias for the other function. */
@@ -96,10 +96,10 @@ sjme_errorCode sjme_rom_libraryNew(
 
 	/* Allocate resultant library. */
 	result = NULL;
-	if (SJME_IS_ERROR(error = sjme_alloc(pool,
+	if (sjme_error_is(error = sjme_alloc(pool,
 		SJME_SIZEOF_LIBRARY_CORE_N(inFunctions->uncommonTypeSize),
 		&result)) || result == NULL)
-		return SJME_DEFAULT_ERROR(error);
+		return sjme_error_default(error);
 
 	/* Setup some basic cache details. */
 	result->functions = inFunctions;
@@ -111,12 +111,12 @@ sjme_errorCode sjme_rom_libraryNew(
 		result->cache.common.frontEnd = *inFrontEnd;
 
 	/* Initialize cache. */
-	if (SJME_IS_ERROR(error = initCacheFunc(result)))
+	if (sjme_error_is(error = initCacheFunc(result)))
 	{
 		/* Cleanup bad pointer. */
 		sjme_alloc_free(result);
 
-		return SJME_DEFAULT_ERROR(error);
+		return sjme_error_default(error);
 	}
 
 	/* Initialize fields. */
@@ -171,13 +171,13 @@ sjme_errorCode sjme_rom_libraryRawReadIter(
 
 	/* Get the raw size of the target library. */
 	libSize = -2;
-	if (SJME_IS_ERROR(error = sjme_rom_libraryRawSize(library,
+	if (sjme_error_is(error = sjme_rom_libraryRawSize(library,
 		&libSize)) || libSize < 0)
 	{
 		if (libSize == -1)
-			return SJME_DEFAULT_ERROR_OR(error,
+			return sjme_error_defaultOr(error,
 				SJME_ERROR_UNSUPPORTED_OPERATION);
-		return SJME_DEFAULT_ERROR(error);
+		return sjme_error_default(error);
 	}
 
 	/* Check bounds of the size to ensure it is correct. */
@@ -221,12 +221,12 @@ sjme_errorCode sjme_rom_libraryRawSize(
 
 	/* Call native handler. */
 	result = -2;
-	if (SJME_IS_ERROR(error = library->functions->rawSize(
+	if (sjme_error_is(error = library->functions->rawSize(
 		library, &result)) || result < 0)
 	{
 		if (result == -1)
 			goto fail_unsupported;
-		return SJME_DEFAULT_ERROR(error);
+		return sjme_error_default(error);
 	}
 
 	/* Return result. */
@@ -267,9 +267,9 @@ sjme_errorCode sjme_rom_libraryResourceAsStream(
 
 	/* Ask for the resource. */
 	result = NULL;
-	if (SJME_IS_ERROR(error = resourceFunc(library,
+	if (sjme_error_is(error = resourceFunc(library,
 		&result, rcName)) || result == NULL)
-		return SJME_DEFAULT_ERROR(error);
+		return sjme_error_default(error);
 
 	/* Success! */
 	*outStream = result;
@@ -315,9 +315,9 @@ sjme_errorCode sjme_rom_resolveClassPathById(
 
 	/* Obtain the list of libraries within the suite. */
 	suiteLibs = NULL;
-	if (SJME_IS_ERROR(error = sjme_rom_suiteLibraries(inSuite,
+	if (sjme_error_is(error = sjme_rom_suiteLibraries(inSuite,
 		&suiteLibs)) || suiteLibs == NULL)
-		return SJME_DEFAULT_ERROR(error);
+		return sjme_error_default(error);
 
 	/* Debug. */
 	sjme_message("Done: %p!", suiteLibs);
@@ -346,9 +346,9 @@ sjme_errorCode sjme_rom_resolveClassPathById(
 				return SJME_ERROR_ILLEGAL_STATE;
 
 			/* Get the library ID. */
-			if (SJME_IS_ERROR(error = inSuite->functions->libraryId(
+			if (sjme_error_is(error = inSuite->functions->libraryId(
 				inSuite, checkLibrary, &libId)))
-				return SJME_DEFAULT_ERROR(error);
+				return sjme_error_default(error);
 
 			/* Library ID function did not store it? */
 			if (checkLibrary->id == 0)
@@ -415,9 +415,9 @@ sjme_errorCode sjme_rom_resolveClassPathByName(
 
 	/* Obtain the list of libraries within the suite. */
 	suiteLibs = NULL;
-	if (SJME_IS_ERROR(error = sjme_rom_suiteLibraries(inSuite,
+	if (sjme_error_is(error = sjme_rom_suiteLibraries(inSuite,
 		&suiteLibs) || suiteLibs == NULL))
-		return SJME_DEFAULT_ERROR(error);
+		return sjme_error_default(error);
 
 	/* Go through each library and get hash matches. */
 	numSuiteLibs = suiteLibs->length;
@@ -425,9 +425,9 @@ sjme_errorCode sjme_rom_resolveClassPathByName(
 	{
 		/* Get hash of this library. */
 		lib = suiteLibs->elements[i];
-		if (SJME_IS_ERROR(error = sjme_rom_libraryHash(lib,
+		if (sjme_error_is(error = sjme_rom_libraryHash(lib,
 			&hash)))
-			return SJME_DEFAULT_ERROR(error);
+			return sjme_error_default(error);
 
 		/* Look for match in output. */
 		for (at = 0; at < length; at++)
@@ -480,9 +480,9 @@ sjme_errorCode sjme_rom_suiteLibraries(
 
 	/* Call the list function. */
 	result = NULL;
-	if (SJME_IS_ERROR(error = listFunc(inSuite,
+	if (sjme_error_is(error = listFunc(inSuite,
 		&result)) || result == NULL)
-		return SJME_DEFAULT_ERROR(error);
+		return sjme_error_default(error);
 
 	/* Store it within the cache. */
 	cache->libraries = result;
@@ -562,10 +562,10 @@ sjme_errorCode sjme_rom_suiteNew(
 
 	/* Allocate resultant suite. */
 	result = NULL;
-	if (SJME_IS_ERROR(error = sjme_alloc(pool,
+	if (sjme_error_is(error = sjme_alloc(pool,
 		SJME_SIZEOF_SUITE_CORE_N(inFunctions->uncommonTypeSize),
 		&result)) || result == NULL)
-		return SJME_DEFAULT_ERROR(error);
+		return sjme_error_default(error);
 
 	/* Setup some basic cache details. */
 	result->functions = inFunctions;
@@ -577,12 +577,12 @@ sjme_errorCode sjme_rom_suiteNew(
 		result->cache.common.frontEnd = *inFrontEnd;
 
 	/* Initialize cache. */
-	if (SJME_IS_ERROR(error = initCacheFunc(result)))
+	if (sjme_error_is(error = initCacheFunc(result)))
 	{
 		/* Cleanup bad pointer. */
 		sjme_alloc_free(result);
 
-		return SJME_DEFAULT_ERROR(error);
+		return sjme_error_default(error);
 	}
 
 	/* Initialize fields. */

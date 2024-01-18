@@ -49,18 +49,18 @@ SJME_TEST_DECLARE(testStreamWriteSingleBA)
 
 	/* Setup output stream. */
 	stream = NULL;
-	if (SJME_IS_ERROR(sjme_stream_outputOpenByteArray(test->pool,
+	if (sjme_error_is(sjme_stream_outputOpenByteArray(test->pool,
 		&stream, 2, finishStreamWriteSingleBA,
 		test)) || stream == NULL)
 		return sjme_unitFail(test, "Could not open output stream.");
 
 	/* Write single value. */
-	if (SJME_IS_ERROR(sjme_stream_outputWriteSingle(stream,
+	if (sjme_error_is(sjme_stream_outputWriteSingle(stream,
 		123)))
 		return sjme_unitFail(test, "Could not write output value.");
 
 	/* Close stream. */
-	if (SJME_IS_ERROR(sjme_stream_outputClose(stream, NULL)))
+	if (sjme_error_is(sjme_stream_outputClose(stream, NULL)))
 		return sjme_unitFail(test, "Could not close output stream.");
 
 	/* Success! */

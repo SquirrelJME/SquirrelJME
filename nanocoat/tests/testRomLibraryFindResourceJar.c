@@ -60,12 +60,12 @@ SJME_TEST_DECLARE(testRomLibraryFindResourceJar)
 
 	/* Try to find a resource. */
 	inputStream = NULL;
-	if (SJME_IS_ERROR(sjme_rom_libraryResourceAsStream(library,
+	if (sjme_error_is(sjme_rom_libraryResourceAsStream(library,
 		&inputStream, "hello.txt")) || inputStream == NULL)
 		return sjme_unitFail(test, "Did not find resource?");
 
 	/* Just close the stream. */
-	if (SJME_IS_ERROR(sjme_stream_inputClose(inputStream)))
+	if (sjme_error_is(sjme_stream_inputClose(inputStream)))
 		return sjme_unitFail(test, "Could not close stream?");
 
 	/* Success! */

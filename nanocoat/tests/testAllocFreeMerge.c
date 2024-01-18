@@ -205,7 +205,7 @@ SJME_TEST_DECLARE(testAllocFreeMerge)
 
 		/* Initialize the pool. */
 		pool = NULL;
-		if (SJME_IS_ERROR(sjme_alloc_poolInitStatic(&pool,
+		if (sjme_error_is(sjme_alloc_poolInitStatic(&pool,
 			chunk, chunkLen)) || pool == NULL)
 			return sjme_unitFail(test, "Could not initialize static pool?");
 
@@ -221,7 +221,7 @@ SJME_TEST_DECLARE(testAllocFreeMerge)
 
 			/* Allocate block. */
 			blocks[linkNum] = NULL;
-			if (SJME_IS_ERROR(sjme_alloc(pool,
+			if (sjme_error_is(sjme_alloc(pool,
 				pool->space[SJME_ALLOC_POOL_SPACE_FREE].usable /
 					(isLast ? 1 : 2),
 				&blocks[linkNum])) || blocks[linkNum] == NULL)
@@ -229,7 +229,7 @@ SJME_TEST_DECLARE(testAllocFreeMerge)
 
 			/* Get the link. */
 			links[linkNum] = NULL;
-			if (SJME_IS_ERROR(sjme_alloc_getLink(blocks[linkNum],
+			if (sjme_error_is(sjme_alloc_getLink(blocks[linkNum],
 				&links[linkNum])) || links[linkNum] == NULL)
 				return sjme_unitFail(test, "Could not get link?");
 
@@ -255,7 +255,7 @@ SJME_TEST_DECLARE(testAllocFreeMerge)
 			link = links[order->order[linkNum]];
 
 			/* Free the link. */
-			if (SJME_IS_ERROR(sjme_alloc_free(block)))
+			if (sjme_error_is(sjme_alloc_free(block)))
 				return sjme_unitFail(test, "Could not free link.");
 
 			/* Go through the entire chain. */

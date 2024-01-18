@@ -68,9 +68,9 @@ static sjme_errorCode sjme_list_newInit(
 		return SJME_ERROR_INVALID_ARGUMENT;
 
 	/* Allocate list. */
-	if (SJME_IS_ERROR(error = sjme_alloc(inPool, newData->allocSize,
+	if (sjme_error_is(error = sjme_alloc(inPool, newData->allocSize,
 		&newData->outList)) || newData->outList == NULL)
-		return SJME_DEFAULT_ERROR(error);
+		return sjme_error_default(error);
 
 	/* Store list length. */
 	fakeList = (sjme_list_sjme_jint*)newData->outList;
@@ -108,9 +108,9 @@ sjme_errorCode sjme_list_allocR(
 
 	/* Forward allocation. */
 	result = NULL;
-	if (SJME_IS_ERROR(error = sjme_alloc(inPool, size, &result)) ||
+	if (sjme_error_is(error = sjme_alloc(inPool, size, &result)) ||
 		result == NULL)
-		return SJME_DEFAULT_ERROR(error);
+		return sjme_error_default(error);
 
 	/* Set sizes of the resultant list. */
 	fakeList = (sjme_list_sjme_jint*)result;
@@ -164,13 +164,13 @@ sjme_errorCode sjme_list_flattenArgCV(
 	/* Common initialization of new lists. */
 	error = SJME_ERROR_UNKNOWN;
 	memset(&newData, 0, sizeof(newData));
-	if (SJME_IS_ERROR(error = sjme_list_newInit(&newData,
+	if (sjme_error_is(error = sjme_list_newInit(&newData,
 		inPool, sizeof(sjme_lpcstr),
 		sizeof(sjme_lpcstr),
 		offsetof(sjme_list_sjme_lpcstr, elements), 4,
 		SJME_BASIC_TYPE_ID_OBJECT, 1, argC,
 		extraFill)))
-		return SJME_DEFAULT_ERROR(error);
+		return sjme_error_default(error);
 
 	/* Map result. */
 	result = (sjme_list_sjme_lpcstr*)newData.outList;
@@ -223,10 +223,10 @@ sjme_errorCode sjme_list_newAR(
 	/* Common initialization of new lists. */
 	error = SJME_ERROR_UNKNOWN;
 	memset(&newData, 0, sizeof(newData));
-	if (SJME_IS_ERROR(error = sjme_list_newInit(&newData,
+	if (sjme_error_is(error = sjme_list_newInit(&newData,
 		inPool, elementSize, rootElementSize, elementOffset, pointerCheck,
 		basicTypeId, numPointerStars, length, 0)))
-		return SJME_DEFAULT_ERROR(error);
+		return sjme_error_default(error);
 
 	/* Because the input is a sequential "array", we can just copy it all. */
 	/* This can turn out to be a very fast operation. */
@@ -289,10 +289,10 @@ sjme_errorCode sjme_list_newVAR(
 	/* Common initialization of new lists. */
 	error = SJME_ERROR_UNKNOWN;
 	memset(&newData, 0, sizeof(newData));
-	if (SJME_IS_ERROR(error = sjme_list_newInit(&newData,
+	if (sjme_error_is(error = sjme_list_newInit(&newData,
 		inPool, elementSize, rootElementSize, elementOffset, pointerCheck,
 		basicTypeId, numPointerStars, length, 0)))
-		return SJME_DEFAULT_ERROR(error);
+		return sjme_error_default(error);
 
 	/* Store elements from variadic arguments. */
 	for (at = 0, off = elementOffset; at < length; at++, off += elementSize)

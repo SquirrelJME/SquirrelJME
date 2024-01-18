@@ -215,7 +215,7 @@ void* sjme_mock_alloc(
 		return sjme_dieP("No input state.");
 	
 	rv = NULL;
-	if (SJME_IS_ERROR(sjme_alloc(inState->allocPool, inLen,
+	if (sjme_error_is(sjme_alloc(inState->allocPool, inLen,
 		&rv)))
 		return sjme_dieP("Could not allocate pointer in test pool.");
 	
@@ -437,13 +437,13 @@ sjme_jboolean sjme_mock_doRomLibrary(
 
 	/* Allocate library. */
 	library = NULL;
-	if (SJME_IS_ERROR(sjme_alloc(inState->allocPool,
+	if (sjme_error_is(sjme_alloc(inState->allocPool,
 		sizeof(*library), &library)) || library == NULL)
 		return sjme_die("Could not allocate library.");
 
 	/* Make a copy of the input data to be used as front end specific data. */
 	library->cache.common.frontEnd.data = NULL;
-	if (SJME_IS_ERROR(sjme_alloc_copy(inState->allocPool,
+	if (sjme_error_is(sjme_alloc_copy(inState->allocPool,
 		sizeof(inData->current.data.romLibrary),
 		&library->cache.common.frontEnd.data,
 		&inData->current.data.romLibrary)) ||
@@ -478,7 +478,7 @@ sjme_jboolean sjme_mock_doRomLibrary(
 		library->name = data->name;
 	else
 	{
-		if (SJME_IS_ERROR(sjme_alloc_format(inState->allocPool,
+		if (sjme_error_is(sjme_alloc_format(inState->allocPool,
 			&library->name,
 			"unnamed%d.jar", (int)(inData->current.indexType + 1))) ||
 			library->name == NULL)
@@ -517,7 +517,7 @@ sjme_jboolean sjme_mock_doRomMockLibrary(
 
 		/* Open it. */
 		result = NULL;
-		if (SJME_IS_ERROR(sjme_rom_libraryFromZipMemory(
+		if (sjme_error_is(sjme_rom_libraryFromZipMemory(
 			inState->allocPool, &result,
 			mock_jar__bin, mock_jar__len)) || result == NULL)
 			return sjme_die("Could not open library.");
@@ -566,7 +566,7 @@ sjme_jboolean sjme_mock_doRomSuite(
 
 	/* Allocate suite. */
 	suite = NULL;
-	if (SJME_IS_ERROR(sjme_alloc(inState->allocPool,
+	if (sjme_error_is(sjme_alloc(inState->allocPool,
 		sizeof(*suite), &suite)) || suite == NULL)
 		return sjme_die("Could not allocate suite.");
 
@@ -578,7 +578,7 @@ sjme_jboolean sjme_mock_doRomSuite(
 
 	/* Copy suite functions. */
 	suite->functions = NULL;
-	if (SJME_IS_ERROR(sjme_alloc_copy(inState->allocPool,
+	if (sjme_error_is(sjme_alloc_copy(inState->allocPool,
 		sizeof(*suite->functions),
 		&suite->functions,
 		&suiteData->functions)) ||
@@ -596,7 +596,7 @@ sjme_jboolean sjme_mock_doRomSuite(
 	/* Otherwise call the initializer. */
 	else
 	{
-		if (SJME_IS_ERROR(writeFunctions->initCache(
+		if (sjme_error_is(writeFunctions->initCache(
 			suite)))
 			return sjme_die("Could not initialize suite via cache init.");
 	}

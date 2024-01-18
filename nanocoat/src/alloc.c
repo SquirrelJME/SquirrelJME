@@ -503,9 +503,9 @@ sjme_errorCode sjme_alloc_copy(
 
 	/* Allocate new copy first. */
 	dest = NULL;
-	if (SJME_IS_ERROR(error = sjme_alloc(pool, size, &dest)) ||
+	if (sjme_error_is(error = sjme_alloc(pool, size, &dest)) ||
 		dest == NULL)
-		return SJME_DEFAULT_ERROR(error);
+		return sjme_error_default(error);
 
 	/* Copy over. */
 	memmove(dest, inAddr, size);
@@ -563,8 +563,8 @@ sjme_errorCode sjme_alloc_free(
 
 	/* Get the link. */
 	link = NULL;
-	if (SJME_IS_ERROR(error = sjme_alloc_getLink(addr, &link)))
-		return SJME_DEFAULT_ERROR(error);
+	if (sjme_error_is(error = sjme_alloc_getLink(addr, &link)))
+		return sjme_error_default(error);
 
 	/* Check the integrity of it. */
 	pool = link->pool;
@@ -628,8 +628,8 @@ sjme_errorCode sjme_alloc_realloc(
 	if (newSize == 0)
 	{
 		/* Just do a normal free of it since zero was requested. */
-		if (SJME_IS_ERROR(error = sjme_alloc_free(source)))
-			return SJME_DEFAULT_ERROR(error);
+		if (sjme_error_is(error = sjme_alloc_free(source)))
+			return sjme_error_default(error);
 
 		/* Clear pointer. */
 		*inOutAddr = NULL;
@@ -640,9 +640,9 @@ sjme_errorCode sjme_alloc_realloc(
 
 	/* Recover the link. */
 	link = NULL;
-	if (SJME_IS_ERROR(error = sjme_alloc_getLink(source,
+	if (sjme_error_is(error = sjme_alloc_getLink(source,
 		&link)) || link == NULL)
-		return SJME_DEFAULT_ERROR(error);
+		return sjme_error_default(error);
 
 	/* Pointless operation. */
 	if (newSize == link->allocSize)
@@ -673,17 +673,17 @@ sjme_errorCode sjme_alloc_realloc(
 
 		/* Allocate new block. */
 		result = NULL;
-		if (SJME_IS_ERROR(error = sjme_alloc(link->pool, newSize,
+		if (sjme_error_is(error = sjme_alloc(link->pool, newSize,
 			&result)) || result == NULL)
-			return SJME_DEFAULT_ERROR_OR(error,
+			return sjme_error_defaultOr(error,
 				SJME_ERROR_OUT_OF_MEMORY);
 
 		/* Copy all the data over. */
 		memmove(result, source, limit);
 
 		/* Free the old block. */
-		if (SJME_IS_ERROR(error = sjme_alloc_free(source)))
-			return SJME_DEFAULT_ERROR(error);
+		if (sjme_error_is(error = sjme_alloc_free(source)))
+			return sjme_error_default(error);
 
 		/* Success! */
 		*inOutAddr = result;

@@ -25,7 +25,7 @@ SJME_TEST_DECLARE(testZipOpen)
 
 	/* Attempt open of Zip. */
 	zip = NULL;
-	if (SJME_IS_ERROR(sjme_zip_open(test->pool, &zip,
+	if (sjme_error_is(sjme_zip_open(test->pool, &zip,
 		mock_jar__bin, mock_jar__len)) || zip == NULL)
 		return sjme_unitFail(test, "Could not open Zip");
 

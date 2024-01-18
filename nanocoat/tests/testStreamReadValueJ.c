@@ -33,7 +33,7 @@ static const sjme_jubyte testData[DATA_LEN] =
 
 #define READ_SEQ(type) \
 	memset(&value, 0, sizeof(value)); \
-	if (SJME_IS_ERROR(sjme_stream_inputReadValueJ(stream, \
+	if (sjme_error_is(sjme_stream_inputReadValueJ(stream, \
 		SJME_TOKEN_PASTE_PP(SJME_BASIC_TYPE_ID_, type), \
 		&value))) \
 		sjme_unitFail(test, "Could not read %s?", #type) \
@@ -63,7 +63,7 @@ SJME_TEST_DECLARE(testStreamReadValueJ)
 
 	/* Open stream to the raw binary data. */
 	stream = NULL;
-	if (SJME_IS_ERROR(sjme_stream_inputOpenMemory(test->pool,
+	if (sjme_error_is(sjme_stream_inputOpenMemory(test->pool,
 		&stream, testData, DATA_LEN)) ||
 		stream == NULL)
 		return sjme_unitFail(test, "Could not open initial stream.");
@@ -112,7 +112,7 @@ SJME_TEST_DECLARE(testStreamReadValueJ)
 
 	/* EOF. */
 	single = -2;
-	if (SJME_IS_ERROR(sjme_stream_inputReadSingle(stream,
+	if (sjme_error_is(sjme_stream_inputReadSingle(stream,
 		&single)) || single < -1)
 		return sjme_unitFail(test, "Could not read final byte?");
 
@@ -121,7 +121,7 @@ SJME_TEST_DECLARE(testStreamReadValueJ)
 		"End of stream not reached?");
 
 	/* Close the stream. */
-	if (SJME_IS_ERROR(sjme_stream_inputClose(stream)))
+	if (sjme_error_is(sjme_stream_inputClose(stream)))
 		return sjme_unitFail(test, "Could not close stream?");
 
 	/* Success! */

@@ -62,19 +62,19 @@ SJME_TEST_DECLARE(testStreamWriteBlockBA)
 
 	/* Open stream. */
 	stream = NULL;
-	if (SJME_IS_ERROR(sjme_stream_outputOpenByteArray(test->pool,
+	if (sjme_error_is(sjme_stream_outputOpenByteArray(test->pool,
 		&stream, 2, finishStreamWriteBlockBA,
 		test)) || stream == NULL)
 		return sjme_unitFail(test, "Could not open output stream.");
 
 	/* Write the buffer sequence for each chunk. */
 	for (i = 0; i < NUM_CHUNKS; i++)
-		if (SJME_IS_ERROR(sjme_stream_outputWrite(stream,
+		if (sjme_error_is(sjme_stream_outputWrite(stream,
 			&chunk, sizeof(chunk))))
 			return sjme_unitFail(test, "Could not write chunk %d?", i);
 
 	/* Close stream. */
-	if (SJME_IS_ERROR(sjme_stream_outputClose(stream, NULL)))
+	if (sjme_error_is(sjme_stream_outputClose(stream, NULL)))
 		return sjme_unitFail(test, "Could not close output stream.");
 
 	/* Success! */

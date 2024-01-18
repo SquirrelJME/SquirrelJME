@@ -52,7 +52,7 @@ SJME_TEST_DECLARE(testRomLibraryResourceStream)
 
 	/* Try to find a resource. */
 	inputStream = NULL;
-	if (SJME_IS_ERROR(sjme_rom_libraryResourceAsStream(library,
+	if (sjme_error_is(sjme_rom_libraryResourceAsStream(library,
 		&inputStream, "hello.txt")) || inputStream == NULL)
 		return sjme_unitFail(test, "Did not find resource?");
 
@@ -63,7 +63,7 @@ SJME_TEST_DECLARE(testRomLibraryResourceStream)
 
 	/* Read way too many bytes. */
 	readCount = -2;
-	if (SJME_IS_ERROR(sjme_stream_inputRead(inputStream,
+	if (sjme_error_is(sjme_stream_inputRead(inputStream,
 		&readCount, buf, bufLen)))
 		return sjme_unitFail(test, "Failed to read bytes?");
 
@@ -76,7 +76,7 @@ SJME_TEST_DECLARE(testRomLibraryResourceStream)
 		"Read bytes are not correct?");
 
 	/* Just close the stream. */
-	if (SJME_IS_ERROR(sjme_stream_inputClose(inputStream)))
+	if (sjme_error_is(sjme_stream_inputClose(inputStream)))
 		return sjme_unitFail(test, "Could not close stream?");
 
 	/* Success! */
