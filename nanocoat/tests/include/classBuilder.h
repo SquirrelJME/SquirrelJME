@@ -300,6 +300,8 @@ sjme_errorCode sjme_classBuilder_addPoolEntryUtf(
  *
  * @param inPool The pool to allocate within.
  * @param outBuilder The output state of the class builder.
+ * @param allowInvalid Allow invalid classes to be generated, this can be used
+ * for testing.
  * @param whatever Whatever data is needed, this is optional.
  * @return Any resultant error, if any.
  * @since 2024/01/09
@@ -307,6 +309,7 @@ sjme_errorCode sjme_classBuilder_addPoolEntryUtf(
 sjme_errorCode sjme_classBuilder_build(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrOutNotNull sjme_classBuilder* outBuilder,
+	sjme_attrInValue sjme_jboolean allowInvalid,
 	sjme_attrInNullable void* whatever);
 
 /**

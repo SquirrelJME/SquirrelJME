@@ -25,7 +25,7 @@ SJME_TEST_DECLARE(testClassParseAttributeStackMap)
 
 	memset(&builder, 0, sizeof(builder));
 	if (SJME_IS_ERROR(sjme_classBuilder_build(test->pool,
-		&builder, test)))
+		&builder, SJME_JNI_FALSE, test)))
 		return sjme_unitFail(test, "Failed to initialize class builder.");
 
 	sjme_todo("Implement %s", __func__);

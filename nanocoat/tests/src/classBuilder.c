@@ -118,6 +118,7 @@ sjme_errorCode sjme_classBuilder_addPoolEntryUtf(
 sjme_errorCode sjme_classBuilder_build(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrOutNotNull sjme_classBuilder* outBuilder,
+	sjme_attrInValue sjme_jboolean allowInvalid,
 	sjme_attrInNullable void* whatever)
 {
 	if (inPool == NULL || outBuilder == NULL)
