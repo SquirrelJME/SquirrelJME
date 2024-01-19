@@ -59,6 +59,9 @@ The available options are:
      remote host that is a listening JDWP debugger.
    * Otherwise, if only `port` is specified then the debugger will wait and
      listen on the given port for an incoming connection.
+ * `-Xdebug`
+   * Enable debugging but with the internal built-in SquirrelJME debugger and
+     not a JDWP connection over TCP.
  * `-Xthread:(single|coop|multi|smt)`
    * Sets the threading mode of the virtual machine.
    * `single`/`coop` -- Single threaded using cooperative multitasking.

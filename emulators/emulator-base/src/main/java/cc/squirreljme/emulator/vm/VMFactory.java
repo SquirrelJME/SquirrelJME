@@ -43,6 +43,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.jar.Manifest;
+import net.multiphasicapps.io.BidirectionalPipe;
+import net.multiphasicapps.io.BidirectionalPipeSide;
+import net.multiphasicapps.io.UnidirectionalPipe;
 
 /**
  * This class is used to initialize virtual machines based on a set of factory
@@ -152,6 +155,7 @@ public abstract class VMFactory
 		// Debugging host and port, if enabled
 		String jdwpHost = null; 
 		int jdwpPort = -1;
+		boolean internalDebug = false;
 		
 		// Threading model
 		VMThreadModel threadModel = VMThreadModel.DEFAULT;
@@ -223,6 +227,13 @@ public abstract class VMFactory
 				jdwpHost = hostPort.substring(0, lastCol);
 				jdwpPort = Integer.parseInt(
 					hostPort.substring(lastCol + 1));
+			}
+			
+			// Direct debugger usage
+			else if (item.startsWith("-Xdebug"))
+			{
+				// Just set this flag
+				internalDebug = true;
 			}
 			
 			// Select a VM
@@ -302,6 +313,11 @@ public abstract class VMFactory
 				throw new IllegalArgumentException(String.format(
 					"Unknown command line switch: %s", item));
 		}
+		
+		// These options are mutually exclusive...
+		if (internalDebug && (jdwpHost != null || jdwpPort >= 1))
+			throw new IllegalArgumentException(
+				"-Xdebug and -Xjdwp are mutually exclusive.");
 		
 		// Main program arguments
 		List<String> mainArgs = new LinkedList<>();
@@ -538,8 +554,9 @@ public abstract class VMFactory
 			// Run the VM
 			VirtualMachine vm = VMFactory.mainVm(vmName,
 				profilerSnapshot,
-				(jdwpPort >= 1 ?
-					VMFactory.__setupJdwp(jdwpHost, jdwpPort) : null),
+				(internalDebug ? VMFactory.__setupJdwpInternal() :
+					(jdwpPort >= 1 ?
+						VMFactory.__setupJdwp(jdwpHost, jdwpPort) : null)),
 				threadModel,
 				new ArraySuiteManager(suites.values()),
 				classpath.<String>toArray(new String[classpath.size()]),
@@ -894,7 +911,26 @@ public abstract class VMFactory
 	}
 	
 	/**
-	 * Unseparates for classpath.
+	 * Sets up an internal JDWP based debugger that is built into SquirrelJME. 
+	 *
+	 * @return The factory for creating the buffer.
+	 * @since 2024/01/19
+	 */
+	private static JDWPFactory __setupJdwpInternal()
+	{
+		// Look for service for it
+		for (VMDebuggerService service :
+			ServiceLoader.load(VMDebuggerService.class))
+		{
+			return service.jdwpFactory();
+		}
+		
+		// Not found, does nothing
+		return null;
+	}
+	
+	/**
+	 * Merges path entries for the classpath.
 	 * 
 	 * @param __in The input string.
 	 * @return The un-separated string.

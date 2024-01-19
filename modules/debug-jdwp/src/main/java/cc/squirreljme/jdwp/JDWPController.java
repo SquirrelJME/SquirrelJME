@@ -45,7 +45,7 @@ public final class JDWPController
 {
 	/** Should debugging be enabled? */
 	static final boolean _DEBUG =
-		Boolean.getBoolean("cc.squirreljme.jdwp.debug");
+		true || Boolean.getBoolean("cc.squirreljme.jdwp.debug");
 	
 	/** The communication link. */
 	protected final CommLink commLink;

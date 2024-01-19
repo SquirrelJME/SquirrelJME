@@ -14,6 +14,8 @@ import cc.squirreljme.jdwp.CommLink;
 import cc.squirreljme.jdwp.CommLinkDirection;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.StringWriter;
 import java.net.ServerSocket;
@@ -28,6 +30,15 @@ import javax.swing.JOptionPane;
  */
 public class Main
 {
+	static
+	{
+		// We need to poke native binding, so it loads our emulation backend
+		NativeBinding.loadedLibraryPath();
+		
+		// Set look and feel, decorating greatly improved speed
+		JFrame.setDefaultLookAndFeelDecorated(true);
+	}
+	
 	/**
 	 * Main entry point.
 	 *
@@ -36,12 +47,6 @@ public class Main
 	 */
 	public static void main(String... __args)
 	{
-		// We need to poke native binding, so it loads our emulation backend
-		NativeBinding.loadedLibraryPath();
-		
-		// Set look and feel, decorating greatly improved speed
-		JFrame.setDefaultLookAndFeelDecorated(true);
-		
 		try
 		{
 			// If no options passed, ask for them
@@ -59,12 +64,8 @@ public class Main
 			// Setup communication link
 			CommLink commLink = Main.__connect(connect);
 			
-			// Wrap into primary debugger state which tracks everything
-			DebuggerState state = new DebuggerState(commLink);
-			new Thread(state, "debugLoop").start();
-			
-			// Spawn the application
-			new PrimaryFrame(state).setVisible(true);
+			// Start the main debug session
+			Main.start(commLink);
 		}
 		
 		// Failed to emit exception
@@ -156,5 +157,45 @@ public class Main
 		// Setup communication link
 		return new CommLink(socket.getInputStream(),
 			socket.getOutputStream(), CommLinkDirection.DEBUGGER_TO_CLIENT);
+	}
+	
+	/**
+	 * Starts the debugging session.
+	 *
+	 * @param __in The stream to read from.
+	 * @param __out The stream to write from.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/19
+	 */
+	public static void start(InputStream __in, OutputStream __out)
+		throws NullPointerException
+	{
+		if (__in == null || __out == null)
+			throw new NullPointerException("NARG");
+		
+		// Forward accordingly
+		Main.start(new CommLink(__in, __out,
+			CommLinkDirection.DEBUGGER_TO_CLIENT));
+	}
+	
+	/**
+	 * Starts the debugging session.
+	 *
+	 * @param __commLink The communication link to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/19
+	 */
+	public static void start(CommLink __commLink)
+		throws NullPointerException
+	{
+		if (__commLink == null)
+			throw new NullPointerException("NARG");
+		
+		// Wrap into primary debugger state which tracks everything
+		DebuggerState state = new DebuggerState(__commLink);
+		new Thread(state, "debugLoop").start();
+		
+		// Spawn the application
+		new PrimaryFrame(state).setVisible(true);
 	}
 }
