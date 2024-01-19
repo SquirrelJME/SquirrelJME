@@ -40,6 +40,9 @@
       <module name="squirreljme.tools.sqf-to-c" target="11" />
       <module name="squirreljme.tools.sqf-to-c.main" target="11" />
       <module name="squirreljme.tools.sqf-to-c.test" target="11" />
+      <module name="squirreljme.tools.squirreljme-debugger" target="11" />
+      <module name="squirreljme.tools.squirreljme-debugger.main" target="11" />
+      <module name="squirreljme.tools.squirreljme-debugger.test" target="11" />
       <module name="squirreljme.tools.txt-to-pbm" target="11" />
       <module name="squirreljme.tools.txt-to-pbm.main" target="11" />
       <module name="squirreljme.tools.txt-to-pbm.test" target="11" />

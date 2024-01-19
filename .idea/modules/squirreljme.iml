@@ -284,6 +284,9 @@
       <excludeFolder url="file://$MODULE_DIR$/../../tools/unzip/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/unzip/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/unzip/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-debugger/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-debugger/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-debugger/out" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="SJME Full SpringCoat Debug" type="CompoundRunConfigurationType">
+    <toRun name="SJME Debug Listen" type="Application" />
+    <toRun name="SJME Full SpringCoat Debug Connect" type="GradleRunConfiguration" />
+    <method v="2" />
+  </configuration>
+</component>

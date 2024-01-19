@@ -48,6 +48,9 @@ public final class CommLink
 	/** The output communication stream. */
 	protected final DataOutputStream out;
 	
+	/** The direction of the channel. */
+	protected final CommLinkDirection direction;
+	
 	/** The queue of packets which are freed, they will go back here. */
 	private final Deque<JDWPPacket> _freePackets =
 		new LinkedList<>();
@@ -90,11 +93,28 @@ public final class CommLink
 	public CommLink(InputStream __in, OutputStream __out)
 		throws NullPointerException
 	{
-		if (__in == null || __out == null)
+		this(__in, __out, CommLinkDirection.CLIENT_TO_DEBUGGER);
+	}
+	
+	/**
+	 * Initializes the communication link.
+	 *
+	 * @param __in The input stream to read from.
+	 * @param __out The output stream to write to.
+	 * @param __direction The direction of communication.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/03/08
+	 */
+	public CommLink(InputStream __in, OutputStream __out,
+		CommLinkDirection __direction)
+		throws NullPointerException
+	{
+		if (__in == null || __out == null || __direction == null)
 			throw new NullPointerException("NARG");
 		
 		this.in = new DataInputStream(__in);
 		this.out = new DataOutputStream(__out);
+		this.direction = __direction;
 	}
 	
 	/**
@@ -139,6 +159,20 @@ public final class CommLink
 		/* {@squirreljme.error AG09 Could not close communication link.} */
 		if (fail != null)
 			throw new JDWPException("AG09", fail);
+	}
+	
+	/**
+	 * Is the debug link shutdown?
+	 *
+	 * @return If this is shutdown.
+	 * @since 2024/01/19
+	 */
+	public boolean isShutdown()
+	{
+		synchronized (this)
+		{
+			return this._shutdown;
+		}
 	}
 	
 	/**
@@ -263,6 +297,10 @@ public final class CommLink
 			/* {@squirreljme.error AG06 Read error.} */
 			catch (IOException e)
 			{
+				// Shutdown the link
+				this._shutdown = true;
+				
+				// Fail here
 				throw new JDWPException("AG06", e);
 			}
 			
@@ -316,59 +354,6 @@ public final class CommLink
 	}
 	
 	/**
-	 * Performs the handshake for JDWP.
-	 * 
-	 * @throws JDWPException If the handshake could not happen.
-	 * @since 2021/03/08
-	 */
-	private void __handshake()
-		throws JDWPException
-	{
-		try
-		{
-			// Debug
-			if (JDWPController._DEBUG)
-				Debugging.debugNote("JDWP: Handshake.");
-			
-			// The debugger sends the handshake sequence first
-			int seqLen = CommLink._HANDSHAKE_SEQUENCE.length;
-			byte[] debuggerShake = new byte[seqLen];
-			
-			// Read in the handshake
-			for (int i = 0; i < seqLen; i++)
-			{
-				int read = this.in.read();
-				
-				/* {@squirreljme.error AG02 EOF reading handshake.} */
-				if (read < 0)
-					throw new JDWPException("AG02");
-				
-				debuggerShake[i] = (byte)read;
-			}
-			
-			/* {@squirreljme.error AG03 Debugger sent an invalid handshake.} */
-			if (!Arrays.equals(debuggerShake, CommLink._HANDSHAKE_SEQUENCE))
-				throw new JDWPException("AG03");
-			
-			// We then reply with our own handshake
-			this.out.write(CommLink._HANDSHAKE_SEQUENCE);
-			this.out.flush();
-			
-			// We did the handshake
-			this._didHandshake = true;
-			
-			// Debug
-			if (JDWPController._DEBUG)
-				Debugging.debugNote("JDWP: Hands shaken at a distance.");
-		}
-		catch (IOException e)
-		{
-			/* {@squirreljme.error AG04 Failed to handshake.} */
-			throw new JDWPException("AG04", e);
-		}
-	}
-	
-	/**
 	 * Returns a fresh packet.
 	 * 
 	 * @param __open Should this be opened?
@@ -396,5 +381,93 @@ public final class CommLink
 			
 			return rv;
 		}
+	}
+	
+	/**
+	 * Performs the handshake for JDWP.
+	 * 
+	 * @throws JDWPException If the handshake could not happen.
+	 * @since 2021/03/08
+	 */
+	private void __handshake()
+		throws JDWPException
+	{
+		try
+		{
+			// Debug
+			if (JDWPController._DEBUG)
+				Debugging.debugNote("JDWP: Handshake.");
+			
+			// The debugger sends the handshake sequence first, so as a client
+			// we read from the remote end
+			if (this.direction == CommLinkDirection.CLIENT_TO_DEBUGGER)
+			{
+				this.__handshakeRead();
+				this.__handshakeWrite();
+			}
+			
+			// Otherwise we are the debugger, so we write our handshake first
+			else
+			{
+				this.__handshakeWrite();
+				this.__handshakeRead();
+			}
+			
+			// We did the handshake
+			this._didHandshake = true;
+			
+			// Debug
+			if (JDWPController._DEBUG)
+				Debugging.debugNote("JDWP: Hands shaken at a distance.");
+		}
+		catch (IOException e)
+		{
+			/* {@squirreljme.error AG04 Failed to handshake.} */
+			throw new JDWPException("AG04", e);
+		}
+	}
+	
+	/**
+	 * Reads the handshake.
+	 *
+	 * @throws IOException On read errors.
+	 * @since 2024/01/19
+	 */
+	private void __handshakeRead()
+		throws IOException
+	{
+		// The debugger sends the handshake sequence first
+		int seqLen = CommLink._HANDSHAKE_SEQUENCE.length;
+		byte[] debuggerShake = new byte[seqLen];
+		
+		// Read in the handshake
+		for (int i = 0; i < seqLen; i++)
+		{
+			int read = this.in.read();
+			
+			/* {@squirreljme.error AG02 EOF reading handshake.} */
+			if (read < 0)
+				throw new JDWPException("AG02");
+			
+			debuggerShake[i] = (byte)read;
+		}
+		
+		/* {@squirreljme.error AG03 Debugger sent an invalid handshake.} */
+		if (!Arrays.equals(debuggerShake, CommLink._HANDSHAKE_SEQUENCE))
+			throw new JDWPException("AG03");
+	}
+	
+	/**
+	 * Writes the handshake.
+	 *
+	 * @throws IOException On write errors.
+	 * @since 2024/01/19
+	 */
+	private void __handshakeWrite()
+		throws IOException
+	{			
+		// We then reply with our own handshake
+		this.out.write(CommLink._HANDSHAKE_SEQUENCE);
+		this.out.flush();
 	}
 }
