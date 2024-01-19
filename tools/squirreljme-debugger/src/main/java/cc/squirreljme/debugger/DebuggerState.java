@@ -151,8 +151,8 @@ public class DebuggerState
 			{
 					// Unhandled currently
 				default:
-					Debugging.debugNote("Unhandled event kind: %d",
-						rawKind);
+					Debugging.debugNote("Unhandled event kind: %d (%s)",
+						rawKind, kind);
 					return;
 			}
 		}

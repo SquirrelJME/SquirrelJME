@@ -30,6 +30,9 @@ in the following format:
  * `java -jar squirreljme-standalone.jar [options] mainClass [mainArgs|...]`
    * Standard launch into the specific classpath and main arguments.
    * For this option, `-classpath (class:path:...)` may be used
+ * `java -jar squirreljme-standalone.jar -XdebuggerOnly [options]`
+   * Only launch the built-in SquirrelJME debugger and not an actual virtual
+     machine.
 
 The available options are:
 
