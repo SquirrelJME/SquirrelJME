@@ -9,5 +9,6 @@ description = "SquirrelJME Interactive Debugger."
 mainClassName = "cc.squirreljme.debugger.Main"
 
 dependencies {
+	implementation project(":emulators:emulator-base")
 	implementation project(":modules:debug-jdwp")
 }

@@ -131,7 +131,7 @@ public final class JDWPPacket
 	 * @return The command Id.
 	 * @since 2021/03/13
 	 */
-	protected int command()
+	public int command()
 	{
 		synchronized (this)
 		{
@@ -163,6 +163,25 @@ public final class JDWPPacket
 	}
 	
 	/**
+	 * Returns the raw command set id.
+	 *
+	 * @return The command set id.
+	 * @since 2024/01/19
+	 */
+	public int commandSetId()
+	{
+		synchronized (this)
+		{
+			// Ensure it is valid
+			this.__checkOpen();
+			this.__checkType(false);
+			
+			// Return the raw command set
+			return this._commandSet;
+		}
+	}
+	
+	/**
 	 * Returns a copy of the given packet.
 	 * 
 	 * @param __packet The packet to copy from.
@@ -171,7 +190,7 @@ public final class JDWPPacket
 	 * @since 2021/04/30
 	 */
 	@SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
-	protected JDWPPacket copyOf(JDWPPacket __packet)
+	public JDWPPacket copyOf(JDWPPacket __packet)
 		throws NullPointerException
 	{
 		if (__packet == null)
@@ -262,6 +281,23 @@ public final class JDWPPacket
 	}
 	
 	/**
+	 * Returns the length of this packet.
+	 *
+	 * @return The packet length.
+	 * @since 2024/01/19
+	 */
+	public int length()
+	{
+		synchronized (this)
+		{
+			// Ensure this is open
+			this.__checkOpen();
+			
+			return this._length;
+		}
+	}
+	
+	/**
 	 * Reads the given array from the packet.
 	 * 
 	 * @param __controller The controller used.
@@ -340,7 +376,7 @@ public final class JDWPPacket
 	 * @throws JDWPException If this does not refer to a valid frame.
 	 * @since 2021/04/11
 	 */
-	protected Object readFrame(JDWPController __controller, boolean __nullable)
+	public Object readFrame(JDWPController __controller, boolean __nullable)
 	{
 		int id = this.readId();
 		Object frame = __controller.state.items.get(id);
@@ -1134,7 +1170,7 @@ public final class JDWPPacket
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/03/12
 	 */
-	protected void writeTo(DataOutputStream __out)
+	public void writeTo(DataOutputStream __out)
 		throws IOException, NullPointerException
 	{
 		if (__out == null)

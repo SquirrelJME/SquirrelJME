@@ -74,7 +74,8 @@ public final class CommLink
 	private volatile int _dataAt;
 	
 	/** Length of read data. */
-	private volatile int _dataLen;
+	private volatile int _dataLen =
+		-1;
 	
 	/** Did we do our handshake? */
 	private volatile boolean _didHandshake;
@@ -322,7 +323,7 @@ public final class CommLink
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/03/12
 	 */
-	protected void send(JDWPPacket __packet)
+	public void send(JDWPPacket __packet)
 		throws JDWPException, NullPointerException
 	{
 		if (__packet == null)

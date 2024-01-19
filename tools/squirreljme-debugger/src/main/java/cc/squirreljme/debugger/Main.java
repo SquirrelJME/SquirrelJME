@@ -9,6 +9,7 @@
 
 package cc.squirreljme.debugger;
 
+import cc.squirreljme.emulator.NativeBinding;
 import cc.squirreljme.jdwp.CommLink;
 import cc.squirreljme.jdwp.CommLinkDirection;
 import java.io.ByteArrayOutputStream;
@@ -35,6 +36,9 @@ public class Main
 	 */
 	public static void main(String... __args)
 	{
+		// We need to poke native binding so it loads our emulation backend
+		NativeBinding.loadedLibraryPath();
+		
 		// Set look and feel, decorating greatly improved speed
 		JFrame.setDefaultLookAndFeelDecorated(true);
 		
