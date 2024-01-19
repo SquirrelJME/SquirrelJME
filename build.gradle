@@ -27,7 +27,6 @@ idea
 		excludeDirs += file(".idea")
 		excludeDirs += file(".vscode")
 		excludeDirs += file(".settings")
-		excludeDirs += file("assets")
 		excludeDirs += file("config")
 		excludeDirs += file("gradle")
 		excludeDirs += file("utils-dev")
