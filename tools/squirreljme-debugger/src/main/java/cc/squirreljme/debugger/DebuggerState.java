@@ -107,6 +107,7 @@ public class DebuggerState
 		if (__packet == null)
 			throw new NullPointerException("NARG");
 		
+		Debugging.debugNote("Process reply...");
 	}
 	
 	/**
@@ -122,39 +123,16 @@ public class DebuggerState
 		if (__packet == null)
 			throw new NullPointerException("NARG");
 		
-		// If this is not the composite event kind, then just ignore
-		if (__packet.commandSetId() != 64 && __packet.command() != 100)
-			return;
-		
-		// If the packet is blank, ignore it
-		if (__packet.length() == 0)
-			return;
-		
-		// Read the suspension policy
-		SuspendPolicy suspend = SuspendPolicy.of(__packet.readByte());
-		
-		// Process all events
-		int numEvents = __packet.readInt();
-		for (int seq = 0; seq < numEvents; seq++)
+		// If this is an event, handle it specifically
+		if (__packet.commandSetId() == 64 && __packet.command() == 100)
 		{
-			// Is this event known?
-			int rawKind = __packet.readByte();
-			EventKind kind = EventKind.of(rawKind);
-			if (kind == null)
-			{
-				Debugging.debugNote("Unknown event kind: %d", rawKind);
-				return;
-			}
+			// Handle this as an event
+			EventProcessor.handle(this, __packet);
 			
-			// Depends on the event kind
-			switch (kind)
-			{
-					// Unhandled currently
-				default:
-					Debugging.debugNote("Unhandled event kind: %d (%s)",
-						rawKind, kind);
-					return;
-			}
+			// Do not do any more processing
+			return;
 		}
+		
+		Debugging.debugNote("Handle non-event?");
 	}
 }
