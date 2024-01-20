@@ -1198,7 +1198,8 @@ public final class JDWPPacket
 			}
 			
 			// Write output data
-			__out.write(this._data, 0, this._length);
+			if (this._length > 0)
+				__out.write(this._data, 0, this._length);
 		}
 	}
 	

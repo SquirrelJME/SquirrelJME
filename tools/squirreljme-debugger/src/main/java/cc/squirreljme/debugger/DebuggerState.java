@@ -10,11 +10,11 @@
 package cc.squirreljme.debugger;
 
 import cc.squirreljme.jdwp.CommLink;
-import cc.squirreljme.jdwp.EventKind;
 import cc.squirreljme.jdwp.JDWPException;
 import cc.squirreljme.jdwp.JDWPPacket;
-import cc.squirreljme.jdwp.SuspendPolicy;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
+import java.util.Map;
 
 /**
  * Stores the debugger state.
@@ -35,6 +35,14 @@ public class DebuggerState
 	protected final TallyTracker receiveTally =
 		new TallyTracker();
 	
+	/** The current capabilities of the remote virtual machine. */
+	protected final CapabilityStatus capabilities =
+		new CapabilityStatus();
+	
+	/** Handler for all replies. */
+	private final Map<Integer, ReplyHandler> _replies =
+		new SortedTreeMap<>();
+	
 	/**
 	 * Initializes the debugger state.
 	 *
@@ -52,6 +60,57 @@ public class DebuggerState
 	}
 	
 	/**
+	 * Sends the given packet.
+	 *
+	 * @param __packet The packet to send.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/19
+	 */
+	public void send(JDWPPacket __packet)
+		throws NullPointerException
+	{
+		this.send(__packet, null);
+	}
+	
+	/**
+	 * Sends the given packet with an optional reply handler for when a
+	 * response is received.
+	 *
+	 * @param __packet The packet to send.
+	 * @param __reply The reply handler to use for this packet.
+	 * @throws IllegalArgumentException If a reply handler is specified and
+	 * this is a reply packet.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/19
+	 */
+	public void send(JDWPPacket __packet, ReplyHandler __reply)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__packet == null)
+			throw new NullPointerException("NARG");
+		
+		// Wanting to handle a reply to this packet 
+		if (__reply != null)
+		{
+			// It makes no sense to handle a reply to a reply
+			if (__packet.isReply())
+				throw new IllegalArgumentException(
+					"Cannot handle a reply to a reply.");
+			
+			// Store handler for replies before we send as the pipe could be
+			// really fast!
+			Map<Integer, ReplyHandler> replies = this._replies;
+			synchronized (this)
+			{
+				replies.put(__packet.id(), __reply);
+			}
+		}
+		
+		// Send over the link
+		this.commLink.send(__packet);
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2024/01/19
 	 */
@@ -60,6 +119,9 @@ public class DebuggerState
 	{
 		CommLink link = this.commLink;
 		TallyTracker receiveTally = this.receiveTally;
+		
+		// Update remote capabilities
+		this.capabilities.update(this);
 		
 		// Infinite read loop, read in packets accordingly
 		for (;;)
@@ -107,7 +169,26 @@ public class DebuggerState
 		if (__packet == null)
 			throw new NullPointerException("NARG");
 		
-		Debugging.debugNote("Process reply...");
+		// See if there is a handler for this reply
+		ReplyHandler handler;
+		Map<Integer, ReplyHandler> replies = this._replies;
+		synchronized (this)
+		{
+			// Only handle once!
+			handler = replies.remove(__packet.id());
+		}
+		
+		// If there is no handler, just ignore
+		if (handler == null)
+		{
+			Debugging.debugNote("No handler for reply %d...",
+				__packet.id());
+			
+			return;
+		}
+		
+		// Call the handler accordingly
+		handler.handlePacket(this, __packet);
 	}
 	
 	/**

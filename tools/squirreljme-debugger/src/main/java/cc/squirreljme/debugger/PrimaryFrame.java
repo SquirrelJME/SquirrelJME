@@ -12,6 +12,7 @@ package cc.squirreljme.debugger;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -74,6 +75,11 @@ public class PrimaryFrame
 		fileMenu.addSeparator();
 		fileMenu.add(exitItem);
 		
+		// Capabilities view
+		JMenuItem capsItem = new JMenuItem("Capabilities");
+		capsItem.setMnemonic('C');
+		capsItem.addActionListener(this::__showCapabilities);
+		
 		// Object view
 		JMenuItem objectItem = new JMenuItem("Object");
 		objectItem.setMnemonic('O');
@@ -107,6 +113,7 @@ public class PrimaryFrame
 		// View menu
 		JMenu viewMenu = new JMenu("View");
 		viewMenu.setMnemonic('V');
+		viewMenu.add(capsItem);
 		viewMenu.add(objectItem);
 		viewMenu.add(typeItem);
 		viewMenu.add(threadGroupItem);
@@ -127,5 +134,20 @@ public class PrimaryFrame
 		
 		// Add that to the bottom
 		this.add(statusPanel, BorderLayout.PAGE_END);
+	}
+	
+	/**
+	 * Shows the capabilities of the connected virtual machine.
+	 *
+	 * @param __event Not used.
+	 * @since 2024/01/19
+	 */
+	private void __showCapabilities(ActionEvent __event)
+	{
+		InspectCapabilities inspect = new InspectCapabilities(this,
+			this.debuggerState.capabilities);
+		
+		// Show it
+		inspect.setVisible(true);
 	}
 }

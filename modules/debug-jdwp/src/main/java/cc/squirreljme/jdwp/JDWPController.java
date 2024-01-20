@@ -83,9 +83,6 @@ public final class JDWPController
 	/** Are events to the debugger being held? */
 	volatile boolean _holdEvents;
 	
-	/** Next ID number. */
-	private volatile int _nextId;
-	
 	/** Is this closed? */
 	private volatile boolean _closed;
 	
@@ -803,16 +800,7 @@ public final class JDWPController
 		if (__policy == null || __kind == null)
 			throw new NullPointerException("NARG");
 		
-		JDWPPacket rv = this.commLink.__getPacket(true);
-		
-		// Composite command code
-		rv._commandSet = 64;
-		rv._command = 100;
-		
-		// Is just a normal event
-		rv._id = this.__nextId();
-		rv._errorCode = ErrorType.NO_ERROR;
-		rv._flags = 0;
+		JDWPPacket rv = this.commLink.request(64, 100);
 		
 		// Write the single event header
 		rv.writeByte(__policy.id);
@@ -821,20 +809,6 @@ public final class JDWPController
 		rv.writeInt(__responseId);
 		
 		return rv;
-	}
-	
-	/**
-	 * The next ID number.
-	 * 
-	 * @return Returns a new ID number.
-	 * @since 2021/03/13
-	 */
-	final int __nextId()
-	{
-		synchronized (this._nextIdMonitor)
-		{
-			return ++this._nextId;
-		}
 	}
 	
 	/**
@@ -847,12 +821,6 @@ public final class JDWPController
 	 */
 	final JDWPPacket __reply(int __id, ErrorType __error)
 	{
-		JDWPPacket rv = this.commLink.__getPacket(true);
-		
-		rv._id = __id;
-		rv._errorCode = __error;
-		rv._flags = JDWPPacket.FLAG_REPLY;
-		
-		return rv;
+		return this.commLink.reply(__id, __error);
 	}
 }

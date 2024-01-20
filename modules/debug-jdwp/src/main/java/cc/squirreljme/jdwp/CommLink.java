@@ -83,6 +83,9 @@ public final class CommLink
 	/** Are we in shutdown? */
 	volatile boolean _shutdown;
 	
+	/** Next packet ID number. */
+	private volatile int _nextId;
+	
 	/**
 	 * Initializes the communication link.
 	 *
@@ -173,6 +176,20 @@ public final class CommLink
 		synchronized (this)
 		{
 			return this._shutdown;
+		}
+	}
+	
+	/**
+	 * The next ID number.
+	 * 
+	 * @return Returns a new ID number.
+	 * @since 2021/03/13
+	 */
+	public final int nextId()
+	{
+		synchronized (this)
+		{
+			return ++this._nextId;
 		}
 	}
 	
@@ -316,6 +333,95 @@ public final class CommLink
 	}
 	
 	/**
+	 * Creates a reply packet.
+	 *
+	 * @param __id The raw packet ID that is being responded to.
+	 * @param __error The error to use for the packet.
+	 * @return The resultant reply packet.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/19
+	 */
+	public JDWPPacket reply(int __id, ErrorType __error)
+		throws NullPointerException
+	{
+		if (__error == null)
+			throw new NullPointerException("NARG");
+		
+		JDWPPacket rv = this.__getPacket(true);
+		
+		rv._id = __id;
+		rv._errorCode = __error;
+		rv._flags = JDWPPacket.FLAG_REPLY;
+		
+		return rv;
+	}
+	
+	/**
+	 * Creates a reply packet.
+	 *
+	 * @param __packet The packet to reply to.
+	 * @param __error The error to use for the packet.
+	 * @return The resultant reply packet.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/19
+	 */
+	public JDWPPacket reply(JDWPPacket __packet, ErrorType __error)
+		throws NullPointerException
+	{
+		if (__packet == null || __error == null)
+			throw new NullPointerException("NARG");
+		
+		return this.reply(__packet.id(), __error);
+	}
+	
+	/**
+	 * Creates a packet for a request.
+	 *
+	 * @param __commandSet The command set to use.
+	 * @param __command The command to use.
+	 * @return The newly created packet.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/19
+	 */
+	public JDWPPacket request(JDWPCommandSet __commandSet,
+		JDWPCommand __command)
+		throws NullPointerException
+	{
+		if (__commandSet == null || __command == null)
+			throw new NullPointerException("NARG");
+		
+		// Forward
+		return this.request(__commandSet.id, __command.debuggerId());
+	}
+	
+	/**
+	 * Creates a packet for a request.
+	 *
+	 * @param __commandSet The command set to use.
+	 * @param __command The command to use.
+	 * @return The newly created packet.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/19
+	 */
+	public JDWPPacket request(int __commandSet, int __command)
+	{
+		JDWPPacket rv = this.__getPacket(true);
+		
+		// Use the next ID for this packet
+		rv._id = this.nextId();
+		
+		// Packet type information
+		rv._commandSet = __commandSet;
+		rv._command = __command;
+		rv._flags = 0;
+		
+		// There is no error technically
+		rv._errorCode = ErrorType.NO_ERROR;
+		
+		return rv;
+	}
+	
+	/**
 	 * Sends the packet to the remote end.
 	 * 
 	 * @param __packet The packet to send.
@@ -328,6 +434,13 @@ public final class CommLink
 	{
 		if (__packet == null)
 			throw new NullPointerException("NARG");
+		
+		// If the handshake did not happen, do it now
+		synchronized (this)
+		{
+			if (!this._didHandshake)
+				this.__handshake();
+		}
 		
 		// Debug
 		if (JDWPController._DEBUG)

@@ -169,7 +169,7 @@ public enum CommandSetEventRequest
 			
 			// Register the event request
 			EventRequest request = new EventRequest(
-				__controller.__nextId(), eventKind, suspendPolicy,
+				__controller.commLink.nextId(), eventKind, suspendPolicy,
 				occurrenceLimit, eventFilter);
 			__controller.eventManager.addEventRequest(request);
 			
