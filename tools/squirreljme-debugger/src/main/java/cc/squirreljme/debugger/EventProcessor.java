@@ -109,13 +109,15 @@ public enum EventProcessor
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			SuspendPolicy __suspend)
 		{
+			StoredInfo<InfoThread> threadStore =
+				__state.storedInfo.getThread();
+			
 			// Read in packet details
 			int requestId = __packet.readInt();
 			int threadId = __packet.readId();
 			
-			// Debugging
-			Debugging.debugNote("Thread start %d -> %d",
-				requestId, threadId);
+			// Mark as started
+			threadStore.get(threadId).isStarted.set(true);
 		}
 	},
 	

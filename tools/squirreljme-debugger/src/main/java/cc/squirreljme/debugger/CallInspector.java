@@ -1,0 +1,27 @@
+// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
+// ---------------------------------------------------------------------------
+// Multi-Phasic Applications: SquirrelJME
+//     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+// ---------------------------------------------------------------------------
+// SquirrelJME is under the Mozilla Public License Version 2.0.
+// See license.mkd for licensing and copyright information.
+// ---------------------------------------------------------------------------
+
+package cc.squirreljme.debugger;
+
+/**
+ * Callback inspector.
+ *
+ * @since 2024/01/20
+ */
+@FunctionalInterface
+public interface CallInspector
+{
+	/**
+	 * Inspects the given item.
+	 *
+	 * @param __info The item to inspect.
+	 * @since 2024/01/20
+	 */
+	void inspect(Info __info);
+}

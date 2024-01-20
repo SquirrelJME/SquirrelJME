@@ -196,6 +196,10 @@ public class Main
 		new Thread(state, "debugLoop").start();
 		
 		// Spawn the application
-		new PrimaryFrame(state).setVisible(true);
+		PrimaryFrame frame = new PrimaryFrame(state);
+		
+		// Show it in a good spot
+		frame.setLocationRelativeTo(null);
+		frame.setVisible(true);
 	}
 }

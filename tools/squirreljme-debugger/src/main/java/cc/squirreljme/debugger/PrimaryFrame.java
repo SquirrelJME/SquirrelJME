@@ -13,10 +13,12 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 
@@ -78,7 +80,7 @@ public class PrimaryFrame
 		// Capabilities view
 		JMenuItem capsItem = new JMenuItem("Capabilities");
 		capsItem.setMnemonic('C');
-		capsItem.addActionListener(this::__showCapabilities);
+		capsItem.addActionListener(this::__inspectCapabilities);
 		
 		// Object view
 		JMenuItem objectItem = new JMenuItem("Object");
@@ -103,6 +105,7 @@ public class PrimaryFrame
 		threadItem.setMnemonic('T');
 		threadItem.setAccelerator(
 			KeyStroke.getKeyStroke(Character.valueOf('t'), metaMask));
+		threadItem.addActionListener(this::__inspectThread);
 		
 		// Frame
 		JMenuItem frameItem = new JMenuItem("Frame");
@@ -137,17 +140,103 @@ public class PrimaryFrame
 	}
 	
 	/**
+	 * Opens the inspector on the item.
+	 *
+	 * @param __info The information to expect.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/20
+	 */
+	public void inspect(Info __info)
+		throws NullPointerException
+	{
+		if (__info == null)
+			throw new NullPointerException("NARG");
+		
+		// Depends on the type
+		JDialog dialog;
+		switch (__info.type)
+		{
+				// Thread
+			case THREAD:
+				dialog = new InspectThread(this, this.debuggerState,
+					(InfoThread)__info);
+				break;
+				
+				// Unknown, so ignore
+			default:
+				return;
+		}
+		
+		// Show it
+		dialog.setLocationRelativeTo(null);
+		dialog.setVisible(true);
+	}
+	
+	/**
+	 * Opens the inspector selection.
+	 *
+	 * @param __stored The stored items to look at.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/20
+	 */
+	private void __inspect(StoredInfo<?> __stored)
+		throws NullPointerException
+	{
+		if (__stored == null)
+			throw new NullPointerException("NARG");
+		
+		InfoType type = __stored.type;
+		
+		// Check to see that we actually know stuff
+		Info[] all = __stored.all();
+		if (all.length == 0)
+		{
+			JOptionPane.showMessageDialog(this,
+				String.format("There are no %s", type.description),
+				"Nothing is known",
+				JOptionPane.ERROR_MESSAGE,
+				null);
+			return;
+		}
+		
+		// Pop up dialog asking what to inspect?
+		Object result = JOptionPane.showInputDialog(this,
+			String.format("Select %s to inspect", type.description),
+			String.format("Choosing %s", type.description),
+			JOptionPane.QUESTION_MESSAGE,
+			null,
+			all,
+			all[0]);
+		
+		// When selected, show the inspector
+		if (result != null)
+			this.inspect((Info)result);
+	}
+	
+	/**
 	 * Shows the capabilities of the connected virtual machine.
 	 *
 	 * @param __event Not used.
 	 * @since 2024/01/19
 	 */
-	private void __showCapabilities(ActionEvent __event)
+	private void __inspectCapabilities(ActionEvent __event)
 	{
 		InspectCapabilities inspect = new InspectCapabilities(this,
 			this.debuggerState.capabilities);
 		
 		// Show it
+		inspect.setLocationRelativeTo(null);
 		inspect.setVisible(true);
+	}
+	
+	/**
+	 * Opens the thread inspector.
+	 *
+	 * @param __event Not used.
+	 * @since 2024/01/20
+	 */
+	private void __inspectThread(ActionEvent __event)
+	{
+		this.__inspect(this.debuggerState.storedInfo.getThread());
 	}
 }

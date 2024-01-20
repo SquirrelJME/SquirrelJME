@@ -39,6 +39,10 @@ public class DebuggerState
 	protected final CapabilityStatus capabilities =
 		new CapabilityStatus();
 	
+	/** Stored information manager. */
+	protected final StoredInfoManager storedInfo =
+		new StoredInfoManager();
+	
 	/** Handler for all replies. */
 	private final Map<Integer, ReplyHandler> _replies =
 		new SortedTreeMap<>();
