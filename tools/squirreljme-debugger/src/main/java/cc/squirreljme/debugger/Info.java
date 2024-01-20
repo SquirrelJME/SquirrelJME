@@ -9,7 +9,7 @@
 
 package cc.squirreljme.debugger;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.function.Consumer;
 
 /**
  * Information storage for types and otherwise that are known to the
@@ -22,24 +22,37 @@ public abstract class Info
 	/** The ID of this item. */
 	protected final int id;
 	
-	/** The type of info this is. */
-	protected final InfoType type;
+	/** The kind of info this is. */
+	protected final InfoKind kind;
 	
 	/**
 	 * Initializes the base information.
 	 *
 	 * @param __id The ID number of this info.
+	 * @param __kind The kind of information this is.
 	 * @since 2024/01/20
 	 */
-	public Info(int __id, InfoType __type)
+	public Info(int __id, InfoKind __kind)
 		throws NullPointerException
 	{
-		if (__type == null)
+		if (__kind == null)
 			throw new NullPointerException("NARG");
 		
 		this.id = __id;
-		this.type = __type;
+		this.kind = __kind;
 	}
+	
+	/**
+	 * Requests that the debugger update information about this.
+	 *
+	 * @param __state The state to update in.
+	 * @param __callback The callback to use when an update is complete.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/20
+	 */
+	public abstract void update(DebuggerState __state,
+		Consumer<Info> __callback)
+		throws NullPointerException;
 	
 	/**
 	 * {@inheritDoc}
@@ -49,6 +62,6 @@ public abstract class Info
 	public String toString()
 	{
 		return String.format("%s#%d",
-			this.type, this.id);
+			this.kind, this.id);
 	}
 }

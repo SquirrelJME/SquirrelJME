@@ -10,6 +10,9 @@
 package cc.squirreljme.debugger;
 
 import cc.squirreljme.jdwp.CommLink;
+import cc.squirreljme.jdwp.ErrorType;
+import cc.squirreljme.jdwp.JDWPCommand;
+import cc.squirreljme.jdwp.JDWPCommandSet;
 import cc.squirreljme.jdwp.JDWPException;
 import cc.squirreljme.jdwp.JDWPPacket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -64,6 +67,82 @@ public class DebuggerState
 	}
 	
 	/**
+	 * Creates a packet for a request.
+	 *
+	 * @param __commandSet The command set to use.
+	 * @param __command The command to use.
+	 * @return The newly created packet.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/20
+	 */
+	public JDWPPacket request(JDWPCommandSet __commandSet,
+		JDWPCommand __command)
+		throws NullPointerException
+	{
+		return this.commLink.request(__commandSet, __command);
+	}
+	
+	/**
+	 * Creates a packet for a request.
+	 *
+	 * @param __commandSet The command set to use.
+	 * @param __command The command to use.
+	 * @return The newly created packet.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/20
+	 */
+	public JDWPPacket request(int __commandSet, int __command)
+	{
+		return this.commLink.request(__commandSet, __command);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/01/19
+	 */
+	@Override
+	public void run()
+	{
+		CommLink link = this.commLink;
+		TallyTracker receiveTally = this.receiveTally;
+		
+		// Update remote capabilities
+		this.capabilities.update(this);
+		
+		// Infinite read loop, read in packets accordingly
+		for (;;)
+			try (JDWPPacket packet = link.poll())
+			{
+				// Only when interrupted or terminated does this stop
+				if (packet == null)
+					break;
+				
+				// Tally up!
+				receiveTally.increment();
+				
+				// Debug
+				Debugging.debugNote("Read: %s", packet);
+				
+				// Handle packet
+				if (packet.isReply())
+					this.__processReply(packet);
+				else
+					this.__processRequest(packet);
+			}
+			catch (JDWPException __e)
+			{
+				__e.printStackTrace(System.err);
+				
+				// Stop if shutdown
+				if (link.isShutdown())
+					break;
+			}
+		
+		// Disconnected so indicate that
+		this.disconnectedTally.increment();
+	}
+	
+	/**
 	 * Sends the given packet.
 	 *
 	 * @param __packet The packet to send.
@@ -112,52 +191,6 @@ public class DebuggerState
 		
 		// Send over the link
 		this.commLink.send(__packet);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/01/19
-	 */
-	@Override
-	public void run()
-	{
-		CommLink link = this.commLink;
-		TallyTracker receiveTally = this.receiveTally;
-		
-		// Update remote capabilities
-		this.capabilities.update(this);
-		
-		// Infinite read loop, read in packets accordingly
-		for (;;)
-			try (JDWPPacket packet = link.poll())
-			{
-				// Only when interrupted or terminated does this stop
-				if (packet == null)
-					break;
-				
-				// Tally up!
-				receiveTally.increment();
-				
-				// Debug
-				Debugging.debugNote("Read: %s", packet);
-				
-				// Handle packet
-				if (packet.isReply())
-					this.__processReply(packet);
-				else
-					this.__processRequest(packet);
-			}
-			catch (JDWPException __e)
-			{
-				__e.printStackTrace(System.err);
-				
-				// Stop if shutdown
-				if (link.isShutdown())
-					break;
-			}
-		
-		// Disconnected so indicate that
-		this.disconnectedTally.increment();
 	}
 	
 	/**

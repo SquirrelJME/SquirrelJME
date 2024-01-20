@@ -9,14 +9,12 @@
 
 package cc.squirreljme.debugger;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-
 /**
  * The type of information stored.
  *
  * @since 2024/01/20
  */
-public enum InfoType
+public enum InfoKind
 {
 	/** A thread. */
 	THREAD("Thread")
@@ -44,7 +42,7 @@ public enum InfoType
 	 * @param __desc The item description.
 	 * @since 2024/01/20
 	 */
-	InfoType(String __desc)
+	InfoKind(String __desc)
 	{
 		this.description = __desc;
 	}

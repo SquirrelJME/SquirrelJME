@@ -37,6 +37,7 @@ public class InspectThread
 		
 		// Track these
 		this.addTrack("Started?", __what.isStarted);
+		this.addTrack("Name", __what.threadName);
 		
 		// Update inspection
 		this.update();

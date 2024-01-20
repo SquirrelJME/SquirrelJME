@@ -154,7 +154,7 @@ public class PrimaryFrame
 		
 		// Depends on the type
 		JDialog dialog;
-		switch (__info.type)
+		switch (__info.kind)
 		{
 				// Thread
 			case THREAD:
@@ -185,7 +185,7 @@ public class PrimaryFrame
 		if (__stored == null)
 			throw new NullPointerException("NARG");
 		
-		InfoType type = __stored.type;
+		InfoKind type = __stored.type;
 		
 		// Check to see that we actually know stuff
 		Info[] all = __stored.all();

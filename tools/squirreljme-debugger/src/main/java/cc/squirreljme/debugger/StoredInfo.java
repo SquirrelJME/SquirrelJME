@@ -22,7 +22,7 @@ import java.util.Map;
 public class StoredInfo<I extends Info>
 {
 	/** The type being stored. */
-	protected final InfoType type;
+	protected final InfoKind type;
 	
 	/** The internal item cache. */
 	private final Map<Integer, I> _cache =
@@ -35,7 +35,7 @@ public class StoredInfo<I extends Info>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/20
 	 */
-	public StoredInfo(InfoType __type)
+	public StoredInfo(InfoKind __type)
 		throws NullPointerException
 	{
 		if (__type == null)

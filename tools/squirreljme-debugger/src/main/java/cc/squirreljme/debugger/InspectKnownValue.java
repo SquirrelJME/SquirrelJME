@@ -16,6 +16,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 /**
  * Component for inspecting a known value.
@@ -54,6 +55,8 @@ public class InspectKnownValue
 		BiFunction<JComponent, KnownValue<?>, JComponent> updater;
 		if (__value.type == Boolean.class)
 			updater = InspectKnownValue::__updateBoolean;
+		else if (__value.type == String.class)
+			updater = InspectKnownValue::__updateString;
 		else
 			updater = InspectKnownValue::__updateUnknown;
 		
@@ -111,6 +114,36 @@ public class InspectKnownValue
 		}
 		
 		return check;
+	}
+	
+	/**
+	 * Updates the string value.
+	 *
+	 * @param __base The base component.
+	 * @param __value The value to show.
+	 * @return The component used.
+	 * @since 2024/01/20
+	 */
+	private static JComponent __updateString(JComponent __base,
+		KnownValue<?> __value)
+	{
+		// Need to initialize?
+		JTextField text;
+		if (__base != null)
+			text = (JTextField)__base;
+		else
+		{
+			text = new JTextField();
+			text.setEnabled(false);
+		}
+		
+		// Set label value
+		if (!__value.isKnown())
+			text.setText("Unknown?");
+		else
+			text.setText((String)__value.get());
+		
+		return text;
 	}
 	
 	/**

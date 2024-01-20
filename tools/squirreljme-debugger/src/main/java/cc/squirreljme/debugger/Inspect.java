@@ -27,7 +27,7 @@ import javax.swing.JPanel;
  * @param <I> The item to inspect.
  * @since 2024/01/20
  */
-public abstract class Inspect<I>
+public abstract class Inspect<I extends Info>
 	extends JDialog
 {
 	/** What item is being inspected? */
@@ -39,6 +39,9 @@ public abstract class Inspect<I>
 	
 	/** The root panel. */
 	protected final JPanel panel;
+	
+	/** The state of the debugger. */
+	protected final DebuggerState state;
 	
 	/**
 	 * Initializes the base inspector.
@@ -57,6 +60,9 @@ public abstract class Inspect<I>
 		
 		// What is being inspected?
 		this.what = __what;
+		
+		// Store state for later updates
+		this.state = __state;
 		
 		// This is hard to use when tiny
 		this.setMinimumSize(new Dimension(320, 240));
@@ -91,6 +97,7 @@ public abstract class Inspect<I>
 		// Revert
 		constraints.gridwidth = 1;
 		constraints.fill = GridBagConstraints.NONE;
+		constraints.anchor = GridBagConstraints.CENTER;
 		
 		// Add initial top items
 		constraints.gridy = 1;
@@ -129,6 +136,7 @@ public abstract class Inspect<I>
 		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.gridwidth = 1;
 		constraints.gridheight = 1;
+		constraints.anchor = GridBagConstraints.PAGE_START;
 		
 		// The Y position is depending on which entry this is
 		synchronized (this)
@@ -142,6 +150,9 @@ public abstract class Inspect<I>
 		constraints.gridx = 1;
 		this.panel.add(value, constraints);
 		
+		// Add known
+		this._known.add(value);
+		
 		// Perform packing
 		this.pack();
 	}
@@ -152,6 +163,29 @@ public abstract class Inspect<I>
 	 * @since 2024/01/20
 	 */
 	public final void update()
+	{
+		// Update base information
+		this.what.update(this.state, this::__update);
+	}
+	
+	/**
+	 * Performs the update.
+	 *
+	 * @param __event Not used.
+	 * @since 2024/01/20
+	 */
+	private void __refreshButton(ActionEvent __event)
+	{
+		this.update();
+	}
+	
+	/**
+	 * Called when the information has been updated.
+	 *
+	 * @param __info The information that was updated.
+	 * @since 2024/01/20
+	 */
+	private void __update(Info __info)
 	{
 		// Call internal logic
 		this.updateInternal();
@@ -173,16 +207,5 @@ public abstract class Inspect<I>
 		
 		// Perform packing
 		this.pack();
-	}
-	
-	/**
-	 * Performs the update.
-	 *
-	 * @param __event Not used.
-	 * @since 2024/01/20
-	 */
-	private void __refreshButton(ActionEvent __event)
-	{
-		this.update();
 	}
 }

@@ -26,7 +26,7 @@ public class StoredInfoManager
 	 */
 	public StoredInfoManager()
 	{
-		InfoType[] types = InfoType.values();
+		InfoKind[] types = InfoKind.values();
 		int numTypes = types.length;
 		
 		// Setup storage
@@ -48,7 +48,7 @@ public class StoredInfoManager
 	 */
 	@SuppressWarnings("unchecked")
 	public final <I extends Info> StoredInfo<I> get(Class<I> __class,
-		InfoType __type)
+		InfoKind __type)
 		throws NullPointerException
 	{
 		if (__class == null || __type == null)
@@ -65,6 +65,6 @@ public class StoredInfoManager
 	 */
 	public final StoredInfo<InfoThread> getThread()
 	{
-		return this.<InfoThread>get(InfoThread.class, InfoType.THREAD);
+		return this.<InfoThread>get(InfoThread.class, InfoKind.THREAD);
 	}
 }
