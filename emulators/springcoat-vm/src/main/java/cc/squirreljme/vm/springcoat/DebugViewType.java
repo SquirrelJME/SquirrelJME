@@ -82,6 +82,38 @@ public class DebugViewType
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2024/01/20
+	 */
+	@Override
+	public int constantPoolCount(Object __which)
+	{
+		// Is this a valid class with a pool?
+		SpringClass classy = DebugViewType.__class(__which);
+		if (classy.file == null || classy.isArray() ||
+			classy.isPrimitive())
+			return -1;
+		
+		return classy.file.pool().size();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/01/20
+	 */
+	@Override
+	public byte[] constantPoolRaw(Object __which)
+	{
+		// Is this a valid class with a pool?
+		SpringClass classy = DebugViewType.__class(__which);
+		if (classy.file == null || classy.isArray() ||
+			classy.isPrimitive())
+			return null;
+		
+		return classy.file.pool().rawData();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2021/04/11
 	 */
 	@Override

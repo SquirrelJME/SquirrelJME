@@ -42,6 +42,24 @@ public interface JDWPViewType
 	Object classLoader(Object __which);
 	
 	/**
+	 * Returns the number of items that are in the type's constant pool. 
+	 *
+	 * @param __which Get the constant pool count of what?
+	 * @return The count in the constant pool or {@code -1} if not valid.
+	 * @since 2024/01/20
+	 */
+	int constantPoolCount(Object __which);
+	
+	/**
+	 * Returns the raw data to the class constant pool. 
+	 *
+	 * @param __which Get the constant pool count of what?
+	 * @return The raw bytes for the pool or {@code null} if not valid.
+	 * @since 2024/01/20
+	 */
+	byte[] constantPoolRaw(Object __which);
+	
+	/**
 	 * Returns the component type.
 	 * 
 	 * @param __which Get the component type of what?

@@ -191,6 +191,17 @@ public final class ClassFile
 	}
 	
 	/**
+	 * Returns the constant pool.
+	 *
+	 * @return The constant pool.
+	 * @since 2024/01/20
+	 */
+	public final Pool pool()
+	{
+		return this.pool;
+	}
+	
+	/**
 	 * Returns the source file the class is in.
 	 *
 	 * @return The source file the class is in or {@code null} if it is not

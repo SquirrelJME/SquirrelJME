@@ -543,7 +543,7 @@ public enum CommandSetVirtualMachine
 			rv.writeBoolean(false);
 			
 			// canGetConstantPool
-			rv.writeBoolean(false);
+			rv.writeBoolean(true);
 			
 			// canForceEarlyReturn
 			rv.writeBoolean(false);

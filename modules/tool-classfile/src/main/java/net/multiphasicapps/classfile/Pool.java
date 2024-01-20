@@ -10,7 +10,10 @@
 package net.multiphasicapps.classfile;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.io.MarkableInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.UTFDataFormatException;
 import java.util.Arrays;
@@ -89,15 +92,20 @@ public final class Pool
 	/** The constant pool tags. */
 	private final int[] _tags;
 	
+	/** Raw bytes for the constant pool. */
+	private final byte[] _rawBytes;
+	
 	/**
 	 * Parses and initializes the constant pool structures.
 	 *
+	 * @param __rawBytes Raw constant pool bytes.
 	 * @param __tags The pool tags.
 	 * @param __e The entries which make up the pool, this is used directly.
 	 * @since 2017/06/08
 	 */
-	Pool(int[] __tags, Object... __e)
+	Pool(byte[] __rawBytes, int[] __tags, Object... __e)
 	{
+		this._rawBytes = __rawBytes;
 		this._tags = __tags;
 		this._entries = (__e == null ? new Object[0] : __e);
 	}
@@ -142,6 +150,17 @@ public final class Pool
 				String.format("JC3p %d %s %s", __i, val.getClass(), __cl));
 		
 		return __cl.cast(val);
+	}
+	
+	/**
+	 * Returns the raw constant pool bytes.
+	 *
+	 * @return The raw bytes for the constant pool.
+	 * @since 2024/01/20
+	 */
+	public byte[] rawData()
+	{
+		return this._rawBytes;
 	}
 	
 	/**
@@ -208,6 +227,10 @@ public final class Pool
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
+		// Raw byte output
+		ByteArrayOutputStream rawBytes = new ByteArrayOutputStream();
+		DataOutputStream raw = new DataOutputStream(rawBytes);
+		
 		// Read the raw constant pool contents first
 		int count = __in.readUnsignedShort();
 		int[] tags = new int[count];
@@ -217,6 +240,9 @@ public final class Pool
 			// Read tag
 			int tag = __in.readUnsignedByte();
 			tags[i] = tag;
+			
+			// Send to raw
+			raw.writeByte(tag);
 			
 			// Parse tag data
 			Object data;
@@ -232,6 +258,8 @@ public final class Pool
 					try
 					{
 						data = new UTFConstantEntry(__in.readUTF());
+						
+						raw.writeUTF(data.toString());
 					}
 					
 					/* {@squirreljme.error JC3r Modified UTF-8 data is not in
@@ -249,36 +277,49 @@ public final class Pool
 				case Pool.TAG_NAMEANDTYPE:
 					data = new int[]{__in.readUnsignedShort(),
 						__in.readUnsignedShort()};
+					
+					raw.writeShort(((int[])data)[0]);
+					raw.writeShort(((int[])data)[1]);
 					break;
 					
 					// References to single entry
 				case Pool.TAG_CLASS:
 				case Pool.TAG_STRING:
 					data = new int[]{__in.readUnsignedShort()};
+					
+					raw.writeShort(((int[])data)[0]);
 					break;
 					
 					// Integer
 				case Pool.TAG_INTEGER:
 					data = new ConstantValueInteger(
 						Integer.valueOf(__in.readInt()));
+					
+					raw.writeInt(((ConstantValueInteger)data).intValue());
 					break;
 					
 					// Long
 				case Pool.TAG_LONG:
 					data = new ConstantValueLong(
 						Long.valueOf(__in.readLong()));
+					
+					raw.writeLong(((ConstantValueLong)data).longValue());
 					break;
 					
 					// Float
 				case Pool.TAG_FLOAT:
 					data = new ConstantValueFloat(
 						Float.valueOf(__in.readFloat()));
+					
+					raw.writeFloat(((ConstantValueFloat)data).floatValue());
 					break;
 					
 					// Double
 				case Pool.TAG_DOUBLE:
 					data = new ConstantValueDouble(
 						Double.valueOf(__in.readDouble()));
+					
+					raw.writeDouble(((ConstantValueDouble)data).doubleValue());
 					break;
 					
 					/* {@squirreljme.error JC3s Java ME does not support
@@ -321,7 +362,7 @@ public final class Pool
 		}
 		
 		// Setup
-		return new Pool(tags, entries);
+		return new Pool(rawBytes.toByteArray(), tags, entries);
 	}
 	
 	/**

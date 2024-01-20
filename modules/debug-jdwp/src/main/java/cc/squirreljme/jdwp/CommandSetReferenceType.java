@@ -337,6 +337,40 @@ public enum CommandSetReferenceType
 		}
 	},
 	
+	/** Read the raw constant pool of a class. */
+	CONSTANT_POOL(18)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2024/01/20
+		 */
+		@Override
+		public JDWPPacket execute(JDWPController __controller,
+			JDWPPacket __packet)
+			throws JDWPException
+		{
+			Object type = __packet.readType(__controller, false);
+			
+			// Read information
+			int count = __controller.viewType().constantPoolCount(type);
+			byte[] raw = __controller.viewType().constantPoolRaw(type);
+			
+			// If not existent, this likely a primitive or native type
+			if (count < 0 || raw == null)
+				return __controller.__reply(
+					__packet.id(), ErrorType.ABSENT_INFORMATION);
+			
+			JDWPPacket rv = __controller.__reply(
+				__packet.id(), ErrorType.NO_ERROR);
+			
+			rv.writeInt(count);
+			rv.writeInt(raw.length);
+			rv.write(raw, 0, raw.length);
+			
+			return rv;
+		}
+	},
+	
 	/* End. */
 	;
 	
