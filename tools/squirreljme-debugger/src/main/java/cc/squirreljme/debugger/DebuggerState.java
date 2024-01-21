@@ -375,6 +375,24 @@ public class DebuggerState
 	 */
 	private void __defaultInit()
 	{
+		// Version information
+		try (JDWPPacket packet = this.request(JDWPCommandSet.VIRTUAL_MACHINE,
+			CommandSetVirtualMachine.VERSION))
+		{
+			this.send(packet, (__state, __reply) -> {
+				Debugging.debugNote("Description: %s",
+					__reply.readString());
+				Debugging.debugNote("JDWP Major: %d",
+					__reply.readInt());
+				Debugging.debugNote("JDWP Minor: %d",
+					__reply.readInt());
+				Debugging.debugNote("VM Version: %s",
+					__reply.readString());
+				Debugging.debugNote("VM Name: %s",
+					__reply.readString());
+			});
+		}
+		
 		// Get the capabilities of the remote VM, so we know what we can and
 		// cannot do
 		this.capabilities.update(this);
