@@ -10,6 +10,7 @@
 package cc.squirreljme.debugger;
 
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
@@ -55,8 +56,16 @@ public class StoredInfo<I extends Info>
 	{
 		synchronized (this)
 		{
+			// Get all the known values
 			Collection<I> values = this._cache.values();
-			return (I[])values.toArray(new Info[values.size()]);
+			I[] result = (I[])values.toArray(new Info[values.size()]);
+			
+			// Perform sorting on the values, where possible although it is
+			// very iffy
+			Arrays.sort(result);
+			
+			// Use everything
+			return result;
 		}
 	}
 	
@@ -72,6 +81,23 @@ public class StoredInfo<I extends Info>
 	@SuppressWarnings("unchecked")
 	public final I get(int __id)
 	{
+		return this.get(null, __id);
+	}
+	
+	/**
+	 * Obtains the given item if it is already known if it is not then it
+	 * is created accordingly.
+	 *
+	 * @param __state Optional state, if passed then there will be an implicit
+	 * update to the added item.
+	 * @param __id The ID of the item to get.
+	 * @return The item, this will never be {@code null} as one is always
+	 * created.
+	 * @since 2024/01/20
+	 */
+	@SuppressWarnings("unchecked")
+	public final I get(DebuggerState __state, int __id)
+	{
 		Map<Integer, I> cache = this._cache;
 		synchronized (this)
 		{
@@ -80,6 +106,9 @@ public class StoredInfo<I extends Info>
 			{
 				rv = (I)this.type.seed(__id);
 				cache.put(__id, rv);
+				
+				if (__state != null)
+					rv.update(__state, null);
 			}
 			
 			return rv;

@@ -32,7 +32,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend)
+			SuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
@@ -47,7 +47,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend)
+			SuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
@@ -62,7 +62,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend)
+			SuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
@@ -77,7 +77,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend)
+			SuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
@@ -92,7 +92,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend)
+			SuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
@@ -107,17 +107,16 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend)
+			SuspendPolicy __suspend, EventHandler __handler)
 		{
 			StoredInfo<InfoThread> threadStore =
 				__state.storedInfo.getThread();
 			
 			// Read in packet details
-			int requestId = __packet.readInt();
 			int threadId = __packet.readId();
 			
 			// Mark as started
-			threadStore.get(threadId).isStarted.set(true);
+			threadStore.get(__state, threadId).isStarted.set(true);
 		}
 	},
 	
@@ -130,9 +129,16 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend)
+			SuspendPolicy __suspend, EventHandler __handler)
 		{
-			throw Debugging.todo();
+			StoredInfo<InfoThread> threadStore =
+				__state.storedInfo.getThread();
+			
+			// Read in packet details
+			int threadId = __packet.readId();
+			
+			// Set dead state
+			threadStore.get(__state, threadId).isDead.set(true);
 		}
 	},
 	
@@ -145,7 +151,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend)
+			SuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
@@ -160,7 +166,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend)
+			SuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
@@ -175,7 +181,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend)
+			SuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
@@ -190,7 +196,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend)
+			SuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
@@ -205,7 +211,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend)
+			SuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
@@ -220,7 +226,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend)
+			SuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
@@ -235,7 +241,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend)
+			SuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
@@ -250,7 +256,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend)
+			SuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
@@ -265,7 +271,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend)
+			SuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
@@ -280,7 +286,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend)
+			SuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
@@ -295,7 +301,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend)
+			SuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
@@ -310,7 +316,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend)
+			SuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
@@ -325,7 +331,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend)
+			SuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
@@ -340,7 +346,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend)
+			SuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
@@ -355,7 +361,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend)
+			SuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
@@ -370,7 +376,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend)
+			SuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
@@ -417,10 +423,11 @@ public enum EventProcessor
 	 * @param __state The debugger state.
 	 * @param __packet The packet to read from.
 	 * @param __suspend The suspension policy that is used.
+	 * @param __handler The handler for this specific event.
 	 * @since 2024/01/19
 	 */
 	protected abstract void process(DebuggerState __state, JDWPPacket __packet,
-		SuspendPolicy __suspend);
+		SuspendPolicy __suspend, EventHandler __handler);
 	
 	/**
 	 * Returns the processor for the given event.
@@ -453,7 +460,6 @@ public enum EventProcessor
 		if (__state == null || __packet == null)
 			throw new NullPointerException("NARG");
 		
-		
 		// If the packet is blank, ignore it
 		if (__packet.length() == 0)
 			return;
@@ -474,11 +480,15 @@ public enum EventProcessor
 				return;
 			}
 			
+			// The event request, find the optional handler for it
+			int requestId = __packet.readInt();
+			EventHandler handler = __state.eventHandler(requestId);
+			
 			// Find the processor to use
 			EventProcessor processor = EventProcessor.of(kind);
 			
 			// Process it
-			processor.process(__state, __packet, suspend);
+			processor.process(__state, __packet, suspend, handler);
 		}
 	}
 }

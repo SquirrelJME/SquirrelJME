@@ -10,13 +10,17 @@
 package cc.squirreljme.debugger;
 
 import cc.squirreljme.jdwp.CommLink;
+import cc.squirreljme.jdwp.CommandSetEventRequest;
 import cc.squirreljme.jdwp.ErrorType;
+import cc.squirreljme.jdwp.EventKind;
 import cc.squirreljme.jdwp.JDWPCommand;
 import cc.squirreljme.jdwp.JDWPCommandSet;
 import cc.squirreljme.jdwp.JDWPException;
 import cc.squirreljme.jdwp.JDWPPacket;
+import cc.squirreljme.jdwp.SuspendPolicy;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -48,7 +52,11 @@ public class DebuggerState
 	
 	/** Handler for all replies. */
 	private final Map<Integer, ReplyHandler> _replies =
-		new SortedTreeMap<>();
+		new LinkedHashMap<>();
+	
+	/** Handlers for events. */
+	private final Map<Integer, EventHandler> _eventHandlers =
+		new LinkedHashMap<>();
 	
 	/**
 	 * Initializes the debugger state.
@@ -64,6 +72,64 @@ public class DebuggerState
 			throw new NullPointerException("NARG");
 		
 		this.commLink = __commLink;
+	}
+	
+	/**
+	 * Returns the event handler for the given request.
+	 *
+	 * @param __requestId The request to get.
+	 * @return The handler for the given event, assuming it exists.
+	 * @since 2024/01/20
+	 */
+	public EventHandler eventHandler(int __requestId)
+	{
+		synchronized (this)
+		{
+			return this._eventHandlers.get(__requestId);
+		}
+	}
+	
+	/**
+	 * Requests that an event be listened for.
+	 *
+	 * @param __kind The kind of event to request.
+	 * @param __suspend The suspension policy to use for the given event.
+	 * @param __handler The handler for the event, this is optional.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/20
+	 */
+	public void eventSet(EventKind __kind, SuspendPolicy __suspend,
+		EventHandler __handler)
+		throws NullPointerException
+	{
+		if (__kind == null || __suspend == null)
+			throw new NullPointerException("NARG");
+		
+		try (JDWPPacket out = this.request(JDWPCommandSet.EVENT_REQUEST,
+			CommandSetEventRequest.SET))
+		{
+			// Fill in information
+			out.writeByte(__kind.debuggerId());
+			out.writeByte(__suspend.debuggerId());
+			
+			// Currently just no modifiers
+			out.writeInt(0);
+			
+			// Send it, wait for the response for it
+			if (__handler == null)
+				this.send(out);
+			else
+				this.send(out, (__ignored, __reply) -> {
+					int eventId = __reply.readInt();
+					
+					// Store handler for later
+					Map<Integer, EventHandler> handlers = this._eventHandlers;
+					synchronized (this)
+					{
+						handlers.put(eventId, __handler);
+					}
+				});
+		}
 	}
 	
 	/**
@@ -106,8 +172,8 @@ public class DebuggerState
 		CommLink link = this.commLink;
 		TallyTracker receiveTally = this.receiveTally;
 		
-		// Update remote capabilities
-		this.capabilities.update(this);
+		// Perform default trackers
+		this.__defaultInit();
 		
 		// Infinite read loop, read in packets accordingly
 		for (;;)
@@ -194,6 +260,24 @@ public class DebuggerState
 	}
 	
 	/**
+	 * Default initialization.
+	 *
+	 * @since 2024/01/20
+	 */
+	private void __defaultInit()
+	{
+		// Get the capabilities of the remote VM, so we know what we can and
+		// cannot do
+		this.capabilities.update(this);
+		
+		// Thread events, with no particular handler
+		this.eventSet(EventKind.THREAD_START, SuspendPolicy.NONE,
+			null);
+		this.eventSet(EventKind.THREAD_DEATH, SuspendPolicy.NONE,
+			null);
+	}
+	
+	/**
 	 * Processes the given request packet.
 	 *
 	 * @param __packet The packet to process.
@@ -244,6 +328,9 @@ public class DebuggerState
 		// If this is an event, handle it specifically
 		if (__packet.commandSetId() == 64 && __packet.command() == 100)
 		{
+			// Debug
+			Debugging.debugNote("Process event: %s", __packet);
+			
 			// Handle this as an event
 			EventProcessor.handle(this, __packet);
 			

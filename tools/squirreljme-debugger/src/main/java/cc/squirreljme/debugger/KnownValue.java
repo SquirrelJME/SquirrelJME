@@ -43,6 +43,27 @@ public final class KnownValue<T>
 	}
 	
 	/**
+	 * Initializes the known value with an initial value.
+	 *
+	 * @param __type The type used for the value.
+	 * @param __value The initial value to set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/20
+	 */
+	public KnownValue(Class<T> __type, T __value)
+		throws NullPointerException
+	{
+		if (__type == null)
+			throw new NullPointerException("NARG");
+		
+		this.type = __type;
+		
+		// Set to this known value
+		this._known = true;
+		this._value = __value;
+	}
+	
+	/**
 	 * Gets the current value.
 	 *
 	 * @return The current value, will be {@code null} if not known.
@@ -53,6 +74,23 @@ public final class KnownValue<T>
 		synchronized (this)
 		{
 			return this._value;
+		}
+	}
+	
+	/**
+	 * Gets the current value, or a default.
+	 *
+	 * @param __default The default value if there is no known one.
+	 * @return The current value, will be {@code __default} if not known.
+	 * @since 2024/01/20
+	 */
+	public T getOrDefault(T __default)
+	{
+		synchronized (this)
+		{
+			if (this._known)
+				return this._value;
+			return __default;
 		}
 	}
 	

@@ -13,8 +13,10 @@ import cc.squirreljme.jdwp.CommLink;
 import cc.squirreljme.jdwp.CommandSetThreadReference;
 import cc.squirreljme.jdwp.JDWPCommandSet;
 import cc.squirreljme.jdwp.JDWPPacket;
+import cc.squirreljme.jdwp.JDWPValue;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.function.Consumer;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Thread storage information.
@@ -32,6 +34,10 @@ public class InfoThread
 	protected final KnownValue<String> threadName =
 		new KnownValue<>(String.class);
 	
+	/** Is this thread dead? */
+	protected KnownValue<Boolean> isDead =
+		new KnownValue<>(Boolean.class, false);
+	
 	/**
 	 * Initializes the base thread.
 	 *
@@ -41,6 +47,47 @@ public class InfoThread
 	public InfoThread(int __id)
 	{
 		super(__id, InfoKind.THREAD);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/01/20
+	 */
+	@Override
+	public int compareTo(@NotNull Info __o)
+	{
+		if (!(__o instanceof InfoThread))
+			return super.compareTo(__o);
+		
+		InfoThread other = (InfoThread)__o;
+		
+		// Compare by deadness
+		boolean aDead = this.isDead.getOrDefault(false);
+		boolean bDead = other.isDead.getOrDefault(false);
+		if (aDead != bDead)
+			return (aDead ? 1 : -1);
+		
+		// Compare name next
+		String aName = this.threadName.getOrDefault(null);
+		String bName = this.threadName.getOrDefault(null);
+		if (aName != null && bName != null)
+			return aName.compareTo(bName);
+		
+		// Fallback to normal sort
+		return super.compareTo(__o);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/01/20
+	 */
+	@Override
+	protected String internalString()
+	{
+		String name = this.threadName.getOrDefault("Unknown?");
+		if (this.isDead.getOrDefault(false))
+			return "DEAD " + name;
+		return name;
 	}
 	
 	/**
