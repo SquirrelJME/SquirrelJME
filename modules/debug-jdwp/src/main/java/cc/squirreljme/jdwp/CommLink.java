@@ -351,6 +351,7 @@ public final class CommLink
 		
 		rv._id = __id;
 		rv._errorCode = __error;
+		rv._rawErrorCode = __error.id;
 		rv._flags = JDWPPacket.FLAG_REPLY;
 		
 		return rv;
@@ -417,6 +418,7 @@ public final class CommLink
 		
 		// There is no error technically
 		rv._errorCode = ErrorType.NO_ERROR;
+		rv._rawErrorCode = 0;
 		
 		return rv;
 	}

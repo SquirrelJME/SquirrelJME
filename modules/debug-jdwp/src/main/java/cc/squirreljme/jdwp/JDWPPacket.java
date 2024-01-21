@@ -65,6 +65,9 @@ public final class JDWPPacket
 	volatile int _command =
 		-1;
 	
+	/** The raw error code. */
+	volatile int _rawErrorCode;
+	
 	/** The error code (if a reply). */
 	volatile ErrorType _errorCode;
 	
@@ -810,6 +813,7 @@ public final class JDWPPacket
 			this._commandSet = -1;
 			this._command = -1;
 			this._errorCode = null;
+			this._rawErrorCode = -1;
 			this._length = 0;
 			this._readPos = 0;
 			
@@ -853,7 +857,8 @@ public final class JDWPPacket
 				this._id, flags, length,
 				((flags & JDWPPacket.FLAG_REPLY) != 0 ?
 					(this._errorCode == ErrorType.NO_ERROR ? "" :
-						String.format("[error=%s]", this._errorCode)) :
+						String.format("[error=%s(%d)]",
+							this._errorCode, this._rawErrorCode)) :
 					String.format("[cmdSet=%s;cmd=%s]",
 						(commandSet == null ||
 							commandSet == JDWPCommandSet.UNKNOWN ?
@@ -1473,7 +1478,7 @@ public final class JDWPPacket
 				((__header[6] & 0xFF) << 8) |
 				(__header[7] & 0xFF);
 			int flags;
-			this._flags = (flags = __header[8]);
+			this._flags = ((flags = __header[8]) & 0xFF);
 			
 			// Reply type
 			if ((flags & JDWPPacket.FLAG_REPLY) != 0)
@@ -1483,14 +1488,17 @@ public final class JDWPPacket
 				this._command = -1;
 				
 				// Read just the error code
-				this._errorCode = ErrorType.of(((__header[9] & 0xFF) << 8) |
-					(__header[10] & 0xFF));
+				int rawErrorCode = ((__header[9] & 0xFF) << 8) |
+					(__header[10] & 0xFF);
+				this._rawErrorCode = rawErrorCode;
+				this._errorCode = ErrorType.of(rawErrorCode);
 			}
 			
 			// Non-reply
 			else
 			{
 				// These are not used
+				this._rawErrorCode = 0;
 				this._errorCode = null;
 				
 				// Read the command used

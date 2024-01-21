@@ -47,6 +47,11 @@ final class __TripThreadAlive__
 		JDWPController controller = this.__controller();
 		JDWPState state = controller.state;
 		
+		// Is this the first thread ever called? If it is then implicitly
+		// say that the virtual machine is alive now
+		if (__isAlive && state.latchFirstThread())
+			controller.signal(__thread, EventKind.VM_START, __thread);
+		
 		// Register this thread for later use
 		state.items.put(__thread);
 		

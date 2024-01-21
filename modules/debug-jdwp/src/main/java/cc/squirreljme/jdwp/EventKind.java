@@ -511,7 +511,8 @@ public enum EventKind
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
-			throw Debugging.todo();
+			// Write the starting thread
+			__packet.writeObject(__controller, __thread);
 		}
 	},
 	

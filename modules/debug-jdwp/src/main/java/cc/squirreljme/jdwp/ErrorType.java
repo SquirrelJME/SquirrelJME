@@ -62,6 +62,12 @@ public enum ErrorType
 	/** Virtual machine not running. */
 	VM_DEAD(112),
 	
+	/** Internal error. */
+	INTERNAL(113),
+	
+	/** Thread is not attached. */
+	UNATTACHED_THREAD(113),
+	
 	/** Invalid length. */
 	INVALID_LENGTH(504),
 	

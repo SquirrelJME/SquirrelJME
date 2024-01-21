@@ -117,6 +117,10 @@ public class InfoThread
 					return;
 				}
 				
+				// Another error
+				else if (__response.hasError())
+					return;
+				
 				// Set name
 				this.threadName.set(__response.readString());
 				

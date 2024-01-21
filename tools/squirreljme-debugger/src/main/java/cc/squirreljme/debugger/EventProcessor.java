@@ -352,7 +352,9 @@ public enum EventProcessor
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			SuspendPolicy __suspend, EventHandler __handler)
 		{
-			throw Debugging.todo();
+			// Alias of thread start since this gives the first initial thread
+			EventProcessor.THREAD_START.process(__state, __packet, __suspend,
+				__handler);
 		}
 	},
 	

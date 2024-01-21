@@ -32,6 +32,9 @@ public final class JDWPState
 	private final JDWPView[] _views =
 		new JDWPView[JDWPViewKind.values().length];
 	
+	/** Has this been latched? */
+	private volatile boolean _latchStart;
+	
 	/**
 	 * Initializes the state.
 	 * 
@@ -46,6 +49,27 @@ public final class JDWPState
 			throw new NullPointerException("NARG");
 		
 		this._binding = __binding;
+	}
+	
+	/**
+	 * Latches onto whether this is the first thread being added.
+	 *
+	 * @return If this is the first thread, this method only
+	 * returns {@code true} once.
+	 * @since 2024/01/21
+	 */
+	public boolean latchFirstThread()
+	{
+		synchronized (this)
+		{
+			// Once set, this always returns false
+			if (this._latchStart)
+				return false;
+			
+			// Latch and return true, so we cannot call again
+			this._latchStart = true;
+			return true;
+		}
 	}
 	
 	/**
