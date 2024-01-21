@@ -60,6 +60,9 @@ public class DebuggerState
 	private final Map<Integer, EventHandler> _eventHandlers =
 		new LinkedHashMap<>();
 	
+	/** Has the virtual machine been started? */
+	private volatile boolean _hasStarted;
+	
 	/**
 	 * Initializes the debugger state.
 	 *
@@ -131,6 +134,20 @@ public class DebuggerState
 						handlers.put(eventId, __handler);
 					}
 				});
+		}
+	}
+	
+	/**
+	 * Has this virtual machine been started?
+	 *
+	 * @return If it has been started or not.
+	 * @since 2024/01/21
+	 */
+	public boolean hasStarted()
+	{
+		synchronized (this)
+		{
+			return this._hasStarted;
 		}
 	}
 	
@@ -295,6 +312,19 @@ public class DebuggerState
 		
 		// Send over the link
 		this.commLink.send(__packet);
+	}
+	
+	/**
+	 * Sets that the virtual machine has started.
+	 *
+	 * @since 2024/01/21
+	 */
+	public void setStarted()
+	{
+		synchronized (this)
+		{
+			this._hasStarted = true;
+		}
 	}
 	
 	/**

@@ -384,6 +384,9 @@ public enum EventProcessor
 			EventProcessor.THREAD_START.process(__state, __packet, __suspend,
 				__handler);
 			
+			// Set the VM as started
+			__state.setStarted();
+			
 			// If the VM was started in the suspend state then this would be
 			// known accordingly... so we need to resume the VM since we are
 			// connected to it

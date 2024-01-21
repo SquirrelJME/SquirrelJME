@@ -167,6 +167,11 @@ public abstract class Info
 				return false;
 		}
 		
+		// Do not do any update if the VM has yet to start, assume it has not
+		// been disposed at all in this state
+		if (!__state.hasStarted())
+			return true;
+		
 		// Internal update, if it becomes disposed then set as such
 		boolean result = this.internalUpdate(__state, __callback);
 		if (!result)
