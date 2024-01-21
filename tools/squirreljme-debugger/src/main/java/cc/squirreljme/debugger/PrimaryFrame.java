@@ -13,6 +13,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
+import java.io.InputStream;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -21,6 +23,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
+import net.multiphasicapps.classfile.ClassFile;
 
 /**
  * Primary display window.
@@ -137,6 +140,18 @@ public class PrimaryFrame
 		
 		// Add that to the bottom
 		this.add(statusPanel, BorderLayout.PAGE_END);
+		
+		// For now just show some random method
+		try (InputStream in = PrimaryFrame.class.getResourceAsStream(
+			"test"))
+		{
+			if (in != null)
+				this.showMethod(new JavaMethodViewer(
+					ClassFile.decode(in).methods()[2]));
+		}
+		catch (IOException __ignored)
+		{
+		}
 	}
 	
 	/**
@@ -170,6 +185,23 @@ public class PrimaryFrame
 		// Show it
 		dialog.setLocationRelativeTo(null);
 		dialog.setVisible(true);
+	}
+	
+	/**
+	 * Shows the given method.
+	 *
+	 * @param __method The method to view.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/21
+	 */
+	public void showMethod(MethodViewer __method)
+		throws NullPointerException
+	{
+		if (__method == null)
+			throw new NullPointerException("NARG");
+		
+		ShownMethod show = new ShownMethod(__method);
+		this.add(show, BorderLayout.CENTER);
 	}
 	
 	/**
