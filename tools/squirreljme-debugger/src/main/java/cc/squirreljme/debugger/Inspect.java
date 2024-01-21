@@ -14,6 +14,7 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
@@ -30,9 +31,6 @@ import javax.swing.JPanel;
 public abstract class Inspect<I extends Info>
 	extends JDialog
 {
-	/** What item is being inspected? */
-	protected final I what;
-	
 	/** Known items being inspected. */
 	private final List<InspectKnownValue> _known =
 		new ArrayList<>();
@@ -42,6 +40,9 @@ public abstract class Inspect<I extends Info>
 	
 	/** The state of the debugger. */
 	protected final DebuggerState state;
+	
+	/** What item is being inspected? */
+	private final WeakReference<I> _what;
 	
 	/**
 	 * Initializes the base inspector.
@@ -59,7 +60,7 @@ public abstract class Inspect<I extends Info>
 			throw new NullPointerException("NARG");
 		
 		// What is being inspected?
-		this.what = __what;
+		this._what = new WeakReference<>(__what);
 		
 		// Store state for later updates
 		this.state = __state;
@@ -164,8 +165,22 @@ public abstract class Inspect<I extends Info>
 	 */
 	public final void update()
 	{
-		// Update base information
-		this.what.update(this.state, this::__update);
+		I what = this.what();
+		
+		// Update base information, if it still exists
+		if (what != null)
+			what.update(this.state, this::__update);
+	}
+	
+	/**
+	 * Returns the stored item.
+	 *
+	 * @return The stored item or {@code null} if it was disposed of.
+	 * @since 2024/01/21
+	 */
+	protected final I what()
+	{
+		return this._what.get();
 	}
 	
 	/**
@@ -191,7 +206,7 @@ public abstract class Inspect<I extends Info>
 		this.updateInternal();
 		
 		// Update title of what we are looking at
-		this.setTitle(this.what.toString());
+		this.setTitle(this._what.toString());
 		
 		// Update all knowns
 		InspectKnownValue[] update;

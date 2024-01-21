@@ -9,12 +9,10 @@
 
 package cc.squirreljme.debugger;
 
-import cc.squirreljme.jdwp.CommLink;
 import cc.squirreljme.jdwp.CommandSetThreadReference;
+import cc.squirreljme.jdwp.ErrorType;
 import cc.squirreljme.jdwp.JDWPCommandSet;
 import cc.squirreljme.jdwp.JDWPPacket;
-import cc.squirreljme.jdwp.JDWPValue;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.function.Consumer;
 import org.jetbrains.annotations.NotNull;
 
@@ -92,12 +90,18 @@ public class InfoThread
 	
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @return
 	 * @since 2024/01/20
 	 */
 	@Override
-	public void update(DebuggerState __state, Consumer<Info> __callback)
+	public boolean internalUpdate(DebuggerState __state,
+		Consumer<Info> __callback)
 		throws NullPointerException
 	{
+		if (__state == null)
+			throw new NullPointerException("NARG");
+		
 		// Request name update
 		try (JDWPPacket out = __state.request(JDWPCommandSet.THREAD_REFERENCE,
 			CommandSetThreadReference.NAME))
@@ -106,6 +110,13 @@ public class InfoThread
 			
 			// Send it
 			__state.send(out, (__ignored, __response) -> {
+				// Thread no longer valid?
+				if (__response.hasError(ErrorType.INVALID_THREAD))
+				{
+					this.dispose();
+					return;
+				}
+				
 				// Set name
 				this.threadName.set(__response.readString());
 				
@@ -114,5 +125,8 @@ public class InfoThread
 					__callback.accept(this);
 			});
 		}
+		
+		// Consider as valid unless otherwise
+		return true;
 	}
 }

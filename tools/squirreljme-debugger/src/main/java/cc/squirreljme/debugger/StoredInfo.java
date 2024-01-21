@@ -9,9 +9,10 @@
 
 package cc.squirreljme.debugger;
 
-import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -27,7 +28,7 @@ public class StoredInfo<I extends Info>
 	
 	/** The internal item cache. */
 	private final Map<Integer, I> _cache =
-		new SortedTreeMap<>();
+		new LinkedHashMap<>();
 	
 	/**
 	 * Initializes the stored info.
@@ -52,15 +53,18 @@ public class StoredInfo<I extends Info>
 	 * @since 2024/01/20
 	 */
 	@SuppressWarnings("unchecked")
-	public I[] all()
+	public I[] all(DebuggerState __state)
 	{
 		synchronized (this)
 		{
-			// Get all the known values
+			// Get all the known values, perform garbage collection on them
 			Collection<I> values = this._cache.values();
+			if (__state != null)
+				this.__gc(__state);
+			
 			I[] result = (I[])values.toArray(new Info[values.size()]);
 			
-			// Perform sorting on the values, where possible although it is
+			// Perform sorting on the values, where possible, although it is
 			// very iffy
 			Arrays.sort(result);
 			
@@ -91,8 +95,8 @@ public class StoredInfo<I extends Info>
 	 * @param __state Optional state, if passed then there will be an implicit
 	 * update to the added item.
 	 * @param __id The ID of the item to get.
-	 * @return The item, this will never be {@code null} as one is always
-	 * created.
+	 * @return The item, if this returns {@code null} then the item was likely
+	 * disposed of.
 	 * @since 2024/01/20
 	 */
 	@SuppressWarnings("unchecked")
@@ -105,10 +109,14 @@ public class StoredInfo<I extends Info>
 			if (rv == null)
 			{
 				rv = (I)this.type.seed(__id);
-				cache.put(__id, rv);
 				
+				// Perform update of the object?
 				if (__state != null)
-					rv.update(__state, null);
+					if (!rv.update(__state, null))
+						return null;
+				
+				// Store into the cache
+				cache.put(__id, rv);
 			}
 			
 			return rv;
@@ -128,6 +136,37 @@ public class StoredInfo<I extends Info>
 		synchronized (this)
 		{
 			return this._cache.get(__id);
+		}
+	}
+	
+	/**
+	 * Performs garbage collection on the given values.
+	 *
+	 * @param __state The state being ran in.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/21
+	 */
+	private void __gc(DebuggerState __state)
+		throws NullPointerException
+	{
+		synchronized (this)
+		{
+			Map<Integer, I> items = this._cache;
+			for (Iterator<Map.Entry<Integer, I>> it =
+				 items.entrySet().iterator(); it.hasNext();)
+			{
+				Map.Entry<Integer, I> entry = it.next();
+				I item = entry.getValue();
+				
+				// If the item is known to be disposed, remove it
+				if (item.isDisposed())
+					it.remove();
+				
+				// Request an update for this item, if it gets disposed of then
+				// remove that as well
+				else if (!item.update(__state, null))
+					it.remove();
+			}
 		}
 	}
 }

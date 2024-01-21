@@ -10,6 +10,8 @@
 package cc.squirreljme.debugger;
 
 import java.awt.BorderLayout;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import javax.swing.JCheckBox;
@@ -26,14 +28,14 @@ import javax.swing.JTextField;
 public class InspectKnownValue
 	extends JPanel
 {
-	/** The value being inspected. */
-	protected final KnownValue<?> value;
-	
 	/** The updater for the value. */
 	protected final BiFunction<JComponent, KnownValue<?>, JComponent> updater;
 	
 	/** The base root component. */
 	protected final JComponent base;
+	
+	/** The value being inspected. */
+	private final Reference<KnownValue<?>> _value;
 	
 	/**
 	 * Initializes the inspector.
@@ -49,7 +51,7 @@ public class InspectKnownValue
 			throw new NullPointerException("NARG");
 		
 		// Set value
-		this.value = __value;
+		this._value = new WeakReference<>(__value);
 		
 		// Determine how this updates...
 		BiFunction<JComponent, KnownValue<?>, JComponent> updater;
@@ -79,8 +81,20 @@ public class InspectKnownValue
 	 */
 	public void update()
 	{
-		// Call updater
-		this.updater.apply(this.base, this.value);
+		KnownValue<?> value = this.__value();
+		if (value != null)
+			this.updater.apply(this.base, value);
+	}
+	
+	/**
+	 * Returns the stored known value.
+	 *
+	 * @return The resultant value.
+	 * @since 2024/01/21
+	 */
+	private KnownValue<?> __value()
+	{
+		return this._value.get();
 	}
 	
 	/**

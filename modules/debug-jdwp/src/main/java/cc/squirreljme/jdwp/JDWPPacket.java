@@ -247,6 +247,48 @@ public final class JDWPPacket
 	}
 	
 	/**
+	 * Does this packet have any error?
+	 *
+	 * @return If this has an error.
+	 * @since 2024/01/21
+	 */
+	public boolean hasError()
+	{
+		synchronized (this)
+		{
+			// Ensure this is open
+			this.__checkOpen();
+			
+			return this._errorCode != null;
+		}
+	}
+	
+	/**
+	 * Does this packet have the given error? This should be called when there
+	 * are other possible error states, but we only want to match against a
+	 * specific case.
+	 *
+	 * @param __error The error to check against.
+	 * @return If this has an error, and it is set to {@code __error}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/21
+	 */
+	public boolean hasError(ErrorType __error)
+		throws NullPointerException
+	{
+		if (__error == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (this)
+		{
+			// Ensure this is open
+			this.__checkOpen();
+			
+			return this._errorCode == __error;
+		}
+	}
+	
+	/**
 	 * Returns the packet ID.
 	 * 
 	 * @return The packet it.

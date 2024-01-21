@@ -116,7 +116,9 @@ public enum EventProcessor
 			int threadId = __packet.readId();
 			
 			// Mark as started
-			threadStore.get(__state, threadId).isStarted.set(true);
+			InfoThread thread = threadStore.get(__state, threadId);
+			if (thread != null)
+				thread.isStarted.set(true);
 		}
 	},
 	
@@ -138,7 +140,9 @@ public enum EventProcessor
 			int threadId = __packet.readId();
 			
 			// Set dead state
-			threadStore.get(__state, threadId).isDead.set(true);
+			InfoThread thread = threadStore.get(__state, threadId);
+			if (thread != null)
+				thread.isDead.set(true);
 		}
 	},
 	

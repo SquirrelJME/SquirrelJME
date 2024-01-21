@@ -9,7 +9,6 @@
 
 package cc.squirreljme.debugger;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.function.Consumer;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,6 +26,9 @@ public abstract class Info
 	
 	/** The kind of info this is. */
 	protected final InfoKind kind;
+	
+	/** Has this item been disposed of? */
+	private volatile boolean _disposed;
 	
 	/**
 	 * Initializes the base information.
@@ -46,6 +48,19 @@ public abstract class Info
 	}
 	
 	/**
+	 * Internal update logic for this item.
+	 *
+	 * @param __state The state to update in.
+	 * @param __callback The callback to use when an update is complete.
+	 * @return Will return {@code true} if the info is not disposed.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/20
+	 */
+	protected abstract boolean internalUpdate(DebuggerState __state,
+		Consumer<Info> __callback)
+		throws NullPointerException;
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2024/01/20
 	 */
@@ -63,6 +78,19 @@ public abstract class Info
 	}
 	
 	/**
+	 * Disposes this item to try to get rid of it.
+	 *
+	 * @since 2024/01/21
+	 */
+	protected final void dispose()
+	{
+		synchronized (this)
+		{
+			this._disposed = true;
+		}
+	}
+	
+	/**
 	 * Returns the internal string representation.
 	 *
 	 * @return The string to use.
@@ -74,16 +102,18 @@ public abstract class Info
 	}
 	
 	/**
-	 * Requests that the debugger update information about this.
+	 * Has this item been disposed of?
 	 *
-	 * @param __state The state to update in.
-	 * @param __callback The callback to use when an update is complete.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2024/01/20
+	 * @return The resultant item.
+	 * @since 2024/01/21
 	 */
-	public abstract void update(DebuggerState __state,
-		Consumer<Info> __callback)
-		throws NullPointerException;
+	public final boolean isDisposed()
+	{
+		synchronized (this)
+		{
+			return this._disposed;
+		}
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -92,12 +122,57 @@ public abstract class Info
 	@Override
 	public String toString()
 	{
-		String internalString = this.internalString();
+		// Check if disposed first
+		synchronized (this)
+		{
+			if (this._disposed)
+				return String.format("DISPOSED %s#%d", this.kind, this.id);
+		}
 		
-		if (internalString != null)
-			return String.format("%s (%s#%d)",
-				internalString, this.kind, this.id);
-		return String.format("%s#%d",
-			this.kind, this.id);
+		// Has this been disposed?
+		String internalString = this.internalString();
+		synchronized (this)
+		{
+			if (this._disposed)
+				return String.format("DISPOSED %s#%d", this.kind, this.id);
+			
+			else if (internalString != null)
+				return String.format("%s (%s#%d)", internalString, this.kind,
+					this.id);
+			
+			return String.format("%s#%d", this.kind, this.id);
+		}
+	}
+	
+	/**
+	 * Requests that the debugger update information about this.
+	 *
+	 * @param __state The state to update in.
+	 * @param __callback The callback to use when an update is complete.
+	 * @return Will return {@code true} if the info is not disposed.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/21
+	 */
+	public boolean update(DebuggerState __state,
+		Consumer<Info> __callback)
+		throws NullPointerException
+	{
+		if (__state == null)
+			throw new NullPointerException("NARG");
+		
+		// If this has been disposed of, do nothing
+		synchronized (this)
+		{
+			if (this._disposed)
+				return false;
+		}
+		
+		// Internal update, if it becomes disposed then set as such
+		boolean result = this.internalUpdate(__state, __callback);
+		if (!result)
+			this.dispose();
+		
+		// Run the check again since the information could have been updated
+		return !this.isDisposed();
 	}
 }

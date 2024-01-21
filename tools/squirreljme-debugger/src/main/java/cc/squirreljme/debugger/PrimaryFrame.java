@@ -188,7 +188,7 @@ public class PrimaryFrame
 		InfoKind type = __stored.type;
 		
 		// Check to see that we actually know stuff
-		Info[] all = __stored.all();
+		Info[] all = __stored.all(this.debuggerState);
 		if (all.length == 0)
 		{
 			JOptionPane.showMessageDialog(this,
