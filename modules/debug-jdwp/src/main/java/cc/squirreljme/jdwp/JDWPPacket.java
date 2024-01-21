@@ -262,7 +262,7 @@ public final class JDWPPacket
 			// Ensure this is open
 			this.__checkOpen();
 			
-			return this._errorCode != null;
+			return this._errorCode != ErrorType.NO_ERROR;
 		}
 	}
 	

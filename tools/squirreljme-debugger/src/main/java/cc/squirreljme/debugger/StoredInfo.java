@@ -9,6 +9,7 @@
 
 package cc.squirreljme.debugger;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -113,7 +114,12 @@ public class StoredInfo<I extends Info>
 				// Perform update of the object?
 				if (__state != null)
 					if (!rv.update(__state, null))
+					{
+						// Debug
+						Debugging.debugNote("Initial was disposed?");
+						
 						return null;
+					}
 				
 				// Store into the cache
 				cache.put(__id, rv);

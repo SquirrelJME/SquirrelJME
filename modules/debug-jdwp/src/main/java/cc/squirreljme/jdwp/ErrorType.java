@@ -66,7 +66,7 @@ public enum ErrorType
 	INTERNAL(113),
 	
 	/** Thread is not attached. */
-	UNATTACHED_THREAD(113),
+	UNATTACHED_THREAD(115),
 	
 	/** Invalid length. */
 	INVALID_LENGTH(504),

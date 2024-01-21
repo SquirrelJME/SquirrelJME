@@ -289,8 +289,8 @@ public enum VMType
 							jvmArgs.add(String.format(
 								"-agentlib:jdwp=transport=dt_socket," +
 								"server=n," +
-								"address=%s:%d,suspend=y," +
-								"onuncaught=y", host, port));
+								"address=%s:%d,suspend=y",
+								host, port));
 					}
 				}
 			}

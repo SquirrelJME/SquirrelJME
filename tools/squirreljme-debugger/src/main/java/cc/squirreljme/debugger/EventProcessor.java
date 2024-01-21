@@ -9,6 +9,7 @@
 
 package cc.squirreljme.debugger;
 
+import cc.squirreljme.jdwp.ErrorType;
 import cc.squirreljme.jdwp.EventKind;
 import cc.squirreljme.jdwp.JDWPPacket;
 import cc.squirreljme.jdwp.SuspendPolicy;
@@ -28,6 +29,7 @@ public enum EventProcessor
 	{
 		/**
 		 * {@inheritDoc}
+		 *
 		 * @since 2024/01/19
 		 */
 		@Override
@@ -43,6 +45,7 @@ public enum EventProcessor
 	{
 		/**
 		 * {@inheritDoc}
+		 *
 		 * @since 2024/01/19
 		 */
 		@Override
@@ -58,6 +61,7 @@ public enum EventProcessor
 	{
 		/**
 		 * {@inheritDoc}
+		 *
 		 * @since 2024/01/19
 		 */
 		@Override
@@ -73,6 +77,7 @@ public enum EventProcessor
 	{
 		/**
 		 * {@inheritDoc}
+		 *
 		 * @since 2024/01/19
 		 */
 		@Override
@@ -88,6 +93,7 @@ public enum EventProcessor
 	{
 		/**
 		 * {@inheritDoc}
+		 *
 		 * @since 2024/01/19
 		 */
 		@Override
@@ -103,6 +109,7 @@ public enum EventProcessor
 	{
 		/**
 		 * {@inheritDoc}
+		 *
 		 * @since 2024/01/19
 		 */
 		@Override
@@ -127,6 +134,7 @@ public enum EventProcessor
 	{
 		/**
 		 * {@inheritDoc}
+		 *
 		 * @since 2024/01/19
 		 */
 		@Override
@@ -151,6 +159,7 @@ public enum EventProcessor
 	{
 		/**
 		 * {@inheritDoc}
+		 *
 		 * @since 2024/01/19
 		 */
 		@Override
@@ -166,6 +175,7 @@ public enum EventProcessor
 	{
 		/**
 		 * {@inheritDoc}
+		 *
 		 * @since 2024/01/19
 		 */
 		@Override
@@ -181,6 +191,7 @@ public enum EventProcessor
 	{
 		/**
 		 * {@inheritDoc}
+		 *
 		 * @since 2024/01/19
 		 */
 		@Override
@@ -196,6 +207,7 @@ public enum EventProcessor
 	{
 		/**
 		 * {@inheritDoc}
+		 *
 		 * @since 2024/01/19
 		 */
 		@Override
@@ -211,6 +223,7 @@ public enum EventProcessor
 	{
 		/**
 		 * {@inheritDoc}
+		 *
 		 * @since 2024/01/19
 		 */
 		@Override
@@ -226,6 +239,7 @@ public enum EventProcessor
 	{
 		/**
 		 * {@inheritDoc}
+		 *
 		 * @since 2024/01/19
 		 */
 		@Override
@@ -241,6 +255,7 @@ public enum EventProcessor
 	{
 		/**
 		 * {@inheritDoc}
+		 *
 		 * @since 2024/01/19
 		 */
 		@Override
@@ -256,6 +271,7 @@ public enum EventProcessor
 	{
 		/**
 		 * {@inheritDoc}
+		 *
 		 * @since 2024/01/19
 		 */
 		@Override
@@ -271,6 +287,7 @@ public enum EventProcessor
 	{
 		/**
 		 * {@inheritDoc}
+		 *
 		 * @since 2024/01/19
 		 */
 		@Override
@@ -286,6 +303,7 @@ public enum EventProcessor
 	{
 		/**
 		 * {@inheritDoc}
+		 *
 		 * @since 2024/01/19
 		 */
 		@Override
@@ -301,6 +319,7 @@ public enum EventProcessor
 	{
 		/**
 		 * {@inheritDoc}
+		 *
 		 * @since 2024/01/19
 		 */
 		@Override
@@ -316,6 +335,7 @@ public enum EventProcessor
 	{
 		/**
 		 * {@inheritDoc}
+		 *
 		 * @since 2024/01/19
 		 */
 		@Override
@@ -331,6 +351,7 @@ public enum EventProcessor
 	{
 		/**
 		 * {@inheritDoc}
+		 *
 		 * @since 2024/01/19
 		 */
 		@Override
@@ -346,15 +367,30 @@ public enum EventProcessor
 	{
 		/**
 		 * {@inheritDoc}
+		 *
 		 * @since 2024/01/19
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			SuspendPolicy __suspend, EventHandler __handler)
 		{
+			StoredInfo<InfoThread> threadStore =
+				__state.storedInfo.getThread();
+			
+			// Read in packet details
+			InfoThread thread = threadStore.get(__state, __packet.readId());
+			
 			// Alias of thread start since this gives the first initial thread
 			EventProcessor.THREAD_START.process(__state, __packet, __suspend,
 				__handler);
+			
+			// If the VM was started in the suspend state then this would be
+			// known accordingly... so we need to resume the VM since we are
+			// connected to it
+			if (__suspend == SuspendPolicy.EVENT_THREAD)
+				__state.threadResume(thread);
+			else if (__suspend == SuspendPolicy.ALL)
+				__state.threadResumeAll();
 		}
 	},
 	
@@ -363,6 +399,7 @@ public enum EventProcessor
 	{
 		/**
 		 * {@inheritDoc}
+		 *
 		 * @since 2024/01/19
 		 */
 		@Override
@@ -378,6 +415,7 @@ public enum EventProcessor
 	{
 		/**
 		 * {@inheritDoc}
+		 *
 		 * @since 2024/01/19
 		 */
 		@Override
@@ -432,8 +470,8 @@ public enum EventProcessor
 	 * @param __handler The handler for this specific event.
 	 * @since 2024/01/19
 	 */
-	protected abstract void process(DebuggerState __state, JDWPPacket __packet,
-		SuspendPolicy __suspend, EventHandler __handler);
+	protected abstract void process(DebuggerState __state,
+		JDWPPacket __packet, SuspendPolicy __suspend, EventHandler __handler);
 	
 	/**
 	 * Returns the processor for the given event.
@@ -493,8 +531,14 @@ public enum EventProcessor
 			// Find the processor to use
 			EventProcessor processor = EventProcessor.of(kind);
 			
+			// Debug
+			Debugging.debugNote(
+				"Process event %d of type %s (suspend=%s)...",
+				requestId, processor, suspend);
+			
 			// Process it
-			processor.process(__state, __packet, suspend, handler);
+			processor.process(__state, __packet, suspend,
+				handler);
 		}
 	}
 }

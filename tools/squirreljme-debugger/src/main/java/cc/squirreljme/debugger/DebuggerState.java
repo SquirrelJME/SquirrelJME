@@ -11,6 +11,8 @@ package cc.squirreljme.debugger;
 
 import cc.squirreljme.jdwp.CommLink;
 import cc.squirreljme.jdwp.CommandSetEventRequest;
+import cc.squirreljme.jdwp.CommandSetThreadReference;
+import cc.squirreljme.jdwp.CommandSetVirtualMachine;
 import cc.squirreljme.jdwp.ErrorType;
 import cc.squirreljme.jdwp.EventKind;
 import cc.squirreljme.jdwp.JDWPCommand;
@@ -130,6 +132,42 @@ public class DebuggerState
 					}
 				});
 		}
+	}
+	
+	/**
+	 * Creates a reply packet.
+	 *
+	 * @param __id The packet ID that is being responded to.
+	 * @param __error The error to use for the packet.
+	 * @return The resultant reply packet.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/21
+	 */
+	public JDWPPacket reply(JDWPPacket __id, ErrorType __error)
+		throws NullPointerException
+	{
+		if (__id == null || __error == null)
+			throw new NullPointerException("NARG");
+		
+		return this.reply(__id.id(), __error);
+	}
+	
+	/**
+	 * Creates a reply packet.
+	 *
+	 * @param __id The packet ID that is being responded to.
+	 * @param __error The error to use for the packet.
+	 * @return The resultant reply packet.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/21
+	 */
+	public JDWPPacket reply(int __id, ErrorType __error)
+		throws NullPointerException
+	{
+		if (__error == null)
+			throw new NullPointerException("NARG");
+		
+		return this.commLink.reply(__id, __error);
 	}
 	
 	/**
@@ -260,6 +298,47 @@ public class DebuggerState
 	}
 	
 	/**
+	 * Resumes a single thread.
+	 *
+	 * @param __thread The thread to resume.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/21
+	 */
+	public void threadResume(InfoThread __thread)
+		throws NullPointerException
+	{
+		if (__thread == null)
+			throw new NullPointerException("NARG");
+		
+		try (JDWPPacket out = this.request(JDWPCommandSet.THREAD_REFERENCE,
+			CommandSetThreadReference.RESUME))
+		{
+			// Write the ID of the thread
+			out.writeId(__thread.id);
+			
+			// Send it
+			this.send(out);
+		}
+	}
+	
+	/**
+	 * Resumes all threads.
+	 *
+	 * @since 2024/01/21
+	 */
+	public void threadResumeAll()
+	{
+		// The all version uses the VM command set as there is no
+		// base thread to use
+		try (JDWPPacket out = this.request(JDWPCommandSet.VIRTUAL_MACHINE,
+			CommandSetVirtualMachine.RESUME))
+		{
+			// Send it
+			this.send(out);
+		}
+	}
+	
+	/**
 	 * Default initialization.
 	 *
 	 * @since 2024/01/20
@@ -272,9 +351,9 @@ public class DebuggerState
 		
 		// Thread events, with no particular handler
 		this.eventSet(EventKind.THREAD_START, SuspendPolicy.NONE,
-			null);
+			(__state, __reply) -> {});
 		this.eventSet(EventKind.THREAD_DEATH, SuspendPolicy.NONE,
-			null);
+			(__state, __reply) -> {});
 	}
 	
 	/**
