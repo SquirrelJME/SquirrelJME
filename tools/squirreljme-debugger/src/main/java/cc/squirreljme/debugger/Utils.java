@@ -1,0 +1,61 @@
+// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
+// ---------------------------------------------------------------------------
+// Multi-Phasic Applications: SquirrelJME
+//     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+// ---------------------------------------------------------------------------
+// SquirrelJME is under the Mozilla Public License Version 2.0.
+// See license.mkd for licensing and copyright information.
+// ---------------------------------------------------------------------------
+
+package cc.squirreljme.debugger;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+
+/**
+ * Utilities.
+ *
+ * @since 2024/01/22
+ */
+public final class Utils
+{
+	/**
+	 * Not used.
+	 * 
+	 * @since 2024/01/22
+	 */
+	private Utils()
+	{
+	}
+	
+	/**
+	 * Gets the stack trace of the given exception.
+	 *
+	 * @param __e The exception to get the stack trace of.
+	 * @return The string containing the stack trace.
+	 * @since 2024/01/22
+	 */
+	public static String throwableTrace(Throwable __e)
+	{
+		String message;
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			 PrintStream ps = new PrintStream(baos, true,
+				"utf-8"))
+		{
+			// Print to the output
+			__e.printStackTrace(ps);
+			
+			// Make sure it is flushed
+			ps.flush();
+			
+			message = baos.toString("utf-8");
+		}
+		catch (IOException __f)
+		{
+			// Ignore
+			message = "Could not emit trace, check stderr.";
+		}
+		return message;
+	}
+}

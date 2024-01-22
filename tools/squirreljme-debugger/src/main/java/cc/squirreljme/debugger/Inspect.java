@@ -36,7 +36,7 @@ public abstract class Inspect<I extends Info>
 		new ArrayList<>();
 	
 	/** The root panel. */
-	protected final JPanel panel;
+	protected final SequentialPanel panel;
 	
 	/** The state of the debugger. */
 	protected final DebuggerState state;
@@ -68,44 +68,23 @@ public abstract class Inspect<I extends Info>
 		// This is hard to use when tiny
 		this.setMinimumSize(new Dimension(320, 240));
 		
-		// Setup stretching panel
-		JPanel panel = new JPanel();
-		this.panel = panel;
+		// BorderLayout keeps things simple
 		this.setLayout(new BorderLayout());
-		this.add(panel, BorderLayout.CENTER);
 		
-		// Setup grid view for items
-		GridBagLayout layout = new GridBagLayout();
-		GridBagConstraints constraints = new GridBagConstraints();
-		panel.setLayout(layout);
-		
-		// Default settings
-		constraints.gridwidth = 1;
-		constraints.gridheight = 1;
-		constraints.anchor = GridBagConstraints.FIRST_LINE_START; 
+		// Setup panel for viewing
+		SequentialPanel panel = new SequentialPanel(true);
+		this.panel = panel;
+		this.add(panel.panel(), BorderLayout.CENTER);
 		
 		// Refresh button
 		JButton refresh = new JButton("Refresh");
 		refresh.addActionListener(this::__refreshButton);
+		panel.add(refresh);
 		
-		// Add to form
-		constraints.gridwidth = GridBagConstraints.REMAINDER;
-		constraints.fill = GridBagConstraints.HORIZONTAL;
-		constraints.gridx = 0;
-		constraints.gridy = 0;
-		panel.add(refresh, constraints);
-		
-		// Revert
-		constraints.gridwidth = 1;
-		constraints.fill = GridBagConstraints.NONE;
-		constraints.anchor = GridBagConstraints.CENTER;
-		
-		// Add initial top items
-		constraints.gridy = 1;
-		constraints.gridx = 0;
-		panel.add(new JLabel("Key"), constraints);
-		constraints.gridx = 2;
-		panel.add(new JLabel("Value"), constraints);
+		// Add basic key/value panel
+		panel.add(new KeyValuePanel(
+			new JLabel("Key"),
+			new JLabel("Value")));
 	}
 	
 	/**
@@ -133,23 +112,9 @@ public abstract class Inspect<I extends Info>
 		JLabel key = new JLabel(__desc);
 		InspectKnownValue value = new InspectKnownValue(__value);
 		
-		// Setup constraints
-		GridBagConstraints constraints = new GridBagConstraints();
-		constraints.gridwidth = 1;
-		constraints.gridheight = 1;
-		constraints.anchor = GridBagConstraints.PAGE_START;
-		
-		// The Y position is depending on which entry this is
-		synchronized (this)
-		{
-			constraints.gridy = 2 + this._known.size();
-		}
-		
-		// Add both
-		constraints.gridx = 0;
-		this.panel.add(key, constraints);
-		constraints.gridx = 1;
-		this.panel.add(value, constraints);
+		// Add key/value
+		this.panel.add(new KeyValuePanel(
+			key, value));
 		
 		// Add known
 		this._known.add(value);

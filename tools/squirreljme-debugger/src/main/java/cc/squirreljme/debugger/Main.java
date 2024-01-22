@@ -12,12 +12,9 @@ package cc.squirreljme.debugger;
 import cc.squirreljme.emulator.NativeBinding;
 import cc.squirreljme.jdwp.CommLink;
 import cc.squirreljme.jdwp.CommLinkDirection;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintStream;
-import java.io.StringWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import javax.swing.JFrame;
@@ -71,24 +68,7 @@ public class Main
 		// Failed to emit exception
 		catch (Throwable __e)
 		{
-			String message;
-			try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				PrintStream ps = new PrintStream(baos, true,
-					"utf-8"))
-			{
-				// Print to the output
-				__e.printStackTrace(ps);
-				
-				// Make sure it is flushed
-				ps.flush();
-				
-				message = baos.toString("utf-8");
-			}
-			catch (IOException __f)
-			{
-				// Ignore
-				message = "Could not emit trace, check stderr.";
-			}
+			String message = Utils.throwableTrace(__e);
 			
 			// Oh well...
 			__e.printStackTrace(System.err);

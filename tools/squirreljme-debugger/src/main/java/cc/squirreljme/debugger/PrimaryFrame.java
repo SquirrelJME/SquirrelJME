@@ -9,6 +9,7 @@
 
 package cc.squirreljme.debugger;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -16,11 +17,13 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -28,6 +31,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import net.multiphasicapps.classfile.ClassFile;
 import org.freedesktop.tango.TangoIconLoader;
 
@@ -147,42 +151,52 @@ public class PrimaryFrame
 		JToolBar toolBar = new JToolBar();
 		this.toolBar = toolBar;
 		
-		toolBar.add(PrimaryFrame.__barButton(
-			"View Class From Disk", "document-open"));
-		toolBar.add(PrimaryFrame.__barButton(
-			"Copy Method to Clipboard", "edit-copy"));
+		JButton viewClassDisk = PrimaryFrame.__barButton(toolBar,
+			"View Class From Disk", "document-open");
+		viewClassDisk.addActionListener(this::__viewClassDisk);
+		
+		JButton viewClassNet = PrimaryFrame.__barButton(toolBar,
+			"View Class From Remote", "network-receive");
+		viewClassNet.addActionListener(this::__viewClassNetwork);
+		
+		PrimaryFrame.__barButton(toolBar,
+			"Copy Method to Clipboard", "edit-copy");
 		
 		toolBar.addSeparator();
 		
-		toolBar.add(PrimaryFrame.__barButton(
-			"Resume Single Thread", "media-playback-start"));
-		toolBar.add(PrimaryFrame.__barButton(
-			"Pause Single Thread", "media-playback-pause"));
+		PrimaryFrame.__barButton(toolBar,
+			"Resume Single Thread", "media-playback-start");
+		PrimaryFrame.__barButton(toolBar,
+			"Pause Single Thread", "media-playback-pause");
 		
 		toolBar.addSeparator();
 		
-		toolBar.add(PrimaryFrame.__barButton(
-			"Resume All Threads", "weather-clear"));
-		toolBar.add(PrimaryFrame.__barButton(
-			"Pause All Threads", "weather-snow"));
+		PrimaryFrame.__barButton(toolBar,
+			"Resume All Threads", "weather-clear");
+		PrimaryFrame.__barButton(toolBar,
+			"Pause All Threads", "weather-snow");
 		
 		toolBar.addSeparator();
 		
-		toolBar.add(PrimaryFrame.__barButton(
-			"Single Step", "go-down"));
-		toolBar.add(PrimaryFrame.__barButton(
-			"Single Step in Method Only", "go-bottom"));
-		toolBar.add(PrimaryFrame.__barButton(
-			"Step Over", "go-jump"));
-		toolBar.add(PrimaryFrame.__barButton(
-			"Step Out To Parent Frame", "go-top"));
-		toolBar.add(PrimaryFrame.__barButton(
-			"Run to Cursor", "media-skip-forward"));
+		PrimaryFrame.__barButton(toolBar,
+			"Single Step", "go-down");
+		PrimaryFrame.__barButton(toolBar,
+			"Single Step in Method Only", "go-bottom");
+		PrimaryFrame.__barButton(toolBar,
+			"Step Over", "go-jump");
+		PrimaryFrame.__barButton(toolBar,
+			"Step Out To Parent Frame", "go-top");
+		PrimaryFrame.__barButton(toolBar,
+			"Continuously Single Step", "media-seek-forward");
+		PrimaryFrame.__barButton(toolBar,
+			"Perform X Single Steps", "media-skip-forward");
+		PrimaryFrame.__barButton(toolBar,
+			"Run To Caret", "input-mouse");
 		
 		toolBar.addSeparator();
 		
-		toolBar.add(PrimaryFrame.__barButton(
-			"Run Until Exception Thrown", "weather-storm"));
+		PrimaryFrame.__barButton(toolBar,
+			"Run Until Exception Thrown", "weather-storm");
 		
 		// Add to the top
 		this.add(toolBar, BorderLayout.PAGE_START);
@@ -255,6 +269,9 @@ public class PrimaryFrame
 		
 		ShownMethod show = new ShownMethod(__method);
 		this.add(show, BorderLayout.CENTER);
+		
+		// Pack
+		this.pack();
 	}
 	
 	/**
@@ -326,7 +343,81 @@ public class PrimaryFrame
 	}
 	
 	/**
-	 * Adds a single toolbar button.
+	 * Views a class stored on the disk.
+	 *
+	 * @param __event The event.
+	 * @since 2024/01/22
+	 */
+	private void __viewClassDisk(ActionEvent __event)
+	{
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setFileFilter(new FileNameExtensionFilter(
+			"Java Class Files", "class"));
+		
+		if (fileChooser.showOpenDialog(this) ==
+			JFileChooser.APPROVE_OPTION)
+		{
+			try (InputStream in = Files.newInputStream(
+				fileChooser.getSelectedFile().toPath(),
+				StandardOpenOption.READ))
+			{
+				// Decode the class
+				ClassFile classFile = ClassFile.decode(in);
+				
+				// Use standard viewer
+				this.__viewClass(new JavaClassViewer(classFile));
+			}
+			catch (IOException __e)
+			{
+				JOptionPane.showMessageDialog(this,
+					Utils.throwableTrace(__e),
+					"Could not load class",
+					JOptionPane.ERROR_MESSAGE);
+			}
+		}
+	}
+	
+	/**
+	 * Views the given class.
+	 *
+	 * @param __viewer The class to view.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/22
+	 */
+	private void __viewClass(ClassViewer __viewer)
+		throws NullPointerException
+	{
+		if (__viewer == null)
+			throw new NullPointerException("NARG");
+		
+		ShownClassDialog dialog = new ShownClassDialog(this, __viewer);
+		dialog.setLocationRelativeTo(null);
+		dialog.setVisible(true);
+	}
+	
+	/**
+	 * Views a class from the remote virtual machine.
+	 *
+	 * @param __event The event.
+	 * @since 2024/01/22
+	 */
+	private void __viewClassNetwork(ActionEvent __event)
+	{
+		String option = (String)JOptionPane.showInputDialog(
+			this,
+			"Choose remote class",
+			"Choose remote class",
+			JOptionPane.QUESTION_MESSAGE,
+			null,
+			null,
+			"java/lang/Class");
+		
+		if (option != null)
+			throw Debugging.todo();
+	}
+	
+	/**
+	 * Creates a toolbar button.
 	 *
 	 * @param __label The label to use.
 	 * @param __tango The tango icon to use.
@@ -353,6 +444,30 @@ public class PrimaryFrame
 		catch (IOException __ignored)
 		{
 		}
+		
+		return button;
+	}
+	
+	/**
+	 * Creates a toolbar button and adds it to the given toolbar.
+	 *
+	 * @param __toolBar The toolbar to add to.
+	 * @param __label The label to use.
+	 * @param __tango The tango icon to use.
+	 * @return The created button.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/21
+	 */
+	private static JButton __barButton(JToolBar __toolBar, String __label,
+		String __tango)
+		throws NullPointerException
+	{
+		if (__toolBar == null)
+			throw new NullPointerException("NARG");
+		
+		JButton button = PrimaryFrame.__barButton(__label, __tango);
+		
+		__toolBar.add(button);
 		
 		return button;
 	}

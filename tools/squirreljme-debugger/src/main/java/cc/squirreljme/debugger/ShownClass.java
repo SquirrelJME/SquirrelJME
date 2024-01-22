@@ -12,55 +12,55 @@ package cc.squirreljme.debugger;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 
 /**
- * A panel which shows a single Java method.
+ * Panel for showing class information.
  *
- * @since 2024/01/21
+ * @since 2024/01/22
  */
-public class ShownMethod
+public class ShownClass
 	extends JPanel
 {
-	/** The viewer for the method being shown. */
-	protected final MethodViewer viewer;
+	/** The viewer for classes. */
+	protected final ClassViewer viewer;
 	
-	/** The label which says what method this is. */
+	/** The label description what is being looked at. */
 	protected final JLabel whatLabel;
 	
 	/** The sequential panel view. */
 	protected final SequentialPanel seqPanel;
 	
-	/** All the current instruction showers. */
-	private volatile ShownInstruction[] _shownInstructions;
+	/** The methods to show. */
+	private volatile ShownMethod[] _shownMethods;
 	
 	/**
-	 * Initializes the method viewer.
+	 * Initializes the class viewer.
 	 *
-	 * @param __viewer The method to view.
+	 * @param __viewer The viewer for the class to show.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/22
 	 */
-	public ShownMethod(MethodViewer __viewer)
+	public ShownClass(ClassViewer __viewer)
 		throws NullPointerException
 	{
 		this(__viewer, true);
 	}
 	
 	/**
-	 * Initializes the method viewer.
+	 * Initializes the class viewer.
 	 *
-	 * @param __viewer The method to view.
-	 * @param __scroll Scroll the panel view?
+	 * @param __viewer The viewer for the class to show.
+	 * @param __scroll Use a scrolling area for this?
 	 * @throws NullPointerException On null arguments.
-	 * @since 2024/01/21
+	 * @since 2024/01/22
 	 */
-	public ShownMethod(MethodViewer __viewer, boolean __scroll)
+	public ShownClass(ClassViewer __viewer, boolean __scroll)
 		throws NullPointerException
 	{
 		if (__viewer == null)
@@ -74,10 +74,7 @@ public class ShownMethod
 		// Set up the label description what we are looking at
 		JLabel whatLabel = new JLabel();
 		whatLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		whatLabel.setText(String.format("%s%s%s::%s",
-			(__viewer.isNative() ? "native " : ""),
-			(__viewer.isAbstract() ? "abstract " : ""),
-			__viewer.inClass(), __viewer.methodNameAndType()));
+		whatLabel.setText(__viewer.thisName().toString());
 		
 		// Set at the top
 		this.add(whatLabel, BorderLayout.PAGE_START);
@@ -93,51 +90,47 @@ public class ShownMethod
 	}
 	
 	/**
-	 * Updates the given view.
-	 * 
-	 * @since 2024/01/21
+	 * Updates the shown information.
+	 *
+	 * @since 2024/01/22
 	 */
 	public void shownUpdate()
 	{
-		// Cannot show any byte code if this is abstract or native
-		MethodViewer viewer = this.viewer;
-		if (viewer.isNative() || viewer.isAbstract())
-			return;
-		
-		// Do we need to get the instructions to show?
-		ShownInstruction[] shownInstructions = this._shownInstructions;
-		if (shownInstructions == null)
+		// Do we need to get the methods to show?
+		ClassViewer viewer = this.viewer;
+		ShownMethod[] shownMethods = this._shownMethods;
+		if (shownMethods == null)
 		{
-			// Get the instructions to view
-			InstructionViewer[] instructions = viewer.instructions();
+			// Get the methods to view
+			MethodViewer[] methods = viewer.methods();
 			
 			// Do nothing yet if we do not know what instructions exist
-			if (instructions == null)
+			if (methods == null)
 				return;
 		
 			// All the instructions are placed here
 			SequentialPanel seqPanel = this.seqPanel;
 			
 			// Add everything to the grid view
-			int count = instructions.length;
-			shownInstructions = new ShownInstruction[count];
+			int count = methods.length;
+			shownMethods = new ShownMethod[count];
 			for (int i = 0; i < count; i++)
 			{
 				// Initialize a shower!
-				ShownInstruction shown = new ShownInstruction(
-					instructions[i]);
+				ShownMethod shown = new ShownMethod(
+					methods[i]);
 				
 				// Show it
-				shownInstructions[i] = shown;
+				shownMethods[i] = shown;
 				seqPanel.add(shown);
 			}
 			
 			// Store for later updates
-			this._shownInstructions = shownInstructions;
+			this._shownMethods = shownMethods;
 		}
 		
 		// Go through an update everything accordingly
-		for (ShownInstruction shown : shownInstructions)
+		for (ShownMethod shown : shownMethods)
 			shown.shownUpdate();
 	}
 }
