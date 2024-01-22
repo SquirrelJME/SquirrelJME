@@ -250,6 +250,23 @@ public final class JDWPPacket
 	}
 	
 	/**
+	 * Returns the error for this packet.
+	 *
+	 * @return The packet's error, if there is one.
+	 * @since 2024/01/22
+	 */
+	public ErrorType error()
+	{
+		synchronized (this)
+		{
+			// Ensure this is open
+			this.__checkOpen();
+			
+			return this._errorCode;
+		}
+	}
+	
+	/**
 	 * Does this packet have any error?
 	 *
 	 * @return If this has an error.

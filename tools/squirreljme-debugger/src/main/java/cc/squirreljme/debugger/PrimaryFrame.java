@@ -33,6 +33,7 @@ import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import net.multiphasicapps.classfile.ClassFile;
+import net.multiphasicapps.classfile.ClassName;
 import org.freedesktop.tango.TangoIconLoader;
 
 /**
@@ -369,10 +370,8 @@ public class PrimaryFrame
 			}
 			catch (IOException __e)
 			{
-				JOptionPane.showMessageDialog(this,
-					Utils.throwableTrace(__e),
-					"Could not load class",
-					JOptionPane.ERROR_MESSAGE);
+				Utils.throwableTraceDialog(this,
+					"Failed to load class from disk", __e);
 			}
 		}
 	}
@@ -413,7 +412,13 @@ public class PrimaryFrame
 			"java/lang/Class");
 		
 		if (option != null)
-			throw Debugging.todo();
+			this.debuggerState.lookupClass(new ClassName(option), (__info) -> {
+				this.__viewClass(new RemoteClassViewer(
+					this.debuggerState, __info));
+			}, (__e) -> {
+				Utils.throwableTraceDialog(this,
+					"Could not find class: " + option, __e);
+			});
 	}
 	
 	/**

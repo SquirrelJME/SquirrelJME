@@ -21,9 +21,10 @@ import cc.squirreljme.jdwp.JDWPException;
 import cc.squirreljme.jdwp.JDWPPacket;
 import cc.squirreljme.jdwp.SuspendPolicy;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.Consumer;
+import net.multiphasicapps.classfile.ClassName;
 
 /**
  * Stores the debugger state.
@@ -152,6 +153,39 @@ public class DebuggerState
 		synchronized (this)
 		{
 			return this._hasStarted;
+		}
+	}
+	
+	/**
+	 * Looks up the given class.
+	 *
+	 * @param __className The name of the class to lookup.
+	 * @param __found The action to perform when the class is found.
+	 * @param __notFound The action to perform when the class was not found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/22
+	 */
+	public void lookupClass(ClassName __className,
+		Consumer<InfoClass> __found, Consumer<Throwable> __notFound)
+		throws NullPointerException
+	{
+		if (__className == null)
+			throw new NullPointerException("NARG");
+		
+		try (JDWPPacket packet = this.request(JDWPCommandSet.VIRTUAL_MACHINE,
+			CommandSetVirtualMachine.CLASSES_BY_SIGNATURE))
+		{
+			this.sendThenWait(packet, 3000, (__ignored, __reply) ->
+				{
+					if (__reply.hasError())
+					{
+						__notFound.accept(new Throwable(
+							__reply.error().toString()));
+						return;
+					}
+					
+					throw Debugging.todo();
+				});
 		}
 	}
 	
@@ -319,6 +353,28 @@ public class DebuggerState
 		
 		// Tally up
 		this.sentTally.increment();
+	}
+	
+	/**
+	 * Sends the request to the remote end and blocks until a reply is given
+	 * to the packet.
+	 *
+	 * @param __packet The packet to send.
+	 * @param __timeoutMs How long to wait until this times out.
+	 * @param __reply The method to call when this is handled.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/22
+	 */
+	public void sendThenWait(JDWPPacket __packet, long __timeoutMs,
+		ReplyHandler __reply)
+		throws NullPointerException
+	{
+		if (__packet == null || __reply == null)
+			throw new NullPointerException("NARG");
+		if (__timeoutMs <= 0)
+			throw new IllegalArgumentException("NEGV");
+		
+		throw Debugging.todo();
 	}
 	
 	/**

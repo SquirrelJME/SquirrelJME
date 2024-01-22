@@ -30,6 +30,20 @@ public enum InfoKind
 		}
 	},
 	
+	/* Class type. */
+	CLASS("Class")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2024/01/22
+		 */
+		@Override
+		protected Info seed(int __id)
+		{
+			return new InfoClass(__id);
+		}
+	},
+	
 	/* End. */
 	;
 	

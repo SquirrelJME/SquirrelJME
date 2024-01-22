@@ -68,16 +68,12 @@ public class Main
 		// Failed to emit exception
 		catch (Throwable __e)
 		{
-			String message = Utils.throwableTrace(__e);
-			
 			// Oh well...
 			__e.printStackTrace(System.err);
 			
 			// Emit dialog
-			JOptionPane.showMessageDialog(null,
-				message,
-				"Debugger start failed",
-				JOptionPane.ERROR_MESSAGE);
+			Utils.throwableTraceDialog(null,
+				"Failed to start debugger", __e);
 			
 			// Failed
 			System.exit(1);

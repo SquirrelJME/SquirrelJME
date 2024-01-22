@@ -12,6 +12,9 @@ package cc.squirreljme.debugger;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  * Utilities.
@@ -57,5 +60,24 @@ public final class Utils
 			message = "Could not emit trace, check stderr.";
 		}
 		return message;
+	}
+	
+	/**
+	 * Pops up a dialog showing the given trace.
+	 *
+	 * @param __parent The parent dialog.
+	 * @param __title The dialog title.
+	 * @param __e The exception to show.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/22
+	 */
+	public static void throwableTraceDialog(JFrame __parent,
+		String __title, Throwable __e)
+		throws NullPointerException
+	{
+		JOptionPane.showMessageDialog(__parent,
+			Utils.throwableTrace(__e),
+			__title,
+			JOptionPane.ERROR_MESSAGE);
 	}
 }

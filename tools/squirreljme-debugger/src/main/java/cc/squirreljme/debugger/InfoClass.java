@@ -10,31 +10,26 @@
 package cc.squirreljme.debugger;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import net.multiphasicapps.classfile.ClassName;
+import java.util.function.Consumer;
 
 /**
- * Views remote classes.
+ * Caches information on remote classes and otherwise.
  *
  * @since 2024/01/22
  */
-public class RemoteClassViewer
-	implements ClassViewer
+public class InfoClass
+	extends Info
 {
 	/**
-	 * Initializes the remote class viewer.
+	 * Initializes the base information.
 	 *
-	 * @param __state The state for communication and otherwise.
-	 * @param __classInfo The class to view.
-	 * @throws NullPointerException On null arguments.
+	 * @param __id The ID number of this info.
 	 * @since 2024/01/22
 	 */
-	public RemoteClassViewer(DebuggerState __state, InfoClass __classInfo)
+	public InfoClass(int __id)
 		throws NullPointerException
 	{
-		if (__classInfo == null)
-			throw new NullPointerException("NARG");
-		
-		throw Debugging.todo();
+		super(__id, InfoKind.CLASS);
 	}
 	
 	/**
@@ -42,17 +37,9 @@ public class RemoteClassViewer
 	 * @since 2024/01/22
 	 */
 	@Override
-	public MethodViewer[] methods()
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/01/22
-	 */
-	@Override
-	public ClassName thisName()
+	protected boolean internalUpdate(DebuggerState __state,
+		Consumer<Info> __callback)
+		throws NullPointerException
 	{
 		throw Debugging.todo();
 	}
