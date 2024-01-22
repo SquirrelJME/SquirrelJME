@@ -72,10 +72,14 @@ public class ShownMethod
 		// Primary grid view for instructions
 		JPanel flowPanel = new JPanel();
 		FlowLayout flowLayout = new FlowLayout(FlowLayout.LEADING);
+		flowLayout.setHgap(0);
+		flowLayout.setVgap(0);
 		flowPanel.setLayout(flowLayout);
 		
 		JPanel gridPanel = new JPanel();
 		GridLayout gridLayout = new GridLayout(0, 1);
+		gridLayout.setHgap(0);
+		gridLayout.setVgap(0);
 		gridPanel.setLayout(gridLayout);
 		
 		flowPanel.add(gridPanel);

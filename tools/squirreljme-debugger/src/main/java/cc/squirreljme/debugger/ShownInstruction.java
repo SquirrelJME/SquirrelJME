@@ -14,6 +14,7 @@ import java.awt.Font;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 
 /**
  * Shows information on a single instruction.
@@ -48,8 +49,13 @@ public class ShownInstruction
 		// Store for later usage
 		this.viewer = __viewer;
 		
+		// Reduce border size
+		this.setBorder(new EmptyBorder(0, 0, 0, 0));
+		
 		// Use flow layout for items
 		FlowLayout layout = new FlowLayout(FlowLayout.LEFT);
+		layout.setHgap(4);
+		layout.setVgap(0);
 		this.setLayout(layout);
 		
 		// Setup address
@@ -97,6 +103,9 @@ public class ShownInstruction
 	{
 		if (__label == null)
 			throw new NullPointerException("NARG");
+		
+		// Reduce padding
+		__label.setBorder(new EmptyBorder(0, 0, 0, 0));
 		
 		// Align to the left
 		__label.setHorizontalAlignment(SwingConstants.LEFT);
