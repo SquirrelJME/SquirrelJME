@@ -9,21 +9,27 @@
 
 package cc.squirreljme.debugger;
 
+import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.io.InputStream;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 import net.multiphasicapps.classfile.ClassFile;
+import org.freedesktop.tango.TangoIconLoader;
 
 /**
  * Primary display window.
@@ -38,6 +44,9 @@ public class PrimaryFrame
 	
 	/** The status panel. */
 	protected final StatusPanel statusPanel;
+	
+	/** The toolbar for common actions. */
+	protected final JToolBar toolBar;
 	
 	/**
 	 * Initializes the primary frame.
@@ -133,6 +142,50 @@ public class PrimaryFrame
 		
 		// Use the menu finally
 		this.setJMenuBar(mainMenu);
+		
+		// Setup toolbar
+		JToolBar toolBar = new JToolBar();
+		this.toolBar = toolBar;
+		
+		toolBar.add(PrimaryFrame.__barButton(
+			"View Class From Disk", "document-open"));
+		toolBar.add(PrimaryFrame.__barButton(
+			"Copy Method to Clipboard", "edit-copy"));
+		
+		toolBar.addSeparator();
+		
+		toolBar.add(PrimaryFrame.__barButton(
+			"Resume Single Thread", "media-playback-start"));
+		toolBar.add(PrimaryFrame.__barButton(
+			"Pause Single Thread", "media-playback-pause"));
+		
+		toolBar.addSeparator();
+		
+		toolBar.add(PrimaryFrame.__barButton(
+			"Resume All Threads", "weather-clear"));
+		toolBar.add(PrimaryFrame.__barButton(
+			"Pause All Threads", "weather-snow"));
+		
+		toolBar.addSeparator();
+		
+		toolBar.add(PrimaryFrame.__barButton(
+			"Single Step", "go-down"));
+		toolBar.add(PrimaryFrame.__barButton(
+			"Single Step in Method Only", "go-bottom"));
+		toolBar.add(PrimaryFrame.__barButton(
+			"Step Over", "go-jump"));
+		toolBar.add(PrimaryFrame.__barButton(
+			"Step Out To Parent Frame", "go-top"));
+		toolBar.add(PrimaryFrame.__barButton(
+			"Run to Cursor", "media-skip-forward"));
+		
+		toolBar.addSeparator();
+		
+		toolBar.add(PrimaryFrame.__barButton(
+			"Run Until Exception Thrown", "weather-storm"));
+		
+		// Add to the top
+		this.add(toolBar, BorderLayout.PAGE_START);
 		
 		// Setup status panel
 		StatusPanel statusPanel = new StatusPanel(__debuggerState);
@@ -270,5 +323,37 @@ public class PrimaryFrame
 	private void __inspectThread(ActionEvent __event)
 	{
 		this.__inspect(this.debuggerState.storedInfo.getThread());
+	}
+	
+	/**
+	 * Adds a single toolbar button.
+	 *
+	 * @param __label The label to use.
+	 * @param __tango The tango icon to use.
+	 * @return The created button.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/21
+	 */
+	private static JButton __barButton(String __label, String __tango)
+		throws NullPointerException
+	{
+		if (__label == null || __tango == null)
+			throw new NullPointerException("NARG");
+		
+		JButton button = new JButton();
+		
+		// Help
+		button.setToolTipText(__label);
+		
+		// Set icon for the toolbar item
+		try (InputStream in = TangoIconLoader.loadIcon(16, __tango))
+		{
+			button.setIcon(new ImageIcon(StreamUtils.readAll(in)));
+		}
+		catch (IOException __ignored)
+		{
+		}
+		
+		return button;
 	}
 }

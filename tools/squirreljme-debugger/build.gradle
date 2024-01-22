@@ -21,4 +21,5 @@ jar.dependsOn("mimeDecode")
 dependencies {
 	implementation project(":emulators:emulator-base")
 	implementation project(":modules:debug-jdwp")
+	implementation project(":modules:tango-icon-theme")
 }
