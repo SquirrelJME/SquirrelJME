@@ -44,6 +44,10 @@ public class DebuggerState
 	protected final TallyTracker receiveTally =
 		new TallyTracker();
 	
+	/** Sent tally. */
+	protected final TallyTracker sentTally =
+		new TallyTracker();
+	
 	/** The current capabilities of the remote virtual machine. */
 	protected final CapabilityStatus capabilities =
 		new CapabilityStatus();
@@ -312,6 +316,9 @@ public class DebuggerState
 		
 		// Send over the link
 		this.commLink.send(__packet);
+		
+		// Tally up
+		this.sentTally.increment();
 	}
 	
 	/**

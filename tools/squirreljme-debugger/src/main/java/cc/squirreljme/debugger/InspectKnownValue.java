@@ -19,6 +19,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 
 /**
  * Component for inspecting a known value.
@@ -148,7 +149,8 @@ public class InspectKnownValue
 		else
 		{
 			text = new JTextField();
-			text.setEnabled(false);
+			text.setEditable(false);
+			text.setBorder(new EmptyBorder(0, 0, 0, 0));
 		}
 		
 		// Set label value

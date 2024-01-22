@@ -13,6 +13,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
@@ -28,10 +29,10 @@ public class ShownInstruction
 	protected final InstructionViewer viewer;
 	
 	/** The address of this instruction. */
-	protected final JLabel address;
+	protected final JTextField address;
 	
 	/** The label which describes this. */
-	protected final JLabel description;
+	protected final JTextField description;
 	
 	/**
 	 * Initializes the instruction line.
@@ -59,20 +60,21 @@ public class ShownInstruction
 		this.setLayout(layout);
 		
 		// Setup address
-		JLabel address = new JLabel();
+		JTextField address = new JTextField();
 		ShownInstruction.__pretty(address);
 		
-		// Setup description
-		JLabel description = new JLabel();
-		ShownInstruction.__pretty(description);
+		// Setup mnemonic
+		JTextField mnemonic = new JTextField();
+		ShownInstruction.__pretty(mnemonic);
+		mnemonic.setFont(mnemonic.getFont().deriveFont(Font.BOLD));
 		
 		// Add everything in
 		this.add(address);
-		this.add(description);
+		this.add(mnemonic);
 		
 		// Store for later
 		this.address = address;
-		this.description = description;
+		this.description = mnemonic;
 	}
 	
 	/**
@@ -98,7 +100,7 @@ public class ShownInstruction
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/21
 	 */
-	private static void __pretty(JLabel __label)
+	private static void __pretty(JTextField __label)
 		throws NullPointerException
 	{
 		if (__label == null)
@@ -109,6 +111,10 @@ public class ShownInstruction
 		
 		// Align to the left
 		__label.setHorizontalAlignment(SwingConstants.LEFT);
+		
+		// Allow it to be copied
+		__label.setEditable(false);
+		__label.setBorder(new EmptyBorder(0, 0, 0, 0));
 		
 		// Use a better font for the label
 		Font descFont = __label.getFont();

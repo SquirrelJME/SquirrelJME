@@ -60,8 +60,7 @@ public class StoredInfo<I extends Info>
 		{
 			// Get all the known values, perform garbage collection on them
 			Collection<I> values = this._cache.values();
-			if (__state != null)
-				this.__gc(__state);
+			this.__gc(__state);
 			
 			I[] result = (I[])values.toArray(new Info[values.size()]);
 			
@@ -148,12 +147,10 @@ public class StoredInfo<I extends Info>
 	/**
 	 * Performs garbage collection on the given values.
 	 *
-	 * @param __state The state being ran in.
-	 * @throws NullPointerException On null arguments.
+	 * @param __state The current debugger state.
 	 * @since 2024/01/21
 	 */
 	private void __gc(DebuggerState __state)
-		throws NullPointerException
 	{
 		synchronized (this)
 		{
@@ -170,7 +167,8 @@ public class StoredInfo<I extends Info>
 				
 				// Request an update for this item, if it gets disposed of then
 				// remove that as well
-				else if (!item.update(__state, null))
+				else if (__state != null &&
+					!item.update(__state, null))
 					it.remove();
 			}
 		}
