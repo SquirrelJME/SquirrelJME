@@ -332,7 +332,7 @@ public enum CommandSetVirtualMachine
 			throws JDWPException
 		{
 			// Hold any events
-			__controller._holdEvents = true;
+			__controller.setHoldingEvents(true);
 			return null;
 		}
 	},
@@ -350,7 +350,7 @@ public enum CommandSetVirtualMachine
 			throws JDWPException
 		{
 			// Resume events and let them flow
-			__controller._holdEvents = false;
+			__controller.setHoldingEvents(false);
 			return null;
 		}
 	},

@@ -83,7 +83,7 @@ public final class JDWPHostController
 		new LinkedList<>();
 	
 	/** Are events to the debugger being held? */
-	volatile boolean _holdEvents;
+	private volatile boolean _holdEvents;
 	
 	/** Is this closed? */
 	private volatile boolean _closed;
@@ -379,6 +379,20 @@ public final class JDWPHostController
 	}
 	
 	/**
+	 * Is the debugger holding events?
+	 *
+	 * @return If it is holding events.
+	 * @since 2024/01/23
+	 */
+	public boolean isHoldingEvents()
+	{
+		synchronized (this)
+		{
+			return this._holdEvents;
+		}
+	}
+	
+	/**
 	 * Returns the location of the given thread.
 	 * 
 	 * @param __thread The thread to get from.
@@ -442,7 +456,7 @@ public final class JDWPHostController
 						return false;
 					
 					// If we are still holding events, do not drain any
-					if (this._holdEvents)
+					if (this.isHoldingEvents())
 						break;
 					
 					// Remove the next packet, if there is any
@@ -553,6 +567,20 @@ public final class JDWPHostController
 	}
 	
 	/**
+	 * Set or unset event holding.
+	 *
+	 * @param __hold Should events be held?
+	 * @since 2024/01/23
+	 */
+	public void setHoldingEvents(boolean __hold)
+	{
+		synchronized (this)
+		{
+			this._holdEvents = __hold;
+		}
+	}
+	
+	/**
 	 * Signals a JDWP event, this will find any request and perform suspension
 	 * as requested by the debugger.
 	 * 
@@ -616,7 +644,7 @@ public final class JDWPHostController
 				// Are we holding events? Save this for later if so
 				synchronized (this)
 				{
-					if (this._holdEvents)
+					if (this.isHoldingEvents())
 					{
 						this._heldPackets.add(this.getCommLink()
 							.getPacket().copyOf(packet));
