@@ -14,7 +14,7 @@ package cc.squirreljme.jdwp;
  *
  * @since 2021/03/14
  */
-public enum CommandSetObjectReference
+public enum JDWPCommandSetObjectReference
 	implements JDWPCommand
 {
 	/** The type that an object is. */
@@ -38,7 +38,7 @@ public enum CommandSetObjectReference
 	 * @param __id The ID used.
 	 * @since 2021/03/14
 	 */
-	CommandSetObjectReference(int __id)
+	JDWPCommandSetObjectReference(int __id)
 	{
 		this.id = __id;
 	}

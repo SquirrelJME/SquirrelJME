@@ -24,7 +24,7 @@ public enum JDWPCommandSet
 	VIRTUAL_MACHINE(1, CommandSetVirtualMachine.values()),
 	
 	/** Reference type. */
-	REFERENCE_TYPE(2, CommandSetReferenceType.values()),
+	REFERENCE_TYPE(2, JDWPCommandSetReferenceType.values()),
 	
 	/** Class types. */
 	CLASS_TYPE(3, JDWPCommandSetClassType.values()),
@@ -33,7 +33,7 @@ public enum JDWPCommandSet
 	METHODS(6, JDWPCommandSetMethod.values()),
 	
 	/** Object references. */
-	OBJECT_REFERENCE(9, CommandSetObjectReference.values()),
+	OBJECT_REFERENCE(9, JDWPCommandSetObjectReference.values()),
 	
 	/** String reference. */
 	STRING_REFERENCE(10, CommandSetStringReference.values()),
