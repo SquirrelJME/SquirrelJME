@@ -10,42 +10,21 @@
 package cc.squirreljme.jdwp;
 
 /**
- * Command set for thread support.
+ * Thread group reference commands.
  *
  * @since 2021/03/13
  */
-public enum CommandSetThreadReference
+public enum JDWPCommandSetThreadGroupReference
 	implements JDWPCommand
 {
-	/** Thread name. */
+	/** The name of the group. */
 	NAME(1),
 	
-	/** Suspend thread. */
-	SUSPEND(2),
+	/** The parent thread group. */
+	PARENT(2),
 	
-	/** Resume thread. */
-	RESUME(3),
-	
-	/** Status of the thread. */
-	STATUS(4),
-	
-	/** Thread group of a thread. */
-	THREAD_GROUP(5),
-	
-	/** Frames. */
-	FRAMES(6),
-	
-	/** Frame count. */
-	FRAME_COUNT(7),
-	
-	/** Stops a thread, not supported in Java ME. */
-	STOP(10),
-	
-	/** Interrupt the thread. */
-	INTERRUPT(11),
-	
-	/** Suspension count for each thread. */
-	SUSPEND_COUNT(12),
+	/** The children thread groups and threads. */
+	CHILDREN(3), 
 	
 	/* End. */
 	;
@@ -59,7 +38,7 @@ public enum CommandSetThreadReference
 	 * @param __id The ID used.
 	 * @since 2021/03/13
 	 */
-	CommandSetThreadReference(int __id)
+	JDWPCommandSetThreadGroupReference(int __id)
 	{
 		this.id = __id;
 	}

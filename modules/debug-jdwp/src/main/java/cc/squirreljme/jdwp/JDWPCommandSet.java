@@ -21,7 +21,7 @@ public enum JDWPCommandSet
 	UNKNOWN(-1),
 	
 	/** Virtual machine command set. */
-	VIRTUAL_MACHINE(1, CommandSetVirtualMachine.values()),
+	VIRTUAL_MACHINE(1, JDWPCommandSetVirtualMachine.values()),
 	
 	/** Reference type. */
 	REFERENCE_TYPE(2, JDWPCommandSetReferenceType.values()),
@@ -39,10 +39,10 @@ public enum JDWPCommandSet
 	STRING_REFERENCE(10, JDWPCommandSetStringReference.values()),
 	
 	/** Thread Reference. */
-	THREAD_REFERENCE(11, CommandSetThreadReference.values()),
+	THREAD_REFERENCE(11, JDWPCommandSetThreadReference.values()),
 	
 	/** Thread group reference. */
-	THREAD_GROUP_REFERENCE(12, CommandSetThreadGroupReference.values()),
+	THREAD_GROUP_REFERENCE(12, JDWPCommandSetThreadGroupReference.values()),
 	
 	/** Array references. */
 	ARRAY_REFERENCE(13, JDWPCommandSetArrayReference.values()),

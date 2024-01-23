@@ -14,7 +14,7 @@ package cc.squirreljme.jdwp;
  *
  * @since 2021/03/12
  */
-public enum CommandSetVirtualMachine
+public enum JDWPCommandSetVirtualMachine
 	implements JDWPCommand
 {
 	/** Version information. */
@@ -74,7 +74,7 @@ public enum CommandSetVirtualMachine
 	 * @param __id The ID used.
 	 * @since 2021/03/12
 	 */
-	CommandSetVirtualMachine(int __id)
+	JDWPCommandSetVirtualMachine(int __id)
 	{
 		this.id = __id;
 	}

@@ -9,7 +9,7 @@
 
 package cc.squirreljme.debugger;
 
-import cc.squirreljme.jdwp.CommandSetThreadReference;
+import cc.squirreljme.jdwp.JDWPCommandSetThreadReference;
 import cc.squirreljme.jdwp.JDWPErrorType;
 import cc.squirreljme.jdwp.JDWPCommandSet;
 import cc.squirreljme.jdwp.JDWPPacket;
@@ -104,7 +104,7 @@ public class InfoThread
 		
 		// Request name update
 		try (JDWPPacket out = __state.request(JDWPCommandSet.THREAD_REFERENCE,
-			CommandSetThreadReference.NAME))
+			JDWPCommandSetThreadReference.NAME))
 		{
 			out.writeId(this.id.intValue());
 			

@@ -11,8 +11,8 @@ package cc.squirreljme.debugger;
 
 import cc.squirreljme.jdwp.JDWPCommLink;
 import cc.squirreljme.jdwp.JDWPCommandSetEventRequest;
-import cc.squirreljme.jdwp.CommandSetThreadReference;
-import cc.squirreljme.jdwp.CommandSetVirtualMachine;
+import cc.squirreljme.jdwp.JDWPCommandSetThreadReference;
+import cc.squirreljme.jdwp.JDWPCommandSetVirtualMachine;
 import cc.squirreljme.jdwp.JDWPErrorType;
 import cc.squirreljme.jdwp.JDWPEventKind;
 import cc.squirreljme.jdwp.JDWPCommand;
@@ -176,7 +176,7 @@ public class DebuggerState
 			throw new NullPointerException("NARG");
 		
 		try (JDWPPacket packet = this.request(JDWPCommandSet.VIRTUAL_MACHINE,
-			CommandSetVirtualMachine.CLASSES_BY_SIGNATURE))
+			JDWPCommandSetVirtualMachine.CLASSES_BY_SIGNATURE))
 		{
 			// Request the class
 			packet.writeString(__className.field().toString());
@@ -530,7 +530,7 @@ public class DebuggerState
 			throw new NullPointerException("NARG");
 		
 		try (JDWPPacket out = this.request(JDWPCommandSet.THREAD_REFERENCE,
-			CommandSetThreadReference.RESUME))
+			JDWPCommandSetThreadReference.RESUME))
 		{
 			// Write the ID of the thread
 			out.writeId(__thread.id.intValue());
@@ -550,7 +550,7 @@ public class DebuggerState
 		// The all version uses the VM command set as there is no
 		// base thread to use
 		try (JDWPPacket out = this.request(JDWPCommandSet.VIRTUAL_MACHINE,
-			CommandSetVirtualMachine.RESUME))
+			JDWPCommandSetVirtualMachine.RESUME))
 		{
 			// Send it
 			this.send(out);
@@ -567,7 +567,7 @@ public class DebuggerState
 		// We need to know the sizes of variable length entries, otherwise
 		// we cannot read them at all
 		try (JDWPPacket packet = this.request(JDWPCommandSet.VIRTUAL_MACHINE,
-			CommandSetVirtualMachine.ID_SIZES))
+			JDWPCommandSetVirtualMachine.ID_SIZES))
 		{
 			this.sendThenWait(packet, Utils.IMPORTANT_TIMEOUT,
 				(__state, __reply) -> {
@@ -577,7 +577,7 @@ public class DebuggerState
 		
 		// Version information
 		try (JDWPPacket packet = this.request(JDWPCommandSet.VIRTUAL_MACHINE,
-			CommandSetVirtualMachine.VERSION))
+			JDWPCommandSetVirtualMachine.VERSION))
 		{
 			this.sendThenWait(packet, Utils.IMPORTANT_TIMEOUT,
 				(__state, __reply) -> {
