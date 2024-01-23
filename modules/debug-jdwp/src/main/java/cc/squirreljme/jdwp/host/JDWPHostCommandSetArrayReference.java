@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp.host;
 
+import cc.squirreljme.jdwp.JDWPCommand;
+import cc.squirreljme.jdwp.JDWPCommandSetArrayReference;
 import cc.squirreljme.jdwp.JDWPErrorType;
 import cc.squirreljme.jdwp.JDWPException;
 import cc.squirreljme.jdwp.JDWPHostController;
@@ -27,7 +29,7 @@ public enum JDWPHostCommandSetArrayReference
 	implements JDWPCommandHandler
 {
 	/** Length of array. */
-	LENGTH(1)
+	LENGTH(JDWPCommandSetArrayReference.LENGTH)
 	{
 		/**
 		 * {@inheritDoc}
@@ -51,7 +53,7 @@ public enum JDWPHostCommandSetArrayReference
 	},
 	
 	/** Get values. */
-	GET_VALUES(2)
+	GET_VALUES(JDWPCommandSetArrayReference.GET_VALUES)
 	{
 		/**
 		 * {@inheritDoc}
@@ -113,6 +115,9 @@ public enum JDWPHostCommandSetArrayReference
 	/* End. */
 	;
 	
+	/** The base command. */
+	public final JDWPCommand command;
+	
 	/** The ID of the packet. */
 	public final int id;
 	
@@ -122,9 +127,10 @@ public enum JDWPHostCommandSetArrayReference
 	 * @param __id The ID used.
 	 * @since 2021/03/19
 	 */
-	JDWPHostCommandSetArrayReference(int __id)
+	JDWPHostCommandSetArrayReference(JDWPCommand __id)
 	{
-		this.id = __id;
+		this.command = __id;
+		this.id = __id.debuggerId();
 	}
 	
 	/**

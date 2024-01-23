@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp.host;
 
+import cc.squirreljme.jdwp.JDWPCommand;
+import cc.squirreljme.jdwp.JDWPCommandSetVirtualMachine;
 import cc.squirreljme.jdwp.JDWPErrorType;
 import cc.squirreljme.jdwp.JDWPException;
 import cc.squirreljme.jdwp.JDWPHostController;
@@ -32,7 +34,7 @@ public enum JDWPHostCommandSetVirtualMachine
 	implements JDWPCommandHandler
 {
 	/** Version information. */
-	VERSION(1)
+	VERSION(JDWPCommandSetVirtualMachine.VERSION)
 	{
 		/**
 		 * {@inheritDoc}
@@ -50,8 +52,8 @@ public enum JDWPHostCommandSetVirtualMachine
 			rv.writeString(__controller.bind().vmDescription());
 			
 			// JDWP version (assuming Java 7?)
-			rv.writeInt(1);
-			rv.writeInt(7);
+			rv.writeInt(JDWPCommandSetVirtualMachine.writeInt);
+			rv.writeInt(JDWPCommandSetVirtualMachine.writeInt);
 			
 			// VM Information
 			rv.writeString(__controller.bind().vmVersion());
@@ -62,7 +64,7 @@ public enum JDWPHostCommandSetVirtualMachine
 	},
 	
 	/** Class search by signature. */
-	CLASSES_BY_SIGNATURE(2)
+	CLASSES_BY_SIGNATURE(JDWPCommandSetVirtualMachine.CLASSES_BY_SIGNATURE)
 	{
 		/**
 		 * {@inheritDoc}
@@ -106,7 +108,7 @@ public enum JDWPHostCommandSetVirtualMachine
 	},
 	
 	/** All Threads. */
-	ALL_THREADS(4)
+	ALL_THREADS(JDWPCommandSetVirtualMachine.ALL_THREADS)
 	{
 		/**
 		 * {@inheritDoc}
@@ -124,7 +126,7 @@ public enum JDWPHostCommandSetVirtualMachine
 	},
 	
 	/** Top level thread groups. */
-	TOP_LEVEL_THREAD_GROUPS(5)
+	TOP_LEVEL_THREAD_GROUPS(JDWPCommandSetVirtualMachine.TOP_LEVEL_THREAD_GROUPS)
 	{
 		/**
 		 * {@inheritDoc}
@@ -142,7 +144,7 @@ public enum JDWPHostCommandSetVirtualMachine
 	},
 	
 	/** Dispose of the debugging connection. */
-	DISPOSE(6)
+	DISPOSE(JDWPCommandSetVirtualMachine.DISPOSE)
 	{
 		/**
 		 * {@inheritDoc}
@@ -189,7 +191,7 @@ public enum JDWPHostCommandSetVirtualMachine
 	},
 	
 	/** Returns the size of variable data. */
-	ID_SIZES(7)
+	ID_SIZES(JDWPCommandSetVirtualMachine.ID_SIZES)
 	{
 		/**
 		 * {@inheritDoc}
@@ -213,7 +215,7 @@ public enum JDWPHostCommandSetVirtualMachine
 	},
 	
 	/** Suspend all threads. */
-	SUSPEND(8)
+	SUSPEND(JDWPCommandSetVirtualMachine.SUSPEND)
 	{
 		/**
 		 * {@inheritDoc}
@@ -234,7 +236,7 @@ public enum JDWPHostCommandSetVirtualMachine
 	},
 	
 	/** Resume all threads. */
-	RESUME(9)
+	RESUME(JDWPCommandSetVirtualMachine.RESUME)
 	{
 		/**
 		 * {@inheritDoc}
@@ -255,7 +257,7 @@ public enum JDWPHostCommandSetVirtualMachine
 	},
 	
 	/** Force exit the virtual machine. */
-	EXIT(10)
+	EXIT(JDWPCommandSetVirtualMachine.EXIT)
 	{
 		/**
 		 * {@inheritDoc}
@@ -279,7 +281,7 @@ public enum JDWPHostCommandSetVirtualMachine
 	},
 	
 	/** Capabilities. */
-	CAPABILITIES(12)
+	CAPABILITIES(JDWPCommandSetVirtualMachine.CAPABILITIES)
 	{
 		/**
 		 * {@inheritDoc}
@@ -295,7 +297,7 @@ public enum JDWPHostCommandSetVirtualMachine
 	},
 	
 	/** Class paths. */
-	CLASS_PATHS(13)
+	CLASS_PATHS(JDWPCommandSetVirtualMachine.CLASS_PATHS)
 	{
 		/**
 		 * {@inheritDoc}
@@ -313,7 +315,7 @@ public enum JDWPHostCommandSetVirtualMachine
 			rv.writeString(".");
 			
 			// There are no non-platform class paths
-			rv.writeInt(0);
+			rv.writeInt(JDWPCommandSetVirtualMachine.writeInt);
 			
 			// However the boot class path is used to refer to everything
 			String[] classPaths = __controller.bind().debuggerLibraries();
@@ -326,7 +328,7 @@ public enum JDWPHostCommandSetVirtualMachine
 	},
 	
 	/** Hold events, keep them queued and not transmit them. */
-	HOLD_EVENTS(15)
+	HOLD_EVENTS(JDWPCommandSetVirtualMachine.HOLD_EVENTS)
 	{
 		/**
 		 * {@inheritDoc}
@@ -344,7 +346,7 @@ public enum JDWPHostCommandSetVirtualMachine
 	},
 	
 	/** Release any events. */
-	RELEASE_EVENTS(16)
+	RELEASE_EVENTS(JDWPCommandSetVirtualMachine.RELEASE_EVENTS)
 	{
 		/**
 		 * {@inheritDoc}
@@ -362,7 +364,7 @@ public enum JDWPHostCommandSetVirtualMachine
 	},
 	
 	/** New Capabilities. */
-	CAPABILITIES_NEW(17)
+	CAPABILITIES_NEW(JDWPCommandSetVirtualMachine.CAPABILITIES_NEW)
 	{
 		/**
 		 * {@inheritDoc}
@@ -378,7 +380,7 @@ public enum JDWPHostCommandSetVirtualMachine
 	},
 	
 	/** All loaded classes with generic signature included. */ 
-	ALL_CLASSES_WITH_GENERIC_SIGNATURE(20)
+	ALL_CLASSES_WITH_GENERIC_SIGNATURE(JDWPCommandSetVirtualMachine.ALL_CLASSES_WITH_GENERIC_SIGNATURE)
 	{
 		/**
 		 * {@inheritDoc}
@@ -449,6 +451,9 @@ public enum JDWPHostCommandSetVirtualMachine
 	private static final int _CLASS_INITIALIZED =
 		4;
 	
+	/** The base command. */
+	public final JDWPCommand command;
+	
 	/** The ID of the packet. */
 	public final int id;
 	
@@ -458,9 +463,10 @@ public enum JDWPHostCommandSetVirtualMachine
 	 * @param __id The ID used.
 	 * @since 2021/03/12
 	 */
-	JDWPHostCommandSetVirtualMachine(int __id)
+	JDWPHostCommandSetVirtualMachine(JDWPCommand __id)
 	{
-		this.id = __id;
+		this.command = __id;
+		this.id = __id.debuggerId();
 	}
 	
 	/**

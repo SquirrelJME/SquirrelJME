@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp.host;
 
+import cc.squirreljme.jdwp.JDWPCommand;
+import cc.squirreljme.jdwp.JDWPCommandSetStackFrame;
 import cc.squirreljme.jdwp.JDWPErrorType;
 import cc.squirreljme.jdwp.JDWPException;
 import cc.squirreljme.jdwp.JDWPHostController;
@@ -26,7 +28,7 @@ public enum JDWPHostCommandSetStackFrame
 	implements JDWPCommandHandler
 {
 	/** Get stack frame values. */
-	GET_VALUES(1)
+	GET_VALUES(JDWPCommandSetStackFrame.GET_VALUES)
 	{
 		/**
 		 * {@inheritDoc}
@@ -80,7 +82,7 @@ public enum JDWPHostCommandSetStackFrame
 	},
 	
 	/** The current object of the current frame. */
-	THIS_OBJECT(3)
+	THIS_OBJECT(JDWPCommandSetStackFrame.THIS_OBJECT)
 	{
 		/**
 		 * {@inheritDoc}
@@ -108,7 +110,7 @@ public enum JDWPHostCommandSetStackFrame
 			if (0 != (mFlags & (JDWPHostCommandSetStackFrame._FLAG_STATIC |
 				JDWPHostCommandSetStackFrame._FLAG_NATIVE)))
 			{
-				rv.writeId(0);
+				rv.writeId(JDWPCommandSetStackFrame.writeId);
 			}
 			
 			// Write self value
@@ -137,6 +139,9 @@ public enum JDWPHostCommandSetStackFrame
 	/* End. */
 	;
 	
+	/** The base command. */
+	public final JDWPCommand command;
+	
 	/** Static method. */
 	static final int _FLAG_STATIC =
 		0x0008;
@@ -154,9 +159,10 @@ public enum JDWPHostCommandSetStackFrame
 	 * @param __id The ID used.
 	 * @since 2021/03/15
 	 */
-	JDWPHostCommandSetStackFrame(int __id)
+	JDWPHostCommandSetStackFrame(JDWPCommand __id)
 	{
-		this.id = __id;
+		this.command = __id;
+		this.id = __id.debuggerId();
 	}
 	
 	/**

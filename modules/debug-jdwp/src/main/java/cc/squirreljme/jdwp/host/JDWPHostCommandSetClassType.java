@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp.host;
 
+import cc.squirreljme.jdwp.JDWPCommand;
+import cc.squirreljme.jdwp.JDWPCommandSetClassType;
 import cc.squirreljme.jdwp.JDWPErrorType;
 import cc.squirreljme.jdwp.JDWPException;
 import cc.squirreljme.jdwp.JDWPHostController;
@@ -23,7 +25,7 @@ public enum JDWPHostCommandSetClassType
 	implements JDWPCommandHandler
 {
 	/** The super class of the given class. */
-	SUPERCLASS(1)
+	SUPERCLASS(JDWPCommandSetClassType.SUPERCLASS)
 	{
 		/**
 		 * {@inheritDoc}
@@ -55,6 +57,9 @@ public enum JDWPHostCommandSetClassType
 	/* End. */
 	;
 	
+	/** The base command. */
+	public final JDWPCommand command;
+	
 	/** The ID of the packet. */
 	public final int id;
 	
@@ -64,9 +69,10 @@ public enum JDWPHostCommandSetClassType
 	 * @param __id The ID used.
 	 * @since 2021/03/14
 	 */
-	JDWPHostCommandSetClassType(int __id)
+	JDWPHostCommandSetClassType(JDWPCommand __id)
 	{
-		this.id = __id;
+		this.command = __id;
+		this.id = __id.debuggerId();
 	}
 	
 	/**

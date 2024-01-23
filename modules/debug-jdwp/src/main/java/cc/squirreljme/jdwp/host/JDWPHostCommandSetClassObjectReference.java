@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp.host;
 
+import cc.squirreljme.jdwp.JDWPCommand;
+import cc.squirreljme.jdwp.JDWPCommandSetClassObjectReference;
 import cc.squirreljme.jdwp.JDWPErrorType;
 import cc.squirreljme.jdwp.JDWPException;
 import cc.squirreljme.jdwp.JDWPHostController;
@@ -25,7 +27,7 @@ public enum JDWPHostCommandSetClassObjectReference
 	implements JDWPCommandHandler
 {
 	/** The actual type of the class object. */
-	REFLECTED_TYPE(1)
+	REFLECTED_TYPE(JDWPCommandSetClassObjectReference.REFLECTED_TYPE)
 	{
 		/**
 		 * {@inheritDoc}
@@ -94,6 +96,9 @@ public enum JDWPHostCommandSetClassObjectReference
 	/* End. */
 	;
 	
+	/** The base command. */
+	public final JDWPCommand command;
+	
 	/** The ID of the packet. */
 	public final int id;
 	
@@ -103,9 +108,10 @@ public enum JDWPHostCommandSetClassObjectReference
 	 * @param __id The ID used.
 	 * @since 2021/04/30
 	 */
-	JDWPHostCommandSetClassObjectReference(int __id)
+	JDWPHostCommandSetClassObjectReference(JDWPCommand __id)
 	{
-		this.id = __id;
+		this.command = __id;
+		this.id = __id.debuggerId();
 	}
 	
 	/**

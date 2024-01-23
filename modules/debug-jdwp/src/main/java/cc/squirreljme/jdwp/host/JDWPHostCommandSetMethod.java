@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp.host;
 
+import cc.squirreljme.jdwp.JDWPCommand;
+import cc.squirreljme.jdwp.JDWPCommandSetMethod;
 import cc.squirreljme.jdwp.JDWPErrorType;
 import cc.squirreljme.jdwp.JDWPException;
 import cc.squirreljme.jdwp.JDWPHostController;
@@ -26,7 +28,7 @@ public enum JDWPHostCommandSetMethod
 	implements JDWPCommandHandler
 {
 	/** Line number table. */
-	LINE_TABLE(1)
+	LINE_TABLE(JDWPCommandSetMethod.LINE_TABLE)
 	{
 		/**
 		 * {@inheritDoc}
@@ -53,7 +55,7 @@ public enum JDWPHostCommandSetMethod
 			// are no possible lines we may still want to break at specific
 			// byte code addresses even without the lines?
 			long addrCount = viewType.methodLocationCount(classy, methodId);
-			rv.writeLong(0);
+			rv.writeLong(JDWPCommandSetMethod.writeLong);
 			rv.writeLong(Math.max(-1, addrCount));
 			
 			// Obtain the line table to record, ensure that it exists and is
@@ -64,7 +66,7 @@ public enum JDWPHostCommandSetMethod
 				lineTable.length == 0 || lineTable[0] < 0)
 			{
 				// No information, so there are no lines
-				rv.writeInt(0);
+				rv.writeInt(JDWPCommandSetMethod.writeInt);
 			}
 			
 			// Otherwise record the information
@@ -103,7 +105,7 @@ public enum JDWPHostCommandSetMethod
 	},
 	
 	/** Variable table without generics. */
-	VARIABLE_TABLE(2)
+	VARIABLE_TABLE(JDWPCommandSetMethod.VARIABLE_TABLE)
 	{
 		/**
 		 * {@inheritDoc}
@@ -119,7 +121,7 @@ public enum JDWPHostCommandSetMethod
 	},
 	
 	/** Method byte code. */
-	BYTE_CODES(3)
+	BYTE_CODES(JDWPCommandSetMethod.BYTE_CODES)
 	{
 		/**
 		 * {@inheritDoc}
@@ -157,7 +159,7 @@ public enum JDWPHostCommandSetMethod
 	},
 	
 	/** Variable table with generics. */
-	VARIABLE_TABLE_WITH_GENERIC(5)
+	VARIABLE_TABLE_WITH_GENERIC(JDWPCommandSetMethod.VARIABLE_TABLE_WITH_GENERIC)
 	{
 		/**
 		 * {@inheritDoc}
@@ -175,6 +177,9 @@ public enum JDWPHostCommandSetMethod
 	/* End. */
 	;
 	
+	/** The base command. */
+	public final JDWPCommand command;
+	
 	/** The ID of the packet. */
 	public final int id;
 	
@@ -184,9 +189,10 @@ public enum JDWPHostCommandSetMethod
 	 * @param __id The ID used.
 	 * @since 2021/03/14
 	 */
-	JDWPHostCommandSetMethod(int __id)
+	JDWPHostCommandSetMethod(JDWPCommand __id)
 	{
-		this.id = __id;
+		this.command = __id;
+		this.id = __id.debuggerId();
 	}
 	
 	/**

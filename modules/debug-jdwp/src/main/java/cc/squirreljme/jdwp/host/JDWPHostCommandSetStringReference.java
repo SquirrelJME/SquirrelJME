@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp.host;
 
+import cc.squirreljme.jdwp.JDWPCommand;
+import cc.squirreljme.jdwp.JDWPCommandSetStringReference;
 import cc.squirreljme.jdwp.JDWPErrorType;
 import cc.squirreljme.jdwp.JDWPException;
 import cc.squirreljme.jdwp.JDWPHostController;
@@ -27,7 +29,7 @@ public enum JDWPHostCommandSetStringReference
 	implements JDWPCommandHandler
 {
 	/** Return the value of the string. */
-	VALUE(1)
+	VALUE(JDWPCommandSetStringReference.VALUE)
 	{
 		/**
 		 * {@inheritDoc}
@@ -110,6 +112,9 @@ public enum JDWPHostCommandSetStringReference
 	/* End. */
 	;
 	
+	/** The base command. */
+	public final JDWPCommand command;
+	
 	/** Badly represented character. */
 	private static final char _BAD_CHAR =
 		0xFFFD;
@@ -131,9 +136,10 @@ public enum JDWPHostCommandSetStringReference
 	 * @param __id The ID used.
 	 * @since 2021/03/20
 	 */
-	JDWPHostCommandSetStringReference(int __id)
+	JDWPHostCommandSetStringReference(JDWPCommand __id)
 	{
-		this.id = __id;
+		this.command = __id;
+		this.id = __id.debuggerId();
 	}
 	
 	/**

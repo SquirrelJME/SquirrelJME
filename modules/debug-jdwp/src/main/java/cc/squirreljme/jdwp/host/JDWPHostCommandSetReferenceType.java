@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp.host;
 
+import cc.squirreljme.jdwp.JDWPCommand;
+import cc.squirreljme.jdwp.JDWPCommandSetReferenceType;
 import cc.squirreljme.jdwp.JDWPErrorType;
 import cc.squirreljme.jdwp.JDWPException;
 import cc.squirreljme.jdwp.JDWPHostController;
@@ -26,7 +28,7 @@ public enum JDWPHostCommandSetReferenceType
 	implements JDWPCommandHandler
 {
 	/** Non-generic signature of a given type. */
-	SIGNATURE(1)
+	SIGNATURE(JDWPCommandSetReferenceType.SIGNATURE)
 	{
 		/**
 		 * {@inheritDoc}
@@ -42,7 +44,7 @@ public enum JDWPHostCommandSetReferenceType
 	},
 	
 	/** The class loader used on a class. */
-	CLASS_LOADER(2)
+	CLASS_LOADER(JDWPCommandSetReferenceType.CLASS_LOADER)
 	{
 		/**
 		 * {@inheritDoc}
@@ -71,7 +73,7 @@ public enum JDWPHostCommandSetReferenceType
 	},
 	
 	/** Modifiers for class. */
-	MODIFIERS(3)
+	MODIFIERS(JDWPCommandSetReferenceType.MODIFIERS)
 	{
 		/**
 		 * {@inheritDoc}
@@ -94,7 +96,7 @@ public enum JDWPHostCommandSetReferenceType
 	},
 	
 	/** Fields without generic. */
-	FIELDS(4)
+	FIELDS(JDWPCommandSetReferenceType.FIELDS)
 	{
 		/**
 		 * {@inheritDoc}
@@ -110,7 +112,7 @@ public enum JDWPHostCommandSetReferenceType
 	},
 	
 	/** Methods without generic. */
-	METHODS(5)
+	METHODS(JDWPCommandSetReferenceType.METHODS)
 	{
 		/**
 		 * {@inheritDoc}
@@ -126,7 +128,7 @@ public enum JDWPHostCommandSetReferenceType
 	},
 	
 	/** Static field values. */
-	STATIC_FIELD_VALUE(6)
+	STATIC_FIELD_VALUE(JDWPCommandSetReferenceType.STATIC_FIELD_VALUE)
 	{
 		/**
 		 * {@inheritDoc}
@@ -182,7 +184,7 @@ public enum JDWPHostCommandSetReferenceType
 	},
 	
 	/** Source file. */
-	SOURCE_FILE(7)
+	SOURCE_FILE(JDWPCommandSetReferenceType.SOURCE_FILE)
 	{
 		/**
 		 * {@inheritDoc}
@@ -211,7 +213,7 @@ public enum JDWPHostCommandSetReferenceType
 	},
 	
 	/** Interfaces. */
-	INTERFACES(10)
+	INTERFACES(JDWPCommandSetReferenceType.INTERFACES)
 	{
 		/**
 		 * {@inheritDoc}
@@ -245,7 +247,7 @@ public enum JDWPHostCommandSetReferenceType
 	},
 	
 	/** Class object of type. */
-	CLASS_OBJECT(11)
+	CLASS_OBJECT(JDWPCommandSetReferenceType.CLASS_OBJECT)
 	{
 		/**
 		 * {@inheritDoc}
@@ -271,7 +273,7 @@ public enum JDWPHostCommandSetReferenceType
 	},
 	
 	/** Signature with generic (class). */
-	SIGNATURE_WITH_GENERIC(13)
+	SIGNATURE_WITH_GENERIC(JDWPCommandSetReferenceType.SIGNATURE_WITH_GENERIC)
 	{
 		/**
 		 * {@inheritDoc}
@@ -287,7 +289,7 @@ public enum JDWPHostCommandSetReferenceType
 	},
 	
 	/** Fields with generic types. */
-	FIELDS_WITH_GENERIC(14)
+	FIELDS_WITH_GENERIC(JDWPCommandSetReferenceType.FIELDS_WITH_GENERIC)
 	{
 		/**
 		 * {@inheritDoc}
@@ -303,7 +305,7 @@ public enum JDWPHostCommandSetReferenceType
 	},
 	
 	/** Methods with generic types. */
-	METHODS_WITH_GENERIC(15)
+	METHODS_WITH_GENERIC(JDWPCommandSetReferenceType.METHODS_WITH_GENERIC)
 	{
 		/**
 		 * {@inheritDoc}
@@ -319,7 +321,7 @@ public enum JDWPHostCommandSetReferenceType
 	},
 	
 	/** Class file version. */
-	CLASS_FILE_VERSION(17)
+	CLASS_FILE_VERSION(JDWPCommandSetReferenceType.CLASS_FILE_VERSION)
 	{
 		/**
 		 * {@inheritDoc}
@@ -336,15 +338,15 @@ public enum JDWPHostCommandSetReferenceType
 				__packet.id(), JDWPErrorType.NO_ERROR);
 			
 			// Always Java 1.7
-			rv.writeInt(51);
-			rv.writeInt(0);
+			rv.writeInt(JDWPCommandSetReferenceType.writeInt);
+			rv.writeInt(JDWPCommandSetReferenceType.writeInt);
 			
 			return rv;
 		}
 	},
 	
 	/** Read the raw constant pool of a class. */
-	CONSTANT_POOL(18)
+	CONSTANT_POOL(JDWPCommandSetReferenceType.CONSTANT_POOL)
 	{
 		/**
 		 * {@inheritDoc}
@@ -380,6 +382,9 @@ public enum JDWPHostCommandSetReferenceType
 	/* End. */
 	;
 	
+	/** The base command. */
+	public final JDWPCommand command;
+	
 	/** The ID of the packet. */
 	public final int id;
 	
@@ -389,9 +394,10 @@ public enum JDWPHostCommandSetReferenceType
 	 * @param __id The ID used.
 	 * @since 2021/03/13
 	 */
-	JDWPHostCommandSetReferenceType(int __id)
+	JDWPHostCommandSetReferenceType(JDWPCommand __id)
 	{
-		this.id = __id;
+		this.command = __id;
+		this.id = __id.debuggerId();
 	}
 	
 	/**
@@ -428,7 +434,7 @@ public enum JDWPHostCommandSetReferenceType
 		// Do not allow reading the fields of class of weird things can happen
 		if ("Ljava/lang/Class;".equals(viewType.signature(type)))
 		{
-			rv.writeInt(0);
+			rv.writeInt(JDWPCommandSetReferenceType.writeInt);
 			return rv;
 		}
 		

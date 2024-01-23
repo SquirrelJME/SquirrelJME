@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp.host;
 
+import cc.squirreljme.jdwp.JDWPCommand;
+import cc.squirreljme.jdwp.JDWPCommandSetEventRequest;
 import cc.squirreljme.jdwp.JDWPErrorType;
 import cc.squirreljme.jdwp.JDWPEventKind;
 import cc.squirreljme.jdwp.JDWPEventModifierKind;
@@ -35,7 +37,7 @@ public enum JDWPHostCommandSetEventRequest
 	implements JDWPCommandHandler
 {
 	/** Set event requests. */
-	SET(1)
+	SET(JDWPCommandSetEventRequest.SET)
 	{
 		/**
 		 * {@inheritDoc}
@@ -195,7 +197,7 @@ public enum JDWPHostCommandSetEventRequest
 	},
 	
 	/** Clear event. */
-	CLEAR(2)
+	CLEAR(JDWPCommandSetEventRequest.CLEAR)
 	{
 		/**
 		 * {@inheritDoc}
@@ -222,7 +224,7 @@ public enum JDWPHostCommandSetEventRequest
 	},
 	
 	/** Clear all breakpoints. */
-	CLEAR_ALL_BREAKPOINTS(3)
+	CLEAR_ALL_BREAKPOINTS(JDWPCommandSetEventRequest.CLEAR_ALL_BREAKPOINTS)
 	{
 		/**
 		 * {@inheritDoc}
@@ -242,6 +244,9 @@ public enum JDWPHostCommandSetEventRequest
 	/* End. */
 	;
 	
+	/** The base command. */
+	public final JDWPCommand command;
+	
 	/** The ID of the packet. */
 	public final int id;
 	
@@ -251,9 +256,10 @@ public enum JDWPHostCommandSetEventRequest
 	 * @param __id The ID used.
 	 * @since 2021/03/12
 	 */
-	JDWPHostCommandSetEventRequest(int __id)
+	JDWPHostCommandSetEventRequest(JDWPCommand __id)
 	{
-		this.id = __id;
+		this.command = __id;
+		this.id = __id.debuggerId();
 	}
 	
 	/**

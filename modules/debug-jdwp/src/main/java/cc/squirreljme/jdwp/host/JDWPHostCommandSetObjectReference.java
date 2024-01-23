@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp.host;
 
+import cc.squirreljme.jdwp.JDWPCommand;
+import cc.squirreljme.jdwp.JDWPCommandSetObjectReference;
 import cc.squirreljme.jdwp.JDWPErrorType;
 import cc.squirreljme.jdwp.JDWPException;
 import cc.squirreljme.jdwp.JDWPHostController;
@@ -27,7 +29,7 @@ public enum JDWPHostCommandSetObjectReference
 	implements JDWPCommandHandler
 {
 	/** The type that an object is. */
-	REFERENCE_TYPE(1)
+	REFERENCE_TYPE(JDWPCommandSetObjectReference.REFERENCE_TYPE)
 	{
 		/**
 		 * {@inheritDoc}
@@ -59,7 +61,7 @@ public enum JDWPHostCommandSetObjectReference
 	},
 	
 	/** Get field values. */
-	GET_VALUES(2)
+	GET_VALUES(JDWPCommandSetObjectReference.GET_VALUES)
 	{
 		/**
 		 * {@inheritDoc}
@@ -118,7 +120,7 @@ public enum JDWPHostCommandSetObjectReference
 	},
 	
 	/** Is this object garbage collected? */
-	IS_COLLECTED(9)
+	IS_COLLECTED(JDWPCommandSetObjectReference.IS_COLLECTED)
 	{
 		/**
 		 * {@inheritDoc}
@@ -144,6 +146,9 @@ public enum JDWPHostCommandSetObjectReference
 	/* End. */
 	;
 	
+	/** The base command. */
+	public final JDWPCommand command;
+	
 	/** The ID of the packet. */
 	public final int id;
 	
@@ -153,9 +158,10 @@ public enum JDWPHostCommandSetObjectReference
 	 * @param __id The ID used.
 	 * @since 2021/03/14
 	 */
-	JDWPHostCommandSetObjectReference(int __id)
+	JDWPHostCommandSetObjectReference(JDWPCommand __id)
 	{
-		this.id = __id;
+		this.command = __id;
+		this.id = __id.debuggerId();
 	}
 	
 	/**

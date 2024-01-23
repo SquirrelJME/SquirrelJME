@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp.host;
 
+import cc.squirreljme.jdwp.JDWPCommand;
+import cc.squirreljme.jdwp.JDWPCommandSetThreadReference;
 import cc.squirreljme.jdwp.JDWPErrorType;
 import cc.squirreljme.jdwp.JDWPException;
 import cc.squirreljme.jdwp.JDWPHostController;
@@ -27,7 +29,7 @@ public enum JDWPHostCommandSetThreadReference
 	implements JDWPCommandHandler
 {
 	/** Thread name. */
-	NAME(1)
+	NAME(JDWPCommandSetThreadReference.NAME)
 	{
 		/**
 		 * {@inheritDoc}
@@ -53,7 +55,7 @@ public enum JDWPHostCommandSetThreadReference
 	},
 	
 	/** Suspend thread. */
-	SUSPEND(2)
+	SUSPEND(JDWPCommandSetThreadReference.SUSPEND)
 	{
 		/**
 		 * {@inheritDoc}
@@ -77,7 +79,7 @@ public enum JDWPHostCommandSetThreadReference
 	},
 	
 	/** Resume thread. */
-	RESUME(3)
+	RESUME(JDWPCommandSetThreadReference.RESUME)
 	{
 		/**
 		 * {@inheritDoc}
@@ -101,7 +103,7 @@ public enum JDWPHostCommandSetThreadReference
 	},
 	
 	/** Status of the thread. */
-	STATUS(4)
+	STATUS(JDWPCommandSetThreadReference.STATUS)
 	{
 		/**
 		 * {@inheritDoc}
@@ -124,8 +126,8 @@ public enum JDWPHostCommandSetThreadReference
 					__packet.id(), JDWPErrorType.NO_ERROR);
 				
 				// Terminated and not suspended
-				rv.writeInt(0);
-				rv.writeInt(0);
+				rv.writeInt(JDWPCommandSetThreadReference.writeInt);
+				rv.writeInt(JDWPCommandSetThreadReference.writeInt);
 				
 				return rv;
 			}
@@ -136,7 +138,7 @@ public enum JDWPHostCommandSetThreadReference
 			// If this thread has terminated it becomes a zombie
 			boolean terminated = view.isTerminated(thread);
 			if (terminated)
-				rv.writeInt(0);
+				rv.writeInt(JDWPCommandSetThreadReference.writeInt);
 			
 			// Which state is this thread in?
 			else
@@ -144,18 +146,18 @@ public enum JDWPHostCommandSetThreadReference
 				{
 						// Sleeping
 					case ThreadStatusType.SLEEPING:
-						rv.writeInt(2);
+						rv.writeInt(JDWPCommandSetThreadReference.writeInt);
 						break;
 						
 						// Waiting on a monitor?
 					case ThreadStatusType.MONITOR_WAIT:
-						rv.writeInt(3);
+						rv.writeInt(JDWPCommandSetThreadReference.writeInt);
 						break;
 					
 						// Running state, assuming anything else is running
 					case ThreadStatusType.RUNNING:
 					default:
-						rv.writeInt(1);
+						rv.writeInt(JDWPCommandSetThreadReference.writeInt);
 						break;
 				}
 			
@@ -169,7 +171,7 @@ public enum JDWPHostCommandSetThreadReference
 	},
 	
 	/** Thread group of a thread. */
-	THREAD_GROUP(5)
+	THREAD_GROUP(JDWPCommandSetThreadReference.THREAD_GROUP)
 	{
 		/**
 		 * {@inheritDoc}
@@ -206,7 +208,7 @@ public enum JDWPHostCommandSetThreadReference
 	},
 	
 	/** Frames. */
-	FRAMES(6)
+	FRAMES(JDWPCommandSetThreadReference.FRAMES)
 	{
 		/**
 		 * {@inheritDoc}
@@ -262,7 +264,7 @@ public enum JDWPHostCommandSetThreadReference
 	},
 	
 	/** Frame count. */
-	FRAME_COUNT(7)
+	FRAME_COUNT(JDWPCommandSetThreadReference.FRAME_COUNT)
 	{
 		/**
 		 * {@inheritDoc}
@@ -287,7 +289,7 @@ public enum JDWPHostCommandSetThreadReference
 	},
 	
 	/** Stops a thread, not supported in Java ME. */
-	STOP(10)
+	STOP(JDWPCommandSetThreadReference.STOP)
 	{
 		/**
 		 * {@inheritDoc}
@@ -308,7 +310,7 @@ public enum JDWPHostCommandSetThreadReference
 	},
 	
 	/** Interrupt the thread. */
-	INTERRUPT(11)
+	INTERRUPT(JDWPCommandSetThreadReference.INTERRUPT)
 	{
 		/**
 		 * {@inheritDoc}
@@ -331,7 +333,7 @@ public enum JDWPHostCommandSetThreadReference
 	},
 	
 	/** Suspension count for each thread. */
-	SUSPEND_COUNT(12)
+	SUSPEND_COUNT(JDWPCommandSetThreadReference.SUSPEND_COUNT)
 	{
 		/**
 		 * {@inheritDoc}
@@ -359,6 +361,9 @@ public enum JDWPHostCommandSetThreadReference
 	/* End. */
 	;
 	
+	/** The base command. */
+	public final JDWPCommand command;
+	
 	/** The ID of the packet. */
 	public final int id;
 	
@@ -368,9 +373,10 @@ public enum JDWPHostCommandSetThreadReference
 	 * @param __id The ID used.
 	 * @since 2021/03/13
 	 */
-	JDWPHostCommandSetThreadReference(int __id)
+	JDWPHostCommandSetThreadReference(JDWPCommand __id)
 	{
-		this.id = __id;
+		this.command = __id;
+		this.id = __id.debuggerId();
 	}
 	
 	/**

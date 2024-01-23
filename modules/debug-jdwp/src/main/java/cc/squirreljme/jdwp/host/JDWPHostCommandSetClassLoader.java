@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp.host;
 
+import cc.squirreljme.jdwp.JDWPCommand;
+import cc.squirreljme.jdwp.JDWPCommandSetClassLoader;
 import cc.squirreljme.jdwp.JDWPErrorType;
 import cc.squirreljme.jdwp.JDWPException;
 import cc.squirreljme.jdwp.JDWPHostController;
@@ -26,7 +28,7 @@ public enum JDWPHostCommandSetClassLoader
 	implements JDWPCommandHandler
 {
 	/** Classes which are visible to the given loader. */
-	VISIBLE_CLASSES(1)
+	VISIBLE_CLASSES(JDWPCommandSetClassLoader.VISIBLE_CLASSES)
 	{
 		/**
 		 * {@inheritDoc}
@@ -70,6 +72,9 @@ public enum JDWPHostCommandSetClassLoader
 	/* End. */
 	;
 	
+	/** The base command. */
+	public final JDWPCommand command;
+	
 	/** The ID of the packet. */
 	public final int id;
 	
@@ -79,9 +84,10 @@ public enum JDWPHostCommandSetClassLoader
 	 * @param __id The ID used.
 	 * @since 2021/04/20
 	 */
-	JDWPHostCommandSetClassLoader(int __id)
+	JDWPHostCommandSetClassLoader(JDWPCommand __id)
 	{
-		this.id = __id;
+		this.command = __id;
+		this.id = __id.debuggerId();
 	}
 	
 	/**

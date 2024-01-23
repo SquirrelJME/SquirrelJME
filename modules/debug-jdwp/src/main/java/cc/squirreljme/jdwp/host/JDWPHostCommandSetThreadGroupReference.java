@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp.host;
 
+import cc.squirreljme.jdwp.JDWPCommand;
+import cc.squirreljme.jdwp.JDWPCommandSetThreadGroupReference;
 import cc.squirreljme.jdwp.JDWPErrorType;
 import cc.squirreljme.jdwp.JDWPException;
 import cc.squirreljme.jdwp.JDWPHostController;
@@ -28,7 +30,7 @@ public enum JDWPHostCommandSetThreadGroupReference
 	implements JDWPCommandHandler
 {
 	/** The name of the group. */
-	NAME(1)
+	NAME(JDWPCommandSetThreadGroupReference.NAME)
 	{
 		/**
 		 * {@inheritDoc}
@@ -55,7 +57,7 @@ public enum JDWPHostCommandSetThreadGroupReference
 	},
 	
 	/** The parent thread group. */
-	PARENT(2)
+	PARENT(JDWPCommandSetThreadGroupReference.PARENT)
 	{
 		/**
 		 * {@inheritDoc}
@@ -73,14 +75,14 @@ public enum JDWPHostCommandSetThreadGroupReference
 				__packet.id(), JDWPErrorType.NO_ERROR);
 			
 			// There are never any parent thread groups
-			rv.writeId(0);
+			rv.writeId(JDWPCommandSetThreadGroupReference.writeId);
 			
 			return rv;
 		}
 	},
 	
 	/** The children thread groups and threads. */
-	CHILDREN(3)
+	CHILDREN(JDWPCommandSetThreadGroupReference.CHILDREN)
 	{
 		/**
 		 * {@inheritDoc}
@@ -121,7 +123,7 @@ public enum JDWPHostCommandSetThreadGroupReference
 			}
 			
 			// There are never any child thread groups
-			rv.writeInt(0);
+			rv.writeInt(JDWPCommandSetThreadGroupReference.writeInt);
 			
 			return rv;
 		}
@@ -129,6 +131,9 @@ public enum JDWPHostCommandSetThreadGroupReference
 	
 	/* End. */
 	;
+	
+	/** The base command. */
+	public final JDWPCommand command;
 	
 	/** The ID of the packet. */
 	public final int id;
@@ -139,9 +144,10 @@ public enum JDWPHostCommandSetThreadGroupReference
 	 * @param __id The ID used.
 	 * @since 2021/03/13
 	 */
-	JDWPHostCommandSetThreadGroupReference(int __id)
+	JDWPHostCommandSetThreadGroupReference(JDWPCommand __id)
 	{
-		this.id = __id;
+		this.command = __id;
+		this.id = __id.debuggerId();
 	}
 	
 	/**
