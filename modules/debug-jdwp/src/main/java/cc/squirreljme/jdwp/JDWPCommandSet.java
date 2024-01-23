@@ -30,7 +30,7 @@ public enum JDWPCommandSet
 	CLASS_TYPE(3, JDWPCommandSetClassType.values()),
 	
 	/** Methods. */
-	METHODS(6, CommandSetMethod.values()),
+	METHODS(6, JDWPCommandSetMethod.values()),
 	
 	/** Object references. */
 	OBJECT_REFERENCE(9, CommandSetObjectReference.values()),
@@ -51,7 +51,7 @@ public enum JDWPCommandSet
 	CLASS_LOADER(14, JDWPCommandSetClassLoader.values()),
 	
 	/** Event requests. */
-	EVENT_REQUEST(15, CommandSetEventRequest.values()),
+	EVENT_REQUEST(15, JDWPCommandSetEventRequest.values()),
 	
 	/** Stack frames. */
 	STACK_FRAMES(16, CommandSetStackFrame.values()),

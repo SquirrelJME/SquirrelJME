@@ -10,7 +10,7 @@
 package cc.squirreljme.debugger;
 
 import cc.squirreljme.jdwp.JDWPCommLink;
-import cc.squirreljme.jdwp.CommandSetEventRequest;
+import cc.squirreljme.jdwp.JDWPCommandSetEventRequest;
 import cc.squirreljme.jdwp.CommandSetThreadReference;
 import cc.squirreljme.jdwp.CommandSetVirtualMachine;
 import cc.squirreljme.jdwp.JDWPErrorType;
@@ -119,7 +119,7 @@ public class DebuggerState
 			throw new NullPointerException("NARG");
 		
 		try (JDWPPacket out = this.request(JDWPCommandSet.EVENT_REQUEST,
-			CommandSetEventRequest.SET))
+			JDWPCommandSetEventRequest.SET))
 		{
 			// Fill in information
 			out.writeByte(__kind.debuggerId());

@@ -14,7 +14,7 @@ package cc.squirreljme.jdwp;
  *
  * @since 2021/03/14
  */
-public enum CommandSetMethod
+public enum JDWPCommandSetMethod
 	implements JDWPCommand
 {
 	/** Line number table. */
@@ -41,7 +41,7 @@ public enum CommandSetMethod
 	 * @param __id The ID used.
 	 * @since 2021/03/14
 	 */
-	CommandSetMethod(int __id)
+	JDWPCommandSetMethod(int __id)
 	{
 		this.id = __id;
 	}

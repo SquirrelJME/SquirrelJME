@@ -14,7 +14,7 @@ package cc.squirreljme.jdwp;
  *
  * @since 2021/03/12
  */
-public enum CommandSetEventRequest
+public enum JDWPCommandSetEventRequest
 	implements JDWPCommand
 {
 	/** Set event requests. */
@@ -38,7 +38,7 @@ public enum CommandSetEventRequest
 	 * @param __id The ID used.
 	 * @since 2021/03/12
 	 */
-	CommandSetEventRequest(int __id)
+	JDWPCommandSetEventRequest(int __id)
 	{
 		this.id = __id;
 	}
