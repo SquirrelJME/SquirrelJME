@@ -9,7 +9,7 @@
 
 package cc.squirreljme.jdwp.host.views;
 
-import cc.squirreljme.jdwp.JDWPValue;
+import cc.squirreljme.jdwp.JDWPHostValue;
 
 /**
  * This is a view around thread frames.
@@ -65,7 +65,7 @@ public interface JDWPViewFrame
 	 * @return {@code true} if this is a valid value.
 	 * @since 2021/04/14
 	 */
-	boolean readValue(Object __which, int __index, JDWPValue __out);
+	boolean readValue(Object __which, int __index, JDWPHostValue __out);
 	
 	/**
 	 * Returns the number of values stored in the frame.

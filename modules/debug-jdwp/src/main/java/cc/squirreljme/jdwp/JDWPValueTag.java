@@ -155,7 +155,7 @@ public enum JDWPValueTag
 	 * @since 2021/04/14
 	 */
 	public static JDWPValueTag guessType(JDWPHostController __controller,
-		JDWPValue __value)
+		JDWPHostValue __value)
 		throws NullPointerException
 	{
 		if (__controller == null || __value == null)

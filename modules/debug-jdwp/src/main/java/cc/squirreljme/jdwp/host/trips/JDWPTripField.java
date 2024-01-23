@@ -9,7 +9,7 @@
 
 package cc.squirreljme.jdwp.host.trips;
 
-import cc.squirreljme.jdwp.JDWPValue;
+import cc.squirreljme.jdwp.JDWPHostValue;
 
 /**
  * Trip on fields.
@@ -33,5 +33,5 @@ public interface JDWPTripField
 	 * @since 2021/04/30
 	 */
 	void field(Object __thread, Object __type, int __fieldDx, boolean __write,
-		Object __instance, JDWPValue __jVal);
+		Object __instance, JDWPHostValue __jVal);
 }

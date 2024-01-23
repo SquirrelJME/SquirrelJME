@@ -10,7 +10,7 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jdwp.JDWPHostState;
-import cc.squirreljme.jdwp.JDWPValue;
+import cc.squirreljme.jdwp.JDWPHostValue;
 import cc.squirreljme.jdwp.host.views.JDWPViewFrame;
 import java.lang.ref.Reference;
 
@@ -97,7 +97,7 @@ public class DebugViewFrame
 	 * @since 2021/04/14
 	 */
 	@Override
-	public boolean readValue(Object __which, int __index, JDWPValue __out)
+	public boolean readValue(Object __which, int __index, JDWPHostValue __out)
 	{
 		__out.set(((SpringThread.Frame)__which).loadLocal(
 			Object.class, __index));

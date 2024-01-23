@@ -40,7 +40,7 @@ final class __TripField__
 	 */
 	@Override
 	public void field(Object __thread, Object __type, int __fieldDx,
-		boolean __write, Object __instance, JDWPValue __jVal)
+		boolean __write, Object __instance, JDWPHostValue __jVal)
 	{
 		JDWPHostController controller = this.__controller();
 		JDWPHostState state = controller.getState();

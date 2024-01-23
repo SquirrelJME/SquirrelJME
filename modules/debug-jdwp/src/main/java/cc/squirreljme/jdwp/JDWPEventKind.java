@@ -662,7 +662,7 @@ public enum JDWPEventKind
 		int fieldDx = (int)__args[1];
 		boolean write = (boolean)__args[2];
 		Object instance = __args[3];
-		JDWPValue newValue = (JDWPValue)__args[4];
+		JDWPHostValue newValue = (JDWPHostValue)__args[4];
 		
 		// Write current thread and location
 		__controller.writeObject(__packet, __thread);

@@ -15,7 +15,7 @@ import cc.squirreljme.jdwp.JDWPErrorType;
 import cc.squirreljme.jdwp.JDWPException;
 import cc.squirreljme.jdwp.JDWPHostController;
 import cc.squirreljme.jdwp.JDWPPacket;
-import cc.squirreljme.jdwp.JDWPValue;
+import cc.squirreljme.jdwp.JDWPHostValue;
 import cc.squirreljme.jdwp.JDWPValueTag;
 import cc.squirreljme.jdwp.host.views.JDWPViewFrame;
 
@@ -60,7 +60,7 @@ public enum JDWPHostCommandSetStackFrame
 			
 			JDWPViewFrame viewFrame = __controller.viewFrame();
 			for (int i = 0; i < numSlots; i++)
-				try (JDWPValue value = __controller.value())
+				try (JDWPHostValue value = __controller.value())
 				{
 					// If this value is an object we need to register it for
 					// future grabbing
@@ -115,7 +115,7 @@ public enum JDWPHostCommandSetStackFrame
 			
 			// Write self value
 			else
-				try (JDWPValue value = __controller.value())
+				try (JDWPHostValue value = __controller.value())
 				{
 					// If this value is an object we need to register it for
 					// future grabbing

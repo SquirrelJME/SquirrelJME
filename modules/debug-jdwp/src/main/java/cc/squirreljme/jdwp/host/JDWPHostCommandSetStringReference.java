@@ -16,7 +16,7 @@ import cc.squirreljme.jdwp.JDWPException;
 import cc.squirreljme.jdwp.JDWPHostController;
 import cc.squirreljme.jdwp.JDWPHostUtils;
 import cc.squirreljme.jdwp.JDWPPacket;
-import cc.squirreljme.jdwp.JDWPValue;
+import cc.squirreljme.jdwp.JDWPHostValue;
 import cc.squirreljme.jdwp.host.views.JDWPViewObject;
 import cc.squirreljme.jdwp.host.views.JDWPViewType;
 
@@ -63,7 +63,7 @@ public enum JDWPHostCommandSetStringReference
 			
 			// Load the character array
 			Object charArray;
-			try (JDWPValue value = __controller.value())
+			try (JDWPHostValue value = __controller.value())
 			{
 				// Is this a valid field?
 				if (!viewObject.readValue(object, charFieldDx, value))
@@ -83,7 +83,7 @@ public enum JDWPHostCommandSetStringReference
 			// Load in characters
 			char[] chars = new char[strLen];
 			for (int i = 0; i < strLen; i++)
-				try (JDWPValue value = __controller.value())
+				try (JDWPHostValue value = __controller.value())
 				{
 					// Is this value valid?
 					if (!viewObject.readArray(charArray, i, value))

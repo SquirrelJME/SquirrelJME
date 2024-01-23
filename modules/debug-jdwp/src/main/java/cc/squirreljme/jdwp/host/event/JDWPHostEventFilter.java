@@ -16,7 +16,7 @@ import cc.squirreljme.jdwp.JDWPHostController;
 import cc.squirreljme.jdwp.JDWPHostLocation;
 import cc.squirreljme.jdwp.JDWPHostStepTracker;
 import cc.squirreljme.jdwp.JDWPHostUtils;
-import cc.squirreljme.jdwp.JDWPValue;
+import cc.squirreljme.jdwp.JDWPHostValue;
 import cc.squirreljme.jdwp.host.views.JDWPViewObject;
 import cc.squirreljme.jdwp.host.views.JDWPViewType;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -322,7 +322,7 @@ public final class JDWPHostEventFilter
 						
 						// Get the this from the current frame
 						Object frame = frames[0];
-						try (JDWPValue val = __controller.value())
+						try (JDWPHostValue val = __controller.value())
 						{
 							// Read in the value
 							if (!__controller.viewFrame()

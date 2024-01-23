@@ -92,7 +92,7 @@ public final class JDWPHostController
 		new Object();
 	
 	/** Value cache. */
-	private final Deque<JDWPValue> _freeValues =
+	private final Deque<JDWPHostValue> _freeValues =
 		new LinkedList<>();
 	
 	/** The global trips that are available. */
@@ -841,7 +841,7 @@ public final class JDWPHostController
 					
 					// Read from this field
 					if (fieldId >= 0)
-						try (JDWPValue value = this.value())
+						try (JDWPHostValue value = this.value())
 						{
 							// If this is a valid object, then use it
 							if (viewObject.readValue(thread, fieldId, value))
@@ -1225,19 +1225,19 @@ public final class JDWPHostController
 	 * @return A value to store data in.
 	 * @since 2021/03/19
 	 */
-	public final JDWPValue value()
+	public final JDWPHostValue value()
 	{
-		Deque<JDWPValue> freeValues = this._freeValues;
+		Deque<JDWPHostValue> freeValues = this._freeValues;
 		synchronized (this._freeValues)
 		{
 			// Use an existing free value for recycling?
-			JDWPValue rv = freeValues.poll();
+			JDWPHostValue rv = freeValues.poll();
 			if (rv != null)
 				return rv.__resetToOpen();
 			
 			// Otherwise make a new one
 			//noinspection resource
-			return new JDWPValue(freeValues).__resetToOpen();
+			return new JDWPHostValue(freeValues).__resetToOpen();
 		}
 	}
 	
@@ -1481,10 +1481,10 @@ public final class JDWPHostController
 		throws JDWPException
 	{
 		// We really meant to write a value here
-		if (__val instanceof JDWPValue)
+		if (__val instanceof JDWPHostValue)
 		{
 			this.writeValue(__packet,
-				((JDWPValue)__val).get(), __context, __untag);
+				((JDWPHostValue)__val).get(), __context, __untag);
 			return;
 		}
 		

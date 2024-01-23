@@ -18,11 +18,11 @@ import java.util.Deque;
  *
  * @since 2021/03/17
  */
-public final class JDWPValue
+public final class JDWPHostValue
 	implements AutoCloseable
 {
 	/** Free value queue. */
-	private final Reference<Deque<JDWPValue>> _freeValues;
+	private final Reference<Deque<JDWPHostValue>> _freeValues;
 	
 	/** Is this open? */
 	private volatile boolean _isOpen;
@@ -40,7 +40,7 @@ public final class JDWPValue
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/03/19
 	 */
-	JDWPValue(Deque<JDWPValue> __freeValues)
+	JDWPHostValue(Deque<JDWPHostValue> __freeValues)
 		throws NullPointerException
 	{
 		if (__freeValues == null)
@@ -65,7 +65,7 @@ public final class JDWPValue
 			this._value = null;
 			
 			// Recycle this back in the queue
-			Deque<JDWPValue> queue = this._freeValues.get();
+			Deque<JDWPHostValue> queue = this._freeValues.get();
 			if (queue != null)
 				synchronized (queue)
 				{
@@ -176,7 +176,7 @@ public final class JDWPValue
 	 * @return {@code this}.
 	 * @since 2021/03/19
 	 */
-	final JDWPValue __resetToOpen()
+	final JDWPHostValue __resetToOpen()
 	{
 		synchronized (this)
 		{

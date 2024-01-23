@@ -15,7 +15,7 @@ import cc.squirreljme.jdwp.JDWPErrorType;
 import cc.squirreljme.jdwp.JDWPException;
 import cc.squirreljme.jdwp.JDWPHostController;
 import cc.squirreljme.jdwp.JDWPPacket;
-import cc.squirreljme.jdwp.JDWPValue;
+import cc.squirreljme.jdwp.JDWPHostValue;
 import cc.squirreljme.jdwp.JDWPValueTag;
 import cc.squirreljme.jdwp.host.views.JDWPViewObject;
 import cc.squirreljme.jdwp.host.views.JDWPViewType;
@@ -95,7 +95,7 @@ public enum JDWPHostCommandSetArrayReference
 			
 			// Go through and read all the array values
 			for (int i = 0; i < len; i++)
-				try (JDWPValue value = __controller.value())
+				try (JDWPHostValue value = __controller.value())
 				{
 					if (!viewObject.readArray(array, off + i, value))
 						value.set(tag.defaultValue);

@@ -12,7 +12,7 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.jdwp.JDWPCommandException;
 import cc.squirreljme.jdwp.JDWPLocalVariable;
 import cc.squirreljme.jdwp.JDWPHostState;
-import cc.squirreljme.jdwp.JDWPValue;
+import cc.squirreljme.jdwp.JDWPHostValue;
 import cc.squirreljme.jdwp.host.trips.JDWPTripBreakpoint;
 import cc.squirreljme.jdwp.host.views.JDWPViewType;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchFieldException;
@@ -515,7 +515,7 @@ public class DebugViewType
 	 * @since 2021/04/14
 	 */
 	@Override
-	public boolean readValue(Object __which, int __index, JDWPValue __out)
+	public boolean readValue(Object __which, int __index, JDWPHostValue __out)
 	{
 		SpringClass classy = DebugViewType.__class(__which);
 		
@@ -662,7 +662,7 @@ public class DebugViewType
 	 * @return {@code true} on success.
 	 * @since 2022/09/01
 	 */
-	static boolean __readValue(JDWPValue __out, SpringFieldStorage __store,
+	static boolean __readValue(JDWPHostValue __out, SpringFieldStorage __store,
 		SpringMachine __machine)
 	{
 		Object value = __store.get();

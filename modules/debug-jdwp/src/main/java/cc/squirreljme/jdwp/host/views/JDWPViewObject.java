@@ -9,7 +9,7 @@
 
 package cc.squirreljme.jdwp.host.views;
 
-import cc.squirreljme.jdwp.JDWPValue;
+import cc.squirreljme.jdwp.JDWPHostValue;
 
 /**
  * An object viewer.
@@ -46,7 +46,7 @@ public interface JDWPViewObject
 	 * @return {@code true} if this is a valid value.
 	 * @since 2021/04/10
 	 */
-	boolean readArray(Object __which, int __index, JDWPValue __out);
+	boolean readArray(Object __which, int __index, JDWPHostValue __out);
 	
 	/**
 	 * Reads the value of an instance field within the object.
@@ -57,7 +57,7 @@ public interface JDWPViewObject
 	 * @return {@code true} if this is a valid value.
 	 * @since 2021/04/10
 	 */
-	boolean readValue(Object __which, int __index, JDWPValue __out);
+	boolean readValue(Object __which, int __index, JDWPHostValue __out);
 	
 	/**
 	 * Returns the object type.

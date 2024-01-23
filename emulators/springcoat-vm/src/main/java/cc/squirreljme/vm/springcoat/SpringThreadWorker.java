@@ -16,7 +16,7 @@ import cc.squirreljme.jdwp.JDWPClassStatus;
 import cc.squirreljme.jdwp.JDWPHostController;
 import cc.squirreljme.jdwp.JDWPHostStepTracker;
 import cc.squirreljme.jdwp.JDWPHostThreadSuspension;
-import cc.squirreljme.jdwp.JDWPValue;
+import cc.squirreljme.jdwp.JDWPHostValue;
 import cc.squirreljme.jdwp.host.trips.JDWPGlobalTrip;
 import cc.squirreljme.jdwp.host.trips.JDWPTripBreakpoint;
 import cc.squirreljme.jdwp.host.trips.JDWPTripClassStatus;
@@ -3470,7 +3470,7 @@ public final class SpringThreadWorker
 						
 						// Debug signal
 						if (jdwp != null && ssf.isDebugWatching(true))
-							try (JDWPValue jVal = jdwp.value())
+							try (JDWPHostValue jVal = jdwp.value())
 							{
 								jVal.set(
 									DebugViewObject.__normalizeNull(value));
@@ -3504,7 +3504,7 @@ public final class SpringThreadWorker
 						// Debug signal
 						if (jdwp != null &&
 							field[0].isDebugWatching(true))
-							try (JDWPValue jVal = jdwp.value())
+							try (JDWPHostValue jVal = jdwp.value())
 							{
 								jVal.set(
 									DebugViewObject.__normalizeNull(value));
