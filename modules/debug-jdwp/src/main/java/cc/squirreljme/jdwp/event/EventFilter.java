@@ -12,7 +12,7 @@ package cc.squirreljme.jdwp.event;
 import cc.squirreljme.jdwp.EventKind;
 import cc.squirreljme.jdwp.JDWPHostController;
 import cc.squirreljme.jdwp.JDWPLocation;
-import cc.squirreljme.jdwp.JDWPStepTracker;
+import cc.squirreljme.jdwp.JDWPHostStepTracker;
 import cc.squirreljme.jdwp.JDWPUtils;
 import cc.squirreljme.jdwp.JDWPValue;
 import cc.squirreljme.jdwp.host.views.JDWPViewObject;
@@ -380,11 +380,11 @@ public final class EventFilter
 			case PARAMETER_STEPPING:
 				{
 					// Not a tracker? Do nothing
-					if (!(__on instanceof JDWPStepTracker))
+					if (!(__on instanceof JDWPHostStepTracker))
 						return false;
 					
 					// Get the tracker and the stepping
-					JDWPStepTracker stepTracker = (JDWPStepTracker)__on;
+					JDWPHostStepTracker stepTracker = (JDWPHostStepTracker)__on;
 					CallStackStepping stepping = this.callStackStepping;
 					
 					// No stepping here? Cannot be a match

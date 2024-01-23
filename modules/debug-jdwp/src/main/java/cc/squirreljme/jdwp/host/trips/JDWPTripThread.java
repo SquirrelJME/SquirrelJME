@@ -9,7 +9,7 @@
 
 package cc.squirreljme.jdwp.host.trips;
 
-import cc.squirreljme.jdwp.JDWPStepTracker;
+import cc.squirreljme.jdwp.JDWPHostStepTracker;
 
 /**
  * A trip on a thread.
@@ -35,7 +35,7 @@ public interface JDWPTripThread
 	 * @param __stepTracker The step tracker which is used for this event.
 	 * @since 2021/04/28
 	 */
-	void step(Object __which, JDWPStepTracker __stepTracker);
+	void step(Object __which, JDWPHostStepTracker __stepTracker);
 	
 	/**
 	 * Indicates on thread suspension.

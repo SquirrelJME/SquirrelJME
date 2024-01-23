@@ -596,7 +596,7 @@ public final class JDWPHostController
 						return;
 					
 					// Tell the thread to enter stepping mode
-					JDWPStepTracker stepTracker = this.viewThread()
+					JDWPHostStepTracker stepTracker = this.viewThread()
 						.stepTracker(stepping.thread);
 					stepTracker.steppingSet(this, stepping.thread,
 						stepping.size, stepping.depth);

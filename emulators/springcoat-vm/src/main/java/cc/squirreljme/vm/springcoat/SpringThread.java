@@ -12,7 +12,7 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.emulator.profiler.ProfiledFrame;
 import cc.squirreljme.emulator.profiler.ProfiledThread;
 import cc.squirreljme.jdwp.JDWPHostController;
-import cc.squirreljme.jdwp.JDWPStepTracker;
+import cc.squirreljme.jdwp.JDWPHostStepTracker;
 import cc.squirreljme.jdwp.JDWPHostThreadSuspension;
 import cc.squirreljme.jdwp.host.trips.JDWPGlobalTrip;
 import cc.squirreljme.jdwp.host.trips.JDWPTripThread;
@@ -107,7 +107,7 @@ public final class SpringThread
 	private volatile boolean _terminate;
 	
 	/** Step tracker. */
-	volatile JDWPStepTracker _stepTracker;
+	volatile JDWPHostStepTracker _stepTracker;
 	
 	/**
 	 * Initializes the thread.

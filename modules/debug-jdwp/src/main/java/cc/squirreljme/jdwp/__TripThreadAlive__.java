@@ -65,7 +65,7 @@ final class __TripThreadAlive__
 	 * @since 2021/04/28
 	 */
 	@Override
-	public void step(Object __which, JDWPStepTracker __stepTracker)
+	public void step(Object __which, JDWPHostStepTracker __stepTracker)
 	{
 		// Do we report this?
 		if (!this.__checkReport(__which))
@@ -81,7 +81,7 @@ final class __TripThreadAlive__
 		
 		// Signal the step, if no events are found we likely are no longer
 		// going to step so just stop
-		JDWPStepTracker stepTracker = viewThread.stepTracker(__which);
+		JDWPHostStepTracker stepTracker = viewThread.stepTracker(__which);
 		if (!controller.signal(__which, EventKind.SINGLE_STEP, stepTracker))
 			stepTracker.clear();
 	}

@@ -14,7 +14,7 @@ import cc.squirreljme.emulator.vm.VMTraceFlagTracker;
 import cc.squirreljme.jdwp.EventKind;
 import cc.squirreljme.jdwp.JDWPClassStatus;
 import cc.squirreljme.jdwp.JDWPHostController;
-import cc.squirreljme.jdwp.JDWPStepTracker;
+import cc.squirreljme.jdwp.JDWPHostStepTracker;
 import cc.squirreljme.jdwp.JDWPHostThreadSuspension;
 import cc.squirreljme.jdwp.JDWPValue;
 import cc.squirreljme.jdwp.host.trips.JDWPGlobalTrip;
@@ -1740,7 +1740,7 @@ public final class SpringThreadWorker
 			}
 			
 			// Check if we are doing any single stepping
-			JDWPStepTracker stepTracker = thread._stepTracker;
+			JDWPHostStepTracker stepTracker = thread._stepTracker;
 			if (stepTracker != null && stepTracker.inSteppingMode())
 			{
 				// Tick the current tracker and see if it will activate

@@ -10,7 +10,7 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jdwp.JDWPHostState;
-import cc.squirreljme.jdwp.JDWPStepTracker;
+import cc.squirreljme.jdwp.JDWPHostStepTracker;
 import cc.squirreljme.jdwp.JDWPHostThreadSuspension;
 import cc.squirreljme.jdwp.host.views.JDWPViewThread;
 import cc.squirreljme.vm.springcoat.brackets.VMThreadObject;
@@ -160,17 +160,17 @@ public class DebugViewThread
 	 * @since 2021/04/28
 	 */
 	@Override
-	public JDWPStepTracker stepTracker(Object __which)
+	public JDWPHostStepTracker stepTracker(Object __which)
 	{
 		SpringThread thread = (SpringThread)__which;
 		
 		// Is the tracker existing already?
-		JDWPStepTracker stepTracker = thread._stepTracker;
+		JDWPHostStepTracker stepTracker = thread._stepTracker;
 		if (stepTracker != null)
 			return stepTracker;
 		
 		// Create and store it for later
-		thread._stepTracker = (stepTracker = new JDWPStepTracker());
+		thread._stepTracker = (stepTracker = new JDWPHostStepTracker());
 		return stepTracker;
 	}
 	

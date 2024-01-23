@@ -19,7 +19,7 @@ import cc.squirreljme.jdwp.host.views.JDWPViewThread;
  *
  * @since 2021/04/28
  */
-public final class JDWPStepTracker
+public final class JDWPHostStepTracker
 {
 	/** The position this was at. */
 	protected final Position was =
