@@ -147,7 +147,7 @@ public abstract class Info
 		synchronized (this)
 		{
 			if (this._disposed)
-				return String.format("DISPOSED %s#%d", this.kind, this.id);
+				return String.format("DISPOSED %s#%s", this.kind, this.id);
 		}
 		
 		// Has this been disposed?
@@ -155,13 +155,13 @@ public abstract class Info
 		synchronized (this)
 		{
 			if (this._disposed)
-				return String.format("DISPOSED %s#%d", this.kind, this.id);
+				return String.format("DISPOSED %s#%s", this.kind, this.id);
 			
 			else if (internalString != null)
-				return String.format("%s (%s#%d)", internalString, this.kind,
+				return String.format("%s (%s#%s)", internalString, this.kind,
 					this.id);
 			
-			return String.format("%s#%d", this.kind, this.id);
+			return String.format("%s#%s", this.kind, this.id);
 		}
 	}
 	

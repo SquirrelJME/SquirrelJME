@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -101,6 +102,16 @@ public final class JDWPId
 	public long longValue()
 	{
 		return this.id;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/01/23
+	 */
+	@Override
+	public String toString()
+	{
+		return Long.toString(this.id);
 	}
 	
 	/**
