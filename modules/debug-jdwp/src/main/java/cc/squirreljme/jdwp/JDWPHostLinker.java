@@ -29,7 +29,7 @@ import java.util.Map;
  * @param <T> The type of values to store.
  * @since 2021/03/13
  */
-public final class JDWPLinker<T>
+public final class JDWPHostLinker<T>
 {
 	/** Returns the type of the linked data. */
 	protected final Class<T> type;
@@ -45,7 +45,7 @@ public final class JDWPLinker<T>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/03/13
 	 */
-	public JDWPLinker(Class<T> __type)
+	public JDWPHostLinker(Class<T> __type)
 		throws NullPointerException
 	{
 		if (__type == null)

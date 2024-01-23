@@ -242,7 +242,7 @@ public final class JDWPController
 		int methodDx = viewFrame.atMethodIndex(topFrame);
 		
 		// Make sure the types are added!
-		JDWPLinker<Object> items = this.getState().items;
+		JDWPHostLinker<Object> items = this.getState().items;
 		if (topFrame != null)
 			items.put(topFrame);
 		if (type != null)
@@ -825,7 +825,7 @@ public final class JDWPController
 		Object[] types = this.viewThreadGroup().allTypes(__group);
 		
 		// Register all types so that the debugger knows about their existence
-		JDWPLinker<Object> items = this.getState().items;
+		JDWPHostLinker<Object> items = this.getState().items;
 		for (Object type : types)
 			items.put(type);
 		

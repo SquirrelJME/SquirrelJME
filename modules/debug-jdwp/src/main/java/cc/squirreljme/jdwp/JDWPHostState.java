@@ -23,8 +23,8 @@ import java.lang.ref.WeakReference;
 public final class JDWPHostState
 {
 	/** References to everything the debugger knows about. */
-	public final JDWPLinker<Object> items =
-		new JDWPLinker<>(Object.class);
+	public final JDWPHostLinker<Object> items =
+		new JDWPHostLinker<>(Object.class);
 	
 	/** The binding used. */
 	private final Reference<JDWPHostBinding> _binding;

@@ -687,7 +687,7 @@ public enum EventKind
 			__controller.locationOf(__thread));
 		
 		// Store the location items
-		JDWPLinker<Object> items = __controller.getState().items;
+		JDWPHostLinker<Object> items = __controller.getState().items;
 		if (__thread != null)
 			items.put(__thread);
 		if (location.type != null)
