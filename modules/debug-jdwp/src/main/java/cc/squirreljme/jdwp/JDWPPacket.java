@@ -526,6 +526,40 @@ public final class JDWPPacket
 	}
 	
 	/**
+	 * Reads a variable width value from the packet
+	 * 
+	 * @param __width The width of the value.
+	 * @return The single read value.
+	 * @throws IllegalArgumentException If the width is zero or negative.
+	 * @throws JDWPException If the end of the packet was reached.
+	 * @since 2021/03/13
+	 */
+	public final long readVariable(int __width)
+		throws IllegalArgumentException, JDWPException
+	{
+		if (__width <= 0)
+			throw new IllegalArgumentException("NEGV");
+		
+		long result = 0;
+		
+		synchronized (this)
+		{
+			// Ensure this is open
+			this.__checkOpen();
+			
+			// Read in each byte
+			for (int i = 0; i < __width; i++)
+			{
+				// Shift up and read in
+				result <<= 8;
+				result |= (this.readByte() & 0xFF);
+			}
+		}
+		
+		return result;
+	}
+	
+	/**
 	 * Returns the byte array of the packet.
 	 *
 	 * @return The packet data as a byte array.
