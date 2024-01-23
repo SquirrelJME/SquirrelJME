@@ -18,6 +18,7 @@ import cc.squirreljme.jdwp.host.trips.JDWPGlobalTrip;
 import cc.squirreljme.jdwp.host.trips.JDWPTrip;
 import cc.squirreljme.jdwp.host.views.JDWPView;
 import cc.squirreljme.jdwp.host.views.JDWPViewFrame;
+import cc.squirreljme.jdwp.host.views.JDWPViewHasInstance;
 import cc.squirreljme.jdwp.host.views.JDWPViewKind;
 import cc.squirreljme.jdwp.host.views.JDWPViewObject;
 import cc.squirreljme.jdwp.host.views.JDWPViewThread;
@@ -48,6 +49,11 @@ public final class JDWPHostController
 	/** Should debugging be enabled? */
 	static final boolean _DEBUG =
 		Boolean.getBoolean("cc.squirreljme.jdwp.debug");
+	
+	/** Attempts to instance capture. */
+	private static final JDWPViewKind[] _INSTANCE_CAPTURE =
+		new JDWPViewKind[]{JDWPViewKind.THREAD, JDWPViewKind.THREAD_GROUP,
+			JDWPViewKind.TYPE};
 	
 	/** The communication link. */
 	protected final JDWPCommLink commLink;
@@ -537,6 +543,318 @@ public final class JDWPHostController
 	}
 	
 	/**
+	 * Reads the given array from the packet.
+	 * 
+	 * @param __packet The source packet.
+	 * @param __nullable Can this be null?
+	 * @return The array value.
+	 * @throws JDWPException If this does not refer to a valid array.
+	 * @since 2021/04/11
+	 */
+	public final Object readArray(JDWPPacket __packet,
+		boolean __nullable)
+		throws JDWPException
+	{
+		Object object = this.readObject(__packet, __nullable);
+		
+		// Is this an invalid array?
+		if (this.viewObject().arrayLength(object) < 0)
+		{
+			if (__nullable && object == null)
+				return null;
+			
+			// Fail with invalid thread
+			throw JDWPErrorType.INVALID_ARRAY.toss(object,
+				System.identityHashCode(object));
+		}
+		
+		return object;
+	}
+	
+	/**
+	 * Reads the given frame from the packet.
+	 * 
+	 * @param __packet The source packet.
+	 * @param __nullable Can this be null?
+	 * @return The frame value.
+	 * @throws JDWPException If this does not refer to a valid frame.
+	 * @since 2021/04/11
+	 */
+	public Object readFrame(JDWPPacket __packet, boolean __nullable)
+	{
+		int id = __packet.readId();
+		Object frame = this.getState().items.get(id);
+		
+		// Is this valid?
+		if (!this.viewFrame().isValid(frame))
+		{
+			if (__nullable && frame == null)
+				return null;
+			
+			// Fail with invalid thread
+			throw JDWPErrorType.INVALID_FRAME_ID.toss(frame, id);
+		}
+		
+		return frame;
+	}
+	
+	/**
+	 * Reads a location from the packet.
+	 * 
+	 * @param __packet The source packet.
+	 * @return The given location.
+	 * @throws JDWPException If the location is not valid.
+	 * @since 2021/04/17
+	 */
+	public JDWPHostLocation readLocation(JDWPPacket __packet)
+		throws JDWPException
+	{
+		synchronized (this)
+		{
+			// Ensure this is open
+			__packet.__checkOpen();
+			
+			// This identifies classes or interfaces except we do not need
+			// this distinction, however for exception handlers locations can
+			// be 0 for anything that is not handled.
+			int tag = __packet.readByte();
+			if (tag == 0)
+				return JDWPHostLocation.BLANK;
+			
+			// Make sure the type and method are valid
+			JDWPViewType viewType = this.viewType();
+			Object type = this.readType(__packet, false);
+			int methodDx = __packet.readId();
+			if (!viewType.isValidMethod(type, methodDx))
+				throw JDWPErrorType.INVALID_METHOD_ID.toss(type, methodDx,
+					null);
+			
+			// Build location
+			return new JDWPHostLocation(type, methodDx, __packet.readLong(),
+				viewType.methodName(type, methodDx),
+				viewType.methodSignature(type, methodDx));
+		}
+	}
+	
+	/**
+	 * Reads the given object from the packet.
+	 * 
+	 * @param __packet The source packet.
+	 * @param __nullable Can this be null?
+	 * @return The object value.
+	 * @throws JDWPException If this does not refer to a valid object.
+	 * @since 2021/04/11
+	 */
+	public final Object readObject(JDWPPacket __packet,
+		boolean __nullable)
+		throws JDWPException
+	{
+		int id = __packet.readId();
+		Object object = this.getState().items.get(id);
+		
+		// Is this not a valid object?
+		if (!this.viewObject().isValid(object))
+		{
+			// If this is a valid thread, then bounce through to the thread's
+			// instance object
+			if (this.viewThread().isValid(object))
+			{
+				Object alt = this.viewThread().instance(object);
+				if (this.viewObject().isValid(alt))
+				{
+					// Make sure it is registered
+					this.getState().items.put(alt);
+					return alt;
+				}
+			}
+			
+			// If this is a thread group, try to get the representative object
+			// of it, this should be the task
+			if (this.viewThreadGroup().isValid(object))
+			{
+				Object alt = this.viewThreadGroup().instance(object);
+				if (this.viewObject().isValid(alt))
+				{
+					// Make sure it is registered
+					this.getState().items.put(alt);
+					return alt;
+				}
+			}
+			
+			// If this a valid class, bounce to the class instance object
+			if (this.viewType().isValid(object))
+			{
+				// Double check if it is valid
+				Object alt = this.viewType().instance(object);
+				if (this.viewObject().isValid(alt))
+				{
+					// Make sure it is registered
+					this.getState().items.put(alt);
+					return alt;
+				}
+			}
+			
+			// Not valid?
+			if (__nullable && object == null)
+				return null;
+			
+			// Fail with invalid object
+			throw JDWPErrorType.INVALID_OBJECT.toss(object, id);
+		}
+		
+		return object;
+	}
+	
+	/**
+	 * Reads the given thread from the packet.
+	 * 
+	 * @param __packet The source packet.
+	 * @return The object value.
+	 * @throws JDWPException If this does not refer to a valid thread.
+	 * @since 2021/04/11
+	 */
+	public final Object readThread(JDWPPacket __packet)
+		throws JDWPException
+	{
+		JDWPViewObject viewObject = this.viewObject();
+		JDWPViewThread viewThread = this.viewThread();
+		JDWPViewType viewType = this.viewType();
+		
+		int id = __packet.readId();
+		Object thread = this.getState().items.get(id);
+		
+		// Is this valid?
+		if (!viewThread.isValid(thread))
+		{
+			// Threads may be aliased to objects, and as such if we try to
+			// read a thread that is aliased by an object we need to get
+			// the original thread back
+			// Scan through all threads and see if we can find it again
+			if (viewObject.isValid(thread))
+			{
+				// Try to find the actual owning thread
+				for (Object check : this.allThreads(false))
+					if (thread == viewThread.instance(check))
+					{
+						// Make sure it is registered
+						this.getState().items.put(check);
+						return check;
+					}
+				
+				// Try to get the internal thread this represents if we were
+				// unable to find an existing thread this is owned by... since
+				// perhaps the thread terminated and no longer exists
+				Object objType = viewObject.type(thread);
+				if ("Ljava/lang/Thread;".equals(viewType.signature(objType)))
+				{
+					// Find the field for this
+					int fieldId = JDWPHostUtils.findFieldId(viewType, objType,
+						"_vmThread",
+						"Lcc/squirreljme/jvm/mle/brackets/VMThreadBracket;");
+					
+					// Read from this field
+					if (fieldId >= 0)
+						try (JDWPValue value = this.value())
+						{
+							// If this is a valid object, then use it
+							if (viewObject.readValue(thread, fieldId, value))
+								return viewThread.fromBracket(value.get());
+						}
+				}
+			}
+			
+			// Fail with invalid thread
+			throw JDWPErrorType.INVALID_THREAD.toss(thread, id);
+		}
+		
+		return thread;
+	}
+	
+	/**
+	 * Reads the given thread group from the packet.
+	 * 
+	 * @param __packet The source packet.
+	 * @param __nullable Can this be null?
+	 * @return The thread group.
+	 * @throws JDWPException If this does not refer to a valid thread group.
+	 * @since 2021/04/14
+	 */
+	public final Object readThreadGroup(JDWPPacket __packet,
+		boolean __nullable)
+		throws JDWPException
+	{
+		int id = __packet.readId();
+		Object group = this.getState().items.get(id);
+		
+		// Is this valid?
+		JDWPViewThreadGroup viewThreadGroup = this.viewThreadGroup();
+		if (!this.viewThreadGroup().isValid(group))
+		{
+			// Groups may be aliased to Objects, so if this is not one then
+			// we want to check all of our thread groups to see if we can
+			// find a match accordingly
+			if (this.viewObject().isValid(group))
+				for (Object check : this.allThreadGroups())
+					if (group == viewThreadGroup.instance(check))
+					{
+						// Make sure it is registered
+						this.getState().items.put(check);
+						return check;
+					}
+			
+			if (__nullable && group == null)
+				return null;
+			
+			// Fail with invalid thread
+			throw JDWPErrorType.INVALID_THREAD.toss(group, id);
+		}
+		
+		return group;
+	}
+	
+	/**
+	 * Reads the given type from the packet.
+	 * 
+	 * @param __packet The source packet.
+	 * @param __nullable Can this be null?
+	 * @return The type value.
+	 * @throws JDWPException If this does not refer to a valid type.
+	 * @since 2021/04/12
+	 */
+	public final Object readType(JDWPPacket __packet,
+		boolean __nullable)
+		throws JDWPException
+	{
+		int id = __packet.readId();
+		Object object = this.getState().items.get(id);
+		
+		// Is this valid?
+		if (!this.viewType().isValid(object))
+		{
+			// We may be trying to read the type of an object, so we need to
+			// alias to that
+			if (this.viewObject().isValid(object))
+			{
+				Object alt = this.viewObject().type(object);
+				if (this.viewType().isValid(alt))
+				{
+					// Make it is registered
+					this.getState().items.put(alt);
+					return alt;
+				}
+			}
+			
+			if (__nullable && object == null)
+				return null;
+			
+			// Fail with invalid thread
+			throw JDWPErrorType.INVALID_CLASS.toss(object, id);
+		}
+		
+		return object;
+	}
+	
+	/**
 	 * Creates a reply packet.
 	 * 
 	 * @param __id The identifier.
@@ -907,5 +1225,306 @@ public final class JDWPHostController
 	{
 		return this.getState().view(JDWPViewType.class,
 			JDWPViewKind.TYPE);
+	}
+	
+	/**
+	 * Writes a location into the packet.
+	 * 
+	 * @param __packet The source packet. 
+	 * @param __location The location used.
+	 * @throws JDWPException If the packet could not be written.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/04/25
+	 */
+	public void writeLocation(JDWPPacket __packet,
+		JDWPHostLocation __location)
+		throws JDWPException, NullPointerException
+	{
+		// If this is the blank location, then write as blank
+		if (JDWPHostLocation.BLANK.equals(__location))
+		{
+			__packet.writeByte(0);
+			return;
+		}
+		
+		// Otherwise forward
+		this.writeLocation(__packet, __location.type,
+			__location.methodDx, __location.codeDx);
+	}
+	
+	/**
+	 * Writes a location into the packet.
+	 * 
+	 * @param __packet The source packet. 
+	 * @param __class The class to write.
+	 * @param __atMethodIndex The method index.
+	 * @param __atCodeIndex The code index.
+	 * @throws JDWPException If the packet could not be written.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/04/11
+	 */
+	public void writeLocation(JDWPPacket __packet, Object __class,
+		int __atMethodIndex, long __atCodeIndex)
+		throws JDWPException, NullPointerException
+	{
+		if (__packet == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (this)
+		{
+			// Must be an open packet
+			__packet.__checkOpen();
+			
+			// Write class located within
+			this.writeTaggedId(__packet, __class);
+			
+			// Write the method ID and the special index (address)
+			__packet.writeId(__atMethodIndex);
+			
+			// Where is this located? Note that the index is a long here
+			// although such a high value should hopefully never be needed
+			// in SquirrelJME
+			__packet.writeLong(__atCodeIndex);
+		}
+	}
+	
+	/**
+	 * Writes the object to the output.
+	 * 
+	 * @param __packet The source packet.
+	 * @param __instance The instance of the object.
+	 * @throws JDWPException If this is not an object.
+	 * @throws NullPointerException If {@code __controller} is {@code null}.
+	 * @since 2022/09/01
+	 */
+	public void writeObject(JDWPPacket __packet, Object __instance)
+		throws JDWPException, NullPointerException
+	{
+		if (__packet == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (this)
+		{
+			// If this is the null object, invalidate it
+			JDWPViewObject viewObject = this.viewObject();
+			if (__instance != null && viewObject.isNullObject(__instance))
+				__instance = null;
+			
+			// Try to remap the object to an instance type if possible
+			if (__instance != null)
+			{
+				// Try to capture the object instance of this?
+				for (JDWPViewKind captureKind :
+					JDWPHostController._INSTANCE_CAPTURE)
+				{
+					JDWPViewHasInstance viewInstance =
+						this.view(JDWPViewHasInstance.class, captureKind);
+					
+					// Can only do this if it is valid to do it
+					if (viewInstance.isValid(__instance))
+					{
+						// It is possible that there is no actual instance
+						// type yet such as with types, so only replace if it
+						// does not lead to null
+						Object potential = viewInstance.instance(__instance);
+						if (potential != null &&
+							!viewObject.isNullObject(potential))
+						{
+							// We need to store both of these
+							this.getState().items.put(__instance);
+							this.getState().items.put(potential);
+							
+							// Use the new instance
+							__instance = potential;
+						
+							// Stop now
+							break;
+						}
+					}
+				}
+				
+				// Not valid at all?
+				if (!viewObject.isValid(__instance) &&
+					!this.viewType().isValid(__instance) &&
+					!this.viewFrame().isValid(__instance) &&
+					!this.viewThread().isValid(__instance) &&
+					!this.viewThreadGroup().isValid(__instance))
+					throw JDWPErrorType.INVALID_OBJECT.toss(__instance,
+						System.identityHashCode(__instance));
+			}
+			
+			// Forward to write ID
+			__packet.writeId(System.identityHashCode(__instance));
+			
+			// Store for later referencing, just in case
+			if (__instance != null)
+				this.getState().items.put(__instance);
+		}
+	}
+	
+	/**
+	 * Writes a tagged object ID to the output.
+	 * 
+	 * @param __packet The source packet.
+	 * @param __object The object to write.
+	 * @throws JDWPException If it could not be written.
+	 * @since 2022/08/28
+	 */
+	public void writeTaggedId(JDWPPacket __packet, Object __object)
+		throws JDWPException
+	{
+		synchronized (this)
+		{
+			__packet.writeByte(JDWPHostUtils.classType(
+				this, __object).id);
+			__packet.writeId(System.identityHashCode(__object));
+		}
+	}
+	
+	/**
+	 * Writes a value to the output.
+	 *
+	 * @param __packet The source packet.
+	 * @param __val The value to write.
+	 * @param __context Context value which may adjust how the value is
+	 * written, this may be {@code null}.
+	 * @param __untag Untagged value?
+	 * @throws JDWPException If it failed to write.
+	 * @since 2021/04/11
+	 */
+	public void writeValue(JDWPPacket __packet, Object __val,
+		JDWPValueTag __context, boolean __untag)
+		throws JDWPException
+	{
+		// We really meant to write a value here
+		if (__val instanceof JDWPValue)
+		{
+			this.writeValue(__packet,
+				((JDWPValue)__val).get(), __context, __untag);
+			return;
+		}
+		
+		synchronized (this)
+		{
+			// Must be an open packet
+			__packet.__checkOpen();
+			
+			// Depends on the context
+			switch (__context)
+			{
+					// Void type
+				case VOID:
+					__packet.writeByte('V');
+					break;
+				
+					// Boolean value, may be untagged
+				case BOOLEAN:
+					if (!__untag)
+						__packet.writeByte('Z');
+					__packet.writeBoolean(((__val instanceof Boolean) ?
+						(boolean)__val :
+						((Number)__val).longValue() != 0));
+					break;
+					
+					// Byte value, may be untagged
+				case BYTE:
+					if (!__untag)
+						__packet.writeByte('B');
+					__packet.writeByte(((Number)__val).byteValue());
+					break;
+					
+					// Short value, may be untagged
+				case SHORT:
+					if (!__untag)
+						__packet.writeByte('S');
+					__packet.writeShort(((Number)__val).shortValue());
+					break;
+					
+					// Character value, may be untagged
+				case CHARACTER:
+					if (!__untag)
+						__packet.writeByte('C');
+					__packet.writeShort(((__val instanceof Character) ?
+						(char)__val :
+						((Number)__val).shortValue()));
+					break;
+					
+					// Integer value, may be untagged
+				case INTEGER:
+					if (!__untag)
+						__packet.writeByte('I');
+					__packet.writeInt(((Number)__val).intValue());
+					break;
+					
+					// Long value, may be untagged
+				case LONG:
+					if (!__untag)
+						__packet.writeByte('J');
+					__packet.writeLong(((Number)__val).longValue());
+					break;
+					
+					// Float value, may be untagged
+				case FLOAT:
+					if (!__untag)
+						__packet.writeByte('F');
+					__packet.writeInt(Float.floatToRawIntBits(
+						((Number)__val).floatValue()));
+					break;
+					
+					// Long value, may be untagged
+				case DOUBLE:
+					if (!__untag)
+						__packet.writeByte('D');
+					__packet.writeLong(Double.doubleToRawLongBits(
+						((Number)__val).doubleValue()));
+					break;
+				
+					// Objects are always tagged
+				case ARRAY:
+				case OBJECT:
+				case CLASS_OBJECT:
+				case CLASS_LOADER:
+				case THREAD:
+				case THREAD_GROUP:
+				case STRING:
+					// Write the tag
+					switch (__context)
+					{
+						case ARRAY:
+							__packet.writeByte('[');
+							break;
+						
+						case CLASS_OBJECT:
+							__packet.writeByte('c');
+							break;
+						
+						case CLASS_LOADER:
+							__packet.writeByte('l');
+							break;
+						
+						case THREAD:
+							__packet.writeByte('t');
+							break;
+						
+						case THREAD_GROUP:
+							__packet.writeByte('g');
+							break;
+						
+						case STRING:
+							__packet.writeByte('s');
+							break;
+						
+						default:
+							__packet.writeByte('L');
+							break;
+					}
+					
+					this.writeObject(__packet, __val);
+					break;
+				
+				default:
+					throw Debugging.oops(__context);
+			}
+		}
 	}
 }
