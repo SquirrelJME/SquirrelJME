@@ -39,7 +39,7 @@ public enum JDWPHostCommandSetArrayReference
 			throws JDWPException
 		{
 			// Which object do we want?
-			Object array = __packet.readArray(__controller, false);
+			Object array = __controller.readArray(__packet, false);
 			
 			JDWPPacket rv = __controller.reply(
 				__packet.id(), JDWPErrorType.NO_ERROR);
@@ -62,7 +62,7 @@ public enum JDWPHostCommandSetArrayReference
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			Object array = __packet.readArray(__controller, false);
+			Object array = __controller.readArray(__packet, false);
 			
 			// Obtain the component type of the array
 			JDWPViewType viewType = __controller.viewType();
@@ -99,7 +99,7 @@ public enum JDWPHostCommandSetArrayReference
 						value.set(tag.defaultValue);
 					
 					// Write as untagged if available
-					rv.writeValue(__controller, value, tag, true);
+					__controller.writeValue(rv, value, tag, true);
 					
 					// Store object for later use
 					if (value.get() != null && tag.isObject)

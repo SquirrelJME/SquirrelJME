@@ -95,7 +95,7 @@ public enum JDWPHostCommandSetVirtualMachine
 				__controller.getState().items.put(type);
 				
 				// Write the class type
-				rv.writeTaggedId(__controller, type);
+				__controller.writeTaggedId(rv, type);
 				
 				// Classes are always loaded
 				rv.writeInt(JDWPHostCommandSetVirtualMachine._CLASS_INITIALIZED);
@@ -428,7 +428,7 @@ public enum JDWPHostCommandSetVirtualMachine
 			for (Object type : allTypes)
 			{
 				// The type ID
-				rv.writeTaggedId(__controller, type);
+				__controller.writeTaggedId(rv, type);
 				
 				// The signatures, the generic is ignored
 				rv.writeString(viewType.signature(type));
@@ -588,7 +588,7 @@ public enum JDWPHostCommandSetVirtualMachine
 		{
 			Object objectInstance = __viewInstance.instance(object);
 			
-			rv.writeObject(__controller, objectInstance);
+			__controller.writeObject(rv, objectInstance);
 			
 			// Store for later
 			__controller.getState().items.put(object);

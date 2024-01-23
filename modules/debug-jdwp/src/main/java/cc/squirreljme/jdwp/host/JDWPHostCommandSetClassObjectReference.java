@@ -36,7 +36,7 @@ public enum JDWPHostCommandSetClassObjectReference
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			Object object = __packet.readObject(__controller, false);
+			Object object = __controller.readObject(__packet, false);
 			
 			// This must be Class<?>...
 			JDWPViewType viewType = __controller.viewType();
@@ -85,8 +85,8 @@ public enum JDWPHostCommandSetClassObjectReference
 				__packet.id(), JDWPErrorType.NO_ERROR);
 			
 			// Write the class type and reference to that type
-			rv.writeTaggedId(__controller, found);
-				
+			__controller.writeTaggedId(rv, found);
+			
 			return rv;
 		}
 	},

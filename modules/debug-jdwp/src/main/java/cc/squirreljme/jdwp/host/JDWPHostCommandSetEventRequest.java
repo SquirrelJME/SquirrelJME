@@ -99,15 +99,14 @@ public enum JDWPHostCommandSetEventRequest
 						break;
 					
 					case THREAD_ONLY:
-						thread = __packet.readThread(
-							__controller);
+						thread = __controller.readThread(__packet);
 						
 						if (thread != null)
 							__controller.getState().items.put(thread);
 						break;
 					
 					case CLASS_ONLY:
-						type = __packet.readType(__controller, false);
+						type = __controller.readType(__packet, false);
 						
 						if (type != null)
 							__controller.getState().items.put(type);
@@ -125,12 +124,12 @@ public enum JDWPHostCommandSetEventRequest
 					
 						// A specific location in a class
 					case LOCATION_ONLY:
-						location = __packet.readLocation(__controller);
+						location = __controller.readLocation(__packet);
 						break;
 					
 					case EXCEPTION_ONLY:
 						exception = new JDWPHostExceptionOnly(
-							__packet.readType(__controller, true),
+							__controller.readType(__packet, true),
 							__packet.readBoolean(),
 							__packet.readBoolean());
 						break;
@@ -138,7 +137,7 @@ public enum JDWPHostCommandSetEventRequest
 					case FIELD_ONLY:
 						{
 							// Make sure this is a valid field
-							Object atType = __packet.readType(__controller,
+							Object atType = __controller.readType(__packet,
 								false);
 							int fieldDx = __packet.readId();
 							if (!__controller.viewType().isValidField(atType,
@@ -152,14 +151,13 @@ public enum JDWPHostCommandSetEventRequest
 					
 					case CALL_STACK_STEPPING:
 						callStackStepping = new JDWPHostCallStackStepping(
-							__packet.readThread(__controller),
+							__controller.readThread(__packet),
 							JDWPStepSize.of(__packet.readInt()),
 							JDWPStepDepth.of(__packet.readInt()));
 						break;
 					
 					case THIS_INSTANCE_ONLY:
-						thisInstance = __packet.readObject(__controller,
-							true);
+						thisInstance = __controller.readObject(__packet, true);
 						thisInstanceSet = true;
 						break;
 					

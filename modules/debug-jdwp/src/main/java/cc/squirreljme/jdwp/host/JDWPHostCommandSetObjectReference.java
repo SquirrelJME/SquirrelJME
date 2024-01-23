@@ -39,7 +39,7 @@ public enum JDWPHostCommandSetObjectReference
 			throws JDWPException
 		{
 			// Obtain the object and the type of that object
-			Object object = __packet.readObject(__controller, false);
+			Object object = __controller.readObject(__packet, false);
 			Object type = (__controller.viewType().isValid(object) ?
 				object : __controller.viewObject().type(object));
 			
@@ -52,7 +52,7 @@ public enum JDWPHostCommandSetObjectReference
 				__packet.id(), JDWPErrorType.NO_ERROR);
 				
 			// Write the details of this class
-			rv.writeTaggedId(__controller, type);
+			__controller.writeTaggedId(rv, type);
 			
 			return rv;
 		}
@@ -74,7 +74,7 @@ public enum JDWPHostCommandSetObjectReference
 			JDWPViewType viewType = __controller.viewType();
 			
 			// The type is needed to ensure the field class is valid
-			Object object = __packet.readObject(__controller, false);
+			Object object = __controller.readObject(__packet, false);
 			Object type = viewObject.type(object);
 			
 			// Read in all field indexes and check for their validity
@@ -106,7 +106,7 @@ public enum JDWPHostCommandSetObjectReference
 						value.set(tag.defaultValue);
 					
 					// Always write as tagged value
-					rv.writeValue(__controller, value, tag, false);
+					__controller.writeValue(rv, value, tag, false);
 					
 					// Store object for later use
 					if (value.get() != null && tag.isObject)
@@ -130,7 +130,7 @@ public enum JDWPHostCommandSetObjectReference
 			throws JDWPException
 		{
 			// Read the value but do nothing for it
-			__packet.readObject(__controller, false);
+			__controller.readObject(__packet, false);
 			
 			// If we still know about this object it was not GCed
 			JDWPPacket rv = __controller.reply(

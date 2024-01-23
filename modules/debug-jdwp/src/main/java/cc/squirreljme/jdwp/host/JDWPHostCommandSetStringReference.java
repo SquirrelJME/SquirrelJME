@@ -39,7 +39,7 @@ public enum JDWPHostCommandSetStringReference
 			throws JDWPException
 		{
 			// Get the desired object
-			Object object = __packet.readObject(__controller, false);
+			Object object = __controller.readObject(__packet, false);
 			
 			// Is this the string type?
 			JDWPViewObject viewObject = __controller.viewObject();

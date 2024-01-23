@@ -60,7 +60,7 @@ public enum JDWPHostCommandSetClassLoader
 				if (type != null)
 					__controller.getState().items.put(type);
 				
-				rv.writeTaggedId(__controller, type);
+				__controller.writeTaggedId(rv, type);
 			}
 			
 			return rv;

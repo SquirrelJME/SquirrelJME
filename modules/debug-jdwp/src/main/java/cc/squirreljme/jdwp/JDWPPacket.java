@@ -9,13 +9,6 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.jdwp.host.views.JDWPViewHasInstance;
-import cc.squirreljme.jdwp.host.views.JDWPViewKind;
-import cc.squirreljme.jdwp.host.views.JDWPViewObject;
-import cc.squirreljme.jdwp.host.views.JDWPViewThread;
-import cc.squirreljme.jdwp.host.views.JDWPViewThreadGroup;
-import cc.squirreljme.jdwp.host.views.JDWPViewType;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.Closeable;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -374,22 +367,6 @@ public final class JDWPPacket
 	}
 	
 	/**
-	 * Reads the given array from the packet.
-	 * 
-	 * @param __controller The controller used.
-	 * @param __nullable Can this be null?
-	 * @return The array value.
-	 * @throws JDWPException If this does not refer to a valid array.
-	 * @since 2021/04/11
-	 */
-	public final Object readArray(JDWPHostController __controller,
-		boolean __nullable)
-		throws JDWPException
-	{
-		return __controller.readArray(this, __nullable);
-	}
-	
-	/**
 	 * Reads a single boolean from the packet
 	 * 
 	 * @return The single read value.
@@ -428,20 +405,6 @@ public final class JDWPPacket
 			this._readPos = readPos + 1;
 			return rv;
 		}
-	}
-	
-	/**
-	 * Reads the given frame from the packet.
-	 * 
-	 * @param __controller The controller used.
-	 * @param __nullable Can this be null?
-	 * @return The frame value.
-	 * @throws JDWPException If this does not refer to a valid frame.
-	 * @since 2021/04/11
-	 */
-	public Object readFrame(JDWPHostController __controller, boolean __nullable)
-	{
-		return __controller.readFrame(this, __nullable);
 	}
 	
 	/**
@@ -500,20 +463,6 @@ public final class JDWPPacket
 	}
 	
 	/**
-	 * Reads a location from the packet.
-	 * 
-	 * @param __controller The controller to read from.
-	 * @return The given location.
-	 * @throws JDWPException If the location is not valid.
-	 * @since 2021/04/17
-	 */
-	public JDWPHostLocation readLocation(JDWPHostController __controller)
-		throws JDWPException
-	{
-		return __controller.readLocation(this);
-	}
-	
-	/**
 	 * Reads aa long from the packet
 	 * 
 	 * @return The single read value.
@@ -538,22 +487,6 @@ public final class JDWPPacket
 				((this.readByte() & 0xFF) << 8) |
 				(this.readByte() & 0xFF);
 		}
-	}
-	
-	/**
-	 * Reads the given object from the packet.
-	 * 
-	 * @param __controller The controller used.
-	 * @param __nullable Can this be null?
-	 * @return The object value.
-	 * @throws JDWPException If this does not refer to a valid object.
-	 * @since 2021/04/11
-	 */
-	public final Object readObject(JDWPHostController __controller,
-		boolean __nullable)
-		throws JDWPException
-	{
-		return __controller.readObject(this, __nullable);
 	}
 	
 	/**
@@ -590,52 +523,6 @@ public final class JDWPPacket
 				throw new JDWPException("AG0f", __e);
 			}
 		}
-	}
-	
-	/**
-	 * Reads the given thread from the packet.
-	 * 
-	 * @param __controller The controller used.
-	 * @return The object value.
-	 * @throws JDWPException If this does not refer to a valid thread.
-	 * @since 2021/04/11
-	 */
-	public final Object readThread(JDWPHostController __controller)
-		throws JDWPException
-	{
-		return __controller.readThread(this);
-	}
-	
-	/**
-	 * Reads the given thread group from the packet.
-	 * 
-	 * @param __controller The controller used.
-	 * @param __nullable Can this be null?
-	 * @return The thread group.
-	 * @throws JDWPException If this does not refer to a valid thread group.
-	 * @since 2021/04/14
-	 */
-	public final Object readThreadGroup(JDWPHostController __controller,
-		boolean __nullable)
-		throws JDWPException
-	{
-		return __controller.readThreadGroup(this, __nullable);
-	}
-	
-	/**
-	 * Reads the given type from the packet.
-	 * 
-	 * @param __controller The controller used.
-	 * @param __nullable Can this be null?
-	 * @return The type value.
-	 * @throws JDWPException If this does not refer to a valid type.
-	 * @since 2021/04/12
-	 */
-	public final Object readType(JDWPHostController __controller,
-		boolean __nullable)
-		throws JDWPException
-	{
-		return __controller.readType(this, __nullable);
 	}
 	
 	/**
@@ -822,70 +709,6 @@ public final class JDWPPacket
 	}
 	
 	/**
-	 * Writes a location into the packet.
-	 * 
-	 * @param __controller The controller used. 
-	 * @param __location The location used.
-	 * @throws JDWPException If the packet could not be written.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2021/04/25
-	 */
-	public void writeLocation(JDWPHostController __controller,
-		JDWPHostLocation __location)
-		throws JDWPException, NullPointerException
-	{
-		__controller.writeLocation(this, __location);
-	}
-	
-	/**
-	 * Writes a location into the packet.
-	 * 
-	 * @param __controller The controller used. 
-	 * @param __class The class to write.
-	 * @param __atMethodIndex The method index.
-	 * @param __atCodeIndex The code index.
-	 * @throws JDWPException If the packet could not be written.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2021/04/11
-	 */
-	public void writeLocation(JDWPHostController __controller, Object __class,
-		int __atMethodIndex, long __atCodeIndex)
-		throws JDWPException, NullPointerException
-	{
-		__controller.writeLocation(this, __class, __atMethodIndex,
-			__atCodeIndex);
-	}
-	
-	/**
-	 * Writes the object to the output.
-	 * 
-	 * @param __controller The controller used.
-	 * @param __instance The instance of the object.
-	 * @throws JDWPException If this is not an object.
-	 * @throws NullPointerException If {@code __controller} is {@code null}.
-	 * @since 2022/09/01
-	 */
-	public void writeObject(JDWPHostController __controller, Object __instance)
-		throws JDWPException, NullPointerException
-	{
-		__controller.writeObject(this, __instance);
-	}
-	
-	/**
-	 * Writes a tagged object ID to the output.
-	 * 
-	 * @param __controller The controller used.
-	 * @param __object The object to write.
-	 * @throws JDWPException If it could not be written.
-	 * @since 2022/08/28
-	 */
-	public void writeTaggedId(JDWPHostController __controller, Object __object)
-		throws JDWPException
-	{
-		__controller.writeTaggedId(this, __object);
-	}
-	
-	/**
 	 * Writes a long to the output.
 	 * 
 	 * @param __v The value to write.
@@ -1005,25 +828,6 @@ public final class JDWPPacket
 			if (this._length > 0)
 				__out.write(this._data, 0, this._length);
 		}
-	}
-	
-	/**
-	 * Writes a value to the output.
-	 *
-	 * @param __controller The controller used.
-	 * @param __val The value to write.
-	 * @param __context Context value which may adjust how the value is
-	 * written, this may be {@code null}.
-	 * @param __untag Untagged value?
-	 * @throws JDWPException If it failed to write.
-	 * @since 2021/04/11
-	 */
-	public void writeValue(JDWPHostController __controller, Object __val,
-		JDWPValueTag __context, boolean __untag)
-		throws JDWPException
-	{
-		__controller.writeValue(this, __val, __context,
-			__untag);
 	}
 	
 	/**

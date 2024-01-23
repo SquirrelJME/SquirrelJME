@@ -35,14 +35,14 @@ public enum JDWPHostCommandSetClassType
 			throws JDWPException
 		{
 			// Which class does this refer to?
-			Object type = __packet.readType(__controller, false); 
+			Object type = __controller.readType(__packet, false); 
 			
 			// Respond with the class ID
 			JDWPPacket rv = __controller.reply(
 				__packet.id(), JDWPErrorType.NO_ERROR);
 			
 			Object superClass = __controller.viewType().superType(type);
-			rv.writeObject(__controller, superClass);
+			__controller.writeObject(rv, superClass);
 			
 			// Register the super class so it can be known
 			if (superClass != null)

@@ -39,7 +39,7 @@ public enum JDWPHostCommandSetThreadReference
 			throws JDWPException
 		{
 			// Which thread do we want?
-			Object thread = __packet.readThread(__controller);
+			Object thread = __controller.readThread(__packet);
 			
 			JDWPPacket rv = __controller.reply(
 				__packet.id(), JDWPErrorType.NO_ERROR);
@@ -67,7 +67,7 @@ public enum JDWPHostCommandSetThreadReference
 			JDWPViewThread view = __controller.viewThread();
 			
 			// Which thread do we want?
-			Object thread = __packet.readThread(__controller);
+			Object thread = __controller.readThread(__packet);
 			
 			// Suspend the thread
 			view.suspension(thread).suspend();
@@ -91,7 +91,7 @@ public enum JDWPHostCommandSetThreadReference
 			JDWPViewThread view = __controller.viewThread();
 			
 			// Which thread do we want?
-			Object thread = __packet.readThread(__controller);
+			Object thread = __controller.readThread(__packet);
 			
 			// Suspend the thread
 			view.suspension(thread).resume();
@@ -115,7 +115,7 @@ public enum JDWPHostCommandSetThreadReference
 			JDWPViewThread view = __controller.viewThread();
 			
 			// Which thread do we want? Do not use filtering here
-			Object thread = __packet.readThread(__controller);
+			Object thread = __controller.readThread(__packet);
 			
 			// If the thread is not valid, then just stop
 			if (thread == null)
@@ -185,7 +185,7 @@ public enum JDWPHostCommandSetThreadReference
 				__controller.viewThreadGroup();
 			
 			// Which thread do we want?
-			Object thread = __packet.readThread(__controller);
+			Object thread = __controller.readThread(__packet);
 				
 			// Get the parent
 			Object parent = viewThread.parentGroup(thread);
@@ -199,7 +199,7 @@ public enum JDWPHostCommandSetThreadReference
 				__packet.id(), JDWPErrorType.NO_ERROR);
 			
 			// Write the thread group
-			rv.writeObject(__controller, parentInstance);
+			__controller.writeObject(rv, parentInstance);
 			
 			return rv;
 		}
@@ -218,7 +218,7 @@ public enum JDWPHostCommandSetThreadReference
 			throws JDWPException
 		{
 			// Which thread do we want?
-			Object thread = __packet.readThread(__controller);
+			Object thread = __controller.readThread(__packet);
 			
 			// Input for the packet
 			int startFrame = __packet.readInt();
@@ -244,7 +244,7 @@ public enum JDWPHostCommandSetThreadReference
 				__controller.getState().items.put(frame);
 				
 				// Write frame ID
-				rv.writeObject(__controller, frame);
+				__controller.writeObject(rv, frame);
 				
 				// We need to store and cache the class for later reference
 				Object classy = viewFrame.atClass(frame);
@@ -252,8 +252,8 @@ public enum JDWPHostCommandSetThreadReference
 					__controller.getState().items.put(classy);
 				
 				// Write the frame location
-				rv.writeLocation(__controller, classy,
-					viewFrame.atMethodIndex(frame),
+				int atMethodIndex = viewFrame.atMethodIndex(frame);
+				__controller.writeLocation(rv, classy, atMethodIndex,
 					viewFrame.atCodeIndex(frame));
 			} 
 			
@@ -274,7 +274,7 @@ public enum JDWPHostCommandSetThreadReference
 			throws JDWPException
 		{
 			// Which thread do we want?
-			Object thread = __packet.readThread(__controller);
+			Object thread = __controller.readThread(__packet);
 				
 			JDWPPacket rv = __controller.reply(
 				__packet.id(), JDWPErrorType.NO_ERROR);
@@ -299,7 +299,7 @@ public enum JDWPHostCommandSetThreadReference
 			throws JDWPException
 		{
 			// Read the thread to check if valid, but otherwise do nothing
-			Object thread = __packet.readThread(__controller);
+			Object thread = __controller.readThread(__packet);
 			
 			// Always fail because this does not do anything
 			throw JDWPErrorType.ILLEGAL_ARGUMENT.toss(thread,
@@ -321,7 +321,7 @@ public enum JDWPHostCommandSetThreadReference
 		{
 			// Which thread do we want?
 			JDWPViewThread view = __controller.viewThread();
-			Object thread = __packet.readThread(__controller);
+			Object thread = __controller.readThread(__packet);
 			
 			// Interrupt the thread
 			view.interrupt(thread);
@@ -345,7 +345,7 @@ public enum JDWPHostCommandSetThreadReference
 			JDWPViewThread view = __controller.viewThread();
 			
 			// Which thread do we want?
-			Object thread = __packet.readThread(__controller);
+			Object thread = __controller.readThread(__packet);
 				
 			JDWPPacket rv = __controller.reply(
 				__packet.id(), JDWPErrorType.NO_ERROR);

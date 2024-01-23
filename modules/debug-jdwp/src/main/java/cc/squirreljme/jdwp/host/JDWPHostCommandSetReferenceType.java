@@ -53,7 +53,7 @@ public enum JDWPHostCommandSetReferenceType
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			Object type = __packet.readType(__controller, false);
+			Object type = __controller.readType(__packet, false);
 			
 			JDWPPacket rv = __controller.reply(
 				__packet.id(), JDWPErrorType.NO_ERROR);
@@ -82,7 +82,7 @@ public enum JDWPHostCommandSetReferenceType
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			Object type = __packet.readType(__controller, false);
+			Object type = __controller.readType(__packet, false);
 			
 			JDWPPacket rv = __controller.reply(
 				__packet.id(), JDWPErrorType.NO_ERROR);
@@ -139,7 +139,7 @@ public enum JDWPHostCommandSetReferenceType
 		{
 			// Which class does this refer to?
 			JDWPViewType viewType = __controller.viewType();
-			Object type = __packet.readType(__controller, false);
+			Object type = __controller.readType(__packet, false);
 			
 			// Read in all field indexes and check for their validity
 			int numFields = __packet.readInt();
@@ -170,7 +170,7 @@ public enum JDWPHostCommandSetReferenceType
 						value.set(tag.defaultValue);
 					
 					// Always write as tagged value
-					rv.writeValue(__controller, value, tag, false);
+					__controller.writeValue(rv, value, tag, false);
 					
 					// Store object for later use
 					if (value.get() != null && tag.isObject)
@@ -193,7 +193,7 @@ public enum JDWPHostCommandSetReferenceType
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			Object type = __packet.readType(__controller, false);
+			Object type = __controller.readType(__packet, false);
 			
 			// Does this have a source file?
 			String sourceFile = __controller.viewType().sourceFile(type);
@@ -222,7 +222,7 @@ public enum JDWPHostCommandSetReferenceType
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			Object type = __packet.readType(__controller, false);
+			Object type = __controller.readType(__packet, false);
 			
 			// Get every interface
 			Object[] interfaces = __controller.viewType().interfaceTypes(type);
@@ -234,7 +234,7 @@ public enum JDWPHostCommandSetReferenceType
 			rv.writeInt(interfaces.length);
 			for (Object impl : interfaces)
 			{
-				rv.writeObject(__controller, impl);
+				__controller.writeObject(rv, impl);
 				
 				// Record interface so it is known
 				__controller.getState().items.put(impl);
@@ -256,7 +256,7 @@ public enum JDWPHostCommandSetReferenceType
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			Object type = __packet.readType(__controller, false);
+			Object type = __controller.readType(__packet, false);
 			
 			JDWPPacket rv = __controller.reply(
 				__packet.id(), JDWPErrorType.NO_ERROR);
@@ -264,7 +264,7 @@ public enum JDWPHostCommandSetReferenceType
 			Object instance = __controller.viewType().instance(type);
 			__controller.getState().items.put(instance);
 			
-			rv.writeObject(__controller, instance);
+			__controller.writeObject(rv, instance);
 			
 			return rv;
 		}
@@ -330,7 +330,7 @@ public enum JDWPHostCommandSetReferenceType
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			Object type = __packet.readType(__controller, false);
+			Object type = __controller.readType(__packet, false);
 			
 			JDWPPacket rv = __controller.reply(
 				__packet.id(), JDWPErrorType.NO_ERROR);
@@ -355,7 +355,7 @@ public enum JDWPHostCommandSetReferenceType
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			Object type = __packet.readType(__controller, false);
+			Object type = __controller.readType(__packet, false);
 			
 			// Read information
 			int count = __controller.viewType().constantPoolCount(type);
@@ -420,7 +420,7 @@ public enum JDWPHostCommandSetReferenceType
 	{
 		// Which class does this refer to?
 		JDWPViewType viewType = __controller.viewType();
-		Object type = __packet.readType(__controller, false);
+		Object type = __controller.readType(__packet, false);
 		
 		JDWPPacket rv = __controller.reply(
 			__packet.id(), JDWPErrorType.NO_ERROR);
@@ -471,7 +471,7 @@ public enum JDWPHostCommandSetReferenceType
 	{
 		// Which class does this refer to?
 		JDWPViewType viewType = __controller.viewType();
-		Object type = __packet.readType(__controller, false);
+		Object type = __controller.readType(__packet, false);
 		
 		JDWPPacket rv = __controller.reply(
 			__packet.id(), JDWPErrorType.NO_ERROR);
@@ -513,7 +513,7 @@ public enum JDWPHostCommandSetReferenceType
 		JDWPPacket __packet)
 		throws JDWPException
 	{
-		Object type = __packet.readType(__controller, false);
+		Object type = __controller.readType(__packet, false);
 		
 		// Write the normal class signature
 		JDWPPacket rv = __controller.reply(

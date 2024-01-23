@@ -38,7 +38,7 @@ public enum JDWPHostCommandSetMethod
 			throws JDWPException
 		{
 			// Read class and the method it is in
-			Object classy = __packet.readType(__controller, false);
+			Object classy = __controller.readType(__packet, false);
 			int methodId = __packet.readId();
 			
 			// Not a valid method?
@@ -131,7 +131,7 @@ public enum JDWPHostCommandSetMethod
 			throws JDWPException
 		{
 			// Read class and the method it is in
-			Object classy = __packet.readType(__controller, false);
+			Object classy = __controller.readType(__packet, false);
 			int methodId = __packet.readId();
 			
 			// Not a valid method?
@@ -214,7 +214,7 @@ public enum JDWPHostCommandSetMethod
 		throws JDWPException
 	{
 		// Read class and the method it is in
-		Object classy = __packet.readType(__controller, false);
+		Object classy = __controller.readType(__packet, false);
 		int methodId = __packet.readId();
 		
 		// Not a valid method?

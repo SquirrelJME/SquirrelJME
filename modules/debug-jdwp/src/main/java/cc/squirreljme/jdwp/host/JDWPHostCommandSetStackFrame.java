@@ -38,8 +38,8 @@ public enum JDWPHostCommandSetStackFrame
 			throws JDWPException
 		{
 			// Ignore the thread but check it, then read the frame
-			__packet.readThread(__controller);
-			Object frame = __packet.readFrame(__controller, false);
+			__controller.readThread(__packet);
+			Object frame = __controller.readFrame(__packet, false);
 			
 			// Read in the slot table
 			int numSlots = __packet.readInt();
@@ -68,7 +68,7 @@ public enum JDWPHostCommandSetStackFrame
 					// Try to guess the used value
 					JDWPValueTag tag = JDWPValueTag.guessType(
 						__controller, value);
-					rv.writeValue(__controller, value, tag, false);
+					__controller.writeValue(rv, value, tag, false);
 					
 					// Store object for later use
 					if (value.get() != null && tag.isObject)
@@ -92,8 +92,8 @@ public enum JDWPHostCommandSetStackFrame
 			throws JDWPException
 		{
 			// Ignore the thread but check it, then read the frame
-			__packet.readThread(__controller);
-			Object frame = __packet.readFrame(__controller, false);
+			__controller.readThread(__packet);
+			Object frame = __controller.readFrame(__packet, false);
 			
 			// Where is this frame located?
 			JDWPViewFrame viewFrame = __controller.viewFrame();
@@ -123,7 +123,7 @@ public enum JDWPHostCommandSetStackFrame
 					// Try to guess the used value
 					JDWPValueTag tag = JDWPValueTag.guessType(
 						__controller, value);
-					rv.writeValue(__controller, value, tag, false);
+					__controller.writeValue(rv, value, tag, false);
 					
 					// Store object for later use
 					if (value.get() != null && tag.isObject)

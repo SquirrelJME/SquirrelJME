@@ -42,8 +42,7 @@ public enum JDWPHostCommandSetThreadGroupReference
 			JDWPViewThreadGroup view = __controller.viewThreadGroup();
 			
 			// Is this valid?
-			Object group = __packet.readThreadGroup(
-				__controller, false);
+			Object group = __controller.readThreadGroup(__packet, false);
 			
 			JDWPPacket rv = __controller.reply(
 				__packet.id(), JDWPErrorType.NO_ERROR);
@@ -68,7 +67,7 @@ public enum JDWPHostCommandSetThreadGroupReference
 			throws JDWPException
 		{
 			// Is this valid?
-			__packet.readThreadGroup(__controller, false);
+			__controller.readThreadGroup(__packet, false);
 			
 			JDWPPacket rv = __controller.reply(
 				__packet.id(), JDWPErrorType.NO_ERROR);
@@ -96,8 +95,7 @@ public enum JDWPHostCommandSetThreadGroupReference
 			JDWPViewThread threadView = __controller.viewThread();
 			
 			// Is this valid?
-			Object group = __packet.readThreadGroup(
-				__controller, false);
+			Object group = __controller.readThreadGroup(__packet, false);
 				
 			JDWPPacket rv = __controller.reply(
 				__packet.id(), JDWPErrorType.NO_ERROR);
@@ -115,7 +113,7 @@ public enum JDWPHostCommandSetThreadGroupReference
 			for (Object thread : threads)
 			{
 				Object threadInstance = threadView.instance(thread);
-				rv.writeObject(__controller, threadInstance);
+				__controller.writeObject(rv, threadInstance);
 				
 				// Store for later referencing
 				__controller.getState().items.put(thread);
