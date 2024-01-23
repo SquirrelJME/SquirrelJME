@@ -19,7 +19,7 @@ import java.util.Objects;
 public final class JDWPHostLocation
 {
 	/** Blank location. */
-	protected static final JDWPHostLocation BLANK = 
+	public static final JDWPHostLocation BLANK = 
 		new JDWPHostLocation(null, -1, -1,
 			null, null);
 	

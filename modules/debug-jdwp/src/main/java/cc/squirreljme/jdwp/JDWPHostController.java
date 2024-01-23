@@ -22,6 +22,7 @@ import cc.squirreljme.jdwp.host.JDWPHostCommandSetStringReference;
 import cc.squirreljme.jdwp.host.JDWPHostCommandSetThreadGroupReference;
 import cc.squirreljme.jdwp.host.JDWPHostCommandSetThreadReference;
 import cc.squirreljme.jdwp.host.JDWPHostCommandSetVirtualMachine;
+import cc.squirreljme.jdwp.host.JDWPHostEventKindHandler;
 import cc.squirreljme.jdwp.host.event.JDWPHostCallStackStepping;
 import cc.squirreljme.jdwp.host.event.JDWPHostFieldOnly;
 import cc.squirreljme.jdwp.host.event.JDWPHostEventFilter;
@@ -997,7 +998,8 @@ public final class JDWPHostController
 	 * @return If an event was found and sent for it.
 	 * @since 2021/03/16
 	 */
-	public boolean signal(Object __thread, JDWPEventKind __kind, Object... __args)
+	public boolean signal(Object __thread, JDWPEventKind __kind,
+		Object... __args)
 		throws NullPointerException
 	{
 		if (__kind == null)
@@ -1044,7 +1046,8 @@ public final class JDWPHostController
 						request.id, __kind);
 				
 				// Write the signal event data
-				__kind.write(this, __thread, packet, __args);
+				JDWPHostEventKindHandler.of(__kind.debuggerId())
+					.write(this, __thread, packet, __args);
 				
 				// Are we holding events? Save this for later if so
 				synchronized (this)

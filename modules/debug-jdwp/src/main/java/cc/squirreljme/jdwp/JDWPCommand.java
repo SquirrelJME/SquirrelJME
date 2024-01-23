@@ -15,6 +15,6 @@ package cc.squirreljme.jdwp;
  * @since 2021/03/12
  */
 public interface JDWPCommand
-	extends __IdNumbered__
+	extends JDWPHasId
 {
 }

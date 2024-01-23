@@ -9,11 +9,8 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.jdwp.host.JDWPHostEventHandler;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Arrays;
 import java.util.List;
-import net.multiphasicapps.classfile.ExceptionHandler;
 import net.multiphasicapps.collections.EmptyList;
 import net.multiphasicapps.collections.UnmodifiableIterable;
 import net.multiphasicapps.collections.UnmodifiableList;
@@ -24,7 +21,7 @@ import net.multiphasicapps.collections.UnmodifiableList;
  * @since 2021/03/13
  */
 public enum JDWPEventKind
-	implements __IdNumbered__, JDWPHostEventHandler
+	implements JDWPHasId
 {
 	/** Single Step. */
 	SINGLE_STEP(1,
@@ -34,24 +31,12 @@ public enum JDWPEventKind
 		Arrays.asList(JDWPEventModifierContext.PARAMETER_STEPPING),
 		JDWPEventModifierKind.THREAD_ONLY,
 		JDWPEventModifierKind.CLASS_ONLY,
-		JDWPEventModifierKind.CLASS_MATCH_PATTERN, JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
-		JDWPEventModifierKind.LOCATION_ONLY, JDWPEventModifierKind.CALL_STACK_STEPPING,
-		JDWPEventModifierKind.THIS_INSTANCE_ONLY, JDWPEventModifierKind.LIMIT_OCCURRENCES)
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/16
-		 */
-		@Override
-		public void write(JDWPHostController __controller, Object __thread,
-			JDWPPacket __packet, Object... __args)
-			throws JDWPException
-		{
-			__controller.writeObject(__packet, __thread);
-			__controller.writeLocation(__packet,
-				__controller.locationOf(__thread));
-		}
-	},
+		JDWPEventModifierKind.CLASS_MATCH_PATTERN, 
+		JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
+		JDWPEventModifierKind.LOCATION_ONLY, 
+		JDWPEventModifierKind.CALL_STACK_STEPPING,
+		JDWPEventModifierKind.THIS_INSTANCE_ONLY, 
+		JDWPEventModifierKind.LIMIT_OCCURRENCES),
 	
 	/** Breakpoint. */
 	BREAKPOINT(2, Arrays.asList(JDWPEventModifierContext.CURRENT_THREAD,
@@ -60,206 +45,77 @@ public enum JDWPEventKind
 		null,
 		JDWPEventModifierKind.THREAD_ONLY,
 		JDWPEventModifierKind.CLASS_ONLY,
-		JDWPEventModifierKind.CLASS_MATCH_PATTERN, JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
-		JDWPEventModifierKind.LOCATION_ONLY, JDWPEventModifierKind.THIS_INSTANCE_ONLY,
-		JDWPEventModifierKind.LIMIT_OCCURRENCES)
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/16
-		 */
-		@Override
-		public void write(JDWPHostController __controller, Object __thread,
-			JDWPPacket __packet, Object... __args)
-			throws JDWPException
-		{
-			__controller.writeObject(__packet, __thread);
-			__controller.writeLocation(__packet,
-				__controller.locationOf(__thread));
-		}
-	},
+		JDWPEventModifierKind.CLASS_MATCH_PATTERN, 
+		JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
+		JDWPEventModifierKind.LOCATION_ONLY, 
+		JDWPEventModifierKind.THIS_INSTANCE_ONLY,
+		JDWPEventModifierKind.LIMIT_OCCURRENCES),
 	
 	/** Frame pop. */
 	FRAME_POP(3, null, null,
-		JDWPEventModifierKind.THREAD_ONLY, JDWPEventModifierKind.CLASS_ONLY,
-		JDWPEventModifierKind.CLASS_MATCH_PATTERN, JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
-		JDWPEventModifierKind.THIS_INSTANCE_ONLY, JDWPEventModifierKind.LIMIT_OCCURRENCES)
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/16
-		 */
-		@Override
-		public void write(JDWPHostController __controller, Object __thread,
-			JDWPPacket __packet, Object... __args)
-			throws JDWPException
-		{
-			throw Debugging.todo();
-		}
-	},
+		JDWPEventModifierKind.THREAD_ONLY, 
+		JDWPEventModifierKind.CLASS_ONLY,
+		JDWPEventModifierKind.CLASS_MATCH_PATTERN, 
+		JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
+		JDWPEventModifierKind.THIS_INSTANCE_ONLY, 
+		JDWPEventModifierKind.LIMIT_OCCURRENCES),
 	
 	/** Exception. */
 	EXCEPTION(4, null,
 		Arrays.asList(
 			JDWPEventModifierContext.ENSNARE_ARGUMENT,
 			JDWPEventModifierContext.TOSSED_EXCEPTION),
-		JDWPEventModifierKind.THREAD_ONLY, JDWPEventModifierKind.CLASS_ONLY,
-		JDWPEventModifierKind.CLASS_MATCH_PATTERN, JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
-		JDWPEventModifierKind.LOCATION_ONLY, JDWPEventModifierKind.EXCEPTION_ONLY,
-		JDWPEventModifierKind.THIS_INSTANCE_ONLY, JDWPEventModifierKind.LIMIT_OCCURRENCES)
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/16
-		 */
-		@Override
-		public void write(JDWPHostController __controller, Object __thread,
-			JDWPPacket __packet, Object... __args)
-			throws JDWPException
-		{
-			Object tossing = __args[0];
-			ExceptionHandler handler = (ExceptionHandler)__args[1];
-			
-			// Where are we?
-			JDWPHostLocation tossLocation = __controller.locationOf(__thread);
-			__controller.writeObject(__packet, __thread);
-			__controller.writeLocation(__packet, tossLocation);
-			
-			// Object being tossed
-			__controller.writeTaggedId(__packet, tossing);
-			
-			// Where is the exception handler, if there is one?
-			if (handler == null)
-				__controller.writeLocation(__packet, JDWPHostLocation.BLANK);
-			else
-				__controller.writeLocation(__packet,
-					tossLocation.withCodeIndex(handler.handlerAddress()));
-		}
-	},
+		JDWPEventModifierKind.THREAD_ONLY, 
+		JDWPEventModifierKind.CLASS_ONLY,
+		JDWPEventModifierKind.CLASS_MATCH_PATTERN, 
+		JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
+		JDWPEventModifierKind.LOCATION_ONLY, 
+		JDWPEventModifierKind.EXCEPTION_ONLY,
+		JDWPEventModifierKind.THIS_INSTANCE_ONLY, 
+		JDWPEventModifierKind.LIMIT_OCCURRENCES),
 	
 	/** User defined. */
 	USER_DEFINED(5, null, null,
-		JDWPEventModifierKind.THREAD_ONLY, JDWPEventModifierKind.CLASS_ONLY,
-		JDWPEventModifierKind.CLASS_MATCH_PATTERN, JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
-		JDWPEventModifierKind.THIS_INSTANCE_ONLY, JDWPEventModifierKind.LIMIT_OCCURRENCES)
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/16
-		 */
-		@Override
-		public void write(JDWPHostController __controller, Object __thread,
-			JDWPPacket __packet, Object... __args)
-			throws JDWPException
-		{
-			throw Debugging.todo();
-		}
-	},
+		JDWPEventModifierKind.THREAD_ONLY, 
+		JDWPEventModifierKind.CLASS_ONLY,
+		JDWPEventModifierKind.CLASS_MATCH_PATTERN, 
+		JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
+		JDWPEventModifierKind.THIS_INSTANCE_ONLY, 
+		JDWPEventModifierKind.LIMIT_OCCURRENCES),
 	
 	/** Start of thread. */
-	THREAD_START(6, null, null, JDWPEventModifierKind.THREAD_ONLY,
-		JDWPEventModifierKind.LIMIT_OCCURRENCES)
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/16
-		 */
-		@Override
-		public void write(JDWPHostController __controller, Object __thread,
-			JDWPPacket __packet, Object... __args)
-			throws JDWPException
-		{
-			__controller.writeObject(__packet, __args[0]);
-		}
-	},
+	THREAD_START(6, null, null, 
+		JDWPEventModifierKind.THREAD_ONLY,
+		JDWPEventModifierKind.LIMIT_OCCURRENCES),
 	
 	/** End of thread. */
-	THREAD_DEATH(7, null, null, JDWPEventModifierKind.THREAD_ONLY,
-		JDWPEventModifierKind.LIMIT_OCCURRENCES)
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/16
-		 */
-		@Override
-		public void write(JDWPHostController __controller, Object __thread,
-			JDWPPacket __packet, Object... __args)
-			throws JDWPException
-		{
-			__controller.writeObject(__packet, __args[0]);
-		}
-	},
+	THREAD_DEATH(7, null, null, 
+		JDWPEventModifierKind.THREAD_ONLY,
+		JDWPEventModifierKind.LIMIT_OCCURRENCES),
 	
 	/** Class being prepared. */
 	CLASS_PREPARE(8, null,
 		Arrays.asList(JDWPEventModifierContext.PARAMETER_TYPE),
-		JDWPEventModifierKind.THREAD_ONLY, JDWPEventModifierKind.CLASS_ONLY,
-		JDWPEventModifierKind.CLASS_MATCH_PATTERN, JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
-		JDWPEventModifierKind.LIMIT_OCCURRENCES)
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/16
-		 */
-		@Override
-		public void write(JDWPHostController __controller, Object __thread,
-			JDWPPacket __packet, Object... __args)
-			throws JDWPException
-		{
-			// Extract arguments
-			Object cl = __args[0];
-			JDWPClassStatus status = (JDWPClassStatus)__args[1];
-			
-			// Calling thread
-			__controller.writeObject(__packet, __thread);
-			
-			// The Class ID
-			__controller.writeTaggedId(__packet, cl);
-			
-			// The signature of the class
-			__packet.writeString(__controller.viewType().signature(cl));
-			
-			// The state of this class
-			__packet.writeInt(status.bits);
-		}
-	},
+		JDWPEventModifierKind.THREAD_ONLY, 
+		JDWPEventModifierKind.CLASS_ONLY,
+		JDWPEventModifierKind.CLASS_MATCH_PATTERN, 
+		JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
+		JDWPEventModifierKind.LIMIT_OCCURRENCES),
 	
 	/** Class unloading. */
 	CLASS_UNLOAD(9, null, null,
 		JDWPEventModifierKind.CLASS_MATCH_PATTERN,
-		JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN, JDWPEventModifierKind.LIMIT_OCCURRENCES)
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/16
-		 */
-		@Override
-		public void write(JDWPHostController __controller, Object __thread,
-			JDWPPacket __packet, Object... __args)
-			throws JDWPException
-		{
-			throw Debugging.todo();
-		}
-	},
+		JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN, 
+		JDWPEventModifierKind.LIMIT_OCCURRENCES),
 	
 	/** Class loading. */
 	CLASS_LOAD(10, null, null,
-		JDWPEventModifierKind.THREAD_ONLY, JDWPEventModifierKind.CLASS_ONLY,
-		JDWPEventModifierKind.CLASS_MATCH_PATTERN, JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
-		JDWPEventModifierKind.THIS_INSTANCE_ONLY, JDWPEventModifierKind.LIMIT_OCCURRENCES)
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/16
-		 */
-		@Override
-		public void write(JDWPHostController __controller, Object __thread,
-			JDWPPacket __packet, Object... __args)
-			throws JDWPException
-		{
-			throw Debugging.todo();
-		}
-	},
+		JDWPEventModifierKind.THREAD_ONLY, 
+		JDWPEventModifierKind.CLASS_ONLY,
+		JDWPEventModifierKind.CLASS_MATCH_PATTERN, 
+		JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
+		JDWPEventModifierKind.THIS_INSTANCE_ONLY,
+		JDWPEventModifierKind.LIMIT_OCCURRENCES),
 	
 	/** Field access. */
 	FIELD_ACCESS(20,
@@ -270,23 +126,12 @@ public enum JDWPEventKind
 		Arrays.asList(JDWPEventModifierContext.PARAMETER_TYPE_OR_FIELD,
 			JDWPEventModifierContext.PARAMETER_FIELD),
 		JDWPEventModifierKind.THREAD_ONLY, JDWPEventModifierKind.CLASS_ONLY,
-		JDWPEventModifierKind.CLASS_MATCH_PATTERN, JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
-		JDWPEventModifierKind.LOCATION_ONLY, JDWPEventModifierKind.FIELD_ONLY,
-		JDWPEventModifierKind.THIS_INSTANCE_ONLY, JDWPEventModifierKind.LIMIT_OCCURRENCES)
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/16
-		 */
-		@Override
-		public void write(JDWPHostController __controller, Object __thread,
-			JDWPPacket __packet, Object... __args)
-			throws JDWPException
-		{
-			this.__field(false, __controller, __thread, __packet,
-				__args);
-		}
-	},
+		JDWPEventModifierKind.CLASS_MATCH_PATTERN,
+		JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
+		JDWPEventModifierKind.LOCATION_ONLY, 
+		JDWPEventModifierKind.FIELD_ONLY,
+		JDWPEventModifierKind.THIS_INSTANCE_ONLY,
+		JDWPEventModifierKind.LIMIT_OCCURRENCES),
 	
 	/** Field modification. */
 	FIELD_MODIFICATION(21,
@@ -297,50 +142,27 @@ public enum JDWPEventKind
 		Arrays.asList(JDWPEventModifierContext.PARAMETER_TYPE_OR_FIELD,
 			JDWPEventModifierContext.PARAMETER_FIELD),
 		JDWPEventModifierKind.THREAD_ONLY,
-		JDWPEventModifierKind.CLASS_ONLY, JDWPEventModifierKind.CLASS_MATCH_PATTERN,
-		JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN, JDWPEventModifierKind.LOCATION_ONLY,
-		JDWPEventModifierKind.FIELD_ONLY, JDWPEventModifierKind.THIS_INSTANCE_ONLY,
-		JDWPEventModifierKind.LIMIT_OCCURRENCES)
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/16
-		 */
-		@Override
-		public void write(JDWPHostController __controller, Object __thread,
-			JDWPPacket __packet, Object... __args)
-			throws JDWPException
-		{
-			this.__field(true, __controller, __thread, __packet,
-				__args);
-		}
-	},
+		JDWPEventModifierKind.CLASS_ONLY, 
+		JDWPEventModifierKind.CLASS_MATCH_PATTERN,
+		JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN, 
+		JDWPEventModifierKind.LOCATION_ONLY,
+		JDWPEventModifierKind.FIELD_ONLY, 
+		JDWPEventModifierKind.THIS_INSTANCE_ONLY,
+		JDWPEventModifierKind.LIMIT_OCCURRENCES),
 	
 	/** Exception catch. */
 	EXCEPTION_CATCH(30, null,
 		Arrays.asList(
 			JDWPEventModifierContext.ENSNARE_ARGUMENT,
 			JDWPEventModifierContext.TOSSED_EXCEPTION),
-		JDWPEventModifierKind.THREAD_ONLY, JDWPEventModifierKind.CLASS_ONLY,
-		JDWPEventModifierKind.CLASS_MATCH_PATTERN, JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
-		JDWPEventModifierKind.LOCATION_ONLY, JDWPEventModifierKind.EXCEPTION_ONLY,
-		JDWPEventModifierKind.THIS_INSTANCE_ONLY, JDWPEventModifierKind.LIMIT_OCCURRENCES)
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/16
-		 */
-		@Override
-		public void write(JDWPHostController __controller, Object __thread,
-			JDWPPacket __packet, Object... __args)
-			throws JDWPException
-		{
-			// Exceptions are always formatted the same regardless of
-			// whether they were caught or not
-			JDWPEventKind.EXCEPTION.write(__controller, __thread, __packet,
-				__args);
-		}
-	},
+		JDWPEventModifierKind.THREAD_ONLY, 
+		JDWPEventModifierKind.CLASS_ONLY,
+		JDWPEventModifierKind.CLASS_MATCH_PATTERN, 
+		JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
+		JDWPEventModifierKind.LOCATION_ONLY, 
+		JDWPEventModifierKind.EXCEPTION_ONLY,
+		JDWPEventModifierKind.THIS_INSTANCE_ONLY, 
+		JDWPEventModifierKind.LIMIT_OCCURRENCES),
 	
 	/** Method entry. */
 	METHOD_ENTRY(40,
@@ -348,24 +170,12 @@ public enum JDWPEventKind
 			JDWPEventModifierContext.CURRENT_INSTANCE,
 			JDWPEventModifierContext.CURRENT_TYPE),
 		null,
-		JDWPEventModifierKind.THREAD_ONLY, JDWPEventModifierKind.CLASS_ONLY,
-		JDWPEventModifierKind.CLASS_MATCH_PATTERN, JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
-		JDWPEventModifierKind.THIS_INSTANCE_ONLY, JDWPEventModifierKind.LIMIT_OCCURRENCES)
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/16
-		 */
-		@Override
-		public void write(JDWPHostController __controller, Object __thread,
-			JDWPPacket __packet, Object... __args)
-			throws JDWPException
-		{
-			__controller.writeObject(__packet, __thread);
-			__controller.writeLocation(__packet,
-				__controller.locationOf(__thread));
-		}
-	},
+		JDWPEventModifierKind.THREAD_ONLY, 
+		JDWPEventModifierKind.CLASS_ONLY,
+		JDWPEventModifierKind.CLASS_MATCH_PATTERN, 
+		JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
+		JDWPEventModifierKind.THIS_INSTANCE_ONLY,
+		JDWPEventModifierKind.LIMIT_OCCURRENCES),
 	
 	/** Method exit. */
 	METHOD_EXIT(41,
@@ -375,181 +185,74 @@ public enum JDWPEventKind
 		null,
 		JDWPEventModifierKind.THREAD_ONLY,
 		JDWPEventModifierKind.CLASS_ONLY,
-		JDWPEventModifierKind.CLASS_MATCH_PATTERN, JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
-		JDWPEventModifierKind.THIS_INSTANCE_ONLY, JDWPEventModifierKind.LIMIT_OCCURRENCES)
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/16
-		 */
-		@Override
-		public void write(JDWPHostController __controller, Object __thread,
-			JDWPPacket __packet, Object... __args)
-			throws JDWPException
-		{
-			__controller.writeObject(__packet, __thread);
-			__controller.writeLocation(__packet,
-				__controller.locationOf(__thread));
-		}
-	},
+		JDWPEventModifierKind.CLASS_MATCH_PATTERN, 
+		JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
+		JDWPEventModifierKind.THIS_INSTANCE_ONLY, 
+		JDWPEventModifierKind.LIMIT_OCCURRENCES),
 	
 	/** Method exit with return value. */
 	METHOD_EXIT_WITH_RETURN_VALUE(42, null, null,
 		JDWPEventModifierKind.THREAD_ONLY,
-		JDWPEventModifierKind.CLASS_ONLY, JDWPEventModifierKind.CLASS_MATCH_PATTERN,
-		JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN, JDWPEventModifierKind.THIS_INSTANCE_ONLY,
-		JDWPEventModifierKind.LIMIT_OCCURRENCES)
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/16
-		 */
-		@Override
-		public void write(JDWPHostController __controller, Object __thread,
-			JDWPPacket __packet, Object... __args)
-			throws JDWPException
-		{
-			__controller.writeObject(__packet, __thread);
-			__controller.writeLocation(__packet,
-				__controller.locationOf(__thread));
-			
-			// Write down the value
-			JDWPValueTag context = JDWPValueTag.guessTypeRaw(__controller, __args[0]);
-			__controller.writeValue(__packet, __args[0], context, false);
-		}
-	},
+		JDWPEventModifierKind.CLASS_ONLY, 
+		JDWPEventModifierKind.CLASS_MATCH_PATTERN,
+		JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
+		JDWPEventModifierKind.THIS_INSTANCE_ONLY,
+		JDWPEventModifierKind.LIMIT_OCCURRENCES),
 	
 	/** Contended monitor enter. */
 	MONITOR_CONTENDED_ENTER(43, null, null,
 		JDWPEventModifierKind.THREAD_ONLY,
-		JDWPEventModifierKind.CLASS_ONLY, JDWPEventModifierKind.CLASS_MATCH_PATTERN,
-		JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN, JDWPEventModifierKind.THIS_INSTANCE_ONLY,
-		JDWPEventModifierKind.LIMIT_OCCURRENCES)
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/16
-		 */
-		@Override
-		public void write(JDWPHostController __controller, Object __thread,
-			JDWPPacket __packet, Object... __args)
-			throws JDWPException
-		{
-			throw Debugging.todo();
-		}
-	},
+		JDWPEventModifierKind.CLASS_ONLY, 
+		JDWPEventModifierKind.CLASS_MATCH_PATTERN,
+		JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN, 
+		JDWPEventModifierKind.THIS_INSTANCE_ONLY,
+		JDWPEventModifierKind.LIMIT_OCCURRENCES),
 	
 	/** Contended monitor exit. */
 	MONITOR_CONTENDED_EXIT(44, null, null,
 		JDWPEventModifierKind.THREAD_ONLY,
-		JDWPEventModifierKind.CLASS_ONLY, JDWPEventModifierKind.CLASS_MATCH_PATTERN,
-		JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN, JDWPEventModifierKind.THIS_INSTANCE_ONLY,
-		JDWPEventModifierKind.LIMIT_OCCURRENCES)
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/16
-		 */
-		@Override
-		public void write(JDWPHostController __controller, Object __thread,
-			JDWPPacket __packet, Object... __args)
-			throws JDWPException
-		{
-			throw Debugging.todo();
-		}
-	},
+		JDWPEventModifierKind.CLASS_ONLY,
+		JDWPEventModifierKind.CLASS_MATCH_PATTERN,
+		JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
+		JDWPEventModifierKind.THIS_INSTANCE_ONLY,
+		JDWPEventModifierKind.LIMIT_OCCURRENCES),
 	
 	/** Monitor wait. */
-	MONITOR_WAIT(45, null, null, JDWPEventModifierKind.THREAD_ONLY,
+	MONITOR_WAIT(45, null, null, 
+		JDWPEventModifierKind.THREAD_ONLY,
 		JDWPEventModifierKind.CLASS_ONLY,
-		JDWPEventModifierKind.CLASS_MATCH_PATTERN, JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
-		JDWPEventModifierKind.THIS_INSTANCE_ONLY, JDWPEventModifierKind.LIMIT_OCCURRENCES)
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/16
-		 */
-		@Override
-		public void write(JDWPHostController __controller, Object __thread,
-			JDWPPacket __packet, Object... __args)
-			throws JDWPException
-		{
-			throw Debugging.todo();
-		}
-	},
+		JDWPEventModifierKind.CLASS_MATCH_PATTERN, 
+		JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
+		JDWPEventModifierKind.THIS_INSTANCE_ONLY, 
+		JDWPEventModifierKind.LIMIT_OCCURRENCES),
 	
 	/** Monitor waited. */
-	MONITOR_WAITED(46, null, null, JDWPEventModifierKind.THREAD_ONLY,
+	MONITOR_WAITED(46, null, null, 
+		JDWPEventModifierKind.THREAD_ONLY,
 		JDWPEventModifierKind.CLASS_ONLY,
-		JDWPEventModifierKind.CLASS_MATCH_PATTERN, JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
-		JDWPEventModifierKind.THIS_INSTANCE_ONLY, JDWPEventModifierKind.LIMIT_OCCURRENCES)
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/16
-		 */
-		@Override
-		public void write(JDWPHostController __controller, Object __thread,
-			JDWPPacket __packet, Object... __args)
-			throws JDWPException
-		{
-			throw Debugging.todo();
-		}
-	},
+		JDWPEventModifierKind.CLASS_MATCH_PATTERN, 
+		JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
+		JDWPEventModifierKind.THIS_INSTANCE_ONLY, 
+		JDWPEventModifierKind.LIMIT_OCCURRENCES),
 	
 	/** Virtual machine start. */
-	VM_START(90, null, null, JDWPEventModifierKind.THREAD_ONLY,
-		JDWPEventModifierKind.LIMIT_OCCURRENCES)
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/16
-		 */
-		@Override
-		public void write(JDWPHostController __controller, Object __thread,
-			JDWPPacket __packet, Object... __args)
-			throws JDWPException
-		{
-			// Write the starting thread
-			__controller.writeObject(__packet, __thread);
-		}
-	},
+	VM_START(90, null, null, 
+		JDWPEventModifierKind.THREAD_ONLY,
+		JDWPEventModifierKind.LIMIT_OCCURRENCES),
 	
 	/** Virtual machine death. */
-	VM_DEATH(99, null, null, JDWPEventModifierKind.LIMIT_OCCURRENCES)
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/16
-		 */
-		@Override
-		public void write(JDWPHostController __controller, Object __thread,
-			JDWPPacket __packet, Object... __args)
-			throws JDWPException
-		{
-			throw Debugging.todo();
-		}
-	},
+	VM_DEATH(99, null, null, 
+		JDWPEventModifierKind.LIMIT_OCCURRENCES),
 	
 	/** Special alias to indicate an unconditional {@link #BREAKPOINT}. */
-	UNCONDITIONAL_BREAKPOINT(-2, null, null)
-	{
-		@Override
-		public void write(JDWPHostController __controller, Object __thread,
-			JDWPPacket __packet, Object... __args)
-			throws JDWPException
-		{
-			// This should not truly be called
-			throw Debugging.oops();
-		}
-	},
+	UNCONDITIONAL_BREAKPOINT(-2, null, null),
 	
 	/* End. */
 	;
 	
 	/** Quick table. */
-	private static final __QuickTable__<JDWPEventKind> _QUICK =
-		new __QuickTable__<>(JDWPEventKind.values());
+	private static final JDWPIdMap<JDWPEventKind> _QUICK =
+		new JDWPIdMap<>(JDWPEventKind.values());
 	
 	/** The event ID. */
 	public final int id;
@@ -573,14 +276,17 @@ public enum JDWPEventKind
 	 * @since 2021/03/13
 	 */
 	JDWPEventKind(int __id, Iterable<JDWPEventModifierContext> __nonArg,
-		List<JDWPEventModifierContext> __arg, JDWPEventModifierKind... __modifiers)
+		List<JDWPEventModifierContext> __arg, 
+		JDWPEventModifierKind... __modifiers)
 	{
 		this.id = __id;
 		
 		// Contexts for modifiers
-		this._nonArg = (__nonArg == null ? EmptyList.<JDWPEventModifierContext>empty() :
+		this._nonArg = (__nonArg == null ? 
+			EmptyList.<JDWPEventModifierContext>empty() :
 			UnmodifiableIterable.<JDWPEventModifierContext>of(__nonArg));
-		this._arg = (__arg == null ? EmptyList.<JDWPEventModifierContext>empty() :
+		this._arg = (__arg == null ? 
+			EmptyList.<JDWPEventModifierContext>empty() :
 			UnmodifiableList.<JDWPEventModifierContext>of(__arg));
 		
 		// Determine the modifier bits to quickly get the items
@@ -640,84 +346,6 @@ public enum JDWPEventKind
 	{
 		// Is the ordinal set for this modifier?
 		return (0 != (this._modifierBits & (1 << __mod.ordinal())));
-	}
-	
-	/**
-	 * Performs field packet writing for access and modification.
-	 * 
-	 * @param __write Writing field modification?
-	 * @param __controller The controller used.
-	 * @param __thread The current thread.
-	 * @param __packet The outgoing packet.
-	 * @param __args The arguments to the signal.
-	 * @throws JDWPException If it could not be written.
-	 * @since 2021/04/30
-	 */
-	void __field(boolean __write, JDWPHostController __controller, Object __thread,
-		JDWPPacket __packet, Object... __args)
-		throws JDWPException
-	{
-		// Get the pass field values
-		Object type = __args[0];
-		int fieldDx = (int)__args[1];
-		boolean write = (boolean)__args[2];
-		Object instance = __args[3];
-		JDWPHostValue newValue = (JDWPHostValue)__args[4];
-		
-		// Write current thread and location
-		__controller.writeObject(__packet, __thread);
-		JDWPHostLocation location = __controller.locationOf(__thread);
-		__controller.writeLocation(__packet, __controller.locationOf(__thread));
-		
-		// Store the location items
-		JDWPHostLinker<Object> items = __controller.getState().items;
-		if (__thread != null)
-			items.put(__thread);
-		if (location.type != null)
-			items.put(location.type);
-		
-		// Field reference type tag and type????
-		// Documentation says "Kind of reference type. See JDWP.TypeTag" and
-		// "Type of field" but this is then followed by the field ID so it
-		// does not make sense if this is the field signature value because
-		// how would we know which field we were even writing because the
-		// information is not elsewhere at all??? So this is a big guess.
-		// TODO: Was this guessed correctly???
-		__controller.writeTaggedId(__packet, type);
-		if (type != null)
-			items.put(type);
-		
-		// The field ID
-		__packet.writeId(fieldDx);
-		
-		// The object accessed, this is tagged oddly
-		JDWPValueTag context =
-			JDWPValueTag.guessTypeRaw(__controller, instance);
-		__controller.writeValue(__packet, instance, context, false);
-		if (instance != null)
-			items.put(instance);
-		
-		// Write value if that is changing
-		if (__write || write)
-		{
-			// Determine the field information
-			String fieldSig = __controller.viewType()
-				.fieldSignature(type, fieldDx);
-			JDWPValueTag tag = JDWPValueTag.fromSignature(fieldSig);
-			
-			// Write the value
-			__controller.writeValue(__packet, newValue, tag, false);
-			
-			// Make sure this is a known object
-			Object itemVal = newValue.get();
-			if (__controller.viewObject().isValid(itemVal))
-				items.put(itemVal);
-		}
-		
-		// Debug
-		if (JDWPHostController._DEBUG)
-			Debugging.debugNote("Field(%s#%d, %b, %s, %s) @ %s",
-				type, fieldDx, write, instance, newValue, location);
 	}
 	
 	/**

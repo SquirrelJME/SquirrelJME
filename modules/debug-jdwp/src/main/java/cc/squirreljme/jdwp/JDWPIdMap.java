@@ -22,7 +22,7 @@ import java.util.Set;
  * @param <I> ID Type.
  * @since 2021/03/13
  */
-final class __QuickTable__<I extends __IdNumbered__>
+public final class JDWPIdMap<I extends JDWPHasId>
 	extends AbstractMap<Integer, I>  
 {
 	/** The minimum Id. */
@@ -38,7 +38,7 @@ final class __QuickTable__<I extends __IdNumbered__>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/03/13
 	 */
-	__QuickTable__(I[] __items)
+	public JDWPIdMap(I[] __items)
 		throws NullPointerException
 	{
 		if (__items == null)

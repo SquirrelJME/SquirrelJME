@@ -15,7 +15,7 @@ package cc.squirreljme.jdwp;
  * @since 2021/03/12
  */
 public enum JDWPErrorType
-	implements __IdNumbered__
+	implements JDWPHasId
 {
 	/** Undefined error. */
 	UNDEFINED_ERROR(-1),
@@ -81,8 +81,8 @@ public enum JDWPErrorType
 	;
 	
 	/** Quick table. */
-	private static final __QuickTable__<JDWPErrorType> _QUICK =
-		new __QuickTable__<>(JDWPErrorType.values());
+	private static final JDWPIdMap<JDWPErrorType> _QUICK =
+		new JDWPIdMap<>(JDWPErrorType.values());
 	
 	/** The ID of the packet. */
 	public final int id;

@@ -15,7 +15,7 @@ package cc.squirreljme.jdwp;
  * @since 2021/03/12
  */
 public enum JDWPCommandSet
-	implements __IdNumbered__
+	implements JDWPHasId
 {
 	/** Unknown command set. */
 	UNKNOWN(-1),
@@ -63,14 +63,14 @@ public enum JDWPCommandSet
 	;
 	
 	/** Quick lookup for command sets. */
-	private static final __QuickTable__<JDWPCommandSet> _QUICK =
-		new __QuickTable__<>(JDWPCommandSet.values());
+	private static final JDWPIdMap<JDWPCommandSet> _QUICK =
+		new JDWPIdMap<>(JDWPCommandSet.values());
 	
 	/** The Id of the set. */
 	public final int id;
 	
 	/** Command set commands. */
-	private final __QuickTable__<JDWPCommand> _commands; 
+	private final JDWPIdMap<JDWPCommand> _commands; 
 	
 	/**
 	 * Initializes the command set enum.
@@ -82,7 +82,7 @@ public enum JDWPCommandSet
 	JDWPCommandSet(int __id, JDWPCommand... __cmds)
 	{
 		this.id = __id;
-		this._commands = new __QuickTable__<>(__cmds);
+		this._commands = new JDWPIdMap<>(__cmds);
 	}
 	
 	/**

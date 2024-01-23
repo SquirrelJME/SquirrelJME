@@ -15,7 +15,7 @@ package cc.squirreljme.jdwp;
  * @since 2021/03/13
  */
 public enum JDWPSuspendPolicy
-	implements __IdNumbered__
+	implements JDWPHasId
 {
 	/** None. */
 	NONE(0),
@@ -30,8 +30,8 @@ public enum JDWPSuspendPolicy
 	;
 	
 	/** Quick lookup. */
-	private static final __QuickTable__<JDWPSuspendPolicy> _QUICK =
-		new __QuickTable__<>(JDWPSuspendPolicy.values());
+	private static final JDWPIdMap<JDWPSuspendPolicy> _QUICK =
+		new JDWPIdMap<>(JDWPSuspendPolicy.values());
 	
 	/** The event ID. */
 	public final int id;

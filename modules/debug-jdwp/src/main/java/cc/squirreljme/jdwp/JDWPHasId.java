@@ -14,7 +14,7 @@ package cc.squirreljme.jdwp;
  *
  * @since 2021/04/18
  */
-interface __IdNumbered__
+public interface JDWPHasId
 {
 	/**
 	 * Returns the debugger ID.

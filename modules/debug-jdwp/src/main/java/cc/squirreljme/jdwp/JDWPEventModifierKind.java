@@ -15,7 +15,7 @@ package cc.squirreljme.jdwp;
  * @since 2021/03/13
  */
 public enum JDWPEventModifierKind
-	implements __IdNumbered__
+	implements JDWPHasId
 {
 	/** Limit occurrences. */
 	LIMIT_OCCURRENCES(1),
@@ -51,8 +51,8 @@ public enum JDWPEventModifierKind
 	;
 	
 	/** Quick table. */
-	private static final __QuickTable__<JDWPEventModifierKind> _QUICK =
-		new __QuickTable__<>(JDWPEventModifierKind.values());
+	private static final JDWPIdMap<JDWPEventModifierKind> _QUICK =
+		new JDWPIdMap<>(JDWPEventModifierKind.values());
 	
 	/** The event ID. */
 	public final int id;
