@@ -10,6 +10,7 @@
 package cc.squirreljme.jdwp;
 
 import cc.squirreljme.jdwp.event.EventModContext;
+import cc.squirreljme.jdwp.host.JDWPHostEventHandler;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Arrays;
 import java.util.List;
@@ -24,7 +25,7 @@ import net.multiphasicapps.collections.UnmodifiableList;
  * @since 2021/03/13
  */
 public enum JDWPEventKind
-	implements __IdNumbered__
+	implements __IdNumbered__, JDWPHostEventHandler
 {
 	/** Single Step. */
 	SINGLE_STEP(1,
@@ -590,21 +591,6 @@ public enum JDWPEventKind
 			modifierBits |= (1 << mod.ordinal());
 		this._modifierBits = modifierBits;
 	}
-	
-	/**
-	 * Writes the packet event data.
-	 * 
-	 * @param __controller The controller used.
-	 * @param __thread The current thread of execution.
-	 * @param __packet The packet to write to.
-	 * @param __args The arguments to the packet, the first value should
-	 * always be {@code thread}.
-	 * @throws JDWPException If it could not be written.
-	 * @since 2021/03/16
-	 */
-	public abstract void write(JDWPHostController __controller, Object __thread,
-		JDWPPacket __packet, Object... __args)
-		throws JDWPException;
 	
 	/**
 	 * Returns the context for the given argument.
