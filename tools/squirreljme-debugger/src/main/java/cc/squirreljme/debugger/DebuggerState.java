@@ -9,7 +9,7 @@
 
 package cc.squirreljme.debugger;
 
-import cc.squirreljme.jdwp.CommLink;
+import cc.squirreljme.jdwp.JDWPCommLink;
 import cc.squirreljme.jdwp.CommandSetEventRequest;
 import cc.squirreljme.jdwp.CommandSetThreadReference;
 import cc.squirreljme.jdwp.CommandSetVirtualMachine;
@@ -20,7 +20,6 @@ import cc.squirreljme.jdwp.JDWPCommandSet;
 import cc.squirreljme.jdwp.JDWPException;
 import cc.squirreljme.jdwp.JDWPIdKind;
 import cc.squirreljme.jdwp.JDWPPacket;
-import cc.squirreljme.jdwp.JDWPId;
 import cc.squirreljme.jdwp.SuspendPolicy;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.io.HexDumpOutputStream;
@@ -39,7 +38,7 @@ public class DebuggerState
 	implements Runnable
 {
 	/** The communication link used. */
-	protected final CommLink commLink;
+	protected final JDWPCommLink commLink;
 	
 	/** Disconnected tally. */
 	protected final TallyTracker disconnectedTally =
@@ -79,7 +78,7 @@ public class DebuggerState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/19
 	 */
-	public DebuggerState(CommLink __commLink)
+	public DebuggerState(JDWPCommLink __commLink)
 		throws NullPointerException
 	{
 		if (__commLink == null)
@@ -307,7 +306,7 @@ public class DebuggerState
 	@Override
 	public void run()
 	{
-		CommLink link = this.commLink;
+		JDWPCommLink link = this.commLink;
 		TallyTracker receiveTally = this.receiveTally;
 		
 		// Perform default trackers

@@ -50,7 +50,7 @@ public final class JDWPHostController
 		Boolean.getBoolean("cc.squirreljme.jdwp.debug");
 	
 	/** The communication link. */
-	protected final CommLink commLink;
+	protected final JDWPCommLink commLink;
 	
 	/** Debugger state. */
 	protected final JDWPHostState state;
@@ -106,7 +106,7 @@ public final class JDWPHostController
 		
 		this._bind = new WeakReference<>(__bind);
 		this.state = new JDWPHostState(new WeakReference<>(__bind));
-		this.commLink = new CommLink(__in, __out);
+		this.commLink = new JDWPCommLink(__in, __out);
 		
 		// Set sizes that we use
 		this.commLink.setIdSizes(new JDWPIdSizes(
@@ -268,7 +268,7 @@ public final class JDWPHostController
 		throws JDWPException
 	{
 		// Read in any packets and process them as they come
-		for (CommLink commLink = this.commLink;;)
+		for (JDWPCommLink commLink = this.commLink;;)
 		{
 			// Drain any held packets
 			for (;;)
@@ -386,7 +386,7 @@ public final class JDWPHostController
 		// we terminate the connection
 		try (JDWPHostController ignored = this)
 		{
-			CommLink commLink = this.commLink;
+			JDWPCommLink commLink = this.commLink;
 			while (!commLink.isShutdown())
 				this.poll();
 		}

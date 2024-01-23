@@ -1285,7 +1285,7 @@ public final class JDWPPacket
 			this.__checkOpen();
 			
 			// Write shared header (includes header size)
-			__out.writeInt(this._length + CommLink._HEADER_SIZE);
+			__out.writeInt(this._length + JDWPCommLink._HEADER_SIZE);
 			__out.writeInt(this._id);
 			__out.writeByte(this._flags);
 			

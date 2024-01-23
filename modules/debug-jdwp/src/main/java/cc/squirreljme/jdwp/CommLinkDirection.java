@@ -10,7 +10,7 @@
 package cc.squirreljme.jdwp;
 
 /**
- * Indicates the direction of {@link CommLink}.
+ * Indicates the direction of {@link JDWPCommLink}.
  *
  * @since 2024/01/19
  */

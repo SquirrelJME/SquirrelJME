@@ -27,7 +27,7 @@ import java.util.LinkedList;
  *
  * @since 2021/03/09
  */
-public final class CommLink
+public final class JDWPCommLink
 	implements Closeable
 {
 	/** Handshake sequence, sent by both sides. */
@@ -57,7 +57,7 @@ public final class CommLink
 	
 	/** The header bytes. */
 	private final byte[] _header =
-		new byte[CommLink._HEADER_SIZE];
+		new byte[JDWPCommLink._HEADER_SIZE];
 	
 	/** The monitor used for the output object. */
 	private final Object _outMonitor =
@@ -71,7 +71,7 @@ public final class CommLink
 	
 	/** The data. */
 	private volatile byte[] _data =
-		new byte[CommLink._INIT_DATA_LEN];
+		new byte[JDWPCommLink._INIT_DATA_LEN];
 	
 	/** Read position for read data. */
 	private volatile int _dataAt;
@@ -97,7 +97,7 @@ public final class CommLink
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/03/08
 	 */
-	public CommLink(InputStream __in, OutputStream __out)
+	public JDWPCommLink(InputStream __in, OutputStream __out)
 		throws NullPointerException
 	{
 		this(__in, __out, CommLinkDirection.CLIENT_TO_DEBUGGER);
@@ -112,7 +112,7 @@ public final class CommLink
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/03/08
 	 */
-	public CommLink(InputStream __in, OutputStream __out,
+	public JDWPCommLink(InputStream __in, OutputStream __out,
 		CommLinkDirection __direction)
 		throws NullPointerException
 	{
@@ -243,7 +243,7 @@ public final class CommLink
 					return null;
 				
 				// Still reading in the header?
-				int headerLeft = CommLink._HEADER_SIZE - headerAt;
+				int headerLeft = JDWPCommLink._HEADER_SIZE - headerAt;
 				if (headerLeft > 0)
 				{
 					int rc = in.read(header, headerAt, headerLeft);
@@ -586,7 +586,7 @@ public final class CommLink
 		throws IOException
 	{
 		// The debugger sends the handshake sequence first
-		int seqLen = CommLink._HANDSHAKE_SEQUENCE.length;
+		int seqLen = JDWPCommLink._HANDSHAKE_SEQUENCE.length;
 		byte[] debuggerShake = new byte[seqLen];
 		
 		// Read in the handshake
@@ -602,7 +602,7 @@ public final class CommLink
 		}
 		
 		/* {@squirreljme.error AG03 Debugger sent an invalid handshake.} */
-		if (!Arrays.equals(debuggerShake, CommLink._HANDSHAKE_SEQUENCE))
+		if (!Arrays.equals(debuggerShake, JDWPCommLink._HANDSHAKE_SEQUENCE))
 			throw new JDWPException("AG03");
 	}
 	
@@ -616,7 +616,7 @@ public final class CommLink
 		throws IOException
 	{			
 		// We then reply with our own handshake
-		this.out.write(CommLink._HANDSHAKE_SEQUENCE);
+		this.out.write(JDWPCommLink._HANDSHAKE_SEQUENCE);
 		this.out.flush();
 	}
 }
