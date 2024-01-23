@@ -386,15 +386,14 @@ public final class JDWPHostController
 	 * @param __commandSet The command set to get.
 	 * @param __command The command used.
 	 * @return The handler for commands.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/23
 	 */
 	public JDWPCommandHandler commandHandler(JDWPCommandSet __commandSet,
 		int __command)
-		throws NullPointerException
 	{
+		// No command set? We cannot handle it
 		if (__commandSet == null)
-			throw new NullPointerException("NARG");
+			return null;
 		
 		return this.commandHandler(__commandSet.command(__command));
 	}
@@ -410,9 +409,6 @@ public final class JDWPHostController
 	public JDWPCommandHandler commandHandler(JDWPCommand __command)
 		throws NullPointerException
 	{
-		if (__command == null)
-			throw new NullPointerException("NARG");
-		
 		return JDWPHostController._HANDLERS.get(__command);
 	}
 	
@@ -433,7 +429,8 @@ public final class JDWPHostController
 		if (__policy == null || __kind == null)
 			throw new NullPointerException("NARG");
 		
-		JDWPPacket rv = this.getCommLink().request(64, 100);
+		JDWPPacket rv = this.getCommLink().request(64,
+			100);
 		
 		// Write the single event header
 		rv.writeByte(__policy.id);

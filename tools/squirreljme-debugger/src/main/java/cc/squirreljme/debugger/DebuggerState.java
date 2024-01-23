@@ -571,7 +571,7 @@ public class DebuggerState
 		{
 			this.sendThenWait(packet, Utils.IMPORTANT_TIMEOUT,
 				(__state, __reply) -> {
-					
+					Debugging.debugNote("Read ID Sizes...");
 				});
 		}
 		
