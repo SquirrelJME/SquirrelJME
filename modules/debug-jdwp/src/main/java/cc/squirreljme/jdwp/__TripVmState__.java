@@ -57,7 +57,7 @@ final class __TripVmState__
 			packet.writeObject(controller, __bootThread);
 			
 			// Send it away!
-			controller.commLink.send(packet);
+			controller.getCommLink().send(packet);
 		}
 	}
 }

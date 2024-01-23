@@ -109,7 +109,7 @@ public final class JDWPHostController
 		this.commLink = new JDWPCommLink(__in, __out);
 		
 		// Set sizes that we use
-		this.commLink.setIdSizes(new JDWPIdSizes(
+		this.getCommLink().setIdSizes(new JDWPIdSizes(
 			4, 4, 4, 4, 4));
 		
 		// Setup Communication Link thread
@@ -283,7 +283,7 @@ public final class JDWPHostController
 		// Close the communication link
 		try
 		{
-			this.commLink.close();
+			this.getCommLink().close();
 		}
 		
 		// Close and remove all held packets.
@@ -334,7 +334,7 @@ public final class JDWPHostController
 		if (__policy == null || __kind == null)
 			throw new NullPointerException("NARG");
 		
-		JDWPPacket rv = this.commLink.request(64, 100);
+		JDWPPacket rv = this.getCommLink().request(64, 100);
 		
 		// Write the single event header
 		rv.writeByte(__policy.id);
@@ -343,6 +343,28 @@ public final class JDWPHostController
 		rv.writeInt(__responseId);
 		
 		return rv;
+	}
+	
+	/**
+	 * Returns the communication link.
+	 *
+	 * @return The communication link.
+	 * @since 2024/01/23
+	 */
+	public JDWPCommLink getCommLink()
+	{
+		return this.commLink;
+	}
+	
+	/**
+	 * Returns the event manager.
+	 *
+	 * @return The event manager.
+	 * @since 2024/01/23
+	 */
+	public JDWPHostEventManager getEventManager()
+	{
+		return this.eventManager;
 	}
 	
 	/**
@@ -406,7 +428,7 @@ public final class JDWPHostController
 		throws JDWPException
 	{
 		// Read in any packets and process them as they come
-		for (JDWPCommLink commLink = this.commLink;;)
+		for (JDWPCommLink commLink = this.getCommLink();;)
 		{
 			// Drain any held packets
 			for (;;)
@@ -510,7 +532,7 @@ public final class JDWPHostController
 	 */
 	public final JDWPPacket reply(int __id, JDWPErrorType __error)
 	{
-		return this.commLink.reply(__id, __error);
+		return this.getCommLink().reply(__id, __error);
 	}
 	
 	/**
@@ -524,7 +546,7 @@ public final class JDWPHostController
 		// we terminate the connection
 		try (JDWPHostController ignored = this)
 		{
-			JDWPCommLink commLink = this.commLink;
+			JDWPCommLink commLink = this.getCommLink();
 			while (!commLink.isShutdown())
 				this.poll();
 		}
@@ -562,7 +584,7 @@ public final class JDWPHostController
 		
 		// Go through all compatible events for this thread
 		boolean hit = false;
-		for (JDWPHostEventRequest request : this.eventManager.find(
+		for (JDWPHostEventRequest request : this.getEventManager().find(
 			this, __thread, unconditional, __kind, __args))
 		{
 			// Suspend all threads?
@@ -596,14 +618,14 @@ public final class JDWPHostController
 				{
 					if (this._holdEvents)
 					{
-						this._heldPackets.add(this.commLink
+						this._heldPackets.add(this.getCommLink()
 							.getPacket().copyOf(packet));
 						continue;
 					}
 				}
 				
 				// Send it away!
-				this.commLink.send(packet);
+				this.getCommLink().send(packet);
 			}
 		}
 		

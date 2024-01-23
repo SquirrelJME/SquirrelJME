@@ -171,9 +171,9 @@ public enum CommandSetEventRequest
 			
 			// Register the event request
 			JDWPHostEventRequest request = new JDWPHostEventRequest(
-				__controller.commLink.nextId(), eventKind, suspendPolicy,
+				__controller.getCommLink().nextId(), eventKind, suspendPolicy,
 				occurrenceLimit, eventFilter);
-			__controller.eventManager.addEventRequest(request);
+			__controller.getEventManager().addEventRequest(request);
 			
 			// Perform injection for the event so whatever we are using for
 			// the call can trip events 
@@ -208,7 +208,7 @@ public enum CommandSetEventRequest
 			
 			// Delete the event, if it is known... the kind is ignored since
 			// we always use unique IDs regardless of type
-			__controller.eventManager.delete(__packet.readInt());
+			__controller.getEventManager().delete(__packet.readInt());
 			
 			// Always successful, even if the ID is not valid
 			return null;
@@ -227,7 +227,7 @@ public enum CommandSetEventRequest
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			__controller.eventManager.clear(JDWPEventKind.BREAKPOINT);
+			__controller.getEventManager().clear(JDWPEventKind.BREAKPOINT);
 			
 			return null;
 		}

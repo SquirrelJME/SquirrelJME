@@ -173,7 +173,7 @@ public enum CommandSetVirtualMachine
 				finally
 				{
 					// Clear all events
-					__controller.eventManager.clearAll();
+					__controller.getEventManager().clearAll();
 				}
 			}
 			
