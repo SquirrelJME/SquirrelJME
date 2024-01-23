@@ -9,6 +9,9 @@
 
 package cc.squirreljme.jdwp.host;
 
+import cc.squirreljme.jdwp.JDWPHasIdKind;
+import cc.squirreljme.jdwp.JDWPId;
+import cc.squirreljme.jdwp.JDWPIdKind;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -35,7 +38,7 @@ public final class JDWPHostLinker<T>
 	protected final Class<T> type;
 	
 	/** Links for IDs to existing object types. */
-	private final Map<Integer, Reference<T>> _links =
+	private final Map<JDWPId, Reference<T>> _links =
 		new LinkedHashMap<>();
 	
 	/**
@@ -59,12 +62,12 @@ public final class JDWPHostLinker<T>
 	 * 
 	 * @param __id The ID to get.
 	 * @return The instance for the given ID, may be {@code null}.
-	 * @since 2021/03/13
+	 * @since 2024/01/23
 	 */
-	public final T get(int __id)
+	public final T get(JDWPId __id)
 	{
 		// Protect these!
-		Map<Integer, Reference<T>> links = this._links;
+		Map<JDWPId, Reference<T>> links = this._links;
 		synchronized (this)
 		{
 			// Get by the id
@@ -83,6 +86,25 @@ public final class JDWPHostLinker<T>
 	}
 	
 	/**
+	 * Returns the object by the given ID.
+	 * 
+	 * @param __id The ID to get.
+	 * @return The instance for the given ID, may be {@code null}.
+	 * @deprecated Use {@link JDWPHostLinker#get(JDWPId)} instead.
+	 * @since 2021/03/13
+	 */
+	@Deprecated
+	public final T get(int __id)
+	{
+		// TODO
+		Debugging.todoNote("Deprecated JDWPHostLinker.get(%d)",
+			__id);
+		
+		// Wrap it
+		return this.get(JDWPId.of(JDWPIdKind.UNKNOWN, __id));
+	}
+	
+	/**
 	 * Puts in a new type.
 	 * 
 	 * @param __t The type to put.
@@ -95,11 +117,25 @@ public final class JDWPHostLinker<T>
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		// The ID used
-		Integer id = System.identityHashCode(__t);
+		// Use the passed kind that the object has
+		JDWPId id;
+		if (__t instanceof JDWPHasIdKind)
+			id = ((JDWPHasIdKind)__t).debuggerId();
+			
+		// Deprecated mode
+		else
+		{
+			// Use unknown
+			id = JDWPId.of(JDWPIdKind.UNKNOWN,
+				System.identityHashCode(__t));
+			
+			// TODO
+			Debugging.todoNote("Deprecated JDWPHostLinker.put(%s) -> %s",
+				__t, id);
+		}
 		
 		// Protect these!
-		Map<Integer, Reference<T>> links = this._links;
+		Map<JDWPId, Reference<T>> links = this._links;
 		synchronized (this)
 		{
 			Reference<T> ref = links.get(id);
@@ -135,7 +171,7 @@ public final class JDWPHostLinker<T>
 	}
 	
 	/**
-	 * Returns all of the linked state values.
+	 * Returns all the linked state values.
 	 * 
 	 * @return All the values in the linked state, this is a copy of the values
 	 * and changes will not reflect the underlying linked values.
@@ -147,13 +183,13 @@ public final class JDWPHostLinker<T>
 		List<T> result = new ArrayList<>(this.sizeEstimate());
 		
 		// Protect these!
-		Map<Integer, Reference<T>> links = this._links;
+		Map<JDWPId, Reference<T>> links = this._links;
 		synchronized (this)
 		{
-			for (Iterator<Map.Entry<Integer, Reference<T>>> it =
+			for (Iterator<Map.Entry<JDWPId, Reference<T>>> it =
 				links.entrySet().iterator(); it.hasNext();)
 			{
-				Map.Entry<Integer, Reference<T>> entry = it.next();
+				Map.Entry<JDWPId, Reference<T>> entry = it.next();
 				
 				// Use the value if it still exists
 				Reference<T> ref = entry.getValue();

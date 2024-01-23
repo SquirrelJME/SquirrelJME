@@ -36,13 +36,16 @@ public final class JDWPIdSizes
 			throw new IllegalArgumentException("IOOB");
 		
 		// Normalize everything
-		int[] normalized = new int[JDWPIdKind.values().length];
+		JDWPIdKind[] kinds = JDWPIdKind.values();
+		int[] normalized = new int[kinds.length];
 		System.arraycopy(__sizes, 0,
 			normalized, 0, JDWPIdKind.NUM_KINDS);
 		
 		// Normalize some sizes that are aliases
-		normalized[JDWPIdKind.THREAD_ID.ordinal()] =
-			normalized[JDWPIdKind.OBJECT_ID.ordinal()];
+		for (JDWPIdKind kind : kinds)
+			if (kind.position < 0)
+				normalized[kind.ordinal()] =
+					normalized[JDWPIdKind.invert(kind.position)];
 		
 		// Store sizes
 		this._sizes = normalized;

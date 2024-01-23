@@ -32,7 +32,10 @@ public enum JDWPIdKind
 	FRAME_ID(4),
 	
 	/** Thread ID. */
-	THREAD_ID(-1),
+	THREAD_ID(JDWPIdKind.invert(2)),
+	
+	/** Unknown. */
+	UNKNOWN(JDWPIdKind.invert(2)),
 	
 	/* End. */
 	;
@@ -53,5 +56,17 @@ public enum JDWPIdKind
 	JDWPIdKind(int __position)
 	{
 		this.position = __position;
+	}
+	
+	/**
+	 * Inverts the position value.
+	 *
+	 * @param __i The value to invert.
+	 * @return The inverted value.
+	 * @since 2024/01/23
+	 */
+	public static int invert(int __i)
+	{
+		return (-(__i) - 1);
 	}
 }
