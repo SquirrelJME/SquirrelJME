@@ -10,7 +10,7 @@
 package cc.squirreljme.emulator.vm;
 
 import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
-import cc.squirreljme.jdwp.JDWPFactory;
+import cc.squirreljme.jdwp.JDWPHostFactory;
 import cc.squirreljme.jvm.launch.Application;
 import cc.squirreljme.jvm.launch.AvailableSuites;
 import cc.squirreljme.jvm.launch.SuiteScanner;
@@ -43,9 +43,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.jar.Manifest;
-import net.multiphasicapps.io.BidirectionalPipe;
-import net.multiphasicapps.io.BidirectionalPipeSide;
-import net.multiphasicapps.io.UnidirectionalPipe;
 
 /**
  * This class is used to initialize virtual machines based on a set of factory
@@ -129,7 +126,7 @@ public abstract class VMFactory
 	 * @since 2018/11/17
 	 */
 	protected abstract VirtualMachine createVM(ProfilerSnapshot __profiler,
-		JDWPFactory __jdwp, VMThreadModel __threadModel,
+		JDWPHostFactory __jdwp, VMThreadModel __threadModel,
 		VMSuiteManager __suiteManager, VMClassLibrary[] __classpath,
 		String __mainClass, Map<String, String> __sysProps, String[] __args)
 		throws IllegalArgumentException, NullPointerException, VMException;
@@ -634,7 +631,7 @@ public abstract class VMFactory
 	 * @since 2018/11/17
 	 */
 	public static VirtualMachine mainVm(String __vm, ProfilerSnapshot __ps,
-		JDWPFactory __jdwp, VMThreadModel __threadModel, VMSuiteManager __sm,
+		JDWPHostFactory __jdwp, VMThreadModel __threadModel, VMSuiteManager __sm,
 		String[] __cp,
 		String __bootcl, Map<String, String> __sprops, String... __args)
 		throws IllegalArgumentException, NullPointerException, VMException
@@ -866,7 +863,7 @@ public abstract class VMFactory
 	 * @param __port The port to listen on.
 	 * @since 2021/03/08
 	 */
-	private static JDWPFactory __setupJdwp(String __host, int __port)
+	private static JDWPHostFactory __setupJdwp(String __host, int __port)
 	{
 		// Listening?
 		if (__host == null)
@@ -887,7 +884,7 @@ public abstract class VMFactory
 				socket = new Socket(__host, __port);
 			
 			// Use factory to create it
-			return new JDWPFactory(socket.getInputStream(),
+			return new JDWPHostFactory(socket.getInputStream(),
 				socket.getOutputStream());
 		}
 		
@@ -916,7 +913,7 @@ public abstract class VMFactory
 	 * @return The factory for creating the buffer.
 	 * @since 2024/01/19
 	 */
-	private static JDWPFactory __setupJdwpInternal()
+	private static JDWPHostFactory __setupJdwpInternal()
 	{
 		// Look for service for it
 		for (VMDebuggerService service :

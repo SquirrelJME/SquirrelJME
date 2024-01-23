@@ -22,7 +22,7 @@ import java.io.OutputStream;
  *
  * @since 2021/03/08
  */
-public final class JDWPFactory
+public final class JDWPHostFactory
 	implements Closeable
 {
 	/** The input communication stream. */
@@ -39,7 +39,7 @@ public final class JDWPFactory
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/03/08
 	 */
-	public JDWPFactory(InputStream __in, OutputStream __out)
+	public JDWPHostFactory(InputStream __in, OutputStream __out)
 		throws NullPointerException
 	{
 		if (__in == null || __out == null)

@@ -9,7 +9,7 @@
 
 package cc.squirreljme.emulator.vm;
 
-import cc.squirreljme.jdwp.JDWPFactory;
+import cc.squirreljme.jdwp.JDWPHostFactory;
 import java.util.ServiceLoader;
 
 /**
@@ -25,5 +25,5 @@ public interface VMDebuggerService
 	 * @return The resultant factory.
 	 * @since 2024/01/19
 	 */
-	JDWPFactory jdwpFactory();
+	JDWPHostFactory jdwpFactory();
 }

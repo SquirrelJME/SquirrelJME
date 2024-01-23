@@ -10,7 +10,7 @@
 package cc.squirreljme.debugger;
 
 import cc.squirreljme.emulator.vm.VMDebuggerService;
-import cc.squirreljme.jdwp.JDWPFactory;
+import cc.squirreljme.jdwp.JDWPHostFactory;
 import net.multiphasicapps.io.BidirectionalPipe;
 import net.multiphasicapps.io.BidirectionalPipeSide;
 
@@ -27,7 +27,7 @@ public class BuiltInDebuggerService
 	 * @since 2024/01/19
 	 */
 	@Override
-	public JDWPFactory jdwpFactory()
+	public JDWPHostFactory jdwpFactory()
 	{
 		// Setup a bidirectional local pipe
 		BidirectionalPipe pipe = new BidirectionalPipe();
@@ -38,6 +38,6 @@ public class BuiltInDebuggerService
 		
 		// JDWP factory gets the other end
 		BidirectionalPipeSide b = pipe.side(true);
-		return new JDWPFactory(b.in(), b.out());
+		return new JDWPHostFactory(b.in(), b.out());
 	}
 }
