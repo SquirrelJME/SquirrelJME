@@ -120,7 +120,7 @@ public enum EventProcessor
 				__state.storedInfo.getThread();
 			
 			// Read in packet details
-			int threadId = __packet.readId();
+			RemoteId threadId = RemoteId.of(__packet.readId());
 			
 			// Mark as started
 			InfoThread thread = threadStore.get(__state, threadId);
@@ -145,7 +145,7 @@ public enum EventProcessor
 				__state.storedInfo.getThread();
 			
 			// Read in packet details
-			int threadId = __packet.readId();
+			RemoteId threadId = RemoteId.of(__packet.readId());
 			
 			// Set dead state
 			InfoThread thread = threadStore.get(__state, threadId);
@@ -378,7 +378,8 @@ public enum EventProcessor
 				__state.storedInfo.getThread();
 			
 			// Read in packet details
-			InfoThread thread = threadStore.get(__state, __packet.readId());
+			RemoteId threadId = RemoteId.of(__packet.readId());
+			InfoThread thread = threadStore.get(__state, threadId);
 			
 			// Alias of thread start since this gives the first initial thread
 			EventProcessor.THREAD_START.process(__state, __packet, __suspend,

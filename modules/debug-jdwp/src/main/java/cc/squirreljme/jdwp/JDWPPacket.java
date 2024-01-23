@@ -840,6 +840,35 @@ public final class JDWPPacket
 	}
 	
 	/**
+	 * Returns the byte array of the packet.
+	 *
+	 * @return The packet data as a byte array.
+	 * @since 2024/01/22
+	 */
+	public byte[] toByteArray()
+	{
+		synchronized (this)
+		{
+			// Ensure this is open
+			this.__checkOpen();
+			
+			// If there is no data, then return a blank array
+			byte[] data = this._data;
+			if (data == null)
+				return new byte[0];
+			
+			// Otherwise make a copy of it
+			int len = this._length;
+			byte[] result = new byte[len];
+			System.arraycopy(data, 0,
+				result, 0, len);
+			
+			// Use the result
+			return result;
+		}
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2021/03/13
 	 */

@@ -166,6 +166,17 @@ public final class CommLink
 	}
 	
 	/**
+	 * Gets a blank packet.
+	 *
+	 * @return A blank packet.
+	 * @since 2024/01/22
+	 */
+	public JDWPPacket getPacket()
+	{
+		return this.__getPacket(true);
+	}
+	
+	/**
 	 * Is the debug link shutdown?
 	 *
 	 * @return If this is shutdown.

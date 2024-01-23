@@ -9,6 +9,8 @@
 
 package cc.squirreljme.debugger;
 
+import java.util.function.BiFunction;
+
 /**
  * Stored a cached known value.
  *
@@ -19,6 +21,9 @@ public final class KnownValue<T>
 {
 	/** The type of value to store. */
 	protected final Class<T> type;
+	
+	/** The updater used for values. */
+	protected final KnownValueUpdater<T> updater;
 	
 	/** Is the value known? */
 	private volatile boolean _known;
@@ -40,6 +45,25 @@ public final class KnownValue<T>
 			throw new NullPointerException("NARG");
 		
 		this.type = __type;
+		this.updater = null;
+	}
+	
+	/**
+	 * Initializes the known value with an update handler.
+	 *
+	 * @param __type The type used for the value.
+	 * @param __updater The value updater.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/20
+	 */
+	public KnownValue(Class<T> __type, KnownValueUpdater<T> __updater)
+		throws NullPointerException
+	{
+		if (__type == null || __updater == null)
+			throw new NullPointerException("NARG");
+		
+		this.type = __type;
+		this.updater = __updater;
 	}
 	
 	/**
@@ -57,6 +81,7 @@ public final class KnownValue<T>
 			throw new NullPointerException("NARG");
 		
 		this.type = __type;
+		this.updater = null;
 		
 		// Set to this known value
 		this._known = true;
@@ -95,6 +120,72 @@ public final class KnownValue<T>
 	}
 	
 	/**
+	 * Gets the given value or calls the updater if it is not known.
+	 *
+	 * @param __state The state to use.
+	 * @return The known value or the value when updated.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/22
+	 */
+	public T getOrUpdate(DebuggerState __state)
+		throws NullPointerException
+	{
+		if (__state == null)
+			throw new NullPointerException("NARG");
+		
+		// If the value is already known, then get it
+		if (this.isKnown())
+			return this.get();
+		
+		// Otherwise call the updater
+		return this.update(__state);
+	}
+	
+	/**
+	 * Gets or wait for the value to appear, using the default timeout value.
+	 *
+	 * @return The resultant value or {@code null} if not known due to timeout.
+	 * @since 2024/01/22
+	 */
+	public T getOrWait()
+	{
+		return this.getOrWait(Utils.TIMEOUT);
+	}
+	
+	/**
+	 * Gets or wait for the value to appear.
+	 *
+	 * @param __waitMs The number of milliseconds to wait.
+	 * @return The resultant value or {@code null} if not known due to timeout.
+	 * @since 2024/01/22
+	 */
+	public T getOrWait(int __waitMs)
+	{
+		synchronized (this)
+		{
+			// Do we immediately know the value?
+			if (this._known)
+				return this._value;
+			
+			// Wait
+			try
+			{
+				this.wait(__waitMs);
+			}
+			catch (InterruptedException ignored)
+			{
+			}
+			
+			// Return the value, assuming it is known
+			if (this._known)
+				return this._value;
+			
+			// Otherwise null
+			return null;
+		}
+	}
+	
+	/**
 	 * Is there a known value here?
 	 *
 	 * @return If the value is known.
@@ -122,6 +213,35 @@ public final class KnownValue<T>
 		{
 			this._value = this.type.cast(__v);
 			this._known = true;
+			
+			// Notify on self for anything waiting on this
+			this.notifyAll();
 		}
+	}
+	
+	/**
+	 * Attempts to update the value and returns it.
+	 *
+	 * @param __state The state for packet control.
+	 * @return The current and updated value, if it is valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/22
+	 */
+	public T update(DebuggerState __state)
+		throws NullPointerException
+	{
+		if (__state == null)
+			throw new NullPointerException("NARG");
+		
+		// We need an actual updater
+		KnownValueUpdater<T> updater = this.updater;
+		if (updater == null)
+			return this.get();
+		
+		// Call the updater
+		updater.update(__state, this);
+		
+		// Return the value
+		return this.get();
 	}
 }

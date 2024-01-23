@@ -411,14 +411,38 @@ public class PrimaryFrame
 			null,
 			"java/lang/Class");
 		
+		// Was a class specified?
 		if (option != null)
-			this.debuggerState.lookupClass(new ClassName(option), (__info) -> {
-				this.__viewClass(new RemoteClassViewer(
-					this.debuggerState, __info));
+		{
+			// If there are dots, it really should be slashes
+			if (option.indexOf('.') >= 0)
+				option = option.replace('.', '/');
+			
+			// Perform lookup
+			ClassName className = new ClassName(option);
+			this.debuggerState.lookupClass(className, (__info) -> {
+				InfoClass lookAt;
+				if (__info.length == 1)
+					lookAt = __info[0];
+				else
+					lookAt = (InfoClass)JOptionPane.showInputDialog(
+						this,
+						"Select class:",
+						"Multiple classes found",
+						JOptionPane.QUESTION_MESSAGE,
+						null,
+						__info,
+						__info[0]);
+				
+				// Look at the given class
+				if (lookAt != null)
+					this.__viewClass(new RemoteClassViewer(
+						this.debuggerState, lookAt));
 			}, (__e) -> {
 				Utils.throwableTraceDialog(this,
-					"Could not find class: " + option, __e);
+					"Could not find class: " + className, __e);
 			});
+		}
 	}
 	
 	/**

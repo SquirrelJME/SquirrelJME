@@ -23,6 +23,10 @@ import javax.swing.JOptionPane;
  */
 public final class Utils
 {
+	/** Standard timeout value. */
+	public static final int TIMEOUT =
+		3000;
+	
 	/**
 	 * Not used.
 	 * 

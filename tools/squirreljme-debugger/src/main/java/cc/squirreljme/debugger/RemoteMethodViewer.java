@@ -22,6 +22,23 @@ public class RemoteMethodViewer
 	implements MethodViewer
 {
 	/**
+	 * Initializes the remote method viewer.
+	 *
+	 * @param __state The state this is in.
+	 * @param __info The method information.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/22
+	 */
+	public RemoteMethodViewer(DebuggerState __state, InfoMethod __info)
+		throws NullPointerException
+	{
+		if (__info == null)
+			throw new NullPointerException("NARG");
+		
+		throw Debugging.todo();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2024/01/22
 	 */

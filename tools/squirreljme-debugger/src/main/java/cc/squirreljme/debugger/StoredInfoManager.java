@@ -58,6 +58,17 @@ public class StoredInfoManager
 	}
 	
 	/**
+	 * Returns the class storage manager.
+	 *
+	 * @return The class storage.
+	 * @since 2024/01/22
+	 */
+	public StoredInfo<InfoClass> getClasses()
+	{
+		return this.<InfoClass>get(InfoClass.class, InfoKind.CLASS);
+	}
+	
+	/**
 	 * Returns the thread storage.
 	 *
 	 * @return The thread storage.

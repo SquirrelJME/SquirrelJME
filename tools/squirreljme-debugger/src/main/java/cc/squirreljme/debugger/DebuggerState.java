@@ -21,6 +21,8 @@ import cc.squirreljme.jdwp.JDWPException;
 import cc.squirreljme.jdwp.JDWPPacket;
 import cc.squirreljme.jdwp.SuspendPolicy;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.io.HexDumpOutputStream;
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -166,7 +168,7 @@ public class DebuggerState
 	 * @since 2024/01/22
 	 */
 	public void lookupClass(ClassName __className,
-		Consumer<InfoClass> __found, Consumer<Throwable> __notFound)
+		Consumer<InfoClass[]> __found, Consumer<Throwable> __notFound)
 		throws NullPointerException
 	{
 		if (__className == null)
@@ -175,8 +177,21 @@ public class DebuggerState
 		try (JDWPPacket packet = this.request(JDWPCommandSet.VIRTUAL_MACHINE,
 			CommandSetVirtualMachine.CLASSES_BY_SIGNATURE))
 		{
-			this.sendThenWait(packet, 3000, (__ignored, __reply) ->
+			// Request the class
+			packet.writeString(__className.field().toString());
+			
+			// Send it off and wait for a response before doing something
+			this.sendThenWait(packet, Utils.TIMEOUT,
+				(__state, __reply) ->
 				{
+					// Timed out?
+					if (__reply == null)
+					{
+						__notFound.accept(new Throwable("Timed out."));
+						return;
+					}
+					
+					// Was there an error?
 					if (__reply.hasError())
 					{
 						__notFound.accept(new Throwable(
@@ -184,7 +199,35 @@ public class DebuggerState
 						return;
 					}
 					
-					throw Debugging.todo();
+					// Were there any resultant classes?
+					int count = __reply.readInt();
+					if (count == 0)
+					{
+						__notFound.accept(new Throwable("No classes found."));
+						return;
+					}
+					
+					// Get references for each class
+					StoredInfo<InfoClass> classStorage =
+						__state.storedInfo.getClasses();
+					
+					// Read all class IDs
+					InfoClass[] foundClasses = new InfoClass[count];
+					for (int i = 0; i < count; i++)
+					{
+						// Ignore tag
+						__reply.readByte();
+						
+						// Get referenced class
+						foundClasses[i] = classStorage.get(__state,
+							RemoteId.of(__reply.readId()));
+						
+						// Ignore status
+						__reply.readInt();
+					}
+					
+					// Call the handler with all the found classes
+					__found.accept(foundClasses);
 				});
 		}
 	}
@@ -281,6 +324,14 @@ public class DebuggerState
 				
 				// Debug
 				Debugging.debugNote("Read: %s", packet);
+				try (HexDumpOutputStream dump = new HexDumpOutputStream(
+					System.err))
+				{
+					dump.write(packet.toByteArray());
+				}
+				catch (IOException ignored)
+				{
+				}
 				
 				// Handle packet
 				if (packet.isReply())
@@ -374,7 +425,78 @@ public class DebuggerState
 		if (__timeoutMs <= 0)
 			throw new IllegalArgumentException("NEGV");
 		
-		throw Debugging.todo();
+		// The response holder
+		JDWPPacket[] reply = new JDWPPacket[1];
+		
+		// Send the packet, use a custom handler to set the value
+		this.send(__packet, (__state, __back) -> {
+			synchronized (reply)
+			{
+				// Set the packet, need a copy because it gets implicit closed
+				reply[0] = __state.commLink.getPacket().copyOf(__back);
+				
+				// Signal
+				reply.notifyAll();
+			}
+		});
+		
+		// Wait on the signal
+		JDWPPacket given;
+		synchronized (reply)
+		{
+			// Get the value
+			given = reply[0];
+			
+			// If not found yet, wait on it
+			if (given == null)
+				try
+				{
+					reply.wait(__timeoutMs);
+				}
+				catch (InterruptedException ignored)
+				{
+				}
+			
+			// Read again
+			given = reply[0];
+		}
+		
+		// Call reply handler, it is always called even when null as that
+		// means there was a timeout
+		try
+		{
+			__reply.handlePacket(this, given);
+		}
+		
+		// Need to close the packet since it was dangling open
+		finally
+		{
+			if (given != null)
+				given.close();
+		}
+	}
+	
+	/**
+	 * Sends the request to the remote end and blocks until a reply is given
+	 * to the packet.
+	 *
+	 * @param __packet The packet to send.
+	 * @param __timeoutMs How long to wait until this times out.
+	 * @param __reply The method to call when this is handled.
+	 * @param __failHandler The handler to call on failure.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/22
+	 */
+	public void sendThenWait(JDWPPacket __packet, long __timeoutMs,
+		ReplyHandler __successHandler, ReplyHandler __failHandler)
+		throws NullPointerException
+	{
+		this.sendThenWait(__packet, __timeoutMs, (__state, __result) -> {
+			if (__result == null || __result.hasError())
+				__failHandler.handlePacket(__state, __result);
+			else
+				__successHandler.handlePacket(__state, __result);
+		});
 	}
 	
 	/**
@@ -407,7 +529,7 @@ public class DebuggerState
 			CommandSetThreadReference.RESUME))
 		{
 			// Write the ID of the thread
-			out.writeId(__thread.id);
+			out.writeId(__thread.id.intValue());
 			
 			// Send it
 			this.send(out);

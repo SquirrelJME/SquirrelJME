@@ -20,6 +20,15 @@ import net.multiphasicapps.classfile.ClassName;
 public class RemoteClassViewer
 	implements ClassViewer
 {
+	/** The class information. */
+	protected final InfoClass classInfo;
+	
+	/** The debugger state. */
+	protected final DebuggerState state;
+	
+	/** Methods within the method. */
+	private volatile MethodViewer[] _methods;
+	
 	/**
 	 * Initializes the remote class viewer.
 	 *
@@ -34,7 +43,8 @@ public class RemoteClassViewer
 		if (__classInfo == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		this.state = __state;
+		this.classInfo = __classInfo;
 	}
 	
 	/**
@@ -44,7 +54,26 @@ public class RemoteClassViewer
 	@Override
 	public MethodViewer[] methods()
 	{
-		throw Debugging.todo();
+		// Are the methods already known?
+		MethodViewer[] methods = this._methods;
+		if (methods != null)
+			return methods.clone();
+		
+		// Get the methods that the class has
+		InfoMethod[] infos = this.classInfo.methods();
+		int count = infos.length;
+		
+		// Wrap all the methods in remote viewers
+		DebuggerState state = this.state;
+		methods = new MethodViewer[count];
+		for (int i = 0; i < count; i++)
+			methods[i] = new RemoteMethodViewer(state, infos[i]);
+		
+		// Cache for later
+		this._methods = methods;
+		
+		// Return all of our known classes
+		return methods.clone();
 	}
 	
 	/**
@@ -54,6 +83,6 @@ public class RemoteClassViewer
 	@Override
 	public ClassName thisName()
 	{
-		throw Debugging.todo();
+		return this.classInfo.thisName();
 	}
 }

@@ -24,9 +24,10 @@ public enum InfoKind
 		 * @since 2024/01/20
 		 */
 		@Override
-		protected Info seed(int __id)
+		protected Info seed(DebuggerState __state, RemoteId __id,
+			Object... __extra)
 		{
-			return new InfoThread(__id);
+			return new InfoThread(__state, __id);
 		}
 	},
 	
@@ -38,9 +39,25 @@ public enum InfoKind
 		 * @since 2024/01/22
 		 */
 		@Override
-		protected Info seed(int __id)
+		protected Info seed(DebuggerState __state, RemoteId __id,
+			Object... __extra)
 		{
-			return new InfoClass(__id);
+			return new InfoClass(__state, __id);
+		}
+	},
+	
+	/** Method. */
+	METHOD("Method")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2024/01/22
+		 */
+		@Override
+		protected Info seed(DebuggerState __state, RemoteId __id,
+			Object... __extra)
+		{
+			return new InfoMethod(__state, __id);
 		}
 	},
 	
@@ -64,11 +81,15 @@ public enum InfoKind
 	/**
 	 * Seeds an item with the given ID.
 	 *
+	 * @param __state The state of the debugger.
 	 * @param __id The ID of the item.
+	 * @param __extra Extra values used by the seed, as some require the
+	 * type to have such information.
 	 * @return The resultant item.
 	 * @since 2024/01/20
 	 */
-	protected abstract Info seed(int __id);
+	protected abstract Info seed(DebuggerState __state, RemoteId __id,
+		Object... __extra);
 	
 	/**
 	 * {@inheritDoc}

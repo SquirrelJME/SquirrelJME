@@ -9,8 +9,13 @@
 
 package cc.squirreljme.debugger;
 
+import cc.squirreljme.jdwp.CommandSetReferenceType;
+import cc.squirreljme.jdwp.JDWPCommandSet;
+import cc.squirreljme.jdwp.JDWPPacket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import java.util.function.Consumer;
+import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.FieldDescriptor;
+import net.multiphasicapps.classfile.FieldName;
 
 /**
  * Caches information on remote classes and otherwise.
@@ -20,16 +25,28 @@ import java.util.function.Consumer;
 public class InfoClass
 	extends Info
 {
+	/** The name of this class. */
+	protected final KnownValue<ClassName> thisName; 
+	
+	/** The methods of this class. */
+	protected final KnownValue<InfoMethod[]> methods;
+	
 	/**
 	 * Initializes the base information.
 	 *
+	 * @param __state The debugger state.
 	 * @param __id The ID number of this info.
 	 * @since 2024/01/22
 	 */
-	public InfoClass(int __id)
+	public InfoClass(DebuggerState __state, RemoteId __id)
 		throws NullPointerException
 	{
-		super(__id, InfoKind.CLASS);
+		super(__state, __id, InfoKind.CLASS);
+		
+		this.thisName = new KnownValue<ClassName>(ClassName.class,
+			this::__updateThisName);
+		this.methods = new KnownValue<InfoMethod[]>(InfoMethod[].class,
+			this::__updateMethods);
 	}
 	
 	/**
@@ -37,10 +54,97 @@ public class InfoClass
 	 * @since 2024/01/22
 	 */
 	@Override
-	protected boolean internalUpdate(DebuggerState __state,
-		Consumer<Info> __callback)
+	protected boolean internalUpdate(DebuggerState __state)
 		throws NullPointerException
 	{
-		throw Debugging.todo();
+		return true;
+	}
+	
+	/**
+	 * Returns the methods in this class.
+	 *
+	 * @return The methods in this class.
+	 * @since 2024/01/22
+	 */
+	public InfoMethod[] methods()
+	{
+		InfoMethod[] methods = this.methods.getOrUpdate(this.internalState());
+		if (methods != null)
+			return methods.clone();
+		
+		return new InfoMethod[0];
+	}
+	
+	/**
+	 * Returns the name of this class.
+	 *
+	 * @return The name of this class.
+	 * @since 2024/01/22
+	 */
+	public ClassName thisName()
+	{
+		return this.thisName.getOrUpdate(this.internalState());
+	}
+	
+	/**
+	 * Performs an update of the class methods.
+	 *
+	 * @param __state The state to update from.
+	 * @param __value The value that is being updated.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/22
+	 */
+	private void __updateMethods(DebuggerState __state,
+		KnownValue<InfoMethod[]> __value)
+		throws NullPointerException
+	{
+		if (__state == null || __value == null)
+			throw new NullPointerException("NARG");
+		
+		try (JDWPPacket out = __state.request(JDWPCommandSet.REFERENCE_TYPE,
+			CommandSetReferenceType.METHODS))
+		{
+			// Write the ID
+			out.writeId(this.id.intValue());
+			
+			// Wait for response
+			__state.sendThenWait(out, Utils.TIMEOUT, (__ignored, __reply) -> {
+				int count = __reply.readInt();
+				
+				throw Debugging.todo("count");
+			}, (__ignored, __fail) -> {
+			});
+		}
+	}
+	
+	/**
+	 * Updates the name of this class. 
+	 *
+	 * @param __state The debugger state.
+	 * @param __known The known value being updated.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/22
+	 */
+	private void __updateThisName(DebuggerState __state,
+		KnownValue<ClassName> __known)
+		throws NullPointerException
+	{
+		if (__state == null || __known == null)
+			throw new NullPointerException("NARG");
+		
+		try (JDWPPacket out = __state.request(JDWPCommandSet.REFERENCE_TYPE,
+			CommandSetReferenceType.SIGNATURE))
+		{
+			// Write the ID
+			out.writeId(this.id.intValue());
+			
+			// Wait for response
+			__state.sendThenWait(out, Utils.TIMEOUT, (__ignored, __reply) -> {
+				String value = __reply.readString();
+				
+				__known.set(new FieldDescriptor(value).className());
+			}, (__ignored, __fail) -> {
+			});
+		}
 	}
 }

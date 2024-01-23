@@ -9,6 +9,8 @@
 
 package cc.squirreljme.debugger;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.function.Consumer;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,10 +24,13 @@ public abstract class Info
 	implements Comparable<Info>
 {
 	/** The ID of this item. */
-	protected final int id;
+	protected final RemoteId id;
 	
 	/** The kind of info this is. */
 	protected final InfoKind kind;
+	
+	/** The state cache. */
+	private final Reference<DebuggerState> _state;
 	
 	/** Has this item been disposed of? */
 	private volatile boolean _disposed;
@@ -33,16 +38,18 @@ public abstract class Info
 	/**
 	 * Initializes the base information.
 	 *
+	 * @param __state The debugger state.
 	 * @param __id The ID number of this info.
 	 * @param __kind The kind of information this is.
 	 * @since 2024/01/20
 	 */
-	public Info(int __id, InfoKind __kind)
+	public Info(DebuggerState __state, RemoteId __id, InfoKind __kind)
 		throws NullPointerException
 	{
-		if (__kind == null)
+		if (__state == null || __kind == null)
 			throw new NullPointerException("NARG");
 		
+		this._state = new WeakReference<>(__state);
 		this.id = __id;
 		this.kind = __kind;
 	}
@@ -51,13 +58,11 @@ public abstract class Info
 	 * Internal update logic for this item.
 	 *
 	 * @param __state The state to update in.
-	 * @param __callback The callback to use when an update is complete.
 	 * @return Will return {@code true} if the info is not disposed.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/20
 	 */
-	protected abstract boolean internalUpdate(DebuggerState __state,
-		Consumer<Info> __callback)
+	protected abstract boolean internalUpdate(DebuggerState __state)
 		throws NullPointerException;
 	
 	/**
@@ -74,7 +79,7 @@ public abstract class Info
 			return a.getName().compareTo(b.getName());
 		
 		// Compare by ID
-		return this.id - __o.id;
+		return this.id.compareTo(__o.id);
 	}
 	
 	/**
@@ -88,6 +93,21 @@ public abstract class Info
 		{
 			this._disposed = true;
 		}
+	}
+	
+	/**
+	 * Returns the attached debugger state.
+	 *
+	 * @return The debugger state.
+	 * @since 2024/01/22
+	 */
+	protected DebuggerState internalState()
+	{
+		DebuggerState result = this._state.get();
+		if (result == null)
+			throw new IllegalStateException("GCGC");
+		
+		return result;
 	}
 	
 	/**
@@ -153,7 +173,7 @@ public abstract class Info
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/21
 	 */
-	public boolean update(DebuggerState __state,
+	public final boolean update(DebuggerState __state,
 		Consumer<Info> __callback)
 		throws NullPointerException
 	{
@@ -173,9 +193,13 @@ public abstract class Info
 			return true;*/
 		
 		// Internal update, if it becomes disposed then set as such
-		boolean result = this.internalUpdate(__state, __callback);
+		boolean result = this.internalUpdate(__state);
 		if (!result)
 			this.dispose();
+		
+		// Send it to the callback
+		else if (__callback != null)
+			__callback.accept(this);
 		
 		// Run the check again since the information could have been updated
 		return !this.isDisposed();

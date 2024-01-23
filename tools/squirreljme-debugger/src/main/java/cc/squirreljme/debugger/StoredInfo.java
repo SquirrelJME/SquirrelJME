@@ -28,7 +28,7 @@ public class StoredInfo<I extends Info>
 	protected final InfoKind type;
 	
 	/** The internal item cache. */
-	private final Map<Integer, I> _cache =
+	private final Map<RemoteId, I> _cache =
 		new LinkedHashMap<>();
 	
 	/**
@@ -82,8 +82,7 @@ public class StoredInfo<I extends Info>
 	 * created.
 	 * @since 2024/01/20
 	 */
-	@SuppressWarnings("unchecked")
-	public final I get(int __id)
+	public final I get(RemoteId __id)
 	{
 		return this.get(null, __id);
 	}
@@ -95,20 +94,24 @@ public class StoredInfo<I extends Info>
 	 * @param __state Optional state, if passed then there will be an implicit
 	 * update to the added item.
 	 * @param __id The ID of the item to get.
+	 * @param __extra Any extra values if this needs to be seeded.
 	 * @return The item, if this returns {@code null} then the item was likely
 	 * disposed of.
 	 * @since 2024/01/20
 	 */
 	@SuppressWarnings("unchecked")
-	public final I get(DebuggerState __state, int __id)
+	public final I get(DebuggerState __state, RemoteId __id, Object... __extra)
 	{
-		Map<Integer, I> cache = this._cache;
+		if (__id == null)
+			throw new NullPointerException("NARG");
+		
+		Map<RemoteId, I> cache = this._cache;
 		synchronized (this)
 		{
 			I rv = cache.get(__id);
 			if (rv == null)
 			{
-				rv = (I)this.type.seed(__id);
+				rv = (I)this.type.seed(__state, __id, __extra);
 				
 				// Perform update of the object?
 				if (__state != null)
@@ -136,7 +139,7 @@ public class StoredInfo<I extends Info>
 	 * @return The state information or {@code null} if not known.
 	 * @since 2024/01/20
 	 */
-	public final I optional(int __id)
+	public final I optional(RemoteId __id)
 	{
 		synchronized (this)
 		{
@@ -154,11 +157,11 @@ public class StoredInfo<I extends Info>
 	{
 		synchronized (this)
 		{
-			Map<Integer, I> items = this._cache;
-			for (Iterator<Map.Entry<Integer, I>> it =
+			Map<RemoteId, I> items = this._cache;
+			for (Iterator<Map.Entry<RemoteId, I>> it =
 				 items.entrySet().iterator(); it.hasNext();)
 			{
-				Map.Entry<Integer, I> entry = it.next();
+				Map.Entry<RemoteId, I> entry = it.next();
 				I item = entry.getValue();
 				
 				// If the item is known to be disposed, remove it

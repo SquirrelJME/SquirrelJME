@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
+import net.multiphasicapps.classfile.ClassName;
 
 /**
  * Panel for showing class information.
@@ -74,7 +75,6 @@ public class ShownClass
 		// Set up the label description what we are looking at
 		JLabel whatLabel = new JLabel();
 		whatLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		whatLabel.setText(__viewer.thisName().toString());
 		
 		// Set at the top
 		this.add(whatLabel, BorderLayout.PAGE_START);
@@ -128,6 +128,13 @@ public class ShownClass
 			// Store for later updates
 			this._shownMethods = shownMethods;
 		}
+		
+		// Set the name of the class
+		ClassName thisName = this.viewer.thisName();
+		if (thisName != null)
+			this.whatLabel.setText(thisName.toString());
+		else
+			this.whatLabel.setText("Unknown?");
 		
 		// Go through an update everything accordingly
 		for (ShownMethod shown : shownMethods)

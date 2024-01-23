@@ -13,7 +13,6 @@ import cc.squirreljme.jdwp.CommandSetThreadReference;
 import cc.squirreljme.jdwp.ErrorType;
 import cc.squirreljme.jdwp.JDWPCommandSet;
 import cc.squirreljme.jdwp.JDWPPacket;
-import java.util.function.Consumer;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -39,12 +38,13 @@ public class InfoThread
 	/**
 	 * Initializes the base thread.
 	 *
+	 * @param __state The debugger state.
 	 * @param __id The ID number of this thread.
 	 * @since 2024/01/20
 	 */
-	public InfoThread(int __id)
+	public InfoThread(DebuggerState __state, RemoteId __id)
 	{
-		super(__id, InfoKind.THREAD);
+		super(__state, __id, InfoKind.THREAD);
 	}
 	
 	/**
@@ -95,8 +95,7 @@ public class InfoThread
 	 * @since 2024/01/20
 	 */
 	@Override
-	public boolean internalUpdate(DebuggerState __state,
-		Consumer<Info> __callback)
+	public boolean internalUpdate(DebuggerState __state)
 		throws NullPointerException
 	{
 		if (__state == null)
@@ -106,7 +105,7 @@ public class InfoThread
 		try (JDWPPacket out = __state.request(JDWPCommandSet.THREAD_REFERENCE,
 			CommandSetThreadReference.NAME))
 		{
-			out.writeId(this.id);
+			out.writeId(this.id.intValue());
 			
 			// Send it
 			__state.send(out, (__ignored, __response) -> {
@@ -123,10 +122,6 @@ public class InfoThread
 				
 				// Set name
 				this.threadName.set(__response.readString());
-				
-				// Call info callback
-				if (__callback != null)
-					__callback.accept(this);
 			});
 		}
 		
