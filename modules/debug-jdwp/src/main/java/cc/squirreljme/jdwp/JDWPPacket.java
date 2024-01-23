@@ -74,6 +74,9 @@ public final class JDWPPacket
 	/** The packet data. */
 	private volatile byte[] _data;
 	
+	/** Identifier sizes. */
+	private volatile JDWPIdSizes _idSizes;
+	
 	/** The length of the data. */
 	private volatile int _length;
 	
@@ -831,34 +834,6 @@ public final class JDWPPacket
 	}
 	
 	/**
-	 * Resets and opens the packet.
-	 * 
-	 * @param __open Should this be opened?
-	 * @since 2021/03/12
-	 */
-	protected final void resetAndOpen(boolean __open)
-	{
-		synchronized (this)
-		{
-			/* {@squirreljme.error AG05 Cannot reset an open packet.} */
-			if (this._open)
-				throw new JDWPException("AG05");
-			
-			this._id = 0;
-			this._flags = 0;
-			this._commandSet = -1;
-			this._command = -1;
-			this._errorCode = null;
-			this._rawErrorCode = -1;
-			this._length = 0;
-			this._readPos = 0;
-			
-			// Mark as open?
-			this._open = __open;
-		}
-	}
-	
-	/**
 	 * Returns the byte array of the packet.
 	 *
 	 * @return The packet data as a byte array.
@@ -1573,6 +1548,36 @@ public final class JDWPPacket
 			
 			// Becomes open now
 			this._open = true;
+		}
+	}
+	
+	/**
+	 * Resets and opens the packet.
+	 *
+	 * @param __open Should this be opened?
+	 * @param __idSizes ID sizes.
+	 * @since 2021/03/12
+	 */
+	final void __resetAndOpen(boolean __open, JDWPIdSizes __idSizes)
+	{
+		synchronized (this)
+		{
+			/* {@squirreljme.error AG05 Cannot reset an open packet.} */
+			if (this._open)
+				throw new JDWPException("AG05");
+			
+			this._id = 0;
+			this._flags = 0;
+			this._commandSet = -1;
+			this._command = -1;
+			this._errorCode = null;
+			this._rawErrorCode = -1;
+			this._length = 0;
+			this._readPos = 0;
+			this._idSizes = __idSizes;
+			
+			// Mark as open?
+			this._open = __open;
 		}
 	}
 }

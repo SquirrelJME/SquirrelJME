@@ -63,6 +63,9 @@ public final class CommLink
 	private final Object _outMonitor =
 		new Object();
 	
+	/** Identifier sizes, needed for reading IDs. */
+	private volatile JDWPIdSizes _idSizes;
+	
 	/** Read position for the header. */
 	private volatile int _headerAt;
 	
@@ -481,6 +484,25 @@ public final class CommLink
 	}
 	
 	/**
+	 * Sets the ID sizes.
+	 *
+	 * @param __idSizes The ID sizes to set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/22
+	 */
+	public final void setIdSizes(JDWPIdSizes __idSizes)
+		throws NullPointerException
+	{
+		if (__idSizes == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (this)
+		{
+			this._idSizes = __idSizes;
+		}
+	}
+	
+	/**
 	 * Returns a fresh packet.
 	 * 
 	 * @param __open Should this be opened?
@@ -504,7 +526,7 @@ public final class CommLink
 				rv = freePackets.remove();
 			
 			// Clear it for the next run
-			rv.resetAndOpen(__open);
+			rv.__resetAndOpen(__open, this._idSizes);
 			
 			return rv;
 		}

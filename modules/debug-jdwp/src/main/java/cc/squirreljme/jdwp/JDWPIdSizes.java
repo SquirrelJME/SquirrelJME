@@ -35,8 +35,13 @@ public final class JDWPIdSizes
 		if (__sizes.length != JDWPIdKind.values().length)
 			throw new IllegalArgumentException("IOOB");
 		
+		// Normalize some sizes that are aliases
+		__sizes = __sizes.clone();
+		__sizes[JDWPIdKind.THREAD_ID.ordinal()] =
+			__sizes[JDWPIdKind.OBJECT_ID.ordinal()];
+		
 		// Store sizes
-		this._sizes = __sizes.clone();
+		this._sizes = __sizes;
 	}
 	
 	/**
