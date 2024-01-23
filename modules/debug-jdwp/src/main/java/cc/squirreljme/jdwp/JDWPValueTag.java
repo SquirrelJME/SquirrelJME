@@ -9,6 +9,9 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.host.JDWPHostController;
+import cc.squirreljme.jdwp.host.JDWPHostValue;
+
 /**
  * The value tag for given values.
  *
@@ -154,7 +157,8 @@ public enum JDWPValueTag
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/04/14
 	 */
-	public static JDWPValueTag guessType(JDWPHostController __controller,
+	public static JDWPValueTag guessType(
+		cc.squirreljme.jdwp.host.JDWPHostController __controller,
 		JDWPHostValue __value)
 		throws NullPointerException
 	{

@@ -11,7 +11,6 @@ package cc.squirreljme.jdwp.host;
 
 import cc.squirreljme.jdwp.JDWPCommand;
 import cc.squirreljme.jdwp.JDWPException;
-import cc.squirreljme.jdwp.JDWPHostController;
 import cc.squirreljme.jdwp.JDWPPacket;
 
 /**

@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jdwp;
+package cc.squirreljme.jdwp.host;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;

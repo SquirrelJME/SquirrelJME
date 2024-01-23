@@ -10,7 +10,7 @@
 package cc.squirreljme.emulator.vm;
 
 import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
-import cc.squirreljme.jdwp.JDWPHostFactory;
+import cc.squirreljme.jdwp.host.JDWPHostFactory;
 import cc.squirreljme.jvm.launch.Application;
 import cc.squirreljme.jvm.launch.AvailableSuites;
 import cc.squirreljme.jvm.launch.SuiteScanner;

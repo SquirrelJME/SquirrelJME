@@ -7,8 +7,9 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jdwp;
+package cc.squirreljme.jdwp.host;
 
+import cc.squirreljme.jdwp.JDWPClassType;
 import cc.squirreljme.jdwp.host.views.JDWPViewObject;
 import cc.squirreljme.jdwp.host.views.JDWPViewThread;
 import cc.squirreljme.jdwp.host.views.JDWPViewType;

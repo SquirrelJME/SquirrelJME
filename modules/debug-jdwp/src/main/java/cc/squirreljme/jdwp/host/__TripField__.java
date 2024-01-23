@@ -7,29 +7,29 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jdwp;
+package cc.squirreljme.jdwp.host;
 
-import cc.squirreljme.jdwp.host.trips.JDWPTripBreakpoint;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.jdwp.JDWPEventKind;
+import cc.squirreljme.jdwp.host.trips.JDWPTripField;
 import java.lang.ref.Reference;
 
 /**
- * Trip handler for breakpoints.
+ * Tripping for fields.
  *
- * @since 2021/04/25
+ * @since 2021/04/30
  */
-class __TripBreakpoint__
+final class __TripField__
 	extends __TripBase__
-	implements JDWPTripBreakpoint
+	implements JDWPTripField
 {
 	/**
 	 * Initializes the trip.
 	 * 
 	 * @param __controller The controller.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2021/04/25
+	 * @since 2021/04/30
 	 */
-	__TripBreakpoint__(Reference<JDWPHostController> __controller)
+	__TripField__(Reference<JDWPHostController> __controller)
 		throws NullPointerException
 	{
 		super(__controller);
@@ -37,20 +37,25 @@ class __TripBreakpoint__
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2021/04/25
+	 * @since 2021/04/30
 	 */
 	@Override
-	public void breakpoint(Object __thread)
+	public void field(Object __thread, Object __type, int __fieldDx,
+		boolean __write, Object __instance, JDWPHostValue __jVal)
 	{
-		if (JDWPHostController._DEBUG)
-			Debugging.debugNote("TRIPPING ON BREAKPOINT!");
-		
 		JDWPHostController controller = this.__controller();
+		JDWPHostState state = controller.getState();
 		
-		// Make sure this thread is registered
-		controller.getState().items.put(__thread);
+		// Make sure these are registered
+		if (__type != null)
+			state.items.put(__type);
+		if (__instance != null)
+			state.items.put(__instance);
 		
-		// Send the signal
-		controller.signal(__thread, JDWPEventKind.BREAKPOINT);
+		// Signal access or modification
+		controller.signal(__thread,
+			(__write ? JDWPEventKind.FIELD_MODIFICATION :
+				JDWPEventKind.FIELD_ACCESS),
+			__type, __fieldDx, __write, __instance, __jVal);
 	}
 }

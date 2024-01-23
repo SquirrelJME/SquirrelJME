@@ -10,7 +10,7 @@
 package cc.squirreljme.debugger;
 
 import cc.squirreljme.emulator.vm.VMDebuggerService;
-import cc.squirreljme.jdwp.JDWPHostFactory;
+import cc.squirreljme.jdwp.host.JDWPHostFactory;
 import net.multiphasicapps.io.BidirectionalPipe;
 import net.multiphasicapps.io.BidirectionalPipeSide;
 

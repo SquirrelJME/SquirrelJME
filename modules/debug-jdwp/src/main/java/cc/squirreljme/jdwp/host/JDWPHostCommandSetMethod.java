@@ -13,7 +13,6 @@ import cc.squirreljme.jdwp.JDWPCommand;
 import cc.squirreljme.jdwp.JDWPCommandSetMethod;
 import cc.squirreljme.jdwp.JDWPErrorType;
 import cc.squirreljme.jdwp.JDWPException;
-import cc.squirreljme.jdwp.JDWPHostController;
 import cc.squirreljme.jdwp.JDWPLocalVariable;
 import cc.squirreljme.jdwp.JDWPPacket;
 import cc.squirreljme.jdwp.host.views.JDWPViewType;

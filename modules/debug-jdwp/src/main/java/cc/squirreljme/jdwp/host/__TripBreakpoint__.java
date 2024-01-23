@@ -7,28 +7,30 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jdwp;
+package cc.squirreljme.jdwp.host;
 
-import cc.squirreljme.jdwp.host.trips.JDWPTripField;
+import cc.squirreljme.jdwp.JDWPEventKind;
+import cc.squirreljme.jdwp.host.trips.JDWPTripBreakpoint;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 
 /**
- * Tripping for fields.
+ * Trip handler for breakpoints.
  *
- * @since 2021/04/30
+ * @since 2021/04/25
  */
-final class __TripField__
+class __TripBreakpoint__
 	extends __TripBase__
-	implements JDWPTripField
+	implements JDWPTripBreakpoint
 {
 	/**
 	 * Initializes the trip.
 	 * 
 	 * @param __controller The controller.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2021/04/30
+	 * @since 2021/04/25
 	 */
-	__TripField__(Reference<JDWPHostController> __controller)
+	__TripBreakpoint__(Reference<JDWPHostController> __controller)
 		throws NullPointerException
 	{
 		super(__controller);
@@ -36,25 +38,20 @@ final class __TripField__
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2021/04/30
+	 * @since 2021/04/25
 	 */
 	@Override
-	public void field(Object __thread, Object __type, int __fieldDx,
-		boolean __write, Object __instance, JDWPHostValue __jVal)
+	public void breakpoint(Object __thread)
 	{
+		if (JDWPHostController._DEBUG)
+			Debugging.debugNote("TRIPPING ON BREAKPOINT!");
+		
 		JDWPHostController controller = this.__controller();
-		JDWPHostState state = controller.getState();
 		
-		// Make sure these are registered
-		if (__type != null)
-			state.items.put(__type);
-		if (__instance != null)
-			state.items.put(__instance);
+		// Make sure this thread is registered
+		controller.getState().items.put(__thread);
 		
-		// Signal access or modification
-		controller.signal(__thread,
-			(__write ? JDWPEventKind.FIELD_MODIFICATION :
-				JDWPEventKind.FIELD_ACCESS),
-			__type, __fieldDx, __write, __instance, __jVal);
+		// Send the signal
+		controller.signal(__thread, JDWPEventKind.BREAKPOINT);
 	}
 }

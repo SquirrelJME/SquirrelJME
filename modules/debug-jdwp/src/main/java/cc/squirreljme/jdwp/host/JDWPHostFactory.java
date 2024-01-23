@@ -7,9 +7,8 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jdwp;
+package cc.squirreljme.jdwp.host;
 
-import cc.squirreljme.jdwp.host.JDWPHostBinding;
 import java.io.Closeable;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

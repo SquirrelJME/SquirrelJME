@@ -9,8 +9,8 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.jdwp.JDWPHostState;
-import cc.squirreljme.jdwp.JDWPHostValue;
+import cc.squirreljme.jdwp.host.JDWPHostState;
+import cc.squirreljme.jdwp.host.JDWPHostValue;
 import cc.squirreljme.jdwp.host.views.JDWPViewFrame;
 import java.lang.ref.Reference;
 

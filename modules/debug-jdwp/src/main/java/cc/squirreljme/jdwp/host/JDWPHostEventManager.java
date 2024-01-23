@@ -7,8 +7,10 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jdwp;
+package cc.squirreljme.jdwp.host;
 
+import cc.squirreljme.jdwp.JDWPEventKind;
+import cc.squirreljme.jdwp.JDWPSuspendPolicy;
 import cc.squirreljme.jdwp.host.event.JDWPHostEventFilter;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.EnumTypeMap;

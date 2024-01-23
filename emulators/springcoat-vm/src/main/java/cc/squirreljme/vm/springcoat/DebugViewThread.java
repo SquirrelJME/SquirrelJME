@@ -9,9 +9,9 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.jdwp.JDWPHostState;
-import cc.squirreljme.jdwp.JDWPHostStepTracker;
-import cc.squirreljme.jdwp.JDWPHostThreadSuspension;
+import cc.squirreljme.jdwp.host.JDWPHostState;
+import cc.squirreljme.jdwp.host.JDWPHostStepTracker;
+import cc.squirreljme.jdwp.host.JDWPHostThreadSuspension;
 import cc.squirreljme.jdwp.host.views.JDWPViewThread;
 import cc.squirreljme.vm.springcoat.brackets.VMThreadObject;
 import java.lang.ref.Reference;

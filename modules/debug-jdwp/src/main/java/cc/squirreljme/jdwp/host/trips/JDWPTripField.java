@@ -9,7 +9,7 @@
 
 package cc.squirreljme.jdwp.host.trips;
 
-import cc.squirreljme.jdwp.JDWPHostValue;
+import cc.squirreljme.jdwp.host.JDWPHostValue;
 
 /**
  * Trip on fields.

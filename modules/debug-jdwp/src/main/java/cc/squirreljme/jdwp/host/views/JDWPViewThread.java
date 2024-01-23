@@ -9,8 +9,8 @@
 
 package cc.squirreljme.jdwp.host.views;
 
-import cc.squirreljme.jdwp.JDWPHostStepTracker;
-import cc.squirreljme.jdwp.JDWPHostThreadSuspension;
+import cc.squirreljme.jdwp.host.JDWPHostStepTracker;
+import cc.squirreljme.jdwp.host.JDWPHostThreadSuspension;
 import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
 import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
 

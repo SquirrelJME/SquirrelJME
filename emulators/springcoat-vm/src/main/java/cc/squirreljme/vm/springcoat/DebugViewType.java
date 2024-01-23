@@ -11,8 +11,8 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jdwp.JDWPCommandException;
 import cc.squirreljme.jdwp.JDWPLocalVariable;
-import cc.squirreljme.jdwp.JDWPHostState;
-import cc.squirreljme.jdwp.JDWPHostValue;
+import cc.squirreljme.jdwp.host.JDWPHostState;
+import cc.squirreljme.jdwp.host.JDWPHostValue;
 import cc.squirreljme.jdwp.host.trips.JDWPTripBreakpoint;
 import cc.squirreljme.jdwp.host.views.JDWPViewType;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchFieldException;

@@ -9,7 +9,7 @@
 
 package cc.squirreljme.emulator.vm;
 
-import cc.squirreljme.jdwp.JDWPHostFactory;
+import cc.squirreljme.jdwp.host.JDWPHostFactory;
 import java.util.ServiceLoader;
 
 /**

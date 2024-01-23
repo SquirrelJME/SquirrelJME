@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.host.JDWPHostController;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.Closeable;
 import java.io.DataInputStream;
@@ -30,6 +31,10 @@ import java.util.LinkedList;
 public final class JDWPCommLink
 	implements Closeable
 {
+	/** Should debugging be enabled? */
+	static final boolean _DEBUG =
+		Boolean.getBoolean("cc.squirreljme.jdwp.debug");
+	
 	/** Handshake sequence, sent by both sides. */
 	private static final byte[] _HANDSHAKE_SEQUENCE =
 		{'J', 'D', 'W', 'P', '-', 'H', 'a', 'n', 'd', 's', 'h', 'a', 'k', 'e'};
@@ -459,7 +464,7 @@ public final class JDWPCommLink
 		}
 		
 		// Debug
-		if (JDWPHostController._DEBUG)
+		if (JDWPCommLink._DEBUG)
 			Debugging.debugNote("JDWP: -> %s", __packet);
 		
 		// Write to the destination
@@ -544,7 +549,7 @@ public final class JDWPCommLink
 		try
 		{
 			// Debug
-			if (JDWPHostController._DEBUG)
+			if (JDWPCommLink._DEBUG)
 				Debugging.debugNote("JDWP: Handshake.");
 			
 			// The debugger sends the handshake sequence first, so as a client
@@ -566,7 +571,7 @@ public final class JDWPCommLink
 			this._didHandshake = true;
 			
 			// Debug
-			if (JDWPHostController._DEBUG)
+			if (JDWPCommLink._DEBUG)
 				Debugging.debugNote("JDWP: Hands shaken at a distance.");
 		}
 		catch (IOException e)

@@ -9,7 +9,6 @@
 
 package cc.squirreljme.jdwp.host;
 
-import cc.squirreljme.jdwp.JDWPHostState;
 import cc.squirreljme.jdwp.host.views.JDWPView;
 import cc.squirreljme.jdwp.host.views.JDWPViewKind;
 import java.lang.ref.Reference;

@@ -15,7 +15,7 @@ import cc.squirreljme.emulator.vm.VMFactory;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.emulator.vm.VMThreadModel;
 import cc.squirreljme.emulator.vm.VirtualMachine;
-import cc.squirreljme.jdwp.JDWPHostFactory;
+import cc.squirreljme.jdwp.host.JDWPHostFactory;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.util.Map;
 

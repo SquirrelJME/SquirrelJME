@@ -9,7 +9,7 @@
 
 package cc.squirreljme.jdwp.host.views;
 
-import cc.squirreljme.jdwp.JDWPHostValue;
+import cc.squirreljme.jdwp.host.JDWPHostValue;
 
 /**
  * An object viewer.

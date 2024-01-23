@@ -7,27 +7,23 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jdwp;
+package cc.squirreljme.jdwp.host;
 
-import cc.squirreljme.jdwp.host.JDWPHostCommandSetArrayReference;
-import cc.squirreljme.jdwp.host.JDWPHostCommandSetClassLoader;
-import cc.squirreljme.jdwp.host.JDWPHostCommandSetClassObjectReference;
-import cc.squirreljme.jdwp.host.JDWPHostCommandSetClassType;
-import cc.squirreljme.jdwp.host.JDWPHostCommandSetEventRequest;
-import cc.squirreljme.jdwp.host.JDWPHostCommandSetMethod;
-import cc.squirreljme.jdwp.host.JDWPHostCommandSetObjectReference;
-import cc.squirreljme.jdwp.host.JDWPHostCommandSetReferenceType;
-import cc.squirreljme.jdwp.host.JDWPHostCommandSetStackFrame;
-import cc.squirreljme.jdwp.host.JDWPHostCommandSetStringReference;
-import cc.squirreljme.jdwp.host.JDWPHostCommandSetThreadGroupReference;
-import cc.squirreljme.jdwp.host.JDWPHostCommandSetThreadReference;
-import cc.squirreljme.jdwp.host.JDWPHostCommandSetVirtualMachine;
-import cc.squirreljme.jdwp.host.JDWPHostEventKindHandler;
+import cc.squirreljme.jdwp.JDWPClassStatus;
+import cc.squirreljme.jdwp.JDWPCommLink;
+import cc.squirreljme.jdwp.JDWPCommand;
+import cc.squirreljme.jdwp.JDWPCommandException;
+import cc.squirreljme.jdwp.JDWPCommandSet;
+import cc.squirreljme.jdwp.JDWPErrorType;
+import cc.squirreljme.jdwp.JDWPEventKind;
+import cc.squirreljme.jdwp.JDWPException;
+import cc.squirreljme.jdwp.JDWPIdSizes;
+import cc.squirreljme.jdwp.JDWPPacket;
+import cc.squirreljme.jdwp.JDWPSuspendPolicy;
+import cc.squirreljme.jdwp.JDWPValueTag;
 import cc.squirreljme.jdwp.host.event.JDWPHostCallStackStepping;
 import cc.squirreljme.jdwp.host.event.JDWPHostFieldOnly;
 import cc.squirreljme.jdwp.host.event.JDWPHostEventFilter;
-import cc.squirreljme.jdwp.host.JDWPCommandHandler;
-import cc.squirreljme.jdwp.host.JDWPHostBinding;
 import cc.squirreljme.jdwp.host.trips.JDWPGlobalTrip;
 import cc.squirreljme.jdwp.host.trips.JDWPTrip;
 import cc.squirreljme.jdwp.host.views.JDWPView;

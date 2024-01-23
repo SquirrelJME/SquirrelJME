@@ -9,7 +9,7 @@
 
 package cc.squirreljme.jdwp.host.trips;
 
-import cc.squirreljme.jdwp.JDWPHostStepTracker;
+import cc.squirreljme.jdwp.host.JDWPHostStepTracker;
 
 /**
  * A trip on a thread.

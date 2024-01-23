@@ -7,8 +7,10 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jdwp;
+package cc.squirreljme.jdwp.host;
 
+import cc.squirreljme.jdwp.JDWPStepDepth;
+import cc.squirreljme.jdwp.JDWPStepSize;
 import cc.squirreljme.jdwp.host.views.JDWPViewFrame;
 import cc.squirreljme.jdwp.host.views.JDWPViewThread;
 

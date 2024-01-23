@@ -10,7 +10,7 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.emulator.profiler.ProfiledFrame;
-import cc.squirreljme.jdwp.JDWPHostController;
+import cc.squirreljme.jdwp.host.JDWPHostController;
 import cc.squirreljme.jdwp.host.trips.JDWPGlobalTrip;
 import cc.squirreljme.jdwp.host.trips.JDWPTripThread;
 import cc.squirreljme.jdwp.host.trips.JDWPTripVmState;
