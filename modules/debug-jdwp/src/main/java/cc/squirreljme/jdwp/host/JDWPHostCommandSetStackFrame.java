@@ -110,7 +110,7 @@ public enum JDWPHostCommandSetStackFrame
 			if (0 != (mFlags & (JDWPHostCommandSetStackFrame._FLAG_STATIC |
 				JDWPHostCommandSetStackFrame._FLAG_NATIVE)))
 			{
-				rv.writeId(JDWPCommandSetStackFrame.writeId);
+				rv.writeId(0);
 			}
 			
 			// Write self value

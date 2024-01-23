@@ -338,8 +338,8 @@ public enum JDWPHostCommandSetReferenceType
 				__packet.id(), JDWPErrorType.NO_ERROR);
 			
 			// Always Java 1.7
-			rv.writeInt(JDWPCommandSetReferenceType.writeInt);
-			rv.writeInt(JDWPCommandSetReferenceType.writeInt);
+			rv.writeInt(51);
+			rv.writeInt(0);
 			
 			return rv;
 		}
@@ -434,7 +434,7 @@ public enum JDWPHostCommandSetReferenceType
 		// Do not allow reading the fields of class of weird things can happen
 		if ("Ljava/lang/Class;".equals(viewType.signature(type)))
 		{
-			rv.writeInt(JDWPCommandSetReferenceType.writeInt);
+			rv.writeInt(0);
 			return rv;
 		}
 		

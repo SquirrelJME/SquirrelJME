@@ -52,8 +52,8 @@ public enum JDWPHostCommandSetVirtualMachine
 			rv.writeString(__controller.bind().vmDescription());
 			
 			// JDWP version (assuming Java 7?)
-			rv.writeInt(JDWPCommandSetVirtualMachine.writeInt);
-			rv.writeInt(JDWPCommandSetVirtualMachine.writeInt);
+			rv.writeInt(1);
+			rv.writeInt(7);
 			
 			// VM Information
 			rv.writeString(__controller.bind().vmVersion());
@@ -315,7 +315,7 @@ public enum JDWPHostCommandSetVirtualMachine
 			rv.writeString(".");
 			
 			// There are no non-platform class paths
-			rv.writeInt(JDWPCommandSetVirtualMachine.writeInt);
+			rv.writeInt(0);
 			
 			// However the boot class path is used to refer to everything
 			String[] classPaths = __controller.bind().debuggerLibraries();

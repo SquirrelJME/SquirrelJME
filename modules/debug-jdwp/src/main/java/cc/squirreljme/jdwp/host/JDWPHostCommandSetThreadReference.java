@@ -126,8 +126,8 @@ public enum JDWPHostCommandSetThreadReference
 					__packet.id(), JDWPErrorType.NO_ERROR);
 				
 				// Terminated and not suspended
-				rv.writeInt(JDWPCommandSetThreadReference.writeInt);
-				rv.writeInt(JDWPCommandSetThreadReference.writeInt);
+				rv.writeInt(0);
+				rv.writeInt(0);
 				
 				return rv;
 			}
@@ -138,7 +138,7 @@ public enum JDWPHostCommandSetThreadReference
 			// If this thread has terminated it becomes a zombie
 			boolean terminated = view.isTerminated(thread);
 			if (terminated)
-				rv.writeInt(JDWPCommandSetThreadReference.writeInt);
+				rv.writeInt(0);
 			
 			// Which state is this thread in?
 			else
@@ -146,18 +146,18 @@ public enum JDWPHostCommandSetThreadReference
 				{
 						// Sleeping
 					case ThreadStatusType.SLEEPING:
-						rv.writeInt(JDWPCommandSetThreadReference.writeInt);
+						rv.writeInt(2);
 						break;
 						
 						// Waiting on a monitor?
 					case ThreadStatusType.MONITOR_WAIT:
-						rv.writeInt(JDWPCommandSetThreadReference.writeInt);
+						rv.writeInt(3);
 						break;
 					
 						// Running state, assuming anything else is running
 					case ThreadStatusType.RUNNING:
 					default:
-						rv.writeInt(JDWPCommandSetThreadReference.writeInt);
+						rv.writeInt(1);
 						break;
 				}
 			

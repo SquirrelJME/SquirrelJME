@@ -55,7 +55,7 @@ public enum JDWPHostCommandSetMethod
 			// are no possible lines we may still want to break at specific
 			// byte code addresses even without the lines?
 			long addrCount = viewType.methodLocationCount(classy, methodId);
-			rv.writeLong(JDWPCommandSetMethod.writeLong);
+			rv.writeLong(0);
 			rv.writeLong(Math.max(-1, addrCount));
 			
 			// Obtain the line table to record, ensure that it exists and is
@@ -66,7 +66,7 @@ public enum JDWPHostCommandSetMethod
 				lineTable.length == 0 || lineTable[0] < 0)
 			{
 				// No information, so there are no lines
-				rv.writeInt(JDWPCommandSetMethod.writeInt);
+				rv.writeInt(0);
 			}
 			
 			// Otherwise record the information

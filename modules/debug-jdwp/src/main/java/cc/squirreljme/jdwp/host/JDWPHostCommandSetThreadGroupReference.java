@@ -75,7 +75,7 @@ public enum JDWPHostCommandSetThreadGroupReference
 				__packet.id(), JDWPErrorType.NO_ERROR);
 			
 			// There are never any parent thread groups
-			rv.writeId(JDWPCommandSetThreadGroupReference.writeId);
+			rv.writeId(0);
 			
 			return rv;
 		}
@@ -123,7 +123,7 @@ public enum JDWPHostCommandSetThreadGroupReference
 			}
 			
 			// There are never any child thread groups
-			rv.writeInt(JDWPCommandSetThreadGroupReference.writeInt);
+			rv.writeInt(0);
 			
 			return rv;
 		}
