@@ -472,6 +472,68 @@ public final class JDWPHostController
 	}
 	
 	/**
+	 * Tries to guess the type of value used.
+	 * 
+	 * @param __value The value type.
+	 * @return The guessed value.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/04/14
+	 */
+	public JDWPValueTag guessType(JDWPHostValue __value)
+		throws NullPointerException
+	{
+		if (__value == null)
+			throw new NullPointerException("NARG");
+		
+		// If not set, treat as void
+		if (!__value.isSet())
+			return JDWPValueTag.VOID;
+		return this.guessTypeRaw(__value.get());
+	}
+	
+	/**
+	 * Tries to guess the type of value used.
+	 * 
+	 * @param __value The value type.
+	 * @return The guessed value.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/04/30
+	 */
+	public JDWPValueTag guessTypeRaw(Object __value)
+		throws NullPointerException
+	{
+		// If null, assume an object type
+		if (__value == null || this.viewObject().isNullObject(__value))
+			return JDWPValueTag.OBJECT;
+		
+		// If this a valid object, try to get it from its type
+		else if (this.viewObject().isValid(__value))
+			return JDWPValueTag.fromSignature(this.viewType()
+				.signature(this.viewObject().type(__value)));
+		
+		// Boxed typed?
+		else if (__value instanceof Boolean)
+			return JDWPValueTag.BOOLEAN;
+		else if (__value instanceof Byte)
+			return JDWPValueTag.BYTE;
+		else if (__value instanceof Short)
+			return JDWPValueTag.SHORT;
+		else if (__value instanceof Character)
+			return JDWPValueTag.CHARACTER;
+		else if (__value instanceof Integer)
+			return JDWPValueTag.INTEGER;
+		else if (__value instanceof Long)
+			return JDWPValueTag.LONG;
+		else if (__value instanceof Float)
+			return JDWPValueTag.FLOAT;
+		else if (__value instanceof Double)
+			return JDWPValueTag.DOUBLE;
+		
+		// Unknown, use void
+		return JDWPValueTag.VOID;
+	}
+	
+	/**
 	 * Is the debugger holding events?
 	 *
 	 * @return If it is holding events.

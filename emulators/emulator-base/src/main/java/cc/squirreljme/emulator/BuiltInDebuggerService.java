@@ -7,10 +7,13 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.debugger;
+package cc.squirreljme.emulator;
 
 import cc.squirreljme.emulator.vm.VMDebuggerService;
 import cc.squirreljme.jdwp.host.JDWPHostFactory;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.reflect.Method;
 import net.multiphasicapps.io.BidirectionalPipe;
 import net.multiphasicapps.io.BidirectionalPipeSide;
 
@@ -34,7 +37,22 @@ public class BuiltInDebuggerService
 		
 		// Start debugger with one end of the pipe
 		BidirectionalPipeSide a = pipe.side(false);
-		Main.start(a.in(), a.out());
+		
+		try
+		{
+			// Get the built in debugger's start method
+			Class<?> debuggerMain = Class.forName(
+				"cc.squirreljme.debugger.Main");
+			Method start = debuggerMain.getMethod("start",
+				InputStream.class, OutputStream.class);
+			
+			// Call it with the streams
+			start.invoke(null, a.in(), a.out());
+		}
+		catch (ReflectiveOperationException __e)
+		{
+			return null;
+		}
 		
 		// JDWP factory gets the other end
 		BidirectionalPipeSide b = pipe.side(true);

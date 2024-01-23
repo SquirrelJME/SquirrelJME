@@ -421,7 +421,7 @@ public enum JDWPHostEventKindHandler
 				__controller.locationOf(__thread));
 			
 			// Write down the value
-			JDWPValueTag context = JDWPValueTag.guessTypeRaw(__controller, __args[0]);
+			JDWPValueTag context = __controller.guessTypeRaw(__args[0]);
 			__controller.writeValue(__packet, __args[0], context, false);
 		}
 	},
@@ -699,7 +699,7 @@ public enum JDWPHostEventKindHandler
 		
 		// The object accessed, this is tagged oddly
 		JDWPValueTag context =
-			JDWPValueTag.guessTypeRaw(__controller, instance);
+			__controller.guessTypeRaw(instance);
 		__controller.writeValue(__packet, instance, context, false);
 		if (instance != null)
 			items.put(instance);

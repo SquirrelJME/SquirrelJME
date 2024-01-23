@@ -66,8 +66,7 @@ public enum JDWPHostCommandSetStackFrame
 						value.set(null);
 						
 					// Try to guess the used value
-					JDWPValueTag tag = JDWPValueTag.guessType(
-						__controller, value);
+					JDWPValueTag tag = __controller.guessType(value);
 					__controller.writeValue(rv, value, tag, false);
 					
 					// Store object for later use
@@ -121,8 +120,7 @@ public enum JDWPHostCommandSetStackFrame
 						value.set(null);
 						
 					// Try to guess the used value
-					JDWPValueTag tag = JDWPValueTag.guessType(
-						__controller, value);
+					JDWPValueTag tag = __controller.guessType(value);
 					__controller.writeValue(rv, value, tag, false);
 					
 					// Store object for later use

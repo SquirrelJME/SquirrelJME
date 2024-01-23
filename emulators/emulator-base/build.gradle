@@ -53,6 +53,7 @@ dependencies
 	compileClasspath project(":modules:tac")
 	compileClasspath project(":modules:zip")
 	compileClasspath project(":modules:debug-jdwp")
+	compileClasspath project(":modules:debug-jdwp-vm-host")
 
 	// And for run-time to be able to be ran
 	runtimeClasspath project(":modules:cldc-compact")
@@ -61,6 +62,7 @@ dependencies
 	runtimeClasspath project(":modules:tac")
 	runtimeClasspath project(":modules:zip")
 	runtimeClasspath project(":modules:debug-jdwp")
+	runtimeClasspath project(":modules:debug-jdwp-vm-host")
 }
 
 tasks.register("mimeDecode", MimeDecodeResourcesTask.class,
