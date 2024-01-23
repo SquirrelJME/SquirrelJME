@@ -27,7 +27,7 @@ public enum JDWPCommandSet
 	REFERENCE_TYPE(2, CommandSetReferenceType.values()),
 	
 	/** Class types. */
-	CLASS_TYPE(3, CommandSetClassType.values()),
+	CLASS_TYPE(3, JDWPCommandSetClassType.values()),
 	
 	/** Methods. */
 	METHODS(6, CommandSetMethod.values()),
@@ -57,7 +57,7 @@ public enum JDWPCommandSet
 	STACK_FRAMES(16, CommandSetStackFrame.values()),
 	
 	/** Class object references. */
-	CLASS_OBJECT_REFERENCE(17, CommandSetClassObjectReference.values()),
+	CLASS_OBJECT_REFERENCE(17, JDWPCommandSetClassObjectReference.values()),
 	
 	/* End. */
 	;
