@@ -111,7 +111,7 @@ public class InfoClass
 			__state.sendThenWait(out, Utils.TIMEOUT, (__ignored, __reply) -> {
 				int count = __reply.readInt();
 				
-				throw Debugging.todo("count");
+				throw Debugging.todo(count);
 			}, (__ignored, __fail) -> {
 			});
 		}

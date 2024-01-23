@@ -323,7 +323,7 @@ public class DebuggerState
 				receiveTally.increment();
 				
 				// Debug
-				Debugging.debugNote("Read: %s", packet);
+				Debugging.debugNote("DEBUGGER <- %s", packet);
 				try (HexDumpOutputStream dump = new HexDumpOutputStream(
 					System.err))
 				{
@@ -398,6 +398,9 @@ public class DebuggerState
 				replies.put(__packet.id(), __reply);
 			}
 		}
+		
+		// Debug
+		Debugging.debugNote("DEBUGGER -> %s", __packet);
 		
 		// Send over the link
 		this.commLink.send(__packet);
@@ -482,7 +485,7 @@ public class DebuggerState
 	 *
 	 * @param __packet The packet to send.
 	 * @param __timeoutMs How long to wait until this times out.
-	 * @param __reply The method to call when this is handled.
+	 * @param __successHandler The handler to call on success.
 	 * @param __failHandler The handler to call on failure.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/22

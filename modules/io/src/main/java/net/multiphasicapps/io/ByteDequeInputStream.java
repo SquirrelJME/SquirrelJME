@@ -77,8 +77,9 @@ public class ByteDequeInputStream
 		throws IOException
 	{
 		ByteDeque queue = this.queue;
-		for (;;)
-			synchronized (queue)
+		synchronized (queue)
+		{
+			for (;;)
 			{
 				// Are there any bytes available?
 				int available = queue.available();
@@ -96,6 +97,7 @@ public class ByteDequeInputStream
 				// Remove the first byte from the queue
 				return (queue.removeFirst() & 0xFF);
 			}
+		}
 	}
 	
 	/**
@@ -130,8 +132,9 @@ public class ByteDequeInputStream
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		ByteDeque queue = this.queue;
-		for (;;)
-			synchronized (queue)
+		synchronized (queue)
+		{
+			for (;;)
 			{
 				// Are there any bytes available?
 				int available = queue.available();
@@ -153,6 +156,7 @@ public class ByteDequeInputStream
 				// Read in the bytes
 				return queue.removeFirst(__b, __o, limit);
 			}
+		}
 	}
 	
 	/**

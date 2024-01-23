@@ -31,7 +31,7 @@ public class JDWPCommandException
 	{
 		super(__m);
 		
-		this.type = __errorType;
+		this.type = (__errorType == null ? ErrorType.INTERNAL : __errorType);
 	}
 	
 	/**
@@ -47,7 +47,7 @@ public class JDWPCommandException
 	{
 		super(__m, __c);
 		
-		this.type = __errorType;
+		this.type = (__errorType == null ? ErrorType.INTERNAL : __errorType);
 	}
 	
 	/**
