@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jdwp.event;
+package cc.squirreljme.jdwp.host.event;
 
 import cc.squirreljme.jdwp.JDWPStepDepth;
 import cc.squirreljme.jdwp.JDWPStepSize;

@@ -13,4 +13,4 @@
  * @since 2021/04/17
  */
 
-package cc.squirreljme.jdwp.event;
+package cc.squirreljme.jdwp.host.event;

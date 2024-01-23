@@ -9,7 +9,7 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.jdwp.event.JDWPHostEventFilter;
+import cc.squirreljme.jdwp.host.event.JDWPHostEventFilter;
 
 /**
  * Represents an event request.

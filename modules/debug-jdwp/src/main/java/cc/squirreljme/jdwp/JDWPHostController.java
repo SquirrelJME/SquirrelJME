@@ -9,9 +9,9 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.jdwp.event.JDWPHostCallStackStepping;
-import cc.squirreljme.jdwp.event.JDWPHostFieldOnly;
-import cc.squirreljme.jdwp.event.JDWPHostEventFilter;
+import cc.squirreljme.jdwp.host.event.JDWPHostCallStackStepping;
+import cc.squirreljme.jdwp.host.event.JDWPHostFieldOnly;
+import cc.squirreljme.jdwp.host.event.JDWPHostEventFilter;
 import cc.squirreljme.jdwp.host.JDWPCommandHandler;
 import cc.squirreljme.jdwp.host.JDWPHostBinding;
 import cc.squirreljme.jdwp.host.trips.JDWPGlobalTrip;

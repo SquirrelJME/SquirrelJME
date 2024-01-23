@@ -18,11 +18,11 @@ import cc.squirreljme.jdwp.JDWPHostEventRequest;
 import cc.squirreljme.jdwp.JDWPHostLocation;
 import cc.squirreljme.jdwp.JDWPPacket;
 import cc.squirreljme.jdwp.JDWPSuspendPolicy;
-import cc.squirreljme.jdwp.event.JDWPHostCallStackStepping;
+import cc.squirreljme.jdwp.host.event.JDWPHostCallStackStepping;
 import cc.squirreljme.jdwp.JDWPClassPatternMatcher;
-import cc.squirreljme.jdwp.event.JDWPHostExceptionOnly;
-import cc.squirreljme.jdwp.event.JDWPHostFieldOnly;
-import cc.squirreljme.jdwp.event.JDWPHostEventFilter;
+import cc.squirreljme.jdwp.host.event.JDWPHostExceptionOnly;
+import cc.squirreljme.jdwp.host.event.JDWPHostFieldOnly;
+import cc.squirreljme.jdwp.host.event.JDWPHostEventFilter;
 import cc.squirreljme.jdwp.JDWPStepDepth;
 import cc.squirreljme.jdwp.JDWPStepSize;
 
