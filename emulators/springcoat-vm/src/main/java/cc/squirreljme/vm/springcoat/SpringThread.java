@@ -11,7 +11,7 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.emulator.profiler.ProfiledFrame;
 import cc.squirreljme.emulator.profiler.ProfiledThread;
-import cc.squirreljme.jdwp.JDWPController;
+import cc.squirreljme.jdwp.JDWPHostController;
 import cc.squirreljme.jdwp.JDWPStepTracker;
 import cc.squirreljme.jdwp.JDWPThreadSuspension;
 import cc.squirreljme.jdwp.host.trips.JDWPGlobalTrip;
@@ -685,7 +685,7 @@ public final class SpringThread
 			worker.machine.signalThreadTerminate(this);
 		
 		// If debugging, signal that the thread is no longer alive
-		JDWPController jdwp = this.machine().taskManager().jdwpController;
+		JDWPHostController jdwp = this.machine().taskManager().jdwpController;
 		if (jdwp != null)
 			jdwp.<JDWPTripThread>trip(JDWPTripThread.class,
 				JDWPGlobalTrip.THREAD).alive(this, false);

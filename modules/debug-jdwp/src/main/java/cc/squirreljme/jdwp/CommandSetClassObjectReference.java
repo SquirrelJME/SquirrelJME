@@ -29,7 +29,7 @@ public enum CommandSetClassObjectReference
 		 * @since 2021/04/30
 		 */
 		@Override
-		public JDWPPacket execute(JDWPController __controller,
+		public JDWPPacket execute(JDWPHostController __controller,
 			JDWPPacket __packet)
 			throws JDWPException
 		{

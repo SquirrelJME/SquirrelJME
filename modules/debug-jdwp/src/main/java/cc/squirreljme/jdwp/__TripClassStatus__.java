@@ -28,7 +28,7 @@ final class __TripClassStatus__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/04/11
 	 */
-	__TripClassStatus__(Reference<JDWPController> __controller)
+	__TripClassStatus__(Reference<JDWPHostController> __controller)
 		throws NullPointerException
 	{
 		super(__controller);
@@ -42,7 +42,7 @@ final class __TripClassStatus__
 	public void classStatus(Object __thread, Object __which,
 		JDWPClassStatus __status)
 	{
-		JDWPController controller = this.__controller();
+		JDWPHostController controller = this.__controller();
 		JDWPHostState state = controller.getState();
 		
 		// Record these so they can be grabbed later

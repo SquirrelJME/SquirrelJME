@@ -28,7 +28,7 @@ public enum CommandSetReferenceType
 		 * @since 2021/03/14
 		 */
 		@Override
-		public JDWPPacket execute(JDWPController __controller,
+		public JDWPPacket execute(JDWPHostController __controller,
 			JDWPPacket __packet)
 			throws JDWPException
 		{
@@ -44,7 +44,7 @@ public enum CommandSetReferenceType
 		 * @since 2021/04/20
 		 */
 		@Override
-		public JDWPPacket execute(JDWPController __controller,
+		public JDWPPacket execute(JDWPHostController __controller,
 			JDWPPacket __packet)
 			throws JDWPException
 		{
@@ -73,7 +73,7 @@ public enum CommandSetReferenceType
 		 * @since 2021/04/20
 		 */
 		@Override
-		public JDWPPacket execute(JDWPController __controller,
+		public JDWPPacket execute(JDWPHostController __controller,
 			JDWPPacket __packet)
 			throws JDWPException
 		{
@@ -96,7 +96,7 @@ public enum CommandSetReferenceType
 		 * @since 2021/04/30
 		 */
 		@Override
-		public JDWPPacket execute(JDWPController __controller,
+		public JDWPPacket execute(JDWPHostController __controller,
 			JDWPPacket __packet)
 			throws JDWPException
 		{
@@ -112,7 +112,7 @@ public enum CommandSetReferenceType
 		 * @since 2021/04/30
 		 */
 		@Override
-		public JDWPPacket execute(JDWPController __controller,
+		public JDWPPacket execute(JDWPHostController __controller,
 			JDWPPacket __packet)
 			throws JDWPException
 		{
@@ -128,7 +128,7 @@ public enum CommandSetReferenceType
 		 * @since 2021/03/15
 		 */
 		@Override
-		public JDWPPacket execute(JDWPController __controller,
+		public JDWPPacket execute(JDWPHostController __controller,
 			JDWPPacket __packet)
 			throws JDWPException
 		{
@@ -184,7 +184,7 @@ public enum CommandSetReferenceType
 		 * @since 2021/03/14
 		 */
 		@Override
-		public JDWPPacket execute(JDWPController __controller,
+		public JDWPPacket execute(JDWPHostController __controller,
 			JDWPPacket __packet)
 			throws JDWPException
 		{
@@ -213,7 +213,7 @@ public enum CommandSetReferenceType
 		 * @since 2021/03/14
 		 */
 		@Override
-		public JDWPPacket execute(JDWPController __controller,
+		public JDWPPacket execute(JDWPHostController __controller,
 			JDWPPacket __packet)
 			throws JDWPException
 		{
@@ -247,7 +247,7 @@ public enum CommandSetReferenceType
 		 * @since 2021/04/20
 		 */
 		@Override
-		public JDWPPacket execute(JDWPController __controller,
+		public JDWPPacket execute(JDWPHostController __controller,
 			JDWPPacket __packet)
 			throws JDWPException
 		{
@@ -273,7 +273,7 @@ public enum CommandSetReferenceType
 		 * @since 2021/03/13
 		 */
 		@Override
-		public JDWPPacket execute(JDWPController __controller,
+		public JDWPPacket execute(JDWPHostController __controller,
 			JDWPPacket __packet)
 			throws JDWPException
 		{
@@ -289,7 +289,7 @@ public enum CommandSetReferenceType
 		 * @since 2021/03/14
 		 */
 		@Override
-		public JDWPPacket execute(JDWPController __controller,
+		public JDWPPacket execute(JDWPHostController __controller,
 			JDWPPacket __packet)
 			throws JDWPException
 		{
@@ -305,7 +305,7 @@ public enum CommandSetReferenceType
 		 * @since 2021/03/13
 		 */
 		@Override
-		public JDWPPacket execute(JDWPController __controller,
+		public JDWPPacket execute(JDWPHostController __controller,
 			JDWPPacket __packet)
 			throws JDWPException
 		{
@@ -321,7 +321,7 @@ public enum CommandSetReferenceType
 		 * @since 2021/04/20
 		 */
 		@Override
-		public JDWPPacket execute(JDWPController __controller,
+		public JDWPPacket execute(JDWPHostController __controller,
 			JDWPPacket __packet)
 			throws JDWPException
 		{
@@ -346,7 +346,7 @@ public enum CommandSetReferenceType
 		 * @since 2024/01/20
 		 */
 		@Override
-		public JDWPPacket execute(JDWPController __controller,
+		public JDWPPacket execute(JDWPHostController __controller,
 			JDWPPacket __packet)
 			throws JDWPException
 		{
@@ -409,7 +409,7 @@ public enum CommandSetReferenceType
 	 * @throws JDWPException If this is not valid.
 	 * @since 2021/04/30
 	 */
-	JDWPPacket __fields(boolean __generic, JDWPController __controller,
+	JDWPPacket __fields(boolean __generic, JDWPHostController __controller,
 		JDWPPacket __packet)
 		throws JDWPException
 	{
@@ -461,7 +461,7 @@ public enum CommandSetReferenceType
 	 * @since 2021/04/30
 	 */
 	JDWPPacket __methods(boolean __generic,
-		JDWPController __controller, JDWPPacket __packet)
+		JDWPHostController __controller, JDWPPacket __packet)
 		throws JDWPException
 	{
 		// Which class does this refer to?
@@ -504,7 +504,7 @@ public enum CommandSetReferenceType
 	 * @throws JDWPException If this could not be handled.
 	 * @since 2021/04/14
 	 */
-	JDWPPacket __signature(boolean __generic, JDWPController __controller,
+	JDWPPacket __signature(boolean __generic, JDWPHostController __controller,
 		JDWPPacket __packet)
 		throws JDWPException
 	{

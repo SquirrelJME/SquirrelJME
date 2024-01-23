@@ -21,7 +21,7 @@ abstract class __TripBase__
 	implements JDWPTrip
 {
 	/** The controller reference. */
-	private final Reference<JDWPController> _controller;
+	private final Reference<JDWPHostController> _controller;
 	
 	/**
 	 * Initializes the trip base.
@@ -30,7 +30,7 @@ abstract class __TripBase__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/04/11
 	 */
-	__TripBase__(Reference<JDWPController> __controller)
+	__TripBase__(Reference<JDWPHostController> __controller)
 		throws NullPointerException
 	{
 		if (__controller == null)
@@ -45,11 +45,11 @@ abstract class __TripBase__
 	 * @return The debug controller.
 	 * @since 2021/04/11
 	 */
-	final JDWPController __controller()
+	final JDWPHostController __controller()
 	{
 		/* {@squirreljme.error AG0n The debug controller was garbage
 		collected.} */
-		JDWPController rv = this._controller.get();
+		JDWPHostController rv = this._controller.get();
 		if (rv == null)
 			throw new IllegalStateException("AG0n");
 		

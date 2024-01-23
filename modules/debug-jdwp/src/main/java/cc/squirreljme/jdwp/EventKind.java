@@ -43,7 +43,7 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, Object __thread,
+		public void write(JDWPHostController __controller, Object __thread,
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
@@ -69,7 +69,7 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, Object __thread,
+		public void write(JDWPHostController __controller, Object __thread,
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
@@ -90,7 +90,7 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, Object __thread,
+		public void write(JDWPHostController __controller, Object __thread,
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
@@ -113,7 +113,7 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, Object __thread,
+		public void write(JDWPHostController __controller, Object __thread,
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
@@ -148,7 +148,7 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, Object __thread,
+		public void write(JDWPHostController __controller, Object __thread,
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
@@ -165,7 +165,7 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, Object __thread,
+		public void write(JDWPHostController __controller, Object __thread,
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
@@ -182,7 +182,7 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, Object __thread,
+		public void write(JDWPHostController __controller, Object __thread,
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
@@ -202,7 +202,7 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, Object __thread,
+		public void write(JDWPHostController __controller, Object __thread,
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
@@ -234,7 +234,7 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, Object __thread,
+		public void write(JDWPHostController __controller, Object __thread,
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
@@ -253,7 +253,7 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, Object __thread,
+		public void write(JDWPHostController __controller, Object __thread,
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
@@ -279,7 +279,7 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, Object __thread,
+		public void write(JDWPHostController __controller, Object __thread,
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
@@ -307,7 +307,7 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, Object __thread,
+		public void write(JDWPHostController __controller, Object __thread,
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
@@ -331,7 +331,7 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, Object __thread,
+		public void write(JDWPHostController __controller, Object __thread,
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
@@ -357,7 +357,7 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, Object __thread,
+		public void write(JDWPHostController __controller, Object __thread,
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
@@ -383,7 +383,7 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, Object __thread,
+		public void write(JDWPHostController __controller, Object __thread,
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
@@ -405,7 +405,7 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, Object __thread,
+		public void write(JDWPHostController __controller, Object __thread,
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
@@ -432,7 +432,7 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, Object __thread,
+		public void write(JDWPHostController __controller, Object __thread,
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
@@ -452,7 +452,7 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, Object __thread,
+		public void write(JDWPHostController __controller, Object __thread,
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
@@ -471,7 +471,7 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, Object __thread,
+		public void write(JDWPHostController __controller, Object __thread,
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
@@ -490,7 +490,7 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, Object __thread,
+		public void write(JDWPHostController __controller, Object __thread,
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
@@ -507,7 +507,7 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, Object __thread,
+		public void write(JDWPHostController __controller, Object __thread,
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
@@ -524,7 +524,7 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, Object __thread,
+		public void write(JDWPHostController __controller, Object __thread,
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
@@ -536,7 +536,7 @@ public enum EventKind
 	UNCONDITIONAL_BREAKPOINT(-2, null, null)
 	{
 		@Override
-		public void write(JDWPController __controller, Object __thread,
+		public void write(JDWPHostController __controller, Object __thread,
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
@@ -602,7 +602,7 @@ public enum EventKind
 	 * @throws JDWPException If it could not be written.
 	 * @since 2021/03/16
 	 */
-	public abstract void write(JDWPController __controller, Object __thread,
+	public abstract void write(JDWPHostController __controller, Object __thread,
 		JDWPPacket __packet, Object... __args)
 		throws JDWPException;
 	
@@ -669,7 +669,7 @@ public enum EventKind
 	 * @throws JDWPException If it could not be written.
 	 * @since 2021/04/30
 	 */
-	void __field(boolean __write, JDWPController __controller, Object __thread,
+	void __field(boolean __write, JDWPHostController __controller, Object __thread,
 		JDWPPacket __packet, Object... __args)
 		throws JDWPException
 	{
@@ -731,7 +731,7 @@ public enum EventKind
 		}
 		
 		// Debug
-		if (JDWPController._DEBUG)
+		if (JDWPHostController._DEBUG)
 			Debugging.debugNote("Field(%s#%d, %b, %s, %s) @ %s",
 				type, fieldDx, write, instance, newValue, location);
 	}

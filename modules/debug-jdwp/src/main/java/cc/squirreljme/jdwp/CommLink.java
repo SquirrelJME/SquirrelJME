@@ -459,7 +459,7 @@ public final class CommLink
 		}
 		
 		// Debug
-		if (JDWPController._DEBUG)
+		if (JDWPHostController._DEBUG)
 			Debugging.debugNote("JDWP: -> %s", __packet);
 		
 		// Write to the destination
@@ -544,7 +544,7 @@ public final class CommLink
 		try
 		{
 			// Debug
-			if (JDWPController._DEBUG)
+			if (JDWPHostController._DEBUG)
 				Debugging.debugNote("JDWP: Handshake.");
 			
 			// The debugger sends the handshake sequence first, so as a client
@@ -566,7 +566,7 @@ public final class CommLink
 			this._didHandshake = true;
 			
 			// Debug
-			if (JDWPController._DEBUG)
+			if (JDWPHostController._DEBUG)
 				Debugging.debugNote("JDWP: Hands shaken at a distance.");
 		}
 		catch (IOException e)

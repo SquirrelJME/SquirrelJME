@@ -13,7 +13,7 @@ import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 import cc.squirreljme.emulator.terminal.TerminalPipeManager;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.jdwp.host.JDWPHostBinding;
-import cc.squirreljme.jdwp.JDWPController;
+import cc.squirreljme.jdwp.JDWPHostController;
 import cc.squirreljme.jdwp.JDWPHostState;
 import cc.squirreljme.jdwp.host.views.JDWPView;
 import cc.squirreljme.jdwp.host.views.JDWPViewKind;
@@ -58,7 +58,7 @@ public final class SpringTaskManager
 		new LinkedList<>();
 	
 	/** Controller for JDWP Connections. */
-	protected JDWPController jdwpController;
+	protected JDWPHostController jdwpController;
 	
 	/** Next thread ID, for debugging. */
 	private volatile int _nextThreadId;

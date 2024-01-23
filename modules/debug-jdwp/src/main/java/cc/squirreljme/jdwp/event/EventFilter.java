@@ -10,7 +10,7 @@
 package cc.squirreljme.jdwp.event;
 
 import cc.squirreljme.jdwp.EventKind;
-import cc.squirreljme.jdwp.JDWPController;
+import cc.squirreljme.jdwp.JDWPHostController;
 import cc.squirreljme.jdwp.JDWPLocation;
 import cc.squirreljme.jdwp.JDWPStepTracker;
 import cc.squirreljme.jdwp.JDWPUtils;
@@ -116,7 +116,7 @@ public final class EventFilter
 	 * @return If this meets or not.
 	 * @since 2021/04/18
 	 */
-	public boolean meets(JDWPController __controller, Object __thread,
+	public boolean meets(JDWPHostController __controller, Object __thread,
 		EventKind __kind, Object... __args)
 		throws NullPointerException
 	{
@@ -221,7 +221,7 @@ public final class EventFilter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/04/25
 	 */
-	private boolean __context(JDWPController __controller, Object __thread,
+	private boolean __context(JDWPHostController __controller, Object __thread,
 		EventModContext __context, Object __on, Object[] __ensnare)
 		throws NullPointerException
 	{

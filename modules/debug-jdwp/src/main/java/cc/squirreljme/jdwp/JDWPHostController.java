@@ -42,7 +42,7 @@ import java.util.Queue;
  *
  * @since 2021/03/08
  */
-public final class JDWPController
+public final class JDWPHostController
 	implements Closeable, Runnable
 {
 	/** Should debugging be enabled? */
@@ -75,7 +75,7 @@ public final class JDWPController
 		new JDWPTrip[JDWPGlobalTrip.values().length];
 	
 	/** Weak self reference, so there are not 1000 of these. */
-	private final Reference<JDWPController> _weakThis =
+	private final Reference<JDWPHostController> _weakThis =
 		new WeakReference<>(this);
 	
 	/** Held packets. */
@@ -97,7 +97,7 @@ public final class JDWPController
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/03/08
 	 */
-	public JDWPController(JDWPHostBinding __bind, InputStream __in,
+	public JDWPHostController(JDWPHostBinding __bind, InputStream __in,
 		OutputStream __out)
 		throws NullPointerException
 	{
@@ -308,7 +308,7 @@ public final class JDWPController
 					break;
 				
 				// Debug
-				if (JDWPController._DEBUG)
+				if (JDWPHostController._DEBUG)
 					Debugging.debugNote("JDWP: <- %s", packet);
 				
 				// Ignore any reply packet we received
@@ -384,7 +384,7 @@ public final class JDWPController
 	{
 		// This runs in a thread, so if this thread ever stops for any reason
 		// we terminate the connection
-		try (JDWPController ignored = this)
+		try (JDWPHostController ignored = this)
 		{
 			CommLink commLink = this.commLink;
 			while (!commLink.isShutdown())
@@ -446,7 +446,7 @@ public final class JDWPController
 			try (JDWPPacket packet = this.__event(request.suspendPolicy,
 				__kind, request.id))
 			{
-				if (JDWPController._DEBUG)
+				if (JDWPHostController._DEBUG)
 					Debugging.debugNote("JDWP: Event #%d %s",
 						request.id, __kind);
 				
@@ -495,7 +495,7 @@ public final class JDWPController
 			return __cl.cast(trip);
 		
 		// Otherwise set up a new trip
-		Reference<JDWPController> ref = this._weakThis;
+		Reference<JDWPHostController> ref = this._weakThis;
 		switch (__t)
 		{
 			case CLASS_STATUS:
@@ -535,7 +535,7 @@ public final class JDWPController
 		if (__request == null)
 			throw new NullPointerException("NARG");
 		
-		Reference<JDWPController> ref = this._weakThis;
+		Reference<JDWPHostController> ref = this._weakThis;
 		
 		// Depends on the event
 		EventFilter filter = __request.filter;

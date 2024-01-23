@@ -28,7 +28,7 @@ final class __TripVmState__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/04/11
 	 */
-	__TripVmState__(Reference<JDWPController> __controller)
+	__TripVmState__(Reference<JDWPHostController> __controller)
 		throws NullPointerException
 	{
 		super(__controller);
@@ -41,7 +41,7 @@ final class __TripVmState__
 	@Override
 	public void alive(Object __bootThread, boolean __alive)
 	{
-		JDWPController controller = this.__controller();
+		JDWPHostController controller = this.__controller();
 		JDWPHostState state = controller.getState();
 		
 		// Register this thread for later use

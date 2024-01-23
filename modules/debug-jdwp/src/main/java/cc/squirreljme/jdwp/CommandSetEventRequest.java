@@ -34,7 +34,7 @@ public enum CommandSetEventRequest
 		 * @since 2021/03/12
 		 */
 		@Override
-		public JDWPPacket execute(JDWPController __controller,
+		public JDWPPacket execute(JDWPHostController __controller,
 			JDWPPacket __packet)
 			throws JDWPException
 		{
@@ -195,7 +195,7 @@ public enum CommandSetEventRequest
 		 * @since 2021/04/18
 		 */
 		@Override
-		public JDWPPacket execute(JDWPController __controller,
+		public JDWPPacket execute(JDWPHostController __controller,
 			JDWPPacket __packet)
 			throws JDWPException
 		{
@@ -222,7 +222,7 @@ public enum CommandSetEventRequest
 		 * @since 2021/04/30
 		 */
 		@Override
-		public JDWPPacket execute(JDWPController __controller,
+		public JDWPPacket execute(JDWPHostController __controller,
 			JDWPPacket __packet)
 			throws JDWPException
 		{

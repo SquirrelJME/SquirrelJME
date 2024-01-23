@@ -31,7 +31,7 @@ final class __TripThreadAlive__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/04/11
 	 */
-	__TripThreadAlive__(Reference<JDWPController> __controller)
+	__TripThreadAlive__(Reference<JDWPHostController> __controller)
 		throws NullPointerException
 	{
 		super(__controller);
@@ -44,7 +44,7 @@ final class __TripThreadAlive__
 	@Override
 	public void alive(Object __thread, boolean __isAlive)
 	{
-		JDWPController controller = this.__controller();
+		JDWPHostController controller = this.__controller();
 		JDWPHostState state = controller.getState();
 		
 		// Is this the first thread ever called? If it is then implicitly
@@ -71,7 +71,7 @@ final class __TripThreadAlive__
 		if (!this.__checkReport(__which))
 			return;
 		
-		JDWPController controller = this.__controller();
+		JDWPHostController controller = this.__controller();
 		JDWPViewThread viewThread = controller.viewThread();
 		JDWPViewFrame viewFrame = controller.viewFrame();
 		JDWPHostState state = controller.getState();
@@ -107,10 +107,10 @@ final class __TripThreadAlive__
 		if (!this.__checkReport(__thread))
 			return;
 		
-		if (JDWPController._DEBUG)
+		if (JDWPHostController._DEBUG)
 			Debugging.debugNote("UNCONDITIONAL BREAKPOINT!");
 		
-		JDWPController controller = this.__controller();
+		JDWPHostController controller = this.__controller();
 		
 		// Make sure this thread is registered
 		controller.getState().items.put(__thread);

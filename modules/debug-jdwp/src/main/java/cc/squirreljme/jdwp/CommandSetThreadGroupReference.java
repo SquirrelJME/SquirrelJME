@@ -31,7 +31,7 @@ public enum CommandSetThreadGroupReference
 		 * @since 2021/03/13
 		 */
 		@Override
-		public JDWPPacket execute(JDWPController __controller,
+		public JDWPPacket execute(JDWPHostController __controller,
 			JDWPPacket __packet)
 			throws JDWPException
 		{
@@ -59,7 +59,7 @@ public enum CommandSetThreadGroupReference
 		 * @since 2021/03/13
 		 */
 		@Override
-		public JDWPPacket execute(JDWPController __controller,
+		public JDWPPacket execute(JDWPHostController __controller,
 			JDWPPacket __packet)
 			throws JDWPException
 		{
@@ -84,7 +84,7 @@ public enum CommandSetThreadGroupReference
 		 * @since 2021/03/13
 		 */
 		@Override
-		public JDWPPacket execute(JDWPController __controller,
+		public JDWPPacket execute(JDWPHostController __controller,
 			JDWPPacket __packet)
 			throws JDWPException
 		{

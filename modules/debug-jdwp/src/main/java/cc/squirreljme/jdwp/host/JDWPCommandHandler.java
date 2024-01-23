@@ -10,7 +10,7 @@
 package cc.squirreljme.jdwp.host;
 
 import cc.squirreljme.jdwp.JDWPCommand;
-import cc.squirreljme.jdwp.JDWPController;
+import cc.squirreljme.jdwp.JDWPHostController;
 import cc.squirreljme.jdwp.JDWPException;
 import cc.squirreljme.jdwp.JDWPPacket;
 
@@ -30,6 +30,6 @@ public interface JDWPCommandHandler
 	 * @return The result packet, if there is one.
 	 * @since 2021/03/12
 	 */
-	JDWPPacket execute(JDWPController __controller, JDWPPacket __packet)
+	JDWPPacket execute(JDWPHostController __controller, JDWPPacket __packet)
 		throws JDWPException;
 }

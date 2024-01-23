@@ -94,13 +94,13 @@ public final class JDWPHostFactory
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/03/08
 	 */
-	public final JDWPController open(JDWPHostBinding __bind)
+	public final JDWPHostController open(JDWPHostBinding __bind)
 		throws NullPointerException
 	{
 		if (__bind == null)
 			throw new NullPointerException("NARG");
 		
 		// Return a new controller for processing events
-		return new JDWPController(__bind, this.in, this.out);
+		return new JDWPHostController(__bind, this.in, this.out);
 	}
 }

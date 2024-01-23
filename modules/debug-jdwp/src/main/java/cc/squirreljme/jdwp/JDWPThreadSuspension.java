@@ -44,7 +44,7 @@ public final class JDWPThreadSuspension
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/03/13
 	 */
-	public final boolean await(JDWPController __controller, Object __thread)
+	public final boolean await(JDWPHostController __controller, Object __thread)
 		throws NullPointerException, IllegalStateException
 	{
 		if (__controller == null)

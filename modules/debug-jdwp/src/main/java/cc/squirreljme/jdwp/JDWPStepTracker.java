@@ -100,7 +100,7 @@ public final class JDWPStepTracker
 	 * @param __depth The stepping depth.
 	 * @since 2021/04/28
 	 */
-	public void steppingSet(JDWPController __controller, Object __thread,
+	public void steppingSet(JDWPHostController __controller, Object __thread,
 		StepSize __size, StepDepth __depth)
 	{
 		synchronized (this)
@@ -142,7 +142,7 @@ public final class JDWPStepTracker
 	 * @return If this will trigger a step event.
 	 * @since 2021/04/28
 	 */
-	public boolean tick(JDWPController __jdwp, Object __thread)
+	public boolean tick(JDWPHostController __jdwp, Object __thread)
 	{
 		synchronized (this)
 		{

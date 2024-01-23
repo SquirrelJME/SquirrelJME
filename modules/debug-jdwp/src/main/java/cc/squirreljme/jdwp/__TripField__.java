@@ -28,7 +28,7 @@ final class __TripField__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/04/30
 	 */
-	__TripField__(Reference<JDWPController> __controller)
+	__TripField__(Reference<JDWPHostController> __controller)
 		throws NullPointerException
 	{
 		super(__controller);
@@ -42,7 +42,7 @@ final class __TripField__
 	public void field(Object __thread, Object __type, int __fieldDx,
 		boolean __write, Object __instance, JDWPValue __jVal)
 	{
-		JDWPController controller = this.__controller();
+		JDWPHostController controller = this.__controller();
 		JDWPHostState state = controller.getState();
 		
 		// Make sure these are registered

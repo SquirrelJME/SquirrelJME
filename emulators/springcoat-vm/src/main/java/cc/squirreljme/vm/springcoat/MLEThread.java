@@ -10,7 +10,7 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.emulator.profiler.ProfiledFrame;
-import cc.squirreljme.jdwp.JDWPController;
+import cc.squirreljme.jdwp.JDWPHostController;
 import cc.squirreljme.jdwp.host.trips.JDWPGlobalTrip;
 import cc.squirreljme.jdwp.host.trips.JDWPTripThread;
 import cc.squirreljme.jdwp.host.trips.JDWPTripVmState;
@@ -153,7 +153,7 @@ public enum MLEThread
 			
 			// If we are debugging, we are going to need to tell the debugger
 			// some important details
-			JDWPController jdwp = target.machine()
+			JDWPHostController jdwp = target.machine()
 				.taskManager().jdwpController;
 			if (jdwp != null)
 			{
@@ -545,7 +545,7 @@ public enum MLEThread
 			SpringThread thread = MLEThread.__vmThread(__args[0]).getThread();
 			
 			// If debugging, signal that the thread has ended
-			JDWPController jdwp = thread.machine()
+			JDWPHostController jdwp = thread.machine()
 				.taskManager().jdwpController;
 			if (jdwp != null)
 				jdwp.<JDWPTripThread>trip(JDWPTripThread.class,

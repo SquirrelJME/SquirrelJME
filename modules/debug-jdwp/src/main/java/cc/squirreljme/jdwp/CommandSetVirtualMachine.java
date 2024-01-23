@@ -33,7 +33,7 @@ public enum CommandSetVirtualMachine
 		 * @since 2021/03/13
 		 */
 		@Override
-		public JDWPPacket execute(JDWPController __controller,
+		public JDWPPacket execute(JDWPHostController __controller,
 			JDWPPacket __packet)
 			throws JDWPException
 		{
@@ -63,7 +63,7 @@ public enum CommandSetVirtualMachine
 		 * @since 2021/03/13
 		 */
 		@Override
-		public JDWPPacket execute(JDWPController __controller,
+		public JDWPPacket execute(JDWPHostController __controller,
 			JDWPPacket __packet)
 			throws JDWPException
 		{
@@ -107,7 +107,7 @@ public enum CommandSetVirtualMachine
 		 * @since 2021/03/13
 		 */
 		@Override
-		public JDWPPacket execute(JDWPController __controller,
+		public JDWPPacket execute(JDWPHostController __controller,
 			JDWPPacket __packet)
 			throws JDWPException
 		{
@@ -125,7 +125,7 @@ public enum CommandSetVirtualMachine
 		 * @since 2021/03/13
 		 */
 		@Override
-		public JDWPPacket execute(JDWPController __controller,
+		public JDWPPacket execute(JDWPHostController __controller,
 			JDWPPacket __packet)
 			throws JDWPException
 		{
@@ -143,7 +143,7 @@ public enum CommandSetVirtualMachine
 		 * @since 2021/04/30
 		 */
 		@Override
-		public JDWPPacket execute(JDWPController __controller,
+		public JDWPPacket execute(JDWPHostController __controller,
 			JDWPPacket __packet)
 			throws JDWPException
 		{
@@ -190,7 +190,7 @@ public enum CommandSetVirtualMachine
 		 * @since 2021/03/12
 		 */
 		@Override
-		public JDWPPacket execute(JDWPController __controller,
+		public JDWPPacket execute(JDWPHostController __controller,
 			JDWPPacket __packet)
 			throws JDWPException
 		{
@@ -214,7 +214,7 @@ public enum CommandSetVirtualMachine
 		 * @since 2021/03/13
 		 */
 		@Override
-		public JDWPPacket execute(JDWPController __controller,
+		public JDWPPacket execute(JDWPHostController __controller,
 			JDWPPacket __packet)
 			throws JDWPException
 		{
@@ -235,7 +235,7 @@ public enum CommandSetVirtualMachine
 		 * @since 2021/03/14
 		 */
 		@Override
-		public JDWPPacket execute(JDWPController __controller,
+		public JDWPPacket execute(JDWPHostController __controller,
 			JDWPPacket __packet)
 			throws JDWPException
 		{
@@ -256,7 +256,7 @@ public enum CommandSetVirtualMachine
 		 * @since 2021/04/30
 		 */
 		@Override
-		public JDWPPacket execute(JDWPController __controller,
+		public JDWPPacket execute(JDWPHostController __controller,
 			JDWPPacket __packet)
 			throws JDWPException
 		{
@@ -280,7 +280,7 @@ public enum CommandSetVirtualMachine
 		 * @since 2021/03/13
 		 */
 		@Override
-		public JDWPPacket execute(JDWPController __controller,
+		public JDWPPacket execute(JDWPHostController __controller,
 			JDWPPacket __packet)
 			throws JDWPException
 		{
@@ -296,7 +296,7 @@ public enum CommandSetVirtualMachine
 		 * @since 2021/03/14
 		 */
 		@Override
-		public JDWPPacket execute(JDWPController __controller,
+		public JDWPPacket execute(JDWPHostController __controller,
 			JDWPPacket __packet)
 			throws JDWPException
 		{
@@ -327,7 +327,7 @@ public enum CommandSetVirtualMachine
 		 * @since 2021/03/12
 		 */
 		@Override
-		public JDWPPacket execute(JDWPController __controller,
+		public JDWPPacket execute(JDWPHostController __controller,
 			JDWPPacket __packet)
 			throws JDWPException
 		{
@@ -345,7 +345,7 @@ public enum CommandSetVirtualMachine
 		 * @since 2021/03/12
 		 */
 		@Override
-		public JDWPPacket execute(JDWPController __controller,
+		public JDWPPacket execute(JDWPHostController __controller,
 			JDWPPacket __packet)
 			throws JDWPException
 		{
@@ -363,7 +363,7 @@ public enum CommandSetVirtualMachine
 		 * @since 2021/03/13
 		 */
 		@Override
-		public JDWPPacket execute(JDWPController __controller,
+		public JDWPPacket execute(JDWPHostController __controller,
 			JDWPPacket __packet)
 			throws JDWPException
 		{
@@ -379,7 +379,7 @@ public enum CommandSetVirtualMachine
 		 * @since 2021/03/13
 		 */
 		@Override
-		public JDWPPacket execute(JDWPController __controller,
+		public JDWPPacket execute(JDWPHostController __controller,
 			JDWPPacket __packet)
 			throws JDWPException
 		{
@@ -477,7 +477,7 @@ public enum CommandSetVirtualMachine
 	 * @throws JDWPException If the capabilities could not be returned.
 	 * @since 2021/04/30
 	 */
-	JDWPPacket __capabilities(boolean __new, JDWPController __controller,
+	JDWPPacket __capabilities(boolean __new, JDWPHostController __controller,
 		JDWPPacket __packet)
 		throws JDWPException
 	{
@@ -568,7 +568,7 @@ public enum CommandSetVirtualMachine
 	 * @return The packet.
 	 * @since 2022/09/24
 	 */
-	static JDWPPacket __writeInstances(JDWPController __controller,
+	static JDWPPacket __writeInstances(JDWPHostController __controller,
 		JDWPPacket __packet, JDWPViewHasInstance __viewInstance,
 		Object[] __objects)
 	{

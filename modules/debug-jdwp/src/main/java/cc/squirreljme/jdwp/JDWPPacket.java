@@ -387,7 +387,7 @@ public final class JDWPPacket
 	 * @throws JDWPException If this does not refer to a valid array.
 	 * @since 2021/04/11
 	 */
-	public final Object readArray(JDWPController __controller,
+	public final Object readArray(JDWPHostController __controller,
 		boolean __nullable)
 		throws JDWPException
 	{
@@ -457,7 +457,7 @@ public final class JDWPPacket
 	 * @throws JDWPException If this does not refer to a valid frame.
 	 * @since 2021/04/11
 	 */
-	public Object readFrame(JDWPController __controller, boolean __nullable)
+	public Object readFrame(JDWPHostController __controller, boolean __nullable)
 	{
 		int id = this.readId();
 		Object frame = __controller.getState().items.get(id);
@@ -538,7 +538,7 @@ public final class JDWPPacket
 	 * @throws JDWPException If the location is not valid.
 	 * @since 2021/04/17
 	 */
-	public JDWPLocation readLocation(JDWPController __controller)
+	public JDWPLocation readLocation(JDWPHostController __controller)
 		throws JDWPException
 	{
 		synchronized (this)
@@ -604,7 +604,7 @@ public final class JDWPPacket
 	 * @throws JDWPException If this does not refer to a valid object.
 	 * @since 2021/04/11
 	 */
-	public final Object readObject(JDWPController __controller,
+	public final Object readObject(JDWPHostController __controller,
 		boolean __nullable)
 		throws JDWPException
 	{
@@ -708,7 +708,7 @@ public final class JDWPPacket
 	 * @throws JDWPException If this does not refer to a valid thread.
 	 * @since 2021/04/11
 	 */
-	public final Object readThread(JDWPController __controller)
+	public final Object readThread(JDWPHostController __controller)
 		throws JDWPException
 	{
 		JDWPViewObject viewObject = __controller.viewObject();
@@ -774,7 +774,7 @@ public final class JDWPPacket
 	 * @throws JDWPException If this does not refer to a valid thread group.
 	 * @since 2021/04/14
 	 */
-	public final Object readThreadGroup(JDWPController __controller,
+	public final Object readThreadGroup(JDWPHostController __controller,
 		boolean __nullable)
 		throws JDWPException
 	{
@@ -816,7 +816,7 @@ public final class JDWPPacket
 	 * @throws JDWPException If this does not refer to a valid type.
 	 * @since 2021/04/12
 	 */
-	public final Object readType(JDWPController __controller,
+	public final Object readType(JDWPHostController __controller,
 		boolean __nullable)
 		throws JDWPException
 	{
@@ -1041,7 +1041,7 @@ public final class JDWPPacket
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/04/25
 	 */
-	public void writeLocation(JDWPController __controller,
+	public void writeLocation(JDWPHostController __controller,
 		JDWPLocation __location)
 		throws JDWPException, NullPointerException
 	{
@@ -1068,7 +1068,7 @@ public final class JDWPPacket
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/04/11
 	 */
-	public void writeLocation(JDWPController __controller, Object __class,
+	public void writeLocation(JDWPHostController __controller, Object __class,
 		int __atMethodIndex, long __atCodeIndex)
 		throws JDWPException, NullPointerException
 	{
@@ -1102,7 +1102,7 @@ public final class JDWPPacket
 	 * @throws NullPointerException If {@code __controller} is {@code null}.
 	 * @since 2022/09/01
 	 */
-	public void writeObject(JDWPController __controller, Object __instance)
+	public void writeObject(JDWPHostController __controller, Object __instance)
 		throws JDWPException, NullPointerException
 	{
 		if (__controller == null)
@@ -1174,7 +1174,7 @@ public final class JDWPPacket
 	 * @throws JDWPException If it could not be written.
 	 * @since 2022/08/28
 	 */
-	public void writeTaggedId(JDWPController __controller, Object __object)
+	public void writeTaggedId(JDWPHostController __controller, Object __object)
 		throws JDWPException
 	{
 		synchronized (this)
@@ -1317,7 +1317,7 @@ public final class JDWPPacket
 	 * @throws JDWPException If it failed to write.
 	 * @since 2021/04/11
 	 */
-	public void writeValue(JDWPController __controller, Object __val,
+	public void writeValue(JDWPHostController __controller, Object __val,
 		JDWPValueTag __context, boolean __untag)
 		throws JDWPException
 	{

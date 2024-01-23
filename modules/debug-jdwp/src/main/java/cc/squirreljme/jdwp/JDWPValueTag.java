@@ -154,7 +154,7 @@ public enum JDWPValueTag
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/04/14
 	 */
-	public static JDWPValueTag guessType(JDWPController __controller,
+	public static JDWPValueTag guessType(JDWPHostController __controller,
 		JDWPValue __value)
 		throws NullPointerException
 	{
@@ -176,7 +176,7 @@ public enum JDWPValueTag
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/04/30
 	 */
-	public static JDWPValueTag guessTypeRaw(JDWPController __controller,
+	public static JDWPValueTag guessTypeRaw(JDWPHostController __controller,
 		Object __value)
 		throws NullPointerException
 	{

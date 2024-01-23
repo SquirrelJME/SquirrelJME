@@ -29,7 +29,7 @@ class __TripBreakpoint__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/04/25
 	 */
-	__TripBreakpoint__(Reference<JDWPController> __controller)
+	__TripBreakpoint__(Reference<JDWPHostController> __controller)
 		throws NullPointerException
 	{
 		super(__controller);
@@ -42,10 +42,10 @@ class __TripBreakpoint__
 	@Override
 	public void breakpoint(Object __thread)
 	{
-		if (JDWPController._DEBUG)
+		if (JDWPHostController._DEBUG)
 			Debugging.debugNote("TRIPPING ON BREAKPOINT!");
 		
-		JDWPController controller = this.__controller();
+		JDWPHostController controller = this.__controller();
 		
 		// Make sure this thread is registered
 		controller.getState().items.put(__thread);

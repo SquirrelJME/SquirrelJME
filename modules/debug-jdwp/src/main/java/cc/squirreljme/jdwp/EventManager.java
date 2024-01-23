@@ -69,7 +69,7 @@ public final class EventManager
 			throw new NullPointerException("NARG");
 		
 		// Debug
-		if (JDWPController._DEBUG)
+		if (JDWPHostController._DEBUG)
 			Debugging.debugNote("JDWP: Adding event %s", __request);
 		
 		Map<EventKind, List<EventRequest>> eventByKind = this._eventByKind;
@@ -164,7 +164,7 @@ public final class EventManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/04/17
 	 */
-	protected Iterable<EventRequest> find(JDWPController __controller,
+	protected Iterable<EventRequest> find(JDWPHostController __controller,
 		Object __thread, boolean __unconditional,
 		EventKind __kind, Object... __args)
 		throws NullPointerException
@@ -237,7 +237,8 @@ public final class EventManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/07/06
 	 */
-	private Iterable<EventRequest> __unconditional(JDWPController __controller,
+	private Iterable<EventRequest> __unconditional(
+		JDWPHostController __controller,
 		EventKind __kind)
 		throws NullPointerException
 	{

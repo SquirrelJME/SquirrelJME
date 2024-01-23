@@ -29,7 +29,7 @@ public enum CommandSetMethod
 		 * @since 2021/03/14
 		 */
 		@Override
-		public JDWPPacket execute(JDWPController __controller,
+		public JDWPPacket execute(JDWPHostController __controller,
 			JDWPPacket __packet)
 			throws JDWPException
 		{
@@ -106,7 +106,7 @@ public enum CommandSetMethod
 		 * @since 2021/04/30
 		 */
 		@Override
-		public JDWPPacket execute(JDWPController __controller,
+		public JDWPPacket execute(JDWPHostController __controller,
 			JDWPPacket __packet)
 			throws JDWPException
 		{
@@ -122,7 +122,7 @@ public enum CommandSetMethod
 		 * @since 2021/03/21
 		 */
 		@Override
-		public JDWPPacket execute(JDWPController __controller,
+		public JDWPPacket execute(JDWPHostController __controller,
 			JDWPPacket __packet)
 			throws JDWPException
 		{
@@ -160,7 +160,7 @@ public enum CommandSetMethod
 		 * @since 2021/03/15
 		 */
 		@Override
-		public JDWPPacket execute(JDWPController __controller,
+		public JDWPPacket execute(JDWPHostController __controller,
 			JDWPPacket __packet)
 			throws JDWPException
 		{
@@ -205,7 +205,7 @@ public enum CommandSetMethod
 	 * @throws JDWPException If this is not valid.
 	 * @since 2021/04/30
 	 */
-	JDWPPacket __variables(boolean __generic, JDWPController __controller,
+	JDWPPacket __variables(boolean __generic, JDWPHostController __controller,
 		JDWPPacket __packet)
 		throws JDWPException
 	{

@@ -42,7 +42,7 @@ public final class JDWPUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/04/11
 	 */
-	public static JDWPClassType classType(JDWPController __controller,
+	public static JDWPClassType classType(JDWPHostController __controller,
 		Object __class)
 		throws NullPointerException
 	{
