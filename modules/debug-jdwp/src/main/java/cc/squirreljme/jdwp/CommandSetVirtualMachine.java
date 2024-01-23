@@ -73,7 +73,7 @@ public enum CommandSetVirtualMachine
 			// Search all types for a signature
 			List<Object> found = new LinkedList<>();
 			JDWPViewType viewType = __controller.viewType();
-			for (Object type : __controller.__allTypes(false))
+			for (Object type : __controller.allTypes(false))
 				if (wantSig.equals(viewType.signature(type)))
 					found.add(type);
 				
@@ -113,7 +113,7 @@ public enum CommandSetVirtualMachine
 		{
 			return CommandSetVirtualMachine.__writeInstances(__controller,
 				__packet, __controller.viewThread(),
-				__controller.__allThreads(true));
+				__controller.allThreads(true));
 		}
 	},
 	
@@ -162,7 +162,7 @@ public enum CommandSetVirtualMachine
 					// Force all threads to resume
 					JDWPViewThread viewThread = __controller.viewThread();
 					for (Object thread : __controller
-						.__allThreads(false))
+						.allThreads(false))
 					{
 						JDWPHostThreadSuspension suspension =
 							viewThread.suspension(thread);
@@ -220,7 +220,7 @@ public enum CommandSetVirtualMachine
 		{
 			// Tell all threads to suspend
 			JDWPViewThread view = __controller.viewThread();
-			for (Object thread : __controller.__allThreads(false))
+			for (Object thread : __controller.allThreads(false))
 				view.suspension(thread).suspend();
 			
 			return null;
@@ -241,7 +241,7 @@ public enum CommandSetVirtualMachine
 		{
 			// Tell all threads to resume
 			JDWPViewThread view = __controller.viewThread();
-			for (Object thread : __controller.__allThreads(false))
+			for (Object thread : __controller.allThreads(false))
 				view.suspension(thread).resume();
 			
 			return null;
@@ -383,7 +383,7 @@ public enum CommandSetVirtualMachine
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			List<Object> allTypes = __controller.__allTypes(false);
+			List<Object> allTypes = __controller.allTypes(false);
 			
 			// If we have zero classes then JDB will crash since it always
 			// expects at least a single class! So we need to go out of our

@@ -43,7 +43,7 @@ public enum CommandSetClassLoader
 			// loader
 			List<Object> found = new LinkedList<>();
 			JDWPViewType viewType = __controller.viewType();
-			for (Object type : __controller.__allTypes(false))
+			for (Object type : __controller.allTypes(false))
 				if (loader == viewType.classLoader(type))
 					found.add(type);
 			

@@ -58,7 +58,7 @@ public enum CommandSetClassObjectReference
 			
 			// Could not directly get, so search through all types to find
 			if (found == null || !viewType.isValid(found))
-				for (Object type : __controller.__allTypes(false))
+				for (Object type : __controller.allTypes(false))
 				{
 					// Is this a match?
 					Object maybe = viewType.instance(type);

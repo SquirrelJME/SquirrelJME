@@ -118,6 +118,116 @@ public final class JDWPHostController
 	}
 	
 	/**
+	 * Returns all threads.
+	 *
+	 * @param __filterVisible Filter visible threads?
+	 * @return All threads.
+	 * @since 2021/04/10
+	 */
+	public final Object[] allThreads(boolean __filterVisible)
+	{
+		// Current state
+		JDWPHostState state = this.getState();
+		
+		// Get groups
+		JDWPViewThreadGroup groupView = state.view(
+			JDWPViewThreadGroup.class, JDWPViewKind.THREAD_GROUP);
+		JDWPViewThread threadView = state.view(
+			JDWPViewThread.class, JDWPViewKind.THREAD);
+		
+		// All available threads
+		ArrayList<Object> allThreads = new ArrayList<>(); 
+		
+		// Start from the root thread group and get all the threads
+		// under them, since this is a machine to thread linkage
+		for (Object group : this.bind().debuggerThreadGroups())
+		{
+			// Register thread group
+			state.items.put(group);
+			state.items.put(groupView.instance(group));
+			
+			// Obtain all threads from this group
+			List<Object> threads = new ArrayList<>();
+			for (Object thread : groupView.threads(group))
+				if (!__filterVisible ||
+					JDWPHostUtils.isVisibleThread(threadView, thread))
+					threads.add(thread);
+			
+			// Register each thread
+			for (Object thread : threads)
+			{
+				state.items.put(thread);
+				
+				// We could be at a point where the thread is initialized but
+				// the instance of that thread is not yet known
+				Object threadInstance = threadView.instance(thread);
+				if (threadInstance != null)
+					state.items.put(threadInstance);
+			}
+			
+			// Store into the list
+			allThreads.ensureCapacity(
+				allThreads.size() + threads.size());
+			allThreads.addAll(threads);
+		}
+		
+		return allThreads.toArray(new Object[allThreads.size()]);
+	}
+	
+	/**
+	 * Returns all the known types.
+	 * 
+	 * @param __cached Do we use the type cache?
+	 * @return All the available types.
+	 * @since 2021/04/14
+	 */
+	public List<Object> allTypes(boolean __cached)
+	{
+		List<Object> allTypes = new LinkedList<>();
+		
+		// Using all the known cached types
+		if (__cached)
+		{
+			JDWPViewType viewType = this.viewType();
+			for (Object obj : this.getState().items.values())
+				if (viewType.isValid(obj))
+					allTypes.add(obj);
+		}
+		
+		// Get a fresh perspective on all the loaded types
+		else
+		{
+			for (Object group : this.allThreadGroups())
+				allTypes.addAll(this.allTypes(group));
+		}
+		
+		return allTypes;
+	}
+	
+	/**
+	 * Returns all the types within the given group.
+	 * 
+	 * @param __group The group to search.
+	 * @return All the types within the group.
+	 * @since 2021/04/25
+	 */
+	public List<Object> allTypes(Object __group)
+		throws NullPointerException
+	{
+		if (__group == null)
+			throw new NullPointerException("NARG");
+			
+		Object[] types = this.viewThreadGroup().allTypes(__group);
+		
+		// Register all types so that the debugger knows about their existence
+		JDWPHostLinker<Object> items = this.getState().items;
+		for (Object type : types)
+			items.put(type);
+		
+		return Arrays.asList(types);
+	}
+	
+	/**
 	 * Returns all thread groups.
 	 * 
 	 * @return All thread groups.
@@ -205,6 +315,34 @@ public final class JDWPHostController
 			throw new NullPointerException("NARG");
 		
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Creates an event packet.
+	 * 
+	 * @param __policy The suspension policy used.
+	 * @param __kind The kind of event to give.
+	 * @param __responseId The response identifier.
+	 * @return The event packet.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/03/14
+	 */
+	public JDWPPacket event(JDWPSuspendPolicy __policy, JDWPEventKind __kind,
+		int __responseId)
+		throws NullPointerException
+	{
+		if (__policy == null || __kind == null)
+			throw new NullPointerException("NARG");
+		
+		JDWPPacket rv = this.commLink.request(64, 100);
+		
+		// Write the single event header
+		rv.writeByte(__policy.id);
+		rv.writeInt(1);
+		rv.writeByte(__kind.id);
+		rv.writeInt(__responseId);
+		
+		return rv;
 	}
 	
 	/**
@@ -429,7 +567,7 @@ public final class JDWPHostController
 		{
 			// Suspend all threads?
 			if (request.suspendPolicy == JDWPSuspendPolicy.ALL)
-				for (Object thread : this.__allThreads(false))
+				for (Object thread : this.allThreads(false))
 					this.viewThread().suspension(thread).suspend();
 			
 			// Suspend only a single thread?
@@ -443,7 +581,7 @@ public final class JDWPHostController
 			hit = true;
 			
 			// Send response to the VM of the event that just occurred
-			try (JDWPPacket packet = this.__event(request.suspendPolicy,
+			try (JDWPPacket packet = this.event(request.suspendPolicy,
 				__kind, request.id))
 			{
 				if (JDWPHostController._DEBUG)
@@ -617,7 +755,7 @@ public final class JDWPHostController
 					// that we already know about. Note use the cached types
 					// so we do not have to ask the VM about it.
 					JDWPViewType viewType = this.viewType();
-					for (Object type : this.__allTypes(true))
+					for (Object type : this.allTypes(true))
 						if (filter.meetsType(viewType, type))
 							this.signal(null, __request.eventKind,
 								type, JDWPClassStatus.INITIALIZED);
@@ -719,144 +857,5 @@ public final class JDWPHostController
 	{
 		return this.getState().view(JDWPViewType.class,
 			JDWPViewKind.TYPE);
-	}
-	
-	/**
-	 * Returns all threads.
-	 *
-	 * @param __filterVisible Filter visible threads?
-	 * @return All threads.
-	 * @since 2021/04/10
-	 */
-	final Object[] __allThreads(boolean __filterVisible)
-	{
-		// Current state
-		JDWPHostState state = this.getState();
-		
-		// Get groups
-		JDWPViewThreadGroup groupView = state.view(
-			JDWPViewThreadGroup.class, JDWPViewKind.THREAD_GROUP);
-		JDWPViewThread threadView = state.view(
-			JDWPViewThread.class, JDWPViewKind.THREAD);
-		
-		// All available threads
-		ArrayList<Object> allThreads = new ArrayList<>(); 
-		
-		// Start from the root thread group and get all the threads
-		// under them, since this is a machine to thread linkage
-		for (Object group : this.bind().debuggerThreadGroups())
-		{
-			// Register thread group
-			state.items.put(group);
-			state.items.put(groupView.instance(group));
-			
-			// Obtain all threads from this group
-			List<Object> threads = new ArrayList<>();
-			for (Object thread : groupView.threads(group))
-				if (!__filterVisible ||
-					JDWPHostUtils.isVisibleThread(threadView, thread))
-					threads.add(thread);
-			
-			// Register each thread
-			for (Object thread : threads)
-			{
-				state.items.put(thread);
-				
-				// We could be at a point where the thread is initialized but
-				// the instance of that thread is not yet known
-				Object threadInstance = threadView.instance(thread);
-				if (threadInstance != null)
-					state.items.put(threadInstance);
-			}
-			
-			// Store into the list
-			allThreads.ensureCapacity(
-				allThreads.size() + threads.size());
-			allThreads.addAll(threads);
-		}
-		
-		return allThreads.toArray(new Object[allThreads.size()]);
-	}
-	
-	
-	/**
-	 * Returns all of the known types.
-	 * 
-	 * @param __cached Do we use the type cache?
-	 * @return All of the available types.
-	 * @since 2021/04/14
-	 */
-	List<Object> __allTypes(boolean __cached)
-	{
-		List<Object> allTypes = new LinkedList<>();
-		
-		// Using all the known cached types
-		if (__cached)
-		{
-			JDWPViewType viewType = this.viewType();
-			for (Object obj : this.getState().items.values())
-				if (viewType.isValid(obj))
-					allTypes.add(obj);
-		}
-		
-		// Get a fresh perspective on all the loaded types
-		else
-		{
-			for (Object group : this.allThreadGroups())
-				allTypes.addAll(this.__allTypes(group));
-		}
-		
-		return allTypes;
-	}
-	
-	/**
-	 * Returns all the types within the given group.
-	 * 
-	 * @param __group The group to search.
-	 * @return All the types within the group.
-	 * @since 2021/04/25
-	 */
-	private List<Object> __allTypes(Object __group)
-		throws NullPointerException
-	{
-		if (__group == null)
-			throw new NullPointerException("NARG");
-			
-		Object[] types = this.viewThreadGroup().allTypes(__group);
-		
-		// Register all types so that the debugger knows about their existence
-		JDWPHostLinker<Object> items = this.getState().items;
-		for (Object type : types)
-			items.put(type);
-		
-		return Arrays.asList(types);
-	}
-	
-	/**
-	 * Creates an event packet.
-	 * 
-	 * @param __policy The suspension policy used.
-	 * @param __kind The kind of event to give.
-	 * @param __responseId The response identifier.
-	 * @return The event packet.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2021/03/14
-	 */
-	JDWPPacket __event(JDWPSuspendPolicy __policy, JDWPEventKind __kind,
-		int __responseId)
-		throws NullPointerException
-	{
-		if (__policy == null || __kind == null)
-			throw new NullPointerException("NARG");
-		
-		JDWPPacket rv = this.commLink.request(64, 100);
-		
-		// Write the single event header
-		rv.writeByte(__policy.id);
-		rv.writeInt(1);
-		rv.writeByte(__kind.id);
-		rv.writeInt(__responseId);
-		
-		return rv;
 	}
 }

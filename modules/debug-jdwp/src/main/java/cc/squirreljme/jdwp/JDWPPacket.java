@@ -728,7 +728,7 @@ public final class JDWPPacket
 			if (viewObject.isValid(thread))
 			{
 				// Try to find the actual owning thread
-				for (Object check : __controller.__allThreads(false))
+				for (Object check : __controller.allThreads(false))
 					if (thread == viewThread.instance(check))
 					{
 						// Make sure it is registered
