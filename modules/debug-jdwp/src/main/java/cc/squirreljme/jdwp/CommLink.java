@@ -269,10 +269,10 @@ public final class CommLink
 				{
 					// Figure out the data length, note that it includes our
 					// own header!!
-					dataLen = Math.max(((header[0] & 0xFF) << 24) |
+					dataLen = Math.max((((header[0] & 0xFF) << 24) |
 						((header[1] & 0xFF) << 16) |
 						((header[2] & 0xFF) << 8) |
-						(header[3] & 0xFF) - 11, 0);
+						(header[3] & 0xFF)) - 11, 0);
 						
 					// If our buffer is too small, grow it just enough to fit
 					if (dataLen > data.length)
