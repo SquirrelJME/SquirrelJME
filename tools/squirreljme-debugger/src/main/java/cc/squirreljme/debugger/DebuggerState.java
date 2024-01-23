@@ -19,6 +19,7 @@ import cc.squirreljme.jdwp.JDWPCommand;
 import cc.squirreljme.jdwp.JDWPCommandSet;
 import cc.squirreljme.jdwp.JDWPException;
 import cc.squirreljme.jdwp.JDWPIdKind;
+import cc.squirreljme.jdwp.JDWPIdSizes;
 import cc.squirreljme.jdwp.JDWPPacket;
 import cc.squirreljme.jdwp.JDWPSuspendPolicy;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -314,25 +315,31 @@ public class DebuggerState
 		
 		// Infinite read loop, read in packets accordingly
 		for (;;)
+		{
+			// Debug
+			Debugging.debugNote("Polling JDWPPacket...");
+			
+			// Poll next packet
 			try (JDWPPacket packet = link.poll())
 			{
+				// Debug
+				Debugging.debugNote("DEBUGGER <- %s", packet);
+				if (packet != null)
+					try (HexDumpOutputStream dump = new HexDumpOutputStream(
+						System.err))
+					{
+						dump.write(packet.toByteArray());
+					}
+					catch (IOException ignored)
+					{
+					}
+				
 				// Only when interrupted or terminated does this stop
 				if (packet == null)
 					break;
 				
 				// Tally up!
 				receiveTally.increment();
-				
-				// Debug
-				Debugging.debugNote("DEBUGGER <- %s", packet);
-				try (HexDumpOutputStream dump = new HexDumpOutputStream(
-					System.err))
-				{
-					dump.write(packet.toByteArray());
-				}
-				catch (IOException ignored)
-				{
-				}
 				
 				// Handle packet
 				if (packet.isReply())
@@ -348,6 +355,10 @@ public class DebuggerState
 				if (link.isShutdown())
 					break;
 			}
+		}
+		
+		// Debug
+		Debugging.debugNote("JDWP Loop End...");
 		
 		// Disconnected so indicate that
 		this.disconnectedTally.increment();
@@ -569,9 +580,17 @@ public class DebuggerState
 		try (JDWPPacket packet = this.request(JDWPCommandSet.VIRTUAL_MACHINE,
 			JDWPCommandSetVirtualMachine.ID_SIZES))
 		{
-			this.sendThenWait(packet, Utils.IMPORTANT_TIMEOUT,
+			this.send(packet,
 				(__state, __reply) -> {
 					Debugging.debugNote("Read ID Sizes...");
+					
+					// Read all of these in
+					int[] sizes = new int[JDWPIdKind.NUM_KINDS];
+					for (int i = 0; i < sizes.length; i++)
+						sizes[i] = __reply.readInt();
+					
+					// Initialize sizes
+					this.commLink.setIdSizes(new JDWPIdSizes(sizes));
 				});
 		}
 		
@@ -579,7 +598,7 @@ public class DebuggerState
 		try (JDWPPacket packet = this.request(JDWPCommandSet.VIRTUAL_MACHINE,
 			JDWPCommandSetVirtualMachine.VERSION))
 		{
-			this.sendThenWait(packet, Utils.IMPORTANT_TIMEOUT,
+			this.send(packet,
 				(__state, __reply) -> {
 					Debugging.debugNote("Description: %s",
 						__reply.readString());
