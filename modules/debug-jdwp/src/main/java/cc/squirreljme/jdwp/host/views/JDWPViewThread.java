@@ -10,7 +10,7 @@
 package cc.squirreljme.jdwp.host.views;
 
 import cc.squirreljme.jdwp.JDWPStepTracker;
-import cc.squirreljme.jdwp.JDWPThreadSuspension;
+import cc.squirreljme.jdwp.JDWPHostThreadSuspension;
 import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
 import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
 
@@ -112,7 +112,7 @@ public interface JDWPViewThread
 	 * @return The thread suspension manager.
 	 * @since 2021/04/10
 	 */
-	JDWPThreadSuspension suspension(Object __which);
+	JDWPHostThreadSuspension suspension(Object __which);
 	
 	/**
 	 * Returns the status of the given thread.

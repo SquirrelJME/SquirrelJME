@@ -11,7 +11,7 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jdwp.JDWPHostState;
 import cc.squirreljme.jdwp.JDWPStepTracker;
-import cc.squirreljme.jdwp.JDWPThreadSuspension;
+import cc.squirreljme.jdwp.JDWPHostThreadSuspension;
 import cc.squirreljme.jdwp.host.views.JDWPViewThread;
 import cc.squirreljme.vm.springcoat.brackets.VMThreadObject;
 import java.lang.ref.Reference;
@@ -179,7 +179,7 @@ public class DebugViewThread
 	 * @since 2021/04/10
 	 */
 	@Override
-	public JDWPThreadSuspension suspension(Object __which)
+	public JDWPHostThreadSuspension suspension(Object __which)
 	{
 		return ((SpringThread)__which).debuggerSuspension;
 	}

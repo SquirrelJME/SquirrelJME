@@ -15,7 +15,7 @@ import cc.squirreljme.jdwp.EventKind;
 import cc.squirreljme.jdwp.JDWPClassStatus;
 import cc.squirreljme.jdwp.JDWPHostController;
 import cc.squirreljme.jdwp.JDWPStepTracker;
-import cc.squirreljme.jdwp.JDWPThreadSuspension;
+import cc.squirreljme.jdwp.JDWPHostThreadSuspension;
 import cc.squirreljme.jdwp.JDWPValue;
 import cc.squirreljme.jdwp.host.trips.JDWPGlobalTrip;
 import cc.squirreljme.jdwp.host.trips.JDWPTripBreakpoint;
@@ -3655,7 +3655,7 @@ public final class SpringThreadWorker
 		// early then we were interrupted which means we need to signal
 		// that to whatever is running
 		boolean interrupted = false;
-		JDWPThreadSuspension suspension = thread.debuggerSuspension;
+		JDWPHostThreadSuspension suspension = thread.debuggerSuspension;
 		while (suspension.await(jdwp, thread))
 		{
 			interrupted = true;

@@ -19,7 +19,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2021/03/13
  */
-public final class JDWPThreadSuspension
+public final class JDWPHostThreadSuspension
 {
 	/** The timeout to wait for suspension checks. */
 	private static final int _TIMEOUT = 
@@ -107,7 +107,7 @@ public final class JDWPThreadSuspension
 				// Otherwise wait for the next signal
 				try
 				{
-					this.wait(JDWPThreadSuspension._TIMEOUT);
+					this.wait(JDWPHostThreadSuspension._TIMEOUT);
 				}
 				catch (InterruptedException e)
 				{

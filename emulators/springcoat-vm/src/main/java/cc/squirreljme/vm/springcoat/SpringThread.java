@@ -13,7 +13,7 @@ import cc.squirreljme.emulator.profiler.ProfiledFrame;
 import cc.squirreljme.emulator.profiler.ProfiledThread;
 import cc.squirreljme.jdwp.JDWPHostController;
 import cc.squirreljme.jdwp.JDWPStepTracker;
-import cc.squirreljme.jdwp.JDWPThreadSuspension;
+import cc.squirreljme.jdwp.JDWPHostThreadSuspension;
 import cc.squirreljme.jdwp.host.trips.JDWPGlobalTrip;
 import cc.squirreljme.jdwp.host.trips.JDWPTripThread;
 import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
@@ -56,8 +56,8 @@ public final class SpringThread
 	protected final ProfiledThread profiler;
 	
 	/** Tracker for debugging suspension. */
-	protected final JDWPThreadSuspension debuggerSuspension =
-		new JDWPThreadSuspension();
+	protected final JDWPHostThreadSuspension debuggerSuspension =
+		new JDWPHostThreadSuspension();
 	
 	/** The virtual machine reference. */
 	protected final Reference<SpringMachine> machineRef;

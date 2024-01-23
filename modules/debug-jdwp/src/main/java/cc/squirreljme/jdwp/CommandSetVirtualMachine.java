@@ -164,7 +164,7 @@ public enum CommandSetVirtualMachine
 					for (Object thread : __controller
 						.__allThreads(false))
 					{
-						JDWPThreadSuspension suspension =
+						JDWPHostThreadSuspension suspension =
 							viewThread.suspension(thread);
 						while (suspension.query() > 0)
 							suspension.resume();
