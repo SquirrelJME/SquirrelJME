@@ -9,8 +9,8 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.jdwp.views.JDWPView;
-import cc.squirreljme.jdwp.views.JDWPViewKind;
+import cc.squirreljme.jdwp.host.views.JDWPView;
+import cc.squirreljme.jdwp.host.views.JDWPViewKind;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 

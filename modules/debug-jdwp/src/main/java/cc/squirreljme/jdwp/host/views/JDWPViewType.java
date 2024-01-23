@@ -7,11 +7,11 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jdwp.views;
+package cc.squirreljme.jdwp.host.views;
 
 import cc.squirreljme.jdwp.JDWPLocalVariable;
 import cc.squirreljme.jdwp.JDWPValue;
-import cc.squirreljme.jdwp.trips.JDWPTripBreakpoint;
+import cc.squirreljme.jdwp.host.trips.JDWPTripBreakpoint;
 
 /**
  * Represents a type.

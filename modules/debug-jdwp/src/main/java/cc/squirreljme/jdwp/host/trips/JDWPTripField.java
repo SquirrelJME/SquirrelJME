@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jdwp.trips;
+package cc.squirreljme.jdwp.host.trips;
 
 import cc.squirreljme.jdwp.JDWPValue;
 

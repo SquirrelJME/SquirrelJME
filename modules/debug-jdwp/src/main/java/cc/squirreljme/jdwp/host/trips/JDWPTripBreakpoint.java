@@ -7,22 +7,21 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jdwp.trips;
+package cc.squirreljme.jdwp.host.trips;
 
 /**
- * Trip on virtual machine state.
+ * Handler for breakpoint trips.
  *
- * @since 2021/04/11
+ * @since 2021/04/25
  */
-public interface JDWPTripVmState
+public interface JDWPTripBreakpoint
 	extends JDWPTrip
 {
 	/**
-	 * Is the virtual machine alive?
+	 * Trip for a breakpoint event.
 	 * 
-	 * @param __bootThread The initial starting thread.
-	 * @param __alive If the virtual machine is alive.
-	 * @since 2021/04/11
+	 * @param __thread The thread this is occurring in.
+	 * @since 2021/04/25
 	 */
-	void alive(Object __bootThread, boolean __alive);
+	void breakpoint(Object __thread);
 }

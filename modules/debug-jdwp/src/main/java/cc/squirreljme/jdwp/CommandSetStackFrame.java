@@ -9,7 +9,7 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.jdwp.views.JDWPViewFrame;
+import cc.squirreljme.jdwp.host.views.JDWPViewFrame;
 
 /**
  * Command set for stack frames.

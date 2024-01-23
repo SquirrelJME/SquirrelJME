@@ -7,26 +7,14 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jdwp.trips;
-
-import cc.squirreljme.jdwp.JDWPClassStatus;
+package cc.squirreljme.jdwp.host.trips;
 
 /**
- * Trips on the state of a class.
+ * The base interface for trips, which are used for event handling and
+ * otherwise.
  *
- * @since 2021/04/17
+ * @since 2021/04/11
  */
-public interface JDWPTripClassStatus
-	extends JDWPTrip
+public interface JDWPTrip
 {
-	/**
-	 * Signals that the status of a class has been changed.
-	 * 
-	 * @param __thread The source thread.
-	 * @param __which Which class is this being used on?
-	 * @param __status The status of the class.
-	 * @since 2021/04/17
-	 */
-	void classStatus(Object __thread, Object __which,
-		JDWPClassStatus __status);
 }

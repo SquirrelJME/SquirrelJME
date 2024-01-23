@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jdwp.views;
+package cc.squirreljme.jdwp.host.views;
 
 import cc.squirreljme.jdwp.JDWPStepTracker;
 import cc.squirreljme.jdwp.JDWPThreadSuspension;

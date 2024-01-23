@@ -9,7 +9,7 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.jdwp.views.JDWPViewType;
+import cc.squirreljme.jdwp.host.views.JDWPViewType;
 import java.util.LinkedList;
 import java.util.List;
 

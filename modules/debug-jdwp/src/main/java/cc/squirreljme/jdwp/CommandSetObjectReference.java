@@ -9,8 +9,8 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.jdwp.views.JDWPViewObject;
-import cc.squirreljme.jdwp.views.JDWPViewType;
+import cc.squirreljme.jdwp.host.views.JDWPViewObject;
+import cc.squirreljme.jdwp.host.views.JDWPViewType;
 
 /**
  * Object reference command set.

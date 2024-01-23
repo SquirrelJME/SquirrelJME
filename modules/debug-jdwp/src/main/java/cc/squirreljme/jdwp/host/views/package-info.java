@@ -13,4 +13,4 @@
  * @since 2021/04/11
  */
 
-package cc.squirreljme.jdwp.views;
+package cc.squirreljme.jdwp.host.views;

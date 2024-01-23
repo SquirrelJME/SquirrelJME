@@ -9,7 +9,7 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.jdwp.trips.JDWPTripField;
+import cc.squirreljme.jdwp.host.trips.JDWPTripField;
 import java.lang.ref.Reference;
 
 /**

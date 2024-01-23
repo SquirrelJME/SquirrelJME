@@ -11,8 +11,8 @@ package cc.squirreljme.jdwp;
 
 import cc.squirreljme.jdwp.event.StepDepth;
 import cc.squirreljme.jdwp.event.StepSize;
-import cc.squirreljme.jdwp.views.JDWPViewFrame;
-import cc.squirreljme.jdwp.views.JDWPViewThread;
+import cc.squirreljme.jdwp.host.views.JDWPViewFrame;
+import cc.squirreljme.jdwp.host.views.JDWPViewThread;
 
 /**
  * This is a tracker for stepping events.

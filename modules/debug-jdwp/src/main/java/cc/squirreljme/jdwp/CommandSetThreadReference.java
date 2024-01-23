@@ -9,9 +9,9 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.jdwp.views.JDWPViewFrame;
-import cc.squirreljme.jdwp.views.JDWPViewThread;
-import cc.squirreljme.jdwp.views.JDWPViewThreadGroup;
+import cc.squirreljme.jdwp.host.views.JDWPViewFrame;
+import cc.squirreljme.jdwp.host.views.JDWPViewThread;
+import cc.squirreljme.jdwp.host.views.JDWPViewThreadGroup;
 import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
 
 /**

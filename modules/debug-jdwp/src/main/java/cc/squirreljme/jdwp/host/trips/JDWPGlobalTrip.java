@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jdwp.trips;
+package cc.squirreljme.jdwp.host.trips;
 
 /**
  * A global trip event that is completely non-local.

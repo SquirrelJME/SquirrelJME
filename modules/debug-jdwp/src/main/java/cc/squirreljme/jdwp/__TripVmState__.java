@@ -9,7 +9,7 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.jdwp.trips.JDWPTripVmState;
+import cc.squirreljme.jdwp.host.trips.JDWPTripVmState;
 import java.lang.ref.Reference;
 
 /**

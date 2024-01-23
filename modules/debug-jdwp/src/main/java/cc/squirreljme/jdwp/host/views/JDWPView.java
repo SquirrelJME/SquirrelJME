@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jdwp.views;
+package cc.squirreljme.jdwp.host.views;
 
 /**
  * This is a view of something on JDWP.

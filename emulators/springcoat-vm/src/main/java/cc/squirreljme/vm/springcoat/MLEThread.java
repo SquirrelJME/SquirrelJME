@@ -11,9 +11,9 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.emulator.profiler.ProfiledFrame;
 import cc.squirreljme.jdwp.JDWPController;
-import cc.squirreljme.jdwp.trips.JDWPGlobalTrip;
-import cc.squirreljme.jdwp.trips.JDWPTripThread;
-import cc.squirreljme.jdwp.trips.JDWPTripVmState;
+import cc.squirreljme.jdwp.host.trips.JDWPGlobalTrip;
+import cc.squirreljme.jdwp.host.trips.JDWPTripThread;
+import cc.squirreljme.jdwp.host.trips.JDWPTripVmState;
 import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;

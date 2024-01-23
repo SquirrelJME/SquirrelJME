@@ -9,7 +9,7 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.jdwp.trips.JDWPTripClassStatus;
+import cc.squirreljme.jdwp.host.trips.JDWPTripClassStatus;
 import java.lang.ref.Reference;
 
 /**

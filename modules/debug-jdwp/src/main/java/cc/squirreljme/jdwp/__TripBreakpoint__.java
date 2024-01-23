@@ -9,7 +9,7 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.jdwp.trips.JDWPTripBreakpoint;
+import cc.squirreljme.jdwp.host.trips.JDWPTripBreakpoint;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 

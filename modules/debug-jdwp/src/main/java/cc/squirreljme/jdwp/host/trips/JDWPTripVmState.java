@@ -1,30 +1,28 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jdwp.views;
+package cc.squirreljme.jdwp.host.trips;
 
 /**
- * Represents a type that has an instance view.
+ * Trip on virtual machine state.
  *
- * @since 2022/09/24
+ * @since 2021/04/11
  */
-public interface JDWPViewHasInstance
-	extends JDWPViewValidObject
+public interface JDWPTripVmState
+	extends JDWPTrip
 {
 	/**
-	 * Returns the in virtual machine object instance of the given
-	 * representation.
+	 * Is the virtual machine alive?
 	 * 
-	 * @param __which Which virtual representation to get its actual in VM
-	 * instance of.
-	 * @return The in-VM instance of the given representation.
-	 * @since 2022/09/24
+	 * @param __bootThread The initial starting thread.
+	 * @param __alive If the virtual machine is alive.
+	 * @since 2021/04/11
 	 */
-	Object instance(Object __which);
+	void alive(Object __bootThread, boolean __alive);
 }

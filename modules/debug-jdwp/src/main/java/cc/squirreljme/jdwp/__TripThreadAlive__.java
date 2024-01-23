@@ -9,9 +9,9 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.jdwp.trips.JDWPTripThread;
-import cc.squirreljme.jdwp.views.JDWPViewFrame;
-import cc.squirreljme.jdwp.views.JDWPViewThread;
+import cc.squirreljme.jdwp.host.trips.JDWPTripThread;
+import cc.squirreljme.jdwp.host.views.JDWPViewFrame;
+import cc.squirreljme.jdwp.host.views.JDWPViewThread;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 

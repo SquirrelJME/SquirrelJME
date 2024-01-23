@@ -7,22 +7,10 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jdwp.views;
-
 /**
- * A viewer over something which has a valid object as its subject.
+ * This package contains the interfaces and classes for event tripping.
  *
  * @since 2021/04/11
  */
-public interface JDWPViewValidObject
-	extends JDWPView
-{
-	/**
-	 * Is this a valid object for viewing?
-	 * 
-	 * @param __which What is being checked?
-	 * @return If it is valid or not.
-	 * @since 2021/04/10
-	 */
-	boolean isValid(Object __which);
-}
+
+package cc.squirreljme.jdwp.host.trips;

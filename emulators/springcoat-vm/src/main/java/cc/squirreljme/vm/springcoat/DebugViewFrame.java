@@ -11,7 +11,7 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jdwp.JDWPState;
 import cc.squirreljme.jdwp.JDWPValue;
-import cc.squirreljme.jdwp.views.JDWPViewFrame;
+import cc.squirreljme.jdwp.host.views.JDWPViewFrame;
 import java.lang.ref.Reference;
 
 /**

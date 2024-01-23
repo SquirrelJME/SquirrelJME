@@ -9,10 +9,10 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.jdwp.views.JDWPViewHasInstance;
-import cc.squirreljme.jdwp.views.JDWPViewThread;
-import cc.squirreljme.jdwp.views.JDWPViewThreadGroup;
-import cc.squirreljme.jdwp.views.JDWPViewType;
+import cc.squirreljme.jdwp.host.views.JDWPViewHasInstance;
+import cc.squirreljme.jdwp.host.views.JDWPViewThread;
+import cc.squirreljme.jdwp.host.views.JDWPViewThreadGroup;
+import cc.squirreljme.jdwp.host.views.JDWPViewType;
 import java.util.LinkedList;
 import java.util.List;
 

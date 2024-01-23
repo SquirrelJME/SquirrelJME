@@ -9,8 +9,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.jdwp.views.JDWPViewThreadGroup;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.jdwp.host.views.JDWPViewThreadGroup;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMachineExitException;
 import net.multiphasicapps.classfile.ClassName;
 

@@ -9,12 +9,12 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.jdwp.views.JDWPViewHasInstance;
-import cc.squirreljme.jdwp.views.JDWPViewKind;
-import cc.squirreljme.jdwp.views.JDWPViewObject;
-import cc.squirreljme.jdwp.views.JDWPViewThread;
-import cc.squirreljme.jdwp.views.JDWPViewThreadGroup;
-import cc.squirreljme.jdwp.views.JDWPViewType;
+import cc.squirreljme.jdwp.host.views.JDWPViewHasInstance;
+import cc.squirreljme.jdwp.host.views.JDWPViewKind;
+import cc.squirreljme.jdwp.host.views.JDWPViewObject;
+import cc.squirreljme.jdwp.host.views.JDWPViewThread;
+import cc.squirreljme.jdwp.host.views.JDWPViewThreadGroup;
+import cc.squirreljme.jdwp.host.views.JDWPViewType;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.Closeable;
 import java.io.DataOutputStream;

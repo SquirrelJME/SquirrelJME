@@ -9,9 +9,9 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.jdwp.views.JDWPViewObject;
-import cc.squirreljme.jdwp.views.JDWPViewThread;
-import cc.squirreljme.jdwp.views.JDWPViewType;
+import cc.squirreljme.jdwp.host.views.JDWPViewObject;
+import cc.squirreljme.jdwp.host.views.JDWPViewThread;
+import cc.squirreljme.jdwp.host.views.JDWPViewType;
 
 /**
  * General utilities for JDWP Support.

@@ -9,8 +9,8 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.jdwp.trips.JDWPGlobalTrip;
-import cc.squirreljme.jdwp.trips.JDWPTripThread;
+import cc.squirreljme.jdwp.host.trips.JDWPGlobalTrip;
+import cc.squirreljme.jdwp.host.trips.JDWPTripThread;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**

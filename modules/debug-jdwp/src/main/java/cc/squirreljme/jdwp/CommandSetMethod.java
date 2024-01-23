@@ -9,8 +9,7 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.jdwp.views.JDWPViewType;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.jdwp.host.views.JDWPViewType;
 import net.multiphasicapps.classfile.MethodDescriptor;
 
 /**

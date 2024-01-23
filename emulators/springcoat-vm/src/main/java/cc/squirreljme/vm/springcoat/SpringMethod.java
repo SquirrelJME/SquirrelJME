@@ -9,7 +9,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.jdwp.trips.JDWPTripBreakpoint;
+import cc.squirreljme.jdwp.host.trips.JDWPTripBreakpoint;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.util.Map;
 import net.multiphasicapps.classfile.ByteCode;
