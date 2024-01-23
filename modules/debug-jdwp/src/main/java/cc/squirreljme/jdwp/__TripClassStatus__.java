@@ -49,20 +49,20 @@ final class __TripClassStatus__
 		state.items.put(__thread);
 		state.items.put(__which);
 		
-		EventKind eventKind;
+		JDWPEventKind eventKind;
 		switch (__status)
 		{
 			case UNLOAD:
-				eventKind = EventKind.CLASS_UNLOAD;
+				eventKind = JDWPEventKind.CLASS_UNLOAD;
 				break;
 			
 			case VERIFIED:
-				eventKind = EventKind.CLASS_LOAD;
+				eventKind = JDWPEventKind.CLASS_LOAD;
 				break;
 			
 			case PREPARED:
 			case INITIALIZED:
-				eventKind = EventKind.CLASS_PREPARE;
+				eventKind = JDWPEventKind.CLASS_PREPARE;
 				break;
 			
 			// Unknown, so do nothing

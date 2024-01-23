@@ -49,7 +49,7 @@ public final class JDWPCommLink
 	protected final DataOutputStream out;
 	
 	/** The direction of the channel. */
-	protected final CommLinkDirection direction;
+	protected final JDWPCommLinkDirection direction;
 	
 	/** The queue of packets which are freed, they will go back here. */
 	private final Deque<JDWPPacket> _freePackets =
@@ -100,7 +100,7 @@ public final class JDWPCommLink
 	public JDWPCommLink(InputStream __in, OutputStream __out)
 		throws NullPointerException
 	{
-		this(__in, __out, CommLinkDirection.CLIENT_TO_DEBUGGER);
+		this(__in, __out, JDWPCommLinkDirection.CLIENT_TO_DEBUGGER);
 	}
 	
 	/**
@@ -113,7 +113,7 @@ public final class JDWPCommLink
 	 * @since 2021/03/08
 	 */
 	public JDWPCommLink(InputStream __in, OutputStream __out,
-		CommLinkDirection __direction)
+		JDWPCommLinkDirection __direction)
 		throws NullPointerException
 	{
 		if (__in == null || __out == null || __direction == null)
@@ -549,7 +549,7 @@ public final class JDWPCommLink
 			
 			// The debugger sends the handshake sequence first, so as a client
 			// we read from the remote end
-			if (this.direction == CommLinkDirection.CLIENT_TO_DEBUGGER)
+			if (this.direction == JDWPCommLinkDirection.CLIENT_TO_DEBUGGER)
 			{
 				this.__handshakeRead();
 				this.__handshakeWrite();

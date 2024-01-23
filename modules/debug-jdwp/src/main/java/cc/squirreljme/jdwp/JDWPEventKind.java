@@ -23,7 +23,7 @@ import net.multiphasicapps.collections.UnmodifiableList;
  *
  * @since 2021/03/13
  */
-public enum EventKind
+public enum JDWPEventKind
 	implements __IdNumbered__
 {
 	/** Single Step. */
@@ -121,7 +121,7 @@ public enum EventKind
 			ExceptionHandler handler = (ExceptionHandler)__args[1];
 			
 			// Where are we?
-			JDWPLocation tossLocation = __controller.locationOf(__thread);
+			JDWPHostLocation tossLocation = __controller.locationOf(__thread);
 			__packet.writeObject(__controller, __thread);
 			__packet.writeLocation(__controller, tossLocation);
 			
@@ -130,7 +130,7 @@ public enum EventKind
 			
 			// Where is the exception handler, if there is one?
 			if (handler == null)
-				__packet.writeLocation(__controller, JDWPLocation.BLANK);
+				__packet.writeLocation(__controller, JDWPHostLocation.BLANK);
 			else
 				__packet.writeLocation(__controller,
 					tossLocation.withCodeIndex(handler.handlerAddress()));
@@ -337,7 +337,7 @@ public enum EventKind
 		{
 			// Exceptions are always formatted the same regardless of
 			// whether they were caught or not
-			EventKind.EXCEPTION.write(__controller, __thread, __packet,
+			JDWPEventKind.EXCEPTION.write(__controller, __thread, __packet,
 				__args);
 		}
 	},
@@ -549,8 +549,8 @@ public enum EventKind
 	;
 	
 	/** Quick table. */
-	private static final __QuickTable__<EventKind> _QUICK =
-		new __QuickTable__<>(EventKind.values());
+	private static final __QuickTable__<JDWPEventKind> _QUICK =
+		new __QuickTable__<>(JDWPEventKind.values());
 	
 	/** The event ID. */
 	public final int id;
@@ -573,7 +573,7 @@ public enum EventKind
 	 * @param __modifiers The possible supported modifiers for this event.
 	 * @since 2021/03/13
 	 */
-	EventKind(int __id, Iterable<EventModContext> __nonArg,
+	JDWPEventKind(int __id, Iterable<EventModContext> __nonArg,
 		List<EventModContext> __arg, EventModKind... __modifiers)
 	{
 		this.id = __id;
@@ -682,7 +682,7 @@ public enum EventKind
 		
 		// Write current thread and location
 		__packet.writeObject(__controller, __thread);
-		JDWPLocation location = __controller.locationOf(__thread);
+		JDWPHostLocation location = __controller.locationOf(__thread);
 		__packet.writeLocation(__controller,
 			__controller.locationOf(__thread));
 		
@@ -743,8 +743,8 @@ public enum EventKind
 	 * @return The found constant.
 	 * @since 2021/03/13
 	 */
-	public static EventKind of(int __id)
+	public static JDWPEventKind of(int __id)
 	{
-		return EventKind._QUICK.get(__id);
+		return JDWPEventKind._QUICK.get(__id);
 	}
 }

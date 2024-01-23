@@ -16,11 +16,11 @@ import java.util.Objects;
  *
  * @since 2021/04/17
  */
-public final class JDWPLocation
+public final class JDWPHostLocation
 {
 	/** Blank location. */
-	protected static final JDWPLocation BLANK = 
-		new JDWPLocation(null, -1, -1,
+	protected static final JDWPHostLocation BLANK = 
+		new JDWPHostLocation(null, -1, -1,
 			null, null);
 	
 	/** The location within the method. */
@@ -48,7 +48,7 @@ public final class JDWPLocation
 	 * @param __descriptor The type of the method.
 	 * @since 2021/04/17
 	 */
-	public JDWPLocation(Object __type, int __methodDx, long __codeDx,
+	public JDWPHostLocation(Object __type, int __methodDx, long __codeDx,
 		String __name, String __descriptor)
 	{
 		this.type = __type;
@@ -70,10 +70,10 @@ public final class JDWPLocation
 		if (this == __o)
 			return true;
 		
-		if (!(__o instanceof JDWPLocation))
+		if (!(__o instanceof JDWPHostLocation))
 			return false;
 		
-		JDWPLocation o = (JDWPLocation)__o;
+		JDWPHostLocation o = (JDWPHostLocation)__o;
 		return Objects.equals(this.type, o.type) &&
 			this.methodDx == o.methodDx &&
 			this.codeDx == o.codeDx;
@@ -125,9 +125,9 @@ public final class JDWPLocation
 	 * @return The new location.
 	 * @since 2022/08/28
 	 */
-	public JDWPLocation withCodeIndex(int __newCodeDx)
+	public JDWPHostLocation withCodeIndex(int __newCodeDx)
 	{
-		return new JDWPLocation(this.type, this.methodDx, __newCodeDx,
+		return new JDWPHostLocation(this.type, this.methodDx, __newCodeDx,
 			this.name, this.descriptor);
 	}
 }

@@ -14,7 +14,7 @@ import cc.squirreljme.jdwp.CommandSetEventRequest;
 import cc.squirreljme.jdwp.CommandSetThreadReference;
 import cc.squirreljme.jdwp.CommandSetVirtualMachine;
 import cc.squirreljme.jdwp.JDWPErrorType;
-import cc.squirreljme.jdwp.EventKind;
+import cc.squirreljme.jdwp.JDWPEventKind;
 import cc.squirreljme.jdwp.JDWPCommand;
 import cc.squirreljme.jdwp.JDWPCommandSet;
 import cc.squirreljme.jdwp.JDWPException;
@@ -111,7 +111,7 @@ public class DebuggerState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/20
 	 */
-	public void eventSet(EventKind __kind, SuspendPolicy __suspend,
+	public void eventSet(JDWPEventKind __kind, SuspendPolicy __suspend,
 		EventHandler __handler)
 		throws NullPointerException
 	{
@@ -599,9 +599,9 @@ public class DebuggerState
 		this.capabilities.update(this);
 		
 		// Thread events, with no particular handler
-		this.eventSet(EventKind.THREAD_START, SuspendPolicy.NONE,
+		this.eventSet(JDWPEventKind.THREAD_START, SuspendPolicy.NONE,
 			(__state, __reply) -> {});
-		this.eventSet(EventKind.THREAD_DEATH, SuspendPolicy.NONE,
+		this.eventSet(JDWPEventKind.THREAD_DEATH, SuspendPolicy.NONE,
 			(__state, __reply) -> {});
 	}
 	

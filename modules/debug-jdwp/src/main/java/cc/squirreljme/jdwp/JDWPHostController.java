@@ -225,7 +225,7 @@ public final class JDWPHostController
 	 * @return The current thread location.
 	 * @since 2021/04/25
 	 */
-	public JDWPLocation locationOf(Object __thread)
+	public JDWPHostLocation locationOf(Object __thread)
 	{
 		JDWPViewType viewType = this.viewType();
 		JDWPViewThread viewThread = this.viewThread();
@@ -234,7 +234,7 @@ public final class JDWPHostController
 		// Get the current frames and see if 
 		Object[] frames = viewThread.frames(__thread);
 		if (frames == null || frames.length == 0)
-			return JDWPLocation.BLANK;
+			return JDWPHostLocation.BLANK;
 		
 		// Get frame details
 		Object topFrame = frames[0];
@@ -249,7 +249,7 @@ public final class JDWPHostController
 			items.put(type);
 		
 		// Build information
-		return new JDWPLocation(type,
+		return new JDWPHostLocation(type,
 			methodDx,
 			viewFrame.atCodeIndex(topFrame),
 			viewType.methodName(type, methodDx),
@@ -404,7 +404,7 @@ public final class JDWPHostController
 	 * @return If an event was found and sent for it.
 	 * @since 2021/03/16
 	 */
-	public boolean signal(Object __thread, EventKind __kind, Object... __args)
+	public boolean signal(Object __thread, JDWPEventKind __kind, Object... __args)
 		throws NullPointerException
 	{
 		if (__kind == null)
@@ -416,10 +416,10 @@ public final class JDWPHostController
 		
 		// Is this a special unconditional event
 		boolean unconditional = false;
-		if (__kind == EventKind.UNCONDITIONAL_BREAKPOINT)
+		if (__kind == JDWPEventKind.UNCONDITIONAL_BREAKPOINT)
 		{
 			unconditional = true;
-			__kind = EventKind.BREAKPOINT;
+			__kind = JDWPEventKind.BREAKPOINT;
 		}
 		
 		// Go through all compatible events for this thread
@@ -545,7 +545,7 @@ public final class JDWPHostController
 			case BREAKPOINT:
 				{
 					// If there is no location, this is a pointless breakpoint
-					JDWPLocation location = filter.location;
+					JDWPHostLocation location = filter.location;
 					if (location == null)
 						return;
 					
@@ -568,7 +568,7 @@ public final class JDWPHostController
 					this.viewType().fieldWatch(
 						fieldOnly.type, fieldOnly.fieldDx,
 						__request.eventKind ==
-							EventKind.FIELD_MODIFICATION);
+							JDWPEventKind.FIELD_MODIFICATION);
 				}
 				break;
 				
@@ -842,7 +842,7 @@ public final class JDWPHostController
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/03/14
 	 */
-	JDWPPacket __event(SuspendPolicy __policy, EventKind __kind,
+	JDWPPacket __event(SuspendPolicy __policy, JDWPEventKind __kind,
 		int __responseId)
 		throws NullPointerException
 	{

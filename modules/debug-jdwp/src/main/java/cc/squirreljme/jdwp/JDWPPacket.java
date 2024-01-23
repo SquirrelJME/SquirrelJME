@@ -538,7 +538,7 @@ public final class JDWPPacket
 	 * @throws JDWPException If the location is not valid.
 	 * @since 2021/04/17
 	 */
-	public JDWPLocation readLocation(JDWPHostController __controller)
+	public JDWPHostLocation readLocation(JDWPHostController __controller)
 		throws JDWPException
 	{
 		synchronized (this)
@@ -551,7 +551,7 @@ public final class JDWPPacket
 			// be 0 for anything that is not handled.
 			int tag = this.readByte();
 			if (tag == 0)
-				return JDWPLocation.BLANK;
+				return JDWPHostLocation.BLANK;
 			
 			// Make sure the type and method are valid
 			JDWPViewType viewType = __controller.viewType();
@@ -562,7 +562,7 @@ public final class JDWPPacket
 					null);
 			
 			// Build location
-			return new JDWPLocation(type, methodDx, this.readLong(),
+			return new JDWPHostLocation(type, methodDx, this.readLong(),
 				viewType.methodName(type, methodDx),
 				viewType.methodSignature(type, methodDx));
 		}
@@ -1042,11 +1042,11 @@ public final class JDWPPacket
 	 * @since 2021/04/25
 	 */
 	public void writeLocation(JDWPHostController __controller,
-		JDWPLocation __location)
+		JDWPHostLocation __location)
 		throws JDWPException, NullPointerException
 	{
 		// If this is the blank location, then write as blank
-		if (JDWPLocation.BLANK.equals(__location))
+		if (JDWPHostLocation.BLANK.equals(__location))
 		{
 			this.writeByte(0);
 			return;

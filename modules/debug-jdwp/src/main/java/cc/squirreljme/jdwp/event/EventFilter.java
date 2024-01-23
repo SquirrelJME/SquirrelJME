@@ -9,9 +9,9 @@
 
 package cc.squirreljme.jdwp.event;
 
-import cc.squirreljme.jdwp.EventKind;
+import cc.squirreljme.jdwp.JDWPEventKind;
 import cc.squirreljme.jdwp.JDWPHostController;
-import cc.squirreljme.jdwp.JDWPLocation;
+import cc.squirreljme.jdwp.JDWPHostLocation;
 import cc.squirreljme.jdwp.JDWPHostStepTracker;
 import cc.squirreljme.jdwp.JDWPUtils;
 import cc.squirreljme.jdwp.JDWPValue;
@@ -31,7 +31,7 @@ public final class EventFilter
 		0x08;
 	
 	/** The execution location. */
-	public final JDWPLocation location;
+	public final JDWPHostLocation location;
 	
 	/** The call stack stepping. */
 	public final CallStackStepping callStackStepping;
@@ -77,7 +77,7 @@ public final class EventFilter
 	 */
 	public EventFilter(Object __thread, Object __type,
 		ClassPatternMatcher __includeClass, ClassPatternMatcher __excludeClass,
-		FieldOnly __fieldOnly, JDWPLocation __location,
+		FieldOnly __fieldOnly, JDWPHostLocation __location,
 		boolean __thisInstanceSet, Object __thisInstance,
 		ExceptionOnly __exception, CallStackStepping __callStackStepping)
 	{
@@ -117,7 +117,7 @@ public final class EventFilter
 	 * @since 2021/04/18
 	 */
 	public boolean meets(JDWPHostController __controller, Object __thread,
-		EventKind __kind, Object... __args)
+		JDWPEventKind __kind, Object... __args)
 		throws NullPointerException
 	{
 		if (__controller == null || __kind == null)
@@ -253,7 +253,7 @@ public final class EventFilter
 			case CURRENT_LOCATION:
 				if (this.location != null)
 				{
-					JDWPLocation location = this.location;
+					JDWPHostLocation location = this.location;
 					
 					// With no current thread, we have no idea where we are
 					// even located
@@ -292,7 +292,7 @@ public final class EventFilter
 					
 					// Is this method static? Determines if we match the
 					// instance or not
-					JDWPLocation location = __controller.locationOf(
+					JDWPHostLocation location = __controller.locationOf(
 						__thread);
 					boolean isStatic = (__controller.viewType()
 						.methodFlags(location.type, location.methodDx) &

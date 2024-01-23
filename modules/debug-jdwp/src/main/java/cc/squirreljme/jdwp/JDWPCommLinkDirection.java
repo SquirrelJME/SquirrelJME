@@ -14,7 +14,7 @@ package cc.squirreljme.jdwp;
  *
  * @since 2024/01/19
  */
-public enum CommLinkDirection
+public enum JDWPCommLinkDirection
 {
 	/** Connecting the debugger to the client, we are debugging the client. */
 	DEBUGGER_TO_CLIENT,

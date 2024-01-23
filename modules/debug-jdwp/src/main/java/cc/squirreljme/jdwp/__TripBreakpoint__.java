@@ -51,6 +51,6 @@ class __TripBreakpoint__
 		controller.getState().items.put(__thread);
 		
 		// Send the signal
-		controller.signal(__thread, EventKind.BREAKPOINT);
+		controller.signal(__thread, JDWPEventKind.BREAKPOINT);
 	}
 }

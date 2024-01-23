@@ -39,7 +39,7 @@ public enum CommandSetEventRequest
 			throws JDWPException
 		{
 			// Which kind of event? If not supported, it is not valid
-			EventKind eventKind = EventKind.of(__packet.readByte());
+			JDWPEventKind eventKind = JDWPEventKind.of(__packet.readByte());
 			if (eventKind == null)
 				return __controller.reply(__packet.id(),
 					JDWPErrorType.INVALID_EVENT_TYPE);
@@ -58,7 +58,7 @@ public enum CommandSetEventRequest
 			ClassPatternMatcher includeClass = null;
 			ClassPatternMatcher excludeClass = null;
 			FieldOnly fieldOnly = null;
-			JDWPLocation location = null;
+			JDWPHostLocation location = null;
 			Object thisInstance = null;
 			boolean thisInstanceSet = false;
 			ExceptionOnly exception = null;
@@ -200,7 +200,7 @@ public enum CommandSetEventRequest
 			throws JDWPException
 		{
 			// Which kind of event? If not supported, it is not valid
-			EventKind eventKind = EventKind.of(__packet.readByte());
+			JDWPEventKind eventKind = JDWPEventKind.of(__packet.readByte());
 			if (eventKind == null)
 				return __controller.reply(__packet.id(),
 					JDWPErrorType.INVALID_EVENT_TYPE);
@@ -226,7 +226,7 @@ public enum CommandSetEventRequest
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			__controller.eventManager.clear(EventKind.BREAKPOINT);
+			__controller.eventManager.clear(JDWPEventKind.BREAKPOINT);
 			
 			return null;
 		}

@@ -11,7 +11,7 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.emulator.profiler.ProfiledFrame;
 import cc.squirreljme.emulator.vm.VMTraceFlagTracker;
-import cc.squirreljme.jdwp.EventKind;
+import cc.squirreljme.jdwp.JDWPEventKind;
 import cc.squirreljme.jdwp.JDWPClassStatus;
 import cc.squirreljme.jdwp.JDWPHostController;
 import cc.squirreljme.jdwp.JDWPHostStepTracker;
@@ -1476,7 +1476,7 @@ public final class SpringThreadWorker
 		if (jdwp != null) {
 			// Emit signal
 			jdwp.signal(this.thread, (useeh != null ?
-					EventKind.EXCEPTION_CATCH : EventKind.EXCEPTION),
+					JDWPEventKind.EXCEPTION_CATCH : JDWPEventKind.EXCEPTION),
 				__o, useeh);
 			
 			// Check to see if we are suspended, so we can stop here if we
@@ -3910,7 +3910,7 @@ public final class SpringThreadWorker
 		if (jdwp != null)
 		{
 			// Signal that we went into a method
-			jdwp.signal(this.thread, EventKind.METHOD_ENTRY);
+			jdwp.signal(this.thread, JDWPEventKind.METHOD_ENTRY);
 			
 			// Debugger may have stopped here
 			this.__debugSuspension();
@@ -4031,9 +4031,9 @@ public final class SpringThreadWorker
 		{
 			// Signal that method exited
 			if (__value == null)
-				jdwp.signal(__thread, EventKind.METHOD_EXIT);
+				jdwp.signal(__thread, JDWPEventKind.METHOD_EXIT);
 			else
-				jdwp.signal(__thread, EventKind.METHOD_EXIT_WITH_RETURN_VALUE,
+				jdwp.signal(__thread, JDWPEventKind.METHOD_EXIT_WITH_RETURN_VALUE,
 					__value);
 			
 			// Debugger may have stopped here

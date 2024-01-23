@@ -53,8 +53,8 @@ final class __TripField__
 		
 		// Signal access or modification
 		controller.signal(__thread,
-			(__write ? EventKind.FIELD_MODIFICATION :
-				EventKind.FIELD_ACCESS),
+			(__write ? JDWPEventKind.FIELD_MODIFICATION :
+				JDWPEventKind.FIELD_ACCESS),
 			__type, __fieldDx, __write, __instance, __jVal);
 	}
 }

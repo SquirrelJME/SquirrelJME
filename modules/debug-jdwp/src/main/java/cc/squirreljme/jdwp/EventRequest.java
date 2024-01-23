@@ -22,7 +22,7 @@ public final class EventRequest
 	public final int id;
 	
 	/** The kind of event used. */
-	public final EventKind eventKind;
+	public final JDWPEventKind eventKind;
 	
 	/** The suspend policy. */
 	public final SuspendPolicy suspendPolicy;
@@ -45,7 +45,7 @@ public final class EventRequest
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/03/13
 	 */
-	public EventRequest(int __id, EventKind __eventKind,
+	public EventRequest(int __id, JDWPEventKind __eventKind,
 		SuspendPolicy __suspendPolicy, int __occurrenceLimit,
 		EventFilter __filter)
 		throws NullPointerException

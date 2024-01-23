@@ -50,14 +50,14 @@ final class __TripThreadAlive__
 		// Is this the first thread ever called? If it is then implicitly
 		// say that the virtual machine is alive now
 		if (__isAlive && state.latchFirstThread())
-			controller.signal(__thread, EventKind.VM_START, __thread);
+			controller.signal(__thread, JDWPEventKind.VM_START, __thread);
 		
 		// Register this thread for later use
 		state.items.put(__thread);
 		
 		// Forward generic event
-		controller.signal(__thread, (__isAlive ? EventKind.THREAD_START :
-			EventKind.THREAD_DEATH), __thread);
+		controller.signal(__thread, (__isAlive ? JDWPEventKind.THREAD_START :
+			JDWPEventKind.THREAD_DEATH), __thread);
 	}
 	
 	/**
@@ -82,7 +82,7 @@ final class __TripThreadAlive__
 		// Signal the step, if no events are found we likely are no longer
 		// going to step so just stop
 		JDWPHostStepTracker stepTracker = viewThread.stepTracker(__which);
-		if (!controller.signal(__which, EventKind.SINGLE_STEP, stepTracker))
+		if (!controller.signal(__which, JDWPEventKind.SINGLE_STEP, stepTracker))
 			stepTracker.clear();
 	}
 	
@@ -116,7 +116,7 @@ final class __TripThreadAlive__
 		controller.getState().items.put(__thread);
 		
 		// Send the signal
-		controller.signal(__thread, EventKind.UNCONDITIONAL_BREAKPOINT);
+		controller.signal(__thread, JDWPEventKind.UNCONDITIONAL_BREAKPOINT);
 	}
 	
 	/**

@@ -11,7 +11,7 @@ package cc.squirreljme.debugger;
 
 import cc.squirreljme.emulator.NativeBinding;
 import cc.squirreljme.jdwp.JDWPCommLink;
-import cc.squirreljme.jdwp.CommLinkDirection;
+import cc.squirreljme.jdwp.JDWPCommLinkDirection;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -132,7 +132,7 @@ public class Main
 		
 		// Setup communication link
 		return new JDWPCommLink(socket.getInputStream(),
-			socket.getOutputStream(), CommLinkDirection.DEBUGGER_TO_CLIENT);
+			socket.getOutputStream(), JDWPCommLinkDirection.DEBUGGER_TO_CLIENT);
 	}
 	
 	/**
@@ -151,7 +151,7 @@ public class Main
 		
 		// Forward accordingly
 		Main.start(new JDWPCommLink(__in, __out,
-			CommLinkDirection.DEBUGGER_TO_CLIENT));
+			JDWPCommLinkDirection.DEBUGGER_TO_CLIENT));
 	}
 	
 	/**

@@ -29,18 +29,18 @@ import net.multiphasicapps.collections.EmptyList;
 public final class EventManager
 {
 	/** Event mappings by Kind. */
-	private final Map<EventKind, List<EventRequest>> _eventByKind =
-		new EnumTypeMap<EventKind, List<EventRequest>>(
-			EventKind.class, EventKind.values());
+	private final Map<JDWPEventKind, List<EventRequest>> _eventByKind =
+		new EnumTypeMap<JDWPEventKind, List<EventRequest>>(
+			JDWPEventKind.class, JDWPEventKind.values());
 	
 	/** Event mapping by Id. */
 	private final Map<Integer, EventRequest> _eventById =
 		new HashMap<>();
 	
 	/** Unconditional events. */
-	private final Map<EventKind, EventRequest> _unconditional =
-		new EnumTypeMap<EventKind, EventRequest>(
-			EventKind.class, EventKind.values());
+	private final Map<JDWPEventKind, EventRequest> _unconditional =
+		new EnumTypeMap<JDWPEventKind, EventRequest>(
+			JDWPEventKind.class, JDWPEventKind.values());
 	
 	/**
 	 * Initializes the event manager.
@@ -50,8 +50,8 @@ public final class EventManager
 	public EventManager()
 	{
 		// Unconditional breakpoints
-		this._unconditional.put(EventKind.BREAKPOINT,
-			new EventRequest(0, EventKind.BREAKPOINT,
+		this._unconditional.put(JDWPEventKind.BREAKPOINT,
+			new EventRequest(0, JDWPEventKind.BREAKPOINT,
 				SuspendPolicy.EVENT_THREAD, -1, null));
 	}
 	
@@ -72,7 +72,7 @@ public final class EventManager
 		if (JDWPHostController._DEBUG)
 			Debugging.debugNote("JDWP: Adding event %s", __request);
 		
-		Map<EventKind, List<EventRequest>> eventByKind = this._eventByKind;
+		Map<JDWPEventKind, List<EventRequest>> eventByKind = this._eventByKind;
 		synchronized (this)
 		{
 			// Get list of the event
@@ -94,7 +94,7 @@ public final class EventManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/04/30
 	 */
-	public void clear(EventKind __kind)
+	public void clear(JDWPEventKind __kind)
 		throws NullPointerException
 	{
 		if (__kind == null)
@@ -124,7 +124,7 @@ public final class EventManager
 	 */
 	public void clearAll()
 	{
-		for (EventKind kind : EventKind.values())
+		for (JDWPEventKind kind : JDWPEventKind.values())
 			this.clear(kind);
 	}
 	
@@ -166,7 +166,7 @@ public final class EventManager
 	 */
 	protected Iterable<EventRequest> find(JDWPHostController __controller,
 		Object __thread, boolean __unconditional,
-		EventKind __kind, Object... __args)
+		JDWPEventKind __kind, Object... __args)
 		throws NullPointerException
 	{
 		if (__controller == null || __kind == null)
@@ -239,7 +239,7 @@ public final class EventManager
 	 */
 	private Iterable<EventRequest> __unconditional(
 		JDWPHostController __controller,
-		EventKind __kind)
+		JDWPEventKind __kind)
 		throws NullPointerException
 	{
 		if (__controller == null || __kind == null)
