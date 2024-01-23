@@ -423,20 +423,35 @@ public final class JDWPPacket
 	}
 	
 	/**
-	 * Reads an ID of the given kind.
+	 * Reads the ID based on the kind from the packet.
 	 *
-	 * @param __kind The kind of ID to read.
-	 * @return The read ID.
+	 * @param __kind The kind of value to read.
+	 * @return The resultant ID.
+	 * @throws JDWPException If the kind is not valid or ID sizes are not yet
+	 * known.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2024/01/22
+	 * @since 2024/01/23
 	 */
-	public final JDWPId readId(JDWPIdKind __kind)
-		throws NullPointerException
+	public JDWPId readId(JDWPIdKind __kind)
+		throws JDWPException, NullPointerException
 	{
 		if (__kind == null)
 			throw new NullPointerException("NARG");
 		
-		return JDWPId.of(__kind, this.readId());
+		synchronized (this)
+		{
+			// Ensure this is open
+			this.__checkOpen();
+			
+			/* {@squirreljme.error AG0z ID Sizes not currently known.} */
+			JDWPIdSizes idSizes = this._idSizes;
+			if (idSizes == null)
+				throw new JDWPException("AG0z");
+			
+			/* Read in the variably sized entry. */
+			return JDWPId.of(__kind,
+				this.readVariable(idSizes.getSize(__kind)));
+		}
 	}
 	
 	/**
