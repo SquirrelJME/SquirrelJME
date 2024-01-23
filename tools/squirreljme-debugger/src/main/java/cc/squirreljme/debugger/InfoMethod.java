@@ -9,7 +9,7 @@
 
 package cc.squirreljme.debugger;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.jdwp.JDWPId;
 
 /**
  * Not Described.
@@ -26,7 +26,7 @@ public class InfoMethod
 	 * @param __id The ID number of this info.
 	 * @since 2024/01/22
 	 */
-	public InfoMethod(DebuggerState __state, RemoteId __id)
+	public InfoMethod(DebuggerState __state, JDWPId __id)
 		throws NullPointerException
 	{
 		super(__state, __id, InfoKind.METHOD);

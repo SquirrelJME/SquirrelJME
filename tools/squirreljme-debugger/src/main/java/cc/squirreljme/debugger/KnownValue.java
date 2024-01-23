@@ -22,6 +22,9 @@ public final class KnownValue<T>
 	/** The type of value to store. */
 	protected final Class<T> type;
 	
+	/** Is this an array? */
+	protected final boolean isArray;
+	
 	/** The updater used for values. */
 	protected final KnownValueUpdater<T> updater;
 	
@@ -45,6 +48,7 @@ public final class KnownValue<T>
 			throw new NullPointerException("NARG");
 		
 		this.type = __type;
+		this.isArray = __type.isArray();
 		this.updater = null;
 	}
 	
@@ -63,6 +67,7 @@ public final class KnownValue<T>
 			throw new NullPointerException("NARG");
 		
 		this.type = __type;
+		this.isArray = __type.isArray();
 		this.updater = __updater;
 	}
 	
@@ -81,6 +86,7 @@ public final class KnownValue<T>
 			throw new NullPointerException("NARG");
 		
 		this.type = __type;
+		this.isArray = __type.isArray();
 		this.updater = null;
 		
 		// Set to this known value
@@ -98,7 +104,7 @@ public final class KnownValue<T>
 	{
 		synchronized (this)
 		{
-			return this._value;
+			return this.__clone(this._value);
 		}
 	}
 	
@@ -114,7 +120,7 @@ public final class KnownValue<T>
 		synchronized (this)
 		{
 			if (this._known)
-				return this._value;
+				return this.__clone(this._value);
 			return __default;
 		}
 	}
@@ -165,7 +171,7 @@ public final class KnownValue<T>
 		{
 			// Do we immediately know the value?
 			if (this._known)
-				return this._value;
+				return this.__clone(this._value);
 			
 			// Wait
 			try
@@ -178,7 +184,7 @@ public final class KnownValue<T>
 			
 			// Return the value, assuming it is known
 			if (this._known)
-				return this._value;
+				return this.__clone(this._value);
 			
 			// Otherwise null
 			return null;
@@ -211,7 +217,7 @@ public final class KnownValue<T>
 	{
 		synchronized (this)
 		{
-			this._value = this.type.cast(__v);
+			this._value = this.__clone(this.type.cast(__v));
 			this._known = true;
 			
 			// Notify on self for anything waiting on this
@@ -243,5 +249,21 @@ public final class KnownValue<T>
 		
 		// Return the value
 		return this.get();
+	}
+	
+	/**
+	 * Potentially clones the value.
+	 *
+	 * @param __value The value to potentially clone.
+	 * @return The resultant value.
+	 * @since 2024/01/22
+	 */
+	@SuppressWarnings("unchecked")
+	private T __clone(T __value)
+	{
+		if (__value == null || !this.isArray)
+			return __value;
+		
+		return (T)((Object[])__value).clone();
 	}
 }

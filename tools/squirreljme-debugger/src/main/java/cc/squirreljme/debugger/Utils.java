@@ -27,6 +27,10 @@ public final class Utils
 	public static final int TIMEOUT =
 		3000;
 	
+	/** A timeout for a very important item. */
+	public static final int IMPORTANT_TIMEOUT =
+		1000 * 30;
+	
 	/**
 	 * Not used.
 	 * 

@@ -12,10 +12,9 @@ package cc.squirreljme.debugger;
 import cc.squirreljme.jdwp.CommandSetReferenceType;
 import cc.squirreljme.jdwp.JDWPCommandSet;
 import cc.squirreljme.jdwp.JDWPPacket;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.jdwp.JDWPId;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.FieldDescriptor;
-import net.multiphasicapps.classfile.FieldName;
 
 /**
  * Caches information on remote classes and otherwise.
@@ -38,7 +37,7 @@ public class InfoClass
 	 * @param __id The ID number of this info.
 	 * @since 2024/01/22
 	 */
-	public InfoClass(DebuggerState __state, RemoteId __id)
+	public InfoClass(DebuggerState __state, JDWPId __id)
 		throws NullPointerException
 	{
 		super(__state, __id, InfoKind.CLASS);
@@ -111,7 +110,18 @@ public class InfoClass
 			__state.sendThenWait(out, Utils.TIMEOUT, (__ignored, __reply) -> {
 				int count = __reply.readInt();
 				
-				throw Debugging.todo(count);
+				// Fill in method results
+				InfoMethod[] result = new InfoMethod[count];
+				for (int i = 0; i < count; i++)
+				{
+					long methodId = __reply.readLong();
+					String name = __reply.readString();
+					String type = __reply.readString();
+					int flags = __reply.readInt();
+				}
+				
+				// Set value
+				__value.set(result);
 			}, (__ignored, __fail) -> {
 			});
 		}

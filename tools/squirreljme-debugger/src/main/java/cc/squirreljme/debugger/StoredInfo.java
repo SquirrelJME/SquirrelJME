@@ -9,6 +9,7 @@
 
 package cc.squirreljme.debugger;
 
+import cc.squirreljme.jdwp.JDWPId;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Arrays;
 import java.util.Collection;
@@ -28,7 +29,7 @@ public class StoredInfo<I extends Info>
 	protected final InfoKind type;
 	
 	/** The internal item cache. */
-	private final Map<RemoteId, I> _cache =
+	private final Map<JDWPId, I> _cache =
 		new LinkedHashMap<>();
 	
 	/**
@@ -82,7 +83,7 @@ public class StoredInfo<I extends Info>
 	 * created.
 	 * @since 2024/01/20
 	 */
-	public final I get(RemoteId __id)
+	public final I get(JDWPId __id)
 	{
 		return this.get(null, __id);
 	}
@@ -100,12 +101,12 @@ public class StoredInfo<I extends Info>
 	 * @since 2024/01/20
 	 */
 	@SuppressWarnings("unchecked")
-	public final I get(DebuggerState __state, RemoteId __id, Object... __extra)
+	public final I get(DebuggerState __state, JDWPId __id, Object... __extra)
 	{
 		if (__id == null)
 			throw new NullPointerException("NARG");
 		
-		Map<RemoteId, I> cache = this._cache;
+		Map<JDWPId, I> cache = this._cache;
 		synchronized (this)
 		{
 			I rv = cache.get(__id);
@@ -139,7 +140,7 @@ public class StoredInfo<I extends Info>
 	 * @return The state information or {@code null} if not known.
 	 * @since 2024/01/20
 	 */
-	public final I optional(RemoteId __id)
+	public final I optional(JDWPId __id)
 	{
 		synchronized (this)
 		{
@@ -157,11 +158,11 @@ public class StoredInfo<I extends Info>
 	{
 		synchronized (this)
 		{
-			Map<RemoteId, I> items = this._cache;
-			for (Iterator<Map.Entry<RemoteId, I>> it =
+			Map<JDWPId, I> items = this._cache;
+			for (Iterator<Map.Entry<JDWPId, I>> it =
 				 items.entrySet().iterator(); it.hasNext();)
 			{
-				Map.Entry<RemoteId, I> entry = it.next();
+				Map.Entry<JDWPId, I> entry = it.next();
 				I item = entry.getValue();
 				
 				// If the item is known to be disposed, remove it

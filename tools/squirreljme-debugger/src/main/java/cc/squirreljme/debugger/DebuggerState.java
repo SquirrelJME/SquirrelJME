@@ -18,7 +18,9 @@ import cc.squirreljme.jdwp.EventKind;
 import cc.squirreljme.jdwp.JDWPCommand;
 import cc.squirreljme.jdwp.JDWPCommandSet;
 import cc.squirreljme.jdwp.JDWPException;
+import cc.squirreljme.jdwp.JDWPIdKind;
 import cc.squirreljme.jdwp.JDWPPacket;
+import cc.squirreljme.jdwp.JDWPId;
 import cc.squirreljme.jdwp.SuspendPolicy;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.io.HexDumpOutputStream;
@@ -220,7 +222,7 @@ public class DebuggerState
 						
 						// Get referenced class
 						foundClasses[i] = classStorage.get(__state,
-							RemoteId.of(__reply.readId()));
+							__reply.readId(JDWPIdKind.REFERENCE_TYPE_ID));
 						
 						// Ignore status
 						__reply.readInt();
@@ -563,22 +565,34 @@ public class DebuggerState
 	 */
 	private void __defaultInit()
 	{
+		// We need to know the sizes of variable length entries, otherwise
+		// we cannot read them at all
+		try (JDWPPacket packet = this.request(JDWPCommandSet.VIRTUAL_MACHINE,
+			CommandSetVirtualMachine.ID_SIZES))
+		{
+			this.sendThenWait(packet, Utils.IMPORTANT_TIMEOUT,
+				(__state, __reply) -> {
+					
+				});
+		}
+		
 		// Version information
 		try (JDWPPacket packet = this.request(JDWPCommandSet.VIRTUAL_MACHINE,
 			CommandSetVirtualMachine.VERSION))
 		{
-			this.send(packet, (__state, __reply) -> {
-				Debugging.debugNote("Description: %s",
-					__reply.readString());
-				Debugging.debugNote("JDWP Major: %d",
-					__reply.readInt());
-				Debugging.debugNote("JDWP Minor: %d",
-					__reply.readInt());
-				Debugging.debugNote("VM Version: %s",
-					__reply.readString());
-				Debugging.debugNote("VM Name: %s",
-					__reply.readString());
-			});
+			this.sendThenWait(packet, Utils.IMPORTANT_TIMEOUT,
+				(__state, __reply) -> {
+					Debugging.debugNote("Description: %s",
+						__reply.readString());
+					Debugging.debugNote("JDWP Major: %d",
+						__reply.readInt());
+					Debugging.debugNote("JDWP Minor: %d",
+						__reply.readInt());
+					Debugging.debugNote("VM Version: %s",
+						__reply.readString());
+					Debugging.debugNote("VM Name: %s",
+						__reply.readString());
+				});
 		}
 		
 		// Get the capabilities of the remote VM, so we know what we can and

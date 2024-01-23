@@ -7,9 +7,8 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.debugger;
+package cc.squirreljme.jdwp;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -17,8 +16,8 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 2024/01/22
  */
-public final class RemoteId
-	implements Comparable<RemoteId>
+public final class JDWPId
+	implements Comparable<JDWPId>
 {
 	/** The ID used for this. */
 	public final long id;
@@ -26,16 +25,25 @@ public final class RemoteId
 	/**
 	 * Initializes the ID.
 	 *
+	 * @param __kind The kind of ID this is.
 	 * @param __id The ID to use.
 	 * @since 2024/01/22
 	 */
-	private RemoteId(long __id)
+	private JDWPId(JDWPIdKind __kind, long __id)
+		throws NullPointerException
 	{
+		if (__kind == null)
+			throw new NullPointerException("NARG");
+		
 		this.id = __id;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/01/22
+	 */
 	@Override
-	public int compareTo(@NotNull RemoteId __o)
+	public int compareTo(@NotNull JDWPId __o)
 	{
 		long a = this.id;
 		long b = __o.id;
@@ -56,10 +64,10 @@ public final class RemoteId
 	{
 		if (this == __o)
 			return true;
-		else if (!(__o instanceof RemoteId))
+		else if (!(__o instanceof JDWPId))
 			return false;
 		
-		return this.id == ((RemoteId)__o).id;
+		return this.id == ((JDWPId)__o).id;
 	}
 	
 	/**
@@ -85,14 +93,27 @@ public final class RemoteId
 	}
 	
 	/**
+	 * Returns the ID as a long value.
+	 *
+	 * @return The long ID value.
+	 * @since 2024/01/22
+	 */
+	public long longValue()
+	{
+		return this.id;
+	}
+	
+	/**
 	 * Returns an ID with the given value.
 	 *
 	 * @param __id The ID value.
 	 * @return The remote ID value.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/22
 	 */
-	public static RemoteId of(long __id)
+	public static JDWPId of(JDWPIdKind __kind, long __id)
+		throws NullPointerException
 	{
-		return new RemoteId(__id);
+		return new JDWPId(__kind, __id);
 	}
 }

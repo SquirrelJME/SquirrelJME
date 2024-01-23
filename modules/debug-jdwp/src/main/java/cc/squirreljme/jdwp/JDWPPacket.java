@@ -461,12 +461,31 @@ public final class JDWPPacket
 	 * 
 	 * @return The single read value.
 	 * @throws JDWPException If the end of the packet was reached.
+	 * @deprecated Do not use.
 	 * @since 2021/03/13
 	 */
+	@Deprecated
 	public final int readId()
 		throws JDWPException
 	{
 		return this.readInt();
+	}
+	
+	/**
+	 * Reads an ID of the given kind.
+	 *
+	 * @param __kind The kind of ID to read.
+	 * @return The read ID.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/22
+	 */
+	public final JDWPId readId(JDWPIdKind __kind)
+		throws NullPointerException
+	{
+		if (__kind == null)
+			throw new NullPointerException("NARG");
+		
+		return JDWPId.of(__kind, this.readId());
 	}
 	
 	/**

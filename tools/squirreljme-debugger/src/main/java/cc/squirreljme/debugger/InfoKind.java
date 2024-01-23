@@ -9,6 +9,8 @@
 
 package cc.squirreljme.debugger;
 
+import cc.squirreljme.jdwp.JDWPId;
+
 /**
  * The type of information stored.
  *
@@ -24,7 +26,7 @@ public enum InfoKind
 		 * @since 2024/01/20
 		 */
 		@Override
-		protected Info seed(DebuggerState __state, RemoteId __id,
+		protected Info seed(DebuggerState __state, JDWPId __id,
 			Object... __extra)
 		{
 			return new InfoThread(__state, __id);
@@ -39,7 +41,7 @@ public enum InfoKind
 		 * @since 2024/01/22
 		 */
 		@Override
-		protected Info seed(DebuggerState __state, RemoteId __id,
+		protected Info seed(DebuggerState __state, JDWPId __id,
 			Object... __extra)
 		{
 			return new InfoClass(__state, __id);
@@ -54,7 +56,7 @@ public enum InfoKind
 		 * @since 2024/01/22
 		 */
 		@Override
-		protected Info seed(DebuggerState __state, RemoteId __id,
+		protected Info seed(DebuggerState __state, JDWPId __id,
 			Object... __extra)
 		{
 			return new InfoMethod(__state, __id);
@@ -88,7 +90,7 @@ public enum InfoKind
 	 * @return The resultant item.
 	 * @since 2024/01/20
 	 */
-	protected abstract Info seed(DebuggerState __state, RemoteId __id,
+	protected abstract Info seed(DebuggerState __state, JDWPId __id,
 		Object... __extra);
 	
 	/**

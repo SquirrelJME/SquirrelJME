@@ -13,6 +13,7 @@ import cc.squirreljme.jdwp.CommandSetThreadReference;
 import cc.squirreljme.jdwp.ErrorType;
 import cc.squirreljme.jdwp.JDWPCommandSet;
 import cc.squirreljme.jdwp.JDWPPacket;
+import cc.squirreljme.jdwp.JDWPId;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -42,7 +43,7 @@ public class InfoThread
 	 * @param __id The ID number of this thread.
 	 * @since 2024/01/20
 	 */
-	public InfoThread(DebuggerState __state, RemoteId __id)
+	public InfoThread(DebuggerState __state, JDWPId __id)
 	{
 		super(__state, __id, InfoKind.THREAD);
 	}

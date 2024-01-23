@@ -9,6 +9,7 @@
 
 package cc.squirreljme.debugger;
 
+import cc.squirreljme.jdwp.JDWPId;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.function.Consumer;
@@ -24,7 +25,7 @@ public abstract class Info
 	implements Comparable<Info>
 {
 	/** The ID of this item. */
-	protected final RemoteId id;
+	protected final JDWPId id;
 	
 	/** The kind of info this is. */
 	protected final InfoKind kind;
@@ -43,7 +44,7 @@ public abstract class Info
 	 * @param __kind The kind of information this is.
 	 * @since 2024/01/20
 	 */
-	public Info(DebuggerState __state, RemoteId __id, InfoKind __kind)
+	public Info(DebuggerState __state, JDWPId __id, InfoKind __kind)
 		throws NullPointerException
 	{
 		if (__state == null || __kind == null)

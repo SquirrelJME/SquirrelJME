@@ -9,9 +9,10 @@
 
 package cc.squirreljme.debugger;
 
-import cc.squirreljme.jdwp.ErrorType;
 import cc.squirreljme.jdwp.EventKind;
+import cc.squirreljme.jdwp.JDWPIdKind;
 import cc.squirreljme.jdwp.JDWPPacket;
+import cc.squirreljme.jdwp.JDWPId;
 import cc.squirreljme.jdwp.SuspendPolicy;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.EnumTypeMap;
@@ -120,7 +121,7 @@ public enum EventProcessor
 				__state.storedInfo.getThread();
 			
 			// Read in packet details
-			RemoteId threadId = RemoteId.of(__packet.readId());
+			JDWPId threadId = __packet.readId(JDWPIdKind.THREAD_ID);
 			
 			// Mark as started
 			InfoThread thread = threadStore.get(__state, threadId);
@@ -145,7 +146,7 @@ public enum EventProcessor
 				__state.storedInfo.getThread();
 			
 			// Read in packet details
-			RemoteId threadId = RemoteId.of(__packet.readId());
+			JDWPId threadId = __packet.readId(JDWPIdKind.THREAD_ID);
 			
 			// Set dead state
 			InfoThread thread = threadStore.get(__state, threadId);
@@ -378,7 +379,7 @@ public enum EventProcessor
 				__state.storedInfo.getThread();
 			
 			// Read in packet details
-			RemoteId threadId = RemoteId.of(__packet.readId());
+			JDWPId threadId = __packet.readId(JDWPIdKind.OBJECT_ID);
 			InfoThread thread = threadStore.get(__state, threadId);
 			
 			// Alias of thread start since this gives the first initial thread
