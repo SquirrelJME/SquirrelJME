@@ -19,8 +19,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Allows JDWP and otherwise to link to a given set of objects to be able to
@@ -40,6 +42,14 @@ public final class JDWPHostLinker<T>
 	/** Links for IDs to existing object types. */
 	private final Map<JDWPId, Reference<T>> _links =
 		new LinkedHashMap<>();
+	
+	/** Report storage for deprecated gets. */
+	private final Set<JDWPId> _deprecatedGet =
+		new LinkedHashSet<>();
+	
+	/** Report storage for deprecated puts. */
+	private final Set<JDWPId> _deprecatedPut =
+		new LinkedHashSet<>();
 	
 	/**
 	 * Initializes the linker.
@@ -96,12 +106,26 @@ public final class JDWPHostLinker<T>
 	@Deprecated
 	public final T get(int __id)
 	{
-		// TODO
-		Debugging.todoNote("Deprecated JDWPHostLinker.get(%d)",
-			__id);
+		JDWPId realId = JDWPId.of(JDWPIdKind.UNKNOWN, __id);
+		
+		// Only report get of entries once, otherwise the console will
+		// massively be spammed and slown down
+		Set<JDWPId> deprecated = this._deprecatedGet;
+		synchronized (this)
+		{
+			if (!deprecated.contains(realId))
+			{
+				// TODO
+				Debugging.todoNote("Deprecated JDWPHostLinker.get(%d)",
+					__id);
+				
+				// Store it in
+				deprecated.add(realId);
+			}
+		}
 		
 		// Wrap it
-		return this.get(JDWPId.of(JDWPIdKind.UNKNOWN, __id));
+		return this.get(realId);
 	}
 	
 	/**
@@ -129,9 +153,22 @@ public final class JDWPHostLinker<T>
 			id = JDWPId.of(JDWPIdKind.UNKNOWN,
 				System.identityHashCode(__t));
 			
-			// TODO
-			Debugging.todoNote("Deprecated JDWPHostLinker.put(%s) -> %s",
-				__t, id);
+			// Only report put of entries once, otherwise the console will
+			// massively be spammed and slowed down
+			Set<JDWPId> deprecated = this._deprecatedPut;
+			synchronized (this)
+			{
+				if (!deprecated.contains(id))
+				{
+					// TODO
+					Debugging.todoNote(
+						"Deprecated JDWPHostLinker.put(%s) -> %s",
+						__t, id);
+					
+					// Store it in
+					deprecated.add(id);
+				}
+			}
 		}
 		
 		// Protect these!

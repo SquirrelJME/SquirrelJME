@@ -121,7 +121,8 @@ public final class JDWPId
 	@Override
 	public String toString()
 	{
-		return String.format("%s#%d", this.kind, this.id);
+		return String.format("%s#%d",
+			this.kind, this.id);
 	}
 	
 	/**
