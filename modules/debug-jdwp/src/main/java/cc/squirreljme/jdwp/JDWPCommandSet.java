@@ -45,10 +45,10 @@ public enum JDWPCommandSet
 	THREAD_GROUP_REFERENCE(12, CommandSetThreadGroupReference.values()),
 	
 	/** Array references. */
-	ARRAY_REFERENCE(13, CommandSetArrayReference.values()),
+	ARRAY_REFERENCE(13, JDWPCommandSetArrayReference.values()),
 	
 	/** Class loader. */
-	CLASS_LOADER(14, CommandSetClassLoader.values()),
+	CLASS_LOADER(14, JDWPCommandSetClassLoader.values()),
 	
 	/** Event requests. */
 	EVENT_REQUEST(15, CommandSetEventRequest.values()),

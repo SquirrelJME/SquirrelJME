@@ -14,7 +14,7 @@ package cc.squirreljme.jdwp;
  *
  * @since 2021/04/20
  */
-public enum CommandSetClassLoader
+public enum JDWPCommandSetClassLoader
 	implements JDWPCommand
 {
 	/** Classes which are visible to the given loader. */
@@ -32,7 +32,7 @@ public enum CommandSetClassLoader
 	 * @param __id The ID used.
 	 * @since 2021/04/20
 	 */
-	CommandSetClassLoader(int __id)
+	JDWPCommandSetClassLoader(int __id)
 	{
 		this.id = __id;
 	}

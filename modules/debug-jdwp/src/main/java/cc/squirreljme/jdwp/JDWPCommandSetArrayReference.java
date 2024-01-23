@@ -14,7 +14,7 @@ package cc.squirreljme.jdwp;
  *
  * @since 2021/03/19
  */
-public enum CommandSetArrayReference
+public enum JDWPCommandSetArrayReference
 	implements JDWPCommand
 {
 	/** Length of array. */
@@ -35,7 +35,7 @@ public enum CommandSetArrayReference
 	 * @param __id The ID used.
 	 * @since 2021/03/19
 	 */
-	CommandSetArrayReference(int __id)
+	JDWPCommandSetArrayReference(int __id)
 	{
 		this.id = __id;
 	}
