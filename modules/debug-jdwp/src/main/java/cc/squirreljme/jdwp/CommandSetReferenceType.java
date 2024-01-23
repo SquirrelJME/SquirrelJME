@@ -51,7 +51,7 @@ public enum CommandSetReferenceType
 			Object type = __packet.readType(__controller, false);
 			
 			JDWPPacket rv = __controller.reply(
-				__packet.id(), ErrorType.NO_ERROR);
+				__packet.id(), JDWPErrorType.NO_ERROR);
 			
 			// Make sure the class loader is loaded if used
 			Object loader = __controller.viewType().classLoader(type);
@@ -80,7 +80,7 @@ public enum CommandSetReferenceType
 			Object type = __packet.readType(__controller, false);
 			
 			JDWPPacket rv = __controller.reply(
-				__packet.id(), ErrorType.NO_ERROR);
+				__packet.id(), JDWPErrorType.NO_ERROR);
 			
 			rv.writeInt(__controller.viewType().flags(type));
 			
@@ -143,13 +143,13 @@ public enum CommandSetReferenceType
 			{
 				int fieldDx = __packet.readId();
 				if (!viewType.isValidField(type, fieldDx))
-					throw ErrorType.INVALID_FIELD_ID.toss(type, fieldDx);
+					throw JDWPErrorType.INVALID_FIELD_ID.toss(type, fieldDx);
 				
 				fields[i] = fieldDx;
 			}
 			
 			JDWPPacket rv = __controller.reply(
-				__packet.id(), ErrorType.NO_ERROR);
+				__packet.id(), JDWPErrorType.NO_ERROR);
 			
 			// Write field mappings
 			rv.writeInt(numFields);
@@ -193,11 +193,11 @@ public enum CommandSetReferenceType
 			// Does this have a source file?
 			String sourceFile = __controller.viewType().sourceFile(type);
 			if (sourceFile == null)
-				throw ErrorType.ABSENT_INFORMATION.toss(type,
+				throw JDWPErrorType.ABSENT_INFORMATION.toss(type,
 					System.identityHashCode(type));
 			
 			JDWPPacket rv = __controller.reply(
-				__packet.id(), ErrorType.NO_ERROR);
+				__packet.id(), JDWPErrorType.NO_ERROR);
 			
 			rv.writeString(sourceFile);
 			
@@ -223,7 +223,7 @@ public enum CommandSetReferenceType
 			Object[] interfaces = __controller.viewType().interfaceTypes(type);
 			
 			JDWPPacket rv = __controller.reply(
-				__packet.id(), ErrorType.NO_ERROR);
+				__packet.id(), JDWPErrorType.NO_ERROR);
 			
 			// Write all the interfaces
 			rv.writeInt(interfaces.length);
@@ -254,7 +254,7 @@ public enum CommandSetReferenceType
 			Object type = __packet.readType(__controller, false);
 			
 			JDWPPacket rv = __controller.reply(
-				__packet.id(), ErrorType.NO_ERROR);
+				__packet.id(), JDWPErrorType.NO_ERROR);
 			
 			Object instance = __controller.viewType().instance(type);
 			__controller.getState().items.put(instance);
@@ -328,7 +328,7 @@ public enum CommandSetReferenceType
 			Object type = __packet.readType(__controller, false);
 			
 			JDWPPacket rv = __controller.reply(
-				__packet.id(), ErrorType.NO_ERROR);
+				__packet.id(), JDWPErrorType.NO_ERROR);
 			
 			// Always Java 1.7
 			rv.writeInt(51);
@@ -359,10 +359,10 @@ public enum CommandSetReferenceType
 			// If not existent, this likely a primitive or native type
 			if (count < 0 || raw == null)
 				return __controller.reply(
-					__packet.id(), ErrorType.ABSENT_INFORMATION);
+					__packet.id(), JDWPErrorType.ABSENT_INFORMATION);
 			
 			JDWPPacket rv = __controller.reply(
-				__packet.id(), ErrorType.NO_ERROR);
+				__packet.id(), JDWPErrorType.NO_ERROR);
 			
 			rv.writeInt(count);
 			rv.writeInt(raw.length);
@@ -418,7 +418,7 @@ public enum CommandSetReferenceType
 		Object type = __packet.readType(__controller, false);
 		
 		JDWPPacket rv = __controller.reply(
-			__packet.id(), ErrorType.NO_ERROR);
+			__packet.id(), JDWPErrorType.NO_ERROR);
 		
 		// Do not allow reading the fields of class of weird things can happen
 		if ("Ljava/lang/Class;".equals(viewType.signature(type)))
@@ -469,7 +469,7 @@ public enum CommandSetReferenceType
 		Object type = __packet.readType(__controller, false);
 		
 		JDWPPacket rv = __controller.reply(
-			__packet.id(), ErrorType.NO_ERROR);
+			__packet.id(), JDWPErrorType.NO_ERROR);
 		
 		// Write number of methods
 		int[] methods = viewType.methods(type);
@@ -512,7 +512,7 @@ public enum CommandSetReferenceType
 		
 		// Write the normal class signature
 		JDWPPacket rv = __controller.reply(
-			__packet.id(), ErrorType.NO_ERROR);
+			__packet.id(), JDWPErrorType.NO_ERROR);
 		
 		rv.writeString(__controller.viewType().signature(type));
 		if (__generic)

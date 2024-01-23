@@ -39,7 +39,7 @@ public enum CommandSetThreadReference
 			Object thread = __packet.readThread(__controller);
 			
 			JDWPPacket rv = __controller.reply(
-				__packet.id(), ErrorType.NO_ERROR);
+				__packet.id(), JDWPErrorType.NO_ERROR);
 			
 			// This just uses the object name of the thread, whatever that
 			// may be for simplicity and mapping
@@ -118,7 +118,7 @@ public enum CommandSetThreadReference
 			if (thread == null)
 			{
 				JDWPPacket rv = __controller.reply(
-					__packet.id(), ErrorType.NO_ERROR);
+					__packet.id(), JDWPErrorType.NO_ERROR);
 				
 				// Terminated and not suspended
 				rv.writeInt(0);
@@ -128,7 +128,7 @@ public enum CommandSetThreadReference
 			}
 			
 			JDWPPacket rv = __controller.reply(
-				__packet.id(), ErrorType.NO_ERROR);
+				__packet.id(), JDWPErrorType.NO_ERROR);
 			
 			// If this thread has terminated it becomes a zombie
 			boolean terminated = view.isTerminated(thread);
@@ -193,7 +193,7 @@ public enum CommandSetThreadReference
 			__controller.getState().items.put(parentInstance);
 			
 			JDWPPacket rv = __controller.reply(
-				__packet.id(), ErrorType.NO_ERROR);
+				__packet.id(), JDWPErrorType.NO_ERROR);
 			
 			// Write the thread group
 			rv.writeObject(__controller, parentInstance);
@@ -229,7 +229,7 @@ public enum CommandSetThreadReference
 			
 			// Start by writing the frame count
 			JDWPPacket rv = __controller.reply(
-				__packet.id(), ErrorType.NO_ERROR);
+				__packet.id(), JDWPErrorType.NO_ERROR);
 			rv.writeInt(count);
 			
 			// Write each individual frame
@@ -274,7 +274,7 @@ public enum CommandSetThreadReference
 			Object thread = __packet.readThread(__controller);
 				
 			JDWPPacket rv = __controller.reply(
-				__packet.id(), ErrorType.NO_ERROR);
+				__packet.id(), JDWPErrorType.NO_ERROR);
 			
 			// Return the frame count
 			rv.writeInt(__controller.viewThread().frames(thread).length);
@@ -299,7 +299,7 @@ public enum CommandSetThreadReference
 			Object thread = __packet.readThread(__controller);
 			
 			// Always fail because this does not do anything
-			throw ErrorType.ILLEGAL_ARGUMENT.toss(thread,
+			throw JDWPErrorType.ILLEGAL_ARGUMENT.toss(thread,
 				System.identityHashCode(thread), null);
 		}
 	},
@@ -345,7 +345,7 @@ public enum CommandSetThreadReference
 			Object thread = __packet.readThread(__controller);
 				
 			JDWPPacket rv = __controller.reply(
-				__packet.id(), ErrorType.NO_ERROR);
+				__packet.id(), JDWPErrorType.NO_ERROR);
 			
 			rv.writeInt(view.suspension(thread).query());
 			

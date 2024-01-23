@@ -48,7 +48,7 @@ public enum CommandSetStackFrame
 			
 			// Always reply with the same number of slots
 			JDWPPacket rv = __controller.reply(
-				__packet.id(), ErrorType.NO_ERROR);
+				__packet.id(), JDWPErrorType.NO_ERROR);
 			rv.writeInt(numSlots);
 			
 			JDWPViewFrame viewFrame = __controller.viewFrame();
@@ -96,7 +96,7 @@ public enum CommandSetStackFrame
 			int methodDx = viewFrame.atMethodIndex(frame);
 			
 			JDWPPacket rv = __controller.reply(
-				__packet.id(), ErrorType.NO_ERROR);
+				__packet.id(), JDWPErrorType.NO_ERROR);
 			
 			// Static and native methods always return null
 			int mFlags = __controller.viewType().methodFlags(type, methodDx);

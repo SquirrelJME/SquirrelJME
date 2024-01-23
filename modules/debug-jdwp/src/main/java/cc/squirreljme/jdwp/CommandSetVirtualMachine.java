@@ -38,7 +38,7 @@ public enum CommandSetVirtualMachine
 			throws JDWPException
 		{
 			JDWPPacket rv = __controller.reply(
-				__packet.id(), ErrorType.NO_ERROR);
+				__packet.id(), JDWPErrorType.NO_ERROR);
 			
 			// VM Description
 			rv.writeString(__controller.bind().vmDescription());
@@ -79,7 +79,7 @@ public enum CommandSetVirtualMachine
 				
 			// Write result
 			JDWPPacket rv = __controller.reply(
-				__packet.id(), ErrorType.NO_ERROR);
+				__packet.id(), JDWPErrorType.NO_ERROR);
 			
 			// Record all classes
 			rv.writeInt(found.size());
@@ -195,7 +195,7 @@ public enum CommandSetVirtualMachine
 			throws JDWPException
 		{
 			JDWPPacket rv = __controller.reply(
-				__packet.id(), ErrorType.NO_ERROR);
+				__packet.id(), JDWPErrorType.NO_ERROR);
 			
 			// field, method, object, reference, frame
 			JDWPIdSizes idSizes = __packet.idSizes();
@@ -301,7 +301,7 @@ public enum CommandSetVirtualMachine
 			throws JDWPException
 		{
 			JDWPPacket rv = __controller.reply(
-				__packet.id(), ErrorType.NO_ERROR);
+				__packet.id(), JDWPErrorType.NO_ERROR);
 			
 			// Base directory is the current directory
 			rv.writeString(".");
@@ -410,11 +410,11 @@ public enum CommandSetVirtualMachine
 				
 				// If we did not find a class still, just say the VM is dead
 				if (allTypes.isEmpty())
-					throw ErrorType.VM_DEAD.toss(null, 0);
+					throw JDWPErrorType.VM_DEAD.toss(null, 0);
 			}
 			
 			JDWPPacket rv = __controller.reply(
-				__packet.id(), ErrorType.NO_ERROR);
+				__packet.id(), JDWPErrorType.NO_ERROR);
 			
 			// Write down all the known classes
 			JDWPViewType viewType = __controller.viewType();
@@ -482,7 +482,7 @@ public enum CommandSetVirtualMachine
 		throws JDWPException
 	{
 		JDWPPacket rv = __controller.reply(
-			__packet.id(), ErrorType.NO_ERROR);
+			__packet.id(), JDWPErrorType.NO_ERROR);
 		
 		// canWatchFieldModification
 		rv.writeBoolean(true);
@@ -574,7 +574,7 @@ public enum CommandSetVirtualMachine
 	{
 		// Write result
 		JDWPPacket rv = __controller.reply(
-			__packet.id(), ErrorType.NO_ERROR);
+			__packet.id(), JDWPErrorType.NO_ERROR);
 		
 		// Write it all out
 		rv.writeInt(__objects.length);

@@ -355,7 +355,7 @@ public final class JDWPCommLink
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/19
 	 */
-	public JDWPPacket reply(int __id, ErrorType __error)
+	public JDWPPacket reply(int __id, JDWPErrorType __error)
 		throws NullPointerException
 	{
 		if (__error == null)
@@ -380,7 +380,7 @@ public final class JDWPCommLink
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/19
 	 */
-	public JDWPPacket reply(JDWPPacket __packet, ErrorType __error)
+	public JDWPPacket reply(JDWPPacket __packet, JDWPErrorType __error)
 		throws NullPointerException
 	{
 		if (__packet == null || __error == null)
@@ -431,7 +431,7 @@ public final class JDWPCommLink
 		rv._flags = 0;
 		
 		// There is no error technically
-		rv._errorCode = ErrorType.NO_ERROR;
+		rv._errorCode = JDWPErrorType.NO_ERROR;
 		rv._rawErrorCode = 0;
 		
 		return rv;

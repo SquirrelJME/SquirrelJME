@@ -42,7 +42,7 @@ public enum CommandSetEventRequest
 			EventKind eventKind = EventKind.of(__packet.readByte());
 			if (eventKind == null)
 				return __controller.reply(__packet.id(),
-					ErrorType.INVALID_EVENT_TYPE);
+					JDWPErrorType.INVALID_EVENT_TYPE);
 			
 			// How does this suspend?
 			SuspendPolicy suspendPolicy =
@@ -72,11 +72,11 @@ public enum CommandSetEventRequest
 				EventModKind modKind = EventModKind.of(__packet.readByte());
 				if (modKind == null)
 					return __controller.reply(__packet.id(),
-						ErrorType.NOT_IMPLEMENTED);
+						JDWPErrorType.NOT_IMPLEMENTED);
 				
 				// If this is not a valid modifier, ignore this
 				if (!eventKind.isValidModifier(modKind))
-					throw ErrorType.ILLEGAL_ARGUMENT.toss(
+					throw JDWPErrorType.ILLEGAL_ARGUMENT.toss(
 						null, modKind.ordinal(), null);
 				
 				// Everything except occurrences has a filter!
@@ -135,7 +135,7 @@ public enum CommandSetEventRequest
 							int fieldDx = __packet.readId();
 							if (!__controller.viewType().isValidField(atType,
 									fieldDx))
-								ErrorType.INVALID_FIELD_ID.toss(atType,
+								JDWPErrorType.INVALID_FIELD_ID.toss(atType,
 									fieldDx, null); 
 							
 							fieldOnly = new FieldOnly(atType, fieldDx);
@@ -158,7 +158,7 @@ public enum CommandSetEventRequest
 						// Report not-implemented
 					default:
 						return __controller.reply(__packet.id(),
-							ErrorType.NOT_IMPLEMENTED);
+							JDWPErrorType.NOT_IMPLEMENTED);
 				}
 			}
 			
@@ -180,7 +180,7 @@ public enum CommandSetEventRequest
 			
 			// Respond with the ID of this event
 			JDWPPacket rv = __controller.reply(
-				__packet.id(), ErrorType.NO_ERROR);
+				__packet.id(), JDWPErrorType.NO_ERROR);
 			rv.writeInt(request.id);
 			
 			return rv;
@@ -203,7 +203,7 @@ public enum CommandSetEventRequest
 			EventKind eventKind = EventKind.of(__packet.readByte());
 			if (eventKind == null)
 				return __controller.reply(__packet.id(),
-					ErrorType.INVALID_EVENT_TYPE);
+					JDWPErrorType.INVALID_EVENT_TYPE);
 			
 			// Delete the event, if it is known... the kind is ignored since
 			// we always use unique IDs regardless of type

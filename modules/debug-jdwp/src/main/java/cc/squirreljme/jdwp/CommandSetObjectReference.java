@@ -44,7 +44,7 @@ public enum CommandSetObjectReference
 				__controller.getState().items.put(type);
 			
 			JDWPPacket rv = __controller.reply(
-				__packet.id(), ErrorType.NO_ERROR);
+				__packet.id(), JDWPErrorType.NO_ERROR);
 				
 			// Write the details of this class
 			rv.writeTaggedId(__controller, type);
@@ -79,13 +79,13 @@ public enum CommandSetObjectReference
 			{
 				int fieldDx = __packet.readId();
 				if (!viewType.isValidField(type, fieldDx))
-					throw ErrorType.INVALID_FIELD_ID.toss(type, fieldDx);
+					throw JDWPErrorType.INVALID_FIELD_ID.toss(type, fieldDx);
 				
 				fields[i] = fieldDx;
 			}
 			
 			JDWPPacket rv = __controller.reply(
-				__packet.id(), ErrorType.NO_ERROR);
+				__packet.id(), JDWPErrorType.NO_ERROR);
 			
 			// Write field mappings
 			rv.writeInt(numFields);
@@ -129,7 +129,7 @@ public enum CommandSetObjectReference
 			
 			// If we still know about this object it was not GCed
 			JDWPPacket rv = __controller.reply(
-				__packet.id(), ErrorType.NO_ERROR);
+				__packet.id(), JDWPErrorType.NO_ERROR);
 			rv.writeBoolean(false);
 			
 			return rv;

@@ -46,7 +46,7 @@ public enum CommandSetClassObjectReference
 				if (objectType == null || !viewType.isValid(objectType) ||
 					!"Ljava/lang/Class;"
 						.equals(viewType.signature(objectType)))
-					throw ErrorType.INVALID_OBJECT.toss(object,
+					throw JDWPErrorType.INVALID_OBJECT.toss(object,
 						System.identityHashCode(object),
 						new Throwable("Not a Class object."));
 			}
@@ -71,7 +71,7 @@ public enum CommandSetClassObjectReference
 			
 			// Not found?
 			if (found == null || !viewType.isValid(found))
-				throw ErrorType.INVALID_OBJECT.toss(object,
+				throw JDWPErrorType.INVALID_OBJECT.toss(object,
 					System.identityHashCode(object),
 					new Throwable("No matching type found."));
 					
@@ -79,7 +79,7 @@ public enum CommandSetClassObjectReference
 			__controller.getState().items.put(found);
 			
 			JDWPPacket rv = __controller.reply(
-				__packet.id(), ErrorType.NO_ERROR);
+				__packet.id(), JDWPErrorType.NO_ERROR);
 			
 			// Write the class type and reference to that type
 			rv.writeTaggedId(__controller, found);

@@ -40,10 +40,10 @@ public enum CommandSetMethod
 			// Not a valid method?
 			JDWPViewType viewType = __controller.viewType();
 			if (!viewType.isValidMethod(classy, methodId))
-				throw ErrorType.INVALID_METHOD_ID.toss(classy, methodId);
+				throw JDWPErrorType.INVALID_METHOD_ID.toss(classy, methodId);
 			
 			JDWPPacket rv = __controller.reply(
-				__packet.id(), ErrorType.NO_ERROR);
+				__packet.id(), JDWPErrorType.NO_ERROR);
 				
 			// Put down all the valid indexes in the method, even if there
 			// are no possible lines we may still want to break at specific
@@ -133,16 +133,16 @@ public enum CommandSetMethod
 			// Not a valid method?
 			JDWPViewType viewType = __controller.viewType();
 			if (!viewType.isValidMethod(classy, methodId))
-				throw ErrorType.INVALID_METHOD_ID.toss(classy, methodId);
+				throw JDWPErrorType.INVALID_METHOD_ID.toss(classy, methodId);
 			
 			// Absent information is not returned normally, but in this case
 			// return it
 			byte[] byteCode = viewType.methodByteCode(classy, methodId);
 			if (byteCode == null)
-				throw ErrorType.ABSENT_INFORMATION.toss(classy, methodId);
+				throw JDWPErrorType.ABSENT_INFORMATION.toss(classy, methodId);
 			
 			JDWPPacket rv = __controller.reply(
-				__packet.id(), ErrorType.NO_ERROR);
+				__packet.id(), JDWPErrorType.NO_ERROR);
 			
 			// Dump the byte code
 			rv.writeInt(byteCode.length);
@@ -216,18 +216,18 @@ public enum CommandSetMethod
 		// Not a valid method?
 		JDWPViewType viewType = __controller.viewType();
 		if (!viewType.isValidMethod(classy, methodId))
-			throw ErrorType.INVALID_METHOD_ID.toss(classy, methodId);
+			throw JDWPErrorType.INVALID_METHOD_ID.toss(classy, methodId);
 		
 		// Get the variable table, if missing then ignore it
 		JDWPLocalVariable[] variables = viewType.methodVariableTable(classy,
 			methodId);
 		if (variables == null || variables.length <= 0)
 			return __controller.reply(
-				__packet.id(), ErrorType.ABSENT_INFORMATION);
+				__packet.id(), JDWPErrorType.ABSENT_INFORMATION);
 		
 		// Setup packet
 		JDWPPacket rv = __controller.reply(
-			__packet.id(), ErrorType.NO_ERROR);
+			__packet.id(), JDWPErrorType.NO_ERROR);
 		
 		// Write down the number of argument slots
 		MethodDescriptor desc = new MethodDescriptor(

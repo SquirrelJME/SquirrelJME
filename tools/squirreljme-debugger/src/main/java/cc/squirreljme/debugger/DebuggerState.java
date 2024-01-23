@@ -13,7 +13,7 @@ import cc.squirreljme.jdwp.JDWPCommLink;
 import cc.squirreljme.jdwp.CommandSetEventRequest;
 import cc.squirreljme.jdwp.CommandSetThreadReference;
 import cc.squirreljme.jdwp.CommandSetVirtualMachine;
-import cc.squirreljme.jdwp.ErrorType;
+import cc.squirreljme.jdwp.JDWPErrorType;
 import cc.squirreljme.jdwp.EventKind;
 import cc.squirreljme.jdwp.JDWPCommand;
 import cc.squirreljme.jdwp.JDWPCommandSet;
@@ -242,7 +242,7 @@ public class DebuggerState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/21
 	 */
-	public JDWPPacket reply(JDWPPacket __id, ErrorType __error)
+	public JDWPPacket reply(JDWPPacket __id, JDWPErrorType __error)
 		throws NullPointerException
 	{
 		if (__id == null || __error == null)
@@ -260,7 +260,7 @@ public class DebuggerState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/21
 	 */
-	public JDWPPacket reply(int __id, ErrorType __error)
+	public JDWPPacket reply(int __id, JDWPErrorType __error)
 		throws NullPointerException
 	{
 		if (__error == null)

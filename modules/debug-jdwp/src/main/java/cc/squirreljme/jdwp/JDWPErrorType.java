@@ -14,7 +14,7 @@ package cc.squirreljme.jdwp;
  *
  * @since 2021/03/12
  */
-public enum ErrorType
+public enum JDWPErrorType
 	implements __IdNumbered__
 {
 	/** Undefined error. */
@@ -81,8 +81,8 @@ public enum ErrorType
 	;
 	
 	/** Quick table. */
-	private static final __QuickTable__<ErrorType> _QUICK =
-		new __QuickTable__<>(ErrorType.values());
+	private static final __QuickTable__<JDWPErrorType> _QUICK =
+		new __QuickTable__<>(JDWPErrorType.values());
 	
 	/** The ID of the packet. */
 	public final int id;
@@ -93,7 +93,7 @@ public enum ErrorType
 	 * @param __id The ID used.
 	 * @since 2021/03/13
 	 */
-	ErrorType(int __id)
+	JDWPErrorType(int __id)
 	{
 		this.id = __id;
 	}
@@ -148,9 +148,9 @@ public enum ErrorType
 	 * @return The found constant.
 	 * @since 2021/03/13
 	 */
-	public static ErrorType of(int __id)
+	public static JDWPErrorType of(int __id)
 	{
-		ErrorType rv = ErrorType._QUICK.get(__id);
-		return (rv == null ? ErrorType.UNDEFINED_ERROR : rv);
+		JDWPErrorType rv = JDWPErrorType._QUICK.get(__id);
+		return (rv == null ? JDWPErrorType.UNDEFINED_ERROR : rv);
 	}
 }

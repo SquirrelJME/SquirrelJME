@@ -10,7 +10,7 @@
 package cc.squirreljme.debugger;
 
 import cc.squirreljme.jdwp.CommandSetThreadReference;
-import cc.squirreljme.jdwp.ErrorType;
+import cc.squirreljme.jdwp.JDWPErrorType;
 import cc.squirreljme.jdwp.JDWPCommandSet;
 import cc.squirreljme.jdwp.JDWPPacket;
 import cc.squirreljme.jdwp.JDWPId;
@@ -111,7 +111,7 @@ public class InfoThread
 			// Send it
 			__state.send(out, (__ignored, __response) -> {
 				// Thread no longer valid?
-				if (__response.hasError(ErrorType.INVALID_THREAD))
+				if (__response.hasError(JDWPErrorType.INVALID_THREAD))
 				{
 					this.dispose();
 					return;

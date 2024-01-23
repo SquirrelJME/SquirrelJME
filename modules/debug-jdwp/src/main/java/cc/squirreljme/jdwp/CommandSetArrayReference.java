@@ -37,7 +37,7 @@ public enum CommandSetArrayReference
 			Object array = __packet.readArray(__controller, false);
 			
 			JDWPPacket rv = __controller.reply(
-				__packet.id(), ErrorType.NO_ERROR);
+				__packet.id(), JDWPErrorType.NO_ERROR);
 			
 			rv.writeInt(__controller.viewObject().arrayLength(array));
 			
@@ -74,10 +74,10 @@ public enum CommandSetArrayReference
 			
 			// Invalid index?
 			if (off < 0 || len < 0 || (off + len) > arrayLength)
-				throw ErrorType.INVALID_LENGTH.toss(array, off + len);
+				throw JDWPErrorType.INVALID_LENGTH.toss(array, off + len);
 			
 			JDWPPacket rv = __controller.reply(
-				__packet.id(), ErrorType.NO_ERROR);
+				__packet.id(), JDWPErrorType.NO_ERROR);
 			
 			// Write compactified array details, the tag if it is primitive
 			// (anything that is not L) will be treated as untagged values

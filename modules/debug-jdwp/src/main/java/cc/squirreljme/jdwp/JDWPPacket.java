@@ -69,7 +69,7 @@ public final class JDWPPacket
 	volatile int _rawErrorCode;
 	
 	/** The error code (if a reply). */
-	volatile ErrorType _errorCode;
+	volatile JDWPErrorType _errorCode;
 	
 	/** The packet data. */
 	private volatile byte[] _data;
@@ -207,7 +207,7 @@ public final class JDWPPacket
 		int flags;
 		int commandSet;
 		int command;
-		ErrorType errorCode;
+		JDWPErrorType errorCode;
 		byte[] data;
 		int length;
 		int readPos;
@@ -258,7 +258,7 @@ public final class JDWPPacket
 	 * @return The packet's error, if there is one.
 	 * @since 2024/01/22
 	 */
-	public ErrorType error()
+	public JDWPErrorType error()
 	{
 		synchronized (this)
 		{
@@ -282,7 +282,7 @@ public final class JDWPPacket
 			// Ensure this is open
 			this.__checkOpen();
 			
-			return this._errorCode != ErrorType.NO_ERROR;
+			return this._errorCode != JDWPErrorType.NO_ERROR;
 		}
 	}
 	
@@ -296,7 +296,7 @@ public final class JDWPPacket
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/21
 	 */
-	public boolean hasError(ErrorType __error)
+	public boolean hasError(JDWPErrorType __error)
 		throws NullPointerException
 	{
 		if (__error == null)
@@ -400,7 +400,7 @@ public final class JDWPPacket
 				return null;
 			
 			// Fail with invalid thread
-			throw ErrorType.INVALID_ARRAY.toss(object,
+			throw JDWPErrorType.INVALID_ARRAY.toss(object,
 				System.identityHashCode(object));
 		}
 		
@@ -469,7 +469,7 @@ public final class JDWPPacket
 				return null;
 			
 			// Fail with invalid thread
-			throw ErrorType.INVALID_FRAME_ID.toss(frame, id);
+			throw JDWPErrorType.INVALID_FRAME_ID.toss(frame, id);
 		}
 		
 		return frame;
@@ -558,7 +558,7 @@ public final class JDWPPacket
 			Object type = this.readType(__controller, false);
 			int methodDx = this.readId();
 			if (!viewType.isValidMethod(type, methodDx))
-				throw ErrorType.INVALID_METHOD_ID.toss(type, methodDx,
+				throw JDWPErrorType.INVALID_METHOD_ID.toss(type, methodDx,
 					null);
 			
 			// Build location
@@ -658,7 +658,7 @@ public final class JDWPPacket
 				return null;
 			
 			// Fail with invalid object
-			throw ErrorType.INVALID_OBJECT.toss(object, id);
+			throw JDWPErrorType.INVALID_OBJECT.toss(object, id);
 		}
 		
 		return object;
@@ -759,7 +759,7 @@ public final class JDWPPacket
 			}
 			
 			// Fail with invalid thread
-			throw ErrorType.INVALID_THREAD.toss(thread, id);
+			throw JDWPErrorType.INVALID_THREAD.toss(thread, id);
 		}
 		
 		return thread;
@@ -801,7 +801,7 @@ public final class JDWPPacket
 				return null;
 			
 			// Fail with invalid thread
-			throw ErrorType.INVALID_THREAD.toss(group, id);
+			throw JDWPErrorType.INVALID_THREAD.toss(group, id);
 		}
 		
 		return group;
@@ -843,7 +843,7 @@ public final class JDWPPacket
 				return null;
 			
 			// Fail with invalid thread
-			throw ErrorType.INVALID_CLASS.toss(object, id);
+			throw JDWPErrorType.INVALID_CLASS.toss(object, id);
 		}
 		
 		return object;
@@ -912,7 +912,7 @@ public final class JDWPPacket
 			return String.format("JDWPPacket[id=%08x,flags=%02x,len=%d]:%s:%s",
 				this._id, flags, length,
 				((flags & JDWPPacket.FLAG_REPLY) != 0 ?
-					(this._errorCode == ErrorType.NO_ERROR ? "" :
+					(this._errorCode == JDWPErrorType.NO_ERROR ? "" :
 						String.format("[error=%s(%d)]",
 							this._errorCode, this._rawErrorCode)) :
 					String.format("[cmdSet=%s;cmd=%s]",
@@ -1153,7 +1153,7 @@ public final class JDWPPacket
 					!__controller.viewFrame().isValid(__instance) &&
 					!__controller.viewThread().isValid(__instance) &&
 					!__controller.viewThreadGroup().isValid(__instance))
-					throw ErrorType.INVALID_OBJECT.toss(__instance,
+					throw JDWPErrorType.INVALID_OBJECT.toss(__instance,
 						System.identityHashCode(__instance));
 			}
 			
@@ -1547,7 +1547,7 @@ public final class JDWPPacket
 				int rawErrorCode = ((__header[9] & 0xFF) << 8) |
 					(__header[10] & 0xFF);
 				this._rawErrorCode = rawErrorCode;
-				this._errorCode = ErrorType.of(rawErrorCode);
+				this._errorCode = JDWPErrorType.of(rawErrorCode);
 			}
 			
 			// Non-reply

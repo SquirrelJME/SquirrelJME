@@ -36,7 +36,7 @@ public enum CommandSetClassType
 			
 			// Respond with the class ID
 			JDWPPacket rv = __controller.reply(
-				__packet.id(), ErrorType.NO_ERROR);
+				__packet.id(), JDWPErrorType.NO_ERROR);
 			
 			Object superClass = __controller.viewType().superType(type);
 			rv.writeObject(__controller, superClass);

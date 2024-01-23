@@ -42,7 +42,7 @@ public enum CommandSetStringReference
 			Object type = viewObject.type(object);
 			if (type == null || !CommandSetStringReference._STRING.equals(
 				viewType.signature(type)))
-				throw ErrorType.INVALID_STRING.toss(object,
+				throw JDWPErrorType.INVALID_STRING.toss(object,
 					System.identityHashCode(object));
 			
 			// Locate the char field index
@@ -51,7 +51,7 @@ public enum CommandSetStringReference
 			
 			// Is missing? We do not know how strings work then
 			if (charFieldDx < 0)
-				throw ErrorType.NOT_IMPLEMENTED.toss(type,
+				throw JDWPErrorType.NOT_IMPLEMENTED.toss(type,
 					charFieldDx);
 			
 			// Load the character array
@@ -60,18 +60,18 @@ public enum CommandSetStringReference
 			{
 				// Is this a valid field?
 				if (!viewObject.readValue(object, charFieldDx, value))
-					throw ErrorType.INVALID_STRING.toss(object, charFieldDx);
+					throw JDWPErrorType.INVALID_STRING.toss(object, charFieldDx);
 				
 				// Missing?
 				charArray = value.get();
 				if (charArray == null)
-					throw ErrorType.INVALID_STRING.toss(object, charFieldDx);
+					throw JDWPErrorType.INVALID_STRING.toss(object, charFieldDx);
 			}
 			
 			// How big is this string?
 			int strLen = viewObject.arrayLength(charArray);
 			if (strLen < 0)
-				throw ErrorType.INVALID_STRING.toss(object, strLen);
+				throw JDWPErrorType.INVALID_STRING.toss(object, strLen);
 			
 			// Load in characters
 			char[] chars = new char[strLen];
@@ -96,7 +96,7 @@ public enum CommandSetStringReference
 			
 			// Report string value
 			JDWPPacket rv = __controller.reply(
-				__packet.id(), ErrorType.NO_ERROR);
+				__packet.id(), JDWPErrorType.NO_ERROR);
 			rv.writeString(new String(chars));
 			return rv;
 		}

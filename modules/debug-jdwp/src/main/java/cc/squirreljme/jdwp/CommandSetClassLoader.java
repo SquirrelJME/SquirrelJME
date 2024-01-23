@@ -48,7 +48,7 @@ public enum CommandSetClassLoader
 					found.add(type);
 			
 			JDWPPacket rv = __controller.reply(
-				__packet.id(), ErrorType.NO_ERROR);
+				__packet.id(), JDWPErrorType.NO_ERROR);
 			
 			// Write all entries which meet the same class loader
 			rv.writeInt(found.size());

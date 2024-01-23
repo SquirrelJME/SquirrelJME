@@ -323,7 +323,7 @@ public final class JDWPHostController
 					packet.commandSet(), packet.command());
 				if (command == null)
 					result = this.reply(packet.id(),
-						ErrorType.NOT_IMPLEMENTED);
+						JDWPErrorType.NOT_IMPLEMENTED);
 				
 				// Execute the command normally
 				else
@@ -336,7 +336,7 @@ public final class JDWPHostController
 						// If a result is missing, assume nothing needed
 						if (result == null)
 							result = this.reply(packet.id(),
-								ErrorType.NO_ERROR);
+								JDWPErrorType.NO_ERROR);
 					}
 					
 					// There was an error executing this command
@@ -370,7 +370,7 @@ public final class JDWPHostController
 	 * @return The packet used.
 	 * @since 2021/03/12
 	 */
-	public final JDWPPacket reply(int __id, ErrorType __error)
+	public final JDWPPacket reply(int __id, JDWPErrorType __error)
 	{
 		return this.commLink.reply(__id, __error);
 	}
