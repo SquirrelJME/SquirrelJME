@@ -9,6 +9,19 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.host.JDWPHostCommandSetArrayReference;
+import cc.squirreljme.jdwp.host.JDWPHostCommandSetClassLoader;
+import cc.squirreljme.jdwp.host.JDWPHostCommandSetClassObjectReference;
+import cc.squirreljme.jdwp.host.JDWPHostCommandSetClassType;
+import cc.squirreljme.jdwp.host.JDWPHostCommandSetEventRequest;
+import cc.squirreljme.jdwp.host.JDWPHostCommandSetMethod;
+import cc.squirreljme.jdwp.host.JDWPHostCommandSetObjectReference;
+import cc.squirreljme.jdwp.host.JDWPHostCommandSetReferenceType;
+import cc.squirreljme.jdwp.host.JDWPHostCommandSetStackFrame;
+import cc.squirreljme.jdwp.host.JDWPHostCommandSetStringReference;
+import cc.squirreljme.jdwp.host.JDWPHostCommandSetThreadGroupReference;
+import cc.squirreljme.jdwp.host.JDWPHostCommandSetThreadReference;
+import cc.squirreljme.jdwp.host.JDWPHostCommandSetVirtualMachine;
 import cc.squirreljme.jdwp.host.event.JDWPHostCallStackStepping;
 import cc.squirreljme.jdwp.host.event.JDWPHostFieldOnly;
 import cc.squirreljme.jdwp.host.event.JDWPHostEventFilter;
@@ -33,9 +46,12 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
+import net.multiphasicapps.collections.UnmodifiableMap;
 
 /**
  * This class acts as the main controller interface for JDWP and acts as a kind
@@ -54,6 +70,9 @@ public final class JDWPHostController
 	private static final JDWPViewKind[] _INSTANCE_CAPTURE =
 		new JDWPViewKind[]{JDWPViewKind.THREAD, JDWPViewKind.THREAD_GROUP,
 			JDWPViewKind.TYPE};
+	
+	/** All the command handlers that are available. */
+	private static final Map<JDWPCommand, JDWPCommandHandler> _HANDLERS; 
 	
 	/** The communication link. */
 	protected final JDWPCommLink commLink;
@@ -93,6 +112,63 @@ public final class JDWPHostController
 	
 	/** Is this closed? */
 	private volatile boolean _closed;
+	
+	static
+	{
+		// Fill out handlers
+		Map<JDWPCommand, JDWPCommandHandler> handlers =
+			new LinkedHashMap<>();
+		
+		JDWPHostController.__fillIn(handlers,
+			JDWPHostCommandSetArrayReference.values());
+		JDWPHostController.__fillIn(handlers,
+			JDWPHostCommandSetClassLoader.values());
+		JDWPHostController.__fillIn(handlers,
+			JDWPHostCommandSetClassObjectReference.values());
+		JDWPHostController.__fillIn(handlers,
+			JDWPHostCommandSetClassType.values());
+		JDWPHostController.__fillIn(handlers,
+			JDWPHostCommandSetEventRequest.values());
+		JDWPHostController.__fillIn(handlers,
+			JDWPHostCommandSetMethod.values());
+		JDWPHostController.__fillIn(handlers,
+			JDWPHostCommandSetObjectReference.values());
+		JDWPHostController.__fillIn(handlers,
+			JDWPHostCommandSetReferenceType.values());
+		JDWPHostController.__fillIn(handlers,
+			JDWPHostCommandSetStackFrame.values());
+		JDWPHostController.__fillIn(handlers,
+			JDWPHostCommandSetStringReference.values());
+		JDWPHostController.__fillIn(handlers,
+			JDWPHostCommandSetThreadGroupReference.values());
+		JDWPHostController.__fillIn(handlers,
+			JDWPHostCommandSetThreadReference.values());
+		JDWPHostController.__fillIn(handlers,
+			JDWPHostCommandSetVirtualMachine.values());
+			
+		// Store for later usage
+		_HANDLERS = UnmodifiableMap.of(handlers);
+	}
+	
+	/**
+	 * Fills in values for the map.
+	 *
+	 * @param __handlers The target handler mapping.
+	 * @param __impls The implementation of the handlers.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/23
+	 */
+	private static void __fillIn(
+		Map<JDWPCommand, JDWPCommandHandler> __handlers,
+		JDWPCommandHandler[] __impls)
+		throws NullPointerException
+	{
+		if (__handlers == null || __impls == null)
+			throw new NullPointerException("NARG");
+		
+		for (JDWPCommandHandler impl : __impls)
+			__handlers.put(impl.command(), impl);
+	}
 	
 	/**
 	 * Initializes the controller which manages the communication of JDWP.
@@ -320,7 +396,24 @@ public final class JDWPHostController
 		if (__commandSet == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		return this.commandHandler(__commandSet.command(__command));
+	}
+	
+	/**
+	 * Returns the command handler for packets.
+	 *
+	 * @param __command The command used.
+	 * @return The handler for commands.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/23
+	 */
+	public JDWPCommandHandler commandHandler(JDWPCommand __command)
+		throws NullPointerException
+	{
+		if (__command == null)
+			throw new NullPointerException("NARG");
+		
+		return JDWPHostController._HANDLERS.get(__command);
 	}
 	
 	/**

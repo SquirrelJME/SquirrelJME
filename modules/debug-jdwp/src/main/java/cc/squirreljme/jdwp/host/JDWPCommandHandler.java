@@ -23,6 +23,14 @@ public interface JDWPCommandHandler
 	extends JDWPCommand
 {
 	/**
+	 * Returns the command that this handled.
+	 * 
+	 * @return The handled command.
+	 * @since 2024/01/23
+	 */
+	JDWPCommand command();
+	
+	/**
 	 * Executes the given command.
 	 * 
 	 * @param __controller The controller used.

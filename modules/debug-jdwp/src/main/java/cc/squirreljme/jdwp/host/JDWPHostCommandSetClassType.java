@@ -77,6 +77,16 @@ public enum JDWPHostCommandSetClassType
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2024/01/23
+	 */
+	@Override
+	public final JDWPCommand command()
+	{
+		return this.command;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2021/03/14
 	 */
 	@Override

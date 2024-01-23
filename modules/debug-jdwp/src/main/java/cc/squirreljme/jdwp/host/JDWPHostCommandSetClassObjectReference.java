@@ -116,6 +116,16 @@ public enum JDWPHostCommandSetClassObjectReference
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2024/01/23
+	 */
+	@Override
+	public final JDWPCommand command()
+	{
+		return this.command;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2021/04/30
 	 */
 	@Override
