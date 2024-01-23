@@ -9,7 +9,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.jdwp.JDWPState;
+import cc.squirreljme.jdwp.JDWPHostState;
 import cc.squirreljme.jdwp.JDWPValue;
 import cc.squirreljme.jdwp.host.views.JDWPViewObject;
 import java.lang.ref.Reference;
@@ -23,7 +23,7 @@ public class DebugViewObject
 	implements JDWPViewObject
 {
 	/** The state of the debugger. */
-	protected final Reference<JDWPState> state;
+	protected final Reference<JDWPHostState> state;
 	
 	/**
 	 * Initializes the object viewer.
@@ -32,7 +32,7 @@ public class DebugViewObject
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/04/10
 	 */
-	public DebugViewObject(Reference<JDWPState> __state)
+	public DebugViewObject(Reference<JDWPHostState> __state)
 		throws NullPointerException
 	{
 		if (__state == null)

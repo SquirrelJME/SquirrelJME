@@ -11,7 +11,7 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jdwp.JDWPCommandException;
 import cc.squirreljme.jdwp.JDWPLocalVariable;
-import cc.squirreljme.jdwp.JDWPState;
+import cc.squirreljme.jdwp.JDWPHostState;
 import cc.squirreljme.jdwp.JDWPValue;
 import cc.squirreljme.jdwp.host.trips.JDWPTripBreakpoint;
 import cc.squirreljme.jdwp.host.views.JDWPViewType;
@@ -39,7 +39,7 @@ public class DebugViewType
 	implements JDWPViewType
 {
 	/** The state of the debugger. */
-	protected final Reference<JDWPState> state;
+	protected final Reference<JDWPHostState> state;
 	
 	/**
 	 * Initializes the type viewer.
@@ -48,7 +48,7 @@ public class DebugViewType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/04/10
 	 */
-	public DebugViewType(Reference<JDWPState> __state)
+	public DebugViewType(Reference<JDWPHostState> __state)
 	{
 		if (__state == null)
 			throw new NullPointerException("NARG");

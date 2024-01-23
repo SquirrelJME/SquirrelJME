@@ -9,7 +9,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.jdwp.JDWPState;
+import cc.squirreljme.jdwp.JDWPHostState;
 import cc.squirreljme.jdwp.JDWPStepTracker;
 import cc.squirreljme.jdwp.JDWPThreadSuspension;
 import cc.squirreljme.jdwp.host.views.JDWPViewThread;
@@ -27,7 +27,7 @@ public class DebugViewThread
 	implements JDWPViewThread
 {
 	/** The state of the debugger. */
-	protected final Reference<JDWPState> state;
+	protected final Reference<JDWPHostState> state;
 	
 	/**
 	 * Initializes the thread viewer.
@@ -36,7 +36,7 @@ public class DebugViewThread
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/04/10
 	 */
-	public DebugViewThread(Reference<JDWPState> __state)
+	public DebugViewThread(Reference<JDWPHostState> __state)
 	{
 		if (__state == null)
 			throw new NullPointerException("NARG");

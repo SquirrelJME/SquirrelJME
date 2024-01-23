@@ -20,7 +20,7 @@ import java.lang.ref.WeakReference;
  *
  * @since 2021/03/13
  */
-public final class JDWPState
+public final class JDWPHostState
 {
 	/** References to everything the debugger knows about. */
 	public final JDWPLinker<Object> items =
@@ -43,7 +43,7 @@ public final class JDWPState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/04/10
 	 */
-	JDWPState(Reference<JDWPHostBinding> __binding)
+	JDWPHostState(Reference<JDWPHostBinding> __binding)
 		throws NullPointerException
 	{
 		if (__binding == null)

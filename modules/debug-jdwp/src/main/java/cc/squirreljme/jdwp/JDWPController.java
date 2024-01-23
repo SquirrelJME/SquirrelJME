@@ -53,7 +53,7 @@ public final class JDWPController
 	protected final CommLink commLink;
 	
 	/** Debugger state. */
-	protected final JDWPState state;
+	protected final JDWPHostState state;
 		
 	/** The event manager. */
 	protected final EventManager eventManager =
@@ -105,7 +105,7 @@ public final class JDWPController
 			throw new NullPointerException("NARG");
 		
 		this._bind = new WeakReference<>(__bind);
-		this.state = new JDWPState(new WeakReference<>(__bind));
+		this.state = new JDWPHostState(new WeakReference<>(__bind));
 		this.commLink = new CommLink(__in, __out);
 		
 		// Set sizes that we use
@@ -129,7 +129,7 @@ public final class JDWPController
 		Object[] groups = this.bind().debuggerThreadGroups();
 		
 		// Register each one
-		JDWPState state = this.getState();
+		JDWPHostState state = this.getState();
 		for (Object group : groups)
 			state.items.put(group);
 		
@@ -213,7 +213,7 @@ public final class JDWPController
 	 * @return The debugger state.
 	 * @since 2024/01/23
 	 */
-	public JDWPState getState()
+	public JDWPHostState getState()
 	{
 		return this.state;
 	}
@@ -731,7 +731,7 @@ public final class JDWPController
 	final Object[] __allThreads(boolean __filterVisible)
 	{
 		// Current state
-		JDWPState state = this.getState();
+		JDWPHostState state = this.getState();
 		
 		// Get groups
 		JDWPViewThreadGroup groupView = state.view(

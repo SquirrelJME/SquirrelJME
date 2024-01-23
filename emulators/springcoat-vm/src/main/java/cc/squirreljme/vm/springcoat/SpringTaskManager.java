@@ -14,7 +14,7 @@ import cc.squirreljme.emulator.terminal.TerminalPipeManager;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.jdwp.host.JDWPHostBinding;
 import cc.squirreljme.jdwp.JDWPController;
-import cc.squirreljme.jdwp.JDWPState;
+import cc.squirreljme.jdwp.JDWPHostState;
 import cc.squirreljme.jdwp.host.views.JDWPView;
 import cc.squirreljme.jdwp.host.views.JDWPViewKind;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
@@ -108,7 +108,7 @@ public final class SpringTaskManager
 	 */
 	@Override
 	public <V extends JDWPView> V debuggerView(Class<V> __type,
-		JDWPViewKind __kind, Reference<JDWPState> __state)
+		JDWPViewKind __kind, Reference<JDWPHostState> __state)
 		throws NullPointerException
 	{
 		// What do we want to view?

@@ -9,7 +9,7 @@
 
 package cc.squirreljme.jdwp.host;
 
-import cc.squirreljme.jdwp.JDWPState;
+import cc.squirreljme.jdwp.JDWPHostState;
 import cc.squirreljme.jdwp.host.views.JDWPView;
 import cc.squirreljme.jdwp.host.views.JDWPViewKind;
 import java.lang.ref.Reference;
@@ -50,7 +50,7 @@ public interface JDWPHostBinding
 	 * @since 2021/04/10
 	 */
 	<V extends JDWPView> V debuggerView(Class<V> __type, JDWPViewKind __kind,
-		Reference<JDWPState> __state)
+		Reference<JDWPHostState> __state)
 		throws NullPointerException;
 	
 	/**
