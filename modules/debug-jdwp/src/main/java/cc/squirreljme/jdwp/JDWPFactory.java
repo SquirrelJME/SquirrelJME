@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.host.JDWPHostBinding;
 import java.io.Closeable;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -93,7 +94,7 @@ public final class JDWPFactory
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/03/08
 	 */
-	public final JDWPController open(JDWPBinding __bind)
+	public final JDWPController open(JDWPHostBinding __bind)
 		throws NullPointerException
 	{
 		if (__bind == null)

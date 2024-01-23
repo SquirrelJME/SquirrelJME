@@ -12,6 +12,7 @@ package cc.squirreljme.jdwp;
 import cc.squirreljme.jdwp.event.CallStackStepping;
 import cc.squirreljme.jdwp.event.EventFilter;
 import cc.squirreljme.jdwp.event.FieldOnly;
+import cc.squirreljme.jdwp.host.JDWPHostBinding;
 import cc.squirreljme.jdwp.host.trips.JDWPGlobalTrip;
 import cc.squirreljme.jdwp.host.trips.JDWPTrip;
 import cc.squirreljme.jdwp.host.views.JDWPView;
@@ -58,7 +59,7 @@ public final class JDWPController
 		new EventManager();
 	
 	/** The binding, which is called to perform any actions. */
-	private final Reference<JDWPBinding> _bind;
+	private final Reference<JDWPHostBinding> _bind;
 		
 	/** The ID lock. */
 	private final Object _nextIdMonitor =
@@ -95,7 +96,7 @@ public final class JDWPController
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/03/08
 	 */
-	public JDWPController(JDWPBinding __bind, InputStream __in,
+	public JDWPController(JDWPHostBinding __bind, InputStream __in,
 		OutputStream __out)
 		throws NullPointerException
 	{
@@ -122,12 +123,12 @@ public final class JDWPController
 	 * @throws JDWPException If the binding has been garbage collected.
 	 * @since 2021/05/07
 	 */
-	public JDWPBinding bind()
+	public JDWPHostBinding bind()
 		throws JDWPException
 	{
 		/* {@squirreljme.error AG0h The JDWP Binding has been garbage
 		collected.} */
-		JDWPBinding rv = this._bind.get();
+		JDWPHostBinding rv = this._bind.get();
 		if (rv == null)
 			throw new JDWPException("AG0h");
 		

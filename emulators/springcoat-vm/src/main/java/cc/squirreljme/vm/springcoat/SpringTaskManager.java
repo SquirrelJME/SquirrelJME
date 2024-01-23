@@ -12,7 +12,7 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 import cc.squirreljme.emulator.terminal.TerminalPipeManager;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
-import cc.squirreljme.jdwp.JDWPBinding;
+import cc.squirreljme.jdwp.host.JDWPHostBinding;
 import cc.squirreljme.jdwp.JDWPController;
 import cc.squirreljme.jdwp.JDWPState;
 import cc.squirreljme.jdwp.host.views.JDWPView;
@@ -38,7 +38,7 @@ import java.util.Map;
  * @since 2018/11/04
  */
 public final class SpringTaskManager
-	implements JDWPBinding
+	implements JDWPHostBinding
 {
 	/** The manager for suites. */
 	protected final VMSuiteManager suites;

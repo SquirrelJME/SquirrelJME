@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.host.JDWPHostBinding;
 import cc.squirreljme.jdwp.host.views.JDWPView;
 import cc.squirreljme.jdwp.host.views.JDWPViewKind;
 import java.lang.ref.Reference;
@@ -26,7 +27,7 @@ public final class JDWPState
 		new JDWPLinker<>(Object.class);
 	
 	/** The binding used. */
-	private final Reference<JDWPBinding> _binding;
+	private final Reference<JDWPHostBinding> _binding;
 	
 	/** The views that are available. */
 	private final JDWPView[] _views =
@@ -42,7 +43,7 @@ public final class JDWPState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/04/10
 	 */
-	JDWPState(Reference<JDWPBinding> __binding)
+	JDWPState(Reference<JDWPHostBinding> __binding)
 		throws NullPointerException
 	{
 		if (__binding == null)
@@ -116,11 +117,11 @@ public final class JDWPState
 	 * @throws IllegalStateException If the binding was GCed.
 	 * @since 2021/04/10
 	 */
-	final JDWPBinding __binding()
+	final JDWPHostBinding __binding()
 		throws IllegalStateException
 	{
 		/* {@squirreljme.error AG0l The Binding was GCed.} */
-		JDWPBinding rv = this._binding.get();
+		JDWPHostBinding rv = this._binding.get();
 		if (rv == null)
 			throw new IllegalStateException("AG0l");
 		

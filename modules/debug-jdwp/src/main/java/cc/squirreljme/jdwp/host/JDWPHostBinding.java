@@ -7,8 +7,9 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jdwp;
+package cc.squirreljme.jdwp.host;
 
+import cc.squirreljme.jdwp.JDWPState;
 import cc.squirreljme.jdwp.host.views.JDWPView;
 import cc.squirreljme.jdwp.host.views.JDWPViewKind;
 import java.lang.ref.Reference;
@@ -19,7 +20,7 @@ import java.lang.ref.Reference;
  *
  * @since 2021/03/08
  */
-public interface JDWPBinding
+public interface JDWPHostBinding
 {
 	/**
 	 * Returns the libraries for the debugger.
