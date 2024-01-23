@@ -9,38 +9,32 @@
 
 package cc.squirreljme.jdwp.event;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.Objects;
 
 /**
- * An exception only event.
+ * Only valid in a given field.
  *
  * @since 2021/04/17
  */
-public final class ExceptionOnly
+public final class JDWPHostFieldOnly
 {
-	/** The type used. */
-	protected final Object optionalType;
+	/** The type the field is in. */
+	public final Object type;
 	
-	/** Caught exceptions? */
-	protected final boolean caught;
-	
-	/** Uncaught exceptions? */
-	protected final boolean uncaught;
+	/** The field index. */
+	public final int fieldDx;
 	
 	/**
-	 * Initializes the exception filter details.
+	 * Represents a field only match.
 	 * 
-	 * @param __optionalType The optional type, may be {@code null}.
-	 * @param __caught Report caught exceptions?
-	 * @param __uncaught Report uncaught exceptions?
+	 * @param __type The type containing the field.
+	 * @param __fieldDx The field index.
 	 * @since 2021/04/17
 	 */
-	public ExceptionOnly(Object __optionalType, boolean __caught,
-		boolean __uncaught)
+	public JDWPHostFieldOnly(Object __type, int __fieldDx)
 	{
-		this.optionalType = __optionalType;
-		this.caught = __caught;
-		this.uncaught = __uncaught;
+		this.type = __type;
+		this.fieldDx = __fieldDx;
 	}
 	
 	/**
@@ -50,7 +44,15 @@ public final class ExceptionOnly
 	@Override
 	public boolean equals(Object __o)
 	{
-		throw Debugging.todo();
+		if (this == __o)
+			return true;
+		
+		if (!(__o instanceof JDWPHostFieldOnly))
+			return false;
+		
+		JDWPHostFieldOnly o = (JDWPHostFieldOnly)__o;
+		return this.type == o.type &&
+			this.fieldDx == o.fieldDx;
 	}
 	
 	/**
@@ -60,7 +62,8 @@ public final class ExceptionOnly
 	@Override
 	public int hashCode()
 	{
-		throw Debugging.todo();
+		return Objects.hashCode(this.type) ^
+			this.fieldDx;
 	}
 	
 	/**
@@ -70,8 +73,7 @@ public final class ExceptionOnly
 	@Override
 	public String toString()
 	{
-		return String.format("ExceptionOnly(type=%x, caught=%b, uncaught=%b)",
-			System.identityHashCode(this.optionalType),
-			this.caught, this.uncaught);
+		return String.format("FieldOnly[type=%s;fieldDx=%d]",
+			this.type, this.fieldDx);
 	}
 }

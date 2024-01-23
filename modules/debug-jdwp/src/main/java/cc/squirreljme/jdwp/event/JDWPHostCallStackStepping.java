@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp.event;
 
+import cc.squirreljme.jdwp.JDWPStepDepth;
+import cc.squirreljme.jdwp.JDWPStepSize;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -16,16 +18,16 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2021/04/17
  */
-public final class CallStackStepping
+public final class JDWPHostCallStackStepping
 {
 	/** The thread used. */
 	public final Object thread;
 	
 	/** The relative call stack limit. */
-	public final StepDepth depth;
+	public final JDWPStepDepth depth;
 	
 	/** Relative size of each step. */
-	public final StepSize size;
+	public final JDWPStepSize size;
 	
 	/**
 	 * Initializes the call stack stepping.
@@ -36,8 +38,8 @@ public final class CallStackStepping
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/04/17
 	 */
-	public CallStackStepping(Object __thread, StepSize __size,
-		StepDepth __depth)
+	public JDWPHostCallStackStepping(Object __thread, JDWPStepSize __size,
+		JDWPStepDepth __depth)
 		throws NullPointerException
 	{
 		if (__thread == null || __size == null || __depth == null)

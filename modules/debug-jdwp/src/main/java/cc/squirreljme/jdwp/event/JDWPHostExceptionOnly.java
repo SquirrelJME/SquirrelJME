@@ -9,32 +9,38 @@
 
 package cc.squirreljme.jdwp.event;
 
-import java.util.Objects;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
- * Only valid in a given field.
+ * An exception only event.
  *
  * @since 2021/04/17
  */
-public final class FieldOnly
+public final class JDWPHostExceptionOnly
 {
-	/** The type the field is in. */
-	public final Object type;
+	/** The type used. */
+	protected final Object optionalType;
 	
-	/** The field index. */
-	public final int fieldDx;
+	/** Caught exceptions? */
+	protected final boolean caught;
+	
+	/** Uncaught exceptions? */
+	protected final boolean uncaught;
 	
 	/**
-	 * Represents a field only match.
+	 * Initializes the exception filter details.
 	 * 
-	 * @param __type The type containing the field.
-	 * @param __fieldDx The field index.
+	 * @param __optionalType The optional type, may be {@code null}.
+	 * @param __caught Report caught exceptions?
+	 * @param __uncaught Report uncaught exceptions?
 	 * @since 2021/04/17
 	 */
-	public FieldOnly(Object __type, int __fieldDx)
+	public JDWPHostExceptionOnly(Object __optionalType, boolean __caught,
+		boolean __uncaught)
 	{
-		this.type = __type;
-		this.fieldDx = __fieldDx;
+		this.optionalType = __optionalType;
+		this.caught = __caught;
+		this.uncaught = __uncaught;
 	}
 	
 	/**
@@ -44,15 +50,7 @@ public final class FieldOnly
 	@Override
 	public boolean equals(Object __o)
 	{
-		if (this == __o)
-			return true;
-		
-		if (!(__o instanceof FieldOnly))
-			return false;
-		
-		FieldOnly o = (FieldOnly)__o;
-		return this.type == o.type &&
-			this.fieldDx == o.fieldDx;
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -62,8 +60,7 @@ public final class FieldOnly
 	@Override
 	public int hashCode()
 	{
-		return Objects.hashCode(this.type) ^
-			this.fieldDx;
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -73,7 +70,8 @@ public final class FieldOnly
 	@Override
 	public String toString()
 	{
-		return String.format("FieldOnly[type=%s;fieldDx=%d]",
-			this.type, this.fieldDx);
+		return String.format("ExceptionOnly(type=%x, caught=%b, uncaught=%b)",
+			System.identityHashCode(this.optionalType),
+			this.caught, this.uncaught);
 	}
 }

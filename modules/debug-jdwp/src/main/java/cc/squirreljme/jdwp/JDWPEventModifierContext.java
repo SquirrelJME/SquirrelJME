@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jdwp.event;
+package cc.squirreljme.jdwp;
 
 /**
  * This is the context used for an event modifier, this changes how a value
@@ -15,7 +15,7 @@ package cc.squirreljme.jdwp.event;
  *
  * @since 2021/04/17
  */
-public enum EventModContext
+public enum JDWPEventModifierContext
 {
 	/** Ensnares an argument for later usage. */
 	ENSNARE_ARGUMENT,

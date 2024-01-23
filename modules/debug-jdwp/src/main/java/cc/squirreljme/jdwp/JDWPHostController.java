@@ -9,8 +9,8 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.jdwp.event.CallStackStepping;
-import cc.squirreljme.jdwp.event.FieldOnly;
+import cc.squirreljme.jdwp.event.JDWPHostCallStackStepping;
+import cc.squirreljme.jdwp.event.JDWPHostFieldOnly;
 import cc.squirreljme.jdwp.event.JDWPHostEventFilter;
 import cc.squirreljme.jdwp.host.JDWPCommandHandler;
 import cc.squirreljme.jdwp.host.JDWPHostBinding;
@@ -748,7 +748,7 @@ public final class JDWPHostController
 			case FIELD_MODIFICATION:
 				{
 					// We need to know the field we are watching
-					FieldOnly fieldOnly = filter.fieldOnly;
+					JDWPHostFieldOnly fieldOnly = filter.fieldOnly;
 					if (fieldOnly == null)
 						return;
 					
@@ -773,7 +773,7 @@ public final class JDWPHostController
 					// thread=null, type=null}]
 					
 					// If there is no stepping what are we going to do?
-					CallStackStepping stepping =
+					JDWPHostCallStackStepping stepping =
 						filter.callStackStepping;
 					if (stepping == null || stepping.thread == null)
 						return;

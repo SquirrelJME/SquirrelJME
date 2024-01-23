@@ -7,38 +7,42 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jdwp.event;
+package cc.squirreljme.jdwp;
 
 /**
- * The stepping size when single stepping.
+ * The stepping depth used with stepping.
  *
  * @since 2021/04/28
  */
-public enum StepSize
+public enum JDWPStepDepth
 {
-	/** Single instruction stepping. */
-	MIN,
+	/** Step into any method calls and suspend into the given frame. */
+	INTO,
 	
-	/** Step on line changes, if this happens and lines are available. */
-	LINE,
+	/** Step over any method calls and stay on the same frame. */
+	OVER,
+	
+	/** Step out of the current frame. */
+	OUT,
 	
 	/* End. */
 	;
 	
 	/**
-	 * Returns the step size for the given value.
+	 * Returns the step depth for the given value.
 	 * 
 	 * @param __v The index to get.
-	 * @return The step size for the given value.
+	 * @return The step depth for the given value.
 	 * @since 2021/04/28
 	 */
-	public static StepSize of(int __v)
+	public static JDWPStepDepth of(int __v)
 	{
 		switch (__v)
 		{
-			case 1:		return StepSize.LINE;
+			case 1:		return JDWPStepDepth.OVER;
+			case 2:		return JDWPStepDepth.OUT;
 			case 0:
-			default:	return StepSize.MIN;
+			default:	return JDWPStepDepth.INTO;
 		}
 	}
 }

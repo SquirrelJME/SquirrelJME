@@ -18,13 +18,13 @@ import cc.squirreljme.jdwp.JDWPHostEventRequest;
 import cc.squirreljme.jdwp.JDWPHostLocation;
 import cc.squirreljme.jdwp.JDWPPacket;
 import cc.squirreljme.jdwp.JDWPSuspendPolicy;
-import cc.squirreljme.jdwp.event.CallStackStepping;
-import cc.squirreljme.jdwp.event.ClassPatternMatcher;
-import cc.squirreljme.jdwp.event.ExceptionOnly;
-import cc.squirreljme.jdwp.event.FieldOnly;
+import cc.squirreljme.jdwp.event.JDWPHostCallStackStepping;
+import cc.squirreljme.jdwp.JDWPClassPatternMatcher;
+import cc.squirreljme.jdwp.event.JDWPHostExceptionOnly;
+import cc.squirreljme.jdwp.event.JDWPHostFieldOnly;
 import cc.squirreljme.jdwp.event.JDWPHostEventFilter;
-import cc.squirreljme.jdwp.event.StepDepth;
-import cc.squirreljme.jdwp.event.StepSize;
+import cc.squirreljme.jdwp.JDWPStepDepth;
+import cc.squirreljme.jdwp.JDWPStepSize;
 
 /**
  * Event request command set.
@@ -63,14 +63,14 @@ public enum JDWPHostCommandSetEventRequest
 			int occurrenceLimit = -1;
 			Object thread = null;
 			Object type = null;
-			ClassPatternMatcher includeClass = null;
-			ClassPatternMatcher excludeClass = null;
-			FieldOnly fieldOnly = null;
+			JDWPClassPatternMatcher includeClass = null;
+			JDWPClassPatternMatcher excludeClass = null;
+			JDWPHostFieldOnly fieldOnly = null;
 			JDWPHostLocation location = null;
 			Object thisInstance = null;
 			boolean thisInstanceSet = false;
-			ExceptionOnly exception = null;
-			CallStackStepping callStackStepping = null;
+			JDWPHostExceptionOnly exception = null;
+			JDWPHostCallStackStepping callStackStepping = null;
 			
 			// Modifier kinds
 			int numModifiers = __packet.readInt();
@@ -114,12 +114,12 @@ public enum JDWPHostCommandSetEventRequest
 						break;
 						
 					case CLASS_MATCH_PATTERN:
-						includeClass = new ClassPatternMatcher(
+						includeClass = new JDWPClassPatternMatcher(
 							__packet.readString());
 						break;
 					
 					case CLASS_EXCLUDE_PATTERN:
-						excludeClass = new ClassPatternMatcher(
+						excludeClass = new JDWPClassPatternMatcher(
 							__packet.readString());
 						break;
 					
@@ -129,7 +129,7 @@ public enum JDWPHostCommandSetEventRequest
 						break;
 					
 					case EXCEPTION_ONLY:
-						exception = new ExceptionOnly(
+						exception = new JDWPHostExceptionOnly(
 							__packet.readType(__controller, true),
 							__packet.readBoolean(),
 							__packet.readBoolean());
@@ -146,15 +146,15 @@ public enum JDWPHostCommandSetEventRequest
 								JDWPErrorType.INVALID_FIELD_ID.toss(atType,
 									fieldDx, null); 
 							
-							fieldOnly = new FieldOnly(atType, fieldDx);
+							fieldOnly = new JDWPHostFieldOnly(atType, fieldDx);
 						}
 						break;
 					
 					case CALL_STACK_STEPPING:
-						callStackStepping = new CallStackStepping(
+						callStackStepping = new JDWPHostCallStackStepping(
 							__packet.readThread(__controller),
-							StepSize.of(__packet.readInt()),
-							StepDepth.of(__packet.readInt()));
+							JDWPStepSize.of(__packet.readInt()),
+							JDWPStepDepth.of(__packet.readInt()));
 						break;
 					
 					case THIS_INSTANCE_ONLY:

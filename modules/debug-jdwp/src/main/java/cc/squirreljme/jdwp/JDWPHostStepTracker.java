@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.jdwp.event.StepDepth;
-import cc.squirreljme.jdwp.event.StepSize;
 import cc.squirreljme.jdwp.host.views.JDWPViewFrame;
 import cc.squirreljme.jdwp.host.views.JDWPViewThread;
 
@@ -30,10 +28,10 @@ public final class JDWPHostStepTracker
 		new Position();
 	
 	/** The current stepping mode. */
-	volatile StepSize _stepSize;
+	volatile JDWPStepSize _stepSize;
 	
 	/** The stepping depth. */
-	volatile StepDepth _stepDepth;
+	volatile JDWPStepDepth _stepDepth;
 	
 	/** Is this in stepping mode? */
 	private volatile boolean _inStepping;
@@ -69,7 +67,7 @@ public final class JDWPHostStepTracker
 	 * @return The stepping depth.
 	 * @since 2021/04/29
 	 */
-	public StepDepth depth()
+	public JDWPStepDepth depth()
 	{
 		synchronized (this)
 		{
@@ -101,7 +99,7 @@ public final class JDWPHostStepTracker
 	 * @since 2021/04/28
 	 */
 	public void steppingSet(JDWPHostController __controller, Object __thread,
-		StepSize __size, StepDepth __depth)
+		JDWPStepSize __size, JDWPStepDepth __depth)
 	{
 		synchronized (this)
 		{
@@ -109,12 +107,12 @@ public final class JDWPHostStepTracker
 			this._inStepping = true;
 			
 			// Always choose the smaller of the stepping sizes
-			StepSize oldSize = this._stepSize;
-			this._stepSize = (__size == null || oldSize == StepSize.MIN ?
-				StepSize.MIN : __size);
+			JDWPStepSize oldSize = this._stepSize;
+			this._stepSize = (__size == null || oldSize == JDWPStepSize.MIN ?
+				JDWPStepSize.MIN : __size);
 			
 			// Depth can change regardless
-			this._stepDepth = (__depth == null ? StepDepth.INTO : __depth);
+			this._stepDepth = (__depth == null ? JDWPStepDepth.INTO : __depth);
 			
 			// Get the top-most frame
 			Object[] frames = __controller.viewThread().frames(__thread);
@@ -147,8 +145,8 @@ public final class JDWPHostStepTracker
 		synchronized (this)
 		{
 			// These must be valid and set
-			StepSize stepSize = this._stepSize;
-			StepDepth stepDepth = this._stepDepth;
+			JDWPStepSize stepSize = this._stepSize;
+			JDWPStepDepth stepDepth = this._stepDepth;
 			if (stepSize == null || stepDepth == null)
 				return false;
 			
@@ -207,7 +205,7 @@ public final class JDWPHostStepTracker
 			// back to positional checks. But regardless, if the line number
 			// changes then we take the step.
 			long wasLine = was._line;
-			if (stepSize == StepSize.LINE && wasLine >= 0 && nowLine >= 0)
+			if (stepSize == JDWPStepSize.LINE && wasLine >= 0 && nowLine >= 0)
 				return wasLine != nowLine;
 			
 			// If the code index has changed, then we consider it a step

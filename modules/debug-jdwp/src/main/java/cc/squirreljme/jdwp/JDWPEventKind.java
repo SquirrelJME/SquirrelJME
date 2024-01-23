@@ -9,7 +9,6 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.jdwp.event.EventModContext;
 import cc.squirreljme.jdwp.host.JDWPHostEventHandler;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Arrays;
@@ -29,10 +28,10 @@ public enum JDWPEventKind
 {
 	/** Single Step. */
 	SINGLE_STEP(1,
-		Arrays.asList(EventModContext.CURRENT_THREAD,
-			EventModContext.CURRENT_TYPE,
-			EventModContext.CURRENT_INSTANCE),
-		Arrays.asList(EventModContext.PARAMETER_STEPPING),
+		Arrays.asList(JDWPEventModifierContext.CURRENT_THREAD,
+			JDWPEventModifierContext.CURRENT_TYPE,
+			JDWPEventModifierContext.CURRENT_INSTANCE),
+		Arrays.asList(JDWPEventModifierContext.PARAMETER_STEPPING),
 		JDWPEventModifierKind.THREAD_ONLY,
 		JDWPEventModifierKind.CLASS_ONLY,
 		JDWPEventModifierKind.CLASS_MATCH_PATTERN, JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
@@ -55,9 +54,9 @@ public enum JDWPEventKind
 	},
 	
 	/** Breakpoint. */
-	BREAKPOINT(2, Arrays.asList(EventModContext.CURRENT_THREAD,
-			EventModContext.CURRENT_LOCATION,
-			EventModContext.CURRENT_INSTANCE),
+	BREAKPOINT(2, Arrays.asList(JDWPEventModifierContext.CURRENT_THREAD,
+			JDWPEventModifierContext.CURRENT_LOCATION,
+			JDWPEventModifierContext.CURRENT_INSTANCE),
 		null,
 		JDWPEventModifierKind.THREAD_ONLY,
 		JDWPEventModifierKind.CLASS_ONLY,
@@ -102,8 +101,8 @@ public enum JDWPEventKind
 	/** Exception. */
 	EXCEPTION(4, null,
 		Arrays.asList(
-			EventModContext.ENSNARE_ARGUMENT,
-			EventModContext.TOSSED_EXCEPTION),
+			JDWPEventModifierContext.ENSNARE_ARGUMENT,
+			JDWPEventModifierContext.TOSSED_EXCEPTION),
 		JDWPEventModifierKind.THREAD_ONLY, JDWPEventModifierKind.CLASS_ONLY,
 		JDWPEventModifierKind.CLASS_MATCH_PATTERN, JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
 		JDWPEventModifierKind.LOCATION_ONLY, JDWPEventModifierKind.EXCEPTION_ONLY,
@@ -193,7 +192,7 @@ public enum JDWPEventKind
 	
 	/** Class being prepared. */
 	CLASS_PREPARE(8, null,
-		Arrays.asList(EventModContext.PARAMETER_TYPE),
+		Arrays.asList(JDWPEventModifierContext.PARAMETER_TYPE),
 		JDWPEventModifierKind.THREAD_ONLY, JDWPEventModifierKind.CLASS_ONLY,
 		JDWPEventModifierKind.CLASS_MATCH_PATTERN, JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
 		JDWPEventModifierKind.LIMIT_OCCURRENCES)
@@ -264,12 +263,12 @@ public enum JDWPEventKind
 	
 	/** Field access. */
 	FIELD_ACCESS(20,
-		Arrays.asList(EventModContext.CURRENT_THREAD,
-			EventModContext.CURRENT_LOCATION,
-			EventModContext.CURRENT_TYPE,
-			EventModContext.CURRENT_INSTANCE),
-		Arrays.asList(EventModContext.PARAMETER_TYPE_OR_FIELD,
-			EventModContext.PARAMETER_FIELD),
+		Arrays.asList(JDWPEventModifierContext.CURRENT_THREAD,
+			JDWPEventModifierContext.CURRENT_LOCATION,
+			JDWPEventModifierContext.CURRENT_TYPE,
+			JDWPEventModifierContext.CURRENT_INSTANCE),
+		Arrays.asList(JDWPEventModifierContext.PARAMETER_TYPE_OR_FIELD,
+			JDWPEventModifierContext.PARAMETER_FIELD),
 		JDWPEventModifierKind.THREAD_ONLY, JDWPEventModifierKind.CLASS_ONLY,
 		JDWPEventModifierKind.CLASS_MATCH_PATTERN, JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
 		JDWPEventModifierKind.LOCATION_ONLY, JDWPEventModifierKind.FIELD_ONLY,
@@ -291,12 +290,12 @@ public enum JDWPEventKind
 	
 	/** Field modification. */
 	FIELD_MODIFICATION(21,
-		Arrays.asList(EventModContext.CURRENT_THREAD,
-			EventModContext.CURRENT_LOCATION,
-			EventModContext.CURRENT_TYPE,
-			EventModContext.CURRENT_INSTANCE),
-		Arrays.asList(EventModContext.PARAMETER_TYPE_OR_FIELD,
-			EventModContext.PARAMETER_FIELD),
+		Arrays.asList(JDWPEventModifierContext.CURRENT_THREAD,
+			JDWPEventModifierContext.CURRENT_LOCATION,
+			JDWPEventModifierContext.CURRENT_TYPE,
+			JDWPEventModifierContext.CURRENT_INSTANCE),
+		Arrays.asList(JDWPEventModifierContext.PARAMETER_TYPE_OR_FIELD,
+			JDWPEventModifierContext.PARAMETER_FIELD),
 		JDWPEventModifierKind.THREAD_ONLY,
 		JDWPEventModifierKind.CLASS_ONLY, JDWPEventModifierKind.CLASS_MATCH_PATTERN,
 		JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN, JDWPEventModifierKind.LOCATION_ONLY,
@@ -320,8 +319,8 @@ public enum JDWPEventKind
 	/** Exception catch. */
 	EXCEPTION_CATCH(30, null,
 		Arrays.asList(
-			EventModContext.ENSNARE_ARGUMENT,
-			EventModContext.TOSSED_EXCEPTION),
+			JDWPEventModifierContext.ENSNARE_ARGUMENT,
+			JDWPEventModifierContext.TOSSED_EXCEPTION),
 		JDWPEventModifierKind.THREAD_ONLY, JDWPEventModifierKind.CLASS_ONLY,
 		JDWPEventModifierKind.CLASS_MATCH_PATTERN, JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
 		JDWPEventModifierKind.LOCATION_ONLY, JDWPEventModifierKind.EXCEPTION_ONLY,
@@ -345,9 +344,9 @@ public enum JDWPEventKind
 	
 	/** Method entry. */
 	METHOD_ENTRY(40,
-		Arrays.asList(EventModContext.CURRENT_LOCATION,
-			EventModContext.CURRENT_INSTANCE,
-			EventModContext.CURRENT_TYPE),
+		Arrays.asList(JDWPEventModifierContext.CURRENT_LOCATION,
+			JDWPEventModifierContext.CURRENT_INSTANCE,
+			JDWPEventModifierContext.CURRENT_TYPE),
 		null,
 		JDWPEventModifierKind.THREAD_ONLY, JDWPEventModifierKind.CLASS_ONLY,
 		JDWPEventModifierKind.CLASS_MATCH_PATTERN, JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
@@ -370,9 +369,9 @@ public enum JDWPEventKind
 	
 	/** Method exit. */
 	METHOD_EXIT(41,
-		Arrays.asList(EventModContext.CURRENT_LOCATION,
-			EventModContext.CURRENT_INSTANCE,
-			EventModContext.CURRENT_TYPE),
+		Arrays.asList(JDWPEventModifierContext.CURRENT_LOCATION,
+			JDWPEventModifierContext.CURRENT_INSTANCE,
+			JDWPEventModifierContext.CURRENT_TYPE),
 		null,
 		JDWPEventModifierKind.THREAD_ONLY,
 		JDWPEventModifierKind.CLASS_ONLY,
@@ -560,10 +559,10 @@ public enum JDWPEventKind
 	private final int _modifierBits;
 	
 	/** Non-argument context. */
-	private final Iterable<EventModContext> _nonArg;
+	private final Iterable<JDWPEventModifierContext> _nonArg;
 	
 	/** Argument context. */
-	private final List<EventModContext> _arg;
+	private final List<JDWPEventModifierContext> _arg;
 	
 	/**
 	 * Initializes the event kind.
@@ -574,16 +573,16 @@ public enum JDWPEventKind
 	 * @param __modifiers The possible supported modifiers for this event.
 	 * @since 2021/03/13
 	 */
-	JDWPEventKind(int __id, Iterable<EventModContext> __nonArg,
-		List<EventModContext> __arg, JDWPEventModifierKind... __modifiers)
+	JDWPEventKind(int __id, Iterable<JDWPEventModifierContext> __nonArg,
+		List<JDWPEventModifierContext> __arg, JDWPEventModifierKind... __modifiers)
 	{
 		this.id = __id;
 		
 		// Contexts for modifiers
-		this._nonArg = (__nonArg == null ? EmptyList.<EventModContext>empty() :
-			UnmodifiableIterable.<EventModContext>of(__nonArg));
-		this._arg = (__arg == null ? EmptyList.<EventModContext>empty() :
-			UnmodifiableList.<EventModContext>of(__arg));
+		this._nonArg = (__nonArg == null ? EmptyList.<JDWPEventModifierContext>empty() :
+			UnmodifiableIterable.<JDWPEventModifierContext>of(__nonArg));
+		this._arg = (__arg == null ? EmptyList.<JDWPEventModifierContext>empty() :
+			UnmodifiableList.<JDWPEventModifierContext>of(__arg));
 		
 		// Determine the modifier bits to quickly get the items
 		int modifierBits = 0;
@@ -601,9 +600,9 @@ public enum JDWPEventKind
 	 * not valid for negative values.
 	 * @since 2021/04/17
 	 */
-	public final EventModContext contextArgument(int __i)
+	public final JDWPEventModifierContext contextArgument(int __i)
 	{
-		List<EventModContext> arg = this._arg;
+		List<JDWPEventModifierContext> arg = this._arg;
 		if (__i < 0 || __i >= arg.size())
 			return null;
 		
@@ -616,7 +615,7 @@ public enum JDWPEventKind
 	 * @return The general context.
 	 * @since 2021/04/25
 	 */
-	public final Iterable<EventModContext> contextGeneral()
+	public final Iterable<JDWPEventModifierContext> contextGeneral()
 	{
 		return this._nonArg;
 	}

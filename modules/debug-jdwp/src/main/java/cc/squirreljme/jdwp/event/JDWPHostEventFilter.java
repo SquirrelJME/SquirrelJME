@@ -9,7 +9,9 @@
 
 package cc.squirreljme.jdwp.event;
 
+import cc.squirreljme.jdwp.JDWPClassPatternMatcher;
 import cc.squirreljme.jdwp.JDWPEventKind;
+import cc.squirreljme.jdwp.JDWPEventModifierContext;
 import cc.squirreljme.jdwp.JDWPHostController;
 import cc.squirreljme.jdwp.JDWPHostLocation;
 import cc.squirreljme.jdwp.JDWPHostStepTracker;
@@ -34,19 +36,19 @@ public final class JDWPHostEventFilter
 	public final JDWPHostLocation location;
 	
 	/** The call stack stepping. */
-	public final CallStackStepping callStackStepping;
+	public final JDWPHostCallStackStepping callStackStepping;
 	
 	/** Which exceptions does this fire on? */
-	protected final ExceptionOnly exception;
+	protected final JDWPHostExceptionOnly exception;
 	
 	/** Exclude the given class? */
-	protected final ClassPatternMatcher excludeClass;
+	protected final JDWPClassPatternMatcher excludeClass;
 	
 	/** Only on a specific field? */
-	public final FieldOnly fieldOnly;
+	public final JDWPHostFieldOnly fieldOnly;
 	
 	/** Include the given class? */
-	protected final ClassPatternMatcher includeClass;
+	protected final JDWPClassPatternMatcher includeClass;
 	
 	/** The instance to check on, may be {@code null}. */
 	protected final Object thisInstance;
@@ -76,10 +78,10 @@ public final class JDWPHostEventFilter
 	 * @since 2021/04/17
 	 */
 	public JDWPHostEventFilter(Object __thread, Object __type,
-		ClassPatternMatcher __includeClass, ClassPatternMatcher __excludeClass,
-		FieldOnly __fieldOnly, JDWPHostLocation __location,
+		JDWPClassPatternMatcher __includeClass, JDWPClassPatternMatcher __excludeClass,
+		JDWPHostFieldOnly __fieldOnly, JDWPHostLocation __location,
 		boolean __thisInstanceSet, Object __thisInstance,
-		ExceptionOnly __exception, CallStackStepping __callStackStepping)
+		JDWPHostExceptionOnly __exception, JDWPHostCallStackStepping __callStackStepping)
 	{
 		this.thread = __thread;
 		this.type = __type;
@@ -124,7 +126,7 @@ public final class JDWPHostEventFilter
 			throw new NullPointerException("NARG");
 		
 		// Check the general context for mis-matches
-		for (EventModContext context : __kind.contextGeneral())
+		for (JDWPEventModifierContext context : __kind.contextGeneral())
 			if (!this.__context(__controller, __thread, context, null,
 				null))
 				return false;
@@ -134,7 +136,7 @@ public final class JDWPHostEventFilter
 		for (int i = 0, n = __args.length; i < n; i++)
 		{
 			// Check that there is context here 
-			EventModContext context = __kind.contextArgument(i);
+			JDWPEventModifierContext context = __kind.contextArgument(i);
 			if (context == null)
 				continue;
 			
@@ -169,8 +171,8 @@ public final class JDWPHostEventFilter
 			return false;
 		
 		// Not an included class?
-		ClassPatternMatcher includeClass = this.includeClass;
-		ClassPatternMatcher excludeClass = this.excludeClass;
+		JDWPClassPatternMatcher includeClass = this.includeClass;
+		JDWPClassPatternMatcher excludeClass = this.excludeClass;
 		if (includeClass != null || excludeClass != null)
 		{
 			// Get the runtime name of the class
@@ -222,7 +224,7 @@ public final class JDWPHostEventFilter
 	 * @since 2021/04/25
 	 */
 	private boolean __context(JDWPHostController __controller, Object __thread,
-		EventModContext __context, Object __on, Object[] __ensnare)
+		JDWPEventModifierContext __context, Object __on, Object[] __ensnare)
 		throws NullPointerException
 	{
 		if (__controller == null || __context == null)
@@ -344,7 +346,7 @@ public final class JDWPHostEventFilter
 						return false;
 						
 					// Is this the wrong field?
-					FieldOnly fieldOnly = this.fieldOnly;
+					JDWPHostFieldOnly fieldOnly = this.fieldOnly;
 					if (fieldOnly.fieldDx != ((Number)__on).intValue())
 						return false;
 				}
@@ -355,14 +357,14 @@ public final class JDWPHostEventFilter
 				if (this.fieldOnly != null)
 				{
 					// Is this the wrong field?
-					FieldOnly fieldOnly = this.fieldOnly;
+					JDWPHostFieldOnly fieldOnly = this.fieldOnly;
 					if (fieldOnly.type != __on)
 						return false;
 				}
 				
 				// Forward to type check and see if that is used
 				if (!this.__context(__controller, __thread,
-					EventModContext.PARAMETER_TYPE, __on, __ensnare))
+					JDWPEventModifierContext.PARAMETER_TYPE, __on, __ensnare))
 					return false;
 				break;
 			
@@ -385,7 +387,7 @@ public final class JDWPHostEventFilter
 					
 					// Get the tracker and the stepping
 					JDWPHostStepTracker stepTracker = (JDWPHostStepTracker)__on;
-					CallStackStepping stepping = this.callStackStepping;
+					JDWPHostCallStackStepping stepping = this.callStackStepping;
 					
 					// No stepping here? Cannot be a match
 					if (stepping == null)
@@ -404,7 +406,7 @@ public final class JDWPHostEventFilter
 			case TOSSED_EXCEPTION:
 				if (this.exception != null)
 				{
-					ExceptionOnly exception = this.exception;
+					JDWPHostExceptionOnly exception = this.exception;
 					
 					// Caught/uncaught mismatch?
 					if (__on == null && !exception.uncaught)
