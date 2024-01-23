@@ -702,11 +702,8 @@ public final class JDWPHostController
 	public JDWPHostLocation readLocation(JDWPPacket __packet)
 		throws JDWPException
 	{
-		synchronized (this)
+		synchronized (__packet)
 		{
-			// Ensure this is open
-			__packet.__checkOpen();
-			
 			// This identifies classes or interfaces except we do not need
 			// this distinction, however for exception handlers locations can
 			// be 0 for anything that is not handled.
@@ -924,7 +921,7 @@ public final class JDWPHostController
 		// Is this valid?
 		if (!this.viewType().isValid(object))
 		{
-			// We may be trying to read the type of an object, so we need to
+			// We may be trying to read the type of object, so we need to
 			// alias to that
 			if (this.viewObject().isValid(object))
 			{
@@ -1363,11 +1360,8 @@ public final class JDWPHostController
 		if (__packet == null)
 			throw new NullPointerException("NARG");
 		
-		synchronized (this)
+		synchronized (__packet)
 		{
-			// Must be an open packet
-			__packet.__checkOpen();
-			
 			// Write class located within
 			this.writeTaggedId(__packet, __class);
 			
@@ -1396,7 +1390,7 @@ public final class JDWPHostController
 		if (__packet == null)
 			throw new NullPointerException("NARG");
 		
-		synchronized (this)
+		synchronized (__packet)
 		{
 			// If this is the null object, invalidate it
 			JDWPViewObject viewObject = this.viewObject();
@@ -1466,7 +1460,7 @@ public final class JDWPHostController
 	public void writeTaggedId(JDWPPacket __packet, Object __object)
 		throws JDWPException
 	{
-		synchronized (this)
+		synchronized (__packet)
 		{
 			__packet.writeByte(JDWPHostUtils.classType(
 				this, __object).id);
@@ -1497,11 +1491,8 @@ public final class JDWPHostController
 			return;
 		}
 		
-		synchronized (this)
+		synchronized (__packet)
 		{
-			// Must be an open packet
-			__packet.__checkOpen();
-			
 			// Depends on the context
 			switch (__context)
 			{

@@ -11,14 +11,17 @@ package cc.squirreljme.emulator;
 
 import cc.squirreljme.jvm.mle.ReflectionShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
+import java.awt.Image;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
+import javax.imageio.ImageIO;
 
 /**
  * This class manages the native bindings.
@@ -36,6 +39,43 @@ public final class NativeBinding
 	
 	static
 	{
+		// Try to set some properties for macOS, although it might not work if
+		// too late
+		System.setProperty("apple.laf.useScreenMenuBar", "true");
+		System.setProperty("com.apple.mrj.application.apple.menu.about.name",
+			"SquirrelJME");
+		
+		// If there is the Taskbar class if on Java 9 and up, we can set
+		// some properties accordingly
+		try
+		{
+			Class<?> taskbarClass = Class.forName("java.awt.Taskbar");
+			
+			// Get the current taskbar
+			Method getTaskbarMethod = taskbarClass.getMethod(
+				"getTaskbar");
+			Object taskbar = getTaskbarMethod.invoke(null);
+			
+			// Set icon for SquirrelJME
+			try (InputStream in = NativeBinding.class.getResourceAsStream(
+				"icon.png"))
+			{
+				if (in != null)
+				{
+					Image icon = ImageIO.read(in);
+					
+					Method setIconImageMethod = taskbarClass.getMethod(
+						"setIconImage", Image.class);
+					setIconImageMethod.invoke(taskbar, icon);
+				}
+			}
+		}
+		catch (IOException|ReflectiveOperationException|SecurityException|
+			UnsupportedOperationException ignored)
+		{
+		}
+		
+		// Load main library
 		long loadNs = System.nanoTime();
 		try
 		{
