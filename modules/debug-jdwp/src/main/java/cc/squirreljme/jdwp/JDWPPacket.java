@@ -329,6 +329,22 @@ public final class JDWPPacket
 	}
 	
 	/**
+	 * Returns the current ID sizes in use.
+	 *
+	 * @return The used ID sizes.
+	 * @since 2024/01/22
+	 */
+	public JDWPIdSizes idSizes()
+	{
+		synchronized (this)
+		{
+			this.__checkOpen();
+			
+			return this._idSizes;
+		}
+	}
+	
+	/**
 	 * Is this a reply packet?
 	 * 
 	 * @return If this is a reply.

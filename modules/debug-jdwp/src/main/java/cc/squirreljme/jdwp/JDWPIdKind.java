@@ -17,23 +17,41 @@ package cc.squirreljme.jdwp;
 public enum JDWPIdKind
 {
 	/** Field ID. */
-	FIELD_ID,
+	FIELD_ID(0),
 	
 	/** Method ID. */
-	METHOD_ID,
+	METHOD_ID(1),
 	
 	/** Object ID. */
-	OBJECT_ID,
+	OBJECT_ID(2),
 	
 	/** Reference type. */
-	REFERENCE_TYPE_ID,
+	REFERENCE_TYPE_ID(3),
 	
 	/** Frame ID. */
-	FRAME_ID,
+	FRAME_ID(4),
 	
 	/** Thread ID. */
-	THREAD_ID,
+	THREAD_ID(-1),
 	
 	/* End. */
 	;
+	
+	/** The number of natural ID kinds. */
+	public static final int NUM_KINDS =
+		5;
+	
+	/** The position of this kind. */
+	public final int position;
+	
+	/**
+	 * Initializes the kind.
+	 *
+	 * @param __position The position of this.
+	 * @since 2024/01/22
+	 */
+	JDWPIdKind(int __position)
+	{
+		this.position = __position;
+	}
 }

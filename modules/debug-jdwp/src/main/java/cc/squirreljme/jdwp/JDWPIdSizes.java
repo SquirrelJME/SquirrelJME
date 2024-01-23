@@ -32,16 +32,20 @@ public final class JDWPIdSizes
 	{
 		if (__sizes == null)
 			throw new NullPointerException("NARG");
-		if (__sizes.length != JDWPIdKind.values().length)
+		if (__sizes.length != JDWPIdKind.NUM_KINDS)
 			throw new IllegalArgumentException("IOOB");
 		
+		// Normalize everything
+		int[] normalized = new int[JDWPIdKind.values().length];
+		System.arraycopy(__sizes, 0,
+			normalized, 0, JDWPIdKind.NUM_KINDS);
+		
 		// Normalize some sizes that are aliases
-		__sizes = __sizes.clone();
-		__sizes[JDWPIdKind.THREAD_ID.ordinal()] =
-			__sizes[JDWPIdKind.OBJECT_ID.ordinal()];
+		normalized[JDWPIdKind.THREAD_ID.ordinal()] =
+			normalized[JDWPIdKind.OBJECT_ID.ordinal()];
 		
 		// Store sizes
-		this._sizes = __sizes;
+		this._sizes = normalized;
 	}
 	
 	/**
@@ -59,5 +63,22 @@ public final class JDWPIdSizes
 			throw new NullPointerException("NARG");
 		
 		return this._sizes[__idSize.ordinal()];
+	}
+	
+	/**
+	 * Returns the size of the given type.
+	 *
+	 * @param __idSize The identifier size used.
+	 * @return The resultant size.
+	 * @throws IndexOutOfBoundsException If the kind is not valid.
+	 * @since 2024/01/22
+	 */
+	public int getSize(int __idSize)
+		throws IndexOutOfBoundsException
+	{
+		if (__idSize < 0 || __idSize >= JDWPIdKind.NUM_KINDS)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		return this._sizes[__idSize];
 	}
 }

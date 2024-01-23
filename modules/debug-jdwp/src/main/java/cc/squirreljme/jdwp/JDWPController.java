@@ -106,6 +106,10 @@ public final class JDWPController
 		this.state = new JDWPState(new WeakReference<>(__bind));
 		this.commLink = new CommLink(__in, __out);
 		
+		// Set sizes that we use
+		this.commLink.setIdSizes(new JDWPIdSizes(
+			4, 4, 4, 4, 4));
+		
 		// Setup Communication Link thread
 		Thread thread = new Thread(this, "JDWPController");
 		thread.start();

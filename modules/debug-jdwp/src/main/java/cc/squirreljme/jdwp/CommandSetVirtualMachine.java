@@ -197,8 +197,9 @@ public enum CommandSetVirtualMachine
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// field, method, object, reference, frame
-			for (int i = 0; i < 5; i++)
-				rv.writeInt(JDWPConstants.ID_SIZE);
+			JDWPIdSizes idSizes = __packet.idSizes();
+			for (int i = 0; i < JDWPIdKind.NUM_KINDS; i++)
+				rv.writeInt(idSizes.getSize(i));
 			
 			return rv;
 		}
