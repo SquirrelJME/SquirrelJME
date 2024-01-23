@@ -13,7 +13,7 @@ import cc.squirreljme.jdwp.JDWPEventKind;
 import cc.squirreljme.jdwp.JDWPIdKind;
 import cc.squirreljme.jdwp.JDWPPacket;
 import cc.squirreljme.jdwp.JDWPId;
-import cc.squirreljme.jdwp.SuspendPolicy;
+import cc.squirreljme.jdwp.JDWPSuspendPolicy;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.EnumTypeMap;
 import java.util.Map;
@@ -35,7 +35,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
@@ -51,7 +51,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
@@ -67,7 +67,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
@@ -83,7 +83,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
@@ -99,7 +99,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
@@ -115,7 +115,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			StoredInfo<InfoThread> threadStore =
 				__state.storedInfo.getThread();
@@ -140,7 +140,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			StoredInfo<InfoThread> threadStore =
 				__state.storedInfo.getThread();
@@ -165,7 +165,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
@@ -181,7 +181,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
@@ -197,7 +197,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
@@ -213,7 +213,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
@@ -229,7 +229,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
@@ -245,7 +245,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
@@ -261,7 +261,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
@@ -277,7 +277,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
@@ -293,7 +293,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
@@ -309,7 +309,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
@@ -325,7 +325,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
@@ -341,7 +341,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
@@ -357,7 +357,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
@@ -373,7 +373,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			StoredInfo<InfoThread> threadStore =
 				__state.storedInfo.getThread();
@@ -392,9 +392,9 @@ public enum EventProcessor
 			// If the VM was started in the suspend state then this would be
 			// known accordingly... so we need to resume the VM since we are
 			// connected to it
-			if (__suspend == SuspendPolicy.EVENT_THREAD)
+			if (__suspend == JDWPSuspendPolicy.EVENT_THREAD)
 				__state.threadResume(thread);
-			else if (__suspend == SuspendPolicy.ALL)
+			else if (__suspend == JDWPSuspendPolicy.ALL)
 				__state.threadResumeAll();
 		}
 	},
@@ -409,7 +409,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
@@ -425,7 +425,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
@@ -476,7 +476,7 @@ public enum EventProcessor
 	 * @since 2024/01/19
 	 */
 	protected abstract void process(DebuggerState __state,
-		JDWPPacket __packet, SuspendPolicy __suspend, EventHandler __handler);
+		JDWPPacket __packet, JDWPSuspendPolicy __suspend, EventHandler __handler);
 	
 	/**
 	 * Returns the processor for the given event.
@@ -514,7 +514,7 @@ public enum EventProcessor
 			return;
 		
 		// Read the suspension policy
-		SuspendPolicy suspend = SuspendPolicy.of(__packet.readByte());
+		JDWPSuspendPolicy suspend = JDWPSuspendPolicy.of(__packet.readByte());
 		
 		// Process all events
 		int numEvents = __packet.readInt();

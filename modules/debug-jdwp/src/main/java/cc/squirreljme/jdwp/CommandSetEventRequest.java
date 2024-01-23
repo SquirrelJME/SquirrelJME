@@ -11,7 +11,7 @@ package cc.squirreljme.jdwp;
 
 import cc.squirreljme.jdwp.event.CallStackStepping;
 import cc.squirreljme.jdwp.event.ClassPatternMatcher;
-import cc.squirreljme.jdwp.event.EventFilter;
+import cc.squirreljme.jdwp.event.JDWPHostEventFilter;
 import cc.squirreljme.jdwp.event.ExceptionOnly;
 import cc.squirreljme.jdwp.event.FieldOnly;
 import cc.squirreljme.jdwp.event.StepDepth;
@@ -45,8 +45,8 @@ public enum CommandSetEventRequest
 					JDWPErrorType.INVALID_EVENT_TYPE);
 			
 			// How does this suspend?
-			SuspendPolicy suspendPolicy =
-				SuspendPolicy.of(__packet.readByte());
+			JDWPSuspendPolicy suspendPolicy =
+				JDWPSuspendPolicy.of(__packet.readByte());
 			
 			// Is there at least one filter?
 			boolean hasFilter = false;
@@ -69,7 +69,7 @@ public enum CommandSetEventRequest
 			for (int i = 0; i < numModifiers; i++)
 			{
 				// Check if the kind if supported or known about
-				EventModKind modKind = EventModKind.of(__packet.readByte());
+				JDWPEventModifierKind modKind = JDWPEventModifierKind.of(__packet.readByte());
 				if (modKind == null)
 					return __controller.reply(__packet.id(),
 						JDWPErrorType.NOT_IMPLEMENTED);
@@ -80,7 +80,7 @@ public enum CommandSetEventRequest
 						null, modKind.ordinal(), null);
 				
 				// Everything except occurrences has a filter!
-				if (modKind != EventModKind.LIMIT_OCCURRENCES)
+				if (modKind != JDWPEventModifierKind.LIMIT_OCCURRENCES)
 					hasFilter = true;
 					
 				// Depends on the kind
@@ -163,13 +163,14 @@ public enum CommandSetEventRequest
 			}
 			
 			// Initialize the event filter with all the modifier parameters
-			EventFilter eventFilter = (hasFilter ? new EventFilter(thread,
+			JDWPHostEventFilter
+				eventFilter = (hasFilter ? new JDWPHostEventFilter(thread,
 				type, includeClass, excludeClass, fieldOnly, location,
 				thisInstanceSet, thisInstance, exception,
 				callStackStepping) : null);
 			
 			// Register the event request
-			EventRequest request = new EventRequest(
+			JDWPHostEventRequest request = new JDWPHostEventRequest(
 				__controller.commLink.nextId(), eventKind, suspendPolicy,
 				occurrenceLimit, eventFilter);
 			__controller.eventManager.addEventRequest(request);

@@ -49,7 +49,7 @@ final class __TripVmState__
 		
 		// Tell the remote debugger that we started, note we always generate
 		// this event and we never hide it
-		try (JDWPPacket packet = controller.__event(SuspendPolicy.NONE,
+		try (JDWPPacket packet = controller.__event(JDWPSuspendPolicy.NONE,
 			(__alive ? JDWPEventKind.THREAD_START : JDWPEventKind.THREAD_DEATH),
 			0))
 		{

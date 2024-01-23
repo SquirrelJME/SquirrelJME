@@ -10,49 +10,28 @@
 package cc.squirreljme.jdwp;
 
 /**
- * Event modifier kind.
+ * Suspension policy.
  *
  * @since 2021/03/13
  */
-public enum EventModKind
+public enum JDWPSuspendPolicy
 	implements __IdNumbered__
 {
-	/** Limit occurrences. */
-	LIMIT_OCCURRENCES(1),
+	/** None. */
+	NONE(0),
 	
-	/** Only in the given thread. */	
-	THREAD_ONLY(3),
+	/** Stop the thread generating the event. */
+	EVENT_THREAD(1),
 	
-	/** Only in the given class. */
-	CLASS_ONLY(4),
-	
-	/** Only in the given class, by pattern. */
-	CLASS_MATCH_PATTERN(5),
-	
-	/** Not in the given class, by pattern. */
-	CLASS_EXCLUDE_PATTERN(6),
-	
-	/** By location. */
-	LOCATION_ONLY(7),
-	
-	/** By exception, caught/uncaught. */
-	EXCEPTION_ONLY(8),
-	
-	/** By field. */
-	FIELD_ONLY(9),
-	
-	/** Call stack and stepping limit. */
-	CALL_STACK_STEPPING(10),
-	
-	/** This object. */
-	THIS_INSTANCE_ONLY(11),
+	/** Stop absolutely everything. */
+	ALL(2),
 	
 	/* End. */
 	;
 	
-	/** Quick table. */
-	private static final __QuickTable__<EventModKind> _QUICK =
-		new __QuickTable__<>(EventModKind.values());
+	/** Quick lookup. */
+	private static final __QuickTable__<JDWPSuspendPolicy> _QUICK =
+		new __QuickTable__<>(JDWPSuspendPolicy.values());
 	
 	/** The event ID. */
 	public final int id;
@@ -63,7 +42,7 @@ public enum EventModKind
 	 * @param __id The identifier.
 	 * @since 2021/03/13
 	 */
-	EventModKind(int __id)
+	JDWPSuspendPolicy(int __id)
 	{
 		this.id = __id;
 	}
@@ -85,8 +64,8 @@ public enum EventModKind
 	 * @return The found constant.
 	 * @since 2021/03/13
 	 */
-	public static EventModKind of(int __id)
+	public static JDWPSuspendPolicy of(int __id)
 	{
-		return EventModKind._QUICK.get(__id);
+		return JDWPSuspendPolicy._QUICK.get(__id);
 	}
 }

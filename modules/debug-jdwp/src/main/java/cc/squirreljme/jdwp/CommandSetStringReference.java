@@ -46,7 +46,7 @@ public enum CommandSetStringReference
 					System.identityHashCode(object));
 			
 			// Locate the char field index
-			int charFieldDx = JDWPUtils.findFieldId(viewType, type,
+			int charFieldDx = JDWPHostUtils.findFieldId(viewType, type,
 				CommandSetStringReference._STRING_CHARS, "[C");
 			
 			// Is missing? We do not know how strings work then

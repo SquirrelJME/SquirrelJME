@@ -743,7 +743,7 @@ public final class JDWPPacket
 				if ("Ljava/lang/Thread;".equals(viewType.signature(objType)))
 				{
 					// Find the field for this
-					int fieldId = JDWPUtils.findFieldId(viewType, objType,
+					int fieldId = JDWPHostUtils.findFieldId(viewType, objType,
 						"_vmThread",
 						"Lcc/squirreljme/jvm/mle/brackets/VMThreadBracket;");
 					
@@ -1179,7 +1179,7 @@ public final class JDWPPacket
 	{
 		synchronized (this)
 		{
-			this.writeByte(JDWPUtils.classType(__controller, __object).id);
+			this.writeByte(JDWPHostUtils.classType(__controller, __object).id);
 			this.writeId(System.identityHashCode(__object));
 		}
 	}

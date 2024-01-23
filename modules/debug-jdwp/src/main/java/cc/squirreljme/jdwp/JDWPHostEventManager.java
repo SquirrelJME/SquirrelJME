@@ -9,7 +9,7 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.jdwp.event.EventFilter;
+import cc.squirreljme.jdwp.event.JDWPHostEventFilter;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.EnumTypeMap;
 import java.util.ArrayList;
@@ -26,20 +26,20 @@ import net.multiphasicapps.collections.EmptyList;
  *
  * @since 2021/03/14
  */
-public final class EventManager
+public final class JDWPHostEventManager
 {
 	/** Event mappings by Kind. */
-	private final Map<JDWPEventKind, List<EventRequest>> _eventByKind =
-		new EnumTypeMap<JDWPEventKind, List<EventRequest>>(
+	private final Map<JDWPEventKind, List<JDWPHostEventRequest>> _eventByKind =
+		new EnumTypeMap<JDWPEventKind, List<JDWPHostEventRequest>>(
 			JDWPEventKind.class, JDWPEventKind.values());
 	
 	/** Event mapping by Id. */
-	private final Map<Integer, EventRequest> _eventById =
+	private final Map<Integer, JDWPHostEventRequest> _eventById =
 		new HashMap<>();
 	
 	/** Unconditional events. */
-	private final Map<JDWPEventKind, EventRequest> _unconditional =
-		new EnumTypeMap<JDWPEventKind, EventRequest>(
+	private final Map<JDWPEventKind, JDWPHostEventRequest> _unconditional =
+		new EnumTypeMap<JDWPEventKind, JDWPHostEventRequest>(
 			JDWPEventKind.class, JDWPEventKind.values());
 	
 	/**
@@ -47,12 +47,12 @@ public final class EventManager
 	 * 
 	 * @since 2021/07/05
 	 */
-	public EventManager()
+	public JDWPHostEventManager()
 	{
 		// Unconditional breakpoints
 		this._unconditional.put(JDWPEventKind.BREAKPOINT,
-			new EventRequest(0, JDWPEventKind.BREAKPOINT,
-				SuspendPolicy.EVENT_THREAD, -1, null));
+			new JDWPHostEventRequest(0, JDWPEventKind.BREAKPOINT,
+				JDWPSuspendPolicy.EVENT_THREAD, -1, null));
 	}
 	
 	/**
@@ -62,7 +62,7 @@ public final class EventManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/03/13
 	 */
-	public void addEventRequest(EventRequest __request)
+	public void addEventRequest(JDWPHostEventRequest __request)
 		throws NullPointerException
 	{
 		if (__request == null)
@@ -72,11 +72,11 @@ public final class EventManager
 		if (JDWPHostController._DEBUG)
 			Debugging.debugNote("JDWP: Adding event %s", __request);
 		
-		Map<JDWPEventKind, List<EventRequest>> eventByKind = this._eventByKind;
+		Map<JDWPEventKind, List<JDWPHostEventRequest>> eventByKind = this._eventByKind;
 		synchronized (this)
 		{
 			// Get list of the event
-			List<EventRequest> list = eventByKind.get(__request.eventKind);
+			List<JDWPHostEventRequest> list = eventByKind.get(__request.eventKind);
 			if (list == null)
 				eventByKind.put(__request.eventKind,
 					(list = new LinkedList<>()));
@@ -101,19 +101,19 @@ public final class EventManager
 			throw new NullPointerException("NARG");
 		
 		// Check if there are actual events to clear
-		List<EventRequest> events = this._eventByKind.get(__kind);
+		List<JDWPHostEventRequest> events = this._eventByKind.get(__kind);
 		if (events == null)
 			return;
 		
 		// Get all events to clear
-		EventRequest[] clear;
+		JDWPHostEventRequest[] clear;
 		synchronized (this)
 		{
-			clear = events.toArray(new EventRequest[events.size()]);
+			clear = events.toArray(new JDWPHostEventRequest[events.size()]);
 		}
 		
 		// Delete all of them
-		for (EventRequest event : clear)
+		for (JDWPHostEventRequest event : clear)
 			this.delete(event.id);
 	}
 	
@@ -142,7 +142,7 @@ public final class EventManager
 		{
 			// If this request is found, remove from the respective maps
 			// and lists
-			EventRequest request = this._eventById.get(__id);
+			JDWPHostEventRequest request = this._eventById.get(__id);
 			if (request != null)
 			{
 				this._eventByKind.get(request.eventKind).remove(request);
@@ -164,7 +164,7 @@ public final class EventManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/04/17
 	 */
-	protected Iterable<EventRequest> find(JDWPHostController __controller,
+	protected Iterable<JDWPHostEventRequest> find(JDWPHostController __controller,
 		Object __thread, boolean __unconditional,
 		JDWPEventKind __kind, Object... __args)
 		throws NullPointerException
@@ -173,15 +173,15 @@ public final class EventManager
 			throw new NullPointerException("NARG");
 		
 		// Go through all previously registered requests
-		List<EventRequest> requests = this._eventByKind.get(__kind);
+		List<JDWPHostEventRequest> requests = this._eventByKind.get(__kind);
 		if (requests == null)
 			if (__unconditional)
 				return this.__unconditional(__controller, __kind);
 			else
-				return EmptyList.<EventRequest>empty();
+				return EmptyList.<JDWPHostEventRequest>empty();
 		
 		// Lock since this could be used by many threads
-		List<EventRequest> rv = null;
+		List<JDWPHostEventRequest> rv = null;
 		synchronized (this)
 		{
 			// Nothing?
@@ -189,16 +189,16 @@ public final class EventManager
 				if (__unconditional)
 					return this.__unconditional(__controller, __kind);
 				else
-					return EmptyList.<EventRequest>empty();
+					return EmptyList.<JDWPHostEventRequest>empty();
 			
 			// Find matching events
-			for (Iterator<EventRequest> iterator = requests.iterator();
-				iterator.hasNext();)
+			for (Iterator<JDWPHostEventRequest> iterator = requests.iterator();
+				 iterator.hasNext();)
 			{
-				EventRequest request = iterator.next();
+				JDWPHostEventRequest request = iterator.next();
 				
 				// Are we filtering this? And does this meet this?
-				EventFilter filter = request.filter;
+				JDWPHostEventFilter filter = request.filter;
 				if (filter != null && !filter.meets(__controller, __thread,
 					__kind, __args))
 					continue;
@@ -225,7 +225,7 @@ public final class EventManager
 		
 		// If there are no found events, just use a single instance of the
 		// created empty list, otherwise use that given list
-		return (rv == null ? EmptyList.<EventRequest>empty() : rv);
+		return (rv == null ? EmptyList.<JDWPHostEventRequest>empty() : rv);
 	}
 	
 	/**
@@ -237,7 +237,7 @@ public final class EventManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/07/06
 	 */
-	private Iterable<EventRequest> __unconditional(
+	private Iterable<JDWPHostEventRequest> __unconditional(
 		JDWPHostController __controller,
 		JDWPEventKind __kind)
 		throws NullPointerException
@@ -246,10 +246,10 @@ public final class EventManager
 			throw new NullPointerException("NARG");
 		
 		// Was this ever registered?
-		EventRequest request = this._unconditional.get(__kind);
+		JDWPHostEventRequest request = this._unconditional.get(__kind);
 		if (request != null)
 		{
-			Collection<EventRequest> rv = new ArrayList<>();
+			Collection<JDWPHostEventRequest> rv = new ArrayList<>();
 			
 			rv.add(request);
 			
@@ -257,6 +257,6 @@ public final class EventManager
 		}
 		
 		// Just use this event
-		return EmptyList.<EventRequest>empty();
+		return EmptyList.<JDWPHostEventRequest>empty();
 	}
 }

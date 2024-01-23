@@ -13,7 +13,7 @@ import cc.squirreljme.jdwp.JDWPEventKind;
 import cc.squirreljme.jdwp.JDWPHostController;
 import cc.squirreljme.jdwp.JDWPHostLocation;
 import cc.squirreljme.jdwp.JDWPHostStepTracker;
-import cc.squirreljme.jdwp.JDWPUtils;
+import cc.squirreljme.jdwp.JDWPHostUtils;
 import cc.squirreljme.jdwp.JDWPValue;
 import cc.squirreljme.jdwp.host.views.JDWPViewObject;
 import cc.squirreljme.jdwp.host.views.JDWPViewType;
@@ -24,7 +24,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2021/04/17
  */
-public final class EventFilter
+public final class JDWPHostEventFilter
 {
 	/** Static field. */
 	private static final byte _STATIC_FIELD =
@@ -75,7 +75,7 @@ public final class EventFilter
 	 * @param __callStackStepping Call stepping.
 	 * @since 2021/04/17
 	 */
-	public EventFilter(Object __thread, Object __type,
+	public JDWPHostEventFilter(Object __thread, Object __type,
 		ClassPatternMatcher __includeClass, ClassPatternMatcher __excludeClass,
 		FieldOnly __fieldOnly, JDWPHostLocation __location,
 		boolean __thisInstanceSet, Object __thisInstance,
@@ -174,7 +174,7 @@ public final class EventFilter
 		if (includeClass != null || excludeClass != null)
 		{
 			// Get the runtime name of the class
-			String runtimeName = JDWPUtils.signatureToRuntime(
+			String runtimeName = JDWPHostUtils.signatureToRuntime(
 				__viewType.signature(__arg));
 			
 			// Is not an included class?
@@ -296,7 +296,7 @@ public final class EventFilter
 						__thread);
 					boolean isStatic = (__controller.viewType()
 						.methodFlags(location.type, location.methodDx) &
-							EventFilter._STATIC_FIELD) != 0;
+							JDWPHostEventFilter._STATIC_FIELD) != 0;
 						
 					// Is this a static method?
 					Object thisInstance = this.thisInstance;

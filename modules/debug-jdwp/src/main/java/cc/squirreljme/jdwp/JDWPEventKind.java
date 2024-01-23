@@ -33,11 +33,11 @@ public enum JDWPEventKind
 			EventModContext.CURRENT_TYPE,
 			EventModContext.CURRENT_INSTANCE),
 		Arrays.asList(EventModContext.PARAMETER_STEPPING),
-		EventModKind.THREAD_ONLY,
-		EventModKind.CLASS_ONLY,
-		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
-		EventModKind.LOCATION_ONLY, EventModKind.CALL_STACK_STEPPING,
-		EventModKind.THIS_INSTANCE_ONLY, EventModKind.LIMIT_OCCURRENCES)
+		JDWPEventModifierKind.THREAD_ONLY,
+		JDWPEventModifierKind.CLASS_ONLY,
+		JDWPEventModifierKind.CLASS_MATCH_PATTERN, JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
+		JDWPEventModifierKind.LOCATION_ONLY, JDWPEventModifierKind.CALL_STACK_STEPPING,
+		JDWPEventModifierKind.THIS_INSTANCE_ONLY, JDWPEventModifierKind.LIMIT_OCCURRENCES)
 	{
 		/**
 		 * {@inheritDoc}
@@ -59,11 +59,11 @@ public enum JDWPEventKind
 			EventModContext.CURRENT_LOCATION,
 			EventModContext.CURRENT_INSTANCE),
 		null,
-		EventModKind.THREAD_ONLY,
-		EventModKind.CLASS_ONLY,
-		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
-		EventModKind.LOCATION_ONLY, EventModKind.THIS_INSTANCE_ONLY,
-		EventModKind.LIMIT_OCCURRENCES)
+		JDWPEventModifierKind.THREAD_ONLY,
+		JDWPEventModifierKind.CLASS_ONLY,
+		JDWPEventModifierKind.CLASS_MATCH_PATTERN, JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
+		JDWPEventModifierKind.LOCATION_ONLY, JDWPEventModifierKind.THIS_INSTANCE_ONLY,
+		JDWPEventModifierKind.LIMIT_OCCURRENCES)
 	{
 		/**
 		 * {@inheritDoc}
@@ -82,9 +82,9 @@ public enum JDWPEventKind
 	
 	/** Frame pop. */
 	FRAME_POP(3, null, null,
-		EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
-		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
-		EventModKind.THIS_INSTANCE_ONLY, EventModKind.LIMIT_OCCURRENCES)
+		JDWPEventModifierKind.THREAD_ONLY, JDWPEventModifierKind.CLASS_ONLY,
+		JDWPEventModifierKind.CLASS_MATCH_PATTERN, JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
+		JDWPEventModifierKind.THIS_INSTANCE_ONLY, JDWPEventModifierKind.LIMIT_OCCURRENCES)
 	{
 		/**
 		 * {@inheritDoc}
@@ -104,10 +104,10 @@ public enum JDWPEventKind
 		Arrays.asList(
 			EventModContext.ENSNARE_ARGUMENT,
 			EventModContext.TOSSED_EXCEPTION),
-		EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
-		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
-		EventModKind.LOCATION_ONLY, EventModKind.EXCEPTION_ONLY,
-		EventModKind.THIS_INSTANCE_ONLY, EventModKind.LIMIT_OCCURRENCES)
+		JDWPEventModifierKind.THREAD_ONLY, JDWPEventModifierKind.CLASS_ONLY,
+		JDWPEventModifierKind.CLASS_MATCH_PATTERN, JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
+		JDWPEventModifierKind.LOCATION_ONLY, JDWPEventModifierKind.EXCEPTION_ONLY,
+		JDWPEventModifierKind.THIS_INSTANCE_ONLY, JDWPEventModifierKind.LIMIT_OCCURRENCES)
 	{
 		/**
 		 * {@inheritDoc}
@@ -140,9 +140,9 @@ public enum JDWPEventKind
 	
 	/** User defined. */
 	USER_DEFINED(5, null, null,
-		EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
-		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
-		EventModKind.THIS_INSTANCE_ONLY, EventModKind.LIMIT_OCCURRENCES)
+		JDWPEventModifierKind.THREAD_ONLY, JDWPEventModifierKind.CLASS_ONLY,
+		JDWPEventModifierKind.CLASS_MATCH_PATTERN, JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
+		JDWPEventModifierKind.THIS_INSTANCE_ONLY, JDWPEventModifierKind.LIMIT_OCCURRENCES)
 	{
 		/**
 		 * {@inheritDoc}
@@ -158,8 +158,8 @@ public enum JDWPEventKind
 	},
 	
 	/** Start of thread. */
-	THREAD_START(6, null, null, EventModKind.THREAD_ONLY,
-		EventModKind.LIMIT_OCCURRENCES)
+	THREAD_START(6, null, null, JDWPEventModifierKind.THREAD_ONLY,
+		JDWPEventModifierKind.LIMIT_OCCURRENCES)
 	{
 		/**
 		 * {@inheritDoc}
@@ -175,8 +175,8 @@ public enum JDWPEventKind
 	},
 	
 	/** End of thread. */
-	THREAD_DEATH(7, null, null, EventModKind.THREAD_ONLY,
-		EventModKind.LIMIT_OCCURRENCES)
+	THREAD_DEATH(7, null, null, JDWPEventModifierKind.THREAD_ONLY,
+		JDWPEventModifierKind.LIMIT_OCCURRENCES)
 	{
 		/**
 		 * {@inheritDoc}
@@ -194,9 +194,9 @@ public enum JDWPEventKind
 	/** Class being prepared. */
 	CLASS_PREPARE(8, null,
 		Arrays.asList(EventModContext.PARAMETER_TYPE),
-		EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
-		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
-		EventModKind.LIMIT_OCCURRENCES)
+		JDWPEventModifierKind.THREAD_ONLY, JDWPEventModifierKind.CLASS_ONLY,
+		JDWPEventModifierKind.CLASS_MATCH_PATTERN, JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
+		JDWPEventModifierKind.LIMIT_OCCURRENCES)
 	{
 		/**
 		 * {@inheritDoc}
@@ -227,8 +227,8 @@ public enum JDWPEventKind
 	
 	/** Class unloading. */
 	CLASS_UNLOAD(9, null, null,
-		EventModKind.CLASS_MATCH_PATTERN,
-		EventModKind.CLASS_EXCLUDE_PATTERN, EventModKind.LIMIT_OCCURRENCES)
+		JDWPEventModifierKind.CLASS_MATCH_PATTERN,
+		JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN, JDWPEventModifierKind.LIMIT_OCCURRENCES)
 	{
 		/**
 		 * {@inheritDoc}
@@ -245,9 +245,9 @@ public enum JDWPEventKind
 	
 	/** Class loading. */
 	CLASS_LOAD(10, null, null,
-		EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
-		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
-		EventModKind.THIS_INSTANCE_ONLY, EventModKind.LIMIT_OCCURRENCES)
+		JDWPEventModifierKind.THREAD_ONLY, JDWPEventModifierKind.CLASS_ONLY,
+		JDWPEventModifierKind.CLASS_MATCH_PATTERN, JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
+		JDWPEventModifierKind.THIS_INSTANCE_ONLY, JDWPEventModifierKind.LIMIT_OCCURRENCES)
 	{
 		/**
 		 * {@inheritDoc}
@@ -270,10 +270,10 @@ public enum JDWPEventKind
 			EventModContext.CURRENT_INSTANCE),
 		Arrays.asList(EventModContext.PARAMETER_TYPE_OR_FIELD,
 			EventModContext.PARAMETER_FIELD),
-		EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
-		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
-		EventModKind.LOCATION_ONLY, EventModKind.FIELD_ONLY,
-		EventModKind.THIS_INSTANCE_ONLY, EventModKind.LIMIT_OCCURRENCES)
+		JDWPEventModifierKind.THREAD_ONLY, JDWPEventModifierKind.CLASS_ONLY,
+		JDWPEventModifierKind.CLASS_MATCH_PATTERN, JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
+		JDWPEventModifierKind.LOCATION_ONLY, JDWPEventModifierKind.FIELD_ONLY,
+		JDWPEventModifierKind.THIS_INSTANCE_ONLY, JDWPEventModifierKind.LIMIT_OCCURRENCES)
 	{
 		/**
 		 * {@inheritDoc}
@@ -297,11 +297,11 @@ public enum JDWPEventKind
 			EventModContext.CURRENT_INSTANCE),
 		Arrays.asList(EventModContext.PARAMETER_TYPE_OR_FIELD,
 			EventModContext.PARAMETER_FIELD),
-		EventModKind.THREAD_ONLY,
-		EventModKind.CLASS_ONLY, EventModKind.CLASS_MATCH_PATTERN,
-		EventModKind.CLASS_EXCLUDE_PATTERN, EventModKind.LOCATION_ONLY,
-		EventModKind.FIELD_ONLY, EventModKind.THIS_INSTANCE_ONLY,
-		EventModKind.LIMIT_OCCURRENCES)
+		JDWPEventModifierKind.THREAD_ONLY,
+		JDWPEventModifierKind.CLASS_ONLY, JDWPEventModifierKind.CLASS_MATCH_PATTERN,
+		JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN, JDWPEventModifierKind.LOCATION_ONLY,
+		JDWPEventModifierKind.FIELD_ONLY, JDWPEventModifierKind.THIS_INSTANCE_ONLY,
+		JDWPEventModifierKind.LIMIT_OCCURRENCES)
 	{
 		/**
 		 * {@inheritDoc}
@@ -322,10 +322,10 @@ public enum JDWPEventKind
 		Arrays.asList(
 			EventModContext.ENSNARE_ARGUMENT,
 			EventModContext.TOSSED_EXCEPTION),
-		EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
-		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
-		EventModKind.LOCATION_ONLY, EventModKind.EXCEPTION_ONLY,
-		EventModKind.THIS_INSTANCE_ONLY, EventModKind.LIMIT_OCCURRENCES)
+		JDWPEventModifierKind.THREAD_ONLY, JDWPEventModifierKind.CLASS_ONLY,
+		JDWPEventModifierKind.CLASS_MATCH_PATTERN, JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
+		JDWPEventModifierKind.LOCATION_ONLY, JDWPEventModifierKind.EXCEPTION_ONLY,
+		JDWPEventModifierKind.THIS_INSTANCE_ONLY, JDWPEventModifierKind.LIMIT_OCCURRENCES)
 	{
 		/**
 		 * {@inheritDoc}
@@ -349,9 +349,9 @@ public enum JDWPEventKind
 			EventModContext.CURRENT_INSTANCE,
 			EventModContext.CURRENT_TYPE),
 		null,
-		EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
-		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
-		EventModKind.THIS_INSTANCE_ONLY, EventModKind.LIMIT_OCCURRENCES)
+		JDWPEventModifierKind.THREAD_ONLY, JDWPEventModifierKind.CLASS_ONLY,
+		JDWPEventModifierKind.CLASS_MATCH_PATTERN, JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
+		JDWPEventModifierKind.THIS_INSTANCE_ONLY, JDWPEventModifierKind.LIMIT_OCCURRENCES)
 	{
 		/**
 		 * {@inheritDoc}
@@ -374,10 +374,10 @@ public enum JDWPEventKind
 			EventModContext.CURRENT_INSTANCE,
 			EventModContext.CURRENT_TYPE),
 		null,
-		EventModKind.THREAD_ONLY,
-		EventModKind.CLASS_ONLY,
-		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
-		EventModKind.THIS_INSTANCE_ONLY, EventModKind.LIMIT_OCCURRENCES)
+		JDWPEventModifierKind.THREAD_ONLY,
+		JDWPEventModifierKind.CLASS_ONLY,
+		JDWPEventModifierKind.CLASS_MATCH_PATTERN, JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
+		JDWPEventModifierKind.THIS_INSTANCE_ONLY, JDWPEventModifierKind.LIMIT_OCCURRENCES)
 	{
 		/**
 		 * {@inheritDoc}
@@ -396,10 +396,10 @@ public enum JDWPEventKind
 	
 	/** Method exit with return value. */
 	METHOD_EXIT_WITH_RETURN_VALUE(42, null, null,
-		EventModKind.THREAD_ONLY,
-		EventModKind.CLASS_ONLY, EventModKind.CLASS_MATCH_PATTERN,
-		EventModKind.CLASS_EXCLUDE_PATTERN, EventModKind.THIS_INSTANCE_ONLY,
-		EventModKind.LIMIT_OCCURRENCES)
+		JDWPEventModifierKind.THREAD_ONLY,
+		JDWPEventModifierKind.CLASS_ONLY, JDWPEventModifierKind.CLASS_MATCH_PATTERN,
+		JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN, JDWPEventModifierKind.THIS_INSTANCE_ONLY,
+		JDWPEventModifierKind.LIMIT_OCCURRENCES)
 	{
 		/**
 		 * {@inheritDoc}
@@ -423,10 +423,10 @@ public enum JDWPEventKind
 	
 	/** Contended monitor enter. */
 	MONITOR_CONTENDED_ENTER(43, null, null,
-		EventModKind.THREAD_ONLY,
-		EventModKind.CLASS_ONLY, EventModKind.CLASS_MATCH_PATTERN,
-		EventModKind.CLASS_EXCLUDE_PATTERN, EventModKind.THIS_INSTANCE_ONLY,
-		EventModKind.LIMIT_OCCURRENCES)
+		JDWPEventModifierKind.THREAD_ONLY,
+		JDWPEventModifierKind.CLASS_ONLY, JDWPEventModifierKind.CLASS_MATCH_PATTERN,
+		JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN, JDWPEventModifierKind.THIS_INSTANCE_ONLY,
+		JDWPEventModifierKind.LIMIT_OCCURRENCES)
 	{
 		/**
 		 * {@inheritDoc}
@@ -443,10 +443,10 @@ public enum JDWPEventKind
 	
 	/** Contended monitor exit. */
 	MONITOR_CONTENDED_EXIT(44, null, null,
-		EventModKind.THREAD_ONLY,
-		EventModKind.CLASS_ONLY, EventModKind.CLASS_MATCH_PATTERN,
-		EventModKind.CLASS_EXCLUDE_PATTERN, EventModKind.THIS_INSTANCE_ONLY,
-		EventModKind.LIMIT_OCCURRENCES)
+		JDWPEventModifierKind.THREAD_ONLY,
+		JDWPEventModifierKind.CLASS_ONLY, JDWPEventModifierKind.CLASS_MATCH_PATTERN,
+		JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN, JDWPEventModifierKind.THIS_INSTANCE_ONLY,
+		JDWPEventModifierKind.LIMIT_OCCURRENCES)
 	{
 		/**
 		 * {@inheritDoc}
@@ -462,10 +462,10 @@ public enum JDWPEventKind
 	},
 	
 	/** Monitor wait. */
-	MONITOR_WAIT(45, null, null, EventModKind.THREAD_ONLY,
-		EventModKind.CLASS_ONLY,
-		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
-		EventModKind.THIS_INSTANCE_ONLY, EventModKind.LIMIT_OCCURRENCES)
+	MONITOR_WAIT(45, null, null, JDWPEventModifierKind.THREAD_ONLY,
+		JDWPEventModifierKind.CLASS_ONLY,
+		JDWPEventModifierKind.CLASS_MATCH_PATTERN, JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
+		JDWPEventModifierKind.THIS_INSTANCE_ONLY, JDWPEventModifierKind.LIMIT_OCCURRENCES)
 	{
 		/**
 		 * {@inheritDoc}
@@ -481,10 +481,10 @@ public enum JDWPEventKind
 	},
 	
 	/** Monitor waited. */
-	MONITOR_WAITED(46, null, null, EventModKind.THREAD_ONLY,
-		EventModKind.CLASS_ONLY,
-		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
-		EventModKind.THIS_INSTANCE_ONLY, EventModKind.LIMIT_OCCURRENCES)
+	MONITOR_WAITED(46, null, null, JDWPEventModifierKind.THREAD_ONLY,
+		JDWPEventModifierKind.CLASS_ONLY,
+		JDWPEventModifierKind.CLASS_MATCH_PATTERN, JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
+		JDWPEventModifierKind.THIS_INSTANCE_ONLY, JDWPEventModifierKind.LIMIT_OCCURRENCES)
 	{
 		/**
 		 * {@inheritDoc}
@@ -500,8 +500,8 @@ public enum JDWPEventKind
 	},
 	
 	/** Virtual machine start. */
-	VM_START(90, null, null, EventModKind.THREAD_ONLY,
-		EventModKind.LIMIT_OCCURRENCES)
+	VM_START(90, null, null, JDWPEventModifierKind.THREAD_ONLY,
+		JDWPEventModifierKind.LIMIT_OCCURRENCES)
 	{
 		/**
 		 * {@inheritDoc}
@@ -518,7 +518,7 @@ public enum JDWPEventKind
 	},
 	
 	/** Virtual machine death. */
-	VM_DEATH(99, null, null, EventModKind.LIMIT_OCCURRENCES)
+	VM_DEATH(99, null, null, JDWPEventModifierKind.LIMIT_OCCURRENCES)
 	{
 		/**
 		 * {@inheritDoc}
@@ -575,7 +575,7 @@ public enum JDWPEventKind
 	 * @since 2021/03/13
 	 */
 	JDWPEventKind(int __id, Iterable<EventModContext> __nonArg,
-		List<EventModContext> __arg, EventModKind... __modifiers)
+		List<EventModContext> __arg, JDWPEventModifierKind... __modifiers)
 	{
 		this.id = __id;
 		
@@ -587,7 +587,7 @@ public enum JDWPEventKind
 		
 		// Determine the modifier bits to quickly get the items
 		int modifierBits = 0;
-		for (EventModKind mod : __modifiers)
+		for (JDWPEventModifierKind mod : __modifiers)
 			modifierBits |= (1 << mod.ordinal());
 		this._modifierBits = modifierBits;
 	}
@@ -638,7 +638,7 @@ public enum JDWPEventKind
 	 * @return Is this a valid modifier?
 	 * @since 2021/04/17
 	 */
-	public final boolean isValidModifier(EventModKind __mod)
+	public final boolean isValidModifier(JDWPEventModifierKind __mod)
 	{
 		// Is the ordinal set for this modifier?
 		return (0 != (this._modifierBits & (1 << __mod.ordinal())));

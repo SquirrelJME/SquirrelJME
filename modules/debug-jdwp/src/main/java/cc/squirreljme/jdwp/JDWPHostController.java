@@ -10,7 +10,7 @@
 package cc.squirreljme.jdwp;
 
 import cc.squirreljme.jdwp.event.CallStackStepping;
-import cc.squirreljme.jdwp.event.EventFilter;
+import cc.squirreljme.jdwp.event.JDWPHostEventFilter;
 import cc.squirreljme.jdwp.event.FieldOnly;
 import cc.squirreljme.jdwp.host.JDWPCommandHandler;
 import cc.squirreljme.jdwp.host.JDWPHostBinding;
@@ -56,8 +56,8 @@ public final class JDWPHostController
 	protected final JDWPHostState state;
 		
 	/** The event manager. */
-	protected final EventManager eventManager =
-		new EventManager();
+	protected final JDWPHostEventManager eventManager =
+		new JDWPHostEventManager();
 	
 	/** The binding, which is called to perform any actions. */
 	private final Reference<JDWPHostBinding> _bind;
@@ -424,16 +424,16 @@ public final class JDWPHostController
 		
 		// Go through all compatible events for this thread
 		boolean hit = false;
-		for (EventRequest request : this.eventManager.find(
+		for (JDWPHostEventRequest request : this.eventManager.find(
 			this, __thread, unconditional, __kind, __args))
 		{
 			// Suspend all threads?
-			if (request.suspendPolicy == SuspendPolicy.ALL)
+			if (request.suspendPolicy == JDWPSuspendPolicy.ALL)
 				for (Object thread : this.__allThreads(false))
 					this.viewThread().suspension(thread).suspend();
 			
 			// Suspend only a single thread?
-			else if (request.suspendPolicy == SuspendPolicy.EVENT_THREAD)
+			else if (request.suspendPolicy == JDWPSuspendPolicy.EVENT_THREAD)
 			{
 				if (__thread != null)
 					this.viewThread().suspension(__thread).suspend();
@@ -529,7 +529,7 @@ public final class JDWPHostController
 	 * @param __request The request being tripped at a later point.
 	 * @since 2021/04/17
 	 */
-	public void tripRequest(EventRequest __request)
+	public void tripRequest(JDWPHostEventRequest __request)
 		throws NullPointerException
 	{
 		if (__request == null)
@@ -538,7 +538,7 @@ public final class JDWPHostController
 		Reference<JDWPHostController> ref = this._weakThis;
 		
 		// Depends on the event
-		EventFilter filter = __request.filter;
+		JDWPHostEventFilter filter = __request.filter;
 		switch (__request.eventKind)
 		{
 				// Breakpoint at a random position
@@ -754,7 +754,7 @@ public final class JDWPHostController
 			List<Object> threads = new ArrayList<>();
 			for (Object thread : groupView.threads(group))
 				if (!__filterVisible ||
-					JDWPUtils.isVisibleThread(threadView, thread))
+					JDWPHostUtils.isVisibleThread(threadView, thread))
 					threads.add(thread);
 			
 			// Register each thread
@@ -842,7 +842,7 @@ public final class JDWPHostController
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/03/14
 	 */
-	JDWPPacket __event(SuspendPolicy __policy, JDWPEventKind __kind,
+	JDWPPacket __event(JDWPSuspendPolicy __policy, JDWPEventKind __kind,
 		int __responseId)
 		throws NullPointerException
 	{

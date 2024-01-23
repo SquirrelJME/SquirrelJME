@@ -9,14 +9,14 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.jdwp.event.EventFilter;
+import cc.squirreljme.jdwp.event.JDWPHostEventFilter;
 
 /**
  * Represents an event request.
  *
  * @since 2021/03/13
  */
-public final class EventRequest
+public final class JDWPHostEventRequest
 {
 	/** The ID of the event. */
 	public final int id;
@@ -25,10 +25,10 @@ public final class EventRequest
 	public final JDWPEventKind eventKind;
 	
 	/** The suspend policy. */
-	public final SuspendPolicy suspendPolicy;
+	public final JDWPSuspendPolicy suspendPolicy;
 	
 	/** The event filter. */
-	protected final EventFilter filter;
+	protected final JDWPHostEventFilter filter;
 	
 	/** The number of occurrences left. */
 	volatile int _occurrencesLeft;
@@ -45,9 +45,9 @@ public final class EventRequest
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/03/13
 	 */
-	public EventRequest(int __id, JDWPEventKind __eventKind,
-		SuspendPolicy __suspendPolicy, int __occurrenceLimit,
-		EventFilter __filter)
+	public JDWPHostEventRequest(int __id, JDWPEventKind __eventKind,
+		JDWPSuspendPolicy __suspendPolicy, int __occurrenceLimit,
+		JDWPHostEventFilter __filter)
 		throws NullPointerException
 	{
 		if (__eventKind == null || __suspendPolicy == null)

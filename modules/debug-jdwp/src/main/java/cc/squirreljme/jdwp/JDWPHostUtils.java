@@ -18,7 +18,7 @@ import cc.squirreljme.jdwp.host.views.JDWPViewType;
  *
  * @since 2021/04/11
  */
-public final class JDWPUtils
+public final class JDWPHostUtils
 {
 	/** Interface bit. */
 	private static final int _INTERFACE_BIT = 
@@ -29,7 +29,7 @@ public final class JDWPUtils
 	 * 
 	 * @since 2021/04/11
 	 */
-	private JDWPUtils()
+	private JDWPHostUtils()
 	{
 	}
 	
@@ -56,7 +56,7 @@ public final class JDWPUtils
 			// If this was an object, then get the class of the object
 			JDWPViewObject viewObject = __controller.viewObject();
 			if (__class != null && viewObject.isValid(__class))
-				return JDWPUtils.classType(__controller,
+				return JDWPHostUtils.classType(__controller,
 					viewObject.type(__class));
 			
 			return JDWPClassType.CLASS;
@@ -68,7 +68,7 @@ public final class JDWPUtils
 		
 		// Is this potentially an interface?
 		int flags = viewType.flags(__class);
-		if ((flags & JDWPUtils._INTERFACE_BIT) != 0)
+		if ((flags & JDWPHostUtils._INTERFACE_BIT) != 0)
 			return JDWPClassType.INTERFACE;
 		
 		// Just a plain class

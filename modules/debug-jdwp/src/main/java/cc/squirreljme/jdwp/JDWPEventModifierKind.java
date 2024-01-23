@@ -10,28 +10,49 @@
 package cc.squirreljme.jdwp;
 
 /**
- * Suspension policy.
+ * Event modifier kind.
  *
  * @since 2021/03/13
  */
-public enum SuspendPolicy
+public enum JDWPEventModifierKind
 	implements __IdNumbered__
 {
-	/** None. */
-	NONE(0),
+	/** Limit occurrences. */
+	LIMIT_OCCURRENCES(1),
 	
-	/** Stop the thread generating the event. */
-	EVENT_THREAD(1),
+	/** Only in the given thread. */	
+	THREAD_ONLY(3),
 	
-	/** Stop absolutely everything. */
-	ALL(2),
+	/** Only in the given class. */
+	CLASS_ONLY(4),
+	
+	/** Only in the given class, by pattern. */
+	CLASS_MATCH_PATTERN(5),
+	
+	/** Not in the given class, by pattern. */
+	CLASS_EXCLUDE_PATTERN(6),
+	
+	/** By location. */
+	LOCATION_ONLY(7),
+	
+	/** By exception, caught/uncaught. */
+	EXCEPTION_ONLY(8),
+	
+	/** By field. */
+	FIELD_ONLY(9),
+	
+	/** Call stack and stepping limit. */
+	CALL_STACK_STEPPING(10),
+	
+	/** This object. */
+	THIS_INSTANCE_ONLY(11),
 	
 	/* End. */
 	;
 	
-	/** Quick lookup. */
-	private static final __QuickTable__<SuspendPolicy> _QUICK =
-		new __QuickTable__<>(SuspendPolicy.values());
+	/** Quick table. */
+	private static final __QuickTable__<JDWPEventModifierKind> _QUICK =
+		new __QuickTable__<>(JDWPEventModifierKind.values());
 	
 	/** The event ID. */
 	public final int id;
@@ -42,7 +63,7 @@ public enum SuspendPolicy
 	 * @param __id The identifier.
 	 * @since 2021/03/13
 	 */
-	SuspendPolicy(int __id)
+	JDWPEventModifierKind(int __id)
 	{
 		this.id = __id;
 	}
@@ -64,8 +85,8 @@ public enum SuspendPolicy
 	 * @return The found constant.
 	 * @since 2021/03/13
 	 */
-	public static SuspendPolicy of(int __id)
+	public static JDWPEventModifierKind of(int __id)
 	{
-		return SuspendPolicy._QUICK.get(__id);
+		return JDWPEventModifierKind._QUICK.get(__id);
 	}
 }
