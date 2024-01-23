@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.host.JDWPCommandHandler;
 import cc.squirreljme.jdwp.host.views.JDWPViewObject;
 import cc.squirreljme.jdwp.host.views.JDWPViewType;
 
@@ -18,7 +19,7 @@ import cc.squirreljme.jdwp.host.views.JDWPViewType;
  * @since 2021/04/30
  */
 public enum CommandSetClassObjectReference
-	implements JDWPCommand
+	implements JDWPCommandHandler
 {
 	/** The actual type of the class object. */
 	REFLECTED_TYPE(1)

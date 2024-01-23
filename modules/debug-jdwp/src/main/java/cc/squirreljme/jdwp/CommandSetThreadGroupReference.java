@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.host.JDWPCommandHandler;
 import cc.squirreljme.jdwp.host.views.JDWPViewThread;
 import cc.squirreljme.jdwp.host.views.JDWPViewThreadGroup;
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ import java.util.List;
  * @since 2021/03/13
  */
 public enum CommandSetThreadGroupReference
-	implements JDWPCommand
+	implements JDWPCommandHandler
 {
 	/** The name of the group. */
 	NAME(1)

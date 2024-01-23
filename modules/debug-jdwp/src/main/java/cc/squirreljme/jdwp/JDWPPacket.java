@@ -789,7 +789,7 @@ public final class JDWPPacket
 			// we want to check all of our thread groups to see if we can
 			// find a match accordingly
 			if (__controller.viewObject().isValid(group))
-				for (Object check : __controller.__allThreadGroups())
+				for (Object check : __controller.allThreadGroups())
 					if (group == viewThreadGroup.instance(check))
 					{
 						// Make sure it is registered

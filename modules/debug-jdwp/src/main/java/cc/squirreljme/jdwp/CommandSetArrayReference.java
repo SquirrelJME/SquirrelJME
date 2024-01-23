@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.host.JDWPCommandHandler;
 import cc.squirreljme.jdwp.host.views.JDWPViewObject;
 import cc.squirreljme.jdwp.host.views.JDWPViewType;
 
@@ -18,7 +19,7 @@ import cc.squirreljme.jdwp.host.views.JDWPViewType;
  * @since 2021/03/19
  */
 public enum CommandSetArrayReference
-	implements JDWPCommand
+	implements JDWPCommandHandler
 {
 	/** Length of array. */
 	LENGTH(1)

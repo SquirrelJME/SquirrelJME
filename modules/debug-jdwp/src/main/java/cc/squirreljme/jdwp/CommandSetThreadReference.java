@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.host.JDWPCommandHandler;
 import cc.squirreljme.jdwp.host.views.JDWPViewFrame;
 import cc.squirreljme.jdwp.host.views.JDWPViewThread;
 import cc.squirreljme.jdwp.host.views.JDWPViewThreadGroup;
@@ -20,7 +21,7 @@ import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
  * @since 2021/03/13
  */
 public enum CommandSetThreadReference
-	implements JDWPCommand
+	implements JDWPCommandHandler
 {
 	/** Thread name. */
 	NAME(1)

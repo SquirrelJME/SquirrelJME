@@ -16,6 +16,7 @@ import cc.squirreljme.jdwp.event.ExceptionOnly;
 import cc.squirreljme.jdwp.event.FieldOnly;
 import cc.squirreljme.jdwp.event.StepDepth;
 import cc.squirreljme.jdwp.event.StepSize;
+import cc.squirreljme.jdwp.host.JDWPCommandHandler;
 
 /**
  * Event request command set.
@@ -23,7 +24,7 @@ import cc.squirreljme.jdwp.event.StepSize;
  * @since 2021/03/12
  */
 public enum CommandSetEventRequest
-	implements JDWPCommand
+	implements JDWPCommandHandler
 {
 	/** Set event requests. */
 	SET(1)

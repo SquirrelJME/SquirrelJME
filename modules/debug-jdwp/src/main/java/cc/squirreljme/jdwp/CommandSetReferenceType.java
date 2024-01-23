@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.host.JDWPCommandHandler;
 import cc.squirreljme.jdwp.host.views.JDWPViewType;
 
 /**
@@ -17,7 +18,7 @@ import cc.squirreljme.jdwp.host.views.JDWPViewType;
  * @since 2021/03/13
  */
 public enum CommandSetReferenceType
-	implements JDWPCommand
+	implements JDWPCommandHandler
 {
 	/** Non-generic signature of a given type. */
 	SIGNATURE(1)

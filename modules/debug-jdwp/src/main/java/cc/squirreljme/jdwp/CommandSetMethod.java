@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.host.JDWPCommandHandler;
 import cc.squirreljme.jdwp.host.views.JDWPViewType;
 import net.multiphasicapps.classfile.MethodDescriptor;
 
@@ -18,7 +19,7 @@ import net.multiphasicapps.classfile.MethodDescriptor;
  * @since 2021/03/14
  */
 public enum CommandSetMethod
-	implements JDWPCommand
+	implements JDWPCommandHandler
 {
 	/** Line number table. */
 	LINE_TABLE(1)

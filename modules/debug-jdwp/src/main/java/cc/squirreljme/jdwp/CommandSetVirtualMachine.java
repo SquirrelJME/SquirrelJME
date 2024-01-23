@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.host.JDWPCommandHandler;
 import cc.squirreljme.jdwp.host.views.JDWPViewHasInstance;
 import cc.squirreljme.jdwp.host.views.JDWPViewThread;
 import cc.squirreljme.jdwp.host.views.JDWPViewThreadGroup;
@@ -22,7 +23,7 @@ import java.util.List;
  * @since 2021/03/12
  */
 public enum CommandSetVirtualMachine
-	implements JDWPCommand
+	implements JDWPCommandHandler
 {
 	/** Version information. */
 	VERSION(1)
@@ -130,7 +131,7 @@ public enum CommandSetVirtualMachine
 		{
 			return CommandSetVirtualMachine.__writeInstances(__controller, __packet,
 				__controller.viewThreadGroup(),
-				__controller.__allThreadGroups());
+				__controller.allThreadGroups());
 		}
 	},
 	
@@ -264,7 +265,7 @@ public enum CommandSetVirtualMachine
 			// Our main VM does not have an exit, however we can tell every
 			// group that is running to terminate
 			JDWPViewThreadGroup view = __controller.viewThreadGroup();
-			for (Object threadGroup : __controller.__allThreadGroups())
+			for (Object threadGroup : __controller.allThreadGroups())
 				view.exit(threadGroup, code);
 			
 			return null;
@@ -391,7 +392,7 @@ public enum CommandSetVirtualMachine
 			{
 				// Try to find a type from the first group we find
 				JDWPViewThreadGroup viewGroup = __controller.viewThreadGroup();
-				for (Object group : __controller.__allThreadGroups())
+				for (Object group : __controller.allThreadGroups())
 				{
 					// Do we have the object class?
 					Object type = viewGroup.findType(group,

@@ -9,13 +9,15 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.host.JDWPCommandHandler;
+
 /**
  * Class type commands.
  *
  * @since 2021/03/14
  */
 public enum CommandSetClassType
-	implements JDWPCommand
+	implements JDWPCommandHandler
 {
 	/** The super class of the given class. */
 	SUPERCLASS(1)

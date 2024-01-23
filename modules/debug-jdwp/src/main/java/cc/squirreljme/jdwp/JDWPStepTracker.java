@@ -47,7 +47,7 @@ public final class JDWPStepTracker
 	 * 
 	 * @since 2021/04/28
 	 */
-	protected void clear()
+	public void clear()
 	{
 		synchronized (this)
 		{
@@ -100,7 +100,7 @@ public final class JDWPStepTracker
 	 * @param __depth The stepping depth.
 	 * @since 2021/04/28
 	 */
-	void steppingSet(JDWPController __controller, Object __thread,
+	public void steppingSet(JDWPController __controller, Object __thread,
 		StepSize __size, StepDepth __depth)
 	{
 		synchronized (this)

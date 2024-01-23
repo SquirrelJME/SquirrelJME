@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.host.JDWPCommandHandler;
 import cc.squirreljme.jdwp.host.views.JDWPViewFrame;
 
 /**
@@ -17,7 +18,7 @@ import cc.squirreljme.jdwp.host.views.JDWPViewFrame;
  * @since 2021/03/15
  */
 public enum CommandSetStackFrame
-	implements JDWPCommand
+	implements JDWPCommandHandler
 {
 	/** Get stack frame values. */
 	GET_VALUES(1)

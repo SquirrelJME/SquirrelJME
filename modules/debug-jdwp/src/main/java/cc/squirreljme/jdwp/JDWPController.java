@@ -12,6 +12,7 @@ package cc.squirreljme.jdwp;
 import cc.squirreljme.jdwp.event.CallStackStepping;
 import cc.squirreljme.jdwp.event.EventFilter;
 import cc.squirreljme.jdwp.event.FieldOnly;
+import cc.squirreljme.jdwp.host.JDWPCommandHandler;
 import cc.squirreljme.jdwp.host.JDWPHostBinding;
 import cc.squirreljme.jdwp.host.trips.JDWPGlobalTrip;
 import cc.squirreljme.jdwp.host.trips.JDWPTrip;
@@ -117,6 +118,25 @@ public final class JDWPController
 	}
 	
 	/**
+	 * Returns all thread groups.
+	 * 
+	 * @return All thread groups.
+	 * @since 2021/04/10
+	 */
+	public final Object[] allThreadGroups()
+	{
+		// Get all thread groups
+		Object[] groups = this.bind().debuggerThreadGroups();
+		
+		// Register each one
+		JDWPState state = this.state;
+		for (Object group : groups)
+			state.items.put(group);
+		
+		return groups;
+	}
+	
+	/**
 	 * Returns the binding.
 	 * 
 	 * @return The binding.
@@ -166,6 +186,25 @@ public final class JDWPController
 					heldPackets.poll().close();
 			}
 		}
+	}
+	
+	/**
+	 * Returns the command handler for packets.
+	 *
+	 * @param __commandSet The command set to get.
+	 * @param __command The command used.
+	 * @return The handler for commands.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/23
+	 */
+	public JDWPCommandHandler commandHandler(JDWPCommandSet __commandSet,
+		int __command)
+		throws NullPointerException
+	{
+		if (__commandSet == null)
+			throw new NullPointerException("NARG");
+		
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -269,8 +308,8 @@ public final class JDWPController
 				JDWPPacket result;
 				
 				// Get the command and if it is unknown, ignore it
-				JDWPCommand command = packet.commandSet()
-					.command(packet.command());
+				JDWPCommandHandler command = this.commandHandler(
+					packet.commandSet(), packet.command());
 				if (command == null)
 					result = this.__reply(packet.id(),
 						ErrorType.NOT_IMPLEMENTED);
@@ -324,7 +363,7 @@ public final class JDWPController
 		try (JDWPController ignored = this)
 		{
 			CommLink commLink = this.commLink;
-			while (!commLink._shutdown)
+			while (!commLink.isShutdown())
 				this.poll();
 		}
 	}
@@ -396,7 +435,7 @@ public final class JDWPController
 					if (this._holdEvents)
 					{
 						this._heldPackets.add(this.commLink
-							.__getPacket(true).copyOf(packet));
+							.getPacket().copyOf(packet));
 						continue;
 					}
 				}
@@ -431,7 +470,7 @@ public final class JDWPController
 		if (trip != null)
 			return __cl.cast(trip);
 		
-		// Otherwise setup a new trip
+		// Otherwise set up a new trip
 		Reference<JDWPController> ref = this._weakThis;
 		switch (__t)
 		{
@@ -466,7 +505,7 @@ public final class JDWPController
 	 * @param __request The request being tripped at a later point.
 	 * @since 2021/04/17
 	 */
-	protected void tripRequest(EventRequest __request)
+	public void tripRequest(EventRequest __request)
 		throws NullPointerException
 	{
 		if (__request == null)
@@ -659,25 +698,6 @@ public final class JDWPController
 	}
 	
 	/**
-	 * Returns all thread groups.
-	 * 
-	 * @return All thread groups.
-	 * @since 2021/04/10
-	 */
-	final Object[] __allThreadGroups()
-	{
-		// Get all thread groups
-		Object[] groups = this.bind().debuggerThreadGroups();
-		
-		// Register each one
-		JDWPState state = this.state;
-		for (Object group : groups)
-			state.items.put(group);
-		
-		return groups;
-	}
-	
-	/**
 	 * Returns all threads.
 	 *
 	 * @param __filterVisible Filter visible threads?
@@ -758,7 +778,7 @@ public final class JDWPController
 		// Get a fresh perspective on all the loaded types
 		else
 		{
-			for (Object group : this.__allThreadGroups())
+			for (Object group : this.allThreadGroups())
 				allTypes.addAll(this.__allTypes(group));
 		}
 		

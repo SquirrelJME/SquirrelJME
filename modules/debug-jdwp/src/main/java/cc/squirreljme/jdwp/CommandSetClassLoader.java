@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.host.JDWPCommandHandler;
 import cc.squirreljme.jdwp.host.views.JDWPViewType;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,7 +20,7 @@ import java.util.List;
  * @since 2021/04/20
  */
 public enum CommandSetClassLoader
-	implements JDWPCommand
+	implements JDWPCommandHandler
 {
 	/** Classes which are visible to the given loader. */
 	VISIBLE_CLASSES(1)
