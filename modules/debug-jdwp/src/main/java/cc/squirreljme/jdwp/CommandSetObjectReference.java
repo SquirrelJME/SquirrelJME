@@ -39,11 +39,11 @@ public enum CommandSetObjectReference
 				object : __controller.viewObject().type(object));
 			
 			// Register it for future reference
-			__controller.state.items.put(object);
+			__controller.getState().items.put(object);
 			if (type != null)
-				__controller.state.items.put(type);
+				__controller.getState().items.put(type);
 			
-			JDWPPacket rv = __controller.__reply(
+			JDWPPacket rv = __controller.reply(
 				__packet.id(), ErrorType.NO_ERROR);
 				
 			// Write the details of this class
@@ -84,7 +84,7 @@ public enum CommandSetObjectReference
 				fields[i] = fieldDx;
 			}
 			
-			JDWPPacket rv = __controller.__reply(
+			JDWPPacket rv = __controller.reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// Write field mappings
@@ -105,7 +105,7 @@ public enum CommandSetObjectReference
 					
 					// Store object for later use
 					if (value.get() != null && tag.isObject)
-						__controller.state.items.put(value.get());
+						__controller.getState().items.put(value.get());
 				}
 			
 			return rv;
@@ -128,7 +128,7 @@ public enum CommandSetObjectReference
 			__packet.readObject(__controller, false);
 			
 			// If we still know about this object it was not GCed
-			JDWPPacket rv = __controller.__reply(
+			JDWPPacket rv = __controller.reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			rv.writeBoolean(false);
 			

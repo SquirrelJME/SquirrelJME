@@ -50,13 +50,13 @@ public enum CommandSetReferenceType
 		{
 			Object type = __packet.readType(__controller, false);
 			
-			JDWPPacket rv = __controller.__reply(
+			JDWPPacket rv = __controller.reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// Make sure the class loader is loaded if used
 			Object loader = __controller.viewType().classLoader(type);
 			if (loader != null)
-				__controller.state.items.put(loader);
+				__controller.getState().items.put(loader);
 			
 			// Write the class loader identifier
 			rv.writeId(System.identityHashCode(loader));
@@ -79,7 +79,7 @@ public enum CommandSetReferenceType
 		{
 			Object type = __packet.readType(__controller, false);
 			
-			JDWPPacket rv = __controller.__reply(
+			JDWPPacket rv = __controller.reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			rv.writeInt(__controller.viewType().flags(type));
@@ -148,7 +148,7 @@ public enum CommandSetReferenceType
 				fields[i] = fieldDx;
 			}
 			
-			JDWPPacket rv = __controller.__reply(
+			JDWPPacket rv = __controller.reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// Write field mappings
@@ -169,7 +169,7 @@ public enum CommandSetReferenceType
 					
 					// Store object for later use
 					if (value.get() != null && tag.isObject)
-						__controller.state.items.put(value.get());
+						__controller.getState().items.put(value.get());
 				}
 			
 			return rv;
@@ -196,7 +196,7 @@ public enum CommandSetReferenceType
 				throw ErrorType.ABSENT_INFORMATION.toss(type,
 					System.identityHashCode(type));
 			
-			JDWPPacket rv = __controller.__reply(
+			JDWPPacket rv = __controller.reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			rv.writeString(sourceFile);
@@ -222,7 +222,7 @@ public enum CommandSetReferenceType
 			// Get every interface
 			Object[] interfaces = __controller.viewType().interfaceTypes(type);
 			
-			JDWPPacket rv = __controller.__reply(
+			JDWPPacket rv = __controller.reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// Write all the interfaces
@@ -232,7 +232,7 @@ public enum CommandSetReferenceType
 				rv.writeObject(__controller, impl);
 				
 				// Record interface so it is known
-				__controller.state.items.put(impl);
+				__controller.getState().items.put(impl);
 			}
 			
 			return rv;
@@ -253,11 +253,11 @@ public enum CommandSetReferenceType
 		{
 			Object type = __packet.readType(__controller, false);
 			
-			JDWPPacket rv = __controller.__reply(
+			JDWPPacket rv = __controller.reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			Object instance = __controller.viewType().instance(type);
-			__controller.state.items.put(instance);
+			__controller.getState().items.put(instance);
 			
 			rv.writeObject(__controller, instance);
 			
@@ -327,7 +327,7 @@ public enum CommandSetReferenceType
 		{
 			Object type = __packet.readType(__controller, false);
 			
-			JDWPPacket rv = __controller.__reply(
+			JDWPPacket rv = __controller.reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// Always Java 1.7
@@ -358,10 +358,10 @@ public enum CommandSetReferenceType
 			
 			// If not existent, this likely a primitive or native type
 			if (count < 0 || raw == null)
-				return __controller.__reply(
+				return __controller.reply(
 					__packet.id(), ErrorType.ABSENT_INFORMATION);
 			
-			JDWPPacket rv = __controller.__reply(
+			JDWPPacket rv = __controller.reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			rv.writeInt(count);
@@ -417,7 +417,7 @@ public enum CommandSetReferenceType
 		JDWPViewType viewType = __controller.viewType();
 		Object type = __packet.readType(__controller, false);
 		
-		JDWPPacket rv = __controller.__reply(
+		JDWPPacket rv = __controller.reply(
 			__packet.id(), ErrorType.NO_ERROR);
 		
 		// Do not allow reading the fields of class of weird things can happen
@@ -468,7 +468,7 @@ public enum CommandSetReferenceType
 		JDWPViewType viewType = __controller.viewType();
 		Object type = __packet.readType(__controller, false);
 		
-		JDWPPacket rv = __controller.__reply(
+		JDWPPacket rv = __controller.reply(
 			__packet.id(), ErrorType.NO_ERROR);
 		
 		// Write number of methods
@@ -511,7 +511,7 @@ public enum CommandSetReferenceType
 		Object type = __packet.readType(__controller, false);
 		
 		// Write the normal class signature
-		JDWPPacket rv = __controller.__reply(
+		JDWPPacket rv = __controller.reply(
 			__packet.id(), ErrorType.NO_ERROR);
 		
 		rv.writeString(__controller.viewType().signature(type));

@@ -42,7 +42,7 @@ final class __TripVmState__
 	public void alive(Object __bootThread, boolean __alive)
 	{
 		JDWPController controller = this.__controller();
-		JDWPState state = controller.state;
+		JDWPState state = controller.getState();
 		
 		// Register this thread for later use
 		state.items.put(__bootThread);

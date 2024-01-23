@@ -54,7 +54,7 @@ public enum CommandSetClassObjectReference
 			// Ask the viewer to get the type for this Class reference
 			Object found = viewType.typeOfClassInstance(object);
 			if (found != null && viewType.isValid(found))
-				__controller.state.items.put(found);
+				__controller.getState().items.put(found);
 			
 			// Could not directly get, so search through all types to find
 			if (found == null || !viewType.isValid(found))
@@ -76,9 +76,9 @@ public enum CommandSetClassObjectReference
 					new Throwable("No matching type found."));
 					
 			// Make sure it is known
-			__controller.state.items.put(found);
+			__controller.getState().items.put(found);
 			
-			JDWPPacket rv = __controller.__reply(
+			JDWPPacket rv = __controller.reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// Write the class type and reference to that type

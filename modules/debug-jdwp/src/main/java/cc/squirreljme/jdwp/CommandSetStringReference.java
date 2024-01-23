@@ -95,7 +95,7 @@ public enum CommandSetStringReference
 				}
 			
 			// Report string value
-			JDWPPacket rv = __controller.__reply(
+			JDWPPacket rv = __controller.reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			rv.writeString(new String(chars));
 			return rv;

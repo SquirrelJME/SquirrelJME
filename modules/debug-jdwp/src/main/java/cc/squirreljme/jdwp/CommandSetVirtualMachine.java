@@ -37,7 +37,7 @@ public enum CommandSetVirtualMachine
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			JDWPPacket rv = __controller.__reply(
+			JDWPPacket rv = __controller.reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// VM Description
@@ -78,7 +78,7 @@ public enum CommandSetVirtualMachine
 					found.add(type);
 				
 			// Write result
-			JDWPPacket rv = __controller.__reply(
+			JDWPPacket rv = __controller.reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// Record all classes
@@ -86,7 +86,7 @@ public enum CommandSetVirtualMachine
 			for (Object type : found)
 			{
 				// Store type for later grabbing
-				__controller.state.items.put(type);
+				__controller.getState().items.put(type);
 				
 				// Write the class type
 				rv.writeTaggedId(__controller, type);
@@ -194,7 +194,7 @@ public enum CommandSetVirtualMachine
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			JDWPPacket rv = __controller.__reply(
+			JDWPPacket rv = __controller.reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// field, method, object, reference, frame
@@ -300,7 +300,7 @@ public enum CommandSetVirtualMachine
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			JDWPPacket rv = __controller.__reply(
+			JDWPPacket rv = __controller.reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// Base directory is the current directory
@@ -401,7 +401,7 @@ public enum CommandSetVirtualMachine
 					{
 						// Use this type and register it
 						allTypes.add(type);
-						__controller.state.items.put(type);
+						__controller.getState().items.put(type);
 						
 						// We found one, so we need not try more
 						break;
@@ -413,7 +413,7 @@ public enum CommandSetVirtualMachine
 					throw ErrorType.VM_DEAD.toss(null, 0);
 			}
 			
-			JDWPPacket rv = __controller.__reply(
+			JDWPPacket rv = __controller.reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// Write down all the known classes
@@ -481,7 +481,7 @@ public enum CommandSetVirtualMachine
 		JDWPPacket __packet)
 		throws JDWPException
 	{
-		JDWPPacket rv = __controller.__reply(
+		JDWPPacket rv = __controller.reply(
 			__packet.id(), ErrorType.NO_ERROR);
 		
 		// canWatchFieldModification
@@ -573,7 +573,7 @@ public enum CommandSetVirtualMachine
 		Object[] __objects)
 	{
 		// Write result
-		JDWPPacket rv = __controller.__reply(
+		JDWPPacket rv = __controller.reply(
 			__packet.id(), ErrorType.NO_ERROR);
 		
 		// Write it all out
@@ -585,8 +585,8 @@ public enum CommandSetVirtualMachine
 			rv.writeObject(__controller, objectInstance);
 			
 			// Store for later
-			__controller.state.items.put(object);
-			__controller.state.items.put(objectInstance);
+			__controller.getState().items.put(object);
+			__controller.getState().items.put(objectInstance);
 		}
 		
 		return rv;

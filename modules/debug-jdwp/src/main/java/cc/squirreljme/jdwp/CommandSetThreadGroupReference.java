@@ -41,7 +41,7 @@ public enum CommandSetThreadGroupReference
 			Object group = __packet.readThreadGroup(
 				__controller, false);
 			
-			JDWPPacket rv = __controller.__reply(
+			JDWPPacket rv = __controller.reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// Matches the string representation of the group
@@ -66,7 +66,7 @@ public enum CommandSetThreadGroupReference
 			// Is this valid?
 			__packet.readThreadGroup(__controller, false);
 			
-			JDWPPacket rv = __controller.__reply(
+			JDWPPacket rv = __controller.reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// There are never any parent thread groups
@@ -95,7 +95,7 @@ public enum CommandSetThreadGroupReference
 			Object group = __packet.readThreadGroup(
 				__controller, false);
 				
-			JDWPPacket rv = __controller.__reply(
+			JDWPPacket rv = __controller.reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// Filter out terminated, frameless, and debug threads (callbacks?)
@@ -114,8 +114,8 @@ public enum CommandSetThreadGroupReference
 				rv.writeObject(__controller, threadInstance);
 				
 				// Store for later referencing
-				__controller.state.items.put(thread);
-				__controller.state.items.put(threadInstance);
+				__controller.getState().items.put(thread);
+				__controller.getState().items.put(threadInstance);
 			}
 			
 			// There are never any child thread groups

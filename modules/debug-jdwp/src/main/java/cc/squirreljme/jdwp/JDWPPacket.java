@@ -460,7 +460,7 @@ public final class JDWPPacket
 	public Object readFrame(JDWPController __controller, boolean __nullable)
 	{
 		int id = this.readId();
-		Object frame = __controller.state.items.get(id);
+		Object frame = __controller.getState().items.get(id);
 		
 		// Is this valid?
 		if (!__controller.viewFrame().isValid(frame))
@@ -609,7 +609,7 @@ public final class JDWPPacket
 		throws JDWPException
 	{
 		int id = this.readId();
-		Object object = __controller.state.items.get(id);
+		Object object = __controller.getState().items.get(id);
 		
 		// Is this not a valid object?
 		if (!__controller.viewObject().isValid(object))
@@ -622,7 +622,7 @@ public final class JDWPPacket
 				if (__controller.viewObject().isValid(alt))
 				{
 					// Make sure it is registered
-					__controller.state.items.put(alt);
+					__controller.getState().items.put(alt);
 					return alt;
 				}
 			}
@@ -635,7 +635,7 @@ public final class JDWPPacket
 				if (__controller.viewObject().isValid(alt))
 				{
 					// Make sure it is registered
-					__controller.state.items.put(alt);
+					__controller.getState().items.put(alt);
 					return alt;
 				}
 			}
@@ -648,7 +648,7 @@ public final class JDWPPacket
 				if (__controller.viewObject().isValid(alt))
 				{
 					// Make sure it is registered
-					__controller.state.items.put(alt);
+					__controller.getState().items.put(alt);
 					return alt;
 				}
 			}
@@ -716,7 +716,7 @@ public final class JDWPPacket
 		JDWPViewType viewType = __controller.viewType();
 		
 		int id = this.readId();
-		Object thread = __controller.state.items.get(id);
+		Object thread = __controller.getState().items.get(id);
 		
 		// Is this valid?
 		if (!viewThread.isValid(thread))
@@ -732,7 +732,7 @@ public final class JDWPPacket
 					if (thread == viewThread.instance(check))
 					{
 						// Make sure it is registered
-						__controller.state.items.put(check);
+						__controller.getState().items.put(check);
 						return check;
 					}
 				
@@ -779,7 +779,7 @@ public final class JDWPPacket
 		throws JDWPException
 	{
 		int id = this.readId();
-		Object group = __controller.state.items.get(id);
+		Object group = __controller.getState().items.get(id);
 		
 		// Is this valid?
 		JDWPViewThreadGroup viewThreadGroup = __controller.viewThreadGroup();
@@ -793,7 +793,7 @@ public final class JDWPPacket
 					if (group == viewThreadGroup.instance(check))
 					{
 						// Make sure it is registered
-						__controller.state.items.put(check);
+						__controller.getState().items.put(check);
 						return check;
 					}
 			
@@ -821,7 +821,7 @@ public final class JDWPPacket
 		throws JDWPException
 	{
 		int id = this.readId();
-		Object object = __controller.state.items.get(id);
+		Object object = __controller.getState().items.get(id);
 		
 		// Is this valid?
 		if (!__controller.viewType().isValid(object))
@@ -834,7 +834,7 @@ public final class JDWPPacket
 				if (__controller.viewType().isValid(alt))
 				{
 					// Make it is registered
-					__controller.state.items.put(alt);
+					__controller.getState().items.put(alt);
 					return alt;
 				}
 			}
@@ -1135,8 +1135,8 @@ public final class JDWPPacket
 							!viewObject.isNullObject(potential))
 						{
 							// We need to store both of these
-							__controller.state.items.put(__instance);
-							__controller.state.items.put(potential);
+							__controller.getState().items.put(__instance);
+							__controller.getState().items.put(potential);
 							
 							// Use the new instance
 							__instance = potential;
@@ -1162,7 +1162,7 @@ public final class JDWPPacket
 			
 			// Store for later referencing, just in case
 			if (__instance != null)
-				__controller.state.items.put(__instance);
+				__controller.getState().items.put(__instance);
 		}
 	}
 	

@@ -35,7 +35,7 @@ public enum CommandSetClassType
 			Object type = __packet.readType(__controller, false); 
 			
 			// Respond with the class ID
-			JDWPPacket rv = __controller.__reply(
+			JDWPPacket rv = __controller.reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			Object superClass = __controller.viewType().superType(type);
@@ -43,7 +43,7 @@ public enum CommandSetClassType
 			
 			// Register the super class so it can be known
 			if (superClass != null)
-				__controller.state.items.put(superClass);
+				__controller.getState().items.put(superClass);
 			
 			return rv;
 		}

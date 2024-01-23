@@ -129,7 +129,7 @@ public final class JDWPController
 		Object[] groups = this.bind().debuggerThreadGroups();
 		
 		// Register each one
-		JDWPState state = this.state;
+		JDWPState state = this.getState();
 		for (Object group : groups)
 			state.items.put(group);
 		
@@ -208,6 +208,17 @@ public final class JDWPController
 	}
 	
 	/**
+	 * Returns the debugger state.
+	 *
+	 * @return The debugger state.
+	 * @since 2024/01/23
+	 */
+	public JDWPState getState()
+	{
+		return this.state;
+	}
+	
+	/**
 	 * Returns the location of the given thread.
 	 * 
 	 * @param __thread The thread to get from.
@@ -231,7 +242,7 @@ public final class JDWPController
 		int methodDx = viewFrame.atMethodIndex(topFrame);
 		
 		// Make sure the types are added!
-		JDWPLinker<Object> items = this.state.items;
+		JDWPLinker<Object> items = this.getState().items;
 		if (topFrame != null)
 			items.put(topFrame);
 		if (type != null)
@@ -311,7 +322,7 @@ public final class JDWPController
 				JDWPCommandHandler command = this.commandHandler(
 					packet.commandSet(), packet.command());
 				if (command == null)
-					result = this.__reply(packet.id(),
+					result = this.reply(packet.id(),
 						ErrorType.NOT_IMPLEMENTED);
 				
 				// Execute the command normally
@@ -324,7 +335,7 @@ public final class JDWPController
 						
 						// If a result is missing, assume nothing needed
 						if (result == null)
-							result = this.__reply(packet.id(),
+							result = this.reply(packet.id(),
 								ErrorType.NO_ERROR);
 					}
 					
@@ -335,7 +346,7 @@ public final class JDWPController
 						e.printStackTrace();
 						
 						// Use this result
-						result = this.__reply(
+						result = this.reply(
 							packet.id(), e.type);
 					}
 				}
@@ -349,6 +360,19 @@ public final class JDWPController
 		}
 		
 		return true;
+	}
+	
+	/**
+	 * Creates a reply packet.
+	 * 
+	 * @param __id The identifier.
+	 * @param __error The error code.
+	 * @return The packet used.
+	 * @since 2021/03/12
+	 */
+	public final JDWPPacket reply(int __id, ErrorType __error)
+	{
+		return this.commLink.reply(__id, __error);
 	}
 	
 	/**
@@ -388,7 +412,7 @@ public final class JDWPController
 		
 		// Make sure the thread is known
 		if (__thread != null)
-			this.state.items.put(__thread);
+			this.getState().items.put(__thread);
 		
 		// Is this a special unconditional event
 		boolean unconditional = false;
@@ -637,7 +661,7 @@ public final class JDWPController
 	public final <V extends JDWPView> V view(Class<V> __type,
 		JDWPViewKind __kind)
 	{
-		return this.state.<V>view(__type, __kind);
+		return this.getState().<V>view(__type, __kind);
 	}
 	
 	/**
@@ -648,7 +672,7 @@ public final class JDWPController
 	 */
 	public final JDWPViewFrame viewFrame()
 	{
-		return this.state.view(JDWPViewFrame.class, JDWPViewKind.FRAME);
+		return this.getState().view(JDWPViewFrame.class, JDWPViewKind.FRAME);
 	}
 	
 	/**
@@ -659,7 +683,7 @@ public final class JDWPController
 	 */
 	public final JDWPViewObject viewObject()
 	{
-		return this.state.view(JDWPViewObject.class, JDWPViewKind.OBJECT);
+		return this.getState().view(JDWPViewObject.class, JDWPViewKind.OBJECT);
 	}
 	
 	/**
@@ -670,7 +694,7 @@ public final class JDWPController
 	 */
 	public final JDWPViewThread viewThread()
 	{
-		return this.state.view(JDWPViewThread.class, JDWPViewKind.THREAD);
+		return this.getState().view(JDWPViewThread.class, JDWPViewKind.THREAD);
 	}
 	
 	/**
@@ -681,7 +705,7 @@ public final class JDWPController
 	 */
 	public final JDWPViewThreadGroup viewThreadGroup()
 	{
-		return this.state.view(JDWPViewThreadGroup.class,
+		return this.getState().view(JDWPViewThreadGroup.class,
 			JDWPViewKind.THREAD_GROUP);
 	}
 	
@@ -693,7 +717,7 @@ public final class JDWPController
 	 */
 	public final JDWPViewType viewType()
 	{
-		return this.state.view(JDWPViewType.class,
+		return this.getState().view(JDWPViewType.class,
 			JDWPViewKind.TYPE);
 	}
 	
@@ -707,7 +731,7 @@ public final class JDWPController
 	final Object[] __allThreads(boolean __filterVisible)
 	{
 		// Current state
-		JDWPState state = this.state;
+		JDWPState state = this.getState();
 		
 		// Get groups
 		JDWPViewThreadGroup groupView = state.view(
@@ -770,7 +794,7 @@ public final class JDWPController
 		if (__cached)
 		{
 			JDWPViewType viewType = this.viewType();
-			for (Object obj : this.state.items.values())
+			for (Object obj : this.getState().items.values())
 				if (viewType.isValid(obj))
 					allTypes.add(obj);
 		}
@@ -801,7 +825,7 @@ public final class JDWPController
 		Object[] types = this.viewThreadGroup().allTypes(__group);
 		
 		// Register all types so that the debugger knows about their existence
-		JDWPLinker<Object> items = this.state.items;
+		JDWPLinker<Object> items = this.getState().items;
 		for (Object type : types)
 			items.put(type);
 		
@@ -834,18 +858,5 @@ public final class JDWPController
 		rv.writeInt(__responseId);
 		
 		return rv;
-	}
-	
-	/**
-	 * Creates a reply packet.
-	 * 
-	 * @param __id The identifier.
-	 * @param __error The error code.
-	 * @return The packet used.
-	 * @since 2021/03/12
-	 */
-	final JDWPPacket __reply(int __id, ErrorType __error)
-	{
-		return this.commLink.reply(__id, __error);
 	}
 }

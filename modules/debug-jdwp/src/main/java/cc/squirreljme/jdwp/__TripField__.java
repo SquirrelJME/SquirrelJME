@@ -43,7 +43,7 @@ final class __TripField__
 		boolean __write, Object __instance, JDWPValue __jVal)
 	{
 		JDWPController controller = this.__controller();
-		JDWPState state = controller.state;
+		JDWPState state = controller.getState();
 		
 		// Make sure these are registered
 		if (__type != null)

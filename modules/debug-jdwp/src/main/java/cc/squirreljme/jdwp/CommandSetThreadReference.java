@@ -38,7 +38,7 @@ public enum CommandSetThreadReference
 			// Which thread do we want?
 			Object thread = __packet.readThread(__controller);
 			
-			JDWPPacket rv = __controller.__reply(
+			JDWPPacket rv = __controller.reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// This just uses the object name of the thread, whatever that
@@ -117,7 +117,7 @@ public enum CommandSetThreadReference
 			// If the thread is not valid, then just stop
 			if (thread == null)
 			{
-				JDWPPacket rv = __controller.__reply(
+				JDWPPacket rv = __controller.reply(
 					__packet.id(), ErrorType.NO_ERROR);
 				
 				// Terminated and not suspended
@@ -127,7 +127,7 @@ public enum CommandSetThreadReference
 				return rv;
 			}
 			
-			JDWPPacket rv = __controller.__reply(
+			JDWPPacket rv = __controller.reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// If this thread has terminated it becomes a zombie
@@ -189,10 +189,10 @@ public enum CommandSetThreadReference
 			Object parentInstance = viewThreadGroup.instance(parent);
 			
 			// Make sure both parent representations are stored
-			__controller.state.items.put(parent);
-			__controller.state.items.put(parentInstance);
+			__controller.getState().items.put(parent);
+			__controller.getState().items.put(parentInstance);
 			
-			JDWPPacket rv = __controller.__reply(
+			JDWPPacket rv = __controller.reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// Write the thread group
@@ -228,7 +228,7 @@ public enum CommandSetThreadReference
 				Math.min(count, frames.length - startFrame));
 			
 			// Start by writing the frame count
-			JDWPPacket rv = __controller.__reply(
+			JDWPPacket rv = __controller.reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			rv.writeInt(count);
 			
@@ -238,7 +238,7 @@ public enum CommandSetThreadReference
 			{
 				// Register this frame so it can be grabbed later
 				Object frame = frames[i];
-				__controller.state.items.put(frame);
+				__controller.getState().items.put(frame);
 				
 				// Write frame ID
 				rv.writeObject(__controller, frame);
@@ -246,7 +246,7 @@ public enum CommandSetThreadReference
 				// We need to store and cache the class for later reference
 				Object classy = viewFrame.atClass(frame);
 				if (classy != null)
-					__controller.state.items.put(classy);
+					__controller.getState().items.put(classy);
 				
 				// Write the frame location
 				rv.writeLocation(__controller, classy,
@@ -273,7 +273,7 @@ public enum CommandSetThreadReference
 			// Which thread do we want?
 			Object thread = __packet.readThread(__controller);
 				
-			JDWPPacket rv = __controller.__reply(
+			JDWPPacket rv = __controller.reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// Return the frame count
@@ -344,7 +344,7 @@ public enum CommandSetThreadReference
 			// Which thread do we want?
 			Object thread = __packet.readThread(__controller);
 				
-			JDWPPacket rv = __controller.__reply(
+			JDWPPacket rv = __controller.reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			rv.writeInt(view.suspension(thread).query());

@@ -37,7 +37,7 @@ public enum CommandSetClassLoader
 			// Null is a valid loader, for the system in the event this is
 			// ever the case
 			int id = __packet.readId();
-			Object loader = __controller.state.items.get(id);
+			Object loader = __controller.getState().items.get(id);
 			
 			// Go through all known types to find ones that use this class
 			// loader
@@ -47,7 +47,7 @@ public enum CommandSetClassLoader
 				if (loader == viewType.classLoader(type))
 					found.add(type);
 			
-			JDWPPacket rv = __controller.__reply(
+			JDWPPacket rv = __controller.reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// Write all entries which meet the same class loader
@@ -55,7 +55,7 @@ public enum CommandSetClassLoader
 			for (Object type : found)
 			{
 				if (type != null)
-					__controller.state.items.put(type);
+					__controller.getState().items.put(type);
 				
 				rv.writeTaggedId(__controller, type);
 			}

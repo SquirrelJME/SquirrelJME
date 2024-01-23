@@ -41,7 +41,7 @@ public enum CommandSetEventRequest
 			// Which kind of event? If not supported, it is not valid
 			EventKind eventKind = EventKind.of(__packet.readByte());
 			if (eventKind == null)
-				return __controller.__reply(__packet.id(),
+				return __controller.reply(__packet.id(),
 					ErrorType.INVALID_EVENT_TYPE);
 			
 			// How does this suspend?
@@ -71,7 +71,7 @@ public enum CommandSetEventRequest
 				// Check if the kind if supported or known about
 				EventModKind modKind = EventModKind.of(__packet.readByte());
 				if (modKind == null)
-					return __controller.__reply(__packet.id(),
+					return __controller.reply(__packet.id(),
 						ErrorType.NOT_IMPLEMENTED);
 				
 				// If this is not a valid modifier, ignore this
@@ -95,14 +95,14 @@ public enum CommandSetEventRequest
 							__controller);
 						
 						if (thread != null)
-							__controller.state.items.put(thread);
+							__controller.getState().items.put(thread);
 						break;
 					
 					case CLASS_ONLY:
 						type = __packet.readType(__controller, false);
 						
 						if (type != null)
-							__controller.state.items.put(type);
+							__controller.getState().items.put(type);
 						break;
 						
 					case CLASS_MATCH_PATTERN:
@@ -157,7 +157,7 @@ public enum CommandSetEventRequest
 					
 						// Report not-implemented
 					default:
-						return __controller.__reply(__packet.id(),
+						return __controller.reply(__packet.id(),
 							ErrorType.NOT_IMPLEMENTED);
 				}
 			}
@@ -179,7 +179,7 @@ public enum CommandSetEventRequest
 			__controller.tripRequest(request);
 			
 			// Respond with the ID of this event
-			JDWPPacket rv = __controller.__reply(
+			JDWPPacket rv = __controller.reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			rv.writeInt(request.id);
 			
@@ -202,7 +202,7 @@ public enum CommandSetEventRequest
 			// Which kind of event? If not supported, it is not valid
 			EventKind eventKind = EventKind.of(__packet.readByte());
 			if (eventKind == null)
-				return __controller.__reply(__packet.id(),
+				return __controller.reply(__packet.id(),
 					ErrorType.INVALID_EVENT_TYPE);
 			
 			// Delete the event, if it is known... the kind is ignored since

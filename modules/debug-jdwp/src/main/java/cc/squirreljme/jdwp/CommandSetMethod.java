@@ -42,7 +42,7 @@ public enum CommandSetMethod
 			if (!viewType.isValidMethod(classy, methodId))
 				throw ErrorType.INVALID_METHOD_ID.toss(classy, methodId);
 			
-			JDWPPacket rv = __controller.__reply(
+			JDWPPacket rv = __controller.reply(
 				__packet.id(), ErrorType.NO_ERROR);
 				
 			// Put down all the valid indexes in the method, even if there
@@ -141,7 +141,7 @@ public enum CommandSetMethod
 			if (byteCode == null)
 				throw ErrorType.ABSENT_INFORMATION.toss(classy, methodId);
 			
-			JDWPPacket rv = __controller.__reply(
+			JDWPPacket rv = __controller.reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// Dump the byte code
@@ -222,11 +222,11 @@ public enum CommandSetMethod
 		JDWPLocalVariable[] variables = viewType.methodVariableTable(classy,
 			methodId);
 		if (variables == null || variables.length <= 0)
-			return __controller.__reply(
+			return __controller.reply(
 				__packet.id(), ErrorType.ABSENT_INFORMATION);
 		
 		// Setup packet
-		JDWPPacket rv = __controller.__reply(
+		JDWPPacket rv = __controller.reply(
 			__packet.id(), ErrorType.NO_ERROR);
 		
 		// Write down the number of argument slots

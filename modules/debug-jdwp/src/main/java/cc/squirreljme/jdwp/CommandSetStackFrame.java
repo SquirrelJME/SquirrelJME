@@ -47,7 +47,7 @@ public enum CommandSetStackFrame
 			}
 			
 			// Always reply with the same number of slots
-			JDWPPacket rv = __controller.__reply(
+			JDWPPacket rv = __controller.reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			rv.writeInt(numSlots);
 			
@@ -67,7 +67,7 @@ public enum CommandSetStackFrame
 					
 					// Store object for later use
 					if (value.get() != null && tag.isObject)
-						__controller.state.items.put(value.get());
+						__controller.getState().items.put(value.get());
 				}
 			
 			return rv;
@@ -95,7 +95,7 @@ public enum CommandSetStackFrame
 			Object type = viewFrame.atClass(frame);
 			int methodDx = viewFrame.atMethodIndex(frame);
 			
-			JDWPPacket rv = __controller.__reply(
+			JDWPPacket rv = __controller.reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// Static and native methods always return null
@@ -122,7 +122,7 @@ public enum CommandSetStackFrame
 					
 					// Store object for later use
 					if (value.get() != null && tag.isObject)
-						__controller.state.items.put(value.get());
+						__controller.getState().items.put(value.get());
 				}
 			
 			return rv;

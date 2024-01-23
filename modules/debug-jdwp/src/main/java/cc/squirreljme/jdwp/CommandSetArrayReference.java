@@ -36,7 +36,7 @@ public enum CommandSetArrayReference
 			// Which object do we want?
 			Object array = __packet.readArray(__controller, false);
 			
-			JDWPPacket rv = __controller.__reply(
+			JDWPPacket rv = __controller.reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			rv.writeInt(__controller.viewObject().arrayLength(array));
@@ -76,7 +76,7 @@ public enum CommandSetArrayReference
 			if (off < 0 || len < 0 || (off + len) > arrayLength)
 				throw ErrorType.INVALID_LENGTH.toss(array, off + len);
 			
-			JDWPPacket rv = __controller.__reply(
+			JDWPPacket rv = __controller.reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// Write compactified array details, the tag if it is primitive
@@ -98,7 +98,7 @@ public enum CommandSetArrayReference
 					
 					// Store object for later use
 					if (value.get() != null && tag.isObject)
-						__controller.state.items.put(value.get());
+						__controller.getState().items.put(value.get());
 				}
 			
 			return rv;

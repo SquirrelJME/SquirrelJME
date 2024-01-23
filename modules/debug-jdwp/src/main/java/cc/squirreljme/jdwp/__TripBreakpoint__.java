@@ -48,7 +48,7 @@ class __TripBreakpoint__
 		JDWPController controller = this.__controller();
 		
 		// Make sure this thread is registered
-		controller.state.items.put(__thread);
+		controller.getState().items.put(__thread);
 		
 		// Send the signal
 		controller.signal(__thread, EventKind.BREAKPOINT);

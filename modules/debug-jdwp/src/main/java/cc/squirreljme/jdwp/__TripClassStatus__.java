@@ -43,7 +43,7 @@ final class __TripClassStatus__
 		JDWPClassStatus __status)
 	{
 		JDWPController controller = this.__controller();
-		JDWPState state = controller.state;
+		JDWPState state = controller.getState();
 		
 		// Record these so they can be grabbed later
 		state.items.put(__thread);
