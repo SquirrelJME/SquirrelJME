@@ -10,8 +10,8 @@
 package cc.squirreljme.jdwp;
 
 import cc.squirreljme.jdwp.event.CallStackStepping;
-import cc.squirreljme.jdwp.event.JDWPHostEventFilter;
 import cc.squirreljme.jdwp.event.FieldOnly;
+import cc.squirreljme.jdwp.event.JDWPHostEventFilter;
 import cc.squirreljme.jdwp.host.JDWPCommandHandler;
 import cc.squirreljme.jdwp.host.JDWPHostBinding;
 import cc.squirreljme.jdwp.host.trips.JDWPGlobalTrip;

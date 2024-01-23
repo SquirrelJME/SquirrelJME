@@ -9,45 +9,16 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.jdwp.host.JDWPCommandHandler;
-
 /**
  * Class type commands.
  *
  * @since 2021/03/14
  */
 public enum CommandSetClassType
-	implements JDWPCommandHandler
+	implements JDWPCommand
 {
 	/** The super class of the given class. */
-	SUPERCLASS(1)
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/14
-		 */
-		@Override
-		public JDWPPacket execute(JDWPHostController __controller,
-			JDWPPacket __packet)
-			throws JDWPException
-		{
-			// Which class does this refer to?
-			Object type = __packet.readType(__controller, false); 
-			
-			// Respond with the class ID
-			JDWPPacket rv = __controller.reply(
-				__packet.id(), JDWPErrorType.NO_ERROR);
-			
-			Object superClass = __controller.viewType().superType(type);
-			rv.writeObject(__controller, superClass);
-			
-			// Register the super class so it can be known
-			if (superClass != null)
-				__controller.getState().items.put(superClass);
-			
-			return rv;
-		}
-	}
+	SUPERCLASS(1),
 	
 	/* End. */
 	;

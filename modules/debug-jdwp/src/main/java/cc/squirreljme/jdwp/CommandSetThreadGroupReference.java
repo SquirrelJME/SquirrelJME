@@ -9,121 +9,22 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.jdwp.host.JDWPCommandHandler;
-import cc.squirreljme.jdwp.host.views.JDWPViewThread;
-import cc.squirreljme.jdwp.host.views.JDWPViewThreadGroup;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Thread group reference commands.
  *
  * @since 2021/03/13
  */
 public enum CommandSetThreadGroupReference
-	implements JDWPCommandHandler
+	implements JDWPCommand
 {
 	/** The name of the group. */
-	NAME(1)
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/13
-		 */
-		@Override
-		public JDWPPacket execute(JDWPHostController __controller,
-			JDWPPacket __packet)
-			throws JDWPException
-		{
-			JDWPViewThreadGroup view = __controller.viewThreadGroup();
-			
-			// Is this valid?
-			Object group = __packet.readThreadGroup(
-				__controller, false);
-			
-			JDWPPacket rv = __controller.reply(
-				__packet.id(), JDWPErrorType.NO_ERROR);
-			
-			// Matches the string representation of the group
-			rv.writeString(view.name(group));
-			
-			return rv;
-		}
-	},
+	NAME(1),
 	
 	/** The parent thread group. */
-	PARENT(2)
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/13
-		 */
-		@Override
-		public JDWPPacket execute(JDWPHostController __controller,
-			JDWPPacket __packet)
-			throws JDWPException
-		{
-			// Is this valid?
-			__packet.readThreadGroup(__controller, false);
-			
-			JDWPPacket rv = __controller.reply(
-				__packet.id(), JDWPErrorType.NO_ERROR);
-			
-			// There are never any parent thread groups
-			rv.writeId(0);
-			
-			return rv;
-		}
-	},
+	PARENT(2),
 	
 	/** The children thread groups and threads. */
-	CHILDREN(3)
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/13
-		 */
-		@Override
-		public JDWPPacket execute(JDWPHostController __controller,
-			JDWPPacket __packet)
-			throws JDWPException
-		{
-			JDWPViewThreadGroup groupView = __controller.viewThreadGroup();
-			JDWPViewThread threadView = __controller.viewThread();
-			
-			// Is this valid?
-			Object group = __packet.readThreadGroup(
-				__controller, false);
-				
-			JDWPPacket rv = __controller.reply(
-				__packet.id(), JDWPErrorType.NO_ERROR);
-			
-			// Filter out terminated, frameless, and debug threads (callbacks?)
-			List<Object> threads = new ArrayList<>();
-			for (Object thread : groupView.threads(group))
-				if (JDWPHostUtils.isVisibleThread(threadView, thread))
-					threads.add(thread);
-			
-			// Write number of child threads
-			rv.writeInt(threads.size());
-			
-			// Record all of their IDs
-			for (Object thread : threads)
-			{
-				Object threadInstance = threadView.instance(thread);
-				rv.writeObject(__controller, threadInstance);
-				
-				// Store for later referencing
-				__controller.getState().items.put(thread);
-				__controller.getState().items.put(threadInstance);
-			}
-			
-			// There are never any child thread groups
-			rv.writeInt(0);
-			
-			return rv;
-		}
-	}, 
+	CHILDREN(3), 
 	
 	/* End. */
 	;

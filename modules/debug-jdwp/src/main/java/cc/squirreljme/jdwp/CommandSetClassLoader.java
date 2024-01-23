@@ -9,60 +9,16 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.jdwp.host.JDWPCommandHandler;
-import cc.squirreljme.jdwp.host.views.JDWPViewType;
-import java.util.LinkedList;
-import java.util.List;
-
 /**
  * Support for class loader information.
  *
  * @since 2021/04/20
  */
 public enum CommandSetClassLoader
-	implements JDWPCommandHandler
+	implements JDWPCommand
 {
 	/** Classes which are visible to the given loader. */
-	VISIBLE_CLASSES(1)
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/04/20
-		 */
-		@Override
-		public JDWPPacket execute(JDWPHostController __controller,
-			JDWPPacket __packet)
-			throws JDWPException
-		{
-			// Null is a valid loader, for the system in the event this is
-			// ever the case
-			int id = __packet.readId();
-			Object loader = __controller.getState().items.get(id);
-			
-			// Go through all known types to find ones that use this class
-			// loader
-			List<Object> found = new LinkedList<>();
-			JDWPViewType viewType = __controller.viewType();
-			for (Object type : __controller.allTypes(false))
-				if (loader == viewType.classLoader(type))
-					found.add(type);
-			
-			JDWPPacket rv = __controller.reply(
-				__packet.id(), JDWPErrorType.NO_ERROR);
-			
-			// Write all entries which meet the same class loader
-			rv.writeInt(found.size());
-			for (Object type : found)
-			{
-				if (type != null)
-					__controller.getState().items.put(type);
-				
-				rv.writeTaggedId(__controller, type);
-			}
-			
-			return rv;
-		}
-	},
+	VISIBLE_CLASSES(1),
 	
 	/* End. */
 	;
