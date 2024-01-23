@@ -36,7 +36,7 @@ public enum JDWPCommandSet
 	OBJECT_REFERENCE(9, JDWPCommandSetObjectReference.values()),
 	
 	/** String reference. */
-	STRING_REFERENCE(10, CommandSetStringReference.values()),
+	STRING_REFERENCE(10, JDWPCommandSetStringReference.values()),
 	
 	/** Thread Reference. */
 	THREAD_REFERENCE(11, CommandSetThreadReference.values()),
@@ -54,7 +54,7 @@ public enum JDWPCommandSet
 	EVENT_REQUEST(15, JDWPCommandSetEventRequest.values()),
 	
 	/** Stack frames. */
-	STACK_FRAMES(16, CommandSetStackFrame.values()),
+	STACK_FRAMES(16, JDWPCommandSetStackFrame.values()),
 	
 	/** Class object references. */
 	CLASS_OBJECT_REFERENCE(17, JDWPCommandSetClassObjectReference.values()),

@@ -10,16 +10,19 @@
 package cc.squirreljme.jdwp;
 
 /**
- * String reference command set.
+ * Command set for stack frames.
  *
- * @since 2021/03/20
+ * @since 2021/03/15
  */
-public enum CommandSetStringReference
+public enum JDWPCommandSetStackFrame
 	implements JDWPCommand
 {
-	/** Return the value of the string. */
-	VALUE(1),
+	/** Get stack frame values. */
+	GET_VALUES(1),
 	
+	/** The current object of the current frame. */
+	THIS_OBJECT(3),
+		
 	/* End. */
 	;
 	
@@ -30,16 +33,16 @@ public enum CommandSetStringReference
 	 * Returns the ID used.
 	 * 
 	 * @param __id The ID used.
-	 * @since 2021/03/20
+	 * @since 2021/03/15
 	 */
-	CommandSetStringReference(int __id)
+	JDWPCommandSetStackFrame(int __id)
 	{
 		this.id = __id;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2021/03/20
+	 * @since 2021/03/15
 	 */
 	@Override
 	public final int debuggerId()
