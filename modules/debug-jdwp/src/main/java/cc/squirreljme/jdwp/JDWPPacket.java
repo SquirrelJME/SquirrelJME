@@ -421,6 +421,80 @@ public final class JDWPPacket
 	}
 	
 	/**
+	 * Fully reads an array of byte values.
+	 *
+	 * @param __length The number of bytes to read.
+	 * @return The resultant array.
+	 * @throws IllegalArgumentException If the length is negative.
+	 * @throws JDWPException If the data could not be read.
+	 * @since 2024/01/23
+	 */
+	public byte[] readFully(int __length)
+		throws IllegalArgumentException, JDWPException
+	{
+		if (__length < 0)
+			throw new IllegalArgumentException("NEGV");
+		
+		return this.readFully(new byte[__length], 0, __length);
+	}
+	
+	/**
+	 * Fully reads an array of byte values.
+	 *
+	 * @param __buf The buffer to read into.
+	 * @return The resultant array.
+	 * @throws JDWPException If the data could not be read.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/23
+	 */
+	public byte[] readFully(byte[] __buf)
+		throws JDWPException, NullPointerException
+	{
+		if (__buf == null)
+			throw new NullPointerException("NARG");
+		
+		return this.readFully(__buf, 0, __buf.length);
+	}
+	
+	/**
+	 * Fully reads an array of byte values.
+	 *
+	 * @param __buf The buffer to read into.
+	 * @param __off The offset into the buffer.
+	 * @param __len The number of bytes to read.
+	 * @return The resultant array.
+	 * @throws IndexOutOfBoundsException If the offset and/or length are
+	 * negative or exceed the array bounds.
+	 * @throws JDWPException If the data could not be read.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/23
+	 */
+	public byte[] readFully(byte[] __buf, int __off, int __len)
+		throws IndexOutOfBoundsException, JDWPException, NullPointerException
+	{
+		if (__buf == null)
+			throw new NullPointerException("NARG");
+		
+		int bufLen = __buf.length;
+		if (__off < 0 || __len < 0 || (__off + __len) > bufLen ||
+			(__off + __len) < 0)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		synchronized (this)
+		{
+			// Ensure this is open
+			this.__checkOpen();
+			
+			// Keep reading in bytes
+			for (int i = 0, at = __off; i < __len; i++, at++)
+				__buf[at] = this.readByte();
+		}
+		
+		// Return the passed buffer
+		return __buf;
+	}
+	
+	/**
 	 * Reads an identifier from the packet.
 	 * 
 	 * @return The single read value.

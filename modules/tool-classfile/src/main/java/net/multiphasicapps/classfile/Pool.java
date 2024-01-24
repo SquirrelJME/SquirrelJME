@@ -223,6 +223,23 @@ public final class Pool
 	public static Pool decode(DataInputStream __in)
 		throws InvalidClassFormatException, IOException, NullPointerException
 	{
+		return Pool.decode(__in, -1);
+	}
+	
+	/**
+	 * Decodes the constant pool.
+	 *
+	 * @param __in The input stream.
+	 * @param __count The pool count, may be negative if it should be read.
+	 * @return The read constant pool.
+	 * @throws InvalidClassFormatException If the constant pool is not valid.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/09/27
+	 */
+	public static Pool decode(DataInputStream __in, int __count)
+		throws InvalidClassFormatException, IOException, NullPointerException
+	{
 		// Check
 		if (__in == null)
 			throw new NullPointerException("NARG");
@@ -231,8 +248,14 @@ public final class Pool
 		ByteArrayOutputStream rawBytes = new ByteArrayOutputStream();
 		DataOutputStream raw = new DataOutputStream(rawBytes);
 		
+		// Does the count need to be read?
+		int count;
+		if (__count < 0)
+			count = __in.readUnsignedShort();
+		else
+			count = __count;
+		
 		// Read the raw constant pool contents first
-		int count = __in.readUnsignedShort();
 		int[] tags = new int[count];
 		Object[] rawdata = new Object[count];
 		for (int i = 1; i < count; i++)
@@ -322,13 +345,28 @@ public final class Pool
 					raw.writeDouble(((ConstantValueDouble)data).doubleValue());
 					break;
 					
-					/* {@squirreljme.error JC3s Java ME does not support
-					dynamic invocation (such as method handles or lambda
-					expressions).} */
+					// Invoke dynamic method handle
 				case Pool.TAG_METHODHANDLE:
+					__in.readByte();
+					__in.readShort();
+					
+					data = new UnsupportedInvokeDynamic();
+					break;
+					
+					// Invoke dynamic method type
 				case Pool.TAG_METHODTYPE:
+					__in.readShort();
+					
+					data = new UnsupportedInvokeDynamic();
+					break;
+					
+					// Invoke dynamic
 				case Pool.TAG_INVOKEDYNAMIC:
-					throw new InvalidClassFormatException("JC3s");
+					__in.readShort();
+					__in.readShort();
+					
+					data = new UnsupportedInvokeDynamic();
+					break;
 				
 					/* {@squirreljme.error JC3t Unknown tag type in the
 					constant pool. (The constant pool tag)} */
@@ -423,6 +461,13 @@ public final class Pool
 					sequence = 3;
 					break;
 					
+					// Invoke dynamics which are ignored
+				case Pool.TAG_METHODHANDLE:
+				case Pool.TAG_METHODTYPE:
+				case Pool.TAG_INVOKEDYNAMIC:
+					sequence = 3;
+					break;
+					
 				default:
 					throw Debugging.oops();
 			}
@@ -496,6 +541,13 @@ public final class Pool
 								new MethodDescriptor(nat.type()),
 								tag == Pool.TAG_INTERFACEMETHODREF);
 					}
+					break;
+					
+					// Invoke dynamics which are ignored
+				case Pool.TAG_METHODHANDLE:
+				case Pool.TAG_METHODTYPE:
+				case Pool.TAG_INVOKEDYNAMIC:
+					out = in;
 					break;
 				
 					// Unhandled, should not happen

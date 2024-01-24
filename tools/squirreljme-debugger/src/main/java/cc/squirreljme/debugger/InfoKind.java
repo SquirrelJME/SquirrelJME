@@ -63,12 +63,29 @@ public enum InfoKind
 		protected Info seed(DebuggerState __state, JDWPId __id,
 			Object... __extra)
 		{
-			ClassName inClass = (ClassName)__extra[0];
+			InfoClass inClass = (InfoClass)__extra[0];
 			MethodName name = (MethodName)__extra[1];
 			MethodDescriptor type = (MethodDescriptor)__extra[2];
 			MethodFlags flags = (MethodFlags)__extra[3];
 			
 			return new InfoMethod(__state, __id, inClass, name, type, flags);
+		}
+	},
+	
+	/** Method byte code. */
+	BYTE_CODE("ByteCode")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2024/01/24
+		 */
+		@Override
+		protected Info seed(DebuggerState __state, JDWPId __id,
+			Object... __extra)
+		{
+			InstructionViewer[] instructions = (InstructionViewer[])__extra[0];
+			
+			return new InfoByteCode(__state, __id, instructions);
 		}
 	},
 	

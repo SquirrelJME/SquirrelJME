@@ -104,9 +104,6 @@ public class InfoClass
 		if (__state == null || __value == null)
 			throw new NullPointerException("NARG");
 		
-		// The name of this class
-		ClassName thisName = this.thisName();
-		
 		// Request methods in the class
 		try (JDWPPacket out = __state.request(JDWPCommandSet.REFERENCE_TYPE,
 			JDWPCommandSetReferenceType.METHODS))
@@ -137,7 +134,7 @@ public class InfoClass
 					
 					// Setup method
 					result[i] = stored.get(__state, methodId,
-						thisName, name, type, flags);
+						this, name, type, flags);
 				}
 				
 				// Set value

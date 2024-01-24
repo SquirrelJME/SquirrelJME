@@ -24,6 +24,9 @@ public class RemoteMethodViewer
 	/** The remote method information. */
 	protected final InfoMethod info;
 	
+	/** The debugger state. */
+	protected final DebuggerState state;
+	
 	/**
 	 * Initializes the remote method viewer.
 	 *
@@ -38,6 +41,7 @@ public class RemoteMethodViewer
 		if (__info == null)
 			throw new NullPointerException("NARG");
 		
+		this.state = __state;
 		this.info = __info;
 	}
 	
@@ -48,7 +52,7 @@ public class RemoteMethodViewer
 	@Override
 	public ClassName inClass()
 	{
-		return this.info.inClass;
+		return this.info.inClass.thisName();
 	}
 	
 	/**
@@ -58,7 +62,16 @@ public class RemoteMethodViewer
 	@Override
 	public InstructionViewer[] instructions()
 	{
-		return new InstructionViewer[0];
+		// Return blank if abstract or native
+		if (this.isAbstract() || this.isNative())
+			return new InstructionViewer[0];
+		
+		// Fallback to nothing if there is no byte code
+		InfoByteCode byteCode = this.info.byteCode.getOrUpdate(this.state);
+		if (byteCode == null)
+			return new InstructionViewer[0];
+		
+		return byteCode.instructions();
 	}
 	
 	/**
