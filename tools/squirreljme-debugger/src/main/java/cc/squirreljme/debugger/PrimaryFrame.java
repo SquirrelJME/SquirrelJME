@@ -14,7 +14,6 @@ import cc.squirreljme.jdwp.JDWPCommandSetVirtualMachine;
 import cc.squirreljme.jdwp.JDWPId;
 import cc.squirreljme.jdwp.JDWPIdKind;
 import cc.squirreljme.jdwp.JDWPPacket;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -52,7 +51,7 @@ public class PrimaryFrame
 	extends JFrame
 {
 	/** The debugger state. */
-	protected final DebuggerState debuggerState;
+	protected final DebuggerState state;
 	
 	/** The status panel. */
 	protected final StatusPanel statusPanel;
@@ -66,18 +65,18 @@ public class PrimaryFrame
 	/**
 	 * Initializes the primary frame.
 	 *
-	 * @param __debuggerState The main debugging state.
+	 * @param __state The main debugging state.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/19
 	 */
-	public PrimaryFrame(DebuggerState __debuggerState)
+	public PrimaryFrame(DebuggerState __state)
 		throws NullPointerException
 	{
-		if (__debuggerState == null)
+		if (__state == null)
 			throw new NullPointerException("NARG");
 		
 		// Store state for later usage
-		this.debuggerState = __debuggerState;
+		this.state = __state;
 		
 		// To keep it more easily workable
 		this.setMinimumSize(new Dimension(640, 480));
@@ -226,14 +225,14 @@ public class PrimaryFrame
 		this.add(toolBar, BorderLayout.PAGE_START);
 		
 		// Setup status panel
-		StatusPanel statusPanel = new StatusPanel(__debuggerState);
+		StatusPanel statusPanel = new StatusPanel(__state);
 		this.statusPanel = statusPanel;
 		
 		// Add that to the bottom
 		this.add(statusPanel, BorderLayout.PAGE_END);
 		
 		// Show thread view on the left
-		ShownThreads shownThreads = new ShownThreads();
+		ShownThreads shownThreads = new ShownThreads(__state);
 		this.add(shownThreads, BorderLayout.LINE_START);
 		this.shownThreads = shownThreads;
 		
@@ -248,39 +247,6 @@ public class PrimaryFrame
 		catch (IOException __ignored)
 		{
 		}
-	}
-	
-	/**
-	 * Opens the inspector on the item.
-	 *
-	 * @param __info The information to expect.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2024/01/20
-	 */
-	public void inspect(Info __info)
-		throws NullPointerException
-	{
-		if (__info == null)
-			throw new NullPointerException("NARG");
-		
-		// Depends on the type
-		JDialog dialog;
-		switch (__info.kind)
-		{
-				// Thread
-			case THREAD:
-				dialog = new InspectThread(this, this.debuggerState,
-					(InfoThread)__info);
-				break;
-				
-				// Unknown, so ignore
-			default:
-				return;
-		}
-		
-		// Show it
-		dialog.setLocationRelativeTo(null);
-		dialog.setVisible(true);
 	}
 	
 	/**
@@ -313,35 +279,7 @@ public class PrimaryFrame
 	private void __inspect(StoredInfo<?> __stored)
 		throws NullPointerException
 	{
-		if (__stored == null)
-			throw new NullPointerException("NARG");
-		
-		InfoKind type = __stored.type;
-		
-		// Check to see that we actually know stuff
-		Info[] all = __stored.all(this.debuggerState);
-		if (all.length == 0)
-		{
-			JOptionPane.showMessageDialog(this,
-				String.format("There are no %s", type.description),
-				"Nothing is known",
-				JOptionPane.ERROR_MESSAGE,
-				null);
-			return;
-		}
-		
-		// Pop up dialog asking what to inspect?
-		Object result = JOptionPane.showInputDialog(this,
-			String.format("Select %s to inspect", type.description),
-			String.format("Choosing %s", type.description),
-			JOptionPane.QUESTION_MESSAGE,
-			null,
-			all,
-			all[0]);
-		
-		// When selected, show the inspector
-		if (result != null)
-			this.inspect((Info)result);
+		Utils.inspect(this, this.state, __stored);
 	}
 	
 	/**
@@ -353,7 +291,7 @@ public class PrimaryFrame
 	private void __inspectCapabilities(ActionEvent __event)
 	{
 		InspectCapabilities inspect = new InspectCapabilities(this,
-			this.debuggerState.capabilities);
+			this.state.capabilities);
 		
 		// Show it
 		inspect.setLocationRelativeTo(null);
@@ -368,7 +306,7 @@ public class PrimaryFrame
 	 */
 	private void __inspectThread(ActionEvent __event)
 	{
-		this.__inspect(this.debuggerState.storedInfo.getThread());
+		this.__inspect(this.state.storedInfo.getThread());
 	}
 	
 	/**
@@ -380,7 +318,7 @@ public class PrimaryFrame
 	private void __inspectType(ActionEvent __action)
 	{
 		// Get every single loaded class because this is really expected
-		DebuggerState state = this.debuggerState;
+		DebuggerState state = this.state;
 		try (JDWPPacket out = state.request(JDWPCommandSet.VIRTUAL_MACHINE,
 			JDWPCommandSetVirtualMachine.ALL_CLASSES))
 		{
@@ -389,7 +327,7 @@ public class PrimaryFrame
 				(__state, __reply) -> {
 					// We need to store the actual classes
 					StoredInfo<InfoClass> classes =
-						this.debuggerState.storedInfo.getClasses();
+						this.state.storedInfo.getClasses();
 				
 					// Read in all the classes
 					int count = __reply.readInt();
@@ -495,7 +433,7 @@ public class PrimaryFrame
 			
 			// Perform lookup
 			ClassName className = new ClassName(option);
-			this.debuggerState.lookupClass(className, (__info) -> {
+			this.state.lookupClass(className, (__info) -> {
 				InfoClass lookAt;
 				if (__info.length == 1)
 					lookAt = __info[0];
@@ -512,7 +450,7 @@ public class PrimaryFrame
 				// Look at the given class
 				if (lookAt != null)
 					this.__viewClass(new RemoteClassViewer(
-						this.debuggerState, lookAt));
+						this.state, lookAt));
 			}, (__e) -> {
 				Utils.throwableTraceDialog(this,
 					"Could not find class: " + className, __e);

@@ -10,10 +10,12 @@
 package cc.squirreljme.debugger;
 
 import java.awt.BorderLayout;
+import java.awt.Window;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
 import java.util.function.BiFunction;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -35,21 +37,34 @@ public class InspectKnownValue
 	/** The base root component. */
 	protected final JComponent base;
 	
+	/** The owning window. */
+	protected final Window owner;
+	
+	/** The state of the debugger. */
+	protected final DebuggerState state;
+	
 	/** The value being inspected. */
 	private final Reference<KnownValue<?>> _value;
 	
 	/**
 	 * Initializes the inspector.
 	 *
+	 * @param __owner The owning window, is optional.
+	 * @param __state The debugger state.
 	 * @param __value The value to inspect.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/20
 	 */
-	public InspectKnownValue(KnownValue<?> __value)
+	public InspectKnownValue(Window __owner, DebuggerState __state,
+		KnownValue<?> __value)
 		throws NullPointerException
 	{
-		if (__value == null)
+		if (__state == null || __value == null)
 			throw new NullPointerException("NARG");
+		
+		// Store owner and state for later usage
+		this.owner = __owner;
+		this.state = __state;
 		
 		// Set value
 		this._value = new WeakReference<>(__value);
@@ -57,11 +72,13 @@ public class InspectKnownValue
 		// Determine how this updates...
 		BiFunction<JComponent, KnownValue<?>, JComponent> updater;
 		if (__value.type == Boolean.class)
-			updater = InspectKnownValue::__updateBoolean;
+			updater = this::__updateBoolean;
 		else if (__value.type == String.class)
-			updater = InspectKnownValue::__updateString;
+			updater = this::__updateString;
+		else if (__value.type == InfoMethod[].class)
+			updater = this::__updateMethods;
 		else
-			updater = InspectKnownValue::__updateUnknown;
+			updater = this::__updateUnknown;
 		
 		// Setup initial item and updater
 		JComponent base = updater.apply(null, __value);
@@ -88,17 +105,6 @@ public class InspectKnownValue
 	}
 	
 	/**
-	 * Returns the stored known value.
-	 *
-	 * @return The resultant value.
-	 * @since 2024/01/21
-	 */
-	private KnownValue<?> __value()
-	{
-		return this._value.get();
-	}
-	
-	/**
 	 * Updates the boolean value.
 	 *
 	 * @param __base The base component.
@@ -106,7 +112,7 @@ public class InspectKnownValue
 	 * @return The component used.
 	 * @since 2024/01/20
 	 */
-	private static JComponent __updateBoolean(JComponent __base,
+	private JComponent __updateBoolean(JComponent __base,
 		KnownValue<?> __value)
 	{
 		// Need to initialize?
@@ -132,6 +138,60 @@ public class InspectKnownValue
 	}
 	
 	/**
+	 * Updates the method value.
+	 *
+	 * @param __base The base component.
+	 * @param __value The value used.
+	 * @return The resultant component.
+	 * @since 2024/01/24
+	 */
+	private JComponent __updateMethods(JComponent __base,
+		KnownValue<?> __value)
+	{
+		// Need to initialize?
+		JButton button;
+		if (__base != null)
+			button = (JButton)__base;
+		else
+		{
+			button = new JButton();
+			
+			// Show list of methods when selecting the button, initialize this
+			// here because otherwise there would be multiple actions ran
+			// every time there was an update
+			button.addActionListener((__event) -> {
+				InfoMethod[] methods = __value.get(InfoMethod[].class);
+				if (methods == null)
+					return;
+				
+				// Update all methods
+				DebuggerState state = this.state;
+				for (InfoMethod method : methods)
+					method.update(state, null);
+				
+				// Show inspector on it
+				Utils.inspect(this.owner, state,
+					InfoKind.METHOD, methods);
+			});
+		}
+		
+		// Set label value
+		if (!__value.isKnown())
+			button.setText("Unknown?");
+		else
+		{
+			// Get all the methods
+			InfoMethod[] methods = __value.get(InfoMethod[].class);
+			
+			// The button text is just the number of methods
+			button.setText(String.format("%d Methods", methods.length));
+		}
+		
+		// Return self
+		return button;
+	}
+	
+	/**
 	 * Updates the string value.
 	 *
 	 * @param __base The base component.
@@ -139,7 +199,7 @@ public class InspectKnownValue
 	 * @return The component used.
 	 * @since 2024/01/20
 	 */
-	private static JComponent __updateString(JComponent __base,
+	private JComponent __updateString(JComponent __base,
 		KnownValue<?> __value)
 	{
 		// Need to initialize?
@@ -170,7 +230,7 @@ public class InspectKnownValue
 	 * @return The component used.
 	 * @since 2024/01/20
 	 */
-	private static JComponent __updateUnknown(JComponent __base,
+	private JComponent __updateUnknown(JComponent __base,
 		KnownValue<?> __value)
 	{
 		// Need to initialize?
@@ -187,5 +247,16 @@ public class InspectKnownValue
 			label.setText(Objects.toString(__value.get()));
 		
 		return label;
+	}
+	
+	/**
+	 * Returns the stored known value.
+	 *
+	 * @return The resultant value.
+	 * @since 2024/01/21
+	 */
+	private KnownValue<?> __value()
+	{
+		return this._value.get();
 	}
 }

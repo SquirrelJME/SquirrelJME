@@ -10,7 +10,6 @@
 package cc.squirreljme.debugger;
 
 import cc.squirreljme.jdwp.JDWPId;
-import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodFlags;
 import net.multiphasicapps.classfile.MethodName;
@@ -24,7 +23,7 @@ import net.multiphasicapps.classfile.Pool;
 public enum InfoKind
 {
 	/** A thread. */
-	THREAD("Thread")
+	THREAD("Thread", "Threads")
 	{
 		/**
 		 * {@inheritDoc}
@@ -39,7 +38,7 @@ public enum InfoKind
 	},
 	
 	/* Class type. */
-	CLASS("Class")
+	CLASS("Class", "Classes")
 	{
 		/**
 		 * {@inheritDoc}
@@ -54,7 +53,7 @@ public enum InfoKind
 	},
 	
 	/** Method. */
-	METHOD("Method")
+	METHOD("Method", "Methods")
 	{
 		/**
 		 * {@inheritDoc}
@@ -74,7 +73,7 @@ public enum InfoKind
 	},
 	
 	/** Method byte code. */
-	BYTE_CODE("ByteCode")
+	BYTE_CODE("Bytecode", "Bytecode")
 	{
 		/**
 		 * {@inheritDoc}
@@ -96,18 +95,22 @@ public enum InfoKind
 	/* End. */
 	;
 	
-	/** The item description. */
-	protected final String description;
+	/** Singular description. */
+	public final String singular;
+	
+	/** Plural description. */
+	public final String plural;
 	
 	/**
 	 * The description of this item. 
 	 *
-	 * @param __desc The item description.
+	 * @param __singular Singular.
 	 * @since 2024/01/20
 	 */
-	InfoKind(String __desc)
+	InfoKind(String __singular, String __plural)
 	{
-		this.description = __desc;
+		this.singular = __singular;
+		this.plural = __plural;
 	}
 	
 	/**
@@ -130,6 +133,6 @@ public enum InfoKind
 	@Override
 	public String toString()
 	{
-		return this.description;
+		return this.singular;
 	}
 }

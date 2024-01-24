@@ -15,6 +15,7 @@ import cc.squirreljme.jdwp.JDWPCommandSetMethod;
 import cc.squirreljme.jdwp.JDWPCommandSetReferenceType;
 import cc.squirreljme.jdwp.JDWPId;
 import cc.squirreljme.jdwp.JDWPPacket;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -25,6 +26,7 @@ import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodFlags;
 import net.multiphasicapps.classfile.MethodName;
+import net.multiphasicapps.classfile.MethodNameAndType;
 import net.multiphasicapps.classfile.Pool;
 
 /**
@@ -84,7 +86,20 @@ public class InfoMethod
 	protected boolean internalUpdate(DebuggerState __state)
 		throws NullPointerException
 	{
+		// Single run updates
+		this.byteCode.getOrUpdate(__state);
+		
 		return true;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/01/24
+	 */
+	@Override
+	protected String internalString()
+	{
+		return new MethodNameAndType(this.name, this.type).toString();
 	}
 	
 	/**

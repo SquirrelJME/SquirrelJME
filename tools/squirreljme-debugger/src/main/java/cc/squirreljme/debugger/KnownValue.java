@@ -109,6 +109,25 @@ public final class KnownValue<T>
 	}
 	
 	/**
+	 * Gets the type and casts it to the specified class.
+	 *
+	 * @param <X> The type to cast to.
+	 * @param __type The type to cast to.
+	 * @return The resultant value.
+	 * @throws ClassCastException If the type is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/24
+	 */
+	public <X> X get(Class<X> __type)
+		throws ClassCastException, NullPointerException
+	{
+		if (__type == null)
+			throw new NullPointerException("NARG");
+		
+		return __type.cast(this.get());
+	}
+	
+	/**
 	 * Gets the current value, or a default.
 	 *
 	 * @param __default The default value if there is no known one.

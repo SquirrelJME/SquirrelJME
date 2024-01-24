@@ -9,33 +9,48 @@
 
 package cc.squirreljme.debugger;
 
-import javax.swing.JPanel;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.awt.Window;
+import javax.swing.JDialog;
 
 /**
- * Shows all the running threads within the virtual machine and allows
- * them to be selected accordingly.
+ * Inspects classes.
  *
  * @since 2024/01/24
  */
-public class ShownThreads
-	extends JPanel
+public class InspectClass
+	extends Inspect<InfoClass>
 {
-	/** The debugger state. */
-	protected final DebuggerState state;
-	
 	/**
-	 * Initializes the thread shower.
+	 * Initializes the class inspector.
 	 *
+	 * @param __owner The owning frame.
 	 * @param __state The debugger state.
+	 * @param __info The class information.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/24
 	 */
-	public ShownThreads(DebuggerState __state)
+	public InspectClass(Window __owner, DebuggerState __state,
+		InfoClass __info)
 		throws NullPointerException
 	{
-		if (__state == null)
-			throw new NullPointerException("NARG");
+		super(__owner, __state, __info);
 		
-		this.state = __state;
+		// Track these
+		this.addTrack("Name", __info.thisName);
+		this.addTrack("Constant Pool", __info.constantPool);
+		this.addTrack("Methods", __info.methods);
+		
+		// Update inspection
+		this.update();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/01/24
+	 */
+	@Override
+	protected void updateInternal()
+	{
 	}
 }

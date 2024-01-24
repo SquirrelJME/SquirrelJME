@@ -10,6 +10,7 @@
 package cc.squirreljme.debugger;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.awt.Window;
 import javax.swing.JDialog;
 
 /**
@@ -29,7 +30,7 @@ public class InspectThread
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/20
 	 */
-	public InspectThread(PrimaryFrame __owner, DebuggerState __state,
+	public InspectThread(Window __owner, DebuggerState __state,
 		InfoThread __what)
 		throws NullPointerException
 	{

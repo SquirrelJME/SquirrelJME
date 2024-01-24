@@ -107,6 +107,13 @@ public class InfoClass
 	protected boolean internalUpdate(DebuggerState __state)
 		throws NullPointerException
 	{
+		DebuggerState state = this.internalState();
+		
+		// These can be cached once
+		this.thisName.getOrUpdate(state);
+		this.constantPool.getOrUpdate(state);
+		this.methods.getOrUpdate(state);
+		
 		return true;
 	}
 	

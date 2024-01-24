@@ -9,12 +9,14 @@
 
 package cc.squirreljme.debugger;
 
+import java.awt.Window;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JWindow;
 
 /**
  * Utilities.
@@ -38,6 +40,114 @@ public final class Utils
 	 */
 	private Utils()
 	{
+	}
+	
+	/**
+	 * Opens the inspector selection.
+	 *
+	 * @param __owner The owning window.
+	 * @param __state The debugger state.
+	 * @param __items The items to choose for inspection.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/20
+	 */
+	public static void inspect(Window __owner, DebuggerState __state,
+		InfoKind __kind, Info[] __items)
+		throws NullPointerException
+	{
+		if (__state == null ||__items == null)
+			throw new NullPointerException("NARG");
+	
+		// Pop up dialog asking what to inspect?
+		Object result = JOptionPane.showInputDialog(__owner,
+			String.format("Select a %s to inspect",
+				(__kind == null ? "thing" : __kind.singular)),
+			String.format("Choosing a %s",
+				(__kind == null ? "thing" : __kind.singular)),
+			JOptionPane.QUESTION_MESSAGE,
+			null,
+			__items,
+			__items[0]);
+		
+		// When selected, show the inspector
+		if (result != null)
+			Utils.inspect(__owner, __state, (Info)result);
+	}
+	
+	/**
+	 * Opens the inspector selection.
+	 *
+	 * @param __owner The owning window.
+	 * @param __state The debugger state.
+	 * @param __stored The stored items to look at.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/20
+	 */
+	public static void inspect(Window __owner, DebuggerState __state,
+		StoredInfo<?> __stored)
+		throws NullPointerException
+	{
+		if (__state == null ||__stored == null)
+			throw new NullPointerException("NARG");
+		
+		InfoKind type = __stored.type;
+		
+		// Check to see that we actually know stuff
+		Info[] all = __stored.all(__state);
+		if (all.length == 0)
+		{
+			JOptionPane.showMessageDialog(__owner,
+				String.format("There are no %s.", type.plural),
+				"Error",
+				JOptionPane.ERROR_MESSAGE,
+				null);
+			return;
+		}
+		
+		// Show inspector with all items
+		Utils.inspect(__owner, __state, __stored.type, all);
+	}
+	
+	/**
+	 * Opens the inspector on the item.
+	 *
+	 * @param __owner The owning window.
+	 * @param __state The debugger state.
+	 * @param __info The information to expect.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/20
+	 */
+	public static void inspect(Window __owner, DebuggerState __state,
+		Info __info)
+		throws NullPointerException
+	{
+		if (__state == null || __info == null)
+			throw new NullPointerException("NARG");
+		
+		// Depends on the type
+		Inspect<?> dialog;
+		switch (__info.kind)
+		{
+				// Class
+			case CLASS:
+				dialog = new InspectClass(__owner, __state,
+					(InfoClass)__info);
+				break;
+			
+				// Thread
+			case THREAD:
+				dialog = new InspectThread(__owner, __state,
+					(InfoThread)__info);
+				break;
+				
+				// Unknown, so ignore
+			default:
+				return;
+		}
+		
+		// Show it
+		dialog.setLocationRelativeTo(null);
+		dialog.setVisible(true);
 	}
 	
 	/**

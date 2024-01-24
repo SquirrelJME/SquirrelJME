@@ -65,6 +65,10 @@ public class StoredInfo<I extends Info>
 			
 			I[] result = (I[])values.toArray(new Info[values.size()]);
 			
+			// Update all values that we can
+			for (I item : result)
+				item.update(__state, null);
+			
 			// Perform sorting on the values, where possible, although it is
 			// very iffy
 			Arrays.sort(result);

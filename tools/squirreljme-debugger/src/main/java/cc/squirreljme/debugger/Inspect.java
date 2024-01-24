@@ -13,6 +13,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -41,6 +42,9 @@ public abstract class Inspect<I extends Info>
 	/** The state of the debugger. */
 	protected final DebuggerState state;
 	
+	/** The owning window. */
+	protected final Window owner;
+	
 	/** What item is being inspected? */
 	private final WeakReference<I> _what;
 	
@@ -53,11 +57,14 @@ public abstract class Inspect<I extends Info>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/20
 	 */
-	public Inspect(PrimaryFrame __owner, DebuggerState __state, I __what)
+	public Inspect(Window __owner, DebuggerState __state, I __what)
 		throws NullPointerException
 	{
 		if (__owner == null || __state == null || __what == null)
 			throw new NullPointerException("NARG");
+		
+		// Used for later
+		this.owner = __owner;
 		
 		// What is being inspected?
 		this._what = new WeakReference<>(__what);
@@ -110,7 +117,8 @@ public abstract class Inspect<I extends Info>
 		
 		// Setup key and value
 		JLabel key = new JLabel(__desc);
-		InspectKnownValue value = new InspectKnownValue(__value);
+		InspectKnownValue value = new InspectKnownValue(this.owner,
+			this.state, __value);
 		
 		// Add key/value
 		this.panel.add(new KeyValuePanel(
