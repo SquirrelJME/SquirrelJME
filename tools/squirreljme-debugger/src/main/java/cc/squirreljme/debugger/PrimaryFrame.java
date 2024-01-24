@@ -60,6 +60,9 @@ public class PrimaryFrame
 	/** The toolbar for common actions. */
 	protected final JToolBar toolBar;
 	
+	/** Thread view. */
+	protected final ShownThreads shownThreads;
+	
 	/**
 	 * Initializes the primary frame.
 	 *
@@ -228,6 +231,11 @@ public class PrimaryFrame
 		
 		// Add that to the bottom
 		this.add(statusPanel, BorderLayout.PAGE_END);
+		
+		// Show thread view on the left
+		ShownThreads shownThreads = new ShownThreads();
+		this.add(shownThreads, BorderLayout.LINE_START);
+		this.shownThreads = shownThreads;
 		
 		// For now just show some random method
 		try (InputStream in = PrimaryFrame.class.getResourceAsStream(
