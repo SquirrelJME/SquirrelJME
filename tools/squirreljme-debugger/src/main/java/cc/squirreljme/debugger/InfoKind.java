@@ -10,6 +10,10 @@
 package cc.squirreljme.debugger;
 
 import cc.squirreljme.jdwp.JDWPId;
+import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.MethodDescriptor;
+import net.multiphasicapps.classfile.MethodFlags;
+import net.multiphasicapps.classfile.MethodName;
 
 /**
  * The type of information stored.
@@ -59,7 +63,12 @@ public enum InfoKind
 		protected Info seed(DebuggerState __state, JDWPId __id,
 			Object... __extra)
 		{
-			return new InfoMethod(__state, __id);
+			ClassName inClass = (ClassName)__extra[0];
+			MethodName name = (MethodName)__extra[1];
+			MethodDescriptor type = (MethodDescriptor)__extra[2];
+			MethodFlags flags = (MethodFlags)__extra[3];
+			
+			return new InfoMethod(__state, __id, inClass, name, type, flags);
 		}
 	},
 	

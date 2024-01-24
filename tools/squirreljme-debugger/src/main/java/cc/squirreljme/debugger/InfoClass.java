@@ -11,10 +11,14 @@ package cc.squirreljme.debugger;
 
 import cc.squirreljme.jdwp.JDWPCommandSetReferenceType;
 import cc.squirreljme.jdwp.JDWPCommandSet;
+import cc.squirreljme.jdwp.JDWPIdKind;
 import cc.squirreljme.jdwp.JDWPPacket;
 import cc.squirreljme.jdwp.JDWPId;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.FieldDescriptor;
+import net.multiphasicapps.classfile.MethodDescriptor;
+import net.multiphasicapps.classfile.MethodFlags;
+import net.multiphasicapps.classfile.MethodName;
 
 /**
  * Caches information on remote classes and otherwise.
@@ -100,6 +104,10 @@ public class InfoClass
 		if (__state == null || __value == null)
 			throw new NullPointerException("NARG");
 		
+		// The name of this class
+		ClassName thisName = this.thisName();
+		
+		// Request methods in the class
 		try (JDWPPacket out = __state.request(JDWPCommandSet.REFERENCE_TYPE,
 			JDWPCommandSetReferenceType.METHODS))
 		{
@@ -110,14 +118,26 @@ public class InfoClass
 			__state.sendThenWait(out, Utils.TIMEOUT, (__ignored, __reply) -> {
 				int count = __reply.readInt();
 				
+				// Get method storage
+				StoredInfo<InfoMethod> stored =
+					__state.storedInfo.getMethods();
+			
 				// Fill in method results
 				InfoMethod[] result = new InfoMethod[count];
 				for (int i = 0; i < count; i++)
 				{
-					long methodId = __reply.readLong();
-					String name = __reply.readString();
-					String type = __reply.readString();
-					int flags = __reply.readInt();
+					// Read method information
+					JDWPId methodId = __reply.readId(JDWPIdKind.METHOD_ID);
+					MethodName name =
+						new MethodName(__reply.readString());
+					MethodDescriptor type =
+						new MethodDescriptor(__reply.readString());
+					MethodFlags flags =
+						new MethodFlags(__reply.readInt());
+					
+					// Setup method
+					result[i] = stored.get(__state, methodId,
+						thisName, name, type, flags);
 				}
 				
 				// Set value

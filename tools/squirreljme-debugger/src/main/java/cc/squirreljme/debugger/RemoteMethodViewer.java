@@ -21,6 +21,9 @@ import net.multiphasicapps.classfile.MethodNameAndType;
 public class RemoteMethodViewer
 	implements MethodViewer
 {
+	/** The remote method information. */
+	protected final InfoMethod info;
+	
 	/**
 	 * Initializes the remote method viewer.
 	 *
@@ -35,7 +38,7 @@ public class RemoteMethodViewer
 		if (__info == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		this.info = __info;
 	}
 	
 	/**
@@ -45,7 +48,7 @@ public class RemoteMethodViewer
 	@Override
 	public ClassName inClass()
 	{
-		throw Debugging.todo();
+		return this.info.inClass;
 	}
 	
 	/**
@@ -55,7 +58,7 @@ public class RemoteMethodViewer
 	@Override
 	public InstructionViewer[] instructions()
 	{
-		throw Debugging.todo();
+		return new InstructionViewer[0];
 	}
 	
 	/**
@@ -65,7 +68,7 @@ public class RemoteMethodViewer
 	@Override
 	public boolean isAbstract()
 	{
-		throw Debugging.todo();
+		return this.info.flags.isAbstract();
 	}
 	
 	/**
@@ -75,7 +78,7 @@ public class RemoteMethodViewer
 	@Override
 	public boolean isNative()
 	{
-		throw Debugging.todo();
+		return this.info.flags.isNative();
 	}
 	
 	/**
@@ -85,6 +88,6 @@ public class RemoteMethodViewer
 	@Override
 	public MethodNameAndType methodNameAndType()
 	{
-		throw Debugging.todo();
+		return new MethodNameAndType(this.info.name, this.info.type);
 	}
 }
