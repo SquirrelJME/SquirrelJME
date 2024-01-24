@@ -22,4 +22,5 @@ dependencies {
 	implementation project(":emulators:emulator-base")
 	implementation project(":modules:debug-jdwp")
 	implementation project(":modules:tango-icon-theme")
+	implementation project(":modules:common-vm")
 }

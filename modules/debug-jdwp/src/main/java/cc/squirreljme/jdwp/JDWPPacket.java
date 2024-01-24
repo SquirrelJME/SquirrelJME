@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.debug.ErrorCode;
 import java.io.Closeable;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -176,7 +178,7 @@ public final class JDWPPacket
 	}
 	
 	/**
-	 * Returns a copy of the given packet.
+	 * Copies from the given packet into this one.
 	 * 
 	 * @param __packet The packet to copy from.
 	 * @return {@code this}.
@@ -199,6 +201,7 @@ public final class JDWPPacket
 		byte[] data;
 		int length;
 		int readPos;
+		JDWPIdSizes idSizes;
 		synchronized (__packet)
 		{
 			id = __packet._id;
@@ -206,9 +209,16 @@ public final class JDWPPacket
 			commandSet = __packet._commandSet;
 			command = __packet._command;
 			errorCode = __packet._errorCode;
-			data = __packet._data;
 			length = __packet._length;
 			readPos = __packet._readPos;
+			idSizes = __packet._idSizes;
+			
+			// We need a copy of the data as it is now since if that gets
+			// closed somewhere, the data can become corrupted essentially
+			if (__packet._data != null)
+				data = __packet._data.clone();
+			else
+				data = null;
 		}
 		
 		// Set packet details
@@ -221,6 +231,7 @@ public final class JDWPPacket
 			this._errorCode = errorCode;
 			this._length = length;
 			this._readPos = readPos;
+			this._idSizes = idSizes;
 			
 			// Data might not even be valid here
 			if (data != null)
@@ -231,9 +242,10 @@ public final class JDWPPacket
 					System.arraycopy(data, 0,
 						ourData, 0, data.length);
 				
-				// Larger size, which will require array re-allocation
+				// Larger size, we already did clone the source array so
+				// use that here
 				else
-					this._data = data.clone();
+					this._data = data;
 			}
 		}
 		
@@ -395,10 +407,11 @@ public final class JDWPPacket
 			this.__checkOpen();
 			
 			/* {@squirreljme.error AG0d End of packet reached. 
-			(The packet size)} */
+			(The packet size; The packet length)} */
 			int readPos = this._readPos;
 			if (readPos >= this._length)
-				throw new JDWPException("AG0d " + readPos);
+				throw new JDWPException(ErrorCode.__error__(
+					"AG0d", readPos, this._length));
 			
 			// Read in and increment the position
 			byte rv = this._data[readPos];
@@ -412,14 +425,14 @@ public final class JDWPPacket
 	 * 
 	 * @return The single read value.
 	 * @throws JDWPException If the end of the packet was reached.
-	 * @deprecated Do not use.
+	 * @deprecated Use {@link #readId(JDWPIdKind)} instead.
 	 * @since 2021/03/13
 	 */
 	@Deprecated
 	public final int readId()
 		throws JDWPException
 	{
-		return this.readInt();
+		return this.readId(JDWPIdKind.UNKNOWN).intValue();
 	}
 	
 	/**
@@ -443,14 +456,9 @@ public final class JDWPPacket
 			// Ensure this is open
 			this.__checkOpen();
 			
-			/* {@squirreljme.error AG0z ID Sizes not currently known.} */
-			JDWPIdSizes idSizes = this._idSizes;
-			if (idSizes == null)
-				throw new JDWPException("AG0z");
-			
-			/* Read in the variably sized entry. */
+			// Read in the variably sized entry.
 			return JDWPId.of(__kind,
-				this.readVariable(idSizes.getSize(__kind)));
+				this.readVariable(this.__sizeOf(__kind)));
 		}
 	}
 	
@@ -572,6 +580,49 @@ public final class JDWPPacket
 		}
 		
 		return result;
+	}
+	
+	/**
+	 * Resets the read position of the packet. 
+	 *
+	 * @return {@code this}.
+	 * @since 2024/01/23
+	 */
+	public final JDWPPacket resetReadPosition()
+	{
+		synchronized (this)
+		{
+			// Ensure this is open
+			this.__checkOpen();
+			
+			// Reset position
+			this._readPos = 0;
+		}
+		
+		// Always return self
+		return this;
+	}
+	
+	/**
+	 * Implicitly sets the ID sizes of this packet.
+	 *
+	 * @param __sizes The sizes to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/23
+	 */
+	public void setIdSizes(JDWPIdSizes __sizes)
+		throws NullPointerException
+	{
+		if (__sizes == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (this)
+		{
+			// Ensure this is open
+			this.__checkOpen();
+			
+			this._idSizes = __sizes;
+		}
 	}
 	
 	/**
@@ -726,12 +777,40 @@ public final class JDWPPacket
 	 * 
 	 * @param __v The value to write.
 	 * @throws JDWPException If it could not be written.
+	 * @deprecated Use {@link #writeId(JDWPId)} instead.
 	 * @since 2021/04/10
 	 */
+	@Deprecated
 	public void writeId(int __v)
 		throws JDWPException
 	{
-		this.writeInt(__v);
+		this.writeId(JDWPId.of(JDWPIdKind.UNKNOWN, __v));
+	}
+	
+	/**
+	 * Writes the given ID.
+	 *
+	 * @param __id The ID to write.
+	 * @throws NullPointerException On null arguments.
+	 * @throws JDWPException If it could not be written or the sizes are not
+	 * known.
+	 * @since 2024/01/23
+	 */
+	public void writeId(JDWPId __id)
+		throws NullPointerException, JDWPException
+	{
+		if (__id == null)
+			throw new NullPointerException("NARG");
+		
+		// Write variable sized data
+		synchronized (this)
+		{
+			// Must be an open packet
+			this.__checkOpen();
+			
+			// Write the variable sized identifier
+			this.writeVariable(this.__sizeOf(__id.kind), __id.longValue());
+		}
 	}
 	
 	/**
@@ -880,6 +959,40 @@ public final class JDWPPacket
 	}
 	
 	/**
+	 * Writes a variable width value.
+	 *
+	 * @param __width The width of the value.
+	 * @param __v The value to write.
+	 * @since 2024/01/23
+	 */
+	public void writeVariable(int __width, long __v)
+		throws IllegalArgumentException, JDWPException
+	{
+		if (__width <= 0)
+			throw new IllegalArgumentException("NEGV");
+		
+		// Reverse so that MSB is on the lower bits, shifting down is needed
+		// so that if the width is smaller than 8 the MSB is in the correct
+		// location instead of being 00.
+		__v = Long.reverseBytes(__v) >>> (64 - (__width * 8));
+		
+		// Lock
+		synchronized (this)
+		{
+			// Ensure this is open
+			this.__checkOpen();
+			
+			// Write in each byte, MSB is on the lower bits due to reversal
+			for (int i = 0; i < __width; i++)
+			{
+				// Write then shift down
+				this.writeByte((byte)__v);
+				__v >>>= 8;
+			}
+		}
+	}
+	
+	/**
 	 * Writes a void type to the output.
 	 * 
 	 * @throws JDWPException If it failed to write.
@@ -1020,6 +1133,27 @@ public final class JDWPPacket
 			
 			// Mark as open?
 			this._open = __open;
+		}
+	}
+	
+	/**
+	 * Returns the size of the given kind. 
+	 *
+	 * @param __kind The kind to get.
+	 * @return The size of the resultant kind.
+	 * @since 2024/01/23
+	 */
+	private int __sizeOf(JDWPIdKind __kind)
+	{
+		synchronized (this)
+		{
+			/* {@squirreljme.error AG0z ID Sizes not currently known.} */
+			JDWPIdSizes idSizes = this._idSizes;
+			if (idSizes == null)
+				throw new JDWPIdSizeUnknownException("AG0z");
+			
+			/* Read in the variably sized entry. */
+			return idSizes.getSize(__kind);
 		}
 	}
 }

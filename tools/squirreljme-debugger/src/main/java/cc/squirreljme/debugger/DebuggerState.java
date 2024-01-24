@@ -19,13 +19,16 @@ import cc.squirreljme.jdwp.JDWPCommand;
 import cc.squirreljme.jdwp.JDWPCommandSet;
 import cc.squirreljme.jdwp.JDWPException;
 import cc.squirreljme.jdwp.JDWPIdKind;
+import cc.squirreljme.jdwp.JDWPIdSizeUnknownException;
 import cc.squirreljme.jdwp.JDWPIdSizes;
 import cc.squirreljme.jdwp.JDWPPacket;
 import cc.squirreljme.jdwp.JDWPSuspendPolicy;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.io.HexDumpOutputStream;
 import java.io.IOException;
+import java.util.Deque;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.function.Consumer;
 import net.multiphasicapps.classfile.ClassName;
@@ -68,6 +71,10 @@ public class DebuggerState
 	/** Handlers for events. */
 	private final Map<Integer, EventHandler> _eventHandlers =
 		new LinkedHashMap<>();
+	
+	/** Deferred packets. */
+	private final Deque<JDWPPacket> _defer =
+		new LinkedList<>();
 	
 	/** Has the virtual machine been started? */
 	private volatile boolean _hasStarted;
@@ -309,15 +316,60 @@ public class DebuggerState
 	{
 		JDWPCommLink link = this.commLink;
 		TallyTracker receiveTally = this.receiveTally;
+		Deque<JDWPPacket> defer = this._defer;
 		
 		// Perform default trackers
 		this.__defaultInit();
 		
 		// Infinite read loop, read in packets accordingly
+		boolean sizesKnown = false;
 		for (;;)
 		{
 			// Debug
 			Debugging.debugNote("Polling JDWPPacket...");
+			
+			// Do we know sizes yet?
+			if (!sizesKnown)
+			{
+				// Process any deferred packets if they are known
+				sizesKnown = link.areSizesKnown();
+				if (sizesKnown)
+				{
+					// Debug
+					Debugging.debugNote(
+						"Processing deferred packets...");
+					
+					// These packets are from a time when sizes are not known,
+					// so we need to place in all the sizes
+					JDWPIdSizes sizes = link.idSizes();
+					
+					// Read in everything so we do not keep a lock
+					JDWPPacket[] deferred;
+					synchronized (this)
+					{
+						if (defer.isEmpty())
+							deferred = null;
+						else
+							deferred = defer.toArray(
+								new JDWPPacket[defer.size()]);
+						
+						// Clear it out
+						defer.clear();
+					}
+					
+					// Process all the packets
+					if (deferred != null)
+						for (JDWPPacket copy : deferred)
+							try (JDWPPacket packet = copy)
+							{
+								// Set sizes
+								packet.setIdSizes(sizes);
+								
+								// Process it
+								this.__process(packet.resetReadPosition());
+							}
+				}
+			}
 			
 			// Poll next packet
 			try (JDWPPacket packet = link.poll())
@@ -341,14 +393,12 @@ public class DebuggerState
 				// Tally up!
 				receiveTally.increment();
 				
-				// Handle packet
-				if (packet.isReply())
-					this.__processReply(packet);
-				else
-					this.__processRequest(packet);
+				// Perform processing on it
+				this.__process(packet);
 			}
 			catch (JDWPException __e)
 			{
+				// Print error to the output
 				__e.printStackTrace(System.err);
 				
 				// Stop if shutdown
@@ -412,7 +462,8 @@ public class DebuggerState
 		}
 		
 		// Debug
-		Debugging.debugNote("DEBUGGER -> %s", __packet);
+		Debugging.debugNote("DEBUGGER -> %s (%x)",
+			__packet, System.identityHashCode(__packet));
 		
 		// Send over the link
 		this.commLink.send(__packet);
@@ -590,7 +641,12 @@ public class DebuggerState
 						sizes[i] = __reply.readInt();
 					
 					// Initialize sizes
-					this.commLink.setIdSizes(new JDWPIdSizes(sizes));
+					JDWPIdSizes result = new JDWPIdSizes(sizes);
+					this.commLink.setIdSizes(result);
+					
+					// Debug
+					Debugging.debugNote("Sizes read: %s",
+						result);
 				});
 		}
 		
@@ -622,6 +678,53 @@ public class DebuggerState
 			(__state, __reply) -> {});
 		this.eventSet(JDWPEventKind.THREAD_DEATH, JDWPSuspendPolicy.NONE,
 			(__state, __reply) -> {});
+	}
+	
+	/**
+	 * Processes the given packet, or defers it.
+	 *
+	 * @param __packet The packet to process.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/23
+	 */
+	private void __process(JDWPPacket __packet)
+		throws NullPointerException
+	{
+		if (__packet == null)
+			throw new NullPointerException("NARG");
+		
+		JDWPCommLink link = this.commLink;
+		Deque<JDWPPacket> defer = this._defer;
+				
+		// Try to process the packet
+		try
+		{
+			// Handle packet
+			if (__packet.isReply())
+				this.__processReply(__packet);
+			else
+				this.__processRequest(__packet);
+		}
+		
+		// The sizes are not known, we still want this packet, but we
+		// need to handle it at some point
+		catch (JDWPIdSizeUnknownException ignored)
+		{
+			
+			// Store for later
+			synchronized (this)
+			{
+				JDWPPacket copy = link.getPacket().copyOf(__packet)
+					.resetReadPosition();
+				
+				// Debug
+				Debugging.debugNote("Deferring %s (%08x) -> (%08x)...",
+					__packet, System.identityHashCode(__packet),
+					System.identityHashCode(copy));
+				
+				defer.addLast(copy);
+			}
+		}
 	}
 	
 	/**

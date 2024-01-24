@@ -382,9 +382,9 @@ public enum EventProcessor
 			JDWPId threadId = __packet.readId(JDWPIdKind.OBJECT_ID);
 			InfoThread thread = threadStore.get(__state, threadId);
 			
-			// Alias of thread start since this gives the first initial thread
-			EventProcessor.THREAD_START.process(__state, __packet, __suspend,
-				__handler);
+			// Mark as started
+			if (thread != null)
+				thread.isStarted.set(true);
 			
 			// Set the VM as started
 			__state.setStarted();
@@ -476,7 +476,8 @@ public enum EventProcessor
 	 * @since 2024/01/19
 	 */
 	protected abstract void process(DebuggerState __state,
-		JDWPPacket __packet, JDWPSuspendPolicy __suspend, EventHandler __handler);
+		JDWPPacket __packet, JDWPSuspendPolicy __suspend,
+		EventHandler __handler);
 	
 	/**
 	 * Returns the processor for the given event.
@@ -538,8 +539,8 @@ public enum EventProcessor
 			
 			// Debug
 			Debugging.debugNote(
-				"Process event %d of type %s (suspend=%s)...",
-				requestId, processor, suspend);
+				"Process event #%d %d of type %s (suspend=%s)...",
+				seq, requestId, processor, suspend);
 			
 			// Process it
 			processor.process(__state, __packet, suspend,

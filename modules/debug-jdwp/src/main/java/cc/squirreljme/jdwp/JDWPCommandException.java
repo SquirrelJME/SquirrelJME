@@ -31,7 +31,8 @@ public class JDWPCommandException
 	{
 		super(__m);
 		
-		this.type = (__errorType == null ? JDWPErrorType.INTERNAL : __errorType);
+		this.type = (__errorType == null ? JDWPErrorType.INTERNAL :
+			__errorType);
 	}
 	
 	/**
@@ -47,7 +48,8 @@ public class JDWPCommandException
 	{
 		super(__m, __c);
 		
-		this.type = (__errorType == null ? JDWPErrorType.INTERNAL : __errorType);
+		this.type = (__errorType == null ? JDWPErrorType.INTERNAL :
+			__errorType);
 	}
 	
 	/**
@@ -77,7 +79,8 @@ public class JDWPCommandException
 	public static JDWPCommandException tossInvalidMethod(Object __obj,
 		int __methodDx, Throwable __cause)
 	{
-		return JDWPErrorType.INVALID_METHOD_ID.toss(__obj, __methodDx, __cause);
+		return JDWPErrorType.INVALID_METHOD_ID.toss(__obj, __methodDx,
+			__cause);
 	}
 	
 	/**
@@ -92,6 +95,7 @@ public class JDWPCommandException
 	public static JDWPCommandException tossInvalidField(Object __obj,
 		int __fieldDx, Throwable __cause)
 	{
-		return JDWPErrorType.INVALID_FIELD_ID.toss(__obj, __fieldDx, __cause);
+		return JDWPErrorType.INVALID_FIELD_ID.toss(__obj, __fieldDx,
+			__cause);
 	}
 }

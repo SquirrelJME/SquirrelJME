@@ -9,6 +9,9 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.IntegerArrayList;
+
 /**
  * Contains all the ID sizes for the JDWP protocol.
  *
@@ -83,5 +86,15 @@ public final class JDWPIdSizes
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		return this._sizes[__idSize];
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/01/23
+	 */
+	@Override
+	public String toString()
+	{
+		return new IntegerArrayList(this._sizes).toString();
 	}
 }

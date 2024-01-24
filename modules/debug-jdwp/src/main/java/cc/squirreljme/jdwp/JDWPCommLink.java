@@ -129,6 +129,20 @@ public final class JDWPCommLink
 	}
 	
 	/**
+	 * Are the ID sizes now known?
+	 *
+	 * @return If the sizes are known.
+	 * @since 2024/01/23
+	 */
+	public boolean areSizesKnown()
+	{
+		synchronized (this)
+		{
+			return this._idSizes != null;
+		}
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2021/03/08
 	 */
@@ -181,6 +195,20 @@ public final class JDWPCommLink
 	public JDWPPacket getPacket()
 	{
 		return this.__getPacket(true);
+	}
+	
+	/**
+	 * Returns the ID sizes of the communication link.
+	 *
+	 * @return The link's ID sizes.
+	 * @since 2024/01/23
+	 */
+	public JDWPIdSizes idSizes()
+	{
+		synchronized (this)
+		{
+			return this._idSizes;
+		}
 	}
 	
 	/**
