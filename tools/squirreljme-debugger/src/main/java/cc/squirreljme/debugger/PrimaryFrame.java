@@ -9,6 +9,11 @@
 
 package cc.squirreljme.debugger;
 
+import cc.squirreljme.jdwp.JDWPCommandSet;
+import cc.squirreljme.jdwp.JDWPCommandSetVirtualMachine;
+import cc.squirreljme.jdwp.JDWPId;
+import cc.squirreljme.jdwp.JDWPIdKind;
+import cc.squirreljme.jdwp.JDWPPacket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import java.awt.BorderLayout;
@@ -124,6 +129,7 @@ public class PrimaryFrame
 		typeItem.setMnemonic('y');
 		typeItem.setAccelerator(
 			KeyStroke.getKeyStroke(Character.valueOf('y'), metaMask));
+		typeItem.addActionListener(this::__inspectType);
 		
 		// Thread group
 		JMenuItem threadGroupItem = new JMenuItem("Thread Group");
@@ -355,6 +361,53 @@ public class PrimaryFrame
 	private void __inspectThread(ActionEvent __event)
 	{
 		this.__inspect(this.debuggerState.storedInfo.getThread());
+	}
+	
+	/**
+	 * Inspects the given type.
+	 *
+	 * @param __action Not used.
+	 * @since 2024/01/23
+	 */
+	private void __inspectType(ActionEvent __action)
+	{
+		// Get every single loaded class because this is really expected
+		DebuggerState state = this.debuggerState;
+		try (JDWPPacket out = state.request(JDWPCommandSet.VIRTUAL_MACHINE,
+			JDWPCommandSetVirtualMachine.ALL_CLASSES))
+		{
+			// Wait for response
+			state.sendThenWait(out, Utils.TIMEOUT,
+				(__state, __reply) -> {
+					// We need to store the actual classes
+					StoredInfo<InfoClass> classes =
+						this.debuggerState.storedInfo.getClasses();
+				
+					// Read in all the classes
+					int count = __reply.readInt();
+					for (int i = 0; i < count; i++)
+					{
+						// Ignore tag
+						__reply.readByte();
+						
+						// Read the type ID
+						JDWPId typeId = __reply.readId(
+							JDWPIdKind.REFERENCE_TYPE_ID);
+						
+						// Ignore signature
+						__reply.readString();
+						
+						// Ignore status
+						__reply.readInt();
+						
+						// Setup class
+						classes.get(__state, typeId);
+					}
+				});
+		}
+		
+		// Inspect
+		this.__inspect(state.storedInfo.getClasses());
 	}
 	
 	/**

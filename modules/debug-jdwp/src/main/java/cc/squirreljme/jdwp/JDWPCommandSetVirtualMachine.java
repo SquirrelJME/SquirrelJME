@@ -23,6 +23,9 @@ public enum JDWPCommandSetVirtualMachine
 	/** Class search by signature. */
 	CLASSES_BY_SIGNATURE(2),
 	
+	/** All Classes. */
+	ALL_CLASSES(3),
+	
 	/** All Threads. */
 	ALL_THREADS(4),
 	

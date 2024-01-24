@@ -22,6 +22,7 @@ import cc.squirreljme.jdwp.host.views.JDWPViewThreadGroup;
 import cc.squirreljme.jdwp.host.views.JDWPViewType;
 import java.util.LinkedList;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Virtual machine command set.
@@ -105,6 +106,23 @@ public enum JDWPHostCommandSetVirtualMachine
 		}
 	},
 	
+	/** All classes. */
+	ALL_CLASSES(JDWPCommandSetVirtualMachine.ALL_CLASSES)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/13
+		 */
+		@Override
+		public JDWPPacket execute(JDWPHostController __controller,
+			JDWPPacket __packet)
+			throws JDWPException
+		{
+			return JDWPHostCommandSetVirtualMachine.__allClasses(
+				__controller, __packet, false);
+		}
+	},
+	
 	/** All Threads. */
 	ALL_THREADS(JDWPCommandSetVirtualMachine.ALL_THREADS)
 	{
@@ -117,7 +135,8 @@ public enum JDWPHostCommandSetVirtualMachine
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			return JDWPHostCommandSetVirtualMachine.__writeInstances(__controller,
+			return JDWPHostCommandSetVirtualMachine.__writeInstances(
+				__controller,
 				__packet, __controller.viewThread(),
 				__controller.allThreads(true));
 		}
@@ -389,56 +408,8 @@ public enum JDWPHostCommandSetVirtualMachine
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			List<Object> allTypes = __controller.allTypes(false);
-			
-			// If we have zero classes then JDB will crash since it always
-			// expects at least a single class! So we need to go out of our
-			// way to find a class!
-			if (allTypes.isEmpty())
-			{
-				// Try to find a type from the first group we find
-				JDWPViewThreadGroup viewGroup = __controller.viewThreadGroup();
-				for (Object group : __controller.allThreadGroups())
-				{
-					// Do we have the object class?
-					Object type = viewGroup.findType(group,
-						"java/lang/Object");
-					if (type != null)
-					{
-						// Use this type and register it
-						allTypes.add(type);
-						__controller.getState().items.put(type);
-						
-						// We found one, so we need not try more
-						break;
-					}
-				}
-				
-				// If we did not find a class still, just say the VM is dead
-				if (allTypes.isEmpty())
-					throw JDWPErrorType.VM_DEAD.toss(null, 0);
-			}
-			
-			JDWPPacket rv = __controller.reply(
-				__packet.id(), JDWPErrorType.NO_ERROR);
-			
-			// Write down all the known classes
-			JDWPViewType viewType = __controller.viewType();
-			rv.writeInt(allTypes.size());
-			for (Object type : allTypes)
-			{
-				// The type ID
-				__controller.writeTaggedId(rv, type);
-				
-				// The signatures, the generic is ignored
-				rv.writeString(viewType.signature(type));
-				rv.writeString("");
-				
-				// All classes are considered initialized
-				rv.writeInt(JDWPHostCommandSetVirtualMachine._CLASS_INITIALIZED);
-			}
-			
-			return rv;
+			return JDWPHostCommandSetVirtualMachine.__allClasses(
+				__controller, __packet, true);
 		}
 	},
 		
@@ -485,6 +456,76 @@ public enum JDWPHostCommandSetVirtualMachine
 	public final int debuggerId()
 	{
 		return this.id;
+	}
+	
+	/**
+	 * Writes all classes.
+	 *
+	 * @param __controller The output controller.
+	 * @param __packet The packet to write to.
+	 * @param __generic Include the generic field?
+	 * @return The resultant packet.
+	 * @since 2024/01/24
+	 */
+	@NotNull
+	private static JDWPPacket __allClasses(
+		JDWPHostController __controller, JDWPPacket __packet,
+		boolean __generic)
+	{
+		List<Object> allTypes = __controller.allTypes(false);
+		
+		// If we have zero classes then JDB will crash since it always
+		// expects at least a single class! So we need to go out of our
+		// way to find a class!
+		if (allTypes.isEmpty())
+		{
+			// Try to find a type from the first group we find
+			JDWPViewThreadGroup viewGroup = __controller.viewThreadGroup();
+			for (Object group : __controller.allThreadGroups())
+			{
+				// Do we have the object class?
+				Object type = viewGroup.findType(group,
+					"java/lang/Object");
+				if (type != null)
+				{
+					// Use this type and register it
+					allTypes.add(type);
+					__controller.getState().items.put(type);
+					
+					// We found one, so we need not try more
+					break;
+				}
+			}
+			
+			// If we did not find a class still, just say the VM is dead
+			if (allTypes.isEmpty())
+				throw JDWPErrorType.VM_DEAD.toss(null, 0);
+		}
+		
+		JDWPPacket rv = __controller.reply(
+			__packet.id(), JDWPErrorType.NO_ERROR);
+		
+		// Write down all the known classes
+		JDWPViewType viewType = __controller.viewType();
+		rv.writeInt(allTypes.size());
+		for (Object type : allTypes)
+		{
+			// The type ID
+			__controller.writeTaggedId(rv, type);
+			
+			// The signatures
+			rv.writeString(viewType.signature(type));
+			
+			// There are no actual generics
+			if (__generic) 
+				rv.writeString("");
+			
+			// All classes are considered initialized
+			rv.writeInt(
+				JDWPHostCommandSetVirtualMachine._CLASS_INITIALIZED);
+		}
+		
+		return rv;
 	}
 	
 	/**

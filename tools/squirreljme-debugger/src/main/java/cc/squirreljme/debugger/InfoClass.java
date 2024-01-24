@@ -15,10 +15,12 @@ import cc.squirreljme.jdwp.JDWPCommandSet;
 import cc.squirreljme.jdwp.JDWPIdKind;
 import cc.squirreljme.jdwp.JDWPPacket;
 import cc.squirreljme.jdwp.JDWPId;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.FieldDescriptor;
 import net.multiphasicapps.classfile.MethodDescriptor;
@@ -61,6 +63,16 @@ public class InfoClass
 			this::__updateConstantPool);
 		this.methods = new KnownValue<InfoMethod[]>(InfoMethod[].class,
 			this::__updateMethods);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/01/24
+	 */
+	@Override
+	protected String internalString()
+	{
+		return this.thisName.getOrUpdate(this.internalState()).toString();
 	}
 	
 	/**
