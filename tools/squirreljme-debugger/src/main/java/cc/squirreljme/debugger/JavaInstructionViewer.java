@@ -69,4 +69,14 @@ public class JavaInstructionViewer
 	{
 		return this.instruction.mnemonic();
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/01/23
+	 */
+	@Override
+	public int mnemonicId()
+	{
+		return this.instruction.operation();
+	}
 }

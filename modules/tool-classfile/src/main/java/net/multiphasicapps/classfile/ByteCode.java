@@ -185,7 +185,7 @@ public final class ByteCode
 			
 				// Store length
 				int oplen;
-				lengths[i] = (oplen = ByteCode.__opLength(__ca, i, ollastop));
+				lengths[i] = (oplen = ByteCode.instructionLength(__ca, i, ollastop));
 			
 				/* {@squirreljme.error JC1z The operation exceeds the bounds of
 				the method byte code. (The operation pointer; The operation
@@ -1489,7 +1489,7 @@ public final class ByteCode
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/05/17
 	 */
-	private static int __opLength(byte[] __code, int __a, int[] __last)
+	public static int instructionLength(byte[] __code, int __a, int[] __last)
 		throws InvalidClassFormatException, NullPointerException
 	{
 		// Check

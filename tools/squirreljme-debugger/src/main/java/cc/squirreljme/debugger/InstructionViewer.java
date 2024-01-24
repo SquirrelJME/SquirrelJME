@@ -39,4 +39,12 @@ public interface InstructionViewer
 	 * @since 2024/01/21
 	 */
 	String mnemonic();
+	
+	/**
+	 * Returns the raw mnemonic.
+	 *
+	 * @return The raw mnemonic.
+	 * @since 2024/01/23
+	 */
+	int mnemonicId();
 }

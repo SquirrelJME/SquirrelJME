@@ -10,6 +10,11 @@
 package cc.squirreljme.debugger;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import net.multiphasicapps.classfile.ByteCode;
+import net.multiphasicapps.classfile.Instruction;
+import net.multiphasicapps.classfile.InstructionIndex;
+import net.multiphasicapps.classfile.InstructionMnemonics;
+import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.Pool;
 
 /**
@@ -67,7 +72,15 @@ public class RemoteInstructionViewer
 	@Override
 	public int length()
 	{
-		return 1;
+		try
+		{
+			return ByteCode.instructionLength(
+				this.byteCode, this.address - 8, null);
+		}
+		catch (InvalidClassFormatException ignored)
+		{
+			return 1;
+		}
 	}
 	
 	/**
@@ -77,6 +90,19 @@ public class RemoteInstructionViewer
 	@Override
 	public String mnemonic()
 	{
-		return "nop";
+		return InstructionMnemonics.toString(this.mnemonicId());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/01/23
+	 */
+	@Override
+	public int mnemonicId()
+	{
+		int base = this.byteCode[this.address] & 0xFF;
+		if (base == InstructionIndex.WIDE)
+			return (base << 8) | (this.byteCode[this.address + 1] & 0xFF);
+		return base;
 	}
 }
