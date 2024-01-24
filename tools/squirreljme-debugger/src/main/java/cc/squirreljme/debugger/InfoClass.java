@@ -192,8 +192,11 @@ public class InfoClass
 						new MethodName(__reply.readString());
 					MethodDescriptor type =
 						new MethodDescriptor(__reply.readString());
+					
+					// Read flags, 0xF means it is synthetic, but we should
+					// ignore this here
 					MethodFlags flags =
-						new MethodFlags(__reply.readInt());
+						new MethodFlags(__reply.readInt() & (~0xF0000000));
 					
 					// Setup method
 					result[i] = stored.get(__state, methodId,
