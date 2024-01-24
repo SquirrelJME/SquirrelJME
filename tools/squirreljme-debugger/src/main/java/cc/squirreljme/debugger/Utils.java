@@ -9,10 +9,13 @@
 
 package cc.squirreljme.debugger;
 
+import java.awt.Image;
 import java.awt.Window;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
+import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -154,6 +157,35 @@ public final class Utils
 		// Show it
 		dialog.setLocationRelativeTo(null);
 		dialog.setVisible(true);
+	}
+	
+	/**
+	 * Sets the icon for the window.
+	 *
+	 * @param __window The window to set the icon for.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/24
+	 */
+	public static void setIcon(Window __window)
+		throws NullPointerException
+	{
+		if (__window == null)
+			throw new NullPointerException("NARG");
+		
+		// Set icon for the application
+		try (InputStream in = PrimaryFrame.class.getResourceAsStream(
+			"icon.png"))
+		{
+			if (in != null)
+			{
+				Image icon = ImageIO.read(in);
+				
+				__window.setIconImage(icon);
+			}
+		}
+		catch (IOException ignored)
+		{
+		}
 	}
 	
 	/**

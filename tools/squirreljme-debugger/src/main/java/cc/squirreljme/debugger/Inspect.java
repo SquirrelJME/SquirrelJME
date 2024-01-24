@@ -69,6 +69,12 @@ public abstract class Inspect<I extends Info>
 		// What is being inspected?
 		this._what = new WeakReference<>(__what);
 		
+		// Title
+		this.setTitle(__what.toString());
+		
+		// Set window icon
+		Utils.setIcon(this);
+		
 		// Store state for later updates
 		this.state = __state;
 		

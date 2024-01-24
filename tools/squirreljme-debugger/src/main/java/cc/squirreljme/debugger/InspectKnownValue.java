@@ -74,10 +74,12 @@ public class InspectKnownValue
 		BiFunction<JComponent, KnownValue<?>, JComponent> updater;
 		if (__value.type == Boolean.class)
 			updater = this::__updateBoolean;
-		else if (__value.type == String.class)
-			updater = this::__updateString;
+		else if (__value.type == InfoByteCode.class)
+			updater = this::__updateByteCode;
 		else if (__value.type == InfoMethod[].class)
 			updater = this::__updateMethods;
+		else if (__value.type == String.class)
+			updater = this::__updateString;
 		else
 			updater = this::__updateUnknown;
 		
@@ -140,6 +142,55 @@ public class InspectKnownValue
 		}
 		
 		return check;
+	}
+	
+	/**
+	 * Initializes a byte code viewer.
+	 *
+	 * @param __base The base component.
+	 * @param __value The byte code value.
+	 * @return The component used to show the byte code.
+	 * @since 2024/01/24
+	 */
+	private JComponent __updateByteCode(JComponent __base,
+		KnownValue<?> __value)
+	{
+		// Need to initialize?
+		JButton button;
+		if (__base != null)
+			button = (JButton)__base;
+		else
+		{
+			button = new JButton();
+			
+			// Add handler for showing the byte code
+			button.addActionListener((__event) -> {
+				InfoByteCode byteCode = __value.get(InfoByteCode.class);
+				if (byteCode == null)
+					return;
+				
+				// Was this garbage collected?
+				InfoMethod infoMethod = byteCode.method.get();
+				if (infoMethod == null)
+					return;
+				
+				// Show dialog for the byte code
+				ShownMethodDialog dialog = new ShownMethodDialog(
+					this.owner, new RemoteMethodViewer(this.state,
+						infoMethod));
+				dialog.setLocationRelativeTo(null);
+				dialog.setVisible(true);
+			});
+		}
+		
+		// Set label value
+		if (!__value.isKnown())
+			button.setText("Unknown?");
+		else
+			button.setText("Show Bytecode");
+		
+		// Return self
+		return button;
 	}
 	
 	/**

@@ -13,32 +13,31 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Window;
 import javax.swing.JDialog;
-import javax.swing.border.Border;
 
 /**
- * Dialog for showing classes.
+ * Dialog for showing a method.
  *
- * @since 2024/01/22
+ * @since 2024/01/24
  */
-public class ShownClassDialog
+public class ShownMethodDialog
 	extends JDialog
 {
 	/**
-	 * Initializes the class viewing dialog.
+	 * Initializes the method viewing dialog.
 	 *
 	 * @param __owner The owning frame.
 	 * @param __viewer The viewer to show.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2024/01/22
+	 * @since 2024/01/24
 	 */
-	public ShownClassDialog(Window __owner, ClassViewer __viewer)
+	public ShownMethodDialog(Window __owner, MethodViewer __viewer)
 		throws NullPointerException
 	{
 		if (__owner == null || __viewer == null)
 			throw new NullPointerException("NARG");
 		
 		// Title
-		this.setTitle("Showing " + __viewer.thisName());
+		this.setTitle("Showing " + __viewer.methodNameAndType());
 		
 		// Set window icon
 		Utils.setIcon(this);
@@ -49,15 +48,9 @@ public class ShownClassDialog
 		// Border layout is cleaner
 		this.setLayout(new BorderLayout());
 		
-		// Table of contents view
-		ShownTableOfContents toc = new ShownTableOfContents();
-		
 		// Add class viewer
-		ShownClass shownClass = new ShownClass(__viewer, toc);
-		this.add(shownClass, BorderLayout.CENTER);
-		
-		// Table of contents
-		this.add(toc, BorderLayout.LINE_START);
+		ShownMethod shownMethod = new ShownMethod(__viewer);
+		this.add(shownMethod, BorderLayout.CENTER);
 		
 		// Pack
 		this.pack();

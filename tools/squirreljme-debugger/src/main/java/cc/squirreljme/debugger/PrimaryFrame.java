@@ -82,17 +82,8 @@ public class PrimaryFrame
 		this.setMinimumSize(new Dimension(640, 480));
 		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		
-		// Set icon for the application
-		try (InputStream in = PrimaryFrame.class.getResourceAsStream(
-			"icon.png"))
-		{
-			Image icon = ImageIO.read(in);
-			
-			this.setIconImage(icon);
-		}
-		catch (IOException ignored)
-		{
-		}
+		// Set window icon
+		Utils.setIcon(this);
 		
 		// Insignia
 		this.setTitle("SquirrelJME Debugger");
