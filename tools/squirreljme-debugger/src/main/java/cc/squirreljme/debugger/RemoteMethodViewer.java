@@ -52,7 +52,11 @@ public class RemoteMethodViewer
 	@Override
 	public ClassName inClass()
 	{
-		return this.info.inClass.thisName();
+		InfoClass inClass = this.info.inClass.get();
+		if (inClass == null)
+			return new ClassName("GarbageCollected");
+		
+		return inClass.thisName();
 	}
 	
 	/**

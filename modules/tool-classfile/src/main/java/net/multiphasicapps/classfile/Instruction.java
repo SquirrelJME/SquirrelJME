@@ -40,6 +40,9 @@ public final class Instruction
 	/** The logical function address. */
 	protected final int logicalAddress;
 	
+	/** The length of this instruction. */
+	protected final int length;
+	
 	/** Instruction arguments. */
 	private final Object[] _args;
 	
@@ -63,11 +66,12 @@ public final class Instruction
 	 * @param __args Arguments.
 	 * @param __rawArgs Raw arguments.
 	 * @param __logicalAddr The logical instruction address.
+	 * @param __length The length of this instruction.
 	 * @since 2023/07/03
 	 */
 	private Instruction(int __address, int __op, boolean __naturalflow,
 		StackMapTableState __smtstate, InstructionJumpTargets __jumptargets,
-		Object[] __args, int[] __rawArgs, int __logicalAddr)
+		Object[] __args, int[] __rawArgs, int __logicalAddr, int __length)
 	{
 		this.address = __address;
 		this.op = __op;
@@ -77,6 +81,7 @@ public final class Instruction
 		this._args = __args;
 		this._rawArgs = __rawArgs;
 		this.logicalAddress = __logicalAddr;
+		this.length = __length;
 	}
 	
 	/**
@@ -119,6 +124,7 @@ public final class Instruction
 		this.op = op;
 		this.address = __a;
 		this.logicalAddress = __logicalAddr;
+		this.length = __af - __a;
 		
 		// Arguments for this instruction
 		int[] rawArgs;
@@ -800,6 +806,17 @@ public final class Instruction
 	}
 	
 	/**
+	 * Returns the length of this instruction.
+	 *
+	 * @return The instruction length.
+	 * @since 2024/01/23
+	 */
+	public int length()
+	{
+		return this.length;
+	}
+	
+	/**
 	 * Returns the mnemonic of this instruction.
 	 *
 	 * @return The instruction mnemonic.
@@ -1097,7 +1114,8 @@ public final class Instruction
 			if (normalizeTo >= 0)
 				rv = new Instruction(this.address, normalizeTo,
 					this.naturalflow, this.smtstate, this.jumptargets,
-					normalizeArgs, normalizeRaw, this.logicalAddress);
+					normalizeArgs, normalizeRaw, this.logicalAddress,
+					this.length);
 			else
 				rv = this;
 			this._normalized = new WeakReference<>(rv);

@@ -9,16 +9,22 @@
 
 package cc.squirreljme.debugger;
 
+import cc.squirreljme.jdwp.JDWPCapability;
 import cc.squirreljme.jdwp.JDWPCommandSetReferenceType;
 import cc.squirreljme.jdwp.JDWPCommandSet;
 import cc.squirreljme.jdwp.JDWPIdKind;
 import cc.squirreljme.jdwp.JDWPPacket;
 import cc.squirreljme.jdwp.JDWPId;
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.FieldDescriptor;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodFlags;
 import net.multiphasicapps.classfile.MethodName;
+import net.multiphasicapps.classfile.Pool;
 
 /**
  * Caches information on remote classes and otherwise.
@@ -29,7 +35,10 @@ public class InfoClass
 	extends Info
 {
 	/** The name of this class. */
-	protected final KnownValue<ClassName> thisName; 
+	protected final KnownValue<ClassName> thisName;
+	
+	/** The constant pool of this class. */
+	protected final KnownValue<Pool> constantPool;
 	
 	/** The methods of this class. */
 	protected final KnownValue<InfoMethod[]> methods;
@@ -48,6 +57,8 @@ public class InfoClass
 		
 		this.thisName = new KnownValue<ClassName>(ClassName.class,
 			this::__updateThisName);
+		this.constantPool = new KnownValue<Pool>(Pool.class,
+			this::__updateConstantPool);
 		this.methods = new KnownValue<InfoMethod[]>(InfoMethod[].class,
 			this::__updateMethods);
 	}
@@ -87,6 +98,58 @@ public class InfoClass
 	public ClassName thisName()
 	{
 		return this.thisName.getOrUpdate(this.internalState());
+	}
+	
+	/**
+	 * Updates the constant pool of the class.
+	 *
+	 * @param __state The state this is in.
+	 * @param __value The value to be updated.
+	 * @since 2024/01/23
+	 */
+	private void __updateConstantPool(DebuggerState __state,
+		KnownValue<Pool> __value)
+	{
+		// If the VM does not support this, then we cannot do anything about it
+		if (!__state.capabilities.has(JDWPCapability.CAN_GET_CONSTANT_POOL))
+		{
+			__value.set(null);
+			return;
+		}
+			
+		// Byte code will be much more intelligent if the constant pool
+		// could be obtained
+		try (JDWPPacket out = __state.request(
+			JDWPCommandSet.REFERENCE_TYPE,
+			JDWPCommandSetReferenceType.CONSTANT_POOL))
+		{
+			// Write the class ID
+			out.writeId(this.id);
+			
+			// Send it
+			__state.sendThenWait(out, Utils.TIMEOUT,
+				(__ignored, __reply) -> {
+					// Read entry count
+					int count = __reply.readInt();
+					
+					// Read in the data
+					int length = __reply.readInt();
+					byte[] data = __reply.readFully(length);
+					
+					// Decode pool
+					try (InputStream in = new ByteArrayInputStream(data);
+						 DataInputStream din = new DataInputStream(in))
+					{
+						// Run the decoder
+						__value.set(Pool.decode(din, count));
+					}
+					catch (IOException __e)
+					{
+						__e.printStackTrace();
+					}
+				}, (__ignored, __reply) -> {
+				});
+		}
 	}
 	
 	/**

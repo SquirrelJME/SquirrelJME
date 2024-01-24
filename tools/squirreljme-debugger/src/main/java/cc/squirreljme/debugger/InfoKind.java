@@ -14,6 +14,7 @@ import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodFlags;
 import net.multiphasicapps.classfile.MethodName;
+import net.multiphasicapps.classfile.Pool;
 
 /**
  * The type of information stored.
@@ -83,9 +84,12 @@ public enum InfoKind
 		protected Info seed(DebuggerState __state, JDWPId __id,
 			Object... __extra)
 		{
-			InstructionViewer[] instructions = (InstructionViewer[])__extra[0];
+			InfoMethod method = (InfoMethod)__extra[0];
+			Pool constantPool = (Pool)__extra[1];
+			byte[] byteCode = (byte[])__extra[2];
 			
-			return new InfoByteCode(__state, __id, instructions);
+			return new InfoByteCode(__state, __id,
+				method, constantPool, byteCode);
 		}
 	},
 	

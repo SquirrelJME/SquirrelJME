@@ -25,6 +25,14 @@ public interface InstructionViewer
 	int address();
 	
 	/**
+	 * Returns the length of the instruction.
+	 *
+	 * @return The instruction length.
+	 * @since 2024/01/23
+	 */
+	int length();
+	
+	/**
 	 * Returns the mnemonic of this instruction.
 	 *
 	 * @return The instruction mnemonic.

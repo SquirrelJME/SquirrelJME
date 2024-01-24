@@ -19,6 +19,8 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodFlags;
@@ -43,7 +45,7 @@ public class InfoMethod
 	protected final MethodDescriptor type;
 	
 	/** The class this is in. */
-	protected final InfoClass inClass;
+	protected final Reference<InfoClass> inClass;
 	
 	/** The byte code of this method. */
 	protected final KnownValue<InfoByteCode> byteCode;
@@ -65,7 +67,7 @@ public class InfoMethod
 	{
 		super(__state, __id, InfoKind.METHOD);
 		
-		this.inClass = __inClass;
+		this.inClass = new WeakReference<>(__inClass);
 		this.name = __name;
 		this.type = __type;
 		this.flags = __flags;
@@ -108,47 +110,17 @@ public class InfoMethod
 			return;
 		}
 		
+		// If the class was garbage collected we cannot do much here
+		InfoClass inClass = this.inClass.get();
+		if (inClass == null)
+		{
+			__value.set(null);
+			return;
+		}
+		
 		// Byte code will be much more intelligent if the constant pool
 		// could be obtained
-		Pool[] constantPool = new Pool[]{null};
-		if (__state.capabilities.has(JDWPCapability.CAN_GET_CONSTANT_POOL))
-			try (JDWPPacket out = __state.request(
-				JDWPCommandSet.REFERENCE_TYPE,
-				JDWPCommandSetReferenceType.CONSTANT_POOL))
-			{
-				// Write the class ID
-				out.writeId(this.inClass.id);
-				
-				// Send it
-				__state.sendThenWait(out, Utils.TIMEOUT,
-					(__ignored, __reply) -> {
-						// Read entry count
-						int count = __reply.readInt();
-						
-						// Read in the data
-						int length = __reply.readInt();
-						byte[] data = __reply.readFully(length);
-						
-						// Decode pool
-						try (InputStream in = new ByteArrayInputStream(data);
-							 DataInputStream din = new DataInputStream(in))
-						{
-							// Run the decoder
-							Pool decoded = Pool.decode(din, count);
-							
-							// Store
-							synchronized (constantPool)
-							{
-								constantPool[0] = decoded;
-							}
-						}
-						catch (IOException __e)
-						{
-							__e.printStackTrace();
-						}
-					}, (__ignored, __reply) -> {
-					});
-			}
+		Pool constantPool = inClass.constantPool.getOrUpdate(__state);
 		
 		// Request byte code from the method
 		try (JDWPPacket out = __state.request(
@@ -156,13 +128,23 @@ public class InfoMethod
 			JDWPCommandSetMethod.BYTE_CODES))
 		{
 			// Write the class and method IDs
-			out.writeId(this.inClass.id);
+			out.writeId(inClass.id);
 			out.writeId(this.id);
 			
 			// Send it
 			__state.sendThenWait(out, Utils.TIMEOUT,
 				(__ignored, __reply) -> {
-					__value.set(null);
+					// Get byte code storage
+					StoredInfo<InfoByteCode> stored =
+						__state.storedInfo.getByteCodes();
+					
+					// Read length and the byte code data
+					int length = __reply.readInt();
+					byte[] data = __reply.readFully(length);
+					
+					// Read in the byte code data
+					__value.set(stored.get(__state, this.id,
+						this, constantPool, data));
 				}, (__ignored, __reply) -> {
 				});
 		}

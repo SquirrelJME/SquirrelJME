@@ -52,6 +52,16 @@ public class JavaInstructionViewer
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2024/01/23
+	 */
+	@Override
+	public int length()
+	{
+		return this.instruction.length();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2024/01/21
 	 */
 	@Override
