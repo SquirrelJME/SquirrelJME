@@ -176,7 +176,7 @@ public class InspectKnownValue
 				
 				// Show dialog for the byte code
 				ShownMethodDialog dialog = new ShownMethodDialog(
-					this.owner, new RemoteMethodViewer(this.state,
+					this.owner, this.state, new RemoteMethodViewer(this.state,
 						infoMethod));
 				dialog.setLocationRelativeTo(null);
 				dialog.setVisible(true);

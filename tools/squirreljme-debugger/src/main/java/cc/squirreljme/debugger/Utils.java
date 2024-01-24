@@ -9,17 +9,21 @@
 
 package cc.squirreljme.debugger;
 
+import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import java.awt.Image;
 import java.awt.Window;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JWindow;
+import org.freedesktop.tango.TangoIconLoader;
 
 /**
  * Utilities.
@@ -216,6 +220,34 @@ public final class Utils
 			message = "Could not emit trace, check stderr.";
 		}
 		return message;
+	}
+	
+	/**
+	 * Gets an icon from the Tango theme.
+	 *
+	 * @param __name The name of the icon to get.
+	 * @return The resultant icon data.
+	 * @since 2024/01/24
+	 */
+	public static ImageIcon tangoIcon(String __name)
+		throws NullPointerException
+	{
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		// Set icon for the toolbar item
+		try (InputStream in = TangoIconLoader.loadIcon(16, __name))
+		{
+			if (in != null)
+				return new ImageIcon(StreamUtils.readAll(in));
+		}
+		catch (IOException __ignored)
+		{
+		}
+		
+		// Blank nothingness
+		return new ImageIcon(new BufferedImage(16, 16,
+			BufferedImage.TYPE_INT_ARGB));
 	}
 	
 	/**

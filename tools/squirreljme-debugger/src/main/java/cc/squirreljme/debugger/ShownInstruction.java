@@ -11,7 +11,7 @@ package cc.squirreljme.debugger;
 
 import java.awt.FlowLayout;
 import java.awt.Font;
-import javax.swing.JLabel;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -28,26 +28,34 @@ public class ShownInstruction
 	/** The instruction viewer. */
 	protected final InstructionViewer viewer;
 	
+	/** Breakpoint button. */
+	protected final JButton breakpoint;
+	
 	/** The address of this instruction. */
 	protected final JTextField address;
 	
 	/** The label which describes this. */
 	protected final JTextField description;
 	
+	/** The optional debugger state. */
+	protected final DebuggerState state;
+	
 	/**
 	 * Initializes the instruction line.
 	 *
+	 * @param __state The optional state for tracking.
 	 * @param __viewer The viewer to use.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/21
 	 */
-	public ShownInstruction(InstructionViewer __viewer)
+	public ShownInstruction(DebuggerState __state, InstructionViewer __viewer)
 		throws NullPointerException
 	{
 		if (__viewer == null)
 			throw new NullPointerException("NARG");
 		
 		// Store for later usage
+		this.state = __state;
 		this.viewer = __viewer;
 		
 		// Reduce border size
@@ -58,6 +66,28 @@ public class ShownInstruction
 		layout.setHgap(4);
 		layout.setVgap(0);
 		this.setLayout(layout);
+		
+		// If there is no state we cannot show the breakpoint button
+		if (__state == null)
+			this.breakpoint = null;
+		
+		// Show the breakpoint button
+		else
+		{
+			// Setup button
+			JButton breakpoint = new JButton();
+			this.breakpoint = breakpoint;
+			
+			// Remove everything that makes it look like a button
+			breakpoint.setBorder(new EmptyBorder(
+				0, 0, 0, 0));
+			breakpoint.setBorderPainted(false);
+			breakpoint.setContentAreaFilled(false);
+			breakpoint.setIcon(Utils.tangoIcon("-"));
+			
+			// Add in the button
+			this.add(breakpoint);
+		}
 		
 		// Setup address
 		JTextField address = new JTextField();

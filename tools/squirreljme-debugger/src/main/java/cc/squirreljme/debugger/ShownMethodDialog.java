@@ -26,11 +26,13 @@ public class ShownMethodDialog
 	 * Initializes the method viewing dialog.
 	 *
 	 * @param __owner The owning frame.
+	 * @param __state The optional debug state.
 	 * @param __viewer The viewer to show.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/24
 	 */
-	public ShownMethodDialog(Window __owner, MethodViewer __viewer)
+	public ShownMethodDialog(Window __owner, DebuggerState __state,
+		MethodViewer __viewer)
 		throws NullPointerException
 	{
 		if (__owner == null || __viewer == null)
@@ -49,7 +51,7 @@ public class ShownMethodDialog
 		this.setLayout(new BorderLayout());
 		
 		// Add class viewer
-		ShownMethod shownMethod = new ShownMethod(__viewer);
+		ShownMethod shownMethod = new ShownMethod(__state, __viewer);
 		this.add(shownMethod, BorderLayout.CENTER);
 		
 		// Pack

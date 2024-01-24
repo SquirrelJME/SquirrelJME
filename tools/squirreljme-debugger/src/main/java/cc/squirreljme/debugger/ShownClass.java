@@ -32,6 +32,9 @@ public class ShownClass
 	/** The sequential panel view. */
 	protected final SequentialPanel seqPanel;
 	
+	/** Optional debugger state. */
+	protected final DebuggerState state;
+	
 	/** Table of contents view. */
 	protected final ShownTableOfContents toc;
 	
@@ -43,13 +46,15 @@ public class ShownClass
 	 *
 	 * @param __viewer The viewer for the class to show.
 	 * @param __toc Table of contents.
+	 * @param __state The optional debugging state.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/22
 	 */
-	public ShownClass(ClassViewer __viewer, ShownTableOfContents __toc)
+	public ShownClass(ClassViewer __viewer, ShownTableOfContents __toc,
+		DebuggerState __state)
 		throws NullPointerException
 	{
-		this(__viewer, __toc, true);
+		this(__viewer, __toc, __state, true);
 	}
 	
 	/**
@@ -57,12 +62,13 @@ public class ShownClass
 	 *
 	 * @param __viewer The viewer for the class to show.
 	 * @param __toc Table of contents, is optional.
+	 * @param __state The optional debugging state.
 	 * @param __scroll Use a scrolling area for this?
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/22
 	 */
 	public ShownClass(ClassViewer __viewer, ShownTableOfContents __toc,
-		boolean __scroll)
+		DebuggerState __state, boolean __scroll)
 		throws NullPointerException
 	{
 		if (__viewer == null)
@@ -70,6 +76,7 @@ public class ShownClass
 		
 		this.viewer = __viewer;
 		this.toc = __toc;
+		this.state = __state;
 		
 		// Use border layout for this panel since it is cleaner
 		this.setLayout(new BorderLayout());
@@ -113,14 +120,16 @@ public class ShownClass
 			// All the instructions are placed here
 			SequentialPanel seqPanel = this.seqPanel;
 			
+			// Optional debugger state
+			DebuggerState state = this.state;
+			
 			// Add everything to the grid view
 			int count = methods.length;
 			shownMethods = new ShownMethod[count];
 			for (int i = 0; i < count; i++)
 			{
 				// Initialize a shower!
-				ShownMethod shown = new ShownMethod(
-					methods[i]);
+				ShownMethod shown = new ShownMethod(state, methods[i]);
 				
 				// Show it
 				shownMethods[i] = shown;

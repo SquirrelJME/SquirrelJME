@@ -17,17 +17,14 @@ import cc.squirreljme.jdwp.JDWPPacket;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -253,7 +250,7 @@ public class PrimaryFrame
 		if (__method == null)
 			throw new NullPointerException("NARG");
 		
-		ShownMethod show = new ShownMethod(__method);
+		ShownMethod show = new ShownMethod(this.state, __method);
 		this.add(show, BorderLayout.CENTER);
 		
 		// Pack
@@ -393,7 +390,8 @@ public class PrimaryFrame
 		if (__viewer == null)
 			throw new NullPointerException("NARG");
 		
-		ShownClassDialog dialog = new ShownClassDialog(this, __viewer);
+		ShownClassDialog dialog = new ShownClassDialog(this,
+			this.state, __viewer);
 		dialog.setLocationRelativeTo(null);
 		dialog.setVisible(true);
 	}
@@ -468,15 +466,7 @@ public class PrimaryFrame
 		
 		// Help
 		button.setToolTipText(__label);
-		
-		// Set icon for the toolbar item
-		try (InputStream in = TangoIconLoader.loadIcon(16, __tango))
-		{
-			button.setIcon(new ImageIcon(StreamUtils.readAll(in)));
-		}
-		catch (IOException __ignored)
-		{
-		}
+		button.setIcon(Utils.tangoIcon(__tango));
 		
 		return button;
 	}

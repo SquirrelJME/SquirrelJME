@@ -13,7 +13,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Window;
 import javax.swing.JDialog;
-import javax.swing.border.Border;
 
 /**
  * Dialog for showing classes.
@@ -27,11 +26,13 @@ public class ShownClassDialog
 	 * Initializes the class viewing dialog.
 	 *
 	 * @param __owner The owning frame.
+	 * @param __state The optional debugger state.
 	 * @param __viewer The viewer to show.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/22
 	 */
-	public ShownClassDialog(Window __owner, ClassViewer __viewer)
+	public ShownClassDialog(Window __owner, DebuggerState __state,
+		ClassViewer __viewer)
 		throws NullPointerException
 	{
 		if (__owner == null || __viewer == null)
@@ -53,7 +54,7 @@ public class ShownClassDialog
 		ShownTableOfContents toc = new ShownTableOfContents();
 		
 		// Add class viewer
-		ShownClass shownClass = new ShownClass(__viewer, toc);
+		ShownClass shownClass = new ShownClass(__viewer, toc, __state);
 		this.add(shownClass, BorderLayout.CENTER);
 		
 		// Table of contents
