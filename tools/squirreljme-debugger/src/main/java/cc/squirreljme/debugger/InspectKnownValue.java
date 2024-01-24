@@ -10,6 +10,7 @@
 package cc.squirreljme.debugger;
 
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.Window;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -84,8 +85,12 @@ public class InspectKnownValue
 		JComponent base = updater.apply(null, __value);
 		
 		// Add item to the center of this panel
-		this.setLayout(new BorderLayout());
-		this.add(base, BorderLayout.CENTER);
+		FlowLayout layout = new FlowLayout(FlowLayout.LEADING);
+		layout.setVgap(0);
+		layout.setHgap(0);
+		layout.setAlignment(FlowLayout.LEADING);
+		this.setLayout(layout);
+		this.add(base);
 		
 		// Store for later usage and updating
 		this.base = base;

@@ -41,16 +41,17 @@ public class KeyValuePanel
 		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.gridy = 0;
 		constraints.anchor = GridBagConstraints.FIRST_LINE_START;
-		constraints.fill = GridBagConstraints.HORIZONTAL;
 		
 		// Key item
 		constraints.weightx = 0.25;
 		constraints.gridx = 0;
+		constraints.fill = GridBagConstraints.NONE;
 		this.add(__key, constraints);
 		
 		// Value item
 		constraints.weightx = 0.75;
 		constraints.gridx = 1;
+		constraints.fill = GridBagConstraints.HORIZONTAL;
 		this.add(__value, constraints);
 	}
 }

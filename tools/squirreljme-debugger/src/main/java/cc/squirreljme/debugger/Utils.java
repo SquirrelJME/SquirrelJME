@@ -133,6 +133,12 @@ public final class Utils
 				dialog = new InspectClass(__owner, __state,
 					(InfoClass)__info);
 				break;
+				
+				// Method
+			case METHOD:
+				dialog = new InspectMethod(__owner, __state,
+					(InfoMethod)__info);
+				break;
 			
 				// Thread
 			case THREAD:

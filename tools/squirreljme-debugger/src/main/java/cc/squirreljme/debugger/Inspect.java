@@ -115,8 +115,11 @@ public abstract class Inspect<I extends Info>
 		if (__desc == null || __value == null)
 			throw new NullPointerException("NARG");
 		
-		// Setup key and value
+		// Setup key
 		JLabel key = new JLabel(__desc);
+		key.setMinimumSize(new Dimension(100, 1));
+		
+		// Setup value
 		InspectKnownValue value = new InspectKnownValue(this.owner,
 			this.state, __value);
 		
@@ -130,6 +133,32 @@ public abstract class Inspect<I extends Info>
 		// Perform packing
 		this.pack();
 	}
+	
+	/**
+	 * Adds a track on the given generic value.
+	 *
+	 * @param __desc The description of the item.
+	 * @param __value The value to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/24
+	 */
+	@SuppressWarnings({"unchecked", "rawtypes"})
+	protected final void addTrack(String __desc, Object __value)
+		throws NullPointerException
+	{
+		if (__desc == null || __value == null)
+			throw new NullPointerException("NARG");
+		
+		// If a known value was passed, use that
+		if (__value instanceof KnownValue)
+			this.addTrack(__desc, (KnownValue<?>)__value);
+		
+		// Otherwise just wrap it in a known value
+		else
+			this.addTrack(__desc, new KnownValue(
+				__value.getClass(), __value));
+	}
+	
 	
 	/**
 	 * Updates the inspection.
