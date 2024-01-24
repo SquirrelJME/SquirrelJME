@@ -27,6 +27,7 @@ import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodFlags;
 import net.multiphasicapps.classfile.MethodName;
 import net.multiphasicapps.classfile.Pool;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Caches information on remote classes and otherwise.
@@ -63,6 +64,29 @@ public class InfoClass
 			this::__updateConstantPool);
 		this.methods = new KnownValue<InfoMethod[]>(InfoMethod[].class,
 			this::__updateMethods);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/01/24
+	 */
+	@Override
+	public int compareTo(@NotNull Info __o)
+	{
+		// Wrong class?
+		if (!(__o instanceof InfoClass))
+			return super.compareTo(__o);
+		
+		String a = Objects.toString(
+			this.thisName.getOrDefault(null), "a");
+		String b = Objects.toString(((InfoClass)__o).thisName
+			.getOrDefault(null), "b");
+		
+		int rv = a.compareTo(b);
+		if (rv != 0)
+			return rv;
+		
+		return super.compareTo(__o);
 	}
 	
 	/**
