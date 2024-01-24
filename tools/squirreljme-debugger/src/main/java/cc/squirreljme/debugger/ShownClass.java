@@ -10,13 +10,8 @@
 package cc.squirreljme.debugger;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import net.multiphasicapps.classfile.ClassName;
 
@@ -37,6 +32,9 @@ public class ShownClass
 	/** The sequential panel view. */
 	protected final SequentialPanel seqPanel;
 	
+	/** Table of contents view. */
+	protected final ShownTableOfContents toc;
+	
 	/** The methods to show. */
 	private volatile ShownMethod[] _shownMethods;
 	
@@ -44,30 +42,34 @@ public class ShownClass
 	 * Initializes the class viewer.
 	 *
 	 * @param __viewer The viewer for the class to show.
+	 * @param __toc Table of contents.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/22
 	 */
-	public ShownClass(ClassViewer __viewer)
+	public ShownClass(ClassViewer __viewer, ShownTableOfContents __toc)
 		throws NullPointerException
 	{
-		this(__viewer, true);
+		this(__viewer, __toc, true);
 	}
 	
 	/**
 	 * Initializes the class viewer.
 	 *
 	 * @param __viewer The viewer for the class to show.
+	 * @param __toc Table of contents, is optional.
 	 * @param __scroll Use a scrolling area for this?
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/22
 	 */
-	public ShownClass(ClassViewer __viewer, boolean __scroll)
+	public ShownClass(ClassViewer __viewer, ShownTableOfContents __toc,
+		boolean __scroll)
 		throws NullPointerException
 	{
 		if (__viewer == null)
 			throw new NullPointerException("NARG");
 		
 		this.viewer = __viewer;
+		this.toc = __toc;
 		
 		// Use border layout for this panel since it is cleaner
 		this.setLayout(new BorderLayout());

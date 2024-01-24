@@ -67,6 +67,11 @@ public class SequentialPanel
 				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 			
+			// Scrolling is so horrendously slow...
+			scroll.getVerticalScrollBar().setUnitIncrement(
+				scroll.getVerticalScrollBar().getUnitIncrement() * 8);
+			scroll.setWheelScrollingEnabled(true);
+			
 			// We want to view the scroll
 			this.viewPanel = scroll;
 		}

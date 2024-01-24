@@ -42,8 +42,15 @@ public class ShownClassDialog
 		// Border layout is cleaner
 		this.setLayout(new BorderLayout());
 		
+		// Table of contents view
+		ShownTableOfContents toc = new ShownTableOfContents();
+		
 		// Add class viewer
-		this.add(new ShownClass(__viewer), BorderLayout.CENTER);
+		ShownClass shownClass = new ShownClass(__viewer, toc);
+		this.add(shownClass, BorderLayout.CENTER);
+		
+		// Table of contents
+		this.add(toc, BorderLayout.LINE_START);
 		
 		// Pack
 		this.pack();
