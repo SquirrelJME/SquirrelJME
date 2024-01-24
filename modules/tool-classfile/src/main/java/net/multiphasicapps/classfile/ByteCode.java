@@ -651,7 +651,17 @@ public final class ByteCode
 	 */
 	public byte[] rawByteCode()
 	{
-		return this._rawByteCode.clone();
+		byte[] rawCode = this._rawByteCode;
+		int rawLen = rawCode.length;
+		
+		// It is the actual code attribute, so it needs to be stripped
+		int len = Math.min(rawLen - ByteCode._CODE_OFFSET,
+			this.codelen);
+		byte[] result = new byte[len];
+		System.arraycopy(rawCode, ByteCode._CODE_OFFSET,
+			result, 0, len);
+		
+		return result;
 	}
 	
 	/**
