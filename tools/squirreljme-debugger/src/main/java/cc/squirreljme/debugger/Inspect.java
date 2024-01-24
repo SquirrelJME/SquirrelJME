@@ -171,7 +171,11 @@ public abstract class Inspect<I extends Info>
 		this.updateInternal();
 		
 		// Update title of what we are looking at
-		this.setTitle(this._what.toString());
+		I what = this.what();
+		if (what == null)
+			this.setTitle("Garbage Collected");
+		else
+			this.setTitle(what.toString());
 		
 		// Update all knowns
 		InspectKnownValue[] update;
