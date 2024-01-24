@@ -9,11 +9,11 @@
 
 package cc.squirreljme.debugger;
 
-import cc.squirreljme.jdwp.EventKind;
+import cc.squirreljme.jdwp.JDWPEventKind;
 import cc.squirreljme.jdwp.JDWPIdKind;
 import cc.squirreljme.jdwp.JDWPPacket;
 import cc.squirreljme.jdwp.JDWPId;
-import cc.squirreljme.jdwp.SuspendPolicy;
+import cc.squirreljme.jdwp.JDWPSuspendPolicy;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.EnumTypeMap;
 import java.util.Map;
@@ -26,7 +26,7 @@ import java.util.Map;
 public enum EventProcessor
 {
 	/** Event. */
-	SINGLE_STEP(EventKind.SINGLE_STEP)
+	SINGLE_STEP(JDWPEventKind.SINGLE_STEP)
 	{
 		/**
 		 * {@inheritDoc}
@@ -35,14 +35,14 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
 	},
 	
 	/** Event. */
-	BREAKPOINT(EventKind.BREAKPOINT)
+	BREAKPOINT(JDWPEventKind.BREAKPOINT)
 	{
 		/**
 		 * {@inheritDoc}
@@ -51,14 +51,14 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
 	},
 	
 	/** Event. */
-	FRAME_POP(EventKind.FRAME_POP)
+	FRAME_POP(JDWPEventKind.FRAME_POP)
 	{
 		/**
 		 * {@inheritDoc}
@@ -67,14 +67,14 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
 	},
 	
 	/** Event. */
-	EXCEPTION(EventKind.EXCEPTION)
+	EXCEPTION(JDWPEventKind.EXCEPTION)
 	{
 		/**
 		 * {@inheritDoc}
@@ -83,14 +83,14 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
 	},
 	
 	/** Event. */
-	USER_DEFINED(EventKind.USER_DEFINED)
+	USER_DEFINED(JDWPEventKind.USER_DEFINED)
 	{
 		/**
 		 * {@inheritDoc}
@@ -99,14 +99,14 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
 	},
 	
 	/** Event. */
-	THREAD_START(EventKind.THREAD_START)
+	THREAD_START(JDWPEventKind.THREAD_START)
 	{
 		/**
 		 * {@inheritDoc}
@@ -115,7 +115,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			StoredInfo<InfoThread> threadStore =
 				__state.storedInfo.getThread();
@@ -131,7 +131,7 @@ public enum EventProcessor
 	},
 	
 	/** Event. */
-	THREAD_DEATH(EventKind.THREAD_DEATH)
+	THREAD_DEATH(JDWPEventKind.THREAD_DEATH)
 	{
 		/**
 		 * {@inheritDoc}
@@ -140,7 +140,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			StoredInfo<InfoThread> threadStore =
 				__state.storedInfo.getThread();
@@ -156,7 +156,7 @@ public enum EventProcessor
 	},
 	
 	/** Event. */
-	CLASS_PREPARE(EventKind.CLASS_PREPARE)
+	CLASS_PREPARE(JDWPEventKind.CLASS_PREPARE)
 	{
 		/**
 		 * {@inheritDoc}
@@ -165,14 +165,14 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
 	},
 	
 	/** Event. */
-	CLASS_UNLOAD(EventKind.CLASS_UNLOAD)
+	CLASS_UNLOAD(JDWPEventKind.CLASS_UNLOAD)
 	{
 		/**
 		 * {@inheritDoc}
@@ -181,14 +181,14 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
 	},
 	
 	/** Event. */
-	CLASS_LOAD(EventKind.CLASS_LOAD)
+	CLASS_LOAD(JDWPEventKind.CLASS_LOAD)
 	{
 		/**
 		 * {@inheritDoc}
@@ -197,14 +197,14 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
 	},
 	
 	/** Event. */
-	FIELD_ACCESS(EventKind.FIELD_ACCESS)
+	FIELD_ACCESS(JDWPEventKind.FIELD_ACCESS)
 	{
 		/**
 		 * {@inheritDoc}
@@ -213,14 +213,14 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
 	},
 	
 	/** Event. */
-	FIELD_MODIFICATION(EventKind.FIELD_MODIFICATION)
+	FIELD_MODIFICATION(JDWPEventKind.FIELD_MODIFICATION)
 	{
 		/**
 		 * {@inheritDoc}
@@ -229,14 +229,14 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
 	},
 	
 	/** Event. */
-	EXCEPTION_CATCH(EventKind.EXCEPTION_CATCH)
+	EXCEPTION_CATCH(JDWPEventKind.EXCEPTION_CATCH)
 	{
 		/**
 		 * {@inheritDoc}
@@ -245,14 +245,14 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
 	},
 	
 	/** Event. */
-	METHOD_ENTRY(EventKind.METHOD_ENTRY)
+	METHOD_ENTRY(JDWPEventKind.METHOD_ENTRY)
 	{
 		/**
 		 * {@inheritDoc}
@@ -261,14 +261,14 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
 	},
 	
 	/** Event. */
-	METHOD_EXIT(EventKind.METHOD_EXIT)
+	METHOD_EXIT(JDWPEventKind.METHOD_EXIT)
 	{
 		/**
 		 * {@inheritDoc}
@@ -277,14 +277,14 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
 	},
 	
 	/** Event. */
-	METHOD_EXIT_WITH_RETURN_VALUE(EventKind.METHOD_EXIT_WITH_RETURN_VALUE)
+	METHOD_EXIT_WITH_RETURN_VALUE(JDWPEventKind.METHOD_EXIT_WITH_RETURN_VALUE)
 	{
 		/**
 		 * {@inheritDoc}
@@ -293,14 +293,14 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
 	},
 	
 	/** Event. */
-	MONITOR_CONTENDED_ENTER(EventKind.MONITOR_CONTENDED_ENTER)
+	MONITOR_CONTENDED_ENTER(JDWPEventKind.MONITOR_CONTENDED_ENTER)
 	{
 		/**
 		 * {@inheritDoc}
@@ -309,14 +309,14 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
 	},
 	
 	/** Event. */
-	MONITOR_CONTENDED_EXIT(EventKind.MONITOR_CONTENDED_EXIT)
+	MONITOR_CONTENDED_EXIT(JDWPEventKind.MONITOR_CONTENDED_EXIT)
 	{
 		/**
 		 * {@inheritDoc}
@@ -325,14 +325,14 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
 	},
 	
 	/** Event. */
-	MONITOR_WAIT(EventKind.MONITOR_WAIT)
+	MONITOR_WAIT(JDWPEventKind.MONITOR_WAIT)
 	{
 		/**
 		 * {@inheritDoc}
@@ -341,14 +341,14 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
 	},
 	
 	/** Event. */
-	MONITOR_WAITED(EventKind.MONITOR_WAITED)
+	MONITOR_WAITED(JDWPEventKind.MONITOR_WAITED)
 	{
 		/**
 		 * {@inheritDoc}
@@ -357,14 +357,14 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
 	},
 	
 	/** Event. */
-	VM_START(EventKind.VM_START)
+	VM_START(JDWPEventKind.VM_START)
 	{
 		/**
 		 * {@inheritDoc}
@@ -373,7 +373,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			StoredInfo<InfoThread> threadStore =
 				__state.storedInfo.getThread();
@@ -392,15 +392,15 @@ public enum EventProcessor
 			// If the VM was started in the suspend state then this would be
 			// known accordingly... so we need to resume the VM since we are
 			// connected to it
-			if (__suspend == SuspendPolicy.EVENT_THREAD)
+			if (__suspend == JDWPSuspendPolicy.EVENT_THREAD)
 				__state.threadResume(thread);
-			else if (__suspend == SuspendPolicy.ALL)
+			else if (__suspend == JDWPSuspendPolicy.ALL)
 				__state.threadResumeAll();
 		}
 	},
 	
 	/** Event. */
-	VM_DEATH(EventKind.VM_DEATH)
+	VM_DEATH(JDWPEventKind.VM_DEATH)
 	{
 		/**
 		 * {@inheritDoc}
@@ -409,14 +409,14 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
 	},
 	
 	/** Event. */
-	UNCONDITIONAL_BREAKPOINT(EventKind.UNCONDITIONAL_BREAKPOINT)
+	UNCONDITIONAL_BREAKPOINT(JDWPEventKind.UNCONDITIONAL_BREAKPOINT)
 	{
 		/**
 		 * {@inheritDoc}
@@ -425,7 +425,7 @@ public enum EventProcessor
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
-			SuspendPolicy __suspend, EventHandler __handler)
+			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			throw Debugging.todo();
 		}
@@ -435,15 +435,15 @@ public enum EventProcessor
 	;
 	
 	/** The mapping of event handlers. */
-	private static final Map<EventKind, EventProcessor> _EVENT_MAP;
+	private static final Map<JDWPEventKind, EventProcessor> _EVENT_MAP;
 	
 	/** The kind of event this is. */
-	public final EventKind kind;
+	public final JDWPEventKind kind;
 	
 	static
 	{
-		Map<EventKind, EventProcessor> map = new EnumTypeMap<>(
-			EventKind.class, EventKind.values());
+		Map<JDWPEventKind, EventProcessor> map = new EnumTypeMap<>(
+			JDWPEventKind.class, JDWPEventKind.values());
 		for (EventProcessor processor : EventProcessor.values())
 			map.put(processor.kind, processor);
 			
@@ -457,7 +457,7 @@ public enum EventProcessor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/19
 	 */
-	EventProcessor(EventKind __kind)
+	EventProcessor(JDWPEventKind __kind)
 		throws NullPointerException
 	{
 		if (__kind == null)
@@ -476,7 +476,7 @@ public enum EventProcessor
 	 * @since 2024/01/19
 	 */
 	protected abstract void process(DebuggerState __state,
-		JDWPPacket __packet, SuspendPolicy __suspend, EventHandler __handler);
+		JDWPPacket __packet, JDWPSuspendPolicy __suspend, EventHandler __handler);
 	
 	/**
 	 * Returns the processor for the given event.
@@ -486,7 +486,7 @@ public enum EventProcessor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/19
 	 */
-	public static EventProcessor of(EventKind __kind)
+	public static EventProcessor of(JDWPEventKind __kind)
 		throws NullPointerException
 	{
 		if (__kind == null)
@@ -514,7 +514,7 @@ public enum EventProcessor
 			return;
 		
 		// Read the suspension policy
-		SuspendPolicy suspend = SuspendPolicy.of(__packet.readByte());
+		JDWPSuspendPolicy suspend = JDWPSuspendPolicy.of(__packet.readByte());
 		
 		// Process all events
 		int numEvents = __packet.readInt();
@@ -522,7 +522,7 @@ public enum EventProcessor
 		{
 			// Is this event known?
 			int rawKind = __packet.readByte();
-			EventKind kind = EventKind.of(rawKind);
+			JDWPEventKind kind = JDWPEventKind.of(rawKind);
 			if (kind == null)
 			{
 				Debugging.debugNote("Unknown event kind: %d", rawKind);

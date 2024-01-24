@@ -11,17 +11,17 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.emulator.profiler.ProfiledFrame;
 import cc.squirreljme.emulator.vm.VMTraceFlagTracker;
-import cc.squirreljme.jdwp.EventKind;
+import cc.squirreljme.jdwp.JDWPEventKind;
 import cc.squirreljme.jdwp.JDWPClassStatus;
-import cc.squirreljme.jdwp.JDWPController;
-import cc.squirreljme.jdwp.JDWPStepTracker;
-import cc.squirreljme.jdwp.JDWPThreadSuspension;
-import cc.squirreljme.jdwp.JDWPValue;
-import cc.squirreljme.jdwp.trips.JDWPGlobalTrip;
-import cc.squirreljme.jdwp.trips.JDWPTripBreakpoint;
-import cc.squirreljme.jdwp.trips.JDWPTripClassStatus;
-import cc.squirreljme.jdwp.trips.JDWPTripField;
-import cc.squirreljme.jdwp.trips.JDWPTripThread;
+import cc.squirreljme.jdwp.host.JDWPHostController;
+import cc.squirreljme.jdwp.host.JDWPHostStepTracker;
+import cc.squirreljme.jdwp.host.JDWPHostThreadSuspension;
+import cc.squirreljme.jdwp.host.JDWPHostValue;
+import cc.squirreljme.jdwp.host.trips.JDWPGlobalTrip;
+import cc.squirreljme.jdwp.host.trips.JDWPTripBreakpoint;
+import cc.squirreljme.jdwp.host.trips.JDWPTripClassStatus;
+import cc.squirreljme.jdwp.host.trips.JDWPTripField;
+import cc.squirreljme.jdwp.host.trips.JDWPTripThread;
 import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.TypeObject;
@@ -958,7 +958,7 @@ public final class SpringThreadWorker
 		}
 			
 		// Tell the debugger that this class is verified
-		JDWPController jdwp = this.machine.taskManager().jdwpController;
+		JDWPHostController jdwp = this.machine.taskManager().jdwpController;
 		JDWPTripClassStatus classTrip = (jdwp == null ? null :
 			jdwp.trip(JDWPTripClassStatus.class,
 				JDWPGlobalTrip.CLASS_STATUS));
@@ -1472,11 +1472,11 @@ public final class SpringThreadWorker
 				__o.type().name, useeh != null);
 		
 		// Signal that we caught an exception
-		JDWPController jdwp = this.machine.tasks.jdwpController;
+		JDWPHostController jdwp = this.machine.tasks.jdwpController;
 		if (jdwp != null) {
 			// Emit signal
 			jdwp.signal(this.thread, (useeh != null ?
-					EventKind.EXCEPTION_CATCH : EventKind.EXCEPTION),
+					JDWPEventKind.EXCEPTION_CATCH : JDWPEventKind.EXCEPTION),
 				__o, useeh);
 			
 			// Check to see if we are suspended, so we can stop here if we
@@ -1718,7 +1718,7 @@ public final class SpringThreadWorker
 		ByteCode code = frame.byteCode();
 		
 		// Poll the JDWP debugger for any new debugging state
-		JDWPController jdwp = this.machine.tasks.jdwpController;
+		JDWPHostController jdwp = this.machine.tasks.jdwpController;
 		if (jdwp != null)
 		{
 			// Check for breakpoints to stop at first, because if our thread
@@ -1740,7 +1740,7 @@ public final class SpringThreadWorker
 			}
 			
 			// Check if we are doing any single stepping
-			JDWPStepTracker stepTracker = thread._stepTracker;
+			JDWPHostStepTracker stepTracker = thread._stepTracker;
 			if (stepTracker != null && stepTracker.inSteppingMode())
 			{
 				// Tick the current tracker and see if it will activate
@@ -3470,7 +3470,7 @@ public final class SpringThreadWorker
 						
 						// Debug signal
 						if (jdwp != null && ssf.isDebugWatching(true))
-							try (JDWPValue jVal = jdwp.value())
+							try (JDWPHostValue jVal = jdwp.value())
 							{
 								jVal.set(
 									DebugViewObject.__normalizeNull(value));
@@ -3504,7 +3504,7 @@ public final class SpringThreadWorker
 						// Debug signal
 						if (jdwp != null &&
 							field[0].isDebugWatching(true))
-							try (JDWPValue jVal = jdwp.value())
+							try (JDWPHostValue jVal = jdwp.value())
 							{
 								jVal.set(
 									DebugViewObject.__normalizeNull(value));
@@ -3649,13 +3649,13 @@ public final class SpringThreadWorker
 		if (thread.noDebugSuspend)
 			return;
 		
-		JDWPController jdwp = this.machine.tasks.jdwpController;
+		JDWPHostController jdwp = this.machine.tasks.jdwpController;
 		
 		// This only returns while we are suspended, but if it returns
 		// early then we were interrupted which means we need to signal
 		// that to whatever is running
 		boolean interrupted = false;
-		JDWPThreadSuspension suspension = thread.debuggerSuspension;
+		JDWPHostThreadSuspension suspension = thread.debuggerSuspension;
 		while (suspension.await(jdwp, thread))
 		{
 			interrupted = true;
@@ -3906,11 +3906,11 @@ public final class SpringThreadWorker
 		
 		// Send signal after we enter to indicate that we just went into
 		// a method
-		JDWPController jdwp = this.machine.tasks.jdwpController;
+		JDWPHostController jdwp = this.machine.tasks.jdwpController;
 		if (jdwp != null)
 		{
 			// Signal that we went into a method
-			jdwp.signal(this.thread, EventKind.METHOD_ENTRY);
+			jdwp.signal(this.thread, JDWPEventKind.METHOD_ENTRY);
 			
 			// Debugger may have stopped here
 			this.__debugSuspension();
@@ -4026,14 +4026,14 @@ public final class SpringThreadWorker
 			throw new NullPointerException("NARG");
 		
 		// Indicate exit with return value
-		JDWPController jdwp = this.machine.tasks.jdwpController;
+		JDWPHostController jdwp = this.machine.tasks.jdwpController;
 		if (jdwp != null)
 		{
 			// Signal that method exited
 			if (__value == null)
-				jdwp.signal(__thread, EventKind.METHOD_EXIT);
+				jdwp.signal(__thread, JDWPEventKind.METHOD_EXIT);
 			else
-				jdwp.signal(__thread, EventKind.METHOD_EXIT_WITH_RETURN_VALUE,
+				jdwp.signal(__thread, JDWPEventKind.METHOD_EXIT_WITH_RETURN_VALUE,
 					__value);
 			
 			// Debugger may have stopped here

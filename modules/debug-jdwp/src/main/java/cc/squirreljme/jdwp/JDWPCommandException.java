@@ -18,7 +18,7 @@ public class JDWPCommandException
 	extends JDWPException
 {
 	/** The type of error this is. */
-	public final ErrorType type;
+	public final JDWPErrorType type;
 	
 	/**
 	 * Initializes the exception.
@@ -27,11 +27,11 @@ public class JDWPCommandException
 	 * @param __m The message for the error.
 	 * @since 2021/04/11
 	 */
-	public JDWPCommandException(ErrorType __errorType, String __m)
+	public JDWPCommandException(JDWPErrorType __errorType, String __m)
 	{
 		super(__m);
 		
-		this.type = (__errorType == null ? ErrorType.INTERNAL : __errorType);
+		this.type = (__errorType == null ? JDWPErrorType.INTERNAL : __errorType);
 	}
 	
 	/**
@@ -42,12 +42,12 @@ public class JDWPCommandException
 	 * @param __c The cause.
 	 * @since 2021/04/15
 	 */
-	public JDWPCommandException(ErrorType __errorType, String __m,
+	public JDWPCommandException(JDWPErrorType __errorType, String __m,
 		Throwable __c)
 	{
 		super(__m, __c);
 		
-		this.type = (__errorType == null ? ErrorType.INTERNAL : __errorType);
+		this.type = (__errorType == null ? JDWPErrorType.INTERNAL : __errorType);
 	}
 	
 	/**
@@ -61,7 +61,7 @@ public class JDWPCommandException
 	public static JDWPCommandException tossInvalidClass(Object __obj,
 		Throwable __cause)
 	{
-		return ErrorType.INVALID_CLASS.toss(__obj,
+		return JDWPErrorType.INVALID_CLASS.toss(__obj,
 			System.identityHashCode(__obj), __cause);
 	}
 	
@@ -77,7 +77,7 @@ public class JDWPCommandException
 	public static JDWPCommandException tossInvalidMethod(Object __obj,
 		int __methodDx, Throwable __cause)
 	{
-		return ErrorType.INVALID_METHOD_ID.toss(__obj, __methodDx, __cause);
+		return JDWPErrorType.INVALID_METHOD_ID.toss(__obj, __methodDx, __cause);
 	}
 	
 	/**
@@ -92,6 +92,6 @@ public class JDWPCommandException
 	public static JDWPCommandException tossInvalidField(Object __obj,
 		int __fieldDx, Throwable __cause)
 	{
-		return ErrorType.INVALID_FIELD_ID.toss(__obj, __fieldDx, __cause);
+		return JDWPErrorType.INVALID_FIELD_ID.toss(__obj, __fieldDx, __cause);
 	}
 }

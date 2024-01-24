@@ -1,3 +1,5 @@
+import cc.squirreljme.plugin.tasks.MimeDecodeResourcesTask
+
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.StandardOpenOption
@@ -51,6 +53,7 @@ dependencies
 	compileClasspath project(":modules:tac")
 	compileClasspath project(":modules:zip")
 	compileClasspath project(":modules:debug-jdwp")
+	compileClasspath project(":modules:debug-jdwp-vm-host")
 
 	// And for run-time to be able to be ran
 	runtimeClasspath project(":modules:cldc-compact")
@@ -59,7 +62,16 @@ dependencies
 	runtimeClasspath project(":modules:tac")
 	runtimeClasspath project(":modules:zip")
 	runtimeClasspath project(":modules:debug-jdwp")
+	runtimeClasspath project(":modules:debug-jdwp-vm-host")
 }
+
+tasks.register("mimeDecode", MimeDecodeResourcesTask.class,
+	"main",
+	tasks.named("processResources").get(),
+	tasks.named("clean").get())
+
+processResources.dependsOn("mimeDecode")
+jar.dependsOn("mimeDecode")
 
 // We need the native library in the JAR before we can properly use it
 // But we can compile the Java code just fine without it

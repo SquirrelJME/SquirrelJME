@@ -27,6 +27,7 @@
             <option value="$PROJECT_DIR$/modules/common-vm" />
             <option value="$PROJECT_DIR$/modules/csv" />
             <option value="$PROJECT_DIR$/modules/debug-jdwp" />
+            <option value="$PROJECT_DIR$/modules/debug-jdwp-vm-host" />
             <option value="$PROJECT_DIR$/modules/demo-hello" />
             <option value="$PROJECT_DIR$/modules/dio" />
             <option value="$PROJECT_DIR$/modules/dio-adc" />

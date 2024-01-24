@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -21,6 +22,9 @@ public final class JDWPId
 {
 	/** The ID used for this. */
 	public final long id;
+	
+	/** The kind of ID this is. */
+	public final JDWPIdKind kind;
 	
 	/**
 	 * Initializes the ID.
@@ -35,6 +39,7 @@ public final class JDWPId
 		if (__kind == null)
 			throw new NullPointerException("NARG");
 		
+		this.kind = __kind;
 		this.id = __id;
 	}
 	
@@ -45,6 +50,10 @@ public final class JDWPId
 	@Override
 	public int compareTo(@NotNull JDWPId __o)
 	{
+		int rv = this.kind.compareTo(__o.kind);
+		if (rv != 0)
+			return rv;
+		
 		long a = this.id;
 		long b = __o.id;
 		
@@ -67,7 +76,9 @@ public final class JDWPId
 		else if (!(__o instanceof JDWPId))
 			return false;
 		
-		return this.id == ((JDWPId)__o).id;
+		JDWPId other = (JDWPId)__o;
+		return this.id == other.id &&
+			this.kind == other.kind;
 	}
 	
 	/**
@@ -78,7 +89,7 @@ public final class JDWPId
 	public int hashCode()
 	{
 		long id = this.id;
-		return ((int)(id >>> 32)) | ((int)id);
+		return (((int)(id >>> 32)) | ((int)id)) ^ this.kind.hashCode();
 	}
 	
 	/**
@@ -101,6 +112,17 @@ public final class JDWPId
 	public long longValue()
 	{
 		return this.id;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/01/23
+	 */
+	@Override
+	public String toString()
+	{
+		return String.format("%s#%d",
+			this.kind, this.id);
 	}
 	
 	/**

@@ -9,19 +9,19 @@
 
 package cc.squirreljme.debugger;
 
-import cc.squirreljme.jdwp.CommLink;
-import cc.squirreljme.jdwp.CommandSetEventRequest;
-import cc.squirreljme.jdwp.CommandSetThreadReference;
-import cc.squirreljme.jdwp.CommandSetVirtualMachine;
-import cc.squirreljme.jdwp.ErrorType;
-import cc.squirreljme.jdwp.EventKind;
+import cc.squirreljme.jdwp.JDWPCommLink;
+import cc.squirreljme.jdwp.JDWPCommandSetEventRequest;
+import cc.squirreljme.jdwp.JDWPCommandSetThreadReference;
+import cc.squirreljme.jdwp.JDWPCommandSetVirtualMachine;
+import cc.squirreljme.jdwp.JDWPErrorType;
+import cc.squirreljme.jdwp.JDWPEventKind;
 import cc.squirreljme.jdwp.JDWPCommand;
 import cc.squirreljme.jdwp.JDWPCommandSet;
 import cc.squirreljme.jdwp.JDWPException;
 import cc.squirreljme.jdwp.JDWPIdKind;
+import cc.squirreljme.jdwp.JDWPIdSizes;
 import cc.squirreljme.jdwp.JDWPPacket;
-import cc.squirreljme.jdwp.JDWPId;
-import cc.squirreljme.jdwp.SuspendPolicy;
+import cc.squirreljme.jdwp.JDWPSuspendPolicy;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.io.HexDumpOutputStream;
 import java.io.IOException;
@@ -39,7 +39,7 @@ public class DebuggerState
 	implements Runnable
 {
 	/** The communication link used. */
-	protected final CommLink commLink;
+	protected final JDWPCommLink commLink;
 	
 	/** Disconnected tally. */
 	protected final TallyTracker disconnectedTally =
@@ -79,7 +79,7 @@ public class DebuggerState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/19
 	 */
-	public DebuggerState(CommLink __commLink)
+	public DebuggerState(JDWPCommLink __commLink)
 		throws NullPointerException
 	{
 		if (__commLink == null)
@@ -112,7 +112,7 @@ public class DebuggerState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/20
 	 */
-	public void eventSet(EventKind __kind, SuspendPolicy __suspend,
+	public void eventSet(JDWPEventKind __kind, JDWPSuspendPolicy __suspend,
 		EventHandler __handler)
 		throws NullPointerException
 	{
@@ -120,7 +120,7 @@ public class DebuggerState
 			throw new NullPointerException("NARG");
 		
 		try (JDWPPacket out = this.request(JDWPCommandSet.EVENT_REQUEST,
-			CommandSetEventRequest.SET))
+			JDWPCommandSetEventRequest.SET))
 		{
 			// Fill in information
 			out.writeByte(__kind.debuggerId());
@@ -177,7 +177,7 @@ public class DebuggerState
 			throw new NullPointerException("NARG");
 		
 		try (JDWPPacket packet = this.request(JDWPCommandSet.VIRTUAL_MACHINE,
-			CommandSetVirtualMachine.CLASSES_BY_SIGNATURE))
+			JDWPCommandSetVirtualMachine.CLASSES_BY_SIGNATURE))
 		{
 			// Request the class
 			packet.writeString(__className.field().toString());
@@ -243,7 +243,7 @@ public class DebuggerState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/21
 	 */
-	public JDWPPacket reply(JDWPPacket __id, ErrorType __error)
+	public JDWPPacket reply(JDWPPacket __id, JDWPErrorType __error)
 		throws NullPointerException
 	{
 		if (__id == null || __error == null)
@@ -261,7 +261,7 @@ public class DebuggerState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/21
 	 */
-	public JDWPPacket reply(int __id, ErrorType __error)
+	public JDWPPacket reply(int __id, JDWPErrorType __error)
 		throws NullPointerException
 	{
 		if (__error == null)
@@ -307,7 +307,7 @@ public class DebuggerState
 	@Override
 	public void run()
 	{
-		CommLink link = this.commLink;
+		JDWPCommLink link = this.commLink;
 		TallyTracker receiveTally = this.receiveTally;
 		
 		// Perform default trackers
@@ -315,25 +315,31 @@ public class DebuggerState
 		
 		// Infinite read loop, read in packets accordingly
 		for (;;)
+		{
+			// Debug
+			Debugging.debugNote("Polling JDWPPacket...");
+			
+			// Poll next packet
 			try (JDWPPacket packet = link.poll())
 			{
+				// Debug
+				Debugging.debugNote("DEBUGGER <- %s", packet);
+				if (packet != null)
+					try (HexDumpOutputStream dump = new HexDumpOutputStream(
+						System.err))
+					{
+						dump.write(packet.toByteArray());
+					}
+					catch (IOException ignored)
+					{
+					}
+				
 				// Only when interrupted or terminated does this stop
 				if (packet == null)
 					break;
 				
 				// Tally up!
 				receiveTally.increment();
-				
-				// Debug
-				Debugging.debugNote("DEBUGGER <- %s", packet);
-				try (HexDumpOutputStream dump = new HexDumpOutputStream(
-					System.err))
-				{
-					dump.write(packet.toByteArray());
-				}
-				catch (IOException ignored)
-				{
-				}
 				
 				// Handle packet
 				if (packet.isReply())
@@ -349,6 +355,10 @@ public class DebuggerState
 				if (link.isShutdown())
 					break;
 			}
+		}
+		
+		// Debug
+		Debugging.debugNote("JDWP Loop End...");
 		
 		// Disconnected so indicate that
 		this.disconnectedTally.increment();
@@ -531,7 +541,7 @@ public class DebuggerState
 			throw new NullPointerException("NARG");
 		
 		try (JDWPPacket out = this.request(JDWPCommandSet.THREAD_REFERENCE,
-			CommandSetThreadReference.RESUME))
+			JDWPCommandSetThreadReference.RESUME))
 		{
 			// Write the ID of the thread
 			out.writeId(__thread.id.intValue());
@@ -551,7 +561,7 @@ public class DebuggerState
 		// The all version uses the VM command set as there is no
 		// base thread to use
 		try (JDWPPacket out = this.request(JDWPCommandSet.VIRTUAL_MACHINE,
-			CommandSetVirtualMachine.RESUME))
+			JDWPCommandSetVirtualMachine.RESUME))
 		{
 			// Send it
 			this.send(out);
@@ -568,19 +578,27 @@ public class DebuggerState
 		// We need to know the sizes of variable length entries, otherwise
 		// we cannot read them at all
 		try (JDWPPacket packet = this.request(JDWPCommandSet.VIRTUAL_MACHINE,
-			CommandSetVirtualMachine.ID_SIZES))
+			JDWPCommandSetVirtualMachine.ID_SIZES))
 		{
-			this.sendThenWait(packet, Utils.IMPORTANT_TIMEOUT,
+			this.send(packet,
 				(__state, __reply) -> {
+					Debugging.debugNote("Read ID Sizes...");
 					
+					// Read all of these in
+					int[] sizes = new int[JDWPIdKind.NUM_KINDS];
+					for (int i = 0; i < sizes.length; i++)
+						sizes[i] = __reply.readInt();
+					
+					// Initialize sizes
+					this.commLink.setIdSizes(new JDWPIdSizes(sizes));
 				});
 		}
 		
 		// Version information
 		try (JDWPPacket packet = this.request(JDWPCommandSet.VIRTUAL_MACHINE,
-			CommandSetVirtualMachine.VERSION))
+			JDWPCommandSetVirtualMachine.VERSION))
 		{
-			this.sendThenWait(packet, Utils.IMPORTANT_TIMEOUT,
+			this.send(packet,
 				(__state, __reply) -> {
 					Debugging.debugNote("Description: %s",
 						__reply.readString());
@@ -600,9 +618,9 @@ public class DebuggerState
 		this.capabilities.update(this);
 		
 		// Thread events, with no particular handler
-		this.eventSet(EventKind.THREAD_START, SuspendPolicy.NONE,
+		this.eventSet(JDWPEventKind.THREAD_START, JDWPSuspendPolicy.NONE,
 			(__state, __reply) -> {});
-		this.eventSet(EventKind.THREAD_DEATH, SuspendPolicy.NONE,
+		this.eventSet(JDWPEventKind.THREAD_DEATH, JDWPSuspendPolicy.NONE,
 			(__state, __reply) -> {});
 	}
 	

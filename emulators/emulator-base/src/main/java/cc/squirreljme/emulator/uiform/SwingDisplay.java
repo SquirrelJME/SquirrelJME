@@ -9,12 +9,17 @@
 
 package cc.squirreljme.emulator.uiform;
 
+import cc.squirreljme.emulator.NativeBinding;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIDisplayCallback;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Image;
+import java.io.IOException;
+import java.io.InputStream;
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
@@ -46,6 +51,9 @@ public final class SwingDisplay
 	
 	static
 	{
+		// We need to poke native binding, so it loads our emulation backend
+		NativeBinding.loadedLibraryPath();
+		
 		try
 		{
 			// Greatly optimizes speed
@@ -67,6 +75,18 @@ public final class SwingDisplay
 		
 		// Branding!
 		frame.setTitle("SquirrelJME");
+		
+		// Set icon for the application
+		try (InputStream in = SwingDisplay.class.getResourceAsStream(
+			"icon.png"))
+		{
+			Image icon = ImageIO.read(in);
+			
+			frame.setIconImage(icon);
+		}
+		catch (IOException ignored)
+		{
+		}
 		
 		// Use a basic layout for the form
 		frame.setLayout(new BorderLayout());

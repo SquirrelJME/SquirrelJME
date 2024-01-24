@@ -13,12 +13,14 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -72,6 +74,18 @@ public class PrimaryFrame
 		// To keep it more easily workable
 		this.setMinimumSize(new Dimension(640, 480));
 		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		
+		// Set icon for the application
+		try (InputStream in = PrimaryFrame.class.getResourceAsStream(
+			"icon.png"))
+		{
+			Image icon = ImageIO.read(in);
+			
+			this.setIconImage(icon);
+		}
+		catch (IOException ignored)
+		{
+		}
 		
 		// Insignia
 		this.setTitle("SquirrelJME Debugger");

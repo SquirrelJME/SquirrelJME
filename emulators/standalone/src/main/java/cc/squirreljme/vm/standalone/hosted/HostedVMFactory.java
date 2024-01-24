@@ -15,8 +15,7 @@ import cc.squirreljme.emulator.vm.VMFactory;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.emulator.vm.VMThreadModel;
 import cc.squirreljme.emulator.vm.VirtualMachine;
-import cc.squirreljme.jdwp.JDWPFactory;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.jdwp.host.JDWPHostFactory;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.util.Map;
 
@@ -44,7 +43,7 @@ public class HostedVMFactory
 	 */
 	@Override
 	protected VirtualMachine createVM(ProfilerSnapshot __ps,
-		JDWPFactory __jdwp, VMThreadModel __threadModel,
+		JDWPHostFactory __jdwp, VMThreadModel __threadModel,
 		VMSuiteManager __suiteManager, VMClassLibrary[] __classPath,
 		String __mainClass, Map<String, String> __sysProps, String[] __args)
 		throws IllegalArgumentException, NullPointerException, VMException

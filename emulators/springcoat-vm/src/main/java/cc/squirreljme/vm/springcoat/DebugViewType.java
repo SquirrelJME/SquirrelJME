@@ -11,11 +11,10 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jdwp.JDWPCommandException;
 import cc.squirreljme.jdwp.JDWPLocalVariable;
-import cc.squirreljme.jdwp.JDWPState;
-import cc.squirreljme.jdwp.JDWPValue;
-import cc.squirreljme.jdwp.trips.JDWPTripBreakpoint;
-import cc.squirreljme.jdwp.views.JDWPViewType;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.jdwp.host.JDWPHostState;
+import cc.squirreljme.jdwp.host.JDWPHostValue;
+import cc.squirreljme.jdwp.host.trips.JDWPTripBreakpoint;
+import cc.squirreljme.jdwp.host.views.JDWPViewType;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchFieldException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchMethodException;
 import java.lang.ref.Reference;
@@ -40,7 +39,7 @@ public class DebugViewType
 	implements JDWPViewType
 {
 	/** The state of the debugger. */
-	protected final Reference<JDWPState> state;
+	protected final Reference<JDWPHostState> state;
 	
 	/**
 	 * Initializes the type viewer.
@@ -49,7 +48,7 @@ public class DebugViewType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/04/10
 	 */
-	public DebugViewType(Reference<JDWPState> __state)
+	public DebugViewType(Reference<JDWPHostState> __state)
 	{
 		if (__state == null)
 			throw new NullPointerException("NARG");
@@ -516,7 +515,7 @@ public class DebugViewType
 	 * @since 2021/04/14
 	 */
 	@Override
-	public boolean readValue(Object __which, int __index, JDWPValue __out)
+	public boolean readValue(Object __which, int __index, JDWPHostValue __out)
 	{
 		SpringClass classy = DebugViewType.__class(__which);
 		
@@ -663,7 +662,7 @@ public class DebugViewType
 	 * @return {@code true} on success.
 	 * @since 2022/09/01
 	 */
-	static boolean __readValue(JDWPValue __out, SpringFieldStorage __store,
+	static boolean __readValue(JDWPHostValue __out, SpringFieldStorage __store,
 		SpringMachine __machine)
 	{
 		Object value = __store.get();

@@ -9,7 +9,7 @@
 
 package cc.squirreljme.debugger;
 
-import cc.squirreljme.jdwp.CommandSetReferenceType;
+import cc.squirreljme.jdwp.JDWPCommandSetReferenceType;
 import cc.squirreljme.jdwp.JDWPCommandSet;
 import cc.squirreljme.jdwp.JDWPPacket;
 import cc.squirreljme.jdwp.JDWPId;
@@ -101,7 +101,7 @@ public class InfoClass
 			throw new NullPointerException("NARG");
 		
 		try (JDWPPacket out = __state.request(JDWPCommandSet.REFERENCE_TYPE,
-			CommandSetReferenceType.METHODS))
+			JDWPCommandSetReferenceType.METHODS))
 		{
 			// Write the ID
 			out.writeId(this.id.intValue());
@@ -143,7 +143,7 @@ public class InfoClass
 			throw new NullPointerException("NARG");
 		
 		try (JDWPPacket out = __state.request(JDWPCommandSet.REFERENCE_TYPE,
-			CommandSetReferenceType.SIGNATURE))
+			JDWPCommandSetReferenceType.SIGNATURE))
 		{
 			// Write the ID
 			out.writeId(this.id.intValue());

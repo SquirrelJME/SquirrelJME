@@ -9,13 +9,6 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.jdwp.views.JDWPViewHasInstance;
-import cc.squirreljme.jdwp.views.JDWPViewKind;
-import cc.squirreljme.jdwp.views.JDWPViewObject;
-import cc.squirreljme.jdwp.views.JDWPViewThread;
-import cc.squirreljme.jdwp.views.JDWPViewThreadGroup;
-import cc.squirreljme.jdwp.views.JDWPViewType;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.Closeable;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -43,11 +36,6 @@ public final class JDWPPacket
 	private static final byte _GROW_SIZE =
 		32;
 	
-	/** Attempts to instance capture. */
-	private static final JDWPViewKind[] _INSTANCE_CAPTURE =
-		new JDWPViewKind[]{JDWPViewKind.THREAD, JDWPViewKind.THREAD_GROUP,
-			JDWPViewKind.TYPE};
-	
 	/** The queue where packets will go when done. */
 	private final Reference<Deque<JDWPPacket>> _queue;
 	
@@ -69,7 +57,7 @@ public final class JDWPPacket
 	volatile int _rawErrorCode;
 	
 	/** The error code (if a reply). */
-	volatile ErrorType _errorCode;
+	volatile JDWPErrorType _errorCode;
 	
 	/** The packet data. */
 	private volatile byte[] _data;
@@ -207,7 +195,7 @@ public final class JDWPPacket
 		int flags;
 		int commandSet;
 		int command;
-		ErrorType errorCode;
+		JDWPErrorType errorCode;
 		byte[] data;
 		int length;
 		int readPos;
@@ -258,7 +246,7 @@ public final class JDWPPacket
 	 * @return The packet's error, if there is one.
 	 * @since 2024/01/22
 	 */
-	public ErrorType error()
+	public JDWPErrorType error()
 	{
 		synchronized (this)
 		{
@@ -282,7 +270,7 @@ public final class JDWPPacket
 			// Ensure this is open
 			this.__checkOpen();
 			
-			return this._errorCode != ErrorType.NO_ERROR;
+			return this._errorCode != JDWPErrorType.NO_ERROR;
 		}
 	}
 	
@@ -296,7 +284,7 @@ public final class JDWPPacket
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/21
 	 */
-	public boolean hasError(ErrorType __error)
+	public boolean hasError(JDWPErrorType __error)
 		throws NullPointerException
 	{
 		if (__error == null)
@@ -379,35 +367,6 @@ public final class JDWPPacket
 	}
 	
 	/**
-	 * Reads the given array from the packet.
-	 * 
-	 * @param __controller The controller used.
-	 * @param __nullable Can this be null?
-	 * @return The array value.
-	 * @throws JDWPException If this does not refer to a valid array.
-	 * @since 2021/04/11
-	 */
-	public final Object readArray(JDWPController __controller,
-		boolean __nullable)
-		throws JDWPException
-	{
-		Object object = this.readObject(__controller, __nullable);
-		
-		// Is this an invalid array?
-		if (__controller.viewObject().arrayLength(object) < 0)
-		{
-			if (__nullable && object == null)
-				return null;
-			
-			// Fail with invalid thread
-			throw ErrorType.INVALID_ARRAY.toss(object,
-				System.identityHashCode(object));
-		}
-		
-		return object;
-	}
-	
-	/**
 	 * Reads a single boolean from the packet
 	 * 
 	 * @return The single read value.
@@ -449,33 +408,6 @@ public final class JDWPPacket
 	}
 	
 	/**
-	 * Reads the given frame from the packet.
-	 * 
-	 * @param __controller The controller used.
-	 * @param __nullable Can this be null?
-	 * @return The frame value.
-	 * @throws JDWPException If this does not refer to a valid frame.
-	 * @since 2021/04/11
-	 */
-	public Object readFrame(JDWPController __controller, boolean __nullable)
-	{
-		int id = this.readId();
-		Object frame = __controller.state.items.get(id);
-		
-		// Is this valid?
-		if (!__controller.viewFrame().isValid(frame))
-		{
-			if (__nullable && frame == null)
-				return null;
-			
-			// Fail with invalid thread
-			throw ErrorType.INVALID_FRAME_ID.toss(frame, id);
-		}
-		
-		return frame;
-	}
-	
-	/**
 	 * Reads an identifier from the packet.
 	 * 
 	 * @return The single read value.
@@ -491,20 +423,35 @@ public final class JDWPPacket
 	}
 	
 	/**
-	 * Reads an ID of the given kind.
+	 * Reads the ID based on the kind from the packet.
 	 *
-	 * @param __kind The kind of ID to read.
-	 * @return The read ID.
+	 * @param __kind The kind of value to read.
+	 * @return The resultant ID.
+	 * @throws JDWPException If the kind is not valid or ID sizes are not yet
+	 * known.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2024/01/22
+	 * @since 2024/01/23
 	 */
-	public final JDWPId readId(JDWPIdKind __kind)
-		throws NullPointerException
+	public JDWPId readId(JDWPIdKind __kind)
+		throws JDWPException, NullPointerException
 	{
 		if (__kind == null)
 			throw new NullPointerException("NARG");
 		
-		return JDWPId.of(__kind, this.readId());
+		synchronized (this)
+		{
+			// Ensure this is open
+			this.__checkOpen();
+			
+			/* {@squirreljme.error AG0z ID Sizes not currently known.} */
+			JDWPIdSizes idSizes = this._idSizes;
+			if (idSizes == null)
+				throw new JDWPException("AG0z");
+			
+			/* Read in the variably sized entry. */
+			return JDWPId.of(__kind,
+				this.readVariable(idSizes.getSize(__kind)));
+		}
 	}
 	
 	/**
@@ -527,44 +474,6 @@ public final class JDWPPacket
 				((this.readByte() & 0xFF) << 16) |
 				((this.readByte() & 0xFF) << 8) |
 				(this.readByte() & 0xFF);
-		}
-	}
-	
-	/**
-	 * Reads a location from the packet.
-	 * 
-	 * @param __controller The controller to read from.
-	 * @return The given location.
-	 * @throws JDWPException If the location is not valid.
-	 * @since 2021/04/17
-	 */
-	public JDWPLocation readLocation(JDWPController __controller)
-		throws JDWPException
-	{
-		synchronized (this)
-		{
-			// Ensure this is open
-			this.__checkOpen();
-			
-			// This identifies classes or interfaces except we do not need
-			// this distinction, however for exception handlers locations can
-			// be 0 for anything that is not handled.
-			int tag = this.readByte();
-			if (tag == 0)
-				return JDWPLocation.BLANK;
-			
-			// Make sure the type and method are valid
-			JDWPViewType viewType = __controller.viewType();
-			Object type = this.readType(__controller, false);
-			int methodDx = this.readId();
-			if (!viewType.isValidMethod(type, methodDx))
-				throw ErrorType.INVALID_METHOD_ID.toss(type, methodDx,
-					null);
-			
-			// Build location
-			return new JDWPLocation(type, methodDx, this.readLong(),
-				viewType.methodName(type, methodDx),
-				viewType.methodSignature(type, methodDx));
 		}
 	}
 	
@@ -593,75 +502,6 @@ public final class JDWPPacket
 				((this.readByte() & 0xFF) << 8) |
 				(this.readByte() & 0xFF);
 		}
-	}
-	
-	/**
-	 * Reads the given object from the packet.
-	 * 
-	 * @param __controller The controller used.
-	 * @param __nullable Can this be null?
-	 * @return The object value.
-	 * @throws JDWPException If this does not refer to a valid object.
-	 * @since 2021/04/11
-	 */
-	public final Object readObject(JDWPController __controller,
-		boolean __nullable)
-		throws JDWPException
-	{
-		int id = this.readId();
-		Object object = __controller.state.items.get(id);
-		
-		// Is this not a valid object?
-		if (!__controller.viewObject().isValid(object))
-		{
-			// If this is a valid thread, then bounce through to the thread's
-			// instance object
-			if (__controller.viewThread().isValid(object))
-			{
-				Object alt = __controller.viewThread().instance(object);
-				if (__controller.viewObject().isValid(alt))
-				{
-					// Make sure it is registered
-					__controller.state.items.put(alt);
-					return alt;
-				}
-			}
-			
-			// If this is a thread group, try to get the representative object
-			// of it, this should be the task
-			if (__controller.viewThreadGroup().isValid(object))
-			{
-				Object alt = __controller.viewThreadGroup().instance(object);
-				if (__controller.viewObject().isValid(alt))
-				{
-					// Make sure it is registered
-					__controller.state.items.put(alt);
-					return alt;
-				}
-			}
-			
-			// If this a valid class, bounce to the class instance object
-			if (__controller.viewType().isValid(object))
-			{
-				// Double check if it is valid
-				Object alt = __controller.viewType().instance(object);
-				if (__controller.viewObject().isValid(alt))
-				{
-					// Make sure it is registered
-					__controller.state.items.put(alt);
-					return alt;
-				}
-			}
-			
-			// Not valid?
-			if (__nullable && object == null)
-				return null;
-			
-			// Fail with invalid object
-			throw ErrorType.INVALID_OBJECT.toss(object, id);
-		}
-		
-		return object;
 	}
 	
 	/**
@@ -701,152 +541,37 @@ public final class JDWPPacket
 	}
 	
 	/**
-	 * Reads the given thread from the packet.
+	 * Reads a variable width value from the packet
 	 * 
-	 * @param __controller The controller used.
-	 * @return The object value.
-	 * @throws JDWPException If this does not refer to a valid thread.
-	 * @since 2021/04/11
+	 * @param __width The width of the value.
+	 * @return The single read value.
+	 * @throws IllegalArgumentException If the width is zero or negative.
+	 * @throws JDWPException If the end of the packet was reached.
+	 * @since 2021/03/13
 	 */
-	public final Object readThread(JDWPController __controller)
-		throws JDWPException
+	public final long readVariable(int __width)
+		throws IllegalArgumentException, JDWPException
 	{
-		JDWPViewObject viewObject = __controller.viewObject();
-		JDWPViewThread viewThread = __controller.viewThread();
-		JDWPViewType viewType = __controller.viewType();
+		if (__width <= 0)
+			throw new IllegalArgumentException("NEGV");
 		
-		int id = this.readId();
-		Object thread = __controller.state.items.get(id);
+		long result = 0;
 		
-		// Is this valid?
-		if (!viewThread.isValid(thread))
+		synchronized (this)
 		{
-			// Threads may be aliased to objects, and as such if we try to
-			// read a thread that is aliased by an object we need to get
-			// the original thread back
-			// Scan through all threads and see if we can find it again
-			if (viewObject.isValid(thread))
+			// Ensure this is open
+			this.__checkOpen();
+			
+			// Read in each byte
+			for (int i = 0; i < __width; i++)
 			{
-				// Try to find the actual owning thread
-				for (Object check : __controller.__allThreads(false))
-					if (thread == viewThread.instance(check))
-					{
-						// Make sure it is registered
-						__controller.state.items.put(check);
-						return check;
-					}
-				
-				// Try to get the internal thread this represents if we were
-				// unable to find an existing thread this is owned by... since
-				// perhaps the thread terminated and no longer exists
-				Object objType = viewObject.type(thread);
-				if ("Ljava/lang/Thread;".equals(viewType.signature(objType)))
-				{
-					// Find the field for this
-					int fieldId = JDWPUtils.findFieldId(viewType, objType,
-						"_vmThread",
-						"Lcc/squirreljme/jvm/mle/brackets/VMThreadBracket;");
-					
-					// Read from this field
-					if (fieldId >= 0)
-						try (JDWPValue value = __controller.value())
-						{
-							// If this is a valid object, then use it
-							if (viewObject.readValue(thread, fieldId, value))
-								return viewThread.fromBracket(value.get());
-						}
-				}
+				// Shift up and read in
+				result <<= 8;
+				result |= (this.readByte() & 0xFF);
 			}
-			
-			// Fail with invalid thread
-			throw ErrorType.INVALID_THREAD.toss(thread, id);
 		}
 		
-		return thread;
-	}
-	
-	/**
-	 * Reads the given thread group from the packet.
-	 * 
-	 * @param __controller The controller used.
-	 * @param __nullable Can this be null?
-	 * @return The thread group.
-	 * @throws JDWPException If this does not refer to a valid thread group.
-	 * @since 2021/04/14
-	 */
-	public final Object readThreadGroup(JDWPController __controller,
-		boolean __nullable)
-		throws JDWPException
-	{
-		int id = this.readId();
-		Object group = __controller.state.items.get(id);
-		
-		// Is this valid?
-		JDWPViewThreadGroup viewThreadGroup = __controller.viewThreadGroup();
-		if (!__controller.viewThreadGroup().isValid(group))
-		{
-			// Groups may be aliased to Objects, so if this is not one then
-			// we want to check all of our thread groups to see if we can
-			// find a match accordingly
-			if (__controller.viewObject().isValid(group))
-				for (Object check : __controller.__allThreadGroups())
-					if (group == viewThreadGroup.instance(check))
-					{
-						// Make sure it is registered
-						__controller.state.items.put(check);
-						return check;
-					}
-			
-			if (__nullable && group == null)
-				return null;
-			
-			// Fail with invalid thread
-			throw ErrorType.INVALID_THREAD.toss(group, id);
-		}
-		
-		return group;
-	}
-	
-	/**
-	 * Reads the given type from the packet.
-	 * 
-	 * @param __controller The controller used.
-	 * @param __nullable Can this be null?
-	 * @return The type value.
-	 * @throws JDWPException If this does not refer to a valid type.
-	 * @since 2021/04/12
-	 */
-	public final Object readType(JDWPController __controller,
-		boolean __nullable)
-		throws JDWPException
-	{
-		int id = this.readId();
-		Object object = __controller.state.items.get(id);
-		
-		// Is this valid?
-		if (!__controller.viewType().isValid(object))
-		{
-			// We may be trying to read the type of an object, so we need to
-			// alias to that
-			if (__controller.viewObject().isValid(object))
-			{
-				Object alt = __controller.viewObject().type(object);
-				if (__controller.viewType().isValid(alt))
-				{
-					// Make it is registered
-					__controller.state.items.put(alt);
-					return alt;
-				}
-			}
-			
-			if (__nullable && object == null)
-				return null;
-			
-			// Fail with invalid thread
-			throw ErrorType.INVALID_CLASS.toss(object, id);
-		}
-		
-		return object;
+		return result;
 	}
 	
 	/**
@@ -912,7 +637,7 @@ public final class JDWPPacket
 			return String.format("JDWPPacket[id=%08x,flags=%02x,len=%d]:%s:%s",
 				this._id, flags, length,
 				((flags & JDWPPacket.FLAG_REPLY) != 0 ?
-					(this._errorCode == ErrorType.NO_ERROR ? "" :
+					(this._errorCode == JDWPErrorType.NO_ERROR ? "" :
 						String.format("[error=%s(%d)]",
 							this._errorCode, this._rawErrorCode)) :
 					String.format("[cmdSet=%s;cmd=%s]",
@@ -1033,158 +758,6 @@ public final class JDWPPacket
 	}
 	
 	/**
-	 * Writes a location into the packet.
-	 * 
-	 * @param __controller The controller used. 
-	 * @param __location The location used.
-	 * @throws JDWPException If the packet could not be written.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2021/04/25
-	 */
-	public void writeLocation(JDWPController __controller,
-		JDWPLocation __location)
-		throws JDWPException, NullPointerException
-	{
-		// If this is the blank location, then write as blank
-		if (JDWPLocation.BLANK.equals(__location))
-		{
-			this.writeByte(0);
-			return;
-		}
-		
-		// Otherwise forward
-		this.writeLocation(__controller, __location.type,
-			__location.methodDx, __location.codeDx);
-	}
-	
-	/**
-	 * Writes a location into the packet.
-	 * 
-	 * @param __controller The controller used. 
-	 * @param __class The class to write.
-	 * @param __atMethodIndex The method index.
-	 * @param __atCodeIndex The code index.
-	 * @throws JDWPException If the packet could not be written.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2021/04/11
-	 */
-	public void writeLocation(JDWPController __controller, Object __class,
-		int __atMethodIndex, long __atCodeIndex)
-		throws JDWPException, NullPointerException
-	{
-		if (__controller == null)
-			throw new NullPointerException("NARG");
-		
-		synchronized (this)
-		{
-			// Must be an open packet
-			this.__checkOpen();
-			
-			// Write class located within
-			this.writeTaggedId(__controller, __class);
-			
-			// Write the method ID and the special index (address)
-			this.writeId(__atMethodIndex);
-			
-			// Where is this located? Note that the index is a long here
-			// although such a high value should hopefully never be needed
-			// in SquirrelJME
-			this.writeLong(__atCodeIndex);
-		}
-	}
-	
-	/**
-	 * Writes the object to the output.
-	 * 
-	 * @param __controller The controller used.
-	 * @param __instance The instance of the object.
-	 * @throws JDWPException If this is not an object.
-	 * @throws NullPointerException If {@code __controller} is {@code null}.
-	 * @since 2022/09/01
-	 */
-	public void writeObject(JDWPController __controller, Object __instance)
-		throws JDWPException, NullPointerException
-	{
-		if (__controller == null)
-			throw new NullPointerException("NARG");
-		
-		synchronized (this)
-		{
-			// If this is the null object, invalidate it
-			JDWPViewObject viewObject = __controller.viewObject();
-			if (__instance != null && viewObject.isNullObject(__instance))
-				__instance = null;
-			
-			// Try to remap the object to an instance type if possible
-			if (__instance != null)
-			{
-				// Try to capture the object instance of this?
-				for (JDWPViewKind captureKind : JDWPPacket._INSTANCE_CAPTURE)
-				{
-					JDWPViewHasInstance viewInstance = __controller
-						.view(JDWPViewHasInstance.class, captureKind);
-					
-					// Can only do this if it is valid to do it
-					if (viewInstance.isValid(__instance))
-					{
-						// It is possible that there is no actual instance
-						// type yet such as with types, so only replace if it
-						// does not lead to null
-						Object potential = viewInstance.instance(__instance);
-						if (potential != null &&
-							!viewObject.isNullObject(potential))
-						{
-							// We need to store both of these
-							__controller.state.items.put(__instance);
-							__controller.state.items.put(potential);
-							
-							// Use the new instance
-							__instance = potential;
-						
-							// Stop now
-							break;
-						}
-					}
-				}
-				
-				// Not valid at all?
-				if (!viewObject.isValid(__instance) &&
-					!__controller.viewType().isValid(__instance) &&
-					!__controller.viewFrame().isValid(__instance) &&
-					!__controller.viewThread().isValid(__instance) &&
-					!__controller.viewThreadGroup().isValid(__instance))
-					throw ErrorType.INVALID_OBJECT.toss(__instance,
-						System.identityHashCode(__instance));
-			}
-			
-			// Forward to write ID
-			this.writeId(System.identityHashCode(__instance));
-			
-			// Store for later referencing, just in case
-			if (__instance != null)
-				__controller.state.items.put(__instance);
-		}
-	}
-	
-	/**
-	 * Writes a tagged object ID to the output.
-	 * 
-	 * @param __controller The controller used.
-	 * @param __object The object to write.
-	 * @throws JDWPException If it could not be written.
-	 * @since 2022/08/28
-	 */
-	public void writeTaggedId(JDWPController __controller, Object __object)
-		throws JDWPException
-	{
-		synchronized (this)
-		{
-			this.writeByte(JDWPUtils.classType(__controller, __object).id);
-			this.writeId(System.identityHashCode(__object));
-		}
-	}
-	
-	/**
 	 * Writes a long to the output.
 	 * 
 	 * @param __v The value to write.
@@ -1285,7 +858,7 @@ public final class JDWPPacket
 			this.__checkOpen();
 			
 			// Write shared header (includes header size)
-			__out.writeInt(this._length + CommLink._HEADER_SIZE);
+			__out.writeInt(this._length + JDWPCommLink._HEADER_SIZE);
 			__out.writeInt(this._id);
 			__out.writeByte(this._flags);
 			
@@ -1303,153 +876,6 @@ public final class JDWPPacket
 			// Write output data
 			if (this._length > 0)
 				__out.write(this._data, 0, this._length);
-		}
-	}
-	
-	/**
-	 * Writes a value to the output.
-	 *
-	 * @param __controller The controller used.
-	 * @param __val The value to write.
-	 * @param __context Context value which may adjust how the value is
-	 * written, this may be {@code null}.
-	 * @param __untag Untagged value?
-	 * @throws JDWPException If it failed to write.
-	 * @since 2021/04/11
-	 */
-	public void writeValue(JDWPController __controller, Object __val,
-		JDWPValueTag __context, boolean __untag)
-		throws JDWPException
-	{
-		// We really meant to write a value here
-		if (__val instanceof JDWPValue)
-		{
-			this.writeValue(__controller,
-				((JDWPValue)__val).get(), __context, __untag);
-			return;
-		}
-		
-		synchronized (this)
-		{
-			// Must be an open packet
-			this.__checkOpen();
-			
-			// Depends on the context
-			switch (__context)
-			{
-					// Void type
-				case VOID:
-					this.writeByte('V');
-					break;
-				
-					// Boolean value, may be untagged
-				case BOOLEAN:
-					if (!__untag)
-						this.writeByte('Z');
-					this.writeBoolean(((__val instanceof Boolean) ?
-						(boolean)__val :
-						((Number)__val).longValue() != 0));
-					break;
-					
-					// Byte value, may be untagged
-				case BYTE:
-					if (!__untag)
-						this.writeByte('B');
-					this.writeByte(((Number)__val).byteValue());
-					break;
-					
-					// Short value, may be untagged
-				case SHORT:
-					if (!__untag)
-						this.writeByte('S');
-					this.writeShort(((Number)__val).shortValue());
-					break;
-					
-					// Character value, may be untagged
-				case CHARACTER:
-					if (!__untag)
-						this.writeByte('C');
-					this.writeShort(((__val instanceof Character) ?
-						(char)__val :
-						((Number)__val).shortValue()));
-					break;
-					
-					// Integer value, may be untagged
-				case INTEGER:
-					if (!__untag)
-						this.writeByte('I');
-					this.writeInt(((Number)__val).intValue());
-					break;
-					
-					// Long value, may be untagged
-				case LONG:
-					if (!__untag)
-						this.writeByte('J');
-					this.writeLong(((Number)__val).longValue());
-					break;
-					
-					// Float value, may be untagged
-				case FLOAT:
-					if (!__untag)
-						this.writeByte('F');
-					this.writeInt(Float.floatToRawIntBits(
-						((Number)__val).floatValue()));
-					break;
-					
-					// Long value, may be untagged
-				case DOUBLE:
-					if (!__untag)
-						this.writeByte('D');
-					this.writeLong(Double.doubleToRawLongBits(
-						((Number)__val).doubleValue()));
-					break;
-				
-					// Objects are always tagged
-				case ARRAY:
-				case OBJECT:
-				case CLASS_OBJECT:
-				case CLASS_LOADER:
-				case THREAD:
-				case THREAD_GROUP:
-				case STRING:
-					// Write the tag
-					switch (__context)
-					{
-						case ARRAY:
-							this.writeByte('[');
-							break;
-						
-						case CLASS_OBJECT:
-							this.writeByte('c');
-							break;
-						
-						case CLASS_LOADER:
-							this.writeByte('l');
-							break;
-						
-						case THREAD:
-							this.writeByte('t');
-							break;
-						
-						case THREAD_GROUP:
-							this.writeByte('g');
-							break;
-						
-						case STRING:
-							this.writeByte('s');
-							break;
-						
-						default:
-							this.writeByte('L');
-							break;
-					}
-					
-					this.writeObject(__controller, __val);
-					break;
-				
-				default:
-					throw Debugging.oops(__context);
-			}
 		}
 	}
 	
@@ -1547,7 +973,7 @@ public final class JDWPPacket
 				int rawErrorCode = ((__header[9] & 0xFF) << 8) |
 					(__header[10] & 0xFF);
 				this._rawErrorCode = rawErrorCode;
-				this._errorCode = ErrorType.of(rawErrorCode);
+				this._errorCode = JDWPErrorType.of(rawErrorCode);
 			}
 			
 			// Non-reply

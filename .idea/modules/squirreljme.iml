@@ -286,6 +286,9 @@
       <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-debugger/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-debugger/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-debugger/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/debug-jdwp-vm-host/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/debug-jdwp-vm-host/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/debug-jdwp-vm-host/out" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

@@ -10,8 +10,8 @@
 package cc.squirreljme.debugger;
 
 import cc.squirreljme.emulator.NativeBinding;
-import cc.squirreljme.jdwp.CommLink;
-import cc.squirreljme.jdwp.CommLinkDirection;
+import cc.squirreljme.jdwp.JDWPCommLink;
+import cc.squirreljme.jdwp.JDWPCommLinkDirection;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -59,7 +59,7 @@ public class Main
 				connect = __args[0];
 			
 			// Setup communication link
-			CommLink commLink = Main.__connect(connect);
+			JDWPCommLink commLink = Main.__connect(connect);
 			
 			// Start the main debug session
 			Main.start(commLink);
@@ -90,7 +90,7 @@ public class Main
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/19
 	 */
-	private static CommLink __connect(String __connect)
+	private static JDWPCommLink __connect(String __connect)
 		throws IOException, IllegalArgumentException, NullPointerException
 	{
 		if (__connect == null)
@@ -131,8 +131,8 @@ public class Main
 			new __SocketKill__(socket), "socketKill"));
 		
 		// Setup communication link
-		return new CommLink(socket.getInputStream(),
-			socket.getOutputStream(), CommLinkDirection.DEBUGGER_TO_CLIENT);
+		return new JDWPCommLink(socket.getInputStream(),
+			socket.getOutputStream(), JDWPCommLinkDirection.DEBUGGER_TO_CLIENT);
 	}
 	
 	/**
@@ -150,8 +150,8 @@ public class Main
 			throw new NullPointerException("NARG");
 		
 		// Forward accordingly
-		Main.start(new CommLink(__in, __out,
-			CommLinkDirection.DEBUGGER_TO_CLIENT));
+		Main.start(new JDWPCommLink(__in, __out,
+			JDWPCommLinkDirection.DEBUGGER_TO_CLIENT));
 	}
 	
 	/**
@@ -161,7 +161,7 @@ public class Main
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/19
 	 */
-	public static void start(CommLink __commLink)
+	public static void start(JDWPCommLink __commLink)
 		throws NullPointerException
 	{
 		if (__commLink == null)

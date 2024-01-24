@@ -9,9 +9,9 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.jdwp.JDWPState;
-import cc.squirreljme.jdwp.JDWPValue;
-import cc.squirreljme.jdwp.views.JDWPViewFrame;
+import cc.squirreljme.jdwp.host.JDWPHostState;
+import cc.squirreljme.jdwp.host.JDWPHostValue;
+import cc.squirreljme.jdwp.host.views.JDWPViewFrame;
 import java.lang.ref.Reference;
 
 /**
@@ -23,7 +23,7 @@ public class DebugViewFrame
 	implements JDWPViewFrame
 {
 	/** The state of the debugger. */
-	protected final Reference<JDWPState> state;
+	protected final Reference<JDWPHostState> state;
 	
 	/**
 	 * Initializes the frame viewer.
@@ -32,7 +32,7 @@ public class DebugViewFrame
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/04/11
 	 */
-	public DebugViewFrame(Reference<JDWPState> __state)
+	public DebugViewFrame(Reference<JDWPHostState> __state)
 	{
 		if (__state == null)
 			throw new NullPointerException("NARG");
@@ -97,7 +97,7 @@ public class DebugViewFrame
 	 * @since 2021/04/14
 	 */
 	@Override
-	public boolean readValue(Object __which, int __index, JDWPValue __out)
+	public boolean readValue(Object __which, int __index, JDWPHostValue __out)
 	{
 		__out.set(((SpringThread.Frame)__which).loadLocal(
 			Object.class, __index));

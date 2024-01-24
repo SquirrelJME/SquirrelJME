@@ -9,14 +9,12 @@
 
 package cc.squirreljme.debugger;
 
-import cc.squirreljme.jdwp.CommandSetVirtualMachine;
+import cc.squirreljme.jdwp.JDWPCommandSetVirtualMachine;
 import cc.squirreljme.jdwp.JDWPCapability;
 import cc.squirreljme.jdwp.JDWPCommandSet;
 import cc.squirreljme.jdwp.JDWPPacket;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.HashSet;
 import java.util.Set;
-import net.multiphasicapps.collections.EnumSet;
 
 /**
  * This contains the status of capabilities of the connected virtual machine.
@@ -98,7 +96,7 @@ public class CapabilityStatus
 		// Ask for normal capabilities (older VM)
 		try (JDWPPacket out = __state.commLink.request(
 			JDWPCommandSet.VIRTUAL_MACHINE,
-			CommandSetVirtualMachine.CAPABILITIES))
+			JDWPCommandSetVirtualMachine.CAPABILITIES))
 		{
 			__state.send(out, this);
 		}
@@ -106,7 +104,7 @@ public class CapabilityStatus
 		// Ask for newer capabilities (newer VM)
 		try (JDWPPacket out = __state.commLink.request(
 			JDWPCommandSet.VIRTUAL_MACHINE,
-			CommandSetVirtualMachine.CAPABILITIES_NEW))
+			JDWPCommandSetVirtualMachine.CAPABILITIES_NEW))
 		{
 			__state.send(out, this);
 		}
