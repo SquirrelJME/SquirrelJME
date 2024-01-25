@@ -81,7 +81,8 @@ public abstract class SpringCallbackAdapter
 		callArgs[0] = this.target;
 		
 		// Setup callback thread for handling
-		try (CallbackThread cb = this.machine.obtainCallbackThread(false))
+		try (CallbackThread cb = this.machine.obtainCallbackThread(
+			true))
 		{
 			// Invoke the given method
 			Object result = cb.thread().invokeMethod(false,
