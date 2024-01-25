@@ -127,6 +127,17 @@ public enum InfoKind
 		Object... __extra);
 	
 	/**
+	 * Is this information forgettable?
+	 *
+	 * @return If the information is forgettable.
+	 * @since 2024/01/25
+	 */
+	public final boolean isForgettable()
+	{
+		return false;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2024/01/20
 	 */

@@ -32,7 +32,10 @@ public class StoredInfoManager
 		// Setup storage
 		StoredInfo[] infos = new StoredInfo[numTypes];
 		for (int i = 0; i < numTypes; i++)
-			infos[i] = new StoredInfo(types[i], false);
+			if (types[i].isForgettable())
+				infos[i] = new ForgettableStoredInfo(types[i]);
+			else
+				infos[i] = new PersistentStoredInfo(types[i]);
 		this._infos = infos;
 	}
 	
