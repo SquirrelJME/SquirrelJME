@@ -9,6 +9,7 @@
 
 package cc.squirreljme.debugger;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 /**
@@ -19,4 +20,29 @@ import javax.swing.JPanel;
 public class ShownThread
 	extends JPanel
 {
+	/** The thread being viewed. */
+	protected final InfoThread thread;
+	
+	/** The state of the debugger. */
+	protected final DebuggerState state;
+	
+	/**
+	 * Initializes the shown thread.
+	 *
+	 * @param __state The debugger state.
+	 * @param __thread The thread to show.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/24
+	 */
+	public ShownThread(DebuggerState __state, InfoThread __thread)
+		throws NullPointerException
+	{
+		if (__state == null || __thread == null)
+			throw new NullPointerException("NARG");
+		
+		this.state = __state;
+		this.thread = __thread;
+		
+		this.add(new JLabel(__thread.toString()));
+	}
 }

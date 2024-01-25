@@ -12,6 +12,7 @@ package cc.squirreljme.debugger;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -33,6 +34,9 @@ public class ShownThreads
 	
 	/** The timer. */
 	protected final Timer ticker;
+	
+	/** The currently viewed thread. */
+	private volatile ShownThread _current;
 	
 	/**
 	 * Initializes the thread shower.
@@ -64,6 +68,37 @@ public class ShownThreads
 		this.ticker = ticker;
 		ticker.setRepeats(true);
 		ticker.start();
+		
+		// Set updater for when the combo box value changes
+		combo.addItemListener(this::__chooseThread);
+	}
+	
+	/**
+	 * Chooses an updated thread.
+	 *
+	 * @param __event The event used.
+	 * @since 2024/01/24
+	 */
+	private void __chooseThread(ItemEvent __event)
+	{
+		// Do nothing if nothing was set
+		InfoThread item = (InfoThread)__event.getItem();
+		if (item == null)
+			return;
+		
+		// If the thread has not changed, do nothing
+		ShownThread current = this._current;
+		if (current != null && current.thread == item)
+			return;
+		
+		// Remove old thread being shown
+		if (current != null)
+			this.remove(current);
+		
+		// Add in new thread
+		current = new ShownThread(this.state, item);
+		this.add(current, BorderLayout.CENTER);
+		this._current = current;
 	}
 	
 	/**
@@ -76,51 +111,45 @@ public class ShownThreads
 	{
 		Debugging.debugNote("Update threads...");
 		
-		try
+		// Obtain all resultant threads
+		StoredInfo<InfoThread> stored = this.state.storedInfo.getThreads();
+		InfoThread[] threads = stored.all(this.state, InfoThread[].class);
+		
+		// If there are no threads then not much can be done
+		JComboBox<InfoThread> combo = this.combo;
+		if (threads == null || threads.length == 0)
 		{
-			// Obtain all resultant threads
-			StoredInfo<InfoThread> stored = this.state.storedInfo.getThreads();
-			InfoThread[] threads = stored.all(this.state, InfoThread[].class);
-			
-			// If there are no threads then not much can be done
-			JComboBox<InfoThread> combo = this.combo;
-			if (threads == null || threads.length == 0)
-			{
-				// Remove everything since there is nothing
-				combo.removeAllItems();
-				
-				return;
-			}
-			
-			// Get the currently selected item
-			Object currentSel = combo.getSelectedItem();
-			
-			// Is the selected item still in the combo?
-			boolean stillIn = false;
-			if (currentSel != null)
-				for (InfoThread thread : threads)
-					if (currentSel == thread)
-					{
-						stillIn = true;
-						break;
-					}
-			
-			// If the selection is no longer there, change it
-			if (currentSel == null || !stillIn)
-				currentSel = threads[0];
-			
-			// Add in all threads, ignore dead ones
+			// Remove everything since there is nothing
 			combo.removeAllItems();
-			for (InfoThread thread : threads)
-				if (!thread.isDead.getOrDefault(false))
-					combo.addItem(thread);
 			
-			// Set the selected item
-			combo.setSelectedItem(currentSel);
+			return;
 		}
-		catch (Throwable __t)
-		{
-			__t.printStackTrace();
-		}
+		
+		// Get the currently selected item
+		Object currentSel = combo.getSelectedItem();
+		
+		// Is the selected item still in the combo?
+		boolean stillIn = false;
+		if (currentSel != null)
+			for (InfoThread thread : threads)
+				if (currentSel == thread)
+				{
+					stillIn = true;
+					break;
+				}
+		
+		// If the selection is no longer there, change it
+		if (currentSel == null || !stillIn)
+			currentSel = threads[0];
+		
+		// Add in all threads, ignore dead and disposed ones
+		combo.removeAllItems();
+		for (InfoThread thread : threads)
+			if (!thread.isDisposed() &&
+				!thread.isDead.getOrDefault(false))
+				combo.addItem(thread);
+		
+		// Set the selected item
+		combo.setSelectedItem(currentSel);
 	}
 }
