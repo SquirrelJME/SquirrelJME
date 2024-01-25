@@ -118,7 +118,7 @@ public enum EventProcessor
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			StoredInfo<InfoThread> threadStore =
-				__state.storedInfo.getThread();
+				__state.storedInfo.getThreads();
 			
 			// Read in packet details
 			JDWPId threadId = __packet.readId(JDWPIdKind.THREAD_ID);
@@ -143,7 +143,7 @@ public enum EventProcessor
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			StoredInfo<InfoThread> threadStore =
-				__state.storedInfo.getThread();
+				__state.storedInfo.getThreads();
 			
 			// Read in packet details
 			JDWPId threadId = __packet.readId(JDWPIdKind.THREAD_ID);
@@ -376,7 +376,7 @@ public enum EventProcessor
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
 			StoredInfo<InfoThread> threadStore =
-				__state.storedInfo.getThread();
+				__state.storedInfo.getThreads();
 			
 			// Read in packet details
 			JDWPId threadId = __packet.readId(JDWPIdKind.OBJECT_ID);

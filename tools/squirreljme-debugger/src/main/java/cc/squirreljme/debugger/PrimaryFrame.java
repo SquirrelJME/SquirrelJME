@@ -14,7 +14,6 @@ import cc.squirreljme.jdwp.JDWPCommandSetVirtualMachine;
 import cc.squirreljme.jdwp.JDWPId;
 import cc.squirreljme.jdwp.JDWPIdKind;
 import cc.squirreljme.jdwp.JDWPPacket;
-import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -23,7 +22,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -37,7 +35,6 @@ import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
-import org.freedesktop.tango.TangoIconLoader;
 
 /**
  * Primary display window.
@@ -294,7 +291,7 @@ public class PrimaryFrame
 	 */
 	private void __inspectThread(ActionEvent __event)
 	{
-		this.__inspect(this.state.storedInfo.getThread());
+		this.__inspect(this.state.storedInfo.getThreads());
 	}
 	
 	/**

@@ -51,11 +51,26 @@ public class StoredInfo<I extends Info>
 	/**
 	 * Returns all the known values.
 	 *
+	 * @param __state The debugger state.
 	 * @return All the known values.
 	 * @since 2024/01/20
 	 */
 	@SuppressWarnings("unchecked")
-	public I[] all(DebuggerState __state)
+	public Info[] all(DebuggerState __state)
+	{
+		return this.all(__state, Info[].class);
+	}
+	
+	/**
+	 * Returns all the known values.
+	 *
+	 * @param __state The debugger state.
+	 * @param __basis The basis type.
+	 * @return All the known values.
+	 * @since 2024/01/20
+	 */
+	@SuppressWarnings("unchecked")
+	public I[] all(DebuggerState __state, Class<? extends Info[]> __basis)
 	{
 		synchronized (this)
 		{
@@ -63,7 +78,10 @@ public class StoredInfo<I extends Info>
 			Collection<I> values = this._cache.values();
 			this.__gc(__state);
 			
-			I[] result = (I[])values.toArray(new Info[values.size()]);
+			I[] result = (I[])Arrays.copyOf(
+				values.toArray(new Info[values.size()]),
+				values.size(),
+				__basis);
 			
 			// Update all values that we can
 			for (I item : result)

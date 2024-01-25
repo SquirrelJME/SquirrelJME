@@ -158,8 +158,7 @@ public abstract class Info
 				return String.format("DISPOSED %s#%s", this.kind, this.id);
 			
 			else if (internalString != null)
-				return String.format("%s (%s#%s)", internalString, this.kind,
-					this.id);
+				return internalString;
 			
 			return String.format("%s#%s", this.kind, this.id);
 		}

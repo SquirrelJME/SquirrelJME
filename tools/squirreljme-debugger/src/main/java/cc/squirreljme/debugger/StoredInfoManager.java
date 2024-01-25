@@ -96,7 +96,7 @@ public class StoredInfoManager
 	 * @return The thread storage.
 	 * @since 2024/01/20
 	 */
-	public final StoredInfo<InfoThread> getThread()
+	public final StoredInfo<InfoThread> getThreads()
 	{
 		return this.<InfoThread>get(InfoThread.class, InfoKind.THREAD);
 	}
