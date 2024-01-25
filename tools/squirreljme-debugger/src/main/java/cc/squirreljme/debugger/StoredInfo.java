@@ -11,7 +11,6 @@ package cc.squirreljme.debugger;
 
 import cc.squirreljme.jdwp.JDWPId;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import java.lang.ref.Reference;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -29,6 +28,9 @@ public class StoredInfo<I extends Info>
 	/** The type being stored. */
 	protected final InfoKind type;
 	
+	/** Are the store values forgettable? */
+	protected final boolean forgettable;
+	
 	/** The internal item cache. */
 	private final Map<JDWPId, I> _cache =
 		new LinkedHashMap<>();
@@ -37,16 +39,18 @@ public class StoredInfo<I extends Info>
 	 * Initializes the stored info.
 	 *
 	 * @param __type The type to store.
+	 * @param __forgettable Are the contained values forgettable?
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/20
 	 */
-	public StoredInfo(InfoKind __type)
+	public StoredInfo(InfoKind __type, boolean __forgettable)
 		throws NullPointerException
 	{
 		if (__type == null)
 			throw new NullPointerException("NARG");
 		
 		this.type = __type;
+		this.forgettable = __forgettable;
 	}
 	
 	/**
