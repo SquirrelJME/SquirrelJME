@@ -12,6 +12,7 @@ package cc.squirreljme.debugger;
 import cc.squirreljme.emulator.NativeBinding;
 import cc.squirreljme.jdwp.JDWPCommLink;
 import cc.squirreljme.jdwp.JDWPCommLinkDirection;
+import java.awt.Frame;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -174,8 +175,10 @@ public class Main
 		// Spawn the application
 		PrimaryFrame frame = new PrimaryFrame(state);
 		
-		// Show it in a good spot
+		// Show it in a good spot and maximized as well
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
+		frame.setExtendedState(frame.getExtendedState() |
+			Frame.MAXIMIZED_BOTH);
 	}
 }

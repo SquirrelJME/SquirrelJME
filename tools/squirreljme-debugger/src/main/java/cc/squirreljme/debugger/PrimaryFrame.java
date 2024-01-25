@@ -218,6 +218,9 @@ public class PrimaryFrame
 		
 		// Show thread view on the left
 		ShownThreads shownThreads = new ShownThreads(__state);
+		shownThreads.setMinimumSize(new Dimension(200, 300));
+		shownThreads.setPreferredSize(new Dimension(200, 300));
+		shownThreads.setMaximumSize(new Dimension(200, 9999));
 		this.add(shownThreads, BorderLayout.LINE_START);
 		this.shownThreads = shownThreads;
 		
