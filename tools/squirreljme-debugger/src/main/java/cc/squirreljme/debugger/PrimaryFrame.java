@@ -175,14 +175,18 @@ public class PrimaryFrame
 		PrimaryFrame.__barButton(toolBar,
 			"Resume Single Thread", "media-playback-start");
 		PrimaryFrame.__barButton(toolBar,
-			"Pause Single Thread", "media-playback-pause");
+			"Suspend Single Thread", "media-playback-pause");
 		
 		toolBar.addSeparator();
 		
-		PrimaryFrame.__barButton(toolBar,
+		JButton resumeAll = PrimaryFrame.__barButton(toolBar,
 			"Resume All Threads", "weather-clear");
-		PrimaryFrame.__barButton(toolBar,
-			"Pause All Threads", "weather-snow");
+		resumeAll.addActionListener(
+			(__ignored) -> __state.threadResumeAll());
+		JButton suspendAll = PrimaryFrame.__barButton(toolBar,
+			"Suspend All Threads", "weather-snow");
+		suspendAll.addActionListener(
+			(__ignored) -> __state.threadSuspendAll());
 		
 		toolBar.addSeparator();
 		

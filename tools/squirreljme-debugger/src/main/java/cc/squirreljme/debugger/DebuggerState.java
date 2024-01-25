@@ -620,6 +620,23 @@ public class DebuggerState
 	}
 	
 	/**
+	 * Suspends all threads.
+	 *
+	 * @since 2024/01/25
+	 */
+	public void threadSuspendAll()
+	{
+		// The all version uses the VM command set as there is no
+		// base thread to use
+		try (JDWPPacket out = this.request(JDWPCommandSet.VIRTUAL_MACHINE,
+			JDWPCommandSetVirtualMachine.SUSPEND))
+		{
+			// Send it
+			this.send(out);
+		}
+	}
+	
+	/**
 	 * Default initialization.
 	 *
 	 * @since 2024/01/20
