@@ -26,20 +26,21 @@ public class InspectThread
 	 *
 	 * @param __owner The owning frame.
 	 * @param __state The debugging state.
-	 * @param __what What is being inspected.
+	 * @param __info What is being inspected.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/20
 	 */
 	public InspectThread(Window __owner, DebuggerState __state,
-		InfoThread __what)
+		InfoThread __info)
 		throws NullPointerException
 	{
-		super(__owner, __state, __what);
+		super(__owner, __state, __info);
 		
 		// Track these
-		this.addTrack("Started?", __what.isStarted);
-		this.addTrack("Dead?", __what.isDead);
-		this.addTrack("Name", __what.threadName);
+		this.addTrack("Started?", __info.isStarted);
+		this.addTrack("Dead?", __info.isDead);
+		this.addTrack("Name", __info.threadName);
+		this.addTrack("Suspend Count", __info.suspendCount);
 		
 		// Update inspection
 		this.update();

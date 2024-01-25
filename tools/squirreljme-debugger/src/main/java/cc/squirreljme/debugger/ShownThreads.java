@@ -74,6 +74,22 @@ public class ShownThreads
 	}
 	
 	/**
+	 * Updates the shown threads.
+	 *
+	 * @since 2024/01/25
+	 */
+	public void update()
+	{
+		// Force tick
+		this.__tick(null);
+		
+		// If there is a current item, make sure it gets updated
+		ShownThread current = this._current;
+		if (current != null)
+			current.update();
+	}
+	
+	/**
 	 * Chooses an updated thread.
 	 *
 	 * @param __event The event used.
@@ -99,6 +115,9 @@ public class ShownThreads
 		current = new ShownThread(this.state, item);
 		this.add(current, BorderLayout.CENTER);
 		this._current = current;
+		
+		// Force it to update quicker
+		current.update();
 	}
 	
 	/**
@@ -151,5 +170,10 @@ public class ShownThreads
 		
 		// Set the selected item
 		combo.setSelectedItem(currentSel);
+		
+		// If there is a current item, make sure it gets updated
+		ShownThread current = this._current;
+		if (current != null)
+			current.update();
 	}
 }

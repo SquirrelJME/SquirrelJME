@@ -255,6 +255,21 @@ public final class KnownValue<T>
 	public T update(DebuggerState __state)
 		throws NullPointerException
 	{
+		return this.update(__state, null);
+	}
+	
+	/**
+	 * Attempts to update the value and returns it.
+	 *
+	 * @param __state The state for packet control.
+	 * @param __default The default value if not known.
+	 * @return The current and updated value, if it is valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/25
+	 */
+	public T update(DebuggerState __state, T __default)
+		throws NullPointerException
+	{
 		if (__state == null)
 			throw new NullPointerException("NARG");
 		
@@ -267,7 +282,7 @@ public final class KnownValue<T>
 		updater.update(__state, this);
 		
 		// Return the value
-		return this.get();
+		return this.getOrDefault(__default);
 	}
 	
 	/**

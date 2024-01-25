@@ -80,6 +80,8 @@ public class InspectKnownValue
 			updater = this::__updateMethods;
 		else if (__value.type == String.class)
 			updater = this::__updateString;
+		else if (Number.class.isAssignableFrom(__value.type))
+			updater = this::__updateNumber;
 		else
 			updater = this::__updateUnknown;
 		
@@ -245,6 +247,37 @@ public class InspectKnownValue
 		
 		// Return self
 		return button;
+	}
+	
+	/**
+	 * Updates the number value.
+	 *
+	 * @param __base The base component.
+	 * @param __value The value of the number.
+	 * @return The resultant component.
+	 * @since 2024/01/25
+	 */
+	private JComponent __updateNumber(JComponent __base, KnownValue<?> __value)
+	{
+		// Need to initialize?
+		JTextField text;
+		if (__base != null)
+			text = (JTextField)__base;
+		else
+		{
+			text = new JTextField();
+			text.setEditable(false);
+			text.setBorder(new EmptyBorder(0, 0, 0, 0));
+		}
+		
+		// Set label value
+		if (!__value.isKnown())
+			text.setText("Unknown?");
+		else
+			text.setText(Long.toString(
+				((Number)__value.get()).longValue(), 10));
+		
+		return text;
 	}
 	
 	/**

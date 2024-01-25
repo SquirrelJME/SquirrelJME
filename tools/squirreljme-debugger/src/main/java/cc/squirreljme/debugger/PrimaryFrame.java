@@ -155,6 +155,14 @@ public class PrimaryFrame
 		// Use the menu finally
 		this.setJMenuBar(mainMenu);
 		
+		// Show thread view on the left
+		ShownThreads shownThreads = new ShownThreads(__state);
+		shownThreads.setMinimumSize(new Dimension(200, 300));
+		shownThreads.setPreferredSize(new Dimension(200, 300));
+		shownThreads.setMaximumSize(new Dimension(200, 9999));
+		this.add(shownThreads, BorderLayout.LINE_START);
+		this.shownThreads = shownThreads;
+		
 		// Setup toolbar
 		JToolBar toolBar = new JToolBar();
 		this.toolBar = toolBar;
@@ -182,11 +190,17 @@ public class PrimaryFrame
 		JButton resumeAll = PrimaryFrame.__barButton(toolBar,
 			"Resume All Threads", "weather-clear");
 		resumeAll.addActionListener(
-			(__ignored) -> __state.threadResumeAll());
+			(__ignored) -> {
+				__state.threadResumeAll();
+				this.shownThreads.update();
+			});
 		JButton suspendAll = PrimaryFrame.__barButton(toolBar,
 			"Suspend All Threads", "weather-snow");
 		suspendAll.addActionListener(
-			(__ignored) -> __state.threadSuspendAll());
+			(__ignored) -> {
+				__state.threadSuspendAll();
+				this.shownThreads.update();
+			});
 		
 		toolBar.addSeparator();
 		
@@ -219,14 +233,6 @@ public class PrimaryFrame
 		
 		// Add that to the bottom
 		this.add(statusPanel, BorderLayout.PAGE_END);
-		
-		// Show thread view on the left
-		ShownThreads shownThreads = new ShownThreads(__state);
-		shownThreads.setMinimumSize(new Dimension(200, 300));
-		shownThreads.setPreferredSize(new Dimension(200, 300));
-		shownThreads.setMaximumSize(new Dimension(200, 9999));
-		this.add(shownThreads, BorderLayout.LINE_START);
-		this.shownThreads = shownThreads;
 		
 		// For now just show some random method
 		try (InputStream in = PrimaryFrame.class.getResourceAsStream(

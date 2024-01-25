@@ -9,6 +9,7 @@
 
 package cc.squirreljme.debugger;
 
+import java.awt.BorderLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -25,6 +26,9 @@ public class ShownThread
 	
 	/** The state of the debugger. */
 	protected final DebuggerState state;
+	
+	/** Current suspension state? */
+	protected final JLabel suspendLabel;
 	
 	/**
 	 * Initializes the shown thread.
@@ -43,6 +47,32 @@ public class ShownThread
 		this.state = __state;
 		this.thread = __thread;
 		
-		this.add(new JLabel(__thread.toString()));
+		// Border layout is clean
+		this.setLayout(new BorderLayout());
+		
+		// Add suspension state label
+		JLabel suspendLabel = new JLabel();
+		this.suspendLabel = suspendLabel;
+		this.add(suspendLabel, BorderLayout.PAGE_START);
+	}
+	
+	/**
+	 * Updates the shown information.
+	 *
+	 * @since 2024/01/25
+	 */
+	public void update()
+	{
+		InfoThread thread = this.thread;
+		JLabel suspendLabel = this.suspendLabel;
+		DebuggerState state = this.state;
+		
+		// Inform of the current thread suspension state
+		int suspendCount = thread.suspendCount.update(state, 0);
+		if (suspendCount > 0)
+			suspendLabel.setText(String.format("Suspended %d times.",
+				suspendCount));
+		else
+			suspendLabel.setText("Running");
 	}
 }

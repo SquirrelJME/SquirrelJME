@@ -29,12 +29,14 @@ public class InfoThread
 		new KnownValue<>(Boolean.class);
 	
 	/** The name of the thread. */
-	protected final KnownValue<String> threadName =
-		new KnownValue<>(String.class);
+	protected final KnownValue<String> threadName;
 	
 	/** Is this thread dead? */
 	protected KnownValue<Boolean> isDead =
 		new KnownValue<>(Boolean.class, false);
+	
+	/** The current suspend count of the thread. */
+	protected KnownValue<Integer> suspendCount;
 	
 	/**
 	 * Initializes the base thread.
@@ -46,6 +48,11 @@ public class InfoThread
 	public InfoThread(DebuggerState __state, JDWPId __id)
 	{
 		super(__state, __id, InfoKind.THREAD);
+		
+		this.threadName = new KnownValue<String>(String.class,
+			this::__updateThreadName);
+		this.suspendCount = new KnownValue<Integer>(Integer.class,
+			this::__updateSuspendCount);
 	}
 	
 	/**
@@ -83,7 +90,7 @@ public class InfoThread
 	@Override
 	protected String internalString()
 	{
-		String name = this.threadName.getOrDefault("Unknown?");
+		String name = this.threadName.getOrUpdate(this.internalState());
 		if (this.isDead.getOrDefault(false))
 			return "DEAD " + name;
 		return name;
@@ -99,14 +106,50 @@ public class InfoThread
 	public boolean internalUpdate(DebuggerState __state)
 		throws NullPointerException
 	{
-		if (__state == null)
-			throw new NullPointerException("NARG");
-		
+		// Consider as valid unless otherwise
+		return true;
+	}
+	
+	/**
+	 * Updates the suspend count of the current thread.
+	 *
+	 * @param __state The debugger state.
+	 * @param __value The current value.
+	 * @since 2024/01/25
+	 */
+	private void __updateSuspendCount(DebuggerState __state,
+		KnownValue<Integer> __value)
+	{
+		// Request name update
+		try (JDWPPacket out = __state.request(JDWPCommandSet.THREAD_REFERENCE,
+			JDWPCommandSetThreadReference.SUSPEND_COUNT))
+		{
+			out.writeId(this.id);
+			
+			// Send it
+			__state.sendThenWait(out, Utils.TIMEOUT,
+				(__ignored, __reply) -> {
+					__value.set(__reply.readInt());
+				}, (__ignored, __reply) -> {
+				});
+		}
+	}
+	
+	/**
+	 * Updates the thread name.
+	 *
+	 * @param __state The debugger state.
+	 * @param __value The current value.
+	 * @since 2024/01/25
+	 */
+	private void __updateThreadName(DebuggerState __state,
+		KnownValue<String> __value)
+	{
 		// Request name update
 		try (JDWPPacket out = __state.request(JDWPCommandSet.THREAD_REFERENCE,
 			JDWPCommandSetThreadReference.NAME))
 		{
-			out.writeId(this.id.intValue());
+			out.writeId(this.id);
 			
 			// Send it
 			__state.send(out, (__ignored, __response) -> {
@@ -125,8 +168,5 @@ public class InfoThread
 				this.threadName.set(__response.readString());
 			});
 		}
-		
-		// Consider as valid unless otherwise
-		return true;
 	}
 }
