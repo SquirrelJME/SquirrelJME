@@ -318,6 +318,10 @@ public final class ContextThreadFrame
 	 */
 	public void set(InfoFrame __frame)
 	{
+		if (__frame != null &&
+			(__frame.isDisposed()))
+			return;
+		
 		InfoThread wantThread = (__frame != null ? __frame.inThread : null);
 		if (wantThread != null &&
 			(wantThread.isDisposed() || wantThread.isDead.get()))

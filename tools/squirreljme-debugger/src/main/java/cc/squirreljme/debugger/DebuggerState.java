@@ -81,21 +81,17 @@ public class DebuggerState
 	protected final ContextThreadFrame context =
 		new ContextThreadFrame();
 	
-	/** Handler for all replies. */
-	private final Map<Integer, ReplyHandler> _replies =
-		new LinkedHashMap<>();
-	
-	/** Times for all replies. */
-	private final Map<Integer, Long> _times =
-		new LinkedHashMap<>();
-	
 	/** Handlers for events. */
-	private final Map<Integer, EventHandler<?>> _eventHandlers =
-		new LinkedHashMap<>();
+	protected final EventHandlers eventHandlers =
+		new EventHandlers();
 	
 	/** Deferred packets. */
-	private final Deque<JDWPPacket> _defer =
-		new LinkedList<>();
+	protected final PacketDefer defer =
+		new PacketDefer();
+	
+	/** Awaiting replies. */
+	protected final AwaitingReplies replies =
+		new AwaitingReplies();
 	
 	/** Has the virtual machine been started? */
 	private volatile boolean _hasStarted;
@@ -118,21 +114,6 @@ public class DebuggerState
 			throw new NullPointerException("NARG");
 		
 		this.commLink = __commLink;
-	}
-	
-	/**
-	 * Returns the event handler for the given request.
-	 *
-	 * @param __requestId The request to get.
-	 * @return The handler for the given event, assuming it exists.
-	 * @since 2024/01/20
-	 */
-	public EventHandler eventHandler(int __requestId)
-	{
-		synchronized (this)
-		{
-			return this._eventHandlers.get(__requestId);
-		}
 	}
 	
 	/**
@@ -185,12 +166,7 @@ public class DebuggerState
 							eventId, __handler);
 					
 					// Store handler for later
-					Map<Integer, EventHandler<?>> handlers =
-						this._eventHandlers;
-					synchronized (this)
-					{
-						handlers.put(eventId, __handler);
-					}
+					this.eventHandlers.put(eventId, __handler);
 					
 					// Inform of event?
 					if (__postResponse != null)
@@ -397,7 +373,7 @@ public class DebuggerState
 	{
 		JDWPCommLink link = this.commLink;
 		TallyTracker receiveTally = this.receiveTally;
-		Deque<JDWPPacket> defer = this._defer;
+		PacketDefer defer = this.defer;
 		
 		// Perform default trackers
 		this.__defaultInit();
@@ -427,18 +403,7 @@ public class DebuggerState
 					JDWPIdSizes sizes = link.idSizes();
 					
 					// Read in everything so we do not keep a lock
-					JDWPPacket[] deferred;
-					synchronized (this)
-					{
-						if (defer.isEmpty())
-							deferred = null;
-						else
-							deferred = defer.toArray(
-								new JDWPPacket[defer.size()]);
-						
-						// Clear it out
-						defer.clear();
-					}
+					JDWPPacket[] deferred = defer.removeAll();
 					
 					// Process all the packets
 					if (deferred != null)
@@ -548,13 +513,7 @@ public class DebuggerState
 			
 			// Store handler for replies before we send as the pipe could be
 			// really fast!
-			Map<Integer, ReplyHandler> replies = this._replies;
-			Map<Integer, Long> times = this._times;
-			synchronized (this)
-			{
-				replies.put(__packet.id(), __reply);
-				times.put(__packet.id(), System.nanoTime());
-			}
+			this.replies.await(__packet.id(), __reply);
 			
 			// Mark as waiting
 			this.waitingTally.increment();
@@ -721,12 +680,10 @@ public class DebuggerState
 			JDWPCommandSetVirtualMachine.RESUME))
 		{
 			// Send it
-			if (__done == null)
-				this.send(out);
-			else
-				this.send(out, (__ignored, __reply) -> {
+			this.send(out, (__ignored, __reply) -> {
+				if (__done != null)
 					__done.run();
-				});
+			});
 		}
 	}
 	
@@ -753,7 +710,7 @@ public class DebuggerState
 		EventModifier[] modifiers = {
 				new EventModifierCount(__count),
 				new EventModifierSingleStep(__thread,
-					__depth, __size)
+					__depth, JDWPStepSize.LINE/*__size*/)
 			};
 		
 		// An example single step
@@ -771,10 +728,11 @@ public class DebuggerState
 		// excludeClass=null, fieldOnly=null, includeClass=null, 
 		// location=null, thisInstance=null, thread=null, type=null}]
 		this.eventSet(JDWPEventKind.SINGLE_STEP,
-			JDWPSuspendPolicy.ALL,
+			JDWPSuspendPolicy.EVENT_THREAD,
 			modifiers,
 			__handler,
 			(__id) -> {
+				// The thread is stopped, so we must resume here
 				this.threadResume(__thread, null);
 			});
 	}
@@ -895,7 +853,7 @@ public class DebuggerState
 			throw new NullPointerException("NARG");
 		
 		JDWPCommLink link = this.commLink;
-		Deque<JDWPPacket> defer = this._defer;
+		PacketDefer defer = this.defer;
 				
 		// Try to process the packet
 		try
@@ -911,19 +869,7 @@ public class DebuggerState
 		// need to handle it at some point
 		catch (JDWPIdSizeUnknownException ignored)
 		{
-			// Store for later
-			synchronized (this)
-			{
-				JDWPPacket copy = link.getPacket().copyOf(__packet)
-					.resetReadPosition();
-				
-				// Debug
-				Debugging.debugNote("Deferring %s (%08x) -> (%08x)...",
-					__packet, System.identityHashCode(__packet),
-					System.identityHashCode(copy));
-				
-				defer.addLast(copy);
-			}
+			defer.defer(link, __packet);
 		}
 		
 		// General exception
@@ -948,19 +894,8 @@ public class DebuggerState
 		if (__packet == null)
 			throw new NullPointerException("NARG");
 		
-		// Handler and the time it happened
-		ReplyHandler handler;
-		Long nanoTime;
-		
 		// See if there is a handler for this reply
-		Map<Integer, ReplyHandler> replies = this._replies;
-		Map<Integer, Long> times = this._times;
-		synchronized (this)
-		{
-			// Only handle once!
-			handler = replies.remove(__packet.id());
-			nanoTime = times.remove(__packet.id());
-		}
+		AwaitingReply handler = this.replies.remove(__packet.id());
 		
 		// If there is no handler, just ignore
 		if (handler == null)
@@ -972,15 +907,14 @@ public class DebuggerState
 		}
 		
 		// Set latency
-		if (nanoTime != null)
-			this.latency.set((int)Math.min(Integer.MAX_VALUE,
-				(System.nanoTime() - nanoTime) / 1_000_000L));
+		this.latency.set((int)Math.min(Integer.MAX_VALUE,
+			(System.nanoTime() - handler.nanoTime) / 1_000_000L));
 		
 		// Decrement waiting count
 		this.waitingTally.decrement();
 		
 		// Call the handler accordingly
-		handler.handlePacket(this, __packet);
+		handler.handler.handlePacket(this, __packet);
 	}
 	
 	/**

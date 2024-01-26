@@ -561,7 +561,8 @@ public enum EventProcessor
 			
 			// The event request, find the optional handler for it
 			int requestId = __packet.readInt();
-			EventHandler<?> handler = __state.eventHandler(requestId);
+			EventHandler<?> handler =
+				__state.eventHandlers.eventHandler(requestId);
 			
 			// Find the processor to use
 			EventProcessor processor = EventProcessor.of(kind);
