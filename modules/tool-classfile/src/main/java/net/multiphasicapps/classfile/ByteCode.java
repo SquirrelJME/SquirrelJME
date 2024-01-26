@@ -1761,12 +1761,12 @@ public final class ByteCode
 				break;
 				
 				// Three bytes
-			case InstructionIndex.INVOKEINTERFACE:
 			case InstructionIndex.MULTIANEWARRAY:
 				rv += 3;
 				break;
 				
 				// Four bytes
+			case InstructionIndex.INVOKEINTERFACE:
 			case InstructionIndex.GOTO_W:
 			case InstructionIndex.WIDE_IINC:
 				rv += 4;
