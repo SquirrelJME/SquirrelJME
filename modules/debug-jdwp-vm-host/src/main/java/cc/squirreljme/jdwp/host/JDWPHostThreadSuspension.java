@@ -21,12 +21,13 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  */
 public final class JDWPHostThreadSuspension
 {
+	/** The suspension count. */
+	protected final JDWPHostCounter count =
+		new JDWPHostCounter();
+	
 	/** The timeout to wait for suspension checks. */
 	private static final int _TIMEOUT = 
 		1_000;
-	
-	/** The suspension count. */
-	private volatile int _count;
 	
 	/** Was suspension notified? */
 	private volatile boolean _suspendNotified;
@@ -44,7 +45,8 @@ public final class JDWPHostThreadSuspension
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/03/13
 	 */
-	public final boolean await(JDWPHostController __controller, Object __thread)
+	public final boolean await(JDWPHostController __controller,
+		Object __thread)
 		throws NullPointerException, IllegalStateException
 	{
 		if (__controller == null)
@@ -66,11 +68,12 @@ public final class JDWPHostThreadSuspension
 			{
 				// Get the last count at this await cycle, but only when
 				// it is done first 
+				int queryCount = this.count.query();
 				if (lastCount < 0)
-					lastCount = this._count;
+					lastCount = queryCount;
 				
 				// If this is zero, we are not waiting
-				if (this._count == 0)
+				if (queryCount == 0)
 				{
 					// Going from suspended to clear?
 					if (lastCount > 0)
@@ -126,10 +129,7 @@ public final class JDWPHostThreadSuspension
 	 */
 	public final int query()
 	{
-		synchronized (this)
-		{
-			return this._count;
-		}
+		return this.count.query();
 	}
 	
 	/**
@@ -143,7 +143,8 @@ public final class JDWPHostThreadSuspension
 		synchronized (this)
 		{
 			// Nothing to resume
-			if (this._count == 0)
+			int queryCount = this.count.query();
+			if (queryCount == 0)
 			{
 				// Notify any threads in the event they are waiting
 				this.notifyAll();
@@ -152,9 +153,9 @@ public final class JDWPHostThreadSuspension
 				return 0;
 			}
 			
-			// Count down, if we reach zero then we will make notifications
+			// Count down, if we reach zero then we will make notifications,
 			// so we do not need to needlessly wake threads up
-			int rv = --this._count;
+			int rv = this.count.decrement();
 			if (rv == 0)
 			{
 				// Since we are now at zero suspends, the next time we suspend
@@ -194,13 +195,12 @@ public final class JDWPHostThreadSuspension
 		synchronized (this)
 		{
 			// Is this already suspended?
-			int count = this._count;
+			int count = this.count.query();
 			if (__ifNot && count > 0)
 				return count;
 			
 			// Increment the counter and return it
-			this._count = (++count);
-			return count;
+			return this.count.increment();
 		}
 	}
 }

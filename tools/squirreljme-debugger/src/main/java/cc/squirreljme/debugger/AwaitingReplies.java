@@ -35,7 +35,8 @@ public class AwaitingReplies
 		Map<Integer, AwaitingReply> replies = this._replies;
 		synchronized (this)
 		{
-			replies.put(__id, new AwaitingReply(__reply, System.nanoTime()));
+			replies.put(__id,
+				new AwaitingReply(__id, __reply, System.nanoTime()));
 		}
 	}
 	

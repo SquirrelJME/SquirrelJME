@@ -900,15 +900,22 @@ public class DebuggerState
 		// If there is no handler, just ignore
 		if (handler == null)
 		{
-			Debugging.debugNote("No handler for reply %d...",
-				__packet.id());
+			if (JDWPCommLink.DEBUG)
+				Debugging.debugNote("No handler for reply %d...",
+					__packet.id());
 			
 			return;
 		}
 		
 		// Set latency
-		this.latency.set((int)Math.min(Integer.MAX_VALUE,
-			(System.nanoTime() - handler.nanoTime) / 1_000_000L));
+		int latency = (int)Math.min(Integer.MAX_VALUE,
+			(System.nanoTime() - handler.nanoTime) / 1_000_000L);
+		this.latency.set(latency);
+		
+		// Debug
+		if (JDWPCommLink.DEBUG)
+			Debugging.debugNote("Packet %d (%08x): Latency %d ms",
+				handler.id, handler.id, latency);
 		
 		// Decrement waiting count
 		this.waitingTally.decrement();

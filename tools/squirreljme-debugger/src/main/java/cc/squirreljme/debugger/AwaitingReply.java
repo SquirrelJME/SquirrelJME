@@ -16,6 +16,9 @@ package cc.squirreljme.debugger;
  */
 public class AwaitingReply
 {
+	/** The packet ID. */
+	public final int id;
+	
 	/** The reply handler to use. */
 	public final ReplyHandler handler;
 	
@@ -25,12 +28,14 @@ public class AwaitingReply
 	/**
 	 * Initializes the handler.
 	 *
+	 * @param __id The packet Id.
 	 * @param __handler The handler used.
 	 * @param __nanoTime The time the packet was sent.
 	 * @since 2024/01/26
 	 */
-	public AwaitingReply(ReplyHandler __handler, long __nanoTime)
+	public AwaitingReply(int __id, ReplyHandler __handler, long __nanoTime)
 	{
+		this.id = __id;
 		this.handler = __handler;
 		this.nanoTime = __nanoTime;
 	}
