@@ -284,8 +284,8 @@ public class PrimaryFrame
 	public void handleSingleStep(DebuggerState __state,
 		SingleStepEvent __event)
 	{
-		// Debug
-		Debugging.debugNote("Single stepped.");
+		// Note it
+		this.statusPanel.setMessage("Single stepped.");
 		
 		// Update context frame from this event
 		InfoThread inThread = __event.thread;

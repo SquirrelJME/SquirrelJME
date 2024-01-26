@@ -77,7 +77,8 @@ public class ShownThreads
 	 */
 	@Override
 	public void contextChanged(InfoThread __oldThread, InfoFrame __oldFrame,
-		InfoThread __newThread, InfoFrame __newFrame)
+		FrameLocation __oldLocation, InfoThread __newThread,
+		InfoFrame __newFrame, FrameLocation __newLocation)
 	{
 		// Force an update
 		this.update();
@@ -103,7 +104,7 @@ public class ShownThreads
 		
 		// Go through all the items because we will be adding and removing
 		// them accordingly
-		for (int i = 0, n = combo.getItemCount(); i < n; i++)
+		for (int i = combo.getItemCount() - 1; i >= 0; i--)
 		{
 			// Get the thread here
 			InfoThread at = combo.getItemAt(i);
@@ -129,10 +130,6 @@ public class ShownThreads
 				
 				// Remove it
 				combo.removeItemAt(i);
-				
-				// Run the loop again
-				i--;
-				continue;
 			}
 			
 			// Otherwise clear it to mark as not added

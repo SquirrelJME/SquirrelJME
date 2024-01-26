@@ -70,7 +70,8 @@ public class ShownContextMethod
 	 */
 	@Override
 	public void contextChanged(InfoThread __oldThread, InfoFrame __oldFrame,
-		InfoThread __newThread, InfoFrame __newFrame)
+		FrameLocation __oldLocation, InfoThread __newThread,
+		InfoFrame __newFrame, FrameLocation __newLocation)
 	{
 		// Remove the old method being shown
 		ShownMethod current = this._shownMethod;
@@ -92,6 +93,7 @@ public class ShownContextMethod
 		InfoMethod inMethod = __newFrame.inMethod();
 		current = new ShownMethod(this.state,
 			new RemoteMethodViewer(this.state, inMethod),
+			this.context,
 			true);
 		this._shownMethod = current;
 		this.add(current, BorderLayout.CENTER);

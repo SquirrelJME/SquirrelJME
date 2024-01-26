@@ -34,23 +34,12 @@ public class ShownMethod
 	/** The optional debugger state. */
 	protected final DebuggerState state;
 	
+	/** The current context, is optional. */
+	protected final ContextThreadFrame context;
+	
 	/** All the current instruction showers. */
 	private volatile ShownInstruction[] _shownInstructions;
 	
-	/**
-	 * Initializes the method viewer.
-	 *
-	 * @param __state The debugger state, used for breakpoint and flow
-	 * control.
-	 * @param __viewer The method to view.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2024/01/22
-	 */
-	public ShownMethod(DebuggerState __state, MethodViewer __viewer)
-		throws NullPointerException
-	{
-		this(__state, __viewer, true);
-	}
 	
 	/**
 	 * Initializes the method viewer.
@@ -58,18 +47,20 @@ public class ShownMethod
 	 * @param __state The debugger state, used for breakpoint and flow
 	 * control.
 	 * @param __viewer The method to view.
+	 * @param __context The current thread context, is optional.
 	 * @param __scroll Scroll the panel view?
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/21
 	 */
 	public ShownMethod(DebuggerState __state, MethodViewer __viewer,
-		boolean __scroll)
+		ContextThreadFrame __context, boolean __scroll)
 		throws NullPointerException
 	{
 		if (__viewer == null)
 			throw new NullPointerException("NARG");
 		
 		this.state = __state;
+		this.context = __context;
 		this.viewer = __viewer;
 		
 		// Use border layout for this panel since it is cleaner
@@ -124,6 +115,7 @@ public class ShownMethod
 			
 			// Optional state for breakpoints, etc.
 			DebuggerState state = this.state;
+			ContextThreadFrame context = this.context;
 			
 			// Add everything to the grid view
 			int count = instructions.length;
@@ -132,7 +124,7 @@ public class ShownMethod
 			{
 				// Initialize a shower!
 				ShownInstruction shown = new ShownInstruction(
-					state, instructions[i]);
+					state, instructions[i], context);
 				
 				// Show it
 				shownInstructions[i] = shown;

@@ -38,6 +38,9 @@ public class StatusPanel
 	/** The number of packets that were sent. */
 	protected final JLabel sentLabel;
 	
+	/** General message. */
+	protected final JLabel message;
+	
 	/**
 	 * Initializes the panel.
 	 *
@@ -84,15 +87,32 @@ public class StatusPanel
 		this.__pretty(sentLabel);
 		this.sentLabel = sentLabel;
 		
+		// Mesasage
+		JLabel message = new JLabel();
+		this.__pretty(message);
+		this.message = message;
+		
 		// Add labels
 		this.add(stateLabel);
 		this.add(receivedLabel);
 		this.add(sentLabel);
+		this.add(message);
 		
 		// Add listeners to tallies to update stats
 		__debuggerState.receiveTally.addListener(this);
 		__debuggerState.sentTally.addListener(this);
 		__debuggerState.disconnectedTally.addListener(this);
+	}
+	
+	/**
+	 * Sets the message to display.
+	 *
+	 * @param __message The message.
+	 * @since 2024/01/26
+	 */
+	public void setMessage(String __message)
+	{
+		this.message.setText(__message);
 	}
 	
 	/**

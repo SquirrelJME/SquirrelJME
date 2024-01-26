@@ -39,15 +39,20 @@ public class ShownInstruction
 	/** The optional debugger state. */
 	protected final DebuggerState state;
 	
+	/** The context for this instruction. */
+	protected final ContextThreadFrame context;
+	
 	/**
 	 * Initializes the instruction line.
 	 *
 	 * @param __state The optional state for tracking.
 	 * @param __viewer The viewer to use.
+	 * @param __context The optional thread debugging context.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/21
 	 */
-	public ShownInstruction(DebuggerState __state, InstructionViewer __viewer)
+	public ShownInstruction(DebuggerState __state, InstructionViewer __viewer,
+		ContextThreadFrame __context)
 		throws NullPointerException
 	{
 		if (__viewer == null)
@@ -56,6 +61,7 @@ public class ShownInstruction
 		// Store for later usage
 		this.state = __state;
 		this.viewer = __viewer;
+		this.context = __context;
 		
 		// Reduce border size
 		this.setBorder(new EmptyBorder(0, 0, 0, 0));

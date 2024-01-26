@@ -174,7 +174,7 @@ public class ByteDequeInputStream
 		// in the pipe
 		try
 		{
-			__queue.wait(1000);
+			__queue.wait(100);
 		}
 		catch (InterruptedException __e)
 		{

@@ -129,7 +129,8 @@ public class ShownClass
 			for (int i = 0; i < count; i++)
 			{
 				// Initialize a shower!
-				ShownMethod shown = new ShownMethod(state, methods[i]);
+				ShownMethod shown = new ShownMethod(state, methods[i],
+					null, true);
 				
 				// Show it
 				shownMethods[i] = shown;

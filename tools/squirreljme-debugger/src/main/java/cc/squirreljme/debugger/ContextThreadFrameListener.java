@@ -21,10 +21,13 @@ public interface ContextThreadFrameListener
 	 *
 	 * @param __oldThread The old thread.
 	 * @param __oldFrame The old frame.
+	 * @param __oldLocation The old location.
 	 * @param __newThread The new thread.
 	 * @param __newFrame The new frame.
+	 * @param __newLocation The new location.
 	 * @since 2024/01/25
 	 */
 	void contextChanged(InfoThread __oldThread, InfoFrame __oldFrame,
-		InfoThread __newThread, InfoFrame __newFrame);
+		FrameLocation __oldLocation, InfoThread __newThread,
+		InfoFrame __newFrame, FrameLocation __newLocation);
 }

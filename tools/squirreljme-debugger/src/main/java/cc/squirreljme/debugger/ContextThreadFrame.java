@@ -35,6 +35,9 @@ public final class ContextThreadFrame
 	/** The current frame. */
 	private volatile InfoFrame _frame;
 	
+	/** The current location. */
+	private volatile FrameLocation _location;
+	
 	/**
 	 * Adds a listener to the context update.
 	 *
@@ -119,7 +122,9 @@ public final class ContextThreadFrame
 		}
 		
 		// Update listeners
-		this.__contextChanged(oldThread, oldFrame, newThread, newFrame);
+		this.__contextChanged(
+			oldThread, oldFrame, null,
+			newThread, newFrame, null);
 	}
 	
 	/**
@@ -162,7 +167,20 @@ public final class ContextThreadFrame
 		}
 		
 		// Update listeners
-		this.__contextChanged(oldThread, oldFrame, newThread, newFrame);
+		this.__contextChanged(
+			oldThread, oldFrame, null,
+			newThread, newFrame, null);
+	}
+	
+	/**
+	 * Sets the frame location.
+	 *
+	 * @param __location The new location.
+	 * @since 2024/01/26
+	 */
+	public void set(FrameLocation __location)
+	{
+		
 	}
 	
 	/**
@@ -170,16 +188,20 @@ public final class ContextThreadFrame
 	 *
 	 * @param __oldThread The old thread.
 	 * @param __oldFrame The old frame.
+	 * @param __oldLocation The old location.
 	 * @param __newThread The new thread.
 	 * @param __newFrame The new frame.
+	 * @param __newLocation The new location.
 	 * @since 2024/01/25
 	 */
 	private void __contextChanged(InfoThread __oldThread, InfoFrame __oldFrame,
-		InfoThread __newThread, InfoFrame __newFrame)
+		FrameLocation __oldLocation, InfoThread __newThread,
+		InfoFrame __newFrame, FrameLocation __newLocation)
 	{
 		// If there is no actual update, then just ignore
 		if (Objects.equals(__oldThread, __newThread) &&
-			Objects.equals(__oldFrame, __newFrame))
+			Objects.equals(__oldFrame, __newFrame) &&
+			Objects.equals(__oldLocation, __newLocation))
 			return;
 		
 		// Debug
@@ -215,8 +237,9 @@ public final class ContextThreadFrame
 		// the swing event thread
 		for (ContextThreadFrameListener listener : listeners)
 			SwingUtilities.invokeLater(() -> {
-				listener.contextChanged(__oldThread, __oldFrame, __newThread,
-					__newFrame);
+				listener.contextChanged(
+					__oldThread, __oldFrame, __oldLocation,
+					__newThread, __newFrame, __newLocation);
 			});
 	}
 }

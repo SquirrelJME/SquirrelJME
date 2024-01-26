@@ -51,7 +51,8 @@ public class ShownMethodDialog
 		this.setLayout(new BorderLayout());
 		
 		// Add class viewer
-		ShownMethod shownMethod = new ShownMethod(__state, __viewer);
+		ShownMethod shownMethod = new ShownMethod(__state, __viewer,
+			null, true);
 		this.add(shownMethod, BorderLayout.CENTER);
 		
 		// Pack

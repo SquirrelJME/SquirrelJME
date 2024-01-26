@@ -9,14 +9,8 @@
 
 package cc.squirreljme.debugger;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.awt.BorderLayout;
-import java.awt.font.TextAttribute;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Objects;
-import javax.microedition.lcdui.Font;
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -87,7 +81,8 @@ public class ShownThread
 	 */
 	@Override
 	public void contextChanged(InfoThread __oldThread, InfoFrame __oldFrame,
-		InfoThread __newThread, InfoFrame __newFrame)
+		FrameLocation __oldLocation, InfoThread __newThread,
+		InfoFrame __newFrame, FrameLocation __newLocation)
 	{
 		// Force an update
 		this.update();

@@ -9,7 +9,6 @@
 
 package cc.squirreljme.debugger;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.util.Objects;
@@ -87,7 +86,8 @@ public class ShownContextFrame
 	 */
 	@Override
 	public void contextChanged(InfoThread __oldThread, InfoFrame __oldFrame,
-		InfoThread __newThread, InfoFrame __newFrame)
+		FrameLocation __oldLocation, InfoThread __newThread,
+		InfoFrame __newFrame, FrameLocation __newLocation)
 	{
 		// Is this selected?
 		JButton active = this.active;
