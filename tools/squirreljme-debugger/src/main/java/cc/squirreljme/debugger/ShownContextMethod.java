@@ -10,6 +10,7 @@
 package cc.squirreljme.debugger;
 
 import java.awt.BorderLayout;
+import java.util.Objects;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
@@ -34,6 +35,9 @@ public class ShownContextMethod
 	
 	/** Currently shown method. */
 	private volatile ShownMethod _shownMethod;
+	
+	/** The method we are looking at. */
+	private volatile InfoMethod _lookingAt;
 	
 	/**
 	 * Initializes the context method shower.
@@ -62,6 +66,9 @@ public class ShownContextMethod
 		
 		// Set listener for this to update everything
 		__context.addListener(this);
+		
+		// Initial update
+		this.update();
 	}
 	
 	/**
@@ -73,36 +80,8 @@ public class ShownContextMethod
 		FrameLocation __oldLocation, InfoThread __newThread,
 		InfoFrame __newFrame, FrameLocation __newLocation)
 	{
-		// Remove the old method being shown
-		ShownMethod current = this._shownMethod;
-		if (current != null)
-			this.remove(current);
-		
-		// If there is nothing, just say as such... we do need both a thread
-		// and a frame for this to even make sense
-		if (__newThread == null || __newFrame == null)
-		{
-			this.info.setText("Nothing");
-			return;
-		}
-		
-		// Which thread are we looking at?
-		this.info.setText(__newThread.toString());
-		
-		// Setup new view for the current method
-		InfoMethod inMethod = __newFrame.inMethod();
-		current = new ShownMethod(this.state,
-			new RemoteMethodViewer(this.state, inMethod),
-			this.context,
-			true);
-		this._shownMethod = current;
-		this.add(current, BorderLayout.CENTER);
-		
-		// Make sure it is updated
-		current.shownUpdate();
-		
-		// Repaint
-		this.repaint();
+		// Use normal update
+		this.update();
 	}
 	
 	/**
@@ -113,7 +92,47 @@ public class ShownContextMethod
 	public void update()
 	{
 		ShownMethod current = this._shownMethod;
-		if (current != null)
+		
+		// Get frame and the method we are in
+		InfoFrame inFrame = this.context.getFrame();
+		InfoMethod inMethod = (inFrame == null ? null : inFrame.inMethod());
+		
+		// Do we need to replace the method being shown?
+		if (current == null || !Objects.equals(this._lookingAt, inMethod))
+		{
+			// Remove old one if it is there
+			if (current != null)
+				this.remove(current);
+			
+			// Setup new view for the current method
+			if (inMethod != null)
+			{
+				current = new ShownMethod(this.state,
+					new RemoteMethodViewer(this.state, inMethod), this.context,
+					true);
+				this._shownMethod = current;
+				this._lookingAt = inMethod;
+				this.add(current, BorderLayout.CENTER);
+				
+				// Make sure it gets updated
+				current.shownUpdate();
+			}
+		}
+		
+		// Update it regardless
+		else
 			current.shownUpdate();
+		
+		// If there is nothing, just say as such...
+		if (this._shownMethod == null)
+			this.info.setText("Nothing");
+		
+		// Otherwise describe the current frame
+		else
+			this.info.setText(String.format("%s @ %d",
+				inMethod, inFrame.location.index));
+		
+		// Repaint
+		this.repaint();
 	}
 }

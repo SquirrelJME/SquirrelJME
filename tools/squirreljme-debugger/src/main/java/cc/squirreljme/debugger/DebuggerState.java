@@ -88,6 +88,10 @@ public class DebuggerState
 	/** Has the virtual machine been started? */
 	private volatile boolean _hasStarted;
 	
+	/** Interpreter for byte code locations. */
+	volatile FrameLocationInterpret _locationInterpret =
+		FrameLocationInterpret.ADDRESS;
+	
 	/**
 	 * Initializes the debugger state.
 	 *
@@ -814,19 +818,7 @@ public class DebuggerState
 		try (JDWPPacket packet = this.request(JDWPCommandSet.VIRTUAL_MACHINE,
 			JDWPCommandSetVirtualMachine.VERSION))
 		{
-			this.send(packet,
-				(__state, __reply) -> {
-					Debugging.debugNote("Description: %s",
-						__reply.readString());
-					Debugging.debugNote("JDWP Major: %d",
-						__reply.readInt());
-					Debugging.debugNote("JDWP Minor: %d",
-						__reply.readInt());
-					Debugging.debugNote("VM Version: %s",
-						__reply.readString());
-					Debugging.debugNote("VM Name: %s",
-						__reply.readString());
-				});
+			this.send(packet, this::__remoteVmInfo);
 		}
 		
 		// Get the capabilities of the remote VM, so we know what we can and
@@ -949,5 +941,39 @@ public class DebuggerState
 		}
 		
 		Debugging.debugNote("Handle non-event?");
+	}
+	
+	/**
+	 * Initializes the remote virtual machine info.
+	 *
+	 * @param __state The state used.
+	 * @param __reply The reply packet.
+	 * @since 2024/01/26
+	 */
+	private void __remoteVmInfo(DebuggerState __state, JDWPPacket __reply)
+	{
+		// Read all the info
+		String desc = __reply.readString();
+		int jdwpMajor = __reply.readInt();
+		int jdwpMinor = __reply.readInt();
+		String vmVersion = __reply.readString();
+		String vmName = __reply.readString();
+		
+		// SquirrelJME uses indexes for byte code instructions rather than
+		// their actual address
+		if (desc.contains("SquirrelJME") || vmName.contains("SquirrelJME"))
+			this._locationInterpret = FrameLocationInterpret.INDEX;
+		
+		// Note it
+		Debugging.debugNote("Description: %s",
+			desc);
+		Debugging.debugNote("JDWP Major: %d",
+			jdwpMajor);
+		Debugging.debugNote("JDWP Minor: %d",
+			jdwpMinor);
+		Debugging.debugNote("VM Version: %s",
+			vmVersion);
+		Debugging.debugNote("VM Name: %s",
+			vmName);
 	}
 }

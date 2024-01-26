@@ -34,7 +34,7 @@ public class ShownContextFrame
 	protected final JButton text;
 	
 	/** The active pointer button. */
-	protected final JButton active;
+	protected final JButton pointer;
 	
 	/**
 	 * Initializes the context frame.
@@ -60,12 +60,12 @@ public class ShownContextFrame
 		layout.setVgap(0);
 		this.setLayout(layout);
 		
-		// Add current active context button
-		JButton active = new JButton();
-		this.active = active;
-		Utils.prettyTextButton(active);
-		active.setIcon(Utils.tangoIcon("-"));
-		this.add(active);
+		// Add current frame pointer button
+		JButton pointer = new JButton();
+		this.pointer = pointer;
+		Utils.prettyTextButton(pointer);
+		pointer.setIcon(Utils.tangoIcon("-"));
+		this.add(pointer);
 		
 		// Setup a nice text button
 		JButton text = new JButton(__frame.toString());
@@ -101,12 +101,12 @@ public class ShownContextFrame
 	public void update()
 	{
 		// Is this selected?
-		JButton active = this.active;
+		JButton pointer = this.pointer;
 		InfoFrame inFrame = this.context.getFrame();
 		if (Objects.equals(this.frame, inFrame))
-			active.setIcon(Utils.tangoIcon("go-next"));
+			pointer.setIcon(Utils.tangoIcon("go-next"));
 		else
-			active.setIcon(Utils.tangoIcon("-"));
+			pointer.setIcon(Utils.tangoIcon("-"));
 	}
 	
 	/**

@@ -75,6 +75,20 @@ public final class ContextThreadFrame
 	}
 	
 	/**
+	 * Returns the current frame location.
+	 *
+	 * @return The frame location.
+	 * @since 2024/01/26
+	 */
+	public FrameLocation getLocation()
+	{
+		synchronized (this)
+		{
+			return this._location;
+		}
+	}
+	
+	/**
 	 * Returns the current thread.
 	 *
 	 * @return The current thread.
@@ -200,10 +214,10 @@ public final class ContextThreadFrame
 			else
 				newFrame = oldFrame;
 			
-			// Keep the location the same or clear it?
-			newLocation = oldLocation;
-			if (newFrame != null &&
-				!Objects.equals(newFrame.location, newLocation))
+			// Location is at the frame
+			if (newFrame != null)
+				newLocation = newFrame.location;
+			else
 				newLocation = null;
 			
 			// Set
@@ -246,6 +260,7 @@ public final class ContextThreadFrame
 			{
 				newThread = __frame.inThread;
 				newFrame = __frame;
+				newLocation = __frame.location;
 			}
 			
 			// Clear them
@@ -253,13 +268,8 @@ public final class ContextThreadFrame
 			{
 				newThread = null;
 				newFrame = null;
-			}
-			
-			// Keep the location the same or clear it?
-			newLocation = oldLocation;
-			if (newFrame != null &&
-				!Objects.equals(newFrame.location, newLocation))
 				newLocation = null;
+			}
 			
 			// Set
 			this._thread = newThread;
@@ -281,7 +291,7 @@ public final class ContextThreadFrame
 	 */
 	public void set(FrameLocation __location)
 	{
-		
+		// Is really int the frame location
 	}
 	
 	/**

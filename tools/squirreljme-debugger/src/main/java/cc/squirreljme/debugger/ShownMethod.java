@@ -124,7 +124,7 @@ public class ShownMethod
 			{
 				// Initialize a shower!
 				ShownInstruction shown = new ShownInstruction(
-					state, instructions[i], context);
+					state, instructions[i], context, i);
 				
 				// Show it
 				shownInstructions[i] = shown;

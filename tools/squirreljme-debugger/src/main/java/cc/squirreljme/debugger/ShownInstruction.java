@@ -42,17 +42,24 @@ public class ShownInstruction
 	/** The context for this instruction. */
 	protected final ContextThreadFrame context;
 	
+	/** The index of this instruction. */
+	protected final int index;
+	
+	/** The current pointer. */
+	protected final JButton pointer;
+	
 	/**
 	 * Initializes the instruction line.
 	 *
 	 * @param __state The optional state for tracking.
 	 * @param __viewer The viewer to use.
 	 * @param __context The optional thread debugging context.
+	 * @param __index The index of this instruction.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/21
 	 */
 	public ShownInstruction(DebuggerState __state, InstructionViewer __viewer,
-		ContextThreadFrame __context)
+		ContextThreadFrame __context, int __index)
 		throws NullPointerException
 	{
 		if (__viewer == null)
@@ -62,6 +69,7 @@ public class ShownInstruction
 		this.state = __state;
 		this.viewer = __viewer;
 		this.context = __context;
+		this.index = __index;
 		
 		// Reduce border size
 		this.setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -91,6 +99,19 @@ public class ShownInstruction
 			this.add(breakpoint);
 		}
 		
+		// If there is a context we can show the current position
+		if (__context == null)
+			this.pointer = null;
+		else
+		{
+			// Add current frame pointer button
+			JButton pointer = new JButton();
+			this.pointer = pointer;
+			Utils.prettyTextButton(pointer);
+			pointer.setIcon(Utils.tangoIcon("-"));
+			this.add(pointer);
+		}
+		
 		// Setup address
 		JTextField address = new JTextField();
 		Utils.prettyTextField(address);
@@ -118,8 +139,42 @@ public class ShownInstruction
 	{
 		InstructionViewer viewer = this.viewer;
 		
+		// What is our PC address?
+		int pcAddr = viewer.address();
+		int index = this.index;
+		
+		// Update the context-sensitive info
+		ContextThreadFrame context = this.context;
+		if (context != null)
+		{
+			JButton pointer = this.pointer;
+			
+			// How is the location interpreted?
+			FrameLocationInterpret interpret =
+				this.state._locationInterpret;
+			
+			// Is there a valid location
+			FrameLocation location = context.getLocation();
+			boolean isAt = false;
+			if (location == null)
+				isAt = false;
+			else
+			{
+				if (interpret == FrameLocationInterpret.ADDRESS)
+					isAt = (location.index == pcAddr);
+				else
+					isAt = (location.index == index);
+			}
+			
+			// Is this the location we are at?
+			if (isAt)
+				pointer.setIcon(Utils.tangoIcon("go-next"));
+			else
+				pointer.setIcon(Utils.tangoIcon("-"));
+		}
+		
 		// Set address
-		this.address.setText(String.format("@%d", viewer.address()));
+		this.address.setText(String.format("@%d", pcAddr));
 		
 		// Set mnemonic
 		this.description.setText(viewer.mnemonic());
