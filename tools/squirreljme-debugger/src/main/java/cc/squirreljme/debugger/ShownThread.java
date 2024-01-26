@@ -168,5 +168,8 @@ public class ShownThread
 				sequence.removeAll();
 			}
 		}
+		
+		// Repaint
+		this.repaint();
 	}
 }

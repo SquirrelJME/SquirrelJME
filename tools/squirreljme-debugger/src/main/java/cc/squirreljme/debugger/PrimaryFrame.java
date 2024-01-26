@@ -60,6 +60,9 @@ public class PrimaryFrame
 	protected final ContextThreadFrame context =
 		new ContextThreadFrame();
 	
+	/** The shown context thread. */
+	protected final ShownContextMethod shownContext;
+	
 	/**
 	 * Initializes the primary frame.
 	 *
@@ -160,6 +163,12 @@ public class PrimaryFrame
 		this.add(shownThreads, BorderLayout.LINE_START);
 		this.shownThreads = shownThreads;
 		
+		// Context viewer for the current frame location
+		ShownContextMethod shownContext = new ShownContextMethod(
+			this.state, this.context);
+		this.shownContext = shownContext;
+		this.add(shownContext, BorderLayout.CENTER);
+		
 		// Setup toolbar
 		JToolBar toolBar = new JToolBar();
 		this.toolBar = toolBar;
@@ -189,14 +198,18 @@ public class PrimaryFrame
 		resumeAll.addActionListener(
 			(__ignored) -> {
 				__state.threadResumeAll();
+				
 				this.shownThreads.update();
+				this.shownContext.update();
 			});
 		JButton suspendAll = PrimaryFrame.__barButton(toolBar,
 			"Suspend All Threads", "weather-snow");
 		suspendAll.addActionListener(
 			(__ignored) -> {
 				__state.threadSuspendAll();
+				
 				this.shownThreads.update();
+				this.shownContext.update();
 			});
 		
 		toolBar.addSeparator();
@@ -230,11 +243,6 @@ public class PrimaryFrame
 		
 		// Add that to the bottom
 		this.add(statusPanel, BorderLayout.PAGE_END);
-		
-		// Context viewer for the current frame location
-		ShownContextMethod shownContext = new ShownContextMethod(
-			this.state, this.context);
-		this.add(shownContext, BorderLayout.CENTER);
 	}
 	
 	/**

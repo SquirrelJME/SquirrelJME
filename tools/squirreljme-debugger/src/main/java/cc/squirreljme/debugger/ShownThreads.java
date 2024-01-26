@@ -111,7 +111,8 @@ public class ShownThreads
 			// See if we still know about this thread, if a thread is dead
 			// or disposed of then do not bother showing it at all
 			int found = -1;
-			if (!at.isDisposed() && !at.isDead.getOrDefault(false))
+			if (at != null && !at.isDisposed() &&
+				!at.isDead.getOrDefault(false))
 				for (int j = 0, m = threads.length; j < m; j++)
 					if (Objects.equals(at, threads[j]))
 					{
@@ -179,6 +180,9 @@ public class ShownThreads
 		// Have the shown information update
 		else
 			shown.update();
+		
+		// Repaint
+		this.repaint();
 	}
 	
 	/**
@@ -189,8 +193,12 @@ public class ShownThreads
 	 */
 	private void __chooseThread(ActionEvent __event)
 	{
-		// Did the thread change?
 		InfoThread thread = (InfoThread)this.combo.getSelectedItem();
+		
+		// Debug
+		Debugging.debugNote("Chose %s", thread);
+		
+		// Did the thread change?
 		if (thread != null)
 			this.context.set(thread);
 	}
@@ -203,12 +211,13 @@ public class ShownThreads
 	 */
 	private void __chooseThread(ItemEvent __event)
 	{
-		Debugging.debugNote("ItemListener called!");
-		
 		// Do nothing if nothing was set, or we deselected the item
 		InfoThread thread = (InfoThread)__event.getItem();
 		if (thread == null || __event.getStateChange() != ItemEvent.SELECTED)
 			return;
+		
+		// Debug
+		Debugging.debugNote("Chose %s", thread);
 		
 		// Update thread
 		this.context.set(thread);

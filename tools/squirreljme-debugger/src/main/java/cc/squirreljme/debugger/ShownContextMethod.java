@@ -95,5 +95,23 @@ public class ShownContextMethod
 			true);
 		this._shownMethod = current;
 		this.add(current, BorderLayout.CENTER);
+		
+		// Make sure it is updated
+		current.shownUpdate();
+		
+		// Repaint
+		this.repaint();
+	}
+	
+	/**
+	 * Updates the current item.
+	 *
+	 * @since 2024/01/26
+	 */
+	public void update()
+	{
+		ShownMethod current = this._shownMethod;
+		if (current != null)
+			current.shownUpdate();
 	}
 }
