@@ -251,6 +251,11 @@ public final class ContextThreadFrame
 	 */
 	public void set(InfoThread __thread)
 	{
+		// Changing is not possible if the thread is dead or disposed of
+		if (__thread != null &&
+			(__thread.isDisposed() || __thread.isDead.get()))
+			return;
+		
 		InfoThread oldThread;
 		InfoFrame oldFrame;
 		FrameLocation oldLocation;
@@ -313,6 +318,11 @@ public final class ContextThreadFrame
 	 */
 	public void set(InfoFrame __frame)
 	{
+		InfoThread wantThread = (__frame != null ? __frame.inThread : null);
+		if (wantThread != null &&
+			(wantThread.isDisposed() || wantThread.isDead.get()))
+			return;
+		
 		InfoThread oldThread;
 		InfoFrame oldFrame;
 		FrameLocation oldLocation;
@@ -331,7 +341,7 @@ public final class ContextThreadFrame
 			// Can easily set the new thread and frames
 			if (__frame != null)
 			{
-				newThread = __frame.inThread;
+				newThread = wantThread;
 				newFrame = __frame;
 				newLocation = __frame.location;
 			}
