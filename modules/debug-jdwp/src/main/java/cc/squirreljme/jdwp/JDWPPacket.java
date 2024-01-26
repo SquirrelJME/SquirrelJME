@@ -587,6 +587,27 @@ public final class JDWPPacket
 	}
 	
 	/**
+	 * Reads a short value.
+	 *
+	 * @return The read value.
+	 * @throws JDWPException If the packet could not be read.
+	 * @since 2024/01/26
+	 */
+	public short readShort()
+		throws JDWPException
+	{
+		synchronized (this)
+		{
+			// Ensure this is open
+			this.__checkOpen();
+			
+			// Read in each byte
+			return (short)(((this.readByte() & 0xFF) << 8) |
+				(this.readByte() & 0xFF));
+		}
+	}
+	
+	/**
 	 * Reads the specified string.
 	 * 
 	 * @return The read string.
@@ -619,6 +640,92 @@ public final class JDWPPacket
 				/* {@squirreljme.error AG0f UTF-8 not supported?} */
 				throw new JDWPException("AG0f", __e);
 			}
+		}
+	}
+	
+	/**
+	 * Reads a single value.
+	 *
+	 * @return The resultant value.
+	 * @throws JDWPException On read errors.
+	 * @since 2024/01/26
+	 */
+	public JDWPValue readValue()
+		throws JDWPException
+	{
+		synchronized (this)
+		{
+			// Ensure this is open
+			this.__checkOpen();
+			
+			// Read tag
+			byte rawTag = this.readByte();
+			JDWPValueTag tag = JDWPValueTag.fromTag(rawTag);
+			if (tag == null)
+				throw new JDWPException("ITAG " + rawTag);
+			
+			// Read based on tag value
+			Object value;
+			switch (tag)
+			{
+					// Void, which is nothing
+				case VOID:
+					value = null;
+					break;
+				
+					// Objects
+				case ARRAY:
+				case OBJECT:
+				case STRING:
+				case CLASS_OBJECT:
+				case CLASS_LOADER:
+				case THREAD_GROUP:
+					value = this.readId(JDWPIdKind.OBJECT_ID);
+					break;
+					
+				case THREAD:
+					value = this.readId(JDWPIdKind.THREAD_ID);
+					break;
+					
+				case BOOLEAN:
+					value = (this.readByte() != 0);
+					break;
+					
+				case BYTE:
+					value = this.readByte();
+					break;
+					
+				case SHORT:
+					value = this.readShort();
+					break;
+					
+				case CHARACTER:
+					value = (char)this.readShort();
+					break;
+					
+				case INTEGER:
+					value = this.readInt();
+					break;
+					
+				case LONG:
+					value = this.readLong();
+					break;
+					
+				case FLOAT:
+					value = Float.intBitsToFloat(this.readInt());
+					break;
+					
+				case DOUBLE:
+					value = Double.longBitsToDouble(this.readLong());
+					break;
+					
+					// Unknown value
+				default:
+					throw new JDWPException("ITAG " + rawTag);
+			}
+			
+			// Return the resultant value
+			return new JDWPValue(tag, value);
 		}
 	}
 	

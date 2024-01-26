@@ -14,6 +14,7 @@ import cc.squirreljme.jdwp.JDWPCommandSetStackFrame;
 import cc.squirreljme.jdwp.JDWPId;
 import cc.squirreljme.jdwp.JDWPIdKind;
 import cc.squirreljme.jdwp.JDWPPacket;
+import cc.squirreljme.jdwp.JDWPValue;
 import cc.squirreljme.jdwp.JDWPValueTag;
 import java.util.ArrayList;
 import java.util.List;
@@ -141,7 +142,7 @@ public class InfoFrame
 		// directly, like it does not tell us the actual type that is there, so
 		// we have to do some major probing to try to get that information...
 		List<Object> result = new ArrayList<>();
-		Object[] object = new Object[1];
+		JDWPValue[] object = new JDWPValue[1];
 		for (int i = 0; i < 255; i++)
 			try
 			{
@@ -171,7 +172,7 @@ public class InfoFrame
 	 * @since 2024/01/26
 	 */
 	private Object __variableAttempt(DebuggerState __state, JDWPId __threadId, 
-		JDWPId __frameId, int __varIndex, Object[] __object)
+		JDWPId __frameId, int __varIndex, JDWPValue[] __object)
 		throws NoSuchElementException, NullPointerException
 	{
 		if (__state == null || __threadId == null || __frameId == null ||
@@ -216,7 +217,7 @@ public class InfoFrame
 	 */
 	private Object __variableAttempt(DebuggerState __state, JDWPId __threadId,
 		JDWPId __frameId, int __varIndex, JDWPValueTag __tag,
-		Object[] __object)
+		JDWPValue[] __object)
 		throws NoSuchElementException, NullPointerException
 	{
 		if (__state == null || __threadId == null || __frameId == null ||
@@ -241,7 +242,7 @@ public class InfoFrame
 				(__ignored, __reply) -> {
 					// The number of read values
 					int numValues = __reply.readInt();
-					Object value = __reply.readByte();
+					JDWPValue value = __reply.readValue();
 					
 					// Set value
 					synchronized (__object)

@@ -98,6 +98,32 @@ public enum JDWPValueTag
 	}
 	
 	/**
+	 * Determines the value tag from the given tag.
+	 * 
+	 * @param __tag The tag to parse. 
+	 * @return The value tag or {@code null} if not valid.
+	 * @since 2021/04/11
+	 */
+	public static JDWPValueTag fromTag(int __tag)
+	{
+		switch (__tag)
+		{
+			case '[':	return JDWPValueTag.ARRAY;
+			case 'Z':	return JDWPValueTag.BOOLEAN;
+			case 'B':	return JDWPValueTag.BYTE;
+			case 'S':	return JDWPValueTag.SHORT;
+			case 'C':	return JDWPValueTag.CHARACTER;
+			case 'I':	return JDWPValueTag.INTEGER;
+			case 'F':	return JDWPValueTag.FLOAT;
+			case 'J':	return JDWPValueTag.LONG;
+			case 'D':	return JDWPValueTag.DOUBLE;
+			case 'L':	return JDWPValueTag.OBJECT;
+		}
+		
+		return null;
+	}
+	
+	/**
 	 * Determines the value tag from the given signature.
 	 * 
 	 * @param __signature The signature to read from. 
