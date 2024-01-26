@@ -83,7 +83,11 @@ public class InfoThread
 		String aName = this.threadName.getOrDefault(null);
 		String bName = this.threadName.getOrDefault(null);
 		if (aName != null && bName != null)
-			return aName.compareTo(bName);
+		{
+			int rv = aName.compareTo(bName);
+			if (rv != 0)
+				return rv;
+		}
 		
 		// Fallback to normal sort
 		return super.compareTo(__o);
