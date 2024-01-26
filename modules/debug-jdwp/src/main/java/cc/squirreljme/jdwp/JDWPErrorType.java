@@ -29,6 +29,9 @@ public enum JDWPErrorType
 	/** Invalid thread group. */
 	INVALID_THREAD_GROUP(11),
 	
+	/** Thread is not suspended. */
+	THREAD_NOT_SUSPENDED(13),
+	
 	/** Invalid object. */
 	INVALID_OBJECT(20),
 	

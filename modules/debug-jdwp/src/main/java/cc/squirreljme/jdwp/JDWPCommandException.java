@@ -24,6 +24,18 @@ public class JDWPCommandException
 	 * Initializes the exception.
 	 * 
 	 * @param __errorType The error type.
+	 * @since 2024/01/26
+	 */
+	public JDWPCommandException(JDWPErrorType __errorType)
+	{
+		this.type = (__errorType == null ? JDWPErrorType.INTERNAL :
+			__errorType);
+	}
+	
+	/**
+	 * Initializes the exception.
+	 * 
+	 * @param __errorType The error type.
 	 * @param __m The message for the error.
 	 * @since 2021/04/11
 	 */

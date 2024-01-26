@@ -10,6 +10,7 @@
 package cc.squirreljme.jdwp.host;
 
 import cc.squirreljme.jdwp.JDWPCommand;
+import cc.squirreljme.jdwp.JDWPCommandException;
 import cc.squirreljme.jdwp.JDWPCommandSetThreadReference;
 import cc.squirreljme.jdwp.JDWPErrorType;
 import cc.squirreljme.jdwp.JDWPException;
@@ -221,13 +222,19 @@ public enum JDWPHostCommandSetThreadReference
 			// Which thread do we want?
 			Object thread = __controller.readThread(__packet);
 			
+			// Not suspended?
+			JDWPViewThread viewThread = __controller.viewThread();
+			if (viewThread.suspension(thread).query() <= 0)
+				throw new JDWPCommandException(
+					JDWPErrorType.THREAD_NOT_SUSPENDED);
+			
 			// Input for the packet
 			int startFrame = __packet.readInt();
 			int count = __packet.readInt();
 			
 			// Correct the frame count, to make sure it is always within
 			// bounds of the call
-			Object[] frames = __controller.viewThread().frames(thread);
+			Object[] frames = viewThread.frames(thread);
 			count = (count == -1 ? Math.max(0, frames.length - startFrame) :
 				Math.min(count, frames.length - startFrame));
 			
@@ -276,12 +283,17 @@ public enum JDWPHostCommandSetThreadReference
 		{
 			// Which thread do we want?
 			Object thread = __controller.readThread(__packet);
+			
+			JDWPViewThread viewThread = __controller.viewThread();
+			if (viewThread.suspension(thread).query() <= 0)
+				throw new JDWPCommandException(
+					JDWPErrorType.THREAD_NOT_SUSPENDED);
 				
 			JDWPPacket rv = __controller.reply(
 				__packet.id(), JDWPErrorType.NO_ERROR);
 			
 			// Return the frame count
-			rv.writeInt(__controller.viewThread().frames(thread).length);
+			rv.writeInt(viewThread.frames(thread).length);
 			
 			return rv;
 		}

@@ -17,6 +17,7 @@ import cc.squirreljme.jdwp.JDWPException;
 import cc.squirreljme.jdwp.JDWPPacket;
 import cc.squirreljme.jdwp.JDWPValueTag;
 import cc.squirreljme.jdwp.host.views.JDWPViewFrame;
+import cc.squirreljme.jdwp.host.views.JDWPViewThread;
 
 /**
  * Command set for stack frames.
@@ -39,8 +40,14 @@ public enum JDWPHostCommandSetStackFrame
 			throws JDWPException
 		{
 			// Ignore the thread but check it, then read the frame
-			__controller.readThread(__packet);
+			Object thread = __controller.readThread(__packet);
 			Object frame = __controller.readFrame(__packet, false);
+			
+			// Not suspended?
+			JDWPViewThread viewThread = __controller.viewThread();
+			if (viewThread.suspension(thread).query() <= 0)
+				throw new JDWPCommandException(
+					JDWPErrorType.THREAD_NOT_SUSPENDED);
 			
 			// Read in the slot table
 			int numSlots = __packet.readInt();
@@ -97,8 +104,14 @@ public enum JDWPHostCommandSetStackFrame
 			throws JDWPException
 		{
 			// Ignore the thread but check it, then read the frame
-			__controller.readThread(__packet);
+			Object thread = __controller.readThread(__packet);
 			Object frame = __controller.readFrame(__packet, false);
+			
+			// Not suspended?
+			JDWPViewThread viewThread = __controller.viewThread();
+			if (viewThread.suspension(thread).query() <= 0)
+				throw new JDWPCommandException(
+					JDWPErrorType.THREAD_NOT_SUSPENDED);
 			
 			// Where is this frame located?
 			JDWPViewFrame viewFrame = __controller.viewFrame();

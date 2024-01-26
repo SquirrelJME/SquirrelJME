@@ -20,6 +20,15 @@ public class JDWPException
 	/**
 	 * Initializes the exception.
 	 * 
+	 * @since 2024/01/26
+	 */
+	public JDWPException()
+	{
+	}
+	
+	/**
+	 * Initializes the exception.
+	 * 
 	 * @param __m The message used.
 	 * @since 2021/03/10
 	 */

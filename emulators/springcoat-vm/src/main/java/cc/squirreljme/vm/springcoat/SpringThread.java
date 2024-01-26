@@ -322,7 +322,7 @@ public final class SpringThread
 	}
 	
 	/**
-	 * Returns all of the frames which are available.
+	 * Returns all the frames which are available.
 	 *
 	 * @return All of the available stack frames.
 	 * @since 2018/09/16
