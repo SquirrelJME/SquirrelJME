@@ -639,7 +639,7 @@ public class DebuggerState
 			JDWPCommandSetThreadReference.RESUME))
 		{
 			// Write the ID of the thread
-			out.writeId(__thread.id.intValue());
+			out.writeId(__thread.id);
 			
 			// Send it
 			this.send(out);
@@ -658,6 +658,30 @@ public class DebuggerState
 		try (JDWPPacket out = this.request(JDWPCommandSet.VIRTUAL_MACHINE,
 			JDWPCommandSetVirtualMachine.RESUME))
 		{
+			// Send it
+			this.send(out);
+		}
+	}
+	
+	/**
+	 * Suspends the specified thread.
+	 *
+	 * @param __thread The thread to suspend.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/26
+	 */
+	public void threadSuspend(InfoThread __thread)
+		throws NullPointerException
+	{
+		if (__thread == null)
+			throw new NullPointerException("NARG");
+		
+		try (JDWPPacket out = this.request(JDWPCommandSet.THREAD_REFERENCE,
+			JDWPCommandSetThreadReference.SUSPEND))
+		{
+			// Write the ID of the thread
+			out.writeId(__thread.id);
+			
 			// Send it
 			this.send(out);
 		}

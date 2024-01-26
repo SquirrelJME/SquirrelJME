@@ -186,10 +186,28 @@ public class PrimaryFrame
 		
 		toolBar.addSeparator();
 		
-		PrimaryFrame.__barButton(toolBar,
+		JButton resumeSingle = PrimaryFrame.__barButton(toolBar,
 			"Resume Single Thread", "media-playback-start");
-		PrimaryFrame.__barButton(toolBar,
+		resumeSingle.addActionListener(
+			(__ignored) -> {
+				InfoThread thread = this.context.getThread();
+				if (thread != null)
+					__state.threadResume(thread);
+				
+				this.shownThreads.update();
+				this.shownContext.update();
+			});
+		JButton suspendSingle = PrimaryFrame.__barButton(toolBar,
 			"Suspend Single Thread", "media-playback-pause");
+		suspendSingle.addActionListener(
+			(__ignored) -> {
+				InfoThread thread = this.context.getThread();
+				if (thread != null)
+					__state.threadSuspend(thread);
+				
+				this.shownThreads.update();
+				this.shownContext.update();
+			});
 		
 		toolBar.addSeparator();
 		

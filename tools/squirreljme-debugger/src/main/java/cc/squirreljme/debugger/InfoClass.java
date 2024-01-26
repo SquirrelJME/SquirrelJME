@@ -215,7 +215,7 @@ public class InfoClass
 			JDWPCommandSetReferenceType.METHODS))
 		{
 			// Write the ID
-			out.writeId(this.id.intValue());
+			out.writeId(this.id);
 			
 			// Wait for response
 			__state.sendThenWait(out, Utils.TIMEOUT, (__ignored, __reply) -> {
@@ -272,7 +272,7 @@ public class InfoClass
 			JDWPCommandSetReferenceType.SIGNATURE))
 		{
 			// Write the ID
-			out.writeId(this.id.intValue());
+			out.writeId(this.id);
 			
 			// Wait for response
 			__state.sendThenWait(out, Utils.TIMEOUT, (__ignored, __reply) -> {
