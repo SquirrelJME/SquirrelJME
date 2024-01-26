@@ -862,7 +862,6 @@ public class DebuggerState
 		// need to handle it at some point
 		catch (JDWPIdSizeUnknownException ignored)
 		{
-			
 			// Store for later
 			synchronized (this)
 			{

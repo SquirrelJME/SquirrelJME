@@ -160,11 +160,8 @@ public class ShownThread
 			// Show as running
 			suspendLabel.setText("Running");
 			
-			synchronized (this)
-			{
-				// No frames are valid, so cannot show anything
-				sequence.removeAll();
-			}
+			// No frames are valid, so cannot show anything
+			sequence.removeAll();
 		}
 		
 		// Repaint

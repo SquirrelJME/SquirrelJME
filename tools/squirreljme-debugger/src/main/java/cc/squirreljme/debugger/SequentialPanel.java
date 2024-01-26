@@ -97,29 +97,26 @@ public class SequentialPanel
 		if (__component == null)
 			throw new NullPointerException("NARG");
 		
-		synchronized (this)
-		{
-			GridBagConstraints constraints = new GridBagConstraints();
-			constraints.anchor = GridBagConstraints.FIRST_LINE_START;
-			constraints.gridx = 0;
-			constraints.gridy = GridBagConstraints.RELATIVE;
-			constraints.gridwidth = 1;
-			constraints.fill = GridBagConstraints.HORIZONTAL;
-			
-			// Force to the left and take no vertical space
-			constraints.weightx = 20.0;
-			constraints.weighty = 0.0;
-			
-			// Remove the filler
-			this.addPanel.remove(this.filler);
-			
-			// Add to the panel
-			this.addPanel.add(__component, constraints);
-			
-			// Add the filler back with an extreme weight
-			constraints.weighty = 20.0;
-			this.addPanel.add(this.filler, constraints);
-		}
+		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.anchor = GridBagConstraints.FIRST_LINE_START;
+		constraints.gridx = 0;
+		constraints.gridy = GridBagConstraints.RELATIVE;
+		constraints.gridwidth = 1;
+		constraints.fill = GridBagConstraints.HORIZONTAL;
+		
+		// Force to the left and take no vertical space
+		constraints.weightx = 20.0;
+		constraints.weighty = 0.0;
+		
+		// Remove the filler
+		this.addPanel.remove(this.filler);
+		
+		// Add to the panel
+		this.addPanel.add(__component, constraints);
+		
+		// Add the filler back with an extreme weight
+		constraints.weighty = 20.0;
+		this.addPanel.add(this.filler, constraints);
 	}
 	
 	/**
@@ -140,21 +137,18 @@ public class SequentialPanel
 	 */
 	public void removeAll()
 	{
-		synchronized (this)
-		{
-			GridBagConstraints constraints = new GridBagConstraints();
-			constraints.anchor = GridBagConstraints.FIRST_LINE_START;
-			constraints.gridx = 0;
-			constraints.gridy = GridBagConstraints.RELATIVE;
-			constraints.gridwidth = 1;
-			constraints.fill = GridBagConstraints.HORIZONTAL;
-			
-			// Clear everything
-			this.addPanel.removeAll();
-			
-			// Add the filler back with an extreme weight
-			constraints.weighty = 20.0;
-			this.addPanel.add(this.filler, constraints);
-		}
+		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.anchor = GridBagConstraints.FIRST_LINE_START;
+		constraints.gridx = 0;
+		constraints.gridy = GridBagConstraints.RELATIVE;
+		constraints.gridwidth = 1;
+		constraints.fill = GridBagConstraints.HORIZONTAL;
+		
+		// Clear everything
+		this.addPanel.removeAll();
+		
+		// Add the filler back with an extreme weight
+		constraints.weighty = 20.0;
+		this.addPanel.add(this.filler, constraints);
 	}
 }
