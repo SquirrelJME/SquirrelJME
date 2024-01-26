@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import javax.swing.SwingUtilities;
 
 /**
  * Stores information on the current thread and frame.
@@ -210,9 +211,12 @@ public final class ContextThreadFrame
 			}
 		}
 		
-		// Call all listeners to update
+		// Call all listeners to update, make sure their update is done in
+		// the swing event thread
 		for (ContextThreadFrameListener listener : listeners)
-			listener.contextChanged(__oldThread, __oldFrame,
-				__newThread, __newFrame);
+			SwingUtilities.invokeLater(() -> {
+				listener.contextChanged(__oldThread, __oldFrame, __newThread,
+					__newFrame);
+			});
 	}
 }

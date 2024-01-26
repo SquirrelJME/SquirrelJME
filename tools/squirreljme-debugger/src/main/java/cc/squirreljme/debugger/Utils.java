@@ -298,14 +298,16 @@ public final class Utils
 			throw new NullPointerException("NARG");
 		
 		// Set icon for the toolbar item
-		try (InputStream in = TangoIconLoader.loadIcon(16, __name))
-		{
-			if (in != null)
-				return new ImageIcon(StreamUtils.readAll(in));
-		}
-		catch (IOException __ignored)
-		{
-		}
+		if (!__name.equals("-"))
+			try (InputStream in = TangoIconLoader.loadIcon(16, __name))
+			{
+				if (in != null)
+					return new ImageIcon(StreamUtils.readAll(in));
+			}
+			catch (IOException __e)
+			{
+				__e.printStackTrace();
+			}
 		
 		// Blank nothingness
 		return new ImageIcon(new BufferedImage(16, 16,

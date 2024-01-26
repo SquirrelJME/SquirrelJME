@@ -11,8 +11,11 @@ package cc.squirreljme.debugger;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.awt.BorderLayout;
+import java.awt.font.TextAttribute;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Objects;
+import javax.microedition.lcdui.Font;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -116,7 +119,7 @@ public class ShownThread
 			
 			// Frames are given where the top is at the bottom, so reverse
 			// the order for a more sensible stack
-			Collections.reverse(Arrays.asList(frames));
+			/*Collections.reverse(Arrays.asList(frames));*/
 			
 			// Place in all frames
 			synchronized (this)
@@ -126,10 +129,26 @@ public class ShownThread
 				
 				// Add sequences for all frames
 				ContextThreadFrame context = this.context;
+				InfoClass inClass = null;
 				for (int i = 0, n = frames.length; i < n; i++)
 				{
-					// Make a pretty button
 					InfoFrame frame = frames[i];
+					InfoClass newClass = frame.location.inClass;
+					
+					// Did the class change? Add banner for it
+					if (!Objects.equals(inClass, newClass))
+					{
+						// Add label for the class
+						JLabel atClass = new JLabel(newClass.toString());
+						atClass.setFont(atClass.getFont().deriveFont(
+							java.awt.Font.ITALIC));
+						sequence.add(atClass);
+						
+						// We are in this class now
+						inClass = newClass;
+					}
+					
+					// Make a pretty button
 					ShownContextFrame shownFrame =
 						new ShownContextFrame(frame, context);
 					

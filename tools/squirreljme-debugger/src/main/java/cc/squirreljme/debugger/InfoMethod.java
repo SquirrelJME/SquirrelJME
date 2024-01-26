@@ -119,15 +119,12 @@ public class InfoMethod
 		
 		// If the VM does not have the capability to get byte code, then
 		// we cannot actually do this
-		if (!__state.capabilities.has(JDWPCapability.CAN_GET_BYTECODES))
-		{
-			__value.set(null);
-			return;
-		}
-		
 		// If the class was garbage collected we cannot do much here
+		// or if the method is abstract or native
 		InfoClass inClass = this.inClass.get();
-		if (inClass == null)
+		if (!__state.capabilities.has(JDWPCapability.CAN_GET_BYTECODES) ||
+			inClass == null ||
+			this.flags.isAbstract() || this.flags.isNative())
 		{
 			__value.set(null);
 			return;
