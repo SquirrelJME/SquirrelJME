@@ -14,6 +14,9 @@ import cc.squirreljme.jdwp.JDWPCommandSetVirtualMachine;
 import cc.squirreljme.jdwp.JDWPId;
 import cc.squirreljme.jdwp.JDWPIdKind;
 import cc.squirreljme.jdwp.JDWPPacket;
+import cc.squirreljme.jdwp.JDWPStepDepth;
+import cc.squirreljme.jdwp.JDWPStepSize;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -181,8 +184,8 @@ public class PrimaryFrame
 			"View Class From Remote", "network-receive");
 		viewClassNet.addActionListener(this::__viewClassNetwork);
 		
-		PrimaryFrame.__barButton(toolBar,
-			"Copy Method to Clipboard", "edit-copy");
+		/*PrimaryFrame.__barButton(toolBar,
+			"Copy Method to Clipboard", "edit-copy");*/
 		
 		toolBar.addSeparator();
 		
@@ -232,25 +235,33 @@ public class PrimaryFrame
 		
 		toolBar.addSeparator();
 		
-		PrimaryFrame.__barButton(toolBar,
-			"Single Step", "go-down");
-		PrimaryFrame.__barButton(toolBar,
-			"Single Step in Method Only", "go-bottom");
-		PrimaryFrame.__barButton(toolBar,
-			"Step Over", "go-jump");
-		PrimaryFrame.__barButton(toolBar,
-			"Step Out To Parent Frame", "go-top");
-		PrimaryFrame.__barButton(toolBar,
-			"Continuously Single Step", "media-seek-forward");
-		PrimaryFrame.__barButton(toolBar,
-			"Perform X Single Steps", "media-skip-forward");
-		PrimaryFrame.__barButton(toolBar,
-			"Run To Caret", "input-mouse");
-		
-		toolBar.addSeparator();
-		
-		PrimaryFrame.__barButton(toolBar,
-			"Run Until Exception Thrown", "weather-storm");
+		JButton singleStepInto = PrimaryFrame.__barButton(toolBar,
+			"Single Step Into", "go-down");
+		singleStepInto.addActionListener((__event) -> {
+				InfoThread thread = this.context.getThread();
+				if (thread != null)
+					this.state.threadStep(thread, 1,
+						JDWPStepDepth.INTO, JDWPStepSize.MIN,
+						this::handleSingleStep);
+			});
+		JButton singleStepOver = PrimaryFrame.__barButton(toolBar,
+			"Single Step Over", "go-jump");
+		singleStepOver.addActionListener((__event) -> {
+				InfoThread thread = this.context.getThread();
+				if (thread != null)
+					this.state.threadStep(thread, 1,
+						JDWPStepDepth.OVER, JDWPStepSize.MIN,
+						this::handleSingleStep);
+			});
+		JButton singleStepOut = PrimaryFrame.__barButton(toolBar,
+			"Single Step Out", "go-top");
+		singleStepOut.addActionListener((__event) -> {
+				InfoThread thread = this.context.getThread();
+				if (thread != null)
+					this.state.threadStep(thread, 1,
+						JDWPStepDepth.OUT, JDWPStepSize.MIN,
+						this::handleSingleStep);
+			});
 		
 		// Add to the top
 		this.add(toolBar, BorderLayout.PAGE_START);
@@ -261,6 +272,30 @@ public class PrimaryFrame
 		
 		// Add that to the bottom
 		this.add(statusPanel, BorderLayout.PAGE_END);
+	}
+	
+	/**
+	 * Update via the event handler.
+	 *
+	 * @param __state The state used.
+	 * @param __event The debugging event.
+	 * @since 2024/01/26
+	 */
+	public void handleSingleStep(DebuggerState __state,
+		SingleStepEvent __event)
+	{
+		// Debug
+		Debugging.debugNote("Single stepped.");
+		
+		// Update context frame from this event
+		InfoThread inThread = __event.thread;
+		InfoFrame inFrame = inThread.topFrame(__state);
+		if (inFrame != null)
+			this.context.set(inFrame);
+		
+		// Update information
+		this.shownThreads.update();
+		this.shownContext.update();
 	}
 	
 	/**

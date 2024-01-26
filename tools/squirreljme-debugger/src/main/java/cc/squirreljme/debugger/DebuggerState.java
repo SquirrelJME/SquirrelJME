@@ -17,12 +17,16 @@ import cc.squirreljme.jdwp.JDWPErrorType;
 import cc.squirreljme.jdwp.JDWPEventKind;
 import cc.squirreljme.jdwp.JDWPCommand;
 import cc.squirreljme.jdwp.JDWPCommandSet;
+import cc.squirreljme.jdwp.JDWPEventModifierKind;
 import cc.squirreljme.jdwp.JDWPException;
 import cc.squirreljme.jdwp.JDWPId;
 import cc.squirreljme.jdwp.JDWPIdKind;
 import cc.squirreljme.jdwp.JDWPIdSizeUnknownException;
 import cc.squirreljme.jdwp.JDWPIdSizes;
 import cc.squirreljme.jdwp.JDWPPacket;
+import cc.squirreljme.jdwp.JDWPStepDepth;
+import cc.squirreljme.jdwp.JDWPStepSize;
+import cc.squirreljme.jdwp.JDWPSuspend;
 import cc.squirreljme.jdwp.JDWPSuspendPolicy;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.io.HexDumpOutputStream;
@@ -70,7 +74,7 @@ public class DebuggerState
 		new LinkedHashMap<>();
 	
 	/** Handlers for events. */
-	private final Map<Integer, EventHandler> _eventHandlers =
+	private final Map<Integer, EventHandler<?>> _eventHandlers =
 		new LinkedHashMap<>();
 	
 	/** Deferred packets. */
@@ -121,7 +125,7 @@ public class DebuggerState
 	 * @since 2024/01/20
 	 */
 	public void eventSet(JDWPEventKind __kind, JDWPSuspendPolicy __suspend,
-		EventHandler __handler)
+		EventModifier[] __modifiers, EventHandler<?> __handler)
 		throws NullPointerException
 	{
 		if (__kind == null || __suspend == null)
@@ -134,8 +138,17 @@ public class DebuggerState
 			out.writeByte(__kind.debuggerId());
 			out.writeByte(__suspend.debuggerId());
 			
-			// Currently just no modifiers
-			out.writeInt(0);
+			// No modifiers specified?
+			if (__modifiers == null || __modifiers.length == 0)
+				out.writeInt(0);
+			
+			// Write otherwise
+			else
+			{
+				out.writeInt(__modifiers.length);
+				for (EventModifier modifier : __modifiers)
+					modifier.write(this, out);
+			}
 			
 			// Send it, wait for the response for it
 			if (__handler == null)
@@ -145,7 +158,8 @@ public class DebuggerState
 					int eventId = __reply.readInt();
 					
 					// Store handler for later
-					Map<Integer, EventHandler> handlers = this._eventHandlers;
+					Map<Integer, EventHandler<?>> handlers =
+						this._eventHandlers;
 					synchronized (this)
 					{
 						handlers.put(eventId, __handler);
@@ -664,6 +678,39 @@ public class DebuggerState
 	}
 	
 	/**
+	 * Steps in a thread.
+	 *
+	 * @param __thread The thread to step in.
+	 * @param __count The steps to make.
+	 * @param __depth The step depth.
+	 * @param __size The step size.
+	 * @param __handler The handler to use for the event update.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/26
+	 */
+	public void threadStep(InfoThread __thread, int __count,
+		JDWPStepDepth __depth, JDWPStepSize __size,
+		EventHandler<SingleStepEvent> __handler)
+		throws NullPointerException
+	{
+		if (__thread == null || __depth == null || __size == null)
+			throw new NullPointerException("NARG");
+		
+		// Modifiers to use
+		EventModifier[] modifiers = {
+				new EventModifierSingleStep(__thread,
+					__depth, __size)
+			};
+		
+		// Just normal event set
+		for (int i = 0; i < __count; i++)
+			this.eventSet(JDWPEventKind.SINGLE_STEP,
+				JDWPSuspendPolicy.EVENT_THREAD,
+				modifiers,
+				__handler);
+	}
+	
+	/**
 	 * Suspends the specified thread.
 	 *
 	 * @param __thread The thread to suspend.
@@ -760,9 +807,9 @@ public class DebuggerState
 		
 		// Thread events, with no particular handler
 		this.eventSet(JDWPEventKind.THREAD_START, JDWPSuspendPolicy.NONE,
-			(__state, __reply) -> {});
+			null, (__state, __reply) -> {});
 		this.eventSet(JDWPEventKind.THREAD_DEATH, JDWPSuspendPolicy.NONE,
-			(__state, __reply) -> {});
+			null, (__state, __reply) -> {});
 	}
 	
 	/**

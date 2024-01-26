@@ -9,21 +9,48 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * The stepping size when single stepping.
  *
  * @since 2021/04/28
  */
 public enum JDWPStepSize
+	implements JDWPHasId
 {
 	/** Single instruction stepping. */
-	MIN,
+	MIN(0),
 	
 	/** Step on line changes, if this happens and lines are available. */
-	LINE,
+	LINE(1),
 	
 	/* End. */
 	;
+	
+	/** The identifier. */
+	public final int id;
+	
+	/**
+	 * Initializes the step size.
+	 *
+	 * @param __id The ID used.
+	 * @since 2024/01/26
+	 */
+	JDWPStepSize(int __id)
+	{
+		this.id = __id;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/01/26
+	 */
+	@Override
+	public int debuggerId()
+	{
+		return this.id;
+	}
 	
 	/**
 	 * Returns the step size for the given value.

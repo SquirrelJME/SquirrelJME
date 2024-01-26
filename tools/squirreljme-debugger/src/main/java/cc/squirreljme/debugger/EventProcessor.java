@@ -37,7 +37,20 @@ public enum EventProcessor
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
-			throw Debugging.todo();
+			StoredInfo<InfoThread> threadStore =
+				__state.storedInfo.getThreads();
+			
+			// Read thread
+			JDWPId threadId = __packet.readId(JDWPIdKind.THREAD_ID);
+			InfoThread thread = threadStore.get(__state, threadId);
+			
+			// Read location
+			FrameLocation location = __state.readLocation(thread,
+				__packet);
+			
+			// Call handler
+			__handler.handle(__state, new SingleStepEvent(thread, __suspend,
+				location));
 		}
 	},
 	

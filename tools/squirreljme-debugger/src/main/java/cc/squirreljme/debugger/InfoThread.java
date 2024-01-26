@@ -117,6 +117,28 @@ public class InfoThread
 	}
 	
 	/**
+	 * Returns the top most frame.
+	 *
+	 * @param __state The state used.
+	 * @return The topmost frame or {@code null} if not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/26
+	 */
+	public InfoFrame topFrame(DebuggerState __state)
+		throws NullPointerException
+	{
+		if (__state == null)
+			throw new NullPointerException("NARG");
+		
+		InfoFrame[] frames = this.frames.update(__state);
+		if (frames != null && frames.length > 0)
+			return frames[0];
+		
+		// Not valid
+		return null;
+	}
+	
+	/**
 	 * Updates the stack frames of this thread.
 	 *
 	 * @param __state The current debugger state.

@@ -9,24 +9,51 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * The stepping depth used with stepping.
  *
  * @since 2021/04/28
  */
 public enum JDWPStepDepth
+	implements JDWPHasId
 {
 	/** Step into any method calls and suspend into the given frame. */
-	INTO,
+	INTO(0),
 	
 	/** Step over any method calls and stay on the same frame. */
-	OVER,
+	OVER(1),
 	
 	/** Step out of the current frame. */
-	OUT,
+	OUT(2),
 	
 	/* End. */
 	;
+	
+	/** The step depth id. */
+	public final int id;
+	
+	/**
+	 * Initializes the step depth.
+	 *
+	 * @param __id The ID used.
+	 * @since 2024/01/26
+	 */
+	JDWPStepDepth(int __id)
+	{
+		this.id = __id;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/01/26
+	 */
+	@Override
+	public int debuggerId()
+	{
+		return this.id;
+	}
 	
 	/**
 	 * Returns the step depth for the given value.

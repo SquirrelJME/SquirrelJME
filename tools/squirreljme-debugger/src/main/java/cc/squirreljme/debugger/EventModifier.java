@@ -9,31 +9,21 @@
 
 package cc.squirreljme.debugger;
 
-import cc.squirreljme.jdwp.JDWPSuspendPolicy;
+import cc.squirreljme.jdwp.JDWPPacket;
 
 /**
- * Debugger event.
+ * Modifier for events.
  *
- * @since 2024/01/20
+ * @since 2024/01/26
  */
-public abstract class DebuggerEvent
+public interface EventModifier
 {
-	/** The suspend policy. */
-	protected final JDWPSuspendPolicy suspend;
-	
-	/** The thread this event is in. */
-	protected final InfoThread thread;
-	
 	/**
-	 * Initializes the base event.
+	 * Writes the modifier to the output.
 	 *
-	 * @param __thread The thread this is in.
-	 * @param __suspend The suspend policy.
+	 * @param __debuggerState The debugger state.
+	 * @param __packet The packet to write to.
 	 * @since 2024/01/26
 	 */
-	public DebuggerEvent(InfoThread __thread, JDWPSuspendPolicy __suspend)
-	{
-		this.thread = __thread;
-		this.suspend = __suspend;
-	}
+	void write(DebuggerState __debuggerState, JDWPPacket __packet);
 }
