@@ -12,10 +12,14 @@ package cc.squirreljme.debugger;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.Objects;
+import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
+import javax.swing.MutableComboBoxModel;
 
 /**
  * Shows all the running threads within the virtual machine and allows
@@ -35,6 +39,12 @@ public class ShownThreads
 	
 	/** The thread context. */
 	protected final ContextThreadFrame context;
+	
+	/** The action listener. */
+	private final ActionListener _actionListener;
+	
+	/** The item listener. */
+	private final ItemListener _itemListener;
 	
 	/** The currently viewed thread. */
 	private volatile ShownThread _current;
@@ -66,9 +76,13 @@ public class ShownThreads
 		// Place thread combo at the top
 		this.add(combo, BorderLayout.PAGE_START);
 		
+		// Store listeners
+		this._actionListener = this::__chooseThread;
+		this._itemListener = this::__chooseThread;
+		
 		// Set updater for when the combo box value changes
-		combo.addActionListener(this::__chooseThread);
-		combo.addItemListener(this::__chooseThread);
+		combo.addActionListener(this._actionListener);
+		combo.addItemListener(this._itemListener);
 	}
 	
 	/**
@@ -98,6 +112,13 @@ public class ShownThreads
 		// We will be working on this combo box much
 		JComboBox<InfoThread> combo = this.combo;
 		
+		Debugging.debugNote("Updating combo with %d items...",
+			combo.getItemCount());
+		
+		// Remove all listeners so changing items does not mess things up
+		combo.removeActionListener(this._actionListener);
+		combo.removeItemListener(this._itemListener);
+		
 		// The current selected item
 		InfoThread selected = (InfoThread)combo.getSelectedItem();
 		boolean redoSelection = false;
@@ -108,6 +129,9 @@ public class ShownThreads
 		{
 			// Get the thread here
 			InfoThread at = combo.getItemAt(i);
+			
+			Debugging.debugNote("Poking %s at %d...",
+				at, i);
 			
 			// See if we still know about this thread, if a thread is dead
 			// or disposed of then do not bother showing it at all
@@ -124,6 +148,8 @@ public class ShownThreads
 			// If not found, then remove the thread
 			if (found < 0)
 			{
+				Debugging.debugNote("Clear %s", at);
+				
 				// If this was the selected item, we need to change it
 				if (Objects.equals(selected, at))
 					redoSelection = true;
@@ -134,7 +160,11 @@ public class ShownThreads
 			
 			// Otherwise clear it to mark as not added
 			else
+			{
+				Debugging.debugNote("Found %s at %d", at, found);
+				
 				threads[found] = null;
+			}
 		}
 		
 		// Go through and add any threads that are new
@@ -145,6 +175,13 @@ public class ShownThreads
 		// Need to redo the selection? Just select the first then
 		if (redoSelection)
 			combo.setSelectedItem(0);
+		
+		// Set updater for when the combo box value changes
+		combo.addActionListener(this._actionListener);
+		combo.addItemListener(this._itemListener);
+
+		// Repaint???
+		combo.repaint();
 		
 		// Need to determine if the thread is changing
 		ShownThread shown = this._current;
@@ -193,7 +230,7 @@ public class ShownThreads
 		InfoThread thread = (InfoThread)this.combo.getSelectedItem();
 		
 		// Debug
-		Debugging.debugNote("Chose %s", thread);
+		Debugging.debugNote("Chose %s (ActionEvent)", thread);
 		
 		// Did the thread change?
 		if (thread != null)
@@ -214,9 +251,10 @@ public class ShownThreads
 			return;
 		
 		// Debug
-		Debugging.debugNote("Chose %s", thread);
+		Debugging.debugNote("Chose %s (ItemEvent)", thread);
 		
 		// Update thread
-		this.context.set(thread);
+		if (thread != null)
+			this.context.set(thread);
 	}
 }

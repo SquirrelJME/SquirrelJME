@@ -177,17 +177,24 @@ public abstract class Info
 		}
 		
 		// Has this been disposed?
-		String internalString = this.internalString();
-		synchronized (this)
+		try
 		{
-			if (this._disposed)
-				return String.format("DISPOSED %s#%s", this.kind, this.id);
-			
-			else if (internalString != null)
-				return internalString;
-			
-			return String.format("%s#%s", this.kind, this.id);
+			String internalString = this.internalString();
+			synchronized (this)
+			{
+				if (this._disposed)
+					return String.format("DISPOSED %s#%s", this.kind, this.id);
+				
+				else if (internalString != null)
+					return internalString;
+			}
 		}
+		catch (Throwable __t)
+		{
+			__t.printStackTrace();
+		}
+		
+		return String.format("%s#%s", this.kind, this.id);
 	}
 	
 	/**
