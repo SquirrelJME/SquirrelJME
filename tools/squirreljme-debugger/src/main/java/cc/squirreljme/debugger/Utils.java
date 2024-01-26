@@ -35,6 +35,10 @@ import org.freedesktop.tango.TangoIconLoader;
  */
 public final class Utils
 {
+	/** Short timeout. */
+	public static final int SHORT_TIMEOUT =
+		1000;
+	
 	/** Standard timeout value. */
 	public static final int TIMEOUT =
 		3000;

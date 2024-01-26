@@ -672,7 +672,8 @@ public final class JDWPHostController
 					catch (JDWPCommandException e)
 					{
 						// Print a trace of it
-						e.printStackTrace();
+						if (JDWPHostController._DEBUG)
+							e.printStackTrace();
 						
 						// Use this result
 						result = this.reply(

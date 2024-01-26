@@ -33,6 +33,9 @@ public class ShownContextMethod
 	/** Information label. */
 	protected final JLabel info;
 	
+	/** Variables used. */
+	protected final ShownContextVariables variables;
+	
 	/** Currently shown method. */
 	private volatile ShownMethod _shownMethod;
 	
@@ -63,6 +66,12 @@ public class ShownContextMethod
 		info.setHorizontalAlignment(SwingConstants.CENTER);
 		this.info = info;
 		this.add(info, BorderLayout.PAGE_START);
+		
+		// Add view of local variables
+		ShownContextVariables variables = new ShownContextVariables(__state,
+			__context);
+		this.variables = variables;
+		this.add(variables, BorderLayout.PAGE_END);
 		
 		// Set listener for this to update everything
 		__context.addListener(this);
@@ -131,6 +140,9 @@ public class ShownContextMethod
 		else
 			this.info.setText(String.format("%s @ %d",
 				inMethod, inFrame.location.index));
+		
+		// Update variables
+		this.variables.update();
 		
 		// Repaint
 		this.repaint();

@@ -10,6 +10,7 @@
 package cc.squirreljme.jdwp.host;
 
 import cc.squirreljme.jdwp.JDWPCommand;
+import cc.squirreljme.jdwp.JDWPCommandException;
 import cc.squirreljme.jdwp.JDWPCommandSetStackFrame;
 import cc.squirreljme.jdwp.JDWPErrorType;
 import cc.squirreljme.jdwp.JDWPException;
@@ -72,6 +73,11 @@ public enum JDWPHostCommandSetStackFrame
 					// Store object for later use
 					if (value.get() != null && tag.isObject)
 						__controller.getState().items.put(value.get());
+				}
+				catch (IndexOutOfBoundsException __e)
+				{
+					throw new JDWPCommandException(
+						JDWPErrorType.INVALID_SLOT, "IOOB", __e);
 				}
 			
 			return rv;

@@ -47,6 +47,9 @@ public enum JDWPErrorType
 	/** Invalid frame ID. */
 	INVALID_FRAME_ID(30),
 	
+	/** Invalid variable slot. */
+	INVALID_SLOT(35),
+	
 	/** Not implemented. */
 	NOT_IMPLEMENTED(99),
 	
