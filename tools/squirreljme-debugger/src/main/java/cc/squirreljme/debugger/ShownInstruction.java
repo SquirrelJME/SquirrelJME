@@ -11,6 +11,7 @@ package cc.squirreljme.debugger;
 
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.util.Objects;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -47,6 +48,9 @@ public class ShownInstruction
 	
 	/** The current pointer. */
 	protected final JButton pointer;
+	
+	/** Arguments to the instruction. */
+	private final JButton[] _args;
 	
 	/**
 	 * Initializes the instruction line.
@@ -121,13 +125,28 @@ public class ShownInstruction
 		Utils.prettyTextField(mnemonic);
 		mnemonic.setFont(mnemonic.getFont().deriveFont(Font.BOLD));
 		
+		// Get arguments to the instruction
+		Object[] rawArgs = __viewer.arguments();
+		int argCount = rawArgs.length;
+		JButton[] args = new JButton[argCount];
+		for (int i = 0; i < argCount; i++)
+		{
+			JButton single = new JButton(
+				Objects.toString(rawArgs[i]));
+			Utils.prettyTextButton(single);
+			args[i] = single;
+		}
+		
 		// Add everything in
 		this.add(address);
 		this.add(mnemonic);
+		for (JButton arg : args)
+			this.add(arg);
 		
 		// Store for later
 		this.address = address;
 		this.description = mnemonic;
+		this._args = args;
 	}
 	
 	/**

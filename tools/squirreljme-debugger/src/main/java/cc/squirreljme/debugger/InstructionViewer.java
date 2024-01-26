@@ -25,6 +25,14 @@ public interface InstructionViewer
 	int address();
 	
 	/**
+	 * Returns the argument to the byte code instruction.
+	 *
+	 * @return The instruction arguments.
+	 * @since 2024/01/26
+	 */
+	Object[] arguments();
+	
+	/**
 	 * Returns the length of the instruction.
 	 *
 	 * @return The instruction length.

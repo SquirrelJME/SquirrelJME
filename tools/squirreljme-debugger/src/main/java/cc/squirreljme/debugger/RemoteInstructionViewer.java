@@ -67,6 +67,16 @@ public class RemoteInstructionViewer
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2024/01/26
+	 */
+	@Override
+	public Object[] arguments()
+	{
+		return new Object[0];
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2024/01/23
 	 */
 	@Override

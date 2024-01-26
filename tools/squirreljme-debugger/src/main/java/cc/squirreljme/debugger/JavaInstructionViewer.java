@@ -52,6 +52,16 @@ public class JavaInstructionViewer
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2024/01/26
+	 */
+	@Override
+	public Object[] arguments()
+	{
+		return this.instruction.arguments();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2024/01/23
 	 */
 	@Override
