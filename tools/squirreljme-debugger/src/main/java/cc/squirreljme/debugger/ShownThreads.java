@@ -146,40 +146,39 @@ public class ShownThreads
 		
 		// Need to redo the selection? Just select the first then
 		if (redoSelection)
-		{
-			Debugging.debugNote("Redid selection?");
 			combo.setSelectedItem(0);
-		}
 		
 		// Need to determine if the thread is changing
 		ShownThread shown = this._current;
-		InfoThread thread = this.context.getThread();
+		InfoThread context = this.context.getThread();
 		
-		// If the thread has not changed, do nothing
-		if (thread != null && shown != null &&
-			Objects.equals(shown.thread, thread))
+		// Only update the shown info if the thread changed
+		if (shown != null && !Objects.equals(shown.thread, context))
 		{
-			// But do update it because we do like that
-			shown.update();
-				
-			return;
-		}
-		
-		// Remove old thread being shown
-		if (shown != null)
+			// Remove old thread being shown
 			this.remove(shown);
-		
-		// It is possible for a thread to get unselected
-		if (thread != null)
-		{
-			// Add in new thread
-			shown = new ShownThread(this.state, thread, this.context);
-			this.add(shown, BorderLayout.CENTER);
-			this._current = shown;
-			
-			// Force it to update quicker
-			shown.update();
+			shown = null;
 		}
+		
+		// Set new item?
+		if (shown == null)
+		{
+			// It is possible for a thread to get unselected
+			if (context != null)
+			{
+				// Add in new thread
+				shown = new ShownThread(this.state, context, this.context);
+				this.add(shown, BorderLayout.CENTER);
+				this._current = shown;
+				
+				// Force it to update quicker
+				shown.update();
+			}
+		}
+		
+		// Have the shown information update
+		else
+			shown.update();
 	}
 	
 	/**
