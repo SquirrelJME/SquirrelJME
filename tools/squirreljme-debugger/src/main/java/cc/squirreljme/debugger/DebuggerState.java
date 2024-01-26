@@ -61,6 +61,14 @@ public class DebuggerState
 	protected final TallyTracker sentTally =
 		new TallyTracker();
 	
+	/** Waiting packets. */
+	protected final TallyTracker waitingTally =
+		new TallyTracker();
+	
+	/** Latency. */
+	protected final TallyTracker latency =
+		new TallyTracker();
+	
 	/** The current capabilities of the remote virtual machine. */
 	protected final CapabilityStatus capabilities =
 		new CapabilityStatus();
@@ -75,6 +83,10 @@ public class DebuggerState
 	
 	/** Handler for all replies. */
 	private final Map<Integer, ReplyHandler> _replies =
+		new LinkedHashMap<>();
+	
+	/** Times for all replies. */
+	private final Map<Integer, Long> _times =
 		new LinkedHashMap<>();
 	
 	/** Handlers for events. */
@@ -440,8 +452,8 @@ public class DebuggerState
 					Debugging.debugNote("DEBUGGER <- %s", packet);
 					
 					if (packet != null)
-						try (HexDumpOutputStream dump = new HexDumpOutputStream(
-							System.err))
+						try (HexDumpOutputStream dump =
+								 new HexDumpOutputStream(System.err))
 						{
 							dump.write(packet.toByteArray());
 						}
@@ -520,10 +532,15 @@ public class DebuggerState
 			// Store handler for replies before we send as the pipe could be
 			// really fast!
 			Map<Integer, ReplyHandler> replies = this._replies;
+			Map<Integer, Long> times = this._times;
 			synchronized (this)
 			{
 				replies.put(__packet.id(), __reply);
+				times.put(__packet.id(), System.nanoTime());
 			}
+			
+			// Mark as waiting
+			this.waitingTally.increment();
 		}
 		
 		// Debug
@@ -718,16 +735,23 @@ public class DebuggerState
 		
 		// Modifiers to use
 		EventModifier[] modifiers = {
+				new EventModifierCount(__count),
 				new EventModifierSingleStep(__thread,
 					__depth, __size)
 			};
 		
-		// Just normal event set
-		for (int i = 0; i < __count; i++)
-			this.eventSet(JDWPEventKind.SINGLE_STEP,
-				JDWPSuspendPolicy.EVENT_THREAD,
-				modifiers,
-				__handler);
+		// An example single step
+		// EventRequest[id=483,kind=SINGLE_STEP,suspend=ALL,left=1,
+		// filter=EventFilter{callStackStepping=CallStackStepping[
+		// thread=Thread-6: callback#0,depth=0,size=1],
+		// exception=null, excludeClass=ClassPattern(kotlin.
+		// KotlinNullPointerException), fieldOnly=null,
+		// includeClass=null, location=null, thisInstance=null,
+		// thread=null, type=null}]
+		this.eventSet(JDWPEventKind.SINGLE_STEP,
+			JDWPSuspendPolicy.ALL,
+			modifiers,
+			__handler);
 	}
 	
 	/**
@@ -891,13 +915,18 @@ public class DebuggerState
 		if (__packet == null)
 			throw new NullPointerException("NARG");
 		
-		// See if there is a handler for this reply
+		// Handler and the time it happened
 		ReplyHandler handler;
+		Long nanoTime;
+		
+		// See if there is a handler for this reply
 		Map<Integer, ReplyHandler> replies = this._replies;
+		Map<Integer, Long> times = this._times;
 		synchronized (this)
 		{
 			// Only handle once!
 			handler = replies.remove(__packet.id());
+			nanoTime = times.remove(__packet.id());
 		}
 		
 		// If there is no handler, just ignore
@@ -908,6 +937,14 @@ public class DebuggerState
 			
 			return;
 		}
+		
+		// Set latency
+		if (nanoTime != null)
+			this.latency.set((int)Math.min(Integer.MAX_VALUE,
+				(System.nanoTime() - nanoTime) / 1_000_000L));
+		
+		// Decrement waiting count
+		this.waitingTally.decrement();
 		
 		// Call the handler accordingly
 		handler.handlePacket(this, __packet);

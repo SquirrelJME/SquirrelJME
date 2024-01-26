@@ -49,13 +49,12 @@ public enum EventProcessor
 				__packet);
 			
 			// Set context if missing
-			__state.context.optional(thread);
 			__state.context.optional(thread.topFrame(__state));
-			__state.context.optional(location);
 			
 			// Call handler
-			__handler.handle(__state, new SingleStepEvent(thread, __suspend,
-				location));
+			if (__handler != null)
+				__handler.handle(__state, new SingleStepEvent(thread,
+					__suspend, location));
 		}
 	},
 	
@@ -71,7 +70,7 @@ public enum EventProcessor
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
-			throw Debugging.todo();
+			Debugging.todo("Implement %s", this);
 		}
 	},
 	
@@ -87,7 +86,7 @@ public enum EventProcessor
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
-			throw Debugging.todo();
+			Debugging.todo("Implement %s", this);
 		}
 	},
 	
@@ -103,7 +102,7 @@ public enum EventProcessor
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
-			throw Debugging.todo();
+			Debugging.todo("Implement %s", this);
 		}
 	},
 	
@@ -119,7 +118,7 @@ public enum EventProcessor
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
-			throw Debugging.todo();
+			Debugging.todo("Implement %s", this);
 		}
 	},
 	
@@ -191,7 +190,7 @@ public enum EventProcessor
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
-			throw Debugging.todo();
+			Debugging.todo("Implement %s", this);
 		}
 	},
 	
@@ -207,7 +206,7 @@ public enum EventProcessor
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
-			throw Debugging.todo();
+			Debugging.todo("Implement %s", this);
 		}
 	},
 	
@@ -223,7 +222,7 @@ public enum EventProcessor
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
-			throw Debugging.todo();
+			Debugging.todo("Implement %s", this);
 		}
 	},
 	
@@ -239,7 +238,7 @@ public enum EventProcessor
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
-			throw Debugging.todo();
+			Debugging.todo("Implement %s", this);
 		}
 	},
 	
@@ -255,7 +254,7 @@ public enum EventProcessor
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
-			throw Debugging.todo();
+			Debugging.todo("Implement %s", this);
 		}
 	},
 	
@@ -271,7 +270,7 @@ public enum EventProcessor
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
-			throw Debugging.todo();
+			Debugging.todo("Implement %s", this);
 		}
 	},
 	
@@ -287,7 +286,7 @@ public enum EventProcessor
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
-			throw Debugging.todo();
+			Debugging.todo("Implement %s", this);
 		}
 	},
 	
@@ -303,7 +302,7 @@ public enum EventProcessor
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
-			throw Debugging.todo();
+			Debugging.todo("Implement %s", this);
 		}
 	},
 	
@@ -319,7 +318,7 @@ public enum EventProcessor
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
-			throw Debugging.todo();
+			Debugging.todo("Implement %s", this);
 		}
 	},
 	
@@ -335,7 +334,7 @@ public enum EventProcessor
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
-			throw Debugging.todo();
+			Debugging.todo("Implement %s", this);
 		}
 	},
 	
@@ -351,7 +350,7 @@ public enum EventProcessor
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
-			throw Debugging.todo();
+			Debugging.todo("Implement %s", this);
 		}
 	},
 	
@@ -367,7 +366,7 @@ public enum EventProcessor
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
-			throw Debugging.todo();
+			Debugging.todo("Implement %s", this);
 		}
 	},
 	
@@ -383,7 +382,7 @@ public enum EventProcessor
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
-			throw Debugging.todo();
+			Debugging.todo("Implement %s", this);
 		}
 	},
 	
@@ -438,7 +437,7 @@ public enum EventProcessor
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
-			throw Debugging.todo();
+			Debugging.todo("Implement %s", this);
 		}
 	},
 	
@@ -454,7 +453,7 @@ public enum EventProcessor
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
-			throw Debugging.todo();
+			Debugging.todo("Implement %s", this);
 		}
 	},
 

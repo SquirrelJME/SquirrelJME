@@ -58,7 +58,7 @@ public class DebugViewFrame
 	@Override
 	public long atCodeIndex(Object __which)
 	{
-		return ((SpringThread.Frame)__which).lastExecutedPcIndex();
+		return ((SpringThread.Frame)__which).pcIndex();
 	}
 	
 	/**
@@ -68,7 +68,7 @@ public class DebugViewFrame
 	@Override
 	public long atLineIndex(Object __which)
 	{
-		return ((SpringThread.Frame)__which).lastExecutedPcSourceLine();
+		return ((SpringThread.Frame)__which).pcSourceLine();
 	}
 	
 	/**

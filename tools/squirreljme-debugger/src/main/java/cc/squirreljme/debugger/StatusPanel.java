@@ -38,6 +38,12 @@ public class StatusPanel
 	/** The number of packets that were sent. */
 	protected final JLabel sentLabel;
 	
+	/** Waiting packets. */
+	protected final JLabel waitingLabel;
+	
+	/** Latency. */
+	protected final JLabel latencyLabel;
+	
 	/** General message. */
 	protected final JLabel message;
 	
@@ -87,7 +93,17 @@ public class StatusPanel
 		this.__pretty(sentLabel);
 		this.sentLabel = sentLabel;
 		
-		// Mesasage
+		// Waiting packets
+		JLabel waitingLabel = new JLabel();
+		this.__pretty(waitingLabel);
+		this.waitingLabel = waitingLabel;
+		
+		// Latency
+		JLabel latencyLabel = new JLabel();
+		this.__pretty(latencyLabel);
+		this.latencyLabel = latencyLabel;
+		
+		// Message
 		JLabel message = new JLabel();
 		this.__pretty(message);
 		this.message = message;
@@ -96,11 +112,15 @@ public class StatusPanel
 		this.add(stateLabel);
 		this.add(receivedLabel);
 		this.add(sentLabel);
+		this.add(waitingLabel);
+		this.add(latencyLabel);
 		this.add(message);
 		
 		// Add listeners to tallies to update stats
 		__debuggerState.receiveTally.addListener(this);
 		__debuggerState.sentTally.addListener(this);
+		__debuggerState.waitingTally.addListener(this);
+		__debuggerState.latency.addListener(this);
 		__debuggerState.disconnectedTally.addListener(this);
 	}
 	
@@ -133,6 +153,16 @@ public class StatusPanel
 		else if (__which == debuggerState.sentTally)
 			this.sentLabel.setText(
 				String.format("Sent: %d", __new));
+		
+		// Waiting for packets
+		else if (__which == debuggerState.waitingTally)
+			this.waitingLabel.setText(
+				String.format("Waiting: %d", __new));
+		
+		// Latency
+		else if (__which == debuggerState.latency)
+			this.latencyLabel.setText(
+				String.format("Latency: %d ms", __new));
 		
 		// Disconnected?
 		else if (__which == debuggerState.disconnectedTally)

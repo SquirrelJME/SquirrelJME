@@ -41,9 +41,12 @@ public enum JDWPHostEventKindHandler
 		Arrays.asList(JDWPEventModifierContext.PARAMETER_STEPPING),
 		JDWPEventModifierKind.THREAD_ONLY,
 		JDWPEventModifierKind.CLASS_ONLY,
-		JDWPEventModifierKind.CLASS_MATCH_PATTERN, JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
-		JDWPEventModifierKind.LOCATION_ONLY, JDWPEventModifierKind.CALL_STACK_STEPPING,
-		JDWPEventModifierKind.THIS_INSTANCE_ONLY, JDWPEventModifierKind.LIMIT_OCCURRENCES)
+		JDWPEventModifierKind.CLASS_MATCH_PATTERN,
+		JDWPEventModifierKind.CLASS_EXCLUDE_PATTERN,
+		JDWPEventModifierKind.LOCATION_ONLY,
+		JDWPEventModifierKind.CALL_STACK_STEPPING,
+		JDWPEventModifierKind.THIS_INSTANCE_ONLY,
+		JDWPEventModifierKind.LIMIT_OCCURRENCES)
 	{
 		/**
 		 * {@inheritDoc}

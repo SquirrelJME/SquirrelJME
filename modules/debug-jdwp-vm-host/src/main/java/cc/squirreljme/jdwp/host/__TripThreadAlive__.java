@@ -83,7 +83,8 @@ final class __TripThreadAlive__
 		// Signal the step, if no events are found we likely are no longer
 		// going to step so just stop
 		JDWPHostStepTracker stepTracker = viewThread.stepTracker(__which);
-		if (!controller.signal(__which, JDWPEventKind.SINGLE_STEP, stepTracker))
+		if (!controller.signal(__which, JDWPEventKind.SINGLE_STEP,
+			stepTracker))
 			stepTracker.clear();
 	}
 	
