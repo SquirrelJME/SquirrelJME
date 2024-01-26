@@ -74,7 +74,7 @@ public class InfoClass
 	public int compareTo(@NotNull Info __o)
 	{
 		// Wrong class?
-		if (!(__o instanceof InfoClass))
+		if (__o == this || !(__o instanceof InfoClass))
 			return super.compareTo(__o);
 		
 		String a = Objects.toString(

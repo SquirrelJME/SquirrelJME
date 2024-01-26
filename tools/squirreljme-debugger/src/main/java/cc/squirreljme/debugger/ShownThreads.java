@@ -112,9 +112,6 @@ public class ShownThreads
 		// We will be working on this combo box much
 		JComboBox<InfoThread> combo = this.combo;
 		
-		Debugging.debugNote("Updating combo with %d items...",
-			combo.getItemCount());
-		
 		// Remove all listeners so changing items does not mess things up
 		combo.removeActionListener(this._actionListener);
 		combo.removeItemListener(this._itemListener);
@@ -129,9 +126,6 @@ public class ShownThreads
 		{
 			// Get the thread here
 			InfoThread at = combo.getItemAt(i);
-			
-			Debugging.debugNote("Poking %s at %d...",
-				at, i);
 			
 			// See if we still know about this thread, if a thread is dead
 			// or disposed of then do not bother showing it at all
@@ -148,8 +142,6 @@ public class ShownThreads
 			// If not found, then remove the thread
 			if (found < 0)
 			{
-				Debugging.debugNote("Clear %s", at);
-				
 				// If this was the selected item, we need to change it
 				if (Objects.equals(selected, at))
 					redoSelection = true;
@@ -160,11 +152,7 @@ public class ShownThreads
 			
 			// Otherwise clear it to mark as not added
 			else
-			{
-				Debugging.debugNote("Found %s at %d", at, found);
-				
 				threads[found] = null;
-			}
 		}
 		
 		// Go through and add any threads that are new

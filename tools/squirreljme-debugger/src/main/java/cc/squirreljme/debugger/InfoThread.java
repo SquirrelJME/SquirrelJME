@@ -68,7 +68,7 @@ public class InfoThread
 	@Override
 	public int compareTo(@NotNull Info __o)
 	{
-		if (!(__o instanceof InfoThread))
+		if (__o == this || !(__o instanceof InfoThread))
 			return super.compareTo(__o);
 		
 		InfoThread other = (InfoThread)__o;

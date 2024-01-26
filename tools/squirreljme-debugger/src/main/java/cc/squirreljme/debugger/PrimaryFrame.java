@@ -34,6 +34,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import net.multiphasicapps.classfile.ClassFile;
@@ -197,8 +198,7 @@ public class PrimaryFrame
 				if (thread != null)
 					__state.threadResume(thread);
 				
-				this.shownThreads.update();
-				this.shownContext.update();
+				this.update();
 			});
 		JButton suspendSingle = PrimaryFrame.__barButton(toolBar,
 			"Suspend Single Thread", "media-playback-pause");
@@ -208,8 +208,7 @@ public class PrimaryFrame
 				if (thread != null)
 					__state.threadSuspend(thread);
 				
-				this.shownThreads.update();
-				this.shownContext.update();
+				this.update();
 			});
 		
 		toolBar.addSeparator();
@@ -220,8 +219,7 @@ public class PrimaryFrame
 			(__ignored) -> {
 				__state.threadResumeAll();
 				
-				this.shownThreads.update();
-				this.shownContext.update();
+				this.update();
 			});
 		JButton suspendAll = PrimaryFrame.__barButton(toolBar,
 			"Suspend All Threads", "weather-snow");
@@ -229,8 +227,7 @@ public class PrimaryFrame
 			(__ignored) -> {
 				__state.threadSuspendAll();
 				
-				this.shownThreads.update();
-				this.shownContext.update();
+				this.update();
 			});
 		
 		toolBar.addSeparator();
@@ -294,8 +291,23 @@ public class PrimaryFrame
 			this.context.set(inFrame);
 		
 		// Update information
-		this.shownThreads.update();
-		this.shownContext.update();
+		this.update();
+	}
+	
+	/**
+	 * General update.
+	 *
+	 * @since 2024/01/26
+	 */
+	public void update()
+	{
+		SwingUtilities.invokeLater(() -> {
+			// Update thread selection
+			this.shownThreads.update();
+			
+			// Needs to update second as the thread could have changed
+			this.shownContext.update();
+		});
 	}
 	
 	/**

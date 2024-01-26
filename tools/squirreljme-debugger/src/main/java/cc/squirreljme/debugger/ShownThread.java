@@ -10,6 +10,7 @@
 package cc.squirreljme.debugger;
 
 import java.awt.BorderLayout;
+import java.awt.Font;
 import java.util.Objects;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -116,40 +117,39 @@ public class ShownThread
 			// the order for a more sensible stack
 			/*Collections.reverse(Arrays.asList(frames));*/
 			
-			// Place in all frames
-			synchronized (this)
+			// Clear all frames
+			sequence.removeAll();
+			
+			// Add sequences for all frames
+			ContextThreadFrame context = this.context;
+			InfoClass inClass = null;
+			for (int i = 0, n = frames.length; i < n; i++)
 			{
-				// Clear all frames
-				sequence.removeAll();
+				InfoFrame frame = frames[i];
+				InfoClass newClass = frame.location.inClass;
 				
-				// Add sequences for all frames
-				ContextThreadFrame context = this.context;
-				InfoClass inClass = null;
-				for (int i = 0, n = frames.length; i < n; i++)
+				// Did the class change? Add banner for it
+				if (!Objects.equals(inClass, newClass))
 				{
-					InfoFrame frame = frames[i];
-					InfoClass newClass = frame.location.inClass;
+					// Add label for the class
+					JLabel atClass = new JLabel(newClass.toString());
+					atClass.setFont(atClass.getFont().deriveFont(
+						Font.ITALIC));
+					sequence.add(atClass);
 					
-					// Did the class change? Add banner for it
-					if (!Objects.equals(inClass, newClass))
-					{
-						// Add label for the class
-						JLabel atClass = new JLabel(newClass.toString());
-						atClass.setFont(atClass.getFont().deriveFont(
-							java.awt.Font.ITALIC));
-						sequence.add(atClass);
-						
-						// We are in this class now
-						inClass = newClass;
-					}
-					
-					// Make a pretty button
-					ShownContextFrame shownFrame =
-						new ShownContextFrame(frame, context);
-					
-					// Add it to the sequence
-					sequence.add(shownFrame);
+					// We are in this class now
+					inClass = newClass;
 				}
+				
+				// Make a pretty button
+				ShownContextFrame shownFrame =
+					new ShownContextFrame(frame, context);
+				
+				// Add it to the sequence
+				sequence.add(shownFrame);
+				
+				// Update it quickly
+				shownFrame.update();
 			}
 		}
 		else

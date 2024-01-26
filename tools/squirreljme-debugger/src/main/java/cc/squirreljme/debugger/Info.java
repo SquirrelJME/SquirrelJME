@@ -74,6 +74,9 @@ public abstract class Info
 	@Override
 	public int compareTo(@NotNull Info __o)
 	{
+		if (this == __o)
+			return 0;
+		
 		// If the classes are different, just sort the name
 		Class<?> a = this.getClass();
 		Class<?> b = __o.getClass();

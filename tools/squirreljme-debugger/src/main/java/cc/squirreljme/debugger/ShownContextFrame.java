@@ -89,9 +89,21 @@ public class ShownContextFrame
 		FrameLocation __oldLocation, InfoThread __newThread,
 		InfoFrame __newFrame, FrameLocation __newLocation)
 	{
+		// Update
+		this.update();
+	}
+	
+	/**
+	 * Updates the context.
+	 *
+	 * @since 2024/01/26
+	 */
+	public void update()
+	{
 		// Is this selected?
 		JButton active = this.active;
-		if (Objects.equals(this.frame, __newFrame))
+		InfoFrame inFrame = this.context.getFrame();
+		if (Objects.equals(this.frame, inFrame))
 			active.setIcon(Utils.tangoIcon("go-next"));
 		else
 			active.setIcon(Utils.tangoIcon("-"));

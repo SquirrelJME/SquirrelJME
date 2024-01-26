@@ -61,6 +61,20 @@ public final class ContextThreadFrame
 	}
 	
 	/**
+	 * Returns the current frame.
+	 *
+	 * @return The current context frame.
+	 * @since 2024/01/26
+	 */
+	public InfoFrame getFrame()
+	{
+		synchronized (this)
+		{
+			return this._frame;
+		}
+	}
+	
+	/**
 	 * Returns the current thread.
 	 *
 	 * @return The current thread.
@@ -84,8 +98,10 @@ public final class ContextThreadFrame
 	{
 		InfoThread oldThread;
 		InfoFrame oldFrame;
+		FrameLocation oldLocation;
 		InfoThread newThread;
 		InfoFrame newFrame;
+		FrameLocation newLocation;
 		
 		// Change thread
 		synchronized (this)
@@ -93,14 +109,14 @@ public final class ContextThreadFrame
 			// Get old values
 			oldThread = this._thread;
 			oldFrame = this._frame;
+			oldLocation = this._location;
 			
 			// Setting the new thread is simple
 			newThread = __thread;
 			
 			// Try to set a new frame to look at?
-			if (newThread != null &&
-				(oldFrame == null ||
-					!Objects.equals(oldFrame.inThread, newThread)))
+			if (newThread != null && (oldFrame == null ||
+				!Objects.equals(oldFrame.inThread, newThread)))
 			{
 				// Try to get a frame to look at
 				InfoFrame[] possible = newThread.frames.get();
@@ -116,15 +132,22 @@ public final class ContextThreadFrame
 			else
 				newFrame = oldFrame;
 			
+			// Keep the location the same or clear it?
+			newLocation = oldLocation;
+			if (newFrame != null &&
+				!Objects.equals(newFrame.location, newLocation))
+				newLocation = null;
+			
 			// Set
 			this._thread = newThread;
 			this._frame = newFrame;
+			this._location = newLocation;
 		}
 		
 		// Update listeners
 		this.__contextChanged(
-			oldThread, oldFrame, null,
-			newThread, newFrame, null);
+			oldThread, oldFrame, oldLocation,
+			newThread, newFrame, newLocation);
 	}
 	
 	/**
@@ -137,8 +160,10 @@ public final class ContextThreadFrame
 	{
 		InfoThread oldThread;
 		InfoFrame oldFrame;
+		FrameLocation oldLocation;
 		InfoThread newThread;
 		InfoFrame newFrame;
+		FrameLocation newLocation;
 		
 		// Change thread and frame
 		synchronized (this)
@@ -146,6 +171,7 @@ public final class ContextThreadFrame
 			// Get old values
 			oldThread = this._thread;
 			oldFrame = this._frame;
+			oldLocation = this._location;
 			
 			// Can easily set the new thread and frames
 			if (__frame != null)
@@ -161,15 +187,22 @@ public final class ContextThreadFrame
 				newFrame = null;
 			}
 			
+			// Keep the location the same or clear it?
+			newLocation = oldLocation;
+			if (newFrame != null &&
+				!Objects.equals(newFrame.location, newLocation))
+				newLocation = null;
+			
 			// Set
 			this._thread = newThread;
 			this._frame = newFrame;
+			this._location = newLocation;
 		}
 		
 		// Update listeners
 		this.__contextChanged(
-			oldThread, oldFrame, null,
-			newThread, newFrame, null);
+			oldThread, oldFrame, oldLocation,
+			newThread, newFrame, newLocation);
 	}
 	
 	/**
