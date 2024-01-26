@@ -108,7 +108,7 @@ public final class JDWPHostStepTracker
 			// Set
 			this._inStepping = true;
 			
-			// Always choose the smaller of the stepping sizes
+			// Always choose the smallest of the stepping sizes
 			JDWPStepSize oldSize = this._stepSize;
 			this._stepSize = (__size == null || oldSize == JDWPStepSize.MIN ?
 				JDWPStepSize.MIN : __size);
@@ -203,7 +203,7 @@ public final class JDWPHostStepTracker
 				return true;
 			
 			// First check for line number changes
-			// This is only valid if all the lines are valid! Otherwise fall
+			// This is only valid if all the lines are valid! Otherwise, fall
 			// back to positional checks. But regardless, if the line number
 			// changes then we take the step.
 			long wasLine = was._line;

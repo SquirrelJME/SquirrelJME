@@ -906,7 +906,27 @@ public final class SpringThread
 		 */
 		public final int lastExecutedPc()
 		{
+			ByteCode code = this.code;
+			if (code == null)
+				return -1;
+		
 			return this._lastexecpc;
+		}
+		
+		/**
+		 * Returns the last executed PC index.
+		 *
+		 * @return The last executed PC index.
+		 * @since 2024/01/26
+		 */
+		public final int lastExecutedPcIndex()
+		{
+			ByteCode code = this.code;
+			if (code == null)
+				return -1;
+			
+			// These just use indexes, not true addresses
+			return code.addressToIndex(this._lastexecpc);
 		}
 		
 		/**
@@ -920,6 +940,7 @@ public final class SpringThread
 			ByteCode code = this.code;
 			if (code == null)
 				return -1;
+			
 			return code.lineOfAddress(this._lastexecpc);
 		}
 		
@@ -995,6 +1016,10 @@ public final class SpringThread
 		 */
 		public final int pc()
 		{
+			ByteCode code = this.code;
+			if (code == null)
+				return -1;
+					
 			return this._pc;
 		}
 		
@@ -1008,7 +1033,7 @@ public final class SpringThread
 		{
 			ByteCode code = this.code;
 			if (code == null)
-				return this._pc;
+				return -1;
 			
 			// These just use indexes, not true addresses
 			return code.addressToIndex(this._pc);
@@ -1024,6 +1049,7 @@ public final class SpringThread
 		{
 			if (this.code == null)
 				return -1;
+			
 			return this.code.lineOfAddress(this._pc);
 		}
 		
