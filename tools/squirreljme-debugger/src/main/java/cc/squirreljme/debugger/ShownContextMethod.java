@@ -12,6 +12,7 @@ package cc.squirreljme.debugger;
 import java.awt.BorderLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 /**
  * Shows the current context method.
@@ -55,6 +56,7 @@ public class ShownContextMethod
 		
 		// Information label
 		JLabel info = new JLabel();
+		info.setHorizontalAlignment(SwingConstants.CENTER);
 		this.info = info;
 		this.add(info, BorderLayout.PAGE_START);
 		
@@ -83,9 +85,13 @@ public class ShownContextMethod
 			return;
 		}
 		
+		// Which thread are we looking at?
+		this.info.setText(__newThread.toString());
+		
 		// Setup new view for the current method
+		InfoMethod inMethod = __newFrame.inMethod();
 		current = new ShownMethod(this.state,
-			new RemoteMethodViewer(this.state, __newFrame.inMethod()),
+			new RemoteMethodViewer(this.state, inMethod),
 			true);
 		this._shownMethod = current;
 		this.add(current, BorderLayout.CENTER);
