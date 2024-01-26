@@ -47,6 +47,9 @@ public class StatusPanel
 	/** General message. */
 	protected final JLabel message;
 	
+	/** The maximum latency. */
+	private volatile int _maxLatency;
+	
 	/**
 	 * Initializes the panel.
 	 *
@@ -161,8 +164,14 @@ public class StatusPanel
 		
 		// Latency
 		else if (__which == debuggerState.latency)
+		{
+			int max = Math.max(__new, this._maxLatency);
+			this._maxLatency = max;
+			
 			this.latencyLabel.setText(
-				String.format("Latency: %d ms", __new));
+				String.format("Latency: %d ms (max %d ms)",
+					__new, max));
+		}
 		
 		// Disconnected?
 		else if (__which == debuggerState.disconnectedTally)
