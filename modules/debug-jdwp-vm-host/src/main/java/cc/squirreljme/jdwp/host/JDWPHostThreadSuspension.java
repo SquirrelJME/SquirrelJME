@@ -23,7 +23,7 @@ public final class JDWPHostThreadSuspension
 {
 	/** The timeout to wait for suspension checks. */
 	private static final int _TIMEOUT = 
-		5_000;
+		1_000;
 	
 	/** The suspension count. */
 	private volatile int _count;
@@ -161,7 +161,7 @@ public final class JDWPHostThreadSuspension
 				// we want to send the signal
 				this._suspendNotified = false;
 				
-				// Notify anyone that is suspended so it can resume from
+				// Notify anyone that is suspended, so it can resume from
 				// execution
 				this.notifyAll();
 			}
@@ -184,7 +184,7 @@ public final class JDWPHostThreadSuspension
 	/**
 	 * Suspends the given thread.
 	 * 
-	 * @param __ifNot Only perform suspension if the thread is not alreayd
+	 * @param __ifNot Only perform suspension if the thread is not already
 	 * suspended.
 	 * @return The resultant suspension count.
 	 * @since 2021/04/17

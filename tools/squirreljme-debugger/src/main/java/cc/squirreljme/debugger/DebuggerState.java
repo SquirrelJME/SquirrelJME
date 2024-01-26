@@ -17,7 +17,6 @@ import cc.squirreljme.jdwp.JDWPErrorType;
 import cc.squirreljme.jdwp.JDWPEventKind;
 import cc.squirreljme.jdwp.JDWPCommand;
 import cc.squirreljme.jdwp.JDWPCommandSet;
-import cc.squirreljme.jdwp.JDWPEventModifierKind;
 import cc.squirreljme.jdwp.JDWPException;
 import cc.squirreljme.jdwp.JDWPId;
 import cc.squirreljme.jdwp.JDWPIdKind;
@@ -26,7 +25,6 @@ import cc.squirreljme.jdwp.JDWPIdSizes;
 import cc.squirreljme.jdwp.JDWPPacket;
 import cc.squirreljme.jdwp.JDWPStepDepth;
 import cc.squirreljme.jdwp.JDWPStepSize;
-import cc.squirreljme.jdwp.JDWPSuspend;
 import cc.squirreljme.jdwp.JDWPSuspendPolicy;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.io.HexDumpOutputStream;
@@ -35,7 +33,9 @@ import java.util.Deque;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.IntConsumer;
 import net.multiphasicapps.classfile.ClassName;
 
 /**
@@ -141,11 +141,13 @@ public class DebuggerState
 	 * @param __kind The kind of event to request.
 	 * @param __suspend The suspension policy to use for the given event.
 	 * @param __handler The handler for the event, this is optional.
+	 * @param __postResponse Handler to call when the event ID is known.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/20
 	 */
 	public void eventSet(JDWPEventKind __kind, JDWPSuspendPolicy __suspend,
-		EventModifier[] __modifiers, EventHandler<?> __handler)
+		EventModifier[] __modifiers, EventHandler<?> __handler,
+		IntConsumer __postResponse)
 		throws NullPointerException
 	{
 		if (__kind == null || __suspend == null)
@@ -177,6 +179,11 @@ public class DebuggerState
 				this.send(out, (__ignored, __reply) -> {
 					int eventId = __reply.readInt();
 					
+					// Debug
+					if (JDWPCommLink.DEBUG)
+						Debugging.debugNote("Awaiting Event %d -> %s",
+							eventId, __handler);
+					
 					// Store handler for later
 					Map<Integer, EventHandler<?>> handlers =
 						this._eventHandlers;
@@ -184,6 +191,10 @@ public class DebuggerState
 					{
 						handlers.put(eventId, __handler);
 					}
+					
+					// Inform of event?
+					if (__postResponse != null)
+						__postResponse.accept(eventId);
 				});
 		}
 	}
@@ -464,7 +475,13 @@ public class DebuggerState
 				
 				// Only when interrupted or terminated does this stop
 				if (packet == null)
+				{
+					if (JDWPCommLink.DEBUG)
+						Debugging.debugNote(
+							"JDWP Interrupted/Terminated.");
+					
 					break;
+				}
 				
 				// Tally up!
 				receiveTally.increment();
@@ -682,12 +699,11 @@ public class DebuggerState
 			out.writeId(__thread.id);
 			
 			// Send it
-			if (__done == null)
-				this.send(out);
-			else
-				this.send(out, (__ignored, __reply) -> {
+			this.send(out, (__ignored, __reply) -> {
+				// Inform that it was done
+				if (__done != null)
 					__done.run();
-				});
+			});
 		}
 	}
 	
@@ -748,10 +764,19 @@ public class DebuggerState
 		// KotlinNullPointerException), fieldOnly=null,
 		// includeClass=null, location=null, thisInstance=null,
 		// thread=null, type=null}]
+		// Compared to:
+		// EventRequest[id=125,kind=SINGLE_STEP,suspend=ALL,left=1,
+		// filter=EventFilter{callStackStepping=CallStackStepping[
+		// thread=Thread-1: main,depth=OUT,size=MIN], exception=null, 
+		// excludeClass=null, fieldOnly=null, includeClass=null, 
+		// location=null, thisInstance=null, thread=null, type=null}]
 		this.eventSet(JDWPEventKind.SINGLE_STEP,
 			JDWPSuspendPolicy.ALL,
 			modifiers,
-			__handler);
+			__handler,
+			(__id) -> {
+				this.threadResume(__thread, null);
+			});
 	}
 	
 	/**
@@ -851,9 +876,9 @@ public class DebuggerState
 		
 		// Thread events, with no particular handler
 		this.eventSet(JDWPEventKind.THREAD_START, JDWPSuspendPolicy.NONE,
-			null, (__state, __reply) -> {});
+			null, (__state, __reply) -> {}, null);
 		this.eventSet(JDWPEventKind.THREAD_DEATH, JDWPSuspendPolicy.NONE,
-			null, (__state, __reply) -> {});
+			null, (__state, __reply) -> {}, null);
 	}
 	
 	/**
@@ -899,6 +924,14 @@ public class DebuggerState
 				
 				defer.addLast(copy);
 			}
+		}
+		
+		// General exception
+		catch (JDWPException __e)
+		{
+			__e.printStackTrace();
+			
+			throw __e;
 		}
 	}
 	
@@ -967,7 +1000,8 @@ public class DebuggerState
 		if (__packet.commandSetId() == 64 && __packet.command() == 100)
 		{
 			// Debug
-			Debugging.debugNote("Process event: %s", __packet);
+			if (JDWPCommLink.DEBUG)
+				Debugging.debugNote("Process event: %s", __packet);
 			
 			// Handle this as an event
 			EventProcessor.handle(this, __packet);
@@ -976,7 +1010,9 @@ public class DebuggerState
 			return;
 		}
 		
-		Debugging.debugNote("Handle non-event?");
+		// Debug
+		if (JDWPCommLink.DEBUG)
+			Debugging.debugNote("Handle non-event?");
 	}
 	
 	/**

@@ -106,12 +106,26 @@ public class ShownContextMethod
 		InfoFrame inFrame = this.context.getFrame();
 		InfoMethod inMethod = (inFrame == null ? null : inFrame.inMethod());
 		
-		// Do we need to replace the method being shown?
-		if (current == null || !Objects.equals(this._lookingAt, inMethod))
+		// If there is no context, then we cannot show anything
+		if (inMethod == null || inFrame == null)
 		{
 			// Remove old one if it is there
 			if (current != null)
+			{
 				this.remove(current);
+				current = null;
+			}
+		}
+		
+		// Do we need to replace the method being shown?
+		else if (current == null || !Objects.equals(this._lookingAt, inMethod))
+		{
+			// Remove old one if it is there
+			if (current != null)
+			{
+				this.remove(current);
+				current = null;
+			}
 			
 			// Setup new view for the current method
 			if (inMethod != null)
@@ -133,7 +147,7 @@ public class ShownContextMethod
 			current.shownUpdate();
 		
 		// If there is nothing, just say as such...
-		if (this._shownMethod == null)
+		if (current == null)
 			this.info.setText("Nothing");
 		
 		// Otherwise describe the current frame

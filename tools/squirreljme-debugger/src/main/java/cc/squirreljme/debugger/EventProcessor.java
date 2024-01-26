@@ -175,6 +175,9 @@ public enum EventProcessor
 			InfoThread thread = threadStore.get(__state, threadId);
 			if (thread != null)
 				thread.isDead.set(true);
+			
+			// Drop the thread if it has a context
+			__state.context.drop(thread);
 		}
 	},
 	
@@ -558,7 +561,7 @@ public enum EventProcessor
 			
 			// The event request, find the optional handler for it
 			int requestId = __packet.readInt();
-			EventHandler handler = __state.eventHandler(requestId);
+			EventHandler<?> handler = __state.eventHandler(requestId);
 			
 			// Find the processor to use
 			EventProcessor processor = EventProcessor.of(kind);

@@ -155,7 +155,7 @@ public class InfoThread
 		// If the thread is not suspended then it cannot have frames
 		if (this.suspendCount.update(__state) <= 0)
 		{
-			__value.set(new InfoFrame[0]);
+			__value.drop();
 			return;
 		}
 		

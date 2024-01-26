@@ -197,6 +197,11 @@ public class PrimaryFrame
 				InfoThread thread = this.context.getThread();
 				if (thread != null)
 					__state.threadResume(thread, () -> {
+						// Drop all frames and have no context
+						thread.frames.drop();
+						this.context.dropFrame(thread);
+						
+						// Update the UI
 						this.update();
 					});
 			});
@@ -282,6 +287,7 @@ public class PrimaryFrame
 		SingleStepEvent __event)
 	{
 		// Note it
+		Debugging.debugNote("Single stepped.");
 		this.statusPanel.setMessage("Single stepped.");
 		
 		// Update context frame from this event

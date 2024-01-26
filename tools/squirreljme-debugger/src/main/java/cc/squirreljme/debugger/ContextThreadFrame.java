@@ -61,6 +61,79 @@ public final class ContextThreadFrame
 	}
 	
 	/**
+	 * Drops the thread if it is the current context.
+	 *
+	 * @param __thread The thread to match against.
+	 * @since 2024/01/26
+	 */
+	public void drop(InfoThread __thread)
+	{
+		InfoThread oldThread;
+		InfoFrame oldFrame;
+		FrameLocation oldLocation;
+		
+		synchronized (this)
+		{
+			if (Objects.equals(this._thread, __thread))
+			{
+				// Clear thread
+				oldThread = this._thread;
+				this._thread = null;
+				
+				// Clear frame
+				oldFrame = this._frame;
+				this._frame = null;
+				
+				// Clear location
+				oldLocation = this._location;
+				this._location = null;
+			}
+			
+			// Otherwise do nothing
+			else
+				return;
+		}
+		
+		this.__contextChanged(
+			oldThread, oldFrame, oldLocation,
+			null, null, null);
+	}
+	
+	/**
+	 * Drops the frame if the specified thread is a match.
+	 *
+	 * @param __thread The thread to match against.
+	 * @since 2024/01/26
+	 */
+	public void dropFrame(InfoThread __thread)
+	{
+		InfoFrame oldFrame;
+		FrameLocation oldLocation;
+		
+		synchronized (this)
+		{
+			if (Objects.equals(this._thread, __thread))
+			{
+				// Clear frame
+				oldFrame = this._frame;
+				this._frame = null;
+				
+				// Clear location
+				oldLocation = this._location;
+				this._location = null;
+			}
+			
+			// Otherwise do nothing
+			else
+				return;
+		}
+		
+		this.__contextChanged(
+			__thread, oldFrame, oldLocation,
+			__thread, null, null);
+	}
+	
+	/**
 	 * Returns the current frame.
 	 *
 	 * @return The current context frame.

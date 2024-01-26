@@ -30,18 +30,7 @@ public class InfoFrame
 {
 	/** Possible tags used. */
 	private static final JDWPValueTag[] _TAGS =
-		new JDWPValueTag[]
-		{
-			JDWPValueTag.INTEGER,
-			JDWPValueTag.OBJECT,
-			JDWPValueTag.LONG,
-			JDWPValueTag.SHORT,
-			JDWPValueTag.CHARACTER,
-			JDWPValueTag.BYTE,
-			JDWPValueTag.BOOLEAN,
-			JDWPValueTag.FLOAT,
-			JDWPValueTag.DOUBLE,
-		};
+		JDWPValueTag.values();
 	
 	/** Item success. */
 	private static final __Success__ _SUCCESS =
@@ -127,15 +116,19 @@ public class InfoFrame
 	private void __updateVariables(DebuggerState __state,
 		KnownValue<JDWPValue[]> __value)
 	{
-		// Native/abstract methods cannot have variables
+		// Native/abstract methods cannot have variables, nor can there be
+		// variables for running threads
 		InfoMethod inMethod = this.location.inMethod;
-		if (inMethod.flags.isNative() || inMethod.flags.isAbstract())
+		InfoThread inThread = this.inThread;
+		if (inMethod.flags.isNative() || inMethod.flags.isAbstract() ||
+			inThread.isDead.getOrUpdate(__state) ||
+			inThread.suspendCount.update(__state) <= 0)
 		{
-			__value.set(new JDWPValue[0]);
+			__value.drop();
 			return;
 		}
 		
-		JDWPId threadId = this.inThread.id;
+		JDWPId threadId = inThread.id;
 		JDWPId frameId = this.id;
 		
 		// For JDWP there is no real way to get an accurate set of variables

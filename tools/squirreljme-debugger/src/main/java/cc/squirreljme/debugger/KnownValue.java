@@ -95,6 +95,20 @@ public final class KnownValue<T>
 	}
 	
 	/**
+	 * Drop whatever values are stored here.
+	 *
+	 * @since 2024/01/26
+	 */
+	public void drop()
+	{
+		synchronized (this)
+		{
+			this._value = null;
+			this._known = false;
+		}
+	}
+	
+	/**
 	 * Gets the current value.
 	 *
 	 * @return The current value, will be {@code null} if not known.

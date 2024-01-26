@@ -1718,8 +1718,10 @@ public final class SpringThreadWorker
 		ByteCode code = frame.byteCode();
 		
 		// Poll the JDWP debugger for any new debugging state
+		// Note that if the thread is exempt from suspension do not single
+		// step or stop on any breakpoint...
 		JDWPHostController jdwp = this.machine.tasks.jdwpController;
-		if (jdwp != null)
+		if (jdwp != null && !thread.noDebugSuspend)
 		{
 			// Check for breakpoints to stop at first, because if our thread
 			// gets suspended we want to know before we check for suspension.
