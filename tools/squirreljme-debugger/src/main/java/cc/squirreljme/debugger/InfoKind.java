@@ -22,6 +22,24 @@ import net.multiphasicapps.classfile.Pool;
  */
 public enum InfoKind
 {
+	/** Thread frame. */
+	FRAME("Frame", "Frames")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2024/01/25
+		 */
+		@Override
+		protected Info seed(DebuggerState __state, JDWPId __id,
+			Object... __extra)
+		{
+			InfoThread thread = (InfoThread)__extra[0];
+			FrameLocation location = (FrameLocation)__extra[1];
+			
+			return new InfoFrame(__state, __id, thread, location);
+		}
+	},
+	
 	/** A thread. */
 	THREAD("Thread", "Threads")
 	{

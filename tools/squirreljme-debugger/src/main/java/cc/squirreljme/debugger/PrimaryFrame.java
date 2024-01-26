@@ -56,6 +56,10 @@ public class PrimaryFrame
 	/** Thread view. */
 	protected final ShownThreads shownThreads;
 	
+	/** Currently shown context. */
+	protected final ContextThreadFrame context =
+		new ContextThreadFrame();
+	
 	/**
 	 * Initializes the primary frame.
 	 *
@@ -131,12 +135,6 @@ public class PrimaryFrame
 			KeyStroke.getKeyStroke(Character.valueOf('t'), metaMask));
 		threadItem.addActionListener(this::__inspectThread);
 		
-		// Frame
-		JMenuItem frameItem = new JMenuItem("Frame");
-		frameItem.setMnemonic('F');
-		frameItem.setAccelerator(
-			KeyStroke.getKeyStroke(Character.valueOf('f'), metaMask));
-		
 		// View menu
 		JMenu viewMenu = new JMenu("View");
 		viewMenu.setMnemonic('V');
@@ -145,7 +143,6 @@ public class PrimaryFrame
 		viewMenu.add(typeItem);
 		viewMenu.add(threadGroupItem);
 		viewMenu.add(threadItem);
-		viewMenu.add(frameItem);
 		
 		// Menu bar
 		JMenuBar mainMenu = new JMenuBar();
@@ -156,7 +153,7 @@ public class PrimaryFrame
 		this.setJMenuBar(mainMenu);
 		
 		// Show thread view on the left
-		ShownThreads shownThreads = new ShownThreads(__state);
+		ShownThreads shownThreads = new ShownThreads(__state, this.context);
 		shownThreads.setMinimumSize(new Dimension(200, 300));
 		shownThreads.setPreferredSize(new Dimension(200, 300));
 		shownThreads.setMaximumSize(new Dimension(200, 9999));
@@ -234,37 +231,10 @@ public class PrimaryFrame
 		// Add that to the bottom
 		this.add(statusPanel, BorderLayout.PAGE_END);
 		
-		// For now just show some random method
-		try (InputStream in = PrimaryFrame.class.getResourceAsStream(
-			"test"))
-		{
-			if (in != null)
-				this.showMethod(new JavaMethodViewer(
-					ClassFile.decode(in).methods()[2]));
-		}
-		catch (IOException __ignored)
-		{
-		}
-	}
-	
-	/**
-	 * Shows the given method.
-	 *
-	 * @param __method The method to view.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2024/01/21
-	 */
-	public void showMethod(MethodViewer __method)
-		throws NullPointerException
-	{
-		if (__method == null)
-			throw new NullPointerException("NARG");
-		
-		ShownMethod show = new ShownMethod(this.state, __method);
-		this.add(show, BorderLayout.CENTER);
-		
-		// Pack
-		this.pack();
+		// Context viewer for the current frame location
+		ShownContextMethod shownContext = new ShownContextMethod(
+			this.state, this.context);
+		this.add(shownContext, BorderLayout.CENTER);
 	}
 	
 	/**

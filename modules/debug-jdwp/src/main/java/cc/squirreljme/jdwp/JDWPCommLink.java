@@ -31,7 +31,7 @@ public final class JDWPCommLink
 	implements Closeable
 {
 	/** Should debugging be enabled? */
-	static final boolean _DEBUG =
+	public static final boolean DEBUG =
 		Boolean.getBoolean("cc.squirreljme.jdwp.debug");
 	
 	/** Handshake sequence, sent by both sides. */
@@ -491,7 +491,7 @@ public final class JDWPCommLink
 		}
 		
 		// Debug
-		if (JDWPCommLink._DEBUG)
+		if (JDWPCommLink.DEBUG)
 			Debugging.debugNote("JDWP: -> %s", __packet);
 		
 		// Write to the destination
@@ -576,7 +576,7 @@ public final class JDWPCommLink
 		try
 		{
 			// Debug
-			if (JDWPCommLink._DEBUG)
+			if (JDWPCommLink.DEBUG)
 				Debugging.debugNote("JDWP: Handshake.");
 			
 			// The debugger sends the handshake sequence first, so as a client
@@ -598,7 +598,7 @@ public final class JDWPCommLink
 			this._didHandshake = true;
 			
 			// Debug
-			if (JDWPCommLink._DEBUG)
+			if (JDWPCommLink.DEBUG)
 				Debugging.debugNote("JDWP: Hands shaken at a distance.");
 		}
 		catch (IOException e)

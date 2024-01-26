@@ -12,6 +12,7 @@ package cc.squirreljme.debugger;
 import cc.squirreljme.jdwp.JDWPCommandSetThreadReference;
 import cc.squirreljme.jdwp.JDWPErrorType;
 import cc.squirreljme.jdwp.JDWPCommandSet;
+import cc.squirreljme.jdwp.JDWPIdKind;
 import cc.squirreljme.jdwp.JDWPPacket;
 import cc.squirreljme.jdwp.JDWPId;
 import org.jetbrains.annotations.NotNull;
@@ -32,11 +33,14 @@ public class InfoThread
 	protected final KnownValue<String> threadName;
 	
 	/** Is this thread dead? */
-	protected KnownValue<Boolean> isDead =
+	protected final KnownValue<Boolean> isDead =
 		new KnownValue<>(Boolean.class, false);
 	
 	/** The current suspend count of the thread. */
-	protected KnownValue<Integer> suspendCount;
+	protected final KnownValue<Integer> suspendCount;
+	
+	/** Current stack frames. */
+	protected final KnownValue<InfoFrame[]> frames;
 	
 	/**
 	 * Initializes the base thread.
@@ -53,6 +57,8 @@ public class InfoThread
 			this::__updateThreadName);
 		this.suspendCount = new KnownValue<Integer>(Integer.class,
 			this::__updateSuspendCount);
+		this.frames = new KnownValue<InfoFrame[]>(InfoFrame[].class,
+			this::__updateFrames);
 	}
 	
 	/**
@@ -108,6 +114,58 @@ public class InfoThread
 	{
 		// Consider as valid unless otherwise
 		return true;
+	}
+	
+	/**
+	 * Updates the stack frames of this thread.
+	 *
+	 * @param __state The current debugger state.
+	 * @param __value The current value.
+	 * @since 2024/01/25
+	 */
+	private void __updateFrames(DebuggerState __state,
+		KnownValue<InfoFrame[]> __value)
+	{
+		// If the thread is not suspended then it cannot have frames
+		if (this.suspendCount.update(__state) <= 0)
+		{
+			__value.set(new InfoFrame[0]);
+			return;
+		}
+		
+		// Request frames
+		try (JDWPPacket out = __state.request(JDWPCommandSet.THREAD_REFERENCE,
+			JDWPCommandSetThreadReference.FRAMES))
+		{
+			// Request all frames
+			out.writeId(this.id);
+			out.writeInt(0);
+			out.writeInt(-1);
+			
+			// Send it
+			__state.sendThenWait(out, Utils.TIMEOUT,
+				(__ignored, __reply) -> {
+					// Read in frame count
+					int numFrames = __reply.readInt();
+					
+					// Load in all frames
+					InfoFrame[] result = new InfoFrame[numFrames];
+					for (int i = 0; i < numFrames; i++)
+					{
+						JDWPId frameId = __reply.readId(JDWPIdKind.FRAME_ID);
+						FrameLocation location = __state.readLocation(
+							this, __reply);
+						
+						// Build frame
+						result[i] = new InfoFrame(__state, frameId,
+							this, location);
+					}
+					
+					// Store frames
+					__value.set(result);
+				}, (__ignored, __reply) -> {
+				});
+		}
 	}
 	
 	/**

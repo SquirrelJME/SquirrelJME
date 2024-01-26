@@ -10,6 +10,7 @@
 package cc.squirreljme.debugger;
 
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
+import java.awt.Font;
 import java.awt.Image;
 import java.awt.Window;
 import java.awt.image.BufferedImage;
@@ -19,10 +20,12 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JWindow;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 import org.freedesktop.tango.TangoIconLoader;
 
 /**
@@ -161,6 +164,65 @@ public final class Utils
 		// Show it
 		dialog.setLocationRelativeTo(null);
 		dialog.setVisible(true);
+	}
+	
+	/**
+	 * Makes a text like button.
+	 *
+	 * @param __button The button to update.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/25
+	 */
+	public static void prettyTextButton(JButton __button)
+		throws NullPointerException
+	{
+		if (__button == null)
+			throw new NullPointerException("NARG");
+		
+		// Reduce padding and looks of the button
+		__button.setBorder(new EmptyBorder(0, 0, 0, 0));
+		__button.setBorderPainted(false);
+		__button.setContentAreaFilled(false);
+		
+		// Align to the left
+		__button.setHorizontalAlignment(SwingConstants.LEFT);
+		
+		// Allow it to be copied
+		__button.setBorder(new EmptyBorder(0, 0, 0, 0));
+		
+		// Use a better font for the label
+		Font descFont = __button.getFont();
+		__button.setFont(new Font("monospaced",
+			descFont.getStyle(), descFont.getSize()));
+	}
+	
+	/**
+	 * Makes the label look better.
+	 *
+	 * @param __label The label to edit.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/21
+	 */
+	public static void prettyTextField(JTextField __label)
+		throws NullPointerException
+	{
+		if (__label == null)
+			throw new NullPointerException("NARG");
+		
+		// Reduce padding
+		__label.setBorder(new EmptyBorder(0, 0, 0, 0));
+		
+		// Align to the left
+		__label.setHorizontalAlignment(SwingConstants.LEFT);
+		
+		// Allow it to be copied
+		__label.setEditable(false);
+		__label.setBorder(new EmptyBorder(0, 0, 0, 0));
+		
+		// Use a better font for the label
+		Font descFont = __label.getFont();
+		__label.setFont(new Font("monospaced",
+			descFont.getStyle(), descFont.getSize()));
 	}
 	
 	/**

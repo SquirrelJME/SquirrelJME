@@ -18,6 +18,7 @@ import cc.squirreljme.jdwp.JDWPEventKind;
 import cc.squirreljme.jdwp.JDWPCommand;
 import cc.squirreljme.jdwp.JDWPCommandSet;
 import cc.squirreljme.jdwp.JDWPException;
+import cc.squirreljme.jdwp.JDWPId;
 import cc.squirreljme.jdwp.JDWPIdKind;
 import cc.squirreljme.jdwp.JDWPIdSizeUnknownException;
 import cc.squirreljme.jdwp.JDWPIdSizes;
@@ -242,6 +243,41 @@ public class DebuggerState
 	}
 	
 	/**
+	 * Reads the location information.
+	 *
+	 * @param __inThread The thread this is in.
+	 * @param __packet The packet to read the location information from.
+	 * @return The resultant location.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/25
+	 */
+	public FrameLocation readLocation(InfoThread __inThread,
+		JDWPPacket __packet)
+		throws NullPointerException
+	{
+		if (__inThread == null || __packet == null)
+			throw new NullPointerException("NARG");
+		
+		// Ignore tag
+		__packet.readByte();
+		
+		// Get the class and method we are in
+		JDWPId classId = __packet.readId(JDWPIdKind.REFERENCE_TYPE_ID);
+		JDWPId methodId = __packet.readId(JDWPIdKind.METHOD_ID);
+		
+		// Read location index
+		long index = __packet.readLong();
+		
+		// Initialize location
+		StoredInfoManager storedInfo = this.storedInfo;
+		return new FrameLocation(
+			__inThread,
+			storedInfo.getClasses().get(this, classId),
+			storedInfo.getMethods().get(this, methodId),
+			index);
+	}
+	
+	/**
 	 * Creates a reply packet.
 	 *
 	 * @param __id The packet ID that is being responded to.
@@ -326,7 +362,8 @@ public class DebuggerState
 		for (;;)
 		{
 			// Debug
-			Debugging.debugNote("Polling JDWPPacket...");
+			if (JDWPCommLink.DEBUG)
+				Debugging.debugNote("Polling JDWPPacket...");
 			
 			// Do we know sizes yet?
 			if (!sizesKnown)
@@ -336,8 +373,9 @@ public class DebuggerState
 				if (sizesKnown)
 				{
 					// Debug
-					Debugging.debugNote(
-						"Processing deferred packets...");
+					if (JDWPCommLink.DEBUG)
+						Debugging.debugNote(
+							"Processing deferred packets...");
 					
 					// These packets are from a time when sizes are not known,
 					// so we need to place in all the sizes
@@ -375,16 +413,20 @@ public class DebuggerState
 			try (JDWPPacket packet = link.poll())
 			{
 				// Debug
-				Debugging.debugNote("DEBUGGER <- %s", packet);
-				if (packet != null)
-					try (HexDumpOutputStream dump = new HexDumpOutputStream(
-						System.err))
-					{
-						dump.write(packet.toByteArray());
-					}
-					catch (IOException ignored)
-					{
-					}
+				if (JDWPCommLink.DEBUG)
+				{
+					Debugging.debugNote("DEBUGGER <- %s", packet);
+					
+					if (packet != null)
+						try (HexDumpOutputStream dump = new HexDumpOutputStream(
+							System.err))
+						{
+							dump.write(packet.toByteArray());
+						}
+						catch (IOException ignored)
+						{
+						}
+				}
 				
 				// Only when interrupted or terminated does this stop
 				if (packet == null)
@@ -408,7 +450,8 @@ public class DebuggerState
 		}
 		
 		// Debug
-		Debugging.debugNote("JDWP Loop End...");
+		if (JDWPCommLink.DEBUG)
+			Debugging.debugNote("JDWP Loop End...");
 		
 		// Disconnected so indicate that
 		this.disconnectedTally.increment();
@@ -462,8 +505,9 @@ public class DebuggerState
 		}
 		
 		// Debug
-		Debugging.debugNote("DEBUGGER -> %s (%x)",
-			__packet, System.identityHashCode(__packet));
+		if (JDWPCommLink.DEBUG)
+			Debugging.debugNote("DEBUGGER -> %s (%x)",
+				__packet, System.identityHashCode(__packet));
 		
 		// Send over the link
 		this.commLink.send(__packet);

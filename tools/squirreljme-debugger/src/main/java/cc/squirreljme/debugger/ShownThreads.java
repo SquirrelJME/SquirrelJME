@@ -25,6 +25,7 @@ import javax.swing.Timer;
  */
 public class ShownThreads
 	extends JPanel
+	implements ContextThreadFrameListener
 {
 	/** The debugger state. */
 	protected final DebuggerState state;
@@ -35,6 +36,9 @@ public class ShownThreads
 	/** The timer. */
 	protected final Timer ticker;
 	
+	/** The thread context. */
+	protected final ContextThreadFrame context;
+	
 	/** The currently viewed thread. */
 	private volatile ShownThread _current;
 	
@@ -42,16 +46,18 @@ public class ShownThreads
 	 * Initializes the thread shower.
 	 *
 	 * @param __state The debugger state.
+	 * @param __context The current thread context.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/24
 	 */
-	public ShownThreads(DebuggerState __state)
+	public ShownThreads(DebuggerState __state, ContextThreadFrame __context)
 		throws NullPointerException
 	{
-		if (__state == null)
+		if (__state == null || __context == null)
 			throw new NullPointerException("NARG");
 		
 		this.state = __state;
+		this.context = __context;
 		
 		// Setup combo box to use for threads
 		JComboBox<InfoThread> combo = new JComboBox<>();
@@ -74,19 +80,52 @@ public class ShownThreads
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2024/01/25
+	 */
+	@Override
+	public void contextChanged(InfoThread __oldThread, InfoFrame __oldFrame,
+		InfoThread __newThread, InfoFrame __newFrame)
+	{
+		// Force an update
+		this.update();
+	}
+	
+	/**
 	 * Updates the shown threads.
 	 *
 	 * @since 2024/01/25
 	 */
 	public void update()
 	{
-		// Force tick
-		this.__tick(null);
+		// Need to determine if the thread is changing
+		ShownThread shown = this._current;
+		InfoThread thread = this.context.getThread();
 		
-		// If there is a current item, make sure it gets updated
-		ShownThread current = this._current;
-		if (current != null)
-			current.update();
+		// If the thread has not changed, do nothing
+		if (thread != null && shown != null && shown.thread == thread)
+		{
+			// But do update it because we do like that
+			shown.update();
+				
+			return;
+		}
+		
+		// Remove old thread being shown
+		if (shown != null)
+			this.remove(shown);
+		
+		// It is possible for a thread to get unselected
+		if (thread != null)
+		{
+			// Add in new thread
+			shown = new ShownThread(this.state, thread, this.context);
+			this.add(shown, BorderLayout.CENTER);
+			this._current = shown;
+			
+			// Force it to update quicker
+			shown.update();
+		}
 	}
 	
 	/**
@@ -98,26 +137,15 @@ public class ShownThreads
 	private void __chooseThread(ItemEvent __event)
 	{
 		// Do nothing if nothing was set
-		InfoThread item = (InfoThread)__event.getItem();
-		if (item == null)
+		InfoThread thread = (InfoThread)__event.getItem();
+		if (thread == null)
 			return;
 		
-		// If the thread has not changed, do nothing
-		ShownThread current = this._current;
-		if (current != null && current.thread == item)
-			return;
+		// Update thread
+		this.context.set(thread);
 		
-		// Remove old thread being shown
-		if (current != null)
-			this.remove(current);
-		
-		// Add in new thread
-		current = new ShownThread(this.state, item);
-		this.add(current, BorderLayout.CENTER);
-		this._current = current;
-		
-		// Force it to update quicker
-		current.update();
+		// Force an update
+		this.update();
 	}
 	
 	/**
@@ -171,9 +199,7 @@ public class ShownThreads
 		// Set the selected item
 		combo.setSelectedItem(currentSel);
 		
-		// If there is a current item, make sure it gets updated
-		ShownThread current = this._current;
-		if (current != null)
-			current.update();
+		// Force an update
+		this.update();
 	}
 }

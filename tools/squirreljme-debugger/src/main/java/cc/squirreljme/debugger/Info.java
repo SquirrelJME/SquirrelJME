@@ -10,6 +10,7 @@
 package cc.squirreljme.debugger;
 
 import cc.squirreljme.jdwp.JDWPId;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.function.Consumer;
@@ -94,6 +95,31 @@ public abstract class Info
 		{
 			this._disposed = true;
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/01/25
+	 */
+	@Override
+	public int hashCode()
+	{
+		return this.id.hashCode();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/01/24
+	 */
+	@Override
+	public boolean equals(Object __o)
+	{
+		if (__o == this)
+			return true;
+		else if (!(__o instanceof Info))
+			return false;
+		
+		return this.compareTo((Info)__o) == 0;
 	}
 	
 	/**

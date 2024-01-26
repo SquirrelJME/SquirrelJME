@@ -14,7 +14,6 @@ import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 /**
@@ -79,10 +78,7 @@ public class ShownInstruction
 			this.breakpoint = breakpoint;
 			
 			// Remove everything that makes it look like a button
-			breakpoint.setBorder(new EmptyBorder(
-				0, 0, 0, 0));
-			breakpoint.setBorderPainted(false);
-			breakpoint.setContentAreaFilled(false);
+			Utils.prettyTextButton(breakpoint);
 			breakpoint.setIcon(Utils.tangoIcon("-"));
 			
 			// Add in the button
@@ -91,11 +87,11 @@ public class ShownInstruction
 		
 		// Setup address
 		JTextField address = new JTextField();
-		ShownInstruction.__pretty(address);
+		Utils.prettyTextField(address);
 		
 		// Setup mnemonic
 		JTextField mnemonic = new JTextField();
-		ShownInstruction.__pretty(mnemonic);
+		Utils.prettyTextField(mnemonic);
 		mnemonic.setFont(mnemonic.getFont().deriveFont(Font.BOLD));
 		
 		// Add everything in
@@ -121,34 +117,5 @@ public class ShownInstruction
 		
 		// Set mnemonic
 		this.description.setText(viewer.mnemonic());
-	}
-	
-	/**
-	 * Makes the label look better.
-	 *
-	 * @param __label The label to edit.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2024/01/21
-	 */
-	private static void __pretty(JTextField __label)
-		throws NullPointerException
-	{
-		if (__label == null)
-			throw new NullPointerException("NARG");
-		
-		// Reduce padding
-		__label.setBorder(new EmptyBorder(0, 0, 0, 0));
-		
-		// Align to the left
-		__label.setHorizontalAlignment(SwingConstants.LEFT);
-		
-		// Allow it to be copied
-		__label.setEditable(false);
-		__label.setBorder(new EmptyBorder(0, 0, 0, 0));
-		
-		// Use a better font for the label
-		Font descFont = __label.getFont();
-		__label.setFont(new Font("monospaced",
-			descFont.getStyle(), descFont.getSize()));
 	}
 }
