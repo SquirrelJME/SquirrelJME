@@ -74,6 +74,9 @@ public class ShownThread
 		SequentialPanel sequence = new SequentialPanel(true);
 		this.sequence = sequence;
 		this.add(sequence.panel(), BorderLayout.CENTER);
+		
+		// Perform an initial update to make everything visible
+		this.update();
 	}
 	
 	/**

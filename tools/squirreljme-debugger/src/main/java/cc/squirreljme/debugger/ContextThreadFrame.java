@@ -134,6 +134,29 @@ public final class ContextThreadFrame
 	}
 	
 	/**
+	 * Sets the context thread, updating the frames before the actual set.
+	 *
+	 * @param __thread The thread context.
+	 * @since 2024/01/26
+	 */
+	public void set(DebuggerState __state, InfoThread __thread)
+		throws NullPointerException
+	{
+		if (__state == null)
+			throw new NullPointerException("NARG");
+		
+		// There needs to be an actual thread
+		if (__thread != null)
+		{
+			// Update frames of the thread
+			__thread.frames.update(__state);
+			
+			// Do internal set
+			this.set(__thread);
+		}
+	}
+	
+	/**
 	 * Sets the context thread.
 	 *
 	 * @param __thread The thread context.

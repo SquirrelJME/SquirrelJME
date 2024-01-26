@@ -109,6 +109,9 @@ public class ShownThreads
 		StoredInfo<InfoThread> stored = this.state.storedInfo.getThreads();
 		InfoThread[] threads = stored.all(this.state, InfoThread[].class);
 		
+		// Need to update
+		InfoThread contextThread = this.context.getThread();
+		
 		// We will be working on this combo box much
 		JComboBox<InfoThread> combo = this.combo;
 		
@@ -164,6 +167,10 @@ public class ShownThreads
 		if (redoSelection)
 			combo.setSelectedItem(0);
 		
+		// Make sure our context thread is always selected
+		else
+			combo.setSelectedItem(contextThread);
+		
 		// Set updater for when the combo box value changes
 		combo.addActionListener(this._actionListener);
 		combo.addItemListener(this._itemListener);
@@ -173,12 +180,12 @@ public class ShownThreads
 		
 		// Need to determine if the thread is changing
 		ShownThread shown = this._current;
-		InfoThread contextThread = this.context.getThread();
 		
 		// Only update the shown info if the thread changed
-		if (shown != null && !Objects.equals(shown.thread, contextThread))
+		if (shown != null/* && !Objects.equals(shown.thread, contextThread)*/)
 		{
 			// Remove old thread being shown
+			this._current = null;
 			this.remove(shown);
 			shown = null;
 		}
@@ -223,7 +230,10 @@ public class ShownThreads
 		
 		// Did the thread change?
 		if (thread != null)
-			this.context.set(thread);
+		{
+			this.context.set(this.state, thread);
+			this.update();
+		}
 	}
 	
 	/**
@@ -244,6 +254,9 @@ public class ShownThreads
 		
 		// Update thread
 		if (thread != null)
-			this.context.set(thread);
+		{
+			this.context.set(this.state, thread);
+			this.update();
+		}
 	}
 }
