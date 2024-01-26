@@ -61,8 +61,7 @@ public class PrimaryFrame
 	protected final ShownThreads shownThreads;
 	
 	/** Currently shown context. */
-	protected final ContextThreadFrame context =
-		new ContextThreadFrame();
+	protected final ContextThreadFrame context;
 	
 	/** The shown context thread. */
 	protected final ShownContextMethod shownContext;
@@ -82,6 +81,7 @@ public class PrimaryFrame
 		
 		// Store state for later usage
 		this.state = __state;
+		this.context = __state.context;
 		
 		// To keep it more easily workable
 		this.setMinimumSize(new Dimension(640, 480));
@@ -196,9 +196,9 @@ public class PrimaryFrame
 			(__ignored) -> {
 				InfoThread thread = this.context.getThread();
 				if (thread != null)
-					__state.threadResume(thread);
-				
-				this.update();
+					__state.threadResume(thread, () -> {
+						this.update();
+					});
 			});
 		JButton suspendSingle = PrimaryFrame.__barButton(toolBar,
 			"Suspend Single Thread", "media-playback-pause");
@@ -206,9 +206,9 @@ public class PrimaryFrame
 			(__ignored) -> {
 				InfoThread thread = this.context.getThread();
 				if (thread != null)
-					__state.threadSuspend(thread);
-				
-				this.update();
+					__state.threadSuspend(thread, () -> {
+						this.update();
+					});
 			});
 		
 		toolBar.addSeparator();
@@ -217,17 +217,17 @@ public class PrimaryFrame
 			"Resume All Threads", "weather-clear");
 		resumeAll.addActionListener(
 			(__ignored) -> {
-				__state.threadResumeAll();
-				
-				this.update();
+				__state.threadResumeAll(() -> {
+					this.update();
+				});
 			});
 		JButton suspendAll = PrimaryFrame.__barButton(toolBar,
 			"Suspend All Threads", "weather-snow");
 		suspendAll.addActionListener(
 			(__ignored) -> {
-				__state.threadSuspendAll();
-				
-				this.update();
+				__state.threadSuspendAll(() -> {
+					this.update();
+				});
 			});
 		
 		toolBar.addSeparator();

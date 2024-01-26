@@ -69,6 +69,10 @@ public class DebuggerState
 	protected final StoredInfoManager storedInfo =
 		new StoredInfoManager();
 	
+	/** The frame context. */
+	protected final ContextThreadFrame context =
+		new ContextThreadFrame();
+	
 	/** Handler for all replies. */
 	private final Map<Integer, ReplyHandler> _replies =
 		new LinkedHashMap<>();
@@ -640,10 +644,11 @@ public class DebuggerState
 	 * Resumes a single thread.
 	 *
 	 * @param __thread The thread to resume.
+	 * @param __done The method to call when the action has been performed.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/21
 	 */
-	public void threadResume(InfoThread __thread)
+	public void threadResume(InfoThread __thread, Runnable __done)
 		throws NullPointerException
 	{
 		if (__thread == null)
@@ -656,16 +661,22 @@ public class DebuggerState
 			out.writeId(__thread.id);
 			
 			// Send it
-			this.send(out);
+			if (__done == null)
+				this.send(out);
+			else
+				this.send(out, (__ignored, __reply) -> {
+					__done.run();
+				});
 		}
 	}
 	
 	/**
 	 * Resumes all threads.
 	 *
+	 * @param __done The method to call when the action has been performed.
 	 * @since 2024/01/21
 	 */
-	public void threadResumeAll()
+	public void threadResumeAll(Runnable __done)
 	{
 		// The all version uses the VM command set as there is no
 		// base thread to use
@@ -673,7 +684,12 @@ public class DebuggerState
 			JDWPCommandSetVirtualMachine.RESUME))
 		{
 			// Send it
-			this.send(out);
+			if (__done == null)
+				this.send(out);
+			else
+				this.send(out, (__ignored, __reply) -> {
+					__done.run();
+				});
 		}
 	}
 	
@@ -714,10 +730,11 @@ public class DebuggerState
 	 * Suspends the specified thread.
 	 *
 	 * @param __thread The thread to suspend.
+	 * @param __done The method to call when the action has been performed.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/26
 	 */
-	public void threadSuspend(InfoThread __thread)
+	public void threadSuspend(InfoThread __thread, Runnable __done)
 		throws NullPointerException
 	{
 		if (__thread == null)
@@ -730,16 +747,22 @@ public class DebuggerState
 			out.writeId(__thread.id);
 			
 			// Send it
-			this.send(out);
+			if (__done == null)
+				this.send(out);
+			else
+				this.send(out, (__ignored, __reply) -> {
+					__done.run();
+				});
 		}
 	}
 	
 	/**
 	 * Suspends all threads.
 	 *
+	 * @param __done The method to call when the action has been performed.
 	 * @since 2024/01/25
 	 */
-	public void threadSuspendAll()
+	public void threadSuspendAll(Runnable __done)
 	{
 		// The all version uses the VM command set as there is no
 		// base thread to use
@@ -747,7 +770,12 @@ public class DebuggerState
 			JDWPCommandSetVirtualMachine.SUSPEND))
 		{
 			// Send it
-			this.send(out);
+			if (__done == null)
+				this.send(out);
+			else
+				this.send(out, (__ignored, __reply) -> {
+					__done.run();
+				});
 		}
 	}
 	

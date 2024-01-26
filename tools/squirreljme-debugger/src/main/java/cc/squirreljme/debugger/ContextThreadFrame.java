@@ -89,6 +89,51 @@ public final class ContextThreadFrame
 	}
 	
 	/**
+	 * Sets a thread if one is not set.
+	 *
+	 * @param __thread The thread to set if not set.
+	 * @since 2024/01/26
+	 */
+	public void optional(InfoThread __thread)
+	{
+		synchronized (this)
+		{
+			if (this._thread == null)
+				this.set(__thread);
+		}
+	}
+	
+	/**
+	 * Sets a frame if one is not set.
+	 *
+	 * @param __frame The frame to set if not set.
+	 * @since 2024/01/26
+	 */
+	public void optional(InfoFrame __frame)
+	{
+		synchronized (this)
+		{
+			if (this._frame == null)
+				this.set(__frame);
+		}
+	}
+	
+	/**
+	 * Sets a location if one is not set.
+	 *
+	 * @param __location The location to set if not set.
+	 * @since 2024/01/26
+	 */
+	public void optional(FrameLocation __location)
+	{
+		synchronized (this)
+		{
+			if (this._location == null)
+				this.set(__location);
+		}
+	}
+	
+	/**
 	 * Sets the context thread.
 	 *
 	 * @param __thread The thread context.
@@ -121,7 +166,7 @@ public final class ContextThreadFrame
 				// Try to get a frame to look at
 				InfoFrame[] possible = newThread.frames.get();
 				if (possible != null && possible.length > 0)
-					newFrame = possible[possible.length - 1];
+					newFrame = possible[0];
 				
 				// No frames at all
 				else

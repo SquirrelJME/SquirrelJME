@@ -48,6 +48,11 @@ public enum EventProcessor
 			FrameLocation location = __state.readLocation(thread,
 				__packet);
 			
+			// Set context if missing
+			__state.context.optional(thread);
+			__state.context.optional(thread.topFrame(__state));
+			__state.context.optional(location);
+			
 			// Call handler
 			__handler.handle(__state, new SingleStepEvent(thread, __suspend,
 				location));
@@ -139,7 +144,13 @@ public enum EventProcessor
 			// Mark as started
 			InfoThread thread = threadStore.get(__state, threadId);
 			if (thread != null)
+			{
+				// Set as started
 				thread.isStarted.set(true);
+			
+				// Set context if missing
+				__state.context.optional(thread);
+			}
 		}
 	},
 	
@@ -402,13 +413,16 @@ public enum EventProcessor
 			// Set the VM as started
 			__state.setStarted();
 			
+			// Set context if missing
+			__state.context.optional(thread);
+			
 			// If the VM was started in the suspend state then this would be
 			// known accordingly... so we need to resume the VM since we are
 			// connected to it
 			if (__suspend == JDWPSuspendPolicy.EVENT_THREAD)
-				__state.threadResume(thread);
+				__state.threadResume(thread, null);
 			else if (__suspend == JDWPSuspendPolicy.ALL)
-				__state.threadResumeAll();
+				__state.threadResumeAll(null);
 		}
 	},
 	
