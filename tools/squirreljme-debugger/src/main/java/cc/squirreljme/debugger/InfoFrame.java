@@ -58,7 +58,7 @@ public class InfoFrame
 	protected final FrameLocation location;
 	
 	/** Frame variables. */
-	protected final KnownValue<Object[]> variables;
+	protected final KnownValue<JDWPValue[]> variables;
 	
 	/**
 	 * Initializes the frame information.
@@ -81,7 +81,7 @@ public class InfoFrame
 		
 		this.inThread = __thread;
 		this.location = __location;
-		this.variables = new KnownValue<Object[]>(Object[].class,
+		this.variables = new KnownValue<JDWPValue[]>(JDWPValue[].class,
 			this::__updateVariables);
 	}
 	
@@ -125,13 +125,13 @@ public class InfoFrame
 	 * @since 2024/01/26
 	 */
 	private void __updateVariables(DebuggerState __state,
-		KnownValue<Object[]> __value)
+		KnownValue<JDWPValue[]> __value)
 	{
 		// Native/abstract methods cannot have variables
 		InfoMethod inMethod = this.location.inMethod;
 		if (inMethod.flags.isNative() || inMethod.flags.isAbstract())
 		{
-			__value.set(new Object[0]);
+			__value.set(new JDWPValue[0]);
 			return;
 		}
 		
@@ -141,7 +141,7 @@ public class InfoFrame
 		// For JDWP there is no real way to get an accurate set of variables
 		// directly, like it does not tell us the actual type that is there, so
 		// we have to do some major probing to try to get that information...
-		List<Object> result = new ArrayList<>();
+		List<JDWPValue> result = new ArrayList<>();
 		JDWPValue[] object = new JDWPValue[1];
 		for (int i = 0; i < 255; i++)
 			try
@@ -155,7 +155,7 @@ public class InfoFrame
 			}
 		
 		// Set value
-		__value.set(result.toArray(new Object[result.size()]));
+		__value.set(result.toArray(new JDWPValue[result.size()]));
 	}
 	
 	/**
@@ -171,8 +171,9 @@ public class InfoFrame
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/26
 	 */
-	private Object __variableAttempt(DebuggerState __state, JDWPId __threadId, 
-		JDWPId __frameId, int __varIndex, JDWPValue[] __object)
+	private JDWPValue __variableAttempt(DebuggerState __state,
+		JDWPId __threadId, JDWPId __frameId, int __varIndex,
+		JDWPValue[] __object)
 		throws NoSuchElementException, NullPointerException
 	{
 		if (__state == null || __threadId == null || __frameId == null ||
@@ -215,9 +216,9 @@ public class InfoFrame
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/26
 	 */
-	private Object __variableAttempt(DebuggerState __state, JDWPId __threadId,
-		JDWPId __frameId, int __varIndex, JDWPValueTag __tag,
-		JDWPValue[] __object)
+	private JDWPValue __variableAttempt(DebuggerState __state,
+		JDWPId __threadId, JDWPId __frameId, int __varIndex,
+		JDWPValueTag __tag, JDWPValue[] __object)
 		throws NoSuchElementException, NullPointerException
 	{
 		if (__state == null || __threadId == null || __frameId == null ||

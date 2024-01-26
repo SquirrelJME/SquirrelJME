@@ -9,6 +9,7 @@
 
 package cc.squirreljme.debugger;
 
+import cc.squirreljme.jdwp.JDWPValue;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.awt.BorderLayout;
 import java.util.Arrays;
@@ -95,7 +96,7 @@ public class ShownContextVariables
 		}
 		
 		// Get all values
-		Object[] values = inFrame.variables.update(this.state);
+		JDWPValue[] values = inFrame.variables.update(this.state);
 		if (values != null)
 		{
 			// Debug
@@ -104,9 +105,11 @@ public class ShownContextVariables
 			
 			// Clear everything and re-add
 			sequence.removeAll();
-			for (Object value : values)
-				sequence.add(new JLabel(Objects.toString(value,
-					"null")));
+			for (int i = 0, n = values.length; i < n; i++)
+				sequence.add(new KeyValuePanel(
+					new JLabel(Integer.toString(i)),
+					new JLabel(Objects.toString(values[i],
+						"null"))));
 		}
 	}
 }

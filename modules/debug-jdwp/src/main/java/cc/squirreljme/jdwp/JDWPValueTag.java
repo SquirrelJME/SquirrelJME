@@ -118,6 +118,12 @@ public enum JDWPValueTag
 			case 'J':	return JDWPValueTag.LONG;
 			case 'D':	return JDWPValueTag.DOUBLE;
 			case 'L':	return JDWPValueTag.OBJECT;
+			case 'V':	return JDWPValueTag.VOID;
+			case 's':	return JDWPValueTag.STRING;
+			case 't':	return JDWPValueTag.THREAD;
+			case 'g':	return JDWPValueTag.THREAD_GROUP;
+			case 'l':	return JDWPValueTag.CLASS_LOADER;
+			case 'c':	return JDWPValueTag.CLASS_OBJECT;
 		}
 		
 		return null;
@@ -150,6 +156,12 @@ public enum JDWPValueTag
 			case 'F':	return JDWPValueTag.FLOAT;
 			case 'J':	return JDWPValueTag.LONG;
 			case 'D':	return JDWPValueTag.DOUBLE;
+			case 'V':	return JDWPValueTag.VOID;
+			case 's':	return JDWPValueTag.STRING;
+			case 't':	return JDWPValueTag.THREAD;
+			case 'g':	return JDWPValueTag.THREAD_GROUP;
+			case 'l':	return JDWPValueTag.CLASS_LOADER;
+			case 'c':	return JDWPValueTag.CLASS_OBJECT;
 			
 				// Dependant class types
 			default:
