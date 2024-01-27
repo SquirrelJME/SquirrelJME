@@ -286,21 +286,17 @@ public class PrimaryFrame
 	public void handleSingleStep(DebuggerState __state,
 		SingleStepEvent __event)
 	{
-		Debugging.todoNote("Single step?");
-		/*
 		// Note it
 		Debugging.debugNote("Single stepped.");
 		this.statusPanel.setMessage("Single stepped.");
 		
 		// Update context frame from this event
 		InfoThread inThread = __event.thread;
-		InfoFrame inFrame = inThread.topFrame(__state);
-		if (inFrame != null)
-			this.context.set(inFrame);
+		if (inThread != null)
+			this.context.set(inThread);
 		
 		// Update information
 		this.update();
-		 */
 	}
 	
 	/**
@@ -310,7 +306,7 @@ public class PrimaryFrame
 	 */
 	public void update()
 	{
-		SwingUtilities.invokeLater(() -> {
+		Utils.swingInvoke(() -> {
 			// Update thread selection
 			this.shownThreads.update();
 			

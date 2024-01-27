@@ -428,7 +428,7 @@ public final class ContextThreadFrame
 		// Call all listeners to update, make sure their update is done in
 		// the swing event thread
 		for (ContextThreadFrameListener listener : listeners)
-			SwingUtilities.invokeLater(() -> {
+			Utils.swingInvoke(() -> {
 				listener.contextChanged(
 					__oldThread, __oldFrame, __oldLocation,
 					__newThread, __newFrame, __newLocation);

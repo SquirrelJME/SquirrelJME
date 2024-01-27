@@ -150,7 +150,7 @@ public class ShownInstruction
 		this._args = args;
 		
 		// Request that everything gets updated
-		SwingUtilities.invokeLater(this::shownUpdate);
+		Utils.swingInvoke(this::shownUpdate);
 	}
 	
 	/**

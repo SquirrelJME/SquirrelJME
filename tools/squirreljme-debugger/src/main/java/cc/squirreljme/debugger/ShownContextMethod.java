@@ -78,7 +78,7 @@ public class ShownContextMethod
 		__context.addListener(this);
 		
 		// Request that everything gets updated
-		SwingUtilities.invokeLater(this::update);
+		Utils.swingInvoke(this::update);
 	}
 	
 	/**

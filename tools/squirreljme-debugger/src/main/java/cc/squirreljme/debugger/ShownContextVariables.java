@@ -78,7 +78,7 @@ public class ShownContextVariables
 		__context.addListener(this);
 		
 		// Request that everything gets updated
-		SwingUtilities.invokeLater(this::update);
+		Utils.swingInvoke(this::update);
 	}
 	
 	/**
@@ -118,7 +118,7 @@ public class ShownContextVariables
 		inFrame.variables.update(state, (__state, __value) -> {
 			InfoFrameLocals locals = __value.get();
 			if (locals != null)
-				SwingUtilities.invokeLater(() -> {
+				Utils.swingInvoke(() -> {
 					this.__updateLocals(locals);
 				});
 		});

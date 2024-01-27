@@ -84,7 +84,7 @@ public class ShownThreads
 		combo.addItemListener(this._itemListener);
 		
 		// Request that everything gets updated
-		SwingUtilities.invokeLater(this::update);
+		Utils.swingInvoke(this::update);
 	}
 	
 	/**

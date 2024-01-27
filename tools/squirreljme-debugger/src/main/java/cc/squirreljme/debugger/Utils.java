@@ -25,6 +25,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import org.freedesktop.tango.TangoIconLoader;
 
@@ -256,6 +257,31 @@ public final class Utils
 		catch (IOException ignored)
 		{
 		}
+	}
+	
+	/**
+	 * If the current thread is the Swing dispatch thread then the specified
+	 * {@link Runnable} is run immediately, otherwise it will be invoked later
+	 * in the event thread.
+	 *
+	 * @param __run The runnable to execute.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/27
+	 */
+	public static void swingInvoke(Runnable __run)
+		throws NullPointerException
+	{
+		if (__run == null)
+			throw new NullPointerException("NARG");
+		
+		// It is completely safe to call this as we are in the event thread
+		// so do that
+		if (SwingUtilities.isEventDispatchThread())
+			__run.run();
+		
+		// Otherwise execute it later
+		else
+			SwingUtilities.invokeLater(__run);
 	}
 	
 	/**

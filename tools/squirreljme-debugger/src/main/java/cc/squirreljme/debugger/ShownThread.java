@@ -78,7 +78,7 @@ public class ShownThread
 		this.add(sequence.panel(), BorderLayout.CENTER);
 		
 		// Request that everything gets updated
-		SwingUtilities.invokeLater(this::update);
+		Utils.swingInvoke(this::update);
 	}
 	
 	/**
@@ -107,7 +107,7 @@ public class ShownThread
 		// Update suspension count
 		inThread.suspendCount.update(state, (__state, __value) -> {
 			int count = __value.get();
-			SwingUtilities.invokeLater(() -> {
+			Utils.swingInvoke(() -> {
 				this.__updateSuspend(count);
 			});
 		});
@@ -115,7 +115,7 @@ public class ShownThread
 		// Update the thread information
 		inThread.frames.update(state, (__state, __value) -> {
 			InfoFrame[] frames = __value.get();
-			SwingUtilities.invokeLater(() -> {
+			Utils.swingInvoke(() -> {
 				this.__updateFrames(frames);
 			});
 		});

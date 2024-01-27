@@ -96,7 +96,7 @@ public class ShownClass
 		this.seqPanel = seqPanel;
 		
 		// Request that everything gets updated
-		SwingUtilities.invokeLater(this::shownUpdate);
+		Utils.swingInvoke(this::shownUpdate);
 	}
 	
 	/**
