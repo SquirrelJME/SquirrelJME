@@ -9,6 +9,7 @@
 
 package cc.squirreljme.debugger;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.awt.BorderLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -22,6 +23,7 @@ import javax.swing.SwingUtilities;
  */
 public class ShownMethod
 	extends JPanel
+	implements ContextThreadFrameListener
 {
 	/** The viewer for the method being shown. */
 	protected final MethodViewer viewer;
@@ -84,7 +86,24 @@ public class ShownMethod
 		this.add(seqPanel.panel(), BorderLayout.CENTER);
 		this.seqPanel = seqPanel;
 		
+		// If the context changes, update this so that we get the most
+		// up-to-date information
+		if (__context != null)
+			__context.addListener(this);
+		
 		// Request that everything gets updated
+		Utils.swingInvoke(this::shownUpdate);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/01/27
+	 */
+	@Override
+	public void contextChanged(InfoThread __oldThread, InfoFrame __oldFrame,
+		FrameLocation __oldLocation, InfoThread __newThread,
+		InfoFrame __newFrame, FrameLocation __newLocation)
+	{
 		Utils.swingInvoke(this::shownUpdate);
 	}
 	
@@ -104,43 +123,72 @@ public class ShownMethod
 		ShownInstruction[] shownInstructions = this._shownInstructions;
 		if (shownInstructions == null)
 		{
-			// Get the instructions to view
-			InstructionViewer[] instructions = viewer.instructions();
-			
-			// Do nothing yet if we do not know what instructions exist
-			if (instructions == null)
-				return;
-		
-			// All the instructions are placed here
-			SequentialPanel seqPanel = this.seqPanel;
-			
-			// Optional state for breakpoints, etc.
-			DebuggerState state = this.state;
-			ContextThreadFrame context = this.context;
-			
-			// Add everything to the grid view
-			int count = instructions.length;
-			shownInstructions = new ShownInstruction[count];
-			for (int i = 0; i < count; i++)
-			{
-				// Initialize a shower!
-				ShownInstruction shown = new ShownInstruction(
-					state, instructions[i], context, i);
-				
-				// Show it
-				shownInstructions[i] = shown;
-				seqPanel.add(shown);
-			}
-			
-			// Store for later updates
-			this._shownInstructions = shownInstructions;
+			// If this is looking at a remote method, we will have to belay
+			// showing it while it is being read from the remote VM
+			if (viewer instanceof RemoteMethodViewer)
+				((RemoteMethodViewer)viewer).info.byteCode.update(this.state,
+					(__state, __value) -> {
+						InfoByteCode byteCode = __value.get();
+						if (byteCode != null)
+							Utils.swingInvoke(() -> {
+								this.__updateInstructions(
+									byteCode.instructions());
+							});
+					});
+			else
+				this.__updateInstructions(viewer.instructions());
 		}
 		
 		// Go through an update everything accordingly
-		for (ShownInstruction shown : shownInstructions)
-			shown.shownUpdate();
+		shownInstructions = this._shownInstructions;
+		if (shownInstructions != null)
+			for (ShownInstruction shown : shownInstructions)
+				shown.shownUpdate();
 		
 		// Repaint
 		Utils.revalidate(this);
+	}
+	
+	/**
+	 * Updates the shown instructions.
+	 *
+	 * @param __instructions The instructions to show.
+	 * @since 2024/01/27
+	 */
+	private void __updateInstructions(InstructionViewer[] __instructions)
+	{
+		// Do nothing yet if we do not know what instructions exist
+		if (__instructions == null)
+			return;
+	
+		// All the instructions are placed here
+		SequentialPanel seqPanel = this.seqPanel;
+		
+		// Optional state for breakpoints, etc.
+		DebuggerState state = this.state;
+		ContextThreadFrame context = this.context;
+		
+		// Add everything to the grid view
+		int count = __instructions.length;
+		ShownInstruction[] shownInstructions = new ShownInstruction[count];
+		for (int i = 0; i < count; i++)
+		{
+			// Initialize a shower!
+			ShownInstruction shown = new ShownInstruction(
+				state, __instructions[i], context, i);
+			
+			// Show it
+			shownInstructions[i] = shown;
+			seqPanel.add(shown);
+			
+			// Force an update
+			shown.shownUpdate();
+		}
+		
+		// Store for later updates
+		this._shownInstructions = shownInstructions;
+		
+		// Perform another update
+		this.shownUpdate();
 	}
 }
