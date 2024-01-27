@@ -178,22 +178,25 @@ public class ShownInstruction
 			
 			// Is there a valid location
 			FrameLocation location = context.getLocation();
-			boolean isAt = false;
-			if (location == null)
-				isAt = false;
-			else
+			boolean isAt;
+			if (location != null)
 			{
 				if (interpret == FrameLocationInterpret.ADDRESS)
 					isAt = (location.index == pcAddr);
 				else
 					isAt = (location.index == index);
 			}
+			else
+				isAt = false;
 			
 			// Is this the location we are at?
 			if (isAt)
 				pointer.setIcon(Utils.tangoIcon("go-next"));
 			else
 				pointer.setIcon(Utils.tangoIcon("-"));
+			
+			// Make sure the pointer is updated
+			Utils.revalidate(pointer);
 		}
 		
 		// Set address
@@ -203,6 +206,8 @@ public class ShownInstruction
 		this.description.setText(viewer.mnemonic());
 		
 		// Repaint
+		Utils.revalidate(this.address);
+		Utils.revalidate(this.description);
 		Utils.revalidate(this);
 	}
 }

@@ -72,10 +72,6 @@ public class ShownMethod
 		// Set up the label description what we are looking at
 		JLabel whatLabel = new JLabel();
 		whatLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		whatLabel.setText(String.format("%s%s%s::%s",
-			(__viewer.isNative() ? "native " : ""),
-			(__viewer.isAbstract() ? "abstract " : ""),
-			__viewer.inClass(), __viewer.methodNameAndType()));
 		
 		// Set at the top
 		this.add(whatLabel, BorderLayout.PAGE_START);
@@ -114,8 +110,16 @@ public class ShownMethod
 	 */
 	public void shownUpdate()
 	{
-		// Cannot show any byte code if this is abstract or native
 		MethodViewer viewer = this.viewer;
+		
+		// Update with our location
+		this.whatLabel.setText(String.format("%s%s%s::%s",
+			(viewer.isNative() ? "native " : ""),
+			(viewer.isAbstract() ? "abstract " : ""),
+			viewer.inClass(), viewer.methodNameAndType()));
+		Utils.revalidate(this.whatLabel);
+		
+		// Cannot show any byte code if this is abstract or native
 		if (viewer.isNative() || viewer.isAbstract())
 			return;
 		
@@ -161,8 +165,16 @@ public class ShownMethod
 		if (__instructions == null)
 			return;
 	
-		// All the instructions are placed here
+		// All the instructions are placed here, however prevent them from
+		// being doubly placed
 		SequentialPanel seqPanel = this.seqPanel;
+		if (seqPanel.hasItems())
+		{	
+			// Perform another update
+			this.shownUpdate();
+			
+			return;
+		}
 		
 		// Optional state for breakpoints, etc.
 		DebuggerState state = this.state;

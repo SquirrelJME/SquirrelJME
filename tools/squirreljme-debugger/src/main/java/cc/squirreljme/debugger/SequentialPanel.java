@@ -34,6 +34,9 @@ public class SequentialPanel
 	protected final JLabel filler =
 		new JLabel();
 	
+	/** Does this have items? */
+	private volatile boolean _hasItems;
+	
 	/**
 	 * Initializes the panel.
 	 *
@@ -118,9 +121,23 @@ public class SequentialPanel
 		constraints.weighty = 20.0;
 		this.addPanel.add(this.filler, constraints);
 		
+		// Has items now
+		this._hasItems = true;
+		
 		// Repaint
 		Utils.revalidate(this.addPanel);
 		Utils.revalidate(this.viewPanel);
+	}
+	
+	/**
+	 * Does this have any items?
+	 *
+	 * @return If this has items or not.
+	 * @since 2024/01/27
+	 */
+	public boolean hasItems()
+	{
+		return this._hasItems;
 	}
 	
 	/**
@@ -154,6 +171,9 @@ public class SequentialPanel
 		// Add the filler back with an extreme weight
 		constraints.weighty = 20.0;
 		this.addPanel.add(this.filler, constraints);
+		
+		// No longer has items
+		this._hasItems = false;
 		
 		// Repaint
 		Utils.revalidate(this.addPanel);
