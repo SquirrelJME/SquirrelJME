@@ -451,7 +451,7 @@ public enum MLEThread
 				throw new SpringMLECallError("Out of range time.");
 			
 			// Get the profiler information
-			SpringThread.Frame currentFrame = __thread.thread.currentFrame();
+			SpringThreadFrame currentFrame = __thread.thread.currentFrame();
 			ProfiledFrame profiler = (currentFrame == null ? null :
 				currentFrame._profiler);
 			

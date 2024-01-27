@@ -737,12 +737,12 @@ public final class SpringThreadWorker
 	public final SpringClass contextClass()
 	{
 		SpringThread thread = this.thread;
-		SpringThread.Frame[] frames = thread.frames();
+		SpringThreadFrame[] frames = thread.frames();
 		
 		// Go through frames
 		for (int n = frames.length, i = n - 1; i >= 0; i--)
 		{
-			SpringThread.Frame frame = frames[i];
+			SpringThreadFrame frame = frames[i];
 			
 			// No method, could be a blank frame
 			SpringMethod m = frame.method();
@@ -798,7 +798,7 @@ public final class SpringThreadWorker
 		
 		// Overflow or exceptions might occur
 		int framelimit;
-		SpringThread.Frame blank, execframe;
+		SpringThreadFrame blank, execframe;
 		SpringThread thread = this.thread;
 		try
 		{
@@ -833,7 +833,7 @@ public final class SpringThreadWorker
 		}
 		
 		// This is an error unless the thread signaled exit
-		SpringThread.Frame currentframe = thread.currentFrame();
+		SpringThreadFrame currentframe = thread.currentFrame();
 		if (currentframe != blank)
 		{
 			// If our thread just happened to signal an exit of the VM, then
@@ -1358,7 +1358,7 @@ public final class SpringThreadWorker
 		if ((this.machine._globalTrace & __flags) != 0)
 			return true;
 		
-		SpringThread.Frame frame = this.thread.currentFrame();
+		SpringThreadFrame frame = this.thread.currentFrame();
 		return this._verbose.check((frame == null ? 0 : frame.level), __flags);
 	}
 	
@@ -1371,7 +1371,7 @@ public final class SpringThreadWorker
 	 */
 	public void verboseEmit(String __format, Object... __args)
 	{
-		SpringThread.Frame frame = this.thread.currentFrame();
+		SpringThreadFrame frame = this.thread.currentFrame();
 		Debugging.debugNote("[%s @ %s] %s",
 			this.thread.toString(),
 			(frame == null ? null : String.format("%s:%d (%d)",
@@ -1393,7 +1393,7 @@ public final class SpringThreadWorker
 		this.machine.exitCheck();
 		
 		// Check if this frame handles the exception
-		SpringThread.Frame frame = this.thread.currentFrame();
+		SpringThreadFrame frame = this.thread.currentFrame();
 		SpringObject tossing = frame.tossedException();
 		if (tossing != null)
 		{
@@ -1446,7 +1446,7 @@ public final class SpringThreadWorker
 		
 		// Need the current frame and its byte code
 		SpringThread thread = this.thread;
-		SpringThread.Frame frame = thread.currentFrame();
+		SpringThreadFrame frame = thread.currentFrame();
 		ByteCode code = frame.byteCode();
 		int pc = frame.lastExecutedPc();
 		
@@ -1492,7 +1492,7 @@ public final class SpringThreadWorker
 			thread.popFrame();
 			
 			// Did we run out of stack frames?
-			SpringThread.Frame cf = thread.currentFrame();
+			SpringThreadFrame cf = thread.currentFrame();
 			if (cf == null)
 			{
 				// Just stop execution here
@@ -1543,7 +1543,7 @@ public final class SpringThreadWorker
 		
 		// Used for context and return value handling
 		SpringThread thread = this.thread;
-		SpringThread.Frame frame = thread.currentFrame();
+		SpringThreadFrame frame = thread.currentFrame();
 		
 		// Invoke the exception
 		Object rv;
@@ -1713,7 +1713,7 @@ public final class SpringThreadWorker
 		
 		// We need the current frame and byte code so that we can check on
 		// our breakpoints
-		SpringThread.Frame frame = thread.currentFrame();
+		SpringThreadFrame frame = thread.currentFrame();
 		SpringMethod method = frame.method();
 		ByteCode code = frame.byteCode();
 		
@@ -3679,7 +3679,7 @@ public final class SpringThreadWorker
 	 * @since 2018/09/19
 	 */
 	private void __vmInvokeInterface(Instruction __i, SpringThread __t,
-		SpringThread.Frame __f)
+		SpringThreadFrame __f)
 		throws NullPointerException
 	{
 		if (__i == null || __t == null || __f == null)
@@ -3738,7 +3738,7 @@ public final class SpringThreadWorker
 	 * @since 2018/09/15
 	 */
 	private void __vmInvokeSpecial(Instruction __i, SpringThread __t,
-		SpringThread.Frame __f)
+		SpringThreadFrame __f)
 		throws NullPointerException
 	{
 		if (__i == null || __t == null || __f == null)
@@ -3817,7 +3817,7 @@ public final class SpringThreadWorker
 	 * @since 2018/09/15
 	 */
 	private void __vmInvokeStatic(Instruction __i, SpringThread __t,
-		SpringThread.Frame __f)
+		SpringThreadFrame __f)
 		throws NullPointerException
 	{
 		if (__i == null || __t == null || __f == null)
@@ -3854,7 +3854,7 @@ public final class SpringThreadWorker
 				ref.memberName().toString(), ref.memberType().toString());
 			
 			// Current framer
-			SpringThread.Frame currentFrame = this.thread.currentFrame();
+			SpringThreadFrame currentFrame = this.thread.currentFrame();
 			
 			// Potential return value?
 			MethodDescriptor type = ref.memberType();
@@ -3929,7 +3929,7 @@ public final class SpringThreadWorker
 	 * @since 2018/09/16
 	 */
 	private void __vmInvokeVirtual(Instruction __i, SpringThread __t,
-		SpringThread.Frame __f)
+		SpringThreadFrame __f)
 		throws NullPointerException
 	{
 		if (__i == null || __t == null || __f == null)
@@ -3991,7 +3991,7 @@ public final class SpringThreadWorker
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/15
 	 */
-	private void __vmNew(Instruction __i, SpringThread.Frame __f)
+	private void __vmNew(Instruction __i, SpringThreadFrame __f)
 		throws NullPointerException
 	{
 		if (__i == null || __f == null)
@@ -4043,7 +4043,7 @@ public final class SpringThreadWorker
 		}
 		
 		// Pop our current frame
-		SpringThread.Frame old = __thread.popFrame();
+		SpringThreadFrame old = __thread.popFrame();
 		old.setPc(Integer.MIN_VALUE);
 			
 		// Verbose debug?
@@ -4053,7 +4053,7 @@ public final class SpringThreadWorker
 		// Push the value to the current frame
 		if (__value != null)
 		{
-			SpringThread.Frame cur = __thread.currentFrame();
+			SpringThreadFrame cur = __thread.currentFrame();
 			if (cur != null)
 				cur.pushToStack(__value);
 		}

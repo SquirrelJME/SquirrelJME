@@ -86,17 +86,20 @@ public class ShownContextVariables
 	public void update()
 	{
 		SequentialPanel sequence = this.sequence;
+		DebuggerState state = this.state;
 		
 		// If there is no frame, then there is no purpose to this
+		// Or if it is not suspended...
 		InfoFrame inFrame = this.context.getFrame();
-		if (inFrame == null)
+		if (inFrame == null ||
+			inFrame.inThread.suspendCount.update(state) <= 0)
 		{
 			sequence.removeAll();
 			return;
 		}
 		
 		// Get all values
-		JDWPValue[] values = inFrame.variables.update(this.state);
+		JDWPValue[] values = inFrame.variables.update(state);
 		if (values != null)
 		{
 			// Debug

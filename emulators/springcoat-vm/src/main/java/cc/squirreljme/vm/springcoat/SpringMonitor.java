@@ -318,7 +318,7 @@ public final class SpringMonitor
 	private static void __changeState(SpringThread __thread, boolean __wait)
 	{
 		// Get the profiler information
-		SpringThread.Frame currentFrame = __thread.currentFrame();
+		SpringThreadFrame currentFrame = __thread.currentFrame();
 		ProfiledFrame profiler = (currentFrame == null ? null :
 			currentFrame._profiler);
 		

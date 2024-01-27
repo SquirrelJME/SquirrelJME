@@ -47,7 +47,7 @@ public class DebugViewFrame
 	@Override
 	public Object atClass(Object __which)
 	{
-		return ((SpringThread.Frame)__which).springClass;
+		return ((SpringThreadFrame)__which).springClass;
 	}
 	
 	/**
@@ -58,7 +58,7 @@ public class DebugViewFrame
 	@Override
 	public long atCodeIndex(Object __which)
 	{
-		return ((SpringThread.Frame)__which).pcIndex();
+		return ((SpringThreadFrame)__which).pcIndex();
 	}
 	
 	/**
@@ -68,7 +68,7 @@ public class DebugViewFrame
 	@Override
 	public long atLineIndex(Object __which)
 	{
-		return ((SpringThread.Frame)__which).pcSourceLine();
+		return ((SpringThreadFrame)__which).pcSourceLine();
 	}
 	
 	/**
@@ -78,7 +78,7 @@ public class DebugViewFrame
 	@Override
 	public int atMethodIndex(Object __which)
 	{
-		SpringThread.Frame which = (SpringThread.Frame)__which;
+		SpringThreadFrame which = (SpringThreadFrame)__which;
 		return which.method().methodIndex;
 	}
 	
@@ -89,7 +89,7 @@ public class DebugViewFrame
 	@Override
 	public boolean isValid(Object __which)
 	{
-		return (__which instanceof SpringThread.Frame);
+		return (__which instanceof SpringThreadFrame);
 	}
 	
 	/**
@@ -99,7 +99,7 @@ public class DebugViewFrame
 	@Override
 	public boolean readValue(Object __which, int __index, JDWPHostValue __out)
 	{
-		__out.set(((SpringThread.Frame)__which).loadLocal(
+		__out.set(((SpringThreadFrame)__which).loadLocal(
 			Object.class, __index));
 		return true;
 	}
@@ -111,6 +111,6 @@ public class DebugViewFrame
 	@Override
 	public int numValues(Object __which)
 	{
-		return ((SpringThread.Frame)__which).numLocals();
+		return ((SpringThreadFrame)__which).numLocals();
 	}
 }

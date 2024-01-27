@@ -61,13 +61,13 @@ public class DebugViewThread
 	@Override
 	public Object[] frames(Object __which)
 	{
-		SpringThread.Frame[] frames = ((SpringThread)__which).frames();
+		SpringThreadFrame[] frames = ((SpringThread)__which).frames();
 		Object[] rv = new Object[frames.length];
 		
 		// Filter out any blank frames because it does not make sense to
 		// the debugger at all
 		int at = 0;
-		for (SpringThread.Frame frame : frames)
+		for (SpringThreadFrame frame : frames)
 			if (!frame.isBlank())
 				rv[at++] = frame;
 		
