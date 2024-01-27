@@ -266,6 +266,36 @@ public class PrimaryFrame
 						this::handleSingleStep);
 			});
 		
+		toolBar.addSeparator();
+		
+		JButton singleLineStepInto = PrimaryFrame.__barButton(toolBar,
+			"Single Line Step Into", "format-indent-more");
+		singleLineStepInto.addActionListener((__event) -> {
+				InfoThread thread = this.context.getThread();
+				if (thread != null)
+					this.state.threadStep(thread, 1,
+						JDWPStepDepth.INTO, JDWPStepSize.LINE,
+						this::handleSingleStep);
+			});
+		JButton singleLineStepOver = PrimaryFrame.__barButton(toolBar,
+			"Single Line Step Over", "format-justify-center");
+		singleLineStepOver.addActionListener((__event) -> {
+				InfoThread thread = this.context.getThread();
+				if (thread != null)
+					this.state.threadStep(thread, 1,
+						JDWPStepDepth.OVER, JDWPStepSize.LINE,
+						this::handleSingleStep);
+			});
+		JButton singleLineStepOut = PrimaryFrame.__barButton(toolBar,
+			"Single Line Step Out", "edit-undo");
+		singleLineStepOut.addActionListener((__event) -> {
+				InfoThread thread = this.context.getThread();
+				if (thread != null)
+					this.state.threadStep(thread, 1,
+						JDWPStepDepth.OUT, JDWPStepSize.LINE,
+						this::handleSingleStep);
+			});
+		
 		// Add to the top
 		this.add(toolBar, BorderLayout.PAGE_START);
 		
