@@ -9,9 +9,9 @@
 
 package cc.squirreljme.debugger;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodDescriptor;
+import net.multiphasicapps.classfile.MethodFlags;
 import net.multiphasicapps.classfile.MethodName;
 import net.multiphasicapps.classfile.MethodNameAndType;
 
@@ -68,18 +68,12 @@ public class RemoteMethodViewer
 		if (this.isAbstract() || this.isNative())
 			return new InstructionViewer[0];
 		
-		if (true)
-			return new InstructionViewer[0];
-		throw Debugging.todo();
-		/*
 		// Fallback to nothing if there is no byte code
-		InfoByteCode byteCode = this.info.byteCode.getOrUpdate(this.state);
+		InfoByteCode byteCode = this.info.byteCode.getOrUpdateSync(this.state);
 		if (byteCode == null)
 			return new InstructionViewer[0];
 		
 		return byteCode.instructions();
-		
-		 */
 	}
 	
 	/**
@@ -89,8 +83,11 @@ public class RemoteMethodViewer
 	@Override
 	public boolean isAbstract()
 	{
-		return this.info.flags.getOrUpdateSync(
-			this.info.internalState()).isAbstract();
+		MethodFlags flags = this.info.flags.getOrUpdateSync(
+			this.info.internalState());
+		if (flags != null)
+			return flags.isAbstract();
+		return false;
 	}
 	
 	/**
@@ -100,8 +97,11 @@ public class RemoteMethodViewer
 	@Override
 	public boolean isNative()
 	{
-		return this.info.flags.getOrUpdateSync(
-			this.info.internalState()).isNative();
+		MethodFlags flags = this.info.flags.getOrUpdateSync(
+			this.info.internalState());
+		if (flags != null)
+			return flags.isNative();
+		return false;
 	}
 	
 	/**

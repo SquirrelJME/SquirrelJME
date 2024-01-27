@@ -9,15 +9,19 @@
 
 package cc.squirreljme.debugger;
 
+import cc.squirreljme.jdwp.JDWPCapability;
 import cc.squirreljme.jdwp.JDWPCommandSet;
 import cc.squirreljme.jdwp.JDWPCommandSetClassType;
+import cc.squirreljme.jdwp.JDWPCommandSetMethod;
 import cc.squirreljme.jdwp.JDWPCommandSetReferenceType;
 import cc.squirreljme.jdwp.JDWPId;
 import cc.squirreljme.jdwp.JDWPPacket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import net.multiphasicapps.classfile.MethodDescriptor;
+import net.multiphasicapps.classfile.MethodFlag;
 import net.multiphasicapps.classfile.MethodFlags;
 import net.multiphasicapps.classfile.MethodName;
+import net.multiphasicapps.classfile.Pool;
 
 /**
  * Not Described.
@@ -128,16 +132,14 @@ public class InfoMethod
 			return;
 		}
 		
-		throw Debugging.todo();
-		/*
 		// If the VM does not have the capability to get byte code, then
 		// we cannot actually do this
 		// If the class was garbage collected we cannot do much here
 		// or if the method is abstract or native
-		InfoClass inClass = this.inClass.get();
+		InfoClass inClass = this.inClass;
+		MethodFlags flags = this.flags.getOrUpdateSync(__state);
 		if (!__state.capabilities.has(JDWPCapability.CAN_GET_BYTECODES) ||
-			inClass == null ||
-			this.flags.isAbstract() || this.flags.isNative())
+			(flags != null && (flags.isAbstract() || flags.isNative())))
 		{
 			__value.set(null);
 			return;
@@ -145,7 +147,7 @@ public class InfoMethod
 		
 		// Byte code will be much more intelligent if the constant pool
 		// could be obtained
-		Pool constantPool = inClass.constantPool.getOrUpdate(__state);
+		Pool constantPool = inClass.constantPool.getOrUpdateSync(__state);
 		
 		// Request byte code from the method
 		try (JDWPPacket out = __state.request(
@@ -157,7 +159,7 @@ public class InfoMethod
 			out.writeId(this.id);
 			
 			// Send it
-			__state.sendThenWait(out, Utils.TIMEOUT,
+			__state.sendKnown(out, __value, __sync,
 				(__ignored, __reply) -> {
 					// Get byte code storage
 					StoredInfo<InfoByteCode> stored =
@@ -170,11 +172,8 @@ public class InfoMethod
 					// Read in the byte code data
 					__value.set(stored.get(__state, this.id,
 						this, constantPool, data));
-				}, (__ignored, __reply) -> {
-				});
+				}, ReplyHandler.IGNORED);
 		}
-		
-		 */
 	}
 	
 	/**

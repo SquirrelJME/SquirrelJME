@@ -204,7 +204,7 @@ public class DebuggerState
 			packet.writeString(__className.field().toString());
 			
 			// Send it off and wait for a response before doing something
-			this.sendThenWait(packet, Utils.TIMEOUT,
+			this.send(packet,
 				(__state, __reply) ->
 				{
 					// Timed out?
@@ -251,7 +251,7 @@ public class DebuggerState
 					
 					// Call the handler with all the found classes
 					__found.accept(foundClasses);
-				});
+				}, ReplyHandler.IGNORED);
 		}
 	}
 	
@@ -693,7 +693,7 @@ public class DebuggerState
 		EventModifier[] modifiers = {
 				new EventModifierCount(__count),
 				new EventModifierSingleStep(__thread,
-					__depth, JDWPStepSize.LINE/*__size*/)
+					__depth, __size)
 			};
 		
 		// An example single step

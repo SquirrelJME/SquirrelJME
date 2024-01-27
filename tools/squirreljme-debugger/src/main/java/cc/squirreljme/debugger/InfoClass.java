@@ -121,14 +121,7 @@ public class InfoClass
 	 */
 	public InfoMethod[] methods()
 	{
-		throw Debugging.todo();
-		/*
-		InfoMethod[] methods = this.methods.getOrUpdate(this.internalState());
-		if (methods != null)
-			return methods.clone();
-		
-		return new InfoMethod[0];
-		 */
+		return this.methods.getOrUpdateSync(this.internalState());
 	}
 	
 	/**
@@ -153,6 +146,14 @@ public class InfoClass
 	private void __updateConstantPool(DebuggerState __state,
 		KnownValue<Pool> __value, KnownValueCallback<Pool> __sync)
 	{
+		// If we already got this information, we do not have to try again
+		if (__value.isKnown())
+		{
+			if (__sync != null)
+				__sync.sync(__state, __value);
+			return;
+		}
+		
 		// If the VM does not support this, then we cannot do anything about it
 		if (!__state.capabilities.has(JDWPCapability.CAN_GET_CONSTANT_POOL))
 		{
@@ -170,7 +171,7 @@ public class InfoClass
 			out.writeId(this.id);
 			
 			// Send it
-			__state.sendThenWait(out, Utils.TIMEOUT,
+			__state.sendKnown(out, __value, __sync,
 				(__ignored, __reply) -> {
 					// Read entry count
 					int count = __reply.readInt();
@@ -190,8 +191,7 @@ public class InfoClass
 					{
 						__e.printStackTrace();
 					}
-				}, (__ignored, __reply) -> {
-				});
+				}, ReplyHandler.IGNORED);
 		}
 	}
 	

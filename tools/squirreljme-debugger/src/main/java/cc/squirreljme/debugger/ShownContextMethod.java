@@ -160,6 +160,7 @@ public class ShownContextMethod
 		this.variables.update();
 		
 		// Repaint
+		Utils.revalidate(this.info);
 		Utils.revalidate(this);
 	}
 }
