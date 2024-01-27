@@ -291,10 +291,15 @@ public class PrimaryFrame
 		Debugging.debugNote("Single stepped.");
 		this.statusPanel.setMessage("Single stepped.");
 		
-		// Update context frame from this event
+		// Update context frame from this event, since we are now in a new
+		// location
 		InfoThread inThread = __event.thread;
 		if (inThread != null)
-			this.context.set(inThread);
+			inThread.frames.update(__state, (__ignored, __value) -> {
+				InfoFrame[] frames = __value.get();
+				if (frames != null && frames.length > 0)
+					this.context.set(frames[0]);
+			});
 		
 		// Update information
 		this.update();
