@@ -108,13 +108,14 @@ public class InfoFrame
 	 * @param __locals The local variable.
 	 * @param __varIndex The local variable index.
 	 * @param __tagType The tag type to request.
+	 * @param __varLimit The variable limit.
 	 * @param __sync The callback called when the variable has been updated.
 	 * @since 2024/01/26
 	 */
 	private void __updateChain(DebuggerState __state, JDWPId __inThread,
 		JDWPId __inFrame, KnownValue<InfoFrameLocals> __value,
 		InfoFrameLocals __locals, int __varIndex, int __tagType,
-		KnownValueCallback<InfoFrameLocals> __sync)
+		int __varLimit, KnownValueCallback<InfoFrameLocals> __sync)
 	{
 		// Determine which tag we are on
 		JDWPValueTag[] tags = InfoFrame._TAGS;
@@ -145,19 +146,31 @@ public class InfoFrame
 					
 					// We got the value here, so move onto the next local
 					// variable index
-					if (__varIndex < InfoFrameLocals.MAX_LOCALS -1)
+					if (__varIndex < InfoFrameLocals.MAX_LOCALS - 1)
 						this.__updateChain(__state, __inThread, __inFrame,
 							__value, __locals, __varIndex + 1,
-							0, __sync);
+							0,
+							Math.min(InfoFrameLocals.MAX_LOCALS,
+								__varIndex + InfoFrameLocals._LOCAL_BUMP),
+							__sync);
 				}, (__ignored, __reply) -> {
 					// If the slot is invalid, do not go down the chain
 					// to any more variables
 					if (__reply.hasError(JDWPErrorType.INVALID_SLOT))
+					{
+						// We do not want to get stuck on a single slot so
+						// try to skip it
+						if (__varIndex < __varLimit)
+							this.__updateChain(__state, __inThread, __inFrame,
+								__value, __locals, __varIndex + 1,
+								0, __varLimit, __sync);
 						return;
+					}
 					
+					// When updating the chain keep the current variable limit
 					this.__updateChain(__state, __inThread, __inFrame,
 						__value, __locals, __varIndex, __tagType + 1,
-						__sync);
+						__varLimit, __sync);
 				});
 		}
 	}
@@ -191,6 +204,7 @@ public class InfoFrame
 		// so to reduce load this sequentially obtains the variables up
 		// until it cannot any further
 		this.__updateChain(__state, inThread, inFrame, __value,
-			locals, 0, 0, __sync);
+			locals, 0, 0, InfoFrameLocals._LOCAL_BUMP,
+			__sync);
 	}
 }

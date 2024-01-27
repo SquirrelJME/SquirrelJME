@@ -22,6 +22,10 @@ public class InfoFrameLocals
 	public static final int MAX_LOCALS =
 		127;
 	
+	/** The number of locals to look ahead at most when nothing was found. */
+	static final int _LOCAL_BUMP =
+		8;
+	
 	/** Frame values. */
 	private final JDWPValue[] _values =
 		new JDWPValue[InfoFrameLocals.MAX_LOCALS];
