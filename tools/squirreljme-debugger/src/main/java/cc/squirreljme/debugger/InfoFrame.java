@@ -136,7 +136,7 @@ public class InfoFrame
 		// we have to do some major probing to try to get that information...
 		List<JDWPValue> result = new ArrayList<>();
 		JDWPValue[] object = new JDWPValue[1];
-		for (int i = 0; i < 255; i++)
+		for (int i = 0; i < 63; i++)
 			try
 			{
 				result.add(this.__variableAttempt(

@@ -63,8 +63,8 @@ public final class SpringThread
 	protected final int uniqueId;
 	
 	/** The stack frames. */
-	private final List<SpringThreadFrame> _frames =
-		new ArrayList<>();
+	private final SpringThreadFrames _frames =
+		new SpringThreadFrames();
 	
 	/** Do not allow debug suspension, as in this is a debugger thread. */
 	public final boolean noDebugSuspend;
@@ -145,13 +145,7 @@ public final class SpringThread
 	 */
 	public final SpringThreadFrame currentFrame()
 	{
-		List<SpringThreadFrame> frames = this._frames;
-		synchronized (this)
-		{
-			if (frames.isEmpty())
-				return null;
-			return frames.get(frames.size() - 1);
-		}
+		return this._frames.current();
 	}
 	
 	/**
@@ -167,29 +161,13 @@ public final class SpringThread
 			throw new SpringVirtualMachineException(
 				"Cannot enter frame on terminated thread.");
 		
-		// Setup blank frame
-		List<SpringThreadFrame> frames = this._frames;
-		SpringThreadFrame rv = new SpringThreadFrame(frames.size());
-		
-		/* {@squirreljme.error BK1j Stack overflow.} */
-		if (frames.size() >= SpringThread.MAX_STACK_DEPTH)
-			throw new SpringVirtualMachineException("BK1j");
-		
-		// Profile for this frame
-		/*rv._profiler = this.profiler.enterFrame(
-			"<blank>", "<blank>", "()V",
-			System.nanoTime());*/
-		
-		// Lock on frames as a new one is added
-		synchronized (this)
-		{
-			frames.add(rv);
-		}
+		// Enter blank frame
+		SpringThreadFrame frame = this._frames.enterBlank();
 		
 		// Had one frame (started)
 		this._hadoneframe = true;
 		
-		return rv;
+		return frame;
 	}
 	
 	/**
@@ -217,10 +195,6 @@ public final class SpringThread
 		if (__args == null)
 			__args = new Object[0];
 		
-		// Debug
-		/*Debugging.debugNote("enterFrame(%s::%s, %s)", __m.inClass(),
-			__m.nameAndType(), Arrays.<Object>asList(__args));*/
-		
 		/* {@squirreljme.error BK1k Cannot enter the frame for a method which
 		is abstract. (The class the method is in; The method name and type)} */
 		if (__m.isAbstract())
@@ -229,7 +203,7 @@ public final class SpringThread
 				
 		SpringThreadWorker worker = this._worker;
 		
-		// Convert all of the object to virtual machine objects if they are
+		// Convert all the object to virtual machine objects if they are
 		// not already
 		Object[] vmArgs = Arrays.copyOf(__args, __args.length);
 		if (worker != null)
@@ -237,20 +211,13 @@ public final class SpringThread
 				vmArgs[i] = worker.asVMObject(vmArgs[i], true);
 		
 		// Create new frame
-		List<SpringThreadFrame> frames = this._frames;
-		SpringThreadFrame rv = new SpringThreadFrame(frames.size(),
+		SpringThreadFrame rv = this._frames.enter(
 			this._worker.loadClass(__m.inClass()), __m, vmArgs);
 		
 		// Profile for this frame
 		rv._profiler = this.profiler.enterFrame(__m.inClass().toString(),
 			__m.nameAndType().name().toString(),
 			__m.nameAndType().type().toString(), System.nanoTime());
-		
-		// Lock on frames as a new one is added
-		synchronized (this)
-		{
-			frames.add(rv);
-		}
 		
 		// Had one frame (started)
 		this._hadoneframe = true;
@@ -310,12 +277,7 @@ public final class SpringThread
 	 */
 	public final void exitAllFrames()
 	{
-		// Lock on frames as a new one is added
-		List<SpringThreadFrame> frames = this._frames;
-		synchronized (this)
-		{
-			frames.clear();
-		}
+		this._frames.exitAll();
 	}
 	
 	/**
@@ -326,13 +288,7 @@ public final class SpringThread
 	 */
 	public final SpringThreadFrame[] frames()
 	{
-		// Lock on frames
-		List<SpringThreadFrame> frames = this._frames;
-		synchronized (this)
-		{
-			return frames.<SpringThreadFrame>toArray(
-				new SpringThreadFrame[frames.size()]);
-		}
+		return this._frames.all();
 	}
 	
 	/**
@@ -343,52 +299,50 @@ public final class SpringThread
 	 */
 	public final CallTraceElement[] getStackTrace()
 	{
-		// Lock since the frames may change!
-		List<SpringThreadFrame> frames = this._frames;
-		synchronized (this)
+		// Gather all frames
+		SpringThreadFrame[] frames = this._frames.all();
+		
+		// Setup target array
+		int n = frames.length;
+		CallTraceElement[] rv = new CallTraceElement[n];
+		
+		// The frames at the end are at the top
+		for (int i = n - 1, write = 0; i >= 0; i--, write++)
 		{
-			// Setup target array
-			int n = frames.size();
-			CallTraceElement[] rv = new CallTraceElement[n];
+			SpringThreadFrame frame = frames[i];
+			CallTraceElement trace;
 			
-			// The frames at the end are at the top
-			for (int i = n - 1, write = 0; i >= 0; i--, write++)
+			// Blanks are purely virtual standing points so they are
+			// regarded as such
+			if (frame.isBlank())
 			{
-				SpringThreadFrame frame = frames.get(i);
-				CallTraceElement trace;
-				
-				// Blanks are purely virtual standing points so they are
-				// regarded as such
-				if (frame.isBlank())
-				{
-					trace = new CallTraceElement(
-						"<guard>", "<guard>", null,
-						0L, null, -1);
-				}
-				
-				// Print other parts
-				else
-				{
-					SpringMethod inMethod = frame.method();
-					int pc = frame.lastExecutedPc();
-					
-					trace = new CallTraceElement(
-						inMethod.inClass().toString(),
-						inMethod.name().toString(),
-						inMethod.nameAndType().type().toString(),
-						0,
-						inMethod.infile,
-						inMethod.byteCode().lineOfAddress(pc),
-						inMethod.byteCode().getByAddress(pc).operation(),
-						pc);
-				}
-				
-				// Store trace in top-most order
-				rv[write] = trace;
+				trace = new CallTraceElement(
+					"<guard>", "<guard>", null,
+					0L, null, -1);
 			}
 			
-			return rv;
+			// Print other parts
+			else
+			{
+				SpringMethod inMethod = frame.method();
+				int pc = frame.lastExecutedPc();
+				
+				trace = new CallTraceElement(
+					inMethod.inClass().toString(),
+					inMethod.name().toString(),
+					inMethod.nameAndType().type().toString(),
+					0,
+					inMethod.infile,
+					inMethod.byteCode().lineOfAddress(pc),
+					inMethod.byteCode().getByAddress(pc).operation(),
+					pc);
+			}
+			
+			// Store trace in top-most order
+			rv[write] = trace;
 		}
+		
+		return rv;
 	}
 	
 	/**
@@ -526,11 +480,7 @@ public final class SpringThread
 	 */
 	public final int numFrames()
 	{
-		List<SpringThreadFrame> frames = this._frames;
-		synchronized (this)
-		{
-			return frames.size();
-		}
+		return this._frames.count();
 	}
 	
 	/**
@@ -544,17 +494,7 @@ public final class SpringThread
 		throws SpringVirtualMachineException
 	{
 		// Pop from the stack
-		SpringThreadFrame rv;
-		List<SpringThreadFrame> frames = this._frames;
-		synchronized (this)
-		{
-			/* {@squirreljme.error BK1o No frames to pop.} */
-			int n;
-			if ((n = frames.size()) <= 0)
-				throw new SpringVirtualMachineException("BK1o");	
-			
-			rv = frames.remove(n - 1);
-		}
+		SpringThreadFrame rv = this._frames.pop();
 		
 		// Exit the frame, if not blank
 		if (!rv.isblank)
