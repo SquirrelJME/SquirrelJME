@@ -203,6 +203,6 @@ public class ShownInstruction
 		this.description.setText(viewer.mnemonic());
 		
 		// Repaint
-		this.repaint();
+		Utils.revalidate(this);
 	}
 }

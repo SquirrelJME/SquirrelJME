@@ -177,8 +177,8 @@ public class ShownThreads
 		combo.addActionListener(this._actionListener);
 		combo.addItemListener(this._itemListener);
 
-		// Repaint???
-		combo.repaint();
+		// Repaint
+		Utils.revalidate(combo);
 		
 		// Need to determine if the thread is changing
 		ShownThread shown = this._current;
@@ -211,7 +211,7 @@ public class ShownThreads
 			shown.update();
 		
 		// Repaint
-		this.repaint();
+		Utils.revalidate(this);
 	}
 	
 	/**

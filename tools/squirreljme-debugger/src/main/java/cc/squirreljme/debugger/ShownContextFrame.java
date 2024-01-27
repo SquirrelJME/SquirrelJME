@@ -113,7 +113,7 @@ public class ShownContextFrame
 			pointer.setIcon(Utils.tangoIcon("-"));
 		
 		// Repaint
-		this.repaint();
+		Utils.revalidate(this);
 	}
 	
 	/**

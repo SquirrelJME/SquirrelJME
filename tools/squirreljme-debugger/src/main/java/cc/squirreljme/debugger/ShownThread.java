@@ -9,6 +9,7 @@
 
 package cc.squirreljme.debugger;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.util.Objects;
@@ -121,7 +122,7 @@ public class ShownThread
 		});
 		
 		// Repaint
-		this.repaint();
+		Utils.revalidate(this);
 	}
 	
 	/**
@@ -140,6 +141,7 @@ public class ShownThread
 			return;
 		
 		// Clear all current frames
+		Debugging.debugNote("Removed everything...");
 		sequence.removeAll();
 		
 		// Add sequences for all frames
@@ -178,7 +180,7 @@ public class ShownThread
 		}
 		
 		// Repaint
-		this.repaint();
+		Utils.revalidate(this);
 	}
 	
 	/**
@@ -202,6 +204,6 @@ public class ShownThread
 			suspendLabel.setText("Running");
 		
 		// Repaint
-		this.repaint();
+		Utils.revalidate(this);
 	}
 }

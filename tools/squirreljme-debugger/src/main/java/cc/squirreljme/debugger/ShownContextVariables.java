@@ -124,7 +124,7 @@ public class ShownContextVariables
 		});
 		
 		// Repaint
-		this.repaint();
+		Utils.revalidate(this);
 	}
 	
 	/**
@@ -166,6 +166,6 @@ public class ShownContextVariables
 		}
 		
 		// Repaint
-		this.repaint();
+		Utils.revalidate(this);
 	}
 }

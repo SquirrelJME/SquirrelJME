@@ -141,6 +141,6 @@ public class ShownMethod
 			shown.shownUpdate();
 		
 		// Repaint
-		this.repaint();
+		Utils.revalidate(this);
 	}
 }

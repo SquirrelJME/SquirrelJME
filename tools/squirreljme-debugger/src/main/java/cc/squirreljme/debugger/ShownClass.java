@@ -154,6 +154,6 @@ public class ShownClass
 			shown.shownUpdate();
 		
 		// Repaint
-		this.repaint();
+		Utils.revalidate(this);
 	}
 }

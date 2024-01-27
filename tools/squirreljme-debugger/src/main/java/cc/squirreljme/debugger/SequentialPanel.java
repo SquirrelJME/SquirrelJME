@@ -117,6 +117,10 @@ public class SequentialPanel
 		// Add the filler back with an extreme weight
 		constraints.weighty = 20.0;
 		this.addPanel.add(this.filler, constraints);
+		
+		// Repaint
+		Utils.revalidate(this.addPanel);
+		Utils.revalidate(this.viewPanel);
 	}
 	
 	/**
@@ -150,5 +154,9 @@ public class SequentialPanel
 		// Add the filler back with an extreme weight
 		constraints.weighty = 20.0;
 		this.addPanel.add(this.filler, constraints);
+		
+		// Repaint
+		Utils.revalidate(this.addPanel);
+		Utils.revalidate(this.viewPanel);
 	}
 }

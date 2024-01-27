@@ -21,6 +21,7 @@ import java.io.PrintStream;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -228,6 +229,23 @@ public final class Utils
 		Font descFont = __label.getFont();
 		__label.setFont(new Font("monospaced",
 			descFont.getStyle(), descFont.getSize()));
+	}
+	
+	/**
+	 * Revalidates and paints the component.
+	 *
+	 * @param __component The component to update.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/27
+	 */
+	public static void revalidate(JComponent __component)
+		throws NullPointerException
+	{
+		if (__component == null)
+			throw new NullPointerException("NARG");
+		
+		__component.revalidate();
+		__component.repaint();
 	}
 	
 	/**
