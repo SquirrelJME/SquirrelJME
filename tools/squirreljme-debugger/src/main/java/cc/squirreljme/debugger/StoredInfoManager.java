@@ -83,17 +83,6 @@ public class StoredInfoManager
 	}
 	
 	/**
-	 * Returns the method storage.
-	 *
-	 * @return The method storage.
-	 * @since 2024/01/23
-	 */
-	public final StoredInfo<InfoMethod> getMethods()
-	{
-		return this.<InfoMethod>get(InfoMethod.class, InfoKind.METHOD);
-	}
-	
-	/**
 	 * Returns the thread storage.
 	 *
 	 * @return The thread storage.

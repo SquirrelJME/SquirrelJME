@@ -90,6 +90,29 @@ public class InfoClass
 	}
 	
 	/**
+	 * Gets the associated method with the given ID.
+	 *
+	 * @param __methodId The method to get.
+	 * @return The resultant method or {@code null} if not found.
+	 * @since 2024/01/27
+	 */
+	public InfoMethod getMethod(JDWPId __methodId)
+	{
+		InfoMethod[] methods = this.methods.getOrUpdateSync(
+			this.internalState());
+		if (methods == null || methods.length == 0)
+			return null;
+		
+		// Find by matching ID
+		for (InfoMethod method : methods)
+			if (method.id.id == __methodId.id)
+				return method;
+		
+		// Not found
+		return null;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2024/01/24
 	 */
@@ -232,10 +255,6 @@ public class InfoClass
 				// The number of methods in the class
 				int count = __reply.readInt();
 				
-				// Get method storage
-				StoredInfo<InfoMethod> stored =
-					__state.storedInfo.getMethods();
-			
 				// Fill in method results
 				InfoMethod[] result = new InfoMethod[count];
 				for (int i = 0; i < count; i++)
@@ -253,7 +272,7 @@ public class InfoClass
 						new MethodFlags(__reply.readInt() & (~0xF0000000));
 					
 					// Setup method
-					InfoMethod method = stored.get(__state, methodId,
+					InfoMethod method = new InfoMethod(__state, methodId,
 						this, name, type, flags);
 					
 					// Set resultant method

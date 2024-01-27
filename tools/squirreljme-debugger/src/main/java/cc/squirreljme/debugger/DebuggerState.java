@@ -288,8 +288,7 @@ public class DebuggerState
 		return new FrameLocation(
 			__inThread,
 			inClass,
-			storedInfo.getMethods().get(this, methodId,
-				inClass, null, null, null),
+			inClass.getMethod(methodId),
 			index);
 	}
 	
