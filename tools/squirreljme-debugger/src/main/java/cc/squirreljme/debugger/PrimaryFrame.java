@@ -581,6 +581,9 @@ public class PrimaryFrame
 			this.state.threadStep(thread, 1,
 				JDWPStepDepth.INTO, JDWPStepSize.LINE,
 				this::handleSingleStep);
+		
+		// Update everything
+		this.update();
 	}
 	
 	/**
@@ -596,6 +599,9 @@ public class PrimaryFrame
 			this.state.threadStep(thread, 1,
 				JDWPStepDepth.OUT, JDWPStepSize.LINE,
 				this::handleSingleStep);
+		
+		// Update everything
+		this.update();
 	}
 	
 	/**
@@ -611,6 +617,9 @@ public class PrimaryFrame
 			this.state.threadStep(thread, 1,
 				JDWPStepDepth.OVER, JDWPStepSize.LINE,
 				this::handleSingleStep);
+		
+		// Update everything
+		this.update();
 	}
 	
 	/**
@@ -626,6 +635,9 @@ public class PrimaryFrame
 			this.state.threadStep(thread, 1,
 				JDWPStepDepth.INTO, JDWPStepSize.MIN,
 				this::handleSingleStep);
+		
+		// Update everything
+		this.update();
 	}
 	
 	/**
@@ -641,6 +653,9 @@ public class PrimaryFrame
 			this.state.threadStep(thread, 1,
 				JDWPStepDepth.OUT, JDWPStepSize.MIN,
 				this::handleSingleStep);
+		
+		// Update everything
+		this.update();
 	}
 	
 	/**
@@ -656,6 +671,9 @@ public class PrimaryFrame
 			this.state.threadStep(thread, 1,
 				JDWPStepDepth.OVER, JDWPStepSize.MIN,
 				this::handleSingleStep);
+		
+		// Update everything
+		this.update();
 	}
 	
 	/**
