@@ -229,6 +229,7 @@ public class InfoClass
 			
 			// Wait for response
 			__state.sendKnown(out, __value, __sync, (__ignored, __reply) -> {
+				// The number of methods in the class
 				int count = __reply.readInt();
 				
 				// Get method storage

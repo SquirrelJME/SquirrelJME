@@ -195,16 +195,11 @@ public class InfoMethod
 		// If we already have this information then we do not need to get it
 		// again as it is constant
 		if (name.isKnown() && type.isKnown() && flags.isKnown())
-		{
-			__sync.sync(__state, (KnownValue)__value);
 			return;
-		}
 		
 		// We get this information by requesting the methods in a class, which
 		// will update this method's values
 		this.inClass.methods.update(__state, (__ignored1, __ignored2) -> {
-			if (__sync != null)
-				__sync.sync(__state, (KnownValue)__value);
 		});
 	}
 }

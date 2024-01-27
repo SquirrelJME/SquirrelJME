@@ -146,14 +146,15 @@ public class ShownThread
 		
 		// Add sequences for all frames
 		ContextThreadFrame context = this.context;
-		InfoClass inClass = null;
+		InfoClass currentClass = null;
 		for (int i = 0, n = __frames.length; i < n; i++)
 		{
 			InfoFrame frame = __frames[i];
 			InfoClass newClass = frame.location.inClass;
 			
 			// Did the class change? Add banner for it
-			if (!Objects.equals(inClass, newClass))
+			if ((currentClass == null && newClass != null) ||
+				!Objects.equals(currentClass, newClass))
 			{
 				ClassName newThisName = newClass.thisName();
 				
@@ -165,7 +166,7 @@ public class ShownThread
 				sequence.add(atClass);
 				
 				// We are in this class now
-				inClass = newClass;
+				currentClass = newClass;
 			}
 			
 			// Make a pretty button

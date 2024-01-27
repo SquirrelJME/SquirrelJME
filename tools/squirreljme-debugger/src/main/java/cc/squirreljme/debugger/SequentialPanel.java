@@ -162,7 +162,6 @@ public class SequentialPanel
 			
 			// Scroll here
 			Rectangle bounds = __component.getBounds();
-			/*scroll.scrollRectToVisible(bounds);*/
 			scroll.getViewport().scrollRectToVisible(bounds);
 			
 			// Make sure the view is updated
