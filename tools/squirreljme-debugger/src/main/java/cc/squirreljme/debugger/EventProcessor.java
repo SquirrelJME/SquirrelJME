@@ -70,7 +70,15 @@ public enum EventProcessor
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
-			Debugging.todo("Implement %s", this);
+			StoredInfo<InfoThread> threadStore =
+				__state.storedInfo.getThreads();
+			
+			JDWPId threadId = __packet.readId(JDWPIdKind.THREAD_ID);
+			InfoThread thread = threadStore.get(__state, threadId);
+			
+			__state.readLocation(thread, __packet);
+			
+			Debugging.todoNote("Implement %s", this);
 		}
 	},
 	
@@ -86,7 +94,7 @@ public enum EventProcessor
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
-			Debugging.todo("Implement %s", this);
+			Debugging.todoNote("Implement %s", this);
 		}
 	},
 	
@@ -102,7 +110,19 @@ public enum EventProcessor
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
-			Debugging.todo("Implement %s", this);
+			StoredInfo<InfoThread> threadStore =
+				__state.storedInfo.getThreads();
+			
+			JDWPId threadId = __packet.readId(JDWPIdKind.THREAD_ID);
+			InfoThread thread = threadStore.get(__state, threadId);
+			
+			__state.readLocation(thread, __packet);
+			
+			__packet.readTaggedObjectId();
+			
+			__state.readLocation(thread, __packet);
+			
+			Debugging.todoNote("Implement %s", this);
 		}
 	},
 	
@@ -118,7 +138,7 @@ public enum EventProcessor
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
-			Debugging.todo("Implement %s", this);
+			Debugging.todoNote("Implement %s", this);
 		}
 	},
 	
@@ -193,7 +213,18 @@ public enum EventProcessor
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
-			Debugging.todo("Implement %s", this);
+			StoredInfo<InfoThread> threadStore =
+				__state.storedInfo.getThreads();
+			
+			JDWPId threadId = __packet.readId(JDWPIdKind.THREAD_ID);
+			InfoThread thread = threadStore.get(__state, threadId);
+			
+			__packet.readByte();
+			__packet.readId(JDWPIdKind.REFERENCE_TYPE_ID);
+			__packet.readString();
+			__packet.readInt();
+			
+			Debugging.todoNote("Implement %s", this);
 		}
 	},
 	
@@ -209,7 +240,9 @@ public enum EventProcessor
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
-			Debugging.todo("Implement %s", this);
+			__packet.readString();
+			
+			Debugging.todoNote("Implement %s", this);
 		}
 	},
 	
@@ -225,7 +258,7 @@ public enum EventProcessor
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
-			Debugging.todo("Implement %s", this);
+			Debugging.todoNote("Implement %s", this);
 		}
 	},
 	
@@ -241,7 +274,7 @@ public enum EventProcessor
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
-			Debugging.todo("Implement %s", this);
+			Debugging.todoNote("Implement %s", this);
 		}
 	},
 	
@@ -273,7 +306,7 @@ public enum EventProcessor
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
-			Debugging.todo("Implement %s", this);
+			Debugging.todoNote("Implement %s", this);
 		}
 	},
 	
@@ -289,7 +322,7 @@ public enum EventProcessor
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
-			Debugging.todo("Implement %s", this);
+			Debugging.todoNote("Implement %s", this);
 		}
 	},
 	
@@ -305,7 +338,7 @@ public enum EventProcessor
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
-			Debugging.todo("Implement %s", this);
+			Debugging.todoNote("Implement %s", this);
 		}
 	},
 	
@@ -321,7 +354,7 @@ public enum EventProcessor
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
-			Debugging.todo("Implement %s", this);
+			Debugging.todoNote("Implement %s", this);
 		}
 	},
 	
@@ -337,7 +370,7 @@ public enum EventProcessor
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
-			Debugging.todo("Implement %s", this);
+			Debugging.todoNote("Implement %s", this);
 		}
 	},
 	
@@ -353,7 +386,7 @@ public enum EventProcessor
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
-			Debugging.todo("Implement %s", this);
+			Debugging.todoNote("Implement %s", this);
 		}
 	},
 	
@@ -369,7 +402,7 @@ public enum EventProcessor
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
-			Debugging.todo("Implement %s", this);
+			Debugging.todoNote("Implement %s", this);
 		}
 	},
 	
@@ -385,7 +418,7 @@ public enum EventProcessor
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
-			Debugging.todo("Implement %s", this);
+			Debugging.todoNote("Implement %s", this);
 		}
 	},
 	
@@ -440,7 +473,7 @@ public enum EventProcessor
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
-			Debugging.todo("Implement %s", this);
+			__state.vmDeadTally.increment();
 		}
 	},
 	
@@ -456,7 +489,7 @@ public enum EventProcessor
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
-			Debugging.todo("Implement %s", this);
+			Debugging.todoNote("Implement %s", this);
 		}
 	},
 

@@ -53,18 +53,18 @@ public class StatusPanel
 	/**
 	 * Initializes the panel.
 	 *
-	 * @param __debuggerState The state of the debugger.
+	 * @param __state The state of the debugger.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/19
 	 */
-	public StatusPanel(DebuggerState __debuggerState)
+	public StatusPanel(DebuggerState __state)
 		throws NullPointerException
 	{
-		if (__debuggerState == null)
+		if (__state == null)
 			throw new NullPointerException("NARG");
 		
 		// Store for tracking
-		this.debuggerState = __debuggerState;
+		this.debuggerState = __state;
 		
 		// Make sure it is always visible
 		Font baseLabelFont = new JLabel().getFont();
@@ -120,11 +120,12 @@ public class StatusPanel
 		this.add(message);
 		
 		// Add listeners to tallies to update stats
-		__debuggerState.receiveTally.addListener(this);
-		__debuggerState.sentTally.addListener(this);
-		__debuggerState.waitingTally.addListener(this);
-		__debuggerState.latency.addListener(this);
-		__debuggerState.disconnectedTally.addListener(this);
+		__state.receiveTally.addListener(this);
+		__state.sentTally.addListener(this);
+		__state.waitingTally.addListener(this);
+		__state.latency.addListener(this);
+		__state.disconnectedTally.addListener(this);
+		__state.vmDeadTally.addListener(this);
 	}
 	
 	/**
@@ -145,25 +146,25 @@ public class StatusPanel
 	@Override
 	public void updateTally(TallyTracker __which, int __old, int __new)
 	{
-		DebuggerState debuggerState = this.debuggerState;
+		DebuggerState state = this.debuggerState;
 		
 		// Received a packet? Or disconnected?
-		if (__which == debuggerState.receiveTally)
+		if (__which == state.receiveTally)
 			this.receivedLabel.setText(
 				String.format("Received: %d", __new));
 		
 		// Sent a packet?
-		else if (__which == debuggerState.sentTally)
+		else if (__which == state.sentTally)
 			this.sentLabel.setText(
 				String.format("Sent: %d", __new));
 		
 		// Waiting for packets
-		else if (__which == debuggerState.waitingTally)
+		else if (__which == state.waitingTally)
 			this.waitingLabel.setText(
 				String.format("Waiting: %d", __new));
 		
 		// Latency
-		else if (__which == debuggerState.latency)
+		else if (__which == state.latency)
 		{
 			int max = Math.max(__new, this._maxLatency);
 			this._maxLatency = max;
@@ -174,8 +175,14 @@ public class StatusPanel
 		}
 		
 		// Disconnected?
-		else if (__which == debuggerState.disconnectedTally)
-			this.stateLabel.setText("DISCONNECTED");
+		else if (__which == state.disconnectedTally ||
+			__which == state.vmDeadTally)
+		{
+			if (state.vmDeadTally.get() > 0)
+				this.stateLabel.setText("DEAD");
+			else
+				this.stateLabel.setText("DISCONNECTED");
+		}
 	}
 	
 	/**

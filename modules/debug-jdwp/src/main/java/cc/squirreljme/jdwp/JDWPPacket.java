@@ -9,7 +9,6 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.debug.ErrorCode;
 import java.io.Closeable;
 import java.io.DataOutputStream;
@@ -640,6 +639,49 @@ public final class JDWPPacket
 				/* {@squirreljme.error AG0f UTF-8 not supported?} */
 				throw new JDWPException("AG0f", __e);
 			}
+		}
+	}
+	
+	/**
+	 * Reads the tagged object ID.
+	 *
+	 * @return The tagged on.
+	 * @throws JDWPException If it could not be read.
+	 * @since 2024/01/27
+	 */
+	public JDWPId readTaggedObjectId()
+		throws JDWPException
+	{
+		synchronized (this)
+		{
+			// Ensure this is open
+			this.__checkOpen();
+			
+			// Read the tag, assume object if unspecified.
+			JDWPValueTag tag = JDWPValueTag.fromTag(this.readByte());
+			if (tag == null)
+				tag = JDWPValueTag.OBJECT;
+			
+			// Which kind does this map to?
+			JDWPIdKind kind;
+			switch (tag)
+			{
+				case THREAD:
+					kind = JDWPIdKind.THREAD_ID;
+					break;
+					
+				case CLASS_OBJECT:
+					kind = JDWPIdKind.REFERENCE_TYPE_ID;
+					break;
+					
+					// Assume object
+				default:
+					kind = JDWPIdKind.OBJECT_ID;
+					break;
+			}
+			
+			// Read ID of this kind
+			return this.readId(kind);
 		}
 	}
 	

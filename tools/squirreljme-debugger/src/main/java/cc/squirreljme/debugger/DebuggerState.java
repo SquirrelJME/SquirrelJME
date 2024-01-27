@@ -64,6 +64,14 @@ public class DebuggerState
 	protected final TallyTracker latency =
 		new TallyTracker();
 	
+	/**
+	 * Tally for tracking when the VM is dead.
+	 * 
+	 * @since 2024/01/27
+	 */
+	protected final TallyTracker vmDeadTally =
+		new TallyTracker();
+	
 	/** The current capabilities of the remote virtual machine. */
 	protected final CapabilityStatus capabilities =
 		new CapabilityStatus();
