@@ -20,7 +20,7 @@ public class InfoFrameLocals
 {
 	/** The maximum number of locals. */
 	public static final int MAX_LOCALS =
-		0/*127*/;
+		127;
 	
 	/** Frame values. */
 	private final JDWPValue[] _values =

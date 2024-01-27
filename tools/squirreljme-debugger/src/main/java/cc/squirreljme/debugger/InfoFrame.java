@@ -106,14 +106,14 @@ public class InfoFrame
 	 * @param __inFrame The frame this is in.
 	 * @param __value The resultant values.
 	 * @param __locals The local variable.
-	 * @param __index The local variable index.
+	 * @param __varIndex The local variable index.
 	 * @param __tagType The tag type to request.
 	 * @param __sync The callback called when the variable has been updated.
 	 * @since 2024/01/26
 	 */
 	private void __updateChain(DebuggerState __state, JDWPId __inThread,
 		JDWPId __inFrame, KnownValue<InfoFrameLocals> __value,
-		InfoFrameLocals __locals, int __index, int __tagType,
+		InfoFrameLocals __locals, int __varIndex, int __tagType,
 		KnownValueCallback<InfoFrameLocals> __sync)
 	{
 		// Determine which tag we are on
@@ -132,28 +132,32 @@ public class InfoFrame
 			
 			// Request a single slot with the tag
 			out.writeInt(1);
-			out.writeInt(__index);
+			out.writeInt(__varIndex);
 			out.writeByte(tag.tag);
 			
 			// Send it
 			__state.sendKnown(out, __value, __sync,
 				(__ignored, __reply) -> {
-					// Ignore if no value is here
+					// Only read and set the first value found
 					int numValues = __reply.readInt();
-					if (numValues <= 0)
-						return;
+					if (numValues > 0)
+						__locals.set(__varIndex, __reply.readValue());
 					
-					// Only read and set the first value
-					__locals.set(__index, __reply.readValue());
+					// We got the value here, so move onto the next local
+					// variable index
+					if (__varIndex < InfoFrameLocals.MAX_LOCALS -1)
+						this.__updateChain(__state, __inThread, __inFrame,
+							__value, __locals, __varIndex + 1,
+							0, __sync);
 				}, (__ignored, __reply) -> {
 					// If the slot is invalid, do not go down the chain
-					// since it would be rather pointless
+					// to any more variables
 					if (__reply.hasError(JDWPErrorType.INVALID_SLOT))
 						return;
 					
-					// We failed, so go down the tag chain
-					this.__updateChain(__state, __inThread, __inFrame, __value,
-						__locals, __index, __tagType + 1, __sync);
+					this.__updateChain(__state, __inThread, __inFrame,
+						__value, __locals, __varIndex, __tagType + 1,
+						__sync);
 				});
 		}
 	}
@@ -183,10 +187,10 @@ public class InfoFrame
 		JDWPId inFrame = this.id;
 		
 		// We need to ask the virtual machine for a ton of information to get
-		// the proper local variables...
-		for (int index = 0, maxLocals = InfoFrameLocals.MAX_LOCALS;
-			index < maxLocals; index++)
-			this.__updateChain(__state, inThread, inFrame, __value,
-				locals, index, 0, __sync);
+		// the proper local variables... This is a very expensive operation
+		// so to reduce load this sequentially obtains the variables up
+		// until it cannot any further
+		this.__updateChain(__state, inThread, inFrame, __value,
+			locals, 0, 0, __sync);
 	}
 }

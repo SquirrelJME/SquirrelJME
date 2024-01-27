@@ -158,11 +158,15 @@ public class ShownContextVariables
 			
 			// Update the key/value pair
 			KeyValuePanel keyValue = keyValues[index];
-			((JLabel)keyValue.value).setText(
-				Objects.toString(value, "null"));
+			JLabel subValue = (JLabel)keyValue.value;
+			subValue.setText(Objects.toString(value, "null"));
 			
 			// Add in key sequence
 			sequence.add(keyValue);
+			
+			// Make sure it gets updated
+			Utils.revalidate(subValue);
+			Utils.revalidate(keyValue);
 		}
 		
 		// Repaint
