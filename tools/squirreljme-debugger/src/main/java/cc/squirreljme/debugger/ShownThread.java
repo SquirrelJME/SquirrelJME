@@ -15,6 +15,7 @@ import java.util.Objects;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import net.multiphasicapps.classfile.ClassName;
 
 /**
  * Shows a thread's stack trace.
@@ -152,8 +153,11 @@ public class ShownThread
 			// Did the class change? Add banner for it
 			if (!Objects.equals(inClass, newClass))
 			{
+				ClassName newThisName = newClass.thisName();
+				
 				// Add label for the class
-				JLabel atClass = new JLabel(newClass.thisName().toString());
+				JLabel atClass = new JLabel(
+					Objects.toString(newThisName, "null"));
 				atClass.setFont(atClass.getFont().deriveFont(
 					Font.ITALIC));
 				sequence.add(atClass);

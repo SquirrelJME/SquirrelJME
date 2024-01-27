@@ -184,7 +184,8 @@ public class ShownThreads
 		ShownThread shown = this._current;
 		
 		// Only update the shown info if the thread changed
-		if (shown != null/* && !Objects.equals(shown.thread, contextThread)*/)
+		if (shown != null && contextThread != null &&
+			!Objects.equals(shown.thread, contextThread))
 		{
 			// Remove old thread being shown
 			this._current = null;
@@ -193,24 +194,20 @@ public class ShownThreads
 		}
 		
 		// Set new item?
-		if (shown == null)
+		if (shown == null && contextThread != null)
 		{
-			// It is possible for a thread to get unselected
-			if (contextThread != null)
-			{
-				// Add in new thread
-				shown = new ShownThread(this.state, contextThread,
-					this.context);
-				this.add(shown, BorderLayout.CENTER);
-				this._current = shown;
-				
-				// Force it to update quicker
-				shown.update();
-			}
+			// Add in new thread
+			shown = new ShownThread(this.state, contextThread,
+				this.context);
+			this.add(shown, BorderLayout.CENTER);
+			this._current = shown;
+			
+			// Force it to update quicker
+			shown.update();
 		}
 		
 		// Have the shown information update
-		else
+		else if (shown != null)
 			shown.update();
 		
 		// Repaint
