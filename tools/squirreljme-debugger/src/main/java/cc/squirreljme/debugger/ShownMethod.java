@@ -147,7 +147,8 @@ public class ShownMethod
 		shownInstructions = this._shownInstructions;
 		if (shownInstructions != null)
 			for (ShownInstruction shown : shownInstructions)
-				shown.shownUpdate();
+				if (shown.shownUpdate())
+					this.seqPanel.lookAt(shown);
 		
 		// Repaint
 		Utils.revalidate(this);

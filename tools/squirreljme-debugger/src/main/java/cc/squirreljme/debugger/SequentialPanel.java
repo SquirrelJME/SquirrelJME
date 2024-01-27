@@ -11,6 +11,7 @@ package cc.squirreljme.debugger;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Rectangle;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -138,6 +139,35 @@ public class SequentialPanel
 	public boolean hasItems()
 	{
 		return this._hasItems;
+	}
+	
+	/**
+	 * Look at the given component.
+	 *
+	 * @param __component The component to look at.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/27
+	 */
+	public void lookAt(JComponent __component)
+		throws NullPointerException
+	{
+		if (__component == null)
+			throw new NullPointerException("NARG");
+		
+		// If we are using the scroll pane, we need to focus on this
+		JComponent viewPanel = this.viewPanel;
+		if (viewPanel instanceof JScrollPane)
+		{
+			JScrollPane scroll = (JScrollPane)viewPanel;
+			
+			// Scroll here
+			Rectangle bounds = __component.getBounds();
+			/*scroll.scrollRectToVisible(bounds);*/
+			scroll.getViewport().scrollRectToVisible(bounds);
+			
+			// Make sure the view is updated
+			Utils.revalidate(scroll);
+		}
 	}
 	
 	/**

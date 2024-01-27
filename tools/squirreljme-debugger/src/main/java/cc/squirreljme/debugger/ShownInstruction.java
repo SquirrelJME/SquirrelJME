@@ -150,16 +150,18 @@ public class ShownInstruction
 		this._args = args;
 		
 		// Request that everything gets updated
-		Utils.swingInvoke(this::shownUpdate);
+		Utils.swingInvoke(() -> this.shownUpdate());
 	}
 	
 	/**
 	 * Updates the shown instruction.
 	 *
+	 * @return If this is the instruction the pointer is at.
 	 * @since 2024/01/21
 	 */
-	public void shownUpdate()
+	public boolean shownUpdate()
 	{
+		boolean isAt = false;
 		InstructionViewer viewer = this.viewer;
 		
 		// What is our PC address?
@@ -178,7 +180,6 @@ public class ShownInstruction
 			
 			// Is there a valid location
 			FrameLocation location = context.getLocation();
-			boolean isAt;
 			if (location != null)
 			{
 				if (interpret == FrameLocationInterpret.ADDRESS)
@@ -186,8 +187,6 @@ public class ShownInstruction
 				else
 					isAt = (location.index == index);
 			}
-			else
-				isAt = false;
 			
 			// Is this the location we are at?
 			if (isAt)
@@ -209,5 +208,8 @@ public class ShownInstruction
 		Utils.revalidate(this.address);
 		Utils.revalidate(this.description);
 		Utils.revalidate(this);
+		
+		// Are we here?
+		return isAt;
 	}
 }
