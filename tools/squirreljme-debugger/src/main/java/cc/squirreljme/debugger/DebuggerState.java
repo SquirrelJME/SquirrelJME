@@ -569,45 +569,6 @@ public class DebuggerState
 	}
 	
 	/**
-	 * Sends the request to the remote end and blocks until a reply is given
-	 * to the packet.
-	 *
-	 * @param __packet The packet to send.
-	 * @param __timeoutMs How long to wait until this times out.
-	 * @param __reply The method to call when this is handled.
-	 * @throws NullPointerException On null arguments.
-	 * @deprecated Do not use.
-	 * @since 2024/01/22
-	 */
-	@Deprecated
-	public void sendThenWait(JDWPPacket __packet, long __timeoutMs,
-		ReplyHandler __reply)
-		throws NullPointerException
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * Sends the request to the remote end and blocks until a reply is given
-	 * to the packet.
-	 *
-	 * @param __packet The packet to send.
-	 * @param __timeoutMs How long to wait until this times out.
-	 * @param __successHandler The handler to call on success.
-	 * @param __failHandler The handler to call on failure.
-	 * @throws NullPointerException On null arguments.
-	 * @deprecated Do not use.
-	 * @since 2024/01/22
-	 */
-	@Deprecated
-	public void sendThenWait(JDWPPacket __packet, long __timeoutMs,
-		ReplyHandler __successHandler, ReplyHandler __failHandler)
-		throws NullPointerException
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
 	 * Sets that the virtual machine has started.
 	 *
 	 * @since 2024/01/21

@@ -39,6 +39,7 @@ import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.FieldDescriptor;
 
 /**
  * Primary display window.
@@ -369,7 +370,7 @@ public class PrimaryFrame
 			JDWPCommandSetVirtualMachine.ALL_CLASSES))
 		{
 			// Wait for response
-			state.sendThenWait(out, Utils.TIMEOUT,
+			state.send(out,
 				(__state, __reply) -> {
 					// We need to store the actual classes
 					StoredInfo<InfoClass> classes =
@@ -386,20 +387,22 @@ public class PrimaryFrame
 						JDWPId typeId = __reply.readId(
 							JDWPIdKind.REFERENCE_TYPE_ID);
 						
-						// Ignore signature
-						__reply.readString();
+						// Read name
+						String name = __reply.readString();
 						
 						// Ignore status
 						__reply.readInt();
 						
 						// Setup class
-						classes.get(__state, typeId);
+						InfoClass infoClass = classes.get(__state, typeId);
+						if (infoClass != null)
+							infoClass.thisName.set(
+								new FieldDescriptor(name).className());
 					}
-				});
+					
+					this.__inspect(state.storedInfo.getClasses());
+				}, ReplyHandler.IGNORED);
 		}
-		
-		// Inspect
-		this.__inspect(state.storedInfo.getClasses());
 	}
 	
 	/**
