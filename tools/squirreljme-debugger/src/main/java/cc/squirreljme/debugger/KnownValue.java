@@ -9,7 +9,8 @@
 
 package cc.squirreljme.debugger;
 
-import java.util.function.BiFunction;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinTask;
 
 /**
  * Stored a cached known value.
@@ -35,24 +36,6 @@ public final class KnownValue<T>
 	private volatile T _value;
 	
 	/**
-	 * Initializes the known value.
-	 *
-	 * @param __type The type used for the value.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2024/01/20
-	 */
-	public KnownValue(Class<T> __type)
-		throws NullPointerException
-	{
-		if (__type == null)
-			throw new NullPointerException("NARG");
-		
-		this.type = __type;
-		this.isArray = __type.isArray();
-		this.updater = null;
-	}
-	
-	/**
 	 * Initializes the known value with an update handler.
 	 *
 	 * @param __type The type used for the value.
@@ -76,21 +59,23 @@ public final class KnownValue<T>
 	 *
 	 * @param __type The type used for the value.
 	 * @param __value The initial value to set.
+	 * @param __updater The updater for values.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/20
 	 */
-	public KnownValue(Class<T> __type, T __value)
+	public KnownValue(Class<T> __type, T __value,
+		KnownValueUpdater<T> __updater)
 		throws NullPointerException
 	{
-		if (__type == null)
+		if (__type == null || __updater == null)
 			throw new NullPointerException("NARG");
 		
 		this.type = __type;
 		this.isArray = __type.isArray();
-		this.updater = null;
+		this.updater = __updater;
 		
-		// Set to this known value
-		this._known = true;
+		// Set to this known value, assuming null was not passed
+		this._known = (__value != null);
 		this._value = __value;
 	}
 	
@@ -105,6 +90,9 @@ public final class KnownValue<T>
 		{
 			this._value = null;
 			this._known = false;
+			
+			// Notify the monitor
+			this.notifyAll();
 		}
 	}
 	
@@ -159,67 +147,44 @@ public final class KnownValue<T>
 	}
 	
 	/**
-	 * Gets the given value or calls the updater if it is not known.
+	 * Gets the current value, if it is not yet know then updates the value
+	 * synchronously, this should be used sparingly!
 	 *
-	 * @param __state The state to use.
-	 * @return The known value or the value when updated.
+	 * @param __state The state to update within.
+	 * @return The resultant value.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2024/01/22
+	 * @since 2024/01/27
 	 */
-	public T getOrUpdate(DebuggerState __state)
+	public T getOrUpdateSync(DebuggerState __state)
 		throws NullPointerException
 	{
 		if (__state == null)
 			throw new NullPointerException("NARG");
 		
-		// If the value is already known, then get it
-		if (this.isKnown())
-			return this.get();
-		
-		// Otherwise call the updater
-		return this.update(__state);
-	}
-	
-	/**
-	 * Gets or wait for the value to appear, using the default timeout value.
-	 *
-	 * @return The resultant value or {@code null} if not known due to timeout.
-	 * @since 2024/01/22
-	 */
-	public T getOrWait()
-	{
-		return this.getOrWait(Utils.TIMEOUT);
-	}
-	
-	/**
-	 * Gets or wait for the value to appear.
-	 *
-	 * @param __waitMs The number of milliseconds to wait.
-	 * @return The resultant value or {@code null} if not known due to timeout.
-	 * @since 2024/01/22
-	 */
-	public T getOrWait(int __waitMs)
-	{
+		// Check to see if the value is known first
 		synchronized (this)
 		{
-			// Do we immediately know the value?
 			if (this._known)
-				return this.__clone(this._value);
-			
-			// Wait
-			try
-			{
-				this.wait(__waitMs);
-			}
-			catch (InterruptedException ignored)
-			{
-			}
-			
-			// Return the value, assuming it is known
+				return this._value;
+		}
+		
+		// Run the update
+		ForkJoinPool pool = ForkJoinPool.commonPool();
+		ForkJoinTask<?> task = pool.submit(() -> {
+				this.update(__state, (__ignored1, __ignored2) -> {});
+			});
+		
+		// Wait for the task to complete
+		task.join();
+		
+		// Try again!
+		synchronized (this)
+		{
+			// Can we quickly tell it was set?
 			if (this._known)
-				return this.__clone(this._value);
+				return this._value;
 			
-			// Otherwise null
+			// Not set or known
 			return null;
 		}
 	}
@@ -262,41 +227,26 @@ public final class KnownValue<T>
 	 * Attempts to update the value and returns it.
 	 *
 	 * @param __state The state for packet control.
-	 * @return The current and updated value, if it is valid.
+	 * @param __sync The callback to execute on completion.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/22
 	 */
-	public T update(DebuggerState __state)
+	public void update(DebuggerState __state, KnownValueCallback<T> __sync)
 		throws NullPointerException
 	{
-		return this.update(__state, null);
-	}
-	
-	/**
-	 * Attempts to update the value and returns it.
-	 *
-	 * @param __state The state for packet control.
-	 * @param __default The default value if not known.
-	 * @return The current and updated value, if it is valid.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2024/01/25
-	 */
-	public T update(DebuggerState __state, T __default)
-		throws NullPointerException
-	{
-		if (__state == null)
+		if (__state == null || __sync == null)
 			throw new NullPointerException("NARG");
 		
 		// We need an actual updater
 		KnownValueUpdater<T> updater = this.updater;
 		if (updater == null)
-			return this.get();
+		{
+			__sync.sync(__state, this);
+			return;
+		}
 		
 		// Call the updater
-		updater.update(__state, this);
-		
-		// Return the value
-		return this.getOrDefault(__default);
+		updater.update(__state, this, __sync);
 	}
 	
 	/**

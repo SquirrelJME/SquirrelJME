@@ -29,11 +29,6 @@ import cc.squirreljme.jdwp.JDWPSuspendPolicy;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.io.HexDumpOutputStream;
 import java.io.IOException;
-import java.util.Deque;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 import net.multiphasicapps.classfile.ClassName;
@@ -131,7 +126,7 @@ public class DebuggerState
 		IntConsumer __postResponse)
 		throws NullPointerException
 	{
-		if (__kind == null || __suspend == null)
+		if (__kind == null || __suspend == null || __handler == null)
 			throw new NullPointerException("NARG");
 		
 		try (JDWPPacket out = this.request(JDWPCommandSet.EVENT_REQUEST,
@@ -154,24 +149,21 @@ public class DebuggerState
 			}
 			
 			// Send it, wait for the response for it
-			if (__handler == null)
-				this.send(out);
-			else
-				this.send(out, (__ignored, __reply) -> {
-					int eventId = __reply.readInt();
-					
-					// Debug
-					if (JDWPCommLink.DEBUG)
-						Debugging.debugNote("Awaiting Event %d -> %s",
-							eventId, __handler);
-					
-					// Store handler for later
-					this.eventHandlers.put(eventId, __handler);
-					
-					// Inform of event?
-					if (__postResponse != null)
-						__postResponse.accept(eventId);
-				});
+			this.send(out, (__ignored, __reply) -> {
+				int eventId = __reply.readInt();
+				
+				// Debug
+				if (JDWPCommLink.DEBUG)
+					Debugging.debugNote("Awaiting Event %d -> %s",
+						eventId, __handler);
+				
+				// Store handler for later
+				this.eventHandlers.put(eventId, __handler);
+				
+				// Inform of event?
+				if (__postResponse != null)
+					__postResponse.accept(eventId);
+			}, ReplyHandler.IGNORED);
 		}
 	}
 	
@@ -289,12 +281,15 @@ public class DebuggerState
 		// Read location index
 		long index = __packet.readLong();
 		
-		// Initialize location
 		StoredInfoManager storedInfo = this.storedInfo;
+		InfoClass inClass = storedInfo.getClasses().get(this, classId);
+		
+		// Initialize location
 		return new FrameLocation(
 			__inThread,
-			storedInfo.getClasses().get(this, classId),
-			storedInfo.getMethods().get(this, methodId),
+			inClass,
+			storedInfo.getMethods().get(this, methodId,
+				inClass, null, null, null),
 			index);
 	}
 	
@@ -483,7 +478,7 @@ public class DebuggerState
 	public void send(JDWPPacket __packet)
 		throws NullPointerException
 	{
-		this.send(__packet, null);
+		this.send(__packet, null, null);
 	}
 	
 	/**
@@ -491,20 +486,42 @@ public class DebuggerState
 	 * response is received.
 	 *
 	 * @param __packet The packet to send.
-	 * @param __reply The reply handler to use for this packet.
+	 * @param __pass The reply handler to use for this packet.
+	 * @param __fail Called when the packet has failed.
 	 * @throws IllegalArgumentException If a reply handler is specified and
 	 * this is a reply packet.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/19
 	 */
-	public void send(JDWPPacket __packet, ReplyHandler __reply)
+	public void send(JDWPPacket __packet, ReplyHandler __pass,
+		ReplyHandler __fail)
+		throws IllegalArgumentException, NullPointerException
+	{
+		this.send(__packet, __pass, __fail, null);
+	}
+	
+	/**
+	 * Sends the given packet with an optional reply handler for when a
+	 * response is received.
+	 *
+	 * @param __packet The packet to send.
+	 * @param __pass The reply handler to use for this packet.
+	 * @param __fail Called when the packet has failed.
+	 * @param __always This handler is always called.
+	 * @throws IllegalArgumentException If a reply handler is specified and
+	 * this is a reply packet.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/27
+	 */
+	public void send(JDWPPacket __packet, ReplyHandler __pass,
+		ReplyHandler __fail, ReplyHandler __always)
 		throws IllegalArgumentException, NullPointerException
 	{
 		if (__packet == null)
 			throw new NullPointerException("NARG");
 		
 		// Wanting to handle a reply to this packet 
-		if (__reply != null)
+		if (__pass != null)
 		{
 			// It makes no sense to handle a reply to a reply
 			if (__packet.isReply())
@@ -513,7 +530,7 @@ public class DebuggerState
 			
 			// Store handler for replies before we send as the pipe could be
 			// really fast!
-			this.replies.await(__packet.id(), __reply);
+			this.replies.await(__packet.id(), __pass, __fail, __always);
 			
 			// Mark as waiting
 			this.waitingTally.increment();
@@ -532,6 +549,26 @@ public class DebuggerState
 	}
 	
 	/**
+	 * Helper for sending known values that always calls sync at the end.
+	 *
+	 * @param __out The out packet.
+	 * @param __value The known value.
+	 * @param __sync The sync to call.
+	 * @param __pass Called on successful packets.
+	 * @param __fail Called on failed packets.
+	 * @since 2024/01/27
+	 */
+	public void sendKnown(JDWPPacket __out, KnownValue<?> __value,
+		KnownValueCallback<?> __sync, ReplyHandler __pass,
+		ReplyHandler __fail)
+	{
+		this.send(__out, __pass, __fail, (__state, __reply) -> {
+				if (__sync != null)
+					__sync.sync(__state, (KnownValue)__value);
+			});
+	}
+	
+	/**
 	 * Sends the request to the remote end and blocks until a reply is given
 	 * to the packet.
 	 *
@@ -539,66 +576,15 @@ public class DebuggerState
 	 * @param __timeoutMs How long to wait until this times out.
 	 * @param __reply The method to call when this is handled.
 	 * @throws NullPointerException On null arguments.
+	 * @deprecated Do not use.
 	 * @since 2024/01/22
 	 */
+	@Deprecated
 	public void sendThenWait(JDWPPacket __packet, long __timeoutMs,
 		ReplyHandler __reply)
 		throws NullPointerException
 	{
-		if (__packet == null || __reply == null)
-			throw new NullPointerException("NARG");
-		if (__timeoutMs <= 0)
-			throw new IllegalArgumentException("NEGV");
-		
-		// The response holder
-		JDWPPacket[] reply = new JDWPPacket[1];
-		
-		// Send the packet, use a custom handler to set the value
-		this.send(__packet, (__state, __back) -> {
-			synchronized (reply)
-			{
-				// Set the packet, need a copy because it gets implicit closed
-				reply[0] = __state.commLink.getPacket().copyOf(__back);
-				
-				// Signal
-				reply.notifyAll();
-			}
-		});
-		
-		// Wait on the signal
-		JDWPPacket given;
-		synchronized (reply)
-		{
-			// Get the value
-			given = reply[0];
-			
-			// If not found yet, wait on it
-			if (given == null)
-				try
-				{
-					reply.wait(__timeoutMs);
-				}
-				catch (InterruptedException ignored)
-				{
-				}
-			
-			// Read again
-			given = reply[0];
-		}
-		
-		// Call reply handler, it is always called even when null as that
-		// means there was a timeout
-		try
-		{
-			__reply.handlePacket(this, given);
-		}
-		
-		// Need to close the packet since it was dangling open
-		finally
-		{
-			if (given != null)
-				given.close();
-		}
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -610,18 +596,15 @@ public class DebuggerState
 	 * @param __successHandler The handler to call on success.
 	 * @param __failHandler The handler to call on failure.
 	 * @throws NullPointerException On null arguments.
+	 * @deprecated Do not use.
 	 * @since 2024/01/22
 	 */
+	@Deprecated
 	public void sendThenWait(JDWPPacket __packet, long __timeoutMs,
 		ReplyHandler __successHandler, ReplyHandler __failHandler)
 		throws NullPointerException
 	{
-		this.sendThenWait(__packet, __timeoutMs, (__state, __result) -> {
-			if (__result == null || __result.hasError())
-				__failHandler.handlePacket(__state, __result);
-			else
-				__successHandler.handlePacket(__state, __result);
-		});
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -662,7 +645,7 @@ public class DebuggerState
 				// Inform that it was done
 				if (__done != null)
 					__done.run();
-			});
+			}, ReplyHandler.IGNORED);
 		}
 	}
 	
@@ -683,7 +666,7 @@ public class DebuggerState
 			this.send(out, (__ignored, __reply) -> {
 				if (__done != null)
 					__done.run();
-			});
+			}, ReplyHandler.IGNORED);
 		}
 	}
 	
@@ -758,12 +741,10 @@ public class DebuggerState
 			out.writeId(__thread.id);
 			
 			// Send it
-			if (__done == null)
-				this.send(out);
-			else
-				this.send(out, (__ignored, __reply) -> {
+			this.send(out, (__ignored, __reply) -> {
+				if (__done != null)
 					__done.run();
-				});
+			}, ReplyHandler.IGNORED);
 		}
 	}
 	
@@ -781,12 +762,10 @@ public class DebuggerState
 			JDWPCommandSetVirtualMachine.SUSPEND))
 		{
 			// Send it
-			if (__done == null)
-				this.send(out);
-			else
-				this.send(out, (__ignored, __reply) -> {
+			this.send(out, (__ignored, __reply) -> {
+				if (__done != null)
 					__done.run();
-				});
+			}, ReplyHandler.IGNORED);
 		}
 	}
 	
@@ -818,14 +797,14 @@ public class DebuggerState
 					// Debug
 					Debugging.debugNote("Sizes read: %s",
 						result);
-				});
+				}, ReplyHandler.IGNORED);
 		}
 		
 		// Version information
 		try (JDWPPacket packet = this.request(JDWPCommandSet.VIRTUAL_MACHINE,
 			JDWPCommandSetVirtualMachine.VERSION))
 		{
-			this.send(packet, this::__remoteVmInfo);
+			this.send(packet, this::__remoteVmInfo, ReplyHandler.IGNORED);
 		}
 		
 		// Get the capabilities of the remote VM, so we know what we can and
@@ -920,8 +899,28 @@ public class DebuggerState
 		// Decrement waiting count
 		this.waitingTally.decrement();
 		
-		// Call the handler accordingly
-		handler.handler.handlePacket(this, __packet);
+		// Always ensure that the always-callback gets executed regardless
+		// of any exceptions or otherwise that may occur
+		try
+		{
+			// Call the pass/fail handler accordingly
+			if (__packet.hasError())
+			{
+				if (handler.fail != null)
+					handler.fail.handlePacket(this, __packet);
+			}
+			else
+			{
+				if (handler.pass != null)
+					handler.pass.handlePacket(this, __packet);
+			}
+		}
+		finally
+		{
+			// Call the always-handler?
+			if (handler.always != null)
+				handler.always.handlePacket(this, __packet);
+		}
 	}
 	
 	/**

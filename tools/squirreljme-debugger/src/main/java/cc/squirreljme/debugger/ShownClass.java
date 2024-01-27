@@ -13,6 +13,7 @@ import java.awt.BorderLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import net.multiphasicapps.classfile.ClassName;
 
 /**
@@ -94,8 +95,8 @@ public class ShownClass
 		this.add(seqPanel.panel(), BorderLayout.CENTER);
 		this.seqPanel = seqPanel;
 		
-		// Initialize with instructions
-		this.shownUpdate();
+		// Request that everything gets updated
+		SwingUtilities.invokeLater(this::shownUpdate);
 	}
 	
 	/**
@@ -151,5 +152,8 @@ public class ShownClass
 		// Go through an update everything accordingly
 		for (ShownMethod shown : shownMethods)
 			shown.shownUpdate();
+		
+		// Repaint
+		this.repaint();
 	}
 }

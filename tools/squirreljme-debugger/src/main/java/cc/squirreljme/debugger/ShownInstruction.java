@@ -15,6 +15,7 @@ import java.util.Objects;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 /**
@@ -147,6 +148,9 @@ public class ShownInstruction
 		this.address = address;
 		this.description = mnemonic;
 		this._args = args;
+		
+		// Request that everything gets updated
+		SwingUtilities.invokeLater(this::shownUpdate);
 	}
 	
 	/**
@@ -197,5 +201,8 @@ public class ShownInstruction
 		
 		// Set mnemonic
 		this.description.setText(viewer.mnemonic());
+		
+		// Repaint
+		this.repaint();
 	}
 }

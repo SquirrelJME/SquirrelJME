@@ -18,6 +18,10 @@ import cc.squirreljme.jdwp.JDWPPacket;
  */
 public interface ReplyHandler
 {
+	/** Ignored reply, does not matter. */
+	ReplyHandler IGNORED =
+		(__ignored1, __ignored2) -> {};
+	
 	/**
 	 * Handles the given packet.
 	 *

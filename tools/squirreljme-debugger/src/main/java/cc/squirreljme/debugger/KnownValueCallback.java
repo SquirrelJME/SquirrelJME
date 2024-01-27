@@ -10,28 +10,20 @@
 package cc.squirreljme.debugger;
 
 /**
- * Updater for known values.
+ * When a known value has been updated, this will be called accordingly to
+ * the interested party.
  *
- * @param <T> The value type.
- * @since 2024/01/22
+ * @param <T> The type of value to update.
+ * @since 2024/01/26
  */
-public interface KnownValueUpdater<T>
+public interface KnownValueCallback<T>
 {
-	/** Ignored value update. */
-	KnownValueUpdater IGNORED =
-		(__state, __value, __sync) -> {
-			if (__sync != null)
-				__sync.sync(__state, __value);
-		};
-	
 	/**
-	 * Updates the given value.
+	 * Indicates that the value has been updated.
 	 *
 	 * @param __state The state.
-	 * @param __value The value to update.
-	 * @param __sync The method to call when the value has been updated.
-	 * @since 2024/01/22
+	 * @param __value The value which was updated.
+	 * @since 2024/01/26
 	 */
-	void update(DebuggerState __state, KnownValue<T> __value,
-		KnownValueCallback<T> __sync);
+	void sync(DebuggerState __state, KnownValue<T> __value);
 }

@@ -14,6 +14,7 @@ import java.util.Objects;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 /**
  * Shows the current context method.
@@ -76,8 +77,8 @@ public class ShownContextMethod
 		// Set listener for this to update everything
 		__context.addListener(this);
 		
-		// Initial update
-		this.update();
+		// Request that everything gets updated
+		SwingUtilities.invokeLater(this::update);
 	}
 	
 	/**

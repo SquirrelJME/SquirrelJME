@@ -27,16 +27,20 @@ public class AwaitingReplies
 	 * Awaits for the given reply.
 	 *
 	 * @param __id The packet ID.
-	 * @param __reply The reply handler used.
+	 * @param __pass Successful packet handler.
+	 * @param __fail Failed packet handler.
+	 * @param __always The always handler.
 	 * @since 2024/01/26
 	 */
-	public void await(int __id, ReplyHandler __reply)
+	public void await(int __id, ReplyHandler __pass, ReplyHandler __fail,
+		ReplyHandler __always)
 	{
 		Map<Integer, AwaitingReply> replies = this._replies;
 		synchronized (this)
 		{
 			replies.put(__id,
-				new AwaitingReply(__id, __reply, System.nanoTime()));
+				new AwaitingReply(__id, __pass, __fail, __always,
+					System.nanoTime()));
 		}
 	}
 	

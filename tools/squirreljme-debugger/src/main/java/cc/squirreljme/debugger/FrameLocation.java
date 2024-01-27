@@ -57,8 +57,8 @@ public class FrameLocation
 	public String toString()
 	{
 		return String.format("%s:%s @ %d",
-			this.inMethod.name,
-			this.inMethod.type,
+			this.inMethod.name.getOrDefault(null),
+			this.inMethod.type.getOrDefault(null),
 			this.index);
 	}
 }

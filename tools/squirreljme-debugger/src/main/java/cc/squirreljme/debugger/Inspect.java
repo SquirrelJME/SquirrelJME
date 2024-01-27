@@ -162,7 +162,7 @@ public abstract class Inspect<I extends Info>
 		// Otherwise just wrap it in a known value
 		else
 			this.addTrack(__desc, new KnownValue(
-				__value.getClass(), __value));
+				__value.getClass(), KnownValueUpdater.IGNORED));
 	}
 	
 	

@@ -14,6 +14,7 @@ import java.awt.Font;
 import java.util.Objects;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 /**
  * Shows a thread's stack trace.
@@ -75,8 +76,8 @@ public class ShownThread
 		this.sequence = sequence;
 		this.add(sequence.panel(), BorderLayout.CENTER);
 		
-		// Perform an initial update to make everything visible
-		this.update();
+		// Request that everything gets updated
+		SwingUtilities.invokeLater(this::update);
 	}
 	
 	/**
@@ -99,70 +100,102 @@ public class ShownThread
 	 */
 	public void update()
 	{
-		InfoThread thread = this.thread;
-		JLabel suspendLabel = this.suspendLabel;
+		InfoThread inThread = this.thread;
 		DebuggerState state = this.state;
+		
+		// Update suspension count
+		inThread.suspendCount.update(state, (__state, __value) -> {
+			int count = __value.get();
+			SwingUtilities.invokeLater(() -> {
+				this.__updateSuspend(count);
+			});
+		});
+		
+		// Update the thread information
+		inThread.frames.update(state, (__state, __value) -> {
+			InfoFrame[] frames = __value.get();
+			SwingUtilities.invokeLater(() -> {
+				this.__updateFrames(frames);
+			});
+		});
+		
+		// Repaint
+		this.repaint();
+	}
+	
+	/**
+	 * Updates all frames.
+	 *
+	 * @param __frames The frames to update with.
+	 * @since 2024/01/26
+	 */
+	private void __updateFrames(InfoFrame[] __frames)
+	{
 		SequentialPanel sequence = this.sequence;
 		
-		// Inform of the current thread suspension state
-		int suspendCount = thread.suspendCount.update(state, 0);
-		if (suspendCount > 0)
+		// Nothing to actually show? Do not perform any updating just in case
+		// the information is invalid for just a moment
+		if (__frames == null || __frames.length == 0)
+			return;
+		
+		// Clear all current frames
+		sequence.removeAll();
+		
+		// Add sequences for all frames
+		ContextThreadFrame context = this.context;
+		InfoClass inClass = null;
+		for (int i = 0, n = __frames.length; i < n; i++)
 		{
-			// Show as suspended
-			suspendLabel.setText(
-				String.format("Suspended %d time%s.", suspendCount,
-					(suspendCount == 1 ? "" : "s")));
+			InfoFrame frame = __frames[i];
+			InfoClass newClass = frame.location.inClass;
 			
-			// Get all frames in the thread
-			InfoFrame[] frames = thread.frames.update(state);
-			
-			// Frames are given where the top is at the bottom, so reverse
-			// the order for a more sensible stack
-			/*Collections.reverse(Arrays.asList(frames));*/
-			
-			// Clear all frames
-			sequence.removeAll();
-			
-			// Add sequences for all frames
-			ContextThreadFrame context = this.context;
-			InfoClass inClass = null;
-			for (int i = 0, n = frames.length; i < n; i++)
+			// Did the class change? Add banner for it
+			if (!Objects.equals(inClass, newClass))
 			{
-				InfoFrame frame = frames[i];
-				InfoClass newClass = frame.location.inClass;
+				// Add label for the class
+				JLabel atClass = new JLabel(newClass.thisName().toString());
+				atClass.setFont(atClass.getFont().deriveFont(
+					Font.ITALIC));
+				sequence.add(atClass);
 				
-				// Did the class change? Add banner for it
-				if (!Objects.equals(inClass, newClass))
-				{
-					// Add label for the class
-					JLabel atClass = new JLabel(newClass.toString());
-					atClass.setFont(atClass.getFont().deriveFont(
-						Font.ITALIC));
-					sequence.add(atClass);
-					
-					// We are in this class now
-					inClass = newClass;
-				}
-				
-				// Make a pretty button
-				ShownContextFrame shownFrame =
-					new ShownContextFrame(frame, context);
-				
-				// Add it to the sequence
-				sequence.add(shownFrame);
-				
-				// Update it quickly
-				shownFrame.update();
+				// We are in this class now
+				inClass = newClass;
 			}
-		}
-		else
-		{
-			// Show as running
-			suspendLabel.setText("Running");
 			
-			// No frames are valid, so cannot show anything
-			sequence.removeAll();
+			// Make a pretty button
+			ShownContextFrame shownFrame =
+				new ShownContextFrame(frame, context);
+			
+			// Add it to the sequence
+			sequence.add(shownFrame);
+			
+			// Update it quickly
+			shownFrame.update();
 		}
+		
+		// Repaint
+		this.repaint();
+	}
+	
+	/**
+	 * Updates the shown suspension count.
+	 *
+	 * @param __count The suspension count used.
+	 * @since 2024/01/26
+	 */
+	private void __updateSuspend(int __count)
+	{
+		JLabel suspendLabel = this.suspendLabel;
+		
+		// Show as suspended
+		if (__count > 0)
+			suspendLabel.setText(
+				String.format("Suspended %d time%s.", __count,
+					(__count == 1 ? "" : "s")));
+		
+		// Show as running
+		else
+			suspendLabel.setText("Running");
 		
 		// Repaint
 		this.repaint();

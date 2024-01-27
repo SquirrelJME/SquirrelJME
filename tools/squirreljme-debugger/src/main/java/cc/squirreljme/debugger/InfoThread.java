@@ -9,12 +9,11 @@
 
 package cc.squirreljme.debugger;
 
-import cc.squirreljme.jdwp.JDWPCommandSetThreadReference;
-import cc.squirreljme.jdwp.JDWPErrorType;
 import cc.squirreljme.jdwp.JDWPCommandSet;
+import cc.squirreljme.jdwp.JDWPCommandSetThreadReference;
+import cc.squirreljme.jdwp.JDWPId;
 import cc.squirreljme.jdwp.JDWPIdKind;
 import cc.squirreljme.jdwp.JDWPPacket;
-import cc.squirreljme.jdwp.JDWPId;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -26,15 +25,13 @@ public class InfoThread
 	extends Info
 {
 	/** Is this thread started? */
-	protected final KnownValue<Boolean> isStarted =
-		new KnownValue<>(Boolean.class);
+	protected final KnownValue<Boolean> isStarted;
 	
 	/** The name of the thread. */
 	protected final KnownValue<String> threadName;
 	
 	/** Is this thread dead? */
-	protected final KnownValue<Boolean> isDead =
-		new KnownValue<>(Boolean.class, false);
+	protected final KnownValue<Boolean> isDead;
 	
 	/** The current suspend count of the thread. */
 	protected final KnownValue<Integer> suspendCount;
@@ -52,6 +49,11 @@ public class InfoThread
 	public InfoThread(DebuggerState __state, JDWPId __id)
 	{
 		super(__state, __id, InfoKind.THREAD);
+		
+		this.isStarted = new KnownValue<Boolean>(Boolean.class,
+			false, KnownValueUpdater.IGNORED);
+		this.isDead = new KnownValue<Boolean>(Boolean.class,
+			false, KnownValueUpdater.IGNORED);
 		
 		this.threadName = new KnownValue<String>(String.class,
 			this::__updateThreadName);
@@ -100,7 +102,7 @@ public class InfoThread
 	@Override
 	protected String internalString()
 	{
-		String name = this.threadName.getOrUpdate(this.internalState());
+		String name = this.threadName.getOrUpdateSync(this.internalState());
 		if (this.isDead.getOrDefault(false))
 			return "DEAD " + name;
 		return name;
@@ -121,44 +123,17 @@ public class InfoThread
 	}
 	
 	/**
-	 * Returns the top most frame.
-	 *
-	 * @param __state The state used.
-	 * @return The topmost frame or {@code null} if not valid.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2024/01/26
-	 */
-	public InfoFrame topFrame(DebuggerState __state)
-		throws NullPointerException
-	{
-		if (__state == null)
-			throw new NullPointerException("NARG");
-		
-		InfoFrame[] frames = this.frames.update(__state);
-		if (frames != null && frames.length > 0)
-			return frames[0];
-		
-		// Not valid
-		return null;
-	}
-	
-	/**
 	 * Updates the stack frames of this thread.
 	 *
 	 * @param __state The current debugger state.
 	 * @param __value The current value.
+	 * @param __sync The callback to execute.
 	 * @since 2024/01/25
 	 */
 	private void __updateFrames(DebuggerState __state,
-		KnownValue<InfoFrame[]> __value)
+		KnownValue<InfoFrame[]> __value,
+		KnownValueCallback<InfoFrame[]> __sync)
 	{
-		// If the thread is not suspended then it cannot have frames
-		if (this.suspendCount.update(__state) <= 0)
-		{
-			__value.drop();
-			return;
-		}
-		
 		// Request frames
 		try (JDWPPacket out = __state.request(JDWPCommandSet.THREAD_REFERENCE,
 			JDWPCommandSetThreadReference.FRAMES))
@@ -169,7 +144,7 @@ public class InfoThread
 			out.writeInt(-1);
 			
 			// Send it
-			__state.sendThenWait(out, Utils.TIMEOUT,
+			__state.sendKnown(out, __value, __sync,
 				(__ignored, __reply) -> {
 					// Read in frame count
 					int numFrames = __reply.readInt();
@@ -189,8 +164,7 @@ public class InfoThread
 					
 					// Store frames
 					__value.set(result);
-				}, (__ignored, __reply) -> {
-				});
+				}, ReplyHandler.IGNORED);
 		}
 	}
 	
@@ -199,10 +173,11 @@ public class InfoThread
 	 *
 	 * @param __state The debugger state.
 	 * @param __value The current value.
+	 * @param __sync The callback to execute.
 	 * @since 2024/01/25
 	 */
 	private void __updateSuspendCount(DebuggerState __state,
-		KnownValue<Integer> __value)
+		KnownValue<Integer> __value, KnownValueCallback<Integer> __sync)
 	{
 		// Request name update
 		try (JDWPPacket out = __state.request(JDWPCommandSet.THREAD_REFERENCE,
@@ -211,11 +186,10 @@ public class InfoThread
 			out.writeId(this.id);
 			
 			// Send it
-			__state.sendThenWait(out, Utils.TIMEOUT,
+			__state.sendKnown(out, __value, __sync,
 				(__ignored, __reply) -> {
 					__value.set(__reply.readInt());
-				}, (__ignored, __reply) -> {
-				});
+				}, ReplyHandler.IGNORED);
 		}
 	}
 	
@@ -224,10 +198,11 @@ public class InfoThread
 	 *
 	 * @param __state The debugger state.
 	 * @param __value The current value.
+	 * @param __sync The callback to execute.
 	 * @since 2024/01/25
 	 */
 	private void __updateThreadName(DebuggerState __state,
-		KnownValue<String> __value)
+		KnownValue<String> __value, KnownValueCallback<String> __sync)
 	{
 		// Request name update
 		try (JDWPPacket out = __state.request(JDWPCommandSet.THREAD_REFERENCE,
@@ -236,21 +211,13 @@ public class InfoThread
 			out.writeId(this.id);
 			
 			// Send it
-			__state.send(out, (__ignored, __response) -> {
-				// Thread no longer valid?
-				if (__response.hasError(JDWPErrorType.INVALID_THREAD))
-				{
+			__state.sendKnown(out, __value, __sync,
+				(__ignored, __response) -> {
+					// Set name
+					__value.set(__response.readString());
+				}, (__ignored, __response) -> {
 					this.dispose();
-					return;
-				}
-				
-				// Another error
-				else if (__response.hasError())
-					return;
-				
-				// Set name
-				this.threadName.set(__response.readString());
-			});
+				});
 		}
 	}
 }

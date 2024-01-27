@@ -96,7 +96,10 @@ public class InfoClass
 	@Override
 	protected String internalString()
 	{
-		return this.thisName.getOrUpdate(this.internalState()).toString();
+		ClassName result = this.thisName.get();
+		if (result != null)
+			return result.toString();
+		return null;
 	}
 	
 	/**
@@ -107,13 +110,6 @@ public class InfoClass
 	protected boolean internalUpdate(DebuggerState __state)
 		throws NullPointerException
 	{
-		DebuggerState state = this.internalState();
-		
-		// These can be cached once
-		this.thisName.getOrUpdate(state);
-		this.constantPool.getOrUpdate(state);
-		this.methods.getOrUpdate(state);
-		
 		return true;
 	}
 	
@@ -125,11 +121,14 @@ public class InfoClass
 	 */
 	public InfoMethod[] methods()
 	{
+		throw Debugging.todo();
+		/*
 		InfoMethod[] methods = this.methods.getOrUpdate(this.internalState());
 		if (methods != null)
 			return methods.clone();
 		
 		return new InfoMethod[0];
+		 */
 	}
 	
 	/**
@@ -140,7 +139,7 @@ public class InfoClass
 	 */
 	public ClassName thisName()
 	{
-		return this.thisName.getOrUpdate(this.internalState());
+		return this.thisName.getOrUpdateSync(this.internalState());
 	}
 	
 	/**
@@ -148,10 +147,11 @@ public class InfoClass
 	 *
 	 * @param __state The state this is in.
 	 * @param __value The value to be updated.
+	 * @param __sync The callback to execute when updated.
 	 * @since 2024/01/23
 	 */
 	private void __updateConstantPool(DebuggerState __state,
-		KnownValue<Pool> __value)
+		KnownValue<Pool> __value, KnownValueCallback<Pool> __sync)
 	{
 		// If the VM does not support this, then we cannot do anything about it
 		if (!__state.capabilities.has(JDWPCapability.CAN_GET_CONSTANT_POOL))
@@ -200,15 +200,25 @@ public class InfoClass
 	 *
 	 * @param __state The state to update from.
 	 * @param __value The value that is being updated.
+	 * @param __sync The callback to execute when updated.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/22
 	 */
 	private void __updateMethods(DebuggerState __state,
-		KnownValue<InfoMethod[]> __value)
+		KnownValue<InfoMethod[]> __value,
+		KnownValueCallback<InfoMethod[]> __sync)
 		throws NullPointerException
 	{
 		if (__state == null || __value == null)
 			throw new NullPointerException("NARG");
+		
+		// If we already got this information, we do not have to try again
+		if (__value.isKnown())
+		{
+			if (__sync != null)
+				__sync.sync(__state, __value);
+			return;
+		}
 		
 		// Request methods in the class
 		try (JDWPPacket out = __state.request(JDWPCommandSet.REFERENCE_TYPE,
@@ -218,7 +228,7 @@ public class InfoClass
 			out.writeId(this.id);
 			
 			// Wait for response
-			__state.sendThenWait(out, Utils.TIMEOUT, (__ignored, __reply) -> {
+			__state.sendKnown(out, __value, __sync, (__ignored, __reply) -> {
 				int count = __reply.readInt();
 				
 				// Get method storage
@@ -242,14 +252,22 @@ public class InfoClass
 						new MethodFlags(__reply.readInt() & (~0xF0000000));
 					
 					// Setup method
-					result[i] = stored.get(__state, methodId,
+					InfoMethod method = stored.get(__state, methodId,
 						this, name, type, flags);
+					
+					// Set resultant method
+					result[i] = method;
+					
+					// Set details about the method as if this is called it
+					// would not be known here
+					method.name.set(name);
+					method.type.set(type);
+					method.flags.set(flags);
 				}
 				
 				// Set value
 				__value.set(result);
-			}, (__ignored, __fail) -> {
-			});
+			}, ReplyHandler.IGNORED);
 		}
 	}
 	
@@ -257,16 +275,25 @@ public class InfoClass
 	 * Updates the name of this class. 
 	 *
 	 * @param __state The debugger state.
-	 * @param __known The known value being updated.
+	 * @param __value The known value being updated.
 	 * @throws NullPointerException On null arguments.
+	 * @param __sync The callback to execute when updated.
 	 * @since 2024/01/22
 	 */
 	private void __updateThisName(DebuggerState __state,
-		KnownValue<ClassName> __known)
+		KnownValue<ClassName> __value, KnownValueCallback<ClassName> __sync)
 		throws NullPointerException
 	{
-		if (__state == null || __known == null)
+		if (__state == null || __value == null)
 			throw new NullPointerException("NARG");
+		
+		// We only need to get this information once
+		if (__value.isKnown())
+		{
+			if (__sync != null)
+				__sync.sync(__state, __value);
+			return;
+		}
 		
 		try (JDWPPacket out = __state.request(JDWPCommandSet.REFERENCE_TYPE,
 			JDWPCommandSetReferenceType.SIGNATURE))
@@ -275,12 +302,12 @@ public class InfoClass
 			out.writeId(this.id);
 			
 			// Wait for response
-			__state.sendThenWait(out, Utils.TIMEOUT, (__ignored, __reply) -> {
-				String value = __reply.readString();
-				
-				__known.set(new FieldDescriptor(value).className());
-			}, (__ignored, __fail) -> {
-			});
+			__state.sendKnown(out, __value, __sync,
+				(__ignored, __reply) -> {
+					// Parse class name
+					String value = __reply.readString();
+					__value.set(new FieldDescriptor(value).className());
+				}, ReplyHandler.IGNORED);
 		}
 	}
 }

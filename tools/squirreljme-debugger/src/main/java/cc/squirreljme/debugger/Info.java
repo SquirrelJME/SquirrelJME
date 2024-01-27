@@ -97,6 +97,9 @@ public abstract class Info
 		synchronized (this)
 		{
 			this._disposed = true;
+			
+			// Notify the monitor
+			this.notifyAll();
 		}
 	}
 	

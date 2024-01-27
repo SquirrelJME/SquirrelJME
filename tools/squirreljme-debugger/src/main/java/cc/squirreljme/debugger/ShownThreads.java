@@ -16,10 +16,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.Objects;
-import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
-import javax.swing.MutableComboBoxModel;
+import javax.swing.SwingUtilities;
 
 /**
  * Shows all the running threads within the virtual machine and allows
@@ -83,6 +82,9 @@ public class ShownThreads
 		// Set updater for when the combo box value changes
 		combo.addActionListener(this._actionListener);
 		combo.addItemListener(this._itemListener);
+		
+		// Request that everything gets updated
+		SwingUtilities.invokeLater(this::update);
 	}
 	
 	/**

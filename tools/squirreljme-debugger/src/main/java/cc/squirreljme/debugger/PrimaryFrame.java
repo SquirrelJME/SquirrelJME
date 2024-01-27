@@ -286,6 +286,8 @@ public class PrimaryFrame
 	public void handleSingleStep(DebuggerState __state,
 		SingleStepEvent __event)
 	{
+		Debugging.todoNote("Single step?");
+		/*
 		// Note it
 		Debugging.debugNote("Single stepped.");
 		this.statusPanel.setMessage("Single stepped.");
@@ -298,6 +300,7 @@ public class PrimaryFrame
 		
 		// Update information
 		this.update();
+		 */
 	}
 	
 	/**

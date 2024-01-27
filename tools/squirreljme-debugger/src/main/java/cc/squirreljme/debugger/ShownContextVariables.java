@@ -10,12 +10,11 @@
 package cc.squirreljme.debugger;
 
 import cc.squirreljme.jdwp.JDWPValue;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.awt.BorderLayout;
-import java.util.Arrays;
 import java.util.Objects;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 /**
  * Shows variable information.
@@ -34,6 +33,9 @@ public class ShownContextVariables
 	
 	/** The variable sequences. */
 	protected final SequentialPanel sequence;
+	
+	/** Pre-created key and values. */
+	private final KeyValuePanel[] _keyValues;
 	
 	/**
 	 * Initializes the shown context variables.
@@ -54,6 +56,16 @@ public class ShownContextVariables
 		this.state = __state;
 		this.context = __context;
 		
+		// Pre-create all key/value pairs to reduce allocation/de-allocation
+		// strain
+		KeyValuePanel[] keyValues =
+			new KeyValuePanel[InfoFrameLocals.MAX_LOCALS];
+		for (int i = 0, n = InfoFrameLocals.MAX_LOCALS; i < n; i++)
+			keyValues[i] = new KeyValuePanel(
+				new JLabel(Integer.toString(i)),
+				new JLabel());
+		this._keyValues = keyValues;
+		
 		// Border layout is always clean
 		this.setLayout(new BorderLayout());
 		
@@ -64,6 +76,9 @@ public class ShownContextVariables
 		
 		// Set updater to show locals
 		__context.addListener(this);
+		
+		// Request that everything gets updated
+		SwingUtilities.invokeLater(this::update);
 	}
 	
 	/**
@@ -88,31 +103,69 @@ public class ShownContextVariables
 		SequentialPanel sequence = this.sequence;
 		DebuggerState state = this.state;
 		
-		// If there is no frame, then there is no purpose to this
-		// Or if it is not suspended...
+		// Get the frame, if there is none then do nothing other than
+		// removing everything
 		InfoFrame inFrame = this.context.getFrame();
-		if (inFrame == null ||
-			inFrame.inThread.suspendCount.update(state) <= 0)
+		if (inFrame == null)
 		{
+			// Nothing to actually show...
 			sequence.removeAll();
+			
 			return;
 		}
 		
-		// Get all values
-		JDWPValue[] values = inFrame.variables.update(state);
-		if (values != null)
+		// Otherwise, request an update of all the variables
+		inFrame.variables.update(state, (__state, __value) -> {
+			InfoFrameLocals locals = __value.get();
+			if (locals != null)
+				SwingUtilities.invokeLater(() -> {
+					this.__updateLocals(locals);
+				});
+		});
+		
+		// Repaint
+		this.repaint();
+	}
+	
+	/**
+	 * Updates the shown locals.
+	 *
+	 * @param __locals The locals to show.
+	 * @since 2024/01/27
+	 */
+	private void __updateLocals(InfoFrameLocals __locals)
+	{
+		SequentialPanel sequence = this.sequence;
+		
+		// Ignore if there are none
+		if (__locals == null)
+			return;
+		
+		// Clear sequence chain
+		sequence.removeAll();
+		
+		// Get pre-created key/value sequences
+		KeyValuePanel[] keyValues = this._keyValues;
+		
+		// Add in for every local
+		for (int index = 0, numLocals = InfoFrameLocals.MAX_LOCALS;
+			index < numLocals; index++)
 		{
-			// Debug
-			Debugging.debugNote("Read variables: %s",
-				Arrays.asList(values));
+			// Skip any null values
+			JDWPValue value = __locals.get(index);
+			if (value == null)
+				continue;
 			
-			// Clear everything and re-add
-			sequence.removeAll();
-			for (int i = 0, n = values.length; i < n; i++)
-				sequence.add(new KeyValuePanel(
-					new JLabel(Integer.toString(i)),
-					new JLabel(Objects.toString(values[i],
-						"null"))));
+			// Update the key/value pair
+			KeyValuePanel keyValue = keyValues[index];
+			((JLabel)keyValue.value).setText(
+				Objects.toString(value, "null"));
+			
+			// Add in key sequence
+			sequence.add(keyValue);
 		}
+		
+		// Repaint
+		this.repaint();
 	}
 }

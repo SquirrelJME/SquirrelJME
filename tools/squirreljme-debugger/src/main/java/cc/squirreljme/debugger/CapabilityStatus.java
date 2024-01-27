@@ -98,7 +98,7 @@ public class CapabilityStatus
 			JDWPCommandSet.VIRTUAL_MACHINE,
 			JDWPCommandSetVirtualMachine.CAPABILITIES))
 		{
-			__state.send(out, this);
+			__state.send(out, this, ReplyHandler.IGNORED);
 		}
 		
 		// Ask for newer capabilities (newer VM)
@@ -106,7 +106,7 @@ public class CapabilityStatus
 			JDWPCommandSet.VIRTUAL_MACHINE,
 			JDWPCommandSetVirtualMachine.CAPABILITIES_NEW))
 		{
-			__state.send(out, this);
+			__state.send(out, this, ReplyHandler.IGNORED);
 		}
 	}
 }

@@ -185,7 +185,7 @@ public final class ContextThreadFrame
 	{
 		synchronized (this)
 		{
-			if (this._thread == null)
+			if (this._thread == null && __thread != null)
 				this.set(__thread);
 		}
 	}
@@ -200,7 +200,7 @@ public final class ContextThreadFrame
 	{
 		synchronized (this)
 		{
-			if (this._frame == null)
+			if (this._frame == null && __frame != null)
 				this.set(__frame);
 		}
 	}
@@ -215,7 +215,7 @@ public final class ContextThreadFrame
 	{
 		synchronized (this)
 		{
-			if (this._location == null)
+			if (this._location == null && __location != null)
 				this.set(__location);
 		}
 	}
@@ -234,13 +234,7 @@ public final class ContextThreadFrame
 		
 		// There needs to be an actual thread
 		if (__thread != null)
-		{
-			// Update frames of the thread
-			__thread.frames.update(__state);
-			
-			// Do internal set
 			this.set(__thread);
-		}
 	}
 	
 	/**
@@ -252,8 +246,8 @@ public final class ContextThreadFrame
 	public void set(InfoThread __thread)
 	{
 		// Changing is not possible if the thread is dead or disposed of
-		if (__thread != null &&
-			(__thread.isDisposed() || __thread.isDead.get()))
+		if (__thread != null && (__thread.isDisposed() ||
+			__thread.isDead.getOrDefault(false)))
 			return;
 		
 		InfoThread oldThread;
@@ -323,8 +317,8 @@ public final class ContextThreadFrame
 			return;
 		
 		InfoThread wantThread = (__frame != null ? __frame.inThread : null);
-		if (wantThread != null &&
-			(wantThread.isDisposed() || wantThread.isDead.get()))
+		if (wantThread != null && (wantThread.isDisposed() ||
+			wantThread.isDead.getOrDefault(false)))
 			return;
 		
 		InfoThread oldThread;

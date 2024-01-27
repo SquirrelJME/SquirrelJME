@@ -49,7 +49,7 @@ public enum EventProcessor
 				__packet);
 			
 			// Set context if missing
-			__state.context.optional(thread.topFrame(__state));
+			__state.context.optional(thread);
 			
 			// Call handler
 			if (__handler != null)

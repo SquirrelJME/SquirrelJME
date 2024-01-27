@@ -14,6 +14,7 @@ import java.awt.event.ActionEvent;
 import java.util.Objects;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 /**
  * Shown context frame.
@@ -78,6 +79,9 @@ public class ShownContextFrame
 		
 		// Called when context updates
 		__context.addListener(this);
+		
+		// Request that everything gets updated
+		SwingUtilities.invokeLater(this::update);
 	}
 	
 	/**
@@ -107,6 +111,9 @@ public class ShownContextFrame
 			pointer.setIcon(Utils.tangoIcon("go-next"));
 		else
 			pointer.setIcon(Utils.tangoIcon("-"));
+		
+		// Repaint
+		this.repaint();
 	}
 	
 	/**

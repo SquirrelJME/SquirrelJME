@@ -11,6 +11,8 @@ package cc.squirreljme.debugger;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.MethodDescriptor;
+import net.multiphasicapps.classfile.MethodName;
 import net.multiphasicapps.classfile.MethodNameAndType;
 
 /**
@@ -52,11 +54,7 @@ public class RemoteMethodViewer
 	@Override
 	public ClassName inClass()
 	{
-		InfoClass inClass = this.info.inClass.get();
-		if (inClass == null)
-			return new ClassName("GarbageCollected");
-		
-		return inClass.thisName();
+		return this.info.inClass.thisName();
 	}
 	
 	/**
@@ -70,12 +68,18 @@ public class RemoteMethodViewer
 		if (this.isAbstract() || this.isNative())
 			return new InstructionViewer[0];
 		
+		if (true)
+			return new InstructionViewer[0];
+		throw Debugging.todo();
+		/*
 		// Fallback to nothing if there is no byte code
 		InfoByteCode byteCode = this.info.byteCode.getOrUpdate(this.state);
 		if (byteCode == null)
 			return new InstructionViewer[0];
 		
 		return byteCode.instructions();
+		
+		 */
 	}
 	
 	/**
@@ -85,7 +89,8 @@ public class RemoteMethodViewer
 	@Override
 	public boolean isAbstract()
 	{
-		return this.info.flags.isAbstract();
+		return this.info.flags.getOrUpdateSync(
+			this.info.internalState()).isAbstract();
 	}
 	
 	/**
@@ -95,7 +100,8 @@ public class RemoteMethodViewer
 	@Override
 	public boolean isNative()
 	{
-		return this.info.flags.isNative();
+		return this.info.flags.getOrUpdateSync(
+			this.info.internalState()).isNative();
 	}
 	
 	/**
@@ -105,6 +111,12 @@ public class RemoteMethodViewer
 	@Override
 	public MethodNameAndType methodNameAndType()
 	{
-		return new MethodNameAndType(this.info.name, this.info.type);
+		InfoMethod info = this.info;
+		DebuggerState state = info.internalState();
+		
+		MethodName name = info.name.getOrUpdateSync(state);
+		MethodDescriptor type = info.type.getOrUpdateSync(state);
+		
+		return new MethodNameAndType(name, type);
 	}
 }

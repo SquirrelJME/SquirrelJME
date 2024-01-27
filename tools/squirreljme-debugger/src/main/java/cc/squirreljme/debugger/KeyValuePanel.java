@@ -23,6 +23,12 @@ import javax.swing.JPanel;
 public class KeyValuePanel
 	extends JPanel
 {
+	/** The key component. */
+	protected final JComponent key;
+	
+	/** The value component. */
+	protected final JComponent value;
+	
 	/**
 	 * Initializes the key/value panel.
 	 *
@@ -53,5 +59,9 @@ public class KeyValuePanel
 		constraints.gridx = 1;
 		constraints.fill = GridBagConstraints.HORIZONTAL;
 		this.add(__value, constraints);
+		
+		// Store for later
+		this.key = __key;
+		this.value = __value;
 	}
 }

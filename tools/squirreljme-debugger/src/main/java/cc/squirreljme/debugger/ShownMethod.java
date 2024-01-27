@@ -13,6 +13,7 @@ import java.awt.BorderLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 /**
  * A panel which shows a single Java method.
@@ -83,8 +84,8 @@ public class ShownMethod
 		this.add(seqPanel.panel(), BorderLayout.CENTER);
 		this.seqPanel = seqPanel;
 		
-		// Initialize with instructions
-		this.shownUpdate();
+		// Request that everything gets updated
+		SwingUtilities.invokeLater(this::shownUpdate);
 	}
 	
 	/**
@@ -138,5 +139,8 @@ public class ShownMethod
 		// Go through an update everything accordingly
 		for (ShownInstruction shown : shownInstructions)
 			shown.shownUpdate();
+		
+		// Repaint
+		this.repaint();
 	}
 }

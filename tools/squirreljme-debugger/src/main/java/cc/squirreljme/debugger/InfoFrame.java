@@ -11,14 +11,10 @@ package cc.squirreljme.debugger;
 
 import cc.squirreljme.jdwp.JDWPCommandSet;
 import cc.squirreljme.jdwp.JDWPCommandSetStackFrame;
+import cc.squirreljme.jdwp.JDWPErrorType;
 import cc.squirreljme.jdwp.JDWPId;
-import cc.squirreljme.jdwp.JDWPIdKind;
 import cc.squirreljme.jdwp.JDWPPacket;
-import cc.squirreljme.jdwp.JDWPValue;
 import cc.squirreljme.jdwp.JDWPValueTag;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
 
 /**
  * Tracks information on a single frame within a thread.
@@ -32,14 +28,6 @@ public class InfoFrame
 	private static final JDWPValueTag[] _TAGS =
 		JDWPValueTag.values();
 	
-	/** Item success. */
-	private static final __Success__ _SUCCESS =
-		new __Success__();
-	
-	/** Item failed. */
-	private static final NoSuchElementException _FAILED =
-		new NoSuchElementException();
-	
 	/** The thread this frame is in. */
 	protected final InfoThread inThread;
 	
@@ -47,7 +35,7 @@ public class InfoFrame
 	protected final FrameLocation location;
 	
 	/** Frame variables. */
-	protected final KnownValue<JDWPValue[]> variables;
+	protected final KnownValue<InfoFrameLocals> variables;
 	
 	/**
 	 * Initializes the frame information.
@@ -70,7 +58,7 @@ public class InfoFrame
 		
 		this.inThread = __thread;
 		this.location = __location;
-		this.variables = new KnownValue<JDWPValue[]>(JDWPValue[].class,
+		this.variables = new KnownValue<InfoFrameLocals>(InfoFrameLocals.class,
 			this::__updateVariables);
 	}
 	
@@ -103,7 +91,71 @@ public class InfoFrame
 	@Override
 	protected String internalString()
 	{
-		return this.location.toString();
+		DebuggerState state = this.internalState();
+		return String.format("%s:%s @ %d",
+			this.location.inMethod.name.getOrUpdateSync(state),
+			this.location.inMethod.type.getOrUpdateSync(state),
+			this.location.index);
+	}
+	
+	/**
+	 * Attempts variable update state and chains accordingly on failure.
+	 *
+	 * @param __state The state to update within.
+	 * @param __inThread The thread this is in.
+	 * @param __inFrame The frame this is in.
+	 * @param __value The resultant values.
+	 * @param __locals The local variable.
+	 * @param __index The local variable index.
+	 * @param __tagType The tag type to request.
+	 * @param __sync The callback called when the variable has been updated.
+	 * @since 2024/01/26
+	 */
+	private void __updateChain(DebuggerState __state, JDWPId __inThread,
+		JDWPId __inFrame, KnownValue<InfoFrameLocals> __value,
+		InfoFrameLocals __locals, int __index, int __tagType,
+		KnownValueCallback<InfoFrameLocals> __sync)
+	{
+		// Determine which tag we are on
+		JDWPValueTag[] tags = InfoFrame._TAGS;
+		if (__tagType >= tags.length)
+			return;
+		JDWPValueTag tag = tags[__tagType];
+		
+		// Request variables
+		try (JDWPPacket out = __state.request(JDWPCommandSet.STACK_FRAMES,
+			JDWPCommandSetStackFrame.GET_VALUES))
+		{
+			// Current frame and thread
+			out.writeId(__inThread);
+			out.writeId(__inFrame);
+			
+			// Request a single slot with the tag
+			out.writeInt(1);
+			out.writeInt(__index);
+			out.writeByte(tag.tag);
+			
+			// Send it
+			__state.sendKnown(out, __value, __sync,
+				(__ignored, __reply) -> {
+					// Ignore if no value is here
+					int numValues = __reply.readInt();
+					if (numValues <= 0)
+						return;
+					
+					// Only read and set the first value
+					__locals.set(__index, __reply.readValue());
+				}, (__ignored, __reply) -> {
+					// If the slot is invalid, do not go down the chain
+					// since it would be rather pointless
+					if (__reply.hasError(JDWPErrorType.INVALID_SLOT))
+						return;
+					
+					// We failed, so go down the tag chain
+					this.__updateChain(__state, __inThread, __inFrame, __value,
+						__locals, __index, __tagType + 1, __sync);
+				});
+		}
 	}
 	
 	/**
@@ -111,147 +163,30 @@ public class InfoFrame
 	 *
 	 * @param __state The current state.
 	 * @param __value The current value.
+	 * @param __sync The callback to execute.
 	 * @since 2024/01/26
 	 */
 	private void __updateVariables(DebuggerState __state,
-		KnownValue<JDWPValue[]> __value)
+		KnownValue<InfoFrameLocals> __value,
+		KnownValueCallback<InfoFrameLocals> __sync)
 	{
-		// Native/abstract methods cannot have variables, nor can there be
-		// variables for running threads
-		InfoMethod inMethod = this.location.inMethod;
-		InfoThread inThread = this.inThread;
-		if (inMethod.flags.isNative() || inMethod.flags.isAbstract() ||
-			inThread.isDead.getOrUpdate(__state) ||
-			inThread.suspendCount.update(__state) <= 0)
+		// Get the locals to update
+		InfoFrameLocals locals = __value.get();
+		if (locals == null)
 		{
-			__value.drop();
-			return;
+			locals = new InfoFrameLocals();
+			__value.set(locals);
 		}
 		
-		JDWPId threadId = inThread.id;
-		JDWPId frameId = this.id;
+		// Get current thread and frame IDs
+		JDWPId inThread = this.inThread.id;
+		JDWPId inFrame = this.id;
 		
-		// For JDWP there is no real way to get an accurate set of variables
-		// directly, like it does not tell us the actual type that is there, so
-		// we have to do some major probing to try to get that information...
-		List<JDWPValue> result = new ArrayList<>();
-		JDWPValue[] object = new JDWPValue[1];
-		for (int i = 0; i < 63; i++)
-			try
-			{
-				result.add(this.__variableAttempt(
-					__state, threadId, frameId, i, object));
-			}
-			catch (NoSuchElementException ignored)
-			{
-				break;
-			}
-		
-		// Set value
-		__value.set(result.toArray(new JDWPValue[result.size()]));
-	}
-	
-	/**
-	 * Attempts to read a local variable.
-	 *
-	 * @param __state The current state.
-	 * @param __threadId The thread ID.
-	 * @param __frameId The frame ID.
-	 * @param __varIndex The variable index.
-	 * @param __object The resultant object.
-	 * @return The value at the given location.
-	 * @throws NoSuchElementException If no such item is here.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2024/01/26
-	 */
-	private JDWPValue __variableAttempt(DebuggerState __state,
-		JDWPId __threadId, JDWPId __frameId, int __varIndex,
-		JDWPValue[] __object)
-		throws NoSuchElementException, NullPointerException
-	{
-		if (__state == null || __threadId == null || __frameId == null ||
-			__object == null)
-			throw new NullPointerException("NARG");
-		
-		// Try to read with all tags
-		JDWPValueTag[] tags = InfoFrame._TAGS;
-		for (JDWPValueTag tag : tags)
-			try
-			{
-				return this.__variableAttempt(__state, __threadId, __frameId,
-					__varIndex, tag, __object);
-			}
-			catch (__Success__ __ignored)
-			{
-				synchronized (__object)
-				{
-					return __object[0];
-				}
-			}
-			catch (NoSuchElementException __ignored)
-			{
-			}
-		
-		// Failed
-		throw InfoFrame._FAILED;
-	}
-	
-	/**
-	 * Attempts to read a local variable.
-	 *
-	 * @param __state The debugger state.
-	 * @param __threadId The thread ID.
-	 * @param __frameId The frame ID.
-	 * @param __varIndex The variable index.
-	 * @param __object The resultant object.
-	 * @return The value at the given location.
-	 * @throws NoSuchElementException If no such item is here.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2024/01/26
-	 */
-	private JDWPValue __variableAttempt(DebuggerState __state,
-		JDWPId __threadId, JDWPId __frameId, int __varIndex,
-		JDWPValueTag __tag, JDWPValue[] __object)
-		throws NoSuchElementException, NullPointerException
-	{
-		if (__state == null || __threadId == null || __frameId == null ||
-			__tag == null || __object == null)
-			throw new NullPointerException("NARG");
-	
-		// Request variables
-		try (JDWPPacket out = __state.request(JDWPCommandSet.STACK_FRAMES,
-			JDWPCommandSetStackFrame.GET_VALUES))
-		{
-			// Current frame and thread
-			out.writeId(__threadId);
-			out.writeId(__frameId);
-			
-			// Request a single slot with the tag
-			out.writeInt(1);
-			out.writeInt(__varIndex);
-			out.writeByte(__tag.tag);
-			
-			// Send it
-			__state.sendThenWait(out, Utils.SHORT_TIMEOUT,
-				(__ignored, __reply) -> {
-					// The number of read values
-					int numValues = __reply.readInt();
-					JDWPValue value = __reply.readValue();
-					
-					// Set value
-					synchronized (__object)
-					{
-						__object[0] = value;
-					}
-					
-					// Success
-					throw InfoFrame._SUCCESS;
-				}, (__ignored, __reply) -> {
-					throw InfoFrame._FAILED;
-				});
-		}
-		
-		// Failed
-		throw InfoFrame._FAILED;
+		// We need to ask the virtual machine for a ton of information to get
+		// the proper local variables...
+		for (int index = 0, maxLocals = InfoFrameLocals.MAX_LOCALS;
+			index < maxLocals; index++)
+			this.__updateChain(__state, inThread, inFrame, __value,
+				locals, index, 0, __sync);
 	}
 }

@@ -9,18 +9,15 @@
 
 package cc.squirreljme.debugger;
 
-import cc.squirreljme.jdwp.JDWPCapability;
 import cc.squirreljme.jdwp.JDWPCommandSet;
-import cc.squirreljme.jdwp.JDWPCommandSetMethod;
+import cc.squirreljme.jdwp.JDWPCommandSetClassType;
+import cc.squirreljme.jdwp.JDWPCommandSetReferenceType;
 import cc.squirreljme.jdwp.JDWPId;
 import cc.squirreljme.jdwp.JDWPPacket;
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodFlags;
 import net.multiphasicapps.classfile.MethodName;
-import net.multiphasicapps.classfile.MethodNameAndType;
-import net.multiphasicapps.classfile.Pool;
 
 /**
  * Not Described.
@@ -30,17 +27,17 @@ import net.multiphasicapps.classfile.Pool;
 public class InfoMethod
 	extends Info
 {
+	/** The class this is in. */
+	protected final InfoClass inClass;
+	
 	/** The method flags. */
-	protected final MethodFlags flags;
+	protected final KnownValue<MethodFlags> flags;
 	
 	/** The method name. */
-	protected final MethodName name;
+	protected final KnownValue<MethodName> name;
 	
 	/** The method type. */
-	protected final MethodDescriptor type;
-	
-	/** The class this is in. */
-	protected final Reference<InfoClass> inClass;
+	protected final KnownValue<MethodDescriptor> type;
 	
 	/** The byte code of this method. */
 	protected final KnownValue<InfoByteCode> byteCode;
@@ -62,10 +59,19 @@ public class InfoMethod
 	{
 		super(__state, __id, InfoKind.METHOD);
 		
-		this.inClass = new WeakReference<>(__inClass);
-		this.name = __name;
-		this.type = __type;
-		this.flags = __flags;
+		// The class is required to be known
+		if (__inClass == null)
+			throw new NullPointerException("NARG");
+		
+		this.inClass = __inClass;
+		
+		// Generic updaters
+		this.name = new KnownValue<MethodName>(MethodName.class,
+			__name, this::__updateGeneric);
+		this.type = new KnownValue<MethodDescriptor>(MethodDescriptor.class,
+			__type, this::__updateGeneric);
+		this.flags = new KnownValue<MethodFlags>(MethodFlags.class,
+			__flags, this::__updateGeneric);
 		
 		this.byteCode = new KnownValue<InfoByteCode>(InfoByteCode.class,
 			this::__updateByteCode);
@@ -79,9 +85,6 @@ public class InfoMethod
 	protected boolean internalUpdate(DebuggerState __state)
 		throws NullPointerException
 	{
-		// Single run updates
-		this.byteCode.getOrUpdate(__state);
-		
 		return true;
 	}
 	
@@ -92,7 +95,12 @@ public class InfoMethod
 	@Override
 	protected String internalString()
 	{
-		return new MethodNameAndType(this.name, this.type).toString();
+		DebuggerState state = this.internalState();
+		
+		MethodName name = this.name.getOrUpdateSync(state);
+		MethodDescriptor type = this.type.getOrUpdateSync(state);
+		
+		return String.format("%s:%s", name, type);
 	}
 	
 	/**
@@ -100,16 +108,28 @@ public class InfoMethod
 	 *
 	 * @param __state The state.
 	 * @param __value The value being updated.
+	 * @param __sync The callback when the value is known.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/23
 	 */
 	private void __updateByteCode(DebuggerState __state,
-		KnownValue<InfoByteCode> __value)
+		KnownValue<InfoByteCode> __value,
+		KnownValueCallback<InfoByteCode> __sync)
 		throws NullPointerException
 	{
 		if (__state == null || __value == null)
 			throw new NullPointerException("NARG");
 		
+		// Only need to calculate this once
+		if (__value.isKnown())
+		{
+			if (__sync != null)
+				__sync.sync(__state, __value);
+			return;
+		}
+		
+		throw Debugging.todo();
+		/*
 		// If the VM does not have the capability to get byte code, then
 		// we cannot actually do this
 		// If the class was garbage collected we cannot do much here
@@ -153,5 +173,39 @@ public class InfoMethod
 				}, (__ignored, __reply) -> {
 				});
 		}
+		
+		 */
+	}
+	
+	/**
+	 * Updates the generic method information.
+	 *
+	 * @param __state The state used.
+	 * @param __value Ignored.
+	 * @param __sync The callback to execute when done.
+	 * @since 2024/01/27
+	 */
+	@SuppressWarnings({"rawtypes", "unchecked"})
+	private void __updateGeneric(DebuggerState __state,
+		KnownValue<?> __value, KnownValueCallback<?> __sync)
+	{
+		KnownValue<MethodName> name = this.name;
+		KnownValue<MethodDescriptor> type = this.type;
+		KnownValue<MethodFlags> flags = this.flags;
+		
+		// If we already have this information then we do not need to get it
+		// again as it is constant
+		if (name.isKnown() && type.isKnown() && flags.isKnown())
+		{
+			__sync.sync(__state, (KnownValue)__value);
+			return;
+		}
+		
+		// We get this information by requesting the methods in a class, which
+		// will update this method's values
+		this.inClass.methods.update(__state, (__ignored1, __ignored2) -> {
+			if (__sync != null)
+				__sync.sync(__state, (KnownValue)__value);
+		});
 	}
 }
