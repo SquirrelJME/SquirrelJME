@@ -21,6 +21,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -97,6 +99,10 @@ public class PrimaryFrame
 		// Default shortcut key mask, like Apple's Command button
 		int metaMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 		
+		// Preferences
+		JMenuItem preferencesItem = new JMenuItem("Preferences...");
+		preferencesItem.setMnemonic('P');
+		
 		// About the debugger
 		JMenuItem aboutItem = new JMenuItem("About...");
 		aboutItem.setMnemonic('A');
@@ -108,6 +114,8 @@ public class PrimaryFrame
 		// File menu
 		JMenu fileMenu = new JMenu("File");
 		fileMenu.setMnemonic('F');
+		fileMenu.add(preferencesItem);
+		fileMenu.addSeparator();
 		fileMenu.add(aboutItem);
 		fileMenu.addSeparator();
 		fileMenu.add(exitItem);
@@ -152,10 +160,92 @@ public class PrimaryFrame
 		viewMenu.add(threadGroupItem);
 		viewMenu.add(threadItem);
 		
+		// Resume items
+		JMenuItem resumeSingleItem = PrimaryFrame.__menuItem(
+			"Resume Single Thread", "media-playback-start");
+		resumeSingleItem.addActionListener(this::__threadSingleResume);
+		resumeSingleItem.setAccelerator(
+			KeyStroke.getKeyStroke(KeyEvent.VK_F9, 0));
+		JMenuItem suspendSingleItem = PrimaryFrame.__menuItem(
+			"Suspend Single Thread", "media-playback-pause");
+		suspendSingleItem.addActionListener(this::__threadSingleSuspend);
+		suspendSingleItem.setAccelerator(
+			KeyStroke.getKeyStroke(KeyEvent.VK_F5, 
+				InputEvent.SHIFT_DOWN_MASK));
+		
+		JMenuItem resumeAllItem = PrimaryFrame.__menuItem(
+			"Resume All Threads", "weather-clear");
+		resumeAllItem.addActionListener(this::__threadAllResume);
+		resumeAllItem.setAccelerator(
+			KeyStroke.getKeyStroke(KeyEvent.VK_F9,
+				InputEvent.CTRL_DOWN_MASK));
+		JMenuItem suspendAllItem = PrimaryFrame.__menuItem(
+			"Suspend All Threads", "weather-snow");
+		suspendAllItem.addActionListener(this::__threadAllSuspend);
+		suspendAllItem.setAccelerator(
+			KeyStroke.getKeyStroke(KeyEvent.VK_F5, 
+				InputEvent.SHIFT_DOWN_MASK |
+					InputEvent.CTRL_DOWN_MASK));
+		
+		JMenuItem singleStepIntoItem = PrimaryFrame.__menuItem(
+			"Single Step Into", "go-down");
+		singleStepIntoItem.addActionListener(this::__singleStepMinInto);
+		singleStepIntoItem.setAccelerator(
+			KeyStroke.getKeyStroke(KeyEvent.VK_F7, 0));
+		JMenuItem singleStepOverItem = PrimaryFrame.__menuItem(
+			"Single Step Over", "go-jump");
+		singleStepOverItem.addActionListener(this::__singleStepMinOver);
+		singleStepOverItem.setAccelerator(
+			KeyStroke.getKeyStroke(KeyEvent.VK_F8, 0));
+		JMenuItem singleStepOutItem = PrimaryFrame.__menuItem(
+			"Single Step Out", "go-top");
+		singleStepOutItem.addActionListener(this::__singleStepMinOut);
+		singleStepOutItem.setAccelerator(
+			KeyStroke.getKeyStroke(KeyEvent.VK_F8,
+				InputEvent.SHIFT_DOWN_MASK));
+		
+		JMenuItem singleLineIntoItem = PrimaryFrame.__menuItem(
+			"Single Line Step Into", "format-indent-more");
+		singleLineIntoItem.addActionListener(this::__singleStepLineInto);
+		singleLineIntoItem.setAccelerator(
+			KeyStroke.getKeyStroke(KeyEvent.VK_F7,
+				InputEvent.CTRL_DOWN_MASK));
+		JMenuItem singleLineOverItem = PrimaryFrame.__menuItem(
+			"Single Line Step Over", "format-justify-center");
+		singleLineOverItem.addActionListener(this::__singleStepLineOver);
+		singleLineOverItem.setAccelerator(
+			KeyStroke.getKeyStroke(KeyEvent.VK_F8,
+				InputEvent.CTRL_DOWN_MASK));
+		JMenuItem singleLineOutItem = PrimaryFrame.__menuItem(
+			"Single Line Step Out", "edit-undo");
+		singleLineOutItem.addActionListener(this::__singleStepLineOut);
+		singleLineOutItem.setAccelerator(
+			KeyStroke.getKeyStroke(KeyEvent.VK_F8,
+				InputEvent.CTRL_DOWN_MASK |
+					InputEvent.SHIFT_DOWN_MASK));
+		
+		// Debug Controls
+		JMenu debugMenu = new JMenu("Debug");
+		debugMenu.setMnemonic('D');
+		debugMenu.add(resumeSingleItem);
+		debugMenu.add(suspendSingleItem);
+		debugMenu.addSeparator();
+		debugMenu.add(resumeAllItem);
+		debugMenu.add(suspendAllItem);
+		debugMenu.addSeparator();
+		debugMenu.add(singleStepIntoItem);
+		debugMenu.add(singleStepOverItem);
+		debugMenu.add(singleStepOutItem);
+		debugMenu.addSeparator();
+		debugMenu.add(singleLineIntoItem);
+		debugMenu.add(singleLineOverItem);
+		debugMenu.add(singleLineOutItem);
+		
 		// Menu bar
 		JMenuBar mainMenu = new JMenuBar();
 		mainMenu.add(fileMenu);
 		mainMenu.add(viewMenu);
+		mainMenu.add(debugMenu);
 		
 		// Use the menu finally
 		this.setJMenuBar(mainMenu);
@@ -193,108 +283,43 @@ public class PrimaryFrame
 		
 		JButton resumeSingle = PrimaryFrame.__barButton(toolBar,
 			"Resume Single Thread", "media-playback-start");
-		resumeSingle.addActionListener(
-			(__ignored) -> {
-				InfoThread thread = this.context.getThread();
-				if (thread != null)
-					__state.threadResume(thread, () -> {
-						// Drop all frames and have no context
-						thread.frames.drop();
-						this.context.dropFrame(thread);
-						
-						// Update the UI
-						this.update();
-					});
-			});
+		resumeSingle.addActionListener(this::__threadSingleResume);
 		JButton suspendSingle = PrimaryFrame.__barButton(toolBar,
 			"Suspend Single Thread", "media-playback-pause");
-		suspendSingle.addActionListener(
-			(__ignored) -> {
-				InfoThread thread = this.context.getThread();
-				if (thread != null)
-					__state.threadSuspend(thread, () -> {
-						this.update();
-					});
-			});
+		suspendSingle.addActionListener(this::__threadSingleSuspend);
 		
 		toolBar.addSeparator();
 		
 		JButton resumeAll = PrimaryFrame.__barButton(toolBar,
 			"Resume All Threads", "weather-clear");
-		resumeAll.addActionListener(
-			(__ignored) -> {
-				__state.threadResumeAll(() -> {
-					this.update();
-				});
-			});
+		resumeAll.addActionListener(this::__threadAllResume);
 		JButton suspendAll = PrimaryFrame.__barButton(toolBar,
 			"Suspend All Threads", "weather-snow");
-		suspendAll.addActionListener(
-			(__ignored) -> {
-				__state.threadSuspendAll(() -> {
-					this.update();
-				});
-			});
+		suspendAll.addActionListener(this::__threadAllSuspend);
 		
 		toolBar.addSeparator();
 		
 		JButton singleStepInto = PrimaryFrame.__barButton(toolBar,
 			"Single Step Into", "go-down");
-		singleStepInto.addActionListener((__event) -> {
-				InfoThread thread = this.context.getThread();
-				if (thread != null)
-					this.state.threadStep(thread, 1,
-						JDWPStepDepth.INTO, JDWPStepSize.MIN,
-						this::handleSingleStep);
-			});
+		singleStepInto.addActionListener(this::__singleStepMinInto);
 		JButton singleStepOver = PrimaryFrame.__barButton(toolBar,
 			"Single Step Over", "go-jump");
-		singleStepOver.addActionListener((__event) -> {
-				InfoThread thread = this.context.getThread();
-				if (thread != null)
-					this.state.threadStep(thread, 1,
-						JDWPStepDepth.OVER, JDWPStepSize.MIN,
-						this::handleSingleStep);
-			});
+		singleStepOver.addActionListener(this::__singleStepMinOver);
 		JButton singleStepOut = PrimaryFrame.__barButton(toolBar,
 			"Single Step Out", "go-top");
-		singleStepOut.addActionListener((__event) -> {
-				InfoThread thread = this.context.getThread();
-				if (thread != null)
-					this.state.threadStep(thread, 1,
-						JDWPStepDepth.OUT, JDWPStepSize.MIN,
-						this::handleSingleStep);
-			});
+		singleStepOut.addActionListener(this::__singleStepMinOut);
 		
 		toolBar.addSeparator();
 		
 		JButton singleLineStepInto = PrimaryFrame.__barButton(toolBar,
 			"Single Line Step Into", "format-indent-more");
-		singleLineStepInto.addActionListener((__event) -> {
-				InfoThread thread = this.context.getThread();
-				if (thread != null)
-					this.state.threadStep(thread, 1,
-						JDWPStepDepth.INTO, JDWPStepSize.LINE,
-						this::handleSingleStep);
-			});
+		singleLineStepInto.addActionListener(this::__singleStepLineInto);
 		JButton singleLineStepOver = PrimaryFrame.__barButton(toolBar,
 			"Single Line Step Over", "format-justify-center");
-		singleLineStepOver.addActionListener((__event) -> {
-				InfoThread thread = this.context.getThread();
-				if (thread != null)
-					this.state.threadStep(thread, 1,
-						JDWPStepDepth.OVER, JDWPStepSize.LINE,
-						this::handleSingleStep);
-			});
+		singleLineStepOver.addActionListener(this::__singleStepLineOver);
 		JButton singleLineStepOut = PrimaryFrame.__barButton(toolBar,
 			"Single Line Step Out", "edit-undo");
-		singleLineStepOut.addActionListener((__event) -> {
-				InfoThread thread = this.context.getThread();
-				if (thread != null)
-					this.state.threadStep(thread, 1,
-						JDWPStepDepth.OUT, JDWPStepSize.LINE,
-						this::handleSingleStep);
-			});
+		singleLineStepOut.addActionListener(this::__singleStepLineOut);
 		
 		// Add to the top
 		this.add(toolBar, BorderLayout.PAGE_START);
@@ -544,6 +569,157 @@ public class PrimaryFrame
 	}
 	
 	/**
+	 * Line single step into.
+	 *
+	 * @param __event Ignored.
+	 * @since 2024/01/27
+	 */
+	private void __singleStepLineInto(ActionEvent __event)
+	{
+		InfoThread thread = this.context.getThread();
+		if (thread != null)
+			this.state.threadStep(thread, 1,
+				JDWPStepDepth.INTO, JDWPStepSize.LINE,
+				this::handleSingleStep);
+	}
+	
+	/**
+	 * Line single step out.
+	 *
+	 * @param __event Ignored.
+	 * @since 2024/01/27
+	 */
+	private void __singleStepLineOut(ActionEvent __event)
+	{
+		InfoThread thread = this.context.getThread();
+		if (thread != null)
+			this.state.threadStep(thread, 1,
+				JDWPStepDepth.OUT, JDWPStepSize.LINE,
+				this::handleSingleStep);
+	}
+	
+	/**
+	 * Line single step over.
+	 *
+	 * @param __event Ignored.
+	 * @since 2024/01/27
+	 */
+	private void __singleStepLineOver(ActionEvent __event)
+	{
+		InfoThread thread = this.context.getThread();
+		if (thread != null)
+			this.state.threadStep(thread, 1,
+				JDWPStepDepth.OVER, JDWPStepSize.LINE,
+				this::handleSingleStep);
+	}
+	
+	/**
+	 * Minimal single step into.
+	 *
+	 * @param __event Ignored.
+	 * @since 2024/01/27
+	 */
+	private void __singleStepMinInto(ActionEvent __event)
+	{
+		InfoThread thread = this.context.getThread();
+		if (thread != null)
+			this.state.threadStep(thread, 1,
+				JDWPStepDepth.INTO, JDWPStepSize.MIN,
+				this::handleSingleStep);
+	}
+	
+	/**
+	 * Minimal single step out.
+	 *
+	 * @param __event Ignored.
+	 * @since 2024/01/27
+	 */
+	private void __singleStepMinOut(ActionEvent __event)
+	{
+		InfoThread thread = this.context.getThread();
+		if (thread != null)
+			this.state.threadStep(thread, 1,
+				JDWPStepDepth.OUT, JDWPStepSize.MIN,
+				this::handleSingleStep);
+	}
+	
+	/**
+	 * Minimal single step over.
+	 *
+	 * @param __event Ignored.
+	 * @since 2024/01/27
+	 */
+	private void __singleStepMinOver(ActionEvent __event)
+	{
+		InfoThread thread = this.context.getThread();
+		if (thread != null)
+			this.state.threadStep(thread, 1,
+				JDWPStepDepth.OVER, JDWPStepSize.MIN,
+				this::handleSingleStep);
+	}
+	
+	/**
+	 * Resumes all threads.
+	 *
+	 * @param __event Ignored.
+	 * @since 2024/01/27
+	 */
+	private void __threadAllResume(ActionEvent __event)
+	{
+		this.state.threadResumeAll(() -> {
+			this.update();
+		});
+	}
+	
+	/**
+	 * Suspends all threads.
+	 *
+	 * @param __event Ignored.
+	 * @since 2024/01/27
+	 */
+	private void __threadAllSuspend(ActionEvent __event)
+	{
+		this.state.threadSuspendAll(() -> {
+			this.update();
+		});
+	}
+	
+	/**
+	 * Resumes a single thread.
+	 *
+	 * @param __event Ignored.
+	 * @since 2024/01/27
+	 */
+	private void __threadSingleResume(ActionEvent __event)
+	{
+		InfoThread thread = this.context.getThread();
+		if (thread != null)
+			this.state.threadResume(thread, () -> {
+				// Drop all frames and have no context
+				thread.frames.drop();
+				this.context.dropFrame(thread);
+				
+				// Update the UI
+				this.update();
+			});
+	}
+	
+	/**
+	 * Suspends a single thread.
+	 *
+	 * @param __event Ignored.
+	 * @since 2024/01/27
+	 */
+	private void __threadSingleSuspend(ActionEvent __event)
+	{
+		InfoThread thread = this.context.getThread();
+		if (thread != null)
+			this.state.threadSuspend(thread, () -> {
+				this.update();
+			});
+	}
+	
+	/**
 	 * Creates a toolbar button.
 	 *
 	 * @param __label The label to use.
@@ -560,7 +736,6 @@ public class PrimaryFrame
 		
 		JButton button = new JButton();
 		
-		// Help
 		button.setToolTipText(__label);
 		button.setIcon(Utils.tangoIcon(__tango));
 		
@@ -589,5 +764,24 @@ public class PrimaryFrame
 		__toolBar.add(button);
 		
 		return button;
+	}
+	
+	/**
+	 * Creates a menu item.
+	 *
+	 * @param __label The label to use.
+	 * @param __tango The tango icon to use.
+	 * @return The created button.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/21
+	 */
+	private static JMenuItem __menuItem(String __label, String __tango)
+		throws NullPointerException
+	{
+		if (__label == null || __tango == null)
+			throw new NullPointerException("NARG");
+		
+		return new JMenuItem(__label,
+			Utils.tangoIcon(__tango));
 	}
 }
