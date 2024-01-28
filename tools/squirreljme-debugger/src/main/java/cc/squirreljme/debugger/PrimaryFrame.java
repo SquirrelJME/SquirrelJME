@@ -251,11 +251,22 @@ public class PrimaryFrame
 		debugMenu.add(singleLineOverItem);
 		debugMenu.add(singleLineOutItem);
 		
+		// Probe vendor specific commands
+		JMenuItem vendorProbeItem = new JMenuItem(
+			"Probe Vendor Specific Commands");
+		vendorProbeItem.setMnemonic('p');
+		vendorProbeItem.addActionListener(this::__probeVendorCommands);
+		
+		// Advanced Menu
+		JMenu advancedMenu = new JMenu("Advanced");
+		advancedMenu.add(vendorProbeItem);
+		
 		// Menu bar
 		JMenuBar mainMenu = new JMenuBar();
 		mainMenu.add(fileMenu);
 		mainMenu.add(viewMenu);
 		mainMenu.add(debugMenu);
+		mainMenu.add(advancedMenu);
 		
 		// Use the menu finally
 		this.setJMenuBar(mainMenu);
@@ -590,6 +601,20 @@ public class PrimaryFrame
 					"Could not find class: " + className, __e);
 			});
 		}
+	}
+	
+	/**
+	 * Probes for vendor specific commands in the remote virtual machine.
+	 *
+	 * @param __event Ignored.
+	 * @since 2024/01/28
+	 */
+	private void __probeVendorCommands(ActionEvent __event)
+	{
+		VendorCommandProbe probe = new VendorCommandProbe(
+			this, this.state);
+		probe.setLocationRelativeTo(null);
+		probe.setVisible(true);
 	}
 	
 	/**
