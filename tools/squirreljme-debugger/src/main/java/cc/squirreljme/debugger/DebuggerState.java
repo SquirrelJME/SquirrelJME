@@ -829,7 +829,8 @@ public class DebuggerState
 		
 		// Thread events, with no particular handler
 		this.eventSet(JDWPEventKind.THREAD_START, JDWPSuspendPolicy.NONE,
-			null, (__state, __reply) -> {}, null);
+			null, (__state, __event) -> {
+			}, null);
 		this.eventSet(JDWPEventKind.THREAD_DEATH, JDWPSuspendPolicy.NONE,
 			null, (__state, __reply) -> {}, null);
 	}
