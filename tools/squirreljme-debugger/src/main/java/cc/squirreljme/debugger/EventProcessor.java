@@ -170,6 +170,11 @@ public enum EventProcessor
 				// Set context if missing
 				__state.context.optional(thread);
 			}
+			
+			// Call handler
+			if (__handler != null)
+				__handler.handle(__state,
+					new ThreadStartEvent(thread, __suspend));
 		}
 	},
 	

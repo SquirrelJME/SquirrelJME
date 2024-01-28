@@ -9,6 +9,8 @@
 
 package cc.squirreljme.debugger;
 
+import cc.squirreljme.jdwp.JDWPEventKind;
+import cc.squirreljme.jdwp.JDWPSuspendPolicy;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;

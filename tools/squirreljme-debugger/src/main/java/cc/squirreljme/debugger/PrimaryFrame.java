@@ -121,6 +121,14 @@ public class PrimaryFrame
 		fileMenu.addSeparator();
 		fileMenu.add(exitItem);
 		
+		// Refresh
+		JMenuItem refreshItem = PrimaryFrame.__menuItem(
+			"Refresh", "view-refresh");
+		refreshItem.setMnemonic('R');
+		refreshItem.addActionListener(this::__refresh);
+		refreshItem.setAccelerator(
+			KeyStroke.getKeyStroke(Character.valueOf('r'), metaMask));
+		
 		// Capabilities view
 		JMenuItem capsItem = new JMenuItem("Capabilities");
 		capsItem.setMnemonic('C');
@@ -155,6 +163,7 @@ public class PrimaryFrame
 		// View menu
 		JMenu viewMenu = new JMenu("View");
 		viewMenu.setMnemonic('V');
+		viewMenu.add(refreshItem);
 		viewMenu.add(capsItem);
 		viewMenu.add(objectItem);
 		viewMenu.add(typeItem);
@@ -279,6 +288,13 @@ public class PrimaryFrame
 		
 		/*PrimaryFrame.__barButton(toolBar,
 			"Copy Method to Clipboard", "edit-copy");*/
+		
+		toolBar.addSeparator();
+		
+		// Refresh
+		JButton refresh = PrimaryFrame.__barButton(toolBar,
+			"Refresh", "view-refresh");
+		refresh.addActionListener(this::__refresh);
 		
 		toolBar.addSeparator();
 		
@@ -574,6 +590,19 @@ public class PrimaryFrame
 					"Could not find class: " + className, __e);
 			});
 		}
+	}
+	
+	/**
+	 * Refreshes the view.
+	 *
+	 * @param __event Ignored.
+	 * @since 2024/01/28
+	 */
+	private void __refresh(ActionEvent __event)
+	{
+		Utils.swingInvoke(() -> {
+			this.update();
+		});
 	}
 	
 	/**

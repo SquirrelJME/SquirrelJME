@@ -12,6 +12,8 @@ package cc.squirreljme.debugger;
 import cc.squirreljme.emulator.NativeBinding;
 import cc.squirreljme.jdwp.JDWPCommLink;
 import cc.squirreljme.jdwp.JDWPCommLinkDirection;
+import cc.squirreljme.jdwp.JDWPEventKind;
+import cc.squirreljme.jdwp.JDWPSuspendPolicy;
 import java.awt.Frame;
 import java.io.IOException;
 import java.io.InputStream;
