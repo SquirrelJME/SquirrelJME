@@ -50,6 +50,15 @@ public enum JDWPErrorType
 	/** Invalid frame ID. */
 	INVALID_FRAME_ID(30),
 	
+	/** Frame does not have any information. */
+	OPAQUE_FRAME(32),
+	
+	/** Not the current frame. */
+	NOT_CURRENT_FRAME(33),
+	
+	/** The type for the requested slot is not valid. */
+	TYPE_MISMATCH(34),
+	
 	/** Invalid variable slot. */
 	INVALID_SLOT(35),
 	
