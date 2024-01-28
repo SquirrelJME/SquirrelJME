@@ -20,6 +20,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -611,10 +612,23 @@ public class PrimaryFrame
 	 */
 	private void __probeVendorCommands(ActionEvent __event)
 	{
-		VendorCommandProbe probe = new VendorCommandProbe(
-			this, this.state);
-		probe.setLocationRelativeTo(null);
-		probe.setVisible(true);
+		// Really mean this
+		if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(
+			this,
+			"This probes all 32768 vendor specific JDWP commands\n" +
+				"which may overload the JVM and/or cause it to crash\n" +
+				"and/or have undesired effects.\n" +
+				"You have been warned, continue?",
+			"Are you sure?",
+			JOptionPane.YES_NO_OPTION,
+			JOptionPane.QUESTION_MESSAGE,
+			null))
+		{
+			VendorCommandProbe probe = new VendorCommandProbe(this,
+				this.state);
+			probe.setLocationRelativeTo(null);
+			probe.setVisible(true);
+		}
 	}
 	
 	/**
