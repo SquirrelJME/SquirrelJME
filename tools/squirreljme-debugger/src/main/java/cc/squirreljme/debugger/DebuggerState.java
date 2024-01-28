@@ -96,6 +96,9 @@ public class DebuggerState
 	protected final AwaitingReplies replies =
 		new AwaitingReplies();
 	
+	/** Called when the virtual machine is ready to be debugger. */
+	protected final Consumer<DebuggerState> ready;
+	
 	/** Has the virtual machine been started? */
 	private volatile boolean _hasStarted;
 	
@@ -107,16 +110,57 @@ public class DebuggerState
 	 * Initializes the debugger state.
 	 *
 	 * @param __commLink The communication link.
+	 * @param __ready The callback to execute when the debugger sequence is
+	 * ready.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/19
 	 */
-	public DebuggerState(JDWPCommLink __commLink)
+	public DebuggerState(JDWPCommLink __commLink,
+		Consumer<DebuggerState> __ready)
 		throws NullPointerException
 	{
 		if (__commLink == null)
 			throw new NullPointerException("NARG");
 		
 		this.commLink = __commLink;
+		this.ready = __ready;
+	}
+	
+	/**
+	 * Queries and returns all the virtual machine threads.
+	 *
+	 * @param __callback The callback to execute when the threads are obtained.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/28
+	 */
+	public void allThreads(Consumer<InfoThread[]> __callback)
+		throws NullPointerException
+	{
+		if (__callback == null)
+			throw new NullPointerException("NARG");
+		
+		try (JDWPPacket out = this.request(JDWPCommandSet.VIRTUAL_MACHINE,
+			JDWPCommandSetVirtualMachine.ALL_THREADS))
+		{
+			// Send it out
+			this.send(out, (__state, __reply) -> {
+					int numThreads = __reply.readInt();
+					
+					StoredInfo<InfoThread> stored =
+						__state.storedInfo.getThreads();
+					
+					// Read in all threads
+					InfoThread[] threads = new InfoThread[numThreads];
+					for (int i = 0; i < numThreads; i++)
+					{
+						JDWPId thread = __reply.readId(JDWPIdKind.THREAD_ID);
+						threads[i] = stored.get(__state, thread);
+					}
+					
+					// Send to the callback all the updated threads
+					__callback.accept(threads);
+				}, ReplyHandler.IGNORED);
+		}
 	}
 	
 	/**
@@ -418,6 +462,10 @@ public class DebuggerState
 								// Process it
 								this.__process(packet.resetReadPosition());
 							}
+					
+					// Call the ready handler if one is set
+					if (this.ready != null)
+						this.ready.accept(this);
 				}
 			}
 			

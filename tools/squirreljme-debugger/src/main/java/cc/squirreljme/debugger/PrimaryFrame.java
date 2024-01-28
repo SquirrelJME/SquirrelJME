@@ -37,6 +37,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import net.multiphasicapps.classfile.ClassFile;
@@ -330,6 +331,11 @@ public class PrimaryFrame
 		
 		// Add that to the bottom
 		this.add(statusPanel, BorderLayout.PAGE_END);
+		
+		// Add a timer to keep everything updated accordingly
+		Timer updateTimer = new Timer(30_000,
+			(__ignored) -> this.update());
+		updateTimer.start();
 	}
 	
 	/**
@@ -354,6 +360,8 @@ public class PrimaryFrame
 				InfoFrame[] frames = __value.get();
 				if (frames != null && frames.length > 0)
 					this.context.set(frames[0]);
+				
+				this.update();
 			});
 		
 		// Update information

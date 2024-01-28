@@ -23,4 +23,9 @@ dependencies {
 	implementation project(":modules:debug-jdwp")
 	implementation project(":modules:tango-icon-theme")
 	implementation project(":modules:common-vm")
+	implementation project(":modules:json")
+	
+	// Lombok for simpler getters/setters
+	implementation 'org.projectlombok:lombok:1.18.30'
+	annotationProcessor 'org.projectlombok:lombok:1.18.30'
 }

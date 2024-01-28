@@ -103,9 +103,12 @@ public class InfoThread
 	protected String internalString()
 	{
 		String name = this.threadName.getOrUpdateSync(this.internalState());
+		String result = String.format("%s (%d)",
+			(name != null ? name : "Unknown?"), this.id.id);
+		
 		if (this.isDead.getOrDefault(false))
-			return "DEAD " + name;
-		return name;
+			return "DEAD " + result;
+		return result;
 	}
 	
 	/**

@@ -169,7 +169,10 @@ public class Main
 			throw new NullPointerException("NARG");
 		
 		// Wrap into primary debugger state which tracks everything
-		DebuggerState state = new DebuggerState(__commLink);
+		DebuggerState state = new DebuggerState(__commLink, (__state) -> {
+		});
+		
+		// Start the debug loop
 		new Thread(state, "debugLoop").start();
 		
 		// Spawn the application
