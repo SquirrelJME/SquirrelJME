@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import javax.imageio.ImageIO;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -173,6 +174,30 @@ public final class Utils
 	}
 	
 	/**
+	 * Returns the lex icon.
+	 *
+	 * @return The lex icon.
+	 * @since 2024/01/28
+	 */
+	public static Image lexIcon()
+	{
+		
+		// Set icon for the application
+		try (InputStream in = PrimaryFrame.class.getResourceAsStream(
+			"icon.png"))
+		{
+			if (in != null)
+				return ImageIO.read(in);
+		}
+		catch (IOException ignored)
+		{
+		}
+		
+		// Not found or loadable?
+		return null;
+	}
+	
+	/**
 	 * Makes a text like button.
 	 *
 	 * @param __button The button to update.
@@ -261,20 +286,7 @@ public final class Utils
 		if (__window == null)
 			throw new NullPointerException("NARG");
 		
-		// Set icon for the application
-		try (InputStream in = PrimaryFrame.class.getResourceAsStream(
-			"icon.png"))
-		{
-			if (in != null)
-			{
-				Image icon = ImageIO.read(in);
-				
-				__window.setIconImage(icon);
-			}
-		}
-		catch (IOException ignored)
-		{
-		}
+		__window.setIconImage(Utils.lexIcon());
 	}
 	
 	/**

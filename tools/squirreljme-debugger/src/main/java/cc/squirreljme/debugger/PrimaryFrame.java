@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -104,14 +105,28 @@ public class PrimaryFrame
 		// Preferences
 		JMenuItem preferencesItem = new JMenuItem("Preferences...");
 		preferencesItem.setMnemonic('P');
+		preferencesItem.setAccelerator(
+			KeyStroke.getKeyStroke(Character.valueOf('s'), 
+				InputEvent.ALT_DOWN_MASK | metaMask));
 		
 		// About the debugger
 		JMenuItem aboutItem = new JMenuItem("About...");
 		aboutItem.setMnemonic('A');
+		aboutItem.setIcon(new ImageIcon(Utils.lexIcon()));
+		aboutItem.setAccelerator(
+			KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
+		aboutItem.addActionListener((__event) -> {
+			AboutDialog about = new AboutDialog(this);
+			about.setLocationRelativeTo(null);
+			about.setVisible(true);
+		});
 		
 		// Exit
-		JMenuItem exitItem = new JMenuItem("Exit");
+		JMenuItem exitItem = PrimaryFrame.__menuItem(
+			"Exit", "system-log-out");
 		exitItem.setMnemonic('x');
+		exitItem.setAccelerator(
+			KeyStroke.getKeyStroke(KeyEvent.VK_F4, InputEvent.ALT_DOWN_MASK));
 		
 		// File menu
 		JMenu fileMenu = new JMenu("File");
