@@ -12,8 +12,7 @@ package cc.squirreljme.debugger;
 import cc.squirreljme.emulator.NativeBinding;
 import cc.squirreljme.jdwp.JDWPCommLink;
 import cc.squirreljme.jdwp.JDWPCommLinkDirection;
-import cc.squirreljme.jdwp.JDWPEventKind;
-import cc.squirreljme.jdwp.JDWPSuspendPolicy;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.awt.Frame;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,6 +21,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Main entry point for the debugger.
@@ -49,23 +49,33 @@ public class Main
 	{
 		try
 		{
+			// Get initial preferences
+			Preferences preferences = Main.preferences();
+			
 			// If no options passed, ask for them
 			String connect;
 			if (__args.length == 0)
+			{
 				connect = (String)JOptionPane.showInputDialog(
 					null,
 					"Connection address ([hostname]:port):",
 					"Debugger Connect", JOptionPane.QUESTION_MESSAGE,
 					null,
-					null, ":5005");
+					null,
+					preferences.getLastAddress());
+			}
 			else
 				connect = __args[0];
 			
 			// Setup communication link
 			JDWPCommLink commLink = Main.__connect(connect);
 			
+			// Store last connection
+			if (connect != null && !connect.isEmpty())
+				preferences.setLastAddress(connect);
+			
 			// Start the main debug session
-			Main.start(commLink);
+			Main.start(commLink, preferences);
 		}
 		
 		// Failed to emit exception
@@ -81,6 +91,23 @@ public class Main
 			// Failed
 			System.exit(1);
 		}
+	}
+	
+	/**
+	 * Loads initial preferences.
+	 *
+	 * @return The resultant preferences.
+	 * @since 2024/01/28
+	 */
+	@NotNull
+	public static Preferences preferences()
+	{
+		// Load initial preferences
+		Preferences preferences = new Preferences();
+		PreferencesManager prefManager = new PreferencesManager();
+		prefManager.load(preferences);
+		
+		return preferences;
 	}
 	
 	/**
@@ -135,7 +162,8 @@ public class Main
 		
 		// Setup communication link
 		return new JDWPCommLink(socket.getInputStream(),
-			socket.getOutputStream(), JDWPCommLinkDirection.DEBUGGER_TO_CLIENT);
+			socket.getOutputStream(),
+			JDWPCommLinkDirection.DEBUGGER_TO_CLIENT);
 	}
 	
 	/**
@@ -143,10 +171,12 @@ public class Main
 	 *
 	 * @param __in The stream to read from.
 	 * @param __out The stream to write from.
+	 * @param __preferences Debugger preferences.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/19
 	 */
-	public static void start(InputStream __in, OutputStream __out)
+	public static void start(InputStream __in, OutputStream __out,
+		Preferences __preferences)
 		throws NullPointerException
 	{
 		if (__in == null || __out == null)
@@ -154,36 +184,37 @@ public class Main
 		
 		// Forward accordingly
 		Main.start(new JDWPCommLink(__in, __out,
-			JDWPCommLinkDirection.DEBUGGER_TO_CLIENT));
+			JDWPCommLinkDirection.DEBUGGER_TO_CLIENT), __preferences);
 	}
 	
 	/**
 	 * Starts the debugging session.
 	 *
 	 * @param __commLink The communication link to use.
+	 * @param __preferences Debugger preferences.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/19
 	 */
-	public static void start(JDWPCommLink __commLink)
+	public static void start(JDWPCommLink __commLink,
+		Preferences __preferences)
 		throws NullPointerException
 	{
 		if (__commLink == null)
 			throw new NullPointerException("NARG");
 		
-		// Load initial preferences
-		Preferences preferences = new Preferences();
-		PreferencesManager prefManager = new PreferencesManager();
-		prefManager.load(preferences);
+		// Fallback preferences?
+		if (__preferences == null)
+			__preferences = Main.preferences();
 		
 		// Wrap into primary debugger state which tracks everything
-		DebuggerState state = new DebuggerState(__commLink, preferences,
+		DebuggerState state = new DebuggerState(__commLink, __preferences,
 			(__state) -> {});
 		
 		// Start the debug loop
 		new Thread(state, "debugLoop").start();
 		
 		// Spawn the application
-		PrimaryFrame frame = new PrimaryFrame(state, preferences);
+		PrimaryFrame frame = new PrimaryFrame(state, __preferences);
 		
 		// Show it in a good spot and maximized as well
 		frame.setLocationRelativeTo(null);

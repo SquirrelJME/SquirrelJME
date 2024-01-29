@@ -40,14 +40,15 @@ public class BuiltInDebuggerService
 		
 		try
 		{
-			// Get the built in debugger's start method
+			// Get the built-in debugger's start method
 			Class<?> debuggerMain = Class.forName(
 				"cc.squirreljme.debugger.Main");
 			Method start = debuggerMain.getMethod("start",
-				InputStream.class, OutputStream.class);
+				InputStream.class, OutputStream.class,
+				Class.forName("cc.squirreljme.debugger.Preferences"));
 			
 			// Call it with the streams
-			start.invoke(null, a.in(), a.out());
+			start.invoke(null, a.in(), a.out(), null);
 		}
 		catch (ReflectiveOperationException __e)
 		{
