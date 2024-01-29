@@ -459,10 +459,13 @@ public enum EventProcessor
 			// If the VM was started in the suspend state then this would be
 			// known accordingly... so we need to resume the VM since we are
 			// connected to it
-			if (__suspend == JDWPSuspendPolicy.EVENT_THREAD)
-				__state.threadResume(thread, null);
-			else if (__suspend == JDWPSuspendPolicy.ALL)
-				__state.threadResumeAll(null);
+			if (__state.preferences.resumeOnConnect)
+			{
+				if (__suspend == JDWPSuspendPolicy.EVENT_THREAD)
+					__state.threadResume(thread, null);
+				else if (__suspend == JDWPSuspendPolicy.ALL)
+					__state.threadResumeAll(null);
+			}
 		}
 	},
 	

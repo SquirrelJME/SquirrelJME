@@ -9,8 +9,10 @@
 
 package cc.squirreljme.debugger;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Preferences for the debugger.
@@ -19,6 +21,8 @@ import lombok.Data;
  */
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Preferences
 {
 	/** Automatically resume on connect? */

@@ -99,6 +99,9 @@ public class DebuggerState
 	/** Called when the virtual machine is ready to be debugger. */
 	protected final Consumer<DebuggerState> ready;
 	
+	/** Preferences for the debugger. */
+	protected final Preferences preferences;
+	
 	/** Has the virtual machine been started? */
 	private volatile boolean _hasStarted;
 	
@@ -110,19 +113,21 @@ public class DebuggerState
 	 * Initializes the debugger state.
 	 *
 	 * @param __commLink The communication link.
+	 * @param __preferences Debugger preferences.
 	 * @param __ready The callback to execute when the debugger sequence is
 	 * ready.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/19
 	 */
-	public DebuggerState(JDWPCommLink __commLink,
+	public DebuggerState(JDWPCommLink __commLink, Preferences __preferences,
 		Consumer<DebuggerState> __ready)
 		throws NullPointerException
 	{
-		if (__commLink == null)
+		if (__commLink == null || __preferences == null)
 			throw new NullPointerException("NARG");
 		
 		this.commLink = __commLink;
+		this.preferences = __preferences;
 		this.ready = __ready;
 	}
 	

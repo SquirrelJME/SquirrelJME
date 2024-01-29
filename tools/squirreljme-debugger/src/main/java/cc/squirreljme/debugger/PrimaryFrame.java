@@ -20,7 +20,6 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -38,7 +37,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -72,22 +70,27 @@ public class PrimaryFrame
 	/** The shown context thread. */
 	protected final ShownContextMethod shownContext;
 	
+	/** Debugger preferences. */
+	protected final Preferences preferences;
+	
 	/**
 	 * Initializes the primary frame.
 	 *
 	 * @param __state The main debugging state.
+	 * @param __preferences Preferences for the debugger.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/19
 	 */
-	public PrimaryFrame(DebuggerState __state)
+	public PrimaryFrame(DebuggerState __state, Preferences __preferences)
 		throws NullPointerException
 	{
-		if (__state == null)
+		if (__state == null || __preferences == null)
 			throw new NullPointerException("NARG");
 		
 		// Store state for later usage
 		this.state = __state;
 		this.context = __state.context;
+		this.preferences = __preferences;
 		
 		// To keep it more easily workable
 		this.setMinimumSize(new Dimension(640, 480));

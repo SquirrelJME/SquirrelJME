@@ -20,6 +20,48 @@ import java.util.Locale;
  */
 public class PreferencesManager
 {
+	/** The path where the configuration is. */
+	protected final Path path;
+	
+	/**
+	 * Initializes the preference manager.
+	 *
+	 * @since 2024/01/28
+	 */
+	public PreferencesManager()
+	{
+		this.path = PreferencesManager.baseDirectory()
+			.resolve("debugger.json");
+	}
+	
+	/**
+	 * Loads the given preferences.
+	 *
+	 * @param __prefs The preferences to load.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/28
+	 */
+	public void load(Preferences __prefs)
+		throws NullPointerException
+	{
+		if (__prefs == null)
+			throw new NullPointerException("NARG");
+	}
+	
+	/**
+	 * Stores the given preferences.
+	 *
+	 * @param __prefs The preferences to store.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/28
+	 */
+	public void store(Preferences __prefs)
+		throws NullPointerException
+	{
+		if (__prefs == null)
+			throw new NullPointerException("NARG");
+	}
+	
 	/**
 	 * The base program directory for preference storage.
 	 *

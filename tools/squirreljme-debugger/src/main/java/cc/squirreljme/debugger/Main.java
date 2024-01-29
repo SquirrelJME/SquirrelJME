@@ -170,15 +170,20 @@ public class Main
 		if (__commLink == null)
 			throw new NullPointerException("NARG");
 		
+		// Load initial preferences
+		Preferences preferences = new Preferences();
+		PreferencesManager prefManager = new PreferencesManager();
+		prefManager.load(preferences);
+		
 		// Wrap into primary debugger state which tracks everything
-		DebuggerState state = new DebuggerState(__commLink, (__state) -> {
-		});
+		DebuggerState state = new DebuggerState(__commLink, preferences,
+			(__state) -> {});
 		
 		// Start the debug loop
 		new Thread(state, "debugLoop").start();
 		
 		// Spawn the application
-		PrimaryFrame frame = new PrimaryFrame(state);
+		PrimaryFrame frame = new PrimaryFrame(state, preferences);
 		
 		// Show it in a good spot and maximized as well
 		frame.setLocationRelativeTo(null);
