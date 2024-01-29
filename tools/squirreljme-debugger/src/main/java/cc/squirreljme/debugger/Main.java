@@ -12,7 +12,6 @@ package cc.squirreljme.debugger;
 import cc.squirreljme.emulator.NativeBinding;
 import cc.squirreljme.jdwp.JDWPCommLink;
 import cc.squirreljme.jdwp.JDWPCommLinkDirection;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.awt.Frame;
 import java.io.IOException;
 import java.io.InputStream;
@@ -205,6 +204,10 @@ public class Main
 		// Fallback preferences?
 		if (__preferences == null)
 			__preferences = Main.preferences();
+		
+		// Perform an automatic save of preferences when the application exits
+		Runtime.getRuntime().addShutdownHook(new Thread(
+			new __SavePreferencesOnExit__(__preferences), "PrefSave"));
 		
 		// Wrap into primary debugger state which tracks everything
 		DebuggerState state = new DebuggerState(__commLink, __preferences,

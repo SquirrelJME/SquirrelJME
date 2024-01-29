@@ -9,6 +9,11 @@
 
 package cc.squirreljme.debugger;
 
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,6 +30,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Preferences
 {
+	/** The search path for class path entries if missing from remote VM. */
+	protected final List<Path> classSearchPath =
+		Collections.synchronizedList(new ArrayList<>());
+	
 	/** Automatically resume on connect? */
 	@Builder.Default
 	protected volatile boolean resumeOnConnect =

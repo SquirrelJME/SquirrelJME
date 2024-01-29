@@ -9,8 +9,22 @@
 
 package cc.squirreljme.debugger;
 
+import com.oracle.json.JsonArrayBuilder;
+import com.oracle.json.JsonObject;
+import com.oracle.json.JsonReader;
+import com.oracle.json.JsonStructure;
+import com.oracle.json.JsonValue;
+import com.oracle.json.JsonWriter;
+import com.oracle.json.spi.JsonProvider;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -21,7 +35,7 @@ import java.util.Locale;
 public class PreferencesManager
 {
 	/** The path where the configuration is. */
-	protected final Path path;
+	protected final Path configPath;
 	
 	/**
 	 * Initializes the preference manager.
@@ -30,7 +44,7 @@ public class PreferencesManager
 	 */
 	public PreferencesManager()
 	{
-		this.path = PreferencesManager.baseDirectory()
+		this.configPath = PreferencesManager.baseDirectory()
 			.resolve("debugger.json");
 	}
 	
@@ -46,20 +60,97 @@ public class PreferencesManager
 	{
 		if (__prefs == null)
 			throw new NullPointerException("NARG");
+		
+		// Load in the JSON data
+		JsonProvider provider = JsonProvider.provider();
+		try (InputStream in = Files.newInputStream(this.configPath,
+			StandardOpenOption.READ);
+			 JsonReader reader = provider.createReader(in))
+		{
+			// Read in JSON structure
+			JsonObject struct = reader.readObject();
+			
+			__prefs.setResumeOnConnect(
+				struct.getBoolean("resumeOnConnect"));
+			__prefs.setLastAddress(
+				struct.getString("lastAddress"));
+			
+			// Parse in all paths
+			List<Path> paths = new ArrayList<>();
+			for (JsonValue value : struct.getJsonArray("classSearchPath"))
+				paths.add(Paths.get(value.toString()));
+			__prefs.getClassSearchPath().clear();
+			__prefs.getClassSearchPath().addAll(paths);
+		}
+		catch (IOException __e)
+		{
+			__e.printStackTrace();
+		}
 	}
 	
 	/**
 	 * Stores the given preferences.
 	 *
 	 * @param __prefs The preferences to store.
+	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/28
 	 */
 	public void store(Preferences __prefs)
-		throws NullPointerException
+		throws IOException, NullPointerException
 	{
 		if (__prefs == null)
 			throw new NullPointerException("NARG");
+		
+		// Write to disk
+		Path tempFile = null;
+		JsonProvider provider = JsonProvider.provider();
+		try
+		{
+			// Write everything into a temporary file first
+			tempFile = Files.createTempFile("debugger", ".json");
+			try (OutputStream out = Files.newOutputStream(tempFile,
+				StandardOpenOption.WRITE, StandardOpenOption.CREATE,
+				StandardOpenOption.TRUNCATE_EXISTING);
+				JsonWriter writer = provider.createWriter(out))
+			{
+				// Search path where everything is
+				JsonArrayBuilder searchPath = provider.createArrayBuilder();
+				for (Path path : __prefs.getClassSearchPath())
+					searchPath.add(path.toAbsolutePath().toString());
+				
+				// Build base object
+				JsonObject object = provider.createObjectBuilder()
+					.add("resumeOnConnect", __prefs.isResumeOnConnect())
+					.add("lastAddress", __prefs.getLastAddress())
+					.add("classSearchPath", searchPath)
+					.build();
+				
+				// Write it out
+				writer.writeObject(object);
+			}
+			
+			// Make sure the configuration directory actually exists
+			Path configPath = this.configPath;
+			Files.createDirectories(configPath.getParent());
+			
+			// Then move over the configuration
+			Files.move(tempFile, configPath);
+		}
+		
+		// Cleanup temp file if it exists
+		finally
+		{
+			if (tempFile != null)
+				try
+				{
+					Files.delete(tempFile);
+				}
+				catch (IOException __ignored)
+				{
+					// Ignored
+				}
+		}
 	}
 	
 	/**
@@ -120,13 +211,13 @@ public class PreferencesManager
 			// Home directory
 			String homeDir = System.getenv("HOME");
 			if (homeDir != null)
-				return Paths.get(homeDir);
+				return Paths.get(homeDir).resolve(".config");
 		}
 		
 		// Unknown, assume home, then fallback to pwd otherwise
 		String homeDir = System.getProperty("user.home");
 		if (homeDir != null)
-			return Paths.get(homeDir);
+			return Paths.get(homeDir).resolve(".config");
 		return Paths.get("user.dir");
 	}
 }
