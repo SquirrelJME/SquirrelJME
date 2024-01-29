@@ -111,6 +111,12 @@ public class PrimaryFrame
 		preferencesItem.setAccelerator(
 			KeyStroke.getKeyStroke(Character.valueOf('s'), 
 				InputEvent.ALT_DOWN_MASK | metaMask));
+		preferencesItem.addActionListener((__event) -> {
+			PreferencesDialog prefs = new PreferencesDialog(this,
+				this.preferences);
+			prefs.setLocationRelativeTo(null);
+			prefs.setVisible(true);
+		});
 		
 		// About the debugger
 		JMenuItem aboutItem = new JMenuItem("About...");
@@ -315,9 +321,6 @@ public class PrimaryFrame
 		JButton viewClassNet = PrimaryFrame.__barButton(toolBar,
 			"View Class From Remote", "network-receive");
 		viewClassNet.addActionListener(this::__viewClassNetwork);
-		
-		/*PrimaryFrame.__barButton(toolBar,
-			"Copy Method to Clipboard", "edit-copy");*/
 		
 		toolBar.addSeparator();
 		

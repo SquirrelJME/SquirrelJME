@@ -22,6 +22,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
@@ -135,7 +136,8 @@ public class PreferencesManager
 			Files.createDirectories(configPath.getParent());
 			
 			// Then move over the configuration
-			Files.move(tempFile, configPath);
+			Files.move(tempFile, configPath,
+				StandardCopyOption.REPLACE_EXISTING);
 		}
 		
 		// Cleanup temp file if it exists
