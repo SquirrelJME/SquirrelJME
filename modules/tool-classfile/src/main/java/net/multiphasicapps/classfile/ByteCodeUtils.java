@@ -9,6 +9,10 @@
 
 package net.multiphasicapps.classfile;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.IntegerList;
+import java.util.Arrays;
+
 /**
  * Byte code utilities.
  *
@@ -31,6 +35,7 @@ public final class ByteCodeUtils
 	 * @param __code The method byte code.
 	 * @param __codeOff Offset into the byte code.
 	 * @param __a The address of the instruction to get the length of.
+	 * @param __last Optional output which gets the last address?
 	 * @throws InvalidClassFormatException If the instruction is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/05/17
@@ -46,15 +51,9 @@ public final class ByteCodeUtils
 		// Real offset, since the code attribute is offset
 		int aa = __a + __codeOff;
 		
-		// Read opcode
-		int op = instructionOpCode(__code, __codeOff, __a);
-		
-		// Determine the base length of it
-		int rv;
-		if ((op >>> 8) == InstructionIndex.WIDE)
-			rv = 2;
-		else
-			rv = 1;
+		// Read opcode and determine the base length
+		int op = ByteCodeUtils.instructionOpCode(__code, __codeOff, __a);
+		int rv = ByteCodeUtils.instructionOpCodeLength(op);
 		
 		// Depends on the operation
 		switch (op)
@@ -386,6 +385,40 @@ public final class ByteCodeUtils
 	}
 	
 	/**
+	 * Determines the length of the opcode instruction.
+	 *
+	 * @param __code The byte code to read from.
+	 * @param __codeOff The code offset.
+	 * @param __a The address of the instruction.
+	 * @return The length of the opcode.
+	 * @throws InvalidClassFormatException If the instruction is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/30
+	 */
+	public static int instructionOpCodeLength(byte[] __code, int __codeOff,
+		int __a)
+		throws InvalidClassFormatException, NullPointerException
+	{
+		return ByteCodeUtils.instructionOpCodeLength(
+			ByteCodeUtils.instructionOpCode(__code, __codeOff, __a));
+	}
+	
+	/**
+	 * Determines the length of the opcode instruction.
+	 *
+	 * @param __opCode The opcode instruction.
+	 * @return The length of the opcode.
+	 * @since 2024/01/30
+	 */
+	public static int instructionOpCodeLength(int __opCode)
+	{
+		// Determine the base length of it
+		if ((__opCode >>> 8) == InstructionIndex.WIDE)
+			return 2;
+		return 1;
+	}
+	
+	/**
 	 * Returns the arguments for the given instruction.
 	 *
 	 * @param __code The byte code to read from.
@@ -400,12 +433,26 @@ public final class ByteCodeUtils
 		byte[] __code, int __codeOff, int __a)
 		throws InvalidClassFormatException, NullPointerException
 	{
-		if (__code == null)
-			throw new NullPointerException("NARG");
-		
+		return ByteCodeUtils.instructionRawArguments(
+			ByteCodeUtils.instructionOpCode(__code, __codeOff, __a), __a);
+	}
+	
+	/**
+	 * Returns the arguments for the given instruction.
+	 *
+	 * @param __opCode The opcode.
+	 * @param __a The address of the instruction.
+	 * @return The resultant argument types.
+	 * @throws InvalidClassFormatException If the instruction is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/30
+	 */
+	public static InstructionRawArgumentType[] instructionRawArguments(
+		int __opCode, int __a)
+		throws InvalidClassFormatException, NullPointerException
+	{
 		// Depends on the operation
-		int op = instructionOpCode(__code, __codeOff, __a);
-		switch (op)
+		switch (__opCode)
 		{
 				// No arguments
 			case InstructionIndex.ATHROW:
@@ -668,12 +715,153 @@ public final class ByteCodeUtils
 						InstructionRawArgumentType.TABLESWITCH
 					};
 				
+				// Invoke dynamic, ignored
+			case InstructionIndex.INVOKEDYNAMIC:
+				return new InstructionRawArgumentType[]
+					{
+						InstructionRawArgumentType.UNSIGNED_SHORT,
+						InstructionRawArgumentType.SIGNED_BYTE,
+						InstructionRawArgumentType.SIGNED_BYTE
+					};
+				
 				/* {@squirreljme.error JC37 The operation at the specified
 				address is not supported yet. (The operation; The name of
 				the operation; The address it is at)} */
 			default:
 				throw new RuntimeException(String.format("JC37 %d %s %d",
-					op, InstructionMnemonics.toString(op), __a));
+					__opCode, InstructionMnemonics.toString(__opCode), __a));
 		}
+	}
+	
+	/**
+	 * Reads raw instruction arguments.
+	 *
+	 * @param __code The code to read from.
+	 * @param __codeOff The code offset.
+	 * @param __a The address of the instruction.
+	 * @return The resultant raw arguments.
+	 * @throws InvalidClassFormatException If the class is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/30
+	 */
+	public static int[] readRawArguments(
+		byte[] __code, int __codeOff, int __a)
+		throws InvalidClassFormatException, NullPointerException
+	{
+		if (__code == null)
+			throw new NullPointerException("NARG");
+		
+		// Get opcode length and argument types
+		int readPos = __codeOff + __a + ByteCodeUtils.instructionOpCodeLength(
+			__code, __codeOff, __a);
+		InstructionRawArgumentType[] rawTypes =
+			ByteCodeUtils.instructionRawArguments(__code, __codeOff, __a);
+		
+		// Read in arguments
+		IntegerList result = new IntegerList();
+		for (InstructionRawArgumentType rawType : rawTypes)
+		{
+			// Depends on the type
+			switch (rawType)
+			{
+				case PADDING_0:
+					break;
+				
+				case PADDING_1:
+					readPos += 1;
+					break;
+				
+				case PADDING_2:
+					readPos += 2;
+					break;
+				
+				case PADDING_3:
+					readPos += 3;
+					break;
+				
+				case SIGNED_BYTE:
+					result.addInteger(Instruction.__readByte(__code,
+						readPos));
+					readPos += 1;
+					break;
+				
+				case UNSIGNED_BYTE:
+					result.addInteger(Instruction.__readUnsignedByte(__code,
+						readPos));
+					readPos += 1;
+					break;
+				
+				case SIGNED_SHORT:
+					result.addInteger(Instruction.__readShort(__code,
+						readPos));
+					readPos += 2;
+					break;
+				
+				case UNSIGNED_SHORT:
+					result.addInteger(Instruction.__readUnsignedShort(
+						__code, readPos));
+					readPos += 2;
+					break;
+				
+				case INTEGER:
+					result.addInteger(Instruction.__readInt(
+						__code, readPos));
+					readPos += 4;
+					break;
+				
+				case LOOKUPSWITCH:
+					// Default branch
+					result.addInteger(Instruction.__readInt(
+						__code, readPos));
+					readPos += 4;
+					
+					// Number of pairs
+					int numPairs = Instruction.__readInt(__code, readPos);
+					readPos += 4;
+					
+					// Read in all pairs
+					for (int i = 0; i < numPairs; i++)
+					{
+						result.addInteger(
+							Instruction.__readInt(__code, readPos));
+						readPos += 4;
+						result.addInteger(
+							Instruction.__readInt(__code, readPos));
+						readPos += 4;
+					}
+					break;
+				
+				case TABLESWITCH:
+					// Default branch
+					result.addInteger(Instruction.__readInt(
+						__code, readPos));
+					readPos += 4;
+					
+					// Low value
+					int lo = Instruction.__readInt(__code, readPos);
+					result.addInteger(lo);
+					readPos += 4;
+					
+					// High value
+					int hi = Instruction.__readInt(__code, readPos);
+					result.addInteger(hi);
+					readPos += 4;
+					
+					// Read jump offsets
+					for (int i = 0, n = (hi - lo) + 1; i < n; i++)
+					{
+						result.addInteger(Instruction.__readInt(
+							__code, readPos));
+						readPos += 4;
+					}
+					break;
+					
+				default:
+					throw Debugging.todo();
+			}
+		}
+		
+		// Is the result base off?
+		return result.toIntegerArray();
 	}
 }

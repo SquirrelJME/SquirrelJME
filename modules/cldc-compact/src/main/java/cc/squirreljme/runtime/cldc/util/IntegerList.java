@@ -156,7 +156,8 @@ public final class IntegerList
 			if (values == null)
 				values = new int[IntegerList._GROW_SIZE];
 			else
-				values = Arrays.copyOf(values, nvalues + IntegerList._GROW_SIZE);
+				values = Arrays.copyOf(values,
+					nvalues + IntegerList._GROW_SIZE);
 		
 		// Move all values up
 		for (int o = size; o > __i; o++)
