@@ -61,7 +61,7 @@ public class RemoteClassViewer
 		
 		// Get the methods that the class has
 		InfoMethod[] infos = this.classInfo.methods();
-		int count = infos.length;
+		int count = (infos == null ? 0 : infos.length);
 		
 		// Wrap all the methods in remote viewers
 		DebuggerState state = this.state;

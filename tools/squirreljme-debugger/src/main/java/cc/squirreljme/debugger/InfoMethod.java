@@ -17,6 +17,7 @@ import cc.squirreljme.jdwp.JDWPCommandSetReferenceType;
 import cc.squirreljme.jdwp.JDWPId;
 import cc.squirreljme.jdwp.JDWPPacket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodFlag;
 import net.multiphasicapps.classfile.MethodFlags;
@@ -167,7 +168,8 @@ public class InfoMethod
 					
 					// Read length and the byte code data
 					int length = __reply.readInt();
-					byte[] data = __reply.readFully(length);
+					byte[] data = new byte[length];
+					__reply.readFully(data, 0, length);
 					
 					// Read in the byte code data
 					__value.set(stored.get(__state, this.id,

@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.classfile;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.LinkedHashSet;
@@ -111,7 +110,7 @@ public final class Instruction
 		this.smtstate = __smt.get(__a);
 		
 		// Calculate real instruction address
-		int aa = __a + ByteCode._CODE_OFFSET;
+		int aa = __a + ByteCode.CODE_OFFSET;
 		
 		// Read operation here
 		int op = (__code[aa] & 0xFF),

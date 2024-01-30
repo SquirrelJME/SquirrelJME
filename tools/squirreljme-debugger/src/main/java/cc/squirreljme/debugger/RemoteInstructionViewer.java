@@ -9,9 +9,8 @@
 
 package cc.squirreljme.debugger;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import net.multiphasicapps.classfile.ByteCode;
-import net.multiphasicapps.classfile.Instruction;
+import net.multiphasicapps.classfile.ByteCodeUtils;
+import net.multiphasicapps.classfile.InstructionRawArgumentType;
 import net.multiphasicapps.classfile.InstructionIndex;
 import net.multiphasicapps.classfile.InstructionMnemonics;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
@@ -72,7 +71,12 @@ public class RemoteInstructionViewer
 	@Override
 	public Object[] arguments()
 	{
-		return new Object[0];
+		// Read in argument types
+		InstructionRawArgumentType[] argTypes =
+			ByteCodeUtils.instructionRawArguments(this.byteCode, 0,
+				this.address);
+		
+		return argTypes;
 	}
 	
 	/**
@@ -84,8 +88,8 @@ public class RemoteInstructionViewer
 	{
 		try
 		{
-			return ByteCode.instructionLength(
-				this.byteCode, this.address - 8, null);
+			return ByteCodeUtils.instructionLength(
+				this.byteCode, 0, this.address, null);
 		}
 		catch (InvalidClassFormatException ignored)
 		{
