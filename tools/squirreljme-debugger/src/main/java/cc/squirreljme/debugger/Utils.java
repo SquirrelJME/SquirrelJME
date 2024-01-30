@@ -18,8 +18,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.List;
 import javax.imageio.ImageIO;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -29,6 +34,15 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
+import net.multiphasicapps.classfile.BinaryName;
+import net.multiphasicapps.classfile.ClassFile;
+import net.multiphasicapps.classfile.ClassIdentifier;
+import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.InvalidClassFormatException;
+import net.multiphasicapps.zip.ZipException;
+import net.multiphasicapps.zip.blockreader.FileChannelBlockAccessor;
+import net.multiphasicapps.zip.blockreader.ZipBlockEntry;
+import net.multiphasicapps.zip.blockreader.ZipBlockReader;
 import org.freedesktop.tango.TangoIconLoader;
 
 /**
@@ -57,6 +71,108 @@ public final class Utils
 	 */
 	private Utils()
 	{
+	}
+	
+	/**
+	 * Gets the class directory name.
+	 *
+	 * @param __name The name to get.
+	 * @return The directory for the class.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/29
+	 */
+	private static Path classDirName(BinaryName __name)
+		throws NullPointerException
+	{
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		// Get identifier fragments
+		List<ClassIdentifier> names = __name.identifiers();
+		
+		// Go down the path tree accordingly
+		Path result = null;
+		for (int i = 0, n = names.size() - 1; i < n; i++)
+		{
+			ClassIdentifier name = names.get(i);
+			if (result == null)
+				result = Paths.get(name.toString());
+			else
+				result = result.resolve(name.toString());
+		}
+		
+		// Resolve final path
+		String baseName = names.get(names.size() - 1).toString() + ".class";
+		if (result == null)
+			return Paths.get(baseName);
+		return result.resolve(baseName);
+	}
+	
+	/**
+	 * Loads the given class from the given preferences.
+	 *
+	 * @param __name The name of the class to load.
+	 * @param __prefs The preferences to use for the search path.
+	 * @return The resultant class or {@code null} if not found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/29
+	 */
+	public static ClassFile[] loadClass(ClassName __name, Preferences __prefs)
+		throws NullPointerException
+	{
+		if (__name == null || __prefs == null)
+			throw new NullPointerException("NARG");
+		
+		// We cannot natively load array or primitive classes in any way
+		BinaryName binaryName = __name.binaryName();
+		if (binaryName == null || __name.isArray() || __name.isPrimitive())
+			return null;
+		
+		// Determine both the directory based name and the content based name
+		Path dirName = Utils.classDirName(binaryName);
+		String zipName = binaryName + ".class";
+		
+		// Go through all the paths to try to load all classes
+		List<ClassFile> result = new ArrayList<>();
+		for (Path searchPath : __prefs.getClassSearchPath())
+			try
+			{
+				// Can we load from a directory?
+				Path wantDir = searchPath.resolve(dirName);
+				if (Files.exists(wantDir))
+					try (InputStream in = Files.newInputStream(
+						wantDir, StandardOpenOption.READ))
+					{
+						result.add(ClassFile.decode(in));
+					}
+					catch (InvalidClassFormatException|IOException __ignored)
+					{
+						// Ignore
+					}
+				
+				// Try to load from Zip
+				try (ZipBlockReader zip = new ZipBlockReader(
+					new FileChannelBlockAccessor(searchPath)))
+				{
+					ZipBlockEntry entry = zip.get(zipName);
+					if (entry != null)
+						try (InputStream in = entry.open())
+						{
+							result.add(ClassFile.decode(in));
+						}
+				}
+				catch (ZipException __ignored)
+				{
+					// Ignore
+				}
+			}
+			catch (IOException __ignored)
+			{
+				// Ignored
+			}
+		
+		// Return all the found classes
+		return result.toArray(new ClassFile[result.size()]);
 	}
 	
 	/**

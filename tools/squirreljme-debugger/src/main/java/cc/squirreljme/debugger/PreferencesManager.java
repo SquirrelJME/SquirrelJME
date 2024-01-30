@@ -71,10 +71,18 @@ public class PreferencesManager
 			// Read in JSON structure
 			JsonObject struct = reader.readObject();
 			
-			__prefs.setResumeOnConnect(
-				struct.getBoolean("resumeOnConnect"));
-			__prefs.setLastAddress(
-				struct.getString("lastAddress"));
+			// Boolean values
+			__prefs.setResumeOnConnect(struct.getBoolean(
+				"resumeOnConnect",
+				Preferences.DEFAULT_RESUME_ON_CONNECT));
+			__prefs.setLocalClassOnly(struct.getBoolean(
+				"localClassOnly",
+				Preferences.DEFAULT_LOCAL_CLASS_ONLY));
+			
+			// String values
+			__prefs.setLastAddress(struct.getString(
+				"lastAddress",
+				Preferences.DEFAULT_LAST_ADDRESS));
 			
 			// Parse in all paths
 			List<Path> paths = new ArrayList<>();
@@ -123,6 +131,7 @@ public class PreferencesManager
 				// Build base object
 				JsonObject object = provider.createObjectBuilder()
 					.add("resumeOnConnect", __prefs.isResumeOnConnect())
+					.add("localClassOnly", __prefs.isLocalClassOnly())
 					.add("lastAddress", __prefs.getLastAddress())
 					.add("classSearchPath", searchPath)
 					.build();

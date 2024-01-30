@@ -14,7 +14,10 @@ import java.util.Objects;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
+import net.multiphasicapps.classfile.ClassFile;
+import net.multiphasicapps.classfile.Method;
+import net.multiphasicapps.classfile.MethodFlags;
+import net.multiphasicapps.classfile.MethodNameAndType;
 
 /**
  * Shows the current context method.
@@ -37,6 +40,9 @@ public class ShownContextMethod
 	/** Variables used. */
 	protected final ShownContextVariables variables;
 	
+	/** The preferences to use for local classes. */
+	protected final Preferences preferences;
+	
 	/** Currently shown method. */
 	private volatile ShownMethod _shownMethod;
 	
@@ -48,16 +54,20 @@ public class ShownContextMethod
 	 *
 	 * @param __state The current state.
 	 * @param __context The context to show.
+	 * @param __preferences Preferences to use.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/25
 	 */
 	public ShownContextMethod(DebuggerState __state,
-		ContextThreadFrame __context)
+		ContextThreadFrame __context, Preferences __preferences)
 	{
 		if (__state == null || __context == null)
 			throw new NullPointerException("NARG");
 		
+		// Store for later
 		this.state = __state;
 		this.context = __context;
+		this.preferences = __preferences;
 		
 		// Border layout is pretty clean
 		this.setLayout(new BorderLayout());
@@ -131,8 +141,21 @@ public class ShownContextMethod
 			// Setup new view for the current method
 			if (inMethod != null)
 			{
-				current = new ShownMethod(this.state,
-					new RemoteMethodViewer(this.state, inMethod), this.context,
+				// Should we load a local class or remote?
+				MethodViewer remote = new RemoteMethodViewer(this.state,
+					inMethod);
+				Method localMethod = ShownContextMethod.__possiblyLocal(
+					this.state, remote, this.preferences);
+				MethodViewer viewer;
+				if (localMethod != null)
+					viewer = new JavaMethodViewer(localMethod);
+				
+				// Use remote method
+				else
+					viewer = remote;
+				
+				// Initialize view
+				current = new ShownMethod(this.state, viewer, this.context,
 					true);
 				this._shownMethod = current;
 				this._lookingAt = inMethod;
@@ -162,5 +185,51 @@ public class ShownContextMethod
 		// Repaint
 		Utils.revalidate(this.info);
 		Utils.revalidate(this);
+	}
+	
+	/**
+	 * Should this use local classes?
+	 *
+	 * @param __state The state to load from.
+	 * @param __inMethod The method to look in.
+	 * @param __preferences The preferences used.
+	 * @return If a local class should be loaded in.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/29
+	 */
+	private static Method __possiblyLocal(DebuggerState __state,
+		MethodViewer __inMethod, Preferences __preferences)
+		throws NullPointerException
+	{
+		if (__inMethod == null || __preferences == null)
+			throw new NullPointerException("NARG");
+		
+		// Ignore for native and abstract as there will never be byte code
+		if (__inMethod.isAbstract() || __inMethod.isNative())
+			return null;
+		
+		// If we are doing local classes only or when the VM has no
+		// instructions to give... then we use a local class assuming it
+		// exists
+		InstructionViewer[] instructions = __inMethod.instructions();
+		if (instructions == null || instructions.length == 0 ||
+			__preferences.isLocalClassOnly())
+		{
+			// We need to load the class first
+			ClassFile[] classFiles = Utils.loadClass(__inMethod.inClass(),
+				__preferences);
+			if (classFiles == null || classFiles.length == 0)
+				return null;
+			
+			// Try to find the matching method in the first class that matches
+			MethodNameAndType wantNat = __inMethod.methodNameAndType();
+			for (ClassFile classFile : classFiles)
+				for (Method method : classFile.methods())
+					if (Objects.equals(wantNat, method.nameAndType()))
+						return method;
+		}
+		
+		// Use remote class
+		return null;
 	}
 }

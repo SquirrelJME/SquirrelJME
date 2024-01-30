@@ -306,7 +306,7 @@ public class PrimaryFrame
 		
 		// Context viewer for the current frame location
 		ShownContextMethod shownContext = new ShownContextMethod(
-			this.state, this.context);
+			this.state, this.context, __preferences);
 		this.shownContext = shownContext;
 		this.add(shownContext, BorderLayout.CENTER);
 		
@@ -317,6 +317,10 @@ public class PrimaryFrame
 		JButton viewClassDisk = PrimaryFrame.__barButton(toolBar,
 			"View Class From Disk", "document-open");
 		viewClassDisk.addActionListener(this::__viewClassDisk);
+		
+		JButton viewClassLocal = PrimaryFrame.__barButton(toolBar,
+			"View Class From Remote", "computer");
+		viewClassLocal.addActionListener(this::__viewClassLocal);
 		
 		JButton viewClassNet = PrimaryFrame.__barButton(toolBar,
 			"View Class From Remote", "network-receive");
@@ -572,6 +576,64 @@ public class PrimaryFrame
 			this.state, __viewer);
 		dialog.setLocationRelativeTo(null);
 		dialog.setVisible(true);
+	}
+	
+	/**
+	 * Views a local class.
+	 *
+	 * @param __event Not used.
+	 * @since 2024/01/29
+	 */
+	private void __viewClassLocal(ActionEvent __event)
+	{
+		String option = (String)JOptionPane.showInputDialog(
+			this,
+			"Choose local class",
+			"Choose local class",
+			JOptionPane.QUESTION_MESSAGE,
+			null,
+			null,
+			"java/lang/Class");
+		
+		// Was a class specified?
+		if (option != null)
+		{
+			// If there are dots, it really should be slashes
+			if (option.indexOf('.') >= 0)
+				option = option.replace('.', '/');
+			
+			// Perform lookup
+			ClassName className = new ClassName(option);
+			ClassFile[] classFiles = Utils.loadClass(className,
+				this.preferences);
+			
+			// No class?
+			if (classFiles == null || classFiles.length == 0)
+			{
+				Utils.throwableTraceDialog(this,
+					"Could not find class: " + className,
+					new Throwable());
+				return;
+			}
+			
+			// What do we look at?
+			ClassFile lookAt;
+			if (classFiles.length == 1)
+				lookAt = classFiles[0];
+			else
+				lookAt = (ClassFile)JOptionPane.showInputDialog(
+					this,
+					"Select class:",
+					"Multiple classes found",
+					JOptionPane.QUESTION_MESSAGE,
+					null,
+					classFiles,
+					classFiles[0]);
+			
+			// Look at the given class
+			if (lookAt != null)
+				this.__viewClass(new JavaClassViewer(lookAt));
+		}
 	}
 	
 	/**
