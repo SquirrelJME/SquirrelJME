@@ -346,7 +346,7 @@ public final class Instruction
 			case InstructionIndex.GOTO:
 				naturalflow = false;
 				args = new Object[]{new InstructionJumpTarget(
-					rawArgs[0])};
+					__a + rawArgs[0])};
 				break;
 				
 				// Increment local variable
@@ -384,7 +384,7 @@ public final class Instruction
 			case InstructionIndex.IFLE:
 				naturalflow = true;
 				args = new Object[]{new InstructionJumpTarget(
-					rawArgs[0])};
+					__a + rawArgs[0])};
 				break;
 				
 				// Method invocations

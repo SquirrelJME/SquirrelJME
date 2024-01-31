@@ -701,8 +701,7 @@ public final class ByteCodeUtils
 			case InstructionIndex.LOOKUPSWITCH:
 				return new InstructionRawArgumentType[]
 					{
-						InstructionRawArgumentType.padding(
-							((__a + 4) & (~3))),
+						ByteCodeUtils.switchPadding(__a),
 						InstructionRawArgumentType.LOOKUPSWITCH
 					};
 				
@@ -710,8 +709,7 @@ public final class ByteCodeUtils
 			case InstructionIndex.TABLESWITCH:
 				return new InstructionRawArgumentType[]
 					{
-						InstructionRawArgumentType.padding(
-							((__a + 4) & (~3))),
+						ByteCodeUtils.switchPadding(__a),
 						InstructionRawArgumentType.TABLESWITCH
 					};
 				
@@ -863,5 +861,26 @@ public final class ByteCodeUtils
 		
 		// Is the result base off?
 		return result.toIntegerArray();
+	}
+	
+	/**
+	 * Calculates the switch padding for the given address.
+	 *
+	 * @param __a The address to calculate for.
+	 * @return The resultant padding.
+	 * @since 2024/01/30
+	 */
+	public static InstructionRawArgumentType switchPadding(int __a)
+	{
+		switch (__a & 3)
+		{
+			case 3: return InstructionRawArgumentType.PADDING_0;
+			case 2: return InstructionRawArgumentType.PADDING_1;
+			case 1: return InstructionRawArgumentType.PADDING_2;
+			case 0: return InstructionRawArgumentType.PADDING_3;
+			
+			default:
+				throw Debugging.oops();
+		}
 	}
 }

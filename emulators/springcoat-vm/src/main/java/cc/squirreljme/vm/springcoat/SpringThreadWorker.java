@@ -1797,10 +1797,6 @@ public final class SpringThreadWorker
 		int nextPc = code.addressFollowing(pc);
 		int origNextPc = nextPc;
 		
-		// Check that the next address is actually valid
-		if (nextPc != inst.addressFollowing())
-			throw Debugging.oops(inst, nextPc, inst.addressFollowing());
-		
 		// Handle individual instructions
 		int opId;
 		try

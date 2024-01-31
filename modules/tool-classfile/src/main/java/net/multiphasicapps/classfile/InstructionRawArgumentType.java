@@ -71,6 +71,6 @@ public enum InstructionRawArgumentType
 			case 3: return InstructionRawArgumentType.PADDING_3;
 		}
 		
-		throw new InvalidClassFormatException("IOOB");
+		throw new InvalidClassFormatException("IOOB " + __i);
 	}
 }
