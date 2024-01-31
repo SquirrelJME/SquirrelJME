@@ -29,7 +29,8 @@ public interface JDWPTripVmState
 	/**
 	 * User defined event.
 	 *
+	 * @param __thread The thread this occurred in.
 	 * @since 2024/01/30
 	 */
-	void userDefined();
+	void userDefined(Object __thread);
 }

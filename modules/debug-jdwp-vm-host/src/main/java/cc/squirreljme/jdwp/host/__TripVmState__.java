@@ -14,7 +14,6 @@ import cc.squirreljme.jdwp.JDWPPacket;
 import cc.squirreljme.jdwp.JDWPSuspendPolicy;
 import cc.squirreljme.jdwp.host.trips.JDWPTripVmState;
 import cc.squirreljme.jdwp.host.views.JDWPViewThread;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 
 /**
@@ -71,7 +70,7 @@ final class __TripVmState__
 	 * @since 2024/01/30
 	 */
 	@Override
-	public void userDefined()
+	public void userDefined(Object __thread)
 	{
 		// Just send the basic user defined event
 		JDWPHostController controller = this.__controller();
@@ -85,6 +84,9 @@ final class __TripVmState__
 		try (JDWPPacket packet = controller.event(JDWPSuspendPolicy.ALL,
 			JDWPEventKind.USER_DEFINED, 0))
 		{
+			// Inform of the thread this is on
+			controller.writeObject(packet, __thread);
+			
 			// Send it away!
 			controller.getCommLink().send(packet);
 		}

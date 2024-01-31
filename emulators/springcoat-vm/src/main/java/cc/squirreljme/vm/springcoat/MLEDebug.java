@@ -44,7 +44,7 @@ public enum MLEDebug
 				__thread.machine.taskManager().jdwpController;
 			if (jdwp != null)
 				jdwp.<JDWPTripVmState>trip(JDWPTripVmState.class,
-					JDWPGlobalTrip.VM_STATE).userDefined();
+					JDWPGlobalTrip.VM_STATE).userDefined(__thread.thread);
 			
 			return null;
 		}

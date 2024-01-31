@@ -12,6 +12,7 @@ package cc.squirreljme.runtime.launcher.ui;
 import cc.squirreljme.jvm.launch.Application;
 import cc.squirreljme.jvm.launch.SuiteScanListener;
 import cc.squirreljme.jvm.launch.SuiteScanner;
+import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.brackets.TaskBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;

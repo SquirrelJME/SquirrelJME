@@ -131,14 +131,21 @@ public enum EventProcessor
 	{
 		/**
 		 * {@inheritDoc}
-		 *
 		 * @since 2024/01/19
 		 */
 		@Override
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
-			// Ignore, is a user defined event
+			StoredInfo<InfoThread> threadStore =
+				__state.storedInfo.getThreads();
+			
+			// Get the thread this occurred on
+			JDWPId threadId = __packet.readId(JDWPIdKind.THREAD_ID);
+			InfoThread thread = threadStore.get(__state, threadId);
+			
+			// Set context thread
+			__state.context.optional(thread);
 		}
 	},
 	

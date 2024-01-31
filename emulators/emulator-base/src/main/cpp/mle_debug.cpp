@@ -7,6 +7,8 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <stdlib.h>
+
 #include "squirreljme.h"
 
 // The class to forward to
