@@ -141,7 +141,6 @@ public class ShownThread
 			return;
 		
 		// Clear all current frames
-		Debugging.debugNote("Removed everything...");
 		sequence.removeAll();
 		
 		// Add sequences for all frames

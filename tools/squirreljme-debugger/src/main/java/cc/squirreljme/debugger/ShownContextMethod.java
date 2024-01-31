@@ -205,7 +205,10 @@ public class ShownContextMethod
 			throw new NullPointerException("NARG");
 		
 		// Ignore for native and abstract as there will never be byte code
-		if (__inMethod.isAbstract() || __inMethod.isNative())
+		// Also if we do not know the class we are in, we cannot do anything
+		// either
+		if (__inMethod.isAbstract() || __inMethod.isNative() ||
+			__inMethod.inClass() == null)
 			return null;
 		
 		// If we are doing local classes only or when the VM has no
