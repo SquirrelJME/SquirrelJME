@@ -314,6 +314,9 @@ public class PrimaryFrame
 		JToolBar toolBar = new JToolBar();
 		this.toolBar = toolBar;
 		
+		// Do not allow this to float
+		toolBar.setFloatable(false);
+		
 		JButton viewClassDisk = PrimaryFrame.__barButton(toolBar,
 			"View Class From Disk", "document-open");
 		viewClassDisk.addActionListener(this::__viewClassDisk);
