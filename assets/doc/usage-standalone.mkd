@@ -68,8 +68,9 @@ The available options are:
  * `-Xdebug`
    * Enable debugging but with the internal built-in SquirrelJME debugger and
      not a JDWP connection over TCP.
-   * This is not supported under the `hosted` emulator, you will have to set up
-     a JDWP connection with the host virtual machine that you are using.
+   * This is supported under the `hosted` emulator, however if you launch
+     another application within it will not debug that process, therefor if
+     you wish to debug you should use `-jar`.
  * `-Xthread:(single|coop|multi|smt)`
    * Sets the threading mode of the virtual machine.
    * `single`/`coop` -- Single threaded using cooperative multitasking.
