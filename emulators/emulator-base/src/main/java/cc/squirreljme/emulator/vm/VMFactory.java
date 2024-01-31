@@ -519,7 +519,12 @@ public abstract class VMFactory
 			if (mainClass == null)
 				mainClass = appEntry.entryPoint();
 			
-			// Do we need special loader arguments to pass before this so
+			// Extract any needed system properties
+			Map<String, String> wantProps = app.loaderSystemProperties();
+			if (wantProps != null)
+				systemProperties.putAll(wantProps);
+			
+			// Do we need special loader arguments to pass before this, so
 			// it can correctly launch?
 			String[] loaderArgs = app.loaderEntryArgs();
 			if (loaderArgs != null && loaderArgs.length > 0)
