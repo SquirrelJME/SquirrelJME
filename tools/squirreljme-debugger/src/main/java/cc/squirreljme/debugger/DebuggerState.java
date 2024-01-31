@@ -838,6 +838,13 @@ public class DebuggerState
 			}, null);
 		this.eventSet(JDWPEventKind.THREAD_DEATH, JDWPSuspendPolicy.NONE,
 			null, (__state, __reply) -> {}, null);
+		
+		// Trick the SquirrelJME hosted environment to handle
+		// DebugShelf.breakpoint() calls
+		this.eventSet(JDWPEventKind.EXCEPTION, JDWPSuspendPolicy.ALL,
+			new EventModifier[]{new EventModifierClassMatch(
+				"cc.squirreljme.emulator.__PseudoBreakpoint__")},
+			(__state, __reply) -> {}, null);
 	}
 	
 	/**

@@ -34,6 +34,14 @@ public class EmulatedDebugShelf
 	@SquirrelJMEVendorApi
 	public static void breakpoint()
 	{
+		try
+		{
+			throw new __PseudoBreakpoint__();
+		}
+		catch (__PseudoBreakpoint__ __ignored)
+		{
+			// Ignore
+		}
 	}
 	
 	/**
