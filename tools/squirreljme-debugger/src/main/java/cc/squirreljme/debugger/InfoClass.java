@@ -296,8 +296,8 @@ public class InfoClass
 	 *
 	 * @param __state The debugger state.
 	 * @param __value The known value being updated.
-	 * @throws NullPointerException On null arguments.
 	 * @param __sync The callback to execute when updated.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/22
 	 */
 	private void __updateThisName(DebuggerState __state,

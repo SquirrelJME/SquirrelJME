@@ -11,7 +11,6 @@ package net.multiphasicapps.classfile;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.IntegerList;
-import java.util.Arrays;
 
 /**
  * Byte code utilities.
@@ -741,6 +740,449 @@ public final class ByteCodeUtils
 			default:
 				throw new RuntimeException(String.format("JC37 %d %s %d",
 					__opCode, InstructionMnemonics.toString(__opCode), __a));
+		}
+	}
+	
+	/**
+	 * Does the given instruction naturally flow?
+	 *
+	 * @param __op The operation to check.
+	 * @return If it naturally flows or not.
+	 * @since 2024/01/31
+	 */
+	public static boolean naturallyFlows(int __op)
+	{
+		switch (__op)
+		{
+				// Does not naturally flow
+			case InstructionIndex.ATHROW:
+			case InstructionIndex.ARETURN:
+			case InstructionIndex.DRETURN:
+			case InstructionIndex.FRETURN:
+			case InstructionIndex.IRETURN:
+			case InstructionIndex.LRETURN:
+			case InstructionIndex.RETURN:
+			case InstructionIndex.GOTO:
+			case InstructionIndex.GOTO_W:
+				return false;
+			
+				// Otherwise, does by default
+			default:
+				return true;
+		}
+	}
+	
+	/**
+	 * Processes the given arguments.
+	 *
+	 * @param __pool The pool used.
+	 * @param __op The operation.
+	 * @param __addr The address of the operation.
+	 * @param __rawArgs The raw arguments.
+	 * @return The resultant arguments.
+	 * @throws InvalidClassFormatException If the arguments or class is not
+	 * valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/31
+	 */
+	public static Object[] processArguments(Pool __pool, int __op,
+		int __addr, int[] __rawArgs)
+		throws InvalidClassFormatException, NullPointerException
+	{
+		if (__pool == null || __rawArgs == null)
+			throw new NullPointerException("NARG");
+		
+		// Depends on the operation
+		switch (__op)
+		{
+				// No arguments
+			case InstructionIndex.ATHROW:
+			case InstructionIndex.ARETURN:
+			case InstructionIndex.DRETURN:
+			case InstructionIndex.FRETURN:
+			case InstructionIndex.IRETURN:
+			case InstructionIndex.LRETURN:
+			case InstructionIndex.RETURN:
+			case InstructionIndex.AALOAD:
+			case InstructionIndex.AASTORE:
+			case InstructionIndex.ACONST_NULL:
+			case InstructionIndex.ALOAD_0:
+			case InstructionIndex.ALOAD_1:
+			case InstructionIndex.ALOAD_2:
+			case InstructionIndex.ALOAD_3:
+			case InstructionIndex.ARRAYLENGTH:
+			case InstructionIndex.ASTORE_0:
+			case InstructionIndex.ASTORE_1:
+			case InstructionIndex.ASTORE_2:
+			case InstructionIndex.ASTORE_3:
+			case InstructionIndex.BALOAD:
+			case InstructionIndex.BASTORE:
+			case InstructionIndex.CALOAD:
+			case InstructionIndex.CASTORE:
+			case InstructionIndex.D2F:
+			case InstructionIndex.D2I:
+			case InstructionIndex.D2L:
+			case InstructionIndex.DADD:
+			case InstructionIndex.DALOAD:
+			case InstructionIndex.DASTORE:
+			case InstructionIndex.DCMPG:
+			case InstructionIndex.DCMPL:
+			case InstructionIndex.DCONST_0:
+			case InstructionIndex.DCONST_1:
+			case InstructionIndex.DDIV:
+			case InstructionIndex.DLOAD_0:
+			case InstructionIndex.DLOAD_1:
+			case InstructionIndex.DLOAD_2:
+			case InstructionIndex.DLOAD_3:
+			case InstructionIndex.DMUL:
+			case InstructionIndex.DNEG:
+			case InstructionIndex.DREM:
+			case InstructionIndex.DSTORE_0:
+			case InstructionIndex.DSTORE_1:
+			case InstructionIndex.DSTORE_2:
+			case InstructionIndex.DSTORE_3:
+			case InstructionIndex.DSUB:
+			case InstructionIndex.DUP:
+			case InstructionIndex.DUP2:
+			case InstructionIndex.DUP2_X1:
+			case InstructionIndex.DUP2_X2:
+			case InstructionIndex.DUP_X1:
+			case InstructionIndex.DUP_X2:
+			case InstructionIndex.F2D:
+			case InstructionIndex.F2I:
+			case InstructionIndex.F2L:
+			case InstructionIndex.FADD:
+			case InstructionIndex.FALOAD:
+			case InstructionIndex.FASTORE:
+			case InstructionIndex.FCMPG:
+			case InstructionIndex.FCMPL:
+			case InstructionIndex.FCONST_0:
+			case InstructionIndex.FCONST_1:
+			case InstructionIndex.FCONST_2:
+			case InstructionIndex.FDIV:
+			case InstructionIndex.FLOAD_0:
+			case InstructionIndex.FLOAD_1:
+			case InstructionIndex.FLOAD_2:
+			case InstructionIndex.FLOAD_3:
+			case InstructionIndex.FMUL:
+			case InstructionIndex.FNEG:
+			case InstructionIndex.FREM:
+			case InstructionIndex.FSTORE_0:
+			case InstructionIndex.FSTORE_1:
+			case InstructionIndex.FSTORE_2:
+			case InstructionIndex.FSTORE_3:
+			case InstructionIndex.FSUB:
+			case InstructionIndex.I2B:
+			case InstructionIndex.I2C:
+			case InstructionIndex.I2D:
+			case InstructionIndex.I2F:
+			case InstructionIndex.I2L:
+			case InstructionIndex.I2S:
+			case InstructionIndex.IADD:
+			case InstructionIndex.IALOAD:
+			case InstructionIndex.IAND:
+			case InstructionIndex.IASTORE:
+			case InstructionIndex.ICONST_0:
+			case InstructionIndex.ICONST_1:
+			case InstructionIndex.ICONST_2:
+			case InstructionIndex.ICONST_3:
+			case InstructionIndex.ICONST_4:
+			case InstructionIndex.ICONST_5:
+			case InstructionIndex.ICONST_M1:
+			case InstructionIndex.IDIV:
+			case InstructionIndex.ILOAD_0:
+			case InstructionIndex.ILOAD_1:
+			case InstructionIndex.ILOAD_2:
+			case InstructionIndex.ILOAD_3:
+			case InstructionIndex.IMUL:
+			case InstructionIndex.INEG:
+			case InstructionIndex.IOR:
+			case InstructionIndex.IREM:
+			case InstructionIndex.ISHL:
+			case InstructionIndex.ISHR:
+			case InstructionIndex.ISTORE_0:
+			case InstructionIndex.ISTORE_1:
+			case InstructionIndex.ISTORE_2:
+			case InstructionIndex.ISTORE_3:
+			case InstructionIndex.ISUB:
+			case InstructionIndex.IUSHR:
+			case InstructionIndex.IXOR:
+			case InstructionIndex.L2D:
+			case InstructionIndex.L2F:
+			case InstructionIndex.L2I:
+			case InstructionIndex.LADD:
+			case InstructionIndex.LALOAD:
+			case InstructionIndex.LAND:
+			case InstructionIndex.LASTORE:
+			case InstructionIndex.LCMP:
+			case InstructionIndex.LCONST_0:
+			case InstructionIndex.LCONST_1:
+			case InstructionIndex.LDIV:
+			case InstructionIndex.LLOAD_0:
+			case InstructionIndex.LLOAD_1:
+			case InstructionIndex.LLOAD_2:
+			case InstructionIndex.LLOAD_3:
+			case InstructionIndex.LMUL:
+			case InstructionIndex.LNEG:
+			case InstructionIndex.LOR:
+			case InstructionIndex.LREM:
+			case InstructionIndex.LSHL:
+			case InstructionIndex.LSHR:
+			case InstructionIndex.LSTORE_0:
+			case InstructionIndex.LSTORE_1:
+			case InstructionIndex.LSTORE_2:
+			case InstructionIndex.LSTORE_3:
+			case InstructionIndex.LSUB:
+			case InstructionIndex.LUSHR:
+			case InstructionIndex.LXOR:
+			case InstructionIndex.MONITORENTER:
+			case InstructionIndex.MONITOREXIT:
+			case InstructionIndex.NOP:
+			case InstructionIndex.POP:
+			case InstructionIndex.POP2:
+			case InstructionIndex.SALOAD:
+			case InstructionIndex.SASTORE:
+			case InstructionIndex.SWAP:
+				return new Object[0];
+				
+				// Argument is a class
+			case InstructionIndex.ANEWARRAY:
+			case InstructionIndex.CHECKCAST:
+			case InstructionIndex.INSTANCEOF:
+			case InstructionIndex.NEW:
+				return new Object[]{__pool.<ClassName>require(ClassName.class,
+					__rawArgs[0])};
+				
+				// First value is a signed byte
+			case InstructionIndex.BIPUSH:
+				return new Object[]{
+					__rawArgs[0]};
+				
+				// First value is an unsigned byte
+			case InstructionIndex.ALOAD:
+			case InstructionIndex.ILOAD:
+			case InstructionIndex.LLOAD:
+			case InstructionIndex.FLOAD:
+			case InstructionIndex.DLOAD:
+			case InstructionIndex.ASTORE:
+			case InstructionIndex.ISTORE:
+			case InstructionIndex.LSTORE:
+			case InstructionIndex.FSTORE:
+			case InstructionIndex.DSTORE:
+				return new Object[]{
+					__rawArgs[0]};
+				
+				// First value is a signed short
+			case InstructionIndex.SIPUSH:
+				return new Object[]{
+					__rawArgs[0]};
+				
+				// Read or write of a field
+			case InstructionIndex.GETSTATIC:
+			case InstructionIndex.PUTSTATIC:
+			case InstructionIndex.GETFIELD:
+			case InstructionIndex.PUTFIELD:
+				return new Object[]{__pool.<FieldReference>require(
+					FieldReference.class,
+					__rawArgs[0])};
+				
+				// Goto
+			case InstructionIndex.GOTO:
+				return new Object[]{new InstructionJumpTarget(
+					__rawArgs[0])};
+				
+				// Increment local variable
+			case InstructionIndex.IINC:
+				return new Object[]{
+					__rawArgs[0],
+					__rawArgs[1]};
+				
+				// Increment local variable (wide)
+			case InstructionIndex.WIDE_IINC:
+				return new Object[]{
+					__rawArgs[0],
+					__rawArgs[1]};
+				
+				// Branches
+			case InstructionIndex.IFNONNULL:
+			case InstructionIndex.IFNULL:
+			case InstructionIndex.IF_ACMPEQ:
+			case InstructionIndex.IF_ACMPNE:
+			case InstructionIndex.IF_ICMPEQ:
+			case InstructionIndex.IF_ICMPNE:
+			case InstructionIndex.IF_ICMPLT:
+			case InstructionIndex.IF_ICMPGE:
+			case InstructionIndex.IF_ICMPGT:
+			case InstructionIndex.IF_ICMPLE:
+			case InstructionIndex.IFEQ:
+			case InstructionIndex.IFNE:
+			case InstructionIndex.IFLT:
+			case InstructionIndex.IFGE:
+			case InstructionIndex.IFGT:
+			case InstructionIndex.IFLE:
+				return new Object[]{new InstructionJumpTarget(
+					__rawArgs[0])};
+				
+				// Method invocations
+			case InstructionIndex.INVOKEINTERFACE:
+			case InstructionIndex.INVOKESPECIAL:
+			case InstructionIndex.INVOKESTATIC:
+			case InstructionIndex.INVOKEVIRTUAL:
+				// Reference is in the constant pool
+				MethodReference mr = __pool.<MethodReference>require(
+					MethodReference.class,
+					__rawArgs[0]);
+				
+				/* {@squirreljme.error JC31 Invocation of method did not
+				have the matching interface/not-interface attribute.
+				(The operation; The address; The method reference)} */
+				if (mr.isInterface() !=
+					(__op == InstructionIndex.INVOKEINTERFACE))
+					throw new InvalidClassFormatException(String.format(
+						"JC31 %d %d %s", __op, __addr, mr));
+				
+				return new Object[]{mr};
+				
+				// Load constant value
+			case InstructionIndex.LDC:
+			case InstructionIndex.LDC_W:
+				// Could vary in type
+				Object ldcv = __pool.<Object>require(Object.class,
+					__rawArgs[0]);
+				
+				// Turn into a class value
+				ConstantValue cvalue;
+				if (ldcv instanceof ClassName)
+					cvalue = new ConstantValueClass((ClassName)ldcv);
+				else
+					cvalue = (ConstantValue)ldcv;
+				
+				/* {@squirreljme.error JC32 Cannot load a constant value which
+				is not of a narrow type. (The operation; The address; The
+				constant value)} */
+				if (!cvalue.type().isNarrow())
+					throw new InvalidClassFormatException(String.format(
+						"JC32 %d %d %s", __op, __addr, cvalue));
+				
+				// Just use this value
+				return new Object[]{cvalue};
+				
+				// Load wide constant value
+			case InstructionIndex.LDC2_W:
+				// Just will be a constant value type
+				cvalue = __pool.<ConstantValue>require(
+					ConstantValue.class,
+					__rawArgs[0]);
+				
+				/* {@squirreljme.error JC33 Cannot load a constant value which
+				is not of a wide type. (The operation; The address;
+				The constant value)} */
+				if (!cvalue.type().isWide())
+					throw new InvalidClassFormatException(String.format(
+						"JC33 %d %d %s", __op, __addr, cvalue));
+				
+				// Just use this value
+				return new Object[]{cvalue};
+				
+				// Allocate array of primitive type
+			case InstructionIndex.NEWARRAY:
+				// The primitive type depends
+				PrimitiveType pt;
+				int pd;
+				switch ((pd = __rawArgs[0]))
+				{
+					case 4:		pt = PrimitiveType.BOOLEAN; break;
+					case 5:		pt = PrimitiveType.CHARACTER; break;
+					case 6:		pt = PrimitiveType.FLOAT; break;
+					case 7:		pt = PrimitiveType.DOUBLE; break;
+					case 8:		pt = PrimitiveType.BYTE; break;
+					case 9:		pt = PrimitiveType.SHORT; break;
+					case 10:	pt = PrimitiveType.INTEGER; break;
+					case 11:	pt = PrimitiveType.LONG; break;
+					
+						/* {@squirreljme.error JC34 Unknown type specified for
+						new primitive array. (The operation; The address;
+						The type specifier)} */
+					default:
+						throw new InvalidClassFormatException(String.format(
+							"JC34 %d %d %d", __op, __addr, pd));
+				}
+				
+				return new Object[]{pt};
+				
+				// New multi-dimensional array
+			case InstructionIndex.MULTIANEWARRAY:
+				ClassName cname = __pool.<ClassName>require(ClassName.class,
+					__rawArgs[0]);
+				int dims = __rawArgs[1];
+				
+				/* {@squirreljme.error JC35 Dimensions represented in type
+				is smaller than the represented dimensions.
+				(The operation; The address; The dimensions)} */
+				if (cname.dimensions() < dims)
+					throw new InvalidClassFormatException(String.format(
+						"JC35 %d %d %d", __op, __addr, dims));
+				
+				return new Object[]{cname, dims};
+			
+				// Lookup switch lookup table
+			case InstructionIndex.LOOKUPSWITCH:
+				{
+					// Read in the default
+					InstructionJumpTarget def = new InstructionJumpTarget(
+						__rawArgs[0]);
+					
+					// Setup
+					int n = __rawArgs[1];
+					int[] keys = new int[n];
+					InstructionJumpTarget[] jumps =
+						new InstructionJumpTarget[n];
+					
+					// Load in tables
+					for (int i = 0, fromDx = 2; i < n; i++, fromDx += 2)
+					{
+						int key = __rawArgs[fromDx];
+						keys[i] = key;
+						jumps[i] = new InstructionJumpTarget(
+							__rawArgs[fromDx + 1],
+							key);
+					}
+					
+					// Setup instruction properties
+					return new Object[]{new LookupSwitch(def, keys, jumps)};
+				}
+			
+				// Table switch lookup table
+			case InstructionIndex.TABLESWITCH:
+				{
+					// Read in the default
+					InstructionJumpTarget def = new InstructionJumpTarget(
+						__rawArgs[0]);
+					
+					// Read in low and high
+					int lo = __rawArgs[1];
+					int hi = __rawArgs[2];
+					
+					// Read jump targets
+					int n = (hi - lo) + 1;
+					InstructionJumpTarget[] jumps =
+						new InstructionJumpTarget[n];
+					
+					// Load in tables
+					for (int i = 0, fromDx = 3; i < n; i++, fromDx++)
+						jumps[i] = new InstructionJumpTarget(
+							__rawArgs[fromDx], lo + i);
+					
+					// Setup instruction properties
+					return new Object[]{new TableSwitch(def, lo, hi, jumps)};
+				}
+				
+				/* {@squirreljme.error JC37 The operation at the specified
+				address is not supported yet. (The operation; The name of
+				the operation; The address it is at)} */
+			default:
+				throw new RuntimeException(String.format("JC37 %d %s %d",
+					__op, InstructionMnemonics.toString(__op), __addr));
 		}
 	}
 	

@@ -102,7 +102,7 @@ public enum InfoKind
 			Object... __extra)
 		{
 			InfoMethod method = (InfoMethod)__extra[0];
-			Pool constantPool = (Pool)__extra[1];
+			KnownValue<Pool> constantPool = (KnownValue<Pool>)__extra[1];
 			byte[] byteCode = (byte[])__extra[2];
 			
 			return new InfoByteCode(__state, __id,

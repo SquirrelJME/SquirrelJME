@@ -11,7 +11,6 @@ package cc.squirreljme.debugger;
 
 import cc.squirreljme.runtime.cldc.util.IntegerArrayList;
 import net.multiphasicapps.classfile.ByteCodeUtils;
-import net.multiphasicapps.classfile.InstructionRawArgumentType;
 import net.multiphasicapps.classfile.InstructionIndex;
 import net.multiphasicapps.classfile.InstructionMnemonics;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
@@ -32,24 +31,32 @@ public class RemoteInstructionViewer
 	protected final byte[] byteCode;
 	
 	/** The constant pool, may be {@code null}. */
-	protected final Pool pool;
+	protected final KnownValue<Pool> pool;
+	
+	/** The debugger state. */
+	protected final DebuggerState state;
+	
+	/** Arguments to the instruction. */
+	private volatile Object[] _args;
 	
 	/**
 	 * Initializes the instruction viewer.
 	 *
+	 * @param __state The state of the debugger.
 	 * @param __pool The constant pool.
 	 * @param __byteCode The method byte code.
 	 * @param __address The address of this instruction.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/23
 	 */
-	public RemoteInstructionViewer(Pool __pool, byte[] __byteCode,
-		int __address)
+	public RemoteInstructionViewer(DebuggerState __state,
+		KnownValue<Pool> __pool, byte[] __byteCode, int __address)
 		throws NullPointerException
 	{
-		if (__byteCode == null)
+		if (__state == null || __byteCode == null)
 			throw new NullPointerException("NARG");
 		
+		this.state = __state;
 		this.pool = __pool;
 		this.byteCode = __byteCode;
 		this.address = __address;
@@ -72,11 +79,56 @@ public class RemoteInstructionViewer
 	@Override
 	public Object[] arguments()
 	{
-		// Read in argument types
-		int[] args = ByteCodeUtils.readRawArguments(this.byteCode, 0,
-			this.address);
+		// Was this already cached?
+		Object[] result = this._args;
+		if (result != null)
+			return result.clone();
 		
-		return new IntegerArrayList(args).toArray(new Integer[args.length]);
+		// Process with fallback
+		boolean cacheOkay = false;
+		try
+		{
+			// Read in raw arguments
+			int[] rawArgs = ByteCodeUtils.readRawArguments(this.byteCode,
+				0, this.address);
+			
+			// If there is no pool, we cannot continue
+			Pool pool = this.pool.getOrUpdateSync(this.state);
+			if (pool == null)
+				result = new IntegerArrayList(rawArgs).toArray(
+					new Integer[rawArgs.length]);
+				
+			// Process them to get the real ones
+			else
+				try
+				{
+					result = ByteCodeUtils.processArguments(pool,
+						this.mnemonicId(), this.address, rawArgs);
+					
+					// We can safely cache this
+					cacheOkay = true;
+				}
+				catch (InvalidClassFormatException __e)
+				{
+					__e.printStackTrace();
+					
+					result = new IntegerArrayList(rawArgs).toArray(
+						new Integer[rawArgs.length]);
+				}
+		}
+		
+		// Failed, fallback
+		catch (InvalidClassFormatException __e)
+		{
+			__e.printStackTrace();
+			
+			result = new Object[0];
+		}
+		
+		// Use whatever result was determined
+		if (cacheOkay)
+			this._args = result;
+		return result.clone();
 	}
 	
 	/**

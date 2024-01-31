@@ -11,11 +11,13 @@ package cc.squirreljme.debugger;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Point;
 import java.awt.Rectangle;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JViewport;
 import javax.swing.ScrollPaneConstants;
 
 /**
@@ -159,10 +161,16 @@ public class SequentialPanel
 		if (viewPanel instanceof JScrollPane)
 		{
 			JScrollPane scroll = (JScrollPane)viewPanel;
+			JViewport viewport = scroll.getViewport();
+			
+			// Where is the current view?
+			Rectangle viewRect = viewport.getViewRect();
 			
 			// Scroll here
 			Rectangle bounds = __component.getBounds();
-			scroll.getViewport().scrollRectToVisible(bounds);
+			viewport.setViewPosition(new Point(bounds.x,
+				bounds.y - (viewRect.height / 4)));
+			//viewport.scrollRectToVisible(bounds);
 			
 			// Make sure the view is updated
 			Utils.revalidate(scroll);

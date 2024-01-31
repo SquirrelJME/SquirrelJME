@@ -148,7 +148,7 @@ public class InfoMethod
 		
 		// Byte code will be much more intelligent if the constant pool
 		// could be obtained
-		Pool constantPool = inClass.constantPool.getOrUpdateSync(__state);
+		KnownValue<Pool> constantPool = inClass.constantPool;
 		
 		// Request byte code from the method
 		try (JDWPPacket out = __state.request(

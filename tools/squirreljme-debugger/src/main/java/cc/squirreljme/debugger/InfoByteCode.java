@@ -32,7 +32,7 @@ public class InfoByteCode
 	protected final WeakReference<InfoMethod> method;
 	
 	/** The constant pool of the class this is in. */
-	protected final Pool constantPool;
+	protected final KnownValue<Pool> constantPool;
 	
 	/** The byte code of the method. */
 	private final byte[] _byteCode;
@@ -51,7 +51,8 @@ public class InfoByteCode
 	 * @since 2024/01/23
 	 */
 	public InfoByteCode(DebuggerState __state, JDWPId __id,
-		InfoMethod __method, Pool __constantPool, byte[] __byteCode)
+		InfoMethod __method, KnownValue<Pool> __constantPool,
+		byte[] __byteCode)
 		throws NullPointerException
 	{
 		super(__state, __id, InfoKind.BYTE_CODE);
@@ -79,7 +80,7 @@ public class InfoByteCode
 		List<InstructionViewer> output = new ArrayList<>();
 		
 		// Used to refer to the instructions
-		Pool pool = this.constantPool;
+		KnownValue<Pool> pool = this.constantPool;
 		
 		// We will be referencing this much!
 		byte[] byteCode = this._byteCode;
@@ -87,7 +88,7 @@ public class InfoByteCode
 		{
 			// Setup instruction at this point
 			InstructionViewer instruction = new RemoteInstructionViewer(
-				pool, byteCode, at);
+				this.internalState(), pool, byteCode, at);
 			
 			// Move the pointer up
 			at += instruction.length();
