@@ -551,7 +551,7 @@ public final class Instruction
 					// Load in tables
 					for (int i = 0, fromDx = 3; i < n; i++, fromDx++)
 						jumps[i] = new InstructionJumpTarget(
-							rawAwrgs[fromDx], lo + i);
+							rawArgs[fromDx], lo + i);
 					
 					// Setup instruction properties
 					naturalflow = true;
