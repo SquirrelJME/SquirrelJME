@@ -345,6 +345,9 @@ public final class Debugging
 		// exception is thrown
 		finally
 		{
+			// Try to emit a breakpoint
+			DebugShelf.breakpoint();
+			
 			// Just exit directly so there is no way to continue, if we can
 			try
 			{

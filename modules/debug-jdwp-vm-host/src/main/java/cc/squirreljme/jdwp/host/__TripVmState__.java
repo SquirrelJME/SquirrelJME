@@ -13,6 +13,8 @@ import cc.squirreljme.jdwp.JDWPEventKind;
 import cc.squirreljme.jdwp.JDWPPacket;
 import cc.squirreljme.jdwp.JDWPSuspendPolicy;
 import cc.squirreljme.jdwp.host.trips.JDWPTripVmState;
+import cc.squirreljme.jdwp.host.views.JDWPViewThread;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 
 /**
@@ -53,12 +55,36 @@ final class __TripVmState__
 		// Tell the remote debugger that we started, note we always generate
 		// this event and we never hide it
 		try (JDWPPacket packet = controller.event(JDWPSuspendPolicy.NONE,
-			(__alive ? JDWPEventKind.THREAD_START : JDWPEventKind.THREAD_DEATH),
-			0))
+			(__alive ? JDWPEventKind.THREAD_START :
+				JDWPEventKind.THREAD_DEATH), 0))
 		{
 			// Write the initial starting thread
 			controller.writeObject(packet, __bootThread);
 			
+			// Send it away!
+			controller.getCommLink().send(packet);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/01/30
+	 */
+	@Override
+	public void userDefined()
+	{
+		// Just send the basic user defined event
+		JDWPHostController controller = this.__controller();
+		
+		// Pause all threads
+		JDWPViewThread viewThread = controller.viewThread();
+		for (Object thread : controller.allThreads(false))
+			viewThread.suspension(thread).suspend();
+		
+		// Send the packet, which does not have much information
+		try (JDWPPacket packet = controller.event(JDWPSuspendPolicy.ALL,
+			JDWPEventKind.USER_DEFINED, 0))
+		{
 			// Send it away!
 			controller.getCommLink().send(packet);
 		}

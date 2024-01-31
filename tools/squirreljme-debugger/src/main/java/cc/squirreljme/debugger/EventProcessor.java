@@ -138,7 +138,7 @@ public enum EventProcessor
 		protected void process(DebuggerState __state, JDWPPacket __packet,
 			JDWPSuspendPolicy __suspend, EventHandler __handler)
 		{
-			Debugging.todoNote("Implement %s", this);
+			// Ignore, is a user defined event
 		}
 	},
 	

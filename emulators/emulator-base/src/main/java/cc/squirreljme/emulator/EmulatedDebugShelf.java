@@ -22,6 +22,19 @@ import org.jetbrains.annotations.NotNull;
  */
 public class EmulatedDebugShelf
 {
+	
+	/**
+	 * If there is a debugger attached, then this will emit a breakpoint to
+	 * halt execution accordingly. This might not be supported by all
+	 * SquirrelJME implementations.
+	 *
+	 * @since 2024/01/30
+	 */
+	@SquirrelJMEVendorApi
+	public static void breakpoint()
+	{
+	}
+	
 	/**
 	 * Resolves the class from the given point.
 	 *

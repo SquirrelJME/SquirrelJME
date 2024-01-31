@@ -25,4 +25,11 @@ public interface JDWPTripVmState
 	 * @since 2021/04/11
 	 */
 	void alive(Object __bootThread, boolean __alive);
+	
+	/**
+	 * User defined event.
+	 *
+	 * @since 2024/01/30
+	 */
+	void userDefined();
 }
