@@ -9,7 +9,6 @@
 
 package cc.squirreljme.jvm.launch;
 
-import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.constants.VMStatisticType;
@@ -31,30 +30,36 @@ public final class SuiteScanner
 	/** The shelf to access. */
 	protected final VirtualJarPackageShelf shelf;
 	
+	/** Allow parallel scanning? */
+	protected final boolean parallel;
+	
 	/**
 	 * Initializes the base suite scanner.
 	 * 
+	 * @param __parallel Allow parallel scanning?
 	 * @since 2020/12/28
 	 */
-	public SuiteScanner()
+	public SuiteScanner(boolean __parallel)
 	{
-		this(new DefaultJarPackageShelf());
+		this(__parallel, new DefaultJarPackageShelf());
 	}
 	
 	/**
 	 * Initializes the suite scanner.
 	 *
+	 * @param __parallel Allow parallel scanning?
 	 * @param __shelf The shelf to initialize from.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/06
 	 */
-	public SuiteScanner(VirtualJarPackageShelf __shelf)
+	public SuiteScanner(boolean __parallel, VirtualJarPackageShelf __shelf)
 		throws NullPointerException
 	{
 		if (__shelf == null)
 			throw new NullPointerException("NARG");
 		
 		this.shelf = __shelf;
+		this.parallel = __parallel;
 	}
 	
 	/**
@@ -113,8 +118,12 @@ public final class SuiteScanner
 		// loading operations across multiple threads at once for faster
 		// scanning... On SpringCoat scans can take a while, so we want to
 		// make it as fast as we can...
-		int numThreads = Math.max(1,
-			(int)RuntimeShelf.vmStatistic(VMStatisticType.CPU_THREAD_COUNT));
+		int numThreads;
+		if (this.parallel)
+			numThreads = Math.max(1, (int)RuntimeShelf.vmStatistic(
+				VMStatisticType.CPU_THREAD_COUNT));
+		else
+			numThreads = 1;
 		
 		// Locate programs via the library path, single threaded, so we do not
 		// need to anything more complex

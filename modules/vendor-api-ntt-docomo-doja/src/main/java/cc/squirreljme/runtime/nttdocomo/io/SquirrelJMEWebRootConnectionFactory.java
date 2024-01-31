@@ -11,6 +11,7 @@ package cc.squirreljme.runtime.nttdocomo.io;
 
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.gcf.CustomConnectionFactory;
 import cc.squirreljme.runtime.gcf.HTTPAddress;
@@ -29,15 +30,18 @@ import org.intellij.lang.annotations.Language;
  * @see SquirrelJMEWebRootManager
  * @since 2022/10/07
  */
+@SquirrelJMEVendorApi
 public class SquirrelJMEWebRootConnectionFactory
 	implements CustomConnectionFactory
 {
 	/** The base scheme for this connection. */
 	@Language("http-url-reference")
+	@SquirrelJMEVendorApi
 	public static final String URI_SCHEME =
 		"squirreljme+doja";
 	
 	/** Webroot suffix. */
+	@SquirrelJMEVendorApi
 	public static final String WEBROOT_EXTENSION =
 		"webroot";
 	
@@ -49,6 +53,7 @@ public class SquirrelJMEWebRootConnectionFactory
 	 * @since 2022/10/07
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public Connection connect(String __part, int __mode, boolean __timeouts,
 		ConnectionOption<?>[] __opts)
 		throws IOException, NullPointerException
@@ -99,6 +104,7 @@ public class SquirrelJMEWebRootConnectionFactory
 	 * @since 2022/10/07
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public String scheme()
 	{
 		return SquirrelJMEWebRootConnectionFactory.URI_SCHEME;

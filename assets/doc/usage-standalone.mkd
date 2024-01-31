@@ -48,6 +48,12 @@ The available options are:
    * Specifies libraries that should be available to the virtual machine
      and the suite management system, note that this is not the same as
      the `-classpath` option as that is for the _current_ application.
+   * Wildcard directories may be specified in the following way, depending
+     on the operating system and possible shell expansion:
+     * `/path/to/directory/*`
+     * `/path/to/directory/**`
+     * `/path/to/directory/*.*`
+     * `wildcard=/path/to/directory`
  * `-Xentry:id`
    * Used with `-jar`, this allows one to specify an entry point index,
      application name, or application entry point to determine which one to

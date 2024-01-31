@@ -10,8 +10,10 @@
 package cc.squirreljme.emulator.vm;
 
 import cc.squirreljme.jvm.suite.SuiteUtils;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -52,6 +54,8 @@ public final class __JarWalker__
 	public FileVisitResult visitFile(Path __path, BasicFileAttributes __attrib)
 		throws IOException
 	{
+		Debugging.debugNote("Wildcard checking: %s", __path);
+		
 		// If this is a Jar or resource, we will grab it
 		String fn = __path.getFileName().toString();
 		if (SuiteUtils.isAny(fn))

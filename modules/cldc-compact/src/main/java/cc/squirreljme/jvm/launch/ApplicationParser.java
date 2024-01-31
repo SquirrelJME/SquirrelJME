@@ -128,7 +128,11 @@ public enum ApplicationParser
 			
 			// If there is no JAM file, this cannot be an i-mode application
 			if (jam == null)
+			{
+				Debugging.debugNote("No JAM found for %s.",
+					jarName);
 				return;
+			}
 			
 			// Try to locate the scratchpad seed archive
 			JarPackageBracket binarySto = __state.findIModeScratchPad(
@@ -202,7 +206,11 @@ public enum ApplicationParser
 			
 			// If there is no ADF file, this cannot be an i-mode application
 			if (binaryAdf == null)
+			{
+				Debugging.debugNote("No Binary ADF found for %s.",
+					jarName);
 				return;
+			}
 			
 			// Decode the Binary ADF information
 			Map<String, String> adfProps = new LinkedHashMap<>();
@@ -237,7 +245,7 @@ public enum ApplicationParser
 			if (binarySto != null)
 				extraSysProps.put(
 					IModeApplication.SEED_SCRATCHPAD_PREFIX + ".0",
-					JarPackageShelf.libraryPath(binarySto));
+					__state.libraryPath(binarySto));
 			
 			// Load application
 			try

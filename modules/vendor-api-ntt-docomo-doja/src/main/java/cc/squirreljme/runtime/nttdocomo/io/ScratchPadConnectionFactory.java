@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.nttdocomo.io;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.util.StringUtils;
 import cc.squirreljme.runtime.gcf.CustomConnectionFactory;
 import java.io.IOException;
@@ -24,6 +25,7 @@ import javax.microedition.io.ConnectionOption;
  * @see ScratchPadConnection
  * @since 2021/11/30
  */
+@SquirrelJMEVendorApi
 public class ScratchPadConnectionFactory
 	implements CustomConnectionFactory
 {
@@ -33,6 +35,7 @@ public class ScratchPadConnectionFactory
 	 * @since 2021/11/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public Connection connect(String __part, int __mode, boolean __timeouts,
 		ConnectionOption<?>[] __opts)
 		throws IOException, NullPointerException
@@ -147,10 +150,10 @@ public class ScratchPadConnectionFactory
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2021/11/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public String scheme()
 	{
 		return "scratchpad";

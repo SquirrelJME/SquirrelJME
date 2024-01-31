@@ -207,7 +207,7 @@ public final class ApplicationParserState
 			throw new NullPointerException("NARG");
 		
 		return new IModeApplication(this.jar, this._libs, __adfProps,
-			__extraSysProps);
+			this.libraryPath(), __extraSysProps);
 	}
 	
 	/**

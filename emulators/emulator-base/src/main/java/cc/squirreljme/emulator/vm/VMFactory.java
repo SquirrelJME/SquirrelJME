@@ -28,6 +28,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -37,6 +38,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -465,7 +467,7 @@ public abstract class VMFactory
 			// Setup suite scanner to use our fake suite list and combined
 			// libraries accordingly, scan all suites to get available
 			// applications we can potentially launch
-			SuiteScanner scanner = new SuiteScanner(fakeShelf);
+			SuiteScanner scanner = new SuiteScanner(false, fakeShelf);
 			AvailableSuites available = scanner.scanSuites();
 			
 			// Find applications for our Jar
@@ -717,7 +719,7 @@ public abstract class VMFactory
 			throw new NullPointerException("NARG");
 		
 		// Add directly if not a wildcard
-		if (!__path.endsWith("*"))
+		if (!__path.endsWith("*") && !__path.startsWith("wildcard="))
 		{
 			__files.add(__path);
 			return;
@@ -726,9 +728,24 @@ public abstract class VMFactory
 		// Try searching for JAR files in a directory
 		try
 		{
-			Path startPath = Paths.get(
-				__path.substring(0, __path.length() - 1));
-			Files.walkFileTree(startPath, new __JarWalker__(__files));
+			// Try multiple different wildcard types
+			String basePath;
+			if (__path.startsWith("wildcard="))
+				basePath = __path.substring("wildcard=".length());
+			else if (__path.endsWith("*.*"))
+				basePath = __path.substring(0, __path.length() - 3);
+			else if (__path.endsWith("**"))
+				basePath = __path.substring(0, __path.length() - 2);
+			else
+				basePath = __path.substring(0, __path.length() - 1);
+			
+			// Realize it
+			Path startPath = Paths.get(basePath);
+			Files.walkFileTree(startPath,
+				new HashSet<FileVisitOption>(
+					Arrays.asList(FileVisitOption.FOLLOW_LINKS)),
+				64,
+				new __JarWalker__(__files));
 		}
 		catch (IOException e)
 		{
