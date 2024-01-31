@@ -402,7 +402,8 @@ public class Connector
 		if (__opts == null)
 			__opts = new ConnectionOption<?>[0];
 		
-		/* {@squirreljme.error EC11 The URI does not have a scheme. (The URI)} */
+		/* {@squirreljme.error EC11 The URI does not have a scheme.
+		(The URI)} */
 		int fc = __uri.indexOf(':');
 		if (fc < 0)
 			throw new IllegalArgumentException(String.format("EC11 %s",

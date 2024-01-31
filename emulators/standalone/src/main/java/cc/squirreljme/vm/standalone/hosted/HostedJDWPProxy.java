@@ -137,6 +137,11 @@ public class HostedJDWPProxy
 			// Accept the first connection that appears
 			Socket socket = this.server.accept();
 			
+			// Use no delay for faster communication and keep alive so it
+			// does not just die from a bad route
+			socket.setTcpNoDelay(true);
+			socket.setKeepAlive(true);
+			
 			// Proxy input
 			Thread threadIn = new Thread(() -> {
 					try
