@@ -11,6 +11,7 @@ package java.util;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.time.ISO6801Calendar;
 
 @Api
 public abstract class Calendar
@@ -190,16 +191,17 @@ public abstract class Calendar
 	@Api
 	protected boolean[] isSet;
 	
+	/** Has the time been set? */
 	@Api
 	protected boolean isTimeSet;
 	
+	/** The current UTC milliseconds since the Unix epoch. */
 	@Api
 	protected long time;
 	
 	@Api
 	protected Calendar()
 	{
-		throw Debugging.todo();
 	}
 	
 	@Api
@@ -265,7 +267,6 @@ public abstract class Calendar
 	@Api
 	protected void complete()
 	{
-		throw Debugging.todo();
 	}
 	
 	@Override
@@ -275,8 +276,11 @@ public abstract class Calendar
 	}
 	
 	@Api
-	public int get(int __a)
+	public int get(int __fieldId)
 	{
+		// Debug
+		Debugging.debugNote("Calendar.get(%d)", __fieldId);
+		
 		throw Debugging.todo();
 	}
 	
@@ -395,16 +399,33 @@ public abstract class Calendar
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * Sets the calendar to the given date.
+	 *
+	 * @param __time The date to set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/30
+	 */
 	@Api
-	public final void setTime(Date __a)
+	public final void setTime(Date __time)
+		throws NullPointerException
 	{
-		throw Debugging.todo();
+		if (__time == null)
+			throw new NullPointerException("NARG");
+		
+		this.__setTimeInMillis(__time.getTime());
 	}
 	
+	/**
+	 * Sets the time to the given UTC milliseconds since the Unix epoch.
+	 *
+	 * @param __utcMillis The number of UTC milliseconds since the Unix epoch.
+	 * @since 2024/01/30
+	 */
 	@Api
-	public void setTimeInMillis(long __a)
+	public void setTimeInMillis(long __utcMillis)
 	{
-		throw Debugging.todo();
+		this.__setTimeInMillis(__utcMillis);
 	}
 	
 	@Api
@@ -419,16 +440,63 @@ public abstract class Calendar
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * Performs the actual time setting logic.
+	 *
+	 * @param __utcMillis The milliseconds to set to.
+	 * @since 2024/01/30
+	 */
+	private void __setTimeInMillis(long __utcMillis)
+	{
+		synchronized (this)
+		{
+			// Was time set previously?
+			boolean wasTimeSet = this.isTimeSet;
+			
+			// Directly set
+			this.time = __utcMillis;
+			this.isTimeSet = true;
+			
+			// Calculate time fields from milliseconds?
+			if (!wasTimeSet)
+				this.computeFields();
+			this.complete();
+		}
+	}
+	
+	/**
+	 * Returns a calendar instance which uses the default timezone and
+	 * system locale.
+	 *
+	 * @return The instance of the calendar.
+	 * @since 2024/01/30
+	 */
 	@Api
 	public static Calendar getInstance()
 	{
-		throw Debugging.todo();
+		return Calendar.getInstance(TimeZone.getDefault());
 	}
 	
+	/**
+	 * Returns a calendar in the given time zone with the default locale.
+	 *
+	 * @param __zone The time zone the calendar should be in.
+	 * @return The instance of the calendar.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/30
+	 */
 	@Api
-	public static Calendar getInstance(TimeZone __a)
+	public static Calendar getInstance(TimeZone __zone)
+		throws NullPointerException
 	{
-		throw Debugging.todo();
+		if (__zone == null)
+			throw new NullPointerException("NARG");
+		
+		// TODO
+		Debugging.todoNote("Calendar.getInstance(%s)", __zone);
+		
+		// Use generic ISO6801 implementation
+		return new ISO6801Calendar(__zone);
 	}
 }
 
