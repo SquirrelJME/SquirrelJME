@@ -92,9 +92,12 @@ public class InfoFrame
 	protected String internalString()
 	{
 		DebuggerState state = this.internalState();
+		InfoMethod inMethod = this.location.inMethod;
 		return String.format("%s:%s @ %d",
-			this.location.inMethod.name.getOrUpdateSync(state),
-			this.location.inMethod.type.getOrUpdateSync(state),
+			(inMethod == null ? "<opaque>" :
+				inMethod.name.getOrUpdateSync(state)),
+			(inMethod == null ? "<opaque>" :
+				inMethod.type.getOrUpdateSync(state)),
 			this.location.index);
 	}
 	

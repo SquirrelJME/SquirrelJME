@@ -9,6 +9,7 @@
 
 package cc.squirreljme.debugger;
 
+import cc.squirreljme.runtime.cldc.util.IntegerArrayList;
 import net.multiphasicapps.classfile.ByteCodeUtils;
 import net.multiphasicapps.classfile.InstructionRawArgumentType;
 import net.multiphasicapps.classfile.InstructionIndex;
@@ -72,11 +73,10 @@ public class RemoteInstructionViewer
 	public Object[] arguments()
 	{
 		// Read in argument types
-		InstructionRawArgumentType[] argTypes =
-			ByteCodeUtils.instructionRawArguments(this.byteCode, 0,
-				this.address);
+		int[] args = ByteCodeUtils.readRawArguments(this.byteCode, 0,
+			this.address);
 		
-		return argTypes;
+		return new IntegerArrayList(args).toArray(new Integer[args.length]);
 	}
 	
 	/**

@@ -1794,15 +1794,15 @@ public final class SpringThreadWorker
 		
 		// Used to detect the next instruction of execution following this,
 		// may be set accordingly in the frame manually
-		int nextpc = code.addressFollowing(pc),
-			orignextpc = nextpc;
+		int nextPc = code.addressFollowing(pc);
+		int origNextPc = nextPc;
 		
 		// Handle individual instructions
-		int opid;
+		int opId;
 		try
 		{
 			// Handle it
-			switch ((opid = inst.operation()))
+			switch ((opId = inst.operation()))
 			{
 					// Do absolutely nothing!
 				case InstructionIndex.NOP:
@@ -1851,7 +1851,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.ALOAD_2:
 				case InstructionIndex.ALOAD_3:
 					frame.loadToStack(SpringObject.class,
-						opid - InstructionIndex.ALOAD_0);
+						opId - InstructionIndex.ALOAD_0);
 					break;
 				
 					// Allocate new array
@@ -1868,7 +1868,7 @@ public final class SpringThreadWorker
 						SpringObject.class);
 					this.__vmReturn(thread,
 						(rvObject != null ? rvObject : SpringNullObject.NULL));
-					nextpc = Integer.MIN_VALUE;
+					nextPc = Integer.MIN_VALUE;
 					break;
 					
 					// Length of array
@@ -1891,7 +1891,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.ASTORE_2:
 				case InstructionIndex.ASTORE_3:
 					{
-						frame.storeLocal(opid - InstructionIndex.ASTORE_0,
+						frame.storeLocal(opId - InstructionIndex.ASTORE_0,
 							frame.<SpringObject>popFromStack(
 								SpringObject.class));
 					}
@@ -1908,8 +1908,8 @@ public final class SpringThreadWorker
 						if (popped == SpringNullObject.NULL)
 							throw new SpringNullPointerException("BKnt");
 						
-						nextpc = this.__handleException(popped);
-						if (nextpc < 0)
+						nextPc = this.__handleException(popped);
+						if (nextPc < 0)
 							return;
 					}
 					break;
@@ -2009,7 +2009,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.DCONST_0:
 				case InstructionIndex.DCONST_1:
 					frame.pushToStack(
-						Double.valueOf(opid - InstructionIndex.DCONST_0));
+						Double.valueOf(opId - InstructionIndex.DCONST_0));
 					break;
 				
 					// Divide double
@@ -2034,7 +2034,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.DLOAD_2:
 				case InstructionIndex.DLOAD_3:
 					frame.loadToStack(Double.class,
-						opid - InstructionIndex.DLOAD_0);
+						opId - InstructionIndex.DLOAD_0);
 					break;
 				
 					// Multiply double
@@ -2067,7 +2067,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.DRETURN:
 					this.__vmReturn(thread,
 						frame.<Double>popFromStack(Double.class));
-					nextpc = Integer.MIN_VALUE;
+					nextPc = Integer.MIN_VALUE;
 					break;
 				
 					// Subtract double
@@ -2091,7 +2091,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.DSTORE_1:
 				case InstructionIndex.DSTORE_2:
 				case InstructionIndex.DSTORE_3:
-					frame.storeLocal(opid - InstructionIndex.DSTORE_0,
+					frame.storeLocal(opId - InstructionIndex.DSTORE_0,
 						frame.<Double>popFromStack(Double.class));
 					break;
 					
@@ -2383,7 +2383,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.FCONST_1:
 				case InstructionIndex.FCONST_2:
 					frame.pushToStack(
-						Float.valueOf(opid - InstructionIndex.FCONST_0));
+						Float.valueOf(opId - InstructionIndex.FCONST_0));
 					break;
 				
 					// Divide float
@@ -2408,7 +2408,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.FLOAD_2:
 				case InstructionIndex.FLOAD_3:
 					frame.loadToStack(Float.class,
-						opid - InstructionIndex.FLOAD_0);
+						opId - InstructionIndex.FLOAD_0);
 					break;
 				
 					// Multiply float
@@ -2441,7 +2441,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.FRETURN:
 					this.__vmReturn(thread,
 						frame.<Float>popFromStack(Float.class));
-					nextpc = Integer.MIN_VALUE;
+					nextPc = Integer.MIN_VALUE;
 					break;
 				
 					// Subtract float
@@ -2465,7 +2465,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.FSTORE_1:
 				case InstructionIndex.FSTORE_2:
 				case InstructionIndex.FSTORE_3:
-					frame.storeLocal(opid - InstructionIndex.FSTORE_0,
+					frame.storeLocal(opId - InstructionIndex.FSTORE_0,
 						frame.<Float>popFromStack(Float.class));
 					break;
 					
@@ -2536,7 +2536,7 @@ public final class SpringThreadWorker
 					// Go to address
 				case InstructionIndex.GOTO:
 				case InstructionIndex.GOTO_W:
-					nextpc = inst.<InstructionJumpTarget>argument(0,
+					nextPc = inst.<InstructionJumpTarget>argument(0,
 						InstructionJumpTarget.class).target();
 					break;
 					
@@ -2698,7 +2698,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.ICONST_4:
 				case InstructionIndex.ICONST_5:
 					frame.pushToStack(Integer.valueOf(
-						-1 + (opid - InstructionIndex.ICONST_M1)));
+						-1 + (opId - InstructionIndex.ICONST_M1)));
 					break;
 					
 					// Object a == b
@@ -2710,7 +2710,7 @@ public final class SpringThreadWorker
 								SpringObject.class);
 						
 						if (a == b)
-							nextpc = inst.<InstructionJumpTarget>argument(0,
+							nextPc = inst.<InstructionJumpTarget>argument(0,
 								InstructionJumpTarget.class).target();
 					}
 					break;
@@ -2724,7 +2724,7 @@ public final class SpringThreadWorker
 								SpringObject.class);
 						
 						if (a != b)
-							nextpc = inst.<InstructionJumpTarget>argument(0,
+							nextPc = inst.<InstructionJumpTarget>argument(0,
 								InstructionJumpTarget.class).target();
 					}
 					break;
@@ -2736,7 +2736,7 @@ public final class SpringThreadWorker
 							a = frame.<Integer>popFromStack(Integer.class);
 						
 						if (a == b)
-							nextpc = inst.<InstructionJumpTarget>argument(0,
+							nextPc = inst.<InstructionJumpTarget>argument(0,
 								InstructionJumpTarget.class).target();
 					}
 					break;
@@ -2748,7 +2748,7 @@ public final class SpringThreadWorker
 							a = frame.<Integer>popFromStack(Integer.class);
 						
 						if (a >= b)
-							nextpc = inst.<InstructionJumpTarget>argument(0,
+							nextPc = inst.<InstructionJumpTarget>argument(0,
 								InstructionJumpTarget.class).target();
 					}
 					break;
@@ -2760,7 +2760,7 @@ public final class SpringThreadWorker
 							a = frame.<Integer>popFromStack(Integer.class);
 						
 						if (a > b)
-							nextpc = inst.<InstructionJumpTarget>argument(0,
+							nextPc = inst.<InstructionJumpTarget>argument(0,
 								InstructionJumpTarget.class).target();
 					}
 					break;
@@ -2772,7 +2772,7 @@ public final class SpringThreadWorker
 							a = frame.<Integer>popFromStack(Integer.class);
 						
 						if (a <= b)
-							nextpc = inst.<InstructionJumpTarget>argument(0,
+							nextPc = inst.<InstructionJumpTarget>argument(0,
 								InstructionJumpTarget.class).target();
 					}
 					break;
@@ -2784,7 +2784,7 @@ public final class SpringThreadWorker
 							a = frame.<Integer>popFromStack(Integer.class);
 						
 						if (a < b)
-							nextpc = inst.<InstructionJumpTarget>argument(0,
+							nextPc = inst.<InstructionJumpTarget>argument(0,
 								InstructionJumpTarget.class).target();
 					}
 					break;
@@ -2796,7 +2796,7 @@ public final class SpringThreadWorker
 							a = frame.<Integer>popFromStack(Integer.class);
 						
 						if (a != b)
-							nextpc = inst.<InstructionJumpTarget>argument(0,
+							nextPc = inst.<InstructionJumpTarget>argument(0,
 								InstructionJumpTarget.class).target();
 					}
 					break;
@@ -2804,42 +2804,42 @@ public final class SpringThreadWorker
 					// int a == 0
 				case InstructionIndex.IFEQ:
 					if (frame.<Integer>popFromStack(Integer.class) == 0)
-						nextpc = inst.<InstructionJumpTarget>argument(0,
+						nextPc = inst.<InstructionJumpTarget>argument(0,
 							InstructionJumpTarget.class).target();
 					break;
 					
 					// int a >= 0
 				case InstructionIndex.IFGE:
 					if (frame.<Integer>popFromStack(Integer.class) >= 0)
-						nextpc = inst.<InstructionJumpTarget>argument(0,
+						nextPc = inst.<InstructionJumpTarget>argument(0,
 							InstructionJumpTarget.class).target();
 					break;
 					
 					// int a > 0
 				case InstructionIndex.IFGT:
 					if (frame.<Integer>popFromStack(Integer.class) > 0)
-						nextpc = inst.<InstructionJumpTarget>argument(0,
+						nextPc = inst.<InstructionJumpTarget>argument(0,
 							InstructionJumpTarget.class).target();
 					break;
 					
 					// int a <= 0
 				case InstructionIndex.IFLE:
 					if (frame.<Integer>popFromStack(Integer.class) <= 0)
-						nextpc = inst.<InstructionJumpTarget>argument(0,
+						nextPc = inst.<InstructionJumpTarget>argument(0,
 							InstructionJumpTarget.class).target();
 					break;
 					
 					// int a < 0
 				case InstructionIndex.IFLT:
 					if (frame.<Integer>popFromStack(Integer.class) < 0)
-						nextpc = inst.<InstructionJumpTarget>argument(0,
+						nextPc = inst.<InstructionJumpTarget>argument(0,
 							InstructionJumpTarget.class).target();
 					break;
 					
 					// int a != 0
 				case InstructionIndex.IFNE:
 					if (frame.<Integer>popFromStack(Integer.class) != 0)
-						nextpc = inst.<InstructionJumpTarget>argument(0,
+						nextPc = inst.<InstructionJumpTarget>argument(0,
 							InstructionJumpTarget.class).target();
 					break;
 					
@@ -2847,7 +2847,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.IFNONNULL:
 					if (frame.<SpringObject>popFromStack(
 						SpringObject.class) != SpringNullObject.NULL)
-						nextpc = inst.<InstructionJumpTarget>argument(0,
+						nextPc = inst.<InstructionJumpTarget>argument(0,
 							InstructionJumpTarget.class).target();
 					break;
 					
@@ -2857,7 +2857,7 @@ public final class SpringThreadWorker
 						SpringObject a = frame.<SpringObject>popFromStack(
 							SpringObject.class);
 						if (a == SpringNullObject.NULL)
-							nextpc = inst.<InstructionJumpTarget>argument(0,
+							nextPc = inst.<InstructionJumpTarget>argument(0,
 								InstructionJumpTarget.class).target();
 					}
 					break;
@@ -2886,7 +2886,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.ILOAD_2:
 				case InstructionIndex.ILOAD_3:
 					frame.loadToStack(Integer.class,
-						opid - InstructionIndex.ILOAD_0);
+						opId - InstructionIndex.ILOAD_0);
 					break;
 				
 					// Addly integer
@@ -3023,7 +3023,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.IRETURN:
 					this.__vmReturn(thread,
 						frame.<Integer>popFromStack(Integer.class));
-					nextpc = Integer.MIN_VALUE;
+					nextPc = Integer.MIN_VALUE;
 					break;
 				
 					// Shift left integer
@@ -3056,7 +3056,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.ISTORE_1:
 				case InstructionIndex.ISTORE_2:
 				case InstructionIndex.ISTORE_3:
-					frame.storeLocal(opid - InstructionIndex.ISTORE_0,
+					frame.storeLocal(opId - InstructionIndex.ISTORE_0,
 						frame.<Integer>popFromStack(Integer.class));
 					break;
 				
@@ -3142,7 +3142,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.LCONST_0:
 				case InstructionIndex.LCONST_1:
 					frame.pushToStack(Long.valueOf(
-						(opid - InstructionIndex.LCONST_0)));
+						(opId - InstructionIndex.LCONST_0)));
 					break;
 					
 					// Load from constant pool, push to the stack
@@ -3196,7 +3196,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.LLOAD_2:
 				case InstructionIndex.LLOAD_3:
 					frame.loadToStack(Long.class,
-						opid - InstructionIndex.LLOAD_0);
+						opId - InstructionIndex.LLOAD_0);
 					break;
 					
 					// Multiply long
@@ -3237,7 +3237,7 @@ public final class SpringThreadWorker
 					// Lookup in a jump table
 				case InstructionIndex.LOOKUPSWITCH:
 				case InstructionIndex.TABLESWITCH:
-					nextpc = inst.<IntMatchingJumpTable>argument(0,
+					nextPc = inst.<IntMatchingJumpTable>argument(0,
 						IntMatchingJumpTable.class).match(
 						frame.<Integer>popFromStack(Integer.class)).target();
 					break;
@@ -3255,7 +3255,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.LRETURN:
 					this.__vmReturn(thread,
 						frame.<Long>popFromStack(Long.class));
-					nextpc = Integer.MIN_VALUE;
+					nextPc = Integer.MIN_VALUE;
 					break;
 				
 					// Shift left long
@@ -3288,7 +3288,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.LSTORE_1:
 				case InstructionIndex.LSTORE_2:
 				case InstructionIndex.LSTORE_3:
-					frame.storeLocal(opid - InstructionIndex.LSTORE_0,
+					frame.storeLocal(opId - InstructionIndex.LSTORE_0,
 						frame.<Long>popFromStack(Long.class));
 					break;
 				
@@ -3560,12 +3560,12 @@ public final class SpringThreadWorker
 		catch (ArithmeticException e)
 		{
 			// PC converts?
-			nextpc = this.__handleException(
+			nextPc = this.__handleException(
 				(SpringObject)this.asVMObject(new SpringArithmeticException(
 				e.getMessage())));
 			
 			// Do not set PC address?
-			if (nextpc < 0)
+			if (nextPc < 0)
 				return;
 		}
 		
@@ -3595,11 +3595,11 @@ public final class SpringThreadWorker
 			if (e instanceof SpringConvertableThrowable)
 			{
 				// PC converts?
-				nextpc = this.__handleException(
+				nextPc = this.__handleException(
 					(SpringObject)this.asVMObject(e));
 				
 				// Do not set PC address?
-				if (nextpc < 0)
+				if (nextPc < 0)
 					return;
 			}
 			
@@ -3633,8 +3633,8 @@ public final class SpringThreadWorker
 		
 		// Set implicit next PC address, if it has not been set or the next
 		// address was actually changed
-		if (nextpc != orignextpc || pc == frame.pc())
-			frame.setPc(nextpc);
+		if (nextPc != origNextPc || pc == frame.pc())
+			frame.setPc(nextPc);
 	}
 	
 	/**

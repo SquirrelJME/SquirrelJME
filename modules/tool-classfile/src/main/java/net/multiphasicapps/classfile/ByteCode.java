@@ -10,6 +10,8 @@
 package net.multiphasicapps.classfile;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.debug.ErrorCode;
+import cc.squirreljme.runtime.cldc.util.IntegerArrayList;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -114,7 +116,7 @@ public final class ByteCode
 	 *
 	 * @param __mr The owning method reference.
 	 * @param __ca The raw code attribute data.
-	 * @param __tt The this type.
+	 * @param __tt The current {@code this} type.
 	 * @param __mf Method flags.
 	 * @throws InvalidClassFormatException If the byte code is not valid.
 	 * @throws NullPointerException On null arguments.
@@ -146,55 +148,54 @@ public final class ByteCode
 			new ByteArrayInputStream(__ca)))
 		{
 			// The number of variables allocated to the method
-			int maxstack = in.readUnsignedShort(),
-				maxlocals = in.readUnsignedShort();
+			int maxStack = in.readUnsignedShort();
+			int maxLocals = in.readUnsignedShort();
 				
 			/* {@squirreljme.error JC1y The specified code length is not valid.
 			(The code length)} */
-			int codelen = in.readInt();
-			if (codelen <= 0 || codelen > ByteCode._MAX_CODE_LENGTH)
+			int codeLen = in.readInt();
+			if (codeLen <= 0 || codeLen > ByteCode._MAX_CODE_LENGTH)
 				throw new InvalidClassFormatException(
-					String.format("JC1y %d", codelen));
+					String.format("JC1y %d", codeLen));
 		
 			// Ignore that many bytes
-			for (int i = 0; i < codelen; i++)
+			for (int i = 0; i < codeLen; i++)
 				in.readByte();
 			
 			// Read exception handler table
 			ExceptionHandlerTable eht = ExceptionHandlerTable.decode(in, pool,
-				codelen);
+				codeLen);
 			
 			// The instruction index is used to lookup using a linear index
 			// count rather than the potentially spaced out address lookup
-			int[] index = new int[codelen];
+			int[] index = new int[codeLen];
 			int indexat = 0;
 		
 			// Set all lengths initially to invalid positions, this used as a
 			// quick marker to determine which positions have valid
 			// instructions
-			int[] lengths = new int[codelen];
-			for (int i = 0; i < codelen; i++)
+			int[] lengths = new int[codeLen];
+			for (int i = 0; i < codeLen; i++)
 				lengths[i] = -1;
 		
 			// Determine instruction lengths for each position
-			int[] ollastop = new int[]{-1};
-			for (int i = 0, li = -1; i < codelen; li = i)
+			for (int i = 0, li = -1; i < codeLen; li = i)
 			{
 				// Store address of instruction for an index based lookup
 				index[indexat++] = i;
 			
 				// Store length
-				int oplen;
-				lengths[i] = (oplen = ByteCodeUtils.instructionLength(__ca,
-					ByteCode.CODE_OFFSET, i, ollastop));
+				int opLen = ByteCodeUtils.instructionLength(__ca,
+					ByteCode.CODE_OFFSET, i, null);
+				lengths[i] = opLen;
 			
 				/* {@squirreljme.error JC1z The operation exceeds the bounds of
 				the method byte code. (The operation pointer; The operation
 				length; The code length; The last operation pointer)} */
-				if ((i += oplen) > codelen)
+				if ((i += opLen) > codeLen)
 					throw new InvalidClassFormatException(
 						String.format("JC1z %d %d %d %d",
-							i, oplen, codelen, li));
+							i, opLen, codeLen, li));
 			}
 			
 			// The stack map table is used for verification
@@ -231,8 +232,8 @@ public final class ByteCode
 			}
 			
 			// Initialize a blank line number table
-			short[] lnt = new short[codelen];
-			for (int i = 0; i < codelen; i++)
+			short[] lnt = new short[codeLen];
+			for (int i = 0; i < codeLen; i++)
 				lnt[i] = -1;
 			
 			// Parse the line number table for debug purposes
@@ -252,7 +253,7 @@ public final class ByteCode
 						// Failed to read the program address, this could be
 						// a failure but instead just ignore it and continue
 						// on
-						if (pc < 0 || pc >= codelen)
+						if (pc < 0 || pc >= codeLen)
 							continue;
 						
 						// This gets handled later, but if there is more than
@@ -267,21 +268,21 @@ public final class ByteCode
 				LocalVariableTable.parse(pool, attrs);
 			
 			// Can set fields now
-			this.maxstack = maxstack;
-			this.maxlocals = maxlocals;
-			this.codelen = codelen;
+			this.maxstack = maxStack;
+			this.maxlocals = maxLocals;
+			this.codelen = codeLen;
 			this.exceptions = eht;
 			this.pool = pool;
 			this.thistype = __tt;
 			this._smtdata = smt;
 			this._newsmtdata = smtnew;
 			this._lengths = lengths;
-			this._icache = ByteCode.__newCache(codelen);
+			this._icache = ByteCode.__newCache(codeLen);
 			this._linenumbertable = lnt;
 			this.localVariables = localVariables;
 			
 			// Store addresses for all the indexes
-			if (indexat == codelen)
+			if (indexat == codeLen)
 				this._index = index;
 			else
 				this._index = Arrays.copyOf(index, indexat);
@@ -299,7 +300,8 @@ public final class ByteCode
 	 *
 	 * @param __a The following address.
 	 * @return The instruction address following the instruction at the
-	 * specified address.
+	 * specified address, if the next address is at the end then this will
+	 * return an address after the last operation.
 	 * @throws InvalidClassFormatException If the specified address
 	 * is not valid.
 	 * @since 2017/05/20
@@ -313,7 +315,11 @@ public final class ByteCode
 			throw new InvalidClassFormatException(
 				String.format("JC21 %d", __a));
 		
-		return __a + this._lengths[__a];
+		int result = __a + this._lengths[__a];
+		if (result >= this._lengths.length)
+			return this._lengths.length;
+		
+		return result;
 	}
 	
 	/**
@@ -364,8 +370,32 @@ public final class ByteCode
 		/* {@squirreljme.error JC22 The instruction at the specified address is
 		not valid. (The address)} */
 		if (!this.isValidAddress(__a))
+		{
+			Reference<Instruction>[] iCache = this._icache;
+			int numCache = iCache.length;
+			Instruction[] cache = new Instruction[numCache];
+			for (int i = 0; i < numCache; i++)
+				if (i == __a || iCache[i] != null ||
+					!this.isValidAddress(i))
+					cache[i] = (iCache[i] != null ? iCache[i].get() : null);
+				else
+					try
+					{
+						cache[i] = this.getByAddress(i);
+					}
+					catch (Throwable __ignored)
+					{
+						// Ignored
+					}
+			
 			throw new InvalidClassFormatException(
-				String.format("JC22 %d", __a));
+				ErrorCode.__error__("JC22", __a,
+					this.__method().inClass(),
+					this.methodname, this.methodtype,
+					new IntegerArrayList(this._lengths),
+					new IntegerArrayList(this._index),
+					Arrays.asList(cache)));
+		}
 		
 		Reference<Instruction>[] icache = this._icache;
 		Reference<Instruction> ref = icache[__a];
@@ -875,7 +905,7 @@ public final class ByteCode
 	}
 	
 	/**
-	 * Returns all of the local variables which are written to.
+	 * Returns all the local variables which are written to.
 	 *
 	 * @return The local variables which are written to.
 	 * @since 2019/03/30

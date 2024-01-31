@@ -40,8 +40,14 @@ public enum InstructionRawArgumentType
 	/** Unsigned short. */
 	UNSIGNED_SHORT,
 	
+	/** Jump-short value. */
+	JUMP_SHORT,
+	
 	/** Integer. */
 	INTEGER,
+	
+	/** Jump-integer value. */
+	JUMP_INTEGER,
 	
 	/** Lookup switch table. */
 	LOOKUPSWITCH,
@@ -71,6 +77,6 @@ public enum InstructionRawArgumentType
 			case 3: return InstructionRawArgumentType.PADDING_3;
 		}
 		
-		throw new InvalidClassFormatException("IOOB");
+		throw new InvalidClassFormatException("IOOB " + __i);
 	}
 }
