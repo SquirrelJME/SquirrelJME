@@ -631,23 +631,6 @@ public final class ByteCodeUtils
 				
 				// Single signed short
 			case InstructionIndex.SIPUSH:
-			case InstructionIndex.GOTO:
-			case InstructionIndex.IFNONNULL:
-			case InstructionIndex.IFNULL:
-			case InstructionIndex.IF_ACMPEQ:
-			case InstructionIndex.IF_ACMPNE:
-			case InstructionIndex.IF_ICMPEQ:
-			case InstructionIndex.IF_ICMPNE:
-			case InstructionIndex.IF_ICMPLT:
-			case InstructionIndex.IF_ICMPGE:
-			case InstructionIndex.IF_ICMPGT:
-			case InstructionIndex.IF_ICMPLE:
-			case InstructionIndex.IFEQ:
-			case InstructionIndex.IFNE:
-			case InstructionIndex.IFLT:
-			case InstructionIndex.IFGE:
-			case InstructionIndex.IFGT:
-			case InstructionIndex.IFLE:
 				return new InstructionRawArgumentType[]
 					{
 						InstructionRawArgumentType.SIGNED_SHORT
@@ -695,6 +678,36 @@ public final class ByteCodeUtils
 					{
 						InstructionRawArgumentType.UNSIGNED_SHORT,
 						InstructionRawArgumentType.UNSIGNED_BYTE
+					};
+				
+				// Short branches
+			case InstructionIndex.GOTO:
+			case InstructionIndex.IFNONNULL:
+			case InstructionIndex.IFNULL:
+			case InstructionIndex.IF_ACMPEQ:
+			case InstructionIndex.IF_ACMPNE:
+			case InstructionIndex.IF_ICMPEQ:
+			case InstructionIndex.IF_ICMPNE:
+			case InstructionIndex.IF_ICMPLT:
+			case InstructionIndex.IF_ICMPGE:
+			case InstructionIndex.IF_ICMPGT:
+			case InstructionIndex.IF_ICMPLE:
+			case InstructionIndex.IFEQ:
+			case InstructionIndex.IFNE:
+			case InstructionIndex.IFLT:
+			case InstructionIndex.IFGE:
+			case InstructionIndex.IFGT:
+			case InstructionIndex.IFLE:
+				return new InstructionRawArgumentType[]
+					{
+						InstructionRawArgumentType.JUMP_SHORT
+					};
+				
+				// Jump int
+			case InstructionIndex.GOTO_W:
+				return new InstructionRawArgumentType[]
+					{
+						InstructionRawArgumentType.JUMP_INTEGER
 					};
 				
 				// Lookup switch lookup table
@@ -800,6 +813,12 @@ public final class ByteCodeUtils
 						__code, readPos));
 					readPos += 2;
 					break;
+					
+				case JUMP_SHORT:
+					result.addInteger(__a + Instruction.__readShort(__code,
+						readPos));
+					readPos += 2;
+					break;
 				
 				case INTEGER:
 					result.addInteger(Instruction.__readInt(
@@ -807,14 +826,21 @@ public final class ByteCodeUtils
 					readPos += 4;
 					break;
 				
+				case JUMP_INTEGER:
+					result.addInteger(__a + Instruction.__readInt(
+						__code, readPos));
+					readPos += 4;
+					break;
+				
 				case LOOKUPSWITCH:
 					// Default branch
-					result.addInteger(Instruction.__readInt(
+					result.addInteger(__a + Instruction.__readInt(
 						__code, readPos));
 					readPos += 4;
 					
 					// Number of pairs
 					int numPairs = Instruction.__readInt(__code, readPos);
+					result.addInteger(numPairs);
 					readPos += 4;
 					
 					// Read in all pairs
@@ -823,7 +849,7 @@ public final class ByteCodeUtils
 						result.addInteger(
 							Instruction.__readInt(__code, readPos));
 						readPos += 4;
-						result.addInteger(
+						result.addInteger(__a +
 							Instruction.__readInt(__code, readPos));
 						readPos += 4;
 					}
@@ -831,7 +857,7 @@ public final class ByteCodeUtils
 				
 				case TABLESWITCH:
 					// Default branch
-					result.addInteger(Instruction.__readInt(
+					result.addInteger(__a + Instruction.__readInt(
 						__code, readPos));
 					readPos += 4;
 					
@@ -848,7 +874,7 @@ public final class ByteCodeUtils
 					// Read jump offsets
 					for (int i = 0, n = (hi - lo) + 1; i < n; i++)
 					{
-						result.addInteger(Instruction.__readInt(
+						result.addInteger(__a + Instruction.__readInt(
 							__code, readPos));
 						readPos += 4;
 					}

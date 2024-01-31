@@ -40,8 +40,14 @@ public enum InstructionRawArgumentType
 	/** Unsigned short. */
 	UNSIGNED_SHORT,
 	
+	/** Jump-short value. */
+	JUMP_SHORT,
+	
 	/** Integer. */
 	INTEGER,
+	
+	/** Jump-integer value. */
+	JUMP_INTEGER,
 	
 	/** Lookup switch table. */
 	LOOKUPSWITCH,
