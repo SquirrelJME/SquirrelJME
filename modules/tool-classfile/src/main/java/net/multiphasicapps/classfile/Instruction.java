@@ -1138,9 +1138,9 @@ public final class Instruction
 			sb.append(']');
 			
 			// Address following
-			sb.append("->[@");
+			sb.append("(~>@");
 			sb.append(this.addressFollowing);
-			sb.append("]");
+			sb.append(")");
 			
 			// Cache
 			this._string = new WeakReference<>((rv = sb.toString()));
