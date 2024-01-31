@@ -149,6 +149,9 @@ public class HostedVirtualMachine
 				new Thread(new HostedCleanup(tempJars),
 					"hosted-cleanup"));
 			
+			// Get system properties to use
+			Map<String, String> actualSysProps = this.actualSysProps;
+			
 			// Extract and handle libraries accordingly
 			Set<Path> libPaths = new LinkedHashSet<>();
 			Map<String, Path> jarToPath = new LinkedHashMap<>();
@@ -180,6 +183,26 @@ public class HostedVirtualMachine
 				// Map between the two
 				libPaths.add(path);
 				jarToPath.put(actualName, path);
+				
+				// System property path translation, as needed
+				Path wasPath = lib.path();
+				if (wasPath != null)
+				{
+					// What are we coming from?
+					String wasRelStr = wasPath.toString();
+					String wasAbsStr = wasPath.toAbsolutePath().toString();
+						
+					// What are we going to?
+					String nowAbsStr = path.toAbsolutePath().toString();
+					for (Map.Entry<String, String> entry :
+						this.actualSysProps.entrySet())
+					{
+						String value = entry.getValue();
+						if (Objects.equals(value, wasRelStr) ||
+							Objects.equals(value, wasAbsStr))
+							entry.setValue(nowAbsStr);
+					}
+				}
 			}
 			
 			// Determine the true classpath of what is being run
@@ -198,9 +221,6 @@ public class HostedVirtualMachine
 			
 			// Our own classpath is the support path
 			String supportPath = System.getProperty("java.class.path");
-			
-			// Get system properties to use
-			Map<String, String> actualSysProps = this.actualSysProps;
 			
 			// Define all the available library and classpath paths
 			actualSysProps.put(EmulatedTaskShelf.AVAILABLE_LIBRARIES,
