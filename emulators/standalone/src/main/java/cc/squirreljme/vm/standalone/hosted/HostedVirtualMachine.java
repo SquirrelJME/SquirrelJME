@@ -14,6 +14,7 @@ import cc.squirreljme.emulator.NativeBinding;
 import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.emulator.vm.VirtualMachine;
+import cc.squirreljme.jdwp.host.JDWPHostFactory;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
 import cc.squirreljme.jvm.suite.SuiteUtils;
@@ -60,6 +61,9 @@ public class HostedVirtualMachine
 	/** The manager which contains all the library JARs. */
 	protected final VMSuiteManager suiteManager;
 	
+	/** Factory for the host debugger interface. */ 
+	protected final JDWPHostFactory jdwpFactory;
+	
 	/** The classpath to use for execution. */
 	private final VMClassLibrary[] _classPath;
 	
@@ -69,6 +73,7 @@ public class HostedVirtualMachine
 	/**
 	 * Initializes the hosted virtual machine.
 	 *
+	 * @param __jdwp The debugger interface to communicate with.
 	 * @param __suiteManager The manager for suite entries.
 	 * @param __classPath The initial classpath to use.
 	 * @param __mainClass The main class to execute.
@@ -76,7 +81,8 @@ public class HostedVirtualMachine
 	 * @param __args Arguments to the main class.
 	 * @since 2023/12/03
 	 */
-	public HostedVirtualMachine(VMSuiteManager __suiteManager,
+	public HostedVirtualMachine(JDWPHostFactory __jdwp,
+		VMSuiteManager __suiteManager,
 		VMClassLibrary[] __classPath, String __mainClass,
 		Map<String, String> __sysProps, String... __args)
 		throws NullPointerException
@@ -111,6 +117,7 @@ public class HostedVirtualMachine
 		actualSysProps.put(EmulatedTaskShelf.HOSTED_VM_SUPPORTPATH, "");
 		
 		// Store other values
+		this.jdwpFactory = __jdwp;
 		this.suiteManager = __suiteManager;
 		this.mainClass = __mainClass;
 		this._classPath = __classPath.clone();
@@ -129,6 +136,7 @@ public class HostedVirtualMachine
 		
 		// Setup and run the virtual machine
 		Path tempJars = null;
+		Process process = null;
 		try
 		{
 			// We need to go through and possibly extract JARs depending on
@@ -219,6 +227,27 @@ public class HostedVirtualMachine
 			args.add(Objects.toString(RuntimeShelf.vmDescription(
 				VMDescriptionType.EXECUTABLE_PATH), "java"));
 			
+			// If we are connecting to a debugger, we need to set up a proxy
+			// between the new JVM and this current one through TCP
+			JDWPHostFactory jdwpFactory = this.jdwpFactory;
+			if (jdwpFactory != null)
+				try
+				{
+					// Setup proxy
+					HostedJDWPProxy proxy = new HostedJDWPProxy(jdwpFactory);
+					
+					// We need to connect to the VM through our own internal
+					// proxy
+					args.add(String.format("-agentlib:jdwp=" +
+						"transport=dt_socket,server=n," +
+						"address=localhost:%d,suspend=y",
+						proxy.port));
+				}
+				catch (IOException __e)
+				{
+					__e.printStackTrace();
+				}
+			
 			// Any system properties
 			for (Map.Entry<String, String> prop : actualSysProps.entrySet())
 				args.add(String.format("-D%s=%s",
@@ -246,7 +275,7 @@ public class HostedVirtualMachine
 			Debugging.debugNote("Hosted Args: %s", args);
 			
 			// Execute the virtual machine, wait for it to complete
-			Process process = builder.start();
+			process = builder.start();
 			int exitCode;
 			for (;;)
 				try
@@ -271,6 +300,19 @@ public class HostedVirtualMachine
 		// Cleanup extracted JARs
 		finally
 		{
+			// Kill the process if it is running
+			if (process != null)
+				if (process.isAlive())
+					try
+					{
+						process.destroyForcibly();
+					}
+					catch (Throwable __e)
+					{
+						__e.printStackTrace();
+					}
+			
+			// Cleanup Jars
 			new HostedCleanup(tempJars).run();
 		}
 	}

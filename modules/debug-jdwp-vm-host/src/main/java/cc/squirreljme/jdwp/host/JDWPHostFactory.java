@@ -86,6 +86,17 @@ public final class JDWPHostFactory
 	}
 	
 	/**
+	 * Returns the input stream.
+	 *
+	 * @return The input stream.
+	 * @since 2024/01/30
+	 */
+	public InputStream in()
+	{
+		return this.in;
+	}
+	
+	/**
 	 * Opens the controller.
 	 * 
 	 * @param __bind The binding to use.
@@ -101,5 +112,16 @@ public final class JDWPHostFactory
 		
 		// Return a new controller for processing events
 		return new JDWPHostController(__bind, this.in, this.out);
+	}
+	
+	/**
+	 * Returns the output stream.
+	 *
+	 * @return The output stream.
+	 * @since 2024/01/30
+	 */
+	public OutputStream out()
+	{
+		return this.out;
 	}
 }

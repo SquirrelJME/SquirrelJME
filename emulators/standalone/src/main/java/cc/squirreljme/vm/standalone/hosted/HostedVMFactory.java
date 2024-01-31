@@ -49,7 +49,7 @@ public class HostedVMFactory
 		throws IllegalArgumentException, NullPointerException, VMException
 	{
 		// This is just an opaque wrapper interface
-		return new HostedVirtualMachine(__suiteManager, __classPath,
+		return new HostedVirtualMachine(__jdwp, __suiteManager, __classPath,
 			__mainClass, __sysProps, __args);
 	}
 }

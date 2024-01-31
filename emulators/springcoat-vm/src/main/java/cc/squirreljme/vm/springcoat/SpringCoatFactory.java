@@ -44,12 +44,12 @@ public class SpringCoatFactory
 	 */
 	@Override
 	protected VirtualMachine createVM(ProfilerSnapshot __profiler,
-		JDWPHostFactory __jdwp, VMThreadModel __threadModel, VMSuiteManager __suiteManager,
-		VMClassLibrary[] __classpath, String __mainClass, Map<String, String> __sysProps,
-		String[] __args)
+		JDWPHostFactory __jdwp, VMThreadModel __threadModel,
+		VMSuiteManager __suiteManager, VMClassLibrary[] __classpath,
+		String __mainClass, Map<String, String> __sysProps, String[] __args)
 		throws IllegalArgumentException, NullPointerException, VMException
 	{
-		// Setup the main task manager which runs everything
+		// Set up the main task manager which runs everything
 		SpringTaskManager tm = new SpringTaskManager(__suiteManager,
 			__profiler);
 		
