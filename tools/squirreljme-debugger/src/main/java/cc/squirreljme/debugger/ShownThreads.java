@@ -9,18 +9,15 @@
 
 package cc.squirreljme.debugger;
 
-import cc.squirreljme.jdwp.JDWPEventKind;
-import cc.squirreljme.jdwp.JDWPSuspendPolicy;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.Arrays;
 import java.util.Objects;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 /**
@@ -129,10 +126,11 @@ public class ShownThreads
 		if (threads == null || threads.length == 0)
 			return;
 		
-		// Need to update, do not update if we have no context
+		// Context thread for potential selecting
 		InfoThread contextThread = this.context.getThread();
-		if (contextThread == null)
-			return;
+		
+		// Sort again
+		Arrays.sort(threads);
 		
 		// We will be working on this combo box much
 		JComboBox<InfoThread> combo = this.combo;
@@ -144,6 +142,7 @@ public class ShownThreads
 		// The current selected item
 		InfoThread selected = (InfoThread)combo.getSelectedItem();
 		boolean redoSelection = false;
+		boolean didFind = false;
 		
 		// Go through all the items because we will be adding and removing
 		// them accordingly
@@ -177,7 +176,10 @@ public class ShownThreads
 			
 			// Otherwise clear it to mark as not added
 			else
+			{
+				didFind = true;
 				threads[found] = null;
+			}
 		}
 		
 		// Go through and add any threads that are new
@@ -186,8 +188,15 @@ public class ShownThreads
 				combo.addItem(thread);
 		
 		// Need to redo the selection? Just select the first then
-		if (redoSelection)
-			combo.setSelectedItem(0);
+		if (!didFind || redoSelection || contextThread == null)
+		{
+			// Select it
+			InfoThread forceSelect = threads[0];
+			combo.setSelectedItem(forceSelect);
+			
+			// Force it to be shown
+			this.context.optional(forceSelect);
+		}
 		
 		// Make sure our context thread is always selected
 		else
@@ -196,6 +205,10 @@ public class ShownThreads
 		// Set updater for when the combo box value changes
 		combo.addActionListener(this._actionListener);
 		combo.addItemListener(this._itemListener);
+		
+		// If there is nothing shown, try to show whatever is in the context
+		if (this._current == null && contextThread != null)
+			this.__context(contextThread);
 
 		// Repaint
 		Utils.revalidate(combo);

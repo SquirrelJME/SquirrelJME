@@ -54,7 +54,13 @@ public final class JDWPHostEventManager
 		// Unconditional breakpoints
 		this._unconditional.put(JDWPEventKind.BREAKPOINT,
 			new JDWPHostEventRequest(0, JDWPEventKind.BREAKPOINT,
-				JDWPSuspendPolicy.EVENT_THREAD, -1, null));
+				JDWPSuspendPolicy.EVENT_THREAD, -1,
+				null));
+		
+		// Suspend all on VM start
+		this.addEventRequest(new JDWPHostEventRequest(0,
+			JDWPEventKind.VM_START, JDWPSuspendPolicy.ALL, -1,
+			null));
 	}
 	
 	/**
@@ -74,11 +80,13 @@ public final class JDWPHostEventManager
 		if (JDWPHostController._DEBUG)
 			Debugging.debugNote("JDWP: Adding event %s", __request);
 		
-		Map<JDWPEventKind, List<JDWPHostEventRequest>> eventByKind = this._eventByKind;
+		Map<JDWPEventKind, List<JDWPHostEventRequest>> eventByKind =
+			this._eventByKind;
 		synchronized (this)
 		{
 			// Get list of the event
-			List<JDWPHostEventRequest> list = eventByKind.get(__request.eventKind);
+			List<JDWPHostEventRequest> list = eventByKind.get(
+				__request.eventKind);
 			if (list == null)
 				eventByKind.put(__request.eventKind,
 					(list = new LinkedList<>()));
@@ -166,9 +174,9 @@ public final class JDWPHostEventManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/04/17
 	 */
-	protected Iterable<JDWPHostEventRequest> find(JDWPHostController __controller,
-		Object __thread, boolean __unconditional,
-		JDWPEventKind __kind, Object... __args)
+	protected Iterable<JDWPHostEventRequest> find(
+		JDWPHostController __controller, Object __thread,
+		boolean __unconditional, JDWPEventKind __kind, Object... __args)
 		throws NullPointerException
 	{
 		if (__controller == null || __kind == null)
