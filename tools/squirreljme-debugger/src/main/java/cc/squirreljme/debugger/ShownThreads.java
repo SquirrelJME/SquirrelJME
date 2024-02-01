@@ -21,6 +21,7 @@ import java.util.Objects;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 
 /**
  * Shows all the running threads within the virtual machine and allows
@@ -49,6 +50,9 @@ public class ShownThreads
 	
 	/** The currently viewed thread. */
 	private volatile ShownThread _current;
+	
+	/** Last known threads. */
+	private volatile InfoThread[] _lastKnown;
 	
 	/**
 	 * Initializes the thread shower.
@@ -85,8 +89,15 @@ public class ShownThreads
 		combo.addActionListener(this._actionListener);
 		combo.addItemListener(this._itemListener);
 		
-		// Request that everything gets updated
-		Utils.swingInvoke(this::update);
+		// Last known threads, blank for now
+		this._lastKnown = new InfoThread[0];
+		
+		// Set up a timer to updates threads
+		Timer tick = new Timer(5000, (__event) -> {
+				this.__updateAll();
+			});
+		tick.setInitialDelay(3000);
+		tick.start();
 	}
 	
 	/**
@@ -98,8 +109,8 @@ public class ShownThreads
 		FrameLocation __oldLocation, InfoThread __newThread,
 		InfoFrame __newFrame, FrameLocation __newLocation)
 	{
-		// Force an update
-		this.update();
+		// Update all threads, this will call the updater later
+		this.__updateAll();
 	}
 	
 	/**
@@ -109,12 +120,19 @@ public class ShownThreads
 	 */
 	public void update()
 	{
-		// Obtain all resultant threads
-		StoredInfo<InfoThread> stored = this.state.storedInfo.getThreads();
-		InfoThread[] threads = stored.all(this.state, InfoThread[].class);
+		// Obtain all resultant threads, do not perform any updates if blank
+		InfoThread[] threads;
+		synchronized (this)
+		{
+			threads = this._lastKnown;
+		}
+		if (threads == null || threads.length == 0)
+			return;
 		
-		// Need to update
+		// Need to update, do not update if we have no context
 		InfoThread contextThread = this.context.getThread();
+		if (contextThread == null)
+			return;
 		
 		// We will be working on this combo box much
 		JComboBox<InfoThread> combo = this.combo;
@@ -181,13 +199,62 @@ public class ShownThreads
 
 		// Repaint
 		Utils.revalidate(combo);
+		Utils.revalidate(this);
+	}
+	
+	/**
+	 * Chooses the updated thread.
+	 *
+	 * @param __event The event.
+	 * @since 2024/01/26
+	 */
+	private void __chooseThread(ActionEvent __event)
+	{
+		InfoThread thread = (InfoThread)this.combo.getSelectedItem();
 		
+		// Did the thread change? Context call will eventually cause an update
+		if (thread != null)
+		{
+			this.context.set(this.state, thread);
+			Utils.swingInvoke(() -> this.__context(thread));
+		}
+	}
+	
+	/**
+	 * Chooses an updated thread.
+	 *
+	 * @param __event The event used.
+	 * @since 2024/01/24
+	 */
+	private void __chooseThread(ItemEvent __event)
+	{
+		// Do nothing if nothing was set, or we deselected the item
+		InfoThread thread = (InfoThread)__event.getItem();
+		if (thread == null || __event.getStateChange() != ItemEvent.SELECTED)
+			return;
+		
+		// Update thread, the context call will eventually cause an update
+		if (thread != null)
+		{
+			this.context.set(this.state, thread);
+			Utils.swingInvoke(() -> this.__context(thread));
+		}
+	}
+	
+	/**
+	 * Updates the context thread view.
+	 *
+	 * @param __context The new context thread.
+	 * @since 2024/02/01
+	 */
+	private void __context(InfoThread __context)
+	{
 		// Need to determine if the thread is changing
 		ShownThread shown = this._current;
 		
 		// Only update the shown info if the thread changed
-		if (shown != null && contextThread != null &&
-			!Objects.equals(shown.thread, contextThread))
+		if (shown != null && __context != null &&
+			!Objects.equals(shown.thread, __context))
 		{
 			// Remove old thread being shown
 			this._current = null;
@@ -196,10 +263,10 @@ public class ShownThreads
 		}
 		
 		// Set new item?
-		if (shown == null && contextThread != null)
+		if (shown == null && __context != null)
 		{
 			// Add in new thread
-			shown = new ShownThread(this.state, contextThread,
+			shown = new ShownThread(this.state, __context,
 				this.context);
 			this.add(shown, BorderLayout.CENTER);
 			this._current = shown;
@@ -217,47 +284,21 @@ public class ShownThreads
 	}
 	
 	/**
-	 * Chooses the updated thread.
+	 * Updates all known threads.
 	 *
-	 * @param __event The event.
-	 * @since 2024/01/26
+	 * @since 2024/02/01
 	 */
-	private void __chooseThread(ActionEvent __event)
+	private void __updateAll()
 	{
-		InfoThread thread = (InfoThread)this.combo.getSelectedItem();
-		
-		// Debug
-		Debugging.debugNote("Chose %s (ActionEvent)", thread);
-		
-		// Did the thread change?
-		if (thread != null)
-		{
-			this.context.set(this.state, thread);
-			this.update();
-		}
-	}
-	
-	/**
-	 * Chooses an updated thread.
-	 *
-	 * @param __event The event used.
-	 * @since 2024/01/24
-	 */
-	private void __chooseThread(ItemEvent __event)
-	{
-		// Do nothing if nothing was set, or we deselected the item
-		InfoThread thread = (InfoThread)__event.getItem();
-		if (thread == null || __event.getStateChange() != ItemEvent.SELECTED)
-			return;
-		
-		// Debug
-		Debugging.debugNote("Chose %s (ItemEvent)", thread);
-		
-		// Update thread
-		if (thread != null)
-		{
-			this.context.set(this.state, thread);
-			this.update();
-		}
+		this.state.allThreads((__threads) -> {
+				// Use these threads instead
+				synchronized (this)
+				{
+					this._lastKnown = __threads;
+				}
+				
+				// Update everything
+				Utils.swingInvoke(this::update);
+			});
 	}
 }

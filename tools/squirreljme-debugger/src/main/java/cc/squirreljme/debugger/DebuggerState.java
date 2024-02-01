@@ -29,6 +29,7 @@ import cc.squirreljme.jdwp.JDWPSuspendPolicy;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.io.HexDumpOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 import net.multiphasicapps.classfile.ClassName;
@@ -161,6 +162,9 @@ public class DebuggerState
 						JDWPId thread = __reply.readId(JDWPIdKind.THREAD_ID);
 						threads[i] = stored.get(__state, thread);
 					}
+					
+					// Sort all the threads if we can
+					Arrays.sort(threads);
 					
 					// Send to the callback all the updated threads
 					__callback.accept(threads);

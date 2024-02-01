@@ -432,9 +432,6 @@ public class PrimaryFrame
 	public void update()
 	{
 		Utils.swingInvoke(() -> {
-			// Update thread selection
-			this.shownThreads.update();
-			
 			// Needs to update second as the thread could have changed
 			this.shownContext.update();
 		});
