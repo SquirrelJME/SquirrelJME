@@ -63,6 +63,9 @@
       <excludeFolder url="file://$MODULE_DIR$/../../modules/csv/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/csv/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/csv/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/debug-jdwp-vm-host/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/debug-jdwp-vm-host/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/debug-jdwp-vm-host/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/debug-jdwp/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/debug-jdwp/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/debug-jdwp/out" />
@@ -261,6 +264,9 @@
       <excludeFolder url="file://$MODULE_DIR$/../../ratufacoat/build" />
       <excludeFolder url="file://$MODULE_DIR$/../../ratufacoat/cmake-build-debug" />
       <excludeFolder url="file://$MODULE_DIR$/../../ratufacoat/cmake-build-release" />
+      <excludeFolder url="file://$MODULE_DIR$/../../sdk/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../sdk/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../sdk/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/markdown-javadoc/.settings" />
@@ -273,22 +279,16 @@
       <excludeFolder url="file://$MODULE_DIR$/../../tools/sqf-to-c/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/sqf-to-c/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/sqf-to-c/out" />
-      <excludeFolder url="file://$MODULE_DIR$/../../tools/txt-to-pbm/.settings" />
-      <excludeFolder url="file://$MODULE_DIR$/../../tools/txt-to-pbm/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../tools/txt-to-pbm/out" />
-      <excludeFolder url="file://$MODULE_DIR$/../../utils-dev" />
-      <excludeFolder url="file://$MODULE_DIR$/../../sdk/.settings" />
-      <excludeFolder url="file://$MODULE_DIR$/../../sdk/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../sdk/out" />
-      <excludeFolder url="file://$MODULE_DIR$/../../tools/unzip/.settings" />
-      <excludeFolder url="file://$MODULE_DIR$/../../tools/unzip/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../tools/unzip/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-debugger/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-debugger/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-debugger/out" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/debug-jdwp-vm-host/.settings" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/debug-jdwp-vm-host/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/debug-jdwp-vm-host/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/txt-to-pbm/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/txt-to-pbm/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/txt-to-pbm/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/unzip/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/unzip/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/unzip/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../utils-dev" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

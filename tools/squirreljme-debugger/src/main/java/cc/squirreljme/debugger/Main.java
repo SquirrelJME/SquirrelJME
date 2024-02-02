@@ -222,7 +222,6 @@ public class Main
 		// Show it in a good spot and maximized as well
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
-		frame.setExtendedState(frame.getExtendedState() |
-			Frame.MAXIMIZED_BOTH);
+		Utils.maximize(frame);
 	}
 }

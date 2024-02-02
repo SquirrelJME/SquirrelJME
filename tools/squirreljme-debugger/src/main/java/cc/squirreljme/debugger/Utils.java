@@ -11,6 +11,8 @@ package cc.squirreljme.debugger;
 
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import java.awt.Font;
+import java.awt.Frame;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Window;
 import java.awt.image.BufferedImage;
@@ -24,6 +26,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -311,6 +314,34 @@ public final class Utils
 		
 		// Not found or loadable?
 		return null;
+	}
+	
+	/**
+	 * Maximizes the given frame.
+	 *
+	 * @param __frame The frame to maximize.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/02/02
+	 */
+	public static void maximize(JFrame __frame)
+		throws NullPointerException
+	{
+		if (__frame == null)
+			throw new NullPointerException("NARG");
+		
+		// Maximizing on Windows causes the frame to cover the taskbar,
+		// especially if it is not in the standard position of being at the
+		// bottom of the screen
+		if (System.getProperty("os.name").toLowerCase(Locale.ROOT)
+			.contains("windows"))
+		{
+			GraphicsEnvironment env =
+				GraphicsEnvironment.getLocalGraphicsEnvironment();
+			__frame.setMaximizedBounds(env.getMaximumWindowBounds());
+		}
+		
+		__frame.setExtendedState(__frame.getExtendedState() |
+			Frame.MAXIMIZED_BOTH);
 	}
 	
 	/**
