@@ -43,6 +43,12 @@ public abstract class TimeZone
 	@Api
 	public abstract void setRawOffset(int __a);
 	
+	/**
+	 * Does this time zone use daylight savings time?
+	 *
+	 * @return If daylight savings time is used.
+	 * @since 2024/02/02
+	 */
 	@Api
 	public abstract boolean useDaylightTime();
 	

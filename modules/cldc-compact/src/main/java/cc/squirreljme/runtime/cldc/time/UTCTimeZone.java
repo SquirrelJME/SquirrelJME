@@ -47,9 +47,14 @@ public class UTCTimeZone
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/02/02
+	 */
 	@Override
 	public boolean useDaylightTime()
 	{
-		throw Debugging.todo();
+		// UTC has no time zone
+		return false;
 	}
 }
