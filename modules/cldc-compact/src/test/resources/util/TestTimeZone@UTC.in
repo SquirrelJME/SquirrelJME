@@ -1,6 +1,7 @@
 MANIFEST-VERSION: 1.0
 result: NoResult
 thrown: NoExceptionThrown
+secondary-id: string:UTC
 secondary-displayname: string:Coordinated\_Universal\_Time
 secondary-displaynamedstlong: string:Coordinated\_Universal\_Time
 secondary-displaynamedstshort: string:UTC

@@ -32,6 +32,10 @@ public class TestTimeZone
 	{
 		TimeZone zone = TimeZone.getTimeZone(__zoneId);
 		
+		// ID
+		this.secondary("id",
+			zone.getID());
+		
 		// Display names
 		this.secondary("displayName",
 			zone.getDisplayName());
