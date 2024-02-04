@@ -7,19 +7,17 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <string.h>
-
 #include "mock.h"
 #include "proto.h"
 #include "test.h"
 #include "unit.h"
 
 /**
- * Tests parsing of class field descriptors.
+ * Tests parsing of class names.
  *  
- * @since 2024/01/01 
+ * @since 2024/02/04 
  */
-SJME_TEST_DECLARE(testClassParseFieldDescriptor)
+SJME_TEST_DECLARE(testDescClassName)
 {
 	sjme_todo("Implement %s", __func__);
 	return SJME_TEST_RESULT_FAIL;

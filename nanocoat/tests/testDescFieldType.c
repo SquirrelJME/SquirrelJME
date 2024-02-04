@@ -15,11 +15,11 @@
 #include "unit.h"
 
 /**
- * Tests parsing of method descriptors.
+ * Tests parsing of class field descriptors.
  *  
  * @since 2024/01/01 
  */
-SJME_TEST_DECLARE(testClassParseMethodDescriptor)
+SJME_TEST_DECLARE(testDescFieldType)
 {
 	sjme_todo("Implement %s", __func__);
 	return SJME_TEST_RESULT_FAIL;

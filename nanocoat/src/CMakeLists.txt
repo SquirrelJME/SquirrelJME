@@ -15,6 +15,7 @@ list(APPEND coreSources
 	classy.c
 	comparator.c
 	debug.c
+	descriptor.c
 	error.c
 	except.c
 	gfx.c

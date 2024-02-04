@@ -19,7 +19,7 @@
  *  
  * @since 2024/01/02 
  */
-SJME_TEST_DECLARE(testClassParseBinaryName)
+SJME_TEST_DECLARE(testDescBinaryName)
 {
 	sjme_todo("Implement %s", __func__);
 	return SJME_TEST_RESULT_FAIL;
