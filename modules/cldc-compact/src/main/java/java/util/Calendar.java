@@ -182,14 +182,19 @@ public abstract class Calendar
 	public static final int ZONE_OFFSET =
 		15;
 	
+	/** Have fields been set? */
 	@Api
 	protected boolean areFieldsSet;
 	
+	/** Fields within the calendar. */
 	@Api
-	protected int[] fields;
+	protected int[] fields =
+		new int[Calendar.FIELD_COUNT];
 	
+	/** Has a specific field been set? */
 	@Api
-	protected boolean[] isSet;
+	protected boolean[] isSet =
+		new boolean[Calendar.FIELD_COUNT];
 	
 	/** Has the time been set? */
 	@Api
@@ -240,14 +245,30 @@ public abstract class Calendar
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * Clears all the calendar fields back to zero.
+	 *
+	 * @since 2024/02/03
+	 */
 	@Api
 	public final void clear()
 	{
-		throw Debugging.todo();
+		// Clear all fields
+		int[] fields = this.fields;
+		boolean[] isSet = this.isSet;
+		for (int field = 0; field < Calendar.FIELD_COUNT; field++)
+		{
+			fields[field] = 0;
+			isSet[field] = false;
+		}
+		
+		// Time and fields are no longer set
+		this.areFieldsSet = false;
+		this.isTimeSet = false;
 	}
 	
 	@Api
-	public final void clear(int __a)
+	public final void clear(int __field)
 	{
 		throw Debugging.todo();
 	}
