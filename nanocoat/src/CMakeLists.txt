@@ -19,6 +19,7 @@ list(APPEND coreSources
 	error.c
 	except.c
 	gfx.c
+	jdwp.c
 	list.c
 	loop.c
 	modelessStars.c
