@@ -691,6 +691,20 @@ typedef struct sjme_range
 } sjme_range;
 
 /**
+ * Represents a pointer and a length.
+ * 
+ * @since 2024/02/04
+ */
+typedef struct sjme_pointerLen
+{
+	/** The pointer to the data. */
+	sjme_pointer pointer;
+	
+	/** The length of the pointer. */
+	sjme_jint length;
+} sjme_pointerLen;
+
+/**
  * A wrapper used by front ends, which is reserved for use, which stores a
  * natively bound object accordingly as needed.
  * 

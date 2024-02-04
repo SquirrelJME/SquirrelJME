@@ -98,23 +98,26 @@ SJME_LIST_DECLARE(sjme_jint, 0);
 /** List of @c sjme_jint* . */
 SJME_LIST_DECLARE(sjme_jint, 1);
 
-/** List of @c sjme_juint. */
+/** List of @c sjme_juint . */
 SJME_LIST_DECLARE(sjme_juint, 0);
 
-/** List of @c sjme_lpstr. */
+/** List of @c sjme_lpstr . */
 SJME_LIST_DECLARE(sjme_lpstr, 0);
 
-/** List of @c sjme_lpcstr. */
+/** List of @c sjme_lpcstr . */
 SJME_LIST_DECLARE(sjme_lpcstr, 0);
 
-/** List of @c sjme_jobject. */
+/** List of @c sjme_jobject . */
 SJME_LIST_DECLARE(sjme_jobject, 0);
 
-/** List of @c sjme_pointer. */
+/** List of @c sjme_pointer . */
 SJME_LIST_DECLARE(sjme_pointer, 0);
 
-/** List of @c sjme_cchar. */
+/** List of @c sjme_cchar . */
 SJME_LIST_DECLARE(sjme_cchar, 0);
+
+/** List of @c sjme_pointerLen . */
+SJME_LIST_DECLARE(sjme_pointerLen, 0);
 
 /**
  * Allocates a given list generically.

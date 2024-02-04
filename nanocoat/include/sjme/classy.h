@@ -32,6 +32,37 @@ extern "C" {
 /*--------------------------------------------------------------------------*/
 
 /**
+ * Represents a single identifier.
+ * 
+ * @since 2024/02/04
+ */
+typedef struct sjme_class_identifier
+{
+	/** The hash of this identifier. */
+	sjme_jint hash;
+	
+	/** The string which makes up the identifier. */
+	sjme_cchar string[sjme_flexibleArrayCount];
+} sjme_class_identifier;
+
+/** A list of identifiers. */
+SJME_LIST_DECLARE(sjme_class_identifier, 0);
+
+/**
+ * The binary name of a class.
+ * 
+ * @since 2024/02/04
+ */
+typedef struct sjme_class_binaryName
+{
+	/** The hash of this binary name. */
+	sjme_jint hash;
+	
+	/** The component identifiers that make up the binary name. */
+	sjme_list_sjme_class_identifier identifiers;
+} sjme_class_binaryName;
+
+/**
  * Represents a field descriptor.
  *
  * @since 2024/01/03
@@ -40,12 +71,15 @@ typedef struct sjme_class_fieldDescriptor
 {
 	/** The hash of this descriptor. */
 	sjme_jint hash;
-
+	
 	/** How deep this is in array terms. */
 	sjme_jubyte arrayDepth;
+	
+	/** The type this is in Java. */
+	sjme_javaTypeId javaType;
 
 	/** The core type, without any array signifiers. */
-	sjme_cchar coreType[sjme_flexibleArrayCountUnion];
+	sjme_class_binaryName binary[sjme_flexibleArrayCount];
 } sjme_class_fieldDescriptor;
 
 /**
@@ -68,7 +102,7 @@ typedef struct sjme_class_methodDescriptor
 {
 	/** The hash of this descriptor. */
 	sjme_jint hash;
-
+	
 	/** The return type. */
 	sjme_class_fieldDescriptor returnType;
 
@@ -94,8 +128,8 @@ typedef struct sjme_class_classDescriptor
 		/** As a field descriptor. */
 		sjme_class_fieldDescriptor field;
 
-		/** As an actual string. */
-		sjme_cchar binary[sjme_flexibleArrayCountUnion];
+		/** As a binary name. */
+		sjme_class_binaryName binary;
 	} descriptor;
 } sjme_class_classDescriptor;
 
