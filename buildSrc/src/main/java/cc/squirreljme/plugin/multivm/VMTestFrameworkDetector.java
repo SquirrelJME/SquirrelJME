@@ -110,7 +110,8 @@ public class VMTestFrameworkDetector
 		if (path.endsWith(".class"))
 			path = path.substring(0, path.length() - ".class".length());
 		
-		// If there is an at sign in this test then remove it since
+		// If there is an at sign in this test then remove it since we
+		// only care for the base name
 		int lastSlash = path.lastIndexOf('/');
 		int atSign = path.lastIndexOf('@');
 		if (atSign >= 0 && atSign > lastSlash)
