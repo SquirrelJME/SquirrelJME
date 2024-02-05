@@ -68,6 +68,12 @@ SJME_TEST_DECLARE(testDescIdentifier)
 		sjme_desc_interpretIdentifier(&result,
 			"squirrel/squirrel", 0),
 		"Name with '/' is valid?");
+		
+	memset(&result, 0, sizeof(result));
+	sjme_unitEqualI(test, SJME_ERROR_INVALID_IDENTIFIER,
+		sjme_desc_interpretIdentifier(&result,
+			"", 0),
+		"Blank is valid?");
 	
 	/* Success! */
 	return SJME_TEST_RESULT_PASS;
