@@ -21,10 +21,10 @@ sjme_errorCode sjme_desc_interpretBinaryName(
 	if (inPool == NULL || outName == NULL || inStr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	if (inLen < 0)
-		return SJME_ERROR_INVALID_ARGUMENT;
-	else if (inLen == 0)
+	if (inLen == 0)
 		inLen = strlen(inStr);
+	if (inLen <= 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
 		
 	sjme_todo("Implement this?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
@@ -39,10 +39,10 @@ sjme_errorCode sjme_desc_interpretClassName(
 	if (inPool == NULL || outName == NULL || inStr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	if (inLen < 0)
-		return SJME_ERROR_INVALID_ARGUMENT;
-	else if (inLen == 0)
+	if (inLen == 0)
 		inLen = strlen(inStr);
+	if (inLen <= 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
 		
 	sjme_todo("Implement this?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
@@ -57,10 +57,10 @@ sjme_errorCode sjme_desc_interpretFieldType(
 	if (inPool == NULL || outType == NULL || inStr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	if (inLen < 0)
-		return SJME_ERROR_INVALID_ARGUMENT;
-	else if (inLen == 0)
+	if (inLen == 0)
 		inLen = strlen(inStr);
+	if (inLen <= 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
 		
 	sjme_todo("Implement this?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
@@ -74,10 +74,10 @@ sjme_errorCode sjme_desc_interpretIdentifier(
 	if (outIdent == NULL || inStr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	if (inLen < 0)
-		return SJME_ERROR_INVALID_ARGUMENT;
-	else if (inLen == 0)
+	if (inLen == 0)
 		inLen = strlen(inStr);
+	if (inLen <= 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
 		
 	sjme_todo("Implement this?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
@@ -92,10 +92,10 @@ sjme_errorCode sjme_desc_interpretMethodType(
 	if (inPool == NULL || outType == NULL || inStr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	if (inLen < 0)
-		return SJME_ERROR_INVALID_ARGUMENT;
-	else if (inLen == 0)
+	if (inLen == 0)
 		inLen = strlen(inStr);
+	if (inLen <= 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
 		
 	sjme_todo("Implement this?");
 	return SJME_ERROR_NOT_IMPLEMENTED;

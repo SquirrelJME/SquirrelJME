@@ -70,7 +70,7 @@ SJME_TEST_DECLARE(testDescIdentifier)
 		"Name with '/' is valid?");
 		
 	memset(&result, 0, sizeof(result));
-	sjme_unitEqualI(test, SJME_ERROR_INVALID_IDENTIFIER,
+	sjme_unitEqualI(test, SJME_ERROR_INVALID_ARGUMENT,
 		sjme_desc_interpretIdentifier(&result,
 			"", 0),
 		"Blank is valid?");
