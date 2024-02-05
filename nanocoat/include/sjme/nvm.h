@@ -1675,6 +1675,9 @@ typedef enum sjme_errorCode
 	/** Unexpected end of file. */
 	SJME_ERROR_UNEXPECTED_EOF = -38,
 	
+	/** Invalid identifier. */
+	SJME_ERROR_INVALID_IDENTIFIER = -39,
+	
 	/** The number of error codes. */
 	SJME_NUM_ERROR_CODES = -39
 } sjme_errorCode;
