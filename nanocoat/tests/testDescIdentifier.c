@@ -33,7 +33,7 @@ SJME_TEST_DECLARE(testDescIdentifier)
 	/* Valid identifier. */
 	memset(&result, 0, sizeof(result));
 	if (sjme_error_is(sjme_desc_interpretIdentifier(
-		&result, string, 0)))
+		&result, string, strlen(string))))
 		sjme_unitFail(test, "Could not interpret identifier?");
 	
 	/* Make sure it was calculated correctly. */

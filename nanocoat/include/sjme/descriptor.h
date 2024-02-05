@@ -155,8 +155,7 @@ typedef struct sjme_desc_methodType
  * @param inPool The allocation pool to use. 
  * @param outName The interpreted result.
  * @param inStr The input string to be interpreted.
- * @param inLen The length of the input string, if @c 0 then the length of
- * the string will be obtained first.
+ * @param inLen The length of the input string.
  * @return Any resultant error code.
  * @since 2024/02/04
  */
@@ -172,8 +171,7 @@ sjme_errorCode sjme_desc_interpretBinaryName(
  * @param inPool The allocation pool to use. 
  * @param outName The interpreted result.
  * @param inStr The input string to be interpreted.
- * @param inLen The length of the input string, if @c 0 then the length of
- * the string will be obtained first.
+ * @param inLen The length of the input string.
  * @return Any resultant error code.
  * @since 2024/02/04
  */
@@ -189,8 +187,7 @@ sjme_errorCode sjme_desc_interpretClassName(
  * @param inPool The allocation pool to use. 
  * @param outType The interpreted result.
  * @param inStr The input string to be interpreted.
- * @param inLen The length of the input string, if @c 0 then the length of
- * the string will be obtained first.
+ * @param inLen The length of the input string.
  * @return Any resultant error code.
  * @since 2024/02/04
  */
@@ -205,8 +202,7 @@ sjme_errorCode sjme_desc_interpretFieldType(
  * 
  * @param outIdent The interpreted result.
  * @param inStr The input string to be interpreted.
- * @param inLen The length of the input string, if @c 0 then the length of
- * the string will be obtained first.
+ * @param inLen The length of the input string.
  * @return Any resultant error code.
  * @since 2024/02/04
  */
@@ -221,8 +217,7 @@ sjme_errorCode sjme_desc_interpretIdentifier(
  * @param inPool The allocation pool to use. 
  * @param outType The interpreted result.
  * @param inStr The input string to be interpreted.
- * @param inLen The length of the input string, if @c 0 then the length of
- * the string will be obtained first.
+ * @param inLen The length of the input string.
  * @return Any resultant error code.
  * @since 2024/02/04
  */
