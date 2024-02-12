@@ -36,7 +36,7 @@ extern "C" {
  * 
  * @since 2023/11/20
  */
-typedef enum sjme_unitOperator
+typedef enum sjme_unit_operator
 {
 	/** Equality, @c ==. */
 	SJME_UNIT_OPERATOR_EQUAL,
@@ -58,7 +58,7 @@ typedef enum sjme_unitOperator
 	
 	/** The number of unit operators. */
 	SJME_NUM_UNIT_OPERATORS
-} sjme_unitOperator;
+} sjme_unit_operator;
 
 /**
  * Checks equality between the two integer values.
@@ -72,8 +72,8 @@ typedef enum sjme_unitOperator
  * @return The assertion state.
  * @since 2023/11/11
  */
-sjme_testResult sjme_unitOperatorIR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
-	sjme_attrInValue sjme_unitOperator operator,
+sjme_testResult sjme_unit_operatorIR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_attrInValue sjme_unit_operator operator,
 	sjme_attrInNotNull sjme_test* test,
 	sjme_attrInValue sjme_jint a,
 	sjme_attrInValue sjme_jint b,
@@ -91,8 +91,8 @@ sjme_testResult sjme_unitOperatorIR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * @return The assertion state.
  * @since 2023/11/11
  */
-#define sjme_unitEqualI(...) \
-	sjme_unitOperatorIR(SJME_DEBUG_FILE_LINE_FUNC, \
+#define sjme_unit_equalI(...) \
+	sjme_unit_operatorIR(SJME_DEBUG_FILE_LINE_FUNC, \
 		SJME_UNIT_OPERATOR_EQUAL, __VA_ARGS__)
 
 /**
@@ -106,8 +106,8 @@ sjme_testResult sjme_unitOperatorIR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * @return The assertion state.
  * @since 2023/11/11
  */
-#define sjme_unitLessEqualI(...) \
-	sjme_unitOperatorIR(SJME_DEBUG_FILE_LINE_FUNC, \
+#define sjme_unit_lessEqualI(...) \
+	sjme_unit_operatorIR(SJME_DEBUG_FILE_LINE_FUNC, \
 		SJME_UNIT_OPERATOR_LESS_EQUAL, __VA_ARGS__)
 
 /**
@@ -121,8 +121,8 @@ sjme_testResult sjme_unitOperatorIR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * @return The assertion state.
  * @since 2023/11/20
  */
-#define sjme_unitNotEqualI(...) \
-	sjme_unitOperatorIR(SJME_DEBUG_FILE_LINE_FUNC, \
+#define sjme_unit_notEqualI(...) \
+	sjme_unit_operatorIR(SJME_DEBUG_FILE_LINE_FUNC, \
 		SJME_UNIT_OPERATOR_NOT_EQUAL, __VA_ARGS__)
 
 /**
@@ -137,8 +137,8 @@ sjme_testResult sjme_unitOperatorIR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * @return The assertion state.
  * @since 2023/11/17
  */
-sjme_testResult sjme_unitOperatorLR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
-	sjme_attrInValue sjme_unitOperator operator,
+sjme_testResult sjme_unit_operatorLR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_attrInValue sjme_unit_operator operator,
 	sjme_attrInNotNull sjme_test* test,
 	sjme_attrInNullable sjme_jobject a,
 	sjme_attrInNullable sjme_jobject b,
@@ -156,8 +156,8 @@ sjme_testResult sjme_unitOperatorLR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * @return The assertion state.
  * @since 2023/11/17
  */
-#define sjme_unitEqualL(...) \
-	sjme_unitOperatorLR(SJME_DEBUG_FILE_LINE_FUNC, \
+#define sjme_unit_equalL(...) \
+	sjme_unit_operatorLR(SJME_DEBUG_FILE_LINE_FUNC, \
 		SJME_UNIT_OPERATOR_EQUAL, __VA_ARGS__)
 
 /**
@@ -171,8 +171,8 @@ sjme_testResult sjme_unitOperatorLR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * @return The assertion state.
  * @since 2023/11/20
  */
-#define sjme_unitNotEqualL(...) \
-	sjme_unitOperatorLR(SJME_DEBUG_FILE_LINE_FUNC, \
+#define sjme_unit_notEqualL(...) \
+	sjme_unit_operatorLR(SJME_DEBUG_FILE_LINE_FUNC, \
 		SJME_UNIT_OPERATOR_NOT_EQUAL, __VA_ARGS__)
 
 /**
@@ -187,8 +187,8 @@ sjme_testResult sjme_unitOperatorLR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * @return The assertion state.
  * @since 2023/11/19
  */
-sjme_testResult sjme_unitOperatorPR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
-	sjme_attrInValue sjme_unitOperator operator,
+sjme_testResult sjme_unit_operatorPR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_attrInValue sjme_unit_operator operator,
 	sjme_attrInNotNull sjme_test* test,
 	sjme_attrInNullable void* a,
 	sjme_attrInNullable void* b,
@@ -206,8 +206,8 @@ sjme_testResult sjme_unitOperatorPR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * @return The assertion state.
  * @since 2023/11/19
  */
-#define sjme_unitEqualP(...) \
-	sjme_unitOperatorPR(SJME_DEBUG_FILE_LINE_FUNC, \
+#define sjme_unit_equalP(...) \
+	sjme_unit_operatorPR(SJME_DEBUG_FILE_LINE_FUNC, \
 		SJME_UNIT_OPERATOR_EQUAL, __VA_ARGS__)
 
 /**
@@ -221,8 +221,8 @@ sjme_testResult sjme_unitOperatorPR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * @return The assertion state.
  * @since 2023/11/20
  */
-#define sjme_unitNotEqualP(...) \
-	sjme_unitOperatorPR(SJME_DEBUG_FILE_LINE_FUNC, \
+#define sjme_unit_notEqualP(...) \
+	sjme_unit_operatorPR(SJME_DEBUG_FILE_LINE_FUNC, \
 		SJME_UNIT_OPERATOR_NOT_EQUAL, __VA_ARGS__)
 
 /**
@@ -237,8 +237,8 @@ sjme_testResult sjme_unitOperatorPR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * @return The assertion state.
  * @since 2023/12/17
  */
-sjme_testResult sjme_unitOperatorSR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
-	sjme_attrInValue sjme_unitOperator operator,
+sjme_testResult sjme_unit_operatorSR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_attrInValue sjme_unit_operator operator,
 	sjme_attrInNotNull sjme_test* test,
 	sjme_attrInNullable sjme_lpcstr a,
 	sjme_attrInNullable sjme_lpcstr b,
@@ -256,8 +256,8 @@ sjme_testResult sjme_unitOperatorSR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * @return The assertion state.
  * @since 2023/11/17
  */
-#define sjme_unitEqualS(...) \
-	sjme_unitOperatorSR(SJME_DEBUG_FILE_LINE_FUNC, \
+#define sjme_unit_equalS(...) \
+	sjme_unit_operatorSR(SJME_DEBUG_FILE_LINE_FUNC, \
 		SJME_UNIT_OPERATOR_EQUAL, __VA_ARGS__)
 
 /**
@@ -272,8 +272,8 @@ sjme_testResult sjme_unitOperatorSR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * @return The assertion state.
  * @since 2024/01/09
  */
-sjme_testResult sjme_unitOperatorZR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
-	sjme_attrInValue sjme_unitOperator operator,
+sjme_testResult sjme_unit_operatorZR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_attrInValue sjme_unit_operator operator,
 	sjme_attrInNotNull sjme_test* test,
 	sjme_attrInValue sjme_jboolean a,
 	sjme_attrInValue sjme_jboolean b,
@@ -291,9 +291,23 @@ sjme_testResult sjme_unitOperatorZR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * @return The assertion state.
  * @since 2024/01/09
  */
-#define sjme_unitEqualZ(...) \
-	sjme_unitOperatorZR(SJME_DEBUG_FILE_LINE_FUNC, \
+#define sjme_unit_equalZ(...) \
+	sjme_unit_operatorZR(SJME_DEBUG_FILE_LINE_FUNC, \
 		SJME_UNIT_OPERATOR_EQUAL, __VA_ARGS__)
+
+/**
+ * Is the given value @c SJME_JNI_TRUE ?
+ * 
+ * @param test The test data.
+ * @param value The value to check.
+ * @param format The message.
+ * @param ... The message parameters.
+ * @return The assertion state.
+ * @since 2024/02/11
+ */
+#define sjme_unit_isTrue(test, value, ...) \
+	sjme_unit_operatorZR(SJME_DEBUG_FILE_LINE_FUNC, \
+		SJME_UNIT_OPERATOR_EQUAL, test, SJME_JNI_TRUE, value, __VA_ARGS__)
 
 /**
  * Checks inequality between the two boolean values.
@@ -306,8 +320,8 @@ sjme_testResult sjme_unitOperatorZR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * @return The assertion state.
  * @since 2024/01/09
  */
-#define sjme_unitNotEqualZ(...) \
-	sjme_unitOperatorZR(SJME_DEBUG_FILE_LINE_FUNC, \
+#define sjme_unit_notEqualZ(...) \
+	sjme_unit_operatorZR(SJME_DEBUG_FILE_LINE_FUNC, \
 		SJME_UNIT_OPERATOR_NOT_EQUAL, __VA_ARGS__)
 
 /**
@@ -319,7 +333,7 @@ sjme_testResult sjme_unitOperatorZR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * @return The test result, which is fail.
  * @since 2023/11/11
  */
-sjme_testResult sjme_unitFailR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+sjme_testResult sjme_unit_failR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_attrInNotNull sjme_test* test,
 	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr format, ...)
 	sjme_attrFormatOuter(4, 5);
@@ -333,7 +347,7 @@ sjme_testResult sjme_unitFailR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * @return The test result, which is fail.
  * @since 2023/11/11
  */
-#define sjme_unitFail(...) sjme_unitFailR(SJME_DEBUG_FILE_LINE_FUNC, \
+#define sjme_unit_fail(...) sjme_unit_failR(SJME_DEBUG_FILE_LINE_FUNC, \
 	__VA_ARGS__)
 
 /**
@@ -345,7 +359,7 @@ sjme_testResult sjme_unitFailR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * @return The test result, which is skip.
  * @since 2023/11/19
  */
-sjme_testResult sjme_unitSkipR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+sjme_testResult sjme_unit_skipR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_attrInNotNull sjme_test* test,
 	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr format, ...)
 	sjme_attrFormatOuter(4, 5);
@@ -359,7 +373,7 @@ sjme_testResult sjme_unitSkipR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * @return The test result, which is skip.
  * @since 2023/11/19
  */
-#define sjme_unitSkip(...) sjme_unitSkipR(SJME_DEBUG_FILE_LINE_FUNC, \
+#define sjme_unit_skip(...) sjme_unit_skipR(SJME_DEBUG_FILE_LINE_FUNC, \
 	__VA_ARGS__)
 
 /*--------------------------------------------------------------------------*/

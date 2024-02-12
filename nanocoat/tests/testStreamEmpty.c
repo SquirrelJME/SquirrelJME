@@ -31,21 +31,21 @@ SJME_TEST_DECLARE(testStreamEmpty)
 	/* Open stream. */
 	if (sjme_error_is(sjme_stream_inputOpenMemory(test->pool,
 		&inputStream, emptyBuffer, 0)))
-		return sjme_unitFail(test, "Could not open input stream.");
+		return sjme_unit_fail(test, "Could not open input stream.");
 
 	/* Try to read a single byte, it should indicate EOS. */
 	result = 999;
 	if (sjme_error_is(sjme_stream_inputReadSingle(inputStream,
 		&result)))
-		return sjme_unitFail(test, "Could not read single byte.");
+		return sjme_unit_fail(test, "Could not read single byte.");
 
 	/* Should be EOF. */
-	sjme_unitEqualI(test, -1, result,
+	sjme_unit_equalI(test, -1, result,
 		"Incorrect read byte?");
 
 	/* Close the stream. */
 	if (sjme_error_is(sjme_stream_inputClose(inputStream)))
-		return sjme_unitFail(test, "Could not close stream?");
+		return sjme_unit_fail(test, "Could not close stream?");
 
 	/* Success! */
 	return SJME_TEST_RESULT_PASS;

@@ -49,19 +49,19 @@ SJME_TEST_DECLARE(testAllocReallocRandom)
 	chunkLen = 32768;
 	chunk = sjme_alloca(chunkLen);
 	if (chunk == NULL)
-		return sjme_unitSkip(test, "Could not alloca(%d).",
+		return sjme_unit_skip(test, "Could not alloca(%d).",
 			(int)chunkLen);
 
 	/* Initialize the pool. */
 	pool = NULL;
 	if (sjme_error_is(sjme_alloc_poolInitStatic(&pool,
 			chunk, chunkLen)) || pool == NULL)
-		return sjme_unitFail(test, "Could not initialize static pool?");
+		return sjme_unit_fail(test, "Could not initialize static pool?");
 
 	/* Initialize the PRNG. */
 	memset(&random, 0, sizeof(random));
 	if (!sjme_randomInit(&random, 12345, 67890))
-		return sjme_unitFail(test, "Could not initialize PRNG?");
+		return sjme_unit_fail(test, "Could not initialize PRNG?");
 
 	/* Perform many small allocations. */
 	lastLink = NULL;
@@ -70,14 +70,14 @@ SJME_TEST_DECLARE(testAllocReallocRandom)
 		/* Determine size to allocate. */
 		linkLen = 0;
 		if (!sjme_randomNextIntMax(&random, &linkLen, 32))
-			return sjme_unitFail(test, "Could not random size %d %d.",
+			return sjme_unit_fail(test, "Could not random size %d %d.",
 				(int)i, (int)linkLen);
 		linkLen += sizeof(linkLen);
 
 		/* Allocate link. */
 		link = NULL;
 		if (sjme_error_is(sjme_alloc(pool, linkLen, &link)))
-			return sjme_unitFail(test, "Could not allocate link %d %d.",
+			return sjme_unit_fail(test, "Could not allocate link %d %d.",
 				(int)i, (int)linkLen);
 
 		/* Link in. */
@@ -101,7 +101,7 @@ SJME_TEST_DECLARE(testAllocReallocRandom)
 		desire = -1;
 		if (!sjme_randomNextIntMax(&random, &desire,
 				NUM_RANDOM))
-			return sjme_unitFail(test, "Could not desire %d.",
+			return sjme_unit_fail(test, "Could not desire %d.",
 				(int)i);
 
 		/* Always bump up by one to skip the last link. */
@@ -136,7 +136,7 @@ SJME_TEST_DECLARE(testAllocReallocRandom)
 
 		/* Free it. */
 		if (sjme_error_is(sjme_alloc_free(link)))
-			return sjme_unitFail(test, "Could not free link %d at %p.",
+			return sjme_unit_fail(test, "Could not free link %d at %p.",
 				(int)i, link);
 	}
 

@@ -43,7 +43,7 @@ SJME_TEST_DECLARE(testTaskSpawn)
 	memset(&mock, 0, sizeof(mock));
 	if (!sjme_mock_act(test, &mock, &configTaskSpawn,
 		0))
-		return sjme_unitFail(test, "Could not setup mocks.");
+		return sjme_unit_fail(test, "Could not setup mocks.");
 
 	/* Setup start configuration. */
 	memset(&startConfig, 0, sizeof(startConfig));
@@ -53,7 +53,7 @@ SJME_TEST_DECLARE(testTaskSpawn)
 	task = NULL;
 	if (sjme_error_is(sjme_task_start(mock.nvmState,
 		&startConfig, &task)) || task == NULL)
-		return sjme_unitFail(test, "Could not start task.");
+		return sjme_unit_fail(test, "Could not start task.");
 
 	sjme_todo("Implement %s", __func__);
 	return SJME_TEST_RESULT_FAIL;

@@ -116,13 +116,13 @@ SJME_TEST_DECLARE(testStringDecodeChar)
 			/* These should never happen. */
 			if (charIndex >= MAX_LEN ||
 				((uintptr_t)p - (uintptr_t)string) >= MAX_LEN)
-				sjme_unitFail(test, "Reading input/output too far in?");
+				sjme_unit_fail(test, "Reading input/output too far in?");
 
 			/* Decode. */
 			c = sjme_string_decodeChar(p, &p);
 
 			/* Must match the character index. */
-			sjme_unitEqualI(test, c, testing->out[charIndex],
+			sjme_unit_equalI(test, c, testing->out[charIndex],
 				"For input %d with output #%d, invalid result?",
 				i, charIndex);
 

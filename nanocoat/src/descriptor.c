@@ -12,6 +12,26 @@
 #include "sjme/descriptor.h"
 #include "sjme/debug.h"
 
+sjme_jboolean sjme_desc_identifierMatch(
+	sjme_attrInNotNull const sjme_desc_identifier* identifier,
+	sjme_attrInNotNull sjme_lpcstr string)
+{
+	sjme_jint strLen;
+	
+	/* Are these the same NULL? */
+	if (identifier == NULL || string == NULL)
+		return (identifier == NULL) == (string == NULL);
+	
+	/* Wrong string length? */
+	strLen = strlen(string);
+	if (strLen != identifier->pointer.length)
+		return SJME_JNI_FALSE;
+	
+	/* Compare actual values. */
+	return ((0 == strncmp(identifier->pointer.pointer,
+		string, strLen)) ? SJME_JNI_TRUE : SJME_JNI_FALSE);
+}
+
 sjme_errorCode sjme_desc_interpretBinaryName(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrOutNotNull sjme_desc_binaryName** outName,

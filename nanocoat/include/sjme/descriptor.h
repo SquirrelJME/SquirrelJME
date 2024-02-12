@@ -150,6 +150,18 @@ typedef struct sjme_desc_methodType
 } sjme_desc_methodType;
 
 /**
+ * Does this identifier match the given string?
+ * 
+ * @param identifier The identifier to check.
+ * @param string The string to check against.
+ * @return If the identifier matches.
+ * @since 2024/02/11
+ */
+sjme_jboolean sjme_desc_identifierMatch(
+	sjme_attrInNotNull const sjme_desc_identifier* identifier,
+	sjme_attrInNotNull sjme_lpcstr string);
+
+/**
  * Interprets the given binary name.
  * 
  * @param inPool The allocation pool to use. 

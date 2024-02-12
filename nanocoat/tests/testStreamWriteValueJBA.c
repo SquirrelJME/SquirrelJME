@@ -35,7 +35,7 @@ static const sjme_jubyte testData[DATA_LEN] =
 	if (sjme_error_is(sjme_stream_outputWriteValueJP(stream, \
 		SJME_TOKEN_PASTE_PP(SJME_BASIC_TYPE_ID_, type), \
 		&value))) \
-		sjme_unitFail(test, "Could not write %s?", #type) \
+		sjme_unit_fail(test, "Could not write %s?", #type) \
 
 #define STREAM_SEQ(type, structMember, what) \
 	memset(&value, 0, sizeof(value)); \
@@ -59,12 +59,12 @@ static sjme_errorCode finishStreamWriteValueJBA(
 	test = (sjme_test*)result->whatever;
 
 	/* The write count should be the buffer size. */
-	sjme_unitEqualI(test,
+	sjme_unit_equalI(test,
 		DATA_LEN, result->length,
 		"Number of written bytes incorrect?");
 
 	/* All the buffer bytes should match. */
-	sjme_unitEqualI(test,
+	sjme_unit_equalI(test,
 		0, memcmp(result->array, testData, result->length),
 		"Written buffer does not match?");
 
@@ -86,7 +86,7 @@ SJME_TEST_DECLARE(testStreamWriteValueJBA)
 	/* Setup buffer to write to. */
 	buf = sjme_alloca(DATA_LEN);
 	if (buf == NULL)
-		return sjme_unitFail(test, "Could not output buffer.");
+		return sjme_unit_fail(test, "Could not output buffer.");
 
 	/* Clear buffer. */
 	memset(buf, 0, DATA_LEN);
@@ -95,7 +95,7 @@ SJME_TEST_DECLARE(testStreamWriteValueJBA)
 	if (sjme_error_is(sjme_stream_outputOpenByteArray(test->pool,
 		&stream, 2, finishStreamWriteValueJBA,
 		test)) || stream == NULL)
-		return sjme_unitFail(test, "Could not open output stream.");
+		return sjme_unit_fail(test, "Could not open output stream.");
 
 	/* dos.writeBoolean(false); */
 	STREAM_SEQ(BOOLEAN, z, SJME_JNI_FALSE);
@@ -141,7 +141,7 @@ SJME_TEST_DECLARE(testStreamWriteValueJBA)
 
 	/* Close stream. */
 	if (sjme_error_is(sjme_stream_outputClose(stream, NULL)))
-		return sjme_unitFail(test, "Could not close output stream.");
+		return sjme_unit_fail(test, "Could not close output stream.");
 
 	/* Success! */
 	return SJME_TEST_RESULT_PASS;

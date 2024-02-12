@@ -37,33 +37,33 @@
  * @return Returns what the comparison is.
  * @since 2023/11/20
  */
-typedef sjme_jboolean (*sjme_unitOperatorFunc)(size_t size, void* a, void* b);
+typedef sjme_jboolean (*sjme_unit_operatorFunc)(size_t size, void* a, void* b);
 
 /**
  * Operator comparison information.
  * 
  * @since 2023/11/20
  */
-typedef struct sjme_unitOperatorInfo
+typedef struct sjme_unit_operatorInfo
 {
 	/** The operator symbol. */
 	sjme_lpcstr symbol;
 	
 	/** The function for comparison. */
-	sjme_unitOperatorFunc function;
-} sjme_unitOperatorInfo;
+	sjme_unit_operatorFunc function;
+} sjme_unit_operatorInfo;
 
-static sjme_jboolean sjme_unitOperatorEqual(size_t size, void* a, void* b)
+static sjme_jboolean sjme_unit_operatorEqual(size_t size, void* a, void* b)
 {
 	return memcmp(a, b, size) == 0;
 }
 
-static sjme_jboolean sjme_unitOperatorNotEqual(size_t size, void* a, void* b)
+static sjme_jboolean sjme_unit_operatorNotEqual(size_t size, void* a, void* b)
 {
 	return memcmp(a, b, size) != 0;
 }
 
-static sjme_jboolean sjme_unitOperatorLessThan(size_t size, void* a, void* b)
+static sjme_jboolean sjme_unit_operatorLessThan(size_t size, void* a, void* b)
 {
 	sjme_jlong *ja;
 	sjme_jlong *jb;
@@ -78,7 +78,7 @@ static sjme_jboolean sjme_unitOperatorLessThan(size_t size, void* a, void* b)
 	return SJME_JNI_FALSE;  
 }
 
-static sjme_jboolean sjme_unitOperatorLessEqual(size_t size, void* a, void* b)
+static sjme_jboolean sjme_unit_operatorLessEqual(size_t size, void* a, void* b)
 {
 	sjme_jlong *ja;
 	sjme_jlong *jb;
@@ -93,7 +93,7 @@ static sjme_jboolean sjme_unitOperatorLessEqual(size_t size, void* a, void* b)
 	return SJME_JNI_FALSE;
 }
 
-static sjme_jboolean sjme_unitOperatorGreaterThan(size_t size, void* a, void* b)
+static sjme_jboolean sjme_unit_operatorGreaterThan(size_t size, void* a, void* b)
 {
 	sjme_jlong *ja;
 	sjme_jlong *jb;
@@ -108,7 +108,7 @@ static sjme_jboolean sjme_unitOperatorGreaterThan(size_t size, void* a, void* b)
 	return SJME_JNI_FALSE;
 }
 
-static sjme_jboolean sjme_unitOperatorGreaterEqual(size_t size, void* a, void* b)
+static sjme_jboolean sjme_unit_operatorGreaterEqual(size_t size, void* a, void* b)
 {
 	sjme_jlong *ja;
 	sjme_jlong *jb;
@@ -124,42 +124,42 @@ static sjme_jboolean sjme_unitOperatorGreaterEqual(size_t size, void* a, void* b
 }
 
 /** Operator information. */
-const sjme_unitOperatorInfo sjme_unitOperatorInfos[SJME_NUM_UNIT_OPERATORS] =
+const sjme_unit_operatorInfo sjme_unit_operatorInfos[SJME_NUM_UNIT_OPERATORS] =
 {
 	/* SJME_UNIT_OPERATOR_EQUAL. */
 	{
 		"==",
-		sjme_unitOperatorEqual
+		sjme_unit_operatorEqual
 	},
 
 	/* SJME_UNIT_OPERATOR_NOT_EQUAL. */
 	{
 		"!=",
-		sjme_unitOperatorNotEqual
+		sjme_unit_operatorNotEqual
 	},
 
 	/* SJME_UNIT_OPERATOR_LESS_THAN. */
 	{
 		"<",
-		sjme_unitOperatorLessThan
+		sjme_unit_operatorLessThan
 	},
 
 	/* SJME_UNIT_OPERATOR_LESS_EQUAL. */
 	{
 		"<=",
-		sjme_unitOperatorLessEqual
+		sjme_unit_operatorLessEqual
 	},
 
 	/* SJME_UNIT_OPERATOR_GREATER_THAN. */
 	{
 		">",
-		sjme_unitOperatorGreaterThan
+		sjme_unit_operatorGreaterThan
 	},
 
 	/* SJME_UNIT_OPERATOR_GREATER_EQUAL. */
 	{
 		">=",
-		sjme_unitOperatorGreaterEqual
+		sjme_unit_operatorGreaterEqual
 	},
 };
 
@@ -186,19 +186,19 @@ static sjme_jboolean sjme_unitShortingEmit(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	return (type == SJME_TEST_RESULT_PASS);
 }
 
-sjme_testResult sjme_unitOperatorIR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
-	sjme_attrInValue sjme_unitOperator operator,
+sjme_testResult sjme_unit_operatorIR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_attrInValue sjme_unit_operator operator,
 	sjme_attrInNotNull sjme_test* test,
 	sjme_attrInValue sjme_jint a,
 	sjme_attrInValue sjme_jint b,
 	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr format, ...)
 {
 	SJME_VA_DEF;
-	const sjme_unitOperatorInfo* opInfo;
+	const sjme_unit_operatorInfo* opInfo;
 	
 	if (operator < 0 || operator >= SJME_NUM_UNIT_OPERATORS)
 		SJME_VA_SHORT(SJME_TEST_RESULT_FAIL);
-	opInfo = &sjme_unitOperatorInfos[operator];
+	opInfo = &sjme_unit_operatorInfos[operator];
 	
 	if (!opInfo->function(sizeof(sjme_jint), &a, &b))
 	{
@@ -217,19 +217,19 @@ sjme_testResult sjme_unitOperatorIR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	return SJME_TEST_RESULT_PASS;
 }
 
-sjme_testResult sjme_unitOperatorLR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
-	sjme_attrInValue sjme_unitOperator operator,
+sjme_testResult sjme_unit_operatorLR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_attrInValue sjme_unit_operator operator,
 	sjme_attrInNotNull sjme_test* test,
 	sjme_attrInNullable sjme_jobject a,
 	sjme_attrInNullable sjme_jobject b,
 	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr format, ...)
 {
 	SJME_VA_DEF;
-	const sjme_unitOperatorInfo* opInfo;
+	const sjme_unit_operatorInfo* opInfo;
 	
 	if (operator < 0 || operator >= SJME_NUM_UNIT_OPERATORS)
 		SJME_VA_SHORT(SJME_TEST_RESULT_FAIL);
-	opInfo = &sjme_unitOperatorInfos[operator];
+	opInfo = &sjme_unit_operatorInfos[operator];
 	
 	if (!opInfo->function(sizeof(sjme_jobject), &a, &b))
 	{
@@ -248,19 +248,19 @@ sjme_testResult sjme_unitOperatorLR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	return SJME_TEST_RESULT_PASS;
 }
 
-sjme_testResult sjme_unitOperatorPR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
-	sjme_attrInValue sjme_unitOperator operator,
+sjme_testResult sjme_unit_operatorPR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_attrInValue sjme_unit_operator operator,
 	sjme_attrInNotNull sjme_test* test,
 	sjme_attrInNullable void* a,
 	sjme_attrInNullable void* b,
 	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr format, ...)
 {
 	SJME_VA_DEF;
-	const sjme_unitOperatorInfo* opInfo;
+	const sjme_unit_operatorInfo* opInfo;
 	
 	if (operator < 0 || operator >= SJME_NUM_UNIT_OPERATORS)
 		SJME_VA_SHORT(SJME_TEST_RESULT_FAIL);
-	opInfo = &sjme_unitOperatorInfos[operator];
+	opInfo = &sjme_unit_operatorInfos[operator];
 	
 	if (!opInfo->function(sizeof(void*), &a, &b))
 	{
@@ -279,15 +279,15 @@ sjme_testResult sjme_unitOperatorPR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	return SJME_TEST_RESULT_PASS;
 }
 
-sjme_testResult sjme_unitOperatorSR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
-	sjme_attrInValue sjme_unitOperator operator,
+sjme_testResult sjme_unit_operatorSR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_attrInValue sjme_unit_operator operator,
 	sjme_attrInNotNull sjme_test* test,
 	sjme_attrInNullable sjme_lpcstr a,
 	sjme_attrInNullable sjme_lpcstr b,
 	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr format, ...)
 {
 	SJME_VA_DEF;
-	const sjme_unitOperatorInfo* opInfo;
+	const sjme_unit_operatorInfo* opInfo;
 	sjme_jint lenA, lenB;
 	int abComp;
 
@@ -295,7 +295,7 @@ sjme_testResult sjme_unitOperatorSR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	if (operator != SJME_UNIT_OPERATOR_EQUAL &&
 		operator != SJME_UNIT_OPERATOR_NOT_EQUAL)
 		SJME_VA_SHORT(SJME_TEST_RESULT_FAIL);
-	opInfo = &sjme_unitOperatorInfos[operator];
+	opInfo = &sjme_unit_operatorInfos[operator];
 
 	/* Get length of both. */
 	lenA = (a != NULL ? strlen(a) : -1);
@@ -352,20 +352,20 @@ sjme_testResult sjme_unitOperatorSR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	return SJME_TEST_RESULT_PASS;
 }
 
-sjme_testResult sjme_unitOperatorZR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
-	sjme_attrInValue sjme_unitOperator operator,
+sjme_testResult sjme_unit_operatorZR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_attrInValue sjme_unit_operator operator,
 	sjme_attrInNotNull sjme_test* test,
 	sjme_attrInValue sjme_jboolean a,
 	sjme_attrInValue sjme_jboolean b,
 	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr format, ...)
 {
 	SJME_VA_DEF;
-	const sjme_unitOperatorInfo* opInfo;
+	const sjme_unit_operatorInfo* opInfo;
 
 	if (operator != SJME_UNIT_OPERATOR_EQUAL &&
 		operator != SJME_UNIT_OPERATOR_NOT_EQUAL)
 		SJME_VA_SHORT(SJME_TEST_RESULT_FAIL);
-	opInfo = &sjme_unitOperatorInfos[operator];
+	opInfo = &sjme_unit_operatorInfos[operator];
 
 	if ((a == b) != (operator == SJME_UNIT_OPERATOR_EQUAL))
 	{
@@ -384,7 +384,7 @@ sjme_testResult sjme_unitOperatorZR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	return SJME_TEST_RESULT_PASS;
 }
 
-sjme_testResult sjme_unitFailR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+sjme_testResult sjme_unit_failR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_attrInNotNull sjme_test* test,
 	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr format, ...)
 {
@@ -397,7 +397,7 @@ sjme_testResult sjme_unitFailR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	return SJME_TEST_RESULT_FAIL;
 }
 
-sjme_testResult sjme_unitSkipR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+sjme_testResult sjme_unit_skipR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_attrInNotNull sjme_test* test,
 	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr format, ...)
 {

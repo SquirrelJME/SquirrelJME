@@ -37,18 +37,18 @@ SJME_TEST_DECLARE(testListFlattenArgs)
 	list = NULL;
 	if (sjme_error_is(sjme_list_flattenArgCV(test->pool,
 		&list, testArgC, testArgV)) || list == NULL)
-		sjme_unitFail(test, "Could not build flattened list?");
+		sjme_unit_fail(test, "Could not build flattened list?");
 
 	/* Test resultant list values. */
-	sjme_unitEqualI(test, list->length, testArgC, "Length invalid?");
+	sjme_unit_equalI(test, list->length, testArgC, "Length invalid?");
 	for (i = 0; i < testArgC; i++)
 	{
 		/* The strings should be equal. */
-		sjme_unitEqualS(test, list->elements[i], testArgV[i],
+		sjme_unit_equalS(test, list->elements[i], testArgV[i],
 			"Array element %d not set correctly?", i);
 
 		/* However the pointers should not be the same, as it is a copy. */
-		sjme_unitNotEqualP(test, list->elements[i], testArgV[i],
+		sjme_unit_notEqualP(test, list->elements[i], testArgV[i],
 			"Value element %d was not copied?", i);
 	}
 

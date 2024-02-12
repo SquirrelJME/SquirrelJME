@@ -34,43 +34,46 @@ SJME_TEST_DECLARE(testDescIdentifier)
 	memset(&result, 0, sizeof(result));
 	if (sjme_error_is(sjme_desc_interpretIdentifier(
 		&result, string, strlen(string))))
-		sjme_unitFail(test, "Could not interpret identifier?");
+		sjme_unit_fail(test, "Could not interpret identifier?");
 	
 	/* Make sure it was calculated correctly. */
-	sjme_unitNotEqualI(test, result.hash, stringHash,
+	sjme_unit_notEqualI(test, result.hash, stringHash,
 		"Hash set incorrectly?");
-	sjme_unitEqualP(test, result.pointer.pointer, (void*)string,
+	sjme_unit_equalP(test, result.pointer.pointer, (void*)string,
 		"Pointer not valid?");
-	sjme_unitEqualI(test, result.pointer.length, strlen(string),
+	sjme_unit_equalI(test, result.pointer.length, strlen(string),
 		"Pointer length not valid?");
+	sjme_unit_isTrue(test,
+		sjme_desc_identifierMatch(&result, "squirrel"),
+		"Identifier does not match?");
 		
 	/* All of these are not valid. */
 	memset(&result, 0, sizeof(result));
-	sjme_unitEqualI(test, SJME_ERROR_INVALID_IDENTIFIER,
+	sjme_unit_equalI(test, SJME_ERROR_INVALID_IDENTIFIER,
 		sjme_desc_interpretIdentifier(&result,
 		"squirrel.squirrel", 0),
 		"Name with '.' is valid?");
 		
 	memset(&result, 0, sizeof(result));
-	sjme_unitEqualI(test, SJME_ERROR_INVALID_IDENTIFIER,
+	sjme_unit_equalI(test, SJME_ERROR_INVALID_IDENTIFIER,
 		sjme_desc_interpretIdentifier(&result,
 			"squirrel;squirrel", 0),
 		"Name with ';' is valid?");
 		
 	memset(&result, 0, sizeof(result));
-	sjme_unitEqualI(test, SJME_ERROR_INVALID_IDENTIFIER,
+	sjme_unit_equalI(test, SJME_ERROR_INVALID_IDENTIFIER,
 		sjme_desc_interpretIdentifier(&result,
 			"squirrel[squirrel", 0),
 		"Name with '[' is valid?");
 		
 	memset(&result, 0, sizeof(result));
-	sjme_unitEqualI(test, SJME_ERROR_INVALID_IDENTIFIER,
+	sjme_unit_equalI(test, SJME_ERROR_INVALID_IDENTIFIER,
 		sjme_desc_interpretIdentifier(&result,
 			"squirrel/squirrel", 0),
 		"Name with '/' is valid?");
 		
 	memset(&result, 0, sizeof(result));
-	sjme_unitEqualI(test, SJME_ERROR_INVALID_ARGUMENT,
+	sjme_unit_equalI(test, SJME_ERROR_INVALID_ARGUMENT,
 		sjme_desc_interpretIdentifier(&result,
 			"", 0),
 		"Blank is valid?");

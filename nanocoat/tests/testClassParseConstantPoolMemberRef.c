@@ -26,7 +26,7 @@ SJME_TEST_DECLARE(testClassParseConstantPoolMemberRef)
 	memset(&builder, 0, sizeof(builder));
 	if (sjme_error_is(sjme_classBuilder_build(test->pool,
 		&builder, SJME_JNI_FALSE, test)))
-		return sjme_unitFail(test, "Failed to initialize class builder.");
+		return sjme_unit_fail(test, "Failed to initialize class builder.");
 
 	sjme_todo("Implement %s", __func__);
 	return SJME_TEST_RESULT_FAIL;

@@ -78,7 +78,7 @@ SJME_TEST_DECLARE(testStringHash)
 		hash = sjme_string_hash(string);
 
 		/* Was it calculated correctly? */
-		sjme_unitEqualI(test, hash, testing->out,
+		sjme_unit_equalI(test, hash, testing->out,
 			"Input %d has invalid result?", i);
 	}
 

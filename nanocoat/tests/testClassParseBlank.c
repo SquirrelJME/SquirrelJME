@@ -30,7 +30,7 @@ SJME_TEST_DECLARE(testClassParseBlank)
 	memset(&builder, 0, sizeof(builder));
 	if (sjme_error_is(sjme_classBuilder_build(test->pool,
 		&builder, SJME_JNI_FALSE, test)))
-		return sjme_unitFail(test, "Failed to initialize class builder.");
+		return sjme_unit_fail(test, "Failed to initialize class builder.");
 	
 	/* Build. */
 	sjme_error_alsoV(SJME_ERROR_NONE,
@@ -58,7 +58,7 @@ SJME_TEST_DECLARE(testClassParseBlank)
 		
 	/* Construct. */	
 	if (sjme_error_is(sjme_classBuilder_finish(&builder, &rawClass)))
-		return sjme_unitFail(test, "Could not construct class.");
+		return sjme_unit_fail(test, "Could not construct class.");
 	
 	sjme_todo("Implement %s", __func__);
 	return SJME_TEST_RESULT_FAIL;

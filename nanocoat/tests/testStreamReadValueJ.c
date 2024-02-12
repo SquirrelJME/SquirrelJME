@@ -36,18 +36,18 @@ static const sjme_jubyte testData[DATA_LEN] =
 	if (sjme_error_is(sjme_stream_inputReadValueJ(stream, \
 		SJME_TOKEN_PASTE_PP(SJME_BASIC_TYPE_ID_, type), \
 		&value))) \
-		sjme_unitFail(test, "Could not read %s?", #type) \
+		sjme_unit_fail(test, "Could not read %s?", #type) \
 
 #define STREAM_SEQ(type, structMember, expected) \
 	READ_SEQ(type); \
-	sjme_unitEqualI(test, value.structMember, (expected), \
+	sjme_unit_equalI(test, value.structMember, (expected), \
 		"Incorrect value for %s?", #type)
 
 #define STREAM_SEQ2(type, hiMember, loMember, hiExpected, loExpected) \
 	READ_SEQ(type); \
-	sjme_unitEqualI(test, value.hiMember, (hiExpected), \
+	sjme_unit_equalI(test, value.hiMember, (hiExpected), \
 		"Incorrect hi value for %s?", #type); \
-	sjme_unitEqualI(test, value.loMember, (loExpected), \
+	sjme_unit_equalI(test, value.loMember, (loExpected), \
 		"Incorrect lo value for %s?", #type)
 
 /**
@@ -66,7 +66,7 @@ SJME_TEST_DECLARE(testStreamReadValueJ)
 	if (sjme_error_is(sjme_stream_inputOpenMemory(test->pool,
 		&stream, testData, DATA_LEN)) ||
 		stream == NULL)
-		return sjme_unitFail(test, "Could not open initial stream.");
+		return sjme_unit_fail(test, "Could not open initial stream.");
 
 	/* dos.writeBoolean(false); */
 	STREAM_SEQ(BOOLEAN, z, SJME_JNI_FALSE);
@@ -114,15 +114,15 @@ SJME_TEST_DECLARE(testStreamReadValueJ)
 	single = -2;
 	if (sjme_error_is(sjme_stream_inputReadSingle(stream,
 		&single)) || single < -1)
-		return sjme_unitFail(test, "Could not read final byte?");
+		return sjme_unit_fail(test, "Could not read final byte?");
 
 	/* Must be end of stream. */
-	sjme_unitEqualI(test, single, -1,
+	sjme_unit_equalI(test, single, -1,
 		"End of stream not reached?");
 
 	/* Close the stream. */
 	if (sjme_error_is(sjme_stream_inputClose(stream)))
-		return sjme_unitFail(test, "Could not close stream?");
+		return sjme_unit_fail(test, "Could not close stream?");
 
 	/* Success! */
 	return SJME_TEST_RESULT_PASS;

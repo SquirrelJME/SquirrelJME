@@ -74,7 +74,7 @@ SJME_TEST_DECLARE(testStringLength)
 		len = sjme_string_length(string);
 
 		/* Was it calculated correctly? */
-		sjme_unitEqualI(test, len, testing->out,
+		sjme_unit_equalI(test, len, testing->out,
 			"Input %d has invalid result?", i);
 	}
 
