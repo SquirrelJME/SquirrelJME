@@ -7,8 +7,12 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <stdlib.h>
+#include <string.h>
+
 #include "mock.h"
 #include "proto.h"
+#include "sjme/util.h"
 #include "test.h"
 #include "unit.h"
 
@@ -19,6 +23,15 @@
  */
 SJME_TEST_DECLARE(testDescClassName)
 {
+	sjme_desc_binaryName* result;
+	sjme_lpcstr string;
+	sjme_jint strLen, strHash;
+	
+	/* Setup base. */
+	string = "Squeak";
+	strLen = strlen(string);
+	strHash = sjme_string_hash(string);
+	
 	sjme_todo("Implement %s", __func__);
 	return SJME_TEST_RESULT_FAIL;
 }
