@@ -310,6 +310,20 @@ sjme_testResult sjme_unit_operatorZR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 		SJME_UNIT_OPERATOR_EQUAL, test, SJME_JNI_TRUE, value, __VA_ARGS__)
 
 /**
+ * Is the given value @c SJME_JNI_FALSE ?
+ * 
+ * @param test The test data.
+ * @param value The value to check.
+ * @param format The message.
+ * @param ... The message parameters.
+ * @return The assertion state.
+ * @since 2024/02/12
+ */
+#define sjme_unit_isFalse(test, value, ...) \
+	sjme_unit_operatorZR(SJME_DEBUG_FILE_LINE_FUNC, \
+		SJME_UNIT_OPERATOR_EQUAL, test, SJME_JNI_FALSE, value, __VA_ARGS__)
+
+/**
  * Checks inequality between the two boolean values.
  *
  * @param test The test data.
