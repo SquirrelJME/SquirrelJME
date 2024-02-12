@@ -150,15 +150,29 @@ typedef struct sjme_desc_methodType
 } sjme_desc_methodType;
 
 /**
+ * Matches the class against the given string.
+ * 
+ * @param inClass The class to check. 
+ * @param isFieldType Should this be a field type match?
+ * @param string The string to match against.
+ * @return If the classes matches the given string.
+ * @since 2024/02/11
+ */
+sjme_jboolean sjme_desc_classMatch(
+	sjme_attrInNotNull const sjme_desc_className* inClass,
+	sjme_attrInValue sjme_jboolean isFieldType, 
+	sjme_attrInNotNull sjme_lpcstr string);
+
+/**
  * Does this identifier match the given string?
  * 
- * @param identifier The identifier to check.
+ * @param inIdentifier The identifier to check.
  * @param string The string to check against.
  * @return If the identifier matches.
  * @since 2024/02/11
  */
 sjme_jboolean sjme_desc_identifierMatch(
-	sjme_attrInNotNull const sjme_desc_identifier* identifier,
+	sjme_attrInNotNull const sjme_desc_identifier* inIdentifier,
 	sjme_attrInNotNull sjme_lpcstr string);
 
 /**

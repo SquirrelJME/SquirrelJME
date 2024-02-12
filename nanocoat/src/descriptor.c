@@ -12,23 +12,32 @@
 #include "sjme/descriptor.h"
 #include "sjme/debug.h"
 
+sjme_jboolean sjme_desc_classMatch(
+	sjme_attrInNotNull const sjme_desc_className* inClass,
+	sjme_attrInValue sjme_jboolean isFieldType, 
+	sjme_attrInNotNull sjme_lpcstr string)
+{
+	sjme_todo("Implement this?");
+	return SJME_JNI_FALSE;
+}
+
 sjme_jboolean sjme_desc_identifierMatch(
-	sjme_attrInNotNull const sjme_desc_identifier* identifier,
+	sjme_attrInNotNull const sjme_desc_identifier* inIdentifier,
 	sjme_attrInNotNull sjme_lpcstr string)
 {
 	sjme_jint strLen;
 	
 	/* Are these the same NULL? */
-	if (identifier == NULL || string == NULL)
-		return (identifier == NULL) == (string == NULL);
+	if (inIdentifier == NULL || string == NULL)
+		return (inIdentifier == NULL) == (string == NULL);
 	
 	/* Wrong string length? */
 	strLen = strlen(string);
-	if (strLen != identifier->pointer.length)
+	if (strLen != inIdentifier->pointer.length)
 		return SJME_JNI_FALSE;
 	
 	/* Compare actual values. */
-	return ((0 == strncmp(identifier->pointer.pointer,
+	return ((0 == strncmp(inIdentifier->pointer.pointer,
 		string, strLen)) ? SJME_JNI_TRUE : SJME_JNI_FALSE);
 }
 
