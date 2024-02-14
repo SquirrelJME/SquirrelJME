@@ -213,11 +213,11 @@ SJME_TEST_DECLARE(testDescFieldType)
 	sjme_jint strLen, strHash, atEntry;
 	
 	/* Go through every entry. */
-	for (int atEntryIndex = 0; testEntries[atEntryIndex].string != NULL;
-		atEntryIndex++)
+	for (atEntry = 0; testEntries[atEntry].string != NULL;
+		 atEntry++)
 	{
 		/* Get the entry to test. */
-		entry = &testEntries[atEntryIndex];
+		entry = &testEntries[atEntry];
 		
 		/* Load in string details. */
 		string = entry->string;
