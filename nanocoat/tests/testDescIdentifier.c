@@ -43,8 +43,8 @@ SJME_TEST_DECLARE(testDescIdentifier)
 		"Pointer not valid?");
 	sjme_unit_equalI(test, result.pointer.length, strlen(string),
 		"Pointer length not valid?");
-	sjme_unit_isTrue(test,
-		sjme_desc_identifierMatch(&result, "squirrel"),
+	sjme_unit_equalI(test,
+		0, sjme_desc_compareIdentifierS(&result, "squirrel"),
 		"Identifier does not match?");
 		
 	/* All of these are not valid. */

@@ -92,6 +92,18 @@ typedef struct sjme_tree_findFunc
 } sjme_tree_findFunc;
 
 /**
+ * Compares two null values, nulls are placed before non-nulls.
+ * 
+ * @param a The first value.
+ * @param b The second value.
+ * @return The resultant comparison.
+ * @since 2024/02/14
+ */
+sjme_jint sjme_compare_null(
+	sjme_attrInNullable const void* a,
+	sjme_attrInNullable const void* b);
+
+/**
  * Initializes the random number generator.
  * 
  * @param outRandom The random state to initialize. 

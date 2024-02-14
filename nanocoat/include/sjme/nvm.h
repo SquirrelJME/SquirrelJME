@@ -282,23 +282,26 @@ typedef enum sjme_basicTypeId
 	/** Boolean or byte. */
 	SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE = SJME_NUM_JAVA_TYPE_IDS,
 	
+	/** Character or short type. */
+	SJME_JAVA_TYPE_ID_SHORT_OR_CHAR = 6,
+	
 	/** Void type. */
-	SJME_BASIC_TYPE_ID_VOID = 6,
+	SJME_BASIC_TYPE_ID_VOID = 7,
 	
 	/** Void type. */
 	SJME_JAVA_TYPE_ID_VOID = SJME_BASIC_TYPE_ID_VOID,
 
 	/** Short. */
-	SJME_BASIC_TYPE_ID_SHORT = 7,
+	SJME_BASIC_TYPE_ID_SHORT = 8,
 
 	/** Character. */
-	SJME_BASIC_TYPE_ID_CHARACTER = 8,
+	SJME_BASIC_TYPE_ID_CHARACTER = 9,
 
 	/** Specifically boolean. */
-	SJME_BASIC_TYPE_ID_BOOLEAN = 9,
+	SJME_BASIC_TYPE_ID_BOOLEAN = 10,
 
 	/** Specifically jbyte. */
-	SJME_BASIC_TYPE_ID_BYTE = 10,
+	SJME_BASIC_TYPE_ID_BYTE = 11,
 
 	/** Number of basic type IDs. */
 	SJME_NUM_BASIC_TYPE_IDS = 11

@@ -89,10 +89,10 @@ struct sjme_desc_fieldType
 	sjme_jboolean isArray : 1;
 	
 	/** Interpretation of the array component type, if an array. */
-	sjme_desc_fieldType* componentType;
+	const sjme_desc_fieldType* componentType;
 	
 	/** Interpretation of object type, if an object. */
-	sjme_desc_binaryName* objectType;
+	const sjme_desc_binaryName* objectType;
 };
 
 /** A list of interpreted field descriptors. */
@@ -150,30 +150,127 @@ typedef struct sjme_desc_methodType
 } sjme_desc_methodType;
 
 /**
- * Matches the class against the given string.
+ * Compares the binary name against the given binary name.
  * 
- * @param inClass The class to check. 
- * @param isFieldType Should this be a field type match?
- * @param string The string to match against.
- * @return If the classes matches the given string.
- * @since 2024/02/11
+ * @param aName The first value. 
+ * @param bName The second value.
+ * @return The comparison value.
+ * @since 2024/02/14
  */
-sjme_jboolean sjme_desc_classMatch(
-	sjme_attrInNotNull const sjme_desc_className* inClass,
-	sjme_attrInValue sjme_jboolean isFieldType, 
-	sjme_attrInNotNull sjme_lpcstr string);
+sjme_jint sjme_desc_compareBinaryName(
+	sjme_attrInNullable const sjme_desc_binaryName* aName,
+	sjme_attrInNullable const sjme_desc_binaryName* bName);
+	
+/**
+ * Compares the binary name against the given string.
+ * 
+ * @param aName The binary name to check.
+ * @param bString The string to match against.
+ * @return The comparison value.
+ * @since 2024/02/14
+ */
+sjme_jint sjme_desc_compareBinaryNameS(
+	sjme_attrInNullable const sjme_desc_binaryName* aName,
+	sjme_attrInNullable sjme_lpcstr bString);
 
 /**
- * Does this identifier match the given string?
+ * Compares the class against the given class.
  * 
- * @param inIdentifier The identifier to check.
- * @param string The string to check against.
- * @return If the identifier matches.
+ * @param aClass The first value. 
+ * @param bClass The second value.
+ * @return The comparison value.
+ * @since 2024/02/14
+ */
+sjme_jint sjme_desc_compareClass(
+	sjme_attrInNullable const sjme_desc_className* aClass,
+	sjme_attrInNullable const sjme_desc_className* bClass);
+	
+/**
+ * Compares the class against the given string.
+ * 
+ * @param aClass The class to check. 
+ * @param bIsFieldType Should this be a field type match?
+ * @param bString The string to match against.
+ * @return The comparison value.
  * @since 2024/02/11
  */
-sjme_jboolean sjme_desc_identifierMatch(
-	sjme_attrInNotNull const sjme_desc_identifier* inIdentifier,
-	sjme_attrInNotNull sjme_lpcstr string);
+sjme_jint sjme_desc_compareClassS(
+	sjme_attrInNullable const sjme_desc_className* aClass,
+	sjme_attrInValue sjme_jboolean bIsFieldType, 
+	sjme_attrInNullable sjme_lpcstr bString);
+
+/**
+ * Compares the field against the given field.
+ * 
+ * @param aField The first value. 
+ * @param bField The second value.
+ * @return The comparison value.
+ * @since 2024/02/14
+ */
+sjme_jint sjme_desc_compareField(
+	sjme_attrInNullable const sjme_desc_fieldType* aField,
+	sjme_attrInNullable const sjme_desc_fieldType* bField);
+	
+/**
+ * Compares the field against the given string.
+ * 
+ * @param aField The field to check.
+ * @param bString The string to match against.
+ * @return The comparison value.
+ * @since 2024/02/14
+ */
+sjme_jint sjme_desc_compareFieldS(
+	sjme_attrInNullable const sjme_desc_fieldType* aField,
+	sjme_attrInNullable sjme_lpcstr bString);
+
+/**
+ * Compares the identifier against the given identifier.
+ * 
+ * @param aClass The first value. 
+ * @param bClass The second value.
+ * @return The comparison value.
+ * @return The comparison value.
+ * @since 2024/02/14
+ */
+sjme_jint sjme_desc_compareIdentifier(
+	sjme_attrInNullable const sjme_desc_identifier* aIdent,
+	sjme_attrInNullable const sjme_desc_identifier* bIdent);
+
+/**
+ * Compares the identifier against the given string.
+ * 
+ * @param aIdent The identifier to check.
+ * @param bString The string to check against.
+ * @return The comparison value.
+ * @since 2024/02/11
+ */
+sjme_jint sjme_desc_compareIdentifierS(
+	sjme_attrInNullable const sjme_desc_identifier* aIdent,
+	sjme_attrInNullable sjme_lpcstr bString);
+
+/**
+ * Compares the method against the given method.
+ * 
+ * @param aMethod The first value. 
+ * @param bMethod The second value.
+ * @return The comparison value.
+ * @since 2024/02/14
+ */
+sjme_jint sjme_desc_compareMethod(
+	sjme_attrInNullable const sjme_desc_methodType* aMethod,
+	sjme_attrInNullable const sjme_desc_methodType* bMethod);
+	
+/**
+ * Compares the field against the given string.
+ * 
+ * @param aMethod The method to check.
+ * @param bString The string to match against.
+ * @return The comparison value.
+ * @since 2024/02/14
+ */
+sjme_jint sjme_desc_compareMethodS(
+	sjme_attrInNullable const sjme_desc_methodType* aMethod,
+	sjme_attrInNullable sjme_lpcstr bString);
 
 /**
  * Interprets the given binary name.
@@ -187,7 +284,7 @@ sjme_jboolean sjme_desc_identifierMatch(
  */
 sjme_errorCode sjme_desc_interpretBinaryName(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull sjme_desc_binaryName** outName,
+	sjme_attrOutNotNull const sjme_desc_binaryName** outName,
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen);
 
@@ -203,7 +300,7 @@ sjme_errorCode sjme_desc_interpretBinaryName(
  */
 sjme_errorCode sjme_desc_interpretClassName(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull sjme_desc_className** outName,
+	sjme_attrOutNotNull const sjme_desc_className** outName,
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen);
 
@@ -219,7 +316,7 @@ sjme_errorCode sjme_desc_interpretClassName(
  */
 sjme_errorCode sjme_desc_interpretFieldType(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull sjme_desc_fieldType** outType,
+	sjme_attrOutNotNull const sjme_desc_fieldType** outType,
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen);
 
@@ -249,7 +346,7 @@ sjme_errorCode sjme_desc_interpretIdentifier(
  */
 sjme_errorCode sjme_desc_interpretMethodType(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull sjme_desc_methodType** outType,
+	sjme_attrOutNotNull const sjme_desc_methodType** outType,
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen);
 

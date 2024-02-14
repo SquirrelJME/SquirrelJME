@@ -48,8 +48,8 @@ SJME_TEST_DECLARE(testDescBinaryName)
 	/* Check that everything is valid. */
 	sjme_unit_equalI(test, result->identifiers.length, 1,
 		"Incorrect number of elements?");
-	sjme_unit_isTrue(test,
-		sjme_desc_identifierMatch(
+	sjme_unit_equalI(test,
+		0, sjme_desc_compareIdentifierS(
 			&result->identifiers.elements[0], "Squeak"),
 		"Incorrect identifier 1?");
 	
@@ -76,18 +76,18 @@ SJME_TEST_DECLARE(testDescBinaryName)
 	sjme_unit_equalI(test, result->identifiers.length, 3,
 		"Incorrect number of elements?");
 		
-	sjme_unit_isTrue(test,
-		sjme_desc_identifierMatch(
+	sjme_unit_equalI(test,
+		0, sjme_desc_compareIdentifierS(
 			&result->identifiers.elements[0], "Squeak"),
 		"Incorrect identifier 1?");
 		
-	sjme_unit_isTrue(test,
-		sjme_desc_identifierMatch(
+	sjme_unit_equalI(test,
+		0, sjme_desc_compareIdentifierS(
 			&result->identifiers.elements[1], "In"),
 		"Incorrect identifier 2?");
 		
-	sjme_unit_isTrue(test,
-		sjme_desc_identifierMatch(
+	sjme_unit_equalI(test,
+		0, sjme_desc_compareIdentifierS(
 			&result->identifiers.elements[2], "Box"),
 		"Incorrect identifier 3?");
 	

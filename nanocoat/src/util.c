@@ -11,6 +11,22 @@
 #include "sjme/util.h"
 #include "sjme/debug.h"
 
+sjme_jint sjme_compare_null(
+	sjme_attrInNullable const void* a,
+	sjme_attrInNullable const void* b)
+{
+	/* Nulls before non-null. */
+	if (a == NULL)
+	{
+		if (b == NULL)
+			return 0;
+		else
+			return -1;
+	}
+	
+	return 1;
+}
+
 /**
  * Initializes the random number generator.
  * 

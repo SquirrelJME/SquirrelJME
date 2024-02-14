@@ -44,10 +44,10 @@ SJME_TEST_DECLARE(testDescClassName)
 		"Hash incorrect?");
 	sjme_unit_isFalse(test, result->isField,
 		"Was a field?");
-	sjme_unit_isTrue(test, sjme_desc_classMatch(result,
+	sjme_unit_equalI(test, 0, sjme_desc_compareClassS(result,
 		SJME_JNI_FALSE, "Squeak"),
 		"Incorrect binary name?");
-	sjme_unit_isTrue(test, sjme_desc_classMatch(result,
+	sjme_unit_notEqualI(test, 0, sjme_desc_compareClassS(result,
 		SJME_JNI_TRUE, "Squeak"),
 		"Matched against field?");
 	
@@ -61,7 +61,7 @@ SJME_TEST_DECLARE(testDescClassName)
 		"Hash incorrect?");
 	sjme_unit_isFalse(test, result->isField,
 		"Was a field?");
-	sjme_unit_isTrue(test, sjme_desc_classMatch(result,
+	sjme_unit_equalI(test, 0, sjme_desc_compareClassS(result,
 		SJME_JNI_FALSE, "Squeak/In/Box"),
 		"Incorrect binary name?");
 	
@@ -89,7 +89,7 @@ SJME_TEST_DECLARE(testDescClassName)
 		"Hash incorrect?");
 	sjme_unit_isTrue(test, result->isField,
 		"Was a binary name?");
-	sjme_unit_isTrue(test, sjme_desc_classMatch(result,
+	sjme_unit_equalI(test, 0, sjme_desc_compareClassS(result,
 		SJME_JNI_FALSE, "[LSqueak/In/Box;"),
 		"Incorrect field name?");
 	
