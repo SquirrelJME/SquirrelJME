@@ -202,6 +202,35 @@ sjme_errorCode sjme_list_flattenArgCV(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_list_flattenArgNul(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrOutNotNull sjme_list_sjme_lpcstr** outList,
+	sjme_attrInNotNull sjme_lpcstr inNulString)
+{
+	sjme_jint count, i;
+	sjme_lpcstr at;
+	sjme_lpcstr* argV;
+	
+	if (inPool == NULL || outList == NULL || inNulString == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Determine the number of strings within. */
+	count = 0;
+	for (at = inNulString; *at != '\0'; at += strlen(at) + 1)
+		count++;
+	
+	/* Allocate temporary argument set. */
+	argV = sjme_alloca(count * sizeof(*argV));
+	memset(argV, 0, count * sizeof(*argV));
+	i = 0;
+	for (at = inNulString; *at != '\0' && i < count;
+		at += strlen(at) + 1, i++)
+		argV[i] = at;
+	
+	/* Perform the flattening. */
+	return sjme_list_flattenArgCV(inPool, outList, count, argV);
+}
+
 sjme_errorCode sjme_list_newAR(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInPositive sjme_jint elementSize,

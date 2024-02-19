@@ -320,6 +320,20 @@ sjme_errorCode sjme_list_flattenArgCV(
 	sjme_attrInNotNull sjme_lpcstr* argV);
 
 /**
+ * Flattens a string which is split by NUL (@c aNULbNULcNULNUL ) into a list.
+ * 
+ * @param inPool The pool to allocate within.
+ * @param outList The resultant list.
+ * @param inNulString The input string.
+ * @return Any resultant error.
+ * @since 2024/02/19
+ */
+sjme_errorCode sjme_list_flattenArgNul(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrOutNotNull sjme_list_sjme_lpcstr** outList,
+	sjme_attrInNotNull sjme_lpcstr inNulString);
+
+/**
  * Searches the given list for the given element.
  *
  * @param inList The list to look within.
