@@ -615,7 +615,8 @@ public final class System
 			throw new NullPointerException("NARG");
 		
 		// Not allowed to do this?
-		System.getSecurityManager().checkPermission(new RuntimePermission("setIO"));
+		System.getSecurityManager().checkPermission(
+			new RuntimePermission("setIO"));
 		
 		// Use a wrapped class to prevent final abuse.
 		((__CanSetPrintStream__)System.out).__set(__a);
