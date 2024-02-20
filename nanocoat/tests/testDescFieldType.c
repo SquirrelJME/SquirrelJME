@@ -205,8 +205,8 @@ static const testDescFieldTypeEntry testEntries[] =
  */
 SJME_TEST_DECLARE(testDescFieldType)
 {
-	const sjme_desc_fieldType* result;
 	const testDescFieldTypeEntry* entry;
+	const sjme_desc_fieldType* result;
 	const sjme_desc_fieldType* componentResult;
 	const sjme_desc_binaryName* objectResult; 
 	sjme_lpcstr string;

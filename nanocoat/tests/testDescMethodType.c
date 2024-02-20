@@ -11,6 +11,7 @@
 
 #include "mock.h"
 #include "proto.h"
+#include "sjme/util.h"
 #include "test.h"
 #include "unit.h"
 
@@ -232,6 +233,80 @@ static const testDescMethodTypeEntry testEntries[] =
  */
 SJME_TEST_DECLARE(testDescMethodType)
 {
-	sjme_todo("Implement %s", __func__);
-	return SJME_TEST_RESULT_FAIL;
+	const testDescMethodTypeEntry* entry;
+	const sjme_desc_methodType* result;
+	const sjme_desc_fieldType* field;
+	sjme_list_sjme_lpcstr* fieldStrings;
+	sjme_lpcstr string, subString;
+	sjme_jint strLen, subStrLen, strHash, atEntry, i;
+	
+	/* Go through every entry. */
+	for (atEntry = 0; testEntries[atEntry].string != NULL;
+		 atEntry++)
+	{
+		/* Get the entry to test. */
+		entry = &testEntries[atEntry];
+		
+		/* Load in string details. */
+		string = entry->string;
+		strLen = strlen(string);
+		strHash = sjme_string_hash(string);
+		
+		/* Interpret method entry. */
+		result = NULL;
+		if (sjme_error_is(sjme_desc_interpretMethodType(test->pool,
+			&result, string, strLen) || result == NULL))
+			return sjme_unit_fail(test, "Could not interpret %s?", string);
+		
+		/* Basic whole value and hash check. */
+		sjme_unit_equalI(test, result->hash, strHash,
+			"Hash of whole %s incorrect?", string);
+		sjme_unit_equalI(test, result->whole.length, strLen,
+			"Length of whole %s incorrect?", string);
+		sjme_unit_equalP(test, result->whole.pointer, string,
+			"Pointer of whole %s incorrect?", string);
+		
+		/* Cells should match. */
+		sjme_unit_equalI(test, result->returnCells, entry->returnCells,
+			"Return cells of %s incorrect?", string);
+		sjme_unit_equalI(test, result->argCells, entry->argCells,
+			"Argument cells of %s incorrect?", string);
+		
+		/* Parse recorded fields. */
+		fieldStrings = NULL;
+		if (sjme_error_is(sjme_list_flattenArgNul(test->pool,
+			&fieldStrings, entry->fields) ||
+			fieldStrings == NULL))
+			return sjme_unit_fail(test, "Could not parse fields of %s?",
+				string);
+		
+		/* Count should match. */
+		sjme_unit_equalI(test, fieldStrings->length, result->fields.length,
+			"Incorrect field count for %s?", string);
+		
+		/* Match each individual field. */
+		for (i = 0; i < fieldStrings->length; i++)
+		{
+			/* Get string information. */
+			subString = fieldStrings->elements[i];
+			subStrLen = strlen(subString);
+			
+			/* Parse */
+			field = NULL;
+			if (sjme_error_is(sjme_desc_interpretFieldType(
+				test->pool, &field, subString,
+				subStrLen)) || field == NULL)
+				return sjme_unit_fail(test, "Could not parse field %s in %s?",
+					subString, string);
+			
+			/* Should be the same field. */
+			sjme_unit_equalI(test, 0, sjme_desc_compareField(
+				&result->fields.elements[i], field),
+				"Decoded field %s is incorrect in %s?",
+					subString, string);
+		}
+	}
+	
+	/* Success! */
+	return SJME_TEST_RESULT_PASS;
 }
