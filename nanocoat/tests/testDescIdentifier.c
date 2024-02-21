@@ -15,6 +15,8 @@
 #include "test.h"
 #include "unit.h"
 
+#define pair(s) s, strlen(s)
+
 /**
  * Tests parsing of identifiers.
  *  
@@ -37,7 +39,7 @@ SJME_TEST_DECLARE(testDescIdentifier)
 		sjme_unit_fail(test, "Could not interpret identifier?");
 	
 	/* Make sure it was calculated correctly. */
-	sjme_unit_notEqualI(test, result.hash, stringHash,
+	sjme_unit_equalI(test, result.hash, stringHash,
 		"Hash set incorrectly?");
 	sjme_unit_equalP(test, result.pointer.pointer, (void*)string,
 		"Pointer not valid?");
@@ -51,31 +53,31 @@ SJME_TEST_DECLARE(testDescIdentifier)
 	memset(&result, 0, sizeof(result));
 	sjme_unit_equalI(test, SJME_ERROR_INVALID_IDENTIFIER,
 		sjme_desc_interpretIdentifier(&result,
-		"squirrel.squirrel", 0),
+		pair("squirrel.squirrel")),
 		"Name with '.' is valid?");
 		
 	memset(&result, 0, sizeof(result));
 	sjme_unit_equalI(test, SJME_ERROR_INVALID_IDENTIFIER,
 		sjme_desc_interpretIdentifier(&result,
-			"squirrel;squirrel", 0),
+			pair("squirrel;squirrel")),
 		"Name with ';' is valid?");
 		
 	memset(&result, 0, sizeof(result));
 	sjme_unit_equalI(test, SJME_ERROR_INVALID_IDENTIFIER,
 		sjme_desc_interpretIdentifier(&result,
-			"squirrel[squirrel", 0),
+			pair("squirrel[squirrel")),
 		"Name with '[' is valid?");
 		
 	memset(&result, 0, sizeof(result));
 	sjme_unit_equalI(test, SJME_ERROR_INVALID_IDENTIFIER,
 		sjme_desc_interpretIdentifier(&result,
-			"squirrel/squirrel", 0),
+			pair("squirrel/squirrel")),
 		"Name with '/' is valid?");
 		
 	memset(&result, 0, sizeof(result));
 	sjme_unit_equalI(test, SJME_ERROR_INVALID_ARGUMENT,
 		sjme_desc_interpretIdentifier(&result,
-			"", 0),
+			pair("")),
 		"Blank is valid?");
 	
 	/* Success! */

@@ -7,6 +7,8 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <string.h>
+
 #include "proto.h"
 #include "sjme/util.h"
 #include "test.h"
@@ -60,7 +62,7 @@ static const testString testStrings[NUM_STRINGS] =
 SJME_TEST_DECLARE(testStringLength)
 {
 	const testString* testing;
-	sjme_jint i, len;
+	sjme_jint i, len, limitLen;
 	sjme_lpcstr string;
 
 	/* Test all the strings. */
@@ -70,12 +72,19 @@ SJME_TEST_DECLARE(testStringLength)
 		testing = &testStrings[i];
 		string = (sjme_lpcstr)testing->in;
 
-		/* Calculate hash. */
+		/* Calculate length. */
 		len = sjme_string_length(string);
 
 		/* Was it calculated correctly? */
 		sjme_unit_equalI(test, len, testing->out,
-			"Input %d has invalid result?", i);
+			"Input %d has invalid length?", i);
+
+		/* Calculate length with limit. */
+		limitLen = sjme_string_lengthN(string, strlen(string));
+
+		/* Was it calculated correctly? */
+		sjme_unit_equalI(test, len, limitLen,
+			"Input %d has incorrect length with limit?", i);
 	}
 
 	/* Success! */

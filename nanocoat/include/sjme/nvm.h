@@ -1687,8 +1687,11 @@ typedef enum sjme_errorCode
 	/** Invalid identifier. */
 	SJME_ERROR_INVALID_IDENTIFIER = -39,
 	
+	/** Invalid identifier string. */
+	SJME_ERROR_INVALID_IDENTIFIER_STRING = -40,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -39
+	SJME_NUM_ERROR_CODES = -41
 } sjme_errorCode;
 
 /**

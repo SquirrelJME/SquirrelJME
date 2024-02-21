@@ -7,6 +7,8 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <string.h>
+
 #include "proto.h"
 #include "sjme/util.h"
 #include "test.h"
@@ -64,7 +66,7 @@ static const testString testStrings[NUM_STRINGS] =
 SJME_TEST_DECLARE(testStringHash)
 {
 	const testString* testing;
-	sjme_jint i, hash;
+	sjme_jint i, hash, limitHash;
 	sjme_lpcstr string;
 
 	/* Test all the strings. */
@@ -80,6 +82,13 @@ SJME_TEST_DECLARE(testStringHash)
 		/* Was it calculated correctly? */
 		sjme_unit_equalI(test, hash, testing->out,
 			"Input %d has invalid result?", i);
+		
+		/* Calculate hash with limit. */
+		limitHash = sjme_string_hashN(string, strlen(string));
+		
+		/* Should be the same. */
+		sjme_unit_equalI(test, hash, limitHash,
+			"Input %d has different hash than limit hash?", i);
 	}
 
 	/* Success! */

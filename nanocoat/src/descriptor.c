@@ -194,14 +194,40 @@ sjme_errorCode sjme_desc_interpretIdentifier(
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen)
 {
+	sjme_lpcstr at, end;
+	sjme_jint c;
+	
 	if (outIdent == NULL || inStr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (inLen <= 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
 		
-	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Check input for invalid characters. */
+	for (at = inStr, end = at + inLen; at < end;)
+	{
+		/* Decode character. */
+		c = sjme_string_decodeChar(at, &at);
+		if (c < 0)
+			return SJME_ERROR_INVALID_IDENTIFIER_STRING;
+		
+		/* Is the character not valid? */
+		if (c == '.' || c == ';' || c == '[' || c == '/')
+			return SJME_ERROR_INVALID_IDENTIFIER;
+	}
+	
+	/* Cannot be blank. */
+	if (end == inStr)
+		return SJME_ERROR_INVALID_IDENTIFIER;
+	
+	/* Fill in info. */
+	memset(outIdent, 0, sizeof(*outIdent));
+	outIdent->hash = sjme_string_hashN(inStr, inLen);
+	outIdent->pointer.pointer = inStr;
+	outIdent->pointer.length = end - inStr;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_desc_interpretMethodType(
