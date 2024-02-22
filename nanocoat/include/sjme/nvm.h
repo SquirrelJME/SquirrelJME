@@ -290,9 +290,12 @@ typedef enum sjme_basicTypeId
 	
 	/** Void type. */
 	SJME_JAVA_TYPE_ID_VOID = SJME_BASIC_TYPE_ID_VOID,
+	
+	/** End of extended Java types. */
+	SJME_NUM_EXTENDED_JAVA_TYPE_IDS = 8,
 
 	/** Short. */
-	SJME_BASIC_TYPE_ID_SHORT = 8,
+	SJME_BASIC_TYPE_ID_SHORT = SJME_NUM_EXTENDED_JAVA_TYPE_IDS,
 
 	/** Character. */
 	SJME_BASIC_TYPE_ID_CHARACTER = 9,

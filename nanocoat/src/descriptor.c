@@ -258,8 +258,10 @@ sjme_errorCode sjme_desc_interpretClassName(
 	if (inPool == NULL || outName == NULL || inStr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	if (inLen <= 0)
+	if (inLen < 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
+	else if (inLen == 0)
+		return SJME_ERROR_INVALID_CLASS_NAME;
 		
 	sjme_todo("Implement this?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
@@ -271,14 +273,118 @@ sjme_errorCode sjme_desc_interpretFieldType(
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen)
 {
+	sjme_jint strLen, typeCode, resultLen;
+	sjme_javaTypeId javaType;
+	sjme_jboolean hasMore, isObject;
+	sjme_desc_fieldType* result;
+	
 	if (inPool == NULL || outType == NULL || inStr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	if (inLen <= 0)
+	if (inLen < 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
+	else if (inLen == 0)
+		return SJME_ERROR_INVALID_FIELD_TYPE;
+	
+	/* Need the length of string to determine what possible type this is. */
+	strLen = sjme_string_lengthN(inStr, inLen);
+	if (strLen <= 0)
+		return SJME_ERROR_INVALID_FIELD_TYPE;
+	
+	/* Decode single character which determines the type this is. */
+	typeCode = sjme_string_decodeChar(inStr, NULL);
+	
+	/* Handle based on the type code. */
+	javaType = SJME_NUM_EXTENDED_JAVA_TYPE_IDS;
+	hasMore = SJME_JNI_FALSE;
+	isObject = SJME_JNI_FALSE;
+	switch (typeCode)
+	{
+			/* Single type codes. */
+		case 'V':
+			if (javaType == SJME_NUM_EXTENDED_JAVA_TYPE_IDS)
+				javaType = SJME_JAVA_TYPE_ID_VOID;
+		case 'Z':
+		case 'B':
+			if (javaType == SJME_NUM_EXTENDED_JAVA_TYPE_IDS)
+				javaType = SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE;
+		case 'S':
+		case 'C':
+			if (javaType == SJME_NUM_EXTENDED_JAVA_TYPE_IDS)
+				javaType = SJME_JAVA_TYPE_ID_SHORT_OR_CHAR;
+		case 'I':
+			if (javaType == SJME_NUM_EXTENDED_JAVA_TYPE_IDS)
+				javaType = SJME_JAVA_TYPE_ID_INTEGER;
+		case 'J':
+			if (javaType == SJME_NUM_EXTENDED_JAVA_TYPE_IDS)
+				javaType = SJME_JAVA_TYPE_ID_LONG;
+		case 'F':
+			if (javaType == SJME_NUM_EXTENDED_JAVA_TYPE_IDS)
+				javaType = SJME_JAVA_TYPE_ID_FLOAT;
+		case 'D':
+			if (javaType == SJME_NUM_EXTENDED_JAVA_TYPE_IDS)
+				javaType = SJME_JAVA_TYPE_ID_DOUBLE;
+			break;
 		
-	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+			/* Longer type codes. */
+		case 'L':
+			isObject = SJME_JNI_TRUE;
+		case '[':
+			hasMore = SJME_JNI_TRUE;
+			if (javaType == SJME_NUM_EXTENDED_JAVA_TYPE_IDS)
+				javaType = SJME_JAVA_TYPE_ID_OBJECT;
+			break;
+		
+		default:
+			return SJME_ERROR_INVALID_FIELD_TYPE;
+	}
+	
+	/* Is this an array or object? */
+	resultLen = -1;
+	if (isObject || hasMore)
+	{
+		sjme_todo("Implement this?");
+		return SJME_ERROR_NOT_IMPLEMENTED;
+	}
+	
+	/* Otherwise a simple type. */
+	else
+		resultLen = sizeof(sjme_desc_fieldType);
+	
+	/* Allocate result. */
+	result = sjme_alloca(resultLen);
+	if (result == NULL)
+		return SJME_ERROR_OUT_OF_MEMORY;
+	
+	/* Initialize. */
+	memset(result, 0, resultLen);
+	
+	/* Base common initialize. */
+	result->whole.pointer = inStr;
+	result->whole.length = inLen;
+	result->hash = sjme_string_hashN(result->whole.pointer,
+		result->whole.length);
+	result->javaType = javaType;
+	
+	/* Determine cell size. */
+	if (javaType == SJME_JAVA_TYPE_ID_VOID)
+		result->cells = 0;
+	else if (javaType == SJME_JAVA_TYPE_ID_LONG ||
+		javaType == SJME_JAVA_TYPE_ID_DOUBLE)
+		result->cells = 2;
+	else
+		result->cells = 1;
+	
+	/* Is this an array or object? */
+	if (isObject || hasMore)
+	{
+		sjme_todo("Implement this?");
+		return SJME_ERROR_NOT_IMPLEMENTED;
+	}
+	
+	/* Return copy of it. */
+	return sjme_alloc_copy(inPool, resultLen, outType,
+		result);
 }
 
 sjme_errorCode sjme_desc_interpretIdentifier(
@@ -333,8 +439,10 @@ sjme_errorCode sjme_desc_interpretMethodType(
 	if (inPool == NULL || outType == NULL || inStr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	if (inLen <= 0)
+	if (inLen < 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
+	else if (inLen == 0)
+		return SJME_ERROR_INVALID_METHOD_TYPE;
 		
 	sjme_todo("Implement this?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
