@@ -199,8 +199,6 @@ static sjme_errorCode sjme_desc_interpretFieldTypeFixed(sjme_lpcstr inStr,
 		
 		/* Decode single character which determines the type this is. */
 		typeCode = sjme_string_decodeChar(strAt, &strAt);
-
-		sjme_message(">> READ: %c from %s", typeCode, inStr);
 		
 		/* There are more characters that are valid? */
 		if (isFinal)
