@@ -116,6 +116,66 @@ static sjme_errorCode sjme_desc_interpretBinaryNameNumSlash(sjme_lpcstr inStr,
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_desc_interpretFieldTypeAllocSize(sjme_lpcstr inStr,
+	sjme_jint inLen, sjme_jint* outAllocLen)
+{
+	sjme_errorCode error;
+	sjme_jint typeCode, allocLen, subLen;
+	sjme_lpcstr next;
+	
+	if (inStr == NULL || outAllocLen == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Decode the type code. */
+	next = NULL;
+	typeCode = sjme_string_decodeChar(inStr, next);
+	if (typeCode <= 0)
+		return SJME_ERROR_INVALID_FIELD_TYPE;
+	
+	/* Determine base size. */
+	allocLen = sizeof(sjme_desc_fieldType);
+	
+	/* Recursive array type? */
+	if (typeCode == '[')
+	{
+		/* Recurse in. */
+		subLen = -1;
+		if (sjme_error_is(error = sjme_desc_interpretFieldTypeAllocSize(
+			next, inLen - (next - inStr), &subLen)) ||
+			subLen < 0)
+			return sjme_error_defaultOr(error,
+				SJME_ERROR_INVALID_FIELD_TYPE);
+		
+		/* Add to resultant length. */
+		allocLen += subLen;
+	}
+	
+	/* Binary name. */
+	else if (typeCode == 'L')
+	{
+		/* Determine the number of identifiers used. */
+		subLen = -1;
+		if (sjme_error_is(error = sjme_desc_interpretBinaryNameNumSlash(
+			next, inLen - (next - inStr) - 1, &subLen,
+			NULL)) || subLen < 0)
+			return sjme_error_defaultOr(error,
+				SJME_ERROR_INVALID_FIELD_TYPE);
+		
+		/* Add in. */
+		allocLen += SJME_SIZEOF_DESC_BINARY_NAME(subLen);
+	} 
+	
+	/* Success! */
+	*outAllocLen = allocLen;
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_desc_interpretFieldTypeFixed()
+{
+	sjme_todo("Implement this?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
 sjme_jint sjme_desc_compareBinaryName(
 	sjme_attrInNullable const sjme_desc_binaryName* aName,
 	sjme_attrInNullable const sjme_desc_binaryName* bName)
