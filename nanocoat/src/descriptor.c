@@ -9,8 +9,9 @@
 
 #include <string.h>
 
-#include "sjme/descriptor.h"
+#include "sjme/alloc.h"
 #include "sjme/debug.h"
+#include "sjme/descriptor.h"
 #include "sjme/util.h"
 
 sjme_jint sjme_desc_compareBinaryName(
@@ -147,14 +148,105 @@ sjme_errorCode sjme_desc_interpretBinaryName(
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen)
 {
+	sjme_errorCode error;
+	sjme_lpcstr at, end, base, finalEnd, nextAt;
+	sjme_desc_binaryName* result;
+	sjme_jint resultLen, c, identLen, identAt, numSlash;
+	
 	if (inPool == NULL || outName == NULL || inStr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	if (inLen <= 0)
+	if (inLen < 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
+	else if (inLen == 0)
+		return SJME_ERROR_INVALID_BINARY_NAME;
+	
+	/* Count the number of slashes. */
+	numSlash = 0;
+	for (at = inStr, end = at + inLen; at < end;)
+	{
+		/* Decode character. */
+		c = sjme_string_decodeChar(at, &at);
+		if (c < 0)
+			return SJME_ERROR_INVALID_BINARY_NAME;
 		
-	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+		/* If a slash it will then get split. */
+		if (c == '/')
+			numSlash++;
+	}
+	
+	/* Store the end for faster final decode. */
+	finalEnd = end;
+	
+	/* Allocate. */
+	resultLen = SJME_SIZEOF_DESC_BINARY_NAME(numSlash + 1);
+	result = sjme_alloca(resultLen);
+	
+	/* Check that it is valid. */
+	if (result == NULL)
+		return SJME_ERROR_OUT_OF_MEMORY;
+		
+	/* Initialize. */
+	memset(result, 0, resultLen);
+	
+	/* Fill in basic details. */
+	result->whole.pointer = inStr;
+	result->whole.length = end - inStr;
+	result->hash = sjme_string_hashN(result->whole.pointer,
+		result->whole.length);
+	
+	/* Initialize list. */
+	sjme_list_directInit(numSlash + 1, &result->identifiers,
+		sjme_desc_identifier, 0);
+	
+	/* Parse individual identifiers, if there are none then this */
+	/* will be skipped completely. */
+	identAt = 0;
+	nextAt = NULL;
+	for (at = inStr, base = at, end = at + inLen;
+		at < end && identAt < numSlash; at = nextAt)
+	{
+		/* Decode character. */
+		c = sjme_string_decodeChar(at, &nextAt);
+		if (c < 0)
+			return SJME_ERROR_INVALID_BINARY_NAME;
+			
+		/* Only split on slashes. */
+		if (c != '/')
+			continue;
+		
+		/* If a slash it will then get split and an identifier parsed. */
+		identLen = at - base;
+		if (identLen <= 0)
+			return SJME_ERROR_INVALID_BINARY_NAME;
+		
+		/* Parse individual identifier fragment. */
+		if (sjme_error_is(error = sjme_desc_interpretIdentifier(
+			&result->identifiers.elements[identAt],
+			base, identLen)))
+			return sjme_error_defaultOr(error,
+				SJME_ERROR_INVALID_BINARY_NAME);
+		
+		/* Move identifier and next base up. */
+		base = at + 1;
+		identAt++;
+	}
+	
+	/* The end fragment is not valid if empty. */
+	identLen = finalEnd - base;
+	if (identLen <= 0)
+		return SJME_ERROR_INVALID_BINARY_NAME;
+	
+	/* Parse final one. */
+	if (sjme_error_is(error = sjme_desc_interpretIdentifier(
+		&result->identifiers.elements[identAt],
+		base, identLen)))
+		return sjme_error_defaultOr(error,
+			SJME_ERROR_INVALID_BINARY_NAME);
+	
+	/* Return a copy. */
+	return sjme_alloc_copy(inPool, resultLen, outName,
+		result);
 }
 
 sjme_errorCode sjme_desc_interpretClassName(
@@ -200,8 +292,10 @@ sjme_errorCode sjme_desc_interpretIdentifier(
 	if (outIdent == NULL || inStr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	if (inLen <= 0)
+	if (inLen < 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
+	else if (inLen == 0)
+		return SJME_ERROR_INVALID_IDENTIFIER;
 		
 	/* Check input for invalid characters. */
 	for (at = inStr, end = at + inLen; at < end;)
@@ -209,7 +303,7 @@ sjme_errorCode sjme_desc_interpretIdentifier(
 		/* Decode character. */
 		c = sjme_string_decodeChar(at, &at);
 		if (c < 0)
-			return SJME_ERROR_INVALID_IDENTIFIER_STRING;
+			return SJME_ERROR_INVALID_IDENTIFIER;
 		
 		/* Is the character not valid? */
 		if (c == '.' || c == ';' || c == '[' || c == '/')

@@ -154,6 +154,40 @@ sjme_errorCode sjme_list_allocR(
 		sizeof(**(outList)))
 
 /**
+ * Directly initializes a list.
+ *
+ * @param inLength The length of the list.
+ * @param outList The output list.
+ * @param elementSize The size of the list elements.
+ * @param elementOffset The offset of elements in the list.
+ * @param pointerCheck A check to see if it is a valid pointer.
+ * @return Any resultant error code, if any.
+ * @since 2024/02/21
+ */
+sjme_errorCode sjme_list_directInitR(
+	sjme_attrInPositive sjme_jint inLength,
+	sjme_attrOutNotNull void* outList,
+	sjme_attrInPositive sjme_jint elementSize,
+	sjme_attrInPositive sjme_jint elementOffset,
+	sjme_attrInValue sjme_jint pointerCheck);
+
+/**
+ * Directly initializes a list.
+ * 
+ * @param inLength The input list length.
+ * @param outList The resultant list information.
+ * @param type The type used in the list.
+ * @param numPointerStars The number of pointer stars used.
+ * @since 2024/02/21
+ */
+#define sjme_list_directInit(inLength, outList, type, numPointerStars) \
+	sjme_list_directInitR((inLength), \
+		(void*)(outList), \
+		sizeof(SJME_TOKEN_TYPE(type, numPointerStars)), \
+		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
+		sizeof(*(outList)))
+
+/**
  * Create a new list with the given set of arguments.
  *
  * @param inPool The pool to allocate within.

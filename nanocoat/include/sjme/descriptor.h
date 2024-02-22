@@ -45,7 +45,7 @@ typedef struct sjme_desc_identifier
 } sjme_desc_identifier;
 
 /** List of identifiers. */
-SJME_LIST_DECLARE(sjme_desc_identifier , 0);
+SJME_LIST_DECLARE(sjme_desc_identifier, 0);
 
 /**
  * Represents an interpretation of a binary name.
@@ -63,6 +63,17 @@ typedef struct sjme_desc_binaryName
 	/** The identifiers that make up the binary name. */
 	sjme_list_sjme_desc_identifier identifiers;
 } sjme_desc_binaryName;
+
+/**
+ * Determines the size of a binary name.
+ * 
+ * @param numIdents The number of used identifiers.
+ * @return The resultant size.
+ * @since 2024/02/21
+ */
+#define SJME_SIZEOF_DESC_BINARY_NAME(numIdents) \
+	sizeof(sjme_desc_binaryName) + \
+		SJME_SIZEOF_LIST(sjme_desc_identifier, 0, (numIdents))
 
 /**
  * Represents an interpretation of a field type.

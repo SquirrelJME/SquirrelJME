@@ -15,6 +15,9 @@
 #include "test.h"
 #include "unit.h"
 
+/** Pair of strings. */
+#define pair(s) s, strlen(s)
+
 /**
  * Test parsing of class binary names.
  *  
@@ -90,6 +93,49 @@ SJME_TEST_DECLARE(testDescBinaryName)
 		0, sjme_desc_compareIdentifierS(
 			&result->identifiers.elements[2], "Box"),
 		"Incorrect identifier 3?");
+	
+	/* Check invalid binary names. */
+	result = NULL;
+	sjme_unit_equalI(test, SJME_ERROR_INVALID_BINARY_NAME,
+		sjme_desc_interpretBinaryName(test->pool, &result,
+			pair("")),
+		"Blank is a valid binary name?");
+	
+	result = NULL;
+	sjme_unit_equalI(test, SJME_ERROR_INVALID_BINARY_NAME,
+		sjme_desc_interpretBinaryName(test->pool, &result,
+			pair("/")),
+		"Single slash is valid binary name?");
+	
+	result = NULL;
+	sjme_unit_equalI(test, SJME_ERROR_INVALID_BINARY_NAME,
+		sjme_desc_interpretBinaryName(test->pool, &result,
+			pair("Squeak/")),
+		"Ending slash is valid binary name?");
+	
+	result = NULL;
+	sjme_unit_equalI(test, SJME_ERROR_INVALID_BINARY_NAME,
+		sjme_desc_interpretBinaryName(test->pool, &result,
+			pair("/Squeak")),
+		"Starting slash is valid binary name?");
+	
+	result = NULL;
+	sjme_unit_equalI(test, SJME_ERROR_INVALID_BINARY_NAME,
+		sjme_desc_interpretBinaryName(test->pool, &result,
+			pair("Cute//Squeak")),
+		"Double slash is valid binary name?");
+	
+	result = NULL;
+	sjme_unit_equalI(test, SJME_ERROR_INVALID_IDENTIFIER,
+		sjme_desc_interpretBinaryName(test->pool, &result,
+			pair("[Z")),
+		"Array is valid binary name?");
+	
+	result = NULL;
+	sjme_unit_equalI(test, SJME_ERROR_INVALID_IDENTIFIER,
+		sjme_desc_interpretBinaryName(test->pool, &result,
+			pair("Squeak/[Z")),
+		"Array in package is valid binary name?");
 	
 	/* Success! */
 	return SJME_TEST_RESULT_PASS;
