@@ -14,6 +14,38 @@
 #include "sjme/descriptor.h"
 #include "sjme/util.h"
 
+static sjme_errorCode sjme_desc_interpretBinaryNameNumSlash(sjme_lpcstr inStr,
+	sjme_jint inLen, sjme_jint* outNumSlash, sjme_lpcstr* finalEnd)
+{
+	sjme_jint c, numSlash;
+	sjme_lpcstr at, end;
+	
+	if (inStr == NULL || outNumSlash == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Count the number of slashes. */
+	numSlash = 0;
+	for (at = inStr, end = at + inLen; at < end;)
+	{
+		/* Decode character. */
+		c = sjme_string_decodeChar(at, &at);
+		if (c < 0)
+			return SJME_ERROR_INVALID_BINARY_NAME;
+		
+		/* If a slash it will then get split. */
+		if (c == '/')
+			numSlash++;
+	}
+	
+	/* Store the end for faster final decode. */
+	if (finalEnd != NULL)
+		*finalEnd = end;
+	
+	/* Success! */
+	*outNumSlash = numSlash;
+	return SJME_ERROR_NONE;
+}
+
 sjme_jint sjme_desc_compareBinaryName(
 	sjme_attrInNullable const sjme_desc_binaryName* aName,
 	sjme_attrInNullable const sjme_desc_binaryName* bName)
@@ -162,21 +194,11 @@ sjme_errorCode sjme_desc_interpretBinaryName(
 		return SJME_ERROR_INVALID_BINARY_NAME;
 	
 	/* Count the number of slashes. */
+	finalEnd = NULL;
 	numSlash = 0;
-	for (at = inStr, end = at + inLen; at < end;)
-	{
-		/* Decode character. */
-		c = sjme_string_decodeChar(at, &at);
-		if (c < 0)
-			return SJME_ERROR_INVALID_BINARY_NAME;
-		
-		/* If a slash it will then get split. */
-		if (c == '/')
-			numSlash++;
-	}
-	
-	/* Store the end for faster final decode. */
-	finalEnd = end;
+	if (sjme_error_is(error = sjme_desc_interpretBinaryNameNumSlash(inStr,
+		inLen, &numSlash, &finalEnd)))
+		return sjme_error_default(error);
 	
 	/* Allocate. */
 	resultLen = SJME_SIZEOF_DESC_BINARY_NAME(numSlash + 1);
@@ -191,7 +213,7 @@ sjme_errorCode sjme_desc_interpretBinaryName(
 	
 	/* Fill in basic details. */
 	result->whole.pointer = inStr;
-	result->whole.length = end - inStr;
+	result->whole.length = finalEnd - inStr;
 	result->hash = sjme_string_hashN(result->whole.pointer,
 		result->whole.length);
 	
