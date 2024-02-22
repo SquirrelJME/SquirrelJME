@@ -226,6 +226,9 @@ static const testDescMethodTypeEntry testEntries[] =
 	{NULL},
 };
 
+/** String pair. */
+#define pair(s) s, strlen(s)
+
 /**
  * Tests parsing of method descriptors.
  *  
@@ -306,6 +309,73 @@ SJME_TEST_DECLARE(testDescMethodType)
 					subString, string);
 		}
 	}
+	
+	/* Invalid methods types. */
+	result = NULL;
+	sjme_unit_equalI(test, SJME_ERROR_INVALID_METHOD_TYPE,
+		sjme_desc_interpretMethodType(test->pool,
+			&result, pair("")),
+		"Blank is valid?");
+		
+	result = NULL;
+	sjme_unit_equalI(test, SJME_ERROR_INVALID_METHOD_TYPE,
+		sjme_desc_interpretMethodType(test->pool,
+			&result, pair("V")),
+		"Return only is valid?");
+		
+	result = NULL;
+	sjme_unit_equalI(test, SJME_ERROR_INVALID_METHOD_TYPE,
+		sjme_desc_interpretMethodType(test->pool,
+			&result, pair("()")),
+		"Arguments only is valid?");
+		
+	result = NULL;
+	sjme_unit_equalI(test, SJME_ERROR_INVALID_METHOD_TYPE,
+		sjme_desc_interpretMethodType(test->pool,
+			&result, pair("()II")),
+		"Double return type is valid?");
+		
+	result = NULL;
+	sjme_unit_equalI(test, SJME_ERROR_INVALID_METHOD_TYPE,
+		sjme_desc_interpretMethodType(test->pool,
+			&result, pair("()[")),
+		"Unspecified array return is valid?");
+		
+	result = NULL;
+	sjme_unit_equalI(test, SJME_ERROR_INVALID_METHOD_TYPE,
+		sjme_desc_interpretMethodType(test->pool,
+			&result, pair("()L")),
+		"Unspecified object return is valid?");
+		
+	result = NULL;
+	sjme_unit_equalI(test, SJME_ERROR_INVALID_METHOD_TYPE,
+		sjme_desc_interpretMethodType(test->pool,
+			&result, pair("()LOops")),
+		"Unclosed object return is valid?");
+		
+	result = NULL;
+	sjme_unit_equalI(test, SJME_ERROR_INVALID_METHOD_TYPE,
+		sjme_desc_interpretMethodType(test->pool,
+			&result, pair("([)V")),
+		"Unspecified array is valid?");
+		
+	result = NULL;
+	sjme_unit_equalI(test, SJME_ERROR_INVALID_METHOD_TYPE,
+		sjme_desc_interpretMethodType(test->pool,
+			&result, pair("(L)V")),
+		"Unspecified object is valid?");
+		
+	result = NULL;
+	sjme_unit_equalI(test, SJME_ERROR_INVALID_METHOD_TYPE,
+		sjme_desc_interpretMethodType(test->pool,
+			&result, pair("(LOops)V")),
+		"Unclosed object is valid?");
+		
+	result = NULL;
+	sjme_unit_equalI(test, SJME_ERROR_INVALID_METHOD_TYPE,
+		sjme_desc_interpretMethodType(test->pool,
+			&result, pair("V()")),
+		"Wrong order is valid?");
 	
 	/* Success! */
 	return SJME_TEST_RESULT_PASS;

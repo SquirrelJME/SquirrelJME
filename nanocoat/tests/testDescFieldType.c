@@ -198,6 +198,9 @@ static const testDescFieldTypeEntry testEntries[] =
 	{NULL}
 };
 
+/** String pair. */
+#define pair(s) s, strlen(s)
+
 /**
  * Tests parsing of class field descriptors.
  *  
@@ -291,6 +294,55 @@ SJME_TEST_DECLARE(testDescFieldType)
 				"Field %s has non-equal object?", string);
 		}
 	}
+	
+	/* Invalid fields. */
+	result = NULL;
+	sjme_unit_equalI(test, SJME_ERROR_INVALID_FIELD_TYPE,
+		sjme_desc_interpretFieldType(test->pool,
+			&result, pair("")),
+		"Blank is valid?");
+	
+	result = NULL;
+	sjme_unit_equalI(test, SJME_ERROR_INVALID_FIELD_TYPE,
+		sjme_desc_interpretFieldType(test->pool,
+			&result, pair("X")),
+		"Unknown type specifier is valid?");
+		
+	result = NULL;
+	sjme_unit_equalI(test, SJME_ERROR_INVALID_FIELD_TYPE,
+		sjme_desc_interpretFieldType(test->pool,
+			&result, pair("ZI")),
+		"Two primitive types is valid?");
+		
+	result = NULL;
+	sjme_unit_equalI(test, SJME_ERROR_INVALID_FIELD_TYPE,
+		sjme_desc_interpretFieldType(test->pool,
+			&result, pair("[")),
+		"Blank array is valid?");
+		
+	result = NULL;
+	sjme_unit_equalI(test, SJME_ERROR_INVALID_FIELD_TYPE,
+		sjme_desc_interpretFieldType(test->pool,
+			&result, pair("[[")),
+		"Blank double array is valid?");
+		
+	result = NULL;
+	sjme_unit_equalI(test, SJME_ERROR_INVALID_FIELD_TYPE,
+		sjme_desc_interpretFieldType(test->pool,
+			&result, pair("L")),
+		"Blank object is valid?");
+		
+	result = NULL;
+	sjme_unit_equalI(test, SJME_ERROR_INVALID_FIELD_TYPE,
+		sjme_desc_interpretFieldType(test->pool,
+			&result, pair("LOops")),
+		"Object missing ending semicolon is valid?");
+		
+	result = NULL;
+	sjme_unit_equalI(test, SJME_ERROR_INVALID_FIELD_TYPE,
+		sjme_desc_interpretFieldType(test->pool,
+			&result, pair("L;")),
+		"Blank object is valid?");
 	
 	/* Success! */
 	return SJME_TEST_RESULT_PASS;

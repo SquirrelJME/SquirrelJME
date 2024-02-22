@@ -1690,8 +1690,17 @@ typedef enum sjme_errorCode
 	/** Invalid binary name. */
 	SJME_ERROR_INVALID_BINARY_NAME = -40,
 	
+	/** Invalid field type. */
+	SJME_ERROR_INVALID_FIELD_TYPE = -41,
+	
+	/** Invalid method type. */
+	SJME_ERROR_INVALID_METHOD_TYPE = -42,
+	
+	/** Invalid class name. */
+	SJME_ERROR_INVALID_CLASS_NAME = -43,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -41
+	SJME_NUM_ERROR_CODES = -44
 } sjme_errorCode;
 
 /**
