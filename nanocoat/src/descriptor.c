@@ -14,6 +14,76 @@
 #include "sjme/descriptor.h"
 #include "sjme/util.h"
 
+static sjme_errorCode sjme_desc_interpretBinaryNameFixed(sjme_lpcstr inStr,
+	sjme_jint inLen, sjme_lpcstr finalEnd, sjme_jint numSlash,
+	sjme_desc_binaryName* result)
+{
+	sjme_errorCode error;
+	sjme_lpcstr at, end, base, nextAt;
+	sjme_jint c, identLen, identAt;
+	
+	if (inStr == NULL || finalEnd == NULL || result == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Fill in basic details. */
+	result->whole.pointer = inStr;
+	result->whole.length = finalEnd - inStr;
+	result->hash = sjme_string_hashN(result->whole.pointer,
+		result->whole.length);
+	
+	/* Initialize list. */
+	sjme_list_directInit(numSlash + 1, &result->identifiers,
+		sjme_desc_identifier, 0);
+	
+	/* Parse individual identifiers, if there are none then this */
+	/* will be skipped completely. */
+	identAt = 0;
+	nextAt = NULL;
+	for (at = inStr, base = at, end = at + inLen;
+		at < end && identAt < numSlash; at = nextAt)
+	{
+		/* Decode character. */
+		c = sjme_string_decodeChar(at, &nextAt);
+		if (c < 0)
+			return SJME_ERROR_INVALID_BINARY_NAME;
+			
+		/* Only split on slashes. */
+		if (c != '/')
+			continue;
+		
+		/* If a slash it will then get split and an identifier parsed. */
+		identLen = at - base;
+		if (identLen <= 0)
+			return SJME_ERROR_INVALID_BINARY_NAME;
+		
+		/* Parse individual identifier fragment. */
+		if (sjme_error_is(error = sjme_desc_interpretIdentifier(
+			&result->identifiers.elements[identAt],
+			base, identLen)))
+			return sjme_error_defaultOr(error,
+				SJME_ERROR_INVALID_BINARY_NAME);
+		
+		/* Move identifier and next base up. */
+		base = at + 1;
+		identAt++;
+	}
+	
+	/* The end fragment is not valid if empty. */
+	identLen = finalEnd - base;
+	if (identLen <= 0)
+		return SJME_ERROR_INVALID_BINARY_NAME;
+	
+	/* Parse final one. */
+	if (sjme_error_is(error = sjme_desc_interpretIdentifier(
+		&result->identifiers.elements[identAt],
+		base, identLen)))
+		return sjme_error_defaultOr(error,
+			SJME_ERROR_INVALID_BINARY_NAME);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_desc_interpretBinaryNameNumSlash(sjme_lpcstr inStr,
 	sjme_jint inLen, sjme_jint* outNumSlash, sjme_lpcstr* finalEnd)
 {
@@ -181,9 +251,9 @@ sjme_errorCode sjme_desc_interpretBinaryName(
 	sjme_attrInPositive sjme_jint inLen)
 {
 	sjme_errorCode error;
-	sjme_lpcstr at, end, base, finalEnd, nextAt;
+	sjme_lpcstr finalEnd;
 	sjme_desc_binaryName* result;
-	sjme_jint resultLen, c, identLen, identAt, numSlash;
+	sjme_jint resultLen, numSlash;
 	
 	if (inPool == NULL || outName == NULL || inStr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -211,58 +281,9 @@ sjme_errorCode sjme_desc_interpretBinaryName(
 	/* Initialize. */
 	memset(result, 0, resultLen);
 	
-	/* Fill in basic details. */
-	result->whole.pointer = inStr;
-	result->whole.length = finalEnd - inStr;
-	result->hash = sjme_string_hashN(result->whole.pointer,
-		result->whole.length);
-	
-	/* Initialize list. */
-	sjme_list_directInit(numSlash + 1, &result->identifiers,
-		sjme_desc_identifier, 0);
-	
-	/* Parse individual identifiers, if there are none then this */
-	/* will be skipped completely. */
-	identAt = 0;
-	nextAt = NULL;
-	for (at = inStr, base = at, end = at + inLen;
-		at < end && identAt < numSlash; at = nextAt)
-	{
-		/* Decode character. */
-		c = sjme_string_decodeChar(at, &nextAt);
-		if (c < 0)
-			return SJME_ERROR_INVALID_BINARY_NAME;
-			
-		/* Only split on slashes. */
-		if (c != '/')
-			continue;
-		
-		/* If a slash it will then get split and an identifier parsed. */
-		identLen = at - base;
-		if (identLen <= 0)
-			return SJME_ERROR_INVALID_BINARY_NAME;
-		
-		/* Parse individual identifier fragment. */
-		if (sjme_error_is(error = sjme_desc_interpretIdentifier(
-			&result->identifiers.elements[identAt],
-			base, identLen)))
-			return sjme_error_defaultOr(error,
-				SJME_ERROR_INVALID_BINARY_NAME);
-		
-		/* Move identifier and next base up. */
-		base = at + 1;
-		identAt++;
-	}
-	
-	/* The end fragment is not valid if empty. */
-	identLen = finalEnd - base;
-	if (identLen <= 0)
-		return SJME_ERROR_INVALID_BINARY_NAME;
-	
-	/* Parse final one. */
-	if (sjme_error_is(error = sjme_desc_interpretIdentifier(
-		&result->identifiers.elements[identAt],
-		base, identLen)))
+	/* Parse fixed binary name. */
+	if (sjme_error_is(error = sjme_desc_interpretBinaryNameFixed(
+		inStr, inLen, finalEnd, numSlash, result)))
 		return sjme_error_defaultOr(error,
 			SJME_ERROR_INVALID_BINARY_NAME);
 	
