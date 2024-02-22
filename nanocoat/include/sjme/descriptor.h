@@ -82,6 +82,29 @@ typedef struct sjme_desc_binaryName
  */
 typedef struct sjme_desc_fieldType sjme_desc_fieldType;
 
+/**
+ * Represents a component within the field type.
+ * 
+ * @since 2024/02/22
+ */
+typedef struct sjme_desc_fieldTypeComponent
+{
+	/** The pointer area for this specific component. */
+	sjme_pointerLen fragment;
+		
+	/** The type of field this is. */
+	sjme_javaTypeId javaType;
+	
+	/** The cell count of this field. */
+	sjme_jint cells;
+		
+	/** Is this an array? */
+	sjme_jboolean isArray : 1;
+		
+	/** Interpretation of object type, if an object. */
+	sjme_desc_binaryName objectType[0];
+} sjme_desc_fieldTypeComponent;
+
 struct sjme_desc_fieldType
 {
 	/** The hash of the field. */
@@ -90,24 +113,18 @@ struct sjme_desc_fieldType
 	/** The pointer area for the whole field type. */
 	sjme_pointerLen whole;
 	
-	/** The type of field this is. */
-	sjme_javaTypeId javaType;
+	/** The number of array dimensions. */
+	sjme_jint numDims;
 	
-	/** The cell count of this field. */
-	sjme_jint cells;
-	
-	/** Is this an array? */
-	sjme_jboolean isArray : 1;
-	
-	/** Interpretation of the array component type, if an array. */
-	const sjme_desc_fieldType* componentType;
-	
-	/** Interpretation of object type, if an object. */
-	const sjme_desc_binaryName* objectType;
+	/** The components of this field, always @c numDims+1 . */
+	sjme_desc_fieldTypeComponent components[sjme_flexibleArrayCount];
 };
 
 /** A list of interpreted field descriptors. */
 SJME_LIST_DECLARE(sjme_desc_fieldType, 0);
+
+/** A list of pointers to interpreted field descriptors. */
+SJME_LIST_DECLARE(sjme_desc_fieldType, 1);
 
 /**
  * An interpreted class descriptor which is either a field if this is an
@@ -157,7 +174,7 @@ typedef struct sjme_desc_methodType
 	sjme_jint argCells;
 	
 	/** The field descriptors used, index zero is the return value. */
-	sjme_list_sjme_desc_fieldType fields;
+	sjme_list_sjme_desc_fieldTypeP fields;
 } sjme_desc_methodType;
 
 /**

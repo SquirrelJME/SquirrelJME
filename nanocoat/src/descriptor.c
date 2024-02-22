@@ -127,31 +127,33 @@ static sjme_errorCode sjme_desc_interpretFieldTypeAllocSize(sjme_lpcstr inStr,
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Decode the type code. */
-	next = NULL;
-	typeCode = sjme_string_decodeChar(inStr, next);
+	next = inStr;
+	typeCode = sjme_string_decodeChar(next, &next);
 	if (typeCode <= 0)
 		return SJME_ERROR_INVALID_FIELD_TYPE;
 	
-	/* Determine base size. */
-	allocLen = sizeof(sjme_desc_fieldType);
+	/* Base size with the single base component. */
+	allocLen = sizeof(sjme_desc_fieldType) +
+		sizeof(sjme_desc_fieldTypeComponent);
 	
-	/* Recursive array type? */
-	if (typeCode == '[')
+	/* If an array, count the number of dimensions... */
+	while (typeCode == '[')
 	{
-		/* Recurse in. */
-		subLen = -1;
-		if (sjme_error_is(error = sjme_desc_interpretFieldTypeAllocSize(
-			next, inLen - (next - inStr), &subLen)) ||
-			subLen < 0)
-			return sjme_error_defaultOr(error,
-				SJME_ERROR_INVALID_FIELD_TYPE);
+		/* Add component. */
+		allocLen += sizeof(sjme_desc_fieldTypeComponent);
 		
-		/* Add to resultant length. */
-		allocLen += subLen;
+		/* Read in next code. */
+		typeCode = sjme_string_decodeChar(next, &next);
+		if (typeCode <= 0)
+			return SJME_ERROR_INVALID_FIELD_TYPE;
+		
+		/* Stop if not an array. */
+		if (typeCode != '[')
+			break;
 	}
 	
-	/* Binary name. */
-	else if (typeCode == 'L')
+	/* Binary name? */
+	if (typeCode == 'L')
 	{
 		/* Determine the number of identifiers used. */
 		subLen = -1;
@@ -170,10 +172,125 @@ static sjme_errorCode sjme_desc_interpretFieldTypeAllocSize(sjme_lpcstr inStr,
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_desc_interpretFieldTypeFixed()
+static sjme_errorCode sjme_desc_interpretFieldTypeFixed(sjme_lpcstr inStr,
+	sjme_jint inLen, sjme_desc_fieldType* result)
 {
-	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	sjme_jint typeCode, compAt;
+	sjme_jboolean isArray, isObject, isFinal;
+	sjme_desc_fieldTypeComponent* component;
+	sjme_lpcstr strAt;
+	
+	if (inStr == NULL || result == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Base common initialize for the whole value. */
+	result->whole.pointer = inStr;
+	result->whole.length = inLen;
+	result->hash = sjme_string_hashN(result->whole.pointer,
+		result->whole.length);
+		
+	/* Component parsing loop. */
+	isFinal = SJME_JNI_FALSE;
+	strAt = inStr;
+	for (compAt = 0;; compAt++)
+	{
+		/* Reading into where? */
+		component = &result->components[compAt];
+		
+		/* Decode single character which determines the type this is. */
+		typeCode = sjme_string_decodeChar(strAt, &strAt);
+
+		sjme_message(">> READ: %c from %s", typeCode, inStr);
+		
+		/* There are more characters that are valid? */
+		if (isFinal)
+		{
+			if (typeCode >= 0)
+				return SJME_ERROR_INVALID_FIELD_TYPE;
+			break;
+		}
+		
+		/* Handle based on the type code. */
+		isArray = SJME_JNI_FALSE;
+		isObject = SJME_JNI_FALSE;
+		switch (typeCode)
+		{
+				/* Single type codes. */
+			case 'V':
+				component->javaType = SJME_JAVA_TYPE_ID_VOID;
+				break;
+				
+			case 'Z':
+			case 'B':
+				component->javaType = SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE;
+				break;
+				
+			case 'S':
+			case 'C':
+				component->javaType = SJME_JAVA_TYPE_ID_SHORT_OR_CHAR;
+				break;
+				
+			case 'I':
+				component->javaType = SJME_JAVA_TYPE_ID_INTEGER;
+				break;
+				
+			case 'J':
+				component->javaType = SJME_JAVA_TYPE_ID_LONG;
+				break;
+				
+			case 'F':
+				component->javaType = SJME_JAVA_TYPE_ID_FLOAT;
+				break;
+				
+			case 'D':
+				component->javaType = SJME_JAVA_TYPE_ID_DOUBLE;
+				break;
+			
+				/* Longer type codes. */
+			case 'L':
+				isObject = SJME_JNI_TRUE;
+			case '[':
+				isArray = !isObject;
+				component->javaType = SJME_JAVA_TYPE_ID_OBJECT;
+				break;
+			
+			default:
+				return SJME_ERROR_INVALID_FIELD_TYPE;
+		}
+		
+		/* Determine cell size. */
+		if (component->javaType == SJME_JAVA_TYPE_ID_VOID)
+			component->cells = 0;
+		else if (component->javaType == SJME_JAVA_TYPE_ID_LONG ||
+			component->javaType == SJME_JAVA_TYPE_ID_DOUBLE)
+			component->cells = 2;
+		else
+			component->cells = 1;
+		
+		/* Is this an array? */
+		if (isArray)
+		{
+			sjme_todo("Implement this?");
+			return SJME_ERROR_NOT_IMPLEMENTED;
+		}
+		
+		/* Is this an object? */
+		else if (isObject)
+		{
+			/* Do not parse anymore, would be an error. */
+			isFinal = SJME_JNI_TRUE;
+			
+			sjme_todo("Implement this?");
+			return SJME_ERROR_NOT_IMPLEMENTED;
+		}
+		
+		/* Final component to parse. */
+		else
+			isFinal = SJME_JNI_TRUE;
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_jint sjme_desc_compareBinaryName(
@@ -376,9 +493,8 @@ sjme_errorCode sjme_desc_interpretFieldType(
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen)
 {
-	sjme_jint strLen, typeCode, resultLen;
-	sjme_javaTypeId javaType;
-	sjme_jboolean hasMore, isObject;
+	sjme_errorCode error;
+	sjme_jint strLen, typeCode, allocLen;
 	sjme_desc_fieldType* result;
 	
 	if (inPool == NULL || outType == NULL || inStr == NULL)
@@ -393,100 +509,30 @@ sjme_errorCode sjme_desc_interpretFieldType(
 	strLen = sjme_string_lengthN(inStr, inLen);
 	if (strLen <= 0)
 		return SJME_ERROR_INVALID_FIELD_TYPE;
-	
-	/* Decode single character which determines the type this is. */
-	typeCode = sjme_string_decodeChar(inStr, NULL);
-	
-	/* Handle based on the type code. */
-	javaType = SJME_NUM_EXTENDED_JAVA_TYPE_IDS;
-	hasMore = SJME_JNI_FALSE;
-	isObject = SJME_JNI_FALSE;
-	switch (typeCode)
-	{
-			/* Single type codes. */
-		case 'V':
-			if (javaType == SJME_NUM_EXTENDED_JAVA_TYPE_IDS)
-				javaType = SJME_JAVA_TYPE_ID_VOID;
-		case 'Z':
-		case 'B':
-			if (javaType == SJME_NUM_EXTENDED_JAVA_TYPE_IDS)
-				javaType = SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE;
-		case 'S':
-		case 'C':
-			if (javaType == SJME_NUM_EXTENDED_JAVA_TYPE_IDS)
-				javaType = SJME_JAVA_TYPE_ID_SHORT_OR_CHAR;
-		case 'I':
-			if (javaType == SJME_NUM_EXTENDED_JAVA_TYPE_IDS)
-				javaType = SJME_JAVA_TYPE_ID_INTEGER;
-		case 'J':
-			if (javaType == SJME_NUM_EXTENDED_JAVA_TYPE_IDS)
-				javaType = SJME_JAVA_TYPE_ID_LONG;
-		case 'F':
-			if (javaType == SJME_NUM_EXTENDED_JAVA_TYPE_IDS)
-				javaType = SJME_JAVA_TYPE_ID_FLOAT;
-		case 'D':
-			if (javaType == SJME_NUM_EXTENDED_JAVA_TYPE_IDS)
-				javaType = SJME_JAVA_TYPE_ID_DOUBLE;
-			break;
-		
-			/* Longer type codes. */
-		case 'L':
-			isObject = SJME_JNI_TRUE;
-		case '[':
-			hasMore = SJME_JNI_TRUE;
-			if (javaType == SJME_NUM_EXTENDED_JAVA_TYPE_IDS)
-				javaType = SJME_JAVA_TYPE_ID_OBJECT;
-			break;
-		
-		default:
-			return SJME_ERROR_INVALID_FIELD_TYPE;
-	}
-	
-	/* Is this an array or object? */
-	resultLen = -1;
-	if (isObject || hasMore)
-	{
-		sjme_todo("Implement this?");
-		return SJME_ERROR_NOT_IMPLEMENTED;
-	}
-	
-	/* Otherwise a simple type. */
-	else
-		resultLen = sizeof(sjme_desc_fieldType);
+
+	/* How many bytes are needed for allocation? */
+	allocLen = -1;
+	if (sjme_error_is(error = sjme_desc_interpretFieldTypeAllocSize(inStr,
+		inLen, &allocLen)) || allocLen <= 0)
+		return sjme_error_defaultOr(error,
+			SJME_ERROR_INVALID_FIELD_TYPE);
 	
 	/* Allocate result. */
-	result = sjme_alloca(resultLen);
+	result = sjme_alloca(allocLen);
 	if (result == NULL)
 		return SJME_ERROR_OUT_OF_MEMORY;
 	
 	/* Initialize. */
-	memset(result, 0, resultLen);
+	memset(result, 0, allocLen);
 	
-	/* Base common initialize. */
-	result->whole.pointer = inStr;
-	result->whole.length = inLen;
-	result->hash = sjme_string_hashN(result->whole.pointer,
-		result->whole.length);
-	result->javaType = javaType;
-	
-	/* Determine cell size. */
-	if (javaType == SJME_JAVA_TYPE_ID_VOID)
-		result->cells = 0;
-	else if (javaType == SJME_JAVA_TYPE_ID_LONG ||
-		javaType == SJME_JAVA_TYPE_ID_DOUBLE)
-		result->cells = 2;
-	else
-		result->cells = 1;
-	
-	/* Is this an array or object? */
-	if (isObject || hasMore)
-	{
-		sjme_todo("Implement this?");
-		return SJME_ERROR_NOT_IMPLEMENTED;
-	}
+	/* Load field, recursively. */
+	if (sjme_error_is(error = sjme_desc_interpretFieldTypeFixed(
+		inStr, inLen, result)))
+		return sjme_error_defaultOr(error,
+			SJME_ERROR_INVALID_FIELD_TYPE);
 	
 	/* Return copy of it. */
-	return sjme_alloc_copy(inPool, resultLen, outType,
+	return sjme_alloc_copy(inPool, allocLen, outType,
 		result);
 }
 
