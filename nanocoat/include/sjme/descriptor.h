@@ -95,6 +95,9 @@ typedef struct sjme_desc_fieldTypeComponent
 	/** The type of field this is. */
 	sjme_javaTypeId javaType;
 	
+	/** The number of array dimensions. */
+	sjme_jint numDims;
+	
 	/** The cell count of this field. */
 	sjme_jint cells;
 		
@@ -104,6 +107,9 @@ typedef struct sjme_desc_fieldTypeComponent
 	/** Binary name of the component, if this is a binary name. */
 	sjme_pointerLen binaryName;
 } sjme_desc_fieldTypeComponent;
+
+/** Field component list. */
+SJME_LIST_DECLARE(sjme_desc_fieldTypeComponent, 0);
 
 struct sjme_desc_fieldType
 {
@@ -174,7 +180,7 @@ typedef struct sjme_desc_methodType
 	sjme_jint argCells;
 	
 	/** The field descriptors used, index zero is the return value. */
-	sjme_list_sjme_desc_fieldTypeP fields;
+	sjme_list_sjme_desc_fieldTypeComponent fields;
 } sjme_desc_methodType;
 
 /**
@@ -260,7 +266,19 @@ sjme_jint sjme_desc_compareClassS(
 sjme_jint sjme_desc_compareField(
 	sjme_attrInNullable const sjme_desc_fieldType* aField,
 	sjme_attrInNullable const sjme_desc_fieldType* bField);
-	
+
+/**
+ * Compares the field component against the given field.
+ * 
+ * @param aFieldComponent The first value. 
+ * @param bField The second value.
+ * @return The comparison value.
+ * @since 2024/02/23
+ */
+sjme_jint sjme_desc_compareFieldC(
+	sjme_attrInNullable const sjme_desc_fieldTypeComponent* aFieldComponent,
+	sjme_attrInNullable const sjme_desc_fieldType* bField);
+
 /**
  * Compares the field against the given string.
  * 

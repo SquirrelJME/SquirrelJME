@@ -205,7 +205,7 @@ static sjme_errorCode sjme_desc_interpretFieldTypeFixed(sjme_lpcstr inStr,
 	sjme_lpcstr *fieldEnd)
 {
 	sjme_errorCode error;
-	sjme_jint typeCode, compAt, numSlash, strLen;
+	sjme_jint typeCode, compAt, numSlash, strLen, subAt;
 	sjme_jboolean isArray, isObject, isFinal;
 	sjme_desc_fieldTypeComponent* component;
 	sjme_lpcstr strAt, strBase, finalEnd, lastAt;
@@ -319,6 +319,10 @@ static sjme_errorCode sjme_desc_interpretFieldTypeFixed(sjme_lpcstr inStr,
 			/* Binary name is unspecified. */
 			component->binaryName.pointer = NULL;
 			component->binaryName.length = 0;
+			
+			/* Go up and increase the array size of each component. */
+			for (subAt = 0; subAt <= compAt; subAt++)
+				result->components[subAt].numDims += 1;
 		}
 		
 		/* Is this an object? */
@@ -486,6 +490,21 @@ sjme_jint sjme_desc_compareField(
 	/* Normal compare. */
 	return sjme_string_compareN(
 		aField->whole.pointer, aField->whole.length,
+		bField->whole.pointer, bField->whole.length);
+}
+
+sjme_jint sjme_desc_compareFieldC(
+	sjme_attrInNullable const sjme_desc_fieldTypeComponent* aFieldComponent,
+	sjme_attrInNullable const sjme_desc_fieldType* bField)
+{
+	/* Compare null. */
+	if (aFieldComponent == NULL || bField == NULL)
+		return sjme_compare_null(aFieldComponent, bField);
+		
+	/* Normal compare. */
+	return sjme_string_compareN(
+		aFieldComponent->fragment.pointer,
+			aFieldComponent->fragment.length,
 		bField->whole.pointer, bField->whole.length);
 }
 

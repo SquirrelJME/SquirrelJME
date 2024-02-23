@@ -303,8 +303,8 @@ SJME_TEST_DECLARE(testDescMethodType)
 					subString, string);
 			
 			/* Should be the same field. */
-			sjme_unit_equalI(test, 0, sjme_desc_compareField(
-				result->fields.elements[i], field),
+			sjme_unit_equalI(test, 0, sjme_desc_compareFieldC(
+				&result->fields.elements[i], field),
 				"Decoded field %s is incorrect in %s?",
 					subString, string);
 		}
