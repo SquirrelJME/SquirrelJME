@@ -7,6 +7,8 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <string.h>
+
 #include "sjme/nvm.h"
 #include "sjme/util.h"
 #include "sjme/debug.h"
@@ -98,6 +100,34 @@ sjme_jint sjme_string_charAt(sjme_lpcstr string, sjme_jint index)
 
 	/* Could not find character. */
 	return -1;
+}
+
+sjme_jint sjme_string_compareN(sjme_lpcstr aString, sjme_jint aLen,
+	sjme_lpcstr bString, sjme_jint bLen)
+{
+	sjme_jint result, limit;
+	
+	/* Compare null. */
+	if (aString == NULL || bString == NULL)
+		return sjme_compare_null(aString, bString);
+		
+	/* Determine the max number of characters to compare. */
+	if (aLen < bLen)
+		limit = aLen;
+	else
+		limit = bLen;
+	
+	/* Compare strings up to the limit. */
+	result = strncmp(aString, bString, limit);
+	if (result != 0)
+		return result;
+	
+	/* If the lengths differ, smaller is first. */
+	if (aLen != bLen)
+		return aLen - bLen;
+	
+	/* Equal otherwise. */
+	return 0;
 }
 
 sjme_jint sjme_string_decodeChar(sjme_lpcstr at, sjme_lpcstr* stringP)

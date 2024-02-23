@@ -444,7 +444,7 @@ SJME_TEST_DECLARE(testDescFieldType)
 					"Not an object?");
 				
 				/* String comparison should be valid. */
-				sjme_unit_isTrue(test, sjme_desc_compareBinaryNameS(
+				sjme_unit_equalI(test, 0, sjme_desc_compareBinaryNameS(
 					result->components[i].objectType,
 					entry->objectString),
 					"Binary name of object is incorrect?");
@@ -500,10 +500,10 @@ SJME_TEST_DECLARE(testDescFieldType)
 		"Blank double array is valid?");
 		
 	result = NULL;
-	sjme_unit_equalI(test, SJME_ERROR_INVALID_FIELD_TYPE,
+	sjme_unit_equalI(test, SJME_ERROR_INVALID_BINARY_NAME,
 		sjme_desc_interpretFieldType(test->pool,
 			&result, pair("L")),
-		"Blank object is valid?");
+		"Only starting L is valid?");
 		
 	result = NULL;
 	sjme_unit_equalI(test, SJME_ERROR_INVALID_FIELD_TYPE,
@@ -512,10 +512,10 @@ SJME_TEST_DECLARE(testDescFieldType)
 		"Object missing ending semicolon is valid?");
 		
 	result = NULL;
-	sjme_unit_equalI(test, SJME_ERROR_INVALID_FIELD_TYPE,
+	sjme_unit_equalI(test, SJME_ERROR_INVALID_BINARY_NAME,
 		sjme_desc_interpretFieldType(test->pool,
 			&result, pair("L;")),
-		"Blank object is valid?");
+		"Empty but specified object is valid?");
 	
 	/* Success! */
 	return SJME_TEST_RESULT_PASS;

@@ -164,7 +164,8 @@ static sjme_errorCode sjme_desc_interpretFieldTypeAllocSize(sjme_lpcstr inStr,
 				SJME_ERROR_INVALID_FIELD_TYPE);
 		
 		/* Add in. */
-		allocLen += SJME_SIZEOF_DESC_BINARY_NAME(subLen);
+		allocLen += SJME_SIZEOF_DESC_BINARY_NAME(subLen) +
+			sizeof(sjme_desc_fieldTypeComponent);
 	} 
 	
 	/* Success! */
@@ -175,10 +176,11 @@ static sjme_errorCode sjme_desc_interpretFieldTypeAllocSize(sjme_lpcstr inStr,
 static sjme_errorCode sjme_desc_interpretFieldTypeFixed(sjme_lpcstr inStr,
 	sjme_jint inLen, sjme_desc_fieldType* result)
 {
-	sjme_jint typeCode, compAt;
+	sjme_errorCode error;
+	sjme_jint typeCode, compAt, numSlash, strLen;
 	sjme_jboolean isArray, isObject, isFinal;
 	sjme_desc_fieldTypeComponent* component;
-	sjme_lpcstr strAt;
+	sjme_lpcstr strAt, strBase, finalEnd;
 	
 	if (inStr == NULL || result == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -198,6 +200,7 @@ static sjme_errorCode sjme_desc_interpretFieldTypeFixed(sjme_lpcstr inStr,
 		component = &result->components[compAt];
 		
 		/* Decode single character which determines the type this is. */
+		strBase = strAt;
 		typeCode = sjme_string_decodeChar(strAt, &strAt);
 		
 		/* There are more characters that are valid? */
@@ -265,11 +268,18 @@ static sjme_errorCode sjme_desc_interpretFieldTypeFixed(sjme_lpcstr inStr,
 		else
 			component->cells = 1;
 		
+		/* The fragment is the remaining string. */
+		component->fragment.pointer = strBase;
+		component->fragment.length = inLen - (strBase - inStr);
+		
 		/* Is this an array? */
 		if (isArray)
 		{
-			sjme_todo("Implement this?");
-			return SJME_ERROR_NOT_IMPLEMENTED;
+			/* Set as array. */
+			component->isArray = SJME_JNI_TRUE;
+			
+			/* Increase dimension count. */
+			result->numDims += 1;
 		}
 		
 		/* Is this an object? */
@@ -278,13 +288,39 @@ static sjme_errorCode sjme_desc_interpretFieldTypeFixed(sjme_lpcstr inStr,
 			/* Do not parse anymore, would be an error. */
 			isFinal = SJME_JNI_TRUE;
 			
-			sjme_todo("Implement this?");
-			return SJME_ERROR_NOT_IMPLEMENTED;
+			/* Determine the string length fragment. */
+			strBase = strAt;
+			strLen = inLen - (strBase - inStr) - 1;
+			
+			/* Count the number of slashes. */
+			finalEnd = NULL;
+			numSlash = -1;
+			if (sjme_error_is(error =
+				sjme_desc_interpretBinaryNameNumSlash(strAt,
+					strLen, &numSlash, &finalEnd)) ||
+				numSlash < 0)
+				return sjme_error_defaultOr(error,
+					SJME_ERROR_INVALID_FIELD_TYPE);
+			
+			/* Interpret binary name. */
+			if (sjme_error_is(error = sjme_desc_interpretBinaryNameFixed(
+				strBase, strLen, finalEnd, numSlash,
+				&component->objectType[0])))
+				return sjme_error_defaultOr(error,
+					SJME_ERROR_INVALID_FIELD_TYPE);
+			
+			/* Need ending semicolon. */
+			strAt = finalEnd;
+			if (';' != sjme_string_decodeChar(strAt, &strAt))
+				return SJME_ERROR_INVALID_FIELD_TYPE;
 		}
 		
-		/* Final component to parse. */
+		/* Primitive type. */
 		else
+		{
+			/* Do not parse any further. */
 			isFinal = SJME_JNI_TRUE;
+		}
 	}
 	
 	/* Success! */
@@ -298,21 +334,30 @@ sjme_jint sjme_desc_compareBinaryName(
 	/* Compare null. */
 	if (aName == NULL || bName == NULL)
 		return sjme_compare_null(aName, bName);
-		
-	sjme_todo("Implement this?");
-	return -999;
+	
+	/* Normal compare. */
+	return sjme_string_compareN(
+		aName->whole.pointer, aName->whole.length,
+		bName->whole.pointer, bName->whole.length);
 }
 
 sjme_jint sjme_desc_compareBinaryNameS(
 	sjme_attrInNullable const sjme_desc_binaryName* aName,
 	sjme_attrInNullable sjme_lpcstr bString)
 {
+	sjme_jint strLen;
+	
 	/* Compare null. */
 	if (aName == NULL || bString == NULL)
 		return sjme_compare_null(aName, bString);
 	
-	sjme_todo("Implement this?");
-	return -999;
+	/* Wrong string length? */
+	strLen = strlen(bString);
+	if (strLen != aName->whole.length)
+		return SJME_JNI_FALSE;
+	
+	/* Compare actual values. */
+	return strncmp(aName->whole.pointer, bString, strLen);
 }
 
 sjme_jint sjme_desc_compareClass(

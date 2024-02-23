@@ -166,6 +166,20 @@ sjme_errorCode sjme_randomNextIntMax(
 sjme_jint sjme_string_charAt(sjme_lpcstr string, sjme_jint index);
 
 /**
+ * Compares two strings up to the given number of characters each, nulls are
+ * in the same order as @c sjme_compare_null() .
+ * 
+ * @param aString A string. 
+ * @param aLen A length.
+ * @param bString B string.
+ * @param bLen B length.
+ * @return The comparison between the two.
+ * @since 2024/02/22
+ */
+sjme_jint sjme_string_compareN(sjme_lpcstr aString, sjme_jint aLen,
+	sjme_lpcstr bString, sjme_jint bLen);
+
+/**
  * Decodes the given UTF-8 character.
  *
  * @param at The character sequence to decode.
