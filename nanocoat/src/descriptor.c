@@ -164,7 +164,7 @@ static sjme_errorCode sjme_desc_interpretFieldTypeAllocSize(sjme_lpcstr inStr,
 				SJME_ERROR_INVALID_FIELD_TYPE);
 		
 		/* Add in. */
-		allocLen += SJME_SIZEOF_DESC_BINARY_NAME(subLen) +
+		allocLen += SJME_SIZEOF_DESC_BINARY_NAME(subLen + 1) +
 			sizeof(sjme_desc_fieldTypeComponent);
 	} 
 	
@@ -368,21 +368,24 @@ sjme_jint sjme_desc_compareClass(
 	if (aClass == NULL || bClass == NULL)
 		return sjme_compare_null(aClass, bClass);
 		
-	sjme_todo("Implement this?");
-	return -999;
+	/* Normal compare. */
+	return sjme_string_compareN(
+		aClass->whole.pointer, aClass->whole.length,
+		bClass->whole.pointer, bClass->whole.length);
 }
 
 sjme_jint sjme_desc_compareClassS(
 	sjme_attrInNullable const sjme_desc_className* aClass,
-	sjme_attrInValue sjme_jboolean bIsFieldType, 
 	sjme_attrInNullable sjme_lpcstr bString)
 {
 	/* Compare null. */
 	if (aClass == NULL || bString == NULL)
 		return sjme_compare_null(aClass, bString);
 	
-	sjme_todo("Implement this?");
-	return -999;
+	/* Normal compare. */
+	return sjme_string_compareN(
+		aClass->whole.pointer, aClass->whole.length,
+		bString, strlen(bString));
 }
 
 sjme_jint sjme_desc_compareField(
@@ -393,8 +396,10 @@ sjme_jint sjme_desc_compareField(
 	if (aField == NULL || bField == NULL)
 		return sjme_compare_null(aField, bField);
 		
-	sjme_todo("Implement this?");
-	return -999;
+	/* Normal compare. */
+	return sjme_string_compareN(
+		aField->whole.pointer, aField->whole.length,
+		bField->whole.pointer, bField->whole.length);
 }
 
 sjme_jint sjme_desc_compareFieldS(
@@ -405,8 +410,10 @@ sjme_jint sjme_desc_compareFieldS(
 	if (aField == NULL || bString == NULL)
 		return sjme_compare_null(aField, bString);
 	
-	sjme_todo("Implement this?");
-	return -999;
+	/* Normal compare. */
+	return sjme_string_compareN(
+		aField->whole.pointer, aField->whole.length,
+		bString, strlen(bString));
 }
 
 sjme_jint sjme_desc_compareIdentifier(
@@ -417,8 +424,10 @@ sjme_jint sjme_desc_compareIdentifier(
 	if (aIdent == NULL || bIdent == NULL)
 		return sjme_compare_null(aIdent, bIdent);
 		
-	sjme_todo("Implement this?");
-	return -999;
+	/* Normal compare. */
+	return sjme_string_compareN(
+		aIdent->whole.pointer, aIdent->whole.length,
+		bIdent->whole.pointer, bIdent->whole.length);
 }
 
 sjme_jint sjme_desc_compareIdentifierS(
@@ -431,13 +440,10 @@ sjme_jint sjme_desc_compareIdentifierS(
 	if (aIdent == NULL || bString == NULL)
 		return sjme_compare_null(aIdent, bString);
 	
-	/* Wrong string length? */
-	strLen = strlen(bString);
-	if (strLen != aIdent->pointer.length)
-		return SJME_JNI_FALSE;
-	
-	/* Compare actual values. */
-	return strncmp(aIdent->pointer.pointer, bString, strLen);
+	/* Compare by string. */
+	return sjme_string_compareN(
+		aIdent->whole.pointer, aIdent->whole.length,
+		bString, strlen(bString));
 }
 
 sjme_jint sjme_desc_compareMethod(
@@ -448,8 +454,10 @@ sjme_jint sjme_desc_compareMethod(
 	if (aMethod == NULL || bMethod == NULL)
 		return sjme_compare_null(aMethod, bMethod);
 		
-	sjme_todo("Implement this?");
-	return -999;
+	/* Normal compare. */
+	return sjme_string_compareN(
+		aMethod->whole.pointer, aMethod->whole.length,
+		bMethod->whole.pointer, bMethod->whole.length);
 }
 
 sjme_jint sjme_desc_compareMethodS(
@@ -460,8 +468,10 @@ sjme_jint sjme_desc_compareMethodS(
 	if (aMethod == NULL || bString == NULL)
 		return sjme_compare_null(aMethod, bString);
 	
-	sjme_todo("Implement this?");
-	return -999;
+	/* Normal compare. */
+	return sjme_string_compareN(
+		aMethod->whole.pointer, aMethod->whole.length,
+		bString, strlen(bString));
 }
 
 sjme_errorCode sjme_desc_interpretBinaryName(
@@ -518,6 +528,11 @@ sjme_errorCode sjme_desc_interpretClassName(
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen)
 {
+	sjme_errorCode error;
+	sjme_jint c, numSlash, allocLen, strLen;
+	sjme_desc_className* result;
+	sjme_lpcstr finalEnd;
+	
 	if (inPool == NULL || outName == NULL || inStr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
@@ -525,9 +540,82 @@ sjme_errorCode sjme_desc_interpretClassName(
 		return SJME_ERROR_INVALID_ARGUMENT;
 	else if (inLen == 0)
 		return SJME_ERROR_INVALID_CLASS_NAME;
+	
+	/* Get actual string length. */
+	strLen = sjme_string_lengthN(inStr, inLen);
+	
+	/* Is this an array? Interpret as field. */
+	c = sjme_string_decodeChar(inStr, NULL);
+	if (c == '[')
+	{
+		/* Determine field size. */
+		allocLen = -1;
+		if (sjme_error_is(error = sjme_desc_interpretFieldTypeAllocSize(
+			inStr, strLen, &allocLen)) || allocLen < 0)
+			return sjme_error_defaultOr(error,
+				SJME_ERROR_INVALID_CLASS_NAME);
+	}
+	
+	/* Otherwise, interpret as binary name. */
+	else
+	{
+		/* Determine slashes for resultant size. */
+		numSlash = -1;
+		finalEnd = NULL;
+		if (sjme_error_is(error = sjme_desc_interpretBinaryNameNumSlash(
+			inStr, strLen, &numSlash, &finalEnd)) ||
+			numSlash < 0)
+			return sjme_error_defaultOr(error,
+				SJME_ERROR_INVALID_CLASS_NAME);
 		
-	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+		/* Allocate this much. */
+		allocLen = SJME_SIZEOF_DESC_BINARY_NAME(numSlash + 1);
+	}
+	
+	/* Add class base. */
+	allocLen += sizeof(sjme_desc_className);
+	
+	/* Allocate. */
+	result = sjme_alloca(allocLen);
+	if (result == NULL)
+		return SJME_ERROR_OUT_OF_MEMORY;
+	
+	/* Initialize. */
+	memset(result, 0, allocLen);
+	
+	/* Fill in basic details. */
+	result->whole.pointer = inStr;
+	result->whole.length = strLen;
+	result->hash = sjme_string_hashN(result->whole.pointer,
+		result->whole.length);
+		
+	/* Parse array. */
+	if (c == '[')
+	{
+		/* Parse. */
+		if (sjme_error_is(error = sjme_desc_interpretFieldTypeFixed(
+			inStr, strLen, &result->descriptor.field)))
+			return sjme_error_defaultOr(error,
+				SJME_ERROR_INVALID_CLASS_NAME);
+		
+		/* Is a field. */
+		result->isField = SJME_JNI_TRUE;
+	}
+	
+	/* Parse binary name. */
+	else
+	{
+		/* Parse. */
+		if (sjme_error_is(error = sjme_desc_interpretBinaryNameFixed(
+			inStr, strLen, finalEnd, numSlash,
+			&result->descriptor.binary)))
+			return sjme_error_defaultOr(error,
+				SJME_ERROR_INVALID_CLASS_NAME);
+	}
+	
+	/* Return a copy. */
+	return sjme_alloc_copy(inPool, allocLen, outName,
+		result);
 }
 
 sjme_errorCode sjme_desc_interpretFieldType(
@@ -615,8 +703,8 @@ sjme_errorCode sjme_desc_interpretIdentifier(
 	/* Fill in info. */
 	memset(outIdent, 0, sizeof(*outIdent));
 	outIdent->hash = sjme_string_hashN(inStr, inLen);
-	outIdent->pointer.pointer = inStr;
-	outIdent->pointer.length = end - inStr;
+	outIdent->whole.pointer = inStr;
+	outIdent->whole.length = end - inStr;
 	
 	/* Success! */
 	return SJME_ERROR_NONE;

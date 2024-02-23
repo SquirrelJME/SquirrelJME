@@ -45,16 +45,20 @@ SJME_TEST_DECLARE(testDescClassName)
 	sjme_unit_isFalse(test, result->isField,
 		"Was a field?");
 	sjme_unit_equalI(test, 0, sjme_desc_compareClassS(result,
-		SJME_JNI_FALSE, "Squeak"),
+		"Squeak"),
 		"Incorrect binary name?");
-	sjme_unit_notEqualI(test, 0, sjme_desc_compareClassS(result,
-		SJME_JNI_TRUE, "Squeak"),
-		"Matched against field?");
 	
 	/* Setup base package. */
 	string = "Squeak/In/Box";
 	strLen = strlen(string);
 	strHash = sjme_string_hash(string);
+	
+	/* Parse. */
+	result = NULL;
+	if (!sjme_desc_interpretClassName(test->pool,
+			&result, string, strLen) ||
+		result == NULL)
+		return sjme_unit_fail(test, "Could not interpret class name?");
 	
 	/* Check validity. */
 	sjme_unit_equalI(test, strHash, result->hash,
@@ -62,7 +66,7 @@ SJME_TEST_DECLARE(testDescClassName)
 	sjme_unit_isFalse(test, result->isField,
 		"Was a field?");
 	sjme_unit_equalI(test, 0, sjme_desc_compareClassS(result,
-		SJME_JNI_FALSE, "Squeak/In/Box"),
+		"Squeak/In/Box"),
 		"Incorrect binary name?");
 	
 	/* Parse. */
@@ -90,7 +94,7 @@ SJME_TEST_DECLARE(testDescClassName)
 	sjme_unit_isTrue(test, result->isField,
 		"Was a binary name?");
 	sjme_unit_equalI(test, 0, sjme_desc_compareClassS(result,
-		SJME_JNI_FALSE, "[LSqueak/In/Box;"),
+		"[LSqueak/In/Box;"),
 		"Incorrect field name?");
 	
 	/* Success! */

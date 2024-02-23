@@ -41,7 +41,7 @@ typedef struct sjme_desc_identifier
 	sjme_jint hash;
 	
 	/** The pointer and length to the identifier. */
-	sjme_pointerLen pointer;
+	sjme_pointerLen whole;
 } sjme_desc_identifier;
 
 /** List of identifiers. */
@@ -217,14 +217,12 @@ sjme_jint sjme_desc_compareClass(
  * Compares the class against the given string.
  * 
  * @param aClass The class to check. 
- * @param bIsFieldType Should this be a field type match?
  * @param bString The string to match against.
  * @return The comparison value.
  * @since 2024/02/11
  */
 sjme_jint sjme_desc_compareClassS(
 	sjme_attrInNullable const sjme_desc_className* aClass,
-	sjme_attrInValue sjme_jboolean bIsFieldType, 
 	sjme_attrInNullable sjme_lpcstr bString);
 
 /**
