@@ -101,8 +101,8 @@ typedef struct sjme_desc_fieldTypeComponent
 	/** Is this an array? */
 	sjme_jboolean isArray : 1;
 		
-	/** Interpretation of object type, if an object. */
-	sjme_desc_binaryName objectType[0];
+	/** Binary name of the component, if this is a binary name. */
+	sjme_pointerLen binaryName;
 } sjme_desc_fieldTypeComponent;
 
 struct sjme_desc_fieldType
@@ -188,7 +188,31 @@ typedef struct sjme_desc_methodType
 sjme_jint sjme_desc_compareBinaryName(
 	sjme_attrInNullable const sjme_desc_binaryName* aName,
 	sjme_attrInNullable const sjme_desc_binaryName* bName);
-	
+
+/**
+ * Compares the pointer and length against the given binary name.
+ * 
+ * @param aName The first value. 
+ * @param bName The second value.
+ * @return The comparison value.
+ * @since 2024/02/23
+ */
+sjme_jint sjme_desc_compareBinaryNameP(
+	sjme_attrInNullable const sjme_pointerLen* aPointerLen,
+	sjme_attrInNullable const sjme_desc_binaryName* bName);
+
+/**
+ * Compares the pointer and length against the given string.
+ * 
+ * @param aName The first value. 
+ * @param bName The second value.
+ * @return The comparison value.
+ * @since 2024/02/23
+ */
+sjme_jint sjme_desc_compareBinaryNamePS(
+	sjme_attrInNullable const sjme_pointerLen* aPointerLen,
+	sjme_attrInNullable sjme_lpcstr bString);
+
 /**
  * Compares the binary name against the given string.
  * 

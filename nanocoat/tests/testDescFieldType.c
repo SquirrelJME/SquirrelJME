@@ -425,6 +425,12 @@ SJME_TEST_DECLARE(testDescFieldType)
 		/* Match all components. */
 		for (i = 0; i <= entry->numDims; i++)
 		{
+			/* Debug. */
+			sjme_message("Field %s, fragment %d: %.*s",
+				string, i, result->components[i].fragment.length,
+				(char*)result->components[i].fragment.pointer);
+			
+			/* Basic comparison. */
 			sjme_unit_equalI(test, result->components[i].javaType,
 				entry->components[i].javaType,
 				"Field %s has incorrect Java type?", string);
@@ -444,8 +450,8 @@ SJME_TEST_DECLARE(testDescFieldType)
 					"Not an object?");
 				
 				/* String comparison should be valid. */
-				sjme_unit_equalI(test, 0, sjme_desc_compareBinaryNameS(
-					result->components[i].objectType,
+				sjme_unit_equalI(test, 0, sjme_desc_compareBinaryNamePS(
+					&result->components[i].binaryName,
 					entry->objectString),
 					"Binary name of object is incorrect?");
 				
@@ -460,8 +466,8 @@ SJME_TEST_DECLARE(testDescFieldType)
 					"Field %s has an invalid object string?", string);
 				
 				/* Should be the same. */
-				sjme_unit_equalI(test, 0, sjme_desc_compareBinaryName(
-					result->components[i].objectType,
+				sjme_unit_equalI(test, 0, sjme_desc_compareBinaryNameP(
+					&result->components[i].binaryName,
 					objectResult),
 					"Field %s has non-equal object?", string);
 			}

@@ -21,19 +21,36 @@ static sjme_errorCode sjme_desc_interpretBinaryNameFixed(sjme_lpcstr inStr,
 	sjme_errorCode error;
 	sjme_lpcstr at, end, base, nextAt;
 	sjme_jint c, identLen, identAt;
+	sjme_desc_identifier* ident;
 	
-	if (inStr == NULL || finalEnd == NULL || result == NULL)
+	if (inStr == NULL || finalEnd == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Fill in basic details. */
-	result->whole.pointer = inStr;
-	result->whole.length = finalEnd - inStr;
-	result->hash = sjme_string_hashN(result->whole.pointer,
-		result->whole.length);
+	/* If a result is actually cared about rather than a parse check. */
+	if (result != NULL)
+	{
+		/* Fill in basic details. */
+		result->whole.pointer = inStr;
+		result->whole.length = finalEnd - inStr;
+		result->hash = sjme_string_hashN(result->whole.pointer,
+			result->whole.length);
+			
+		/* Initialize list. */
+		sjme_list_directInit(numSlash + 1, &result->identifiers,
+			sjme_desc_identifier, 0);
+	}
 	
-	/* Initialize list. */
-	sjme_list_directInit(numSlash + 1, &result->identifiers,
-		sjme_desc_identifier, 0);
+	/* Otherwise identifier is ignored. */
+	else
+	{
+		/* Allocate. */
+		ident = sjme_alloca(sizeof(*ident));
+		if (ident == NULL)
+			return SJME_ERROR_OUT_OF_MEMORY;
+			
+		/* Initialize. */
+		memset(ident, 0, sizeof(*ident));
+	}
 	
 	/* Parse individual identifiers, if there are none then this */
 	/* will be skipped completely. */
@@ -56,10 +73,15 @@ static sjme_errorCode sjme_desc_interpretBinaryNameFixed(sjme_lpcstr inStr,
 		if (identLen <= 0)
 			return SJME_ERROR_INVALID_BINARY_NAME;
 		
+		/* Which identifier is filled? */
+		if (result != NULL)
+			ident = &result->identifiers.elements[identAt];
+		else
+			memset(ident, 0, sizeof(*ident));
+		
 		/* Parse individual identifier fragment. */
 		if (sjme_error_is(error = sjme_desc_interpretIdentifier(
-			&result->identifiers.elements[identAt],
-			base, identLen)))
+			ident, base, identLen)))
 			return sjme_error_defaultOr(error,
 				SJME_ERROR_INVALID_BINARY_NAME);
 		
@@ -73,10 +95,15 @@ static sjme_errorCode sjme_desc_interpretBinaryNameFixed(sjme_lpcstr inStr,
 	if (identLen <= 0)
 		return SJME_ERROR_INVALID_BINARY_NAME;
 	
+	/* Which identifier is filled? */
+	if (result != NULL)
+		ident = &result->identifiers.elements[identAt];
+	else
+		memset(ident, 0, sizeof(*ident));
+	
 	/* Parse final one. */
 	if (sjme_error_is(error = sjme_desc_interpretIdentifier(
-		&result->identifiers.elements[identAt],
-		base, identLen)))
+		ident, base, identLen)))
 		return sjme_error_defaultOr(error,
 			SJME_ERROR_INVALID_BINARY_NAME);
 	
@@ -174,26 +201,22 @@ static sjme_errorCode sjme_desc_interpretFieldTypeAllocSize(sjme_lpcstr inStr,
 }
 
 static sjme_errorCode sjme_desc_interpretFieldTypeFixed(sjme_lpcstr inStr,
-	sjme_jint inLen, sjme_desc_fieldType* result)
+	sjme_jint inLen, sjme_desc_fieldType* result, sjme_jboolean continueField,
+	sjme_lpcstr *fieldEnd)
 {
 	sjme_errorCode error;
 	sjme_jint typeCode, compAt, numSlash, strLen;
 	sjme_jboolean isArray, isObject, isFinal;
 	sjme_desc_fieldTypeComponent* component;
-	sjme_lpcstr strAt, strBase, finalEnd;
+	sjme_lpcstr strAt, strBase, finalEnd, lastAt;
 	
 	if (inStr == NULL || result == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
-	/* Base common initialize for the whole value. */
-	result->whole.pointer = inStr;
-	result->whole.length = inLen;
-	result->hash = sjme_string_hashN(result->whole.pointer,
-		result->whole.length);
-		
 	/* Component parsing loop. */
 	isFinal = SJME_JNI_FALSE;
 	strAt = inStr;
+	lastAt = NULL;
 	for (compAt = 0;; compAt++)
 	{
 		/* Reading into where? */
@@ -206,6 +229,18 @@ static sjme_errorCode sjme_desc_interpretFieldTypeFixed(sjme_lpcstr inStr,
 		/* There are more characters that are valid? */
 		if (isFinal)
 		{
+			/* Last is at the base. */
+			lastAt = strBase;
+			
+			/* Option to continue parsing fields? */
+			if (continueField)
+			{
+				if (fieldEnd != NULL)
+					*fieldEnd = strBase;
+				break;
+			}
+			
+			/* No more field. */
 			if (typeCode >= 0)
 				return SJME_ERROR_INVALID_FIELD_TYPE;
 			break;
@@ -280,6 +315,10 @@ static sjme_errorCode sjme_desc_interpretFieldTypeFixed(sjme_lpcstr inStr,
 			
 			/* Increase dimension count. */
 			result->numDims += 1;
+			
+			/* Binary name is unspecified. */
+			component->binaryName.pointer = NULL;
+			component->binaryName.length = 0;
 		}
 		
 		/* Is this an object? */
@@ -302,12 +341,16 @@ static sjme_errorCode sjme_desc_interpretFieldTypeFixed(sjme_lpcstr inStr,
 				return sjme_error_defaultOr(error,
 					SJME_ERROR_INVALID_FIELD_TYPE);
 			
-			/* Interpret binary name. */
+			/* Interpret binary name, result is actually ignored. */
 			if (sjme_error_is(error = sjme_desc_interpretBinaryNameFixed(
 				strBase, strLen, finalEnd, numSlash,
-				&component->objectType[0])))
+				NULL)))
 				return sjme_error_defaultOr(error,
 					SJME_ERROR_INVALID_FIELD_TYPE);
+			
+			/* Fill in binary name fragment. */
+			component->binaryName.pointer = strBase;
+			component->binaryName.length = strLen;
 			
 			/* Need ending semicolon. */
 			strAt = finalEnd;
@@ -320,8 +363,18 @@ static sjme_errorCode sjme_desc_interpretFieldTypeFixed(sjme_lpcstr inStr,
 		{
 			/* Do not parse any further. */
 			isFinal = SJME_JNI_TRUE;
+			
+			/* Binary name is unspecified. */
+			component->binaryName.pointer = NULL;
+			component->binaryName.length = 0;
 		}
 	}
+		
+	/* Base initialize of field. */
+	result->whole.pointer = inStr;
+	result->whole.length = lastAt - inStr;
+	result->hash = sjme_string_hashN(result->whole.pointer,
+		result->whole.length);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -339,6 +392,40 @@ sjme_jint sjme_desc_compareBinaryName(
 	return sjme_string_compareN(
 		aName->whole.pointer, aName->whole.length,
 		bName->whole.pointer, bName->whole.length);
+}
+
+sjme_jint sjme_desc_compareBinaryNameP(
+	sjme_attrInNullable const sjme_pointerLen* aPointerLen,
+	sjme_attrInNullable const sjme_desc_binaryName* bName)
+{
+	sjme_jboolean aNull;
+	
+	/* Compare null. */
+	aNull = (aPointerLen == NULL || aPointerLen->pointer == NULL);
+	if (aNull || bName == NULL)
+		return sjme_compare_null((aNull ? NULL : aPointerLen), bName);
+	
+	/* Normal compare. */
+	return sjme_string_compareN(
+		aPointerLen->pointer, aPointerLen->length,
+		bName->whole.pointer, bName->whole.length);
+}
+
+sjme_jint sjme_desc_compareBinaryNamePS(
+	sjme_attrInNullable const sjme_pointerLen* aPointerLen,
+	sjme_attrInNullable sjme_lpcstr bString)
+{
+	sjme_jboolean aNull;
+	
+	/* Compare null. */
+	aNull = (aPointerLen == NULL || aPointerLen->pointer == NULL);
+	if (aNull || bString == NULL)
+		return sjme_compare_null((aNull ? NULL : aPointerLen), bString);
+	
+	/* Normal compare. */
+	return sjme_string_compareN(
+		aPointerLen->pointer, aPointerLen->length,
+		bString, strlen(bString));
 }
 
 sjme_jint sjme_desc_compareBinaryNameS(
@@ -594,7 +681,8 @@ sjme_errorCode sjme_desc_interpretClassName(
 	{
 		/* Parse. */
 		if (sjme_error_is(error = sjme_desc_interpretFieldTypeFixed(
-			inStr, strLen, &result->descriptor.field)))
+			inStr, strLen, &result->descriptor.field,
+			SJME_JNI_FALSE, NULL)))
 			return sjme_error_defaultOr(error,
 				SJME_ERROR_INVALID_CLASS_NAME);
 		
@@ -658,7 +746,7 @@ sjme_errorCode sjme_desc_interpretFieldType(
 	
 	/* Load field, recursively. */
 	if (sjme_error_is(error = sjme_desc_interpretFieldTypeFixed(
-		inStr, inLen, result)))
+		inStr, inLen, result, SJME_JNI_FALSE, NULL)))
 		return sjme_error_defaultOr(error,
 			SJME_ERROR_INVALID_FIELD_TYPE);
 	
@@ -716,6 +804,11 @@ sjme_errorCode sjme_desc_interpretMethodType(
 	sjme_attrInNotNull sjme_lpcstr inStr,
 	sjme_attrInPositive sjme_jint inLen)
 {
+	sjme_errorCode error;
+	sjme_jint c, fragmentLen, allocLen;
+	sjme_lpcstr strAt, strBase;
+	sjme_desc_fieldType* workingField;
+	
 	if (inPool == NULL || outType == NULL || inStr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
@@ -723,7 +816,57 @@ sjme_errorCode sjme_desc_interpretMethodType(
 		return SJME_ERROR_INVALID_ARGUMENT;
 	else if (inLen == 0)
 		return SJME_ERROR_INVALID_METHOD_TYPE;
+	
+	/* First character should be opening parenthesis. */
+	strAt = inStr;
+	c = sjme_string_decodeChar(strAt, &strAt);
+	if (c != '(')
+		return SJME_ERROR_INVALID_METHOD_TYPE;
+	
+	/* Parse each argument. */
+	for (;;)
+	{
+		/* Read in type. */
+		strBase = strAt;
+		c = sjme_string_decodeChar(strAt, &strAt);
+		if (c < 0)
+			return SJME_ERROR_INVALID_METHOD_TYPE;
 		
+		/* End of argument list? */
+		if (c == ')')
+			break;
+			
+		/* Maximum end of string. */
+		fragmentLen = inLen - (strAt - inStr);
+		
+		/* Determine the allocation size. */
+		allocLen = -1;
+		if (sjme_error_is(error = sjme_desc_interpretFieldTypeAllocSize(
+			strAt, fragmentLen, &allocLen)) ||
+			allocLen < 0)
+			return sjme_error_defaultOr(error,
+				SJME_ERROR_INVALID_METHOD_TYPE);
+		
+		/* Allocate. */
+		workingField = sjme_alloca(allocLen);
+		if (workingField == NULL)
+			return SJME_ERROR_OUT_OF_MEMORY;
+		
+		/* Initialize. */
+		memset(workingField, 0, allocLen);
+		
+		/* Parse single field */
+		if (sjme_error_is(error = sjme_desc_interpretFieldTypeFixed(
+			strAt, fragmentLen, workingField,
+			SJME_JNI_TRUE, &strAt)))
+			return sjme_error_defaultOr(error,
+				SJME_ERROR_INVALID_METHOD_TYPE);
+		
+		sjme_todo("Implement this?");
+	}
+	
 	sjme_todo("Implement this?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
