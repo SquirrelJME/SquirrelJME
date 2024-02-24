@@ -22,11 +22,11 @@ static sjme_errorCode skippedExcept(sjme_test* test,
 SJME_EXCEPT_WITH(trace):
 	SJME_EXCEPT_TOSS(SJME_ERROR_TOP_NOT_LONG);
 
-	sjme_unitFail(test, "Skipped point should not be reached.");
+	sjme_unit_fail(test, "Skipped point should not be reached.");
 
 SJME_EXCEPT_FAIL:
 	/* Should be set. */
-	sjme_unitEqualI(test, exceptTraceE_sjme, SJME_ERROR_TOP_NOT_LONG,
+	sjme_unit_equalI(test, exceptTraceE_sjme, SJME_ERROR_TOP_NOT_LONG,
 		"Skipped error code was not set?");
 
 	/* Success otherwise. */
@@ -42,11 +42,11 @@ SJME_EXCEPT_WITH(trace):
 	if (sjme_error_is(skippedExcept(test, trace)))
 		SJME_EXCEPT_TOSS_SAME();
 
-	sjme_unitFail(test, "Nested point should not be reached.");
+	sjme_unit_fail(test, "Nested point should not be reached.");
 
 SJME_EXCEPT_FAIL:
 	/* Should be set. */
-	sjme_unitEqualI(test, exceptTraceE_sjme, SJME_ERROR_TOP_NOT_LONG,
+	sjme_unit_equalI(test, exceptTraceE_sjme, SJME_ERROR_TOP_NOT_LONG,
 		"Nested error code was not set?");
 
 	/* Success otherwise. */
@@ -73,11 +73,11 @@ SJME_EXCEPT_WITH(trace):
 		SJME_EXCEPT_TOSS_SAME();
 
 	/* Should hopefully not be reached. */
-	sjme_unitFail(test, "Should not be reached here?");
+	sjme_unit_fail(test, "Should not be reached here?");
 
 SJME_EXCEPT_FAIL:
 	/* Should be set. */
-	sjme_unitEqualI(test, exceptTraceE_sjme, SJME_ERROR_TOP_NOT_LONG,
+	sjme_unit_equalI(test, exceptTraceE_sjme, SJME_ERROR_TOP_NOT_LONG,
 		"Error code was not set?");
 
 	/* Success otherwise. */

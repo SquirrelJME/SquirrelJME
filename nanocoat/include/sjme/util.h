@@ -92,6 +92,18 @@ typedef struct sjme_tree_findFunc
 } sjme_tree_findFunc;
 
 /**
+ * Compares two null values, nulls are placed before non-nulls.
+ * 
+ * @param a The first value.
+ * @param b The second value.
+ * @return The resultant comparison.
+ * @since 2024/02/14
+ */
+sjme_jint sjme_compare_null(
+	sjme_attrInNullable const void* a,
+	sjme_attrInNullable const void* b);
+
+/**
  * Initializes the random number generator.
  * 
  * @param outRandom The random state to initialize. 
@@ -154,6 +166,20 @@ sjme_errorCode sjme_randomNextIntMax(
 sjme_jint sjme_string_charAt(sjme_lpcstr string, sjme_jint index);
 
 /**
+ * Compares two strings up to the given number of characters each, nulls are
+ * in the same order as @c sjme_compare_null() .
+ * 
+ * @param aString A string. 
+ * @param aLen A length.
+ * @param bString B string.
+ * @param bLen B length.
+ * @return The comparison between the two.
+ * @since 2024/02/22
+ */
+sjme_jint sjme_string_compareN(sjme_lpcstr aString, sjme_jint aLen,
+	sjme_lpcstr bString, sjme_jint bLen);
+
+/**
  * Decodes the given UTF-8 character.
  *
  * @param at The character sequence to decode.
@@ -175,6 +201,16 @@ sjme_jint sjme_string_decodeChar(sjme_lpcstr at, sjme_lpcstr* stringP);
 sjme_jint sjme_string_hash(sjme_lpcstr string);
 
 /**
+ * Hashes the given string in accordance to @c String::hashCode() .
+ * 
+ * @param string The string to hash.
+ * @param limit The string limit.
+ * @return The hashcode of the given string.
+ * @since 2024/02/20
+ */
+sjme_jint sjme_string_hashN(sjme_lpcstr string, sjme_jint limit);
+
+/**
  * Returns the length of the string in accordance to @c String::length() .
  * 
  * @param string The string to get the length of.
@@ -182,6 +218,16 @@ sjme_jint sjme_string_hash(sjme_lpcstr string);
  * @since 2023/07/29
  */
 sjme_jint sjme_string_length(sjme_lpcstr string);
+
+/**
+ * Returns the length of the string in accordance to @c String::length() .
+ * 
+ * @param string The string to get the length of.
+ * @param limit The length limit of the C string.
+ * @return The string length or @c -1 if it is not valid.
+ * @since 2024/02/20
+ */
+sjme_jint sjme_string_lengthN(sjme_lpcstr string, sjme_jint limit);
 
 /**
  * Swaps an unsigned integer value.

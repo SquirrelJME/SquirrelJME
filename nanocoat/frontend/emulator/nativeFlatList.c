@@ -31,6 +31,12 @@ jlong SJME_JNI_METHOD(SJME_CLASS_FLAT_LIST, _1_1flatten)
 	/* Allocate an array that can get the pointers for flattening. */
 	utfStrings = sjme_alloca(sizeof(*utfStrings) * arrayLen);
 	isCopies = sjme_alloca(sizeof(*isCopies) * arrayLen);
+	
+	if (utfStrings == NULL || isCopies == NULL)
+	{
+		sjme_jni_throwVMException(env, SJME_ERROR_OUT_OF_MEMORY);
+		return 0;
+	}
 
 	/* Fill in string values accordingly. */
 	for (i = 0; i < arrayLen; i++)
@@ -124,9 +130,17 @@ jlong SJME_JNI_METHOD(SJME_CLASS_FLAT_LIST, _1_1fromArrayP)
 	/* Get pointer to elements in the array. */
 	copied = JNI_FALSE;
 	longPtrs = (*env)->GetLongArrayElements(env, inPtrs, &copied);
+	
+	/* Allocate. */
+	primPtrs = sjme_alloca(sizeof(*primPtrs) * arrayLen);
+	
+	if (primPtrs == NULL)
+	{
+		sjme_jni_throwVMException(env, SJME_ERROR_OUT_OF_MEMORY);
+		return 0;
+	}
 
 	/* We cannot just use long here, we need to map down such as on 32-bit. */
-	primPtrs = sjme_alloca(sizeof(*primPtrs) * arrayLen);
 	memset(primPtrs, 0, sizeof(*primPtrs) * arrayLen);
 	for (i = 0; i < arrayLen; i++)
 		primPtrs[i] = SJME_JLONG_TO_POINTER(sjme_pointer, longPtrs[i]);

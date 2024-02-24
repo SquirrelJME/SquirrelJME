@@ -521,7 +521,7 @@ public final class System
 	 * This returns the identity hash code of the object. The identity hash
 	 * code is randomly given by the virtual machine to an object. There is
 	 * no definition on how the value is to be derived. It may be a unique
-	 * object ID or it may be a memory address. Two objects may also share the
+	 * object ID, or it may be a memory address. Two objects may also share the
 	 * same identity hash code.
 	 *
 	 * @param __o The input object to get the hash code for.
@@ -615,7 +615,8 @@ public final class System
 			throw new NullPointerException("NARG");
 		
 		// Not allowed to do this?
-		System.getSecurityManager().checkPermission(new RuntimePermission("setIO"));
+		System.getSecurityManager().checkPermission(
+			new RuntimePermission("setIO"));
 		
 		// Use a wrapped class to prevent final abuse.
 		((__CanSetPrintStream__)System.out).__set(__a);

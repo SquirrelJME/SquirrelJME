@@ -40,7 +40,7 @@ SJME_TEST_DECLARE(testRomLibraryFindResource)
 	memset(&mock, 0, sizeof(mock));
 	if (!sjme_mock_act(test, &mock,
 			&configRomLibraryFindResource, 0))
-		return sjme_unitFail(test, "Could not initialize mocks");
+		return sjme_unit_fail(test, "Could not initialize mocks");
 
 	/* Get the library to test. */
 	library = mock.romLibraries[0];
@@ -49,11 +49,11 @@ SJME_TEST_DECLARE(testRomLibraryFindResource)
 	inputStream = NULL;
 	if (sjme_error_is(sjme_rom_libraryResourceAsStream(library,
 		&inputStream, "hello.txt")) || inputStream == NULL)
-		return sjme_unitFail(test, "Did not find resource?");
+		return sjme_unit_fail(test, "Did not find resource?");
 
 	/* Just close the stream. */
 	if (sjme_error_is(sjme_stream_inputClose(inputStream)))
-		return sjme_unitFail(test, "Could not close stream?");
+		return sjme_unit_fail(test, "Could not close stream?");
 
 	/* Success! */
 	return SJME_TEST_RESULT_PASS;

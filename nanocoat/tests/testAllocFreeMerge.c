@@ -194,7 +194,7 @@ SJME_TEST_DECLARE(testAllocFreeMerge)
 	chunkLen = 32768;
 	chunk = sjme_alloca(chunkLen);
 	if (chunk == NULL)
-		return sjme_unitSkip(test, "Could not alloca(%d).",
+		return sjme_unit_skip(test, "Could not alloca(%d).",
 			(int)chunkLen);
 
 	/* Use multiple scenarios regarding the order of blocks to free. */
@@ -207,7 +207,7 @@ SJME_TEST_DECLARE(testAllocFreeMerge)
 		pool = NULL;
 		if (sjme_error_is(sjme_alloc_poolInitStatic(&pool,
 			chunk, chunkLen)) || pool == NULL)
-			return sjme_unitFail(test, "Could not initialize static pool?");
+			return sjme_unit_fail(test, "Could not initialize static pool?");
 
 		/* Allocate each of the links. */
 		for (linkNum = 0; linkNum < NUM_LINKS; linkNum++)
@@ -225,17 +225,17 @@ SJME_TEST_DECLARE(testAllocFreeMerge)
 				pool->space[SJME_ALLOC_POOL_SPACE_FREE].usable /
 					(isLast ? 1 : 2),
 				&blocks[linkNum])) || blocks[linkNum] == NULL)
-				return sjme_unitFail(test, "Could not allocate link?");
+				return sjme_unit_fail(test, "Could not allocate link?");
 
 			/* Get the link. */
 			links[linkNum] = NULL;
 			if (sjme_error_is(sjme_alloc_getLink(blocks[linkNum],
 				&links[linkNum])) || links[linkNum] == NULL)
-				return sjme_unitFail(test, "Could not get link?");
+				return sjme_unit_fail(test, "Could not get link?");
 
 			/* The last block should claim all the free space. */
 			if (isLast)
-				sjme_unitEqualI(test,
+				sjme_unit_equalI(test,
 					0, pool->space[SJME_ALLOC_POOL_SPACE_FREE].usable,
 					"All of the free space was not taken?");
 		}
@@ -256,7 +256,7 @@ SJME_TEST_DECLARE(testAllocFreeMerge)
 
 			/* Free the link. */
 			if (sjme_error_is(sjme_alloc_free(block)))
-				return sjme_unitFail(test, "Could not free link.");
+				return sjme_unit_fail(test, "Could not free link.");
 
 			/* Go through the entire chain. */
 			numUsed = numFree = 0;
@@ -272,7 +272,7 @@ SJME_TEST_DECLARE(testAllocFreeMerge)
 				at = links[sequence->which[atId]];
 
 				/* Must be this one. */
-				sjme_unitEqualP(test, rover, at,
+				sjme_unit_equalP(test, rover, at,
 					"Incorrect sequence %d.%d.%d?", scenario, linkNum, x);
 
 				/* Is the block free or not? */
@@ -283,7 +283,7 @@ SJME_TEST_DECLARE(testAllocFreeMerge)
 
 					/* The freeness should match. */
 					wantFree = !!(sequence->which[atId] & FREE);
-					sjme_unitEqualI(test,
+					sjme_unit_equalI(test,
 						isFree, wantFree,
 						"Incorrect freeness %d.%d.%d?", scenario, linkNum, x);
 
@@ -299,9 +299,9 @@ SJME_TEST_DECLARE(testAllocFreeMerge)
 			}
 
 			/* Free and used counts should match. */
-			sjme_unitEqualI(test, numFree, sequence->numFree,
+			sjme_unit_equalI(test, numFree, sequence->numFree,
 				"Free match incorrect %d.%d?", scenario, linkNum);
-			sjme_unitEqualI(test, numUsed, sequence->numUsed,
+			sjme_unit_equalI(test, numUsed, sequence->numUsed,
 				"Free match incorrect %d.%d?", scenario, linkNum);
 		}
 	}

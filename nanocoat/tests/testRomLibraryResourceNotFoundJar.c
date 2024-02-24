@@ -54,7 +54,7 @@ SJME_TEST_DECLARE(testRomLibraryResourceNotFoundJar)
 	memset(&mock, 0, sizeof(mock));
 	if (!sjme_mock_act(test, &mock,
 			&configRomLibraryResourceNotFoundJar, 0))
-		return sjme_unitFail(test, "Could not initialize mocks");
+		return sjme_unit_fail(test, "Could not initialize mocks");
 
 	/* Get the library to test. */
 	library = mock.romLibraries[0];
@@ -65,7 +65,7 @@ SJME_TEST_DECLARE(testRomLibraryResourceNotFoundJar)
 		&inputStream, "nope");
 
 	/* Must be resource not found. */
-	sjme_unitEqualI(test, error, SJME_ERROR_RESOURCE_NOT_FOUND,
+	sjme_unit_equalI(test, error, SJME_ERROR_RESOURCE_NOT_FOUND,
 		"Resource was found or other error?");
 
 	/* Success! */

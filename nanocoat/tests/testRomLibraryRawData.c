@@ -75,7 +75,7 @@ SJME_TEST_DECLARE(testRomLibraryRawData)
 	memset(&mock, 0, sizeof(mock));
 	if (!sjme_mock_act(test, &mock,
 		&configRomLibraryRawData, 0))
-		return sjme_unitFail(test, "Could not initialize mocks");
+		return sjme_unit_fail(test, "Could not initialize mocks");
 
 	/* Get the library to access. */
 	library = mock.romLibraries[0];
@@ -84,27 +84,27 @@ SJME_TEST_DECLARE(testRomLibraryRawData)
 	size = -1;
 	if (sjme_error_is(sjme_rom_libraryRawSize(library, &size) ||
 		size < 0))
-		return sjme_unitFail(test, "Could not read library size.");
+		return sjme_unit_fail(test, "Could not read library size.");
 
 	/* Allocate raw buffer. */
 	raw = sjme_alloca(size);
 	if (raw == NULL)
-		return sjme_unitFail(test, "Could not alloca buffer.");
+		return sjme_unit_fail(test, "Could not alloca buffer.");
 
 	/* Make sure it is cleared first, use FFs to check for gaps. */
 	memset(raw, 0xFF, size);
 
 	/* Check that the size matches. */
-	sjme_unitEqualI(test, size, EXPECTED_SIZE,
+	sjme_unit_equalI(test, size, EXPECTED_SIZE,
 		"File size is not as the expected size?");
 
 	/* Read in the raw data. */
 	if (sjme_error_is(sjme_rom_libraryRawRead(library,
 		raw, 0, size)))
-		return sjme_unitFail(test, "Could not read data.");
+		return sjme_unit_fail(test, "Could not read data.");
 
 	/* Compare all the bytes, must be equal. */
-	sjme_unitEqualI(test,
+	sjme_unit_equalI(test,
 		0, memcmp(expectedRawBin, raw, EXPECTED_SIZE),
 		"Data is wrong?");
 

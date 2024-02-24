@@ -33,7 +33,7 @@ static sjme_errorCode finishStreamWriteBlockBA(
 
 	/* Each chunk should match! */
 	for (i = 0; i < NUM_CHUNKS; i++)
-		sjme_unitEqualI(test,
+		sjme_unit_equalI(test,
 			0, memcmp(test->global, &result->array[(CHUNK_SIZE * i)],
 				CHUNK_SIZE),
 			"Chunk %d did not match?", i);
@@ -65,17 +65,17 @@ SJME_TEST_DECLARE(testStreamWriteBlockBA)
 	if (sjme_error_is(sjme_stream_outputOpenByteArray(test->pool,
 		&stream, 2, finishStreamWriteBlockBA,
 		test)) || stream == NULL)
-		return sjme_unitFail(test, "Could not open output stream.");
+		return sjme_unit_fail(test, "Could not open output stream.");
 
 	/* Write the buffer sequence for each chunk. */
 	for (i = 0; i < NUM_CHUNKS; i++)
 		if (sjme_error_is(sjme_stream_outputWrite(stream,
 			&chunk, sizeof(chunk))))
-			return sjme_unitFail(test, "Could not write chunk %d?", i);
+			return sjme_unit_fail(test, "Could not write chunk %d?", i);
 
 	/* Close stream. */
 	if (sjme_error_is(sjme_stream_outputClose(stream, NULL)))
-		return sjme_unitFail(test, "Could not close output stream.");
+		return sjme_unit_fail(test, "Could not close output stream.");
 
 	/* Success! */
 	return SJME_TEST_RESULT_PASS;

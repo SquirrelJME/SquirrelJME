@@ -73,7 +73,7 @@ SJME_TEST_DECLARE(testRomSuiteLibraries)
 	memset(&mockState, 0, sizeof(mockState));
 	if (!sjme_mock_act(test, &mockState,
 		&mockRomSuiteLibraries, 0))
-		return sjme_unitFail(test, "Could not run mocks.");
+		return sjme_unit_fail(test, "Could not run mocks.");
 
 	/* Get the suite we created. */
 	suite = mockState.romSuites[0];
@@ -82,14 +82,14 @@ SJME_TEST_DECLARE(testRomSuiteLibraries)
 	libraries = NULL;
 	if (sjme_error_is(error = sjme_rom_suiteLibraries(suite,
 		&libraries)) || libraries == NULL)
-		return sjme_unitFail(test, "Could not get libraries list: %d", error);
+		return sjme_unit_fail(test, "Could not get libraries list: %d", error);
 
 	/* The result should be our fake libraries. */
-	sjme_unitEqualP(test, libraries, &testFakeSuiteList,
+	sjme_unit_equalP(test, libraries, &testFakeSuiteList,
 		"Different set of libraries returned?");
 
 	/* The cache should get our libraries. */
-	sjme_unitEqualP(test, suite->cache.libraries, &testFakeSuiteList,
+	sjme_unit_equalP(test, suite->cache.libraries, &testFakeSuiteList,
 		"Library list was not cached?");
 
 	/* Success! */

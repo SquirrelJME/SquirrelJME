@@ -26,12 +26,12 @@ static sjme_errorCode finishStreamWriteSingleBA(
 	test = (sjme_test*)result->whatever;
 
 	/* The write count should be the buffer size. */
-	sjme_unitEqualI(test,
+	sjme_unit_equalI(test,
 		1, result->length,
 		"Number of written bytes incorrect?");
 
 	/* Was this value written? */
-	sjme_unitEqualI(test, 123, result->array[0],
+	sjme_unit_equalI(test, 123, result->array[0],
 		"Value was not written?");
 
 	/* Success! */
@@ -52,16 +52,16 @@ SJME_TEST_DECLARE(testStreamWriteSingleBA)
 	if (sjme_error_is(sjme_stream_outputOpenByteArray(test->pool,
 		&stream, 2, finishStreamWriteSingleBA,
 		test)) || stream == NULL)
-		return sjme_unitFail(test, "Could not open output stream.");
+		return sjme_unit_fail(test, "Could not open output stream.");
 
 	/* Write single value. */
 	if (sjme_error_is(sjme_stream_outputWriteSingle(stream,
 		123)))
-		return sjme_unitFail(test, "Could not write output value.");
+		return sjme_unit_fail(test, "Could not write output value.");
 
 	/* Close stream. */
 	if (sjme_error_is(sjme_stream_outputClose(stream, NULL)))
-		return sjme_unitFail(test, "Could not close output stream.");
+		return sjme_unit_fail(test, "Could not close output stream.");
 
 	/* Success! */
 	return SJME_TEST_RESULT_PASS;

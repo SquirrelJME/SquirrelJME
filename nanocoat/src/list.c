@@ -89,11 +89,10 @@ sjme_errorCode sjme_list_allocR(
 	sjme_attrInPositive sjme_jint elementOffset,
 	sjme_attrInValue sjme_jint pointerCheck)
 {
-	void* result;
 	sjme_errorCode error;
+	void* result;
 	sjme_jint size;
-	sjme_list_sjme_jint* fakeList;
-
+	
 	if (inPool == NULL || outList == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
@@ -108,17 +107,49 @@ sjme_errorCode sjme_list_allocR(
 
 	/* Forward allocation. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_alloc(inPool, size, &result)) ||
-		result == NULL)
+	if (sjme_error_is(error = sjme_alloc(inPool, size,
+		&result)) || result == NULL)
 		return sjme_error_default(error);
 
-	/* Set sizes of the resultant list. */
-	fakeList = (sjme_list_sjme_jint*)result;
-	fakeList->length = inLength;
-	fakeList->elementSize = elementSize;
-
+	/* Perform direct list initialization. */
+	sjme_list_directInitR(inLength, result, elementSize, elementOffset,
+		pointerCheck);
+	
 	/* Give the result! */
 	*outList = result;
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_list_directInitR(
+	sjme_attrInPositive sjme_jint inLength,
+	sjme_attrOutNotNull void* outList,
+	sjme_attrInPositive sjme_jint elementSize,
+	sjme_attrInPositive sjme_jint elementOffset,
+	sjme_attrInValue sjme_jint pointerCheck)
+{
+	sjme_jint size;
+	sjme_list_sjme_jint* fakeList;
+	
+	if (outList == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (inLength < 0 || elementSize <= 0 || elementOffset <= 0 ||
+		pointerCheck <= 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Calculate the size of the list. */
+	size = elementOffset + (elementSize * inLength);
+	if (size <= 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Seed with a fake list. */
+	fakeList = outList;
+	
+	/* Set sizes of the resultant list. */
+	fakeList->length = inLength;
+	fakeList->elementSize = elementSize;
+	
+	/* Success! */
 	return SJME_ERROR_NONE;
 }
 
@@ -200,6 +231,39 @@ sjme_errorCode sjme_list_flattenArgCV(
 	/* Output resultant list. */
 	*outList = result;
 	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_list_flattenArgNul(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrOutNotNull sjme_list_sjme_lpcstr** outList,
+	sjme_attrInNotNull sjme_lpcstr inNulString)
+{
+	sjme_jint count, i;
+	sjme_lpcstr at;
+	sjme_lpcstr* argV;
+	
+	if (inPool == NULL || outList == NULL || inNulString == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Determine the number of strings within. */
+	count = 0;
+	for (at = inNulString; *at != '\0'; at += strlen(at) + 1)
+		count++;
+	
+	/* Allocate. */	
+	argV = sjme_alloca(count * sizeof(*argV));
+	if (argV == NULL)
+		return SJME_ERROR_OUT_OF_MEMORY;
+	
+	/* Allocate temporary argument set. */
+	memset(argV, 0, count * sizeof(*argV));
+	i = 0;
+	for (at = inNulString; *at != '\0' && i < count;
+		at += strlen(at) + 1, i++)
+		argV[i] = at;
+	
+	/* Perform the flattening. */
+	return sjme_list_flattenArgCV(inPool, outList, count, argV);
 }
 
 sjme_errorCode sjme_list_newAR(

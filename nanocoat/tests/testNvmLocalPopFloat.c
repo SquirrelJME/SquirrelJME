@@ -85,18 +85,18 @@ sjme_attrUnused SJME_TEST_DECLARE(testNvmLocalPopFloat)
 	/* Pop integer from the stack to the first local. */
 	oldNumStack = stack->count;
 	if (!sjme_nvm_localPopFloat(frame, 0))
-		return sjme_unitFail(test, "Failed to pop local float.");
+		return sjme_unit_fail(test, "Failed to pop local float.");
 	
 	/* New stack should be lower. */
-	sjme_unitEqualI(test, stack->count, oldNumStack - 1,
+	sjme_unit_equalI(test, stack->count, oldNumStack - 1,
 		"Items in stack not lower?");
 	
 	/* Check that the value was moved over. */
-	sjme_unitEqualI(test, 0x12345678, intsTread->values.jfloats[0].value,
+	sjme_unit_equalI(test, 0x12345678, intsTread->values.jfloats[0].value,
 		"Popped stack into local was not the correct value.");
 		
 	/* And the stack value was cleared. */
-	sjme_unitEqualI(test, 0, intsTread->values.jfloats[1].value,
+	sjme_unit_equalI(test, 0, intsTread->values.jfloats[1].value,
 		"Stack value did not get cleared.");
 	
 	/* Success! */
