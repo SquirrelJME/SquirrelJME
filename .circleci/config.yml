@@ -31,16 +31,16 @@ executors:
       # Allow Gradle to be fully cached
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
 
-  # This is in the documentation but does not actually work, new feature?
-  build-on-windows:
-    machine:
-      image: 'windows-server-2022-gui:current'
-      resource_class: windows.large
-      shell: cmd.exe
-    environment:
-      # Use a reduced amount of memory to all the VMs so that it does not
-      # try grabbing all the memory that is available to the system.
-      JAVA_OPTS: -Xmx3g
+# This is in the documentation but does not actually work, new feature?
+#  build-on-windows:
+#    windows:
+#      name: win/default
+#      shell: cmd.exe
+#    resource_class: medium
+#    environment:
+#      # Use a reduced amount of memory to all the VMs so that it does not
+#      # try grabbing all the memory that is available to the system.
+#      JAVA_OPTS: -Xmx3g
 
   build-on-macos:
     macos:
@@ -156,16 +156,19 @@ jobs:
   ################################## WINDOWS #################################
   build_windows:
     executor:
-      executor: build-on-windows
-      #name: win/default
-      #shell: cmd.exe
-      #size: large
+      name: win/default
+      shell: cmd.exe
+      size: large
     environment:
       # Use a reduced amount of memory to all the VMs so that it does not
       # try grabbing all the memory that is available to the system.
       JAVA_OPTS: -Xmx3g
     steps:
       - checkout
+      - run:
+          shell: cmd.exe
+          name: Java Version
+          command: java -version
       - run:
           shell: cmd.exe
           name: Gradle Build and Test
