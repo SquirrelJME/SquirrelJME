@@ -178,6 +178,7 @@ sjme_errorCode sjme_list_directInitR(
  * @param outList The resultant list information.
  * @param type The type used in the list.
  * @param numPointerStars The number of pointer stars used.
+ * @return Any resultant error.
  * @since 2024/02/21
  */
 #define sjme_list_directInit(inLength, outList, type, numPointerStars) \

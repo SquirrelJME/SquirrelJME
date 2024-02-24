@@ -14,6 +14,25 @@
 #include "sjme/descriptor.h"
 #include "sjme/util.h"
 
+/**
+ * Field type link, used for method type parsing.
+ * 
+ * @since 2024/02/23
+ */
+typedef struct sjme_desc_fieldTypeLink sjme_desc_fieldTypeLink;
+
+struct sjme_desc_fieldTypeLink
+{
+	/** The previous link. */
+	sjme_desc_fieldTypeLink* prev;
+	
+	/** The next link. */
+	sjme_desc_fieldTypeLink* next;
+	
+	/** Field information. */
+	sjme_desc_fieldType field;
+};
+
 static sjme_errorCode sjme_desc_interpretBinaryNameFixed(sjme_lpcstr inStr,
 	sjme_jint inLen, sjme_lpcstr finalEnd, sjme_jint numSlash,
 	sjme_desc_binaryName* result)
@@ -824,9 +843,13 @@ sjme_errorCode sjme_desc_interpretMethodType(
 	sjme_attrInPositive sjme_jint inLen)
 {
 	sjme_errorCode error;
-	sjme_jint c, fragmentLen, allocLen;
+	sjme_jint c, fragmentLen, allocLen, fieldCount, fieldAt;
 	sjme_lpcstr strAt, strBase;
-	sjme_desc_fieldType* workingField;
+	sjme_desc_fieldTypeLink* firstField;
+	sjme_desc_fieldTypeLink* lastField;
+	sjme_desc_fieldTypeLink* currentField;
+	sjme_jboolean isReturn, stopNow;
+	sjme_desc_methodType* result;
 	
 	if (inPool == NULL || outType == NULL || inStr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -843,17 +866,33 @@ sjme_errorCode sjme_desc_interpretMethodType(
 		return SJME_ERROR_INVALID_METHOD_TYPE;
 	
 	/* Parse each argument. */
+	firstField = NULL;
+	lastField = NULL;
+	currentField = NULL;
+	isReturn = SJME_JNI_FALSE;
+	stopNow = SJME_JNI_FALSE;
+	fieldCount = 0;
 	for (;;)
 	{
 		/* Read in type. */
 		strBase = strAt;
 		c = sjme_string_decodeChar(strAt, &strAt);
-		if (c < 0)
+		if ((!stopNow && c < 0) || (stopNow && c >= 0))
 			return SJME_ERROR_INVALID_METHOD_TYPE;
+		
+		/* Stop processing? */
+		if (stopNow)
+			break;
 		
 		/* End of argument list? */
 		if (c == ')')
-			break;
+		{
+			/* Handle return value now. */
+			isReturn = SJME_JNI_TRUE;
+			
+			/* Run loop again. */
+			continue;
+		}
 			
 		/* Maximum end of string. */
 		fragmentLen = inLen - (strAt - inStr);
@@ -861,31 +900,76 @@ sjme_errorCode sjme_desc_interpretMethodType(
 		/* Determine the allocation size. */
 		allocLen = -1;
 		if (sjme_error_is(error = sjme_desc_interpretFieldTypeAllocSize(
-			strAt, fragmentLen, &allocLen)) ||
+			strBase, fragmentLen, &allocLen)) ||
 			allocLen < 0)
 			return sjme_error_defaultOr(error,
 				SJME_ERROR_INVALID_METHOD_TYPE);
 		
 		/* Allocate. */
-		workingField = sjme_alloca(allocLen);
-		if (workingField == NULL)
+		currentField = sjme_alloca(sizeof(*currentField) + allocLen);
+		if (currentField == NULL)
 			return SJME_ERROR_OUT_OF_MEMORY;
 		
 		/* Initialize. */
-		memset(workingField, 0, allocLen);
+		memset(currentField, 0, allocLen);
+		
+		/* First link? */
+		if (firstField == NULL)
+		{
+			firstField = currentField;
+			lastField = currentField;
+		}
+		
+		/* Link in otherwise. */
+		else
+		{
+			lastField->next = currentField;
+			currentField->prev = lastField;
+			lastField = currentField;
+		}
 		
 		/* Parse single field */
 		if (sjme_error_is(error = sjme_desc_interpretFieldTypeFixed(
-			strAt, fragmentLen, workingField,
+			strBase, fragmentLen, &currentField->field,
 			SJME_JNI_TRUE, &strAt)))
 			return sjme_error_defaultOr(error,
 				SJME_ERROR_INVALID_METHOD_TYPE);
 		
+		/* Was a parsed field, so count up. */
+		fieldCount++;
+		
+		/* If this was the return value, stop. */
+		if (isReturn)
+			stopNow = SJME_JNI_TRUE;
+	}
+	
+	/* Allocate result. */
+	allocLen = SJME_SIZEOF_DESC_METHOD_TYPE(fieldCount);
+	result = sjme_alloca(allocLen);
+	if (result == NULL)
+		return SJME_ERROR_OUT_OF_MEMORY;
+	
+	/* Initialize. */
+	memset(result, 0, allocLen);
+	
+	/* Initialize field list. */
+	if (sjme_error_is(error = sjme_list_directInit(fieldCount,
+		&result->fields, sjme_desc_fieldTypeComponent, 0)))
+		return sjme_error_default(error);
+	
+	/* Fill in all the various details. */
+	result->whole.pointer = inStr;
+	result->whole.length = strAt - inStr;
+	result->hash = sjme_string_hashN(result->whole.pointer,
+		result->whole.length);
+	
+	/* Go through and process each field. */
+	for (fieldAt = 0; fieldAt < fieldCount; fieldAt++)
+	{
 		sjme_todo("Implement this?");
 	}
 	
-	sjme_todo("Implement this?");
-	
 	/* Success! */
-	return SJME_ERROR_NONE;
+	return sjme_alloc_copy(inPool, allocLen, outType,
+		result);
 }

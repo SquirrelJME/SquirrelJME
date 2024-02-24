@@ -258,7 +258,7 @@ SJME_TEST_DECLARE(testDescMethodType)
 		/* Interpret method entry. */
 		result = NULL;
 		if (sjme_error_is(sjme_desc_interpretMethodType(test->pool,
-			&result, string, strLen) || result == NULL))
+			&result, string, strLen)) || result == NULL)
 			return sjme_unit_fail(test, "Could not interpret %s?", string);
 		
 		/* Basic whole value and hash check. */

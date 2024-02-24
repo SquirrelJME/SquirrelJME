@@ -184,6 +184,18 @@ typedef struct sjme_desc_methodType
 } sjme_desc_methodType;
 
 /**
+ * Size of a method type.
+ * 
+ * @param numFields The number of fields in the method, including the return
+ * value field
+ * @return The resultant allocation size.
+ * @since 2024/02/23
+ */
+#define SJME_SIZEOF_DESC_METHOD_TYPE(numFields) \
+	(sizeof(sjme_desc_methodType) + \
+		((numFields) * sizeof(sjme_desc_fieldTypeComponent)))
+
+/**
  * Compares the binary name against the given binary name.
  * 
  * @param aName The first value. 
