@@ -167,6 +167,10 @@ jobs:
       - checkout
       - run:
           shell: cmd.exe
+          name: Clear Gradle Cache (It is broken on CircleCI)
+          command: rd /s /q C:\Users\circleci\.gradle\
+      - run:
+          shell: cmd.exe
           name: Gradle Build and Test
           # According to documentation, Gradle on Windows has trouble and tries
           # to make way too many workers which causes extreme resource.
