@@ -154,6 +154,31 @@ commands:
 
 jobs:
   ################################## WINDOWS #################################
+  build_windows_setup:
+    executor:
+      name: win/default
+      shell: cmd.exe
+      size: large
+    environment:
+      # Use older JDK for CircleCI
+      JAVA_HOME: c:/users/circleci/jdk-11.0.22/
+    steps:
+      - run:
+          shell: bash.exe
+          name: Download Older JDK
+          command: wget -O /c/users/circleci/jdk.zip https://download.bell-sw.com/java/11.0.22+12/bellsoft-jdk11.0.22+12-windows-amd64.zip
+      - run:
+          shell: bash.exe
+          name: Extract Older JDK
+          command: unzip /c/users/circleci/jdk.zip
+      - run:
+          shell: cmd.exe
+          name: Java Version
+          command: java -version
+      - persist_to_workspace:
+          root: .
+          paths:
+            - 'jdk-11.0.22/'
   build_windows:
     executor:
       name: win/default
@@ -163,8 +188,13 @@ jobs:
       # Use a reduced amount of memory to all the VMs so that it does not
       # try grabbing all the memory that is available to the system.
       JAVA_OPTS: -Xmx3g
+
+      # Use older JDK for CircleCI
+      JAVA_HOME: c:/users/circleci/jdk-11.0.22/
     steps:
       - checkout
+      - attach_workspace:
+          at: .
       - run:
           shell: cmd.exe
           name: Java Version
@@ -204,6 +234,9 @@ jobs:
       # Use a reduced amount of memory to all the VMs so that it does not
       # try grabbing all the memory that is available to the system.
       JAVA_OPTS: -Xmx3g
+
+      # Use older JDK for CircleCI
+      JAVA_HOME: c:/users/circleci/jdk-11.0.22/
     steps:
       - checkout
       - attach_workspace:
@@ -631,7 +664,10 @@ workflows:
       # Building on Windows is currently expensive and takes longer, so only
       # run these builds on trunk to lower costs.
       # Currently, have an overabundance of credits...
-      - build_windows
+      - build_windows_setup
+      - build_windows:
+          requires:
+             - build_windows_setup
 #          requires:
 #            - build_linux
 #          filters:
