@@ -19,7 +19,7 @@ executors:
       # As of 2023/07/19 it appears .19 is broken since 2023/04/19, so use
       # older .18 here
       - image: cimg/openjdk:11.0.18
-    resource_class: medium
+    resource_class: large
     environment:
       # Allow Gradle to be fully cached
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
