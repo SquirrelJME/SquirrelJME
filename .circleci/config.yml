@@ -628,6 +628,20 @@ workflows:
 #          requires:
 #            - build_linux_arm64
 
+      # Building on Windows is currently expensive and takes longer, so only
+      # run these builds on trunk to lower costs.
+      # Currently, have an overabundance of credits...
+      - build_windows
+#          requires:
+#            - build_linux
+#          filters:
+#            branches:
+#              only:
+#                - trunk
+      - build_windows_standalone:
+           requires:
+             - build_windows
+
       # Mac OS X runs decently however the jobs for it have a higher cost, so
       # only perform builds and tests for trunk to lower costs.
       # Currently I have an overabundance of credits...
@@ -647,20 +661,6 @@ workflows:
       - build_macosx_m1_standalone:
            requires:
              - build_macosx_m1
-
-      # Building on Windows is currently expensive and takes longer, so only
-      # run these builds on trunk to lower costs.
-      # Currently have an overabundance of credits...
-      - build_windows
-#          requires:
-#            - build_linux
-#          filters:
-#            branches:
-#              only:
-#                - trunk
-      - build_windows_standalone:
-           requires:
-             - build_windows
 
       # Publishing to OSS Sonatype Nexus (https://oss.sonatype.org)
       - sonatype_publish:
