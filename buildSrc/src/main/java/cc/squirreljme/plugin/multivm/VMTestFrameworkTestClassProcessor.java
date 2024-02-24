@@ -30,6 +30,7 @@ import org.gradle.api.internal.tasks.testing.TestClassRunInfo;
 import org.gradle.api.internal.tasks.testing.TestCompleteEvent;
 import org.gradle.api.internal.tasks.testing.TestResultProcessor;
 import org.gradle.api.internal.tasks.testing.TestStartEvent;
+import org.gradle.api.tasks.testing.TestFailure;
 import org.gradle.api.tasks.testing.TestOutputEvent;
 import org.gradle.api.tasks.testing.TestResult;
 import org.gradle.internal.id.IdGenerator;
@@ -272,8 +273,8 @@ public class VMTestFrameworkTestClassProcessor
 		if (finalResult == TestResult.ResultType.FAILURE)
 			VMTestFrameworkTestClassProcessor.resultAction(resultProcessor,
 				(__rp) -> __rp.failure(suiteDesc.getId(),
-					VMTestFrameworkTestClassProcessor
-						.messageThrow("Tests have failed.")));
+					TestFailure.fromTestFrameworkFailure(VMTestFrameworkTestClassProcessor
+						.messageThrow("Tests have failed."))));
 		
 		// Use the final result from all the test runs
 		VMTestFrameworkTestClassProcessor.resultAction(resultProcessor,
@@ -385,7 +386,7 @@ public class VMTestFrameworkTestClassProcessor
 				// Failed to start test
 				VMTestFrameworkTestClassProcessor.resultAction(resultProcessor,
 					(__rp) -> __rp.failure(__suiteDesc.getId(),
-						new Throwable("Failed to start test.")));
+						TestFailure.fromTestFrameworkFailure(new Throwable("Failed to start test."))));
 				
 				throw new RuntimeException(__e);
 			}
@@ -476,9 +477,9 @@ public class VMTestFrameworkTestClassProcessor
 			if (finalResult == TestResult.ResultType.FAILURE)
 				VMTestFrameworkTestClassProcessor.resultAction(resultProcessor,
 					(__rp) -> __rp.failure(methodDesc.getId(),
-						VMTestFrameworkTestClassProcessor 
+						TestFailure.fromTestFrameworkFailure(VMTestFrameworkTestClassProcessor
 							.messageThrow("Test failed: " +
-								__testName.normal)));
+								__testName.normal))));
 			
 			// Mark method as completed
 			VMTestFrameworkTestClassProcessor.resultAction(resultProcessor,
