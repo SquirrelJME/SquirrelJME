@@ -161,7 +161,7 @@ jobs:
       size: large
     environment:
       # Use older JDK for CircleCI
-      JAVA_HOME: c:/users/circleci/jdk-11.0.22/
+      JAVA_HOME: c:/users/circleci/project/jdk-11.0.22/
     steps:
       - run:
           shell: bash.exe
@@ -190,7 +190,7 @@ jobs:
       JAVA_OPTS: -Xmx3g
 
       # Use older JDK for CircleCI
-      JAVA_HOME: c:/users/circleci/jdk-11.0.22/
+      JAVA_HOME: c:/users/circleci/project/jdk-11.0.22/
     steps:
       - checkout
       - attach_workspace:
@@ -236,7 +236,7 @@ jobs:
       JAVA_OPTS: -Xmx3g
 
       # Use older JDK for CircleCI
-      JAVA_HOME: c:/users/circleci/jdk-11.0.22/
+      JAVA_HOME: c:/users/circleci/project/jdk-11.0.22/
     steps:
       - checkout
       - attach_workspace:
