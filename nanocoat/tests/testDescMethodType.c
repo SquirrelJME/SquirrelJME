@@ -305,8 +305,10 @@ SJME_TEST_DECLARE(testDescMethodType)
 			/* Should be the same field. */
 			sjme_unit_equalI(test, 0, sjme_desc_compareFieldC(
 				&result->fields.elements[i], field),
-				"Decoded field %s is incorrect in %s?",
-					subString, string);
+				"Decoded field %s is incorrect in %s (%.*s == %s)?",
+					subString, string,
+					result->fields.elements[i].fragment.length,
+					result->fields.elements[i].fragment.pointer, field);
 		}
 	}
 	
@@ -336,37 +338,37 @@ SJME_TEST_DECLARE(testDescMethodType)
 		"Double return type is valid?");
 		
 	result = NULL;
-	sjme_unit_equalI(test, SJME_ERROR_INVALID_METHOD_TYPE,
+	sjme_unit_equalI(test, SJME_ERROR_INVALID_FIELD_TYPE,
 		sjme_desc_interpretMethodType(test->pool,
 			&result, pair("()[")),
 		"Unspecified array return is valid?");
 		
 	result = NULL;
-	sjme_unit_equalI(test, SJME_ERROR_INVALID_METHOD_TYPE,
+	sjme_unit_equalI(test, SJME_ERROR_INVALID_BINARY_NAME,
 		sjme_desc_interpretMethodType(test->pool,
 			&result, pair("()L")),
 		"Unspecified object return is valid?");
 		
 	result = NULL;
-	sjme_unit_equalI(test, SJME_ERROR_INVALID_METHOD_TYPE,
+	sjme_unit_equalI(test, SJME_ERROR_INVALID_FIELD_TYPE,
 		sjme_desc_interpretMethodType(test->pool,
 			&result, pair("()LOops")),
 		"Unclosed object return is valid?");
 		
 	result = NULL;
-	sjme_unit_equalI(test, SJME_ERROR_INVALID_METHOD_TYPE,
+	sjme_unit_equalI(test, SJME_ERROR_INVALID_FIELD_TYPE,
 		sjme_desc_interpretMethodType(test->pool,
 			&result, pair("([)V")),
 		"Unspecified array is valid?");
 		
 	result = NULL;
-	sjme_unit_equalI(test, SJME_ERROR_INVALID_METHOD_TYPE,
+	sjme_unit_equalI(test, SJME_ERROR_INVALID_FIELD_TYPE,
 		sjme_desc_interpretMethodType(test->pool,
 			&result, pair("(L)V")),
 		"Unspecified object is valid?");
 		
 	result = NULL;
-	sjme_unit_equalI(test, SJME_ERROR_INVALID_METHOD_TYPE,
+	sjme_unit_equalI(test, SJME_ERROR_INVALID_FIELD_TYPE,
 		sjme_desc_interpretMethodType(test->pool,
 			&result, pair("(LOops)V")),
 		"Unclosed object is valid?");

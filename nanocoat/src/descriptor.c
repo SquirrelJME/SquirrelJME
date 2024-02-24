@@ -224,10 +224,11 @@ static sjme_errorCode sjme_desc_interpretFieldTypeFixed(sjme_lpcstr inStr,
 	sjme_lpcstr *fieldEnd)
 {
 	sjme_errorCode error;
-	sjme_jint typeCode, compAt, numSlash, strLen, subAt;
-	sjme_jboolean isArray, isObject, isFinal;
+	sjme_jint typeCode, compAt, numSlash, strLen, subAt, c;
+	sjme_jboolean isArray, isObject, isFinal, arrayFragment;
 	sjme_desc_fieldTypeComponent* component;
-	sjme_lpcstr strAt, strBase, finalEnd, lastAt;
+	sjme_desc_fieldTypeComponent* parent;
+	sjme_lpcstr strAt, strBase, finalEnd, lastAt, rootStrBase, seek;
 	
 	if (inStr == NULL || result == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -236,6 +237,7 @@ static sjme_errorCode sjme_desc_interpretFieldTypeFixed(sjme_lpcstr inStr,
 	isFinal = SJME_JNI_FALSE;
 	strAt = inStr;
 	lastAt = NULL;
+	arrayFragment = SJME_JNI_FALSE;
 	for (compAt = 0;; compAt++)
 	{
 		/* Reading into where? */
@@ -243,6 +245,7 @@ static sjme_errorCode sjme_desc_interpretFieldTypeFixed(sjme_lpcstr inStr,
 		
 		/* Decode single character which determines the type this is. */
 		strBase = strAt;
+		rootStrBase = strAt;
 		typeCode = sjme_string_decodeChar(strAt, &strAt);
 		
 		/* There are more characters that are valid? */
@@ -324,16 +327,21 @@ static sjme_errorCode sjme_desc_interpretFieldTypeFixed(sjme_lpcstr inStr,
 		
 		/* The fragment is the remaining string. */
 		component->fragment.pointer = strBase;
-		component->fragment.length = inLen - (strBase - inStr);
 		
 		/* Is this an array? */
 		if (isArray)
 		{
+			/* We parsed an array, so handle actual fragment length later. */
+			arrayFragment = SJME_JNI_TRUE;
+			
 			/* Set as array. */
 			component->isArray = SJME_JNI_TRUE;
 			
 			/* Increase dimension count. */
 			result->numDims += 1;
+			
+			/* Initialize just to base zero for now. */
+			component->fragment.length = 0;
 			
 			/* Binary name is unspecified. */
 			component->binaryName.pointer = NULL;
@@ -352,14 +360,27 @@ static sjme_errorCode sjme_desc_interpretFieldTypeFixed(sjme_lpcstr inStr,
 			
 			/* Determine the string length fragment. */
 			strBase = strAt;
-			strLen = inLen - (strBase - inStr) - 1;
+			for (seek = strBase; *seek != 0;)
+			{
+				/* Decode. */
+				c = sjme_string_decodeChar(seek, &seek);
+				if (c <= 0)
+					return SJME_ERROR_INVALID_FIELD_TYPE;
+				
+				/* Stop at semicolon. */
+				else if (c == ';')
+					break;
+			}
+			
+			/* The string length is more well known now. */
+			strLen = (seek - strBase) - 1;
+			finalEnd = seek - 1;
 			
 			/* Count the number of slashes. */
-			finalEnd = NULL;
 			numSlash = -1;
 			if (sjme_error_is(error =
 				sjme_desc_interpretBinaryNameNumSlash(strAt,
-					strLen, &numSlash, &finalEnd)) ||
+					strLen, &numSlash, NULL)) ||
 				numSlash < 0)
 				return sjme_error_defaultOr(error,
 					SJME_ERROR_INVALID_FIELD_TYPE);
@@ -379,6 +400,9 @@ static sjme_errorCode sjme_desc_interpretFieldTypeFixed(sjme_lpcstr inStr,
 			strAt = finalEnd;
 			if (';' != sjme_string_decodeChar(strAt, &strAt))
 				return SJME_ERROR_INVALID_FIELD_TYPE;
+			
+			/* Fragment length is the base string component. */
+			component->fragment.length = strAt - rootStrBase;
 		}
 		
 		/* Primitive type. */
@@ -387,11 +411,27 @@ static sjme_errorCode sjme_desc_interpretFieldTypeFixed(sjme_lpcstr inStr,
 			/* Do not parse any further. */
 			isFinal = SJME_JNI_TRUE;
 			
+			/* Fragment length is only a single character. */
+			component->fragment.length = 1;
+			
 			/* Binary name is unspecified. */
 			component->binaryName.pointer = NULL;
 			component->binaryName.length = 0;
 		}
 	}
+	
+	/* Fixup array fragment length. */
+	if (arrayFragment)
+		for (compAt = result->numDims; compAt > 0; compAt--)
+		{
+			/* Get base component. */
+			component = &result->components[compAt];
+			parent = &result->components[compAt - 1];
+			
+			/* Calculate parent length, is always one higher as it contains */
+			/* the current component along with the array marker. */
+			parent->fragment.length = component->fragment.length + 1;
+		}
 		
 	/* Base initialize of field. */
 	result->whole.pointer = inStr;
@@ -850,6 +890,9 @@ sjme_errorCode sjme_desc_interpretMethodType(
 	sjme_desc_fieldTypeLink* currentField;
 	sjme_jboolean isReturn, stopNow;
 	sjme_desc_methodType* result;
+	sjme_desc_fieldTypeComponent* target;
+	sjme_desc_fieldType* sourceField;
+	sjme_desc_fieldTypeComponent* source;
 	
 	if (inPool == NULL || outType == NULL || inStr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -895,7 +938,7 @@ sjme_errorCode sjme_desc_interpretMethodType(
 		}
 			
 		/* Maximum end of string. */
-		fragmentLen = inLen - (strAt - inStr);
+		fragmentLen = inLen - (strBase - inStr);
 		
 		/* Determine the allocation size. */
 		allocLen = -1;
@@ -943,6 +986,10 @@ sjme_errorCode sjme_desc_interpretMethodType(
 			stopNow = SJME_JNI_TRUE;
 	}
 	
+	/* If there was never a return type, fail. */
+	if (!isReturn)
+		return SJME_ERROR_INVALID_METHOD_TYPE;
+	
 	/* Allocate result. */
 	allocLen = SJME_SIZEOF_DESC_METHOD_TYPE(fieldCount);
 	result = sjme_alloca(allocLen);
@@ -963,10 +1010,32 @@ sjme_errorCode sjme_desc_interpretMethodType(
 	result->hash = sjme_string_hashN(result->whole.pointer,
 		result->whole.length);
 	
+	/* Set initial cell base. */
+	result->returnCells = 0;
+	result->argCells = 0;
+	
 	/* Go through and process each field. */
-	for (fieldAt = 0; fieldAt < fieldCount; fieldAt++)
+	currentField = firstField;
+	for (fieldAt = 0; fieldAt < fieldCount;
+		fieldAt++, currentField = currentField->next)
 	{
-		sjme_todo("Implement this?");
+		/* Source field to read from. */
+		sourceField = &currentField->field;
+		source = &sourceField->components[0];
+		
+		/* Which field is being modified? */
+		isReturn = (fieldAt == fieldCount - 1);
+		target = &result->fields.elements[(isReturn ? 0 : fieldAt + 1)];
+		
+		/* Everything can be copied over quickly. */
+		memmove(target, source,
+			sizeof(sjme_desc_fieldTypeComponent));
+		
+		/* Increase base cells. */
+		if (isReturn)
+			result->returnCells = source->cells;
+		else
+			result->argCells += source->cells;
 	}
 	
 	/* Success! */

@@ -193,7 +193,7 @@ typedef struct sjme_desc_methodType
  */
 #define SJME_SIZEOF_DESC_METHOD_TYPE(numFields) \
 	(sizeof(sjme_desc_methodType) + \
-		((numFields) * sizeof(sjme_desc_fieldTypeComponent)))
+		(((numFields) + 1) * sizeof(sjme_desc_fieldTypeComponent)))
 
 /**
  * Compares the binary name against the given binary name.
