@@ -19,7 +19,7 @@ executors:
       # As of 2023/07/19 it appears .19 is broken since 2023/04/19, so use
       # older .18 here
       - image: cimg/openjdk:11.0.18
-    resource_class: medium
+    resource_class: large
     environment:
       # Allow Gradle to be fully cached
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
@@ -66,7 +66,7 @@ executors:
     resource_class: squirreljme/squirreljme-macos-m1
 
 orbs:
-  win: circleci/windows@2.4.0
+  win: circleci/windows@5.0
 
 # Parameters to simplify commands
 parameters:
@@ -154,17 +154,51 @@ commands:
 
 jobs:
   ################################## WINDOWS #################################
+  build_windows_setup:
+    executor:
+      name: win/default
+      shell: cmd.exe
+      size: large
+    environment:
+      # Use older JDK for CircleCI
+      JAVA_HOME: c:/users/circleci/project/jdk-11.0.22/
+    steps:
+      - run:
+          shell: bash.exe
+          name: Download Older JDK
+          command: curl -o /c/users/circleci/jdk.zip https://download.bell-sw.com/java/11.0.22+12/bellsoft-jdk11.0.22+12-windows-amd64.zip
+      - run:
+          shell: bash.exe
+          name: Extract Older JDK
+          command: unzip /c/users/circleci/jdk.zip
+      - run:
+          shell: cmd.exe
+          name: Java Version
+          command: java -version
+      - persist_to_workspace:
+          root: .
+          paths:
+            - 'jdk-11.0.22/'
   build_windows:
     executor:
       name: win/default
       shell: cmd.exe
-      size: medium
+      size: large
     environment:
       # Use a reduced amount of memory to all the VMs so that it does not
       # try grabbing all the memory that is available to the system.
       JAVA_OPTS: -Xmx3g
+
+      # Use older JDK for CircleCI
+      JAVA_HOME: c:/users/circleci/project/jdk-11.0.22/
     steps:
       - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          shell: cmd.exe
+          name: Java Version
+          command: java -version
       - run:
           shell: cmd.exe
           name: Gradle Build and Test
@@ -195,11 +229,14 @@ jobs:
     executor:
       name: win/default
       shell: cmd.exe
-      size: medium
+      size: large
     environment:
       # Use a reduced amount of memory to all the VMs so that it does not
       # try grabbing all the memory that is available to the system.
       JAVA_OPTS: -Xmx3g
+
+      # Use older JDK for CircleCI
+      JAVA_HOME: c:/users/circleci/project/jdk-11.0.22/
     steps:
       - checkout
       - attach_workspace:
@@ -220,7 +257,7 @@ jobs:
     executor:
       name: win/default
       shell: cmd.exe
-      size: medium
+      size: large
     environment:
       # Use a reduced amount of memory to all the VMs so that it does not
       # try grabbing all the memory that is available to the system.
@@ -624,6 +661,23 @@ workflows:
 #          requires:
 #            - build_linux_arm64
 
+      # Building on Windows is currently expensive and takes longer, so only
+      # run these builds on trunk to lower costs.
+      # Currently, have an overabundance of credits...
+      - build_windows_setup
+      - build_windows:
+          requires:
+             - build_windows_setup
+#          requires:
+#            - build_linux
+#          filters:
+#            branches:
+#              only:
+#                - trunk
+      - build_windows_standalone:
+           requires:
+             - build_windows
+
       # Mac OS X runs decently however the jobs for it have a higher cost, so
       # only perform builds and tests for trunk to lower costs.
       # Currently I have an overabundance of credits...
@@ -643,20 +697,6 @@ workflows:
       - build_macosx_m1_standalone:
            requires:
              - build_macosx_m1
-
-      # Building on Windows is currently expensive and takes longer, so only
-      # run these builds on trunk to lower costs.
-      # Currently have an overabundance of credits...
-      - build_windows
-#          requires:
-#            - build_linux
-#          filters:
-#            branches:
-#              only:
-#                - trunk
-      - build_windows_standalone:
-           requires:
-             - build_windows
 
       # Publishing to OSS Sonatype Nexus (https://oss.sonatype.org)
       - sonatype_publish:
