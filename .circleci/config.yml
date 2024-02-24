@@ -166,7 +166,7 @@ jobs:
       - run:
           shell: bash.exe
           name: Download Older JDK
-          command: wget -O /c/users/circleci/jdk.zip https://download.bell-sw.com/java/11.0.22+12/bellsoft-jdk11.0.22+12-windows-amd64.zip
+          command: curl -o /c/users/circleci/jdk.zip https://download.bell-sw.com/java/11.0.22+12/bellsoft-jdk11.0.22+12-windows-amd64.zip
       - run:
           shell: bash.exe
           name: Extract Older JDK
