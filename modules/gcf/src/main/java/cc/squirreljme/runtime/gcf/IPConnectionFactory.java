@@ -30,7 +30,7 @@ public abstract class IPConnectionFactory
 	 * @param __addr The IP address.
 	 * @return The resolved address.
 	 * @throws ConnectionNotFoundException If the host was not found.
-	 * @throws IOException If the address could not resolved.
+	 * @throws IOException If the address could not be resolved.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/12
 	 */
