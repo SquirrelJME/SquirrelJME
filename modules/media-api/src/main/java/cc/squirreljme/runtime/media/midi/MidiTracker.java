@@ -35,8 +35,8 @@ public final class MidiTracker
 	/** MIDI trackers. */
 	private final MTrkTracker[] _trackers;
 	
-	/** The number of microseconds per tick division. */
-	volatile long _microsPerTickDiv =
+	/** The number of nanoseconds per tick division. */
+	volatile long _nanosPerTickDiv =
 		-1;
 	
 	/** The time signature. */
@@ -124,11 +124,11 @@ public final class MidiTracker
 			
 			// Current micros per tick div, used for sleeping... if no tempo
 			// was previously set then use the default for MIDI?
-			long microsPerTickDiv = this._microsPerTickDiv;
-			if (microsPerTickDiv < 0)
+			long nanosPerTickDiv = this._nanosPerTickDiv;
+			if (nanosPerTickDiv < 0)
 			{
-				microsPerTickDiv = this.player._microsPerTickDiv;
-				this._microsPerTickDiv = microsPerTickDiv;
+				nanosPerTickDiv = this.player._nanosPerTickDiv;
+				this._nanosPerTickDiv = nanosPerTickDiv;
 			}
 			
 			// Update each tracker accordingly
@@ -154,9 +154,9 @@ public final class MidiTracker
 					delta = tracker.playNext(this, control);
 				
 				// Determine time when the track is ready
-				if (microsPerTickDiv > 0)
+				if (nanosPerTickDiv > 0)
 					readyAts[track] = nowTime +
-						((delta * microsPerTickDiv) * 1_000L);
+						((delta * nanosPerTickDiv) / player._tickDiv);
 			}
 			
 			// Sleep until the next event can occur

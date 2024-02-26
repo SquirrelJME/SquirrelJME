@@ -56,8 +56,8 @@ public class MidiPlayer
 	/** Tracks within the MIDI. */
 	private volatile MTrkParser[] _tracks;
 	
-	/** The number of microseconds per tick division. */
-	volatile long _microsPerTickDiv =
+	/** The number of nanoseconds per tick division. */
+	volatile long _nanosPerTickDiv =
 		-1;
 	
 	/** The tick division used. */
@@ -196,8 +196,9 @@ public class MidiPlayer
 								
 								// Is essentially frames and subframes per
 								// second
-								this._microsPerTickDiv = 1_000_000 /
+								this._nanosPerTickDiv = 1_000_000__000 /
 									(frames * subFrames);
+								this._tickDiv = 1;
 							}
 							
 							// Reversed value from 120 BPM with 24 PPQN
@@ -206,7 +207,7 @@ public class MidiPlayer
 							// the base.
 							else
 							{
-								this._microsPerTickDiv = 500_000 / tickDiv;
+								this._nanosPerTickDiv = 500_000__000 / tickDiv;
 								this._tickDiv = tickDiv;
 							}
 						}
@@ -302,7 +303,7 @@ public class MidiPlayer
 				track.tickDivDuration());
 		
 		// The actual song length is basic multiplication
-		return highestTickDivDuration * this._microsPerTickDiv;
+		return highestTickDivDuration * this._nanosPerTickDiv;
 	}
 	
 	@Override

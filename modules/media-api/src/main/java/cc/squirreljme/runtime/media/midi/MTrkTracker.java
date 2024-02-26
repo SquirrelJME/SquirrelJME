@@ -263,10 +263,15 @@ public class MTrkTracker
 				// Set Tempo
 			case 0x51:
 				{
-					long tickDiv = __midiTracker.player._tickDiv;
-					if (tickDiv > 0)
-						__midiTracker._microsPerTickDiv =
-							500_000L / tickDiv;
+					long tempo = ((bulk[0] & 0xFF) << 16) |
+						((bulk[1] & 0xFF) << 8) |
+						(bulk[2] & 0xFF);
+					
+					// Debug
+					Debugging.debugNote("MIDI Tempo: %d", tempo);
+					
+					// Set new tempo
+					__midiTracker._nanosPerTickDiv = tempo * 1__000L;
 				}
 				break;
 			
