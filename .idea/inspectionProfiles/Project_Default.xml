@@ -278,7 +278,7 @@
     <inspection_tool class="JavaRequiresAutoModule" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="JavadocBlankLines" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="JavadocDeclaration" enabled="true" level="WARNING" enabled_by_default="true">
-      <option name="ADDITIONAL_TAGS" value="squirreljme.syscallparam,squirreljme.syscallreturn,squirreljme.property,squirreljme.error,squirreljme.property,squirreljme.configtype" />
+      <option name="ADDITIONAL_TAGS" value="squirreljme.syscallparam,squirreljme.syscallreturn,squirreljme.property,squirreljme.error,squirreljme.property,squirreljme.configtype,squirreljme.env" />
     </inspection_tool>
     <inspection_tool class="LambdaBodyCanBeCodeBlock" enabled="false" level="INFORMATION" enabled_by_default="false" />
     <inspection_tool class="LambdaCanBeMethodCall" enabled="false" level="INFORMATION" enabled_by_default="false" />
@@ -818,6 +818,7 @@
       <option name="ADD_APPLET_TO_ENTRIES" value="true" />
       <option name="ADD_SERVLET_TO_ENTRIES" value="true" />
       <option name="ADD_NONJAVA_TO_ENTRIES" value="true" />
+      <option name="selected" value="true" />
     </inspection_tool>
   </profile>
 </component>
