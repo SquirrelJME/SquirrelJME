@@ -8,6 +8,7 @@
 
 package cc.squirreljme.runtime.media.midi;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.control.MIDIControl;
@@ -18,6 +19,7 @@ import javax.microedition.media.control.MIDIControl;
  *
  * @since 2022/04/23
  */
+@SquirrelJMEVendorApi
 public abstract class SimpleMidiControl
 	implements MIDIControl
 {
@@ -30,6 +32,7 @@ public abstract class SimpleMidiControl
 	 * @since 2022/04/23
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final int[] getBankList(boolean __custom)
 		throws IllegalStateException, MediaException
 	{
@@ -41,6 +44,7 @@ public abstract class SimpleMidiControl
 	 * @since 2022/04/23
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final int getChannelVolume(int __channel)
 		throws IllegalArgumentException, IllegalStateException
 	{
@@ -52,6 +56,7 @@ public abstract class SimpleMidiControl
 	 * @since 2022/04/23
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final String getKeyName(int __bank, int __prog, int __key)
 		throws IllegalArgumentException, IllegalStateException, MediaException
 	{
@@ -63,6 +68,7 @@ public abstract class SimpleMidiControl
 	 * @since 2022/04/23
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final int[] getProgram(int __channel)
 		throws IllegalArgumentException, IllegalStateException, MediaException
 	{
@@ -74,6 +80,7 @@ public abstract class SimpleMidiControl
 	 * @since 2022/04/23
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final int[] getProgramList(int __bank)
 		throws IllegalArgumentException, IllegalStateException, MediaException
 	{
@@ -85,6 +92,7 @@ public abstract class SimpleMidiControl
 	 * @since 2022/04/23
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final String getProgramName(int __bank, int __program)
 		throws IllegalArgumentException, IllegalStateException, MediaException
 	{
@@ -96,6 +104,7 @@ public abstract class SimpleMidiControl
 	 * @since 2022/04/23
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final boolean isBankQuerySupported()
 	{
 		return false;
@@ -106,6 +115,7 @@ public abstract class SimpleMidiControl
 	 * @since 2022/04/23
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final void setChannelVolume(int __channel, int __volume)
 		throws IllegalArgumentException, IllegalStateException
 	{
@@ -117,6 +127,7 @@ public abstract class SimpleMidiControl
 	 * @since 2022/04/23
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final void setProgram(int __channel, int __bank, int __program)
 		throws IllegalArgumentException, IllegalStateException
 	{
@@ -128,6 +139,7 @@ public abstract class SimpleMidiControl
 	 * @since 2022/04/23
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final void shortMidiEvent(int __type, int __data1, int __data2)
 		throws IllegalArgumentException, IllegalStateException
 	{

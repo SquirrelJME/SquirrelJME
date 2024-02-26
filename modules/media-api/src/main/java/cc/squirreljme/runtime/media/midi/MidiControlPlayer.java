@@ -11,6 +11,7 @@ package cc.squirreljme.runtime.media.midi;
 import cc.squirreljme.jvm.mle.MidiShelf;
 import cc.squirreljme.jvm.mle.brackets.MidiDeviceBracket;
 import cc.squirreljme.jvm.mle.brackets.MidiPortBracket;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.media.Control;
 import javax.microedition.media.MediaException;
@@ -24,6 +25,7 @@ import javax.microedition.media.control.MIDIControl;
  *
  * @since 2022/04/24
  */
+@SquirrelJMEVendorApi
 public class MidiControlPlayer
 	implements Player
 {
@@ -31,6 +33,7 @@ public class MidiControlPlayer
 	 * {@squirreljme.property cc.squirreljme.midi.device=name/id Use the
 	 * selected MIDI device to play audio, if found. May be a name or number.}
 	 */
+	@SquirrelJMEVendorApi
 	public static final String MIDI_DEVICE_PROPERTY =
 		"cc.squirreljme.midi.device";
 	
@@ -38,6 +41,7 @@ public class MidiControlPlayer
 	 * {@squirreljme.property cc.squirreljme.midi.port=id Use the given port
 	 * number for the selected MIDI device.}
 	 */
+	@SquirrelJMEVendorApi
 	public static final String MIDI_PORT_PROPERTY =
 		"cc.squirreljme.midi.port";
 	
@@ -51,6 +55,7 @@ public class MidiControlPlayer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/04/24
 	 */
+	@SquirrelJMEVendorApi
 	public MidiControlPlayer(MidiShelfControl __control)
 		throws NullPointerException
 	{
@@ -61,30 +66,35 @@ public class MidiControlPlayer
 	}
 	
 	@Override
+	@SquirrelJMEVendorApi
 	public void addPlayerListener(PlayerListener __a)
 	{
 		throw Debugging.todo();
 	}
 	
 	@Override
+	@SquirrelJMEVendorApi
 	public void close()
 	{
 		throw Debugging.todo();
 	}
 	
 	@Override
+	@SquirrelJMEVendorApi
 	public void deallocate()
 	{
 		throw Debugging.todo();
 	}
 	
 	@Override
+	@SquirrelJMEVendorApi
 	public String getContentType()
 	{
 		throw Debugging.todo();
 	}
 	
 	@Override
+	@SquirrelJMEVendorApi
 	public Control getControl(String __control)
 		throws NullPointerException
 	{
@@ -100,6 +110,7 @@ public class MidiControlPlayer
 	}
 	
 	@Override
+	@SquirrelJMEVendorApi
 	public Control[] getControls()
 	{
 		// There is just this control
@@ -107,30 +118,35 @@ public class MidiControlPlayer
 	}
 	
 	@Override
+	@SquirrelJMEVendorApi
 	public long getDuration()
 	{
 		throw Debugging.todo();
 	}
 	
 	@Override
+	@SquirrelJMEVendorApi
 	public long getMediaTime()
 	{
 		throw Debugging.todo();
 	}
 	
 	@Override
+	@SquirrelJMEVendorApi
 	public int getState()
 	{
 		throw Debugging.todo();
 	}
 	
 	@Override
+	@SquirrelJMEVendorApi
 	public TimeBase getTimeBase()
 	{
 		throw Debugging.todo();
 	}
 	
 	@Override
+	@SquirrelJMEVendorApi
 	public void prefetch()
 		throws MediaException
 	{
@@ -138,6 +154,7 @@ public class MidiControlPlayer
 	}
 	
 	@Override
+	@SquirrelJMEVendorApi
 	public void realize()
 		throws MediaException
 	{
@@ -145,18 +162,21 @@ public class MidiControlPlayer
 	}
 	
 	@Override
+	@SquirrelJMEVendorApi
 	public void removePlayerListener(PlayerListener __a)
 	{
 		throw Debugging.todo();
 	}
 	
 	@Override
+	@SquirrelJMEVendorApi
 	public void setLoopCount(int __count)
 	{
 		throw Debugging.todo();
 	}
 	
 	@Override
+	@SquirrelJMEVendorApi
 	public long setMediaTime(long __now)
 		throws MediaException
 	{
@@ -164,6 +184,7 @@ public class MidiControlPlayer
 	}
 	
 	@Override
+	@SquirrelJMEVendorApi
 	public void setTimeBase(TimeBase __timeBase)
 		throws MediaException
 	{
@@ -171,6 +192,7 @@ public class MidiControlPlayer
 	}
 	
 	@Override
+	@SquirrelJMEVendorApi
 	public void start()
 		throws MediaException
 	{
@@ -178,6 +200,7 @@ public class MidiControlPlayer
 	}
 	
 	@Override
+	@SquirrelJMEVendorApi
 	public void stop()
 		throws MediaException
 	{
@@ -191,6 +214,7 @@ public class MidiControlPlayer
 	 * @throws MediaException If no MIDI is supported.
 	 * @since 2022/04/24
 	 */
+	@SquirrelJMEVendorApi
 	public static MidiControlPlayer newMidiPlayer()
 		throws MediaException
 	{

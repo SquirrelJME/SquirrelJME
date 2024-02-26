@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.media;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import javax.microedition.media.Control;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
@@ -20,10 +21,12 @@ import javax.microedition.media.control.VolumeControl;
  *
  * @since 2019/04/15
  */
+@SquirrelJMEVendorApi
 public final class NullPlayer
 	extends AbstractPlayer
 {
 	/** Null volume control. */
+	@SquirrelJMEVendorApi
 	private final VolumeControl volumeControl =
 		new NullVolumeControl();
 	
@@ -34,6 +37,7 @@ public final class NullPlayer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/15
 	 */
+	@SquirrelJMEVendorApi
 	public NullPlayer(String __mime)
 		throws NullPointerException
 	{
@@ -45,6 +49,7 @@ public final class NullPlayer
 	 * @since 2022/04/24
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	protected void becomingRealized()
 	{
 		// Does nothing
@@ -55,6 +60,7 @@ public final class NullPlayer
 	 * @since 2022/04/24
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	protected void becomingStarted()
 		throws MediaException
 	{
@@ -66,6 +72,7 @@ public final class NullPlayer
 	 * @since 2022/04/27
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	protected void becomingStopped()
 		throws MediaException
 	{
@@ -77,6 +84,7 @@ public final class NullPlayer
 	 * @since 2022/04/25
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	protected long determineDuration()
 	{
 		// There is no duration for null media
@@ -88,6 +96,7 @@ public final class NullPlayer
 	 * @since 2022/04/24
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	protected void becomingPrefetched()
 		throws MediaException
 	{
@@ -99,6 +108,7 @@ public final class NullPlayer
 	 * @since 2019/04/15
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final void close()
 	{
 		if (this.getState() != Player.CLOSED)
@@ -115,6 +125,7 @@ public final class NullPlayer
 	 * @since 2019/04/15
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final void deallocate()
 	{
 		// {@squirreljme.error EA03 Null Player has been closed.}
@@ -143,6 +154,7 @@ public final class NullPlayer
 	 * @since 2019/04/15
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final Control getControl(String __control)
 	{
 		// {@squirreljme.error EA07 No control specified.}
@@ -161,6 +173,7 @@ public final class NullPlayer
 	 * @since 2019/04/15
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final Control[] getControls()
 	{
 		return new Control[]{this.volumeControl};
@@ -171,6 +184,7 @@ public final class NullPlayer
 	 * @since 2019/04/15
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final long getMediaTime()
 	{
 		synchronized (this)
@@ -189,6 +203,7 @@ public final class NullPlayer
 	 * @since 2019/04/15
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final long setMediaTime(long __now)
 		throws MediaException
 	{

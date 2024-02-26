@@ -8,7 +8,7 @@
 
 package cc.squirreljme.runtime.media;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.LinkedList;
 import java.util.List;
 import javax.microedition.media.Manager;
@@ -22,15 +22,17 @@ import javax.microedition.media.TimeBase;
  *
  * @since 2022/04/24
  */
+@SquirrelJMEVendorApi
 public abstract class AbstractPlayer
 	implements Player
 {
 	/** The current track position. */
+	@SquirrelJMEVendorApi
 	protected final TrackPosition trackPosition =
 		new TrackPosition();
 	
 	/** The mime type. */
-	private final String mime;
+	private final String _mime;
 	
 	/** Listeners available. */
 	private final List<PlayerListener> _listeners =
@@ -41,6 +43,7 @@ public abstract class AbstractPlayer
 		Manager.getSystemTimeBase();
 	
 	/** The loop counter which controls how much the audio replays. */
+	@SquirrelJMEVendorApi
 	protected volatile int loopCounter =
 		1;
 	
@@ -62,13 +65,14 @@ public abstract class AbstractPlayer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/04/24
 	 */
+	@SquirrelJMEVendorApi
 	protected AbstractPlayer(String __mime)
 		throws NullPointerException
 	{
 		if (__mime == null)
 			throw new NullPointerException("NARG");
 		
-		this.mime = __mime;
+		this._mime = __mime;
 	}
 	
 	/**
@@ -77,6 +81,7 @@ public abstract class AbstractPlayer
 	 * @throws MediaException If the player cannot be prefetched.
 	 * @since 2022/04/24
 	 */
+	@SquirrelJMEVendorApi
 	protected abstract void becomingPrefetched()
 		throws MediaException;
 	
@@ -86,6 +91,7 @@ public abstract class AbstractPlayer
 	 * @throws MediaException If the player cannot be realized.
 	 * @since 2022/04/24
 	 */
+	@SquirrelJMEVendorApi
 	protected abstract void becomingRealized()
 		throws MediaException;
 	
@@ -95,6 +101,7 @@ public abstract class AbstractPlayer
 	 * @throws MediaException If the player could not be started.
 	 * @since 2022/04/24
 	 */
+	@SquirrelJMEVendorApi
 	protected abstract void becomingStarted()
 		throws MediaException;
 	
@@ -104,6 +111,7 @@ public abstract class AbstractPlayer
 	 * @throws MediaException If the player could not be stopped.
 	 * @since 2022/04/24
 	 */
+	@SquirrelJMEVendorApi
 	protected abstract void becomingStopped()
 		throws MediaException;
 	
@@ -113,6 +121,7 @@ public abstract class AbstractPlayer
 	 * @return The media length.
 	 * @since 2022/04/25
 	 */
+	@SquirrelJMEVendorApi
 	protected abstract long determineDuration()
 		throws MediaException;
 	
@@ -121,6 +130,7 @@ public abstract class AbstractPlayer
 	 * @since 2019/04/15
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final void addPlayerListener(PlayerListener __l)
 	{
 		// Ignore?
@@ -147,6 +157,7 @@ public abstract class AbstractPlayer
 	 * @param __val The value used.
 	 * @since 2019/06/28
 	 */
+	@SquirrelJMEVendorApi
 	protected final void broadcastEvent(String __key, Object __val)
 	{
 		PlayerListener[] poke;
@@ -176,9 +187,10 @@ public abstract class AbstractPlayer
 	 * @since 2019/04/15
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final String getContentType()
 	{
-		return this.mime;
+		return this._mime;
 	}
 	
 	/**
@@ -186,6 +198,7 @@ public abstract class AbstractPlayer
 	 * @since 2022/04/25
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final long getDuration()
 		throws IllegalStateException
 	{
@@ -223,6 +236,7 @@ public abstract class AbstractPlayer
 	 * @since 2019/04/15
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final int getState()
 	{
 		synchronized (this)
@@ -236,6 +250,7 @@ public abstract class AbstractPlayer
 	 * @since 2019/04/15
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final TimeBase getTimeBase()
 	{
 		// Use the default time base, if there is no current one
@@ -251,6 +266,7 @@ public abstract class AbstractPlayer
 	 * @since 2019/04/15
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final void prefetch()
 		throws MediaException
 	{
@@ -277,6 +293,7 @@ public abstract class AbstractPlayer
 	 * @since 2019/04/15
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final void realize()
 		throws MediaException
 	{
@@ -301,6 +318,7 @@ public abstract class AbstractPlayer
 	 * @since 2019/04/15
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final void removePlayerListener(PlayerListener __l)
 	{
 		// Ignore?
@@ -323,6 +341,7 @@ public abstract class AbstractPlayer
 	 * @since 2022/04/24
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void setLoopCount(int __count)
 		throws IllegalArgumentException, IllegalStateException
 	{
@@ -347,6 +366,7 @@ public abstract class AbstractPlayer
 	 * @throws IllegalArgumentException If the state is not valid.
 	 * @since 2022/04/24
 	 */
+	@SquirrelJMEVendorApi
 	protected final void setState(int __state)
 		throws IllegalArgumentException
 	{
@@ -371,6 +391,7 @@ public abstract class AbstractPlayer
 	 * @since 2022/04/24
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final void setTimeBase(TimeBase __timeBase)
 	{
 		this._currentTimebase = __timeBase;
@@ -381,6 +402,7 @@ public abstract class AbstractPlayer
 	 * @since 2019/04/15
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final void start()
 		throws MediaException
 	{
@@ -419,6 +441,7 @@ public abstract class AbstractPlayer
 	 * @since 2022/04/27
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final void stop()
 		throws MediaException
 	{

@@ -11,6 +11,7 @@ package cc.squirreljme.jvm.mle;
 import cc.squirreljme.jvm.mle.brackets.MidiDeviceBracket;
 import cc.squirreljme.jvm.mle.brackets.MidiPortBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
  * This allows for the native playback and recording of MIDI based events.
@@ -18,6 +19,7 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
  * @see MidiPortBracket
  * @since 2022/04/20
  */
+@SquirrelJMEVendorApi
 public final class MidiShelf
 {
 	/**
@@ -34,6 +36,7 @@ public final class MidiShelf
 	 * {@code null}, or the offset and/or length exceed the array bounds.
 	 * @since 2022/04/21
 	 */
+	@SquirrelJMEVendorApi
 	public static native int dataReceive(MidiPortBracket __port,
 		byte[] __b, int __o, int __l)
 		throws MLECallError;
@@ -50,6 +53,7 @@ public final class MidiShelf
 	 * {@code null}, or the offset and/or length exceed the array bounds.
 	 * @since 2022/04/21
 	 */
+	@SquirrelJMEVendorApi
 	public static native void dataTransmit(MidiPortBracket __port,
 		byte[] __b, int __o, int __l)
 		throws MLECallError;
@@ -62,6 +66,7 @@ public final class MidiShelf
 	 * @throws MLECallError If the device is not valid.
 	 * @since 2022/04/21
 	 */
+	@SquirrelJMEVendorApi
 	public static native String deviceName(MidiDeviceBracket __device)
 		throws MLECallError;
 	
@@ -72,6 +77,7 @@ public final class MidiShelf
 	 * are no MIDI devices, or it is not supported by the system.
 	 * @since 2022/04/21
 	 */
+	@SquirrelJMEVendorApi
 	public static native MidiDeviceBracket[] devices();
 	
 	/**
@@ -85,6 +91,7 @@ public final class MidiShelf
 	 * @throws MLECallError If the device is not valid.
 	 * @since 2022/04/21
 	 */
+	@SquirrelJMEVendorApi
 	public static native MidiPortBracket[] ports(MidiDeviceBracket __device,
 		boolean __transmit)
 		throws MLECallError;
