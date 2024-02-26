@@ -105,6 +105,10 @@ public final class MidiTracker
 		for (int i = 0; i < numTracks; i++)
 			readyAts[i] = Long.MIN_VALUE;
 		
+		// Reset all trackers so they start at the beginning
+		for (MTrkTracker tracker : trackers)
+			tracker.reset();
+		
 		// Play almost forever
 		for (;;)
 		{
