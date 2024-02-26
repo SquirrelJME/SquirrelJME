@@ -10,7 +10,7 @@
 package cc.squirreljme.jvm.mle;
 
 import cc.squirreljme.jvm.mle.brackets.PencilBracket;
-import cc.squirreljme.jvm.mle.constants.NativeImageLoadParameter;
+import cc.squirreljme.jvm.mle.callbacks.NativeImageLoadCallback;
 import cc.squirreljme.jvm.mle.constants.NativeImageLoadType;
 import cc.squirreljme.jvm.mle.constants.PencilCapabilities;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
@@ -389,24 +389,28 @@ public final class PencilShelf
 		throws MLECallError;
 	
 	/**
-	 * Performs native image loading and returns a semi-modified RGB buffer
-	 * where the first values according to {@link NativeImageLoadParameter}
-	 * represent information about the image.
+	 * Performs native image loading
 	 * 
 	 * @param __type The {@link NativeImageLoadType} to load.
 	 * @param __b The buffer.
 	 * @param __o The offset.
 	 * @param __l The length.
-	 * @return The raw RGB for the image with starting parameters.
+	 * @param __callback The callback that performs the image loading.
+	 * @return The object returned will be passed through the callback from
+	 * the native callback, should return {@code null} if the load has been
+	 * cancelled.
 	 * @throws MLECallError If the image could not be loaded.
+	 * @see NativeImageLoadCallback
 	 * @since 2021/12/05
 	 */
 	@SquirrelJMEVendorApi
-	public static native int[] nativeImageLoadRGBA(
+	@Nullable
+	public static native Object nativeImageLoadRGBA(
 		@MagicConstant(valuesFromClass = NativeImageLoadType.class) int __type,
 		@NotNull byte[] __b,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __o,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __l)
+		@Range(from = 0, to = Integer.MAX_VALUE) int __l,
+		@NotNull NativeImageLoadCallback __callback)
 		throws MLECallError;
 	
 	/**

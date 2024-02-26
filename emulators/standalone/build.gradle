@@ -3,6 +3,7 @@ import cc.squirreljme.plugin.multivm.BangletVariant
 import cc.squirreljme.plugin.multivm.ClutterLevel
 import cc.squirreljme.plugin.multivm.VMFullSuiteDepends
 import cc.squirreljme.plugin.multivm.VMHelpers
+import cc.squirreljme.plugin.multivm.VMNameFormat
 import cc.squirreljme.plugin.multivm.VMRunUpToDateWhen
 import cc.squirreljme.plugin.multivm.VMType
 
@@ -17,14 +18,19 @@ plugins
 {
 	id "application"
 	id "java"
-	id "com.github.johnrengelman.shadow" version "7.1.2"
 }
+
+apply plugin: "com.github.johnrengelman.shadow"
 
 description = "Standalone SquirrelJME virtual machine on Java."
 mainClassName = "cc.squirreljme.vm.standalone.main.Main"
 
 dependencies {
 	implementation project(":emulators:springcoat-vm")
+	implementation project(":emulators:nanocoat-vm")
+	
+	// Debugger tool for quick usage
+	implementation project(":tools:squirreljme-debugger")
 }
 
 java {
@@ -295,6 +301,9 @@ shadowJar {
 	// Always SquirrelJME
 	archiveBaseName.set("squirreljme-standalone")
 	
+	// Always merge service files, otherwise multiple VMs will just not work
+	mergeServiceFiles()
+	
 	// Set the suffix of the JAR to be the OS name and arch, since there is
 	// a dynamic library within for it
 	archiveClassifier.set(project.provider({ ->
@@ -320,5 +329,31 @@ shadowJar {
 	dependencies {
 		// Exclude IntelliJ Annotations, they are not needed
 		exclude(dependency("org.jetbrains:annotations-java5:.*"))
+	}
+}
+
+// Shadow run tasks for the various emulator choices
+Provider<Task> shadowJarTask = tasks.named("shadowJar")
+[false, true].each { isDebug ->
+	VMType.values().each { vmType ->
+		tasks.register("run" + vmType.vmName(VMNameFormat.PROPER_NOUN) +
+				(isDebug ? "Debug" : ""),
+			JavaExec) { sub ->
+			sub.dependsOn shadowJarTask
+
+			sub.description = "Runs the standalone VM via " +
+				"${vmType.properName}" + (isDebug ? " with debugging." : ".")
+			sub.group = "squirreljme"
+
+			sub.classpath = shadowJarTask.get().getOutputs().getFiles()
+			sub.mainClass = "cc.squirreljme.vm.standalone.main.Main"
+			if (isDebug) {
+				sub.args = ["-Xemulator:" + 
+					vmType.vmName(VMNameFormat.LOWERCASE), "-Xdebug"]
+				} else {
+				sub.args = ["-Xemulator:" + 
+					vmType.vmName(VMNameFormat.LOWERCASE)]
+			}
+		}
 	}
 }

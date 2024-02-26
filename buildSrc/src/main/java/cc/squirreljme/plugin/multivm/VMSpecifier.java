@@ -73,6 +73,14 @@ public interface VMSpecifier
 	boolean hasDumping();
 	
 	/**
+	 * Does this have an emulator available
+	 * 
+	 * @return If an emulator is available.
+	 * @since 2023/05/28
+	 */
+	boolean hasEmulator();
+	
+	/**
 	 * Is the emulator for this JIT capable, as in there does not need to be
 	 * a library or ROM compilation before running?
 	 * 
@@ -82,6 +90,14 @@ public interface VMSpecifier
 	boolean hasEmulatorJit();
 	
 	/**
+	 * Does this have native port support?
+	 * 
+	 * @return The native port support.
+	 * @since 2023/05/31
+	 */
+	NativePortSupport[] hasNativePortSupport();
+	
+	/**
 	 * Is there a ROM task for the VM?
 	 * 
 	 * @param __variant The variant used.
@@ -89,6 +105,17 @@ public interface VMSpecifier
 	 * @since 2020/08/23
 	 */
 	boolean hasRom(BangletVariant __variant);
+	
+	/**
+	 * If the ROM contains only members of its own source set, then this
+	 * will be {@code true}. This means that there will be {@code main},
+	 * {@code testFixtures}, and {@code test} ROMs.
+	 *
+	 * @param __variant The banglet variant.
+	 * @return If this is a single source set or not.
+	 * @since 2023/07/25
+	 */
+	boolean isSingleSourceSetRom(BangletVariant __variant);
 	
 	/**
 	 * Returns the name of the project that is used to run this using the

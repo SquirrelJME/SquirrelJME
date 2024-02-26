@@ -32,6 +32,7 @@ import org.gradle.api.file.FileCollection;
 import org.gradle.api.internal.AbstractTask;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.provider.Provider;
+import org.gradle.api.tasks.Delete;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.bundling.AbstractArchiveTask;
@@ -302,82 +303,91 @@ public final class TaskInitialization
 				TaskInitialization.task("dump", __classifier),
 				VMDumpLibraryTask.class, __classifier, libTask);
 		
-		// Running the target
-		if (__classifier.isMainSourceSet())
-			tasks.create(
-				TaskInitialization.task("run", __classifier),
-				VMRunTask.class, __classifier, libTask);
-		
-		// Testing the target
-		else if (__classifier.isTestSourceSet())
+		// Emulator targets, which run the VM with the resultant code
+		if (__classifier.getVmType().hasEmulator())
 		{
-			Task vmTest;
-			String taskName = TaskInitialization.task("test",
-				__classifier);
-			
-			// Creating the legacy or modern test task? Using the modern one
-			// is recommended if using IntelliJ or otherwise...
-			if (TaskInitialization.LEGACY_TEST_FRAMEWORK)
-				vmTest = tasks.create(taskName,
-					VMLegacyTestTask.class, __classifier, libTask);
-			else
-				vmTest = tasks.create(taskName,
-					VMModernTestTask.class, __classifier, libTask);
-			
-			// Since there is a release and debug variant, have the base test
-			// refer to both of these
-			String bothName = TaskInitialization.task("test",
-				__classifier.getSourceSet(),
-				__classifier.getVmType(), __classifier.getBangletVariant(),
-				null);
-			
-			// If the task is missing, create it
-			Test bothTest = (Test)__project.getTasks().findByName(bothName);
-			if (bothTest == null)
+			// Running the target
+			if (__classifier.isMainSourceSet())
 			{
-				// Create a test task, so IDEs like IntelliJ can pick this up
-				// despite there being no actual tests that exist
-				bothTest = __project.getTasks().create(bothName, Test.class);
-				
-				// Setup description of these
-				bothTest.setGroup("squirreljme");
-				
-				// Make sure the description makes sense
-				if (__classifier.getVmType().allowOnlyDebug())
-					bothTest.setDescription(String.format("Alias for %s.",
-						taskName));
-				else
-					bothTest.setDescription(
-						String.format("Runs both test tasks %s and %s.",
-							taskName, TaskInitialization.task("test",
-								__classifier.withClutterLevel(__classifier
-									.getTargetClassifier().getClutterLevel()
-									.opposite()))));
-				
-				// Gradle will think these are JUnit tests and then fail
-				// so exclude everything
-				bothTest.setScanForTestClasses(false);
-				bothTest.include();
-				bothTest.exclude("**");
+				tasks.create(
+					TaskInitialization.task("run", __classifier),
+					VMRunTask.class, __classifier, libTask);
 			}
 			
-			// Add to the both task as a dependency
-			bothTest.dependsOn(vmTest);
-			
-			// Make the standard test task depend on these two VM tasks
-			// so that way if it is run, both are run accordingly
-			if (__classifier.getVmType().isGoldTest())
+			// Testing the target
+			else if (__classifier.isTestSourceSet())
 			{
-				Test test = (Test)__project.getTasks().getByName("test");
+				Task vmTest;
+				String taskName = TaskInitialization.task("test",
+					__classifier);
 				
-				// Test needs this
-				test.dependsOn(vmTest);
+				// Creating the legacy or modern test task? Using the modern
+				// one is recommended if using IntelliJ or otherwise...
+				if (TaskInitialization.LEGACY_TEST_FRAMEWORK)
+					vmTest = tasks.create(taskName, VMLegacyTestTask.class,
+						__classifier, libTask);
+				else
+					vmTest = tasks.create(taskName, VMModernTestTask.class,
+						__classifier, libTask);
 				
-				// Gradle will think these are JUnit tests and then fail
-				// so exclude everything
-				test.setScanForTestClasses(false);
-				test.include();
-				test.exclude("**");
+				// Since there is a release and debug variant, have the base
+				// test refer to both of these
+				String bothName = TaskInitialization.task("test",
+					__classifier.getSourceSet(), __classifier.getVmType(),
+					__classifier.getBangletVariant(), null);
+				
+				// If the task is missing, create it
+				Test bothTest = (Test)__project.getTasks()
+					.findByName(bothName);
+				if (bothTest == null)
+				{
+					// Create a test task, so IDEs like IntelliJ can pick this
+					// up despite there being no actual tests that exist
+					bothTest = __project.getTasks().create(bothName,
+						Test.class);
+					
+					// Setup description of these
+					bothTest.setGroup("squirreljme");
+					
+					// Make sure the description makes sense
+					if (__classifier.getVmType().allowOnlyDebug())
+						bothTest.setDescription(
+							String.format("Alias for %s.", taskName));
+					else
+						bothTest.setDescription(
+							String.format("Runs both test tasks %s and %s.",
+								taskName, TaskInitialization.task(
+									"test",
+									__classifier.withClutterLevel(
+										__classifier.getTargetClassifier()
+											.getClutterLevel().opposite()))));
+					
+					// Gradle will think these are JUnit tests and then fail
+					// so exclude everything
+					bothTest.setScanForTestClasses(false);
+					bothTest.include();
+					bothTest.exclude("**");
+				}
+				
+				// Add to the both task as a dependency
+				bothTest.dependsOn(vmTest);
+				
+				// Make the standard test task depend on these two VM tasks
+				// so that way if it is run, both are run accordingly
+				if (__classifier.getVmType().isGoldTest())
+				{
+					Test test = (Test)__project.getTasks()
+						.getByName("test");
+					
+					// Test needs this
+					test.dependsOn(vmTest);
+					
+					// Gradle will think these are JUnit tests and then fail
+					// so exclude everything
+					test.setScanForTestClasses(false);
+					test.include();
+					test.exclude("**");
+				}
 			}
 		}
 	}
@@ -450,7 +460,27 @@ public final class TaskInitialization
 		if (__project == null || __classifier == null)
 			throw new NullPointerException("NARG");
 		
-		// Standard ROM
+		// Is this a single source set ROM?
+		VMSpecifier vmType = __classifier.getVmType();
+		boolean isSingleSourceSetRom = vmType.isSingleSourceSetRom(
+			__classifier.getBangletVariant());
+		
+		// Do not run if there is no emulator
+		if (!__classifier.getVmType().hasEmulator())
+			return;
+		
+		// Standard run everything as one, only allow main and test source
+		// sets to be a candidate for full
+		if (!__classifier.isMainSourceSet() && !__classifier.isTestSourceSet())
+			return;
+		
+		// If this is a debug only target and the requested clutter level is
+		// not debugging, then do not make such a task
+		if (__classifier.getVmType().allowOnlyDebug() &&
+			!__classifier.getTargetClassifier().getClutterLevel().isDebug())
+			return;
+		
+		// Create task
 		__project.getTasks().create(
 			TaskInitialization.task("full", __classifier),
 			VMFullSuite.class, __classifier);
@@ -651,13 +681,19 @@ public final class TaskInitialization
 			throw new NullPointerException("NARG");
 			
 		// Initialize or both main classes and such
-		for (ClutterLevel clutterLevel : ClutterLevel.values())
-			for (String sourceSet : TaskInitialization._SOURCE_SETS)
-				for (VMType vmType : VMType.values())
+		for (VMType vmType : VMType.values())
+		{
+			// Sequential clean storage?
+			List<Task> sequentialClean = new ArrayList<>();
+			
+			// Process for each possible combination
+			for (ClutterLevel clutterLevel : ClutterLevel.values())
+				for (String sourceSet : TaskInitialization._SOURCE_SETS)
 					for (BangletVariant variant : vmType.banglets())
 						TaskInitialization.romTasks(__project,
 							new SourceTargetClassifier(sourceSet, vmType,
-								variant, clutterLevel));
+								variant, clutterLevel), sequentialClean);
+		}
 	}
 	
 	/**
@@ -665,34 +701,93 @@ public final class TaskInitialization
 	 * 
 	 * @param __project The root project.
 	 * @param __classifier The classifier used.
+	 * @param __sequentialClean Sequential clean list.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/23
 	 */
 	private static void romTasks(Project __project,
-		SourceTargetClassifier __classifier)
+		SourceTargetClassifier __classifier, List<Task> __sequentialClean)
 		throws NullPointerException
 	{
-		if (__project == null || __classifier == null)
+		if (__project == null || __classifier == null ||
+			__sequentialClean == null)
 			throw new NullPointerException("NARG");
 			
 		// Everything will be working on these tasks
 		TaskContainer tasks = __project.getTasks();
 		
+		// Determine if this is a single source set ROM
+		VMSpecifier vmType = __classifier.getVmType();
+		boolean isSingleSourceSetRom = vmType.isSingleSourceSetRom(
+			__classifier.getBangletVariant());
+		
 		// Does the VM utilize ROMs?
 		// Test fixtures are just for testing, so there is no test fixtures
-		// ROM variant...
-		if (__classifier.getVmType()
-			.hasRom(__classifier.getBangletVariant()) &&
-			!__classifier.isTestFixturesSourceSet())
+		// ROM variant... unless we are a single source set ROM variant
+		if (vmType.hasRom(__classifier.getBangletVariant()) &&
+			(isSingleSourceSetRom || !__classifier.isTestFixturesSourceSet()))
 		{
 			String baseName = TaskInitialization.task("rom",
 				__classifier);
 			VMRomTask rom = tasks.create(baseName, VMRomTask.class,
 				__classifier);
 			
-			// Full RatufaCoat Built-In
-			__project.getTasks().create(baseName + "RatufaCoat",
-				RatufaCoatBuiltInTask.class,  __classifier, rom);
+			// Which native ports are supported?
+			for (NativePortSupport nativePort :
+				__classifier.getVmType().hasNativePortSupport())
+			{
+				Task nativeTask;
+				String taskName;
+				switch (nativePort)
+				{
+					case RATUFACOAT:
+						taskName = baseName + "RatufaCoat";
+						nativeTask = tasks.create(
+							taskName,
+							RatufaCoatBuiltInTask.class, __classifier, rom);
+						break;
+					
+					case NANOCOAT:
+						// Create task
+						taskName = baseName + "NanoCoat";
+						nativeTask = tasks.create(
+							taskName,
+							NanoCoatBuiltInTask.class,
+							__classifier, rom);
+						break;
+						
+					default:
+						throw new Error(nativePort.toString());
+				}
+				
+				// Setup cleaning task
+				Task cleanTask = nativePort.cleanTask(nativeTask,
+					__classifier);
+				
+				// Clean should call these accordingly
+				__project.afterEvaluate((__p) ->
+					cleanTask.getProject().getRootProject().getTasks()
+						.getByName("clean").dependsOn(cleanTask));
+				
+				// Does clean have to be done sequentially and not in
+				// parallel? This means the clean task is quite complicated
+				// and not easily determined, probably because it looks at
+				// all the ROM files.
+				if (isSingleSourceSetRom || nativePort.isSequentialClean())
+				{
+					// Have this task run after the previous clean task that
+					// was generated
+					if (!__sequentialClean.isEmpty())
+						cleanTask.mustRunAfter(__sequentialClean.get(
+							__sequentialClean.size() - 1));
+					
+					// Add self to the sequential clean list
+					__sequentialClean.add(cleanTask);
+				}
+				
+				// Clean, if it occurs, must happen before
+				nativeTask.mustRunAfter(cleanTask);
+			}
 		}
 	}
 	

@@ -32,9 +32,13 @@ public interface NativeImageLoadType
 	int LOAD_XPM =
 		8;
 	
+	/** SVG. */
+	int LOAD_SVG =
+		16;
+	
 	/** All types. */
 	int ALL_TYPES =
 		NativeImageLoadType.LOAD_PNG |
 		NativeImageLoadType.LOAD_GIF | NativeImageLoadType.LOAD_JPEG |
-		NativeImageLoadType.LOAD_XPM;
+		NativeImageLoadType.LOAD_XPM | NativeImageLoadType.LOAD_SVG;
 }

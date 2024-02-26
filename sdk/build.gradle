@@ -1,0 +1,23 @@
+plugins {
+	id "java"
+}
+
+apply plugin: "com.github.johnrengelman.shadow"
+
+repositories {
+	mavenCentral()
+	jcenter()
+}
+
+dependencies {
+	shadow localGroovy()
+	shadow gradleApi()
+}
+
+/*task relocateShadowJar(type: ConfigureShadowRelocation) {
+    target = tasks.shadowJar
+}
+
+shadowJar {
+	dependsOn relocateShadowJar
+}*/

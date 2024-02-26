@@ -171,6 +171,11 @@ public final class DataDeserialization
 							c = '\t';
 							break;
 							
+							// Comma
+						case 'c':
+							c = ',';
+							break;
+							
 							// Delete
 						case 'd':
 							c = (char)0x7F;

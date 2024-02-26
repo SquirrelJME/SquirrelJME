@@ -10,18 +10,18 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.emulator.profiler.ProfiledFrame;
-import cc.squirreljme.jdwp.EventKind;
+import cc.squirreljme.emulator.vm.VMTraceFlagTracker;
+import cc.squirreljme.jdwp.JDWPEventKind;
 import cc.squirreljme.jdwp.JDWPClassStatus;
-import cc.squirreljme.jdwp.JDWPController;
-import cc.squirreljme.jdwp.JDWPStepTracker;
-import cc.squirreljme.jdwp.JDWPThreadSuspension;
-import cc.squirreljme.jdwp.JDWPValue;
-import cc.squirreljme.jdwp.trips.JDWPGlobalTrip;
-import cc.squirreljme.jdwp.trips.JDWPTripBreakpoint;
-import cc.squirreljme.jdwp.trips.JDWPTripClassStatus;
-import cc.squirreljme.jdwp.trips.JDWPTripField;
-import cc.squirreljme.jdwp.trips.JDWPTripThread;
-import cc.squirreljme.jvm.mle.MathShelf;
+import cc.squirreljme.jdwp.host.JDWPHostController;
+import cc.squirreljme.jdwp.host.JDWPHostStepTracker;
+import cc.squirreljme.jdwp.host.JDWPHostThreadSuspension;
+import cc.squirreljme.jdwp.host.JDWPHostValue;
+import cc.squirreljme.jdwp.host.trips.JDWPGlobalTrip;
+import cc.squirreljme.jdwp.host.trips.JDWPTripBreakpoint;
+import cc.squirreljme.jdwp.host.trips.JDWPTripClassStatus;
+import cc.squirreljme.jdwp.host.trips.JDWPTripField;
+import cc.squirreljme.jdwp.host.trips.JDWPTripThread;
 import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.TypeObject;
@@ -42,7 +42,6 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.regex.Pattern;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassFlags;
 import net.multiphasicapps.classfile.ClassName;
@@ -70,16 +69,6 @@ import net.multiphasicapps.classfile.PrimitiveType;
 public final class SpringThreadWorker
 	extends Thread
 {
-	/**
-	 * {@squirreljme.property cc.squirreljme.vm.trace=bool
-	 * Enable tracing within the virtual machine?}
-	 */
-	public static final String TRACING_ENABLED =
-		"cc.squirreljme.vm.trace";
-	
-	/** Bits where tracing is enabled for. */
-	public static final int TRACING_ENABLED_BITS;
-	
 	/** Number of instructions which can be executed before warning. */
 	private static final int _EXECUTION_THRESHOLD =
 		4000000;
@@ -94,29 +83,11 @@ public final class SpringThreadWorker
 	protected final Thread signalinstead;
 	
 	/** The manager for this thread's verbosity output. */
-	private final VerboseManager _verbose =
-		new VerboseManager();
+	private final VMTraceFlagTracker _verbose =
+		new VMTraceFlagTracker();
 	
 	/** The current step count. */
 	private volatile int _stepCount;
-	
-	static
-	{
-		// Decode the tracing flags to see if some bits are enabled
-		String tracing = System.getProperty(
-			SpringThreadWorker.TRACING_ENABLED);
-		int enableBits = 0;
-		if (tracing != null)
-			for (String item : tracing.split(Pattern.quote(",")))
-			{
-				for (VerboseDebugFlagName flag : VerboseDebugFlagName.values())
-					if (flag.names.contains(item))
-						enableBits |= flag.bits;
-			}
-		
-		// Set enabled bits
-		TRACING_ENABLED_BITS = enableBits;
-	}
 	
 	/**
 	 * Initialize the worker.
@@ -766,12 +737,12 @@ public final class SpringThreadWorker
 	public final SpringClass contextClass()
 	{
 		SpringThread thread = this.thread;
-		SpringThread.Frame[] frames = thread.frames();
+		SpringThreadFrame[] frames = thread.frames();
 		
 		// Go through frames
 		for (int n = frames.length, i = n - 1; i >= 0; i--)
 		{
-			SpringThread.Frame frame = frames[i];
+			SpringThreadFrame frame = frames[i];
 			
 			// No method, could be a blank frame
 			SpringMethod m = frame.method();
@@ -827,7 +798,7 @@ public final class SpringThreadWorker
 		
 		// Overflow or exceptions might occur
 		int framelimit;
-		SpringThread.Frame blank, execframe;
+		SpringThreadFrame blank, execframe;
 		SpringThread thread = this.thread;
 		try
 		{
@@ -862,7 +833,7 @@ public final class SpringThreadWorker
 		}
 		
 		// This is an error unless the thread signaled exit
-		SpringThread.Frame currentframe = thread.currentFrame();
+		SpringThreadFrame currentframe = thread.currentFrame();
 		if (currentframe != blank)
 		{
 			// If our thread just happened to signal an exit of the VM, then
@@ -987,7 +958,7 @@ public final class SpringThreadWorker
 		}
 			
 		// Tell the debugger that this class is verified
-		JDWPController jdwp = this.machine.taskManager().jdwpController;
+		JDWPHostController jdwp = this.machine.taskManager().jdwpController;
 		JDWPTripClassStatus classTrip = (jdwp == null ? null :
 			jdwp.trip(JDWPTripClassStatus.class,
 				JDWPGlobalTrip.CLASS_STATUS));
@@ -1369,7 +1340,7 @@ public final class SpringThreadWorker
 	 * @return The verbose manager.
 	 * @since 2020/07/11
 	 */
-	public final VerboseManager verbose()
+	public final VMTraceFlagTracker verbose()
 	{
 		return this._verbose;
 	}
@@ -1384,10 +1355,10 @@ public final class SpringThreadWorker
 	public boolean verboseCheck(int __flags)
 	{
 		// Was tracing enabled for this flag?
-		if ((SpringThreadWorker.TRACING_ENABLED_BITS & __flags) != 0)
+		if ((this.machine._globalTrace & __flags) != 0)
 			return true;
 		
-		SpringThread.Frame frame = this.thread.currentFrame();
+		SpringThreadFrame frame = this.thread.currentFrame();
 		return this._verbose.check((frame == null ? 0 : frame.level), __flags);
 	}
 	
@@ -1400,11 +1371,11 @@ public final class SpringThreadWorker
 	 */
 	public void verboseEmit(String __format, Object... __args)
 	{
-		SpringThread.Frame frame = this.thread.currentFrame();
+		SpringThreadFrame frame = this.thread.currentFrame();
 		Debugging.debugNote("[%s @ %s] %s",
 			this.thread.toString(),
 			(frame == null ? null : String.format("%s:%d (%d)",
-				frame.method.nameAndType(),
+				(frame.method == null ? "" : frame.method.nameAndType()),
 				frame.pc(),
 				frame.pcSourceLine())),
 			String.format(__format, __args));
@@ -1422,7 +1393,7 @@ public final class SpringThreadWorker
 		this.machine.exitCheck();
 		
 		// Check if this frame handles the exception
-		SpringThread.Frame frame = this.thread.currentFrame();
+		SpringThreadFrame frame = this.thread.currentFrame();
 		SpringObject tossing = frame.tossedException();
 		if (tossing != null)
 		{
@@ -1475,7 +1446,7 @@ public final class SpringThreadWorker
 		
 		// Need the current frame and its byte code
 		SpringThread thread = this.thread;
-		SpringThread.Frame frame = thread.currentFrame();
+		SpringThreadFrame frame = thread.currentFrame();
 		ByteCode code = frame.byteCode();
 		int pc = frame.lastExecutedPc();
 		
@@ -1501,11 +1472,11 @@ public final class SpringThreadWorker
 				__o.type().name, useeh != null);
 		
 		// Signal that we caught an exception
-		JDWPController jdwp = this.machine.tasks.jdwpController;
+		JDWPHostController jdwp = this.machine.tasks.jdwpController;
 		if (jdwp != null) {
 			// Emit signal
 			jdwp.signal(this.thread, (useeh != null ?
-					EventKind.EXCEPTION_CATCH : EventKind.EXCEPTION),
+					JDWPEventKind.EXCEPTION_CATCH : JDWPEventKind.EXCEPTION),
 				__o, useeh);
 			
 			// Check to see if we are suspended, so we can stop here if we
@@ -1521,7 +1492,7 @@ public final class SpringThreadWorker
 			thread.popFrame();
 			
 			// Did we run out of stack frames?
-			SpringThread.Frame cf = thread.currentFrame();
+			SpringThreadFrame cf = thread.currentFrame();
 			if (cf == null)
 			{
 				// Just stop execution here
@@ -1572,7 +1543,7 @@ public final class SpringThreadWorker
 		
 		// Used for context and return value handling
 		SpringThread thread = this.thread;
-		SpringThread.Frame frame = thread.currentFrame();
+		SpringThreadFrame frame = thread.currentFrame();
 		
 		// Invoke the exception
 		Object rv;
@@ -1742,13 +1713,15 @@ public final class SpringThreadWorker
 		
 		// We need the current frame and byte code so that we can check on
 		// our breakpoints
-		SpringThread.Frame frame = thread.currentFrame();
+		SpringThreadFrame frame = thread.currentFrame();
 		SpringMethod method = frame.method();
 		ByteCode code = frame.byteCode();
 		
 		// Poll the JDWP debugger for any new debugging state
-		JDWPController jdwp = this.machine.tasks.jdwpController;
-		if (jdwp != null)
+		// Note that if the thread is exempt from suspension do not single
+		// step or stop on any breakpoint...
+		JDWPHostController jdwp = this.machine.tasks.jdwpController;
+		if (jdwp != null && !thread.noDebugSuspend)
 		{
 			// Check for breakpoints to stop at first, because if our thread
 			// gets suspended we want to know before we check for suspension.
@@ -1769,7 +1742,7 @@ public final class SpringThreadWorker
 			}
 			
 			// Check if we are doing any single stepping
-			JDWPStepTracker stepTracker = thread._stepTracker;
+			JDWPHostStepTracker stepTracker = thread._stepTracker;
 			if (stepTracker != null && stepTracker.inSteppingMode())
 			{
 				// Tick the current tracker and see if it will activate
@@ -1821,15 +1794,15 @@ public final class SpringThreadWorker
 		
 		// Used to detect the next instruction of execution following this,
 		// may be set accordingly in the frame manually
-		int nextpc = code.addressFollowing(pc),
-			orignextpc = nextpc;
+		int nextPc = code.addressFollowing(pc);
+		int origNextPc = nextPc;
 		
 		// Handle individual instructions
-		int opid;
+		int opId;
 		try
 		{
 			// Handle it
-			switch ((opid = inst.operation()))
+			switch ((opId = inst.operation()))
 			{
 					// Do absolutely nothing!
 				case InstructionIndex.NOP:
@@ -1878,7 +1851,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.ALOAD_2:
 				case InstructionIndex.ALOAD_3:
 					frame.loadToStack(SpringObject.class,
-						opid - InstructionIndex.ALOAD_0);
+						opId - InstructionIndex.ALOAD_0);
 					break;
 				
 					// Allocate new array
@@ -1895,7 +1868,7 @@ public final class SpringThreadWorker
 						SpringObject.class);
 					this.__vmReturn(thread,
 						(rvObject != null ? rvObject : SpringNullObject.NULL));
-					nextpc = Integer.MIN_VALUE;
+					nextPc = Integer.MIN_VALUE;
 					break;
 					
 					// Length of array
@@ -1918,7 +1891,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.ASTORE_2:
 				case InstructionIndex.ASTORE_3:
 					{
-						frame.storeLocal(opid - InstructionIndex.ASTORE_0,
+						frame.storeLocal(opId - InstructionIndex.ASTORE_0,
 							frame.<SpringObject>popFromStack(
 								SpringObject.class));
 					}
@@ -1935,8 +1908,8 @@ public final class SpringThreadWorker
 						if (popped == SpringNullObject.NULL)
 							throw new SpringNullPointerException("BKnt");
 						
-						nextpc = this.__handleException(popped);
-						if (nextpc < 0)
+						nextPc = this.__handleException(popped);
+						if (nextPc < 0)
 							return;
 					}
 					break;
@@ -2036,7 +2009,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.DCONST_0:
 				case InstructionIndex.DCONST_1:
 					frame.pushToStack(
-						Double.valueOf(opid - InstructionIndex.DCONST_0));
+						Double.valueOf(opId - InstructionIndex.DCONST_0));
 					break;
 				
 					// Divide double
@@ -2061,7 +2034,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.DLOAD_2:
 				case InstructionIndex.DLOAD_3:
 					frame.loadToStack(Double.class,
-						opid - InstructionIndex.DLOAD_0);
+						opId - InstructionIndex.DLOAD_0);
 					break;
 				
 					// Multiply double
@@ -2094,7 +2067,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.DRETURN:
 					this.__vmReturn(thread,
 						frame.<Double>popFromStack(Double.class));
-					nextpc = Integer.MIN_VALUE;
+					nextPc = Integer.MIN_VALUE;
 					break;
 				
 					// Subtract double
@@ -2118,7 +2091,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.DSTORE_1:
 				case InstructionIndex.DSTORE_2:
 				case InstructionIndex.DSTORE_3:
-					frame.storeLocal(opid - InstructionIndex.DSTORE_0,
+					frame.storeLocal(opId - InstructionIndex.DSTORE_0,
 						frame.<Double>popFromStack(Double.class));
 					break;
 					
@@ -2410,7 +2383,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.FCONST_1:
 				case InstructionIndex.FCONST_2:
 					frame.pushToStack(
-						Float.valueOf(opid - InstructionIndex.FCONST_0));
+						Float.valueOf(opId - InstructionIndex.FCONST_0));
 					break;
 				
 					// Divide float
@@ -2435,7 +2408,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.FLOAD_2:
 				case InstructionIndex.FLOAD_3:
 					frame.loadToStack(Float.class,
-						opid - InstructionIndex.FLOAD_0);
+						opId - InstructionIndex.FLOAD_0);
 					break;
 				
 					// Multiply float
@@ -2468,7 +2441,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.FRETURN:
 					this.__vmReturn(thread,
 						frame.<Float>popFromStack(Float.class));
-					nextpc = Integer.MIN_VALUE;
+					nextPc = Integer.MIN_VALUE;
 					break;
 				
 					// Subtract float
@@ -2492,7 +2465,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.FSTORE_1:
 				case InstructionIndex.FSTORE_2:
 				case InstructionIndex.FSTORE_3:
-					frame.storeLocal(opid - InstructionIndex.FSTORE_0,
+					frame.storeLocal(opId - InstructionIndex.FSTORE_0,
 						frame.<Float>popFromStack(Float.class));
 					break;
 					
@@ -2563,7 +2536,7 @@ public final class SpringThreadWorker
 					// Go to address
 				case InstructionIndex.GOTO:
 				case InstructionIndex.GOTO_W:
-					nextpc = inst.<InstructionJumpTarget>argument(0,
+					nextPc = inst.<InstructionJumpTarget>argument(0,
 						InstructionJumpTarget.class).target();
 					break;
 					
@@ -2725,7 +2698,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.ICONST_4:
 				case InstructionIndex.ICONST_5:
 					frame.pushToStack(Integer.valueOf(
-						-1 + (opid - InstructionIndex.ICONST_M1)));
+						-1 + (opId - InstructionIndex.ICONST_M1)));
 					break;
 					
 					// Object a == b
@@ -2737,7 +2710,7 @@ public final class SpringThreadWorker
 								SpringObject.class);
 						
 						if (a == b)
-							nextpc = inst.<InstructionJumpTarget>argument(0,
+							nextPc = inst.<InstructionJumpTarget>argument(0,
 								InstructionJumpTarget.class).target();
 					}
 					break;
@@ -2751,7 +2724,7 @@ public final class SpringThreadWorker
 								SpringObject.class);
 						
 						if (a != b)
-							nextpc = inst.<InstructionJumpTarget>argument(0,
+							nextPc = inst.<InstructionJumpTarget>argument(0,
 								InstructionJumpTarget.class).target();
 					}
 					break;
@@ -2763,7 +2736,7 @@ public final class SpringThreadWorker
 							a = frame.<Integer>popFromStack(Integer.class);
 						
 						if (a == b)
-							nextpc = inst.<InstructionJumpTarget>argument(0,
+							nextPc = inst.<InstructionJumpTarget>argument(0,
 								InstructionJumpTarget.class).target();
 					}
 					break;
@@ -2775,7 +2748,7 @@ public final class SpringThreadWorker
 							a = frame.<Integer>popFromStack(Integer.class);
 						
 						if (a >= b)
-							nextpc = inst.<InstructionJumpTarget>argument(0,
+							nextPc = inst.<InstructionJumpTarget>argument(0,
 								InstructionJumpTarget.class).target();
 					}
 					break;
@@ -2787,7 +2760,7 @@ public final class SpringThreadWorker
 							a = frame.<Integer>popFromStack(Integer.class);
 						
 						if (a > b)
-							nextpc = inst.<InstructionJumpTarget>argument(0,
+							nextPc = inst.<InstructionJumpTarget>argument(0,
 								InstructionJumpTarget.class).target();
 					}
 					break;
@@ -2799,7 +2772,7 @@ public final class SpringThreadWorker
 							a = frame.<Integer>popFromStack(Integer.class);
 						
 						if (a <= b)
-							nextpc = inst.<InstructionJumpTarget>argument(0,
+							nextPc = inst.<InstructionJumpTarget>argument(0,
 								InstructionJumpTarget.class).target();
 					}
 					break;
@@ -2811,7 +2784,7 @@ public final class SpringThreadWorker
 							a = frame.<Integer>popFromStack(Integer.class);
 						
 						if (a < b)
-							nextpc = inst.<InstructionJumpTarget>argument(0,
+							nextPc = inst.<InstructionJumpTarget>argument(0,
 								InstructionJumpTarget.class).target();
 					}
 					break;
@@ -2823,7 +2796,7 @@ public final class SpringThreadWorker
 							a = frame.<Integer>popFromStack(Integer.class);
 						
 						if (a != b)
-							nextpc = inst.<InstructionJumpTarget>argument(0,
+							nextPc = inst.<InstructionJumpTarget>argument(0,
 								InstructionJumpTarget.class).target();
 					}
 					break;
@@ -2831,42 +2804,42 @@ public final class SpringThreadWorker
 					// int a == 0
 				case InstructionIndex.IFEQ:
 					if (frame.<Integer>popFromStack(Integer.class) == 0)
-						nextpc = inst.<InstructionJumpTarget>argument(0,
+						nextPc = inst.<InstructionJumpTarget>argument(0,
 							InstructionJumpTarget.class).target();
 					break;
 					
 					// int a >= 0
 				case InstructionIndex.IFGE:
 					if (frame.<Integer>popFromStack(Integer.class) >= 0)
-						nextpc = inst.<InstructionJumpTarget>argument(0,
+						nextPc = inst.<InstructionJumpTarget>argument(0,
 							InstructionJumpTarget.class).target();
 					break;
 					
 					// int a > 0
 				case InstructionIndex.IFGT:
 					if (frame.<Integer>popFromStack(Integer.class) > 0)
-						nextpc = inst.<InstructionJumpTarget>argument(0,
+						nextPc = inst.<InstructionJumpTarget>argument(0,
 							InstructionJumpTarget.class).target();
 					break;
 					
 					// int a <= 0
 				case InstructionIndex.IFLE:
 					if (frame.<Integer>popFromStack(Integer.class) <= 0)
-						nextpc = inst.<InstructionJumpTarget>argument(0,
+						nextPc = inst.<InstructionJumpTarget>argument(0,
 							InstructionJumpTarget.class).target();
 					break;
 					
 					// int a < 0
 				case InstructionIndex.IFLT:
 					if (frame.<Integer>popFromStack(Integer.class) < 0)
-						nextpc = inst.<InstructionJumpTarget>argument(0,
+						nextPc = inst.<InstructionJumpTarget>argument(0,
 							InstructionJumpTarget.class).target();
 					break;
 					
 					// int a != 0
 				case InstructionIndex.IFNE:
 					if (frame.<Integer>popFromStack(Integer.class) != 0)
-						nextpc = inst.<InstructionJumpTarget>argument(0,
+						nextPc = inst.<InstructionJumpTarget>argument(0,
 							InstructionJumpTarget.class).target();
 					break;
 					
@@ -2874,7 +2847,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.IFNONNULL:
 					if (frame.<SpringObject>popFromStack(
 						SpringObject.class) != SpringNullObject.NULL)
-						nextpc = inst.<InstructionJumpTarget>argument(0,
+						nextPc = inst.<InstructionJumpTarget>argument(0,
 							InstructionJumpTarget.class).target();
 					break;
 					
@@ -2884,7 +2857,7 @@ public final class SpringThreadWorker
 						SpringObject a = frame.<SpringObject>popFromStack(
 							SpringObject.class);
 						if (a == SpringNullObject.NULL)
-							nextpc = inst.<InstructionJumpTarget>argument(0,
+							nextPc = inst.<InstructionJumpTarget>argument(0,
 								InstructionJumpTarget.class).target();
 					}
 					break;
@@ -2913,7 +2886,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.ILOAD_2:
 				case InstructionIndex.ILOAD_3:
 					frame.loadToStack(Integer.class,
-						opid - InstructionIndex.ILOAD_0);
+						opId - InstructionIndex.ILOAD_0);
 					break;
 				
 					// Addly integer
@@ -3050,7 +3023,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.IRETURN:
 					this.__vmReturn(thread,
 						frame.<Integer>popFromStack(Integer.class));
-					nextpc = Integer.MIN_VALUE;
+					nextPc = Integer.MIN_VALUE;
 					break;
 				
 					// Shift left integer
@@ -3083,7 +3056,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.ISTORE_1:
 				case InstructionIndex.ISTORE_2:
 				case InstructionIndex.ISTORE_3:
-					frame.storeLocal(opid - InstructionIndex.ISTORE_0,
+					frame.storeLocal(opId - InstructionIndex.ISTORE_0,
 						frame.<Integer>popFromStack(Integer.class));
 					break;
 				
@@ -3169,7 +3142,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.LCONST_0:
 				case InstructionIndex.LCONST_1:
 					frame.pushToStack(Long.valueOf(
-						(opid - InstructionIndex.LCONST_0)));
+						(opId - InstructionIndex.LCONST_0)));
 					break;
 					
 					// Load from constant pool, push to the stack
@@ -3223,7 +3196,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.LLOAD_2:
 				case InstructionIndex.LLOAD_3:
 					frame.loadToStack(Long.class,
-						opid - InstructionIndex.LLOAD_0);
+						opId - InstructionIndex.LLOAD_0);
 					break;
 					
 					// Multiply long
@@ -3264,7 +3237,7 @@ public final class SpringThreadWorker
 					// Lookup in a jump table
 				case InstructionIndex.LOOKUPSWITCH:
 				case InstructionIndex.TABLESWITCH:
-					nextpc = inst.<IntMatchingJumpTable>argument(0,
+					nextPc = inst.<IntMatchingJumpTable>argument(0,
 						IntMatchingJumpTable.class).match(
 						frame.<Integer>popFromStack(Integer.class)).target();
 					break;
@@ -3282,7 +3255,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.LRETURN:
 					this.__vmReturn(thread,
 						frame.<Long>popFromStack(Long.class));
-					nextpc = Integer.MIN_VALUE;
+					nextPc = Integer.MIN_VALUE;
 					break;
 				
 					// Shift left long
@@ -3315,7 +3288,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.LSTORE_1:
 				case InstructionIndex.LSTORE_2:
 				case InstructionIndex.LSTORE_3:
-					frame.storeLocal(opid - InstructionIndex.LSTORE_0,
+					frame.storeLocal(opId - InstructionIndex.LSTORE_0,
 						frame.<Long>popFromStack(Long.class));
 					break;
 				
@@ -3499,7 +3472,7 @@ public final class SpringThreadWorker
 						
 						// Debug signal
 						if (jdwp != null && ssf.isDebugWatching(true))
-							try (JDWPValue jVal = jdwp.value())
+							try (JDWPHostValue jVal = jdwp.value())
 							{
 								jVal.set(
 									DebugViewObject.__normalizeNull(value));
@@ -3533,7 +3506,7 @@ public final class SpringThreadWorker
 						// Debug signal
 						if (jdwp != null &&
 							field[0].isDebugWatching(true))
-							try (JDWPValue jVal = jdwp.value())
+							try (JDWPHostValue jVal = jdwp.value())
 							{
 								jVal.set(
 									DebugViewObject.__normalizeNull(value));
@@ -3587,12 +3560,12 @@ public final class SpringThreadWorker
 		catch (ArithmeticException e)
 		{
 			// PC converts?
-			nextpc = this.__handleException(
+			nextPc = this.__handleException(
 				(SpringObject)this.asVMObject(new SpringArithmeticException(
 				e.getMessage())));
 			
 			// Do not set PC address?
-			if (nextpc < 0)
+			if (nextPc < 0)
 				return;
 		}
 		
@@ -3622,11 +3595,11 @@ public final class SpringThreadWorker
 			if (e instanceof SpringConvertableThrowable)
 			{
 				// PC converts?
-				nextpc = this.__handleException(
+				nextPc = this.__handleException(
 					(SpringObject)this.asVMObject(e));
 				
 				// Do not set PC address?
-				if (nextpc < 0)
+				if (nextPc < 0)
 					return;
 			}
 			
@@ -3660,8 +3633,8 @@ public final class SpringThreadWorker
 		
 		// Set implicit next PC address, if it has not been set or the next
 		// address was actually changed
-		if (nextpc != orignextpc || pc == frame.pc())
-			frame.setPc(nextpc);
+		if (nextPc != origNextPc || pc == frame.pc())
+			frame.setPc(nextPc);
 	}
 	
 	/**
@@ -3678,13 +3651,13 @@ public final class SpringThreadWorker
 		if (thread.noDebugSuspend)
 			return;
 		
-		JDWPController jdwp = this.machine.tasks.jdwpController;
+		JDWPHostController jdwp = this.machine.tasks.jdwpController;
 		
 		// This only returns while we are suspended, but if it returns
 		// early then we were interrupted which means we need to signal
 		// that to whatever is running
 		boolean interrupted = false;
-		JDWPThreadSuspension suspension = thread.debuggerSuspension;
+		JDWPHostThreadSuspension suspension = thread.debuggerSuspension;
 		while (suspension.await(jdwp, thread))
 		{
 			interrupted = true;
@@ -3706,7 +3679,7 @@ public final class SpringThreadWorker
 	 * @since 2018/09/19
 	 */
 	private void __vmInvokeInterface(Instruction __i, SpringThread __t,
-		SpringThread.Frame __f)
+		SpringThreadFrame __f)
 		throws NullPointerException
 	{
 		if (__i == null || __t == null || __f == null)
@@ -3765,7 +3738,7 @@ public final class SpringThreadWorker
 	 * @since 2018/09/15
 	 */
 	private void __vmInvokeSpecial(Instruction __i, SpringThread __t,
-		SpringThread.Frame __f)
+		SpringThreadFrame __f)
 		throws NullPointerException
 	{
 		if (__i == null || __t == null || __f == null)
@@ -3825,7 +3798,8 @@ public final class SpringThreadWorker
 		
 		/* {@squirreljme.error BK36 Cannot call private method that is not
 		in the same class. (The method reference; Our current class)} */
-		else if ((isPrivate || (isPackagePrivate && !isInit)) && !inSameClass)
+		else if ((isPrivate || (isPackagePrivate && !isInit)) &&
+			!inSameClass && !inSuper)
 			throw new SpringIncompatibleClassChangeException(
 				String.format("BK36 %s %s", ref, currentClass));
 		
@@ -3843,7 +3817,7 @@ public final class SpringThreadWorker
 	 * @since 2018/09/15
 	 */
 	private void __vmInvokeStatic(Instruction __i, SpringThread __t,
-		SpringThread.Frame __f)
+		SpringThreadFrame __f)
 		throws NullPointerException
 	{
 		if (__i == null || __t == null || __f == null)
@@ -3880,7 +3854,7 @@ public final class SpringThreadWorker
 				ref.memberName().toString(), ref.memberType().toString());
 			
 			// Current framer
-			SpringThread.Frame currentFrame = this.thread.currentFrame();
+			SpringThreadFrame currentFrame = this.thread.currentFrame();
 			
 			// Potential return value?
 			MethodDescriptor type = ref.memberType();
@@ -3934,11 +3908,11 @@ public final class SpringThreadWorker
 		
 		// Send signal after we enter to indicate that we just went into
 		// a method
-		JDWPController jdwp = this.machine.tasks.jdwpController;
+		JDWPHostController jdwp = this.machine.tasks.jdwpController;
 		if (jdwp != null)
 		{
 			// Signal that we went into a method
-			jdwp.signal(this.thread, EventKind.METHOD_ENTRY);
+			jdwp.signal(this.thread, JDWPEventKind.METHOD_ENTRY);
 			
 			// Debugger may have stopped here
 			this.__debugSuspension();
@@ -3955,7 +3929,7 @@ public final class SpringThreadWorker
 	 * @since 2018/09/16
 	 */
 	private void __vmInvokeVirtual(Instruction __i, SpringThread __t,
-		SpringThread.Frame __f)
+		SpringThreadFrame __f)
 		throws NullPointerException
 	{
 		if (__i == null || __t == null || __f == null)
@@ -4017,7 +3991,7 @@ public final class SpringThreadWorker
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/15
 	 */
-	private void __vmNew(Instruction __i, SpringThread.Frame __f)
+	private void __vmNew(Instruction __i, SpringThreadFrame __f)
 		throws NullPointerException
 	{
 		if (__i == null || __f == null)
@@ -4054,14 +4028,14 @@ public final class SpringThreadWorker
 			throw new NullPointerException("NARG");
 		
 		// Indicate exit with return value
-		JDWPController jdwp = this.machine.tasks.jdwpController;
+		JDWPHostController jdwp = this.machine.tasks.jdwpController;
 		if (jdwp != null)
 		{
 			// Signal that method exited
 			if (__value == null)
-				jdwp.signal(__thread, EventKind.METHOD_EXIT);
+				jdwp.signal(__thread, JDWPEventKind.METHOD_EXIT);
 			else
-				jdwp.signal(__thread, EventKind.METHOD_EXIT_WITH_RETURN_VALUE,
+				jdwp.signal(__thread, JDWPEventKind.METHOD_EXIT_WITH_RETURN_VALUE,
 					__value);
 			
 			// Debugger may have stopped here
@@ -4069,7 +4043,7 @@ public final class SpringThreadWorker
 		}
 		
 		// Pop our current frame
-		SpringThread.Frame old = __thread.popFrame();
+		SpringThreadFrame old = __thread.popFrame();
 		old.setPc(Integer.MIN_VALUE);
 			
 		// Verbose debug?
@@ -4079,7 +4053,7 @@ public final class SpringThreadWorker
 		// Push the value to the current frame
 		if (__value != null)
 		{
-			SpringThread.Frame cur = __thread.currentFrame();
+			SpringThreadFrame cur = __thread.currentFrame();
 			if (cur != null)
 				cur.pushToStack(__value);
 		}

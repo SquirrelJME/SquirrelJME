@@ -7,13 +7,23 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <stdlib.h>
+
 #include "squirreljme.h"
 
 // The class to forward to
 #define DEBUGSHELF_CLASSNAME "cc/squirreljme/emulator/EmulatedDebugShelf"
 
+#define DEBUGSHELF_BREAKPOINT_DESC "()V"
 #define DEBUGSHELF_POINTCLASS_DESC "(Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;)Ljava/lang/String;"
 #define DEBUGSHELF_TRACESTACK_DESC "()[Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;"
+
+JNIEXPORT void Impl_mle_DebugShelf_breakpoint(
+	JNIEnv* env, jclass classy)
+{
+	return forwardCallStaticVoid(env, DEBUGSHELF_CLASSNAME,
+		"breakpoint", DEBUGSHELF_BREAKPOINT_DESC);
+}
 
 JNIEXPORT jobjectArray JNICALL Impl_mle_DebugShelf_getThrowableTrace(
 	JNIEnv* env, jclass classy, jobject thrown)
@@ -51,6 +61,8 @@ JNIEXPORT void JNICALL Impl_mle_DebugShelf_verboseStop(
 
 static const JNINativeMethod mleDebugMethods[] =
 {
+	{"breakpoint", DEBUGSHELF_BREAKPOINT_DESC,
+		(void*)Impl_mle_DebugShelf_breakpoint},
 	{"getThrowableTrace", "(Ljava/lang/Throwable;)[Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;",
 		(void*)Impl_mle_DebugShelf_getThrowableTrace},
 	{"pointClass", DEBUGSHELF_POINTCLASS_DESC, (void*)Impl_mle_DebugShelf_pointClass},

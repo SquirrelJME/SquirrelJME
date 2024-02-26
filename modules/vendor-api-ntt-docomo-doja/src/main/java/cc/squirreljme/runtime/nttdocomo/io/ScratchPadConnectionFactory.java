@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.nttdocomo.io;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.util.StringUtils;
 import cc.squirreljme.runtime.gcf.CustomConnectionFactory;
 import java.io.IOException;
@@ -24,6 +25,7 @@ import javax.microedition.io.ConnectionOption;
  * @see ScratchPadConnection
  * @since 2021/11/30
  */
+@SquirrelJMEVendorApi
 public class ScratchPadConnectionFactory
 	implements CustomConnectionFactory
 {
@@ -33,6 +35,7 @@ public class ScratchPadConnectionFactory
 	 * @since 2021/11/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public Connection connect(String __part, int __mode, boolean __timeouts,
 		ConnectionOption<?>[] __opts)
 		throws IOException, NullPointerException
@@ -60,7 +63,8 @@ public class ScratchPadConnectionFactory
 			// No parameters to the URI?
 			int semi = __part.indexOf(';');
 			if (semi < 0)
-				wantPad = Integer.parseInt(__part.substring(3), 10);
+				wantPad = Integer.parseInt(__part.substring(3),
+					10);
 				
 				// Parameters are given
 			else
@@ -71,7 +75,8 @@ public class ScratchPadConnectionFactory
 				// Handle various parameters
 				String parms = __part.substring(semi + 1);
 				if (!parms.isEmpty())
-					for (String item : StringUtils.basicSplit(',', parms))
+					for (String item : StringUtils.basicSplit(',',
+						parms))
 					{
 						// {@squirreljme.error AH0d Missing equal sign in the
 						// parameter. (The URI part)}
@@ -81,8 +86,8 @@ public class ScratchPadConnectionFactory
 								"AH0d " + __part);
 						
 						// Parse the value
-						int val = Integer.parseInt(item.substring(eq + 1),
-							10);
+						int val = Integer.parseInt(item.substring(
+							eq + 1), 10);
 						
 						// And store it accordingly
 						switch (item.substring(0, eq))
@@ -145,10 +150,10 @@ public class ScratchPadConnectionFactory
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2021/11/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public String scheme()
 	{
 		return "scratchpad";

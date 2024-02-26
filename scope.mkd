@@ -49,7 +49,8 @@ These specifications are obsolete and are implemented by newer specifications.
  * **JSR30**/**JSR030** -- J2ME Connected, Limited Device Configuration.
    * _Implemented by newer JSR_.
    * CLDC 1.0.
- * **JSR37**/**JSR037** -- Mobile Information Device Profile for the J2ME Platform.
+ * **JSR37**/**JSR037** -- Mobile Information Device Profile for the J2ME 
+   Platform.
    * _Implemented by newer JSR_.
    * MIDP 1.0.
    * Contains the Limited Capability Device User Interface (LCDUI).
@@ -78,6 +79,23 @@ These specifications are obsolete and are implemented by newer specifications.
  * **JSR246** -- Device Management API
    * _Implemented by newer JSR_.
    * Included by Java ME 8.
+
+## Non-JSR APIs
+
+ * Danger HipTop
+ * Docomo DoJa
+ * Docomo Star
+ * JBlend
+ * JPhone
+ * LG MMPP
+ * Mascot Capsule 3D
+ * Nokia
+ * Samsung
+ * Siemens
+ * SKT
+ * SprintPCS
+ * WIPI
+ * Vodafone
 
 # Considering
 

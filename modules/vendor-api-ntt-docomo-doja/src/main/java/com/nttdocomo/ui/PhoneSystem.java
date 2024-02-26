@@ -37,6 +37,7 @@ public class PhoneSystem
 	public static final int MIN_VENDOR_ATTR = 64;
 	
 	@SuppressWarnings("FinalStaticMethod")
+	@Api
 	public static final void setAttribute(int __attr, int __value)
 	{
 		// Backlight control
@@ -51,7 +52,8 @@ public class PhoneSystem
 		}
 		
 		// Vibration
-		else if (__attr == VendorPhoneSystem.VIBRATE_ATTRIBUTE_F503I_SO503I || __attr == VendorPhoneSystem.VIBRATE_ATTRIBUTE_P503I)
+		else if (__attr == VendorPhoneSystem.VIBRATE_ATTRIBUTE_F503I_SO503I ||
+			__attr == VendorPhoneSystem.VIBRATE_ATTRIBUTE_P503I)
 		{
 			// Different phones have different means of turning on the shake
 			boolean isOn;

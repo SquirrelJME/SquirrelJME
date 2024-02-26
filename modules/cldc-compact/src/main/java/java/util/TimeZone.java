@@ -11,6 +11,7 @@ package java.util;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.time.UTCTimeZone;
 
 @Api
 public abstract class TimeZone
@@ -27,7 +28,6 @@ public abstract class TimeZone
 	@Api
 	public TimeZone()
 	{
-		throw Debugging.todo();
 	}
 	
 	@Api
@@ -112,19 +112,36 @@ public abstract class TimeZone
 		}
 	}
 	
+	/**
+	 * Returns the default time zone.
+	 *
+	 * @return The default timezone.
+	 * @since 2024/01/30
+	 */
 	@Api
 	public static TimeZone getDefault()
 	{
-		throw Debugging.todo();
+		// TODO
+		Debugging.todoNote("TimeZone.getDefault()");
+		
+		return new UTCTimeZone();
 	}
 	
+	/**
+	 * Returns the time zone for the given ID, if unknown this will return
+	 * the UTC timezone.
+	 *
+	 * @param __id The ID of the timezone to get.
+	 * @return The specified timezone or UTC.
+	 * @since 2024/01/30
+	 */
 	@Api
-	public static TimeZone getTimeZone(String __a)
+	public static TimeZone getTimeZone(String __id)
 	{
-		synchronized (TimeZone.class)
-		{
-			throw Debugging.todo();
-		}
+		// TODO
+		Debugging.todoNote("TimeZone.getTimeZone(%s)", __id);
+		
+		return new UTCTimeZone();
 	}
 	
 	@Api

@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.squirrelquarrel.lcdui;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.image.XPMReader;
 import java.io.IOException;
 import java.lang.ref.Reference;
@@ -155,8 +156,14 @@ public class MegaTileCacher
 		if (ref == null || null == (rv = ref.get()))
 			try
 			{
+				if (true)
+					throw Debugging.todo();
+				if (true)
+					throw new IOException();
+				/*
 				MegaTileCacher._TILE_CACHE.put(__t, new WeakReference<>(
-					(rv = new XPMReader(__t.imageStream()).parse())));
+					(rv = new XPMReader(__t.imageStream(), __factory).parse())));
+				 */
 			}
 			
 			/* {@squirreljme.error BE03 Failed to read the image data for the

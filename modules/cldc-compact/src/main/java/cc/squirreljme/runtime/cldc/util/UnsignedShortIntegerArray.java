@@ -16,7 +16,7 @@ package cc.squirreljme.runtime.cldc.util;
  * @since 2021/07/12
  */
 public final class UnsignedShortIntegerArray
-	implements IntegerArray
+	extends AbstractIntegerArray
 {
 	/** The backed array. */
 	protected final short[] array;

@@ -15,6 +15,7 @@ import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.runtime.cldc.debug.ErrorCode;
+import cc.squirreljme.vm.RawVMClassLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.springcoat.brackets.JarPackageObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
@@ -107,10 +108,30 @@ public enum MLEJarPackage
 		}
 	},
 	
+	/** {@link JarPackageShelf#libraryId(JarPackageBracket)}. */
+	LIBRARY_ID("libraryId:(Lcc/squirreljme/jvm/mle/brackets/" +
+		"JarPackageBracket;)I")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/12/18
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			return __thread.machine.suites.libraryId(
+				MLEJarPackage.__jarObject(__args[0]).library());
+		}
+	},
+	
 	/** {@link JarPackageShelf#libraryPath(JarPackageBracket)}. */ 
 	LIBRARY_PATH("libraryPath:(Lcc/squirreljme/jvm/mle/brackets/" +
 		"JarPackageBracket;)Ljava/lang/String;")
 	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/06/18
+		 */
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
@@ -257,28 +278,23 @@ public enum MLEJarPackage
 				__o + __l > __b.length)
 				throw new SpringMLECallError("Invalid parameters.");
 			
-			// Determine the path to the JAR
-			Path path = __jar.library().path();
-			if (path == null)
-				throw new SpringMLECallError(
-					"JAR is not physically backed.");
+			// Check to see if it is supported.
+			VMClassLibrary lib = __jar.library();
+			if (!(lib instanceof RawVMClassLibrary))
+				return -1;
 			
-			// Seek through and find the data
-			try (InputStream in = Files.newInputStream(path,
-				StandardOpenOption.READ))
+			// Otherwise request it
+			try
 			{
-				// Seek first, stop if EOF is hit
-				for (int at = 0; at < __jarOffset; at++)
-					if (in.read() < 0)
-						return -1;
-				
-				// Do a standard read here
-				return in.read(__b, __o, __l);
+				((RawVMClassLibrary)lib).rawData(__jarOffset,
+					__b, __o, __l);
+				return __l;
 			}
-			catch (IOException e)
+			catch (Throwable __t)
 			{
-				throw new SpringMLECallError(
-					"Could not raw read JAR.", e);
+				__t.printStackTrace();
+				
+				return -1;
 			}
 		}
 	},
@@ -299,20 +315,20 @@ public enum MLEJarPackage
 			
 			// Determine the path to the JAR
 			JarPackageObject jar = MLEJarPackage.__jarObject(__args[0]);
-			Path path = jar.library().path();
-			if (path == null)
+			
+			// Check to see if it is supported.
+			VMClassLibrary lib = jar.library();
+			if (!(lib instanceof RawVMClassLibrary))
 				return -1;
 			
-			// Use the file size directly
+			// Otherwise request it
 			try
 			{
-				return (int)Math.min(Integer.MAX_VALUE, Files.size(path));
+				return ((RawVMClassLibrary)lib).rawSize();
 			}
-			
-			// Size is not valid?
-			catch (IOException e)
+			catch (Throwable __t)
 			{
-				e.printStackTrace();
+				__t.printStackTrace();
 				
 				return -1;
 			}

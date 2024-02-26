@@ -289,8 +289,8 @@ public enum VMType
 							jvmArgs.add(String.format(
 								"-agentlib:jdwp=transport=dt_socket," +
 								"server=n," +
-								"address=%s:%d,suspend=y," +
-								"onuncaught=y", host, port));
+								"address=%s:%d,suspend=y",
+								host, port));
 					}
 				}
 			}
@@ -333,6 +333,17 @@ public enum VMType
 			throws IOException, NullPointerException
 		{
 			throw new RuntimeException(this.name() + " cannot be dumped.");
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/05/28
+		 */
+		@Override
+		public NativePortSupport[] hasNativePortSupport()
+		{
+			// Can be run in RatufaCoat
+			return new NativePortSupport[]{NativePortSupport.RATUFACOAT};
 		}
 		
 		/**
@@ -381,6 +392,144 @@ public enum VMType
 		}
 	},
 	
+	/** Nanocoat, a smaller simpler runtime. */
+	NANOCOAT("NanoCoat", "jar",
+		":emulators:nanocoat-vm")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/05/28
+		 */
+		@Override
+		public void dumpLibrary(VMBaseTask __task, boolean __isTest,
+			InputStream __in, OutputStream __out)
+			throws IOException, NullPointerException
+		{
+			throw new RuntimeException(this.name() + " cannot be dumped.");
+		}
+	
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/05/28
+		 */
+		@Override
+		public boolean hasEmulator()
+		{
+			// This can run on the emulator platform
+			return true;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/05/28
+		 */
+		@Override
+		public NativePortSupport[] hasNativePortSupport()
+		{
+			// Currently no native port support
+			return new NativePortSupport[]{};
+			
+			// Can be run in NanoCoat
+			/*return new NativePortSupport[]{NativePortSupport.NANOCOAT};*/
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/05/28
+		 */
+		@Override
+		public boolean isGoldTest()
+		{
+			return false;
+		}
+	
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/25
+		 */
+		@Override
+		public boolean isSingleSourceSetRom(BangletVariant __variant)
+		{
+			// NanoCoat is this special case
+			return true;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/05/28
+		 */
+		@Override
+		public void processLibrary(VMBaseTask __task, boolean __isTest,
+			InputStream __in, OutputStream __out)
+			throws IOException, NullPointerException
+		{
+			if (__in == null || __out == null)
+				throw new NullPointerException("NARG");
+			
+			// Is just pure copy of the JAR
+			VMHelpers.copy(__in, __out);
+			
+			/*
+			// Determine checksum sum of the library, used to detect changes
+			// in the ROM for example with checkpointing/save states
+			// This is not used for security purposes, just to make sure
+			// that a resume does not completely break the VM
+			byte[] data = VMHelpers.readAll(__in);
+			String hex;
+			try
+			{
+				hex = Base64.getEncoder().encodeToString(
+					MessageDigest.getInstance("sha-1").digest(data));
+			}
+			catch (NoSuchAlgorithmException ignored)
+			{
+				hex = Integer.toHexString(Arrays.hashCode(data));
+			}
+			
+			// Run compilation task
+			try (InputStream in = new ByteArrayInputStream(data))
+			{
+				this.__aotCommand(__task, in, __out,
+					Arrays.asList("-XoriginalLibHash:" + hex),
+					"compile", Collections.emptyList());
+			}
+			*/
+		}
+	
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/12/04
+		 */
+		@Override
+		public void processRom(VMBaseTask __task, BangletVariant __variant,
+			OutputStream __out, RomBuildParameters __build, List<Path> __libs)
+			throws IOException, NullPointerException
+		{
+			/* Just do what SpringCoat does... */
+			VMType.SPRINGCOAT.processRom(__task, __variant, __out,
+				__build, __libs);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/05/28
+		 */
+		@Override
+		public void spawnJvmArguments(VMBaseTask __task,
+			boolean __debugEligible,
+			JavaExecSpecFiller __execSpec, String __mainClass,
+			String __commonName, Map<String, String> __sysProps,
+			Path[] __libPath, Path[] __classPath, String... __args)
+			throws NullPointerException
+		{
+			// Use a common handler to execute the VM as the VMs all have
+			// the same entry point handlers and otherwise
+			this.spawnVmViaFactory(__task, __debugEligible, __execSpec,
+				__mainClass, __commonName, __sysProps, __libPath,
+				__classPath, __args);
+		}
+	},
+	
 	/* End. */
 	;
 	
@@ -410,7 +559,8 @@ public enum VMType
 		String __emulatorProject)
 		throws NullPointerException
 	{
-		this(__properName, __extension, new String[]{__emulatorProject});
+		this(__properName, __extension, (__emulatorProject == null ?
+			new String[0] : new String[]{__emulatorProject}));
 	}
 	
 	/**
@@ -479,6 +629,16 @@ public enum VMType
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2023/05/28
+	 */
+	@Override
+	public boolean hasEmulator()
+	{
+		return true;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2022/12/23
 	 */
 	@Override
@@ -489,13 +649,35 @@ public enum VMType
 	
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @since 2023/05/28
+	 */
+	@Override
+	public NativePortSupport[] hasNativePortSupport()
+	{
+		// Not supported by default
+		return new NativePortSupport[0];
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2020/08/23
-	 * @param __variant
 	 */
 	@Override
 	public final boolean hasRom(BangletVariant __variant)
 	{
 		return this != VMType.HOSTED;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/07/25
+	 */
+	@Override
+	public boolean isSingleSourceSetRom(BangletVariant __variant)
+	{
+		// False by default
+		return false;
 	}
 	
 	/**
@@ -605,6 +787,12 @@ public enum VMType
 		for (int i = 0, n = __libs.size(); i < n; i++)
 			libIndex.put(__libs.get(i), i);
 		
+		// Is this a single source set ROM?
+		boolean isSingleSourceSet = this.isSingleSourceSetRom(__variant);
+		boolean bootLoaderEnabled = !isSingleSourceSet ||
+			(isSingleSourceSet &&
+				SourceSet.MAIN_SOURCE_SET_NAME.equals(__task.getSourceSet()));
+		
 		// Setup arguments for packing the ROM
 		List<String> args = new ArrayList<>();
 		
@@ -613,27 +801,32 @@ public enum VMType
 			args.add("-XbootLoaderMainClass:" + __build.bootLoaderMainClass);
 		
 		// Boot loader class path
-		if (__build.bootLoaderClassPath != null)
-			args.add("-XbootLoaderClassPath:" +
-				VMType.__pathIndexList(libIndex, __build.bootLoaderClassPath));
-			
-		// Launcher main class
-		if (__build.launcherMainClass != null)
-			args.add("-XlauncherMainClass:" + __build.launcherMainClass);
-		
-		// Launcher arguments, these are a bit special
-		if (__build.launcherArgs != null)
+		if (bootLoaderEnabled)
 		{
-			String[] launcherArgs = __build.launcherArgs;
-			for (int i = 0, n = launcherArgs.length; i < n; i++)
-				args.add(String.format("-XlauncherArgs:%d:%s",
-					i, launcherArgs[i]));
+			if (__build.bootLoaderClassPath != null)
+				args.add("-XbootLoaderClassPath:" +
+					VMType.__pathIndexList(libIndex,
+					__build.bootLoaderClassPath));
+			
+			// Launcher main class
+			if (__build.launcherMainClass != null)
+				args.add("-XlauncherMainClass:" + __build.launcherMainClass);
+			
+			// Launcher arguments, these are a bit special
+			if (__build.launcherArgs != null)
+			{
+				String[] launcherArgs = __build.launcherArgs;
+				for (int i = 0, n = launcherArgs.length; i < n; i++)
+					args.add(String.format("-XlauncherArgs:%d:%s", i,
+						launcherArgs[i]));
+			}
+			
+			// Launcher class path
+			if (__build.launcherClassPath != null)
+				args.add("-XlauncherClassPath:" +
+					VMType.__pathIndexList(libIndex,
+					__build.launcherClassPath));
 		}
-		
-		// Launcher class path
-		if (__build.launcherClassPath != null)
-			args.add("-XlauncherClassPath:" +
-				VMType.__pathIndexList(libIndex, __build.launcherClassPath));
 		
 		// Put down paths to libraries to link together
 		for (Path path : __libs)
@@ -641,7 +834,7 @@ public enum VMType
 			
 		// Run the specified command
 		this.__aotCommand(__task, null, __out,
-			"rom", args);
+			null, "rom", args);
 	}
 	
 	/**
@@ -794,13 +987,14 @@ public enum VMType
 	 * @param __task The task being run for.
 	 * @param __in The input source (optional).
 	 * @param __out The output source (optional).
+	 * @param __preArgs Pre command arguments.
 	 * @param __command The name of the ROM.
 	 * @param __args The arguments for the AOT command.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/05/16
 	 */
 	void __aotCommand(VMBaseTask __task, InputStream __in, OutputStream __out,
-		String __command, Iterable<String> __args)
+		Iterable<String> __preArgs, String __command, Iterable<String> __args)
 		throws NullPointerException
 	{
 		if (__task == null || __command == null)
@@ -823,6 +1017,20 @@ public enum VMType
 		// The name of this JAR
 		args.add("-Xname:" + __task.getProject().getName());
 		
+		// The current clutter level
+		args.add("-XclutterLevel:" +
+			__task.getClassifier().getTargetClassifier()
+				.getClutterLevel());
+		
+		// Add source set
+		args.add("-XsourceSet:" +
+			__task.getSourceSet());
+		
+		// Arguments before the command
+		if (__preArgs != null)
+			for (String arg : __preArgs)
+				args.add(arg);
+		
 		// Our run command and any additional arguments
 		args.add(__command);
 		if (__args != null)
@@ -842,7 +1050,7 @@ public enum VMType
 					classPath,
 					args.toArray(new String[args.size()]));
 				
-				// Use the error stream directory
+				// Use the error stream directly
 				__spec.setErrorOutput(new GuardedOutputStream(System.err));
 				
 				// Use the given input

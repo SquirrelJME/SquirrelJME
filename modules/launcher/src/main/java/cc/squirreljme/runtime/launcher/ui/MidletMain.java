@@ -12,6 +12,7 @@ package cc.squirreljme.runtime.launcher.ui;
 import cc.squirreljme.jvm.launch.Application;
 import cc.squirreljme.jvm.launch.SuiteScanListener;
 import cc.squirreljme.jvm.launch.SuiteScanner;
+import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.brackets.TaskBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
@@ -153,7 +154,7 @@ public class MidletMain
 			}
 			
 			// Scan all the available suites for launching
-			SuiteScanner.scanSuites(handler);
+			new SuiteScanner(true).scanSuites(handler);
 			
 			// All done so, return the title back
 			programList.setTitle("SquirrelJME Launcher");

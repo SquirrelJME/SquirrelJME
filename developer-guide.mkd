@@ -185,7 +185,20 @@ Instructions for specific debuggers:
  * [Eclipse](
    https://www.eclipse.org/community/eclipse_newsletter/2017/june/article1.php)
 
-## IntelliJ Custom File Type for Jasmin
+# IntelliJ
+
+SquirrelJME uses IntelliJ IDEA Ultimate which is highly recommended for
+development.
+
+## Recommended Plugins
+
+The following plugins are recommended:
+
+ * _EmbeddedProjectJdk_ -- Allows for custom defined JDKs, which SquirrelJME
+   is its own JDK.
+   * <https://plugins.jetbrains.com/plugin/10480-embeddedprojectjdk>
+
+## Custom File Type for Jasmin
 
 IntelliJ supports custom file type definitions, the following is for
 Jasmin so that it has much better syntax highlighting.

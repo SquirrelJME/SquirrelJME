@@ -27,7 +27,6 @@ idea
 		excludeDirs += file(".idea")
 		excludeDirs += file(".vscode")
 		excludeDirs += file(".settings")
-		excludeDirs += file("assets")
 		excludeDirs += file("config")
 		excludeDirs += file("gradle")
 		excludeDirs += file("utils-dev")
@@ -120,4 +119,9 @@ allprojects {
 		eclipseJdt.finalizedBy(eclipseFixBuild)
 		cleanEclipseJdt.finalizedBy(cleanEclipseFixBuild)
 	}
+}
+
+// Generic root clean task, does nothing by default and just depends on
+// others
+tasks.register('clean') {
 }

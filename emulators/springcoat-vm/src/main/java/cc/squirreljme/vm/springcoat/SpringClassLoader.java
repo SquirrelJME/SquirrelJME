@@ -9,6 +9,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassFormatException;
@@ -82,6 +83,12 @@ public final class SpringClassLoader
 	public final VMClassLibrary bootLibrary()
 	{
 		VMClassLibrary[] classpath = this._classpath;
+		
+		if (classpath.length == 0)
+			throw new VMException("There is no classpath.");
+		else if (classpath.length == 1)
+			return classpath[0];
+		
 		return classpath[classpath.length - 1];
 	}
 	

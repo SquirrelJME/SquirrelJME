@@ -1,3 +1,5 @@
+import cc.squirreljme.plugin.tasks.MimeDecodeResourcesTask
+
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.StandardOpenOption
@@ -19,8 +21,11 @@ description = "This library provides the base support for testing and " +
 // so that the C compiler is found and things link... We technically are not
 // on x86_64 but it really does not matter anyway as long as it passes
 // -m64 correctly when on Android.
-if (project.hasProperty("squirreljmeTermuxCompiler") &&
-	project.squirreljmeTermuxCompiler) {
+// The same is the case for other architectures as well
+if ((project.hasProperty("squirreljmeTermuxCompiler") &&
+		project.squirreljmeTermuxCompiler) ||
+	(project.hasProperty("squirreljmeClaimX8664") &&
+		project.squirreljmeClaimX8664)) {
 	library {
 			targetMachines.add(machines.linux.x86_64)
 	}
@@ -48,6 +53,7 @@ dependencies
 	compileClasspath project(":modules:tac")
 	compileClasspath project(":modules:zip")
 	compileClasspath project(":modules:debug-jdwp")
+	compileClasspath project(":modules:debug-jdwp-vm-host")
 
 	// And for run-time to be able to be ran
 	runtimeClasspath project(":modules:cldc-compact")
@@ -56,7 +62,16 @@ dependencies
 	runtimeClasspath project(":modules:tac")
 	runtimeClasspath project(":modules:zip")
 	runtimeClasspath project(":modules:debug-jdwp")
+	runtimeClasspath project(":modules:debug-jdwp-vm-host")
 }
+
+tasks.register("mimeDecode", MimeDecodeResourcesTask.class,
+	"main",
+	tasks.named("processResources").get(),
+	tasks.named("clean").get())
+
+processResources.dependsOn("mimeDecode")
+jar.dependsOn("mimeDecode")
 
 // We need the native library in the JAR before we can properly use it
 // But we can compile the Java code just fine without it

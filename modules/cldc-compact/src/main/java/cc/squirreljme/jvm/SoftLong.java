@@ -58,6 +58,23 @@ public final class SoftLong
 	}
 	
 	/**
+	 * Adds two values.
+	 *
+	 * @param __a A.
+	 * @param __b B.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static long add(long __a, long __b)
+	{
+		return SoftLong.add(MathShelf.longUnpackLow(__a),
+			MathShelf.longUnpackHigh(__a),
+			MathShelf.longUnpackLow(__b),
+			MathShelf.longUnpackHigh(__b));
+	}
+	
+	/**
 	 * Ands two values.
 	 *
 	 * @param __al A low.
@@ -71,6 +88,23 @@ public final class SoftLong
 	public static long and(int __al, int __ah, int __bl, int __bh)
 	{
 		return MathShelf.longPack(__al & __bl, __ah & __bh);
+	}
+	
+	/**
+	 * Ands two values.
+	 *
+	 * @param __a A.
+	 * @param __b B.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static long and(long __a, long __b)
+	{
+		return SoftLong.add(MathShelf.longUnpackLow(__a),
+			MathShelf.longUnpackHigh(__a),
+			MathShelf.longUnpackLow(__b),
+			MathShelf.longUnpackHigh(__b));
 	}
 	
 	/**
@@ -103,6 +137,23 @@ public final class SoftLong
 	}
 	
 	/**
+	 * Compares two values.
+	 *
+	 * @param __a A.
+	 * @param __b B.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static int cmp(long __a, long __b)
+	{
+		return SoftLong.cmp(MathShelf.longUnpackLow(__a),
+			MathShelf.longUnpackHigh(__a),
+			MathShelf.longUnpackLow(__b),
+			MathShelf.longUnpackHigh(__b));
+	}
+	
+	/**
 	 * Divides two values.
 	 *
 	 * @param __al A low.
@@ -120,6 +171,23 @@ public final class SoftLong
 			throw new ArithmeticException();
 		
 		return SoftLong.__div(false, __al, __ah, __bl, __bh);
+	}
+	
+	/**
+	 * Divides two values.
+	 *
+	 * @param __a A.
+	 * @param __b B.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static long div(long __a, long __b)
+	{
+		return SoftLong.div(MathShelf.longUnpackLow(__a),
+			MathShelf.longUnpackHigh(__a),
+			MathShelf.longUnpackLow(__b),
+			MathShelf.longUnpackHigh(__b));
 	}
 	
 	/**
@@ -159,6 +227,23 @@ public final class SoftLong
 	}
 	
 	/**
+	 * Multiplies two long values.
+	 *
+	 * @param __a A.
+	 * @param __b B.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static long mul(long __a, long __b)
+	{
+		return SoftLong.mul(MathShelf.longUnpackLow(__a),
+			MathShelf.longUnpackHigh(__a),
+			MathShelf.longUnpackLow(__b),
+			MathShelf.longUnpackHigh(__b));
+	}
+	
+	/**
 	 * Negates a value.
 	 *
 	 * @param __al A low.
@@ -180,6 +265,20 @@ public final class SoftLong
 	}
 	
 	/**
+	 * Negates a value.
+	 *
+	 * @param __a A.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static long neg(long __a)
+	{
+		return SoftLong.mul(MathShelf.longUnpackLow(__a),
+			MathShelf.longUnpackHigh(__a));
+	}
+	
+	/**
 	 * Ors a value.
 	 *
 	 * @param __al A low.
@@ -193,6 +292,23 @@ public final class SoftLong
 	public static long or(int __al, int __ah, int __bl, int __bh)
 	{
 		return MathShelf.longPack(__al | __bl, __ah | __bh);
+	}
+	
+	/**
+	 * Ors a value.
+	 *
+	 * @param __a A.
+	 * @param __b B.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static long or(long __a, long __b)
+	{
+		return SoftLong.or(MathShelf.longUnpackLow(__a),
+			MathShelf.longUnpackHigh(__a),
+			MathShelf.longUnpackLow(__b),
+			MathShelf.longUnpackHigh(__b));
 	}
 	
 	/**
@@ -213,6 +329,23 @@ public final class SoftLong
 			throw new ArithmeticException();
 		
 		return SoftLong.__div(true, __al, __ah, __bl, __bh);
+	}
+	
+	/**
+	 * Remainders a value.
+	 *
+	 * @param __a A.
+	 * @param __b B.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static long rem(long __a, long __b)
+	{
+		return SoftLong.rem(MathShelf.longUnpackLow(__a),
+			MathShelf.longUnpackHigh(__a),
+			MathShelf.longUnpackLow(__b),
+			MathShelf.longUnpackHigh(__b));
 	}
 	
 	/**
@@ -244,6 +377,21 @@ public final class SoftLong
 	}
 	
 	/**
+	 * Shifts value left by bits.
+	 *
+	 * @param __a A.
+	 * @param __s Shift amount.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static long shl(long __a, int __s)
+	{
+		return SoftLong.shl(MathShelf.longUnpackLow(__a),
+			MathShelf.longUnpackHigh(__a), __s);
+	}
+	
+	/**
 	 * Shifts value right by bits.
 	 *
 	 * @param __al A low.
@@ -270,6 +418,21 @@ public final class SoftLong
 		// Merge of bits (shift in range of 1-31)
 		return MathShelf.longPack((__ah << (32 - __s)) | (__al >>> __s),
 			(__ah >> __s));
+	}
+	
+	/**
+	 * Shifts value right by bits.
+	 *
+	 * @param __a A.
+	 * @param __s Shift amount.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static long shr(long __a, int __s)
+	{
+		return SoftLong.shr(MathShelf.longUnpackLow(__a),
+			MathShelf.longUnpackHigh(__a), __s);
 	}
 	
 	/**
@@ -306,6 +469,23 @@ public final class SoftLong
 	}
 	
 	/**
+	 * Subtracts values.
+	 *
+	 * @param __a A.
+	 * @param __b B.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static long sub(long __a, long __b)
+	{
+		return SoftLong.sub(MathShelf.longUnpackLow(__a),
+			MathShelf.longUnpackHigh(__a),
+			MathShelf.longUnpackLow(__b),
+			MathShelf.longUnpackHigh(__b));
+	}
+	
+	/**
 	 * Converts to double.
 	 *
 	 * @param __al Low value.
@@ -317,6 +497,20 @@ public final class SoftLong
 	public static double toDouble(int __al, int __ah)
 	{
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Converts to double.
+	 *
+	 * @param __a A value.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static double toDouble(long __a)
+	{
+		return SoftLong.toDouble(MathShelf.longUnpackLow(__a),
+			MathShelf.longUnpackHigh(__a));
 	}
 	
 	/**
@@ -334,6 +528,20 @@ public final class SoftLong
 	}
 	
 	/**
+	 * Converts to float.
+	 *
+	 * @param __a A value.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static float toFloat(long __a)
+	{
+		return SoftLong.toFloat(MathShelf.longUnpackLow(__a),
+			MathShelf.longUnpackHigh(__a));
+	}
+	
+	/**
 	 * Converts to integer.
 	 *
 	 * @param __al A low.
@@ -346,6 +554,20 @@ public final class SoftLong
 	{
 		// Just return the low order bits
 		return __al;
+	}
+	
+	/**
+	 * Converts to integer.
+	 *
+	 * @param __a A value.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static int toInteger(long __a)
+	{
+		return SoftLong.toInteger(MathShelf.longUnpackLow(__a),
+			MathShelf.longUnpackHigh(__a));
 	}
 	
 	/**
@@ -377,7 +599,22 @@ public final class SoftLong
 	}
 	
 	/**
-	 * Xors two values.
+	 * Shifts value bits right unsigned.
+	 *
+	 * @param __a A.
+	 * @param __s Shift amount.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static long ushr(long __a, int __s)
+	{
+		return SoftLong.ushr(MathShelf.longUnpackLow(__a),
+			MathShelf.longUnpackHigh(__a), __s);
+	}
+	
+	/**
+	 * Exclusive ORs two values.
 	 *
 	 * @param __al A low.
 	 * @param __ah A high.
@@ -390,6 +627,23 @@ public final class SoftLong
 	public static long xor(int __al, int __ah, int __bl, int __bh)
 	{
 		return MathShelf.longPack(__al ^ __bl, __ah ^ __bh);
+	}
+	
+	/**
+	 * Exclusive ORs two values.
+	 *
+	 * @param __a A.
+	 * @param __b B.
+	 * @return The result.
+	 * @since 2023/08/02
+	 */
+	@SquirrelJMEVendorApi
+	public static long xor(long __a, long __b)
+	{
+		return SoftLong.xor(MathShelf.longUnpackLow(__a),
+			MathShelf.longUnpackHigh(__a),
+			MathShelf.longUnpackLow(__b),
+			MathShelf.longUnpackHigh(__b));
 	}
 	
 	/**

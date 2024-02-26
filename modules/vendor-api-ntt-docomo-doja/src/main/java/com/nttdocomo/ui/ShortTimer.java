@@ -9,6 +9,7 @@
 
 package com.nttdocomo.ui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import com.nttdocomo.util.TimeKeeper;
 import com.nttdocomo.util.Timer;
 import com.nttdocomo.util.TimerListener;
@@ -24,6 +25,7 @@ import java.util.Map;
  * 
  * @since 2022/10/10
  */
+@Api
 public final class ShortTimer
 	implements TimeKeeper
 {
@@ -69,6 +71,7 @@ public final class ShortTimer
 	 */
 	@SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
 	@Override
+	@Api
 	public void dispose()
 	{
 		// Only dispose the timer once
@@ -100,6 +103,7 @@ public final class ShortTimer
 	 * @since 2022/10/10
 	 */
 	@Override
+	@Api
 	public int getMinTimeInterval()
 	{
 		return this._timer.getMinTimeInterval();
@@ -110,6 +114,7 @@ public final class ShortTimer
 	 * @since 2022/10/10
 	 */
 	@Override
+	@Api
 	public int getResolution()
 	{
 		return this._timer.getResolution();
@@ -120,6 +125,7 @@ public final class ShortTimer
 	 * @since 2022/10/10
 	 */
 	@Override
+	@Api
 	public void start()
 	{
 		// Start internal timer
@@ -131,6 +137,7 @@ public final class ShortTimer
 	 * @since 2022/10/10
 	 */
 	@Override
+	@Api
 	public void stop()
 	{
 		// Stop internal timer
@@ -156,6 +163,7 @@ public final class ShortTimer
 	 * @since 2022/10/10
 	 */
 	@SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
+	@Api
 	public static ShortTimer getShortTimer(Canvas __canvas, int __id,
 		int __interval, boolean __repeat)
 		throws IllegalArgumentException, NullPointerException, UIException

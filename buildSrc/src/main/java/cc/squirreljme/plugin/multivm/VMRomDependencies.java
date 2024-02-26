@@ -106,19 +106,32 @@ public class VMRomDependencies
 		if (__task == null || __classifier == null || __result == null)
 			throw new NullPointerException("NARG");
 		
-		// If we are not on the main source set, we need to include everything
-		// the main source set has. For tests for example, we need the main
-		// libraries to even test them properly.
-		if (!__classifier.isMainSourceSet())
-			VMRomDependencies.__libraries(__task,
-				__classifier.withSourceSet(SourceSet.MAIN_SOURCE_SET_NAME),
-				__result);
+		// If this is a single source set ROM, then the dependencies act a
+		// bit differently
+		boolean isSingleSourceSet = __classifier.getVmType()
+			.isSingleSourceSetRom(__classifier.getBangletVariant());
 		
-		// If we are using tests, then we need to include all the test
-		// fixtures as well
-		if (__classifier.isTestSourceSet())
-			VMRomDependencies.__libraries(__task, __classifier.withSourceSet(
-				VMHelpers.TEST_FIXTURES_SOURCE_SET_NAME), __result);
+		// Our ROM is only in our source set, so we do not include the
+		// libraries which are part of the main or other source set at all
+		// The build should go a bit faster for this as it is not waiting
+		// for something to happen
+		if (!isSingleSourceSet)
+		{
+			// If we are not on the main source set, we need to include
+			// everything the main source set has. For tests for example, we
+			// need the main libraries to even test them properly.
+			if (!__classifier.isMainSourceSet())
+				VMRomDependencies.__libraries(__task,
+					__classifier.withSourceSet(SourceSet.MAIN_SOURCE_SET_NAME),
+					__result);
+			
+			// If we are using tests, then we need to include all the test
+			// fixtures as well
+			if (__classifier.isTestSourceSet())
+				VMRomDependencies.__libraries(__task,
+					__classifier.withSourceSet(
+						VMHelpers.TEST_FIXTURES_SOURCE_SET_NAME), __result);
+		}
 		
 		// Go through all projects and map dependencies
 		for (Project project : __task.getProject().getRootProject()

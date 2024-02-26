@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.lcdui.image;
 
+import cc.squirreljme.jvm.mle.callbacks.NativeImageLoadCallback;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import java.io.ByteArrayInputStream;
@@ -16,7 +17,6 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
-import javax.microedition.lcdui.Image;
 import net.multiphasicapps.io.ByteDeque;
 import net.multiphasicapps.io.CRC32Calculator;
 import net.multiphasicapps.io.ChecksumInputStream;
@@ -35,9 +35,16 @@ import net.multiphasicapps.io.ZLibDecompressor;
  * @since 2017/02/28
  */
 public class PNGReader
+	implements ImageReader
 {
 	/** The input source. */
 	protected final DataInputStream in;
+	
+	/** The image loader to use. */
+	protected final NativeImageLoadCallback loader;
+	
+	/** Are indexed pixels desired? */
+	private boolean _wantIndexed;
 	
 	/** Image width. */
 	private int _width;
@@ -82,18 +89,20 @@ public class PNGReader
 	 * Initializes the PNG parser.
 	 *
 	 * @param __in The input stream.
+	 * @param __loader The loader to use.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/28
 	 */
-	public PNGReader(InputStream __in)
+	public PNGReader(InputStream __in, NativeImageLoadCallback __loader)
 		throws NullPointerException
 	{
 		// Check
-		if (__in == null)
+		if (__in == null || __loader == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.in = new DataInputStream(__in);
+		this.loader = __loader;
 	}
 	
 	/**
@@ -103,10 +112,11 @@ public class PNGReader
 	 * @throws IOException On read errors.
 	 * @since 2017/02/28
 	 */
-	public Image parse()
+	public void parse()
 		throws IOException
 	{
 		DataInputStream in = this.in;
+		NativeImageLoadCallback loader = this.loader;
 		
 		/* {@squirreljme.error EB0t Illegal PNG magic number.} */
 		if (in.readUnsignedByte() != 137 ||
@@ -267,8 +277,10 @@ public class PNGReader
 		}
 		
 		// Create image
-		return Image.createRGBImage(argb, this._width, this._height,
-			this._hasalpha);
+		loader.initialize(this._width, this._height,
+			false, false);
+		loader.addImage(argb, 0, argb.length,
+			0, this._hasalpha);
 	}
 	
 	/**
@@ -529,6 +541,10 @@ public class PNGReader
 			// Fill in color
 			palette[i] = (r << 16) | (g << 8) | b;
 		}
+		
+		// Notify that a palette was set
+		this._wantIndexed =
+			this.loader.setPalette(palette, 0, maxColors, true, -1);
 	}
 	
 	/**
@@ -548,14 +564,17 @@ public class PNGReader
 			
 		int[] argb = this._argb;
 		int[] palette = this._palette;
-		int width = this._width,
-			height = this._height,
-			limit = width * height,
-			bitdepth = this._bitDepth,
-			bitmask = (1 << bitdepth) - 1,
-			numpals = (palette != null ? palette.length : 0),
-			hishift = (8 - bitdepth),
-			himask = bitmask << hishift;
+		int width = this._width;
+		int height = this._height;
+		int limit = width * height;
+		int bitdepth = this._bitDepth;
+		int bitmask = (1 << bitdepth) - 1;
+		int numpals = (palette != null ? palette.length : 0);
+		int hishift = (8 - bitdepth);
+		int himask = bitmask << hishift;
+		
+		// Do not translate paletted colors, get their raw index values?
+		boolean wantIndexed = this._wantIndexed;
 		
 		// Read of multiple bits
 		for (int o = 0;;)
@@ -567,7 +586,14 @@ public class PNGReader
 			
 			// Handle each bit
 			for (int b = 0; b < 8 && o < limit; b += bitdepth, v <<= bitdepth)
-				argb[o++] = palette[((v & himask) >>> hishift) % numpals];
+			{
+				int index = ((v & himask) >>> hishift) % numpals;
+				
+				if (wantIndexed)
+					argb[o++] = index;
+				else
+					argb[o++] = palette[index];
+			}
 		}
 	}
 	

@@ -150,6 +150,9 @@ public final class SpringMachine
 	/** The stored call trace. */
 	private CallTraceStorage _storedTrace;
 	
+	/** Global trace flags. */
+	volatile int _globalTrace;
+	
 	/**
 	 * Initializes the virtual machine.
 	 *
@@ -653,6 +656,19 @@ public final class SpringMachine
 		{
 			this._exitcode = __exitCode;
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/01/14
+	 */
+	@Override
+	public void setTraceBits(boolean __or, int __bits)
+	{
+		if (__or)
+			this._globalTrace |= __bits;
+		else
+			this._globalTrace = __bits;
 	}
 	
 	/**

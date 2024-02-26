@@ -11,6 +11,7 @@ package com.nttdocomo.ui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.nttdocomo.ui.EightBitImageStore;
 import com.nttdocomo.opt.ui.Graphics2;
 
 /**
@@ -186,6 +187,7 @@ public class Graphics
 	 * indicate clockwise direction while positive values are counterclockwise.
 	 * @since 2022/10/07
 	 */
+	@Api
 	public void drawArc(int __x, int __y, int __w, int __h,
 		int __startAngle, int __arcAngle)
 	{
@@ -210,6 +212,7 @@ public class Graphics
 			__i.getWidth(), __i.getHeight());
 	}
 	
+	@Api
 	public void drawImage(Image __i, int __dx, int __dy, int __sx, int __sy,
 		int __w, int __h)
 		throws IllegalArgumentException, NullPointerException, UIException
@@ -219,16 +222,49 @@ public class Graphics
 		if (__w < 0 || __h < 0)
 			throw new IllegalArgumentException("ILLA");
 		
-		// What can even be done here?
-		if (!(__i instanceof __MIDPImage__))
-			throw new UIException(UIException.UNSUPPORTED_FORMAT);
+		// Native 32-bit MIDP Image?
+		if (__i instanceof __MIDPImage__)
+		{
+			// Forward base image
+			__MIDPImage__ midpImage = (__MIDPImage__)__i;
+			this._graphics.drawRegion(midpImage.__midpImage(), __sx, __sy,
+				__w, __h, 0, __dx, __dy,
+				javax.microedition.lcdui.Graphics.TOP |
+				javax.microedition.lcdui.Graphics.LEFT);
+			
+			// Stop
+			return;
+		}
 		
-		// Forward base image
-		__MIDPImage__ midpImage = (__MIDPImage__)__i;
-		this._graphics.drawRegion(midpImage.__midpImage(), __sx, __sy,
-			__w, __h, 0, __dx, __dy,
-			javax.microedition.lcdui.Graphics.TOP |
-			javax.microedition.lcdui.Graphics.LEFT);
+		// A 256 color image
+		else if (__i instanceof __8BitImage__)
+		{
+			// Get the actual image to be drawn
+			__8BitImage__ bitImage = (__8BitImage__)__i;
+			EightBitImageStore store = bitImage._store;
+			if (store == null)
+				throw new UIException(UIException.ILLEGAL_STATE);
+			
+			// Setup temporary RGB buffer
+			int a = __w * __h;
+			int[] rgb = new int[a];
+			
+			// Read in RGB data
+			Palette palette = bitImage.getPalette();
+			int transDx = bitImage.getTransparentIndex();
+			store.getRGB(rgb, 0, __w, palette, __sx, __sy, __w, __h,
+				transDx);
+			
+			// Forward to RGB draw
+			this._graphics.drawRGB(rgb, 0, __w, __dx, __dy, __w, __h,
+				bitImage.__hasAlpha() || transDx >= 0);
+			
+			// Stop
+			return;
+		}
+		
+		// Not supported at all
+		throw new UIException(UIException.UNSUPPORTED_FORMAT);
 	}
 	
 	@Api
@@ -290,6 +326,7 @@ public class Graphics
 	 * @see #drawArc(int, int, int, int, int, int)
 	 * @since 2022/10/07
 	 */
+	@Api
 	public void fillArc(int __x, int __y, int __w, int __h,
 		int __startAngle, int __arcAngle)
 	{
@@ -334,6 +371,7 @@ public class Graphics
 	 * @param __h The height.
 	 * @since 2022/10/07
 	 */
+	@Api
 	public void setClip(int __x, int __y, int __w, int __h)
 	{
 		this._graphics.setClip(__x, __y, __w, __h);
@@ -393,6 +431,7 @@ public class Graphics
 	}
 	
 	@SuppressWarnings("MagicNumber")
+	@Api
 	public static int getColorOfName(int __name)
 		throws IllegalArgumentException
 	{
@@ -453,6 +492,7 @@ public class Graphics
 	 * @throws IllegalArgumentException If the values are out of range.
 	 * @since 2022/10/07
 	 */
+	@Api
 	public static int getColorOfRGB(int __r, int __g, int __b, int __a)
 		throws IllegalArgumentException
 	{

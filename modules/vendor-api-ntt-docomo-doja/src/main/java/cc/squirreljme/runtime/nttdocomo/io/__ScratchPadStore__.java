@@ -9,8 +9,12 @@
 
 package cc.squirreljme.runtime.nttdocomo.io;
 
+import cc.squirreljme.jvm.launch.IModeApplication;
+import cc.squirreljme.jvm.mle.JarPackageShelf;
+import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -28,7 +32,16 @@ final class __ScratchPadStore__
 	private static volatile __ScratchPadStore__[] _STORES;
 	
 	/** The record store key prefix. */
-	private static final String _STORE_KEY_PREFIX = "SquirrelJME-i-Appli-";
+	private static final String _STORE_KEY_PREFIX =
+		"SquirrelJME-i-Appli-";
+	
+	/** STO Header size. */
+	private static final int _STO_HEADER_LEN =
+		64;
+	
+	/** STO Header entries. */
+	private static final int _STO_ENTRIES =
+		16;
 	
 	/** The scratch pad being accessed. */
 	private final int _pad;
@@ -60,7 +73,10 @@ final class __ScratchPadStore__
 		{
 			// Nothing was actually created ever?
 			if (store.getNumRecords() <= 0)
+			{
+				__ScratchPadStore__.__seed(__pad, data);
 				return;
+			}
 			
 			// Read in the data
 			if (__length != store.getRecord(0, data, 0))
@@ -222,6 +238,147 @@ final class __ScratchPadStore__
 					__params.getLength(__pad)));
 			
 			return store;
+		}
+	}
+	
+	/**
+	 * Seeds the scratchpad data.
+	 *
+	 * @param __pad The scratchpad to access.
+	 * @param __data The data to fill in.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/01/06
+	 */
+	private static void __seed(int __pad, byte[] __data)
+		throws NullPointerException
+	{
+		if (__data == null)
+			throw new NullPointerException("NARG");
+		
+		// Is a seed specified?
+		String libName = System.getProperty(
+			IModeApplication.SEED_SCRATCHPAD_PREFIX + "." + __pad);
+		if (libName == null)
+			libName = System.getProperty(
+				IModeApplication.SEED_SCRATCHPAD_PREFIX + ".0");
+		
+		// None was found?
+		if (libName == null)
+		{
+			// Debug
+			Debugging.debugNote("No seed for SP %d", __pad);
+			
+			return;
+		}
+		
+		// Try to find the library that contains the seed
+		JarPackageBracket lib = null;
+		for (JarPackageBracket maybeLib : JarPackageShelf.libraries())
+			if (libName.equals(JarPackageShelf.libraryPath(maybeLib)))
+			{
+				lib = maybeLib;
+				break;
+			}
+		
+		// Not found?
+		if (lib == null)
+		{
+			// Debug
+			Debugging.debugNote("Did not find seed library %s.",
+				libName);
+			
+			return;
+		}
+		
+		// Get the size of both
+		int dataLen = __data.length;
+		int seedLen = JarPackageShelf.rawSize(lib);
+		
+		// Invalid?
+		if (seedLen < 0)
+		{
+			// Debug
+			Debugging.debugNote("Seed %s invalid, raw length was %d.",
+				libName, seedLen);
+			
+			return;
+		}
+		
+		// There are different formats, one that has a header at the start
+		// which derives scratchpads accordingly, or direct
+		if (seedLen >= dataLen + __ScratchPadStore__._STO_HEADER_LEN)
+		{
+			// Do nothing if too far in
+			if (__pad >= __ScratchPadStore__._STO_ENTRIES)
+				return;
+			
+			// Read in raw header
+			byte[] rawHeader = new byte[__ScratchPadStore__._STO_HEADER_LEN];
+			JarPackageShelf.rawData(lib, 0,
+				rawHeader, 0, rawHeader.length);
+			
+			// Setup buffers for position and size
+			int[] position = new int[__ScratchPadStore__._STO_ENTRIES];
+			int[] size = new int[__ScratchPadStore__._STO_ENTRIES];
+			
+			// Initial position is always after the header
+			int at = __ScratchPadStore__._STO_HEADER_LEN;
+			
+			// Parse the sizes in the header
+			try (DataInputStream dos = new DataInputStream(
+				new ByteArrayInputStream(rawHeader)))
+			{
+				for (int i = 0; i < __ScratchPadStore__._STO_ENTRIES; i++)
+				{
+					// Always at the baseline position
+					position[i] = at;
+					
+					// Read in size, it is little endian
+					int padSize = Integer.reverseBytes(dos.readInt());
+					if (padSize < 0)
+						padSize = 0;
+					
+					// Set current size
+					size[i] = padSize;
+					
+					// Move position up
+					at += padSize;
+				}
+			}
+			catch (IOException __e)
+			{
+				__e.printStackTrace();
+				
+				// Ignore
+				return;
+			}
+			
+			// Debug
+			seedLen = size[__pad];
+			Debugging.debugNote("Reading seed %s with dl=%d and sl=%d.",
+				libName, dataLen, seedLen);
+			
+			// The limit is the smaller of the two
+			int limit = Math.min(dataLen, seedLen);
+			
+			// Read the seed directly into the buffer
+			JarPackageShelf.rawData(lib, position[__pad],
+				__data, 0, limit);
+		}
+		
+		// Flat seed
+		else
+		{
+			// Debug
+			Debugging.debugNote("Reading seed %s with dl=%d and sl=%d.",
+				libName, dataLen, seedLen);
+			
+			// The limit is the smaller of the two
+			int limit = Math.min(dataLen, seedLen);
+			
+			// Read the seed directly into the buffer
+			JarPackageShelf.rawData(lib, 0,
+				__data, 0, limit);
 		}
 	}
 }

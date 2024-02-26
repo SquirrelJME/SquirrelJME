@@ -112,10 +112,10 @@ class __SortedTreeData__<K, V>
 	 * @since 2016/09/07
 	 */
 	@Override
-	public V setValue(V __a)
+	public V setValue(V __v)
 	{
 		V rv = this._value;
-		this._value = __a;
+		this._value = __v;
 		return rv;
 	}
 	

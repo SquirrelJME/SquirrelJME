@@ -1,0 +1,43 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="ClangTidy" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="Deprecations" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="EditorConfigEncoding" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="HashLoopInspection" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="IdentifierInspection" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="LoopControlInspection" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="MooseAttributeAccessors" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="NamespaceClashes" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="NamespaceMultipleDefinitions" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="NamespaceRecursiveInheritance" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="NamespaceUndefined" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="PackageFileMissing" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="PerlSwitch" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="PerlSyntax" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="PyUnreachableCodeInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RedundantNamespace" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsUnreachableCode" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsUnreachablePatterns" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsWhileTrueLoop" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlUnreachableCodeInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SubMultipleDeclarations" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SubMultipleDefinitions" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SubUnresolvable" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="TruthinessInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="UnreachableCallsOfFunction" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="UnreachableCode" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="UnreachableCodeJS" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="UnresolvedLabels" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="UnusedGlobalVariable" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="UnusedLabels" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="UnusedLexicalVariable" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="UnusedTypeGlob" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="UseStrict" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="UseVars" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="UseWarnings" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="VariableLexicalBuiltIn" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="VariableShadows" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="VariableUnresolvable" enabled="false" level="WARNING" enabled_by_default="false" />
+  </profile>
+</component>

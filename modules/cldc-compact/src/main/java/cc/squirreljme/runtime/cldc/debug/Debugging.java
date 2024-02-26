@@ -38,6 +38,12 @@ import org.jetbrains.annotations.Contract;
 @SquirrelJMEVendorApi
 public final class Debugging
 {
+	/** Is debugging enabled? */
+	@SuppressWarnings({"noinspection", "ConstantValue", "UnnecessaryUnboxing",
+		"unused"})
+	public static boolean ENABLED =
+		Boolean.valueOf(true).booleanValue();
+	
 	/** Only bytes up to this value are permitted in the output. */
 	private static final int _BYTE_LIMIT =
 		0x7E;
@@ -233,11 +239,12 @@ public final class Debugging
 				"*****************************************");
 			Debugging.todoNote("INCOMPLETE CODE HAS BEEN REACHED: ");
 			
-			// If running on Java SE use it's method of printing traces
+			// If running on Java SE use its method of printing traces
 			// because the SquirrelJME trace support may be missing
 			if (RuntimeShelf.vmType() == VMType.JAVA_SE)
 			{
-				new Throwable("INCOMPLETE CODE").printStackTrace(System.err);
+				new Throwable("INCOMPLETE CODE")
+					.printStackTrace(System.err);
 			}
 			
 			// Use SquirrelJME's method
@@ -338,6 +345,9 @@ public final class Debugging
 		// exception is thrown
 		finally
 		{
+			// Try to emit a breakpoint
+			DebugShelf.breakpoint();
+			
 			// Just exit directly so there is no way to continue, if we can
 			try
 			{

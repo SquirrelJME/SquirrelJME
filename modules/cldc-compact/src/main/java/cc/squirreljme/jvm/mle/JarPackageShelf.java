@@ -62,6 +62,18 @@ public final class JarPackageShelf
 	public static native JarPackageBracket[] libraries();
 	
 	/**
+	 * Returns the ID of the specific library.
+	 *
+	 * @param __jar The Jar to get the library ID of.
+	 * @return The library ID for the given Jar.
+	 * @throws MLECallError If the library is not valid.
+	 * @since 2023/12/18
+	 */
+	@SquirrelJMEVendorApi
+	public static native int libraryId(@NotNull JarPackageBracket __jar)
+		throws MLECallError;
+	
+	/**
 	 * Returns the path to the given JAR.
 	 * 
 	 * Note that this may or may not be a physical path, it could be a

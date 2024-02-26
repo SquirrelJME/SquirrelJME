@@ -1201,7 +1201,7 @@ public class ByteDeque
 	 */
 	private static int __dequeSliceSize()
 	{
-		switch (RuntimeShelf.memoryProfile())
+		/*switch (RuntimeShelf.memoryProfile())
 		{
 			case MemoryProfileType.MINIMAL:
 				return 128;
@@ -1209,7 +1209,9 @@ public class ByteDeque
 			case MemoryProfileType.NORMAL:
 			default:
 				return 512;
-		}
+		}*/
+		
+		return 512;
 	}
 }
 

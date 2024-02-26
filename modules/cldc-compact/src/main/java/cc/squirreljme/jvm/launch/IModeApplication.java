@@ -9,7 +9,6 @@
 
 package cc.squirreljme.jvm.launch;
 
-import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.constants.PhoneModelType;
@@ -20,6 +19,7 @@ import cc.squirreljme.jvm.suite.EntryPoint;
 import cc.squirreljme.jvm.suite.InvalidSuiteException;
 import cc.squirreljme.jvm.suite.MarkedDependency;
 import cc.squirreljme.jvm.suite.Profile;
+import cc.squirreljme.jvm.suite.SuiteUtils;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -35,7 +35,7 @@ public class IModeApplication
 {
 	/** The prefix for ADF properties. */
 	public static final String ADF_PROPERTY_PREFIX =
-		"cc.squirrlejme.imode.adf";
+		"cc.squirreljme.imode.adf";
 	
 	/** Property for the application name. */
 	public static final String NAME_PROPERTY =
@@ -125,6 +125,9 @@ public class IModeApplication
 	static final String _SP_SIZE =
 		"SPsize";
 	
+	/** The Jar path. */
+	protected final String jarPath;
+	
 	/** ADF Properties. */
 	private final Map<String, String> _adfProps;
 	
@@ -137,15 +140,16 @@ public class IModeApplication
 	 * @param __jar The JAR used.
 	 * @param __libs The libraries to map.
 	 * @param __adfProps Properties for the ADF/JAM.
+	 * @param __jarPath The Jar path.
 	 * @throws InvalidSuiteException If this suite is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/06/13
 	 */
 	IModeApplication(JarPackageBracket __jar, __Libraries__ __libs,
-		Map<String, String> __adfProps)
+		Map<String, String> __adfProps, String __jarPath)
 		throws InvalidSuiteException, NullPointerException
 	{
-		this(__jar, __libs, __adfProps, null);
+		this(__jar, __libs, __adfProps, __jarPath, null);
 	}
 	
 	/**
@@ -154,19 +158,22 @@ public class IModeApplication
 	 * @param __jar The JAR used.
 	 * @param __libs The libraries to map.
 	 * @param __adfProps Properties for the ADF/JAM.
+	 * @param __jarPath The Jar path.
 	 * @param __sysProps Extra system properties.
 	 * @throws InvalidSuiteException If this suite is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/04/13
 	 */
 	IModeApplication(JarPackageBracket __jar, __Libraries__ __libs,
-		Map<String, String> __adfProps, Map<String, String> __sysProps)
+		Map<String, String> __adfProps, String __jarPath, 
+		Map<String, String> __sysProps)
 		throws InvalidSuiteException, NullPointerException
 	{
 		super(__jar, __libs);
 		
 		this._adfProps = __adfProps;
 		this._extraSysProps = __sysProps;
+		this.jarPath = __jarPath;
 		
 		if (!__adfProps.containsKey(IModeApplication._APP_NAME) ||
 			!__adfProps.containsKey(IModeApplication._APP_CLASS))
@@ -185,11 +192,24 @@ public class IModeApplication
 		
 		if (appName != null)
 		{
+			// If this contains any non-ISO-8859-1 characters, then append the
+			// Jar name
+			boolean nonIso = false;
+			for (int i = 0, n = appName.length(); i < n; i++)
+				if (appName.charAt(i) > 0xFF)
+				{
+					nonIso = true;
+					break;
+				}
+			
 			// If the application name contains an invalid character then
 			// it is an unsupported character we do not know about
-			if (appName.indexOf(0xFFFD) >= 0)
-				return appName + " (" +
-					JarPackageShelf.libraryPath(this.jar) + ")";
+			if (nonIso || appName.indexOf(0xFFFD) >= 0)
+			{
+				String jarPath = this.jarPath;
+				if (jarPath != null)
+					return appName + " (" + SuiteUtils.baseName(jarPath) + ")";
+			}
 			
 			return appName;
 		}

@@ -44,6 +44,16 @@ public final class DebugShelf
 	}
 	
 	/**
+	 * If there is a debugger attached, then this will emit a breakpoint to
+	 * halt execution accordingly. This might not be supported by all
+	 * SquirrelJME implementations.
+	 *
+	 * @since 2024/01/30
+	 */
+	@SquirrelJMEVendorApi
+	public static native void breakpoint();
+	
+	/**
 	 * Returns the trace that is part of the given throwable.
 	 *
 	 * @param __t The throwable to gets it's trace of.

@@ -55,6 +55,9 @@ public final class ClassFile
 	/** The interfaces this class implements. */
 	protected final ClassNames interfaces;
 	
+	/** The constant pool of the class. */
+	protected final Pool pool;
+	
 	/** The fields within this class. */
 	private final Field[] _fields;
 	
@@ -74,13 +77,15 @@ public final class ClassFile
 	 * @param __icl Defined inner classes.
 	 * @param __at Annotations that are declared on the class.
 	 * @param __sfn Source file name.
+	 * @param __pool The constant pool.
 	 * @throws InvalidClassFormatException If the class is not valid.
 	 * @throws NullPointerException On null arguments, except for {@code __sn}.
 	 * @since 2017/09/26
 	 */
 	ClassFile(ClassVersion __ver, ClassFlags __cf, ClassName __tn,
 		ClassName __sn, ClassName[] __in, Field[] __fs, Method[] __ms,
-		InnerClasses __icl, AnnotationTable __at, String __sfn)
+		InnerClasses __icl, AnnotationTable __at, String __sfn,
+		Pool __pool)
 		throws InvalidClassFormatException, NullPointerException
 	{
 		if (__ver == null || __cf == null || __tn == null ||
@@ -118,6 +123,7 @@ public final class ClassFile
 		this._fields = __fs;
 		this._methods = __ms;
 		this.sourcefilename = __sfn;
+		this.pool = __pool;
 	}
 	
 	/**
@@ -182,6 +188,17 @@ public final class ClassFile
 	public final Method[] methods()
 	{
 		return this._methods.clone();
+	}
+	
+	/**
+	 * Returns the constant pool.
+	 *
+	 * @return The constant pool.
+	 * @since 2024/01/20
+	 */
+	public final Pool pool()
+	{
+		return this.pool;
 	}
 	
 	/**
@@ -289,7 +306,7 @@ public final class ClassFile
 		return new ClassFile(ClassVersion.MAX_VERSION, cflags, name,
 			(isPrimitive ? null : new ClassName("java/lang/Object")),
 			new ClassName[0], new Field[0], methods, new InnerClasses(),
-			new AnnotationTable(), "<special>");
+			new AnnotationTable(), "<special>", null);
 	}
 	
 	/**
@@ -383,7 +400,7 @@ public final class ClassFile
 		// Build
 		return new ClassFile(version, classflags, thisname, supername,
 			interfaces, fields, methods, innerclasses, annotations,
-			sourcefilename);
+			sourcefilename, pool);
 	}
 	
 	/**

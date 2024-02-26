@@ -172,6 +172,13 @@ public class VMCompactLibraryTaskAction
 					"<init>", "(", "...", ")", ";",
 				"}",
 			
+			// Assume the debug flag is always false
+			"-assumevalues",
+				"class", "cc.squirreljme.runtime.cldc.debug.Debugging", "{",
+					"public", "static", "boolean", "ENABLED",
+						"=", "false", ";",
+				"}",
+			
 			// Remove any code that calls these debugging calls
 			"-assumenosideeffects",
 				"class", "cc.squirreljme.runtime.cldc.debug.Debugging", "{",
@@ -208,6 +215,33 @@ public class VMCompactLibraryTaskAction
 					"void", "todoNote", "(",
 						"java.lang.String", ",",
 						"java.lang.Object[]", ")", ";",
+				"}",
+			
+			// Disable some DebugShelf methods
+			"-assumevalues",
+				"class", "cc.squirreljme.jvm.mle.DebugShelf", "{",
+					"int", "verbose", "(",
+						"int", ")", "=", "0", ";",
+					"int", "verboseInternalThread", "(",
+						"int", ")", "=", "0", ";",
+				"}",
+			"-assumenosideeffects",
+				"class", "cc.squirreljme.jvm.mle.DebugShelf", "{",
+					"int", "verbose", "(",
+						"int", ")", ";",
+					"int", "verboseInternalThread", "(",
+						"int", ")", ";",
+					"void", "verboseStop", "(",
+						"int", ")", ";",
+				"}",
+			"-assumenoexternalsideeffects",
+				"class", "cc.squirreljme.jvm.mle.DebugShelf", "{",
+					"int", "verbose", "(",
+						"int", ")", ";",
+					"int", "verboseInternalThread", "(",
+						"int", ")", ";",
+					"void", "verboseStop", "(",
+						"int", ")", ";",
 				"}",
 		};
 	

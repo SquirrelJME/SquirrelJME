@@ -626,7 +626,18 @@ public final class SpringClass
 	}
 	
 	/**
-	 * Checks if the given class is a super class of the this class.
+	 * Is this a primitive type?
+	 *
+	 * @return If this is a primitive type.
+	 * @since 2024/01/20
+	 */
+	public boolean isPrimitive()
+	{
+		return this.name.isPrimitive();
+	}
+	
+	/**
+	 * Checks if the given class is a super class of this class.
 	 *
 	 * @param __cl The class to check.
 	 * @return {@code true} if it is a superclass.

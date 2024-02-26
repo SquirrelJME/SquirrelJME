@@ -12,12 +12,25 @@ package cc.squirreljme.emulator.vm;
 import cc.squirreljme.vm.VMClassLibrary;
 
 /**
- * This is the suite manager which represents the.
+ * This is the suite manager which represents the various libraries that
+ * are available.
  *
  * @since 2018/10/26
  */
 public interface VMSuiteManager
 {
+	/**
+	 * Returns a library ID for the given library within this suite manager.
+	 *
+	 * @param __lib The library ID to use.
+	 * @return The ID of the library.
+	 * @throws IllegalArgumentException If this library is not known.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/12/18
+	 */
+	int libraryId(VMClassLibrary __lib)
+		throws IllegalArgumentException, NullPointerException;
+	
 	/**
 	 * Lists the names of libraries which are available for usage.
 	 *

@@ -129,6 +129,7 @@ public class Display
 	}
 	
 	@SuppressWarnings("FinalStaticMethod")
+	@Api
 	public static final Frame getCurrent()
 	{
 		synchronized (Display.class)
@@ -138,30 +139,35 @@ public class Display
 	}
 	
 	@SuppressWarnings("FinalStaticMethod")
+	@Api
 	public static final int getHeight()
 	{
 		return Display.__midpDisplay().getHeight();
 	}
 	
 	@SuppressWarnings("FinalStaticMethod")
+	@Api
 	public static final int getWidth()
 	{
 		return Display.__midpDisplay().getWidth();
 	}
 	
 	@SuppressWarnings("FinalStaticMethod")
+	@Api
 	public static final boolean isColor()
 	{
 		return Display.__midpDisplay().isColor();
 	}
 	
 	@SuppressWarnings("FinalStaticMethod")
+	@Api
 	public static final int numColors()
 	{
 		return Display.__midpDisplay().numColors();
 	}
 	
 	@SuppressWarnings("FinalStaticMethod")
+	@Api
 	public static final void setCurrent(Frame __frame)
 	{
 		synchronized (Display.class)

@@ -294,10 +294,7 @@ public final class VMHelpers
 	public static String classpathAsString(Path... __paths)
 		throws NullPointerException
 	{
-		if (__paths == null)
-			throw new NullPointerException("NARG");
-		
-		return VMHelpers.classpathAsString(Arrays.asList(__paths));
+		return VMHelpers.classpathAsString(false, __paths);
 	}
 	
 	/**
@@ -311,15 +308,50 @@ public final class VMHelpers
 	public static String classpathAsString(Iterable<Path> __paths)
 		throws NullPointerException
 	{
+		return VMHelpers.classpathAsString(false, __paths);
+	}
+	
+	/**
+	 * Returns the class path as a string.
+	 *
+	 * @param __unix Use UNIX separator and not the system one.
+	 * @param __paths Class paths.
+	 * @return The class path as a string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/25
+	 */
+	public static String classpathAsString(boolean __unix, Path... __paths)
+		throws NullPointerException
+	{
+		if (__paths == null)
+			throw new NullPointerException("NARG");
+		
+		return VMHelpers.classpathAsString(Arrays.asList(__paths));
+	}
+	
+	/**
+	 * Returns the class path as a string.
+	 *
+	 * @param __unix Use UNIX separator and not the system one.
+	 * @param __paths Class paths.
+	 * @return The class path as a string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/25
+	 */
+	public static String classpathAsString(boolean __unix,
+		Iterable<Path> __paths)
+		throws NullPointerException
+	{
 		if (__paths == null)
 			throw new NullPointerException("NARG");
 		
 		StringBuilder sb = new StringBuilder();
 		
+		char separator = (__unix ? ':' : File.pathSeparatorChar);
 		for (Path path : __paths)
 		{
 			if (sb.length() > 0)
-				sb.append(File.pathSeparatorChar);
+				sb.append(separator);
 			sb.append(path);
 		}
 		
@@ -1010,6 +1042,43 @@ public final class VMHelpers
 	}
 	
 	/**
+	 * Returns the internal class path specifier to run the given tasks. 
+	 *
+	 * @param __project The project.
+	 * @param __classifier The classifier used.
+	 * @param __optional Include optional JARs?
+	 * @return The class path string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/25
+	 */
+	public static String runClassPathAsInternalClassPath(
+		Project __project, SourceTargetClassifier __classifier,
+		boolean __optional)
+		throws NullPointerException
+	{
+		// Get tasks that are used for dependency running
+		Iterable<VMLibraryTask> tasks =
+			VMHelpers.<VMLibraryTask>resolveProjectTasks(
+				VMLibraryTask.class, __project, VMHelpers
+					.runClassTasks(__project, __classifier, __optional));
+		
+		// Build paths from it
+		StringBuilder result = new StringBuilder();
+		for (VMLibraryTask task : tasks)
+		{
+			// Path separator before
+			if (result.length() > 0)
+				result.append(":");
+			
+			// Use Jar name here
+			result.append(VMHelpers.projectInternalNameViaSourceSet(
+				task.getProject(), task.getSourceSet()) + ".jar");
+		}
+		
+		return result.toString();
+	}
+	
+	/**
 	 * Returns the task dependencies to get outputs from that would be
 	 * considered a part of the project's class path used at execution time.
 	 *
@@ -1212,6 +1281,23 @@ public final class VMHelpers
 		
 		// Is only valid if there is at least one test
 		return new AvailableTests(available, false);
+	}
+	
+	/**
+	 * Translates a path to a string.
+	 *
+	 * @param __name The input string file name.
+	 * @return The resultant path.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/09/03
+	 */
+	public static Path stringToPath(String __name)
+		throws NullPointerException
+	{
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		return Paths.get("", __name.split(Pattern.quote("/")));
 	}
 	
 	/**

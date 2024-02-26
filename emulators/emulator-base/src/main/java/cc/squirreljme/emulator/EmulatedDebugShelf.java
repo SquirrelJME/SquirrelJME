@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import java.lang.reflect.Method;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -22,6 +23,27 @@ import org.jetbrains.annotations.NotNull;
  */
 public class EmulatedDebugShelf
 {
+	
+	/**
+	 * If there is a debugger attached, then this will emit a breakpoint to
+	 * halt execution accordingly. This might not be supported by all
+	 * SquirrelJME implementations.
+	 *
+	 * @since 2024/01/30
+	 */
+	@SquirrelJMEVendorApi
+	public static void breakpoint()
+	{
+		try
+		{
+			throw new __PseudoBreakpoint__();
+		}
+		catch (__PseudoBreakpoint__ __ignored)
+		{
+			// Ignore
+		}
+	}
+	
 	/**
 	 * Resolves the class from the given point.
 	 *

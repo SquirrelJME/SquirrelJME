@@ -261,6 +261,16 @@ final class __AdfUtils__
 				String key = ln.substring(0, eq).trim();
 				String val = ln.substring(eq + 1).trim();
 				
+				// Key might be polluted by NULs
+				int keyNul = key.lastIndexOf(0);
+				if (keyNul >= 0)
+					key = key.substring(keyNul + 1).trim();
+				
+				// Value may as well be polluted by NULs
+				int valNul = val.lastIndexOf(0);
+				if (valNul >= 0)
+					key = key.substring(valNul + 1).trim();
+				
 				// Store into if the key is valid
 				if (!key.isEmpty())
 					__outProps.put(key, val);

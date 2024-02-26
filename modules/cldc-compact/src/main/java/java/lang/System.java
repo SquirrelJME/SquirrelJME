@@ -119,7 +119,7 @@ public final class System
 				"ZZ1y %s %s", __src, __dest));
 		
 		// If we are copying nothing then we need not even bother with anything
-		// else and we do not have to check the array types as well.
+		// else, and we do not have to check the array types as well.
 		if (__copyLen == 0)
 			return;
 		
@@ -419,7 +419,8 @@ public final class System
 			case "microedition.configuration":
 				try
 				{
-					Class<?> file = Class.forName("java.nio.FileSystem");
+					Class<?> file = Class.forName(
+						"java.nio.FileSystem");
 					if (file == null)
 						return "CLDC-1.8-Compact";
 					return "CLDC-1.8";
@@ -520,7 +521,7 @@ public final class System
 	 * This returns the identity hash code of the object. The identity hash
 	 * code is randomly given by the virtual machine to an object. There is
 	 * no definition on how the value is to be derived. It may be a unique
-	 * object ID or it may be a memory address. Two objects may also share the
+	 * object ID, or it may be a memory address. Two objects may also share the
 	 * same identity hash code.
 	 *
 	 * @param __o The input object to get the hash code for.
@@ -614,7 +615,8 @@ public final class System
 			throw new NullPointerException("NARG");
 		
 		// Not allowed to do this?
-		System.getSecurityManager().checkPermission(new RuntimePermission("setIO"));
+		System.getSecurityManager().checkPermission(
+			new RuntimePermission("setIO"));
 		
 		// Use a wrapped class to prevent final abuse.
 		((__CanSetPrintStream__)System.out).__set(__a);

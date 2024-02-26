@@ -34,7 +34,11 @@ public interface VMType
 	byte SUMMERCOAT =
 		3;
 	
+	/** Running on NanoCoat. */
+	byte NANOCOAT =
+		4;
+	
 	/** The number of VM types. */
 	byte NUM_VMTYPES =
-		4;
+		5;
 }
