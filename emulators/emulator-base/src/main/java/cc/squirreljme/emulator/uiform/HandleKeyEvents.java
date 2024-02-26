@@ -9,11 +9,14 @@
 
 package cc.squirreljme.emulator.uiform;
 
+import cc.squirreljme.emulator.NativeGameController;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.constants.NonStandardKey;
 import cc.squirreljme.jvm.mle.constants.UIKeyEventType;
 import cc.squirreljme.jvm.mle.constants.UIKeyModifier;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -27,21 +30,55 @@ import java.util.concurrent.ConcurrentSkipListSet;
  */
 public class HandleKeyEvents
 	extends AbstractListener
-	implements KeyListener
+	implements KeyListener, ActionListener
 {
 	/** Which keys are pressed? */
 	private final Set<Integer> _pressedKeys =
 		new ConcurrentSkipListSet<>();
 	
+	/** The game controller to use. */
+	protected final NativeGameController controller;
+	
 	/**
 	 * Initializes the handler for key events.
-	 * 
+	 *
 	 * @param __item The item used.
+	 * @param __controller The game controller to use, may be {@code null}.
 	 * @since 2021/02/16
 	 */
-	public HandleKeyEvents(SwingWidget __item)
+	public HandleKeyEvents(SwingWidget __item,
+		NativeGameController __controller)
 	{
 		super(__item);
+		
+		this.controller = __controller;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/02/26
+	 */
+	@Override
+	public void actionPerformed(ActionEvent __ignored)
+	{
+		// If there is no widget then we cannot perform actions
+		SwingWidget widget = this.item();
+		if (widget == null)
+			return;
+		
+		// If there is no callback, we cannot send keys to the client
+		UIFormCallback callback = widget.callback();
+		if (callback == null)
+			return;
+		
+		// If there is no controller, there is no point in polling
+		NativeGameController controller = this.controller;
+		if (controller == null)
+			return;
+		
+		// Poll for game keys and such, provided there are events
+		// remaining
+		controller.pollAll(callback);
 	}
 	
 	/**

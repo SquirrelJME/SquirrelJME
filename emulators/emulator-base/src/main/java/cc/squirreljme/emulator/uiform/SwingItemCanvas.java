@@ -9,12 +9,14 @@
 
 package cc.squirreljme.emulator.uiform;
 
+import cc.squirreljme.emulator.NativeGameController;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UISpecialCode;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 /**
  * Standard canvas item.
@@ -26,6 +28,9 @@ public class SwingItemCanvas
 {
 	/** The panel being drawn on. */
 	protected final __PaintingPanel__ panel;
+	
+	/** Gamepad timer. */
+	protected final Timer gamePadTimer;
 	
 	/** Repainting coordinates. */
 	private final int[] _repaint =
@@ -43,13 +48,37 @@ public class SwingItemCanvas
 		final __PaintingPanel__ panel = new __PaintingPanel__(this);
 		this.panel = panel;
 		
-		panel.addComponentListener(new HandleComponentEvents(this));
-		panel.addKeyListener(new HandleKeyEvents(this));
+		// Setup key handler with optional controller support
+		NativeGameController controller = NativeGameController.instance();
+		HandleKeyEvents keyHandler = new HandleKeyEvents(this,
+			controller);
 		
-		// We control all of the drawn pixels here
+		// Add basic listener
+		panel.addComponentListener(new HandleComponentEvents(this));
+		panel.addKeyListener(keyHandler);
+		
+		// If there is a game controller we need to poll it for events
+		if (controller != null)
+		{
+			// Setup timer, at 60 FPS which is pretty standard
+			Timer timer = new Timer(16, keyHandler);
+			timer.setRepeats(true);
+			timer.setDelay(16);
+			timer.setInitialDelay(16);
+			
+			// Store for later usage
+			this.gamePadTimer = timer;
+			
+			// Start it
+			timer.start();
+		}
+		else
+			this.gamePadTimer = null;
+		
+		// We control all the drawn pixels here
 		panel.setOpaque(true);
 		
-		// Allow this to be focused so it can have key events within
+		// Allow this to be focused, so it can have key events within
 		panel.setFocusable(true);
 		panel.setRequestFocusEnabled(true);
 		panel.setFocusTraversalKeysEnabled(true);
@@ -72,6 +101,8 @@ public class SwingItemCanvas
 	@Override
 	public void deletePost()
 	{
+		if (this.gamePadTimer != null)
+			this.gamePadTimer.stop();
 	}
 	
 	/**
