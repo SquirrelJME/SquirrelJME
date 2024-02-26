@@ -89,7 +89,9 @@ public final class MidiTracker
 					MTrkTracker tracker = trackers[track];
 					
 					// Advance the track
-					tracker.playNext(control);
+					int delta = 0;
+					while (delta == 0)
+						delta = tracker.playNext(control);
 				}
 				
 				// Sleep a bit to make it more sane

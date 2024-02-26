@@ -10,7 +10,6 @@
 package cc.squirreljme.runtime.media.midi;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.cldc.util.ByteIntegerArray;
 import java.io.ByteArrayInputStream;
 import javax.microedition.media.control.MIDIControl;
 
@@ -32,6 +31,9 @@ public class MTrkTracker
 	
 	/** Bulk message buffer. */
 	private volatile byte[] _bulk;
+	
+	/** Do we want an event or a delta? */
+	private volatile boolean _wantEvent;
 	
 	/**
 	 * Initializes the tracker for the single track.
@@ -68,8 +70,27 @@ public class MTrkTracker
 		if (__control == null)
 			throw new NullPointerException("NARG");
 		
-		// Read in delta time
-		int delta = this.readVariable();
+		// Last tracked if we want an event
+		boolean wantEvent = this._wantEvent;
+		
+		// Read in delta time if we do not want an event
+		int delta;
+		if (!wantEvent)
+		{
+			// Read delta time
+			delta = this.readVariable();
+			
+			// We are at a delta, we need to stop for timing
+			if (delta > 0)
+			{
+				this._wantEvent = true;
+				return delta;
+			}
+		}
+		
+		// Delta was not read
+		else
+			delta = 0;
 		
 		// Read in event and handle accordingly
 		int event = this.read();
@@ -79,6 +100,9 @@ public class MTrkTracker
 			this.__eventSysEx(event, __control);
 		else
 			this.__eventMidi(event, __control);
+		
+		// We do not want an event here, we need to read a delta
+		this._wantEvent = false;
 		
 		// Return the read in delta
 		return delta;
