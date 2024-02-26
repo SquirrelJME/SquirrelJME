@@ -57,7 +57,11 @@ public class MidiPlayer
 	private volatile MTrkParser[] _tracks;
 	
 	/** The number of microseconds per tick division. */
-	private volatile long _microsPerTickDiv =
+	volatile long _microsPerTickDiv =
+		-1;
+	
+	/** The tick division used. */
+	volatile long _tickDiv =
 		-1;
 	
 	/**
@@ -201,7 +205,10 @@ public class MidiPlayer
 							// multiplication gives 0.5s so this is used as
 							// the base.
 							else
+							{
 								this._microsPerTickDiv = 500_000 / tickDiv;
+								this._tickDiv = tickDiv;
+							}
 						}
 						break;
 						

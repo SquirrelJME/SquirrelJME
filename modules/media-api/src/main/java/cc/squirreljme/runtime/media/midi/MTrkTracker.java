@@ -26,9 +26,6 @@ public class MTrkTracker
 	/** The input stream to read from. */
 	protected final ByteArrayInputStream input;
 	
-	/** The current read head. */
-	private volatile int _at;
-	
 	/** Bulk message buffer. */
 	private volatile byte[] _bulk;
 	
@@ -59,15 +56,16 @@ public class MTrkTracker
 	/**
 	 * Plays the next note.
 	 *
+	 * @param __midiTracker The MIDI tracker being used.
 	 * @param __control The control to play into.
 	 * @return The delta for the current event.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/02/25
 	 */
-	public int playNext(MIDIControl __control)
+	public int playNext(MidiTracker __midiTracker, MIDIControl __control)
 		throws NullPointerException
 	{
-		if (__control == null)
+		if (__midiTracker == null || __control == null)
 			throw new NullPointerException("NARG");
 		
 		// Last tracked if we want an event
@@ -95,7 +93,7 @@ public class MTrkTracker
 		// Read in event and handle accordingly
 		int event = this.read();
 		if (event == 0xFF)
-			this.__eventMeta();
+			this.__eventMeta(__midiTracker);
 		else if (event == 0xF0 || event == 0xF7)
 			this.__eventSysEx(event, __control);
 		else
@@ -200,10 +198,16 @@ public class MTrkTracker
 	/**
 	 * Handles a meta event, which is ignored.
 	 *
+	 * @param __midiTracker The MIDI tracker being used.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2024/02/26
 	 */
-	private void __eventMeta()
+	private void __eventMeta(MidiTracker __midiTracker)
+		throws NullPointerException
 	{
+		if (__midiTracker == null)
+			throw new NullPointerException("NARG");
+		
 		// Read in all the data
 		int type = this.read();
 		int len = this.readVariable();
@@ -227,6 +231,16 @@ public class MTrkTracker
 				// End of track
 			case 0x2F:
 				this.reset();
+				break;
+				
+				// Set Tempo
+			case 0x51:
+				{
+					long tickDiv = __midiTracker.player._tickDiv;
+					if (tickDiv > 0)
+						__midiTracker._microsPerTickDiv =
+							500_000L / tickDiv;
+				}
 				break;
 				
 				// Do not care

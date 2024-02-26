@@ -34,6 +34,10 @@ public final class MidiTracker
 	/** MIDI trackers. */
 	private final MTrkTracker[] _trackers;
 	
+	/** The number of microseconds per tick division. */
+	volatile long _microsPerTickDiv =
+		-1;
+	
 	/**
 	 * Initializes the MIDI tracker.
 	 *
@@ -65,6 +69,7 @@ public final class MidiTracker
 	 * {@inheritDoc}
 	 * @since 2022/04/27
 	 */
+	@SuppressWarnings("ConditionCoveredByFurtherCondition")
 	@Override
 	public void run()
 	{
@@ -73,37 +78,71 @@ public final class MidiTracker
 		MTrkTracker[] trackers = this._trackers;
 		int numTracks = trackers.length;
 		
+		// Used to indicate when the next track time should play
+		long[] readyAts = new long[numTracks];
+		for (int i = 0; i < numTracks; i++)
+			readyAts[i] = Long.MIN_VALUE;
+		
 		// Play almost forever
-		synchronized (this)
+		for (int midiLoop = 0;; midiLoop++)
 		{
-			for (int midiLoop = 0;; midiLoop++)
+			// Stop playback immediately?
+			synchronized (this)
 			{
-				// Stop playback immediately?
 				if (this.stopPlayback)
 					break;
-				
-				// Update each tracker accordingly
-				for (int track = 0; track < numTracks; track++)
+			}
+			
+			// The current time for this loop
+			long nowTime = System.nanoTime();
+			
+			// Current micros per tick div, used for sleeping... if no tempo
+			// was previously set then use the default for MIDI?
+			long microsPerTickDiv = this._microsPerTickDiv;
+			if (microsPerTickDiv < 0)
+			{
+				microsPerTickDiv = this.player._microsPerTickDiv;
+				this._microsPerTickDiv = microsPerTickDiv;
+			}
+			
+			// Update each tracker accordingly
+			long soonestReady = Long.MAX_VALUE;
+			for (int track = 0; track < numTracks; track++)
+			{
+				// We are not ready here yet
+				long readyAt = readyAts[track];
+				if (readyAt != Long.MIN_VALUE && nowTime < readyAt)
 				{
-					// Get the current track to play
-					MTrkTracker tracker = trackers[track];
-					
-					// Advance the track
-					int delta = 0;
-					while (delta == 0)
-						delta = tracker.playNext(control);
+					// Used for sleeping
+					if (readyAt < soonestReady)
+						soonestReady = readyAt;
+					continue;
 				}
 				
-				// Sleep a bit to make it more sane
+				// Get the current track to play
+				MTrkTracker tracker = trackers[track];
+				
+				// Advance the track
+				int delta = 0;
+				while (delta == 0)
+					delta = tracker.playNext(this, control);
+				
+				// Determine time when the track is ready
+				if (microsPerTickDiv > 0)
+					readyAts[track] = nowTime +
+						((delta * microsPerTickDiv) * 1_000L);
+			}
+			
+			// Sleep until the next event can occur
+			if (soonestReady != Long.MAX_VALUE && soonestReady > nowTime)
 				try
 				{
-					Thread.sleep(100);
+					Thread.sleep((soonestReady - nowTime) / 1_000_000);
 				}
 				catch (InterruptedException __ignored)
 				{
 					break;
 				}
-			}
 		}
 		
 		// Put every channel into a default state before leaving
