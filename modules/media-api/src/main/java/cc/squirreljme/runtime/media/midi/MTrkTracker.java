@@ -93,9 +93,6 @@ public class MTrkTracker
 		// Read in event
 		int event = this.read();
 		
-		// Debug
-		Debugging.debugNote("MIDI Event: %02x", event);
-		
 		// Handle
 		if (event == 0xFF)
 		{

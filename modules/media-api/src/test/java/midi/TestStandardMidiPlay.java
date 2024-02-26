@@ -8,6 +8,7 @@
 
 package midi;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.InputStream;
 import javax.microedition.media.Manager;
 import javax.microedition.media.Player;
@@ -54,6 +55,7 @@ public class TestStandardMidiPlay
 			boolean hasDurationUpdated = false;
 			boolean hasStarted = false;
 			boolean hasEndOfMedia = false;
+			boolean hasStopped = false;
 			
 			// Wait for the end for the song to happen
 			long baseTime = System.nanoTime();
@@ -65,12 +67,22 @@ public class TestStandardMidiPlay
 					hasDurationUpdated |= listener._hasDurationUpdated;
 					hasStarted |= listener._hasStarted;
 					hasEndOfMedia |= listener._hasEndOfMedia;
+					hasStopped |= listener._hasStopped;
 					
 					if (hasDurationUpdated &&
 						hasStarted &&
-						hasEndOfMedia)
+						hasEndOfMedia &&
+						hasStopped)
 						break;
 				}
+					
+				// Debug
+				Debugging.debugNote("MIDI Has: %b %b %b %b",
+					hasDurationUpdated, hasStarted, hasEndOfMedia, hasStopped);
+				
+				// Stop if the end was reached
+				if (hasStopped && hasEndOfMedia)
+					break;
 				
 				// Too late?
 				if ((System.nanoTime() - baseTime) >
@@ -108,12 +120,22 @@ public class TestStandardMidiPlay
 					break;
 				
 				// Wait a bit?
-				try
+				synchronized (listener)
 				{
-					Thread.sleep(250);
-				}
-				catch (InterruptedException ignored)
-				{
+					// Did a stop occur?
+					wasEverStopped |= listener._hasStopped;
+				
+					// Stop early
+					if (wasEverStopped)
+						break;
+					
+					try
+					{
+						listener.wait(250);
+					}
+					catch (InterruptedException ignored)
+					{
+					}
 				}
 			}
 			
@@ -123,7 +145,7 @@ public class TestStandardMidiPlay
 				mediaTime != Player.TIME_UNKNOWN && mediaTime > 0);*/
 			
 			// Store flags
-			this.secondary("duration", hasDurationUpdated);
+			/*this.secondary("duration", hasDurationUpdated);*/
 			this.secondary("started", hasStarted);
 			this.secondary("end", hasEndOfMedia);
 			this.secondary("stopped", wasEverStopped);

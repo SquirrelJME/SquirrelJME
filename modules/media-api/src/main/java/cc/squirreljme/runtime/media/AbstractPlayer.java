@@ -193,7 +193,10 @@ public abstract class AbstractPlayer
 		int count = this._loopCounter;
 		
 		if ((--count) <= 0)
+		{
+			this._loopCounter = 0;
 			return true;
+		}
 		
 		this._loopCounter = count;
 		return false;
@@ -473,11 +476,33 @@ public abstract class AbstractPlayer
 			state == Player.PREFETCHED)
 			return;
 		
+		// Send stop via media
+		this.stopViaMedia();
+	}
+	
+	/**
+	 * A stop occurred via media playback.
+	 *
+	 * @throws MediaException On any error.
+	 * @since 2024/02/26
+	 */
+	public final void stopViaMedia()
+		throws MediaException
+	{	
 		// Becoming stopped
 		this.becomingStopped();
-		this.setState(Player.PREFETCHED);
+		
+		// Make sure the state stays valid
+		int state = this.getState();
+		if (state != Player.CLOSED &&
+			state != Player.UNREALIZED &&
+			state != Player.REALIZED &&
+			state != Player.PREFETCHED)
+			this.setState(Player.PREFETCHED);
 		
 		// Send event
+		this.broadcastEvent(PlayerListener.END_OF_MEDIA,
+			this.getTimeBase().getTime());
 		this.broadcastEvent(PlayerListener.STOPPED,
 			this.getTimeBase().getTime());
 	}

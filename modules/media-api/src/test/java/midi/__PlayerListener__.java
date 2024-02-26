@@ -8,6 +8,7 @@
 
 package midi;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.media.Player;
 import javax.microedition.media.PlayerListener;
 
@@ -39,6 +40,9 @@ final class __PlayerListener__
 	public void playerUpdate(Player __player, String __eventType,
 		Object __eventValue)
 	{
+		Debugging.debugNote("EVENT: %h %s %s",
+			__player, __eventType, __eventValue);
+		
 		synchronized (this)
 		{
 			switch (__eventType)
@@ -59,6 +63,9 @@ final class __PlayerListener__
 					this._hasStopped = true;
 					break;
 			}
+			
+			// Notify the monitor
+			this.notifyAll();
 		}
 	}
 }

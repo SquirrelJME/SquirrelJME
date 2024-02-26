@@ -159,7 +159,13 @@ public final class MidiTracker
 			if (soonestReady != Long.MAX_VALUE && soonestReady > nowTime)
 				try
 				{
-					Thread.sleep((soonestReady - nowTime) / 1_000_000);
+					// Do not rest for too long
+					long millis = (soonestReady - nowTime) / 1_000_000;
+					if (millis > 250)
+						millis = 250;
+					
+					// Rest
+					Thread.sleep(millis);
 				}
 				catch (InterruptedException __ignored)
 				{
@@ -186,7 +192,7 @@ public final class MidiTracker
 		// Indicate stop
 		try
 		{
-			player.stop();
+			player.stopViaMedia();
 		}
 		catch (MediaException __ignored)
 		{

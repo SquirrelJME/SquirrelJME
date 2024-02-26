@@ -273,8 +273,8 @@ public class MidiPlayer
 			// Wake it up, if it is sleeping
 			synchronized (tracker)
 			{
-				tracker.interrupt();
 				tracker.notifyAll();
+				tracker.interrupt();
 			}
 			
 			// Remove it, when interrupted and stopped the thread will clean
