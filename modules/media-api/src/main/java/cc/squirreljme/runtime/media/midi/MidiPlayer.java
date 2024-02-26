@@ -261,7 +261,7 @@ public class MidiPlayer
 				return;
 				
 			// Indicate to stop
-			tracker._stopPlayback = true;
+			tracker.stopPlayback = true;
 			
 			// Wake it up, if it is sleeping
 			synchronized (tracker)
@@ -361,7 +361,7 @@ public class MidiPlayer
 				tracker.player.stop();
 			
 			// Setup new tracker
-			tracker = new MidiTracker(__player);
+			tracker = new MidiTracker(__player, __player._tracks);
 			
 			// Make sure it is a daemon thread, so it gets killed on exit
 			ThreadShelf.javaThreadSetDaemon(tracker);

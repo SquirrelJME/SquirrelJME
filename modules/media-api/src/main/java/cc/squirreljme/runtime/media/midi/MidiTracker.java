@@ -8,7 +8,6 @@
 
 package cc.squirreljme.runtime.media.midi;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.media.control.MIDIControl;
 
 /**
@@ -30,23 +29,36 @@ public final class MidiTracker
 	protected final MIDIControl midiControl;
 	
 	/** Stop playing? */
-	protected volatile boolean _stopPlayback;
+	protected volatile boolean stopPlayback;
+	
+	/** MIDI trackers. */
+	private final MTrkTracker[] _trackers;
 	
 	/**
 	 * Initializes the MIDI tracker.
-	 * 
+	 *
 	 * @param __player The player used.
+	 * @param __tracks MIDI tracks to run with.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/04/27
 	 */
-	public MidiTracker(MidiPlayer __player)
+	public MidiTracker(MidiPlayer __player, MTrkParser[] __tracks)
 		throws NullPointerException
 	{
 		super("SquirrelJME-MidiTracker-" +
 			Math.abs(__player.hashCode()));
 		
+		if (__tracks == null)
+			throw new NullPointerException("NARG");
+		
 		this.player = __player;
 		this.midiControl = __player.midiControl;
+		
+		// Trackers for each track
+		MTrkTracker[] trackers = new MTrkTracker[__tracks.length];
+		for (int i = 0, n = __tracks.length; i < n; i++)
+			trackers[i] = new MTrkTracker(__tracks[i]);
+		this._trackers = trackers;
 	}
 	
 	/**
@@ -58,29 +70,36 @@ public final class MidiTracker
 	{
 		MidiPlayer player = this.player;
 		MIDIControl control = this.midiControl;
+		MTrkTracker[] trackers = this._trackers;
+		int numTracks = trackers.length;
 		
 		// Play almost forever
 		synchronized (this)
 		{
-			for (int i = 0;; i++)
+			for (int midiLoop = 0;; midiLoop++)
 			{
 				// Stop playback immediately?
-				if (this._stopPlayback)
+				if (this.stopPlayback)
 					break;
 				
-				// For testing
-				System.err.printf("Emitting %s...%n", i);
-				boolean emit = ((i & 1) == 0);
-				control.shortMidiEvent((emit ? 0b1001_0000 : 0b1000_0000),
-					60 + (i % 20), (emit ? 127 : 0));
+				// Update each tracker accordingly
+				for (int track = 0; track < numTracks; track++)
+				{
+					// Get the current track to play
+					MTrkTracker tracker = trackers[track];
+					
+					// Advance the track
+					tracker.playNext(control);
+				}
 				
-				// For the next note to appear
+				// Sleep a bit to make it more sane
 				try
 				{
-					this.wait(250);
+					Thread.sleep(100);
 				}
-				catch (InterruptedException ignored)
+				catch (InterruptedException __ignored)
 				{
+					break;
 				}
 			}
 		}

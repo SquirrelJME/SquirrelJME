@@ -9,6 +9,7 @@
 package cc.squirreljme.runtime.media.midi;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.io.ByteArrayInputStream;
 
 /**
  * This is a parser for MIDI's {@code MTrk} which is a single MIDI track, it
@@ -53,6 +54,29 @@ public final class MTrkParser
 		this._buffer = __b;
 		this._offset = __o;
 		this._length = __l;
+	}
+	
+	/**
+	 * Returns an input stream over the track data.
+	 *
+	 * @return The input stream used.
+	 * @since 2024/02/26
+	 */
+	public ByteArrayInputStream inputStream()
+	{
+		return new ByteArrayInputStream(this._buffer, this._offset,
+			this._length);
+	}
+	
+	/**
+	 * Returns the length of the track in bytes.
+	 *
+	 * @return The length of the track in bytes.
+	 * @since 2024/02/25
+	 */
+	public int length()
+	{
+		return this._length;
 	}
 	
 	/**
