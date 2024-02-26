@@ -99,6 +99,8 @@ public class MTrkTracker
 			if (this.__eventMeta(__midiTracker))
 				if (__midiTracker.player.decrementLoop())
 					__midiTracker.endOfTrack();
+				else
+					this.reset();
 		}
 		else if (event == 0xF0 || event == 0xF7)
 			this.__eventSysEx(event, __control);
