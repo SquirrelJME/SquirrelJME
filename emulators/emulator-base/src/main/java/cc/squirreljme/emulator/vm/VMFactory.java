@@ -1004,7 +1004,8 @@ public abstract class VMFactory
 		// Class path to the environment?
 		String classPath = System.getenv("SQUIRRELJME_CLASSPATH");
 		if (classPath != null)
-			VMFactory.__addPathsWildcard(__libraries, classPath);
+			for (String path : VMFactory.__unSeparateClassPath(classPath))
+				VMFactory.__addPathsWildcard(__libraries, path);
 		
 		// Java Home Directory?
 		String rawJavaHome = System.getenv("SQUIRRELJME_JAVA_HOME");
