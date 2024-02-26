@@ -308,13 +308,33 @@ public class MidiPlayer
 	@Override
 	public void close()
 	{
-		throw Debugging.todo();
+		// Just deallocate
+		this.deallocate();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/02/26
+	 */
 	@Override
 	public void deallocate()
 	{
-		throw Debugging.todo();
+		// Stop playing
+		try
+		{
+			this.stop();
+		}
+		catch (MediaException __ignored)
+		{	
+		}
+		
+		// Mark as closed
+		this.setState(Player.CLOSED);
+		
+		// Destroy everything
+		this._unrealizedIn = null;
+		this._data = null;
+		this._tracks = null;
 	}
 	
 	@Override

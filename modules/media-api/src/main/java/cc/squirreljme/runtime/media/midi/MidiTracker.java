@@ -8,6 +8,7 @@
 
 package cc.squirreljme.runtime.media.midi;
 
+import javax.microedition.media.MediaException;
 import javax.microedition.media.control.MIDIControl;
 
 /**
@@ -38,6 +39,10 @@ public final class MidiTracker
 	volatile long _microsPerTickDiv =
 		-1;
 	
+	/** The time signature. */
+	volatile int _timeSignature =
+		1;
+	
 	/**
 	 * Initializes the MIDI tracker.
 	 *
@@ -66,6 +71,23 @@ public final class MidiTracker
 	}
 	
 	/**
+	 * End of track has been reached, so stop.
+	 *
+	 * @since 2024/02/26
+	 */
+	public void endOfTrack()
+	{
+		synchronized (this)
+		{
+			// Indicate to stop
+			this.stopPlayback = true;
+			
+			// We might be in a lock
+			this.notifyAll();
+		}
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2022/04/27
 	 */
@@ -84,7 +106,7 @@ public final class MidiTracker
 			readyAts[i] = Long.MIN_VALUE;
 		
 		// Play almost forever
-		for (int midiLoop = 0;; midiLoop++)
+		for (;;)
 		{
 			// Stop playback immediately?
 			synchronized (this)
@@ -159,6 +181,15 @@ public final class MidiTracker
 			// Reset all controllers
 			control.shortMidiEvent(MIDIControl.CONTROL_CHANGE | channel,
 				121, 0);
-		}		
+		}
+		
+		// Indicate stop
+		try
+		{
+			player.stop();
+		}
+		catch (MediaException __ignored)
+		{
+		}
 	}
 }

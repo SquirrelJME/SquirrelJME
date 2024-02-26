@@ -44,7 +44,7 @@ public abstract class AbstractPlayer
 	
 	/** The loop counter which controls how much the audio replays. */
 	@SquirrelJMEVendorApi
-	protected volatile int loopCounter =
+	volatile int _loopCounter =
 		1;
 	
 	/** The state of the player. */
@@ -180,6 +180,23 @@ public abstract class AbstractPlayer
 			{
 				t.printStackTrace();
 			}
+	}
+	
+	/**
+	 * Decrement the loop count.
+	 *
+	 * @return If the loop has reached zero.
+	 * @since 2024/02/26
+	 */
+	public boolean decrementLoop()
+	{
+		int count = this._loopCounter;
+		
+		if ((--count) <= 0)
+			return true;
+		
+		this._loopCounter = count;
+		return false;
 	}
 	
 	/**
@@ -356,7 +373,7 @@ public abstract class AbstractPlayer
 			throw new IllegalStateException("EA0h");
 		
 		// Set the internal loop counter
-		this.loopCounter = __count;
+		this._loopCounter = __count;
 	}
 	
 	/**

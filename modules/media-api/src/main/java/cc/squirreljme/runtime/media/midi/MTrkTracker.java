@@ -90,10 +90,19 @@ public class MTrkTracker
 		else
 			delta = 0;
 		
-		// Read in event and handle accordingly
+		// Read in event
 		int event = this.read();
+		
+		// Debug
+		Debugging.debugNote("MIDI Event: %02x", event);
+		
+		// Handle
 		if (event == 0xFF)
-			this.__eventMeta(__midiTracker);
+		{
+			if (this.__eventMeta(__midiTracker))
+				if (__midiTracker.player.decrementLoop())
+					__midiTracker.endOfTrack();
+		}
 		else if (event == 0xF0 || event == 0xF7)
 			this.__eventSysEx(event, __control);
 		else
@@ -199,10 +208,11 @@ public class MTrkTracker
 	 * Handles a meta event, which is ignored.
 	 *
 	 * @param __midiTracker The MIDI tracker being used.
+	 * @return Will return {@code true} to stop playback.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/02/26
 	 */
-	private void __eventMeta(MidiTracker __midiTracker)
+	private boolean __eventMeta(MidiTracker __midiTracker)
 		throws NullPointerException
 	{
 		if (__midiTracker == null)
@@ -210,8 +220,26 @@ public class MTrkTracker
 		
 		// Read in all the data
 		int type = this.read();
-		int len = this.readVariable();
-		byte[] bulk = this.readBulk(len);
+		int len;
+		byte[] bulk;
+		
+		// Sequence number, the specification says the length is two but
+		// it actually has no data following it
+		if (type == 0x00)
+		{
+			this.read();
+			
+			// Ignore these
+			len = 0;
+			bulk = this._bulk;
+		}
+		
+		// Read in data
+		else
+		{
+			len = this.readVariable();
+			bulk = this.readBulk(len);
+		}
 		
 		// Depends on the type
 		switch (type)
@@ -224,14 +252,14 @@ public class MTrkTracker
 			case 0x05:	// Lyric
 			case 0x06:	// Marker
 			case 0x07:	// Cue Point
-				Debugging.debugNote("MIDI: %s",
-					new String(bulk, 0, len));
+				Debugging.debugNote("MIDI: %02x %s",
+					type, new String(bulk, 0, len));
 				break;
 				
 				// End of track
 			case 0x2F:
 				this.reset();
-				break;
+				return true;
 				
 				// Set Tempo
 			case 0x51:
@@ -242,11 +270,27 @@ public class MTrkTracker
 							500_000L / tickDiv;
 				}
 				break;
+			
+				// Set Time Signature
+			case 0x58:
+				{
+					// I have no idea what any of this means
+					int num = bulk[0];
+					int den = bulk[1];
+					int clocksPerMetronome = bulk[2];
+					int notated32NoteInMidiQuarter = bulk[3];
+					
+					// TODO: ??????
+				}
+				break;
 				
 				// Do not care
 			default:
 				break;
 		}
+		
+		// Default continue playing
+		return false;
 	}
 	
 	/**
@@ -273,8 +317,14 @@ public class MTrkTracker
 			case 0b1000_0000:	// Note Off
 			case 0b1001_0000:	// Note On
 			case 0b1010_0000:	// After touch
-			case 0b1011_0000:	// Control change
 			case 0b1110_0000:	// Pitch wheel
+				data1 = this.read();
+				data2 = this.read();
+				break;
+				
+				// Control change is special as it may be double byte or
+				// single byte depending on the message
+			case 0b1011_0000:
 				data1 = this.read();
 				data2 = this.read();
 				break;
@@ -289,6 +339,14 @@ public class MTrkTracker
 				else if (__event == 0b1111_0011)
 					data1 = this.read();
 				break;
+				
+			default:
+				// Implied channel zero event
+				if ((__event & 0x80) == 0)
+				{
+					__event = 0b1011_0000;
+					data1 = this.read();
+				}
 		}
 		
 		// Send event
@@ -309,7 +367,6 @@ public class MTrkTracker
 		
 		// Read bulk message
 		byte[] sysEx = this.readBulk(length);
-		
 		
 		// Send long message
 		__control.longMidiEvent(sysEx, 0, length);
