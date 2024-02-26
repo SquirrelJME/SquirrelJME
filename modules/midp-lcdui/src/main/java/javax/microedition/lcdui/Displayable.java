@@ -16,6 +16,7 @@ import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
@@ -723,6 +724,7 @@ public abstract class Displayable
 	 * @param __isFull Is this full-screen?
 	 * @since 2021/06/24
 	 */
+	@SquirrelJMEVendorApi
 	final void __updateFormTitle(boolean __knownFull, boolean __isFull)
 	{
 		// If it is unknown whether we are full-screen, then restore the last
@@ -738,7 +740,7 @@ public abstract class Displayable
 			__knownFull, __isFull, this._displayTitle);
 		
 		// If we are not full-screen then the title bar is at the top, so we
-		// can just say we our SquirrelJME. Otherwise, that will be hidden so
+		// can just say our SquirrelJME. Otherwise, that will be hidden, so
 		// we can set the main window title.
 		String useTitle;
 		if (!__isFull)
@@ -752,7 +754,7 @@ public abstract class Displayable
 			UIWidgetProperty.STRING_FORM_TITLE, 0, useTitle);
 		
 		// If this is a form, since we updated the title we should update
-		// all of the layout since the title placement could cause the
+		// all the layout since the title placement could cause the
 		// locations of items to change.
 		if (this instanceof Form)
 			((Form)this).__update();

@@ -3,44 +3,32 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the Mozilla Public License Version 2.0.
+// SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.runtime.media;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import java.util.LinkedList;
-import java.util.List;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import javax.microedition.media.Control;
-import javax.microedition.media.Manager;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
 import javax.microedition.media.PlayerListener;
-import javax.microedition.media.TimeBase;
+import javax.microedition.media.control.VolumeControl;
 
 /**
  * This is a player which does nothing.
  *
  * @since 2019/04/15
  */
+@SquirrelJMEVendorApi
 public final class NullPlayer
-	implements Player
+	extends AbstractPlayer
 {
-	/** The mime type. */
-	private final String mime;
-	
-	/** Listeners available. */
-	private final List<PlayerListener> _listeners =
-		new LinkedList<>();
-	
-	/** The timebase. */
-	private TimeBase _timebase =
-		Manager.getSystemTimeBase();
-	
-	/** The state of the player. */
-	private volatile int _state =
-		Player.UNREALIZED;
+	/** Null volume control. */
+	@SquirrelJMEVendorApi
+	private final VolumeControl volumeControl =
+		new NullVolumeControl();
 	
 	/**
 	 * Initializes the player.
@@ -49,37 +37,70 @@ public final class NullPlayer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/15
 	 */
+	@SquirrelJMEVendorApi
 	public NullPlayer(String __mime)
 		throws NullPointerException
 	{
-		if (__mime == null)
-			throw new NullPointerException("NARG");
-		
-		this.mime = __mime;
+		super(__mime);
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2019/04/15
+	 * @since 2022/04/24
 	 */
 	@Override
-	public final void addPlayerListener(PlayerListener __l)
+	@SquirrelJMEVendorApi
+	protected void becomingRealized()
 	{
-		// Ignore?
-		if (__l == null)
-			return;
-		
-		/* {@squirreljme.error EA01 Null Player has been closed.} */
-		if (this._state == Player.CLOSED)
-			throw new IllegalStateException("EA01");
-		
-		// Add unique listener
-		List<PlayerListener> listeners = this._listeners;
-		synchronized (listeners)
-		{
-			if (!listeners.contains(__l))
-				listeners.add(__l);
-		}
+		// Does nothing
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/04/24
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	protected void becomingStarted()
+		throws MediaException
+	{
+		// Does nothing
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/04/27
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	protected void becomingStopped()
+		throws MediaException
+	{
+		// Does nothing
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/04/25
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	protected long determineDuration()
+	{
+		// There is no duration for null media
+		return 0;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/04/24
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	protected void becomingPrefetched()
+		throws MediaException
+	{
+		// Does nothing
 	}
 	
 	/**
@@ -87,14 +108,15 @@ public final class NullPlayer
 	 * @since 2019/04/15
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final void close()
 	{
-		if (this._state != Player.CLOSED)
+		if (this.getState() != Player.CLOSED)
 		{
-			this._state = Player.CLOSED;
+			this.setState(Player.CLOSED);
 			
 			// Send event
-			this.__event(PlayerListener.CLOSED, null);
+			this.broadcastEvent(PlayerListener.CLOSED, null);
 		}
 	}
 	
@@ -103,13 +125,14 @@ public final class NullPlayer
 	 * @since 2019/04/15
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final void deallocate()
 	{
-		/* {@squirreljme.error EA03 Null Player has been closed.} */
-		if (this._state == Player.CLOSED)
+		// {@squirreljme.error EA03 Null Player has been closed.}
+		if (this.getState() == Player.CLOSED)
 			throw new IllegalStateException("EA03");
 		
-		if (this._state == Player.STARTED)
+		if (this.getState() == Player.STARTED)
 		{
 			// Implicit stop state
 			try
@@ -122,7 +145,7 @@ public final class NullPlayer
 			}
 			
 			// Become realized
-			this._state = Player.REALIZED;
+			this.setState(Player.REALIZED);
 		}
 	}
 	
@@ -131,25 +154,17 @@ public final class NullPlayer
 	 * @since 2019/04/15
 	 */
 	@Override
-	public final String getContentType()
+	@SquirrelJMEVendorApi
+	public final Control getControl(String __control)
 	{
-		return this.mime;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/04/15
-	 */
-	@Override
-	public final Control getControl(String __v)
-	{
-		/* {@squirreljme.error AE07 No control specified.} */
-		if (__v == null)
-			throw new IllegalArgumentException("AE07");
+		// {@squirreljme.error EA07 No control specified.}
+		if (__control == null)
+			throw new IllegalArgumentException("EA07");
 		
-		if (__v.equals("VolumeControl") ||
-			__v.equals("javax.microedition.media.control.VolumeControl"))
-			return new NullVolumeControl();
+		if (__control.equals("VolumeControl") ||
+			__control.equals("javax.microedition.media.control.VolumeControl"))
+			return this.volumeControl;
+		
 		return null;
 	}
 	
@@ -158,9 +173,10 @@ public final class NullPlayer
 	 * @since 2019/04/15
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final Control[] getControls()
 	{
-		throw Debugging.todo();
+		return new Control[]{this.volumeControl};
 	}
 	
 	/**
@@ -168,23 +184,14 @@ public final class NullPlayer
 	 * @since 2019/04/15
 	 */
 	@Override
-	public final long getDuration()
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/04/15
-	 */
-	@Override
+	@SquirrelJMEVendorApi
 	public final long getMediaTime()
 	{
 		synchronized (this)
 		{
-			/* {@squirreljme.error EA08 Cannot obtain the media time for a
-			closed null stream.} */
-			if (this._state == Player.CLOSED)
+			// {@squirreljme.error EA08 Cannot obtain the media time for a
+			// closed null stream.}
+			if (this.getState() == Player.CLOSED)
 				throw new IllegalStateException("EA08");
 			
 			return Player.TIME_UNKNOWN;
@@ -196,188 +203,20 @@ public final class NullPlayer
 	 * @since 2019/04/15
 	 */
 	@Override
-	public final int getState()
-	{
-		synchronized (this)
-		{
-			return this._state;
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/04/15
-	 */
-	@Override
-	public final TimeBase getTimeBase()
-	{
-		return this._timebase;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/04/15
-	 */
-	@Override
-	public final void prefetch()
-		throws MediaException
-	{
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/04/15
-	 */
-	@Override
-	public final void realize()
-		throws MediaException
-	{
-		/* {@squirreljme.error EA04 Null Player has been closed.} */
-		if (this._state == Player.CLOSED)
-			throw new IllegalStateException("EA04");
-		
-		// Become realized, otherwise everything is ignored
-		if (this._state == Player.UNREALIZED)
-			this._state = Player.REALIZED;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/04/15
-	 */
-	@Override
-	public final void removePlayerListener(PlayerListener __l)
-	{
-		// Ignore?
-		if (__l == null)
-			return;
-		
-		/* {@squirreljme.error EA02 Null Player has been closed.} */
-		if (this._state == Player.CLOSED)
-			throw new IllegalStateException("EA02");
-		
-		// Remove it
-		List<PlayerListener> listeners = this._listeners;
-		synchronized (listeners)
-		{
-			listeners.remove(__l);
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/04/15
-	 */
-	@Override
-	public final void setLoopCount(int __a)
-	{
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/04/15
-	 * @param __now
-	 */
-	@Override
+	@SquirrelJMEVendorApi
 	public final long setMediaTime(long __now)
 		throws MediaException
 	{
 		synchronized (this)
 		{
-			/* {@squirreljme.error EA09 Cannot set the media time on a null
-			stream.} */
-			if (this._state == Player.CLOSED ||
-				this._state == Player.UNREALIZED)
+			// {@squirreljme.error EA09 Cannot set the media time on a null
+			// stream.}
+			if (this.getState() == Player.CLOSED ||
+				this.getState() == Player.UNREALIZED)
 				throw new IllegalStateException("EA09");
 			
 			return Player.TIME_UNKNOWN;
 		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/04/15
-	 */
-	@Override
-	public final void setTimeBase(TimeBase __a)
-		throws MediaException
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/04/15
-	 */
-	@Override
-	public final void start()
-		throws MediaException
-	{
-		/* {@squirreljme.error EA05 Null Player has been closed.} */
-		if (this._state == Player.CLOSED)
-			throw new IllegalStateException("EA05");
-		
-		if (this._state != Player.STARTED || this._state == Player.PREFETCHED)
-		{
-			this._state = Player.STARTED;
-			
-			// Send event
-			this.__event(PlayerListener.STARTED,
-				Long.valueOf(this._timebase.getTime()));
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/04/15
-	 */
-	@Override
-	public final void stop()
-		throws MediaException
-	{
-		/* {@squirreljme.error EA06 Null Player has been closed.} */
-		if (this._state == Player.CLOSED)
-			throw new IllegalStateException("EA06");
-		
-		if (this._state != Player.STARTED)
-		{
-			this._state = Player.PREFETCHED;
-			
-			// Send event
-			this.__event(PlayerListener.STOPPED,
-				Long.valueOf(this._timebase.getTime()));
-		}
-	}
-	
-	/**
-	 * Sends an event to all listeners.
-	 *
-	 * @param __key The key used.
-	 * @param __val The value used.
-	 * @since 2019/06/28
-	 */
-	private void __event(String __key, Object __val)
-	{
-		PlayerListener[] poke;
-		
-		// Get listeners to poke
-		List<PlayerListener> listeners = this._listeners;
-		synchronized (listeners)
-		{
-			poke = listeners.<PlayerListener>toArray(
-				new PlayerListener[listeners.size()]);
-		}
-		
-		// Poke them all
-		for (PlayerListener pl : poke)
-			try
-			{
-				pl.playerUpdate(this, __key, __val);
-			}
-			catch (Throwable t)
-			{
-				t.printStackTrace();
-			}
 	}
 }
 

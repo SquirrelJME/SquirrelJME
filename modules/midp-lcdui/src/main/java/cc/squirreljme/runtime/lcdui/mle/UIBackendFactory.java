@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.fb.FBUIBackend;
 import cc.squirreljme.runtime.lcdui.mle.fb.NativeFBAttachment;
@@ -24,6 +25,7 @@ import cc.squirreljme.runtime.lcdui.mle.pure.NativeUIBackend;
  *
  * @since 2020/07/19
  */
+@SquirrelJMEVendorApi
 public final class UIBackendFactory
 {
 	/**
@@ -31,6 +33,7 @@ public final class UIBackendFactory
 	 * Force the usage of the fallback UIForm in the event that native form
 	 * handling should NOT be used.}
 	 */
+	@SquirrelJMEVendorApi
 	public static final String FORCE_FALLBACK_PROPERTY =
 		"cc.squirreljme.runtime.lcdui.mle.fallback";
 	
@@ -39,6 +42,7 @@ public final class UIBackendFactory
 	 * Force that the headless UIForm be used, this will mean that nothing
 	 * will be displayed on the screen.}
 	 */
+	@SquirrelJMEVendorApi
 	public static final String FORCE_HEADLESS_PROPERTY =
 		"cc.squirreljme.runtime.lcdui.mle.headless";
 	
@@ -55,6 +59,7 @@ public final class UIBackendFactory
 	 * @since 2020/06/30
 	 */
 	@SuppressWarnings("StaticVariableUsedBeforeInitialization")
+	@SquirrelJMEVendorApi
 	public static UIBackend getInstance(boolean __allowHeadless)
 	{
 		// If this was already cached, use that

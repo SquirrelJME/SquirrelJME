@@ -1,25 +1,15 @@
-// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the Mozilla Public License Version 2.0.
+// SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package javax.microedition.media;
+/**
+ * This contains the support within SquirrelJME for MIDI generation.
+ *
+ * @since 2022/04/22
+ */
 
-
-import cc.squirreljme.runtime.cldc.annotation.Api;
-
-@Api
-public interface Controllable
-{
-	@Api
-	Control getControl(String __control);
-	
-	@Api
-	Control[] getControls();
-}
-
-
+package cc.squirreljme.runtime.media.midi;
