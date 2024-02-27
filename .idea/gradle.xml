@@ -108,6 +108,7 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$/android" />
+            <option value="$PROJECT_DIR$/android/android-core" />
           </set>
         </option>
       </GradleProjectSettings>
