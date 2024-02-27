@@ -66,7 +66,6 @@ public class NativeGameController
 	 * Poll the game controller and execute key commands.
 	 *
 	 * @param __callback The callback to send keys to.
-	 * @return If there are more events.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/02/26
 	 */
