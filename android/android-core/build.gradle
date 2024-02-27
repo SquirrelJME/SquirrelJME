@@ -1,12 +1,14 @@
 plugins {
 	id "com.android.library"
+	id "org.jetbrains.kotlin.android" version "1.8.0" apply false
 }
 
 android {
 	namespace "cc.squirreljme.core"
-	compileSdk 26
+	compileSdk 28
 	
 	defaultConfig {
+		minSdk 28
 		versionCode 300
 		versionName "0.3.0"
 	}

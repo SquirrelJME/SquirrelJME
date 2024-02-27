@@ -14,9 +14,13 @@ buildscript {
 	}
 }
 
-subprojects {
+allprojects {
 	repositories {
 		google()
 		mavenCentral()
+		
+		maven {
+			url "https://maven.google.com/" 
+		}
 	}
 }

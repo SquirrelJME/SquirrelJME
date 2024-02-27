@@ -1,2 +1,13 @@
+dependencyResolutionManagement {
+	repositories {
+		google()
+		mavenCentral()
+		
+		maven {
+			url "https://maven.google.com/" 
+		}
+	}
+}
+
 include "android-core"
 include "android-33"
