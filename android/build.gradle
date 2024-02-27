@@ -1,0 +1,22 @@
+buildscript {
+	repositories {
+		google()
+		mavenCentral()
+		gradlePluginPortal()
+	}
+	
+	dependencies {
+		// Android Tools
+		classpath 'com.android.tools.build:gradle:7.4.2'
+		
+		// Shadow Jar, for single Jars
+		classpath 'gradle.plugin.com.github.johnrengelman:shadow:7.1.2'
+	}
+}
+
+subprojects {
+	repositories {
+		google()
+		mavenCentral()
+	}
+}

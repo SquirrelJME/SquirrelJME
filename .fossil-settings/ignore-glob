@@ -1,8 +1,17 @@
 # Gradle building
+local.properties
+android/local.properties
 .gradle/
 buildSrc/.gradle/
 buildSrc/build
 buildSrc/out
+android/buildSrc/.gradle/
+android/buildSrc/build
+android/buildSrc/out
+android/build
+android/out
+android/*/build
+android/*/out
 emulators/[^/]*/build
 modules/[^/]*/build
 tools/[^/]*/build

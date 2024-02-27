@@ -1,10 +1,10 @@
 plugins {
-	id "com.android.library"
+	id "com.android.application"
 }
 
 android {
 	namespace "cc.squirreljme"
-	compileSdk 26
+	compileSdk 33
 	
 	defaultConfig {
 		versionCode 300
