@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-	namespace "cc.squirreljme"
+	namespace "cc.squirreljme.core"
 	compileSdk 26
 	
 	defaultConfig {
