@@ -98,6 +98,9 @@ if (JavaVersion.current() >= JavaVersion.VERSION_HIGHER ||
 	}
 }
 
+// Do not include "android" here because it is considered a completely
+// separate project and module.
+
 // Modules and available platforms
 include "modules"
 include "emulators"
