@@ -66,16 +66,16 @@ static sjme_inline sjme_jboolean sjme_alloc_corruptFail(
 	return SJME_JNI_TRUE;
 }
 #else
-	/**
-	 * Prints information on a given link and returns.
-	 *
-	 * @param pool The pool this is in.
-	 * @param atLink The link to print info for.
-	 * @param trigger The trigger for the failure.
-	 * @return Always @c SJME_JNI_TRUE .
-	 * @since 2023/12/29
-	 */
-	#define sjme_alloc_corruptFail(pool, atLink, trigger) SJME_JNI_TRUE
+/**
+ * Prints information on a given link and returns.
+ *
+ * @param pool The pool this is in.
+ * @param atLink The link to print info for.
+ * @param trigger The trigger for the failure.
+ * @return Always @c SJME_JNI_TRUE .
+ * @since 2023/12/29
+ */
+#define sjme_alloc_corruptFail(pool, atLink, trigger) SJME_JNI_TRUE
 #endif
 
 static sjme_inline sjme_jboolean sjme_alloc_checkCorruptionRange(
@@ -204,6 +204,29 @@ static sjme_jboolean sjme_alloc_checkCorruption(sjme_alloc_pool* pool,
 	return SJME_JNI_FALSE;
 }
 
+static sjme_errorCode sjme_alloc_getLinkOptional(
+	sjme_attrInNotNull void* addr,
+	sjme_attrOutNotNull sjme_alloc_link** outLink,
+	sjme_attrInValue sjme_jboolean checkCorruption)
+{
+	sjme_alloc_link* link;
+
+	if (addr == NULL || outLink == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Just need to do some reversing math. */
+	link = (sjme_alloc_link*)(((uintptr_t)addr) -
+		offsetof(sjme_alloc_link, block));
+
+	/* Check the integrity of the link. */
+	if (checkCorruption)
+		sjme_alloc_checkCorruption(link->pool, link);
+	
+	/* Success! */
+	*outLink = link;
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_alloc_poolInitMalloc(
 	sjme_attrOutNotNull sjme_alloc_pool** outPool,
 	sjme_attrInPositive sjme_jint size)
@@ -235,6 +258,7 @@ sjme_errorCode sjme_alloc_poolInitStatic(
 	sjme_alloc_link* frontLink;
 	sjme_alloc_link* midLink;
 	sjme_alloc_link* backLink;
+	sjme_alloc_link* specialParent;
 
 	if (outPool == NULL || baseAddr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -299,6 +323,12 @@ sjme_errorCode sjme_alloc_poolInitStatic(
 	VALGRIND_MAKE_MEM_NOACCESS(backLink,
 		(SJME_SIZEOF_ALLOC_LINK(0)));
 #endif
+
+	/* If this is a valid link then we are allocating a nested pool. */
+	specialParent = NULL;
+	if (!sjme_error_is(sjme_alloc_getLinkOptional(baseAddr,
+		&specialParent, SJME_JNI_FALSE)))
+		specialParent->flags |= SJME_ALLOC_LINK_FLAG_NESTED_POOL;
 	
 	/* Use the pool. */
 	*outPool = pool;
@@ -345,10 +375,11 @@ sjme_errorCode sjme_alloc_poolSpaceTotalSize(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_alloc(
+sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc)(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrInPositiveNonZero sjme_jint size,
-	sjme_attrOutNotNull void** outAddr)
+	sjme_attrOutNotNull void** outAddr
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
 {
 	sjme_alloc_link* scanLink;
 	sjme_alloc_link* rightLink;
@@ -480,6 +511,13 @@ sjme_errorCode sjme_alloc(
 	pool->space[SJME_ALLOC_POOL_SPACE_USED].reserved +=
 		SJME_SIZEOF_ALLOC_LINK(0);
 
+#if defined(SJME_CONFIG_DEBUG)
+	/* Set debug info. */
+	scanLink->debugFile = file;
+	scanLink->debugLine = line;
+	scanLink->debugFunction = func;
+#endif
+
 	/* Make sure we did not cause corruption. */
 	if (sjme_alloc_checkCorruption(pool, scanLink))
 		return SJME_ERROR_MEMORY_CORRUPTION;
@@ -489,11 +527,12 @@ sjme_errorCode sjme_alloc(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_alloc_copy(
+sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_copy)(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrInPositiveNonZero sjme_jint size,
 	sjme_attrOutNotNull void** outAddr,
-	sjme_attrInNotNull void* inAddr)
+	sjme_attrInNotNull void* inAddr
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
 {
 	sjme_errorCode error;
 	void* dest;
@@ -503,8 +542,9 @@ sjme_errorCode sjme_alloc_copy(
 
 	/* Allocate new copy first. */
 	dest = NULL;
-	if (sjme_error_is(error = sjme_alloc(pool, size, &dest)) ||
-		dest == NULL)
+	if (sjme_error_is(error = SJME_DEBUG_IDENTIFIER(sjme_alloc)(
+		pool, size, &dest
+		SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_COPY)) || dest == NULL)
 		return sjme_error_default(error);
 
 	/* Copy over. */
@@ -515,9 +555,10 @@ sjme_errorCode sjme_alloc_copy(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_alloc_format(
+sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_format)(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrOutNotNull sjme_lpstr* outString,
+	SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL SJME_DEBUG_ONLY_COMMA
 	sjme_attrInNotNull sjme_attrFormatArg const char* format,
 	...)
 {
@@ -546,8 +587,9 @@ sjme_errorCode sjme_alloc_format(
 	len = strlen(buf);
 
 	/* Copy it. */
-	return sjme_alloc_copy(inPool, len + 1,
-		(void**)outString, buf);
+	return SJME_DEBUG_IDENTIFIER(sjme_alloc_copy)(inPool, len + 1,
+		(void**)outString, buf
+		SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_COPY);
 #undef BUF_SIZE
 }
 
@@ -573,8 +615,18 @@ sjme_errorCode sjme_alloc_free(
 
 	/* Mark block as free. */
 	link->space = SJME_ALLOC_POOL_SPACE_FREE;
+	
+	/* Clear flags, if any. */
+	link->flags = 0;
 
-	/* Link into free block chain. */
+#if defined(SJME_CONFIG_DEBUG)
+	/* Remove debug information. */
+	link->debugFile = NULL;
+	link->debugLine = 0;
+	link->debugFunction = NULL;
+#endif
+
+	/* Link into free chain. */
 	link->freeNext = pool->freeFirstLink;
 	pool->freeFirstLink->freePrev = link;
 	pool->freeFirstLink = link;
@@ -590,26 +642,14 @@ sjme_errorCode sjme_alloc_getLink(
 	sjme_attrInNotNull void* addr,
 	sjme_attrOutNotNull sjme_alloc_link** outLink)
 {
-	sjme_alloc_link* link;
-
-	if (addr == NULL || outLink == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Just need to do some reversing math. */
-	link = (sjme_alloc_link*)(((uintptr_t)addr) -
-		offsetof(sjme_alloc_link, block));
-
-	/* Check the integrity of the link. */
-	sjme_alloc_checkCorruption(link->pool, link);
-	
-	/* Success! */
-	*outLink = link;
-	return SJME_ERROR_NONE;
+	return sjme_alloc_getLinkOptional(addr, outLink,
+		SJME_JNI_TRUE);
 }
 
-sjme_errorCode sjme_alloc_realloc(
+sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_realloc)(
 	sjme_attrInOutNotNull void** inOutAddr,
-	sjme_attrInPositive sjme_jint newSize)
+	sjme_attrInPositive sjme_jint newSize
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
 {
 	sjme_alloc_link* link;
 	void* result;
@@ -673,8 +713,10 @@ sjme_errorCode sjme_alloc_realloc(
 
 		/* Allocate new block. */
 		result = NULL;
-		if (sjme_error_is(error = sjme_alloc(link->pool, newSize,
-			&result)) || result == NULL)
+		if (sjme_error_is(error = SJME_DEBUG_IDENTIFIER(sjme_alloc)(
+			link->pool, newSize, &result
+			SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_COPY)) ||
+			result == NULL)
 			return sjme_error_defaultOr(error,
 				SJME_ERROR_OUT_OF_MEMORY);
 

@@ -173,8 +173,13 @@ static sjme_jboolean sjme_unitShortingEmit(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 		return sjme_die("No test structure?");
 		
 	/* Emit message. */
+#if defined(SJME_CONFIG_DEBUG)
 	sjme_messageV(file, line, func, SJME_JNI_FALSE,
 		format, vaArgs);
+#else
+	sjme_messageR(file, line, func, SJME_JNI_FALSE,
+		format, vaArgs);
+#endif
 	
 	/* Hit abort for debugging. */
 	sjme_debug_abort();
