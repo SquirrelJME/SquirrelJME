@@ -8,6 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 #include "classBuilder.h"
+#include "sjme/alloc.h"
 
 sjme_errorCode sjme_classBuilder_addAttribute(
 	sjme_attrInNegativeOnePositive sjme_jint order,
@@ -132,11 +133,33 @@ sjme_errorCode sjme_classBuilder_build(
 	sjme_attrInValue sjme_jboolean allowInvalid,
 	sjme_attrInNullable void* whatever)
 {
+	sjme_errorCode error;
+	sjme_classBuilder* result;
+	
 	if (inPool == NULL || outBuilder == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Allocate result. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_alloc(inPool, sizeof(*result),
+		&result)) || result == NULL)
+		return sjme_error_default(error);
+	
+	/* Whatever storage, for use as needed. */
+	result->whatever = whatever;
+	
+	/* Allocate output array. */
+	if (sjme_error_is(error = sjme_stream_outputOpenByteArray(inPool,
+		&result->stream, 1024, NULL, result)))
+		goto fail_outputStream;
 
 	sjme_todo("Implement this?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
+	
+fail_outputStream:
+	if (result != NULL)
+		sjme_alloc_free(result);
+	return sjme_error_default(error);
 }
 
 sjme_errorCode sjme_classBuilder_declareClassA(
