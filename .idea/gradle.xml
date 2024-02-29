@@ -68,6 +68,9 @@
             <option value="$PROJECT_DIR$/modules/midp-lcdui" />
             <option value="$PROJECT_DIR$/modules/opengles" />
             <option value="$PROJECT_DIR$/modules/profile-meep" />
+            <option value="$PROJECT_DIR$/modules/scritch-ui" />
+            <option value="$PROJECT_DIR$/modules/scritch-ui-fb" />
+            <option value="$PROJECT_DIR$/modules/scritch-ui-uiform" />
             <option value="$PROJECT_DIR$/modules/squirrel-quarrel" />
             <option value="$PROJECT_DIR$/modules/std-apps-core" />
             <option value="$PROJECT_DIR$/modules/std-apps-core-lcdui" />

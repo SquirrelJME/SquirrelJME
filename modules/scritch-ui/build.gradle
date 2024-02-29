@@ -1,0 +1,19 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+
+description = "SquirrelJME Scritch UI API Core."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "UX"
+	swmType = JavaMEMidletType.API
+	swmName = "Scritch UI"
+	swmVendor = "Stephanie Gawroriski"
+	tags += "graphics"
+	tags += "scritchui"
+}
+
+dependencies
+{
+	api project(":modules:cldc-compact")
+}

@@ -1,0 +1,21 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+
+description = "Compatibility layer for deprecated SquirrelJME UIForm."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "UZ"
+	swmType = JavaMEMidletType.API
+	swmName = "Scritch UI UIForm Wrapper"
+	swmVendor = "Stephanie Gawroriski"
+	tags += "graphics"
+	tags += "scritchui"
+}
+
+dependencies
+{
+	api project(":modules:cldc-compact")
+	
+	api project(":modules:scritch-ui")
+}
