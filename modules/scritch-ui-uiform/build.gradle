@@ -11,6 +11,10 @@ squirreljme
 	swmVendor = "Stephanie Gawroriski"
 	tags += "graphics"
 	tags += "scritchui"
+	
+	// Optional dependency on the framebuffer implementation in the event
+	// that the system has no native ScritchUI interface
+	optionalDependencies += project(":modules:scritch-ui-fb")
 }
 
 dependencies
