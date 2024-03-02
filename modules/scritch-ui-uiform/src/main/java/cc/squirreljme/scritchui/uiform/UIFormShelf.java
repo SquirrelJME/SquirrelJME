@@ -22,6 +22,7 @@ import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import org.intellij.lang.annotations.Flow;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.Async;
@@ -60,11 +61,14 @@ public final class UIFormShelf
 	 * @since 2023/01/14
 	 */
 	@SquirrelJMEVendorApi
-	public static native void callback(
+	public static void callback(
 		@NotNull UIDisplayBracket __display,
 		@Flow(target = "__display",
 			targetIsContainer = true) UIDisplayCallback __callback)
-		throws MLECallError;
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * This is used to register the callback which is called with the user
@@ -77,10 +81,13 @@ public final class UIFormShelf
 	 * @since 2020/07/03
 	 */
 	@SquirrelJMEVendorApi
-	public static native void callback(@NotNull UIFormBracket __form,
+	public static void callback(@NotNull UIFormBracket __form,
 		@Flow(target = "__display",
 			targetIsContainer = true) UIFormCallback __callback)
-		throws MLECallError;
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the displays which are attached to the system.
@@ -92,8 +99,11 @@ public final class UIFormShelf
 	 */
 	@SquirrelJMEVendorApi
 	@Flow(sourceIsContainer = true)
-	public static native UIDisplayBracket[] displays()
-		throws MLECallError;
+	public static UIDisplayBracket[] displays()
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the form that is currently being shown on the display.
@@ -105,9 +115,12 @@ public final class UIFormShelf
 	 */
 	@SquirrelJMEVendorApi
 	@Flow(source = "__display", sourceIsContainer = true)
-	public static native UIFormBracket displayCurrent(
+	public static UIFormBracket displayCurrent(
 		@NotNull UIDisplayBracket __display)
-		throws MLECallError;
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Shows the given display without having a form be displayed on the
@@ -121,9 +134,12 @@ public final class UIFormShelf
 	 * @since 2023/01/14
 	 */
 	@SquirrelJMEVendorApi
-	public static native void displayShow(@NotNull UIDisplayBracket __display,
+	public static void displayShow(@NotNull UIDisplayBracket __display,
 		boolean __show)
-		throws MLECallError;
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Show the given form on the display.
@@ -135,10 +151,13 @@ public final class UIFormShelf
 	 * @since 2020/07/01
 	 */
 	@SquirrelJMEVendorApi
-	public static native void displayShow(@NotNull UIDisplayBracket __display,
+	public static void displayShow(@NotNull UIDisplayBracket __display,
 		@Flow(target = "__display",
 			targetIsContainer = true) UIFormBracket __form)
-		throws MLECallError;
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Checks if the two displays represent the same {@link UIDisplayBracket}.
@@ -150,9 +169,12 @@ public final class UIFormShelf
 	 * @since 2020/07/01
 	 */
 	@SquirrelJMEVendorApi
-	public static native boolean equals(UIDisplayBracket __a,
+	public static boolean equals(UIDisplayBracket __a,
 		UIDisplayBracket __b)
-		throws MLECallError;
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Checks if the two drawables represent the same
@@ -165,9 +187,12 @@ public final class UIFormShelf
 	 * @since 2023/01/13
 	 */
 	@SquirrelJMEVendorApi
-	public static native boolean equals(UIDrawableBracket __a,
+	public static boolean equals(UIDrawableBracket __a,
 		UIDrawableBracket __b)
-		throws MLECallError;
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Checks if the two displays represent the same {@link UIFormBracket}.
@@ -179,9 +204,12 @@ public final class UIFormShelf
 	 * @since 2020/07/01
 	 */
 	@SquirrelJMEVendorApi
-	public static native boolean equals(UIFormBracket __a,
+	public static boolean equals(UIFormBracket __a,
 		UIFormBracket __b)
-		throws MLECallError;
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Checks if the two displays represent the same {@link UIItemBracket}.
@@ -193,9 +221,12 @@ public final class UIFormShelf
 	 * @since 2020/07/01
 	 */
 	@SquirrelJMEVendorApi
-	public static native boolean equals(UIItemBracket __a,
+	public static boolean equals(UIItemBracket __a,
 		UIItemBracket __b)
-		throws MLECallError;
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Checks if the two displays represent the same {@link UIWidgetBracket}.
@@ -207,9 +238,12 @@ public final class UIFormShelf
 	 * @since 2020/09/20
 	 */
 	@SquirrelJMEVendorApi
-	public static native boolean equals(UIWidgetBracket __a,
+	public static boolean equals(UIWidgetBracket __a,
 		UIWidgetBracket __b)
-		throws MLECallError;
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Flushes all the events and forces them to be processed.
@@ -218,8 +252,11 @@ public final class UIFormShelf
 	 * @since 2020/07/26
 	 */
 	@SquirrelJMEVendorApi
-	public static native void flushEvents()
-		throws MLECallError;
+	public static void flushEvents()
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Deletes the given form.
@@ -229,8 +266,11 @@ public final class UIFormShelf
 	 * @since 2020/07/01
 	 */
 	@SquirrelJMEVendorApi
-	public static native void formDelete(@NotNull UIFormBracket __form)
-		throws MLECallError;
+	public static void formDelete(@NotNull UIFormBracket __form)
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the item at the given location.
@@ -245,10 +285,13 @@ public final class UIFormShelf
 	 */
 	@SquirrelJMEVendorApi
 	@Flow(source = "__form", sourceIsContainer = true)
-	public static native UIItemBracket formItemAtPosition(
+	public static UIItemBracket formItemAtPosition(
 		@NotNull UIFormBracket __form,
 		int __pos)
-		throws MLECallError;
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the number of items on the form.
@@ -259,8 +302,11 @@ public final class UIFormShelf
 	 * @since 2020/07/19
 	 */
 	@SquirrelJMEVendorApi
-	public static native int formItemCount(@NotNull UIFormBracket __form)
-		throws MLECallError;
+	public static int formItemCount(@NotNull UIFormBracket __form)
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the position of the item on the given form, or if it is not
@@ -275,9 +321,12 @@ public final class UIFormShelf
 	 * @since 2020/07/18
 	 */
 	@SquirrelJMEVendorApi
-	public static native int formItemPosition(@NotNull UIFormBracket __form,
+	public static int formItemPosition(@NotNull UIFormBracket __form,
 		@NotNull UIItemBracket __item)
-		throws MLECallError;
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Sets the position of a form's item.
@@ -291,10 +340,13 @@ public final class UIFormShelf
 	 * @since 2020/07/18
 	 */
 	@SquirrelJMEVendorApi
-	public static native void formItemPosition(@NotNull UIFormBracket __form,
+	public static void formItemPosition(@NotNull UIFormBracket __form,
 		@Flow(target = "__form",
 			targetIsContainer = true) @NotNull UIItemBracket __item, int __pos)
-		throws MLECallError;
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Removes the item at the given position on the form.
@@ -308,9 +360,12 @@ public final class UIFormShelf
 	 */
 	@SquirrelJMEVendorApi
 	@Flow(source = "__form", sourceIsContainer = true)
-	public static native UIItemBracket formItemRemove(
+	public static UIItemBracket formItemRemove(
 		@NotNull UIFormBracket __form, int __pos)
-		throws MLECallError;
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Creates a new form.
@@ -320,8 +375,11 @@ public final class UIFormShelf
 	 * @since 2020/07/01
 	 */
 	@SquirrelJMEVendorApi
-	public static native UIFormBracket formNew()
-		throws MLECallError;
+	public static UIFormBracket formNew()
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Forces a form to be refreshed.
@@ -331,8 +389,11 @@ public final class UIFormShelf
 	 * @since 2022/07/20
 	 */
 	@SquirrelJMEVendorApi
-	public static native void formRefresh(@NotNull UIFormBracket __form)
-		throws MLECallError;
+	public static void formRefresh(@NotNull UIFormBracket __form)
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the injector for forms, which is used for testing purposes.
@@ -342,8 +403,11 @@ public final class UIFormShelf
 	 * @since 2020/07/26
 	 */
 	@SquirrelJMEVendorApi
-	public static native UIFormCallback injector()
-		throws MLECallError;
+	public static UIFormCallback injector()
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Deletes the specified item.
@@ -355,8 +419,11 @@ public final class UIFormShelf
 	 * @since 2020/07/18
 	 */
 	@SquirrelJMEVendorApi
-	public static native void itemDelete(@NotNull UIItemBracket __item)
-		throws MLECallError;
+	public static void itemDelete(@NotNull UIItemBracket __item)
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the form the item is on.
@@ -367,8 +434,11 @@ public final class UIFormShelf
 	 * @since 2021/01/03
 	 */
 	@SquirrelJMEVendorApi
-	public static native UIFormBracket itemForm(@NotNull UIItemBracket __item)
-		throws MLECallError;
+	public static UIFormBracket itemForm(@NotNull UIItemBracket __item)
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Creates a new item.
@@ -380,9 +450,12 @@ public final class UIFormShelf
 	 * @since 2020/07/17
 	 */
 	@SquirrelJMEVendorApi
-	public static native UIItemBracket itemNew(
+	public static UIItemBracket itemNew(
 		@MagicConstant(valuesFromClass = UIItemType.class) int __type)
-		throws MLECallError;
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns a metric which describes something about the user interface
@@ -398,9 +471,12 @@ public final class UIFormShelf
 	 * @since 2020/06/30
 	 */
 	@SquirrelJMEVendorApi
-	public static native int metric(@NotNull UIDisplayBracket __display,
+	public static int metric(@NotNull UIDisplayBracket __display,
 		@MagicConstant(valuesFromClass = UIMetricType.class) int __metric)
-		throws MLECallError;
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Calls the given method at a later time.
@@ -412,9 +488,12 @@ public final class UIFormShelf
 	 */
 	@SquirrelJMEVendorApi
 	@Async.Schedule
-	public static native void later(@NotNull UIDisplayBracket __display,
+	public static void later(@NotNull UIDisplayBracket __display,
 		int __serialId)
-		throws MLECallError;
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Sets the given item property.
@@ -428,10 +507,13 @@ public final class UIFormShelf
 	 * @since 2020/09/13
 	 */
 	@SquirrelJMEVendorApi
-	public static native void widgetProperty(@NotNull UIWidgetBracket __widget,
+	public static void widgetProperty(@NotNull UIWidgetBracket __widget,
 		@MagicConstant(valuesFromClass = UIWidgetProperty.class) int __intProp,
 		int __sub, int __newValue)
-		throws MLECallError;
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Sets the given item property.
@@ -445,10 +527,13 @@ public final class UIFormShelf
 	 * @since 2020/09/13
 	 */
 	@SquirrelJMEVendorApi
-	public static native void widgetProperty(@NotNull UIWidgetBracket __widget,
+	public static void widgetProperty(@NotNull UIWidgetBracket __widget,
 		@MagicConstant(valuesFromClass = UIWidgetProperty.class) int __strProp,
 		int __sub, String __newValue)
-		throws MLECallError;
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Gets a property of the given widget.
@@ -461,11 +546,14 @@ public final class UIFormShelf
 	 * @since 2020/09/21
 	 */
 	@SquirrelJMEVendorApi
-	public static native int widgetPropertyInt(
+	public static int widgetPropertyInt(
 		@NotNull UIWidgetBracket __widget,
 		@MagicConstant(valuesFromClass = UIWidgetProperty.class) int __intProp,
 		int __sub)
-		throws MLECallError;
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Gets a property of the given widget.
@@ -478,9 +566,12 @@ public final class UIFormShelf
 	 * @since 2020/09/21
 	 */
 	@SquirrelJMEVendorApi
-	public static native String widgetPropertyStr(
+	public static String widgetPropertyStr(
 		@NotNull UIWidgetBracket __widget,
 		@MagicConstant(valuesFromClass = UIWidgetProperty.class) int __strProp,
 		int __sub)
-		throws MLECallError;
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 }
