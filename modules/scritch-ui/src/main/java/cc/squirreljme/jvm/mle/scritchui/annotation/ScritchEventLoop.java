@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.mle.scritchui.annotation;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -26,6 +27,7 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(value= RetentionPolicy.CLASS)
 @Target(value={ElementType.METHOD})
+@SquirrelJMEVendorApi
 public @interface ScritchEventLoop
 {
 }
