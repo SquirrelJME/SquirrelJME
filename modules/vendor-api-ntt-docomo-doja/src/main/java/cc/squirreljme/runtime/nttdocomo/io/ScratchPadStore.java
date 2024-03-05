@@ -12,6 +12,7 @@ package cc.squirreljme.runtime.nttdocomo.io;
 import cc.squirreljme.jvm.launch.IModeApplication;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -26,10 +27,11 @@ import javax.microedition.rms.RecordStoreException;
  *
  * @since 2021/12/02
  */
-final class __ScratchPadStore__
+@SquirrelJMEVendorApi
+public final class ScratchPadStore
 {
 	/** The static set of stores. */
-	private static volatile __ScratchPadStore__[] _STORES;
+	private static volatile ScratchPadStore[] _STORES;
 	
 	/** The record store key prefix. */
 	private static final String _STORE_KEY_PREFIX =
@@ -60,11 +62,12 @@ final class __ScratchPadStore__
 	 * @throws IOException On read errors.
 	 * @since 2021/12/02
 	 */
-	__ScratchPadStore__(int __pad, int __length)
+	@SquirrelJMEVendorApi
+	ScratchPadStore(int __pad, int __length)
 		throws IOException
 	{
 		this._pad = __pad;
-		this._storeKey = __ScratchPadStore__._STORE_KEY_PREFIX + this._pad;
+		this._storeKey = ScratchPadStore._STORE_KEY_PREFIX + this._pad;
 		
 		// Read in the record store data that already exists, if any
 		byte[] data = new byte[__length];
@@ -74,7 +77,7 @@ final class __ScratchPadStore__
 			// Nothing was actually created ever?
 			if (store.getNumRecords() <= 0)
 			{
-				__ScratchPadStore__.__seed(__pad, data);
+				ScratchPadStore.__seed(__pad, data);
 				return;
 			}
 			
@@ -97,6 +100,7 @@ final class __ScratchPadStore__
 	 * @throws IOException If it could not be flushed.
 	 * @since 2021/12/02
 	 */
+	@SquirrelJMEVendorApi
 	public void flush()
 		throws IOException
 	{
@@ -131,6 +135,7 @@ final class __ScratchPadStore__
 	 * @throws IndexOutOfBoundsException If the read is outside of bounds.
 	 * @since 2021/12/02
 	 */
+	@SquirrelJMEVendorApi
 	public InputStream inputStream(int __pos, int __length)
 		throws IndexOutOfBoundsException
 	{
@@ -154,6 +159,7 @@ final class __ScratchPadStore__
 	 * @throws IOException On data copy errors.
 	 * @since 2021/12/02
 	 */
+	@SquirrelJMEVendorApi
 	public OutputStream outputStream(int __pos, int __len)
 		throws IndexOutOfBoundsException, IOException
 	{
@@ -162,7 +168,7 @@ final class __ScratchPadStore__
 			(__pos + __len) > data.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		return new __ScratchPadOutputTransaction__(this, __pos, __len);
+		return new ScratchPadOutputTransaction(this, __pos, __len);
 	}
 	
 	/**
@@ -177,6 +183,7 @@ final class __ScratchPadStore__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/12/02
 	 */
+	@SquirrelJMEVendorApi
 	public void write(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, IOException, NullPointerException
 	{
@@ -216,25 +223,25 @@ final class __ScratchPadStore__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/12/02
 	 */
-	static __ScratchPadStore__ __open(int __pad,
-		__ScratchPadParams__ __params)
+	static ScratchPadStore __open(int __pad,
+		ScratchPadParams __params)
 		throws IOException, NullPointerException
 	{
 		if (__params == null)
 			throw new NullPointerException("NARG");
 		
-		synchronized (__ScratchPadStore__.class)
+		synchronized (ScratchPadStore.class)
 		{
 			// Do we need to initialize the storage base?
-			__ScratchPadStore__[] stores = __ScratchPadStore__._STORES;
+			ScratchPadStore[] stores = ScratchPadStore._STORES;
 			if (stores == null)
-				__ScratchPadStore__._STORES =
-					(stores = new __ScratchPadStore__[__params.count()]);
+				ScratchPadStore._STORES =
+					(stores = new ScratchPadStore[__params.count()]);
 			
 			// Do we need to initialize the already existing store?
-			__ScratchPadStore__ store = stores[__pad];
+			ScratchPadStore store = stores[__pad];
 			if (store == null)
-				stores[__pad] = (store = new __ScratchPadStore__(__pad,
+				stores[__pad] = (store = new ScratchPadStore(__pad,
 					__params.getLength(__pad)));
 			
 			return store;
@@ -306,29 +313,29 @@ final class __ScratchPadStore__
 		
 		// There are different formats, one that has a header at the start
 		// which derives scratchpads accordingly, or direct
-		if (seedLen >= dataLen + __ScratchPadStore__._STO_HEADER_LEN)
+		if (seedLen >= dataLen + ScratchPadStore._STO_HEADER_LEN)
 		{
 			// Do nothing if too far in
-			if (__pad >= __ScratchPadStore__._STO_ENTRIES)
+			if (__pad >= ScratchPadStore._STO_ENTRIES)
 				return;
 			
 			// Read in raw header
-			byte[] rawHeader = new byte[__ScratchPadStore__._STO_HEADER_LEN];
+			byte[] rawHeader = new byte[ScratchPadStore._STO_HEADER_LEN];
 			JarPackageShelf.rawData(lib, 0,
 				rawHeader, 0, rawHeader.length);
 			
 			// Setup buffers for position and size
-			int[] position = new int[__ScratchPadStore__._STO_ENTRIES];
-			int[] size = new int[__ScratchPadStore__._STO_ENTRIES];
+			int[] position = new int[ScratchPadStore._STO_ENTRIES];
+			int[] size = new int[ScratchPadStore._STO_ENTRIES];
 			
 			// Initial position is always after the header
-			int at = __ScratchPadStore__._STO_HEADER_LEN;
+			int at = ScratchPadStore._STO_HEADER_LEN;
 			
 			// Parse the sizes in the header
 			try (DataInputStream dos = new DataInputStream(
 				new ByteArrayInputStream(rawHeader)))
 			{
-				for (int i = 0; i < __ScratchPadStore__._STO_ENTRIES; i++)
+				for (int i = 0; i < ScratchPadStore._STO_ENTRIES; i++)
 				{
 					// Always at the baseline position
 					position[i] = at;

@@ -10,6 +10,7 @@
 package cc.squirreljme.runtime.nttdocomo.io;
 
 import cc.squirreljme.jvm.launch.IModeApplication;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.util.IntegerList;
 import cc.squirreljme.runtime.cldc.util.StringUtils;
 import java.lang.ref.Reference;
@@ -20,13 +21,15 @@ import java.lang.ref.WeakReference;
  *
  * @since 2021/12/01
  */
-final class __ScratchPadParams__
+@SquirrelJMEVendorApi
+public final class ScratchPadParams
 {
 	/** The maximum number of allowed scratch pads. */
+	@SquirrelJMEVendorApi
 	public static final int MAX_SCRATCH_PADS = 16;
 	
 	/** Declared parameters. */
-	private static volatile Reference<__ScratchPadParams__> _params;
+	private static volatile Reference<ScratchPadParams> _params;
 	
 	/** The sizes of the scratch pads. */
 	private final int[] _sizes;
@@ -38,7 +41,8 @@ final class __ScratchPadParams__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/12/01
 	 */
-	__ScratchPadParams__(int... __sizes)
+	@SquirrelJMEVendorApi
+	public ScratchPadParams(int... __sizes)
 		throws NullPointerException
 	{
 		if (__sizes == null)
@@ -53,6 +57,7 @@ final class __ScratchPadParams__
 	 * @return The number of scratch pads available.
 	 * @since 2021/12/01
 	 */
+	@SquirrelJMEVendorApi
 	public int count()
 	{
 		return this._sizes.length;
@@ -66,6 +71,7 @@ final class __ScratchPadParams__
 	 * @throws IndexOutOfBoundsException If this is not a valid scratchpad.
 	 * @since 2021/12/01
 	 */
+	@SquirrelJMEVendorApi
 	public int getLength(int __i)
 		throws IndexOutOfBoundsException
 	{
@@ -78,11 +84,11 @@ final class __ScratchPadParams__
 	 * @return The scratch pad parameters.
 	 * @since 2021/12/01
 	 */
-	static __ScratchPadParams__ __load()
+	static ScratchPadParams __load()
 	{
 		// Use pre-existing reference?
-		Reference<__ScratchPadParams__> ref = __ScratchPadParams__._params;
-		__ScratchPadParams__ rv = (ref != null ? ref.get() : null);
+		Reference<ScratchPadParams> ref = ScratchPadParams._params;
+		ScratchPadParams rv = (ref != null ? ref.get() : null);
 		if (rv != null)
 			return rv;
 		
@@ -124,12 +130,12 @@ final class __ScratchPadParams__
 		
 		// {@squirreljme.error AH09 Too many scratch pads were requested for
 		// the application. (The property)}
-		if (sizes.size() > __ScratchPadParams__.MAX_SCRATCH_PADS)
+		if (sizes.size() > ScratchPadParams.MAX_SCRATCH_PADS)
 			throw new IllegalArgumentException("AH09 " + prop);
 		
 		// Cache and use it
-		rv = new __ScratchPadParams__(sizes.toIntegerArray());
-		__ScratchPadParams__._params = new WeakReference<>(rv);
+		rv = new ScratchPadParams(sizes.toIntegerArray());
+		ScratchPadParams._params = new WeakReference<>(rv);
 		return rv;
 	}
 }
