@@ -17,6 +17,7 @@ import cc.squirreljme.plugin.multivm.VMType;
 import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import javax.inject.Inject;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.Task;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.language.jvm.tasks.ProcessResources;
 
@@ -58,10 +59,13 @@ public class CollateResourceJarsTask
 		// Must run after this
 		this.mustRunAfter(__processResources);
 		
+		// Dependencies
+		Task fullTask = this.getProject().getRootProject().getTasks()
+			.getByName(this.fullSourceTaskName());
+		this.dependsOn(fullTask);
+		
 		// Inputs
-		this.getInputs().files(VMHelpers.fullSuiteLibraries(
-			this.getProject().getRootProject().getTasks().getByName(
-				this.fullSourceTaskName())));
+		this.getInputs().files(VMHelpers.fullSuiteLibraries(fullTask));
 		
 		// Outputs
 		this.getOutputs().files(new CollateResourceJarsTaskOutputs(
