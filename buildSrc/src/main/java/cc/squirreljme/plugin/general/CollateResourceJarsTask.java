@@ -62,7 +62,7 @@ public class CollateResourceJarsTask
 		// Dependencies
 		Task fullTask = this.getProject().getRootProject().getTasks()
 			.getByName(this.fullSourceTaskName());
-		this.dependsOn(fullTask);
+		this.dependsOn(VMHelpers.fullSuiteLibrariesTasks(fullTask));
 		
 		// Inputs
 		this.getInputs().files(VMHelpers.fullSuiteLibraries(fullTask));
