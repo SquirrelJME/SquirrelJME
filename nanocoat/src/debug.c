@@ -65,7 +65,7 @@ static void sjme_debug_exit(int exitCode)
 	exit(exitCode);
 }
 
-sjme_lpcstr sjme_shortenFile(sjme_lpcstr file)
+sjme_lpcstr sjme_debug_shortenFile(sjme_lpcstr file)
 {
 	sjme_jint i, n;
 	
@@ -116,7 +116,7 @@ void sjme_genericMessage(sjme_lpcstr file, int line,
 		snprintf(fullBuf, DEBUG_BUF - 1,
 			"%s%s(%s:%d in %s()): %s",
 			prefix, (hasPrefix ? " " : ""),
-			sjme_shortenFile(file), line, func, buf);
+			sjme_debug_shortenFile(file), line, func, buf);
 	else
 		snprintf(fullBuf, DEBUG_BUF - 1,
 			"%s%s%s",

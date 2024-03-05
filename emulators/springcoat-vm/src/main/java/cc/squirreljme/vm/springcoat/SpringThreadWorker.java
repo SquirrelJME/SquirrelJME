@@ -3959,15 +3959,7 @@ public final class SpringThreadWorker
 		null.} */
 		SpringObject instance = (SpringObject)args[0];
 		if (instance == null || instance == SpringNullObject.NULL)
-		{
-			SpringNullPointerException toss =
-				new SpringNullPointerException("BK39");
-			
-			Debugging.debugNote("Class is incorrect?");
-			toss.printStackTrace(System.err);
-			
-			throw toss;
-		}
+			throw new SpringNullPointerException("BK39");
 		
 		// Re-resolve method for this object's class
 		refmethod = instance.type().lookupMethod(false,

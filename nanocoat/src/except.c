@@ -13,8 +13,6 @@
 void sjme_genericMessage(sjme_lpcstr file, int line,
 	sjme_lpcstr func, sjme_lpcstr prefix, sjme_lpcstr format, va_list args);
 
-sjme_lpcstr sjme_shortenFile(sjme_lpcstr file);
-
 sjme_errorCode sjme_except_printStackTraceR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_errorCode errorCode, volatile sjme_exceptTrace* exceptTrace)
 {
@@ -36,13 +34,13 @@ sjme_errorCode sjme_except_printStackTraceR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 				sjme_messageR(NULL, -1, NULL, SJME_JNI_TRUE,
 					" | IN %s() (%s:%d)",
 					seeker->func,
-					sjme_shortenFile(seeker->file),
+					sjme_debug_shortenFile(seeker->file),
 					seeker->line);
 			else
 				sjme_messageR(NULL, -1, NULL, SJME_JNI_TRUE,
 					" | IN %s() (%s)",
 					seeker->func,
-					sjme_shortenFile(seeker->file));
+					sjme_debug_shortenFile(seeker->file));
 		}
 		else
 		{

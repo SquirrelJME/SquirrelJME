@@ -42,26 +42,26 @@ SJME_TEST_DECLARE(testAllocRealloc)
 	chunkLen = 32768;
 	chunk = sjme_alloca(chunkLen);
 	if (chunk == NULL)
-		return sjme_unitSkip(test, "Could not alloca(%d).",
+		return sjme_unit_skip(test, "Could not alloca(%d).",
 			(int)chunkLen);
 	
 	/* Initialize the pool. */
 	pool = NULL;
 	if (sjme_error_is(sjme_alloc_poolInitStatic(&pool,
 		chunk, chunkLen)) || pool == NULL)
-		return sjme_unitFail(test, "Could not initialize static pool?");
+		return sjme_unit_fail(test, "Could not initialize static pool?");
 
 	/* Start with a medium-sized block. */
 	block = NULL;
 	if (sjme_error_is(sjme_alloc(pool, MEDIUM_SIZE, &block)) ||
 		block == NULL)
-		return sjme_unitFail(test, "Could not allocate medium block?");
+		return sjme_unit_fail(test, "Could not allocate medium block?");
 
 	/* Get the link of this block. */
 	link = NULL;
 	if (sjme_error_is(sjme_alloc_getLink(block, &link)) ||
 		link == NULL)
-		return sjme_unitFail(test, "Could not get link of block?");
+		return sjme_unit_fail(test, "Could not get link of block?");
 
 	/* Used for both the small and larger allocation. */
 	for (j = 0; j < 2; j++)
@@ -76,27 +76,27 @@ SJME_TEST_DECLARE(testAllocRealloc)
 		oldBlockP = block;
 		if (sjme_error_is(sjme_alloc_realloc(&block,
 			newLen)))
-			return sjme_unitFail(test, "Could not reallocate link?");
+			return sjme_unit_fail(test, "Could not reallocate link?");
 
 		/* In this scenario the pointer should not have moved at all. */
-		sjme_unitEqualP(test, block, oldBlockP,
+		sjme_unit_equalP(test, block, oldBlockP,
 			"Reallocation moved the block?");
 
 		/* The allocation size should be the new size. */
-		sjme_unitEqualI(test, link->allocSize, newLen,
+		sjme_unit_equalI(test, link->allocSize, newLen,
 			"Allocation size unchanged or incorrect?");
 
 		/* The next link should have changed position. */
-		sjme_unitNotEqualP(test, link->next, oldNext,
+		sjme_unit_notEqualP(test, link->next, oldNext,
 			"Next link did not move?");
-		sjme_unitEqualP(test, link->next, &link->block[link->blockSize],
+		sjme_unit_equalP(test, link->next, &link->block[link->blockSize],
 			"Next link did not shift over?");
 
 		/* The next's next's link should still be the back link, as */
 		/* it should have been merged. */
-		sjme_unitEqualP(test, link->next->next, pool->backLink,
+		sjme_unit_equalP(test, link->next->next, pool->backLink,
 			"Next next is not the back link?");
-		sjme_unitEqualP(test, link->next, pool->backLink->prev,
+		sjme_unit_equalP(test, link->next, pool->backLink->prev,
 			"Backlink previous is not the next block?");
 	}
 

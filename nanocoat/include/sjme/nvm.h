@@ -275,27 +275,39 @@ typedef enum sjme_basicTypeId
 
 	/** Object. */
 	SJME_JAVA_TYPE_ID_OBJECT = SJME_BASIC_TYPE_ID_OBJECT,
+	
+	/** The number of Java type IDs. */
+	SJME_NUM_JAVA_TYPE_IDS = 5,
 
 	/** Boolean or byte. */
-	SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE = 5,
-
-	/** The number of Java type IDs. */
-	SJME_NUM_JAVA_TYPE_IDS = SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE,
+	SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE = SJME_NUM_JAVA_TYPE_IDS,
+	
+	/** Character or short type. */
+	SJME_JAVA_TYPE_ID_SHORT_OR_CHAR = 6,
+	
+	/** Void type. */
+	SJME_BASIC_TYPE_ID_VOID = 7,
+	
+	/** Void type. */
+	SJME_JAVA_TYPE_ID_VOID = SJME_BASIC_TYPE_ID_VOID,
+	
+	/** End of extended Java types. */
+	SJME_NUM_EXTENDED_JAVA_TYPE_IDS = 8,
 
 	/** Short. */
-	SJME_BASIC_TYPE_ID_SHORT = 6,
+	SJME_BASIC_TYPE_ID_SHORT = SJME_NUM_EXTENDED_JAVA_TYPE_IDS,
 
 	/** Character. */
-	SJME_BASIC_TYPE_ID_CHARACTER = 7,
+	SJME_BASIC_TYPE_ID_CHARACTER = 9,
 
 	/** Specifically boolean. */
-	SJME_BASIC_TYPE_ID_BOOLEAN = 8,
+	SJME_BASIC_TYPE_ID_BOOLEAN = 10,
 
 	/** Specifically jbyte. */
-	SJME_BASIC_TYPE_ID_BYTE = 9,
+	SJME_BASIC_TYPE_ID_BYTE = 11,
 
 	/** Number of basic type IDs. */
-	SJME_NUM_BASIC_TYPE_IDS = 10
+	SJME_NUM_BASIC_TYPE_IDS = 11
 } sjme_basicTypeId;
 
 /**
@@ -689,6 +701,20 @@ typedef struct sjme_range
 	/** End of the range. */
 	sjme_jint end;
 } sjme_range;
+
+/**
+ * Represents a pointer and a length.
+ * 
+ * @since 2024/02/04
+ */
+typedef struct sjme_pointerLen
+{
+	/** The pointer to the data. */
+	sjme_pointer pointer;
+	
+	/** The length of the pointer. */
+	sjme_jint length;
+} sjme_pointerLen;
 
 /**
  * A wrapper used by front ends, which is reserved for use, which stores a
@@ -1661,8 +1687,23 @@ typedef enum sjme_errorCode
 	/** Unexpected end of file. */
 	SJME_ERROR_UNEXPECTED_EOF = -38,
 	
+	/** Invalid identifier. */
+	SJME_ERROR_INVALID_IDENTIFIER = -39,
+	
+	/** Invalid binary name. */
+	SJME_ERROR_INVALID_BINARY_NAME = -40,
+	
+	/** Invalid field type. */
+	SJME_ERROR_INVALID_FIELD_TYPE = -41,
+	
+	/** Invalid method type. */
+	SJME_ERROR_INVALID_METHOD_TYPE = -42,
+	
+	/** Invalid class name. */
+	SJME_ERROR_INVALID_CLASS_NAME = -43,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -39
+	SJME_NUM_ERROR_CODES = -44
 } sjme_errorCode;
 
 /**

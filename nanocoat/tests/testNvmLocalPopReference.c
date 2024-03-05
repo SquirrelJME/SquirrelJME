@@ -150,32 +150,32 @@ SJME_TEST_DECLARE(testNvmLocalPopReference)
 			/* Pop integer from the stack to the first local. */
 			oldNumStack = stack->count;
 			if (!sjme_nvm_localPopReference(frame, 0))
-				return sjme_unitFail(test, "Failed to pop local reference.");
+				return sjme_unit_fail(test, "Failed to pop local reference.");
 			
 			/* Only a specific object should be GCed and only in a certain */
 			/* circumstance. */
 			if (state.objects[secondId] != NULL &&
 				state.objects[secondId] != state.objects[firstId])
 			{
-				sjme_unitEqualL(test,
+				sjme_unit_equalL(test,
 					hookResult.gc[0], state.objects[secondId],
 					"Old local was not what should have been GCed?");
-				sjme_unitEqualI(test,
+				sjme_unit_equalI(test,
 					hookResult.count, 1,
 					"Different old local not GCed?");
 			}
 	
 			/* New stack should be lower. */
-			sjme_unitEqualI(test, stack->count, oldNumStack - 1,
+			sjme_unit_equalI(test, stack->count, oldNumStack - 1,
 				"Items in stack not lower?");
 	
 			/* Check that the value was moved over. */
-			sjme_unitEqualL(test, state.objects[firstId],
+			sjme_unit_equalL(test, state.objects[firstId],
 				objectsTread->values.jobjects[0],
 				"Popped stack into local was not the correct value.");
 		
 			/* And the stack value was cleared. */
-			sjme_unitEqualL(test, NULL, objectsTread->values.jobjects[1],
+			sjme_unit_equalL(test, NULL, objectsTread->values.jobjects[1],
 				"Stack value did not get cleared.");
 		}
 	

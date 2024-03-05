@@ -39,16 +39,16 @@ SJME_TEST_DECLARE(testStreamOverRead)
 	/* Open stream. */
 	if (sjme_error_is(sjme_stream_inputOpenMemory(test->pool,
 			&inputStream, testBytes, NUM_BYTES)))
-		return sjme_unitFail(test, "Could not open input stream.");
+		return sjme_unit_fail(test, "Could not open input stream.");
 
 	/* Get available bytes. */
 	available = -2;
 	if (sjme_error_is(sjme_stream_inputAvailable(inputStream,
 		&available)) || available < 0)
-		return sjme_unitFail(test, "Could not get available bytes?");
+		return sjme_unit_fail(test, "Could not get available bytes?");
 
 	/* The number of available bytes should be the full size. */
-	sjme_unitEqualI(test, available, NUM_BYTES,
+	sjme_unit_equalI(test, available, NUM_BYTES,
 		"Available bytes incorrect?");
 
 	/* Read way too many bytes. */
@@ -56,19 +56,19 @@ SJME_TEST_DECLARE(testStreamOverRead)
 	readCount = -2;
 	if (sjme_error_is(sjme_stream_inputRead(inputStream,
 		&readCount, buf, READ_BYTES)))
-		return sjme_unitFail(test, "Failed to read bytes?");
+		return sjme_unit_fail(test, "Failed to read bytes?");
 
 	/* Should be the bytes in the buffer, not the read attempt. */
-	sjme_unitEqualI(test, readCount, NUM_BYTES,
+	sjme_unit_equalI(test, readCount, NUM_BYTES,
 		"Read count incorrect?");
 
 	/* Test that the actual bytes are correct. */
-	sjme_unitEqualI(test, 0, memcmp(buf, testBytes, readCount),
+	sjme_unit_equalI(test, 0, memcmp(buf, testBytes, readCount),
 		"Read bytes are not correct?");
 
 	/* Close the stream. */
 	if (sjme_error_is(sjme_stream_inputClose(inputStream)))
-		return sjme_unitFail(test, "Could not close stream?");
+		return sjme_unit_fail(test, "Could not close stream?");
 
 	/* Success! */
 	return SJME_TEST_RESULT_PASS;

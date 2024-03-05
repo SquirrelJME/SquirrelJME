@@ -98,23 +98,26 @@ SJME_LIST_DECLARE(sjme_jint, 0);
 /** List of @c sjme_jint* . */
 SJME_LIST_DECLARE(sjme_jint, 1);
 
-/** List of @c sjme_juint. */
+/** List of @c sjme_juint . */
 SJME_LIST_DECLARE(sjme_juint, 0);
 
-/** List of @c sjme_lpstr. */
+/** List of @c sjme_lpstr . */
 SJME_LIST_DECLARE(sjme_lpstr, 0);
 
-/** List of @c sjme_lpcstr. */
+/** List of @c sjme_lpcstr . */
 SJME_LIST_DECLARE(sjme_lpcstr, 0);
 
-/** List of @c sjme_jobject. */
+/** List of @c sjme_jobject . */
 SJME_LIST_DECLARE(sjme_jobject, 0);
 
-/** List of @c sjme_pointer. */
+/** List of @c sjme_pointer . */
 SJME_LIST_DECLARE(sjme_pointer, 0);
 
-/** List of @c sjme_cchar. */
+/** List of @c sjme_cchar . */
 SJME_LIST_DECLARE(sjme_cchar, 0);
+
+/** List of @c sjme_pointerLen . */
+SJME_LIST_DECLARE(sjme_pointerLen, 0);
 
 /**
  * Allocates a given list generically.
@@ -149,6 +152,41 @@ sjme_errorCode sjme_list_allocR(
 		sizeof(SJME_TOKEN_TYPE(type, numPointerStars)), \
 		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
 		sizeof(**(outList)))
+
+/**
+ * Directly initializes a list.
+ *
+ * @param inLength The length of the list.
+ * @param outList The output list.
+ * @param elementSize The size of the list elements.
+ * @param elementOffset The offset of elements in the list.
+ * @param pointerCheck A check to see if it is a valid pointer.
+ * @return Any resultant error code, if any.
+ * @since 2024/02/21
+ */
+sjme_errorCode sjme_list_directInitR(
+	sjme_attrInPositive sjme_jint inLength,
+	sjme_attrOutNotNull void* outList,
+	sjme_attrInPositive sjme_jint elementSize,
+	sjme_attrInPositive sjme_jint elementOffset,
+	sjme_attrInValue sjme_jint pointerCheck);
+
+/**
+ * Directly initializes a list.
+ * 
+ * @param inLength The input list length.
+ * @param outList The resultant list information.
+ * @param type The type used in the list.
+ * @param numPointerStars The number of pointer stars used.
+ * @return Any resultant error.
+ * @since 2024/02/21
+ */
+#define sjme_list_directInit(inLength, outList, type, numPointerStars) \
+	sjme_list_directInitR((inLength), \
+		(void*)(outList), \
+		sizeof(SJME_TOKEN_TYPE(type, numPointerStars)), \
+		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
+		sizeof(*(outList)))
 
 /**
  * Create a new list with the given set of arguments.
@@ -315,6 +353,20 @@ sjme_errorCode sjme_list_flattenArgCV(
 	sjme_attrOutNotNull sjme_list_sjme_lpcstr** outList,
 	sjme_attrInPositive sjme_jint argC,
 	sjme_attrInNotNull sjme_lpcstr* argV);
+
+/**
+ * Flattens a string which is split by NUL (@c aNULbNULcNULNUL ) into a list.
+ * 
+ * @param inPool The pool to allocate within.
+ * @param outList The resultant list.
+ * @param inNulString The input string.
+ * @return Any resultant error.
+ * @since 2024/02/19
+ */
+sjme_errorCode sjme_list_flattenArgNul(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrOutNotNull sjme_list_sjme_lpcstr** outList,
+	sjme_attrInNotNull sjme_lpcstr inNulString);
 
 /**
  * Searches the given list for the given element.

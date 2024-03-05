@@ -96,3 +96,34 @@ The available options are:
  * `-classpath (class:path:...)`
    * Specifies the class path to use for the current application, the entries
      must be visible from the library path.
+
+## Default Configuration and Library Paths
+
+SquirrelJME may be configured automatically via files on the file system. The
+following paths are considered for automatic configuration and classpath
+inclusion.
+
+ * Windows:
+   * Configuration: `%APPDATA%/squirreljme/config`
+     * Or otherwise `%PROGRAMDATA%/squirreljme/config`
+   * Data: `%APPDATA%/squirreljme/data`
+     * Or otherwise `%PROGRAMDATA%/squirreljme/data`
+ * Linux, macOS, BSD, and other UNIX/UNIX-like systems:
+  * Configuration: `$XDG_CONFIG_HOME/squirreljme`
+    * Or otherwise `$HOME/.config/squirreljme`
+  * Data: `$XDG_DATA_HOME/squirreljme`
+    * Or otherwise `$HOME/.local/share/squirreljme`
+
+SquirrelJME will automatically add to system properties for a properties file:
+
+ * `$SQUIRRELJME_JAVA_OPTS`
+   * In the form of `"-Dproperty=value -Dcute=squirrel"`
+ * `{Configuration}/squirreljme.properties`
+   * In the form of `property=value` on individual lines.
+
+SquirrelJME will automatically add to the classpath from:
+
+ * `$SQUIRRELJME_CLASSPATH/`
+ * `$SQUIRRELJME_JAVA_HOME/lib/`
+ * `$SQUIRRELJME_JAVA_HOME/jre/lib/`
+ * `{Data}/lib/`

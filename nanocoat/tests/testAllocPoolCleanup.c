@@ -29,14 +29,14 @@ SJME_TEST_DECLARE(testAllocPoolCleanup)
 	chunkLen = 32768;
 	chunk = sjme_alloca(chunkLen);
 	if (chunk == NULL)
-		return sjme_unitSkip(test, "Could not alloca(%d).",
+		return sjme_unit_skip(test, "Could not alloca(%d).",
 			(int)chunkLen);
 	
 	/* Initialize the pool. */
 	pool = NULL;
 	if (sjme_error_is(sjme_alloc_poolInitStatic(&pool,
 		chunk, chunkLen)) || pool == NULL)
-		return sjme_unitFail(test, "Could not initialize static pool?");
+		return sjme_unit_fail(test, "Could not initialize static pool?");
 	
 	sjme_todo("Implement %s", __func__);
 	return SJME_TEST_RESULT_FAIL;

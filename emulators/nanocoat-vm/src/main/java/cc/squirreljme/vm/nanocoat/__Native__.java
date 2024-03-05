@@ -49,7 +49,7 @@ final class __Native__
 				try
 				{
 					__Native__._libPath = NativeBinding.libFromResources(
-						"emulator-nanocoat");
+						"emulator-nanocoat", true);
 				}
 				catch (IOException e)
 				{

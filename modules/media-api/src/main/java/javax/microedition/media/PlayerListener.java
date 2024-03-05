@@ -80,7 +80,8 @@ public interface PlayerListener
 		"volumeChanged";
 	
 	@Api
-	void playerUpdate(Player __a, String __b, Object __c);
+	void playerUpdate(Player __player, String __eventType,
+		Object __eventValue);
 }
 
 

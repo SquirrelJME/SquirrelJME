@@ -35,34 +35,34 @@ SJME_TEST_DECLARE(testAllocSplit)
 	chunkLen = 32768;
 	chunk = sjme_alloca(chunkLen);
 	if (chunk == NULL)
-		return sjme_unitSkip(test, "Could not alloca(%d).",
+		return sjme_unit_skip(test, "Could not alloca(%d).",
 			(int)chunkLen);
 
 	/* Initialize the pool. */
 	pool = NULL;
 	if (sjme_error_is(sjme_alloc_poolInitStatic(&pool, chunk,
 			chunkLen)) || pool == NULL)
-		return sjme_unitFail(test, "Could not initialize static pool?");
+		return sjme_unit_fail(test, "Could not initialize static pool?");
 
 	/* There should be a front and back link. */
-	sjme_unitNotEqualP(test, pool->frontLink, NULL,
+	sjme_unit_notEqualP(test, pool->frontLink, NULL,
 		"There is no front link?");
-	sjme_unitNotEqualP(test, pool->backLink, NULL,
+	sjme_unit_notEqualP(test, pool->backLink, NULL,
 		"There is no back link?");
 
 	/* There should be a next to the front link, and it should not be the */
 	/* back link. Vice versa as well... */
-	sjme_unitNotEqualP(test, pool->frontLink->next, NULL,
+	sjme_unit_notEqualP(test, pool->frontLink->next, NULL,
 		"There is no next after the front link?");
-	sjme_unitNotEqualP(test, pool->frontLink->next, pool->backLink,
+	sjme_unit_notEqualP(test, pool->frontLink->next, pool->backLink,
 		"Front link next is the back link?");
-	sjme_unitNotEqualP(test, pool->backLink->prev, NULL,
+	sjme_unit_notEqualP(test, pool->backLink->prev, NULL,
 		"There is no prev before the back link?");
-	sjme_unitNotEqualP(test, pool->backLink->prev, pool->frontLink,
+	sjme_unit_notEqualP(test, pool->backLink->prev, pool->frontLink,
 		"Back link prev is the front link?");
 
 	/* The front and back should point to the same link. */
-	sjme_unitEqualP(test, pool->frontLink->next, pool->backLink->prev,
+	sjme_unit_equalP(test, pool->frontLink->next, pool->backLink->prev,
 		"Different link in the middle?");
 
 	/* Get the main starting link. */
@@ -74,7 +74,7 @@ SJME_TEST_DECLARE(testAllocSplit)
 	initReserved = 0;
 	sjme_alloc_poolSpaceTotalSize(pool,
 		&initTotal, &initReserved, NULL);
-	sjme_unitNotEqualI(test, initTotal, 0,
+	sjme_unit_notEqualI(test, initTotal, 0,
 		"Pool indicates that it has zero space usage?");
 
 	/* Debug. */
@@ -85,37 +85,37 @@ SJME_TEST_DECLARE(testAllocSplit)
 	block = NULL;
 	if (sjme_error_is(sjme_alloc(pool, TEST_BLOCK_SIZE,
 			&block)) || block == NULL)
-		return sjme_unitFail(test, "Could not allocate %d bytes.",
+		return sjme_unit_fail(test, "Could not allocate %d bytes.",
 			TEST_BLOCK_SIZE);
 
 	/* Obtain the block link. */
 	link = NULL;
 	if (sjme_error_is(sjme_alloc_getLink(block, &link)) ||
 		link == NULL)
-		return sjme_unitFail(test, "Could not obtain block link?");
+		return sjme_unit_fail(test, "Could not obtain block link?");
 
 	/* The initial link should be this one. */
-	sjme_unitEqualP(test, link, initLink,
+	sjme_unit_equalP(test, link, initLink,
 		"Used different link from the first?");
 
 	/* The two links should be linked together. */
-	sjme_unitEqualP(test, link, link->next->prev,
+	sjme_unit_equalP(test, link, link->next->prev,
 		"Link not linked back?");
 
 	/* The back link's prev should be the new link's next. */
-	sjme_unitEqualP(test, link->next, pool->backLink->prev,
+	sjme_unit_equalP(test, link->next, pool->backLink->prev,
 		"Back link is not link's next?");
-	sjme_unitEqualP(test, link->next->next, pool->backLink,
+	sjme_unit_equalP(test, link->next->next, pool->backLink,
 		"Link's next is not the back link?");
 
 	/* The sizes of both links should be equal. */
 	next = link->next;
-	sjme_unitEqualI(test, oldInitLinkBlockSize,
+	sjme_unit_equalI(test, oldInitLinkBlockSize,
 		link->blockSize + next->blockSize + SJME_SIZEOF_ALLOC_LINK(0),
 		"Block sizes do not add up?");
 
 	/* The next link should be free. */
-	sjme_unitEqualI(test, next->space, SJME_ALLOC_POOL_SPACE_FREE,
+	sjme_unit_equalI(test, next->space, SJME_ALLOC_POOL_SPACE_FREE,
 		"Next link is not in the free space pool?");
 
 	/* Determine the new total space. */
@@ -129,11 +129,11 @@ SJME_TEST_DECLARE(testAllocSplit)
 		(int)newTotal, (int)newReserved);
 
 	/* Since a new link was created, the reserved size should differ. */
-	sjme_unitNotEqualI(test, initReserved, newReserved,
+	sjme_unit_notEqualI(test, initReserved, newReserved,
 		"Reserved space did not change at all?");
 
 	/* These total sizes should add up the same. */
-	sjme_unitEqualI(test, initTotal, newTotal,
+	sjme_unit_equalI(test, initTotal, newTotal,
 		"Total sizes are different?");
 
 	/* Success! */

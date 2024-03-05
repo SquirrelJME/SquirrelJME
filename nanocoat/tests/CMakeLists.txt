@@ -107,6 +107,21 @@ target_include_directories(BasicTest PUBLIC
 target_link_libraries(BasicTest PUBLIC
 	Core)
 
+# Include debugging info for tests
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+	if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+		target_compile_options(BasicTestLib PRIVATE
+			"-g")
+		target_compile_options(BasicTestLibPIC PRIVATE
+			"-g")
+	elseif(MSVC)
+		target_compile_options(BasicTestLib PRIVATE
+			"/DEBUG")
+		target_compile_options(BasicTestLibPIC PRIVATE
+			"/DEBUG")
+	endif()
+endif()
+
 # Process each individual test accordingly
 message(DEBUG "Looking for tests...")
 foreach(basicTestSource ${basicTestSources})

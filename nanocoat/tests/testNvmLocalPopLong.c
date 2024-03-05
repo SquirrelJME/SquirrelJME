@@ -86,22 +86,22 @@ sjme_attrUnused SJME_TEST_DECLARE(testNvmLocalPopLong)
 	/* Pop integer from the stack to the first local. */
 	oldNumStack = stack->count;
 	if (!sjme_nvm_localPopLong(frame, 0))
-		return sjme_unitFail(test, "Failed to pop local long.");
+		return sjme_unit_fail(test, "Failed to pop local long.");
 	
 	/* New stack should be lowered. */
-	sjme_unitEqualI(test, stack->count, oldNumStack - 1,
+	sjme_unit_equalI(test, stack->count, oldNumStack - 1,
 		"Items in stack not lower?");
 	
 	/* Check that the value was moved over. */
-	sjme_unitEqualI(test, 0x12345678, longsTread->values.jlongs[0].hi,
+	sjme_unit_equalI(test, 0x12345678, longsTread->values.jlongs[0].hi,
 		"Popped stack into local was not the correct value.");
-	sjme_unitEqualI(test, 0x9ABCDEF0, longsTread->values.jlongs[0].lo,
+	sjme_unit_equalI(test, 0x9ABCDEF0, longsTread->values.jlongs[0].lo,
 		"Popped stack into local was not the correct value.");
 		
 	/* And the stack value was cleared. */
-	sjme_unitEqualI(test, 0, longsTread->values.jlongs[1].hi,
+	sjme_unit_equalI(test, 0, longsTread->values.jlongs[1].hi,
 		"Stack value did not get cleared.");
-	sjme_unitEqualI(test, 0, longsTread->values.jlongs[1].lo,
+	sjme_unit_equalI(test, 0, longsTread->values.jlongs[1].lo,
 		"Stack value did not get cleared.");
 	
 	/* Success! */

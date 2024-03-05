@@ -86,17 +86,17 @@ SJME_TEST_DECLARE(testRomSuiteClassPathById)
 	memset(&mockState, 0, sizeof(mockState));
 	if (!sjme_mock_act(test, &mockState,
 			&mockRomSuiteClassPathById, 0))
-		return sjme_unitFail(test, "Could not run mocks.");
+		return sjme_unit_fail(test, "Could not run mocks.");
 
 	/* Calculate both forwards and backwards Ids. */
 	if (sjme_error_is(sjme_list_newV(mockState.allocPool,
 			sjme_jint, 0, 3, &forwardIds,
 			1, 2, 3)))
-		return sjme_unitFail(test, "Could not emit forward ids?");
+		return sjme_unit_fail(test, "Could not emit forward ids?");
 	if (sjme_error_is(sjme_list_newV(mockState.allocPool,
 			sjme_jint, 0, 3, &backwardIds,
 			3, 2, 1)))
-		return sjme_unitFail(test, "Could not emit backwards ids?");
+		return sjme_unit_fail(test, "Could not emit backwards ids?");
 
 	/* Get the suite. */
 	suite = mockState.romSuites[0];
@@ -105,32 +105,32 @@ SJME_TEST_DECLARE(testRomSuiteClassPathById)
 	result = NULL;
 	if (sjme_error_is(sjme_rom_resolveClassPathById(suite,
 		forwardIds, &result)) || result == NULL)
-		return sjme_unitFail(test, "Could not resolve ids?");
+		return sjme_unit_fail(test, "Could not resolve ids?");
 
 	/* The libraries must match! */
-	sjme_unitEqualI(test, 3, result->length,
+	sjme_unit_equalI(test, 3, result->length,
 		"Length does not match?");
-	sjme_unitEqualP(test, mockState.romLibraries[0], result->elements[0],
+	sjme_unit_equalP(test, mockState.romLibraries[0], result->elements[0],
 		"First incorrect?");
-	sjme_unitEqualP(test, mockState.romLibraries[1], result->elements[1],
+	sjme_unit_equalP(test, mockState.romLibraries[1], result->elements[1],
 		"Second incorrect?");
-	sjme_unitEqualP(test, mockState.romLibraries[2], result->elements[2],
+	sjme_unit_equalP(test, mockState.romLibraries[2], result->elements[2],
 		"Third incorrect?");
 
 	/* Resolve backwards names last. */
 	result = NULL;
 	if (sjme_error_is(sjme_rom_resolveClassPathById(suite,
 		backwardIds, &result)) || result == NULL)
-		return sjme_unitFail(test, "Could not resolve reverse ids?");
+		return sjme_unit_fail(test, "Could not resolve reverse ids?");
 
 	/* The libraries must match! */
-	sjme_unitEqualI(test, 3, result->length,
+	sjme_unit_equalI(test, 3, result->length,
 		"Reverse length does not match?");
-	sjme_unitEqualP(test, mockState.romLibraries[0], result->elements[2],
+	sjme_unit_equalP(test, mockState.romLibraries[0], result->elements[2],
 		"Reverse first incorrect?");
-	sjme_unitEqualP(test, mockState.romLibraries[1], result->elements[1],
+	sjme_unit_equalP(test, mockState.romLibraries[1], result->elements[1],
 		"Reverse second incorrect?");
-	sjme_unitEqualP(test, mockState.romLibraries[2], result->elements[0],
+	sjme_unit_equalP(test, mockState.romLibraries[2], result->elements[0],
 		"Reverse third incorrect?");
 
 	/* Success! */
