@@ -47,6 +47,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.jar.Manifest;
 
@@ -83,6 +84,10 @@ public abstract class VMFactory
 	/** Internal JAR directory root. */
 	private static final String STANDALONE_DIRECTORY =
 		"X-SquirrelJME-Standalone-Internal-Jar-Root";
+	
+	/** Internal JAR directory root (debug). */
+	private static final String STANDALONE_DIRECTORY_DEBUG =
+		"X-SquirrelJME-Standalone-Internal-Debug-Jar-Root";
 	
 	/** The separator character. */
 	private static final char SEPARATOR_CHAR;
@@ -185,6 +190,9 @@ public abstract class VMFactory
 		String rawJarPath = null;
 		String rawJarEntry = null;
 		
+		// Clutter level of the library
+		String clutterLevel = "release";
+		
 		// Load in standard system properties
 		VMFactory.__standardSysProps(systemProperties);
 		
@@ -200,6 +208,7 @@ public abstract class VMFactory
 		// -Xthread:(single|coop|multi|smt)
 		// -Dsysprop=value
 		// -classpath (class:path:...)
+		// -Xclutter:(release|debug)
 		// -Xtrace=(flag|...)
 		// Optionally `-jar`
 		// Main-class
@@ -285,6 +294,10 @@ public abstract class VMFactory
 				initTraceBits = VMTraceFlagTracker.parseBits(
 					item.substring("-Xtrace:".length()));
 			}
+			
+			// Clutter level to use
+			else if (item.startsWith("-Xclutter:"))
+				clutterLevel = item.substring("-Xclutter:".length());
 			
 			// JARs to load
 			else if (item.equals("-classpath") || item.equals("-cp"))
@@ -394,8 +407,13 @@ public abstract class VMFactory
 		ResourceBasedSuiteManager standaloneDir = null;
 		if (metaManifest != null)
 		{
-			String prefix = metaManifest.getMainAttributes()
-				.getValue(VMFactory.STANDALONE_DIRECTORY);
+			String prefix;
+			if (Objects.equals("debug", clutterLevel))
+				prefix = metaManifest.getMainAttributes()
+					.getValue(VMFactory.STANDALONE_DIRECTORY_DEBUG);
+			else
+				prefix = metaManifest.getMainAttributes()
+					.getValue(VMFactory.STANDALONE_DIRECTORY);
 			
 			// If it exists, use it!
 			if (prefix != null)

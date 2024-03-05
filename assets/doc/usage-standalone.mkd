@@ -65,6 +65,11 @@ The available options are:
      remote host that is a listening JDWP debugger.
    * Otherwise, if only `port` is specified then the debugger will wait and
      listen on the given port for an incoming connection.
+ * `-Xclutter:(release|debug)`
+   * Use the given core libraries with the given clutter level.
+   * `release` includes obfuscation and no debugging and thus runs faster.
+   * `debug` does not have any obfuscation and may work in cases where
+     obfuscation and optimization may cause issues.
  * `-Xdebug`
    * Enable debugging but with the internal built-in SquirrelJME debugger and
      not a JDWP connection over TCP.
