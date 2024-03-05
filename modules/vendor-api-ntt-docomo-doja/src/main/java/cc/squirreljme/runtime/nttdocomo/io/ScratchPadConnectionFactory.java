@@ -45,7 +45,7 @@ public class ScratchPadConnectionFactory
 		
 		// {@squirreljme.error AH05 Application JAD never set any available
 		// scratch pads.}
-		__ScratchPadParams__ params = __ScratchPadParams__.__load();
+		ScratchPadParams params = ScratchPadParams.__load();
 		if (params == null)
 			throw new ConnectionNotFoundException("AH05");
 		

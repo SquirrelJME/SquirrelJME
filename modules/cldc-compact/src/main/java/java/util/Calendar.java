@@ -11,6 +11,7 @@ package java.util;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.debug.ErrorCode;
 import cc.squirreljme.runtime.cldc.time.ISO6801Calendar;
 
 @Api
@@ -296,13 +297,27 @@ public abstract class Calendar
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * Returns the value of the given field.
+	 *
+	 * @param __fieldId The field ID to get.
+	 * @return The resultant field value.
+	 * @throws ArrayIndexOutOfBoundsException If the ID is not valid.
+	 * @since 2024/03/04
+	 */
 	@Api
 	public int get(int __fieldId)
+		throws ArrayIndexOutOfBoundsException
 	{
-		// Debug
-		Debugging.debugNote("Calendar.get(%d)", __fieldId);
+		/* {@squirreljme.error ZZ40 Calendar field is not valid. (The
+		field ID; The number of fields available.} */
+		int[] fields = this.fields;
+		if (__fieldId < 0 || __fieldId >= fields.length)
+			throw new ArrayIndexOutOfBoundsException(
+				ErrorCode.__error__("ZZ40", __fieldId,
+					fields.length));
 		
-		throw Debugging.todo();
+		return fields[__fieldId];
 	}
 	
 	@Api
