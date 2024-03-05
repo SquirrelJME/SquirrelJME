@@ -523,7 +523,7 @@ public final class VMHelpers
 		throws NullPointerException
 	{
 		Collection<Path> libPath = new LinkedHashSet<>();
-		for (VMExecutableTask dep : VMHelpers.fullSuiteLibrariesTasks(__task))
+		for (VMLibraryTask dep : VMHelpers.fullSuiteLibrariesTasks(__task))
 			for (File file : dep.getOutputs().getFiles())
 				libPath.add(file.toPath());
 		
@@ -537,15 +537,15 @@ public final class VMHelpers
 	 * @return The path for the full suite libraries.
 	 * @since 2024/03/05
 	 */
-	public static Collection<VMExecutableTask> fullSuiteLibrariesTasks(
+	public static Collection<VMLibraryTask> fullSuiteLibrariesTasks(
 		Task __task)
 		throws NullPointerException
 	{
 		// Load executable library tasks from our own VM
-		Collection<VMExecutableTask> result = new LinkedHashSet<>();
+		Collection<VMLibraryTask> result = new LinkedHashSet<>();
 		for (Task dep : __task.getTaskDependencies().getDependencies(__task))
-			if (dep instanceof VMExecutableTask)
-				result.add((VMExecutableTask)dep);
+			if (dep instanceof VMLibraryTask)
+				result.add((VMLibraryTask)dep);
 		
 		return result;
 	}
