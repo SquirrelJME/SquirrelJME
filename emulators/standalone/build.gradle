@@ -62,15 +62,19 @@ static String flatClasspath(Project project) {
 }
 
 String MERGED_PREFIX = "SQUIRRELJME.SQC"
+String MERGED_PREFIX_DEBUG = "SQUIRRELJME-DEBUG.SQC"
 
 tasks.register("collateResourceJars",
 	CollateResourceJarsTask.class,
 	processResources, ClutterLevel.RELEASE, MERGED_PREFIX)
+tasks.register("collateResourceJarsDebug",
+	CollateResourceJarsTask.class,
+	processResources, ClutterLevel.DEBUG, MERGED_PREFIX_DEBUG)
 
 // Jar Configuration
 jar {
-	dependsOn processResources, collateResourceJars
-	mustRunAfter collateResourceJars
+	dependsOn processResources, collateResourceJars, collateResourceJarsDebug
+	mustRunAfter collateResourceJars, collateResourceJarsDebug
 	
 	// We need to set specific manifest properties
 	manifest {
@@ -89,14 +93,16 @@ jar {
 							as Iterable<Path>))
 				}),
 			"X-SquirrelJME-Standalone-Internal-Jar-Root": project.provider({ ->
-				"/" + MERGED_PREFIX + "/"})
+				"/" + MERGED_PREFIX + "/"}),
+			"X-SquirrelJME-Standalone-Internal-Debug-Jar-Root": project.provider({ ->
+				"/" + MERGED_PREFIX_DEBUG + "/"})
 	}
 }
 
 // Configuration for ShadowJar
 shadowJar {
-	dependsOn collateResourceJars
-	mustRunAfter collateResourceJars
+	dependsOn collateResourceJars, collateResourceJarsDebug
+	mustRunAfter collateResourceJars, collateResourceJarsDebug
 	
 	// Always SquirrelJME
 	archiveBaseName.set("squirreljme-standalone")
@@ -135,24 +141,41 @@ shadowJar {
 // Shadow run tasks for the various emulator choices
 Provider<Task> shadowJarTask = tasks.named("shadowJar")
 [false, true].each { isDebug ->
-	VMType.values().each { vmType ->
-		tasks.register("run" + vmType.vmName(VMNameFormat.PROPER_NOUN) +
-				(isDebug ? "Debug" : ""),
-			JavaExec) { sub ->
-			sub.dependsOn shadowJarTask
-
-			sub.description = "Runs the standalone VM via " +
-				"${vmType.properName}" + (isDebug ? " with debugging." : ".")
-			sub.group = "squirreljme"
-
-			sub.classpath = shadowJarTask.get().getOutputs().getFiles()
-			sub.mainClass = "cc.squirreljme.vm.standalone.main.Main"
-			if (isDebug) {
-				sub.args = ["-Xemulator:" + 
-					vmType.vmName(VMNameFormat.LOWERCASE), "-Xdebug"]
+	[false, true].each { isCluttered ->
+		VMType.values().each { vmType ->
+			tasks.register("run" + vmType.vmName(VMNameFormat.PROPER_NOUN) +
+					(isDebug ? "Debug" : "") +
+					(isCluttered ? "Cluttered" : ""),
+				JavaExec) { sub ->
+				sub.dependsOn shadowJarTask
+	
+				sub.description = "Runs the standalone VM via " +
+					"${vmType.properName}" +
+					(isDebug ? " with debugging" : "") +
+					(isCluttered ? " with cluttering" : "") + ".";
+				sub.group = "squirreljme"
+	
+				sub.classpath = shadowJarTask.get().getOutputs().getFiles()
+				sub.mainClass = "cc.squirreljme.vm.standalone.main.Main"
+				if (isCluttered) {
+					if (isDebug) {
+						sub.args = ["-Xemulator:" + 
+							vmType.vmName(VMNameFormat.LOWERCASE), "-Xdebug",
+							"-Xclutter:debug"]
+					} else {
+						sub.args = ["-Xemulator:" + 
+							vmType.vmName(VMNameFormat.LOWERCASE),
+							"-Xclutter:debug"]
+					}
 				} else {
-				sub.args = ["-Xemulator:" + 
-					vmType.vmName(VMNameFormat.LOWERCASE)]
+					if (isDebug) {
+						sub.args = ["-Xemulator:" + 
+							vmType.vmName(VMNameFormat.LOWERCASE), "-Xdebug"]
+					} else {
+						sub.args = ["-Xemulator:" + 
+							vmType.vmName(VMNameFormat.LOWERCASE)]
+					}
+				}
 			}
 		}
 	}
