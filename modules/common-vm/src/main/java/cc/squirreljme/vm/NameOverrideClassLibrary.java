@@ -20,7 +20,7 @@ import java.nio.file.Path;
  * @since 2020/04/19
  */
 public class NameOverrideClassLibrary
-	implements VMClassLibrary
+	implements VMClassLibrary, OverlayVMClassLibrary
 {
 	/** The base library. */
 	protected final VMClassLibrary base;
@@ -67,11 +67,10 @@ public class NameOverrideClassLibrary
 	}
 	
 	/**
-	 * Returns the original base library.
-	 *
-	 * @return The original library.
+	 * {@inheritDoc}
 	 * @since 2023/12/03
 	 */
+	@Override
 	public VMClassLibrary originalLibrary()
 	{
 		return this.base;

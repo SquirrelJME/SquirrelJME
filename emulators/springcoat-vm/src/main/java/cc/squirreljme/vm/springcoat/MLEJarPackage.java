@@ -15,6 +15,7 @@ import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.runtime.cldc.debug.ErrorCode;
+import cc.squirreljme.vm.OverlayVMClassLibrary;
 import cc.squirreljme.vm.RawVMClassLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.springcoat.brackets.JarPackageObject;
@@ -278,16 +279,16 @@ public enum MLEJarPackage
 				__o + __l > __b.length)
 				throw new SpringMLECallError("Invalid parameters.");
 			
-			// Check to see if it is supported.
-			VMClassLibrary lib = __jar.library();
-			if (!(lib instanceof RawVMClassLibrary))
+			// Check to see if it is supported...
+			RawVMClassLibrary lib = MLEJarPackage.__rawLibrary(
+				__jar.library());
+			if (lib == null)
 				return -1;
 			
 			// Otherwise request it
 			try
 			{
-				((RawVMClassLibrary)lib).rawData(__jarOffset,
-					__b, __o, __l);
+				lib.rawData(__jarOffset, __b, __o, __l);
 				return __l;
 			}
 			catch (Throwable __t)
@@ -316,15 +317,15 @@ public enum MLEJarPackage
 			// Determine the path to the JAR
 			JarPackageObject jar = MLEJarPackage.__jarObject(__args[0]);
 			
-			// Check to see if it is supported.
-			VMClassLibrary lib = jar.library();
-			if (!(lib instanceof RawVMClassLibrary))
+			// Check to see if it is supported...
+			RawVMClassLibrary lib = MLEJarPackage.__rawLibrary(jar.library());
+			if (lib == null)
 				return -1;
 			
 			// Otherwise request it
 			try
 			{
-				return ((RawVMClassLibrary)lib).rawSize();
+				return lib.rawSize();
 			}
 			catch (Throwable __t)
 			{
@@ -382,5 +383,30 @@ public enum MLEJarPackage
 			throw new SpringMLECallError("Not a JarPackageObject.");
 		
 		return (JarPackageObject)__object; 
+	}
+	
+	/**
+	 * Obtains the raw library.
+	 *
+	 * @param __lib The library to get the raw library of.
+	 * @return The resultant library or {@code null} if there is none.
+	 * @throws SpringMLECallError On null arguments.
+	 * @since 2024/03/05
+	 */
+	static RawVMClassLibrary __rawLibrary(VMClassLibrary __lib)
+		throws SpringMLECallError
+	{
+		if (__lib == null)
+			throw new SpringMLECallError("Null arguments.");
+		
+		// If an overlay, go deeper
+		if (__lib instanceof OverlayVMClassLibrary)
+			return MLEJarPackage.__rawLibrary(
+				((OverlayVMClassLibrary)__lib).originalLibrary());
+		
+		// Is this a raw library?
+		if (__lib instanceof RawVMClassLibrary)
+			return (RawVMClassLibrary)__lib;
+		return null;
 	}
 }
