@@ -153,6 +153,13 @@ commands:
           command: sudo apt-get install -y --no-install-recommends cmake build-essential curl wget openjdk-11-jdk gcc g++ make
 
 jobs:
+  ################################## BUNDLE ##################################
+  bundle:
+    executor: build-on-linux-amd64
+    steps:
+      - checkout
+      - linux-install-required
+
   ################################## WINDOWS #################################
   build_windows_setup:
     executor:
@@ -680,7 +687,7 @@ workflows:
 
       # Mac OS X runs decently however the jobs for it have a higher cost, so
       # only perform builds and tests for trunk to lower costs.
-      # Currently I have an overabundance of credits...
+      # Currently, I have an overabundance of credits...
       - build_macosx
 #          filters:
 #            branches:
@@ -738,6 +745,14 @@ workflows:
 #          requires:
 #            - build_macosx
 #            - construct_romTestSummerCoat
+
+      ############################## DEPLOYMENT ##############################
+      - bundle:
+          requires:
+            - build_linux_amd64_standalone
+            - build_windows_standalone
+            - build_macosx_standalone
+            - build_macosx_m1_standalone
 
   #################### TASKS TO INCREASE USER FRIENDLINESS ####################
   friendliness:

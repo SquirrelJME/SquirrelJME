@@ -31,10 +31,6 @@ dependencies {
 	
 	// Debugger tool for quick usage
 	implementation project(":tools:squirreljme-debugger")
-	
-	// Game Controller Support
-	implementation "net.java.jinput:jinput:2.0.10"
-	implementation "net.java.jinput:jinput:2.0.10:natives-all"
 }
 
 java {
