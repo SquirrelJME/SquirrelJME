@@ -165,30 +165,7 @@ public enum MLEJarPackage
 				if (in == null)
 					return SpringNullObject.NULL;
 				
-				// Copy everything to the a byte array, since it is easier to
-				// handle resources without juggling special resource streams
-				// and otherwise
-				try (ByteArrayOutputStream baos = new ByteArrayOutputStream(
-					Math.max(1024, in.available())))
-				{
-					// Copy all the data
-					byte[] copy = new byte[4096];
-					for (;;)
-					{
-						int rc = in.read(copy);
-						
-						if (rc < 0)
-							break;
-						
-						baos.write(copy, 0, rc);
-					}
-					
-					// Use this as the stream input
-					return __thread.newInstance(__thread.loadClass(
-						"java/io/ByteArrayInputStream"),
-						new MethodDescriptor("([B)V"),
-						__thread.asVMObject(baos.toByteArray()));
-				}
+				return __thread.proxyInputStream(in);
 			}
 			
 			// Could not read it

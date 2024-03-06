@@ -18,6 +18,7 @@ jint JNICALL mleFormInit(JNIEnv* env, jclass classy);
 jint JNICALL mleJarInit(JNIEnv* env, jclass classy);
 jint JNICALL mleMathInit(JNIEnv* env, jclass classy);
 jint JNICALL mleMidiInit(JNIEnv* env, jclass classy);
+jint JNICALL mleNativeArchiveInit(JNIEnv* env, jclass classy);
 jint JNICALL mleObjectInit(JNIEnv* env, jclass classy);
 jint JNICALL mlePencilInit(JNIEnv* env, jclass classy);
 jint JNICALL mleReflectionInit(JNIEnv* env, jclass classy);
@@ -56,4 +57,66 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 	const char* const classy, const char* const name, const char* const type,
 	...);
 
+#define FORWARD_init(funcName, forwardFuncs) \
+	jint JNICALL funcName(JNIEnv* env, jclass classy) \
+	{ \
+		return env->RegisterNatives( \
+			env->FindClass(FORWARD_CLASS), \
+			forwardFuncs, sizeof(forwardFuncs) / sizeof(JNINativeMethod)); \
+	}
+	
+#define FORWARD_stringy(x) #x
+
+#define FORWARD_paste(x, y) x ## y
+
+#define FORWARD_from(x) x
+	
+#define FORWARD_list(className, methodName) \
+	{FORWARD_stringy(methodName), \
+	FORWARD_from(FORWARD_paste(FORWARD_DESC_, methodName)), \
+	(void*)Impl_mle_ ## className ## _ ## methodName}
+
+#define FORWARD_IMPL_none()
+
+#define FORWARD_IMPL_args(...) , __VA_ARGS__
+
+#define FORWARD_IMPL_pass(...) , __VA_ARGS__
+
+#define FORWARD_IMPL_none()
+
+#define FORWARD_IMPL_VOID(className, methodName, args, pass) \
+	JNIEXPORT void JNICALL Impl_mle_ ## className ## _ ## methodName( \
+		JNIEnv* env, jclass classy args) \
+	{ \
+		forwardCallStaticVoid(env, FORWARD_NATIVE_CLASS, \
+			FORWARD_stringy(methodName), \
+			FORWARD_from(FORWARD_paste(FORWARD_DESC_, methodName)) \
+			pass); \
+	}
+
+#define FORWARD_IMPL(className, methodName, rtype, rjava, args, pass) \
+	JNIEXPORT rtype JNICALL Impl_mle_ ## className ## _ ## methodName( \
+		JNIEnv* env, jclass classy args) \
+	{ \
+		return FORWARD_paste(forwardCallStatic, rjava)(env, \
+			FORWARD_NATIVE_CLASS, \
+			FORWARD_stringy(methodName), \
+			FORWARD_from(FORWARD_paste(FORWARD_DESC_, methodName)) \
+			pass); \
+	}
+
+#define DESC_ARRAY(x) "[" x
+#define DESC_CLASS(x) "L" x ";"
+#define DESC_BOOLEAN "Z"
+#define DESC_BYTE "B"
+#define DESC_SHORT "S"
+#define DESC_CHAR "C"
+#define DESC_INT "I"
+#define DESC_LONG "J"
+#define DESC_FLOAT "F"
+#define DESC_DOUBLE "D"
+#define DESC_VOID "V"
+#define DESC_STRING DESC_CLASS("java/lang/String")
+
 #endif /* __SQUIRRELJME_H__ */
+
