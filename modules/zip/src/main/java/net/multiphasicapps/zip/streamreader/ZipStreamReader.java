@@ -39,7 +39,7 @@ public class ZipStreamReader
 	private static final int _MAX_EXTRACT_VERSION =
 		20;
 	
-	/** The minumum size of the local header. */
+	/** The minimum size of the local header. */
 	private static final int _MINIMUM_HEADER_SIZE =
 		30;
 	

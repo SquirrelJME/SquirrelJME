@@ -20,6 +20,8 @@ add_library(EmulatorBaseLib SHARED
     src/main/cpp/mle_form.cpp
     src/main/cpp/mle_jar.cpp
     src/main/cpp/mle_math.cpp
+    src/main/cpp/mle_midi.cpp
+    src/main/cpp/mle_nativearchive.cpp
     src/main/cpp/mle_object.cpp
     src/main/cpp/mle_pencil.cpp
     src/main/cpp/mle_reflection.cpp
