@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.nttdocomo.io;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -18,7 +19,8 @@ import java.io.OutputStream;
  *
  * @since 2021/12/02
  */
-final class __ScratchPadOutputTransaction__
+@SquirrelJMEVendorApi
+public final class ScratchPadOutputTransaction
 	extends OutputStream
 {
 	/** The data storage for this transaction. */
@@ -31,7 +33,7 @@ final class __ScratchPadOutputTransaction__
 	private final int _pos;
 	
 	/** The transaction storage. */
-	private final __ScratchPadStore__ _store;
+	private final ScratchPadStore _store;
 	
 	/** Has this been closed? */
 	private volatile boolean _isClosed;
@@ -49,7 +51,8 @@ final class __ScratchPadOutputTransaction__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/12/02
 	 */
-	__ScratchPadOutputTransaction__(__ScratchPadStore__ __store, int __pos,
+	@SquirrelJMEVendorApi
+	ScratchPadOutputTransaction(ScratchPadStore __store, int __pos,
 		int __length)
 		throws IOException, NullPointerException
 	{
@@ -70,6 +73,7 @@ final class __ScratchPadOutputTransaction__
 	 * @since 2021/12/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void close()
 		throws IOException
 	{
@@ -91,10 +95,11 @@ final class __ScratchPadOutputTransaction__
 	 * @since 2021/12/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void flush()
 		throws IOException
 	{
-		__ScratchPadStore__ store = this._store;
+		ScratchPadStore store = this._store;
 		
 		// Write our transaction data to the storage area then commit that
 		// to the record store
@@ -111,6 +116,7 @@ final class __ScratchPadOutputTransaction__
 	 * @since 2021/12/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void write(int __b)
 		throws IOException
 	{

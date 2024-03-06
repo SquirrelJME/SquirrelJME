@@ -9,7 +9,6 @@
 
 package cc.squirreljme.emulator.uiform;
 
-import cc.squirreljme.emulator.NativeGameController;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.constants.NonStandardKey;
@@ -36,22 +35,15 @@ public class HandleKeyEvents
 	private final Set<Integer> _pressedKeys =
 		new ConcurrentSkipListSet<>();
 	
-	/** The game controller to use. */
-	protected final NativeGameController controller;
-	
 	/**
 	 * Initializes the handler for key events.
 	 *
 	 * @param __item The item used.
-	 * @param __controller The game controller to use, may be {@code null}.
 	 * @since 2021/02/16
 	 */
-	public HandleKeyEvents(SwingWidget __item,
-		NativeGameController __controller)
+	public HandleKeyEvents(SwingWidget __item)
 	{
 		super(__item);
-		
-		this.controller = __controller;
 	}
 	
 	/**
@@ -70,15 +62,6 @@ public class HandleKeyEvents
 		UIFormCallback callback = widget.callback();
 		if (callback == null)
 			return;
-		
-		// If there is no controller, there is no point in polling
-		NativeGameController controller = this.controller;
-		if (controller == null)
-			return;
-		
-		// Poll for game keys and such, provided there are events
-		// remaining
-		controller.pollAll(callback);
 	}
 	
 	/**

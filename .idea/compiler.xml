@@ -64,7 +64,7 @@
       <module name="stephanie.squirreljme.emulators.springcoat-vm.test" target="11" />
       <module name="stephanie.squirreljme.emulators.standalone" target="11" />
       <module name="stephanie.squirreljme.emulators.standalone.test" target="11" />
-      <module name="stephanie.squirreljme.sdk.test" target="11" />
+      <module name="stephanie.squirreljme.sdk.test" target="17" />
       <module name="stephanie.squirreljme.tools.pcf-to-sqf" target="11" />
       <module name="stephanie.squirreljme.tools.pcf-to-sqf.main" target="11" />
       <module name="stephanie.squirreljme.tools.pcf-to-sqf.test" target="11" />
@@ -74,7 +74,7 @@
       <module name="stephanie.squirreljme.tools.txt-to-pbm" target="11" />
       <module name="stephanie.squirreljme.tools.txt-to-pbm.main" target="11" />
       <module name="stephanie.squirreljme.tools.txt-to-pbm.test" target="11" />
-      <module name="unzip.squirreljme.tools.unzip.test" target="11" />
+      <module name="unzip.squirreljme.tools.unzip.test" target="17" />
     </bytecodeTargetLevel>
   </component>
 </project>
