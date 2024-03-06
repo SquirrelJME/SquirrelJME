@@ -59,7 +59,7 @@ public enum MLENativeArchive
 	 */
 	ARCHIVE_ENTRY("archiveEntry:" +
 		"(Lcc/squirreljme/jvm/mle/brackets/NativeArchiveBracket;" +
-		"Ljava/lang/String)" +
+		"Ljava/lang/String;)" +
 		"Lcc/squirreljme/jvm/mle/brackets/NativeArchiveEntryBracket;")
 	{
 		/**
