@@ -26,6 +26,7 @@ add_library(EmulatorBaseLib SHARED
     src/main/cpp/mle_pencil.cpp
     src/main/cpp/mle_reflection.cpp
     src/main/cpp/mle_runtime.cpp
+    src/main/cpp/mle_scritchui.cpp
     src/main/cpp/mle_task.cpp
     src/main/cpp/mle_terminal.cpp
     src/main/cpp/mle_thread.cpp

@@ -11,6 +11,7 @@ package cc.squirreljme.scritchui.fb;
 
 import cc.squirreljme.jvm.mle.scritchui.ScritchEnvironmentInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,14 +20,36 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 2024/03/07
  */
+@SquirrelJMEVendorApi
 public class FramebufferScritchInterface
 	implements ScritchInterface
 {
+	/** The provider for screens. */
+	protected final FramebufferScreensProvider provider;
+	
+	/**
+	 * Initializes the framebuffer interface.
+	 *
+	 * @param __provider The provider for framebuffer screens.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/03/07
+	 */
+	@SquirrelJMEVendorApi
+	public FramebufferScritchInterface(FramebufferScreensProvider __provider)
+		throws NullPointerException
+	{
+		if (__provider == null)
+			throw new NullPointerException("NARG");
+		
+		this.provider = __provider;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2024/03/07
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public ScritchEnvironmentInterface environment()
 	{
 		throw Debugging.todo();
