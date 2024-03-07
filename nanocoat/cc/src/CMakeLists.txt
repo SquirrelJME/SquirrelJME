@@ -33,5 +33,5 @@ add_executable(cc
 	preproc.c)
 
 # Includes for the compiler
-target_include_directories(cc
+target_include_directories(cc PUBLIC
 	"${CMAKE_SOURCE_DIR}/include")

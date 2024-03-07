@@ -108,6 +108,7 @@ cmake_install.cmake
 *.dylib
 cmake-build-debug
 nanocoat/cmake-build-debug
+nanocoat/cc/cmake-build-debug
 nanocoat/cmake/utils/decode
 nanocoat/cmake/utils/decode.exe
 nanocoat/cmake/utils/simple
