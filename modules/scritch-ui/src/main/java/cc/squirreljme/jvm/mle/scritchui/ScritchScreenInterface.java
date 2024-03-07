@@ -9,38 +9,32 @@
 
 package cc.squirreljme.jvm.mle.scritchui;
 
-import cc.squirreljme.jvm.mle.scritchui.constants.ScritchWindowManagerType;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import org.intellij.lang.annotations.MagicConstant;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
 /**
- * Interface which describes the environment ScritchUI is running under.
+ * Interface which is used to interact with display screens.
  *
  * @since 2024/03/07
  */
 @SquirrelJMEVendorApi
-public interface ScritchEnvironmentInterface
+public interface ScritchScreenInterface
 {
 	/**
-	 * Returns the screen interface for each screen.
+	 * Returns the height of this screen.
 	 *
-	 * @return The screen interface for each screen.
+	 * @return The screen height.
 	 * @since 2024/03/07
 	 */
-	@NotNull
-	ScritchScreenInterface[] screens();
+	@Range(from = 0, to = Integer.MAX_VALUE)
+	int height();
 	
 	/**
-	 * Returns the type of window manager ScritchUI is running on.
+	 * Returns the width of this screen.
 	 *
-	 * @return One of {@link ScritchWindowManagerType}.
-	 * @see ScritchWindowManagerType
+	 * @return The screen width.
 	 * @since 2024/03/07
 	 */
-	@SquirrelJMEVendorApi
-	@Range(from = 0, to = ScritchWindowManagerType.NUM_TYPES)
-	@MagicConstant(valuesFromClass = ScritchWindowManagerType.class)
-	int windowManagerType();
+	@Range(from = 0, to = Integer.MAX_VALUE)
+	int width();
 }
