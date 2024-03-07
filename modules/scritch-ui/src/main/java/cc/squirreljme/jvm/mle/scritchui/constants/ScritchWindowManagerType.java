@@ -7,28 +7,24 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.emulator.scritchui;
-
-import cc.squirreljme.jvm.mle.scritchui.ScritchEnvironmentInterface;
-import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import org.jetbrains.annotations.NotNull;
+package cc.squirreljme.jvm.mle.scritchui.constants;
 
 /**
- * Swing implementation of ScritchUI.
+ * Represents the type of window manager used by Scritch.
  *
- * @since 2024/03/01
+ * @since 2024/03/07
  */
-public class SwingScritchInterface
-	implements ScritchInterface
+public interface ScritchWindowManagerType
 {
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/03/07
-	 */
-	@Override
-	public ScritchEnvironmentInterface environment()
-	{
-		throw Debugging.todo();
-	}
+	/** One frame per screen. */
+	byte ONE_FRAME_PER_SCREEN = 
+		0;
+	
+	/** Standard desktop interface. */
+	byte STANDARD_DESKTOP =
+		1;
+	
+	/** The number of display types. */
+	byte NUM_TYPES =
+		2;
 }

@@ -87,6 +87,7 @@ java_pid*.hprof
 CMakeFiles
 CTestTestfile.cmake
 CMakeCache.txt
+nanocoat/cc/cmake-build-debug
 ratufacoat/cmake-build-release
 ratufacoat/cmake-build-debug
 ratufacoat/cmake-build-*

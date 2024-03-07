@@ -9,25 +9,28 @@
 
 package cc.squirreljme.jvm.mle.scritchui;
 
+import cc.squirreljme.jvm.mle.scritchui.constants.ScritchWindowManagerType;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import org.jetbrains.annotations.NotNull;
+import org.intellij.lang.annotations.MagicConstant;
+import org.jetbrains.annotations.Range;
 
 /**
- * Main interface for ScritchUI, all the logic calls are made through this
- * initially.
+ * Interface which describes the environment ScritchUI is running under.
  *
- * @since 2024/02/29
+ * @since 2024/03/07
  */
 @SquirrelJMEVendorApi
-public interface ScritchInterface
+public interface ScritchEnvironmentInterface
 {
 	/**
-	 * Returns the interface which contains information on the environment.
+	 * Returns the type of window manager ScritchUI is running on.
 	 *
-	 * @return The environment interface.
+	 * @return One of {@link ScritchWindowManagerType}.
+	 * @see ScritchWindowManagerType
 	 * @since 2024/03/07
 	 */
 	@SquirrelJMEVendorApi
-	@NotNull
-	ScritchEnvironmentInterface environment();
+	@Range(from = 0, to = ScritchWindowManagerType.NUM_TYPES)
+	@MagicConstant(valuesFromClass = ScritchWindowManagerType.class)
+	int windowManagerType();
 }

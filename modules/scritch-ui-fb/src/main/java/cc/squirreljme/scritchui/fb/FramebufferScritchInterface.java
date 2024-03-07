@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.emulator.scritchui;
+package cc.squirreljme.scritchui.fb;
 
 import cc.squirreljme.jvm.mle.scritchui.ScritchEnvironmentInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
@@ -15,11 +15,11 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Swing implementation of ScritchUI.
+ * Framebuffer implementation of ScritchUI.
  *
- * @since 2024/03/01
+ * @since 2024/03/07
  */
-public class SwingScritchInterface
+public class FramebufferScritchInterface
 	implements ScritchInterface
 {
 	/**
