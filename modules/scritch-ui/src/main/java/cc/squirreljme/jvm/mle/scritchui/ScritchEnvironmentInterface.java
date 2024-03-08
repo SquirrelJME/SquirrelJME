@@ -30,6 +30,7 @@ public interface ScritchEnvironmentInterface
 	 * @since 2024/03/07
 	 */
 	@NotNull
+	@SquirrelJMEVendorApi
 	ScritchScreenInterface[] screens();
 	
 	/**

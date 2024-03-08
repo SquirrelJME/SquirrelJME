@@ -17,6 +17,7 @@ import cc.squirreljme.jvm.mle.constants.UIInputFlag;
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
@@ -26,6 +27,7 @@ import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 import cc.squirreljme.runtime.lcdui.mle.Vibration;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -263,37 +265,52 @@ public class Display
 	public static final int TAB =
 		4;
 	
+	/** The display state. */
+	final DisplayState _state;
+	
 	/** Serial runs of a given method for this display. */
+	@Deprecated
 	final Map<Integer, Runnable> _serialRuns =
 		new LinkedHashMap<>();
 	
 	/** The number of times there has been a non-unique serial run. */
+	@Deprecated
 	private static volatile int _NON_UNIQUE_SERIAL_RUNS;
 	
 	/** The native display instance. */ 
+	@Deprecated
 	final UIDisplayBracket _uiDisplay;
 	
 	/** The displayable to show. */
+	@Deprecated
 	private volatile Displayable _current;
 	
 	/** The displayable to show on exit. */
+	@Deprecated
 	private volatile Displayable _exit;
 	
 	/** The layout policy of this display. */
+	@Deprecated
 	private CommandLayoutPolicy _layoutPolicy;
 	
 	/**
 	 * Initializes the display instance.
 	 *
+	 * @param __window The ScritchUI Window to use.
 	 * @param __uiDisplay The native display.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/16
 	 */
-	Display(UIDisplayBracket __uiDisplay)
+	Display(ScritchWindowBracket __window, UIDisplayBracket __uiDisplay)
 		throws NullPointerException
 	{
 		if (__uiDisplay == null)
 			throw new NullPointerException("NARG");
+		
+		// Initialize Display state
+		this._state = new DisplayState(this, __window);
+		
+		// DEPRECATED!
 		
 		this._uiDisplay = __uiDisplay;
 		
@@ -1441,7 +1458,7 @@ public class Display
 			// Initialize display instances
 			all = new Display[n];
 			for (int i = 0; i < n; i++)
-				all[i] = new Display(uiDisplays[i]);
+				all[i] = new Display(null, uiDisplays[i]);
 			
 			// Use these for future calls
 			StaticDisplayState.DISPLAYS = all;

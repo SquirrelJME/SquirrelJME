@@ -22,6 +22,8 @@ import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import java.util.ArrayList;
@@ -41,32 +43,45 @@ import org.jetbrains.annotations.Async;
 public abstract class Displayable
 	extends __CommonWidget__
 {
+	/** The displayable state. */
+	final DisplayableState _state =
+		new DisplayableState(this);
+
 	/** Commands/Menus which have been added to the displayable. */
+	@Deprecated
 	final __VolatileList__<__Action__> _actions =
 		new __VolatileList__<>();
 	
 	/** The display this is attached to, if any. */
+	@Deprecated
 	volatile Display _display;
 	
 	/** The command listener to call into when commands are generated. */
+	@Deprecated
 	volatile CommandListener _cmdListener;
 	
 	/** The title of the displayable. */
+	@Deprecated
 	volatile String _userTitle;
 	
 	/** Display title to use. */
+	@Deprecated
 	volatile String _displayTitle;
 	
 	/** The ticker of the displayable. */
+	@Deprecated
 	volatile Ticker _ticker;
 	
 	/** The current layout, if valid this will be set. */
+	@Deprecated
 	private volatile __Layout__ _layout;
 	
 	/** The layout policy of this displayable. */
+	@Deprecated
 	private CommandLayoutPolicy _layoutPolicy;
 	
 	/** Was the last time the title update, were we fullscreen? */
+	@Deprecated
 	private boolean _titleFullScreen;
 	
 	/**

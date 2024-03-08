@@ -26,6 +26,7 @@ public interface ScritchScreenInterface
 	 * @return The screen height.
 	 * @since 2024/03/07
 	 */
+	@SquirrelJMEVendorApi
 	@Range(from = 0, to = Integer.MAX_VALUE)
 	int height();
 	
@@ -35,6 +36,7 @@ public interface ScritchScreenInterface
 	 * @return The screen width.
 	 * @since 2024/03/07
 	 */
+	@SquirrelJMEVendorApi
 	@Range(from = 0, to = Integer.MAX_VALUE)
 	int width();
 }
