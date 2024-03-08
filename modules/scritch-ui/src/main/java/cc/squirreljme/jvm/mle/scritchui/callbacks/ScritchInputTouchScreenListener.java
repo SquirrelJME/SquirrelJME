@@ -7,30 +7,17 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.mle.scritchui.constants;
+package cc.squirreljme.jvm.mle.scritchui.callbacks;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
- * Represents the type of window manager used by Scritch.
+ * Listener for touch screen events.
  *
  * @since 2024/03/07
  */
 @SquirrelJMEVendorApi
-public interface ScritchWindowManagerType
+public interface ScritchInputTouchScreenListener
+	extends ScritchInputListener
 {
-	/** One frame per screen. */
-	@SquirrelJMEVendorApi
-	byte ONE_FRAME_PER_SCREEN = 
-		0;
-	
-	/** Standard desktop interface. */
-	@SquirrelJMEVendorApi
-	byte STANDARD_DESKTOP =
-		1;
-	
-	/** The number of display types. */
-	@SquirrelJMEVendorApi
-	byte NUM_TYPES =
-		2;
 }
