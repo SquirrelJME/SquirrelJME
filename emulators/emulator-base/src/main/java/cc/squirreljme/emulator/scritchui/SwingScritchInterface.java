@@ -12,7 +12,6 @@ package cc.squirreljme.emulator.scritchui;
 import cc.squirreljme.jvm.mle.scritchui.ScritchEnvironmentInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Swing implementation of ScritchUI.
