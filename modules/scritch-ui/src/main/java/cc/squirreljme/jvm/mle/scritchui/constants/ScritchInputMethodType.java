@@ -11,6 +11,7 @@ package cc.squirreljme.jvm.mle.scritchui.constants;
 
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchInputDialPadListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchInputGamepadListener;
+import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchInputImeListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchInputKeyboardListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchInputMouseListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchInputNumPadListener;
@@ -66,4 +67,9 @@ public interface ScritchInputMethodType
 	@SquirrelJMEVendorApi
 	short ROCKER =
 		128;
+	
+	/** System enabled IME, {@link ScritchInputImeListener}. */
+	@SquirrelJMEVendorApi
+	short IME =
+		256;
 }
