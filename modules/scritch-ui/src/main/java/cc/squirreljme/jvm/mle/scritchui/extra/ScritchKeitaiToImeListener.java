@@ -12,13 +12,12 @@ package cc.squirreljme.jvm.mle.scritchui.extra;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
- * This maps a dial-pad and/or number-pad to keyboard input for input on
- * devices which lack a keyboard.
+ * This maps a dial-pad and/or number-pad to Keitai input for Japanese phones.
  *
  * @since 2024/03/07
  */
 @SquirrelJMEVendorApi
-public class ScritchMultiTapToImeListener
+public class ScritchKeitaiToImeListener
 	implements ScritchDialPadToImeListener
 {
 }

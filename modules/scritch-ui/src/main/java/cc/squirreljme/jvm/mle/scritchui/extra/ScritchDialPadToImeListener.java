@@ -9,16 +9,17 @@
 
 package cc.squirreljme.jvm.mle.scritchui.extra;
 
+import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchInputDialPadListener;
+import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchInputNumPadListener;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
- * This maps a dial-pad and/or number-pad to keyboard input for input on
- * devices which lack a keyboard.
+ * Base interface for mapped IMEs.
  *
  * @since 2024/03/07
  */
 @SquirrelJMEVendorApi
-public class ScritchMultiTapToImeListener
-	implements ScritchDialPadToImeListener
+public interface ScritchDialPadToImeListener
+	extends ScritchInputDialPadListener, ScritchInputNumPadListener
 {
 }

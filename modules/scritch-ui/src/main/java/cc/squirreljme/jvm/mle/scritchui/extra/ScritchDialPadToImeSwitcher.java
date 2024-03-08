@@ -12,13 +12,13 @@ package cc.squirreljme.jvm.mle.scritchui.extra;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
- * This maps a dial-pad and/or number-pad to keyboard input for input on
- * devices which lack a keyboard.
+ * Allows for switching between multiple different 
+ * input methods as for {@link ScritchDialPadToImeListener}.
  *
  * @since 2024/03/07
  */
 @SquirrelJMEVendorApi
-public class ScritchMultiTapToImeListener
+public class ScritchDialPadToImeSwitcher
 	implements ScritchDialPadToImeListener
 {
 }
