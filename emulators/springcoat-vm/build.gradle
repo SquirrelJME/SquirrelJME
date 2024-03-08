@@ -18,6 +18,7 @@ dependencies
 	api project(":modules:debug-jdwp")
 	api project(":modules:debug-jdwp-vm-host")
 	api project(":tools:squirreljme-debugger")
+	api project(":modules:scritch-ui")
 }
 
 

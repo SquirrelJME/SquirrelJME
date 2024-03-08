@@ -85,6 +85,9 @@ public enum MLEDispatcher
 	RUNTIME("cc/squirreljme/jvm/mle/RuntimeShelf",
 		MLERuntime.values()),
 	
+	SCRITCH_UI("cc/squirreljme/jvm/mle/scritchui/NativeScritchInterface",
+		MLEScritchUI.values()),
+	
 	/** {@link TaskShelf}. */
 	TASK("cc/squirreljme/jvm/mle/TaskShelf",
 		MLETask.values()),
