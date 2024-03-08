@@ -60,7 +60,7 @@ public interface ScritchInputMethodType
 	
 	/** Game controller, {@link ScritchInputGamepadListener}. */
 	@SquirrelJMEVendorApi
-	byte GAME_CONTROLLER =
+	byte GAMEPAD =
 		64;
 	
 	/** Rocker, left/right and select, {@link ScritchInputRockerListener}. */

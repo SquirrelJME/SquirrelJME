@@ -20,7 +20,7 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  * @since 2024/03/07
  */
 @SquirrelJMEVendorApi
-public class ScritchMultiTapToKeyboardListener
+public class ScritchMultiTapToImeListener
 	implements ScritchInputDialPadListener, ScritchInputNumPadListener
 {
 }
