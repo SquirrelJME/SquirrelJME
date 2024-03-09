@@ -18,7 +18,7 @@
 	")" DESC_CLASS(NAME_INTERFACE)
 
 FORWARD_IMPL(NativeScritchInterface, nativeInterface, jobject, Object, \
-	FORWARD_IMPL_args(jobject archive))
+	FORWARD_IMPL_none(), FORWARD_IMPL_none())
 
 static const JNINativeMethod mleNativeScritchInterfaceMethods[] =
 {
