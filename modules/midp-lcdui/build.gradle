@@ -90,4 +90,5 @@ dependencies
 	api project(":modules:io")
 	api project(":modules:collections")
 	api project(":modules:scritch-ui")
+	api project(":modules:scritch-ui-fb")
 }

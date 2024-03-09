@@ -9,14 +9,16 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
-import cc.squirreljme.jvm.mle.callbacks.UIDisplayCallback;
 import cc.squirreljme.jvm.mle.constants.UIInputFlag;
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
+import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchLAFInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchScreenInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchWindowInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -28,6 +30,8 @@ import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 import cc.squirreljme.runtime.lcdui.mle.Vibration;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayManager;
+import cc.squirreljme.runtime.lcdui.scritchui.ScritchLcdUiUtils;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -268,6 +272,12 @@ public class Display
 	/** The display state. */
 	final DisplayState _state;
 	
+	/** The owning native window. */
+	private final ScritchWindowBracket _window;
+	
+	/** The ScritchUI interface in use. */
+	private final ScritchInterface _scritch;
+	
 	/** Serial runs of a given method for this display. */
 	@Deprecated
 	final Map<Integer, Runnable> _serialRuns =
@@ -276,10 +286,6 @@ public class Display
 	/** The number of times there has been a non-unique serial run. */
 	@Deprecated
 	private static volatile int _NON_UNIQUE_SERIAL_RUNS;
-	
-	/** The native display instance. */ 
-	@Deprecated
-	final UIDisplayBracket _uiDisplay;
 	
 	/** The displayable to show. */
 	@Deprecated
@@ -296,51 +302,25 @@ public class Display
 	/**
 	 * Initializes the display instance.
 	 *
+	 * @param __scritch The ScritchUI interface used.
 	 * @param __window The ScritchUI Window to use.
+	 * @param __screen The screen this displays on.
 	 * @param __uiDisplay The native display.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/16
 	 */
-	Display(ScritchWindowBracket __window, UIDisplayBracket __uiDisplay)
+	Display(ScritchInterface __scritch, ScritchWindowBracket __window,
+		ScritchScreenInterface __screen, UIDisplayBracket __uiDisplay)
 		throws NullPointerException
 	{
-		if (__uiDisplay == null)
+		if (__scritch == null || __window == null || __screen == null ||
+			__uiDisplay == null)
 			throw new NullPointerException("NARG");
 		
 		// Initialize Display state
 		this._state = new DisplayState(this, __window);
-		
-		// DEPRECATED!
-		
-		this._uiDisplay = __uiDisplay;
-		
-		// Check and ensure that the background thread exists
-		synchronized (StaticDisplayState.class)
-		{
-			// If there is no background thread yet, initialize it
-			Thread bgThread = StaticDisplayState.backgroundThread();
-			if (bgThread == null)
-			{
-				// The user interface thread to use
-				__MLEUIThread__ uiRunner = new __MLEUIThread__();
-				
-				// Initialize thread and make it a background worker
-				bgThread = new Thread(uiRunner, "SquirrelJME-LCDUI");
-				ThreadShelf.javaThreadSetDaemon(bgThread);
-				
-				// Set background thread state and start it
-				StaticDisplayState.setBackgroundThread(bgThread, uiRunner);
-				bgThread.start();
-			}
-			
-			// Register this object for the native display
-			UIDisplayBracket uiDisplay = this._uiDisplay;
-			StaticDisplayState.register(this, uiDisplay);
-			
-			// Register the display for callbacks
-			UIBackendFactory.getInstance(true).callback(uiDisplay,
-				(UIDisplayCallback)StaticDisplayState.callback());
-		}
+		this._scritch = __scritch;
+		this._window = __window;
 	}
 	
 	/**
@@ -367,11 +347,9 @@ public class Display
 	}
 	
 	/**
-	 * Flashes the display LED for the given number of milliseconds.
-	 *
-	 * In SquirrelJME this flashes an LED and not the back light, since it is
-	 * not a popular means to notify the user and additionally due to
-	 * medical concerns such as epilepsy.
+	 * Flashes the backlight for the purpose of getting attention from the
+	 * user. In SquirrelJME this just uses the system's notification system
+	 * to call attention to the display window.
 	 *
 	 * @param __ms The number of milliseconds to flash for.
 	 * @return {@code true} if the backlight is controlled by the application
@@ -386,19 +364,9 @@ public class Display
 		if (__ms < 0)
 			throw new IllegalArgumentException("EB30");
 		
-		throw Debugging.todo();
-		/*
-		// Blink!
-		throw Debugging.todo();
-		/*
-		Assembly.sysCall(SystemCallIndex.DEVICE_FEEDBACK,
-			DeviceFeedbackType.BLINK_LED, __ms);
-		
-		// Only return true if no error was generated
-		return (SystemCallError.NO_ERROR ==
-			Assembly.sysCallV(SystemCallIndex.ERROR_GET,
-				SystemCallIndex.DEVICE_FEEDBACK));*/
-				
+		// Just call attention to the user
+		this._scritch.window().callAttention(this._window);
+		return false;
 	}
 	
 	/**
@@ -406,12 +374,15 @@ public class Display
 	 * active mode is set then the display will inhibit power saving features.
 	 *
 	 * @return Either {@link #MODE_ACTIVE} or {@link #MODE_NORMAL}.
+	 * @see Display#setActivityMode(int) 
 	 * @since 2016/10/08
 	 */
 	@Api
 	public int getActivityMode()
 	{
-		throw Debugging.todo();
+		if (this._scritch.environment().isInhibitingSleep())
+			return Display.MODE_ACTIVE;
+		return Display.MODE_NORMAL;
 	}
 	
 	/**
@@ -427,16 +398,20 @@ public class Display
 	 * {@link #NOTIFICATION}, and
 	 * {@link #MENU}.
 	 *
-	 * @param __a If display element.
+	 * @param __elem If display element.
 	 * @return The height of the image for that element.
 	 * @throws IllegalArgumentException On null arguments.
 	 * @since 2016/10/14
 	 */
 	@Api
-	public int getBestImageHeight(int __a)
+	public int getBestImageHeight(int __elem)
 		throws IllegalArgumentException
 	{
-		return this.__bestImageSize(__a, true);
+		ScritchLAFInterface laf =
+			this._scritch.environment().lookAndFeel();
+		
+		return laf.imageSize(
+			ScritchLcdUiUtils.scritchElementType(__elem), true);
 	}
 	
 	/**
@@ -452,22 +427,39 @@ public class Display
 	 * {@link #NOTIFICATION}, and
 	 * {@link #MENU}.
 	 *
-	 * @param __a If display element.
+	 * @param __elem If display element.
 	 * @return The width of the image for that element.
 	 * @throws IllegalArgumentException On null arguments.
 	 * @since 2016/10/14
 	 */
 	@Api
-	public int getBestImageWidth(int __a)
+	public int getBestImageWidth(int __elem)
 		throws IllegalArgumentException
 	{
-		return this.__bestImageSize(__a, false);
+		ScritchLAFInterface laf =
+			this._scritch.environment().lookAndFeel();
+		
+		return laf.imageSize(
+			ScritchLcdUiUtils.scritchElementType(__elem), false);
 	}
 	
+	/**
+	 * Returns the border style for items which are highlighted or otherwise
+	 * not.
+	 *
+	 * @param __highlight If {@code true} then this should return the style
+	 * for borders which are highlighted.
+	 * @return The style for the given item.
+	 * @since 2024/03/09
+	 */
 	@Api
-	public int getBorderStyle(boolean __a)
+	public int getBorderStyle(boolean __highlight)
 	{
-		throw Debugging.todo();
+		ScritchLAFInterface laf =
+			this._scritch.environment().lookAndFeel();
+		
+		return ScritchLcdUiUtils.lcduiLineStyle(
+			laf.focusBorderStyle(__highlight));
 	}
 	
 	/**
@@ -484,6 +476,8 @@ public class Display
 	@Api
 	public int getCapabilities()
 	{
+		throw Debugging.todo();
+		/*
 		// These are all standard and expected to always be supported
 		int rv = Display.__defaultCapabilities();
 			
@@ -493,7 +487,7 @@ public class Display
 		if (0 != backend.metric(_uiDisplay, UIMetricType.INPUT_FLAGS))
 			rv |= Display.SUPPORTS_INPUT_EVENTS;
 		
-		return rv;
+		return rv;*/
 	}
 	
 	/**
@@ -521,45 +515,11 @@ public class Display
 	public int getColor(int __c)
 		throws IllegalArgumentException
 	{
-		int rv;
-		switch (__c)
-		{
-			case Display.COLOR_BORDER:
-				rv = CommonColors.BORDER;
-				break;
-			
-			case Display.COLOR_BACKGROUND:
-			case Display.COLOR_IDLE_BACKGROUND:
-				rv = CommonColors.BACKGROUND;
-				break;
-			
-			case Display.COLOR_FOREGROUND:
-			case Display.COLOR_IDLE_FOREGROUND:
-				rv = CommonColors.FOREGROUND;
-				break;
-			
-			case Display.COLOR_HIGHLIGHTED_BORDER:
-				rv = CommonColors.HIGHLIGHTED_BORDER;
-				break;
-				
-			case Display.COLOR_HIGHLIGHTED_BACKGROUND:
-			case Display.COLOR_IDLE_HIGHLIGHTED_BACKGROUND:
-				rv = CommonColors.HIGHLIGHTED_BACKGROUND;
-				break;
-			
-			case Display.COLOR_HIGHLIGHTED_FOREGROUND:
-			case Display.COLOR_IDLE_HIGHLIGHTED_FOREGROUND:
-				rv = CommonColors.HIGHLIGHTED_FOREGROUND;
-				break;
+		ScritchLAFInterface laf =
+			this._scritch.environment().lookAndFeel();
 		
-				/* {@squirreljme.error EB1h Unknown color specifier. (The
-				color specifier)} */
-			default:
-				throw new IllegalArgumentException("EB1h " + __c);
-		}
-		
-		// Clip the alpha away
-		return (rv & 0xFFFFFF);
+		return laf.elementColor(
+			ScritchLcdUiUtils.scritchElementColor(__c)) & 0xFFFFFF;
 	}
 	
 	/**
@@ -607,10 +567,26 @@ public class Display
 		return this._current;
 	}
 	
+	/**
+	 * Gets the state of the display. 
+	 *
+	 * @return One of {@link #STATE_BACKGROUND}, {@link #STATE_VISIBLE},
+	 * or {@link #STATE_FOREGROUND}.
+	 * @since 2024/03/09
+	 */
 	@Api
 	public int getDisplayState()
 	{
-		throw Debugging.todo();
+		ScritchWindowInterface scritch = this._scritch.window();
+		
+		if (scritch.isVisible(this._window))
+		{
+			if (scritch.hasFocus(this._window))
+				return Display.STATE_FOREGROUND;
+			return Display.STATE_VISIBLE;
+		}
+		
+		return Display.STATE_BACKGROUND;
 	}
 	
 	/**
@@ -630,7 +606,7 @@ public class Display
 	}
 	
 	/**
-	 * Returns all of the possible exact placements where items may go on
+	 * Returns all the possible exact placements where items may go on
 	 * a given border.
 	 * 
 	 * The orientation of the display does affect the border positions, if
@@ -945,13 +921,10 @@ public class Display
 	public void setActivityMode(int __m)
 		throws IllegalArgumentException
 	{
-		// Active?
-		if (__m == Display.MODE_ACTIVE)
-			throw Debugging.todo();
-	
-		// Normal
-		else if (__m == Display.MODE_NORMAL)
-			throw Debugging.todo();
+		// Valid?
+		if (__m == Display.MODE_ACTIVE || __m == Display.MODE_NORMAL)
+			this._scritch.environment().setInhibitSleep(
+				__m == Display.MODE_ACTIVE);
 	
 		/* {@squirreljme.error EB1i Unknown activity mode specified.} */
 		else
@@ -1133,49 +1106,6 @@ public class Display
 	{
 		// Forward
 		return Vibration.vibrate(__d);
-	}
-	
-	/**
-	 * This wraps getting the best image size.
-	 *
-	 * @param __e The element to get it for.
-	 * @param __h Return the height?
-	 * @return The best image size.
-	 * @throws IllegalArgumentException If the element type is not valid.
-	 * @since 2016/10/14
-	 */
-	private int __bestImageSize(int __e, boolean __h)
-		throws IllegalArgumentException
-	{
-		// Depends
-		UIBackend backend = UIBackendFactory.getInstance(true);
-		switch (__e)
-		{
-			case Display.CHOICE_GROUP_ELEMENT:
-				throw Debugging.todo();
-				
-			case Display.ALERT:
-				throw Debugging.todo();
-				
-			case Display.TAB:
-				throw Debugging.todo();
-				
-			case Display.NOTIFICATION:
-				throw Debugging.todo();
-				
-			case Display.LIST_ELEMENT:
-				return backend.metric(_uiDisplay, UIMetricType.LIST_ITEM_HEIGHT);
-				
-			case Display.MENU:
-			case Display.COMMAND:
-				return backend.metric(_uiDisplay, UIMetricType.COMMAND_BAR_HEIGHT);
-				
-				/* {@squirreljme.error EB1o Cannot get the best image size of
-				the specified element. (The element specifier)} */
-			default:
-				throw new IllegalArgumentException(String.format("EB1o %d",
-					__e));
-		}
 	}
 	
 	/**
@@ -1399,7 +1329,7 @@ public class Display
 	public static void addDisplayListener(DisplayListener __dl)
 		throws NullPointerException
 	{
-		StaticDisplayState.addListener(__dl);
+		DisplayManager.instance().displayListenerAdd(__dl);
 	}
 	
 	/**
@@ -1446,28 +1376,11 @@ public class Display
 	public static Display[] getDisplays(int __caps)
 		throws IllegalStateException
 	{
-		// Use cached displays, but otherwise load them
-		Display[] all = StaticDisplayState.DISPLAYS;
-		if (all == null)
-		{
-			// Get the displays that are attached to the system
-			UIDisplayBracket[] uiDisplays =
-				UIBackendFactory.getInstance(true).displays();
-			int n = uiDisplays.length;
-			
-			// Initialize display instances
-			all = new Display[n];
-			for (int i = 0; i < n; i++)
-				all[i] = new Display(null, uiDisplays[i]);
-			
-			// Use these for future calls
-			StaticDisplayState.DISPLAYS = all;
-			
-			// Inform any listeners that the displays exist now
-			for (DisplayListener listener : StaticDisplayState.listeners())
-				for (Display display : all) 
-					listener.displayAdded(display);
-		}
+		// Get display interface
+		DisplayManager manager = DisplayManager.instance();
+		
+		// Get tracker so we can map to actual displays and windows
+		Display[] all = manager.mapScreens(new __NewDisplay__());
 		
 		// If we do not care for the capabilities of the displays then just
 		// return all of them
@@ -1492,7 +1405,7 @@ public class Display
 	 * when events occur.
 	 *
 	 * @param __dl The listener to remove.
-	 * @throws IllegalStateException If the listener is not in the display.
+	 * @throws IllegalStateException If the listener is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/24
 	 */
@@ -1500,7 +1413,10 @@ public class Display
 	public static void removeDisplayListener(DisplayListener __dl)
 		throws IllegalStateException, NullPointerException
 	{
-		StaticDisplayState.removeListener(__dl);
+		if (__dl == null)
+			throw new NullPointerException("NARG");
+		
+		DisplayManager.instance().displayListenerRemove(__dl);
 	}
 	
 	/**

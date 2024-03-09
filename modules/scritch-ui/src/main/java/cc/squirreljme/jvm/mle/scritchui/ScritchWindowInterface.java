@@ -9,54 +9,44 @@
 
 package cc.squirreljme.jvm.mle.scritchui;
 
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import org.jetbrains.annotations.Range;
 
 /**
- * Interface which is used to interact with display screens.
+ * Interface for {@link ScritchWindowBracket}.
  *
- * @since 2024/03/07
+ * @since 2024/03/09
  */
 @SquirrelJMEVendorApi
-public interface ScritchScreenInterface
+public interface ScritchWindowInterface
 {
 	/**
-	 * Returns the DPI of the screen.
+	 * Calls attention to this window, it may be through whatever means
+	 * the operating system performs.
 	 *
-	 * @return The screen DPI.
+	 * @param __window The window to query.
 	 * @since 2024/03/09
 	 */
 	@SquirrelJMEVendorApi
-	@Range(from = 0, to = Integer.MAX_VALUE)
-	int dpi();
+	void callAttention(ScritchWindowBracket __window);
 	
 	/**
-	 * Returns the height of this screen.
+	 * Does this window have focus? 
 	 *
-	 * @return The screen height.
-	 * @since 2024/03/07
-	 */
-	@SquirrelJMEVendorApi
-	@Range(from = 0, to = Integer.MAX_VALUE)
-	int height();
-	
-	/**
-	 * The ID of this screen.
-	 * 
-	 * @return The screen ID.
+	 * @param __window The window to query.
+	 * @return If the window has focus.
 	 * @since 2024/03/09
 	 */
 	@SquirrelJMEVendorApi
-	@Range(from = 0, to = Integer.MAX_VALUE)
-	int id();
+	boolean hasFocus(ScritchWindowBracket __window);
 	
 	/**
-	 * Returns the width of this screen.
+	 * Is this window visible.
 	 *
-	 * @return The screen width.
-	 * @since 2024/03/07
+	 * @param __window The window to query.
+	 * @return If the window is visible.
+	 * @since 2024/03/09
 	 */
 	@SquirrelJMEVendorApi
-	@Range(from = 0, to = Integer.MAX_VALUE)
-	int width();
+	boolean isVisible(ScritchWindowBracket __window);
 }

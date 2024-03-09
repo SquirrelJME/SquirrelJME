@@ -7,37 +7,16 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.mle.scritchui;
+package cc.squirreljme.jvm.mle.scritchui.constants;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import org.jetbrains.annotations.NotNull;
 
 /**
- * Main interface for ScritchUI, all the logic calls are made through this
- * initially.
+ * Represents the style of line used.
  *
- * @since 2024/02/29
+ * @since 2024/03/09
  */
 @SquirrelJMEVendorApi
-public interface ScritchInterface
+public interface ScritchLineStyle
 {
-	/**
-	 * Returns the interface which contains information on the environment.
-	 *
-	 * @return The environment interface.
-	 * @since 2024/03/07
-	 */
-	@SquirrelJMEVendorApi
-	@NotNull
-	ScritchEnvironmentInterface environment();
-	
-	/**
-	 * Returns the window interface.
-	 *
-	 * @return The window interface.
-	 * @since 2024/03/09
-	 */
-	@SquirrelJMEVendorApi
-	@NotNull
-	ScritchWindowInterface window();
 }

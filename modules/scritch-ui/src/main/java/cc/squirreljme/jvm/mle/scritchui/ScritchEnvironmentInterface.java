@@ -24,6 +24,24 @@ import org.jetbrains.annotations.Range;
 public interface ScritchEnvironmentInterface
 {
 	/**
+	 * Is this inhibiting sleep and/or screensaver? 
+	 *
+	 * @return If sleep is being inhibited.
+	 * @since 2024/03/09
+	 */
+	@SquirrelJMEVendorApi
+	boolean isInhibitingSleep();
+	
+	/**
+	 * Returns the look and feel interface.
+	 *
+	 * @return The look and feel interface.
+	 * @since 2024/03/09
+	 */
+	@SquirrelJMEVendorApi
+	ScritchLAFInterface lookAndFeel();
+	
+	/**
 	 * Returns the screen interface for each screen.
 	 *
 	 * @return The screen interface for each screen.
@@ -32,6 +50,14 @@ public interface ScritchEnvironmentInterface
 	@NotNull
 	@SquirrelJMEVendorApi
 	ScritchScreenInterface[] screens();
+	
+	/**
+	 * Sets whether sleep and/or screen saver should be inhibited.
+	 *
+	 * @param __inhibit If sleep and/or screen saver should be inhibited.
+	 * @since 2024/03/09
+	 */
+	void setInhibitSleep(boolean __inhibit);
 	
 	/**
 	 * Returns the type of window manager ScritchUI is running on.
