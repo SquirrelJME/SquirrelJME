@@ -706,7 +706,7 @@ public class Display
 	}
 	
 	/**
-	 * Returns all of the placements which support menu items.
+	 * Returns all the placements which support menu items.
 	 *  
 	 * @return The list of supported menu item placements.
 	 * @since 2020/09/27
