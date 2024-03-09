@@ -18,7 +18,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  * @since 2024/03/09
  */
 @SquirrelJMEVendorApi
-public class DisplayNoScale
+public class DisplayIdentityScale
 	implements DisplayScale
 {
 	/**
@@ -28,7 +28,7 @@ public class DisplayNoScale
 	@Override
 	public int screenX(int __x)
 	{
-		throw Debugging.todo();
+		return __x;
 	}
 	
 	/**
@@ -38,7 +38,7 @@ public class DisplayNoScale
 	@Override
 	public int screenY(int __y)
 	{
-		throw Debugging.todo();
+		return __y;
 	}
 	
 	/**
@@ -48,7 +48,7 @@ public class DisplayNoScale
 	@Override
 	public int textureX(int __x)
 	{
-		throw Debugging.todo();
+		return __x;
 	}
 	
 	/**
@@ -58,6 +58,6 @@ public class DisplayNoScale
 	@Override
 	public int textureY(int __y)
 	{
-		throw Debugging.todo();
+		return __y;
 	}
 }
