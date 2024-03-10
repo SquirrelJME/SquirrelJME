@@ -11,6 +11,7 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchScreenInterface;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayFactory;
 
@@ -28,7 +29,7 @@ final class __NewDisplay__
 	 */
 	@Override
 	public Display create(ScritchInterface __scritch,
-		ScritchWindowBracket __window, ScritchScreenInterface __screen)
+		ScritchWindowBracket __window, ScritchScreenBracket __screen)
 		throws NullPointerException
 	{
 		if (__scritch == null || __window == null || __screen == null)

@@ -19,11 +19,11 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchLAFInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchScreenInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchWindowInterface;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
-import cc.squirreljme.runtime.lcdui.common.CommonColors;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
@@ -272,6 +272,9 @@ public class Display
 	/** The display state. */
 	final DisplayState _state;
 	
+	/** The associated screen this display is for. */
+	private final ScritchScreenBracket _screen;
+	
 	/** The owning native window. */
 	private final ScritchWindowBracket _window;
 	
@@ -310,7 +313,7 @@ public class Display
 	 * @since 2018/03/16
 	 */
 	Display(ScritchInterface __scritch, ScritchWindowBracket __window,
-		ScritchScreenInterface __screen, UIDisplayBracket __uiDisplay)
+		ScritchScreenBracket __screen, UIDisplayBracket __uiDisplay)
 		throws NullPointerException
 	{
 		if (__scritch == null || __window == null || __screen == null ||
@@ -320,6 +323,7 @@ public class Display
 		// Initialize Display state
 		this._state = new DisplayState(this, __window);
 		this._scritch = __scritch;
+		this._screen = __screen;
 		this._window = __window;
 	}
 	
@@ -803,7 +807,7 @@ public class Display
 	@Api
 	public boolean isBuiltIn()
 	{
-		throw Debugging.todo();
+		return this._scritch.screen().isBuiltIn(this._screen);
 	}
 	
 	/**

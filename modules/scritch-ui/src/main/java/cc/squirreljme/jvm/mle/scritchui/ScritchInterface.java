@@ -32,6 +32,16 @@ public interface ScritchInterface
 	ScritchEnvironmentInterface environment();
 	
 	/**
+	 * Returns the screen interface.
+	 *
+	 * @return The screen interface.
+	 * @since 2024/03/10
+	 */
+	@SquirrelJMEVendorApi
+	@NotNull
+	ScritchScreenInterface screen();
+	
+	/**
 	 * Returns the window interface.
 	 *
 	 * @return The window interface.

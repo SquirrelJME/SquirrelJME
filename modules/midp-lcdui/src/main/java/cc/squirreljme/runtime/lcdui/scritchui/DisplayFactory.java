@@ -11,6 +11,7 @@ package cc.squirreljme.runtime.lcdui.scritchui;
 
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchScreenInterface;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import javax.microedition.lcdui.Display;
@@ -34,6 +35,6 @@ public interface DisplayFactory
 	 * @since 2024/03/09
 	 */
 	Display create(ScritchInterface __scritch, ScritchWindowBracket __window,
-		ScritchScreenInterface __screen)
+		ScritchScreenBracket __screen)
 		throws NullPointerException;
 }
