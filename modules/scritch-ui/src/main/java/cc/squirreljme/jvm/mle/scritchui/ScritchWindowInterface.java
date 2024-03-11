@@ -10,7 +10,10 @@
 package cc.squirreljme.jvm.mle.scritchui;
 
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
+import cc.squirreljme.jvm.mle.scritchui.constants.ScritchInputMethodType;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import org.intellij.lang.annotations.MagicConstant;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Interface for {@link ScritchWindowBracket}.
@@ -49,4 +52,16 @@ public interface ScritchWindowInterface
 	 */
 	@SquirrelJMEVendorApi
 	boolean isVisible(ScritchWindowBracket __window);
+	
+	/**
+	 * Returns the {@link ScritchInputMethodType}s that are possible for
+	 * this specific window.
+	 *
+	 * @param __window The window to check.
+	 * @return The valid {@link ScritchInputMethodType}s.
+	 * @since 2024/03/11
+	 */
+	@SquirrelJMEVendorApi
+	@MagicConstant(valuesFromClass = ScritchInputMethodType.class)
+	int inputTypes(@NotNull ScritchWindowBracket __window);
 }

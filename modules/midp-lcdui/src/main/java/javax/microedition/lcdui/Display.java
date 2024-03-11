@@ -21,6 +21,7 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchScreenInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchWindowInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
+import cc.squirreljme.jvm.mle.scritchui.constants.ScritchInputMethodType;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
@@ -764,9 +765,9 @@ public class Display
 	@Api
 	public boolean hasPointerEvents()
 	{
-		return (UIBackendFactory.getInstance(true).metric(_uiDisplay,
-			UIMetricType.INPUT_FLAGS) & UIInputFlag.POINTER) ==
-			(UIInputFlag.POINTER);
+		int types = this._scritch.window().inputTypes(this._window);
+		return 0 != (types & (ScritchInputMethodType.MOUSE |
+			ScritchInputMethodType.TOUCHSCREEN));
 	}
 	
 	/**
@@ -778,10 +779,8 @@ public class Display
 	@Api
 	public boolean hasPointerMotionEvents()
 	{
-		return (UIBackendFactory.getInstance(true).metric(_uiDisplay,
-			UIMetricType.INPUT_FLAGS) &
-			(UIInputFlag.POINTER | UIInputFlag.POINTER_MOTION)) ==
-			(UIInputFlag.POINTER | UIInputFlag.POINTER_MOTION);
+		int types = this._scritch.window().inputTypes(this._window);
+		return 0 != (types & (ScritchInputMethodType.MOUSE));
 	}
 	
 	/**
