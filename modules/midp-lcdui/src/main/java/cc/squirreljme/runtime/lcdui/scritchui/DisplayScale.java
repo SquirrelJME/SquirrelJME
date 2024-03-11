@@ -40,6 +40,24 @@ public interface DisplayScale
 	int screenY(int __y);
 	
 	/**
+	 * Returns the max height of the scaled target texture.
+	 *
+	 * @return The target texture height.
+	 * @since 2024/03/11
+	 */
+	@SquirrelJMEVendorApi
+	int textureMaxH();
+	
+	/**
+	 * Returns the max width of the scaled target texture.
+	 *
+	 * @return The target texture width.
+	 * @since 2024/03/11
+	 */
+	@SquirrelJMEVendorApi
+	int textureMaxW();
+	
+	/**
 	 * Projects a screen coordinate to a texture coordinate.
 	 *
 	 * @param __x The input screen coordinate.

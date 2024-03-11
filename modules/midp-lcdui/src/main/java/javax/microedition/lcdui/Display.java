@@ -29,6 +29,8 @@ import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 import cc.squirreljme.runtime.lcdui.mle.Vibration;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayIdentityScale;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayScale;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayManager;
 import cc.squirreljme.runtime.lcdui.scritchui.ScritchLcdUiUtils;
@@ -281,6 +283,9 @@ public class Display
 	/** The ScritchUI interface in use. */
 	private final ScritchInterface _scritch;
 	
+	/** Display scaling. */
+	private final DisplayScale _scale;
+	
 	/** Serial runs of a given method for this display. */
 	@Deprecated
 	final Map<Integer, Runnable> _serialRuns =
@@ -325,6 +330,8 @@ public class Display
 		this._scritch = __scritch;
 		this._screen = __screen;
 		this._window = __window;
+		this._scale = new DisplayIdentityScale(this._scritch,
+			this._screen, this._window);
 	}
 	
 	/**
@@ -685,8 +692,7 @@ public class Display
 	@Api
 	public int getHeight()
 	{
-		return UIBackendFactory.getInstance(true)
-			.metric(_uiDisplay, UIMetricType.DISPLAY_MAX_HEIGHT);
+		return this._scale.textureMaxH();
 	}
 	
 	@Api
@@ -732,28 +738,9 @@ public class Display
 	@Api
 	public int getOrientation()
 	{
-		int width, height;
-		
-		// If a form is being shown, use those dimensions
-		Displayable form = this._current;
-		if (form != null)
-		{
-			width = Displayable.__getWidth(form, null);
-			height = Displayable.__getHeight(form, null);
-		}
-		
-		// Otherwise use the display dimensions
-		else
-		{
-			width = this.getWidth();
-			height = this.getHeight();
-		}
-		
-		// Landscape just means a longer width
-		if (width > height)
-			return Display.ORIENTATION_LANDSCAPE;
-		else
+		if (this._scritch.screen().isPortrait(this._screen))
 			return Display.ORIENTATION_PORTRAIT;
+		return Display.ORIENTATION_LANDSCAPE;
 	}
 	
 	/**
@@ -765,8 +752,7 @@ public class Display
 	@Api
 	public int getWidth()
 	{
-		return UIBackendFactory.getInstance(true)
-			.metric(_uiDisplay, UIMetricType.DISPLAY_MAX_WIDTH);
+		return this._scale.textureMaxW();
 	}
 	
 	/**

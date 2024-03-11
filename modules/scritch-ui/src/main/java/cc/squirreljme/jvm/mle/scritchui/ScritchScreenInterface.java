@@ -55,6 +55,16 @@ public interface ScritchScreenInterface
 	boolean isBuiltIn(@NotNull ScritchScreenBracket __screen);
 	
 	/**
+	 * Is the screen in portrait orientation?
+	 *
+	 * @param __screen The screen to check.
+	 * @return If the screen is in portrait orientation.
+	 * @since 2024/03/11
+	 */
+	@SquirrelJMEVendorApi
+	boolean isPortrait(@NotNull ScritchScreenBracket __screen);
+	
+	/**
 	 * The ID of this screen.
 	 * 
 	 * @param __screen The screen to get from.

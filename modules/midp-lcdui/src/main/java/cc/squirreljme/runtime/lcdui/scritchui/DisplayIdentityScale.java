@@ -9,6 +9,9 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui;
 
+import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
@@ -21,6 +24,37 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 public class DisplayIdentityScale
 	implements DisplayScale
 {
+	/** The base screen. */
+	protected final ScritchScreenBracket screen;
+	
+	/** The base window. */
+	protected final ScritchWindowBracket window;
+	
+	/** The scritch interface to use. */
+	protected final ScritchInterface scritch;
+	
+	/**
+	 * Initializes the scaling information.
+	 *
+	 * @param __scritch The ScritchUI interface to use.
+	 * @param __screen The screen to access.
+	 * @param __window The window to access.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/03/11
+	 */
+	public DisplayIdentityScale(ScritchInterface __scritch,
+		ScritchScreenBracket __screen,
+		ScritchWindowBracket __window)
+		throws NullPointerException
+	{
+		if (__scritch == null || __screen == null || __window == null)
+			throw new NullPointerException("NARG");
+		
+		this.scritch = __scritch;
+		this.screen = __screen;
+		this.window = __window;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2024/03/09
@@ -39,6 +73,26 @@ public class DisplayIdentityScale
 	public int screenY(int __y)
 	{
 		return __y;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/03/11
+	 */
+	@Override
+	public int textureMaxH()
+	{
+		return this.scritch.screen().height(this.screen);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/03/11
+	 */
+	@Override
+	public int textureMaxW()
+	{
+		return this.scritch.screen().width(this.screen);
 	}
 	
 	/**

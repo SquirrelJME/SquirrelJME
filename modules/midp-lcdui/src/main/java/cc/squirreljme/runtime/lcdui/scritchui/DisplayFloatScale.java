@@ -9,6 +9,9 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui;
 
+import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
@@ -21,6 +24,48 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 public class DisplayFloatScale
 	implements DisplayScale
 {
+	/** The base screen. */
+	protected final ScritchScreenBracket screen;
+	
+	/** The base window. */
+	protected final ScritchWindowBracket window;
+	
+	/** The scritch interface to use. */
+	protected final ScritchInterface scritch;
+	
+	/** Scaled target width. */
+	private final int scaledW;
+	
+	/** Scaled target height. */
+	private final int scaledH;
+	
+	/**
+	 * Initializes the scaling information.
+	 *
+	 * @param __scritch The ScritchUI interface to use.
+	 * @param __screen The screen to access.
+	 * @param __window The window to access.
+	 * @param __scaledW The scaled width.
+	 * @param __scaledH The scaled height.
+	 * @throws IllegalArgumentException If the scale target is invalid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/03/11
+	 */
+	public DisplayFloatScale(ScritchInterface __scritch,
+		ScritchScreenBracket __screen,
+		ScritchWindowBracket __window, int __scaledW, int __scaledH)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__scritch == null || __screen == null || __window == null)
+			throw new NullPointerException("NARG");
+		
+		this.scritch = __scritch;
+		this.screen = __screen;
+		this.window = __window;
+		this.scaledW = __scaledW;
+		this.scaledH = __scaledH;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2024/03/09
@@ -39,6 +84,26 @@ public class DisplayFloatScale
 	public int screenY(int __y)
 	{
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/03/11
+	 */
+	@Override
+	public int textureMaxH()
+	{
+		return this.scaledH;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/03/11
+	 */
+	@Override
+	public int textureMaxW()
+	{
+		return this.scaledW;
 	}
 	
 	/**
