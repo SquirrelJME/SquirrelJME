@@ -901,6 +901,8 @@ public abstract class Canvas
 	@Override
 	final void __paint(Graphics __gfx, int __sw, int __sh, int __special)
 	{
+		throw Debugging.todo();
+		/*
 		// Draw background?
 		if (!this._isOpaque)
 		{
@@ -946,6 +948,8 @@ public abstract class Canvas
 				}
 			}
 		}
+		
+		 */
 	}
 	
 	/**

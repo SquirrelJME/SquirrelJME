@@ -301,6 +301,8 @@ public abstract class CustomItem
 		this._lastHeight = __sh;
 		
 		// Draw background?
+		throw Debugging.todo();
+		/*
 		if (!this._transparent)
 		{
 			int old = __gfx.getAlphaColor();
@@ -315,6 +317,8 @@ public abstract class CustomItem
 		
 		// Forward draw
 		this.paint(__gfx, __sw, __sh);
+		
+		 */
 	}
 	
 	/**

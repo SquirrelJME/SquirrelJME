@@ -804,8 +804,12 @@ public class Display
 	@Api
 	public boolean isColor()
 	{
+		throw Debugging.todo();
+		/*
 		return UIBackendFactory.getInstance(true).metric(_uiDisplay,
 			UIMetricType.DISPLAY_MONOCHROMATIC) == 0;
+			
+		 */
 	}
 	
 	/**
@@ -822,6 +826,8 @@ public class Display
 	@SuppressWarnings({"MagicNumber", "SwitchStatementWithTooFewBranches"})
 	public int numAlphaLevels()
 	{
+		throw Debugging.todo();
+		/*
 		switch (UIBackendFactory.getInstance(true).metric(_uiDisplay,
 			UIMetricType.DISPLAY_PIXEL_FORMAT))
 		{
@@ -833,7 +839,7 @@ public class Display
 				// alpha colors calculated.
 			default:
 				return 256;
-		}
+		}*/
 	}
 	
 	/**
@@ -850,6 +856,8 @@ public class Display
 	@SuppressWarnings("MagicNumber")
 	public int numColors()
 	{
+		throw Debugging.todo();
+		/*
 		int pf;
 		switch ((pf = UIBackendFactory.getInstance(true).metric(_uiDisplay,
 			UIMetricType.DISPLAY_PIXEL_FORMAT)))
@@ -879,10 +887,11 @@ public class Display
 			case UIPixelFormat.PACKED_INDEXED1:
 				return 2;
 			
-				/* {@squirreljme.error EB3j Unhandled pixel format. (Format)} */
+				/* {@squirreljme.error EB3j Unhandled pixel format. (Format)} * /
 			default:
 				throw Debugging.oops("EB3j", pf);
 		}
+		*/
 	}
 	
 	/**
@@ -1105,6 +1114,8 @@ public class Display
 	 */
 	private Displayable __doHideCurrent()
 	{
+		throw Debugging.todo();
+		/*
 		// Nothing was ever visible on this display?
 		Displayable current = this._current;
 		if (current == null)
@@ -1125,7 +1136,7 @@ public class Display
 		if (current instanceof Canvas)
 			((Canvas)current).hideNotify();
 		
-		return current;
+		return current;*/
 	}
 	
 	/**
@@ -1138,6 +1149,8 @@ public class Display
 	final void __doShowCurrent(Displayable __show)
 		throws NullPointerException
 	{
+		throw Debugging.todo();
+		/*
 		if (__show == null)
 			throw new NullPointerException("NARG");
 		
@@ -1170,6 +1183,7 @@ public class Display
 		
 		// Notify that it was shown
 		this.__queueSerialRunner(new __NotifyShow__(__show));
+		 */
 	}
 	
 	/**
@@ -1240,6 +1254,8 @@ public class Display
 	final int __queueSerialRunner(Runnable __run)
 		throws NullPointerException
 	{
+		throw Debugging.todo();
+		/*
 		if (__run == null)
 			throw new NullPointerException("NARG");
 		
@@ -1264,6 +1280,8 @@ public class Display
 		
 		// This is the ID used to refer to this runner
 		return idRunner;
+		
+		 */
 	}
 	
 	/**

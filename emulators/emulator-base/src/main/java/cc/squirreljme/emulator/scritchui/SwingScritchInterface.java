@@ -11,7 +11,10 @@ package cc.squirreljme.emulator.scritchui;
 
 import cc.squirreljme.jvm.mle.scritchui.ScritchEnvironmentInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchScreenInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchWindowInterface;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Swing implementation of ScritchUI.
@@ -27,6 +30,26 @@ public class SwingScritchInterface
 	 */
 	@Override
 	public ScritchEnvironmentInterface environment()
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/03/12
+	 */
+	@Override
+	public @NotNull ScritchScreenInterface screen()
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/03/12
+	 */
+	@Override
+	public @NotNull ScritchWindowInterface window()
 	{
 		throw Debugging.todo();
 	}

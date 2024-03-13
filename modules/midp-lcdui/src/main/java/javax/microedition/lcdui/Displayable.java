@@ -470,11 +470,15 @@ public abstract class Displayable
 		if (display == null)
 			return false;
 		
+		throw Debugging.todo();
+		/*
 		// When checking if shown, actually probe the current form on the
 		// display as another task may have taken the display from us
 		UIBackend backend = this.__backend();
 		return backend.equals(this.__state(__DisplayableState__.class)._uiForm,
 			backend.displayCurrent(display._uiDisplay));
+			
+		 */
 	}
 	
 	/**
