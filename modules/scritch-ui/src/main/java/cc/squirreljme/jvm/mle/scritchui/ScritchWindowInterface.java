@@ -31,7 +31,7 @@ public interface ScritchWindowInterface
 	 * @since 2024/03/09
 	 */
 	@SquirrelJMEVendorApi
-	void callAttention(ScritchWindowBracket __window);
+	void callAttention(@NotNull ScritchWindowBracket __window);
 	
 	/**
 	 * Does this window have focus? 
@@ -41,7 +41,7 @@ public interface ScritchWindowInterface
 	 * @since 2024/03/09
 	 */
 	@SquirrelJMEVendorApi
-	boolean hasFocus(ScritchWindowBracket __window);
+	boolean hasFocus(@NotNull ScritchWindowBracket __window);
 	
 	/**
 	 * Is this window visible.
@@ -51,7 +51,7 @@ public interface ScritchWindowInterface
 	 * @since 2024/03/09
 	 */
 	@SquirrelJMEVendorApi
-	boolean isVisible(ScritchWindowBracket __window);
+	boolean isVisible(@NotNull ScritchWindowBracket __window);
 	
 	/**
 	 * Returns the {@link ScritchInputMethodType}s that are possible for

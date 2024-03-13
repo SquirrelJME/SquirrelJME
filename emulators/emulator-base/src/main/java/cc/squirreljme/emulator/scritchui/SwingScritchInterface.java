@@ -14,7 +14,6 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchScreenInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchWindowInterface;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Swing implementation of ScritchUI.
@@ -24,6 +23,18 @@ import org.jetbrains.annotations.NotNull;
 public class SwingScritchInterface
 	implements ScritchInterface
 {
+	/** The environment interface. */
+	protected final SwingEnvironmentInterface environment =
+		new SwingEnvironmentInterface();
+	
+	/** Screen interface. */
+	protected final ScritchScreenInterface screen =
+		new SwingScreenInterface();
+	
+	/** Window interface. */
+	protected final ScritchWindowInterface window =
+		new SwingWindowInterface();
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2024/03/07
@@ -31,7 +42,7 @@ public class SwingScritchInterface
 	@Override
 	public ScritchEnvironmentInterface environment()
 	{
-		throw Debugging.todo();
+		return this.environment;
 	}
 	
 	/**
@@ -39,9 +50,9 @@ public class SwingScritchInterface
 	 * @since 2024/03/12
 	 */
 	@Override
-	public @NotNull ScritchScreenInterface screen()
+	public ScritchScreenInterface screen()
 	{
-		throw Debugging.todo();
+		return this.screen;
 	}
 	
 	/**
@@ -49,8 +60,8 @@ public class SwingScritchInterface
 	 * @since 2024/03/12
 	 */
 	@Override
-	public @NotNull ScritchWindowInterface window()
+	public ScritchWindowInterface window()
 	{
-		throw Debugging.todo();
+		return this.window;
 	}
 }

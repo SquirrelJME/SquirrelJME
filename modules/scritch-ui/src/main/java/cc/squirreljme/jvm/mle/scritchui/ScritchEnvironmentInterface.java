@@ -40,6 +40,7 @@ public interface ScritchEnvironmentInterface
 	 * @since 2024/03/09
 	 */
 	@SquirrelJMEVendorApi
+	@NotNull
 	ScritchLAFInterface lookAndFeel();
 	
 	/**
