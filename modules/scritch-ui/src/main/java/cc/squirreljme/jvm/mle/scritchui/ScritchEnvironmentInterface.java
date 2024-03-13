@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.mle.scritchui;
 
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchWindowManagerType;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.intellij.lang.annotations.MagicConstant;
@@ -49,7 +50,7 @@ public interface ScritchEnvironmentInterface
 	 */
 	@NotNull
 	@SquirrelJMEVendorApi
-	ScritchScreenInterface[] screens();
+	ScritchScreenBracket[] screens();
 	
 	/**
 	 * Sets whether sleep and/or screen saver should be inhibited.

@@ -64,4 +64,14 @@ public interface ScritchWindowInterface
 	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = ScritchInputMethodType.class)
 	int inputTypes(@NotNull ScritchWindowBracket __window);
+	
+	/**
+	 * Creates a new empty window.
+	 *
+	 * @return A new empty window.
+	 * @since 2024/03/13
+	 */
+	@SquirrelJMEVendorApi
+	@NotNull
+	ScritchWindowBracket newWindow();
 }

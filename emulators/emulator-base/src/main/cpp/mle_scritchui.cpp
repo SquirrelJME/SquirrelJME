@@ -25,4 +25,4 @@ static const JNINativeMethod mleNativeScritchInterfaceMethods[] =
 	FORWARD_list(NativeScritchInterface, nativeInterface),
 };
 
-FORWARD_init(NativeScritchInterfaceInit, mleNativeScritchInterfaceMethods)
+FORWARD_init(mleNativeScritchInterfaceInit, mleNativeScritchInterfaceMethods)

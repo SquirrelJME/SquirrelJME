@@ -34,7 +34,7 @@ public interface DisplayFactory
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/03/09
 	 */
-	Display create(ScritchInterface __scritch, ScritchWindowBracket __window,
-		ScritchScreenBracket __screen)
+	DisplayState create(ScritchInterface __scritch,
+		ScritchWindowBracket __window, ScritchScreenBracket __screen)
 		throws NullPointerException;
 }

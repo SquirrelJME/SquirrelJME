@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchScreenInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayFactory;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
 
 /**
  * Creates new displays.
@@ -28,13 +29,14 @@ final class __NewDisplay__
 	 * @since 2024/03/09
 	 */
 	@Override
-	public Display create(ScritchInterface __scritch,
+	public DisplayState create(ScritchInterface __scritch,
 		ScritchWindowBracket __window, ScritchScreenBracket __screen)
 		throws NullPointerException
 	{
 		if (__scritch == null || __window == null || __screen == null)
 			throw new NullPointerException("NARG");
 		
-		return new Display(__scritch, __window, __screen, null);
+		return new Display(__scritch, __window, __screen,
+			null)._state;
 	}
 }

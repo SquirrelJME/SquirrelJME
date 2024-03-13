@@ -19,6 +19,7 @@ jint JNICALL mleJarInit(JNIEnv* env, jclass classy);
 jint JNICALL mleMathInit(JNIEnv* env, jclass classy);
 jint JNICALL mleMidiInit(JNIEnv* env, jclass classy);
 jint JNICALL mleNativeArchiveInit(JNIEnv* env, jclass classy);
+jint JNICALL mleNativeScritchInterfaceInit(JNIEnv* env, jclass classy);
 jint JNICALL mleObjectInit(JNIEnv* env, jclass classy);
 jint JNICALL mlePencilInit(JNIEnv* env, jclass classy);
 jint JNICALL mleReflectionInit(JNIEnv* env, jclass classy);
