@@ -9,31 +9,24 @@
 
 package cc.squirreljme.emulator.scritchui;
 
-import cc.squirreljme.jvm.mle.scritchui.ScritchEnvironmentInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchLAFInterface;
-import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
 /**
- * Swing based environment interface for ScritchUI.
+ * Swing look and feel interface.
  *
  * @since 2024/03/13
  */
-public class SwingEnvironmentInterface
-	implements ScritchEnvironmentInterface
+public class SwingLAFInterface
+	implements ScritchLAFInterface
 {
-	/** Look and feel interface. */
-	protected final ScritchLAFInterface lookAndFeel =
-		new SwingLAFInterface();
-	
 	/**
 	 * {@inheritDoc}
 	 * @since 2024/03/13
 	 */
 	@Override
-	public boolean isInhibitingSleep()
+	public int elementColor(int __element)
 	{
 		throw Debugging.todo();
 	}
@@ -43,17 +36,7 @@ public class SwingEnvironmentInterface
 	 * @since 2024/03/13
 	 */
 	@Override
-	public ScritchLAFInterface lookAndFeel()
-	{
-		return this.lookAndFeel;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/03/13
-	 */
-	@Override
-	public ScritchScreenBracket[] screens()
+	public int focusBorderStyle(boolean __focused)
 	{
 		throw Debugging.todo();
 	}
@@ -63,17 +46,7 @@ public class SwingEnvironmentInterface
 	 * @since 2024/03/13
 	 */
 	@Override
-	public void setInhibitSleep(boolean __inhibit)
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/03/13
-	 */
-	@Override
-	public int windowManagerType()
+	public int imageSize(int __elem, boolean __height)
 	{
 		throw Debugging.todo();
 	}
