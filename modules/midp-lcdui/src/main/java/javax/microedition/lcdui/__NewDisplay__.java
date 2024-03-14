@@ -10,7 +10,6 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
-import cc.squirreljme.jvm.mle.scritchui.ScritchScreenInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayFactory;
@@ -36,7 +35,6 @@ final class __NewDisplay__
 		if (__scritch == null || __window == null || __screen == null)
 			throw new NullPointerException("NARG");
 		
-		return new Display(__scritch, __window, __screen,
-			null)._state;
+		return new Display(__scritch, __window, __screen)._state;
 	}
 }

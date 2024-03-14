@@ -13,6 +13,11 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchEnvironmentInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchLAFInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
@@ -55,7 +60,29 @@ public class SwingEnvironmentInterface
 	@Override
 	public ScritchScreenBracket[] screens()
 	{
-		throw Debugging.todo();
+		GraphicsEnvironment gfxEnv =
+			GraphicsEnvironment.getLocalGraphicsEnvironment();
+		
+		// Default screen, make sure it is first later on
+		GraphicsDevice defScreen = gfxEnv.getDefaultScreenDevice();
+		
+		// Process all attached screens
+		List<ScritchScreenBracket> result = new ArrayList<>(); 
+		for (GraphicsDevice awtScreen : gfxEnv.getScreenDevices())
+		{
+			// Wrap screen
+			SwingScreenObject screen = new SwingScreenObject(awtScreen);
+			
+			// Store into the list
+			if (awtScreen.equals(defScreen) ||
+				Objects.equals(defScreen.getIDstring(),
+					awtScreen.getIDstring()))
+				result.add(0, screen);
+			else
+				result.add(screen);
+		}
+		
+		return result.toArray(new ScritchScreenBracket[result.size()]);
 	}
 	
 	/**

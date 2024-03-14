@@ -9,7 +9,6 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchLAFInterface;
@@ -306,16 +305,14 @@ public class Display
 	 * @param __scritch The ScritchUI interface used.
 	 * @param __window The ScritchUI Window to use.
 	 * @param __screen The screen this displays on.
-	 * @param __uiDisplay The native display.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/16
 	 */
 	Display(ScritchInterface __scritch, ScritchWindowBracket __window,
-		ScritchScreenBracket __screen, UIDisplayBracket __uiDisplay)
+		ScritchScreenBracket __screen)
 		throws NullPointerException
 	{
-		if (__scritch == null || __window == null || __screen == null ||
-			__uiDisplay == null)
+		if (__scritch == null || __window == null || __screen == null)
 			throw new NullPointerException("NARG");
 		
 		// Initialize Display state

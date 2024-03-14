@@ -69,6 +69,6 @@ public class SwingWindowInterface
 	@Override
 	public ScritchWindowBracket newWindow()
 	{
-		throw Debugging.todo();
+		return new SwingWindowObject();
 	}
 }

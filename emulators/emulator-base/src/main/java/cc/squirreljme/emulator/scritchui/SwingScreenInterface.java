@@ -9,6 +9,7 @@
 
 package cc.squirreljme.emulator.scritchui;
 
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchScreenInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -30,6 +31,9 @@ public class SwingScreenInterface
 	@Override
 	public int dpi(ScritchScreenBracket __screen)
 	{
+		if (__screen == null)
+			throw new MLECallError("Null screen.");
+	
 		throw Debugging.todo();
 	}
 	
@@ -40,7 +44,10 @@ public class SwingScreenInterface
 	@Override
 	public int height(ScritchScreenBracket __screen)
 	{
-		throw Debugging.todo();
+		if (__screen == null)
+			throw new MLECallError("Null screen.");
+	
+		return ((SwingScreenObject)__screen).height();
 	}
 	
 	/**
@@ -50,6 +57,9 @@ public class SwingScreenInterface
 	@Override
 	public boolean isBuiltIn(ScritchScreenBracket __screen)
 	{
+		if (__screen == null)
+			throw new MLECallError("Null screen.");
+	
 		throw Debugging.todo();
 	}
 	
@@ -60,6 +70,9 @@ public class SwingScreenInterface
 	@Override
 	public boolean isPortrait(ScritchScreenBracket __screen)
 	{
+		if (__screen == null)
+			throw new MLECallError("Null screen.");
+	
 		throw Debugging.todo();
 	}
 	
@@ -70,7 +83,10 @@ public class SwingScreenInterface
 	@Override
 	public int id(ScritchScreenBracket __screen)
 	{
-		throw Debugging.todo();
+		if (__screen == null)
+			throw new MLECallError("Null screen.");
+		
+		return ((SwingScreenObject)__screen).id();
 	}
 	
 	/**
@@ -80,6 +96,9 @@ public class SwingScreenInterface
 	@Override
 	public int width(ScritchScreenBracket __screen)
 	{
-		throw Debugging.todo();
+		if (__screen == null)
+			throw new MLECallError("Null screen.");
+		
+		return ((SwingScreenObject)__screen).width();
 	}
 }
