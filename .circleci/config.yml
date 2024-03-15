@@ -152,6 +152,39 @@ commands:
           name: Install required dependencies
           command: sudo apt-get install -y --no-install-recommends cmake build-essential curl wget openjdk-11-jdk gcc g++ make
 
+  # Install what is required by Flatpak
+  flatpak-install-required:
+    steps:
+      - run:
+          name: Flatpak Base
+          command: sudo apt-get install -y flatpak flatpak-builder
+      - run:
+          name: Flatpak FreeDesktop Platform
+          command: flatpak install --user flathub org.freedesktop.Platform//23.08
+      - run:
+          name: Flatpak FreeDesktop SDK
+          command: flatpak install --user flathub org.freedesktop.Sdk//23.08
+      - run:
+          name: Flatpak OpenJDK
+          command: flatpak install --user flathub org.freedesktop.Sdk.Extension.openjdk11
+  flatpak-common-build:
+    parameters:
+      arch:
+        type: string
+    steps:
+      - run:
+          name: Flatpak Build
+          command: flatpak-builder --from-git-branch=$CIRCLE_BRANCH build-dir cc.squirreljme.SquirrelJME.yml
+      - run:
+          name: Flatpak Install
+          command: flatpak-builder --user --install build-dir cc.squirreljme.SquirrelJME.yml
+      - run:
+          name: Flatpak Bundle
+          command: flatpak build-bundle $HOME/.local/share/flatpak/repo squirreljme-<<parameters.arch>>.flatpak cc.squirreljme.SquirrelJME
+      - store_artifacts:
+          path: squirreljme-<<parameters.arch>>.flatpak
+          destination: .
+
 jobs:
   ################################## BUNDLE ##################################
   bundle:
@@ -432,18 +465,9 @@ jobs:
     steps:
       - checkout
       - linux-install-required
-      - run:
-          name: Flatpak Support
-          command: sudo apt-get install -y flatpak-builder
-      - run:
-          name: Flatpak Build
-          command: flatpak-builder --from-git-branch=$CIRCLE_BRANCH build-dir cc.squirreljme.SquirrelJME.yml
-      - run:
-          name: Flatpak Bundle
-          command: flatpak build-bundle build-dir squirreljme-amd64.flatpak cc.squirreljme.SquirrelJME
-      - store_artifacts:
-          path: squirreljme-amd64.flatpak
-          destination: .
+      - flatpak-install-required
+      - flatpak-common-build:
+          arch: amd64
   build_linux_arm64:
     executor: build-on-linux-arm64
     steps:
@@ -483,18 +507,9 @@ jobs:
     steps:
       - checkout
       - linux-install-required
-      - run:
-          name: Flatpak Support
-          command: sudo apt-get install -y flatpak-builder
-      - run:
-          name: Flatpak Build
-          command: flatpak-builder --from-git-branch=$CIRCLE_BRANCH build-dir cc.squirreljme.SquirrelJME.yml
-      - run:
-          name: Flatpak Bundle
-          command: flatpak build-bundle build-dir squirreljme-arm64.flatpak cc.squirreljme.SquirrelJME
-      - store_artifacts:
-          path: squirreljme-arm64.flatpak
-          destination: .
+      - flatpak-install-required
+      - flatpak-common-build:
+          arch: arm64
 
   ### OSS SonaType Nexus
   sonatype_publish:

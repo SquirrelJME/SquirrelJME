@@ -60,7 +60,9 @@ if (osArch.equalsIgnoreCase("ppc") ||
 	osArch.equalsIgnoreCase("ppc64le") ||
 	osArch.equalsIgnoreCase("riscv") ||
 	osArch.equalsIgnoreCase("riscv32") ||
-	osArch.equalsIgnoreCase("riscv64")) {
+	osArch.equalsIgnoreCase("riscv64") ||
+	osArch.equalsIgnoreCase('aarch64') ||
+	osArch.equalsIgnoreCase('arm64')) {
 	logger.warn("Faking x86_64 for other architectures...")
 	
 	gradle.beforeProject({proj ->
