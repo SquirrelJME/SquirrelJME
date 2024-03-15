@@ -152,7 +152,7 @@ commands:
       - run:
           name: Install required dependencies
           command: |
-            sudo apt-get install -y --no-install-recommends cmake build-essential curl wget openjdk-17-jdk gcc g++ make clang
+            sudo apt-get install -y --no-install-recommends cmake build-essential curl wget openjdk-17-jdk gcc g++ make clang git openssh-client
 
   # Install what is required by Flatpak
   flatpak-install-required:
