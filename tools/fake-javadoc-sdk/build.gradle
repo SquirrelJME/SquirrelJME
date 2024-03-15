@@ -2,8 +2,8 @@ plugins {
 	id "java-library"
 }
 
-description = "Fake JavaDoc API"
+// Java 8 Only
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 
-build {
-	onlyIf { false }
-}
+description = "Fake JavaDoc API"
