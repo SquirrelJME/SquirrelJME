@@ -52,9 +52,7 @@ if (osName.equalsIgnoreCase('Mac OS X') &&
 	gradle.beforeProject({proj ->
 		proj.ext.squirreljmeMacOsArmCpp = true
 	})
-}
-
-if (osArch.equalsIgnoreCase("ppc") ||
+} else if (osArch.equalsIgnoreCase("ppc") ||
 	osArch.equalsIgnoreCase("powerpc") ||
 	osArch.equalsIgnoreCase("ppc64") ||
 	osArch.equalsIgnoreCase("ppc64le") ||
@@ -62,7 +60,8 @@ if (osArch.equalsIgnoreCase("ppc") ||
 	osArch.equalsIgnoreCase("riscv32") ||
 	osArch.equalsIgnoreCase("riscv64") ||
 	osArch.equalsIgnoreCase('aarch64') ||
-	osArch.equalsIgnoreCase('arm64')) {
+	osArch.equalsIgnoreCase('arm64') ||
+	osArch.equalsIgnoreCase('arm64-v8')) {
 	logger.warn("Faking x86_64 for other architectures...")
 	
 	gradle.beforeProject({proj ->
