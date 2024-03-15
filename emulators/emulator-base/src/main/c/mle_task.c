@@ -21,7 +21,7 @@ JNIEXPORT jobject JNICALL Impl_mle_TaskShelf_start(
 	JNIEnv* env, jclass classy, jobjectArray classPath, jstring mainClass,
 	jobjectArray args, jobjectArray sysPropPairs, jint stdOut, jint stdErr)
 {
-	return forwardCallStaticObject(env, TASK_CLASSNAME,
+	return forwardCallStaticObject(env, classy, TASK_CLASSNAME,
 		"start", TASK_START_DESC,
 		classPath, mainClass, args, sysPropPairs, stdOut, stdErr);
 }
@@ -29,7 +29,7 @@ JNIEXPORT jobject JNICALL Impl_mle_TaskShelf_start(
 JNIEXPORT jint JNICALL Impl_mle_TaskShelf_status(
 	JNIEnv* env, jclass classy, jobject task)
 {
-	return forwardCallStaticInteger(env, TASK_CLASSNAME,
+	return forwardCallStaticInteger(env, classy, TASK_CLASSNAME,
 		"status", TASK_STATUS_DESC,
 		task);
 }
@@ -42,8 +42,8 @@ static const JNINativeMethod mleTaskMethods[] =
 
 jint JNICALL mleTaskInit(JNIEnv* env, jclass classy)
 {
-	return env->RegisterNatives(
-		env->FindClass("cc/squirreljme/jvm/mle/TaskShelf"),
+	return (*env)->RegisterNatives(env,
+		(*env)->FindClass(env, "cc/squirreljme/jvm/mle/TaskShelf"),
 		mleTaskMethods, sizeof(mleTaskMethods) /
 			sizeof(JNINativeMethod));
 }

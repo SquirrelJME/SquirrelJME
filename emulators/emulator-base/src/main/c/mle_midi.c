@@ -21,7 +21,7 @@
 JNIEXPORT jint JNICALL Impl_mle_MidiShelf_dataReceive(JNIEnv* env,
 	jclass classy, jobject port, jbyteArray buf, jint off, jint len)
 {
-	return forwardCallStaticInteger(env, MIDI_CLASSNAME,
+	return forwardCallStaticInteger(env, classy, classy, MIDI_CLASSNAME,
 		"dataReceive", MIDI_DATARECEIVE_DESC,
 		port, buf, off, len);
 }
@@ -29,7 +29,7 @@ JNIEXPORT jint JNICALL Impl_mle_MidiShelf_dataReceive(JNIEnv* env,
 JNIEXPORT void JNICALL Impl_mle_MidiShelf_dataTransmit(JNIEnv* env,
 	jclass classy, jobject port, jbyteArray buf, jint off, jint len)
 {
-	forwardCallStaticVoid(env, MIDI_CLASSNAME,
+	forwardCallStaticVoid(env, classy, classy, MIDI_CLASSNAME,
 		"dataTransmit", MIDI_DATATRANSMIT_DESC,
 		port, buf, off, len);
 }
@@ -37,7 +37,7 @@ JNIEXPORT void JNICALL Impl_mle_MidiShelf_dataTransmit(JNIEnv* env,
 JNIEXPORT jstring JNICALL Impl_mle_MidiShelf_deviceName(JNIEnv* env,
 	jclass classy, jobject device)
 {
-	return (jstring)forwardCallStaticObject(env, MIDI_CLASSNAME,
+	return (jstring)forwardCallStaticObject(env, classy, classy, MIDI_CLASSNAME,
 		"deviceName", MIDI_DEVICENAME_DESC,
 		device);
 }
@@ -45,14 +45,14 @@ JNIEXPORT jstring JNICALL Impl_mle_MidiShelf_deviceName(JNIEnv* env,
 JNIEXPORT jobjectArray JNICALL Impl_mle_MidiShelf_devices(JNIEnv* env,
 	jclass classy)
 {
-	return (jobjectArray)forwardCallStaticObject(env, MIDI_CLASSNAME,
+	return (jobjectArray)forwardCallStaticObject(env, classy, classy, MIDI_CLASSNAME,
 		"devices", MIDI_DEVICES_DESC);
 }
 
 JNIEXPORT jobjectArray JNICALL Impl_mle_MidiShelf_ports(JNIEnv* env,
 	jclass classy, jobject device, jboolean transmit)
 {
-	return (jobjectArray)forwardCallStaticObject(env, MIDI_CLASSNAME,
+	return (jobjectArray)forwardCallStaticObject(env, classy, MIDI_CLASSNAME,
 		"ports", MIDI_PORTS_DESC,
 		device, transmit);
 }
@@ -68,8 +68,8 @@ static const JNINativeMethod mleMidiMethods[] =
 
 jint JNICALL mleMidiInit(JNIEnv* env, jclass classy)
 {
-	return env->RegisterNatives(
-		env->FindClass("cc/squirreljme/jvm/mle/MidiShelf"),
+	return (*env)->RegisterNatives(env,
+		(*env)->FindClass(env, "cc/squirreljme/jvm/mle/MidiShelf"),
 		mleMidiMethods, sizeof(mleMidiMethods) /
 			sizeof(JNINativeMethod));
 }

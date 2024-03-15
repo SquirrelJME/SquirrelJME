@@ -16,7 +16,7 @@
 JNIEXPORT void JNICALL Impl_mle_ReflectionShelf_invokeMain(JNIEnv* env,
 	jclass classy, jobject type, jobject args)
 {
-	forwardCallStaticVoid(env, REFLECTION_CLASSNAME,
+	forwardCallStaticVoid(env, classy, classy, REFLECTION_CLASSNAME,
 		"invokeMain", INVOKEMAIN_DESC,
 		type, args);
 }
@@ -28,8 +28,8 @@ static const JNINativeMethod mleReflectionMethods[] =
 
 jint JNICALL mleReflectionInit(JNIEnv* env, jclass classy)
 {
-	return env->RegisterNatives(
-		env->FindClass("cc/squirreljme/jvm/mle/ReflectionShelf"),
+	return (*env)->RegisterNatives(env,
+		(*env)->FindClass(env, "cc/squirreljme/jvm/mle/ReflectionShelf"),
 		mleReflectionMethods, sizeof(mleReflectionMethods) /
 			sizeof(JNINativeMethod));
 }

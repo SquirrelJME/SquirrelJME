@@ -36,7 +36,7 @@ static const JNINativeMethod mleMathMethods[] =
 
 jint JNICALL mleMathInit(JNIEnv* env, jclass classy)
 {
-	return env->RegisterNatives(
-		env->FindClass("cc/squirreljme/jvm/mle/MathShelf"),
+	return (*env)->RegisterNatives(env,
+		(*env)->FindClass(env, "cc/squirreljme/jvm/mle/MathShelf"),
 		mleMathMethods, sizeof(mleMathMethods) / sizeof(JNINativeMethod));
 }

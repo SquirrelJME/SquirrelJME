@@ -7,16 +7,16 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: CMake Helper for project
 
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.5)
 
 # Declare project
-project(EmulatorBaseLib)
+project(libEmulatorBase)
 
 # We need JNI for this to work
 find_package(JNI)
 
 # Declare library
-add_library(EmulatorBaseLib SHARED
+add_library(libEmulatorBase SHARED
 	src/main/c/mle_debug.c
     src/main/c/mle_form.c
     src/main/c/mle_jar.c
@@ -35,17 +35,23 @@ add_library(EmulatorBaseLib SHARED
     src/main/c/utils.c)
 
 # Includes for the build
-target_include_directories(EmulatorBaseLib PUBLIC
+target_include_directories(libEmulatorBase PUBLIC
 	"src/main/headers"
 	${JNI_INCLUDE_DIRS})
 
+# It is easier to find this when it is in the build root
+set_target_properties(libEmulatorBase PROPERTIES
+	RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+	LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+	ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
+
 # Use a more basic name for the library
-set_target_properties(EmulatorBaseLib PROPERTIES
+set_target_properties(libEmulatorBase PROPERTIES
 	LIBRARY_OUTPUT_NAME
 	"emulator-base"
 	ARCHIVE_OUTPUT_NAME
 	"emulator-base")
 
 # Always make this position independent
-set_property(TARGET EmulatorBaseLib
+set_property(TARGET libEmulatorBase
 	PROPERTY POSITION_INDEPENDENT_CODE ON)

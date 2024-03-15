@@ -60,8 +60,8 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 #define FORWARD_init(funcName, forwardFuncs) \
 	jint JNICALL funcName(JNIEnv* env, jclass classy) \
 	{ \
-		return env->RegisterNatives( \
-			env->FindClass(FORWARD_CLASS), \
+		return (*env)->RegisterNatives(env, \
+			(*env)->FindClass(env, FORWARD_CLASS), \
 			forwardFuncs, sizeof(forwardFuncs) / sizeof(JNINativeMethod)); \
 	}
 	
@@ -88,7 +88,7 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 	JNIEXPORT void JNICALL Impl_mle_ ## className ## _ ## methodName( \
 		JNIEnv* env, jclass classy args) \
 	{ \
-		forwardCallStaticVoid(env, FORWARD_NATIVE_CLASS, \
+		forwardCallStaticVoid(env, classy, FORWARD_NATIVE_CLASS, \
 			FORWARD_stringy(methodName), \
 			FORWARD_from(FORWARD_paste(FORWARD_DESC_, methodName)) \
 			pass); \

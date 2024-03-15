@@ -108,11 +108,11 @@ JNIEXPORT jstring JNICALL Impl_mle_RuntimeShelf_vmDescription(
 		if (fileName[0] != 0)
 		{
 			fileName[NATIVE_EXEC_PATH_LEN - 1] = 0;
-			return env->NewStringUTF(fileName);
+			return (*env)->NewStringUTF(env, fileName);
 		}
 	}
 	
-	return (jstring)forwardCallStaticObject(env, RUNTIME_CLASSNAME,
+	return (jstring)forwardCallStaticObject(env, classy, RUNTIME_CLASSNAME,
 		"vmDescription", RUNTIME_VMDESCRIPTION_DESC,
 		id);
 #undef NATIVE_EXEC_PATH_LEN
@@ -121,7 +121,7 @@ JNIEXPORT jstring JNICALL Impl_mle_RuntimeShelf_vmDescription(
 JNIEXPORT jlong JNICALL Impl_mle_RuntimeShelf_vmStatistic(
 	JNIEnv* env, jclass classy, jint id)
 {
-	return forwardCallStaticLong(env, RUNTIME_CLASSNAME,
+	return forwardCallStaticLong(env, classy, RUNTIME_CLASSNAME,
 		"vmStatistic", RUNTIME_VMSTATISTIC_DESC,
 		id);
 }
@@ -141,7 +141,7 @@ JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_phoneModel(JNIEnv*, jclass)
 JNIEXPORT jobject JNICALL Impl_mle_RuntimeShelf_systemEnv(
 	JNIEnv* env, jclass classy, jstring key)
 {
-	return forwardCallStaticObject(env, RUNTIME_CLASSNAME,
+	return forwardCallStaticObject(env, classy, RUNTIME_CLASSNAME,
 		"systemEnv", RUNTIME_SYSTEMENV_DESC,
 		key);
 }
@@ -166,8 +166,8 @@ static const JNINativeMethod mleRuntimeMethods[] =
 
 jint JNICALL mleRuntimeInit(JNIEnv* env, jclass classy)
 {
-	return env->RegisterNatives(
-		env->FindClass("cc/squirreljme/jvm/mle/RuntimeShelf"),
+	return (*env)->RegisterNatives(env,
+		(*env)->FindClass(env, "cc/squirreljme/jvm/mle/RuntimeShelf"),
 		mleRuntimeMethods, sizeof(mleRuntimeMethods) /
 			sizeof(JNINativeMethod));
 }

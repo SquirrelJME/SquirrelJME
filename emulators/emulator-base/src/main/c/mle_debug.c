@@ -21,28 +21,28 @@
 JNIEXPORT void Impl_mle_DebugShelf_breakpoint(
 	JNIEnv* env, jclass classy)
 {
-	return forwardCallStaticVoid(env, DEBUGSHELF_CLASSNAME,
+	return forwardCallStaticVoid(env, classy, classy, DEBUGSHELF_CLASSNAME,
 		"breakpoint", DEBUGSHELF_BREAKPOINT_DESC);
 }
 
 JNIEXPORT jobjectArray JNICALL Impl_mle_DebugShelf_getThrowableTrace(
 	JNIEnv* env, jclass classy, jobject thrown)
 {
-	return env->NewObjectArray(0, env->FindClass(
+	return (*env)->NewObjectArray(env, 0, (*env)->FindClass(env,
 		"cc/squirreljme/jvm/mle/brackets/TracePointBracket"), NULL);
 }
 
 JNIEXPORT jobject JNICALL Impl_mle_DebugShelf_pointClass(
 	JNIEnv* env, jclass classy, jobject trace)
 {
-	return forwardCallStaticObject(env, DEBUGSHELF_CLASSNAME,
+	return forwardCallStaticObject(env, classy, classy, DEBUGSHELF_CLASSNAME,
 		"pointClass", DEBUGSHELF_POINTCLASS_DESC, trace);
 }
 
 JNIEXPORT jobject JNICALL Impl_mle_DebugShelf_traceStack(
 	JNIEnv* env, jclass classy)
 {
-	return forwardCallStaticObject(env, DEBUGSHELF_CLASSNAME,
+	return forwardCallStaticObject(env, classy, classy, DEBUGSHELF_CLASSNAME,
 		"traceStack", DEBUGSHELF_TRACESTACK_DESC);
 }
 
@@ -77,8 +77,8 @@ static const JNINativeMethod mleDebugMethods[] =
 
 jint JNICALL mleDebugInit(JNIEnv* env, jclass classy)
 {
-	return env->RegisterNatives(
-		env->FindClass("cc/squirreljme/jvm/mle/DebugShelf"),
+	return (*env)->RegisterNatives(env,
+		(*env)->FindClass(env, "cc/squirreljme/jvm/mle/DebugShelf"),
 		mleDebugMethods, sizeof(mleDebugMethods) /
 			sizeof(JNINativeMethod));
 }

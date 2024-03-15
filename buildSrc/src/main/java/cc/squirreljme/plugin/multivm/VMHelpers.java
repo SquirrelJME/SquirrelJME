@@ -10,6 +10,7 @@
 package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
+import cc.squirreljme.plugin.general.cmake.CMakeBuildTask;
 import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import cc.squirreljme.plugin.multivm.ident.TargetClassifier;
 import cc.squirreljme.plugin.swm.JavaMEMidlet;
@@ -501,15 +502,12 @@ public final class VMHelpers
 		Project emuBase = __task.getProject().getRootProject()
 			.findProject(":emulators:emulator-base");
 		
-		// Is this valid?
-		Object raw = emuBase.getExtensions().getExtraProperties()
-			.get("libPathBase");
-		if (!(raw instanceof Path))
-			return null;
+		// Get the CMake Task for this
+		CMakeBuildTask cmake = (CMakeBuildTask)emuBase.getTasks()
+			.getByName("libNativeEmulatorBase");
 		
-		// Library is here?
-		return ((Path)raw).resolve(
-			System.mapLibraryName("emulator-base")).toAbsolutePath();
+		// Use the resultant library
+		return cmake.cmakeOutLibrary;
 	}
 	
 	/**

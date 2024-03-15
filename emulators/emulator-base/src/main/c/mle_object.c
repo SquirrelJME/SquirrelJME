@@ -17,7 +17,7 @@
 		JNIEnv* env, jclass classy, \
 		jarray array, jint off, jint len, javaType val) \
 		{ \
-			forwardCallStaticVoid(env, \
+			forwardCallStaticVoid(env, classy, \
 				OBJECTSHELF_CLASSNAME, \
 				"arrayFill", desc, \
 				array, off, len, val); \
@@ -42,13 +42,14 @@ JNIEXPORT jint JNICALL Impl_mle_ObjectShelf_arrayLength(JNIEnv* env,
 		return -1;
 
 	// Determine if this is an array or not
-	classClass = env->FindClass("java/lang/Class");
-	classIsArrayId = env->GetMethodID(classClass, "isArray", "()Z");
-	if (JNI_FALSE == env->CallBooleanMethod(env->GetObjectClass(array),
+	classClass = (*env)->FindClass(env, "java/lang/Class");
+	classIsArrayId = (*env)->GetMethodID(env, classClass, "isArray", "()Z");
+	if (JNI_FALSE == (*env)->CallBooleanMethod(env,
+		(*env)->GetObjectClass(env, array),
 		classIsArrayId))
 		return -1;
 
-	return env->GetArrayLength(array);
+	return (*env)->GetArrayLength(env, array);
 }
 
 static const JNINativeMethod mleObjectMethods[] =
@@ -76,8 +77,8 @@ static const JNINativeMethod mleObjectMethods[] =
 
 jint JNICALL mleObjectInit(JNIEnv* env, jclass classy)
 {
-	return env->RegisterNatives(
-		env->FindClass("cc/squirreljme/jvm/mle/ObjectShelf"),
+	return (*env)->RegisterNatives(env,
+		(*env)->FindClass(env, "cc/squirreljme/jvm/mle/ObjectShelf"),
 		mleObjectMethods, sizeof(mleObjectMethods) /
 			sizeof(JNINativeMethod));
 }
