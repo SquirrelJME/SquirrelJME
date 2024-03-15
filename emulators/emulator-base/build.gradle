@@ -80,9 +80,9 @@ String useDebugTask = (useDebugLib ? "assembleDebug" : "assembleRelease")
 // We need the native library in the JAR before we can properly use it
 // But we can compile the Java code just fine without it
 jar {
-	if (tasks.findByName(useDebugTask) == null) {
-		dependsOn "assemble"
-	} else {
+	// Only if found it is added as otherwise there will be a circular
+	// dependency
+	if (tasks.findByName(useDebugTask) != null) {
 		dependsOn (useDebugLib ? "assembleDebug" : "assembleRelease")
 	}
 	
