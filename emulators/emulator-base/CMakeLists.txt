@@ -6,6 +6,7 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 # DESCRIPTION: CMake Helper for project
+
 cmake_minimum_required(VERSION 3.0)
 
 # Declare project
@@ -16,22 +17,22 @@ find_package(JNI)
 
 # Declare library
 add_library(EmulatorBaseLib SHARED
-	src/main/cpp/mle_debug.cpp
-    src/main/cpp/mle_form.cpp
-    src/main/cpp/mle_jar.cpp
-    src/main/cpp/mle_math.cpp
-    src/main/cpp/mle_midi.cpp
-    src/main/cpp/mle_nativearchive.cpp
-    src/main/cpp/mle_object.cpp
-    src/main/cpp/mle_pencil.cpp
-    src/main/cpp/mle_reflection.cpp
-    src/main/cpp/mle_runtime.cpp
-    src/main/cpp/mle_task.cpp
-    src/main/cpp/mle_terminal.cpp
-    src/main/cpp/mle_thread.cpp
-    src/main/cpp/mle_type.cpp
-    src/main/cpp/nativebinding.cpp
-    src/main/cpp/utils.cpp)
+	src/main/c/mle_debug.c
+    src/main/c/mle_form.c
+    src/main/c/mle_jar.c
+    src/main/c/mle_math.c
+    src/main/c/mle_midi.c
+    src/main/c/mle_nativearchive.c
+    src/main/c/mle_object.c
+    src/main/c/mle_pencil.c
+    src/main/c/mle_reflection.c
+    src/main/c/mle_runtime.c
+    src/main/c/mle_task.c
+    src/main/c/mle_terminal.c
+    src/main/c/mle_thread.c
+    src/main/c/mle_type.c
+    src/main/c/nativebinding.c
+    src/main/c/utils.c)
 
 # Includes for the build
 target_include_directories(EmulatorBaseLib PUBLIC
