@@ -8,7 +8,7 @@ import java.util.regex.Pattern
 
 plugins
 {
-	// C++ needs to be first otherwise the build will break
+	// C needs to be first otherwise the build will break
 	id "cpp-library"
 	id "java-library"
 }
@@ -26,8 +26,32 @@ if ((project.hasProperty("squirreljmeTermuxCompiler") &&
 		project.squirreljmeTermuxCompiler) ||
 	(project.hasProperty("squirreljmeClaimX8664") &&
 		project.squirreljmeClaimX8664)) {
+	// Find GCC ourselves
+	def gccPath = null
+	for (String splice : System.getenv("PATH").split(
+		Pattern.quote(File.pathSeparator))) {
+		java.nio.file.Path desire = Paths.get(splice)
+			.resolve("gcc")
+		
+		if (Files.exists(desire)) {
+			gccPath = desire.toAbsolutePath().toString()
+			break
+		}
+	}
+	
+	// Did we find GCC here?
+	if (gccPath != null) {
+		model {
+			toolChains {
+				gcc(Gcc) {
+					path gccPath
+				}
+			}
+		}
+	}
+	
 	library {
-			targetMachines.add(machines.linux.x86_64)
+		targetMachines.add(machines.linux.x86_64)
 	}
 }
 
@@ -84,6 +108,10 @@ jar {
 	// dependency
 	if (tasks.findByName(useDebugTask) != null) {
 		dependsOn (useDebugLib ? "assembleDebug" : "assembleRelease")
+	}
+	
+	if (tasks.findByName("stripSymbolsRelease") != null) {
+		dependsOn "stripSymbolsRelease"
 	}
 	
 	java.nio.file.Path libPath = buildDir.toPath().resolve("lib")
@@ -237,7 +265,7 @@ List<String> getMacOsArchArguments(ToolChain toolChain) {
 
 // Improve debugging with native code compiles, these are only used by the
 // build system tests so these do not impact users at all
-tasks.withType(CppCompile).configureEach() {item ->
+tasks.withType(CCompile).configureEach() {item ->
 	// Only set for non-debugging targets
 	boolean isRelease = item.name.toLowerCase().contains("release")
 	if (!isRelease) {
@@ -253,7 +281,8 @@ tasks.withType(CppCompile).configureEach() {item ->
 		}
 		
 		// Microsoft Visual C++
-		if ("visualCpp".equalsIgnoreCase(toolChain.name)) {
+		if ("visualCpp".equalsIgnoreCase(toolChain.name) ||
+			"visualC".equalsIgnoreCase(toolChain.name)) {
 			if (!isRelease) {
 				return [
 					// Disable optimization
@@ -296,7 +325,8 @@ tasks.withType(LinkSharedLibrary).configureEach() { item ->
 		}
 		
 		// Microsoft Visual C++
-		if ("visualCpp".equalsIgnoreCase(toolChain.name)) {
+		if ("visualCpp".equalsIgnoreCase(toolChain.name) ||
+			"visualC".equalsIgnoreCase(toolChain.name)) {
 			if (!isRelease) {
 				return [
 					// Full debug info
