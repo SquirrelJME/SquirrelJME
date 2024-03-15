@@ -25,6 +25,7 @@ shadowJar {
 FileCollection toolsJar	= files(Paths.get("${System.properties['java.home']}")
 	.getParent().resolve("lib").resolve("tools.jar"))
 if (!Files.exists(toolsJar.singleFile.toPath())) {
+	// If on Java 9 or higher the module must be pulled in
 	if (JavaVersion.current() >= JavaVersion.VERSION_1_9) {
 		// Windows/Linux
 		toolsJar = files(Paths.get("${System.properties['java.home']}")
@@ -40,7 +41,11 @@ if (!Files.exists(toolsJar.singleFile.toPath())) {
 
 dependencies {
 	// Depend directly on tools.jar so it is brought in, or the module
-	implementation files(toolsJar)
+	if (Files.exists(toolsJar.singleFile.toPath())) {
+		implementation files(toolsJar)
+	} else {
+		implementation project(":tools:fake-javadoc-api")
+	}
 	
 	implementation project(":modules:io-file")
 	implementation project(":modules:json")

@@ -1,0 +1,9 @@
+plugins {
+	id "java-library"
+}
+
+description = "Fake JavaDoc API"
+
+build {
+	onlyIf { false }
+}
