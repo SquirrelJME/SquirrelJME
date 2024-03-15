@@ -327,7 +327,12 @@ installed with the following:
 
  * `flatpak-builder build-dir cc.squirreljme.SquirrelJME.yml`
  * `flatpak-builder --user --install --force-clean build-dir `
-   `cc.squirreljme.SquirrelJME`
+   ` cc.squirreljme.SquirrelJME`
+
+To bundle into a single file, run the following:
+
+ * `flatpak build-bundle build-dir squirreljme.flatpak `
+   ` cc.squirreljme.SquirrelJME`
 
 ## Mac OS
 

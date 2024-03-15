@@ -39,7 +39,7 @@ modules:
 
       # Desktop files
       - install -Dm644 assets/flatpak/cc.squirreljme.SquirrelJME.default.desktop
-        /app/share/applications/cc.squirreljme.SquirrelJME.default.desktop
+        /app/share/applications/cc.squirreljme.SquirrelJME.desktop
       - install -Dm644 assets/flatpak/cc.squirreljme.SquirrelJME.hosted.desktop
         /app/share/applications/cc.squirreljme.SquirrelJME.hosted.desktop
       - install -Dm644 assets/flatpak/cc.squirreljme.SquirrelJME.springcoat.desktop

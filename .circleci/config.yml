@@ -25,7 +25,7 @@ executors:
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
   build-on-linux-arm64:
     docker:
-      - image: cimg/ubuntu-2004:current
+      - image: cimg/ubuntu-2204:current
     resource_class: arm.medium
     environment:
       # Allow Gradle to be fully cached
@@ -427,7 +427,23 @@ jobs:
       - store_artifacts:
           path: emulators/standalone/build/libs/
           destination: .
-
+  build_linux_amd64_standalone_flatpak:
+    executor: build-on-linux-amd64
+    steps:
+      - checkout
+      - linux-install-required
+      - run:
+          name: Flatpak Support
+          command: sudo apt-get install -y flatpak-builder
+      - run:
+          name: Flatpak Build
+          command: flatpak-builder --from-git-branch=$CIRCLE_BRANCH build-dir cc.squirreljme.SquirrelJME.yml
+      - run:
+          name: Flatpak Bundle
+          command: flatpak build-bundle build-dir squirreljme-amd64.flatpak cc.squirreljme.SquirrelJME
+      - store_artifacts:
+          path: squirreljme-amd64.flatpak
+          destination: .
   build_linux_arm64:
     executor: build-on-linux-arm64
     steps:
@@ -461,6 +477,23 @@ jobs:
           command: rm emulators/standalone/build/libs/standalone-*.jar
       - store_artifacts:
           path: emulators/standalone/build/libs/
+          destination: .
+  build_linux_arm64_standalone_flatpak:
+    executor: build-on-linux-arm64
+    steps:
+      - checkout
+      - linux-install-required
+      - run:
+          name: Flatpak Support
+          command: sudo apt-get install -y flatpak-builder
+      - run:
+          name: Flatpak Build
+          command: flatpak-builder --from-git-branch=$CIRCLE_BRANCH build-dir cc.squirreljme.SquirrelJME.yml
+      - run:
+          name: Flatpak Bundle
+          command: flatpak build-bundle build-dir squirreljme-arm64.flatpak cc.squirreljme.SquirrelJME
+      - store_artifacts:
+          path: squirreljme-arm64.flatpak
           destination: .
 
   ### OSS SonaType Nexus
@@ -651,7 +684,7 @@ workflows:
     jobs:
       ############################# STANDARD TESTS ############################
       - build_linux_amd64
-#      - build_linux_arm64
+      - build_linux_arm64
       - test_springcoat_debug:
           requires:
             - construct_testJars
@@ -664,9 +697,15 @@ workflows:
       - build_linux_amd64_standalone:
            requires:
              - build_linux_amd64
-#      - build_linux_arm64_standalone:
-#          requires:
-#            - build_linux_arm64
+      - build_linux_amd64_standalone_flatpak:
+           requires:
+             - build_linux_amd64
+      - build_linux_arm64_standalone:
+          requires:
+            - build_linux_arm64
+      - build_linux_arm64_standalone_flatpak:
+          requires:
+            - build_linux_arm64
 
       # Building on Windows is currently expensive and takes longer, so only
       # run these builds on trunk to lower costs.
