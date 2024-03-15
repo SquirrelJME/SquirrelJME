@@ -10,7 +10,7 @@ build-options:
   env:
     - JAVA_HOME=/usr/lib/sdk/openjdk11/jvm/openjdk-11
     - PATH=/usr/lib/sdk/openjdk11/jvm/openjdk-11/bin:/app/bin:/usr/bin
-command: squirreljme
+command: /app/bin/squirreljme.sh
 modules:
   - name: openjdk
     buildsystem: simple
