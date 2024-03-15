@@ -150,7 +150,7 @@ commands:
           command: sudo apt-get update -y
       - run:
           name: Install required dependencies
-          command: sudo apt-get install -y --no-install-recommends cmake build-essential curl wget openjdk-11-jdk gcc g++ make
+          command: sudo apt-get install -y --no-install-recommends cmake build-essential curl wget openjdk-11-jdk gcc g++ make clang
 
   # Install what is required by Flatpak
   flatpak-install-required:
