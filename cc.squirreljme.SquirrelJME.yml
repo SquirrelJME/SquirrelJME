@@ -38,16 +38,16 @@ modules:
         /app/share/metainfo/cc.squirreljme.SquirrelJME.metainfo.xml
 
       # Desktop files
-      - install -Dm644 assets/flatpak/cc.squirreljme.Default.desktop
-        /app/share/applications/cc.squirreljme.Default.desktop
-      - install -Dm644 assets/flatpak/cc.squirreljme.Default.desktop
+      - install -Dm644 assets/flatpak/cc.squirreljme.SquirrelJME.default.desktop
+        /app/share/applications/cc.squirreljme.SquirrelJME.default.desktop
+      - install -Dm644 assets/flatpak/cc.squirreljme.SquirrelJME.default.desktop
         /app/share/applications/cc.squirreljme.SquirrelJME.desktop
-      - install -Dm644 assets/flatpak/cc.squirreljme.Hosted.desktop
-        /app/share/applications/cc.squirreljme.Hosted.desktop
-      - install -Dm644 assets/flatpak/cc.squirreljme.SpringCoat.desktop
-        /app/share/applications/cc.squirreljme.SpringCoat.desktop
-      - install -Dm644 assets/flatpak/cc.squirreljme.NanoCoat.desktop
-        /app/share/applications/cc.squirreljme.NanoCoat.desktop
+      - install -Dm644 assets/flatpak/cc.squirreljme.SquirrelJME.hosted.desktop
+        /app/share/applications/cc.squirreljme.SquirrelJME.hosted.desktop
+      - install -Dm644 assets/flatpak/cc.squirreljme.SquirrelJME.springcoat.desktop
+        /app/share/applications/cc.squirreljme.SquirrelJME.springcoat.desktop
+      - install -Dm644 assets/flatpak/cc.squirreljme.SquirrelJME.nanocoat.desktop
+        /app/share/applications/cc.squirreljme.SquirrelJME.nanocoat.desktop
 
       # XPM Icons
       - install -Dm644 assets/mascot/head_8x8.xpm
