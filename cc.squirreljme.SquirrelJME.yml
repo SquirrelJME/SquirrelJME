@@ -9,8 +9,8 @@ build-options:
     - "--share=network"
   env:
     - JAVA_HOME=/usr/lib/sdk/openjdk11/jvm/openjdk-11
-    - PATH=/usr/lib/sdk/openjdk11/jvm/openjdk-11/bin:/usr/bin
-command: java -jar /app/bin/squirreljme-standalone.jar
+    - PATH=/usr/lib/sdk/openjdk11/jvm/openjdk-11/bin:/app/bin:/usr/bin
+command: squirreljme
 modules:
   - name: openjdk
     buildsystem: simple
@@ -23,9 +23,13 @@ modules:
         -x test -x testHosted -x testHostedDebug
         -x testSpringCoat -x testSpringCoatRelease -x testSpringCoatDebug
         -x testNanoCoat -x testNanoCoatRelease -x testNanoCoatDebug
-      - install -D
+      - install -Dm755 assets/flatpak/squirreljme.sh
+        /app/bin/squirreljme.sh
+      - install -Dm755
         emulators/standalone/build/libs/squirreljme-standalone-*.jar
         /app/bin/squirreljme-standalone.jar
+      - install -Dm644 assets/flatpak/cc.squirreljme.SquirrelJME.metainfo.xml
+        /app/share/metainfo/cc.squirreljme.SquirrelJME.metainfo.xml
       - install -Dm644 assets/flatpak/cc.squirreljme.Default.desktop
         /app/share/applications/cc.squirreljme.Default.desktop
       - install -Dm644 assets/flatpak/cc.squirreljme.Hosted.desktop
@@ -63,4 +67,4 @@ finish-args:
   - "--filesystem=~/.config/squirreljme"
   - "--filesystem=~/.local/share/squirreljme"
   - "--env=JAVA_HOME=/usr/lib/sdk/openjdk11/jvm/openjdk-11"
-  - "--env=PATH=/usr/lib/sdk/openjdk11/jvm/openjdk-11/bin:/usr/bin"
+  - "--env=PATH=/usr/lib/sdk/openjdk11/jvm/openjdk-11/bin:/app/bin:/usr/bin"
