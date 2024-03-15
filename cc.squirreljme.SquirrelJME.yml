@@ -66,19 +66,19 @@ modules:
         /app/share/icons/hicolor/128x128/apps/cc.squirreljme.SquirrelJME.xpm
 
       # PNG Icons
-      - convert assets/mascot/head_8x8.xpm
+      - tail +2 assets/mascot/head_8x8.png.__mime | base64 -d -i | cat>
         /app/share/icons/hicolor/8x8/apps/cc.squirreljme.SquirrelJME.png
-      - convert assets/mascot/head_16x16.xpm
+      - tail +2 assets/mascot/head_16x16.png.__mime | base64 -d -i | cat >
         /app/share/icons/hicolor/16x16/apps/cc.squirreljme.SquirrelJME.png
-      - convert assets/mascot/head_24x24.xpm
+      - tail +2 assets/mascot/head_24x24.png.__mime | base64 -d -i | cat >
         /app/share/icons/hicolor/24x24/apps/cc.squirreljme.SquirrelJME.png
-      - convert assets/mascot/head_32x32.xpm
+      - tail +2 assets/mascot/head_32x32.png.__mime | base64 -d -i | cat >
         /app/share/icons/hicolor/32x32/apps/cc.squirreljme.SquirrelJME.png
-      - convert assets/mascot/head_48x48.xpm
+      - tail +2 assets/mascot/head_48x48.png.__mime | base64 -d -i | cat >
         /app/share/icons/hicolor/48x48/apps/cc.squirreljme.SquirrelJME.png
-      - convert assets/mascot/head_64x64.xpm
+      - tail +2 assets/mascot/head_64x64.png.__mime | base64 -d -i | cat >
         /app/share/icons/hicolor/64x64/apps/cc.squirreljme.SquirrelJME.png
-      - convert assets/mascot/head_128x128.xpm
+      - tail +2 assets/mascot/head_128x128.png.__mime | base64 -d -i | cat >
         /app/share/icons/hicolor/128x128/apps/cc.squirreljme.SquirrelJME.png
     sources:
       - type: git
