@@ -1,0 +1,59 @@
+id: cc.squirreljme.SquirrelJME
+runtime: org.freedesktop.Platform
+runtime-version: '23.08'
+sdk: org.freedesktop.Sdk
+sdk-extensions:
+  - "org.freedesktop.Sdk.Extension.openjdk11"
+build-options:
+  build-args:
+    - "--share=network"
+  env:
+    - JAVA_HOME=/usr/lib/sdk/openjdk11/jvm/openjdk-11
+    - PATH=/usr/lib/sdk/openjdk11/jvm/openjdk-11/bin:/usr/bin
+command: java -jar /app/bin/squirreljme-standalone.jar
+modules:
+  - name: openjdk
+    buildsystem: simple
+    build-commands:
+      - /usr/lib/sdk/openjdk11/install.sh
+  - name: squirreljme
+    buildsystem: simple
+    build-commands:
+      - ./gradlew --console plain --no-daemon :emulators:standalone:shadowJar
+        -x test -x testHosted -x testHostedDebug
+        -x testSpringCoat -x testSpringCoatRelease -x testSpringCoatDebug
+      - install
+        emulators/standalone/build/libs/squirreljme-standalone-*.jar
+        /app/bin/squirreljme-standalone.jar
+      - install -Dm644 assets/flatpak/cc.squirreljme.SquirrelJME.desktop
+        /app/share/applications/cc.squirreljme.SquirrelJME.desktop
+      - install -Dm644 assets/mascot/head_8x8.xpm
+        /app/share/icons/hicolor/8x8/apps/cc.squirreljme.SquirrelJME.xpm
+      - install -Dm644 assets/mascot/head_16x16.xpm
+        /app/share/icons/hicolor/16x16/apps/cc.squirreljme.SquirrelJME.xpm
+      - install -Dm644 assets/mascot/head_24x24.xpm
+        /app/share/icons/hicolor/24x24/apps/cc.squirreljme.SquirrelJME.xpm
+      - install -Dm644 assets/mascot/head_32x32.xpm
+        /app/share/icons/hicolor/32x32/apps/cc.squirreljme.SquirrelJME.xpm
+      - install -Dm644 assets/mascot/head_48x48.xpm
+        /app/share/icons/hicolor/48x48/apps/cc.squirreljme.SquirrelJME.xpm
+      - install -Dm644 assets/mascot/head_64x64.xpm
+        /app/share/icons/hicolor/64x64/apps/cc.squirreljme.SquirrelJME.xpm
+      - install -Dm644 assets/mascot/head_128x128.xpm
+        /app/share/icons/hicolor/128x128/apps/cc.squirreljme.SquirrelJME.xpm
+    sources:
+      - type: git
+        branch: trunk
+        url: https://github.com/SquirrelJME/SquirrelJME.git
+finish-args:
+  - "--share=network"
+  - "--socket=x11"
+  - "--socket=wayland"
+  - "--socket=fallback-x11"
+  - "--socket=pulseaudio"
+  - "--socket=session-bus"
+  - "--device=dri"
+  - "--filesystem=~/.config/squirreljme"
+  - "--filesystem=~/.local/share/squirreljme"
+  - "--env=JAVA_HOME=/usr/lib/sdk/openjdk11/jvm/openjdk-11"
+  - "--env=PATH=/usr/lib/sdk/openjdk11/jvm/openjdk-11/bin:/usr/bin"

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=SquirrelJME
+Comment=Java ME 8 Virtual Machine
+Type=Application
+Categories=Application;Utilities;
+Exec=java -jar /app/bin/squirreljme-standalone.jar
+Terminal=false
+Icon=cc.squirreljme.SquirrelJME

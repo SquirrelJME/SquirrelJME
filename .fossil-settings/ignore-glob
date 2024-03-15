@@ -83,10 +83,20 @@ modules/*/out/test/
 java_pid*.hprof
 *.nps
 
+# Flatpak
+.flatpak-builder/
+build-dir/
+
 # CMake
 CMakeFiles
 CTestTestfile.cmake
 CMakeCache.txt
+nanocoat/cmake-build-release
+nanocoat/cmake-build-debug
+nanocoat/cmake-build-*
+nanocoat/cc/cmake-build-release
+nanocoat/cc/cmake-build-debug
+nanocoat/cc/cmake-build-*
 ratufacoat/cmake-build-release
 ratufacoat/cmake-build-debug
 ratufacoat/cmake-build-*
