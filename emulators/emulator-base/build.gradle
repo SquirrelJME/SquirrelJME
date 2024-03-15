@@ -55,6 +55,13 @@ if ((project.hasProperty("squirreljmeTermuxCompiler") &&
 	}
 }
 
+library {
+	binaries.configureEach {
+		def compileTask = compileTask.get()
+		compileTask.source.from fileTree(dir: "src/main/c", include: "**/*.c")
+	}
+}
+
 // Gradle does not support C++ compilation on M1 Macs currently, so this
 // is a bit of a workaround
 if (project.hasProperty("squirreljmeMacOsArmCpp") &&
