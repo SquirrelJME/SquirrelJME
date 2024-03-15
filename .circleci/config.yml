@@ -182,11 +182,8 @@ commands:
         type: string
     steps:
       - run:
-          name: Flatpak Build
-          command: flatpak-builder --user --install-deps-from=flathub --allow-missing-runtimes --from-git-branch=$CIRCLE_BRANCH build-dir cc.squirreljme.SquirrelJME.yml
-      - run:
-          name: Flatpak Install
-          command: flatpak-builder --user --install build-dir cc.squirreljme.SquirrelJME.yml
+          name: Flatpak Build and Install
+          command: flatpak-builder --user --install --install-deps-from=flathub --allow-missing-runtimes --force-clean build-dir cc.squirreljme.SquirrelJME.yml
       - run:
           name: Flatpak Bundle
           command: flatpak --user build-bundle $HOME/.local/share/flatpak/repo squirreljme-<<parameters.arch>>.flatpak cc.squirreljme.SquirrelJME
