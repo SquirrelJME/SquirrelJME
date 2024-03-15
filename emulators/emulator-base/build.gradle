@@ -73,11 +73,18 @@ tasks.register("mimeDecode", MimeDecodeResourcesTask.class,
 processResources.dependsOn("mimeDecode")
 jar.dependsOn("mimeDecode")
 
+// Which base library is used?
+boolean useDebugLib = false
+String useDebugTask = (useDebugLib ? "assembleDebug" : "assembleRelease")
+
 // We need the native library in the JAR before we can properly use it
 // But we can compile the Java code just fine without it
-boolean useDebugLib = false
 jar {
-	dependsOn (useDebugLib ? "assembleDebug" : "assembleRelease")
+	if (tasks.findByName(useDebugTask) == null) {
+		dependsOn "assemble"
+	} else {
+		dependsOn (useDebugLib ? "assembleDebug" : "assembleRelease")
+	}
 	
 	java.nio.file.Path libPath = buildDir.toPath().resolve("lib")
 		.resolve("main").resolve((useDebugLib ? "debug" : "release"))
