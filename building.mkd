@@ -340,6 +340,10 @@ To bundle into a single file, run the following:
  * `flatpak build-bundle $HOME/.local/share/flatpak/repo squirreljme.flatpak `
    ` cc.squirreljme.SquirrelJME`
 
+To run from the command line, you may want to add to your `PATH`:
+
+ * `$HOME/.local/share/flatpak/exports/bin/`
+
 ## Mac OS
 
 This is used with [Homebrew](https://brew.sh/), with checked
