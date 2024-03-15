@@ -16,16 +16,14 @@ version: 2.1
 executors:
   build-on-linux-amd64:
     docker:
-      # As of 2023/07/19 it appears .19 is broken since 2023/04/19, so use
-      # older .18 here
-      - image: cimg/openjdk:11.0.18
+      - image: debian:bookworm
     resource_class: large
     environment:
       # Allow Gradle to be fully cached
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
   build-on-linux-arm64:
-    machine:
-      image: ubuntu-2204:2024.01.1
+    docker:
+      - image: debian:bookworm
     resource_class: arm.medium
     environment:
       # Allow Gradle to be fully cached
@@ -150,7 +148,8 @@ commands:
           command: sudo apt-get update -y
       - run:
           name: Install required dependencies
-          command: sudo apt-get install -y --no-install-recommends cmake build-essential curl wget openjdk-11-jdk gcc g++ make clang
+          command: |
+            sudo apt-get install -y --no-install-recommends cmake build-essential curl wget openjdk-17-jdk gcc g++ make clang
 
   # Install what is required by Flatpak
   flatpak-install-required:
