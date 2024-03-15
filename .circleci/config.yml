@@ -169,7 +169,7 @@ commands:
           command: flatpak install --user -y --noninteractive flathub org.freedesktop.Sdk//23.08
       - run:
           name: Flatpak OpenJDK
-          command: flatpak install --user -y --noninteractive flathub org.freedesktop.Sdk.Extension.openjdk11
+          command: flatpak install --user -y --noninteractive flathub runtime/org.freedesktop.Sdk.Extension.openjdk11//23.08
   flatpak-common-build:
     parameters:
       arch:
