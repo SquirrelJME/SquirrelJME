@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=SquirrelJME (SpringCoat)
+Comment=Java ME 8 Virtual Machine, via SpringCoat.
+Type=Application
+Categories=Application;Utilities;
+Exec=java -jar /app/bin/squirreljme-standalone.jar -Xemulator:springcoat
+Terminal=false
+Icon=cc.squirreljme.SquirrelJME
