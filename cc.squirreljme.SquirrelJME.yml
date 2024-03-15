@@ -23,21 +23,33 @@ modules:
         -x test -x testHosted -x testHostedDebug
         -x testSpringCoat -x testSpringCoatRelease -x testSpringCoatDebug
         -x testNanoCoat -x testNanoCoatRelease -x testNanoCoatDebug
+
+      # Run Script
       - install -Dm755 assets/flatpak/squirreljme.sh
         /app/bin/squirreljme.sh
+
+      # Resultant Jar
       - install -Dm755
         emulators/standalone/build/libs/squirreljme-standalone-*.jar
         /app/bin/squirreljme-standalone.jar
-      - install -Dm644 assets/flatpak/cc.squirreljme.SquirrelJME.metainfo.xml
+
+      # Flatpak Manifest
+      - install -Dm644 cc.squirreljme.SquirrelJME.metainfo.xml
         /app/share/metainfo/cc.squirreljme.SquirrelJME.metainfo.xml
+
+      # Desktop files
       - install -Dm644 assets/flatpak/cc.squirreljme.Default.desktop
         /app/share/applications/cc.squirreljme.Default.desktop
+      - install -Dm644 assets/flatpak/cc.squirreljme.Default.desktop
+        /app/share/applications/cc.squirreljme.SquirrelJME.desktop
       - install -Dm644 assets/flatpak/cc.squirreljme.Hosted.desktop
         /app/share/applications/cc.squirreljme.Hosted.desktop
       - install -Dm644 assets/flatpak/cc.squirreljme.SpringCoat.desktop
         /app/share/applications/cc.squirreljme.SpringCoat.desktop
       - install -Dm644 assets/flatpak/cc.squirreljme.NanoCoat.desktop
         /app/share/applications/cc.squirreljme.NanoCoat.desktop
+
+      # XPM Icons
       - install -Dm644 assets/mascot/head_8x8.xpm
         /app/share/icons/hicolor/8x8/apps/cc.squirreljme.SquirrelJME.xpm
       - install -Dm644 assets/mascot/head_16x16.xpm
@@ -52,6 +64,22 @@ modules:
         /app/share/icons/hicolor/64x64/apps/cc.squirreljme.SquirrelJME.xpm
       - install -Dm644 assets/mascot/head_128x128.xpm
         /app/share/icons/hicolor/128x128/apps/cc.squirreljme.SquirrelJME.xpm
+
+      # PNG Icons
+      - convert assets/mascot/head_8x8.xpm
+        /app/share/icons/hicolor/8x8/apps/cc.squirreljme.SquirrelJME.png
+      - convert assets/mascot/head_16x16.xpm
+        /app/share/icons/hicolor/16x16/apps/cc.squirreljme.SquirrelJME.png
+      - convert assets/mascot/head_24x24.xpm
+        /app/share/icons/hicolor/24x24/apps/cc.squirreljme.SquirrelJME.png
+      - convert assets/mascot/head_32x32.xpm
+        /app/share/icons/hicolor/32x32/apps/cc.squirreljme.SquirrelJME.png
+      - convert assets/mascot/head_48x48.xpm
+        /app/share/icons/hicolor/48x48/apps/cc.squirreljme.SquirrelJME.png
+      - convert assets/mascot/head_64x64.xpm
+        /app/share/icons/hicolor/64x64/apps/cc.squirreljme.SquirrelJME.png
+      - convert assets/mascot/head_128x128.xpm
+        /app/share/icons/hicolor/128x128/apps/cc.squirreljme.SquirrelJME.png
     sources:
       - type: git
         branch: trunk
