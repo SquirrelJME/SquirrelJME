@@ -320,6 +320,15 @@ virtual machine implementations is available when calling the task:
 
  * `:emulators:standalone:shadowJar`
 
+## Flatpak
+
+This is used with [Flatpak](https://www.flatpak.org/) and can be built and
+installed with the following:
+
+ * `flatpak-builder build-dir cc.squirreljme.SquirrelJME.yml`
+ * `flatpak-builder --user --install --force-clean build-dir `
+   `cc.squirreljme.SquirrelJME`
+
 ## Mac OS
 
 This is used with [Homebrew](https://brew.sh/), with checked
