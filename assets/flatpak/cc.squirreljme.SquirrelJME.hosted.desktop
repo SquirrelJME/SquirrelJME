@@ -3,6 +3,6 @@ Name=SquirrelJME (Hosted)
 Comment=Java ME 8 Virtual Machine, via Hosted environment.
 Type=Application
 Categories=Utility;Emulator;
-Exec=java -jar /app/bin/squirreljme-standalone.jar -Xemulator:hosted
+Exec=/app/bin/squirreljme.sh -Xemulator:hosted
 Terminal=false
 Icon=cc.squirreljme.SquirrelJME

@@ -3,6 +3,6 @@ Name=SquirrelJME
 Comment=Java ME 8 Virtual Machine.
 Type=Application
 Categories=Utility;Emulator;
-Exec=java -jar /app/bin/squirreljme-standalone.jar
+Exec=/app/bin/squirreljme.sh
 Terminal=false
 Icon=cc.squirreljme.SquirrelJME
