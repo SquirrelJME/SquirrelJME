@@ -47,6 +47,16 @@ modules:
       - install -Dm644 assets/flatpak/cc.squirreljme.SquirrelJME.nanocoat.desktop
         /app/share/applications/cc.squirreljme.SquirrelJME.nanocoat.desktop
 
+      # Desktop files with the internal debugger enable
+      - install -Dm644 assets/flatpak/cc.squirreljme.SquirrelJME.default.debug.desktop
+        /app/share/applications/cc.squirreljme.SquirrelJME.default.debug.desktop
+      - install -Dm644 assets/flatpak/cc.squirreljme.SquirrelJME.hosted.debug.desktop
+        /app/share/applications/cc.squirreljme.SquirrelJME.hosted.debug.desktop
+      - install -Dm644 assets/flatpak/cc.squirreljme.SquirrelJME.springcoat.debug.desktop
+        /app/share/applications/cc.squirreljme.SquirrelJME.springcoat.debug.desktop
+      - install -Dm644 assets/flatpak/cc.squirreljme.SquirrelJME.nanocoat.debug.desktop
+        /app/share/applications/cc.squirreljme.SquirrelJME.nanocoat.debug.desktop
+
       # XPM Icons
       - install -Dm644 assets/mascot/head_8x8.xpm
         /app/share/icons/hicolor/8x8/apps/cc.squirreljme.SquirrelJME.xpm

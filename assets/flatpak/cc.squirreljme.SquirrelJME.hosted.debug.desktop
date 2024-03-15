@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=SquirrelJME (Debug; Hosted)
+Comment=Java ME 8 Virtual Machine with debugging, via Hosted environment.
+Type=Application
+Categories=Utility;Emulator;
+Exec=/app/bin/squirreljme.sh -Xemulator:hosted -Xdebug -Xclutter:debug
+Terminal=false
+Icon=cc.squirreljme.SquirrelJME
