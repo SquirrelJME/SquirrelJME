@@ -187,6 +187,9 @@ commands:
       - run:
           name: Flatpak Bundle
           command: flatpak build-bundle $HOME/.local/share/flatpak/repo squirreljme-<<parameters.arch>>.flatpak cc.squirreljme.SquirrelJME
+      - run:
+          name: Flatpak size
+          command: ls -al squirreljme-<<parameters.arch>>.flatpak
       - store_artifacts:
           path: squirreljme-<<parameters.arch>>.flatpak
           destination: squirreljme-<<parameters.arch>>.flatpak
