@@ -16,7 +16,7 @@
 JNIEXPORT void JNICALL Impl_mle_ReflectionShelf_invokeMain(JNIEnv* env,
 	jclass classy, jobject type, jobject args)
 {
-	forwardCallStaticVoid(env, classy, classy, REFLECTION_CLASSNAME,
+	forwardCallStaticVoid(env, REFLECTION_CLASSNAME,
 		"invokeMain", INVOKEMAIN_DESC,
 		type, args);
 }

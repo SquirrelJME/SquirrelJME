@@ -48,28 +48,28 @@
 JNIEXPORT void JNICALL Impl_mle_FormShelf_callbackDisplay(JNIEnv* env,
 	jclass classy, jobject display, jobject callback)
 {
-	forwardCallStaticVoid(env, classy, classy, SWINGUIFORM_CLASSNAME,
+	forwardCallStaticVoid(env, SWINGUIFORM_CLASSNAME,
 		"callback", SWINGUIFORM_CALLBACK_DISPLAY_DESC, display, callback);
 }
 
 JNIEXPORT void JNICALL Impl_mle_FormShelf_callback(JNIEnv* env,
 	jclass classy, jobject form, jobject callback)
 {
-	forwardCallStaticVoid(env, classy, classy, SWINGUIFORM_CLASSNAME,
+	forwardCallStaticVoid(env, SWINGUIFORM_CLASSNAME,
 		"callback", SWINGUIFORM_CALLBACK_DESC, form, callback);
 }
 
 JNIEXPORT jobject JNICALL Impl_mle_FormShelf_displays(JNIEnv* env,
 	jclass classy)
 {
-	return forwardCallStaticObject(env, classy, classy, SWINGUIFORM_CLASSNAME,
+	return forwardCallStaticObject(env, SWINGUIFORM_CLASSNAME,
 		"displays", SWINGUIFORM_DISPLAYS_DESC);
 }
 
 JNIEXPORT jobject JNICALL Impl_mle_FormShelf_displayCurrent(JNIEnv* env,
 	jclass classy, jobject display)
 {
-	return forwardCallStaticObject(env, classy, classy, SWINGUIFORM_CLASSNAME,
+	return forwardCallStaticObject(env, SWINGUIFORM_CLASSNAME,
 		"displayCurrent", SWINGUIFORM_DISPLAYCURRENT_DESC,
 		display);
 }
@@ -77,7 +77,7 @@ JNIEXPORT jobject JNICALL Impl_mle_FormShelf_displayCurrent(JNIEnv* env,
 JNIEXPORT void JNICALL Impl_mle_FormShelf_displayShowZ(JNIEnv* env,
 	jclass classy, jobject display, jboolean shown)
 {
-	forwardCallStaticVoid(env, classy, classy, SWINGUIFORM_CLASSNAME,
+	forwardCallStaticVoid(env, SWINGUIFORM_CLASSNAME,
 		"displayShow", SWINGUIFORM_DISPLAYSHOWZ_DESC,
 		display, shown);
 }
@@ -85,7 +85,7 @@ JNIEXPORT void JNICALL Impl_mle_FormShelf_displayShowZ(JNIEnv* env,
 JNIEXPORT void JNICALL Impl_mle_FormShelf_displayShow(JNIEnv* env,
 	jclass classy, jobject display, jobject form)
 {
-	forwardCallStaticVoid(env, classy, classy, SWINGUIFORM_CLASSNAME,
+	forwardCallStaticVoid(env, SWINGUIFORM_CLASSNAME,
 		"displayShow", SWINGUIFORM_DISPLAYSHOW_DESC,
 		display, form);
 }
@@ -93,7 +93,7 @@ JNIEXPORT void JNICALL Impl_mle_FormShelf_displayShow(JNIEnv* env,
 JNIEXPORT jboolean JNICALL Impl_mle_FormShelf_equalsDisplay(JNIEnv* env,
 	jclass classy, jobject a, jobject b)
 {
-	return forwardCallStaticBoolean(env, classy, classy, SWINGUIFORM_CLASSNAME,
+	return forwardCallStaticBoolean(env,SWINGUIFORM_CLASSNAME,
 		"equals", SWINGUIFORM_EQUALSDISPLAY_DESC,
 		a, b);
 }
@@ -101,7 +101,7 @@ JNIEXPORT jboolean JNICALL Impl_mle_FormShelf_equalsDisplay(JNIEnv* env,
 JNIEXPORT jboolean JNICALL Impl_mle_FormShelf_equalsDrawable(JNIEnv* env,
 	jclass classy, jobject a, jobject b)
 {
-	return forwardCallStaticBoolean(env, classy, classy, SWINGUIFORM_CLASSNAME,
+	return forwardCallStaticBoolean(env,SWINGUIFORM_CLASSNAME,
 		"equals", SWINGUIFORM_EQUALSDRAWABLE_DESC,
 		a, b);
 }
@@ -109,7 +109,7 @@ JNIEXPORT jboolean JNICALL Impl_mle_FormShelf_equalsDrawable(JNIEnv* env,
 JNIEXPORT jboolean JNICALL Impl_mle_FormShelf_equalsForm(JNIEnv* env,
 	jclass classy, jobject a, jobject b)
 {
-	return forwardCallStaticBoolean(env, classy, classy, SWINGUIFORM_CLASSNAME,
+	return forwardCallStaticBoolean(env,SWINGUIFORM_CLASSNAME,
 		"equals", SWINGUIFORM_EQUALSFORM_DESC,
 		a, b);
 }
@@ -117,7 +117,7 @@ JNIEXPORT jboolean JNICALL Impl_mle_FormShelf_equalsForm(JNIEnv* env,
 JNIEXPORT jboolean JNICALL Impl_mle_FormShelf_equalsItem(JNIEnv* env,
 	jclass classy, jobject a, jobject b)
 {
-	return forwardCallStaticBoolean(env, classy, classy, SWINGUIFORM_CLASSNAME,
+	return forwardCallStaticBoolean(env,SWINGUIFORM_CLASSNAME,
 		"equals", SWINGUIFORM_EQUALSITEM_DESC,
 		a, b);
 }
@@ -125,7 +125,7 @@ JNIEXPORT jboolean JNICALL Impl_mle_FormShelf_equalsItem(JNIEnv* env,
 JNIEXPORT jboolean JNICALL Impl_mle_FormShelf_equalsWidget(JNIEnv* env,
 	jclass classy, jobject a, jobject b)
 {
-	return forwardCallStaticBoolean(env, classy, classy, SWINGUIFORM_CLASSNAME,
+	return forwardCallStaticBoolean(env,SWINGUIFORM_CLASSNAME,
 		"equals", SWINGUIFORM_EQUALSWIDGET_DESC,
 		a, b);
 }
@@ -133,14 +133,14 @@ JNIEXPORT jboolean JNICALL Impl_mle_FormShelf_equalsWidget(JNIEnv* env,
 JNIEXPORT void JNICALL Impl_mle_FormShelf_flushEvents(JNIEnv* env,
 	jclass classy)
 {
-	forwardCallStaticVoid(env, classy, classy, SWINGUIFORM_CLASSNAME,
+	forwardCallStaticVoid(env, SWINGUIFORM_CLASSNAME,
 		"flushEvents", SWINGUIFORM_FLUSHEVENTS_DESC);
 }
 
 JNIEXPORT void JNICALL Impl_mle_FormShelf_formDelete(JNIEnv* env,
 	jclass classy, jobject form)
 {
-	forwardCallStaticVoid(env, classy, classy, SWINGUIFORM_CLASSNAME,
+	forwardCallStaticVoid(env, SWINGUIFORM_CLASSNAME,
 		"formDelete", SWINGUIFORM_FORMDELETE_DESC,
 		form);
 }
@@ -148,7 +148,7 @@ JNIEXPORT void JNICALL Impl_mle_FormShelf_formDelete(JNIEnv* env,
 JNIEXPORT jobject JNICALL Impl_mle_FormShelf_formItemAtPosition(JNIEnv* env,
 	jclass classy, jobject form, jint position)
 {
-	return forwardCallStaticObject(env, classy, classy, SWINGUIFORM_CLASSNAME,
+	return forwardCallStaticObject(env, SWINGUIFORM_CLASSNAME,
 		"formItemAtPosition", SWINGUIFORM_FORMITEMATPOSITION_DESC,
 		form, position);
 }
@@ -156,7 +156,7 @@ JNIEXPORT jobject JNICALL Impl_mle_FormShelf_formItemAtPosition(JNIEnv* env,
 JNIEXPORT jint JNICALL Impl_mle_FormShelf_formItemCount(JNIEnv* env,
 	jclass classy, jobject form)
 {
-	return forwardCallStaticInteger(env, classy, classy, SWINGUIFORM_CLASSNAME,
+	return forwardCallStaticInteger(env, SWINGUIFORM_CLASSNAME,
 		"formItemCount", SWINGUIFORM_FORMITEMCOUNT_DESC,
 		form);
 }
@@ -164,7 +164,7 @@ JNIEXPORT jint JNICALL Impl_mle_FormShelf_formItemCount(JNIEnv* env,
 JNIEXPORT jint JNICALL Impl_mle_FormShelf_formItemPositionGet(JNIEnv* env,
 	jclass classy, jobject form, jobject item)
 {
-	return forwardCallStaticInteger(env, classy, classy, SWINGUIFORM_CLASSNAME,
+	return forwardCallStaticInteger(env, SWINGUIFORM_CLASSNAME,
 		"formItemPosition", SWINGUIFORM_FORMITEMPOSITIONGET_DESC,
 		form, item);
 }
@@ -172,7 +172,7 @@ JNIEXPORT jint JNICALL Impl_mle_FormShelf_formItemPositionGet(JNIEnv* env,
 JNIEXPORT void JNICALL Impl_mle_FormShelf_formItemPositionSet(JNIEnv* env,
 	jclass classy, jobject form, jobject item, jint position)
 {
-	forwardCallStaticVoid(env, classy, classy, SWINGUIFORM_CLASSNAME,
+	forwardCallStaticVoid(env, SWINGUIFORM_CLASSNAME,
 		"formItemPosition", SWINGUIFORM_FORMITEMPOSITIONSET_DESC,
 		form, item, position);
 }
@@ -180,7 +180,7 @@ JNIEXPORT void JNICALL Impl_mle_FormShelf_formItemPositionSet(JNIEnv* env,
 JNIEXPORT jobject JNICALL Impl_mle_FormShelf_formItemRemove(JNIEnv* env,
 	jclass classy, jobject form, jint position)
 {
-	return forwardCallStaticObject(env, classy, classy, SWINGUIFORM_CLASSNAME,
+	return forwardCallStaticObject(env, SWINGUIFORM_CLASSNAME,
 		"formItemRemove", SWINGUIFORM_FORMITEMREMOVE_DESC,
 		form, position);
 }
@@ -188,28 +188,28 @@ JNIEXPORT jobject JNICALL Impl_mle_FormShelf_formItemRemove(JNIEnv* env,
 JNIEXPORT jobject JNICALL Impl_mle_FormShelf_formNew(JNIEnv* env,
 	jclass classy)
 {
-	return forwardCallStaticObject(env, classy, classy, SWINGUIFORM_CLASSNAME,
+	return forwardCallStaticObject(env, SWINGUIFORM_CLASSNAME,
 		"formNew", SWINGUIFORM_FORMNEW_DESC);
 }
 
 JNIEXPORT void JNICALL Impl_mle_FormShelf_formRefresh(JNIEnv* env,
 	jclass classy, jobject form)
 {
-	forwardCallStaticVoid(env, classy, classy, SWINGUIFORM_CLASSNAME,
+	forwardCallStaticVoid(env, SWINGUIFORM_CLASSNAME,
 		"formRefresh", SWINGUIFORM_FORMREFRESH_DESC, form);
 }
 
 JNIEXPORT jobject JNICALL Impl_mle_FormShelf_injector(JNIEnv* env,
 	jclass classy)
 {
-	return forwardCallStaticObject(env, classy, classy, SWINGUIFORM_CLASSNAME,
+	return forwardCallStaticObject(env, SWINGUIFORM_CLASSNAME,
 		"injector", SWINGUIFORM_INJECTOR_DESC);
 }
 
 JNIEXPORT void JNICALL Impl_mle_FormShelf_itemDelete(JNIEnv* env,
 	jclass classy, jobject form)
 {
-	forwardCallStaticVoid(env, classy, classy, SWINGUIFORM_CLASSNAME,
+	forwardCallStaticVoid(env, SWINGUIFORM_CLASSNAME,
 		"itemDelete", SWINGUIFORM_ITEMDELETE_DESC,
 		form);
 }
@@ -217,7 +217,7 @@ JNIEXPORT void JNICALL Impl_mle_FormShelf_itemDelete(JNIEnv* env,
 JNIEXPORT jobject JNICALL Impl_mle_FormShelf_itemForm(JNIEnv* env,
 	jclass classy, jobject item)
 {
-	return forwardCallStaticObject(env, classy, classy, SWINGUIFORM_CLASSNAME,
+	return forwardCallStaticObject(env, SWINGUIFORM_CLASSNAME,
 		"itemForm", SWINGUIFORM_ITEMFORM_DESC,
 		item);
 }
@@ -225,7 +225,7 @@ JNIEXPORT jobject JNICALL Impl_mle_FormShelf_itemForm(JNIEnv* env,
 JNIEXPORT jobject JNICALL Impl_mle_FormShelf_itemNew(JNIEnv* env,
 	jclass classy, jint type)
 {
-	return forwardCallStaticObject(env, classy, classy, SWINGUIFORM_CLASSNAME,
+	return forwardCallStaticObject(env, SWINGUIFORM_CLASSNAME,
 		"itemNew", SWINGUIFORM_ITEMNEW_DESC,
 		type);
 }
@@ -233,7 +233,7 @@ JNIEXPORT jobject JNICALL Impl_mle_FormShelf_itemNew(JNIEnv* env,
 JNIEXPORT void JNICALL Impl_mle_FormShelf_later(JNIEnv* env, jclass classy,
 	jobject displayKey, jint serialKey)
 {
-	forwardCallStaticVoid(env, classy, classy, SWINGUIFORM_CLASSNAME,
+	forwardCallStaticVoid(env, SWINGUIFORM_CLASSNAME,
 		"later", SWINGUIFORM_LATER_DESC,
 		displayKey, serialKey);
 }
@@ -241,7 +241,7 @@ JNIEXPORT void JNICALL Impl_mle_FormShelf_later(JNIEnv* env, jclass classy,
 JNIEXPORT jint JNICALL Impl_mle_FormShelf_metric(JNIEnv* env, jclass classy,
 	jobject display, jint metricId)
 {
-	return forwardCallStaticInteger(env, classy, classy, SWINGUIFORM_CLASSNAME,
+	return forwardCallStaticInteger(env, SWINGUIFORM_CLASSNAME,
 		"metric", SWINGUIFORM_METRIC_DESC,
 		display, metricId);
 }
@@ -249,7 +249,7 @@ JNIEXPORT jint JNICALL Impl_mle_FormShelf_metric(JNIEnv* env, jclass classy,
 JNIEXPORT void JNICALL Impl_mle_FormShelf_widgetPropertyInt(JNIEnv* env,
 	jclass classy, jobject item, jint property, jint sub, jint newValue)
 {
-	forwardCallStaticVoid(env, classy, classy, SWINGUIFORM_CLASSNAME,
+	forwardCallStaticVoid(env, SWINGUIFORM_CLASSNAME,
 		"widgetProperty", SWINGUIFORM_WIDGETPROPERTY_INT_DESC,
 		item, property, sub, newValue);
 }
@@ -257,7 +257,7 @@ JNIEXPORT void JNICALL Impl_mle_FormShelf_widgetPropertyInt(JNIEnv* env,
 JNIEXPORT void JNICALL Impl_mle_FormShelf_widgetPropertyStr(JNIEnv* env,
 	jclass classy, jobject item, jint property, jint sub, jobject newValue)
 {
-	forwardCallStaticVoid(env, classy, classy, SWINGUIFORM_CLASSNAME,
+	forwardCallStaticVoid(env, SWINGUIFORM_CLASSNAME,
 		"widgetProperty", SWINGUIFORM_WIDGETPROPERTY_STR_DESC,
 		item, property, sub, newValue);
 }
@@ -265,7 +265,7 @@ JNIEXPORT void JNICALL Impl_mle_FormShelf_widgetPropertyStr(JNIEnv* env,
 JNIEXPORT jint JNICALL Impl_mle_FormShelf_widgetPropertyGetInt(JNIEnv* env,
 	jclass classy, jobject item, jint property, jint sub)
 {
-	return forwardCallStaticInteger(env, classy, classy, SWINGUIFORM_CLASSNAME,
+	return forwardCallStaticInteger(env, SWINGUIFORM_CLASSNAME,
 		"widgetPropertyInt", SWINGUIFORM_WIDGETPROPERTY_GET_INT_DESC,
 		item, property, sub);
 }
@@ -273,7 +273,7 @@ JNIEXPORT jint JNICALL Impl_mle_FormShelf_widgetPropertyGetInt(JNIEnv* env,
 JNIEXPORT jobject JNICALL Impl_mle_FormShelf_widgetPropertyGetStr(JNIEnv* env,
 	jclass classy, jobject item, jint property, jint sub)
 {
-	return forwardCallStaticObject(env, classy, classy, SWINGUIFORM_CLASSNAME,
+	return forwardCallStaticObject(env, SWINGUIFORM_CLASSNAME,
 		"widgetPropertyStr", SWINGUIFORM_WIDGETPROPERTY_GET_STR_DESC,
 		item, property, sub);
 }

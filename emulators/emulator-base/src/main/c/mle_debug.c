@@ -21,7 +21,7 @@
 JNIEXPORT void Impl_mle_DebugShelf_breakpoint(
 	JNIEnv* env, jclass classy)
 {
-	return forwardCallStaticVoid(env, classy, classy, DEBUGSHELF_CLASSNAME,
+	return forwardCallStaticVoid(env, DEBUGSHELF_CLASSNAME,
 		"breakpoint", DEBUGSHELF_BREAKPOINT_DESC);
 }
 
@@ -35,14 +35,14 @@ JNIEXPORT jobjectArray JNICALL Impl_mle_DebugShelf_getThrowableTrace(
 JNIEXPORT jobject JNICALL Impl_mle_DebugShelf_pointClass(
 	JNIEnv* env, jclass classy, jobject trace)
 {
-	return forwardCallStaticObject(env, classy, classy, DEBUGSHELF_CLASSNAME,
+	return forwardCallStaticObject(env, DEBUGSHELF_CLASSNAME,
 		"pointClass", DEBUGSHELF_POINTCLASS_DESC, trace);
 }
 
 JNIEXPORT jobject JNICALL Impl_mle_DebugShelf_traceStack(
 	JNIEnv* env, jclass classy)
 {
-	return forwardCallStaticObject(env, classy, classy, DEBUGSHELF_CLASSNAME,
+	return forwardCallStaticObject(env, DEBUGSHELF_CLASSNAME,
 		"traceStack", DEBUGSHELF_TRACESTACK_DESC);
 }
 

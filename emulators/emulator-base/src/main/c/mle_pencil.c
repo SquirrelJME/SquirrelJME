@@ -20,7 +20,7 @@
 JNIEXPORT jint JNICALL Impl_mle_PencilShelf_capabilities(JNIEnv* env,
 	jclass classy, jint pixelFormat)
 {
-	return forwardCallStaticInteger(env, classy, SWINGPENCIL_CLASSNAME,
+	return forwardCallStaticInteger(env,  SWINGPENCIL_CLASSNAME,
 		"capabilities", SWINGPENCIL_CAPABILITIES_DESC,
 		pixelFormat);
 }
@@ -29,7 +29,7 @@ JNIEXPORT jobject JNICALL Impl_mle_PencilShelf_nativeImageLoadRGBA(JNIEnv* env,
 	jclass classy, jint type, jbyteArray buf, jint off, jint len,
 	jobject callback)
 {
-	return forwardCallStaticObject(env, classy, SWINGPENCIL_CLASSNAME,
+	return forwardCallStaticObject(env, SWINGPENCIL_CLASSNAME,
 		"nativeImageLoadRGBA", SWINGPENCIL_NATIVEIMAGELOADRGBA_DESC,
 		type, buf, off, len, callback);
 }
@@ -37,7 +37,7 @@ JNIEXPORT jobject JNICALL Impl_mle_PencilShelf_nativeImageLoadRGBA(JNIEnv* env,
 JNIEXPORT jint JNICALL Impl_mle_PencilShelf_nativeImageLoadTypes(JNIEnv* env,
 	jclass classy)
 {
-	return forwardCallStaticInteger(env, classy, SWINGPENCIL_CLASSNAME,
+	return forwardCallStaticInteger(env, SWINGPENCIL_CLASSNAME,
 		"nativeImageLoadTypes", SWINGPENCIL_NATIVEIMAGELOADTYPES_DESC);
 }
 

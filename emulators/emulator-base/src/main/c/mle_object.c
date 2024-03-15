@@ -17,7 +17,7 @@
 		JNIEnv* env, jclass classy, \
 		jarray array, jint off, jint len, javaType val) \
 		{ \
-			forwardCallStaticVoid(env, classy, \
+			forwardCallStaticVoid(env, \
 				OBJECTSHELF_CLASSNAME, \
 				"arrayFill", desc, \
 				array, off, len, val); \

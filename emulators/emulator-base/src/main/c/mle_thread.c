@@ -14,7 +14,7 @@
 JNIEXPORT jint JNICALL Impl_mle_ThreadShelf_aliveThreadCount(JNIEnv* env,
 	jclass classy, jboolean includeMain, jboolean includeDaemon)
 {
-	return forwardCallStaticInteger(env, classy,
+	return forwardCallStaticInteger(env, 
 		"cc/squirreljme/emulator/NativeThreadShelf",
 		"aliveThreadCount", "(ZZ)I", includeMain, includeDaemon);
 }
@@ -22,14 +22,14 @@ JNIEXPORT jint JNICALL Impl_mle_ThreadShelf_aliveThreadCount(JNIEnv* env,
 JNIEXPORT jobject JNICALL Impl_mle_ThreadShelf_currentJavaThread(JNIEnv* env,
 	jclass classy)
 {
-	return forwardCallStaticObject(env, classy, "java/lang/Thread",
+	return forwardCallStaticObject(env, "java/lang/Thread",
 		"currentThread", "()Ljava/lang/Thread;");
 }
 
 JNIEXPORT void JNICALL Impl_mle_ThreadShelf_javaThreadSetDaemon(JNIEnv* env,
 	jclass classy, jobject javaThread)
 {
-	forwardCallStaticVoid(env, classy, "cc/squirreljme/emulator/NativeThreadShelf",
+	forwardCallStaticVoid(env, "cc/squirreljme/emulator/NativeThreadShelf",
 		"javaThreadSetDaemon", "(Ljava/lang/Thread;)V", javaThread);
 }
 		
@@ -43,7 +43,7 @@ JNIEXPORT jboolean JNICALL Impl_mle_ThreadShelf_waitForUpdate(JNIEnv* env,
 	jclass classy, jint msWait)
 {
 	// Has no effect
-	return forwardCallStaticBoolean(env, classy,
+	return forwardCallStaticBoolean(env, 
 		"cc/squirreljme/emulator/NativeThreadShelf",
 		"waitForUpdate", WAITFORUPDATE_DESC,
 		msWait);

@@ -21,7 +21,7 @@ JNIEXPORT jobject JNICALL Impl_mle_TaskShelf_start(
 	JNIEnv* env, jclass classy, jobjectArray classPath, jstring mainClass,
 	jobjectArray args, jobjectArray sysPropPairs, jint stdOut, jint stdErr)
 {
-	return forwardCallStaticObject(env, classy, TASK_CLASSNAME,
+	return forwardCallStaticObject(env, TASK_CLASSNAME,
 		"start", TASK_START_DESC,
 		classPath, mainClass, args, sysPropPairs, stdOut, stdErr);
 }
@@ -29,7 +29,7 @@ JNIEXPORT jobject JNICALL Impl_mle_TaskShelf_start(
 JNIEXPORT jint JNICALL Impl_mle_TaskShelf_status(
 	JNIEnv* env, jclass classy, jobject task)
 {
-	return forwardCallStaticInteger(env, classy, TASK_CLASSNAME,
+	return forwardCallStaticInteger(env, TASK_CLASSNAME,
 		"status", TASK_STATUS_DESC,
 		task);
 }

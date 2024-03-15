@@ -23,7 +23,7 @@
 JNIEXPORT jobject JNICALL Impl_mle_TypeShelf_binaryName(JNIEnv* env,
 	jclass classy, jobject mleType)
 {
-	return forwardCallStaticObject(env, classy, TYPE_CLASSNAME,
+	return forwardCallStaticObject(env, TYPE_CLASSNAME,
 		"binaryName", BINARYNAME_DESC,
 		mleType);
 }
@@ -31,7 +31,7 @@ JNIEXPORT jobject JNICALL Impl_mle_TypeShelf_binaryName(JNIEnv* env,
 JNIEXPORT jobject JNICALL Impl_mle_TypeShelf_classToType(JNIEnv* env,
 	jclass classy, jobject javaClass)
 {
-	return forwardCallStaticObject(env, classy, TYPE_CLASSNAME,
+	return forwardCallStaticObject(env, TYPE_CLASSNAME,
 		"classToType", CLASSTOTYPE_DESC,
 		javaClass);
 }
@@ -39,7 +39,7 @@ JNIEXPORT jobject JNICALL Impl_mle_TypeShelf_classToType(JNIEnv* env,
 JNIEXPORT jobject JNICALL Impl_mle_TypeShelf_componentRoot(JNIEnv* env,
 	jclass classy, jobject mleType)
 {
-	return forwardCallStaticObject(env, classy, TYPE_CLASSNAME,
+	return forwardCallStaticObject(env, TYPE_CLASSNAME,
 		"componentRoot", COMPONENTROOT_DESC,
 		mleType);
 }
@@ -47,7 +47,7 @@ JNIEXPORT jobject JNICALL Impl_mle_TypeShelf_componentRoot(JNIEnv* env,
 JNIEXPORT jobject JNICALL Impl_mle_TypeShelf_findType(JNIEnv* env,
 	jclass classy, jobject className)
 {
-	return forwardCallStaticObject(env, classy, TYPE_CLASSNAME,
+	return forwardCallStaticObject(env, TYPE_CLASSNAME,
 		"findType", FINDTYPE_DESC,
 		className);
 }
@@ -55,7 +55,7 @@ JNIEXPORT jobject JNICALL Impl_mle_TypeShelf_findType(JNIEnv* env,
 JNIEXPORT jobject JNICALL Impl_mle_TypeShelf_inJar(JNIEnv* env,
 	jclass classy, jobject mleType)
 {
-	return forwardCallStaticObject(env, classy, TYPE_CLASSNAME,
+	return forwardCallStaticObject(env, TYPE_CLASSNAME,
 		"inJar", INJAR_DESC,
 		mleType);
 }
@@ -63,7 +63,7 @@ JNIEXPORT jobject JNICALL Impl_mle_TypeShelf_inJar(JNIEnv* env,
 JNIEXPORT jobject JNICALL Impl_mle_TypeShelf_interfaces(JNIEnv* env,
 	jclass classy, jobject mleType)
 {
-	return forwardCallStaticObject(env, classy, TYPE_CLASSNAME,
+	return forwardCallStaticObject(env, TYPE_CLASSNAME,
 		"interfaces", INTERFACES_DESC,
 		mleType);
 }
@@ -71,7 +71,7 @@ JNIEXPORT jobject JNICALL Impl_mle_TypeShelf_interfaces(JNIEnv* env,
 JNIEXPORT jboolean JNICALL Impl_mle_TypeShelf_isArray(JNIEnv* env,
 	jclass classy, jobject mleType)
 {
-	return forwardCallStaticBoolean(env, classy, TYPE_CLASSNAME,
+	return forwardCallStaticBoolean(env, TYPE_CLASSNAME,
 		"isArray", ISARRAY_DESC,
 		mleType);
 }
@@ -79,7 +79,7 @@ JNIEXPORT jboolean JNICALL Impl_mle_TypeShelf_isArray(JNIEnv* env,
 JNIEXPORT jobject JNICALL Impl_mle_TypeShelf_typeToClass(JNIEnv* env,
 	jclass classy, jobject mleType)
 {
-	return forwardCallStaticObject(env, classy, TYPE_CLASSNAME,
+	return forwardCallStaticObject(env, TYPE_CLASSNAME,
 		"typeToClass", TYPETOCLASS_DESC,
 		mleType);
 }

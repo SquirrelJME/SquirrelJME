@@ -88,7 +88,7 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 	JNIEXPORT void JNICALL Impl_mle_ ## className ## _ ## methodName( \
 		JNIEnv* env, jclass classy args) \
 	{ \
-		forwardCallStaticVoid(env, classy, FORWARD_NATIVE_CLASS, \
+		forwardCallStaticVoid(env, FORWARD_NATIVE_CLASS, \
 			FORWARD_stringy(methodName), \
 			FORWARD_from(FORWARD_paste(FORWARD_DESC_, methodName)) \
 			pass); \
