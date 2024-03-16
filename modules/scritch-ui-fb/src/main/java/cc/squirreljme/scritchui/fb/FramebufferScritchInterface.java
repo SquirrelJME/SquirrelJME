@@ -11,6 +11,7 @@ package cc.squirreljme.scritchui.fb;
 
 import cc.squirreljme.jvm.mle.scritchui.ScritchEnvironmentInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchPanelInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchScreenInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchWindowInterface;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
@@ -53,6 +54,17 @@ public class FramebufferScritchInterface
 	@Override
 	@SquirrelJMEVendorApi
 	public ScritchEnvironmentInterface environment()
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/03/16
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public ScritchPanelInterface panel()
 	{
 		throw Debugging.todo();
 	}

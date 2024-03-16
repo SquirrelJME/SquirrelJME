@@ -11,9 +11,12 @@ package cc.squirreljme.emulator.scritchui;
 
 import cc.squirreljme.jvm.mle.scritchui.ScritchEnvironmentInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchPanelInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchScreenInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchWindowInterface;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Swing implementation of ScritchUI.
@@ -35,6 +38,10 @@ public class SwingScritchInterface
 	protected final ScritchWindowInterface window =
 		new SwingWindowInterface();
 	
+	/** The interface for panels. */
+	private final ScritchPanelInterface panel =
+		new SwingPanelInterface();
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2024/03/07
@@ -43,6 +50,18 @@ public class SwingScritchInterface
 	public ScritchEnvironmentInterface environment()
 	{
 		return this.environment;
+	}
+	
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/03/16
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public ScritchPanelInterface panel()
+	{
+		return this.panel;
 	}
 	
 	/**

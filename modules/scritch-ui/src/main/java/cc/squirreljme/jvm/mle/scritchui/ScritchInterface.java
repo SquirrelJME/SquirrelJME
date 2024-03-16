@@ -32,6 +32,16 @@ public interface ScritchInterface
 	ScritchEnvironmentInterface environment();
 	
 	/**
+	 * Return the interface for panels.
+	 *
+	 * @return The panel interface.
+	 * @since 2024/03/16
+	 */
+	@SquirrelJMEVendorApi
+	@NotNull
+	ScritchPanelInterface panel();
+	
+	/**
 	 * Returns the screen interface.
 	 *
 	 * @return The screen interface.

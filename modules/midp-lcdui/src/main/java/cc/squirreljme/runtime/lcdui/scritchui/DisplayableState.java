@@ -9,6 +9,9 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui;
 
+import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
+import cc.squirreljme.scritchui.fb.DefaultScritchInterface;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import javax.microedition.lcdui.Display;
@@ -28,6 +31,9 @@ public final class DisplayableState
 	protected final StringNotifier title =
 		new StringNotifier();
 	
+	/** The panel to use for this specific displayable. */
+	protected final ScritchPanelBracket panel;
+	
 	/** The display this is showing on. */
 	private volatile Reference<DisplayState> _current;
 	
@@ -35,6 +41,7 @@ public final class DisplayableState
 	 * Initializes the displayable state.
 	 *
 	 * @param __displayable The displayable this is linked to.
+	 * @param __panel The panel to use for this.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/03/08
 	 */
@@ -45,6 +52,10 @@ public final class DisplayableState
 			throw new NullPointerException("NARG");
 		
 		this.displayable = new WeakReference<>(__displayable);
+		
+		// Initialize basic panel
+		ScritchInterface scritchApi = DefaultScritchInterface.instance();
+		this.panel = scritchApi.panel().newPanel(); 
 	}
 	
 	/**
