@@ -55,6 +55,13 @@ set_target_properties(libEmulatorBase PROPERTIES
 	LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
 	ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
 
+foreach(outputConfig ${CMAKE_CONFIGURATION_TYPES})
+	set_target_properties(libEmulatorBase PROPERTIES
+		RUNTIME_OUTPUT_DIRECTORY_${outputConfig} "${CMAKE_BINARY_DIR}"
+		LIBRARY_OUTPUT_DIRECTORY_${outputConfig} "${CMAKE_BINARY_DIR}"
+		ARCHIVE_OUTPUT_DIRECTORY_${outputConfig} "${CMAKE_BINARY_DIR}")
+endforeach()
+
 # Use a more basic name for the library
 set_target_properties(libEmulatorBase PROPERTIES
 	RUNTIME_OUTPUT_NAME

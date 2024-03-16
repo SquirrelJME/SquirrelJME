@@ -38,3 +38,4 @@ set_target_properties(libJvm PROPERTIES
 	"jvm"
 	ARCHIVE_OUTPUT_NAME
 	"jvm")
+
