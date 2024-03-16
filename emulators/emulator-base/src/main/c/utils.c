@@ -36,7 +36,7 @@ forwardMethod JNICALL findForwardMethod(JNIEnv* env,
 	va_end(vaArgs);
 
 // Debugging?
-#if defined(_DEBUG) || defined(DEBUG)
+#if 0 /*defined(_DEBUG) || defined(DEBUG)*/
 	#define DEBUG_CALL fprintf(stderr, "JNI Forward: %s:%s\n", classy, name);
 #else
 	#define DEBUG_CALL
