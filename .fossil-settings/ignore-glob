@@ -59,6 +59,11 @@ emulators/*/out/test/
 modules/*/out/production/
 modules/*/out/test/
 
+# BVM
+bvm/.idea/workspace.xml
+bvm/cmake-build-debug
+bvm/cmake-build-release
+
 # Contributions
 *.diff
 *.gdiff

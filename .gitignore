@@ -53,6 +53,11 @@ nanocoat/rom/test_release
 emulators/emulator-base/cmake-build-*
 *.jar
 
+# BVM
+bvm/.idea/workspace.xml
+bvm/cmake-build-debug
+bvm/cmake-build-release
+
 # IntelliJ Dependency Matrix
 emulators/*/out/production/
 emulators/*/out/test/
