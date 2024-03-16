@@ -41,7 +41,8 @@ JNIEXPORT void JNICALL Impl_mle_RuntimeShelf_garbageCollect(
 	// Does nothing
 }
 
-JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_lineEnding(JNIEnv*, jclass)
+JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_lineEnding(
+	JNIEnv* env, jclass classy)
 {
 #if defined(_WIN32)
 	return 3;
@@ -126,13 +127,15 @@ JNIEXPORT jlong JNICALL Impl_mle_RuntimeShelf_vmStatistic(
 		id);
 }
 
-JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_memoryProfile(JNIEnv*, jclass)
+JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_memoryProfile(
+	JNIEnv* env, jclass classy)
 {
 	// The value is normal
 	return 0;
 }
 
-JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_phoneModel(JNIEnv*, jclass)
+JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_phoneModel(
+	JNIEnv* env, jclass classy)
 {
 	// Just be a generic device here
 	return 0;
@@ -146,7 +149,8 @@ JNIEXPORT jobject JNICALL Impl_mle_RuntimeShelf_systemEnv(
 		key);
 }
 
-JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_vmType(JNIEnv*, jclass)
+JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_vmType(
+	JNIEnv* env, jclass classy)
 {
 	// The value 1 is Java SE type
 	return 1;
