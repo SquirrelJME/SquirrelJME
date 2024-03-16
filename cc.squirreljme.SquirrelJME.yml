@@ -1,0 +1,107 @@
+id: cc.squirreljme.SquirrelJME
+runtime: org.freedesktop.Platform
+runtime-version: '23.08'
+sdk: org.freedesktop.Sdk
+sdk-extensions:
+  - "org.freedesktop.Sdk.Extension.openjdk11"
+build-options:
+  build-args:
+    - "--share=network"
+  env:
+    - JAVA_HOME=/usr/lib/sdk/openjdk11/jvm/openjdk-11
+    - PATH=/usr/lib/sdk/openjdk11/jvm/openjdk-11/bin:/app/bin:/usr/bin
+command: /app/bin/squirreljme.sh
+modules:
+  - name: openjdk
+    buildsystem: simple
+    build-commands:
+      - /usr/lib/sdk/openjdk11/install.sh
+  - name: squirreljme
+    buildsystem: simple
+    build-commands:
+      - ./gradlew --console plain --no-daemon :emulators:standalone:shadowJar
+        -x test -x testHosted -x testHostedDebug
+        -x testSpringCoat -x testSpringCoatRelease -x testSpringCoatDebug
+        -x testNanoCoat -x testNanoCoatRelease -x testNanoCoatDebug
+
+      # Run Script
+      - install -Dm755 assets/flatpak/squirreljme.sh
+        /app/bin/squirreljme.sh
+
+      # Resultant Jar
+      - install -Dm755
+        emulators/standalone/build/libs/squirreljme-standalone-*.jar
+        /app/bin/squirreljme-standalone.jar
+
+      # Flatpak Manifest
+      - install -Dm644 cc.squirreljme.SquirrelJME.metainfo.xml
+        /app/share/metainfo/cc.squirreljme.SquirrelJME.metainfo.xml
+
+      # Desktop files
+      - install -Dm644 assets/flatpak/cc.squirreljme.SquirrelJME.default.desktop
+        /app/share/applications/cc.squirreljme.SquirrelJME.desktop
+      - install -Dm644 assets/flatpak/cc.squirreljme.SquirrelJME.hosted.desktop
+        /app/share/applications/cc.squirreljme.SquirrelJME.hosted.desktop
+      - install -Dm644 assets/flatpak/cc.squirreljme.SquirrelJME.springcoat.desktop
+        /app/share/applications/cc.squirreljme.SquirrelJME.springcoat.desktop
+      - install -Dm644 assets/flatpak/cc.squirreljme.SquirrelJME.nanocoat.desktop
+        /app/share/applications/cc.squirreljme.SquirrelJME.nanocoat.desktop
+
+      # Desktop files with the internal debugger enable
+      - install -Dm644 assets/flatpak/cc.squirreljme.SquirrelJME.default.debug.desktop
+        /app/share/applications/cc.squirreljme.SquirrelJME.default.debug.desktop
+      - install -Dm644 assets/flatpak/cc.squirreljme.SquirrelJME.hosted.debug.desktop
+        /app/share/applications/cc.squirreljme.SquirrelJME.hosted.debug.desktop
+      - install -Dm644 assets/flatpak/cc.squirreljme.SquirrelJME.springcoat.debug.desktop
+        /app/share/applications/cc.squirreljme.SquirrelJME.springcoat.debug.desktop
+      - install -Dm644 assets/flatpak/cc.squirreljme.SquirrelJME.nanocoat.debug.desktop
+        /app/share/applications/cc.squirreljme.SquirrelJME.nanocoat.debug.desktop
+
+      # XPM Icons
+      - install -Dm644 assets/mascot/head_8x8.xpm
+        /app/share/icons/hicolor/8x8/apps/cc.squirreljme.SquirrelJME.xpm
+      - install -Dm644 assets/mascot/head_16x16.xpm
+        /app/share/icons/hicolor/16x16/apps/cc.squirreljme.SquirrelJME.xpm
+      - install -Dm644 assets/mascot/head_24x24.xpm
+        /app/share/icons/hicolor/24x24/apps/cc.squirreljme.SquirrelJME.xpm
+      - install -Dm644 assets/mascot/head_32x32.xpm
+        /app/share/icons/hicolor/32x32/apps/cc.squirreljme.SquirrelJME.xpm
+      - install -Dm644 assets/mascot/head_48x48.xpm
+        /app/share/icons/hicolor/48x48/apps/cc.squirreljme.SquirrelJME.xpm
+      - install -Dm644 assets/mascot/head_64x64.xpm
+        /app/share/icons/hicolor/64x64/apps/cc.squirreljme.SquirrelJME.xpm
+      - install -Dm644 assets/mascot/head_128x128.xpm
+        /app/share/icons/hicolor/128x128/apps/cc.squirreljme.SquirrelJME.xpm
+
+      # PNG Icons
+      - tail +2 assets/mascot/head_8x8.png.__mime | base64 -d -i | cat>
+        /app/share/icons/hicolor/8x8/apps/cc.squirreljme.SquirrelJME.png
+      - tail +2 assets/mascot/head_16x16.png.__mime | base64 -d -i | cat >
+        /app/share/icons/hicolor/16x16/apps/cc.squirreljme.SquirrelJME.png
+      - tail +2 assets/mascot/head_24x24.png.__mime | base64 -d -i | cat >
+        /app/share/icons/hicolor/24x24/apps/cc.squirreljme.SquirrelJME.png
+      - tail +2 assets/mascot/head_32x32.png.__mime | base64 -d -i | cat >
+        /app/share/icons/hicolor/32x32/apps/cc.squirreljme.SquirrelJME.png
+      - tail +2 assets/mascot/head_48x48.png.__mime | base64 -d -i | cat >
+        /app/share/icons/hicolor/48x48/apps/cc.squirreljme.SquirrelJME.png
+      - tail +2 assets/mascot/head_64x64.png.__mime | base64 -d -i | cat >
+        /app/share/icons/hicolor/64x64/apps/cc.squirreljme.SquirrelJME.png
+      - tail +2 assets/mascot/head_128x128.png.__mime | base64 -d -i | cat >
+        /app/share/icons/hicolor/128x128/apps/cc.squirreljme.SquirrelJME.png
+    sources:
+      - type: git
+        branch: trunk
+        url: https://github.com/SquirrelJME/SquirrelJME.git
+finish-args:
+  - "--share=network"
+  - "--socket=x11"
+  - "--socket=fallback-x11"
+  - "--socket=pulseaudio"
+  - "--socket=session-bus"
+  - "--device=dri"
+  - "--filesystem=~/.config/squirreljme"
+  - "--filesystem=~/.local/share/squirreljme"
+  - "--env=SQUIRRELJME_CONFIG_HOME=~/.config/squirreljme"
+  - "--env=SQUIRRELJME_DATA_HOME=~/.local/share/squirreljme"
+  - "--env=JAVA_HOME=/app/jre/"
+  - "--env=PATH=/app/bin:/app/jre/bin:/usr/bin"

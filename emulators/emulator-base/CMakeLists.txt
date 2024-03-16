@@ -6,46 +6,74 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 # DESCRIPTION: CMake Helper for project
-cmake_minimum_required(VERSION 3.0)
+
+cmake_minimum_required(VERSION 3.5)
 
 # Declare project
-project(EmulatorBaseLib)
+project(libEmulatorBase)
 
-# We need JNI for this to work
-find_package(JNI)
+# Use standard JNI search
+find_package(JNI QUIET)
+
+# If JNI was not found, use a local copy as a fallback
+if(NOT JNI_FOUND)
+	# Where are the headers?
+	set(JNI_INCLUDE_DIRS
+		"src/main/headers/jni")
+
+	# Set as found
+	set(JNI_FOUND ON)
+endif()
 
 # Declare library
-add_library(EmulatorBaseLib SHARED
-	src/main/cpp/mle_debug.cpp
-    src/main/cpp/mle_form.cpp
-    src/main/cpp/mle_jar.cpp
-    src/main/cpp/mle_math.cpp
-    src/main/cpp/mle_midi.cpp
-    src/main/cpp/mle_nativearchive.cpp
-    src/main/cpp/mle_object.cpp
-    src/main/cpp/mle_pencil.cpp
-    src/main/cpp/mle_reflection.cpp
-    src/main/cpp/mle_runtime.cpp
-    src/main/cpp/mle_scritchui.cpp
-    src/main/cpp/mle_task.cpp
-    src/main/cpp/mle_terminal.cpp
-    src/main/cpp/mle_thread.cpp
-    src/main/cpp/mle_type.cpp
-    src/main/cpp/nativebinding.cpp
-    src/main/cpp/utils.cpp)
+add_library(libEmulatorBase SHARED
+	src/main/c/mle_debug.c
+	src/main/c/mle_form.c
+	src/main/c/mle_jar.c
+	src/main/c/mle_math.c
+	src/main/c/mle_midi.c
+	src/main/c/mle_nativearchive.c
+	src/main/c/mle_object.c
+	src/main/c/mle_pencil.c
+	src/main/c/mle_reflection.c
+	src/main/c/mle_runtime.c
+	src/main/c/mle_scritchui.c
+	src/main/c/mle_task.c
+	src/main/c/mle_terminal.c
+	src/main/c/mle_thread.c
+	src/main/c/mle_type.c
+	src/main/c/nativebinding.c
+	src/main/c/utils.c)
 
 # Includes for the build
-target_include_directories(EmulatorBaseLib PUBLIC
+target_include_directories(libEmulatorBase PUBLIC
 	"src/main/headers"
 	${JNI_INCLUDE_DIRS})
 
+# It is easier to find this when it is in the build root
+set_target_properties(libEmulatorBase PROPERTIES
+	RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+	LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+	ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
+
+foreach(outputConfig ${CMAKE_CONFIGURATION_TYPES})
+	string(TOUPPER "${outputConfig}" outputConfig)
+
+	set_target_properties(libEmulatorBase PROPERTIES
+		RUNTIME_OUTPUT_DIRECTORY_${outputConfig} "${CMAKE_BINARY_DIR}"
+		LIBRARY_OUTPUT_DIRECTORY_${outputConfig} "${CMAKE_BINARY_DIR}"
+		ARCHIVE_OUTPUT_DIRECTORY_${outputConfig} "${CMAKE_BINARY_DIR}")
+endforeach()
+
 # Use a more basic name for the library
-set_target_properties(EmulatorBaseLib PROPERTIES
+set_target_properties(libEmulatorBase PROPERTIES
+	RUNTIME_OUTPUT_NAME
+	"emulator-base"
 	LIBRARY_OUTPUT_NAME
 	"emulator-base"
 	ARCHIVE_OUTPUT_NAME
 	"emulator-base")
 
 # Always make this position independent
-set_property(TARGET EmulatorBaseLib
+set_property(TARGET libEmulatorBase
 	PROPERTY POSITION_INDEPENDENT_CODE ON)

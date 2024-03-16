@@ -10,7 +10,7 @@ plugins {
 
 apply plugin: "com.github.johnrengelman.shadow"
 
-// Say this is a Java 8 project
+// Java 8 Only
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
@@ -21,26 +21,16 @@ shadowJar {
 	dependsOn jar
 }
 
-// On Java 8 we have tools.jar for this
-FileCollection toolsJar	= files(Paths.get("${System.properties['java.home']}")
-	.getParent().resolve("lib").resolve("tools.jar"))
-if (!Files.exists(toolsJar.singleFile.toPath())) {
-	if (JavaVersion.current() >= JavaVersion.VERSION_1_9) {
-		// Windows/Linux
-		toolsJar = files(Paths.get("${System.properties['java.home']}")
-			.getParent().resolve("jmods").resolve("jdk.javadoc.jmod"))
-		
-		// Mac OS
-		if (!Files.exists(toolsJar.singleFile.toPath())) {
-			toolsJar = files(Paths.get("${System.properties['java.home']}")
-				.resolve("jmods").resolve("jdk.javadoc.jmod"))
-		}
-	}
-}
-
 dependencies {
 	// Depend directly on tools.jar so it is brought in, or the module
-	implementation files(toolsJar)
+	if (rootProject.hasProperty("squirreljmeFakeJavaDocSdk") &&
+		rootProject.squirreljmeFakeJavaDocSdk) {
+		implementation project(":tools:fake-javadoc-sdk")
+	} else {
+		logger.lifecycle("Tools 1 ${rootProject.squirreljmeToolsJar.getFiles()}")
+		logger.lifecycle("Tools 2 ${rootProject.ext.squirreljmeToolsJar.getFiles()}")
+		implementation files(rootProject.ext.squirreljmeToolsJar)
+	}
 	
 	implementation project(":modules:io-file")
 	implementation project(":modules:json")

@@ -45,8 +45,19 @@ set_target_properties(libEmulator PROPERTIES
 	LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
 	ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
 
+foreach(outputConfig ${CMAKE_CONFIGURATION_TYPES})
+	string(TOUPPER "${outputConfig}" outputConfig)
+
+	set_target_properties(libEmulator PROPERTIES
+		RUNTIME_OUTPUT_DIRECTORY_${outputConfig} "${CMAKE_BINARY_DIR}"
+		LIBRARY_OUTPUT_DIRECTORY_${outputConfig} "${CMAKE_BINARY_DIR}"
+		ARCHIVE_OUTPUT_DIRECTORY_${outputConfig} "${CMAKE_BINARY_DIR}")
+endforeach()
+
 # Use a simpler name for the library
 set_target_properties(libEmulator PROPERTIES
+	RUNTIME_OUTPUT_NAME
+	"emulator-nanocoat"
 	LIBRARY_OUTPUT_NAME
 	"emulator-nanocoat"
 	ARCHIVE_OUTPUT_NAME

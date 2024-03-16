@@ -36,7 +36,7 @@ typedef struct sjme_stream_cacheMemory
 typedef struct sjme_stream_cacheByteArray
 {
 	/** The byte array data. */
-	void* array;
+	sjme_jubyte* array;
 
 	/** The current limit. */
 	sjme_jint limit;
@@ -458,7 +458,7 @@ sjme_errorCode sjme_stream_inputReadSingle(
 	for (;;)
 	{
 		/* Attempt single byte read. */
-		single = 999;
+		single = 0xFE;
 		readCount = -2;
 		if (sjme_error_is(error = sjme_stream_inputReadIter(stream,
 			&readCount, &single, 0, 1)) || readCount < -1)

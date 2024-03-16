@@ -92,8 +92,10 @@ public final class VMEmulatorDependencies
 			rv.add(emuTasks.getByName("assemble"));
 			rv.add(emuBase.getByName("jar"));
 			rv.add(emuBase.getByName("assemble"));
-			rv.add(emuBase.getByName("assembleDebug"));
-			rv.add(emuBase.getByName("assembleRelease"));
+			if (null != emuBase.findByName("assembleDebug"))
+				rv.add(emuBase.getByName("assembleDebug"));
+			if (null != emuBase.findByName("assembleRelease"))
+				rv.add(emuBase.getByName("assembleRelease"));
 		}
 		
 		return new ArrayList<>(rv);

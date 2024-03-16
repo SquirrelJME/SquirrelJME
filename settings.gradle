@@ -52,15 +52,16 @@ if (osName.equalsIgnoreCase('Mac OS X') &&
 	gradle.beforeProject({proj ->
 		proj.ext.squirreljmeMacOsArmCpp = true
 	})
-}
-
-if (osArch.equalsIgnoreCase("ppc") ||
+} else if (osArch.equalsIgnoreCase("ppc") ||
 	osArch.equalsIgnoreCase("powerpc") ||
 	osArch.equalsIgnoreCase("ppc64") ||
 	osArch.equalsIgnoreCase("ppc64le") ||
 	osArch.equalsIgnoreCase("riscv") ||
 	osArch.equalsIgnoreCase("riscv32") ||
-	osArch.equalsIgnoreCase("riscv64")) {
+	osArch.equalsIgnoreCase("riscv64") ||
+	osArch.equalsIgnoreCase('aarch64') ||
+	osArch.equalsIgnoreCase('arm64') ||
+	osArch.equalsIgnoreCase('arm64-v8')) {
 	logger.warn("Faking x86_64 for other architectures...")
 	
 	gradle.beforeProject({proj ->
@@ -98,6 +99,41 @@ if (JavaVersion.current() >= JavaVersion.VERSION_HIGHER ||
 	}
 }
 
+// On Java 8 we have tools.jar for JavaDoc
+FileCollection toolsJar	= files(Paths.get("${System.properties['java.home']}")
+	.getParent().resolve("lib").resolve("tools.jar"))
+if (!Files.exists(toolsJar.singleFile.toPath())) {
+	// If on Java 9 or higher the module must be pulled in, but it does not
+	// exist since Java 17
+	if (JavaVersion.current() >= JavaVersion.VERSION_1_9 &&
+		JavaVersion.current() < JavaVersion.VERSION_16) {
+		// Windows/Linux
+		toolsJar = files(Paths.get("${System.properties['java.home']}")
+			.getParent().resolve("jmods").resolve("jdk.javadoc.jmod"))
+		
+		// Mac OS
+		if (!Files.exists(toolsJar.singleFile.toPath())) {
+			toolsJar = files(Paths.get("${System.properties['java.home']}")
+				.resolve("jmods").resolve("jdk.javadoc.jmod"))
+		}
+	}
+}
+
+// What should we do for this?
+def squirreljmeFakeJavaDocSdk =
+	!Files.exists(toolsJar.singleFile.toPath())
+if (squirreljmeFakeJavaDocSdk) {
+	// Use fake API for building
+	gradle.beforeProject({proj ->
+		proj.ext.squirreljmeFakeJavaDocSdk = true
+	})
+} else {
+	// Use the real tools Jar for this
+	gradle.beforeProject({proj ->
+		proj.ext.squirreljmeToolsJar = toolsJar
+	})
+}
+
 // Modules and available platforms
 include "modules"
 include "emulators"
@@ -128,6 +164,17 @@ file(rootProject.projectDir.toPath().resolve("emulators"))
 file(rootProject.projectDir.toPath().resolve("tools"))
 	.eachDir(
 	{ subdir ->
+		// We may or may not want to include this accordingly
+		if ("fake-javadoc-sdk".equals(subdir.name)) {
+			if (squirreljmeFakeJavaDocSdk) {
+				logger.lifecycle("Including Fake JavaDoc SDK!")
+			} else {
+				logger.lifecycle("Not including Fake JavaDoc SDK, becuase " +
+					"${toolsJar.getFiles()} exists...")
+				return
+			}
+		}
+		
 		if (subdir.toPath().resolve("build.gradle").toFile().exists())
 		{
 			include "tools:" + subdir.name

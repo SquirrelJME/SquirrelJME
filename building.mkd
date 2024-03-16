@@ -320,6 +320,30 @@ virtual machine implementations is available when calling the task:
 
  * `:emulators:standalone:shadowJar`
 
+## Flatpak
+
+This is used with [Flatpak](https://www.flatpak.org/). This requires some dependencies first:
+
+ * Install `flatpak-builder`
+ * `flatpak install flathub org.freedesktop.Platform//23.08`
+ * `flatpak install flathub org.freedesktop.Sdk//23.08`
+ * `flatpak install flathub org.freedesktop.Sdk.Extension.openjdk11`
+
+With the dependencies installed, it may be built with:
+
+ * `flatpak-builder build-dir cc.squirreljme.SquirrelJME.yml`
+ * `flatpak-builder --user --install build-dir `
+   ` cc.squirreljme.SquirrelJME.yml`
+
+To bundle into a single file, run the following:
+
+ * `flatpak build-bundle $HOME/.local/share/flatpak/repo squirreljme.flatpak `
+   ` cc.squirreljme.SquirrelJME`
+
+To run from the command line, you may want to add to your `PATH`:
+
+ * `$HOME/.local/share/flatpak/exports/bin/`
+
 ## Mac OS
 
 This is used with [Homebrew](https://brew.sh/), with checked
