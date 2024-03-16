@@ -12,8 +12,18 @@ cmake_minimum_required(VERSION 3.5)
 # Declare project
 project(libEmulatorBase)
 
-# We need JNI for this to work
-find_package(JNI)
+# Use standard JNI search
+find_package(JNI QUIET)
+
+# If JNI was not found, use a local copy as a fallback
+if(NOT JNI_FOUND)
+	# Where are the headers?
+	set(JNI_INCLUDE_DIRS
+		"src/main/headers")
+
+	# Set as found
+	set(JNI_FOUND ON)
+endif()
 
 # Declare library
 add_library(libEmulatorBase SHARED
