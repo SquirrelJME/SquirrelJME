@@ -16,13 +16,6 @@ description = "This library provides the base support for testing and " +
 	"running SquirrelJME on a Java SE host, which is normally not " +
 	"capable of doing as such."
 
-Provider<CMakeBuildTask> libNativeEmulatorBase = tasks.register(
-	"libNativeEmulatorBase",
-	CMakeBuildTask.class,
-	project.getProjectDir().toPath(),
-	"emulator-base",
-	"libEmulatorBase")
-
 // Due to the combination of C++ and Java these dependencies have to be very
 // specific in that they only refer to the Java or C++ portion. So
 // "implementation" and "compile" cannot be used because the C++ library will
@@ -38,17 +31,27 @@ dependencies
 	api project(":modules:debug-jdwp-vm-host")
 }
 
-tasks.register("mimeDecode", MimeDecodeResourcesTask.class,
+Provider<CMakeBuildTask> libNativeEmulatorBase = tasks.register(
+	"libNativeEmulatorBase",
+	CMakeBuildTask.class,
+	project.getProjectDir().toPath(),
+	"emulator-base",
+	"libEmulatorBase")
+
+Provider<MimeDecodeResourcesTask> mimeDecode =tasks.register(
+	"mimeDecode", MimeDecodeResourcesTask.class,
 	"main",
 	tasks.named("processResources").get(),
 	tasks.named("clean").get())
 
-processResources.dependsOn("mimeDecode")
+processResources.dependsOn(mimeDecode)
 processResources.dependsOn(libNativeEmulatorBase)
 
-jar.dependsOn("mimeDecode")
+jar.dependsOn(mimeDecode)
 
 compileJava.dependsOn(libNativeEmulatorBase)
+
+mimeDecode.get().dependsOn(libNativeEmulatorBase)
 
 // We need the native library in the JAR before we can properly use it
 // But we can compile the Java code just fine without it

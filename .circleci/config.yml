@@ -158,6 +158,14 @@ commands:
           command: |
             sudo apt-get install -y --no-install-recommends cmake build-essential curl wget openjdk-17-jdk gcc g++ make clang git openssh-client
 
+  # Install required packages on Windows
+  windows-install-required:
+    steps:
+      - run:
+          name: Install CMake
+          shell: cmd.exe
+          command: choco install cmake -y
+
   # Install what is required by Flatpak
   flatpak-install-required:
     steps:
@@ -176,6 +184,8 @@ commands:
       - run:
           name: Flatpak OpenJDK
           command: flatpak install --user -y --noninteractive flathub runtime/org.freedesktop.Sdk.Extension.openjdk11//23.08
+
+  # Flatpak Common Build Rules
   flatpak-common-build:
     parameters:
       arch:
@@ -244,6 +254,7 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
+      - windows-install-required
       - run:
           shell: cmd.exe
           name: Java Version
@@ -290,6 +301,7 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
+      - windows-install-required
       - run:
           shell: bash.exe
           name: Construct Standalone
@@ -315,11 +327,7 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
-      - run:
-          name: Install required dependencies
-          working_directory: ratufacoat
-          shell: cmd.exe
-          command: choco install cmake.install
+      - windows-install-required
       - run:
           name: Setup CMake build
           working_directory: ratufacoat

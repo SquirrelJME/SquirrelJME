@@ -70,7 +70,7 @@ public class CMakeBuildTask
 		this.setDescription("Performs a CMake build.");
 		
 		// Only build if CMake is available
-		this.onlyIf(new CMakeOnlyIf());
+		/*this.onlyIf(new CMakeOnlyIf());*/
 		
 		// Check if out of date
 		this.getOutputs().upToDateWhen(new CMakeUpToDateWhen());

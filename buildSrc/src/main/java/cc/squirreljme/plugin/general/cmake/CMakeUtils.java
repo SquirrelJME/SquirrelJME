@@ -13,12 +13,14 @@ import cc.squirreljme.plugin.util.PathUtils;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.gradle.api.logging.LogLevel;
 import org.gradle.api.logging.Logger;
+import org.gradle.internal.os.OperatingSystem;
 
 /**
  * Utilities for CMake.
@@ -44,9 +46,25 @@ public final class CMakeUtils
 	 */
 	public static Path cmakeExePath()
 	{
+		// Standard executable?
 		Path cmakePath = PathUtils.findPath("cmake");
+		
+		// Windows executable?
 		if (cmakePath == null)
-			return PathUtils.findPath("cmake.exe");
+			cmakePath = PathUtils.findPath("cmake.exe");
+		
+		// Standard installation on Windows?
+		if (OperatingSystem.current() == OperatingSystem.WINDOWS)
+		{
+			String programFiles = System.getenv("PROGRAMFILES");
+			if (programFiles != null)
+			{
+				Path maybe = Paths.get(programFiles).resolve("CMake")
+					.resolve("bin").resolve("cmake.exe");
+				if (Files.exists(maybe))
+					return maybe;
+			}
+		}
 		
 		return cmakePath;
 	}
@@ -65,9 +83,14 @@ public final class CMakeUtils
 		Path __cmakeBuild, String... __args)
 		throws IOException
 	{
+		// Need CMake
+		Path cmakePath = CMakeUtils.cmakeExePath();
+		if (cmakePath == null)
+			throw new RuntimeException("CMake not found.");
+		
 		// Determine run arguments
 		List<String> args = new ArrayList<>();
-		args.add(CMakeUtils.cmakeExePath().toAbsolutePath().toString());
+		args.add(cmakePath.toAbsolutePath().toString());
 		args.addAll(Arrays.asList(__args));
 		
 		// Set executable process
