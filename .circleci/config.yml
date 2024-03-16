@@ -23,6 +23,7 @@ executors:
     environment:
       # Allow Gradle to be fully cached
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
+
   build-on-linux-arm64:
     #docker:
     #  - image: debian:bookworm
@@ -32,6 +33,10 @@ executors:
     environment:
       # Allow Gradle to be fully cached
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
+
+  build-on-linux-riscv64:
+    machine: true
+    resource_class: squirreljme/squirreljme-linux-riscv64
 
 # This is in the documentation but does not actually work, new feature?
 #  build-on-windows:
@@ -166,6 +171,15 @@ commands:
           shell: cmd.exe
           command: choco install cmake -y
 
+  # Install required packages on macOS
+  macos-install-required:
+    steps:
+      - run:
+          # Only OpenJDK is required, Gradle always uses Gradle wrapper so
+          # we do not need that... also CMake as well for native code
+          name: Install Dependencies
+          command: brew install openjdk@11 coreutils cmake
+
   # Install what is required by Flatpak
   flatpak-install-required:
     steps:
@@ -203,6 +217,19 @@ commands:
       - store_artifacts:
           path: squirreljme-<<parameters.arch>>.flatpak
           destination: squirreljme-<<parameters.arch>>.flatpak
+
+  # Common Build for Standalone (UNIX)
+  standalone-unix-common-build:
+    steps:
+      - run:
+          name: Construct Standalone
+          command: ./gradlew :emulators:standalone:shadowJar <<pipeline.parameters.standard-gradle-options>>
+      - run:
+          name: Remove distracting JAR, if any
+          command: rm emulators/standalone/build/libs/standalone-*.jar
+      - store_artifacts:
+          path: emulators/standalone/build/libs/
+          destination: .
 
 jobs:
   ################################## BUNDLE ##################################
@@ -349,11 +376,7 @@ jobs:
     executor: build-on-macos
     steps:
       - checkout
-      - run:
-          # Only OpenJDK is required, Gradle always uses Gradle wrapper so
-          # we do not need that
-          name: Install Dependencies
-          command: brew install openjdk@11 coreutils cmake
+      - macos-install-required
       - run:
           name: Gradle Build and Test
           command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
@@ -389,60 +412,20 @@ jobs:
     executor: build-on-macos
     steps:
       - checkout
-      - run:
-          # Only OpenJDK is required, Gradle always uses Gradle wrapper so
-          # we do not need that
-          name: Install Dependencies
-          command: brew install openjdk@11 coreutils cmake
+      - macos-install-required
       - attach_workspace:
           at: .
-      - run:
-          name: Construct Standalone
-          command: ./gradlew :emulators:standalone:shadowJar <<pipeline.parameters.standard-gradle-options>>
-      - run:
-          name: Remove distracting JAR, if any
-          command: rm emulators/standalone/build/libs/standalone-*.jar
-      - store_artifacts:
-          path: emulators/standalone/build/libs/
-          destination: .
+      - standalone-unix-common-build
   build_macosx_m1_standalone:
     executor: build-on-macos-m1
     steps:
       - checkout
       - attach_workspace:
           at: .
-      - run:
-          name: Construct Standalone
-          command: ./gradlew :emulators:standalone:shadowJar <<pipeline.parameters.standard-gradle-options>>
-      - run:
-          name: Remove distracting JAR, if any
-          command: rm emulators/standalone/build/libs/standalone-*.jar
-      - store_artifacts:
-          path: emulators/standalone/build/libs/
-          destination: .
-
-  ratufacoat_build_macosx:
-    executor: build-on-macos
-    steps:
-      - checkout
-      - run:
-          name: Install CMake
-          command: brew install cmake coreutils
-      - attach_workspace:
-          at: .
-      - run:
-          name: Setup CMake build
-          working_directory: ratufacoat
-          command: cmake .
-      - run:
-          name: Compile CMake build
-          working_directory: ratufacoat
-          command: cmake --build .
-      - store_artifacts:
-          path: ratufacoat/src/SquirrelJME
-          destination: SquirrelJME
+      - standalone-unix-common-build
 
   ################################### LINUX ##################################
+  # Linux AMD64
   build_linux_amd64:
     executor: build-on-linux-amd64
     steps:
@@ -468,15 +451,7 @@ jobs:
       - linux-install-required
       - attach_workspace:
           at: .
-      - run:
-          name: Construct Standalone
-          command: ./gradlew :emulators:standalone:shadowJar <<pipeline.parameters.standard-gradle-options>>
-      - run:
-          name: Remove distracting JAR, if any
-          command: rm emulators/standalone/build/libs/standalone-*.jar
-      - store_artifacts:
-          path: emulators/standalone/build/libs/
-          destination: .
+      - standalone-unix-common-build
   build_linux_amd64_standalone_flatpak:
     executor: build-on-linux-amd64
     steps:
@@ -485,6 +460,8 @@ jobs:
       - flatpak-install-required
       - flatpak-common-build:
           arch: amd64
+
+  # Linux ARM64
   build_linux_arm64:
     executor: build-on-linux-arm64
     steps:
@@ -508,17 +485,7 @@ jobs:
     steps:
       - checkout
       - linux-install-required
-      - attach_workspace:
-          at: .
-      - run:
-          name: Construct Standalone
-          command: ./gradlew :emulators:standalone:shadowJar <<pipeline.parameters.standard-gradle-options>>
-      - run:
-          name: Remove distracting JAR, if any
-          command: rm emulators/standalone/build/libs/standalone-*.jar
-      - store_artifacts:
-          path: emulators/standalone/build/libs/
-          destination: .
+      - standalone-unix-common-build
   build_linux_arm64_standalone_flatpak:
     executor: build-on-linux-arm64
     steps:
@@ -527,6 +494,30 @@ jobs:
       - flatpak-install-required
       - flatpak-common-build:
           arch: arm64
+
+  # Linux RISC-V 64-bit
+  build_linux_riscv64:
+    executor: build-on-linux-riscv64
+    steps:
+      - checkout
+      - run:
+          name: Gradle Build and Test
+          command: timeout --foreground 120m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 120m
+      - save-test-results:
+          where: "vm-test-hosted-debug"
+          os: "linux-arm64"
+          vm: "hosted"
+      - save-test-results:
+          where: "vm-test-hosted-release"
+          os: "linux-arm64"
+          vm: "hosted"
+      - persist-gradle
+  build_linux_riscv64_standalone:
+    executor: build-on-linux-riscv64
+    steps:
+      - checkout
+      - standalone-unix-common-build
 
   ### OSS SonaType Nexus
   sonatype_publish:
@@ -539,26 +530,6 @@ jobs:
       - run:
           name: Publish to OSS SonaType
           command: ./gradlew publishMavenPublicationToMavenRepository <<pipeline.parameters.standard-gradle-options>> || circleci-agent step halt
-
-  ### RatufaCoat
-  ratufacoat_build_linux:
-    executor: build-on-linux-amd64
-    steps:
-      - checkout
-      - linux-install-required
-      - attach_workspace:
-          at: .
-      - run:
-          name: Setup CMake build
-          working_directory: ratufacoat
-          command: cmake .
-      - run:
-          name: Compile CMake build
-          working_directory: ratufacoat
-          command: cmake --build .
-      - store_artifacts:
-          path: ratufacoat/src/SquirrelJME
-          destination: SquirrelJME
 
   ### SpringCoat
   test_springcoat_debug:
@@ -591,26 +562,6 @@ jobs:
           where: "vm-test-springcoat-release"
           os: "linux"
           vm: "springcoat"
-
-  test_summercoat:
-    executor: build-on-linux-amd64
-    steps:
-      - checkout
-      - linux-install-required
-      - attach_workspace:
-          at: .
-      - run:
-          name: SummerCoat Tests
-          command: timeout --foreground 60m ./gradlew testSummerCoat <<pipeline.parameters.standard-gradle-options>>
-          no_output_timeout: 60m
-      - save-test-results:
-          where: "vm-test-summercoat-debug"
-          os: "linux"
-          vm: "summercoat"
-      - save-test-results:
-          where: "vm-test-summercoat-release"
-          os: "linux"
-          vm: "summercoat"
 
   ################################### USERS ##################################
   export_user_guide:
@@ -715,29 +666,39 @@ workflows:
   tests:
     jobs:
       ############################# STANDARD TESTS ############################
+      # AMD64
       - build_linux_amd64
-      - build_linux_arm64
       - test_springcoat_debug:
           requires:
             - construct_testJars
       - test_springcoat_release:
           requires:
             - construct_testJars
-#      - test_summercoat:
-#          requires:
-#            - construct_libTestSummerCoat
       - build_linux_amd64_standalone:
            requires:
              - build_linux_amd64
       - build_linux_amd64_standalone_flatpak:
            requires:
              - build_linux_amd64
+
+      # ARM64
+      - build_linux_arm64
       - build_linux_arm64_standalone:
           requires:
             - build_linux_arm64
       - build_linux_arm64_standalone_flatpak:
           requires:
             - build_linux_arm64
+
+      # RISC-V 64-bit
+      - build_linux_riscv64
+      - build_linux_riscv64_standalone:
+          requires:
+            - build_linux_riscv64
+          filters:
+            branches:
+              only:
+                - trunk
 
       # Building on Windows is currently expensive and takes longer, so only
       # run these builds on trunk to lower costs.
@@ -746,12 +707,6 @@ workflows:
       - build_windows:
           requires:
              - build_windows_setup
-#          requires:
-#            - build_linux
-#          filters:
-#            branches:
-#              only:
-#                - trunk
       - build_windows_standalone:
            requires:
              - build_windows
@@ -760,15 +715,7 @@ workflows:
       # only perform builds and tests for trunk to lower costs.
       # Currently, I have an overabundance of credits...
       - build_macosx
-#          filters:
-#            branches:
-#              only:
-#                - trunk
       - build_macosx_m1
-#          filters:
-#            branches:
-#              only:
-#                - trunk
       - build_macosx_standalone:
            requires:
              - build_macosx
@@ -790,32 +737,6 @@ workflows:
       - construct_testJars:
           requires:
             - build_linux_amd64
-#      - construct_libSummerCoat:
-#          requires:
-#            - build_linux_amd64
-#      - construct_libTestSummerCoat:
-#          requires:
-#            - construct_testJars
-#      - construct_romSummerCoat:
-#          requires:
-#            - construct_libSummerCoat
-#      - construct_romTestSummerCoat:
-#          requires:
-#            - construct_libTestSummerCoat
-
-      ############################## RATUFACOAT ##############################
-#      - ratufacoat_build_windows:
-#          requires:
-#            - build_windows
-#            - construct_romTestSummerCoat
-#      - ratufacoat_build_linux:
-#          requires:
-#            - build_linux_amd64
-#            - construct_romTestSummerCoat
-#      - ratufacoat_build_macosx:
-#          requires:
-#            - build_macosx
-#            - construct_romTestSummerCoat
 
       ############################## DEPLOYMENT ##############################
       - bundle:
