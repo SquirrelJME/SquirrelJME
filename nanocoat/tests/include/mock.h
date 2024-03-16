@@ -302,6 +302,9 @@ typedef sjme_jboolean (*sjme_mock_doFunc)(
 	sjme_attrInNotNull sjme_mock* inState,
 	sjme_attrInNotNull sjme_mock_configWorkData* inData);
 
+/** The maximum number mock functions permitted. */
+#define SJME_MAX_MOCK_FUNCTIONS 64
+
 /**
  * Structure which contains the mock instructions to use for initializing
  * a test virtual machine.
@@ -317,7 +320,7 @@ typedef struct sjme_mock_configSet
 	sjme_jint flags;
 	
 	/** Mock function order. */
-	sjme_mock_doFunc order[sjme_flexibleArrayCount];
+	sjme_mock_doFunc order[SJME_MAX_MOCK_FUNCTIONS];
 } sjme_mock_configSet;
 
 /**
