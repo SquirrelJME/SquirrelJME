@@ -485,6 +485,8 @@ jobs:
     steps:
       - checkout
       - linux-install-required
+      - attach_workspace:
+          at: .
       - standalone-unix-common-build
   build_linux_arm64_standalone_flatpak:
     executor: build-on-linux-arm64
@@ -517,6 +519,8 @@ jobs:
     executor: build-on-linux-riscv64
     steps:
       - checkout
+      - attach_workspace:
+          at: .
       - standalone-unix-common-build
 
   ### OSS SonaType Nexus
