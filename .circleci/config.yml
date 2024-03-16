@@ -352,8 +352,8 @@ jobs:
       - run:
           # Only OpenJDK is required, Gradle always uses Gradle wrapper so
           # we do not need that
-          name: Install OpenJDK 11
-          command: brew install openjdk@11 coreutils
+          name: Install Dependencies
+          command: brew install openjdk@11 coreutils cmake
       - run:
           name: Gradle Build and Test
           command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
@@ -392,8 +392,8 @@ jobs:
       - run:
           # Only OpenJDK is required, Gradle always uses Gradle wrapper so
           # we do not need that
-          name: Install OpenJDK 11
-          command: brew install openjdk@11 coreutils
+          name: Install Dependencies
+          command: brew install openjdk@11 coreutils cmake
       - attach_workspace:
           at: .
       - run:

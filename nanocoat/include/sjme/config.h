@@ -236,8 +236,13 @@ extern "C" {
 	#define sjme_attrOutRange(lo, hi) _Out_range_((lo), (hi))
 
 	#if !defined(sjme_flexibleArrayCount)
-		/** Flexible array count, MSVC assumes blank. */
-		#define sjme_flexibleArrayCount
+		/** Flexible array count, MSVC requires 1 because C2233. */
+		#define sjme_flexibleArrayCount 1
+	#endif
+	
+	#if !defined(sjme_flexibleArrayCountUnion)
+		/** Flexible array count for union, MSVC requires 1 because C2233. */
+		#define sjme_flexibleArrayCountUnion 1
 	#endif
 
 	/** Allocate on the stack. */
@@ -414,6 +419,11 @@ extern "C" {
 	#define sjme_flexibleArrayCount 0
 #endif
 
+#if !defined(sjme_flexibleArrayCountUnion)
+	/** Flexible array count but for unions. */
+	#define sjme_flexibleArrayCountUnion 0
+#endif
+
 #if !defined(sjme_attrUnused)
 	/** Unused value. */
 	#define sjme_attrUnused
@@ -428,9 +438,6 @@ extern "C" {
 	/** Artificial function. */
 	#define sjme_attrArtificial
 #endif
-
-/** Flexible array count but for unions. */
-#define sjme_flexibleArrayCountUnion 0
 
 #if !defined(sjme_alloca)
 	/** Allocate on the stack. */
