@@ -19,7 +19,7 @@ find_package(JNI QUIET)
 if(NOT JNI_FOUND)
 	# Where are the headers?
 	set(JNI_INCLUDE_DIRS
-		"src/main/headers")
+		"src/main/headers/jni")
 
 	# Set as found
 	set(JNI_FOUND ON)
