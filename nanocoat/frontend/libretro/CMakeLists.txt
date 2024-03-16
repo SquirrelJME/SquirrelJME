@@ -86,6 +86,8 @@ set_target_properties(squirreljme_libretro PROPERTIES
 	ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
 
 foreach(outputConfig ${CMAKE_CONFIGURATION_TYPES})
+	string(TOUPPER "${outputConfig}" outputConfig)
+
 	set_target_properties(squirreljme_libretro PROPERTIES
 		RUNTIME_OUTPUT_DIRECTORY_${outputConfig} "${CMAKE_BINARY_DIR}"
 		LIBRARY_OUTPUT_DIRECTORY_${outputConfig} "${CMAKE_BINARY_DIR}"
