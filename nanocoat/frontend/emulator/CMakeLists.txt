@@ -47,6 +47,8 @@ set_target_properties(libEmulator PROPERTIES
 
 # Use a simpler name for the library
 set_target_properties(libEmulator PROPERTIES
+	RUNTIME_OUTPUT_NAME
+	"emulator-nanocoat"
 	LIBRARY_OUTPUT_NAME
 	"emulator-nanocoat"
 	ARCHIVE_OUTPUT_NAME

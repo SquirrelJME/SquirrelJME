@@ -32,6 +32,8 @@ target_include_directories(libJvm PUBLIC
 
 # Use a conforming name for the library
 set_target_properties(libJvm PROPERTIES
+	RUNTIME_OUTPUT_DIRECTORY
+	"jvm"
 	LIBRARY_OUTPUT_NAME
 	"jvm"
 	ARCHIVE_OUTPUT_NAME

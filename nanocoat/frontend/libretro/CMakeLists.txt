@@ -59,12 +59,16 @@ add_dependencies(squirreljme_libretro
 if(ANDROID OR
 	(DEFINED ANDROID_PLATFORM AND ANDROID_PLATFORM))
 	set_target_properties(squirreljme_libretro PROPERTIES
+		RUNTIME_OUTPUT_DIRECTORY
+			"squirreljme_libretro_android"
 		LIBRARY_OUTPUT_NAME
 			"squirreljme_libretro_android"
 		ARCHIVE_OUTPUT_NAME
 			"squirreljme_libretro_android")
 else()
 	set_target_properties(squirreljme_libretro PROPERTIES
+		RUNTIME_OUTPUT_NAME
+			"squirreljme_libretro${LIBRETRO_SUFFIX}"
 		LIBRARY_OUTPUT_NAME
 			"squirreljme_libretro${LIBRETRO_SUFFIX}"
 		ARCHIVE_OUTPUT_NAME

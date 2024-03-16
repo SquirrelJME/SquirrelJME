@@ -57,6 +57,8 @@ set_target_properties(libEmulatorBase PROPERTIES
 
 # Use a more basic name for the library
 set_target_properties(libEmulatorBase PROPERTIES
+	RUNTIME_OUTPUT_NAME
+	"emulator-base"
 	LIBRARY_OUTPUT_NAME
 	"emulator-base"
 	ARCHIVE_OUTPUT_NAME

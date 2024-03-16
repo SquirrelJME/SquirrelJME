@@ -125,9 +125,9 @@ public abstract class SystemPathProvider
 		
 		// Windows
 		if (osName.contains("windows") || osName.contains("reactos"))
-			return new WindowsPathProvider();
+			return new OverridingPathProvider(new WindowsPathProvider());
 		
 		// Fallback to Unix
-		return new UnixPathProvider();
+		return new OverridingPathProvider(new UnixPathProvider());
 	}
 }

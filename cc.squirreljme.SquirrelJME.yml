@@ -101,5 +101,7 @@ finish-args:
   - "--device=dri"
   - "--filesystem=~/.config/squirreljme"
   - "--filesystem=~/.local/share/squirreljme"
+  - "--env=SQUIRRELJME_CONFIG_HOME=~/.config/squirreljme"
+  - "--env=SQUIRRELJME_DATA_HOME=~/.local/share/squirreljme"
   - "--env=JAVA_HOME=/app/jre/"
   - "--env=PATH=/app/bin:/app/jre/bin:/usr/bin"
