@@ -9,6 +9,8 @@
 
 package cc.squirreljme.emulator.scritchui;
 
+import cc.squirreljme.jvm.mle.scritchui.ScritchComponentInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchContainerInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchEnvironmentInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchPanelInterface;
@@ -39,8 +41,36 @@ public class SwingScritchInterface
 		new SwingWindowInterface();
 	
 	/** The interface for panels. */
-	private final ScritchPanelInterface panel =
+	protected final ScritchPanelInterface panel =
 		new SwingPanelInterface();
+	
+	/** The interface for components. */
+	protected final ScritchComponentInterface component =
+		new SwingComponentInterface();
+	
+	/** The interface for containers. */
+	protected final ScritchContainerInterface container =
+		new SwingContainerInterface();
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/03/16
+	 */
+	@Override
+	public ScritchComponentInterface component()
+	{
+		return this.component;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/03/16
+	 */
+	@Override
+	public ScritchContainerInterface container()
+	{
+		return this.container;
+	}
 	
 	/**
 	 * {@inheritDoc}

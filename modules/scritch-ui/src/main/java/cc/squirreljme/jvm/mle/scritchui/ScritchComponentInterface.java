@@ -7,27 +7,16 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.emulator.scritchui;
+package cc.squirreljme.jvm.mle.scritchui;
 
-import cc.squirreljme.jvm.mle.scritchui.ScritchPanelInterface;
-import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
- * Swing interface around panels.
+ * Generic interface for ScritchUI components.
  *
  * @since 2024/03/16
  */
-public class SwingPanelInterface
-	implements ScritchPanelInterface
+@SquirrelJMEVendorApi
+public interface ScritchComponentInterface
 {
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/03/16
-	 */
-	@Override
-	public ScritchPanelBracket newPanel()
-	{
-		return new SwingPanelObject();
-	}
 }

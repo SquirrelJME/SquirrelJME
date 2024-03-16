@@ -9,6 +9,8 @@
 
 package cc.squirreljme.scritchui.fb;
 
+import cc.squirreljme.jvm.mle.scritchui.ScritchComponentInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchContainerInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchEnvironmentInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchPanelInterface;
@@ -45,6 +47,26 @@ public class FramebufferScritchInterface
 			throw new NullPointerException("NARG");
 		
 		this.provider = __provider;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/03/16
+	 */
+	@Override
+	public ScritchComponentInterface component()
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/03/16
+	 */
+	@Override
+	public ScritchContainerInterface container()
+	{
+		throw Debugging.todo();
 	}
 	
 	/**

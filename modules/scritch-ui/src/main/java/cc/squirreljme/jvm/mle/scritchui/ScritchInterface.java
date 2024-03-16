@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.mle.scritchui;
 
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchContainerBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,6 +22,26 @@ import org.jetbrains.annotations.NotNull;
 @SquirrelJMEVendorApi
 public interface ScritchInterface
 {
+	/**
+	 * Returns the generic component interface.
+	 *
+	 * @return The generic component interface.
+	 * @since 2024/03/16
+	 */
+	@SquirrelJMEVendorApi
+	@NotNull
+	ScritchComponentInterface component();
+	
+	/**
+	 * Returns the generic container interface.
+	 *
+	 * @return The generic container interface.
+	 * @since 2024/03/16
+	 */
+	@SquirrelJMEVendorApi
+	@NotNull
+	ScritchContainerInterface container();
+	
 	/**
 	 * Returns the interface which contains information on the environment.
 	 *

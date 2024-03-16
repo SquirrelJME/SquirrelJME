@@ -9,25 +9,19 @@
 
 package cc.squirreljme.emulator.scritchui;
 
-import cc.squirreljme.jvm.mle.scritchui.ScritchPanelInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import javax.swing.JPanel;
 
 /**
- * Swing interface around panels.
+ * Object for Swing panels.
  *
  * @since 2024/03/16
  */
-public class SwingPanelInterface
-	implements ScritchPanelInterface
+public class SwingPanelObject
+	extends SwingComponentObject
+	implements ScritchPanelBracket
 {
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/03/16
-	 */
-	@Override
-	public ScritchPanelBracket newPanel()
-	{
-		return new SwingPanelObject();
-	}
+	/** The backing panel. */
+	protected final JPanel panel =
+		new JPanel();
 }
