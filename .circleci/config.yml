@@ -695,14 +695,14 @@ workflows:
             - build_linux_arm64
 
       # RISC-V 64-bit
-      - build_linux_riscv64
-      - build_linux_riscv64_standalone:
-          requires:
-            - build_linux_riscv64
-          filters:
-            branches:
-              only:
-                - trunk
+#      - build_linux_riscv64
+#      - build_linux_riscv64_standalone:
+#          requires:
+#            - build_linux_riscv64
+#          filters:
+#            branches:
+#              only:
+#                - trunk
 
       # Building on Windows is currently expensive and takes longer, so only
       # run these builds on trunk to lower costs.
