@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.mle.scritchui;
 
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchInputMethodType;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
@@ -74,4 +75,16 @@ public interface ScritchWindowInterface
 	@SquirrelJMEVendorApi
 	@NotNull
 	ScritchWindowBracket newWindow();
+	
+	/**
+	 * Sets the visibility of the given window.
+	 *
+	 * @param __window The window to set.
+	 * @param __visible Should the window be visible?
+	 * @throws MLECallError On null arguments.
+	 * @since 2024/03/17
+	 */
+	@SquirrelJMEVendorApi
+	void setVisible(@NotNull ScritchWindowBracket __window, boolean __visible)
+		throws MLECallError;
 }

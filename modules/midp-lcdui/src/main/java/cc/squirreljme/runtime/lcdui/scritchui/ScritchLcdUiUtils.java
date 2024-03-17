@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFImageElementType;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLineStyle;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.debug.ErrorCode;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Graphics;
 import org.intellij.lang.annotations.MagicConstant;
@@ -71,14 +72,41 @@ public final class ScritchLcdUiUtils
 	 *
 	 * @param __in The input {@link Display} element.
 	 * @return The resultant mapped type to {@link ScritchLAFImageElementType}.
+	 * @throws IllegalArgumentException If the element is not valid.
 	 * @since 2024/03/09
 	 */
 	@MagicConstant(valuesFromClass = ScritchLAFImageElementType.class)
 	@SquirrelJMEVendorApi
 	public static int scritchElementType(
 		@MagicConstant(valuesFromClass = Display.class) int __in)
+		throws IllegalArgumentException
 	{
-		// ScritchLAFImageElementType
-		throw Debugging.todo();
+		switch (__in)
+		{
+			case Display.LIST_ELEMENT:
+				return ScritchLAFImageElementType.LIST_ELEMENT;
+				
+			case Display.CHOICE_GROUP_ELEMENT:
+				return ScritchLAFImageElementType.CHOICE_GROUP;
+			
+			case Display.ALERT:
+				return ScritchLAFImageElementType.ALERT;
+			
+			case Display.TAB:
+				return ScritchLAFImageElementType.TAB;
+			
+			case Display.COMMAND:
+				return ScritchLAFImageElementType.COMMAND;
+			
+			case Display.NOTIFICATION:
+				return ScritchLAFImageElementType.NOTIFICATION;
+			
+			case Display.MENU:
+				return ScritchLAFImageElementType.MENU;
+		}
+		
+		/* {@squirreljme.error EB1h Invalid element type. (The type)} */
+		throw new IllegalArgumentException(ErrorCode.__error__(
+			"EB1h", __in));
 	}
 }

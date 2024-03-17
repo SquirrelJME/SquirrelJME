@@ -9,8 +9,13 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.jvm.mle.scritchui.ScritchComponentInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchContainerInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchWindowInterface;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
+import cc.squirreljme.jvm.mle.scritchui.constants.ScritchBorderLayoutType;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -74,8 +79,39 @@ class __ExecDisplaySetCurrent__
 	{
 		// Get the container API since we will have to clear and add it to
 		// the Display's frame...
-		ScritchContainerInterface containerApi = this.scritchApi.container();
+		ScritchInterface scritchApi = this.scritchApi;
+		ScritchContainerInterface containerApi = scritchApi.container();
+		ScritchComponentInterface componentApi = scritchApi.component();
+		ScritchWindowInterface windowApi = scritchApi.window();
 		
-		throw Debugging.todo();
+		// Target panel may be set later
+		ScritchPanelBracket panel;
+		
+		// Get the ScritchUI window
+		ScritchWindowBracket window =
+			this.display._state.scritchWindow();
+		
+		// Remove everything from the window
+		containerApi.removeAll(window);
+		
+		// Add in the panel, if there is one
+		Displayable showNow = this.showNow;
+		if (showNow != null)
+		{
+			// Get the needed panel and add it in
+			panel = this.showNow._state.scritchPanel();
+			containerApi.add(window, panel,
+				ScritchBorderLayoutType.CENTER);
+			
+			// Revalidate so it gets updated
+			componentApi.revalidate(panel);
+			
+			// Show the display window
+			windowApi.setVisible(window, true);
+		}
+		
+		// Hide the window
+		else
+			windowApi.setVisible(window, false);
 	}
 }

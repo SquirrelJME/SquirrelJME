@@ -73,4 +73,15 @@ public final class DisplayableState
 		
 		return result;
 	}
+	
+	/**
+	 * Returns the ScritchUI panel.
+	 *
+	 * @return The panel used for this {@link Displayable}.
+	 * @since 2024/03/17
+	 */
+	public ScritchPanelBracket scritchPanel()
+	{
+		return this.panel;
+	}
 }

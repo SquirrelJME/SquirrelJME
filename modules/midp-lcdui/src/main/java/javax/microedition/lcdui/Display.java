@@ -402,7 +402,7 @@ public class Display
 	 *
 	 * @param __elem If display element.
 	 * @return The height of the image for that element.
-	 * @throws IllegalArgumentException On null arguments.
+	 * @throws IllegalArgumentException If the element is not valid.
 	 * @since 2016/10/14
 	 */
 	@Api
@@ -431,7 +431,7 @@ public class Display
 	 *
 	 * @param __elem If display element.
 	 * @return The width of the image for that element.
-	 * @throws IllegalArgumentException On null arguments.
+	 * @throws IllegalArgumentException If the element is not valid.
 	 * @since 2016/10/14
 	 */
 	@Api

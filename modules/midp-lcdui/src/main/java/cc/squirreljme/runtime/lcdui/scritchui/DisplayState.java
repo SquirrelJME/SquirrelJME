@@ -73,4 +73,15 @@ public final class DisplayState
 		
 		return result;
 	}
+	
+	/**
+	 * Returns the ScritchUI window in use.
+	 *
+	 * @return The ScritchUI window.
+	 * @since 2024/03/17
+	 */
+	public final ScritchWindowBracket scritchWindow()
+	{
+		return this.scritchWindow;
+	}
 }

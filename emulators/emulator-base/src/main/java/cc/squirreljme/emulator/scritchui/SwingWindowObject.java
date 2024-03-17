@@ -10,6 +10,7 @@
 package cc.squirreljme.emulator.scritchui;
 
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
+import java.awt.Container;
 import javax.swing.JFrame;
 
 /**
@@ -18,9 +19,19 @@ import javax.swing.JFrame;
  * @since 2024/03/14
  */
 public class SwingWindowObject
-	implements ScritchWindowBracket
+	implements ScritchWindowBracket, SwingContainerObject
 {
 	/** The backing frame. */
 	protected final JFrame frame =
-		new JFrame();	
+		new JFrame();
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/03/17
+	 */
+	@Override
+	public Container swingContainer()
+	{
+		return (Container)this.frame;
+	}
 }

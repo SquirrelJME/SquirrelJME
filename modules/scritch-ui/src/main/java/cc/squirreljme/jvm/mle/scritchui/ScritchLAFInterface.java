@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.mle.scritchui;
 
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFElementColor;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFImageElementType;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLineStyle;
@@ -54,11 +55,13 @@ public interface ScritchLAFInterface
 	 * @param __height Should the height be returned? If not then the width
 	 * is returned.
 	 * @return Either the width or the height depending on {@code __height}.
+	 * @throws MLECallError If the element is not valid.
 	 * @since 2024/03/09
 	 */
 	@SquirrelJMEVendorApi
 	@Range(from = 0, to = Integer.MAX_VALUE)
 	int imageSize(
 		@MagicConstant(valuesFromClass = ScritchLAFImageElementType.class)
-		int __elem, boolean __height);
+		int __elem, boolean __height)
+		throws MLECallError;
 }

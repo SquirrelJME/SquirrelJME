@@ -9,9 +9,16 @@
 
 package cc.squirreljme.emulator.scritchui;
 
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchLAFInterface;
+import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFImageElementType;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import org.jetbrains.annotations.Range;
+import cc.squirreljme.runtime.cldc.util.MathUtils;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.image.BufferedImage;
+import javax.swing.UIManager;
+import javax.swing.plaf.synth.SynthLookAndFeel;
 
 /**
  * Swing look and feel interface.
@@ -21,6 +28,14 @@ import org.jetbrains.annotations.Range;
 public class SwingLAFInterface
 	implements ScritchLAFInterface
 {
+	/** Fallback size for widgets. */
+	public static final int FALLBACK_SIZE =
+		16;
+	
+	/** The size of message icons. */
+	public static final int MESSAGE_ICON_SIZE = 
+		32;
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2024/03/13
@@ -47,7 +62,48 @@ public class SwingLAFInterface
 	 */
 	@Override
 	public int imageSize(int __elem, boolean __height)
+		throws MLECallError
 	{
-		throw Debugging.todo();
+		switch (__elem)
+		{
+			case ScritchLAFImageElementType.LIST_ELEMENT:
+				return SwingLAFInterface.__sizeFont("List.font");
+				
+			case ScritchLAFImageElementType.CHOICE_GROUP:
+				return SwingLAFInterface.__sizeFont("RadioButton.font");
+				
+			case ScritchLAFImageElementType.TAB:
+				return SwingLAFInterface.__sizeFont("TabbedPane.font");
+				
+			case ScritchLAFImageElementType.ALERT:
+			case ScritchLAFImageElementType.NOTIFICATION:
+				return SwingLAFInterface.MESSAGE_ICON_SIZE;
+				
+			case ScritchLAFImageElementType.COMMAND:
+			case ScritchLAFImageElementType.MENU:
+				return SwingLAFInterface.__sizeFont("MenuItem.font");
+		}
+		
+		throw new MLECallError("Invalid element type: " + __elem);
+	}
+	
+	/**
+	 * Returns the size of the given font in pixels.
+	 *
+	 * @param __key The key to get.
+	 * @return The resultant size in pixels.
+	 * @since 2024/03/17
+	 */
+	private static int __sizeFont(String __key)
+	{
+		Font font = UIManager.getFont(__key);
+		if (font == null)
+			return SwingLAFInterface.FALLBACK_SIZE;
+		
+		// We need a graphics object to base on, once we get round to power
+		// of two
+		FontMetrics metrics = new BufferedImage(1, 1,
+			BufferedImage.TYPE_INT_RGB).getGraphics().getFontMetrics(font);
+		return MathUtils.nearestPowerOfTwo(metrics.getHeight());
 	}
 }

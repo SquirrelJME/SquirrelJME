@@ -9,23 +9,22 @@
 
 package cc.squirreljme.emulator.scritchui;
 
-import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
-import java.awt.Component;
-import javax.swing.JComponent;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchContainerBracket;
+import java.awt.Container;
 
 /**
- * Base bracket for components.
+ * Swing interface for containers.
  *
- * @since 2024/03/16
+ * @since 2024/03/17
  */
-public abstract class SwingComponentObject
-	implements ScritchComponentBracket
+public interface SwingContainerObject
+	extends ScritchContainerBracket
 {
 	/**
-	 * Returns the component.
+	 * Returns the Swing container.
 	 *
-	 * @return The component used.
+	 * @return The Swing container.
 	 * @since 2024/03/17
 	 */
-	public abstract JComponent component();
+	Container swingContainer();
 }

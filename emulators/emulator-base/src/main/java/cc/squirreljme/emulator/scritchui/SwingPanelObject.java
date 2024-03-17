@@ -10,6 +10,8 @@
 package cc.squirreljme.emulator.scritchui;
 
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 /**
@@ -24,4 +26,14 @@ public class SwingPanelObject
 	/** The backing panel. */
 	protected final JPanel panel =
 		new JPanel();
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/03/17
+	 */
+	@Override
+	public JComponent component()
+	{
+		return this.panel;
+	}
 }

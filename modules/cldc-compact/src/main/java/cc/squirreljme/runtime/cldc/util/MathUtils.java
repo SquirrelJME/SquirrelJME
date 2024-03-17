@@ -7,30 +7,41 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.mle.scritchui;
+package cc.squirreljme.runtime.cldc.util;
 
-import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
-import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import org.jetbrains.annotations.NotNull;
 
 /**
- * Generic interface for ScritchUI components.
+ * Math utilities.
  *
- * @since 2024/03/16
+ * @since 2024/03/17
  */
 @SquirrelJMEVendorApi
-public interface ScritchComponentInterface
+public final class MathUtils
 {
 	/**
-	 * Revalidates the given component.
-	 *
-	 * @param __component The component to revalidate.
-	 * @throws MLECallError On null arguments.
+	 * Not used. 
+	 * 
 	 * @since 2024/03/17
 	 */
-	@SquirrelJMEVendorApi
-	void revalidate(@NotNull ScritchComponentBracket __component)
-		throws MLECallError;
+	private MathUtils()
+	{
+	}
+	
+	
+	/**
+	 * Rounds to the nearest power of two.
+	 *
+	 * @param __val The value to round.
+	 * @return The resultant rounded value.
+	 * @since 2024/03/17
+	 */
+	public static int nearestPowerOfTwo(int __val)
+	{
+		int hi = Math.max(1, Integer.highestOneBit(__val));
+		int mask = Math.max(1, hi - 1);
+		if ((__val & mask) >= (hi >>> 1))
+			return hi << 1;
+		return hi;
+	}
 }

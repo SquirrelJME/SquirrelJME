@@ -9,6 +9,7 @@
 
 package cc.squirreljme.emulator.scritchui;
 
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchWindowInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -70,5 +71,21 @@ public class SwingWindowInterface
 	public ScritchWindowBracket newWindow()
 	{
 		return new SwingWindowObject();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/03/17
+	 */
+	@Override
+	public void setVisible(@NotNull ScritchWindowBracket __window,
+		boolean __visible)
+		throws MLECallError
+	{
+		if (__window == null)
+			throw new MLECallError("Null arguments.");
+		
+		// Forward to Swing
+		((SwingWindowObject)__window).frame.setVisible(__visible);
 	}
 }
