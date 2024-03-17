@@ -12,6 +12,7 @@ package cc.squirreljme.emulator.scritchui;
 import cc.squirreljme.jvm.mle.scritchui.ScritchComponentInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchContainerInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchEnvironmentInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchEventLoopInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchPanelInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchScreenInterface;
@@ -52,6 +53,10 @@ public class SwingScritchInterface
 	protected final ScritchContainerInterface container =
 		new SwingContainerInterface();
 	
+	/** Event loop interface. */
+	protected final ScritchEventLoopInterface eventLoop =
+		new SwingEventLoopInterface();
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2024/03/16
@@ -82,6 +87,16 @@ public class SwingScritchInterface
 		return this.environment;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/03/16
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public ScritchEventLoopInterface eventLoop()
+	{
+		return this.eventLoop;
+	}
 	
 	/**
 	 * {@inheritDoc}

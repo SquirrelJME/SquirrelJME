@@ -892,8 +892,10 @@ public class Display
 	@Api
 	public void removeCurrent()
 	{
-		// Just performs the internal hiding logic
-		this.__doHideCurrent();
+		// Make sure this happens in the event loop as we might need to
+		// update widgets and otherwise
+		this._scritch.eventLoop().execute(
+			new __ExecDisplaySetCurrent__(this._scritch, this, null, null));
 	}
 	
 	/**
@@ -961,34 +963,10 @@ public class Display
 		if (__exit instanceof Alert)
 			throw new IllegalStateException("EB1k");
 		
-		// Debug
-		Debugging.debugNote("Showing alert \"%s\"", __show._message);
-		
-		// Perform call on this display
-		throw Debugging.todo();
-		/*
-		try
-		{
-			// Set widgets
-			if (true)
-				throw new todo.TODO();
-			/*
-			LcdServiceCall.<VoidType>call(VoidType.class,
-				LcdFunction.WIDGET_ALERT_SHOW, this._handle,
-				__show._handle, __exit._handle);
-			* /
-			
-			// Hold onto these so they do not get GCed
-			this._heldcurrent = __show;
-			this._heldexit = __exit;
-		}
-		
-		/* {@squirreljme.error EB1l Could not set the alert and its exit
-		displayable because it is already set on a display.} * /
-		catch (LcdWidgetOwnedException e)
-		{
-			throw new IllegalStateException("EB1l", e);
-		}*/
+		// Make sure this happens in the event loop as we might need to
+		// update widgets and otherwise
+		this._scritch.eventLoop().execute(
+			new __ExecDisplaySetCurrent__(this._scritch, this, __show, __exit));
 	}
 	
 	/**
@@ -1020,34 +998,10 @@ public class Display
 		if (__show == null)
 			return;
 		
-		// If we are trying to show the same display, force foreground
-		Displayable current = this._current;
-		if (current == __show)
-		{
-			// This will force the form to be currently shown on the screen
-			// even if another task has set the form. Since displays may only
-			// have a single form associated with them, this effectively
-			// retakes control accordingly
-			this.__doShowCurrent(__show);
-			
-			return;
-		}
-		
-		// If showing an alert, it gets displayed instead
-		if (__show instanceof Alert)
-		{
-			this.setCurrent((Alert)__show, this.getCurrent());
-			return;
-		}
-		
-		/* {@squirreljme.error EB1m The displayable to be displayed is already
-		being displayed.} */
-		if (__show._display != null)
-			throw new IllegalStateException("EB1m");
-		
-		// Hide the current display then show the new one
-		this.__doHideCurrent();
-		this.__doShowCurrent(__show);
+		// Make sure this happens in the event loop as we might need to
+		// update widgets and otherwise
+		this._scritch.eventLoop().execute(
+			new __ExecDisplaySetCurrent__(this._scritch, this, __show, null));
 	}
 	
 	@Api

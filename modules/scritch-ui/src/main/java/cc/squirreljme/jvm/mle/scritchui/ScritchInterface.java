@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm.mle.scritchui;
 
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.jvm.mle.scritchui.annotation.ScritchEventLoop;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchContainerBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.jetbrains.annotations.NotNull;
@@ -51,6 +53,16 @@ public interface ScritchInterface
 	@SquirrelJMEVendorApi
 	@NotNull
 	ScritchEnvironmentInterface environment();
+	
+	/**
+	 * Returns the event loop interface.
+	 *
+	 * @return The event loop interface.
+	 * @since 2024/03/16
+	 */
+	@SquirrelJMEVendorApi
+	@NotNull
+	ScritchEventLoopInterface eventLoop();
 	
 	/**
 	 * Return the interface for panels.

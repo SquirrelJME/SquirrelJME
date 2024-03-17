@@ -12,6 +12,7 @@ package cc.squirreljme.scritchui.fb;
 import cc.squirreljme.jvm.mle.scritchui.ScritchComponentInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchContainerInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchEnvironmentInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchEventLoopInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchPanelInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchScreenInterface;
@@ -76,6 +77,17 @@ public class FramebufferScritchInterface
 	@Override
 	@SquirrelJMEVendorApi
 	public ScritchEnvironmentInterface environment()
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/03/16
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public ScritchEventLoopInterface eventLoop()
 	{
 		throw Debugging.todo();
 	}
