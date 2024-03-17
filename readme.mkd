@@ -35,6 +35,7 @@ _[LinkedIn](https://www.linkedin.com/in/xerthesquirrel/)!_
 
 _SquirrelJME_ utilizes _Install4J_ for cross-platform installers, you can
 read more about it and check out their product page at:
+
  * [Install4J Multi-Platform Installer Builder](
     https://www.ej-technologies.com/products/install4j/overview.html)
 
