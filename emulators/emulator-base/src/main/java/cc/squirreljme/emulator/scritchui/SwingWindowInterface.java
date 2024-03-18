@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchWindowInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.awt.Dimension;
 import javax.swing.JFrame;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
@@ -32,6 +33,9 @@ public class SwingWindowInterface
 	@Override
 	public void callAttention(ScritchWindowBracket __window)
 	{
+		if (__window == null)
+			throw new MLECallError("Null arguments.");
+		
 		throw Debugging.todo();
 	}
 	
@@ -48,6 +52,23 @@ public class SwingWindowInterface
 		
 		JFrame frame = ((SwingWindowObject)__window).frame;
 		return frame.getContentPane().getHeight();
+	}
+	
+	@Override
+	public void contentMinimumSize(@NotNull ScritchWindowBracket __window,
+		@Range(from = 1, to = Integer.MAX_VALUE) int __w,
+		@Range(from = 1, to = Integer.MAX_VALUE) int __h)
+		throws MLECallError
+	{
+		if (__window == null)
+			throw new MLECallError("Null arguments.");
+		
+		if (__w <= 0 || __h <= 0)
+			throw new MLECallError("Invalid dimensions");
+		
+		JFrame frame = ((SwingWindowObject)__window).frame;
+		frame.getContentPane().setMinimumSize(new Dimension(__w, __h));
+		frame.setMinimumSize(new Dimension(__w, __h));
 	}
 	
 	/**
@@ -72,6 +93,9 @@ public class SwingWindowInterface
 	@Override
 	public boolean hasFocus(ScritchWindowBracket __window)
 	{
+		if (__window == null)
+			throw new MLECallError("Null arguments.");
+	
 		throw Debugging.todo();
 	}
 	
@@ -82,6 +106,9 @@ public class SwingWindowInterface
 	@Override
 	public boolean isVisible(ScritchWindowBracket __window)
 	{
+		if (__window == null)
+			throw new MLECallError("Null arguments.");
+	
 		throw Debugging.todo();
 	}
 	
@@ -92,6 +119,9 @@ public class SwingWindowInterface
 	@Override
 	public int inputTypes(ScritchWindowBracket __window)
 	{
+		if (__window == null)
+			throw new MLECallError("Null arguments.");
+	
 		throw Debugging.todo();
 	}
 	

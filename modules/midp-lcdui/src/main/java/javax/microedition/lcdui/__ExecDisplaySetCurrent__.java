@@ -16,6 +16,7 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchWindowInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchBorderLayoutType;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayScale;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
 
 /**
@@ -56,7 +57,7 @@ class __ExecDisplaySetCurrent__
 		Displayable __showNow, Displayable __onExit)
 		throws NullPointerException
 	{
-		if (__scritchApi == null)
+		if (__scritchApi == null || __display == null)
 			throw new NullPointerException("NARG");
 		
 		// If we have an exit but are not showing something then this is
@@ -104,6 +105,11 @@ class __ExecDisplaySetCurrent__
 			panel = this.showNow._state.scritchPanel();
 			containerApi.add(window, panel,
 				ScritchBorderLayoutType.CENTER);
+			
+			// Set the frame's preferred and minimum sizes for the content area
+			DisplayScale scale = display._scale;
+			windowApi.contentMinimumSize(window,
+				scale.textureMaxW(), scale.textureMaxH());
 			
 			// Revalidate so it gets updated
 			componentApi.revalidate(panel);

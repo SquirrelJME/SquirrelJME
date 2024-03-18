@@ -10,7 +10,10 @@
 package cc.squirreljme.emulator.scritchui;
 
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.awt.GraphicsDevice;
+import java.awt.Insets;
+import java.awt.Toolkit;
 
 /**
  * Not Described.
@@ -58,7 +61,12 @@ public class SwingScreenObject
 	 */
 	public int height()
 	{
-		return this.awtScreen.getDisplayMode().getHeight();
+		GraphicsDevice awtScreen = this.awtScreen;
+		Insets insets = Toolkit.getDefaultToolkit().getScreenInsets(
+			awtScreen.getDefaultConfiguration());
+		
+		return awtScreen.getDisplayMode().getHeight() +
+			(insets.bottom + insets.top);
 	}
 	
 	/**
@@ -69,6 +77,11 @@ public class SwingScreenObject
 	 */
 	public int width()
 	{
-		return this.awtScreen.getDisplayMode().getWidth();
+		GraphicsDevice awtScreen = this.awtScreen;
+		Insets insets = Toolkit.getDefaultToolkit().getScreenInsets(
+			awtScreen.getDefaultConfiguration());
+		
+		return awtScreen.getDisplayMode().getWidth() -
+			(insets.right + insets.left);
 	}
 }

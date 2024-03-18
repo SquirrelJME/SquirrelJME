@@ -53,6 +53,22 @@ public interface ScritchWindowInterface
 		throws MLECallError;
 	
 	/**
+	 * Sets the minimum size of the content pane.
+	 *
+	 * @param __window The window to set.
+	 * @param __w The minimum width of the content area.
+	 * @param __h The minimum height of the content area.
+	 * @throws MLECallError On null arguments or the width and/or height
+	 * are zero or negative.
+	 * @since 2024/03/18
+	 */
+	@SquirrelJMEVendorApi
+	void contentMinimumSize(@NotNull ScritchWindowBracket __window,
+		@Range(from = 1, to = Integer.MAX_VALUE) int __w,
+		@Range(from = 1, to = Integer.MAX_VALUE) int __h)
+		throws MLECallError;
+	
+	/**
 	 * Returns the width of the content area, that is what is used solely
 	 * by widgets and not any window decorations or otherwise. 
 	 *
