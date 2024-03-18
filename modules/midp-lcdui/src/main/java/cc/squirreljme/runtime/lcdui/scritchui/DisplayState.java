@@ -11,6 +11,7 @@ package cc.squirreljme.runtime.lcdui.scritchui;
 
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import javax.microedition.lcdui.Display;
@@ -20,19 +21,23 @@ import javax.microedition.lcdui.Display;
  *
  * @since 2024/03/08
  */
+@SquirrelJMEVendorApi
 public final class DisplayState
 {
 	/** The display this is linked to. */
+	@SquirrelJMEVendorApi
 	protected final Reference<Display> lcduiDisplay;
 	
 	/** The scritch window which this display represents. */
+	@SquirrelJMEVendorApi
 	protected final ScritchWindowBracket scritchWindow;
 	
 	/** The screen this represents. */
+	@SquirrelJMEVendorApi
 	protected final ScritchScreenBracket scritchScreen;
 	
 	/** The displayable currently showing on this. */
-	private volatile Reference<DisplayableState> _current;
+	volatile Reference<DisplayableState> _current;
 	
 	/** The display to show on exit. */
 	private volatile Reference<DisplayableState> _onExit;
@@ -46,6 +51,7 @@ public final class DisplayState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/03/08
 	 */
+	@SquirrelJMEVendorApi
 	public DisplayState(Display __display,
 		ScritchWindowBracket __window, ScritchScreenBracket __screen)
 		throws NullPointerException
@@ -64,6 +70,7 @@ public final class DisplayState
 	 * @return The associated display.
 	 * @since 2024/03/08
 	 */
+	@SquirrelJMEVendorApi
 	public final Display display()
 	{
 		Display result = this.lcduiDisplay.get();
@@ -80,6 +87,7 @@ public final class DisplayState
 	 * @return The ScritchUI window.
 	 * @since 2024/03/17
 	 */
+	@SquirrelJMEVendorApi
 	public final ScritchWindowBracket scritchWindow()
 	{
 		return this.scritchWindow;

@@ -15,6 +15,7 @@ import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
+import cc.squirreljme.jvm.mle.scritchui.annotation.ScritchEventLoop;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -455,6 +456,21 @@ public abstract class Displayable
 	protected void sizeChanged(int __w, int __h)
 	{
 		// Implemented by subclasses
+	}
+	
+	/**
+	 * Performs revalidation for ScritchUI, overridden as needed.
+	 *
+	 * @param __parent The parent display.
+	 * @since 2024/03/18
+	 */
+	@ScritchEventLoop
+	@SerializedEvent
+	@Async.Execute
+	void __execRevalidate(DisplayState __parent)
+	{
+		// Reparent the display
+		this._state.setParent(__parent);
 	}
 	
 	/**

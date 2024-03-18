@@ -10,11 +10,13 @@
 package cc.squirreljme.jvm.mle.scritchui;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchInputMethodType;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 /**
  * Interface for {@link ScritchWindowBracket}.
@@ -29,30 +31,64 @@ public interface ScritchWindowInterface
 	 * the operating system performs.
 	 *
 	 * @param __window The window to query.
+	 * @throws MLECallError On null arguments.
 	 * @since 2024/03/09
 	 */
 	@SquirrelJMEVendorApi
-	void callAttention(@NotNull ScritchWindowBracket __window);
+	void callAttention(@NotNull ScritchWindowBracket __window)
+		throws MLECallError;
+	
+	/**
+	 * Returns the height of the content area, that is what is used solely
+	 * by widgets and not any window decorations or otherwise. 
+	 *
+	 * @param __window The window to get the content height of.
+	 * @return The height of the content area.
+	 * @throws MLECallError On null arguments.
+	 * @since 2024/03/18
+	 */
+	@SquirrelJMEVendorApi
+	@Range(from = 0, to = Integer.MAX_VALUE)
+	int contentHeight(@NotNull ScritchWindowBracket __window)
+		throws MLECallError;
+	
+	/**
+	 * Returns the width of the content area, that is what is used solely
+	 * by widgets and not any window decorations or otherwise. 
+	 *
+	 * @param __window The window to get the content width of.
+	 * @return The width of the content area.
+	 * @throws MLECallError On null arguments.
+	 * @since 2024/03/18
+	 */
+	@SquirrelJMEVendorApi
+	@Range(from = 0, to = Integer.MAX_VALUE)
+	int contentWidth(@NotNull ScritchWindowBracket __window)
+		throws MLECallError;
 	
 	/**
 	 * Does this window have focus? 
 	 *
 	 * @param __window The window to query.
 	 * @return If the window has focus.
+	 * @throws MLECallError On null arguments.
 	 * @since 2024/03/09
 	 */
 	@SquirrelJMEVendorApi
-	boolean hasFocus(@NotNull ScritchWindowBracket __window);
+	boolean hasFocus(@NotNull ScritchWindowBracket __window)
+		throws MLECallError;
 	
 	/**
 	 * Is this window visible.
 	 *
 	 * @param __window The window to query.
 	 * @return If the window is visible.
+	 * @throws MLECallError On null arguments.
 	 * @since 2024/03/09
 	 */
 	@SquirrelJMEVendorApi
-	boolean isVisible(@NotNull ScritchWindowBracket __window);
+	boolean isVisible(@NotNull ScritchWindowBracket __window)
+		throws MLECallError;
 	
 	/**
 	 * Returns the {@link ScritchInputMethodType}s that are possible for
@@ -60,11 +96,13 @@ public interface ScritchWindowInterface
 	 *
 	 * @param __window The window to check.
 	 * @return The valid {@link ScritchInputMethodType}s.
+	 * @throws MLECallError On null arguments.
 	 * @since 2024/03/11
 	 */
 	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = ScritchInputMethodType.class)
-	int inputTypes(@NotNull ScritchWindowBracket __window);
+	int inputTypes(@NotNull ScritchWindowBracket __window)
+		throws MLECallError;
 	
 	/**
 	 * Creates a new empty window.

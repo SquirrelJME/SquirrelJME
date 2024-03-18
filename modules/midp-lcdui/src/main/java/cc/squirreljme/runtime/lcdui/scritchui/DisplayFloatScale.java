@@ -88,6 +88,16 @@ public class DisplayFloatScale
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2024/03/18
+	 */
+	@Override
+	public int textureH()
+	{
+		return this.scaledH;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2024/03/11
 	 */
 	@Override
@@ -102,6 +112,16 @@ public class DisplayFloatScale
 	 */
 	@Override
 	public int textureMaxW()
+	{
+		return this.scaledW;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/03/18
+	 */
+	@Override
+	public int textureW()
 	{
 		return this.scaledW;
 	}

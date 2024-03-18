@@ -16,7 +16,7 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchWindowInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchBorderLayoutType;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
 
 /**
  * Handler for showing/removing a {@link Displayable}.
@@ -88,8 +88,10 @@ class __ExecDisplaySetCurrent__
 		ScritchPanelBracket panel;
 		
 		// Get the ScritchUI window
+		Display display = this.display;
+		DisplayState displayState = display._state;
 		ScritchWindowBracket window =
-			this.display._state.scritchWindow();
+			displayState.scritchWindow();
 		
 		// Remove everything from the window
 		containerApi.removeAll(window);
@@ -108,6 +110,9 @@ class __ExecDisplaySetCurrent__
 			
 			// Show the display window
 			windowApi.setVisible(window, true);
+			
+			// Internal revalidation logic
+			showNow.__execRevalidate(displayState);
 		}
 		
 		// Hide the window

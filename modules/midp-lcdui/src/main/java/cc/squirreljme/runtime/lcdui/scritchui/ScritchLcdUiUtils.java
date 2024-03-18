@@ -37,6 +37,25 @@ public final class ScritchLcdUiUtils
 	}
 	
 	/**
+	 * Determines the size of the display that should be used. 
+	 *
+	 * @param __state The current displayable state.
+	 * @param __height Request the height?
+	 * @return The 
+	 * @since 2024/03/18
+	 */
+	public static int lcduiDisplaySize(DisplayableState __state,
+		boolean __height)
+		throws NullPointerException
+	{
+		if (__state == null)
+			throw new NullPointerException("NARG");
+		
+		
+		throw Debugging.todo();
+	}
+	
+	/**
 	 * Maps the line style. 
 	 *
 	 * @param __style The input line style, one of {@link ScritchLineStyle}.

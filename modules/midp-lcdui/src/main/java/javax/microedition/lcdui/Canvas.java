@@ -13,7 +13,6 @@ import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
-import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.jvm.mle.constants.UISpecialCode;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.runtime.cldc.annotation.Api;
@@ -25,6 +24,9 @@ import cc.squirreljme.runtime.lcdui.event.KeyNames;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayScale;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
+import cc.squirreljme.runtime.lcdui.scritchui.ScritchLcdUiUtils;
 import org.jetbrains.annotations.Async;
 
 /**
@@ -263,6 +265,9 @@ public abstract class Canvas
 	private final Object _repaintLock =
 		new Object();
 	
+	/** The current image buffer. */
+	volatile Image _buffer;
+	
 	/** The key listener to use. */
 	KeyListener _keyListener;
 	
@@ -270,7 +275,7 @@ public abstract class Canvas
 	boolean _isOpaque =
 		true;
 	
-	/** Should this be ran full-screen? */
+	/** Should this be run full-screen? */
 	volatile boolean _isFullScreen;
 	
 	/** The number of pending paints. */
@@ -295,7 +300,7 @@ public abstract class Canvas
 	/**
 	 * This is called when this is to be painted. The clipping area will
 	 * be set to the area that needs updating and as such drawing should only
-	 * occur within the region. Any pixels drawn outside of the clipping area
+	 * occur within the region. Any pixels drawn outside the clipping area
 	 * might not be updated and may have no effect when drawing.
 	 *
 	 * If this is transparent then the background will automatically be filled
@@ -333,8 +338,13 @@ public abstract class Canvas
 	@Override
 	public int getHeight()
 	{
-		return Displayable.__getHeight(this,
-			this.__state(__CanvasState__.class)._uiCanvas);
+		// Use the actual buffer size first
+		Image buffer = this._buffer;
+		if (buffer != null)
+			return buffer.getHeight();
+		
+		// Otherwise, fallback to the owning or default display
+		return ScritchLcdUiUtils.lcduiDisplaySize(this._state, true);
 	}
 	
 	/**
@@ -444,8 +454,13 @@ public abstract class Canvas
 	@Override
 	public int getWidth()
 	{
-		return Displayable.__getWidth(this,
-			this.__state(__CanvasState__.class)._uiCanvas);
+		// Use the actual buffer size first
+		Image buffer = this._buffer;
+		if (buffer != null)
+			return buffer.getWidth();
+		
+		// Otherwise, fallback to the owning or default display
+		return ScritchLcdUiUtils.lcduiDisplaySize(this._state, false);
 	}
 	
 	/**
@@ -881,6 +896,28 @@ public abstract class Canvas
 				(rv = new __CanvasDefaultKeyListener__(this));
 		
 		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/03/18
+	 */
+	@Override
+	void __execRevalidate(DisplayState __parent)
+	{
+		// Setup super first
+		super.__execRevalidate(__parent);
+		
+		// Get the display scale to determine how the canvas should be drawn
+		DisplayScale scale = __parent.display()._scale;
+		
+		// Get the current texture size of the window
+		int w = Math.max(1, scale.textureW());
+		int h = Math.max(1, scale.textureH());
+		
+		// Setup new image with a raw buffer
+		this._buffer = new Image(new int[w * h], 0, w * h, w, h,
+			true, false);
 	}
 	
 	/**

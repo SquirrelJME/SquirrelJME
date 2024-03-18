@@ -276,7 +276,7 @@ public class Display
 	private final ScritchInterface _scritch;
 	
 	/** Display scaling. */
-	private final DisplayScale _scale;
+	final DisplayScale _scale;
 	
 	/** Serial runs of a given method for this display. */
 	@Deprecated

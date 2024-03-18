@@ -13,7 +13,9 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchWindowInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import javax.swing.JFrame;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 /**
  * Swing window interface.
@@ -31,6 +33,36 @@ public class SwingWindowInterface
 	public void callAttention(ScritchWindowBracket __window)
 	{
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/03/18
+	 */
+	@Override
+	public int contentHeight(ScritchWindowBracket __window)
+		throws MLECallError
+	{
+		if (__window == null)
+			throw new MLECallError("Null arguments.");
+		
+		JFrame frame = ((SwingWindowObject)__window).frame;
+		return frame.getContentPane().getHeight();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/03/18
+	 */
+	@Override
+	public int contentWidth(ScritchWindowBracket __window)
+		throws MLECallError
+	{
+		if (__window == null)
+			throw new MLECallError("Null arguments.");
+		
+		JFrame frame = ((SwingWindowObject)__window).frame;
+		return frame.getContentPane().getWidth();
 	}
 	
 	/**
@@ -85,7 +117,12 @@ public class SwingWindowInterface
 		if (__window == null)
 			throw new MLECallError("Null arguments.");
 		
+		// Center the frame first if it is not visible
+		JFrame frame = ((SwingWindowObject)__window).frame;
+		if (!frame.isVisible())
+			frame.setLocationRelativeTo(null);
+		
 		// Forward to Swing
-		((SwingWindowObject)__window).frame.setVisible(__visible);
+		frame.setVisible(__visible);
 	}
 }

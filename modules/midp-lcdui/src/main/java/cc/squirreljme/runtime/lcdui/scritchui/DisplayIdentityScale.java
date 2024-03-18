@@ -77,6 +77,16 @@ public class DisplayIdentityScale
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2024/03/18
+	 */
+	@Override
+	public int textureH()
+	{
+		return this.scritch.window().contentHeight(this.window);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2024/03/11
 	 */
 	@Override
@@ -93,6 +103,16 @@ public class DisplayIdentityScale
 	public int textureMaxW()
 	{
 		return this.scritch.screen().width(this.screen);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/03/18
+	 */
+	@Override
+	public int textureW()
+	{
+		return this.scritch.window().contentWidth(this.window);
 	}
 	
 	/**
