@@ -344,7 +344,8 @@ public abstract class Canvas
 			return buffer.getHeight();
 		
 		// Otherwise, fallback to the owning or default display
-		return ScritchLcdUiUtils.lcduiDisplaySize(this._state, true);
+		return ScritchLcdUiUtils.lcduiDisplaySize(this._state,
+			true);
 	}
 	
 	/**
@@ -460,7 +461,8 @@ public abstract class Canvas
 			return buffer.getWidth();
 		
 		// Otherwise, fallback to the owning or default display
-		return ScritchLcdUiUtils.lcduiDisplaySize(this._state, false);
+		return ScritchLcdUiUtils.lcduiDisplaySize(this._state,
+			false);
 	}
 	
 	/**

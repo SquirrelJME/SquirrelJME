@@ -9,6 +9,9 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui;
 
+import cc.squirreljme.jvm.mle.scritchui.ScritchComponentInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFElementColor;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFImageElementType;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLineStyle;
@@ -37,11 +40,12 @@ public final class ScritchLcdUiUtils
 	}
 	
 	/**
-	 * Determines the size of the display that should be used. 
+	 * Determines the size of the display that should be used.
 	 *
 	 * @param __state The current displayable state.
 	 * @param __height Request the height?
-	 * @return The 
+	 * @return The size of the display.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2024/03/18
 	 */
 	public static int lcduiDisplaySize(DisplayableState __state,
@@ -51,8 +55,28 @@ public final class ScritchLcdUiUtils
 		if (__state == null)
 			throw new NullPointerException("NARG");
 		
+		ScritchPanelBracket panel = __state.panel;
+		ScritchInterface scritchApi = __state.scritchApi;
 		
-		throw Debugging.todo();
+		// Use the actual panel size here
+		DisplayState display = __state.currentDisplay();
+		if (display != null)
+		{
+			ScritchComponentInterface componentApi = scritchApi.component();
+			
+			if (__height)
+				return componentApi.height(panel);
+			return componentApi.width(panel);
+		}
+		
+		// Otherwise use the default display size
+		else
+		{
+			Display firstDisplay = Display.getDisplays(0)[0];
+			if (__height)
+				return firstDisplay.getWidth();
+			return firstDisplay.getWidth();
+		}
 	}
 	
 	/**

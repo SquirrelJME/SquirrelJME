@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 /**
  * Generic interface for ScritchUI components.
@@ -24,6 +25,19 @@ import org.jetbrains.annotations.NotNull;
 public interface ScritchComponentInterface
 {
 	/**
+	 * Returns the height of the component.
+	 *
+	 * @param __component The component to access.
+	 * @return The height of the component.
+	 * @throws MLECallError On null arguments.
+	 * @since 2024/03/18
+	 */
+	@SquirrelJMEVendorApi
+	@Range(from = 0, to = Integer.MAX_VALUE)
+	int height(@NotNull ScritchComponentBracket __component)
+		throws MLECallError;
+	
+	/**
 	 * Revalidates the given component.
 	 *
 	 * @param __component The component to revalidate.
@@ -32,5 +46,18 @@ public interface ScritchComponentInterface
 	 */
 	@SquirrelJMEVendorApi
 	void revalidate(@NotNull ScritchComponentBracket __component)
+		throws MLECallError;
+	
+	/**
+	 * Returns the width of the component.
+	 *
+	 * @param __component The component to access.
+	 * @return The width of the component.
+	 * @throws MLECallError On null arguments.
+	 * @since 2024/03/18
+	 */
+	@SquirrelJMEVendorApi
+	@Range(from = 0, to = Integer.MAX_VALUE)
+	int width(@NotNull ScritchComponentBracket __component)
 		throws MLECallError;
 }

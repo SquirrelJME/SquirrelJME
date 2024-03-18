@@ -41,6 +41,10 @@ public final class DisplayableState
 	@SquirrelJMEVendorApi
 	protected final ScritchPanelBracket panel;
 	
+	/** The API in use. */
+	@SquirrelJMEVendorApi
+	protected final ScritchInterface scritchApi;
+	
 	/** The display this is showing on. */
 	private volatile Reference<DisplayState> _current;
 	
@@ -62,6 +66,7 @@ public final class DisplayableState
 		
 		// Initialize basic panel
 		ScritchInterface scritchApi = DefaultScritchInterface.instance();
+		this.scritchApi = scritchApi;
 		this.panel = scritchApi.panel().newPanel(); 
 	}
 	
