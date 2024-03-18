@@ -359,12 +359,6 @@ libjvm_re_undefined8* JVM_FindClassFromClassLoader(libjvm_re_long param_1,
 	sjme_todo("Impl?");
 }
 
-void JVM_FindLibraryEntry(libjvm_re_undefined8 param_1,
-	libjvm_re_undefined8 param_2)
-{
-	sjme_todo("Impl?");
-}
-
 libjvm_re_undefined8 JVM_FindLoadedClass(libjvm_re_long param_1,
 	libjvm_re_undefined8* param_2, libjvm_re_long* param_3)
 {
@@ -947,11 +941,6 @@ libjvm_re_undefined8* JVM_LoadClass0(libjvm_re_long param_1,
 	sjme_todo("Impl?");
 }
 
-libjvm_re_long JVM_LoadLibrary(libjvm_re_undefined8 param_1)
-{
-	sjme_todo("Impl?");
-}
-
 void JVM_Lseek(libjvm_re_int param_1, libjvm_re_off64_t param_2,
 	libjvm_re_int param_3)
 {
@@ -1225,11 +1214,6 @@ void JVM_TraceInstructions(void)
 }
 
 void JVM_TraceMethodCalls(void)
-{
-	sjme_todo("Impl?");
-}
-
-void JVM_UnloadLibrary(libjvm_re_undefined8 param_1)
 {
 	sjme_todo("Impl?");
 }
