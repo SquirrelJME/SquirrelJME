@@ -29,9 +29,6 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
-libjvm_re_int JNI_CreateJavaVM(libjvm_re_undefined8* param_1,
-	libjvm_re_long* param_2, libjvm_re_undefined8 param_3);
-
 libjvm_re_undefined8 JNI_GetCreatedJavaVMs(libjvm_re_undefined8* param_1,
 	libjvm_re_int param_2, libjvm_re_undefined4* param_3);
 

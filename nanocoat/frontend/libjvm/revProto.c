@@ -10,19 +10,8 @@
 #include "frontend/libjvm/revProto.h"
 #include "sjme/debug.h"
 
-libjvm_re_int JNI_CreateJavaVM(libjvm_re_undefined8* param_1,
-	libjvm_re_long* param_2, libjvm_re_undefined8 param_3)
-{
-	sjme_todo("Impl?");
-}
-
 libjvm_re_undefined8 JNI_GetCreatedJavaVMs(libjvm_re_undefined8* param_1,
 	libjvm_re_int param_2, libjvm_re_undefined4* param_3)
-{
-	sjme_todo("Impl?");
-}
-
-libjvm_re_int JNI_GetDefaultJavaVMInitArgs(libjvm_re_int* param_1)
 {
 	sjme_todo("Impl?");
 }

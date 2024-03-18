@@ -325,10 +325,12 @@ sjme_errorCode sjme_alloc_poolInitStatic(
 #endif
 
 	/* If this is a valid link then we are allocating a nested pool. */
+#if 0
 	specialParent = NULL;
 	if (!sjme_error_is(sjme_alloc_getLinkOptional(baseAddr,
 		&specialParent, SJME_JNI_FALSE)))
 		specialParent->flags |= SJME_ALLOC_LINK_FLAG_NESTED_POOL;
+#endif
 	
 	/* Use the pool. */
 	*outPool = pool;
