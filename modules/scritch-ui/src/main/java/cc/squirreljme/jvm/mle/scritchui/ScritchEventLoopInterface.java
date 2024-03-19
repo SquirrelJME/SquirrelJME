@@ -11,6 +11,7 @@ package cc.squirreljme.jvm.mle.scritchui;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import org.jetbrains.annotations.Async;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -35,6 +36,8 @@ public interface ScritchEventLoopInterface
 	 * @since 2024/03/16
 	 */
 	@SquirrelJMEVendorApi
+	@Async.Execute
+	@Async.Schedule
 	void execute(@NotNull Runnable __task)
 		throws MLECallError;
 	

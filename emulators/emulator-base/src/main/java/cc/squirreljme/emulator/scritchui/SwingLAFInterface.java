@@ -14,11 +14,11 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchLAFInterface;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFImageElementType;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.MathUtils;
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.image.BufferedImage;
 import javax.swing.UIManager;
-import javax.swing.plaf.synth.SynthLookAndFeel;
 
 /**
  * Swing look and feel interface.
@@ -85,6 +85,49 @@ public class SwingLAFInterface
 		}
 		
 		throw new MLECallError("Invalid element type: " + __elem);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/03/19
+	 */
+	@Override
+	public int panelColor()
+	{
+		return SwingLAFInterface.__color("Panel.background",
+			0xFF_FFFFFF);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/03/19
+	 */
+	@Override
+	public int panelPenColor()
+	{
+		return SwingLAFInterface.__color("Panel.foreground",
+			0xFF_000000);
+	}
+	
+	/**
+	 * Returns the given color.
+	 *
+	 * @param __key The color to get.
+	 * @param __default The default color to use.
+	 * @return The resultant color or {@code __default}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/03/19
+	 */
+	private static int __color(String __key, int __default)
+		throws NullPointerException
+	{
+		if (__key == null)
+			throw new NullPointerException("NARG");
+		
+		Color color = UIManager.getColor(__key);
+		if (color != null)
+			return color.getRGB();
+		return __default;
 	}
 	
 	/**

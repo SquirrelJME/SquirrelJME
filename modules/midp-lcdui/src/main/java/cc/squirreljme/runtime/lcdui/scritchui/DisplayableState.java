@@ -17,7 +17,6 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.scritchui.fb.DefaultScritchInterface;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 
 /**
@@ -101,6 +100,18 @@ public final class DisplayableState
 			throw new IllegalStateException("GCGC");
 		
 		return result;
+	}
+	
+	/**
+	 * Returns the ScritchUI interface in use.
+	 *
+	 * @return The ScritchUI interface in use.
+	 * @since 2024/03/19
+	 */
+	@SquirrelJMEVendorApi
+	public ScritchInterface scritchApi()
+	{
+		return this.scritchApi;
 	}
 	
 	/**

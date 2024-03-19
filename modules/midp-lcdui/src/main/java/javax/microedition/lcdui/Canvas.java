@@ -15,6 +15,7 @@ import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UISpecialCode;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
+import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -26,6 +27,7 @@ import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayScale;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
 import cc.squirreljme.runtime.lcdui.scritchui.ScritchLcdUiUtils;
 import org.jetbrains.annotations.Async;
 
@@ -295,6 +297,12 @@ public abstract class Canvas
 	@Api
 	protected Canvas()
 	{
+		DisplayableState state = this._state;
+		ScritchInterface scritchApi = state.scritchApi();
+		
+		// Set listener for painting
+		scritchApi.panel().setPaintListener(
+			state.scritchPanel(), new __ExecCanvasPaint__(this));
 	}
 	
 	/**
@@ -643,10 +651,9 @@ public abstract class Canvas
 	@Api
 	public final void repaint()
 	{
-		// A remote repaint call is performed for the canvas so it is
-		// possible that the width/height are not valid. Internally the code
-		// will clip the rectangle to be in bounds.
-		this.repaint(0, 0, this.getWidth(), this.getHeight());
+		// Froward repaint call
+		DisplayableState state = this._state;
+		state.scritchApi().panel().repaint(state.scritchPanel());
 	}
 	
 	/**
@@ -869,7 +876,7 @@ public abstract class Canvas
 	@Async.Execute
 	protected void showNotify()
 	{
-		// Implemented by sub-classes
+		// Implemented by subclasses
 	}
 	
 	/**
@@ -940,25 +947,24 @@ public abstract class Canvas
 	@Override
 	final void __paint(Graphics __gfx, int __sw, int __sh, int __special)
 	{
-		throw Debugging.todo();
-		/*
+		// Debug
+		Debugging.debugNote("__paint()");
+		
 		// Draw background?
 		if (!this._isOpaque)
 		{
-			// Store old color for future operations
-			int old = __gfx.getAlphaColor();
-			
 			// Determine the color to draw
-			int bgColor = this.__backend()
-				.metric(this._display._uiDisplay,
-					UIMetricType.COLOR_CANVAS_BACKGROUND);
+			int bgColor = this._state.scritchApi().environment().lookAndFeel()
+				.panelColor();
 			
 			// Draw entire background
 			__gfx.setAlphaColor(bgColor | 0xFF_000000);
 			__gfx.fillRect(0, 0, __sw, __sh);
 			
-			// Restore the original drawing color
-			__gfx.setAlphaColor(old);
+			// Use a default pen color
+			int fgColor = this._state.scritchApi().environment().lookAndFeel()
+				.panelPenColor();
+			__gfx.setAlphaColor(fgColor | 0xFF_000000);
 		}
 		
 		// Forward Draw
@@ -987,8 +993,6 @@ public abstract class Canvas
 				}
 			}
 		}
-		
-		 */
 	}
 	
 	/**

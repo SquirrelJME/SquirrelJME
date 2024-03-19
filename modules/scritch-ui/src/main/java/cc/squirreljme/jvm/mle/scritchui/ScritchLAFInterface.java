@@ -64,4 +64,24 @@ public interface ScritchLAFInterface
 		@MagicConstant(valuesFromClass = ScritchLAFImageElementType.class)
 		int __elem, boolean __height)
 		throws MLECallError;
+	
+	/**
+	 * Returns the color that is used for the background of panels.
+	 *
+	 * @return The panel background color.
+	 * @since 2024/03/19
+	 */
+	@SquirrelJMEVendorApi
+	@Range(from = 0, to = 0xFFFFFF)
+	int panelColor();
+	
+	/**
+	 * Returns the color that is used for the foreground of panels.
+	 *
+	 * @return The panel foreground color.
+	 * @since 2024/03/19
+	 */
+	@SquirrelJMEVendorApi
+	@Range(from = 0, to = 0xFFFFFF)
+	int panelPenColor();
 }

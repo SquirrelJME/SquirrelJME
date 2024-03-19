@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.microedition.midlet.MIDlet;
 import org.jetbrains.annotations.Async;
+import org.jetbrains.annotations.MustBeInvokedByOverriders;
 
 /**
  * A displayable is a primary container such as a form or a canvas that can be
@@ -467,6 +468,7 @@ public abstract class Displayable
 	@ScritchEventLoop
 	@SerializedEvent
 	@Async.Execute
+	@MustBeInvokedByOverriders
 	void __execRevalidate(DisplayState __parent)
 	{
 		// Reparent the display
