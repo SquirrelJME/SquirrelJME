@@ -64,10 +64,37 @@ public class SwingPanelObject
 		if (__listener != null)
 		{
 			this._listener = new WeakReference<>(__listener);
-			this.panel.repaint();
+			
+			// We control all the drawn pixels here
+			JPanel panel = this.panel;
+			panel.setOpaque(true);
+			
+			// Allow this to be focused, so it can have key events within
+			panel.setFocusable(true);
+			panel.setRequestFocusEnabled(true);
+			panel.setFocusTraversalKeysEnabled(true);
+			
+			// Redraw it
+			panel.repaint();
 		}
+		
+		// Clear listener
 		else
+		{
 			this._listener = null;
+			
+			// Give up control of drawing
+			JPanel panel = this.panel;
+			panel.setOpaque(false);
+			
+			// Also do not permit the panel take keys and be focused
+			panel.setFocusable(false);
+			panel.setRequestFocusEnabled(false);
+			panel.setFocusTraversalKeysEnabled(false);
+			
+			// Redraw it
+			panel.repaint();
+		}
 	}
 	
 	/**
@@ -95,14 +122,6 @@ public class SwingPanelObject
 				throw new NullPointerException("NARG");
 			
 			this.panel = new WeakReference<>(__panel);
-		
-			// We control all the drawn pixels here
-			this.setOpaque(true);
-			
-			// Allow this to be focused, so it can have key events within
-			this.setFocusable(true);
-			this.setRequestFocusEnabled(true);
-			this.setFocusTraversalKeysEnabled(true);
 		}
 		
 		/**

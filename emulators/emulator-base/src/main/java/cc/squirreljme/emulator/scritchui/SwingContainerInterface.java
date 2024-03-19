@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchContainerInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchContainerBracket;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.awt.Container;
 import javax.swing.JComponent;
 
@@ -53,6 +54,9 @@ public class SwingContainerInterface
 	{
 		if (__container == null || __component == null)
 			throw new MLECallError("Null arguments.");
+		
+		if (true)
+			throw Debugging.todo("ADD CALLED");
 		
 		// Get the container used
 		Container swing = ((SwingContainerObject)__container).swingContainer();
