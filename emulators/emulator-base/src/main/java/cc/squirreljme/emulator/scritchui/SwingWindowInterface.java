@@ -147,9 +147,12 @@ public class SwingWindowInterface
 		if (__window == null)
 			throw new MLECallError("Null arguments.");
 		
+		// Debug
+		Debugging.debugNote("setVisible(%p, %b)", __window, __visible);
+		
 		// Center the frame first if it is not visible
 		JFrame frame = ((SwingWindowObject)__window).frame;
-		if (!frame.isVisible())
+		if (!frame.isVisible() && __visible)
 			frame.setLocationRelativeTo(null);
 		
 		// Forward to Swing

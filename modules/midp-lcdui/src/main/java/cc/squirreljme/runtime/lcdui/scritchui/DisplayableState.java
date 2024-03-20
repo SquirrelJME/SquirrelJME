@@ -45,7 +45,7 @@ public final class DisplayableState
 	protected final ScritchInterface scritchApi;
 	
 	/** The display this is showing on. */
-	private volatile Reference<DisplayState> _current;
+	private volatile DisplayState _current;
 	
 	/**
 	 * Initializes the displayable state.
@@ -78,11 +78,7 @@ public final class DisplayableState
 	@SquirrelJMEVendorApi
 	public final DisplayState currentDisplay()
 	{
-		Reference<DisplayState> current = this._current;
-		
-		if (current != null)
-			return current.get();
-		return null;
+		return this._current;
 	}
 	
 	/**
@@ -136,6 +132,8 @@ public final class DisplayableState
 	@ScritchEventLoop
 	public void setParent(DisplayState __parent)
 	{
+		Debugging.debugNote("%p.setParent(%p)", this, __parent);
+		
 		// Overwrite existing display?
 		DisplayState current = this.currentDisplay();
 		if (current != null)
@@ -150,8 +148,8 @@ public final class DisplayableState
 		// Set fresh displayable, if any
 		if (__parent != null)
 		{
-			this._current = new WeakReference<>(__parent);
-			__parent._current = new WeakReference<>(this);
+			this._current = __parent;
+			__parent._current = this;
 		}
 	}
 }

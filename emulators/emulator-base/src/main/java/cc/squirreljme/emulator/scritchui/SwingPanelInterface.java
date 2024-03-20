@@ -48,7 +48,7 @@ public class SwingPanelInterface
 			throw new MLECallError("Null arguments");
 		
 		SwingPanelObject panel = (SwingPanelObject)__component;
-		panel.panel.repaint();
+		panel.repaint();
 	}
 	
 	/**

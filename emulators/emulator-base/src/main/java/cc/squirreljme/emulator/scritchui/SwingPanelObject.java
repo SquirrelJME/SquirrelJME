@@ -14,6 +14,9 @@ import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchPaintListener;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.awt.AlphaComposite;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -23,6 +26,8 @@ import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.EtchedBorder;
 
 /**
  * Object for Swing panels.
@@ -34,14 +39,21 @@ public class SwingPanelObject
 	implements ScritchPanelBracket
 {
 	/** The backing panel. */
-	protected final JPanel panel =
+	protected final __InternalPanel__ panel =
 		new __InternalPanel__(this);
-	
-	/** The listener to use for paint events. */
-	volatile Reference<ScritchPaintListener> _listener;
 	
 	/** The image to draw onto. */
 	volatile BufferedImage _pixelImage;
+	
+	/**
+	 * Initializes the base panel.
+	 *
+	 * @since 2024/03/19
+	 */
+	public SwingPanelObject()
+	{
+		this.panel.setLayout(new BorderLayout());
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -54,6 +66,20 @@ public class SwingPanelObject
 	}
 	
 	/**
+	 * Repaints the panel.
+	 *
+	 * @since 2024/03/19
+	 */
+	protected void repaint()
+	{
+		// Debug
+		Debugging.debugNote("repaint(%p)",
+			this.panel);
+		
+		this.panel.repaint();
+	}
+	
+	/**
 	 * Sets the paint listener for the panel.
 	 *
 	 * @param __listener The listener to use, or {@code null} to clear.
@@ -61,40 +87,30 @@ public class SwingPanelObject
 	 */
 	public void setPaintListener(ScritchPaintListener __listener)
 	{
-		if (__listener != null)
-		{
-			this._listener = new WeakReference<>(__listener);
-			
-			// We control all the drawn pixels here
-			JPanel panel = this.panel;
-			panel.setOpaque(true);
-			
-			// Allow this to be focused, so it can have key events within
-			panel.setFocusable(true);
-			panel.setRequestFocusEnabled(true);
-			panel.setFocusTraversalKeysEnabled(true);
-			
-			// Redraw it
-			panel.repaint();
-		}
+		__InternalPanel__ panel = this.panel;
 		
-		// Clear listener
-		else
-		{
-			this._listener = null;
-			
-			// Give up control of drawing
-			JPanel panel = this.panel;
-			panel.setOpaque(false);
-			
-			// Also do not permit the panel take keys and be focused
-			panel.setFocusable(false);
-			panel.setRequestFocusEnabled(false);
-			panel.setFocusTraversalKeysEnabled(false);
-			
-			// Redraw it
-			panel.repaint();
-		}
+		// Debug
+		Debugging.debugNote("setPaintListener(%p) <- parent: %p",
+			__listener, panel.getParent());
+		
+		// Store listener for later calls
+		panel._listener = __listener;
+		
+		// Are we setting everything?
+		boolean set = (__listener != null);
+		
+		// We control all the drawn pixels here
+		// Or give up control of drawing
+		panel.setOpaque(set);
+		
+		// Allow this to be focused, so it can have key events within
+		// Or do not permit the panel take keys and be focused
+		panel.setFocusable(set);
+		panel.setRequestFocusEnabled(set);
+		panel.setFocusTraversalKeysEnabled(set);
+		
+		// Redraw it
+		panel.repaint();
 	}
 	
 	/**
@@ -105,8 +121,11 @@ public class SwingPanelObject
 	private static class __InternalPanel__
 		extends JPanel
 	{
-		/** The panel to draw on. */
-		protected final WeakReference<SwingPanelObject> panel;
+		/** The owning panel. */
+		protected final Reference<SwingPanelObject> panel;
+	
+		/** The listener to use for paint events. */
+		volatile ScritchPaintListener _listener;
 		
 		/**
 		 * Initializes the base panel.
@@ -131,11 +150,14 @@ public class SwingPanelObject
 		@Override
 		protected void paintComponent(Graphics __g)
 		{
+			// Debug
+			Debugging.debugNote("paintComponent() A");
+			
 			// Must always be called to perform other operations
 			super.paintComponent(__g);
 			
 			// Debug
-			Debugging.debugNote("paintComponent() A");
+			Debugging.debugNote("paintComponent() B");
 			
 			// Do nothing if the panel was GCed
 			SwingPanelObject panel = this.panel.get();
@@ -143,18 +165,10 @@ public class SwingPanelObject
 				return;
 			
 			// Debug
-			Debugging.debugNote("paintComponent() B");
-			
-			// Do nothing if there is no listener
-			Reference<ScritchPaintListener> listenerRef = panel._listener;
-			if (listenerRef == null)
-				return;
-			
-			// Debug
 			Debugging.debugNote("paintComponent() C");
 			
-			// Also do nothing if it was GCed
-			ScritchPaintListener listener = listenerRef.get();
+			// Do nothing if there is no listener
+			ScritchPaintListener listener = this._listener;
 			if (listener == null)
 				return;
 			

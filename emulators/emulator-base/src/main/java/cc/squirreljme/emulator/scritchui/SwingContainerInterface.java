@@ -15,6 +15,7 @@ import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchContainerBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.awt.Container;
+import java.util.Arrays;
 import javax.swing.JComponent;
 
 /**
@@ -85,5 +86,13 @@ public class SwingContainerInterface
 		JComponent component = ((SwingComponentObject)__component).component();
 		swing.add(component,
 			SwingScritchUtils.mapLayout(container, __layoutInfo));
+		
+		// Revalidate has to happen for it to appear
+		swing.revalidate();
+		component.revalidate();
+		
+		// Debug
+		Debugging.debugNote("add(%s, %s)",
+			swing, component);
 	}
 }

@@ -1002,7 +1002,8 @@ public class Display
 		// Make sure this happens in the event loop as we might need to
 		// update widgets and otherwise
 		this._scritch.eventLoop().execute(
-			new __ExecDisplaySetCurrent__(this._scritch, this, __show, null));
+			new __ExecDisplaySetCurrent__(this._scritch, this, __show,
+				null));
 	}
 	
 	@Api

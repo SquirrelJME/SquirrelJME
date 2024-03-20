@@ -37,10 +37,10 @@ public final class DisplayState
 	protected final ScritchScreenBracket scritchScreen;
 	
 	/** The displayable currently showing on this. */
-	volatile Reference<DisplayableState> _current;
+	volatile DisplayableState _current;
 	
 	/** The display to show on exit. */
-	private volatile Reference<DisplayableState> _onExit;
+	private volatile DisplayableState _onExit;
 	
 	/**
 	 * Initializes the display state.

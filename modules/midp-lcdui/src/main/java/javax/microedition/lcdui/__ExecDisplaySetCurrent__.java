@@ -12,12 +12,15 @@ package javax.microedition.lcdui;
 import cc.squirreljme.jvm.mle.scritchui.ScritchComponentInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchContainerInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchPanelInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchWindowInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchBorderLayoutType;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayScale;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
 
 /**
  * Handler for showing/removing a {@link Displayable}.
@@ -83,6 +86,7 @@ class __ExecDisplaySetCurrent__
 		ScritchInterface scritchApi = this.scritchApi;
 		ScritchContainerInterface containerApi = scritchApi.container();
 		ScritchComponentInterface componentApi = scritchApi.component();
+		ScritchPanelInterface panelApi = scritchApi.panel();
 		ScritchWindowInterface windowApi = scritchApi.window();
 		
 		// Target panel may be set later
@@ -97,12 +101,16 @@ class __ExecDisplaySetCurrent__
 		// Remove everything from the window
 		containerApi.removeAll(window);
 		
+		// Debug
+		Debugging.debugNote("setCurrent(%p)", this.showNow);
+		
 		// Add in the panel, if there is one
 		Displayable showNow = this.showNow;
 		if (showNow != null)
 		{
 			// Get the needed panel and add it in
-			panel = this.showNow._state.scritchPanel();
+			DisplayableState ourState = this.showNow._state;
+			panel = ourState.scritchPanel();
 			containerApi.add(window, panel,
 				ScritchBorderLayoutType.CENTER);
 			
@@ -110,6 +118,9 @@ class __ExecDisplaySetCurrent__
 			DisplayScale scale = display._scale;
 			windowApi.contentMinimumSize(window,
 				scale.textureMaxW(), scale.textureMaxH());
+			
+			// Make sure the parent is set
+			ourState.setParent(displayState);
 			
 			// Revalidate so it gets updated
 			componentApi.revalidate(panel);
@@ -119,6 +130,9 @@ class __ExecDisplaySetCurrent__
 			
 			// Internal revalidation logic
 			showNow.__execRevalidate(displayState);
+			
+			// Force it to be painted
+			panelApi.repaint(panel);
 		}
 		
 		// Hide the window

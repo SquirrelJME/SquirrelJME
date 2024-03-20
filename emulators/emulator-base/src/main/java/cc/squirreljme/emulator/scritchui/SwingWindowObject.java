@@ -10,6 +10,7 @@
 package cc.squirreljme.emulator.scritchui;
 
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
+import java.awt.BorderLayout;
 import java.awt.Container;
 import javax.swing.JFrame;
 
@@ -24,6 +25,16 @@ public class SwingWindowObject
 	/** The backing frame. */
 	protected final JFrame frame =
 		new JFrame();
+	
+	/**
+	 * Initializes the window.
+	 *
+	 * @since 2024/03/19
+	 */
+	public SwingWindowObject()
+	{
+		this.frame.setLayout(new BorderLayout());
+	}
 	
 	/**
 	 * {@inheritDoc}
