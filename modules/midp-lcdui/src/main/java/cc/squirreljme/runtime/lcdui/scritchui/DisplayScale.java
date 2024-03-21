@@ -9,6 +9,9 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui;
 
+import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
@@ -17,7 +20,7 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  * @since 2024/03/09
  */
 @SquirrelJMEVendorApi
-public interface DisplayScale
+public abstract class DisplayScale
 {
 	/**
 	 * Projects a texture coordinate to a screen coordinate.
@@ -27,7 +30,7 @@ public interface DisplayScale
 	 * @since 2024/03/09
 	 */
 	@SquirrelJMEVendorApi
-	int screenX(int __x);
+	public abstract int screenX(int __x);
 	
 	/**
 	 * Projects a texture coordinate to a screen coordinate.
@@ -37,7 +40,7 @@ public interface DisplayScale
 	 * @since 2024/03/09
 	 */
 	@SquirrelJMEVendorApi
-	int screenY(int __y);
+	public abstract int screenY(int __y);
 	
 	/**
 	 * Returns the current texture height.
@@ -46,7 +49,7 @@ public interface DisplayScale
 	 * @since 2024/03/18
 	 */
 	@SquirrelJMEVendorApi
-	int textureH();
+	public abstract int textureH();
 	
 	/**
 	 * Returns the max height of the scaled target texture.
@@ -55,7 +58,7 @@ public interface DisplayScale
 	 * @since 2024/03/11
 	 */
 	@SquirrelJMEVendorApi
-	int textureMaxH();
+	public abstract int textureMaxH();
 	
 	/**
 	 * Returns the max width of the scaled target texture.
@@ -64,7 +67,7 @@ public interface DisplayScale
 	 * @since 2024/03/11
 	 */
 	@SquirrelJMEVendorApi
-	int textureMaxW();
+	public abstract int textureMaxW();
 	
 	/**
 	 * Returns the current texture width.
@@ -73,7 +76,7 @@ public interface DisplayScale
 	 * @since 2024/03/18
 	 */
 	@SquirrelJMEVendorApi
-	int textureW();
+	public abstract int textureW();
 	
 	/**
 	 * Projects a screen coordinate to a texture coordinate.
@@ -83,7 +86,7 @@ public interface DisplayScale
 	 * @since 2024/03/09
 	 */
 	@SquirrelJMEVendorApi
-	int textureX(int __x);
+	public abstract int textureX(int __x);
 	
 	/**
 	 * Projects a screen coordinate to a texture coordinate.
@@ -93,5 +96,21 @@ public interface DisplayScale
 	 * @since 2024/03/09
 	 */
 	@SquirrelJMEVendorApi
-	int textureY(int __y);
+	public abstract int textureY(int __y);
+	
+	/**
+	 * Returns the display scale that currently should be used.
+	 *
+	 * @param __scritch The Scritch API used.
+	 * @param __screen The screen to draw on.
+	 * @param __window The window for the display.
+	 * @return The resultant scale.
+	 * @since 2024/03/21
+	 */
+	public static DisplayScale currentScale(ScritchInterface __scritch,
+		ScritchScreenBracket __screen, ScritchWindowBracket __window)
+		throws NullPointerException
+	{
+		return new DisplayFixedFlatScale(240, 320);
+	}
 }

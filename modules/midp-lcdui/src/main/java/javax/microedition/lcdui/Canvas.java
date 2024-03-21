@@ -950,6 +950,14 @@ public abstract class Canvas
 		// Debug
 		Debugging.debugNote("__paint()");
 		
+		// Only paint if there is a buffer
+		Image buffer = this._buffer;
+		if (buffer == null)
+			return;
+		
+		// We want to draw into the buffer so that we may scale it
+		Graphics bufferGfx = buffer.getGraphics();
+		
 		// Draw background?
 		if (!this._isOpaque)
 		{
@@ -958,19 +966,23 @@ public abstract class Canvas
 				.panelColor();
 			
 			// Draw entire background
-			__gfx.setAlphaColor(bgColor | 0xFF_000000);
-			__gfx.fillRect(0, 0, __sw, __sh);
+			bufferGfx.setAlphaColor(bgColor | 0xFF_000000);
+			bufferGfx.fillRect(0, 0, __sw, __sh);
 			
 			// Use a default pen color
 			int fgColor = this._state.scritchApi().environment().lookAndFeel()
 				.panelPenColor();
-			__gfx.setAlphaColor(fgColor | 0xFF_000000);
+			bufferGfx.setAlphaColor(fgColor | 0xFF_000000);
 		}
 		
 		// Forward Draw
 		try
 		{
-			this.paint(__gfx);
+			// Use buffer paint
+			this.paint(bufferGfx);
+			
+			// Draw image accordingly with scaling
+			__gfx.drawImage(buffer, 0, 0, 0);
 		}
 		
 		// Handle repaint servicing

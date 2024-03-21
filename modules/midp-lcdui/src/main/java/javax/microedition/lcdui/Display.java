@@ -321,7 +321,7 @@ public class Display
 		this._scritch = __scritch;
 		this._screen = __screen;
 		this._window = __window;
-		this._scale = new DisplayIdentityScale(this._scritch,
+		this._scale = DisplayScale.currentScale(this._scritch,
 			this._screen, this._window);
 	}
 	

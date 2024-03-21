@@ -22,7 +22,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  */
 @SquirrelJMEVendorApi
 public class DisplayFloatScale
-	implements DisplayScale
+	extends DisplayScale
 {
 	/** The base screen. */
 	protected final ScritchScreenBracket screen;
