@@ -78,21 +78,27 @@ public class SwingContainerInterface
 		if (__container == null || __component == null)
 			throw new MLECallError("Null arguments.");
 		
+		// Debug
+		Debugging.debugNote("scritch.add(%p, %p, %d)",
+			__container, __component, __layoutInfo);
+		
 		// Get the container used
 		SwingContainerObject container = (SwingContainerObject)__container;
 		Container swing = container.swingContainer();
 		
+		Object mappedConstraint = SwingScritchUtils.mapLayout(container,
+			__layoutInfo);
+		
+		// Debug
+		Debugging.debugNote("Mapped %s -> %s",
+			__layoutInfo, mappedConstraint);
+		
 		// Add it
 		JComponent component = ((SwingComponentObject)__component).component();
-		swing.add(component,
-			SwingScritchUtils.mapLayout(container, __layoutInfo));
+		swing.add(component, mappedConstraint);
 		
 		// Revalidate has to happen for it to appear
 		swing.revalidate();
 		component.revalidate();
-		
-		// Debug
-		Debugging.debugNote("add(%s, %s)",
-			swing, component);
 	}
 }

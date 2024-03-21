@@ -98,9 +98,6 @@ class __ExecDisplaySetCurrent__
 		ScritchWindowBracket window =
 			displayState.scritchWindow();
 		
-		// Remove everything from the window
-		containerApi.removeAll(window);
-		
 		// Debug
 		Debugging.debugNote("setCurrent(%p)", this.showNow);
 		
@@ -108,6 +105,10 @@ class __ExecDisplaySetCurrent__
 		Displayable showNow = this.showNow;
 		if (showNow != null)
 		{
+			// Remove everything from the window
+			// TODO FIXME: For some reason removeAll happens after the add??
+			/*containerApi.removeAll(window);*/
+			
 			// Get the needed panel and add it in
 			DisplayableState ourState = this.showNow._state;
 			panel = ourState.scritchPanel();
