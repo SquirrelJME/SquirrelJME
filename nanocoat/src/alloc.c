@@ -428,7 +428,23 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc)(
 	
 	/* Out of memory. */
 	if (scanLink == NULL)
+	{
+		/* If there is an adjacent pool, if allocation fails then we shall */
+		/* try the next pool, this means multiple pools can work together */
+		/* accordingly. */
+		if (pool->nextPool != NULL)
+		{
+#if defined(SJME_CONFIG_DEBUG)
+			return sjme_allocR(pool->nextPool, size, outAddr,
+				file, line, func);
+#else
+			return sjme_alloc(pool->nextPool, size, outAddr);
+#endif
+		}
+		
+		/* Otherwise fail! */
 		return SJME_ERROR_OUT_OF_MEMORY;
+	}
 
 	/* Debug. */
 	sjme_message("Found link at %p: %d bytes, we need %d with split %d.",
