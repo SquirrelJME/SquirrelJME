@@ -72,10 +72,6 @@ public class SwingPanelObject
 	 */
 	protected void repaint()
 	{
-		// Debug
-		Debugging.debugNote("repaint(%p)",
-			this.panel);
-		
 		this.panel.repaint();
 	}
 	
@@ -150,30 +146,18 @@ public class SwingPanelObject
 		@Override
 		protected void paintComponent(Graphics __g)
 		{
-			// Debug
-			Debugging.debugNote("paintComponent() A");
-			
 			// Must always be called to perform other operations
 			super.paintComponent(__g);
-			
-			// Debug
-			Debugging.debugNote("paintComponent() B");
 			
 			// Do nothing if the panel was GCed
 			SwingPanelObject panel = this.panel.get();
 			if (panel == null)
 				return;
 			
-			// Debug
-			Debugging.debugNote("paintComponent() C");
-			
 			// Do nothing if there is no listener
 			ScritchPaintListener listener = this._listener;
 			if (listener == null)
 				return;
-			
-			// Debug
-			Debugging.debugNote("paintComponent() D");
 			
 			// We always want to overwrite the alpha values and do no blending
 			Graphics2D gt = ((__g instanceof Graphics2D) ?

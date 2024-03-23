@@ -947,9 +947,6 @@ public abstract class Canvas
 	@Override
 	final void __paint(Graphics __gfx, int __sw, int __sh, int __special)
 	{
-		// Debug
-		Debugging.debugNote("__paint()");
-		
 		// Only paint if there is a buffer
 		Image buffer = this._buffer;
 		if (buffer == null)

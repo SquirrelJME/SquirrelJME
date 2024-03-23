@@ -471,8 +471,6 @@ public abstract class Displayable
 	@MustBeInvokedByOverriders
 	void __execRevalidate(DisplayState __parent)
 	{
-		Debugging.debugNote("__execRevalidate(%p)", __parent);
-		
 		// Reparent the display
 		this._state.setParent(__parent);
 	}

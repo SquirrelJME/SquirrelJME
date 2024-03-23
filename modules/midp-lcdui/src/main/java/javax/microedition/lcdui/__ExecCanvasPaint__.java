@@ -65,16 +65,10 @@ class __ExecCanvasPaint__
 		@Range(from = 0, to = Integer.MAX_VALUE) int __sh,
 		int __special)
 	{
-		// Debug
-		Debugging.debugNote("paint() A");
-			
 		// Do not draw if the canvas was GCed
 		Canvas canvas = this._canvas.get();
 		if (canvas == null)
 			return;
-		
-		// Debug
-		Debugging.debugNote("paint() B");
 		
 		// Try to use hardware accelerated graphics where possible
 		Graphics gfx = PencilGraphics.hardwareGraphics(__pf,
