@@ -34,7 +34,7 @@ public interface ScritchPanelInterface
 	 * @since 2024/03/24
 	 */
 	@SquirrelJMEVendorApi
-	void enableFocus(ScritchPanelBracket __panel, boolean __enabled)
+	void enableFocus(@NotNull ScritchPanelBracket __panel, boolean __enabled)
 		throws MLECallError;
 	
 	/**

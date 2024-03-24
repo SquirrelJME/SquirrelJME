@@ -18,9 +18,9 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchPanelInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchScreenInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchWindowInterface;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.scritchui.fb.panel.FramebufferRawPanelInterface;
-import org.jetbrains.annotations.NotNull;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 
 /**
  * Framebuffer implementation of ScritchUI.
@@ -31,9 +31,37 @@ import org.jetbrains.annotations.NotNull;
 public class FramebufferScritchInterface
 	implements ScritchInterface
 {
-	/** Panels only interface. */
+	/** The core scritch interface providing basic means. */
 	@SquirrelJMEVendorApi
-	protected final ScritchInterface panelsOnly;
+	protected final ScritchInterface coreInterface;
+	
+	/** Component interface. */
+	@SquirrelJMEVendorApi
+	protected final ScritchComponentInterface component;
+	
+	/** Container interface. */
+	@SquirrelJMEVendorApi
+	protected final ScritchContainerInterface container;
+	
+	/** Environment interface. */
+	@SquirrelJMEVendorApi
+	protected final ScritchEnvironmentInterface environment;
+	
+	/** Event loop interface. */
+	@SquirrelJMEVendorApi
+	protected final ScritchEventLoopInterface eventLoop;
+	
+	/** Panel interface. */
+	@SquirrelJMEVendorApi
+	protected final ScritchPanelInterface panel;
+	
+	/** Screen interface. */
+	@SquirrelJMEVendorApi
+	protected final ScritchScreenInterface screen;
+	
+	/** Window interface. */
+	@SquirrelJMEVendorApi
+	protected final ScritchWindowInterface window;
 	
 	/**
 	 * Initializes the framebuffer interface.
@@ -46,26 +74,35 @@ public class FramebufferScritchInterface
 	public FramebufferScritchInterface(FramebufferScreensProvider __provider)
 		throws NullPointerException
 	{
-		if (__provider == null)
-			throw new NullPointerException("NARG");
-		
-		this.panelsOnly = new FramebufferRawPanelInterface(__provider);
+		this(new FramebufferRawPanelInterface(__provider));
 	}
 	
 	/**
 	 * Panel only interface.
 	 *
-	 * @param __panelsOnly The panels only interface.
+	 * @param __core The panels only interface.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/03/24
 	 */
-	public FramebufferScritchInterface(ScritchInterface __panelsOnly)
+	public FramebufferScritchInterface(ScritchInterface __core)
 		throws NullPointerException
 	{
-		if (__panelsOnly == null)
+		if (__core == null)
 			throw new NullPointerException("NARG");
 		
-		this.panelsOnly = __panelsOnly;
+		this.coreInterface = __core;
+		
+		// Reference to self so we can garbage collect properly
+		Reference<FramebufferScritchInterface> self =
+			new WeakReference<>(this);
+		
+		this.component = new FramebufferComponentInterface(self, __core);
+		this.container = new FramebufferContainerInterface(self, __core);
+		this.eventLoop = new FramebufferEventLoopInterface(self, __core);
+		this.environment = new FramebufferEnvironmentInterface(self, __core);
+		this.panel = new FramebufferPanelInterface(self, __core);
+		this.screen = new FramebufferScreenInterface(self, __core);
+		this.window = new FramebufferWindowInterface(self, __core);
 	}
 	
 	/**
@@ -75,7 +112,7 @@ public class FramebufferScritchInterface
 	@Override
 	public ScritchComponentInterface component()
 	{
-		throw Debugging.todo();
+		return this.component;
 	}
 	
 	/**
@@ -85,7 +122,7 @@ public class FramebufferScritchInterface
 	@Override
 	public ScritchContainerInterface container()
 	{
-		throw Debugging.todo();
+		return this.container;
 	}
 	
 	/**
@@ -96,7 +133,7 @@ public class FramebufferScritchInterface
 	@SquirrelJMEVendorApi
 	public ScritchEnvironmentInterface environment()
 	{
-		throw Debugging.todo();
+		return this.environment;
 	}
 	
 	/**
@@ -107,7 +144,7 @@ public class FramebufferScritchInterface
 	@SquirrelJMEVendorApi
 	public ScritchEventLoopInterface eventLoop()
 	{
-		throw Debugging.todo();
+		return this.eventLoop;
 	}
 	
 	/**
@@ -118,7 +155,7 @@ public class FramebufferScritchInterface
 	@SquirrelJMEVendorApi
 	public ScritchPanelInterface panel()
 	{
-		throw Debugging.todo();
+		return this.panel;
 	}
 	
 	/**
@@ -127,9 +164,9 @@ public class FramebufferScritchInterface
 	 */
 	@Override
 	@SquirrelJMEVendorApi
-	public @NotNull ScritchScreenInterface screen()
+	public ScritchScreenInterface screen()
 	{
-		throw Debugging.todo();
+		return this.screen;
 	}
 	
 	/**
@@ -138,8 +175,8 @@ public class FramebufferScritchInterface
 	 */
 	@Override
 	@SquirrelJMEVendorApi
-	public @NotNull ScritchWindowInterface window()
+	public ScritchWindowInterface window()
 	{
-		throw Debugging.todo();
+		return this.window;
 	}
 }

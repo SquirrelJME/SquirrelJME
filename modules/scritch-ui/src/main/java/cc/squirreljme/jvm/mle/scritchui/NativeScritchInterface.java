@@ -50,6 +50,7 @@ public final class NativeScritchInterface
 	 * - {@link ScritchComponentInterface}.
 	 * - {@link ScritchContainerInterface}.
 	 * - {@link ScritchEnvironmentInterface}.
+	 * - {@link ScritchEventLoopInterface}.
 	 * - {@link ScritchPanelInterface}.
 	 * - {@link ScritchWindowInterface}.
 	 *
