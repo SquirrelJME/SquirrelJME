@@ -28,6 +28,21 @@ public class SwingPanelInterface
 {
 	/**
 	 * {@inheritDoc}
+	 * @since 2024/03/24
+	 */
+	@Override
+	public void enableFocus(ScritchPanelBracket __panel, boolean __enabled)
+		throws MLECallError
+	{
+		if (__panel == null)
+			throw new MLECallError("Null arguments");
+		
+		SwingPanelObject panel = (SwingPanelObject)__panel;
+		panel.enableFocus(__enabled);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2024/03/16
 	 */
 	@Override

@@ -16,6 +16,8 @@ import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UISpecialCode;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchPanelInterface;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -299,10 +301,15 @@ public abstract class Canvas
 	{
 		DisplayableState state = this._state;
 		ScritchInterface scritchApi = state.scritchApi();
+		ScritchPanelInterface panelApi = scritchApi.panel();
+		ScritchPanelBracket scritchPanel = state.scritchPanel();
 		
 		// Set listener for painting
-		scritchApi.panel().setPaintListener(
-			state.scritchPanel(), new __ExecCanvasPaint__(this));
+		panelApi.setPaintListener(scritchPanel,
+			new __ExecCanvasPaint__(this));
+		
+		// Canvases take focus and inputs, so enable it
+		panelApi.enableFocus(scritchPanel, true);
 	}
 	
 	/**

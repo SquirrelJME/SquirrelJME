@@ -26,6 +26,18 @@ public interface ScritchPanelInterface
 	extends ScritchPaintableInterface
 {
 	/**
+	 * Enables or disables focus on the panel along with traversal of tabs.
+	 *
+	 * @param __panel The panel to modify.
+	 * @param __enabled Whether focus and tab traversal should be enabled.
+	 * @throws MLECallError On null arguments.
+	 * @since 2024/03/24
+	 */
+	@SquirrelJMEVendorApi
+	void enableFocus(ScritchPanelBracket __panel, boolean __enabled)
+		throws MLECallError;
+	
+	/**
 	 * Creates a new panel.
 	 *
 	 * @return The newly created panel.

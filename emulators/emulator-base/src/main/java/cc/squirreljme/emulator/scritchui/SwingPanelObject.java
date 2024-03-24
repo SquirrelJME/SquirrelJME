@@ -66,6 +66,23 @@ public class SwingPanelObject
 	}
 	
 	/**
+	 * Enables or disables focus for this panel.
+	 *
+	 * @param __enabled If focus should be enabled.
+	 * @since 2024/03/24
+	 */
+	protected void enableFocus(boolean __enabled)
+	{
+		__InternalPanel__ panel = this.panel;
+		
+		// Allow this to be focused, so it can have key events within
+		// Or do not permit the panel take keys and be focused
+		panel.setFocusable(__enabled);
+		panel.setRequestFocusEnabled(__enabled);
+		panel.setFocusTraversalKeysEnabled(__enabled);
+	}
+	
+	/**
 	 * Repaints the panel.
 	 *
 	 * @since 2024/03/19
@@ -98,12 +115,6 @@ public class SwingPanelObject
 		// We control all the drawn pixels here
 		// Or give up control of drawing
 		panel.setOpaque(set);
-		
-		// Allow this to be focused, so it can have key events within
-		// Or do not permit the panel take keys and be focused
-		panel.setFocusable(set);
-		panel.setRequestFocusEnabled(set);
-		panel.setFocusTraversalKeysEnabled(set);
 		
 		// Redraw it
 		panel.repaint();

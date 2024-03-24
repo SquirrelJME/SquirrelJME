@@ -9,7 +9,6 @@
 
 package io;
 
-import cc.squirreljme.jvm.Framebuffer;
 import cc.squirreljme.runtime.cldc.io.MarkableInputStream;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import java.io.ByteArrayInputStream;
