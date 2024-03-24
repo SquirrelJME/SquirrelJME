@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.scritchui.fb;
+package cc.squirreljme.scritchui.fb.panel;
 
 import cc.squirreljme.jvm.mle.scritchui.ScritchComponentInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchContainerInterface;
@@ -19,58 +19,40 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchScreenInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchWindowInterface;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.scritchui.fb.panel.FramebufferRawPanelInterface;
-import org.jetbrains.annotations.NotNull;
+import cc.squirreljme.scritchui.fb.FramebufferScreensProvider;
 
 /**
- * Framebuffer implementation of ScritchUI.
+ * Provides raw panels on top of the framebuffer.
  *
- * @since 2024/03/07
+ * @since 2024/03/24
  */
 @SquirrelJMEVendorApi
-public class FramebufferScritchInterface
+public class FramebufferRawPanelInterface
 	implements ScritchInterface
 {
-	/** Panels only interface. */
-	@SquirrelJMEVendorApi
-	protected final ScritchInterface panelsOnly;
+	/** The provider used for the framebuffer. */
+	protected final FramebufferScreensProvider provider;
 	
 	/**
-	 * Initializes the framebuffer interface.
+	 * Initializes the raw panel interface.
 	 *
-	 * @param __provider The provider for framebuffer screens.
+	 * @param __provider The provider to access framebuffer screens.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2024/03/07
+	 * @since 2024/03/24
 	 */
 	@SquirrelJMEVendorApi
-	public FramebufferScritchInterface(FramebufferScreensProvider __provider)
+	public FramebufferRawPanelInterface(FramebufferScreensProvider __provider)
 		throws NullPointerException
 	{
 		if (__provider == null)
 			throw new NullPointerException("NARG");
 		
-		this.panelsOnly = new FramebufferRawPanelInterface(__provider);
-	}
-	
-	/**
-	 * Panel only interface.
-	 *
-	 * @param __panelsOnly The panels only interface.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2024/03/24
-	 */
-	public FramebufferScritchInterface(ScritchInterface __panelsOnly)
-		throws NullPointerException
-	{
-		if (__panelsOnly == null)
-			throw new NullPointerException("NARG");
-		
-		this.panelsOnly = __panelsOnly;
+		this.provider = __provider;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2024/03/16
+	 * @since 2024/03/24
 	 */
 	@Override
 	public ScritchComponentInterface component()
@@ -80,7 +62,7 @@ public class FramebufferScritchInterface
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2024/03/16
+	 * @since 2024/03/24
 	 */
 	@Override
 	public ScritchContainerInterface container()
@@ -90,10 +72,9 @@ public class FramebufferScritchInterface
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2024/03/07
+	 * @since 2024/03/24
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public ScritchEnvironmentInterface environment()
 	{
 		throw Debugging.todo();
@@ -101,10 +82,9 @@ public class FramebufferScritchInterface
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2024/03/16
+	 * @since 2024/03/24
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public ScritchEventLoopInterface eventLoop()
 	{
 		throw Debugging.todo();
@@ -112,10 +92,9 @@ public class FramebufferScritchInterface
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2024/03/16
+	 * @since 2024/03/24
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public ScritchPanelInterface panel()
 	{
 		throw Debugging.todo();
@@ -123,22 +102,20 @@ public class FramebufferScritchInterface
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2024/03/10
+	 * @since 2024/03/24
 	 */
 	@Override
-	@SquirrelJMEVendorApi
-	public @NotNull ScritchScreenInterface screen()
+	public ScritchScreenInterface screen()
 	{
 		throw Debugging.todo();
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2024/03/10
+	 * @since 2024/03/24
 	 */
 	@Override
-	@SquirrelJMEVendorApi
-	public @NotNull ScritchWindowInterface window()
+	public ScritchWindowInterface window()
 	{
 		throw Debugging.todo();
 	}

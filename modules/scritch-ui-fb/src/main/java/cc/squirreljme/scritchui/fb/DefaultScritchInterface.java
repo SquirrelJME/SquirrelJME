@@ -22,8 +22,9 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 public final class DefaultScritchInterface
 {
 	/**
-	 * {@squirreljme.property cc.squirreljme.scritchui.force=(boolean)
-	 * Should the framebuffer be forced to be used for ScritchUI?}
+	 * {@squirreljme.property cc.squirreljme.scritchui.force=(false|true|panel)
+	 * Should the framebuffer be forced to be used for ScritchUI? If panel
+	 * is specified then if supported, only native panels will be used.}
 	 */
 	@SquirrelJMEVendorApi
 	public static final String FORCE_PROPERTY =
@@ -57,8 +58,8 @@ public final class DefaultScritchInterface
 		
 		// Use native interface, if enabled, otherwise framebuffer
 		instance = NativeScritchInterface.nativeInterface();
-		if (instance == null ||
-			Boolean.getBoolean(DefaultScritchInterface.FORCE_PROPERTY))
+		if (instance == null || Boolean.getBoolean(
+			DefaultScritchInterface.FORCE_PROPERTY))
 		{
 			// Use a default screen provider
 			FramebufferScreensProvider provider =
@@ -67,6 +68,13 @@ public final class DefaultScritchInterface
 			// Setup framebuffer instance
 			instance = new FramebufferScritchInterface(provider);
 		}
+		
+		// Are panels only supported? We then need to provide components
+		// and drawing for everything else
+		else if (NativeScritchInterface.panelOnly() ||
+			"panel".equals(System.getProperty(
+				DefaultScritchInterface.FORCE_PROPERTY)))
+			instance = new FramebufferScritchInterface(instance);
 		
 		// Cache and return
 		DefaultScritchInterface._instance = instance;

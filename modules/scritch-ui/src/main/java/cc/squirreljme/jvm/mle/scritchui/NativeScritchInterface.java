@@ -41,4 +41,15 @@ public final class NativeScritchInterface
 	@SquirrelJMEVendorApi
 	public static native ScritchInterface nativeInterface()
 		throws MLECallError;
+	
+	/**
+	 * Checks whether the native interface only supports panels.
+	 *
+	 * @return If the interface only supports panels.
+	 * @throws MLECallError If there is no support for the native interface.
+	 * @since 2024/03/24
+	 */
+	@SquirrelJMEVendorApi
+	public static native boolean panelOnly()
+		throws MLECallError;
 }
