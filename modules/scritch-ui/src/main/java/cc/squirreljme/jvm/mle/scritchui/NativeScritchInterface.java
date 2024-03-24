@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.mle.scritchui;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
@@ -43,7 +44,14 @@ public final class NativeScritchInterface
 		throws MLECallError;
 	
 	/**
-	 * Checks whether the native interface only supports panels.
+	 * Checks whether the native interface only supports basic panels.
+	 * 
+	 * This implies that the following interfaces are supported:
+	 * - {@link ScritchComponentInterface}.
+	 * - {@link ScritchContainerInterface}.
+	 * - {@link ScritchEnvironmentInterface}.
+	 * - {@link ScritchPanelInterface}.
+	 * - {@link ScritchWindowInterface}.
 	 *
 	 * @return If the interface only supports panels.
 	 * @throws MLECallError If there is no support for the native interface.

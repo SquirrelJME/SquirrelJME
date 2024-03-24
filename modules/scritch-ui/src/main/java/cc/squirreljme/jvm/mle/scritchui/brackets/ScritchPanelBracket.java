@@ -13,7 +13,7 @@ import cc.squirreljme.jvm.mle.annotation.GhostObject;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
- * Represents a panel which contains items.
+ * Represents a panel which contains items and may be drawn upon.
  *
  * @since 2024/03/01
  */
