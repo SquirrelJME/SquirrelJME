@@ -72,7 +72,7 @@ public interface ScritchLAFInterface
 	 * @since 2024/03/24
 	 */
 	@SquirrelJMEVendorApi
-	booolean isDarkMode();
+	boolean isDarkMode();
 	
 	/**
 	 * Returns the color that is used for the background of panels.

@@ -89,6 +89,16 @@ public class SwingLAFInterface
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2024/03/24
+	 */
+	@Override
+	public boolean isDarkMode()
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2024/03/19
 	 */
 	@Override
