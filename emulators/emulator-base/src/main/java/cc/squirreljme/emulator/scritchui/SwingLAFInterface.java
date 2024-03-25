@@ -92,7 +92,7 @@ public class SwingLAFInterface
 	 * @since 2024/03/19
 	 */
 	@Override
-	public int panelColor()
+	public int panelBackgroundColor()
 	{
 		return SwingLAFInterface.__color("Panel.background",
 			0xFF_FFFFFF);
@@ -103,7 +103,7 @@ public class SwingLAFInterface
 	 * @since 2024/03/19
 	 */
 	@Override
-	public int panelPenColor()
+	public int panelForegroundColor()
 	{
 		return SwingLAFInterface.__color("Panel.foreground",
 			0xFF_000000);

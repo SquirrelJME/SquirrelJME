@@ -66,6 +66,15 @@ public interface ScritchLAFInterface
 		throws MLECallError;
 	
 	/**
+	 * Returns whether dark mode is currently in use.
+	 *
+	 * @return If dark mode is in use.
+	 * @since 2024/03/24
+	 */
+	@SquirrelJMEVendorApi
+	booolean isDarkMode();
+	
+	/**
 	 * Returns the color that is used for the background of panels.
 	 *
 	 * @return The panel background color.
@@ -73,7 +82,7 @@ public interface ScritchLAFInterface
 	 */
 	@SquirrelJMEVendorApi
 	@Range(from = 0, to = 0xFFFFFF)
-	int panelColor();
+	int panelBackgroundColor();
 	
 	/**
 	 * Returns the color that is used for the foreground of panels.
@@ -83,5 +92,5 @@ public interface ScritchLAFInterface
 	 */
 	@SquirrelJMEVendorApi
 	@Range(from = 0, to = 0xFFFFFF)
-	int panelPenColor();
+	int panelForegroundColor();
 }

@@ -967,7 +967,7 @@ public abstract class Canvas
 		{
 			// Determine the color to draw
 			int bgColor = this._state.scritchApi().environment().lookAndFeel()
-				.panelColor();
+				.panelBackgroundColor();
 			
 			// Draw entire background
 			bufferGfx.setAlphaColor(bgColor | 0xFF_000000);
@@ -975,7 +975,7 @@ public abstract class Canvas
 			
 			// Use a default pen color
 			int fgColor = this._state.scritchApi().environment().lookAndFeel()
-				.panelPenColor();
+				.panelForegroundColor();
 			bufferGfx.setAlphaColor(fgColor | 0xFF_000000);
 		}
 		
