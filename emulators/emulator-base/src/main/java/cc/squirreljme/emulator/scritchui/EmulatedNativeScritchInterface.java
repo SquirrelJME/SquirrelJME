@@ -11,7 +11,13 @@ package cc.squirreljme.emulator.scritchui;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.NativeScritchInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchComponentInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchContainerInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchEnvironmentInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchEventLoopInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchPanelInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchWindowInterface;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
@@ -33,5 +39,20 @@ public class EmulatedNativeScritchInterface
 		throws MLECallError
 	{
 		return new SwingScritchInterface();
+	}
+	
+	/**
+	 * Same as {@link NativeScritchInterface#panelOnly()}.
+	 * 
+	 *
+	 * @return Same as {@link NativeScritchInterface#panelOnly()}.
+	 * @throws MLECallError Same as {@link NativeScritchInterface#panelOnly()}.
+	 * @since 2024/03/24
+	 */
+	@SquirrelJMEVendorApi
+	public static boolean panelOnly()
+		throws MLECallError
+	{
+		return false;
 	}
 }

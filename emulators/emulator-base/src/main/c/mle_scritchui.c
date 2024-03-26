@@ -16,13 +16,18 @@
 
 #define FORWARD_DESC_nativeInterface "(" \
 	")" DESC_CLASS(NAME_INTERFACE)
+#define FORWARD_DESC_panelOnly "(" \
+	")" DESC_BOOLEAN
 
 FORWARD_IMPL(NativeScritchInterface, nativeInterface, jobject, Object, \
+	FORWARD_IMPL_none(), FORWARD_IMPL_none())
+FORWARD_IMPL(NativeScritchInterface, panelOnly, jboolean, Boolean, \
 	FORWARD_IMPL_none(), FORWARD_IMPL_none())
 
 static const JNINativeMethod mleNativeScritchInterfaceMethods[] =
 {
 	FORWARD_list(NativeScritchInterface, nativeInterface),
+	FORWARD_list(NativeScritchInterface, panelOnly),
 };
 
 FORWARD_init(mleNativeScritchInterfaceInit, mleNativeScritchInterfaceMethods)
