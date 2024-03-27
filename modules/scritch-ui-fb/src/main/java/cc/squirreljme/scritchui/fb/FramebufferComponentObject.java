@@ -104,8 +104,31 @@ public abstract class FramebufferComponentObject
 	 * @param __enabled Should focus be enabled?
 	 * @since 2024/03/26
 	 */
-	protected void __enableFocus(boolean __enabled)
+	void __enableFocus(boolean __enabled)
 	{
+		// Forward to core
 		this.coreApi.panel().enableFocus(this.corePanel, __enabled);
+	}
+	
+	/**
+	 * Requests repainting of the component. 
+	 *
+	 * @since 2024/03/26
+	 */
+	void __repaint()
+	{
+		// Forward to core
+		this.coreApi.panel().repaint(this.corePanel);
+	}
+	
+	/**
+	 * Revalidates this object.
+	 *
+	 * @since 2024/03/26
+	 */
+	void __revalidate()
+	{
+		// Forward to core
+		this.coreApi.component().revalidate(this.corePanel);
 	}
 }

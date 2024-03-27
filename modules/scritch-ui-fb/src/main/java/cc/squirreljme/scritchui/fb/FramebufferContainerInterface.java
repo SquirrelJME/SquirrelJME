@@ -55,7 +55,17 @@ public class FramebufferContainerInterface
 		ScritchComponentBracket __component)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__container == null || __component == null)
+			throw new MLECallError("NARG");
+		
+		// Get framebuffer wrappers of these
+		FramebufferContainerObject container =
+			(FramebufferContainerObject)__container;
+		FramebufferComponentObject component =
+			(FramebufferComponentObject)__component;
+		
+		// Forward
+		container.__containerManager().add(component);
 	}
 	
 	/**
@@ -79,6 +89,17 @@ public class FramebufferContainerInterface
 		int __x, int __y, int __w,  int __h)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__container == null || __component == null)
+			throw new MLECallError("NARG");
+		
+		// Get framebuffer wrappers of these
+		FramebufferContainerObject container =
+			(FramebufferContainerObject)__container;
+		FramebufferComponentObject component =
+			(FramebufferComponentObject)__component;
+		
+		// Forward
+		container.__containerManager().setBounds(component,
+			__x, __y, __w, __h);
 	}
 }

@@ -94,7 +94,8 @@ public class SwingLAFInterface
 	@Override
 	public boolean isDarkMode()
 	{
-		throw Debugging.todo();
+		// Never in dark mode
+		return false;
 	}
 	
 	/**

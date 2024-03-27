@@ -53,6 +53,9 @@ public class FramebufferComponentInterface
 	public int height(ScritchComponentBracket __component)
 		throws MLECallError
 	{
+		if (__component == null)
+			throw new MLECallError("NARG");
+	
 		throw Debugging.todo();
 	}
 	
@@ -64,7 +67,14 @@ public class FramebufferComponentInterface
 	public void revalidate(ScritchComponentBracket __component)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__component == null)
+			throw new MLECallError("NARG");
+		
+		// Forward to handler
+		FramebufferComponentObject component =
+			(FramebufferComponentObject)__component;
+		
+		component.__revalidate();
 	}
 	
 	/**
@@ -75,6 +85,9 @@ public class FramebufferComponentInterface
 	public int width(ScritchComponentBracket __component)
 		throws MLECallError
 	{
+		if (__component == null)
+			throw new MLECallError("NARG");
+	
 		throw Debugging.todo();
 	}
 }

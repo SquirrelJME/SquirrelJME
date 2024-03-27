@@ -82,7 +82,13 @@ public class FramebufferPanelInterface
 	public void repaint(ScritchComponentBracket __component)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__component == null)
+			throw new MLECallError("NARG");
+	
+		// Forward to component
+		FramebufferPanelObject component =
+			(FramebufferPanelObject)__component;
+		component.__repaint();
 	}
 	
 	/**

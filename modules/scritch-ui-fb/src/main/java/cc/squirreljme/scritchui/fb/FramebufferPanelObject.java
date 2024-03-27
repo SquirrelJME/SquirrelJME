@@ -10,26 +10,27 @@
 package cc.squirreljme.scritchui.fb;
 
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
-import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchContainerBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchPaintListener;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Range;
 
 /**
- * Framebuffer based panel.
+ * Framebuffer panel, which is generally used for general drawing onto with
+ * a Canvas or to build custom components.
  *
  * @since 2024/03/26
  */
 @SquirrelJMEVendorApi
 public class FramebufferPanelObject
 	extends FramebufferComponentObject
-	implements ScritchPanelBracket
+	implements FramebufferContainerObject, ScritchPanelBracket
 {
+	/** The container manager. */
+	private final FramebufferContainerManager _container;
+	
 	/** The listener to call on paint events. */
 	private volatile ScritchPaintListener _paintListener;
 	
@@ -48,6 +49,29 @@ public class FramebufferPanelObject
 		throws NullPointerException
 	{
 		super(__selfApi, __coreApi, __corePanel);
+		
+		this._container = new FramebufferContainerManager(
+			__selfApi, __coreApi, this);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/03/26
+	 */
+	@Override
+	public ScritchContainerBracket __container()
+	{
+		return this.corePanel;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/03/26
+	 */
+	@Override
+	public FramebufferContainerManager __containerManager()
+	{
+		return this._container;
 	}
 	
 	/**

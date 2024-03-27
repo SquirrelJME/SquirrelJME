@@ -34,6 +34,9 @@ public class FramebufferEnvironmentInterface
 	extends FramebufferBaseInterface
 	implements ScritchEnvironmentInterface
 {
+	/** The look and feel interface. */
+	protected final FramebufferLAFInterface laf;
+	
 	/** Internal cache of screens. */
 	private final Map<Integer, FramebufferScreenObject> _screens =
 		new LinkedHashMap<>();
@@ -52,6 +55,9 @@ public class FramebufferEnvironmentInterface
 		throws NullPointerException
 	{
 		super(__self, __core);
+		
+		// Setup sub interfaces
+		this.laf = new FramebufferLAFInterface(__self, __core);
 	}
 	
 	/**
@@ -71,7 +77,7 @@ public class FramebufferEnvironmentInterface
 	@Override
 	public ScritchLAFInterface lookAndFeel()
 	{
-		throw Debugging.todo();
+		return this.laf;
 	}
 	
 	/**

@@ -16,8 +16,6 @@ import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Range;
 
 /**
  * Interface for windows.
@@ -53,6 +51,9 @@ public class FramebufferWindowInterface
 	public void callAttention(ScritchWindowBracket __window)
 		throws MLECallError
 	{
+		if (__window == null)
+			throw new MLECallError("NARG");
+	
 		throw Debugging.todo();
 	}
 	
@@ -64,6 +65,9 @@ public class FramebufferWindowInterface
 	public int contentHeight(ScritchWindowBracket __window)
 		throws MLECallError
 	{
+		if (__window == null)
+			throw new MLECallError("NARG");
+	
 		throw Debugging.todo();
 	}
 	
@@ -76,7 +80,13 @@ public class FramebufferWindowInterface
 		int __w, int __h)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__window == null)
+			throw new MLECallError("NARG");
+		
+		// Forward to wrapped window
+		FramebufferWindowObject window = (FramebufferWindowObject)__window;
+		
+		window.__contentMinimumSize(__w, __h);
 	}
 	
 	/**
@@ -87,6 +97,9 @@ public class FramebufferWindowInterface
 	public int contentWidth(ScritchWindowBracket __window)
 		throws MLECallError
 	{
+		if (__window == null)
+			throw new MLECallError("NARG");
+		
 		throw Debugging.todo();
 	}
 	
@@ -98,6 +111,9 @@ public class FramebufferWindowInterface
 	public boolean hasFocus(ScritchWindowBracket __window)
 		throws MLECallError
 	{
+		if (__window == null)
+			throw new MLECallError("NARG");
+	
 		throw Debugging.todo();
 	}
 	
@@ -109,6 +125,9 @@ public class FramebufferWindowInterface
 	public boolean isVisible(ScritchWindowBracket __window)
 		throws MLECallError
 	{
+		if (__window == null)
+			throw new MLECallError("NARG");
+	
 		throw Debugging.todo();
 	}
 	
@@ -120,6 +139,9 @@ public class FramebufferWindowInterface
 	public int inputTypes(ScritchWindowBracket __window)
 		throws MLECallError
 	{
+		if (__window == null)
+			throw new MLECallError("NARG");
+	
 		throw Debugging.todo();
 	}
 	
@@ -144,6 +166,12 @@ public class FramebufferWindowInterface
 		boolean __visible)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__window == null)
+			throw new MLECallError("NARG");
+	
+		// Forward to wrapped window
+		FramebufferWindowObject window = (FramebufferWindowObject)__window;
+		
+		window.__setVisible(__visible);
 	}
 }

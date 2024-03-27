@@ -10,10 +10,10 @@
 package cc.squirreljme.scritchui.fb;
 
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchContainerBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.lang.ref.Reference;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents a wrapped native window.
@@ -23,8 +23,11 @@ import org.jetbrains.annotations.NotNull;
 @SquirrelJMEVendorApi
 public class FramebufferWindowObject
 	extends FramebufferBaseObject
-	implements ScritchWindowBracket
+	implements FramebufferContainerObject, ScritchWindowBracket
 {
+	/** The container manager. */
+	private final FramebufferContainerManager _container;
+	
 	/** The core window we are wrapping. */
 	private final ScritchWindowBracket _coreWindow;
 	
@@ -50,5 +53,55 @@ public class FramebufferWindowObject
 			throw new NullPointerException("NARG");
 		
 		this._coreWindow = __coreWindow;
+		this._container = new FramebufferContainerManager(
+			__selfApi, __coreApi, this);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/03/26
+	 */
+	@Override
+	public ScritchContainerBracket __container()
+	{
+		return this._coreWindow;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/03/26
+	 */
+	@Override
+	public FramebufferContainerManager __containerManager()
+	{
+		return this._container;
+	}
+	
+	
+	/**
+	 * Sets the minimum content size.
+	 *
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @since 2024/03/26
+	 */
+	void __contentMinimumSize(int __w, int __h)
+	{
+		// Forward to core
+		this.coreApi.window().contentMinimumSize(
+			this._coreWindow, __w, __h);
+	}
+	
+	/**
+	 * Set the visibility of the window.
+	 *
+	 * @param __visible If it should be visible or not?
+	 * @since 2024/03/26
+	 */
+	void __setVisible(boolean __visible)
+	{
+		// Forward to core
+		this.coreApi.window().setVisible(
+			this._coreWindow, __visible);
 	}
 }
