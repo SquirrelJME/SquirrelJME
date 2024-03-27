@@ -13,14 +13,13 @@ import cc.squirreljme.jvm.mle.annotation.GhostObject;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
- * Represents a panel which contains items and may be drawn upon.
+ * Represents a component which may be drawn.
  *
- * @since 2024/03/01
+ * @since 2024/03/26
  */
 @GhostObject
 @SquirrelJMEVendorApi
-public interface ScritchPanelBracket
-	extends ScritchComponentBracket, ScritchContainerBracket,
-		ScritchPaintableBracket
+public interface ScritchPaintableBracket
+	extends ScritchComponentBracket
 {
 }

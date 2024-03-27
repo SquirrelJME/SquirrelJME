@@ -22,9 +22,11 @@ import java.lang.ref.Reference;
 public abstract class FramebufferBaseInterface
 {
 	/** The core interface. */
+	@SquirrelJMEVendorApi
 	protected final ScritchInterface coreApi;
 	
 	/** The framebuffer self interface. */
+	@SquirrelJMEVendorApi
 	protected final Reference<FramebufferScritchInterface> selfApi;
 	
 	/**
@@ -35,6 +37,7 @@ public abstract class FramebufferBaseInterface
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/03/24
 	 */
+	@SquirrelJMEVendorApi
 	public FramebufferBaseInterface(
 		Reference<FramebufferScritchInterface> __self,
 		ScritchInterface __core)

@@ -13,13 +13,12 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchPanelInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPaintableBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchPaintListener;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Interface for panels.
@@ -55,7 +54,12 @@ public class FramebufferPanelInterface
 	public void enableFocus(ScritchPanelBracket __panel, boolean __enabled)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__panel == null)
+			throw new MLECallError("NARG");
+		
+		// Forward to component
+		FramebufferPanelObject panel = (FramebufferPanelObject)__panel;
+		panel.__enableFocus(__enabled);
 	}
 	
 	/**
@@ -65,7 +69,9 @@ public class FramebufferPanelInterface
 	@Override
 	public ScritchPanelBracket newPanel()
 	{
-		throw Debugging.todo();
+		return new FramebufferPanelObject(this.selfApi,
+			this.coreApi,
+			this.coreApi.panel().newPanel());
 	}
 	
 	/**
@@ -84,10 +90,16 @@ public class FramebufferPanelInterface
 	 * @since 2024/03/24
 	 */
 	@Override
-	public void setPaintListener(ScritchComponentBracket __component,
+	public void setPaintListener(ScritchPaintableBracket __component,
 		ScritchPaintListener __listener)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__component == null)
+			throw new MLECallError("NARG");
+		
+		// Forward to component
+		FramebufferPanelObject component =
+			(FramebufferPanelObject)__component;
+		component.__setPaintListener(__listener);
 	}
 }

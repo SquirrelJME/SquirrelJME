@@ -12,6 +12,7 @@ package cc.squirreljme.emulator.scritchui;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchPanelInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPaintableBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchPaintListener;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -71,7 +72,7 @@ public class SwingPanelInterface
 	 * @since 2024/03/19
 	 */
 	@Override
-	public void setPaintListener(@NotNull ScritchComponentBracket __component,
+	public void setPaintListener(@NotNull ScritchPaintableBracket __component,
 		@Nullable ScritchPaintListener __listener)
 		throws MLECallError
 	{
