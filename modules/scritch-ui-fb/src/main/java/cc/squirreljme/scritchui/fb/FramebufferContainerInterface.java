@@ -18,6 +18,7 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 /**
  * Interface for components.
@@ -50,17 +51,6 @@ public class FramebufferContainerInterface
 	 * @since 2024/03/24
 	 */
 	@Override
-	public void removeAll(ScritchContainerBracket __container)
-		throws MLECallError
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/03/24
-	 */
-	@Override
 	public void add(ScritchContainerBracket __container,
 		ScritchComponentBracket __component)
 		throws MLECallError
@@ -73,8 +63,20 @@ public class FramebufferContainerInterface
 	 * @since 2024/03/24
 	 */
 	@Override
-	public void add(ScritchContainerBracket __container,
-		ScritchComponentBracket __component, int __layoutInfo)
+	public void removeAll(ScritchContainerBracket __container)
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/03/26
+	 */
+	@Override
+	public void setBounds(ScritchContainerBracket __container,
+		ScritchComponentBracket __component,
+		int __x, int __y, int __w,  int __h)
 		throws MLECallError
 	{
 		throw Debugging.todo();

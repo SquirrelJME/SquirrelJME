@@ -16,7 +16,6 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchPanelInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchWindowInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
-import cc.squirreljme.jvm.mle.scritchui.constants.ScritchBorderLayoutType;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayScale;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
@@ -112,8 +111,7 @@ class __ExecDisplaySetCurrent__
 			// Get the needed panel and add it in
 			DisplayableState ourState = this.showNow._state;
 			panel = ourState.scritchPanel();
-			containerApi.add(window, panel,
-				ScritchBorderLayoutType.CENTER);
+			containerApi.add(window, panel);
 			
 			// Set the frame's preferred and minimum sizes for the content area
 			DisplayScale scale = display._scale;

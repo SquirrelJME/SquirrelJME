@@ -12,10 +12,10 @@ package cc.squirreljme.jvm.mle.scritchui;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchContainerBracket;
-import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 /**
  * Interface for generic containers.
@@ -25,17 +25,6 @@ import org.jetbrains.annotations.NotNull;
 @SquirrelJMEVendorApi
 public interface ScritchContainerInterface
 {
-	/**
-	 * Removes all items from the container.
-	 *
-	 * @param __container The container to remove from.
-	 * @throws MLECallError On null arguments.
-	 * @since 2024/03/17
-	 */
-	@SquirrelJMEVendorApi
-	void removeAll(@NotNull ScritchContainerBracket __container)
-		throws MLECallError;
-	
 	/**
 	 * Adds the given component to the container.
 	 *
@@ -50,17 +39,34 @@ public interface ScritchContainerInterface
 		throws MLECallError;
 	
 	/**
-	 * Adds the given component to the container, with layout information.
+	 * Removes all items from the container.
 	 *
-	 * @param __container The container to add to.
-	 * @param __component The container to add.
-	 * @param __layoutInfo The integer based layout information, which will
-	 * vary depending on the used layout.
+	 * @param __container The container to remove from.
 	 * @throws MLECallError On null arguments.
 	 * @since 2024/03/17
 	 */
 	@SquirrelJMEVendorApi
-	void add(@NotNull ScritchContainerBracket __container,
-		@NotNull ScritchComponentBracket __component, int __layoutInfo)
+	void removeAll(@NotNull ScritchContainerBracket __container)
+		throws MLECallError;
+	
+	/**
+	 * Sets the bounds of the given component in the container.
+	 *
+	 * @param __container The container to set within.
+	 * @param __component The component to change the size and position of.
+	 * @param __x The X position.
+	 * @param __y The Y position.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @throws MLECallError On null arguments or the size and/or position
+	 * are not valid.
+	 * @since 2024/03/26
+	 */
+	@SquirrelJMEVendorApi
+	void setBounds(@NotNull ScritchContainerBracket __container,
+		@NotNull ScritchComponentBracket __component,
+		int __x, int __y,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __h)
 		throws MLECallError;
 }

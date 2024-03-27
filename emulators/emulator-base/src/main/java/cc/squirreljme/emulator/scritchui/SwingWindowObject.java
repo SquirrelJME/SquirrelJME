@@ -33,7 +33,8 @@ public class SwingWindowObject
 	 */
 	public SwingWindowObject()
 	{
-		this.frame.setLayout(new BorderLayout());
+		// Null layout is absolute positioning layout
+		this.frame.setLayout(null);
 	}
 	
 	/**

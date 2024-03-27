@@ -931,6 +931,12 @@ public abstract class Canvas
 		int w = Math.max(1, scale.textureW());
 		int h = Math.max(1, scale.textureH());
 		
+		// Set absolute bounds of the canvas
+		DisplayableState state = this._state;
+		state.scritchApi().container().setBounds(
+			__parent.scritchWindow(),
+			state.scritchPanel(), 0, 0, w, h);
+		
 		// Setup new image with a raw buffer
 		this._buffer = new Image(new int[w * h], 0, w * h, w, h,
 			true, false);

@@ -14,8 +14,8 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchContainerInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchContainerBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.awt.Component;
 import java.awt.Container;
-import java.util.Arrays;
 import javax.swing.JComponent;
 
 /**
@@ -25,7 +25,31 @@ import javax.swing.JComponent;
  */
 public class SwingContainerInterface
 	implements ScritchContainerInterface
-{
+{	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/03/17
+	 */
+	@Override
+	public void add(ScritchContainerBracket __container,
+		ScritchComponentBracket __component)
+		throws MLECallError
+	{
+		if (__container == null || __component == null)
+			throw new MLECallError("Null arguments.");
+		
+		// Get the container used
+		JComponent component = ((SwingComponentObject)__component).component();
+		Container swing = ((SwingContainerObject)__container).swingContainer();
+		
+		// Add it
+		swing.add(component);
+		
+		// Revalidate has to happen for it to appear
+		swing.revalidate();
+		component.revalidate();
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2024/03/17
@@ -46,59 +70,23 @@ public class SwingContainerInterface
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2024/03/17
+	 * @since 2024/03/26
 	 */
 	@Override
-	public void add(ScritchContainerBracket __container,
-		ScritchComponentBracket __component)
+	public void setBounds(ScritchContainerBracket __container,
+		ScritchComponentBracket __component,
+		int __x, int __y, int __w,  int __h)
 		throws MLECallError
 	{
 		if (__container == null || __component == null)
 			throw new MLECallError("Null arguments.");
 		
-		if (true)
-			throw Debugging.todo("ADD CALLED");
+		// Get the container and component used
+		Container container = ((SwingContainerObject)__container)
+			.swingContainer();
+		Component component = ((SwingComponentObject)__component).component(); 
 		
-		// Get the container used
-		Container swing = ((SwingContainerObject)__container).swingContainer();
-		
-		// Add it
-		swing.add(((SwingComponentObject)__component).component());
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/03/17
-	 */
-	@Override
-	public void add(ScritchContainerBracket __container,
-		ScritchComponentBracket __component, int __layoutInfo)
-		throws MLECallError
-	{
-		if (__container == null || __component == null)
-			throw new MLECallError("Null arguments.");
-		
-		// Debug
-		Debugging.debugNote("scritch.add(%p, %p, %d)",
-			__container, __component, __layoutInfo);
-		
-		// Get the container used
-		SwingContainerObject container = (SwingContainerObject)__container;
-		Container swing = container.swingContainer();
-		
-		Object mappedConstraint = SwingScritchUtils.mapLayout(container,
-			__layoutInfo);
-		
-		// Debug
-		Debugging.debugNote("Mapped %s -> %s",
-			__layoutInfo, mappedConstraint);
-		
-		// Add it
-		JComponent component = ((SwingComponentObject)__component).component();
-		swing.add(component, mappedConstraint);
-		
-		// Revalidate has to happen for it to appear
-		swing.revalidate();
-		component.revalidate();
+		// Set bounds
+		component.setBounds(__x, __y, __w, __h);
 	}
 }
