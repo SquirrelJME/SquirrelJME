@@ -130,7 +130,9 @@ public class FramebufferWindowInterface
 	@Override
 	public ScritchWindowBracket newWindow()
 	{
-		throw Debugging.todo();
+		ScritchInterface coreApi = this.coreApi;
+		return new FramebufferWindowObject(this.selfApi, coreApi,
+			coreApi.window().newWindow());
 	}
 	
 	/**

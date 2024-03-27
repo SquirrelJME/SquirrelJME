@@ -9,6 +9,7 @@
 
 package cc.squirreljme.scritchui.fb;
 
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchScreenInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
@@ -50,7 +51,11 @@ public class FramebufferScreenInterface
 	 */
 	@Override
 	public int dpi(ScritchScreenBracket __screen)
+		throws MLECallError
 	{
+		if (__screen == null)
+			throw new MLECallError("NARG");
+	
 		throw Debugging.todo();
 	}
 	
@@ -60,7 +65,11 @@ public class FramebufferScreenInterface
 	 */
 	@Override
 	public int height(ScritchScreenBracket __screen)
+		throws MLECallError
 	{
+		if (__screen == null)
+			throw new MLECallError("NARG");
+	
 		throw Debugging.todo();
 	}
 	
@@ -70,7 +79,11 @@ public class FramebufferScreenInterface
 	 */
 	@Override
 	public boolean isBuiltIn(ScritchScreenBracket __screen)
+		throws MLECallError
 	{
+		if (__screen == null)
+			throw new MLECallError("NARG");
+	
 		throw Debugging.todo();
 	}
 	
@@ -80,7 +93,11 @@ public class FramebufferScreenInterface
 	 */
 	@Override
 	public boolean isPortrait(ScritchScreenBracket __screen)
+		throws MLECallError
 	{
+		if (__screen == null)
+			throw new MLECallError("NARG");
+	
 		throw Debugging.todo();
 	}
 	
@@ -90,8 +107,14 @@ public class FramebufferScreenInterface
 	 */
 	@Override
 	public int id(ScritchScreenBracket __screen)
+		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__screen == null)
+			throw new MLECallError("NARG");
+	
+		FramebufferScreenObject screen = (FramebufferScreenObject)__screen;
+		
+		return screen._screenId;
 	}
 	
 	/**
@@ -100,7 +123,11 @@ public class FramebufferScreenInterface
 	 */
 	@Override
 	public int width(ScritchScreenBracket __screen)
+		throws MLECallError
 	{
+		if (__screen == null)
+			throw new MLECallError("NARG");
+		
 		throw Debugging.todo();
 	}
 }

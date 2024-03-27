@@ -51,7 +51,11 @@ public class FramebufferEventLoopInterface
 	public void execute(Runnable __task)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__task == null)
+			throw new MLECallError("NARG");
+		
+		// Forward to the native event loop
+		this.coreApi.eventLoop().execute(__task);
 	}
 	
 	/**
@@ -61,6 +65,7 @@ public class FramebufferEventLoopInterface
 	@Override
 	public boolean inLoop()
 	{
-		throw Debugging.todo();
+		// Use forwarded determination
+		return this.coreApi.eventLoop().inLoop();
 	}
 }

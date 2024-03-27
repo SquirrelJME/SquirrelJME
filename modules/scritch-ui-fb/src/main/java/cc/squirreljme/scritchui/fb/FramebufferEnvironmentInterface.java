@@ -12,10 +12,15 @@ package cc.squirreljme.scritchui.fb;
 import cc.squirreljme.jvm.mle.scritchui.ScritchEnvironmentInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchLAFInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchScreenInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
@@ -29,6 +34,10 @@ public class FramebufferEnvironmentInterface
 	extends FramebufferBaseInterface
 	implements ScritchEnvironmentInterface
 {
+	/** Internal cache of screens. */
+	private final Map<Integer, FramebufferScreenObject> _screens =
+		new LinkedHashMap<>();
+	
 	/**
 	 * Initializes this interface. 
 	 *
@@ -72,7 +81,45 @@ public class FramebufferEnvironmentInterface
 	@Override
 	public ScritchScreenBracket[] screens()
 	{
-		throw Debugging.todo();
+		ScritchInterface coreApi = this.coreApi;
+		ScritchScreenInterface screenApi = coreApi.screen();
+		
+		// These are the screens we layer on top of
+		ScritchScreenBracket[] coreScreens =
+			coreApi.environment().screens();
+		
+		// We need to determine which screens we already know about and
+		// what we need to add
+		List<FramebufferScreenObject> result = new ArrayList<>();
+		Map<Integer, FramebufferScreenObject> screens = this._screens;
+		
+		// We want to keep screens with a given ID around
+		for (ScritchScreenBracket coreScreen : coreScreens)
+		{
+			synchronized (this)
+			{
+				Integer coreId = screenApi.id(coreScreen);
+				
+				// Do we need to create a wrapper over this screen?
+				FramebufferScreenObject wrapped = screens.get(coreId);
+				if (wrapped == null)
+				{
+					// Setup wrapper
+					wrapped = new FramebufferScreenObject(
+						this.selfApi, this.coreApi,
+						coreScreen, coreId);
+					
+					// Store for later
+					screens.put(coreId, wrapped);
+				}
+				
+				// Add it in
+				result.add(wrapped);
+			}
+		}
+		
+		// Use whatever result we calculated
+		return result.toArray(new FramebufferScreenObject[result.size()]);
 	}
 	
 	/**
