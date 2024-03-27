@@ -86,7 +86,7 @@ public final class FramebufferContainerManager
 		
 		// Copy anything old in there
 		if (orderLen > 0)
-			System.arraycopy(order, orderLen,
+			System.arraycopy(order, 0,
 				newOrder, 0, orderLen);
 		
 		// Add component to the end
