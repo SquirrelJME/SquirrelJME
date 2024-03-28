@@ -6,4 +6,4 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 
-# PalmOS
+# Macintosh Toolbox (m68k and PowerPC)
