@@ -13,6 +13,7 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
+import cc.squirreljme.runtime.lcdui.scritchui.ChoiceManager;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +37,12 @@ public class ChoiceGroup
 	static final int _MAX_TYPE =
 		Choice.POPUP;
 	
+	/** Manages and contains choice entries. */
+	final ChoiceManager _choices =
+		new ChoiceManager();
+	
 	/** Entries which are available in the group. */
+	@Deprecated
 	private final List<__ChoiceEntry__> _entries =
 		new ArrayList<>();
 	

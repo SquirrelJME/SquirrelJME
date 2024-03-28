@@ -22,6 +22,7 @@ import cc.squirreljme.runtime.lcdui.font.FontUtilities;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
+import cc.squirreljme.runtime.lcdui.scritchui.ChoiceManager;
 import org.jetbrains.annotations.Async;
 
 @Api
@@ -34,7 +35,12 @@ public class List
 	public static final Command SELECT_COMMAND =
 		new Command("Select", Command.SCREEN, 0, true);
 	
+	/** Manages and contains choice entries. */
+	final ChoiceManager _choices =
+		new ChoiceManager();
+	
 	/** Items on the list. */
+	@Deprecated
 	final __VolatileList__<__ChoiceEntry__> _items =
 		new __VolatileList__<>();
 	

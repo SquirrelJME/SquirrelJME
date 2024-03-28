@@ -17,21 +17,27 @@ package javax.microedition.lcdui;
  *
  * @since 2017/08/20
  */
+@Deprecated
 final class __ChoiceEntry__
 {
 	/** The string to display for this choice. */
+	@Deprecated
 	volatile String _label;
 	
 	/** The image to display for this choice. */
+	@Deprecated
 	volatile Image _image;
 	
 	/** The font to use for this choice. */
+	@Deprecated
 	volatile Font _font;
 	
 	/** Is this entry selected? */
+	@Deprecated
 	volatile boolean _selected;
 	
 	/** Is this item disabled? (is enabled by default) */
+	@Deprecated
 	volatile boolean _disabled;
 	
 	/**
@@ -41,6 +47,7 @@ final class __ChoiceEntry__
 	 * @param __i The image to display.
 	 * @since 2017/08/20
 	 */
+	@Deprecated
 	__ChoiceEntry__(String __s, Image __i)
 	{
 		// Set
@@ -53,6 +60,7 @@ final class __ChoiceEntry__
 	 * @since 2020/10/18
 	 */
 	@Override
+	@Deprecated
 	public final boolean equals(Object __o)
 	{
 		return this == __o;
@@ -63,6 +71,7 @@ final class __ChoiceEntry__
 	 * @since 2020/10/18
 	 */
 	@Override
+	@Deprecated
 	public final int hashCode()
 	{
 		int rv = System.identityHashCode(this);
