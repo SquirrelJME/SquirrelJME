@@ -23,10 +23,12 @@ import org.jetbrains.annotations.Async;
  *
  * @since 2020/10/17
  */
+@Deprecated
 abstract class __CommonWidget__
 	implements DisplayWidget
 {
 	/** The common display state. */
+	@Deprecated
 	private final __CommonState__ _commonState;
 	
 	/**
@@ -34,6 +36,7 @@ abstract class __CommonWidget__
 	 * 
 	 * @since 2023/01/14
 	 */
+	@Deprecated
 	__CommonWidget__()
 	{
 		this._commonState = this.__stateInit(
@@ -48,6 +51,7 @@ abstract class __CommonWidget__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/01/14
 	 */
+	@Deprecated
 	abstract __CommonState__ __stateInit(UIBackend __backend)
 		throws NullPointerException;
 	
@@ -57,6 +61,7 @@ abstract class __CommonWidget__
 	 * @return The used backend.
 	 * @since 2023/01/14
 	 */
+	@Deprecated
 	final UIBackend __backend()
 	{
 		return this._commonState._backend;
@@ -68,6 +73,7 @@ abstract class __CommonWidget__
 	 * @return If this can be painted on.
 	 * @since 2020/10/17
 	 */
+	@Deprecated
 	@SerializedEvent
 	@Async.Execute
 	boolean __isPainted()
@@ -85,6 +91,7 @@ abstract class __CommonWidget__
 	 * other value depending on what is being painted.
 	 * @since 2020/09/21
 	 */
+	@Deprecated
 	@SerializedEvent
 	@Async.Execute
 	void __paint(Graphics __gfx, int __sw, int __sh, int __special)
@@ -103,6 +110,7 @@ abstract class __CommonWidget__
 	 * @return If the event was handled and we should stop.
 	 * @since 2020/10/17
 	 */
+	@Deprecated
 	@SerializedEvent
 	@Async.Execute
 	boolean __propertyChange(UIFormBracket __form, UIItemBracket __item,
@@ -130,6 +138,7 @@ abstract class __CommonWidget__
 	 * @return If the event was handled and we should stop.
 	 * @since 2020/10/17
 	 */
+	@Deprecated
 	@SerializedEvent
 	@Async.Execute
 	boolean __propertyChange(UIFormBracket __form, UIItemBracket __item,
@@ -155,6 +164,7 @@ abstract class __CommonWidget__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/01/14
 	 */
+	@Deprecated
 	final <S extends __CommonState__> S __state(Class<S> __type)
 		throws NullPointerException
 	{
@@ -169,9 +179,11 @@ abstract class __CommonWidget__
 	 * 
 	 * @since 2023/01/14
 	 */
+	@Deprecated
 	abstract static class __CommonState__
 	{
 		/** The backend to use. */
+		@Deprecated
 		final UIBackend _backend;
 		
 		/**
@@ -182,6 +194,7 @@ abstract class __CommonWidget__
 		 * @throws NullPointerException On null arguments.
 		 * @since 2023/01/14
 		 */
+		@Deprecated
 		__CommonState__(UIBackend __backend, DisplayWidget __self)
 			throws NullPointerException
 		{
