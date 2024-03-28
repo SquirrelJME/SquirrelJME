@@ -31,12 +31,54 @@ extern "C" {
 /*--------------------------------------------------------------------------*/
 
 /**
+ * ScritchUI state.
+ * 
+ * @since 2024/03/27
+ */
+typedef struct sjme_scritchui* sjme_scritchui;
+
+/**
+ * Component within ScritchUI.
+ * 
+ * @since 2024/03/27
+ */
+typedef struct sjme_scritchui_uiComponent* sjme_scritchui_uiComponent;
+
+/**
+ * A panel within ScritchUI.
+ * 
+ * @since 2024/03/27
+ */
+typedef struct sjme_scritchui_uiPanel* sjme_scritchui_uiPanel;
+
+/**
+ * A window within ScritchUI.
+ * 
+ * @since 2024/03/27
+ */
+typedef struct sjme_scritchui_uiWindow* sjme_scritchui_uiWindow;
+
+/**
+ * Initializes the native UI interface needed by ScritchUI.
+ * 
+ * @param inPool The allocation pool to use.
+ * @param outState The resultant state.
+ * @return Any error state when applicable.
+ * @since 2024/03/27
+ */
+typedef sjme_errorCode (*sjme_scritchui_apiInitFunc)(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInOutNotNull sjme_scritchui* outState);
+
+/**
  * ScritchUI API functions, implemented by a native library accordingly.
  * 
  * @since 2024/03/27
  */
 typedef struct sjme_scritchui_apiFunctions
 {
+	/** Initialize the framework library. */
+	sjme_scritchui_apiInitFunc init;
 } sjme_scritchui_apiFunctions;
 
 /*--------------------------------------------------------------------------*/
