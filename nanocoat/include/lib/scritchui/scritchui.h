@@ -16,6 +16,9 @@
 #ifndef SQUIRRELJME_SCRITCHUI_H
 #define SQUIRRELJME_SCRITCHUI_H
 
+#include "sjme/config.h"
+#include "sjme/nvm.h"
+
 /* Anti-C++. */
 #ifdef __cplusplus
 	#ifndef SJME_CXX_IS_EXTERNED
@@ -26,6 +29,15 @@ extern "C" {
 #endif     /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
+
+/**
+ * ScritchUI API functions, implemented by a native library accordingly.
+ * 
+ * @since 2024/03/27
+ */
+typedef struct sjme_scritchui_apiFunctions
+{
+} sjme_scritchui_apiFunctions;
 
 /*--------------------------------------------------------------------------*/
 
