@@ -5,3 +5,23 @@
 # SquirrelJME is under the Mozilla Public License Version 2.0.
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
+
+# We need to know where Motif is
+find_package(Motif)
+
+# Declare base library
+add_library(ScritchUIMotif SHARED
+	motifCore.c)
+
+# Always make it PIC
+set_property(TARGET ScritchUIMotif
+	PROPERTY POSITION_INDEPENDENT_CODE ON)
+
+# Include main headers
+target_include_directories(ScritchUIMotif PUBLIC
+	"${CMAKE_SOURCE_DIR}/include"
+	${MOTIF_INCLUDE_DIR})
+
+# Link in Motif
+target_link_libraries(ScritchUIMotif
+	${MOTIF_LIBRARIES})
