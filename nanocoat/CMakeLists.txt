@@ -117,6 +117,9 @@ endif()
 # uses nothing else
 add_subdirectory(src)
 
+# Extra libraries
+add_subdirectory(lib)
+
 # Tests first since we add to these and when the ROMs register themselves
 # they will get their tests added accordingly
 if(SQUIRRELJME_ENABLE_TESTING OR
