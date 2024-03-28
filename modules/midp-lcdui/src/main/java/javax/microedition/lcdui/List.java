@@ -51,6 +51,7 @@ public class List
 	volatile Command _selCommand;
 	
 	/** The current locking code. */
+	@Deprecated
 	volatile int _lockingCode;
 	
 	/**
