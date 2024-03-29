@@ -81,6 +81,16 @@ typedef struct sjme_scritchui_apiFunctions
 	sjme_scritchui_apiInitFunc init;
 } sjme_scritchui_apiFunctions;
 
+/**
+ * Function pointer type for obtaining the ScritchUI API functions from
+ * a dynamic library.
+ * 
+ * @return The resultant API functions set.
+ * @since 2024/03/29
+ */
+typedef const sjme_scritchui_apiFunctions* (*sjme_scritchui_dylibApiFunc)(
+	void);
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

@@ -44,6 +44,9 @@ endif()
 # Fixes and otherwise for compatibility
 squirreljme_include("fixes.cmake")
 
+# Hardening options
+squirreljme_include("hardening.cmake")
+
 # CMake Utilities, compiled and used during build
 squirreljme_include("utils.cmake")
 
