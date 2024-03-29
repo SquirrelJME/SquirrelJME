@@ -87,11 +87,17 @@ if(SQUIRRELJME_IS_DEBUG)
 	endif()
 endif()
 
-# Valgrind Support on UNIX OSes, if debugging
+# Valgrind Support on UNIX OSes, if debugging is enabled
 if(ANDROID OR SQUIRRELJME_IS_UNIX)
 	if(SQUIRRELJME_IS_DEBUG)
 		squirreljme_include("valgrind.cmake")
 	endif()
+endif()
+
+# Where should dynamic libraries go when output?
+if(NOT DEFINED SQUIRRELJME_DYLIB_OUTPUT_DIR)
+	set(SQUIRRELJME_DYLIB_OUTPUT_DIR
+		"${CMAKE_BINARY_DIR}" PARENT_SCOPE)
 endif()
 
 # Enable support for testing, this is needed here otherwise testing will not

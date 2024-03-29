@@ -40,25 +40,9 @@ target_include_directories(libEmulator PUBLIC
 	${JNI_INCLUDE_DIRS})
 
 # It is easier to find this when it is in the build root
-set_target_properties(libEmulator PROPERTIES
-	RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
-	LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
-	ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
-
-foreach(outputConfig ${CMAKE_CONFIGURATION_TYPES})
-	string(TOUPPER "${outputConfig}" outputConfig)
-
-	set_target_properties(libEmulator PROPERTIES
-		RUNTIME_OUTPUT_DIRECTORY_${outputConfig} "${CMAKE_BINARY_DIR}"
-		LIBRARY_OUTPUT_DIRECTORY_${outputConfig} "${CMAKE_BINARY_DIR}"
-		ARCHIVE_OUTPUT_DIRECTORY_${outputConfig} "${CMAKE_BINARY_DIR}")
-endforeach()
+squirreljme_target_binary_output(libEmulator
+	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
 
 # Use a simpler name for the library
-set_target_properties(libEmulator PROPERTIES
-	RUNTIME_OUTPUT_NAME
-	"emulator-nanocoat"
-	LIBRARY_OUTPUT_NAME
-	"emulator-nanocoat"
-	ARCHIVE_OUTPUT_NAME
+squirreljme_target_binary_name(libEmulator
 	"emulator-nanocoat")
