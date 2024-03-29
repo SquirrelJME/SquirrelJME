@@ -99,7 +99,8 @@ typedef const sjme_scritchui_apiFunctions* (*sjme_scritchui_dylibApiFunc)(
 	"squirreljme-scritchui-" SJME_TOKEN_STRING(x)
 
 /** The symbol to use with @c sjme_scritchui_dylibApiFunc . */
-#define SJME_SCRITCHUI_DYLIB_SYMBOL(x) sjme_scritchui_dylibApi ## x
+#define SJME_SCRITCHUI_DYLIB_SYMBOL(x) \
+	SJME_TOKEN_PASTE(sjme_scritchui_dylibApi, x)
 		
 #endif
 
