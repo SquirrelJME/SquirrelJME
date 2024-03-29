@@ -9,49 +9,57 @@
 # Include common macros to make things easier
 squirreljme_include("scritchui.cmake")
 
-# Collection dependencies
-set(SQUIRRELJME_SCRITCHUI_COLLECT_TARGETS)
-set(SQUIRRELJME_SCRITCHUI_COLLECT_LIBS)
+# Framebuffer implementation of ScritchUI, does not require any native
+# libraries other than direct framebuffer access. This library is purely
+# a static library and is included as needed...
+include_directories(framebuffer)
 
-# Windows?
-squirreljme_scritchui_build(WIN32 win32 Win32)
+# We can only build dynamic libraries if requested to
+if(NOT SQUIRRELJME_SCRITCHUI_NO_DYLIB)
+	# Collection dependencies
+	set(SQUIRRELJME_SCRITCHUI_COLLECT_TARGETS)
+	set(SQUIRRELJME_SCRITCHUI_COLLECT_LIBS)
 
-# Motif?
-find_package(Motif)
+	# Windows?
+	squirreljme_scritchui_build(WIN32 win32 Win32)
 
-squirreljme_scritchui_build(MOTIF_FOUND motif Motif)
+	# Motif?
+	find_package(Motif)
 
-# Include pkg-config finder
-find_package(PkgConfig)
+	squirreljme_scritchui_build(MOTIF_FOUND motif Motif)
 
-# Only if package config was found can we reliably use these
-if(PKG_CONFIG_FOUND)
-	# X11?
-	pkg_check_modules(X11 x11)
+	# Include pkg-config finder
+	find_package(PkgConfig)
 
-	squirreljme_scritchui_build(X11_FOUND x11 X11)
+	# Only if package config was found can we reliably use these
+	if(PKG_CONFIG_FOUND)
+		# X11?
+		pkg_check_modules(X11 x11)
 
-	# GTK2?
-	pkg_check_modules(GTK2 gtk+-2.0)
+		squirreljme_scritchui_build(X11_FOUND x11 X11)
 
-	squirreljme_scritchui_build(GTK2_FOUND gtk2 GTK2)
+		# GTK2?
+		pkg_check_modules(GTK2 gtk+-2.0)
 
-	# GTK3?
-	pkg_check_modules(GTK3 gtk+-3.0)
+		squirreljme_scritchui_build(GTK2_FOUND gtk2 GTK2)
 
-	squirreljme_scritchui_build(GTK3_FOUND gtk3 GTK3)
-else()
-	message("ScritchUI: pkg-config not found...")
+		# GTK3?
+		pkg_check_modules(GTK3 gtk+-3.0)
+
+		squirreljme_scritchui_build(GTK3_FOUND gtk3 GTK3)
+	else()
+		message("ScritchUI: pkg-config not found...")
+	endif()
+
+	# Collect all ScritchUI outputs into a single archive
+	set(SQUIRRELJME_SCRITCHUI_COLLECT_ZIP
+		"${SQUIRRELJME_DYLIB_OUTPUT_DIR}/libsquirreljme-scritchui.zip")
+	add_custom_target(ScritchUICollectZip
+		COMMAND "${CMAKE_COMMAND}" -E "tar" "cv"
+			"${SQUIRRELJME_SCRITCHUI_COLLECT_ZIP}" "--format=zip" "--"
+			${SQUIRRELJME_SCRITCHUI_COLLECT_LIBS}
+		DEPENDS ${SQUIRRELJME_SCRITCHUI_COLLECT_TARGETS}
+		BYPRODUCTS "${SQUIRRELJME_SCRITCHUI_COLLECT_ZIP}"
+		COMMENT "Collects all ScritchUI outputs into one single Zip."
+		COMMAND_EXPAND_LISTS)
 endif()
-
-# Collect all ScritchUI outputs into a single archive
-set(SQUIRRELJME_SCRITCHUI_COLLECT_ZIP
-	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}/libsquirreljme-scritchui.zip")
-add_custom_target(ScritchUICollectZip
-	COMMAND "${CMAKE_COMMAND}" -E "tar" "cv"
-		"${SQUIRRELJME_SCRITCHUI_COLLECT_ZIP}" "--format=zip" "--"
-		${SQUIRRELJME_SCRITCHUI_COLLECT_LIBS}
-	DEPENDS ${SQUIRRELJME_SCRITCHUI_COLLECT_TARGETS}
-	BYPRODUCTS "${SQUIRRELJME_SCRITCHUI_COLLECT_ZIP}"
-	COMMENT "Collects all ScritchUI outputs into one single Zip."
-	COMMAND_EXPAND_LISTS)

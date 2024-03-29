@@ -81,6 +81,9 @@ typedef struct sjme_scritchui_apiFunctions
 	sjme_scritchui_apiInitFunc init;
 } sjme_scritchui_apiFunctions;
 
+/* If dynamic libraries are not supported, we cannot do this. */
+#if !defined(SJME_CONFIG_SCRITCHUI_NO_DYLIB)
+
 /**
  * Function pointer type for obtaining the ScritchUI API functions from
  * a dynamic library.
@@ -90,6 +93,15 @@ typedef struct sjme_scritchui_apiFunctions
  */
 typedef const sjme_scritchui_apiFunctions* (*sjme_scritchui_dylibApiFunc)(
 	void);
+
+/** The name of the dynamic library for ScritchUI. */
+#define SJME_SCRITCHUI_DYLIB_NAME(x) \
+	"squirreljme-scritchui-" SJME_TOKEN_STRING(x)
+
+/** The symbol to use with @c sjme_scritchui_dylibApiFunc . */
+#define SJME_SCRITCHUI_DYLIB_SYMBOL(x) sjme_scritchui_dylibApi ## x
+		
+#endif
 
 /*--------------------------------------------------------------------------*/
 
