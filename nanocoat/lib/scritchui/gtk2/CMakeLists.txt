@@ -11,7 +11,7 @@ pkg_check_modules(GTK2 gtk+-2.0)
 
 # Declare base library
 add_library(ScritchUIGTK2 SHARED
-	gtkCore.c)
+	gtk2Core.c)
 
 # Always make it PIC
 set_property(TARGET ScritchUIGTK2
@@ -26,3 +26,6 @@ target_include_directories(ScritchUIGTK2 PUBLIC
 target_link_libraries(ScritchUIGTK2
 	${GTK2_LIBRARIES})
 
+# ScritchUI requires a normalized library name
+squirreljme_target_binary_name(ScritchUIGTK2
+	"squirreljme-scritchui-gtk2")

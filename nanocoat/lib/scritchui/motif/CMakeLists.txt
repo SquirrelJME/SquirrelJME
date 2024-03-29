@@ -25,3 +25,7 @@ target_include_directories(ScritchUIMotif PUBLIC
 # Link in Motif
 target_link_libraries(ScritchUIMotif
 	${MOTIF_LIBRARIES})
+
+# ScritchUI requires a normalized library name
+squirreljme_target_binary_name(ScritchUIMotif
+	"squirreljme-scritchui-motif")

@@ -6,26 +6,20 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 
+# Include common macros to make things easier
+squirreljme_include("scritchui.cmake")
+
+# Collection dependencies
+set(SQUIRRELJME_SCRITCHUI_COLLECT_TARGETS)
+set(SQUIRRELJME_SCRITCHUI_COLLECT_LIBS)
+
 # Windows?
-if(WIN32)
-	message("ScritchUI: Enabling Win32!")
+squirreljme_scritchui_build(WIN32 win32 Win32)
 
-	add_subdirectory(win32)
-else()
-	message("ScritchUI: Win32 not available...")
-endif()
-
-# Motif
+# Motif?
 find_package(Motif)
 
-# Is there Motif (Common Desktop Environment)?
-if(MOTIF_FOUND)
-	message("ScritchUI: Enabling Motif!")
-
-	add_subdirectory(motif)
-else()
-	message("ScritchUI: Motif not available...")
-endif()
+squirreljme_scritchui_build(MOTIF_FOUND motif Motif)
 
 # Include pkg-config finder
 find_package(PkgConfig)
@@ -35,35 +29,29 @@ if(PKG_CONFIG_FOUND)
 	# X11?
 	pkg_check_modules(X11 x11)
 
-	if(X11_FOUND)
-		message("ScritchUI: Enabling X11!")
-
-		add_subdirectory(x11)
-	else()
-		message("ScritchUI: X11 not available...")
-	endif()
+	squirreljme_scritchui_build(X11_FOUND x11 X11)
 
 	# GTK2?
 	pkg_check_modules(GTK2 gtk+-2.0)
 
-	if(GTK2_FOUND)
-		message("ScritchUI: Enabling GTK2!")
-
-		add_subdirectory(gtk2)
-	else()
-		message("ScritchUI: GTK2 not found...")
-	endif()
+	squirreljme_scritchui_build(GTK2_FOUND gtk2 GTK2)
 
 	# GTK3?
 	pkg_check_modules(GTK3 gtk+-3.0)
 
-	if (GTK3_FOUND)
-		message("ScritchUI: Enabling GTK3!")
-
-		add_subdirectory(gtk3)
-	else()
-		message("ScritchUI: GTK3 not found...")
-	endif()
+	squirreljme_scritchui_build(GTK3_FOUND gtk3 GTK3)
 else()
 	message("ScritchUI: pkg-config not found...")
 endif()
+
+# Collect all ScritchUI outputs into a single archive
+set(SQUIRRELJME_SCRITCHUI_COLLECT_ZIP
+	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}/libsquirreljme-scritchui.zip")
+add_custom_target(ScritchUICollectZip
+	COMMAND "${CMAKE_COMMAND}" -E "tar" "cv"
+		"${SQUIRRELJME_SCRITCHUI_COLLECT_ZIP}" "--format=zip" "--"
+		${SQUIRRELJME_SCRITCHUI_COLLECT_LIBS}
+	DEPENDS ${SQUIRRELJME_SCRITCHUI_COLLECT_TARGETS}
+	BYPRODUCTS "${SQUIRRELJME_SCRITCHUI_COLLECT_ZIP}"
+	COMMENT "Collects all ScritchUI outputs into one single Zip."
+	COMMAND_EXPAND_LISTS)

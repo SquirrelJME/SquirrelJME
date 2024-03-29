@@ -12,10 +12,7 @@ package cc.squirreljme.plugin.general.cmake;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import javax.inject.Inject;
-import lombok.Getter;
 import org.gradle.api.DefaultTask;
-import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.OutputFile;
 
 /**
  * Task for building CMake projects.
@@ -32,7 +29,7 @@ public class CMakeBuildTask
 	public final Path cmakeBuild;
 	
 	/** The output library we want. */
-	public final Path cmakeOutLibrary;
+	public final Path cmakeOutFile;
 	
 	/** The rule to use. */
 	public final String cmakeRule;
@@ -41,16 +38,16 @@ public class CMakeBuildTask
 	 * Initializes the build task.
 	 *
 	 * @param __source The project source directory.
-	 * @param __outputLib The output library we want.
+	 * @param __outputFile The output library we want.
 	 * @param __rule The rule to execute.
 	 * @since 2024/03/15
 	 */
 	@Inject
-	public CMakeBuildTask(Path __source, String __outputLib,
+	public CMakeBuildTask(Path __source, String __outputFile,
 		String __rule)
 		throws NullPointerException
 	{
-		if (__source == null || __outputLib == null || __rule == null)
+		if (__source == null || __outputFile == null || __rule == null)
 			throw new NullPointerException("NARG");
 		
 		// Set source for later
@@ -59,18 +56,15 @@ public class CMakeBuildTask
 		
 		// The build root is based on the task
 		this.cmakeBuild = this.getProject().getBuildDir().toPath()
-			.resolve("cmake");
+			.resolve("cmake-" + this.getName());
 		
-		// The desired library we want
-		this.cmakeOutLibrary = this.cmakeBuild.resolve(
-			Paths.get(System.mapLibraryName(__outputLib)));
+		// The desired output we want
+		this.cmakeOutFile = this.cmakeBuild.resolve(
+			Paths.get(__outputFile));
 		
 		// Description
 		this.setGroup("squirreljme");
 		this.setDescription("Performs a CMake build.");
-		
-		// Only build if CMake is available
-		/*this.onlyIf(new CMakeOnlyIf());*/
 		
 		// Check if out of date
 		this.getOutputs().upToDateWhen(new CMakeUpToDateWhen());
@@ -80,7 +74,7 @@ public class CMakeBuildTask
 		this.getInputs().files(
 			this.cmakeSource.resolve("CMakeLists.txt"));
 		this.getOutputs().dirs(this.cmakeBuild);
-		this.getOutputs().files(this.cmakeOutLibrary);
+		this.getOutputs().files(this.cmakeOutFile);
 		
 		// What to do for this
 		this.doFirst(new CMakeBuildTaskAction());

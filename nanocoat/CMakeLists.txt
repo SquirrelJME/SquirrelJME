@@ -98,6 +98,8 @@ endif()
 if(NOT DEFINED SQUIRRELJME_DYLIB_OUTPUT_DIR)
 	set(SQUIRRELJME_DYLIB_OUTPUT_DIR
 		"${CMAKE_BINARY_DIR}" PARENT_SCOPE)
+	set(SQUIRRELJME_DYLIB_OUTPUT_DIR
+		"${CMAKE_BINARY_DIR}")
 endif()
 
 # Enable support for testing, this is needed here otherwise testing will not

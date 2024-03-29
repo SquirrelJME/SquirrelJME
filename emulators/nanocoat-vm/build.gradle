@@ -27,7 +27,7 @@ Provider<CMakeBuildTask> libNativeNanoCoat = tasks.register(
 	"libNativeNanoCoat",
 	CMakeBuildTask.class,
 	gradle.rootProject.projectDir.toPath().resolve("nanocoat"),
-	"emulator-nanocoat",
+	System.mapLibraryName("emulator-nanocoat"),
 	"libEmulator")
 
 libNativeNanoCoat.configure { taskIsh ->
@@ -51,7 +51,7 @@ jar {
 	dependsOn libNativeNanoCoat
 	
 	// Include library into the root
-	from libNativeNanoCoat.get().cmakeOutLibrary.toFile()
+	from libNativeNanoCoat.get().cmakeOutFile.toFile()
 	into "/"
 }
 

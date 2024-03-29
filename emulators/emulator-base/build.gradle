@@ -32,13 +32,23 @@ dependencies
 	api project(":modules:scritch-ui")
 }
 
+// Native emulator support library
 Provider<CMakeBuildTask> libNativeEmulatorBase = tasks.register(
 	"libNativeEmulatorBase",
 	CMakeBuildTask.class,
 	project.getProjectDir().toPath(),
-	"emulator-base",
+	System.mapLibraryName("emulator-base"),
 	"libEmulatorBase")
 
+// ScritchUI native implementations
+Provider<CMakeBuildTask> libNativeScritchUI = tasks.register(
+	"libNativeScritchUI",
+	CMakeBuildTask.class,
+	rootProject.getProjectDir().toPath().resolve("nanocoat"),
+	"libsquirreljme-scritchui.zip",
+	"ScritchUICollectZip")
+
+// Decoding of mime resources
 Provider<MimeDecodeResourcesTask> mimeDecode = tasks.register(
 	"mimeDecode", MimeDecodeResourcesTask.class,
 	"main",
@@ -47,19 +57,21 @@ Provider<MimeDecodeResourcesTask> mimeDecode = tasks.register(
 
 processResources.dependsOn(mimeDecode)
 processResources.dependsOn(libNativeEmulatorBase)
-
-jar.dependsOn(mimeDecode)
+processResources.dependsOn(libNativeScritchUI)
 
 compileJava.dependsOn(libNativeEmulatorBase)
+compileJava.dependsOn(libNativeScritchUI)
 
 mimeDecode.get().dependsOn(libNativeEmulatorBase)
+mimeDecode.get().dependsOn(libNativeScritchUI)
 
 // We need the native library in the JAR before we can properly use it
 // But we can compile the Java code just fine without it
 jar {
-	dependsOn libNativeEmulatorBase
+	dependsOn mimeDecode, libNativeEmulatorBase, libNativeScritchUI
 
-	from libNativeEmulatorBase.get().cmakeOutLibrary.toFile()
+	from libNativeEmulatorBase.get().cmakeOutFile.toFile()
+	from zipTree(libNativeScritchUI.get().cmakeOutFile.toFile()).files
 	into "/"
 }
 
