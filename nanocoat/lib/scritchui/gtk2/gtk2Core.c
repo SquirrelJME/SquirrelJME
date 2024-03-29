@@ -8,3 +8,19 @@
 // -------------------------------------------------------------------------*/
 
 #include "lib/scritchui/scritchui.h"
+
+/** GTK Function set for Scritch UI. */
+static const sjme_scritchui_apiFunctions sjme_scritchUI_gtkFunctions =
+{
+};
+
+/**
+ * Returns the GTK ScritchUI interface.
+ * 
+ * @return The library interface.
+ * @since 2024/03/29 
+ */
+const sjme_scritchui_apiFunctions* SJME_SCRITCHUI_DYLIB_SYMBOL(gtk2)(void)
+{
+	return &sjme_scritchUI_gtkFunctions;
+}

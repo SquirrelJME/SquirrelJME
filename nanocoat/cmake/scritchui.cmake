@@ -19,6 +19,10 @@ macro(squirreljme_scritchui_build ifVar subDir targetBase)
 			"ScritchUI${targetBase}")
 		list(APPEND SQUIRRELJME_SCRITCHUI_COLLECT_LIBS
 			"$<TARGET_FILE:ScritchUI${targetBase}>")
+		list(APPEND SQUIRRELJME_SCRITCHUI_COLLECT_NAMES
+			"${targetBase}")
+		set(SQUIRRELJME_SCRITCHUI_COLLECT_NAMES_CONTENT
+			"${targetBase}\n${SQUIRRELJME_SCRITCHUI_COLLECT_NAMES_CONTENT}")
 	else()
 		message("ScritchUI: ${targetBase} not available...")
 	endif()
