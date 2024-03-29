@@ -31,6 +31,17 @@ extern "C" {
 /*--------------------------------------------------------------------------*/
 
 /**
+ * API Flags for ScritchUI.
+ * 
+ * @since 2024/03/29
+ */
+typedef enum sjme_scritchui_apiFlag
+{
+	/** Only panels are supported for this interface. */
+	SJME_SCRITCHUI_API_FLAG_PANEL_ONLY = 1,
+} sjme_scritchui_apiFlag;
+
+/**
  * ScritchUI state.
  * 
  * @since 2024/03/27
@@ -63,12 +74,24 @@ typedef struct sjme_scritchui_uiWindow* sjme_scritchui_uiWindow;
  * 
  * @param inPool The allocation pool to use.
  * @param outState The resultant state.
- * @return Any error state when applicable.
+ * @return Any error code if applicable.
  * @since 2024/03/27
  */
 typedef sjme_errorCode (*sjme_scritchui_apiInitFunc)(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInOutNotNull sjme_scritchui* outState);
+
+/**
+ * Obtains the flags which describe the interface.
+ * 
+ * @param inState The input ScritchUI state.
+ * @param outFlags The output flags for this interface.
+ * @return Any error code if applicable.
+ * @since 2024/03/29
+ */
+typedef sjme_errorCode (*sjme_scritchui_apiFlags)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_jint outFlags);
 
 /**
  * ScritchUI API functions, implemented by a native library accordingly.
@@ -79,6 +102,9 @@ typedef struct sjme_scritchui_apiFunctions
 {
 	/** Initialize the framework library. */
 	sjme_scritchui_apiInitFunc init;
+	
+	/** API flags. */
+	sjme_scritchui_apiFlags flags;
 } sjme_scritchui_apiFunctions;
 
 /* If dynamic libraries are not supported, we cannot do this. */

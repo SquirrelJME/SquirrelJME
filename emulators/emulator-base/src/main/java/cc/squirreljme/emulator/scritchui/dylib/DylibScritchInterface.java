@@ -28,6 +28,25 @@ import org.jetbrains.annotations.NotNull;
 public class DylibScritchInterface
 	implements ScritchInterface
 {
+	/** The native dynamic library to use. */
+	protected final NativeScritchDylib dyLib;
+	
+	/**
+	 * Initializes the native dynamic library interface.
+	 *
+	 * @param __dyLib The dynamic library interface to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/03/29
+	 */
+	public DylibScritchInterface(NativeScritchDylib __dyLib)
+		throws NullPointerException
+	{
+		if (__dyLib == null)
+			throw new NullPointerException("NARG");
+		
+		this.dyLib = __dyLib;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2024/03/29
