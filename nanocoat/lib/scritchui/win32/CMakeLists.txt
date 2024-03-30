@@ -5,3 +5,19 @@
 # SquirrelJME is under the Mozilla Public License Version 2.0.
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
+
+# Declare base library
+add_library(ScritchUIWin32 SHARED
+	win32Core.c)
+
+# Always make it PIC
+set_property(TARGET ScritchUIWin32
+	PROPERTY POSITION_INDEPENDENT_CODE ON)
+
+# Include main headers
+target_include_directories(ScritchUIWin32 PUBLIC
+	"${CMAKE_SOURCE_DIR}/include")
+
+# ScritchUI requires a normalized library name
+squirreljme_target_binary_name(ScritchUIWin32
+	"squirreljme-scritchui-win32")
