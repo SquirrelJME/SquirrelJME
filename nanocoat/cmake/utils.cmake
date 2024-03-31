@@ -37,6 +37,7 @@ if(NOT EXISTS "${SQUIRRELJME_UTIL_DIR}" OR
 		# Note
 		message(STATUS "Bootstrapping utils into "
 			"${SQUIRRELJME_UTIL_DIR}...")
+		message(STATUS "Current generator is ${CMAKE_GENERATOR}...")
 
 		# Run nested CMake to build the utilities
 		if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.13")
@@ -60,6 +61,7 @@ if(NOT EXISTS "${SQUIRRELJME_UTIL_DIR}" OR
 					"--unset=LDFLAGS"
 					"${CMAKE_COMMAND}"
 					"-DCMAKE_BUILD_TYPE=Debug"
+					"-G" "${CMAKE_GENERATOR}"
 					"-S" "${SQUIRRELJME_UTIL_SOURCE_DIR}"
 					"-B" "${SQUIRRELJME_UTIL_DIR}"
 				RESULT_VARIABLE cmakeUtilBuildResult)
@@ -85,6 +87,7 @@ if(NOT EXISTS "${SQUIRRELJME_UTIL_DIR}" OR
 					"--unset=LDFLAGS"
 					"${CMAKE_COMMAND}"
 					"-DCMAKE_BUILD_TYPE=Debug"
+					"-G" "${CMAKE_GENERATOR}"
 					"${SQUIRRELJME_UTIL_SOURCE_DIR}"
 				WORKING_DIRECTORY "${SQUIRRELJME_UTIL_DIR}"
 				RESULT_VARIABLE cmakeUtilConfigResult)

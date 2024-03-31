@@ -31,11 +31,12 @@ dependencies
 	api project(":modules:debug-jdwp-vm-host")
 }
 
+// Native emulator support library
 Provider<CMakeBuildTask> libNativeEmulatorBase = tasks.register(
 	"libNativeEmulatorBase",
 	CMakeBuildTask.class,
-	project.getProjectDir().toPath(),
-	"emulator-base",
+	project.getProjectDir().toPath().resolve("src").resolve("main"),
+	System.mapLibraryName("emulator-base"),
 	"libEmulatorBase")
 
 Provider<MimeDecodeResourcesTask> mimeDecode =tasks.register(
@@ -58,7 +59,7 @@ mimeDecode.get().dependsOn(libNativeEmulatorBase)
 jar {
 	dependsOn libNativeEmulatorBase
 
-	from libNativeEmulatorBase.get().cmakeOutLibrary.toFile()
+	from libNativeEmulatorBase.get().cmakeOutFile.toFile()
 	into "/"
 }
 

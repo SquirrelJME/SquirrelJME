@@ -91,6 +91,9 @@ build-dir/
 CMakeFiles
 CTestTestfile.cmake
 CMakeCache.txt
+nanocoat/cc/cmake-build-debug
+ratufacoat/cmake-build-release
+ratufacoat/cmake-build-release
 nanocoat/cmake-build-release
 nanocoat/cmake-build-debug
 nanocoat/cmake-build-*

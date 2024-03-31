@@ -19,7 +19,7 @@ find_package(JNI QUIET)
 if(NOT JNI_FOUND)
 	# Where are the headers?
 	set(JNI_INCLUDE_DIRS
-		"src/main/headers/jni")
+		"headers/jni")
 
 	# Set as found
 	set(JNI_FOUND ON)
@@ -27,26 +27,27 @@ endif()
 
 # Declare library
 add_library(libEmulatorBase SHARED
-	src/main/c/mle_debug.c
-    src/main/c/mle_form.c
-    src/main/c/mle_jar.c
-    src/main/c/mle_math.c
-    src/main/c/mle_midi.c
-    src/main/c/mle_nativearchive.c
-    src/main/c/mle_object.c
-    src/main/c/mle_pencil.c
-    src/main/c/mle_reflection.c
-    src/main/c/mle_runtime.c
-    src/main/c/mle_task.c
-    src/main/c/mle_terminal.c
-    src/main/c/mle_thread.c
-    src/main/c/mle_type.c
-    src/main/c/nativebinding.c
-    src/main/c/utils.c)
+	c/mle_debug.c
+	c/mle_form.c
+	c/mle_jar.c
+	c/mle_math.c
+	c/mle_midi.c
+	c/mle_nativearchive.c
+	c/mle_object.c
+	c/mle_pencil.c
+	c/mle_reflection.c
+	c/mle_runtime.c
+	c/mle_task.c
+	c/mle_terminal.c
+	c/mle_thread.c
+	c/mle_type.c
+	c/nativebinding.c
+	c/utils.c)
 
 # Includes for the build
 target_include_directories(libEmulatorBase PUBLIC
-	"src/main/headers"
+	"headers"
+	"${CMAKE_SOURCE_DIR}/../../nanocoat/include"
 	${JNI_INCLUDE_DIRS})
 
 # It is easier to find this when it is in the build root

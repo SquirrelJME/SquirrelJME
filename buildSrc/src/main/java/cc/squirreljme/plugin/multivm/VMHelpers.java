@@ -507,7 +507,7 @@ public final class VMHelpers
 			.getByName("libNativeEmulatorBase");
 		
 		// Use the resultant library
-		return cmake.cmakeOutLibrary;
+		return cmake.cmakeOutFile;
 	}
 	
 	/**
