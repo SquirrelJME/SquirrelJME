@@ -9,6 +9,7 @@
 
 package cc.squirreljme.emulator.scritchui.dylib;
 
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import java.nio.file.Path;
 
 /**
@@ -18,6 +19,9 @@ import java.nio.file.Path;
  */
 public final class NativeScritchDylib
 {
+	/** Structure pointer. */
+	private final long _structP;
+	
 	/**
 	 * Initializes the native library layer for ScritchUI.
 	 *
@@ -32,6 +36,21 @@ public final class NativeScritchDylib
 		if (__libPath == null || __name == null)
 			throw new NullPointerException("NARG");
 		
-		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
+		// Link in native library and locate the structure
+		long structP = this.__link(
+			__libPath.toAbsolutePath().toString(), __name);
+		if (structP == 0)
+			throw new MLECallError("No native structure.");
+		this._structP = structP;
 	}
+	
+	/**
+	 * Link in the library and load the given structure pointer.
+	 *
+	 * @param __libPath The library path.
+	 * @param __name The interface name.
+	 * @return The resultant struct implementation pointer.
+	 * @since 2024/03/31
+	 */
+	private native long __link(String __libPath, String __name);
 }

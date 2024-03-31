@@ -124,6 +124,10 @@ typedef const sjme_scritchui_apiFunctions* (*sjme_scritchui_dylibApiFunc)(
 #define SJME_SCRITCHUI_DYLIB_NAME(x) \
 	"squirreljme-scritchui-" SJME_TOKEN_STRING_PP(x)
 
+/** The path name for the dynamic library for ScritchUI. */
+#define SJME_SCRITCHUI_DYLIB_PATHNAME(x) \
+	SJME_CONFIG_DYLIB_PATHNAME(SJME_SCRITCHUI_DYLIB_NAME(x))
+
 /** The symbol to use with @c sjme_scritchui_dylibApiFunc . */
 #define SJME_SCRITCHUI_DYLIB_SYMBOL(x) \
 	SJME_TOKEN_PASTE(sjme_scritchui_dylibApi, x)

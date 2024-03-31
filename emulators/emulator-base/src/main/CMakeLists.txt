@@ -38,6 +38,7 @@ add_library(libEmulatorBase SHARED
 	c/mle_reflection.c
 	c/mle_runtime.c
 	c/mle_scritchui.c
+	c/mle_scritchuidylib.c
 	c/mle_task.c
 	c/mle_terminal.c
 	c/mle_thread.c
@@ -46,9 +47,12 @@ add_library(libEmulatorBase SHARED
 	c/utils.c)
 
 # Includes for the build
+get_filename_component(nanocoatIncludePath
+	"${CMAKE_SOURCE_DIR}/../../../../nanocoat/include" ABSOLUTE)
+message(STATUS "NanoCoat include is: ${nanocoatIncludePath}")
 target_include_directories(libEmulatorBase PUBLIC
 	"headers"
-	"${CMAKE_SOURCE_DIR}/../../nanocoat/include"
+	"${nanocoatIncludePath}"
 	${JNI_INCLUDE_DIRS})
 
 # It is easier to find this when it is in the build root

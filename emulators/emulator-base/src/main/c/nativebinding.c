@@ -39,6 +39,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_emulator_NativeBinding__1_1bindMethod
 	rv |= mleMathInit(env, classy);
 	rv |= mleMidiInit(env, classy);
 	rv |= mleNativeArchiveInit(env, classy);
+	rv |= mleNativeScritchDylibInit(env, classy);
 	rv |= mleNativeScritchInterfaceInit(env, classy);
 	rv |= mleObjectInit(env, classy);
 	rv |= mlePencilInit(env, classy);

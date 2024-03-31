@@ -42,6 +42,36 @@ extern "C" {
 	#undef SJME_CONFIG_RELEASE
 #endif
 
+/* The current operating system. */
+#if defined(__linux__) || defined(linux) || defined(__linux)
+	/** Linux is available. */
+	#define SJME_CONFIG_HAS_LINUX
+#elif defined(__CYGWIN__)
+	/** Cygwin is available. */
+	#define SJME_CONFIG_HAS_CYGWIN
+#elif defined(_WIN32) || defined(__WIN32__) || \
+	defined(__WIN32) || defined(_WINDOWS)
+	/** Windows is available. */
+	#define SJME_CONFIG_HAS_WINDOWS
+#elif defined(__APPLE__) && defined(__MACH__)
+	/** macOS 10+ is available. */
+	#define SJME_CONFIG_HAS_MACOS
+#elif defined(macintosh)
+	/** macOS Classic is available. */
+	#define SJME_CONFIG_HAS_MACOS_CLASSIC
+#elif defined(__palmos__)
+	/** PalmOS is available. */
+	#define SJME_CONFIG_HAS_PALMOS
+#elif defined(__FreeBSD__) || defined(__NetBSD__) ||
+defined(__OpenBSD__) || defined(__bsdi__) ||
+	defined(__DragonFly__) || defined(__MidnightBSD__)
+	/** BSD is available. */
+	#define SJME_CONFIG_HAS_BSD
+#elif defined(__BEOS__) || defined(__HAIKU__)
+	/** BeOS/Haiku is available. */
+	#define SJME_CONFIG_HAS_BEOS
+#endif
+
 /** Possibly detect endianess. */
 #if !defined(SJME_CONFIG_HAS_BIG_ENDIAN) && \
 	!defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)
@@ -454,8 +484,7 @@ extern "C" {
 	#define SJME_CONFIG_HAS_GCC
 #endif
 
-#if defined(_WIN32) || defined(__WIN32__) || \
-	defined(__WIN32) || defined(_WINDOWS)
+#if defined(SJME_CONFIG_HAS_WINDOWS)
 	/** Supports Windows Atomic Access. */
 	#define SJME_CONFIG_HAS_ATOMIC_WIN32
 #elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L && \
@@ -480,6 +509,22 @@ extern "C" {
 		/** Atomics are supported. */
 		#define SJME_CONFIG_HAS_ATOMIC
 	#endif
+#endif
+
+#if defined(SJME_CONFIG_HAS_LINUX) || \
+	defined(SJME_CONFIG_HAS_BSD) || \
+    defined(SJME_CONFIG_HAS_BEOS)
+	#define SJME_CONFIG_DYLIB_PATHNAME(x) \
+		"lib" x ".so"
+#elif defined(SJME_CONFIG_HAS_CYGWIN)
+	#define SJME_CONFIG_DYLIB_PATHNAME(x) \
+		"lib" x ".dll"
+#elif defined(SJME_CONFIG_HAS_WINDOWS)
+	#define SJME_CONFIG_DYLIB_PATHNAME(x) \
+		"" x ".dll"
+#elif defined(SJME_CONFIG_HAS_MACOS)
+	#define SJME_CONFIG_DYLIB_PATHNAME(x) \
+		"lib" x ".dylib"
 #endif
 
 /*--------------------------------------------------------------------------*/
