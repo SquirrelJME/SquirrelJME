@@ -19,7 +19,7 @@ executors:
     #  - image: debian:bookworm
     machine:
       image: ubuntu-2204:2024.01.1
-    resource_class: large
+    resource_class: medium
     environment:
       # Allow Gradle to be fully cached
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
@@ -38,16 +38,16 @@ executors:
     machine: true
     resource_class: squirreljme/squirreljme-linux-riscv64
 
-# This is in the documentation but does not actually work, new feature?
-#  build-on-windows:
-#    windows:
-#      name: win/default
-#      shell: cmd.exe
-#    resource_class: medium
-#    environment:
-#      # Use a reduced amount of memory to all the VMs so that it does not
-#      # try grabbing all the memory that is available to the system.
-#      JAVA_OPTS: -Xmx3g
+  # This is in the documentation but does not actually work, new feature?
+  #  build-on-windows:
+  #    windows:
+  #      name: win/default
+  #      shell: cmd.exe
+  #    resource_class: medium
+  #    environment:
+  #      # Use a reduced amount of memory to all the VMs so that it does not
+  #      # try grabbing all the memory that is available to the system.
+  #      JAVA_OPTS: -Xmx3g
 
   build-on-macos:
     macos:
@@ -244,7 +244,7 @@ jobs:
     executor:
       name: win/default
       shell: cmd.exe
-      size: large
+      size: medium
     environment:
       # Use older JDK for CircleCI
       JAVA_HOME: c:/users/circleci/project/jdk-11.0.22/
@@ -269,7 +269,7 @@ jobs:
     executor:
       name: win/default
       shell: cmd.exe
-      size: large
+      size: medium
     environment:
       # Use a reduced amount of memory to all the VMs so that it does not
       # try grabbing all the memory that is available to the system.
@@ -316,7 +316,7 @@ jobs:
     executor:
       name: win/default
       shell: cmd.exe
-      size: large
+      size: medium
     environment:
       # Use a reduced amount of memory to all the VMs so that it does not
       # try grabbing all the memory that is available to the system.
@@ -340,36 +340,6 @@ jobs:
       - store_artifacts:
           path: emulators/standalone/build/libs/
           destination: .
-
-  ratufacoat_build_windows:
-    executor:
-      name: win/default
-      shell: cmd.exe
-      size: large
-    environment:
-      # Use a reduced amount of memory to all the VMs so that it does not
-      # try grabbing all the memory that is available to the system.
-      JAVA_OPTS: -Xmx3g
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - windows-install-required
-      - run:
-          name: Setup CMake build
-          working_directory: ratufacoat
-          shell: bash.exe
-          command: |
-            "$PROGRAMFILES/CMake/bin/cmake.exe" .
-      - run:
-          name: Compile CMake build
-          working_directory: ratufacoat
-          shell: bash.exe
-          command: |
-            "$PROGRAMFILES/CMake/bin/cmake.exe" --build .
-      - store_artifacts:
-          path: ratufacoat\src\Debug\SquirrelJME.exe
-          destination: SquirrelJME.exe
 
   ################################# MAC OS X #################################
   build_macosx:
@@ -610,61 +580,6 @@ jobs:
           command: ./gradlew testJar <<pipeline.parameters.standard-gradle-options>>
       - persist-gradle
 
-  # Constructs the ROM fragment libraries for SummerCoat, since they are used
-  # for general ROM construction
-  construct_libSummerCoat:
-    executor: build-on-linux-amd64
-    steps:
-      - checkout
-      - linux-install-required
-      - attach_workspace:
-          at: .
-      - run:
-          name: Construct SummerCoat Libraries
-          command: ./gradlew libSummerCoat <<pipeline.parameters.standard-gradle-options>>
-      - persist-gradle
-
-  # All the tests so that they can run from within SummerCoat
-  construct_libTestSummerCoat:
-    executor: build-on-linux-amd64
-    steps:
-      - checkout
-      - linux-install-required
-      - attach_workspace:
-          at: .
-      - run:
-          name: Construct Test SummerCoat Libraries
-          command: ./gradlew libTestSummerCoat <<pipeline.parameters.standard-gradle-options>>
-      - persist-gradle
-
-  # Constructs the standard SummerCoat ROM, could be uploaded later
-  construct_romSummerCoat:
-    executor: build-on-linux-amd64
-    steps:
-      - checkout
-      - linux-install-required
-      - attach_workspace:
-          at: .
-      - run:
-          name: Construct SummerCoat ROM
-          command: ./gradlew romSummerCoat <<pipeline.parameters.standard-gradle-options>>
-      - persist-gradle
-
-  # Constructs the test SummerCoat ROM, could be uploaded later, this is so
-  # that any RatufaCoats have an actual ROM that can be tested to ensure that
-  # it properly works.
-  construct_romTestSummerCoat:
-    executor: build-on-linux-amd64
-    steps:
-      - checkout
-      - linux-install-required
-      - attach_workspace:
-          at: .
-      - run:
-          name: Construct Test SummerCoat ROM
-          command: ./gradlew romTestSummerCoat <<pipeline.parameters.standard-gradle-options>>
-      - persist-gradle
-
 workflows:
   version: 2
   tests:
@@ -678,31 +593,51 @@ workflows:
       - test_springcoat_release:
           requires:
             - construct_testJars
+          filters:
+            branches:
+              only:
+                - trunk
       - build_linux_amd64_standalone:
-           requires:
-             - build_linux_amd64
+          requires:
+            - build_linux_amd64
+          filters:
+            branches:
+              only:
+                - trunk
       - build_linux_amd64_standalone_flatpak:
-           requires:
-             - build_linux_amd64
+          requires:
+            - build_linux_amd64
+          filters:
+            branches:
+              only:
+                - trunk
 
       # ARM64
       - build_linux_arm64
       - build_linux_arm64_standalone:
           requires:
             - build_linux_arm64
+          filters:
+            branches:
+              only:
+                - trunk
       - build_linux_arm64_standalone_flatpak:
           requires:
             - build_linux_arm64
+          filters:
+            branches:
+              only:
+                - trunk
 
       # RISC-V 64-bit
-#      - build_linux_riscv64
-#      - build_linux_riscv64_standalone:
-#          requires:
-#            - build_linux_riscv64
-#          filters:
-#            branches:
-#              only:
-#                - trunk
+      #      - build_linux_riscv64
+      #      - build_linux_riscv64_standalone:
+      #          requires:
+      #            - build_linux_riscv64
+      #          filters:
+      #            branches:
+      #              only:
+      #                - trunk
 
       # Building on Windows is currently expensive and takes longer, so only
       # run these builds on trunk to lower costs.
@@ -710,10 +645,14 @@ workflows:
       - build_windows_setup
       - build_windows:
           requires:
-             - build_windows_setup
+            - build_windows_setup
       - build_windows_standalone:
-           requires:
-             - build_windows
+          requires:
+            - build_windows
+          filters:
+            branches:
+              only:
+                - trunk
 
       # Mac OS X runs decently however the jobs for it have a higher cost, so
       # only perform builds and tests for trunk to lower costs.
@@ -721,11 +660,19 @@ workflows:
       - build_macosx
       - build_macosx_m1
       - build_macosx_standalone:
-           requires:
-             - build_macosx
+          requires:
+            - build_macosx
+          filters:
+            branches:
+              only:
+                - trunk
       - build_macosx_m1_standalone:
-           requires:
-             - build_macosx_m1
+          requires:
+            - build_macosx_m1
+          filters:
+            branches:
+              only:
+                - trunk
 
       # Publishing to OSS Sonatype Nexus (https://oss.sonatype.org)
       - sonatype_publish:
@@ -749,6 +696,10 @@ workflows:
             - build_windows_standalone
             - build_macosx_standalone
             - build_macosx_m1_standalone
+          filters:
+            branches:
+              only:
+                - trunk
 
   #################### TASKS TO INCREASE USER FRIENDLINESS ####################
   friendliness:

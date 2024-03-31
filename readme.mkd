@@ -33,6 +33,12 @@ your soul rest in peace. You will not be forgotten.
 _I am currently searching for employment! Check out my_
 _[LinkedIn](https://www.linkedin.com/in/xerthesquirrel/)!_
 
+_SquirrelJME_ utilizes _Install4J_ for cross-platform installers, you can
+read more about it and check out their product page at:
+
+ * [Install4J Multi-Platform Installer Builder](
+    https://www.ej-technologies.com/products/install4j/overview.html)
+
 Badges:
 
  * _Checks and Quality_

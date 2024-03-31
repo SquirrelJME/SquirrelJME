@@ -10,19 +10,8 @@
 #include "frontend/libjvm/revProto.h"
 #include "sjme/debug.h"
 
-libjvm_re_int JNI_CreateJavaVM(libjvm_re_undefined8* param_1,
-	libjvm_re_long* param_2, libjvm_re_undefined8 param_3)
-{
-	sjme_todo("Impl?");
-}
-
 libjvm_re_undefined8 JNI_GetCreatedJavaVMs(libjvm_re_undefined8* param_1,
 	libjvm_re_int param_2, libjvm_re_undefined4* param_3)
-{
-	sjme_todo("Impl?");
-}
-
-libjvm_re_int JNI_GetDefaultJavaVMInitArgs(libjvm_re_int* param_1)
 {
 	sjme_todo("Impl?");
 }
@@ -366,12 +355,6 @@ libjvm_re_undefined8* JVM_FindClassFromClass(libjvm_re_long param_1,
 libjvm_re_undefined8* JVM_FindClassFromClassLoader(libjvm_re_long param_1,
 	sjme_lpstr param_2, libjvm_re_undefined param_3, libjvm_re_undefined8* param_4,
 	char param_5)
-{
-	sjme_todo("Impl?");
-}
-
-void JVM_FindLibraryEntry(libjvm_re_undefined8 param_1,
-	libjvm_re_undefined8 param_2)
 {
 	sjme_todo("Impl?");
 }
@@ -958,11 +941,6 @@ libjvm_re_undefined8* JVM_LoadClass0(libjvm_re_long param_1,
 	sjme_todo("Impl?");
 }
 
-libjvm_re_long JVM_LoadLibrary(libjvm_re_undefined8 param_1)
-{
-	sjme_todo("Impl?");
-}
-
 void JVM_Lseek(libjvm_re_int param_1, libjvm_re_off64_t param_2,
 	libjvm_re_int param_3)
 {
@@ -1236,11 +1214,6 @@ void JVM_TraceInstructions(void)
 }
 
 void JVM_TraceMethodCalls(void)
-{
-	sjme_todo("Impl?");
-}
-
-void JVM_UnloadLibrary(libjvm_re_undefined8 param_1)
 {
 	sjme_todo("Impl?");
 }

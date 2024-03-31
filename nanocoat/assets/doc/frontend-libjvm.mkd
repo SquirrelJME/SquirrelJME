@@ -1,0 +1,29 @@
+# libjvm Frontend
+
+This frontend is intended to provide a drop-in replacement of the `jvm`
+library commonly found on existing Java installations. The library itself
+is usually launched from the `java` command.
+
+## Existing Programs
+
+Any program which pulls in `libjvm` and then creates a virtual machine may
+be able to function and run.
+
+## Installation 
+
+This requires making the library known, such as in the configuration
+of `/etc/java-$VERSION-$VENDOR/jvm-$OS_ARCH.cfg`:
+
+```
+-squirreljme KNOWN
+```
+
+Then creating a directory within `/usr/lib/jvm/$VERSION/lib`, this for
+example will be `default-java` on Debian, then within a subdirectory
+of that called `squirreljme` where `libjvm.so` is to be placed.
+
+For a user installed JDK for example one installed from IntelliJ, as an
+example the given files would be:
+
+ * `~/.jdks/liberica-1.8.0_392/jre/lib/amd64/jvm.cfg`
+ * `~/.jdks/liberica-1.8.0_392/jre/lib/amd64/squirreljme/libjvm.so`

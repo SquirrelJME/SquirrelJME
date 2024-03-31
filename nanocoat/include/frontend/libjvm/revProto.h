@@ -29,9 +29,6 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
-libjvm_re_int JNI_CreateJavaVM(libjvm_re_undefined8* param_1,
-	libjvm_re_long* param_2, libjvm_re_undefined8 param_3);
-
 libjvm_re_undefined8 JNI_GetCreatedJavaVMs(libjvm_re_undefined8* param_1,
 	libjvm_re_int param_2, libjvm_re_undefined4* param_3);
 
@@ -211,9 +208,6 @@ libjvm_re_undefined8* JVM_FindClassFromClass(libjvm_re_long param_1,
 libjvm_re_undefined8* JVM_FindClassFromClassLoader(libjvm_re_long param_1,
 	sjme_lpstr param_2, libjvm_re_undefined param_3, libjvm_re_undefined8* param_4,
 	char param_5);
-
-void JVM_FindLibraryEntry(libjvm_re_undefined8 param_1,
-	libjvm_re_undefined8 param_2);
 
 libjvm_re_undefined8 JVM_FindLoadedClass(libjvm_re_long param_1,
 	libjvm_re_undefined8* param_2, libjvm_re_long* param_3);
@@ -500,8 +494,6 @@ libjvm_re_undefined8* JVM_LoadClass0(libjvm_re_long param_1,
 	libjvm_re_undefined8 param_2, libjvm_re_undefined8* param_3,
 	libjvm_re_long* param_4);
 
-libjvm_re_long JVM_LoadLibrary(libjvm_re_undefined8 param_1);
-
 void JVM_Lseek(libjvm_re_int param_1, libjvm_re_off64_t param_2,
 	libjvm_re_int param_3);
 
@@ -628,8 +620,6 @@ libjvm_re_ulong JVM_TotalMemory(void);
 void JVM_TraceInstructions(void);
 
 void JVM_TraceMethodCalls(void);
-
-void JVM_UnloadLibrary(libjvm_re_undefined8 param_1);
 
 void JVM_Write(libjvm_re_ulong param_1, libjvm_re_undefined8 param_2,
 	libjvm_re_ulong param_3);

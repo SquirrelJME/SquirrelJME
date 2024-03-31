@@ -15,7 +15,9 @@ squirreljme_include("docker.cmake")
 # Define library
 add_library(libJvm SHARED
 	$<TARGET_OBJECTS:CorePIC>
-	revProto.c)
+	revProto.c
+	vmInit.c
+	vmNativeLib.c)
 
 # Always make this position independent
 set_property(TARGET libJvm
