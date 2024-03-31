@@ -9,6 +9,8 @@
 
 package cc.squirreljme.emulator.scritchui.dylib;
 
+import java.nio.file.Path;
+
 /**
  * Native dynamic library that directly wraps the C-based ScritchUI API.
  *
@@ -16,4 +18,20 @@ package cc.squirreljme.emulator.scritchui.dylib;
  */
 public final class NativeScritchDylib
 {
+	/**
+	 * Initializes the native library layer for ScritchUI.
+	 *
+	 * @param __libPath The library path to load.
+	 * @param __name The name of the ScritchUI interface.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/03/30
+	 */
+	public NativeScritchDylib(Path __libPath, String __name)
+		throws NullPointerException
+	{
+		if (__libPath == null || __name == null)
+			throw new NullPointerException("NARG");
+		
+		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
+	}
 }

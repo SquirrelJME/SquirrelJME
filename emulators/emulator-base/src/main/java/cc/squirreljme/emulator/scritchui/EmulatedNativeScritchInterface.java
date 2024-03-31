@@ -9,6 +9,7 @@
 
 package cc.squirreljme.emulator.scritchui;
 
+import cc.squirreljme.emulator.scritchui.dylib.DylibScritchInterface;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.NativeScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchComponentInterface;
@@ -38,6 +39,8 @@ public class EmulatedNativeScritchInterface
 	public static ScritchInterface nativeInterface()
 		throws MLECallError
 	{
+		if (true)
+			return DylibScritchInterface.instance();
 		return new SwingScritchInterface();
 	}
 	

@@ -36,7 +36,7 @@ dependencies
 Provider<CMakeBuildTask> libNativeEmulatorBase = tasks.register(
 	"libNativeEmulatorBase",
 	CMakeBuildTask.class,
-	project.getProjectDir().toPath(),
+	project.getProjectDir().toPath().resolve("src").resolve("main"),
 	System.mapLibraryName("emulator-base"),
 	"libEmulatorBase")
 
@@ -71,7 +71,9 @@ jar {
 	dependsOn mimeDecode, libNativeEmulatorBase, libNativeScritchUI
 
 	from libNativeEmulatorBase.get().cmakeOutFile.toFile()
-	from zipTree(libNativeScritchUI.get().cmakeOutFile.toFile()).files
+	from project.provider({ ->
+		zipTree(libNativeScritchUI.get().cmakeOutFile.toFile())
+			.getElements() })
 	into "/"
 }
 
