@@ -8,3 +8,6 @@
 
 # SquirrelJME base library
 add_subdirectory(base)
+
+# Third party support libraries that come from outside SquirrelJME
+add_subdirectory(3rdparty)

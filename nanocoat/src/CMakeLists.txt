@@ -46,6 +46,3 @@ squirreljme_multilib_target_include_directories(Core
 
 # Doxygen
 squirreljme_doxygen(Core)
-
-# Third party support libraries
-add_subdirectory(3rdparty)
