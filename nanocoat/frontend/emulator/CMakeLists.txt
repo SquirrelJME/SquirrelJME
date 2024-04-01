@@ -12,6 +12,7 @@ squirreljme_include("jni.cmake")
 
 # Declare library
 add_library(libEmulator SHARED
+	$<TARGET_OBJECTS:BasePIC>
 	$<TARGET_OBJECTS:CorePIC>
 	emu.c
 	jniHelper.c

@@ -11,11 +11,13 @@ if(LIBRETRO_REALLY_STATIC)
 	set(libRetroIsStatic ON)
 	set(libRetroBuildType STATIC)
 	set(libRetroCore Core)
+	set(libRetroBaseObjects $<TARGET_OBJECTS:Base>)
 	set(libRetroCoreObjects $<TARGET_OBJECTS:Core>)
 else()
 	set(libRetroIsStatic OFF)
 	set(libRetroBuildType SHARED)
 	set(libRetroCore CorePIC)
+	set(libRetroBaseObjects $<TARGET_OBJECTS:BasePIC>)
 	set(libRetroCoreObjects $<TARGET_OBJECTS:CorePIC>)
 endif()
 
@@ -32,6 +34,7 @@ endif()
 
 # Declare library
 add_library(squirreljme_libretro ${libRetroBuildType}
+	${libRetroBaseObjects}
 	${libRetroCoreObjects}
 	${libRetroTestObjects}
 	audio.c

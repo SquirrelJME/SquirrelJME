@@ -7,6 +7,7 @@
 # ---------------------------------------------------------------------------
 
 add_library(npapi SHARED
+	$<TARGET_OBJECTS:BasePIC>
 	$<TARGET_OBJECTS:CorePIC>
 	plugin.c)
 
