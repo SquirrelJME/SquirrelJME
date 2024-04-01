@@ -59,3 +59,21 @@ macro(squirreljme_multilib_target_include_directories libBase)
 	target_include_directories(${libBase}DyLib PUBLIC
 		${libBaseIncludes})
 endmacro()
+
+# Multi-lib linking of libraries
+macro(squirreljme_multilib_target_link_libraries libBase)
+	# Load in source files
+	set(libBaseLibs)
+	foreach(arg ${ARGV})
+		# Ignore first
+		if("${arg}" STREQUAL "${libBase}")
+			continue()
+		endif()
+
+		list(APPEND libBaseLibs "${arg}")
+	endforeach()
+
+	# Only link for the dynamic library
+	target_link_libraries(${libBase}DyLib PUBLIC
+		${libBaseIncludes})
+endmacro()
