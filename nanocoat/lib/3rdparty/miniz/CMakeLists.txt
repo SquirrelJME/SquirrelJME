@@ -6,27 +6,10 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 
-# Declare library
-squirreljme_multilib_add_library(Core
-	boot.c
-	bytecode.c
-	classy.c
-	descriptor.c
-	gfx.c
-	jdwp.c
-	loop.c
-	modelessStars.c
-	multithread.c
-	native.c
-	nvm.c
-	rom.c
-	task.c
-	tread.c
-	vmConfig.c)
+# Declare MiniZ library
+squirreljme_multilib_add_library(3rdPartyMiniZ
+	miniz.c)
 
 # Include main headers
-squirreljme_multilib_target_include_directories(Core
+squirreljme_multilib_target_include_directories(3rdPartyMiniZ
 	"${CMAKE_SOURCE_DIR}/include")
-
-# Doxygen
-squirreljme_doxygen(Core)

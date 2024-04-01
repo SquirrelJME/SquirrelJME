@@ -6,9 +6,25 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 
-add_library(3rdPartyMiniZ OBJECT
-	miniz.c)
+# Declare Base library
+squirreljme_multilib_add_library(Base
+	alloc.c
+	allocSizeOf.c
+	atomic.c
+	comparator.c
+	debug.c
+	dylib.c
+	error.c
+	except.c
+	list.c
+	recycle.c
+	refcount.c
+	seekable.c
+	stream.c
+	tree.c
+	util.c
+	zip.c)
 
 # Include main headers
-target_include_directories(3rdPartyMiniZ PUBLIC
+squirreljme_multilib_target_include_directories(Base
 	"${CMAKE_SOURCE_DIR}/include")

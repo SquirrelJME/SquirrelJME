@@ -66,6 +66,9 @@ set(CMAKE_C_STANDARD_REQUIRED True)
 # Assets and otherwise, such as icons, etc.
 squirreljme_include("assets.cmake")
 
+# Multi-library declarations
+squirreljme_include("multilib.cmake")
+
 # Turn some warnings into errors
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
 	add_compile_options("-Werror=implicit-function-declaration")
@@ -100,8 +103,6 @@ endif()
 # Where should dynamic libraries go when output?
 if(NOT DEFINED SQUIRRELJME_DYLIB_OUTPUT_DIR)
 	set(SQUIRRELJME_DYLIB_OUTPUT_DIR
-		"${CMAKE_BINARY_DIR}" PARENT_SCOPE)
-	set(SQUIRRELJME_DYLIB_OUTPUT_DIR
 		"${CMAKE_BINARY_DIR}")
 endif()
 
@@ -123,6 +124,9 @@ if(SQUIRRELJME_ENABLE_PACKING OR
 	NOT DEFINED SQUIRRELJME_ENABLE_PACKING)
 	squirreljme_include("packing.cmake")
 endif()
+
+# Internal Libraries
+add_subdirectory(lib)
 
 # Include the base core first because it is completely standalone and it
 # uses nothing else
