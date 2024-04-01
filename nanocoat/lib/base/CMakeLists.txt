@@ -28,3 +28,7 @@ squirreljme_multilib_add_library(Base
 # Include main headers
 squirreljme_multilib_target_include_directories(Base
 	"${CMAKE_SOURCE_DIR}/include")
+
+# Base library goes here
+squirreljme_multilib_target_binary_output(Base
+	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
