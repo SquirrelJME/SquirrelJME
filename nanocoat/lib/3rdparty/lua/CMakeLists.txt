@@ -36,8 +36,8 @@ squirreljme_multilib_add_library(3rdPartyLua
 	ltable.c
 	ltablib.c
 	ltm.c
-	lua.c
-	luac.c
+	#lua.c -- main program we can ignore
+	#luac.c -- main program we can ignore
 	lundump.c
 	lutf8lib.c
 	lvm.c

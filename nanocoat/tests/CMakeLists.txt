@@ -17,6 +17,7 @@ squirreljme_sourceize_dir("${CMAKE_CURRENT_BINARY_DIR}/blobs/binary"
 
 # Setup main test execution wrapper which runs within TAC
 add_library(TACTestExecutorCore STATIC
+	$<TARGET_OBJECTS:Base>
 	$<TARGET_OBJECTS:Core>
 	src/tac.c)
 
@@ -74,6 +75,7 @@ add_library(BasicTestLibPIC OBJECT
 # Initialize executable for basic tests, which contains everything
 add_executable(BasicTest
 	src/basicMain.c
+	$<TARGET_OBJECTS:Base>
 	$<TARGET_OBJECTS:Core>
 	$<TARGET_OBJECTS:BasicTestLib>)
 
