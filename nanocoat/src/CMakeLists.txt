@@ -6,7 +6,8 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 
-list(APPEND coreSources
+# Declare library
+squirreljme_multilib_add_library(Core
 	alloc.c
 	allocSizeOf.c
 	atomic.c
@@ -39,22 +40,8 @@ list(APPEND coreSources
 	vmConfig.c
 	zip.c)
 
-# The core library contains the main logic for the virtual machine
-# For non-PIC:
-add_library(Core OBJECT
-	${coreSources})
-# For PIC:
-add_library(CorePIC OBJECT
-	${coreSources})
-
-# Needs to be position independent when included in other parts
-set_property(TARGET CorePIC
-	PROPERTY POSITION_INDEPENDENT_CODE ON)
-
 # Include main headers
-target_include_directories(Core PUBLIC
-	"${CMAKE_SOURCE_DIR}/include")
-target_include_directories(CorePIC PUBLIC
+squirreljme_multilib_target_include_directories(Core
 	"${CMAKE_SOURCE_DIR}/include")
 
 # Doxygen
