@@ -11,6 +11,10 @@ package cc.squirreljme.plugin.general.cmake;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import javax.inject.Inject;
 import org.gradle.api.DefaultTask;
 
@@ -32,27 +36,32 @@ public class CMakeBuildTask
 	public final Path cmakeOutFile;
 	
 	/** The rule to use. */
-	public final String cmakeRule;
+	public final List<String> cmakeRules;
 	
 	/**
 	 * Initializes the build task.
 	 *
 	 * @param __source The project source directory.
 	 * @param __outputFile The output file we want, this is optional.
-	 * @param __rule The rule to execute.
+	 * @param __rules The rules to execute.
 	 * @since 2024/03/15
 	 */
 	@Inject
 	public CMakeBuildTask(Path __source, String __outputFile,
-		String __rule)
+		List<String> __rules)
 		throws NullPointerException
 	{
-		if (__source == null || __rule == null)
+		if (__source == null || __rules == null || __rules.isEmpty())
 			throw new NullPointerException("NARG");
+		
+		__rules = new ArrayList<>(__rules);
+		for (String rule : __rules)
+			if (rule == null)
+				throw new NullPointerException("NARG");
 		
 		// Set source for later
 		this.cmakeSource = __source;
-		this.cmakeRule = __rule;
+		this.cmakeRules = Collections.<String>unmodifiableList(__rules);
 		
 		// The build root is based on the task
 		this.cmakeBuild = this.getProject().getBuildDir().toPath()

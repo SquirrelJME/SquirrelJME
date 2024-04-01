@@ -50,17 +50,19 @@ public class CMakeBuildTaskAction
 				"-S", cmakeSource.toAbsolutePath().toString(),
 				"-B", cmakeBuild.toAbsolutePath().toString());
 			
-			// Then perform the actual build
-			CMakeUtils.cmakeExecute(__task.getLogger(),
-				"build",
-				cmakeBuild,
-				"--build", cmakeBuild.toAbsolutePath().toString(),
-				"-t", from.cmakeRule);
+			// Then perform the actual build, for each rule
+			for (String cmakeRule : from.cmakeRules)
+				CMakeUtils.cmakeExecute(__task.getLogger(),
+					"build-" + cmakeRule,
+					cmakeBuild,
+					"--build",
+					cmakeBuild.toAbsolutePath().toString(),
+					"-t", cmakeRule);
 			
 			// Was the output file even created?
 			if (from.cmakeOutFile != null && !Files.exists(from.cmakeOutFile))
 				throw new FileNotFoundException(
-					"Could not find output library: " +
+					"Could not find output file: " +
 						from.cmakeOutFile);
 		}
 		catch (IOException __e)
