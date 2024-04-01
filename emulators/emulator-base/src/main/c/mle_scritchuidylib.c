@@ -14,7 +14,7 @@
 
 /** The class being implemented. */
 #define IMPL_CLASS "cc/squirreljme/emulator/scritchui/dylib/" \
-	"NativeScritchDylib/NativeScritchDylib"
+	"NativeScritchDylib"
 #define FORWARD_CLASS IMPL_CLASS
 
 #define FORWARD_DESC___link "(" \
