@@ -58,7 +58,7 @@ public class CMakeBuildTaskAction
 				"-t", from.cmakeRule);
 			
 			// Was the output file even created?
-			if (!Files.exists(from.cmakeOutFile))
+			if (from.cmakeOutFile != null && !Files.exists(from.cmakeOutFile))
 				throw new FileNotFoundException(
 					"Could not find output library: " +
 						from.cmakeOutFile);

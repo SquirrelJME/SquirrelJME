@@ -113,7 +113,8 @@ public final class CMakeUtils
 		{
 			if (!proc.waitFor(5, TimeUnit.MINUTES) ||
 				proc.exitValue() != 0)
-				throw new RuntimeException("CMake failed to configure...");
+				throw new RuntimeException(String.format(
+					"CMake failed to %s...", __logName));
 		}
 		catch (InterruptedException __e)
 		{
