@@ -7,7 +7,7 @@
 # ---------------------------------------------------------------------------
 
 # Declare library
-add_library(3rdPartyLua OBJECT
+squirreljme_multilib_add_library(3rdPartyLua
 	lapi.c
 	lauxlib.c
 	lbaselib.c
@@ -44,6 +44,6 @@ add_library(3rdPartyLua OBJECT
 	lzio.c)
 
 # Include main headers
-target_include_directories(3rdPartyLua PUBLIC
+squirreljme_multilib_target_include_directories(3rdPartyLua
 	"${CMAKE_SOURCE_DIR}/include"
 	"${CMAKE_SOURCE_DIR}/include/3rdparty/lua")
