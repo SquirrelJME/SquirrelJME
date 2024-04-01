@@ -11,6 +11,7 @@ pkg_check_modules(X11 x11)
 
 # Declare base library
 add_library(ScritchUIX11 SHARED
+	$<TARGET_OBJECTS:BasePIC>
 	x11Core.c)
 
 # Always make it PIC

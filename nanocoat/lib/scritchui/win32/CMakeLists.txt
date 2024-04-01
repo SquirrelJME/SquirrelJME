@@ -8,6 +8,7 @@
 
 # Declare base library
 add_library(ScritchUIWin32 SHARED
+	$<TARGET_OBJECTS:BasePIC>
 	win32Core.c)
 
 # Always make it PIC

@@ -11,6 +11,7 @@ find_package(Motif)
 
 # Declare base library
 add_library(ScritchUIMotif SHARED
+	$<TARGET_OBJECTS:BasePIC>
 	motifCore.c)
 
 # Always make it PIC

@@ -11,6 +11,7 @@ pkg_check_modules(GTK2 gtk+-2.0)
 
 # Declare base library
 add_library(ScritchUIGTK2 SHARED
+	$<TARGET_OBJECTS:BasePIC>
 	gtk2Core.c)
 
 # Always make it PIC
