@@ -14,6 +14,7 @@ squirreljme_include("docker.cmake")
 
 # Define library
 add_library(libJvm SHARED
+	$<TARGET_OBJECTS:BasePIC>
 	$<TARGET_OBJECTS:CorePIC>
 	revProto.c
 	vmInit.c

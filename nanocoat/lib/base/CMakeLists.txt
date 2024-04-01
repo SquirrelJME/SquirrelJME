@@ -28,3 +28,10 @@ squirreljme_multilib_add_library(Base
 # Include main headers
 squirreljme_multilib_target_include_directories(Base
 	"${CMAKE_SOURCE_DIR}/include")
+
+# Export PIC library
+add_custom_target(BasePICExport
+	COMMENT "Copying library for export."
+	DEPENDS BasePIC
+	BYPRODUCTS "${SQUIRRELJME_DYLIB_OUTPUT_DIR}/$<TARGET_FILE_NAME:BasePIC>"
+	SOURCES "$<TARGET_FILE:BasePIC>")

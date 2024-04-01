@@ -31,7 +31,14 @@ macro(squirreljme_multilib_add_library libBase)
 	set_property(TARGET ${libBase}PIC
 		PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-	# Shared
+	# Static Library
+	add_library(${libBase}Static STATIC
+		${libBaseSources})
+
+	set_property(TARGET ${libBase}Static
+		PROPERTY POSITION_INDEPENDENT_CODE ON)
+
+	# Shared Library
 	add_library(${libBase}DyLib SHARED
 		${libBaseSources})
 
@@ -55,6 +62,8 @@ macro(squirreljme_multilib_target_include_directories libBase)
 	target_include_directories(${libBase} PUBLIC
 		${libBaseIncludes})
 	target_include_directories(${libBase}PIC PUBLIC
+		${libBaseIncludes})
+	target_include_directories(${libBase}Static PUBLIC
 		${libBaseIncludes})
 	target_include_directories(${libBase}DyLib PUBLIC
 		${libBaseIncludes})
