@@ -86,3 +86,14 @@ macro(squirreljme_multilib_target_link_libraries libBase)
 	target_link_libraries(${libBase}DyLib PUBLIC
 		${libBaseIncludes})
 endmacro()
+
+# Output locations for binaries
+macro(squirreljme_multilib_target_binary_output libBase where)
+	# Static library output
+	squirreljme_target_binary_output(${libBase}Static
+		${where})
+
+	# Dynamic library output
+	squirreljme_target_binary_output(${libBase}DyLib
+		${where})
+endmacro()
