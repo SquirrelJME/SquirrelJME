@@ -37,7 +37,7 @@ Provider<CMakeBuildTask> libNativeEmulatorBase = tasks.register(
 	CMakeBuildTask.class,
 	project.getProjectDir().toPath().resolve("src").resolve("main"),
 	System.mapLibraryName("emulator-base"),
-	"libEmulatorBase")
+	["libEmulatorBase"])
 
 Provider<MimeDecodeResourcesTask> mimeDecode =tasks.register(
 	"mimeDecode", MimeDecodeResourcesTask.class,
