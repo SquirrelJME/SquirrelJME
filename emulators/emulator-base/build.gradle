@@ -35,7 +35,8 @@ dependencies
 Provider<CMakeBuildTask> libNativeEmulatorBase = tasks.register(
 	"libNativeEmulatorBase",
 	CMakeBuildTask.class,
-	project.getProjectDir().toPath().resolve("src").resolve("main"),
+	project.getProjectDir().toPath().getParent()
+		.resolve("emulator-base-native"),
 	System.mapLibraryName("emulator-base"),
 	["libEmulatorBase"])
 
