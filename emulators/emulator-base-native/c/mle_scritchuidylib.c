@@ -39,6 +39,9 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __apiInit)
 		return 0;
 	}
 	
+	/* Debug. */
+	sjme_message("Initializing pool...");
+	
 	/* We need a pool for allocations. */
 	pool = NULL;
 	if (sjme_error_is(error = sjme_alloc_poolInitMalloc(&pool,
@@ -47,6 +50,10 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __apiInit)
 
 	/* Restore structure. */
 	apiFuncs = (const sjme_scritchui_apiFunctions*)structP;
+
+	/* Debug. */
+	sjme_message("Init into %p (%p)...", apiFuncs,
+		apiFuncs->apiInit);
 
 	/* Initialize state. */
 	state = NULL;

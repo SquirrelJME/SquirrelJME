@@ -13,7 +13,7 @@
 static const sjme_scritchui_apiFunctions sjme_scritchUI_gtkFunctions =
 {
 	.apiFlags = NULL,
-	.apiInit = NULL,
+	.apiInit = sjme_scritchui_gtk2_apiInit,
 	.loopIterate = NULL,
 };
 
