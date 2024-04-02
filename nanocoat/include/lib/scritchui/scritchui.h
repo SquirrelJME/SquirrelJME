@@ -98,11 +98,24 @@ typedef sjme_errorCode (*sjme_scritchui_apiInitFunc)(
  * 
  * @param inState The input ScritchUI state.
  * @param outHasTerminated Has the GUI interface terminated?
+ * @return Any error code if applicable.
  * @since 2024/04/02
  */
 typedef sjme_errorCode (*sjme_scritchui_loopIterateFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNullable sjme_jboolean* outHasTerminated);
+
+/**
+ * Creates a new panel.
+ * 
+ * @param inState The input state.
+ * @param outPanel The resultant panel.
+ * @return Any error code if applicable.
+ * @since 2024/04/02
+ */
+typedef sjme_errorCode (*sjme_scritchui_panelNewFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_uiPanel* outPanel);
 
 /**
  * ScritchUI API functions, implemented by a native library accordingly.
@@ -119,6 +132,9 @@ typedef struct sjme_scritchui_apiFunctions
 	
 	/** Iterates a single run of the event loop. */
 	sjme_scritchui_loopIterateFunc loopIterate;
+	
+	/** Creates a new panel. */
+	sjme_scritchui_panelNewFunc panelNew;
 } sjme_scritchui_apiFunctions;
 
 /* If dynamic libraries are not supported, we cannot do this. */

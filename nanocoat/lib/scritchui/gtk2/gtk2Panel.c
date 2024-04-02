@@ -8,23 +8,15 @@
 // -------------------------------------------------------------------------*/
 
 #include "lib/scritchui/gtk2/gtk2.h"
+#include "sjme/alloc.h"
 
-/** GTK Function set for Scritch UI. */
-static const sjme_scritchui_apiFunctions sjme_scritchUI_gtkFunctions =
+sjme_errorCode sjme_scritchui_gtk2_panelNew(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_uiPanel* outPanel)
 {
-	.apiFlags = NULL,
-	.apiInit = sjme_scritchui_gtk2_apiInit,
-	.loopIterate = NULL,
-	.panelNew = sjme_scritchui_gtk2_panelNew,
-};
-
-/**
- * Returns the GTK ScritchUI interface.
- * 
- * @return The library interface.
- * @since 2024/03/29 
- */
-const sjme_scritchui_apiFunctions* SJME_SCRITCHUI_DYLIB_SYMBOL(gtk2)(void)
-{
-	return &sjme_scritchUI_gtkFunctions;
+	if (inState == NULL || outPanel == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
 }

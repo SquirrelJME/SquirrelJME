@@ -54,6 +54,18 @@ struct sjme_scritchui
 sjme_errorCode sjme_scritchui_gtk2_apiInit(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInOutNotNull sjme_scritchui* outState);
+	
+/**
+ * Creates a new panel under GTK2.
+ * 
+ * @param inState The input state.
+ * @param outPanel The resultant panel.
+ * @return Any error code if applicable.
+ * @since 2024/04/02
+ */
+sjme_errorCode sjme_scritchui_gtk2_panelNew(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_uiPanel* outPanel);
 
 /*--------------------------------------------------------------------------*/
 
