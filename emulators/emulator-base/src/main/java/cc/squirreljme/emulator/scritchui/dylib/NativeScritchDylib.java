@@ -38,9 +38,12 @@ public final class NativeScritchDylib
 		
 		// Link in native library and locate the structure
 		long structP = this.__link(
-			__libPath.toAbsolutePath().toString(), __name);
+			__libPath.toAbsolutePath().toString(),
+			__name.toLowerCase());
 		if (structP == 0)
-			throw new MLECallError("No native structure.");
+			throw new MLECallError(String.format(
+				"No native structure found in library '%s' (%s)",
+				__libPath, __name));
 		this._structP = structP;
 	}
 	

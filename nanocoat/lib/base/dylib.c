@@ -58,7 +58,13 @@ sjme_errorCode sjme_dylib_lookup(
 	/* Attempt symbol lookup. */
 	handle = dlsym(inLib, inSymbol);
 	if (handle == NULL)
+	{
+		/* Debug. */
+		sjme_message("sjme_dylib_lookup(%p, %s): %s",
+			inLib, inSymbol, dlerror());
+		
 		return SJME_ERROR_INVALID_LIBRARY_SYMBOL;
+	}
 		
 	/* Success! */
 	*outPtr = handle;
@@ -86,7 +92,13 @@ sjme_errorCode sjme_dylib_open(
 	/* Attempt loading the library. */
 	handle = dlopen(libPath, RTLD_NOW | RTLD_LOCAL);
 	if (handle == NULL)
+	{
+		/* Debug. */
+		sjme_message("sjme_dylib_open(%s): %s",
+			libPath, dlerror());
+		
 		return SJME_ERROR_COULD_NOT_LOAD_LIBRARY;
+	}
 	
 	/* Success! */
 	*outLib = handle;

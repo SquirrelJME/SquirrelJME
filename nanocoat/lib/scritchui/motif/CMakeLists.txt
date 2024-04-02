@@ -21,7 +21,8 @@ set_property(TARGET ScritchUIMotif
 # Include main headers
 target_include_directories(ScritchUIMotif PUBLIC
 	"${CMAKE_SOURCE_DIR}/include"
-	${MOTIF_INCLUDE_DIR})
+	${MOTIF_INCLUDE_DIR}
+	${MOTIF_INCLUDE_DIRS})
 
 # Link in Motif
 target_link_libraries(ScritchUIMotif

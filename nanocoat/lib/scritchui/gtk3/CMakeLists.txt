@@ -7,7 +7,8 @@
 # ---------------------------------------------------------------------------
 
 # Bring in GTK3
-pkg_check_modules(GTK3 gtk+-3.0)
+find_package(PkgConfig)
+pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
 
 # Declare base library
 add_library(ScritchUIGTK3 SHARED
@@ -21,10 +22,12 @@ set_property(TARGET ScritchUIGTK3
 # Include main headers
 target_include_directories(ScritchUIGTK3 PUBLIC
 	"${CMAKE_SOURCE_DIR}/include"
-	${GTK2_INCLUDE_DIR})
+	${GTK2_INCLUDE_DIRS})
 
 # Link in GTK
-target_link_libraries(ScritchUIGTK3
+target_link_directories(ScritchUIGTK3 PUBLIC
+	${GTK3_LIBRARY_DIRS})
+target_link_libraries(ScritchUIGTK3 PUBLIC
 	${GTK3_LIBRARIES})
 
 # ScritchUI requires a normalized library name

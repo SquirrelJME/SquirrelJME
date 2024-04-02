@@ -20,15 +20,73 @@
 #define FORWARD_DESC___link "(" \
 	DESC_STRING DESC_STRING ")" DESC_LONG
 
-JNIEXPORT long JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __link)
+JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __link)
 	(JNIEnv* env, jclass classy, jstring libPath, jstring name)
 {
-	void* lib;
+#define BUF_SIZE 128
+	sjme_errorCode error;
+	sjme_dylib lib;
+	char buf[BUF_SIZE];
+	sjme_scritchui_dylibApiFunc apiFunc;
+	const char* libPathChars;
+	jboolean libPathCharsCopy;
+	const char* nameChars;
+	jboolean nameCharsCopy;
 	
-	if (SJME_ERROR_IS(sjme_dylib_open(libPath, &lib)))
+	/* Resolve path. */
+	libPathCharsCopy = JNI_FALSE;
+	libPathChars = (*env)->GetStringUTFChars(env, libPath, &libPathCharsCopy);
+	
+	/* Resolve name. */
+	nameCharsCopy = JNI_FALSE;
+	nameChars = (*env)->GetStringUTFChars(env, name, &nameCharsCopy);
+	
+	memset(buf, 0, sizeof(buf));
+	snprintf(buf, BUF_SIZE - 2, "sjme_scritchui_dylibApi%s", nameChars);
+	buf[BUF_SIZE - 1] = 0;
+	
+	/* Release name. */
+	(*env)->ReleaseStringUTFChars(env, name, nameChars);
+	
+	/* Debug. */
+	sjme_message("Attempting load of '%s'...", libPathChars);
+	
+	/* Load native library. */
+	lib = NULL;
+	if (sjme_error_is(error = sjme_dylib_open(libPathChars, &lib)) ||
+		lib == NULL)
+	{
+		sjme_message("Did not find lib '%s': %d",
+			libPathChars, error);
+			
+		(*env)->ReleaseStringUTFChars(env, libPath, libPathChars);
 		return 0;
+	}
 	
-	sjme_todo("Fail");
+	/* Debug. */
+	sjme_message("Attempting lookup of '%s'...", buf);
+	
+	/* Find function that returns the ScritchUI API interface. */
+	apiFunc = NULL;
+	if (sjme_error_is(error = sjme_dylib_lookup(lib, buf,
+		&apiFunc)) || apiFunc == NULL)
+	{
+		sjme_message("Did not find symbol '%s' in '%s': %d",
+			buf, libPathChars, error);
+			
+		(*env)->ReleaseStringUTFChars(env, libPath, libPathChars);
+		return 0;
+	}
+	
+	/* Release path. */
+	(*env)->ReleaseStringUTFChars(env, libPath, libPathChars);
+	
+	/* Debug. */
+	sjme_message("Obtaining ScritchUI API Interface...");
+	
+	/* Call it to get from it. */
+	return (jlong)apiFunc();
+#undef BUF_SIZE
 }
 
 static const JNINativeMethod mleNativeScritchDylibMethods[] =

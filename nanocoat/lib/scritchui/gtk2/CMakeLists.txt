@@ -7,7 +7,8 @@
 # ---------------------------------------------------------------------------
 
 # Bring in GTK2
-pkg_check_modules(GTK2 gtk+-2.0)
+find_package(PkgConfig)
+pkg_check_modules(GTK2 REQUIRED gtk+-2.0)
 
 # Declare base library
 add_library(ScritchUIGTK2 SHARED
@@ -21,10 +22,12 @@ set_property(TARGET ScritchUIGTK2
 # Include main headers
 target_include_directories(ScritchUIGTK2 PUBLIC
 	"${CMAKE_SOURCE_DIR}/include"
-	${GTK2_INCLUDE_DIR})
+	${GTK2_INCLUDE_DIRS})
 
-# Link in Motif
-target_link_libraries(ScritchUIGTK2
+# Link in GTK2
+target_link_directories(ScritchUIGTK2 PUBLIC
+	${GTK2_LIBRARY_DIRS})
+target_link_libraries(ScritchUIGTK2 PUBLIC
 	${GTK2_LIBRARIES})
 
 # ScritchUI requires a normalized library name

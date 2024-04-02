@@ -7,6 +7,8 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <gtk-2.0/gtk/gtk.h>
+
 #include "lib/scritchui/scritchui.h"
 
 /** GTK Function set for Scritch UI. */
