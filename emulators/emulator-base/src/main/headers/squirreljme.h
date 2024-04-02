@@ -123,5 +123,23 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 #define DESC_VOID "V"
 #define DESC_STRING DESC_CLASS("java/lang/String")
 
+/**
+ * Checks to see if a virtual machine call failed.
+ *
+ * @param env The Java environment.
+ * @return If there is an exception.
+ * @since 2023/12/29
+ */
+sjme_jboolean sjme_jni_checkVMException(JNIEnv* env);
+
+/**
+ * Throws a @c VMException .
+ *
+ * @param env The current Java environment.
+ * @param code The error code.
+ * @since 2023/12/08
+ */
+void sjme_jni_throwVMException(JNIEnv* env, sjme_errorCode code);
+
 #endif /* __SQUIRRELJME_H__ */
 

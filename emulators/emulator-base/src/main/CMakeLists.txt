@@ -27,6 +27,7 @@ endif()
 
 # Declare library
 add_library(libEmulatorBase SHARED
+	c/jniHelper.c
 	c/mle_debug.c
 	c/mle_form.c
 	c/mle_jar.c

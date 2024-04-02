@@ -48,6 +48,9 @@ public class DylibScritchInterface
 	/** The native dynamic library to use. */
 	protected final NativeScritchDylib dyLib;
 	
+	/** The state pointer. */
+	protected final long stateP;
+	
 	/**
 	 * Initializes the native dynamic library interface.
 	 *
@@ -61,7 +64,12 @@ public class DylibScritchInterface
 		if (__dyLib == null)
 			throw new NullPointerException("NARG");
 		
+		// Store for later
 		this.dyLib = __dyLib;
+		
+		// Internal initialization
+		long stateP = __dyLib.apiInit();
+		this.stateP = stateP;
 	}
 	
 	/**

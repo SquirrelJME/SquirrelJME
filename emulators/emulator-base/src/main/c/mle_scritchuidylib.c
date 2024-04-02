@@ -17,8 +17,27 @@
 	"NativeScritchDylib"
 #define FORWARD_CLASS IMPL_CLASS
 
+#define FORWARD_DESC___apiInit "(" \
+	DESC_LONG ")" DESC_LONG
 #define FORWARD_DESC___link "(" \
 	DESC_STRING DESC_STRING ")" DESC_LONG
+	
+JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __apiInit)
+	(JNIEnv* env, jclass classy, jlong structP)
+{
+	const sjme_scritchui_apiFunctions* apiFuncs;
+	
+	if (structP == 0)
+	{
+		sjme_jni_throwVMException(env, SJME_ERROR_NULL_ARGUMENTS);
+		return 0;
+	}
+
+	/* Restore structure. */
+	apiFuncs = (const sjme_scritchui_apiFunctions*)structP;
+	
+	sjme_todo("Implement this.");
+}
 
 JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __link)
 	(JNIEnv* env, jclass classy, jstring libPath, jstring name)
@@ -91,6 +110,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __link)
 
 static const JNINativeMethod mleNativeScritchDylibMethods[] =
 {
+	FORWARD_list(NativeScritchDylib, __apiInit),
 	FORWARD_list(NativeScritchDylib, __link),
 };
 

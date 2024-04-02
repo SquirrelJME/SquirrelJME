@@ -37,7 +37,7 @@ public final class NativeScritchDylib
 			throw new NullPointerException("NARG");
 		
 		// Link in native library and locate the structure
-		long structP = this.__link(
+		long structP = NativeScritchDylib.__link(
 			__libPath.toAbsolutePath().toString(),
 			__name.toLowerCase());
 		if (structP == 0)
@@ -48,6 +48,26 @@ public final class NativeScritchDylib
 	}
 	
 	/**
+	 * Initializes the ScritchUI API.
+	 *
+	 * @return The resultant state pointer.
+	 * @since 2024/04/02
+	 */
+	public long apiInit()
+	{
+		return NativeScritchDylib.__apiInit(this._structP);
+	}
+	
+	/**
+	 * Initializes the ScritchUI API.
+	 *
+	 * @param __structP The API structure pointer.
+	 * @return The resultant state pointer.
+	 * @since 2024/04/02
+	 */
+	private static native long __apiInit(long __structP);
+	
+	/**
 	 * Link in the library and load the given structure pointer.
 	 *
 	 * @param __libPath The library path.
@@ -55,5 +75,5 @@ public final class NativeScritchDylib
 	 * @return The resultant struct implementation pointer.
 	 * @since 2024/03/31
 	 */
-	private native long __link(String __libPath, String __name);
+	private static native long __link(String __libPath, String __name);
 }

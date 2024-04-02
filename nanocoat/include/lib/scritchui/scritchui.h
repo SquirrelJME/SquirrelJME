@@ -70,6 +70,18 @@ typedef struct sjme_scritchui_uiPanel* sjme_scritchui_uiPanel;
 typedef struct sjme_scritchui_uiWindow* sjme_scritchui_uiWindow;
 
 /**
+ * Obtains the flags which describe the interface.
+ * 
+ * @param inState The input ScritchUI state.
+ * @param outFlags The output flags for this interface.
+ * @return Any error code if applicable.
+ * @since 2024/03/29
+ */
+typedef sjme_errorCode (*sjme_scritchui_apiFlagsFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_jint outFlags);
+
+/**
  * Initializes the native UI interface needed by ScritchUI.
  * 
  * @param inPool The allocation pool to use.
@@ -82,16 +94,15 @@ typedef sjme_errorCode (*sjme_scritchui_apiInitFunc)(
 	sjme_attrInOutNotNull sjme_scritchui* outState);
 
 /**
- * Obtains the flags which describe the interface.
+ * Iterates a single run of the event loop.
  * 
  * @param inState The input ScritchUI state.
- * @param outFlags The output flags for this interface.
- * @return Any error code if applicable.
- * @since 2024/03/29
+ * @param outHasTerminated Has the GUI interface terminated?
+ * @since 2024/04/02
  */
-typedef sjme_errorCode (*sjme_scritchui_apiFlags)(
+typedef sjme_errorCode (*sjme_scritchui_loopIterateFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrOutNotNull sjme_jint outFlags);
+	sjme_attrOutNullable sjme_jboolean* outHasTerminated);
 
 /**
  * ScritchUI API functions, implemented by a native library accordingly.
@@ -100,11 +111,14 @@ typedef sjme_errorCode (*sjme_scritchui_apiFlags)(
  */
 typedef struct sjme_scritchui_apiFunctions
 {
-	/** Initialize the framework library. */
-	sjme_scritchui_apiInitFunc init;
-	
 	/** API flags. */
-	sjme_scritchui_apiFlags flags;
+	sjme_scritchui_apiFlagsFunc apiFlags;
+	
+	/** Initialize the framework library. */
+	sjme_scritchui_apiInitFunc apiInit;
+	
+	/** Iterates a single run of the event loop. */
+	sjme_scritchui_loopIterateFunc loopIterate;
 } sjme_scritchui_apiFunctions;
 
 /* If dynamic libraries are not supported, we cannot do this. */
