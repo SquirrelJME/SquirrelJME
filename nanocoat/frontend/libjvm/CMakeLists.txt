@@ -33,6 +33,11 @@ target_include_directories(libJvm PUBLIC
 	"${CMAKE_SOURCE_DIR}/include"
 	${JNI_INCLUDE_DIRS})
 
+# Libraries needed to be linked with for the DyLib to function
+target_link_libraries(libJvm PUBLIC
+	${SQUIRRELJME_LINK_LIBRARIES_Base}
+	${SQUIRRELJME_LINK_LIBRARIES_Core})
+
 # Use a conforming name for the library
 squirreljme_target_binary_name(libJvm
 	"jvm")

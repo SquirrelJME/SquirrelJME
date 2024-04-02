@@ -23,3 +23,8 @@ set_property(TARGET npapi
 target_include_directories(npapi PUBLIC
 	"${CMAKE_SOURCE_DIR}/include"
 	"${CMAKE_SOURCE_DIR}/include/3rdparty/npapi")
+
+# Libraries needed to be linked with for the DyLib to function
+target_link_libraries(npapi PUBLIC
+	${SQUIRRELJME_LINK_LIBRARIES_Base}
+	${SQUIRRELJME_LINK_LIBRARIES_Core})

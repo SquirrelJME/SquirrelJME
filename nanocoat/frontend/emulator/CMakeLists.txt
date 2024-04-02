@@ -40,6 +40,11 @@ target_include_directories(libEmulator PUBLIC
 	"${CMAKE_SOURCE_DIR}/include"
 	${JNI_INCLUDE_DIRS})
 
+# Libraries needed to be linked with for the DyLib to function
+target_link_libraries(libEmulator PUBLIC
+	${SQUIRRELJME_LINK_LIBRARIES_Base}
+	${SQUIRRELJME_LINK_LIBRARIES_Core})
+
 # It is easier to find this when it is in the build root
 squirreljme_target_binary_output(libEmulator
 	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
