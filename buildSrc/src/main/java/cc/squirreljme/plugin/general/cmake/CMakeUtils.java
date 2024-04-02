@@ -155,6 +155,10 @@ public final class CMakeUtils
 		Path outLog = __cmakeBuild.resolve(__logName + ".out");
 		Path errLog = __cmakeBuild.resolve(__logName + ".err");
 		
+		// Make sure directories exist first
+		Files.createDirectories(outLog.getParent());
+		Files.createDirectories(errLog.getParent());
+		
 		// Run with log wrapping
 		try (OutputStream stdOut = Files.newOutputStream(outLog,
 				StandardOpenOption.CREATE, StandardOpenOption.WRITE,
