@@ -22,6 +22,8 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,6 +53,27 @@ public class DylibScritchInterface
 	/** The state pointer. */
 	protected final long stateP;
 	
+	/** Component interface. */
+	protected final ScritchComponentInterface component;
+	
+	/** Container interface. */
+	protected final ScritchContainerInterface container;
+	
+	/** Environment interface. */
+	protected final ScritchEnvironmentInterface environment;
+	
+	/** Event loop interface. */
+	protected final ScritchEventLoopInterface eventLoop;
+	
+	/** Panel interface. */
+	protected final ScritchPanelInterface panel;
+	
+	/** Screen interface. */
+	protected final ScritchScreenInterface screen;
+	
+	/** Window interface. */
+	protected final ScritchWindowInterface window;
+	
 	/**
 	 * Initializes the native dynamic library interface.
 	 *
@@ -70,6 +93,24 @@ public class DylibScritchInterface
 		// Internal initialization
 		long stateP = __dyLib.apiInit();
 		this.stateP = stateP;
+		
+		// Initialize all sub-interfaces
+		Reference<DylibScritchInterface> self =
+			new WeakReference<>(this);
+		this.component =
+			new DylibComponentInterface(self, __dyLib, stateP);
+		this.container =
+			new DylibContainerInterface(self, __dyLib, stateP);
+		this.environment =
+			new DylibEnvironmentInterface(self, __dyLib, stateP);
+		this.eventLoop =
+			new DylibEventLoopInterface(self, __dyLib, stateP);
+		this.panel =
+			new DylibPanelInterface(self, __dyLib, stateP);
+		this.screen =
+			new DylibScreenInterface(self, __dyLib, stateP);
+		this.window =
+			new DylibWindowInterface(self, __dyLib, stateP);
 	}
 	
 	/**
@@ -79,7 +120,7 @@ public class DylibScritchInterface
 	@Override
 	public ScritchComponentInterface component()
 	{
-		throw Debugging.todo();
+		return this.component;
 	}
 	
 	/**
@@ -89,7 +130,7 @@ public class DylibScritchInterface
 	@Override
 	public ScritchContainerInterface container()
 	{
-		throw Debugging.todo();
+		return this.container;
 	}
 	
 	/**
@@ -99,7 +140,7 @@ public class DylibScritchInterface
 	@Override
 	public ScritchEnvironmentInterface environment()
 	{
-		throw Debugging.todo();
+		return this.environment;
 	}
 	
 	/**
@@ -109,7 +150,7 @@ public class DylibScritchInterface
 	@Override
 	public ScritchEventLoopInterface eventLoop()
 	{
-		throw Debugging.todo();
+		return this.eventLoop;
 	}
 	
 	/**
@@ -119,7 +160,7 @@ public class DylibScritchInterface
 	@Override
 	public ScritchPanelInterface panel()
 	{
-		throw Debugging.todo();
+		return this.panel;
 	}
 	
 	/**
@@ -129,7 +170,7 @@ public class DylibScritchInterface
 	@Override
 	public ScritchScreenInterface screen()
 	{
-		throw Debugging.todo();
+		return this.screen;
 	}
 	
 	/**
@@ -139,7 +180,7 @@ public class DylibScritchInterface
 	@Override
 	public ScritchWindowInterface window()
 	{
-		throw Debugging.todo();
+		return this.window;
 	}
 	
 	/**
