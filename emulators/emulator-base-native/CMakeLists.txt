@@ -49,7 +49,7 @@ add_library(libEmulatorBase SHARED
 
 # Includes for the build
 get_filename_component(nanocoatIncludePath
-	"${CMAKE_SOURCE_DIR}/../../../../nanocoat/include" ABSOLUTE)
+	"${CMAKE_SOURCE_DIR}/../../nanocoat/include" ABSOLUTE)
 message(STATUS "NanoCoat include is: ${nanocoatIncludePath}")
 target_include_directories(libEmulatorBase PUBLIC
 	"headers"
