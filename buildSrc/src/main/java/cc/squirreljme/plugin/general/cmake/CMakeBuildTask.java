@@ -9,6 +9,7 @@
 
 package cc.squirreljme.plugin.general.cmake;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
 import org.gradle.api.DefaultTask;
+import org.gradle.util.internal.VersionNumber;
 
 /**
  * Task for building CMake projects.
@@ -64,8 +66,9 @@ public class CMakeBuildTask
 		this.cmakeRules = Collections.<String>unmodifiableList(__rules);
 		
 		// The build root is based on the task
-		this.cmakeBuild = this.getProject().getBuildDir().toPath()
+		Path cmakeBuild = this.getProject().getBuildDir().toPath()
 			.resolve("cmake-" + this.getName());
+		this.cmakeBuild = cmakeBuild;
 		
 		// The desired output we want
 		if (__outputFile == null)
@@ -77,6 +80,21 @@ public class CMakeBuildTask
 		// Description
 		this.setGroup("squirreljme");
 		this.setDescription("Performs a CMake build.");
+		
+		// Need to get some details about the CMake build
+		try
+		{
+			// Configure CMake first before we continue with anything
+			CMakeUtils.cmakeExecute(this.getLogger(),
+				"configure", cmakeBuild,
+				"-S", __source.toAbsolutePath().toString(), "-B",
+				cmakeBuild.toAbsolutePath().toString());
+		}
+		catch (IOException __e)
+		{
+			throw new RuntimeException(String.format(
+				"Could not configure CMake for task %s", this.getName()), __e);
+		}
 		
 		// Check if out of date
 		this.getOutputs().upToDateWhen(new CMakeUpToDateWhen());

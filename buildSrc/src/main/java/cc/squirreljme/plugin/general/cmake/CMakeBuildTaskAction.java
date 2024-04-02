@@ -43,13 +43,6 @@ public class CMakeBuildTaskAction
 			// Make sure the output build directory exists
 			Files.createDirectories(cmakeBuild);
 			
-			// Configure CMake first
-			CMakeUtils.cmakeExecute(__task.getLogger(),
-				"configure",
-				cmakeBuild,
-				"-S", cmakeSource.toAbsolutePath().toString(),
-				"-B", cmakeBuild.toAbsolutePath().toString());
-			
 			// Then perform the actual build, for each rule
 			for (String cmakeRule : from.cmakeRules)
 				CMakeUtils.cmakeExecute(__task.getLogger(),

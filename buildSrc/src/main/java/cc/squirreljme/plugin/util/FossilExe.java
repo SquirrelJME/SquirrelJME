@@ -231,7 +231,7 @@ public final class FossilExe
 			return out.toByteArray();
 		}
 		
-		// Could no read the command result
+		// Could not read the command result
 		catch (IOException e)
 		{
 			throw new RuntimeException("Raw read/write error.", e);
