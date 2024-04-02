@@ -7,10 +7,13 @@
 // See license.mkd for licensing and copyright information.
 // ------------------------------------------------------------------------ */
 
+#include <string.h>
+
 #include "squirreljme.h"
 #include "lib/scritchui/scritchui.h"
 #include "sjme/dylib.h"
 #include "sjme/debug.h"
+#include "sjme/alloc.h"
 
 /** The class being implemented. */
 #define IMPL_CLASS "cc/squirreljme/emulator/scritchui/dylib/" \
@@ -25,18 +28,44 @@
 JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __apiInit)
 	(JNIEnv* env, jclass classy, jlong structP)
 {
+	sjme_errorCode error;
 	const sjme_scritchui_apiFunctions* apiFuncs;
+	sjme_alloc_pool* pool;
+	sjme_scritchui state;
 	
 	if (structP == 0)
 	{
 		sjme_jni_throwVMException(env, SJME_ERROR_NULL_ARGUMENTS);
 		return 0;
 	}
+	
+	/* We need a pool for allocations. */
+	pool = NULL;
+	if (sjme_error_is(error = sjme_alloc_poolInitMalloc(&pool,
+		4 * 1048576)) || pool == NULL)
+		goto fail_poolAlloc;
 
 	/* Restore structure. */
 	apiFuncs = (const sjme_scritchui_apiFunctions*)structP;
+
+	/* Initialize state. */
+	state = NULL;
+	if (sjme_error_is(error = apiFuncs->apiInit(pool,
+		&state)) || state == NULL)
+		goto fail_apiInit;
 	
-	sjme_todo("Implement this.");
+	/* Return the state pointer. */
+	return (jlong)state;
+	
+fail_apiInit:
+	if (pool != NULL)
+		free(pool);
+	
+fail_poolAlloc:
+
+	/* Fail. */
+	sjme_jni_throwVMException(env, sjme_error_default(error));
+	return 0L;
 }
 
 JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __link)
@@ -61,7 +90,8 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __link)
 	nameChars = (*env)->GetStringUTFChars(env, name, &nameCharsCopy);
 	
 	memset(buf, 0, sizeof(buf));
-	snprintf(buf, BUF_SIZE - 2, "sjme_scritchui_dylibApi%s", nameChars);
+	snprintf(buf, BUF_SIZE - 2,
+		"sjme_scritchui_dylibApi%s", nameChars);
 	buf[BUF_SIZE - 1] = 0;
 	
 	/* Release name. */
@@ -72,8 +102,8 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __link)
 	
 	/* Load native library. */
 	lib = NULL;
-	if (sjme_error_is(error = sjme_dylib_open(libPathChars, &lib)) ||
-		lib == NULL)
+	if (sjme_error_is(error = sjme_dylib_open(libPathChars,
+		&lib)) || lib == NULL)
 	{
 		sjme_message("Did not find lib '%s': %d",
 			libPathChars, error);

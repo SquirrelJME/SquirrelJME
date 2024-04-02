@@ -8,22 +8,25 @@
 // -------------------------------------------------------------------------*/
 
 #include "lib/scritchui/gtk2/gtk2.h"
+#include "sjme/alloc.h"
 
-/** GTK Function set for Scritch UI. */
-static const sjme_scritchui_apiFunctions sjme_scritchUI_gtkFunctions =
+sjme_errorCode sjme_scritchui_gtk2_apiInit(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInOutNotNull sjme_scritchui* outState)
 {
-	.apiFlags = NULL,
-	.apiInit = NULL,
-	.loopIterate = NULL,
-};
+	sjme_errorCode error;
+	sjme_scritchui state;
 
-/**
- * Returns the GTK ScritchUI interface.
- * 
- * @return The library interface.
- * @since 2024/03/29 
- */
-const sjme_scritchui_apiFunctions* SJME_SCRITCHUI_DYLIB_SYMBOL(gtk2)(void)
-{
-	return &sjme_scritchUI_gtkFunctions;
+	if (inPool == NULL || outState == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Allocate state. */
+	state = NULL;
+	if (sjme_error_is(error = sjme_alloc(inPool, sizeof(*state),
+		&state)) || state == NULL)
+		return sjme_error_default(error);
+	
+	/* Return resultant state. */
+	*outState = state;
+	return SJME_ERROR_NONE;
 }

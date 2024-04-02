@@ -11,6 +11,7 @@
 #define __SQUIRRELJME_H__
 
 #include "jni.h"
+#include "sjme/debug.h"
 
 /** Initializing methods. */
 jint JNICALL mleDebugInit(JNIEnv* env, jclass classy);
