@@ -32,3 +32,7 @@ squirreljme_multilib_target_include_directories(Base
 # Base library goes here
 squirreljme_multilib_target_binary_output(Base
 	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
+
+# Dynamic linker library is needed
+squirreljme_multilib_target_link_libraries(Base
+	${CMAKE_DL_LIBS})

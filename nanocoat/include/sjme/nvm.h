@@ -1702,8 +1702,14 @@ typedef enum sjme_errorCode
 	/** Invalid class name. */
 	SJME_ERROR_INVALID_CLASS_NAME = -43,
 	
+	/** Could not load library. */
+	SJME_ERROR_COULD_NOT_LOAD_LIBRARY = -44,
+	
+	/** Invalid library symbol. */
+	SJME_ERROR_INVALID_LIBRARY_SYMBOL = -45,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -44
+	SJME_NUM_ERROR_CODES = -46
 } sjme_errorCode;
 
 /**

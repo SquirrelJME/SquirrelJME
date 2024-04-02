@@ -28,5 +28,9 @@ squirreljme_multilib_add_library(Core
 squirreljme_multilib_target_include_directories(Core
 	"${CMAKE_SOURCE_DIR}/include")
 
+# Libraries for linking
+squirreljme_multilib_target_link_libraries(Core
+	$<TARGET_PROPERTY:Base,SQUIRRELJME_LINK_LIBRARIES>)
+
 # Doxygen
 squirreljme_doxygen(Core)

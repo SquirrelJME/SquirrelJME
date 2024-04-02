@@ -9,7 +9,9 @@
 
 package cc.squirreljme.plugin.general.cmake;
 
+import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Map;
 import org.gradle.api.Task;
 import org.gradle.api.specs.Spec;
 
@@ -28,6 +30,55 @@ public class CMakeUpToDateWhen
 	@Override
 	public boolean isSatisfiedBy(Task __task)
 	{
-		return Files.isDirectory(((CMakeBuildTask)__task).cmakeBuild);
+		CMakeBuildTask cmakeTask = (CMakeBuildTask)__task;
+		
+		// Cache directory does not exist?
+		if (!Files.isDirectory(cmakeTask.cmakeBuild))
+			return false;
+		
+		// Output is specified but does not exist?
+		if (cmakeTask.cmakeOutFile != null &&
+			!Files.exists(cmakeTask.cmakeOutFile))
+			return false;
+		
+		// Poke the native build system to see if it is out of date
+		try
+		{
+			// Load CMake cache
+			Map<String, String> cmakeCache = CMakeUtils.loadCache(
+				cmakeTask.cmakeBuild);
+			
+			// Which generator is being used?
+			String generator = cmakeCache.get("CMAKE_GENERATOR:INTERNAL");
+			switch (generator)
+			{
+				case "MSYS Makefiles":
+				case "MinGW Makefiles":
+				case "Unix Makefiles":
+					if (CMakeUtils.cmakeExecutePipe(false,
+						null, null, null,
+						"up-to-date", "--", "-q") != 0)
+						return false;
+					break;
+					
+				case "NMake Makefiles":
+					if (CMakeUtils.cmakeExecutePipe(false,
+						null, null, null,
+						"up-to-date", "--", "/Q") != 0)
+						return false;
+					break;
+			}
+		}
+		
+		// If this occurs then assume out of date
+		catch (IOException __e)
+		{
+			__task.getLogger().warn("Could not determine if out of date.",
+				__e);
+			return false;
+		}
+		
+		// Otherwise, success!
+		return true;
 	}
 }

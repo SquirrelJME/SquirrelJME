@@ -9,18 +9,31 @@
 
 package cc.squirreljme.plugin.general.cmake;
 
+import cc.squirreljme.plugin.util.ForwardInputToOutput;
+import cc.squirreljme.plugin.util.ForwardStream;
 import cc.squirreljme.plugin.util.PathUtils;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.gradle.api.logging.LogLevel;
 import org.gradle.api.logging.Logger;
 import org.gradle.internal.os.OperatingSystem;
+import org.gradle.util.internal.VersionNumber;
 
 /**
  * Utilities for CMake.
@@ -70,17 +83,161 @@ public final class CMakeUtils
 	}
 	
 	/**
+	 * Requests the version of CMake.
+	 *
+	 * @return The resultant CMake version or {@code null} if there is no
+	 * CMake available.
+	 * @since 2024/04/01
+	 */
+	public static VersionNumber cmakeExeVersion()
+	{
+		// We need the CMake executable
+		Path cmakeExe = CMakeUtils.cmakeExePath();
+		if (cmakeExe == null)
+			return null;
+		
+		try
+		{
+			String rawStr = CMakeUtils.cmakeExecuteOutput("version",
+				"--version");
+			
+			// Read in what looks like a version number
+			try (BufferedReader buf = new BufferedReader(
+				new StringReader(rawStr)))
+			{
+				for (;;)
+				{
+					String ln = buf.readLine();
+					if (ln == null)
+						break;
+					
+					// Remove any whitespace and make it lowercase so it is
+					// easier to parse
+					ln = ln.trim().toLowerCase(Locale.ROOT);
+					
+					// Is this the version string?
+					if (ln.startsWith("cmake version"))
+						return VersionNumber.parse(
+							ln.substring("cmake version".length()).trim());
+				}
+			}
+			
+			// Failed
+			throw new RuntimeException(
+				"CMake executed but there was no version.");
+		}
+		catch (IOException __e)
+		{
+			throw new RuntimeException("Could not determine CMake version.",
+				__e);
+		}
+	}
+	
+	/**
 	 * Executes a CMake task.
 	 *
 	 * @param __logger The logger to use.
 	 * @param __logName The name of the log.
 	 * @param __cmakeBuild The CMake build directory.
 	 * @param __args CMake arguments.
+	 * @return The CMake exit value.
 	 * @throws IOException On read/write or execution errors.
 	 * @since 2024/03/15
 	 */
-	public static void cmakeExecute(Logger __logger, String __logName,
+	public static int cmakeExecute(Logger __logger, String __logName,
 		Path __cmakeBuild, String... __args)
+		throws IOException
+	{
+		if (__cmakeBuild == null)
+			throw new NullPointerException("NARG");
+		
+		// Output log files
+		Path outLog = __cmakeBuild.resolve(__logName + ".out");
+		Path errLog = __cmakeBuild.resolve(__logName + ".err");
+		
+		// Run with log wrapping
+		try (OutputStream stdOut = Files.newOutputStream(outLog,
+				StandardOpenOption.CREATE, StandardOpenOption.WRITE,
+				StandardOpenOption.TRUNCATE_EXISTING);
+			 OutputStream stdErr = Files.newOutputStream(errLog,
+				StandardOpenOption.CREATE, StandardOpenOption.WRITE,
+				StandardOpenOption.TRUNCATE_EXISTING))
+		{
+			// Execute CMake
+			return CMakeUtils.cmakeExecutePipe(null, stdOut, stdErr,
+				__logName, __args);
+		}
+		
+		// Dump logs to Gradle
+		finally
+		{
+			CMakeUtils.dumpLog(__logger,
+				LogLevel.LIFECYCLE, outLog);
+			CMakeUtils.dumpLog(__logger,
+				LogLevel.ERROR, errLog);
+		}
+	}
+	
+	/**
+	 * Executes a CMake task and returns the output as a string.
+	 *
+	 * @param __buildType The build type used.
+	 * @param __args CMake arguments.
+	 * @throws IOException On read/write or execution errors.
+	 * @since 2024/04/01
+	 */
+	public static String cmakeExecuteOutput(String __buildType,
+		String... __args)
+		throws IOException
+	{
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
+		{
+			// Run command
+			CMakeUtils.cmakeExecutePipe(null, baos, null,
+				__buildType, __args);
+			
+			// Decode to output
+			return baos.toString("utf-8");
+		}
+	}
+	
+	/**
+	 * Executes a CMake task to the given pipe.
+	 *
+	 * @param __in The standard input for the task.
+	 * @param __out The standard output for the task.
+	 * @param __err The standard error for the task.
+	 * @param __buildType The build type used.
+	 * @param __args CMake arguments.
+	 * @return The CMake exit value.
+	 * @throws IOException On read/write or execution errors.
+	 * @since 2024/04/01
+	 */
+	public static int cmakeExecutePipe(InputStream __in,
+		OutputStream __out, OutputStream __err, String __buildType,
+		String... __args)
+		throws IOException
+	{
+		return CMakeUtils.cmakeExecutePipe(true, __in, __out, __err,
+			__buildType, __args);
+	}
+	
+	/**
+	 * Executes a CMake task to the given pipe.
+	 *
+	 * @param __fail Emit failure if exit status is non-zero.
+	 * @param __in The standard input for the task.
+	 * @param __out The standard output for the task.
+	 * @param __err The standard error for the task.
+	 * @param __buildType The build type used.
+	 * @param __args CMake arguments.
+	 * @return The CMake exit value.
+	 * @throws IOException On read/write or execution errors.
+	 * @since 2024/04/01
+	 */
+	public static int cmakeExecutePipe(boolean __fail, InputStream __in,
+		OutputStream __out, OutputStream __err, String __buildType,
+		String... __args)
 		throws IOException
 	{
 		// Need CMake
@@ -91,30 +248,46 @@ public final class CMakeUtils
 		// Determine run arguments
 		List<String> args = new ArrayList<>();
 		args.add(cmakePath.toAbsolutePath().toString());
-		args.addAll(Arrays.asList(__args));
+		if (__args != null && __args.length > 0)
+			args.addAll(Arrays.asList(__args));
 		
 		// Set executable process
 		ProcessBuilder procBuilder = new ProcessBuilder();
 		procBuilder.command(args);
 		
-		// Output log files
-		Path outLog = __cmakeBuild.resolve(__logName + ".out");
-		Path errLog = __cmakeBuild.resolve(__logName + ".err");
-		
 		// Log the output somewhere
-		procBuilder.redirectOutput(outLog.toFile());
-		procBuilder.redirectError(errLog.toFile());
+		if (__in != null)
+			procBuilder.redirectInput(ProcessBuilder.Redirect.PIPE);
+		if (__out != null)
+			procBuilder.redirectOutput(ProcessBuilder.Redirect.PIPE);
+		if (__err != null)
+			procBuilder.redirectError(ProcessBuilder.Redirect.PIPE);
 		
 		// Start the process
 		Process proc = procBuilder.start();
 		
 		// Wait for it to complete
-		try
+		try (ForwardStream fwdOut = (__out == null ? null : 
+				 new ForwardInputToOutput(proc.getInputStream(), __out));
+			 ForwardStream fwdErr = (__err == null ? null : 
+				 new ForwardInputToOutput(proc.getErrorStream(), __err)))
 		{
-			if (!proc.waitFor(5, TimeUnit.MINUTES) ||
-				proc.exitValue() != 0)
+			// Forward output
+			if (__out != null)
+				fwdOut.runThread("cmake-stdout");
+			
+			// Forward error
+			if (__err != null)
+				fwdErr.runThread("cmake-stderr");
+			
+			// Wait for completion, stop if it takes too long
+			if (!proc.waitFor(15, TimeUnit.MINUTES) ||
+				(__fail && proc.exitValue() != 0))
 				throw new RuntimeException(String.format(
-					"CMake failed to %s...", __logName));
+					"CMake failed to %s...", __buildType));
+			
+			// Use the given exit value
+			return proc.exitValue();
 		}
 		catch (InterruptedException __e)
 		{
@@ -122,10 +295,8 @@ public final class CMakeUtils
 		}
 		finally
 		{
-			CMakeUtils.dumpLog(__logger,
-				LogLevel.LIFECYCLE, outLog);
-			CMakeUtils.dumpLog(__logger,
-				LogLevel.ERROR, errLog);
+			// Destroy the task
+			proc.destroy();
 		}
 	}
 	
@@ -148,5 +319,43 @@ public final class CMakeUtils
 		{
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * Loads the CMake cache from the given build.
+	 *
+	 * @param __cmakeBuild The build directory to use.
+	 * @return The CMake cache.
+	 * @throws IOException If it could not be read.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/04/01
+	 */
+	public static Map<String, String> loadCache(Path __cmakeBuild)
+		throws IOException, NullPointerException
+	{
+		if (__cmakeBuild == null)
+			throw new NullPointerException("NARG");
+		
+		// Load in lines accordingly
+		Map<String, String> result = new LinkedHashMap<>();
+		for (String line : Files.readAllLines(
+			__cmakeBuild.resolve("CMakeCache.txt")))
+		{
+			// Comment?
+			if (line.startsWith("//") || line.startsWith("#"))
+				continue;
+			
+			// Find equal sign between key and value
+			int eq = line.indexOf('=');
+			if (eq < 0)
+				continue;
+			
+			// Split in
+			result.put(line.substring(0, eq).trim(),
+				line.substring(eq + 1).trim());
+		}
+		
+		// Return parsed properties
+		return result;
 	}
 }

@@ -69,6 +69,31 @@ macro(squirreljme_multilib_target_include_directories libBase)
 		${libBaseIncludes})
 endmacro()
 
+# Multi-lib library directories
+macro(squirreljme_multilib_target_link_directories libBase)
+	# Load in source files
+	set(libBaseLibDirs)
+	foreach(arg ${ARGV})
+		# Ignore first
+		if("${arg}" STREQUAL "${libBase}")
+			continue()
+		endif()
+
+		list(APPEND libBaseLibDirs "${arg}")
+	endforeach()
+
+	# Only link for the dynamic library
+	target_link_directories(${libBase}DyLib PUBLIC
+		${libBaseLibDirs})
+
+	# Otherwise set transient library directories to be included, for use with
+	# $<TARGET_PROPERTY:Target,SQUIRRELJME_LINK_DIRECTORIES>
+	set_target_properties(${libBase} PROPERTIES
+		SQUIRRELJME_LINK_DIRECTORIES "${libBaseLibDirs}")
+	set(SQUIRRELJME_LINK_DIRECTORIES_${libBase}
+		${libBaseLibDirs})
+endmacro()
+
 # Multi-lib linking of libraries
 macro(squirreljme_multilib_target_link_libraries libBase)
 	# Load in source files
@@ -84,7 +109,14 @@ macro(squirreljme_multilib_target_link_libraries libBase)
 
 	# Only link for the dynamic library
 	target_link_libraries(${libBase}DyLib PUBLIC
-		${libBaseIncludes})
+		${libBaseLibs})
+
+	# Otherwise set transient libraries to be included, for use with
+	# $<TARGET_PROPERTY:Target,SQUIRRELJME_LINK_LIBRARIES>
+	set_target_properties(${libBase} PROPERTIES
+		SQUIRRELJME_LINK_LIBRARIES "${libBaseLibs}")
+	set(SQUIRRELJME_LINK_LIBRARIES_${libBase}
+		${libBaseLibs})
 endmacro()
 
 # Output locations for binaries

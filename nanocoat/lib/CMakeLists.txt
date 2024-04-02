@@ -6,8 +6,8 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 
-# SquirrelJME base library
-add_subdirectory(base)
+# The SquirrelJME base library is added in the base root project and not
+# by this one
 
 # Third party support libraries that come from outside SquirrelJME
 add_subdirectory(3rdparty)

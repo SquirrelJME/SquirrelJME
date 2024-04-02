@@ -125,12 +125,15 @@ if(SQUIRRELJME_ENABLE_PACKING OR
 	squirreljme_include("packing.cmake")
 endif()
 
-# Internal Libraries
-add_subdirectory(lib)
+# SquirrelJME Base Library, everything depends on this essentially
+add_subdirectory(lib/base)
 
 # Include the base core first because it is completely standalone and it
 # uses nothing else
 add_subdirectory(src)
+
+# Internal Libraries other than Base
+add_subdirectory(lib)
 
 # Tests first since we add to these and when the ROMs register themselves
 # they will get their tests added accordingly
