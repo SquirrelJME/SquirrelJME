@@ -20,7 +20,6 @@ public class Collections
 {
 	private Collections()
 	{
-		throw Debugging.todo();
 	}
 	
 	/**
