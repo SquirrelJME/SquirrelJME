@@ -17,6 +17,8 @@ sjme_errorCode sjme_scritchui_gtk2_panelNew(
 	if (inState == NULL || outPanel == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+	
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }

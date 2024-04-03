@@ -31,6 +31,24 @@ extern "C" {
 /*--------------------------------------------------------------------------*/
 
 /**
+ * Represents the type that this is.
+ * 
+ * @since 2024/04/02
+ */
+typedef enum sjme_scritchui_uiType
+{
+	/** The number of possible types. */
+	SJME_NUM_SCRITCHUI_UI_TYPES
+} sjme_scritchui_uiType;
+
+/**
+ * An opaque native handle.
+ * 
+ * @since 2024/04/02
+ */
+typedef void* sjme_scritchui_handle;
+
+/**
  * API Flags for ScritchUI.
  * 
  * @since 2024/03/29
@@ -46,28 +64,28 @@ typedef enum sjme_scritchui_apiFlag
  * 
  * @since 2024/03/27
  */
-typedef struct sjme_scritchui* sjme_scritchui;
+typedef struct sjme_scritchui_stateBase* sjme_scritchui;
 
 /**
  * Component within ScritchUI.
  * 
  * @since 2024/03/27
  */
-typedef struct sjme_scritchui_uiComponent* sjme_scritchui_uiComponent;
+typedef struct sjme_scritchui_uiComponentBase* sjme_scritchui_uiComponent;
 
 /**
  * A panel within ScritchUI.
  * 
  * @since 2024/03/27
  */
-typedef struct sjme_scritchui_uiPanel* sjme_scritchui_uiPanel;
+typedef struct sjme_scritchui_uiPanelBase* sjme_scritchui_uiPanel;
 
 /**
  * A window within ScritchUI.
  * 
  * @since 2024/03/27
  */
-typedef struct sjme_scritchui_uiWindow* sjme_scritchui_uiWindow;
+typedef struct sjme_scritchui_uiWindowBase* sjme_scritchui_uiWindow;
 
 /**
  * Obtains the flags which describe the interface.
