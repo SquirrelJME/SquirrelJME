@@ -22,6 +22,9 @@ public final class NativeScritchDylib
 	/** Structure pointer. */
 	private final long _structP;
 	
+	/** The state pointer. */
+	private final long _stateP;
+	
 	/**
 	 * Initializes the native library layer for ScritchUI.
 	 *
@@ -45,17 +48,10 @@ public final class NativeScritchDylib
 				"No native structure found in library '%s' (%s)",
 				__libPath, __name));
 		this._structP = structP;
-	}
-	
-	/**
-	 * Initializes the ScritchUI API.
-	 *
-	 * @return The resultant state pointer.
-	 * @since 2024/04/02
-	 */
-	public long apiInit()
-	{
-		return NativeScritchDylib.__apiInit(this._structP);
+		
+		// Internal initialization
+		long stateP = this.__apiInit(structP);
+		this._stateP = stateP;
 	}
 	
 	/**

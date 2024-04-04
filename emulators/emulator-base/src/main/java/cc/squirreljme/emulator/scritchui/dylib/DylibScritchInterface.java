@@ -50,29 +50,26 @@ public class DylibScritchInterface
 	/** The native dynamic library to use. */
 	protected final NativeScritchDylib dyLib;
 	
-	/** The state pointer. */
-	protected final long stateP;
-	
 	/** Component interface. */
-	protected final ScritchComponentInterface component;
+	protected final DylibComponentInterface component;
 	
 	/** Container interface. */
-	protected final ScritchContainerInterface container;
+	protected final DylibContainerInterface container;
 	
 	/** Environment interface. */
-	protected final ScritchEnvironmentInterface environment;
+	protected final DylibEnvironmentInterface environment;
 	
 	/** Event loop interface. */
-	protected final ScritchEventLoopInterface eventLoop;
+	protected final DylibEventLoopInterface eventLoop;
 	
 	/** Panel interface. */
-	protected final ScritchPanelInterface panel;
+	protected final DylibPanelInterface panel;
 	
 	/** Screen interface. */
-	protected final ScritchScreenInterface screen;
+	protected final DylibScreenInterface screen;
 	
 	/** Window interface. */
-	protected final ScritchWindowInterface window;
+	protected final DylibWindowInterface window;
 	
 	/**
 	 * Initializes the native dynamic library interface.
@@ -90,27 +87,16 @@ public class DylibScritchInterface
 		// Store for later
 		this.dyLib = __dyLib;
 		
-		// Internal initialization
-		long stateP = __dyLib.apiInit();
-		this.stateP = stateP;
-		
 		// Initialize all sub-interfaces
 		Reference<DylibScritchInterface> self =
 			new WeakReference<>(this);
-		this.component =
-			new DylibComponentInterface(self, __dyLib, stateP);
-		this.container =
-			new DylibContainerInterface(self, __dyLib, stateP);
-		this.environment =
-			new DylibEnvironmentInterface(self, __dyLib, stateP);
-		this.eventLoop =
-			new DylibEventLoopInterface(self, __dyLib, stateP);
-		this.panel =
-			new DylibPanelInterface(self, __dyLib, stateP);
-		this.screen =
-			new DylibScreenInterface(self, __dyLib, stateP);
-		this.window =
-			new DylibWindowInterface(self, __dyLib, stateP);
+		this.component = new DylibComponentInterface(self, __dyLib);
+		this.container = new DylibContainerInterface(self, __dyLib);
+		this.environment = new DylibEnvironmentInterface(self, __dyLib);
+		this.eventLoop = new DylibEventLoopInterface(self, __dyLib);
+		this.panel = new DylibPanelInterface(self, __dyLib);
+		this.screen = new DylibScreenInterface(self, __dyLib);
+		this.window = new DylibWindowInterface(self, __dyLib);
 	}
 	
 	/**

@@ -21,9 +21,6 @@ public abstract class DylibBaseInterface
 	/** Dynamic library interface. */
 	protected final NativeScritchDylib dyLib;
 	
-	/** State pointer. */
-	protected final long stateP;
-	
 	/** Reference to our own API. */
 	private final Reference<DylibScritchInterface> _selfApi;
 	
@@ -32,19 +29,17 @@ public abstract class DylibBaseInterface
 	 *
 	 * @param __selfApi Reference to our own API.
 	 * @param __dyLib The dynamic library interface.
-	 * @param __stateP The current state pointer.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/04/02
 	 */
 	public DylibBaseInterface(Reference<DylibScritchInterface> __selfApi,
-		NativeScritchDylib __dyLib, long __stateP)
+		NativeScritchDylib __dyLib)
 		throws NullPointerException
 	{
-		if (__selfApi == null || __dyLib == null || __stateP == 0)
+		if (__selfApi == null || __dyLib == null)
 			throw new NullPointerException("NARG");
 		
 		this._selfApi = __selfApi;
 		this.dyLib = __dyLib;
-		this.stateP = __stateP;
 	}
 }

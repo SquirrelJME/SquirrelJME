@@ -31,15 +31,14 @@ public class DylibScreenInterface
 	 *
 	 * @param __selfApi Reference to our own API.
 	 * @param __dyLib The dynamic library interface.
-	 * @param __stateP The current state pointer.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/04/02
 	 */
 	public DylibScreenInterface(Reference<DylibScritchInterface> __selfApi,
-		NativeScritchDylib __dyLib, long __stateP)
+		NativeScritchDylib __dyLib)
 		throws NullPointerException
 	{
-		super(__selfApi, __dyLib, __stateP);
+		super(__selfApi, __dyLib);
 	}
 	
 	/**
