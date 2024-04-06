@@ -13,6 +13,7 @@ pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
 # Declare base library
 add_library(ScritchUIGTK3 SHARED
 	$<TARGET_OBJECTS:BasePIC>
+	$<TARGET_OBJECTS:ScritchUICorePIC>
 	gtk3Core.c)
 
 # Always make it PIC

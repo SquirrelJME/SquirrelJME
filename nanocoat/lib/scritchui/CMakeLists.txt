@@ -9,6 +9,14 @@
 # Include common macros to make things easier
 squirreljme_include("scritchui.cmake")
 
+# Core ScritchUI Library
+squirreljme_multilib_add_library(ScritchUICore
+	scritchPanel.c)
+
+# Include main headers
+target_include_directories(ScritchUICore PUBLIC
+	"${CMAKE_SOURCE_DIR}/include")
+
 # Framebuffer implementation of ScritchUI, does not require any native
 # libraries other than direct framebuffer access. This library is purely
 # a static library and is included as needed...
