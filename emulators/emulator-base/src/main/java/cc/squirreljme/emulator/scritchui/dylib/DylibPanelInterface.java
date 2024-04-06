@@ -51,7 +51,10 @@ public class DylibPanelInterface
 		boolean __enabled)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__panel == null)
+			throw new MLECallError("NARG");
+		
+		this.dyLib.enableFocus((DylibPanelObject)__panel, __enabled);
 	}
 	
 	/**

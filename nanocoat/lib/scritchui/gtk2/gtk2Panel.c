@@ -11,6 +11,25 @@
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/alloc.h"
 
+sjme_errorCode sjme_scritchui_gtk2_panelEnableFocus(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiPanel inPanel,
+	sjme_attrInValue sjme_jboolean enableFocus)
+{
+	GtkWidget* widget;
+	
+	if (inState == NULL || inPanel == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Set focusable. */
+	widget = inPanel->component.common.handle;
+	gtk_widget_set_can_focus(widget,
+		SJME_JBOOLEAN_TO_GBOOLEAN(enableFocus));
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_scritchui_gtk2_panelNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_scritchui_uiPanel inOutPanel)

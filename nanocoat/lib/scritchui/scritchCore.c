@@ -18,6 +18,7 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 	.apiInit = sjme_scritchui_core_apiInit,
 	.componentSetPaintListener = sjme_scritchui_core_componentSetPaintListener,
 	.loopIterate = NULL,
+	.panelEnableFocus = sjme_scritchui_core_panelEnableFocus,
 	.panelNew = sjme_scritchui_core_panelNew,
 };
 

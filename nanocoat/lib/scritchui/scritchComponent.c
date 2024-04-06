@@ -53,7 +53,7 @@ sjme_errorCode sjme_scritchui_core_componentSetPaintListener(
 	error = SJME_ERROR_NOT_IMPLEMENTED;
 	if (inState->impl->componentSetPaintListener == NULL ||
 		sjme_error_is(error = inState->impl->componentSetPaintListener(
-			inState, inComponent, inListener, copyFrontEnd)))
+			inState, inComponent, inListener, paint, copyFrontEnd)))
 	{
 		/* Error, copy old value back. */
 		paint->listener = oldListener;

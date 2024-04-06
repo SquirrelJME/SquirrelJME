@@ -601,6 +601,13 @@ typedef void* sjme_pointer;
 #define SJME_TYPEOF_IS_POINTER_sjme_pointer 1
 
 /**
+ * Integer based pointer.
+ * 
+ * @since 2024/04/06
+ */
+typedef intptr_t sjme_intPointer;
+
+/**
  * Long value.
  * 
  * @since 2023/07/25

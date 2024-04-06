@@ -48,6 +48,9 @@ typedef struct sjme_scritchui_uiPaintableBase
 	
 	/** Front end for paint listener. */
 	sjme_frontEnd frontEnd;
+	
+	/** Extra data if needed. */
+	sjme_intPointer extra;
 } sjme_scritchui_uiPaintableBase;
 
 typedef struct sjme_scritchui_uiPanelBase
@@ -57,6 +60,9 @@ typedef struct sjme_scritchui_uiPanelBase
 	
 	/** Paint related. */
 	sjme_scritchui_uiPaintableBase paint;
+	
+	/** Is focus enabled? */
+	sjme_jboolean enableFocus;
 } sjme_scritchui_uiPanelBase;
 
 typedef struct sjme_scritchui_uiWindowBase

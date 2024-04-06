@@ -34,10 +34,25 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
+/** Maps a @c sjme_jboolean to @c gboolean . */
+#define SJME_JBOOLEAN_TO_GBOOLEAN(b) \
+	((b) == SJME_JNI_FALSE ? FALSE : TRUE)
+
+/** Maps a @c gboolean to @c sjme_jboolean . */
+#define GBOOLEAN_TO_SJME_JBOOLEAN(b) \
+	((b) == FALSE ? SJME_JNI_FALSE : SJME_JNI_TRUE)
+
 sjme_errorCode sjme_scritchui_gtk2_componentSetPaintListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrInNotNull sjme_scritchui_paintListenerFunc inListener);
+	sjme_attrInNullable sjme_scritchui_paintListenerFunc inListener,
+	sjme_attrInNotNull sjme_scritchui_uiPaintable inPaint,
+	sjme_attrInNullable sjme_frontEnd* copyFrontEnd);
+
+sjme_errorCode sjme_scritchui_gtk2_panelEnableFocus(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiPanel inPanel,
+	sjme_attrInValue sjme_jboolean enableFocus);
 
 sjme_errorCode sjme_scritchui_gtk2_panelNew(
 	sjme_attrInNotNull sjme_scritchui inState,

@@ -95,6 +95,13 @@ typedef struct sjme_scritchui_implFunctions sjme_scritchui_implFunctions;
 typedef struct sjme_scritchui_uiComponentBase* sjme_scritchui_uiComponent;
 
 /**
+ * Base paintable for ScritchUI.
+ * 
+ * @since 2024/04/06
+ */
+typedef struct sjme_scritchui_uiPaintableBase* sjme_scritchui_uiPaintable;
+
+/**
  * A panel within ScritchUI.
  * 
  * @since 2024/03/27
@@ -203,6 +210,20 @@ typedef sjme_errorCode (*sjme_scritchui_loopIterateFunc)(
 	sjme_attrOutNullable sjme_jboolean* outHasTerminated);
 
 /**
+ * Enables or disables focus on a panel.
+ * 
+ * @param inState The input state.
+ * @param inPanel The input panel.
+ * @param enableFocus Should focus be enabled?
+ * @return Any error code if applicable.
+ * @since 2024/04/06
+ */
+typedef sjme_errorCode (*sjme_scritchui_panelEnableFocusFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiPanel inPanel,
+	sjme_attrInValue sjme_jboolean enableFocus);
+
+/**
  * Creates a new panel.
  * 
  * @param inState The input state.
@@ -227,6 +248,9 @@ struct sjme_scritchui_apiFunctions
 	
 	/** Iterates a single run of the event loop. */
 	sjme_scritchui_loopIterateFunc loopIterate;
+	
+	/** Enable focus on a panel. */
+	sjme_scritchui_panelEnableFocusFunc panelEnableFocus;
 	
 	/** Creates a new panel. */
 	sjme_scritchui_panelNewFunc panelNew;

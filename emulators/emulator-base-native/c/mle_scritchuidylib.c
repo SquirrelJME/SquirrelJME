@@ -27,6 +27,8 @@
 	DESC_LONG DESC_LONG DESC_SCRITCH_PAINT_LISTENER ")" DESC_VOID
 #define FORWARD_DESC___linkInit "(" \
 	DESC_STRING DESC_STRING ")" DESC_LONG
+#define FORWARD_DESC___panelEnableFocus "(" \
+	DESC_LONG DESC_LONG DESC_BOOLEAN ")" DESC_VOID
 #define FORWARD_DESC___panelNew "(" \
 	DESC_LONG ")" DESC_LONG
 
@@ -188,6 +190,38 @@ fail_poolInit:
 	return 0;
 }
 
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__panelEnableFocus)(JNIEnv* env, jclass classy, jlong stateP,
+	jlong panelP, jboolean enableFocus)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	sjme_scritchui_uiPanel panel;
+	
+	if (stateP == 0 || panelP == 0)
+	{
+		error = SJME_ERROR_NULL_ARGUMENTS;
+		goto fail_nullArgs;
+	}
+	
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	panel = (sjme_scritchui_uiPanel)panelP;
+	
+	/* Forward call. */
+	if (state->api->panelEnableFocus == NULL ||
+		sjme_error_is(error = state->api->panelEnableFocus(state, panel,
+			(sjme_jboolean)enableFocus)))
+		goto fail_panelFocus;
+
+	/* Success! */
+	return;
+	
+fail_panelFocus:
+fail_nullArgs:
+	sjme_jni_throwVMException(env, sjme_error_default(error));
+}
+
 JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __panelNew)
 	(JNIEnv* env, jclass classy, jlong stateP)
 {
@@ -195,7 +229,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __panelNew)
 	sjme_scritchui state;
 	sjme_scritchui_uiPanel panel;
 	
-	if (state == NULL)
+	if (stateP == 0)
 	{
 		error = SJME_ERROR_NULL_ARGUMENTS;
 		goto fail_nullArgs;
@@ -225,6 +259,7 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 {
 	FORWARD_list(NativeScritchDylib, __componentSetPaintListener),
 	FORWARD_list(NativeScritchDylib, __linkInit),
+	FORWARD_list(NativeScritchDylib, __panelEnableFocus),
 	FORWARD_list(NativeScritchDylib, __panelNew),
 };
 
