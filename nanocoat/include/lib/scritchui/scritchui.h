@@ -17,6 +17,7 @@
 #define SQUIRRELJME_SCRITCHUI_H
 
 #include "sjme/config.h"
+#include "sjme/gfxConst.h"
 #include "sjme/nvm.h"
 
 /* Anti-C++. */
@@ -37,6 +38,12 @@ extern "C" {
  */
 typedef enum sjme_scritchui_uiType
 {
+	/** Reserved. */
+	SJME_SCRITCHUI_TYPE_RESERVED,
+	
+	/** Panel. */
+	SJME_SCRITCHUI_TYPE_PANEL,
+	
 	/** The number of possible types. */
 	SJME_NUM_SCRITCHUI_UI_TYPES
 } sjme_scritchui_uiType;
@@ -102,6 +109,45 @@ typedef struct sjme_scritchui_uiPanelBase* sjme_scritchui_uiPanel;
 typedef struct sjme_scritchui_uiWindowBase* sjme_scritchui_uiWindow;
 
 /**
+ * Callback that is used to draw the given component.
+ *
+ * @param __component The component to draw on.
+ * @param __pf The @c sjme_gfx_pixelFormat used for the draw.
+ * @param __bw The buffer width, this is the scanline width of the buffer.
+ * @param __bh The buffer height.
+ * @param __buf The target buffer to draw to, this is cast to the correct
+ * buffer format.
+ * @param __bufOff The offset to the start of the buffer.
+ * @param __bufLen The length of @c __buf .
+ * @param __pal The color palette, may be @c NULL .
+ * @param __numPal The number of colors in the palette, may be @c 0 if
+ * the argument @c __pal is @c NULL .
+ * @param __sx Starting surface X coordinate.
+ * @param __sy Starting surface Y coordinate.
+ * @param __sw Surface width.
+ * @param __sh Surface height.
+ * @param __special Special value for painting, may be @c 0 or any
+ * other value if it is meaningful to what is being painted.
+ * @return Any error as required.
+ * @since 2024/04/06
+ */
+typedef sjme_errorCode (*sjme_scritchui_paintListenerFunc)(
+	sjme_attrInNotNull sjme_scritchui_uiComponent __component,
+	sjme_attrInNotNull sjme_gfx_pixelFormat __pf,
+	sjme_attrInPositive sjme_jint __bw,
+	sjme_attrInPositive sjme_jint __bh,
+	sjme_attrInNotNull const void* __buf,
+	sjme_attrInPositive sjme_jint __bufOff,
+	sjme_attrInPositive sjme_jint __bufLen,
+	sjme_attrInNullable const sjme_jint* __pal,
+	sjme_attrInPositive sjme_jint __numPal,
+	sjme_attrInPositive sjme_jint __sx,
+	sjme_attrInPositive sjme_jint __sy,
+	sjme_attrInPositive sjme_jint __sw,
+	sjme_attrInPositive sjme_jint __sh,
+	sjme_attrInValue sjme_jint __special);
+
+/**
  * Obtains the flags which describe the interface.
  * 
  * @param inState The input ScritchUI state.
@@ -128,6 +174,21 @@ typedef sjme_errorCode (*sjme_scritchui_apiInitFunc)(
 	sjme_attrInOutNotNull sjme_scritchui* outState);
 
 /**
+ * Sets the paint listener for the given component.
+ * 
+ * @param inState The input state.
+ * @param inComponent The component to set the listener for.
+ * @param inListener The listener for paint events, may be @c NULL to clear
+ * the existing listener.
+ * @return Any error if applicable.
+ * @since 2024/04/06
+ */
+typedef sjme_errorCode (*sjme_scritchui_componentSetPaintListenerFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNullable sjme_scritchui_paintListenerFunc inListener);
+
+/**
  * Iterates a single run of the event loop.
  * 
  * @param inState The input ScritchUI state.
@@ -150,7 +211,7 @@ typedef sjme_errorCode (*sjme_scritchui_loopIterateFunc)(
 typedef sjme_errorCode (*sjme_scritchui_panelNewFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_scritchui_uiPanel* outPanel);
- 
+
 struct sjme_scritchui_apiFunctions
 {
 	/** API flags. */
@@ -158,6 +219,9 @@ struct sjme_scritchui_apiFunctions
 	
 	/** Initialize the framework library. */
 	sjme_scritchui_apiInitFunc apiInit;
+	
+	/** Sets the paint listener for a component. */
+	sjme_scritchui_componentSetPaintListenerFunc componentSetPaintListener;
 	
 	/** Iterates a single run of the event loop. */
 	sjme_scritchui_loopIterateFunc loopIterate;

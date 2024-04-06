@@ -30,7 +30,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_emulator_NativeBinding__1_1bindMethod
 {
 	jint rv = 0;
 	
-	// It is happening!
+	/* It is happening! */
 	fprintf(stderr, "JNI Sub-Level: Binding Methods...\n");
 
 	rv |= mleDebugInit(env, classy);
@@ -39,8 +39,6 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_emulator_NativeBinding__1_1bindMethod
 	rv |= mleMathInit(env, classy);
 	rv |= mleMidiInit(env, classy);
 	rv |= mleNativeArchiveInit(env, classy);
-	rv |= mleNativeScritchDylibInit(env, classy);
-	rv |= mleNativeScritchInterfaceInit(env, classy);
 	rv |= mleObjectInit(env, classy);
 	rv |= mlePencilInit(env, classy);
 	rv |= mleReflectionInit(env, classy);
@@ -50,7 +48,12 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_emulator_NativeBinding__1_1bindMethod
 	rv |= mleTypeInit(env, classy);
 	rv |= mleThreadInit(env, classy);
 	
-	// It happened!
+	/* ScritchUI. */
+	rv |= mleDylibBaseObjectInit(env, classy);
+	rv |= mleNativeScritchDylibInit(env, classy);
+	rv |= mleNativeScritchInterfaceInit(env, classy);
+	
+	/* It happened! */
 	fprintf(stderr, "JNI Sub-Level: Methods are now bound!\n");
 
 	return rv;

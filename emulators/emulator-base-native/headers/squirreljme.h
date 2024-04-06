@@ -15,6 +15,7 @@
 
 /** Initializing methods. */
 jint JNICALL mleDebugInit(JNIEnv* env, jclass classy);
+jint JNICALL mleDylibBaseObjectInit(JNIEnv* env, jclass classy);
 jint JNICALL mleFormInit(JNIEnv* env, jclass classy);
 jint JNICALL mleJarInit(JNIEnv* env, jclass classy);
 jint JNICALL mleMathInit(JNIEnv* env, jclass classy);
@@ -122,6 +123,7 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 #define DESC_FLOAT "F"
 #define DESC_DOUBLE "D"
 #define DESC_VOID "V"
+#define DESC_OBJECT DESC_CLASS("java/lang/Object")
 #define DESC_STRING DESC_CLASS("java/lang/String")
 
 /**

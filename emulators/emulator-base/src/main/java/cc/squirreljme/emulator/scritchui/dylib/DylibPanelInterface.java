@@ -84,6 +84,11 @@ public class DylibPanelInterface
 		ScritchPaintListener __listener)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__component == null)
+			throw new MLECallError("No component given.");
+		
+		// Forward
+		this.dyLib.componentSetPaintListener(
+			(DylibPaintableObject)__component, __listener);
 	}
 }

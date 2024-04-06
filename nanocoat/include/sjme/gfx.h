@@ -17,6 +17,7 @@
 #define SQUIRRELJME_GFX_H
 
 #include "sjme/nvm.h"
+#include "sjme/gfxConst.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -43,50 +44,6 @@ typedef struct sjme_gfx_framebuffer sjme_gfx_framebuffer;
  * @since 2023/11/24
  */
 typedef struct sjme_gfx_graphics sjme_gfx_graphics;
-
-/**
- * The pixel format used for graphics, matches @c UIPixelFormat.
- * 
- * @since 2023/11/25
- */
-typedef enum sjme_gfx_pixelFormat
-{
-	/** 32-bit RGBA (@c uint32_t ) [Java ME Standard]. */
-	SJME_GFX_PIXEL_FORMAT_INT_RGBA8888 = 0,
-	
-	/** 32-bit RGB (@c uint32_t ) [Java ME Standard]. */
-	SJME_GFX_PIXEL_FORMAT_INT_RGB888 = 1,
-	
-	/** 16-bit RGBA4444. (@c uint16_t ) [Java ME Standard]. */
-	SJME_GFX_PIXEL_FORMAT_SHORT_RGBA4444 = 2,
-	
-	/** 16-bit RGB565. (@c uint16_t ) [Java ME Standard]. */
-	SJME_GFX_PIXEL_FORMAT_SHORT_RGB565 = 3,
-	
-	/** 16-bit RGB555. (@c uint16_t ). */
-	SJME_GFX_PIXEL_FORMAT_SHORT_RGB555 = 4,
-	
-	/** 16-bit ABGR1555. (@c uint16_t ) [PlayStation 2]. */
-	SJME_GFX_PIXEL_FORMAT_SHORT_ABGR1555 = 5,
-	
-	/** 65536 Colors (@c uint16_t ). */
-	SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536 = 6,
-	
-	/** 256 Colors (@c uint8_t ). */
-	SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256 = 7,
-	
-	/** Packed 16 colors (4-bit). (packed @c uint8_t ) */
-	SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4 = 8,
-	
-	/** Packed 4 Colors (2-bit). (packed @c uint8_t ) */
-	SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2 = 9,
-	
-	/** Packed 2 colors (1-bit). (packed @c uint8_t ) */
-	SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1 = 10,
-	
-	/** The number of pixel formats. */
-	SJME_NUM_GFX_PIXEL_FORMATS = 11
-} sjme_gfx_pixelFormat;
 
 /**
  * Obtains a graphics drawing instance of the framebuffer.

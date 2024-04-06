@@ -16,6 +16,7 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 {
 	.apiFlags = NULL,
 	.apiInit = sjme_scritchui_core_apiInit,
+	.componentSetPaintListener = sjme_scritchui_core_componentSetPaintListener,
 	.loopIterate = NULL,
 	.panelNew = sjme_scritchui_core_panelNew,
 };

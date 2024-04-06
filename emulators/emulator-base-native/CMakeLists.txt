@@ -39,6 +39,7 @@ add_library(libEmulatorBase SHARED
 	c/mle_reflection.c
 	c/mle_runtime.c
 	c/mle_scritchui.c
+	c/mle_scritchuibaseobject.c
 	c/mle_scritchuidylib.c
 	c/mle_task.c
 	c/mle_terminal.c

@@ -10,6 +10,8 @@
 package cc.squirreljme.emulator.scritchui.dylib;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPaintableBracket;
+import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchPaintListener;
 import java.nio.file.Path;
 
 /**
@@ -48,12 +50,32 @@ public final class NativeScritchDylib
 	}
 	
 	/**
+	 * Sets the component paint listener.
+	 *
+	 * @param __component The component to draw on.
+	 * @param __listener The listener to use.
+	 * @throws MLECallError On null arguments.
+	 * @since 2024/04/06
+	 */
+	public void componentSetPaintListener(DylibPaintableObject __component,
+		ScritchPaintListener __listener)
+		throws MLECallError
+	{
+		if (__component == null)
+			throw new MLECallError("NARG");
+		
+		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
+	}
+	
+	/**
 	 * Initializes a new panel.
 	 *
 	 * @return The newly created panel.
+	 * @throws MLECallError If the panel could not be created.
 	 * @since 2024/04/06
 	 */
 	public DylibPanelObject panelNew()
+		throws MLECallError
 	{
 		long panelP = NativeScritchDylib.__panelNew(this._stateP);
 		if (panelP == 0)

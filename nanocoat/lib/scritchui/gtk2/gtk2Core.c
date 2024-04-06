@@ -13,6 +13,7 @@
 /** GTK Function set for Scritch UI. */
 static const sjme_scritchui_implFunctions sjme_scritchUI_gtkFunctions =
 {
+	.componentSetPaintListener = sjme_scritchui_gtk2_componentSetPaintListener,
 	.panelNew = sjme_scritchui_gtk2_panelNew,
 };
 

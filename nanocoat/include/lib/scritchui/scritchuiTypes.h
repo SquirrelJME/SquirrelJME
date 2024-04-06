@@ -40,6 +40,9 @@ typedef struct sjme_scritchui_uiPanelBase
 {
 	/** Common data. */
 	sjme_scritchui_uiComponentBase component;
+	
+	/** Paint listener. */
+	sjme_scritchui_paintListenerFunc paintListener;
 } sjme_scritchui_uiPanelBase;
 
 typedef struct sjme_scritchui_uiWindowBase

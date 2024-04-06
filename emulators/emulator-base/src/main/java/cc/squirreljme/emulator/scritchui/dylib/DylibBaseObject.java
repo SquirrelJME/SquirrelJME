@@ -9,6 +9,8 @@
 
 package cc.squirreljme.emulator.scritchui.dylib;
 
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+
 /**
  * Base class for all brackets that are wrapped by the ScritchUI Dylib.
  *
@@ -33,5 +35,19 @@ public abstract class DylibBaseObject
 			throw new NullPointerException("NARG");
 		
 		this.objectP = __objectP;
+		
+		// Bind object to this so native code can find the object again
+		DylibBaseObject.__bind(__objectP, this);
 	}
+	
+	/**
+	 * Binds this to the Java object.
+	 *
+	 * @param __objectP The base wrapped native object.
+	 * @param __javaObject The Java object to reference.
+	 * @throws MLECallError On null arguments.
+	 * @since 2024/04/06
+	 */
+	private static native void __bind(long __objectP, Object __javaObject)
+		throws MLECallError;
 }

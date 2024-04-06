@@ -9,27 +9,14 @@
 
 package cc.squirreljme.emulator.scritchui.dylib;
 
-import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPaintableBracket;
 
 /**
- * A {@link ScritchPanelBracket}.
+ * An object that can be painted to.
  *
  * @since 2024/04/06
  */
-public class DylibPanelObject
-	extends DylibBaseObject
-	implements DylibPaintableObject, ScritchPanelBracket
+public interface DylibPaintableObject
+	extends ScritchPaintableBracket
 {
-	/**
-	 * Initializes the panel object.
-	 *
-	 * @param __objectP The object pointer.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2024/04/06
-	 */
-	public DylibPanelObject(long __objectP)
-		throws NullPointerException
-	{
-		super(__objectP);
-	}
 }
