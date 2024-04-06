@@ -13,20 +13,13 @@
 
 sjme_errorCode sjme_scritchui_gtk2_panelNew(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInOutNotNull sjme_scritchui_uiPanel* outPanel)
+	sjme_attrInOutNotNull sjme_scritchui_uiPanel inOutPanel)
 {
-	sjme_scritchui_uiPanel result;
 	sjme_errorCode error;
 	GtkWidget* widget;
 
-	if (inState == NULL || outPanel == NULL)
+	if (inState == NULL || inOutPanel == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Allocate result. */
-	result = NULL;
-	if (sjme_error_is(error = sjme_alloc(inState->pool, sizeof(*result),
-		&result)) || result == NULL)
-		return sjme_error_default(error);
 	
 	/* Setup GTK widget, used fixed as we want exact placements. */
 	widget = NULL;
@@ -34,15 +27,11 @@ sjme_errorCode sjme_scritchui_gtk2_panelNew(
 		goto fail_gtkWidget;
 	
 	/* Store information. */
-	result->component.common.handle = widget;
+	inOutPanel->component.common.handle = widget;
 	
 	/* Success! */
-	*outPanel = result;
 	return SJME_ERROR_NONE;
 	
 fail_gtkWidget:
-	if (result != NULL)
-		sjme_alloc_free(result);
-	
 	return sjme_error_default(error);
 }

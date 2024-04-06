@@ -11,10 +11,11 @@ squirreljme_include("scritchui.cmake")
 
 # Core ScritchUI Library
 squirreljme_multilib_add_library(ScritchUICore
+	scritchCore.c
 	scritchPanel.c)
 
 # Include main headers
-target_include_directories(ScritchUICore PUBLIC
+squirreljme_multilib_target_include_directories(ScritchUICore PUBLIC
 	"${CMAKE_SOURCE_DIR}/include")
 
 # Framebuffer implementation of ScritchUI, does not require any native

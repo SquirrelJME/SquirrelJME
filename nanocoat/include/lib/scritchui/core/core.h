@@ -8,49 +8,57 @@
 // -------------------------------------------------------------------------*/
 
 /**
- * GTK2 ScritchUI Header.
+ * ScritchUI Core.
  * 
- * @since 2024/04/02
+ * @since 2024/04/06
  */
 
-#ifndef SQUIRRELJME_GTK2_H
-#define SQUIRRELJME_GTK2_H
+#ifndef SQUIRRELJME_CORE_H
+#define SQUIRRELJME_CORE_H
 
-#include <gtk-2.0/gtk/gtk.h>
-
-#include "sjme/config.h"
-#include "sjme/debug.h"
 #include "lib/scritchui/scritchui.h"
-#include "lib/scritchui/scritchuiImpl.h"
+#include "lib/scritchui/scritchuiTypes.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
 	#ifndef SJME_CXX_IS_EXTERNED
 		#define SJME_CXX_IS_EXTERNED
-		#define SJME_CXX_SQUIRRELJME_GTK2_H
+		#define SJME_CXX_SQUIRRELJME_CORE_H
 extern "C" {
 	#endif /* #ifdef SJME_CXX_IS_EXTERNED */
 #endif     /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
 
-sjme_errorCode sjme_scritchui_gtk2_apiInit(
+sjme_errorCode sjme_scritchui_core_apiInit(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull const sjme_scritchui_apiFunctions* inApiFunc,
+	sjme_attrInNotNull const sjme_scritchui_implFunctions* inImplFunc,
 	sjme_attrInOutNotNull sjme_scritchui* outState);
 
-sjme_errorCode sjme_scritchui_gtk2_panelNew(
+/**
+ * Outputs the core API functions.
+ * 
+ * @param outApi The output API functions. 
+ * @return With any error code.
+ * @since 2024/04/06
+ */
+sjme_errorCode sjme_scritchui_core_apiFunctions(
+	sjme_attrInOutNotNull const sjme_scritchui_apiFunctions** outApi);
+
+sjme_errorCode sjme_scritchui_core_panelNew(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInOutNotNull sjme_scritchui_uiPanel inOutPanel);
+	sjme_attrInOutNotNull sjme_scritchui_uiPanel* outPanel);
 
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
 #ifdef __cplusplus
-	#ifdef SJME_CXX_SQUIRRELJME_GTK2_H
+	#ifdef SJME_CXX_SQUIRRELJME_CORE_H
 }
-		#undef SJME_CXX_SQUIRRELJME_GTK2_H
+		#undef SJME_CXX_SQUIRRELJME_CORE_H
 		#undef SJME_CXX_IS_EXTERNED
-	#endif /* #ifdef SJME_CXX_SQUIRRELJME_GTK2_H */
+	#endif /* #ifdef SJME_CXX_SQUIRRELJME_CORE_H */
 #endif     /* #ifdef __cplusplus */
 
-#endif /* SQUIRRELJME_GTK2_H */
+#endif /* SQUIRRELJME_CORE_H */

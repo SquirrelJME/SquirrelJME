@@ -17,6 +17,7 @@
 #define SQUIRRELJME_SCRITCHUITYPES_H
 
 #include "lib/scritchui/scritchui.h"
+#include "lib/scritchui/scritchuiImpl.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -53,6 +54,12 @@ struct sjme_scritchui_stateBase
 {
 	/** Common data. */
 	sjme_scritchui_commonBase common;
+	
+	/** API functions to use. */
+	const sjme_scritchui_apiFunctions* api;
+	
+	/** Implementation functions to use. */
+	const sjme_scritchui_implFunctions* impl;
 	
 	/** The allocation pool to use for allocations. */
 	sjme_alloc_pool* pool;

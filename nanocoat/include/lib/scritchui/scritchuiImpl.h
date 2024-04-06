@@ -8,49 +8,54 @@
 // -------------------------------------------------------------------------*/
 
 /**
- * GTK2 ScritchUI Header.
+ * ScritchUI implementation interface.
  * 
- * @since 2024/04/02
+ * @since 2024/04/06
  */
 
-#ifndef SQUIRRELJME_GTK2_H
-#define SQUIRRELJME_GTK2_H
+#ifndef SQUIRRELJME_SCRITCHUIIMPL_H
+#define SQUIRRELJME_SCRITCHUIIMPL_H
 
-#include <gtk-2.0/gtk/gtk.h>
-
-#include "sjme/config.h"
-#include "sjme/debug.h"
 #include "lib/scritchui/scritchui.h"
-#include "lib/scritchui/scritchuiImpl.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
 	#ifndef SJME_CXX_IS_EXTERNED
 		#define SJME_CXX_IS_EXTERNED
-		#define SJME_CXX_SQUIRRELJME_GTK2_H
+		#define SJME_CXX_SQUIRRELJME_SCRITCHUIIMPL_H
 extern "C" {
 	#endif /* #ifdef SJME_CXX_IS_EXTERNED */
 #endif     /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
 
-sjme_errorCode sjme_scritchui_gtk2_apiInit(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrInOutNotNull sjme_scritchui* outState);
-
-sjme_errorCode sjme_scritchui_gtk2_panelNew(
+/**
+ * Creates a new native panel.
+ * 
+ * @param inState The input ScritchUI state.
+ * @param inOutPanel The input/output panel.
+ * @return Any error code as per implementation.
+ * @since 2024/04/06
+ */
+typedef sjme_errorCode (*sjme_scritchui_impl_panelNewFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_scritchui_uiPanel inOutPanel);
+
+struct sjme_scritchui_implFunctions
+{
+	/** Creates a new native panel. */
+	sjme_scritchui_impl_panelNewFunc panelNew;
+};
 
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
 #ifdef __cplusplus
-	#ifdef SJME_CXX_SQUIRRELJME_GTK2_H
+	#ifdef SJME_CXX_SQUIRRELJME_SCRITCHUIIMPL_H
 }
-		#undef SJME_CXX_SQUIRRELJME_GTK2_H
+		#undef SJME_CXX_SQUIRRELJME_SCRITCHUIIMPL_H
 		#undef SJME_CXX_IS_EXTERNED
-	#endif /* #ifdef SJME_CXX_SQUIRRELJME_GTK2_H */
+	#endif /* #ifdef SJME_CXX_SQUIRRELJME_SCRITCHUIIMPL_H */
 #endif     /* #ifdef __cplusplus */
 
-#endif /* SQUIRRELJME_GTK2_H */
+#endif /* SQUIRRELJME_SCRITCHUIIMPL_H */
