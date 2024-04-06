@@ -8,6 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 #include "lib/scritchui/gtk2/gtk2.h"
+#include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/alloc.h"
 
 sjme_errorCode sjme_scritchui_gtk2_apiInit(
