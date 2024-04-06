@@ -17,8 +17,6 @@ import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchPaintListener;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Not Described.
@@ -63,7 +61,7 @@ public class DylibPanelInterface
 	@Override
 	public ScritchPanelBracket newPanel()
 	{
-		throw Debugging.todo();
+		return this.dyLib.panelNew();
 	}
 	
 	/**

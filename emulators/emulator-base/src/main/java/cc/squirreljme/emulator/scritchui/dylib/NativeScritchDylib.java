@@ -19,9 +19,6 @@ import java.nio.file.Path;
  */
 public final class NativeScritchDylib
 {
-	/** Structure pointer. */
-	private final long _structP;
-	
 	/** The state pointer. */
 	private final long _stateP;
 	
@@ -40,36 +37,47 @@ public final class NativeScritchDylib
 			throw new NullPointerException("NARG");
 		
 		// Link in native library and locate the structure
-		long structP = NativeScritchDylib.__link(
+		long stateP = NativeScritchDylib.__linkInit(
 			__libPath.toAbsolutePath().toString(),
 			__name.toLowerCase());
-		if (structP == 0)
+		if (stateP == 0)
 			throw new MLECallError(String.format(
-				"No native structure found in library '%s' (%s)",
+				"Could not initialize ScritchUI library '%s' (%s)",
 				__libPath, __name));
-		this._structP = structP;
-		
-		// Internal initialization
-		long stateP = this.__apiInit(structP);
 		this._stateP = stateP;
 	}
 	
 	/**
-	 * Initializes the ScritchUI API.
+	 * Initializes a new panel.
 	 *
-	 * @param __structP The API structure pointer.
-	 * @return The resultant state pointer.
-	 * @since 2024/04/02
+	 * @return The newly created panel.
+	 * @since 2024/04/06
 	 */
-	private static native long __apiInit(long __structP);
+	public DylibPanelObject panelNew()
+	{
+		long panelP = NativeScritchDylib.__panelNew(this._stateP);
+		if (panelP == 0)
+			throw new MLECallError("Could not create panel.");
+		
+		return new DylibPanelObject(panelP);
+	}
 	
 	/**
 	 * Link in the library and load the given structure pointer.
 	 *
 	 * @param __libPath The library path.
 	 * @param __name The interface name.
-	 * @return The resultant struct implementation pointer.
+	 * @return The resultant ScritchUI state pointer.
 	 * @since 2024/03/31
 	 */
-	private static native long __link(String __libPath, String __name);
+	private static native long __linkInit(String __libPath, String __name);
+	
+	/**
+	 * Initializes a new panel. 
+	 *
+	 * @param __stateP The state pointer.
+	 * @return The pointer to the panel.
+	 * @since 2024/04/06
+	 */
+	private static native long __panelNew(long __stateP);
 }

@@ -166,6 +166,41 @@ struct sjme_scritchui_apiFunctions
 	sjme_scritchui_panelNewFunc panelNew;
 };
 
+/**
+ * Common data structure shared by everything.
+ * 
+ * @since 2024/04/02
+ */
+typedef struct sjme_scritchui_commonBase
+{
+	/** The type of what this is. */
+	sjme_scritchui_uiType type;
+	
+	/**
+	 * Front-end data for this, note that ScritchUI implementations must not
+	 * use this for information as this is only to be used by front-ends.
+	 */
+	sjme_frontEnd frontEnd;
+	
+	/** Opaque native handle for this. */
+	sjme_scritchui_handle handle;
+} sjme_scritchui_commonBase;
+
+struct sjme_scritchui_stateBase
+{
+	/** Common data. */
+	sjme_scritchui_commonBase common;
+	
+	/** API functions to use. */
+	const sjme_scritchui_apiFunctions* api;
+	
+	/** Implementation functions to use. */
+	const sjme_scritchui_implFunctions* impl;
+	
+	/** The allocation pool to use for allocations. */
+	sjme_alloc_pool* pool;
+};
+
 /* If dynamic libraries are not supported, we cannot do this. */
 #if !defined(SJME_CONFIG_SCRITCHUI_NO_DYLIB)
 

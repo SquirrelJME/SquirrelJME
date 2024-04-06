@@ -20,24 +20,27 @@
 	"NativeScritchDylib"
 #define FORWARD_CLASS IMPL_CLASS
 
-#define FORWARD_DESC___apiInit "(" \
-	DESC_LONG ")" DESC_LONG
-#define FORWARD_DESC___link "(" \
+#define FORWARD_DESC___linkInit "(" \
 	DESC_STRING DESC_STRING ")" DESC_LONG
-	
-JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __apiInit)
-	(JNIEnv* env, jclass classy, jlong structP)
+#define FORWARD_DESC___panelNew "(" \
+	DESC_LONG ")" DESC_LONG
+
+JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __linkInit)
+	(JNIEnv* env, jclass classy, jstring libPath, jstring name)
 {
+#define BUF_SIZE 128
 	sjme_errorCode error;
+	sjme_dylib lib;
+	char buf[BUF_SIZE];
+	sjme_scritchui_dylibApiFunc getFuncs;
+	const char* libPathChars;
+	jboolean libPathCharsCopy;
+	const char* nameChars;
+	jboolean nameCharsCopy;
 	const sjme_scritchui_apiFunctions* apiFuncs;
+	const sjme_scritchui_implFunctions* implFuncs;
 	sjme_alloc_pool* pool;
 	sjme_scritchui state;
-	
-	if (structP == 0)
-	{
-		sjme_jni_throwVMException(env, SJME_ERROR_NULL_ARGUMENTS);
-		return 0;
-	}
 	
 	/* Debug. */
 	sjme_message("Initializing pool...");
@@ -46,47 +49,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __apiInit)
 	pool = NULL;
 	if (sjme_error_is(error = sjme_alloc_poolInitMalloc(&pool,
 		4 * 1048576)) || pool == NULL)
-		goto fail_poolAlloc;
-
-	/* Restore structure. */
-	apiFuncs = (const sjme_scritchui_apiFunctions*)structP;
-
-	/* Debug. */
-	sjme_message("Init into %p (%p)...", apiFuncs,
-		apiFuncs->apiInit);
-
-	/* Initialize state. */
-	state = NULL;
-	if (sjme_error_is(error = apiFuncs->apiInit(pool,
-		&state)) || state == NULL)
-		goto fail_apiInit;
-	
-	/* Return the state pointer. */
-	return (jlong)state;
-	
-fail_apiInit:
-	if (pool != NULL)
-		free(pool);
-	
-fail_poolAlloc:
-
-	/* Fail. */
-	sjme_jni_throwVMException(env, sjme_error_default(error));
-	return 0L;
-}
-
-JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __link)
-	(JNIEnv* env, jclass classy, jstring libPath, jstring name)
-{
-#define BUF_SIZE 128
-	sjme_errorCode error;
-	sjme_dylib lib;
-	char buf[BUF_SIZE];
-	sjme_scritchui_dylibApiFunc apiFunc;
-	const char* libPathChars;
-	jboolean libPathCharsCopy;
-	const char* nameChars;
-	jboolean nameCharsCopy;
+		goto fail_poolInit;
 	
 	/* Resolve path. */
 	libPathCharsCopy = JNI_FALSE;
@@ -111,44 +74,97 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __link)
 	lib = NULL;
 	if (sjme_error_is(error = sjme_dylib_open(libPathChars,
 		&lib)) || lib == NULL)
-	{
-		sjme_message("Did not find lib '%s': %d",
-			libPathChars, error);
-			
-		(*env)->ReleaseStringUTFChars(env, libPath, libPathChars);
-		return 0;
-	}
+		goto fail_dyLibOpen;
 	
 	/* Debug. */
 	sjme_message("Attempting lookup of '%s'...", buf);
 	
 	/* Find function that returns the ScritchUI API interface. */
-	apiFunc = NULL;
+	getFuncs = NULL;
 	if (sjme_error_is(error = sjme_dylib_lookup(lib, buf,
-		&apiFunc)) || apiFunc == NULL)
-	{
-		sjme_message("Did not find symbol '%s' in '%s': %d",
-			buf, libPathChars, error);
-			
-		(*env)->ReleaseStringUTFChars(env, libPath, libPathChars);
-		return 0;
-	}
+		&getFuncs)) || getFuncs == NULL)
+		goto fail_dyLibLookup;
 	
 	/* Release path. */
 	(*env)->ReleaseStringUTFChars(env, libPath, libPathChars);
+	libPathChars = NULL;
 	
 	/* Debug. */
 	sjme_message("Obtaining ScritchUI API Interface...");
+
+	/* Obtain ScritchUI API functions. */
+	apiFuncs = NULL;
+	implFuncs = NULL;
+	if (sjme_error_is(error = getFuncs(&apiFuncs,
+	   &implFuncs)) || apiFuncs == NULL || implFuncs == NULL)
+	   goto fail_getFuncs;
+	
+	/* Initialize ScritchUI. */
+	state = NULL;
+	if (sjme_error_is(apiFuncs->apiInit(pool, apiFuncs,
+		implFuncs, &state)) || state == NULL)
+		goto fail_apiInit;
 	
 	/* Call it to get from it. */
-	return (jlong)apiFunc();
+	return (jlong)state;
 #undef BUF_SIZE
+
+fail_apiInit:
+fail_getFuncs:
+fail_dyLibLookup:
+fail_dyLibOpen:
+	if (libPathChars != NULL)
+	{
+		(*env)->ReleaseStringUTFChars(env, libPath, libPathChars);
+		libPathChars = NULL;
+	}
+
+fail_poolInit:
+	/* Delete pool. */
+	if (pool != NULL)
+		free(pool);
+	
+	/* Fail. */
+	sjme_jni_throwVMException(env, sjme_error_default(error));
+	return 0;
+}
+
+JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __panelNew)
+	(JNIEnv* env, jclass classy, jlong stateP)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	sjme_scritchui_uiPanel panel;
+
+	/* Restore state. */
+	state = (sjme_scritchui*)stateP;
+	if (state == 0)
+	{
+		error = SJME_ERROR_NULL_ARGUMENTS;
+		goto fail_nullArgs;
+	}
+
+	/* Create new panel. */
+	panel = NULL;
+	if (sjme_error_is(error = state->api->panelNew(state,
+		&panel)) || panel == NULL)
+		goto fail_newPanel;
+	
+	/* Return the state pointer. */
+	return (jlong)panel;
+
+fail_newPanel:
+fail_nullArgs:
+	
+	/* Fail. */
+	sjme_jni_throwVMException(env, sjme_error_default(error));
+	return 0L;
 }
 
 static const JNINativeMethod mleNativeScritchDylibMethods[] =
 {
-	FORWARD_list(NativeScritchDylib, __apiInit),
-	FORWARD_list(NativeScritchDylib, __link),
+	FORWARD_list(NativeScritchDylib, __linkInit),
+	FORWARD_list(NativeScritchDylib, __panelNew),
 };
 
 FORWARD_init(mleNativeScritchDylibInit, mleNativeScritchDylibMethods)

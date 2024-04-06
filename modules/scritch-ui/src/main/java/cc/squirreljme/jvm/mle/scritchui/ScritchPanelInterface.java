@@ -41,9 +41,11 @@ public interface ScritchPanelInterface
 	 * Creates a new panel.
 	 *
 	 * @return The newly created panel.
+	 * @throws MLECallError If the panel could not be created.
 	 * @since 2024/03/16
 	 */
 	@SquirrelJMEVendorApi
 	@NotNull
-	ScritchPanelBracket newPanel();
+	ScritchPanelBracket newPanel()
+		throws MLECallError;
 }
