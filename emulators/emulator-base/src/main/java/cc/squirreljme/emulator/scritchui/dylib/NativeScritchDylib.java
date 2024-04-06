@@ -10,7 +10,6 @@
 package cc.squirreljme.emulator.scritchui.dylib;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPaintableBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchPaintListener;
 import java.nio.file.Path;
 
@@ -64,7 +63,10 @@ public final class NativeScritchDylib
 		if (__component == null)
 			throw new MLECallError("NARG");
 		
-		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
+		// Forward
+		NativeScritchDylib.__componentSetPaintListener(this._stateP,
+			((DylibBaseObject)__component).objectP,
+			__listener);
 	}
 	
 	/**
@@ -83,6 +85,19 @@ public final class NativeScritchDylib
 		
 		return new DylibPanelObject(panelP);
 	}
+	
+	/**
+	 * Sets the paint listener for the component.
+	 *
+	 * @param __stateP The state used.
+	 * @param __componentP The object pointer.
+	 * @param __listener The listener to use.
+	 * @throws MLECallError On any errors.
+	 * @since 2024/04/06
+	 */
+	private static native void __componentSetPaintListener(long __stateP,
+		long __componentP, ScritchPaintListener __listener)
+		throws MLECallError;
 	
 	/**
 	 * Link in the library and load the given structure pointer.

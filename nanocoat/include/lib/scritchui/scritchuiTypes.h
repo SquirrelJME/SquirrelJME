@@ -36,13 +36,27 @@ typedef struct sjme_scritchui_uiComponentBase
 	sjme_scritchui_commonBase common;
 } sjme_scritchui_uiComponentBase;
 
+/**
+ * Base data for paintable components.
+ * 
+ * @since 2024/04/06
+ */
+typedef struct sjme_scritchui_uiPaintableBase
+{
+	/** Paint listener. */
+	sjme_scritchui_paintListenerFunc listener;
+	
+	/** Front end for paint listener. */
+	sjme_frontEnd frontEnd;
+} sjme_scritchui_uiPaintableBase;
+
 typedef struct sjme_scritchui_uiPanelBase
 {
 	/** Common data. */
 	sjme_scritchui_uiComponentBase component;
 	
-	/** Paint listener. */
-	sjme_scritchui_paintListenerFunc paintListener;
+	/** Paint related. */
+	sjme_scritchui_uiPaintableBase paint;
 } sjme_scritchui_uiPanelBase;
 
 typedef struct sjme_scritchui_uiWindowBase

@@ -29,19 +29,8 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
-/**
- * Sets the paint listener for the given component.
- * 
- * @param inState The input state.
- * @param inComponent The component to set the paint listener for.
- * @param inListener The input listener used.
- * @return Any error code if applicable.
- * @since 2024/04/06
- */
-typedef sjme_errorCode (*sjme_scritchui_impl_componentSetPaintListenerFunc)(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrInNotNull sjme_scritchui_paintListenerFunc inListener);
+/** Sets the paint listener for the given component. */
+typedef sjme_scritchui_componentSetPaintListenerFunc sjme_scritchui_impl_componentSetPaintListenerFunc;
 
 /**
  * Creates a new native panel.

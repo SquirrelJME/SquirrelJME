@@ -111,41 +111,41 @@ typedef struct sjme_scritchui_uiWindowBase* sjme_scritchui_uiWindow;
 /**
  * Callback that is used to draw the given component.
  *
- * @param __component The component to draw on.
- * @param __pf The @c sjme_gfx_pixelFormat used for the draw.
- * @param __bw The buffer width, this is the scanline width of the buffer.
- * @param __bh The buffer height.
- * @param __buf The target buffer to draw to, this is cast to the correct
+ * @param component The component to draw on.
+ * @param pf The @c sjme_gfx_pixelFormat used for the draw.
+ * @param bw The buffer width, this is the scanline width of the buffer.
+ * @param bh The buffer height.
+ * @param buf The target buffer to draw to, this is cast to the correct
  * buffer format.
- * @param __bufOff The offset to the start of the buffer.
- * @param __bufLen The length of @c __buf .
- * @param __pal The color palette, may be @c NULL .
- * @param __numPal The number of colors in the palette, may be @c 0 if
- * the argument @c __pal is @c NULL .
- * @param __sx Starting surface X coordinate.
- * @param __sy Starting surface Y coordinate.
- * @param __sw Surface width.
- * @param __sh Surface height.
- * @param __special Special value for painting, may be @c 0 or any
+ * @param bufOff The offset to the start of the buffer.
+ * @param bufLen The length of @c buf .
+ * @param pal The color palette, may be @c NULL .
+ * @param numPal The number of colors in the palette, may be @c 0 if
+ * the argument @c pal is @c NULL .
+ * @param sx Starting surface X coordinate.
+ * @param sy Starting surface Y coordinate.
+ * @param sw Surface width.
+ * @param sh Surface height.
+ * @param special Special value for painting, may be @c 0 or any
  * other value if it is meaningful to what is being painted.
  * @return Any error as required.
  * @since 2024/04/06
  */
 typedef sjme_errorCode (*sjme_scritchui_paintListenerFunc)(
-	sjme_attrInNotNull sjme_scritchui_uiComponent __component,
-	sjme_attrInNotNull sjme_gfx_pixelFormat __pf,
-	sjme_attrInPositive sjme_jint __bw,
-	sjme_attrInPositive sjme_jint __bh,
-	sjme_attrInNotNull const void* __buf,
-	sjme_attrInPositive sjme_jint __bufOff,
-	sjme_attrInPositive sjme_jint __bufLen,
-	sjme_attrInNullable const sjme_jint* __pal,
-	sjme_attrInPositive sjme_jint __numPal,
-	sjme_attrInPositive sjme_jint __sx,
-	sjme_attrInPositive sjme_jint __sy,
-	sjme_attrInPositive sjme_jint __sw,
-	sjme_attrInPositive sjme_jint __sh,
-	sjme_attrInValue sjme_jint __special);
+	sjme_attrInNotNull sjme_scritchui_uiComponent component,
+	sjme_attrInNotNull sjme_gfx_pixelFormat pf,
+	sjme_attrInPositive sjme_jint bw,
+	sjme_attrInPositive sjme_jint bh,
+	sjme_attrInNotNull const void* buf,
+	sjme_attrInPositive sjme_jint bufOff,
+	sjme_attrInPositive sjme_jint bufLen,
+	sjme_attrInNullable const sjme_jint* pal,
+	sjme_attrInPositive sjme_jint numPal,
+	sjme_attrInPositive sjme_jint sx,
+	sjme_attrInPositive sjme_jint sy,
+	sjme_attrInPositive sjme_jint sw,
+	sjme_attrInPositive sjme_jint sh,
+	sjme_attrInValue sjme_jint special);
 
 /**
  * Obtains the flags which describe the interface.
@@ -180,13 +180,15 @@ typedef sjme_errorCode (*sjme_scritchui_apiInitFunc)(
  * @param inComponent The component to set the listener for.
  * @param inListener The listener for paint events, may be @c NULL to clear
  * the existing listener.
+ * @param copyFrontEnd The front end data to copy, may be @c NULL .
  * @return Any error if applicable.
  * @since 2024/04/06
  */
 typedef sjme_errorCode (*sjme_scritchui_componentSetPaintListenerFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrInNullable sjme_scritchui_paintListenerFunc inListener);
+	sjme_attrInNullable sjme_scritchui_paintListenerFunc inListener,
+	sjme_attrInNullable sjme_frontEnd* copyFrontEnd);
 
 /**
  * Iterates a single run of the event loop.

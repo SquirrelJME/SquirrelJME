@@ -36,7 +36,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(DylibBaseObject, __bind)
 	
 	/* Set forward states. */
 	component->common.frontEnd.data = env;
-	component->common.frontEnd.wrapper = bindTo;
+	component->common.frontEnd.wrapper = (*env)->NewGlobalRef(env, bindTo);
 }
 
 static const JNINativeMethod mleDylibBaseObjectMethods[] =

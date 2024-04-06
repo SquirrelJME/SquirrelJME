@@ -49,7 +49,8 @@ sjme_errorCode sjme_scritchui_core_apiFunctions(
 sjme_errorCode sjme_scritchui_core_componentSetPaintListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrInNullable sjme_scritchui_paintListenerFunc inListener);
+	sjme_attrInNullable sjme_scritchui_paintListenerFunc inListener,
+	sjme_frontEnd* copyFrontEnd);
 
 sjme_errorCode sjme_scritchui_core_panelNew(
 	sjme_attrInNotNull sjme_scritchui inState,

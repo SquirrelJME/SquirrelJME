@@ -27,6 +27,9 @@ sjme_errorCode sjme_scritchui_core_panelNew(
 		&result)) || result == NULL)
 		return sjme_error_default(error);
 	
+	/* Set base properties. */
+	result->component.common.type = SJME_SCRITCHUI_TYPE_PANEL;
+	
 	/* Setup native widget. */
 	if (inState->impl->panelNew == NULL ||
 		sjme_error_is(error = inState->impl->panelNew(inState,

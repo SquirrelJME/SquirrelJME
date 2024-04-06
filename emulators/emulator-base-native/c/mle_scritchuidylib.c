@@ -20,10 +20,69 @@
 	"NativeScritchDylib"
 #define FORWARD_CLASS IMPL_CLASS
 
+#define DESC_SCRITCH_PAINT_LISTENER DESC_CLASS( \
+	"cc/squirreljme/jvm/mle/scritchui/callbacks/ScritchPaintListener")
+
+#define FORWARD_DESC___componentSetPaintListener "(" \
+	DESC_LONG DESC_LONG DESC_SCRITCH_PAINT_LISTENER ")" DESC_VOID
 #define FORWARD_DESC___linkInit "(" \
 	DESC_STRING DESC_STRING ")" DESC_LONG
 #define FORWARD_DESC___panelNew "(" \
 	DESC_LONG ")" DESC_LONG
+
+static sjme_errorCode mle_scritchUiPaintListener(
+	sjme_attrInNotNull sjme_scritchui_uiComponent component,
+	sjme_attrInNotNull sjme_gfx_pixelFormat pf,
+	sjme_attrInPositive sjme_jint bw,
+	sjme_attrInPositive sjme_jint bh,
+	sjme_attrInNotNull const void* buf,
+	sjme_attrInPositive sjme_jint bufOff,
+	sjme_attrInPositive sjme_jint bufLen,
+	sjme_attrInNullable const sjme_jint* pal,
+	sjme_attrInPositive sjme_jint numPal,
+	sjme_attrInPositive sjme_jint sx,
+	sjme_attrInPositive sjme_jint sy,
+	sjme_attrInPositive sjme_jint sw,
+	sjme_attrInPositive sjme_jint sh,
+	sjme_attrInValue sjme_jint special)
+{
+	sjme_todo("Implement paint");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__componentSetPaintListener)(JNIEnv* env, jclass classy, jlong stateP,
+	jlong componentP, jobject javaListener)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	sjme_scritchui_uiComponent component;
+	sjme_frontEnd newFrontEnd;
+	
+	if (stateP == 0 || componentP == 0)
+	{
+		sjme_jni_throwVMException(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	component = (sjme_scritchui_uiComponent)componentP;
+	
+	/* Setup new front-end to refer to this component. */
+	memset(&newFrontEnd, 0, sizeof(newFrontEnd));
+	newFrontEnd.data = env;
+	newFrontEnd.wrapper = (*env)->NewGlobalRef(env, javaListener);
+	
+	/* Forward. */
+	if (sjme_error_is(error = state->api->componentSetPaintListener(
+		state, component,
+		mle_scritchUiPaintListener, &newFrontEnd)))
+	{
+		sjme_jni_throwVMException(env, error);
+		return;
+	}
+}
 
 JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __linkInit)
 	(JNIEnv* env, jclass classy, jstring libPath, jstring name)
@@ -135,14 +194,15 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __panelNew)
 	sjme_errorCode error;
 	sjme_scritchui state;
 	sjme_scritchui_uiPanel panel;
-
-	/* Restore state. */
-	state = (sjme_scritchui*)stateP;
-	if (state == 0)
+	
+	if (state == NULL)
 	{
 		error = SJME_ERROR_NULL_ARGUMENTS;
 		goto fail_nullArgs;
 	}
+
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
 
 	/* Create new panel. */
 	panel = NULL;
@@ -163,6 +223,7 @@ fail_nullArgs:
 
 static const JNINativeMethod mleNativeScritchDylibMethods[] =
 {
+	FORWARD_list(NativeScritchDylib, __componentSetPaintListener),
 	FORWARD_list(NativeScritchDylib, __linkInit),
 	FORWARD_list(NativeScritchDylib, __panelNew),
 };

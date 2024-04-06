@@ -13,7 +13,7 @@
 sjme_errorCode sjme_scritchui_gtk2_componentSetPaintListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-sjme_attrInNotNull sjme_scritchui_paintListenerFunc inListener)
+	sjme_attrInNotNull sjme_scritchui_paintListenerFunc inListener)
 {
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
