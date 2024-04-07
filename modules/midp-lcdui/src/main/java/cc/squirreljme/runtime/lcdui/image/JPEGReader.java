@@ -50,7 +50,6 @@ public final class JPEGReader
 	/**
 	 * Parses the JPEG.
 	 *
-	 * @return The resulting image.
 	 * @since 2019/05/06
 	 */
 	@Override
