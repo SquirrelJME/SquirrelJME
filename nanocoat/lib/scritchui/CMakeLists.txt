@@ -13,7 +13,9 @@ squirreljme_include("scritchui.cmake")
 squirreljme_multilib_add_library(ScritchUICore
 	scritchComponent.c
 	scritchCore.c
-	scritchPanel.c)
+	scritchPanel.c
+	scritchScreen.c
+	scritchWindow.c)
 
 # Include main headers
 squirreljme_multilib_target_include_directories(ScritchUICore PUBLIC

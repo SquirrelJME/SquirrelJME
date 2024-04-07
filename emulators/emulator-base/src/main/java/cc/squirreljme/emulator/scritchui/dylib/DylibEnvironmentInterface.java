@@ -69,7 +69,7 @@ public class DylibEnvironmentInterface
 	@Override
 	public ScritchScreenBracket[] screens()
 	{
-		throw Debugging.todo();
+		return this.dyLib.screens();
 	}
 	
 	/**

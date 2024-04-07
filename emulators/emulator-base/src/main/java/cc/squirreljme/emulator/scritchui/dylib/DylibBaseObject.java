@@ -19,25 +19,25 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 public abstract class DylibBaseObject
 {
 	/** Pointer to the object. */
-	protected final long componentP;
+	protected final long objectP;
 	
 	/**
 	 * Initializes the base object.
 	 *
-	 * @param __componentP The object pointer.
+	 * @param __objectP The object pointer.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/04/04
 	 */
-	public DylibBaseObject(long __componentP)
+	public DylibBaseObject(long __objectP)
 		throws NullPointerException
 	{
-		if (__componentP == 0)
+		if (__objectP == 0)
 			throw new NullPointerException("NARG");
 		
-		this.componentP = __componentP;
+		this.objectP = __objectP;
 		
 		// Bind object to this so native code can find the object again
-		DylibBaseObject.__bind(__componentP, this);
+		DylibBaseObject.__bind(__objectP, this);
 	}
 	
 	/**

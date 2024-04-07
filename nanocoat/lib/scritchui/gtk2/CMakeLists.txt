@@ -17,7 +17,9 @@ add_library(ScritchUIGTK2 SHARED
 	gtk2Component.c
 	gtk2Core.c
 	gtk2Loop.c
-	gtk2Panel.c)
+	gtk2Panel.c
+	gtk2Screen.c
+	gtk2Window.c)
 
 # Always make it PIC
 set_property(TARGET ScritchUIGTK2

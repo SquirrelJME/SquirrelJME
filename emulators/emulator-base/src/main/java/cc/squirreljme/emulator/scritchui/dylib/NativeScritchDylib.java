@@ -10,6 +10,7 @@
 package cc.squirreljme.emulator.scritchui.dylib;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchPaintListener;
 import java.nio.file.Path;
 
@@ -65,7 +66,7 @@ public final class NativeScritchDylib
 		
 		// Forward
 		NativeScritchDylib.__componentSetPaintListener(this._stateP,
-			((DylibBaseObject)__component).componentP,
+			((DylibBaseObject)__component).objectP,
 			__listener);
 	}
 	
@@ -84,7 +85,7 @@ public final class NativeScritchDylib
 			throw new MLECallError("NARG");
 		
 		NativeScritchDylib.__panelEnableFocus(this._stateP,
-			__panel.componentP, __enabled);
+			__panel.objectP, __enabled);
 	}
 	
 	/**
@@ -102,6 +103,17 @@ public final class NativeScritchDylib
 			throw new MLECallError("Could not create panel.");
 		
 		return new DylibPanelObject(panelP);
+	}
+	
+	/**
+	 * Returns the available screens.
+	 *
+	 * @return The available screens.
+	 * @since 2024/04/06
+	 */
+	public ScritchScreenBracket[] screens()
+	{
+		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
 	}
 	
 	/**

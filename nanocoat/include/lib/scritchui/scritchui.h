@@ -19,6 +19,7 @@
 #include "sjme/config.h"
 #include "sjme/gfxConst.h"
 #include "sjme/nvm.h"
+#include "sjme/list.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -107,6 +108,16 @@ typedef struct sjme_scritchui_uiPaintableBase* sjme_scritchui_uiPaintable;
  * @since 2024/03/27
  */
 typedef struct sjme_scritchui_uiPanelBase* sjme_scritchui_uiPanel;
+
+/**
+ * A single monitor screen on the display for ScritchUI.
+ * 
+ * @since 2024/04/06
+ */
+typedef struct sjme_scritchui_uiScreenBase* sjme_scritchui_uiScreen;
+
+/** List of screens. */
+SJME_LIST_DECLARE(sjme_scritchui_uiScreen, 0);
 
 /**
  * A window within ScritchUI.
@@ -235,6 +246,19 @@ typedef sjme_errorCode (*sjme_scritchui_panelNewFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_scritchui_uiPanel* outPanel);
 
+/**
+ * Obtains the screens which are attached to the system displays.
+ * 
+ * @param inState The input state.
+ * @param outScreens The output screens, the caller should
+ * call @c sjme_alloc_free this list when finished.
+ * @return Any error code if applicable.
+ * @since 2024/04/06
+ */
+typedef sjme_errorCode (*sjme_scritchui_screensFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_list_sjme_scritchui_uiScreen* outScreens);
+
 struct sjme_scritchui_apiFunctions
 {
 	/** API flags. */
@@ -254,6 +278,9 @@ struct sjme_scritchui_apiFunctions
 	
 	/** Creates a new panel. */
 	sjme_scritchui_panelNewFunc panelNew;
+	
+	/** Screens available. */
+	sjme_scritchui_screensFunc screens;
 };
 
 /**
