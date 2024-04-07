@@ -15,6 +15,7 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchScreenInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchWindowInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
+import cc.squirreljme.jvm.mle.scritchui.constants.ScritchWindowManagerType;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.scritchui.fb.DefaultScritchInterface;
@@ -33,6 +34,10 @@ import javax.microedition.lcdui.DisplayListener;
 @SquirrelJMEVendorApi
 public final class DisplayManager
 {
+	/** The number of available desktop windows. */
+	private static final int _DESKTOP_WINDOWS =
+		16;
+	
 	/** The instance of the display tracker. */
 	private static volatile DisplayManager _INSTANCE;
 	
@@ -109,7 +114,6 @@ public final class DisplayManager
 		
 		ScritchInterface scritchApi = this.scritch;
 		ScritchEnvironmentInterface envApi = scritchApi.environment();
-		ScritchWindowInterface winApi = scritchApi.window();
 		ScritchScreenInterface screenApi = scritchApi.screen();
 		
 		// Are there any actual screens to map?
@@ -120,32 +124,22 @@ public final class DisplayManager
 		// Resultant displays
 		List<Display> result = new ArrayList<>();
 		
-		// Map any displays which are not yet mapped
-		Map<Integer, DisplayState> displays = this._displays;
-		for (ScritchScreenBracket screen : screens)
-			synchronized (this)
-			{
-				// Each screen has a unique ID
-				Integer id = screenApi.id(screen);
+		// Depends on the type of window manager being used...
+		switch (envApi.windowManagerType())
+		{
+				// One frame per screen
+			case ScritchWindowManagerType.ONE_FRAME_PER_SCREEN:
+				for (ScritchScreenBracket screen : screens)
+					result.add(this.__mapScreen(screenApi.id(screen),
+						screen, __factory));
+				break;
 				
-				// If the display already exists, use it
-				DisplayState display = displays.get(id);
-				if (display != null)
-				{
-					result.add(display.display());
-					continue;
-				}
-				
-				// Setup new window for this display
-				ScritchWindowBracket window = winApi.newWindow();
-				
-				// Otherwise it needs to be created
-				display = __factory.create(scritchApi, window, screen);
-				displays.put(id, display);
-				
-				// Cache screen
-				result.add(display.display());
-			}
+				// Frames can share the same screen freely
+			case ScritchWindowManagerType.STANDARD_DESKTOP:
+				for (int i = 0; i < DisplayManager._DESKTOP_WINDOWS; i++)
+					result.add(this.__mapScreen(i, screens[0], __factory));
+				break;
+		}
 		
 		// Return any attached screen
 		return result.toArray(new Display[result.size()]);
@@ -160,6 +154,47 @@ public final class DisplayManager
 	public ScritchInterface scritch()
 	{
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Internally maps a screen.
+	 *
+	 * @param __id The screen ID.
+	 * @param __screen The screen to map to.
+	 * @param __factory The factory for creating displays.
+	 * @return The resultant display, either newly created or cached.
+	 * @since 2024/04/07
+	 */
+	private Display __mapScreen(int __id, ScritchScreenBracket __screen,
+		DisplayFactory __factory)
+	{
+		ScritchInterface scritchApi = this.scritch;
+		ScritchWindowInterface winApi = scritchApi.window();
+		
+		// Map any displays which are not yet mapped
+		Map<Integer, DisplayState> displays = this._displays;
+		
+		// Each screen has a unique ID
+		Integer id = __id;
+		
+		// Could be called from different threads
+		synchronized (this)
+		{
+			// If the display already exists, use it
+			DisplayState display = displays.get(id);
+			if (display != null)
+				return display.display();
+			
+			// Setup new window for this display
+			ScritchWindowBracket window = winApi.newWindow();
+			
+			// Otherwise it needs to be created
+			display = __factory.create(scritchApi, window, __screen);
+			displays.put(id, display);
+			
+			// Use this display
+			return display.display();
+		}
 	}
 	
 	/**

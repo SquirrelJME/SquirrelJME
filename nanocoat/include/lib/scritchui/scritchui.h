@@ -45,6 +45,12 @@ typedef enum sjme_scritchui_uiType
 	/** Panel. */
 	SJME_SCRITCHUI_TYPE_PANEL,
 	
+	/** Screen. */
+	SJME_SCRITCHUI_TYPE_SCREEN,
+	
+	/** Window. */
+	SJME_SCRITCHUI_TYPE_WINDOW,
+	
 	/** The number of possible types. */
 	SJME_NUM_SCRITCHUI_UI_TYPES
 } sjme_scritchui_uiType;
