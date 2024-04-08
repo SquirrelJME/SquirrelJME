@@ -12,7 +12,7 @@ squirreljme
 {
 	javaDocErrorCode = "ZG"
 	swmType = JavaMEMidletType.API
-	swmName = "Connection Device Configuration: BD-J Xlet"
+	swmName = "Connected Device Configuration (BD-J Xlet)"
 	swmVendor = "Stephanie Gawroriski"
 }
 

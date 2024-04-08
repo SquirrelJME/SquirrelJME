@@ -12,7 +12,7 @@ squirreljme
 {
 	javaDocErrorCode = "ZE"
 	swmType = JavaMEMidletType.API
-	swmName = "Connection Device Configuration: Applets"
+	swmName = "Connected Device Configuration (Applets)"
 	swmVendor = "Stephanie Gawroriski"
 }
 

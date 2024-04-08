@@ -12,7 +12,7 @@ squirreljme
 {
 	javaDocErrorCode = "ZF"
 	swmType = JavaMEMidletType.API
-	swmName = "Connection Device Configuration: Personal Basis Profile"
+	swmName = "Connected Device Configuration (Personal Basis Profile)"
 	swmVendor = "Stephanie Gawroriski"
 }
 
