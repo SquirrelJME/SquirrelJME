@@ -299,6 +299,9 @@
       <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-applet/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-applet/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-applet/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-pbp-awt-heavy/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-pbp-awt-heavy/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-pbp-awt-heavy/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-pbp/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-pbp/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-pbp/out" />
