@@ -24,24 +24,6 @@ import org.gradle.api.Task;
 public class CMakeBuildTaskAction
 	implements Action<Task>
 {
-	public void configure(Task __task)
-		throws IOException
-	{
-		CMakeBuildTask from = (CMakeBuildTask)__task;
-		
-		Path cmakeBuild = from.cmakeBuild;
-		Path cmakeSource = from.cmakeSource;
-		
-		// Make sure the output build directory exists
-		Files.createDirectories(cmakeBuild);
-		
-		// Configure CMake first before we continue with anything
-		CMakeUtils.cmakeExecute(__task.getLogger(),
-			"configure", __task.getProject().getBuildDir().toPath(),
-			"-S", cmakeSource.toAbsolutePath().toString(),
-			"-B", cmakeBuild.toAbsolutePath().toString());
-	}
-	
 	/**
 	 * {@inheritDoc}
 	 * @since 2024/03/15
@@ -61,10 +43,9 @@ public class CMakeBuildTaskAction
 			// Then perform the actual build, for each rule
 			for (String cmakeRule : from.cmakeRules)
 			{
-				// Does the cache seem invalid? Then configure first
-				if (!Files.isDirectory(cmakeBuild) ||
-					!Files.exists(cmakeBuild.resolve("CMakeCache.txt")))
-					this.configure(__task);
+				// Do we need to configure?
+				if (CMakeUtils.configureNeeded(from))
+					CMakeUtils.configure(from);
 				
 				// Run normal CMake build
 				CMakeUtils.cmakeExecute(__task.getLogger(),

@@ -93,7 +93,7 @@ public class CMakeBuildTask
 		try
 		{
 			// Configure CMake first before we continue with anything
-			action.configure(this);
+			CMakeUtils.configure(this);
 		}
 		catch (IOException __e)
 		{

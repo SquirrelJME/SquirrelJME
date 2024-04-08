@@ -9,6 +9,7 @@
 
 package cc.squirreljme.plugin.general.cmake;
 
+import cc.squirreljme.plugin.multivm.VMHelpers;
 import cc.squirreljme.plugin.util.ForwardInputToOutput;
 import cc.squirreljme.plugin.util.ForwardStream;
 import cc.squirreljme.plugin.util.PathUtils;
@@ -30,6 +31,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import org.gradle.api.Task;
 import org.gradle.api.logging.LogLevel;
 import org.gradle.api.logging.Logger;
 import org.gradle.internal.os.OperatingSystem;
@@ -315,6 +317,79 @@ public final class CMakeUtils
 			// Destroy the task
 			proc.destroy();
 		}
+	}
+	
+	/**
+	 * Configures the CMake task.
+	 *
+	 * @param __task The task to configure.
+	 * @throws IOException If it could not be configured.
+	 * @since 2024/04/08
+	 */
+	public static void configure(CMakeBuildTask __task)
+		throws IOException
+	{
+		Path cmakeBuild = __task.cmakeBuild;
+		Path cmakeSource = __task.cmakeSource;
+		
+		// Old directory must be deleted as it might be very stale
+		VMHelpers.deleteDirTree(__task, cmakeBuild);
+		
+		// Make sure the output build directory exists
+		Files.createDirectories(cmakeBuild);
+		
+		// Configure CMake first before we continue with anything
+		CMakeUtils.cmakeExecute(__task.getLogger(),
+			"configure", __task.getProject().getBuildDir().toPath(),
+			"-S", cmakeSource.toAbsolutePath().toString(),
+			"-B", cmakeBuild.toAbsolutePath().toString());
+	}
+	/**
+	 * Is configuration needed?
+	 *
+	 * @param __task The task to check.
+	 * @return If reconfiguration is needed or not.
+	 * @since 2024/04/08
+	 */
+	public static boolean configureNeeded(CMakeBuildTask __task)
+	{
+		Path cmakeBuild = __task.cmakeBuild;
+		
+		// Missing directories or no cache at all?
+		if (!Files.isDirectory(cmakeBuild) ||
+			!Files.exists(cmakeBuild.resolve("CMakeCache.txt")))
+			return true;
+		
+		// Load in the CMake cache to check it
+		try
+		{
+			// Load CMake cache
+			Map<String, String> cmakeCache = CMakeUtils.loadCache(cmakeBuild);
+			
+			// Check the configuration directory
+			String rawConfigDir = cmakeCache.get(
+				"CMAKE_CACHEFILE_DIR:INTERNAL");
+			
+			// No configuration directory is known??
+			if (rawConfigDir == null)
+				return true;
+			
+			// Did the directory of the cache change? This can happen
+			// under CI/CD where the build directory is different and
+			// there is old data that is restored
+			Path configDir = Paths.get(rawConfigDir).toAbsolutePath();
+			if (!Files.isSameFile(configDir, cmakeBuild) ||
+				!cmakeBuild.equals(configDir))
+				return true;
+		}
+		catch (IOException __ignored)
+		{
+			// If this happens, just assume it needs to be done
+			return true;
+		}
+		
+		// Not needed
+		return false;
 	}
 	
 	/**

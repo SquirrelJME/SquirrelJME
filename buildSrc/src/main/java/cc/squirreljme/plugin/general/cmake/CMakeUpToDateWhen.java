@@ -32,6 +32,10 @@ public class CMakeUpToDateWhen
 	{
 		CMakeBuildTask cmakeTask = (CMakeBuildTask)__task;
 		
+		// Configuration is needed?
+		if (CMakeUtils.configureNeeded(cmakeTask))
+			return false;
+		
 		// Cache directory does not exist?
 		if (!Files.isDirectory(cmakeTask.cmakeBuild))
 			return false;
