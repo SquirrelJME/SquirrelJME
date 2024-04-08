@@ -138,22 +138,22 @@ public final class CMakeUtils
 	 *
 	 * @param __logger The logger to use.
 	 * @param __logName The name of the log.
-	 * @param __cmakeBuild The CMake build directory.
+	 * @param __logDir The CMake build directory.
 	 * @param __args CMake arguments.
 	 * @return The CMake exit value.
 	 * @throws IOException On read/write or execution errors.
 	 * @since 2024/03/15
 	 */
 	public static int cmakeExecute(Logger __logger, String __logName,
-		Path __cmakeBuild, String... __args)
+		Path __logDir, String... __args)
 		throws IOException
 	{
-		if (__cmakeBuild == null)
+		if (__logDir == null)
 			throw new NullPointerException("NARG");
 		
 		// Output log files
-		Path outLog = __cmakeBuild.resolve(__logName + ".out");
-		Path errLog = __cmakeBuild.resolve(__logName + ".err");
+		Path outLog = __logDir.resolve(__logName + ".out");
+		Path errLog = __logDir.resolve(__logName + ".err");
 		
 		// Make sure directories exist first
 		Files.createDirectories(outLog.getParent());
@@ -328,22 +328,22 @@ public final class CMakeUtils
 	/**
 	 * Loads the CMake cache from the given build.
 	 *
-	 * @param __cmakeBuild The build directory to use.
+	 * @param __logDir The build directory to use.
 	 * @return The CMake cache.
 	 * @throws IOException If it could not be read.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/04/01
 	 */
-	public static Map<String, String> loadCache(Path __cmakeBuild)
+	public static Map<String, String> loadCache(Path __logDir)
 		throws IOException, NullPointerException
 	{
-		if (__cmakeBuild == null)
+		if (__logDir == null)
 			throw new NullPointerException("NARG");
 		
 		// Load in lines accordingly
 		Map<String, String> result = new LinkedHashMap<>();
 		for (String line : Files.readAllLines(
-			__cmakeBuild.resolve("CMakeCache.txt")))
+			__logDir.resolve("CMakeCache.txt")))
 		{
 			// Comment?
 			if (line.startsWith("//") || line.startsWith("#"))
