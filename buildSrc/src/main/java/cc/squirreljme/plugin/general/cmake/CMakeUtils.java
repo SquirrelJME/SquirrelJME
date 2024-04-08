@@ -300,14 +300,15 @@ public final class CMakeUtils
 			if (!proc.waitFor(15, TimeUnit.MINUTES) ||
 				(__fail && proc.exitValue() != 0))
 				throw new RuntimeException(String.format(
-					"CMake failed to %s...", __buildType));
+					"CMake failed to %s: exit value %d",
+						__buildType, proc.exitValue()));
 			
 			// Use the given exit value
 			return proc.exitValue();
 		}
-		catch (InterruptedException __e)
+		catch (InterruptedException|IllegalThreadStateException __e)
 		{
-			throw new RuntimeException("CMake timed out!", __e);
+			throw new RuntimeException("CMake timed out or stuck!", __e);
 		}
 		finally
 		{
