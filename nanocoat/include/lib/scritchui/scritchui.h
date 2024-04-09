@@ -74,6 +74,29 @@ typedef enum sjme_scritchui_apiFlag
 } sjme_scritchui_apiFlag;
 
 /**
+ * Which type of screen update has occurred?
+ * 
+ * @since 2024/04/09
+ */
+typedef enum sjme_scritchui_screenUpdateType
+{
+	/** Unknown. */
+	SJME_SCRITCHUI_SCREEN_UPDATE_UNKNOWN,
+	
+	/** New screen. */
+	SJME_SCRITCHUI_SCREEN_UPDATE_NEW,
+	
+	/** Deleted screen. */
+	SJME_SCRITCHUI_SCREEN_UPDATE_DELETED,
+	
+	/** Updated screen (resolution, color, etc.) */
+	SJME_SCRITCHUI_SCREEN_UPDATE_CHANGED,
+	
+	/** The number of update types. */
+	SJME_SCRITCHUI_NUM_SCREEN_UPDATE
+} sjme_scritchui_screenUpdateType;
+
+/**
  * ScritchUI state.
  * 
  * @since 2024/03/27
@@ -135,6 +158,7 @@ typedef struct sjme_scritchui_uiWindowBase* sjme_scritchui_uiWindow;
 /**
  * Callback that is used to draw the given component.
  *
+ * @param inState The ScritchUI state.
  * @param component The component to draw on.
  * @param pf The @c sjme_gfx_pixelFormat used for the draw.
  * @param bw The buffer width, this is the scanline width of the buffer.
@@ -156,6 +180,7 @@ typedef struct sjme_scritchui_uiWindowBase* sjme_scritchui_uiWindow;
  * @since 2024/04/06
  */
 typedef sjme_errorCode (*sjme_scritchui_paintListenerFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent component,
 	sjme_attrInNotNull sjme_gfx_pixelFormat pf,
 	sjme_attrInPositive sjme_jint bw,
@@ -170,6 +195,21 @@ typedef sjme_errorCode (*sjme_scritchui_paintListenerFunc)(
 	sjme_attrInPositive sjme_jint sw,
 	sjme_attrInPositive sjme_jint sh,
 	sjme_attrInValue sjme_jint special);
+
+/**
+ * Listener callback for when a screen has been queried or it has been
+ * updated.
+ * 
+ * @param inState The input state.
+ * @param updateType The type of update this is for.
+ * @param inScreen The screen that has been updated.
+ * @return Any error code if applicable.
+ * @since 2024/04/09
+ */
+typedef sjme_errorCode (*sjme_scritchui_screenListenerFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInValue sjme_scritchui_screenUpdateType updateType,
+	sjme_attrInNotNull sjme_scritchui_uiScreen inScreen);
 
 /**
  * Obtains the flags which describe the interface.
@@ -253,17 +293,16 @@ typedef sjme_errorCode (*sjme_scritchui_panelNewFunc)(
 	sjme_attrInOutNotNull sjme_scritchui_uiPanel* outPanel);
 
 /**
- * Obtains the screens which are attached to the system displays.
+ * Obtains and queries the screens which are attached to the system displays.
  * 
  * @param inState The input state.
- * @param outScreens The output screens, the caller should
- * call @c sjme_alloc_free this list when finished.
+ * @param callback The callback for screen information and changes.
  * @return Any error code if applicable.
  * @since 2024/04/06
  */
 typedef sjme_errorCode (*sjme_scritchui_screensFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInOutNotNull sjme_list_sjme_scritchui_uiScreen* outScreens);
+	sjme_attrInNotNull sjme_scritchui_screenListenerFunc callback);
 
 struct sjme_scritchui_apiFunctions
 {
