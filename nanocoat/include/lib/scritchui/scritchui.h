@@ -156,6 +156,18 @@ SJME_LIST_DECLARE(sjme_scritchui_uiScreen, 0);
 typedef struct sjme_scritchui_uiWindowBase* sjme_scritchui_uiWindow;
 
 /**
+ * Callback for a generic execution.
+ * 
+ * @param inState The ScritchUI state.
+ * @param anything May be any value.
+* @return Any error as required.
+ * @since 2024/04/09
+ */
+typedef sjme_errorCode (*sjme_scritchui_genericListenerFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNullable void* anything);
+
+/**
  * Callback that is used to draw the given component.
  *
  * @param inState The ScritchUI state.
@@ -255,6 +267,32 @@ typedef sjme_errorCode (*sjme_scritchui_componentSetPaintListenerFunc)(
 	sjme_attrInNullable sjme_frontEnd* copyFrontEnd);
 
 /**
+ * Execute the given callback within the event loop of the GUI.
+ * 
+ * @param inState The input state.
+ * @param callback The callback to execute.
+ * @param anything A value that can be passed to the listener.
+ * @return Any error code if applicable.
+ * @since 2024/04/09
+ */
+typedef sjme_errorCode (*sjme_scritchui_loopExecuteFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_genericListenerFunc callback,
+	sjme_attrInNullable void* anything);
+
+/**
+ * Determines whether the current thread is in the event loop or not.
+ * 
+ * @param inState The input state.
+ * @param outInThread The result of whether this is in the event loop.
+ * @return Any error code if applicable.
+ * @since 2024/04/09
+ */
+typedef sjme_errorCode (*sjme_scritchui_loopIsInThreadFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_jboolean* outInThread);
+
+/**
  * Iterates a single run of the event loop.
  * 
  * @param inState The input ScritchUI state.
@@ -314,6 +352,12 @@ struct sjme_scritchui_apiFunctions
 	
 	/** Sets the paint listener for a component. */
 	sjme_scritchui_componentSetPaintListenerFunc componentSetPaintListener;
+	
+	/** Execute callback within the event loop. */
+	sjme_scritchui_loopExecuteFunc loopExecute;
+	
+	/** Is the current thread in the loop? */
+	sjme_scritchui_loopIsInThreadFunc loopIsInThread;
 	
 	/** Iterates a single run of the event loop. */
 	sjme_scritchui_loopIterateFunc loopIterate;
