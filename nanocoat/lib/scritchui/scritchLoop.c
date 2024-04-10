@@ -8,12 +8,11 @@
 // -------------------------------------------------------------------------*/
 
 #include "lib/scritchui/core/core.h"
-#include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/debug.h"
 
-sjme_errorCode sjme_scritchui_core_screensFunc(
+sjme_errorCode sjme_scritchui_core_loopIterateFunc(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_screenListenerFunc callback)
+	sjme_attrOutNullable sjme_jboolean* outHasTerminated)
 {
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;

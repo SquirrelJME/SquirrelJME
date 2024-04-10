@@ -52,6 +52,10 @@ sjme_errorCode sjme_scritchui_core_componentSetPaintListener(
 	sjme_attrInNullable sjme_scritchui_paintListenerFunc inListener,
 	sjme_frontEnd* copyFrontEnd);
 
+sjme_errorCode sjme_scritchui_core_loopIterateFunc(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNullable sjme_jboolean* outHasTerminated);
+
 sjme_errorCode sjme_scritchui_core_panelEnableFocus(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiPanel inPanel,
@@ -60,6 +64,10 @@ sjme_errorCode sjme_scritchui_core_panelEnableFocus(
 sjme_errorCode sjme_scritchui_core_panelNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_scritchui_uiPanel* outPanel);
+
+sjme_errorCode sjme_scritchui_core_screensFunc(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_screenListenerFunc callback);
 
 /*--------------------------------------------------------------------------*/
 
