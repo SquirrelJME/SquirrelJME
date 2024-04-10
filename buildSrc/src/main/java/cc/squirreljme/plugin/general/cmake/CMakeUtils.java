@@ -9,6 +9,7 @@
 
 package cc.squirreljme.plugin.general.cmake;
 
+import cc.squirreljme.plugin.multivm.VMHelpers;
 import cc.squirreljme.plugin.util.ForwardInputToOutput;
 import cc.squirreljme.plugin.util.ForwardStream;
 import cc.squirreljme.plugin.util.PathUtils;
@@ -30,6 +31,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import org.gradle.api.Task;
 import org.gradle.api.logging.LogLevel;
 import org.gradle.api.logging.Logger;
 import org.gradle.internal.os.OperatingSystem;
@@ -67,7 +69,8 @@ public final class CMakeUtils
 			cmakePath = PathUtils.findPath("cmake.exe");
 		
 		// Standard installation on Windows?
-		if (OperatingSystem.current() == OperatingSystem.WINDOWS)
+		if (cmakePath == null &&
+			OperatingSystem.current() == OperatingSystem.WINDOWS)
 		{
 			String programFiles = System.getenv("PROGRAMFILES");
 			if (programFiles != null)
@@ -75,8 +78,19 @@ public final class CMakeUtils
 				Path maybe = Paths.get(programFiles).resolve("CMake")
 					.resolve("bin").resolve("cmake.exe");
 				if (Files.exists(maybe))
-					return maybe;
+					cmakePath = maybe;
 			}
+		}
+		
+		// Homebrew on macOS?
+		if (cmakePath == null &&
+			OperatingSystem.current() == OperatingSystem.MAC_OS)
+		{
+			Path maybe = Paths.get("/").resolve("opt")
+				.resolve("homebrew").resolve("bin")
+				.resolve("cmake");
+			if (Files.exists(maybe))
+				cmakePath = maybe;
 		}
 		
 		return cmakePath;
@@ -138,22 +152,22 @@ public final class CMakeUtils
 	 *
 	 * @param __logger The logger to use.
 	 * @param __logName The name of the log.
-	 * @param __cmakeBuild The CMake build directory.
+	 * @param __logDir The CMake build directory.
 	 * @param __args CMake arguments.
 	 * @return The CMake exit value.
 	 * @throws IOException On read/write or execution errors.
 	 * @since 2024/03/15
 	 */
 	public static int cmakeExecute(Logger __logger, String __logName,
-		Path __cmakeBuild, String... __args)
+		Path __logDir, String... __args)
 		throws IOException
 	{
-		if (__cmakeBuild == null)
+		if (__logDir == null)
 			throw new NullPointerException("NARG");
 		
 		// Output log files
-		Path outLog = __cmakeBuild.resolve(__logName + ".out");
-		Path errLog = __cmakeBuild.resolve(__logName + ".err");
+		Path outLog = __logDir.resolve(__logName + ".out");
+		Path errLog = __logDir.resolve(__logName + ".err");
 		
 		// Make sure directories exist first
 		Files.createDirectories(outLog.getParent());
@@ -288,20 +302,94 @@ public final class CMakeUtils
 			if (!proc.waitFor(15, TimeUnit.MINUTES) ||
 				(__fail && proc.exitValue() != 0))
 				throw new RuntimeException(String.format(
-					"CMake failed to %s...", __buildType));
+					"CMake failed to %s: exit value %d",
+						__buildType, proc.exitValue()));
 			
 			// Use the given exit value
 			return proc.exitValue();
 		}
-		catch (InterruptedException __e)
+		catch (InterruptedException|IllegalThreadStateException __e)
 		{
-			throw new RuntimeException("CMake timed out!", __e);
+			throw new RuntimeException("CMake timed out or stuck!", __e);
 		}
 		finally
 		{
 			// Destroy the task
 			proc.destroy();
 		}
+	}
+	
+	/**
+	 * Configures the CMake task.
+	 *
+	 * @param __task The task to configure.
+	 * @throws IOException If it could not be configured.
+	 * @since 2024/04/08
+	 */
+	public static void configure(CMakeBuildTask __task)
+		throws IOException
+	{
+		Path cmakeBuild = __task.cmakeBuild;
+		Path cmakeSource = __task.cmakeSource;
+		
+		// Old directory must be deleted as it might be very stale
+		VMHelpers.deleteDirTree(__task, cmakeBuild);
+		
+		// Make sure the output build directory exists
+		Files.createDirectories(cmakeBuild);
+		
+		// Configure CMake first before we continue with anything
+		CMakeUtils.cmakeExecute(__task.getLogger(),
+			"configure", __task.getProject().getBuildDir().toPath(),
+			"-S", cmakeSource.toAbsolutePath().toString(),
+			"-B", cmakeBuild.toAbsolutePath().toString());
+	}
+	/**
+	 * Is configuration needed?
+	 *
+	 * @param __task The task to check.
+	 * @return If reconfiguration is needed or not.
+	 * @since 2024/04/08
+	 */
+	public static boolean configureNeeded(CMakeBuildTask __task)
+	{
+		Path cmakeBuild = __task.cmakeBuild;
+		
+		// Missing directories or no cache at all?
+		if (!Files.isDirectory(cmakeBuild) ||
+			!Files.exists(cmakeBuild.resolve("CMakeCache.txt")))
+			return true;
+		
+		// Load in the CMake cache to check it
+		try
+		{
+			// Load CMake cache
+			Map<String, String> cmakeCache = CMakeUtils.loadCache(cmakeBuild);
+			
+			// Check the configuration directory
+			String rawConfigDir = cmakeCache.get(
+				"CMAKE_CACHEFILE_DIR:INTERNAL");
+			
+			// No configuration directory is known??
+			if (rawConfigDir == null)
+				return true;
+			
+			// Did the directory of the cache change? This can happen
+			// under CI/CD where the build directory is different and
+			// there is old data that is restored
+			Path configDir = Paths.get(rawConfigDir).toAbsolutePath();
+			if (!Files.isSameFile(configDir, cmakeBuild) ||
+				!cmakeBuild.equals(configDir))
+				return true;
+		}
+		catch (IOException __ignored)
+		{
+			// If this happens, just assume it needs to be done
+			return true;
+		}
+		
+		// Not needed
+		return false;
 	}
 	
 	/**
@@ -328,22 +416,22 @@ public final class CMakeUtils
 	/**
 	 * Loads the CMake cache from the given build.
 	 *
-	 * @param __cmakeBuild The build directory to use.
+	 * @param __logDir The build directory to use.
 	 * @return The CMake cache.
 	 * @throws IOException If it could not be read.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/04/01
 	 */
-	public static Map<String, String> loadCache(Path __cmakeBuild)
+	public static Map<String, String> loadCache(Path __logDir)
 		throws IOException, NullPointerException
 	{
-		if (__cmakeBuild == null)
+		if (__logDir == null)
 			throw new NullPointerException("NARG");
 		
 		// Load in lines accordingly
 		Map<String, String> result = new LinkedHashMap<>();
 		for (String line : Files.readAllLines(
-			__cmakeBuild.resolve("CMakeCache.txt")))
+			__logDir.resolve("CMakeCache.txt")))
 		{
 			// Comment?
 			if (line.startsWith("//") || line.startsWith("#"))

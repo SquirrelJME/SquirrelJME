@@ -13,10 +13,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.concurrent.TimeUnit;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
-import org.gradle.api.logging.LogLevel;
 
 /**
  * Actual build task for CMake projects.
@@ -35,7 +33,6 @@ public class CMakeBuildTaskAction
 	{
 		CMakeBuildTask from = (CMakeBuildTask)__task;
 		
-		Path cmakeSource = from.cmakeSource;
 		Path cmakeBuild = from.cmakeBuild;
 		
 		try
@@ -45,12 +42,19 @@ public class CMakeBuildTaskAction
 			
 			// Then perform the actual build, for each rule
 			for (String cmakeRule : from.cmakeRules)
+			{
+				// Do we need to configure?
+				if (CMakeUtils.configureNeeded(from))
+					CMakeUtils.configure(from);
+				
+				// Run normal CMake build
 				CMakeUtils.cmakeExecute(__task.getLogger(),
 					"build-" + cmakeRule,
-					cmakeBuild,
+					__task.getProject().getBuildDir().toPath(),
 					"--build",
 					cmakeBuild.toAbsolutePath().toString(),
 					"-t", cmakeRule);
+			}
 			
 			// Was the output file even created?
 			if (from.cmakeOutFile != null && !Files.exists(from.cmakeOutFile))

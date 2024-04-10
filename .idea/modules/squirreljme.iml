@@ -296,6 +296,21 @@
       <excludeFolder url="file://$MODULE_DIR$/../../emulators/emulator-base-native/cmake-build-debug" />
       <excludeFolder url="file://$MODULE_DIR$/../../emulators/emulator-base-native/cmake-build-release" />
       <excludeFolder url="file://$MODULE_DIR$/../../emulators/emulator-base-native/cmake-build-relwithdebinfo" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-applet/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-applet/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-applet/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-pbp-awt-heavy/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-pbp-awt-heavy/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-pbp-awt-heavy/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-pbp/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-pbp/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-pbp/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-xlet/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-xlet/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-xlet/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../nanocoat/cmake-build-relwithdebinfo" />
     </content>
     <orderEntry type="inheritedJdk" />

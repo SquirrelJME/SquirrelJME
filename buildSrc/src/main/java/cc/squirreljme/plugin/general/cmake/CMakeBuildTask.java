@@ -10,6 +10,7 @@
 package cc.squirreljme.plugin.general.cmake;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -81,14 +82,18 @@ public class CMakeBuildTask
 		this.setGroup("squirreljme");
 		this.setDescription("Performs a CMake build.");
 		
+		// Must be run _after_ clean, otherwise bad stuff happens
+		this.mustRunAfter(
+			this.getProject().getTasks().named("clean"));
+		
+		// Build action
+		CMakeBuildTaskAction action = new CMakeBuildTaskAction();
+		
 		// Need to get some details about the CMake build
 		try
 		{
 			// Configure CMake first before we continue with anything
-			CMakeUtils.cmakeExecute(this.getLogger(),
-				"configure", cmakeBuild,
-				"-S", __source.toAbsolutePath().toString(), "-B",
-				cmakeBuild.toAbsolutePath().toString());
+			CMakeUtils.configure(this);
 		}
 		catch (IOException __e)
 		{
@@ -104,10 +109,12 @@ public class CMakeBuildTask
 		this.getInputs().files(
 			this.cmakeSource.resolve("CMakeLists.txt"));
 		this.getOutputs().dirs(this.cmakeBuild);
+		this.getOutputs().files(
+			this.cmakeBuild.resolve("CMakeCache.txt"));
 		if (__outputFile != null)
 			this.getOutputs().files(this.cmakeOutFile);
 		
 		// What to do for this
-		this.doFirst(new CMakeBuildTaskAction());
+		this.doFirst(action);
 	}
 }

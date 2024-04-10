@@ -108,7 +108,6 @@ public class PNGReader
 	/**
 	 * Parses the PNG image data.
 	 *
-	 * @return The read image.
 	 * @throws IOException On read errors.
 	 * @since 2017/02/28
 	 */

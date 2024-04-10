@@ -21,6 +21,11 @@
             <option value="$PROJECT_DIR$/modules/aot-springcoat" />
             <option value="$PROJECT_DIR$/modules/bluetooth" />
             <option value="$PROJECT_DIR$/modules/c-source-writer" />
+            <option value="$PROJECT_DIR$/modules/cdc" />
+            <option value="$PROJECT_DIR$/modules/cdc-applet" />
+            <option value="$PROJECT_DIR$/modules/cdc-pbp" />
+            <option value="$PROJECT_DIR$/modules/cdc-pbp-awt-heavy" />
+            <option value="$PROJECT_DIR$/modules/cdc-xlet" />
             <option value="$PROJECT_DIR$/modules/cldc" />
             <option value="$PROJECT_DIR$/modules/cldc-compact" />
             <option value="$PROJECT_DIR$/modules/collections" />
