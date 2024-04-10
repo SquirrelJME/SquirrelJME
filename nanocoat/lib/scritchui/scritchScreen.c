@@ -11,7 +11,7 @@
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/debug.h"
 
-sjme_errorCode sjme_scritchui_core_screensFunc(
+sjme_errorCode sjme_scritchui_core_screens(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_screenListenerFunc callback)
 {

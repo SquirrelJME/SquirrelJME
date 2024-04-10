@@ -17,12 +17,12 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 	.apiFlags = NULL,
 	.apiInit = sjme_scritchui_core_apiInit,
 	.componentSetPaintListener = sjme_scritchui_core_componentSetPaintListener,
-	.loopExecute = NULL,
-	.loopIsInThread = NULL,
-	.loopIterate = NULL,
+	.loopExecute = sjme_scritchui_core_loopExecute,
+	.loopIsInThread = sjme_scritchui_core_loopIsInThread,
+	.loopIterate = sjme_scritchui_core_loopIterateFunc,
 	.panelEnableFocus = sjme_scritchui_core_panelEnableFocus,
 	.panelNew = sjme_scritchui_core_panelNew,
-	.screens = sjme_scritchui_core_screensFunc,
+	.screens = sjme_scritchui_core_screens,
 };
 
 sjme_errorCode sjme_scritchui_core_apiFunctions(

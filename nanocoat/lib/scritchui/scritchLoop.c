@@ -10,6 +10,23 @@
 #include "lib/scritchui/core/core.h"
 #include "sjme/debug.h"
 
+sjme_errorCode sjme_scritchui_core_loopExecute(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_genericListenerFunc callback,
+	sjme_attrInNullable void* anything)
+{
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+sjme_errorCode sjme_scritchui_core_loopIsInThread(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_jboolean* outInThread)
+{
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
 sjme_errorCode sjme_scritchui_core_loopIterateFunc(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNullable sjme_jboolean* outHasTerminated)
