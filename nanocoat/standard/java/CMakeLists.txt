@@ -9,6 +9,7 @@
 # Declare base executable
 add_executable(StandardJava
 	$<TARGET_OBJECTS:BasePIC>
+	home.c
 	main.c)
 
 # Base dependencies
@@ -18,6 +19,7 @@ add_dependencies(StandardJava
 
 # We need all of our base headers
 target_include_directories(StandardJava PUBLIC
+	"${CMAKE_CURRENT_SOURCE_DIR}"
 	"${CMAKE_SOURCE_DIR}/include"
 	"${CMAKE_SOURCE_DIR}/include/3rdparty/jni")
 
