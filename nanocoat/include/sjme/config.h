@@ -16,32 +16,6 @@
 #ifndef SQUIRRELJME_CONFIG_H
 #define SQUIRRELJME_CONFIG_H
 
-#include <stddef.h>
-
-/* Anti-C++. */
-#ifdef __cplusplus
-	#ifndef SJME_CXX_IS_EXTERNED
-		#define SJME_CXX_IS_EXTERNED
-		#define SJME_CXX_SQUIRRELJME_CONFIG_H
-extern "C" {
-	#endif /* #ifdef SJME_CXX_IS_EXTERNED */
-#endif     /* #ifdef __cplusplus */
-
-/*--------------------------------------------------------------------------*/
-
-#if !defined(SJME_CONFIG_RELEASE) && !defined(SJME_CONFIG_DEBUG)
-	#if (defined(DEBUG) || defined(_DEBUG)) || \
-		(!defined(NDEBUG) && !defined(_NDEBUG))
-		/** Debug build. */
-		#define SJME_CONFIG_DEBUG
-	#else
-		/** Release build. */
-		#define SJME_CONFIG_RELEASE
-	#endif
-#elif defined(SJME_CONFIG_RELEASE) && defined(SJME_CONFIG_DEBUG)
-	#undef SJME_CONFIG_RELEASE
-#endif
-
 /* The current operating system. */
 #if defined(__linux__) || defined(linux) || defined(__linux)
 	/** Linux is available. */
@@ -70,6 +44,48 @@ defined(__OpenBSD__) || defined(__bsdi__) ||
 #elif defined(__BEOS__) || defined(__HAIKU__)
 	/** BeOS/Haiku is available. */
 	#define SJME_CONFIG_HAS_BEOS
+#endif
+
+#if defined(SJME_CONFIG_HAS_WINDOWS)
+	/* Include minimal header set. */
+	#define WIN32_LEAN_AND_MEAN
+	#define VC_EXTRALEAN
+	
+	#include <windows.h>
+	
+	#undef WIN32_LEAN_AND_MEAN
+	#undef VC_EXTRALEAN
+#elif defined(SJME_CONFIG_HAS_LINUX)
+	#include <linux/limits.h>
+#elif defined(SJME_CONFIG_HAS_BSD) || defined(SJME_CONFIG_HAS_MACOS)
+	#include <dirent.h>
+#endif
+
+#include <stddef.h>
+#include <limits.h>
+
+/* Anti-C++. */
+#ifdef __cplusplus
+	#ifndef SJME_CXX_IS_EXTERNED
+		#define SJME_CXX_IS_EXTERNED
+		#define SJME_CXX_SQUIRRELJME_CONFIG_H
+extern "C" {
+	#endif /* #ifdef SJME_CXX_IS_EXTERNED */
+#endif     /* #ifdef __cplusplus */
+
+/*--------------------------------------------------------------------------*/
+
+#if !defined(SJME_CONFIG_RELEASE) && !defined(SJME_CONFIG_DEBUG)
+	#if (defined(DEBUG) || defined(_DEBUG)) || \
+		(!defined(NDEBUG) && !defined(_NDEBUG))
+		/** Debug build. */
+		#define SJME_CONFIG_DEBUG
+	#else
+		/** Release build. */
+		#define SJME_CONFIG_RELEASE
+	#endif
+#elif defined(SJME_CONFIG_RELEASE) && defined(SJME_CONFIG_DEBUG)
+	#undef SJME_CONFIG_RELEASE
 #endif
 
 /** Possibly detect endianess. */
@@ -525,6 +541,29 @@ defined(__OpenBSD__) || defined(__bsdi__) ||
 #elif defined(SJME_CONFIG_HAS_MACOS)
 	#define SJME_CONFIG_DYLIB_PATHNAME(x) \
 		"lib" x ".dylib"
+#endif
+
+#if defined(SJME_CONFIG_HAS_WINDOWS)
+	/** General "maximum" path limit, within reason. */ 
+	#define SJME_CONFIG_PATH_MAX MAX_PATH
+#elif defined(SJME_CONFIG_HAS_LINUX) || \
+	defined(SJME_CONFIG_HAS_BSD) || \
+	defined(SJME_CONFIG_HAS_MACOS)
+	/** General "maximum" path limit, within reason. */
+	#define SJME_CONFIG_PATH_MAX PATH_MAX
+
+	/** General "maximum" file name limit, within reason. */
+	#define SJME_CONFIG_NAME_MAX NAME_MAX
+#endif
+
+#if !defined(SJME_CONFIG_PATH_MAX)
+	/** General "maximum" path limit, within reason. */
+	#define SJME_CONFIG_PATH_MAX 4096
+#endif
+
+#if !defined(SJME_CONFIG_NAME_MAX)
+	/** General "maximum" file name limit, within reason. */
+	#define SJME_CONFIG_NAME_MAX 256
 #endif
 
 /*--------------------------------------------------------------------------*/
