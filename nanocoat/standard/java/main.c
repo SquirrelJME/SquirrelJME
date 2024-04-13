@@ -26,6 +26,11 @@ static sjme_lpcstr findLibJvm()
 	javaHome = getenv("SQUIRRELJME_JAVA_HOME");
 	if (javaHome == NULL)
 		javaHome = getenv("JAVA_HOME");
+		
+	/* Possible names are... */
+	/* @c lib/libjvm.so . */
+	/* (jvm.cfg) @c $VM/libjvm.so . */
+	/* (jvm.cfg) @c lib$VM.so . */
 	
 	return NULL;
 }
