@@ -163,7 +163,6 @@ static sjme_dylib findLibJvmTry(sjme_lpcstr basePath, sjme_lpcstr subPath,
 	return result;
 }
 
-
 /**
  * Locates the Java library.
  * 
@@ -263,6 +262,8 @@ int main(int argc, char** argv)
 	jmethodID mainMethod;
 	jobjectArray mainArgs;
 	jstring str;
+	sjme_cchar classpath[SJME_CONFIG_PATH_MAX];
+	sjme_lpstr dotSlash;
 	int tryJniVersion, optionsN, i, argBase, argN;
 	
 	/* Setup options for forwarded arguments. */
@@ -275,6 +276,7 @@ int main(int argc, char** argv)
 	
 	/* Clear before using. */
 	memset(vmOptions, 0, sizeof(*vmOptions) * (argc + 7));
+	memset(classpath, 0, sizeof(classpath));
 	
 	/* The main class to use. */
 	mainClass = NULL;
@@ -283,6 +285,7 @@ int main(int argc, char** argv)
 	argBase = argc;
 	for (i = 1; i < argc; i++)
 	{
+		/* Argument to parse. */
 		optArg = argv[i];
 		
 		/* Dump version info? */
@@ -295,12 +298,38 @@ int main(int argc, char** argv)
 		/* Load classpath. */
 		else if (strcmp(optArg, "-classpath") == 0)
 		{
-			sjme_todo("-classpath?");
+			/* Get following. */
+			if ((++i) >= argc)
+			{
+				sjme_die("Expected argument after -jar.");
+				return EXIT_FAILURE;
+			}
+			
+			/* Load in. */
+			optArg = argv[i];
+			
+			/* Copy classpath over. */
+			snprintf(classpath, SJME_CONFIG_PATH_MAX - 1,
+				"-Djava.class.path=%s", optArg);
 		}
 		
 		/* Load Jar and its main manifest. */
 		else if (strcmp(optArg, "-jar") == 0)
 		{
+			/* Get following. */
+			if ((++i) >= argc)
+			{
+				sjme_die("Expected argument after -jar.");
+				return EXIT_FAILURE;
+			}
+			
+			/* Load in. */
+			optArg = argv[i];
+			
+			/* Copy classpath over. */
+			snprintf(classpath, SJME_CONFIG_PATH_MAX - 1,
+				"-Djava.class.path=%s", optArg);
+			
 			sjme_todo("-jar?");
 		}
 		
@@ -330,6 +359,13 @@ int main(int argc, char** argv)
 		return EXIT_FAILURE;
 	}
 	
+	/* No classpath specified? */
+	if (classpath[0] == 0)
+	{
+		sjme_die("No classpath specified.");
+		return EXIT_FAILURE;
+	}
+	
 	/* Find and load libjvm. */
 	libJvm = findLibJvm(optionsN, argv);
 	if (libJvm == NULL)
@@ -346,6 +382,10 @@ int main(int argc, char** argv)
 		sjme_die("Could not find JNI_CreateJavaVM(): %d", error);
 		return EXIT_FAILURE;
 	}
+	
+	/* Set classpath. */
+	vmOptions[optionsN].optionString = classpath;
+	optionsN++;
 	
 	/* Setup initial arguments. */
 	memset(&initArgs, 0, sizeof(initArgs));
@@ -397,6 +437,10 @@ int main(int argc, char** argv)
 		sjme_die("Could not find String class.");
 		return EXIT_FAILURE;
 	}
+	
+	/* The main class needs to be translated. */
+	while (NULL != (dotSlash = strchr(mainClass, '.')))
+		*dotSlash = '/';
 	
 	/* Find main class. */
 	foundMainClass = (*env)->FindClass(env, mainClass);
