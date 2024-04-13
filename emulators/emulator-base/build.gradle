@@ -40,7 +40,19 @@ Provider<CMakeBuildTask> libNativeEmulatorBase = tasks.register(
 	System.mapLibraryName("emulator-base"),
 	["libEmulatorBase"])
 
-Provider<MimeDecodeResourcesTask> mimeDecode =tasks.register(
+// Native implementations
+Provider<CMakeBuildTask> libsNativeNanoCoat = tasks.register(
+	"libsNativeNanoCoat",
+	CMakeBuildTask.class,
+	rootProject.getProjectDir().toPath().resolve("nanocoat"),
+	"",
+	["BaseStatic"])
+
+// The base library needs to exist first
+libNativeEmulatorBase.get().dependsOn(libsNativeNanoCoat)
+
+// Decoding of mime resources
+Provider<MimeDecodeResourcesTask> mimeDecode = tasks.register(
 	"mimeDecode", MimeDecodeResourcesTask.class,
 	"main",
 	tasks.named("processResources").get(),
@@ -48,17 +60,18 @@ Provider<MimeDecodeResourcesTask> mimeDecode =tasks.register(
 
 processResources.dependsOn(mimeDecode)
 processResources.dependsOn(libNativeEmulatorBase)
-
-jar.dependsOn(mimeDecode)
+processResources.dependsOn(libsNativeNanoCoat)
 
 compileJava.dependsOn(libNativeEmulatorBase)
+compileJava.dependsOn(libsNativeNanoCoat)
 
 mimeDecode.get().dependsOn(libNativeEmulatorBase)
+mimeDecode.get().dependsOn(libsNativeNanoCoat)
 
 // We need the native library in the JAR before we can properly use it
 // But we can compile the Java code just fine without it
 jar {
-	dependsOn libNativeEmulatorBase
+	dependsOn mimeDecode, libNativeEmulatorBase, libsNativeNanoCoat
 
 	from libNativeEmulatorBase.get().cmakeOutFile.toFile()
 	into "/"

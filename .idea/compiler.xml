@@ -34,6 +34,7 @@
       <module name="squirreljme.emulators.standalone.test" target="17" />
       <module name="squirreljme.sdk" target="17" />
       <module name="squirreljme.sdk.main" target="17" />
+      <module name="squirreljme.sdk.test" target="17" />
       <module name="squirreljme.tools.pcf-to-sqf" target="17" />
       <module name="squirreljme.tools.pcf-to-sqf.main" target="17" />
       <module name="squirreljme.tools.pcf-to-sqf.test" target="17" />
@@ -48,6 +49,7 @@
       <module name="squirreljme.tools.txt-to-pbm.test" target="17" />
       <module name="squirreljme.tools.unzip" target="17" />
       <module name="squirreljme.tools.unzip.main" target="17" />
+      <module name="squirreljme.tools.unzip.test" target="17" />
       <module name="Stephanie Gawroriski.squirreljme.buildSrc.main" target="11" />
       <module name="stephanie.squirreljme.buildSrc" target="11" />
       <module name="stephanie.squirreljme.buildSrc.main" target="11" />

@@ -62,6 +62,10 @@ public class CMakeBuildTask
 			if (rule == null)
 				throw new NullPointerException("NARG");
 		
+		// Blank?
+		if (__outputFile.isEmpty())
+			__outputFile = null;
+		
 		// Set source for later
 		this.cmakeSource = __source;
 		this.cmakeRules = Collections.<String>unmodifiableList(__rules);
