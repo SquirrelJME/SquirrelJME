@@ -175,11 +175,22 @@ static sjme_dylib findLibJvm(int argc, char** argv)
 {
 	sjme_errorCode error;
 	sjme_dylib result;
-	sjme_lpcstr basePath;
+	sjme_lpcstr basePath, dyLibEnv;
 	sjme_cchar libName[SJME_CONFIG_NAME_MAX];
 	sjme_cchar subName[SJME_CONFIG_NAME_MAX];
 	sjme_cchar subPath[SJME_CONFIG_PATH_MAX];
 	sjme_lpcstr vmSwitch;
+	
+	/* Passed via dylib? */
+	dyLibEnv = getenv("SQUIRRELJME_JAVA_DYLIB");
+	if (dyLibEnv != NULL)
+	{
+		/* Is it here? */
+		result = NULL;
+		if (sjme_error_is(error = sjme_dylib_open(dyLibEnv,
+			&result)) || result == NULL)
+			return result;
+	}
 	
 	/* Possible names are... */
 	/* @c lib/libjvm.so . */
