@@ -61,6 +61,20 @@ sjme_errorCode sjme_dylib_lookup(
 	void** outPtr);
 
 /**
+ * Calculates the name of the given library for the current system.
+ * 
+ * @param inLibName The input library name.
+ * @param outName The resultant library name.
+ * @param outLen The length of the output buffer.
+ * @return Any error code as applicable.
+ * @since 2024/04/13
+ */
+sjme_errorCode sjme_dylib_name(
+	sjme_attrInNotNull sjme_lpcstr inLibName,
+	sjme_attrOutNotNullBuf(outLen) sjme_lpstr outName,
+	sjme_attrInPositive sjme_jint outLen);
+
+/**
  * Opens a dynamic library.
  * 
  * @param libPath The path to the library to open.
