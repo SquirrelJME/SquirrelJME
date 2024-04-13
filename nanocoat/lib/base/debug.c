@@ -12,7 +12,7 @@
 #include <stdarg.h>
 #include <string.h>
 
-#if defined(_WIN32)
+#if defined(SJME_CONFIG_HAS_WINDOWS)
 	#include <windows.h>
 #endif
 
@@ -36,7 +36,7 @@ void sjme_debug_abort(void)
 		if (sjme_debug_abortHandler())
 			return;
 
-#if defined(_WIN32)
+#if defined(SJME_CONFIG_HAS_WINDOWS)
 	/* When running tests without a debugger this will pop up about 1000 */
 	/* dialogs saying the program aborted, so only abort on debugging. */
 	if (!IsDebuggerPresent())

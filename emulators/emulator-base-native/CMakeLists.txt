@@ -27,6 +27,7 @@ endif()
 
 # Declare library
 add_library(libEmulatorBase SHARED
+	c/jniHelper.c
 	c/mle_debug.c
 	c/mle_form.c
 	c/mle_jar.c
@@ -45,9 +46,12 @@ add_library(libEmulatorBase SHARED
 	c/utils.c)
 
 # Includes for the build
+get_filename_component(nanocoatIncludePath
+	"${CMAKE_SOURCE_DIR}/../../nanocoat/include" ABSOLUTE)
+message(STATUS "NanoCoat include is: ${nanocoatIncludePath}")
 target_include_directories(libEmulatorBase PUBLIC
 	"headers"
-	"${CMAKE_SOURCE_DIR}/../../nanocoat/include"
+	"${nanocoatIncludePath}"
 	${JNI_INCLUDE_DIRS})
 
 # It is easier to find this when it is in the build root

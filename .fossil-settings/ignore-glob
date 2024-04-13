@@ -117,6 +117,9 @@ ratufacoat/Testing
 ratufacoat/Makefile
 ratufacoat/libretro-log.txt
 ratufacoat/file-*
+emulators/emulator-base-native/cmake-build-release
+emulators/emulator-base-native/cmake-build-debug
+emulators/emulator-base-native/cmake-build-*
 cmake_install.cmake
 *.o
 *.dll
