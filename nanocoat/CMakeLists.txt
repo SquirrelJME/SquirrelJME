@@ -148,5 +148,8 @@ endif()
 # Front ends
 add_subdirectory(frontend)
 
+# Standard Programs
+add_subdirectory(standard)
+
 # Directory where the ROM compiled sources exist
 add_subdirectory(rom)
