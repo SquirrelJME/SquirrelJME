@@ -58,7 +58,7 @@ sjme_errorCode sjme_dylib_close(
 sjme_errorCode sjme_dylib_lookup(
 	sjme_attrInNotNull sjme_dylib inLib,
 	sjme_attrInNotNull sjme_lpcstr inSymbol,
-	void* outPtr);
+	void** outPtr);
 
 /**
  * Opens a dynamic library.
