@@ -10,9 +10,9 @@ plugins {
 
 apply plugin: "com.github.johnrengelman.shadow"
 
-// Java 8 Only
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+// Java 6+ Only
+sourceCompatibility = JavaVersion.VERSION_1_6
+targetCompatibility = JavaVersion.VERSION_1_6
 
 jar {
 }

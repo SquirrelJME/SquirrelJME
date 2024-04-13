@@ -11,13 +11,14 @@ subprojects
 	idea {
 		module
 		{
-			// The emulators run on Java 8 because this is for the host VM
-			// which can take advantage of this.
-			jdkName = "1.8"
+			// The emulators run on Java 6+ because this is for the host VM
+			// which can take advantage of this...
+			// Older version is used for any system capable of running 6
+			jdkName = "1.6"
 			
 			// Compile as this
-			languageLevel = new IdeaLanguageLevel("1.8")
-			targetBytecodeVersion = JavaVersion.VERSION_1_8
+			languageLevel = new IdeaLanguageLevel("1.6")
+			targetBytecodeVersion = JavaVersion.VERSION_1_6
 		}
 	}
 }

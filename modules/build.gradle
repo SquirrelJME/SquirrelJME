@@ -74,7 +74,7 @@ subprojects {
 	java {
 		// Java ME 8 is effectively Java 7, but use Java 8 here
         compileJava.sourceCompatibility = JavaVersion.VERSION_1_7
-		compileJava.targetCompatibility = JavaVersion.VERSION_1_8
+		compileJava.targetCompatibility = JavaVersion.VERSION_1_7
 
 		// All files are always in UTF-8 format
 		compileJava.options.encoding = "utf-8"

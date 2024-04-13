@@ -72,7 +72,10 @@ if (osName.equalsIgnoreCase('Mac OS X') &&
 // If we have a really high Java version being used then the parameters
 // for -source and -target were likely removed, so as such we cannot rely on
 // the project being able to be built in such versions.
+// Or if we are using an older version of Java such as 6, we need to use
+// ECJ to target 7 properly
 if (JavaVersion.current() >= JavaVersion.VERSION_HIGHER ||
+	JavaVersion.current() <= JavaVersion.VERSION_1_6 ||
 	Boolean.getBoolean("force.ecj")) {
 	// Emit a warning to indicate that the version is quite new
 	logger.warn("The current Java version is quite new, " +
