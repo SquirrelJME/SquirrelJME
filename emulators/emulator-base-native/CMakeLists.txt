@@ -59,7 +59,8 @@ target_include_directories(libEmulatorBase PUBLIC
 
 # Libraries for the build
 get_filename_component(nanocoatLibPath
-	"${CMAKE_SOURCE_DIR}/../emulator-base/build/cmake-libsNativeNanoCoat" ABSOLUTE)
+	"${CMAKE_SOURCE_DIR}/../emulator-base/build/cmake-libsNativeNanoCoat"
+	ABSOLUTE)
 message(STATUS "NanoCoat lib is: ${nanocoatLibPath}")
 target_link_directories(libEmulatorBase PUBLIC
 	"${nanocoatLibPath}")

@@ -62,8 +62,8 @@ extern "C" {
 #elif defined(__palmos__)
 	/** PalmOS is available. */
 	#define SJME_CONFIG_HAS_PALMOS
-#elif defined(__FreeBSD__) || defined(__NetBSD__) ||
-defined(__OpenBSD__) || defined(__bsdi__) ||
+#elif defined(__FreeBSD__) || defined(__NetBSD__) || \
+	defined(__OpenBSD__) || defined(__bsdi__) || \
 	defined(__DragonFly__) || defined(__MidnightBSD__)
 	/** BSD is available. */
 	#define SJME_CONFIG_HAS_BSD

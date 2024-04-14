@@ -18,6 +18,8 @@
 	#endif
 #endif
 
+#include <stdio.h>
+
 #if defined(SJME_CONFIG_DYLIB_HAS_DLFCN)
 	#include <dlfcn.h>
 #endif
@@ -73,6 +75,46 @@ sjme_errorCode sjme_dylib_lookup(
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 #endif
+}
+
+sjme_errorCode sjme_dylib_name(
+	sjme_attrInNotNull sjme_lpcstr inLibName,
+	sjme_attrOutNotNullBuf(outLen) sjme_lpstr outName,
+	sjme_attrInPositive sjme_jint outLen)
+{
+	sjme_intPointer outNameBase;
+	
+	if (inLibName == NULL || outName == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	outNameBase = (sjme_intPointer)outName;
+	if (outLen < 0 || (outNameBase + outLen) < outNameBase)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Pointless operation? */
+	if (outLen <= 1)
+		return SJME_ERROR_NONE;
+	
+	/* Print what? */
+#if defined(SJME_CONFIG_HAS_LINUX) || \
+	defined(SJME_CONFIG_HAS_BSD) || \
+    defined(SJME_CONFIG_HAS_BEOS)
+	snprintf(outName, outLen - 1, "lib%s.so", inLibName);
+#elif defined(SJME_CONFIG_HAS_CYGWIN)
+	snprintf(outName, outLen - 1, "lib%s.dll", inLibName);
+#elif defined(SJME_CONFIG_HAS_WINDOWS)
+	snprintf(outName, outLen - 1, "%s.dll", inLibName);
+#elif defined(SJME_CONFIG_HAS_MACOS)
+	snprintf(outName, outLen - 1, "lib%s.dylib", inLibName);
+#else
+	return SJME_ERROR_NOT_IMPLEMENTED;
+#endif
+	
+	/* Always add NULL. */
+	outName[outLen - 1] = 0;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_dylib_open(
