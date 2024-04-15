@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -11,7 +11,13 @@ package cc.squirreljme.runtime.cldc.lang;
 
 import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
+import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.util.IntegerArray;
+import cc.squirreljme.runtime.cldc.util.IntegerIntegerArray;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * This method contains the code which is able to initialize multi-dimensional
@@ -19,6 +25,7 @@ import java.util.Arrays;
  *
  * @since 2018/11/03
  */
+@SquirrelJMEVendorApi
 public final class ArrayUtils
 {
 	/** Boolean array. */
@@ -172,7 +179,7 @@ public final class ArrayUtils
 				return __class.cast(Arrays.copyOf(new Object[0], __len,
 					(Class<? extends Object[]>)((Object)__class)));
 			
-				// {@squirreljme.error ZZ5f Invalid array type.}
+				/* {@squirreljme.error ZZ5f Invalid array type.} */
 			default:
 				throw new IllegalArgumentException("ZZ5f");
 		}
@@ -231,7 +238,7 @@ public final class ArrayUtils
 			case ArrayUtils.ARRAY_OBJECT:
 				return __cast.cast(((Object[])__a)[__dx]);
 			
-				// {@squirreljme.error ZZf7 Invalid array type.}
+				/* {@squirreljme.error ZZf7 Invalid array type.} */
 			default:
 				throw new IllegalArgumentException("ZZf7");
 		}
@@ -316,7 +323,7 @@ public final class ArrayUtils
 				((Object[])__a)[__dx] = __v;
 				break;
 			
-				// {@squirreljme.error ZZ0c Invalid array type.}
+				/* {@squirreljme.error ZZ0c Invalid array type.} */
 			default:
 				throw new IllegalArgumentException("ZZ0c");
 		}
@@ -356,8 +363,141 @@ public final class ArrayUtils
 		else if (__a instanceof double[])
 			return ArrayUtils.ARRAY_DOUBLE;
 		
-		// {@squirreljme.error ZZ0d Invalid array type. (The type)}
+		/* {@squirreljme.error ZZ0d Invalid array type. (The type)} */
 		throw new IllegalArgumentException("ZZ0d " + __a.getClass().getName());
+	}
+	
+	/**
+	 * Flattens all the specified arrays into a new array. 
+	 *
+	 * @param __arrays The arrays to flatten.
+	 * @return The flattened arrays.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/09
+	 */
+	public static int[] flatten(IntegerArray... __arrays)
+		throws NullPointerException
+	{
+		if (__arrays == null)
+			throw new NullPointerException("NARG");
+		
+		return ArrayUtils.flatten(Arrays.asList(__arrays));
+	}
+	
+	/**
+	 * Flattens all the specified arrays into a new array. 
+	 *
+	 * @param __arrays The arrays to flatten.
+	 * @return The flattened arrays.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/09
+	 */
+	public static int[] flatten(List<IntegerArray> __arrays)
+		throws NullPointerException
+	{
+		if (__arrays == null)
+			throw new NullPointerException("NARG");
+	
+		// Determine the total size of the arrays
+		int total = 0;
+		int lastTotal;
+		for (IntegerArray array : __arrays)
+		{
+			lastTotal = total;
+			total += array.size();
+			
+			// Hopefully does not occur
+			if (total < 0 || total < lastTotal)
+				throw new IllegalStateException("OOPS");
+		}
+		
+		// Create a giant array as the result, then copy into each one
+		int[] result = new int[total];
+		for (int i = 0, n = __arrays.size(), off = 0; i < n; i++)
+		{
+			// Get source array to copy from
+			IntegerArray source = __arrays.get(i);
+			int sourceLen = source.size();
+			
+			// Is there a faster more direct copy?
+			if (source instanceof IntegerIntegerArray)
+			{
+				// Use direct copy
+				((IntegerIntegerArray)source).copyFrom(0,
+					result, off, sourceLen);
+			
+				// Move output up in a single chunk
+				off += sourceLen;
+			}
+				
+			// Otherwise, slow copy
+			else
+			{
+				for (int j = 0; j < sourceLen; j++)
+					result[off++] = source.get(j);
+			}
+		}
+		
+		// Return resultant array
+		return result;
+	}
+	
+	/**
+	 * Flattens all the specified arrays into a new array. 
+	 *
+	 * @param __arrays The arrays to flatten.
+	 * @return The flattened arrays.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/09
+	 */
+	public static int[] flattenPrimitive(int[]... __arrays)
+		throws NullPointerException
+	{
+		if (__arrays == null)
+			throw new NullPointerException("NARG");
+		
+		// Simpler operations?
+		int n = __arrays.length;
+		if (n == 0)
+			return null;
+		else if (n == 1)
+			return __arrays[0].clone();
+		
+		// Wrap all the arrays accordingly
+		List<IntegerArray> wrapped = new ArrayList<>(n);
+		for (int i = 0; i < n; i++)
+			wrapped.add(i, new IntegerIntegerArray(__arrays[i]));
+		
+		return ArrayUtils.flatten(wrapped);
+	}
+	
+	/**
+	 * Flattens all the specified arrays into a new array. 
+	 *
+	 * @param __arrays The arrays to flatten.
+	 * @return The flattened arrays.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/09
+	 */
+	public static int[] flattenPrimitive(List<int[]> __arrays)
+		throws NullPointerException
+	{
+		if (__arrays == null)
+			throw new NullPointerException("NARG");
+		
+		// Simpler operations?
+		int n = __arrays.size();
+		if (n == 0)
+			return null;
+		else if (n == 1)
+			return __arrays.get(0).clone();
+		
+		// Wrap arrays
+		List<IntegerArray> wrapped = new ArrayList<>(n);
+		for (int i = 0; i < n; i++)
+			wrapped.add(i, new IntegerIntegerArray(__arrays.get(i)));
+		
+		return ArrayUtils.flatten(wrapped);
 	}
 	
 	/**
@@ -373,6 +513,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
+	@SquirrelJMEVendorApi
 	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a)
 		throws NegativeArraySizeException, NullPointerException
@@ -395,6 +536,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
+	@SquirrelJMEVendorApi
 	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b)
 		throws NegativeArraySizeException, NullPointerException
@@ -418,6 +560,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
+	@SquirrelJMEVendorApi
 	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b, int __c)
 		throws NegativeArraySizeException, NullPointerException
@@ -442,6 +585,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
+	@SquirrelJMEVendorApi
 	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b, int __c, int __d)
 		throws NegativeArraySizeException, NullPointerException
@@ -467,6 +611,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
+	@SquirrelJMEVendorApi
 	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b, int __c, int __d, int __e)
 		throws NegativeArraySizeException, NullPointerException
@@ -493,6 +638,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
+	@SquirrelJMEVendorApi
 	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b, int __c, int __d, int __e, int __f)
 		throws NegativeArraySizeException, NullPointerException
@@ -520,6 +666,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
+	@SquirrelJMEVendorApi
 	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b, int __c, int __d, int __e, int __f, int __g)
 		throws NegativeArraySizeException, NullPointerException
@@ -548,6 +695,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
+	@SquirrelJMEVendorApi
 	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b, int __c, int __d, int __e, int __f, int __g,
 		int __h)
@@ -578,6 +726,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
+	@SquirrelJMEVendorApi
 	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b, int __c, int __d, int __e, int __f, int __g,
 		int __h, int __i)
@@ -609,6 +758,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
+	@SquirrelJMEVendorApi
 	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b, int __c, int __d, int __e, int __f, int __g,
 		int __h, int __i, int __j)
@@ -631,6 +781,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/03
 	 */
+	@SquirrelJMEVendorApi
 	public static Object multiANewArray(Class<?> __type, int __skip,
 		int[] __dims)
 		throws NegativeArraySizeException, NullPointerException
@@ -644,8 +795,8 @@ public final class ArrayUtils
 		while (typename.charAt(typeDims) == '[')
 			typeDims++;
 		
-		// {@squirreljme.error ZZ0e Negative number of dimensions available
-		// or input type is not correct for the array type.}
+		/* {@squirreljme.error ZZ0e Negative number of dimensions available
+		or input type is not correct for the array type.} */
 		int dims = __dims.length - __skip;
 		if (__skip < 0 || dims <= 0 || typeDims < dims)
 			throw new IllegalArgumentException("ZZ0e");
@@ -670,8 +821,8 @@ public final class ArrayUtils
 				subtype = Class.forName(typename.substring(1));
 			}
 			
-			// {@squirreljme.error ZZ0f Could not find the sub-type for
-			// multi-dimensional array.}
+			/* {@squirreljme.error ZZ0f Could not find the sub-type for
+			multi-dimensional array.} */
 			catch (ClassNotFoundException e)
 			{
 				throw new Error("ZZ0f", e);

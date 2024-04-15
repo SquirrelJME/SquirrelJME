@@ -1,0 +1,145 @@
+# Standalone Usage
+
+SquirrelJME's Standalone JAR requires at least a Java SE 8 virtual
+machine. For most systems, it may be downloaded from the following locations:
+
+ * <https://adoptopenjdk.net/>
+ * <http://www.oracle.com/technetwork/java/javase/downloads/index.html>
+ * In Debian/Ubuntu, OpenJDK is available in the repository.
+
+Generally SquirrelJME will work best with at least a Java 8 virtual machine.
+
+The JAR file `squirreljme-standalone.jar` may be run by running the following:
+
+ * `java -jar squirreljme-standalone.jar`
+
+When run, it should start the launcher and provide a list of available
+programs.
+
+## Command Line Usage
+
+The following may be used at the command line, the format is the same
+as `java`. An option within square brackets `[]` are optional, and
+any option within parenthesis `()` are required. The usage of SquirrelJME is
+in the following format:
+
+ * `java -jar squirreljme-standalone.jar [options]`
+   * Start into the launcher. 
+ * `java -jar squirreljme-standalone.jar [options] -jar a.jar`
+   * Directly launch the given Jar, bypassing the launcher. 
+ * `java -jar squirreljme-standalone.jar [options] mainClass [mainArgs|...]`
+   * Standard launch into the specific classpath and main arguments.
+   * For this option, `-classpath (class:path:...)` may be used
+ * `java -jar squirreljme-standalone.jar -XdebuggerOnly [options]`
+   * Only launch the built-in SquirrelJME debugger and not an actual virtual
+     machine.
+
+The available options are:
+
+ * `-Xemulator:(vm)`
+   * Specifies the backend emulator to use, the supported options are:
+     * `hosted` -- Uses the host JVM to run all the software.
+     * `springcoat` -- SpringCoat, interpreter written in Java.
+     * `nanocoat` -- NanoCoat, interpreter written in C.
+ * `-Xsnapshot:(path-to-nps)`
+   * Profile the virtual machine and store the profile results into the
+     given VisualVM snapshot file.
+ * `-Xlibraries:(class:path:...)`
+   * Specifies libraries that should be available to the virtual machine
+     and the suite management system, note that this is not the same as
+     the `-classpath` option as that is for the _current_ application.
+   * Wildcard directories may be specified in the following way, depending
+     on the operating system and possible shell expansion:
+     * `/path/to/directory/*`
+     * `/path/to/directory/**`
+     * `/path/to/directory/*.*`
+     * `wildcard=/path/to/directory`
+ * `-Xentry:id`
+   * Used with `-jar`, this allows one to specify an entry point index,
+     application name, or application entry point to determine which one to
+     launch within the Jar as there may be multiple.
+   * By default, if not specified, the first is always used.
+ * `-Xjdwp:[hostname]:port`
+   * Enable debugging.
+   * If `hostname` is specified then the debugger will connect to the
+     remote host that is a listening JDWP debugger.
+   * Otherwise, if only `port` is specified then the debugger will wait and
+     listen on the given port for an incoming connection.
+ * `-Xclutter:(release|debug)`
+   * Use the given core libraries with the given clutter level.
+   * `release` includes obfuscation and no debugging and thus runs faster.
+   * `debug` does not have any obfuscation and may work in cases where
+     obfuscation and optimization may cause issues.
+ * `-Xdebug`
+   * Enable debugging but with the internal built-in SquirrelJME debugger and
+     not a JDWP connection over TCP.
+   * This is supported under the `hosted` emulator, however if you launch
+     another application within it will not debug that process, therefor if
+     you wish to debug you should use `-jar`.
+ * `-Xthread:(single|coop|multi|smt)`
+   * Sets the threading mode of the virtual machine.
+   * `single`/`coop` -- Single threaded using cooperative multitasking.
+   * `multi`/`smt` -- Multi threaded using asynchronous multitasking.
+ * `-Xtrace=option[,option[,...]]` -- Trace options
+   * `all` -- Enable all.
+   * `instructions` -- Instructions being executed.
+   * `methodEntry` -- Entry of methods.
+   * `methodExit` -- Exit of methods.
+   * `mleCall` -- SquirrelJME MLE Native Calls.
+   * `invokeStatic` -- Static invocations.
+   * `allocation` -- Allocations such as `new`.
+   * `classInitialize` -- Class is initialized.
+   * `vmException` -- Virtual machine exceptions.
+   * `missingClass` -- Class does not exist.
+   * `monitorEnter` -- Monitor is entered.
+   * `monitorExit` -- Exiting a monitor.
+   * `monitorWait` -- Monitor is waited on.
+   * `monitorNotify` -- Monitor is notified.
+   * `threadNew` -- New thread is created.
+ * `-Dsysprop=value`
+   * Defines the given system property. 
+ * `-classpath (class:path:...)`
+   * Specifies the class path to use for the current application, the entries
+     must be visible from the library path.
+
+## Default Configuration and Library Paths
+
+SquirrelJME may be configured automatically via files on the file system. The
+following paths are considered for automatic configuration and classpath
+inclusion.
+
+ * Windows:
+   * Cache: `%LOCALAPPDATA%/squirreljme/cache`
+     * Or otherwise `%PROGRAMDATA%/squirreljme/cache`
+   * Configuration: `%APPDATA%/squirreljme/config`
+     * Or otherwise `%PROGRAMDATA%/squirreljme/config`
+   * Data: `%APPDATA%/squirreljme/data`
+     * Or otherwise `%PROGRAMDATA%/squirreljme/data`
+ * Linux, macOS, BSD, and other UNIX/UNIX-like systems:
+  * Cache: `$XDG_CACHE_HOME/squirreljme`
+    * Or otherwise `$HOME/.cache/squirreljme`
+  * Configuration: `$XDG_CONFIG_HOME/squirreljme`
+    * Or otherwise `$HOME/.config/squirreljme`
+  * Data: `$XDG_DATA_HOME/squirreljme`
+    * Or otherwise `$HOME/.local/share/squirreljme`
+
+To override the defaults, you may instead use the following, if any start
+with `~` that is replaced with `$HOME` or `%USERPROFILE%`:
+
+ * `SQUIRRELJME_CACHE_HOME` for _Cache_ path.
+ * `SQUIRRELJME_CONFIG_HOME` for _Configuration_ path.
+ * `SQUIRRELJME_DATA_HOME` for _Data_ path.
+
+SquirrelJME will automatically add to system properties for a properties file:
+
+ * `$SQUIRRELJME_JAVA_OPTS`
+   * In the form of `"-Dproperty=value -Dcute=squirrel"`
+ * `{Configuration}/squirreljme.properties`
+   * In the form of `property=value` on individual lines.
+
+SquirrelJME will automatically add to the classpath from:
+
+ * `$SQUIRRELJME_CLASSPATH/`
+ * `$SQUIRRELJME_JAVA_HOME/lib/`
+ * `$SQUIRRELJME_JAVA_HOME/jre/lib/`
+ * `{Data}/lib/`

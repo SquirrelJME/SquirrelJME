@@ -3,17 +3,22 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.emulator;
 
+import cc.squirreljme.jvm.manifest.JavaManifest;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.debug.ErrorCode;
 import cc.squirreljme.vm.DataContainerLibrary;
 import cc.squirreljme.vm.JarClassLibrary;
+import cc.squirreljme.vm.RawVMClassLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +30,8 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 /**
  * Handlers for {@link JarPackageShelf}.
@@ -83,12 +90,33 @@ public final class EmulatedJarPackageShelf
 			EmulatedTaskShelf.AVAILABLE_LIBRARIES);
 		if (paths != null)
 			rv = EmulatedJarPackageShelf.__loadPaths(paths);
-				else
+		else
 			rv = new JarPackageBracket[0];
 		
 		// Store cache for later usages
 		EmulatedJarPackageShelf._LIB_CACHE = rv;
 		return rv.clone();
+	}
+	
+	/**
+	 * Returns the ID of the specific library.
+	 *
+	 * @param __jar The Jar to get the library ID of.
+	 * @return The library ID for the given Jar.
+	 * @throws MLECallError If the library is not valid.
+	 * @since 2023/12/18
+	 */
+	@SquirrelJMEVendorApi
+	public static int libraryId(@NotNull JarPackageBracket __jar)
+		throws MLECallError
+	{
+		if (__jar == null)
+			throw new MLECallError("No JAR.");
+		
+		EmulatedJarPackageBracket jar = (EmulatedJarPackageBracket)__jar;
+		
+		Path path = jar.vmLib.path();
+		return (path != null ? path.hashCode() : jar.vmLib.name().hashCode());
 	}
 	
 	/**
@@ -131,6 +159,52 @@ public final class EmulatedJarPackageShelf
 	}
 	
 	/**
+	 * Returns the prefix code for the class.
+	 *
+	 * @param __jar The Jar to get the prefix code from.
+	 * @return The prefix code in the JAR, mapped accordingly to 37 radix,
+	 * will return -1 if there is none.
+	 * @throws MLECallError If {@code __jar} is null.
+	 * @since 2023/07/19
+	 */
+	public static int prefixCode(JarPackageBracket __jar)
+		throws MLECallError
+	{
+		if (__jar == null)
+			throw new MLECallError("Null Jar");
+		
+		// Open manifest
+		try (InputStream in = ((EmulatedJarPackageBracket)__jar)
+			.openResource("META-INF/MANIFEST.MF"))
+		{
+			if (in == null)
+				return -1;
+			
+			// Load in manifest
+			JavaManifest manifest = new JavaManifest(in);
+			
+			// Is there an actual value for this?
+			String value = manifest.getMainAttributes()
+				.getValue(ErrorCode.PREFIX_PROPERTY);
+			if (value == null)
+				return -1;
+			
+			// Get both characters for radix calculation
+			char a = value.charAt(0);
+			char b = value.charAt(1);
+			
+			// Calculate prefix code
+			return (Character.digit(a, Character.MAX_RADIX) * 
+				Character.MAX_RADIX) +
+				Character.digit(b, Character.MAX_RADIX);
+		}
+		catch (IOException ignored)
+		{
+			return -1;
+		}
+	}
+	
+	/**
 	 * Loads paths from the given JAR set.
 	 * 
 	 * @param __paths The paths to load.
@@ -154,6 +228,10 @@ public final class EmulatedJarPackageShelf
 				vmLib = new JarClassLibrary(segPath);
 			else
 				vmLib = new DataContainerLibrary(segPath);
+			
+			// Debug
+			System.err.printf("Registered %s as a %s.%n",
+				segPath, vmLib.getClass().getName());
 			
 			// Wrap class library container
 			fill.add(new EmulatedJarPackageBracket(vmLib));
@@ -193,26 +271,16 @@ public final class EmulatedJarPackageShelf
 		
 		// Determine the path to the JAR
 		EmulatedJarPackageBracket emul = (EmulatedJarPackageBracket)__jar;
-		Path path = emul.vmLib.path();
-		if (path == null)
-			throw new MLECallError("JAR is not physically backed.");
 		
-		// Seek through and find the data
-		try (InputStream in = Files.newInputStream(path,
-			StandardOpenOption.READ))
-		{
-			// Seek first, stop if EOF is hit
-			for (int at = 0; at < __jarOffset; at++)
-				if (in.read() < 0)
-					return -1;
-			
-			// Do a standard read here
-			return in.read(__b, __o, __l);
-		}
-		catch (IOException e)
-		{
-			throw new MLECallError("Could not raw read JAR.", e);
-		}
+		// We need to get the raw Jar itself
+		VMClassLibrary vmLib = emul.vmLib;
+		if (!(vmLib instanceof RawVMClassLibrary))
+			throw new MLECallError("JAR is not physically backed.");
+		RawVMClassLibrary rawLib = (RawVMClassLibrary)vmLib;
+		
+		// Read in the data
+		rawLib.rawData(__jarOffset, __b, __o, __l);
+		return __l;
 	}
 	
 	/**
@@ -234,21 +302,14 @@ public final class EmulatedJarPackageShelf
 		// Determine the path to the JAR
 		EmulatedJarPackageBracket emul = (EmulatedJarPackageBracket)__jar;
 		Path path = emul.vmLib.path();
-		if (path == null)
-			return -1;
 		
-		// Use the file size directly
-		try
-		{
-			return (int)Math.min(Integer.MAX_VALUE, Files.size(path));
-		}
+		// We need to get the raw Jar itself
+		VMClassLibrary vmLib = emul.vmLib;
+		if (!(vmLib instanceof RawVMClassLibrary))
+			throw new MLECallError("JAR is not physically backed.");
+		RawVMClassLibrary rawLib = (RawVMClassLibrary)vmLib;
 		
-		// Size is not valid?
-		catch (IOException e)
-		{
-			e.printStackTrace();
-			
-			return -1;
-		}
+		// Return the raw size
+		return rawLib.rawSize();
 	}
 }

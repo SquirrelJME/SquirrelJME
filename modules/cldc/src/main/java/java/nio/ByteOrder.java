@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.nio;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -16,13 +17,16 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2016/02/27
  */
+@Api
 public final class ByteOrder
 {
 	/** Big endian byte order. */
+	@Api
 	public static final ByteOrder BIG_ENDIAN =
 		new ByteOrder("BIG_ENDIAN");
 	
 	/** Little endian byte order. */
+	@Api
 	public static final ByteOrder LITTLE_ENDIAN =
 		new ByteOrder("LITTLE_ENDIAN");
 	
@@ -60,6 +64,7 @@ public final class ByteOrder
 		return this._string;
 	}
 	
+	@Api
 	public static ByteOrder nativeOrder()
 	{
 		throw Debugging.todo();

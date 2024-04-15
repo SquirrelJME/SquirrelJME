@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -14,6 +14,8 @@ import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.constants.NonStandardKey;
 import cc.squirreljme.jvm.mle.constants.UIKeyEventType;
 import cc.squirreljme.jvm.mle.constants.UIKeyModifier;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -27,7 +29,7 @@ import java.util.concurrent.ConcurrentSkipListSet;
  */
 public class HandleKeyEvents
 	extends AbstractListener
-	implements KeyListener
+	implements KeyListener, ActionListener
 {
 	/** Which keys are pressed? */
 	private final Set<Integer> _pressedKeys =
@@ -35,13 +37,31 @@ public class HandleKeyEvents
 	
 	/**
 	 * Initializes the handler for key events.
-	 * 
+	 *
 	 * @param __item The item used.
 	 * @since 2021/02/16
 	 */
 	public HandleKeyEvents(SwingWidget __item)
 	{
 		super(__item);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/02/26
+	 */
+	@Override
+	public void actionPerformed(ActionEvent __ignored)
+	{
+		// If there is no widget then we cannot perform actions
+		SwingWidget widget = this.item();
+		if (widget == null)
+			return;
+		
+		// If there is no callback, we cannot send keys to the client
+		UIFormCallback callback = widget.callback();
+		if (callback == null)
+			return;
 	}
 	
 	/**
@@ -119,7 +139,7 @@ public class HandleKeyEvents
 			modifiers |= UIKeyModifier.MODIFIER_RIGHT_COMMAND;
 		
 		// Send the event
-		callback.eventKey(widget.form(), (UIItemBracket)widget, __type,
+		callback.eventKey((UIItemBracket)widget, __type,
 			keyCode, modifiers);
 	}
 	

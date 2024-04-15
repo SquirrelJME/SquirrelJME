@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -101,7 +101,7 @@ final class __Utils__
 		if (__c == null || __result == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB3b Invalid flag array length. (The length)}
+		/* {@squirreljme.error EB3b Invalid flag array length. (The length)} */
 		int outLen = __result.length;
 		int listLen = __c.size();
 		if (outLen < listLen)

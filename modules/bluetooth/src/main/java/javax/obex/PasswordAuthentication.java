@@ -3,27 +3,31 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package javax.obex;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public class PasswordAuthentication
 {
-	@SuppressWarnings("unused")
+	@Api
 	public PasswordAuthentication(byte[] __bytes, byte[] __bytes1)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public byte[] getPassword()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public byte[] getUserName()
 	{
 		throw Debugging.todo();

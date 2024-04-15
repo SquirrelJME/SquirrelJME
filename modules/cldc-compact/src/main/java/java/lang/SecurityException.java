@@ -3,11 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.lang;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This is thrown when the security manager has detected a security violation.
@@ -15,6 +17,7 @@ package java.lang;
  * @see SecurityManager
  * @since 2018/09/18
  */
+@Api
 public class SecurityException
 	extends RuntimeException
 {
@@ -23,6 +26,7 @@ public class SecurityException
 	 *
 	 * @since 2018/09/18
 	 */
+	@Api
 	public SecurityException()
 	{
 	}
@@ -33,6 +37,7 @@ public class SecurityException
 	 * @param __m The message.
 	 * @since 2018/09/18
 	 */
+	@Api
 	public SecurityException(String __m)
 	{
 		super(__m);
@@ -45,6 +50,7 @@ public class SecurityException
 	 * @param __t The cause.
 	 * @since 2018/09/18
 	 */
+	@Api
 	public SecurityException(String __m, Throwable __t)
 	{
 		super(__m, __t);
@@ -56,6 +62,7 @@ public class SecurityException
 	 * @param __t The cause.
 	 * @since 2018/09/18
 	 */
+	@Api
 	public SecurityException(Throwable __t)
 	{
 		super(__t);

@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.lang.ref;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.util.Deque;
 import java.util.LinkedList;
 
@@ -19,6 +20,7 @@ import java.util.LinkedList;
  * @param <T> The type of reference to store.
  * @since 2018/09/23
  */
+@Api
 public class ReferenceQueue<T>
 {
 	/** Internal queue of references. */
@@ -32,11 +34,12 @@ public class ReferenceQueue<T>
 	 * @return The next removed reference or {@code null} if there is none.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public Reference<? extends T> poll()
 	{
 		// Lock and remove
 		Deque<Reference<? extends T>> queue = this._queue;
-		synchronized (queue)
+		synchronized (this)
 		{
 			return queue.poll();
 		}
@@ -53,10 +56,11 @@ public class ReferenceQueue<T>
 	 * waiting.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public Reference<? extends T> remove(long __ms)
 		throws IllegalArgumentException, InterruptedException
 	{
-		// {@squirreljme.error ZZ2a A negative timeout was specified.}
+		/* {@squirreljme.error ZZ2a A negative timeout was specified.} */
 		if (__ms < 0)
 			throw new IllegalArgumentException("ZZ2a");
 		
@@ -69,7 +73,7 @@ public class ReferenceQueue<T>
 		
 		// Lock on the queue
 		Deque<Reference<? extends T>> queue = this._queue;
-		synchronized (queue)
+		synchronized (this)
 		{
 			for (;;)
 			{
@@ -98,12 +102,13 @@ public class ReferenceQueue<T>
 	 * @throws InterruptedException If the thread was interrupted.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public Reference<? extends T> remove()
 		throws InterruptedException
 	{
 		// Lock on the queue
 		Deque<Reference<? extends T>> queue = this._queue;
-		synchronized (queue)
+		synchronized (this)
 		{
 			for (;;)
 			{
@@ -112,7 +117,7 @@ public class ReferenceQueue<T>
 				if (rv != null)
 					return rv;
 				
-				// Otherwise wait for a signal, InterruptedException is tossed
+				// Otherwise, wait for a signal, InterruptedException is tossed
 				// on the outside
 				queue.wait();
 			}
@@ -134,7 +139,7 @@ public class ReferenceQueue<T>
 		
 		// Lock on the queue to add it
 		Deque<Reference<? extends T>> queue = this._queue;
-		synchronized (queue)
+		synchronized (this)
 		{
 			queue.add(__ref);
 			

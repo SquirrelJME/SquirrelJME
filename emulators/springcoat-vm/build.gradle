@@ -16,6 +16,8 @@ dependencies
 	api project(":modules:meep-swm")
 	api project(":modules:tool-classfile")
 	api project(":modules:debug-jdwp")
+	api project(":modules:debug-jdwp-vm-host")
+	api project(":tools:squirreljme-debugger")
 }
 
 
@@ -29,6 +31,14 @@ java {
 		// Use the default bootstrap classpath
 		options.bootstrapClasspath = null
 	}
+
+	// Maximize debugging
+	compileJava.options.debug = true
+	compileJava.options.debugOptions.setDebugLevel("source,lines,vars")
+
+	// Copy settings
+	compileTestJava.options.debug = compileJava.options.debug
+	compileTestJava.options.debugOptions = compileJava.options.debugOptions
 	
 	javadoc.options.tags = [ "squirreljme.property",
 		"squirreljme.env",

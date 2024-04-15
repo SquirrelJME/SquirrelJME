@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.font.FontUtilities;
 import cc.squirreljme.runtime.lcdui.font.SQFFont;
@@ -23,61 +24,76 @@ import java.util.List;
  *
  * @since 2017/05/25
  */
+@Api
 public final class Font
 {
 	/** The monospace font. */
+	@Api
 	public static final int FACE_MONOSPACE =
 		32;
 	
 	/** Proportional fonts. */
+	@Api
 	public static final int FACE_PROPORTIONAL =
 		64;
 	
 	/** The system font. */
+	@Api
 	public static final int FACE_SYSTEM =
 		0;
 	
 	/** The font used for input text. */
+	@Api
 	public static final int FONT_INPUT_TEXT =
 		1;
 	
 	/** The text used to draw item and screen content, such as buttons. */
+	@Api
 	public static final int FONT_STATIC_TEXT =
 		0;
 	
 	/** The font used for unfocused text on the idle screen. */
+	@Api
 	public static final int FONT_IDLE_TEXT =
 		2;
 	
 	/** The font used for highlighted and focused text on the idle screen. */ 
+	@Api
 	public static final int FONT_IDLE_HIGHLIGHTED_TEXT =
 		3;
 	
 	/** Large font size. */
+	@Api
 	public static final int SIZE_LARGE =
 		16;
 	
 	/** Medium font size, this is the default. */
+	@Api
 	public static final int SIZE_MEDIUM =
 		0;
 	
 	/** Small font size. */
+	@Api
 	public static final int SIZE_SMALL =
 		8;
 	
 	/** Bold text. */
+	@Api
 	public static final int STYLE_BOLD =
 		1;
 	
 	/** Italic (slanted) text. */
+	@Api
 	public static final int STYLE_ITALIC =
 		2;
 	
 	/** Plain style text. */
+	@Api
 	public static final int STYLE_PLAIN =
 		0;
 	
 	/** Underlined text. */
+	@Api
 	public static final int STYLE_UNDERLINED =
 		4;
 	
@@ -147,6 +163,7 @@ public final class Font
 	 * @return The width of the given character.
 	 * @since 2017/10/21
 	 */
+	@Api
 	public int charWidth(char __c)
 	{
 		return this._sqf.charWidth(SQFFont.mapChar(__c));
@@ -165,6 +182,7 @@ public final class Font
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/06
 	 */
+	@Api
 	public int charsWidth(char[] __c, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, NullPointerException
 	{
@@ -212,6 +230,7 @@ public final class Font
 	 * no font is available using that size.
 	 * @since 2018/11/24
 	 */
+	@Api
 	public Font deriveFont(int __pxs)
 		throws IllegalArgumentException
 	{
@@ -228,10 +247,11 @@ public final class Font
 	 * no font is available using that size, or the style is not valid.
 	 * @since 2018/11/24
 	 */
+	@Api
 	public Font deriveFont(int __style, int __pxs)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB1t Invalid font style specified. (The style)}
+		/* {@squirreljme.error EB1t Invalid font style specified. (The style)} */
 		if ((__style & ~(Font.STYLE_PLAIN | Font.STYLE_UNDERLINED | Font.STYLE_BOLD)) != 0)
 			throw new IllegalArgumentException(String.format("EB1t %d",
 				__style));
@@ -240,8 +260,8 @@ public final class Font
 		if (__pxs == 0)
 			__pxs = FontUtilities.logicalSizeToPixelSize(Font.SIZE_MEDIUM);
 		
-		// {@squirreljme.error EB1u The pixel size of a font cannot be
-		// negative.}
+		/* {@squirreljme.error EB1u The pixel size of a font cannot be
+		negative.} */
 		else if (__pxs < 0)
 			throw new IllegalArgumentException("EB1u");
 		
@@ -281,6 +301,7 @@ public final class Font
 	 * @return The ascent of the font.
 	 * @since 2017/10/24
 	 */
+	@Api
 	public int getAscent()
 	{
 		return this._sqf.ascent;
@@ -292,6 +313,7 @@ public final class Font
 	 * @return The baseline of the font.
 	 * @since 2018/11/29
 	 */
+	@Api
 	public int getBaselinePosition()
 	{
 		return this._sqf.maxascent;
@@ -304,6 +326,7 @@ public final class Font
 	 * @return The descent of the font.
 	 * @since 2017/10/24
 	 */
+	@Api
 	public int getDescent()
 	{
 		return this._sqf.descent;
@@ -315,11 +338,13 @@ public final class Font
 	 * @return The font face.
 	 * @since 2018/12/13
 	 */
+	@Api
 	public int getFace()
 	{
 		return this._face;
 	}
 	
+	@Api
 	public String getFamily()
 	{
 		throw Debugging.todo();
@@ -331,6 +356,7 @@ public final class Font
 	 * @return The font name.
 	 * @since 2018/12/01
 	 */
+	@Api
 	public String getFontName()
 	{
 		return this._name;
@@ -343,6 +369,7 @@ public final class Font
 	 * @return The standard font height.
 	 * @since 2017/10/20
 	 */
+	@Api
 	public int getHeight()
 	{
 		int height = this._height;
@@ -361,16 +388,19 @@ public final class Font
 	 * @return The standard leading.
 	 * @since 2017/10/24
 	 */
+	@Api
 	public int getLeading()
 	{
 		return this._sqf.leading;
 	}
 	
+	@Api
 	public int getMaxAscent()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int getMaxDescent()
 	{
 		throw Debugging.todo();
@@ -382,6 +412,7 @@ public final class Font
 	 * @return The font size in pixels.
 	 * @since 2018/11/24
 	 */
+	@Api
 	public int getPixelSize()
 	{
 		return this._pixelsize;
@@ -393,6 +424,7 @@ public final class Font
 	 * @return The logical font size.
 	 * @since 2018/11/24
 	 */
+	@Api
 	public int getSize()
 	{
 		return FontUtilities.pixelSizeToLogicalSize(this._pixelsize);
@@ -404,6 +436,7 @@ public final class Font
 	 * @return The style used.
 	 * @since 2018/11/24
 	 */
+	@Api
 	public int getStyle()
 	{
 		return this._style;
@@ -421,21 +454,25 @@ public final class Font
 			this._pixelsize;
 	}
 	
+	@Api
 	public boolean isBold()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public boolean isItalic()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public boolean isPlain()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public boolean isUnderlined()
 	{
 		throw Debugging.todo();
@@ -449,6 +486,7 @@ public final class Font
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/10/21
 	 */
+	@Api
 	public int stringWidth(String __s)
 		throws NullPointerException
 	{
@@ -470,6 +508,7 @@ public final class Font
 	 * within bounds.
 	 * @since 2017/10/21
 	 */
+	@Api
 	public int substringWidth(String __s, int __o, int __l)
 		throws NullPointerException, StringIndexOutOfBoundsException
 	{
@@ -518,6 +557,7 @@ public final class Font
 		}
 	}
 	
+	@Api
 	public static Font createFont(InputStream __data)
 		throws IOException
 	{
@@ -530,6 +570,7 @@ public final class Font
 	 * @return All of the available fonts.
 	 * @since 2018/11/24
 	 */
+	@Api
 	public static Font[] getAvailableFonts()
 	{
 		// Already read these fonts?
@@ -557,10 +598,11 @@ public final class Font
 	 * @throws IllegalArgumentException If the parameters are not correct.
 	 * @since 2017/05/25
 	 */
+	@Api
 	public static Font[] getAvailableFonts(int __style)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB1v Invalid font style specified. (The style)}
+		/* {@squirreljme.error EB1v Invalid font style specified. (The style)} */
 		if ((__style & ~(Font.STYLE_PLAIN | Font.STYLE_ITALIC |
 			Font.STYLE_UNDERLINED | Font.STYLE_BOLD)) != 0)
 			throw new IllegalArgumentException(String.format("EB1v %d",
@@ -593,10 +635,11 @@ public final class Font
 	 * @throws IllegalArgumentException If the parameters are not correct.
 	 * @since 2018/11/24
 	 */
+	@Api
 	public static Font[] getAvailableFonts(int __face, int __style, int __pxs)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB1w Invalid font style specified. (The style)}
+		/* {@squirreljme.error EB1w Invalid font style specified. (The style)} */
 		if ((__style & ~(Font.STYLE_PLAIN | Font.STYLE_ITALIC |
 			Font.STYLE_UNDERLINED | Font.STYLE_BOLD)) != 0)
 			throw new IllegalArgumentException(String.format("EB1w %d",
@@ -629,6 +672,7 @@ public final class Font
 	 * @return The default system font.
 	 * @since 2017/05/24
 	 */
+	@Api
 	public static Font getDefaultFont()
 	{
 		// 
@@ -649,10 +693,11 @@ public final class Font
 	 * @throws IllegalArgumentException If the specifier is not valid.
 	 * @since 2018/11/24
 	 */
+	@Api
 	public static Font getFont(int __spec)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB1x Invalid font specifiers. (The specifiers)}
+		/* {@squirreljme.error EB1x Invalid font specifiers. (The specifiers)} */
 		if (__spec != Font.FONT_INPUT_TEXT &&
 			__spec != Font.FONT_STATIC_TEXT &&
 			__spec != Font.FONT_IDLE_TEXT &&
@@ -680,16 +725,17 @@ public final class Font
 	 * @throws IllegalArgumentException If the input parameters are not valid.
 	 * @since 2017/05/25
 	 */
+	@Api
 	public static Font getFont(int __face, int __style, int __size)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB1y Invalid font face specified. (The face)}
+		/* {@squirreljme.error EB1y Invalid font face specified. (The face)} */
 		if ((__face & ~(Font.FACE_SYSTEM | Font.FACE_MONOSPACE |
 			Font.FACE_PROPORTIONAL)) != 0 || Integer.bitCount(__face) > 1)
 			throw new IllegalArgumentException(String.format("EB1y %d",
 				__face));
 		
-		// {@squirreljme.error EB1z Invalid font size specified. (The size)}
+		/* {@squirreljme.error EB1z Invalid font size specified. (The size)} */
 		if ((__size & ~(Font.SIZE_SMALL | Font.SIZE_MEDIUM |
 			Font.SIZE_LARGE)) != 0 || Integer.bitCount(__size) > 1)
 			throw new IllegalArgumentException(String.format("EB1z %d",
@@ -740,6 +786,7 @@ public final class Font
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/24
 	 */
+	@Api
 	public static Font getFont(String __name, int __style, int __pxs)
 		throws IllegalArgumentException, NullPointerException
 	{
@@ -751,8 +798,8 @@ public final class Font
 			if (__name.equals(f.getFontName()))
 				return f.deriveFont(__style, __pxs);
 		
-		// {@squirreljme.error EB20 Could not locate a font by the given
-		// name. (The font name)}
+		/* {@squirreljme.error EB20 Could not locate a font by the given
+		name. (The font name)} */
 		throw new IllegalArgumentException("EB20 " + __name);
 	}
 	
@@ -765,6 +812,7 @@ public final class Font
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/24
 	 */
+	@Api
 	public static int getPixelSize(String __name)
 		throws IllegalArgumentException, NullPointerException
 	{
@@ -775,8 +823,8 @@ public final class Font
 			if (__name.equals(f.getFontName()))
 				return f.getPixelSize();
 		
-		// {@squirreljme.error EB21 No font with the given name exists.
-		// (The font name)}
+		/* {@squirreljme.error EB21 No font with the given name exists.
+		(The font name)} */
 		throw new IllegalArgumentException("EB21 " + __name);
 	}
 	
@@ -789,6 +837,7 @@ public final class Font
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/24
 	 */
+	@Api
 	public static int getStyle(String __name)
 		throws IllegalArgumentException, NullPointerException
 	{
@@ -799,8 +848,8 @@ public final class Font
 			if (__name.equals(f.getFontName()))
 				return f.getStyle();
 		
-		// {@squirreljme.error EB22 No font with the given name exists.
-		// (The font name)}
+		/* {@squirreljme.error EB22 No font with the given name exists.
+		(The font name)} */
 		throw new IllegalArgumentException("EB2g " + __name);
 	}
 }

@@ -5,15 +5,36 @@ plugins {
 repositories {
 	mavenCentral()
 	jcenter()
+	
+	maven {
+		url = uri("https://plugins.gradle.org/m2/")
+	}
 }
 
 dependencies {
 	implementation gradleApi()
 
 	// Jasmin Sable (Java byte code assembler)
-	implementation "ca.mcgill.sable:jasmin:3.0.2"
+	implementation "ca.mcgill.sable:jasmin:3.0.3"
+	
+	// ProGuard, minification
+	implementation "com.guardsquare:proguard-base:7.4.1"
+	implementation "com.guardsquare:proguard-core:9.1.1"
 	
 	// Lombok for simpler getters/setters
-	implementation 'org.projectlombok:lombok:1.18.24'
-	annotationProcessor 'org.projectlombok:lombok:1.18.24'
+	implementation 'org.projectlombok:lombok:1.18.30'
+	annotationProcessor 'org.projectlombok:lombok:1.18.30'
+	
+	// Country codes
+	implementation 'org.iban4j:iban4j:3.2.7-RELEASE'
+	
+	// CSV parsing, for NanoCoat generation
+	implementation 'com.opencsv:opencsv:5.9'
+	
+	// Shadow Jar, for single Jars
+	implementation 'gradle.plugin.com.github.johnrengelman:shadow:7.1.2'
+	
+	// Jackson, for JSON APIs
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr353:2.11.0'
+	implementation 'org.glassfish:javax.json:1.1'
 }

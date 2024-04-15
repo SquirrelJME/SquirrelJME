@@ -1,0 +1,3 @@
+META-INF/MANIFEST.MF
+META-INF/services/net.multiphasicapps.tac.TestInterface
+TestNothing.class

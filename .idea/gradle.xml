@@ -4,28 +4,35 @@
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
-        <option name="delegatedBuild" value="true" />
-        <option name="testRunner" value="GRADLE" />
-        <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="gradleJvm" value="11.0.5" />
+        <option name="gradleJvm" value="17" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/buildSrc" />
             <option value="$PROJECT_DIR$/emulators" />
             <option value="$PROJECT_DIR$/emulators/emulator-base" />
+            <option value="$PROJECT_DIR$/emulators/nanocoat-vm" />
             <option value="$PROJECT_DIR$/emulators/springcoat-vm" />
             <option value="$PROJECT_DIR$/emulators/standalone" />
             <option value="$PROJECT_DIR$/modules" />
             <option value="$PROJECT_DIR$/modules/aot" />
+            <option value="$PROJECT_DIR$/modules/aot-nanocoat" />
             <option value="$PROJECT_DIR$/modules/aot-springcoat" />
             <option value="$PROJECT_DIR$/modules/bluetooth" />
+            <option value="$PROJECT_DIR$/modules/c-source-writer" />
+            <option value="$PROJECT_DIR$/modules/cdc" />
+            <option value="$PROJECT_DIR$/modules/cdc-applet" />
+            <option value="$PROJECT_DIR$/modules/cdc-pbp" />
+            <option value="$PROJECT_DIR$/modules/cdc-pbp-awt-heavy" />
+            <option value="$PROJECT_DIR$/modules/cdc-xlet" />
             <option value="$PROJECT_DIR$/modules/cldc" />
             <option value="$PROJECT_DIR$/modules/cldc-compact" />
             <option value="$PROJECT_DIR$/modules/collections" />
             <option value="$PROJECT_DIR$/modules/common-vm" />
+            <option value="$PROJECT_DIR$/modules/csv" />
             <option value="$PROJECT_DIR$/modules/debug-jdwp" />
+            <option value="$PROJECT_DIR$/modules/debug-jdwp-vm-host" />
             <option value="$PROJECT_DIR$/modules/demo-hello" />
             <option value="$PROJECT_DIR$/modules/dio" />
             <option value="$PROJECT_DIR$/modules/dio-adc" />
@@ -44,7 +51,6 @@
             <option value="$PROJECT_DIR$/modules/gcf" />
             <option value="$PROJECT_DIR$/modules/io" />
             <option value="$PROJECT_DIR$/modules/io-file" />
-            <option value="$PROJECT_DIR$/modules/jblend-api" />
             <option value="$PROJECT_DIR$/modules/json" />
             <option value="$PROJECT_DIR$/modules/launcher" />
             <option value="$PROJECT_DIR$/modules/lcdui-demo" />
@@ -57,6 +63,7 @@
             <option value="$PROJECT_DIR$/modules/meep-key" />
             <option value="$PROJECT_DIR$/modules/meep-liblets" />
             <option value="$PROJECT_DIR$/modules/meep-lui" />
+            <option value="$PROJECT_DIR$/modules/meep-lui-lcdui" />
             <option value="$PROJECT_DIR$/modules/meep-midlet" />
             <option value="$PROJECT_DIR$/modules/meep-power" />
             <option value="$PROJECT_DIR$/modules/meep-provisioning" />
@@ -64,25 +71,40 @@
             <option value="$PROJECT_DIR$/modules/meep-securityframework" />
             <option value="$PROJECT_DIR$/modules/meep-swm" />
             <option value="$PROJECT_DIR$/modules/midp-lcdui" />
-            <option value="$PROJECT_DIR$/modules/nokia-api" />
-            <option value="$PROJECT_DIR$/modules/ntt-docomo-doja-api" />
-            <option value="$PROJECT_DIR$/modules/ntt-docomo-star-api" />
             <option value="$PROJECT_DIR$/modules/opengles" />
             <option value="$PROJECT_DIR$/modules/profile-meep" />
-            <option value="$PROJECT_DIR$/modules/sprint-api" />
             <option value="$PROJECT_DIR$/modules/squirrel-quarrel" />
+            <option value="$PROJECT_DIR$/modules/std-apps-core" />
+            <option value="$PROJECT_DIR$/modules/std-apps-core-lcdui" />
             <option value="$PROJECT_DIR$/modules/tac" />
+            <option value="$PROJECT_DIR$/modules/tango-icon-theme" />
             <option value="$PROJECT_DIR$/modules/tool-classfile" />
             <option value="$PROJECT_DIR$/modules/tool-manifest-writer" />
-            <option value="$PROJECT_DIR$/modules/vodafone-api" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-danger-hiptop" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-jblend" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-jphone" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-kwisf-wipi" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-lg-mmpp" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-mascot-capsule-3d" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-nokia" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-ntt-docomo-doja" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-ntt-docomo-star" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-samsung" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-siemens" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-skt" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-sprintpcs" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-vodafone" />
             <option value="$PROJECT_DIR$/modules/wireless-messaging" />
             <option value="$PROJECT_DIR$/modules/zip" />
             <option value="$PROJECT_DIR$/sdk" />
             <option value="$PROJECT_DIR$/tools" />
+            <option value="$PROJECT_DIR$/tools/fake-javadoc-sdk" />
             <option value="$PROJECT_DIR$/tools/markdown-javadoc" />
             <option value="$PROJECT_DIR$/tools/pcf-to-sqf" />
             <option value="$PROJECT_DIR$/tools/sqf-to-c" />
+            <option value="$PROJECT_DIR$/tools/squirreljme-debugger" />
             <option value="$PROJECT_DIR$/tools/txt-to-pbm" />
+            <option value="$PROJECT_DIR$/tools/unzip" />
           </set>
         </option>
       </GradleProjectSettings>

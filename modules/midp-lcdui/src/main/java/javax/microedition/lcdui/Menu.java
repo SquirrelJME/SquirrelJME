@@ -3,35 +3,41 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public class Menu
 	extends __Action__
 {
 	/** The image used. */
 	private volatile Image _image;
 	
+	@Api
 	public Menu(String __short, String __long, Image __i)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int append(Command __c)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int append(Menu __m)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public Command getCommand(int __i)
 	{
 		throw Debugging.todo();
@@ -44,6 +50,7 @@ public class Menu
 	 * @return The font that should be used as a hint.
 	 * @since 2018/04/01
 	 */
+	@Api
 	public Font getFont()
 	{
 		throw Debugging.todo();
@@ -55,6 +62,7 @@ public class Menu
 	 * @return The image of the command or {@code null} if it has none.
 	 * @since 2018/04/01
 	 */
+	@Api
 	public Image getImage()
 	{
 		throw Debugging.todo();
@@ -66,6 +74,7 @@ public class Menu
 	 * @return The label used for the menu.
 	 * @since 2018/04/01
 	 */
+	@Api
 	public String getLabel()
 	{
 		throw Debugging.todo();
@@ -77,41 +86,49 @@ public class Menu
 	 * @return The long label of the menu or {@code null} if it has none.
 	 * @since 2018/04/01
 	 */
+	@Api
 	public String getLongLabel()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public Menu getMenu(int __i)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int getMenuDepth()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void insert(int __i, Command __c)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void insert(int __i, Menu __m)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public boolean isCommand(int __i)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public boolean isEnabled()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public boolean isVisible()
 	{
 		throw Debugging.todo();
@@ -129,11 +146,13 @@ public class Menu
 		// The default implementation does nothing
 	}
 	
+	@Api
 	public void remove(Command __c)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void remove(Menu __m)
 	{
 		throw Debugging.todo();
@@ -145,6 +164,7 @@ public class Menu
 	 * @param __e If the menu is enabled or not.
 	 * @since 2018/04/01
 	 */
+	@Api
 	public void setEnabled(boolean __e)
 	{
 		throw Debugging.todo();
@@ -157,6 +177,7 @@ public class Menu
 	 * {@code null} will use the default.
 	 * @since 2018/04/01
 	 */
+	@Api
 	public void setFont(Font __f)
 	{
 		throw Debugging.todo();
@@ -173,6 +194,7 @@ public class Menu
 	 * @param __i The image to set or {@code null} to clear it.
 	 * @since 2018/04/06
 	 */
+	@Api
 	public void setImage(Image __i)
 	{
 		throw Debugging.todo();
@@ -193,6 +215,7 @@ public class Menu
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/04/01
 	 */
+	@Api
 	public void setLabel(String __s)
 	{
 		throw Debugging.todo();
@@ -207,6 +230,7 @@ public class Menu
 	 * @param __s The long label to use, {@code null} clears it.
 	 * @since 2018/04/01
 	 */
+	@Api
 	public void setLongLabel(String __s)
 	{
 		throw Debugging.todo();
@@ -215,11 +239,13 @@ public class Menu
 		*/
 	}
 	
+	@Api
 	public int size()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static int getMaxMenuDepth()
 	{
 		throw Debugging.todo();

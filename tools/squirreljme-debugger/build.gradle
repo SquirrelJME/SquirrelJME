@@ -1,0 +1,32 @@
+import cc.squirreljme.plugin.tasks.MimeDecodeResourcesTask
+
+plugins {
+	id "java"
+	id "application"
+}
+
+apply plugin: "com.github.johnrengelman.shadow"
+
+description = "SquirrelJME Interactive Debugger."
+mainClassName = "cc.squirreljme.debugger.Main"
+
+tasks.register("mimeDecode", MimeDecodeResourcesTask.class,
+	"main",
+	tasks.named("processResources").get(),
+	tasks.named("clean").get())
+
+processResources.dependsOn("mimeDecode")
+jar.dependsOn("mimeDecode")
+
+dependencies {
+	implementation project(":emulators:emulator-base")
+	implementation project(":modules:debug-jdwp")
+	implementation project(":modules:tango-icon-theme")
+	implementation project(":modules:common-vm")
+	implementation project(":modules:json")
+	implementation project(":modules:launcher")
+	
+	// Lombok for simpler getters/setters
+	implementation 'org.projectlombok:lombok:1.18.30'
+	annotationProcessor 'org.projectlombok:lombok:1.18.30'
+}

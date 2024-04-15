@@ -3,14 +3,18 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
+@Api
 public interface Comparator<T>
 {
+	@Api
 	int compare(T __a, T __b);
 	
 	/**

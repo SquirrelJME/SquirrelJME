@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package javax.microedition.swm;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.io.IOException;
 
 /**
@@ -17,6 +18,7 @@ import java.io.IOException;
  *
  * @since 2016/06/24
  */
+@Api
 public class SuiteLockedException
 	extends IOException
 {
@@ -25,6 +27,7 @@ public class SuiteLockedException
 	 *
 	 * @since 2016/06/24
 	 */
+	@Api
 	public SuiteLockedException()
 	{
 	}
@@ -35,6 +38,7 @@ public class SuiteLockedException
 	 * @param __s The message to use.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public SuiteLockedException(String __s)
 	{
 		super(__s);

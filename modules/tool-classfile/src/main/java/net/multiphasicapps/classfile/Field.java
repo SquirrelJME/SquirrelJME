@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -63,8 +63,8 @@ public final class Field
 		if (__f == null || __n == null || __t == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JC2o The constant value is not compatible with
-		// the given field type. (The value; The value type; The field type)}
+		/* {@squirreljme.error JC2o The constant value is not compatible with
+		the given field type. (The value; The value type; The field type)} */
 		if (__cv != null && !__cv.type().isCompatibleWith(__t))
 			throw new InvalidClassFormatException(String.format(
 				"JC2o %s %s %s", __cv, __cv.type(), __t));
@@ -182,8 +182,8 @@ public final class Field
 				__pool.<UTFConstantEntry>require(UTFConstantEntry.class,
 				__in.readUnsignedShort()).toString());
 			
-			// {@squirreljme.error JC2p A duplicate method exists within the
-			// class. (The method name; The method descriptor)}
+			/* {@squirreljme.error JC2p A duplicate method exists within the
+			class. (The method name; The method descriptor)} */
 			if (!dup.add(new NameAndType(name.toString(), type.toString())))
 				throw new InvalidClassFormatException(String.format(
 					"JC2p %s %s", name, type));

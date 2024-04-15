@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -117,8 +117,8 @@ public final class JavaManifest
 			}
 			
 			// This will be a name: value line, so find the colon on it
-			// {@squirreljme.error BB01 Expected colon to appear on the
-			// manifest line, to split a name/value pair.}
+			/* {@squirreljme.error BB01 Expected colon to appear on the
+			manifest line, to split a name/value pair.} */
 			int col = ln.indexOf(':');
 			if (col < 0)
 				throw new JavaManifestException("BB01");
@@ -126,8 +126,8 @@ public final class JavaManifest
 			// Read key and value
 			String key = ln.substring(0, col);
 			
-			// {@squirreljme.error BB02 Manifest key contains an invalid
-			// character.}
+			/* {@squirreljme.error BB02 Manifest key contains an invalid
+			character.} */
 			for (int i = 0, n = key.length(); i < n; i++)
 				if (!JavaManifest.__isKeyChar(key.charAt(i)))
 					throw new JavaManifestException(
@@ -177,8 +177,8 @@ public final class JavaManifest
 			// Was this the start of a new section?
 			if (curname == null)
 			{
-				// {@squirreljme.error BB03 New section must start with
-				// {@code Name: value}. (The input section)}
+				/* {@squirreljme.error BB03 New section must start with
+				{@code Name: value}. (The input section)} */
 				if (!"name".equals(ak.string))
 					throw new JavaManifestException("BB03 " + ak);
 				

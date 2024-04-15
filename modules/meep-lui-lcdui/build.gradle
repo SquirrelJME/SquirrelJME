@@ -1,0 +1,23 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEStandard
+
+description = "LCDUI Implementation of LUI."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "DX"
+	swmType = JavaMEMidletType.API
+	swmName = "LCDUI LUI Implementatiion"
+	swmVendor = "Stephanie Gawroriski"
+	tags += "meep"
+	tags += "graphics"
+}
+
+dependencies
+{
+	api project(":modules:cldc-compact")
+
+	api project(":modules:meep-lui")
+	api project(":modules:midp-lcdui")
+}

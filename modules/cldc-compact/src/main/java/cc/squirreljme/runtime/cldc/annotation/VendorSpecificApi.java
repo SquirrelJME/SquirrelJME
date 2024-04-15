@@ -3,7 +3,7 @@
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -29,6 +29,6 @@ import java.lang.annotation.Target;
 	ElementType.PARAMETER, ElementType.TYPE})
 public @interface VendorSpecificApi
 {
-	/** The vendor this belongs to. */
+	/** The API this belongs to. */
 	String value() default "";
 }

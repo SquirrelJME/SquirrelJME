@@ -3,17 +3,21 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package com.oracle.json;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * An immutable string value.
  *
  * @since 2014/07/25
  */
+@Api
+@SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
 public interface JsonString
 	extends JsonValue
 {
@@ -34,6 +38,7 @@ public interface JsonString
 	 * @return A character sequence for this specified string.
 	 * @since 2014/07/26
 	 */
+	@Api
 	CharSequence getChars();
 	
 	/**
@@ -42,6 +47,7 @@ public interface JsonString
 	 * @return A string.
 	 * @since 2014/07/26
 	 */
+	@Api
 	String getString();
 	
 	/**

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -65,8 +65,8 @@ public abstract class SpringArrayObject
 		if (!__self.isArray())
 			throw new IllegalArgumentException("Type not an array: " + __self);
 		
-		// {@squirreljme.error BK01 Attempt to allocate an array of a
-		// negative size. (The length requested)}
+		/* {@squirreljme.error BK01 Attempt to allocate an array of a
+		negative size. (The length requested)} */
 		if (__l < 0)
 			throw new SpringNegativeArraySizeException(
 				String.format("BK01 %d", __l));

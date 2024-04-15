@@ -9,7 +9,7 @@ version = rootProject.version
 
 squirreljme
 {
-	javaDocErrorCode = "DG"
+	javaDocErrorCode = "JS"
 	swmType = JavaMEMidletType.API
 	swmName = "JSON API"
 	swmVendor = "Stephanie Gawroriski"

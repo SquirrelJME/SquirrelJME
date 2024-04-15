@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.manifest.JavaManifest;
 import cc.squirreljme.jvm.manifest.JavaManifestKey;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
@@ -23,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+@Api
 public abstract class MIDlet
 {
 	/** This is the prefix used to override settings. */
@@ -38,6 +40,7 @@ public abstract class MIDlet
 	 *
 	 * @since 2017/02/08
 	 */
+	@Api
 	protected MIDlet()
 	{
 		// Set the active midlet to this one
@@ -47,10 +50,11 @@ public abstract class MIDlet
 	/**
 	 * Signals that the MIDlet is in the destruction state.
 	 *
-	 * @param __uc Is is unconditional?
+	 * @param __uc Is this unconditional?
 	 * @throws MIDletStateChangeException If the destruction might stop.
 	 * @since 2020/02/29
 	 */
+	@Api
 	protected abstract void destroyApp(boolean __uc)
 		throws MIDletStateChangeException;
 	
@@ -60,6 +64,7 @@ public abstract class MIDlet
 	 * @throws MIDletStateChangeException If the MIDlet should not start.
 	 * @since 2020/10/03
 	 */
+	@Api
 	protected abstract void startApp()
 		throws MIDletStateChangeException;
 	
@@ -74,6 +79,7 @@ public abstract class MIDlet
 	 * @throws IllegalStateException If this is a MIDP 3.0 application.
 	 * @since 2019/05/05
 	 */
+	@Api
 	@ApiDefinedDeprecated
 	public final int checkPermission(String __p)
 		throws IllegalStateException
@@ -89,8 +95,8 @@ public abstract class MIDlet
 			// Makes it easier to use
 			profile = profile.toLowerCase();
 			
-			// {@squirreljme.error AD03 Cannot use check permission on
-			// MIDP 3.0 or MEEP suite profiles.}
+			/* {@squirreljme.error AD03 Cannot use check permission on
+			MIDP 3.0 or MEEP suite profiles.} */
 			if (profile.contains("midp-3") || profile.contains("meep"))
 				throw new IllegalStateException("AD03");
 		}
@@ -125,6 +131,7 @@ public abstract class MIDlet
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/07
 	 */
+	@Api
 	public final String getAppProperty(String __p)
 		throws NullPointerException
 	{
@@ -164,8 +171,8 @@ public abstract class MIDlet
 			if (manifest == null)
 				try (InputStream in = type.manifestStream(ourJar))
 				{
-					// {@squirreljme.error ZZ4j No manifest available for
-					// this current MIDlet of the given type. (The type)}
+					/* {@squirreljme.error ZZ4j No manifest available for
+					this current MIDlet of the given type. (The type)} */
 					if (in == null)
 						throw new IOException("ZZ4j " + type);
 					
@@ -202,16 +209,19 @@ public abstract class MIDlet
 		return null;
 	}
 	
+	@Api
 	public final MIDletIdentity getMIDletIdentity()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public final long getSplashScreenTime()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public final boolean isSelectedScreenSaver()
 	{
 		throw Debugging.todo();
@@ -224,6 +234,7 @@ public abstract class MIDlet
 	 *
 	 * @since 2019/04/15
 	 */
+	@Api
 	public final void notifyDestroyed()
 	{
 		Debugging.debugNote("Notification of destruction");
@@ -242,6 +253,7 @@ public abstract class MIDlet
 	 *
 	 * @since 2017/02/08
 	 */
+	@Api
 	@ApiDefinedDeprecated
 	public final void notifyPaused()
 	{
@@ -254,6 +266,7 @@ public abstract class MIDlet
 	 *
 	 * @since 2017/02/08
 	 */
+	@Api
 	@ApiDefinedDeprecated
 	public void pauseApp()
 	{
@@ -270,6 +283,7 @@ public abstract class MIDlet
 	 * connection type is not supported.
 	 * @since 2020/07/02
 	 */
+	@Api
 	public final boolean platformRequest(String __url)
 		throws Exception
 	{
@@ -293,11 +307,13 @@ public abstract class MIDlet
 	 * 
 	 * @since 2020/07/03
 	 */
+	@Api
 	@ApiDefinedDeprecated
 	public final void resumeRequest()
 	{
 	}
 	
+	@Api
 	public static String getAppProperty(String __name, String __vend,
 		String __attrname, String __attrdelim)
 		throws NullPointerException

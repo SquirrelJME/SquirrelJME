@@ -3,13 +3,14 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.runtime.cldc.util;
 
 import java.util.AbstractList;
+import java.util.List;
 import java.util.RandomAccess;
 
 /**
@@ -130,6 +131,18 @@ public class FloatArrayList
 	public int size()
 	{
 		return this.size;
+	}
+	
+	/**
+	 * Returns the boxed list type of the given primitive array.
+	 * 
+	 * @param __array The array to wrap.
+	 * @return The boxed list type.
+	 * @since 2023/05/29
+	 */
+	public static List<Float> asList(float... __array)
+	{
+		return new FloatArrayList(__array);
 	}
 }
 

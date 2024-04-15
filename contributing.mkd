@@ -107,7 +107,7 @@ from these projects cannot be used.
 	You grant Stephanie Gawroriski an irrevocable license that:
     
 	 1. That you own the contributing work.
-	 2. Grants a patent license, as per the GNU GPLv3.
+	 2. Grants a patent license, as per the Mozilla Public License 2.0.
 	 3. Granting Stephanie Gawroriski permission to redistribute, sell, lease,
 	    modify, transform, translate, and relicense the specified works. This
 	    is to simplify the licensing of the project and permit it to be

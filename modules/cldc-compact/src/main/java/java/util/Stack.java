@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -20,29 +21,35 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2019/05/08
  */
+@Api
 public class Stack<E>
 	extends Vector<E>
 {
+	@Api
 	public boolean empty()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public E peek()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public E pop()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public E push(E __item)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int search(Object __o)
 	{
 		throw Debugging.todo();

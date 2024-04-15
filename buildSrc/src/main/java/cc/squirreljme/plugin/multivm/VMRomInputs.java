@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -23,34 +24,29 @@ import java.util.concurrent.Callable;
 public class VMRomInputs
 	implements Callable<Iterable<Path>>
 {
-	/** The source set used. */
-	protected final String sourceSet;
-	
 	/** The task to generate for. */
 	protected final VMRomTask task;
 	
-	/** The type of virtual machine used. */
-	protected final VMSpecifier vmType;
+	/** The classifier used. */
+	protected final SourceTargetClassifier classifier;
 	
 	/**
 	 * Initializes the handler.
 	 * 
 	 * @param __task The task to create for.
-	 * @param __sourceSet The source set to use.
-	 * @param __vmType The virtual machine type.
+	 * @param __classifier The classifier used.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/23
 	 */
 	public VMRomInputs(VMRomTask __task,
-		String __sourceSet, VMSpecifier __vmType)
+		SourceTargetClassifier __classifier)
 		throws NullPointerException
 	{
-		if (__task == null || __sourceSet == null || __vmType == null)
+		if (__task == null || __classifier == null)
 			throw new NullPointerException("NARG");
 		
 		this.task = __task;
-		this.sourceSet = __sourceSet;
-		this.vmType = __vmType;
+		this.classifier = __classifier;
 	}
 	
 	/**
@@ -63,7 +59,7 @@ public class VMRomInputs
 		// All the inputs for the ROM are the outputs of all the library tasks
 		Collection<Path> rv = new LinkedHashSet<>();
 		for (VMLibraryTask task : VMRomDependencies.libraries(this.task,
-			this.sourceSet, this.vmType))
+			this.classifier))
 			for (File f : task.getOutputs().getFiles().getFiles())
 				rv.add(f.toPath());
 		

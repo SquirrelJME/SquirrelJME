@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.manifest.JavaManifest;
 import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.VMType;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,6 +30,7 @@ import org.junit.Test;
  *
  * @since 2018/10/06
  */
+@SquirrelJMEVendorApi
 abstract class __CoreTest__
 	implements TestInterface
 {
@@ -50,6 +52,7 @@ abstract class __CoreTest__
 	 * @since 2018/10/06
 	 */
 	@Test
+	@SquirrelJMEVendorApi
 	abstract Object __runTest(Object... __args)
 		throws Throwable;
 	
@@ -106,12 +109,13 @@ abstract class __CoreTest__
 					case "javase":		vmType = VMType.JAVA_SE; break;
 					case "springcoat":	vmType = VMType.SPRINGCOAT; break;
 					case "summercoat":	vmType = VMType.SUMMERCOAT; break;
+					case "nanocoat":	vmType = VMType.NANOCOAT; break;
 					case "anycoat":		vmType = __CoreTest__._ANYCOAT; break;
 				}
 			
-			// {@squirreljme.error BU0k Test is only valid on
-			// AnyCoat (such as SpringCoat/SummerCoat).
-			// (The requested VM type; The system VM type)}
+			/* {@squirreljme.error BU0k Test is only valid on
+			AnyCoat (such as SpringCoat/SummerCoat).
+			(The requested VM type; The system VM type)} */
 			int systemVmType = RuntimeShelf.vmType();
 			if (vmType == __CoreTest__._ANYCOAT &&
 				systemVmType != VMType.SPRINGCOAT &&
@@ -119,8 +123,8 @@ abstract class __CoreTest__
 				throw new UntestableException("BU0k " + vmType + " " +
 					systemVmType);
 			
-			// {@squirreljme.error BU0j Test cannot run on a different VM.
-			// (The requested VM type; The system VM type)}
+			/* {@squirreljme.error BU0j Test cannot run on a different VM.
+			(The requested VM type; The system VM type)} */
 			else if (vmType >= 0 && vmType != systemVmType)
 				throw new UntestableException("BU0j " + vmType + " " +
 					systemVmType);
@@ -337,7 +341,8 @@ abstract class __CoreTest__
 		
 		// Determine the base name which is used for resources
 		int ld = classname.lastIndexOf('.');
-		String basename = (ld < 0 ? classname : classname.substring(ld + 1));
+		String basename = (ld < 0 ? classname :
+			classname.substring(ld + 1));
 		
 		// The system property prefix is just the class name but lowercased
 		String sysprefix = classname.toLowerCase();

@@ -3,17 +3,20 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.net;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This is thrown when there is no route to the remote destination.
  *
  * @since 2018/12/08
  */
+@Api
 public class NoRouteToHostException
 	extends SocketException
 {
@@ -22,6 +25,7 @@ public class NoRouteToHostException
 	 *
 	 * @since 2018/12/08
 	 */
+	@Api
 	public NoRouteToHostException()
 	{
 	}
@@ -32,6 +36,7 @@ public class NoRouteToHostException
 	 * @param __m The message.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public NoRouteToHostException(String __m)
 	{
 		super(__m);

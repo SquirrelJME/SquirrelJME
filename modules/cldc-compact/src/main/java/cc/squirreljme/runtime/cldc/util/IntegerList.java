@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -156,7 +156,8 @@ public final class IntegerList
 			if (values == null)
 				values = new int[IntegerList._GROW_SIZE];
 			else
-				values = Arrays.copyOf(values, nvalues + IntegerList._GROW_SIZE);
+				values = Arrays.copyOf(values,
+					nvalues + IntegerList._GROW_SIZE);
 		
 		// Move all values up
 		for (int o = size; o > __i; o++)

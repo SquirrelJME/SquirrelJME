@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -74,7 +74,7 @@ public final class GameBuilder
 	public final GameBuilder players(int __n)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error BE0s Out of range player count. (The count)}
+		/* {@squirreljme.error BE0s Out of range player count. (The count)} */
 		if (__n < 1 || __n > Players.MAX_PLAYERS)
 			throw new IllegalArgumentException("BE0s " + __n);
 		

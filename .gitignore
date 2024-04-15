@@ -3,8 +3,12 @@
 buildSrc/.gradle/
 build/
 */build/
+sdk/build
 out/
 */out/
+build/squirreljme/vm-test-*-debug/squirreljme-test.zip
+build/squirreljme/vm-testFixtures-*-debug/squirreljme-testFixtures.zip
+previous-compilation-data.bin
 
 # VSCode Files
 *~
@@ -38,6 +42,16 @@ ratufacoat/.idea/modules/
 ratufacoat/.idea/shelf/
 ratufacoat/libretro-log.txt
 file-*
+nanocoat/rom/NanoCoatDebug
+nanocoat/rom/NanoCoatRelease
+nanocoat/rom/main_debug
+nanocoat/rom/testFixtures_debug
+nanocoat/rom/test_debug
+nanocoat/rom/main_release
+nanocoat/rom/testFixtures_release
+nanocoat/rom/test_release
+emulators/emulator-base/cmake-build-*
+*.jar
 
 # IntelliJ Dependency Matrix
 emulators/*/out/production/
@@ -74,6 +88,8 @@ CTestTestfile.cmake
 CMakeCache.txt
 ratufacoat/cmake-build-release
 ratufacoat/cmake-build-debug
+ratufacoat/cmake-build-*
+ratufacoat/venv
 ratufacoat/src/Debug
 ratufacoat/src/Release
 ratufacoat/src/SquirrelJME.dir
@@ -95,28 +111,8 @@ cmake-build-debug
 # Fossil files
 _FOSSIL_
 .fslckout
-ci-comment-*.txtout-*1*
 ci-comment-*.txt
 ci-comment-*.txt.save
-out-*2*
-out-*3*
-out-*4*
-out-*5*
-out-*6*
-out-*7*
-out-*8*
-out-*9*
-out-*0*
-in-*1*
-in-*2*
-in-*3*
-in-*4*
-in-*5*
-in-*6*
-in-*7*
-in-*8*
-in-*9*
-in-*0*
 in-*0
 in-*1
 in-*2

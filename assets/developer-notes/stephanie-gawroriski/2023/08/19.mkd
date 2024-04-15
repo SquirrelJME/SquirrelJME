@@ -1,0 +1,7 @@
+# 2023/08/19
+
+## 21:46
+
+I had an idea for tests where I might want to output files for manual testing, so I
+should define a spot where those files can go accordingly. Naturally cleaned and
+otherwise for Gradle.

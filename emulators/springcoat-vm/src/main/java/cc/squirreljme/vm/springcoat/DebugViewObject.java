@@ -3,15 +3,15 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.jdwp.JDWPState;
-import cc.squirreljme.jdwp.JDWPValue;
-import cc.squirreljme.jdwp.views.JDWPViewObject;
+import cc.squirreljme.jdwp.host.JDWPHostState;
+import cc.squirreljme.jdwp.host.JDWPHostValue;
+import cc.squirreljme.jdwp.host.views.JDWPViewObject;
 import java.lang.ref.Reference;
 
 /**
@@ -23,7 +23,7 @@ public class DebugViewObject
 	implements JDWPViewObject
 {
 	/** The state of the debugger. */
-	protected final Reference<JDWPState> state;
+	protected final Reference<JDWPHostState> state;
 	
 	/**
 	 * Initializes the object viewer.
@@ -32,7 +32,7 @@ public class DebugViewObject
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/04/10
 	 */
-	public DebugViewObject(Reference<JDWPState> __state)
+	public DebugViewObject(Reference<JDWPHostState> __state)
 		throws NullPointerException
 	{
 		if (__state == null)
@@ -65,10 +65,20 @@ public class DebugViewObject
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2022/09/21
+	 */
+	@Override
+	public boolean isNullObject(Object __value)
+	{
+		return (__value == null || __value == SpringNullObject.NULL);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2021/04/11
 	 */
 	@Override
-	public boolean readArray(Object __which, int __index, JDWPValue __out)
+	public boolean readArray(Object __which, int __index, JDWPHostValue __out)
 	{
 		__out.set(DebugViewObject.__normalizeNull(
 			((SpringArrayObject)__which).get(Object.class, __index)));
@@ -80,7 +90,7 @@ public class DebugViewObject
 	 * @since 2021/04/10
 	 */
 	@Override
-	public boolean readValue(Object __which, int __index, JDWPValue __out)
+	public boolean readValue(Object __which, int __index, JDWPHostValue __out)
 	{
 		// Nulls never have a value
 		if (__which == SpringNullObject.NULL)

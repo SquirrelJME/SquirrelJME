@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 
 /**
@@ -16,6 +17,7 @@ import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
  *
  * @since 2019/01/20
  */
+@Api
 public class EventObject
 {
 	/** The source of the event. */
@@ -28,6 +30,7 @@ public class EventObject
 	 * @throws IllegalArgumentException If no source was specified.
 	 * @since 2019/01/20
 	 */
+	@Api
 	@ImplementationNote("Throwing IllegalArgumentException is intended.")
 	public EventObject(Object __s)
 		throws IllegalArgumentException
@@ -44,6 +47,7 @@ public class EventObject
 	 * @return The source object.
 	 * @since 2019/01/20
 	 */
+	@Api
 	public Object getSource()
 	{
 		return this._source;

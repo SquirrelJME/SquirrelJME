@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -17,13 +17,6 @@ import org.gradle.api.Task;
  * @since 2020/08/15
  */
 public interface VMExecutableTask
-	extends Task
+	extends VMBaseTask
 {
-	/**
-	 * Returns the source set that is used.
-	 * 
-	 * @return The source set for the task.
-	 * @since 2020/08/21
-	 */
-	String getSourceSet();
 }

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -17,10 +17,13 @@ import cc.squirreljme.jvm.mle.brackets.PipeBracket;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.constants.VMType;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.io.ConsoleOutputStream;
 import cc.squirreljme.runtime.cldc.io.NonClosedOutputStream;
 import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
 import java.io.PrintStream;
+import org.intellij.lang.annotations.PrintFormat;
+import org.jetbrains.annotations.Contract;
 
 /**
  * This class contains all of the static methods which are for writing debug
@@ -32,8 +35,15 @@ import java.io.PrintStream;
  *
  * @since 2020/03/21
  */
+@SquirrelJMEVendorApi
 public final class Debugging
 {
+	/** Is debugging enabled? */
+	@SuppressWarnings({"noinspection", "ConstantValue", "UnnecessaryUnboxing",
+		"unused"})
+	public static boolean ENABLED =
+		Boolean.valueOf(true).booleanValue();
+	
 	/** Only bytes up to this value are permitted in the output. */
 	private static final int _BYTE_LIMIT =
 		0x7E;
@@ -61,7 +71,8 @@ public final class Debugging
 	 * @param __fmt The format.
 	 * @since 2020/05/13
 	 */
-	public static void debugNote(String __fmt)
+	@SquirrelJMEVendorApi
+	public static void debugNote(@PrintFormat String __fmt)
 	{
 		Debugging.__format('D', 'B', __fmt, (Object[])null);
 	}
@@ -73,9 +84,22 @@ public final class Debugging
 	 * @param __args The arguments to the string.
 	 * @since 2020/03/27
 	 */
-	public static void debugNote(String __fmt, Object... __args)
+	@SquirrelJMEVendorApi
+	public static void debugNote(@PrintFormat String __fmt, Object... __args)
 	{
 		Debugging.__format('D', 'B', __fmt, __args);
+	}
+	
+	/**
+	 * Emits a notice
+	 *
+	 * @param __fmt The format.
+	 * @since 2023/02/10
+	 */
+	@SquirrelJMEVendorApi
+	public static void notice(@PrintFormat String __fmt)
+	{
+		Debugging.__format('\0', '\0', __fmt, (Object[])null);
 	}
 	
 	/**
@@ -85,7 +109,8 @@ public final class Debugging
 	 * @param __args The arguments to the string.
 	 * @since 2021/01/18
 	 */
-	public static void notice(String __fmt, Object... __args)
+	@SquirrelJMEVendorApi
+	public static void notice(@PrintFormat String __fmt, Object... __args)
 	{
 		Debugging.__format('\0', '\0', __fmt, __args);
 	}
@@ -96,6 +121,7 @@ public final class Debugging
 	 * @return The generated error.
 	 * @since 2020/12/31
 	 */
+	@SquirrelJMEVendorApi
 	public static Error oops()
 	{
 		return Debugging.todo();
@@ -108,6 +134,8 @@ public final class Debugging
 	 * @return The generated error.
 	 * @since 2020/03/22
 	 */
+	@SquirrelJMEVendorApi
+	@Contract("_ -> fail")
 	public static Error oops(Object... __args)
 	{
 		return Debugging.todo(__args);
@@ -169,6 +197,7 @@ public final class Debugging
 	 * @return The generated error.
 	 * @since 2020/03/21
 	 */
+	@SquirrelJMEVendorApi
 	public static Error todo()
 	{
 		return Debugging.todo((Object[])null);
@@ -181,7 +210,10 @@ public final class Debugging
 	 * @return The generated error.
 	 * @since 2020/03/21
 	 */
-	@SuppressWarnings("StaticVariableUsedBeforeInitialization")
+	@SquirrelJMEVendorApi
+	@SuppressWarnings({"StaticVariableUsedBeforeInitialization", 
+		"squirreljme_thrownErrorToDo"})
+	@Contract("_ -> fail")
 	public static Error todo(Object... __args)
 	{
 		// Only trip this once! In the event this trips twice, just shortcut
@@ -207,11 +239,12 @@ public final class Debugging
 				"*****************************************");
 			Debugging.todoNote("INCOMPLETE CODE HAS BEEN REACHED: ");
 			
-			// If running on Java SE use it's method of printing traces
+			// If running on Java SE use its method of printing traces
 			// because the SquirrelJME trace support may be missing
 			if (RuntimeShelf.vmType() == VMType.JAVA_SE)
 			{
-				new Throwable("INCOMPLETE CODE").printStackTrace(System.err);
+				new Throwable("INCOMPLETE CODE")
+					.printStackTrace(System.err);
 			}
 			
 			// Use SquirrelJME's method
@@ -312,6 +345,9 @@ public final class Debugging
 		// exception is thrown
 		finally
 		{
+			// Try to emit a breakpoint
+			DebugShelf.breakpoint();
+			
 			// Just exit directly so there is no way to continue, if we can
 			try
 			{
@@ -333,7 +369,8 @@ public final class Debugging
 	 * @param __fmt Format string.
 	 * @since 2020/05/13
 	 */
-	public static void todoNote(String __fmt)
+	@SquirrelJMEVendorApi
+	public static void todoNote(@PrintFormat String __fmt)
 	{
 		Debugging.__format('T', 'D', __fmt, (Object[])null);
 	}
@@ -345,7 +382,8 @@ public final class Debugging
 	 * @param __args Arguments.
 	 * @since 2020/03/31
 	 */
-	public static void todoNote(String __fmt, Object... __args)
+	@SquirrelJMEVendorApi
+	public static void todoNote(@PrintFormat String __fmt, Object... __args)
 	{
 		Debugging.__format('T', 'D', __fmt, __args);
 	}
@@ -358,6 +396,7 @@ public final class Debugging
 	 * @return Never returns.
 	 * @since 2020/04/09
 	 */
+	@SquirrelJMEVendorApi
 	public static <T> T todoObject(Object... __args)
 	{
 		throw Debugging.todo(__args);

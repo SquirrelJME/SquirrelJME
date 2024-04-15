@@ -1,10 +1,24 @@
 # Gradle building
 .gradle/
 buildSrc/.gradle/
-build/
-*/build/
-out/
-*/out/
+buildSrc/build
+buildSrc/out
+emulators/[^/]*/build
+modules/[^/]*/build
+tools/[^/]*/build
+sdk/build
+modules/*/build/classes
+modules/*/build/generated
+modules/*/build/libs
+modules/*/build/resources
+modules/*/build/squirreljme
+modules/*/build/tmp
+build/squirreljme/vm-main-*/squirreljme.zip
+build/squirreljme/vm-test-*/squirreljme.zip
+build/squirreljme/vm-test-*-debug/squirreljme-test.zip
+build/squirreljme/vm-testFixtures-*-debug/squirreljme-testFixtures.zip
+previous-compilation-data.bin
+*/previous-compilation-data.bin
 
 # VSCode Files
 *~
@@ -67,13 +81,32 @@ modules/*/out/test/
 
 # VisualVM files
 java_pid*.hprof
+*.nps
+
+# Flatpak
+.flatpak-builder/
+build-dir/
 
 # CMake
 CMakeFiles
 CTestTestfile.cmake
 CMakeCache.txt
+nanocoat/cc/cmake-build-debug
+ratufacoat/cmake-build-release
+ratufacoat/cmake-build-release
+nanocoat/cmake-build-release
+nanocoat/cmake-build-debug
+nanocoat/cmake-build-*
+nanocoat/cc/cmake-build-release
+nanocoat/cc/cmake-build-debug
+nanocoat/cc/cmake-build-*
+emulators/emulator-base-native/cmake-build-release
+emulators/emulator-base-native/cmake-build-debug
+emulators/emulator-base-native/cmake-build-*
 ratufacoat/cmake-build-release
 ratufacoat/cmake-build-debug
+ratufacoat/cmake-build-*
+ratufacoat/venv
 ratufacoat/src/Debug
 ratufacoat/src/Release
 ratufacoat/src/SquirrelJME.dir
@@ -84,48 +117,39 @@ ratufacoat/Testing
 ratufacoat/Makefile
 ratufacoat/libretro-log.txt
 ratufacoat/file-*
+emulators/emulator-base-native/cmake-build-release
+emulators/emulator-base-native/cmake-build-debug
+emulators/emulator-base-native/cmake-build-*
 cmake_install.cmake
 *.o
 *.dll
 *.exe
 *.dylib
 cmake-build-debug
+nanocoat/cmake-build-debug
+nanocoat/cmake/utils/decode
+nanocoat/cmake/utils/decode.exe
+nanocoat/cmake/utils/simple
+nanocoat/cmake/utils/simple.exe
 *.tmp
+nanocoat/rom/NanoCoatDebug
+nanocoat/rom/NanoCoatRelease
+nanocoat/rom/main_debug
+nanocoat/rom/testFixtures_debug
+nanocoat/rom/test_debug
+nanocoat/rom/main_release
+nanocoat/rom/testFixtures_release
+nanocoat/rom/test_release
+nanocoat/rom/shared
+nanocoat/rom/specific
+nanocoat/cmake-build-*
+emulators/emulator-base/cmake-build-*
+*.jar
 
 # Fossil files
 _FOSSIL_
 .fslckout
 ci-comment-*.txt
 ci-comment-*.txt.save
-in-*0
-in-*1
-in-*2
-in-*3
-in-*4
-in-*5
-in-*6
-in-*7
-in-*8
-in-*9
-in-*A
-in-*B
-in-*C
-in-*D
-in-*E
-in-*F
-out-*0
-out-*1
-out-*2
-out-*3
-out-*4
-out-*5
-out-*6
-out-*7
-out-*8
-out-*9
-out-*A
-out-*B
-out-*C
-out-*D
-out-*E
-out-*F
+in-[A-F0-9]*
+out-[A-F0-9]*

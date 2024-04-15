@@ -3,13 +3,14 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.runtime.midlet;
 
 import cc.squirreljme.jvm.mle.ThreadShelf;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.midlet.MIDlet;
 
@@ -20,6 +21,7 @@ import javax.microedition.midlet.MIDlet;
  * @see ApplicationInterface
  * @since 2021/11/30
  */
+@SquirrelJMEVendorApi
 public final class ApplicationHandler
 {
 	/** Undefined application name. */
@@ -52,6 +54,7 @@ public final class ApplicationHandler
 	 * @return The current application interface.
 	 * @since 2022/02/14
 	 */
+	@SquirrelJMEVendorApi
 	public static ApplicationInterface<?> currentInterface()
 	{
 		return ApplicationHandler._CURRENT_INTERFACE;
@@ -63,6 +66,7 @@ public final class ApplicationHandler
 	 * @return The current application instance.
 	 * @since 2022/02/14
 	 */
+	@SquirrelJMEVendorApi
 	public static Object currentInstance()
 	{
 		return ApplicationHandler._CURRENT_INSTANCE;
@@ -74,6 +78,7 @@ public final class ApplicationHandler
 	 * @return The current name.
 	 * @since 2019/04/14
 	 */
+	@SquirrelJMEVendorApi
 	public static String currentName()
 	{
 		String rv;
@@ -113,6 +118,7 @@ public final class ApplicationHandler
 	 * @return The current vendor.
 	 * @since 2019/04/14
 	 */
+	@SquirrelJMEVendorApi
 	public static String currentVendor()
 	{
 		String rv;
@@ -155,6 +161,7 @@ public final class ApplicationHandler
 	 * @throws Throwable On any exception.
 	 * @since 2021/11/30
 	 */
+	@SquirrelJMEVendorApi
 	public static <T> void main(ApplicationInterface<T> __ai)
 		throws NullPointerException, Throwable
 	{
@@ -260,6 +267,7 @@ public final class ApplicationHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/12/02
 	 */
+	@SquirrelJMEVendorApi
 	public static void setNameAndVendor(String __name, String __vend)
 		throws NullPointerException
 	{

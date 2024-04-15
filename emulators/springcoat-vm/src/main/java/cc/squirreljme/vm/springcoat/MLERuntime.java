@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -18,6 +18,7 @@ import cc.squirreljme.jvm.mle.constants.PhoneModelType;
 import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
 import cc.squirreljme.jvm.mle.constants.VMStatisticType;
 import cc.squirreljme.jvm.mle.constants.VMType;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 
@@ -194,6 +195,27 @@ public enum MLERuntime
 		}
 	},
 	
+	/** {@link RuntimeShelf#systemEnv(String)}. */
+	SYSTEM_ENV("systemEnv:(Ljava/lang/String;)" +
+		"Ljava/lang/String;")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/02/02
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			String key = __thread
+				.<String>asNativeObject(String.class, __args[0]);
+			
+			if (key == null)
+				throw new SpringMLECallError("Null key.");
+			
+			return __thread.asVMObject(RuntimeShelf.systemEnv(key));
+		}
+	},
+	
 	/** {@link RuntimeShelf#systemProperty(String)}. */
 	SYSTEM_PROPERTY("systemProperty:(Ljava/lang/String;)" +
 		"Ljava/lang/String;")
@@ -279,19 +301,15 @@ public enum MLERuntime
 				throw new SpringMLECallError(
 					"Index out of range: " + index);
 			
-			switch (index)
+			// Forward to normal call
+			try
 			{
-				case VMStatisticType.MEM_FREE:
-					return Runtime.getRuntime().freeMemory();
-					
-				case VMStatisticType.MEM_MAX:
-					return Runtime.getRuntime().maxMemory();
-				
-				case VMStatisticType.MEM_USED:
-					return Runtime.getRuntime().totalMemory();
+				return RuntimeShelf.vmStatistic(index);
 			}
-			
-			return 0L;
+			catch (MLECallError e)
+			{
+				throw new SpringMLECallError(e.getMessage(), e);
+			}
 		}
 	},
 	

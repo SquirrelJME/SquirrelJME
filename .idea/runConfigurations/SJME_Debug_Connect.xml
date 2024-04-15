@@ -1,0 +1,12 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="SJME Debug Connect" type="Application" factoryName="Application" activateToolWindowBeforeRun="false" singleton="false">
+    <option name="ALTERNATIVE_JRE_PATH" value="BUNDLED" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+    <option name="MAIN_CLASS_NAME" value="cc.squirreljme.debugger.Main" />
+    <module name="squirreljme.tools.squirreljme-debugger.main" />
+    <option name="PROGRAM_PARAMETERS" value="localhost:5005" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

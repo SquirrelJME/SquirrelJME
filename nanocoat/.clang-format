@@ -1,0 +1,85 @@
+# ---------------------------------------------------------------------------
+# SquirrelJME
+#     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+# ---------------------------------------------------------------------------
+# SquirrelJME is under the Mozilla Public License Version 2.0.
+# See license.mkd for licensing and copyright information.
+# ---------------------------------------------------------------------------
+BasedOnStyle: LLVM
+AccessModifierOffset: -4
+AlignAfterOpenBracket: DontAlign
+AlignConsecutiveAssignments: None
+AlignOperands: false
+AllowAllArgumentsOnNextLine: false
+AllowAllConstructorInitializersOnNextLine: false
+AllowAllParametersOfDeclarationOnNextLine: false
+AllowShortBlocksOnASingleLine: Never
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLambdasOnASingleLine: None
+AllowShortLoopsOnASingleLine: false
+AlwaysBreakAfterReturnType: None
+AlwaysBreakTemplateDeclarations: Yes
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterCaseLabel: false
+  AfterClass: true
+  AfterControlStatement: Always
+  AfterEnum: true
+  AfterFunction: true
+  AfterNamespace: true
+  AfterUnion: true
+  AfterStruct: true
+  BeforeCatch: false
+  BeforeElse: true
+  IndentBraces: false
+  SplitEmptyFunction: true
+  SplitEmptyRecord: true
+BreakBeforeBinaryOperators: None
+BreakBeforeTernaryOperators: false
+BreakConstructorInitializers: AfterColon
+BreakInheritanceList: AfterComma
+ColumnLimit: 79
+CompactNamespaces: false
+ContinuationIndentWidth: 4
+IndentCaseLabels: true
+IndentPPDirectives: BeforeHash
+IndentWidth: 4
+KeepEmptyLinesAtTheStartOfBlocks: true
+MaxEmptyLinesToKeep: 2
+NamespaceIndentation: All
+ObjCSpaceAfterProperty: false
+ObjCSpaceBeforeProtocolList: true
+PointerAlignment: Left
+ReflowComments: false
+SpaceAfterCStyleCast: false
+SpaceAfterLogicalNot: false
+SpaceAfterTemplateKeyword: false
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeCpp11BracedList: false
+SpaceBeforeCtorInitializerColon: true
+SpaceBeforeInheritanceColon: true
+SpaceBeforeParens: ControlStatements
+SpaceBeforeRangeBasedForLoopColon: true
+SpaceInEmptyParentheses: false
+SpacesBeforeTrailingComments: 0
+SpacesInAngles: false
+SpacesInCStyleCastParentheses: false
+SpacesInContainerLiterals: false
+SpacesInParentheses: false
+SpacesInSquareBrackets: false
+TabWidth: 4
+UseTab: ForContinuationAndIndentation
+AlignConsecutiveMacros: None
+IndentGotoLabels: false
+IndentWrappedFunctionNames: false
+ReferenceAlignment: Left
+SortIncludes: CaseSensitive
+AlwaysBreakBeforeMultilineStrings: false
+BinPackParameters: true
+BitFieldColonSpacing: Both
+
+# Macro workarounds
+StatementAttributeLikeMacros: ['SJME_DEPRECATED']
+StatementMacros: ['SJME_REFPTR_CODE_BEGIN', 'SJME_REFPTR_CODE_END', 'SJME_REFPTR_VAR']

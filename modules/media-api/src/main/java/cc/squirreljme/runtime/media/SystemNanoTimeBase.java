@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.runtime.media;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import javax.microedition.media.TimeBase;
 
 /**
@@ -16,6 +17,7 @@ import javax.microedition.media.TimeBase;
  *
  * @since 2019/04/15
  */
+@SquirrelJMEVendorApi
 public final class SystemNanoTimeBase
 	implements TimeBase
 {
@@ -24,6 +26,7 @@ public final class SystemNanoTimeBase
 	 * @since 2019/04/15
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final long getTime()
 	{
 		// Measured in microseconds

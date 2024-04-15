@@ -3,13 +3,15 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.emulator.vm;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -63,6 +65,26 @@ public final class ArraySuiteManager
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2023/12/18
+	 */
+	@Override
+	public int libraryId(VMClassLibrary __lib)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__lib == null)
+			throw new NullPointerException("NARG");
+		
+		// Map libraries to linear IDs
+		VMClassLibrary[] libraries = this._libraries;
+		for (int i = 0, n = libraries.length; i < n; i++)
+			if (libraries[i] == __lib)
+				return 1 + i;
+		
+		throw new IllegalArgumentException("Unknown library: " + __lib);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2020/02/29
 	 */
 	@Override
@@ -90,8 +112,14 @@ public final class ArraySuiteManager
 			throw new NullPointerException("NARG");
 		
 		for (VMClassLibrary lib : this._libraries)
-			if (__s.equals(lib.name()))
+		{
+			// There may be a path
+			Path path = lib.path();
+			
+			if (__s.equals(lib.name()) ||
+				(path != null && __s.equals(path.toString())))
 				return lib;
+		}
 		
 		return null;
 	}

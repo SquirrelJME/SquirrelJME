@@ -1,0 +1,8 @@
+# 2023/12/03
+
+## 11:39
+
+I have determined that for the emulator based system for SquirrelJME that I can
+actually use NanoCoat via JNI so I can run it directly using the system that
+SpringCoat uses. I think that would be very beneficial for usage and otherwise, would
+make testing easier and quicker.

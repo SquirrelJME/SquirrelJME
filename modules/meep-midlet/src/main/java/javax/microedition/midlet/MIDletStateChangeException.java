@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package javax.microedition.midlet;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 
 /**
@@ -17,6 +18,7 @@ import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
  *
  * @since 2019/09/25
  */
+@Api
 @ApiDefinedDeprecated
 public class MIDletStateChangeException
 	extends Exception
@@ -26,6 +28,7 @@ public class MIDletStateChangeException
 	 *
 	 * @since 2019/09/25
 	 */
+	@Api
 	@ApiDefinedDeprecated
 	public MIDletStateChangeException()
 	{
@@ -37,6 +40,7 @@ public class MIDletStateChangeException
 	 * @param __s The message to use.
 	 * @since 2019/09/25
 	 */
+	@Api
 	@ApiDefinedDeprecated
 	public MIDletStateChangeException(String __s)
 	{

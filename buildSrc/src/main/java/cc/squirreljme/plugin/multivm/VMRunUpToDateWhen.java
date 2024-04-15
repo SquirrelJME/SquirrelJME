@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -28,28 +29,23 @@ import org.gradle.api.specs.Spec;
 public class VMRunUpToDateWhen
 	implements Spec<Task>
 {
-	/** The source set working under. */
-	protected final String sourceSet;
-	
-	/** The virtual machine type. */
-	protected final VMSpecifier vmType;
+	/** The classifier used. */
+	protected final SourceTargetClassifier classifier;
 	
 	/**
 	 * Initializes the handler.
 	 * 
-	 * @param __sourceSet The source set.
-	 * @param __vmType The virtual machine this is created for.
+	 * @param __classifier The classifier used.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/02/23
 	 */
-	public VMRunUpToDateWhen(String __sourceSet, VMSpecifier __vmType)
+	public VMRunUpToDateWhen(SourceTargetClassifier __classifier)
 		throws NullPointerException
 	{
-		if (__sourceSet == null || __vmType == null)
+		if (__classifier == null)
 			throw new NullPointerException("NARG");
 		
-		this.sourceSet = __sourceSet;
-		this.vmType = __vmType;
+		this.classifier = __classifier;
 	}
 	
 	/**
@@ -65,8 +61,8 @@ public class VMRunUpToDateWhen
 			taskOuts.add(Instant.ofEpochMilli(f.lastModified()));
 		
 		// Determine if any of our parent dependencies were out of date
-		for (Path dep : VMHelpers.runClassPath(__task, this.sourceSet,
-			this.vmType, true))
+		for (Path dep : VMHelpers.runClassPath(__task, this.classifier,
+			true))
 		{
 			Instant fileTime;
 			try

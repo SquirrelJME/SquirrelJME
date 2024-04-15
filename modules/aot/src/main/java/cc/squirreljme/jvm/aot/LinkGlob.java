@@ -3,14 +3,17 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.jvm.aot;
 
+import cc.squirreljme.jvm.manifest.JavaManifest;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * Base interface which describes a glob of linked binary.
@@ -18,6 +21,7 @@ import java.io.InputStream;
  * @since 2020/11/22
  */
 public interface LinkGlob
+	extends Closeable
 {
 	/**
 	 * Indicates that compilation is complete and the final binary should
@@ -28,17 +32,29 @@ public interface LinkGlob
 	 */
 	void finish()
 		throws IOException;
-		
+	
 	/**
-	 * Joins this into the linking structure.
+	 * Indicates that the compilation step is soon to start.
 	 * 
-	 * @param __name The name of the object to link.
-	 * @param __isRc Is this a resource and not an executable?
-	 * @param __data The data to link in.
 	 * @throws IOException On read/write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2020/11/22
+	 * @since 2023/05/28
 	 */
-	void join(String __name, boolean __isRc, InputStream __data)
-		throws IOException, NullPointerException;
+	void initialize()
+		throws IOException;
+	
+	/**
+	 * Potentially remembers the main manifest, if this is important.
+	 *
+	 * @param __manifest The manifest to remember.
+	 * @since 2023/07/25
+	 */
+	void rememberManifest(JavaManifest __manifest);
+	
+	/**
+	 * Remembers the lists of tests.
+	 *
+	 * @param __tests The list of tests.
+	 * @since 2023/07/25
+	 */
+	void rememberTests(List<String> __tests);
 }

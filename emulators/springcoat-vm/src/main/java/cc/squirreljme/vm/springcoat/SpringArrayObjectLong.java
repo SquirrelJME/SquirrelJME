@@ -3,15 +3,17 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.runtime.cldc.debug.ErrorCode;
 import cc.squirreljme.vm.springcoat.exceptions.SpringArrayIndexOutOfBoundsException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringArrayStoreException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNegativeArraySizeException;
+import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 
 /**
  * Array backed by a long array.
@@ -83,12 +85,12 @@ public final class SpringArrayObjectLong
 			return (C)Long.valueOf(this._elements[__dx]);
 		}
 		
-		// {@squirreljme.error BK0n Out of bounds access to array. (The index;
-		// The length of the array)}
+		/* {@squirreljme.error BK0n Out of bounds access to array. (The index;
+		The length of the array)} */
 		catch (IndexOutOfBoundsException e)
 		{
 			throw new SpringArrayIndexOutOfBoundsException(
-				String.format("BK0n %d %d", __dx, this.length), e);
+				__error__("BK0n %d %d", __dx, this.length), e);
 		}
 	}
 	
@@ -106,15 +108,15 @@ public final class SpringArrayObjectLong
 			this._elements[__dx] = ((Long)__v).longValue();
 		}
 		
-		// {@squirreljme.error BK0o Could not set the index in the long
-		// array.}
+		/* {@squirreljme.error BK0o Could not set the index in the long
+		array.} */
 		catch (ClassCastException e)
 		{
 			throw new SpringArrayStoreException("BK0o", e);
 		}
 		
-		// {@squirreljme.error BK0p Out of bounds access to array. (The index;
-		// The length of the array)}
+		/* {@squirreljme.error BK0p Out of bounds access to array. (The index;
+		The length of the array)} */
 		catch (IndexOutOfBoundsException e)
 		{
 			throw new SpringArrayIndexOutOfBoundsException(

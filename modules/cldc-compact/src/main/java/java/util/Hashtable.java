@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.IteratorToEnumeration;
@@ -21,6 +22,7 @@ import cc.squirreljme.runtime.cldc.util.SynchronizedEntrySetNotNull;
  *
  * @since 2019/05/05
  */
+@Api
 public class Hashtable<K, V>
 	implements Map<K, V>, Cloneable
 {
@@ -36,6 +38,7 @@ public class Hashtable<K, V>
 	 * load factor is not positive.
 	 * @since 2019/05/05
 	 */
+	@Api
 	public Hashtable(int __cap, float __load)
 	{
 		this._map = new __BucketMap__<K, V>(false, false, __cap, __load);
@@ -48,6 +51,7 @@ public class Hashtable<K, V>
 	 * @throws IllegalArgumentException If the capacity is negative.
 	 * @since 2019/05/05
 	 */
+	@Api
 	public Hashtable(int __cap)
 		throws IllegalArgumentException
 	{
@@ -59,6 +63,7 @@ public class Hashtable<K, V>
 	 *
 	 * @since 2019/05/05
 	 */
+	@Api
 	public Hashtable()
 	{
 		this._map = new __BucketMap__<K, V>(false);
@@ -75,6 +80,7 @@ public class Hashtable<K, V>
 	 * null keys or values.
 	 * @since 2018/10/07
 	 */
+	@Api
 	public Hashtable(Map<? extends K, ? extends V> __m)
 		throws NullPointerException
 	{
@@ -129,7 +135,7 @@ public class Hashtable<K, V>
 			// Oops
 			catch (IllegalAccessException|InstantiationException e)
 			{
-				// {@squirreljme.error ZZ2r Could not clone the hashtable.}
+				/* {@squirreljme.error ZZ2r Could not clone the hashtable.} */
 				throw new RuntimeException("ZZ2r", e);
 			}
 		}
@@ -184,6 +190,7 @@ public class Hashtable<K, V>
 	 * @return The enumerator over the elements.
 	 * @since 2019/05/05
 	 */
+	@Api
 	public Enumeration<V> elements()
 	{
 		synchronized (this)
@@ -282,6 +289,7 @@ public class Hashtable<K, V>
 	 * @return The key enumeration.
 	 * @since 2019/05/05
 	 */
+	@Api
 	public Enumeration<K> keys()
 	{
 		synchronized (this)
@@ -345,6 +353,7 @@ public class Hashtable<K, V>
 	 *
 	 * @since 2019/05/05
 	 */
+	@Api
 	@ImplementationNote("In SquirrelJME this has no actual effect because " +
 		"it is internally handled, however code might rely on overriding " +
 		"this method to determine when the map has been rehashed.")

@@ -3,11 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.lang;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This is thrown when an attempt is made to read from or write to an array
@@ -15,6 +17,7 @@ package java.lang;
  *
  * @since 2018/12/04
  */
+@Api
 public class ArrayIndexOutOfBoundsException
 	extends IndexOutOfBoundsException
 {
@@ -23,6 +26,7 @@ public class ArrayIndexOutOfBoundsException
 	 *
 	 * @since 2018/12/04
 	 */
+	@Api
 	public ArrayIndexOutOfBoundsException()
 	{
 	}
@@ -34,9 +38,10 @@ public class ArrayIndexOutOfBoundsException
 	 * @param __i The out of bounds index.
 	 * @since 2018/12/04
 	 */
+	@Api
 	public ArrayIndexOutOfBoundsException(int __i)
 	{
-		// {@squirreljme.error ZZ0r Array index out of bounds. (The index)}
+		/* {@squirreljme.error ZZ0r Array index out of bounds. (The index)} */
 		super("ZZ0r " + __i);
 	}
 	
@@ -46,6 +51,7 @@ public class ArrayIndexOutOfBoundsException
 	 * @param __m The exception message.
 	 * @since 2018/12/04
 	 */
+	@Api
 	public ArrayIndexOutOfBoundsException(String __m)
 	{
 		super(__m);

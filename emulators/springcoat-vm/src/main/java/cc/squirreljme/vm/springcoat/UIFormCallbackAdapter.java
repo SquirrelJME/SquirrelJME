@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -12,7 +12,6 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.UIFormObject;
 import cc.squirreljme.vm.springcoat.brackets.UIItemObject;
 import net.multiphasicapps.classfile.ClassName;
@@ -25,7 +24,7 @@ import net.multiphasicapps.classfile.MethodNameAndType;
  * @since 2020/09/13
  */
 public class UIFormCallbackAdapter
-	extends SpringCallbackAdapter
+	extends UIDrawableCallbackAdapter
 	implements UIFormCallback
 {
 	/** The callback class. */
@@ -49,55 +48,6 @@ public class UIFormCallbackAdapter
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2020/09/13
-	 */
-	@Override
-	public void eventKey(UIFormBracket __form, UIItemBracket __item,
-		int __event, int __keyCode, int __modifiers)
-	{
-		this.invokeCallback(
-			MethodNameAndType.ofArguments("eventKey", null,
-				"Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;",
-				"Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;",
-				"I", "I", "I"),
-			new UIFormObject(this.machine, __form), new UIItemObject(machine,
-				__item),
-			__event, __keyCode, __modifiers);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/09/13
-	 */
-	@Override
-	public void eventMouse(UIFormBracket __form, UIItemBracket __item,
-		int __event, int __button, int __x, int __y, int __modifiers)
-	{
-		this.invokeCallback(
-			MethodNameAndType.ofArguments("eventMouse", null,
-				"Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;",
-				"Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;",
-				"I", "I", "I", "I", "I"),
-			new UIFormObject(this.machine, __form), new UIItemObject(
-				this.machine, __item),
-			__event, __button, __x, __y, __modifiers);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/09/13
-	 */
-	@Override
-	public void exitRequest(UIFormBracket __form)
-	{
-		this.invokeCallback(
-			MethodNameAndType.ofArguments("exitRequest", null,
-			"Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;"),
-			new UIFormObject(this.machine, __form));
-	}
-	
-	/**
-	 * {@inheritDoc}
 	 * @since 2022/07/20
 	 */
 	@Override
@@ -109,27 +59,6 @@ public class UIFormCallbackAdapter
 			"Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;",
 				"I", "I", "I", "I"),
 			new UIFormObject(this.machine, __form), __sx, __sy, __sw, __sh);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/09/13
-	 */
-	@Override
-	public void paint(UIFormBracket __form, UIItemBracket __item, int __pf,
-		int __bw, int __bh, Object __buf, int __offset, int[] __pal, int __sx,
-		int __sy, int __sw, int __sh, int __special)
-	{
-		this.invokeCallback(
-			MethodNameAndType.ofArguments("paint", null,
-				"Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;",
-				"Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;",
-				"I", "I", "I", "Ljava/lang/Object;", "I", "[I",
-				"I", "I", "I", "I", "I"),
-			new UIFormObject(this.machine, __form), new UIItemObject(
-				this.machine, __item),
-			__pf, __bw, __bh, __buf, __offset, __pal, __sx, __sy, __sw, __sh,
-			__special);
 	}
 	
 	/**

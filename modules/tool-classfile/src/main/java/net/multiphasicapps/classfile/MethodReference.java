@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -68,6 +68,40 @@ public final class MethodReference
 		throws NullPointerException
 	{
 		this(new MethodHandle(__c, __i, __t), __int);
+	}
+	
+	/**
+	 * Initializes the method reference.
+	 *
+	 * @param __c The class the member resides in.
+	 * @param __i The name of the member.
+	 * @param __t The descriptor of the member.
+	 * @param __int Does this refer to an interface method?
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	public MethodReference(String __c, MethodName __i,
+		MethodDescriptor __t, boolean __int)
+		throws NullPointerException
+	{
+		this(new ClassName(__c), __i, __t, __int);
+	}
+	
+	/**
+	 * Initializes the method reference.
+	 *
+	 * @param __c The class the member resides in.
+	 * @param __i The name of the member.
+	 * @param __t The descriptor of the member.
+	 * @param __int Does this refer to an interface method?
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	public MethodReference(String __c, String __i,
+		MethodDescriptor __t, boolean __int)
+		throws NullPointerException
+	{
+		this(new ClassName(__c), new MethodName(__i), __t, __int);
 	}
 	
 	/**

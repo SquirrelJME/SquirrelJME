@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
 import cc.squirreljme.jvm.manifest.JavaManifestKey;
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import cc.squirreljme.runtime.cldc.util.SortedTreeSet;
@@ -41,6 +42,7 @@ import net.multiphasicapps.tool.manifest.writer.MutableJavaManifestAttributes;
  *
  * @since 2019/05/08
  */
+@SquirrelJMEVendorApi
 public final class TestResult
 {
 	/** Return value result. */
@@ -68,6 +70,7 @@ public final class TestResult
 	 * contains a null value.
 	 * @since 2019/05/09
 	 */
+	@SquirrelJMEVendorApi
 	public TestResult(String __rv, String __tv, Map<String, String> __sec)
 		throws NullPointerException
 	{
@@ -122,6 +125,7 @@ public final class TestResult
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/16
 	 */
+	@SquirrelJMEVendorApi
 	public final String getSecondaryRawValue(String __key)
 		throws NullPointerException
 	{
@@ -154,6 +158,7 @@ public final class TestResult
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/03/01
 	 */
+	@SquirrelJMEVendorApi
 	public final boolean isSatisfiedBy(TestResult __o)
 		throws NullPointerException
 	{
@@ -174,6 +179,7 @@ public final class TestResult
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/09
 	 */
+	@SquirrelJMEVendorApi
 	public final void printComparison(PrintStream __ps, TestResult __o)
 		throws NullPointerException
 	{
@@ -252,6 +258,7 @@ public final class TestResult
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/08
 	 */
+	@SquirrelJMEVendorApi
 	@SuppressWarnings({"FeatureEnvy", "resource"})
 	public final void writeAsManifest(OutputStream __os)
 		throws IOException, NullPointerException
@@ -287,6 +294,7 @@ public final class TestResult
 	 * @throws NullPointerException If no class was specified.
 	 * @since 2019/05/08
 	 */
+	@SquirrelJMEVendorApi
 	@SuppressWarnings("FeatureEnvy")
 	public static TestResult loadForClass(Class<?> __cl,
 		Map<String, String> __otherKeys, String __multiParam)
@@ -357,13 +365,14 @@ public final class TestResult
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/09 
 	 */
+	@SquirrelJMEVendorApi
 	public static List<String> throwableList(String __ts)
 		throws NullPointerException
 	{
 		if (__ts == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error BU07 Not a throwable.}
+		/* {@squirreljme.error BU07 Not a throwable.} */
 		if (!__ts.startsWith("throwable:"))
 			throw new IllegalArgumentException("BU07");
 		__ts = __ts.substring(10);
@@ -416,6 +425,7 @@ public final class TestResult
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/10/06
 	 */
+	@SquirrelJMEVendorApi
 	public static boolean valueEquals(String __act, String __exp)
 		throws InvalidTestParameterException, NullPointerException
 	{
@@ -498,6 +508,10 @@ public final class TestResult
 		{
 			String key = a.getKey();
 			
+			// Ignore values which have been dropped
+			if ("Drop".equals(__exp.get(key)))
+				continue;
+			
 			// Second is missing key
 			if (!__exp.containsKey(key))
 				return false;
@@ -509,9 +523,15 @@ public final class TestResult
 		
 		// Just scan through the keys in the second map, if any keys are
 		// missing then extra keys were added
-		for (String k : __exp.keySet())
-			if (!__act.containsKey(k))
+		for (String key : __exp.keySet())
+			if (!__act.containsKey(key))
+			{
+				// Ignore values which have been dropped
+				if ("Drop".equals(__exp.get(key)))
+					continue;
+				
 				return false;
+			}
 		
 		// Is a match
 		return true;

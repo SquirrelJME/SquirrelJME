@@ -3,17 +3,20 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.lang;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This is thrown when a certain state is invalid.
  *
  * @since 2018/12/04
  */
+@Api
 public class IllegalStateException
 	extends RuntimeException
 {
@@ -22,6 +25,7 @@ public class IllegalStateException
 	 *
 	 * @since 2018/12/04
 	 */
+	@Api
 	public IllegalStateException()
 	{
 	}
@@ -32,6 +36,7 @@ public class IllegalStateException
 	 * @param __m The message.
 	 * @since 2018/12/04
 	 */
+	@Api
 	public IllegalStateException(String __m)
 	{
 		super(__m);
@@ -44,6 +49,7 @@ public class IllegalStateException
 	 * @param __t The cause.
 	 * @since 2018/12/04
 	 */
+	@Api
 	public IllegalStateException(String __m, Throwable __t)
 	{
 		super(__m, __t);
@@ -55,6 +61,7 @@ public class IllegalStateException
 	 * @param __t The cause.
 	 * @since 2018/12/04
 	 */
+	@Api
 	public IllegalStateException(Throwable __t)
 	{
 		super(__t);

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -107,14 +107,14 @@ public abstract class SerializedGraphics
 	 * @since 2018/11/19
 	 */
 	@Override
-	public void drawArc(int __x, int __y, int __w, int __h, int __sa,
-		int __aa)
+	public void drawArc(int __x, int __y, int __w, int __h, int __startAngle,
+		int __arcAngle)
 	{
 		int transx = this.transx,
 			transy = this.transy;
 		
 		this.serialize(GraphicsFunction.DRAW_ARC,
-			__x + transx, __y + transy, __w, __h, __sa, __aa);
+			__x + transx, __y + transy, __w, __h, __startAngle, __arcAngle);
 	}
 	
 	/**
@@ -277,7 +277,7 @@ public abstract class SerializedGraphics
 		int[] data = new int[numpixels];
 		__src.getRGB(data, 0, __wsrc, __xsrc, __ysrc, __wsrc, __hsrc);
 		
-		// {@squirreljme.error EB0l Illegal region draw.}
+		/* {@squirreljme.error EB0l Illegal region draw.} */
 		int rv = (Integer)this.serialize(GraphicsFunction.DRAW_REGION,
 			data, (__wsrc << 16) | __hsrc, __trans,
 			__xdest + transx, __ydest + transy,
@@ -347,11 +347,11 @@ public abstract class SerializedGraphics
 	 * @since 2018/11/19
 	 */
 	@Override
-	public void fillArc(int __x, int __y, int __w, int __h, int __sa,
-		int __aa)
+	public void fillArc(int __x, int __y, int __w, int __h, int __startAngle,
+		int __arcAngle)
 	{
 		this.serialize(GraphicsFunction.FILL_ARC,
-			__x, __y, __w, __h, __sa, __aa);
+			__x, __y, __w, __h, __startAngle, __arcAngle);
 	}
 	
 	/**
@@ -607,7 +607,7 @@ public abstract class SerializedGraphics
 	public void setBlendingMode(int __m)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB0m Failed to set blending mode.}
+		/* {@squirreljme.error EB0m Failed to set blending mode.} */
 		int okay = (Integer)this.serialize(GraphicsFunction.SET_BLENDING_MODE,
 			__m);
 		if (okay < 0)
@@ -687,7 +687,7 @@ public abstract class SerializedGraphics
 	public void setStrokeStyle(int __s)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB0n Failed to set stroke style.}
+		/* {@squirreljme.error EB0n Failed to set stroke style.} */
 		int okay = (Integer)this.serialize(GraphicsFunction.SET_STROKE_STYLE,
 			__s);
 		if (okay < 0)
@@ -1061,7 +1061,7 @@ public abstract class SerializedGraphics
 			return Font.getFont(name, style, pixelsize);
 		}
 		
-		// {@squirreljme.error EB0o Could not serialize the text object.}
+		/* {@squirreljme.error EB0o Could not serialize the text object.} */
 		catch (IOException e)
 		{
 			throw new RuntimeException("EB0o", e);
@@ -1118,7 +1118,7 @@ public abstract class SerializedGraphics
 			return baos.toByteArray();
 		}
 		
-		// {@squirreljme.error EB0p Could not serialize the text object.}
+		/* {@squirreljme.error EB0p Could not serialize the text object.} */
 		catch (IOException e)
 		{
 			throw new RuntimeException("EB0p", e);
@@ -1204,7 +1204,7 @@ public abstract class SerializedGraphics
 			return rv;
 		}
 		
-		// {@squirreljme.error EB0q Could not serialize the text object.}
+		/* {@squirreljme.error EB0q Could not serialize the text object.} */
 		catch (IOException e)
 		{
 			throw new RuntimeException("EB0q", e);
@@ -1276,7 +1276,7 @@ public abstract class SerializedGraphics
 			return baos.toByteArray();
 		}
 		
-		// {@squirreljme.error EB0r Could not serialize the text object.}
+		/* {@squirreljme.error EB0r Could not serialize the text object.} */
 		catch (IOException e)
 		{
 			throw new RuntimeException("EB0r", e);

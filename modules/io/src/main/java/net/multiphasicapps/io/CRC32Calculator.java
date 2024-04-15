@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -149,6 +149,107 @@ public class CRC32Calculator
 	{
 		// Only the remainder has to be updated
 		this._remainder = this.initRemainder;
+	}
+	
+	/**
+	 * Calculates the checksum using the given parameters.
+	 *
+	 * @param __rdata Reflect the data?
+	 * @param __rrem Reflect the remainder?
+	 * @param __poly The polynomial.
+	 * @param __initrem The initial remainder.
+	 * @param __fxor The value to XOR the remainder with on return.
+	 * @param __b The buffer to calculate.
+	 * @return The checksum.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/12
+	 */
+	public static final int calculate(boolean __rdata, boolean __rrem,
+		int __poly, int __initrem, int __fxor, byte[] __b)
+		throws NullPointerException
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
+		return CRC32Calculator.calculate(__rdata, __rrem, __poly, __initrem,
+			__fxor, __b, 0, __b.length);
+	}
+	
+	/**
+	 * Calculates the checksum using the given parameters.
+	 *
+	 * @param __rdata Reflect the data?
+	 * @param __rrem Reflect the remainder?
+	 * @param __poly The polynomial.
+	 * @param __initrem The initial remainder.
+	 * @param __fxor The value to XOR the remainder with on return.
+	 * @param __b The buffer to calculate.
+	 * @param __o The offset into the buffer.
+	 * @param __l The length of the buffer.
+	 * @return The checksum.
+	 * @throws IndexOutOfBoundsException If the offset and/or length are
+	 * negative or exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/12
+	 */
+	public static final int calculate(boolean __rdata, boolean __rrem,
+		int __poly, int __initrem, int __fxor, byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Initialize calculator
+		CRC32Calculator calc = new CRC32Calculator(__rdata, __rrem,
+			__poly, __initrem, __fxor);
+		
+		// Calculate and return checksum
+		calc.offer(__b, __o, __l);
+		return calc.checksum();
+	}
+	
+	/**
+	 * Calculates the checksum in accordance to Zip files.
+	 *
+	 * @param __b The buffer to calculate.
+	 * @return The checksum.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/12
+	 */
+	public static final int calculateZip(byte[] __b)
+		throws NullPointerException
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
+		return CRC32Calculator.calculateZip(__b, 0, __b.length);
+	}
+	
+	/**
+	 * Calculates the checksum in accordance to Zip files.
+	 *
+	 * @param __b The buffer to calculate.
+	 * @param __o The offset into the buffer.
+	 * @param __l The length of the buffer.
+	 * @return The checksum.
+	 * @throws IndexOutOfBoundsException If the offset and/or length are
+	 * negative or exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/08/12
+	 */
+	public static final int calculateZip(byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		return CRC32Calculator.calculate(true, true,
+			0x04C11DB7, 0xFFFFFFFF, 0xFFFFFFFF,
+			__b, __o, __l);
 	}
 }
 

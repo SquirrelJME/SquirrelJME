@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -11,6 +11,7 @@ package cc.squirreljme.runtime.lcdui.mle;
 
 import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
+import cc.squirreljme.jvm.mle.brackets.UIDrawableBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
@@ -21,6 +22,7 @@ import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
  * This interface is used as a wrapper around {@link UIFormShelf}, it is
@@ -30,19 +32,22 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
  *
  * @since 2020/06/30
  */
+@SquirrelJMEVendorApi
 public interface UIBackend
 {
 	/**
-	 * Registers a display callback that is to be called when information about
-	 * displays changes.
+	 * Registers a callback for a display when it needs to be drawn or the
+	 * display state changes.
 	 * 
-	 * @param __ref The object this refers to, if it gets garbage collected
-	 * then this becomes invalidated.
-	 * @param __dc The display callback to use.
-	 * @throws MLECallError On null arguments.
-	 * @since 2020/10/03
+	 * @param __display The display that the callback will act under.
+	 * @param __callback The callback to register.
+	 * @throws MLECallError If {@code __display} is {@code null}.
+	 * @see UIDisplayCallback
+	 * @since 2023/01/14
 	 */
-	void callback(Object __ref, UIDisplayCallback __dc)
+	@SquirrelJMEVendorApi
+	void callback(UIDisplayBracket __display,
+		UIDisplayCallback __callback)
 		throws MLECallError;
 	
 	/**
@@ -54,6 +59,7 @@ public interface UIBackend
 	 * @throws MLECallError If {@code __form} is {@code null}.
 	 * @since 2020/07/03
 	 */
+	@SquirrelJMEVendorApi
 	void callback(UIFormBracket __form, UIFormCallback __callback)
 		throws MLECallError;
 	
@@ -65,6 +71,7 @@ public interface UIBackend
 	 * @throws MLECallError If there are no displays.
 	 * @since 2020/07/01
 	 */
+	@SquirrelJMEVendorApi
 	UIDisplayBracket[] displays()
 		throws MLECallError;
 	
@@ -76,7 +83,24 @@ public interface UIBackend
 	 * @throws MLECallError On null arguments.
 	 * @since 2020/07/01
 	 */
+	@SquirrelJMEVendorApi
 	UIFormBracket displayCurrent(UIDisplayBracket __display)
+		throws MLECallError;
+	
+	/**
+	 * Shows the given display without having a form be displayed on the
+	 * display, this can be used for raw graphics operations such as canvases
+	 * and otherwise.
+	 * 
+	 * @param __display The display to show.
+	 * @param __show Should the display be shown or hidden?
+	 * @throws MLECallError If {@code __display} is {@code null} or there was
+	 * an error showing the display.
+	 * @since 2023/01/14
+	 */
+	@SquirrelJMEVendorApi
+	void displayShow(UIDisplayBracket __display,
+		boolean __show)
 		throws MLECallError;
 	
 	/**
@@ -88,6 +112,7 @@ public interface UIBackend
 	 * @throws MLECallError On {@code __display} is {@code null}.
 	 * @since 2020/07/01
 	 */
+	@SquirrelJMEVendorApi
 	void displayShow(UIDisplayBracket __display, UIFormBracket __form)
 		throws MLECallError;
 	
@@ -100,7 +125,22 @@ public interface UIBackend
 	 * @throws MLECallError If either is {@code null}.
 	 * @since 2020/07/01
 	 */
+	@SquirrelJMEVendorApi
 	boolean equals(UIDisplayBracket __a, UIDisplayBracket __b)
+		throws MLECallError;
+	
+	/**
+	 * Checks if the two drawables represent the same
+	 * {@link UIDrawableBracket}.
+	 * 
+	 * @param __a The first.
+	 * @param __b The second.
+	 * @return If these are the same drawable.
+	 * @throws MLECallError If either is {@code null}.
+	 * @since 2023/01/13
+	 */
+	@SquirrelJMEVendorApi
+	boolean equals(UIDrawableBracket __a, UIDrawableBracket __b)
 		throws MLECallError;
 	
 	/**
@@ -112,6 +152,7 @@ public interface UIBackend
 	 * @throws MLECallError If either is {@code null}.
 	 * @since 2020/07/01
 	 */
+	@SquirrelJMEVendorApi
 	boolean equals(UIFormBracket __a, UIFormBracket __b)
 		throws MLECallError;
 	
@@ -124,6 +165,7 @@ public interface UIBackend
 	 * @throws MLECallError If either is {@code null}.
 	 * @since 2020/07/01
 	 */
+	@SquirrelJMEVendorApi
 	boolean equals(UIItemBracket __a, UIItemBracket __b)
 		throws MLECallError;
 	
@@ -136,6 +178,7 @@ public interface UIBackend
 	 * @throws MLECallError If either is {@code null}.
 	 * @since 2020/09/20
 	 */
+	@SquirrelJMEVendorApi
 	boolean equals(UIWidgetBracket __a, UIWidgetBracket __b)
 		throws MLECallError;
 	
@@ -145,6 +188,7 @@ public interface UIBackend
 	 * @throws MLECallError If events could not be flushed.
 	 * @since 2020/07/26
 	 */
+	@SquirrelJMEVendorApi
 	void flushEvents()
 		throws MLECallError;
 	
@@ -155,6 +199,7 @@ public interface UIBackend
 	 * @throws MLECallError On null arguments or the form could not be deleted.
 	 * @since 2020/07/01
 	 */
+	@SquirrelJMEVendorApi
 	void formDelete(UIFormBracket __form)
 		throws MLECallError;
 	
@@ -169,6 +214,7 @@ public interface UIBackend
 	 * not valid.
 	 * @since 2020/07/19
 	 */
+	@SquirrelJMEVendorApi
 	UIItemBracket formItemAtPosition(UIFormBracket __form, int __pos)
 		throws MLECallError;
 	
@@ -180,6 +226,7 @@ public interface UIBackend
 	 * @throws MLECallError If the form is null or not valid.
 	 * @since 2020/07/19
 	 */
+	@SquirrelJMEVendorApi
 	int formItemCount(UIFormBracket __form)
 		throws MLECallError;
 	
@@ -195,6 +242,7 @@ public interface UIBackend
 	 * @throws MLECallError If the form and item are null.
 	 * @since 2020/07/18
 	 */
+	@SquirrelJMEVendorApi
 	int formItemPosition(UIFormBracket __form, UIItemBracket __item)
 		throws MLECallError;
 	
@@ -209,6 +257,7 @@ public interface UIBackend
 	 * is not valid.
 	 * @since 2020/07/18
 	 */
+	@SquirrelJMEVendorApi
 	void formItemPosition(UIFormBracket __form, UIItemBracket __item,
 		int __pos)
 		throws MLECallError;
@@ -223,6 +272,7 @@ public interface UIBackend
 	 * not valid, or there was no item at the position.
 	 * @since 2020/07/18
 	 */
+	@SquirrelJMEVendorApi
 	UIItemBracket formItemRemove(UIFormBracket __form, int __pos)
 		throws MLECallError;
 	
@@ -233,6 +283,7 @@ public interface UIBackend
 	 * @throws MLECallError If the form could not be created.
 	 * @since 2020/07/01
 	 */
+	@SquirrelJMEVendorApi
 	UIFormBracket formNew()
 		throws MLECallError;
 		
@@ -243,6 +294,7 @@ public interface UIBackend
 	 * @throws MLECallError On null arguments or the form is not valid.
 	 * @since 2022/07/20
 	 */
+	@SquirrelJMEVendorApi
 	void formRefresh(UIFormBracket __form)
 		throws MLECallError;
 	
@@ -253,6 +305,7 @@ public interface UIBackend
 	 * @throws MLECallError If injecting is not supported.
 	 * @since 2020/07/26
 	 */
+	@SquirrelJMEVendorApi
 	UIFormCallback injector()
 		throws MLECallError;
 	
@@ -265,6 +318,7 @@ public interface UIBackend
 	 * active within a form.
 	 * @since 2020/07/18
 	 */
+	@SquirrelJMEVendorApi
 	void itemDelete(UIItemBracket __item)
 		throws MLECallError;
 	
@@ -276,6 +330,7 @@ public interface UIBackend
 	 * @throws MLECallError If {@code __item} is {@code null}.
 	 * @since 2021/01/03
 	 */
+	@SquirrelJMEVendorApi
 	UIFormBracket itemForm(UIItemBracket __item)
 		throws MLECallError;
 	
@@ -288,24 +343,27 @@ public interface UIBackend
 	 * not valid.
 	 * @since 2020/07/17
 	 */
+	@SquirrelJMEVendorApi
 	UIItemBracket itemNew(int __type)
 		throws MLECallError;
 	
 	/**
 	 * Calls the given method serially within the main event handler.
-	 * 
-	 * @param __displayId The display identifier.
+	 *
+	 * @param __display The display identifier.
 	 * @param __serialId The serial identifier.
 	 * @throws MLECallError If the call is not valid.
 	 * @since 2020/10/03
 	 */
-	void later(int __displayId, int __serialId)
+	@SquirrelJMEVendorApi
+	void later(UIDisplayBracket __display, int __serialId)
 		throws MLECallError;
 	
 	/**
 	 * Returns a metric which describes something about the user interface
 	 * forms implementation or other details about the system.
-	 * 
+	 *
+	 * @param __display The display to get the metric of.
 	 * @param __metric One of {@link UIMetricType}. The metric
 	 * {@link UIMetricType#UIFORMS_SUPPORTED} is always a valid metric and
 	 * must be supported, even if the implementation lacks forms.
@@ -314,7 +372,8 @@ public interface UIBackend
 	 * supported and the metric is not {@link UIMetricType#UIFORMS_SUPPORTED}.
 	 * @since 2020/06/30
 	 */
-	int metric(int __metric)
+	@SquirrelJMEVendorApi
+	int metric(UIDisplayBracket __display, int __metric)
 		throws MLECallError;
 	
 	/**
@@ -328,6 +387,7 @@ public interface UIBackend
 	 * valid or not an integer property.
 	 * @since 2020/09/13
 	 */
+	@SquirrelJMEVendorApi
 	void widgetProperty(UIWidgetBracket __item, int __intProp, int __sub,
 		int __newValue);
 	
@@ -342,6 +402,7 @@ public interface UIBackend
 	 * valid or not a string property.
 	 * @since 2020/09/13
 	 */
+	@SquirrelJMEVendorApi
 	void widgetProperty(UIWidgetBracket __item, int __strProp, int __sub,
 		String __newValue);
 	
@@ -355,6 +416,7 @@ public interface UIBackend
 	 * @throws MLECallError If the widget or property is not valid.
 	 * @since 2020/09/21
 	 */
+	@SquirrelJMEVendorApi
 	int widgetPropertyInt(UIWidgetBracket __widget, int __intProp, int __sub)
 		throws MLECallError;
 	
@@ -368,6 +430,7 @@ public interface UIBackend
 	 * @throws MLECallError If the widget or property is not valid.
 	 * @since 2020/09/21
 	 */
+	@SquirrelJMEVendorApi
 	String widgetPropertyStr(UIWidgetBracket __widget, int __strProp,
 		int __sub)
 		throws MLECallError;

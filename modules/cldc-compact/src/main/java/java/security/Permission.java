@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.security;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
@@ -21,6 +22,7 @@ import java.lang.ref.WeakReference;
  *
  * @since 2018/12/08
  */
+@Api
 public abstract class Permission
 {
 	/** The permission name. */
@@ -35,6 +37,7 @@ public abstract class Permission
 	 * @param __name The name of the permission.
 	 * @since 2018/09/18
 	 */
+	@Api
 	public Permission(String __name)
 	{
 		this._name = __name;
@@ -53,6 +56,7 @@ public abstract class Permission
 	 * @return The actions performed on this permission.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public abstract String getActions();
 	
 	/**
@@ -69,6 +73,7 @@ public abstract class Permission
 	 * @return If this permission implies the specified one.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public abstract boolean implies(Permission __p);
 	
 	/**
@@ -77,6 +82,7 @@ public abstract class Permission
 	 * @return The permission name.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public final String getName()
 	{
 		return this._name;
@@ -95,6 +101,7 @@ public abstract class Permission
 	 * @return The permission collection.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public PermissionCollection newPermissionCollection()
 	{
 		return null;

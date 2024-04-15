@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.common.CommonColors;
 import cc.squirreljme.runtime.lcdui.common.TextStorage;
@@ -22,29 +23,38 @@ import cc.squirreljme.runtime.lcdui.common.TextStorage;
  *
  * @since 2018/11/29
  */
+@Api
 public class Text
 {
+	@Api
 	public static final int ALIGN_CENTER =
 		1;
 	
+	@Api
 	public static final int ALIGN_DEFAULT =
 		4;
 	
+	@Api
 	public static final int ALIGN_JUSTIFY =
 		3;
 	
+	@Api
 	public static final int ALIGN_LEFT =
 		0;
 	
+	@Api
 	public static final int ALIGN_RIGHT =
 		2;
 	
+	@Api
 	public static final int DIRECTION_LTR =
 		10;
 	
+	@Api
 	public static final int DIRECTION_NEUTRAL =
 		12;
 	
+	@Api
 	public static final int DIRECTION_RTL =
 		11;
 	
@@ -117,6 +127,7 @@ public class Text
 	 *
 	 * @since 2018/11/29
 	 */
+	@Api
 	public Text()
 	{
 		this("", 0, 0);
@@ -132,6 +143,7 @@ public class Text
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/29
 	 */
+	@Api
 	public Text(String __c, int __w, int __h)
 		throws IllegalArgumentException, NullPointerException
 	{
@@ -152,6 +164,7 @@ public class Text
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/29
 	 */
+	@Api
 	public Text(String __c, int __o, int __l, int __w, int __h)
 		throws IllegalArgumentException, IndexOutOfBoundsException,
 			NullPointerException
@@ -161,8 +174,8 @@ public class Text
 		if (__o < 0 || __l < 0 || (__o + __l) > __c.length())
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		// {@squirreljme.error EB2p The width and height cannot be negative
-		// for text.}
+		/* {@squirreljme.error EB2p The width and height cannot be negative
+		for text.} */
 		if (__w < 0 || __h < 0)
 			throw new IllegalArgumentException("EB2p");
 		
@@ -182,6 +195,7 @@ public class Text
 	 * @throws IndexOutOfBoundsException If the index is out of bounds.
 	 * @since 2018/12/02
 	 */
+	@Api
 	public void delete(int __i, int __l)
 		throws IndexOutOfBoundsException
 	{
@@ -207,6 +221,7 @@ public class Text
 	 * @return The text alignment.
 	 * @since 2018/12/02
 	 */
+	@Api
 	public int getAlignment()
 	{
 		return this._alignment;
@@ -218,6 +233,7 @@ public class Text
 	 * @return The background color.
 	 * @since 2018/12/02
 	 */
+	@Api
 	public int getBackgroundColor()
 	{
 		return this._backgroundcolor;
@@ -229,6 +245,7 @@ public class Text
 	 * @return The caret position or {@code -1} if it is not used.
 	 * @since 2018/12/02
 	 */
+	@Api
 	public int getCaret()
 	{
 		return this._caret;
@@ -246,6 +263,7 @@ public class Text
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/01
 	 */
+	@Api
 	public void getCharExtent(int __i, int[] __ext)
 		throws IllegalArgumentException, IndexOutOfBoundsException,
 			NullPointerException
@@ -280,13 +298,14 @@ public class Text
 		}
 		catch (IndexOutOfBoundsException e)
 		{
-			// {@squirreljme.error EB2q Extent array length must at least
-			// be 4.}
+			/* {@squirreljme.error EB2q Extent array length must at least
+			be 4.} */
 			if (__ext.length < 4)
 				throw new IllegalArgumentException("EB2q");
 		}
 	}
 	
+	@Api
 	public int getCharIndex(int __x, int __y)
 	{
 		throw Debugging.todo();
@@ -298,6 +317,7 @@ public class Text
 	 * @return The default font.
 	 * @since 2018/12/01
 	 */
+	@Api
 	public Font getFont()
 	{
 		return this._defaultfont;
@@ -311,6 +331,7 @@ public class Text
 	 * @throws IndexOutOfBoundsException If the index it outside of bounds.
 	 * @since 2018/12/01
 	 */
+	@Api
 	public Font getFont(int __i)
 		throws IndexOutOfBoundsException
 	{
@@ -333,6 +354,7 @@ public class Text
 	 * @return The default foreground color.
 	 * @since 2018/12/02
 	 */
+	@Api
 	public int getForegroundColor()
 	{
 		return this._defaultcolor;
@@ -345,6 +367,7 @@ public class Text
 	 * @return The color for that character.
 	 * @since 2018/12/01
 	 */
+	@Api
 	public int getForegroundColor(int __i)
 		throws IndexOutOfBoundsException
 	{
@@ -367,6 +390,7 @@ public class Text
 	 * @return The height of the text.
 	 * @since 2018/12/01
 	 */
+	@Api
 	public int getHeight()
 	{
 		return this._height;
@@ -378,6 +402,7 @@ public class Text
 	 * @return The highlight index or {@code -1} if none.
 	 * @since 2018/12/02
 	 */
+	@Api
 	public int getHighlightIndex()
 	{
 		return this._highlightdx;
@@ -389,6 +414,7 @@ public class Text
 	 * @return The number of characters highlighted, {@code 0} if none.
 	 * @since 2018/12/02
 	 */
+	@Api
 	public int getHighlightLength()
 	{
 		return this._highlightlen;
@@ -400,6 +426,7 @@ public class Text
 	 * @return The indentation.
 	 * @since 2018/12/02
 	 */
+	@Api
 	public int getIndent()
 	{
 		return this._indentation;
@@ -411,6 +438,7 @@ public class Text
 	 * @return The initial direction.
 	 * @since 2018/12/02
 	 */
+	@Api
 	public int getInitialDirection()
 	{
 		return this._direction;
@@ -423,6 +451,7 @@ public class Text
 	 * @return The required height to draw.
 	 * @since 2018/12/01
 	 */
+	@Api
 	public int getRequiredHeight()
 	{
 		// Update
@@ -439,6 +468,7 @@ public class Text
 	 * @return The number of lines which are required.
 	 * @since 2018/12/01
 	 */
+	@Api
 	public int getRequiredLineCount()
 	{
 		// Update
@@ -454,6 +484,7 @@ public class Text
 	 * @return The scroll offset.
 	 * @since 2018/12/02
 	 */
+	@Api
 	public int getScrollOffset()
 	{
 		return this._scrolloffset;
@@ -465,6 +496,7 @@ public class Text
 	 * @return The space above.
 	 * @since 2018/12/02
 	 */
+	@Api
 	public int getSpaceAbove()
 	{
 		return this._spaceabove;
@@ -476,6 +508,7 @@ public class Text
 	 * @return The space below.
 	 * @since 2018/12/02
 	 */
+	@Api
 	public int getSpaceBelow()
 	{
 		return this._spacebelow;
@@ -491,13 +524,14 @@ public class Text
 	 * the text bounds.
 	 * @since 2018/12/01
 	 */
+	@Api
 	public String getText(int __i, int __l)
 		throws IndexOutOfBoundsException
 	{
 		TextStorage storage = this._storage;
 		
-		// {@squirreljme.error EB2r Text outside of bounds. (The starting
-		// index; The ending index; The size of the text)}
+		/* {@squirreljme.error EB2r Text outside of bounds. (The starting
+		index; The ending index; The size of the text)} */
 		int size = storage.size;
 		if (__i < 0 || __l < 0 || (__i + __l) > size)
 			throw new IndexOutOfBoundsException(
@@ -513,6 +547,7 @@ public class Text
 	 * @return The length of the text object.
 	 * @since 2018/12/01
 	 */
+	@Api
 	public int getTextLength()
 	{
 		return this._storage.size;
@@ -524,6 +559,7 @@ public class Text
 	 * @return The text width.
 	 * @since 2018/12/01
 	 */
+	@Api
 	public int getWidth()
 	{
 		return this._width;
@@ -539,6 +575,7 @@ public class Text
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/30
 	 */
+	@Api
 	public void insert(int __i, String __s)
 		throws NullPointerException
 	{
@@ -574,11 +611,13 @@ public class Text
 		this._dirty = true;
 	}
 	
+	@Api
 	public int lastRenderedIndex()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void moveCaret(int __nl)
 	{
 		throw Debugging.todo();
@@ -591,10 +630,11 @@ public class Text
 	 * @throws IllegalArgumentException If the alignment is not valid.
 	 * @since 2018/12/02
 	 */
+	@Api
 	public void setAlignment(int __a)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB2s Invalid alignment. (The alignment)}
+		/* {@squirreljme.error EB2s Invalid alignment. (The alignment)} */
 		if (__a != Text.ALIGN_LEFT && __a != Text.ALIGN_CENTER && __a != Text.ALIGN_RIGHT &&
 			__a != Text.ALIGN_JUSTIFY && __a != Text.ALIGN_DEFAULT)
 			throw new IllegalArgumentException("EB2s " + __a);
@@ -608,6 +648,7 @@ public class Text
 	 * @param __argb The color to use.
 	 * @since 2018/12/02
 	 */
+	@Api
 	public void setBackgroundColor(int __argb)
 	{
 		this._backgroundcolor = __argb;
@@ -621,6 +662,7 @@ public class Text
 	 * text bounds.
 	 * @since 2018/12/02
 	 */
+	@Api
 	public void setCaret(int __i)
 		throws IndexOutOfBoundsException
 	{
@@ -641,6 +683,7 @@ public class Text
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/30
 	 */
+	@Api
 	public void setFont(Font __f)
 		throws NullPointerException
 	{
@@ -667,6 +710,7 @@ public class Text
 	 * @throws IndexOutOfBoundsException If the given range is out of bounds.
 	 * @since 2018/12/02
 	 */
+	@Api
 	public void setFont(Font __f, int __i, int __l)
 	{
 		TextStorage storage = this._storage;
@@ -691,6 +735,7 @@ public class Text
 	 * @param __argb The color to use.
 	 * @since 2018/12/01
 	 */
+	@Api
 	public void setForegroundColor(int __argb)
 	{
 		// This does not dirty anything because it is just a color change,
@@ -707,6 +752,7 @@ public class Text
 	 * @throws IndexOutOfBoundsException If the given range is out of bounds.
 	 * @since 2018/12/02
 	 */
+	@Api
 	public void setForegroundColor(int __argb, int __i, int __l)
 	{
 		TextStorage storage = this._storage;
@@ -732,11 +778,12 @@ public class Text
 	 * @throws IllegalArgumentException If the height is negative.
 	 * @since 2018/12/01
 	 */
+	@Api
 	public void setHeight(int __h)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB2t The height of a font cannot be
-		// negative.}
+		/* {@squirreljme.error EB2t The height of a font cannot be
+		negative.} */
 		if (__h < 0)
 			throw new IllegalArgumentException("EB2t");
 		
@@ -754,6 +801,7 @@ public class Text
 	 * @throws IndexOutOfBoundsException If the index and/or length are out
 	 * of bounds.
 	 */
+	@Api
 	public void setHighlight(int __i, int __l)
 		throws IndexOutOfBoundsException
 	{
@@ -774,6 +822,7 @@ public class Text
 	 * @param __i The indentation.
 	 * @since 2018/12/02
 	 */
+	@Api
 	public void setIndent(int __i)
 	{
 		this._indentation = __i;
@@ -786,10 +835,11 @@ public class Text
 	 * @throws IllegalArgumentException If the direction is not valid.
 	 * @since 2018/12/02
 	 */
+	@Api
 	public void setInitialDirection(int __dir)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB2u The direction to use. (The direction)}
+		/* {@squirreljme.error EB2u The direction to use. (The direction)} */
 		if (__dir != Text.DIRECTION_LTR && __dir != Text.DIRECTION_RTL &&
 			__dir != Text.DIRECTION_NEUTRAL)
 			throw new IllegalArgumentException("EB2u " + __dir);
@@ -803,6 +853,7 @@ public class Text
 	 * @param __o The offset.
 	 * @since 2018/12/02
 	 */
+	@Api
 	public void setScrollOffset(int __o)
 	{
 		this._scrolloffset = __o;
@@ -814,6 +865,7 @@ public class Text
 	 * @param __sa The space above in pixels.
 	 * @since 2018/12/02
 	 */
+	@Api
 	public void setSpaceAbove(int __sa)
 	{
 		this._spaceabove = __sa;
@@ -825,6 +877,7 @@ public class Text
 	 * @param __sb The space below in pixels.
 	 * @since 2018/12/02
 	 */
+	@Api
 	public void setSpaceBelow(int __sb)
 	{
 		this._spacebelow = __sb;
@@ -837,10 +890,11 @@ public class Text
 	 * @throws IllegalArgumentException If the width is negative.
 	 * @since 2018/11/30
 	 */
+	@Api
 	public void setWidth(int __w)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB2v Cannot set the width to a negative value.}
+		/* {@squirreljme.error EB2v Cannot set the width to a negative value.} */
 		if (__w < 0)
 			throw new IllegalArgumentException("EB2v");
 		
@@ -860,6 +914,7 @@ public class Text
 	 * @return If all of the text fits within the bounds of the box.
 	 * @since 2018/12/01
 	 */
+	@Api
 	public boolean textFits()
 	{
 		// Update

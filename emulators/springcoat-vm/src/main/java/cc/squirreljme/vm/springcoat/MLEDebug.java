@@ -3,12 +3,18 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.jdwp.JDWPEventKind;
+import cc.squirreljme.jdwp.JDWPPacket;
+import cc.squirreljme.jdwp.JDWPSuspendPolicy;
+import cc.squirreljme.jdwp.host.JDWPHostController;
+import cc.squirreljme.jdwp.host.trips.JDWPGlobalTrip;
+import cc.squirreljme.jdwp.host.trips.JDWPTripVmState;
 import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
@@ -23,6 +29,27 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 public enum MLEDebug
 	implements MLEFunction
 {
+	/** {@link DebugShelf#breakpoint()}. */
+	BREAKPOINT("breakpoint:()V")
+	{
+		/**
+		 * {@inheritDoc
+		 * @since 2023/01/30
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			// If a debugger is attached, break immediately on everything
+			JDWPHostController jdwp =
+				__thread.machine.taskManager().jdwpController;
+			if (jdwp != null)
+				jdwp.<JDWPTripVmState>trip(JDWPTripVmState.class,
+					JDWPGlobalTrip.VM_STATE).userDefined(__thread.thread);
+			
+			return null;
+		}
+	},
+	
 	/** {@link DebugShelf#getThrowableTrace(Throwable)}. */
 	GET_THROWABLE_TRACE("getThrowableTrace:(Ljava/lang/Throwable;)" +
 		"[Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;")

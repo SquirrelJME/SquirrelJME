@@ -3,11 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.util;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This is a set which is backed by a hash table except that the iterator
@@ -19,6 +21,7 @@ package java.util;
  * @see HashSet
  * @since 2018/11/01
  */
+@Api
 public class LinkedHashSet<E>
 	extends HashSet<E>
 	implements Set<E>, Cloneable
@@ -32,6 +35,7 @@ public class LinkedHashSet<E>
 	 * load factor is not positive.
 	 * @since 2018/11/01
 	 */
+	@Api
 	public LinkedHashSet(int __initcap, float __load)
 		throws IllegalArgumentException
 	{
@@ -45,6 +49,7 @@ public class LinkedHashSet<E>
 	 * @throws IllegalArgumentException If the capacity is negative.
 	 * @since 2018/11/01
 	 */
+	@Api
 	public LinkedHashSet(int __initcap)
 		throws IllegalArgumentException
 	{
@@ -56,6 +61,7 @@ public class LinkedHashSet<E>
 	 *
 	 * @since 2018/11/01
 	 */
+	@Api
 	public LinkedHashSet()
 	{
 	}
@@ -70,6 +76,7 @@ public class LinkedHashSet<E>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/10/07
 	 */
+	@Api
 	public LinkedHashSet(Collection<? extends E> __s)
 	{
 		super(__s);

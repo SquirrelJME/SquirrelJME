@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SharedFileColors">
+    <fileColor scope="Assets" color="Blue" />
+    <fileColor scope="VM Ports" color="Rose" />
+    <fileColor scope="Tests" color="Green" />
+    <fileColor scope="Java API Packages (Include)" color="Violet" />
+  </component>
+</project>

@@ -3,11 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.io;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This class provides the ability to read binary data from a stream.
@@ -16,11 +18,14 @@ package java.io;
  *
  * @since 2018/12/01
  */
+@Api
+@SuppressWarnings("DuplicateThrows")
 public class DataInputStream
 	extends InputStream
 	implements DataInput
 {
 	/** The wrapped stream. */
+	@Api
 	protected final InputStream in;
 	
 	/**
@@ -30,6 +35,7 @@ public class DataInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/01
 	 */
+	@Api
 	public DataInputStream(InputStream __in)
 		throws NullPointerException
 	{
@@ -233,26 +239,7 @@ public class DataInputStream
 	public final void readFully(byte[] __b)
 		throws EOFException, IOException, NullPointerException
 	{
-		if (__b == null)
-			throw new NullPointerException("NARG");
-		
-		int rv = 0,
-			bl = __b.length;
-		
-		// Constantly read in as many chunks as possible
-		InputStream in = this.in;
-		while (rv < bl)
-		{
-			// Read entire chunk
-			int rc = in.read(__b, rv, bl - rv);
-			
-			// Reached EOF
-			if (rc < 0)
-				throw new EOFException("EOFF");
-			
-			// These many characters were read, we might try again
-			rv += rc;
-		}
+		this.__readFully(__b, 0, __b.length);
 	}
 	
 	/**
@@ -263,27 +250,7 @@ public class DataInputStream
 	public final void readFully(byte[] __b, int __o, int __l)
 		throws EOFException, IOException
 	{
-		if (__b == null)
-			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
-			throw new IndexOutOfBoundsException("IOOB");
-		
-		int rv = 0;
-		
-		// Constantly read in as many chunks as possible
-		InputStream in = this.in;
-		while (rv < __l)
-		{
-			// Read entire chunk
-			int rc = in.read(__b, __o + rv, __l - rv);
-			
-			// Reached EOF
-			if (rc < 0)
-				throw new EOFException("EOFF");
-			
-			// These many bytes were read, we might try again
-			rv += rc;
-		}
+		this.__readFully(__b, __o, __l);
 	}
 	
 	/**
@@ -465,6 +432,45 @@ public class DataInputStream
 	}
 	
 	/**
+	 * Reads a full buffer from the stream, throwing {@link EOFException}
+	 * if not enough bytes were read.
+	 * 
+	 * @param __b The buffer to read into.
+	 * @param __o The offset.
+	 * @param __l The length.
+	 * @throws IndexOutOfBoundsException The offset and/or length are
+	 * negative or exceeds the array bounds.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/07/07
+	 */
+	private void __readFully(byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, IOException, NullPointerException
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		int rv = 0;
+		
+		// Constantly read in as many chunks as possible
+		InputStream in = this.in;
+		while (rv < __l)
+		{
+			// Read entire chunk
+			int rc = in.read(__b, __o + rv, __l - rv);
+			
+			// Reached EOF
+			if (rc < 0)
+				throw new EOFException("EOFF");
+			
+			// These many bytes were read, we might try again
+			rv += rc;
+		}
+	}
+	
+	/**
 	 * Reads a modified-UTF sequence from the input.
 	 *
 	 * @param __in The input.
@@ -475,6 +481,7 @@ public class DataInputStream
 	 * @throws UTFDataFormatException If the input UTF data is not correct.
 	 * @since 2018/12/03
 	 */
+	@Api
 	public static final String readUTF(DataInput __in)
 		throws EOFException, IOException, NullPointerException,
 			UTFDataFormatException
@@ -507,8 +514,8 @@ public class DataInputStream
 			// Single byte
 			if ((a & 0b1000_0000) == 0b0000_0000)
 			{
-				// {@squirreljme.error ZZ0j The zero byte cannot be represented
-				// with a zero value.}
+				/* {@squirreljme.error ZZ0j The zero byte cannot be represented
+				with a zero value.} */
 				if (a == 0)
 					throw new UTFDataFormatException("ZZ0j");
 				
@@ -521,8 +528,8 @@ public class DataInputStream
 				int b = (queueat < len ? (queue[queueat++] & 0xFF) :
 					__in.readUnsignedByte());
 				
-				// {@squirreljme.error ZZ0k Invalid double byte character.
-				// (The byte sequence)}
+				/* {@squirreljme.error ZZ0k Invalid double byte character.
+				(The byte sequence)} */
 				if ((b & 0b1100_0000) != 0b1000_0000)
 					throw new UTFDataFormatException(String.format(
 						"ZZ0k %02x%02x", a, b));
@@ -550,8 +557,8 @@ public class DataInputStream
 					c = __in.readUnsignedByte();
 				}
 				
-				// {@squirreljme.error ZZ0l Invalid double byte character.
-				// (The byte sequence)}
+				/* {@squirreljme.error ZZ0l Invalid double byte character.
+				(The byte sequence)} */
 				if (((b & 0b1100_0000) != 0b1000_0000) ||
 					((c & 0b1100_0000) != 0b1000_0000))
 					throw new UTFDataFormatException(String.format(
@@ -562,7 +569,7 @@ public class DataInputStream
 					(c & 0x3F));
 			}
 			
-			// {@squirreljme.error ZZ0m Invalid byte sequence. (The byte)}
+			/* {@squirreljme.error ZZ0m Invalid byte sequence. (The byte)} */
 			else
 				throw new UTFDataFormatException(String.format("ZZ0m %02x",
 					a));

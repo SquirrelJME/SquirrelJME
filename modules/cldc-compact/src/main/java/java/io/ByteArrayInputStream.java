@@ -3,30 +3,37 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.io;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This is a class which reads from an input byte array and returns its data.
  *
  * @since 2018/11/11
  */
+@Api
 public class ByteArrayInputStream
 	extends InputStream
 {
 	/** The buffer to read from. */
+	@Api
 	protected byte[] buf;
 	
 	/** The number of bytes to read. */
+	@Api
 	protected int count;
 	
 	/** The current mark. */
+	@Api
 	protected int mark;
 	
 	/** The position within the byte array. */
+	@Api
 	protected int pos;
 	
 	/**
@@ -36,6 +43,7 @@ public class ByteArrayInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/11
 	 */
+	@Api
 	public ByteArrayInputStream(byte[] __b)
 		throws NullPointerException
 	{
@@ -51,6 +59,7 @@ public class ByteArrayInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/11
 	 */
+	@Api
 	public ByteArrayInputStream(byte[] __b, int __o, int __l)
 		throws NullPointerException
 	{

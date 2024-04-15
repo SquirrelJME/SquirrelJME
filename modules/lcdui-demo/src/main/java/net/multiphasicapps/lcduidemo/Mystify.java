@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -79,9 +79,6 @@ public class Mystify
 		
 		// Set display to the canvas
 		Display.getDisplay(this).setCurrent(cv);
-		
-		// Setup thread to force repaints on canvas
-		new RepaintTimer(cv, Mystify.DELAY_TIME).start();
 	}
 	
 	/**
@@ -209,7 +206,8 @@ public class Mystify
 							this._lockflag = false;
 							
 							// Update some other time in the future
-							this._nextnano = System.nanoTime() + Mystify.DELAY_TIME_NS;
+							this._nextnano = System.nanoTime() +
+								Mystify.DELAY_TIME_NS;
 						}
 				}
 				
@@ -227,6 +225,9 @@ public class Mystify
 					__g.drawLine(a.x, a.y, b.x, b.y);
 				}
 			}
+			
+			// Request repaint to paint as fast as possible
+			this.repaint();
 		}
 		
 		/**

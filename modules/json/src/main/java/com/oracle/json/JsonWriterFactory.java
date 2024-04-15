@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package com.oracle.json;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
@@ -20,6 +21,8 @@ import java.util.Map;
  *
  * @since 2014/07/26
  */
+@Api
+@SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
 public interface JsonWriterFactory
 {
 	/**
@@ -30,6 +33,7 @@ public interface JsonWriterFactory
 	 * @return A {@link JsonWriter}.
 	 * @since 2014/07/26
 	 */
+	@Api
 	JsonWriter createWriter(OutputStream __o);
 	
 	/**
@@ -43,6 +47,7 @@ public interface JsonWriterFactory
 	 * supported.
 	 * @since 2014/07/26
 	 */
+	@Api
 	JsonWriter createWriter(OutputStream __o, String __charSet)
 		throws UnsupportedEncodingException;
 	
@@ -54,6 +59,7 @@ public interface JsonWriterFactory
 	 * @return A {@link JsonWriter}.
 	 * @since 2014/07/26
 	 */
+	@Api
 	JsonWriter createWriter(Writer __w);
 	
 	/**
@@ -64,6 +70,7 @@ public interface JsonWriterFactory
 	 * empty but must never be {@code null}.
 	 * @since 2014/07/26
 	 */
+	@Api
 	Map<String, ?> getConfigInUse();
 }
 

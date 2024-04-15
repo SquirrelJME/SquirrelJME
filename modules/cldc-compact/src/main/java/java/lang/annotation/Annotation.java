@@ -3,11 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.lang.annotation;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This is the common interface in which all annotation types are inherited
@@ -18,6 +20,7 @@ package java.lang.annotation;
  *
  * @since 2014/10/13
  */
+@Api
 public interface Annotation
 {
 	/**
@@ -26,6 +29,7 @@ public interface Annotation
 	 * @return The annotation type.
 	 * @since 2014/10/13
 	 */
+	@Api
 	Class<? extends Annotation> annotationType();
 	
 	/**

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -65,8 +65,8 @@ public final class AnnotationTable
 		Map<ClassName, Annotation> rv = new LinkedHashMap<>();
 		for (Annotation e : __e)
 		{
-			// {@squirreljme.error JC1w Duplicate annotation declared. (The
-			// declared annotation)}
+			/* {@squirreljme.error JC1w Duplicate annotation declared. (The
+			declared annotation)} */
 			ClassName name = e.type();
 			if (rv.containsKey(name))
 				throw new InvalidClassFormatException(String.format("JC1w %s",

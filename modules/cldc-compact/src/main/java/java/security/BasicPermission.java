@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.security;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -30,6 +31,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  * 
  * @since 2020/07/09
  */
+@Api
 public abstract class BasicPermission
 	extends Permission
 {
@@ -44,6 +46,7 @@ public abstract class BasicPermission
 	 * @throws NullPointerException If no name was specified.
 	 * @since 2018/09/18
 	 */
+	@Api
 	public BasicPermission(String __name)
 		throws IllegalArgumentException, NullPointerException
 	{
@@ -59,6 +62,7 @@ public abstract class BasicPermission
 	 * @throws NullPointerException If no name was specified.
 	 * @since 2018/09/18
 	 */
+	@Api
 	public BasicPermission(String __name,
 		@SuppressWarnings("unused") String __act)
 		throws IllegalArgumentException, NullPointerException
@@ -68,8 +72,8 @@ public abstract class BasicPermission
 		if (__name == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ2b The name for basic permissions cannot
-		// be empty.}
+		/* {@squirreljme.error ZZ2b The name for basic permissions cannot
+		be empty.} */
 		if (__name.equals(""))
 			throw new IllegalArgumentException("ZZ0z");
 		

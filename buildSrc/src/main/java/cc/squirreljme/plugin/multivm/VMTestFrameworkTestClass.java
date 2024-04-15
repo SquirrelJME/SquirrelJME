@@ -3,7 +3,7 @@
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -28,6 +28,12 @@ public final class VMTestFrameworkTestClass
 	/** The normal test. */
 	public String normal;
 	
+	/** The primary sub-variant, if any. */
+	public String primarySubVariant;
+	
+	/** The secondary sub-variant, if any. */
+	public String secondarySubVariant;
+	
 	/**
 	 * Initializes the class name reference.
 	 * 
@@ -42,15 +48,45 @@ public final class VMTestFrameworkTestClass
 			throw new NullPointerException("NARG");
 		
 		// Split off from the test and the class
-		int lastAt = __testName.lastIndexOf('@');
-		int lastSlash = __testName.lastIndexOf('.');
+		int firstAt = __testName.indexOf('@');
+		int lastDot = __testName.lastIndexOf('.',
+			(firstAt < 0 ? __testName.length() : firstAt));
 		
 		// Determine the actual class name and variant
 		this.normal = __testName;
-		this.className = (lastAt >= 0 && lastAt > lastSlash ?
-			__testName.substring(0, lastAt) : __testName);
-		this.variant = (lastAt >= 0 && lastAt > lastSlash ?
-			__testName.substring(lastAt + 1) : null);
+		this.className = (firstAt >= 0 && firstAt > lastDot ?
+			__testName.substring(0, firstAt) : __testName);
+		this.variant = (firstAt >= 0 && firstAt > lastDot ?
+			__testName.substring(firstAt + 1) : null);
+		
+		// If there is no variant, there is no possibility of of a sub-variant
+		if (this.variant == null)
+		{
+			this.primarySubVariant = null;
+			this.secondarySubVariant = null;
+		}
+		
+		// Otherwise the sub-variants will be the left and right side of the
+		// variant's at sign.
+		else
+		{
+			int nextAt = this.variant.indexOf('@');
+			
+			// Only a primary sub-variant
+			if (nextAt < 0)
+			{
+				this.primarySubVariant = this.variant;
+				this.secondarySubVariant = null;
+			}
+			
+			// Has both sub-variants
+			else
+			{
+				this.primarySubVariant = this.variant.substring(0, nextAt);
+				this.secondarySubVariant =
+					this.variant.substring(nextAt + 1);
+			}
+		}
 	}
 	
 	/**
@@ -104,5 +140,17 @@ public final class VMTestFrameworkTestClass
 	public int hashCode()
 	{
 		return Objects.hash(this.normal, this.className, this.variant);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/12/23
+	 */
+	@Override
+	public String toString()
+	{
+		return String.format("Test[%s, %s, %s (%s, %s)]",
+			this.normal, this.className, this.variant,
+			this.primarySubVariant, this.secondarySubVariant);
 	}
 }

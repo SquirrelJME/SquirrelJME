@@ -1,0 +1,21 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+import org.iban4j.CountryCode
+
+description = "Danger Hiptop API"
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "HP"
+	swmType = JavaMEMidletType.API
+	swmName = "Danger Hiptop API"
+	swmVendor = "Stephanie Gawroriski"
+	originalApiVendor = "Danger Incorporated (T-Mobile)"
+	originalApiVendorCountry = CountryCode.US
+	tags += "hiptop"
+}
+
+dependencies
+{
+	api project(":modules:cldc-compact")
+}

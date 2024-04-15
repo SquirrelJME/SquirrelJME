@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -72,7 +72,7 @@ public final class TaskInputStream
 			if (rc == PipeErrorType.END_OF_FILE)
 				return -1;
 			
-			// {@squirreljme.error ZZ45 I/O Error. (The error)}
+			/* {@squirreljme.error ZZ45 I/O Error. (The error)} */
 			else if (rc < 0)
 				throw new IOException("ZZ45 " + rc);
 			
@@ -86,8 +86,8 @@ public final class TaskInputStream
 					// Clear interrupt status
 					ThreadShelf.javaThreadClearInterrupt(self);
 					
-					// {@squirreljme.error ZZ4f Interrupt during single byte
-					// task input read.}
+					/* {@squirreljme.error ZZ4f Interrupt during single byte
+					task input read.} */
 					throw new InterruptedIOException("ZZ4f");
 				} 
 				
@@ -117,7 +117,7 @@ public final class TaskInputStream
 		// Forward into
 		int rv = TaskShelf.read(this.task, this.fd, __b, 0, __b.length);
 		
-		// {@squirreljme.error ZZ4c I/O Exception. (The error)} 
+		/* {@squirreljme.error ZZ4c I/O Exception. (The error)} */ 
 		if (rv < 0 && rv != PipeErrorType.END_OF_FILE)
 			throw new IOException("ZZ4c " + rv);
 		
@@ -140,7 +140,7 @@ public final class TaskInputStream
 		// Forward into
 		int rv = TaskShelf.read(this.task, this.fd, __b, __o, __l);
 		
-		// {@squirreljme.error ZZ4e I/O Exception. (The error)} 
+		/* {@squirreljme.error ZZ4e I/O Exception. (The error)} */ 
 		if (rv < 0 && rv != PipeErrorType.END_OF_FILE)
 			throw new IOException("ZZ4e " + rv);
 		

@@ -3,11 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.lang;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This is thrown when a thread is interrupted.
@@ -16,6 +18,7 @@ package java.lang;
  *
  * @since 2018/11/21
  */
+@Api
 public class InterruptedException
 	extends Exception
 {
@@ -24,6 +27,7 @@ public class InterruptedException
 	 *
 	 * @since 2018/11/21
 	 */
+	@Api
 	public InterruptedException()
 	{
 	}
@@ -34,6 +38,7 @@ public class InterruptedException
 	 * @param __m The message.
 	 * @since 2018/11/21
 	 */
+	@Api
 	public InterruptedException(String __m)
 	{
 		super(__m);

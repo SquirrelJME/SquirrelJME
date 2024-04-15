@@ -1,0 +1,34 @@
+<application>
+	<component name="ProjectJdkTable">
+		<jdk version="2">
+			<name value="squirreljme-8"/>
+			<type value="JavaSDK"/>
+			<version value="java version &quot;1.8.0&quot;" />
+			<homePath value="$PROJECT_DIR$/.idea/.jdk" />
+			<roots>
+				<classPath>
+					<root type="composite">
+						<root
+							url="file://$PROJECT_DIR$/modules/cldc-compact/build/libs/cldc-compact.jar"
+							type="simple" />
+						<root
+							url="file://$PROJECT_DIR$/modules/cldc-compact/build/classes/java/main"
+							type="simple" />
+					</root>
+				</classPath>
+				<javadocPath>
+					<root type="composite" />
+				</javadocPath>
+				<sourcePath>
+					<root type="composite">
+						<root
+							url="file://$PROJECT_DIR$/modules/cldc-compact/src/main/java"
+							type="simple" />
+					</root>
+				</sourcePath>
+			</roots>
+			<additional/>
+		</jdk>
+	</component>
+</application>
+

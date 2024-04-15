@@ -3,13 +3,14 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
+import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import cc.squirreljme.plugin.util.ProjectAndSourceSet;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -30,31 +31,26 @@ public class VMRomDependencies
 	/** The task to execute for. */
 	protected final VMRomTask task;
 	
-	/** The source set used. */
-	protected final String sourceSet;
-	
-	/** The virtual machine creating for. */
-	protected final VMSpecifier vmType;
+	/** The classifier used. */
+	protected final SourceTargetClassifier classifier;
 	
 	/**
 	 * Initializes the ROM dependency task.
 	 * 
 	 * @param __task The task to use.
-	 * @param __sourceSet The source set.
-	 * @param __vmType The virtual machine type.
+	 * @param __classifier The classifier used.
 	 * @throws NullPointerException on null arguments.
 	 * @since 2020/08/23
 	 */
-	public VMRomDependencies(VMRomTask __task, String __sourceSet,
-		VMSpecifier __vmType)
+	public VMRomDependencies(VMRomTask __task,
+		SourceTargetClassifier __classifier)
 		throws NullPointerException
 	{
-		if (__task == null || __sourceSet == null || __vmType == null)
+		if (__task == null || __classifier == null)
 			throw new NullPointerException("NARG");
 		
 		this.task = __task;
-		this.sourceSet = __sourceSet;
-		this.vmType = __vmType;
+		this.classifier = __classifier;
 	}
 	
 	/**
@@ -64,25 +60,23 @@ public class VMRomDependencies
 	@Override
 	public Iterable<VMLibraryTask> call()
 	{
-		return VMRomDependencies.libraries(this.task,
-			this.sourceSet, this.vmType);
+		return VMRomDependencies.libraries(this.task, this.classifier);
 	}
 	
 	/**
 	 * Returns all the libraries that should make up the ROM.
 	 * 
 	 * @param __task The task to get from.
-	 * @param __sourceSet The source set to use.
-	 * @param __vmType The VM type running for.
+	 * @param __classifier The classifier used.
 	 * @return The libraries that are used as a dependency to build the ROM.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/27
 	 */
 	public static Iterable<VMLibraryTask> libraries(Task __task,
-		String __sourceSet, VMSpecifier __vmType)
+		SourceTargetClassifier __classifier)
 		throws NullPointerException
 	{
-		if (__task == null || __sourceSet == null || __vmType == null)
+		if (__task == null || __classifier == null)
 			throw new NullPointerException("NARG");
 		
 		// Where all the libraries will go
@@ -90,7 +84,7 @@ public class VMRomDependencies
 			new LinkedHashMap<>();
 		
 		// This could be recursive
-		VMRomDependencies.__libraries(__task, __sourceSet, __vmType, result);
+		VMRomDependencies.__libraries(__task, __classifier, result);
 		
 		return new ArrayList<>(result.values());
 	}
@@ -99,33 +93,45 @@ public class VMRomDependencies
 	 * Returns all the mapped libraries.
 	 * 
 	 * @param __task The task to add for.
-	 * @param __sourceSet The source set to add.
-	 * @param __vmType The current virtual machine type.
+	 * @param __classifier The classifier used.
 	 * @param __result Where all the results are stored.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/08/07
 	 */
-	private static void __libraries(Task __task, String __sourceSet,
-		VMSpecifier __vmType,
+	private static void __libraries(Task __task,
+		SourceTargetClassifier __classifier,
 		Map<ProjectAndSourceSet, VMLibraryTask> __result)
 		throws NullPointerException
 	{
-		if (__task == null || __sourceSet == null || __vmType == null ||
-			__result == null)
+		if (__task == null || __classifier == null || __result == null)
 			throw new NullPointerException("NARG");
 		
-		// If we are not on the main source set, we need to include everything
-		// the main source set has. For tests for example, we need the main
-		// libraries to even test them properly.
-		if (!SourceSet.MAIN_SOURCE_SET_NAME.equals(__sourceSet))
-			VMRomDependencies.__libraries(__task,
-				SourceSet.MAIN_SOURCE_SET_NAME, __vmType, __result);
+		// If this is a single source set ROM, then the dependencies act a
+		// bit differently
+		boolean isSingleSourceSet = __classifier.getVmType()
+			.isSingleSourceSetRom(__classifier.getBangletVariant());
 		
-		// If we are using tests, then we need to include all of the test
-		// fixtures as well
-		if (SourceSet.TEST_SOURCE_SET_NAME.equals(__sourceSet))
-			VMRomDependencies.__libraries(__task,
-				VMHelpers.TEST_FIXTURES_SOURCE_SET_NAME, __vmType, __result);
+		// Our ROM is only in our source set, so we do not include the
+		// libraries which are part of the main or other source set at all
+		// The build should go a bit faster for this as it is not waiting
+		// for something to happen
+		if (!isSingleSourceSet)
+		{
+			// If we are not on the main source set, we need to include
+			// everything the main source set has. For tests for example, we
+			// need the main libraries to even test them properly.
+			if (!__classifier.isMainSourceSet())
+				VMRomDependencies.__libraries(__task,
+					__classifier.withSourceSet(SourceSet.MAIN_SOURCE_SET_NAME),
+					__result);
+			
+			// If we are using tests, then we need to include all the test
+			// fixtures as well
+			if (__classifier.isTestSourceSet())
+				VMRomDependencies.__libraries(__task,
+					__classifier.withSourceSet(
+						VMHelpers.TEST_FIXTURES_SOURCE_SET_NAME), __result);
+		}
 		
 		// Go through all projects and map dependencies
 		for (Project project : __task.getProject().getRootProject()
@@ -139,13 +145,13 @@ public class VMRomDependencies
 			
 			// Only consider library tasks of this given type
 			Task task = project.getTasks().findByName(TaskInitialization
-				.task("lib", __sourceSet, __vmType));
+				.task("lib", __classifier));
 			if (!(task instanceof VMLibraryTask))
 				continue;
 			
 			// Add the task
-			__result.put(new ProjectAndSourceSet(
-				task.getProject(), __sourceSet), (VMLibraryTask)task);
+			__result.put(new ProjectAndSourceSet(task.getProject(),
+				__classifier.getSourceSet()), (VMLibraryTask)task);
 		}
 	}
 }

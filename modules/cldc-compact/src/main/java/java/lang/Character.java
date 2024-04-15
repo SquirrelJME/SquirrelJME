@@ -3,13 +3,14 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.lang;
 
 import cc.squirreljme.jvm.mle.TypeShelf;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.i18n.DefaultLocale;
 import java.lang.ref.Reference;
@@ -20,30 +21,37 @@ import java.lang.ref.WeakReference;
  *
  * @since 2018/10/13
  */
+@Api
 public final class Character
 	implements Comparable<Character>
 {
 	/** The maximum radix for digit conversions. */
+	@Api
 	public static final int MAX_RADIX =
 		36;
 	
 	/** The maximum value for characters. */
+	@Api
 	public static final char MAX_VALUE =
 		65535;
 	
 	/** The minimum radix for digit conversions. */
+	@Api
 	public static final int MIN_RADIX =
 		2;
 	
 	/** The minimum value for characters. */
+	@Api
 	public static final char MIN_VALUE =
 		0;
 	
 	/** The number of bits used to represent a character. */
+	@Api
 	public static final int SIZE =
 		16;
 	
 	/** The class representing the primitive type. */
+	@Api
 	public static final Class<Character> TYPE =
 		TypeShelf.<Character>typeToClass(TypeShelf.typeOfCharacter());
 	
@@ -59,6 +67,7 @@ public final class Character
 	 * @param __v The character to use.
 	 * @since 2018/10/11
 	 */
+	@Api
 	public Character(char __v)
 	{
 		this._value = __v;
@@ -70,6 +79,7 @@ public final class Character
 	 * @return The character value.
 	 * @since 2018/10/11
 	 */
+	@Api
 	public char charValue()
 	{
 		return this._value;
@@ -147,6 +157,7 @@ public final class Character
 	 * not valid then {@code -1} is returned.
 	 * @since 2018/10/13
 	 */
+	@Api
 	public static int digit(char __c, int __r)
 	{
 		// Invalid radix
@@ -181,6 +192,7 @@ public final class Character
 	 * or the radix is out of range.
 	 * @since 2018/10/13
 	 */
+	@Api
 	public static char forDigit(int __dig, int __r)
 	{
 		if (__dig < 0 || __dig >= __r || __r < Character.MIN_RADIX ||
@@ -199,6 +211,7 @@ public final class Character
 	 * @return True if the character is a digit.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public static boolean isDigit(char __c)
 	{
 		return (__c >= '0' && __c <= '9');
@@ -211,6 +224,7 @@ public final class Character
 	 * @return True if the character is an ISO control code.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public static boolean isISOControl(char __c)
 	{
 		return (__c >= 0 && __c <= 0x1F) || (__c >= 0x7F && __c <= 0x9F);
@@ -225,6 +239,7 @@ public final class Character
 	 * @return True if the character is lowercase.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public static boolean isLowerCase(char __c)
 	{
 		// 0xF7 is Divide
@@ -239,6 +254,7 @@ public final class Character
 	 * @return True if the character is a space character.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public static boolean isSpaceChar(char __c)
 	{
 		return (__c == 0x09 || __c == 0x0A || __c == 0x0C || __c == 0x0D ||
@@ -254,6 +270,7 @@ public final class Character
 	 * @return True if the character is uppercase.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public static boolean isUpperCase(char __c)
 	{
 		// 0xD7 is multiply
@@ -268,6 +285,7 @@ public final class Character
 	 * @return True if the character is whitespace.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public static boolean isWhitespace(char __c)
 	{
 		switch (__c)
@@ -299,6 +317,7 @@ public final class Character
 	 * @return The converted character.
 	 * @since 2018/10/13
 	 */
+	@Api
 	@ImplementationNote("CLDC only supports Latin-1 and this method has no " +
 		"locale support.")
 	public static char toLowerCase(char __c)
@@ -313,6 +332,7 @@ public final class Character
 	 * @return The string representation of that character.
 	 * @since 2018/10/13
 	 */
+	@Api
 	public static String toString(char __c)
 	{
 		return new String(new char[]{__c}, (short)0);
@@ -326,6 +346,7 @@ public final class Character
 	 * @return The converted character.
 	 * @since 2018/10/13
 	 */
+	@Api
 	@ImplementationNote("CLDC only supports Latin-1 and this method has no " +
 		"locale support.")
 	public static char toUpperCase(char __c)
@@ -340,7 +361,9 @@ public final class Character
 	 * @return The resulting character value.
 	 * @since 2018/10/11
 	 */
+	@Api
 	@ImplementationNote("This is not cached.")
+	@SuppressWarnings("UnnecessaryBoxing")
 	public static Character valueOf(char __v)
 	{
 		return new Character(__v);

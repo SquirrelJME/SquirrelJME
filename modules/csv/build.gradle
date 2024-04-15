@@ -1,0 +1,19 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+
+description = "Contains support for reading/writing CSV files."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "CS"
+	swmType = JavaMEMidletType.LIBRARY
+	swmName = "CSV Library"
+	swmVendor = "Stephanie Gawroriski"
+	tags += "extra"
+}
+
+dependencies
+{
+	api project(":modules:cldc-compact")
+	api project(":modules:collections")
+}

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -163,8 +163,8 @@ public enum GraphicsFunction
 			case 30:	return GraphicsFunction.SET_BLENDING_MODE;
 			case 31:	return GraphicsFunction.DRAW_REGION;
 				
-				// {@squirreljme.error EB0j Invalid graphics function.
-				// (The function ID)}
+				/* {@squirreljme.error EB0j Invalid graphics function.
+				(The function ID)} */
 			default:
 				throw new IllegalArgumentException("EB0j " + __id);
 		}

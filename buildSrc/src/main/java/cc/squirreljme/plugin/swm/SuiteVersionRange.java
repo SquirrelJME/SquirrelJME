@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -85,7 +85,7 @@ public final class SuiteVersionRange
 		// Trim
 		__s = __s.trim();
 		
-		// {@squirreljme.error DG0l The version range cannot be blank.}
+		/* {@squirreljme.error DG0l The version range cannot be blank.} */
 		int sl = __s.length();
 		if (sl <= 0)
 			throw new IllegalArgumentException("AR0l");
@@ -114,8 +114,8 @@ public final class SuiteVersionRange
 					this.to = new SuiteVersion(99, 99, 99);
 				}
 				
-				// {@squirreljme.error DG0m Major only wildcard versions must
-				// be a single asterisk. (The input string)}
+				/* {@squirreljme.error DG0m Major only wildcard versions must
+				be a single asterisk. (The input string)} */
 				else
 					throw new InvalidSuiteException(String.format("AR0m %s",
 						__s));
@@ -125,8 +125,8 @@ public final class SuiteVersionRange
 			// how deep it goes
 			else
 			{
-				// {@squirreljme.error DG0n The last dot in a wildcard must be
-				// before the asterisk. (The input string)}
+				/* {@squirreljme.error DG0n The last dot in a wildcard must be
+				before the asterisk. (The input string)} */
 				if (ld != sl - 1)
 					throw new InvalidSuiteException(String.format("AR0n %s",
 						__s));
@@ -150,8 +150,8 @@ public final class SuiteVersionRange
 				else if (numdots == 2)
 					this.to = new SuiteVersion(ver.major(), ver.minor(), 99);
 				
-				// {@squirreljme.error DG0o There are too many decimal points
-				// in the wildcard version string. (The input string)}
+				/* {@squirreljme.error DG0o There are too many decimal points
+				in the wildcard version string. (The input string)} */
 				else
 					throw new InvalidSuiteException(String.format("AR0o %s",
 						__s));

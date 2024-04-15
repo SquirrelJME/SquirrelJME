@@ -1,0 +1,6 @@
+# 2023/01/14
+
+## 15:54
+
+I did three micro refactorings, which is very nice around the display code. I
+am not sure if I will be doing any more but I will if I see something.

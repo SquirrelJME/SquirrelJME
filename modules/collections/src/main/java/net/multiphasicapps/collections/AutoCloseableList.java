@@ -4,7 +4,7 @@
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 //     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -47,8 +47,8 @@ public class AutoCloseableList<T extends AutoCloseable>
 				count++;
 			}
 		
-		// {@squirreljme.error AC06 There was at least one exception which
-		// occurred while closing the list. (The number of exceptions thrown)}
+		/* {@squirreljme.error AC06 There was at least one exception which
+		occurred while closing the list. (The number of exceptions thrown)} */
 		if (defer != null)
 			throw new RuntimeException(String.format("AC06 %d", count), defer);
 	}

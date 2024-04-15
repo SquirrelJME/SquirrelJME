@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.multivm.ident.TargetClassifier;
 import org.gradle.api.Task;
 import org.gradle.api.specs.Spec;
 
@@ -20,23 +21,23 @@ import org.gradle.api.specs.Spec;
 public class CheckRomShouldBuild
 	implements Spec<Task>
 {
-	/** The virtual machine specifier. */
-	protected final VMSpecifier vmType;
+	/** The classifier used. */
+	protected final TargetClassifier classifier;
 	
 	/**
 	 * Checks if a ROM should be built.
 	 * 
-	 * @param __vmType The virtual machine type.
+	 * @param __classifier The classifier used.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/23
 	 */
-	public CheckRomShouldBuild(VMSpecifier __vmType)
+	public CheckRomShouldBuild(TargetClassifier __classifier)
 		throws NullPointerException
 	{
-		if (__vmType == null)
+		if (__classifier == null)
 			throw new NullPointerException("NARG");
 		
-		this.vmType = __vmType;
+		this.classifier = __classifier;
 	}
 	
 	/**
@@ -50,6 +51,7 @@ public class CheckRomShouldBuild
 		if (__task == null)
 			throw new NullPointerException("NARG");
 		
-		return this.vmType.hasRom();
+		return this.classifier.getVmType().hasRom(
+			this.classifier.getBangletVariant());
 	}
 }

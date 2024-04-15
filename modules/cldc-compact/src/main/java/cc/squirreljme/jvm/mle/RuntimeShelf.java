@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -19,12 +19,19 @@ import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
 import cc.squirreljme.jvm.mle.constants.VMStatisticType;
 import cc.squirreljme.jvm.mle.constants.VMType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import org.intellij.lang.annotations.MagicConstant;
+import org.jetbrains.annotations.Blocking;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Run-time shelf which contains system information.
  *
  * @since 2020/06/09
  */
+@SquirrelJMEVendorApi
 public final class RuntimeShelf
 {
 	/**
@@ -42,6 +49,8 @@ public final class RuntimeShelf
 	 * @return The {@link ByteOrderType} of the system.
 	 * @since 2021/02/09
 	 */
+	@SquirrelJMEVendorApi
+	@MagicConstant(valuesFromClass = ByteOrderType.class)
 	public static native int byteOrder();
 	
 	/**
@@ -50,6 +59,7 @@ public final class RuntimeShelf
 	 * @return The current time in milliseconds since UTC.
 	 * @since 2020/06/18
 	 */
+	@SquirrelJMEVendorApi
 	public static native long currentTimeMillis();
 	
 	/**
@@ -59,6 +69,8 @@ public final class RuntimeShelf
 	 * @see BuiltInEncodingType
 	 * @since 2020/06/11
 	 */
+	@SquirrelJMEVendorApi
+	@MagicConstant(valuesFromClass = BuiltInEncodingType.class)
 	public static native int encoding();
 	
 	/**
@@ -67,6 +79,8 @@ public final class RuntimeShelf
 	 * @param __code The exit code.
 	 * @since 2020/06/16
 	 */
+	@SquirrelJMEVendorApi
+	@Contract("_ -> fail")
 	public static native void exit(int __code);
 	
 	/**
@@ -75,6 +89,8 @@ public final class RuntimeShelf
 	 * 
 	 * @since 2021/01/04
 	 */
+	@SquirrelJMEVendorApi
+	@Blocking
 	public static native void garbageCollect();
 	
 	/**
@@ -84,6 +100,8 @@ public final class RuntimeShelf
 	 * @see LineEndingType
 	 * @since 2020/06/09
 	 */
+	@SquirrelJMEVendorApi
+	@MagicConstant(valuesFromClass = LineEndingType.class)
 	public static native int lineEnding();
 	
 	/**
@@ -93,6 +111,8 @@ public final class RuntimeShelf
 	 * @see BuiltInLocaleType
 	 * @since 2020/06/11
 	 */
+	@SquirrelJMEVendorApi
+	@MagicConstant(valuesFromClass = BuiltInLocaleType.class)
 	public static native int locale();
 	
 	/**
@@ -102,6 +122,8 @@ public final class RuntimeShelf
 	 * @return The {@link MemoryProfileType} of the system.
 	 * @since 2021/02/19
 	 */
+	@SquirrelJMEVendorApi
+	@MagicConstant(valuesFromClass = MemoryProfileType.class)
 	public static native int memoryProfile();
 	
 	/**
@@ -110,6 +132,7 @@ public final class RuntimeShelf
 	 * @return The monotonic nanosecond clock.
 	 * @since 2020/06/18
 	 */
+	@SquirrelJMEVendorApi
 	public static native long nanoTime();
 	
 	/**
@@ -118,7 +141,24 @@ public final class RuntimeShelf
 	 * @return The {@link PhoneModelType}.
 	 * @since 2022/02/14
 	 */
+	@SquirrelJMEVendorApi
+	@MagicConstant(valuesFromClass = PhoneModelType.class)
 	public static native int phoneModel();
+	
+	/**
+	 * Returns the value of a system environment variable.
+	 * 
+	 * Not every platform and/or system may have these, so these should not
+	 * be depended upon.
+	 * 
+	 * @param __key The environment variable key.
+	 * @return The value of the variable if it is set, otherwise {@code null}.
+	 * @throws MLECallError If key is {@code null}.
+	 * @since 2023/02/02
+	 */
+	@SquirrelJMEVendorApi
+	public static native String systemEnv(@NotNull String __key)
+		throws MLECallError;
 	
 	/**
 	 * Returns the system property for the given key, if there is one.
@@ -128,7 +168,8 @@ public final class RuntimeShelf
 	 * @throws MLECallError If {@code __key} is {@code null}.
 	 * @since 2020/06/17
 	 */
-	public static native String systemProperty(String __key)
+	@SquirrelJMEVendorApi
+	public static native String systemProperty(@NotNull String __key)
 		throws MLECallError;
 	
 	/**
@@ -140,7 +181,9 @@ public final class RuntimeShelf
 	 * @throws MLECallError If {@code __type} is not valid.
 	 * @since 2020/06/17
 	 */
-	public static native String vmDescription(int __type)
+	@SquirrelJMEVendorApi
+	public static native String vmDescription(
+		@MagicConstant(valuesFromClass = VMDescriptionType.class) int __type)
 		throws MLECallError;
 	
 	/**
@@ -151,7 +194,9 @@ public final class RuntimeShelf
 	 * @throws MLECallError If {@code __type} is not valid.
 	 * @since 2020/06/17
 	 */
-	public static native long vmStatistic(int __type)
+	@SquirrelJMEVendorApi
+	public static native long vmStatistic(
+		@MagicConstant(valuesFromClass = VMStatisticType.class) int __type)
 		throws MLECallError;
 	
 	/**
@@ -160,5 +205,7 @@ public final class RuntimeShelf
 	 * @return The current {@link VMType}.
 	 * @since 2020/06/16
 	 */
+	@SquirrelJMEVendorApi
+	@MagicConstant(valuesFromClass = VMType.class)
 	public static native int vmType();
 }

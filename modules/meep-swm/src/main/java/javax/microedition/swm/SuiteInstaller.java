@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package javax.microedition.swm;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.swm.JarStreamSupplier;
 import java.util.Set;
@@ -19,6 +20,7 @@ import net.multiphasicapps.collections.IdentityLinkedHashSet;
  *
  * @since 2016/06/24
  */
+@Api
 public final class SuiteInstaller
 {
 	/** The supplier for the JAR data. */
@@ -51,6 +53,7 @@ public final class SuiteInstaller
 	 * @param __sl The listener to add.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public final void addInstallationListener(SuiteInstallListener __sl)
 	{
 		// Ignore
@@ -65,6 +68,7 @@ public final class SuiteInstaller
 	 *
 	 * @since 2016/06/24
 	 */
+	@Api
 	public final void cancel()
 	{
 		throw Debugging.todo();
@@ -77,6 +81,7 @@ public final class SuiteInstaller
 	 * @param __sl The listener to remove.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public final void removeInstallationListener(SuiteInstallListener __sl)
 	{
 		// Ignore
@@ -99,6 +104,7 @@ public final class SuiteInstaller
 	 * @return The tracker for the given suite.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public final SuiteManagementTracker start()
 	{
 		return new __SuiteTracker__(this);

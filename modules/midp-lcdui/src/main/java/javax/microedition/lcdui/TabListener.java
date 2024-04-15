@@ -3,13 +3,15 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
+import org.jetbrains.annotations.Async;
 
 /**
  * This interface is used as a callback when there has been a change to the
@@ -18,6 +20,7 @@ import cc.squirreljme.runtime.lcdui.SerializedEvent;
  *
  * @since 2018/03/29
  */
+@Api
 public interface TabListener
 {
 	/**
@@ -28,7 +31,9 @@ public interface TabListener
 	 * @param __tab The screen that was added to the tabbed pane.
 	 * @since 2018/03/29
 	 */
+	@Api
 	@SerializedEvent
+	@Async.Execute
 	void tabAddedEvent(int __i, Screen __tab);
 	
 	/**
@@ -38,7 +43,9 @@ public interface TabListener
 	 * @param __tab The tab which now has focus.
 	 * @since 2018/03/29
 	 */
+	@Api
 	@SerializedEvent
+	@Async.Execute
 	void tabChangeEvent(Screen __tab);
 	
 	/**
@@ -48,7 +55,9 @@ public interface TabListener
 	 * @param __i The tab that has been removed.
 	 * @since 2018/03/29
 	 */
+	@Api
 	@SerializedEvent
+	@Async.Execute
 	void tabRemoveEvent(int __i);
 }
 

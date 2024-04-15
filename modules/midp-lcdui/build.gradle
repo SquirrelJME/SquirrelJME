@@ -16,6 +16,66 @@ squirreljme
 	definedStandards += new JavaMEStandard("microedition.lcdui;;")
 	tags += "graphics"
 	tags += "j2me"
+	
+	// ProGuard thinks this method has no side effects so it removes this
+	// however, we really do need to keep this method but we can obfuscate it
+	proGuardOptions += ["-keepclassmembers,allowobfuscation",
+		"class", "*", "{",
+			"javax.microedition.lcdui.__CommonWidget__\$__CommonState__",
+				"__stateInit", "(",
+					"cc.squirreljme.runtime.lcdui.mle.UIBackend",
+				")", ";",
+		"}"]
+	
+	// Performing optimizations here breaks MLE callbacks
+	proGuardOptions += ["-keep,includecode",
+		"class", "javax.microedition.lcdui.__MLEUIThread__", "{",
+			"<methods>", ";",
+		"}"]
+	
+	// Keep any class members that are marked as serialized events and do not
+	// optimize them
+	proGuardOptions += ["-keepclassmembers,includecode",
+		"class", "*", "{",
+			"@cc.squirreljme.runtime.lcdui.SerializedEvent", "*", ";",
+		"}"]
+	
+	// Buggy when these are optimized
+	proGuardOptions += ["-keep,includecode", "class",
+		"javax.microedition.lcdui.__NotifyShow__"]
+	proGuardOptions += ["-keep,includecode",
+		"class", "cc.squirreljme.runtime.lcdui.mle.PencilGraphics", "{",
+			"<methods>", ";",
+		"}"]
+	proGuardOptions += ["-keepclassmembers,includecode",
+		"class", "javax.microedition.lcdui.Canvas", "{",
+			"cc.squirreljme.runtime.lcdui.mle.UIBackend",
+				"__backend", "(", ")", ";",
+			"void", "__updateFormTitle", "(",
+				"boolean", ",",
+				"boolean", ")", ";",
+		"}"]
+	proGuardOptions += ["-keepclassmembers,includecode",
+		"class", "javax.microedition.lcdui.Displayable", "{",
+			"void", "__showNotify", "(",
+				"javax.microedition.lcdui.Displayable", ")", ";",
+			"void", "__layoutCommands", "(", ")", ";",
+			"void", "__layoutDefault", "(",
+					"javax.microedition.lcdui.__Layout__",
+				")", ";",
+			"void", "__layoutExecute", "(",
+					"javax.microedition.lcdui.__Layout__",
+				")", ";",
+			"void", "__layoutExecute", "(",
+					"javax.microedition.lcdui.__Layout__", ",",
+					"int", ",",
+					"int",
+				")", ";",
+			"void", "__layoutActionSet", "(",
+					"javax.microedition.lcdui.__Action__", ",",
+					"int",
+				")", ";",
+		"}"]
 }
 
 dependencies

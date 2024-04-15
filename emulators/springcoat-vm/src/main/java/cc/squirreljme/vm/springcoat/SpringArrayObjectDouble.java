@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -83,8 +83,8 @@ public final class SpringArrayObjectDouble
 			return (C)Double.valueOf(this._elements[__dx]);
 		}
 		
-		// {@squirreljme.error BK0b Out of bounds access to array. (The index;
-		// The length of the array)}
+		/* {@squirreljme.error BK0b Out of bounds access to array. (The index;
+		The length of the array)} */
 		catch (IndexOutOfBoundsException e)
 		{
 			throw new SpringArrayIndexOutOfBoundsException(
@@ -106,15 +106,15 @@ public final class SpringArrayObjectDouble
 			this._elements[__dx] = ((Double)__v).doubleValue();
 		}
 		
-		// {@squirreljme.error BK0c Could not set the index in the double
-		// array.}
+		/* {@squirreljme.error BK0c Could not set the index in the double
+		array.} */
 		catch (ClassCastException e)
 		{
 			throw new SpringArrayStoreException("BK0c", e);
 		}
 		
-		// {@squirreljme.error BK0d Out of bounds access to array. (The index;
-		// The length of the array)}
+		/* {@squirreljme.error BK0d Out of bounds access to array. (The index;
+		The length of the array)} */
 		catch (IndexOutOfBoundsException e)
 		{
 			throw new SpringArrayIndexOutOfBoundsException(

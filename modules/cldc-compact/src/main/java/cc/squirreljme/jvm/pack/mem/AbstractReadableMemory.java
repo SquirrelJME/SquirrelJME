@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -19,7 +19,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2019/04/21
  */
-@SuppressWarnings("MagicNumber")
+@SuppressWarnings({"MagicNumber", "DuplicateThrows"})
 public abstract class AbstractReadableMemory
 	implements HasByteOrder, ReadableMemory
 {
@@ -46,7 +46,7 @@ public abstract class AbstractReadableMemory
 	public AbstractReadableMemory(int __byteOrder)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error ZZ3u Invalid byte order.}
+		/* {@squirreljme.error ZZ3u Invalid byte order.} */
 		if (__byteOrder != ByteOrderType.BIG_ENDIAN &&
 			__byteOrder != ByteOrderType.LITTLE_ENDIAN)
 			throw new IllegalArgumentException("ZZ3u " + __byteOrder);
@@ -62,8 +62,8 @@ public abstract class AbstractReadableMemory
 	public long absoluteAddress(long __addr)
 		throws MemoryAccessException, NotRealMemoryException
 	{
-		// {@squirreljme.error ZZ4p This is not memory that has a valid
-		// absolute address.}
+		/* {@squirreljme.error ZZ4p This is not memory that has a valid
+		absolute address.} */
 		throw new NotRealMemoryException(__addr, "ZZ4p");
 	}
 	
@@ -222,8 +222,8 @@ public abstract class AbstractReadableMemory
 		if (__base == 0 && __len == this.memRegionSize())
 			return this;
 		
-		// {@squirreljme.error ZZ4b Sub-section would be out of range of
-		// this memory region. (The base address; The length)}
+		/* {@squirreljme.error ZZ4b Sub-section would be out of range of
+		this memory region. (The base address; The length)} */
 		if (__base < 0 || __len < 0 || (__base + __len) > this.memRegionSize())
 			throw new MemoryAccessException(__base,
 				"ZZ4b " + __base + " " + __len);

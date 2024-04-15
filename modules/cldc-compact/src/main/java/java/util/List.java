@@ -3,23 +3,28 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
+@Api
 public interface List<E>
 	extends Collection<E>
 {
 	@Override
 	boolean add(E __a);
 	
+	@Api
 	void add(int __a, E __b);
 	
 	@Override
 	boolean addAll(Collection<? extends E> __a);
 	
+	@Api
 	boolean addAll(int __a, Collection<? extends E> __b);
 	
 	@Override
@@ -43,12 +48,14 @@ public interface List<E>
 	 * list.
 	 * @since 2018/12/07
 	 */
+	@Api
 	E get(int __i)
 		throws IndexOutOfBoundsException;
 	
 	@Override
 	int hashCode();
 	
+	@Api
 	int indexOf(Object __a);
 	
 	@Override
@@ -57,15 +64,19 @@ public interface List<E>
 	@Override
 	Iterator<E> iterator();
 	
+	@Api
 	int lastIndexOf(Object __a);
 	
+	@Api
 	ListIterator<E> listIterator();
 	
+	@Api
 	ListIterator<E> listIterator(int __a);
 	
 	@Override
 	boolean remove(Object __a);
 	
+	@Api
 	E remove(int __a);
 	
 	@Override
@@ -74,11 +85,13 @@ public interface List<E>
 	@Override
 	boolean retainAll(Collection<?> __a);
 	
+	@Api
 	E set(int __a, E __b);
 	
 	@Override
 	int size();
 	
+	@Api
 	List<E> subList(int __a, int __b);
 	
 	@Override

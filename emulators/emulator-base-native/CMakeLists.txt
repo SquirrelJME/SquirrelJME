@@ -1,0 +1,93 @@
+# ---------------------------------------------------------------------------
+# SquirrelJME
+#     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+# ---------------------------------------------------------------------------
+# SquirrelJME is under the Mozilla Public License Version 2.0.
+# See license.mkd for licensing and copyright information.
+# ---------------------------------------------------------------------------
+# DESCRIPTION: CMake Helper for project
+
+cmake_minimum_required(VERSION 3.5)
+
+# Declare project
+project(libEmulatorBase)
+
+# Use standard JNI search
+find_package(JNI QUIET)
+
+# If JNI was not found, use a local copy as a fallback
+if(NOT JNI_FOUND)
+	# Where are the headers?
+	set(JNI_INCLUDE_DIRS
+		"headers/jni")
+
+	# Set as found
+	set(JNI_FOUND ON)
+endif()
+
+# Declare library
+add_library(libEmulatorBase SHARED
+	c/jniHelper.c
+	c/mle_debug.c
+	c/mle_form.c
+	c/mle_jar.c
+	c/mle_math.c
+	c/mle_midi.c
+	c/mle_nativearchive.c
+	c/mle_object.c
+	c/mle_pencil.c
+	c/mle_reflection.c
+	c/mle_runtime.c
+	c/mle_task.c
+	c/mle_terminal.c
+	c/mle_thread.c
+	c/mle_type.c
+	c/nativebinding.c
+	c/utils.c)
+
+# Includes for the build
+get_filename_component(nanocoatIncludePath
+	"${CMAKE_SOURCE_DIR}/../../nanocoat/include" ABSOLUTE)
+message(STATUS "NanoCoat include is: ${nanocoatIncludePath}")
+target_include_directories(libEmulatorBase PUBLIC
+	"headers"
+	"${nanocoatIncludePath}"
+	${JNI_INCLUDE_DIRS})
+
+# Libraries for the build
+get_filename_component(nanocoatLibPath
+	"${CMAKE_SOURCE_DIR}/../emulator-base/build/cmake-libsNativeNanoCoat"
+	ABSOLUTE)
+message(STATUS "NanoCoat lib is: ${nanocoatLibPath}")
+target_link_directories(libEmulatorBase PUBLIC
+	"${nanocoatLibPath}")
+target_link_libraries(libEmulatorBase PUBLIC
+	"BaseStatic")
+
+# It is easier to find this when it is in the build root
+set_target_properties(libEmulatorBase PROPERTIES
+	RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+	LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+	ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
+
+foreach(outputConfig ${CMAKE_CONFIGURATION_TYPES})
+	string(TOUPPER "${outputConfig}" outputConfig)
+
+	set_target_properties(libEmulatorBase PROPERTIES
+		RUNTIME_OUTPUT_DIRECTORY_${outputConfig} "${CMAKE_BINARY_DIR}"
+		LIBRARY_OUTPUT_DIRECTORY_${outputConfig} "${CMAKE_BINARY_DIR}"
+		ARCHIVE_OUTPUT_DIRECTORY_${outputConfig} "${CMAKE_BINARY_DIR}")
+endforeach()
+
+# Use a more basic name for the library
+set_target_properties(libEmulatorBase PROPERTIES
+	RUNTIME_OUTPUT_NAME
+	"emulator-base"
+	LIBRARY_OUTPUT_NAME
+	"emulator-base"
+	ARCHIVE_OUTPUT_NAME
+	"emulator-base")
+
+# Always make this position independent
+set_property(TARGET libEmulatorBase
+	PROPERTY POSITION_INDEPENDENT_CODE ON)

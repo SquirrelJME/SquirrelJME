@@ -11,10 +11,10 @@ squirreljme
 	swmType = JavaMEMidletType.APPLICATION
 	swmName = "LCDUI Graphics Demo"
 	swmVendor = "Stephanie Gawroriski"
-	midlets += new JavaMEMidlet("Font Demo", "fonts.xpm",
-		"net.multiphasicapps.lcduidemo.Fonts")
 	midlets += new JavaMEMidlet("Mystify Demo", "mystify.xpm",
 		"net.multiphasicapps.lcduidemo.Mystify")
+	midlets += new JavaMEMidlet("Font Demo", "fonts.xpm",
+		"net.multiphasicapps.lcduidemo.Fonts")
 	midlets += new JavaMEMidlet("Events Demo", "event.xpm",
 		"net.multiphasicapps.lcduidemo.Events")
 	midlets += new JavaMEMidlet("List Demo", "list.xpm",
@@ -34,4 +34,5 @@ dependencies
 {
 	api project(":modules:cldc-compact")
 	api project(":modules:profile-meep")
+	api project(":modules:midp-lcdui")
 }

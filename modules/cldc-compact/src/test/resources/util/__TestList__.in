@@ -94,8 +94,8 @@ secondary-removevalue: true
 secondary-set13: string:12
 secondary-set29: throwable:IndexOutOfBoundsException
 secondary-set6: string:5
-secondary-stringform: string:[Hello!,\_1,\_beep2,\_Xer!,\_6,\_8,\_10,\_11,
- \_13,\_14,\_16,\_17,\_Squirrels!]
+secondary-stringform: string:[Hello!\c\_1\c\_beep2\c\_Xer!\c\_6\c\_8\c\_10\c
+ \_11\c\_13\c\_14\c\_16\c\_17\c\_Squirrels!]
 secondary-listitremovebefore: throwable:IllegalStateException
 secondary-reversea: string[13]:Squirrels!,17,16,14,13,11,10,8,6,Xer!,beep2,1,
  Hello!

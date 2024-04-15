@@ -3,19 +3,22 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package javax.microedition.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.security.Permission;
 import java.security.PermissionCollection;
 
+@Api
 public final class FileProtocolPermission
 	extends GCFPermission
 {
+	@Api
 	public FileProtocolPermission(String __a, String __b)
 	{
 		super((String)null);

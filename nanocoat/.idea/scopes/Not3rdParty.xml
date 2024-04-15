@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="Not3rdParty" pattern="(file[nanocoat]:include//*||file[nanocoat]:frontend//*||file[nanocoat]:src//*)&amp;&amp;!file[nanocoat]:src/3rdparty//*&amp;&amp;!file[nanocoat]:include/3rdparty//*||file[nanocoat]:tests//*" />
+</component>

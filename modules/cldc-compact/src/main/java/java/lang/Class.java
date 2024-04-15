@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.InputStream;
 
@@ -24,6 +25,7 @@ import java.io.InputStream;
  *
  * @since 2018/12/08
  */
+@Api
 public final class Class<T>
 {
 	/** This is the prefix that is used for assertion checks. */
@@ -71,6 +73,7 @@ public final class Class<T>
 	 * @see Class#isAssignableFrom(Class)
 	 * @since 2016/06/13
 	 */
+	@Api
 	@SuppressWarnings({"unchecked"})
 	public <U> Class<? extends U> asSubclass(Class<U> __cl)
 		throws ClassCastException, NullPointerException
@@ -78,8 +81,8 @@ public final class Class<T>
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ0v The specified class is not a sub-class
-		// of this class. (The class being checked; The current class)}
+		/* {@squirreljme.error ZZ0v The specified class is not a sub-class
+		of this class. (The class being checked; The current class)} */
 		if (!this.isAssignableFrom(__cl))
 			throw new ClassCastException("ZZ0v " + __cl + " " + this);
 		
@@ -94,6 +97,7 @@ public final class Class<T>
 	 * @throws ClassCastException If the type is not matched.
 	 * @since 2018/09/29
 	 */
+	@Api
 	@SuppressWarnings({"unchecked"})
 	public T cast(Object __o)
 		throws ClassCastException
@@ -102,8 +106,8 @@ public final class Class<T>
 		if (__o == null)
 			return null;
 		
-		// {@squirreljme.error ZZ0w The other class cannot be casted to this
-		// class. (This class; The other class)}
+		/* {@squirreljme.error ZZ0w The other class cannot be casted to this
+		class. (This class; The other class)} */
 		Class<?> other = __o.getClass();
 		if (!this.isAssignableFrom(other))
 			throw new ClassCastException("ZZ0w " + this.getName() + " " +
@@ -126,6 +130,7 @@ public final class Class<T>
 	 * this may return {@code false} if they are disabled for a class.
 	 * @since 2016/06/13
 	 */
+	@Api
 	public boolean desiredAssertionStatus()
 	{
 		// If assertions have been checked, they do not have to be rechecked
@@ -142,6 +147,7 @@ public final class Class<T>
 	 * @return The name of this class.
 	 * @since 2018/09/22
 	 */
+	@Api
 	public String getName()
 	{
 		return TypeShelf.runtimeName(this._type);
@@ -173,6 +179,7 @@ public final class Class<T>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/01
 	 */
+	@Api
 	public InputStream getResourceAsStream(String __name)
 		throws NullPointerException
 	{
@@ -227,6 +234,7 @@ public final class Class<T>
 	 * @return The superclass or {@code null} if there is none.
 	 * @since 2017/03/29
 	 */
+	@Api
 	public Class<? super T> getSuperclass()
 	{
 		TypeBracket rv = TypeShelf.superClass(this._type);
@@ -239,6 +247,7 @@ public final class Class<T>
 	 * @return {@code true} if this class represents an array type.
 	 * @since 2016/06/16
 	 */
+	@Api
 	public boolean isArray()
 	{
 		return TypeShelf.isArray(this._type);
@@ -255,6 +264,7 @@ public final class Class<T>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/27
 	 */
+	@Api
 	@SuppressWarnings("EqualsBetweenInconvertibleTypes")
 	public boolean isAssignableFrom(Class<?> __cl)
 		throws NullPointerException
@@ -276,6 +286,7 @@ public final class Class<T>
 	 * @return If this is an interface.
 	 * @since 2018/11/03
 	 */
+	@Api
 	public boolean isInterface()
 	{
 		return TypeShelf.isInterface(this._type);
@@ -288,6 +299,7 @@ public final class Class<T>
 	 * @return If the given object is an instance of this class.
 	 * @since 2018/09/27
 	 */
+	@Api
 	public boolean isInstance(Object __o)
 	{
 		// Null will never be an instance
@@ -308,6 +320,7 @@ public final class Class<T>
 	 * @return The newly created instance.
 	 * @since 2018/12/04
 	 */
+	@Api
 	@SuppressWarnings({"unchecked", "RedundantThrows"})
 	public T newInstance()
 		throws InstantiationException, IllegalAccessException
@@ -374,46 +387,6 @@ public final class Class<T>
 	}
 	
 	/**
-	 * Constructs a new instance of this class.
-	 *
-	 * @throws InstantiationException If the default constructor cannot be
-	 * accessed by the calling method.
-	 * @throws IllegalAccessException If the class or constructor could not
-	 * be accessed.
-	 * @since 2018/12/04
-	 */
-	@SuppressWarnings("RedundantThrows")
-	final Object __newInstance()
-		throws InstantiationException, IllegalAccessException
-	{
-		throw Debugging.todo();
-		/*
-		// Get class details
-		ClassData data = this._data;
-		String binaryName = data.binaryName();
-		
-		// {@squirreljme.error ZZ0x Cannot construct new instance of class
-		// because it has no default constructor.}
-		StaticMethod sm = data.defaultConstructorMethod();
-		if (sm == null)
-			throw new InstantiationException("ZZ0x " + binaryName);
-		
-		// Allocate class instance
-		Object rv = ObjectAccess.allocateObject(binaryName);
-		
-		// {@squirreljme.error ZZ0y Could not allocate new instance.}
-		if (rv == null)
-			throw new OutOfMemoryError("ZZ0y");
-		
-		// Call default constructor
-		ObjectAccess.invokeStatic(sm, rv);
-		
-		// All done!
-		return rv;
-		*/
-	}
-	
-	/**
 	 * Locates the class with the given name and returns it, otherwise an
 	 * exception is thrown.
 	 *
@@ -432,6 +405,7 @@ public final class Class<T>
 	 * @throws NullPointerException If no name was specified.
 	 * @since 2016/03/01
 	 */
+	@Api
 	public static Class<?> forName(String __n)
 		throws ClassNotFoundException
 	{
@@ -439,8 +413,8 @@ public final class Class<T>
 		if (__n == null)
 			throw new NullPointerException();
 		
-		// {@squirreljme.error ZZ0z Could not find the specified class. (The
-		// name of the class)}
+		/* {@squirreljme.error ZZ0z Could not find the specified class. (The
+		name of the class)} */
 		TypeBracket found = TypeShelf.findType(
 			__n.replace('.', '/'));
 		if (found == null)

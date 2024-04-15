@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -63,13 +63,13 @@ public final class NullFileSystem
 		if (__base == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZY01 The null filesystem only supports a single
-		// path element.}
+		/* {@squirreljme.error ZY01 The null filesystem only supports a single
+		path element.} */
 		if (!__base.equals(NullPath.ONLY_PATH_STRING))
 			throw new InvalidPathException(__base, "ZY01");
 		
-		// {@squirreljme.error ZY02 Additional null path elements must be
-		// blank or null.}
+		/* {@squirreljme.error ZY02 Additional null path elements must be
+		blank or null.} */
 		if (__more != null)
 			for (String m : __more)
 				if (m != null && !m.isEmpty())

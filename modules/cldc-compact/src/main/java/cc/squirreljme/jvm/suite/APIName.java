@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -39,12 +39,12 @@ public final class APIName
 		// Force all APIs to be uppercase
 		__n = StringUtils.toUpperCaseNoLocale(__n);
 		
-		// {@squirreljme.error DG01 An illegal character was
-		// specified in the API name. (The API name)}
+		/* {@squirreljme.error DG01 An illegal character was
+		specified in the API name. (The API name)} */
 		if (StringUtils.firstIndex("\0\r\n:;", __n) >= 0)
 			throw new InvalidSuiteException(String.format("DG01 %s", __n));
 		
-		// {@squirreljme.error DG02 API name cannot be blank.}
+		/* {@squirreljme.error DG02 API name cannot be blank.} */
 		if (__n.length() <= 0)
 			throw new InvalidSuiteException("DG02");
 		

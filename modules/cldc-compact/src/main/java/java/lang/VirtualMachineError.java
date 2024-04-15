@@ -3,17 +3,20 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.lang;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This is thrown when the virtual machine has encountered an error.
  *
  * @since 2018/12/04
  */
+@Api
 public abstract class VirtualMachineError
 	extends Error
 {
@@ -22,6 +25,7 @@ public abstract class VirtualMachineError
 	 *
 	 * @since 2018/12/04
 	 */
+	@Api
 	public VirtualMachineError()
 	{
 	}
@@ -32,6 +36,7 @@ public abstract class VirtualMachineError
 	 * @param __m The message.
 	 * @since 2018/12/04
 	 */
+	@Api
 	public VirtualMachineError(String __m)
 	{
 		super(__m);

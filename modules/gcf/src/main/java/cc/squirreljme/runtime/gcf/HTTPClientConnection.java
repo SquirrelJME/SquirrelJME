@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -46,20 +46,22 @@ public class HTTPClientConnection
 	 * Initializes the HTTP connection.
 	 *
 	 * @param __addr The address.
+	 * @param __connector The connector for HTTP calls.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/12
 	 */
-	public HTTPClientConnection(HTTPAddress __addr)
+	public HTTPClientConnection(HTTPAddress __addr,
+		HTTPAgentConnector __connector)
 		throws NullPointerException
 	{
-		if (__addr == null)
+		if (__addr == null || __connector == null)
 			throw new NullPointerException("NARG");
 		
 		this.address = __addr;
 		
 		// Setup agents and handlers
 		HTTPStateTracker tracker = this.tracker;
-		HTTPAgent agent = new HTTPAgent(__addr, tracker);
+		HTTPAgent agent = new HTTPAgent(__addr, tracker, __connector);
 		this.agent = agent;
 		
 		// Setup builder for the requests
@@ -406,7 +408,7 @@ public class HTTPClientConnection
 	private HTTPRequestBuilder __request()
 		throws IOException
 	{
-		// {@squirreljme.error EC03 Cannot access the request
+		/* {@squirreljme.error EC03 Cannot access the request} */
 		if (this.tracker._state != HTTPState.SETUP)
 		{
 			// Clear before it is thrown
@@ -461,13 +463,14 @@ public class HTTPClientConnection
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/06
 	 */
-	public static final HTTPClientConnection connect(HTTPAddress __addr)
+	public static final HTTPClientConnection connectDefault(HTTPAddress __addr)
 		throws NullPointerException
 	{
 		if (__addr == null)
 			throw new NullPointerException("NARG");
 		
-		return new HTTPClientConnection(__addr);
+		return new HTTPClientConnection(__addr,
+			new SocketHTTPAgentConnector());
 	}
 }
 

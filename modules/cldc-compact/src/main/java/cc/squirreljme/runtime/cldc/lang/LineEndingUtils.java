@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -132,7 +132,7 @@ public final class LineEndingUtils
 			case LineEndingType.CRLF:
 				return (__index == 0 ? '\r' : '\n');
 			
-			// {@squirreljme.error ZZ03 Unknown line ending type. (Type)}
+			/* {@squirreljme.error ZZ03 Unknown line ending type. (Type)} */
 			default:
 				throw new IllegalArgumentException("ZZ03 " + __type);
 		}
@@ -155,7 +155,7 @@ public final class LineEndingUtils
 			case LineEndingType.LF:		return "\n";
 			case LineEndingType.CRLF:	return "\r\n";
 			
-			// {@squirreljme.error ZZ29 Unknown line ending type. (Type)}
+			/* {@squirreljme.error ZZ29 Unknown line ending type. (Type)} */
 			default:
 				throw new IllegalArgumentException("ZZ29 " + __type);
 		}
@@ -182,7 +182,7 @@ public final class LineEndingUtils
 			case "\n":		return LineEndingType.LF;
 			case "\r\n":	return LineEndingType.CRLF;
 			
-				// {@squirreljme.error ZZ3w Unknown line ending string.}
+				/* {@squirreljme.error ZZ3w Unknown line ending string.} */
 			default:
 				throw new IllegalArgumentException("ZZ3w " + __string);
 		}

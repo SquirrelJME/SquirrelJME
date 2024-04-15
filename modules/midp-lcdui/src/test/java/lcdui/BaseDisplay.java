@@ -3,13 +3,14 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package lcdui;
 
 import cc.squirreljme.jvm.mle.UIFormShelf;
+import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.lcdui.Display;
@@ -43,8 +44,12 @@ public abstract class BaseDisplay
 	public final void test(String __param)
 		throws Throwable
 	{
+		UIDisplayBracket[] displays = UIFormShelf.displays();
+		
 		Debugging.todoNote("BaseDisplay::test() -- Headless check.");
-		if (0 == UIFormShelf.metric(UIMetricType.UIFORMS_SUPPORTED))
+		if (displays == null || displays.length == 0 ||
+			0 == UIFormShelf.metric(displays[0],
+				UIMetricType.UIFORMS_SUPPORTED))
 			throw new UntestableException("Native forms not supported.");
 		
 		// Forward test

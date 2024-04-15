@@ -3,7 +3,7 @@
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -59,7 +59,7 @@ class __ReadableSubSection__
 	public final long absoluteAddress(long __addr)
 		throws MemoryAccessException, NotRealMemoryException
 	{
-		// {@squirreljme.error ZZ4s Address is out of range of the section.}
+		/* {@squirreljme.error ZZ4s Address is out of range of the section.} */
 		if (__addr < 0 || __addr >= this.length)
 			throw new MemoryAccessException(__addr, "ZZ4s");
 		
@@ -160,8 +160,8 @@ class __ReadableSubSection__
 		if (__base == 0 && __len == this.memRegionSize())
 			return this;
 		
-		// {@squirreljme.error ZZ4q Sub-section would be out of range of
-		// this memory region. (The base address; The length)}
+		/* {@squirreljme.error ZZ4q Sub-section would be out of range of
+		this memory region. (The base address; The length)} */
 		if (__base < 0 || __len < 0 || (__base + __len) > this.memRegionSize())
 			throw new MemoryAccessException(__base,
 				"ZZ4q " + __base + " " + __len);
@@ -179,8 +179,8 @@ class __ReadableSubSection__
 	 */
 	private long __check(long __addr, int __len)
 	{
-		// {@squirreljme.error ZZ5a Access out of bounds. (The address;
-		// The requested length; The memory length)}
+		/* {@squirreljme.error ZZ5a Access out of bounds. (The address;
+		The requested length; The memory length)} */
 		if (__addr < 0 || __len < 0 || __addr + __len > this.length)
 			throw new MemoryAccessException(__addr, String.format(
 				"ZZ5a %d + %d in %d", __addr, __len, this.length));

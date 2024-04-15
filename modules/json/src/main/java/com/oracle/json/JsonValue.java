@@ -3,20 +3,24 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package com.oracle.json;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This represents an immutable JSON value.
  *
  * @since 2014/07/26
  */
+@Api
 public interface JsonValue
 {
 	/** The null literal. */
+	@Api
 	JsonValue NULL =
 		new JsonValue()
 		{
@@ -34,6 +38,7 @@ public interface JsonValue
 		};
 	
 	/** The true literal .*/
+	@Api
 	JsonValue TRUE =
 		new JsonValue()
 		{
@@ -51,6 +56,7 @@ public interface JsonValue
 		};
 	
 	/** The false literal. */
+	@Api
 	JsonValue FALSE =
 		new JsonValue()
 		{
@@ -73,6 +79,7 @@ public interface JsonValue
 	 * @return The type of value that this is.
 	 * @since 2014/07/26
 	 */
+	@Api
 	JsonValue.ValueType getValueType();
 	
 	/**
@@ -89,27 +96,35 @@ public interface JsonValue
 	 *
 	 * @since 2014/06/26
 	 */
+	@Api
 	enum ValueType
 	{
 		/** An array. */
+		@Api
 		ARRAY,
 		
 		/** An object. */
+		@Api
 		OBJECT,
 		
 		/** A string. */
+		@Api
 		STRING,
 		
 		/** A number. */
+		@Api
 		NUMBER,
 		
 		/** True. */
+		@Api
 		TRUE,
 		
 		/** False. */
+		@Api
 		FALSE,
 		
 		/** Null value. */
+		@Api
 		NULL,
 		
 		/** End. */

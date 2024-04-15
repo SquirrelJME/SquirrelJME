@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -11,13 +11,22 @@ package cc.squirreljme.jvm.mle;
 
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.InputStream;
+import org.jetbrains.annotations.CheckReturnValue;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 /**
  * This allows access to the library class path and resources.
  *
  * @since 2020/06/07
  */
+@SuppressWarnings("UnstableApiUsage")
+@SquirrelJMEVendorApi
 public final class JarPackageShelf
 {
 	/**
@@ -26,6 +35,7 @@ public final class JarPackageShelf
 	 * @return The classpath of the current program.
 	 * @since 2020/06/07
 	 */
+	@SquirrelJMEVendorApi
 	public static native JarPackageBracket[] classPath();
 	
 	/**
@@ -37,6 +47,7 @@ public final class JarPackageShelf
 	 * @throws MLECallError If either argument is {@code null}.
 	 * @since 2020/07/02
 	 */
+	@SquirrelJMEVendorApi
 	public static native boolean equals(
 		JarPackageBracket __a, JarPackageBracket __b)
 		throws MLECallError;
@@ -47,7 +58,20 @@ public final class JarPackageShelf
 	 * @return The libraries that are currently available.
 	 * @since 2020/10/31
 	 */
+	@SquirrelJMEVendorApi
 	public static native JarPackageBracket[] libraries();
+	
+	/**
+	 * Returns the ID of the specific library.
+	 *
+	 * @param __jar The Jar to get the library ID of.
+	 * @return The library ID for the given Jar.
+	 * @throws MLECallError If the library is not valid.
+	 * @since 2023/12/18
+	 */
+	@SquirrelJMEVendorApi
+	public static native int libraryId(@NotNull JarPackageBracket __jar)
+		throws MLECallError;
 	
 	/**
 	 * Returns the path to the given JAR.
@@ -60,7 +84,8 @@ public final class JarPackageShelf
 	 * @throws MLECallError If the JAR is not valid.
 	 * @since 2020/10/31
 	 */
-	public static native String libraryPath(JarPackageBracket __jar)
+	@SquirrelJMEVendorApi
+	public static native String libraryPath(@NotNull JarPackageBracket __jar)
 		throws MLECallError;
 	
 	/**
@@ -74,8 +99,25 @@ public final class JarPackageShelf
 	 * specified.
 	 * @since 2020/06/07
 	 */
-	public static native InputStream openResource(JarPackageBracket __jar,
-		String __rc)
+	@SquirrelJMEVendorApi
+	@Nullable
+	public static native InputStream openResource(
+		@NotNull JarPackageBracket __jar,
+		@NotNull String __rc)
+		throws MLECallError;
+	
+	/**
+	 * Returns the prefix code for the class.
+	 *
+	 * @param __jar The Jar to get the prefix code from.
+	 * @return The prefix code in the JAR, mapped accordingly to 37 radix,
+	 * will return -1 if there is none.
+	 * @throws MLECallError If {@code __jar} is null.
+	 * @since 2023/07/19
+	 */
+	@SquirrelJMEVendorApi
+	@Range(from = -1, to = 1296)
+	public static native int prefixCode(@NotNull JarPackageBracket __jar)
 		throws MLECallError;
 	
 	/**
@@ -93,8 +135,13 @@ public final class JarPackageShelf
 	 * exceed the array bounds.
 	 * @since 2022/03/04
 	 */
-	public static native int rawData(JarPackageBracket __jar,
-		int __jarOffset, byte[] __b, int __o, int __l)
+	@SquirrelJMEVendorApi
+	@CheckReturnValue
+	public static native int rawData(@NotNull JarPackageBracket __jar,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __jarOffset,
+		@NotNull byte[] __b,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __o,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __l)
 		throws MLECallError;
 	
 	/**
@@ -107,6 +154,8 @@ public final class JarPackageShelf
 	 * @throws MLECallError If {@code __jar} is null.
 	 * @since 2022/03/04
 	 */
-	public static native int rawSize(JarPackageBracket __jar)
+	@SquirrelJMEVendorApi
+	@CheckReturnValue
+	public static native int rawSize(@NotNull JarPackageBracket __jar)
 		throws MLECallError;
 }

@@ -1,12 +1,32 @@
 <component name="InspectionProjectProfileManager">
   <profile version="1.0">
     <option name="myName" value="Project Default" />
-    <inspection_tool class="AbstractClassWithOnlyOneDirectInheritor" enabled="true" level="WARNING" enabled_by_default="true" />
+    <option name="scopesOrder">
+      <list>
+        <option value="Java API Packages (Exclude)" />
+        <option value="Java API Packages (Include)" />
+        <option value="Open Files" />
+        <option value="Production" />
+        <option value="Project Files" />
+        <option value="Scratches and Consoles" />
+        <option value="Tests" />
+      </list>
+    </option>
+    <inspection_tool class="0a13ff53-5fcb-3e0d-aed2-4be555b30a99" enabled="true" level="ERROR" enabled_by_default="true" editorAttributes="ERRORS_ATTRIBUTES" />
+    <inspection_tool class="64b983f1-24ea-3e21-ab1a-d1f799d73f9b" enabled="true" level="INFORMATION" enabled_by_default="true" editorAttributes="WRONG_REFERENCES_ATTRIBUTES" />
+    <inspection_tool class="65a552e9-f62d-3bdb-a825-d751c50c4ba6" enabled="true" level="INFORMATION" enabled_by_default="true" editorAttributes="DEPRECATED_ATTRIBUTES" />
+    <inspection_tool class="9be1bd10-89f8-3737-88e5-9b5e0640e57e" enabled="true" level="ERROR" enabled_by_default="true" editorAttributes="ERRORS_ATTRIBUTES" />
+    <inspection_tool class="AbstractClassWithOnlyOneDirectInheritor" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Tests" level="WARNING" enabled="false" />
+    </inspection_tool>
     <inspection_tool class="AbstractMethodOverridesAbstractMethod" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="ignoreJavaDoc" value="true" />
     </inspection_tool>
     <inspection_tool class="Anonymous2MethodRef" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="AnonymousClassComplexity" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Java API Packages (Include)" level="WARNING" enabled="false">
+        <option name="m_limit" value="3" />
+      </scope>
       <option name="m_limit" value="3" />
     </inspection_tool>
     <inspection_tool class="AnonymousClassMethodCount" enabled="true" level="WARNING" enabled_by_default="true">
@@ -14,14 +34,21 @@
     </inspection_tool>
     <inspection_tool class="AnonymousHasLambdaAlternative" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="AnonymousInnerClass" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="AnonymousInnerClassMayBeStatic" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Java API Packages (Include)" level="WARNING" enabled="false" />
+    </inspection_tool>
     <inspection_tool class="ArrayLengthInLoopCondition" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="ArraysAsListWithZeroOrOneArgument" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="AssertEqualsBetweenInconvertibleTypes" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="AssignmentToForLoopParameter" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_checkForeachParameters" value="true" />
+    </inspection_tool>
     <inspection_tool class="AutoCloseableResource" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="METHOD_MATCHER_CONFIG" value="java.util.Formatter,format,java.io.Writer,append,com.google.common.base.Preconditions,checkNotNull,org.hibernate.Session,close,java.io.PrintWriter,printf,net.multiphasicapps.io.ChunkWriter,addSection,cc.squirreljme.jvm.aot.summercoat.base.ChunkUtils,writeIntegers" />
     </inspection_tool>
     <inspection_tool class="BeforeClassOrAfterClassIsPublicStaticVoidNoArg" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="BeforeOrAfterIsPublicVoidNoArg" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="BlockMarkerComments" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="BooleanMethodNameMustStartWithQuestion" enabled="false" level="WEAK WARNING" enabled_by_default="false">
       <option name="ignoreBooleanMethods" value="false" />
       <option name="ignoreInAnnotationInterface" value="true" />
@@ -33,18 +60,47 @@
       <option name="m_limit" value="64" />
     </inspection_tool>
     <inspection_tool class="ClassComplexity" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Java API Packages (Include)" level="WARNING" enabled="false">
+        <option name="m_limit" value="80" />
+      </scope>
       <option name="m_limit" value="80" />
     </inspection_tool>
     <inspection_tool class="ClassCoupling" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Java API Packages (Include)" level="WARNING" enabled="false">
+        <option name="m_includeJavaClasses" value="false" />
+        <option name="m_includeLibraryClasses" value="false" />
+        <option name="m_limit" value="15" />
+      </scope>
       <option name="m_includeJavaClasses" value="false" />
       <option name="m_includeLibraryClasses" value="false" />
       <option name="m_limit" value="15" />
+    </inspection_tool>
+    <inspection_tool class="ClassInheritanceDepth" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Java API Packages (Include)" level="WARNING" enabled="false">
+        <option name="m_limit" value="2" />
+      </scope>
+      <scope name="Tests" level="WARNING" enabled="false">
+        <option name="m_limit" value="2" />
+      </scope>
+      <option name="m_limit" value="2" />
+    </inspection_tool>
+    <inspection_tool class="ClassInitializerMayBeStatic" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Java API Packages (Include)" level="WARNING" enabled="false" />
+    </inspection_tool>
+    <inspection_tool class="ClassMayBeInterface" enabled="true" level="INFORMATION" enabled_by_default="true">
+      <scope name="Java API Packages (Include)" level="INFORMATION" enabled="false" />
     </inspection_tool>
     <inspection_tool class="ClassName" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <option name="namePattern" value="(__)?[A-Z][A-Za-z\d]*(__)?" />
     </inspection_tool>
     <inspection_tool class="ClassNamePrefixedWithPackageName" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="ClassNameSameAsAncestorName" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="ClassNestingDepth" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Java API Packages (Include)" level="WARNING" enabled="false">
+        <option name="m_limit" value="1" />
+      </scope>
+      <option name="m_limit" value="1" />
+    </inspection_tool>
     <inspection_tool class="ClassWithOnlyPrivateConstructors" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="CloneReturnsClassType" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="CodeBlock2Expr" enabled="false" level="WARNING" enabled_by_default="false" />
@@ -55,6 +111,9 @@
     <inspection_tool class="ConstPropertyName" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <option name="namePattern" value="_?[A-Z][_A-Z\d]*" />
     </inspection_tool>
+    <inspection_tool class="ConstantValue" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="DONT_REPORT_TRUE_ASSERT_STATEMENTS" value="true" />
+    </inspection_tool>
     <inspection_tool class="ConstructorCount" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="ignoreDeprecatedConstructors" value="true" />
       <option name="m_limit" value="8" />
@@ -63,8 +122,29 @@
     <inspection_tool class="Convert2Lambda" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="Convert2MethodRef" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="Convert2streamapi" enabled="false" level="INFORMATION" enabled_by_default="false" />
+    <inspection_tool class="CyclomaticComplexity" enabled="true" level="SERVER PROBLEM" enabled_by_default="true" editorAttributes="WARNING_ATTRIBUTES">
+      <option name="m_limit" value="15" />
+    </inspection_tool>
     <inspection_tool class="DefaultNotLastCaseInSwitch" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="Deprecation" enabled="true" level="WARNING" enabled_by_default="true" editorAttributes="MARKED_FOR_REMOVAL_ATTRIBUTES" />
     <inspection_tool class="DollarSignInName" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="EditorConfigEncoding" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="EmptyClass" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Java API Packages (Include)" level="WARNING" enabled="false">
+        <option name="ignorableAnnotations">
+          <value />
+        </option>
+        <option name="ignoreClassWithParameterization" value="false" />
+        <option name="ignoreThrowables" value="true" />
+        <option name="commentsAreContent" value="true" />
+      </scope>
+      <option name="ignorableAnnotations">
+        <value />
+      </option>
+      <option name="ignoreClassWithParameterization" value="false" />
+      <option name="ignoreThrowables" value="true" />
+      <option name="commentsAreContent" value="true" />
+    </inspection_tool>
     <inspection_tool class="EmptyMethod" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="EXCLUDE_ANNOS">
         <value>
@@ -78,6 +158,30 @@
     <inspection_tool class="ExceptionNameDoesntEndWithException" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="ExplicitArgumentCanBeLambda" enabled="false" level="INFORMATION" enabled_by_default="false" />
     <inspection_tool class="ExtendsUtilityClass" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="FieldAccessedSynchronizedAndUnsynchronized" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="countGettersAndSetters" value="true" />
+    </inspection_tool>
+    <inspection_tool class="FieldCanBeLocal" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Java API Packages (Include)" level="WARNING" enabled="false" />
+    </inspection_tool>
+    <inspection_tool class="FieldCount" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Java API Packages (Include)" level="WARNING" enabled="false">
+        <option name="m_countConstantFields" value="false" />
+        <option name="m_considerStaticFinalFieldsConstant" value="false" />
+        <option name="myCountEnumConstants" value="false" />
+        <option name="m_limit" value="10" />
+      </scope>
+      <option name="m_countConstantFields" value="false" />
+      <option name="m_considerStaticFinalFieldsConstant" value="false" />
+      <option name="myCountEnumConstants" value="false" />
+      <option name="m_limit" value="10" />
+    </inspection_tool>
+    <inspection_tool class="FieldMayBeFinal" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Java API Packages (Include)" level="WARNING" enabled="false" />
+    </inspection_tool>
+    <inspection_tool class="FieldMayBeStatic" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Java API Packages (Include)" level="WARNING" enabled="false" />
+    </inspection_tool>
     <inspection_tool class="FieldNamingConvention" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <extension name="ConstantNamingConvention" enabled="true">
         <option name="m_regex" value="_?[a-zA-Z][A-Za-z_\d]*" />
@@ -113,7 +217,7 @@
     <inspection_tool class="FunctionName" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <option name="namePattern" value="(__)?[a-z][A-Za-z\d]*" />
     </inspection_tool>
-    <inspection_tool class="Guava" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="GroovySynchronizedMethod" enabled="true" level="ERROR" enabled_by_default="true" editorAttributes="ERRORS_ATTRIBUTES" />
     <inspection_tool class="HtmlTagCanBeJavadocTag" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="IfCanBeSwitch" enabled="false" level="WARNING" enabled_by_default="false">
       <option name="minimumBranches" value="3" />
@@ -122,12 +226,17 @@
     </inspection_tool>
     <inspection_tool class="InconsistentLineSeparators" enabled="true" level="TYPO" enabled_by_default="true" />
     <inspection_tool class="IndexOfReplaceableByContains" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="InnerClassMayBeStatic" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Java API Packages (Include)" level="WARNING" enabled="false" />
+    </inspection_tool>
+    <inspection_tool class="InstanceofIncompatibleInterface" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="InterfaceWithOnlyOneDirectInheritor" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="JUnit4AnnotatedMethodInJUnit3TestCase" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="JUnit5MalformedNestedClass" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="JUnit5MalformedParameterized" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="JUnit5MalformedRepeated" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="JUnit5Platform" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JUnitMalformedDeclaration" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="Java8CollectionRemoveIf" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="Java8ListSort" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="Java8MapApi" enabled="false" level="WARNING" enabled_by_default="false" />
@@ -167,6 +276,10 @@
     <inspection_tool class="JavaLangImport" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="JavaModuleNaming" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="JavaRequiresAutoModule" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JavadocBlankLines" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JavadocDeclaration" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ADDITIONAL_TAGS" value="squirreljme.syscallparam,squirreljme.syscallreturn,squirreljme.property,squirreljme.error,squirreljme.property,squirreljme.configtype,squirreljme.env" />
+    </inspection_tool>
     <inspection_tool class="LambdaBodyCanBeCodeBlock" enabled="false" level="INFORMATION" enabled_by_default="false" />
     <inspection_tool class="LambdaCanBeMethodCall" enabled="false" level="INFORMATION" enabled_by_default="false" />
     <inspection_tool class="LambdaCanBeReplacedWithAnonymous" enabled="false" level="INFORMATION" enabled_by_default="false" />
@@ -175,6 +288,15 @@
     </inspection_tool>
     <inspection_tool class="LambdaParameterTypeCanBeSpecified" enabled="false" level="INFORMATION" enabled_by_default="false" />
     <inspection_tool class="LambdaUnfriendlyMethodOverload" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="LimitedScopeInnerClass" enabled="true" level="ERROR" enabled_by_default="true" editorAttributes="ERRORS_ATTRIBUTES" />
+    <inspection_tool class="LocalCanBeFinal" enabled="false" level="WARNING" enabled_by_default="false">
+      <scope name="Java API Packages (Include)" level="WARNING" enabled="false">
+        <option name="REPORT_VARIABLES" value="true" />
+        <option name="REPORT_PARAMETERS" value="true" />
+      </scope>
+      <option name="REPORT_VARIABLES" value="true" />
+      <option name="REPORT_PARAMETERS" value="true" />
+    </inspection_tool>
     <inspection_tool class="LocalVariableName" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <option name="namePattern" value="(__)?[a-z][A-Za-z\d]*" />
     </inspection_tool>
@@ -186,12 +308,108 @@
       <option name="m_maxLength" value="20" />
     </inspection_tool>
     <inspection_tool class="LongLine" enabled="true" level="TYPO" enabled_by_default="true" />
-    <inspection_tool class="MagicNumber" enabled="true" level="WEAK WARNING" enabled_by_default="true">
-      <scope name="Tests" level="WEAK WARNING" enabled="false" />
+    <inspection_tool class="MagicConstant" enabled="true" level="WARNING" enabled_by_default="true" editorAttributes="TYPO" />
+    <inspection_tool class="MagicNumber" enabled="true" level="TYPO" enabled_by_default="true" editorAttributes="TEXT_STYLE_SUGGESTION">
+      <scope name="Tests" level="TYPO" enabled="false" editorAttributes="TEXT_STYLE_SUGGESTION" />
+      <option name="ignoreInitialCapacity" value="true" />
+    </inspection_tool>
+    <inspection_tool class="MethodCount" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Java API Packages (Include)" level="WARNING" enabled="false">
+        <option name="m_limit" value="20" />
+        <option name="ignoreGettersAndSetters" value="false" />
+        <option name="ignoreOverridingMethods" value="false" />
+      </scope>
+      <option name="m_limit" value="25" />
+      <option name="ignoreGettersAndSetters" value="true" />
+      <option name="ignoreOverridingMethods" value="true" />
+    </inspection_tool>
+    <inspection_tool class="MethodMayBeStatic" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Java API Packages (Include)" level="WARNING" enabled="false">
+        <option name="m_onlyPrivateOrFinal" value="true" />
+        <option name="m_ignoreEmptyMethods" value="true" />
+      </scope>
+      <option name="m_onlyPrivateOrFinal" value="false" />
+      <option name="m_ignoreEmptyMethods" value="true" />
     </inspection_tool>
     <inspection_tool class="MethodNameSameAsClassName" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="MethodNameSameAsParentName" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="MethodOnlyUsedFromInnerClass" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Java API Packages (Include)" level="WARNING" enabled="false">
+        <option name="ignoreMethodsAccessedFromAnonymousClass" value="false" />
+        <option name="ignoreStaticMethodsFromNonStaticInnerClass" value="false" />
+        <option name="onlyReportStaticMethods" value="false" />
+      </scope>
+      <option name="ignoreMethodsAccessedFromAnonymousClass" value="false" />
+      <option name="ignoreStaticMethodsFromNonStaticInnerClass" value="false" />
+      <option name="onlyReportStaticMethods" value="false" />
+    </inspection_tool>
     <inspection_tool class="MethodRefCanBeReplacedWithLambda" enabled="false" level="INFORMATION" enabled_by_default="false" />
+    <inspection_tool class="MismatchedCollectionQueryUpdate" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="queryNames">
+        <value>
+          <item value="equals" />
+          <item value="size" />
+          <item value="write" />
+          <item value="toString" />
+          <item value="parallelStream" />
+          <item value="forEach" />
+          <item value="contains" />
+          <item value="store" />
+          <item value="save" />
+          <item value="iterator" />
+          <item value="indexOf" />
+          <item value="copyInto" />
+          <item value="stream" />
+          <item value="lastIndexOf" />
+          <item value="get" />
+          <item value="toArray" />
+          <item value="propertyNames" />
+          <item value="hashCode" />
+          <item value="peek" />
+          <item value="getMainAttributes" />
+        </value>
+      </option>
+      <option name="updateNames">
+        <value />
+      </option>
+      <option name="ignoredClasses">
+        <value />
+      </option>
+    </inspection_tool>
+    <inspection_tool class="MissingDeprecatedAnnotation" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="MissingJavadoc" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="PACKAGE_SETTINGS">
+        <Options>
+          <option name="ENABLED" value="false" />
+        </Options>
+      </option>
+      <option name="MODULE_SETTINGS">
+        <Options>
+          <option name="ENABLED" value="false" />
+        </Options>
+      </option>
+      <option name="TOP_LEVEL_CLASS_SETTINGS">
+        <Options>
+          <option name="ENABLED" value="false" />
+        </Options>
+      </option>
+      <option name="INNER_CLASS_SETTINGS">
+        <Options>
+          <option name="ENABLED" value="false" />
+        </Options>
+      </option>
+      <option name="METHOD_SETTINGS">
+        <Options>
+          <option name="REQUIRED_TAGS" value="@return@param@throws or @exception" />
+          <option name="ENABLED" value="false" />
+        </Options>
+      </option>
+      <option name="FIELD_SETTINGS">
+        <Options>
+          <option name="ENABLED" value="false" />
+        </Options>
+      </option>
+    </inspection_tool>
     <inspection_tool class="MissingOverrideAnnotation" enabled="true" level="ERROR" enabled_by_default="true">
       <option name="ignoreObjectMethods" value="false" />
       <option name="ignoreAnonymousClassMethods" value="false" />
@@ -202,6 +420,7 @@
     </inspection_tool>
     <inspection_tool class="MisspelledHeader" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <option name="CUSTOM_HEADERS">
+        <header value="argument-1" />
         <header value="multi-parameters" />
         <header value="result" />
         <header value="secondary-key" />
@@ -209,6 +428,12 @@
       </option>
     </inspection_tool>
     <inspection_tool class="MisspelledMethodName" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="MoveFieldAssignmentToInitializer" enabled="true" level="INFORMATION" enabled_by_default="true">
+      <scope name="Java API Packages (Include)" level="INFORMATION" enabled="false" />
+    </inspection_tool>
+    <inspection_tool class="MultipleTopLevelClassesInFile" enabled="true" level="WARNING" enabled_by_default="false" editorAttributes="WARNING_ATTRIBUTES">
+      <scope name="Production" level="ERROR" enabled="true" editorAttributes="ERRORS_ATTRIBUTES" />
+    </inspection_tool>
     <inspection_tool class="MultiplyOrDivideByPowerOfTwo" enabled="true" level="TYPO" enabled_by_default="true">
       <option name="checkDivision" value="true" />
     </inspection_tool>
@@ -272,8 +497,12 @@
       <option name="onlyWarnOnBaseMethods" value="true" />
     </inspection_tool>
     <inspection_tool class="NonExceptionNameEndsWithException" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="NonFinalUtilityClass" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Java API Packages (Include)" level="WARNING" enabled="false" />
+    </inspection_tool>
     <inspection_tool class="NonPublicClone" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="NotNullFieldNotInitialized" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="NotifyWithoutCorrespondingWait" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="NullableProblems" enabled="false" level="WARNING" enabled_by_default="false">
       <option name="REPORT_NULLABLE_METHOD_OVERRIDES_NOTNULL" value="true" />
       <option name="REPORT_NOT_ANNOTATED_METHOD_OVERRIDES_NOTNULL" value="true" />
@@ -283,6 +512,12 @@
       <option name="REPORT_NOT_ANNOTATED_SETTER_PARAMETER" value="true" />
       <option name="REPORT_ANNOTATION_NOT_PROPAGATED_TO_OVERRIDERS" value="true" />
       <option name="REPORT_NULLS_PASSED_TO_NON_ANNOTATED_METHOD" value="true" />
+    </inspection_tool>
+    <inspection_tool class="ObsoleteCollection" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Java API Packages (Include)" level="WARNING" enabled="false">
+        <option name="ignoreRequiredObsoleteCollectionTypes" value="true" />
+      </scope>
+      <option name="ignoreRequiredObsoleteCollectionTypes" value="true" />
     </inspection_tool>
     <inspection_tool class="OctalLiteral" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="OnDemandImport" enabled="true" level="ERROR" enabled_by_default="true" />
@@ -310,6 +545,16 @@
     </inspection_tool>
     <inspection_tool class="ParameterTypePreventsOverriding" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="PrivateMemberAccessBetweenOuterAndInnerClass" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="PublicConstructor" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Java API Packages (Include)" level="WARNING" enabled="false" />
+    </inspection_tool>
+    <inspection_tool class="PublicConstructorInNonPublicClass" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Java API Packages (Include)" level="WARNING" enabled="false" />
+    </inspection_tool>
+    <inspection_tool class="PublicStaticArrayField" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="PublicStaticCollectionField" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="METHOD_MATCHER_CONFIG" value="java.util.Collections,(empty|unmodifiable).*,java.util.List,of,java.util.Set,of,java.util.Map,of,com.google.common.collect.ImmutableCollection,.*,com.google.common.collect.ImmutableMap,.*,com.google.common.collect.ImmutableMultimap,.*,com.google.common.collect.ImmutableTable,.*,net.multiphasicapps.collections.UnmodifiableSet,of,net.multiphasicapps.collections.UnmodifiableMap,of,net.multiphasicapps.collections.UnmodifiableList,of,net.multiphasicapps.collections.UnmodifiableCollection,of,net.multiphasicapps.collections.UnmodifiableArrayList,of" />
+    </inspection_tool>
     <inspection_tool class="QuestionableName" enabled="false" level="WEAK WARNING" enabled_by_default="false">
       <option name="nameString" value="aa,abc,bad,bar,bar2,baz,baz1,baz2,baz3,bb,blah,bogus,bool,cc,dd,defau1t,dummy,dummy2,ee,fa1se,ff,foo,foo1,foo2,foo3,foobar,four,fred,fred1,fred2,gg,hh,hello,hello1,hello2,hello3,ii,nu11,one,silly,silly2,string,two,that,then,three,whi1e,var" />
     </inspection_tool>
@@ -323,34 +568,206 @@
     </inspection_tool>
     <inspection_tool class="RedundantTypeArguments" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="ReplaceNullCheck" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SSBasedInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <replaceConfiguration name="C Source Writer: Expression can be simplified" description="Expression can be simplified to use a basic expression wrapper." suppressId="squirreljme_cSourceWriter_simplify" problemDescriptor="Expression can be simplified to use a basic expression wrapper." text="cc.squirreljme.c.CExpressionBuilder.builder().string($expr$).build()" recursive="false" caseInsensitive="false" type="JAVA" pattern_context="default" reformatAccordingToStyle="false" shortenFQN="true" replacement="cc.squirreljme.c.CBasicExpression.string($expr$)">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="expr" within="" contains="" />
+      </replaceConfiguration>
+      <replaceConfiguration name="C Source Writer: Expression can be simplified" text="cc.squirreljme.c.CExpressionBuilder.builder().reference($expr$).build()" recursive="false" caseInsensitive="false" type="JAVA" pattern_context="default" reformatAccordingToStyle="false" shortenFQN="true" replacement="cc.squirreljme.c.CBasicExpression.reference($expr$)">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="expr" within="" contains="" />
+      </replaceConfiguration>
+      <replaceConfiguration name="C Source Writer: Expression can be simplified" text="cc.squirreljme.c.CExpressionBuilder.builder().number($expr$).build()" recursive="false" caseInsensitive="false" type="JAVA" pattern_context="default" reformatAccordingToStyle="false" shortenFQN="true" replacement="cc.squirreljme.c.CBasicExpression.number($expr$)">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="expr" within="" contains="" />
+      </replaceConfiguration>
+      <replaceConfiguration name="C Source Writer: Expression can be simplified" text="cc.squirreljme.c.CExpressionBuilder.builder().number($type$, $expr$).build()" recursive="false" caseInsensitive="false" type="JAVA" pattern_context="default" reformatAccordingToStyle="false" shortenFQN="true" replacement="cc.squirreljme.c.CBasicExpression.number($type$, $expr$)">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="expr" within="" contains="" />
+        <constraint name="type" within="" contains="" />
+      </replaceConfiguration>
+      <searchConfiguration name="Java ME: There is no Arrays.hashCode()" description="Java ME: There is no Arrays.hashCode()." suppressId="squirrejme_javaMe_noArraysHashCode" problemDescriptor="Java ME: There is no Arrays.hashCode()" text="java.util.Arrays.hashCode($expr$)" recursive="true" caseInsensitive="false" type="JAVA" pattern_context="default">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="expr" within="" contains="" />
+      </searchConfiguration>
+      <replaceConfiguration name="SquirrelJME: __error__ is qualified." description="__error__ is the only special&#10;static import, for error code&#10;composition." suppressId="squirreljme_qualifiedError" problemDescriptor="SquirrelJME: __error__ is qualified." text="$errorCodeClass$.__error__($args$)" recursive="false" caseInsensitive="true" type="JAVA" pattern_context="default" reformatAccordingToStyle="false" shortenFQN="true" useStaticImport="true" replacement="ErrorCode.__error__($args$)">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="args" minCount="0" maxCount="2147483647" within="" contains="" />
+        <constraint name="errorCodeClass" regexp="ErrorCode" within="" contains="" />
+      </replaceConfiguration>
+      <searchConfiguration name="SquirrelJME: Call to API defined deprecated method." description="These are marked as actually deprecated in the API code and should not be used." suppressId="squirreljme_apiDefinedDeprecated" problemDescriptor="SquirrelJME: Call to API defined deprecated method." text="@cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated&#10;$ReturnType$ $Method$($ParameterType$ $Parameter$);" recursive="true" caseInsensitive="true" type="JAVA" pattern_context="member">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="ReturnType" within="" contains="" />
+        <constraint name="Method" within="" contains="" />
+        <constraint name="ParameterType" within="" contains="" />
+        <constraint name="Parameter" minCount="0" maxCount="2147483647" within="" contains="" />
+      </searchConfiguration>
+      <searchConfiguration name="SquirrelJME: Error definition" uuid="64b983f1-24ea-3e21-ab1a-d1f799d73f9b" suppressId="squirreljme_errorDefinition" problemDescriptor="SquirrelJME: Error definition" text="/* {@squirreljme.error $code$ $message$} */" recursive="true" caseInsensitive="true" type="JAVA" pattern_context="default">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="code" within="" contains="" />
+        <constraint name="message" within="" contains="" />
+      </searchConfiguration>
+      <searchConfiguration name="SquirrelJME: Error definition" uuid="64b983f1-24ea-3e21-ab1a-d1f799d73f9b" text="&quot;$code$&quot;" recursive="true" caseInsensitive="true" type="JAVA" pattern_context="default">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="code" regexp="[A-Z]{2}[0-9a-z]{2}" within="" contains="" />
+      </searchConfiguration>
+      <searchConfiguration name="SquirrelJME: Error definition" uuid="64b983f1-24ea-3e21-ab1a-d1f799d73f9b" text="&quot;$code$&quot;" recursive="true" caseInsensitive="true" type="JAVA" pattern_context="default">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="code" regexp="[A-Z]{2}[0-9a-z]{2} (%[^ ])+" within="" contains="" />
+      </searchConfiguration>
+      <searchConfiguration name="SquirrelJME: Error definition" uuid="64b983f1-24ea-3e21-ab1a-d1f799d73f9b" text="cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__($format$, $args$)" recursive="true" caseInsensitive="false" type="JAVA" pattern_context="default" search_injected="false">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="format" regexp="[0-9]+" within="" contains="" />
+        <constraint name="args" minCount="0" maxCount="2147483647" within="" contains="" />
+      </searchConfiguration>
+      <searchConfiguration name="SquirrelJME: Error definition" uuid="64b983f1-24ea-3e21-ab1a-d1f799d73f9b" text="cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__($format$)" recursive="true" caseInsensitive="false" type="JAVA" pattern_context="default" search_injected="false">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="format" regexp="[0-9]+" within="" contains="" />
+      </searchConfiguration>
+      <searchConfiguration name="SquirrelJME: Flushable does not exist in Java ME, cannot implement or extend it." uuid="9be1bd10-89f8-3737-88e5-9b5e0640e57e" description="Call to non-extistent interface Flushable." suppressId="squirreljme_implementsFlushable" problemDescriptor="SquirrelJME: Flushable does not exist in Java ME, cannot implement or extend it." text="class $Class$ implements $Interface$ {}" recursive="true" caseInsensitive="true" type="JAVA" pattern_context="default">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="Class" target="true" within="" contains="" />
+        <constraint name="Interface" regexp="java.io.Flushable" within="" contains="" />
+      </searchConfiguration>
+      <searchConfiguration name="SquirrelJME: Flushable does not exist in Java ME, cannot implement or extend it." uuid="9be1bd10-89f8-3737-88e5-9b5e0640e57e" text="interface $Class$ extends $Interface$ {}" recursive="true" caseInsensitive="true" type="JAVA" pattern_context="default">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="Class" target="true" within="" contains="" />
+        <constraint name="Interface" regexp="java.io.Flushable" within="" contains="" />
+      </searchConfiguration>
+      <searchConfiguration name="SquirrelJME: Flushable does not exist in Java ME, cannot implement or extend it." uuid="9be1bd10-89f8-3737-88e5-9b5e0640e57e" text="((java.io.Flushable)$instance$).flush()" recursive="true" caseInsensitive="true" type="JAVA" pattern_context="default">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="instance" within="" contains="" />
+      </searchConfiguration>
+      <searchConfiguration name="SquirrelJME: Old-style error code." suppressId="squirreljme_oldStyleError" problemDescriptor="SquirrelJME: Old-style error code." text="/* {@squirreljme.error $code$ $message$} */" recursive="true" caseInsensitive="true" type="JAVA" pattern_context="default">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="code" regexp="[A-Z]{2}[0-9a-z]{2}" within="" contains="" />
+        <constraint name="message" within="" contains="" />
+      </searchConfiguration>
+      <searchConfiguration name="SquirrelJME: Old-style error code." text="cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__(&quot;$code$&quot;)" recursive="true" caseInsensitive="true" type="JAVA" pattern_context="default">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="code" regexp="[A-Z]{2}[0-9a-z]{2}" within="" contains="" />
+      </searchConfiguration>
+      <replaceConfiguration name="SquirrelJME: Parameterized string in error should be __error__." uuid="a5974be9-ecc1-37f0-8b8c-6f23c72c1291" suppressId="squirreljme_stringFormatError" problemDescriptor="SquirrelJME: Parameterized string in error should be __error__." text="new $throwable$(java.lang.String.format(&quot;$format$&quot;, $args$), $cause$)" recursive="false" caseInsensitive="true" type="JAVA" pattern_context="default" reformatAccordingToStyle="false" shortenFQN="true" useStaticImport="true" replacement="new $throwable$(cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__(&quot;$format$&quot;, $args$), $cause$)">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="args" minCount="0" maxCount="2147483647" within="" contains="" />
+        <constraint name="throwable" regexp="java.lang.Throwable" withinHierarchy="true" within="" contains="" />
+        <constraint name="format" regexp="[A-Z]{2}[a-z0-9]{2} (%[^ ] *)+" within="" contains="" />
+        <constraint name="cause" minCount="0" within="" contains="" />
+      </replaceConfiguration>
+      <replaceConfiguration name="SquirrelJME: Parameterized string in error should be __error__." uuid="a5974be9-ecc1-37f0-8b8c-6f23c72c1291" text="new $throwable$(java.lang.String.format(&quot;$format$&quot;, $args$))" recursive="false" caseInsensitive="true" type="JAVA" pattern_context="default" reformatAccordingToStyle="false" shortenFQN="true" useStaticImport="true" replacement="new $throwable$(cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__(&quot;$format$&quot;, $args$))">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="args" minCount="0" maxCount="2147483647" within="" contains="" />
+        <constraint name="throwable" regexp="java.lang.Throwable" withinHierarchy="true" within="" contains="" />
+        <constraint name="format" regexp="[A-Z]{2}[a-z0-9]{2} (%[^ ])+" within="" contains="" />
+      </replaceConfiguration>
+      <replaceConfiguration name="SquirrelJME: Parameterized string in error should be __error__." uuid="a5974be9-ecc1-37f0-8b8c-6f23c72c1291" text="new $throwable$(&quot;$format$&quot; + $args$, $cause$)" recursive="false" caseInsensitive="true" type="JAVA" pattern_context="default" reformatAccordingToStyle="false" shortenFQN="true" useStaticImport="true" replacement="new $throwable$(cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__(&quot;$format$&quot;, $args$), $cause$)">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="throwable" within="" contains="" />
+        <constraint name="cause" minCount="0" within="" contains="" />
+        <constraint name="format" regexp="[A-Z]{2}[a-z0-9]{2} *" within="" contains="" />
+        <constraint name="args" maxCount="2147483647" within="" contains="" />
+      </replaceConfiguration>
+      <replaceConfiguration name="SquirrelJME: Parameterized string in error should be __error__." uuid="a5974be9-ecc1-37f0-8b8c-6f23c72c1291" text="new $throwable$(&quot;$format$&quot; + $args$)" recursive="false" caseInsensitive="true" type="JAVA" pattern_context="default" reformatAccordingToStyle="false" shortenFQN="true" useStaticImport="true" replacement="new $throwable$(cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__(&quot;$format$&quot;, $args$))">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="throwable" within="" contains="" />
+        <constraint name="format" regexp="[A-Z]{2}[a-z0-9]{2} *" within="" contains="" />
+        <constraint name="args" maxCount="2147483647" within="" contains="" />
+      </replaceConfiguration>
+      <replaceConfiguration name="SquirrelJME: Parameterized string in error should be __error__." uuid="a5974be9-ecc1-37f0-8b8c-6f23c72c1291" text="new $throwable$(&quot;$format$&quot;, $cause$)" recursive="false" caseInsensitive="true" type="JAVA" pattern_context="default" reformatAccordingToStyle="false" shortenFQN="true" useStaticImport="true" replacement="new $throwable$(cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__(&quot;$format$&quot;), $cause$)">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="throwable" regexp="java.lang.Throwable" withinHierarchy="true" within="" contains="" />
+        <constraint name="format" regexp="[A-Z]{2}[a-z0-9]{2} *" within="" contains="" />
+        <constraint name="cause" minCount="0" within="" contains="" />
+      </replaceConfiguration>
+      <replaceConfiguration name="SquirrelJME: Parameterized string in error should be __error__." uuid="a5974be9-ecc1-37f0-8b8c-6f23c72c1291" text="new $throwable$(&quot;$format$&quot;)" recursive="false" caseInsensitive="true" type="JAVA" pattern_context="default" reformatAccordingToStyle="false" shortenFQN="true" useStaticImport="true" replacement="new $throwable$(cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__(&quot;$format$&quot;))">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="throwable" regexp="java.lang.Throwable" withinHierarchy="true" within="" contains="" />
+        <constraint name="format" regexp="[A-Z]{2}[a-z0-9]{2} *" within="" contains="" />
+      </replaceConfiguration>
+      <searchConfiguration name="SquirrelJME: Serializable is not supported." description="There is no serialization in SquirrelJME." suppressId="squirreljme_noSerializable" problemDescriptor="SquirrelJME: Serializable is not supported." text="private static final long serialVersionUID = $value$;" recursive="true" caseInsensitive="true" type="JAVA" pattern_context="default">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="value" within="" contains="" />
+      </searchConfiguration>
+      <searchConfiguration name="SquirrelJME: Serializable is not supported." text="class $Class$ implements $Interface$ {}" recursive="true" caseInsensitive="true" type="JAVA" pattern_context="default">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="Class" target="true" within="" contains="" />
+        <constraint name="Interface" regexp="java.io.Serializable" within="" contains="" />
+      </searchConfiguration>
+      <searchConfiguration name="SquirrelJME: Serializable is not supported." text="interface $Class$ extends $Interface$ {}" recursive="true" caseInsensitive="true" type="JAVA" pattern_context="default">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="Class" target="true" within="" contains="" />
+        <constraint name="Interface" regexp="java.io.Serializable" within="" contains="" />
+      </searchConfiguration>
+      <searchConfiguration name="SquirrelJME: Serializable is not supported." text="$ReturnType$ writeObject$(java.io.ObjectOutputStream $Parameter$);" recursive="true" caseInsensitive="true" type="JAVA" pattern_context="member">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="ReturnType" within="" contains="" />
+        <constraint name="Parameter" within="" contains="" />
+      </searchConfiguration>
+      <searchConfiguration name="SquirrelJME: Serializable is not supported." text="$ReturnType$ readObject(java.io.ObjectInputStream $Parameter$);" recursive="true" caseInsensitive="true" type="JAVA" pattern_context="member">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="ReturnType" within="" contains="" />
+        <constraint name="Parameter" within="" contains="" />
+      </searchConfiguration>
+      <searchConfiguration name="SquirrelJME: Serializable is not supported." text="$ReturnType$ readObjectNoData();" recursive="true" caseInsensitive="true" type="JAVA" pattern_context="member">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="ReturnType" within="" contains="" />
+      </searchConfiguration>
+      <replaceConfiguration name="SquirrelJME: Thrown Error TODO instead of Debugging.todo()." suppressId="squirreljme_thrownErrorToDo" problemDescriptor="SquirrelJME: Thrown Error TODO instead of Debugging.todo()." text="throw new Error(&quot;TODO&quot;);" recursive="false" caseInsensitive="true" type="JAVA" pattern_context="default" reformatAccordingToStyle="false" shortenFQN="true" replacement="throw Debugging.todo();">
+        <constraint name="__context__" within="" contains="" />
+      </replaceConfiguration>
+      <searchConfiguration name="SquirrelJME: TODO Thrown" description="TODO Thrown" suppressId="squirreljme_thrown_todo" problemDescriptor="SquirrelJME: TODO Thrown" text="throw cc.squirreljme.runtime.cldc.debug.Debugging.todo($any$);" recursive="true" caseInsensitive="false" type="JAVA" pattern_context="default">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="any" minCount="0" maxCount="2147483647" within="" contains="" />
+      </searchConfiguration>
+    </inspection_tool>
     <inspection_tool class="SamePackageImport" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="ShellCheck" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="SimplifiableJUnitAssertion" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="SimplifyForEach" enabled="false" level="INFORMATION" enabled_by_default="false" />
     <inspection_tool class="Since15" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="SingleCharacterStartsWith" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
-    <inspection_tool class="SizeReplaceableByIsEmpty" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="SleepWhileHoldingLock" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="StandardVariableNames" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="StaticCallOnSubclass" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="StaticFieldReferenceOnSubclass" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="StaticImport" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="StaticImport" enabled="true" level="ERROR" enabled_by_default="true">
+      <option name="allowedClasses">
+        <set>
+          <option value="cc.squirreljme.runtime.cldc.debug.ErrorCode" />
+        </set>
+      </option>
+    </inspection_tool>
     <inspection_tool class="StaticInheritance" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="StaticPseudoFunctionalStyleMethod" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="StaticMethodOnlyUsedInOneClass" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Java API Packages (Include)" level="WARNING" enabled="false" />
+      <option name="ignoreTestClasses" value="true" />
+    </inspection_tool>
     <inspection_tool class="StaticSuite" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="StringRepeatCanBeUsed" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="SwitchStatementWithTooFewBranches" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <option name="m_limit" value="2" />
     </inspection_tool>
+    <inspection_tool class="SynchronizeOnNonFinalField" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SynchronizedMethod" enabled="true" level="ERROR" enabled_by_default="true" editorAttributes="ERRORS_ATTRIBUTES">
+      <option name="m_includeNativeMethods" value="true" />
+      <option name="ignoreSynchronizedSuperMethods" value="true" />
+    </inspection_tool>
+    <inspection_tool class="SynchronizedOnLiteralObject" enabled="true" level="ERROR" enabled_by_default="true" editorAttributes="ERRORS_ATTRIBUTES" />
     <inspection_tool class="SystemGetenv" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="TestFailedLine" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="TestMethodIsPublicVoidNoArg" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="TextBlockBackwardMigration" enabled="false" level="INFORMATION" enabled_by_default="false" />
     <inspection_tool class="TextBlockMigration" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="ThreadStopSuspendResume" enabled="true" level="ERROR" enabled_by_default="true" editorAttributes="ERRORS_ATTRIBUTES" />
     <inspection_tool class="ToArrayCallWithZeroLengthArrayArgument" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="TodoComment" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="UnconstructableTestCase" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="UnnecessaryConstructor" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="UnnecessaryFinalOnLocalVariableOrParameter" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="UnnecessaryFullyQualifiedName" enabled="true" level="TYPO" enabled_by_default="true" editorAttributes="TYPO">
+      <option name="m_ignoreJavadoc" value="false" />
+      <option name="ignoreInModuleStatements" value="true" />
+    </inspection_tool>
     <inspection_tool class="UnnecessarySuperConstructor" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="UnqualifiedFieldAccess" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="UnqualifiedInnerClassAccess" enabled="true" level="WARNING" enabled_by_default="true">
@@ -362,7 +779,9 @@
       <option name="m_ignoreStaticMethodCalls" value="false" />
       <option name="m_ignoreStaticAccessFromStaticContext" value="false" />
     </inspection_tool>
-    <inspection_tool class="UnstableApiUsage" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="UnstableApiUsage" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Java API Packages (Include)" level="WEAK WARNING" enabled="false" />
+    </inspection_tool>
     <inspection_tool class="UpperCaseFieldNameNotConstant" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="UseCompareMethod" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="UseOfAWTPeerClass" enabled="true" level="ERROR" enabled_by_default="true" />
@@ -370,8 +789,30 @@
     <inspection_tool class="UseOfJDBCDriverClass" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="UseOfProcessBuilder" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="UseOfSunClasses" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="UtilityClassCanBeEnum" enabled="false" level="WARNING" enabled_by_default="false">
+      <scope name="Java API Packages (Include)" level="WARNING" enabled="false" />
+    </inspection_tool>
+    <inspection_tool class="UtilityClassWithPublicConstructor" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Java API Packages (Include)" level="WARNING" enabled="false" />
+    </inspection_tool>
+    <inspection_tool class="UtilityClassWithoutPrivateConstructor" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Java API Packages (Include)" level="WARNING" enabled="false">
+        <option name="ignorableAnnotations">
+          <value />
+        </option>
+        <option name="ignoreClassesWithOnlyMain" value="false" />
+      </scope>
+      <option name="ignorableAnnotations">
+        <value />
+      </option>
+      <option name="ignoreClassesWithOnlyMain" value="false" />
+    </inspection_tool>
     <inspection_tool class="VariableTypeCanBeExplicit" enabled="false" level="INFORMATION" enabled_by_default="false" />
-    <inspection_tool class="unused" enabled="true" level="WARNING" enabled_by_default="true" klass="packageLocal" inner_class="packageLocal" field="packageLocal" method="packageLocal" checkParameterExcludingHierarchy="false">
+    <inspection_tool class="WaitNotifyNotInSynchronizedContext" enabled="true" level="WEAK WARNING" enabled_by_default="true" editorAttributes="INFO_ATTRIBUTES" />
+    <inspection_tool class="a0354417-3b94-3018-9ae2-d07f9a5a442a" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ced03fc8-111a-390f-8655-ed7465debd5f" enabled="true" level="GRAMMAR_ERROR" enabled_by_default="true" editorAttributes="TEXT_STYLE_ERROR" />
+    <inspection_tool class="f93a96c1-2c44-3074-aa46-c5bbec2c6b07" enabled="true" level="ERROR" enabled_by_default="true" editorAttributes="ERRORS_ATTRIBUTES" />
+    <inspection_tool class="unused" enabled="true" level="WARNING" enabled_by_default="true" checkParameterExcludingHierarchy="false" test_entries="false">
       <option name="LOCAL_VARIABLE" value="true" />
       <option name="FIELD" value="true" />
       <option name="METHOD" value="true" />
@@ -382,6 +823,7 @@
       <option name="ADD_APPLET_TO_ENTRIES" value="true" />
       <option name="ADD_SERVLET_TO_ENTRIES" value="true" />
       <option name="ADD_NONJAVA_TO_ENTRIES" value="true" />
+      <option name="selected" value="true" />
     </inspection_tool>
   </profile>
 </component>

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -13,6 +13,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeSet;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.AbstractList;
 import java.util.Arrays;
 import java.util.Set;
 
@@ -22,6 +23,7 @@ import java.util.Set;
  * @since 2019/03/30
  */
 public final class InstructionJumpTargets
+	extends AbstractList<InstructionJumpTarget>
 {
 	/** Normal jumps. */
 	private final InstructionJumpTarget[] _normal;
@@ -86,6 +88,17 @@ public final class InstructionJumpTargets
 	}
 	
 	/**
+	 * Returns the number of normal functional flow.
+	 * 
+	 * @return The number of normal instructional flow.
+	 * @since 2023/05/31
+	 */
+	public int countNormal()
+	{
+		return this._normal.length;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2019/03/30
 	 */
@@ -102,6 +115,7 @@ public final class InstructionJumpTargets
 	 * @return The target jump target.
 	 * @since 2019/03/31
 	 */
+	@Override
 	public final InstructionJumpTarget get(int __i)
 	{
 		InstructionJumpTarget[] normal = this._normal;
@@ -111,6 +125,17 @@ public final class InstructionJumpTargets
 		if (__i >= numnormal)
 			return this._exception[__i - numnormal];
 		return this._normal[__i];
+	}
+	
+	/**
+	 * Checks if this has any exception specified.
+	 * 
+	 * @return If this has any exception.
+	 * @since 2023/05/31
+	 */
+	public boolean hasAnyException()
+	{
+		return this._exception.length > 0;
 	}
 	
 	/**
@@ -165,6 +190,7 @@ public final class InstructionJumpTargets
 	 * @return If this is empty or not.
 	 * @since 2019/03/31
 	 */
+	@Override
 	public final boolean isEmpty()
 	{
 		return this.size() == 0;
@@ -188,6 +214,7 @@ public final class InstructionJumpTargets
 	 * @return The number of jump targets.
 	 * @since 2019/03/31
 	 */
+	@Override
 	public final int size()
 	{
 		return this._normal.length + this._exception.length;

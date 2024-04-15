@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -96,8 +96,8 @@ public final class KeyNames
 				if (__c > 0)
 					return Character.valueOf((char)__c).toString();
 				
-				// {@squirreljme.error EB06 Cannot get the name for the given
-				// key code because it is not known. (The key code)}
+				/* {@squirreljme.error EB06 Cannot get the name for the given
+				key code because it is not known. (The key code)} */
 				throw new IllegalArgumentException(String.format("EB06 %d",
 					__c));
 		}

@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.runtime.lcdui.image;
 
+import cc.squirreljme.jvm.mle.callbacks.NativeImageLoadCallback;
 import java.io.IOException;
 import javax.microedition.lcdui.Image;
 import net.multiphasicapps.io.ExtendedDataInputStream;
@@ -19,36 +20,45 @@ import net.multiphasicapps.io.ExtendedDataInputStream;
  * @since 2021/12/04
  */
 public class GIFReader
+	implements ImageReader
 {
 	/** The source data stream. */
 	protected final ExtendedDataInputStream in;
 	
+	/** The image loader to use. */
+	protected final NativeImageLoadCallback loader;
+	
 	/**
 	 * Initializes the GIF reader.
-	 * 
+	 *
 	 * @param __in The stream to read from.
+	 * @param __loader The native loader to use.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/12/04
 	 */
-	public GIFReader(ExtendedDataInputStream __in)
+	public GIFReader(ExtendedDataInputStream __in,
+		NativeImageLoadCallback __loader)
 		throws NullPointerException
 	{
-		if (__in == null)
+		if (__in == null || __loader == null)
 			throw new NullPointerException("NARG");
 		
 		this.in = __in;
+		this.loader = __loader;
 	}
 	
 	/**
 	 * Parses the image.
 	 * 
-	 * @return The resultant image.
-	 * @throws IOException On null arguments.
+	 * @throws IOException On read errors.
 	 * @since 2021/12/04
 	 */
-	protected Image parse()
+	@Override
+	public void parse()
 		throws IOException
 	{
+		NativeImageLoadCallback loader = this.loader;
+		
 		// Skip header
 		ExtendedDataInputStream in = this.in;
 		for (int i = 0; i < 6; i++)
@@ -59,7 +69,9 @@ public class GIFReader
 		int screenHeight = in.readUnsignedShort();
 		
 		// Build image
-		return Image.createImage(Image.createImage(screenWidth, screenHeight,
-			false, 0xFF00FF));
+		loader.initialize(screenWidth, screenHeight,
+			false, false);
+		loader.addImage(new int[screenWidth * screenHeight], 0,
+			screenWidth * screenHeight, 0, false);
 	}
 }

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -78,6 +78,7 @@ public final class RomSettings
 		String launcherMainClass = null;
 		List<String> launcherArgs = null;
 		List<Integer> launcherClassPath = null;
+		String clutterLevel = null;
 		
 		// Handle arguments
 		while (!__args.isEmpty())
@@ -117,7 +118,7 @@ public final class RomSettings
 			else if (arg.startsWith("-XlauncherClassPath:"))
 				launcherClassPath = RomSettings.__parseClassPath(arg);
 			
-			// {@squirreljme.error AE07 Unknown argument. (The argument)}
+			/* {@squirreljme.error AE07 Unknown argument. (The argument)} */
 			else
 				throw new IllegalArgumentException("AE07 " + arg);
 		}
@@ -146,14 +147,14 @@ public final class RomSettings
 		if (__arg == null)
 			throw new NullPointerException("NARG");
 			
-		// {@squirreljme.error AE0c Missing colon in argument. (The argument)}
+		/* {@squirreljme.error AE0c Missing colon in argument. (The argument)} */
 		int col = __arg.indexOf(':');
 		if (col < 0)
 			throw new IllegalArgumentException("AE0c " + __arg);
 			
 			
-		// {@squirreljme.error AE0d Missing second colon in argument.
-		// (The argument)}
+		/* {@squirreljme.error AE0d Missing second colon in argument.
+		(The argument)} */
 		int sec = __arg.indexOf(':', col + 1);
 		if (sec < 0)
 			throw new IllegalArgumentException("AE0d " + __arg);
@@ -162,16 +163,16 @@ public final class RomSettings
 		int index;
 		try
 		{
-			// {@squirreljme.error AE0g Index refers to a negative position.
-			// (The argument)}
+			/* {@squirreljme.error AE0g Index refers to a negative position.
+			(The argument)} */
 			index = Integer.parseInt(__arg.substring(col + 1, sec), 10);
 			if (index < 0)
 				throw new IllegalArgumentException("AE0g " + __arg);
 		}
 		catch (NumberFormatException e)
 		{
-			// {@squirreljme.error AE0e Could not parse number index.
-			// (The argument)}
+			/* {@squirreljme.error AE0e Could not parse number index.
+			(The argument)} */
 			throw new IllegalArgumentException("AE0e " + __arg);
 		}
 		
@@ -208,7 +209,7 @@ public final class RomSettings
 		if (__arg == null)
 			throw new NullPointerException("NARG");
 			
-		// {@squirreljme.error AE0a Missing colon in argument. (The argument)}
+		/* {@squirreljme.error AE0a Missing colon in argument. (The argument)} */
 		int col = __arg.indexOf(':');
 		if (col < 0)
 			throw new IllegalArgumentException("AE0a " + __arg);
@@ -224,8 +225,8 @@ public final class RomSettings
 			// Parse it and add
 			try
 			{
-				// {@squirreljme.error AE0f Index refers to a negative
-				// position. (The argument)}
+				/* {@squirreljme.error AE0f Index refers to a negative
+				position. (The argument)} */
 				int index = Integer.parseInt(__arg.substring(i, seq), 10);
 				if (index < 0)
 					throw new IllegalArgumentException("AE0f " + __arg);
@@ -234,8 +235,8 @@ public final class RomSettings
 			}
 			catch (NumberFormatException e)
 			{
-				// {@squirreljme.error AE0b Could not parse integer value
-				// as it was not valid. (The argument)}
+				/* {@squirreljme.error AE0b Could not parse integer value
+				as it was not valid. (The argument)} */
 				throw new IllegalArgumentException("AE0b " + __arg);
 			}
 			
@@ -262,7 +263,7 @@ public final class RomSettings
 		if (__arg == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AE09 Missing colon in argument. (The argument)}
+		/* {@squirreljme.error AE09 Missing colon in argument. (The argument)} */
 		int col = __arg.indexOf(':');
 		if (col < 0)
 			throw new IllegalArgumentException("AE09 " + __arg);

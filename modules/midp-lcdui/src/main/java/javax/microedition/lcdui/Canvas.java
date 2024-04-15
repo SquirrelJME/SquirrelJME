@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -16,14 +16,16 @@ import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.jvm.mle.constants.UISpecialCode;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.event.EventTranslate;
 import cc.squirreljme.runtime.lcdui.event.KeyNames;
+import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
-import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
+import org.jetbrains.annotations.Async;
 
 /**
  * The canvas acts as the base class for primary display interfaces that
@@ -36,6 +38,7 @@ import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
  *
  * @since 2016/10/08
  */
+@Api
 public abstract class Canvas
 	extends Displayable
 {
@@ -57,6 +60,7 @@ public abstract class Canvas
 	 * - {@link #GAME_C}.
 	 * - {@link #GAME_D}.
 	 */
+	@Api
 	public static final int ACTIONS_ALL =
 		-2;
 	
@@ -70,10 +74,12 @@ public abstract class Canvas
 	 * - {@link #RIGHT}.
 	 * - {@link #FIRE}.
 	 */
+	@Api
 	public static final int ACTIONS_NAVIGATION =
 		-1;
 	
 	/** No actions are required. */
+	@Api
 	public static final int ACTIONS_NONE =
 		0;
 	
@@ -82,118 +88,147 @@ public abstract class Canvas
 	 * 
 	 * The bits of this key are {@code 0b110}, inverted from {@link #UP}.
 	 */
+	@Api
 	public static final int DOWN =
 		6;
 	
 	/** This is a game key for the fire button. */
+	@Api
 	public static final int FIRE =
 		8;
 	
 	/** This is a game key for the A button. */
+	@Api
 	public static final int GAME_A =
 		9;
 	
 	/** This is a game key for the B button. */
+	@Api
 	public static final int GAME_B =
 		10;
 	
 	/** This is a game key for the C button. */
+	@Api
 	public static final int GAME_C =
 		11;
 	
 	/** This is a game key for the D button. */
+	@Api
 	public static final int GAME_D =
 		12;
 	
 	/** Backspace keyboard key. */
+	@Api
 	public static final int KEY_BACKSPACE =
 		8;
 	
 	/** Delete keyboard key. */
+	@Api
 	public static final int KEY_DELETE =
 		127;
 	
 	/** Down arrow keyboard key. */
+	@Api
 	public static final int KEY_DOWN =
 		-2;
 	
 	/** Enter keyboard key. */
+	@Api
 	public static final int KEY_ENTER =
 		10;
 	
 	/** Escape keyboard key. */
+	@Api
 	public static final int KEY_ESCAPE =
 		27;
 	
 	/** Left arrow keyboard key. */
+	@Api
 	public static final int KEY_LEFT =
 		-3;
 	
 	/** Number pad zero keyboard key. */
+	@Api
 	public static final int KEY_NUM0 =
 		48;
 	
 	/** Number pad one keyboard key. */
+	@Api
 	public static final int KEY_NUM1 =
 		49;
 	
 	/** Number pad two keyboard key. */
+	@Api
 	public static final int KEY_NUM2 =
 		50;
 	
 	/** Number pad three keyboard key. */
+	@Api
 	public static final int KEY_NUM3 =
 		51;
 	
 	/** Number pad four keyboard key. */
+	@Api
 	public static final int KEY_NUM4 =
 		52;
 	
 	/** Number pad five keyboard key. */
+	@Api
 	public static final int KEY_NUM5 =
 		53;
 	
 	/** Number pad six keyboard key. */
+	@Api
 	public static final int KEY_NUM6 =
 		54;
 	
 	/** Number pad seven keyboard key. */
+	@Api
 	public static final int KEY_NUM7 =
 		55;
 	
 	/** Number pad eight keyboard key. */
+	@Api
 	public static final int KEY_NUM8 =
 		56;
 	
 	/** Number pad nine keyboard key. */
+	@Api
 	public static final int KEY_NUM9 =
 		57;
 	
 	/** Pound/hash keyboard key. */
+	@Api
 	public static final int KEY_POUND =
 		35;
 	
 	/** Right arrow keyboard key. */
+	@Api
 	public static final int KEY_RIGHT =
 		-4;
 	
 	/** The select key. */
+	@Api
 	public static final int KEY_SELECT =
 		-5;
 	
 	/** The space bar keyboard key. */
+	@Api
 	public static final int KEY_SPACE =
 		32;
 	
 	/** The star/asterisk keyboard key. */
+	@Api
 	public static final int KEY_STAR =
 		42;
 	
 	/** The horizontal tab keyboard key. */
+	@Api
 	public static final int KEY_TAB =
 		9;
 	
 	/** The up arrow key. */
+	@Api
 	public static final int KEY_UP =
 		-1;
 	
@@ -202,6 +237,7 @@ public abstract class Canvas
 	 * 
 	 * The bits of this key are {@code 0b010}, inverted from {@link #RIGHT}.
 	 */
+	@Api
 	public static final int LEFT =
 		2;
 	
@@ -210,6 +246,7 @@ public abstract class Canvas
 	 * 
 	 * The bits of this key are {@code 0b101}, inverted from {@link #LEFT}.
 	 */
+	@Api
 	public static final int RIGHT =
 		5;
 	
@@ -218,11 +255,9 @@ public abstract class Canvas
 	 * 
 	 * The bits of this key are {@code 0b001}, inverted from {@link #DOWN}.
 	 */
+	@Api
 	public static final int UP =
 		1;
-	
-	/** The native display instance. */
-	final UIItemBracket _uiCanvas;
 	
 	/** Lock for repaints and servicing repaints. */
 	private final Object _repaintLock =
@@ -252,18 +287,9 @@ public abstract class Canvas
 	 *
 	 * @since 2016/10/08
 	 */
+	@Api
 	protected Canvas()
 	{
-		// Build new canvas
-		UIBackend backend = UIBackendFactory.getInstance(true);
-		UIItemBracket uiCanvas = backend.itemNew(UIItemType.CANVAS);
-		this._uiCanvas = uiCanvas;
-		
-		// Register self for future paint events
-		StaticDisplayState.register(this, uiCanvas);
-		
-		// Show it on the form for this displayable
-		backend.formItemPosition(this._uiForm, uiCanvas, 0);
 	}
 	
 	/**
@@ -279,7 +305,9 @@ public abstract class Canvas
 	 * @param __g The graphics to draw into.
 	 * @since 2018/03/28
 	 */
+	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected abstract void paint(Graphics __g);
 	
 	/**
@@ -291,6 +319,7 @@ public abstract class Canvas
 	 * @throws IllegalArgumentException If the specified keycode is not valid.
 	 * @since 2017/02/12
 	 */
+	@Api
 	public int getGameAction(int __kc)
 		throws IllegalArgumentException
 	{
@@ -304,7 +333,8 @@ public abstract class Canvas
 	@Override
 	public int getHeight()
 	{
-		return Displayable.__getHeight(this, this._uiCanvas);
+		return Displayable.__getHeight(this,
+			this.__state(__CanvasState__.class)._uiCanvas);
 	}
 	
 	/**
@@ -315,10 +345,11 @@ public abstract class Canvas
 	 * @throws IllegalArgumentException If the game action is not valid.
 	 * @since 2019/04/14
 	 */
+	@Api
 	public int getKeyCode(int __gc)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB1a The specified game action is not valid.}
+		/* {@squirreljme.error EB1a The specified game action is not valid.} */
 		int rv = EventTranslate.gameActionToKeyCode(__gc);
 		if (rv == 0)
 			throw new IllegalArgumentException("EB1a " + __gc);
@@ -333,6 +364,7 @@ public abstract class Canvas
 	 * @throws IllegalArgumentException If the key is not valid.
 	 * @since 2017/02/12
 	 */
+	@Api
 	public String getKeyName(int __a)
 		throws IllegalArgumentException
 	{
@@ -353,6 +385,7 @@ public abstract class Canvas
 	 * @return The coordinates, these will be {@code [x, y, width, height]}.
 	 * @since 2020/10/03
 	 */
+	@Api
 	public int[] getSoftkeyLabelCoordinates(int __sk)
 		throws IllegalArgumentException
 	{
@@ -363,17 +396,18 @@ public abstract class Canvas
 		
 		int index = (__sk & Display.SOFTKEY_INDEX_MASK);
 		
-		// {@squirreljme.error EB17 The placement is not valid or not supported
-		// on this device/implementation. (The placement)}
+		/* {@squirreljme.error EB17 The placement is not valid or not supported
+		on this device/implementation. (The placement)} */
 		if (index == 0 || (__sk != Display._SOFTKEY_LEFT_COMMAND &&
 			__sk != Display._SOFTKEY_RIGHT_COMMAND))
 			throw new IllegalArgumentException("EB17 " + __sk);
 		
-		UIBackend backend = UIBackendFactory.getInstance(true);
+		UIBackend backend = this.__backend();
 		
 		// Use the item's actual position
 		int uiPos = Display.__layoutSoftKeyToPos(__sk);
-		UIItemBracket item = backend.formItemAtPosition(this._uiForm, uiPos);
+		UIItemBracket item = backend.formItemAtPosition(
+			this.__state(__DisplayableState__.class)._uiForm, uiPos);
 		if (item != null)
 			return new int[]{
 					backend.widgetPropertyInt(item,
@@ -410,7 +444,8 @@ public abstract class Canvas
 	@Override
 	public int getWidth()
 	{
-		return Displayable.__getWidth(this, this._uiCanvas);
+		return Displayable.__getWidth(this,
+			this.__state(__CanvasState__.class)._uiCanvas);
 	}
 	
 	/**
@@ -420,6 +455,7 @@ public abstract class Canvas
 	 * @return {@code true} if pointer events are available.
 	 * @since 2017/02/12
 	 */
+	@Api
 	@ApiDefinedDeprecated
 	public boolean hasPointerEvents()
 	{
@@ -435,6 +471,7 @@ public abstract class Canvas
 	 * @return {@code true} if pointer motion events are available.
 	 * @since 2017/02/12
 	 */
+	@Api
 	@ApiDefinedDeprecated
 	public boolean hasPointerMotionEvents()
 	{
@@ -450,6 +487,7 @@ public abstract class Canvas
 	 * @return Always {@code true}.
 	 * @since 2017/02/12
 	 */
+	@Api
 	public boolean hasRepeatEvents()
 	{
 		return true;
@@ -462,7 +500,9 @@ public abstract class Canvas
 	 *
 	 * @since 2018/03/28
 	 */
+	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected void hideNotify()
 	{
 		// Implemented by sub-classes
@@ -475,6 +515,7 @@ public abstract class Canvas
 	 * @return {@code true}.
 	 * @since 2017/05/13
 	 */
+	@Api
 	public boolean isDoubleBuffered()
 	{
 		return true;
@@ -486,7 +527,9 @@ public abstract class Canvas
 	 * @param __code The key code, the character is not modified by modifiers.
 	 * @since 2017/02/12
 	 */
+	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected void keyPressed(int __code)
 	{
 		// Does nothing, implemented by sub-classes
@@ -498,7 +541,9 @@ public abstract class Canvas
 	 * @param __code The key code, the character is not modified by modifiers.
 	 * @since 2017/02/12
 	 */
+	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected void keyReleased(int __code)
 	{
 		// Does nothing, implemented by sub-classes
@@ -510,7 +555,9 @@ public abstract class Canvas
 	 * @param __code The key code, the character is not modified by modifiers.
 	 * @since 2017/02/12
 	 */
+	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected void keyRepeated(int __code)
 	{
 		// Does nothing, implemented by sub-classes
@@ -527,7 +574,9 @@ public abstract class Canvas
 	 * @param __y The Y coordinate of the pointer, on the canvas origin.
 	 * @since 2017/02/12
 	 */
+	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected void pointerDragged(int __x, int __y)
 	{
 		// Does nothing by default
@@ -543,7 +592,9 @@ public abstract class Canvas
 	 * @param __y The Y coordinate of the pointer, on the canvas origin.
 	 * @since 2017/02/12
 	 */
+	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected void pointerPressed(int __x, int __y)
 	{
 		// Does nothing by default
@@ -559,7 +610,9 @@ public abstract class Canvas
 	 * @param __y The Y coordinate of the pointer, on the canvas origin.
 	 * @since 2017/02/12
 	 */
+	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected void pointerReleased(int __x, int __y)
 	{
 		// Does nothing by default
@@ -570,6 +623,7 @@ public abstract class Canvas
 	 *
 	 * @since 2017/02/10
 	 */
+	@Api
 	public final void repaint()
 	{
 		// A remote repaint call is performed for the canvas so it is
@@ -596,6 +650,7 @@ public abstract class Canvas
 	 * @param __h The height.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public final void repaint(int __x, int __y, int __w, int __h)
 	{
 		// Do nothing
@@ -603,19 +658,19 @@ public abstract class Canvas
 			return;
 		
 		// Request repainting
-		UIBackend instance = UIBackendFactory.getInstance(true);
+		UIBackend instance = this.__backend();
 		
 		// Send repaint properties
-		instance.widgetProperty(this._uiCanvas,
+		instance.widgetProperty(this.__state(__CanvasState__.class)._uiCanvas,
 			UIWidgetProperty.INT_SIGNAL_REPAINT, 0,
 				UISpecialCode.REPAINT_KEY_X | __x);
-		instance.widgetProperty(this._uiCanvas,
+		instance.widgetProperty(this.__state(__CanvasState__.class)._uiCanvas,
 			UIWidgetProperty.INT_SIGNAL_REPAINT, 0,
 				UISpecialCode.REPAINT_KEY_Y | __y);
-		instance.widgetProperty(this._uiCanvas,
+		instance.widgetProperty(this.__state(__CanvasState__.class)._uiCanvas,
 			UIWidgetProperty.INT_SIGNAL_REPAINT, 0,
 				UISpecialCode.REPAINT_KEY_WIDTH | __w);
-		instance.widgetProperty(this._uiCanvas,
+		instance.widgetProperty(this.__state(__CanvasState__.class)._uiCanvas,
 			UIWidgetProperty.INT_SIGNAL_REPAINT, 0,
 				UISpecialCode.REPAINT_KEY_HEIGHT | __h);
 		
@@ -626,7 +681,7 @@ public abstract class Canvas
 		}
 		
 		// Execute the paint
-		instance.widgetProperty(this._uiCanvas,
+		instance.widgetProperty(this.__state(__CanvasState__.class)._uiCanvas,
 			UIWidgetProperty.INT_SIGNAL_REPAINT, 0,
 			UISpecialCode.REPAINT_EXECUTE);
 	}
@@ -642,6 +697,7 @@ public abstract class Canvas
 	 *
 	 * @since 2019/04/14
 	 */
+	@Api
 	@SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
 	public final void serviceRepaints()
 	{
@@ -689,6 +745,7 @@ public abstract class Canvas
 	 * @param __f If {@code true} then fullscreen mode should be used.
 	 * @since 2017/02/28
 	 */
+	@Api
 	public void setFullScreenMode(boolean __f)
 	{
 		// Do nothing if the state is the same
@@ -700,8 +757,10 @@ public abstract class Canvas
 		
 		// Depending on full-screen either choose the first position or the
 		// full-screen body of the form
-		UIBackend backend = UIBackendFactory.getInstance(true);
-		backend.formItemPosition(this._uiForm, this._uiCanvas, (__f ?
+		UIBackend backend = this.__backend();
+		backend.formItemPosition(
+			this.__state(__DisplayableState__.class)._uiForm,
+			this.__state(__CanvasState__.class)._uiCanvas, (__f ?
 			UIItemPosition.BODY : 0));
 		
 		// Update form title
@@ -717,6 +776,7 @@ public abstract class Canvas
 	 * @param __kl The key listener to use, {@code null} clears it.
 	 * @since 2017/02/12
 	 */
+	@Api
 	public void setKeyListener(KeyListener __kl)
 	{
 		this._keyListener = __kl;
@@ -737,6 +797,7 @@ public abstract class Canvas
 	 * @param __opaque If {@code true} then opaque mode is enabled.
 	 * @since 2017/02/12
 	 */
+	@Api
 	public void setPaintMode(boolean __opaque)
 	{
 		this._isOpaque = __opaque;
@@ -750,10 +811,11 @@ public abstract class Canvas
 	 * @throws IllegalArgumentException If the actions are not valid.
 	 * @since 2020/10/03
 	 */
+	@Api
 	public void setRequiredActions(int __actions)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB18 Invalid action. {The action ID}) */
+		/* {@squirreljme.error EB18 Invalid action. (The action ID)} */
 		if (__actions != Canvas.ACTIONS_ALL &&
 			__actions != Canvas.ACTIONS_NAVIGATION &&
 			__actions != Canvas.ACTIONS_NONE)
@@ -785,7 +847,9 @@ public abstract class Canvas
 	 *
 	 * @since 2018/12/02.
 	 */
+	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected void showNotify()
 	{
 		// Implemented by sub-classes
@@ -795,8 +859,10 @@ public abstract class Canvas
 	 * {@inheritDoc}
 	 * @since 2017/02/10
 	 */
+	@Api
 	@Override
 	@SerializedEvent
+	@Async.Execute
 	protected void sizeChanged(int __w, int __h)
 	{
 	}
@@ -842,8 +908,9 @@ public abstract class Canvas
 			int old = __gfx.getAlphaColor();
 			
 			// Determine the color to draw
-			int bgColor = UIBackendFactory.getInstance(true)
-				.metric(UIMetricType.COLOR_CANVAS_BACKGROUND);
+			int bgColor = this.__backend()
+				.metric(this._display._uiDisplay,
+					UIMetricType.COLOR_CANVAS_BACKGROUND);
 			
 			// Draw entire background
 			__gfx.setAlphaColor(bgColor | 0xFF_000000);
@@ -871,7 +938,7 @@ public abstract class Canvas
 				if (pending > 0)
 				{
 					// Clear all paints, since this could have been called
-					// multiple times and we may have done one
+					// multiple times, and we may have done one
 					this._pendingPaints = 0;
 					
 					// Signal that a repaint was done
@@ -889,10 +956,11 @@ public abstract class Canvas
 	boolean __propertyChange(UIFormBracket __form, UIItemBracket __item,
 		int __intProp, int __sub, int __old, int __new)
 	{
-		UIBackend instance = UIBackendFactory.getInstance(true);
+		UIBackend instance = this.__backend();
 		
 		// Only act on the canvas item
-		if (!instance.equals(__item, this._uiCanvas))
+		if (!instance.equals(__item,
+			this.__state(__CanvasState__.class)._uiCanvas))
 			return false;
 		
 		// Depends on the property
@@ -935,12 +1003,57 @@ public abstract class Canvas
 	final void __showNotifyCanvas()
 	{
 		// Signal focus on this canvas since it has been shown
-		UIBackend backend = UIBackendFactory.getInstance(true);
-		backend.widgetProperty(this._uiCanvas,
+		UIBackend backend = this.__backend();
+		backend.widgetProperty(this.__state(__CanvasState__.class)._uiCanvas,
 			UIWidgetProperty.INT_SIGNAL_FOCUS, 0, 0);
 		
 		// Call the notification handler
 		this.showNotify();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/01/14
+	 */
+	@Override
+	final __CommonState__ __stateInit(UIBackend __backend)
+		throws NullPointerException
+	{
+		return new __CanvasState__(__backend, this);
+	}
+	
+	/**
+	 * File selector state.
+	 * 
+	 * @since 2023/01/14
+	 */
+	static class __CanvasState__
+		extends Displayable.__DisplayableState__
+	{
+		/** The native display instance. */
+		final UIItemBracket _uiCanvas;
+		
+		/**
+		 * Initializes the backend state.
+		 *
+		 * @param __backend The backend used.
+		 * @param __self Self widget.
+		 * @since 2023/01/14
+		 */
+		__CanvasState__(UIBackend __backend, DisplayWidget __self)
+		{
+			super(__backend, __self);
+			
+			// Build new canvas
+			UIItemBracket uiCanvas = __backend.itemNew(UIItemType.CANVAS);
+			this._uiCanvas = uiCanvas;
+			
+			// Register self for future paint events
+			StaticDisplayState.register(__self, uiCanvas);
+			
+			// Show it on the form for this displayable
+			__backend.formItemPosition(this._uiForm, uiCanvas, 0);
+		}
 	}
 }
 

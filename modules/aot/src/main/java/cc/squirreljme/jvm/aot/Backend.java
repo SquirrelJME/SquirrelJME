@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -24,6 +24,7 @@ import java.util.ServiceLoader;
  *
  * @since 2020/11/22
  */
+@SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
 public interface Backend
 {
 	/**
@@ -34,13 +35,28 @@ public interface Backend
 	 * compilation step.
 	 * @param __name The name of the class being compiled.
 	 * @param __in The input stream.
-	 * @param __out The output stream.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/22
 	 */
 	void compileClass(CompileSettings __settings, LinkGlob __glob,
-		String __name, InputStream __in, OutputStream __out)
+		String __name, InputStream __in)
+		throws IOException, NullPointerException;
+	
+	/**
+	 * Performs compilation of a resource class.
+	 * 
+	 * @param __settings The settings for compilation.
+	 * @param __glob The compilation glob if this is needed by the source
+	 * compilation step.
+	 * @param __path The path of the resource being compiled.
+	 * @param __in The input stream.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/05/28
+	 */
+	void compileResource(CompileSettings __settings, LinkGlob __glob,
+		String __path, InputStream __in)
 		throws IOException, NullPointerException;
 	
 	/**
@@ -54,22 +70,22 @@ public interface Backend
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/05/16
 	 */
-	void dumpGlob(byte[] __inGlob, String __name, PrintStream __out)
+	void dumpGlob(AOTSettings __inGlob, byte[] __name, PrintStream __out)
 		throws IOException, NullPointerException;
 	
 	/**
 	 * Creates a glob that is used for linking compiled classes together.
-	 * 
-	 * @param __settings The settings for compilation.
-	 * @param __name The name of the glob.
+	 *
+	 * @param __aotSettings The settings for compilation.
+	 * @param __compileSettings The name of the glob.
 	 * @param __out The destination output.
 	 * @return The glob for linking.
 	 * @throws IOException On any read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/22
 	 */
-	LinkGlob linkGlob(CompileSettings __settings, String __name,
-		OutputStream __out)
+	LinkGlob linkGlob(AOTSettings __aotSettings,
+		CompileSettings __compileSettings, OutputStream __out)
 		throws IOException, NullPointerException;
 	
 	/**
@@ -82,7 +98,8 @@ public interface Backend
 	
 	/**
 	 * Links together the ROM.
-	 * 
+	 *
+	 * @param __aotSettings The AOT settings.
 	 * @param __settings ROM settings.
 	 * @param __out The stream to write to.
 	 * @param __libs The libraries to be combined, the first library should
@@ -91,7 +108,7 @@ public interface Backend
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/27
 	 */
-	void rom(RomSettings __settings, OutputStream __out,
-		VMClassLibrary... __libs)
+	void rom(AOTSettings __aotSettings, RomSettings __settings,
+		OutputStream __out, VMClassLibrary... __libs)
 		throws IOException, NullPointerException;
 }

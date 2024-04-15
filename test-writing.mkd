@@ -62,6 +62,18 @@ secondary value is set by using `this.secondary(key, value)` from a test, the
 result is stored for later checking. Secondary keys may be any value however
 they are dash encoded for special characters.
 
+## Printing Resultant Manifest
+
+In the event a manifest needs to quickly be created there is a property
+which will print that manifest, this is generally used for getting the
+baseline results via Java SE. This should _never_ be used outside of
+that, as running a test and placing in its own values normally is a very
+bad idea.
+
+The following system property can be set:
+
+ * `net.multiphasicapps.tac.resultManifest=true`
+
 ## Expectation Specifiers
 
 The following expectation specifiers are used for various values. Arrays are
@@ -180,7 +192,7 @@ An example test with the test expectations:
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 

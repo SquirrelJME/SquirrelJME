@@ -1,0 +1,16 @@
+# 2023/07/09
+
+## 13:56
+
+Before I get deeper into redoing NanoCoat with temporary stacks for pushing and
+popping, I need to just push through and make tests for every single byte code
+instruction. This way I have a baseline for something that works and I can just
+verify it by running every single test. I did put into the documentation the format
+for Jasmin files, since sadly it is not saved per project... oh well. But with that
+I can actually just load it back again manually by copy and paste. It is nice to
+have syntax highlighting with all of the keywords for Jasmin.
+
+## 17:35
+
+Actually found a bug with SpringCoat, if a null reference was thrown the VM would just 
+exit instead of emitting `NullPointerException`.

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -12,11 +12,11 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 import cc.squirreljme.emulator.terminal.TerminalPipeManager;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
-import cc.squirreljme.jdwp.JDWPBinding;
-import cc.squirreljme.jdwp.JDWPController;
-import cc.squirreljme.jdwp.JDWPState;
-import cc.squirreljme.jdwp.views.JDWPView;
-import cc.squirreljme.jdwp.views.JDWPViewKind;
+import cc.squirreljme.jdwp.host.JDWPHostBinding;
+import cc.squirreljme.jdwp.host.JDWPHostController;
+import cc.squirreljme.jdwp.host.JDWPHostState;
+import cc.squirreljme.jdwp.host.views.JDWPView;
+import cc.squirreljme.jdwp.host.views.JDWPViewKind;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -38,7 +38,7 @@ import java.util.Map;
  * @since 2018/11/04
  */
 public final class SpringTaskManager
-	implements JDWPBinding
+	implements JDWPHostBinding
 {
 	/** The manager for suites. */
 	protected final VMSuiteManager suites;
@@ -58,7 +58,7 @@ public final class SpringTaskManager
 		new LinkedList<>();
 	
 	/** Controller for JDWP Connections. */
-	protected JDWPController jdwpController;
+	protected JDWPHostController jdwpController;
 	
 	/** Next thread ID, for debugging. */
 	private volatile int _nextThreadId;
@@ -108,7 +108,7 @@ public final class SpringTaskManager
 	 */
 	@Override
 	public <V extends JDWPView> V debuggerView(Class<V> __type,
-		JDWPViewKind __kind, Reference<JDWPState> __state)
+		JDWPViewKind __kind, Reference<JDWPHostState> __state)
 		throws NullPointerException
 	{
 		// What do we want to view?

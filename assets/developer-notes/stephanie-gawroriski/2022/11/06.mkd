@@ -1,0 +1,10 @@
+# 2022/11/06
+
+## 10:33
+
+Twitter is possibly collapsing and I do have a bunch of tweets on there for
+SquirrelJME that I should record in the notes for a given day, for historical
+purposes. I would have to write a parser for Twitter data exports but that
+would not be too difficult at all. The only thing would be images and otherwise.
+But in the future I should just record in the notes here what I am going to say
+anyway since I like having a backup.

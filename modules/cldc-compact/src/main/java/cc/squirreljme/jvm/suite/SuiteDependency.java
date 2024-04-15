@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -62,8 +62,8 @@ public final class SuiteDependency
 		// Extract all semicolon positions
 		int[] sc = StringUtils.multipleIndexOf(';', __s);
 		
-		// {@squirreljme.error DG06 Expected four semi-colons in the
-		// dependency field. (The input dependency)}
+		/* {@squirreljme.error DG06 Expected four semi-colons in the
+		dependency field. (The input dependency)} */
 		if (sc.length != 4)
 			throw new InvalidSuiteException(String.format(
 				"AR06 %s", __s));
@@ -119,8 +119,8 @@ public final class SuiteDependency
 		// Extract all semicolon positions
 		int[] sc = StringUtils.multipleIndexOf(';', __s);
 		
-		// {@squirreljme.error DG07 Expected two semi-colons in the
-		// dependency field. (The input dependency)}
+		/* {@squirreljme.error DG07 Expected two semi-colons in the
+		dependency field. (The input dependency)} */
 		if (sc.length != 2)
 			throw new InvalidSuiteException(String.format(
 				"AR07 %s", __s));
@@ -403,8 +403,8 @@ public final class SuiteDependency
 				else
 					return false;
 				
-				// {@squirreljme.error DG08 Illegal dependency check.
-				// (The dependency type; The target class)}
+				/* {@squirreljme.error DG08 Illegal dependency check.
+				(The dependency type; The target class)} */
 			default:
 				throw new RuntimeException(String.format("AR08 %s %s",
 					type, mpclass));
@@ -521,9 +521,9 @@ public final class SuiteDependency
 		SuiteVendor __vendor, SuiteVersionRange __version)
 		throws InvalidSuiteException
 	{
-		// {@squirreljme.error DG09 Dependencies on LIBlets must have the
-		// name, vendor, and version set. (The type; The level; The name;
-		// The vendor; The version)}
+		/* {@squirreljme.error DG09 Dependencies on LIBlets must have the
+		name, vendor, and version set. (The type; The level; The name;
+		The vendor; The version)} */
 		if (__type == SuiteDependencyType.LIBLET && (__name == null ||
 			__vendor == null || __version == null))
 			throw new InvalidSuiteException(

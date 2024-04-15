@@ -3,13 +3,14 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.plugin.multivm;
 
-import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
+import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
+import cc.squirreljme.plugin.multivm.ident.TargetClassifier;
 import cc.squirreljme.plugin.util.GradleJavaExecSpecFiller;
 import cc.squirreljme.plugin.util.GuardedOutputStream;
 import cc.squirreljme.plugin.util.JavaExecSpecFiller;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -50,10 +52,20 @@ public enum VMType
 	{
 		/**
 		 * {@inheritDoc}
+		 * @since 2023/02/10
+		 */
+		@Override
+		public boolean allowOnlyDebug()
+		{
+			return true;
+		}
+		
+		/**
+		 * {@inheritDoc}
 		 * @since 2021/05/16
 		 */
 		@Override
-		public void dumpLibrary(Task __task, boolean __isTest,
+		public void dumpLibrary(VMBaseTask __task, boolean __isTest,
 			InputStream __in, OutputStream __out)
 			throws IOException, NullPointerException
 		{
@@ -62,10 +74,20 @@ public enum VMType
 		
 		/**
 		 * {@inheritDoc}
+		 * @since 2022/10/01
+		 */
+		@Override
+		public boolean isGoldTest()
+		{
+			return true;
+		}
+		
+		/**
+		 * {@inheritDoc}
 		 * @since 2020/08/15
 		 */
 		@Override
-		public void processLibrary(Task __task, boolean __isTest,
+		public void processLibrary(VMBaseTask __task, boolean __isTest,
 			InputStream __in, OutputStream __out)
 			throws IOException, NullPointerException
 		{
@@ -81,8 +103,8 @@ public enum VMType
 		 * @since 2020/11/21
 		 */
 		@Override
-		public Iterable<Task> processLibraryDependencies(
-			VMExecutableTask __task)
+		public Iterable<Task> processLibraryDependencies(VMBaseTask __task,
+			BangletVariant __variant)
 			throws NullPointerException
 		{
 			return Collections.emptyList();
@@ -93,8 +115,8 @@ public enum VMType
 		 * @since 2020/11/27
 		 */
 		@Override
-		public void processRom(Task __task, OutputStream __out,
-			RomBuildParameters __build, List<Path> __libs)
+		public void processRom(VMBaseTask __task, BangletVariant __variant,
+			OutputStream __out, RomBuildParameters __build, List<Path> __libs)
 			throws IOException, NullPointerException
 		{
 			throw new RuntimeException(this.name() + " is not ROM capable.");
@@ -106,7 +128,8 @@ public enum VMType
 		 */
 		@SuppressWarnings("CallToSystemGetenv")
 		@Override
-		public void spawnJvmArguments(Task __task, boolean __debugEligible,
+		public void spawnJvmArguments(VMBaseTask __task,
+			boolean __debugEligible,
 			JavaExecSpecFiller __execSpec, String __mainClass,
 			String __commonName, Map<String, String> __sysProps,
 			Path[] __libPath, Path[] __classPath, String... __args)
@@ -198,6 +221,11 @@ public enum VMType
 			sysProps.put("squirreljme.orig.microedition.platform",
 				"SquirrelJME/0.3.0");
 			
+			// VM Tracing?
+			String tracing = System.getProperty("cc.squirreljme.vm.trace");
+			if (tracing != null)
+				sysProps.put("cc.squirreljme.vm.trace", tracing);
+			
 			// Declare system properties that are all the originally defined
 			// system properties
 			for (Map.Entry<String, String> e : __sysProps.entrySet())
@@ -261,8 +289,8 @@ public enum VMType
 							jvmArgs.add(String.format(
 								"-agentlib:jdwp=transport=dt_socket," +
 								"server=n," +
-								"address=%s:%d,suspend=y," +
-								"onuncaught=y", host, port));
+								"address=%s:%d,suspend=y",
+								host, port));
 					}
 				}
 			}
@@ -300,7 +328,7 @@ public enum VMType
 		 * @since 2021/05/16
 		 */
 		@Override
-		public void dumpLibrary(Task __task, boolean __isTest,
+		public void dumpLibrary(VMBaseTask __task, boolean __isTest,
 			InputStream __in, OutputStream __out)
 			throws IOException, NullPointerException
 		{
@@ -309,10 +337,31 @@ public enum VMType
 		
 		/**
 		 * {@inheritDoc}
+		 * @since 2023/05/28
+		 */
+		@Override
+		public NativePortSupport[] hasNativePortSupport()
+		{
+			// Can be run in RatufaCoat
+			return new NativePortSupport[]{NativePortSupport.RATUFACOAT};
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2022/10/01
+		 */
+		@Override
+		public boolean isGoldTest()
+		{
+			return true;
+		}
+		
+		/**
+		 * {@inheritDoc}
 		 * @since 2020/08/15
 		 */
 		@Override
-		public void processLibrary(Task __task, boolean __isTest,
+		public void processLibrary(VMBaseTask __task, boolean __isTest,
 			InputStream __in, OutputStream __out)
 			throws IOException, NullPointerException
 		{
@@ -328,7 +377,146 @@ public enum VMType
 		 * @since 2020/08/15
 		 */
 		@Override
-		public void spawnJvmArguments(Task __task, boolean __debugEligible,
+		public void spawnJvmArguments(VMBaseTask __task,
+			boolean __debugEligible,
+			JavaExecSpecFiller __execSpec, String __mainClass,
+			String __commonName, Map<String, String> __sysProps,
+			Path[] __libPath, Path[] __classPath, String... __args)
+			throws NullPointerException
+		{
+			// Use a common handler to execute the VM as the VMs all have
+			// the same entry point handlers and otherwise
+			this.spawnVmViaFactory(__task, __debugEligible, __execSpec,
+				__mainClass, __commonName, __sysProps, __libPath,
+				__classPath, __args);
+		}
+	},
+	
+	/** Nanocoat, a smaller simpler runtime. */
+	NANOCOAT("NanoCoat", "jar",
+		":emulators:nanocoat-vm")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/05/28
+		 */
+		@Override
+		public void dumpLibrary(VMBaseTask __task, boolean __isTest,
+			InputStream __in, OutputStream __out)
+			throws IOException, NullPointerException
+		{
+			throw new RuntimeException(this.name() + " cannot be dumped.");
+		}
+	
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/05/28
+		 */
+		@Override
+		public boolean hasEmulator()
+		{
+			// This can run on the emulator platform
+			return true;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/05/28
+		 */
+		@Override
+		public NativePortSupport[] hasNativePortSupport()
+		{
+			// Currently no native port support
+			return new NativePortSupport[]{};
+			
+			// Can be run in NanoCoat
+			/*return new NativePortSupport[]{NativePortSupport.NANOCOAT};*/
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/05/28
+		 */
+		@Override
+		public boolean isGoldTest()
+		{
+			return false;
+		}
+	
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/25
+		 */
+		@Override
+		public boolean isSingleSourceSetRom(BangletVariant __variant)
+		{
+			// NanoCoat is this special case
+			return true;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/05/28
+		 */
+		@Override
+		public void processLibrary(VMBaseTask __task, boolean __isTest,
+			InputStream __in, OutputStream __out)
+			throws IOException, NullPointerException
+		{
+			if (__in == null || __out == null)
+				throw new NullPointerException("NARG");
+			
+			// Is just pure copy of the JAR
+			VMHelpers.copy(__in, __out);
+			
+			/*
+			// Determine checksum sum of the library, used to detect changes
+			// in the ROM for example with checkpointing/save states
+			// This is not used for security purposes, just to make sure
+			// that a resume does not completely break the VM
+			byte[] data = VMHelpers.readAll(__in);
+			String hex;
+			try
+			{
+				hex = Base64.getEncoder().encodeToString(
+					MessageDigest.getInstance("sha-1").digest(data));
+			}
+			catch (NoSuchAlgorithmException ignored)
+			{
+				hex = Integer.toHexString(Arrays.hashCode(data));
+			}
+			
+			// Run compilation task
+			try (InputStream in = new ByteArrayInputStream(data))
+			{
+				this.__aotCommand(__task, in, __out,
+					Arrays.asList("-XoriginalLibHash:" + hex),
+					"compile", Collections.emptyList());
+			}
+			*/
+		}
+	
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/12/04
+		 */
+		@Override
+		public void processRom(VMBaseTask __task, BangletVariant __variant,
+			OutputStream __out, RomBuildParameters __build, List<Path> __libs)
+			throws IOException, NullPointerException
+		{
+			/* Just do what SpringCoat does... */
+			VMType.SPRINGCOAT.processRom(__task, __variant, __out,
+				__build, __libs);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/05/28
+		 */
+		@Override
+		public void spawnJvmArguments(VMBaseTask __task,
+			boolean __debugEligible,
 			JavaExecSpecFiller __execSpec, String __mainClass,
 			String __commonName, Map<String, String> __sysProps,
 			Path[] __libPath, Path[] __classPath, String... __args)
@@ -371,7 +559,8 @@ public enum VMType
 		String __emulatorProject)
 		throws NullPointerException
 	{
-		this(__properName, __extension, new String[]{__emulatorProject});
+		this(__properName, __extension, (__emulatorProject == null ?
+			new String[0] : new String[]{__emulatorProject}));
 	}
 	
 	/**
@@ -399,10 +588,31 @@ public enum VMType
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2023/02/10
+	 */
+	@Override
+	public boolean allowOnlyDebug()
+	{
+		return false;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/09/30
+	 */
+	@Override
+	public Set<BangletVariant> banglets()
+	{
+		// Defaults to none
+		return Collections.unmodifiableSet(EnumSet.of(BangletVariant.NONE));
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2020/08/16
 	 */
 	@Override
-	public final List<String> emulatorProjects()
+	public final List<String> emulatorProjects(BangletVariant __variant)
 	{
 		return this.emulatorProjects;
 	}
@@ -419,12 +629,55 @@ public enum VMType
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2023/05/28
+	 */
+	@Override
+	public boolean hasEmulator()
+	{
+		return true;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/12/23
+	 */
+	@Override
+	public boolean hasEmulatorJit()
+	{
+		return false;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @since 2023/05/28
+	 */
+	@Override
+	public NativePortSupport[] hasNativePortSupport()
+	{
+		// Not supported by default
+		return new NativePortSupport[0];
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2020/08/23
 	 */
 	@Override
-	public final boolean hasRom()
+	public final boolean hasRom(BangletVariant __variant)
 	{
 		return this != VMType.HOSTED;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/07/25
+	 */
+	@Override
+	public boolean isSingleSourceSetRom(BangletVariant __variant)
+	{
+		// False by default
+		return false;
 	}
 	
 	/**
@@ -442,7 +695,7 @@ public enum VMType
 		if (SourceSet.MAIN_SOURCE_SET_NAME.equals(__sourceSet))
 			return __project.getName() + "." + this.extension;
 		
-		// Otherwise include the source sets
+		// Otherwise, include the source sets
 		return __project.getName() + "-" + __sourceSet + "." + this.extension;
 	}
 	
@@ -451,12 +704,25 @@ public enum VMType
 	 * @since 2020/11/27
 	 */
 	@Override
-	public String outputRomName(String __sourceSet)
+	public String outputRomName(String __sourceSet, BangletVariant __variant)
 		throws NullPointerException
 	{
+		// If this is the main source set, then just do not include "main"
+		// as it is pointless
+		String variantNoun = __variant.properNoun;
 		if (SourceSet.MAIN_SOURCE_SET_NAME.equals(__sourceSet))
-			return "squirreljme." + this.extension;
-		return "squirreljme-" + __sourceSet + "." + this.extension;
+		{
+			if (variantNoun.isEmpty())
+				return "squirreljme." + this.extension;
+			return "squirreljme-" + variantNoun + "." + this.extension;
+		}
+		
+		// If there is no variant include it
+		if (variantNoun.isEmpty())
+			return "squirreljme-" + __sourceSet + "." + this.extension;
+		
+		return "squirreljme-" + __sourceSet + "-" + variantNoun + "." +
+			this.extension;
 	}
 	
 	/**
@@ -464,8 +730,8 @@ public enum VMType
 	 * @since 2020/11/21
 	 */
 	@Override
-	public Iterable<Task> processLibraryDependencies(
-		VMExecutableTask __task)
+	public Iterable<Task> processLibraryDependencies(VMBaseTask __task,
+		BangletVariant __variant)
 		throws NullPointerException
 	{
 		Project project = __task.getProject().getRootProject()
@@ -473,12 +739,13 @@ public enum VMType
 				this.vmName(VMNameFormat.LOWERCASE));
 		Project rootProject = project.getRootProject();
 		
-		// Make sure the AOT compiler is always up to date when this is
+		// Make sure the AOT compiler is always up-to-date when this is
 		// ran, otherwise things can be very weird if it is not updated
 		// which would not be a good thing at all
 		Collection<Task> rv = new LinkedList<>();
 		for (ProjectAndTaskName task : VMHelpers.runClassTasks(project,
-			SourceSet.MAIN_SOURCE_SET_NAME, VMType.HOSTED))
+			new SourceTargetClassifier(SourceSet.MAIN_SOURCE_SET_NAME,
+				VMType.HOSTED, BangletVariant.NONE, ClutterLevel.DEBUG)))
 		{
 			Project taskProject = rootProject.project(task.project);
 			
@@ -495,7 +762,8 @@ public enum VMType
 		// Make sure the hosted environment is working since it needs to
 		// be kept up to date as well
 		for (Task task : new VMEmulatorDependencies(__task,
-			VMType.HOSTED).call())
+			new TargetClassifier(VMType.HOSTED, BangletVariant.NONE,
+				ClutterLevel.DEBUG)).call())
 			rv.add(task);
 		
 		return rv;
@@ -506,8 +774,8 @@ public enum VMType
 	 * @since 2020/11/27
 	 */
 	@Override
-	public void processRom(Task __task, OutputStream __out,
-		RomBuildParameters __build, List<Path> __libs)
+	public void processRom(VMBaseTask __task, BangletVariant __variant,
+		OutputStream __out, RomBuildParameters __build, List<Path> __libs)
 		throws IOException, NullPointerException
 	{
 		if (__task == null || __out == null || __build == null ||
@@ -519,6 +787,12 @@ public enum VMType
 		for (int i = 0, n = __libs.size(); i < n; i++)
 			libIndex.put(__libs.get(i), i);
 		
+		// Is this a single source set ROM?
+		boolean isSingleSourceSet = this.isSingleSourceSetRom(__variant);
+		boolean bootLoaderEnabled = !isSingleSourceSet ||
+			(isSingleSourceSet &&
+				SourceSet.MAIN_SOURCE_SET_NAME.equals(__task.getSourceSet()));
+		
 		// Setup arguments for packing the ROM
 		List<String> args = new ArrayList<>();
 		
@@ -527,27 +801,32 @@ public enum VMType
 			args.add("-XbootLoaderMainClass:" + __build.bootLoaderMainClass);
 		
 		// Boot loader class path
-		if (__build.bootLoaderClassPath != null)
-			args.add("-XbootLoaderClassPath:" +
-				VMType.__pathIndexList(libIndex, __build.bootLoaderClassPath));
-			
-		// Launcher main class
-		if (__build.launcherMainClass != null)
-			args.add("-XlauncherMainClass:" + __build.launcherMainClass);
-		
-		// Launcher arguments, these are a bit special
-		if (__build.launcherArgs != null)
+		if (bootLoaderEnabled)
 		{
-			String[] launcherArgs = __build.launcherArgs;
-			for (int i = 0, n = launcherArgs.length; i < n; i++)
-				args.add(String.format("-XlauncherArgs:%d:%s",
-					i, launcherArgs[i]));
+			if (__build.bootLoaderClassPath != null)
+				args.add("-XbootLoaderClassPath:" +
+					VMType.__pathIndexList(libIndex,
+					__build.bootLoaderClassPath));
+			
+			// Launcher main class
+			if (__build.launcherMainClass != null)
+				args.add("-XlauncherMainClass:" + __build.launcherMainClass);
+			
+			// Launcher arguments, these are a bit special
+			if (__build.launcherArgs != null)
+			{
+				String[] launcherArgs = __build.launcherArgs;
+				for (int i = 0, n = launcherArgs.length; i < n; i++)
+					args.add(String.format("-XlauncherArgs:%d:%s", i,
+						launcherArgs[i]));
+			}
+			
+			// Launcher class path
+			if (__build.launcherClassPath != null)
+				args.add("-XlauncherClassPath:" +
+					VMType.__pathIndexList(libIndex,
+					__build.launcherClassPath));
 		}
-		
-		// Launcher class path
-		if (__build.launcherClassPath != null)
-			args.add("-XlauncherClassPath:" +
-				VMType.__pathIndexList(libIndex, __build.launcherClassPath));
 		
 		// Put down paths to libraries to link together
 		for (Path path : __libs)
@@ -555,7 +834,7 @@ public enum VMType
 			
 		// Run the specified command
 		this.__aotCommand(__task, null, __out,
-			"rom", args);
+			null, "rom", args);
 	}
 	
 	/**
@@ -574,12 +853,12 @@ public enum VMType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/15
 	 */
-	public void spawnVmViaFactory(Task __task, boolean __debugEligible,
+	public void spawnVmViaFactory(VMBaseTask __task, boolean __debugEligible,
 		JavaExecSpecFiller __execSpec, String __mainClass,
 		String __commonName, Map<String, String> __sysProps, Path[] __libPath,
 		Path[] __classPath, String[] __args)
 		throws NullPointerException
-	{
+	{ 
 		if (__task == null || __execSpec == null || __mainClass == null ||
 			__sysProps == null || __libPath == null || __classPath == null ||
 			__args == null)
@@ -637,9 +916,8 @@ public enum VMType
 		// Determine where profiler snapshots are to go, try to use the
 		// profiler directory for that
 		Path profilerDir = ((__task instanceof VMExecutableTask) ?
-			VMHelpers.profilerDir(__task.getProject(), this,
-			((VMExecutableTask)__task).getSourceSet()).get() :
-			__task.getProject().getBuildDir().toPath());
+			VMHelpers.profilerDir(__task.getProject(), __task.getClassifier())
+			.get() : __task.getProject().getBuildDir().toPath());
 		
 		// Use the main class name unless this is a test, so that they are
 		// named better
@@ -697,7 +975,8 @@ public enum VMType
 				
 			case PROPER_NOUN:
 			default:
-				return properName;
+				return Character.toUpperCase(properName.charAt(0)) +
+					properName.substring(1);
 		}
 	}
 	
@@ -708,13 +987,14 @@ public enum VMType
 	 * @param __task The task being run for.
 	 * @param __in The input source (optional).
 	 * @param __out The output source (optional).
+	 * @param __preArgs Pre command arguments.
 	 * @param __command The name of the ROM.
 	 * @param __args The arguments for the AOT command.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/05/16
 	 */
-	void __aotCommand(Task __task, InputStream __in, OutputStream __out,
-		String __command, Iterable<String> __args)
+	void __aotCommand(VMBaseTask __task, InputStream __in, OutputStream __out,
+		Iterable<String> __preArgs, String __command, Iterable<String> __args)
 		throws NullPointerException
 	{
 		if (__task == null || __command == null)
@@ -724,7 +1004,9 @@ public enum VMType
 		Path[] classPath = VMHelpers.runClassPath(__task.getProject()
 			.getRootProject().project(":modules:aot-" +
 				this.vmName(VMNameFormat.LOWERCASE)),
-			SourceSet.MAIN_SOURCE_SET_NAME, VMType.HOSTED);
+			new SourceTargetClassifier(
+				SourceSet.MAIN_SOURCE_SET_NAME, VMType.HOSTED,
+				BangletVariant.NONE, ClutterLevel.DEBUG));
 		
 		// Setup arguments for compilation
 		Collection<String> args = new ArrayList<>();
@@ -734,6 +1016,20 @@ public enum VMType
 		
 		// The name of this JAR
 		args.add("-Xname:" + __task.getProject().getName());
+		
+		// The current clutter level
+		args.add("-XclutterLevel:" +
+			__task.getClassifier().getTargetClassifier()
+				.getClutterLevel());
+		
+		// Add source set
+		args.add("-XsourceSet:" +
+			__task.getSourceSet());
+		
+		// Arguments before the command
+		if (__preArgs != null)
+			for (String arg : __preArgs)
+				args.add(arg);
 		
 		// Our run command and any additional arguments
 		args.add(__command);
@@ -754,7 +1050,7 @@ public enum VMType
 					classPath,
 					args.toArray(new String[args.size()]));
 				
-				// Use the error stream directory
+				// Use the error stream directly
 				__spec.setErrorOutput(new GuardedOutputStream(System.err));
 				
 				// Use the given input

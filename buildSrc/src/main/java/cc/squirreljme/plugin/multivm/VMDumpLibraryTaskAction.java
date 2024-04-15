@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
 
@@ -20,29 +21,23 @@ import org.gradle.api.Task;
 public class VMDumpLibraryTaskAction
 	implements Action<Task>
 {
-	/** The source set used. */
-	public final String sourceSet;
-	
-	/** The virtual machine type. */
-	public final VMSpecifier vmType;
+	/** The classifier used. */
+	public final SourceTargetClassifier classifier;
 	
 	/**
 	 * Initializes the task action.
 	 * 
-	 * @param __sourceSet The source set.
-	 * @param __vmType The virtual machine type.
+	 * @param __classifier The classifier used.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/05/16
 	 */
-	public VMDumpLibraryTaskAction(String __sourceSet,
-		VMSpecifier __vmType)
+	public VMDumpLibraryTaskAction(SourceTargetClassifier __classifier)
 		throws NullPointerException
 	{
-		if (__sourceSet == null || __vmType == null)
+		if (__classifier == null)
 			throw new NullPointerException("NARG");
 		
-		this.sourceSet = __sourceSet;
-		this.vmType = __vmType;
+		this.classifier = __classifier;
 	}
 	
 	/**
@@ -52,7 +47,7 @@ public class VMDumpLibraryTaskAction
 	@Override
 	public void execute(Task __task)
 	{
-		VMLibraryTaskAction.execute(__task, this.vmType, this.sourceSet,
-			this.vmType::dumpLibrary);
+		VMLibraryTaskAction.execute((VMBaseTask)__task, this.classifier,
+			this.classifier.getVmType()::dumpLibrary);
 	}
 }

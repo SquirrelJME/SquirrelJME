@@ -3,11 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.util;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This is thrown when through iteration the structure of the collection
@@ -15,6 +17,7 @@ package java.util;
  *
  * @since 2018/12/08
  */
+@Api
 public class ConcurrentModificationException
 	extends RuntimeException
 {
@@ -23,6 +26,7 @@ public class ConcurrentModificationException
 	 *
 	 * @since 2018/12/08
 	 */
+	@Api
 	public ConcurrentModificationException()
 	{
 	}
@@ -33,6 +37,7 @@ public class ConcurrentModificationException
 	 * @param __m The message.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public ConcurrentModificationException(String __m)
 	{
 		super(__m);

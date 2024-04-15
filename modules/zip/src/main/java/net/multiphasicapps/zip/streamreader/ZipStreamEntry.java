@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -306,12 +306,12 @@ public final class ZipStreamEntry
 			// Mark EOF
 			this._eof = true;
 			
-			// {@squirreljme.error BF0u Reached end of file in the entry
-			// however the size it consumes and/or its CRC does not match
-			// the expected values. (The expected CRC; The actual CRC;
-			// The expected uncompressed size; The actual uncompressed
-			// size; The expected compressed size; The actual compressed
-			// size)}
+			/* {@squirreljme.error BF0u Reached end of file in the entry
+			however the size it consumes and/or its CRC does not match
+			the expected values. (The expected CRC; The actual CRC;
+			The expected uncompressed size; The actual uncompressed
+			size; The expected compressed size; The actual compressed
+			size)} */
 			CRC32Calculator crc = this.crc;
 			int expectedcrc = this.expectedcrc,
 				expecteduncompsize = this.expecteduncompsize,
@@ -328,11 +328,11 @@ public final class ZipStreamEntry
 			return -1;
 		}
 		
-		// {@squirreljme.error BF72 While reading an exact-size entry no
-		// compressed data was read and EOF was not returned, it is possible
-		// that the ZIP is corrupted. (Expected compressed size; Currently
-		// read uncompressed bytes/The expected uncompressed size; Currently
-		// read compressed bytes/The expected compressed size; The file)}
+		/*  {@squirreljme.error BF72 While reading an exact-size entry no
+		compressed data was read and EOF was not returned, it is possible
+		that the ZIP is corrupted. (Expected compressed size; Currently
+		read uncompressed bytes/The expected uncompressed size; Currently
+		read compressed bytes/The expected compressed size; The file)} */
 		else if (rc == 0 && rest == 0)
 			throw new ZipException(String.format("BF72 %d (%d/%d) (%d/%d) %s",
 				this.expecteduncompsize, cinusz, this.expecteduncompsize,
@@ -376,9 +376,9 @@ public final class ZipStreamEntry
 		// Mark EOF so future reads fail
 		this._eof = true;
 		
-		// {@squirreljme.error BF0v Could not find end of entry because the
-		// entry exceeds the bounds of the ZIP file. (The number of read
-		// bytes)}
+		/* {@squirreljme.error BF0v Could not find end of entry because the
+		entry exceeds the bounds of the ZIP file. (The number of read
+		bytes)} */
 		int probed = dhin.peek(0, peeking, 0,
 			ZipStreamEntry._MAX_DESCRIPTOR_SIZE);
 		if (probed < ZipStreamEntry._HEADERLESS_DESCRIPTOR_SIZE)
@@ -393,12 +393,12 @@ public final class ZipStreamEntry
 			ddcomp = ZipStreamReader.__readInt(peeking, offset + 4),
 			dduncomp = ZipStreamReader.__readInt(peeking, offset + 8);
 
-		// {@squirreljme.error BF0w Reached end of file in the entry
-		// however the size it consumes and/or its CRC does not match
-		// the expected values. (The expected CRC; The actual CRC;
-		// The expected uncompressed size; The actual uncompressed
-		// size; The expected compressed size; The actual compressed
-		// size)}
+		/* {@squirreljme.error BF0w Reached end of file in the entry
+		however the size it consumes and/or its CRC does not match
+		the expected values. (The expected CRC; The actual CRC;
+		The expected uncompressed size; The actual uncompressed
+		size; The expected compressed size; The actual compressed
+		size)} */
 		CRC32Calculator crc = this.crc;
 		long cinusz = cin.uncompressedBytes(),
 			cincsz = cin.compressedBytes();
@@ -439,9 +439,9 @@ public final class ZipStreamEntry
 		int d = 0;
 		for (int i = __o, e = __o + __l; i < e; i++, d++)
 		{
-			// {@squirreljme.error BF0x Could not find end of entry because the
-			// entry exceeds the bounds of the ZIP file. (The number of read
-			// bytes)}
+			/* {@squirreljme.error BF0x Could not find end of entry because the
+			entry exceeds the bounds of the ZIP file. (The number of read
+			bytes)} */
 			int probed = dhin.peek(0, peeking, 0,
 				ZipStreamEntry._MAX_DESCRIPTOR_SIZE);
 			if (probed < ZipStreamEntry._HEADERLESS_DESCRIPTOR_SIZE)
@@ -468,8 +468,8 @@ public final class ZipStreamEntry
 				return (d <= 0 ? -1 : d);
 			}
 			
-			// {@squirreljme.error BF0y Reached end of file before the end
-			// of the ZIP entry could be found.}
+			/* {@squirreljme.error BF0y Reached end of file before the end
+			of the ZIP entry could be found.} */
 			int rc = cin.read();
 			if (rc < 0)
 				throw new ZipException("BF0y");

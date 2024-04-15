@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import cc.squirreljme.plugin.util.GradleLoggerOutputStream;
 import cc.squirreljme.plugin.util.UnassistedLaunchEntry;
 import cc.squirreljme.plugin.util.GradleJavaExecSpecFiller;
@@ -39,28 +40,23 @@ public class VMFullSuiteTaskAction
 	public static final String LIBRARIES_PROPERTY =
 		"full.libraries";
 	
-	/** The source set used. */
-	public final String sourceSet;
-	
-	/** The virtual machine creating for. */
-	protected final VMSpecifier vmType;
+	/** The source target classifier used. */
+	protected final SourceTargetClassifier classifier;
 	
 	/**
 	 * Initializes the task.
 	 * 
-	 * @param __sourceSet The source set.
-	 * @param __vmType The VM to make a ROM for.
+	 * @param __classifier The classifier used.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/10/17
 	 */
-	public VMFullSuiteTaskAction(String __sourceSet, VMSpecifier __vmType)
+	public VMFullSuiteTaskAction(SourceTargetClassifier __classifier)
 		throws NullPointerException
 	{
-		if (__vmType == null || __sourceSet == null)
+		if (__classifier == null)
 			throw new NullPointerException("NARG");
 		
-		this.vmType = __vmType;
-		this.sourceSet = __sourceSet;
+		this.classifier = __classifier;
 	}
 	
 	/**
@@ -72,7 +68,7 @@ public class VMFullSuiteTaskAction
 	{
 		Project root = __task.getProject().getRootProject();
 		
-		// We need all of the libraries to load and to be available
+		// We need all the libraries to load and to be available
 		Collection<Path> libPath = VMHelpers.fullSuiteLibraries(__task);
 		
 		// Additional items onto the library set?
@@ -99,13 +95,14 @@ public class VMFullSuiteTaskAction
 		
 		// Determine the initial classpath of the launcher, which is always
 		// ran first
+		SourceTargetClassifier withMain = this.classifier
+			.withSourceSet(SourceSet.MAIN_SOURCE_SET_NAME);
 		Collection<Path> classPath = new LinkedHashSet<>();
 		classPath.addAll(Arrays
 			.asList(VMHelpers.runClassPath((VMExecutableTask)root.project(
 				":modules:launcher").getTasks().getByName(TaskInitialization
-					.task("lib", SourceSet.MAIN_SOURCE_SET_NAME,
-					 this.vmType)),
-				SourceSet.MAIN_SOURCE_SET_NAME, this.vmType)));
+					.task("lib", withMain)),
+				withMain)));
 		
 		// Debug these, just to ensure they work
 		__task.getLogger().debug("LibPath: {}", libPath);
@@ -115,7 +112,9 @@ public class VMFullSuiteTaskAction
 		ExecResult exitResult = __task.getProject().javaexec(__spec ->
 			{
 				// Use filled JVM arguments
-				this.vmType.spawnJvmArguments(__task, true,
+				this.classifier.getVmType().spawnJvmArguments(
+					(VMBaseTask)__task,
+					true,
 					new GradleJavaExecSpecFiller(__spec),
 					UnassistedLaunchEntry.MIDLET_MAIN_CLASS,
 					"fullSuite",

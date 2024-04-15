@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
@@ -86,8 +86,8 @@ public class SizeLimitedInputStream
 		if (__is == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error BD1o The limit is negative. (The negative
-		// limit)}
+		/* {@squirreljme.error BD1o The limit is negative. (The negative
+		limit)} */
 		if (__li < 0)
 			throw new IllegalArgumentException(String.format("BD1o %d", __li));
 		
@@ -132,9 +132,9 @@ public class SizeLimitedInputStream
 			// Read in remaining bytes if doing so
 			if (this.exact)
 			{
-				// {@squirreljme.error BD1p Reached EOF on wrapped stream when
-				// requesting an exact number of bytes. (The current read
-				// count; The read limit)}
+				/* {@squirreljme.error BD1p Reached EOF on wrapped stream when
+				requesting an exact number of bytes. (The current read
+				count; The read limit)} */
 				long limit = this.limit;
 				long at;
 				while ((at = this._current) < limit)
@@ -171,9 +171,9 @@ public class SizeLimitedInputStream
 		// EOF?
 		if (next < 0)
 		{
-			// {@squirreljme.error BD1q Required an exact number of bytes
-			// however the limit was not yet reached, the input stream is too
-			// short. (The limit; The current position)}
+			/* {@squirreljme.error BD1q Required an exact number of bytes
+			however the limit was not yet reached, the input stream is too
+			short. (The limit; The current position)} */
 			if (this.exact && cur != limit)
 				throw new IOException(String.format("BD1q %d %d",
 					limit, cur));
@@ -208,9 +208,9 @@ public class SizeLimitedInputStream
 		long limit = this.limit;
 		if (current >= limit)
 		{
-			// {@squirreljme.error BD1r Required an exact number of bytes
-			// however the limit was not yet reached, the file is too short.
-			// (The limit; The current position)}
+			/* {@squirreljme.error BD1r Required an exact number of bytes
+			however the limit was not yet reached, the file is too short.
+			(The limit; The current position)} */
 			if (this.exact && current != limit)
 				throw new IOException(String.format("BD1r %d %d",
 					limit, current));
@@ -228,9 +228,9 @@ public class SizeLimitedInputStream
 		// EOF?
 		if (rc < 0)
 		{
-			// {@squirreljme.error BD1s Required an exact number of bytes
-			// however the limit was not yet reached. (The limit; The
-			// current position)}
+			/* {@squirreljme.error BD1s Required an exact number of bytes
+			however the limit was not yet reached. (The limit; The
+			current position)} */
 			if (this.exact && current != limit)
 				throw new IOException(String.format("BD1s %d %d",
 					limit, current));

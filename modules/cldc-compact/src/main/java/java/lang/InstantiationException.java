@@ -3,17 +3,20 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.lang;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This is thrown when an instance could not be instantiated.
  *
  * @since 2018/12/04
  */
+@Api
 public class InstantiationException
 	extends Exception
 {
@@ -22,6 +25,7 @@ public class InstantiationException
 	 *
 	 * @since 2018/12/04
 	 */
+	@Api
 	public InstantiationException()
 	{
 	}
@@ -32,6 +36,7 @@ public class InstantiationException
 	 * @param __m The message.
 	 * @since 2018/12/04
 	 */
+	@Api
 	public InstantiationException(String __m)
 	{
 		super(__m);

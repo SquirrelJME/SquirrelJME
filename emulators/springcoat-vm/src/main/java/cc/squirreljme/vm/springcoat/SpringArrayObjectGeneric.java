@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -109,8 +109,8 @@ public final class SpringArrayObjectGeneric
 			return __cl.cast(rv);
 		}
 		
-		// {@squirreljme.error BK0h Out of bounds access to array.
-		// (The index; The length of the array)}
+		/* {@squirreljme.error BK0h Out of bounds access to array.
+		(The index; The length of the array)} */
 		catch (IndexOutOfBoundsException e)
 		{
 			throw new SpringArrayIndexOutOfBoundsException(
@@ -165,9 +165,9 @@ public final class SpringArrayObjectGeneric
 			// Performing the check for cache?
 			/*else*/ if (wouldSet != lastValid)
 			{
-				// {@squirreljme.error BK0i The specified type is not
-				// compatible with the values this array stores. (The input
-				// value; The component type)}
+				/* {@squirreljme.error BK0i The specified type is not
+				compatible with the values this array stores. (The input
+				value; The component type)} */
 				SpringClass component = this.component;
 				if (!component.isCompatible(__v))
 					throw new SpringArrayStoreException(String.format(
@@ -184,8 +184,8 @@ public final class SpringArrayObjectGeneric
 			this._elements[__dx] = (__v == null ? SpringNullObject.NULL : __v);
 		}
 		
-		// {@squirreljme.error BK0j Out of bounds access to array. (The index;
-		// The length of the array)}
+		/* {@squirreljme.error BK0j Out of bounds access to array. (The index;
+		The length of the array)} */
 		catch (IndexOutOfBoundsException e)
 		{
 			throw new SpringArrayIndexOutOfBoundsException(

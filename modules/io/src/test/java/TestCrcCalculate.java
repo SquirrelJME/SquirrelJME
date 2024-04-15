@@ -3,7 +3,7 @@
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -33,17 +33,17 @@ public class TestCrcCalculate
 	@Override
 	public Integer test()
 	{
-		/* Perform the same calculation as ZIP. */
+		// Perform the same calculation as ZIP.
 		CRC32Calculator crc = new CRC32Calculator(
 			ZipCRCConstants.CRC_REFLECT_DATA,
 			ZipCRCConstants.CRC_REFLECT_REMAINDER,
 			ZipCRCConstants.CRC_POLYNOMIAL, ZipCRCConstants.CRC_REMAINDER,
 			ZipCRCConstants.CRC_FINALXOR);
 		
-		/* Run the calculation. */
+		// Run the calculation.
 		crc.offer(TestCrcCalculate._DATA);
 		
-		/* Return the calculated checksum. */
+		// Return the calculated checksum.
 		return crc.checksum();
 	}
 }

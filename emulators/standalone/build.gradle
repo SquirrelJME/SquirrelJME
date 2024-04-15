@@ -1,27 +1,26 @@
-import cc.squirreljme.plugin.multivm.VMFullSuiteDepends
-import cc.squirreljme.plugin.multivm.VMHelpers
-import cc.squirreljme.plugin.multivm.VMRunUpToDateWhen
-import cc.squirreljme.plugin.multivm.VMType
+import cc.squirreljme.plugin.general.CollateResourceJarsTask
+import cc.squirreljme.plugin.multivm.*
+import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier
 
-import java.nio.file.Files
-import java.nio.file.Paths
-import java.nio.file.StandardOpenOption
 import java.util.regex.Pattern
-import java.util.zip.ZipEntry
-import java.util.zip.ZipInputStream
 
 plugins
 {
 	id "application"
 	id "java"
-	id "com.github.johnrengelman.shadow" version "7.1.2"
 }
+
+apply plugin: "com.github.johnrengelman.shadow"
 
 description = "Standalone SquirrelJME virtual machine on Java."
 mainClassName = "cc.squirreljme.vm.standalone.main.Main"
 
 dependencies {
 	implementation project(":emulators:springcoat-vm")
+	implementation project(":emulators:nanocoat-vm")
+	
+	// Debugger tool for quick usage
+	implementation project(":tools:squirreljme-debugger")
 }
 
 java {
@@ -33,7 +32,16 @@ java {
 		
 		// Use the default bootstrap classpath
 		options.bootstrapClasspath = null
+		
 	}
+	
+	// Maximize debugging
+	compileJava.options.debug = true
+	compileJava.options.debugOptions.setDebugLevel("source,lines,vars")
+	
+	// Copy settings
+	compileTestJava.options.debug = compileJava.options.debug
+	compileTestJava.options.debugOptions = compileJava.options.debugOptions
 }
 
 // Mapper for Jar names on files to straight file names
@@ -45,210 +53,28 @@ static Iterable<java.nio.file.Path> mapBaseNameP(Iterable<Path> input) {
 	return result;
 }
 
-// Mapper for Jar names on files to straight file names
-static Iterable<java.nio.file.Path> mapBaseNameF(Iterable<File> input) {
-	List<java.nio.file.Path> mapped = new ArrayList<>()
-	
-	input.forEach({file -> mapped.add(file.toPath())})
-	
-	return mapBaseNameP(mapped as Iterable<Path>)
-}
-
 static String flatClasspath(Project project) {
 	return VMHelpers.classpathAsString(mapBaseNameP(VMHelpers
-		.runClassPath(project, SourceSet.MAIN_SOURCE_SET_NAME,
-			VMType.SPRINGCOAT) as List<Path>))
+		.runClassPath(project, new SourceTargetClassifier(
+			SourceSet.MAIN_SOURCE_SET_NAME,
+			VMType.SPRINGCOAT, BangletVariant.NONE,
+			ClutterLevel.RELEASE)) as List<Path>))
 }
 
-static java.nio.file.Path nameToDiskFile(java.nio.file.Path jarOut,
-	String name) {
-	java.nio.file.Path diskFile = jarOut
-	for (String splice : name.split("[\\\\/]"))
-		diskFile = diskFile.resolve(splice)
-		
-	return diskFile
-}
-
-// Prefix for included JAR resources
 String MERGED_PREFIX = "SQUIRRELJME.SQC"
+String MERGED_PREFIX_DEBUG = "SQUIRRELJME-DEBUG.SQC"
 
-task collateResourceJars {
-	dependsOn new VMFullSuiteDepends(collateResourceJars,
-		SourceSet.MAIN_SOURCE_SET_NAME, VMType.SPRINGCOAT)
-	mustRunAfter processResources
-	
-	// About this task
-	group "squirreljme"
-	description "Collates all files for standalone JARs."
-	
-	// Inputs for this, it is just all of the input JARs and such
-	inputs.files(project.provider({ -> VMHelpers.fullSuiteLibraries(
-		rootProject.tasks.getByName("fullSpringCoat")) as Iterable<Path>}))
-	outputs.files(project.provider({ ->
-			java.nio.file.Path outBase = processResources.getOutputs().
-				files.getSingleFile().toPath().resolve(MERGED_PREFIX)
-				
-			Set<java.nio.file.Path> result = new LinkedHashSet<>()
-			
-			// Suites list
-			result.add(outBase.resolve("suites.list"))
-			
-			// Process each JAR
-			for (File jarFile : collateResourceJars.getInputs()
-				.files.asList()) {
-				java.nio.file.Path jarPath = jarFile.toPath()
-				java.nio.file.Path jarName = jarPath.getFileName()
-				java.nio.file.Path jarOut = outBase.resolve(jarName)
-				
-				// JAR contents
-				result.add(jarOut.resolve("META-INF")
-					.resolve("squirreljme").resolve("resources.list"))
-				
-				// Contents of the JAR
-				try (InputStream jarIn = Files.newInputStream(jarPath,
-						StandardOpenOption.READ);
-					ZipInputStream jar = new ZipInputStream(jarIn)) {
-					for (;;) {
-						ZipEntry entry = jar.getNextEntry()
-						if (entry == null)
-							break
-						
-						if (entry.isDirectory())
-							continue
-						
-						// Where is this file going?
-						result.add(nameToDiskFile(jarOut, name))
-					}
-				}
-			}
-			
-			return result
-		}))
-	
-	// Up to date when dependencies are updated
-	outputs.upToDateWhen(new VMRunUpToDateWhen(
-		SourceSet.MAIN_SOURCE_SET_NAME, VMType.SPRINGCOAT))
-		
-	// Explode the JARs into the resource root
-	doFirst {
-		java.nio.file.Path outBase = processResources.getOutputs().
-			files.getSingleFile().toPath().resolve(MERGED_PREFIX)
-		
-		// Delete old directory set first since it will have a bunch of
-		// old files in it and such...
-		if (Files.isDirectory(outBase)) {
-			Set<java.nio.file.Path> deleteFiles = new LinkedHashSet<>()
-			Set<java.nio.file.Path> deleteDirs = new LinkedHashSet<>()
-			Files.walk(outBase).forEach({
-					if (Files.isDirectory(it))
-						deleteDirs.add(it)
-					else
-						deleteFiles.add(it)
-				})
-			for (Set<java.nio.file.Path> rawByes : [deleteFiles, deleteDirs]) {
-				List<java.nio.file.Path> byes = new ArrayList<>(rawByes)
-				Collections.reverse(byes)
-				
-				for (java.nio.file.Path bye : byes) {
-					logger.lifecycle(String.format("Cleaning %s...", bye))
-					
-					try {
-						Files.deleteIfExists(bye)
-					} catch (IOException e) {
-						e.printStackTrace()
-					}
-				}
-			}
-		}
-		
-		// Make sure it exists
-		Files.createDirectories(outBase)
-		
-		// JAR suite list
-		List<String> suiteList = new ArrayList<>()
-		
-		// Go through all of the files
-		byte[] buf = new byte[524288];
-		for (File jarFile : collateResourceJars.getInputs().files.asList()) {
-			// Where is everything?
-			java.nio.file.Path jarPath = jarFile.toPath()
-			java.nio.file.Path jarName = jarPath.getFileName()
-			
-			// Add to the suite list for later
-			suiteList.add(jarName.toString())
-			
-			// Where does the exploded JAR content go?
-			java.nio.file.Path jarOut = outBase.resolve(jarName)
-			
-			// Setup base dir
-			Files.createDirectories(jarOut)
-			
-			// Read the ZIP and process
-			List<String> jarContent = new ArrayList<>()
-			try (InputStream jarIn = Files.newInputStream(jarPath,
-					StandardOpenOption.READ);
-				ZipInputStream jar = new ZipInputStream(jarIn)) {
-				for (;;) {
-					ZipEntry entry = jar.getNextEntry()
-					if (entry == null)
-						break
-					
-					if (entry.isDirectory())
-						continue
-					
-					// Record for later
-					String name = entry.getName()
-					jarContent.add(name)
-					
-					// Find where it goes
-					java.nio.file.Path diskFile = nameToDiskFile(jarOut, name)
-					
-					// Setup parent
-					Files.createDirectories(diskFile.getParent())
-					
-					// Note it
-					logger.lifecycle(String.format("Adding %s...",
-						outBase.relativize(diskFile)))
-					
-					// Copy down file
-					try (OutputStream out = Files.newOutputStream(diskFile,
-							StandardOpenOption.WRITE,
-							StandardOpenOption.TRUNCATE_EXISTING,
-							StandardOpenOption.CREATE)) {
-						for (;;) {
-							int rc = jar.read(buf)
-							
-							if (rc < 0)
-								break
-							
-							out.write(buf, 0, rc)
-						}
-					}
-				}
-			}
-			
-			// Write resource list
-			java.nio.file.Path rcListBase =
-				jarOut.resolve("META-INF").resolve("squirreljme")
-			java.nio.file.Path rcListPath =
-				rcListBase.resolve("resources.list")
-			Files.createDirectories(rcListBase)
-			Files.write(rcListPath, jarContent,
-				StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING,
-				StandardOpenOption.CREATE)
-		}
-		
-		// Write the suite list
-		Files.write(outBase.resolve("suites.list"), suiteList,
-			StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING,
-			StandardOpenOption.CREATE)
-	}
-}
+tasks.register("collateResourceJars",
+	CollateResourceJarsTask.class,
+	processResources, ClutterLevel.RELEASE, MERGED_PREFIX)
+tasks.register("collateResourceJarsDebug",
+	CollateResourceJarsTask.class,
+	processResources, ClutterLevel.DEBUG, MERGED_PREFIX_DEBUG)
 
 // Jar Configuration
 jar {
-	dependsOn processResources, collateResourceJars
-	mustRunAfter collateResourceJars
+	dependsOn processResources, collateResourceJars, collateResourceJarsDebug
+	mustRunAfter collateResourceJars, collateResourceJarsDebug
 	
 	// We need to set specific manifest properties
 	manifest {
@@ -263,21 +89,26 @@ jar {
 			"X-SquirrelJME-Standalone-Library": project.provider({ ->
 					return VMHelpers.classpathAsString(
 						mapBaseNameP(VMHelpers.fullSuiteLibraries(
-							rootProject.tasks.getByName("fullSpringCoat"))
+							rootProject.tasks.getByName("fullSpringCoatRelease"))
 							as Iterable<Path>))
 				}),
 			"X-SquirrelJME-Standalone-Internal-Jar-Root": project.provider({ ->
-				"/" + MERGED_PREFIX + "/"})
+				"/" + MERGED_PREFIX + "/"}),
+			"X-SquirrelJME-Standalone-Internal-Debug-Jar-Root": project.provider({ ->
+				"/" + MERGED_PREFIX_DEBUG + "/"})
 	}
 }
 
 // Configuration for ShadowJar
 shadowJar {
-	dependsOn collateResourceJars
-	mustRunAfter collateResourceJars
+	dependsOn collateResourceJars, collateResourceJarsDebug
+	mustRunAfter collateResourceJars, collateResourceJarsDebug
 	
 	// Always SquirrelJME
 	archiveBaseName.set("squirreljme-standalone")
+	
+	// Always merge service files, otherwise multiple VMs will just not work
+	mergeServiceFiles()
 	
 	// Set the suffix of the JAR to be the OS name and arch, since there is
 	// a dynamic library within for it
@@ -296,4 +127,56 @@ shadowJar {
 			return (osName + "-" + osArch).replaceAll(
 				Pattern.compile("[\\s<>:\"/\\\\|?*]"), "") 
 		}))
+	
+	// Exclude IntelliJ Annotations, they are not needed
+	exclude "org/jetbrains/annotations/*.class"
+	exclude "org/intellij/lang/annotations/*.class"
+	
+	dependencies {
+		// Exclude IntelliJ Annotations, they are not needed
+		exclude(dependency("org.jetbrains:annotations-java5:.*"))
+	}
+}
+
+// Shadow run tasks for the various emulator choices
+Provider<Task> shadowJarTask = tasks.named("shadowJar")
+[false, true].each { isDebug ->
+	[false, true].each { isCluttered ->
+		VMType.values().each { vmType ->
+			tasks.register("run" + vmType.vmName(VMNameFormat.PROPER_NOUN) +
+					(isDebug ? "Debug" : "") +
+					(isCluttered ? "Cluttered" : ""),
+				JavaExec) { sub ->
+				sub.dependsOn shadowJarTask
+	
+				sub.description = "Runs the standalone VM via " +
+					"${vmType.properName}" +
+					(isDebug ? " with debugging" : "") +
+					(isCluttered ? " with cluttering" : "") + ".";
+				sub.group = "squirreljme"
+	
+				sub.classpath = shadowJarTask.get().getOutputs().getFiles()
+				sub.mainClass = "cc.squirreljme.vm.standalone.main.Main"
+				if (isCluttered) {
+					if (isDebug) {
+						sub.args = ["-Xemulator:" + 
+							vmType.vmName(VMNameFormat.LOWERCASE), "-Xdebug",
+							"-Xclutter:debug"]
+					} else {
+						sub.args = ["-Xemulator:" + 
+							vmType.vmName(VMNameFormat.LOWERCASE),
+							"-Xclutter:debug"]
+					}
+				} else {
+					if (isDebug) {
+						sub.args = ["-Xemulator:" + 
+							vmType.vmName(VMNameFormat.LOWERCASE), "-Xdebug"]
+					} else {
+						sub.args = ["-Xemulator:" + 
+							vmType.vmName(VMNameFormat.LOWERCASE)]
+					}
+				}
+			}
+		}
+	}
 }

@@ -3,14 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package net.multiphasicapps.classfile;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -88,8 +87,8 @@ public final class MethodDescriptor
 		// Set
 		this.string = __n;
 		
-		// {@squirreljme.error JC3h Method descriptors must start with an open
-		// parenthesis. (The method descriptor)}
+		/* {@squirreljme.error JC3h Method descriptors must start with an open
+		parenthesis. (The method descriptor)} */
 		if (!__n.startsWith("("))
 			throw new InvalidClassFormatException(
 				String.format("JC3h %s", __n));
@@ -111,8 +110,8 @@ public final class MethodDescriptor
 				if ('[' != __n.charAt(at))
 					break;
 			
-			// {@squirreljme.error JC3i Reached end of descriptor parsing
-			// arguments. (The method descriptor)}
+			/* {@squirreljme.error JC3i Reached end of descriptor parsing
+			arguments. (The method descriptor)} */
 			if (at >= n)
 				throw new InvalidClassFormatException(
 					String.format("JC3i %s", __n));
@@ -138,8 +137,8 @@ public final class MethodDescriptor
 							break;
 					break;
 				
-					// {@squirreljme.error JC3j Unknown field descriptor in
-					// method descriptor argument. (The descriptor)}
+					/* {@squirreljme.error JC3j Unknown field descriptor in
+					method descriptor argument. (The descriptor)} */
 				default:
 					throw new InvalidClassFormatException(
 						String.format("JC3j %s", __n));
@@ -157,8 +156,8 @@ public final class MethodDescriptor
 		// Skip the ending parenthesis
 		i++;
 		
-		// {@squirreljme.error JC3k The method descriptor has no return
-		// value. (The method descriptor)}
+		/* {@squirreljme.error JC3k The method descriptor has no return
+		value. (The method descriptor)} */
 		if (i >= n)
 			throw new InvalidClassFormatException(
 				String.format("JC3k %s", __n));
@@ -184,6 +183,21 @@ public final class MethodDescriptor
 		throws IndexOutOfBoundsException
 	{
 		return this._args[__i];
+	}
+	
+	/**
+	 * Returns the slot count for arguments.
+	 * 
+	 * @return The slot count for arguments.
+	 * @since 2022/09/21
+	 */
+	public int argumentSlotCount()
+	{
+		int total = 0;
+		for (FieldDescriptor desc : this._args)
+			total += (desc.isWide() ? 2 : 1);
+		
+		return total;
 	}
 	
 	/**
@@ -217,6 +231,8 @@ public final class MethodDescriptor
 	{
 		if (__other == null)
 			throw new NullPointerException("NARG");
+		if (__other == this)
+			return 0;
 		
 		FieldDescriptor[] aList = this._args;
 		FieldDescriptor[] bList = __other._args;
@@ -235,6 +251,10 @@ public final class MethodDescriptor
 				return compare;
 		}
 		
+		// Shorter list comes first
+		if (aLen != bLen)
+			return bLen - aLen;
+		
 		// Compare return types
 		FieldDescriptor aReturn = this.rvalue;
 		FieldDescriptor bReturn = __other.rvalue;
@@ -250,14 +270,10 @@ public final class MethodDescriptor
 		
 		// Do the compare if neither are null
 		if (aReturn != null)
-		{
-			int compare = aReturn.compareTo(bReturn);
-			if (compare != 0)
-				return compare;
-		}
+			return aReturn.compareTo(bReturn);
 		
-		// Shorter lists come first
-		return bLen - aLen;
+		// These are equal
+		return 0;
 	}
 	
 	/**
@@ -268,6 +284,8 @@ public final class MethodDescriptor
 	public boolean equals(Object __o)
 	{
 		// Check
+		if (__o == this)
+			return true;
 		if (!(__o instanceof MethodDescriptor))
 			return false;
 		
@@ -364,6 +382,25 @@ public final class MethodDescriptor
 		
 		return new MethodDescriptor(
 			(__rv == null ? null : new FieldDescriptor(__rv)), args);
+	}
+	
+	/**
+	 * Creates a descriptor from the given input strings.
+	 * 
+	 * @param __rv The return value of the method, may be {@code null}.
+	 * @param __args The arguments of the method.
+	 * @return The descriptor.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	public static MethodDescriptor ofArguments(FieldDescriptor __rv,
+		FieldDescriptor... __args)
+		throws NullPointerException
+	{
+		if (__args == null)
+			throw new NullPointerException("NARG");
+		
+		return new MethodDescriptor(__rv, __args.clone());
 	}
 }
 

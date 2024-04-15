@@ -3,47 +3,53 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package javax.obex;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.io.IOException;
 import javax.microedition.io.Connection;
 
+@Api
 public interface ClientSession
 	extends Connection
 {
-	@SuppressWarnings("RedundantThrows")
+	@Api
 	HeaderSet connect(HeaderSet __a)
 		throws IOException;
 	
+	@Api
 	HeaderSet createHeaderSet();
 	
-	@SuppressWarnings("RedundantThrows")
+	@Api
 	HeaderSet delete(HeaderSet __a)
 		throws IOException;
 	
-	@SuppressWarnings("RedundantThrows")
+	@Api
 	HeaderSet disconnect(HeaderSet __a)
 		throws IOException;
 	
-	@SuppressWarnings("RedundantThrows")
+	@Api
 	Operation get(HeaderSet __a)
 		throws IOException;
 	
+	@Api
 	long getConnectionID();
 	
-	@SuppressWarnings("RedundantThrows")
+	@Api
 	Operation put(HeaderSet __a)
 		throws IOException;
 	
+	@Api
 	void setAuthenticator(Authenticator __a);
 	
+	@Api
 	void setConnectionID(long __a);
 	
-	@SuppressWarnings("RedundantThrows")
+	@Api
 	HeaderSet setPath(HeaderSet __a, boolean __b, boolean __c)
 		throws IOException;
 }

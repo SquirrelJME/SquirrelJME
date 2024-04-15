@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -11,8 +11,10 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
+import cc.squirreljme.jvm.mle.brackets.UIDrawableBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
+import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIDisplayCallback;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.constants.NonStandardKey;
@@ -20,6 +22,7 @@ import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.constants.UIKeyEventType;
 import cc.squirreljme.jvm.mle.constants.UIKeyModifier;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.event.EventTranslate;
 import cc.squirreljme.runtime.lcdui.event.KeyCodeTranslator;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
@@ -27,7 +30,8 @@ import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import cc.squirreljme.runtime.midlet.ApplicationInterface;
-import java.util.Map;
+import java.util.Objects;
+import org.jetbrains.annotations.Async;
 
 /**
  * This thread is responsible for handling graphics operations.
@@ -49,15 +53,19 @@ final class __MLEUIThread__
 	 * @since 2020/09/12
 	 */
 	@Override
-	public void eventKey(UIFormBracket __form, UIItemBracket __item,
+	public void eventKey(UIDrawableBracket __drawable,
 		int __event, int __keyCode, int __modifiers)
 	{
 		// Debug
-		/*Debugging.debugNote("eventKey(%08x, %08x, %d, %d, %x)",
-			System.identityHashCode(__form), System.identityHashCode(__item),
+		/*Debugging.debugNote("eventKey(%08x, %08x, %d, %d, %s)",
+			Objects.toString(__drawable),
 			__event, __keyCode, __modifiers);*/
 		
-		DisplayWidget widget = StaticDisplayState.locate(__item);
+		if (!(__drawable instanceof UIWidgetBracket))
+			return;
+		
+		DisplayWidget widget = StaticDisplayState.locate(
+			(UIItemBracket)__drawable);
 		
 		// Commands are special key events
 		if (__event == UIKeyEventType.COMMAND_ACTIVATED)
@@ -120,15 +128,18 @@ final class __MLEUIThread__
 			}
 			
 			// Provided the position is valid, try to find an item to activate
-			if (pos != UIItemPosition.NOT_ON_FORM)
+			if (pos != UIItemPosition.NOT_ON_FORM &&
+				(widget instanceof Displayable))
 			{
 				// Locate the item and try to execute the command if it is one
 				UIItemBracket item = UIFormShelf.formItemAtPosition(
-					__form, pos);
+					((Displayable)widget).__state(
+						Displayable.__DisplayableState__.class)._uiForm, pos);
 				if (item != null)
 				{
 					// If this is mapped to a command then activate it
-					DisplayWidget attempt = StaticDisplayState.locate(__item);
+					DisplayWidget attempt = StaticDisplayState.locate(
+						(UIItemBracket)__drawable);
 					if (attempt instanceof __CommandWidget__)
 						((__CommandWidget__)attempt).__activate();
 					
@@ -177,7 +188,7 @@ final class __MLEUIThread__
 	 * @since 2020/09/12
 	 */
 	@Override
-	public void eventMouse(UIFormBracket __form, UIItemBracket __item,
+	public void eventMouse(UIDrawableBracket __drawable,
 		int __event, int __button, int __x, int __y, int __modifiers)
 	{
 		// Debug
@@ -192,11 +203,11 @@ final class __MLEUIThread__
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void exitRequest(UIFormBracket __form)
+	public void exitRequest(UIDrawableBracket __drawable)
 	{
 		// Debug
 		Debugging.debugNote("exitRequest(%08x) @ %s",
-			System.identityHashCode(__form), Thread.currentThread());
+			System.identityHashCode(__drawable), Thread.currentThread());
 			
 		// Obtain the application we are actually running, since this
 		// could be done different for different ones
@@ -217,7 +228,7 @@ final class __MLEUIThread__
 		}
 		catch (Throwable t)
 		{
-			// {@squirreljme.error EB0k Failed to terminate application.}
+			/* {@squirreljme.error EB0k Failed to terminate application.} */
 			throw new Error("EB0k", t);
 		}
 	}
@@ -241,34 +252,14 @@ final class __MLEUIThread__
 	 * @since 2020/10/03
 	 */
 	@Override
-	public void later(int __displayId, int __serialId)
+	public void later(UIDisplayBracket __display, int __serialId)
 	{
-		// Call with the wrong ID? Ignore this
-		if (__displayId != System.identityHashCode(this))
+		DisplayWidget widget = StaticDisplayState.locate(__display);
+		if (!(widget instanceof Display))
 			return;
 		
-		// Look to see if it is a valid call
-		Integer key = __serialId;
-		synchronized (Display.class)
-		{
-			Map<Integer, Runnable> serialRuns = Display._SERIAL_RUNS;
-			
-			// Run it
-			Runnable runner = serialRuns.get(key);
-			if (runner != null)
-				try
-				{
-					runner.run();
-				}
-				finally
-				{
-					// Always clear it, even with failures
-					serialRuns.remove(key);
-					
-					// Notify all the threads that something happened
-					Display.class.notifyAll();
-				}
-		}
+		// Call the display callback
+		((Display)widget).__serialRun(__serialId);
 	}
 	
 	/**
@@ -276,7 +267,7 @@ final class __MLEUIThread__
 	 * @since 2020/09/12
 	 */
 	@Override
-	public void paint(UIFormBracket __form, UIItemBracket __item, int __pf,
+	public void paint(UIDrawableBracket __drawable, int __pf,
 		int __bw, int __bh, Object __buf, int __offset, int[] __pal, int __sx,
 		int __sy, int __sw, int __sh, int __special)
 	{
@@ -288,7 +279,15 @@ final class __MLEUIThread__
 			__pf, __bw, __bh, __buf, __offset, __pal, __sx, __sy, __sw, __sh);
 		*/
 		
-		DisplayWidget widget = StaticDisplayState.locate(__form);
+		// Does nothing as at this point, software implementations of the UI
+		// would have handled the display callback here so no action is
+		// needed to be performed.
+		if (__drawable instanceof UIDisplayBracket)
+			return;
+		
+		// Assume otherwise that drawing is done for widgets
+		DisplayWidget widget =
+			StaticDisplayState.locate((UIWidgetBracket)__drawable);
 		if (widget instanceof __CommonWidget__)
 		{
 			// Ignore widgets which do not want the paint event
@@ -322,20 +321,6 @@ final class __MLEUIThread__
 				this._inPaint = false;
 			}
 		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2022/01/05
-	 */
-	@Override
-	public void paintDisplay(UIDisplayBracket __display, int __pf, int __bw,
-		int __bh, Object __buf, int __offset, int[] __pal, int __sx, int __sy,
-		int __sw, int __sh, int __special)
-	{
-		// Does nothing as at this point, software implementations of the UI
-		// would have handled the display callback here so no action is
-		// needed to be performed.
 	}
 	
 	/**
@@ -424,6 +409,8 @@ final class __MLEUIThread__
 	 * null.
 	 * @since 2020/10/16
 	 */
+	@SerializedEvent
+	@Async.Execute
 	private void __eventKey(Canvas __canvas, CustomItem __cItem, int __event,
 		int __keyCode, int __modifiers)
 		throws IllegalArgumentException, NullPointerException

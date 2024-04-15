@@ -3,12 +3,13 @@
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -42,11 +43,8 @@ public class RatufaCoatBuiltInTaskAction
 	/** The longest length. */
 	private static final int _LONGEST;
 	
-	/** The source set used. */
-	public final String sourceSet;
-	
-	/** The virtual machine creating for. */
-	protected final VMSpecifier vmType;
+	/** The classifier used. */
+	protected final SourceTargetClassifier classifier;
 	
 	static
 	{
@@ -78,20 +76,17 @@ public class RatufaCoatBuiltInTaskAction
 	/**
 	 * Initializes the task.
 	 * 
-	 * @param __vmType The VM to make a ROM for.
-	 * @param __sourceSet The source set.
+	 * @param __classifier The classifier used.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/02/25
 	 */
-	public RatufaCoatBuiltInTaskAction(VMSpecifier __vmType,
-		String __sourceSet)
+	public RatufaCoatBuiltInTaskAction(SourceTargetClassifier __classifier)
 		throws NullPointerException
 	{
-		if (__vmType == null || __sourceSet == null)
+		if (__classifier == null)
 			throw new NullPointerException("NARG");
 		
-		this.vmType = __vmType;
-		this.sourceSet = __sourceSet;
+		this.classifier = __classifier;
 	}
 	
 	/**
@@ -142,7 +137,23 @@ public class RatufaCoatBuiltInTaskAction
 				
 				// Which source set was this created for?
 				out.print("const char* const sjme_builtInSourceSet = \"");
-				out.print(this.sourceSet);
+				out.print(this.classifier.getSourceSet());
+				out.println("\";");
+				
+				// Which VM Type was used?
+				out.print("const char* const sjme_builtInVmType = \"");
+				out.print(this.classifier.getVmType()
+					.vmName(VMNameFormat.PROPER_NOUN));
+				out.println("\";");
+				
+				// What is the "nice" name of the variant?
+				out.print("const char* const sjme_builtInVariant = \"");
+				out.print(this.classifier.getBangletVariant().properNoun);
+				out.println("\";");
+				
+				// Which banglet was used?
+				out.print("const char* const sjme_builtInBanglet = \"");
+				out.print(this.classifier.getBangletVariant().banglet);
 				out.println("\";");
 				
 				// Declare the type

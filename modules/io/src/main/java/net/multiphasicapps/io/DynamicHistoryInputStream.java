@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -90,16 +90,16 @@ public class DynamicHistoryInputStream
 	public int grab(int __i)
 		throws IndexOutOfBoundsException, IOException
 	{
-		// {@squirreljme.error BD0m A negative number of bytes cannot be
-		// grabbed. (The number of bytes to grab)}
+		/* {@squirreljme.error BD0m A negative number of bytes cannot be
+		grabbed. (The number of bytes to grab)} */
 		if (__i < 0)
 			throw new IndexOutOfBoundsException(String.format("BD0m %s", __i));
 		
 		// Lock
 		ByteDeque buffer = this.buffer;
 		
-		// {@squirreljme.error BD0n Cannot grab bytes because the stream
-		// is closed.}
+		/* {@squirreljme.error BD0n Cannot grab bytes because the stream
+		is closed.} */
 		if (this._closed)
 			throw new IOException("BD0n");
 		
@@ -150,16 +150,16 @@ public class DynamicHistoryInputStream
 	public int peek(int __a)
 		throws IndexOutOfBoundsException, IOException
 	{
-		// {@squirreljme.error BD0o Cannot a peek byte which have already been
-		// read. (The requested index)}
+		/* {@squirreljme.error BD0o Cannot a peek byte which have already been
+		read. (The requested index)} */
 		if (__a < 0)
 			throw new IndexOutOfBoundsException(String.format("BD0o %d", __a));
 		
 		// Lock
 		ByteDeque buffer = this.buffer;
 		
-		// {@squirreljme.error BD0p Cannot peek a single byte because the
-		// stream is closed.}
+		/* {@squirreljme.error BD0p Cannot peek a single byte because the
+		stream is closed.} */
 		if (this._closed)
 			throw new IOException("BD0p");
 		
@@ -210,8 +210,8 @@ public class DynamicHistoryInputStream
 	public int peek(int __a, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, IOException, NullPointerException
 	{
-		// {@squirreljme.error BD0q Cannot peek bytes which have already been
-		// read. (The requested index)}
+		/* {@squirreljme.error BD0q Cannot peek bytes which have already been
+		read. (The requested index)} */
 		if (__a < 0)
 			throw new IndexOutOfBoundsException(String.format("BD0q %d", __a));
 		
@@ -225,8 +225,8 @@ public class DynamicHistoryInputStream
 		// Lock
 		ByteDeque buffer = this.buffer;
 		
-		// {@squirreljme.error BD0r Cannot peek multiple bytes because
-		// the stream is closed.}
+		/* {@squirreljme.error BD0r Cannot peek multiple bytes because
+		the stream is closed.} */
 		if (this._closed)
 			throw new IOException("BD0r");
 		
@@ -253,8 +253,8 @@ public class DynamicHistoryInputStream
 	public int read()
 		throws IOException
 	{
-		// {@squirreljme.error BD0s Cannot read a single byte because the
-		// stream has been closed.}
+		/* {@squirreljme.error BD0s Cannot read a single byte because the
+		stream has been closed.} */
 		if (this._closed)
 			throw new IOException("BD0s");
 		

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -66,8 +66,8 @@ public final class CodecFactory
 			case BuiltInEncodingType.UTF8:
 				return new UTF8Decoder();
 				
-				// {@squirreljme.error ZZ47 Unsupported decoder.
-				// (The built-in encoding ID)}
+				/* {@squirreljme.error ZZ47 Unsupported decoder.
+				(The built-in encoding ID)} */
 			case BuiltInEncodingType.UNSPECIFIED:
 			default:
 				throw new UnsupportedEncodingException("ZZ47 " + __builtIn);
@@ -103,8 +103,8 @@ public final class CodecFactory
 		}
 		catch (UnsupportedEncodingException e)
 		{
-			// {@squirreljme.error ZZ02 Built-in encoding is not configured
-			// properly.}
+			/* {@squirreljme.error ZZ02 Built-in encoding is not configured
+			properly.} */
 			throw new Error("ZZ02", e);
 		}
 	}
@@ -123,8 +123,8 @@ public final class CodecFactory
 		}
 		catch (UnsupportedEncodingException e)
 		{
-			// {@squirreljme.error ZZ04 Built-in encoding is not configured
-			// properly.}
+			/* {@squirreljme.error ZZ04 Built-in encoding is not configured
+			properly.} */
 			throw new Error("ZZ04", e);
 		}
 	}
@@ -160,8 +160,8 @@ public final class CodecFactory
 			case BuiltInEncodingType.UTF8:
 				return new UTF8Encoder();
 				
-				// {@squirreljme.error ZZ48 Unsupported encoder.
-				// (The built-in encoding ID)}
+				/* {@squirreljme.error ZZ48 Unsupported encoder.
+				(The built-in encoding ID)} */
 			case BuiltInEncodingType.UNSPECIFIED:
 			default:
 				throw new UnsupportedEncodingException("ZZ48 " + __builtIn);
@@ -206,8 +206,8 @@ public final class CodecFactory
 			case "shift-jis":	return BuiltInEncodingType.SHIFT_JIS;
 			case "utf-8":		return BuiltInEncodingType.UTF8;
 			
-				// {@squirreljme.error ZZ01 Unknown encoding. (The input
-				// encoding)}
+				/* {@squirreljme.error ZZ01 Unknown encoding. (The input
+				encoding)} */
 			default:
 				throw new UnsupportedEncodingException(
 					String.format("ZZ01 %s", __enc));
@@ -234,8 +234,8 @@ public final class CodecFactory
 			case BuiltInEncodingType.SHIFT_JIS:		return "shift-jis";
 			case BuiltInEncodingType.UTF8:			return "utf-8";
 			
-				// {@squirreljme.error ZZ49 Invalid built-in encoding.
-				// (The built-in ID}}
+				/* {@squirreljme.error ZZ49 Invalid built-in encoding.
+				(The built-in ID}} */
 			default:
 				throw new IllegalArgumentException("ZZ49 " + __builtIn);
 		}

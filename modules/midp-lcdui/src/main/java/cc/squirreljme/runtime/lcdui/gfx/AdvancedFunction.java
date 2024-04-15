@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -425,14 +425,19 @@ public enum AdvancedFunction
 					}
 					catch (IndexOutOfBoundsException e)
 					{
-						Debugging.debugNote("Oops: " +
-							"__o=%d, __l=%d, __x=%d, __y=%d, " +
-							"__w=%d, __h=%d, __subX=%d, __subY=%d, " +
-							"__b[%d]=%s, data[%d]=%s, iw=%d, eosa=%d, " +
-							"dest=%d, src=%d, ey=%d, spend=%d !!",
-							__o, __l, __x, __y, __w, __h, __subX, __subY,
-							__b.length, __b, data.length, data, iw, eosa,
-							dest, src, ey, spend);
+						if (!AdvancedFunction._didOops)
+						{
+							AdvancedFunction._didOops = true;
+						
+							Debugging.debugNote("Oops: " +
+								"__o=%d, __l=%d, __x=%d, __y=%d, " +
+								"__w=%d, __h=%d, __subX=%d, __subY=%d, " +
+								"__b[%d]=%s, data[%d]=%s, iw=%d, eosa=%d, " +
+								"dest=%d, src=%d, ey=%d, spend=%d !!",
+								__o, __l, __x, __y, __w, __h, __subX, __subY,
+								__b.length, __b, data.length, data, iw, eosa,
+								dest, src, ey, spend);
+						}
 					}
 		}
 	},
@@ -587,6 +592,9 @@ public enum AdvancedFunction
 	
 	/** End. */
 	;
+	
+	/** Did an oops when drawing? */
+	static volatile boolean _didOops;
 	
 	/**
 	 * Executes the graphics function.

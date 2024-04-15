@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -56,8 +56,8 @@ public final class ReplayOutputStream
 			this.out.writeByte(__v);
 		}
 		
-		// {@squirreljme.error BE0l Could not write the byte value.
-		// (The value to write)}
+		/* {@squirreljme.error BE0l Could not write the byte value.
+		(The value to write)} */
 		catch (IOException e)
 		{
 			throw new ReplayIOException(String.format("BE0l %d", __v), e);
@@ -79,8 +79,8 @@ public final class ReplayOutputStream
 			this.out.writeInt(__v);
 		}
 		
-		// {@squirreljme.error BE0m Could not write the integer value.
-		// (The value to write)}
+		/* {@squirreljme.error BE0m Could not write the integer value.
+		(The value to write)} */
 		catch (IOException e)
 		{
 			throw new ReplayIOException(String.format("BE0m %d", __v), e);
@@ -103,8 +103,8 @@ public final class ReplayOutputStream
 			this.out.writeInt((int)__v);
 		}
 		
-		// {@squirreljme.error BE0n Could not write the long value.
-		// (The value to write)}
+		/* {@squirreljme.error BE0n Could not write the long value.
+		(The value to write)} */
 		catch (IOException e)
 		{
 			throw new ReplayIOException(String.format("BE0n %d", __v), e);

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -107,7 +107,7 @@ public final class HTTPResponse
 				length = -1;
 		}
 		
-		// {@squirreljme.error EC07 Invalid content length.}
+		/* {@squirreljme.error EC07 Invalid content length.} */
 		catch (NumberFormatException e)
 		{
 			throw new IOException("EC07", e);
@@ -122,8 +122,8 @@ public final class HTTPResponse
 			{
 				int rc = __in.read(bytes, at, length - at);
 				
-				// {@squirreljme.error EC08 The HTTP body was too small. (The
-				// read length; The expected size)}
+				/* {@squirreljme.error EC08 The HTTP body was too small. (The
+				read length; The expected size)} */
 				if (rc < 0)
 					throw new IOException("EC08 " + at + " " + length);
 				

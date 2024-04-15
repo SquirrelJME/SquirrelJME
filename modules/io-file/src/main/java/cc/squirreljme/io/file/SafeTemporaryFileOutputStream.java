@@ -3,13 +3,12 @@
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.io.file;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;

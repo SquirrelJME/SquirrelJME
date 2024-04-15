@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -19,6 +19,48 @@ import cc.squirreljme.jvm.mle.MathShelf;
 public enum MLEMath
 	implements MLEFunction
 {
+	/** {@link MathShelf#longPack(int, int)}. */
+	LONG_PACK("longPack:(II)J")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/05/30
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			return MathShelf.longPack((int)__args[0], (int)__args[1]);
+		}
+	},
+	
+	/** {@link MathShelf#longUnpackHigh(long)}. */
+	LONG_UNPACK_HIGH("longUnpackHigh:(J)I")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/05/30
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			return MathShelf.longUnpackHigh((long)__args[0]);
+		}
+	},
+	
+	/** {@link MathShelf#longUnpackLow(long)}. */
+	LONG_UNPACK_LOW("longUnpackLow:(J)I")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/05/30
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			return MathShelf.longUnpackLow((long)__args[0]);
+		}
+	},
+	
 	/** {@link MathShelf#rawDoubleToLong(double)}. */
 	RAW_DOUBLE_TO_LONG("rawDoubleToLong:(D)J")
 	{

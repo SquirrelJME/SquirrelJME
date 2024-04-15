@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -14,28 +14,29 @@ import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIListType;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.font.FontUtilities;
+import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
-import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
+import org.jetbrains.annotations.Async;
 
+@Api
 public class List
 	extends Screen
 	implements Choice
 {
 	/** The default select command used for lists. */
+	@Api
 	public static final Command SELECT_COMMAND =
 		new Command("Select", Command.SCREEN, 0, true);
 	
 	/** Items on the list. */
 	final __VolatileList__<__ChoiceEntry__> _items =
 		new __VolatileList__<>();
-	
-	/** The user interface list. */
-	final UIItemBracket _uiList;
 	
 	/** The type of list this is. */
 	private final int _type;
@@ -54,6 +55,7 @@ public class List
 	 * @throws IllegalArgumentException If the type is not valid.
 	 * @since 2018/11/16
 	 */
+	@Api
 	public List(String __title, int __type)
 		throws IllegalArgumentException
 	{
@@ -72,18 +74,19 @@ public class List
 	 * a null element.
 	 * @since 2018/11/16
 	 */
+	@Api
 	public List(String __title, int __type, String[] __strs, Image[] __imgs)
 		throws IllegalArgumentException, NullPointerException
 	{
 		if (__strs == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB2j String and image elements differ in
-		// size.}
+		/* {@squirreljme.error EB2j String and image elements differ in
+		size.} */
 		if (__imgs != null && __strs.length != __imgs.length)
 			throw new IllegalArgumentException("EB2j");
 		
-		// {@squirreljme.error EB2k Invalid list type. (The list type)}
+		/* {@squirreljme.error EB2k Invalid list type. (The list type)} */
 		if (__type != Choice.IMPLICIT && __type != Choice.EXCLUSIVE &&
 			__type != Choice.MULTIPLE)
 			throw new IllegalArgumentException("EB2k " + __type);
@@ -92,18 +95,7 @@ public class List
 		this._userTitle = __title;
 		this._type = __type;
 		
-		// Build new list
-		UIBackend backend = UIBackendFactory.getInstance(true);
-		UIItemBracket uiList = backend.itemNew(UIItemType.LIST);
-		this._uiList = uiList;
-		
-		// Register self for future events
-		StaticDisplayState.register(this, uiList);
-		
-		// Show it on the form for this displayable
-		backend.formItemPosition(this._uiForm, uiList, 0);
-		
-		// Append all of the items to the list
+		// Append all the items to the list
 		for (int i = 0, n = __strs.length; i < n; i++)
 			this.append(__strs[i], (__imgs == null ? null : __imgs[i]));
 		
@@ -127,8 +119,10 @@ public class List
 		}
 		
 		// Inform the backend that this is the kind of list we want
-		backend.widgetProperty(uiList, UIWidgetProperty.INT_LIST_TYPE, 0,
-			nativeType);
+		__ListState__ state = this.<__ListState__>__state(
+			__ListState__.class);
+		state._backend.widgetProperty(state._uiList,
+			UIWidgetProperty.INT_LIST_TYPE, 0, nativeType);
 	}
 	
 	/**
@@ -383,6 +377,7 @@ public class List
 		this.__refresh();
 	}
 	
+	@Api
 	public void setSelectCommand(Command __a)
 	{
 		throw Debugging.todo();
@@ -401,8 +396,8 @@ public class List
 			
 		java.util.List<__ChoiceEntry__> items = this._items.valuesAsList();
 		
-		// {@squirreljme.error EB3n Array is longer than the list size.
-		// (The list size; the array size)}
+		/* {@squirreljme.error EB3n Array is longer than the list size.
+		(The list size; the array size)} */
 		int n = items.size();
 		if (n > __flags.length)
 			throw new IllegalArgumentException("EB3n " + n + " " +
@@ -538,8 +533,8 @@ public class List
 	 */
 	private void __refresh()
 	{
-		UIItemBracket uiList = this._uiList;
-		UIBackend backend = UIBackendFactory.getInstance(true);
+		UIItemBracket uiList = this.__state(__ListState__.class)._uiList;
+		UIBackend backend = this.__backend();
 		java.util.List<__ChoiceEntry__> choices = this._items.valuesAsList();
 		
 		// Set new size of the list
@@ -597,6 +592,7 @@ public class List
 	 * @since 2020/11/14
 	 */
 	@SerializedEvent
+	@Async.Execute
 	final void __selectCommand(int __keyCode)
 	{
 		// This command is only executed for implicit lists only
@@ -621,6 +617,7 @@ public class List
 	 * @since 2020/11/15
 	 */
 	@SerializedEvent
+	@Async.Execute
 	private void __updateSelection(int __i, boolean __b)
 	{
 		// Drop any attempts to clear selection if not on multiple choice lists
@@ -638,6 +635,51 @@ public class List
 		__VolatileList__<__ChoiceEntry__> items = this._items;
 		for (int i = 0, n = flags.length; i < n; i++)
 			items.get(i)._selected = flags[i];
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/01/14
+	 */
+	@Override
+	__CommonState__ __stateInit(UIBackend __backend)
+		throws NullPointerException
+	{
+		return new __ListState__(__backend, this);
+	}
+	
+	/**
+	 * File selector state.
+	 * 
+	 * @since 2023/01/14
+	 */
+	static class __ListState__
+		extends Screen.__ScreenState__
+	{	
+		/** The user interface list. */
+		final UIItemBracket _uiList;
+		
+		/**
+		 * Initializes the backend state.
+		 *
+		 * @param __backend The backend used.
+		 * @param __self Self widget.
+		 * @since 2023/01/14
+		 */
+		__ListState__(UIBackend __backend, DisplayWidget __self)
+		{
+			super(__backend, __self);
+			
+			// Build new list
+			UIItemBracket uiList = __backend.itemNew(UIItemType.LIST);
+			this._uiList = uiList;
+			
+			// Register self for future events
+			StaticDisplayState.register(__self, uiList);
+			
+			// Show it on the form for this displayable
+			__backend.formItemPosition(this._uiForm, uiList, 0);
+		}
 	}
 }
 

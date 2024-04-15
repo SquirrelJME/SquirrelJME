@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import java.nio.file.Path;
 import javax.inject.Inject;
 import lombok.Getter;
@@ -23,36 +24,28 @@ import org.gradle.api.tasks.Internal;
  */
 public class VMRomTask
 	extends DefaultTask
-	implements VMExecutableTask
+	implements VMBaseTask, VMExecutableTask
 {
-	/** The source set used. */
+	/** The classifier used. */
 	@Internal
 	@Getter
-	public final String sourceSet;
-	
-	/** The virtual machine type. */
-	@Internal
-	@Getter
-	public final VMSpecifier vmType;
+	public final SourceTargetClassifier classifier;
 	
 	/**
 	 * Initializes the library creation task.
 	 * 
-	 * @param __sourceSet The source set used.
-	 * @param __vmType The virtual machine type.
+	 * @param __classifier The classifier used.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/07
 	 */
 	@Inject
-	public VMRomTask(String __sourceSet,
-		VMSpecifier __vmType)
+	public VMRomTask(SourceTargetClassifier __classifier)
 		throws NullPointerException
 	{
-		if (__sourceSet == null || __vmType == null)
+		if (__classifier == null)
 			throw new NullPointerException("NARG");
 		
-		this.sourceSet = __sourceSet;
-		this.vmType = __vmType;
+		this.classifier = __classifier;
 		
 		// Set details of this task
 		this.setGroup("squirreljmeGeneral");
@@ -60,20 +53,21 @@ public class VMRomTask
 		
 		// The JAR we are compiling has to be built first
 		this.dependsOn(new VMRomDependencies(
-			this, __sourceSet, __vmType));
+			this, __classifier));
 		
 		// Only execute this task in certain cases
-		this.onlyIf(new CheckRomShouldBuild(__vmType));
+		this.onlyIf(new CheckRomShouldBuild(
+			__classifier.getTargetClassifier()));
 		
 		// The inputs of this tasks are all the ROM files to merge
 		this.getInputs().files(new VMRomInputs(
-			this, __sourceSet, __vmType));
+			this, __classifier));
 		
 		// And the output is a primary single file for the ROM
 		this.getOutputs().file(this.outputPath());
 		
 		// Action for performing the actual linkage of the ROM
-		this.doLast(new VMRomTaskAction(__sourceSet, __vmType));
+		this.doLast(new VMRomTaskAction(__classifier));
 	}
 	
 	/**
@@ -85,7 +79,9 @@ public class VMRomTask
 	public final Provider<Path> outputPath()
 	{
 		return this.getProject().provider(() -> VMHelpers.cacheDir(
-			this.getProject(), this.vmType, this.sourceSet).get()
-			.resolve(this.vmType.outputRomName(this.sourceSet)));
+			this.getProject(), this.classifier).get()
+			.resolve(this.classifier.getVmType()
+				.outputRomName(this.classifier.getSourceSet(),
+					this.classifier.getBangletVariant())));
 	}
 }

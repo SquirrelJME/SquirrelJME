@@ -3,13 +3,12 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.runtime.gcf;
 
-import cc.squirreljme.runtime.cldc.asm.SystemProperties;
 import java.io.IOException;
 import java.util.ServiceLoader;
 import javax.microedition.io.ConnectionNotFoundException;
@@ -72,7 +71,7 @@ public abstract class IPConnectionFactory
 					return rv;
 				
 				// Use implementation for this
-				String ipf = SystemProperties.implementationClass(
+				/*String ipf = SystemProperties.implementationClass(
 					"cc.squirreljme.runtime.gcf.IPConnectionFactory");
 				if (ipf != null)
 					try
@@ -84,7 +83,7 @@ public abstract class IPConnectionFactory
 						IllegalAccessException e)
 					{
 						e.printStackTrace();
-					}
+					}*/
 				
 				// Use the first found service
 				if (rv == null)

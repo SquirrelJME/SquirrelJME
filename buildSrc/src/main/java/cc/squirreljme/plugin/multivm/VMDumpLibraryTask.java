@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import java.io.File;
 import java.nio.file.Paths;
 import javax.inject.Inject;
@@ -28,38 +29,32 @@ public class VMDumpLibraryTask
 	extends DefaultTask
 	implements VMExecutableTask
 {
-	/** The source set used. */
+	/** The classifier used. */
 	@Internal
 	@Getter
-	public final String sourceSet;
-	
-	/** The virtual machine type. */
-	@Internal
-	@Getter
-	public final VMSpecifier vmType;
+	public final SourceTargetClassifier classifier;
 	
 	/**
 	 * Initializes the library dumping task.
 	 * 
-	 * @param __sourceSet The source set used.
-	 * @param __vmType The virtual machine type.
+	 * @param __classifier The source set used.
+	 * @param __libTask The library task.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/05/16
 	 */
 	@Inject
-	public VMDumpLibraryTask(String __sourceSet,
-		VMSpecifier __vmType, VMLibraryTask __libTask)
+	public VMDumpLibraryTask(SourceTargetClassifier __classifier,
+		VMLibraryTask __libTask)
 		throws NullPointerException
 	{
-		if (__sourceSet == null || __vmType == null)
+		if (__classifier == null || __libTask == null)
 			throw new NullPointerException("NARG");
 			
 		Project project = this.getProject();
-		Jar baseJar = VMHelpers.jarTask(project, __sourceSet);
+		Jar baseJar = VMHelpers.jarTask(project, __classifier.getSourceSet());
 		
 		// These are used at the build stage
-		this.sourceSet = __sourceSet;
-		this.vmType = __vmType;
+		this.classifier = __classifier;
 		
 		// Set details of this task
 		this.setGroup("squirreljme");
@@ -77,10 +72,10 @@ public class VMDumpLibraryTask
 		// The output depends on the task and its source set
 		this.getOutputs().file(this.getProject().provider(
 			() -> Paths.get(file.get() + ".yml").toFile()));
-		this.getOutputs().upToDateWhen(
-			new VMLibraryTaskUpToDate(this.vmType));
+		this.getOutputs().upToDateWhen(new VMLibraryTaskUpToDate(
+			__classifier.getTargetClassifier()));
 		
 		// Performs the action of the task
-		this.doLast(new VMDumpLibraryTaskAction(__sourceSet, __vmType));
+		this.doLast(new VMDumpLibraryTaskAction(__classifier));
 	}
 }

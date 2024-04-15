@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.emulator.uiform;
 
+import cc.squirreljme.emulator.NativeBinding;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
@@ -91,6 +92,9 @@ public final class SwingForm
 	
 	static
 	{
+		// We need to poke native binding, so it loads our emulation backend
+		NativeBinding.loadedLibraryPath();
+		
 		try
 		{
 			// Greatly optimizes speed

@@ -3,11 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.lang;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This is thrown when an attempt is made to allocate an array that is of a
@@ -15,6 +17,7 @@ package java.lang;
  *
  * @since 2018/09/22
  */
+@Api
 public class NegativeArraySizeException
 	extends RuntimeException
 {
@@ -23,6 +26,7 @@ public class NegativeArraySizeException
 	 *
 	 * @since 2018/09/22
 	 */
+	@Api
 	public NegativeArraySizeException()
 	{
 	}
@@ -33,6 +37,7 @@ public class NegativeArraySizeException
 	 * @param __m The message.
 	 * @since 2018/09/22
 	 */
+	@Api
 	public NegativeArraySizeException(String __m)
 	{
 		super(__m);

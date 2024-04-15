@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.util.FDMLMath;
 
@@ -24,6 +25,7 @@ import cc.squirreljme.runtime.cldc.util.FDMLMath;
 	"library documentation since it must always be the same exact code. " +
 	"Since there is only one way to implement this class it should be " +
 	"legal to do so for compatibility purposes.")
+@Api
 public class Random
 {
 	/** The current seed value. */
@@ -41,6 +43,7 @@ public class Random
 	 *
 	 * @since 2018/11/02
 	 */
+	@Api
 	public Random()
 	{
 		this(System.currentTimeMillis() +
@@ -53,6 +56,7 @@ public class Random
 	 * @param __seed The seed to initialize with.
 	 * @since 2018/11/02
 	 */
+	@Api
 	public Random(long __seed)
 	{
 		this.setSeed(__seed);
@@ -67,6 +71,7 @@ public class Random
 	 * @return The produced value.
 	 * @since 2018/11/02
 	 */
+	@Api
 	@SuppressWarnings("MagicNumber")
 	protected int next(int __bits)
 	{
@@ -87,6 +92,7 @@ public class Random
 	 * @return The next value.
 	 * @since 2018/11/02
 	 */
+	@Api
 	public boolean nextBoolean()
 	{
 		return this.next(1) != 0;
@@ -99,6 +105,7 @@ public class Random
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/02
 	 */
+	@Api
 	public void nextBytes(byte[] __a)
 		throws NullPointerException
 	{
@@ -117,6 +124,7 @@ public class Random
 	 * @return The next value.
 	 * @since 2018/11/02
 	 */
+	@Api
 	@SuppressWarnings("MagicNumber")
 	public double nextDouble()
 	{
@@ -130,6 +138,7 @@ public class Random
 	 * @return The next value.
 	 * @since 2018/11/02
 	 */
+	@Api
 	@SuppressWarnings("MagicNumber")
 	public float nextFloat()
 	{
@@ -142,6 +151,7 @@ public class Random
 	 * @return The next value.
 	 * @since 2018/11/02
 	 */
+	@Api
 	public double nextGaussian()
 	{
 		synchronized (this)
@@ -186,6 +196,7 @@ public class Random
 	 * @return The next value.
 	 * @since 2018/11/02
 	 */
+	@Api
 	public int nextInt()
 	{
 		return this.next(32);
@@ -200,11 +211,12 @@ public class Random
 	 * @throws IllegalArgumentException If the cap is zero or negative.
 	 * @since 2018/11/02
 	 */
+	@Api
 	@SuppressWarnings("MagicNumber")
 	public int nextInt(int __cap)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error ZZ2z Cap value must be a positive integer}
+		/* {@squirreljme.error ZZ2z Cap value must be a positive integer} */
 		if (__cap <= 0)
 			throw new IllegalArgumentException("ZZ2z");
 		
@@ -229,6 +241,7 @@ public class Random
 	 * @return The next long value.
 	 * @since 2018/11/02
 	 */
+	@Api
 	@SuppressWarnings("MagicNumber")
 	public long nextLong()
 	{
@@ -243,6 +256,7 @@ public class Random
 	 * @param __seed The seed to use.
 	 * @since 2018/11/02
 	 */
+	@Api
 	@SuppressWarnings("MagicNumber")
 	public void setSeed(long __seed)
 	{

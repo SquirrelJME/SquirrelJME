@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package javax.microedition.khronos.egl;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.opengles.DefaultEGL;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -29,6 +30,7 @@ import javax.microedition.khronos.opengles.GL;
  *
  * @since 2016/10/10
  */
+@Api
 public abstract class EGLContext
 {
 	/** The single instance of EGL, shared by everything. */
@@ -41,6 +43,7 @@ public abstract class EGLContext
 	 * @return The OpenGL ES rasterization API accessor.
 	 * @since 2016/10/10
 	 */
+	@Api
 	public abstract GL getGL();
 	
 	/**
@@ -50,6 +53,7 @@ public abstract class EGLContext
 	 * @return An instance of the OpenGL ES rasterizer.
 	 * @since 2016/10/10
 	 */
+	@Api
 	public static EGL getEGL()
 	{
 		// Get

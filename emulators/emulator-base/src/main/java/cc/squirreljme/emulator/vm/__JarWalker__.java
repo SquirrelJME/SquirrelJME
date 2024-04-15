@@ -3,14 +3,17 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.emulator.vm;
 
+import cc.squirreljme.jvm.suite.SuiteUtils;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -51,12 +54,11 @@ public final class __JarWalker__
 	public FileVisitResult visitFile(Path __path, BasicFileAttributes __attrib)
 		throws IOException
 	{
-		// If this is a JAR, we will grab it
+		Debugging.debugNote("Wildcard checking: %s", __path);
+		
+		// If this is a Jar or resource, we will grab it
 		String fn = __path.getFileName().toString();
-		if (fn.endsWith(".jar") || fn.endsWith(".JAR") ||
-			fn.endsWith(".jad") || fn.endsWith(".JAD") ||
-			fn.endsWith(".jam") || fn.endsWith(".JAM") ||
-			fn.endsWith(".kjx") || fn.endsWith(".KJX"))
+		if (SuiteUtils.isAny(fn))
 			this._files.add(__path.toString());
 		
 		// The default way is to just handle it

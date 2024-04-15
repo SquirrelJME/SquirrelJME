@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -79,4 +79,12 @@ public interface VerboseDebugFlag
 	/** New thread is created. */
 	short THREAD_NEW =
 		0x4000;
+	
+	/** Implicit exceptions being generated. */
+	int IMPLICIT_EXCEPTION =
+		0x8000;
+	
+	/** Method with many execution cycles. */
+	int METHOD_CYCLES =
+		0x1_0000;
 }

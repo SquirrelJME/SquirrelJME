@@ -3,11 +3,14 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.util;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
+import org.jetbrains.annotations.Async;
 
 /**
  * The timer class is used to schedule events for the future which may
@@ -23,6 +26,7 @@ package java.util;
  *
  * @since 2018/12/11
  */
+@Api
 public class Timer
 {
 	/** The thread which runs the task of running things. */
@@ -33,6 +37,7 @@ public class Timer
 	 *
 	 * @since 2018/12/11
 	 */
+	@Api
 	public Timer()
 	{
 		this("TimerThread");
@@ -45,6 +50,7 @@ public class Timer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/11
 	 */
+	@Api
 	public Timer(String __s)
 		throws NullPointerException
 	{
@@ -62,6 +68,7 @@ public class Timer
 	 *
 	 * @since 2018/12/11
 	 */
+	@Api
 	public void cancel()
 	{
 		__TimerThread__ thread = this._thread;
@@ -81,6 +88,7 @@ public class Timer
 	 *
 	 * @since 2018/12/11
 	 */
+	@Api
 	public void purge()
 	{
 		// Lock to prevent adds
@@ -106,11 +114,14 @@ public class Timer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/11
 	 */
+	@Api
+	@Async.Schedule
 	public void schedule(TimerTask __task, Date __time)
 		throws IllegalArgumentException, IllegalStateException,
 			NullPointerException
 	{
-		this._thread.__schedule(__task, __time, false, false, 0);
+		this._thread.__schedule(__task, __time, false,
+			false, 0);
 	}
 	
 	/**
@@ -127,6 +138,8 @@ public class Timer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/11
 	 */
+	@Api
+	@Async.Schedule
 	public void schedule(TimerTask __task, Date __time, long __period)
 		throws IllegalArgumentException, IllegalStateException,
 			NullPointerException
@@ -145,6 +158,8 @@ public class Timer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/11
 	 */
+	@Api
+	@Async.Schedule
 	public void schedule(TimerTask __task, long __delay)
 		throws IllegalArgumentException, IllegalStateException,
 			NullPointerException
@@ -166,6 +181,8 @@ public class Timer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/11
 	 */
+	@Api
+	@Async.Schedule
 	public void schedule(TimerTask __task, long __delay, long __period)
 		throws IllegalArgumentException, IllegalStateException,
 			NullPointerException
@@ -188,6 +205,8 @@ public class Timer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/11
 	 */
+	@Api
+	@Async.Schedule
 	public void scheduleAtFixedRate(TimerTask __task, Date __first,
 		long __period)
 		throws IllegalArgumentException, IllegalStateException,
@@ -211,6 +230,8 @@ public class Timer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/11
 	 */
+	@Api
+	@Async.Schedule
 	public void scheduleAtFixedRate(TimerTask __task, long __delay,
 		long __period)
 		throws IllegalArgumentException, IllegalStateException,

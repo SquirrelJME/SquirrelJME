@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -227,9 +227,9 @@ public class ZLibDecompressor
 					// must be set for every byte which was read.
 					this._basecomp += current.compressedBytes();
 					
-					// {@squirreljme.error BD1w The checksum for the ZLib
-					// stream is not valid. (The desired checksum; The actual
-					// checksum)}
+					/* {@squirreljme.error BD1w The checksum for the ZLib
+					stream is not valid. (The desired checksum; The actual
+					checksum)} */
 					int want = in.readInt(),
 						was = checksum.checksum();
 					if (want != was)
@@ -275,15 +275,15 @@ public class ZLibDecompressor
 				// Count single compressed byte
 				this._basecomp++;
 				
-				// {@squirreljme.error BD1x Only deflate compressed ZLib
-				// streams are supported. (The compression method used)}
+				/* {@squirreljme.error BD1x Only deflate compressed ZLib
+				streams are supported. (The compression method used)} */
 				int method = (cmf & ZLibDecompressor._CMF_COMPRESSION_METHOD_MASK);
 				if (ZLibDecompressor._CMF_METHOD_DEFLATE != method)
 					throw new IOException(String.format("BD1x %d", method));
 				
-				// {@squirreljme.error BD1y The specified binary logarithm
-				// specified for the sliding window is not valid. (The binary
-				// logarithm of the sliding window)}
+				/* {@squirreljme.error BD1y The specified binary logarithm
+				specified for the sliding window is not valid. (The binary
+				logarithm of the sliding window)} */
 				// The specification says that higher sliding windows are not
 				// allowed, but skirt that requirement
 				int slwin = ((cmf & ZLibDecompressor._CMF_COMPRESSION_INFO_MASK) >>> ZLibDecompressor._CMF_COMPRESSION_INFO_SHIFT) + 8;
@@ -299,17 +299,17 @@ public class ZLibDecompressor
 				// Count single compressed byte
 				this._basecomp++;
 				
-				// {@squirreljme.error BD1z The checksum for the starting
-				// ZLib header is not a multiple of 31. (The checksum
-				// remainder)}
+				/* {@squirreljme.error BD1z The checksum for the starting
+				ZLib header is not a multiple of 31. (The checksum
+				remainder)} */
 				// This is a basic check to ensure that in most cases that the
 				// header of the ZLib chunk is not corrupt.
 				int was = ((cmf * 256) + mf) % 31;
 				if (was != 0)
 					throw new IOException(String.format("BD1z %d", was));
 				
-				// {@squirreljme.error BD20 Preset dictionaries in ZLib
-				// streams are not supported.}
+				/* {@squirreljme.error BD20 Preset dictionaries in ZLib
+				streams are not supported.} */
 				if ((mf & ZLibDecompressor._FLAG_PRESET_DICTIONARY) != 0)
 					throw new IOException("BD20");
 				

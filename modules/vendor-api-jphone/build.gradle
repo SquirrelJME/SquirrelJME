@@ -1,0 +1,24 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEStandard
+import org.iban4j.CountryCode
+
+description = "Proprietary J-Phone API"
+version = rootProject.version
+
+squirreljme
+	{
+		javaDocErrorCode = "LE"
+		swmType = JavaMEMidletType.API
+		swmName = "J-Phone API"
+		swmVendor = "Stephanie Gawroriski"
+		originalApiVendor = "J-Phone (Vodafone Group plc)"
+		originalApiVendorUrl = "https://www.vodafone.com/"
+		originalApiVendorCountry = CountryCode.GB
+		tags += "j2me"
+		tags += "jphone"
+	}
+
+dependencies
+{
+	api project(":modules:cldc-compact")
+}

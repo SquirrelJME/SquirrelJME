@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -46,8 +46,8 @@ public class SlidingByteWindow
 	public SlidingByteWindow(int __wsz)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error BD1t Zero or negative window size specified.
-		// (The window size)}
+		/* {@squirreljme.error BD1t Zero or negative window size specified.
+		(The window size)} */
 		if (__wsz <= 0)
 			throw new IllegalArgumentException(String.format("BD1t %d",
 				__wsz));
@@ -179,19 +179,19 @@ public class SlidingByteWindow
 		if (__o < 0 || __l < 0 || (__o + __l > __b.length))
 			throw new IndexOutOfBoundsException("BAOB");
 		
-		// {@squirreljme.error BD1u Bulk read of window bytes would exceed
-		// the bounds of the window. (The bytes in the past to start the
-		// copy from; The number of bytes to read; The total number of
-		// bytes in the window)}
+		/* {@squirreljme.error BD1u Bulk read of window bytes would exceed 		
+		the bounds of the window. (The bytes in the past to start the		
+		copy from; The number of bytes to read; The total number of		
+		bytes in the window)@squirreljme.error0} */
 		int windowsize = this.windowsize;
 		int total = this._total;
 		if (__ago <= 0 || ((total - __ago) + __l) > total)
 			throw new IndexOutOfBoundsException(String.format(
 				"BD1u %d %d %d", __ago, __l, total));
 		
-		// {@squirreljme.error BD1v Get of a sliding window read did not
-		// read the expected number of bytes. (The expected number of bytes
-		// to read; The actual number read)}
+		/* {@squirreljme.error BD1v Get of a sliding window read did not
+		read the expected number of bytes. (The expected number of bytes
+		to read; The actual number read)} */
 		int rv;
 		if ((rv = this.deque.get(total - __ago, __b, __o,
 			__l)) != __l)

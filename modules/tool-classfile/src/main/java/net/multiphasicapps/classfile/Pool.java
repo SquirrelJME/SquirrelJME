@@ -3,14 +3,17 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package net.multiphasicapps.classfile;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.io.MarkableInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.UTFDataFormatException;
 import java.util.Arrays;
@@ -86,14 +89,24 @@ public final class Pool
 	/** Entries within the constant pool. */
 	private final Object[] _entries;
 	
+	/** The constant pool tags. */
+	private final int[] _tags;
+	
+	/** Raw bytes for the constant pool. */
+	private final byte[] _rawBytes;
+	
 	/**
 	 * Parses and initializes the constant pool structures.
 	 *
+	 * @param __rawBytes Raw constant pool bytes.
+	 * @param __tags The pool tags.
 	 * @param __e The entries which make up the pool, this is used directly.
 	 * @since 2017/06/08
 	 */
-	Pool(Object... __e)
+	Pool(byte[] __rawBytes, int[] __tags, Object... __e)
 	{
+		this._rawBytes = __rawBytes;
+		this._tags = __tags;
 		this._entries = (__e == null ? new Object[0] : __e);
 	}
 	
@@ -121,22 +134,33 @@ public final class Pool
 		if (__i == 0)
 			return null;
 		
-		// {@squirreljme.error JC3o The specified index is not within the bounds
-		// of the constant pool. (The index of the entry)}
+		/* {@squirreljme.error JC3o The specified index is not within the bounds
+		of the constant pool. (The index of the entry)} */
 		Object[] entries = this._entries;
 		if (__i < 0 || __i >= entries.length)
 			throw new InvalidClassFormatException(
 				String.format("JC3o %d", __i));
 		
-		// {@squirreljme.error JC3p The specified entry's class is not of the
-		// expected class. (The index of the entry; The class the entry is; The
-		// expected class)}
+		/* {@squirreljme.error JC3p The specified entry's class is not of the
+		expected class. (The index of the entry; The class the entry is; The
+		expected class)} */
 		Object val = entries[__i];
 		if (val != null && !__cl.isInstance(val))
 			throw new InvalidClassFormatException(
 				String.format("JC3p %d %s %s", __i, val.getClass(), __cl));
 		
 		return __cl.cast(val);
+	}
+	
+	/**
+	 * Returns the raw constant pool bytes.
+	 *
+	 * @return The raw bytes for the constant pool.
+	 * @since 2024/01/20
+	 */
+	public byte[] rawData()
+	{
+		return this._rawBytes;
 	}
 	
 	/**
@@ -155,13 +179,35 @@ public final class Pool
 	public <C> C require(Class<C> __cl, int __i)
 		throws InvalidClassFormatException, NullPointerException
 	{
-		// {@squirreljme.error JC3q Expected the specified constant pool entry
-		// to not be the null entry. (The index; The expected class)}
+		/* {@squirreljme.error JC3q Expected the specified constant pool entry
+		to not be the null entry. (The index; The expected class)} */
 		C rv = this.<C>get(__cl, __i);
 		if (rv == null)
 			throw new InvalidClassFormatException(
 				String.format("JC3q %d %s", __i, __cl));
 		return rv;
+	}
+	
+	/**
+	 * Returns the size of the constant pool.
+	 *
+	 * @return The constant pool size.
+	 * @since 2023/08/09
+	 */
+	public int size()
+	{
+		return this._entries.length;
+	}
+	
+	/**
+	 * Returns the constant pool tags.
+	 *
+	 * @return The tags used for the constant pool.
+	 * @since 2023/08/09
+	 */
+	public int[] tags()
+	{
+		return this._tags.clone();
 	}
 	
 	/**
@@ -177,12 +223,39 @@ public final class Pool
 	public static Pool decode(DataInputStream __in)
 		throws InvalidClassFormatException, IOException, NullPointerException
 	{
+		return Pool.decode(__in, -1);
+	}
+	
+	/**
+	 * Decodes the constant pool.
+	 *
+	 * @param __in The input stream.
+	 * @param __count The pool count, may be negative if it should be read.
+	 * @return The read constant pool.
+	 * @throws InvalidClassFormatException If the constant pool is not valid.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/09/27
+	 */
+	public static Pool decode(DataInputStream __in, int __count)
+		throws InvalidClassFormatException, IOException, NullPointerException
+	{
 		// Check
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
+		// Raw byte output
+		ByteArrayOutputStream rawBytes = new ByteArrayOutputStream();
+		DataOutputStream raw = new DataOutputStream(rawBytes);
+		
+		// Does the count need to be read?
+		int count;
+		if (__count < 0)
+			count = __in.readUnsignedShort();
+		else
+			count = __count;
+		
 		// Read the raw constant pool contents first
-		int count = __in.readUnsignedShort();
 		int[] tags = new int[count];
 		Object[] rawdata = new Object[count];
 		for (int i = 1; i < count; i++)
@@ -190,6 +263,9 @@ public final class Pool
 			// Read tag
 			int tag = __in.readUnsignedByte();
 			tags[i] = tag;
+			
+			// Send to raw
+			raw.writeByte(tag);
 			
 			// Parse tag data
 			Object data;
@@ -205,10 +281,12 @@ public final class Pool
 					try
 					{
 						data = new UTFConstantEntry(__in.readUTF());
+						
+						raw.writeUTF(data.toString());
 					}
 					
-					// {@squirreljme.error JC3r Modified UTF-8 data is not in
-					// the correct format.}
+					/* {@squirreljme.error JC3r Modified UTF-8 data is not in
+					the correct format.} */
 					catch (UTFDataFormatException e)
 					{
 						throw new InvalidClassFormatException("JC3r", e);
@@ -222,48 +300,76 @@ public final class Pool
 				case Pool.TAG_NAMEANDTYPE:
 					data = new int[]{__in.readUnsignedShort(),
 						__in.readUnsignedShort()};
+					
+					raw.writeShort(((int[])data)[0]);
+					raw.writeShort(((int[])data)[1]);
 					break;
 					
 					// References to single entry
 				case Pool.TAG_CLASS:
 				case Pool.TAG_STRING:
 					data = new int[]{__in.readUnsignedShort()};
+					
+					raw.writeShort(((int[])data)[0]);
 					break;
 					
 					// Integer
 				case Pool.TAG_INTEGER:
 					data = new ConstantValueInteger(
 						Integer.valueOf(__in.readInt()));
+					
+					raw.writeInt(((ConstantValueInteger)data).intValue());
 					break;
 					
 					// Long
 				case Pool.TAG_LONG:
 					data = new ConstantValueLong(
 						Long.valueOf(__in.readLong()));
+					
+					raw.writeLong(((ConstantValueLong)data).longValue());
 					break;
 					
 					// Float
 				case Pool.TAG_FLOAT:
 					data = new ConstantValueFloat(
 						Float.valueOf(__in.readFloat()));
+					
+					raw.writeFloat(((ConstantValueFloat)data).floatValue());
 					break;
 					
 					// Double
 				case Pool.TAG_DOUBLE:
 					data = new ConstantValueDouble(
 						Double.valueOf(__in.readDouble()));
+					
+					raw.writeDouble(((ConstantValueDouble)data).doubleValue());
 					break;
 					
-					// {@squirreljme.error JC3s Java ME does not support
-					// dynamic invocation (such as method handles or lambda
-					// expressions).}
+					// Invoke dynamic method handle
 				case Pool.TAG_METHODHANDLE:
+					__in.readByte();
+					__in.readShort();
+					
+					data = new UnsupportedInvokeDynamic();
+					break;
+					
+					// Invoke dynamic method type
 				case Pool.TAG_METHODTYPE:
+					__in.readShort();
+					
+					data = new UnsupportedInvokeDynamic();
+					break;
+					
+					// Invoke dynamic
 				case Pool.TAG_INVOKEDYNAMIC:
-					throw new InvalidClassFormatException("JC3s");
+					__in.readShort();
+					__in.readShort();
+					
+					data = new UnsupportedInvokeDynamic();
+					break;
 				
-					// {@squirreljme.error JC3t Unknown tag type in the
-					// constant pool. (The constant pool tag)}
+					/* {@squirreljme.error JC3t Unknown tag type in the
+					constant pool. (The constant pool tag)} */
 				default:
 					throw new InvalidClassFormatException(
 						String.format("JC3t %d", tag));
@@ -286,7 +392,7 @@ public final class Pool
 			Pool.__initializeEntries(entries, tags, rawdata);
 		}
 		
-		// {@squirreljme.error JC3u The constant pool is not valid.}
+		/* {@squirreljme.error JC3u The constant pool is not valid.} */
 		catch (ClassCastException|IndexOutOfBoundsException|
 			NullPointerException e)
 		{
@@ -294,7 +400,7 @@ public final class Pool
 		}
 		
 		// Setup
-		return new Pool(entries);
+		return new Pool(rawBytes.toByteArray(), tags, entries);
 	}
 	
 	/**
@@ -324,8 +430,8 @@ public final class Pool
 		int[] order = new int[count];
 		for (int i = 0; i < count; i++)
 		{
-			int tag = __tags[i],
-				sequence;
+			int tag = __tags[i];
+			int sequence;
 			
 			// Determine the sequence based on the tag
 			switch (tag)
@@ -355,6 +461,13 @@ public final class Pool
 					sequence = 3;
 					break;
 					
+					// Invoke dynamics which are ignored
+				case Pool.TAG_METHODHANDLE:
+				case Pool.TAG_METHODTYPE:
+				case Pool.TAG_INVOKEDYNAMIC:
+					sequence = 3;
+					break;
+					
 				default:
 					throw Debugging.oops();
 			}
@@ -368,12 +481,12 @@ public final class Pool
 		// sequence order is known.
 		for (int j = 0; j < count; j++)
 		{
-			int i = order[j] & 0xFFFF,
-				tag = __tags[i];
+			int i = order[j] & 0xFFFF;
+			int tag = __tags[i];
 			
 			// Process tags
-			Object in = __rawdata[i],
-				out;
+			Object in = __rawdata[i];
+			Object out;
 			switch (tag)
 			{
 					// These are copied directly
@@ -428,6 +541,13 @@ public final class Pool
 								new MethodDescriptor(nat.type()),
 								tag == Pool.TAG_INTERFACEMETHODREF);
 					}
+					break;
+					
+					// Invoke dynamics which are ignored
+				case Pool.TAG_METHODHANDLE:
+				case Pool.TAG_METHODTYPE:
+				case Pool.TAG_INVOKEDYNAMIC:
+					out = in;
 					break;
 				
 					// Unhandled, should not happen

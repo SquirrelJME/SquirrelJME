@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -16,7 +16,7 @@ import java.lang.ref.WeakReference;
 import java.util.Objects;
 
 /**
- * This contains all of the information which is provided by a suite.
+ * This contains all the information which is provided by a suite.
  *
  * @since 2017/11/30
  */
@@ -67,19 +67,19 @@ public final class SuiteInfo
 		SuiteType type = SuiteType.ofManifest(__man);
 		this.type = type;
 		
-		// {@squirreljme.error DG0b No suite name was specified.}
+		/* {@squirreljme.error DG0b No suite name was specified.} */
 		SuiteName name = new SuiteName(
 			Objects.<String>requireNonNull(attr.getValue(type.nameKey()),
 			"AR0b"));
 		this.name = name;
 		
-		// {@squirreljme.error DG0c No suite vendor was specified.}
+		/* {@squirreljme.error DG0c No suite vendor was specified.} */
 		SuiteVendor vendor = new SuiteVendor(
 			Objects.<String>requireNonNull(attr.getValue(type.vendorKey()),
 			"AR0c"));
 		this.vendor = vendor;
 		
-		// {@squirreljme.error DG0d No suite version was specified.}
+		/* {@squirreljme.error DG0d No suite version was specified.} */
 		SuiteVersion version = new SuiteVersion(
 			Objects.<String>requireNonNull(attr.getValue(type.versionKey()),
 			"AR0d"));

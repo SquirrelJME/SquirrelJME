@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.io.CodecFactory;
 import cc.squirreljme.runtime.cldc.io.Decoder;
 
@@ -18,6 +19,7 @@ import cc.squirreljme.runtime.cldc.io.Decoder;
  *
  * @since 2018/10/13
  */
+@Api
 public class InputStreamReader
 	extends Reader
 {
@@ -38,6 +40,7 @@ public class InputStreamReader
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/10/13
 	 */
+	@Api
 	public InputStreamReader(InputStream __in)
 		throws NullPointerException
 	{
@@ -61,6 +64,7 @@ public class InputStreamReader
 	 * @throws UnsupportedEncodingException If the encoding is not supported.
 	 * @since 2018/10/13
 	 */
+	@Api
 	public InputStreamReader(InputStream __in, String __enc)
 		throws NullPointerException, UnsupportedEncodingException
 	{
@@ -91,6 +95,7 @@ public class InputStreamReader
 	 * @return The encoding name.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public String getEncoding()
 	{
 		return this._decoder.encodingName();
@@ -113,8 +118,8 @@ public class InputStreamReader
 		// Read characters
 		for (;;)
 		{
-			// {@squirreljme.error ZZ0o Read of input byte sequence exceeded
-			// the maximum specified sequence length. (The store length)}
+			/* {@squirreljme.error ZZ0o Read of input byte sequence exceeded
+			the maximum specified sequence length. (The store length)} */
 			if (storelen >= declimit)
 				throw new IOException("ZZ0o " + storelen);
 			
@@ -172,8 +177,8 @@ public class InputStreamReader
 			baseo = __o;
 		for (int o = __o; rv < __l;)
 		{
-			// {@squirreljme.error ZZ0p Read of input byte sequence exceeded
-			// the maximum specified sequence length. (The store length)}
+			/* {@squirreljme.error ZZ0p Read of input byte sequence exceeded
+			the maximum specified sequence length. (The store length)} */
 			if (storelen >= declimit)
 				throw new IOException("ZZ0p " + storelen);
 			

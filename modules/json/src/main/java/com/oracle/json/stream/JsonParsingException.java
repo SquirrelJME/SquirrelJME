@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package com.oracle.json.stream;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import com.oracle.json.JsonException;
 
 /**
@@ -16,6 +17,7 @@ import com.oracle.json.JsonException;
  *
  * @since 2014/07/25
  */
+@Api
 public class JsonParsingException
 	extends JsonException
 {
@@ -33,6 +35,7 @@ public class JsonParsingException
 	 * @param __l Location of the parsing error.
 	 * @since 2014/07/25
 	 */
+	@Api
 	public JsonParsingException(String __m, JsonLocation __l)
 	{
 		super(__m);
@@ -49,6 +52,7 @@ public class JsonParsingException
 	 * @param __l Location of the parsing error.
 	 * @since 2014/07/25
 	 */
+	@Api
 	public JsonParsingException(String __m, Throwable __c, JsonLocation __l)
 	{
 		super(__m, __c);
@@ -64,6 +68,7 @@ public class JsonParsingException
 	 * @return The location of the parse error, is never {@code null}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	public JsonLocation getLocation()
 	{
 		return this._loc;
@@ -74,6 +79,7 @@ public class JsonParsingException
 	 *
 	 * @since 2015/06/07
 	 */
+	@Api
 	static class BlankLocation
 		implements JsonLocation
 	{

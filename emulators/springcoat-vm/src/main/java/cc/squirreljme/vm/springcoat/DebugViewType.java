@@ -3,23 +3,32 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jdwp.JDWPCommandException;
-import cc.squirreljme.jdwp.JDWPState;
-import cc.squirreljme.jdwp.JDWPValue;
-import cc.squirreljme.jdwp.trips.JDWPTripBreakpoint;
-import cc.squirreljme.jdwp.views.JDWPViewType;
+import cc.squirreljme.jdwp.JDWPLocalVariable;
+import cc.squirreljme.jdwp.host.JDWPHostState;
+import cc.squirreljme.jdwp.host.JDWPHostValue;
+import cc.squirreljme.jdwp.host.trips.JDWPTripBreakpoint;
+import cc.squirreljme.jdwp.host.views.JDWPViewType;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchFieldException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchMethodException;
 import java.lang.ref.Reference;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ConstantValueString;
+import net.multiphasicapps.classfile.LocalVariableInfo;
+import net.multiphasicapps.classfile.LocalVariableTable;
+import net.multiphasicapps.classfile.StackMapTable;
+import net.multiphasicapps.classfile.StackMapTableEntry;
+import net.multiphasicapps.classfile.StackMapTableState;
 
 /**
  * A viewer around class types.
@@ -30,7 +39,7 @@ public class DebugViewType
 	implements JDWPViewType
 {
 	/** The state of the debugger. */
-	protected final Reference<JDWPState> state;
+	protected final Reference<JDWPHostState> state;
 	
 	/**
 	 * Initializes the type viewer.
@@ -39,7 +48,7 @@ public class DebugViewType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/04/10
 	 */
-	public DebugViewType(Reference<JDWPState> __state)
+	public DebugViewType(Reference<JDWPHostState> __state)
 	{
 		if (__state == null)
 			throw new NullPointerException("NARG");
@@ -68,6 +77,38 @@ public class DebugViewType
 	public Object classLoader(Object __which)
 	{
 		return DebugViewType.__class(__which).classLoader();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/01/20
+	 */
+	@Override
+	public int constantPoolCount(Object __which)
+	{
+		// Is this a valid class with a pool?
+		SpringClass classy = DebugViewType.__class(__which);
+		if (classy.file == null || classy.isArray() ||
+			classy.isPrimitive())
+			return -1;
+		
+		return classy.file.pool().size();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/01/20
+	 */
+	@Override
+	public byte[] constantPoolRaw(Object __which)
+	{
+		// Is this a valid class with a pool?
+		SpringClass classy = DebugViewType.__class(__which);
+		if (classy.file == null || classy.isArray() ||
+			classy.isPrimitive())
+			return null;
+		
+		return classy.file.pool().rawData();
 	}
 	
 	/**
@@ -358,6 +399,97 @@ public class DebugViewType
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2022/09/21
+	 */
+	@Override
+	public JDWPLocalVariable[] methodVariableTable(Object __which,
+		int __methodDx)
+	{
+		SpringMethod method = DebugViewType.__method(__which,
+			__methodDx);
+		
+		// If there is no byte code then this is likely a native method
+		ByteCode byteCode = method.method.byteCode();
+		if (byteCode == null)
+			return null;
+		
+		// Resultant builder
+		List<JDWPLocalVariable> result = new ArrayList<>();
+		
+		// We can use both of these as a source for variables, although the
+		// StackMapTable is not precise
+		LocalVariableTable localVariables = byteCode.localVariables();
+		StackMapTable stackMap = byteCode.stackMapTable();
+		
+		// Build from debugged local variables
+		if (localVariables != null && localVariables.size() > 0)
+		{
+			// Direct copy over
+			for (LocalVariableInfo var : localVariables)
+				result.add(new JDWPLocalVariable(var.slot,
+					var.startPc, var.length, var.type.toString(),
+					var.name.toString()));
+		}
+		
+		// Otherwise, make up something based on the stack map
+		else if (stackMap != null)
+		{
+			// Needed to determine the end of the table
+			int codeLen = byteCode.length();
+			
+			// Determine gap lengths for each entry, so we can spread values
+			// around accordingly
+			Map<Integer, Integer> atLengths = new LinkedHashMap<>();
+			int lastAt = 0;
+			for (Map.Entry<Integer, StackMapTableState> entry : stackMap)
+			{
+				int at = entry.getKey();
+				
+				// Put in the length to the last one
+				Integer old = atLengths.get(lastAt);
+				atLengths.put(lastAt, (old == null ? 0 : old) + (at - lastAt));
+				
+				// New position
+				lastAt = at;
+			}
+			
+			// The final length is
+			atLengths.put(lastAt, codeLen - lastAt);
+			
+			// Go through and add entries for these
+			for (Map.Entry<Integer, StackMapTableState> entry : stackMap)
+			{
+				int at = entry.getKey();
+				StackMapTableState state = entry.getValue();
+				
+				// We need to actually go through each slot in this state
+				// to get the correct information
+				int maxLocals = state.maxLocals();
+				for (int slot = 0; slot < maxLocals; slot++)
+				{
+					StackMapTableEntry local = state.getLocal(slot);
+					
+					// Ignore uninitialized values as they have nothing that
+					// can be stored there
+					// We also do not know what top variables are
+					if (!local.isInitialized() || local.isTop())
+						continue;
+					
+					// Store this, assume 0 is always this
+					result.add(new JDWPLocalVariable(
+						slot, at, atLengths.get(at),
+						local.type().type().toString(),
+						(slot == 0 ? "this" :
+							String.format("var$%d@%d", slot, at))));
+				}
+			}
+		}
+		
+		return result.toArray(new JDWPLocalVariable[result.size()]);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2021/04/14
 	 */
 	@Override
@@ -383,7 +515,7 @@ public class DebugViewType
 	 * @since 2021/04/14
 	 */
 	@Override
-	public boolean readValue(Object __which, int __index, JDWPValue __out)
+	public boolean readValue(Object __which, int __index, JDWPHostValue __out)
 	{
 		SpringClass classy = DebugViewType.__class(__which);
 		
@@ -530,7 +662,7 @@ public class DebugViewType
 	 * @return {@code true} on success.
 	 * @since 2022/09/01
 	 */
-	static boolean __readValue(JDWPValue __out, SpringFieldStorage __store,
+	static boolean __readValue(JDWPHostValue __out, SpringFieldStorage __store,
 		SpringMachine __machine)
 	{
 		Object value = __store.get();

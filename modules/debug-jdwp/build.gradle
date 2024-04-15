@@ -7,7 +7,7 @@ squirreljme
 {
 	javaDocErrorCode = "AG"
 	swmType = JavaMEMidletType.LIBRARY
-	swmName = "JDWP Implementation"
+	swmName = "JDWP Interface Protocol"
 	swmVendor = "Stephanie Gawroriski"
 	tags += "debug"
 }

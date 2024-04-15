@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -215,10 +215,10 @@ public final class MethodFlags
 		if (__oc == null || __mn == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JC3l An {@code abstract} method cannot be
-		// {@code private}, {@code static}, {@code final},
-		// {@code synchronized}, {@code native}, or {@code strictfp}. (The
-		// method flags)}
+		/* {@squirreljme.error JC3l An {@code abstract} method cannot be
+		{@code private}, {@code static}, {@code final},
+		{@code synchronized}, {@code native}, or {@code strictfp}. (The
+		method flags)} */
 		if (this.isAbstract())
 			if (this.isPrivate() || this.isStatic() || this.isFinal() || this
 				.isSynchronized() || this.isNative() || this.isStrict())
@@ -243,8 +243,8 @@ public final class MethodFlags
 				// Is it set?
 				boolean has = this.contains(f);
 				
-				// {@squirreljme.error JC3m Flags for interface method has an
-				// incorrect set of flags. (The method flags)}
+				/* {@squirreljme.error JC3m Flags for interface method has an
+				incorrect set of flags. (The method flags)} */
 				if (must != has && !maybe)
 					throw new InvalidClassFormatException(
 						String.format("JC3m %s", this));

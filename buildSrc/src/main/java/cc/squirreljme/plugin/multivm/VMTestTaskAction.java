@@ -3,13 +3,14 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
+import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import cc.squirreljme.plugin.util.JavaExecSpecFiller;
 import cc.squirreljme.plugin.util.SerializedPath;
 import cc.squirreljme.plugin.util.SimpleJavaExecSpecFiller;
@@ -27,10 +28,10 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
-import java.util.function.Supplier;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
@@ -53,9 +54,14 @@ import org.gradle.workers.WorkerExecutor;
 public class VMTestTaskAction
 	implements Action<Task>
 {
+	
 	/** The special key for quick finding test results. */
 	static final String _SPECIAL_KEY = 
 		"XERSQUIRRELJMEXER";
+	
+	/** Print the test manifest? */
+	public static final String PRINT_TEST_MANIFEST =
+		"net.multiphasicapps.tac.resultManifest";
 	
 	/** The maximum parallel tests that can run at once. */
 	private static final int _MAX_PARALLEL_TESTS =
@@ -67,31 +73,26 @@ public class VMTestTaskAction
 	/** The worker executor. */
 	protected final WorkerExecutor executor;
 	
-	/** The source set used. */
-	protected final String sourceSet;
-	
-	/** The virtual machine type. */
-	protected final VMSpecifier vmType;
+	/** The classifier used. */
+	protected final SourceTargetClassifier classifier;
 	
 	/**
 	 * Initializes the virtual machine task action.
 	 * 
 	 * @param __executor The executor for tasks.
-	 * @param __sourceSet The source set.
-	 * @param __vmType The virtual machine type used.
+	 * @param __classifier The classifier used.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/23
 	 */
-	public VMTestTaskAction(WorkerExecutor __executor, String __sourceSet,
-		VMSpecifier __vmType)
+	public VMTestTaskAction(WorkerExecutor __executor,
+		SourceTargetClassifier __classifier)
 		throws NullPointerException
 	{
-		if (__sourceSet == null || __vmType == null)
+		if (__executor == null || __classifier == null)
 			throw new NullPointerException("NARG");
 		
 		this.executor = __executor;
-		this.sourceSet = __sourceSet;
-		this.vmType = __vmType;
+		this.classifier = __classifier;
 	}
 	
 	/**
@@ -107,16 +108,16 @@ public class VMTestTaskAction
 		// Debug
 		Logger logger = __task.getLogger();
 		logger.debug("Tests: {}", VMHelpers.runningTests(
-			__task.getProject(), this.sourceSet));
+			__task.getProject(), this.classifier.getSourceSet()));
 		
 		// We want our tasks to run from within Gradle
 		WorkQueue queue = this.executor.noIsolation();
 		
 		// All results will go here
-		String sourceSet = this.sourceSet;
-		VMSpecifier vmType = this.vmType;
+		String sourceSet = this.classifier.getSourceSet();
+		VMSpecifier vmType = this.classifier.getVmType();
 		Path resultDir = VMHelpers.testResultXmlDir(__task.getProject(),
-			vmType, sourceSet).get();
+			this.classifier).get();
 		
 		// All the result files will be read afterwards to determine whether
 		// this task will pass or fail
@@ -133,7 +134,7 @@ public class VMTestTaskAction
 		
 		// Calculate suite run parameters
 		SuiteRunParameters runSuite = VMTestTaskAction.runSuite(
-			__task, sourceSet, vmType);
+			(VMBaseTask)__task, this.classifier);
 		
 		// Force non-parallel?
 		if (runSuite.noParallelTests)
@@ -161,8 +162,9 @@ public class VMTestTaskAction
 		{
 			// Calculate test running parameters
 			CandidateTestFiles candidate = tests.get(testName);
-			TestRunParameters runTest = VMTestTaskAction.runTest(__task,
-				sourceSet, vmType, runSuite, testName, candidate);
+			TestRunParameters runTest = VMTestTaskAction.runTest(
+				(VMBaseTask)__task, this.classifier, runSuite, testName,
+				candidate);
 			
 			// Where will the results be read from?
 			Path xmlResult = resultDir.resolve(
@@ -226,7 +228,7 @@ public class VMTestTaskAction
 			
 		// Determine and ensure the directory where CSVs go exist
 		Path csvDir = VMHelpers.testResultsCsvDir(__task.getProject(),
-			vmType, sourceSet).get();
+			this.classifier).get();
 		try
 		{
 			Files.createDirectories(csvDir);
@@ -439,17 +441,16 @@ public class VMTestTaskAction
 	 * Initializes the suite parameters.
 	 *
 	 * @param __task The task.
-	 * @param __sourceSet The source set.
-	 * @param __vmType The virtual machine used.
+	 * @param __classifier The classifier used.
 	 * @return The parameters to run all tests with.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/09/11
 	 */
-	public static SuiteRunParameters runSuite(Task __task, String __sourceSet,
-		VMSpecifier __vmType)
+	public static SuiteRunParameters runSuite(VMBaseTask __task,
+		SourceTargetClassifier __classifier)
 		throws NullPointerException
 	{
-		if (__task == null || __sourceSet == null || __vmType == null)
+		if (__task == null || __classifier == null)
 			throw new NullPointerException("NARG");
 		
 		// Setup builder
@@ -486,16 +487,15 @@ public class VMTestTaskAction
 			.emuLib(new SerializedPath(emuLib))
 			.uniqueId(UUID.randomUUID().toString())
 			.classPath(SerializedPath.boxPaths(VMHelpers.runClassPath(
-				__task, __sourceSet, __vmType, true)))
+				__task, __classifier, true)))
 			.build();
 	}
 	
 	/**
-	 * Determines the run parameters.
+	 * Determines the command line that is used to run tests.
 	 * 
 	 * @param __task The task this is for.
-	 * @param __sourceSet The source set used.
-	 * @param __vmType The type of virtual machine this is.
+	 * @param __classifier The classifier used.
 	 * @param __runSuite The existing run suite.
 	 * @param __testName The name of the test.
 	 * @param __candidate The test candidate, for test information.
@@ -503,13 +503,13 @@ public class VMTestTaskAction
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/09/11
 	 */
-	public static TestRunParameters runTest(Task __task,
-		String __sourceSet, VMSpecifier __vmType,
+	public static TestRunParameters runTest(VMBaseTask __task,
+		SourceTargetClassifier __classifier,
 		SuiteRunParameters __runSuite, String __testName,
 		CandidateTestFiles __candidate)
 		throws NullPointerException
 	{
-		if (__task == null || __sourceSet == null || __vmType == null ||
+		if (__task == null || __classifier == null ||
 			__runSuite == null || __testName == null || __candidate == null)
 			throw new NullPointerException("NARG");
 		
@@ -531,11 +531,25 @@ public class VMTestTaskAction
 		// Deserialize classpath
 		Path[] classPath = SerializedPath.unboxPaths(__runSuite.classPath);
 		
+		Map<String, String> sysProps = new LinkedHashMap<>(
+			__runSuite.getSysProps());
+		if (Boolean.parseBoolean(
+			__candidate.expectedValues.get("test-vm-target")))
+			sysProps.put("cc.squirreljme.test.vm",
+				__classifier.getBangletVariant().banglet);
+		
+		// Print test result manifest?
+		if (Boolean.getBoolean(VMTestTaskAction.PRINT_TEST_MANIFEST) ||
+			(__task.hasProperty(VMTestTaskAction.PRINT_TEST_MANIFEST) &&
+			Boolean.parseBoolean(Objects.toString(
+				__task.property(VMTestTaskAction.PRINT_TEST_MANIFEST)))))
+			sysProps.put(VMTestTaskAction.PRINT_TEST_MANIFEST, "true");
+		
 		// Determine the arguments that are used to spawn the JVM
 		JavaExecSpecFiller execSpec = new SimpleJavaExecSpecFiller();
-		__vmType.spawnJvmArguments(__task, true, execSpec,
-			mainClass, __testName, __runSuite.getSysProps(), classPath,
-			classPath, mainArgs);
+		__classifier.getVmType().spawnJvmArguments(__task, true,
+			execSpec, mainClass, __testName, sysProps,
+			classPath, classPath, mainArgs);
 		
 		// Get command line
 		List<String> commandLine = new ArrayList<>();

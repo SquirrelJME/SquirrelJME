@@ -3,11 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.lang;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * For any exceptions which extend this class and not {@link RuntimeException}
@@ -16,6 +18,7 @@ package java.lang;
  *
  * @since 2018/09/16
  */
+@Api
 public class Exception
 	extends Throwable
 {
@@ -24,6 +27,7 @@ public class Exception
 	 *
 	 * @since 2018/09/16
 	 */
+	@Api
 	public Exception()
 	{
 	}
@@ -34,6 +38,7 @@ public class Exception
 	 * @param __m The message.
 	 * @since 2018/09/16
 	 */
+	@Api
 	public Exception(String __m)
 	{
 		super(__m);
@@ -46,6 +51,7 @@ public class Exception
 	 * @param __t The cause.
 	 * @since 2018/09/16
 	 */
+	@Api
 	public Exception(String __m, Throwable __t)
 	{
 		super(__m, __t);
@@ -57,6 +63,7 @@ public class Exception
 	 * @param __t The cause.
 	 * @since 2018/09/16
 	 */
+	@Api
 	public Exception(Throwable __t)
 	{
 		super(__t);

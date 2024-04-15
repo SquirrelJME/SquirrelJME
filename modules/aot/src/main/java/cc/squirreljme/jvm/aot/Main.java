@@ -3,18 +3,18 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.jvm.aot;
 
+import cc.squirreljme.jvm.manifest.JavaManifest;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.vm.JarClassLibrary;
 import cc.squirreljme.vm.SummerCoatJarLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -44,7 +44,7 @@ public class Main
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/22
 	 */
-	private static Backend findBackend(String __compiler)
+	public static Backend findBackend(String __compiler)
 		throws IllegalArgumentException, NullPointerException
 	{
 		if (__compiler == null)
@@ -55,9 +55,34 @@ public class Main
 			if (__compiler.equals(backend.name()))
 				return backend;
 		
-		// {@squirreljme.error AE04 The given compiler does not exist.
-		// (The compiler)}
+		/* {@squirreljme.error AE04 The given compiler does not exist.
+		(The compiler)} */
 		throw new IllegalArgumentException("AE04 " + __compiler);
+	}
+	
+	/**
+	 * Main entry point for the compiler interface.
+	 * 
+	 * @param __args Arguments to the main class.
+	 * @throws Throwable On any exception.
+	 * @since 2023/10/14
+	 */
+	public static void main(String... __args)
+		throws Throwable
+	{
+		try
+		{
+			Main.mainWrapped(__args);
+		}
+		catch (Throwable t)
+		{
+			t.printStackTrace(System.err);
+			
+			if (t instanceof Error)
+				throw (Error)t;
+			
+			throw t;
+		}
 	}
 	
 	/**
@@ -67,7 +92,7 @@ public class Main
 	 * @throws IOException On read errors.
 	 * @since 2020/11/21
 	 */
-	public static void main(String... __args)
+	public static void mainWrapped(String... __args)
 		throws IOException
 	{
 		// Push all arguments to the queue
@@ -77,6 +102,9 @@ public class Main
 		String compiler = null;
 		String name = "undefined";
 		String mode = null;
+		String clutterLevel = null;
+		String sourceSet = null;
+		String originalLibHash = null;
 		
 		// Parse input arguments
 		while (!args.isEmpty())
@@ -91,6 +119,18 @@ public class Main
 			else if (arg.startsWith("-Xname:"))
 				name = arg.substring("-Xname:".length());
 			
+			// The current clutter level
+			else if (arg.startsWith("-XclutterLevel"))
+				clutterLevel = arg.substring("-XclutterLevel:".length());
+			
+			// The source set being compiled
+			else if (arg.startsWith("-XsourceSet"))
+				sourceSet = arg.substring("-XsourceSet:".length());
+			
+			// Original library hash code
+			else if (arg.startsWith("-XoriginalLibHash:"))
+				originalLibHash = arg.substring("-XoriginalLibHash:".length());
+			
 			// End of switches
 			else if (!arg.startsWith("-"))
 			{
@@ -98,17 +138,21 @@ public class Main
 				break;
 			}
 			
-			// {@squirreljme.error AE01 Unknown argument. (The argument)}
+			/* {@squirreljme.error AE01 Unknown argument. (The argument)} */
 			else
 				throw new IllegalArgumentException("AE01 " + arg);
 		}
 		
-		// {@squirreljme.error AE03 Mode was not specified.}
+		/* {@squirreljme.error AE03 Mode was not specified.} */
 		if (mode == null)
 			throw new IllegalArgumentException("AE03");
 		
 		// Find the backend to use
 		Backend backend = Main.findBackend(compiler);
+		
+		// Store into settings
+		AOTSettings aotSettings = new AOTSettings(compiler,
+			name, mode, sourceSet, clutterLevel, originalLibHash);
 		
 		// Use explicit input/output
 		try (InputStream in = new StandardInputStream();
@@ -119,20 +163,20 @@ public class Main
 			{
 					// Compile code
 				case "compile":
-					Main.mainCompile(backend, in, out, name, args);
+					Main.mainCompile(aotSettings, backend, in, out, args);
 					break;
 					
 					// Dump the result of "compile"
 				case "dumpCompile":
-					Main.dumpCompile(backend, in, out, name);
+					Main.dumpCompile(aotSettings, backend, in, out);
 					break;
 					
 					// Link multiple libraries into one
 				case "rom":
-					Main.mainRom(backend, out, args);
+					Main.mainRom(aotSettings, backend, out, args);
 					break;
 				
-				// {@squirreljme.error AE02 Unknown mode. (The mode)}
+				/* {@squirreljme.error AE02 Unknown mode. (The mode)} */
 				default:
 					throw new IllegalArgumentException("AE02 " + mode);
 			}
@@ -142,21 +186,22 @@ public class Main
 	/**
 	 * Dumps the result of the compilation to a readable text format used
 	 * for debugging.
-	 * 
+	 *
+	 * @param __aotSettings AOT settings.
 	 * @param __backend The backend to use.
 	 * @param __inGlob The input glob.
 	 * @param __out Where to write the output.
-	 * @param __name The name of the Glob.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/05/16
 	 */
-	private static void dumpCompile(Backend __backend, InputStream __inGlob,
-		OutputStream __out, String __name)
+	public static void dumpCompile(AOTSettings __aotSettings,
+		Backend __backend, InputStream __inGlob,
+		OutputStream __out)
 		throws IOException, NullPointerException
 	{
 		if (__backend == null || __inGlob == null || __out == null ||
-			__name == null)
+			__aotSettings == null)
 			throw new NullPointerException("NARG");
 		
 		// Read in the entire contents of the data
@@ -169,27 +214,28 @@ public class Main
 		// Dump the output
 		try (PrintStream out = new PrintStream(__out, true))
 		{
-			__backend.dumpGlob(dump, __name, out);
+			__backend.dumpGlob(__aotSettings, dump, out);
 		}
 	}
 	
 	/**
 	 * Handles the main compilation stage.
-	 * 
+	 *
+	 * @param __aotSettings AOT settings.
 	 * @param __backend The backend to use.
 	 * @param __inZip The input stream of the input ZIP.
 	 * @param __outGlob The output stream of the Glob.
-	 * @param __name The name of the library.
 	 * @param __args The arguments to use.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/22
 	 */
-	private static void mainCompile(Backend __backend, InputStream __inZip,
-		OutputStream __outGlob, String __name, Deque<String> __args)
+	public static void mainCompile(AOTSettings __aotSettings,
+		Backend __backend, InputStream __inZip,
+		OutputStream __outGlob, Deque<String> __args)
 		throws IOException, NullPointerException
 	{
-		if (__backend == null || __name == null || __args == null ||
+		if (__backend == null || __aotSettings == null || __args == null ||
 			__inZip == null || __outGlob == null)
 			throw new NullPointerException("NARG");
 		
@@ -197,49 +243,77 @@ public class Main
 		CompileSettings settings = CompileSettings.parse(__args);
 		
 		// Setup glob for final linking
-		LinkGlob glob = __backend.linkGlob(settings, __name, __outGlob);
-		
-		// Read input JAR and perform inline compilation
-		try (InputStream in = __inZip;
-			ZipStreamReader zip = new ZipStreamReader(in))
+		try (LinkGlob glob = __backend.linkGlob(__aotSettings, settings,
+			__outGlob))
 		{
-			// Process JAR entries and compile them into individual class
-			// fragments
-			for (;;)
-				try (ZipStreamEntry entry = zip.nextEntry())
-				{
-					// No more entries to process
-					if (entry == null)
-						break;
-					
-					// Only compile classes
-					String name = entry.name();
-					if (!name.endsWith(".class"))
+			// Starting linking
+			glob.initialize();
+			
+			// Read input JAR and perform inline compilation
+			try (InputStream in = __inZip;
+				 ZipStreamReader zip = new ZipStreamReader(in))
+			{
+				// Process JAR entries and compile them into individual class
+				// fragments
+				for (;;)
+					try (ZipStreamEntry entry = zip.nextEntry())
 					{
-						// Link in the resource as-is however
-						glob.join(name, true, entry);
+						// No more entries to process
+						if (entry == null)
+							break;
 						
-						continue;
-					}
-					
-					// Perform class compilation
-					try (ByteArrayOutputStream classBytes =
-						new ByteArrayOutputStream())
-					{
-						// Perform compilation
-						__backend.compileClass(settings, glob,
-							name.substring(0,
-								name.length() - ".class".length()),
-							entry, classBytes);
+						// Ignore directories
+						String name = entry.name();
+						if (name.endsWith("/"))
+							continue;
 						
-						// Link in the resultant object
-						try (InputStream bain = new ByteArrayInputStream(
-							classBytes.toByteArray()))
+						// Compile resource file?
+						if (!Main.__isValidClass(name))
 						{
-							glob.join(name, false, bain);
+							// If not the manifest, do not keep a copy of it
+							InputStream actual;
+							boolean isManifest =
+								name.equals("META-INF/MANIFEST.MF");
+							boolean isTestList =
+								name.equals("META-INF/services/net." +
+									"multiphasicapps.tac.TestInterface");
+							if (!isManifest && !isTestList)
+								actual = entry;
+							
+							// Otherwise do make a copy of it
+							else
+							{
+								// Load this into the glob, if it cares
+								byte[] data = StreamUtils.readAll(entry);
+								try (InputStream rawIn =
+									 new ByteArrayInputStream(data))
+								{
+									if (isManifest)
+										glob.rememberManifest(
+											new JavaManifest(rawIn));
+									else
+										glob.rememberTests(
+											StreamUtils.readAllLines(rawIn,
+												"utf-8"));
+								}
+								
+								// Use this for the resource read
+								actual = new ByteArrayInputStream(data);
+							}
+							
+							// Build the resource
+							__backend.compileResource(settings, glob, name,
+								actual);
 						}
-					} 
-				}
+						
+						// Compile class file?
+						else
+							__backend.compileClass(settings, glob,
+								name.substring(0,
+									name.length() - ".class".length()),
+								entry);
+					}
+			}
 			
 			// Linking stage is finished
 			glob.finish();
@@ -248,7 +322,8 @@ public class Main
 	
 	/**
 	 * Links the ROM together as one.
-	 * 
+	 *
+	 * @param __aotSettings AOT settings.
 	 * @param __backend The backend to use.
 	 * @param __out Where the resultant ROM is to be written.
 	 * @param __args The arguments to the ROM linking.
@@ -256,8 +331,8 @@ public class Main
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/27
 	 */
-	public static void mainRom(Backend __backend, OutputStream __out,
-		Deque<String> __args)
+	public static void mainRom(AOTSettings __aotSettings, Backend __backend,
+		OutputStream __out, Deque<String> __args)
 		throws IOException, NullPointerException
 	{
 		if (__backend == null || __args == null || __out == null)
@@ -282,7 +357,7 @@ public class Main
 			libs.add(lib);
 		}
 		
-		// {@squirreljme.error AE08 No libraries specified to link together.}
+		/* {@squirreljme.error AE08 No libraries specified to link together.} */
 		if (libs.isEmpty())
 			throw new IllegalArgumentException("AE08");
 		
@@ -291,6 +366,38 @@ public class Main
 			new VMClassLibrary[libs.size()]);
 		
 		// Perform combined linking
-		__backend.rom(settings, __out, vmLibs);
+		__backend.rom(__aotSettings, settings, __out, vmLibs);
+	}
+	
+	/**
+	 * Is this a valid class?
+	 * 
+	 * @param __name The file name.
+	 * @return If this is a valid class.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/05/28
+	 */
+	private static boolean __isValidClass(String __name)
+		throws NullPointerException
+	{
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		// If not a class file, ignore
+		if (!__name.endsWith(".class"))
+			return false;
+		
+		// Check for invalid characters
+		for (int i = 0, n = __name.length() - 6; i < n; i++)
+		{
+			char c = __name.charAt(i);
+			
+			// Only these are invalid
+			if (c == '-' || c == '.' || c == ';' || c == '[')
+				return false;
+		}
+		
+		// No failure, so is a valid class
+		return true;
 	}
 }

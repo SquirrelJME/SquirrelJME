@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+result: NoResult
+thrown: NoExceptionThrown
+todo: TODO: The only in is Java SE for now because the AOT steps are not really
+ runnable right now.
+only-in: javase
+secondary-compile--0: true
+secondary-compile--1: true
+secondary-compile--2: true
+secondary-rom: true

@@ -3,13 +3,14 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
+import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import cc.squirreljme.plugin.swm.JavaMEMidlet;
 import cc.squirreljme.plugin.util.GradleJavaExecSpecFiller;
 import cc.squirreljme.plugin.util.GradleLoggerOutputStream;
@@ -31,29 +32,23 @@ import org.gradle.process.ExecResult;
 public class VMRunTaskAction
 	implements Action<Task>
 {
-	/** The source set used. */
-	protected final String sourceSet;
-	
-	/** The virtual machine type. */
-	protected final VMSpecifier vmType;
+	/** The classifier used. */
+	protected final SourceTargetClassifier classifier;
 	
 	/**
 	 * Initializes the task action.
 	 * 
-	 * @param __sourceSet The source set to use.
-	 * @param __vmType The virtual machine type.
+	 * @param __classifier The classifier used.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/16
 	 */
-	public VMRunTaskAction(String __sourceSet,
-		VMSpecifier __vmType)
+	public VMRunTaskAction(SourceTargetClassifier __classifier)
 		throws NullPointerException
 	{
-		if (__sourceSet == null || __vmType == null)
+		if (__classifier == null)
 			throw new NullPointerException("NARG");
 		
-		this.sourceSet = __sourceSet;
-		this.vmType = __vmType;
+		this.classifier = __classifier;
 	}
 	
 	/**
@@ -69,9 +64,9 @@ public class VMRunTaskAction
 			
 		// Gather the class path to use for target execution, this is all the
 		// SquirrelJME modules this depends on
-		VMSpecifier vmType = this.vmType;
+		VMSpecifier vmType = this.classifier.getVmType();
 		Path[] classPath = VMHelpers.runClassPath(__task,
-			this.sourceSet, vmType, true);
+			this.classifier, true);
 		
 		// Debug
 		__task.getLogger().debug("Classpath: {}", Arrays.asList(classPath));
@@ -99,7 +94,7 @@ public class VMRunTaskAction
 		ExecResult exitResult = __task.getProject().javaexec(__spec ->
 			{
 				// Use filled JVM arguments
-				vmType.spawnJvmArguments(__task, true,
+				vmType.spawnJvmArguments((VMBaseTask)__task, true,
 					new GradleJavaExecSpecFiller(__spec), mainClass,
 					(midlet != null ? midlet.mainClass : mainClass),
 					Collections.<String, String>emptyMap(),

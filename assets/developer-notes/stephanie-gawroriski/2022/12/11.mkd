@@ -1,0 +1,9 @@
+# 2022/12/11
+
+## 15:11
+
+It would be nice to have smart pointers in RatufaCoat, it would simplify cleanup
+and otherwise, it would be safer overall. It would require some boilerplate but
+hopefully could be done. I suppose it would be like constructor and destructors
+and objects. I would essentially just be re-inventing C++... but going C++ is
+a mess. I suppose in general it is just a mess anyway.

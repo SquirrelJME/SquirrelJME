@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -69,7 +69,7 @@ class __SortedTreeIterator__<K, V>
 	@Override
 	public Map.Entry<K, V> next()
 	{
-		// {@squirreljme.error AC06 No more elements to iterate over.}
+		/* {@squirreljme.error AC06 No more elements to iterate over.} */
 		__SortedTreeData__<K, V> rv = this._at;
 		if (rv == null)
 			throw new NoSuchElementException("AC06");
@@ -91,7 +91,7 @@ class __SortedTreeIterator__<K, V>
 	@Override
 	public void remove()
 	{
-		// {@squirreljme.error AC07 No last entry exists for deletion.}
+		/* {@squirreljme.error AC07 No last entry exists for deletion.} */
 		__SortedTreeData__<K, V> last = this._last;
 		if (last == null)
 			throw new IllegalStateException("AC07");
@@ -118,7 +118,7 @@ class __SortedTreeIterator__<K, V>
 		if (__data == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AC08 Referenced node was deleted.}
+		/* {@squirreljme.error AC08 Referenced node was deleted.} */
 		if (__data._node == null)
 			throw new ConcurrentModificationException("AC08");
 		

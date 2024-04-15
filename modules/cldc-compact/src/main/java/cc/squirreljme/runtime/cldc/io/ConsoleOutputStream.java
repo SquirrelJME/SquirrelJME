@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -53,7 +53,7 @@ public final class ConsoleOutputStream
 		}
 		catch (MLECallError e)
 		{
-			// {@squirreljme.error ZZ5g The standard pipe is not valid.}
+			/* {@squirreljme.error ZZ5g The standard pipe is not valid.} */
 			throw new IllegalArgumentException("ZZ5g", e);
 		}
 	}
@@ -133,7 +133,7 @@ public final class ConsoleOutputStream
 	public void close()
 		throws IOException
 	{
-		// {@squirreljme.error ZZ3y Could not close the terminal output.}
+		/* {@squirreljme.error ZZ3y Could not close the terminal output.} */
 		if (TerminalShelf.close(this.pipe) < 0)
 			throw new IOException("ZZ3y");
 	}
@@ -146,7 +146,7 @@ public final class ConsoleOutputStream
 	public void flush()
 		throws IOException
 	{
-		// {@squirreljme.error ZZ05 Could not flush the console.}
+		/* {@squirreljme.error ZZ05 Could not flush the console.} */
 		if (TerminalShelf.flush(this.pipe) < 0)
 			throw new IOException("ZZ05");
 	}
@@ -159,7 +159,7 @@ public final class ConsoleOutputStream
 	public void write(int __b)
 		throws IOException
 	{
-		// {@squirreljme.error ZZ06 Error writing to console.}
+		/* {@squirreljme.error ZZ06 Error writing to console.} */
 		if (TerminalShelf.write(this.pipe, __b) < 0)
 			throw new IOException("ZZ06");
 		
@@ -179,7 +179,7 @@ public final class ConsoleOutputStream
 		if (__b == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ07 Error writing to console.}
+		/* {@squirreljme.error ZZ07 Error writing to console.} */
 		if (TerminalShelf.write(this.pipe, __b, 0, __b.length) < 0)
 			throw new IOException("ZZ07");
 		
@@ -201,7 +201,7 @@ public final class ConsoleOutputStream
 		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		// {@squirreljme.error ZZ08 Error writing to console.}
+		/* {@squirreljme.error ZZ08 Error writing to console.} */
 		if (TerminalShelf.write(this.pipe, __b, __o, __l) < 0)
 			throw new IOException("ZZ08");
 		

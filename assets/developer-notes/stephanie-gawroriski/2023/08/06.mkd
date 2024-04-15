@@ -1,0 +1,9 @@
+# 2023/08/06
+
+## 20:01
+
+Fixed a bug in SpringCoat regarding `invokespecial` which I found because of the
+C source code writer I have been working on in _wip-nanocoat_. There was an
+incompatible class change error when calling `super.__file()` which is package-private
+and that was failing. It has been fixed now, which is good. Also more tests and
+especially when I work on NanoCoat these small edge cases will be useful.

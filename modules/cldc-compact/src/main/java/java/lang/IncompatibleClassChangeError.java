@@ -3,11 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.lang;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This is thrown when a class has changed and when that change is no longer
@@ -15,6 +17,7 @@ package java.lang;
  *
  * @since 2018/12/04
  */
+@Api
 public class IncompatibleClassChangeError
 	extends LinkageError
 {
@@ -23,6 +26,7 @@ public class IncompatibleClassChangeError
 	 *
 	 * @since 2018/12/04
 	 */
+	@Api
 	public IncompatibleClassChangeError()
 	{
 	}
@@ -33,6 +37,7 @@ public class IncompatibleClassChangeError
 	 * @param __m The message.
 	 * @since 2018/12/04
 	 */
+	@Api
 	public IncompatibleClassChangeError(String __m)
 	{
 		super(__m);

@@ -3,13 +3,16 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
+import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +23,7 @@ import java.util.List;
  *
  * @since 2017/08/20
  */
+@Api
 public class ChoiceGroup
 	extends Item
 	implements Choice
@@ -48,6 +52,7 @@ public class ChoiceGroup
 	 * if {@link Choice#IMPLICIT} was specified.
 	 * @since 2017/08/20
 	 */
+	@Api
 	public ChoiceGroup(String __l, int __ct)
 		throws IllegalArgumentException
 	{
@@ -70,6 +75,7 @@ public class ChoiceGroup
 	 * elements.
 	 * @since 2017/08/20
 	 */
+	@Api
 	public ChoiceGroup(String __l, int __ct, String[] __se, Image[] __ie)
 		throws IllegalArgumentException, NullPointerException
 	{
@@ -77,14 +83,14 @@ public class ChoiceGroup
 		if (__se == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB1b The image array does not have the same
-		// length as the string array.}
+		/* {@squirreljme.error EB1b The image array does not have the same
+		length as the string array.} */
 		int n = __se.length;
 		if (__ie != null && __ie.length != n)
 			throw new IllegalArgumentException("EB1b");
 		
-		// {@squirreljme.error EB1c Invalid choice type specified for a
-		// choice group. (The choice type)}
+		/* {@squirreljme.error EB1c Invalid choice type specified for a
+		choice group. (The choice type)} */
 		if (__ct < ChoiceGroup._MIN_TYPE || __ct > ChoiceGroup._MAX_TYPE ||
 			__ct == Choice.IMPLICIT)
 			throw new IllegalArgumentException(String.format("EB1c %d", __ct));
@@ -96,8 +102,8 @@ public class ChoiceGroup
 		// Append all elements
 		for (int i = 0; i < n; i++)
 		{
-			// {@squirreljme.error EB1d A string element contains a null
-			// entry.}
+			/* {@squirreljme.error EB1d A string element contains a null
+			entry.} */
 			String s = __se[i];
 			if (s == null)
 				throw new NullPointerException("EB1d");
@@ -203,8 +209,8 @@ public class ChoiceGroup
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB1e Cannot insert choice at the specified
-		// index because it is not within bounds. (The index to add at)}
+		/* {@squirreljme.error EB1e Cannot insert choice at the specified
+		index because it is not within bounds. (The index to add at)} */
 		List<__ChoiceEntry__> entries = this._entries;
 		if (__v < 0 || __v > entries.size())
 			throw new IndexOutOfBoundsException(String.format("EB1e %d",
@@ -272,6 +278,38 @@ public class ChoiceGroup
 	public int size()
 	{
 		return this._entries.size();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/01/14
+	 */
+	@Override
+	__CommonState__ __stateInit(UIBackend __backend)
+		throws NullPointerException
+	{
+		return new __ChoiceGroupState__(__backend, this);
+	}
+	
+	/**
+	 * Choice group state.
+	 * 
+	 * @since 2023/01/14
+	 */
+	static class __ChoiceGroupState__
+		extends Item.__ItemState__
+	{
+		/**
+		 * Initializes the backend state.
+		 *
+		 * @param __backend The backend used.
+		 * @param __self Self widget.
+		 * @since 2023/01/14
+		 */
+		__ChoiceGroupState__(UIBackend __backend, DisplayWidget __self)
+		{
+			super(__backend, __self);
+		}
 	}
 }
 

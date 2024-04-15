@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.runtime.lcdui.image;
 
+import cc.squirreljme.jvm.mle.callbacks.NativeImageLoadCallback;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import java.io.ByteArrayInputStream;
@@ -16,7 +17,6 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
-import javax.microedition.lcdui.Image;
 import net.multiphasicapps.io.ByteDeque;
 import net.multiphasicapps.io.CRC32Calculator;
 import net.multiphasicapps.io.ChecksumInputStream;
@@ -35,9 +35,16 @@ import net.multiphasicapps.io.ZLibDecompressor;
  * @since 2017/02/28
  */
 public class PNGReader
+	implements ImageReader
 {
 	/** The input source. */
 	protected final DataInputStream in;
+	
+	/** The image loader to use. */
+	protected final NativeImageLoadCallback loader;
+	
+	/** Are indexed pixels desired? */
+	private boolean _wantIndexed;
 	
 	/** Image width. */
 	private int _width;
@@ -82,33 +89,35 @@ public class PNGReader
 	 * Initializes the PNG parser.
 	 *
 	 * @param __in The input stream.
+	 * @param __loader The loader to use.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/28
 	 */
-	public PNGReader(InputStream __in)
+	public PNGReader(InputStream __in, NativeImageLoadCallback __loader)
 		throws NullPointerException
 	{
 		// Check
-		if (__in == null)
+		if (__in == null || __loader == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.in = new DataInputStream(__in);
+		this.loader = __loader;
 	}
 	
 	/**
 	 * Parses the PNG image data.
 	 *
-	 * @return The read image.
 	 * @throws IOException On read errors.
 	 * @since 2017/02/28
 	 */
-	public Image parse()
+	public void parse()
 		throws IOException
 	{
 		DataInputStream in = this.in;
+		NativeImageLoadCallback loader = this.loader;
 		
-		// {@squirreljme.error EB0t Illegal PNG magic number.}
+		/* {@squirreljme.error EB0t Illegal PNG magic number.} */
 		if (in.readUnsignedByte() != 137 ||
 			in.readUnsignedByte() != 80 ||
 			in.readUnsignedByte() != 78 ||
@@ -206,8 +215,8 @@ public class PNGReader
 				}
 			}
 			
-			// {@squirreljme.error EB0u CRC mismatch in PNG data chunk.
-			// (Desired CRC; Actual CRC; Last chunk type read)}
+			/* {@squirreljme.error EB0u CRC mismatch in PNG data chunk.
+			(Desired CRC; Actual CRC; Last chunk type read)} */
 			int want = in.readInt(),
 				real = crc.checksum();
 			if (want != real)
@@ -215,7 +224,7 @@ public class PNGReader
 					want, real, lasttype));
 		}
 		
-		// {@squirreljme.error EB0v No image data has been loaded.}
+		/* {@squirreljme.error EB0v No image data has been loaded.} */
 		int[] argb = this._argb;
 		if (argb == null)
 			throw new IOException("EB0v");
@@ -233,16 +242,16 @@ public class PNGReader
 					palette[i] |= 0xFF_000000;
 		}
 		
-		// {@squirreljme.error EB0w Unsupported bit-depth. (The bitdepth)}
+		/* {@squirreljme.error EB0w Unsupported bit-depth. (The bitdepth)} */
 		int bitdepth = this._bitDepth;
 		if (Integer.bitCount(bitdepth) != 1 || bitdepth > 8)
 			throw new IOException("EB0w " + bitdepth);
 		
-		// {@squirreljme.error EB0x Adam7 interlacing not supported.}
+		/* {@squirreljme.error EB0x Adam7 interlacing not supported.} */
 		if (this._adamseven)
 			throw new IOException("EB0x");
 		
-		// {@squirreljme.error EB0y Paletted PNG image has no palette.}
+		/* {@squirreljme.error EB0y Paletted PNG image has no palette.} */
 		if (this._colorType == 3 && this._palette == null)
 			throw new IOException("EB0y");
 		
@@ -267,8 +276,10 @@ public class PNGReader
 		}
 		
 		// Create image
-		return Image.createRGBImage(argb, this._width, this._height,
-			this._hasalpha);
+		loader.initialize(this._width, this._height,
+			false, false);
+		loader.addImage(argb, 0, argb.length,
+			0, this._hasalpha);
 	}
 	
 	/**
@@ -392,15 +403,15 @@ public class PNGReader
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB0z Image has zero or negative width.
-		// (The width)}
+		/* {@squirreljme.error EB0z Image has zero or negative width.
+		(The width)} */
 		int width = __in.readInt();
 		if (width <= 0)
 			throw new IOException(String.format("EB0z %d", width));
 		this._width = width;
 		
-		// {@squirreljme.error EB10 Image has zero or negative height. (The
-		// height)}
+		/* {@squirreljme.error EB10 Image has zero or negative height. (The
+		height)} */
 		int height = __in.readInt();
 		if (height <= 0)
 			throw new IOException(String.format("EB10 %d", height));
@@ -413,13 +424,13 @@ public class PNGReader
 		int bitdepth = __in.readUnsignedByte(),
 			colortype = __in.readUnsignedByte();
 		
-		// {@squirreljme.error EB11 Invalid PNG bit depth.
-		// (The bit depth)}
+		/* {@squirreljme.error EB11 Invalid PNG bit depth.
+		(The bit depth)} */
 		if (Integer.bitCount(bitdepth) != 1 || bitdepth < 0 || bitdepth > 16)
 			throw new IOException(String.format("EB11 %d", bitdepth));
 		
-		// {@squirreljme.error EB12 Invalid PNG bit depth and color type
-		// combination. (The color type; The bit depth)}
+		/* {@squirreljme.error EB12 Invalid PNG bit depth and color type
+		combination. (The color type; The bit depth)} */
 		if ((bitdepth < 8 && (colortype != 0 && colortype != 3)) ||
 			(bitdepth > 8 && colortype != 3))
 			throw new IOException(String.format("EB12 %d %d", colortype,
@@ -444,20 +455,20 @@ public class PNGReader
 		// is any
 		this._scanlen = ((width * channels * bitdepth) + 7) / 8;
 		
-		// {@squirreljme.error EB13 Only deflate compressed PNG images are
-		// supported. (The compression method)}
+		/* {@squirreljme.error EB13 Only deflate compressed PNG images are
+		supported. (The compression method)} */
 		int compressionmethod = __in.readUnsignedByte();
 		if (compressionmethod != 0)
 			throw new IOException(String.format("EB13 %d", compressionmethod));
 		
-		// {@squirreljme.error EB14 Only adapative filtered PNGs are supported.
-		// (The filter type)}
+		/* {@squirreljme.error EB14 Only adapative filtered PNGs are supported.
+		(The filter type)} */
 		int filter = __in.readUnsignedByte();
 		if (filter != 0)
 			throw new IOException(String.format("EB14 %d", filter));
 		
-		// {@squirreljme.error EB15 Unsupported PNG interlace method. (The
-		// interlace type)}
+		/* {@squirreljme.error EB15 Unsupported PNG interlace method. (The
+		interlace type)} */
 		int interlace = __in.readUnsignedByte();
 		if (interlace != 0 && interlace != 1)
 			throw new IOException(String.format("EB15 %d", interlace));
@@ -529,6 +540,10 @@ public class PNGReader
 			// Fill in color
 			palette[i] = (r << 16) | (g << 8) | b;
 		}
+		
+		// Notify that a palette was set
+		this._wantIndexed =
+			this.loader.setPalette(palette, 0, maxColors, true, -1);
 	}
 	
 	/**
@@ -548,14 +563,17 @@ public class PNGReader
 			
 		int[] argb = this._argb;
 		int[] palette = this._palette;
-		int width = this._width,
-			height = this._height,
-			limit = width * height,
-			bitdepth = this._bitDepth,
-			bitmask = (1 << bitdepth) - 1,
-			numpals = (palette != null ? palette.length : 0),
-			hishift = (8 - bitdepth),
-			himask = bitmask << hishift;
+		int width = this._width;
+		int height = this._height;
+		int limit = width * height;
+		int bitdepth = this._bitDepth;
+		int bitmask = (1 << bitdepth) - 1;
+		int numpals = (palette != null ? palette.length : 0);
+		int hishift = (8 - bitdepth);
+		int himask = bitmask << hishift;
+		
+		// Do not translate paletted colors, get their raw index values?
+		boolean wantIndexed = this._wantIndexed;
 		
 		// Read of multiple bits
 		for (int o = 0;;)
@@ -567,7 +585,14 @@ public class PNGReader
 			
 			// Handle each bit
 			for (int b = 0; b < 8 && o < limit; b += bitdepth, v <<= bitdepth)
-				argb[o++] = palette[((v & himask) >>> hishift) % numpals];
+			{
+				int index = ((v & himask) >>> hishift) % numpals;
+				
+				if (wantIndexed)
+					argb[o++] = index;
+				else
+					argb[o++] = palette[index];
+			}
 		}
 	}
 	
@@ -680,8 +705,8 @@ public class PNGReader
 			
 			// At the start of every scanline is the filter type, which
 			// describes how the data should be treated
-			// {@squirreljme.error EB16 Unknown filter type. (The type; The
-			// scanline base coordinate; The scan line length; Image size)}
+			/* {@squirreljme.error EB16 Unknown filter type. (The type; The
+			scanline base coordinate; The scan line length; Image size)} */
 			int type = __in.read();
 			if (type < 0 || type > 4)
 				throw new IOException(String.format(

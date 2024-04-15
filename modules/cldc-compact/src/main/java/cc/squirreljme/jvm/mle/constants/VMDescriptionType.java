@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -65,7 +65,15 @@ public interface VMDescriptionType
 	byte VM_SECURITY_POLICY =
 		10;
 	
+	/** Single lines of legal text and copyrights used for ports. */
+	byte THIRD_PARTY_LEGAL_LINE =
+		11;
+	
+	/** Full document of legal text, with entire licenses. */
+	byte THIRD_PARTY_LEGAL_DOCUMENT =
+		12;
+	
 	/** The current number of properties. */
 	byte NUM_TYPES =
-		11;
+		13;
 }

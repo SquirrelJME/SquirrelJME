@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="JDWP Full SpringCoat Debug" type="CompoundRunConfigurationType">
+    <toRun name="SJME Full SpringCoat Debug Connect" type="GradleRunConfiguration" />
+    <toRun name="JDWP Listen" type="Remote" />
+    <method v="2" />
+  </configuration>
+</component>

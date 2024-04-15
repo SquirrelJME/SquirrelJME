@@ -3,20 +3,23 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.WeakReference;
 
+@Api
 public abstract class Reader
 	implements Closeable
 {
 	/** The lock to use when performing read operations. */
+	@Api
 	@ImplementationNote("This is only used with the skip() method.")
 	protected Object lock;
 	
@@ -25,6 +28,7 @@ public abstract class Reader
 	 *
 	 * @since 2018/10/13
 	 */
+	@Api
 	@ImplementationNote("The lock should be initialized to this, however " +
 		"this would result in the reader itself never able to be freed " +
 		"because it refers to itself.")
@@ -40,6 +44,7 @@ public abstract class Reader
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/10/13
 	 */
+	@Api
 	protected Reader(Object __l)
 		throws NullPointerException
 	{
@@ -62,9 +67,11 @@ public abstract class Reader
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/10/13
 	 */
+	@Api
 	public abstract int read(char[] __c, int __o, int __l)
 		throws IndexOutOfBoundsException, IOException, NullPointerException;
 	
+	@Api
 	public void mark(int __a)
 		throws IOException
 	{
@@ -73,6 +80,7 @@ public abstract class Reader
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public boolean markSupported()
 	{
 		throw Debugging.todo();
@@ -85,6 +93,7 @@ public abstract class Reader
 	 * @throws IOException On read errors.
 	 * @since 2018/10/13
 	 */
+	@Api
 	public int read()
 		throws IOException
 	{
@@ -115,6 +124,7 @@ public abstract class Reader
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/10/13
 	 */
+	@Api
 	public int read(char[] __c)
 		throws IOException, NullPointerException
 	{
@@ -124,6 +134,7 @@ public abstract class Reader
 		return this.read(__c, 0, __c.length);
 	}
 	
+	@Api
 	public boolean ready()
 		throws IOException
 	{
@@ -132,6 +143,7 @@ public abstract class Reader
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void reset()
 		throws IOException
 	{
@@ -140,6 +152,7 @@ public abstract class Reader
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public long skip(long __a)
 		throws IOException
 	{
@@ -158,6 +171,7 @@ public abstract class Reader
 	 * @return The locking object.
 	 * @since 2018/10/13
 	 */
+	@Api
 	final Object __lock()
 	{
 		Object rv = this.lock;

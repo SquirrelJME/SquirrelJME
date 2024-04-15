@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -39,7 +39,7 @@ public class ZipStreamReader
 	private static final int _MAX_EXTRACT_VERSION =
 		20;
 	
-	/** The minumum size of the local header. */
+	/** The minimum size of the local header. */
 	private static final int _MINIMUM_HEADER_SIZE =
 		30;
 	
@@ -130,8 +130,8 @@ public class ZipStreamReader
 	public ZipStreamEntry nextEntry()
 		throws IOException
 	{
-		// {@squirreljme.error BF0z An entry is currently being read, it
-		// must first be closed.}
+		/* {@squirreljme.error BF0z An entry is currently being read, it
+		must first be closed.} */
 		if (this._entry != null)
 			throw new IOException("BF0z");
 		
@@ -152,7 +152,7 @@ public class ZipStreamReader
 				rhcount = input.peek(0, localheader, 0, 4);
 			}
 			
-			// {@squirreljme.error BF10 Could not peek the magic number.}
+			/* {@squirreljme.error BF10 Could not peek the magic number.} */
 			catch (IndexOutOfBoundsException e)
 			{
 				throw new ZipException("BF10", e);
@@ -210,8 +210,8 @@ public class ZipStreamReader
 			boolean deny = false;
 			deny |= (xver < 0 || xver > ZipStreamReader._MAX_EXTRACT_VERSION);
 			
-			// {@squirreljme.error BF11 Zip version not suppored. (The
-			// version)}
+			/* {@squirreljme.error BF11 Zip version not suppored. (The
+			version)} */
 			if (defer == null && deny)
 				defer = new ZipException(String.format("BF11 %d",
 					xver));
@@ -224,7 +224,7 @@ public class ZipStreamReader
 			// Cannot read encrypted entries
 			deny |= (0 != (gpfs & 1));
 			
-			// {@squirreljme.error BF12 Encrypted entries not supported.}
+			/* {@squirreljme.error BF12 Encrypted entries not supported.} */
 			if (defer == null && deny)
 				defer = new ZipException("BF12");
 			
@@ -233,8 +233,8 @@ public class ZipStreamReader
 				ZipStreamReader.__readUnsignedShort(localheader, 8));
 			deny |= (cmeth == null);
 			
-			// {@squirreljme.error BF13 Compression method not supported.
-			// (The method)}
+			/* {@squirreljme.error BF13 Compression method not supported.
+			(The method)} */
 			if (defer == null && deny)
 				defer = new ZipException(String.format("BF13 %s", cmeth));
 			
@@ -251,8 +251,8 @@ public class ZipStreamReader
 			if (!undefinedsize)
 				deny |= (usz < 0);
 			
-			// {@squirreljme.error BF14 Entry exceeds 2GiB in size.
-			// (The compressed size; The uncompressed size)}
+			/* {@squirreljme.error BF14 Entry exceeds 2GiB in size.
+			(The compressed size; The uncompressed size)} */
 			if (defer == null && deny)
 				defer = new ZipException(String.format("BF14 %d %d", csz,
 					usz));
@@ -325,7 +325,7 @@ public class ZipStreamReader
 		if (__ent == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error BF15 Close of an incorrect entry.}
+		/* {@squirreljme.error BF15 Close of an incorrect entry.} */
 		if (this._entry != __ent)
 			throw new IOException("BF15");
 		

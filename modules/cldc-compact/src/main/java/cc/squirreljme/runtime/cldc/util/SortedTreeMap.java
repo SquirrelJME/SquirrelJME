@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -186,7 +186,8 @@ public class SortedTreeMap<K, V>
 	{
 		// Insert node
 		__Found__ found = new __Found__();
-		__SortedTreeNode__<K, V> now = this.__insert(null, this._root, found, __k, __v);
+		__SortedTreeNode__<K, V> now = this.__insert(
+			null, this._root, found, __k, __v);
 		
 		// The root of the tree always becomes black
 		now.__makeBlack();
@@ -206,7 +207,8 @@ public class SortedTreeMap<K, V>
 	{
 		// Delete node
 		__Found__ found = new __Found__();
-		__SortedTreeNode__<K, V> newroot = this.__remove(this._root, found, (K)__k);
+		__SortedTreeNode__<K, V> newroot = this.__remove(
+			this._root, found, (K)__k);
 		
 		// The root of the tree is always black
 		this._root = newroot;

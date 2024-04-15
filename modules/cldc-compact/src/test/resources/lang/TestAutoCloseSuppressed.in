@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+result: NoResult
+thrown: NoExceptionThrown
+secondary-thrown: throwable:IllegalArgumentException
+secondary-has--suppressed: true
+secondary-suppressed--len: int:1
+secondary-suppressed--first: throwable:IllegalStateException

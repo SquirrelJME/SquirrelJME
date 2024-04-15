@@ -3,13 +3,14 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.runtime.lcdui.mle.fb;
 
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
+import cc.squirreljme.jvm.mle.brackets.UIDrawableBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
@@ -46,10 +47,11 @@ public class FBUIBackend
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2020/07/19
+	 * @since 2023/01/14
 	 */
 	@Override
-	public void callback(Object __ref, UIDisplayCallback __dc)
+	public void callback(UIDisplayBracket __display,
+		UIDisplayCallback __callback)
 		throws MLECallError
 	{
 		throw Debugging.todo();
@@ -90,6 +92,17 @@ public class FBUIBackend
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2023/01/14
+	 */
+	@Override
+	public void displayShow(UIDisplayBracket __display, boolean __show)
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2020/07/19
 	 */
 	@Override
@@ -105,6 +118,17 @@ public class FBUIBackend
 	 */
 	@Override
 	public boolean equals(UIDisplayBracket __a, UIDisplayBracket __b)
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/01/13
+	 */
+	@Override
+	public boolean equals(UIDrawableBracket __a, UIDrawableBracket __b)
 		throws MLECallError
 	{
 		throw Debugging.todo();
@@ -292,7 +316,7 @@ public class FBUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
-	public void later(int __displayId, int __serialId)
+	public void later(UIDisplayBracket __display, int __serialId)
 		throws MLECallError
 	{
 		throw Debugging.todo();
@@ -303,7 +327,7 @@ public class FBUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
-	public int metric(int __metric)
+	public int metric(UIDisplayBracket __display, int __metric)
 		throws MLECallError
 	{
 		throw Debugging.todo();

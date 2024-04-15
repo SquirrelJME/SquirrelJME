@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -131,7 +131,7 @@ public final class Unit
 		
 		throw Debugging.todo();
 		/*
-		// {@squirreljme.error BE0a Cannot morph a linked unit.}
+		/* {@squirreljme.error BE0a Cannot morph a linked unit.} * /
 		if (this._islinked)
 			throw new IllegalStateException("BE0a");
 		

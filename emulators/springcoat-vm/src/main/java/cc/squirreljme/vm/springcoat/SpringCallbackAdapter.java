@@ -3,7 +3,7 @@
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -81,7 +81,8 @@ public abstract class SpringCallbackAdapter
 		callArgs[0] = this.target;
 		
 		// Setup callback thread for handling
-		try (CallbackThread cb = this.machine.obtainCallbackThread(false))
+		try (CallbackThread cb = this.machine.obtainCallbackThread(
+			true))
 		{
 			// Invoke the given method
 			Object result = cb.thread().invokeMethod(false,
@@ -92,14 +93,21 @@ public abstract class SpringCallbackAdapter
 			{
 				MethodInvokeException mie = (MethodInvokeException)result;
 				
+				Debugging.debugNote("--------------------------------");
+				
+				// Print outside exception to try to get the original call
 				Debugging.debugNote("Callback exception: %s",
 					mie.exception);
+				mie.printStackTrace(System.err);
 				
 				// Print stack trace through the VM if possible
+				Debugging.debugNote("Within VM:");
 				cb.thread().invokeMethod(false,
 					SpringCallbackAdapter._THROWABLE_CLASS,
 					SpringCallbackAdapter._PRINT_STACK_TRACE_NAT,
 					mie.exception);
+				
+				Debugging.debugNote("--------------------------------");
 				
 				throw new SpringMLECallError("Callback threw exception!");
 			}

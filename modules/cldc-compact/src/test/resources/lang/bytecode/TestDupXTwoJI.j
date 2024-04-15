@@ -3,7 +3,7 @@
 ; SquirrelJME
 ;     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 ; ---------------------------------------------------------------------------
-; SquirrelJME is under the GNU General Public License v3+, or later.
+; SquirrelJME is under the Mozilla Public License Version 2.0.
 ; See license.mkd for licensing and copyright information.
 ; ---------------------------------------------------------------------------
 
@@ -19,20 +19,26 @@
 .method public test()I
 .limit stack 5
 	
-	sipush 1234	; b
+; b
+	sipush 1234
 	i2l
+
+; a
+	sipush 3000
 	
-	sipush 3000 ; a
-	
-	; J b, I a -> I a, J b, I a
+; J b, I a -> I a, J b, I a
 	dup_x2
+
+; I a -> J a [I a, J b, J a]
+	i2l			
+; J b + J a -> x [I a, J x]
+	ladd		
 	
-	i2l			; I a -> J a [I a, J b, J a]
-	ladd		; J b + J a -> x [I a, J x]
+; J x -> I x [I a, I x]
+	l2i	
 	
-	l2i			; J x -> I x [I a, I x]
-	
-	iadd		; I a + I x -> I y [I y]
+; I a + I x -> I y [I y]
+	iadd		
 	
 	ireturn
 .end method

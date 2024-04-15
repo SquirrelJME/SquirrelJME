@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+result: NoResult
+thrown: NoExceptionThrown
+secondary-int: string[4]:int,*,foo,;
+secondary-intfar: string[4]:int,far*,foo,;
+secondary-inthuge: string[4]:int,huge*,foo,;
+secondary-intfarhuge: string[5]:int,far*,huge*,foo,;

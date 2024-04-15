@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.annotation.ProgrammerTip;
 
@@ -17,6 +18,7 @@ import cc.squirreljme.runtime.cldc.annotation.ProgrammerTip;
  *
  * @since 2018/12/07
  */
+@Api
 public abstract class AbstractList<E>
 	extends AbstractCollection<E>
 	implements List<E>
@@ -25,6 +27,7 @@ public abstract class AbstractList<E>
 	 * The modification count of this list, used to detect situations
 	 * where a list was modified while it was being iterated.
 	 */
+	@Api
 	protected transient int modCount;
 	
 	/**
@@ -32,6 +35,7 @@ public abstract class AbstractList<E>
 	 *
 	 * @since 2018/09/15
 	 */
+	@Api
 	protected AbstractList()
 	{
 	}
@@ -294,6 +298,7 @@ public abstract class AbstractList<E>
 	@ProgrammerTip("The basic implementation of this method is not " +
 		"efficient at all, it should be reimplemented if removal is a " +
 		"busy operation.")
+	@Api
 	protected void removeRange(int __from, int __to)
 	{
 		int left = __to - __from;

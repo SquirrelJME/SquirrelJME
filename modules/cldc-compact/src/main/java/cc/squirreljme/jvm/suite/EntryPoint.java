@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -61,7 +61,8 @@ public final class EntryPoint
 		
 		// This may include an absolute path, however that can be stripped off
 		this.imageResource = (__imgRc == null ? null :
-			(__imgRc.startsWith("/") ? __imgRc.substring(1) : __imgRc));
+			(__imgRc.startsWith("/") ? __imgRc.substring(1) :
+				__imgRc));
 	}
 	
 	/**

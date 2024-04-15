@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -16,20 +16,19 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Indicates the API level of the native call.
+ * This indicates an actual API that is available for usage.
  *
- * @deprecated This is SquirrelJME specific and is no longer used. 
  * @since 2018/12/05
  */
 @Documented
-@Retention(value=RetentionPolicy.SOURCE)
+@Retention(value=RetentionPolicy.CLASS)
 @Target(value={ElementType.CONSTRUCTOR, ElementType.FIELD,
 	ElementType.LOCAL_VARIABLE, ElementType.METHOD, ElementType.PACKAGE,
 	ElementType.PARAMETER, ElementType.TYPE})
-@Deprecated
+@SquirrelJMEVendorApi
 public @interface Api
 {
-	/** @return The API level. */
-	int value();
+	/** @return The API version. */
+	String value() default "";
 }
 

@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -27,31 +28,26 @@ public class VMTestOutputs
 	/** The task executing under. */
 	protected final VMExecutableTask task;
 	
-	/** The source set working under. */
-	protected final String sourceSet;
-	
-	/** The virtual machine type. */
-	protected final VMSpecifier vmType;
+	/** The classifier used. */
+	protected final SourceTargetClassifier classifier;
 	
 	/**
 	 * Initializes the handler.
 	 * 
 	 * @param __task The task testing under.
-	 * @param __sourceSet The source set.
-	 * @param __vmType The virtual machine this is created for.
+	 * @param __classifier The classifier used.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/09/06
 	 */
-	public VMTestOutputs(VMExecutableTask __task, String __sourceSet,
-		VMSpecifier __vmType)
+	public VMTestOutputs(VMExecutableTask __task,
+		SourceTargetClassifier __classifier)
 		throws NullPointerException
 	{
-		if (__task == null || __sourceSet == null || __vmType == null)
+		if (__task == null || __classifier == null)
 			throw new NullPointerException("NARG");
 		
 		this.task = __task;
-		this.sourceSet = __sourceSet;
-		this.vmType = __vmType;
+		this.classifier = __classifier;
 	}
 	
 	/**
@@ -64,20 +60,20 @@ public class VMTestOutputs
 		Collection<Path> result = new LinkedHashSet<>();
 		
 		Project project = this.task.getProject();
-		String sourceSet = this.sourceSet;
+		String sourceSet = this.classifier.getSourceSet();
 		
 		// Determine the root test result directory
 		Path resultRoot = VMHelpers.testResultXmlDir(
-			project, this.vmType, sourceSet).get();
+			project, this.classifier).get();
 		
 		// The output of the task will be the test results
-		for (String testName :
-			VMHelpers.runningTests(project, sourceSet).tests.keySet())
+		for (String testName : VMHelpers.runningTests(project, sourceSet)
+			.tests.keySet())
 			result.add(resultRoot.resolve(
 				VMHelpers.testResultXmlName(testName)));
 		
 		// Result CSV file that contains a summary on all the tests
-		result.add(VMHelpers.testResultsCsvDir(project, this.vmType, sourceSet)
+		result.add(VMHelpers.testResultsCsvDir(project, this.classifier)
 			.get().resolve(VMHelpers.testResultsCsvName(project)));
 		
 		return result;

@@ -3,12 +3,14 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.emulator.uiform;
 
+import cc.squirreljme.jvm.mle.brackets.UIDrawableBracket;
+import cc.squirreljme.jvm.mle.callbacks.UIDrawableCallback;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import java.awt.AlphaComposite;
@@ -29,11 +31,31 @@ import javax.swing.JPanel;
 class __PaintingPanel__
 	extends JPanel
 {
+	/** The display to draw on. */
+	protected final Reference<SwingDisplay> displayRef;
+	
 	/** The item to check callbacks on. */
 	protected final Reference<SwingItem> itemRef;
 	
 	/** The pixel image for drawing. */
 	private BufferedImage _pixelImage;
+	
+	/**
+	 * Initializes the painting panel, with no linked item.
+	 * 
+	 * @param __display The display to paint on.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/01/14
+	 */
+	__PaintingPanel__(SwingDisplay __display)
+		throws NullPointerException
+	{
+		if (__display == null)
+			throw new NullPointerException("NARG");
+		
+		this.displayRef = new WeakReference<>(__display);
+		this.itemRef = null;
+	}
 	
 	/**
 	 * Initializes the painting panel.
@@ -48,6 +70,7 @@ class __PaintingPanel__
 		if (__item == null)
 			throw new NullPointerException("NARG");
 		
+		this.displayRef = null;
 		this.itemRef = new WeakReference<>(__item);
 	}
 	
@@ -86,21 +109,40 @@ class __PaintingPanel__
 			Arrays.fill(buffer, 0xFF_000000);
 		}
 		
-		// Send callback
-		SwingItem item = this.itemRef.get();
-		if (item != null)
+		// Determine which callback is to be called
+		UIDrawableCallback callback = null;
+		UIDrawableBracket callbackItem = null;
+		if (this.itemRef != null)
 		{
-			SwingForm form = item._form;
-			if (form != null)
+			SwingItem item = this.itemRef.get();
+			if (item != null)
 			{
-				UIFormCallback callback = form.callback();
-				if (callback != null)
-					callback.paint(form, item, UIPixelFormat.INT_RGB888,
-						pW, pH, ((DataBufferInt)pixelImage.getRaster()
-							.getDataBuffer()).getData(), 0,
-							null, 0, 0, pW, pH, 0);
+				SwingForm form = item._form;
+				if (form != null)
+					callback = form.callback();
+				
+				// Use for the callback
+				callbackItem = item;
 			}
 		}
+		
+		// Is a display?
+		else if (this.displayRef != null)
+		{
+			SwingDisplay display = this.displayRef.get();
+			if (display != null)
+			{
+				callback = display.callback();
+				callbackItem = display;
+			}	
+		}
+		
+		// Send to callback
+		if (callback != null)
+			callback.paint(callbackItem, UIPixelFormat.INT_RGB888,
+				pW, pH, ((DataBufferInt)pixelImage.getRaster()
+					.getDataBuffer()).getData(), 0,
+					null, 0, 0, pW, pH, 0);
 		
 		// Draw the buffer directly onto the panel
 		__g.drawImage(pixelImage, 0, 0, pW, pH,

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -32,7 +32,7 @@ public interface VMLibraryExecuteFunction
 	 * @throws IOException Any read/write errors.
 	 * @since 2021/05/16
 	 */
-	void function(Task __task, boolean __isTest, InputStream __in,
+	void function(VMBaseTask __task, boolean __isTest, InputStream __in,
 		OutputStream __out)
 		throws IOException;
 }

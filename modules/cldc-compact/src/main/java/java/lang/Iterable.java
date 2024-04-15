@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.util.Iterator;
 
 /**
@@ -18,6 +19,7 @@ import java.util.Iterator;
  * @param <T> The type this returns.
  * @since 2018/12/08
  */
+@Api
 public interface Iterable<T>
 {
 	/**
@@ -26,6 +28,7 @@ public interface Iterable<T>
 	 * @return The object iterator.
 	 * @since 2018/12/08
 	 */
+	@Api
 	Iterator<T> iterator();
 }
 

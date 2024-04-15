@@ -3,33 +3,38 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.lang;
 
 import cc.squirreljme.jvm.mle.TypeShelf;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This is a boxed boolean value.
  *
  * @since 2018/12/07
  */
+@Api
 public final class Boolean
 	implements Comparable<Boolean>
 {
 	/** The false value. */
 	@SuppressWarnings("UnnecessaryBoxing")
+	@Api
 	public static final Boolean FALSE =
 		new Boolean(false);
 	
 	/** The true value. */
 	@SuppressWarnings("UnnecessaryBoxing")
+	@Api
 	public static final Boolean TRUE =
 		new Boolean(true);
 	
 	/** The class representing the primitive type. */
+	@Api
 	public static final Class<Boolean> TYPE =
 		TypeShelf.<Boolean>typeToClass(TypeShelf.typeOfBoolean());
 	
@@ -42,6 +47,7 @@ public final class Boolean
 	 * @param __v The value to use.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public Boolean(boolean __v)
 	{
 		this._value = __v;
@@ -53,6 +59,7 @@ public final class Boolean
 	 * @param __s String boolean representation.
 	 * @since 2018/12/07
 	 */
+	@Api
 	public Boolean(String __s)
 	{
 		this(Boolean.valueOf(__s)._value);
@@ -64,6 +71,7 @@ public final class Boolean
 	 * @return The boolean value.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public boolean booleanValue()
 	{
 		return this._value;
@@ -134,6 +142,7 @@ public final class Boolean
 	 * @throws SecurityException If it is not permitted to get the property.
 	 * @since 2018/12/07
 	 */
+	@Api
 	public static boolean getBoolean(String __p)
 		throws NullPointerException, SecurityException
 	{
@@ -150,6 +159,7 @@ public final class Boolean
 	 * @return The boolean of the parse.
 	 * @since 2018/12/07
 	 */
+	@Api
 	public static boolean parseBoolean(String __v)
 	{
 		return (__v != null && __v.equalsIgnoreCase("true"));
@@ -162,6 +172,7 @@ public final class Boolean
 	 * @return The string representation of the boolean.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public static String toString(boolean __a)
 	{
 		if (__a)
@@ -176,6 +187,7 @@ public final class Boolean
 	 * @return Either {@link #TRUE} or {@link #FALSE}.
 	 * @since 2016/03/21
 	 */
+	@Api
 	public static Boolean valueOf(boolean __a)
 	{
 		if (__a)
@@ -190,6 +202,7 @@ public final class Boolean
 	 * @return The boolean value.
 	 * @since 2018/12/07
 	 */
+	@Api
 	public static Boolean valueOf(String __v)
 	{
 		if (__v != null && __v.equalsIgnoreCase("true"))

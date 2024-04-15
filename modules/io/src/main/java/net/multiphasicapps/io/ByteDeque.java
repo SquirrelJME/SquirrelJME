@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -77,8 +77,8 @@ public class ByteDeque
 	 */
 	static
 	{
-		// {@squirreljme.error BD21 The block size of the data deque is not
-		// a power of two. (The specified block size)}
+		/* {@squirreljme.error BD21 The block size of the data deque is not
+		a power of two. (The specified block size)} */
 		if (Integer.bitCount(ByteDeque._BLOCK_SIZE) != 1)
 			throw new RuntimeException(String.format("BD21 %d",
 				ByteDeque._BLOCK_SIZE));
@@ -104,7 +104,7 @@ public class ByteDeque
 	public ByteDeque(int __cap)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error BD22 Negative deque capacity specified.}
+		/* {@squirreljme.error BD22 Negative deque capacity specified.} */
 		if (__cap < 0)
 			throw new IllegalArgumentException("BD22");
 		
@@ -170,8 +170,8 @@ public class ByteDeque
 		if (__l == 0)
 			return;
 		
-		// {@squirreljme.error BD23 Adding bytes to the start would exceed
-		// the capacity of the queue.}
+		/* {@squirreljme.error BD23 Adding bytes to the start would exceed
+		the capacity of the queue.} */
 		int total = this._total;
 		int newtotal = total + __l;
 		if (newtotal < 0 || newtotal > this.capacity)
@@ -243,8 +243,8 @@ public class ByteDeque
 		if (__l == 0)
 			return;
 		
-		// {@squirreljme.error BD24 Adding bytes to the end would exceed
-		// the capacity of the queue.}
+		/* {@squirreljme.error BD24 Adding bytes to the end would exceed
+		the capacity of the queue.} */
 		int total = this._total;
 		int newtotal = total + __l;
 		if (newtotal < 0 || newtotal > this.capacity)
@@ -341,8 +341,8 @@ public class ByteDeque
 	public final int deleteFirst(int __l)
 		throws IndexOutOfBoundsException
 	{
-		// {@squirreljme.error BD25 Attempt to delete starting from a negative
-		// address.}
+		/* {@squirreljme.error BD25 Attempt to delete starting from a negative
+		address.} */
 		if (__l < 0)
 			throw new IndexOutOfBoundsException("BD25");
 		
@@ -427,7 +427,7 @@ public class ByteDeque
 	public final byte get(int __a)
 		throws IndexOutOfBoundsException
 	{
-		// {@squirreljme.error BD26 Request get at a negative index.}
+		/* {@squirreljme.error BD26 Request get at a negative index.} */
 		if (__a < 0)
 			throw new IndexOutOfBoundsException("BD26");
 		
@@ -436,8 +436,8 @@ public class ByteDeque
 		if (rv == 1)
 			return solo[0];
 		
-		// {@squirreljme.error BD27 Could not get the byte at the
-		// given position because it exceeds the deque bounds. (The index)}
+		/* {@squirreljme.error BD27 Could not get the byte at the
+		given position because it exceeds the deque bounds. (The index)} */
 		throw new IndexOutOfBoundsException(String.format("BD27 %d", __a));
 	}
 	
@@ -477,7 +477,7 @@ public class ByteDeque
 	public final int get(int __a, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
-		// {@squirreljme.error BD28 Request get at a negative index.}
+		/* {@squirreljme.error BD28 Request get at a negative index.} */
 		if (__a < 0)
 			throw new IndexOutOfBoundsException("BD28");
 		
@@ -492,9 +492,9 @@ public class ByteDeque
 		if (total <= 0)
 			return 0;
 		
-		// {@squirreljme.error BD29 The requested address is outside of
-		// the bounds of the queue. (The requested address; The number of
-		// bytes in the queue)}
+		/* {@squirreljme.error BD29 The requested address is outside of
+		the bounds of the queue. (The requested address; The number of
+		bytes in the queue)} */
 		if (__a >= total)
 			throw new IndexOutOfBoundsException(String.format("BD29 %d %d",
 				__a, total));
@@ -520,8 +520,8 @@ public class ByteDeque
 		if (rv == 1)
 			return solo[0];
 		
-		// {@squirreljme.error BD2a Could not get the first byte
-		// because the deque is empty.}
+		/* {@squirreljme.error BD2a Could not get the first byte
+		because the deque is empty.} */
 		throw new NoSuchElementException("BD2a");
 	}
 	
@@ -574,8 +574,8 @@ public class ByteDeque
 		if (rv == 0)
 			return solo[0];
 		
-		// {@squirreljme.error BD2b Could not remove the last byte because
-		// the deque is empty.}
+		/* {@squirreljme.error BD2b Could not remove the last byte because
+		the deque is empty.} */
 		throw new NoSuchElementException("BD2b");
 	}
 	
@@ -834,8 +834,8 @@ public class ByteDeque
 		if (rv == 1)
 			return solo[0];
 		
-		// {@squirreljme.error BD2c Could not remove the first byte
-		// because the deque is empty.}
+		/* {@squirreljme.error BD2c Could not remove the first byte
+		because the deque is empty.} */
 		throw new NoSuchElementException("BD2c");
 	}
 	
@@ -911,8 +911,8 @@ public class ByteDeque
 		if (rv == 1)
 			return solo[0];
 		
-		// {@squirreljme.error BD2d Could not remove the last byte because
-		// the deque is empty.}
+		/* {@squirreljme.error BD2d Could not remove the last byte because
+		the deque is empty.} */
 		throw new NoSuchElementException("BD2d");
 	}
 	
@@ -966,7 +966,7 @@ public class ByteDeque
 	public final byte set(int __a)
 		throws IndexOutOfBoundsException
 	{
-		// {@squirreljme.error BD2e Request set at a negative index.}
+		/* {@squirreljme.error BD2e Request set at a negative index.} */
 		if (__a < 0)
 			throw new IndexOutOfBoundsException("BD2e");
 		
@@ -975,8 +975,8 @@ public class ByteDeque
 		if (rv == 1)
 			return solo[0];
 		
-		// {@squirreljme.error BD2f Could not set the byte at the
-		// given position because it exceeds the deque bounds. (The index)}
+		/* {@squirreljme.error BD2f Could not set the byte at the
+		given position because it exceeds the deque bounds. (The index)} */
 		throw new IndexOutOfBoundsException(String.format("BD2f %d", __a));
 	}
 	
@@ -1016,7 +1016,7 @@ public class ByteDeque
 	public final int set(int __a, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
-		// {@squirreljme.error BD2g Request set at a negative index.}
+		/* {@squirreljme.error BD2g Request set at a negative index.} */
 		if (__a < 0)
 			throw new IndexOutOfBoundsException("BD2g");
 		
@@ -1026,9 +1026,9 @@ public class ByteDeque
 		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("BAOB");
 		
-		// {@squirreljme.error BD2h The requested address is outside of
-		// the bounds of the queue. (The requested address; The number of
-		// bytes in the queue)}
+		/* {@squirreljme.error BD2h The requested address is outside of
+		the bounds of the queue. (The requested address; The number of
+		bytes in the queue)} */
 		int total = this._total;
 		if (__a < 0 || __a >= total)
 			throw new IndexOutOfBoundsException(String.format("BD2h %d %d",
@@ -1201,7 +1201,7 @@ public class ByteDeque
 	 */
 	private static int __dequeSliceSize()
 	{
-		switch (RuntimeShelf.memoryProfile())
+		/*switch (RuntimeShelf.memoryProfile())
 		{
 			case MemoryProfileType.MINIMAL:
 				return 128;
@@ -1209,7 +1209,9 @@ public class ByteDeque
 			case MemoryProfileType.NORMAL:
 			default:
 				return 512;
-		}
+		}*/
+		
+		return 512;
 	}
 }
 

@@ -3,11 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package com.oracle.json;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This is a builder which is able to generate {@link JsonArray}s, it also
@@ -16,6 +18,8 @@ package com.oracle.json;
  *
  * @since 2014/07/25
  */
+@Api
+@SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
 public interface JsonArrayBuilder
 {
 	/**
@@ -25,6 +29,7 @@ public interface JsonArrayBuilder
 	 * @return {@code this}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonArrayBuilder add(boolean __v);
 	
 	/**
@@ -35,6 +40,7 @@ public interface JsonArrayBuilder
 	 * @throws NumberFormatException If {@code __v} is an infinity or NaN.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonArrayBuilder add(double __v);
 	
 	/**
@@ -44,6 +50,7 @@ public interface JsonArrayBuilder
 	 * @return {@code this}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonArrayBuilder add(int __v);
 	
 	/**
@@ -54,6 +61,7 @@ public interface JsonArrayBuilder
 	 * @throws NullPointerException If {@code __v} is null.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonArrayBuilder add(JsonArrayBuilder __v);
 	
 	/**
@@ -64,6 +72,7 @@ public interface JsonArrayBuilder
 	 * @throws NullPointerException If {@code __v} is null.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonArrayBuilder add(JsonObjectBuilder __v);
 	
 	/**
@@ -74,6 +83,7 @@ public interface JsonArrayBuilder
 	 * @throws NullPointerException If {@code __v} is null.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonArrayBuilder add(JsonValue __v);
 	
 	/**
@@ -83,6 +93,7 @@ public interface JsonArrayBuilder
 	 * @return {@code this}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonArrayBuilder add(long __v);
 	
 	/**
@@ -93,6 +104,7 @@ public interface JsonArrayBuilder
 	 * @throws NullPointerException If {@code __v} is null.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonArrayBuilder add(String __v);
 	
 	/**
@@ -101,6 +113,7 @@ public interface JsonArrayBuilder
 	 * @return {@code this}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonArrayBuilder addNull();
 	
 	/**
@@ -109,6 +122,7 @@ public interface JsonArrayBuilder
 	 * @return A freshly constructed array.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonArray build();
 }
 

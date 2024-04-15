@@ -1,191 +1,55 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// SquirrelJME
+// Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.jdwp;
 
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
-import java.util.Deque;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
- * Represents a value for storage.
+ * Not Described.
  *
- * @since 2021/03/17
+ * @since 2024/01/26
  */
-public final class JDWPValue
-	implements AutoCloseable
+public class JDWPValue
 {
-	/** Free value queue. */
-	private final Reference<Deque<JDWPValue>> _freeValues;
+	/** The tag type. */
+	public final JDWPValueTag tag;
 	
-	/** Is this open? */
-	private volatile boolean _isOpen;
-	
-	/** The set value. */
-	private volatile Object _value;
-	
-	/** Is this set? */
-	private volatile boolean _isSet;
+	/** The value type. */
+	public final Object value;
 	
 	/**
-	 * Initializes the value storage.
-	 * 
-	 * @param __freeValues The free values queue, to go when closed.
+	 * Initializes the JDWP value.
+	 *
+	 * @param __tag The tag type.
+	 * @param __value The value used.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2021/03/19
+	 * @since 2024/01/26
 	 */
-	JDWPValue(Deque<JDWPValue> __freeValues)
+	public JDWPValue(JDWPValueTag __tag, Object __value)
 		throws NullPointerException
 	{
-		if (__freeValues == null)
+		if (__tag == null)
 			throw new NullPointerException("NARG");
 		
-		this._freeValues = new WeakReference<>(__freeValues);
+		this.tag = __tag;
+		this.value = __value;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2021/03/17
-	 */
-	@SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
-	@Override
-	public void close()
-	{
-		if (this._isOpen)
-		{
-			// Clear to closed
-			this._isOpen = true;
-			this._isSet = false;
-			this._value = null;
-			
-			// Recycle this back in the queue
-			Deque<JDWPValue> queue = this._freeValues.get();
-			if (queue != null)
-				synchronized (queue)
-				{
-					queue.add(this);
-				}
-		}
-	}
-	
-	/**
-	 * Returns the value.
-	 * 
-	 * @return The value.
-	 * @throws IllegalStateException If no value was set or this was closed.
-	 * @since 2021/03/17
-	 */
-	public Object get()
-		throws IllegalStateException
-	{
-		synchronized (this)
-		{
-			// Must be open
-			this.__checkOpen();
-			
-			// {@squirreljme.error AG0j Value not set.}
-			if (!this._isSet)
-				throw new IllegalStateException("AG0j");
-			
-			return this._value;
-		}
-	}
-	
-	/**
-	 * Checks if the value has been set.
-	 * 
-	 * @return If this is set.
-	 * @throws IllegalStateException If this is not open.
-	 * @since 2021/04/30
-	 */
-	public boolean isSet()
-		throws IllegalStateException
-	{
-		synchronized (this)
-		{
-			// Must be open
-			this.__checkOpen();
-			
-			return this._isSet;
-		}
-	}
-	
-	/**
-	 * Sets the value.
-	 * 
-	 * @param __val The value to set.
-	 * @throws IllegalStateException If a value is already set or this is
-	 * not open.
-	 * @since 2021/03/19
-	 */
-	public void set(Object __val)
-		throws IllegalStateException
-	{
-		synchronized (this)
-		{
-			// Must be open
-			this.__checkOpen();
-			
-			// {@squirreljme.error AG0k Value already set.}
-			if (this._isSet)
-				throw new IllegalStateException("AG0k");
-			
-			this._value = __val;
-			this._isSet = true;
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/04/30
+	 * @since 2024/01/26
 	 */
 	@Override
-	public final String toString()
+	public String toString()
 	{
-		synchronized (this)
-		{
-			if (!this._isSet)
-				return "<UNSET>";
-			return String.valueOf(this._value);
-		}
-	}
-	
-	/**
-	 * Checks if the value is open.
-	 * 
-	 * @throws IllegalStateException If it is not open.
-	 * @since 2021/03/19
-	 */
-	void __checkOpen()
-		throws IllegalStateException
-	{
-		// {@squirreljme.error AG0i Value not open.}
-		if (!this._isOpen)
-			throw new IllegalStateException("AG0i");
-	}
-	
-	/**
-	 * Resets this value.
-	 * 
-	 * @return {@code this}.
-	 * @since 2021/03/19
-	 */
-	final JDWPValue __resetToOpen()
-	{
-		synchronized (this)
-		{
-			// Set to open
-			this._isOpen = true;
-			this._isSet = false;
-			this._value = null;
-			
-			return this;
-		}
+		return String.format("%s %s",
+			this.tag, this.value);
 	}
 }

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -11,6 +11,7 @@ package cc.squirreljme.emulator.uiform;
 
 import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
+import cc.squirreljme.jvm.mle.brackets.UIDrawableBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
@@ -23,16 +24,13 @@ import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.awt.DisplayMode;
 import java.awt.GraphicsEnvironment;
 import java.awt.HeadlessException;
 import java.awt.Toolkit;
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
-import java.util.IdentityHashMap;
-import java.util.Map;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -55,10 +53,6 @@ public final class SwingFormShelf
 	private static final UIFormCallback _INJECTOR =
 		new SwingInjector();
 	
-	/** Display callbacks that are available. */
-	static final Map<Reference<?>, UIDisplayCallback> _DISPLAY_CALLBACKS =
-		new IdentityHashMap<>();
-	
 	/**
 	 * Not used.
 	 * 
@@ -69,25 +63,22 @@ public final class SwingFormShelf
 	}
 	
 	/**
-	 * As {@link UIFormShelf#callback(Object, UIDisplayCallback)}. 
+	 * As {@link UIFormShelf#callback(UIDisplayBracket, UIDisplayCallback)}.
 	 * 
-	 * @param __ref The object this refers to, if it gets garbage collected
-	 * then this becomes invalidated.
-	 * @param __dc The display callback to use.
-	 * @throws MLECallError On null arguments.
-	 * @since 2020/10/03
+	 * @param __display The display that the callback will act under.
+	 * @param __callback The callback to register.
+	 * @throws MLECallError If {@code __display} is {@code null}.
+	 * @see UIDisplayCallback
+	 * @since 2023/01/14
 	 */
-	public static void callback(Object __ref, UIDisplayCallback __dc)
+	public static void callback(UIDisplayBracket __display,
+		UIDisplayCallback __callback)
 		throws MLECallError
 	{
-		if (__ref == null || __dc == null)
-			throw new MLECallError("Null arguments.");
+		if (__display == null)
+			throw new MLECallError("No form specified.");
 		
-		synchronized (SwingFormShelf.class)
-		{
-			SwingFormShelf._DISPLAY_CALLBACKS
-				.put(new WeakReference<>(__ref), __dc);
-		}
+		((SwingDisplay)__display).setCallback(__callback);
 	}
 	
 	/**
@@ -119,6 +110,16 @@ public final class SwingFormShelf
 	public static UIDisplayBracket[] displays()
 		throws MLECallError
 	{
+		// If there is no head, then just return nothing
+		try
+		{
+			Toolkit.getDefaultToolkit().getScreenSize();
+		}
+		catch (HeadlessException e)
+		{
+			return new UIDisplayBracket[0];
+		}
+		
 		// Just wrap the instance of the display
 		return new UIDisplayBracket[]{SwingDisplay.getInstance()};
 	}
@@ -141,6 +142,26 @@ public final class SwingFormShelf
 	}
 	
 	/**
+	 * Handles {@link UIFormShelf#displayShow(UIDisplayBracket, boolean)}.
+	 * 
+	 * @param __display The display to show.
+	 * @param __show Should the display be shown or hidden?
+	 * @throws MLECallError If {@code __display} is {@code null} or there was
+	 * an error showing the display.
+	 * @since 2023/01/14
+	 */
+	@Api
+	public static void displayShow(UIDisplayBracket __display,
+		boolean __show)
+		throws MLECallError
+	{
+		if (__display == null)
+			throw new MLECallError("Null display.");
+		
+		((SwingDisplay)__display).show(__show);
+	}
+	
+	/**
 	 * Handles
 	 * {@link UIFormShelf#displayShow(UIDisplayBracket, UIFormBracket)}. 
 	 * 
@@ -149,6 +170,7 @@ public final class SwingFormShelf
 	 * @throws MLECallError On {@code null} arguments.
 	 * @since 2020/07/01
 	 */
+	@Api
 	public static void displayShow(UIDisplayBracket __display,
 		UIFormBracket __form)
 		throws MLECallError
@@ -172,9 +194,22 @@ public final class SwingFormShelf
 		UIDisplayBracket __b)
 		throws MLECallError
 	{
-		if (__a == null || __b == null)
-			throw new MLECallError("Null arguments.");
-		
+		return __a == __b;
+	}
+	
+	/**
+	 * As {@link UIFormShelf#equals(UIDrawableBracket, UIDrawableBracket)}. 
+	 * 
+	 * @param __a The first.
+	 * @param __b The second.
+	 * @return If these are the same display.
+	 * @throws MLECallError If either is {@code null}.
+	 * @since 2023/01/13
+	 */
+	public static boolean equals(UIDrawableBracket __a,
+		UIDrawableBracket __b)
+		throws MLECallError
+	{
 		return __a == __b;
 	}
 	
@@ -191,9 +226,6 @@ public final class SwingFormShelf
 		UIFormBracket __b)
 		throws MLECallError
 	{
-		if (__a == null || __b == null)
-			throw new MLECallError("Null arguments.");
-		
 		return __a == __b;
 	}
 	
@@ -210,9 +242,6 @@ public final class SwingFormShelf
 		UIItemBracket __b)
 		throws MLECallError
 	{
-		if (__a == null || __b == null)
-			throw new MLECallError("Null arguments.");
-		
 		return __a == __b;
 	}
 	
@@ -229,9 +258,6 @@ public final class SwingFormShelf
 		UIWidgetBracket __b)
 		throws MLECallError
 	{
-		if (__a == null || __b == null)
-			throw new MLECallError("Null arguments.");
-		
 		return __a == __b;
 	}
 	
@@ -514,28 +540,30 @@ public final class SwingFormShelf
 	}
 	
 	/**
-	 * Handles {@link UIFormShelf#later(int, int)}. 
-	 * 
-	 * @param __displayId The display identifier.
+	 * Handles {@link UIFormShelf#later(UIDisplayBracket, int)}.
+	 *
+	 * @param __display The display identifier.
 	 * @param __serialId The serial identifier.
 	 * @throws MLECallError If the call is not valid.
 	 * @since 2020/10/03
 	 */
-	public static void later(int __displayId, int __serialId)
+	public static void later(UIDisplayBracket __display, int __serialId)
 		throws MLECallError
 	{
-		SwingUtilities.invokeLater(new CallLater(__displayId, __serialId));
+		SwingUtilities.invokeLater(
+			new CallLater((SwingDisplay)__display, __serialId));
 	}
 	
 	/**
-	 * Handles {@link UIFormShelf#metric(int)}. 
+	 * Handles {@link UIFormShelf#metric(UIDisplayBracket, int)}. 
 	 * 
+	 * @param __display The display used.
 	 * @param __metricId The {@link UIMetricType}.
 	 * @return Metric value.
 	 * @throws MLECallError If the call is not valid.
 	 * @since 2020/07/01
 	 */
-	public static int metric(int __metricId)
+	public static int metric(UIDisplayBracket __display, int __metricId)
 		throws MLECallError
 	{
 		if (__metricId < 0 || __metricId >= UIMetricType.NUM_METRICS)

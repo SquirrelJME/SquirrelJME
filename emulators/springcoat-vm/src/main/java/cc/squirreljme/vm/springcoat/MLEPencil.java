@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -11,20 +11,23 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.PencilShelf;
 import cc.squirreljme.jvm.mle.brackets.PencilBracket;
-import cc.squirreljme.jvm.mle.constants.NativeImageLoadParameter;
 import cc.squirreljme.jvm.mle.constants.NativeImageLoadType;
 import cc.squirreljme.jvm.mle.constants.PencilCapabilities;
+import cc.squirreljme.jvm.mle.constants.PencilShelfError;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.runtime.lcdui.image.ImageReaderDispatcher;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.SoftwareGraphicsFactory;
 import cc.squirreljme.vm.springcoat.brackets.PencilObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import javax.microedition.lcdui.AnimatedImage;
+import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
+import javax.microedition.lcdui.ScalableImage;
 
 /**
  * Handling for {@link PencilShelf}.
@@ -50,9 +53,92 @@ public enum MLEPencil
 					pf);
 			
 			return PencilCapabilities.MINIMUM |
-				PencilCapabilities.FILL_RECT |
+				PencilCapabilities.COPY_AREA |
 				PencilCapabilities.DRAW_LINE |
-				PencilCapabilities.DRAW_XRGB32_REGION;
+				PencilCapabilities.DRAW_RECT |
+				PencilCapabilities.DRAW_XRGB32_REGION |
+				PencilCapabilities.FILL_RECT |
+				PencilCapabilities.FILL_TRIANGLE |
+				PencilCapabilities.TEXT_BASIC;
+		}
+	},
+	
+	/**
+	 * {@link PencilShelf#hardwareCopyArea(PencilBracket, int, int, int, int,
+	 * int, int, int)}.
+	 */
+	HARDWARE_COPY_AREA("hardwareCopyArea:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/PencilBracket;IIIIIII)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/02/19
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			try
+			{
+				MLEPencil.__graphics(__args[0])
+					.copyArea((Integer)__args[1],
+						(Integer)__args[2],
+						(Integer)__args[3],
+						(Integer)__args[4],
+						(Integer)__args[5],
+						(Integer)__args[6],
+						(Integer)__args[7]);
+			}
+			catch (IllegalArgumentException e)
+			{
+				throw new SpringMLECallError(e,
+					PencilShelfError.ILLEGAL_ARGUMENT);
+			}
+			catch (IllegalStateException e)
+			{
+				throw new SpringMLECallError(e, 
+					PencilShelfError.ILLEGAL_STATE);
+			}
+			
+			return null;
+		}
+	},
+	
+	/**
+	 * {@link PencilShelf#hardwareDrawChars(PencilBracket, char[], int, int,
+	 * int, int, int)}.
+	 */
+	HARDWARE_DRAW_CHARS("hardwareDrawChars:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/PencilBracket;[CIIIII)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/02/19
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			try
+			{
+				MLEPencil.__graphics(__args[0])
+					.drawChars(((SpringArrayObjectChar)__args[1]).array(),
+						(Integer)__args[2],
+						(Integer)__args[3],
+						(Integer)__args[4],
+						(Integer)__args[5],
+						(Integer)__args[6]);
+			}
+			catch (IllegalArgumentException e)
+			{
+				throw new SpringMLECallError(e,
+					PencilShelfError.ILLEGAL_ARGUMENT);
+			}
+			catch (IndexOutOfBoundsException e)
+			{
+				throw new SpringMLECallError(e,
+					PencilShelfError.INDEX_OUT_OF_BOUNDS);
+			}
+			
+			return null;
 		}
 	},
 	
@@ -74,6 +160,70 @@ public enum MLEPencil
 					(Integer)__args[2],
 					(Integer)__args[3],
 					(Integer)__args[4]);
+			
+			return null;
+		}
+	},
+	
+	/**
+	 * {@link PencilShelf#hardwareDrawRect(PencilBracket, int, int, int, int)}.
+	 */
+	HARDWARE_DRAW_RECT("hardwareDrawRect:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/PencilBracket;IIII)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/12/05
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			MLEPencil.__graphics(__args[0])
+				.drawRect((Integer)__args[1],
+					(Integer)__args[2],
+					(Integer)__args[3],
+					(Integer)__args[4]);
+			
+			return null;
+		}
+	},
+	
+	/**
+	 * {@link PencilShelf#hardwareDrawSubstring(PencilBracket, String, int,
+	 * int, int, int, int)}.
+	 */
+	HARDWARE_DRAW_SUBSTRING("hardwareDrawSubstring:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/PencilBracket;" +
+		"Ljava/lang/String;IIIII)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/02/19
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			try
+			{
+				MLEPencil.__graphics(__args[0])
+					.drawSubstring(
+						__thread.asNativeObject(String.class, __args[1]),
+						(Integer)__args[2],
+						(Integer)__args[3],
+						(Integer)__args[4],
+						(Integer)__args[5],
+						(Integer)__args[6]);
+			}
+			catch (IllegalArgumentException e)
+			{
+				throw new SpringMLECallError(e,
+					PencilShelfError.ILLEGAL_ARGUMENT);
+			}
+			catch (StringIndexOutOfBoundsException e)
+			{
+				throw new SpringMLECallError(e,
+					PencilShelfError.INDEX_OUT_OF_BOUNDS);
+			}
 			
 			return null;
 		}
@@ -193,7 +343,33 @@ public enum MLEPencil
 			
 			return null;
 		}
-	}, 
+	},
+	
+	/**
+	 * {@link PencilShelf#hardwareFillTriangle(PencilBracket, int, int, int,
+	 * int, int, int)}.
+	 */
+	HARDWARE_FILL_TRIANGLE("hardwareFillTriangle:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/PencilBracket;IIIIII)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/02/16
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			MLEPencil.__graphics(__args[0])
+				.fillTriangle((Integer)__args[1],
+					(Integer)__args[2],
+					(Integer)__args[3],
+					(Integer)__args[4],
+					(Integer)__args[5],
+					(Integer)__args[6]);
+			
+			return null;
+		}
+	},
 	
 	/**
 	 * {@link PencilShelf#hardwareGraphics(int, int, int, Object, int, int[],
@@ -299,7 +475,49 @@ public enum MLEPencil
 			
 			return null;
 		}
-	}, 
+	},
+	
+	/** {@link PencilShelf#hardwareSetDefaultFont(PencilBracket)}. */
+	HARDWARE_SET_DEFAULT_FONT("hardwareSetDefaultFont:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/PencilBracket;)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/02/19
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			MLEPencil.__graphics(__args[0])
+				.setFont(null);
+			
+			return null;
+		}
+	},
+	
+	/**
+	 * {@link PencilShelf#hardwareSetFont(PencilBracket, String, int, int)}.
+	 */
+	HARDWARE_SET_FONT("hardwareSetFont:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/PencilBracket;" +
+		"Ljava/lang/String;II)V")
+		{
+			/**
+			 * {@inheritDoc}
+			 * @since 2023/02/19
+			 */
+			@Override
+			public Object handle(SpringThreadWorker __thread, Object... __args)
+			{
+				MLEPencil.__graphics(__args[0])
+					.setFont(Font.getFont(
+						__thread.asNativeObject(String.class, __args[1]),
+						(Integer)__args[2],
+						(Integer)__args[3]));
+				
+				return null;
+			}
+		},
 	
 	/** {@link PencilShelf#hardwareSetStrokeStyle(PencilBracket, int)}. */
 	HARDWARE_SET_STROKE_STYLE("hardwareSetStrokeStyle:" +
@@ -353,8 +571,13 @@ public enum MLEPencil
 		}
 	},
 	
-	/** {@link PencilShelf#nativeImageLoadRGBA(int, byte[], int, int)}. */
-	NATIVE_IMAGE_LOAD_RGBA("nativeImageLoadRGBA:(I[BII)[I")
+	/**
+	 * {@link PencilShelf#nativeImageLoadRGBA(int, byte[], int, int,
+	 * cc.squirreljme.jvm.mle.callbacks.NativeImageLoadCallback)}.
+	 */
+	NATIVE_IMAGE_LOAD_RGBA("nativeImageLoadRGBA:(I[BII" +
+		"Lcc/squirreljme/jvm/mle/callbacks/NativeImageLoadCallback;)" +
+		"Ljava/lang/Object;")
 	{
 		/**
 		 * {@inheritDoc}
@@ -368,6 +591,29 @@ public enum MLEPencil
 			SpringArrayObjectByte buf = (SpringArrayObjectByte)__args[1];
 			int off = (Integer)__args[2];
 			int len = (Integer)__args[3];
+			SpringObject callbackRaw = (SpringObject)__args[4];
+			
+			if (buf == null || callbackRaw == null)
+				throw new SpringMLECallError("No buf or callback.");
+			if (off < 0 || len < 0 || (off + len) > buf.length())
+				throw new SpringMLECallError("Out of bounds data.");
+			
+			// Callback for image loading
+			NativeImageLoadCallbackAdapter callback =
+				new NativeImageLoadCallbackAdapter(__thread.machine,
+					callbackRaw);
+			
+			// Does the native MLE handler support this?
+			if ((PencilShelf.nativeImageLoadTypes() & type) != 0)
+			{
+				// Forward to MLE handler
+				Object result = PencilShelf.nativeImageLoadRGBA(type,
+					buf.array(), off, len, callback); 
+					
+				// Was this cancelled?
+				if (result == null || result == SpringNullObject.NULL)
+					return SpringNullObject.NULL;
+			}
 			
 			// Read from our image
 			try (InputStream in = new ByteArrayInputStream(
@@ -376,33 +622,51 @@ public enum MLEPencil
 				// Load the image using our more native code, this will
 				// forward into our native handler which means that we will
 				// essentially get hyper accelerated images potentially
-				Image image = ImageReaderDispatcher.parse(in);
+				Image image = Image.createImage(in);
 				
-				// Extract image parameters
-				boolean useAlpha = image.hasAlpha();
-				int imageWidth = image.getWidth();
-				int imageHeight = image.getHeight();
-				int imageArea = imageWidth * imageHeight;
+				// Send initial image parameters
+				callback.initialize(image.getWidth(),
+					image.getHeight(),
+					image.isAnimated(),
+					image.isScalable());
 				
-				// Setup resultant buffer
-				int[] result = new int[
-					NativeImageLoadParameter.NUM_PARAMETERS + imageArea];
+				// Scalable image
+				if (image instanceof ScalableImage)
+					throw Debugging.todo();
 				
-				// Setup base result with parameters
-				result[NativeImageLoadParameter.STORED_PARAMETER_COUNT] =
-					NativeImageLoadParameter.NUM_PARAMETERS;
-				result[NativeImageLoadParameter.USE_ALPHA] =
-					(useAlpha ? 1 : 0);
-				result[NativeImageLoadParameter.WIDTH] = imageWidth;
-				result[NativeImageLoadParameter.HEIGHT] = imageHeight;
+				// Processing depends on the type of image this is
+				else if (image instanceof AnimatedImage)
+				{
+					// Set up the loop count of the image
+					AnimatedImage animated = (AnimatedImage)image;
+					callback.setLoopCount(animated.getLoopCount());
+					
+					for (int i = 0; i >= 0; i++)
+						try
+						{
+							MLEPencil.__addImage(callback,
+								animated.getFrame(i),
+								animated.getFrameDelay(i));
+						}
+						catch (IndexOutOfBoundsException ignored)
+						{
+							break;
+						}
+				}
 				
-				// Load the RGB into the rest of the image
-				image.getRGB(result,
-					NativeImageLoadParameter.NUM_PARAMETERS, imageWidth,
-					0, 0, imageWidth, imageHeight);
+				// Still image
+				else
+					MLEPencil.__addImage(callback, image, -1);
 				
-				// Use this image array
-				return result;
+				// Check if it was cancelled
+				Object finished = callback.finish();
+				if (finished == null || finished == SpringNullObject.NULL)
+					return SpringNullObject.NULL;
+				
+				// Should finish as a SpringObject
+				if (!(finished instanceof SpringObject))
+					throw new SpringMLECallError("Not an object?");
+				return finished;
 			}
 			catch (IndexOutOfBoundsException|IOException|
 				NullPointerException e)
@@ -442,6 +706,48 @@ public enum MLEPencil
 	public String key()
 	{
 		return this.key;
+	}
+	
+	/**
+	 * Adds an image to be passed to the image loading callback.
+	 * 
+	 * @param __callback The callback to send to.
+	 * @param __frame The frame.
+	 * @param __frameDelay The frame delay.
+	 * @since 2022/06/28
+	 */
+	static void __addImage(NativeImageLoadCallbackAdapter __callback,
+		Image __frame, int __frameDelay)
+		throws NullPointerException
+	{
+		if (__callback == null || __frame == null)
+			throw new NullPointerException("NARG");
+		
+		// Try to get a direct RGB buffer from the image, this is faster
+		// than doing an RGB copy of it
+		int[] buf;
+		int off, len;
+		if (__frame.squirreljmeIsDirect())
+		{
+			buf = __frame.squirreljmeDirectRGBInt();
+			off = __frame.squirreljmeDirectOffset();
+			len = __frame.squirreljmeDirectScanLen() * __frame.getHeight();
+		}
+		
+		// Otherwise, we need to load the RGB data from the image
+		else
+		{
+			buf = new int[__frame.getWidth() * __frame.getHeight()];
+			off = 0;
+			len = buf.length;
+			
+			// Read in all the data
+			__frame.getRGB(buf, 0, __frame.getWidth(),
+				0, 0, __frame.getWidth(), __frame.getHeight());
+		}
+		
+		// Send to the callback
+		__callback.addImage(buf, off, len, __frameDelay, __frame.hasAlpha());
 	}
 	
 	/**

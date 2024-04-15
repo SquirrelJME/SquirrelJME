@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -35,8 +35,7 @@ public class ExtendedDataInputStream
 	protected final boolean canmark;
 	
 	/** The target endianess. */
-	private volatile DataEndianess _endian =
-		DataEndianess.BIG;
+	private volatile DataEndianess _endian;
 	
 	/** The number of bytes read. */
 	private volatile long _count;
@@ -59,14 +58,29 @@ public class ExtendedDataInputStream
 	public ExtendedDataInputStream(InputStream __is)
 		throws NullPointerException
 	{
+		this(__is, DataEndianess.BIG);
+	}
+	
+	/**
+	 * Initializes the extended input stream.
+	 *
+	 * @param __is The stream to read data from.
+	 * @param __endian The endianess to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/07/07
+	 */
+	public ExtendedDataInputStream(InputStream __is, DataEndianess __endian)
+		throws NullPointerException
+	{
 		// Check
-		if (__is == null)
+		if (__is == null || __endian == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		DataInputStream w;
 		this.input = (w = ((__is instanceof DataInputStream) ?
 			(DataInputStream)__is : new DataInputStream(__is)));
+		this._endian = __endian;
 		
 		// Need to know if marking is supported
 		this.canmark = w.markSupported();
@@ -195,7 +209,7 @@ public class ExtendedDataInputStream
 		// Read value
 		int rv = this.read();
 		
-		// {@squirreljme.error BD0t End of file reached.}
+		/* {@squirreljme.error BD0t End of file reached.} */
 		if (rv < 0)
 			throw new EOFException("BD0t");
 		
@@ -442,13 +456,13 @@ public class ExtendedDataInputStream
 	public void reset()
 		throws IOException
 	{
-		// {@squirreljme.error BD0u The stream has not been marked.}
+		/* {@squirreljme.error BD0u The stream has not been marked.} */
 		long markstart = this._markstart;
 		if (markstart < 0)
 			throw new IOException("BD0u");
 		
-		// {@squirreljme.error BD0v Exceeded the number of bytes specified by
-		// mark.}
+		/* {@squirreljme.error BD0v Exceeded the number of bytes specified by
+		mark.} */
 		long count = this._count;
 		long markend = this._markend;
 		if (count > markend)
@@ -507,7 +521,14 @@ public class ExtendedDataInputStream
 	public int skipBytes(int __n)
 		throws IOException
 	{
-		throw Debugging.todo();
+		// Try to read as many bytes as possible
+		InputStream in = this.input;
+		for (int i = 0; i < __n; i++)
+			if (in.read() < 0)
+				return i;
+		
+		// Read all the bytes
+		return __n;
 	}
 	
 	/**

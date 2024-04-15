@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -15,6 +15,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -58,6 +59,30 @@ public final class ResourceBasedSuiteManager
 		
 		this.actingclass = __act;
 		this.prefix = __prefix;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/12/18
+	 */
+	@Override
+	public int libraryId(VMClassLibrary __lib)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__lib == null)
+			throw new NullPointerException("NARG");
+		
+		Map<String, VMClassLibrary> cache = this._cache;
+		synchronized (cache)
+		{
+			// The library must have been previously loaded first
+			if (!cache.values().contains(__lib))
+				throw new IllegalArgumentException(
+					"Unknown library: " + __lib);
+			
+			Path path = __lib.path();
+			return (path != null ? path.hashCode() : __lib.name().hashCode());
+		}
 	}
 	
 	/**
@@ -112,7 +137,7 @@ public final class ResourceBasedSuiteManager
 			return libs;
 		}
 		
-		// {@squirreljme.error AK01 Could not read the library list.}
+		/* {@squirreljme.error AK01 Could not read the library list.} */
 		catch (IOException e)
 		{
 			throw new RuntimeException("AK01", e);

@@ -1,0 +1,34 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEProfile
+import org.iban4j.CountryCode
+
+description = "Proprietary NTT Docomo Star API"
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "AN"
+	swmType = JavaMEMidletType.API
+	swmName = "NTT Docomo Star API"
+	swmVendor = "Stephanie Gawroriski"
+	originalApiVendor = "NTT Docomo"
+	originalApiVendorUrl = "https://www.docomo.ne.jp/english"
+	originalApiVendorCountry = CountryCode.JP
+	definedProfiles += new JavaMEProfile("Star-1.0")
+	definedProfiles += new JavaMEProfile("Star-1.1")
+	definedProfiles += new JavaMEProfile("Star-1.2")
+	definedProfiles += new JavaMEProfile("Star-1.3")
+	definedProfiles += new JavaMEProfile("Star-1.4")
+	definedProfiles += new JavaMEProfile("Star-1.5")
+	definedProfiles += new JavaMEProfile("Star-2.0")
+	tags += "nttdocomo"
+	tags += "star"
+}
+
+dependencies
+{
+	api project(":modules:cldc-compact")
+	api project(":modules:meep-midlet")
+	api project(":modules:meep-rms")
+	api project(":modules:midp-lcdui")
+}

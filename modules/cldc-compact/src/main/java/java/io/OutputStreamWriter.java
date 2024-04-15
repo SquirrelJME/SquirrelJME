@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.io.CodecFactory;
 import cc.squirreljme.runtime.cldc.io.Encoder;
@@ -19,6 +20,7 @@ import cc.squirreljme.runtime.cldc.io.Encoder;
  * 
  * @since 2022/07/12
  */
+@Api
 public class OutputStreamWriter
 	extends Writer
 {
@@ -38,6 +40,7 @@ public class OutputStreamWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/07/12
 	 */
+	@Api
 	public OutputStreamWriter(OutputStream __out)
 		throws NullPointerException
 	{
@@ -53,6 +56,7 @@ public class OutputStreamWriter
 	 * @throws UnsupportedEncodingException If the encoding is not supported.
 	 * @since 2022/07/12
 	 */
+	@Api
 	public OutputStreamWriter(OutputStream __out, String __charset)
 		throws NullPointerException, UnsupportedEncodingException
 	{
@@ -66,6 +70,7 @@ public class OutputStreamWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/07/12
 	 */
+	@Api
 	private OutputStreamWriter(OutputStream __out, Encoder __encoder)
 		throws NullPointerException
 	{
@@ -107,6 +112,7 @@ public class OutputStreamWriter
 	 * @return The encoding name.
 	 * @since 2022/07/12
 	 */
+	@Api
 	public String getEncoding()
 	{
 		return this._encoder.encodingName();

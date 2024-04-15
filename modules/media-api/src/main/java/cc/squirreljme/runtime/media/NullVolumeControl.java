@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.runtime.media;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import javax.microedition.media.control.VolumeControl;
 
 /**
@@ -16,6 +17,7 @@ import javax.microedition.media.control.VolumeControl;
  *
  * @since 2019/06/29
  */
+@SquirrelJMEVendorApi
 public final class NullVolumeControl
 	implements VolumeControl
 {
@@ -31,6 +33,7 @@ public final class NullVolumeControl
 	 * @since 2019/06/29
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final int getLevel()
 	{
 		return this._level;
@@ -41,6 +44,7 @@ public final class NullVolumeControl
 	 * @since 2019/06/29
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final boolean isMuted()
 	{
 		return this._mute;
@@ -51,6 +55,7 @@ public final class NullVolumeControl
 	 * @since 2019/06/29
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final int setLevel(int __v)
 	{
 		this._level = (__v = (__v < 0 ? 0 : (Math.min(__v, 100))));
@@ -62,6 +67,7 @@ public final class NullVolumeControl
 	 * @since 2019/06/29
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final void setMute(boolean __v)
 	{
 		this._mute = __v;

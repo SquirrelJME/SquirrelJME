@@ -1,3 +1,4 @@
+
 # Building
 
 ------------------------------------------------------------------------------
@@ -214,11 +215,12 @@ SquirrelJME run-time. Modules within SquirrelJME have tasks which allow them
 to be ran accordingly.
 
  * SpringCoat
-   * `:modules:<name>:runSpringCoat` (running)
+   * `:modules:<name>:runSpringCoatDebug` (running)
+   * `:modules:<name>:runSpringCoatRelease` (running)
    * `:modules:<name>:testSpringCoat` (testing)
  * Native (runs on the host Java SE)
-   * `:modules:<name>:runHosted` (running)
-   * `:modules:<name>:testHosted` (testing)
+   * `:modules:<name>:runHostedDebug` (running)
+   * `:modules:<name>:testHostedDebug` (testing)
 
 Note that the `test` task is not supported and will throw an exception, it
 is not able to reliably test within SquirrelJME.
@@ -274,9 +276,11 @@ There is a task which initializes a full suite of SquirrelJME, including
 every module. This can be used to run a specific program within SquirrelJME's
 environment through Gradle.
 
- * `fullHosted` -- Hosted Environment.
- * `fullSpringCoat` -- SpringCoat.
- * `fullSummerCoat` -- SummerCoat.
+ * Hosted Environment.
+   * `fullHostedDebug`
+ * SpringCoat
+   * `fullSpringCoatRelease`
+   * `fullSpringCoatDebug`
 
 There are system properties that are available and can be used to modify
 the behavior:
@@ -285,6 +289,22 @@ the behavior:
    suite path.
    * Same format as the `-classpath` argument. On Windows this will use `;`
      as separators, while other systems will use `:`.
+ * `cc.squirreljme.vm.trace=option[,option[,...]]` -- Trace options
+   * `all` -- Enable all.
+   * `instructions` -- Instructions being executed.
+   * `methodEntry` -- Entry of methods.
+   * `methodExit` -- Exit of methods.
+   * `mleCall` -- SquirrelJME MLE Native Calls.
+   * `invokeStatic` -- Static invocations.
+   * `allocation` -- Allocations such as `new`.
+   * `classInitialize` -- Class is initialized.
+   * `vmException` -- Virtual machine exceptions.
+   * `missingClass` -- Class does not exist.
+   * `monitorEnter` -- Monitor is entered.
+   * `monitorExit` -- Exiting a monitor.
+   * `monitorWait` -- Monitor is waited on.
+   * `monitorNotify` -- Monitor is notified.
+   * `threadNew` -- New thread is created.
 
 # New Java Version Contingency
 
@@ -299,6 +319,30 @@ A standalone Java emulator Jar which contains all of the available test
 virtual machine implementations is available when calling the task:
 
  * `:emulators:standalone:shadowJar`
+
+## Flatpak
+
+This is used with [Flatpak](https://www.flatpak.org/). This requires some dependencies first:
+
+ * Install `flatpak-builder`
+ * `flatpak install flathub org.freedesktop.Platform//23.08`
+ * `flatpak install flathub org.freedesktop.Sdk//23.08`
+ * `flatpak install flathub org.freedesktop.Sdk.Extension.openjdk11`
+
+With the dependencies installed, it may be built with:
+
+ * `flatpak-builder build-dir cc.squirreljme.SquirrelJME.yml`
+ * `flatpak-builder --user --install build-dir `
+   ` cc.squirreljme.SquirrelJME.yml`
+
+To bundle into a single file, run the following:
+
+ * `flatpak build-bundle $HOME/.local/share/flatpak/repo squirreljme.flatpak `
+   ` cc.squirreljme.SquirrelJME`
+
+To run from the command line, you may want to add to your `PATH`:
+
+ * `$HOME/.local/share/flatpak/exports/bin/`
 
 ## Mac OS
 

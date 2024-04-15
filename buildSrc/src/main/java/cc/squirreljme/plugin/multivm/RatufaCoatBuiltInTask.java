@@ -3,14 +3,16 @@
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import java.nio.file.Path;
 import javax.inject.Inject;
+import lombok.Getter;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.provider.Provider;
 
@@ -21,32 +23,29 @@ import org.gradle.api.provider.Provider;
  */
 public class RatufaCoatBuiltInTask
 	extends DefaultTask
+	implements VMBaseTask
 {
-	/** The virtual machine type. */
-	public final VMSpecifier vmType;
-	
-	/** The source set used. */
-	public final String sourceSet;
+	/** The classifier used. */
+	@Getter
+	private final SourceTargetClassifier classifier;
 	
 	/**
 	 * Initializes the full suite task.
 	 * 
-	 * @param __sourceSet The source set used.
-	 * @param __vmType The virtual machine type.
+	 * @param __classifier The classifier used.
 	 * @param __romTask The task used to create the ROM.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/02/25
 	 */
 	@Inject
-	public RatufaCoatBuiltInTask(String __sourceSet, VMSpecifier __vmType, 
+	public RatufaCoatBuiltInTask(SourceTargetClassifier __classifier, 
 		VMRomTask __romTask)
 		throws NullPointerException
 	{
-		if (__vmType == null || __sourceSet == null || __romTask == null)
+		if (__classifier == null || __romTask == null)
 			throw new NullPointerException("NARG");
 		
-		this.sourceSet = __sourceSet;
-		this.vmType = __vmType;
+		this.classifier = __classifier;
 		
 		// Set details of this task
 		this.setGroup("squirreljmeGeneral");
@@ -62,7 +61,7 @@ public class RatufaCoatBuiltInTask
 		this.getOutputs().file(this.outputPath());
 		
 		// Actual running of everything
-		this.doLast(new RatufaCoatBuiltInTaskAction(__vmType, __sourceSet));
+		this.doLast(new RatufaCoatBuiltInTaskAction(__classifier));
 	}
 	
 	/**
@@ -88,7 +87,7 @@ public class RatufaCoatBuiltInTask
 	{
 		return this.getProject().provider(() -> this.getProject().getRootDir()
 			.toPath().resolve("ratufacoat").resolve("build")
-			.resolve(TaskInitialization
-				.task("builtin", this.sourceSet) + ".c"));
+			.resolve(TaskInitialization.task(
+				"builtin", this.classifier) + ".c"));
 	}
 }

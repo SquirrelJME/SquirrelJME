@@ -1,0 +1,17 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+
+description = "Backing library for core standard applications."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "SD"
+	swmType = JavaMEMidletType.LIBRARY
+	swmName = "Core Standard Applications Library"
+	swmVendor = "Stephanie Gawroriski"
+}
+
+dependencies
+{
+	implementation project(":modules:cldc-compact")
+}

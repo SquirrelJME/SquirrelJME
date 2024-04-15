@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -231,7 +231,7 @@ public final class FossilExe
 			return out.toByteArray();
 		}
 		
-		// Could no read the command result
+		// Could not read the command result
 		catch (IOException e)
 		{
 			throw new RuntimeException("Raw read/write error.", e);
@@ -467,36 +467,16 @@ public final class FossilExe
 		if (rv != null)
 			return rv;
 		
-		// Path should exist, but it might not
-		String pathEnv = System.getenv("PATH");
-		if (pathEnv == null)
-			throw new InvalidFossilExeException("No PATH variable is set.");
+		// Try to find it
+		Path maybe = PathUtils.findPathExecutable("fossil");
+		if (maybe == null)
+			throw new InvalidFossilExeException(
+				"Could not find Fossil executable.");
 		
-		// The executable we are looking for
-		Path exeName = Paths.get(
-			(OperatingSystem.current() == OperatingSystem.WINDOWS ?
-			"fossil.exe" : "fossil"));
-		
-		// Search each path piece for the given executable
-		for (String pathSegment : pathEnv.split(
-			Pattern.quote(System.getProperty("path.separator"))))
-		{
-			Path fullPath = Paths.get(pathSegment).resolve(exeName);
-			
-			// If we find it, cache it
-			if (Files.isRegularFile(fullPath) && Files.isExecutable(fullPath))
-			{
-				rv = new FossilExe(fullPath);
-				
-				FossilExe._cached = rv;
-				
-				return rv;
-			}
-		}
-		
-		// Not found
-		throw new InvalidFossilExeException(
-			"Could not find Fossil executable.");
+		// Cache for later
+		rv = new FossilExe(maybe);
+		FossilExe._cached = rv;		
+		return rv;
 	}
 	
 	/**

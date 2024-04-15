@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -51,13 +51,14 @@ public final class Vibration
 	public static boolean vibrate(int __d)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB1n Cannot vibrate for a negative duration.}
+		/* {@squirreljme.error EB1n Cannot vibrate for a negative duration.} */
 		if (__d < 0)
 			throw new IllegalArgumentException("EB1n");
 		
 		// Only perform the action if we can vibrate the device
 		UIBackend backend = UIBackendFactory.getInstance(true);
-		if (backend.metric(UIMetricType.SUPPORTS_VIBRATION) != 0)
+		if (backend.metric(backend.displays()[0],
+			UIMetricType.SUPPORTS_VIBRATION) != 0)
 			throw Debugging.todo();
 		
 		// There is none, so we cannot say we control it

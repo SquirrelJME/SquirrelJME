@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package com.oracle.json;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.io.Closeable;
 import java.io.IOException;
 
@@ -20,6 +21,8 @@ import java.io.IOException;
  *
  * @since 2014/07/26
  */
+@Api
+@SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
 public interface JsonWriter
 	extends Closeable
 {
@@ -45,6 +48,7 @@ public interface JsonWriter
 	 * called previously.
 	 * @since 2014/07/26
 	 */
+	@Api
 	void write(JsonStructure __v);
 	
 	/**
@@ -57,6 +61,7 @@ public interface JsonWriter
 	 * called previously.
 	 * @since 2014/07/26
 	 */
+	@Api
 	void writeArray(JsonArray __v);
 	
 	/**
@@ -69,6 +74,7 @@ public interface JsonWriter
 	 * called previously.
 	 * @since 2014/07/26
 	 */
+	@Api
 	void writeObject(JsonObject __v);
 }
 

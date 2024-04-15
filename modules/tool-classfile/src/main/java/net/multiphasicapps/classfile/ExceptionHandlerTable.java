@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -329,9 +329,9 @@ public final class ExceptionHandlerTable
 			ClassName type = __pool.<ClassName>get(ClassName.class,
 				__is.readUnsignedShort());
 			
-			// {@squirreljme.error JC2n Address is outside of the bounds of the
-			// method. (The start address; The end address; The handler
-			// address; The code length)}
+			/* {@squirreljme.error JC2n Address is outside of the bounds of the
+			method. (The start address; The end address; The handler
+			address; The code length)} */
 			if (spc >= __len || epc > __len || hpc >= __len)
 				throw new InvalidClassFormatException(String.format(
 					"JC2n %d %d %d %d", spc, epc, hpc, __len));

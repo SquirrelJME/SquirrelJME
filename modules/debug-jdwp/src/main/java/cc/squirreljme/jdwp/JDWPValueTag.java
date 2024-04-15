@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -98,6 +98,38 @@ public enum JDWPValueTag
 	}
 	
 	/**
+	 * Determines the value tag from the given tag.
+	 * 
+	 * @param __tag The tag to parse. 
+	 * @return The value tag or {@code null} if not valid.
+	 * @since 2021/04/11
+	 */
+	public static JDWPValueTag fromTag(int __tag)
+	{
+		switch (__tag)
+		{
+			case '[':	return JDWPValueTag.ARRAY;
+			case 'Z':	return JDWPValueTag.BOOLEAN;
+			case 'B':	return JDWPValueTag.BYTE;
+			case 'S':	return JDWPValueTag.SHORT;
+			case 'C':	return JDWPValueTag.CHARACTER;
+			case 'I':	return JDWPValueTag.INTEGER;
+			case 'F':	return JDWPValueTag.FLOAT;
+			case 'J':	return JDWPValueTag.LONG;
+			case 'D':	return JDWPValueTag.DOUBLE;
+			case 'L':	return JDWPValueTag.OBJECT;
+			case 'V':	return JDWPValueTag.VOID;
+			case 's':	return JDWPValueTag.STRING;
+			case 't':	return JDWPValueTag.THREAD;
+			case 'g':	return JDWPValueTag.THREAD_GROUP;
+			case 'l':	return JDWPValueTag.CLASS_LOADER;
+			case 'c':	return JDWPValueTag.CLASS_OBJECT;
+		}
+		
+		return null;
+	}
+	
+	/**
 	 * Determines the value tag from the given signature.
 	 * 
 	 * @param __signature The signature to read from. 
@@ -124,6 +156,12 @@ public enum JDWPValueTag
 			case 'F':	return JDWPValueTag.FLOAT;
 			case 'J':	return JDWPValueTag.LONG;
 			case 'D':	return JDWPValueTag.DOUBLE;
+			case 'V':	return JDWPValueTag.VOID;
+			case 's':	return JDWPValueTag.STRING;
+			case 't':	return JDWPValueTag.THREAD;
+			case 'g':	return JDWPValueTag.THREAD_GROUP;
+			case 'l':	return JDWPValueTag.CLASS_LOADER;
+			case 'c':	return JDWPValueTag.CLASS_OBJECT;
 			
 				// Dependant class types
 			default:
@@ -143,74 +181,5 @@ public enum JDWPValueTag
 				
 				return JDWPValueTag.OBJECT; 
 		}
-	}
-	
-	/**
-	 * Tries to guess the type of value used.
-	 * 
-	 * @param __controller The controller used.
-	 * @param __value The value type.
-	 * @return The guessed value.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2021/04/14
-	 */
-	public static JDWPValueTag guessType(JDWPController __controller,
-		JDWPValue __value)
-		throws NullPointerException
-	{
-		if (__controller == null || __value == null)
-			throw new NullPointerException("NARG");
-		
-		// If not set, treat as void
-		if (!__value.isSet())
-			return JDWPValueTag.VOID;
-		return JDWPValueTag.guessTypeRaw(__controller, __value.get());
-	}
-	
-	/**
-	 * Tries to guess the type of value used.
-	 * 
-	 * @param __controller The controller used.
-	 * @param __value The value type.
-	 * @return The guessed value.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2021/04/30
-	 */
-	public static JDWPValueTag guessTypeRaw(JDWPController __controller,
-		Object __value)
-		throws NullPointerException
-	{
-		if (__controller == null)
-			throw new NullPointerException("NARG");
-		
-		// If null, assume an object type
-		if (__value == null)
-			return JDWPValueTag.OBJECT;
-		
-		// If this a valid object, try to get it from its type
-		else if (__controller.viewObject().isValid(__value))
-			return JDWPValueTag.fromSignature(__controller.viewType()
-				.signature(__controller.viewObject().type(__value)));
-		
-		// Boxed typed?
-		else if (__value instanceof Boolean)
-			return JDWPValueTag.BOOLEAN;
-		else if (__value instanceof Byte)
-			return JDWPValueTag.BYTE;
-		else if (__value instanceof Short)
-			return JDWPValueTag.SHORT;
-		else if (__value instanceof Character)
-			return JDWPValueTag.CHARACTER;
-		else if (__value instanceof Integer)
-			return JDWPValueTag.INTEGER;
-		else if (__value instanceof Long)
-			return JDWPValueTag.LONG;
-		else if (__value instanceof Float)
-			return JDWPValueTag.FLOAT;
-		else if (__value instanceof Double)
-			return JDWPValueTag.DOUBLE;
-		
-		// Unknown, use void
-		return JDWPValueTag.VOID;
 	}
 }

@@ -3,16 +3,17 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.jdwp.JDWPState;
-import cc.squirreljme.jdwp.JDWPStepTracker;
-import cc.squirreljme.jdwp.JDWPThreadSuspension;
-import cc.squirreljme.jdwp.views.JDWPViewThread;
+import cc.squirreljme.jdwp.host.JDWPHostState;
+import cc.squirreljme.jdwp.host.JDWPHostStepTracker;
+import cc.squirreljme.jdwp.host.JDWPHostThreadSuspension;
+import cc.squirreljme.jdwp.host.views.JDWPViewThread;
+import cc.squirreljme.vm.springcoat.brackets.VMThreadObject;
 import java.lang.ref.Reference;
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,7 +27,7 @@ public class DebugViewThread
 	implements JDWPViewThread
 {
 	/** The state of the debugger. */
-	protected final Reference<JDWPState> state;
+	protected final Reference<JDWPHostState> state;
 	
 	/**
 	 * Initializes the thread viewer.
@@ -35,7 +36,7 @@ public class DebugViewThread
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/04/10
 	 */
-	public DebugViewThread(Reference<JDWPState> __state)
+	public DebugViewThread(Reference<JDWPHostState> __state)
 	{
 		if (__state == null)
 			throw new NullPointerException("NARG");
@@ -60,13 +61,13 @@ public class DebugViewThread
 	@Override
 	public Object[] frames(Object __which)
 	{
-		SpringThread.Frame[] frames = ((SpringThread)__which).frames();
+		SpringThreadFrame[] frames = ((SpringThread)__which).frames();
 		Object[] rv = new Object[frames.length];
 		
 		// Filter out any blank frames because it does not make sense to
 		// the debugger at all
 		int at = 0;
-		for (SpringThread.Frame frame : frames)
+		for (SpringThreadFrame frame : frames)
 			if (!frame.isBlank())
 				rv[at++] = frame;
 		
@@ -75,6 +76,16 @@ public class DebugViewThread
 		rv = (at == frames.length ? rv : Arrays.<Object>copyOf(rv, at));
 		Collections.reverse(Arrays.asList(rv));
 		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/09/24
+	 */
+	@Override
+	public Object fromBracket(Object __bracket)
+	{
+		return ((VMThreadObject)__bracket).getThread();
 	}
 	
 	/**
@@ -102,6 +113,16 @@ public class DebugViewThread
 	public void interrupt(Object __which)
 	{
 		((SpringThread)__which).hardInterrupt();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/09/23
+	 */
+	@Override
+	public boolean isDebugCallback(Object __thread)
+	{
+		return ((SpringThread)__thread).noDebugSuspend;
 	}
 	
 	/**
@@ -139,17 +160,17 @@ public class DebugViewThread
 	 * @since 2021/04/28
 	 */
 	@Override
-	public JDWPStepTracker stepTracker(Object __which)
+	public JDWPHostStepTracker stepTracker(Object __which)
 	{
 		SpringThread thread = (SpringThread)__which;
 		
 		// Is the tracker existing already?
-		JDWPStepTracker stepTracker = thread._stepTracker;
+		JDWPHostStepTracker stepTracker = thread._stepTracker;
 		if (stepTracker != null)
 			return stepTracker;
 		
 		// Create and store it for later
-		thread._stepTracker = (stepTracker = new JDWPStepTracker());
+		thread._stepTracker = (stepTracker = new JDWPHostStepTracker());
 		return stepTracker;
 	}
 	
@@ -158,7 +179,7 @@ public class DebugViewThread
 	 * @since 2021/04/10
 	 */
 	@Override
-	public JDWPThreadSuspension suspension(Object __which)
+	public JDWPHostThreadSuspension suspension(Object __which)
 	{
 		return ((SpringThread)__which).debuggerSuspension;
 	}

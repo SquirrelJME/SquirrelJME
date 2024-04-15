@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -11,13 +11,13 @@ package cc.squirreljme.runtime.lcdui.mle.pure;
 
 import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
+import cc.squirreljme.jvm.mle.brackets.UIDrawableBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIDisplayCallback;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 
 /**
@@ -31,13 +31,14 @@ public class NativeUIBackend
 {
 	/**
 	 * {@inheritDoc}
-	 * @since 2020/07/19
+	 * @since 2023/01/14
 	 */
 	@Override
-	public void callback(Object __ref, UIDisplayCallback __dc)
+	public void callback(UIDisplayBracket __display,
+		UIDisplayCallback __callback)
 		throws MLECallError
 	{
-		UIFormShelf.callback(__ref, __dc);
+		UIFormShelf.callback(__display, __callback);
 	}
 	
 	/**
@@ -75,6 +76,17 @@ public class NativeUIBackend
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2023/01/14
+	 */
+	@Override
+	public void displayShow(UIDisplayBracket __display, boolean __show)
+		throws MLECallError
+	{
+		UIFormShelf.displayShow(__display, __show);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2020/07/19
 	 */
 	@Override
@@ -90,6 +102,17 @@ public class NativeUIBackend
 	 */
 	@Override
 	public boolean equals(UIDisplayBracket __a, UIDisplayBracket __b)
+		throws MLECallError
+	{
+		return UIFormShelf.equals(__a, __b);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/01/13
+	 */
+	@Override
+	public boolean equals(UIDrawableBracket __a, UIDrawableBracket __b)
 		throws MLECallError
 	{
 		return UIFormShelf.equals(__a, __b);
@@ -277,10 +300,10 @@ public class NativeUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
-	public void later(int __displayId, int __serialId)
+	public void later(UIDisplayBracket __display, int __serialId)
 		throws MLECallError
 	{
-		UIFormShelf.later(__displayId, __serialId);
+		UIFormShelf.later(__display, __serialId);
 	}
 	
 	/**
@@ -288,10 +311,10 @@ public class NativeUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
-	public int metric(int __metric)
+	public int metric(UIDisplayBracket __display, int __metric)
 		throws MLECallError
 	{
-		return UIFormShelf.metric(__metric);
+		return UIFormShelf.metric(__display, __metric);
 	}
 	
 	/**

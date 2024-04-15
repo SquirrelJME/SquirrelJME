@@ -21,6 +21,14 @@ static VersionNumber normalizeMavenVersion(Object __inVersion) {
 	return VersionNumber.parse(inVersion.toString() + "-SNAPSHOT")
 }
 
+idea {
+	module
+	{
+		// This is 1.8 because 1.7 is not really available
+		jdkName = "squirreljme-8"
+	}
+}
+
 // Every sub-project needs SquirrelJME specific pieces
 subprojects {
 	// Apply ECJ for compilation? (Such as too new of Java)
@@ -44,7 +52,7 @@ subprojects {
 		module
 		{
 			// This is 1.8 because 1.7 is not really available
-			jdkName = "1.8"
+			jdkName = "squirreljme-8"
 			
 			// However, everything targets 1.7 otherwise
 			languageLevel = new IdeaLanguageLevel("1.7")
@@ -73,6 +81,10 @@ subprojects {
 
 		// Emit deprecation errors
 		compileJava.options.deprecation = true
+		
+		// Maximize debugging
+		compileJava.options.debug = true
+		compileJava.options.debugOptions.setDebugLevel("source,lines,vars")
 
 		// Copy to tests
 		compileTestJava.sourceCompatibility = compileJava.sourceCompatibility
@@ -80,6 +92,8 @@ subprojects {
 		compileTestJava.options.encoding = compileJava.options.encoding
 		compileTestJava.options.verbose = compileJava.options.verbose
 		compileTestJava.options.deprecation = compileJava.options.deprecation
+		compileTestJava.options.debug = compileJava.options.debug
+		compileTestJava.options.debugOptions = compileJava.options.debugOptions
 
 		// Copy to JavaDoc
 		javadoc.options.source = "1.7"

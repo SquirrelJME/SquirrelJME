@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="VM Ports" pattern="file:nanocoat//*||file:ratufacoat//*" />
+</component>

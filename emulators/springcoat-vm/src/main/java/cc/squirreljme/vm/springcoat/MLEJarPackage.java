@@ -3,15 +3,20 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.emulator.vm.VMSuiteManager;
+import cc.squirreljme.jvm.manifest.JavaManifest;
+import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
+import cc.squirreljme.runtime.cldc.debug.ErrorCode;
+import cc.squirreljme.vm.OverlayVMClassLibrary;
+import cc.squirreljme.vm.RawVMClassLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.springcoat.brackets.JarPackageObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
@@ -104,10 +109,30 @@ public enum MLEJarPackage
 		}
 	},
 	
+	/** {@link JarPackageShelf#libraryId(JarPackageBracket)}. */
+	LIBRARY_ID("libraryId:(Lcc/squirreljme/jvm/mle/brackets/" +
+		"JarPackageBracket;)I")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/12/18
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			return __thread.machine.suites.libraryId(
+				MLEJarPackage.__jarObject(__args[0]).library());
+		}
+	},
+	
 	/** {@link JarPackageShelf#libraryPath(JarPackageBracket)}. */ 
 	LIBRARY_PATH("libraryPath:(Lcc/squirreljme/jvm/mle/brackets/" +
 		"JarPackageBracket;)Ljava/lang/String;")
 	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/06/18
+		 */
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
@@ -140,30 +165,7 @@ public enum MLEJarPackage
 				if (in == null)
 					return SpringNullObject.NULL;
 				
-				// Copy everything to the a byte array, since it is easier to
-				// handle resources without juggling special resource streams
-				// and otherwise
-				try (ByteArrayOutputStream baos = new ByteArrayOutputStream(
-					Math.max(1024, in.available())))
-				{
-					// Copy all the data
-					byte[] copy = new byte[4096];
-					for (;;)
-					{
-						int rc = in.read(copy);
-						
-						if (rc < 0)
-							break;
-						
-						baos.write(copy, 0, rc);
-					}
-					
-					// Use this as the stream input
-					return __thread.newInstance(__thread.loadClass(
-						"java/io/ByteArrayInputStream"),
-						new MethodDescriptor("([B)V"),
-						__thread.asVMObject(baos.toByteArray()));
-				}
+				return __thread.proxyInputStream(in);
 			}
 			
 			// Could not read it
@@ -171,6 +173,58 @@ public enum MLEJarPackage
 			{
 				throw new SpringVirtualMachineException(
 					"Failed to read resource", e);
+			}
+		}
+	},
+	
+	/** {@link JarPackageShelf#prefixCode(JarPackageBracket)}. */
+	PREFIX_CODE("prefixCode:(Lcc/squirreljme/jvm/mle/brackets/" +
+		"JarPackageBracket;)I")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/19
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			if (__args[0] == null)
+				throw new SpringMLECallError("No JAR specified.");
+			
+			JarPackageObject __jar = MLEJarPackage.__jarObject(__args[0]);
+			
+			// Load manifest to get the info
+			try (InputStream in = __jar.library()
+				.resourceAsStream("META-INF/MANIFEST.MF"))
+			{
+				if (in == null)
+					return -1;
+				
+				// Load in manifest
+				JavaManifest manifest = new JavaManifest(in);
+				
+				// Load in value
+				String value = manifest.getMainAttributes()
+					.getValue(ErrorCode.PREFIX_PROPERTY);
+				if (value == null)
+					return -1;
+				
+				// Too short?
+				if (value.length() < 2)
+					return -1;
+				
+				// Get both characters for radix calculation
+				char a = value.charAt(0);
+				char b = value.charAt(1);
+				
+				// Calculate prefix code
+				return (Character.digit(a, Character.MAX_RADIX) * 
+					Character.MAX_RADIX) +
+					Character.digit(b, Character.MAX_RADIX);
+			}
+			catch (IOException ignored)
+			{
+				return -1;
 			}
 		}
 	},
@@ -202,28 +256,23 @@ public enum MLEJarPackage
 				__o + __l > __b.length)
 				throw new SpringMLECallError("Invalid parameters.");
 			
-			// Determine the path to the JAR
-			Path path = __jar.library().path();
-			if (path == null)
-				throw new SpringMLECallError(
-					"JAR is not physically backed.");
+			// Check to see if it is supported...
+			RawVMClassLibrary lib = MLEJarPackage.__rawLibrary(
+				__jar.library());
+			if (lib == null)
+				return -1;
 			
-			// Seek through and find the data
-			try (InputStream in = Files.newInputStream(path,
-				StandardOpenOption.READ))
+			// Otherwise request it
+			try
 			{
-				// Seek first, stop if EOF is hit
-				for (int at = 0; at < __jarOffset; at++)
-					if (in.read() < 0)
-						return -1;
-				
-				// Do a standard read here
-				return in.read(__b, __o, __l);
+				lib.rawData(__jarOffset, __b, __o, __l);
+				return __l;
 			}
-			catch (IOException e)
+			catch (Throwable __t)
 			{
-				throw new SpringMLECallError(
-					"Could not raw read JAR.", e);
+				__t.printStackTrace();
+				
+				return -1;
 			}
 		}
 	},
@@ -244,20 +293,20 @@ public enum MLEJarPackage
 			
 			// Determine the path to the JAR
 			JarPackageObject jar = MLEJarPackage.__jarObject(__args[0]);
-			Path path = jar.library().path();
-			if (path == null)
+			
+			// Check to see if it is supported...
+			RawVMClassLibrary lib = MLEJarPackage.__rawLibrary(jar.library());
+			if (lib == null)
 				return -1;
 			
-			// Use the file size directly
+			// Otherwise request it
 			try
 			{
-				return (int)Math.min(Integer.MAX_VALUE, Files.size(path));
+				return lib.rawSize();
 			}
-			
-			// Size is not valid?
-			catch (IOException e)
+			catch (Throwable __t)
 			{
-				e.printStackTrace();
+				__t.printStackTrace();
 				
 				return -1;
 			}
@@ -311,5 +360,30 @@ public enum MLEJarPackage
 			throw new SpringMLECallError("Not a JarPackageObject.");
 		
 		return (JarPackageObject)__object; 
+	}
+	
+	/**
+	 * Obtains the raw library.
+	 *
+	 * @param __lib The library to get the raw library of.
+	 * @return The resultant library or {@code null} if there is none.
+	 * @throws SpringMLECallError On null arguments.
+	 * @since 2024/03/05
+	 */
+	static RawVMClassLibrary __rawLibrary(VMClassLibrary __lib)
+		throws SpringMLECallError
+	{
+		if (__lib == null)
+			throw new SpringMLECallError("Null arguments.");
+		
+		// If an overlay, go deeper
+		if (__lib instanceof OverlayVMClassLibrary)
+			return MLEJarPackage.__rawLibrary(
+				((OverlayVMClassLibrary)__lib).originalLibrary());
+		
+		// Is this a raw library?
+		if (__lib instanceof RawVMClassLibrary)
+			return (RawVMClassLibrary)__lib;
+		return null;
 	}
 }

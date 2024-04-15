@@ -3,11 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.lang.ref;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * A weak reference is one which is garbage collected when there are no strong
@@ -16,6 +18,7 @@ package java.lang.ref;
  * @param <T> The type of object to store.
  * @since 2018/09/23
  */
+@Api
 public class WeakReference<T>
 	extends Reference<T>
 {
@@ -25,6 +28,7 @@ public class WeakReference<T>
 	 * @param __v The object to point to, may be {@code null}.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public WeakReference(T __v)
 	{
 		super(__v, null);
@@ -41,6 +45,7 @@ public class WeakReference<T>
 	 * {@code null}
 	 * @since 2018/09/23
 	 */
+	@Api
 	public WeakReference(T __v, ReferenceQueue<? super T> __q)
 	{
 		super(__v, __q);

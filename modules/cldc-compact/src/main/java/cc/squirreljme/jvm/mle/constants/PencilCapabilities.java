@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -76,10 +76,10 @@ public interface PencilCapabilities
 		8;
 	
 	/**
-	 * Reserved.
+	 * Capable of the following:
+	 * - {@code drawText}.
 	 */
-	@Deprecated
-	byte RESERVED_16 =
+	byte TEXT_ADVANCED =
 		16;
 	
 	/**
@@ -153,10 +153,9 @@ public interface PencilCapabilities
 	 * - {@code drawChars}.
 	 * - {@code drawString}.
 	 * - {@code drawSubstring}.
-	 * - {@code drawText}.
 	 * - {@code getFont}.
 	 * - {@code setFont}.
 	 */
-	short FONT_TEXT =
+	short TEXT_BASIC =
 		16384;
 }

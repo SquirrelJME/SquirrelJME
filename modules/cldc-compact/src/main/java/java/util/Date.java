@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -19,6 +20,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2019/12/25
  */
+@Api
 public class Date
 	implements Cloneable, Comparable<Date>
 {
@@ -30,6 +32,7 @@ public class Date
 	 *
 	 * @since 2019/12/25
 	 */
+	@Api
 	public Date()
 	{
 		this(System.currentTimeMillis());
@@ -41,6 +44,7 @@ public class Date
 	 * @param __time The time to set.
 	 * @since 2019/12/25
 	 */
+	@Api
 	public Date(long __time)
 	{
 		this._javatime = __time;
@@ -95,6 +99,7 @@ public class Date
 	 * @return The number of milliseconds since the epoch.
 	 * @since 2019/12/25
 	 */
+	@Api
 	public long getTime()
 	{
 		return this._javatime;
@@ -117,6 +122,7 @@ public class Date
 	 * @param __v The time to set.
 	 * @since 2019/12/25
 	 */
+	@Api
 	public void setTime(long __v)
 	{
 		this._javatime = __v;

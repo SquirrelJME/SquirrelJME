@@ -3,17 +3,20 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package javax.microedition.rms;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This is used to be notified of changes which occur in a record store.
  *
  * @since 2017/02/26
  */
+@Api
 public interface RecordListener
 {
 	/**
@@ -23,6 +26,7 @@ public interface RecordListener
 	 * @param __id The ID of the added record.
 	 * @since 2017/02/26
 	 */
+	@Api
 	void recordAdded(RecordStore __rs, int __id);
 	
 	/**
@@ -32,6 +36,7 @@ public interface RecordListener
 	 * @param __id The ID of the changed record.
 	 * @since 2017/02/26
 	 */
+	@Api
 	void recordChanged(RecordStore __rs, int __id);
 	
 	/**
@@ -43,6 +48,7 @@ public interface RecordListener
 	 * {@link InvalidRecordIDException}.
 	 * @since 2017/02/26
 	 */
+	@Api
 	void recordDeleted(RecordStore __rs, int __id);
 }
 

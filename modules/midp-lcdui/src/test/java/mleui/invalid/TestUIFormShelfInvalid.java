@@ -3,14 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package mleui.invalid;
 
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
-import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIDisplayCallback;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
@@ -30,6 +29,10 @@ import net.multiphasicapps.tac.UntestableException;
 public class TestUIFormShelfInvalid
 	extends BaseBackend
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/06/22
+	 */
 	@Override
 	public void test(UIBackend __backend, UIDisplayBracket __display)
 		throws Throwable
@@ -45,7 +48,7 @@ public class TestUIFormShelfInvalid
 				callCount++;
 				
 				// Run the test and stop if this is the end
-				if (this.test(__backend, i))
+				if (this.test(__display, __backend, i))
 				{
 					callCount--;
 					break;
@@ -68,39 +71,47 @@ public class TestUIFormShelfInvalid
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Runs the test.
+	 * 
+	 * @param __display The display used.
+	 * @param __backend The backend.
+	 * @param __index The index.
 	 * @since 2020/06/22
 	 */
 	@SuppressWarnings("ResultOfMethodCallIgnored")
-	public boolean test(UIBackend __backend, int __index)
+	public boolean test(UIDisplayBracket __display, UIBackend __backend,
+		int __index)
 		throws MLECallError
 	{
 		// Check to see if forms are actually supported, if not then we cannot
 		// check if it is invalid
-		if (0 == __backend.metric(UIMetricType.UIFORMS_SUPPORTED))
+		if (0 == __backend.metric(__display, UIMetricType.UIFORMS_SUPPORTED))
 			throw new UntestableException("UIForms Not Supported!");
 		
 		UIItemBracket fake;
 		switch (__index)
 		{
 			case 0:
-				__backend.metric(-1);
+				__backend.metric(__display, -1);
 				break;
 			
 			case 1:
-				__backend.metric(UIMetricType.NUM_METRICS);
+				__backend.metric(__display, UIMetricType.NUM_METRICS);
 				break;
 			
 			case 2:
-				__backend.equals((UIDisplayBracket)null, null);
+				__backend.formItemPosition(__backend.formNew(),
+					__backend.itemNew(UIItemType.BUTTON),
+					UIItemPosition.MIN_VALUE - 1);
 				break;
 			
 			case 3:
-				__backend.equals((UIFormBracket)null, null);
+				__backend.formItemRemove(__backend.formNew(),
+					UIItemPosition.BODY);
 				break;
 			
 			case 4:
-				__backend.equals((UIItemBracket)null, null);
+				__backend.itemForm(null);
 				break;
 			
 			case 5:
@@ -176,21 +187,6 @@ public class TestUIFormShelfInvalid
 			case 21:
 				__backend.formItemPosition(__backend.formNew(),
 					__backend.itemNew(UIItemType.BUTTON), 1);
-				break;
-			
-			case 22:
-				__backend.formItemPosition(__backend.formNew(),
-					__backend.itemNew(UIItemType.BUTTON),
-					UIItemPosition.MIN_VALUE - 1);
-				break;
-			
-			case 23:
-				__backend.formItemRemove(__backend.formNew(),
-					UIItemPosition.BODY);
-				break;
-			
-			case 24:
-				__backend.itemForm(null);
 				break;
 			
 			default:

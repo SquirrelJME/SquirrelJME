@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package net.multiphasicapps.tac;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.junit.Test;
 
 /**
@@ -17,6 +18,7 @@ import org.junit.Test;
  * @param <A> The first argument type.
  * @since 2018/10/06
  */
+@SquirrelJMEVendorApi
 public abstract class TestConsumer<A>
 	extends __CoreTest__
 {
@@ -28,6 +30,7 @@ public abstract class TestConsumer<A>
 	 * @since 2018/10/06
 	 */
 	@Test
+	@SquirrelJMEVendorApi
 	public abstract void test(A __a)
 		throws Throwable;
 	
@@ -37,6 +40,7 @@ public abstract class TestConsumer<A>
 	 */
 	@Override
 	@SuppressWarnings({"unchecked"})
+	@SquirrelJMEVendorApi
 	final Object __runTest(Object... __args)
 		throws Throwable
 	{
@@ -45,8 +49,8 @@ public abstract class TestConsumer<A>
 		if (this instanceof OptionalFirstParameter)
 			testArg = (__args.length == 0 ? null : __args[0]);
 		
-		// {@squirreljme.error BU05 Test takes one parameter. (The number of
-		// passed parameters)}
+		/* {@squirreljme.error BU05 Test takes one parameter. (The number of
+		passed parameters)} */
 		else if (__args.length != 1)
 			throw new InvalidTestParameterException("BU05 " + __args.length);
 		

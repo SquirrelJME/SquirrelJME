@@ -31,4 +31,5 @@ secondary-reusedcontainednew: true
 secondary-reusedvaluenew: string:Squirrels
 secondary-reusedsize: int:1
 secondary-reusedhassecond: false
+secondary-equalentrysets: true
 

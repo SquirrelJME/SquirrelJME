@@ -3,13 +3,16 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
+import cc.squirreljme.plugin.general.cmake.CMakeBuildTask;
+import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
+import cc.squirreljme.plugin.multivm.ident.TargetClassifier;
 import cc.squirreljme.plugin.swm.JavaMEMidlet;
 import cc.squirreljme.plugin.util.FileLocation;
 import cc.squirreljme.plugin.util.TestDetection;
@@ -45,12 +48,14 @@ import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.Dependency;
 import org.gradle.api.artifacts.ProjectDependency;
 import org.gradle.api.capabilities.Capability;
+import org.gradle.api.file.FileCollection;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.jvm.tasks.Jar;
@@ -123,14 +128,15 @@ public final class VMHelpers
 		Map<String, FileLocation> expects = new HashMap<>();
 		
 		// Setup initial set of sources and files for lookup
-		List<CandidateTestFileSource> everything = new ArrayList<>();
+		Set<CandidateTestFileSource> everything = new LinkedHashSet<>();
 		everything.add(new CandidateTestFileSource(true,
 			TestDetection.sourceSetFiles(__project, __sourceSet)));
 		
 		// Go through dependencies since we need to know about those test
 		// details and such
 		for (ProjectAndTaskName projectTask : VMHelpers.runClassTasks(
-			__project, __sourceSet, VMType.HOSTED))
+			__project, new SourceTargetClassifier(__sourceSet, VMType.HOSTED,
+				BangletVariant.NONE, ClutterLevel.DEBUG)))
 		{
 			// Only consider actual projects
 			Project subProject = __project.project(projectTask.project);
@@ -154,7 +160,8 @@ public final class VMHelpers
 				// does not include the mime extension as that is removed at
 				// JAR build time
 				Path normalized;
-				if ("__mime".equals(VMHelpers.getExtension(file.getRelative())))
+				if ("__mime".equals(VMHelpers.getExtension(
+						file.getRelative())))
 					normalized = VMHelpers.stripExtension(file.getRelative());
 				else
 					normalized = file.getRelative();
@@ -245,8 +252,10 @@ public final class VMHelpers
 			
 			// Otherwise, signify all the parameters within
 			else
+			{
 				for (String multiParam : multiParams)
 					result.put(testName + "@" + multiParam, candidate);
+			}
 		}
 		
 		return Collections.unmodifiableMap(result);
@@ -256,23 +265,24 @@ public final class VMHelpers
 	 * Returns the cache directory of the project.
 	 * 
 	 * @param __project The project to get the cache directory of.
-	 * @param __vmType The virtual machine being used.
-	 * @param __sourceSet The source set for the library, as there might be
-	 * duplicates between them potentially.
+	 * @param __classifier The classifier for the VM.
 	 * @return The path provider to the project cache directory.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/15
 	 */
 	public static Provider<Path> cacheDir(Project __project,
-		VMSpecifier __vmType, String __sourceSet)
+		SourceTargetClassifier __classifier)
 		throws NullPointerException
 	{
-		if (__project == null || __vmType == null)
+		if (__project == null || __classifier == null)
 			throw new NullPointerException("NARG");
 		
 		return __project.provider(() -> __project.getBuildDir().toPath()
-			.resolve("squirreljme").resolve("vm-" + __sourceSet + "-" +
-				__vmType.vmName(VMNameFormat.LOWERCASE)));
+			.resolve("squirreljme").resolve(
+				String.format("vm-%s-%s-%s", __classifier.getSourceSet(),
+					__classifier.getVmType().vmName(VMNameFormat.LOWERCASE),
+					__classifier.getTargetClassifier().getClutterLevel()))
+			.resolve(__classifier.getBangletVariant().properNoun));
 	}
 	
 	/**
@@ -286,10 +296,7 @@ public final class VMHelpers
 	public static String classpathAsString(Path... __paths)
 		throws NullPointerException
 	{
-		if (__paths == null)
-			throw new NullPointerException("NARG");
-		
-		return VMHelpers.classpathAsString(Arrays.asList(__paths));
+		return VMHelpers.classpathAsString(false, __paths);
 	}
 	
 	/**
@@ -303,15 +310,50 @@ public final class VMHelpers
 	public static String classpathAsString(Iterable<Path> __paths)
 		throws NullPointerException
 	{
+		return VMHelpers.classpathAsString(false, __paths);
+	}
+	
+	/**
+	 * Returns the class path as a string.
+	 *
+	 * @param __unix Use UNIX separator and not the system one.
+	 * @param __paths Class paths.
+	 * @return The class path as a string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/25
+	 */
+	public static String classpathAsString(boolean __unix, Path... __paths)
+		throws NullPointerException
+	{
+		if (__paths == null)
+			throw new NullPointerException("NARG");
+		
+		return VMHelpers.classpathAsString(Arrays.asList(__paths));
+	}
+	
+	/**
+	 * Returns the class path as a string.
+	 *
+	 * @param __unix Use UNIX separator and not the system one.
+	 * @param __paths Class paths.
+	 * @return The class path as a string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/25
+	 */
+	public static String classpathAsString(boolean __unix,
+		Iterable<Path> __paths)
+		throws NullPointerException
+	{
 		if (__paths == null)
 			throw new NullPointerException("NARG");
 		
 		StringBuilder sb = new StringBuilder();
 		
+		char separator = (__unix ? ':' : File.pathSeparatorChar);
 		for (Path path : __paths)
 		{
 			if (sb.length() > 0)
-				sb.append(File.pathSeparatorChar);
+				sb.append(separator);
 			sb.append(path);
 		}
 		
@@ -337,6 +379,78 @@ public final class VMHelpers
 			result.add(Paths.get(split));
 		
 		return result.<Path>toArray(new Path[result.size()]);
+	}
+	
+	/**
+	 * Returns all the compact library tasks that the specified project
+	 * depends upon.
+	 * 
+	 * @param __project The project to get the dependencies from.
+	 * @param __sourceSet The source set to base off.
+	 * @return The tasks which are part of the compaction dependencies.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/02/02
+	 */
+	public static Collection<VMCompactLibraryTask> compactLibTaskDepends(
+		Project __project, String __sourceSet)
+		throws NullPointerException
+	{
+		if (__project == null || __sourceSet == null)
+			throw new NullPointerException("NARG");
+		
+		// Where does this go?
+		Collection<VMCompactLibraryTask> result = new LinkedHashSet<>();
+		
+		// Are we testing?
+		boolean isTest = SourceSet.TEST_SOURCE_SET_NAME.equals(__sourceSet);
+		boolean isTestFixtures =
+			VMHelpers.TEST_FIXTURES_SOURCE_SET_NAME.equals(__sourceSet);
+		
+		// This is a bit messy but it works for now
+		Collection<ProjectAndTaskName> runTasks =
+			VMHelpers.runClassTasks(__project,
+				SourceTargetClassifier.builder()
+					.sourceSet(__sourceSet)
+					.targetClassifier(TargetClassifier.builder()
+						.bangletVariant(BangletVariant.NONE)
+						.vmType(VMType.SPRINGCOAT)
+						.clutterLevel(ClutterLevel.RELEASE)
+						.build())
+					.build());
+		for (ProjectAndTaskName projectAndTask : runTasks)
+		{
+			// Find the referenced project
+			Project subProject = __project.project(projectAndTask.project); 
+			
+			// Ignore our own project, if not testing
+			if (__project.equals(subProject) && !isTest && !isTestFixtures)
+				continue;
+			
+			// Check the main source set
+			String checkName = TaskInitialization.task("compactLib",
+				SourceSet.MAIN_SOURCE_SET_NAME);
+			Task maybe = subProject.getTasks().findByName(checkName);
+			if (maybe instanceof VMCompactLibraryTask)
+			{
+				VMCompactLibraryTask task = (VMCompactLibraryTask)maybe;
+				result.add(task);
+			}
+			
+			// If we are testing, see if we can pull in any test fixtures
+			if (isTest)
+			{
+				String check = TaskInitialization.task("compactLib",
+					VMHelpers.TEST_FIXTURES_SOURCE_SET_NAME);
+				Task fixture = subProject.getTasks().findByName(check);
+				if (fixture instanceof VMCompactLibraryTask)
+				{
+					VMCompactLibraryTask task = (VMCompactLibraryTask)fixture;
+					result.add(task);
+				}
+			}
+		}
+		
+		return result;
 	}
 	
 	/**
@@ -367,6 +481,79 @@ public final class VMHelpers
 	}
 	
 	/**
+	 * Deletes the given directory tree.
+	 *
+	 * @param __task The task deleting for.
+	 * @param __path The path to delete.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/04/08
+	 */
+	public static void deleteDirTree(Task __task, Path __path)
+		throws NullPointerException
+	{
+		if (__task == null || __path == null)
+			throw new NullPointerException("NARG");
+		
+		// Ignore if not a directory
+		Path base = __path.toAbsolutePath().normalize();
+		if (!Files.isDirectory(__path))
+			return;
+		
+		// Collect files to delete
+		Set<Path> deleteFiles = new LinkedHashSet<>();
+		Set<Path> deleteDirs = new LinkedHashSet<>();
+		
+		// Perform the walk to collect files
+		try (Stream<Path> walk = Files.walk(__path))
+		{
+			walk.forEach((__it) -> {
+				Path normal = __it.toAbsolutePath().normalize();
+				
+				if (Files.isDirectory(normal))
+					deleteDirs.add(normal);
+				else
+					deleteFiles.add(normal);
+			});
+		}
+		catch (IOException __e)
+		{
+			__e.printStackTrace();
+		}
+		
+		// Run through and delete files then directories
+		for (Set<Path> rawByes : Arrays.asList(deleteFiles, deleteDirs))
+		{
+			List<Path> byes = new ArrayList<>(rawByes);
+			Collections.reverse(byes);
+			
+			for (Path bye : byes)
+			{
+				// Note
+				__task.getLogger().lifecycle(
+					String.format("Cleaning %s...", bye));
+				
+				// Skip out of tree files
+				if (!bye.startsWith(base))
+				{
+					__task.getLogger().lifecycle(
+						String.format("%s is out of tree, skipping...", bye));
+					continue;
+				}
+				
+				// Perform deletion
+				try
+				{
+					Files.deleteIfExists(bye);
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	/**
 	 * Attempts to find the emulator library so that can be loaded directly
 	 * instead of being extracted by each test process, if possible.
 	 * 
@@ -389,15 +576,12 @@ public final class VMHelpers
 		Project emuBase = __task.getProject().getRootProject()
 			.findProject(":emulators:emulator-base");
 		
-		// Is this valid?
-		Object raw = emuBase.getExtensions().getExtraProperties()
-			.get("libPathBase");
-		if (!(raw instanceof Path))
-			return null;
+		// Get the CMake Task for this
+		CMakeBuildTask cmake = (CMakeBuildTask)emuBase.getTasks()
+			.getByName("libNativeEmulatorBase");
 		
-		// Library is here?
-		return ((Path)raw).resolve(
-			System.mapLibraryName("emulator-base")).toAbsolutePath();
+		// Use the resultant library
+		return cmake.cmakeOutFile;
 	}
 	
 	/**
@@ -411,17 +595,55 @@ public final class VMHelpers
 		throws NullPointerException
 	{
 		Collection<Path> libPath = new LinkedHashSet<>();
-		for (Task dep : __task.getTaskDependencies().getDependencies(__task))
-		{
-			//System.err.printf("Task: %s %s%n", dep, dep.getClass());
-			
-			// Load executable library tasks from our own VM
-			if (dep instanceof VMExecutableTask)
-				for (File file : dep.getOutputs().getFiles())
-					libPath.add(file.toPath());
-		}
+		for (VMLibraryTask dep : VMHelpers.fullSuiteLibrariesTasks(__task))
+			for (File file : dep.getOutputs().getFiles())
+				libPath.add(file.toPath());
 		
 		return libPath;
+	}
+	
+	/**
+	 * Returns the full suite library tasks for a given task.
+	 * 
+	 * @param __task The task to get.
+	 * @return The path for the full suite libraries.
+	 * @since 2024/03/05
+	 */
+	public static Collection<VMLibraryTask> fullSuiteLibrariesTasks(
+		Task __task)
+		throws NullPointerException
+	{
+		// Load executable library tasks from our own VM
+		Collection<VMLibraryTask> result = new LinkedHashSet<>();
+		for (Task dep : __task.getTaskDependencies().getDependencies(__task))
+			if (dep instanceof VMLibraryTask)
+				result.add((VMLibraryTask)dep);
+		
+		return result;
+	}
+	
+	/**
+	 * Gets the base name of the file without the extension, if there is one.
+	 * 
+	 * @param __path The path to get from.
+	 * @return The file base name.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/02/05
+	 */
+	public static String getBaseName(Path __path)
+		throws NullPointerException
+	{
+		if (__path == null)
+			throw new NullPointerException("NARG");
+		
+		// Does this file even have an extension to it?
+		String fileName = __path.getFileName().toString();
+		int ld = fileName.lastIndexOf('.');
+		if (ld < 0)
+			return fileName;
+		
+		// Otherwise extract it
+		return fileName.substring(0, ld);
 	}
 	
 	/**
@@ -505,6 +727,47 @@ public final class VMHelpers
 	}
 	
 	/**
+	 * Returns the only file with the given extension in the given collection.
+	 * 
+	 * @param __collection The collection to get.
+	 * @param __ext The extension to get from.
+	 * @return The only file in the collection with the extension.
+	 * @throws IllegalStateException If there are multiple or no files
+	 * available.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/02/05
+	 */
+	public static Path onlyFile(FileCollection __collection, String __ext)
+		throws IllegalStateException, NullPointerException
+	{
+		if (__collection == null || __ext == null)
+			throw new NullPointerException("NARG");
+		
+		// Scan through everything and look for it
+		Path result = null;
+		for (File file : __collection.getFiles())
+		{
+			Path path = file.toPath();
+			
+			if (__ext.equals(VMHelpers.getExtension(path)))
+			{
+				if (result != null)
+					throw new IllegalStateException(
+						String.format("Multiple .%s in %s",
+							__ext, __collection));
+				
+				result = path;
+			}
+		}
+		
+		// None found?
+		if (result == null)
+			throw new IllegalStateException(
+				String.format("No .%s in %s", __ext, __collection));
+		return result;
+	}
+	
+	/**
 	 * Returns the optional dependencies for a given project.
 	 * 
 	 * @param __project The project to get for.
@@ -569,22 +832,20 @@ public final class VMHelpers
 	 * Returns the directory where profiler snapshots go.
 	 * 
 	 * @param __project The project to get the cache directory of.
-	 * @param __vmType The virtual machine being used.
-	 * @param __sourceSet The source set for the library, as there might be
-	 * duplicates between them potentially.
+	 * @param __classifier The classifier used.
 	 * @return The path provider to the profiler snapshot directory.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/09/06
 	 */
 	public static Provider<Path> profilerDir(Project __project,
-		VMSpecifier __vmType, String __sourceSet)
+		SourceTargetClassifier __classifier)
 		throws NullPointerException
 	{
-		if (__project == null || __vmType == null)
+		if (__project == null || __classifier == null)
 			throw new NullPointerException("NARG");
 		
 		return __project.provider(() -> VMHelpers.cacheDir(
-			__project, __vmType, __sourceSet).get().resolve("nps"));
+			__project, __classifier).get().resolve("nps"));
 	}
 	
 	/**
@@ -785,17 +1046,15 @@ public final class VMHelpers
 	 * running an executable.
 	 *
 	 * @param __task The task to get for.
-	 * @param __sourceSet The source set used.
-	 * @param __vmType The virtual machine type.
+	 * @param __classifier The classifier used.
 	 * @return An array of paths containing the class path of execution.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/21
 	 */
 	public static Path[] runClassPath(Task __task,
-		String __sourceSet, VMSpecifier __vmType)
+		SourceTargetClassifier __classifier)
 	{
-		return VMHelpers.runClassPath(__task, __sourceSet, __vmType,
-			false);
+		return VMHelpers.runClassPath(__task, __classifier, false);
 	}
 	
 	/**
@@ -803,19 +1062,18 @@ public final class VMHelpers
 	 * running an executable.
 	 * 
 	 * @param __task The task to get for.
-	 * @param __sourceSet The source set used.
-	 * @param __vmType The virtual machine type.
+	 * @param __classifier The classifier used.
 	 * @param __optional use optional dependencies?
 	 * @return An array of paths containing the class path of execution.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/09/05
 	 */
 	public static Path[] runClassPath(Task __task,
-		String __sourceSet, VMSpecifier __vmType, boolean __optional)
+		SourceTargetClassifier __classifier, boolean __optional)
 		throws NullPointerException
 	{
 		return VMHelpers.runClassPath(__task.getProject(),
-			__sourceSet, __vmType, __optional);
+			__classifier, __optional);
 	}
 	
 	/**
@@ -823,18 +1081,16 @@ public final class VMHelpers
 	 * running an executable.
 	 *
 	 * @param __project The project to get for.
-	 * @param __sourceSet The source set used.
-	 * @param __vmType The virtual machine type.
+	 * @param __classifier The classifier used.
 	 * @return An array of paths containing the class path of execution.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/20
 	 */
 	public static Path[] runClassPath(Project __project,
-		String __sourceSet, VMSpecifier __vmType)
+		SourceTargetClassifier __classifier)
 		throws NullPointerException
 	{
-		return VMHelpers.runClassPath(__project, __sourceSet, __vmType,
-			false);
+		return VMHelpers.runClassPath(__project, __classifier, false);
 	}
 	
 	/**
@@ -842,26 +1098,24 @@ public final class VMHelpers
 	 * running an executable.
 	 * 
 	 * @param __project The project to get for.
-	 * @param __sourceSet The source set used.
-	 * @param __vmType The virtual machine type.
+	 * @param __classifier The classifier used.
 	 * @param __optional use optional dependencies?
 	 * @return An array of paths containing the class path of execution.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/09/05
 	 */
 	public static Path[] runClassPath(Project __project,
-		String __sourceSet, VMSpecifier __vmType, boolean __optional)
+		SourceTargetClassifier __classifier, boolean __optional)
 		throws NullPointerException
 	{
-		if (__project == null || __sourceSet == null || __vmType == null)
+		if (__project == null || __classifier == null)
 			throw new NullPointerException("NARG");
 		
 		// Get tasks that are used for dependency running
 		Iterable<VMLibraryTask> tasks =
 			VMHelpers.<VMLibraryTask>resolveProjectTasks(
 				VMLibraryTask.class, __project, VMHelpers
-					.runClassTasks(__project, __sourceSet, __vmType,
-						__optional));
+					.runClassTasks(__project, __classifier, __optional));
 		
 		// Get the outputs of these, as they will be used. Ensure the order is
 		// kept otherwise execution may be non-deterministic and could break.
@@ -874,22 +1128,57 @@ public final class VMHelpers
 	}
 	
 	/**
+	 * Returns the internal class path specifier to run the given tasks. 
+	 *
+	 * @param __project The project.
+	 * @param __classifier The classifier used.
+	 * @param __optional Include optional JARs?
+	 * @return The class path string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/25
+	 */
+	public static String runClassPathAsInternalClassPath(
+		Project __project, SourceTargetClassifier __classifier,
+		boolean __optional)
+		throws NullPointerException
+	{
+		// Get tasks that are used for dependency running
+		Iterable<VMLibraryTask> tasks =
+			VMHelpers.<VMLibraryTask>resolveProjectTasks(
+				VMLibraryTask.class, __project, VMHelpers
+					.runClassTasks(__project, __classifier, __optional));
+		
+		// Build paths from it
+		StringBuilder result = new StringBuilder();
+		for (VMLibraryTask task : tasks)
+		{
+			// Path separator before
+			if (result.length() > 0)
+				result.append(":");
+			
+			// Use Jar name here
+			result.append(VMHelpers.projectInternalNameViaSourceSet(
+				task.getProject(), task.getSourceSet()) + ".jar");
+		}
+		
+		return result.toString();
+	}
+	
+	/**
 	 * Returns the task dependencies to get outputs from that would be
 	 * considered a part of the project's class path used at execution time.
 	 *
 	 * @param __project The task to get from.
-	 * @param __sourceSet The source set used.
-	 * @param __vmType The virtual machine information.
+	 * @param __classifier The classifier used.
 	 * @return The direct run dependencies for the task.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/15
 	 */
 	public static Collection<ProjectAndTaskName> runClassTasks(
-		Project __project, String __sourceSet,
-		VMSpecifier __vmType)
+		Project __project, SourceTargetClassifier __classifier)
 		throws NullPointerException
 	{
-		return VMHelpers.runClassTasks(__project, __sourceSet, __vmType,
+		return VMHelpers.runClassTasks(__project, __classifier,
 			false, null);
 	}
 	
@@ -898,20 +1187,19 @@ public final class VMHelpers
 	 * considered a part of the project's class path used at execution time.
 	 * 
 	 * @param __project The task to get from.
-	 * @param __sourceSet The source set used.
-	 * @param __vmType The virtual machine information.
+	 * @param __classifier The classifier used.
 	 * @param __optional Include optional dependencies?
 	 * @return The direct run dependencies for the task.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/09/05
 	 */
 	public static Collection<ProjectAndTaskName> runClassTasks(
-		Project __project, String __sourceSet,
-		VMSpecifier __vmType, boolean __optional)
+		Project __project, SourceTargetClassifier __classifier,
+		boolean __optional)
 		throws NullPointerException
 	{
-		return VMHelpers.runClassTasks(__project, __sourceSet, __vmType,
-			__optional, null);
+		return VMHelpers.runClassTasks(__project, __classifier, __optional,
+			null);
 	}
 	
 	/**
@@ -919,8 +1207,7 @@ public final class VMHelpers
 	 * considered a part of the project's class path used at execution time.
 	 * 
 	 * @param __project The task to get from.
-	 * @param __sourceSet The source set used.
-	 * @param __vmType The virtual machine information.
+	 * @param __classifier The classifier used.
 	 * @param __optional Include optional dependencies?
 	 * @param __did Projects that have been processed.
 	 * @return The direct run dependencies for the task.
@@ -928,11 +1215,11 @@ public final class VMHelpers
 	 * @since 2020/08/15
 	 */
 	public static Collection<ProjectAndTaskName> runClassTasks(
-		Project __project, String __sourceSet, VMSpecifier __vmType,
+		Project __project, SourceTargetClassifier __classifier,
 		boolean __optional, Set<ProjectAndTaskName> __did)
 		throws NullPointerException
 	{
-		if (__project == null || __sourceSet == null || __vmType == null)
+		if (__project == null || __classifier == null)
 			throw new NullPointerException("NARG");
 		
 		// Make sure this is always set
@@ -941,7 +1228,8 @@ public final class VMHelpers
 		
 		// If this was already processed, ignore it
 		ProjectAndTaskName selfProjectTask = ProjectAndTaskName.of(__project,
-			TaskInitialization.task("lib", __sourceSet, __vmType));
+			TaskInitialization.task("lib",
+				__classifier.withVmByEmulatedJit()));
 		if (__did.contains(selfProjectTask))
 			return Collections.emptySet();
 		
@@ -949,17 +1237,21 @@ public final class VMHelpers
 		
 		// If we are testing then we depend on the main TAC library, otherwise
 		// we will not be able to do any actual testing
-		boolean isTesting = __sourceSet.equals(SourceSet.TEST_SOURCE_SET_NAME);
+		boolean isTesting = __classifier.isTestSourceSet();
 		if (isTesting)
 		{
 			// Depend on TAC
 			result.addAll(VMHelpers.runClassTasks(
 				__project.findProject(":modules:tac"),
-				SourceSet.MAIN_SOURCE_SET_NAME, __vmType, __optional, __did));
+				__classifier.withSourceSet(SourceSet.MAIN_SOURCE_SET_NAME)
+					.withVmByEmulatedJit(),
+				__optional, __did));
 			
 			// Depend on our main project as we will be testing it
 			result.addAll(VMHelpers.runClassTasks(__project,
-				SourceSet.MAIN_SOURCE_SET_NAME, __vmType, __optional, __did));
+				__classifier.withSourceSet(SourceSet.MAIN_SOURCE_SET_NAME)
+					.withVmByEmulatedJit(),
+				__optional, __did));
 		}
 		
 		// Go through the configurations to yank in the dependencies as needed
@@ -1001,7 +1293,9 @@ public final class VMHelpers
 					VMHelpers.TEST_FIXTURES_SOURCE_SET_NAME :
 					SourceSet.MAIN_SOURCE_SET_NAME);
 				Collection<ProjectAndTaskName> selected =
-					VMHelpers.runClassTasks(sub, targetSourceSet, __vmType,
+					VMHelpers.runClassTasks(sub,
+						__classifier.withSourceSet(targetSourceSet)
+							.withVmByEmulatedJit(),
 						__optional, __did);
 				
 				result.addAll(selected);
@@ -1018,10 +1312,11 @@ public final class VMHelpers
 		// used accordingly...
 		if (__optional)
 			for (Project optional : VMHelpers.optionalDepends(__project,
-				__sourceSet))
+				__classifier.getSourceSet()))
 				result.addAll(VMHelpers.runClassTasks(optional,
-					SourceSet.MAIN_SOURCE_SET_NAME, __vmType, true,
-					__did));
+					__classifier.withSourceSet(SourceSet.MAIN_SOURCE_SET_NAME)
+						.withVmByEmulatedJit(),
+						true, __did));
 		
 		// Debug as needed
 		__project.getLogger().debug("Run Depends: {}", result);
@@ -1075,6 +1370,23 @@ public final class VMHelpers
 	}
 	
 	/**
+	 * Translates a path to a string.
+	 *
+	 * @param __name The input string file name.
+	 * @return The resultant path.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/09/03
+	 */
+	public static Path stringToPath(String __name)
+		throws NullPointerException
+	{
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		return Paths.get("", __name.split(Pattern.quote("/")));
+	}
+	
+	/**
 	 * Strips the extension from the path.
 	 * 
 	 * @param __path The path to strip the extension from.
@@ -1102,22 +1414,20 @@ public final class VMHelpers
 	 * Returns the directory where test results go.
 	 * 
 	 * @param __project The project to get the cache directory of.
-	 * @param __vmType The virtual machine being used.
-	 * @param __sourceSet The source set for the library, as there might be
-	 * duplicates between them potentially.
+	 * @param __classifier The classifier used.
 	 * @return The path provider to the test result directory.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/09/06
 	 */
 	public static Provider<Path> testResultXmlDir(Project __project,
-		VMSpecifier __vmType, String __sourceSet)
+		SourceTargetClassifier __classifier)
 		throws NullPointerException
 	{
-		if (__project == null || __vmType == null)
+		if (__project == null || __classifier == null)
 			throw new NullPointerException("NARG");
 		
-		return __project.provider(() -> VMHelpers.cacheDir(
-			__project, __vmType, __sourceSet).get().resolve("junit"));
+		return __project.provider(() -> VMHelpers.cacheDir(__project,
+			__classifier).get().resolve("junit"));
 	}
 	
 	/**
@@ -1143,22 +1453,20 @@ public final class VMHelpers
 	 * Returns the directory where test results go.
 	 * 
 	 * @param __project The project to get the cache directory of.
-	 * @param __vmType The virtual machine being used.
-	 * @param __sourceSet The source set for the library, as there might be
-	 * duplicates between them potentially.
+	 * @param __classifier The classifier used.
 	 * @return The path provider to the test result directory.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/26
 	 */
 	public static Provider<Path> testResultsCsvDir(Project __project,
-		VMSpecifier __vmType, String __sourceSet)
+		SourceTargetClassifier __classifier)
 		throws NullPointerException
 	{
-		if (__project == null || __vmType == null)
+		if (__project == null || __classifier == null)
 			throw new NullPointerException("NARG");
 		
 		return __project.provider(() -> VMHelpers.cacheDir(
-			__project, __vmType, __sourceSet).get().resolve("csv"));
+			__project, __classifier).get().resolve("csv"));
 	}
 	
 	/**

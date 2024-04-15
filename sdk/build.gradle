@@ -1,18 +1,30 @@
 plugins {
-	id 'java-gradle-plugin'
+	id "java"
 }
+
+apply plugin: "com.github.johnrengelman.shadow"
 
 description = "SquirrelJME SDK Gradle Plugin, SquirrelJME is a Java ME 8 " +
 	"virtual machine available at https://squirreljme.cc/."
 
 repositories {
 	mavenCentral()
+	jcenter()
 }
 
 dependencies {
-	implementation gradleApi()
+	shadow localGroovy()
+	shadow gradleApi()
 
 	// Lombok for simpler getters/setters
 	implementation 'org.projectlombok:lombok:1.18.24'
 	annotationProcessor 'org.projectlombok:lombok:1.18.24'
 }
+
+/*task relocateShadowJar(type: ConfigureShadowRelocation) {
+    target = tasks.shadowJar
+}
+
+shadowJar {
+	dependsOn relocateShadowJar
+}*/

@@ -3,17 +3,20 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.io;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This thrown when the end of file has been reached.
  *
  * @since 2018/12/08
  */
+@Api
 public class EOFException
 	extends IOException
 {
@@ -22,6 +25,7 @@ public class EOFException
 	 *
 	 * @since 2018/12/08
 	 */
+	@Api
 	public EOFException()
 	{
 	}
@@ -32,6 +36,7 @@ public class EOFException
 	 * @param __m The message.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public EOFException(String __m)
 	{
 		super(__m);

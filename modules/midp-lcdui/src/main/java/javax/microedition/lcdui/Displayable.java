@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -15,16 +15,19 @@ import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
+import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
+import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
-import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import java.util.ArrayList;
 import java.util.List;
 import javax.microedition.midlet.MIDlet;
+import org.jetbrains.annotations.Async;
 
 /**
  * A displayable is a primary container such as a form or a canvas that can be
@@ -33,19 +36,11 @@ import javax.microedition.midlet.MIDlet;
  *
  * @since 2016/10/08
  */
+@Api
 @SuppressWarnings("OverlyComplexClass")
 public abstract class Displayable
 	extends __CommonWidget__
 {
-	/** The native form instance. */
-	final UIFormBracket _uiForm;
-	
-	/** The title of the form. */
-	final UIItemBracket _uiTitle;
-	
-	/** The item used for the ticker on this displayable. */
-	final UIItemBracket _uiTicker;
-	
 	/** Commands/Menus which have been added to the displayable. */
 	final __VolatileList__<__Action__> _actions =
 		new __VolatileList__<>();
@@ -81,31 +76,7 @@ public abstract class Displayable
 	 */
 	Displayable()
 	{
-		UIBackend backend = UIBackendFactory.getInstance(true);
-		
-		// Create a new form for this displayable
-		UIFormBracket uiForm = backend.formNew();
-		this._uiForm = uiForm;
-		
-		// Register it with the global state
-		StaticDisplayState.register(this, uiForm);
-		
-		// Build the title item
-		UIItemBracket uiTitle = backend.itemNew(UIItemType.LABEL);
-		this._uiTitle = uiTitle;
-		
-		// Use a default title for now
-		String title = Displayable.__defaultTitle();
-		this._displayTitle = title;
-		Debugging.debugNote("Default title: %s", title);
-		
-		// Setup the title item
-		backend.formItemPosition(uiForm, uiTitle, UIItemPosition.TITLE);
-		backend.widgetProperty(uiTitle, UIWidgetProperty.STRING_LABEL,
-			0, title);
-		
-		// Each displayable has its own ticker
-		this._uiTicker = backend.itemNew(UIItemType.LABEL);
+		this._displayTitle = Displayable.__defaultTitle();
 	}
 	
 	/**
@@ -116,6 +87,7 @@ public abstract class Displayable
 	 * visible then the default height is returned.
 	 * @since 2017/02/08
 	 */
+	@Api
 	public abstract int getHeight();
 	
 	/**
@@ -126,6 +98,7 @@ public abstract class Displayable
 	 * visible then the default width is returned.
 	 * @since 2017/02/08
 	 */
+	@Api
 	public abstract int getWidth();
 	
 	/**
@@ -138,13 +111,14 @@ public abstract class Displayable
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/17
 	 */
+	@Api
 	public void addCommand(Command __c)
 		throws DisplayCapabilityException, NullPointerException
 	{
 		if (__c == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB1s The display does not support commands.}
+		/* {@squirreljme.error EB1s The display does not support commands.} */
 		Display cd = this.getCurrentDisplay();
 		if (cd != null)
 			if ((cd.getCapabilities() & Display.SUPPORTS_COMMANDS) == 0)
@@ -164,6 +138,7 @@ public abstract class Displayable
 			this.__layoutCommands();
 	}
 	
+	@Api
 	public Command getCommand(int __p)
 	{
 		throw Debugging.todo();
@@ -176,6 +151,7 @@ public abstract class Displayable
 	 * @return The current command layout policy, may be {@code null}.
 	 * @since 2020/09/27
 	 */
+	@Api
 	public CommandLayoutPolicy getCommandLayoutPolicy()
 	{
 		return this._layoutPolicy;
@@ -187,6 +163,7 @@ public abstract class Displayable
 	 * @return The command listener.
 	 * @since 2019/05/18
 	 */
+	@Api
 	protected CommandListener getCommandListener()
 	{
 		return this._cmdListener;
@@ -198,6 +175,7 @@ public abstract class Displayable
 	 * @return The available commands.
 	 * @since 2019/05/17
 	 */
+	@Api
 	public Command[] getCommands()
 	{
 		List<Command> rv = new ArrayList<>();
@@ -213,11 +191,13 @@ public abstract class Displayable
 	 * @return The owning display or {@code null} if not found.
 	 * @since 2016/10/08
 	 */
+	@Api
 	public Display getCurrentDisplay()
 	{
 		return this._display;
 	}
 	
+	@Api
 	public Menu getMenu(int __p)
 	{
 		throw Debugging.todo();
@@ -229,6 +209,7 @@ public abstract class Displayable
 	 * @return The ticker being shown or {@code null} if there is none.
 	 * @since 2018/03/26
 	 */
+	@Api
 	public Ticker getTicker()
 	{
 		return this._ticker;
@@ -240,6 +221,7 @@ public abstract class Displayable
 	 * @return The title of this displayable.
 	 * @since 2016/10/08
 	 */
+	@Api
 	public String getTitle()
 	{
 		return this._userTitle;
@@ -251,6 +233,7 @@ public abstract class Displayable
 	 * 
 	 * @since 2020/09/27
 	 */
+	@Api
 	public void invalidateCommandLayout()
 	{
 		if (this.__isShown())
@@ -263,6 +246,7 @@ public abstract class Displayable
 	 * @return If the displayable is being shown.
 	 * @since 2018/12/02
 	 */
+	@Api
 	public boolean isShown()
 	{
 		return this.__isShown();
@@ -276,6 +260,7 @@ public abstract class Displayable
 	 * @param __c The command to remove.
 	 * @since 2019/04/15
 	 */
+	@Api
 	public void removeCommand(Command __c)
 	{
 		if (__c == null)
@@ -290,6 +275,7 @@ public abstract class Displayable
 		}
 	}
 	
+	@Api
 	public void removeCommandOrMenu(int __p)
 	{
 		throw Debugging.todo();
@@ -309,6 +295,7 @@ public abstract class Displayable
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/09/27
 	 */
+	@Api
 	public void setCommand(Command __c, int __p)
 		throws DisplayCapabilityException, IllegalArgumentException,
 			IllegalStateException, NullPointerException 
@@ -323,6 +310,7 @@ public abstract class Displayable
 	 * the display.
 	 * @since 2021/11/30
 	 */
+	@Api
 	public void setCommandLayoutPolicy(CommandLayoutPolicy __p)
 	{
 		this._layoutPolicy = __p;
@@ -335,6 +323,7 @@ public abstract class Displayable
 	 * the listener is cleared.
 	 * @since 2017/08/19
 	 */
+	@Api
 	public void setCommandListener(CommandListener __l)
 	{
 		this._cmdListener = __l;
@@ -354,6 +343,7 @@ public abstract class Displayable
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/09/27
 	 */
+	@Api
 	public void setMenu(Menu __m, int __p)
 		throws DisplayCapabilityException, IllegalArgumentException,
 			IllegalStateException, NullPointerException 
@@ -368,6 +358,7 @@ public abstract class Displayable
 	 * to clear it.
 	 * @since 2018/03/26
 	 */
+	@Api
 	public void setTicker(Ticker __t)
 	{
 		// Removing old ticker?
@@ -412,6 +403,7 @@ public abstract class Displayable
 	 * @param __t The title to use, {@code null} clears it.
 	 * @since 2016/10/08
 	 */
+	@Api
 	public void setTitle(String __t)
 	{
 		// Cache it for later return
@@ -427,7 +419,8 @@ public abstract class Displayable
 		
 		// We can always set the title for the widget as the form should be
 		// allocated
-		UIBackendFactory.getInstance(true).widgetProperty(this._uiTitle,
+		this.__backend().widgetProperty(
+			this.__state(__DisplayableState__.class)._uiTitle,
 			UIWidgetProperty.STRING_LABEL, 0, __t);
 		
 		// Update the form title
@@ -441,10 +434,12 @@ public abstract class Displayable
 	 * @param __h The new height of the displayable.
 	 * @since 2016/10/10
 	 */
+	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected void sizeChanged(int __w, int __h)
 	{
-		// Implemented by sub-classes
+		// Implemented by subclasses
 	}
 	
 	/**
@@ -462,8 +457,8 @@ public abstract class Displayable
 		
 		// When checking if shown, actually probe the current form on the
 		// display as another task may have taken the display from us
-		UIBackend backend = UIBackendFactory.getInstance(true);
-		return backend.equals(this._uiForm,
+		UIBackend backend = this.__backend();
+		return backend.equals(this.__state(__DisplayableState__.class)._uiForm,
 			backend.displayCurrent(display._uiDisplay));
 	}
 	
@@ -488,16 +483,16 @@ public abstract class Displayable
 		if (__a == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB3i The current display does not support
-		// commands.}
+		/* {@squirreljme.error EB3i The current display does not support
+		commands.} */
 		Display display = this._display;
 		int caps = (display == null ? Display.__defaultCapabilities() :
 			display.getCapabilities());
 		if (0 == (caps & Display.SUPPORTS_COMMANDS))
 			throw new IllegalArgumentException("EB3i");
 		
-		// {@squirreljme.error EB3h The current displayable is not getting
-		// its layout calculated.}
+		/* {@squirreljme.error EB3h The current displayable is not getting
+		its layout calculated.} */
 		__Layout__ layout = this._layout;
 		if (layout == null)
 			throw new IllegalStateException("EB3h");
@@ -512,6 +507,8 @@ public abstract class Displayable
 	 * 
 	 * @since 2020/09/27
 	 */
+	@SerializedEvent
+	@Async.Execute
 	private void __layoutCommands()
 	{
 		// Get our own policy or the one specified by the display
@@ -627,6 +624,8 @@ public abstract class Displayable
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/09/27
 	 */
+	@SerializedEvent
+	@Async.Execute
 	private void __layoutExecute(__Layout__ __layout)
 		throws NullPointerException
 	{
@@ -651,14 +650,16 @@ public abstract class Displayable
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/09/27
 	 */
+	@SerializedEvent
+	@Async.Execute
 	private void __layoutExecute(__Layout__ __layout, int __from, int __to)
 		throws NullPointerException
 	{
 		if (__layout == null)
 			throw new NullPointerException("NARG");
 		
-		UIFormBracket form = this._uiForm;
-		UIBackend backend = UIBackendFactory.getInstance(true);
+		UIFormBracket form = this.__state(__DisplayableState__.class)._uiForm;
+		UIBackend backend = this.__backend();
 		
 		// If there is nothing here, clear it
 		__Action__ action = __layout.get(__from);
@@ -693,6 +694,7 @@ public abstract class Displayable
 	 * @since 2020/09/27
 	 */
 	@SerializedEvent
+	@Async.Execute
 	final void __showNotify(Displayable __show)
 		throws NullPointerException
 	{
@@ -722,6 +724,7 @@ public abstract class Displayable
 	 * @param __isFull Is this full-screen?
 	 * @since 2021/06/24
 	 */
+	@SquirrelJMEVendorApi
 	final void __updateFormTitle(boolean __knownFull, boolean __isFull)
 	{
 		// If it is unknown whether we are full-screen, then restore the last
@@ -737,7 +740,7 @@ public abstract class Displayable
 			__knownFull, __isFull, this._displayTitle);
 		
 		// If we are not full-screen then the title bar is at the top, so we
-		// can just say we our SquirrelJME. Otherwise, that will be hidden so
+		// can just say our SquirrelJME. Otherwise, that will be hidden, so
 		// we can set the main window title.
 		String useTitle;
 		if (!__isFull)
@@ -746,11 +749,12 @@ public abstract class Displayable
 			useTitle = this._displayTitle;
 		
 		// Set the form title
-		UIBackendFactory.getInstance(true).widgetProperty(this._uiForm,
+		this.__backend().widgetProperty(
+			this.__state(__DisplayableState__.class)._uiForm,
 			UIWidgetProperty.STRING_FORM_TITLE, 0, useTitle);
 		
 		// If this is a form, since we updated the title we should update
-		// all of the layout since the title placement could cause the
+		// all the layout since the title placement could cause the
 		// locations of items to change.
 		if (this instanceof Form)
 			((Form)this).__update();
@@ -763,15 +767,17 @@ public abstract class Displayable
 	 */
 	final void __updateTicker()
 	{
-		UIBackend backend = UIBackendFactory.getInstance(true);
-		UIFormBracket uiForm = this._uiForm;
+		UIBackend backend = this.__backend();
+		UIFormBracket uiForm = this.__state(
+			__DisplayableState__.class)._uiForm;
 		
 		// Has this changed?
 		boolean hasChanged;
 		
 		// Is the ticker being removed?
 		Ticker ticker = this._ticker;
-		UIItemBracket uiTicker = this._uiTicker;
+		UIItemBracket uiTicker = this.__state(
+			__DisplayableState__.class)._uiTicker;
 		if (ticker == null)
 		{
 			// Remove the ticker if it is currently being displayed
@@ -818,7 +824,7 @@ public abstract class Displayable
 	 * @return Application default title.
 	 * @since 2019/05/16
 	 */
-	private static String __defaultTitle()
+	static String __defaultTitle()
 	{
 		// Try getting a sensible name from a system property
 		MIDlet amid = ActiveMidlet.optional();
@@ -866,8 +872,9 @@ public abstract class Displayable
 			return Display.getDisplays(0)[0].getHeight();
 		
 		// Get current form size
-		return UIBackendFactory.getInstance(true).widgetPropertyInt(
-			(__alt != null ? __alt : __d._uiForm),
+		return __d.__backend().widgetPropertyInt(
+			(__alt != null ? __alt :
+				__d.__state(__DisplayableState__.class)._uiForm),
 			UIWidgetProperty.INT_HEIGHT, 0);
 	}
 	
@@ -891,9 +898,61 @@ public abstract class Displayable
 			return Display.getDisplays(0)[0].getWidth();
 		
 		// Get current form size
-		return UIBackendFactory.getInstance(true).widgetPropertyInt(
-			(__alt != null ? __alt : __d._uiForm),
+		return __d.__backend().widgetPropertyInt(
+			(__alt != null ? __alt :
+				__d.__state(__DisplayableState__.class)._uiForm),
 			UIWidgetProperty.INT_WIDTH, 0);
+	}
+	
+	/**
+	 * State for {@link Displayable}
+	 * 
+	 * @since 2023/01/14
+	 */
+	abstract static class __DisplayableState__
+		extends __CommonWidget__.__CommonState__
+	{
+		/** The native form instance. */
+		final UIFormBracket _uiForm;
+		
+		/** The title of the form. */
+		@Deprecated
+		final UIItemBracket _uiTitle;
+		
+		/** The item used for the ticker on this displayable. */
+		@Deprecated
+		final UIItemBracket _uiTicker;
+		
+		/**
+		 * Initializes the backend state.
+		 * 
+		 * @param __backend The backend used.
+		 * @param __self Self widget.
+		 * @since 2023/01/14
+		 */
+		__DisplayableState__(UIBackend __backend, DisplayWidget __self)
+		{
+			super(__backend, __self);
+			
+			// Create a new form for this displayable
+			UIFormBracket uiForm = __backend.formNew();
+			this._uiForm = uiForm;
+			
+			// Register it with the global state
+			StaticDisplayState.register(__self, uiForm);
+			
+			// Build the title item
+			UIItemBracket uiTitle = __backend.itemNew(UIItemType.LABEL);
+			this._uiTitle = uiTitle;
+			
+			// Set up the title item
+			__backend.formItemPosition(uiForm, uiTitle, UIItemPosition.TITLE);
+			__backend.widgetProperty(uiTitle, UIWidgetProperty.STRING_LABEL,
+				0, Displayable.__defaultTitle());
+			
+			// Each displayable has its own ticker
+			this._uiTicker = __backend.itemNew(UIItemType.LABEL);
+		}
 	}
 }
 

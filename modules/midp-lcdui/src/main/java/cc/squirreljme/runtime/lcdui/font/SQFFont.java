@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -303,8 +303,8 @@ public final class SQFFont
 			try (InputStream in = SQFFont.class.getResourceAsStream(
 				spec.toFileName()))
 			{
-				// {@squirreljme.error EB08 The font does not exist.
-				// (The name; The pixel size)}
+				/* {@squirreljme.error EB08 The font does not exist.
+				(The name; The pixel size)} */
 				if (in == null)
 					throw new IllegalArgumentException(
 						String.format("EB08 %s %d", __n, __pxs));
@@ -316,8 +316,8 @@ public final class SQFFont
 				cache.put(spec, rv);
 			}
 			
-			// {@squirreljme.error EB09 Could not load the font data.
-			// (The name; The pixel size)}
+			/* {@squirreljme.error EB09 Could not load the font data.
+			(The name; The pixel size)} */
 			catch (IOException e)
 			{
 				throw new IllegalArgumentException(

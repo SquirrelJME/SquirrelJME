@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -11,6 +11,7 @@ package java.lang;
 
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This is the base class for enum types.
@@ -18,6 +19,7 @@ import cc.squirreljme.jvm.mle.brackets.TypeBracket;
  * @param <E> The enum type.
  * @since 2018/09/24
  */
+@Api
 public abstract class Enum<E extends Enum<E>>
 	implements Comparable<E>
 {
@@ -36,14 +38,15 @@ public abstract class Enum<E extends Enum<E>>
 	 * @throws NullPointerException If no name was specified.
 	 * @since 2018/09/24
 	 */
+	@Api
 	protected Enum(String __s, int __o)
 		throws IllegalArgumentException, NullPointerException
 	{
-		// {@squirreljme.error ZZ10 Enum has no string.}
+		/* {@squirreljme.error ZZ10 Enum has no string.} */
 		if (__s == null)
 			throw new NullPointerException("ZZ10");
 		
-		// {@squirreljme.error ZZ11 Enum has negative ordinal.}
+		/* {@squirreljme.error ZZ11 Enum has negative ordinal.} */
 		if (__o < 0)
 			throw new IllegalArgumentException("ZZ11");
 		
@@ -59,7 +62,7 @@ public abstract class Enum<E extends Enum<E>>
 	protected final Object clone()
 		throws CloneNotSupportedException
 	{
-		// {@squirreljme.error ZZ12 Enums cannot be cloned.}
+		/* {@squirreljme.error ZZ12 Enums cannot be cloned.} */
 		throw new CloneNotSupportedException("ZZ12");
 	}
 	
@@ -74,8 +77,8 @@ public abstract class Enum<E extends Enum<E>>
 		if (__o == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ13 Cannot compare enums of a different
-		// type.}
+		/* {@squirreljme.error ZZ13 Cannot compare enums of a different
+		type.} */
 		if (this.getDeclaringClass() != __o.getDeclaringClass())
 			throw new ClassCastException("ZZ13");
 		
@@ -101,6 +104,7 @@ public abstract class Enum<E extends Enum<E>>
 	 * @since 2018/09/24
 	 */
 	@SuppressWarnings({"unchecked"})
+	@Api
 	public final Class<E> getDeclaringClass()
 	{
 		// Enums are either directly extending or extending a base class which
@@ -129,6 +133,7 @@ public abstract class Enum<E extends Enum<E>>
 	 * @return The constant name.
 	 * @since 2018/09/24
 	 */
+	@Api
 	public final String name()
 	{
 		return this._name;
@@ -140,6 +145,7 @@ public abstract class Enum<E extends Enum<E>>
 	 * @return The ordinal constant.
 	 * @since 2018/09/24
 	 */
+	@Api
 	public final int ordinal()
 	{
 		return this._ordinal;
@@ -167,13 +173,14 @@ public abstract class Enum<E extends Enum<E>>
 	 * @since 2018/12/07
 	 */
 	@SuppressWarnings({"rawtypes"})
+	@Api
 	public static <T extends Enum<T>> T valueOf(Class<T> __cl, String __s)
 		throws IllegalArgumentException, NullPointerException
 	{
 		if (__cl == null || __s == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ3x Type is not an enumeration. (The type)}
+		/* {@squirreljme.error ZZ3x Type is not an enumeration. (The type)} */
 		TypeBracket type = TypeShelf.classToType(__cl);
 		if (!TypeShelf.isEnum(type))
 			throw new ClassCastException("ZZ3x " + __cl);
@@ -183,7 +190,7 @@ public abstract class Enum<E extends Enum<E>>
 			if (__s.equals(value.name()))
 				return __cl.cast(value);
 		
-		// {@squirreljme.error ZZ15 Not an enumeration value. (The value)}
+		/* {@squirreljme.error ZZ15 Not an enumeration value. (The value)} */
 		throw new IllegalArgumentException(String.format("ZZ15 %s", __s));
 	}
 }

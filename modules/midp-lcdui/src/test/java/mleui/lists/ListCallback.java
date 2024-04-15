@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package mleui.lists;
 
+import cc.squirreljme.jvm.mle.brackets.UIDrawableBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
@@ -30,7 +31,7 @@ public class ListCallback
 	 * @since 2020/10/29
 	 */
 	@Override
-	public void eventKey(UIFormBracket __form, UIItemBracket __item,
+	public void eventKey(UIDrawableBracket __drawable,
 		int __event, int __keyCode, int __modifiers)
 	{
 	}
@@ -40,7 +41,7 @@ public class ListCallback
 	 * @since 2020/10/29
 	 */
 	@Override
-	public void eventMouse(UIFormBracket __form, UIItemBracket __item,
+	public void eventMouse(UIDrawableBracket __drawable,
 		int __event, int __button, int __x, int __y, int __modifiers)
 	{
 	}
@@ -50,7 +51,7 @@ public class ListCallback
 	 * @since 2020/10/29
 	 */
 	@Override
-	public void exitRequest(UIFormBracket __form)
+	public void exitRequest(UIDrawableBracket __drawable)
 	{
 	}
 	
@@ -69,7 +70,7 @@ public class ListCallback
 	 * @since 2020/10/29
 	 */
 	@Override
-	public void paint(UIFormBracket __form, UIItemBracket __item, int __pf,
+	public void paint(UIDrawableBracket __drawable, int __pf,
 		int __bw, int __bh, Object __buf, int __offset, int[] __pal, int __sx,
 		int __sy, int __sw, int __sh, int __special)
 	{

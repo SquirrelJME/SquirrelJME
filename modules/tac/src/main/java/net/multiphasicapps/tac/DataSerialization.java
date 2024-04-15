@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package net.multiphasicapps.tac;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.util.BooleanArrayList;
 import cc.squirreljme.runtime.cldc.util.ByteArrayList;
 import cc.squirreljme.runtime.cldc.util.CharacterArrayList;
@@ -24,6 +25,7 @@ import java.util.List;
  *
  * @since 2019/01/20
  */
+@SquirrelJMEVendorApi
 public final class DataSerialization
 {
 	/**
@@ -37,6 +39,7 @@ public final class DataSerialization
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/09
 	 */
+	@SquirrelJMEVendorApi
 	public static String encodeKey(String __key)
 		throws NullPointerException
 	{
@@ -102,6 +105,7 @@ public final class DataSerialization
 	 * @return The encoded string, {@code null} has a special value.
 	 * @since 2018/10/06
 	 */
+	@SquirrelJMEVendorApi
 	public static String encodeString(String __s)
 	{
 		// Special value for null strings
@@ -159,6 +163,12 @@ public final class DataSerialization
 				case '}':
 					escape = true;
 					c = ')';
+					break;
+					
+					// Comma
+				case ',':
+					escape = true;
+					c = 'c';
 					break;
 					
 					// Delete
@@ -227,6 +237,7 @@ public final class DataSerialization
 	 * @return The resulting serialization.
 	 * @since 2019/01/20
 	 */
+	@SquirrelJMEVendorApi
 	public static String serialize(Object __o)
 	{
 		// Null
@@ -248,6 +259,10 @@ public final class DataSerialization
 		// No exception was thrown
 		else if (__o instanceof __NoExceptionThrown__)
 			return "NoExceptionThrown";
+		
+		// Drop value
+		else if (__o instanceof __Drop__)
+			return "Drop";
 		
 		// Boolean values
 		else if (__o instanceof Boolean)

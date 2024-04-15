@@ -3,15 +3,20 @@
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.plugin.tasks;
 
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
+import cc.squirreljme.plugin.multivm.BangletVariant;
+import cc.squirreljme.plugin.multivm.ClutterLevel;
 import cc.squirreljme.plugin.multivm.TaskInitialization;
 import cc.squirreljme.plugin.multivm.VMHelpers;
+import cc.squirreljme.plugin.multivm.VMType;
+import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
+import cc.squirreljme.plugin.multivm.ident.TargetClassifier;
 import cc.squirreljme.plugin.swm.JavaMEConfiguration;
 import cc.squirreljme.plugin.swm.JavaMEMidlet;
 import cc.squirreljme.plugin.swm.JavaMEMidletType;
@@ -34,6 +39,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Set;
 import java.util.jar.Attributes;
 import org.gradle.api.Action;
@@ -117,6 +123,10 @@ public class AdditionalManifestPropertiesTaskAction
 		attributes.putValue(type.versionKey(),
 			new SuiteVersion(project.getVersion().toString()).toString());
 		
+		// Error Prefix
+		attributes.putValue("X-SquirrelJME-PrefixCode",
+			Objects.toString(config.javaDocErrorCode, "XX"));
+		
 		// Application
 		if (type == JavaMEMidletType.APPLICATION)
 		{
@@ -129,6 +139,19 @@ public class AdditionalManifestPropertiesTaskAction
 				// Main entry point is always the TAC test runner
 				attributes.putValue("Main-Class",
 					"net.multiphasicapps.tac.MainSuiteRunner");
+				
+				// Add class path needed to run the test
+				attributes.putValue("X-SquirrelJME-Tests-ClassPath",
+					VMHelpers.runClassPathAsInternalClassPath(
+						__task.getProject(),
+						SourceTargetClassifier.builder()
+							.sourceSet(SourceSet.TEST_SOURCE_SET_NAME)
+							.targetClassifier(TargetClassifier.builder()
+								.bangletVariant(BangletVariant.NONE)
+								.vmType(VMType.HOSTED)
+								.clutterLevel(ClutterLevel.DEBUG)
+								.build())
+							.build(), true));
 			}
 			
 			// Normal application
@@ -359,7 +382,9 @@ public class AdditionalManifestPropertiesTaskAction
 		if (subSwmType == JavaMEMidletType.APPLICATION)
 		{
 			// If this is another project, we cannot just depend on it at all
-			if (project.compareTo(__dependency.dependency) != 0)
+			// Unless we are testing, then we can bend the rules a little
+			if (project.compareTo(__dependency.dependency) != 0 &&
+				!__sourceSourceSet.equals(SourceSet.TEST_SOURCE_SET_NAME))
 				throw new IllegalArgumentException(String.format(
 					"Project %s:%s cannot depend on application %s:%s.",
 						project.getPath(), __sourceSourceSet,

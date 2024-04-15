@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -24,8 +24,8 @@ public class MainSingleRunner
 	 */
 	public static void main(String... __args)
 	{
-		// {@squirreljme.error BU0b Expected single argument specifying the
-		// test to run.}
+		/* {@squirreljme.error BU0b Expected single argument specifying the
+		test to run.} */
 		if (__args == null || __args.length != 1 || __args[0] == null)
 			throw new IllegalArgumentException("BU0b");
 			
@@ -56,8 +56,8 @@ public class MainSingleRunner
 		}
 		catch (ClassNotFoundException e)
 		{
-			// {@squirreljme.error BU0g Could not find main test class.
-			// (The class name)}
+			/* {@squirreljme.error BU0g Could not find main test class.
+			(The class name)} */
 			throw new IllegalArgumentException("BU0g " + __args[0]);
 		}
 		
@@ -69,8 +69,8 @@ public class MainSingleRunner
 		}
 		catch (InstantiationException|IllegalAccessException e)
 		{
-			// {@squirreljme.error BU0h Could not instantiate the class.
-			// (The class name)}
+			/* {@squirreljme.error BU0h Could not instantiate the class.
+			(The class name)} */
 			throw new IllegalArgumentException("BU0h " + __args[0], e);
 		}
 		
@@ -82,8 +82,8 @@ public class MainSingleRunner
 		}
 		catch (ClassCastException e)
 		{
-			// {@squirreljme.error BU0i Class is not the expected type that
-			// it should be. (The class name)}
+			/* {@squirreljme.error BU0i Class is not the expected type that
+			it should be. (The class name)} */
 			throw new IllegalArgumentException("BU0i " + __args[0]);
 		}
 		

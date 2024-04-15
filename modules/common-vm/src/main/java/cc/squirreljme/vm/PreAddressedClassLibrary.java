@@ -3,7 +3,7 @@
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -58,8 +58,8 @@ public final class PreAddressedClassLibrary
 	@Override
 	public String[] listResources()
 	{
-		// {@squirreljme.error AK03 Pre-addressed class libraries do not
-		// support lookup.}
+		/* {@squirreljme.error AK03 Pre-addressed class libraries do not
+		support lookup.} */
 		throw new IllegalStateException("AK03");
 	}
 	
@@ -91,8 +91,8 @@ public final class PreAddressedClassLibrary
 	public InputStream resourceAsStream(String __rc)
 		throws IOException, NullPointerException
 	{
-		// {@squirreljme.error AK02 Pre-addressed class libraries do not
-		// support lookup.}
+		/* {@squirreljme.error AK02 Pre-addressed class libraries do not
+		support lookup.} */
 		throw new IllegalStateException("AK02");
 	}
 }

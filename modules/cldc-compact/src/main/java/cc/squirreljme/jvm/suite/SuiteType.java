@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -74,8 +74,8 @@ public enum SuiteType
 	 */
 	public JavaManifestKey dependencyKey(int __i)
 	{
-		// {@squirreljme.error DG0f Cannot have a zero or negative dependency
-		// index.}
+		/* {@squirreljme.error DG0f Cannot have a zero or negative dependency
+		index.} */
 		if (__i <= 0)
 			throw new IllegalArgumentException("AR0f");
 		
@@ -174,8 +174,8 @@ public enum SuiteType
 			if (attr.definesValue(t.nameKey()))
 				return t;
 		
-		// {@squirreljme.error DG0g Could not obtain the type of suite from
-		// the input manifest.}
+		/* {@squirreljme.error DG0g Could not obtain the type of suite from
+		the input manifest.} */
 		throw new InvalidSuiteException("AR0g");
 	}
 }

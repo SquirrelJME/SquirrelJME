@@ -3,7 +3,7 @@
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -11,6 +11,7 @@ package cc.squirreljme.emulator;
 
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
+import cc.squirreljme.jvm.mle.constants.VMStatisticType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 
 /**
@@ -20,6 +21,24 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
  */
 public class EmulatedRuntimeShelf
 {
+	/**
+	 * Same as {@link RuntimeShelf#systemEnv(String)}.
+	 * 
+	 * @param __key The environment variable key.
+	 * @return The value of the variable if it is set, otherwise {@code null}.
+	 * @throws MLECallError If key is {@code null}.
+	 * @since 2023/02/02
+	 */
+	@SuppressWarnings("CallToSystemGetenv")
+	public static String systemEnv(String __key)
+		throws MLECallError
+	{
+		if (__key == null)
+			throw new MLECallError("No key specified.");
+		
+		return System.getenv(__key);
+	}
+	
 	/**
 	 * Same as {@link RuntimeShelf#vmDescription(int)}.
 	 *
@@ -70,5 +89,37 @@ public class EmulatedRuntimeShelf
 			default:
 				throw new MLECallError("Invalid " + __type);
 		}
+	}
+	
+	/**
+	 * Returns a statistic of the virtual machine.
+	 *
+	 * @param __type The {@link VMStatisticType}.
+	 * @return The value of the statistic, or {@code 0L} if not set.
+	 * @throws MLECallError If {@code __type} is not valid.
+	 * @since 2022/10/03
+	 */
+	public static long vmStatistic(int __type)
+		throws MLECallError
+	{
+		if (__type < 0 || __type >= VMStatisticType.NUM_STATISTICS)
+			throw new MLECallError("Bad statistic: " + __type);
+		
+		switch (__type)
+		{
+			case VMStatisticType.CPU_THREAD_COUNT:
+				return Runtime.getRuntime().availableProcessors();
+			
+			case VMStatisticType.MEM_FREE:
+				return Runtime.getRuntime().freeMemory();
+			
+			case VMStatisticType.MEM_MAX:
+				return Runtime.getRuntime().maxMemory();
+			
+			case VMStatisticType.MEM_USED:
+				return Runtime.getRuntime().totalMemory();
+		}
+		
+		return 0L;
 	}
 }

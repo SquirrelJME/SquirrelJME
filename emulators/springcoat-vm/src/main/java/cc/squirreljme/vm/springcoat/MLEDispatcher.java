@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -13,6 +13,8 @@ import cc.squirreljme.jvm.mle.AtomicShelf;
 import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.MathShelf;
+import cc.squirreljme.jvm.mle.MidiShelf;
+import cc.squirreljme.jvm.mle.NativeArchiveShelf;
 import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.PencilShelf;
 import cc.squirreljme.jvm.mle.ReferenceShelf;
@@ -54,6 +56,14 @@ public enum MLEDispatcher
 	/** {@link MathShelf}. */
 	MATH("cc/squirreljme/jvm/mle/MathShelf",
 		MLEMath.values()),
+	
+	/** {@link MidiShelf}. */
+	MIDI("cc/squirreljme/jvm/mle/MidiShelf",
+		MLEMidi.values()),
+	
+	/** {@link NativeArchiveShelf}. */
+	NATIVE_ARCHIVE("cc/squirreljme/jvm/mle/NativeArchiveShelf",
+		MLENativeArchive.values()),
 	
 	/** {@link ObjectShelf}. */
 	OBJECT("cc/squirreljme/jvm/mle/ObjectShelf",

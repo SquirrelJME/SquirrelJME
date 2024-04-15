@@ -3,11 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.nio.file;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This class provides a single static method which is used to create instances
@@ -15,6 +17,7 @@ package java.nio.file;
  *
  * @since 2017/06/12
  */
+@Api
 public final class Paths
 {
 	/**
@@ -38,6 +41,7 @@ public final class Paths
 	 * on the native system.
 	 * @since 2017/06/12
 	 */
+	@Api
 	public static Path get(String __a, String... __b)
 		throws InvalidPathException
 	{

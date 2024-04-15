@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -15,7 +15,7 @@ import cc.squirreljme.emulator.vm.VMFactory;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.emulator.vm.VMThreadModel;
 import cc.squirreljme.emulator.vm.VirtualMachine;
-import cc.squirreljme.jdwp.JDWPFactory;
+import cc.squirreljme.jdwp.host.JDWPHostFactory;
 import cc.squirreljme.jvm.mle.constants.TaskPipeRedirectType;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.util.Map;
@@ -43,21 +43,22 @@ public class SpringCoatFactory
 	 * @since 2018/11/17
 	 */
 	@Override
-	protected VirtualMachine createVM(ProfilerSnapshot __ps,
-		JDWPFactory __jdwp, VMThreadModel __threadModel, VMSuiteManager __sm,
-		VMClassLibrary[] __cp, String __maincl, Map<String, String> __sprops,
-		String[] __args)
+	protected VirtualMachine createVM(ProfilerSnapshot __profiler,
+		JDWPHostFactory __jdwp, VMThreadModel __threadModel,
+		VMSuiteManager __suiteManager, VMClassLibrary[] __classpath,
+		String __mainClass, Map<String, String> __sysProps, String[] __args)
 		throws IllegalArgumentException, NullPointerException, VMException
 	{
-		// Setup the main task manager which runs everything
-		SpringTaskManager tm = new SpringTaskManager(__sm, __ps);
+		// Set up the main task manager which runs everything
+		SpringTaskManager tm = new SpringTaskManager(__suiteManager,
+			__profiler);
 		
 		// Bind this to the task manager which is the pure global state
 		if (__jdwp != null)
 			tm.jdwpController = __jdwp.open(tm); 
 		
 		// Spawn initial virtual machine task
-		return tm.startTask(__cp, __maincl, __args, __sprops,
+		return tm.startTask(__classpath, __mainClass, __args, __sysProps,
 			TaskPipeRedirectType.TERMINAL, TaskPipeRedirectType.TERMINAL,
 			false, true);
 	}

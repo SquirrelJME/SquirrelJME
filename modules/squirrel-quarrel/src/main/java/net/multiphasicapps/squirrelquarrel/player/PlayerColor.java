@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -161,8 +161,8 @@ public enum PlayerColor
 			case 4: return PlayerColor.PURPLE;
 			case 5: return PlayerColor.GRAY;
 			
-				// {@squirreljme.error BE04 Player index out of range. (The
-				// player index)}
+				/* {@squirreljme.error BE04 Player index out of range. (The
+				player index)} */
 			default:
 				throw new IllegalArgumentException(String.format("BE04 %d",
 					__i));

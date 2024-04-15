@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -14,11 +14,13 @@ import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.constants.VMStatisticType;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.CallTraceUtils;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.io.ConsoleOutputStream;
 import cc.squirreljme.runtime.cldc.io.NonClosedOutputStream;
 import java.io.PrintStream;
+import org.jetbrains.annotations.Contract;
 
 /**
  * This class contains information about the host memory environment along
@@ -27,6 +29,7 @@ import java.io.PrintStream;
  *
  * @since 2018/10/14
  */
+@Api
 public class Runtime
 {
 	/** There is only a single instance of the run-time. */
@@ -51,6 +54,8 @@ public class Runtime
 	 * @throws SecurityException If exiting is not permitted.
 	 * @since 2017/02/08
 	 */
+	@Api
+	@Contract("_ -> fail")
 	public void exit(int __v)
 		throws SecurityException
 	{
@@ -88,6 +93,7 @@ public class Runtime
 	 * @return The amount of free memory.
 	 * @since 2018/10/14
 	 */
+	@Api
 	public long freeMemory()
 	{
 		return RuntimeShelf.vmStatistic(VMStatisticType.MEM_FREE);
@@ -99,6 +105,7 @@ public class Runtime
 	 *
 	 * @since 2017/02/08
 	 */
+	@Api
 	public void gc()
 	{
 		RuntimeShelf.garbageCollect();
@@ -112,6 +119,7 @@ public class Runtime
 	 * @return The maximum amount of memory available to the virtual machine.
 	 * @since 2018/10/14
 	 */
+	@Api
 	public long maxMemory()
 	{
 		return RuntimeShelf.vmStatistic(VMStatisticType.MEM_MAX);
@@ -125,6 +133,7 @@ public class Runtime
 	 * @return The amount of memory being used by the virtual machine.
 	 * @since 2018/10/14
 	 */
+	@Api
 	public long totalMemory()
 	{
 		return RuntimeShelf.vmStatistic(VMStatisticType.MEM_USED);
@@ -138,6 +147,7 @@ public class Runtime
 	 * @return The current run-time.
 	 * @since 2018/03/01
 	 */
+	@Api
 	public static Runtime getRuntime()
 	{
 		return Runtime._INSTANCE;

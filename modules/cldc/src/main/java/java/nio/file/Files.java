@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.nio.file;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,6 +21,7 @@ import java.nio.file.attribute.FileTime;
 import java.util.Map;
 import java.util.Set;
 
+@Api
 public final class Files
 {
 	private Files()
@@ -27,6 +29,7 @@ public final class Files
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static Path copy(Path __a, Path __b, CopyOption... __c)
 		throws IOException
 	{
@@ -35,6 +38,7 @@ public final class Files
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static Path createDirectories(Path __a, FileAttribute<?>... __b)
 		throws IOException
 	{
@@ -43,6 +47,7 @@ public final class Files
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static Path createDirectory(Path __a, FileAttribute<?>... __b)
 		throws IOException
 	{
@@ -51,6 +56,7 @@ public final class Files
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static Path createFile(Path __a, FileAttribute<?>... __b)
 		throws IOException
 	{
@@ -59,6 +65,7 @@ public final class Files
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static Path createTempDirectory(Path __a, String __b,
 		FileAttribute<?>... __c)
 		throws IOException
@@ -68,6 +75,7 @@ public final class Files
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static Path createTempDirectory(String __a, FileAttribute<?>...
 		__b)
 		throws IOException
@@ -77,6 +85,7 @@ public final class Files
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static Path createTempFile(Path __a, String __b, String __c,
 		FileAttribute<?>... __d)
 		throws IOException
@@ -86,6 +95,7 @@ public final class Files
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static Path createTempFile(String __a, String __b, FileAttribute
 		<?>... __c)
 		throws IOException
@@ -95,6 +105,7 @@ public final class Files
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static void delete(Path __a)
 		throws IOException
 	{
@@ -103,6 +114,7 @@ public final class Files
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static boolean deleteIfExists(Path __a)
 		throws IOException
 	{
@@ -111,11 +123,13 @@ public final class Files
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static boolean exists(Path __a, LinkOption... __b)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static Object getAttribute(Path __a, String __b, LinkOption... __c
 		)
 		throws IOException
@@ -125,6 +139,7 @@ public final class Files
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static FileStore getFileStore(Path __a)
 		throws IOException
 	{
@@ -133,6 +148,7 @@ public final class Files
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static FileTime getLastModifiedTime(Path __a, LinkOption... __b)
 		throws IOException
 	{
@@ -141,11 +157,13 @@ public final class Files
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static boolean isDirectory(Path __a, LinkOption... __b)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static boolean isHidden(Path __a)
 		throws IOException
 	{
@@ -154,16 +172,19 @@ public final class Files
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static boolean isReadable(Path __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static boolean isRegularFile(Path __p)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static boolean isSameFile(Path __a, Path __b)
 		throws IOException
 	{
@@ -172,11 +193,13 @@ public final class Files
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static boolean isWritable(Path __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static Path move(Path __a, Path __b, CopyOption... __c)
 		throws IOException
 	{
@@ -185,6 +208,7 @@ public final class Files
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static SeekableByteChannel newByteChannel(Path __a, Set<? extends
 		OpenOption> __b, FileAttribute<?>... __c)
 		throws IOException
@@ -194,6 +218,7 @@ public final class Files
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static SeekableByteChannel newByteChannel(Path __a, OpenOption...
 		__b)
 		throws IOException
@@ -203,6 +228,7 @@ public final class Files
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static DirectoryStream<Path> newDirectoryStream(Path __a)
 		throws IOException
 	{
@@ -211,6 +237,7 @@ public final class Files
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static DirectoryStream<Path> newDirectoryStream(Path __a, String
 		__b)
 		throws IOException
@@ -220,6 +247,7 @@ public final class Files
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static DirectoryStream<Path> newDirectoryStream(Path __a,
 		DirectoryStream.Filter<? super Path> __b)
 		throws IOException
@@ -229,6 +257,7 @@ public final class Files
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static InputStream newInputStream(Path __a, OpenOption... __b)
 		throws IOException
 	{
@@ -237,6 +266,7 @@ public final class Files
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static OutputStream newOutputStream(Path __a, OpenOption... __b)
 		throws IOException
 	{
@@ -245,11 +275,13 @@ public final class Files
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static boolean notExists(Path __a, LinkOption... __b)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static <A extends BasicFileAttributes> A readAttributes(Path __a,
 		Class<A> __b, LinkOption... __c)
 		throws IOException
@@ -259,6 +291,7 @@ public final class Files
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static Map<String, Object> readAttributes(Path __a, String __b,
 		LinkOption... __c)
 		throws IOException
@@ -268,6 +301,7 @@ public final class Files
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static Path setAttribute(Path __a, String __b, Object __c,
 		LinkOption... __d)
 		throws IOException
@@ -277,6 +311,7 @@ public final class Files
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static Path setLastModifiedTime(Path __a, FileTime __b)
 		throws IOException
 	{
@@ -285,6 +320,7 @@ public final class Files
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static long size(Path __a)
 		throws IOException
 	{

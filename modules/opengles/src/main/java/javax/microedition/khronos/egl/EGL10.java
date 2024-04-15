@@ -3,27 +3,32 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package javax.microedition.khronos.egl;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import javax.microedition.khronos.opengles.GL;
+import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Graphics;
 
 /**
  * This interface defines the standard OpenGL ES definitions and methods.
  *
  * To initialize a display, {@link #eglGetDisplay(Object)} must be called
  * where the {@link Object} is an instance of
- * {@link javax.microedition.lcdui.Display}.
+ * {@link Display}.
  *
  * OpenGL ES is utilized by calling
  * {@link EGL10#eglCreateWindowSurface(EGLDisplay, EGLConfig, Object, int[])}.
  * The {@link Object} parameter in this call represents a native surface to
  * draw onto. In this case, it is an instance of
- * {@link javax.microedition.lcdui.Graphics}.
+ * {@link Graphics}.
  */
+@SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
+@Api
 public interface EGL10
 	extends EGL
 {
@@ -35,43 +40,56 @@ public interface EGL10
 	 *
 	 * Default 0.
 	 */
+	@Api
 	int EGL_ALPHA_SIZE =
 		12321;
 	
+	@Api
 	int EGL_BAD_ACCESS =
 		12290;
 	
+	@Api
 	int EGL_BAD_ALLOC =
 		12291;
 	
+	@Api
 	int EGL_BAD_ATTRIBUTE =
 		12292;
 	
+	@Api
 	int EGL_BAD_CONFIG =
 		12293;
 	
+	@Api
 	int EGL_BAD_CONTEXT =
 		12294;
 	
+	@Api
 	int EGL_BAD_CURRENT_SURFACE =
 		12295;
 	
 	/** This is an error specifying that the given display is not valid. */
+	@Api
 	int EGL_BAD_DISPLAY =
 		12296;
 	
+	@Api
 	int EGL_BAD_MATCH =
 		12297;
 	
+	@Api
 	int EGL_BAD_NATIVE_PIXMAP =
 		12298;
 	
+	@Api
 	int EGL_BAD_NATIVE_WINDOW =
 		12299;
 	
+	@Api
 	int EGL_BAD_PARAMETER =
 		12300;
 	
+	@Api
 	int EGL_BAD_SURFACE =
 		12301;
 	
@@ -83,6 +101,7 @@ public interface EGL10
 	 *
 	 * Default 0.
 	 */
+	@Api
 	int EGL_BLUE_SIZE =
 		12322;
 	
@@ -91,6 +110,7 @@ public interface EGL10
 	 *
 	 * Default 0.
 	 */
+	@Api
 	int EGL_BUFFER_SIZE =
 		12320;
 	
@@ -104,6 +124,7 @@ public interface EGL10
 	 *
 	 * Default {@link #EGL_DONT_CARE}.
 	 */
+	@Api
 	int EGL_CONFIG_CAVEAT =
 		12327;
 	
@@ -114,13 +135,16 @@ public interface EGL10
 	 *
 	 * Default {@link #EGL_DONT_CARE}.
 	 */
+	@Api
 	int EGL_CONFIG_ID =
 		12328;
 	
+	@Api
 	int EGL_CORE_NATIVE_ENGINE =
 		12379;
 	
 	/** This is used to signify that the default display should be used. */
+	@Api
 	Object EGL_DEFAULT_DISPLAY =
 		new Object();
 	
@@ -131,12 +155,15 @@ public interface EGL10
 	 *
 	 * Default 0.
 	 */
+	@Api
 	int EGL_DEPTH_SIZE =
 		12325;
 	
+	@Api
 	int EGL_DONT_CARE =
 		-1;
 	
+	@Api
 	int EGL_DRAW =
 		12377;
 	
@@ -144,9 +171,11 @@ public interface EGL10
 	 * A value for {@link #eglQueryString(EGLDisplay, int)} that requests the
 	 * extensions that are available to this OpenGL ES implementation.
 	 */
+	@Api
 	int EGL_EXTENSIONS =
 		12373;
 	
+	@Api
 	int EGL_FALSE =
 		0;
 	
@@ -158,31 +187,39 @@ public interface EGL10
 	 *
 	 * Default 0.
 	 */
+	@Api
 	int EGL_GREEN_SIZE =
 		12323;
 	
+	@Api
 	int EGL_HEIGHT =
 		12374;
 	
+	@Api
 	int EGL_LARGEST_PBUFFER =
 		12376;
 	
 	/**
-	 * The exact number of buffer-levels to use, positive values mean the given
+	 * The exact number of buffer-levels to use, positive values mean the
+	 * given
 	 * number of overlay buffers and negative values are mapped to underlay
 	 * buffers. Level zero is the default framebuffer of the display.
 	 *
 	 * Default 0.
 	 */
+	@Api
 	int EGL_LEVEL =
 		12329;
 	
+	@Api
 	int EGL_MAX_PBUFFER_HEIGHT =
 		12330;
 	
+	@Api
 	int EGL_MAX_PBUFFER_PIXELS =
 		12331;
 	
+	@Api
 	int EGL_MAX_PBUFFER_WIDTH =
 		12332;
 	
@@ -195,9 +232,11 @@ public interface EGL10
 	 *
 	 * Default {@link #EGL_DONT_CARE}.
 	 */
+	@Api
 	int EGL_NATIVE_RENDERABLE =
 		12333;
 	
+	@Api
 	int EGL_NATIVE_VISUAL_ID =
 		12334;
 	
@@ -206,62 +245,73 @@ public interface EGL10
 	 *
 	 * Default {@link #EGL_DONT_CARE}.
 	 */
+	@Api
 	int EGL_NATIVE_VISUAL_TYPE =
 		12335;
 	
+	@Api
 	int EGL_NONE =
 		12344;
 	
+	@Api
 	int EGL_NON_CONFORMANT_CONFIG =
 		12369;
 	
 	/** An error specifying that the display has not been initialized. */
+	@Api
 	int EGL_NOT_INITIALIZED =
 		12289;
 	
 	/** This represents a null context. */
+	@Api
 	EGLContext EGL_NO_CONTEXT =
 		new EGLContext()
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/10/10
+		 */
+		@Override
+		public GL getGL()
 		{
-			/**
-			 * {@inheritDoc}
-			 * @since 2016/10/10
-			 */
-			@Override
-			public GL getGL()
-			{
-				// {@squirreljme.error EJ0a Cannot get the GL instance of
-				// a null context.}
-				throw new RuntimeException("EJ0a");
-			}
-		};
+			/* {@squirreljme.error EJ0a Cannot get the GL instance of
+			a null context.} */
+			throw new RuntimeException("EJ0a");
+		}
+	};
 	
 	/** This represents a null display. */
+	@Api
 	EGLDisplay EGL_NO_DISPLAY =
 		new EGLDisplay()
-		{
-		};
+	{
+	};
 	
 	/** This represents a null surface. */
+	@Api
 	EGLSurface EGL_NO_SURFACE =
 		new EGLSurface()
-		{
-		};
+	{
+	};
 	
 	/**
 	 * Specifies that the surface is capable of creating pixel buffer
 	 * surfaces.
 	 */
+	@Api
 	int EGL_PBUFFER_BIT =
 		1;
 	
 	/** Specifies that the surface is capable of creating pixmap surfaces. */
+	@Api
 	int EGL_PIXMAP_BIT =
 		2;
 	
+	@Api
 	int EGL_PRESERVED_RESOURCES =
 		12336;
 	
+	@Api
 	int EGL_READ =
 		12378;
 	
@@ -273,6 +323,7 @@ public interface EGL10
 	 *
 	 * Default 0.
 	 */
+	@Api
 	int EGL_RED_SIZE =
 		12324;
 	
@@ -281,6 +332,7 @@ public interface EGL10
 	 *
 	 * Default unspecified.
 	 */
+	@Api
 	int EGL_SAMPLES =
 		12337;
 	
@@ -290,9 +342,11 @@ public interface EGL10
 	 *
 	 * Default 0.
 	 */
+	@Api
 	int EGL_SAMPLE_BUFFERS =
 		12338;
 	
+	@Api
 	int EGL_SLOW_CONFIG =
 		12368;
 	
@@ -303,9 +357,11 @@ public interface EGL10
 	 *
 	 * Default 0.
 	 */
+	@Api
 	int EGL_STENCIL_SIZE =
 		12326;
 	
+	@Api
 	int EGL_SUCCESS =
 		12288;
 	
@@ -316,6 +372,7 @@ public interface EGL10
 	 *
 	 * Default {@link #EGL_WINDOW_BIT}.
 	 */
+	@Api
 	int EGL_SURFACE_TYPE =
 		12339;
 	
@@ -327,6 +384,7 @@ public interface EGL10
 	 *
 	 * Default {@link #EGL_DONT_CARE}.
 	 */
+	@Api
 	int EGL_TRANSPARENT_BLUE_VALUE =
 		12341;
 	
@@ -338,6 +396,7 @@ public interface EGL10
 	 *
 	 * Default {@link #EGL_DONT_CARE}.
 	 */
+	@Api
 	int EGL_TRANSPARENT_GREEN_VALUE =
 		12342;
 	
@@ -349,9 +408,11 @@ public interface EGL10
 	 *
 	 * Default {@link #EGL_DONT_CARE}.
 	 */
+	@Api
 	int EGL_TRANSPARENT_RED_VALUE =
 		12343;
 	
+	@Api
 	int EGL_TRANSPARENT_RGB =
 		12370;
 	
@@ -366,9 +427,11 @@ public interface EGL10
 	 *
 	 * Default {@link #EGL_NONE}.
 	 */
+	@Api
 	int EGL_TRANSPARENT_TYPE =
 		12340;
 	
+	@Api
 	int EGL_TRUE =
 		1;
 	
@@ -376,6 +439,7 @@ public interface EGL10
 	 * A value for {@link #eglQueryString(EGLDisplay, int)} that requests the
 	 * OpenGL ES vendor.
 	 */
+	@Api
 	int EGL_VENDOR =
 		12371;
 	
@@ -383,13 +447,16 @@ public interface EGL10
 	 * A value for {@link #eglQueryString(EGLDisplay, int)} that requests the
 	 * OpenGL ES version in the form of {@code major.minor vendor-specific}.
 	 */
+	@Api
 	int EGL_VERSION =
 		12372;
 	
+	@Api
 	int EGL_WIDTH =
 		12375;
 	
 	/** Supports creation of window surfaces. */
+	@Api
 	int EGL_WINDOW_BIT =
 		4;
 	
@@ -397,7 +464,8 @@ public interface EGL10
 	 * This returns an array of framebuffer configurations that match the
 	 * given input attributes.
 	 *
-	 * This method attempts to match all of the attributes that were specified.
+	 * This method attempts to match all of the attributes that were
+	 * specified.
 	 * All attributes start with a key and is followed by a value.
 	 *
 	 * If the attribute list is {@code null} or has {@link #EGL_NONE} as the
@@ -433,10 +501,10 @@ public interface EGL10
 	 * Conifgurations are sorted in the following order:
 	 *
 	 * 1. {@link #EGL_CONFIG_CAVEAT} with the order: {@link #EGL_NONE},
-	 *    {@link #EGL_SLOW_CONFIG}, then {@link #EGL_NON_CONFORMANT_CONFIG}.
+	 * {@link #EGL_SLOW_CONFIG}, then {@link #EGL_NON_CONFORMANT_CONFIG}.
 	 * 2. The number of bits for the red, green, blue, and alpha channels,
-	 *    higher is better. If the value is zero or {@link #EGL_DONT_CARE} then
-	 *    it is not considered.
+	 * higher is better. If the value is zero or {@link #EGL_DONT_CARE} then
+	 * it is not considered.
 	 * 3. Smaller {@link #EGL_BUFFER_SIZE}.
 	 * 4. Smaller {@link #EGL_SAMPLE_BUFFERS}.
 	 * 5. Smaller {@link #EGL_DEPTH_SIZE}.
@@ -469,38 +537,50 @@ public interface EGL10
 	 * is zero.
 	 * @since 2016/10/11
 	 */
+	@Api
 	boolean eglChooseConfig(EGLDisplay __disp, int[] __attrl,
 		EGLConfig[] __confs, int __confssize, int[] __numconf)
 		throws IllegalArgumentException;
 	
+	@Api
 	boolean eglCopyBuffers(EGLDisplay __a, EGLSurface __b, Object __c);
 	
+	@Api
 	EGLContext eglCreateContext(EGLDisplay __a, EGLConfig __b, EGLContext __c,
 		int[] __d);
 	
+	@Api
 	EGLSurface eglCreatePbufferSurface(EGLDisplay __a, EGLConfig __b,
 		int[] __c);
 	
+	@Api
 	EGLSurface eglCreatePixmapSurface(EGLDisplay __a, EGLConfig __b,
 		Object __c, int[] __d);
 	
+	@Api
 	EGLSurface eglCreateWindowSurface(EGLDisplay __a, EGLConfig __b,
 		Object __c, int[] __d);
 	
+	@Api
 	boolean eglDestroyContext(EGLDisplay __a, EGLContext __b);
 	
+	@Api
 	boolean eglDestroySurface(EGLDisplay __a, EGLSurface __b);
 	
+	@Api
 	boolean eglGetConfigAttrib(EGLDisplay __a, EGLConfig __b, int __c,
 		int[] __d);
 	
-	boolean eglGetConfigs(EGLDisplay __a, EGLConfig[] __b, int __c,
-	 int[] __d);
+	@Api
+	boolean eglGetConfigs(EGLDisplay __a, EGLConfig[] __b, int __c, int[] __d);
 	
+	@Api
 	EGLContext eglGetCurrentContext();
 	
+	@Api
 	EGLDisplay eglGetCurrentDisplay();
 	
+	@Api
 	EGLSurface eglGetCurrentSurface(int __a);
 	
 	/**
@@ -512,7 +592,7 @@ public interface EGL10
 	 * No error code is set.
 	 *
 	 * @param __nd The native display object to use, in SquirrelJME this will
-	 * be an instance of {@link javax.microedition.lcdui.Display}. This may
+	 * be an instance of {@link Display}. This may
 	 * be {@link #EGL_DEFAULT_DISPLAY} to use the default display.
 	 * @return The OpenGL ES Display for the given native display, or
 	 * {@code EGL_NO_DISPLAY} is returned on error.
@@ -520,6 +600,7 @@ public interface EGL10
 	 * not compatible with the OpenGL ES backend.
 	 * @since 2016/10/10
 	 */
+	@Api
 	EGLDisplay eglGetDisplay(Object __nd)
 		throws IllegalArgumentException;
 	
@@ -532,6 +613,7 @@ public interface EGL10
 	 * @return The error code.
 	 * @since 2016/10/11
 	 */
+	@Api
 	int eglGetError();
 	
 	/**
@@ -553,21 +635,24 @@ public interface EGL10
 	 *
 	 * @param __disp The display to initialize.
 	 * @param __ver An optional array of at least length 2 where the first
-	 * element is set to the major version number and the second element is set
+	 * element is set to the major version number and the second element is
+	 * set
 	 * to the minor version number.
 	 * @return {@code true} on success.
 	 * @throws IllegalArgumentException If {@code __disp} is {@code null} or
 	 * {@code __ver} is non-null and has a length lower than two.
 	 * @since 2016/10/11
 	 */
+	@Api
 	boolean eglInitialize(EGLDisplay __disp, int[] __ver)
 		throws IllegalArgumentException;
 	
+	@Api
 	boolean eglMakeCurrent(EGLDisplay __a, EGLSurface __b, EGLSurface __c,
 		EGLContext __d);
 	
-	boolean eglQueryContext(EGLDisplay __a, EGLContext __b, int __c,
-	 int[] __d);
+	@Api
+	boolean eglQueryContext(EGLDisplay __a, EGLContext __b, int __c, int[] __d);
 	
 	/**
 	 * Queries an implementation specific string from the specified display.
@@ -583,23 +668,28 @@ public interface EGL10
 	 *
 	 * @param __disp The display to query.
 	 * @param __key The key value to obtain.
-	 * @return The string value for the given display and variable or 
+	 * @return The string value for the given display and variable or
 	 * {@code null} on failure.
 	 * @throws IllegalArgumentException If {@code __disp} is {@code null}.
 	 * @since 2016/10/11
 	 */
+	@Api
 	String eglQueryString(EGLDisplay __disp, int __key)
 		throws IllegalArgumentException;
 	
-	boolean eglQuerySurface(EGLDisplay __a, EGLSurface __b, int __c,
-	 int[] __d);
+	@Api
+	boolean eglQuerySurface(EGLDisplay __a, EGLSurface __b, int __c, int[] __d);
 	
+	@Api
 	boolean eglSwapBuffers(EGLDisplay __a, EGLSurface __b);
 	
+	@Api
 	boolean eglTerminate(EGLDisplay __a);
 	
+	@Api
 	boolean eglWaitGL();
 	
+	@Api
 	boolean eglWaitNative(int __a, Object __b);
 }
 

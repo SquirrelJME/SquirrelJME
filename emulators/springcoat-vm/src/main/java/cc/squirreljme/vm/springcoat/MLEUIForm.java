@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -11,10 +11,13 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
+import cc.squirreljme.jvm.mle.brackets.UIDrawableBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
+import cc.squirreljme.jvm.mle.callbacks.UIDisplayCallback;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.UIDisplayObject;
 import cc.squirreljme.vm.springcoat.brackets.UIFormObject;
 import cc.squirreljme.vm.springcoat.brackets.UIItemObject;
@@ -29,30 +32,27 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 public enum MLEUIForm
 	implements MLEFunction
 {
-	/** Registers a display callback. */
-	CALLBACK_DISPLAY("callback:" +
-		"(Ljava/lang/Object;Lcc/squirreljme/jvm/mle/callbacks/" +
-		"UIDisplayCallback;)V")
+	/** {@link UIFormShelf#callback(UIDisplayBracket, UIDisplayCallback)}. */
+	CALLBACK_DISPLAY("callback:(" +
+		"Lcc/squirreljme/jvm/mle/brackets/UIDisplayBracket;" +
+		"Lcc/squirreljme/jvm/mle/callbacks/UIDisplayCallback;)V")
 	{
 		/**
 		 * {@inheritDoc}
-		 * @since 2020/10/03
+		 * @since 2023/01/14
 		 */
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			SpringObject ref = (SpringObject)__args[0];
-			if (ref == null || ref == SpringNullObject.NULL)
-				throw new SpringMLECallError("Null reference.");
+			UIDisplayObject display = MLEUIForm.__display(__args[0]);
 			
 			SpringObject callback = (SpringObject)__args[1];
 			if (callback == null || callback == SpringNullObject.NULL)
 				throw new SpringMLECallError("Null callback.");
 			
-			// The callback needs to be wrapped accordingly
-			UIFormShelf.callback(ref,
+			// The callback needs to be wrapped accordingly for SpringCoat
+			UIFormShelf.callback(display.display,
 				new UIDisplayCallbackAdapter(__thread.machine, callback));
-			
 			return null;
 		}
 	},
@@ -129,6 +129,19 @@ public enum MLEUIForm
 		}
 	},
 	
+	/** {@link UIFormShelf#displayShow(UIDisplayBracket, boolean)}. */ 
+	DISPLAY_SHOWZ("displayShow:(Lcc/squirreljme/jvm/mle/brackets/" +
+		"UIDisplayBracket;Z)V")
+	{
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			UIFormShelf.displayShow(MLEUIForm.__display(__args[0]).display,
+				(int)__args[1] != 0);
+			return null;
+		}
+	},
+	
 	/** {@link UIFormShelf#displayShow(UIDisplayBracket, UIFormBracket)}. */ 
 	DISPLAY_SHOW("displayShow:(Lcc/squirreljme/jvm/mle/brackets/" +
 		"UIDisplayBracket;Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;)V")
@@ -142,6 +155,23 @@ public enum MLEUIForm
 				(form == null || form == SpringNullObject.NULL ? null :
 				MLEUIForm.__form(__args[1]).form));
 			return null;
+		}
+	},
+	
+	/** {@link UIFormShelf#equals(UIDrawableBracket, UIDrawableBracket)}. */
+	EQUALS_DRAWABLE("equals:(Lcc/squirreljme/jvm/mle/brackets/" +
+		"UIDrawableBracket;Lcc/squirreljme/jvm/mle/brackets/" +
+		"UIDrawableBracket;)Z")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/01/14
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			return UIFormShelf.equals(MLEUIForm.__drawable(__args[0]),
+				MLEUIForm.__drawable(__args[1]));
 		}
 	},
 	
@@ -432,8 +462,8 @@ public enum MLEUIForm
 		}
 	},
 	
-	/** {@link UIFormShelf#later(int, int)}. */ 
-	LATER("later:(II)V")
+	/** {@link UIFormShelf#later(UIDisplayBracket, int)}. */ 
+	LATER("later:(Lcc/squirreljme/jvm/mle/brackets/UIDisplayBracket;I)V")
 	{
 		/**
 		 * {@inheritDoc}
@@ -442,13 +472,15 @@ public enum MLEUIForm
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			UIFormShelf.later((int)__args[0], (int)__args[1]);
+			UIFormShelf.later(MLEUIForm.__display(__args[0]).display,
+				(int)__args[1]);
 			return null;
 		}
 	},
 	
-	/** {@link UIFormShelf#metric(int)}. */
-	METRIC("metric:(I)I")
+	/** {@link UIFormShelf#metric(UIDisplayBracket, int)}. */
+	METRIC("metric:(Lcc/squirreljme/jvm/mle/brackets/UIDisplayBracket;" +
+		"I)I")
 	{
 		/**
 		 * {@inheritDoc}
@@ -457,9 +489,10 @@ public enum MLEUIForm
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			int metric = (int)__args[0];
+			int metric = (int)__args[1];
 			
-			return UIFormShelf.metric(metric);
+			return UIFormShelf.metric(MLEUIForm.__display(__args[0]).display,
+				metric);
 		}
 	},
 	
@@ -581,6 +614,25 @@ public enum MLEUIForm
 			throw new SpringMLECallError("Not a UIDisplayObject.");
 		
 		return (UIDisplayObject)__o;
+	}
+	
+	/**
+	 * Maps the drawable bracket.
+	 *
+	 * @param __arg The argument to map.
+	 * @return The drawable bracket.
+	 * @since 2023/01/13
+	 */
+	static UIDrawableBracket __drawable(Object __arg)
+	{
+		if (__arg instanceof UIFormObject)
+			return MLEUIForm.__form(__arg).form;
+		else if (__arg instanceof UIItemObject)
+			return MLEUIForm.__item(__arg).item;
+		else if (__arg instanceof UIDisplayObject)
+			return MLEUIForm.__display(__arg).display;
+		else
+			throw Debugging.todo(__arg.getClass().toString());
 	}
 	
 	/**

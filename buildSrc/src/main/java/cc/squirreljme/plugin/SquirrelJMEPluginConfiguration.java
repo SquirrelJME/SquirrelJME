@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import org.gradle.api.Project;
 import org.gradle.api.UnknownDomainObjectException;
+import org.iban4j.CountryCode;
 
 /**
  * Allows SquirrelJME specific parts of modules to be configured.
@@ -50,6 +51,15 @@ public class SquirrelJMEPluginConfiguration
 	
 	/** The vendor of the MIDlet or LIBlet. */
 	public String swmVendor;
+	
+	/** The original vendor of the API. */
+	public String originalApiVendor;
+	
+	/** The URL to the original vendor's homepage. */
+	public String originalApiVendorUrl;
+	
+	/** The country of origin for the original vendor. */
+	public CountryCode originalApiVendorCountry;
 	
 	/** Ignore in the launcher? */
 	public boolean ignoreInLauncher;
@@ -107,6 +117,18 @@ public class SquirrelJMEPluginConfiguration
 	
 	/** The main class for the boot loader. */
 	public String bootLoaderMainClass;
+	
+	/** Extra proguard options. */
+	public List<String> proGuardOptions =
+		new ArrayList<>();
+	
+	/** Extra proguard options, for testing. */
+	public List<String> proGuardOptionsTest =
+		new ArrayList<>();
+	
+	/** Extra proguard options, for test fixtures. */
+	public List<String> proGuardOptionsTestFixtures =
+		new ArrayList<>();
 	
 	/**
 	 * Initializes the configuration with the contained project.

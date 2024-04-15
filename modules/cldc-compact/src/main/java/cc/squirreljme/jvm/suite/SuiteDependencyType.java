@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -78,8 +78,8 @@ public enum SuiteDependencyType
 			case "service":		return SuiteDependencyType.SERVICE;
 			case "proprietary":	return SuiteDependencyType.PROPRIETARY;
 			
-				// {@squirreljme.error DG0a The specified string is not a valid
-				// dependency type. (The input string)}
+				/* {@squirreljme.error DG0a The specified string is not a valid
+				dependency type. (The input string)} */
 			default:
 				throw new InvalidSuiteException(
 					String.format("AR0a %s", __s));

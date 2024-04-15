@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -160,9 +160,73 @@ public interface NonStandardKey
 	byte VGAME_LCDUI_INSPECTOR =
 		-37;
 	
+	/** Number pad divide. */
+	byte NUMPAD_DIVIDE =
+		-38;
+	
+	/** Number pad multiply. */
+	byte NUMPAD_MULTIPLY =
+		-39;
+	
+	/** Number pad minus. */
+	byte NUMPAD_MINUS =
+		-40;
+	
+	/** Number pad plus. */
+	byte NUMPAD_PLUS =
+		-41;
+	
+	/** Number pad decimal. */
+	byte NUMPAD_DECIMAL =
+		-42;
+	
+	/** Number pad enter. */
+	byte NUMPAD_ENTER =
+		-43;
+	
+	/** Number pad 0. */
+	byte NUMPAD_0 =
+		-50;
+	
+	/** Number pad 1. */
+	byte NUMPAD_1 =
+		-51;
+	
+	/** Number pad 2. */
+	byte NUMPAD_2 =
+		-52;
+	
+	/** Number pad 3. */
+	byte NUMPAD_3 =
+		-53;
+	
+	/** Number pad 4. */
+	byte NUMPAD_4 =
+		-54;
+	
+	/** Number pad 5. */
+	byte NUMPAD_5 =
+		-55;
+	
+	/** Number pad 6. */
+	byte NUMPAD_6 =
+		-56;
+	
+	/** Number pad 7. */
+	byte NUMPAD_7 =
+		-57;
+	
+	/** Number pad 8. */
+	byte NUMPAD_8 =
+		-58;
+	
+	/** Number pad 9. */
+	byte NUMPAD_9 =
+		-59;
+	
 	/** F24. */
 	byte F24 =
-		-40;
+		-64;
 	
 	/** F1. */
 	byte F1 =

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -63,7 +63,7 @@ public class SwingItemButton
 			return;
 		
 		// Fake this as a key being pressed on this item
-		callback.eventKey(form, this, UIKeyEventType.COMMAND_ACTIVATED,
+		callback.eventKey(this, UIKeyEventType.COMMAND_ACTIVATED,
 			0, 0);
 	}
 	

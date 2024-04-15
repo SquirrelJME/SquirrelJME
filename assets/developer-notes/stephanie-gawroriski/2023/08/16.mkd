@@ -1,0 +1,15 @@
+# 2023/08/16
+
+## 09:49
+
+IntelliJ has this plugin called EmbeddedProjectJdk and it is great because I can
+define my own SquirrelJME SDK for the project. This basically makes things very
+convenient as basically:
+
+ * Context clicking on a JDK class goes to my API.
+ * Documentation shows the documentation as per my own API.
+ * Private and package-private fields in classes no longer show up as errors when
+   accessed, because these are specific to SquirrelJME.
+ * APIs that do not exist in CLDC 8 are no longer suggested so that means basically
+   that whenever I do `Collections` or otherwise, it does not suggest methods such
+   as `unmodifiableList()`.

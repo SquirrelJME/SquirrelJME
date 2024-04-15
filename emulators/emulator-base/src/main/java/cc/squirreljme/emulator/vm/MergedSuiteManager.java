@@ -3,15 +3,19 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.emulator.vm;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
+import net.multiphasicapps.collections.IdentityMap;
 
 /**
  * This is a suite manager which merges multiple suite managers into one so
@@ -24,6 +28,13 @@ public final class MergedSuiteManager
 {
 	/** The source managers. */
 	private final VMSuiteManager[] _sources;
+	
+	/** The library to ID mapping. */
+	private final Map<VMClassLibrary, Integer> _libToId =
+		new IdentityMap<>(new LinkedHashMap<>());
+	
+	/** The next library ID. */
+	private volatile int _nextLibId;
 	
 	/**
 	 * Initializes the merged suite manager.
@@ -45,6 +56,29 @@ public final class MergedSuiteManager
 				throw new NullPointerException("NARG");
 		
 		this._sources = __s;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/12/18
+	 */
+	@Override
+	public int libraryId(VMClassLibrary __lib)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__lib == null)
+			throw new NullPointerException("NARG");
+		
+		Map<VMClassLibrary, Integer> libToId = this._libToId;
+		synchronized (libToId)
+		{
+			Integer rv = libToId.get(__lib);
+			if (rv == null)
+				throw new IllegalArgumentException(
+					"Unknown library: " + __lib);
+			
+			return rv;
+		}
 	}
 	
 	/**
@@ -80,7 +114,18 @@ public final class MergedSuiteManager
 		{
 			VMClassLibrary rv = m.loadLibrary(__s);
 			if (rv != null)
+			{
+				// Do we need to initialize a library ID here?
+				Map<VMClassLibrary, Integer> libToId = this._libToId;
+				synchronized (libToId)
+				{
+					if (!libToId.containsKey(rv))
+						libToId.put(rv, ++this._nextLibId);
+				}
+				
+				// Use it
 				return rv;
+			}
 		}
 		
 		// Not found

@@ -3,17 +3,20 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.lang;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This is thrown when no class definition was found.
  *
  * @since 2018/12/04
  */
+@Api
 public class NoClassDefFoundError
 	extends LinkageError
 {
@@ -22,6 +25,7 @@ public class NoClassDefFoundError
 	 *
 	 * @since 2018/12/04
 	 */
+	@Api
 	public NoClassDefFoundError()
 	{
 	}
@@ -32,6 +36,7 @@ public class NoClassDefFoundError
 	 * @param __m The message.
 	 * @since 2018/12/04
 	 */
+	@Api
 	public NoClassDefFoundError(String __m)
 	{
 		super(__m);

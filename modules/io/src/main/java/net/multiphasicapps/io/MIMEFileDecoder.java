@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -332,16 +332,16 @@ public final class MIMEFileDecoder
 		{
 			BufferedReader in = this.in;
 			
-			// {@squirreljme.error BD1k Unexpected end of file while trying
-			// to read MIME header.}
+			/* {@squirreljme.error BD1k Unexpected end of file while trying
+			to read MIME header.} */
 			String ln = in.readLine();
 			if (ln == null)
 				throw new IOException("BD1k");
 			
 			// The header is in this format:
 			// begin-base64 <unixmode> <filename>
-			// {@squirreljme.error BD1l MIME encoded does not start with
-			// MIME header.}
+			/* {@squirreljme.error BD1l MIME encoded does not start with
+			MIME header.} */
 			if (!ln.startsWith("begin-base64"))
 				throw new IOException("BD1l");
 			
@@ -375,8 +375,8 @@ public final class MIMEFileDecoder
 		private boolean __readNext()
 			throws IOException
 		{
-			// {@squirreljme.error BD1m Unexpected EOF while read the MIME
-			// file data.}
+			/* {@squirreljme.error BD1m Unexpected EOF while read the MIME
+			file data.} */
 			String ln = this.in.readLine();
 			if (ln == null)
 				throw new IOException("BD1m");

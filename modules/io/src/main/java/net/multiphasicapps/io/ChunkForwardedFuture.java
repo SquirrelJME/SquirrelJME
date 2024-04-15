@@ -3,7 +3,7 @@
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -79,7 +79,7 @@ public final class ChunkForwardedFuture
 				if (this.zeroInit)
 					return 0;
 					
-				// {@squirreljme.error BD05 A future was never set.}
+				/* {@squirreljme.error BD05 A future was never set.} */
 				throw new IllegalStateException("BD05");
 			}
 			

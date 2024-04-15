@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -94,6 +94,29 @@ public abstract class Application
 	public abstract String loaderEntryClass();
 	
 	/**
+	 * Determines the class path for this application.
+	 *
+	 * @return The classpath for the application.
+	 * @since 2024/01/06
+	 */
+	public final JarPackageBracket[] classPath()
+	{
+		// Find libraries to base off
+		Library[] libraries = this._libraries.matchDependencies(
+			this.loaderDependencies(), true);
+		int numLibs = libraries.length;
+		
+		// Determine the class path used from this
+		JarPackageBracket[] classPath = new JarPackageBracket[numLibs + 1];
+		for (int i = 0; i < numLibs; i++)
+			classPath[i] = libraries[i].jar;
+		classPath[numLibs] = this.jar;
+		
+		// Return the resultant classpath
+		return classPath;
+	}
+	
+	/**
 	 * Returns the stream to the application icon data.
 	 * 
 	 * @return The stream for the application data or {@code null} if there is
@@ -128,17 +151,6 @@ public abstract class Application
 	 */
 	public final TaskBracket launch()
 	{
-		// Find libraries to base off
-		Library[] libraries = this._libraries.matchDependencies(
-			this.loaderDependencies(), true);
-		int numLibs = libraries.length;
-		
-		// Determine the class path used from this
-		JarPackageBracket[] classPath = new JarPackageBracket[numLibs + 1];
-		for (int i = 0; i < numLibs; i++)
-			classPath[i] = libraries[i].jar;
-		classPath[numLibs] = this.jar;
-		
 		// Load in any system properties that can be used or declared by
 		// the application
 		Map<String, String> inSysProps = this.loaderSystemProperties();
@@ -157,7 +169,7 @@ public abstract class Application
 		}
 		
 		// Have the task launch itself
-		return TaskShelf.start(classPath,
+		return TaskShelf.start(this.classPath(),
 			this.loaderEntryClass(),
 			this.loaderEntryArgs(),
 			sysProps,

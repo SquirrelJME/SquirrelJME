@@ -3,7 +3,7 @@
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -30,6 +30,7 @@ import org.gradle.api.internal.tasks.testing.TestClassRunInfo;
 import org.gradle.api.internal.tasks.testing.TestCompleteEvent;
 import org.gradle.api.internal.tasks.testing.TestResultProcessor;
 import org.gradle.api.internal.tasks.testing.TestStartEvent;
+import org.gradle.api.tasks.testing.TestFailure;
 import org.gradle.api.tasks.testing.TestOutputEvent;
 import org.gradle.api.tasks.testing.TestResult;
 import org.gradle.internal.id.IdGenerator;
@@ -123,29 +124,54 @@ public class VMTestFrameworkTestClassProcessor
 		VMTestFrameworkTestClass testClass =
 			new VMTestFrameworkTestClass(test);
 		
-		// If there is no variant, we need to search to see if we are trying
-		// to run a test that has variants
+		// Was there a match at all?
+		boolean match = false;
+		
 		Map<String, Set<VMTestFrameworkTestClass>> runTests = this.runTests;
-		if (testClass.variant == null)
+		for (String availableTest : this.availableTests.keySet())
 		{
-			for (String availableTest : this.availableTests.keySet())
-			{
-				VMTestFrameworkTestClass available =
-					new VMTestFrameworkTestClass(availableTest);
-				
-				// If this is the exact class use it, since it is not variant
-				// Or the base class name matches
-				if (testClass.normal.equals(available.normal) ||
-					testClass.className.equals(available.className))
-					runTests.computeIfAbsent(testClass.className,
-							(__k) -> new TreeSet<>())
-						.add(new VMTestFrameworkTestClass(availableTest));
-			}
+			VMTestFrameworkTestClass available =
+				new VMTestFrameworkTestClass(availableTest);
+			
+			// Belong to a different class, ignore completely
+			if (!testClass.className.equals(available.className))
+				continue;
+			
+			// Is this pure match?
+			boolean currentMatch = false;
+			currentMatch = testClass.normal.equals(available.normal);
+			
+			// Is there a variant match?
+			if (!currentMatch && testClass.variant != null)
+				currentMatch = testClass.variant.equals(available.variant);
+			
+			// We have a primary sub-variant which matches, but we asked for no
+			// secondary sub-variant and there is one... we want to grab it
+			if (!currentMatch && testClass.primarySubVariant != null)
+				currentMatch = testClass.primarySubVariant
+					.equals(available.primarySubVariant) &&
+					testClass.secondarySubVariant == null &&
+					available.secondarySubVariant != null;
+			
+			// We did not ask for a variant but there is one, so include the
+			// test
+			if (!currentMatch && testClass.variant == null &&
+				available.variant != null)
+				currentMatch = true;
+			
+			// Matched, so add the test
+			if (currentMatch)
+				runTests.computeIfAbsent(testClass.className,
+						(__k) -> new TreeSet<>())
+					.add(new VMTestFrameworkTestClass(availableTest));
+			
+			// Matching emits a match
+			match |= currentMatch;
 		}
 		
-		// Otherwise, always add this class since it has a known variant, and
-		// we want a precise test
-		else
+		// If there is no match and a variant was specified, we likely want
+		// a slightly different parameter
+		if (!match && testClass.variant != null)
 		{
 			// Remember class for later, sort by classes all together
 			runTests.computeIfAbsent(testClass.className,
@@ -215,6 +241,10 @@ public class VMTestFrameworkTestClassProcessor
 						break;
 				}
 				
+				// We do not know how to run the test, so do nothing
+				if (this.runParameters.get(testName.normal) == null)
+					continue;
+				
 				// Run test and get its result
 				TestResult.ResultType result = this.__runSingleTest(suiteDesc,
 					testName, classDesc);
@@ -243,8 +273,8 @@ public class VMTestFrameworkTestClassProcessor
 		if (finalResult == TestResult.ResultType.FAILURE)
 			VMTestFrameworkTestClassProcessor.resultAction(resultProcessor,
 				(__rp) -> __rp.failure(suiteDesc.getId(),
-					VMTestFrameworkTestClassProcessor
-						.messageThrow("Tests have failed.")));
+					TestFailure.fromTestFrameworkFailure(VMTestFrameworkTestClassProcessor
+						.messageThrow("Tests have failed."))));
 		
 		// Use the final result from all the test runs
 		VMTestFrameworkTestClassProcessor.resultAction(resultProcessor,
@@ -356,7 +386,7 @@ public class VMTestFrameworkTestClassProcessor
 				// Failed to start test
 				VMTestFrameworkTestClassProcessor.resultAction(resultProcessor,
 					(__rp) -> __rp.failure(__suiteDesc.getId(),
-						new Throwable("Failed to start test.")));
+						TestFailure.fromTestFrameworkFailure(new Throwable("Failed to start test."))));
 				
 				throw new RuntimeException(__e);
 			}
@@ -447,9 +477,9 @@ public class VMTestFrameworkTestClassProcessor
 			if (finalResult == TestResult.ResultType.FAILURE)
 				VMTestFrameworkTestClassProcessor.resultAction(resultProcessor,
 					(__rp) -> __rp.failure(methodDesc.getId(),
-						VMTestFrameworkTestClassProcessor 
+						TestFailure.fromTestFrameworkFailure(VMTestFrameworkTestClassProcessor
 							.messageThrow("Test failed: " +
-								__testName.normal)));
+								__testName.normal))));
 			
 			// Mark method as completed
 			VMTestFrameworkTestClassProcessor.resultAction(resultProcessor,

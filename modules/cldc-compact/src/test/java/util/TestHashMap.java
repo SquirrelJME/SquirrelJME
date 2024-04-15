@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -12,6 +12,7 @@ package util;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 import net.multiphasicapps.tac.TestRunnable;
 
 /**
@@ -111,6 +112,10 @@ public class TestHashMap
 		
 		// Check the size
 		this.secondary("dumpsize", map.size());
+		
+		// Two entry sets should be equal to each other
+		this.secondary("equalentrysets",
+			Objects.equals(map.entrySet(), map.entrySet()));
 		
 		// Search for entry by iterator
 		for (Iterator<Map.Entry<Integer, String>> it =

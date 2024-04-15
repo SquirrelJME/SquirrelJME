@@ -4,8 +4,9 @@ on: [push, pull_request]
 jobs:
   build:
     name: "Gradle Build and Test"
+    if: ${{ false }}
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
     - name: Build with Gradle
-      run: cmd /c gradlew build testHosted -x testSpringCoat -x javadoc -x javadocJar -x sourcesJar -x markdownJavaDoc --console plain --continue --parallel --no-daemon
+      run: cmd /c gradlew build testHosted -x testSpringCoat -x testSpringCoatDebug -x testSpringCoatRelease -x javadoc -x javadocJar -x sourcesJar -x markdownJavaDoc --console plain --continue --parallel --no-daemon

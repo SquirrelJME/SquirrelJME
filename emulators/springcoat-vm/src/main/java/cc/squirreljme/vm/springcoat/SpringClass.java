@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -174,8 +174,8 @@ public final class SpringClass
 			if (null != methods.put(m.nameAndType(),
 				(sm = new SpringMethod(name, m, filename, atIndex))))
 			{
-				// {@squirreljme.error BK0t Duplicated method in class. (The
-				// method)}
+				/* {@squirreljme.error BK0t Duplicated method in class. (The
+				method)} */
 				throw new SpringClassFormatException(name, String.format(
 					"BK0t %s", m.nameAndType()));
 			}
@@ -226,7 +226,7 @@ public final class SpringClass
 			// Where is this field located? At which index?
 			int atDx = (isinstance ? instanceFieldCount++ : --staticFieldAt);
 			
-			// {@squirreljme.error BK0u Duplicated field in class. (The field)}
+			/* {@squirreljme.error BK0u Duplicated field in class. (The field)} */
 			SpringField sf;
 			if (null != fields.put(f.nameAndType(),
 				(sf = new SpringField(name, f, atDx))))
@@ -626,7 +626,18 @@ public final class SpringClass
 	}
 	
 	/**
-	 * Checks if the given class is a super class of the this class.
+	 * Is this a primitive type?
+	 *
+	 * @return If this is a primitive type.
+	 * @since 2024/01/20
+	 */
+	public boolean isPrimitive()
+	{
+		return this.name.isPrimitive();
+	}
+	
+	/**
+	 * Checks if the given class is a super class of this class.
 	 *
 	 * @param __cl The class to check.
 	 * @return {@code true} if it is a superclass.
@@ -745,15 +756,15 @@ public final class SpringClass
 					return sc.lookupField(__static, __nat);
 			}
 			
-			// {@squirreljme.error BK0v The specified field does not exist.
-			// (The class which was looked in; The name and type of the field)}
+			/* {@squirreljme.error BK0v The specified field does not exist.
+			(The class which was looked in; The name and type of the field)} */
 			throw new SpringNoSuchFieldException(String.format("BK0v %s %s",
 				this.name, __nat));
 		}
 		
-		// {@squirreljme.error BK0w The specified field exists in the class
-		// however it does not match being static. (The class the field is in;
-		// The name and type of the method; If a static field was requested)}
+		/* {@squirreljme.error BK0w The specified field exists in the class
+		however it does not match being static. (The class the field is in;
+		The name and type of the method; If a static field was requested)} */
 		if (rv.isStatic() != __static)
 			throw new SpringIncompatibleClassChangeException(String.format(
 				"BK0w %s %s %s", this.name, __nat, __static));
@@ -830,16 +841,16 @@ public final class SpringClass
 		/*todo.DEBUG.note("Looking up method %s::%s (static=%b)", this.name,
 			__nat, __static);*/
 		
-		// {@squirreljme.error BK0x The specified method does not exist.
-		// (The class which was looked in; The name and type of the method)} 
+		/* {@squirreljme.error BK0x The specified method does not exist.
+		(The class which was looked in; The name and type of the method)} */ 
 		SpringMethod rv = this._methods.get(__nat);
 		if (rv == null)
 			throw new SpringNoSuchMethodException(String.format("BK0x %s %s",
 				this.name, __nat));
 		
-		// {@squirreljme.error BK0y The specified method exists in the class
-		// however it does not match being static. (The class the method is in;
-		// The name and type of the method; If a static method was requested)}
+		/* {@squirreljme.error BK0y The specified method exists in the class
+		however it does not match being static. (The class the method is in;
+		The name and type of the method; If a static method was requested)} */
 		if (rv.isStatic() != __static)
 			throw new SpringIncompatibleClassChangeException(String.format(
 				"BK0y %s %s %b", this.name, __nat, __static));
@@ -888,16 +899,16 @@ public final class SpringClass
 		/*todo.DEBUG.note("Looking up non-virtual method %s::%s.", this.name,
 			__nat);*/
 		
-		// {@squirreljme.error BK0z The specified method does not exist, when
-		// non-virtual lookup is used. (The class which was looked in; The
-		// name and type of the method)} 
+		/* {@squirreljme.error BK0z The specified method does not exist, when
+		non-virtual lookup is used. (The class which was looked in; The
+		name and type of the method)} */ 
 		SpringMethod rv = this._nonvirtmethods.get(__nat);
 		if (rv == null)
 			throw new SpringNoSuchMethodException(String.format("BK0z %s %s",
 				this.name, __nat));
 		
-		// {@squirreljme.error BK10 Non-virtual method lookup found a static
-		// method. (The class being looked in; The name and type requested)}
+		/* {@squirreljme.error BK10 Non-virtual method lookup found a static
+		method. (The class being looked in; The name and type requested)} */
 		if (rv.flags().isStatic())
 			throw new SpringIncompatibleClassChangeException(String.format(
 				"BK10 %s %s", this.name, __nat));
@@ -939,8 +950,8 @@ public final class SpringClass
 	{
 		synchronized (this)
 		{
-			// {@squirreljme.error BK11 Class attempted to be initialized
-			// twice. (This class)}
+			/* {@squirreljme.error BK11 Class attempted to be initialized
+			twice. (This class)} */
 			if (this._initialized)
 				throw new SpringVirtualMachineException(String.format(
 					"BK11 %s", this.name));

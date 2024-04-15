@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -37,9 +37,9 @@ public final class SuiteName
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error DG0e An illegal character was
-		// specified in the midlet suite name. (The midlet suite
-		// name)}
+		/* {@squirreljme.error DG0e An illegal character was
+		specified in the midlet suite name. (The midlet suite
+		name)} */
 		if (StringUtils.firstIndex("\0\r\n:;", __v) >= 0)
 			throw new InvalidSuiteException(String.format("AR0e %s", __v));
 		

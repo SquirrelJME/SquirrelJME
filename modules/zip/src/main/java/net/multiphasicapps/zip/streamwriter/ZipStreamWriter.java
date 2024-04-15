@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -112,8 +112,8 @@ public class ZipStreamWriter
 		if (this._closed)
 			return;
 		
-		// {@squirreljme.error BF16 Cannot close the ZIP writer because
-		// an entry is still being written.}
+		/* {@squirreljme.error BF16 Cannot close the ZIP writer because
+		an entry is still being written.} */
 		if (this._inner != null || this._outer != null)
 			throw new IOException("BF16");
 		
@@ -269,23 +269,23 @@ public class ZipStreamWriter
 		// Lock
 		LinkedList<__TOCEntry__> toc = this._toc;
 		
-		// {@squirreljme.error BF17 Cannot write new entry because the ZIP
-		// has been closed.}
+		/* {@squirreljme.error BF17 Cannot write new entry because the ZIP
+		has been closed.} */
 		if (this._closed)
 			throw new IOException("BF17");
 		
-		// {@squirreljme.error BF18 Cannot create a new entry for output
-		// because the previous entry has not be closed.}
+		/* {@squirreljme.error BF18 Cannot create a new entry for output
+		because the previous entry has not be closed.} */
 		if (this._inner != null || this._outer != null)
 			throw new IOException("BF18");
 		
-		// {@squirreljme.error BF19 A ZIP file cannot have more than
-		// 65536 entries.}
+		/* {@squirreljme.error BF19 A ZIP file cannot have more than
+		65536 entries.} */
 		if (toc.size() >= 65535)
 			throw new IOException("BF19");
 		
-		// {@squirreljme.error BF1a The length of the input file exceeds
-		// 65535 UTF-8 characters. (The filename length)}
+		/* {@squirreljme.error BF1a The length of the input file exceeds
+		65535 UTF-8 characters. (The filename length)} */
 		byte[] utfname = __name.getBytes("utf-8");
 		int fnn;
 		if ((fnn = utfname.length) > 65535)
@@ -359,8 +359,8 @@ public class ZipStreamWriter
 		__InnerOutputStream__ inner = this._inner;
 		__OuterOutputStream__ outer = this._outer;
 		
-		// {@squirreljme.error BF1b Cannot close entry because a current
-		// one is not being used.}
+		/* {@squirreljme.error BF1b Cannot close entry because a current
+		one is not being used.} */
 		if (inner == null || outer == null)
 			throw new IOException("BF1b");
 		
@@ -375,9 +375,9 @@ public class ZipStreamWriter
 		long uncomp = outer._size;
 		long comp = inner._size;
 		
-		// {@squirreljme.error BF1c Either one or both of the compressed
-		// or uncompressed file sizes exceeds 4GiB. (The uncompressed size;
-		// The compressed size)}
+		/* {@squirreljme.error BF1c Either one or both of the compressed
+		or uncompressed file sizes exceeds 4GiB. (The uncompressed size;
+		The compressed size)} */
 		if (uncomp >= ZipStreamWriter._MAX_FILE_SIZE || comp >= ZipStreamWriter._MAX_FILE_SIZE)
 			throw new IOException(String.format("BF1c %d %d", uncomp,
 				comp));
@@ -474,13 +474,13 @@ public class ZipStreamWriter
 		public void write(int __b)
 			throws IOException
 		{
-			// {@squirreljme.error BF1d Cannot write a single byte because
-			// the stream is closed.}
+			/* {@squirreljme.error BF1d Cannot write a single byte because
+			the stream is closed.} */
 			if (this.finished)
 				throw new IOException("BF1d");
 			
-			// {@squirreljme.error BF1e Cannot write a single byte because
-			// the ZIP entry would exceed 4GiB.}
+			/* {@squirreljme.error BF1e Cannot write a single byte because
+			the ZIP entry would exceed 4GiB.} */
 			int oldsize = this._size, newsize = oldsize + 1;
 			if (newsize < 0 || newsize < oldsize)
 				throw new IOException("BF1e");
@@ -505,13 +505,13 @@ public class ZipStreamWriter
 			if (__o < 0 || __l < 0 || (__o + __l) > n)
 				throw new IndexOutOfBoundsException("IOOB");
 			
-			// {@squirreljme.error BF1f Cannot write multiple bytes because
-			// the stream is closed.}
+			/* {@squirreljme.error BF1f Cannot write multiple bytes because
+			the stream is closed.} */
 			if (this.finished)
 				throw new IOException("BF1f");
 			
-			// {@squirreljme.error BF1g Cannot write multiple bytes because
-			// the ZIP entry would exceed 4GiB.}
+			/* {@squirreljme.error BF1g Cannot write multiple bytes because
+			the ZIP entry would exceed 4GiB.} */
 			int oldsize = this._size, newsize = oldsize + __l;
 			if (newsize < 0 || newsize < oldsize)
 				throw new IOException("BF1g");

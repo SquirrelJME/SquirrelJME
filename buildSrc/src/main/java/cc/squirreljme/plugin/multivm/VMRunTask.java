@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import javax.inject.Inject;
 import lombok.Getter;
 import org.gradle.api.DefaultTask;
@@ -21,38 +22,31 @@ import org.gradle.api.tasks.Internal;
  */
 public class VMRunTask
 	extends DefaultTask
-	implements VMExecutableTask
+	implements VMBaseTask, VMExecutableTask
 {
-	/** The source set used. */
+	/** The classifier used. */
 	@Internal
 	@Getter
-	protected final String sourceSet;
-	
-	/** The virtual machine type. */
-	@Internal
-	@Getter
-	protected final VMSpecifier vmType;
+	protected final SourceTargetClassifier classifier;
 	
 	/**
 	 * Initializes the task.
 	 * 
-	 * @param __sourceSet The source set to use.
-	 * @param __vmType The virtual machine type.
+	 * @param __classifier The classifier used.
 	 * @param __libTask The task used to create libraries, this may be directly
 	 * depended upon.
 	 * @since 2020/08/07
 	 */
 	@Inject
-	public VMRunTask(String __sourceSet,
-		VMSpecifier __vmType, VMLibraryTask __libTask)
+	public VMRunTask(SourceTargetClassifier __classifier,
+		VMLibraryTask __libTask)
 		throws NullPointerException
 	{
-		if (__sourceSet == null || __vmType == null || __libTask == null)
+		if (__classifier == null || __libTask == null)
 			throw new NullPointerException("NARG");
 		
 		// These are used when running
-		this.sourceSet = __sourceSet;
-		this.vmType = __vmType;
+		this.classifier = __classifier;
 		
 		// Set details of this task
 		this.setGroup("squirreljme");
@@ -62,13 +56,14 @@ public class VMRunTask
 		// depending on the dependencies along with the emulator being
 		// available as well
 		this.dependsOn(this.getProject().provider(
-			new VMRunDependencies(this, __sourceSet, __vmType)),
-			new VMEmulatorDependencies(this, __vmType));
+			new VMRunDependencies(this, __classifier)),
+			new VMEmulatorDependencies(this,
+				__classifier.getTargetClassifier()));
 		
 		// Only run if entry points are valid
 		this.onlyIf(new CheckForEntryPoints());
 		
 		// Performs the action of the task
-		this.doLast(new VMRunTaskAction(__sourceSet, __vmType));
+		this.doLast(new VMRunTaskAction(__classifier));
 	}
 }

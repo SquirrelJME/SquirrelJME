@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -11,6 +11,7 @@ package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import cc.squirreljme.plugin.general.UpdateFossilJavaDoc;
+import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import cc.squirreljme.plugin.tasks.AdditionalManifestPropertiesTask;
 import cc.squirreljme.plugin.tasks.GenerateTestsListTask;
 import cc.squirreljme.plugin.tasks.JasminAssembleTask;
@@ -28,10 +29,13 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.UnknownDomainObjectException;
 import org.gradle.api.file.FileCollection;
+import org.gradle.api.internal.AbstractTask;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.provider.Provider;
+import org.gradle.api.tasks.Delete;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskContainer;
+import org.gradle.api.tasks.bundling.AbstractArchiveTask;
 import org.gradle.api.tasks.javadoc.Javadoc;
 import org.gradle.api.tasks.testing.Test;
 import org.gradle.external.javadoc.CoreJavadocOptions;
@@ -205,6 +209,35 @@ public final class TaskInitialization
 		if (__project == null || __sourceSet == null || __vmType == null)
 			throw new NullPointerException("NARG");
 		
+		for (ClutterLevel clutterLevel : ClutterLevel.values())
+		{
+			// Only allow debug targets for this?
+			if (__vmType.allowOnlyDebug() && !clutterLevel.isDebug())
+				continue;
+			
+			// Initialize tasks
+			for (BangletVariant variant : __vmType.banglets())
+				TaskInitialization.initialize(__project,
+					new SourceTargetClassifier(__sourceSet, __vmType, variant,
+						clutterLevel));
+		}
+	}
+	
+	/**
+	 * Initializes the virtual machine for the given project's sourceset.
+	 * 
+	 * @param __project The project to initialize for.
+	 * @param __classifier The classifier used.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/08/07
+	 */
+	public static void initialize(Project __project,
+		SourceTargetClassifier __classifier)
+		throws NullPointerException
+	{
+		if (__project == null || __classifier == null)
+			throw new NullPointerException("NARG");
+		
 		// Everything will be working on these tasks
 		TaskContainer tasks = __project.getTasks();
 		
@@ -212,65 +245,149 @@ public final class TaskInitialization
 		try
 		{
 			__project.getConvention().getPlugin(JavaPluginConvention.class)
-				.getSourceSets().getByName(__sourceSet);
+				.getSourceSets().getByName(__classifier.getSourceSet());
 		}
 		catch (UnknownDomainObjectException e)
 		{
 			__project.getLogger().debug(String.format(
 				"Could not find sourceSet %s in project %s (available: %s)",
-				__sourceSet, __project.getPath(), new ArrayList<>(
+				__classifier.getSourceSet(), __project.getPath(),
+				new ArrayList<>(
 					__project.getConvention()
 					.getPlugin(JavaPluginConvention.class).getSourceSets())),
 				e);
 		}
 		
+		// The source library task depends on whether we are debugging or not
+		Jar sourceJar = VMHelpers.jarTask(__project,
+			__classifier.getSourceSet());
+		AbstractTask usedSourceJar;
+		
+		// If we are debugging, then we keep everything... otherwise we just
+		// strip everything out that we can to minimize the size as much as
+		// possible...
+		// Or it is just disabled completely
+		if (__classifier.getTargetClassifier().getClutterLevel().isDebug())
+			usedSourceJar = sourceJar;
+		
+		// Otherwise set up a new task to compact the Jar and remove any
+		// debugging information and unneeded symbols for execution.
+		else
+		{
+			// Look for that task first
+			String checkName = TaskInitialization.task("compactLib",
+				__classifier.getSourceSet());
+			AbstractTask maybe = (AbstractTask)tasks.findByName(checkName);
+			
+			// If it exists, use that one
+			if (maybe != null)
+				usedSourceJar = maybe;
+			
+			// Otherwise, create it
+			else
+			{
+				usedSourceJar = tasks.create(checkName,
+					VMCompactLibraryTask.class, __classifier.getSourceSet(),
+					sourceJar);
+			}
+		}
+		
 		// Library that needs to be constructed so execution happens properly
 		VMLibraryTask libTask = tasks.create(
-			TaskInitialization.task("lib", __sourceSet, __vmType),
-			VMLibraryTask.class, __sourceSet, __vmType);
+			TaskInitialization.task("lib", __classifier),
+			VMLibraryTask.class, __classifier, usedSourceJar);
 		
 		// Is dumping available?
-		if (__vmType.hasDumping())
+		if (__classifier.getVmType().hasDumping())
 			tasks.create(
-				TaskInitialization.task("dump", __sourceSet, __vmType),
-				VMDumpLibraryTask.class, __sourceSet, __vmType, libTask);
+				TaskInitialization.task("dump", __classifier),
+				VMDumpLibraryTask.class, __classifier, libTask);
 		
-		// Running the target
-		if (__sourceSet.equals(SourceSet.MAIN_SOURCE_SET_NAME))
-			tasks.create(
-				TaskInitialization.task("run", __sourceSet, __vmType),
-				VMRunTask.class, __sourceSet, __vmType, libTask);
-		
-		// Testing the target
-		else if (__sourceSet.equals(SourceSet.TEST_SOURCE_SET_NAME))
+		// Emulator targets, which run the VM with the resultant code
+		if (__classifier.getVmType().hasEmulator())
 		{
-			Task vmTest;
-			String taskName = TaskInitialization.task("test",
-				__sourceSet, __vmType);
-			
-			// Creating the legacy or modern test task? Using the modern one
-			// is recommended if using IntelliJ or otherwise...
-			if (TaskInitialization.LEGACY_TEST_FRAMEWORK)
-				vmTest = tasks.create(taskName,
-					VMLegacyTestTask.class, __sourceSet, __vmType, libTask);
-			else
-				vmTest = tasks.create(taskName,
-					VMModernTestTask.class, __sourceSet, __vmType, libTask);
-			
-			// Make the standard test task depend on these two VM tasks
-			// so that way if it is run, both are run accordingly
-			if (__vmType == VMType.HOSTED || __vmType == VMType.SPRINGCOAT)
+			// Running the target
+			if (__classifier.isMainSourceSet())
 			{
-				Test test = (Test)__project.getTasks().getByName("test");
+				tasks.create(
+					TaskInitialization.task("run", __classifier),
+					VMRunTask.class, __classifier, libTask);
+			}
+			
+			// Testing the target
+			else if (__classifier.isTestSourceSet())
+			{
+				Task vmTest;
+				String taskName = TaskInitialization.task("test",
+					__classifier);
 				
-				// Test needs this
-				test.dependsOn(vmTest);
+				// Creating the legacy or modern test task? Using the modern
+				// one is recommended if using IntelliJ or otherwise...
+				if (TaskInitialization.LEGACY_TEST_FRAMEWORK)
+					vmTest = tasks.create(taskName, VMLegacyTestTask.class,
+						__classifier, libTask);
+				else
+					vmTest = tasks.create(taskName, VMModernTestTask.class,
+						__classifier, libTask);
 				
-				// Gradle will think these are JUnit tests and then fail
-				// so exclude everything
-				test.setScanForTestClasses(false);
-				test.include();
-				test.exclude("**");
+				// Since there is a release and debug variant, have the base
+				// test refer to both of these
+				String bothName = TaskInitialization.task("test",
+					__classifier.getSourceSet(), __classifier.getVmType(),
+					__classifier.getBangletVariant(), null);
+				
+				// If the task is missing, create it
+				Test bothTest = (Test)__project.getTasks()
+					.findByName(bothName);
+				if (bothTest == null)
+				{
+					// Create a test task, so IDEs like IntelliJ can pick this
+					// up despite there being no actual tests that exist
+					bothTest = __project.getTasks().create(bothName,
+						Test.class);
+					
+					// Setup description of these
+					bothTest.setGroup("squirreljme");
+					
+					// Make sure the description makes sense
+					if (__classifier.getVmType().allowOnlyDebug())
+						bothTest.setDescription(
+							String.format("Alias for %s.", taskName));
+					else
+						bothTest.setDescription(
+							String.format("Runs both test tasks %s and %s.",
+								taskName, TaskInitialization.task(
+									"test",
+									__classifier.withClutterLevel(
+										__classifier.getTargetClassifier()
+											.getClutterLevel().opposite()))));
+					
+					// Gradle will think these are JUnit tests and then fail
+					// so exclude everything
+					bothTest.setScanForTestClasses(false);
+					bothTest.include();
+					bothTest.exclude("**");
+				}
+				
+				// Add to the both task as a dependency
+				bothTest.dependsOn(vmTest);
+				
+				// Make the standard test task depend on these two VM tasks
+				// so that way if it is run, both are run accordingly
+				if (__classifier.getVmType().isGoldTest())
+				{
+					Test test = (Test)__project.getTasks()
+						.getByName("test");
+					
+					// Test needs this
+					test.dependsOn(vmTest);
+					
+					// Gradle will think these are JUnit tests and then fail
+					// so exclude everything
+					test.setScanForTestClasses(false);
+					test.include();
+					test.exclude("**");
+				}
 			}
 		}
 	}
@@ -317,10 +434,13 @@ public final class TaskInitialization
 		if (__project == null)
 			throw new NullPointerException("NARG");
 		
-		for (VMType vmType : VMType.values())
-			for (String sourceSet : TaskInitialization._SOURCE_SETS)
-				TaskInitialization.initializeFullSuiteTask(__project,
-					sourceSet, vmType);
+		for (ClutterLevel clutterLevel : ClutterLevel.values())
+			for (VMType vmType : VMType.values())
+				for (BangletVariant variant : vmType.banglets())
+					for (String sourceSet : TaskInitialization._SOURCE_SETS)
+						TaskInitialization.initializeFullSuiteTask(__project,
+							new SourceTargetClassifier(sourceSet, vmType,
+								variant, clutterLevel));
 	}
 	
 	/**
@@ -329,22 +449,41 @@ public final class TaskInitialization
 	 * launching.
 	 * 
 	 * @param __project The root project.
-	 * @param __sourceSet Source set used.
-	 * @param __vmType The virtual machine type.
+	 * @param __classifier The classifier used.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/10/17
 	 */
 	private static void initializeFullSuiteTask(Project __project,
-		String __sourceSet, VMType __vmType)
+		SourceTargetClassifier __classifier)
 		throws NullPointerException
 	{
-		if (__project == null || __sourceSet == null || __vmType == null)
+		if (__project == null || __classifier == null)
 			throw new NullPointerException("NARG");
 		
-		// Standard ROM
+		// Is this a single source set ROM?
+		VMSpecifier vmType = __classifier.getVmType();
+		boolean isSingleSourceSetRom = vmType.isSingleSourceSetRom(
+			__classifier.getBangletVariant());
+		
+		// Do not run if there is no emulator
+		if (!__classifier.getVmType().hasEmulator())
+			return;
+		
+		// Standard run everything as one, only allow main and test source
+		// sets to be a candidate for full
+		if (!__classifier.isMainSourceSet() && !__classifier.isTestSourceSet())
+			return;
+		
+		// If this is a debug only target and the requested clutter level is
+		// not debugging, then do not make such a task
+		if (__classifier.getVmType().allowOnlyDebug() &&
+			!__classifier.getTargetClassifier().getClutterLevel().isDebug())
+			return;
+		
+		// Create task
 		__project.getTasks().create(
-			TaskInitialization.task("full", __sourceSet, __vmType),
-			VMFullSuite.class, __sourceSet, __vmType);
+			TaskInitialization.task("full", __classifier),
+			VMFullSuite.class, __classifier);
 	}
 	
 	/**
@@ -385,9 +524,12 @@ public final class TaskInitialization
 		
 		// We are using a specific classpath, in this case it is just
 		// SpringCoat's libraries for runtime
+		SourceTargetClassifier classifier = new SourceTargetClassifier(
+			SourceSet.MAIN_SOURCE_SET_NAME, VMType.SPRINGCOAT,
+			BangletVariant.NONE, ClutterLevel.DEBUG);
 		FileCollection useClassPath = __project.files(
 			(Object[])VMHelpers.runClassPath(__project,
-				SourceSet.MAIN_SOURCE_SET_NAME, VMType.SPRINGCOAT));
+				classifier));
 				
 		// We need to know how to make the classes
 		Task classes = __project.getTasks().getByName(TaskInitialization.task(
@@ -401,8 +543,8 @@ public final class TaskInitialization
 		// SpringCoat related tasks
 		Provider<Iterable<Task>> springCoatTasks = __project.provider(() ->
 			VMHelpers.<Task>resolveProjectTasks(
-			Task.class, __project, VMHelpers.runClassTasks(__project,
-			SourceSet.MAIN_SOURCE_SET_NAME, VMType.SPRINGCOAT)));
+				Task.class, __project, VMHelpers.runClassTasks(__project,
+				classifier)));
 		
 		// Classes need to compile first, and we need the doclet Jar too
 		// However we do not know it exists yet
@@ -539,44 +681,113 @@ public final class TaskInitialization
 			throw new NullPointerException("NARG");
 			
 		// Initialize or both main classes and such
-		for (String sourceSet : TaskInitialization._SOURCE_SETS)
-			for (VMType vmType : VMType.values())
-				TaskInitialization.romTasks(__project, sourceSet, vmType);
+		for (VMType vmType : VMType.values())
+		{
+			// Sequential clean storage?
+			List<Task> sequentialClean = new ArrayList<>();
+			
+			// Process for each possible combination
+			for (ClutterLevel clutterLevel : ClutterLevel.values())
+				for (String sourceSet : TaskInitialization._SOURCE_SETS)
+					for (BangletVariant variant : vmType.banglets())
+						TaskInitialization.romTasks(__project,
+							new SourceTargetClassifier(sourceSet, vmType,
+								variant, clutterLevel), sequentialClean);
+		}
 	}
 	
 	/**
 	 * Initializes ROM tasks for the given base project.
 	 * 
 	 * @param __project The root project.
-	 * @param __sourceSet The source set to use.
-	 * @param __vmType The virtual machine type used.
+	 * @param __classifier The classifier used.
+	 * @param __sequentialClean Sequential clean list.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/23
 	 */
-	private static void romTasks(Project __project, String __sourceSet,
-		VMType __vmType)
+	private static void romTasks(Project __project,
+		SourceTargetClassifier __classifier, List<Task> __sequentialClean)
 		throws NullPointerException
 	{
-		if (__project == null || __sourceSet == null || __vmType == null)
+		if (__project == null || __classifier == null ||
+			__sequentialClean == null)
 			throw new NullPointerException("NARG");
 			
 		// Everything will be working on these tasks
 		TaskContainer tasks = __project.getTasks();
 		
+		// Determine if this is a single source set ROM
+		VMSpecifier vmType = __classifier.getVmType();
+		boolean isSingleSourceSetRom = vmType.isSingleSourceSetRom(
+			__classifier.getBangletVariant());
+		
 		// Does the VM utilize ROMs?
 		// Test fixtures are just for testing, so there is no test fixtures
-		// ROM variant...
-		if (__vmType.hasRom() &&
-			!__sourceSet.equals(VMHelpers.TEST_FIXTURES_SOURCE_SET_NAME))
+		// ROM variant... unless we are a single source set ROM variant
+		if (vmType.hasRom(__classifier.getBangletVariant()) &&
+			(isSingleSourceSetRom || !__classifier.isTestFixturesSourceSet()))
 		{
 			String baseName = TaskInitialization.task("rom",
-				__sourceSet, __vmType);
-			VMRomTask rom = tasks.create(baseName,
-				VMRomTask.class, __sourceSet, __vmType);
+				__classifier);
+			VMRomTask rom = tasks.create(baseName, VMRomTask.class,
+				__classifier);
 			
-			// Full RatufaCoat Built-In
-			__project.getTasks().create(baseName + "RatufaCoat",
-				RatufaCoatBuiltInTask.class,  __sourceSet, __vmType, rom);
+			// Which native ports are supported?
+			for (NativePortSupport nativePort :
+				__classifier.getVmType().hasNativePortSupport())
+			{
+				Task nativeTask;
+				String taskName;
+				switch (nativePort)
+				{
+					case RATUFACOAT:
+						taskName = baseName + "RatufaCoat";
+						nativeTask = tasks.create(
+							taskName,
+							RatufaCoatBuiltInTask.class, __classifier, rom);
+						break;
+					
+					case NANOCOAT:
+						// Create task
+						taskName = baseName + "NanoCoat";
+						nativeTask = tasks.create(
+							taskName,
+							NanoCoatBuiltInTask.class,
+							__classifier, rom);
+						break;
+						
+					default:
+						throw new Error(nativePort.toString());
+				}
+				
+				// Setup cleaning task
+				Task cleanTask = nativePort.cleanTask(nativeTask,
+					__classifier);
+				
+				// Clean should call these accordingly
+				__project.afterEvaluate((__p) ->
+					cleanTask.getProject().getRootProject().getTasks()
+						.getByName("clean").dependsOn(cleanTask));
+				
+				// Does clean have to be done sequentially and not in
+				// parallel? This means the clean task is quite complicated
+				// and not easily determined, probably because it looks at
+				// all the ROM files.
+				if (isSingleSourceSetRom || nativePort.isSequentialClean())
+				{
+					// Have this task run after the previous clean task that
+					// was generated
+					if (!__sequentialClean.isEmpty())
+						cleanTask.mustRunAfter(__sequentialClean.get(
+							__sequentialClean.size() - 1));
+					
+					// Add self to the sequential clean list
+					__sequentialClean.add(cleanTask);
+				}
+				
+				// Clean, if it occurs, must happen before
+				nativeTask.mustRunAfter(cleanTask);
+			}
 		}
 	}
 	
@@ -660,11 +871,59 @@ public final class TaskInitialization
 		VMSpecifier __vmType)
 		throws NullPointerException
 	{
-		if (__name == null || __sourceSet == null || __vmType == null)
+		return TaskInitialization.task(__name, __sourceSet, __vmType,
+			BangletVariant.NONE, ClutterLevel.DEBUG);
+	}
+	
+	/**
+	 * Initializes the task name.
+	 * 
+	 * @param __name The name of the task.
+	 * @param __classifier The classifier for the target.
+	 * @return The task name.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/10/01
+	 */
+	public static String task(String __name,
+		SourceTargetClassifier __classifier)
+		throws NullPointerException
+	{
+		if (__name == null || __classifier == null)
+			throw new NullPointerException("NARG");
+		
+		return TaskInitialization.task(__name,
+			__classifier.getSourceSet(),
+			__classifier.getTargetClassifier().getVmType(),
+			__classifier.getTargetClassifier().getBangletVariant(),
+			__classifier.getTargetClassifier().getClutterLevel());
+	}
+	
+	/**
+	 * Builds a name for a task.
+	 * 
+	 * @param __name The task name.
+	 * @param __sourceSet The source set for the task base.
+	 * @param __vmType The type of virtual machine used.
+	 * @param __variant The banglet variant.
+	 * @param __clutterLevel Release or debug, may be {@code null}.
+	 * @return A string representing the task.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/10/01
+	 */
+	public static String task(String __name, String __sourceSet,
+		VMSpecifier __vmType, BangletVariant __variant,
+		ClutterLevel __clutterLevel)
+		throws NullPointerException
+	{
+		if (__name == null || __sourceSet == null || __vmType == null ||
+			__variant == null)
 			throw new NullPointerException("NARG");
 		
 		return TaskInitialization.task(__name, __sourceSet) +
-			__vmType.vmName(VMNameFormat.PROPER_NOUN);
+			__vmType.vmName(VMNameFormat.PROPER_NOUN) +
+			TaskInitialization.uppercaseFirst(__variant.properNoun) +
+			(__clutterLevel == null ? "" :
+				TaskInitialization.uppercaseFirst(__clutterLevel.toString()));
 	}
 	
 	/**

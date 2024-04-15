@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.multivm.ident.TargetClassifier;
 import java.io.File;
 import java.time.Instant;
 import java.util.HashSet;
@@ -17,7 +18,7 @@ import org.gradle.api.Task;
 import org.gradle.api.specs.Spec;
 
 /**
- * This is a check to determine if a task is up to date or not for the library
+ * This is a check to determine if a task is up-to-date or not for the library
  * compiler.
  *
  * @since 2020/11/28
@@ -25,23 +26,23 @@ import org.gradle.api.specs.Spec;
 public class VMLibraryTaskUpToDate
 	implements Spec<Task>
 {
-	/** The virtual machine to target. */
-	protected final VMSpecifier vmType;
+	/** The classifier used. */
+	protected final TargetClassifier classifier;
 	
 	/**
 	 * Initializes the task dependencies.
 	 * 
-	 * @param __vmType The virtual machine to target.
+	 * @param __classifier The classifier used.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/28
 	 */
-	public VMLibraryTaskUpToDate(VMSpecifier __vmType)
+	public VMLibraryTaskUpToDate(TargetClassifier __classifier)
 		throws NullPointerException
 	{
-		if (__vmType == null)
+		if (__classifier == null)
 			throw new NullPointerException("NARG");
 		
-		this.vmType = __vmType;
+		this.classifier = __classifier;
 	}
 	
 	/**
@@ -57,15 +58,15 @@ public class VMLibraryTaskUpToDate
 			taskOuts.add(Instant.ofEpochMilli(f.lastModified()));
 		
 		// Determine if any part of the compiler was not considered up-to-date
-		for (Task dep : this.vmType.processLibraryDependencies(
-			(VMExecutableTask)__task))
+		for (Task dep : this.classifier.getVmType().processLibraryDependencies(
+			(VMExecutableTask)__task, this.classifier.getBangletVariant()))
 		{
 			for (File f : dep.getOutputs().getFiles().getFiles())
 			{
 				Instant fileTime = Instant.ofEpochMilli(f.lastModified());
 				
 				// One of the JARs the compiler uses is newer than the JAR we
-				// made, so this is not up to date!
+				// made, so this is not up-to-date!
 				for (Instant taskOut : taskOuts)
 					if (fileTime.compareTo(taskOut) > 0)
 						return false;

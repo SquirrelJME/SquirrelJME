@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -12,41 +12,53 @@ package java.lang;
 import cc.squirreljme.jvm.SoftDouble;
 import cc.squirreljme.jvm.mle.MathShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public final class Double
 	extends Number
 	implements Comparable<Double>
 {
+	@Api
 	public static final int MAX_EXPONENT =
 		1023;
 	
+	@Api
 	public static final double MAX_VALUE =
 		+0x1.FFFFFFFFFFFFFp1023D;
 	
+	@Api
 	public static final int MIN_EXPONENT =
 		-1022;
 	
+	@Api
 	public static final double MIN_NORMAL =
 		+0x1.0p-1022D;
 	
+	@Api
 	public static final double MIN_VALUE =
 		+0x0.0000000000001p-1022D;
 	
+	@Api
 	public static final double NEGATIVE_INFINITY =
 		Double.longBitsToDouble(-4503599627370496L);
 	
+	@Api
 	public static final double NaN =
 		Double.longBitsToDouble(9221120237041090560L);
 	
+	@Api
 	public static final double POSITIVE_INFINITY =
 		Double.longBitsToDouble(9218868437227405312L);
 	
 	/** The number of bits double requires for storage. */
+	@Api
 	public static final int SIZE =
 		64;
 	
 	/** The class representing the primitive type. */
+	@Api
 	public static final Class<Double> TYPE =
 		TypeShelf.<Double>typeToClass(TypeShelf.typeOfDouble());
 	
@@ -59,11 +71,13 @@ public final class Double
 	 * @param __v The value to set.
 	 * @since 2022/01/06
 	 */
+	@Api
 	public Double(double __v)
 	{
 		this._value = __v;
 	}
 	
+	@Api
 	public Double(String __a)
 		throws NumberFormatException
 	{
@@ -160,6 +174,7 @@ public final class Double
 		return (int)this._value;
 	}
 	
+	@Api
 	public boolean isInfinite()
 	{
 		throw Debugging.todo();
@@ -171,6 +186,7 @@ public final class Double
 	 * @return If this is the NaN value.
 	 * @since 2022/01/06
 	 */
+	@Api
 	public boolean isNaN()
 	{
 		return Double.isNaN(this._value);
@@ -202,6 +218,7 @@ public final class Double
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static int compare(double __a, double __b)
 	{
 		throw Debugging.todo();
@@ -215,6 +232,7 @@ public final class Double
 	 * @return The bits for the value.
 	 * @since 2018/11/04
 	 */
+	@Api
 	public static long doubleToLongBits(double __v)
 	{
 		long raw = Double.doubleToRawLongBits(__v);
@@ -233,11 +251,13 @@ public final class Double
 	 * @return The raw bits for the value.
 	 * @since 2018/11/03
 	 */
+	@Api
 	public static long doubleToRawLongBits(double __v)
 	{
 		return MathShelf.rawDoubleToLong(__v);
 	}
 	
+	@Api
 	public static boolean isInfinite(double __a)
 	{
 		throw Debugging.todo();
@@ -250,6 +270,7 @@ public final class Double
 	 * @return If it is NaN or not.
 	 * @since 2022/01/06
 	 */
+	@Api
 	public static boolean isNaN(double __v)
 	{
 		return SoftDouble.isNaN(Double.doubleToRawLongBits(__v));
@@ -266,11 +287,13 @@ public final class Double
 	 * @return The resulting double.
 	 * @since 2018/11/03
 	 */
+	@Api
 	public static double longBitsToDouble(long __b)
 	{
 		return MathShelf.rawLongToDouble(__b);
 	}
 	
+	@Api
 	public static double parseDouble(String __a)
 		throws NumberFormatException
 	{
@@ -279,11 +302,13 @@ public final class Double
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static String toString(double __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static Double valueOf(String __a)
 		throws NumberFormatException
 	{
@@ -300,6 +325,7 @@ public final class Double
 	 * @since 2022/01/06
 	 */
 	@SuppressWarnings("UnnecessaryBoxing")
+	@Api
 	public static Double valueOf(double __v)
 	{
 		return new Double(__v);

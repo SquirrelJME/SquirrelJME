@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -55,6 +55,9 @@ public final class ClassFile
 	/** The interfaces this class implements. */
 	protected final ClassNames interfaces;
 	
+	/** The constant pool of the class. */
+	protected final Pool pool;
+	
 	/** The fields within this class. */
 	private final Field[] _fields;
 	
@@ -74,13 +77,15 @@ public final class ClassFile
 	 * @param __icl Defined inner classes.
 	 * @param __at Annotations that are declared on the class.
 	 * @param __sfn Source file name.
+	 * @param __pool The constant pool.
 	 * @throws InvalidClassFormatException If the class is not valid.
 	 * @throws NullPointerException On null arguments, except for {@code __sn}.
 	 * @since 2017/09/26
 	 */
 	ClassFile(ClassVersion __ver, ClassFlags __cf, ClassName __tn,
 		ClassName __sn, ClassName[] __in, Field[] __fs, Method[] __ms,
-		InnerClasses __icl, AnnotationTable __at, String __sfn)
+		InnerClasses __icl, AnnotationTable __at, String __sfn,
+		Pool __pool)
 		throws InvalidClassFormatException, NullPointerException
 	{
 		if (__ver == null || __cf == null || __tn == null ||
@@ -95,11 +100,11 @@ public final class ClassFile
 				if (f == null)
 					throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JC29 Either Object has a superclass which it
-		// cannot extend any class or any other class does not have a super
-		// class. Additionally primitive types cannot have a super class.
-		// (The current class name; The super class name; Object class name;
-		// Is this primitive?)}
+		/* {@squirreljme.error JC29 Either Object has a superclass which it
+		cannot extend any class or any other class does not have a super
+		class. Additionally primitive types cannot have a super class.
+		(The current class name; The super class name; Object class name;
+		Is this primitive?)} */
 		ClassName objectcn = new ClassName("java/lang/Object");
 		if ((__tn.isPrimitive() ||
 			__tn.equals(objectcn)) != (__sn == null))
@@ -118,6 +123,7 @@ public final class ClassFile
 		this._fields = __fs;
 		this._methods = __ms;
 		this.sourcefilename = __sfn;
+		this.pool = __pool;
 	}
 	
 	/**
@@ -182,6 +188,17 @@ public final class ClassFile
 	public final Method[] methods()
 	{
 		return this._methods.clone();
+	}
+	
+	/**
+	 * Returns the constant pool.
+	 *
+	 * @return The constant pool.
+	 * @since 2024/01/20
+	 */
+	public final Pool pool()
+	{
+		return this.pool;
 	}
 	
 	/**
@@ -265,8 +282,8 @@ public final class ClassFile
 		if (__d == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JC2a Cannot create a special class because it
-		// is not an array or primitive type. (The descriptor)}
+		/* {@squirreljme.error JC2a Cannot create a special class because it
+		is not an array or primitive type. (The descriptor)} */
 		if (!__d.isArray() && !__d.isPrimitive())
 			throw new IllegalArgumentException(String.format("JC2a %s", __d));
 		
@@ -289,7 +306,7 @@ public final class ClassFile
 		return new ClassFile(ClassVersion.MAX_VERSION, cflags, name,
 			(isPrimitive ? null : new ClassName("java/lang/Object")),
 			new ClassName[0], new Field[0], methods, new InnerClasses(),
-			new AnnotationTable(), "<special>");
+			new AnnotationTable(), "<special>", null);
 	}
 	
 	/**
@@ -311,16 +328,16 @@ public final class ClassFile
 		if (__is == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JC2b The magic number for the class is not
-		// valid. (The read magic number; The expected magic number)}
+		/* {@squirreljme.error JC2b The magic number for the class is not
+		valid. (The read magic number; The expected magic number)} */
 		DataInputStream in = new DataInputStream(__is);
 		int magic = in.readInt();
 		if (magic != ClassFile._MAGIC_NUMBER)
 			throw new InvalidClassFormatException(String.format(
 				"JC2b %08x %08x", magic, ClassFile._MAGIC_NUMBER));
 		
-		// {@squirreljme.error JC2c The version number of the input class
-		// file is not valid. (The version number)}
+		/* {@squirreljme.error JC2c The version number of the input class
+		file is not valid. (The version number)} */
 		int cver = in.readShort() | (in.readShort() << 16);
 		ClassVersion version = ClassVersion.findVersion(cver);
 		if (version == null)
@@ -364,8 +381,8 @@ public final class ClassFile
 		// Parse inner classes
 		InnerClasses innerclasses = InnerClasses.parse(pool, attrs);
 		
-		// {@squirreljme.error JC2d Expected end of the class to follow the
-		// attributes in the class. (The name of this class)}
+		/* {@squirreljme.error JC2d Expected end of the class to follow the
+		attributes in the class. (The name of this class)} */
 		if (in.read() >= 0)
 			throw new InvalidClassFormatException(
 				String.format("JC2d %s", thisname));
@@ -383,7 +400,7 @@ public final class ClassFile
 		// Build
 		return new ClassFile(version, classflags, thisname, supername,
 			interfaces, fields, methods, innerclasses, annotations,
-			sourcefilename);
+			sourcefilename, pool);
 	}
 	
 	/**
@@ -412,8 +429,8 @@ public final class ClassFile
 		__aname[0] = __pool.<UTFConstantEntry>require(UTFConstantEntry.class,
 			__in.readUnsignedShort()).toString();
 		
-		// {@squirreljme.error JC2e Attribute exceeds 2GiB in length. (The
-		// size of the attribute)}
+		/* {@squirreljme.error JC2e Attribute exceeds 2GiB in length. (The
+		size of the attribute)} */
 		int len = __in.readInt();
 		if (len < 0)
 			throw new InvalidClassFormatException(String.format("JC2e %d",

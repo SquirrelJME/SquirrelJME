@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -169,9 +169,9 @@ public final class Base64Decoder
 		if (__in == null || __chars == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error BD0g The alphabet to use for the base64
-		// decoder must be 64 characters plus one padding character.
-		// (The character count)}
+		/* {@squirreljme.error BD0g The alphabet to use for the base64
+		decoder must be 64 characters plus one padding character.
+		(The character count)} */
 		int n;
 		if ((n = __chars.length) != 65)
 			throw new IllegalArgumentException(String.format("BD0g %d", n));
@@ -347,9 +347,9 @@ public final class Base64Decoder
 			// Is EOF?
 			if (ch < 0)
 			{
-				// {@squirreljme.error BD01 Read EOF from input when there
-				// were expected to be more characters or the ending padding
-				// character. (The bits in the buffer)}
+				/* {@squirreljme.error BD01 Read EOF from input when there
+				were expected to be more characters or the ending padding
+				character. (The bits in the buffer)} */
 				if (bits != 0)
 					throw new IOException("BD01 " + bits);
 				
@@ -379,8 +379,8 @@ public final class Base64Decoder
 			// Decoded padding character
 			else if (ch == 64)
 			{
-				// {@squirreljme.error BD02 Did not expect a padding character.
-				// (The number of decoded bits in queue)}
+				/* {@squirreljme.error BD02 Did not expect a padding character.
+				(The number of decoded bits in queue)} */
 				if (bits == 0 || bits == 24)
 					throw new IOException("BD02 " + bits);
 				
@@ -388,8 +388,8 @@ public final class Base64Decoder
 				// all that is valid
 				else if (bits < 16)
 				{
-					// {@squirreljme.error BD03 Expected another padding
-					// character.}
+					/* {@squirreljme.error BD03 Expected another padding
+					character.} */
 					if (in.read() != alphabet[64])
 						throw new IOException("BD03");
 					
@@ -516,7 +516,7 @@ public final class Base64Decoder
 			return baos.toByteArray();
 		}
 		
-		// {@squirreljme.error BD04 Could not decode the input string.}
+		/* {@squirreljme.error BD04 Could not decode the input string.} */
 		catch (IOException e)
 		{
 			throw new IllegalArgumentException("BD04", e);

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import javax.microedition.io.Connector;
 import javax.microedition.io.SocketConnection;
+import javax.microedition.io.StreamConnection;
 
 /**
  * This class manages the HTTP connection data and is able to encode and
@@ -32,6 +33,9 @@ public final class HTTPAgent
 	/** The state tracker. */
 	protected final HTTPStateTracker tracker;
 	
+	/** The connector used. */
+	protected final HTTPAgentConnector connector;
+	
 	/** The HTTP response. */
 	HTTPResponse _response;
 	
@@ -40,10 +44,12 @@ public final class HTTPAgent
 	 *
 	 * @param __addr The address.
 	 * @param __t The state tracker.
+	 * @param __connector The connector used for connections.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/13
 	 */
-	public HTTPAgent(HTTPAddress __addr, HTTPStateTracker __t)
+	public HTTPAgent(HTTPAddress __addr, HTTPStateTracker __t,
+		HTTPAgentConnector __connector)
 		throws NullPointerException
 	{
 		if (__addr == null || __t == null)
@@ -51,6 +57,7 @@ public final class HTTPAgent
 		
 		this.address = __addr;
 		this.tracker = __t;
+		this.connector = __connector;
 	}
 	
 	/**
@@ -69,8 +76,8 @@ public final class HTTPAgent
 		
 		// Open connection to remote server
 		byte[] response;
-		try (SocketConnection socket = (SocketConnection)Connector.open(
-			"socket://" + this.address.ipaddr))
+		try (StreamConnection socket =
+			 this.connector.connectStream(this.address))
 		{
 			// Connect to remote system and send all the HTTP data and
 			// read it as well

@@ -5,5 +5,6 @@
  * @since 2014/07/26
  */
 
+@org.jetbrains.annotations.ApiStatus.Internal
 package net.multiphasicapps.jsr353;
 

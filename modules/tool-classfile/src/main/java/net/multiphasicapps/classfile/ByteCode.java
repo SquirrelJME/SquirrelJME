@@ -3,22 +3,28 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package net.multiphasicapps.classfile;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.debug.ErrorCode;
+import cc.squirreljme.runtime.cldc.util.IntegerArrayList;
+import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -32,7 +38,7 @@ public final class ByteCode
 	implements Iterable<Instruction>
 {
 	/** The code is always at this offset. */
-	static final int _CODE_OFFSET =
+	public static final int CODE_OFFSET =
 		8;
 	
 	/** The maximum number of bytes the byte code may be. */
@@ -69,6 +75,9 @@ public final class ByteCode
 	/** Is this an instance method? */
 	protected final boolean isinstance;
 	
+	/** Local variable table. */
+	protected final LocalVariableTable localVariables;
+	
 	/** The input attribute code, used for instruction lookup. */
 	private final byte[] _rawByteCode;
 	
@@ -99,12 +108,15 @@ public final class ByteCode
 	/** The stack map table cache. */
 	private Reference<StackMapTable> _smt;
 	
+	/** Stack map at runtime. */
+	private Reference<StackMapTablePairs> _stackMapRunTime;
+	
 	/**
 	 * Initializes the byte code.
 	 *
 	 * @param __mr The owning method reference.
 	 * @param __ca The raw code attribute data.
-	 * @param __tt The this type.
+	 * @param __tt The current {@code this} type.
 	 * @param __mf Method flags.
 	 * @throws InvalidClassFormatException If the byte code is not valid.
 	 * @throws NullPointerException On null arguments.
@@ -136,54 +148,54 @@ public final class ByteCode
 			new ByteArrayInputStream(__ca)))
 		{
 			// The number of variables allocated to the method
-			int maxstack = in.readUnsignedShort(),
-				maxlocals = in.readUnsignedShort();
+			int maxStack = in.readUnsignedShort();
+			int maxLocals = in.readUnsignedShort();
 				
-			// {@squirreljme.error JC1y The specified code length is not valid.
-			// (The code length)}
-			int codelen = in.readInt();
-			if (codelen <= 0 || codelen > ByteCode._MAX_CODE_LENGTH)
+			/* {@squirreljme.error JC1y The specified code length is not valid.
+			(The code length)} */
+			int codeLen = in.readInt();
+			if (codeLen <= 0 || codeLen > ByteCode._MAX_CODE_LENGTH)
 				throw new InvalidClassFormatException(
-					String.format("JC1y %d", codelen));
+					String.format("JC1y %d", codeLen));
 		
 			// Ignore that many bytes
-			for (int i = 0; i < codelen; i++)
+			for (int i = 0; i < codeLen; i++)
 				in.readByte();
 			
 			// Read exception handler table
 			ExceptionHandlerTable eht = ExceptionHandlerTable.decode(in, pool,
-				codelen);
+				codeLen);
 			
 			// The instruction index is used to lookup using a linear index
 			// count rather than the potentially spaced out address lookup
-			int[] index = new int[codelen];
+			int[] index = new int[codeLen];
 			int indexat = 0;
 		
 			// Set all lengths initially to invalid positions, this used as a
 			// quick marker to determine which positions have valid
 			// instructions
-			int[] lengths = new int[codelen];
-			for (int i = 0; i < codelen; i++)
+			int[] lengths = new int[codeLen];
+			for (int i = 0; i < codeLen; i++)
 				lengths[i] = -1;
 		
 			// Determine instruction lengths for each position
-			int[] ollastop = new int[]{-1};
-			for (int i = 0, li = -1; i < codelen; li = i)
+			for (int i = 0, li = -1; i < codeLen; li = i)
 			{
 				// Store address of instruction for an index based lookup
 				index[indexat++] = i;
 			
 				// Store length
-				int oplen;
-				lengths[i] = (oplen = ByteCode.__opLength(__ca, i, ollastop));
+				int opLen = ByteCodeUtils.instructionLength(__ca,
+					ByteCode.CODE_OFFSET, i, null);
+				lengths[i] = opLen;
 			
-				// {@squirreljme.error JC1z The operation exceeds the bounds of
-				// the method byte code. (The operation pointer; The operation
-				// length; The code length; The last operation pointer)}
-				if ((i += oplen) > codelen)
+				/* {@squirreljme.error JC1z The operation exceeds the bounds of
+				the method byte code. (The operation pointer; The operation
+				length; The code length; The last operation pointer)} */
+				if ((i += opLen) > codeLen)
 					throw new InvalidClassFormatException(
 						String.format("JC1z %d %d %d %d",
-							i, oplen, codelen, li));
+							i, opLen, codeLen, li));
 			}
 			
 			// The stack map table is used for verification
@@ -220,8 +232,8 @@ public final class ByteCode
 			}
 			
 			// Initialize a blank line number table
-			short[] lnt = new short[codelen];
-			for (int i = 0; i < codelen; i++)
+			short[] lnt = new short[codeLen];
+			for (int i = 0; i < codeLen; i++)
 				lnt[i] = -1;
 			
 			// Parse the line number table for debug purposes
@@ -241,7 +253,7 @@ public final class ByteCode
 						// Failed to read the program address, this could be
 						// a failure but instead just ignore it and continue
 						// on
-						if (pc < 0 || pc >= codelen)
+						if (pc < 0 || pc >= codeLen)
 							continue;
 						
 						// This gets handled later, but if there is more than
@@ -251,27 +263,32 @@ public final class ByteCode
 					}
 				}
 			
+			// Parse local variables
+			LocalVariableTable localVariables =
+				LocalVariableTable.parse(pool, attrs);
+			
 			// Can set fields now
-			this.maxstack = maxstack;
-			this.maxlocals = maxlocals;
-			this.codelen = codelen;
+			this.maxstack = maxStack;
+			this.maxlocals = maxLocals;
+			this.codelen = codeLen;
 			this.exceptions = eht;
 			this.pool = pool;
 			this.thistype = __tt;
 			this._smtdata = smt;
 			this._newsmtdata = smtnew;
 			this._lengths = lengths;
-			this._icache = ByteCode.__newCache(codelen);
+			this._icache = ByteCode.__newCache(codeLen);
 			this._linenumbertable = lnt;
+			this.localVariables = localVariables;
 			
 			// Store addresses for all the indexes
-			if (indexat == codelen)
+			if (indexat == codeLen)
 				this._index = index;
 			else
 				this._index = Arrays.copyOf(index, indexat);
 		}
 		
-		// {@squirreljme.error JC20 Failed to read from the code attribute.}
+		/* {@squirreljme.error JC20 Failed to read from the code attribute.} */
 		catch (IOException e)
 		{
 			throw new InvalidClassFormatException("JC20", e);
@@ -283,7 +300,8 @@ public final class ByteCode
 	 *
 	 * @param __a The following address.
 	 * @return The instruction address following the instruction at the
-	 * specified address.
+	 * specified address, if the next address is at the end then this will
+	 * return an address after the last operation.
 	 * @throws InvalidClassFormatException If the specified address
 	 * is not valid.
 	 * @since 2017/05/20
@@ -291,13 +309,17 @@ public final class ByteCode
 	public int addressFollowing(int __a)
 		throws InvalidClassFormatException
 	{
-		// {@squirreljme.error JC21 The instruction at the specified address is
-		// not valid. (The address)}
+		/* {@squirreljme.error JC21 The instruction at the specified address is
+		not valid. (The address)} */
 		if (!this.isValidAddress(__a))
 			throw new InvalidClassFormatException(
 				String.format("JC21 %d", __a));
 		
-		return __a + this._lengths[__a];
+		int result = __a + this._lengths[__a];
+		if (result >= this._lengths.length)
+			return this._lengths.length;
+		
+		return result;
 	}
 	
 	/**
@@ -345,11 +367,35 @@ public final class ByteCode
 	public Instruction getByAddress(int __a)
 		throws InvalidClassFormatException
 	{
-		// {@squirreljme.error JC22 The instruction at the specified address is
-		// not valid. (The address)}
+		/* {@squirreljme.error JC22 The instruction at the specified address is
+		not valid. (The address)} */
 		if (!this.isValidAddress(__a))
+		{
+			Reference<Instruction>[] iCache = this._icache;
+			int numCache = iCache.length;
+			Instruction[] cache = new Instruction[numCache];
+			for (int i = 0; i < numCache; i++)
+				if (i == __a || iCache[i] != null ||
+					!this.isValidAddress(i))
+					cache[i] = (iCache[i] != null ? iCache[i].get() : null);
+				else
+					try
+					{
+						cache[i] = this.getByAddress(i);
+					}
+					catch (Throwable __ignored)
+					{
+						// Ignored
+					}
+			
 			throw new InvalidClassFormatException(
-				String.format("JC22 %d", __a));
+				ErrorCode.__error__("JC22", __a,
+					this.__method().inClass(),
+					this.methodname, this.methodtype,
+					new IntegerArrayList(this._lengths),
+					new IntegerArrayList(this._index),
+					Arrays.asList(cache)));
+		}
 		
 		Reference<Instruction>[] icache = this._icache;
 		Reference<Instruction> ref = icache[__a];
@@ -358,7 +404,8 @@ public final class ByteCode
 		if (ref == null || null == (rv = ref.get()))
 			icache[__a] = new SoftReference<>((rv = new Instruction(
 				this._rawByteCode, this.pool, __a, this.exceptions,
-				this.stackMapTable(), this.addressFollowing(__a))));
+				this.stackMapTable(), this.addressFollowing(__a),
+				this.addressToIndex(__a))));
 		
 		return rv;
 	}
@@ -573,6 +620,17 @@ public final class ByteCode
 	}
 	
 	/**
+	 * Returns the local variable table.
+	 *
+	 * @return The local variable table.
+	 * @since 2022/09/21
+	 */
+	public LocalVariableTable localVariables()
+	{
+		return this.localVariables;
+	}
+	
+	/**
 	 * Returns the maximum number of locals.
 	 *
 	 * @return The maximum number of locals.
@@ -624,7 +682,17 @@ public final class ByteCode
 	 */
 	public byte[] rawByteCode()
 	{
-		return this._rawByteCode.clone();
+		byte[] rawCode = this._rawByteCode;
+		int rawLen = rawCode.length;
+		
+		// It is the actual code attribute, so it needs to be stripped
+		int len = Math.min(rawLen - ByteCode.CODE_OFFSET,
+			this.codelen);
+		byte[] result = new byte[len];
+		System.arraycopy(rawCode, ByteCode.CODE_OFFSET,
+			result, 0, len);
+		
+		return result;
 	}
 	
 	/**
@@ -638,14 +706,14 @@ public final class ByteCode
 	public final int readRawCodeUnsignedShort(int __addr)
 		throws IndexOutOfBoundsException
 	{
-		// {@squirreljme.error JC23 Out of bounds read of unsigned short from
-		// raw byte code. (The address)}
+		/* {@squirreljme.error JC23 Out of bounds read of unsigned short from
+		raw byte code. (The address)} */
 		if (__addr < 0 || __addr >= this.codelen - 1)
 			throw new IndexOutOfBoundsException(
 				String.format("JC23 %d", __addr));
 		
 		byte[] rad = this._rawByteCode;
-		int d = __addr + ByteCode._CODE_OFFSET;
+		int d = __addr + ByteCode.CODE_OFFSET;
 		return ((rad[d] & 0xFF) << 8) |
 			(rad[d + 1] & 0xFF);
 	}
@@ -663,7 +731,7 @@ public final class ByteCode
 		// Get the original jump table
 		Map<Integer, InstructionJumpTargets> jumpmap = this.jumpTargets();
 		
-		// The target jump table has both normals and exceptions so it must
+		// The target jump table has both normals and exceptions, so it must
 		// remember that state accordingly
 		class Working
 		{
@@ -738,6 +806,38 @@ public final class ByteCode
 	}
 	
 	/**
+	 * Returns a fully filled in {@link StackMapTable} for each instruction
+	 * as it would occur at runtime.
+	 * 
+	 * @return The stack map table at runtime.
+	 * @since 2023/07/03
+	 */
+	public StackMapTablePairs stackMapTableFull()
+	{
+		Reference<StackMapTablePairs> ref = this._stackMapRunTime;
+		StackMapTablePairs rv;
+		
+		if (ref == null || (rv = ref.get()) == null)
+			try
+			{
+				rv = this.__calcStackMapTableFull();
+				this._stackMapRunTime = new WeakReference<>(rv);
+			}
+			catch (InvalidClassFormatException __e)
+			{
+				/* {@squirreljme.error JC9a Could not calculate the full stack
+				map in method. (The class; The method)} */
+				Method method = this.__method();
+				throw new InvalidClassFormatException(
+					String.format("JC9a %s %s",
+						method.inClass(),
+						method.nameAndType()), __e);
+			}
+		
+		return rv;
+	}
+	
+	/**
 	 * Returns the name of the current class.
 	 *
 	 * @return The current class name.
@@ -805,7 +905,7 @@ public final class ByteCode
 	}
 	
 	/**
-	 * Returns all of the local variables which are written to.
+	 * Returns all the local variables which are written to.
 	 *
 	 * @return The local variables which are written to.
 	 * @since 2019/03/30
@@ -900,6 +1000,411 @@ public final class ByteCode
 	}
 	
 	/**
+	 * Calculates the full stack map.
+	 * 
+	 * @return The full stack map.
+	 * @since 2023/07/16
+	 */
+	private StackMapTablePairs __calcStackMapTableFull()
+	{
+		// We need to get the base table
+		StackMapTable base = this.stackMapTable();
+		
+		// Resultant tables, will get big!
+		Map<Integer, StackMapTableState> inputs = new SortedTreeMap<>();
+		Map<Integer, StackMapTableState> outputs = new SortedTreeMap<>();
+		
+		// Working pop set
+		List<StackMapTableEntry> popped = new ArrayList<>();
+		
+		// Go through each instruction and build the mapping
+		StackMapTableState current = null;
+		for (int logicalAddr = 0, numAddrs = this.instructionCount();
+			 logicalAddr < numAddrs; logicalAddr++)
+		{
+			int actualAddr = this.indexToAddress(logicalAddr);
+			Instruction instruction = this.getByIndex(logicalAddr)
+				.normalize();
+			
+			// Wipe popped state
+			popped.clear();
+			
+			// Use pre-existing table? At entry point that is
+			if (inputs.containsKey(actualAddr))
+				current = inputs.get(actualAddr);
+			else
+			{
+				StackMapTableState exist = instruction.stackMapTableState();
+				if (exist != null)
+				{
+					current = exist;
+					
+					// Overwrite input with the one from the actual stack map
+					// table
+					inputs.put(actualAddr, current);
+				}
+			}
+			
+			// Debug
+			/*Debugging.debugNote("I### %s: %s -> ...",
+				instruction, current);*/
+			
+			// Should not occur
+			StackMapTableState input = current;
+			if (current == null)
+				throw Debugging.oops();
+			
+			// At an input state currently, if not set already
+			if (!inputs.containsKey(actualAddr))
+				inputs.put(actualAddr, current);
+			
+			// Depends on the instruction what happens
+			try
+			{
+				int op = instruction.op;
+				switch (op)
+				{
+						// No changes to the stack
+					case InstructionIndex.NOP:
+					case InstructionIndex.GOTO:
+					case InstructionIndex.GOTO_W:
+					case InstructionIndex.WIDE_IINC:
+					case InstructionIndex.RETURN:
+						break;
+						
+						// Push null object
+					case InstructionIndex.ACONST_NULL:
+						current = current.deriveStackPush(
+							StackMapTableEntry.INITIALIZED_OBJECT);
+						break;
+						
+						// Load local variables
+					case InstructionIndex.WIDE_ALOAD:
+					case InstructionIndex.WIDE_ILOAD:
+					case InstructionIndex.WIDE_FLOAD:
+					case InstructionIndex.WIDE_LLOAD:
+					case InstructionIndex.WIDE_DLOAD:
+						current = current.deriveLocalLoad(
+							instruction.intArgument(0));
+						break;
+					
+						// Store local variable
+					case InstructionIndex.WIDE_ASTORE:
+					case InstructionIndex.WIDE_ISTORE:
+					case InstructionIndex.WIDE_FSTORE:
+					case InstructionIndex.WIDE_LSTORE:
+					case InstructionIndex.WIDE_DSTORE:
+						current = current.deriveLocalStore(
+							instruction.intArgument(0));
+						break;
+						
+						// Load constant value
+					case InstructionIndex.LDC:
+					case InstructionIndex.LDC_W:
+					case InstructionIndex.LDC2_W:
+						current = current.deriveStackPush(
+							ByteCode.__deriveLdc(instruction));
+						break;
+						
+						// Load from reference array
+					case InstructionIndex.AALOAD:
+						current = current.deriveStackPop(popped, 2);
+						current = current.deriveStackPush(
+							ByteCode.__deriveComponentType(popped.get(0)));
+						break;
+						
+						// Load from array, note that the input could be
+						// Object, so we have to assume it is the right array
+					case InstructionIndex.IALOAD:
+					case InstructionIndex.LALOAD:
+					case InstructionIndex.FALOAD:
+					case InstructionIndex.DALOAD:
+					case InstructionIndex.BALOAD:
+					case InstructionIndex.CALOAD:
+					case InstructionIndex.SALOAD:
+						current = current.deriveStackPop(popped, 2);
+						current = current.deriveStackPush(
+							ByteCode.__deriveComponentTypeViaOp(op));
+						break;
+						
+						// Store into array
+					case InstructionIndex.IASTORE:
+					case InstructionIndex.LASTORE:
+					case InstructionIndex.FASTORE:
+					case InstructionIndex.DASTORE:
+					case InstructionIndex.AASTORE:
+					case InstructionIndex.BASTORE:
+					case InstructionIndex.CASTORE:
+					case InstructionIndex.SASTORE:
+						current = current.deriveStackPop(null,
+							3);
+						break;
+						
+						// Push/pop operations
+					case InstructionIndex.POP:
+					case InstructionIndex.POP2:
+					case InstructionIndex.DUP:
+					case InstructionIndex.DUP_X1:
+					case InstructionIndex.DUP_X2:
+					case InstructionIndex.DUP2:
+					case InstructionIndex.DUP2_X1:
+					case InstructionIndex.DUP2_X2:
+					case InstructionIndex.SWAP:
+						current = current.deriveStackShuffle(
+							JavaStackShuffleType.ofOperation(op));
+						break;
+						
+						// Pop two, push first type
+					case InstructionIndex.IADD:
+					case InstructionIndex.LADD:
+					case InstructionIndex.FADD:
+					case InstructionIndex.DADD:
+					case InstructionIndex.ISUB:
+					case InstructionIndex.LSUB:
+					case InstructionIndex.FSUB:
+					case InstructionIndex.DSUB:
+					case InstructionIndex.IMUL:
+					case InstructionIndex.LMUL:
+					case InstructionIndex.FMUL:
+					case InstructionIndex.DMUL:
+					case InstructionIndex.IDIV:
+					case InstructionIndex.LDIV:
+					case InstructionIndex.FDIV:
+					case InstructionIndex.DDIV:
+					case InstructionIndex.IREM:
+					case InstructionIndex.LREM:
+					case InstructionIndex.FREM:
+					case InstructionIndex.DREM:
+					case InstructionIndex.IAND:
+					case InstructionIndex.LAND:
+					case InstructionIndex.IOR:
+					case InstructionIndex.LOR:
+					case InstructionIndex.IXOR:
+					case InstructionIndex.LXOR:
+					case InstructionIndex.ISHL:
+					case InstructionIndex.LSHL:
+					case InstructionIndex.ISHR:
+					case InstructionIndex.LSHR:
+					case InstructionIndex.IUSHR:
+					case InstructionIndex.LUSHR:
+						current = current.deriveStackPop(popped, 2);
+						current = current.deriveStackPush(popped.get(0));
+						break;
+						
+						// Pop then push same type
+					case InstructionIndex.INEG:
+					case InstructionIndex.LNEG:
+					case InstructionIndex.FNEG:
+					case InstructionIndex.DNEG:
+					case InstructionIndex.CHECKCAST:
+						current = current.deriveStackPop(popped, 1);
+						current = current.deriveStackPush(popped.get(0));
+						break;
+						
+						// Pop one then push integer
+					case InstructionIndex.INSTANCEOF:
+					case InstructionIndex.L2I:
+					case InstructionIndex.F2I:
+					case InstructionIndex.D2I:
+					case InstructionIndex.I2B:
+					case InstructionIndex.I2C:
+					case InstructionIndex.I2S:
+						current = current.deriveStackPop(popped, 1);
+						current = current.deriveStackPush(
+							StackMapTableEntry.INTEGER);
+						break;
+						
+						// Pop two then push integer
+					case InstructionIndex.LCMP:
+					case InstructionIndex.FCMPL:
+					case InstructionIndex.FCMPG:
+					case InstructionIndex.DCMPL:
+					case InstructionIndex.DCMPG:
+						current = current.deriveStackPop(popped, 2);
+						current = current.deriveStackPush(
+							StackMapTableEntry.INTEGER);
+						break;
+					
+					// Pop single value, push nothing
+					case InstructionIndex.IFEQ:
+					case InstructionIndex.IFNE:
+					case InstructionIndex.IFLT:
+					case InstructionIndex.IFGE:
+					case InstructionIndex.IFGT:
+					case InstructionIndex.IFLE:
+					case InstructionIndex.TABLESWITCH:
+					case InstructionIndex.LOOKUPSWITCH:
+					case InstructionIndex.ATHROW:
+					case InstructionIndex.IRETURN:
+					case InstructionIndex.LRETURN:
+					case InstructionIndex.FRETURN:
+					case InstructionIndex.DRETURN:
+					case InstructionIndex.ARETURN:
+					case InstructionIndex.MONITORENTER:
+					case InstructionIndex.MONITOREXIT:
+					case InstructionIndex.IFNULL:
+					case InstructionIndex.IFNONNULL:
+					case InstructionIndex.PUTSTATIC:
+						current = current.deriveStackPop(popped, 1);
+						break;
+						
+						// Pop value, push integer
+					case InstructionIndex.ARRAYLENGTH:
+						current = current.deriveStackPopThenPush(popped,
+							1, StackMapTableEntry.INTEGER);
+						break;
+						
+						// Pop two values, push nothing
+					case InstructionIndex.IF_ICMPEQ:
+					case InstructionIndex.IF_ICMPNE:
+					case InstructionIndex.IF_ICMPLT:
+					case InstructionIndex.IF_ICMPGE:
+					case InstructionIndex.IF_ICMPGT:
+					case InstructionIndex.IF_ICMPLE:
+					case InstructionIndex.IF_ACMPEQ:
+					case InstructionIndex.IF_ACMPNE:
+					case InstructionIndex.PUTFIELD:
+						current = current.deriveStackPop(popped, 2);
+						break;
+						
+						// Method invocation
+					case InstructionIndex.INVOKEVIRTUAL:
+					case InstructionIndex.INVOKESPECIAL:
+					case InstructionIndex.INVOKESTATIC:
+					case InstructionIndex.INVOKEINTERFACE:
+						current = current.deriveMethodCall(
+							op == InstructionIndex.INVOKESTATIC,
+							instruction.argument(0,
+								MethodReference.class));
+						break;
+						
+						// Pop one then push long
+					case InstructionIndex.I2L:
+					case InstructionIndex.F2L:
+					case InstructionIndex.D2L:
+						current = current.deriveStackPop(popped, 1);
+						current = current.deriveStackPush(
+							StackMapTableEntry.LONG);
+						break;
+						
+						// Pop one then push float
+					case InstructionIndex.I2F:
+					case InstructionIndex.L2F:
+					case InstructionIndex.D2F:
+						current = current.deriveStackPop(popped, 1);
+						current = current.deriveStackPush(
+							StackMapTableEntry.FLOAT);
+						break;
+						
+						// Pop one then push double
+					case InstructionIndex.I2D:
+					case InstructionIndex.L2D:
+					case InstructionIndex.F2D:
+						current = current.deriveStackPop(popped, 1);
+						current = current.deriveStackPush(
+							StackMapTableEntry.DOUBLE);
+						break;
+						
+						// Push new object of given type
+					case InstructionIndex.NEW:
+						current = current.deriveStackPush(
+							instruction.argument(0, ClassName.class)
+								.field());
+						break;
+						
+						// Pop one, push specified array
+					case InstructionIndex.ANEWARRAY:
+						current = current.deriveStackPop(null,
+							1);
+						current = current.deriveStackPush(
+							instruction.argument(0, ClassName.class)
+								.field().addDimensions(1));
+						break;
+						
+						// Pop one, push specified array as primitive
+					case InstructionIndex.NEWARRAY:
+						current = current.deriveStackPop(null,
+							1);
+						current = current.deriveStackPush(
+							instruction.argument(0, PrimitiveType.class)
+								.field().addDimensions(1));
+						break;
+						
+						// Pop count in arg 1, push an array
+					case InstructionIndex.MULTIANEWARRAY:
+						current = current.deriveStackPop(null,
+							instruction.intArgument(1));
+						current = current.deriveStackPush(
+							instruction.argument(0, ClassName.class)
+								.field().addDimensions(
+									instruction.intArgument(1)));
+						break;
+						
+						// Push referred reference type
+					case InstructionIndex.GETSTATIC:
+						current = current.deriveStackPush(
+							instruction.argument(0,
+								FieldReference.class).memberType());
+						break;
+						
+						// Pop one, push referred type
+					case InstructionIndex.GETFIELD:
+						current = current.deriveStackPop(null,
+							1);
+						current = current.deriveStackPush(
+							instruction.argument(0,
+								FieldReference.class).memberType());
+						break;
+						
+						// Unhandled?
+					default:
+						throw Debugging.todo(
+							InstructionMnemonics.toString(op));
+				}
+			}
+			catch (InvalidClassFormatException|IllegalArgumentException|
+				IllegalStateException __e)
+			{
+				/* {@squirreljme.error JC9b Could not process for instruction.
+				(The instruction; The input; The output (may be partial)} */
+				throw new InvalidClassFormatException(
+					String.format("JC9b %s L#%d %s ?(%s)?",
+						instruction,
+						this.lineOfAddress(instruction.address()),
+						input,
+						current), __e);
+			}
+			
+			// Debug
+			/*Debugging.debugNote("... -> %s",
+				current);*/
+			
+			// Store output of the instruction
+			if (!outputs.containsKey(actualAddr))
+				outputs.put(actualAddr, current);
+			
+			// Set inputs for all jump targets
+			InstructionJumpTargets jumps = instruction.jumpTargets();
+			for (int i = 0, n = jumps.size(); i < n; i++)
+			{
+				// Get the designated jump target
+				InstructionJumpTarget jump = jumps.get(i);
+				boolean isException = jumps.isException(i);
+				
+				// Set input if it does not exist
+				if (!inputs.containsKey(jump.target))
+				{
+					if (!isException)
+						inputs.put(jump.target, current);
+				}
+			}
+		}
+		
+		// Setup table pair
+		return new StackMapTablePairs(inputs, outputs);
+	}
+	
+	/**
 	 * Returns the method which owns this byte code.
 	 *
 	 * @return The owning method.
@@ -907,12 +1412,100 @@ public final class ByteCode
 	 */
 	private Method __method()
 	{
-		// {@squirreljme.error JC24 The method owning this byte code has been
-		// garbage collected.}
+		/* {@squirreljme.error JC24 The method owning this byte code has been
+		garbage collected.} */
 		Method rv = this._methodref.get();
 		if (rv == null)
 			throw new IllegalStateException("JC24");
 		return rv;
+	}
+	
+	/**
+	 * Derives the component type.
+	 * 
+	 * @param __entry The entry to derive.
+	 * @return The derived type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/03
+	 */
+	private static StackMapTableEntry __deriveComponentType(
+		StackMapTableEntry __entry)
+		throws NullPointerException
+	{
+		if (__entry == null)
+			throw new NullPointerException("NARG");
+		
+		// Get the component type, if it is not found, assume object
+		FieldDescriptor type = __entry.type().type().componentType();
+		if (type == null)
+			return StackMapTableEntry.INITIALIZED_OBJECT;
+		
+		// Promote smaller than int primitives
+		if (type.isPrimitive())
+			switch (type.primitiveType())
+			{
+				case BOOLEAN:
+				case BYTE:
+				case SHORT:
+				case CHARACTER:
+					type = FieldDescriptor.INTEGER;
+					break;
+			}
+		
+		return new StackMapTableEntry(type, true);
+	}
+	
+	/**
+	 * Derives the component type for primitive arrays.
+	 *
+	 * @param __op The operation to check.
+	 * @return The entry for the type.
+	 * @throws InvalidClassFormatException If the operation is not valid.
+	 * @since 2023/07/17
+	 */
+	private static StackMapTableEntry __deriveComponentTypeViaOp(int __op)
+		throws InvalidClassFormatException
+	{
+		switch (__op)
+		{
+			case InstructionIndex.BALOAD:
+			case InstructionIndex.CALOAD:
+			case InstructionIndex.SALOAD:
+			case InstructionIndex.IALOAD:
+				return StackMapTableEntry.INTEGER;
+			
+			case InstructionIndex.LALOAD:
+				return StackMapTableEntry.LONG;
+				
+			case InstructionIndex.FALOAD:
+				return StackMapTableEntry.FLOAT;
+				
+			case InstructionIndex.DALOAD:
+				return StackMapTableEntry.DOUBLE;
+		}
+			
+		/* {@squirreljme.error JCl1 Could not derive primitive type of the
+		array instruction. (The instruction)} */
+		throw new InvalidClassFormatException(
+			String.format("JCl1 %s", InstructionMnemonics.toString(__op)));
+	}
+	
+	/**
+	 * Derives the LDC instruction.
+	 *
+	 * @param __instruction The instruction.
+	 * @return The derived entry.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/03
+	 */
+	private static FieldDescriptor __deriveLdc(Instruction __instruction)
+		throws NullPointerException
+	{
+		if (__instruction == null)
+			throw new NullPointerException("NARG");
+		
+		return __instruction.argument(0, ConstantValue.class)
+			.type.javaType().type;
 	}
 	
 	/**
@@ -926,338 +1519,6 @@ public final class ByteCode
 	private static Reference<Instruction>[] __newCache(int __l)
 	{
 		return (Reference<Instruction>[])new Reference[__l];
-	}
-	
-	/**
-	 * Returns the length of the operation at the given address.
-	 *
-	 * @param __code The method byte code.
-	 * @param __a The address of the instruction to get the length of.
-	 * @throws InvalidClassFormatException If the instruction is not valid.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/05/17
-	 */
-	private static int __opLength(byte[] __code, int __a, int[] __last)
-		throws InvalidClassFormatException, NullPointerException
-	{
-		// Check
-		if (__code == null)
-			throw new NullPointerException("NARG");
-		
-		// Base instruction length is always 1
-		int rv = 1;
-		
-		// Real offset, since the code attribute is offset
-		int aa = __a + ByteCode._CODE_OFFSET;
-		
-		// Read operation
-		int op = (__code[aa] & 0xFF);
-		if (op == InstructionIndex.WIDE)
-		{
-			// {@squirreljme.error JC25 The wide instruction cannot be the
-			// last instruction in a method. (The address)}
-			if (aa + 1 >= __code.length)
-				throw new InvalidClassFormatException(
-					String.format("JC25 %d", __a));
-			
-			op = (op << 8) | (__code[aa + 1] & 0xFF);
-			rv = 2;
-		}
-		
-		// Depends on the operation
-		switch (op)
-		{
-				// {@squirreljme.error JC26 Unsupported instruction specified
-				// in the method byte code. (The operation; The address)}
-			case InstructionIndex.BREAKPOINT:
-			case InstructionIndex.IMPDEP1:
-			case InstructionIndex.IMPDEP2:
-			case InstructionIndex.JSR:
-			case InstructionIndex.JSR_W:
-			case InstructionIndex.RET:
-			case InstructionIndex.WIDE:
-				throw new InvalidClassFormatException(
-					String.format("JC26 %d %d", op, __a));
-			
-				// {@squirreljme.error JC27 Invokedynamic is not supported in
-				// this virtual machine. (The address)}
-			case InstructionIndex.INVOKEDYNAMIC:
-				throw new InvalidClassFormatException(
-					String.format("JC27 %d", __a));
-				
-				// Operands with no arguments
-			case InstructionIndex.AALOAD:
-			case InstructionIndex.AASTORE:
-			case InstructionIndex.ACONST_NULL:
-			case InstructionIndex.ALOAD_0:
-			case InstructionIndex.ALOAD_1:
-			case InstructionIndex.ALOAD_2:
-			case InstructionIndex.ALOAD_3:
-			case InstructionIndex.ARETURN:
-			case InstructionIndex.ARRAYLENGTH:
-			case InstructionIndex.ASTORE_0:
-			case InstructionIndex.ASTORE_1:
-			case InstructionIndex.ASTORE_2:
-			case InstructionIndex.ASTORE_3:
-			case InstructionIndex.ATHROW:
-			case InstructionIndex.BALOAD:
-			case InstructionIndex.BASTORE:
-			case InstructionIndex.CALOAD:
-			case InstructionIndex.CASTORE:
-			case InstructionIndex.D2F:
-			case InstructionIndex.D2I:
-			case InstructionIndex.D2L:
-			case InstructionIndex.DADD:
-			case InstructionIndex.DALOAD:
-			case InstructionIndex.DASTORE:
-			case InstructionIndex.DCMPG:
-			case InstructionIndex.DCMPL:
-			case InstructionIndex.DCONST_0:
-			case InstructionIndex.DCONST_1:
-			case InstructionIndex.DDIV:
-			case InstructionIndex.DLOAD_0:
-			case InstructionIndex.DLOAD_1:
-			case InstructionIndex.DLOAD_2:
-			case InstructionIndex.DLOAD_3:
-			case InstructionIndex.DMUL:
-			case InstructionIndex.DNEG:
-			case InstructionIndex.DREM:
-			case InstructionIndex.DRETURN:
-			case InstructionIndex.DSTORE_0:
-			case InstructionIndex.DSTORE_1:
-			case InstructionIndex.DSTORE_2:
-			case InstructionIndex.DSTORE_3:
-			case InstructionIndex.DSUB:
-			case InstructionIndex.DUP:
-			case InstructionIndex.DUP2:
-			case InstructionIndex.DUP2_X1:
-			case InstructionIndex.DUP2_X2:
-			case InstructionIndex.DUP_X1:
-			case InstructionIndex.DUP_X2:
-			case InstructionIndex.F2D:
-			case InstructionIndex.F2I:
-			case InstructionIndex.F2L:
-			case InstructionIndex.FADD:
-			case InstructionIndex.FALOAD:
-			case InstructionIndex.FASTORE:
-			case InstructionIndex.FCMPG:
-			case InstructionIndex.FCMPL:
-			case InstructionIndex.FCONST_0:
-			case InstructionIndex.FCONST_1:
-			case InstructionIndex.FCONST_2:
-			case InstructionIndex.FDIV:
-			case InstructionIndex.FLOAD_0:
-			case InstructionIndex.FLOAD_1:
-			case InstructionIndex.FLOAD_2:
-			case InstructionIndex.FLOAD_3:
-			case InstructionIndex.FMUL:
-			case InstructionIndex.FNEG:
-			case InstructionIndex.FREM:
-			case InstructionIndex.FRETURN:
-			case InstructionIndex.FSTORE_0:
-			case InstructionIndex.FSTORE_1:
-			case InstructionIndex.FSTORE_2:
-			case InstructionIndex.FSTORE_3:
-			case InstructionIndex.FSUB:
-			case InstructionIndex.I2B:
-			case InstructionIndex.I2C:
-			case InstructionIndex.I2D:
-			case InstructionIndex.I2F:
-			case InstructionIndex.I2L:
-			case InstructionIndex.I2S:
-			case InstructionIndex.IADD:
-			case InstructionIndex.IALOAD:
-			case InstructionIndex.IAND:
-			case InstructionIndex.IASTORE:
-			case InstructionIndex.ICONST_0:
-			case InstructionIndex.ICONST_1:
-			case InstructionIndex.ICONST_2:
-			case InstructionIndex.ICONST_3:
-			case InstructionIndex.ICONST_4:
-			case InstructionIndex.ICONST_5:
-			case InstructionIndex.ICONST_M1:
-			case InstructionIndex.IDIV:
-			case InstructionIndex.ILOAD_0:
-			case InstructionIndex.ILOAD_1:
-			case InstructionIndex.ILOAD_2:
-			case InstructionIndex.ILOAD_3:
-			case InstructionIndex.IMUL:
-			case InstructionIndex.INEG:
-			case InstructionIndex.IOR:
-			case InstructionIndex.IREM:
-			case InstructionIndex.IRETURN:
-			case InstructionIndex.ISHL:
-			case InstructionIndex.ISHR:
-			case InstructionIndex.ISTORE_0:
-			case InstructionIndex.ISTORE_1:
-			case InstructionIndex.ISTORE_2:
-			case InstructionIndex.ISTORE_3:
-			case InstructionIndex.ISUB:
-			case InstructionIndex.IUSHR:
-			case InstructionIndex.IXOR:
-			case InstructionIndex.L2D:
-			case InstructionIndex.L2F:
-			case InstructionIndex.L2I:
-			case InstructionIndex.LADD:
-			case InstructionIndex.LALOAD:
-			case InstructionIndex.LAND:
-			case InstructionIndex.LASTORE:
-			case InstructionIndex.LCMP:
-			case InstructionIndex.LCONST_0:
-			case InstructionIndex.LCONST_1:
-			case InstructionIndex.LDIV:
-			case InstructionIndex.LLOAD_0:
-			case InstructionIndex.LLOAD_1:
-			case InstructionIndex.LLOAD_2:
-			case InstructionIndex.LLOAD_3:
-			case InstructionIndex.LMUL:
-			case InstructionIndex.LNEG:
-			case InstructionIndex.LOR:
-			case InstructionIndex.LREM:
-			case InstructionIndex.LRETURN:
-			case InstructionIndex.LSHL:
-			case InstructionIndex.LSHR:
-			case InstructionIndex.LSTORE_0:
-			case InstructionIndex.LSTORE_1:
-			case InstructionIndex.LSTORE_2:
-			case InstructionIndex.LSTORE_3:
-			case InstructionIndex.LSUB:
-			case InstructionIndex.LUSHR:
-			case InstructionIndex.LXOR:
-			case InstructionIndex.MONITORENTER:
-			case InstructionIndex.MONITOREXIT:
-			case InstructionIndex.NOP:
-			case InstructionIndex.POP:
-			case InstructionIndex.POP2:
-			case InstructionIndex.RETURN:
-			case InstructionIndex.SALOAD:
-			case InstructionIndex.SASTORE:
-			case InstructionIndex.SWAP:
-				break;
-				
-				// An additional byte
-			case InstructionIndex.ALOAD:
-			case InstructionIndex.ASTORE:
-			case InstructionIndex.BIPUSH:
-			case InstructionIndex.DLOAD:
-			case InstructionIndex.DSTORE:
-			case InstructionIndex.FLOAD:
-			case InstructionIndex.FSTORE:
-			case InstructionIndex.ILOAD:
-			case InstructionIndex.ISTORE:
-			case InstructionIndex.LDC:
-			case InstructionIndex.LLOAD:
-			case InstructionIndex.LSTORE:
-			case InstructionIndex.NEWARRAY:
-				rv++;
-				break;
-				
-				// Operations with two bytes following
-			case InstructionIndex.ANEWARRAY:
-			case InstructionIndex.CHECKCAST:
-			case InstructionIndex.GETFIELD:
-			case InstructionIndex.GETSTATIC:
-			case InstructionIndex.GOTO:
-			case InstructionIndex.IF_ACMPEQ:
-			case InstructionIndex.IF_ACMPNE:
-			case InstructionIndex.IFEQ:
-			case InstructionIndex.IFGE:
-			case InstructionIndex.IFGT:
-			case InstructionIndex.IF_ICMPEQ:
-			case InstructionIndex.IF_ICMPGE:
-			case InstructionIndex.IF_ICMPGT:
-			case InstructionIndex.IF_ICMPLE:
-			case InstructionIndex.IF_ICMPLT:
-			case InstructionIndex.IF_ICMPNE:
-			case InstructionIndex.IFLE:
-			case InstructionIndex.IFLT:
-			case InstructionIndex.IFNE:
-			case InstructionIndex.IFNONNULL:
-			case InstructionIndex.IFNULL:
-			case InstructionIndex.IINC:
-			case InstructionIndex.INSTANCEOF:
-			case InstructionIndex.INVOKESPECIAL:
-			case InstructionIndex.INVOKESTATIC:
-			case InstructionIndex.INVOKEVIRTUAL:
-			case InstructionIndex.LDC2_W:
-			case InstructionIndex.LDC_W:
-			case InstructionIndex.NEW:
-			case InstructionIndex.PUTFIELD:
-			case InstructionIndex.PUTSTATIC:
-			case InstructionIndex.SIPUSH:
-			case InstructionIndex.WIDE_ALOAD:
-			case InstructionIndex.WIDE_ASTORE:
-			case InstructionIndex.WIDE_DLOAD:
-			case InstructionIndex.WIDE_DSTORE:
-			case InstructionIndex.WIDE_FLOAD:
-			case InstructionIndex.WIDE_FSTORE:
-			case InstructionIndex.WIDE_ILOAD:
-			case InstructionIndex.WIDE_ISTORE:
-			case InstructionIndex.WIDE_LLOAD:
-			case InstructionIndex.WIDE_LSTORE:
-				rv += 2;
-				break;
-				
-				// Three bytes
-			case InstructionIndex.INVOKEINTERFACE:
-			case InstructionIndex.MULTIANEWARRAY:
-				rv += 3;
-				break;
-				
-				// Four bytes
-			case InstructionIndex.GOTO_W:
-			case InstructionIndex.WIDE_IINC:
-				rv += 4;
-				break;
-			
-				// Table switch, the length of this instruction varies due to
-				// alignment and the count contained within
-			case InstructionIndex.TABLESWITCH:
-				//             tusaddr +4    +8
-			    // +0          +4      +8    +12    [+16x4         ]...
-				// op  x  x  x default lowdx highdx [(highdx-lowdx)]...
-				//    op  x  x default lowdx highdx [(highdx-lowdx)]...
-				//       op  x default lowdx highdx [(highdx-lowdx)]...
-				//          op default lowdx highdx [(highdx-lowdx)]...
-				// tuspadlen includes the opcode
-				int tusaddr = ((aa + 4) & (~3)),
-					tuspadlen = tusaddr - aa;
-				rv = tuspadlen + 12 + (4 *
-					(Instruction.__readInt(__code, tusaddr + 8) -
-					Instruction.__readInt(__code, tusaddr + 4) + 1));
-				break;
-				
-				// Lookup switch, the length of this instruction varies due to
-				// alignment and the number of contained entries.
-			case InstructionIndex.LOOKUPSWITCH:
-				// The instruction is in this format:
-				//             lusaddr +4    +8
-				// +0          +4      +8    [+12x8       ]...
-				// op  x  x  x default count [match offset]...
-				//    op  x  x default count [match offset]...
-				//       op  x default count [match offset]...
-				//          op default count [match offset]...
-				// luspadlen includes the opcode
-				int lusaddr = ((aa + 4) & (~3)),
-					luspadlen = lusaddr - aa;
-				rv = luspadlen + 8 + (8 * Instruction.__readInt(__code,
-					lusaddr + 4));
-				break;
-			
-				// {@squirreljme.error JC28 Cannot get the length of the
-				// specified operation because it is not valid. (The operation;
-				// The address; The operation before this one)}
-			default:
-				throw new InvalidClassFormatException(
-					String.format("JC28 %d %d %d", op, __a,
-					((__last != null && __last.length > 0) ? __last[0] : -1)));
-		}
-		
-		// Set last
-		if (__last != null && __last.length > 0)
-			__last[0] = op;
-		
-		return rv;
 	}
 	
 	/**

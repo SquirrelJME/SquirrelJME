@@ -14,6 +14,10 @@ squirreljme
 	definedStandards += new JavaMEStandard("microedition.lui;;")
 	tags += "meep"
 	tags += "graphics"
+	
+	// If this is available, provide the LCDUI implementation of LUI for
+	// non-terminal based applications
+	optionalDependencies += project(":modules:meep-lui-lcdui")
 }
 
 dependencies
@@ -23,5 +27,4 @@ dependencies
 	api project(":modules:collections")
 	api project(":modules:gcf")
 	api project(":modules:meep-key")
-	api project(":modules:midp-lcdui")
 }
