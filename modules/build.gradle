@@ -132,7 +132,7 @@ subprojects {
 					
 					licenses {
 						license {
-							name = "GNU General Public License v3"
+							name = "Mozilla Public License v2"
 							url = "https://squirreljme.cc/file?name=LICENSE&ci=trunk"
 						}
 					}
@@ -149,7 +149,7 @@ subprojects {
 						contributor {
 							name = "Stephanie Gawroriski"
 							email = "xerthesquirrel@gmail.com"
-							roles = [ "Primary Developer" ]
+							roles = [ "Lead Squirrel" ]
 							timezone = "America/New_York"
 							url = "https://shadowtail.dev/"
 						}
@@ -239,18 +239,6 @@ subprojects {
 				}
 			}
 		}
-		
-		// IntelliJ adjustments
-		idea {
-			module {
-				// Make testFixtures as part of tests so that in search and
-				// otherwise they appear as such
-				testSourceDirs += project.projectDir.toPath().resolve("src")
-					.resolve("testFixtures").resolve("java").toFile()
-				testResourceDirs += project.projectDir.toPath().resolve("src")
-					.resolve("testFixtures").resolve("resources").toFile()
-			}
-		}
 	}
 	
 	// Signing publications
@@ -273,6 +261,18 @@ subprojects {
 		
 		// The default Maven release becomes signed
 		sign publishing.publications.maven
+	}
+		
+	// IntelliJ adjustments
+	idea {
+		module {
+			// Make testFixtures as part of tests so that in search and
+			// otherwise they appear as such
+			testSourceDirs += project.projectDir.toPath().resolve("src")
+				.resolve("testFixtures").resolve("java").toFile()
+			testResourceDirs += project.projectDir.toPath().resolve("src")
+				.resolve("testFixtures").resolve("resources").toFile()
+		}
 	}
 }
 

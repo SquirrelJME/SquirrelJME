@@ -7,30 +7,24 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.sdk;
+package cc.squirreljme.sdk.generator;
 
-import org.gradle.api.Plugin;
-import org.gradle.api.Project;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
- * SquirrelJME plugin definition.
+ * Generates for DoJa.
  *
- * @since 2023/12/27
+ * @since 2024/04/15
  */
-public class SquirrelJMESDKPlugin
-	implements Plugin<Project>
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class DoJaGenerator
+	extends Generator
 {
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/12/27
-	 */
-	@Override
-	public void apply(Project __project)
-	{
-		// Add configuration for SquirrelJME
-		SquirrelJMESDKConfiguration config = __project
-			.getExtensions().<SquirrelJMESDKConfiguration>create(
-			"squirreljmeSdk", SquirrelJMESDKConfiguration.class,
-			this, __project);
-	}
+	/** The main class. */
+	String mainClass;
+	
+	/** The size of the scratchpads. */
+	int[] scratchPadSize;
 }

@@ -7,30 +7,17 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.sdk;
-
-import org.gradle.api.Plugin;
-import org.gradle.api.Project;
+package cc.squirreljme.sdk.util;
 
 /**
- * SquirrelJME plugin definition.
+ * Automatically converts usages of new APIs to older APIs to ease writing
+ * code without needing to have clunky classes being used. The main purpose
+ * of this is to allow one to write more modern Java ME 8 code and not have
+ * to worry about back-porting manually.
  *
- * @since 2023/12/27
+ * @since 2024/04/15
  */
-public class SquirrelJMESDKPlugin
-	implements Plugin<Project>
+public class ToOldApiProcessor
+	implements ClassProcessor
 {
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/12/27
-	 */
-	@Override
-	public void apply(Project __project)
-	{
-		// Add configuration for SquirrelJME
-		SquirrelJMESDKConfiguration config = __project
-			.getExtensions().<SquirrelJMESDKConfiguration>create(
-			"squirreljmeSdk", SquirrelJMESDKConfiguration.class,
-			this, __project);
-	}
 }

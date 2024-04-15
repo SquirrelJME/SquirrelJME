@@ -7,30 +7,14 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.sdk;
-
-import org.gradle.api.Plugin;
-import org.gradle.api.Project;
+package cc.squirreljme.sdk.util;
 
 /**
- * SquirrelJME plugin definition.
+ * Converts {@code StackMapTable} to {@code StackMap}.
  *
- * @since 2023/12/27
+ * @since 2024/04/15
  */
-public class SquirrelJMESDKPlugin
-	implements Plugin<Project>
+public class StackMapConvertProcessor
+	implements ClassProcessor
 {
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/12/27
-	 */
-	@Override
-	public void apply(Project __project)
-	{
-		// Add configuration for SquirrelJME
-		SquirrelJMESDKConfiguration config = __project
-			.getExtensions().<SquirrelJMESDKConfiguration>create(
-			"squirreljmeSdk", SquirrelJMESDKConfiguration.class,
-			this, __project);
-	}
 }

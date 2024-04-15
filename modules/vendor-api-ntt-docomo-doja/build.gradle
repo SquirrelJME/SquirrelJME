@@ -19,6 +19,10 @@ squirreljme
 	definedProfiles += new JavaMEProfile("DoJa-2.1")
 	definedProfiles += new JavaMEProfile("DoJa-2.2")
 	definedProfiles += new JavaMEProfile("DoJa-3.0")
+	definedProfiles += new JavaMEProfile("DoJa-3.1")
+	definedProfiles += new JavaMEProfile("DoJa-3.2")
+	definedProfiles += new JavaMEProfile("DoJa-3.3")
+	definedProfiles += new JavaMEProfile("DoJa-3.4")
 	definedProfiles += new JavaMEProfile("DoJa-3.5")
 	definedProfiles += new JavaMEProfile("DoJa-4.0")
 	definedProfiles += new JavaMEProfile("DoJa-4.1")
@@ -27,8 +31,6 @@ squirreljme
 	tags += "nttdocomo"
 	tags += "imode"
 	tags += "doja"
-	
-	
 }
 
 dependencies

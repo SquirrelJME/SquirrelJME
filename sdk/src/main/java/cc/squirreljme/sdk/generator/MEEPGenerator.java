@@ -7,30 +7,19 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.sdk;
+package cc.squirreljme.sdk.generator;
 
-import org.gradle.api.Plugin;
-import org.gradle.api.Project;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
- * SquirrelJME plugin definition.
+ * Generator for MEEP and MIDP 3, with dependency support.
  *
- * @since 2023/12/27
+ * @since 2024/04/15
  */
-public class SquirrelJMESDKPlugin
-	implements Plugin<Project>
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class MEEPGenerator
+	extends JavaMEGenerator
 {
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/12/27
-	 */
-	@Override
-	public void apply(Project __project)
-	{
-		// Add configuration for SquirrelJME
-		SquirrelJMESDKConfiguration config = __project
-			.getExtensions().<SquirrelJMESDKConfiguration>create(
-			"squirreljmeSdk", SquirrelJMESDKConfiguration.class,
-			this, __project);
-	}
 }

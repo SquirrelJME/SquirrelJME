@@ -9,28 +9,11 @@
 
 package cc.squirreljme.sdk;
 
-import org.gradle.api.Plugin;
-import org.gradle.api.Project;
-
 /**
- * SquirrelJME plugin definition.
+ * Configuration for the SquirrelJME SDK plugin.
  *
- * @since 2023/12/27
+ * @since 2024/04/15
  */
-public class SquirrelJMESDKPlugin
-	implements Plugin<Project>
+public class SquirrelJMESDKConfiguration
 {
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/12/27
-	 */
-	@Override
-	public void apply(Project __project)
-	{
-		// Add configuration for SquirrelJME
-		SquirrelJMESDKConfiguration config = __project
-			.getExtensions().<SquirrelJMESDKConfiguration>create(
-			"squirreljmeSdk", SquirrelJMESDKConfiguration.class,
-			this, __project);
-	}
 }
