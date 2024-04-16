@@ -1715,8 +1715,11 @@ typedef enum sjme_errorCode
 	/** Invalid library symbol. */
 	SJME_ERROR_INVALID_LIBRARY_SYMBOL = -45,
 	
+	/** There is no graphics display. */
+	SJME_ERROR_HEADLESS_DISPLAY = -46,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -46
+	SJME_NUM_ERROR_CODES = -47
 } sjme_errorCode;
 
 /**

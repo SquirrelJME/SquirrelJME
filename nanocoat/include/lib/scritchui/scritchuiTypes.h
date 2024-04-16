@@ -65,6 +65,18 @@ typedef struct sjme_scritchui_uiPanelBase
 	sjme_jboolean enableFocus;
 } sjme_scritchui_uiPanelBase;
 
+typedef struct sjme_scritchui_uiScreenBase
+{
+	/** Common data. */
+	sjme_scritchui_commonBase common;
+	
+	/** The screen Id. */
+	sjme_jint id;
+	
+	/** Generic display handle such as for X11. */
+	sjme_scritchui_handle displayHandle;
+} sjme_scritchui_uiScreenBase;
+
 typedef struct sjme_scritchui_uiWindowBase
 {
 	/** Common data. */

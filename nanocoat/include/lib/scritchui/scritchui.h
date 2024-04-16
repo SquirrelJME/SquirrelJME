@@ -118,6 +118,13 @@ typedef struct sjme_scritchui_apiFunctions sjme_scritchui_apiFunctions;
 typedef struct sjme_scritchui_implFunctions sjme_scritchui_implFunctions;
 
 /**
+ * Internal ScritchUI API functions.
+ * 
+ * @since 2024/04/15
+ */
+typedef struct sjme_scritchui_internFunctions sjme_scritchui_internFunctions;
+
+/**
  * Component within ScritchUI.
  * 
  * @since 2024/03/27
@@ -145,7 +152,7 @@ typedef struct sjme_scritchui_uiPanelBase* sjme_scritchui_uiPanel;
  */
 typedef struct sjme_scritchui_uiScreenBase* sjme_scritchui_uiScreen;
 
-/** List of screens. */
+/** A list of screens. */
 SJME_LIST_DECLARE(sjme_scritchui_uiScreen, 0);
 
 /**
@@ -331,16 +338,30 @@ typedef sjme_errorCode (*sjme_scritchui_panelNewFunc)(
 	sjme_attrInOutNotNull sjme_scritchui_uiPanel* outPanel);
 
 /**
- * Obtains and queries the screens which are attached to the system displays.
+ * Sets the screen listener callback for screen changes.
  * 
  * @param inState The input state.
  * @param callback The callback for screen information and changes.
  * @return Any error code if applicable.
  * @since 2024/04/06
  */
-typedef sjme_errorCode (*sjme_scritchui_screensFunc)(
+typedef sjme_errorCode (*sjme_scritchui_screenSetListenerFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_screenListenerFunc callback);
+
+/**
+ * Obtains and queries the screens which are attached to the system displays.
+ * 
+ * @param inState The input state.
+ * @param outScreens The resultant screens.
+ * @param inOutNumScreens The number of screens for input and output.
+ * @return Any error code if applicable.
+ * @since 2024/04/06
+ */
+typedef sjme_errorCode (*sjme_scritchui_screensFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_scritchui_uiScreen* outScreens,
+	sjme_attrInOutNotNull sjme_jint* inOutNumScreens);
 
 struct sjme_scritchui_apiFunctions
 {
@@ -367,6 +388,9 @@ struct sjme_scritchui_apiFunctions
 	
 	/** Creates a new panel. */
 	sjme_scritchui_panelNewFunc panelNew;
+	
+	/** Register listener. */
+	sjme_scritchui_screenSetListenerFunc screenSetListener;
 	
 	/** Screens available. */
 	sjme_scritchui_screensFunc screens;
@@ -403,8 +427,14 @@ struct sjme_scritchui_stateBase
 	/** Implementation functions to use. */
 	const sjme_scritchui_implFunctions* impl;
 	
+	/** Internal implementation functions to use. */
+	const sjme_scritchui_internFunctions* intern;
+	
 	/** The allocation pool to use for allocations. */
 	sjme_alloc_pool* pool;
+	
+	/** The available screens. */
+	sjme_list_sjme_scritchui_uiScreen* screens;
 };
 
 /* If dynamic libraries are not supported, we cannot do this. */

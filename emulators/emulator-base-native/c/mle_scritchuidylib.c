@@ -31,8 +31,11 @@
 	DESC_LONG DESC_LONG DESC_BOOLEAN ")" DESC_VOID
 #define FORWARD_DESC___panelNew "(" \
 	DESC_LONG ")" DESC_LONG
+#define FORWARD_DESC___screens "(" \
+	DESC_LONG DESC_ARRAY(DESC_LONG) ")" DESC_INTEGER
 
 static sjme_errorCode mle_scritchUiPaintListener(
+	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent component,
 	sjme_attrInNotNull sjme_gfx_pixelFormat pf,
 	sjme_attrInPositive sjme_jint bw,
@@ -77,9 +80,11 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	newFrontEnd.wrapper = (*env)->NewGlobalRef(env, javaListener);
 	
 	/* Forward. */
-	if (sjme_error_is(error = state->api->componentSetPaintListener(
-		state, component,
-		mle_scritchUiPaintListener, &newFrontEnd)))
+	error = SJME_ERROR_NOT_IMPLEMENTED;
+	if (state->api->componentSetPaintListener == NULL ||
+		sjme_error_is(error = state->api->componentSetPaintListener(
+			state, component,
+			mle_scritchUiPaintListener, &newFrontEnd)))
 	{
 		sjme_jni_throwVMException(env, error);
 		return;
@@ -162,7 +167,9 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __linkInit)
 	
 	/* Initialize ScritchUI. */
 	state = NULL;
-	if (sjme_error_is(apiFuncs->apiInit(pool, apiFuncs,
+	error = SJME_ERROR_NOT_IMPLEMENTED;
+	if (apiFuncs->apiInit == NULL ||
+		sjme_error_is(apiFuncs->apiInit(pool, apiFuncs,
 		implFuncs, &state)) || state == NULL)
 		goto fail_apiInit;
 	
@@ -209,9 +216,10 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	panel = (sjme_scritchui_uiPanel)panelP;
 	
 	/* Forward call. */
+	error = SJME_ERROR_NOT_IMPLEMENTED;
 	if (state->api->panelEnableFocus == NULL ||
-		sjme_error_is(error = state->api->panelEnableFocus(state, panel,
-			(sjme_jboolean)enableFocus)))
+		sjme_error_is(error = state->api->panelEnableFocus(state,
+			panel, (sjme_jboolean)enableFocus)))
 		goto fail_panelFocus;
 
 	/* Success! */
@@ -240,8 +248,10 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __panelNew)
 
 	/* Create new panel. */
 	panel = NULL;
-	if (sjme_error_is(error = state->api->panelNew(state,
-		&panel)) || panel == NULL)
+	error = SJME_ERROR_NOT_IMPLEMENTED;
+	if (state->api->panelNew == NULL ||
+		sjme_error_is(error = state->api->panelNew(state,
+			&panel)) || panel == NULL)
 		goto fail_newPanel;
 	
 	/* Return the state pointer. */
@@ -255,12 +265,83 @@ fail_nullArgs:
 	return 0L;
 }
 
+JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __screens)
+	(JNIEnv* env, jclass classy, jlong stateP, jlongArray screenPs)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	sjme_jint numScreenPs, maxScreenPs, i;
+	sjme_scritchui_uiScreen* screens;
+	jlong tempJ;
+	
+	if (stateP == 0 || screenPs == NULL)
+	{
+		error = SJME_ERROR_NULL_ARGUMENTS;
+		goto fail_nullArgs;
+	}
+
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	
+	/* How many screens are being used? */
+	maxScreenPs = (*env)->GetArrayLength(env, screenPs);
+	numScreenPs = maxScreenPs;
+	
+	/* Allocate where screens will go before mapping. */
+	screens = sjme_alloca(sizeof(*screens) * numScreenPs);
+	if (screens == NULL)
+	{
+		error = SJME_ERROR_OUT_OF_MEMORY;
+		goto fail_alloca;
+	}
+	
+	/* Clear. */
+	memset(screens, 0, sizeof(*screens) * numScreenPs);
+	
+	/* Debug. */
+	sjme_message("Before Screen Call");
+	
+	/* Request screen information. */
+	error = SJME_ERROR_NOT_IMPLEMENTED;
+	if (state->api->screens == NULL ||
+		sjme_error_is(error = state->api->screens(state,
+			screens, &numScreenPs)))
+	{
+		sjme_jni_throwVMException(env, error);
+		goto fail_screens;
+	}
+
+	/* Debug. */
+	sjme_message("After Screen Call");
+	
+	/* Smaller amount? */
+	if (numScreenPs > maxScreenPs)
+		numScreenPs = maxScreenPs; 
+	
+	/* Copy pointers over. */
+	for (i = 0; i < numScreenPs; i++)
+	{
+		tempJ = (jlong)screens[i];
+		(*env)->SetLongArrayRegion(env, screenPs, i, 1, &tempJ);
+	}
+	
+	/* Return actual screen count. */
+	return numScreenPs;
+
+fail_screens:
+fail_alloca:
+fail_nullArgs:
+	sjme_jni_throwVMException(env, error);
+	return -1;
+}
+
 static const JNINativeMethod mleNativeScritchDylibMethods[] =
 {
 	FORWARD_list(NativeScritchDylib, __componentSetPaintListener),
 	FORWARD_list(NativeScritchDylib, __linkInit),
 	FORWARD_list(NativeScritchDylib, __panelEnableFocus),
 	FORWARD_list(NativeScritchDylib, __panelNew),
+	FORWARD_list(NativeScritchDylib, __screens),
 };
 
 FORWARD_init(mleNativeScritchDylibInit, mleNativeScritchDylibMethods)

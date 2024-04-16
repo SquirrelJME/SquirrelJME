@@ -22,7 +22,14 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 	.loopIterate = sjme_scritchui_core_loopIterateFunc,
 	.panelEnableFocus = sjme_scritchui_core_panelEnableFocus,
 	.panelNew = sjme_scritchui_core_panelNew,
+	.screenSetListener = sjme_scritchui_core_screenSetListenerFunc,
 	.screens = sjme_scritchui_core_screens,
+};
+
+/** Internal functions for ScritchUI implementations. */
+static const sjme_scritchui_internFunctions sjme_scritchUI_coreIntern =
+{
+	.mapScreen = sjme_scritchui_core_intern_mapScreen,
 };
 
 sjme_errorCode sjme_scritchui_core_apiFunctions(
@@ -58,6 +65,7 @@ sjme_errorCode sjme_scritchui_core_apiInit(
 	/* Seed state. */
 	state->pool = inPool;
 	state->api = inApiFunc;
+	state->intern = &sjme_scritchUI_coreIntern;
 	state->impl = inImplFunc;
 	
 	/* Return resultant state. */

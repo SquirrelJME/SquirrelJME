@@ -118,7 +118,9 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 #define DESC_BYTE "B"
 #define DESC_SHORT "S"
 #define DESC_CHAR "C"
+#define DESC_CHARACTER DESC_CHAR
 #define DESC_INT "I"
+#define DESC_INTEGER DESC_INT
 #define DESC_LONG "J"
 #define DESC_FLOAT "F"
 #define DESC_DOUBLE "D"

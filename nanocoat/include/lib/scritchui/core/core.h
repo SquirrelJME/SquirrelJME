@@ -74,9 +74,20 @@ sjme_errorCode sjme_scritchui_core_panelNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_scritchui_uiPanel* outPanel);
 
-sjme_errorCode sjme_scritchui_core_screens(
+sjme_errorCode sjme_scritchui_core_screenSetListenerFunc(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_screenListenerFunc callback);
+
+sjme_errorCode sjme_scritchui_core_screens(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_scritchui_uiScreen* outScreens,
+	sjme_attrInOutNotNull sjme_jint* inOutNumScreens);
+	
+sjme_errorCode sjme_scritchui_core_intern_mapScreen(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInValue sjme_jint screenId,
+	sjme_attrInOutNotNull sjme_scritchui_uiScreen* outScreen,
+	sjme_attrInNullable sjme_scritchui_handle updateHandle);
 
 /*--------------------------------------------------------------------------*/
 

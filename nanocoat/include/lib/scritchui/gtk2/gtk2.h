@@ -58,6 +58,11 @@ sjme_errorCode sjme_scritchui_gtk2_panelNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_scritchui_uiPanel inOutPanel);
 
+sjme_errorCode sjme_scritchui_gtk2_screens(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_scritchui_uiScreen* outScreens,
+	sjme_attrInOutNotNull sjme_jint* inOutNumScreens);
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

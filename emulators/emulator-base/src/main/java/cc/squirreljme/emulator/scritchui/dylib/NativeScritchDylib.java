@@ -21,6 +21,10 @@ import java.nio.file.Path;
  */
 public final class NativeScritchDylib
 {
+	/** Default number of screens to request. */
+	private static final int _REQUEST_SCREENS =
+		16;
+	
 	/** The state pointer. */
 	private final long _stateP;
 	
@@ -113,7 +117,26 @@ public final class NativeScritchDylib
 	 */
 	public ScritchScreenBracket[] screens()
 	{
-		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
+		// Read in screens
+		int numScreens = NativeScritchDylib._REQUEST_SCREENS;
+		for (;;)
+		{
+			// Request all screens
+			long[] screenPs = new long[numScreens];
+			numScreens = NativeScritchDylib.__screens(this._stateP, screenPs);
+			
+			// Not big enough?
+			if (numScreens > screenPs.length)
+				continue;
+			
+			// Map them to objects
+			ScritchScreenBracket[] result =
+				new ScritchScreenBracket[numScreens];
+			for (int i = 0; i < numScreens; i++)
+				result[i] = new DylibScreenObject(screenPs[i]);
+			
+			return result;
+		}
 	}
 	
 	/**
@@ -160,4 +183,15 @@ public final class NativeScritchDylib
 	 * @since 2024/04/06
 	 */
 	private static native long __panelNew(long __stateP);
+	
+	/**
+	 * Queries the native screens.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __screenPs The resultant screen pointers.
+	 * @return The number of screens returned, may be higher than the input
+	 * if there are more screens.
+	 * @since 2024/04/15
+	 */
+	private static native int __screens(long __stateP, long[] __screenPs);
 }

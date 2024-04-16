@@ -51,6 +51,10 @@ typedef sjme_errorCode (*sjme_scritchui_impl_componentSetPaintListenerFunc)(
 typedef sjme_scritchui_panelEnableFocusFunc
 	sjme_scritchui_impl_panelEnableFocusFunc;
 
+/** Obtain screens. */
+typedef sjme_scritchui_screensFunc
+	sjme_scritchui_impl_screensFunc;
+
 /**
  * Creates a new native panel.
  * 
@@ -74,6 +78,32 @@ struct sjme_scritchui_implFunctions
 	
 	/** Creates a new native panel. */
 	sjme_scritchui_impl_panelNewFunc panelNew;
+	
+	/** The available screens. */
+	sjme_scritchui_impl_screensFunc screens;
+};
+
+/**
+ * Maps the given screen internally.
+ * 
+ * @param inState The input state.
+ * @param screenId The screen ID to map.
+ * @param outScreen The resultant screen, may be newly created or one that
+ * already exists.
+ * @param updateHandle If not @c NULL then the handle is updated to this.
+ * @return Any resultant error, if any.
+ * @since 2024/04/15
+ */
+typedef sjme_errorCode (*sjme_scritchui_intern_mapScreenFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInValue sjme_jint screenId,
+	sjme_attrInOutNotNull sjme_scritchui_uiScreen* outScreen,
+	sjme_attrInNullable sjme_scritchui_handle updateHandle);
+
+struct sjme_scritchui_internFunctions
+{
+	/** Maps the given screen. */
+	sjme_scritchui_intern_mapScreenFunc mapScreen;
 };
 
 /*--------------------------------------------------------------------------*/
