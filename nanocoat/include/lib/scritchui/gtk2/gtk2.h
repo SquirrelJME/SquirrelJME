@@ -66,6 +66,10 @@ sjme_errorCode sjme_scritchui_gtk2_screens(
 	sjme_attrOutNotNull sjme_scritchui_uiScreen* outScreens,
 	sjme_attrInOutNotNull sjme_jint* inOutNumScreens);
 
+sjme_errorCode sjme_scritchui_gtk2_windowNew(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_uiWindow* outWindow);
+	
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

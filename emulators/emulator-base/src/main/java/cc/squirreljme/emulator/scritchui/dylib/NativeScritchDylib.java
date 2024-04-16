@@ -11,6 +11,7 @@ package cc.squirreljme.emulator.scritchui.dylib;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchPaintListener;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchWindowManagerType;
 import java.nio.file.Path;
@@ -152,6 +153,21 @@ public final class NativeScritchDylib
 	}
 	
 	/**
+	 * Creates a new window.
+	 *
+	 * @return The newly created window.
+	 * @since 2024/04/16
+	 */
+	public ScritchWindowBracket windowNew()
+	{
+		long windowP = NativeScritchDylib.__windowNew(this._stateP);
+		if (windowP == 0)
+			throw new MLECallError("Could not create window.");
+		
+		return new DylibWindowObject(windowP);
+	}
+	
+	/**
 	 * Sets the paint listener for the component.
 	 *
 	 * @param __stateP The state used.
@@ -215,4 +231,14 @@ public final class NativeScritchDylib
 	 * @since 2024/04/15
 	 */
 	private static native int __windowManagerType(long __stateP);
+	
+	/**
+	 * Creates a new window.
+	 *
+	 * @param __stateP The state pointer.
+	 * @return The newly created window or {@code 0} if it could not be
+	 * created.
+	 * @since 2024/04/16
+	 */
+	private static native long __windowNew(long __stateP);
 }

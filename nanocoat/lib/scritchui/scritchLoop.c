@@ -27,7 +27,7 @@ sjme_errorCode sjme_scritchui_core_loopIsInThread(
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
-sjme_errorCode sjme_scritchui_core_loopIterateFunc(
+sjme_errorCode sjme_scritchui_core_loopIterate(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNullable sjme_jboolean* outHasTerminated)
 {

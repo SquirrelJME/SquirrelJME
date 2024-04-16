@@ -18,6 +18,7 @@ static const sjme_scritchui_implFunctions sjme_scritchUI_gtkFunctions =
 	.panelEnableFocus = sjme_scritchui_gtk2_panelEnableFocus,
 	.panelNew = sjme_scritchui_gtk2_panelNew,
 	.screens = sjme_scritchui_gtk2_screens,
+	.windowNew = sjme_scritchui_gtk2_windowNew,
 };
 
 /**

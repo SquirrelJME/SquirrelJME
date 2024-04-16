@@ -27,7 +27,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(DylibBaseObject, __bind)
 	
 	if (componentP == 0 || bindTo == NULL)
 	{
-		sjme_jni_throwVMException(env, SJME_ERROR_NULL_ARGUMENTS);
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return;
 	}
 	

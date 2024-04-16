@@ -35,6 +35,8 @@
 	DESC_LONG DESC_ARRAY(DESC_LONG) ")" DESC_INTEGER
 #define FORWARD_DESC___windowManagerType "(" \
 	DESC_LONG ")" DESC_INTEGER
+#define FORWARD_DESC___windowNew "(" \
+	DESC_LONG ")" DESC_LONG
 
 static sjme_errorCode mle_scritchUiPaintListener(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -68,7 +70,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	
 	if (stateP == 0 || componentP == 0)
 	{
-		sjme_jni_throwVMException(env, SJME_ERROR_NULL_ARGUMENTS);
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return;
 	}
 
@@ -88,7 +90,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 			state, component,
 			mle_scritchUiPaintListener, &newFrontEnd)))
 	{
-		sjme_jni_throwVMException(env, error);
+		sjme_jni_throwMLECallError(env, error);
 		return;
 	}
 }
@@ -195,7 +197,7 @@ fail_poolInit:
 		free(pool);
 	
 	/* Fail. */
-	sjme_jni_throwVMException(env, sjme_error_default(error));
+	sjme_jni_throwMLECallError(env, sjme_error_default(error));
 	return 0;
 }
 
@@ -229,7 +231,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	
 fail_panelFocus:
 fail_nullArgs:
-	sjme_jni_throwVMException(env, sjme_error_default(error));
+	sjme_jni_throwMLECallError(env, sjme_error_default(error));
 }
 
 JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __panelNew)
@@ -263,7 +265,7 @@ fail_newPanel:
 fail_nullArgs:
 	
 	/* Fail. */
-	sjme_jni_throwVMException(env, sjme_error_default(error));
+	sjme_jni_throwMLECallError(env, sjme_error_default(error));
 	return 0L;
 }
 
@@ -309,7 +311,7 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __screens)
 		sjme_error_is(error = state->api->screens(state,
 			screens, &numScreenPs)))
 	{
-		sjme_jni_throwVMException(env, error);
+		sjme_jni_throwMLECallError(env, error);
 		goto fail_screens;
 	}
 
@@ -333,7 +335,7 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __screens)
 fail_screens:
 fail_alloca:
 fail_nullArgs:
-	sjme_jni_throwVMException(env, error);
+	sjme_jni_throwMLECallError(env, error);
 	return -1;
 }
 
@@ -344,7 +346,7 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	
 	if (stateP == 0)
 	{
-		sjme_jni_throwVMException(env, SJME_ERROR_NULL_ARGUMENTS);
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return -1;
 	}
 
@@ -355,6 +357,35 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	return state->wmType;
 }
 
+JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__windowNew)(JNIEnv* env, jclass classy, jlong stateP)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	sjme_scritchui_uiWindow window;
+
+	if (stateP == 0)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return -1;
+	}
+
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	
+	/* Forward call. */
+	window = NULL;
+	if (sjme_error_is(error = state->api->windowNew(state, &window)) ||
+		window == NULL)
+	{
+		sjme_jni_throwMLECallError(env, error);
+		return 0;
+	}
+	
+	/* Success! */
+	return (jlong)window;
+}
+
 static const JNINativeMethod mleNativeScritchDylibMethods[] =
 {
 	FORWARD_list(NativeScritchDylib, __componentSetPaintListener),
@@ -363,6 +394,7 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 	FORWARD_list(NativeScritchDylib, __panelNew),
 	FORWARD_list(NativeScritchDylib, __screens),
 	FORWARD_list(NativeScritchDylib, __windowManagerType),
+	FORWARD_list(NativeScritchDylib, __windowNew),
 };
 
 FORWARD_init(mleNativeScritchDylibInit, mleNativeScritchDylibMethods)

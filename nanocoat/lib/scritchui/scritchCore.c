@@ -19,11 +19,12 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 	.componentSetPaintListener = sjme_scritchui_core_componentSetPaintListener,
 	.loopExecute = sjme_scritchui_core_loopExecute,
 	.loopIsInThread = sjme_scritchui_core_loopIsInThread,
-	.loopIterate = sjme_scritchui_core_loopIterateFunc,
+	.loopIterate = sjme_scritchui_core_loopIterate,
 	.panelEnableFocus = sjme_scritchui_core_panelEnableFocus,
 	.panelNew = sjme_scritchui_core_panelNew,
-	.screenSetListener = sjme_scritchui_core_screenSetListenerFunc,
+	.screenSetListener = sjme_scritchui_core_screenSetListener,
 	.screens = sjme_scritchui_core_screens,
+	.windowNew = sjme_scritchui_core_windowNew,
 };
 
 /** Internal functions for ScritchUI implementations. */

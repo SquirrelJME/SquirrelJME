@@ -138,6 +138,26 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 sjme_jboolean sjme_jni_checkVMException(JNIEnv* env);
 
 /**
+ * Throws a @c MLECallError .
+ *
+ * @param env The current Java environment.
+ * @param code The error code.
+ * @since 2024/04/16
+ */
+void sjme_jni_throwMLECallError(JNIEnv* env, sjme_errorCode code);
+
+/**
+ * Throws the given throwable type.
+ *
+ * @param env The current Java environment.
+ * @param code The error code.
+ * @param type The type of exception to throw.
+ * @since 2024/04/16
+ */
+void sjme_jni_throwThrowable(JNIEnv* env, sjme_errorCode code,
+	sjme_lpcstr type);
+
+/**
  * Throws a @c VMException .
  *
  * @param env The current Java environment.

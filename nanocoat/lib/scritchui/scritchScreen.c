@@ -118,7 +118,7 @@ fail_alloc:
 	return sjme_error_default(error);
 }
 
-sjme_errorCode sjme_scritchui_core_screenSetListenerFunc(
+sjme_errorCode sjme_scritchui_core_screenSetListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_screenListenerFunc callback)
 {

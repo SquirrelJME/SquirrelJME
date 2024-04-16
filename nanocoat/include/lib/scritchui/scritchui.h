@@ -379,6 +379,18 @@ typedef sjme_errorCode (*sjme_scritchui_screensFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_scritchui_uiScreen* outScreens,
 	sjme_attrInOutNotNull sjme_jint* inOutNumScreens);
+	
+/**
+ * Creates a new window.
+ * 
+ * @param inState The input state.
+ * @param outWindow The resultant newly created window.
+ * @return Any error code if applicable.
+ * @since 2024/04/16
+ */
+typedef sjme_errorCode (*sjme_scritchui_windowNewFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_uiWindow* outWindow);
 
 struct sjme_scritchui_apiFunctions
 {
@@ -411,6 +423,9 @@ struct sjme_scritchui_apiFunctions
 	
 	/** Screens available. */
 	sjme_scritchui_screensFunc screens;
+	
+	/** Creates a new window. */
+	sjme_scritchui_windowNewFunc windowNew;
 };
 
 /**

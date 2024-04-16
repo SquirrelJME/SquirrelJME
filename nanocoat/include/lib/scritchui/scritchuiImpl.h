@@ -61,10 +61,6 @@ typedef sjme_errorCode (*sjme_scritchui_impl_componentSetPaintListenerFunc)(
 typedef sjme_scritchui_panelEnableFocusFunc
 	sjme_scritchui_impl_panelEnableFocusFunc;
 
-/** Obtain screens. */
-typedef sjme_scritchui_screensFunc
-	sjme_scritchui_impl_screensFunc;
-
 /**
  * Creates a new native panel.
  * 
@@ -76,6 +72,14 @@ typedef sjme_scritchui_screensFunc
 typedef sjme_errorCode (*sjme_scritchui_impl_panelNewFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_scritchui_uiPanel inOutPanel);
+
+/** Obtain screens. */
+typedef sjme_scritchui_screensFunc
+	sjme_scritchui_impl_screensFunc;
+
+/** Creates a new window. */
+typedef sjme_scritchui_windowNewFunc
+	sjme_scritchui_impl_windowNewFunc;
 
 struct sjme_scritchui_implFunctions
 {
@@ -94,6 +98,9 @@ struct sjme_scritchui_implFunctions
 	
 	/** The available screens. */
 	sjme_scritchui_impl_screensFunc screens;
+	
+	/** Creates a new window. */
+	sjme_scritchui_impl_windowNewFunc windowNew;
 };
 
 /**

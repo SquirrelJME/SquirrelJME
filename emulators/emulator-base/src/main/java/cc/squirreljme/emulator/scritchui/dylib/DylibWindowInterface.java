@@ -14,8 +14,6 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchWindowInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Range;
 
 /**
  * Window interface.
@@ -129,7 +127,7 @@ public class DylibWindowInterface
 	@Override
 	public ScritchWindowBracket newWindow()
 	{
-		throw Debugging.todo();
+		return this.dyLib.windowNew();
 	}
 	
 	/**
