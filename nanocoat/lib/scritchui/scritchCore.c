@@ -56,11 +56,15 @@ sjme_errorCode sjme_scritchui_core_apiInit(
 		outState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+	/* API missing? */
+	if (inImplFunc->apiInit == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
+	
 	/* Allocate state. */
 	state = NULL;
 	if (sjme_error_is(error = sjme_alloc(inPool, sizeof(*state),
 		&state)) || state == NULL)
-		return sjme_error_default(error);
+		goto fail_alloc;
 	
 	/* Seed state. */
 	state->pool = inPool;
@@ -68,7 +72,21 @@ sjme_errorCode sjme_scritchui_core_apiInit(
 	state->intern = &sjme_scritchUI_coreIntern;
 	state->impl = inImplFunc;
 	
+	/* Perform API specific initialization. */
+	if (sjme_error_is(error = state->impl->apiInit(state)))
+		goto fail_apiInit;
+	
 	/* Return resultant state. */
 	*outState = state;
 	return SJME_ERROR_NONE;
+
+fail_apiInit:
+fail_alloc:
+	if (state != NULL)
+	{
+		sjme_alloc_free(state);
+		state = NULL;
+	}
+	
+	return sjme_error_default(error);
 }

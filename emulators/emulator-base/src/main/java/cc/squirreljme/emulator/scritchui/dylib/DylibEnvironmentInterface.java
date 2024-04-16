@@ -14,8 +14,6 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchLAFInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Range;
 
 /**
  * Not Described.
@@ -89,6 +87,6 @@ public class DylibEnvironmentInterface
 	@Override
 	public int windowManagerType()
 	{
-		throw Debugging.todo();
+		return this.dyLib.windowManagerType();
 	}
 }

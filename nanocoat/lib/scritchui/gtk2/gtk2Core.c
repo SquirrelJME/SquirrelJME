@@ -13,6 +13,7 @@
 /** GTK Function set for Scritch UI. */
 static const sjme_scritchui_implFunctions sjme_scritchUI_gtkFunctions =
 {
+	.apiInit = sjme_scritchui_gtk2_apiInit,
 	.componentSetPaintListener = sjme_scritchui_gtk2_componentSetPaintListener,
 	.panelEnableFocus = sjme_scritchui_gtk2_panelEnableFocus,
 	.panelNew = sjme_scritchui_gtk2_panelNew,
@@ -35,4 +36,17 @@ sjme_errorCode SJME_SCRITCHUI_DYLIB_SYMBOL(gtk2)(
 	/* Our own implementation along with the standard base core. */
 	*outImpl = &sjme_scritchUI_gtkFunctions;
 	return sjme_scritchui_core_apiFunctions(outApi);
+}
+
+sjme_errorCode sjme_scritchui_gtk2_apiInit(
+	sjme_attrInNotNull sjme_scritchui inState)
+{
+	if (inState == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* This is a standard desktop. */
+	inState->wmType = SJME_SCRITCHUI_WM_TYPE_STANDARD_DESKTOP;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }

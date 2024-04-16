@@ -30,6 +30,16 @@ extern "C" {
 /*--------------------------------------------------------------------------*/
 
 /**
+ * Implementation specific initialization.
+ * 
+ * @param inState The state being initialized.
+ * @return Any resultant error, if any.
+ * @since 2024/04/15
+ */
+typedef sjme_errorCode (*sjme_scritchui_impl_apiInit)(
+	sjme_attrInNotNull sjme_scritchui inState);
+
+/**
  * Sets the paint listener for the given component.
  * 
  * @param inState The input state.
@@ -69,6 +79,9 @@ typedef sjme_errorCode (*sjme_scritchui_impl_panelNewFunc)(
 
 struct sjme_scritchui_implFunctions
 {
+	/** Initialize implementation API instance. */
+	sjme_scritchui_impl_apiInit apiInit;
+	
 	/** Set paint listener for component. */
 	sjme_scritchui_impl_componentSetPaintListenerFunc
 		componentSetPaintListener;

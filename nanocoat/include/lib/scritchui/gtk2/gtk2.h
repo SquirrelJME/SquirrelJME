@@ -42,6 +42,9 @@ extern "C" {
 #define GBOOLEAN_TO_SJME_JBOOLEAN(b) \
 	((b) == FALSE ? SJME_JNI_FALSE : SJME_JNI_TRUE)
 
+sjme_errorCode sjme_scritchui_gtk2_apiInit(
+	sjme_attrInNotNull sjme_scritchui inState);
+
 sjme_errorCode sjme_scritchui_gtk2_componentSetPaintListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,

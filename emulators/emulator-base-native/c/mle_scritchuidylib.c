@@ -33,6 +33,8 @@
 	DESC_LONG ")" DESC_LONG
 #define FORWARD_DESC___screens "(" \
 	DESC_LONG DESC_ARRAY(DESC_LONG) ")" DESC_INTEGER
+#define FORWARD_DESC___windowManagerType "(" \
+	DESC_LONG ")" DESC_INTEGER
 
 static sjme_errorCode mle_scritchUiPaintListener(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -335,6 +337,24 @@ fail_nullArgs:
 	return -1;
 }
 
+JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__windowManagerType)(JNIEnv* env, jclass classy, jlong stateP)
+{
+	sjme_scritchui state;
+	
+	if (stateP == 0)
+	{
+		sjme_jni_throwVMException(env, SJME_ERROR_NULL_ARGUMENTS);
+		return -1;
+	}
+
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	
+	/* We can directly access this. */
+	return state->wmType;
+}
+
 static const JNINativeMethod mleNativeScritchDylibMethods[] =
 {
 	FORWARD_list(NativeScritchDylib, __componentSetPaintListener),
@@ -342,6 +362,7 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 	FORWARD_list(NativeScritchDylib, __panelEnableFocus),
 	FORWARD_list(NativeScritchDylib, __panelNew),
 	FORWARD_list(NativeScritchDylib, __screens),
+	FORWARD_list(NativeScritchDylib, __windowManagerType),
 };
 
 FORWARD_init(mleNativeScritchDylibInit, mleNativeScritchDylibMethods)

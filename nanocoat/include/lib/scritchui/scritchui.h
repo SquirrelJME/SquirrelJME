@@ -97,6 +97,23 @@ typedef enum sjme_scritchui_screenUpdateType
 } sjme_scritchui_screenUpdateType;
 
 /**
+ * The type of window manager that is used.
+ * 
+ * @since 2024/04/15
+ */
+typedef enum sjme_scritchui_windowManagerType
+{
+	/** One frame per screen. */
+	SJME_SCRITCHUI_WM_TYPE_ONE_FRAME_PER_SCREEN = 0,
+	
+	/** Standard desktop interface. */
+	SJME_SCRITCHUI_WM_TYPE_STANDARD_DESKTOP = 1,
+	
+	/** The number of window manager types. */
+	SJME_SCRITCHUI_NUM_WM_TYPES
+} sjme_scritchui_windowManagerType;
+
+/**
  * ScritchUI state.
  * 
  * @since 2024/03/27
@@ -435,6 +452,9 @@ struct sjme_scritchui_stateBase
 	
 	/** The available screens. */
 	sjme_list_sjme_scritchui_uiScreen* screens;
+	
+	/** The window manager type used. */
+	sjme_scritchui_windowManagerType wmType;
 };
 
 /* If dynamic libraries are not supported, we cannot do this. */

@@ -12,6 +12,7 @@ package cc.squirreljme.emulator.scritchui.dylib;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchPaintListener;
+import cc.squirreljme.jvm.mle.scritchui.constants.ScritchWindowManagerType;
 import java.nio.file.Path;
 
 /**
@@ -140,6 +141,17 @@ public final class NativeScritchDylib
 	}
 	
 	/**
+	 * Returns the {@link ScritchWindowManagerType}.
+	 *
+	 * @return A {@link ScritchWindowManagerType}.
+	 * @since 2024/04/15
+	 */
+	public int windowManagerType()
+	{
+		return NativeScritchDylib.__windowManagerType(this._stateP);
+	}
+	
+	/**
 	 * Sets the paint listener for the component.
 	 *
 	 * @param __stateP The state used.
@@ -194,4 +206,13 @@ public final class NativeScritchDylib
 	 * @since 2024/04/15
 	 */
 	private static native int __screens(long __stateP, long[] __screenPs);
+	
+	/**
+	 * Returns the {@link ScritchWindowManagerType}.
+	 *
+	 * @param __stateP The state pointer.
+	 * @return A {@link ScritchWindowManagerType}.
+	 * @since 2024/04/15
+	 */
+	private static native int __windowManagerType(long __stateP);
 }
