@@ -106,13 +106,11 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __linkInit)
 	sjme_errorCode error;
 	sjme_dylib lib;
 	char buf[BUF_SIZE];
-	sjme_scritchui_dylibApiFunc getFuncs;
+	sjme_scritchui_dylibApiFunc apiInitFunc;
 	const char* libPathChars;
 	jboolean libPathCharsCopy;
 	const char* nameChars;
 	jboolean nameCharsCopy;
-	const sjme_scritchui_apiFunctions* apiFuncs;
-	const sjme_scritchui_implFunctions* implFuncs;
 	sjme_alloc_pool* pool;
 	sjme_scritchui state;
 	
@@ -154,9 +152,9 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __linkInit)
 	sjme_message("Attempting lookup of '%s'...", buf);
 	
 	/* Find function that returns the ScritchUI API interface. */
-	getFuncs = NULL;
+	apiInitFunc = NULL;
 	if (sjme_error_is(error = sjme_dylib_lookup(lib, buf,
-		&getFuncs)) || getFuncs == NULL)
+		&apiInitFunc)) || apiInitFunc == NULL)
 		goto fail_dyLibLookup;
 	
 	/* Release path. */
@@ -166,19 +164,11 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __linkInit)
 	/* Debug. */
 	sjme_message("Obtaining ScritchUI API Interface...");
 
-	/* Obtain ScritchUI API functions. */
-	apiFuncs = NULL;
-	implFuncs = NULL;
-	if (sjme_error_is(error = getFuncs(&apiFuncs,
-	   &implFuncs)) || apiFuncs == NULL || implFuncs == NULL)
-	   goto fail_getFuncs;
-	
 	/* Initialize ScritchUI. */
 	state = NULL;
 	error = SJME_ERROR_NOT_IMPLEMENTED;
-	if (apiFuncs->apiInit == NULL ||
-		sjme_error_is(apiFuncs->apiInit(pool, apiFuncs,
-		implFuncs, &state)) || state == NULL)
+	if (sjme_error_is(apiInitFunc(pool, &state)) ||
+		state == NULL)
 		goto fail_apiInit;
 	
 	/* Call it to get from it. */
@@ -186,7 +176,6 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __linkInit)
 #undef BUF_SIZE
 
 fail_apiInit:
-fail_getFuncs:
 fail_dyLibLookup:
 fail_dyLibOpen:
 	if (libPathChars != NULL)

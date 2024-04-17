@@ -8,16 +8,39 @@
 // -------------------------------------------------------------------------*/
 
 #include "lib/scritchui/core/core.h"
+#include "lib/scritchui/core/coreSerial.h"
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/alloc.h"
+
+/** Core dispatch functions for serial calls. */
+static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
+{
+	/* As normal. */
+	.apiFlags = NULL,
+	.componentSetPaintListener =
+		sjme_scritchui_coreSerial_componentSetPaintListener,
+	
+	/* Loops are unchanged. */
+	.loopExecute = sjme_scritchui_core_loopExecute,
+	.loopExecuteWait = sjme_scritchui_core_loopExecuteWait,
+	.loopIsInThread = sjme_scritchui_core_loopIsInThread,
+	.loopIterate = sjme_scritchui_core_loopIterate,
+	
+	/* As normal. */
+	.panelEnableFocus = sjme_scritchui_coreSerial_panelEnableFocus,
+	.panelNew = sjme_scritchui_coreSerial_panelNew,
+	.screenSetListener = sjme_scritchui_coreSerial_screenSetListener,
+	.screens = sjme_scritchui_coreSerial_screens,
+	.windowNew = sjme_scritchui_coreSerial_windowNew,
+};
 
 /** Core Function set for ScritchUI. */
 static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 {
 	.apiFlags = NULL,
-	.apiInit = sjme_scritchui_core_apiInit,
 	.componentSetPaintListener = sjme_scritchui_core_componentSetPaintListener,
 	.loopExecute = sjme_scritchui_core_loopExecute,
+	.loopExecuteWait = sjme_scritchui_core_loopExecuteWait,
 	.loopIsInThread = sjme_scritchui_core_loopIsInThread,
 	.loopIterate = sjme_scritchui_core_loopIterate,
 	.panelEnableFocus = sjme_scritchui_core_panelEnableFocus,
@@ -33,33 +56,16 @@ static const sjme_scritchui_internFunctions sjme_scritchUI_coreIntern =
 	.mapScreen = sjme_scritchui_core_intern_mapScreen,
 };
 
-sjme_errorCode sjme_scritchui_core_apiFunctions(
-	sjme_attrInOutNotNull const sjme_scritchui_apiFunctions** outApi)
-{
-	if (outApi == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Return the internal API. */
-	*outApi = &sjme_scritchUI_coreFunctions;
-	return SJME_ERROR_NONE;
-}
-
 sjme_errorCode sjme_scritchui_core_apiInit(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrInNotNull const sjme_scritchui_apiFunctions* inApiFunc,
 	sjme_attrInNotNull const sjme_scritchui_implFunctions* inImplFunc,
 	sjme_attrInOutNotNull sjme_scritchui* outState)
 {
 	sjme_errorCode error;
 	sjme_scritchui state;
 	
-	if (inPool == NULL || inApiFunc == NULL || inImplFunc == NULL ||
-		outState == NULL)
+	if (inPool == NULL || inImplFunc == NULL || outState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* API missing? */
-	if (inImplFunc->apiInit == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
 	
 	/* Allocate state. */
 	state = NULL;
@@ -69,7 +75,8 @@ sjme_errorCode sjme_scritchui_core_apiInit(
 	
 	/* Seed state. */
 	state->pool = inPool;
-	state->api = inApiFunc;
+	state->api = &sjme_scritchUI_serialFunctions;
+	state->apiInThread = &sjme_scritchUI_coreFunctions;
 	state->intern = &sjme_scritchUI_coreIntern;
 	state->impl = inImplFunc;
 	

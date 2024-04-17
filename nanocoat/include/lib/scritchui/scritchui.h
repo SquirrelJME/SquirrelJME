@@ -406,6 +406,9 @@ struct sjme_scritchui_apiFunctions
 	/** Execute callback within the event loop. */
 	sjme_scritchui_loopExecuteFunc loopExecute;
 	
+	/** Execute callback within the event loop and wait until termination. */
+	sjme_scritchui_loopExecuteFunc loopExecuteWait;
+	
 	/** Is the current thread in the loop? */
 	sjme_scritchui_loopIsInThreadFunc loopIsInThread;
 	
@@ -456,6 +459,9 @@ struct sjme_scritchui_stateBase
 	/** API functions to use. */
 	const sjme_scritchui_apiFunctions* api;
 	
+	/** In thread API functions. */
+	const sjme_scritchui_apiFunctions* apiInThread;
+	
 	/** Implementation functions to use. */
 	const sjme_scritchui_implFunctions* impl;
 	
@@ -476,17 +482,16 @@ struct sjme_scritchui_stateBase
 #if !defined(SJME_CONFIG_SCRITCHUI_NO_DYLIB)
 
 /**
- * Function pointer type for obtaining the ScritchUI API functions from
- * a dynamic library.
+ * Initializes the API through the dynamic library.
  * 
- * @param outApi Output Core API functions.
- * @param outImpl Output Implementation functions.
+ * @param inPool The pool to allocate within.
+ * @param outState The resultant newly created ScritchUI state.
  * @return Any error code that may occur.
  * @since 2024/03/29
  */
 typedef sjme_errorCode (*sjme_scritchui_dylibApiFunc)(
-	sjme_attrInOutNotNull const sjme_scritchui_apiFunctions** outApi,
-	sjme_attrInOutNotNull const sjme_scritchui_implFunctions** outImpl);
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInOutNotNull sjme_scritchui outState);
 
 /** The name of the dynamic library for ScritchUI. */
 #define SJME_SCRITCHUI_DYLIB_NAME(x) \

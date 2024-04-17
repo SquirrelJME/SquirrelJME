@@ -25,19 +25,21 @@ static const sjme_scritchui_implFunctions sjme_scritchUI_gtkFunctions =
 /**
  * Returns the GTK ScritchUI interface.
  * 
+ * @param outState The newly created state.
  * @return The library interface.
  * @since 2024/03/29 
  */
 sjme_errorCode SJME_SCRITCHUI_DYLIB_SYMBOL(gtk2)(
-	const sjme_scritchui_apiFunctions** outApi,
-	const sjme_scritchui_implFunctions** outImpl)
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInOutNotNull sjme_scritchui* outState)
 {
-	if (outApi == NULL || outImpl == NULL)
+	if (outState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Our own implementation along with the standard base core. */
-	*outImpl = &sjme_scritchUI_gtkFunctions;
-	return sjme_scritchui_core_apiFunctions(outApi);
+	/* Forward to core call. */
+	return sjme_scritchui_core_apiInit(inPool,
+	   &sjme_scritchUI_gtkFunctions,
+	   outState);
 }
 
 sjme_errorCode sjme_scritchui_gtk2_apiInit(
