@@ -185,7 +185,7 @@ typedef struct sjme_scritchui_uiWindowBase* sjme_scritchui_uiWindow;
  * 
  * @param inState The ScritchUI state.
  * @param anything May be any value.
-* @return Any error as required.
+ * @return Any error as required.
  * @since 2024/04/09
  */
 typedef sjme_errorCode (*sjme_scritchui_genericListenerFunc)(

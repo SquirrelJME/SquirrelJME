@@ -39,6 +39,48 @@
 			return sjme_error_default(error); \
 	} while (0)
 
+static sjme_errorCode sjme_scritchui_serialDispatch(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNullable void* anything)
+{
+	sjme_scritchui_serialData* data;
+	
+	if (inState == NULL || anything == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Restore data. */
+	data = (sjme_scritchui_serialData*)anything;
+	switch (data->type)
+	{
+		case SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_PAINT_LISTENER:
+			sjme_todo("Impl?");
+			return SJME_ERROR_NOT_IMPLEMENTED;
+		
+		case SJME_SCRITCHUI_SERIAL_TYPE_PANEL_ENABLE_FOCUS:
+			sjme_todo("Impl?");
+			return SJME_ERROR_NOT_IMPLEMENTED;
+		
+		case SJME_SCRITCHUI_SERIAL_TYPE_PANEL_NEW:
+			sjme_todo("Impl?");
+			return SJME_ERROR_NOT_IMPLEMENTED;
+	
+		case SJME_SCRITCHUI_SERIAL_TYPE_SCREEN_SET_LISTENER:
+			sjme_todo("Impl?");
+			return SJME_ERROR_NOT_IMPLEMENTED;
+		
+		case SJME_SCRITCHUI_SERIAL_TYPE_SCREENS:
+			sjme_todo("Impl?");
+			return SJME_ERROR_NOT_IMPLEMENTED;
+	
+		case SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_NEW:
+			sjme_todo("Impl?");
+			return SJME_ERROR_NOT_IMPLEMENTED;
+			
+		default:
+			return SJME_ERROR_NOT_IMPLEMENTED;
+	}
+}
+
 sjme_errorCode sjme_scritchui_coreSerial_componentSetPaintListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
