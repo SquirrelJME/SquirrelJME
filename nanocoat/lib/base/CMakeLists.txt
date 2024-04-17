@@ -17,6 +17,7 @@ squirreljme_multilib_add_library(Base
 	error.c
 	except.c
 	list.c
+	multithread.c
 	recycle.c
 	refcount.c
 	seekable.c

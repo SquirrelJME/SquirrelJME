@@ -17,6 +17,7 @@
 #define SQUIRRELJME_SCRITCHUI_H
 
 #include "sjme/config.h"
+#include "sjme/multithread.h"
 #include "sjme/gfxConst.h"
 #include "sjme/nvm.h"
 #include "sjme/list.h"
@@ -470,6 +471,9 @@ struct sjme_scritchui_stateBase
 	
 	/** The allocation pool to use for allocations. */
 	sjme_alloc_pool* pool;
+	
+	/** The event loop thread, if applicable. */
+	sjme_thread loopThread;
 	
 	/** The available screens. */
 	sjme_list_sjme_scritchui_uiScreen* screens;

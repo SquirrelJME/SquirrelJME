@@ -10,7 +10,12 @@
 cmake_minimum_required(VERSION 3.5)
 
 # Declare project
-project(libEmulatorBase)
+project(libEmulatorBase
+    LANGUAGES C)
+
+# Threading support
+include("${CMAKE_SOURCE_DIR}/../../nanocoat/cmake/threads.cmake"
+    NO_POLICY_SCOPE)
 
 # Use standard JNI search
 find_package(JNI QUIET)
