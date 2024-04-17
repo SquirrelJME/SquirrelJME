@@ -95,6 +95,37 @@ public final class NativeScritchDylib
 	}
 	
 	/**
+	 * Executes the given task in the event loop or the current thread if
+	 * this is the event loop.
+	 *
+	 * @param __task The task to run
+	 * @throws MLECallError On null arguments.
+	 * @since 2024/04/16
+	 */
+	public void loopExecute(Runnable __task)
+		throws MLECallError
+	{
+		if (__task == null)
+			throw new MLECallError("NARG");
+		
+		if (this.loopIsInThread())
+			__task.run();
+		else
+			NativeScritchDylib.__loopExecute(this._stateP, __task);
+	}
+	
+	/**
+	 * Is this in the event loop?
+	 *
+	 * @return If this is in the event loop.
+	 * @since 2024/04/16
+	 */
+	public boolean loopIsInThread()
+	{
+		return NativeScritchDylib.__loopIsInThread(this._stateP);
+	}
+	
+	/**
 	 * Initializes a new panel.
 	 *
 	 * @return The newly created panel.
@@ -189,6 +220,24 @@ public final class NativeScritchDylib
 	 * @since 2024/03/31
 	 */
 	private static native long __linkInit(String __libPath, String __name);
+	
+	/**
+	 * Executes the given runnable in the loop.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __task The task to run.
+	 * @since 2024/04/16
+	 */
+	private static native void __loopExecute(long __stateP, Runnable __task);
+	
+	/**
+	 * Is this thread in the event loop?
+	 *
+	 * @param __stateP The state pointer.
+	 * @return If this is in the event loop or not.
+	 * @since 2024/04/16
+	 */
+	private static native boolean __loopIsInThread(long __stateP);
 	
 	/**
 	 * Enables or disables a panel being focusable. 

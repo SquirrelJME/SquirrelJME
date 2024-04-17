@@ -26,6 +26,10 @@ sjme_errorCode sjme_scritchui_core_componentSetPaintListener(
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+	/* Soft poll. */
+	if (inState->impl->loopSoftPoll != NULL)
+		inState->impl->loopSoftPoll(inState);
+	
 	/* Only certain types can be painted on. */
 	switch (inComponent->common.type)
 	{

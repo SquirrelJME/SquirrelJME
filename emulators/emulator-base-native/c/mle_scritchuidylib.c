@@ -27,6 +27,10 @@
 	DESC_LONG DESC_LONG DESC_SCRITCH_PAINT_LISTENER ")" DESC_VOID
 #define FORWARD_DESC___linkInit "(" \
 	DESC_STRING DESC_STRING ")" DESC_LONG
+#define FORWARD_DESC___loopExecute "(" \
+	DESC_LONG DESC_CLASS("java/lang/Runnable") ")" DESC_VOID
+#define FORWARD_DESC___loopIsInThread "(" \
+	DESC_LONG ")" DESC_BOOLEAN
 #define FORWARD_DESC___panelEnableFocus "(" \
 	DESC_LONG DESC_LONG DESC_BOOLEAN ")" DESC_VOID
 #define FORWARD_DESC___panelNew "(" \
@@ -199,6 +203,55 @@ fail_poolInit:
 	/* Fail. */
 	sjme_jni_throwMLECallError(env, sjme_error_default(error));
 	return 0;
+}
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __loopExecute)
+	(JNIEnv* env, jclass classy, jlong stateP, jobject runnable)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	
+	if (stateP == 0)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	
+	sjme_todo("Impl?");
+}
+
+JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__loopIsInThread) (JNIEnv* env, jclass classy, jlong stateP)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	sjme_jboolean inThread;
+	
+	if (stateP == 0)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return JNI_FALSE;
+	}
+
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+
+	/* Query API. */
+	error = SJME_ERROR_NOT_IMPLEMENTED;
+	inThread = SJME_JNI_FALSE;
+	if (state->api->loopIsInThread == NULL ||
+		sjme_error_is(error = state->api->loopIsInThread(state,
+		&inThread)))
+	{
+		sjme_jni_throwMLECallError(env, error);
+		return JNI_FALSE;
+	}
+	
+	/* Is this in thread? */
+	return inThread;
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
@@ -375,8 +428,8 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	
 	/* Forward call. */
 	window = NULL;
-	if (sjme_error_is(error = state->api->windowNew(state, &window)) ||
-		window == NULL)
+	if (sjme_error_is(error = state->api->windowNew(state,
+		&window)) || window == NULL)
 	{
 		sjme_jni_throwMLECallError(env, error);
 		return 0;
@@ -390,6 +443,8 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 {
 	FORWARD_list(NativeScritchDylib, __componentSetPaintListener),
 	FORWARD_list(NativeScritchDylib, __linkInit),
+	FORWARD_list(NativeScritchDylib, __loopExecute),
+	FORWARD_list(NativeScritchDylib, __loopIsInThread),
 	FORWARD_list(NativeScritchDylib, __panelEnableFocus),
 	FORWARD_list(NativeScritchDylib, __panelNew),
 	FORWARD_list(NativeScritchDylib, __screens),

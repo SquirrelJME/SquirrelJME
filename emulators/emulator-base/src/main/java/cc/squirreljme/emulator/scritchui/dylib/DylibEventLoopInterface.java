@@ -47,7 +47,10 @@ public class DylibEventLoopInterface
 	public void execute(Runnable __task)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__task == null)
+			throw new MLECallError("Null arguments.");
+		
+		this.dyLib.loopExecute(__task);
 	}
 	
 	/**
@@ -57,6 +60,6 @@ public class DylibEventLoopInterface
 	@Override
 	public boolean inLoop()
 	{
-		throw Debugging.todo();
+		return this.dyLib.loopIsInThread();
 	}
 }
