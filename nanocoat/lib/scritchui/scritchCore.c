@@ -81,7 +81,9 @@ sjme_errorCode sjme_scritchui_core_apiInit(
 	state->impl = inImplFunc;
 	
 	/* Perform API specific initialization. */
-	if (sjme_error_is(error = state->impl->apiInit(state)))
+	error = SJME_ERROR_NOT_IMPLEMENTED;
+	if (state->impl->apiInit == NULL ||
+		sjme_error_is(error = state->impl->apiInit(state)))
 		goto fail_apiInit;
 	
 	/* Return resultant state. */

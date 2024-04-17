@@ -303,7 +303,7 @@ typedef sjme_errorCode (*sjme_scritchui_componentSetPaintListenerFunc)(
 typedef sjme_errorCode (*sjme_scritchui_loopExecuteFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_genericListenerFunc callback,
-	sjme_attrInNullable void* anything);
+	sjme_attrInNullable sjme_thread_parameter anything);
 
 /**
  * Determines whether the current thread is in the event loop or not.
@@ -397,9 +397,6 @@ struct sjme_scritchui_apiFunctions
 {
 	/** API flags. */
 	sjme_scritchui_apiFlagsFunc apiFlags;
-	
-	/** Initialize the framework library. */
-	sjme_scritchui_apiInitFunc apiInit;
 	
 	/** Sets the paint listener for a component. */
 	sjme_scritchui_componentSetPaintListenerFunc componentSetPaintListener;
@@ -495,7 +492,7 @@ struct sjme_scritchui_stateBase
  */
 typedef sjme_errorCode (*sjme_scritchui_dylibApiFunc)(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrInOutNotNull sjme_scritchui outState);
+	sjme_attrInOutNotNull sjme_scritchui* outState);
 
 /** The name of the dynamic library for ScritchUI. */
 #define SJME_SCRITCHUI_DYLIB_NAME(x) \

@@ -1721,8 +1721,11 @@ typedef enum sjme_errorCode
 	/** Cannot create something. */
 	SJME_ERROR_CANNOT_CREATE = -47,
 	
+	/** Invalid thread state. */
+	SJME_ERROR_INVALID_THREAD_STATE = -48,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -48
+	SJME_NUM_ERROR_CODES = -49
 } sjme_errorCode;
 
 /**

@@ -48,25 +48,43 @@ extern "C" {
 	/** A single thread. */
 	typedef pthread_t sjme_thread;
 	
+	/** Thread result. */
+	typedef void* sjme_thread_result;
+	
+	/** Thread parameter. */
+	typedef void* sjme_thread_parameter;
+	
 	/** Null thread handle. */
 	#define SJME_THREAD_NULL ((unsigned long)0)
+	
+	/** Error as thread result. */
+	#define SJME_THREAD_RESULT(err) ((void*)(err))
 #elif defined(SJME_CONFIG_HAS_THREADS_WIN32)
 	/** A single thread. */
 	typedef HANDLE sjme_thread;
 	
+	/** Thread result. */
+	typedef DWORD sjme_thread_result;
+	
+	/** Thread parameter. */
+	typedef LPVOID sjme_thread_parameter;
+	
 	/** Null thread handle. */
 	#define SJME_THREAD_NULL NULL
+	
+	/** Error as thread result. */
+	#define SJME_THREAD_RESULT(err) ((DWORD)(err));
 #endif
 
 /**
  * Main thread function type.
  * 
  * @param anything Passed from @c sjme_thread_new .
- * @return Any resultant error from the thread.
+ * @return Thread resultant value.
  * @since 2024/04/16
  */
-typedef sjme_errorCode (*sjme_thread_mainFunc)(
-	sjme_attrInNullable void* anything);
+typedef sjme_thread_result (*sjme_thread_mainFunc)(
+	sjme_attrInNullable sjme_thread_parameter anything);
 
 /**
  * Returns the current thread.

@@ -22,25 +22,31 @@ static const sjme_scritchui_implFunctions sjme_scritchUI_gtkFunctions =
 	.windowNew = sjme_scritchui_gtk2_windowNew,
 };
 
-static sjme_errorCode sjme_scritchui_gtk2_loopMain(
-	sjme_attrInNullable void* anything)
+static sjme_thread_result sjme_scritchui_gtk2_loopMain(
+	sjme_attrInNullable sjme_thread_parameter anything)
 {
 	sjme_scritchui state;
 	
 	if (anything == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
+		return SJME_THREAD_RESULT(SJME_ERROR_NULL_ARGUMENTS);
 	
 	/* Restore state. */
 	state = (sjme_scritchui)anything;
 	
+	/* Debug. */
+	sjme_message("GTK Init...");
+	
 	/* Initialize, we do not care for the arguments. */
 	gtk_init(0, NULL);
+	
+	/* Debug. */
+	sjme_message("GTK Main Loop...");
 	
 	/* Run main loop. */
 	gtk_main();
 	
 	/* Success! */
-	return SJME_ERROR_NONE;
+	return SJME_THREAD_RESULT(SJME_ERROR_NONE);
 }
 
 /**
@@ -59,6 +65,9 @@ sjme_errorCode SJME_SCRITCHUI_DYLIB_SYMBOL(gtk2)(
 
 	if (outState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Debug. */
+	sjme_message("Core initialization...");
 	
 	/* Forward to core call. */
 	state = NULL;
@@ -66,8 +75,12 @@ sjme_errorCode SJME_SCRITCHUI_DYLIB_SYMBOL(gtk2)(
 		&sjme_scritchUI_gtkFunctions,
 		&state)) || state == NULL)
 		return sjme_error_default(error);
+		
+	/* Debug. */
+	sjme_message("GTK thread setup...");
 	
 	/* Start main GTK thread. */
+	state->loopThread = SJME_THREAD_NULL;
 	if (sjme_error_is(error = sjme_thread_new(&state->loopThread,
 		sjme_scritchui_gtk2_loopMain, state)) ||
 		state->loopThread == SJME_THREAD_NULL)

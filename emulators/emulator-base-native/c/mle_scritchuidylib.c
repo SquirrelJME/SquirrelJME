@@ -162,12 +162,11 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __linkInit)
 	libPathChars = NULL;
 	
 	/* Debug. */
-	sjme_message("Obtaining ScritchUI API Interface...");
+	sjme_message("Initializing ScritchUI Interface...");
 
 	/* Initialize ScritchUI. */
 	state = NULL;
-	error = SJME_ERROR_NOT_IMPLEMENTED;
-	if (sjme_error_is(apiInitFunc(pool, &state)) ||
+	if (sjme_error_is(error = apiInitFunc(pool, &state)) ||
 		state == NULL)
 		goto fail_apiInit;
 	

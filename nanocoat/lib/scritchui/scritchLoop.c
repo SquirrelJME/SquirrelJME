@@ -32,8 +32,22 @@ sjme_errorCode sjme_scritchui_core_loopIsInThread(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_jboolean* outInThread)
 {
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	sjme_errorCode error;
+	sjme_thread self;
+	
+	if (inState == NULL || outInThread == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Check current thread. */
+	self = SJME_THREAD_NULL;
+	if (sjme_error_is(error = sjme_thread_current(&self)) ||
+		self == SJME_THREAD_NULL)
+		return sjme_error_defaultOr(error,
+			SJME_ERROR_INVALID_THREAD_STATE);
+	
+	/* Are we in the loop? */
+	*outInThread = sjme_thread_equal(self, inState->loopThread);
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchui_core_loopIterate(
