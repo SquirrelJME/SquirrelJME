@@ -24,6 +24,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(DylibBaseObject, __bind)
 	(JNIEnv* env, jclass classy, jlong componentP, jobject bindTo)
 {
 	sjme_scritchui_uiComponent component;
+	JavaVM* vm;
 	
 	if (componentP == 0 || bindTo == NULL)
 	{
@@ -35,7 +36,9 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(DylibBaseObject, __bind)
 	component = (sjme_scritchui_uiComponent)componentP;
 	
 	/* Set forward states. */
-	component->common.frontEnd.data = env;
+	vm = NULL;
+	(*env)->GetJavaVM(env, &vm);
+	component->common.frontEnd.data = vm;
 	component->common.frontEnd.wrapper = (*env)->NewGlobalRef(env, bindTo);
 }
 

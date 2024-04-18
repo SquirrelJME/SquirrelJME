@@ -7,6 +7,8 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <string.h>
+
 #include "lib/scritchui/core/core.h"
 #include "lib/scritchui/core/coreSerial.h"
 #include "lib/scritchui/scritchuiTypes.h"
@@ -59,6 +61,7 @@ static const sjme_scritchui_internFunctions sjme_scritchUI_coreIntern =
 sjme_errorCode sjme_scritchui_core_apiInit(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInNotNull const sjme_scritchui_implFunctions* inImplFunc,
+	sjme_attrInNullable sjme_frontEnd* initFrontEnd,
 	sjme_attrInOutNotNull sjme_scritchui* outState)
 {
 	sjme_errorCode error;
@@ -79,6 +82,11 @@ sjme_errorCode sjme_scritchui_core_apiInit(
 	state->apiInThread = &sjme_scritchUI_coreFunctions;
 	state->intern = &sjme_scritchUI_coreIntern;
 	state->impl = inImplFunc;
+	
+	/* Copy frontend over, if set. */
+	if (initFrontEnd != NULL)
+		memmove(&state->common.frontEnd, initFrontEnd,
+			sizeof(*initFrontEnd));
 	
 	/* Perform API specific initialization. */
 	error = SJME_ERROR_NOT_IMPLEMENTED;

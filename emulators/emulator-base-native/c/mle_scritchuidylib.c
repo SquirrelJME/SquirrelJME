@@ -29,6 +29,8 @@
 	DESC_STRING DESC_STRING ")" DESC_LONG
 #define FORWARD_DESC___loopExecute "(" \
 	DESC_LONG DESC_CLASS("java/lang/Runnable") ")" DESC_VOID
+#define FORWARD_DESC___loopExecuteWait "(" \
+	DESC_LONG DESC_CLASS("java/lang/Runnable") ")" DESC_VOID
 #define FORWARD_DESC___loopIsInThread "(" \
 	DESC_LONG ")" DESC_BOOLEAN
 #define FORWARD_DESC___panelEnableFocus "(" \
@@ -41,6 +43,16 @@
 	DESC_LONG ")" DESC_INTEGER
 #define FORWARD_DESC___windowNew "(" \
 	DESC_LONG ")" DESC_LONG
+
+/** Loop execution data. */
+typedef struct mle_loopExecuteData
+{
+	/** The Java VM used. */
+	JavaVM* vm;
+	
+	/** The @c Runnable to call. */
+	jobject runnable;
+} mle_loopExecuteData;
 
 static sjme_errorCode mle_scritchUiPaintListener(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -63,6 +75,103 @@ static sjme_errorCode mle_scritchUiPaintListener(
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
+static sjme_thread_result mle_loopExecuteMain(
+	sjme_attrInNullable sjme_thread_parameter anything)
+{
+	mle_loopExecuteData* data;
+	JavaVM* vm;
+	JNIEnv* env;
+	jobject runnable;
+	jclass classy;
+	jmethodID runId;
+	jint error;
+	
+	/* Recover data. */
+	data = (mle_loopExecuteData*)anything;
+	if (data == NULL)
+		return SJME_THREAD_RESULT(SJME_ERROR_NULL_ARGUMENTS);
+	
+	/* Copy data locally. */
+	vm = data->vm;
+	runnable = data->runnable;
+	
+	/* Free it. */
+	free(data);
+	data = NULL;
+	
+	/* Relocate env. */
+	env = NULL;
+	error = (*vm)->GetEnv(vm, &env, JNI_VERSION_1_1);
+	if (env == NULL)
+		sjme_die("Could not relocate env: %d??", error);
+	
+	/* Debug. */
+	sjme_message("Lookup Runnable...");
+	
+	/* Locate Runnable Class. */
+	classy = (*env)->FindClass(env, "java/lang/Runnable");
+	if (classy == NULL)
+		sjme_die("Did not find Runnable??");
+
+	/* Debug. */
+	sjme_message("Lookup Runnable:run()...");
+	
+	/* Locate run() method. */
+	runId = (*env)->GetMethodID(env, classy, "run", "()V");
+	if (runId == NULL)
+		sjme_die("Did not find Runnable:run()??");
+
+	/* Debug. */
+	sjme_message("Execute Runnable!");
+	
+	/* Call it. */
+	(*env)->CallVoidMethod(env, runnable, runId);
+
+	/* Debug. */
+	sjme_message("Cleanup Reference...");
+	
+	/* Remove reference when the call is done. */
+	(*env)->DeleteGlobalRef(env, runnable);
+
+	/* Success! */
+	return SJME_THREAD_RESULT(SJME_ERROR_NONE);
+}
+
+static sjme_thread_result mle_bindEventThread(
+	sjme_attrInNullable sjme_thread_parameter anything)
+{
+	sjme_scritchui state;
+	JavaVM* vm;
+	JNIEnv* env;
+	JavaVMAttachArgs attachArgs;
+	jint error;
+	
+	/* Restore state. */
+	state = (sjme_scritchui)anything;
+	if (state == NULL)
+		return SJME_THREAD_RESULT(SJME_ERROR_NULL_ARGUMENTS);
+	
+	/* Restore VM. */
+	vm = (JavaVM*)state->common.frontEnd.data;
+	
+	/* Setup arguments. */
+	memset(&attachArgs, 0, sizeof(attachArgs));
+	attachArgs.version = JNI_VERSION_1_1;
+	attachArgs.name = "ScritchUIEventLoop";
+	
+	/* Debug. */
+	sjme_message("Attaching ScritchUI thread to current VM...");
+
+	/* Attach event loop to the JVM. */
+	env = NULL;
+	error = (*vm)->AttachCurrentThreadAsDaemon(vm, &env, &attachArgs);
+	if (env == NULL)
+		sjme_die("Could not attach thread: %d??", error);
+	
+	/* Success! */
+	return SJME_THREAD_RESULT(SJME_ERROR_NONE);
+}
+
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	__componentSetPaintListener)(JNIEnv* env, jclass classy, jlong stateP,
 	jlong componentP, jobject javaListener)
@@ -71,6 +180,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	sjme_scritchui state;
 	sjme_scritchui_uiComponent component;
 	sjme_frontEnd newFrontEnd;
+	JavaVM* vm;
 	
 	if (stateP == 0 || componentP == 0)
 	{
@@ -84,7 +194,9 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	
 	/* Setup new front-end to refer to this component. */
 	memset(&newFrontEnd, 0, sizeof(newFrontEnd));
-	newFrontEnd.data = env;
+	vm = NULL;
+	(*env)->GetJavaVM(env, &vm);
+	newFrontEnd.data = vm;
 	newFrontEnd.wrapper = (*env)->NewGlobalRef(env, javaListener);
 	
 	/* Forward. */
@@ -113,6 +225,8 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __linkInit)
 	jboolean nameCharsCopy;
 	sjme_alloc_pool* pool;
 	sjme_scritchui state;
+	sjme_frontEnd frontEnd;
+	JavaVM* vm;
 	
 	/* Debug. */
 	sjme_message("Initializing pool...");
@@ -163,10 +277,17 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __linkInit)
 	
 	/* Debug. */
 	sjme_message("Initializing ScritchUI Interface...");
+	
+	/* Setup front end. */
+	memset(&frontEnd, 0, sizeof(frontEnd));
+	vm = NULL;
+	(*env)->GetJavaVM(env, &vm);
+	frontEnd.data = vm;
 
 	/* Initialize ScritchUI. */
 	state = NULL;
-	if (sjme_error_is(error = apiInitFunc(pool, &state)) ||
+	if (sjme_error_is(error = apiInitFunc(pool,
+		mle_bindEventThread, &frontEnd, &state)) ||
 		state == NULL)
 		goto fail_apiInit;
 	
@@ -198,6 +319,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __loopExecute)
 {
 	sjme_errorCode error;
 	sjme_scritchui state;
+	mle_loopExecuteData* data;
 	
 	if (stateP == 0)
 	{
@@ -208,7 +330,64 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __loopExecute)
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
 	
-	sjme_todo("Impl?");
+	/* Allocate data for call. */
+	data = malloc(sizeof(*data));
+	if (data == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_OUT_OF_MEMORY);
+		return;
+	}
+	
+	/* Fill in data. */
+	data->vm = NULL;
+	(*env)->GetJavaVM(env, &data->vm);
+	data->runnable = (*env)->NewGlobalRef(env, runnable);
+	
+	/* Perform call. */
+	if (sjme_error_is(error = state->api->loopExecute(state,
+		mle_loopExecuteMain, data)))
+	{
+		free(data);
+		sjme_jni_throwMLECallError(env, error);
+	}
+}
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __loopExecuteWait)
+	(JNIEnv* env, jclass classy, jlong stateP, jobject runnable)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	mle_loopExecuteData* data;
+	
+	if (stateP == 0)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	
+	/* Allocate data for call. */
+	data = malloc(sizeof(*data));
+	if (data == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_OUT_OF_MEMORY);
+		return;
+	}
+	
+	/* Fill in data. */
+	data->vm = NULL;
+	(*env)->GetJavaVM(env, &data->vm);
+	data->runnable = (*env)->NewGlobalRef(env, runnable);
+	
+	/* Perform call. */
+	if (sjme_error_is(error = state->api->loopExecuteWait(state,
+		mle_loopExecuteMain, data)))
+	{
+		free(data);
+		sjme_jni_throwMLECallError(env, error);
+	}
 }
 
 JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
@@ -432,6 +611,7 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 	FORWARD_list(NativeScritchDylib, __componentSetPaintListener),
 	FORWARD_list(NativeScritchDylib, __linkInit),
 	FORWARD_list(NativeScritchDylib, __loopExecute),
+	FORWARD_list(NativeScritchDylib, __loopExecuteWait),
 	FORWARD_list(NativeScritchDylib, __loopIsInThread),
 	FORWARD_list(NativeScritchDylib, __panelEnableFocus),
 	FORWARD_list(NativeScritchDylib, __panelNew),

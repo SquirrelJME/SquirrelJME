@@ -115,6 +115,26 @@ public final class NativeScritchDylib
 	}
 	
 	/**
+	 * Executes the given task in the event loop or the current thread if
+	 * this is the event loop.
+	 *
+	 * @param __task The task to run
+	 * @throws MLECallError On null arguments.
+	 * @since 2024/04/17
+	 */
+	public void loopExecuteWait(Runnable __task)
+		throws MLECallError
+	{
+		if (__task == null)
+			throw new MLECallError("NARG");
+		
+		if (this.loopIsInThread())
+			__task.run();
+		else
+			NativeScritchDylib.__loopExecuteWait(this._stateP, __task);
+	}
+	
+	/**
 	 * Is this in the event loop?
 	 *
 	 * @return If this is in the event loop.
@@ -229,6 +249,16 @@ public final class NativeScritchDylib
 	 * @since 2024/04/16
 	 */
 	private static native void __loopExecute(long __stateP, Runnable __task);
+	
+	/**
+	 * Executes the given runnable in the loop.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __task The task to run.
+	 * @since 2024/04/17
+	 */
+	private static native void __loopExecuteWait(long __stateP,
+		Runnable __task);
 	
 	/**
 	 * Is this thread in the event loop?

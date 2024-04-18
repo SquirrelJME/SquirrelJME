@@ -42,6 +42,22 @@ public interface ScritchEventLoopInterface
 		throws MLECallError;
 	
 	/**
+	 * Executes the given task in the event loop, if the current thread is
+	 * the event loop then this will run it immediately otherwise it will
+	 * wait for the given method to finish execution.
+	 *
+	 * @param __task The task to run.
+	 * @throws MLECallError On null arguments or execution of the given task
+	 * failed.
+	 * @since 2024/04/17
+	 */
+	@SquirrelJMEVendorApi
+	@Async.Execute
+	@Async.Schedule
+	void executeWait(@NotNull Runnable __task)
+		throws MLECallError;
+	
+	/**
 	 * Returns whether the current thread is the event loop thread.
 	 *
 	 * @return If the current thread is the event loop thread.

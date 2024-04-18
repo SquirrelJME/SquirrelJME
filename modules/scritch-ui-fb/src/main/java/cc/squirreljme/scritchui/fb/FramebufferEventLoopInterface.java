@@ -60,6 +60,21 @@ public class FramebufferEventLoopInterface
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2024/04/17
+	 */
+	@Override
+	public void executeWait(@NotNull Runnable __task)
+		throws MLECallError
+	{
+		if (__task == null)
+			throw new MLECallError("NARG");
+		
+		// Forward to the native event loop
+		this.coreApi.eventLoop().executeWait(__task);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2024/03/24
 	 */
 	@Override

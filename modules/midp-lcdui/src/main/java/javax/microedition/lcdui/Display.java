@@ -894,8 +894,9 @@ public class Display
 	{
 		// Make sure this happens in the event loop as we might need to
 		// update widgets and otherwise
-		this._scritch.eventLoop().execute(
-			new __ExecDisplaySetCurrent__(this._scritch, this, null, null));
+		this._scritch.eventLoop().executeWait(
+			new __ExecDisplaySetCurrent__(this._scritch, this,
+				null, null));
 	}
 	
 	/**
@@ -965,7 +966,7 @@ public class Display
 		
 		// Make sure this happens in the event loop as we might need to
 		// update widgets and otherwise
-		this._scritch.eventLoop().execute(
+		this._scritch.eventLoop().executeWait(
 			new __ExecDisplaySetCurrent__(this._scritch, this,
 				__show, __exit));
 	}
@@ -1001,7 +1002,7 @@ public class Display
 		
 		// Make sure this happens in the event loop as we might need to
 		// update widgets and otherwise
-		this._scritch.eventLoop().execute(
+		this._scritch.eventLoop().executeWait(
 			new __ExecDisplaySetCurrent__(this._scritch, this, __show,
 				null));
 	}

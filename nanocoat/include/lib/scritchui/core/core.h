@@ -33,6 +33,7 @@ extern "C" {
 sjme_errorCode sjme_scritchui_core_apiInit(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInNotNull const sjme_scritchui_implFunctions* inImplFunc,
+	sjme_attrInNullable sjme_frontEnd* initFrontEnd,
 	sjme_attrInOutNotNull sjme_scritchui* outState);
 
 sjme_errorCode sjme_scritchui_core_componentSetPaintListener(

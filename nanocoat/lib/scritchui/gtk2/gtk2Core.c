@@ -35,6 +35,10 @@ static sjme_thread_result sjme_scritchui_gtk2_loopMain(
 	/* Restore state. */
 	state = (sjme_scritchui)anything;
 	
+	/* Need to initialize? */
+	if (state->loopThreadInit != NULL)
+		state->loopThreadInit(state);
+	
 	/* Debug. */
 	sjme_message("GTK Init...");
 	
@@ -54,12 +58,17 @@ static sjme_thread_result sjme_scritchui_gtk2_loopMain(
 /**
  * Returns the GTK ScritchUI interface.
  * 
+ * @param inPool The allocation pool used.
+ * @param loopExecute The loop execution to run after init.
+ * @param initFrontEnd Optional initial frontend data.
  * @param outState The newly created state.
  * @return The library interface.
  * @since 2024/03/29 
  */
 sjme_errorCode SJME_SCRITCHUI_DYLIB_SYMBOL(gtk2)(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
+	sjme_attrInNullable sjme_frontEnd* initFrontEnd,
 	sjme_attrInOutNotNull sjme_scritchui* outState)
 {
 	sjme_errorCode error;
@@ -74,7 +83,7 @@ sjme_errorCode SJME_SCRITCHUI_DYLIB_SYMBOL(gtk2)(
 	/* Forward to core call. */
 	state = NULL;
 	if (sjme_error_is(error = sjme_scritchui_core_apiInit(inPool,
-		&sjme_scritchUI_gtkFunctions,
+		&sjme_scritchUI_gtkFunctions, initFrontEnd,
 		&state)) || state == NULL)
 		return sjme_error_default(error);
 		
@@ -83,6 +92,7 @@ sjme_errorCode SJME_SCRITCHUI_DYLIB_SYMBOL(gtk2)(
 	
 	/* Start main GTK thread. */
 	state->loopThread = SJME_THREAD_NULL;
+	state->loopThreadInit = loopExecute;
 	if (sjme_error_is(error = sjme_thread_new(&state->loopThread,
 		sjme_scritchui_gtk2_loopMain, state)) ||
 		state->loopThread == SJME_THREAD_NULL)

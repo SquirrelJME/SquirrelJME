@@ -460,6 +460,9 @@ struct sjme_scritchui_stateBase
 	/** The event loop thread, if applicable. */
 	sjme_thread loopThread;
 	
+	/** Loop thread initializer if one was passed. */
+	sjme_thread_mainFunc loopThreadInit;
+	
 	/** The available screens. */
 	sjme_list_sjme_scritchui_uiScreen* screens;
 	
@@ -474,12 +477,17 @@ struct sjme_scritchui_stateBase
  * Initializes the API through the dynamic library.
  * 
  * @param inPool The pool to allocate within.
+ * @param loopExecute Optional callback for loop execution, may be @c NULL ,
+ * the passed argument is always the state.
+ * @param initFrontEnd Optional initial front end data.
  * @param outState The resultant newly created ScritchUI state.
  * @return Any error code that may occur.
  * @since 2024/03/29
  */
 typedef sjme_errorCode (*sjme_scritchui_dylibApiFunc)(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
+	sjme_attrInNullable sjme_frontEnd* initFrontEnd,
 	sjme_attrInOutNotNull sjme_scritchui* outState);
 
 /** The name of the dynamic library for ScritchUI. */

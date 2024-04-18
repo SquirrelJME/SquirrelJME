@@ -52,6 +52,17 @@ public class SwingEventLoopInterface
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2024/04/17
+	 */
+	@Override
+	public void executeWait(@NotNull Runnable __task)
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2024/03/16
 	 */
 	@Override
