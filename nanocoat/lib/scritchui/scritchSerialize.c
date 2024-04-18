@@ -59,11 +59,27 @@
 		return sjme_error_default(error); \
 	return data.error; } while (0)
 
+/** Declares dispatch type. */
+#define SJME_DISPATCH_DECL(what) \
+	volatile SJME_TOKEN_PASTE(sjme_scritchui_serialData_, what)* what
+
+/** Performs dispatch call. */
+#define SJME_DISPATCH_CALL(what, args) \
+	do { what = &data->data.what; \
+	if (state->apiInThread->what == NULL) \
+		return SJME_THREAD_RESULT(SJME_ERROR_NOT_IMPLEMENTED); \
+	data->error = state->apiInThread->what args; } while (0)
+
 static sjme_thread_result sjme_scritchui_serialDispatch(
 	sjme_attrInNullable sjme_thread_parameter anything)
 {
 	volatile sjme_scritchui_serialData* data;
-	volatile sjme_scritchui_serialData_panelNew* panelNew;
+	SJME_DISPATCH_DECL(componentSetPaintListener);
+	SJME_DISPATCH_DECL(panelNew);
+	SJME_DISPATCH_DECL(panelEnableFocus);
+	SJME_DISPATCH_DECL(screenSetListener);
+	SJME_DISPATCH_DECL(screens);
+	SJME_DISPATCH_DECL(windowNew);
 	sjme_scritchui state;
 	
 	if (anything == NULL)
@@ -76,37 +92,48 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 	/* Restore info. */
 	state = data->state;
 	
-	/* Debug. */
-	sjme_message("Synchronous ScritchUI adapted %d.", data->type);
-	
 	/* Depends on the type... */
 	switch (data->type)
 	{
 		case SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_PAINT_LISTENER:
-			sjme_todo("Impl?");
-			return SJME_THREAD_RESULT(SJME_ERROR_NOT_IMPLEMENTED);
+			SJME_DISPATCH_CALL(componentSetPaintListener,
+				(state,
+				componentSetPaintListener->inComponent,
+				componentSetPaintListener->inListener,
+				componentSetPaintListener->copyFrontEnd));
+			break;
 		
 		case SJME_SCRITCHUI_SERIAL_TYPE_PANEL_ENABLE_FOCUS:
-			sjme_todo("Impl?");
-			return SJME_THREAD_RESULT(SJME_ERROR_NOT_IMPLEMENTED);
+			SJME_DISPATCH_CALL(panelEnableFocus,
+				(state,
+				panelEnableFocus->inPanel,
+				panelEnableFocus->enableFocus));
+			break;
 		
 		case SJME_SCRITCHUI_SERIAL_TYPE_PANEL_NEW:
-			panelNew = &data->data.panelNew;
-			data->error = state->apiInThread->panelNew(
-				state, panelNew->outPanel);
+			SJME_DISPATCH_CALL(panelNew,
+				(state,
+				panelNew->outPanel));
 			break;
 	
 		case SJME_SCRITCHUI_SERIAL_TYPE_SCREEN_SET_LISTENER:
-			sjme_todo("Impl?");
-			return SJME_THREAD_RESULT(SJME_ERROR_NOT_IMPLEMENTED);
+			SJME_DISPATCH_CALL(screenSetListener,
+				(state,
+				screenSetListener->callback));
+			break;
 		
 		case SJME_SCRITCHUI_SERIAL_TYPE_SCREENS:
-			sjme_todo("Impl?");
-			return SJME_THREAD_RESULT(SJME_ERROR_NOT_IMPLEMENTED);
+			SJME_DISPATCH_CALL(screens,
+				(state,
+				screens->outScreens,
+				screens->inOutNumScreens));
+			break;
 	
 		case SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_NEW:
-			sjme_todo("Impl?");
-			return SJME_THREAD_RESULT(SJME_ERROR_NOT_IMPLEMENTED);
+			SJME_DISPATCH_CALL(windowNew,
+				(state,
+				windowNew->outWindow));
+			break;
 			
 		default:
 			return SJME_THREAD_RESULT(SJME_ERROR_NOT_IMPLEMENTED);

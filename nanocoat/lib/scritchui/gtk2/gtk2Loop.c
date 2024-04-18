@@ -29,9 +29,10 @@ typedef struct sjme_scritchui_gtk2_onceExecuteData
  * Thread callbacks have a return value we need to handle properly.
  * 
  * @param inData The input once execution data.
+ * @return Always @c TRUE so the loop terminates.
  * @since 2024/04/17
  */
-static void sjme_scritchui_gtk2_onceExecute(gpointer inData)
+static gboolean sjme_scritchui_gtk2_onceExecute(gpointer inData)
 {
 	sjme_scritchui_gtk2_onceExecuteData* data;
 	sjme_thread_mainFunc callback;
@@ -39,24 +40,21 @@ static void sjme_scritchui_gtk2_onceExecute(gpointer inData)
 	
 	data = (sjme_scritchui_gtk2_onceExecuteData*)inData;
 	if (data == NULL)
-		return;
+		return G_SOURCE_REMOVE;
 	
 	/* Recover data. */
 	callback = data->callback;
 	anything = data->anything;
 	
-	/* Debug. */
-	sjme_message("GTK before-exec free...");
-	
 	/* Clear data before we call in the event of signals or otherwise. */
 	g_free_sized(data, sizeof(*data));
 	data = NULL;
 	
-	/* Debug. */
-	sjme_message("GTK exec call...");
-	
 	/* Perform the call. */
 	callback(anything);
+	
+	/* Always remove. */
+	return G_SOURCE_REMOVE;
 }
 
 sjme_errorCode sjme_scritchui_gtk2_loopExecute(
@@ -76,19 +74,15 @@ sjme_errorCode sjme_scritchui_gtk2_loopExecute(
 	data->callback = callback;
 	data->anything = anything;
 	
-	/* Debug. */
-	sjme_message("GTK enqueue...");
-	
 	/* Add to the event loop. */
-	eventId = g_idle_add_once(sjme_scritchui_gtk2_onceExecute, data);
-	if (eventId == 0)
-	{
-		/* Debug. */
-		sjme_message("GTK event id was zero?");
-		
-		g_free(data);
-		return SJME_ERROR_CANNOT_CREATE;
-	}
+	/* We want to make sure it gets executed as soon as possible! */
+#if GTK_CHECK_VERSION(2, 2, 28)
+	g_main_context_invoke_full(NULL, G_PRIORITY_HIGH,
+		sjme_scritchui_gtk2_onceExecute, data, NULL);
+#else
+	g_idle_add_full(G_PRIORITY_HIGH_IDLE,
+		sjme_scritchui_gtk2_onceExecute, data, NULL);
+#endif
 	
 	/* Success! */
 	return SJME_ERROR_NONE;

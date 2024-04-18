@@ -35,15 +35,9 @@ static sjme_thread_result sjme_scritchui_core_waitAdapter(
 	waitData = (sjme_scritchui_core_waitData*)anything;
 	if (waitData == NULL)
 		return SJME_THREAD_RESULT(SJME_ERROR_NULL_ARGUMENTS);
-		
-	/* Debug. */
-	sjme_message("Pre-run adapted callback wait...");
 	
 	/* Synchronous call. */
 	result = waitData->callback(waitData->anything);
-		
-	/* Debug. */
-	sjme_message("Signal callback done!");
 	
 	/* Signal that wait is complete. */
 	sjme_atomic_sjme_jint_set(&waitData->signal, 1);
