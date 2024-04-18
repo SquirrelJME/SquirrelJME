@@ -77,6 +77,53 @@ public final class NativeScritchDylib
 	}
 	
 	/**
+	 * Adds component to the container.
+	 *
+	 * @param __container The container to add to.
+	 * @param __component The component to add.
+	 * @throws MLECallError On null arguments or the add is not valid.
+	 * @since 2024/04/18
+	 */
+	public void containerAdd(DylibContainerObject __container,
+		DylibComponentObject __component)
+		throws MLECallError
+	{
+		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
+	}
+	
+	/**
+	 * Removes all components from the container.
+	 *
+	 * @param __container The container to remove from.
+	 * @throws MLECallError On null arguments.
+	 * @since 2024/04/18
+	 */
+	public void containerRemoveAll(DylibContainerObject __container)
+		throws MLECallError
+	{
+		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
+	}
+	
+	/**
+	 * Sets the bounds for the component in the container.
+	 *
+	 * @param __container The container to set within.
+	 * @param __component The component to set the bounds of.
+	 * @param __x The X position.
+	 * @param __y The Y position.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @throws MLECallError On null arguments or the bounds set is not valid.
+	 * @since 2024/04/18
+	 */
+	public void containerSetBounds(DylibContainerObject __container,
+		DylibComponentObject __component, int __x, int __y, int __w, int __h)
+		throws MLECallError
+	{
+		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
+	}
+	
+	/**
 	 * Enable focus on a panel.
 	 *
 	 * @param __panel The panel to modify.

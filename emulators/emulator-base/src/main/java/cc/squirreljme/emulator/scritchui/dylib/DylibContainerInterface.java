@@ -51,7 +51,11 @@ public class DylibContainerInterface
 		ScritchComponentBracket __component)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__container == null || __component == null)
+			throw new MLECallError("Null arguments");
+		
+		this.dyLib.containerAdd((DylibContainerObject)__container,
+			(DylibComponentObject)__component);
 	}
 	
 	/**
@@ -62,7 +66,10 @@ public class DylibContainerInterface
 	public void removeAll(ScritchContainerBracket __container)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__container == null)
+			throw new MLECallError("Null arguments");
+		
+		this.dyLib.containerRemoveAll((DylibContainerObject)__container);
 	}
 	
 	/**
@@ -76,6 +83,10 @@ public class DylibContainerInterface
 		int __h)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__container == null || __component == null)
+			throw new MLECallError("Null arguments");
+		
+		this.dyLib.containerSetBounds((DylibContainerObject)__container,
+			(DylibComponentObject)__component, __x, __y, __w, __h);
 	}
 }
