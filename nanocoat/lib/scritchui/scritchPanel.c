@@ -21,10 +21,6 @@ sjme_errorCode sjme_scritchui_core_panelEnableFocus(
 	if (inState == NULL || inPanel == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Soft poll. */
-	if (inState->impl->loopSoftPoll != NULL)
-		inState->impl->loopSoftPoll(inState);
-	
 	/* Forward to native handler. */
 	error = SJME_ERROR_NOT_IMPLEMENTED;
 	if (inState->impl->panelEnableFocus == NULL ||
@@ -48,10 +44,6 @@ sjme_errorCode sjme_scritchui_core_panelNew(
 
 	if (inState == NULL || outPanel == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Soft poll. */
-	if (inState->impl->loopSoftPoll != NULL)
-		inState->impl->loopSoftPoll(inState);
 	
 	/* Allocate result. */
 	result = NULL;

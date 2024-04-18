@@ -27,10 +27,6 @@ sjme_errorCode sjme_scritchui_core_intern_mapScreen(
 	if (inState == NULL || outScreen == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Soft poll. */
-	if (inState->impl->loopSoftPoll != NULL)
-		inState->impl->loopSoftPoll(inState);
-	
 	/* Check if the screen is already known. */
 	oldScreens = inState->screens;
 	if (oldScreens != NULL)
@@ -148,10 +144,6 @@ sjme_errorCode sjme_scritchui_core_screens(
 	maxScreens = *inOutNumScreens;
 	if (maxScreens <= 0)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
-	
-	/* Soft poll. */
-	if (inState->impl->loopSoftPoll != NULL)
-		inState->impl->loopSoftPoll(inState);
 	
 	/* Missing API? */
 	if (inState->impl->screens == NULL)

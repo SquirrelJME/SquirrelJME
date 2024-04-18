@@ -57,16 +57,6 @@ typedef sjme_errorCode (*sjme_scritchui_impl_componentSetPaintListenerFunc)(
 	sjme_attrInNotNull sjme_scritchui_uiPaintable inPaint,
 	sjme_attrInNullable sjme_frontEnd* copyFrontEnd);
 
-/**
- * Soft polling for the event loop.
- * 
- * @param inState The input state.
- * @return Any error code if applicable.
- * @since 2024/04/16
- */
-typedef sjme_errorCode (*sjme_scritchui_impl_loopSoftPollFunc)(
-	sjme_attrInNotNull sjme_scritchui inState);
-
 /** Enables or disables focus on a panel. */
 typedef sjme_scritchui_panelEnableFocusFunc
 	sjme_scritchui_impl_panelEnableFocusFunc;
@@ -106,9 +96,6 @@ struct sjme_scritchui_implFunctions
 	/** Execute callback within the event loop and wait until termination. */
 	sjme_scritchui_loopExecuteFunc loopExecuteWait;
 	
-	/** Loop soft polling. */
-	sjme_scritchui_impl_loopSoftPollFunc loopSoftPoll;
-		
 	/** Enable/disable focus on a panel. */
 	sjme_scritchui_impl_panelEnableFocusFunc panelEnableFocus;
 	

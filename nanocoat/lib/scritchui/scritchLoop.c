@@ -128,10 +128,6 @@ sjme_errorCode sjme_scritchui_core_loopIterate(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNullable sjme_jboolean* outHasTerminated)
 {
-	/* Soft poll. */
-	if (inState->impl->loopSoftPoll != NULL)
-		inState->impl->loopSoftPoll(inState);
-		
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
