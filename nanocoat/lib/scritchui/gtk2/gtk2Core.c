@@ -15,6 +15,8 @@ static const sjme_scritchui_implFunctions sjme_scritchUI_gtkFunctions =
 {
 	.apiInit = sjme_scritchui_gtk2_apiInit,
 	.componentSetPaintListener = sjme_scritchui_gtk2_componentSetPaintListener,
+	.loopExecute = sjme_scritchui_gtk2_loopExecute,
+	.loopExecuteWait = NULL,
 	.loopSoftPoll = NULL,
 	.panelEnableFocus = sjme_scritchui_gtk2_panelEnableFocus,
 	.panelNew = sjme_scritchui_gtk2_panelNew,

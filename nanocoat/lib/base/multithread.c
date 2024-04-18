@@ -7,8 +7,23 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include "sjme/config.h"
+
+#if defined(SJME_CONFIG_HAS_LINUX)
+	#include <sched.h>
+#endif
+
 #include "sjme/multithread.h"
 #include "sjme/debug.h"
+
+void sjme_thread_barrier(void)
+{
+#if defined(SJME_CONFIG_HAS_GCC)
+	__sync_synchronize();
+#elif defined(SJME_CONFIG_HAS_WINDOWS)
+	MemoryBarrier();
+#endif
+}
 
 sjme_errorCode sjme_thread_current(
 	sjme_attrInOutNotNull sjme_thread* outThread)
@@ -91,4 +106,15 @@ sjme_errorCode sjme_thread_new(
 	/* Success! */
 	*outThread = result;
 	return SJME_ERROR_NONE;
+}
+
+void sjme_thread_yield(void)
+{
+#if defined(SJME_CONFIG_HAS_LINUX)
+	sched_yield();
+#elif defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
+	pthread_yield();
+#elif defined(SJME_CONFIG_HAS_THREADS_WIN32)
+	SwitchToThread();
+#endif
 }

@@ -43,13 +43,13 @@ sjme_errorCode sjme_scritchui_core_componentSetPaintListener(
 	
 sjme_errorCode sjme_scritchui_core_loopExecute(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_genericListenerFunc callback,
-	sjme_attrInNullable void* anything);
+	sjme_attrInNotNull sjme_thread_mainFunc callback,
+	sjme_attrInNullable sjme_thread_parameter anything);
 
 sjme_errorCode sjme_scritchui_core_loopExecuteWait(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_genericListenerFunc callback,
-	sjme_attrInNullable void* anything);
+	sjme_attrInNotNull sjme_thread_mainFunc callback,
+	sjme_attrInNullable sjme_thread_parameter anything);
 
 sjme_errorCode sjme_scritchui_core_loopIsInThread(
 	sjme_attrInNotNull sjme_scritchui inState,

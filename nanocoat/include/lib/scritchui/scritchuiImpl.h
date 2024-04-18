@@ -100,6 +100,12 @@ struct sjme_scritchui_implFunctions
 	sjme_scritchui_impl_componentSetPaintListenerFunc
 		componentSetPaintListener;
 	
+	/** Execute callback within the event loop. */
+	sjme_scritchui_loopExecuteFunc loopExecute;
+	
+	/** Execute callback within the event loop and wait until termination. */
+	sjme_scritchui_loopExecuteFunc loopExecuteWait;
+	
 	/** Loop soft polling. */
 	sjme_scritchui_impl_loopSoftPollFunc loopSoftPoll;
 		

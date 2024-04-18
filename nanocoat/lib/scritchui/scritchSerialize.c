@@ -7,6 +7,8 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <string.h>
+
 #include "lib/scritchui/core/core.h"
 #include "lib/scritchui/core/coreSerial.h"
 #include "lib/scritchui/scritchuiTypes.h"
@@ -14,9 +16,11 @@
 #include "sjme/debug.h"
 
 /** Serial variables. */
-#define SJME_SCRITCHUI_SERIAL_VARS \
+#define SJME_SCRITCHUI_SERIAL_VARS(what) \
 	sjme_errorCode error; \
-	sjme_jboolean direct
+	sjme_jboolean direct; \
+	volatile sjme_scritchui_serialData data; \
+	SJME_TOKEN_PASTE(sjme_scritchui_serialData_, what)* serial
 
 /** Pre-check call to make. */
 #define SJME_SCRITCHUI_SERIAL_PRE_CHECK \
@@ -39,17 +43,43 @@
 			return sjme_error_default(error); \
 	} while (0)
 
+/** Setup pre-serialization. */
+#define SJME_SCRITCHUI_SERIAL_SETUP(key, what) \
+	do { memset(&data, 0, sizeof(data)); \
+	data.type = (key); \
+	data.error = SJME_ERROR_UNKNOWN; \
+	data.state = inState; \
+	serial = &data.data.what; } while (0)
+
+/* Invoke serial call and wait for result. */
+#define SJME_SCRITCHUI_INVOKE_WAIT \
+	do { sjme_thread_barrier(); \
+		if (sjme_error_is(error = inState->api->loopExecuteWait(inState, \
+		sjme_scritchui_serialDispatch, &data))) \
+		return sjme_error_default(error); \
+	return data.error; } while (0)
+
 static sjme_thread_result sjme_scritchui_serialDispatch(
-	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNullable sjme_thread_parameter anything)
 {
-	sjme_scritchui_serialData* data;
+	volatile sjme_scritchui_serialData* data;
+	volatile sjme_scritchui_serialData_panelNew* panelNew;
+	sjme_scritchui state;
 	
-	if (inState == NULL || anything == NULL)
+	if (anything == NULL)
 		return SJME_THREAD_RESULT(SJME_ERROR_NULL_ARGUMENTS);
-	
-	/* Restore data. */
+		
+	/* Emit barrier so we can access this. */
 	data = (sjme_scritchui_serialData*)anything;
+	sjme_thread_barrier();
+	
+	/* Restore info. */
+	state = data->state;
+	
+	/* Debug. */
+	sjme_message("Synchronous ScritchUI adapted %d.", data->type);
+	
+	/* Depends on the type... */
 	switch (data->type)
 	{
 		case SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_PAINT_LISTENER:
@@ -61,8 +91,10 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 			return SJME_THREAD_RESULT(SJME_ERROR_NOT_IMPLEMENTED);
 		
 		case SJME_SCRITCHUI_SERIAL_TYPE_PANEL_NEW:
-			sjme_todo("Impl?");
-			return SJME_THREAD_RESULT(SJME_ERROR_NOT_IMPLEMENTED);
+			panelNew = &data->data.panelNew;
+			data->error = state->apiInThread->panelNew(
+				state, panelNew->outPanel);
+			break;
 	
 		case SJME_SCRITCHUI_SERIAL_TYPE_SCREEN_SET_LISTENER:
 			sjme_todo("Impl?");
@@ -79,6 +111,9 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 		default:
 			return SJME_THREAD_RESULT(SJME_ERROR_NOT_IMPLEMENTED);
 	}
+	
+	/* Map result. */
+	return SJME_THREAD_RESULT(data->error);
 }
 
 sjme_errorCode sjme_scritchui_coreSerial_componentSetPaintListener(
@@ -87,7 +122,7 @@ sjme_errorCode sjme_scritchui_coreSerial_componentSetPaintListener(
 	sjme_attrInNullable sjme_scritchui_paintListenerFunc inListener,
 	sjme_frontEnd* copyFrontEnd)
 {
-	SJME_SCRITCHUI_SERIAL_VARS;
+	SJME_SCRITCHUI_SERIAL_VARS(componentSetPaintListener);
 	
 	SJME_SCRITCHUI_SERIAL_PRE_CHECK;
 	SJME_SCRITCHUI_SERIAL_LOOP_CHECK(componentSetPaintListener);
@@ -97,8 +132,16 @@ sjme_errorCode sjme_scritchui_coreSerial_componentSetPaintListener(
 		return inState->apiInThread->componentSetPaintListener(inState,
 			inComponent, inListener, copyFrontEnd);
 	
-	sjme_todo("Impl");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Serialize and Store. */
+	SJME_SCRITCHUI_SERIAL_SETUP(
+		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_PAINT_LISTENER,
+		componentSetPaintListener);
+	serial->inComponent = inComponent;
+	serial->inListener = inListener;
+	serial->copyFrontEnd = copyFrontEnd;
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
 }
 
 sjme_errorCode sjme_scritchui_coreSerial_panelEnableFocus(
@@ -106,7 +149,7 @@ sjme_errorCode sjme_scritchui_coreSerial_panelEnableFocus(
 	sjme_attrInNotNull sjme_scritchui_uiPanel inPanel,
 	sjme_attrInValue sjme_jboolean enableFocus)
 {
-	SJME_SCRITCHUI_SERIAL_VARS;
+	SJME_SCRITCHUI_SERIAL_VARS(panelEnableFocus);
 	
 	SJME_SCRITCHUI_SERIAL_PRE_CHECK;
 	SJME_SCRITCHUI_SERIAL_LOOP_CHECK(panelEnableFocus);
@@ -116,15 +159,22 @@ sjme_errorCode sjme_scritchui_coreSerial_panelEnableFocus(
 		return inState->apiInThread->panelEnableFocus(inState,
 			inPanel, enableFocus);
 	
-	sjme_todo("Impl");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Serialize and Store. */
+	SJME_SCRITCHUI_SERIAL_SETUP(
+		SJME_SCRITCHUI_SERIAL_TYPE_PANEL_ENABLE_FOCUS,
+		panelEnableFocus);
+	serial->inPanel = inPanel;
+	serial->enableFocus = enableFocus;
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
 }
 
 sjme_errorCode sjme_scritchui_coreSerial_panelNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_scritchui_uiPanel* outPanel)
 {
-	SJME_SCRITCHUI_SERIAL_VARS;
+	SJME_SCRITCHUI_SERIAL_VARS(panelNew);
 	
 	SJME_SCRITCHUI_SERIAL_PRE_CHECK;
 	SJME_SCRITCHUI_SERIAL_LOOP_CHECK(panelNew);
@@ -133,16 +183,21 @@ sjme_errorCode sjme_scritchui_coreSerial_panelNew(
 	if (direct)
 		return inState->apiInThread->panelNew(inState,
 			outPanel);
+
+	/* Serialize and Store. */
+	SJME_SCRITCHUI_SERIAL_SETUP(SJME_SCRITCHUI_SERIAL_TYPE_PANEL_NEW,
+		panelNew);
+	serial->outPanel = outPanel;
 	
-	sjme_todo("Impl");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
 }
 
 sjme_errorCode sjme_scritchui_coreSerial_screenSetListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_screenListenerFunc callback)
 {
-	SJME_SCRITCHUI_SERIAL_VARS;
+	SJME_SCRITCHUI_SERIAL_VARS(screenSetListener);
 	
 	SJME_SCRITCHUI_SERIAL_PRE_CHECK;
 	SJME_SCRITCHUI_SERIAL_LOOP_CHECK(screenSetListener);
@@ -152,8 +207,14 @@ sjme_errorCode sjme_scritchui_coreSerial_screenSetListener(
 		return inState->apiInThread->screenSetListener(inState,
 			callback);
 	
-	sjme_todo("Impl");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Serialize and Store. */
+	SJME_SCRITCHUI_SERIAL_SETUP(
+		SJME_SCRITCHUI_SERIAL_TYPE_SCREEN_SET_LISTENER,
+		screenSetListener);
+	serial->callback = callback;
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
 }
 
 sjme_errorCode sjme_scritchui_coreSerial_screens(
@@ -161,7 +222,7 @@ sjme_errorCode sjme_scritchui_coreSerial_screens(
 	sjme_attrOutNotNull sjme_scritchui_uiScreen* outScreens,
 	sjme_attrInOutNotNull sjme_jint* inOutNumScreens)
 {
-	SJME_SCRITCHUI_SERIAL_VARS;
+	SJME_SCRITCHUI_SERIAL_VARS(screens);
 	
 	SJME_SCRITCHUI_SERIAL_PRE_CHECK;
 	SJME_SCRITCHUI_SERIAL_LOOP_CHECK(screens);
@@ -171,15 +232,22 @@ sjme_errorCode sjme_scritchui_coreSerial_screens(
 		return inState->apiInThread->screens(inState,
 			outScreens, inOutNumScreens);
 	
-	sjme_todo("Impl");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Serialize and Store. */
+	SJME_SCRITCHUI_SERIAL_SETUP(
+		SJME_SCRITCHUI_SERIAL_TYPE_SCREENS,
+		screens);
+	serial->outScreens = outScreens;
+	serial->inOutNumScreens = inOutNumScreens;
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
 }
 	
 sjme_errorCode sjme_scritchui_coreSerial_windowNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_scritchui_uiWindow* outWindow)
 {
-	SJME_SCRITCHUI_SERIAL_VARS;
+	SJME_SCRITCHUI_SERIAL_VARS(windowNew);
 	
 	SJME_SCRITCHUI_SERIAL_PRE_CHECK;
 	SJME_SCRITCHUI_SERIAL_LOOP_CHECK(windowNew);
@@ -189,6 +257,12 @@ sjme_errorCode sjme_scritchui_coreSerial_windowNew(
 		return inState->apiInThread->windowNew(inState,
 			outWindow);
 	
-	sjme_todo("Impl");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Serialize and Store. */
+	SJME_SCRITCHUI_SERIAL_SETUP(
+		SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_NEW,
+		windowNew);
+	serial->outWindow = outWindow;
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
 }

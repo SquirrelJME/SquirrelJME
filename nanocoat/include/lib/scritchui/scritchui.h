@@ -181,18 +181,6 @@ SJME_LIST_DECLARE(sjme_scritchui_uiScreen, 0);
 typedef struct sjme_scritchui_uiWindowBase* sjme_scritchui_uiWindow;
 
 /**
- * Callback for a generic execution.
- * 
- * @param inState The ScritchUI state.
- * @param anything May be any value.
- * @return Any error as required.
- * @since 2024/04/09
- */
-typedef sjme_errorCode (*sjme_scritchui_genericListenerFunc)(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNullable void* anything);
-
-/**
  * Callback that is used to draw the given component.
  *
  * @param inState The ScritchUI state.
@@ -302,7 +290,7 @@ typedef sjme_errorCode (*sjme_scritchui_componentSetPaintListenerFunc)(
  */
 typedef sjme_errorCode (*sjme_scritchui_loopExecuteFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_genericListenerFunc callback,
+	sjme_attrInNotNull sjme_thread_mainFunc callback,
 	sjme_attrInNullable sjme_thread_parameter anything);
 
 /**

@@ -87,6 +87,13 @@ typedef sjme_thread_result (*sjme_thread_mainFunc)(
 	sjme_attrInNullable sjme_thread_parameter anything);
 
 /**
+ * Memory barrier.
+ * 
+ * @since 2024/04/17
+ */
+void sjme_thread_barrier(void);
+
+/**
  * Returns the current thread.
  * 
  * @param outThread The resultant thread.
@@ -121,6 +128,13 @@ sjme_errorCode sjme_thread_new(
 	sjme_attrInOutNotNull sjme_thread* outThread,
 	sjme_attrInNotNull sjme_thread_mainFunc inMain,
 	sjme_attrInNullable void* anything);
+
+/**
+ * Yields execution.
+ * 
+ * @since 2024/04/17
+ */
+void sjme_thread_yield(void);
 
 /*--------------------------------------------------------------------------*/
 

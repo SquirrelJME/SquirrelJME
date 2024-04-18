@@ -62,29 +62,53 @@ typedef enum sjme_scritchui_serialType
 	SJME_SCRITCHUI_NUM_SERIAL_TYPES
 } sjme_scritchui_serialType;
 
-typedef struct sjme_scritchui_serialDataComponentSetPaintListener
+typedef struct sjme_scritchui_serialData_componentSetPaintListener
 {
-} sjme_scritchui_serialDataComponentSetPaintListener;
+	/** The input component. */
+	volatile sjme_scritchui_uiComponent inComponent;
+	
+	/** The listener to set. */
+	volatile sjme_scritchui_paintListenerFunc inListener;
+	
+	/** Any front-end data to set as needed. */
+	volatile sjme_frontEnd* copyFrontEnd;
+} sjme_scritchui_serialData_componentSetPaintListener;
 
-typedef struct sjme_scritchui_serialDataPanelEnableFocus
+typedef struct sjme_scritchui_serialData_panelEnableFocus
 {
-} sjme_scritchui_serialDataPanelEnableFocus;
+	/** The input panel. */
+	volatile sjme_scritchui_uiPanel inPanel;
+	
+	/** Should focus be enabled? */
+	volatile sjme_jboolean enableFocus;
+} sjme_scritchui_serialData_panelEnableFocus;
 
-typedef struct sjme_scritchui_serialDataPanelNew
+typedef struct sjme_scritchui_serialData_panelNew
 {
-} sjme_scritchui_serialDataPanelNew;
+	/** The resultant panel. */
+	volatile sjme_scritchui_uiPanel* outPanel;
+} sjme_scritchui_serialData_panelNew;
 
-typedef struct sjme_scritchui_serialDataScreenSetListener
+typedef struct sjme_scritchui_serialData_screenSetListener
 {
-} sjme_scritchui_serialDataScreenSetListener;
+	/** The callback for screen listener. */
+	volatile sjme_scritchui_screenListenerFunc callback;
+} sjme_scritchui_serialData_screenSetListener;
 
-typedef struct sjme_scritchui_serialDataScreens
+typedef struct sjme_scritchui_serialData_screens
 {
-} sjme_scritchui_serialDataScreens;
+	/** The resultant screen array. */
+	volatile sjme_scritchui_uiScreen* outScreens;
+	
+	/** The size of the input array then the number of total screens. */
+	volatile sjme_jint* inOutNumScreens;
+} sjme_scritchui_serialData_screens;
 
-typedef struct sjme_scritchui_serialDataWindowNew
+typedef struct sjme_scritchui_serialData_windowNew
 {
-} sjme_scritchui_serialDataWindowNew;
+	/** The resultant window. */
+	volatile sjme_scritchui_uiWindow* outWindow;
+} sjme_scritchui_serialData_windowNew;
 
 /**
  * Union for serial data.
@@ -94,23 +118,23 @@ typedef struct sjme_scritchui_serialDataWindowNew
 typedef union sjme_scritchui_serialDataUnion
 {
 	/** @c componentSetPaintListener . */
-	sjme_scritchui_serialDataComponentSetPaintListener
+	volatile sjme_scritchui_serialData_componentSetPaintListener
 		componentSetPaintListener;
 		
 	/** @c panelEnableFocus . */
-	sjme_scritchui_serialDataPanelEnableFocus panelEnableFocus;
+	volatile sjme_scritchui_serialData_panelEnableFocus panelEnableFocus;
 		
 	/** @c panelNew . */
-	sjme_scritchui_serialDataPanelNew panelNew;
+	volatile sjme_scritchui_serialData_panelNew panelNew;
 	
 	/** @c screenSetListener . */
-	sjme_scritchui_serialDataScreenSetListener screenSetListener;
+	volatile sjme_scritchui_serialData_screenSetListener screenSetListener;
 		
 	/** @c screens . */
-	sjme_scritchui_serialDataScreens screens;
+	volatile sjme_scritchui_serialData_screens screens;
 	
 	/** @c windowNew . */
-	sjme_scritchui_serialDataWindowNew windowNew;
+	volatile sjme_scritchui_serialData_windowNew windowNew;
 } sjme_scritchui_serialDataUnion;
 
 /**
@@ -121,10 +145,16 @@ typedef union sjme_scritchui_serialDataUnion
 typedef struct sjme_scritchui_serialData
 {
 	/** The type of call this is. */
-	sjme_scritchui_serialType type;
+	volatile sjme_scritchui_serialType type;
+	
+	/** The error value returned. */
+	volatile sjme_errorCode error;
+	
+	/** The current state being invoked for. */
+	volatile sjme_scritchui state;
 	
 	/** The serial data. */
-	sjme_scritchui_serialDataUnion data;
+	volatile sjme_scritchui_serialDataUnion data;
 } sjme_scritchui_serialData;
 
 sjme_errorCode sjme_scritchui_coreSerial_componentSetPaintListener(
