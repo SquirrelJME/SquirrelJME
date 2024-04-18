@@ -143,6 +143,7 @@ static sjme_thread_result mle_bindEventThread(
 	sjme_scritchui state;
 	JavaVM* vm;
 	JNIEnv* env;
+	JNIEnv* checkEnv;
 	JavaVMAttachArgs attachArgs;
 	jint error;
 	
@@ -153,6 +154,12 @@ static sjme_thread_result mle_bindEventThread(
 	
 	/* Restore VM. */
 	vm = (JavaVM*)state->common.frontEnd.data;
+	
+	/* If this thread is already attached, only attach once. */
+	checkEnv = NULL;
+	error = (*vm)->GetEnv(vm, &checkEnv, JNI_VERSION_1_1);
+	if (error == JNI_OK)
+		return SJME_THREAD_RESULT(SJME_ERROR_NONE);
 	
 	/* Setup arguments. */
 	memset(&attachArgs, 0, sizeof(attachArgs));
