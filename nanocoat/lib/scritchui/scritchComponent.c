@@ -68,11 +68,39 @@ sjme_errorCode sjme_scritchui_core_containerAdd(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent)
 {
+	sjme_scritchui_uiContainer container;
+	sjme_errorCode error;
+	
 	if (inState == NULL || inContainer == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Cannot add a window to a container despite windows being components. */
+	if (inComponent->common.type == SJME_SCRITCHUI_TYPE_WINDOW)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Only certain types are containers. */
+	if (sjme_error_is(error = inState->intern->getContainer(inState,
+		inComponent, &container)) || container == NULL)
+		return sjme_error_default(error);
+	
+	/* Cannot add a component to multiple containers, they must be removed */
+	/* manually for consistency purposes. */
+	if (inComponent->parent != NULL)
+		return SJME_ERROR_ALREADY_IN_CONTAINER;
+	
+	/* Forward call. */	
+	error = SJME_ERROR_NOT_IMPLEMENTED;
+	if (inState->impl->containerAdd == NULL ||
+		sjme_error_is(error = inState->impl->containerAdd(inState,
+		inContainer, container,
+		inComponent)))
+		return sjme_error_default(error);
+	
+	/* Update parent. */
+	inComponent->parent = inContainer;
+		
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchui_core_intern_getContainer(

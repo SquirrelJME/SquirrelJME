@@ -250,6 +250,27 @@ public final class NativeScritchDylib
 	}
 	
 	/**
+	 * Sets the minimum size to use for a window's contents.
+	 *
+	 * @param __window The window to set the content size of.
+	 * @param __w The width
+	 * @param __h The height.
+	 * @throws MLECallError On null arguments or the size is not valid.
+	 * @since 2024/04/20
+	 */
+	public void windowContentMinimumSize(DylibWindowObject __window,
+		int __w, int __h)
+		throws MLECallError
+	{
+		if (__window == null)
+			throw new MLECallError("Null arguments");
+		if (__w <= 0 || __h <= 0)
+			throw new MLECallError("Zero or negative size");
+			
+		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
+	}
+	
+	/**
 	 * Returns the {@link ScritchWindowManagerType}.
 	 *
 	 * @return A {@link ScritchWindowManagerType}.

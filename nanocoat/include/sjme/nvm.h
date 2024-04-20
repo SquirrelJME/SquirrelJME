@@ -1724,6 +1724,9 @@ typedef enum sjme_errorCode
 	/** Invalid thread state. */
 	SJME_ERROR_INVALID_THREAD_STATE = -48,
 	
+	/** Component is already in a container. */
+	SJME_ERROR_ALREADY_IN_CONTAINER = -49,
+	
 	/** The number of error codes. */
 	SJME_NUM_ERROR_CODES = -49
 } sjme_errorCode;

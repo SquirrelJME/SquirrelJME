@@ -68,11 +68,16 @@ public class DylibWindowInterface
 	 */
 	@Override
 	public void contentMinimumSize(ScritchWindowBracket __window,
-		int __w,
-		int __h)
+		int __w, int __h)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__window == null)
+			throw new MLECallError("Null arguments");
+		if (__w <= 0 || __h <= 0)
+			throw new MLECallError("Zero or negative size");
+		
+		this.dyLib.windowContentMinimumSize(
+			(DylibWindowObject)__window, __w, __h);
 	}
 	
 	/**

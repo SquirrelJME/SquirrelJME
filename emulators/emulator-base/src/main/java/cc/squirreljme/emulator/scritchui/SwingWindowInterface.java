@@ -54,6 +54,10 @@ public class SwingWindowInterface
 		return frame.getContentPane().getHeight();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/03/18
+	 */
 	@Override
 	public void contentMinimumSize(@NotNull ScritchWindowBracket __window,
 		@Range(from = 1, to = Integer.MAX_VALUE) int __w,

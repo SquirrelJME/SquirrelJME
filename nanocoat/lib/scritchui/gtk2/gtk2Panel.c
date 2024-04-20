@@ -35,18 +35,21 @@ sjme_errorCode sjme_scritchui_gtk2_panelNew(
 	sjme_attrInOutNotNull sjme_scritchui_uiPanel inOutPanel)
 {
 	sjme_errorCode error;
-	GtkWidget* widget;
+	GtkWidget* fixed;
 
 	if (inState == NULL || inOutPanel == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Setup GTK widget, used fixed as we want exact placements. */
-	widget = NULL;
-	if ((widget = gtk_fixed_new()) == NULL)
+	fixed = NULL;
+	if ((fixed = gtk_fixed_new()) == NULL)
 		goto fail_gtkWidget;
 	
+	/* Does not have a window component. */
+	gtk_fixed_set_has_window(GTK_FIXED(fixed), FALSE);
+	
 	/* Store information. */
-	inOutPanel->component.common.handle = widget;
+	inOutPanel->component.common.handle = fixed;
 	
 	/* Success! */
 	return SJME_ERROR_NONE;

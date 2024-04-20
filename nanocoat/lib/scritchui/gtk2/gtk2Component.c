@@ -28,18 +28,8 @@ sjme_errorCode sjme_scritchui_gtk2_componentSetPaintListener(
 {
 	GtkWidget* widget;
 	
-	if (inState == NULL || inComponent == NULL)
+	if (inState == NULL || inComponent == NULL || inPaint == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Only for certain types. */
-	switch (inComponent->common.type)
-	{
-		case SJME_SCRITCHUI_TYPE_PANEL:
-			break;
-		
-		default:
-			return SJME_ERROR_INVALID_ARGUMENT;
-	}
 	
 	/* For GTK we do not give it a listener, we just say we paint on it. */
 	widget = (GtkWidget*)inComponent->common.handle;
@@ -54,6 +44,50 @@ sjme_errorCode sjme_scritchui_gtk2_componentSetPaintListener(
 	if (inListener != NULL)
 		inPaint->extra = g_signal_connect(widget, "expose-event",
 			G_CALLBACK(sjme_scritchui_gtk2_exposeHandler), NULL);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_scritchui_gtk2_containerAdd(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrInNotNull sjme_scritchui_uiContainer inContainerData,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent)
+{
+	GtkWindow* window;
+	GtkFixed* fixed;
+	GtkWidget* widget;
+	
+	if (inState == NULL || inContainer == NULL || inContainerData == NULL ||
+		inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Widget should always be the same. */
+	widget = (GtkWidget*)inComponent->common.handle;
+
+	/* Debug. */
+	sjme_message("containerAdd(%p (%d), %p (%d))",
+		inContainer, inContainer->common.type,
+		inComponent, inComponent->common.type);
+	
+	/* Which type is this? */
+	switch (inContainer->common.type)
+	{
+		case SJME_SCRITCHUI_TYPE_WINDOW:
+			window = (GtkWindow*)inContainer->common.handle;
+			gtk_container_add(GTK_CONTAINER(window), widget);
+			break;
+		
+			/* Place into fixed at basic coordinates. */
+		case SJME_SCRITCHUI_TYPE_PANEL:
+			fixed = (GtkFixed*)inContainer->common.handle;
+			gtk_fixed_put(GTK_FIXED(fixed), widget, 0, 0);
+			break;
+		
+		default:
+			return SJME_ERROR_NOT_IMPLEMENTED;
+	}
 	
 	/* Success! */
 	return SJME_ERROR_NONE;

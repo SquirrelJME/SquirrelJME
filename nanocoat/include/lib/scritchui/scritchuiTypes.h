@@ -36,7 +36,7 @@ typedef struct sjme_scritchui_uiComponentBase
 	sjme_scritchui_commonBase common;
 	
 	/** The parent of this component. */
-	sjme_scritchui_uiContainer parent;
+	sjme_scritchui_uiComponent parent;
 } sjme_scritchui_uiComponentBase;
 
 /**

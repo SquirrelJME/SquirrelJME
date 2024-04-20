@@ -57,6 +57,21 @@ typedef sjme_errorCode (*sjme_scritchui_impl_componentSetPaintListenerFunc)(
 	sjme_attrInNotNull sjme_scritchui_uiPaintable inPaint,
 	sjme_attrInNullable sjme_frontEnd* copyFrontEnd);
 
+/**
+ * Adds the given component to the specified container.
+ * 
+ * @param inState The input state.
+ * @param inContainer The container to place the component within.
+ * @param inComponent The component to add to the container.
+ * @return Any error code if applicable.
+ * @since 2024/04/20
+ */
+typedef sjme_errorCode (*sjme_scritchui_impl_containerAddFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrInNotNull sjme_scritchui_uiContainer inContainerData,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
+
 /** Enables or disables focus on a panel. */
 typedef sjme_scritchui_panelEnableFocusFunc
 	sjme_scritchui_impl_panelEnableFocusFunc;
@@ -89,6 +104,9 @@ struct sjme_scritchui_implFunctions
 	/** Set paint listener for component. */
 	sjme_scritchui_impl_componentSetPaintListenerFunc
 		componentSetPaintListener;
+	
+	/** Add component to container. */
+	sjme_scritchui_impl_containerAddFunc containerAdd;
 	
 	/** Execute callback within the event loop. */
 	sjme_scritchui_loopExecuteFunc loopExecute;
