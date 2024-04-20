@@ -17,7 +17,7 @@ import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
  * @since 2024/04/06
  */
 public class DylibWindowObject
-	extends DylibBaseObject
+	extends DylibComponentObject
 	implements DylibContainerObject, ScritchWindowBracket
 {
 	/**

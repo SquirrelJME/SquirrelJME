@@ -17,6 +17,6 @@ import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPaintableBracket;
  * @since 2024/04/06
  */
 public interface DylibPaintableObject
-	extends ScritchPaintableBracket
+	extends DylibHasObjectPointer, ScritchPaintableBracket
 {
 }

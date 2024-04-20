@@ -38,8 +38,8 @@ sjme_errorCode sjme_scritchui_gtk2_windowNew(
 	}
 	
 	/* Setup window. */
-	window->common.type = SJME_SCRITCHUI_TYPE_WINDOW;
-	window->common.handle = gtkWindow;
+	window->component.common.type = SJME_SCRITCHUI_TYPE_WINDOW;
+	window->component.common.handle = gtkWindow;
 	
 	/* Success! */
 	*outWindow = window;

@@ -110,6 +110,34 @@ struct sjme_scritchui_implFunctions
 };
 
 /**
+ * Returns the container for the given component.
+ * 
+ * @param inState The input state.
+ * @param inComponent The input component.
+ * @param outContainer The resultant container.
+ * @return Any error code if applicable, such as the component is not valid.
+ * @since 2024/04/20 
+ */
+typedef sjme_errorCode (*sjme_scritchui_intern_getContainerFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInOutNotNull sjme_scritchui_uiContainer* outContainer);
+
+/**
+ * Returns the container for the given component.
+ * 
+ * @param inState The input state.
+ * @param inComponent The input component.
+ * @param outContainer The resultant container.
+ * @return Any error code if applicable, such as the component is not valid.
+ * @since 2024/04/20 
+ */
+typedef sjme_errorCode (*sjme_scritchui_intern_getPaintableFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInOutNotNull sjme_scritchui_uiPaintable* outPaintable);
+
+/**
  * Maps the given screen internally.
  * 
  * @param inState The input state.
@@ -128,6 +156,12 @@ typedef sjme_errorCode (*sjme_scritchui_intern_mapScreenFunc)(
 
 struct sjme_scritchui_internFunctions
 {
+	/** Returns the container for the given component. */
+	sjme_scritchui_intern_getContainerFunc getContainer;
+	
+	/** Returns the paintable for the given component. */
+	sjme_scritchui_intern_getPaintableFunc getPaintable;
+		
 	/** Maps the given screen. */
 	sjme_scritchui_intern_mapScreenFunc mapScreen;
 };

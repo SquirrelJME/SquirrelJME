@@ -41,7 +41,12 @@ sjme_errorCode sjme_scritchui_core_componentSetPaintListener(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInNullable sjme_scritchui_paintListenerFunc inListener,
 	sjme_frontEnd* copyFrontEnd);
-	
+
+sjme_errorCode sjme_scritchui_core_containerAdd(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
+
 sjme_errorCode sjme_scritchui_core_loopExecute(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_thread_mainFunc callback,
@@ -81,7 +86,17 @@ sjme_errorCode sjme_scritchui_core_screens(
 sjme_errorCode sjme_scritchui_core_windowNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_scritchui_uiWindow* outWindow);
-	
+
+sjme_errorCode sjme_scritchui_core_intern_getContainer(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInOutNotNull sjme_scritchui_uiContainer* outContainer);
+
+sjme_errorCode sjme_scritchui_core_intern_getPaintable(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInOutNotNull sjme_scritchui_uiPaintable* outPaintable);
+
 sjme_errorCode sjme_scritchui_core_intern_mapScreen(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInValue sjme_jint screenId,

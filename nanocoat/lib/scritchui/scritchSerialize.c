@@ -171,6 +171,32 @@ sjme_errorCode sjme_scritchui_coreSerial_componentSetPaintListener(
 	SJME_SCRITCHUI_INVOKE_WAIT;
 }
 
+sjme_errorCode sjme_scritchui_coreSerial_containerAdd(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent)
+{
+	SJME_SCRITCHUI_SERIAL_VARS(containerAdd);
+	
+	SJME_SCRITCHUI_SERIAL_PRE_CHECK;
+	SJME_SCRITCHUI_SERIAL_LOOP_CHECK(containerAdd);
+	
+	/* Direct call? */
+	if (direct)
+		return inState->apiInThread->containerAdd(inState,
+			inContainer, inComponent);
+	
+	/* Serialize and Store. */
+	SJME_SCRITCHUI_SERIAL_SETUP(
+		SJME_SCRITCHUI_SERIAL_TYPE_CONTAINER_ADD,
+		containerAdd);
+	serial->inContainer = inContainer;
+	serial->inComponent = inComponent;
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
+}
+
 sjme_errorCode sjme_scritchui_coreSerial_panelEnableFocus(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiPanel inPanel,

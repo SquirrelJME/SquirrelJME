@@ -150,6 +150,13 @@ typedef struct sjme_scritchui_internFunctions sjme_scritchui_internFunctions;
 typedef struct sjme_scritchui_uiComponentBase* sjme_scritchui_uiComponent;
 
 /**
+ * Represents a container which can contain other components.
+ * 
+ * @since 2024/04/20
+ */
+typedef struct sjme_scritchui_uiContainerBase* sjme_scritchui_uiContainer;
+
+/**
  * Base paintable for ScritchUI.
  * 
  * @since 2024/04/06
@@ -270,7 +277,7 @@ typedef sjme_errorCode (*sjme_scritchui_apiInitFunc)(
  * @param inListener The listener for paint events, may be @c NULL to clear
  * the existing listener.
  * @param copyFrontEnd The front end data to copy, may be @c NULL .
- * @return Any error if applicable.
+ * @return Any error code if applicable.
  * @since 2024/04/06
  */
 typedef sjme_errorCode (*sjme_scritchui_componentSetPaintListenerFunc)(
@@ -278,6 +285,20 @@ typedef sjme_errorCode (*sjme_scritchui_componentSetPaintListenerFunc)(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInNullable sjme_scritchui_paintListenerFunc inListener,
 	sjme_attrInNullable sjme_frontEnd* copyFrontEnd);
+
+/**
+ * Adds the given component to the specified container.
+ * 
+ * @param inState The input state.
+ * @param inContainer The container to place the component within.
+ * @param inComponent The component to add to the container.
+ * @return Any error code if applicable.
+ * @since 2024/04/20
+ */
+typedef sjme_errorCode (*sjme_scritchui_containerAddFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
 
 /**
  * Execute the given callback within the event loop of the GUI.
@@ -388,6 +409,9 @@ struct sjme_scritchui_apiFunctions
 	
 	/** Sets the paint listener for a component. */
 	sjme_scritchui_componentSetPaintListenerFunc componentSetPaintListener;
+	
+	/** Adds component to container. */
+	sjme_scritchui_containerAddFunc containerAdd;
 	
 	/** Execute callback within the event loop. */
 	sjme_scritchui_loopExecuteFunc loopExecute;

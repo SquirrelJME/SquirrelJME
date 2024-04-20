@@ -10,6 +10,7 @@
 package cc.squirreljme.emulator.scritchui.dylib;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * Base class for all brackets that are wrapped by the ScritchUI Dylib.
@@ -17,6 +18,7 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
  * @since 2024/04/04
  */
 public abstract class DylibBaseObject
+	implements DylibHasObjectPointer
 {
 	/** Pointer to the object. */
 	protected final long objectP;
@@ -38,6 +40,16 @@ public abstract class DylibBaseObject
 		
 		// Bind object to this so native code can find the object again
 		DylibBaseObject.__bind(__objectP, this);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/04/20
+	 */
+	@Override
+	public final long objectPointer()
+	{
+		return this.objectP;
 	}
 	
 	/**

@@ -7,19 +7,20 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.mle.scritchui.brackets;
-
-import cc.squirreljme.jvm.mle.annotation.GhostObject;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+package cc.squirreljme.emulator.scritchui.dylib;
 
 /**
- * Represents an item which can contain other items.
+ * This has a native object pointer.
  *
- * @since 2024/03/01
+ * @since 2024/04/20
  */
-@GhostObject
-@SquirrelJMEVendorApi
-public interface ScritchContainerBracket
-	extends ScritchComponentBracket
+public interface DylibHasObjectPointer
 {
+	/**
+	 * Returns the object pointer.
+	 *
+	 * @return The object pointer.
+	 * @since 2024/04/20
+	 */
+	long objectPointer();
 }

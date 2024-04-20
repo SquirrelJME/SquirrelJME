@@ -11,6 +11,7 @@
 
 #include "lib/scritchui/core/core.h"
 #include "lib/scritchui/scritchuiTypes.h"
+#include "sjme/debug.h"
 
 sjme_errorCode sjme_scritchui_core_componentSetPaintListener(
 	sjme_scritchui inState,
@@ -19,7 +20,7 @@ sjme_errorCode sjme_scritchui_core_componentSetPaintListener(
 	sjme_frontEnd* copyFrontEnd)
 {
 	sjme_errorCode error;
-	sjme_scritchui_uiPaintableBase* paint;
+	sjme_scritchui_uiPaintable paint;
 	sjme_frontEnd oldFrontEnd;
 	sjme_scritchui_paintListenerFunc oldListener;
 
@@ -27,15 +28,10 @@ sjme_errorCode sjme_scritchui_core_componentSetPaintListener(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Only certain types can be painted on. */
-	switch (inComponent->common.type)
-	{
-		case SJME_SCRITCHUI_TYPE_PANEL:
-			paint = &((sjme_scritchui_uiPanel)inComponent)->paint;
-			break;
-		
-		default:
-			return SJME_ERROR_INVALID_ARGUMENT;
-	}
+	paint = NULL;
+	if (sjme_error_is(error = inState->intern->getPaintable(inState,
+		inComponent, &paint)) || paint == NULL)
+		return sjme_error_default(error);
 	
 	/* Set new listener. */
 	oldListener = paint->listener;
@@ -64,5 +60,73 @@ sjme_errorCode sjme_scritchui_core_componentSetPaintListener(
 	}
 	
 	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_scritchui_core_containerAdd(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent)
+{
+	if (inState == NULL || inContainer == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+sjme_errorCode sjme_scritchui_core_intern_getContainer(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInOutNotNull sjme_scritchui_uiContainer* outContainer)
+{
+	sjme_scritchui_uiContainer container;
+	
+	if (inState == NULL || inComponent == NULL || outContainer == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Only certain types can be a container. */
+	switch (inComponent->common.type)
+	{
+		case SJME_SCRITCHUI_TYPE_PANEL:
+			container = &((sjme_scritchui_uiPanel)inComponent)->container;
+			break;
+		
+		case SJME_SCRITCHUI_TYPE_WINDOW:
+			container = &((sjme_scritchui_uiWindow)inComponent)->container;
+			break;
+		
+		default:
+			return SJME_ERROR_INVALID_ARGUMENT;
+	}
+	
+	/* Success! */
+	*outContainer = container;
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_scritchui_core_intern_getPaintable(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInOutNotNull sjme_scritchui_uiPaintable* outPaintable)
+{
+	sjme_scritchui_uiPaintable paint;
+	
+	if (inState == NULL || inComponent == NULL || outPaintable == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Only certain types can be painted on. */
+	switch (inComponent->common.type)
+	{
+		case SJME_SCRITCHUI_TYPE_PANEL:
+			paint = &((sjme_scritchui_uiPanel)inComponent)->paint;
+			break;
+		
+		default:
+			return SJME_ERROR_INVALID_ARGUMENT;
+	}
+	
+	/* Success! */
+	*outPaintable = paint;
 	return SJME_ERROR_NONE;
 }

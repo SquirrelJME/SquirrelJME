@@ -34,7 +34,21 @@ typedef struct sjme_scritchui_uiComponentBase
 {
 	/** Common data. */
 	sjme_scritchui_commonBase common;
+	
+	/** The parent of this component. */
+	sjme_scritchui_uiContainer parent;
 } sjme_scritchui_uiComponentBase;
+
+/**
+ * Base data for containers which may contain components.
+ * 
+ * @since 2024/04/20
+ */
+typedef struct sjme_scritchui_uiContainerBase
+{
+	/** Todo. */
+	sjme_jint todo;
+} sjme_scritchui_uiContainerBase; 
 
 /**
  * Base data for paintable components.
@@ -58,6 +72,9 @@ typedef struct sjme_scritchui_uiPanelBase
 	/** Common data. */
 	sjme_scritchui_uiComponentBase component;
 	
+	/** Container related. */
+	sjme_scritchui_uiContainerBase container;
+	
 	/** Paint related. */
 	sjme_scritchui_uiPaintableBase paint;
 	
@@ -80,7 +97,10 @@ typedef struct sjme_scritchui_uiScreenBase
 typedef struct sjme_scritchui_uiWindowBase
 {
 	/** Common data. */
-	sjme_scritchui_commonBase common;
+	sjme_scritchui_uiComponentBase component;
+	
+	/** Container related. */
+	sjme_scritchui_uiContainerBase container;
 } sjme_scritchui_uiWindowBase;
 
 /*--------------------------------------------------------------------------*/

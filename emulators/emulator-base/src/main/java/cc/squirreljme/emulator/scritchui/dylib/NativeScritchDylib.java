@@ -88,7 +88,11 @@ public final class NativeScritchDylib
 		DylibComponentObject __component)
 		throws MLECallError
 	{
-		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
+		if (__container == null || __component == null)
+			throw new MLECallError("Null arguments.");
+		
+		NativeScritchDylib.__containerAdd(this._stateP,
+			__container.objectPointer(), __component.objectP);
 	}
 	
 	/**
@@ -101,6 +105,9 @@ public final class NativeScritchDylib
 	public void containerRemoveAll(DylibContainerObject __container)
 		throws MLECallError
 	{
+		if (__container == null)
+			throw new MLECallError("Null arguments.");
+		
 		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
 	}
 	
@@ -120,6 +127,9 @@ public final class NativeScritchDylib
 		DylibComponentObject __component, int __x, int __y, int __w, int __h)
 		throws MLECallError
 	{
+		if (__container == null || __component == null)
+			throw new MLECallError("Null arguments.");
+		
 		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
 	}
 	
@@ -276,6 +286,20 @@ public final class NativeScritchDylib
 	 */
 	private static native void __componentSetPaintListener(long __stateP,
 		long __componentP, ScritchPaintListener __listener)
+		throws MLECallError;
+	
+	/**
+	 * Adds the given component to the given container.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __containerP The container pointer.
+	 * @param __componentP The component pointer.
+	 * @throws MLECallError On null arguments or the container and/or component
+	 * are not valid.
+	 * @since 2024/04/20
+	 */
+	private static native void __containerAdd(long __stateP,
+		long __containerP, long __componentP)
 		throws MLECallError;
 	
 	/**

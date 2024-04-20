@@ -42,6 +42,9 @@ typedef enum sjme_scritchui_serialType
 	
 	/** @c componentSetPaintListener . */
 	SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_PAINT_LISTENER,
+	
+	/** @c containerAdd . */
+	SJME_SCRITCHUI_SERIAL_TYPE_CONTAINER_ADD,
 		
 	/** @c panelEnableFocus . */
 	SJME_SCRITCHUI_SERIAL_TYPE_PANEL_ENABLE_FOCUS,
@@ -73,6 +76,15 @@ typedef struct sjme_scritchui_serialData_componentSetPaintListener
 	/** Any front-end data to set as needed. */
 	volatile sjme_frontEnd* copyFrontEnd;
 } sjme_scritchui_serialData_componentSetPaintListener;
+
+typedef struct sjme_scritchui_serialData_containerAdd
+{
+	/** The input container. */
+	volatile sjme_scritchui_uiComponent inContainer;
+	
+	/** The input component. */
+	volatile sjme_scritchui_uiComponent inComponent;
+} sjme_scritchui_serialData_containerAdd;
 
 typedef struct sjme_scritchui_serialData_panelEnableFocus
 {
@@ -120,6 +132,9 @@ typedef union sjme_scritchui_serialDataUnion
 	/** @c componentSetPaintListener . */
 	volatile sjme_scritchui_serialData_componentSetPaintListener
 		componentSetPaintListener;
+	
+	/** @c containerAdd . */
+	volatile sjme_scritchui_serialData_containerAdd containerAdd;
 		
 	/** @c panelEnableFocus . */
 	volatile sjme_scritchui_serialData_panelEnableFocus panelEnableFocus;
@@ -162,6 +177,11 @@ sjme_errorCode sjme_scritchui_coreSerial_componentSetPaintListener(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInNullable sjme_scritchui_paintListenerFunc inListener,
 	sjme_frontEnd* copyFrontEnd);
+
+sjme_errorCode sjme_scritchui_coreSerial_containerAdd(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
 
 sjme_errorCode sjme_scritchui_coreSerial_panelEnableFocus(
 	sjme_attrInNotNull sjme_scritchui inState,

@@ -17,6 +17,6 @@ import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
  * @since 2024/04/18
  */
 public interface DylibContainerObject
-	extends ScritchComponentBracket
+	extends DylibHasObjectPointer, ScritchComponentBracket
 {
 }

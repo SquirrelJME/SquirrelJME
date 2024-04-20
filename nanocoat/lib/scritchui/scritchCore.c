@@ -21,6 +21,7 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 	.apiFlags = NULL,
 	.componentSetPaintListener =
 		sjme_scritchui_coreSerial_componentSetPaintListener,
+	.containerAdd = sjme_scritchui_coreSerial_containerAdd,
 	
 	/* Loops are unchanged. */
 	.loopExecute = sjme_scritchui_core_loopExecute,
@@ -41,6 +42,7 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 {
 	.apiFlags = NULL,
 	.componentSetPaintListener = sjme_scritchui_core_componentSetPaintListener,
+	.containerAdd = sjme_scritchui_core_containerAdd,
 	.loopExecute = sjme_scritchui_core_loopExecute,
 	.loopExecuteWait = sjme_scritchui_core_loopExecuteWait,
 	.loopIsInThread = sjme_scritchui_core_loopIsInThread,
@@ -55,6 +57,8 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 /** Internal functions for ScritchUI implementations. */
 static const sjme_scritchui_internFunctions sjme_scritchUI_coreIntern =
 {
+	.getContainer = sjme_scritchui_core_intern_getContainer,
+	.getPaintable = sjme_scritchui_core_intern_getPaintable,
 	.mapScreen = sjme_scritchui_core_intern_mapScreen,
 };
 
