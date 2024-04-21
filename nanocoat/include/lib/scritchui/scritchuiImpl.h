@@ -92,6 +92,10 @@ typedef sjme_errorCode (*sjme_scritchui_impl_panelNewFunc)(
 typedef sjme_scritchui_screensFunc
 	sjme_scritchui_impl_screensFunc;
 
+/** Minimum size for contents in a window. */
+typedef sjme_scritchui_windowContentMinimumSizeFunc
+	sjme_scritchui_impl_windowContentMinimumSizeFunc;
+
 /** Creates a new window. */
 typedef sjme_scritchui_windowNewFunc
 	sjme_scritchui_impl_windowNewFunc;
@@ -122,6 +126,9 @@ struct sjme_scritchui_implFunctions
 	
 	/** The available screens. */
 	sjme_scritchui_impl_screensFunc screens;
+	
+	/** Set minimum size of content window. */
+	sjme_scritchui_impl_windowContentMinimumSizeFunc windowContentMinimumSize;
 	
 	/** Creates a new window. */
 	sjme_scritchui_impl_windowNewFunc windowNew;

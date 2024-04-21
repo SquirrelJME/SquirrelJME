@@ -34,6 +34,8 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 	.panelNew = sjme_scritchui_coreSerial_panelNew,
 	.screenSetListener = sjme_scritchui_coreSerial_screenSetListener,
 	.screens = sjme_scritchui_coreSerial_screens,
+	.windowContentMinimumSize =
+		sjme_scritchui_coreSerial_windowContentMinimumSize,
 	.windowNew = sjme_scritchui_coreSerial_windowNew,
 };
 
@@ -51,6 +53,7 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 	.panelNew = sjme_scritchui_core_panelNew,
 	.screenSetListener = sjme_scritchui_core_screenSetListener,
 	.screens = sjme_scritchui_core_screens,
+	.windowContentMinimumSize = sjme_scritchui_core_windowContentMinimumSize,
 	.windowNew = sjme_scritchui_core_windowNew,
 };
 

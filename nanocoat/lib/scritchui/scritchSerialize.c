@@ -20,7 +20,7 @@
 	sjme_errorCode error; \
 	sjme_jboolean direct; \
 	volatile sjme_scritchui_serialData data; \
-	SJME_TOKEN_PASTE(sjme_scritchui_serialData_, what)* serial
+	SJME_TOKEN_PASTE(sjme_scritchui_serialData_, what)* volatile serial
 
 /** Pre-check call to make. */
 #define SJME_SCRITCHUI_SERIAL_PRE_CHECK \
@@ -61,7 +61,7 @@
 
 /** Declares dispatch type. */
 #define SJME_DISPATCH_DECL(what) \
-	volatile SJME_TOKEN_PASTE(sjme_scritchui_serialData_, what)* what
+	SJME_TOKEN_PASTE(sjme_scritchui_serialData_, what)* volatile what
 
 /** Performs dispatch call. */
 #define SJME_DISPATCH_CALL(what, args) \
@@ -74,11 +74,13 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 	sjme_attrInNullable sjme_thread_parameter anything)
 {
 	volatile sjme_scritchui_serialData* data;
+	SJME_DISPATCH_DECL(containerAdd);
 	SJME_DISPATCH_DECL(componentSetPaintListener);
 	SJME_DISPATCH_DECL(panelNew);
 	SJME_DISPATCH_DECL(panelEnableFocus);
 	SJME_DISPATCH_DECL(screenSetListener);
 	SJME_DISPATCH_DECL(screens);
+	SJME_DISPATCH_DECL(windowContentMinimumSize);
 	SJME_DISPATCH_DECL(windowNew);
 	sjme_scritchui state;
 	
@@ -101,6 +103,13 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 				componentSetPaintListener->inComponent,
 				componentSetPaintListener->inListener,
 				componentSetPaintListener->copyFrontEnd));
+			break;
+		
+		case SJME_SCRITCHUI_SERIAL_TYPE_CONTAINER_ADD:
+			SJME_DISPATCH_CALL(containerAdd,
+				(state,
+				containerAdd->inContainer,
+				containerAdd->inComponent));
 			break;
 		
 		case SJME_SCRITCHUI_SERIAL_TYPE_PANEL_ENABLE_FOCUS:
@@ -127,6 +136,14 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 				(state,
 				screens->outScreens,
 				screens->inOutNumScreens));
+			break;
+		
+		case SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_CONTENT_MINIMUM_SIZE:
+			SJME_DISPATCH_CALL(windowContentMinimumSize,
+				(state,
+				windowContentMinimumSize->inWindow,
+				windowContentMinimumSize->width,
+				windowContentMinimumSize->height));
 			break;
 	
 		case SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_NEW:
@@ -291,6 +308,34 @@ sjme_errorCode sjme_scritchui_coreSerial_screens(
 		screens);
 	serial->outScreens = outScreens;
 	serial->inOutNumScreens = inOutNumScreens;
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
+}
+	
+sjme_errorCode sjme_scritchui_coreSerial_windowContentMinimumSize(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInPositiveNonZero sjme_jint width,
+	sjme_attrInPositiveNonZero sjme_jint height)
+{
+	SJME_SCRITCHUI_SERIAL_VARS(windowContentMinimumSize);
+	
+	SJME_SCRITCHUI_SERIAL_PRE_CHECK;
+	SJME_SCRITCHUI_SERIAL_LOOP_CHECK(windowContentMinimumSize);
+	
+	/* Direct call? */
+	if (direct)
+		return inState->apiInThread->windowContentMinimumSize(inState,
+			inWindow, width, height);
+	
+	/* Serialize and Store. */
+	SJME_SCRITCHUI_SERIAL_SETUP(
+		SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_CONTENT_MINIMUM_SIZE,
+		windowContentMinimumSize);
+	serial->inWindow = inWindow;
+	serial->width = width;
+	serial->height = height;
 	
 	/* Invoke and wait. */
 	SJME_SCRITCHUI_INVOKE_WAIT;

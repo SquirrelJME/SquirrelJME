@@ -389,6 +389,23 @@ typedef sjme_errorCode (*sjme_scritchui_screensFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_scritchui_uiScreen* outScreens,
 	sjme_attrInOutNotNull sjme_jint* inOutNumScreens);
+
+/**
+ * Sets the minimum content size for windows.
+ * 
+ * @param inState The input state.
+ * @param inWindow The window to set the minimum content size for.
+ * @param width The width to set.
+ * @param height The height to set.
+ * @return Any error code if applicable, such as if the width and/or height
+ * are zero or negative.
+ * @since 2024/04/21
+ */
+typedef sjme_errorCode (*sjme_scritchui_windowContentMinimumSizeFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInPositiveNonZero sjme_jint width,
+	sjme_attrInPositiveNonZero sjme_jint height);
 	
 /**
  * Creates a new window.
@@ -436,6 +453,9 @@ struct sjme_scritchui_apiFunctions
 	
 	/** Screens available. */
 	sjme_scritchui_screensFunc screens;
+	
+	/** Sets minimum size of the window contents. */
+	sjme_scritchui_windowContentMinimumSizeFunc windowContentMinimumSize;
 	
 	/** Creates a new window. */
 	sjme_scritchui_windowNewFunc windowNew;

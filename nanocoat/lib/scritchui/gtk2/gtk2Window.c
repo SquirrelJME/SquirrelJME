@@ -11,6 +11,42 @@
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/alloc.h"
 
+sjme_errorCode sjme_scritchui_gtk2_windowContentMinimumSize(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInPositiveNonZero sjme_jint width,
+	sjme_attrInPositiveNonZero sjme_jint height)
+{
+	sjme_errorCode error;
+	GtkWindow* gtkWindow;
+	GdkGeometry geometry;
+	
+	if (inState == NULL || inWindow == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (width <= 0 || height <= 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Recover window. */
+	gtkWindow = inWindow->component.common.handle;
+	
+	/* Setup geometry. */
+	memset(&geometry, 0, sizeof(geometry));
+	geometry.min_width = width;
+	geometry.min_height = height;
+	geometry.base_width = width;
+	geometry.base_height = height;
+	
+	/* Set minimum size. */
+	gtk_window_set_geometry_hints(gtkWindow,
+		gtkWindow,
+		&geometry,
+		GDK_HINT_MIN_SIZE | GDK_HINT_BASE_SIZE);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_scritchui_gtk2_windowNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_scritchui_uiWindow* outWindow)

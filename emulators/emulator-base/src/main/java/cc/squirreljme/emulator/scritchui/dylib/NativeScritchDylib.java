@@ -266,8 +266,9 @@ public final class NativeScritchDylib
 			throw new MLECallError("Null arguments");
 		if (__w <= 0 || __h <= 0)
 			throw new MLECallError("Zero or negative size");
-			
-		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
+		
+		NativeScritchDylib.__windowContentMinimumSize(this._stateP,
+			__window.objectP, __w, __h);
 	}
 	
 	/**
@@ -393,6 +394,21 @@ public final class NativeScritchDylib
 	 * @since 2024/04/15
 	 */
 	private static native int __screens(long __stateP, long[] __screenPs);
+	
+	/**
+	 * Sets the minimum size for contents in windows.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __windowP The window pointer.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @throws MLECallError On null arguments or the width and/or height
+	 * are not valid.
+	 * @since 2024/04/21
+	 */
+	private static native void __windowContentMinimumSize(long __stateP,
+		long __windowP, int __w, int __h)
+		throws MLECallError;
 	
 	/**
 	 * Returns the {@link ScritchWindowManagerType}.

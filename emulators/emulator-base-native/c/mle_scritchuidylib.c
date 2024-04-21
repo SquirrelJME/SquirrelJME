@@ -41,6 +41,8 @@
 	DESC_LONG ")" DESC_LONG
 #define FORWARD_DESC___screens "(" \
 	DESC_LONG DESC_ARRAY(DESC_LONG) ")" DESC_INTEGER
+#define FORWARD_DESC___windowContentMinimumSize "(" \
+	DESC_LONG DESC_LONG DESC_INTEGER DESC_INTEGER ")" DESC_VOID
 #define FORWARD_DESC___windowManagerType "(" \
 	DESC_LONG ")" DESC_INTEGER
 #define FORWARD_DESC___windowNew "(" \
@@ -597,6 +599,30 @@ fail_nullArgs:
 	return -1;
 }
 
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__windowContentMinimumSize)(JNIEnv* env, jclass classy,
+	jlong stateP, jlong windowP, jint width, jint height)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	sjme_scritchui_uiWindow window;
+	
+	if (stateP == 0 || windowP == 0)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+	
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	window = (sjme_scritchui_uiWindow)windowP;
+	
+	/* Forward call. */
+	if (sjme_error_is(error = state->api->windowContentMinimumSize(
+		state, window, width, height)))
+		sjme_jni_throwMLECallError(env, error);
+}
+
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	__windowManagerType)(JNIEnv* env, jclass classy, jlong stateP)
 {
@@ -655,6 +681,7 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 	FORWARD_list(NativeScritchDylib, __panelEnableFocus),
 	FORWARD_list(NativeScritchDylib, __panelNew),
 	FORWARD_list(NativeScritchDylib, __screens),
+	FORWARD_list(NativeScritchDylib, __windowContentMinimumSize),
 	FORWARD_list(NativeScritchDylib, __windowManagerType),
 	FORWARD_list(NativeScritchDylib, __windowNew),
 };

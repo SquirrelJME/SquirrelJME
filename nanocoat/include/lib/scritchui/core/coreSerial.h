@@ -58,6 +58,9 @@ typedef enum sjme_scritchui_serialType
 	/** @c screens . */
 	SJME_SCRITCHUI_SERIAL_TYPE_SCREENS,
 	
+	/** @c windowContentMinimumSize . */
+	SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_CONTENT_MINIMUM_SIZE,
+	
 	/** @c windowNew . */
 	SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_NEW,
 	
@@ -74,7 +77,7 @@ typedef struct sjme_scritchui_serialData_componentSetPaintListener
 	volatile sjme_scritchui_paintListenerFunc inListener;
 	
 	/** Any front-end data to set as needed. */
-	volatile sjme_frontEnd* copyFrontEnd;
+	sjme_frontEnd* volatile copyFrontEnd;
 } sjme_scritchui_serialData_componentSetPaintListener;
 
 typedef struct sjme_scritchui_serialData_containerAdd
@@ -98,7 +101,7 @@ typedef struct sjme_scritchui_serialData_panelEnableFocus
 typedef struct sjme_scritchui_serialData_panelNew
 {
 	/** The resultant panel. */
-	volatile sjme_scritchui_uiPanel* outPanel;
+	sjme_scritchui_uiPanel volatile outPanel;
 } sjme_scritchui_serialData_panelNew;
 
 typedef struct sjme_scritchui_serialData_screenSetListener
@@ -110,16 +113,28 @@ typedef struct sjme_scritchui_serialData_screenSetListener
 typedef struct sjme_scritchui_serialData_screens
 {
 	/** The resultant screen array. */
-	volatile sjme_scritchui_uiScreen* outScreens;
+	sjme_scritchui_uiScreen* volatile outScreens;
 	
 	/** The size of the input array then the number of total screens. */
-	volatile sjme_jint* inOutNumScreens;
+	sjme_jint* volatile inOutNumScreens;
 } sjme_scritchui_serialData_screens;
+
+typedef struct sjme_scritchui_serialData_windowContentMinimumSize
+{
+	/** The input window. */
+	volatile sjme_scritchui_uiWindow inWindow;
+	
+	/** The width. */
+	volatile sjme_jint width;
+	
+	/** The height. */
+	volatile sjme_jint height;
+} sjme_scritchui_serialData_windowContentMinimumSize;
 
 typedef struct sjme_scritchui_serialData_windowNew
 {
 	/** The resultant window. */
-	volatile sjme_scritchui_uiWindow* outWindow;
+	sjme_scritchui_uiWindow* volatile outWindow;
 } sjme_scritchui_serialData_windowNew;
 
 /**
@@ -147,6 +162,10 @@ typedef union sjme_scritchui_serialDataUnion
 		
 	/** @c screens . */
 	volatile sjme_scritchui_serialData_screens screens;
+	
+	/** @c windowContentMinimumSize. */
+	volatile sjme_scritchui_serialData_windowContentMinimumSize
+		windowContentMinimumSize;
 	
 	/** @c windowNew . */
 	volatile sjme_scritchui_serialData_windowNew windowNew;
@@ -200,7 +219,13 @@ sjme_errorCode sjme_scritchui_coreSerial_screens(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_scritchui_uiScreen* outScreens,
 	sjme_attrInOutNotNull sjme_jint* inOutNumScreens);
-	
+
+sjme_errorCode sjme_scritchui_coreSerial_windowContentMinimumSize(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInPositiveNonZero sjme_jint width,
+	sjme_attrInPositiveNonZero sjme_jint height);
+
 sjme_errorCode sjme_scritchui_coreSerial_windowNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_scritchui_uiWindow* outWindow);
