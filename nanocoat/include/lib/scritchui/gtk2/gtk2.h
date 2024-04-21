@@ -44,6 +44,10 @@ extern "C" {
 
 sjme_errorCode sjme_scritchui_gtk2_apiInit(
 	sjme_attrInNotNull sjme_scritchui inState);
+	
+sjme_errorCode sjme_scritchui_gtk_componentRevalidate(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
 
 sjme_errorCode sjme_scritchui_gtk2_componentSetPaintListener(
 	sjme_attrInNotNull sjme_scritchui inState,

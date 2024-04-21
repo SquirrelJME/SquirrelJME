@@ -40,6 +40,9 @@ typedef enum sjme_scritchui_serialType
 	/** Unknown. */
 	SJME_SCRITCHUI_SERIAL_TYPE_UNKNOWN,
 	
+	/** @c componentRevalidate . */
+	SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_REVALIDATE,
+	
 	/** @c componentSetPaintListener . */
 	SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_PAINT_LISTENER,
 	
@@ -67,6 +70,12 @@ typedef enum sjme_scritchui_serialType
 	/** The number of serialized types. */
 	SJME_SCRITCHUI_NUM_SERIAL_TYPES
 } sjme_scritchui_serialType;
+
+typedef struct sjme_scritchui_serialData_componentRevalidate
+{
+	/** The input component. */
+	volatile sjme_scritchui_uiComponent inComponent;
+} sjme_scritchui_serialData_componentRevalidate;
 
 typedef struct sjme_scritchui_serialData_componentSetPaintListener
 {
@@ -144,6 +153,10 @@ typedef struct sjme_scritchui_serialData_windowNew
  */
 typedef union sjme_scritchui_serialDataUnion
 {
+	/** @c componentRevalidate . */
+	volatile sjme_scritchui_serialData_componentRevalidate
+		componentRevalidate;
+	
 	/** @c componentSetPaintListener . */
 	volatile sjme_scritchui_serialData_componentSetPaintListener
 		componentSetPaintListener;
@@ -190,6 +203,10 @@ typedef struct sjme_scritchui_serialData
 	/** The serial data. */
 	volatile sjme_scritchui_serialDataUnion data;
 } sjme_scritchui_serialData;
+
+sjme_errorCode sjme_scritchui_coreSerial_componentRevalidate(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
 
 sjme_errorCode sjme_scritchui_coreSerial_componentSetPaintListener(
 	sjme_attrInNotNull sjme_scritchui inState,

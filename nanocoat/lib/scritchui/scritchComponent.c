@@ -13,6 +13,20 @@
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/debug.h"
 
+sjme_errorCode sjme_scritchui_core_componentRevalidate(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent)
+{
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (inState->impl->componentRevalidate == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Forward call. */
+	return inState->impl->componentRevalidate(inState, inComponent);
+}
+
 sjme_errorCode sjme_scritchui_core_componentSetPaintListener(
 	sjme_scritchui inState,
 	sjme_scritchui_uiComponent inComponent,

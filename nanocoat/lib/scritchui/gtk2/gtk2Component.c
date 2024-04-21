@@ -19,6 +19,24 @@ static gboolean sjme_scritchui_gtk2_exposeHandler(GtkWidget* widget,
 	return FALSE;
 }
 
+sjme_errorCode sjme_scritchui_gtk_componentRevalidate(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent)
+{
+	GtkWidget* widget;
+	
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* There is not really a revalidate in GTK, but we can make sure */
+	/* that everything is properly shown. */
+	widget = (GtkWidget*)inComponent->common.handle;
+	gtk_widget_show_all(widget);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_scritchui_gtk2_componentSetPaintListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
@@ -88,6 +106,9 @@ sjme_errorCode sjme_scritchui_gtk2_containerAdd(
 		default:
 			return SJME_ERROR_NOT_IMPLEMENTED;
 	}
+	
+	/* The widget needs to be shown for it to appear. */
+	gtk_widget_show(widget);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;

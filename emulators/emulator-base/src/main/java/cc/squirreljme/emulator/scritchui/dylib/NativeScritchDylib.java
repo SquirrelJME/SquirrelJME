@@ -56,6 +56,22 @@ public final class NativeScritchDylib
 	}
 	
 	/**
+	 * Revalidates the given component.
+	 *
+	 * @param __component The component to revalidate.
+	 * @throws MLECallError On null arguments.
+	 * @since 2024/04/21
+	 */
+	public void componentRevalidate(DylibComponentObject __component)
+		throws MLECallError
+	{
+		if (__component == null)
+			throw new MLECallError("Null arguments");
+		
+		NativeScritchDylib.__componentRevalidate(this._stateP, __component.objectP);
+	}
+	
+	/**
 	 * Sets the component paint listener.
 	 *
 	 * @param __component The component to draw on.
@@ -296,6 +312,18 @@ public final class NativeScritchDylib
 		
 		return new DylibWindowObject(windowP);
 	}
+	
+	/**
+	 * Revalidates the given component.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __componentP The component pointer.
+	 * @throws MLECallError On null arguments.
+	 * @since 2024/04/21
+	 */
+	private static native void __componentRevalidate(long __stateP,
+		long __componentP)
+		throws MLECallError;
 	
 	/**
 	 * Sets the paint listener for the component.

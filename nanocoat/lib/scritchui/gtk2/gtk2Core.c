@@ -14,6 +14,7 @@
 static const sjme_scritchui_implFunctions sjme_scritchUI_gtkFunctions =
 {
 	.apiInit = sjme_scritchui_gtk2_apiInit,
+	.componentRevalidate = sjme_scritchui_gtk_componentRevalidate,
 	.componentSetPaintListener = sjme_scritchui_gtk2_componentSetPaintListener,
 	.containerAdd = sjme_scritchui_gtk2_containerAdd,
 	.loopExecute = sjme_scritchui_gtk2_loopExecute,

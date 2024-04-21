@@ -23,6 +23,8 @@
 #define DESC_SCRITCH_PAINT_LISTENER DESC_CLASS( \
 	"cc/squirreljme/jvm/mle/scritchui/callbacks/ScritchPaintListener")
 
+#define FORWARD_DESC___componentRevalidate "(" \
+	DESC_LONG DESC_LONG ")" DESC_VOID
 #define FORWARD_DESC___componentSetPaintListener "(" \
 	DESC_LONG DESC_LONG DESC_SCRITCH_PAINT_LISTENER ")" DESC_VOID
 #define FORWARD_DESC___containerAdd "(" \
@@ -181,6 +183,32 @@ static sjme_thread_result mle_bindEventThread(
 	
 	/* Success! */
 	return SJME_THREAD_RESULT(SJME_ERROR_NONE);
+}
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__componentRevalidate)(JNIEnv* env, jclass classy, jlong stateP,
+	jlong componentP)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	sjme_scritchui_uiComponent component;
+	
+	if (stateP == 0 || componentP == 0)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	component = (sjme_scritchui_uiComponent)componentP;
+	
+	/* Forward call. */
+	error = SJME_ERROR_NOT_IMPLEMENTED;
+	if (state->api->componentRevalidate == NULL ||
+		sjme_error_is(error = state->api->componentRevalidate(state,
+			component)))
+		sjme_jni_throwMLECallError(env, error);
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
@@ -672,6 +700,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 
 static const JNINativeMethod mleNativeScritchDylibMethods[] =
 {
+	FORWARD_list(NativeScritchDylib, __componentRevalidate),
 	FORWARD_list(NativeScritchDylib, __componentSetPaintListener),
 	FORWARD_list(NativeScritchDylib, __containerAdd),
 	FORWARD_list(NativeScritchDylib, __linkInit),

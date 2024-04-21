@@ -270,6 +270,18 @@ typedef sjme_errorCode (*sjme_scritchui_apiInitFunc)(
 	sjme_attrInOutNotNull sjme_scritchui* outState);
 
 /**
+ * Revalidates the given component.
+ * 
+ * @param inState The input state.
+ * @param inComponent The component to be revalidated.
+ * @return On any error if applicable.
+ * @since 2024/04/21
+ */
+typedef sjme_errorCode (*sjme_scritchui_componentRevalidateFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
+
+/**
  * Sets the paint listener for the given component.
  * 
  * @param inState The input state.
@@ -423,6 +435,9 @@ struct sjme_scritchui_apiFunctions
 {
 	/** API flags. */
 	sjme_scritchui_apiFlagsFunc apiFlags;
+	
+	/** Revalidates the given component. */
+	sjme_scritchui_componentRevalidateFunc componentRevalidate;
 	
 	/** Sets the paint listener for a component. */
 	sjme_scritchui_componentSetPaintListenerFunc componentSetPaintListener;

@@ -74,8 +74,9 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 	sjme_attrInNullable sjme_thread_parameter anything)
 {
 	volatile sjme_scritchui_serialData* data;
-	SJME_DISPATCH_DECL(containerAdd);
+	SJME_DISPATCH_DECL(componentRevalidate);
 	SJME_DISPATCH_DECL(componentSetPaintListener);
+	SJME_DISPATCH_DECL(containerAdd);
 	SJME_DISPATCH_DECL(panelNew);
 	SJME_DISPATCH_DECL(panelEnableFocus);
 	SJME_DISPATCH_DECL(screenSetListener);
@@ -97,6 +98,12 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 	/* Depends on the type... */
 	switch (data->type)
 	{
+		case SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_REVALIDATE:
+			SJME_DISPATCH_CALL(componentRevalidate,
+				(state,
+				componentRevalidate->inComponent));
+			break;
+		
 		case SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_PAINT_LISTENER:
 			SJME_DISPATCH_CALL(componentSetPaintListener,
 				(state,
@@ -158,6 +165,30 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 	
 	/* Map result. */
 	return SJME_THREAD_RESULT(data->error);
+}
+
+sjme_errorCode sjme_scritchui_coreSerial_componentRevalidate(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent)
+{
+	SJME_SCRITCHUI_SERIAL_VARS(componentRevalidate);
+	
+	SJME_SCRITCHUI_SERIAL_PRE_CHECK;
+	SJME_SCRITCHUI_SERIAL_LOOP_CHECK(componentRevalidate);
+	
+	/* Direct call? */
+	if (direct)
+		return inState->apiInThread->componentRevalidate(inState,
+			inComponent);
+	
+	/* Serialize and Store. */
+	SJME_SCRITCHUI_SERIAL_SETUP(
+		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_REVALIDATE,
+		componentRevalidate);
+	serial->inComponent = inComponent;
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
 }
 
 sjme_errorCode sjme_scritchui_coreSerial_componentSetPaintListener(

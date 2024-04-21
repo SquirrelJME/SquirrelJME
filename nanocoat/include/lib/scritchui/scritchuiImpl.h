@@ -39,6 +39,10 @@ extern "C" {
 typedef sjme_errorCode (*sjme_scritchui_impl_apiInit)(
 	sjme_attrInNotNull sjme_scritchui inState);
 
+/** Revalidate component. */
+typedef sjme_scritchui_componentRevalidateFunc
+	sjme_scritchui_impl_componentRevalidateFunc;
+
 /**
  * Sets the paint listener for the given component.
  * 
@@ -104,6 +108,9 @@ struct sjme_scritchui_implFunctions
 {
 	/** Initialize implementation API instance. */
 	sjme_scritchui_impl_apiInit apiInit;
+	
+	/** Revalidate component. */
+	sjme_scritchui_impl_componentRevalidateFunc componentRevalidate;
 	
 	/** Set paint listener for component. */
 	sjme_scritchui_impl_componentSetPaintListenerFunc
