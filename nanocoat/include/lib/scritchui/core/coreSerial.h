@@ -110,7 +110,7 @@ typedef struct sjme_scritchui_serialData_panelEnableFocus
 typedef struct sjme_scritchui_serialData_panelNew
 {
 	/** The resultant panel. */
-	sjme_scritchui_uiPanel volatile outPanel;
+	sjme_scritchui_uiPanel* volatile outPanel;
 } sjme_scritchui_serialData_panelNew;
 
 typedef struct sjme_scritchui_serialData_screenSetListener

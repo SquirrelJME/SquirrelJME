@@ -51,13 +51,29 @@
 	data.state = inState; \
 	serial = &data.data.what; } while (0)
 
-/* Invoke serial call and wait for result. */
+/** Invoke serial call and wait for result. */
 #define SJME_SCRITCHUI_INVOKE_WAIT \
 	do { sjme_thread_barrier(); \
 		if (sjme_error_is(error = inState->api->loopExecuteWait(inState, \
 		sjme_scritchui_serialDispatch, &data))) \
 		return sjme_error_default(error); \
 	return data.error; } while (0)
+
+/** Common shared chunk of forwarding code, to reduce duplicates. */
+#define SJME_SCRITCHUI_SERIAL_CHUNK(what, whatType, directInvokeArgs) \
+	SJME_SCRITCHUI_SERIAL_VARS(what); \
+	 \
+	SJME_SCRITCHUI_SERIAL_PRE_CHECK; \
+	SJME_SCRITCHUI_SERIAL_LOOP_CHECK(what); \
+	 \
+	/* Direct call? */ \
+	if (direct) \
+		return inState->apiInThread->what directInvokeArgs; \
+	 \
+	/* Serialize and Store. */ \
+	SJME_SCRITCHUI_SERIAL_SETUP( \
+		whatType, \
+		what)
 
 /** Declares dispatch type. */
 #define SJME_DISPATCH_DECL(what) \
@@ -69,6 +85,12 @@
 	if (state->apiInThread->what == NULL) \
 		return SJME_THREAD_RESULT(SJME_ERROR_NOT_IMPLEMENTED); \
 	data->error = state->apiInThread->what args; } while (0)
+
+/** Simplified case call. */
+#define SJME_DISPATCH_CASE(what, whatType, args) \
+	case whatType: \
+		SJME_DISPATCH_CALL(what, args); \
+		break
 
 static sjme_thread_result sjme_scritchui_serialDispatch(
 	sjme_attrInNullable sjme_thread_parameter anything)
@@ -98,66 +120,57 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 	/* Depends on the type... */
 	switch (data->type)
 	{
-		case SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_REVALIDATE:
-			SJME_DISPATCH_CALL(componentRevalidate,
-				(state,
-				componentRevalidate->inComponent));
-			break;
+		SJME_DISPATCH_CASE(componentRevalidate,
+			SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_REVALIDATE,
+			(state,
+			componentRevalidate->inComponent));
 		
-		case SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_PAINT_LISTENER:
-			SJME_DISPATCH_CALL(componentSetPaintListener,
-				(state,
-				componentSetPaintListener->inComponent,
-				componentSetPaintListener->inListener,
-				componentSetPaintListener->copyFrontEnd));
-			break;
-		
-		case SJME_SCRITCHUI_SERIAL_TYPE_CONTAINER_ADD:
-			SJME_DISPATCH_CALL(containerAdd,
-				(state,
-				containerAdd->inContainer,
-				containerAdd->inComponent));
-			break;
-		
-		case SJME_SCRITCHUI_SERIAL_TYPE_PANEL_ENABLE_FOCUS:
-			SJME_DISPATCH_CALL(panelEnableFocus,
-				(state,
-				panelEnableFocus->inPanel,
-				panelEnableFocus->enableFocus));
-			break;
-		
-		case SJME_SCRITCHUI_SERIAL_TYPE_PANEL_NEW:
-			SJME_DISPATCH_CALL(panelNew,
-				(state,
-				panelNew->outPanel));
-			break;
+		SJME_DISPATCH_CASE(componentSetPaintListener,
+			SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_PAINT_LISTENER,
+			(state,
+			componentSetPaintListener->inComponent,
+			componentSetPaintListener->inListener,
+			componentSetPaintListener->copyFrontEnd));
+			
+		SJME_DISPATCH_CASE(containerAdd,
+			SJME_SCRITCHUI_SERIAL_TYPE_CONTAINER_ADD,
+			(state,
+			containerAdd->inContainer,
+			containerAdd->inComponent));
 	
-		case SJME_SCRITCHUI_SERIAL_TYPE_SCREEN_SET_LISTENER:
-			SJME_DISPATCH_CALL(screenSetListener,
-				(state,
-				screenSetListener->callback));
-			break;
-		
-		case SJME_SCRITCHUI_SERIAL_TYPE_SCREENS:
-			SJME_DISPATCH_CALL(screens,
-				(state,
-				screens->outScreens,
-				screens->inOutNumScreens));
-			break;
-		
-		case SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_CONTENT_MINIMUM_SIZE:
-			SJME_DISPATCH_CALL(windowContentMinimumSize,
-				(state,
-				windowContentMinimumSize->inWindow,
-				windowContentMinimumSize->width,
-				windowContentMinimumSize->height));
-			break;
+		SJME_DISPATCH_CASE(panelEnableFocus,
+			SJME_SCRITCHUI_SERIAL_TYPE_PANEL_ENABLE_FOCUS,
+			(state,
+			panelEnableFocus->inPanel,
+			panelEnableFocus->enableFocus));
 	
-		case SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_NEW:
-			SJME_DISPATCH_CALL(windowNew,
-				(state,
-				windowNew->outWindow));
-			break;
+		SJME_DISPATCH_CASE(panelNew,
+			SJME_SCRITCHUI_SERIAL_TYPE_PANEL_NEW,
+			(state,
+			panelNew->outPanel));
+	
+		SJME_DISPATCH_CASE(screenSetListener,
+			SJME_SCRITCHUI_SERIAL_TYPE_SCREEN_SET_LISTENER,
+			(state,
+			screenSetListener->callback));
+	
+		SJME_DISPATCH_CASE(screens,
+			SJME_SCRITCHUI_SERIAL_TYPE_SCREENS,
+			(state,
+			screens->outScreens,
+			screens->inOutNumScreens));
+		
+		SJME_DISPATCH_CASE(windowContentMinimumSize,
+			SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_CONTENT_MINIMUM_SIZE,
+			(state,
+			windowContentMinimumSize->inWindow,
+			windowContentMinimumSize->width,
+			windowContentMinimumSize->height));
+				
+		SJME_DISPATCH_CASE(windowNew,
+			SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_NEW,
+			(state,
+			windowNew->outWindow));
 			
 		default:
 			return SJME_THREAD_RESULT(SJME_ERROR_NOT_IMPLEMENTED);
@@ -171,20 +184,9 @@ sjme_errorCode sjme_scritchui_coreSerial_componentRevalidate(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent)
 {
-	SJME_SCRITCHUI_SERIAL_VARS(componentRevalidate);
-	
-	SJME_SCRITCHUI_SERIAL_PRE_CHECK;
-	SJME_SCRITCHUI_SERIAL_LOOP_CHECK(componentRevalidate);
-	
-	/* Direct call? */
-	if (direct)
-		return inState->apiInThread->componentRevalidate(inState,
-			inComponent);
-	
-	/* Serialize and Store. */
-	SJME_SCRITCHUI_SERIAL_SETUP(
+	SJME_SCRITCHUI_SERIAL_CHUNK(componentRevalidate,
 		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_REVALIDATE,
-		componentRevalidate);
+		(inState, inComponent));
 	serial->inComponent = inComponent;
 	
 	/* Invoke and wait. */
@@ -197,20 +199,9 @@ sjme_errorCode sjme_scritchui_coreSerial_componentSetPaintListener(
 	sjme_attrInNullable sjme_scritchui_paintListenerFunc inListener,
 	sjme_frontEnd* copyFrontEnd)
 {
-	SJME_SCRITCHUI_SERIAL_VARS(componentSetPaintListener);
-	
-	SJME_SCRITCHUI_SERIAL_PRE_CHECK;
-	SJME_SCRITCHUI_SERIAL_LOOP_CHECK(componentSetPaintListener);
-	
-	/* Direct call? */
-	if (direct)
-		return inState->apiInThread->componentSetPaintListener(inState,
-			inComponent, inListener, copyFrontEnd);
-	
-	/* Serialize and Store. */
-	SJME_SCRITCHUI_SERIAL_SETUP(
+	SJME_SCRITCHUI_SERIAL_CHUNK(componentSetPaintListener,
 		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_PAINT_LISTENER,
-		componentSetPaintListener);
+		(inState, inComponent, inListener, copyFrontEnd));
 	serial->inComponent = inComponent;
 	serial->inListener = inListener;
 	serial->copyFrontEnd = copyFrontEnd;
@@ -224,20 +215,9 @@ sjme_errorCode sjme_scritchui_coreSerial_containerAdd(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent)
 {
-	SJME_SCRITCHUI_SERIAL_VARS(containerAdd);
-	
-	SJME_SCRITCHUI_SERIAL_PRE_CHECK;
-	SJME_SCRITCHUI_SERIAL_LOOP_CHECK(containerAdd);
-	
-	/* Direct call? */
-	if (direct)
-		return inState->apiInThread->containerAdd(inState,
-			inContainer, inComponent);
-	
-	/* Serialize and Store. */
-	SJME_SCRITCHUI_SERIAL_SETUP(
+	SJME_SCRITCHUI_SERIAL_CHUNK(containerAdd,
 		SJME_SCRITCHUI_SERIAL_TYPE_CONTAINER_ADD,
-		containerAdd);
+		(inState, inContainer, inComponent));
 	serial->inContainer = inContainer;
 	serial->inComponent = inComponent;
 	
@@ -250,20 +230,9 @@ sjme_errorCode sjme_scritchui_coreSerial_panelEnableFocus(
 	sjme_attrInNotNull sjme_scritchui_uiPanel inPanel,
 	sjme_attrInValue sjme_jboolean enableFocus)
 {
-	SJME_SCRITCHUI_SERIAL_VARS(panelEnableFocus);
-	
-	SJME_SCRITCHUI_SERIAL_PRE_CHECK;
-	SJME_SCRITCHUI_SERIAL_LOOP_CHECK(panelEnableFocus);
-	
-	/* Direct call? */
-	if (direct)
-		return inState->apiInThread->panelEnableFocus(inState,
-			inPanel, enableFocus);
-	
-	/* Serialize and Store. */
-	SJME_SCRITCHUI_SERIAL_SETUP(
+	SJME_SCRITCHUI_SERIAL_CHUNK(panelEnableFocus,
 		SJME_SCRITCHUI_SERIAL_TYPE_PANEL_ENABLE_FOCUS,
-		panelEnableFocus);
+		(inState, inPanel, enableFocus));
 	serial->inPanel = inPanel;
 	serial->enableFocus = enableFocus;
 	
@@ -275,19 +244,9 @@ sjme_errorCode sjme_scritchui_coreSerial_panelNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_scritchui_uiPanel* outPanel)
 {
-	SJME_SCRITCHUI_SERIAL_VARS(panelNew);
-	
-	SJME_SCRITCHUI_SERIAL_PRE_CHECK;
-	SJME_SCRITCHUI_SERIAL_LOOP_CHECK(panelNew);
-	
-	/* Direct call? */
-	if (direct)
-		return inState->apiInThread->panelNew(inState,
-			outPanel);
-
-	/* Serialize and Store. */
-	SJME_SCRITCHUI_SERIAL_SETUP(SJME_SCRITCHUI_SERIAL_TYPE_PANEL_NEW,
-		panelNew);
+	SJME_SCRITCHUI_SERIAL_CHUNK(panelNew,
+		SJME_SCRITCHUI_SERIAL_TYPE_PANEL_NEW,
+		(inState, outPanel));
 	serial->outPanel = outPanel;
 	
 	/* Invoke and wait. */
@@ -298,20 +257,9 @@ sjme_errorCode sjme_scritchui_coreSerial_screenSetListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_screenListenerFunc callback)
 {
-	SJME_SCRITCHUI_SERIAL_VARS(screenSetListener);
-	
-	SJME_SCRITCHUI_SERIAL_PRE_CHECK;
-	SJME_SCRITCHUI_SERIAL_LOOP_CHECK(screenSetListener);
-	
-	/* Direct call? */
-	if (direct)
-		return inState->apiInThread->screenSetListener(inState,
-			callback);
-	
-	/* Serialize and Store. */
-	SJME_SCRITCHUI_SERIAL_SETUP(
+	SJME_SCRITCHUI_SERIAL_CHUNK(screenSetListener,
 		SJME_SCRITCHUI_SERIAL_TYPE_SCREEN_SET_LISTENER,
-		screenSetListener);
+		(inState, callback));
 	serial->callback = callback;
 	
 	/* Invoke and wait. */
@@ -323,20 +271,9 @@ sjme_errorCode sjme_scritchui_coreSerial_screens(
 	sjme_attrOutNotNull sjme_scritchui_uiScreen* outScreens,
 	sjme_attrInOutNotNull sjme_jint* inOutNumScreens)
 {
-	SJME_SCRITCHUI_SERIAL_VARS(screens);
-	
-	SJME_SCRITCHUI_SERIAL_PRE_CHECK;
-	SJME_SCRITCHUI_SERIAL_LOOP_CHECK(screens);
-	
-	/* Direct call? */
-	if (direct)
-		return inState->apiInThread->screens(inState,
-			outScreens, inOutNumScreens);
-	
-	/* Serialize and Store. */
-	SJME_SCRITCHUI_SERIAL_SETUP(
+	SJME_SCRITCHUI_SERIAL_CHUNK(screens,
 		SJME_SCRITCHUI_SERIAL_TYPE_SCREENS,
-		screens);
+		(inState, outScreens, inOutNumScreens));
 	serial->outScreens = outScreens;
 	serial->inOutNumScreens = inOutNumScreens;
 	
@@ -350,20 +287,9 @@ sjme_errorCode sjme_scritchui_coreSerial_windowContentMinimumSize(
 	sjme_attrInPositiveNonZero sjme_jint width,
 	sjme_attrInPositiveNonZero sjme_jint height)
 {
-	SJME_SCRITCHUI_SERIAL_VARS(windowContentMinimumSize);
-	
-	SJME_SCRITCHUI_SERIAL_PRE_CHECK;
-	SJME_SCRITCHUI_SERIAL_LOOP_CHECK(windowContentMinimumSize);
-	
-	/* Direct call? */
-	if (direct)
-		return inState->apiInThread->windowContentMinimumSize(inState,
-			inWindow, width, height);
-	
-	/* Serialize and Store. */
-	SJME_SCRITCHUI_SERIAL_SETUP(
+	SJME_SCRITCHUI_SERIAL_CHUNK(windowContentMinimumSize,
 		SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_CONTENT_MINIMUM_SIZE,
-		windowContentMinimumSize);
+		(inState, inWindow, width, height));
 	serial->inWindow = inWindow;
 	serial->width = width;
 	serial->height = height;
@@ -376,20 +302,9 @@ sjme_errorCode sjme_scritchui_coreSerial_windowNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_scritchui_uiWindow* outWindow)
 {
-	SJME_SCRITCHUI_SERIAL_VARS(windowNew);
-	
-	SJME_SCRITCHUI_SERIAL_PRE_CHECK;
-	SJME_SCRITCHUI_SERIAL_LOOP_CHECK(windowNew);
-	
-	/* Direct call? */
-	if (direct)
-		return inState->apiInThread->windowNew(inState,
-			outWindow);
-	
-	/* Serialize and Store. */
-	SJME_SCRITCHUI_SERIAL_SETUP(
+	SJME_SCRITCHUI_SERIAL_CHUNK(windowNew,
 		SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_NEW,
-		windowNew);
+		(inState, outWindow));
 	serial->outWindow = outWindow;
 	
 	/* Invoke and wait. */

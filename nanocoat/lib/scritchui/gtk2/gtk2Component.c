@@ -28,6 +28,11 @@ sjme_errorCode sjme_scritchui_gtk_componentRevalidate(
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+	/* We do not want to show windows themselves until they are explicitly */
+	/* shown. */
+	if (inComponent->common.type == SJME_SCRITCHUI_TYPE_WINDOW)
+		return SJME_ERROR_NONE;
+	
 	/* There is not really a revalidate in GTK, but we can make sure */
 	/* that everything is properly shown. */
 	widget = (GtkWidget*)inComponent->common.handle;
