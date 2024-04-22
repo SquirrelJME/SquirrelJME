@@ -431,6 +431,20 @@ typedef sjme_errorCode (*sjme_scritchui_windowNewFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_scritchui_uiWindow* outWindow);
 
+/**
+ * Sets the visibility of a window.
+ * 
+ * @param inState The input state.
+ * @param inWindow The input window.
+ * @param isVisible Should the window be visible?
+ * @return Any error code if applicable.
+ * @since 2024/04/21
+ */
+typedef sjme_errorCode (*sjme_scritchui_windowSetVisibleFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInValue sjme_jboolean isVisible);
+
 struct sjme_scritchui_apiFunctions
 {
 	/** API flags. */
@@ -474,6 +488,9 @@ struct sjme_scritchui_apiFunctions
 	
 	/** Creates a new window. */
 	sjme_scritchui_windowNewFunc windowNew;
+	
+	/** Sets visibility of window. */
+	sjme_scritchui_windowSetVisibleFunc windowSetVisible;
 };
 
 /**

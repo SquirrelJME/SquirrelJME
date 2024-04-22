@@ -91,6 +91,11 @@ sjme_errorCode sjme_scritchui_gtk2_windowNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_scritchui_uiWindow* outWindow);
 	
+sjme_errorCode sjme_scritchui_gtk2_windowSetVisible(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInValue sjme_jboolean isVisible);
+	
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

@@ -49,6 +49,8 @@
 	DESC_LONG ")" DESC_INTEGER
 #define FORWARD_DESC___windowNew "(" \
 	DESC_LONG ")" DESC_LONG
+#define FORWARD_DESC___windowSetVisible "(" \
+	DESC_LONG DESC_LONG DESC_BOOLEAN ")" DESC_VOID
 
 /** Loop execution data. */
 typedef struct mle_loopExecuteData
@@ -698,6 +700,37 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	return (jlong)window;
 }
 
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__windowSetVisible)(JNIEnv* env, jclass classy, jlong stateP,
+	jlong windowP, jboolean visible)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	sjme_scritchui_uiWindow window;
+	
+	if (stateP == 0 || windowP == 0)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	window = (sjme_scritchui_uiWindow)windowP;
+	
+	/* Not implemented? */
+	if (state->api->windowSetVisible == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
+		return;
+	}
+	
+	/* Forward call. */
+	if (sjme_error_is(error = state->api->windowSetVisible(state, window,
+		visible)))
+		sjme_jni_throwMLECallError(env, error);
+}
+
 static const JNINativeMethod mleNativeScritchDylibMethods[] =
 {
 	FORWARD_list(NativeScritchDylib, __componentRevalidate),
@@ -713,6 +746,7 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 	FORWARD_list(NativeScritchDylib, __windowContentMinimumSize),
 	FORWARD_list(NativeScritchDylib, __windowManagerType),
 	FORWARD_list(NativeScritchDylib, __windowNew),
+	FORWARD_list(NativeScritchDylib, __windowSetVisible),
 };
 
 FORWARD_init(mleNativeScritchDylibInit, mleNativeScritchDylibMethods)

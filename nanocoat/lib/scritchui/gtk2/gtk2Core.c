@@ -24,6 +24,7 @@ static const sjme_scritchui_implFunctions sjme_scritchUI_gtkFunctions =
 	.screens = sjme_scritchui_gtk2_screens,
 	.windowContentMinimumSize = sjme_scritchui_gtk2_windowContentMinimumSize,
 	.windowNew = sjme_scritchui_gtk2_windowNew,
+	.windowSetVisible = sjme_scritchui_gtk2_windowSetVisible,
 };
 
 static sjme_thread_result sjme_scritchui_gtk2_loopMain(

@@ -38,6 +38,7 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 	.windowContentMinimumSize =
 		sjme_scritchui_coreSerial_windowContentMinimumSize,
 	.windowNew = sjme_scritchui_coreSerial_windowNew,
+	.windowSetVisible = sjme_scritchui_coreSerial_windowSetVisible,
 };
 
 /** Core Function set for ScritchUI. */
@@ -57,6 +58,7 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 	.screens = sjme_scritchui_core_screens,
 	.windowContentMinimumSize = sjme_scritchui_core_windowContentMinimumSize,
 	.windowNew = sjme_scritchui_core_windowNew,
+	.windowSetVisible = sjme_scritchui_core_windowSetVisible,
 };
 
 /** Internal functions for ScritchUI implementations. */

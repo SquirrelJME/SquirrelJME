@@ -144,6 +144,9 @@ public class DylibWindowInterface
 		boolean __visible)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__window == null)
+			throw new MLECallError("Null arguments.");
+		
+		this.dyLib.windowSetVisible((DylibWindowObject)__window, __visible);
 	}
 }

@@ -104,6 +104,10 @@ typedef sjme_scritchui_windowContentMinimumSizeFunc
 typedef sjme_scritchui_windowNewFunc
 	sjme_scritchui_impl_windowNewFunc;
 
+/** Sets visibility of window. */
+typedef sjme_scritchui_windowSetVisibleFunc
+	sjme_scritchui_impl_windowSetVisibleFunc;
+
 struct sjme_scritchui_implFunctions
 {
 	/** Initialize implementation API instance. */
@@ -139,6 +143,9 @@ struct sjme_scritchui_implFunctions
 	
 	/** Creates a new window. */
 	sjme_scritchui_impl_windowNewFunc windowNew;
+	
+	/** Sets visibility of the window. */
+	sjme_scritchui_impl_windowSetVisibleFunc windowSetVisible;
 };
 
 /**

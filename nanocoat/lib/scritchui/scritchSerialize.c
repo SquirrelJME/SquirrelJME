@@ -75,36 +75,41 @@
 		whatType, \
 		what)
 
+/** Pass a serial value. */
+#define SJME_SCRITCHUI_SERIAL_PASS(what) \
+	serial->what = what
+
 /** Declares dispatch type. */
-#define SJME_DISPATCH_DECL(what) \
+#define SJME_SCRITCHUI_DISPATCH_DECL(what) \
 	SJME_TOKEN_PASTE(sjme_scritchui_serialData_, what)* volatile what
 
 /** Performs dispatch call. */
-#define SJME_DISPATCH_CALL(what, args) \
+#define SJME_SCRITCHUI_DISPATCH_CALL(what, args) \
 	do { what = &data->data.what; \
 	if (state->apiInThread->what == NULL) \
 		return SJME_THREAD_RESULT(SJME_ERROR_NOT_IMPLEMENTED); \
 	data->error = state->apiInThread->what args; } while (0)
 
 /** Simplified case call. */
-#define SJME_DISPATCH_CASE(what, whatType, args) \
+#define SJME_SCRITCHUI_DISPATCH_CASE(what, whatType, args) \
 	case whatType: \
-		SJME_DISPATCH_CALL(what, args); \
+		SJME_SCRITCHUI_DISPATCH_CALL(what, args); \
 		break
 
 static sjme_thread_result sjme_scritchui_serialDispatch(
 	sjme_attrInNullable sjme_thread_parameter anything)
 {
 	volatile sjme_scritchui_serialData* data;
-	SJME_DISPATCH_DECL(componentRevalidate);
-	SJME_DISPATCH_DECL(componentSetPaintListener);
-	SJME_DISPATCH_DECL(containerAdd);
-	SJME_DISPATCH_DECL(panelNew);
-	SJME_DISPATCH_DECL(panelEnableFocus);
-	SJME_DISPATCH_DECL(screenSetListener);
-	SJME_DISPATCH_DECL(screens);
-	SJME_DISPATCH_DECL(windowContentMinimumSize);
-	SJME_DISPATCH_DECL(windowNew);
+	SJME_SCRITCHUI_DISPATCH_DECL(componentRevalidate);
+	SJME_SCRITCHUI_DISPATCH_DECL(componentSetPaintListener);
+	SJME_SCRITCHUI_DISPATCH_DECL(containerAdd);
+	SJME_SCRITCHUI_DISPATCH_DECL(panelNew);
+	SJME_SCRITCHUI_DISPATCH_DECL(panelEnableFocus);
+	SJME_SCRITCHUI_DISPATCH_DECL(screenSetListener);
+	SJME_SCRITCHUI_DISPATCH_DECL(screens);
+	SJME_SCRITCHUI_DISPATCH_DECL(windowContentMinimumSize);
+	SJME_SCRITCHUI_DISPATCH_DECL(windowNew);
+	SJME_SCRITCHUI_DISPATCH_DECL(windowSetVisible);
 	sjme_scritchui state;
 	
 	if (anything == NULL)
@@ -120,57 +125,63 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 	/* Depends on the type... */
 	switch (data->type)
 	{
-		SJME_DISPATCH_CASE(componentRevalidate,
+		SJME_SCRITCHUI_DISPATCH_CASE(componentRevalidate,
 			SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_REVALIDATE,
 			(state,
 			componentRevalidate->inComponent));
 		
-		SJME_DISPATCH_CASE(componentSetPaintListener,
+		SJME_SCRITCHUI_DISPATCH_CASE(componentSetPaintListener,
 			SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_PAINT_LISTENER,
 			(state,
 			componentSetPaintListener->inComponent,
 			componentSetPaintListener->inListener,
 			componentSetPaintListener->copyFrontEnd));
 			
-		SJME_DISPATCH_CASE(containerAdd,
+		SJME_SCRITCHUI_DISPATCH_CASE(containerAdd,
 			SJME_SCRITCHUI_SERIAL_TYPE_CONTAINER_ADD,
 			(state,
 			containerAdd->inContainer,
 			containerAdd->inComponent));
 	
-		SJME_DISPATCH_CASE(panelEnableFocus,
+		SJME_SCRITCHUI_DISPATCH_CASE(panelEnableFocus,
 			SJME_SCRITCHUI_SERIAL_TYPE_PANEL_ENABLE_FOCUS,
 			(state,
 			panelEnableFocus->inPanel,
 			panelEnableFocus->enableFocus));
 	
-		SJME_DISPATCH_CASE(panelNew,
+		SJME_SCRITCHUI_DISPATCH_CASE(panelNew,
 			SJME_SCRITCHUI_SERIAL_TYPE_PANEL_NEW,
 			(state,
 			panelNew->outPanel));
 	
-		SJME_DISPATCH_CASE(screenSetListener,
+		SJME_SCRITCHUI_DISPATCH_CASE(screenSetListener,
 			SJME_SCRITCHUI_SERIAL_TYPE_SCREEN_SET_LISTENER,
 			(state,
 			screenSetListener->callback));
 	
-		SJME_DISPATCH_CASE(screens,
+		SJME_SCRITCHUI_DISPATCH_CASE(screens,
 			SJME_SCRITCHUI_SERIAL_TYPE_SCREENS,
 			(state,
 			screens->outScreens,
 			screens->inOutNumScreens));
 		
-		SJME_DISPATCH_CASE(windowContentMinimumSize,
+		SJME_SCRITCHUI_DISPATCH_CASE(windowContentMinimumSize,
 			SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_CONTENT_MINIMUM_SIZE,
 			(state,
 			windowContentMinimumSize->inWindow,
 			windowContentMinimumSize->width,
 			windowContentMinimumSize->height));
 				
-		SJME_DISPATCH_CASE(windowNew,
+		SJME_SCRITCHUI_DISPATCH_CASE(windowNew,
 			SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_NEW,
 			(state,
 			windowNew->outWindow));
+			
+		SJME_SCRITCHUI_DISPATCH_CASE(windowSetVisible,
+			SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_SET_VISIBLE,
+			(state,
+			windowSetVisible->inWindow,
+			windowSetVisible->isVisible));
 			
 		default:
 			return SJME_THREAD_RESULT(SJME_ERROR_NOT_IMPLEMENTED);
@@ -187,7 +198,8 @@ sjme_errorCode sjme_scritchui_coreSerial_componentRevalidate(
 	SJME_SCRITCHUI_SERIAL_CHUNK(componentRevalidate,
 		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_REVALIDATE,
 		(inState, inComponent));
-	serial->inComponent = inComponent;
+		
+	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
 	
 	/* Invoke and wait. */
 	SJME_SCRITCHUI_INVOKE_WAIT;
@@ -202,9 +214,10 @@ sjme_errorCode sjme_scritchui_coreSerial_componentSetPaintListener(
 	SJME_SCRITCHUI_SERIAL_CHUNK(componentSetPaintListener,
 		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_PAINT_LISTENER,
 		(inState, inComponent, inListener, copyFrontEnd));
-	serial->inComponent = inComponent;
-	serial->inListener = inListener;
-	serial->copyFrontEnd = copyFrontEnd;
+		
+	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
+	SJME_SCRITCHUI_SERIAL_PASS(inListener);
+	SJME_SCRITCHUI_SERIAL_PASS(copyFrontEnd);
 	
 	/* Invoke and wait. */
 	SJME_SCRITCHUI_INVOKE_WAIT;
@@ -218,8 +231,9 @@ sjme_errorCode sjme_scritchui_coreSerial_containerAdd(
 	SJME_SCRITCHUI_SERIAL_CHUNK(containerAdd,
 		SJME_SCRITCHUI_SERIAL_TYPE_CONTAINER_ADD,
 		(inState, inContainer, inComponent));
-	serial->inContainer = inContainer;
-	serial->inComponent = inComponent;
+		
+	SJME_SCRITCHUI_SERIAL_PASS(inContainer);
+	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
 	
 	/* Invoke and wait. */
 	SJME_SCRITCHUI_INVOKE_WAIT;
@@ -233,8 +247,9 @@ sjme_errorCode sjme_scritchui_coreSerial_panelEnableFocus(
 	SJME_SCRITCHUI_SERIAL_CHUNK(panelEnableFocus,
 		SJME_SCRITCHUI_SERIAL_TYPE_PANEL_ENABLE_FOCUS,
 		(inState, inPanel, enableFocus));
-	serial->inPanel = inPanel;
-	serial->enableFocus = enableFocus;
+		
+	SJME_SCRITCHUI_SERIAL_PASS(inPanel);
+	SJME_SCRITCHUI_SERIAL_PASS(enableFocus);
 	
 	/* Invoke and wait. */
 	SJME_SCRITCHUI_INVOKE_WAIT;
@@ -247,7 +262,8 @@ sjme_errorCode sjme_scritchui_coreSerial_panelNew(
 	SJME_SCRITCHUI_SERIAL_CHUNK(panelNew,
 		SJME_SCRITCHUI_SERIAL_TYPE_PANEL_NEW,
 		(inState, outPanel));
-	serial->outPanel = outPanel;
+		
+	SJME_SCRITCHUI_SERIAL_PASS(outPanel);
 	
 	/* Invoke and wait. */
 	SJME_SCRITCHUI_INVOKE_WAIT;
@@ -260,7 +276,8 @@ sjme_errorCode sjme_scritchui_coreSerial_screenSetListener(
 	SJME_SCRITCHUI_SERIAL_CHUNK(screenSetListener,
 		SJME_SCRITCHUI_SERIAL_TYPE_SCREEN_SET_LISTENER,
 		(inState, callback));
-	serial->callback = callback;
+		
+	SJME_SCRITCHUI_SERIAL_PASS(callback);
 	
 	/* Invoke and wait. */
 	SJME_SCRITCHUI_INVOKE_WAIT;
@@ -274,8 +291,9 @@ sjme_errorCode sjme_scritchui_coreSerial_screens(
 	SJME_SCRITCHUI_SERIAL_CHUNK(screens,
 		SJME_SCRITCHUI_SERIAL_TYPE_SCREENS,
 		(inState, outScreens, inOutNumScreens));
-	serial->outScreens = outScreens;
-	serial->inOutNumScreens = inOutNumScreens;
+		
+	SJME_SCRITCHUI_SERIAL_PASS(outScreens);
+	SJME_SCRITCHUI_SERIAL_PASS(inOutNumScreens);
 	
 	/* Invoke and wait. */
 	SJME_SCRITCHUI_INVOKE_WAIT;
@@ -290,9 +308,10 @@ sjme_errorCode sjme_scritchui_coreSerial_windowContentMinimumSize(
 	SJME_SCRITCHUI_SERIAL_CHUNK(windowContentMinimumSize,
 		SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_CONTENT_MINIMUM_SIZE,
 		(inState, inWindow, width, height));
-	serial->inWindow = inWindow;
-	serial->width = width;
-	serial->height = height;
+		
+	SJME_SCRITCHUI_SERIAL_PASS(inWindow);
+	SJME_SCRITCHUI_SERIAL_PASS(width);
+	SJME_SCRITCHUI_SERIAL_PASS(height);
 	
 	/* Invoke and wait. */
 	SJME_SCRITCHUI_INVOKE_WAIT;
@@ -305,8 +324,26 @@ sjme_errorCode sjme_scritchui_coreSerial_windowNew(
 	SJME_SCRITCHUI_SERIAL_CHUNK(windowNew,
 		SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_NEW,
 		(inState, outWindow));
-	serial->outWindow = outWindow;
+		
+	SJME_SCRITCHUI_SERIAL_PASS(outWindow);
 	
 	/* Invoke and wait. */
 	SJME_SCRITCHUI_INVOKE_WAIT;
 }
+
+sjme_errorCode sjme_scritchui_coreSerial_windowSetVisible(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInValue sjme_jboolean isVisible)
+{
+	SJME_SCRITCHUI_SERIAL_CHUNK(windowSetVisible,
+		SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_SET_VISIBLE,
+		(inState, inWindow, isVisible));
+		
+	SJME_SCRITCHUI_SERIAL_PASS(inWindow);
+	SJME_SCRITCHUI_SERIAL_PASS(isVisible);
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
+}
+

@@ -67,6 +67,9 @@ typedef enum sjme_scritchui_serialType
 	/** @c windowNew . */
 	SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_NEW,
 	
+	/** @c windowSetVisible . */
+	SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_SET_VISIBLE,
+	
 	/** The number of serialized types. */
 	SJME_SCRITCHUI_NUM_SERIAL_TYPES
 } sjme_scritchui_serialType;
@@ -146,6 +149,15 @@ typedef struct sjme_scritchui_serialData_windowNew
 	sjme_scritchui_uiWindow* volatile outWindow;
 } sjme_scritchui_serialData_windowNew;
 
+typedef struct sjme_scritchui_serialData_windowSetVisible
+{
+	/** The input window. */
+	volatile sjme_scritchui_uiWindow inWindow;
+	
+	/** Should it be visible? */
+	volatile sjme_jboolean isVisible;
+} sjme_scritchui_serialData_windowSetVisible;
+
 /**
  * Union for serial data.
  * 
@@ -182,6 +194,9 @@ typedef union sjme_scritchui_serialDataUnion
 	
 	/** @c windowNew . */
 	volatile sjme_scritchui_serialData_windowNew windowNew;
+	
+	/** @c windowSetVisible . */
+	volatile sjme_scritchui_serialData_windowSetVisible windowSetVisible;
 } sjme_scritchui_serialDataUnion;
 
 /**
@@ -246,6 +261,11 @@ sjme_errorCode sjme_scritchui_coreSerial_windowContentMinimumSize(
 sjme_errorCode sjme_scritchui_coreSerial_windowNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_scritchui_uiWindow* outWindow);
+	
+sjme_errorCode sjme_scritchui_coreSerial_windowSetVisible(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInValue sjme_jboolean isVisible);
 
 /*--------------------------------------------------------------------------*/
 

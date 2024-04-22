@@ -45,3 +45,19 @@ sjme_errorCode sjme_scritchui_core_windowNew(
 	/* Forward call. */
 	return inState->impl->windowNew(inState, outWindow);
 }
+
+sjme_errorCode sjme_scritchui_core_windowSetVisible(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInValue sjme_jboolean isVisible)
+{
+	if (inState == NULL || inWindow == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Not implemented? */
+	if (inState->impl->windowSetVisible == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Forward call. */
+	return inState->impl->windowSetVisible(inState, inWindow, isVisible);
+}

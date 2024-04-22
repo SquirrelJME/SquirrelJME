@@ -91,3 +91,27 @@ fail_alloc:
 	
 	return sjme_error_default(error);
 }
+
+sjme_errorCode sjme_scritchui_gtk2_windowSetVisible(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInValue sjme_jboolean isVisible)
+{
+	sjme_errorCode error;
+	GtkWindow* gtkWindow;
+	
+	if (inState == NULL || inWindow == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover window. */
+	gtkWindow = inWindow->component.common.handle;
+	
+	/* Show or hide it. */
+	if (isVisible)
+		gtk_window_present(GTK_WINDOW(gtkWindow));
+	else
+		gtk_widget_hide(GTK_WIDGET(gtkWindow));
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}

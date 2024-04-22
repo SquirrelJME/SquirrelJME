@@ -302,15 +302,36 @@ public final class NativeScritchDylib
 	 * Creates a new window.
 	 *
 	 * @return The newly created window.
+	 * @throws MLECallError If the window could not be created.
 	 * @since 2024/04/16
 	 */
 	public ScritchWindowBracket windowNew()
+		throws MLECallError
 	{
 		long windowP = NativeScritchDylib.__windowNew(this._stateP);
 		if (windowP == 0)
 			throw new MLECallError("Could not create window.");
 		
 		return new DylibWindowObject(windowP);
+	}
+	
+	/**
+	 * Sets the visibility of the specified window.
+	 *
+	 * @param __window The window to set the visibility of.
+	 * @param __visible Should the window be visible?
+	 * @throws MLECallError On any errors.
+	 * @since 2024/04/21
+	 */
+	public void windowSetVisible(DylibWindowObject __window,
+		boolean __visible)
+		throws MLECallError
+	{
+		if (__window == null)
+			throw new MLECallError("Null arguments.");
+		
+		NativeScritchDylib.__windowSetVisible(this._stateP, __window.objectP,
+			__visible);
 	}
 	
 	/**
@@ -456,4 +477,17 @@ public final class NativeScritchDylib
 	 * @since 2024/04/16
 	 */
 	private static native long __windowNew(long __stateP);
+	
+	/**
+	 * Sets the visibility of the window.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __windowP The window to set the visibility of.
+	 * @param __visible Should the window be visible?
+	 * @throws MLECallError On any errors.
+	 * @since 2024/04/21
+	 */
+	private static native void __windowSetVisible(long __stateP,
+		long __windowP, boolean __visible)
+		throws MLECallError;
 }
