@@ -1715,8 +1715,20 @@ typedef enum sjme_errorCode
 	/** Invalid library symbol. */
 	SJME_ERROR_INVALID_LIBRARY_SYMBOL = -45,
 	
+	/** There is no graphics display. */
+	SJME_ERROR_HEADLESS_DISPLAY = -46,
+	
+	/** Cannot create something. */
+	SJME_ERROR_CANNOT_CREATE = -47,
+	
+	/** Invalid thread state. */
+	SJME_ERROR_INVALID_THREAD_STATE = -48,
+	
+	/** Component is already in a container. */
+	SJME_ERROR_ALREADY_IN_CONTAINER = -49,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -46
+	SJME_NUM_ERROR_CODES = -49
 } sjme_errorCode;
 
 /**

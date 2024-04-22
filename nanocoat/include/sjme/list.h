@@ -60,6 +60,9 @@ extern "C" {
 		/** The element size of this type. */ \
 		sjme_jint elementSize; \
 	 \
+		/** The element offset of this type. */ \
+		sjme_jint elementOffset; \
+	 \
 		/** The elements in the list. */ \
 		SJME_TOKEN_TYPE(type, numPointerStars) \
 			elements[sjme_flexibleArrayCount]; \
@@ -143,6 +146,10 @@ sjme_errorCode sjme_list_allocR(
  * Allocates the given list without setting any of the values.
  *
  * @param inPool The pool to allocate within.
+ * @param inLength The list length.
+ * @param outList The resultant list.
+ * @param type The list type.
+ * @param numPointerStars The number of pointer stars.
  * @return Any error state.
  * @since 2023/12/17
  */
@@ -152,6 +159,48 @@ sjme_errorCode sjme_list_allocR(
 		sizeof(SJME_TOKEN_TYPE(type, numPointerStars)), \
 		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
 		sizeof(**(outList)))
+
+/**
+ * Allocates a given list generically.
+ *
+ * @param inPool The pool to allocate within.
+ * @param inNewLength The new list length.
+ * @param inOldList The list to copy from.
+ * @param outNewList The resultant list.
+ * @param elementSize The size of the list elements.
+ * @param elementOffset The offset of elements in the list.
+ * @param pointerCheck A check to see if it is a valid pointer.
+ * @return Any resultant error code, if any.
+ * @since 2024/04/15
+ */
+sjme_errorCode sjme_list_copyR(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInPositive sjme_jint inNewLength,
+	sjme_attrInNotNull void* inOldList,
+	sjme_attrOutNotNull void** outNewList,
+	sjme_attrInPositive sjme_jint elementSize,
+	sjme_attrInPositive sjme_jint elementOffset,
+	sjme_attrInValue sjme_jint pointerCheck);
+
+/**
+ * Allocates a new list that is a copy of the old list.
+ *
+ * @param inPool The pool to allocate within.
+ * @param inNewLength The new list length.
+ * @param inOldList The list to copy from.
+ * @param outNewList The resultant list.
+ * @param type The list type.
+ * @param numPointerStars The number of pointer stars.
+ * @return Any error state.
+ * @since 2024/04/15
+ */
+#define sjme_list_copy(inPool, inNewLength, inOldList, outNewList, type, \
+	numPointerStars) \
+    sjme_list_copyR((inPool), (inNewLength), (inOldList), \
+		(void**)(outNewList), \
+		sizeof(SJME_TOKEN_TYPE(type, numPointerStars)), \
+		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
+		sizeof(**(outNewList)))
 
 /**
  * Directly initializes a list.

@@ -13,7 +13,11 @@
 #include <string.h>
 
 #if defined(SJME_CONFIG_HAS_WINDOWS)
+	#define WIN32_LEAN_AND_MEAN 1
+	
 	#include <windows.h>
+
+	#undef WIN32_LEAN_AND_MEAN
 #endif
 
 #include "sjme/nvm.h"

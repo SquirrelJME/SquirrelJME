@@ -76,6 +76,7 @@ static sjme_errorCode sjme_list_newInit(
 	fakeList = (sjme_list_sjme_jint*)newData->outList;
 	fakeList->length = length;
 	fakeList->elementSize = elementSize;
+	fakeList->elementOffset = elementOffset;
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -120,6 +121,51 @@ sjme_errorCode sjme_list_allocR(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_list_copyR(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInPositive sjme_jint inNewLength,
+	sjme_attrInNotNull void* inOldList,
+	sjme_attrOutNotNull void** outNewList,
+	sjme_attrInPositive sjme_jint elementSize,
+	sjme_attrInPositive sjme_jint elementOffset,
+	sjme_attrInValue sjme_jint pointerCheck)
+{
+	sjme_errorCode error;
+	sjme_jint i, limit;
+	sjme_list_sjme_jint* fakeOld;
+	sjme_list_sjme_jint* fakeNew;
+	
+	if (inPool == NULL || inOldList == NULL || outNewList == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (inNewLength < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Map fake. */
+	fakeOld = (sjme_list_sjme_jint*)inOldList;
+	
+	/* Wrong element size and/or offset? Might be different types. */
+	if (fakeOld->elementSize != elementSize ||
+		fakeOld->elementOffset != elementOffset)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Allocate new list first. */
+	if (sjme_error_is(error = sjme_list_allocR(inPool,
+		inNewLength, (void**)&fakeNew, elementSize,
+		elementOffset, pointerCheck)))
+		return sjme_error_default(error);
+	
+	/* Copy over elements with direct memory copy. */
+	limit = (fakeOld->length < inNewLength ? fakeOld->length : inNewLength);
+	memmove((void*)(((sjme_intPointer)fakeNew) + elementOffset),
+		(void*)(((sjme_intPointer)fakeOld) + elementOffset),
+		elementSize * limit);
+	
+	/* Success! */
+	*outNewList = fakeNew;
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_list_directInitR(
 	sjme_attrInPositive sjme_jint inLength,
 	sjme_attrOutNotNull void* outList,
@@ -148,6 +194,7 @@ sjme_errorCode sjme_list_directInitR(
 	/* Set sizes of the resultant list. */
 	fakeList->length = inLength;
 	fakeList->elementSize = elementSize;
+	fakeList->elementOffset = elementOffset;
 	
 	/* Success! */
 	return SJME_ERROR_NONE;

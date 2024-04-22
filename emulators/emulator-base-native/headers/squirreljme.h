@@ -85,6 +85,9 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 
 #define FORWARD_IMPL_none()
 
+#define FORWARD_FUNC_NAME(className, methodName) \
+	Impl_mle_ ## className ## _ ## methodName
+
 #define FORWARD_IMPL_VOID(className, methodName, args, pass) \
 	JNIEXPORT void JNICALL Impl_mle_ ## className ## _ ## methodName( \
 		JNIEnv* env, jclass classy args) \
@@ -112,7 +115,9 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 #define DESC_BYTE "B"
 #define DESC_SHORT "S"
 #define DESC_CHAR "C"
+#define DESC_CHARACTER DESC_CHAR
 #define DESC_INT "I"
+#define DESC_INTEGER DESC_INT
 #define DESC_LONG "J"
 #define DESC_FLOAT "F"
 #define DESC_DOUBLE "D"
@@ -128,6 +133,26 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
  * @since 2023/12/29
  */
 sjme_jboolean sjme_jni_checkVMException(JNIEnv* env);
+
+/**
+ * Throws a @c MLECallError .
+ *
+ * @param env The current Java environment.
+ * @param code The error code.
+ * @since 2024/04/16
+ */
+void sjme_jni_throwMLECallError(JNIEnv* env, sjme_errorCode code);
+
+/**
+ * Throws the given throwable type.
+ *
+ * @param env The current Java environment.
+ * @param code The error code.
+ * @param type The type of exception to throw.
+ * @since 2024/04/16
+ */
+void sjme_jni_throwThrowable(JNIEnv* env, sjme_errorCode code,
+	sjme_lpcstr type);
 
 /**
  * Throws a @c VMException .

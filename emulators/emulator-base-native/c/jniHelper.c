@@ -28,15 +28,21 @@ sjme_jboolean sjme_jni_checkVMException(JNIEnv* env)
 	return SJME_JNI_FALSE;
 }
 
-void sjme_jni_throwVMException(JNIEnv* env, sjme_errorCode code)
+void sjme_jni_throwMLECallError(JNIEnv* env, sjme_errorCode code)
+{
+	sjme_jni_throwThrowable(env, code,
+		"cc/squirreljme/jvm/mle/exceptions/MLECallError");
+}
+
+void sjme_jni_throwThrowable(JNIEnv* env, sjme_errorCode code,
+	sjme_lpcstr type)
 {
 #define BUF_SIZE 512
 	jclass tossingClass;
 	char buf[BUF_SIZE];
 
 	/* Get the class where the exception is. */
-	tossingClass = (*env)->FindClass(env,
-		"cc/squirreljme/emulator/vm/VMException");
+	tossingClass = (*env)->FindClass(env, type);
 	if (tossingClass == NULL)
 	{
 		sjme_die("Could not find exception class?");
@@ -53,4 +59,10 @@ void sjme_jni_throwVMException(JNIEnv* env, sjme_errorCode code)
 	if ((*env)->ThrowNew(env, tossingClass, buf) != 0)
 		sjme_die("Could not throw a new throwable?");
 #undef BUF_SIZE
+}
+
+void sjme_jni_throwVMException(JNIEnv* env, sjme_errorCode code)
+{
+	sjme_jni_throwThrowable(env, code,
+		"cc/squirreljme/emulator/vm/VMException");
 }
