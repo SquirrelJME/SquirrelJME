@@ -1727,8 +1727,11 @@ typedef enum sjme_errorCode
 	/** Component is already in a container. */
 	SJME_ERROR_ALREADY_IN_CONTAINER = -49,
 	
+	/** Not a sub component. */
+	SJME_ERROR_NOT_SUB_COMPONENT = -50,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -49
+	SJME_NUM_ERROR_CODES = -51
 } sjme_errorCode;
 
 /**

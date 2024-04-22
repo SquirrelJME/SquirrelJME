@@ -312,6 +312,15 @@ typedef sjme_errorCode (*sjme_scritchui_containerAddFunc)(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
 
+typedef sjme_errorCode (*sjme_scritchui_containerSetBoundsFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInPositive sjme_jint x,
+	sjme_attrInPositive sjme_jint y,
+	sjme_attrInPositiveNonZero sjme_jint width,
+	sjme_attrInPositiveNonZero sjme_jint height);
+
 /**
  * Execute the given callback within the event loop of the GUI.
  * 
@@ -458,6 +467,9 @@ struct sjme_scritchui_apiFunctions
 	
 	/** Adds component to container. */
 	sjme_scritchui_containerAddFunc containerAdd;
+	
+	/** Set bounds of component in a container. */
+	sjme_scritchui_containerSetBoundsFunc containerSetBounds;
 	
 	/** Execute callback within the event loop. */
 	sjme_scritchui_loopExecuteFunc loopExecute;

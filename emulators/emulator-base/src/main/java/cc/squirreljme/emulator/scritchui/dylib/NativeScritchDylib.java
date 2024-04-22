@@ -146,7 +146,9 @@ public final class NativeScritchDylib
 		if (__container == null || __component == null)
 			throw new MLECallError("Null arguments.");
 		
-		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
+		NativeScritchDylib.__containerSetBounds(this._stateP,
+			__container.objectPointer(), __component.objectP,
+			__x, __y, __w, __h);
 	}
 	
 	/**
@@ -371,6 +373,24 @@ public final class NativeScritchDylib
 	 */
 	private static native void __containerAdd(long __stateP,
 		long __containerP, long __componentP)
+		throws MLECallError;
+	
+	/**
+	 * Sets the bounds of the given component in the container.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __containerP The container pointer.
+	 * @param __componentP The component pointer.
+	 * @param __x The X position.
+	 * @param __y The Y position.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @throws MLECallError On null arguments or if the bounds are invalid.
+	 * @since 2024/04/22
+	 */
+	private static native void __containerSetBounds(long __stateP,
+		long __containerP, long __componentP,
+		int __x, int __y, int __w, int __h)
 		throws MLECallError;
 	
 	/**

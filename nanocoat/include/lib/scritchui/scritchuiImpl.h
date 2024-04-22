@@ -76,6 +76,10 @@ typedef sjme_errorCode (*sjme_scritchui_impl_containerAddFunc)(
 	sjme_attrInNotNull sjme_scritchui_uiContainer inContainerData,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
 
+/** Set bounds of component in container. */
+typedef sjme_scritchui_containerSetBoundsFunc
+	sjme_scritchui_impl_containerSetBoundsFunc;
+
 /** Enables or disables focus on a panel. */
 typedef sjme_scritchui_panelEnableFocusFunc
 	sjme_scritchui_impl_panelEnableFocusFunc;
@@ -122,6 +126,9 @@ struct sjme_scritchui_implFunctions
 	
 	/** Add component to container. */
 	sjme_scritchui_impl_containerAddFunc containerAdd;
+	
+	/** Set bounds of component in container. */
+	sjme_scritchui_impl_containerSetBoundsFunc containerSetBounds;
 	
 	/** Execute callback within the event loop. */
 	sjme_scritchui_loopExecuteFunc loopExecute;

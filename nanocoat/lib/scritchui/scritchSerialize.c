@@ -103,6 +103,7 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 	SJME_SCRITCHUI_DISPATCH_DECL(componentRevalidate);
 	SJME_SCRITCHUI_DISPATCH_DECL(componentSetPaintListener);
 	SJME_SCRITCHUI_DISPATCH_DECL(containerAdd);
+	SJME_SCRITCHUI_DISPATCH_DECL(containerSetBounds);
 	SJME_SCRITCHUI_DISPATCH_DECL(panelNew);
 	SJME_SCRITCHUI_DISPATCH_DECL(panelEnableFocus);
 	SJME_SCRITCHUI_DISPATCH_DECL(screenSetListener);
@@ -142,6 +143,16 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 			(state,
 			containerAdd->inContainer,
 			containerAdd->inComponent));
+			
+		SJME_SCRITCHUI_DISPATCH_CASE(containerSetBounds,
+			SJME_SCRITCHUI_SERIAL_TYPE_CONTAINER_SET_BOUNDS,
+			(state,
+			containerSetBounds->inContainer,
+			containerSetBounds->inComponent,
+			containerSetBounds->x,
+			containerSetBounds->y,
+			containerSetBounds->width,
+			containerSetBounds->height));
 	
 		SJME_SCRITCHUI_DISPATCH_CASE(panelEnableFocus,
 			SJME_SCRITCHUI_SERIAL_TYPE_PANEL_ENABLE_FOCUS,
@@ -234,6 +245,30 @@ sjme_errorCode sjme_scritchui_coreSerial_containerAdd(
 		
 	SJME_SCRITCHUI_SERIAL_PASS(inContainer);
 	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
+}
+
+sjme_errorCode sjme_scritchui_coreSerial_containerSetBounds(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInPositive sjme_jint x,
+	sjme_attrInPositive sjme_jint y,
+	sjme_attrInPositiveNonZero sjme_jint width,
+	sjme_attrInPositiveNonZero sjme_jint height)
+{
+	SJME_SCRITCHUI_SERIAL_CHUNK(containerSetBounds,
+		SJME_SCRITCHUI_SERIAL_TYPE_CONTAINER_SET_BOUNDS,
+		(inState, inContainer, inComponent, x, y, width, height));
+		
+	SJME_SCRITCHUI_SERIAL_PASS(inContainer);
+	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
+	SJME_SCRITCHUI_SERIAL_PASS(x);
+	SJME_SCRITCHUI_SERIAL_PASS(y);
+	SJME_SCRITCHUI_SERIAL_PASS(width);
+	SJME_SCRITCHUI_SERIAL_PASS(height);
 	
 	/* Invoke and wait. */
 	SJME_SCRITCHUI_INVOKE_WAIT;

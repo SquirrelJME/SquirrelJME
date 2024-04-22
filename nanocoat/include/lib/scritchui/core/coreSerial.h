@@ -48,6 +48,9 @@ typedef enum sjme_scritchui_serialType
 	
 	/** @c containerAdd . */
 	SJME_SCRITCHUI_SERIAL_TYPE_CONTAINER_ADD,
+	
+	/** @c containerSetBounds . */
+	SJME_SCRITCHUI_SERIAL_TYPE_CONTAINER_SET_BOUNDS,
 		
 	/** @c panelEnableFocus . */
 	SJME_SCRITCHUI_SERIAL_TYPE_PANEL_ENABLE_FOCUS,
@@ -100,6 +103,27 @@ typedef struct sjme_scritchui_serialData_containerAdd
 	/** The input component. */
 	volatile sjme_scritchui_uiComponent inComponent;
 } sjme_scritchui_serialData_containerAdd;
+
+typedef struct sjme_scritchui_serialData_containerSetBounds
+{
+	/** The input container. */
+	volatile sjme_scritchui_uiComponent inContainer;
+	
+	/** The input component. */
+	volatile sjme_scritchui_uiComponent inComponent;
+	
+	/** The X position. */
+	volatile sjme_jint x;
+	
+	/** The Y position. */
+	volatile sjme_jint y;
+	
+	/** The width. */
+	volatile sjme_jint width;
+	
+	/** The height. */
+	volatile sjme_jint height;
+} sjme_scritchui_serialData_containerSetBounds;
 
 typedef struct sjme_scritchui_serialData_panelEnableFocus
 {
@@ -158,6 +182,10 @@ typedef struct sjme_scritchui_serialData_windowSetVisible
 	volatile sjme_jboolean isVisible;
 } sjme_scritchui_serialData_windowSetVisible;
 
+/** Define serial data union quicker. */
+#define SJME_SCRITCHUI_SDU_DEF(what) \
+	volatile SJME_TOKEN_PASTE(sjme_scritchui_serialData_, what) what
+
 /**
  * Union for serial data.
  * 
@@ -166,38 +194,41 @@ typedef struct sjme_scritchui_serialData_windowSetVisible
 typedef union sjme_scritchui_serialDataUnion
 {
 	/** @c componentRevalidate . */
-	volatile sjme_scritchui_serialData_componentRevalidate
-		componentRevalidate;
+	SJME_SCRITCHUI_SDU_DEF(componentRevalidate);
 	
 	/** @c componentSetPaintListener . */
-	volatile sjme_scritchui_serialData_componentSetPaintListener
-		componentSetPaintListener;
+	SJME_SCRITCHUI_SDU_DEF(componentSetPaintListener);
 	
 	/** @c containerAdd . */
-	volatile sjme_scritchui_serialData_containerAdd containerAdd;
+	SJME_SCRITCHUI_SDU_DEF(containerAdd);
+	
+	/** @c containerSetBounds . */
+	SJME_SCRITCHUI_SDU_DEF(containerSetBounds);
 		
 	/** @c panelEnableFocus . */
-	volatile sjme_scritchui_serialData_panelEnableFocus panelEnableFocus;
+	SJME_SCRITCHUI_SDU_DEF(panelEnableFocus);
 		
 	/** @c panelNew . */
-	volatile sjme_scritchui_serialData_panelNew panelNew;
+	SJME_SCRITCHUI_SDU_DEF(panelNew);
 	
 	/** @c screenSetListener . */
-	volatile sjme_scritchui_serialData_screenSetListener screenSetListener;
+	SJME_SCRITCHUI_SDU_DEF(screenSetListener);
 		
 	/** @c screens . */
-	volatile sjme_scritchui_serialData_screens screens;
+	SJME_SCRITCHUI_SDU_DEF(screens);
 	
 	/** @c windowContentMinimumSize. */
-	volatile sjme_scritchui_serialData_windowContentMinimumSize
-		windowContentMinimumSize;
+	SJME_SCRITCHUI_SDU_DEF(windowContentMinimumSize);
 	
 	/** @c windowNew . */
-	volatile sjme_scritchui_serialData_windowNew windowNew;
+	SJME_SCRITCHUI_SDU_DEF(windowNew);
 	
 	/** @c windowSetVisible . */
-	volatile sjme_scritchui_serialData_windowSetVisible windowSetVisible;
+	SJME_SCRITCHUI_SDU_DEF(windowSetVisible);
 } sjme_scritchui_serialDataUnion;
+
+/* No longer needed. */
+#undef SJME_SCRITCHUI_SDU_DEF
 
 /**
  * Data for the serial call.
@@ -233,6 +264,15 @@ sjme_errorCode sjme_scritchui_coreSerial_containerAdd(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
+	
+sjme_errorCode sjme_scritchui_coreSerial_containerSetBounds(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInPositive sjme_jint x,
+	sjme_attrInPositive sjme_jint y,
+	sjme_attrInPositiveNonZero sjme_jint width,
+	sjme_attrInPositiveNonZero sjme_jint height);
 
 sjme_errorCode sjme_scritchui_coreSerial_panelEnableFocus(
 	sjme_attrInNotNull sjme_scritchui inState,

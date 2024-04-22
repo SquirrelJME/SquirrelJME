@@ -23,6 +23,7 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 	.componentSetPaintListener =
 		sjme_scritchui_coreSerial_componentSetPaintListener,
 	.containerAdd = sjme_scritchui_coreSerial_containerAdd,
+	.containerSetBounds = sjme_scritchui_coreSerial_containerSetBounds,
 	
 	/* Loops are unchanged. */
 	.loopExecute = sjme_scritchui_core_loopExecute,
@@ -48,6 +49,7 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 	.componentRevalidate = sjme_scritchui_core_componentRevalidate,
 	.componentSetPaintListener = sjme_scritchui_core_componentSetPaintListener,
 	.containerAdd = sjme_scritchui_core_containerAdd,
+	.containerSetBounds = sjme_scritchui_core_containerSetBounds,
 	.loopExecute = sjme_scritchui_core_loopExecute,
 	.loopExecuteWait = sjme_scritchui_core_loopExecuteWait,
 	.loopIsInThread = sjme_scritchui_core_loopIsInThread,

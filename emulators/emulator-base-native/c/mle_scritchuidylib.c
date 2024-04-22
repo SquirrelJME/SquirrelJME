@@ -29,6 +29,9 @@
 	DESC_LONG DESC_LONG DESC_SCRITCH_PAINT_LISTENER ")" DESC_VOID
 #define FORWARD_DESC___containerAdd "(" \
 	DESC_LONG DESC_LONG DESC_LONG ")" DESC_VOID
+#define FORWARD_DESC___containerSetBounds "(" \
+	DESC_LONG DESC_LONG DESC_LONG \
+	DESC_INTEGER DESC_INTEGER DESC_INTEGER DESC_INTEGER ")" DESC_VOID
 #define FORWARD_DESC___linkInit "(" \
 	DESC_STRING DESC_STRING ")" DESC_LONG
 #define FORWARD_DESC___loopExecute "(" \
@@ -272,9 +275,53 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	container = (sjme_scritchui_uiComponent)containerP;
 	component = (sjme_scritchui_uiComponent)componentP;
 	
+	/* Not implemented? */
+	if (state->api->containerAdd == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
+		return;
+	}
+	
 	/* Forward call. */
 	if (sjme_error_is(error = state->api->containerAdd(state,
 		container, component)))
+	{
+		sjme_jni_throwMLECallError(env, error);
+		return;
+	}
+}
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__containerSetBounds)(JNIEnv* env, jclass classy, jlong stateP,
+	jlong containerP, jlong componentP, jint x, jint y, jint w, jint h)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	sjme_scritchui_uiComponent container;
+	sjme_scritchui_uiComponent component;
+	
+	if (stateP == 0 || containerP == 0 || componentP == 0)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+	
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	container = (sjme_scritchui_uiComponent)containerP;
+	component = (sjme_scritchui_uiComponent)componentP;
+	
+	/* Not implemented? */
+	if (state->api->containerSetBounds == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
+		return;
+	}
+	
+	/* Forward call. */
+	if (sjme_error_is(error = state->api->containerSetBounds(
+		state, container, component,
+		x, y, w, h)))
 	{
 		sjme_jni_throwMLECallError(env, error);
 		return;
@@ -726,8 +773,8 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	}
 	
 	/* Forward call. */
-	if (sjme_error_is(error = state->api->windowSetVisible(state, window,
-		visible)))
+	if (sjme_error_is(error = state->api->windowSetVisible(
+		state, window, visible)))
 		sjme_jni_throwMLECallError(env, error);
 }
 
@@ -736,6 +783,7 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 	FORWARD_list(NativeScritchDylib, __componentRevalidate),
 	FORWARD_list(NativeScritchDylib, __componentSetPaintListener),
 	FORWARD_list(NativeScritchDylib, __containerAdd),
+	FORWARD_list(NativeScritchDylib, __containerSetBounds),
 	FORWARD_list(NativeScritchDylib, __linkInit),
 	FORWARD_list(NativeScritchDylib, __loopExecute),
 	FORWARD_list(NativeScritchDylib, __loopExecuteWait),

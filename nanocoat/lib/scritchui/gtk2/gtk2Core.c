@@ -17,6 +17,7 @@ static const sjme_scritchui_implFunctions sjme_scritchUI_gtkFunctions =
 	.componentRevalidate = sjme_scritchui_gtk_componentRevalidate,
 	.componentSetPaintListener = sjme_scritchui_gtk2_componentSetPaintListener,
 	.containerAdd = sjme_scritchui_gtk2_containerAdd,
+	.containerSetBounds = sjme_scritchui_gtk2_containerSetBounds,
 	.loopExecute = sjme_scritchui_gtk2_loopExecute,
 	.loopExecuteWait = NULL,
 	.panelEnableFocus = sjme_scritchui_gtk2_panelEnableFocus,

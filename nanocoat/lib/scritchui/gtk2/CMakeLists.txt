@@ -15,6 +15,7 @@ add_library(ScritchUIGTK2 SHARED
 	$<TARGET_OBJECTS:BasePIC>
 	$<TARGET_OBJECTS:ScritchUICorePIC>
 	gtk2Component.c
+	gtk2Container.c
 	gtk2Core.c
 	gtk2Loop.c
 	gtk2Panel.c
