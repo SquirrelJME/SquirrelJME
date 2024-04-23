@@ -159,6 +159,8 @@ commands:
           name: Install packages
           environment:
             DEBIAN_FRONTEND: noninteractive
+            NEEDRESTART_MODE: l
+            NEEDRESTART_SUSPEND: 1
           command: |
             sudo apt-get install -yqq --no-install-recommends <<parameters.packages>>
 
@@ -169,11 +171,15 @@ commands:
           name: Install Sudo
           environment:
             DEBIAN_FRONTEND: noninteractive
+            NEEDRESTART_MODE: l
+            NEEDRESTART_SUSPEND: 1
           command: apt-get update -y && apt-get -yqq install sudo || echo "Failed, but ignoring..."
       - run:
           name: Update package lists
           environment:
             DEBIAN_FRONTEND: noninteractive
+            NEEDRESTART_MODE: l
+            NEEDRESTART_SUSPEND: 1
           command: sudo apt-get update -y
       - linux-debian-apt-get-install:
           packages: cmake build-essential curl wget openjdk-17-jdk gcc g++ make clang git openssh-client
@@ -198,9 +204,8 @@ commands:
   # Install what is required by Flatpak
   flatpak-install-required:
     steps:
-      - run:
-          name: Flatpak Base
-          command: sudo apt-get install -yqq flatpak flatpak-builder
+      - linux-debian-apt-get-install:
+          packages: flatpak flatpak-builder
       - run:
           name: Register Flathub
           command: flatpak remote-add --user flathub https://dl.flathub.org/repo/flathub.flatpakrepo
