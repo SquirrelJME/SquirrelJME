@@ -154,14 +154,14 @@ commands:
     steps:
       - run:
           name: Install Sudo
-          command: apt-get update -y && apt-get -y install sudo || echo "Failed, but ignoring..."
+          command: apt-get update -y && apt-get -yqq install sudo || echo "Failed, but ignoring..."
       - run:
           name: Update package lists
           command: sudo apt-get update -y
       - run:
           name: Install required dependencies
           command: |
-            sudo apt-get install -y --no-install-recommends cmake build-essential curl wget openjdk-17-jdk gcc g++ make clang git openssh-client
+            sudo apt-get install -yqq --no-install-recommends cmake build-essential curl wget openjdk-17-jdk gcc g++ make clang git openssh-client
 
   # Install required packages on Windows
   windows-install-required:
@@ -185,7 +185,7 @@ commands:
     steps:
       - run:
           name: Flatpak Base
-          command: sudo apt-get install -y flatpak flatpak-builder
+          command: sudo apt-get install -yqq flatpak flatpak-builder
       - run:
           name: Register Flathub
           command: flatpak remote-add --user flathub https://dl.flathub.org/repo/flathub.flatpakrepo
