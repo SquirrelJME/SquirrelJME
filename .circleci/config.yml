@@ -149,19 +149,34 @@ commands:
       - store_artifacts:
           path: <<parameters.store-home>>/test-results
 
+  # Standard apt-get install
+  linux-debian-apt-get-install:
+    parameters:
+      packages:
+        type: string
+    steps:
+      - run:
+          name: Install packages
+          environment:
+            DEBIAN_FRONTEND: noninteractive
+          command: |
+            apt-get install -yqq --no-install-recommends <<parameters.packages>>
+
   # Install standard packages in Debian/Ubuntu
   linux-install-required:
     steps:
       - run:
           name: Install Sudo
+          environment:
+            DEBIAN_FRONTEND: noninteractive
           command: apt-get update -y && apt-get -yqq install sudo || echo "Failed, but ignoring..."
       - run:
           name: Update package lists
+          environment:
+            DEBIAN_FRONTEND: noninteractive
           command: sudo apt-get update -y
-      - run:
-          name: Install required dependencies
-          command: |
-            sudo apt-get install -yqq --no-install-recommends cmake build-essential curl wget openjdk-17-jdk gcc g++ make clang git openssh-client
+      - linux-debian-apt-get-install:
+          packages: cmake build-essential curl wget openjdk-17-jdk gcc g++ make clang git openssh-client
 
   # Install required packages on Windows
   windows-install-required:
