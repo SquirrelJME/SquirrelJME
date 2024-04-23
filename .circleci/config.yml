@@ -160,7 +160,7 @@ commands:
           environment:
             DEBIAN_FRONTEND: noninteractive
           command: |
-            apt-get install -yqq --no-install-recommends <<parameters.packages>>
+            sudo apt-get install -yqq --no-install-recommends <<parameters.packages>>
 
   # Install standard packages in Debian/Ubuntu
   linux-install-required:
