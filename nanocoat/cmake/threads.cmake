@@ -33,7 +33,12 @@ elseif(Threads_FOUND)
 			if (LINUX)
 				add_compile_definitions(
 					SJME_CONFIG_HAS_THREADS_PTHREAD_LINUX=1)
-			elseif (APPLE OR BSD)
+			elseif(APPLE OR BSD)
+				if(APPLE)
+					add_compile_definitions(
+						SJME_CONFIG_HAS_THREADS_PTHREAD_MACOS=1)
+				endif()
+
 				add_compile_definitions(
 					SJME_CONFIG_HAS_THREADS_PTHREAD_BSD=1)
 			endif()

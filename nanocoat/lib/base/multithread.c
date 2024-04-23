@@ -112,7 +112,8 @@ void sjme_thread_yield(void)
 {
 #if defined(SJME_CONFIG_HAS_LINUX)
 	sched_yield();
-#elif defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
+#elif defined(SJME_CONFIG_HAS_THREADS_PTHREAD_MACOS);
+#elif defined(SJME_CONFIG_HAS_THREADS_PTHREAD_BSD)
 	pthread_yield();
 #elif defined(SJME_CONFIG_HAS_THREADS_WIN32)
 	SwitchToThread();
