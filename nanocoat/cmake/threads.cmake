@@ -16,7 +16,8 @@ elseif(Threads_FOUND)
 	if(CMAKE_USE_PTHREADS_INIT)
 		# Does pthread actually exist?
 		try_compile(SQUIRRELJME_PTHREADS_VALID
-			SOURCES "${CMAKE_CURRENT_LIST_DIR}/tryPThread.c")
+			SOURCES "${CMAKE_CURRENT_LIST_DIR}/tryPThread.c"
+			LINK_LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
 
 		# Valid?
 		if(SQUIRRELJME_PTHREADS_VALID)
