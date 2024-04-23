@@ -43,7 +43,7 @@ extern "C" {
 #endif
 
 /* The current operating system. */
-#if defined(__3DS__)
+#if defined(__3DS__) || defined(_3DS)
 	/** Nintendo 3DS is available. */
 	#define SJME_CONFIG_HAS_NINTENDO_3DS
 #elif defined(__linux__) || defined(linux) || defined(__linux)
