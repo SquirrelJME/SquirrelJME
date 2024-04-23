@@ -16,6 +16,20 @@
 #ifndef SQUIRRELJME_MULTITHREAD_H
 #define SQUIRRELJME_MULTITHREAD_H
 
+#include "sjme/config.h"
+
+#if defined(SJME_CONFIG_HAS_THREADS_FALLBACK)
+	/* Clear pthreads. */
+	#if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
+		#undef SJME_CONFIG_HAS_THREADS_PTHREAD
+	#endif
+
+	/* Clear Win32 threads. */ 
+	#if defined(SJME_CONFIG_HAS_THREADS_WIN32)
+		#undef SJME_CONFIG_HAS_THREADS_WIN32
+	#endif
+#endif
+
 #if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
 	#include <pthread.h>
 	#include <errno.h>
