@@ -73,7 +73,28 @@ extern "C" {
 	#define SJME_THREAD_NULL NULL
 	
 	/** Error as thread result. */
-	#define SJME_THREAD_RESULT(err) ((DWORD)(err));
+	#define SJME_THREAD_RESULT(err) ((DWORD)(err))
+#else
+	/** Threads not supported. */
+	typedef struct sjme_thread_unsupported
+	{
+		int unsupported;
+	} sjme_thread_unsupported;
+	
+	/** A single thread. */
+	typedef sjme_thread_unsupported* sjme_thread;
+	
+	/** Thread result. */
+	typedef int sjme_thread_result;
+	
+	/** Thread parameter. */
+	typedef void* sjme_thread_parameter;
+	
+	/** Null thread handle. */
+	#define SJME_THREAD_NULL NULL
+	
+	/** Error as thread result. */
+	#define SJME_THREAD_RESULT(err) ((int)(err))
 #endif
 
 /**
