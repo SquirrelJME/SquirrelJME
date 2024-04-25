@@ -106,7 +106,7 @@ sjme_errorCode sjme_scritchui_gtk2_componentRepaint(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_scritchui_gtk_componentRevalidate(
+sjme_errorCode sjme_scritchui_gtk2_componentRevalidate(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent)
 {
