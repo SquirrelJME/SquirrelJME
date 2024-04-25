@@ -19,6 +19,34 @@ static gboolean sjme_scritchui_gtk2_exposeHandler(GtkWidget* widget,
 	return FALSE;
 }
 
+sjme_errorCode sjme_scritchui_gtk2_componentRepaint(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInPositive sjme_jint x,
+	sjme_attrInPositive sjme_jint y,
+	sjme_attrInPositiveNonZero sjme_jint width,
+	sjme_attrInPositiveNonZero sjme_jint height)
+{
+	GtkWidget* widget;
+	
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover widget. */
+	widget = (GtkWidget*)inComponent->common.handle;
+	
+	/* Max value just means to draw everywhere. */
+	if (width <= 0 || height <= 0 ||
+		width == INT32_MAX || height == INT32_MAX)
+		gtk_widget_queue_draw(widget);
+	else
+		gtk_widget_queue_draw_area(widget,
+			x, y, width, height);
+		
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_scritchui_gtk_componentRevalidate(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent)

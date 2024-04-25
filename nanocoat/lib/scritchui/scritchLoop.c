@@ -84,7 +84,8 @@ sjme_errorCode sjme_scritchui_core_loopExecuteWait(
 	
 	/* Execute call. */
 	if (sjme_error_is(error = sjme_scritchui_core_loopExecute(
-		inState, sjme_scritchui_core_waitAdapter, &waitData)))
+		inState, sjme_scritchui_core_waitAdapter,
+		&waitData)))
 		return sjme_error_default(error);
 	
 	/* Wait for termination. */

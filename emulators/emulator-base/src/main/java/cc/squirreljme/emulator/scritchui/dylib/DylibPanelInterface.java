@@ -75,7 +75,11 @@ public class DylibPanelInterface
 	public void repaint(ScritchComponentBracket __component)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__component == null)
+			throw new MLECallError("Null arguments.");
+		
+		this.dyLib.componentRepaint((DylibComponentObject)__component,
+			0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE);
 	}
 	
 	/**

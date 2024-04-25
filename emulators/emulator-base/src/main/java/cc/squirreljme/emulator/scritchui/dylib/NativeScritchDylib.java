@@ -56,6 +56,28 @@ public final class NativeScritchDylib
 	}
 	
 	/**
+	 * Repaints the given component.
+	 *
+	 * @param __component The component to repaint.
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @throws MLECallError If the component is not valid.
+	 * @since 2024/04/24
+	 */
+	public void componentRepaint(DylibComponentObject __component,
+		int __x, int __y, int __w, int __h)
+		throws MLECallError
+	{
+		if (__component == null)
+			throw new MLECallError("NARG");
+		
+		NativeScritchDylib.__componentRepaint(this._stateP,
+			__component.objectP, __x, __y, __w, __h);
+	}
+	
+	/**
 	 * Revalidates the given component.
 	 *
 	 * @param __component The component to revalidate.
@@ -335,6 +357,22 @@ public final class NativeScritchDylib
 		NativeScritchDylib.__windowSetVisible(this._stateP, __window.objectP,
 			__visible);
 	}
+	
+	/**
+	 * Repaints the given component.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __componentP The component to repaint.
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @throws MLECallError If the component is not valid.
+	 * @since 2024/04/24
+	 */
+	private static native void __componentRepaint(long __stateP,
+		long __componentP, int __x, int __y, int __w, int __h)
+		throws MLECallError;
 	
 	/**
 	 * Revalidates the given component.

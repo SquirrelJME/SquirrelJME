@@ -270,6 +270,26 @@ typedef sjme_errorCode (*sjme_scritchui_apiInitFunc)(
 	sjme_attrInOutNotNull sjme_scritchui* outState);
 
 /**
+ * Repaints the given component.
+ * 
+ * @param inState The input state.
+ * @param inComponent The input component.
+ * @param x The X position.
+ * @param y The Y position.
+ * @param width The width.
+ * @param height The height.
+ * @return Any error code if applicable.
+ * @since 2024/04/24
+ */
+typedef sjme_errorCode (*sjme_scritchui_componentRepaintFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInPositive sjme_jint x,
+	sjme_attrInPositive sjme_jint y,
+	sjme_attrInPositiveNonZero sjme_jint width,
+	sjme_attrInPositiveNonZero sjme_jint height);
+
+/**
  * Revalidates the given component.
  * 
  * @param inState The input state.
@@ -458,6 +478,9 @@ struct sjme_scritchui_apiFunctions
 {
 	/** API flags. */
 	sjme_scritchui_apiFlagsFunc apiFlags;
+	
+	/** Repaints the given component. */
+	sjme_scritchui_componentRepaintFunc componentRepaint;
 	
 	/** Revalidates the given component. */
 	sjme_scritchui_componentRevalidateFunc componentRevalidate;

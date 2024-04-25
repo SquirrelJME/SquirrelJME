@@ -39,6 +39,10 @@ extern "C" {
 typedef sjme_errorCode (*sjme_scritchui_impl_apiInit)(
 	sjme_attrInNotNull sjme_scritchui inState);
 
+/** Repaint component. */
+typedef sjme_scritchui_componentRepaintFunc
+	sjme_scritchui_impl_componentRepaintFunc;
+
 /** Revalidate component. */
 typedef sjme_scritchui_componentRevalidateFunc
 	sjme_scritchui_impl_componentRevalidateFunc;
@@ -116,6 +120,9 @@ struct sjme_scritchui_implFunctions
 {
 	/** Initialize implementation API instance. */
 	sjme_scritchui_impl_apiInit apiInit;
+	
+	/** Repaint component. */
+	sjme_scritchui_impl_componentRepaintFunc componentRepaint;
 	
 	/** Revalidate component. */
 	sjme_scritchui_impl_componentRevalidateFunc componentRevalidate;

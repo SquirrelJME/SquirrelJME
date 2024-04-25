@@ -100,6 +100,7 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 	sjme_attrInNullable sjme_thread_parameter anything)
 {
 	volatile sjme_scritchui_serialData* data;
+	SJME_SCRITCHUI_DISPATCH_DECL(componentRepaint);
 	SJME_SCRITCHUI_DISPATCH_DECL(componentRevalidate);
 	SJME_SCRITCHUI_DISPATCH_DECL(componentSetPaintListener);
 	SJME_SCRITCHUI_DISPATCH_DECL(containerAdd);
@@ -126,6 +127,15 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 	/* Depends on the type... */
 	switch (data->type)
 	{
+		SJME_SCRITCHUI_DISPATCH_CASE(componentRepaint,
+			SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_REPAINT,
+			(state,
+			componentRepaint->inComponent,
+			componentRepaint->x,
+			componentRepaint->y,
+			componentRepaint->width,
+			componentRepaint->height));
+		
 		SJME_SCRITCHUI_DISPATCH_CASE(componentRevalidate,
 			SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_REVALIDATE,
 			(state,
@@ -200,6 +210,29 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 	
 	/* Map result. */
 	return SJME_THREAD_RESULT(data->error);
+}
+
+
+sjme_errorCode sjme_scritchui_coreSerial_componentRepaint(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInPositive sjme_jint x,
+	sjme_attrInPositive sjme_jint y,
+	sjme_attrInPositiveNonZero sjme_jint width,
+	sjme_attrInPositiveNonZero sjme_jint height)
+{
+	SJME_SCRITCHUI_SERIAL_CHUNK(componentRepaint,
+		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_REPAINT,
+		(inState, inComponent, x, y, width, height));
+		
+	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
+	SJME_SCRITCHUI_SERIAL_PASS(x);
+	SJME_SCRITCHUI_SERIAL_PASS(y);
+	SJME_SCRITCHUI_SERIAL_PASS(width);
+	SJME_SCRITCHUI_SERIAL_PASS(height);
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
 }
 
 sjme_errorCode sjme_scritchui_coreSerial_componentRevalidate(

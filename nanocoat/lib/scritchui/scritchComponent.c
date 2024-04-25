@@ -13,6 +13,45 @@
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/debug.h"
 
+sjme_errorCode sjme_scritchui_core_componentRepaint(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInPositive sjme_jint x,
+	sjme_attrInPositive sjme_jint y,
+	sjme_attrInPositiveNonZero sjme_jint width,
+	sjme_attrInPositiveNonZero sjme_jint height)
+{
+	sjme_errorCode error;
+	sjme_scritchui_uiPaintable paint;
+	
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Not implemented? */
+	if (inState->impl->componentRepaint == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
+		
+	/* Only certain types are paintable. */
+	paint = NULL;
+	if (sjme_error_is(error = inState->intern->getPaintable(inState,
+		inComponent, &paint)) || paint == NULL)
+		return sjme_error_default(error);
+	
+	/* Rather than failing, just normalize. */
+	if (x < 0)
+		x = 0;
+	if (y < 0)
+		y = 0;
+	if (width <= 0)
+		width = INT32_MAX;
+	if (height <= 0)
+		height = INT32_MAX;
+	
+	/* Forward. */
+	return inState->impl->componentRepaint(inState, inComponent,
+		x, y, width, height);
+}
+
 sjme_errorCode sjme_scritchui_core_componentRevalidate(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent)
