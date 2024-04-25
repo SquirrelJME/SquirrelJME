@@ -57,6 +57,7 @@ sjme_errorCode sjme_scritchui_core_intern_mapScreen(
 		goto fail_alloc;
 	
 	/* Fill in information. */
+	maybe->common.state = inState;
 	maybe->common.type = SJME_SCRITCHUI_TYPE_SCREEN;
 	maybe->common.handle = updateHandle;
 	maybe->id = screenId;

@@ -538,6 +538,9 @@ typedef struct sjme_scritchui_commonBase
 	/** The type of what this is. */
 	sjme_scritchui_uiType type;
 	
+	/** The state which owns this. */
+	sjme_scritchui state;
+	
 	/**
 	 * Front-end data for this, note that ScritchUI implementations must not
 	 * use this for information as this is only to be used by front-ends.

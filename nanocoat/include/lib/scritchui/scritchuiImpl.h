@@ -92,13 +92,13 @@ typedef sjme_scritchui_panelEnableFocusFunc
  * Creates a new native panel.
  * 
  * @param inState The input ScritchUI state.
- * @param inOutPanel The input/output panel.
+ * @param inPanel The panel that was created.
  * @return Any error code as per implementation.
  * @since 2024/04/06
  */
 typedef sjme_errorCode (*sjme_scritchui_impl_panelNewFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInOutNotNull sjme_scritchui_uiPanel inOutPanel);
+	sjme_attrInNotNull sjme_scritchui_uiPanel inPanel);
 
 /** Obtain screens. */
 typedef sjme_scritchui_screensFunc
@@ -108,9 +108,17 @@ typedef sjme_scritchui_screensFunc
 typedef sjme_scritchui_windowContentMinimumSizeFunc
 	sjme_scritchui_impl_windowContentMinimumSizeFunc;
 
-/** Creates a new window. */
-typedef sjme_scritchui_windowNewFunc
-	sjme_scritchui_impl_windowNewFunc;
+/**
+ * Creates a new window.
+ * 
+ * @param inState The input state.
+ * @param inWindow The window that was created.
+ * @return Any resultant error, if any.
+ * @since 2024/04/24
+ */
+typedef sjme_errorCode (*sjme_scritchui_impl_windowNewFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow);
 
 /** Sets visibility of window. */
 typedef sjme_scritchui_windowSetVisibleFunc

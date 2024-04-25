@@ -32,12 +32,12 @@ sjme_errorCode sjme_scritchui_gtk2_panelEnableFocus(
 
 sjme_errorCode sjme_scritchui_gtk2_panelNew(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInOutNotNull sjme_scritchui_uiPanel inOutPanel)
+	sjme_attrInNotNull sjme_scritchui_uiPanel inPanel)
 {
 	sjme_errorCode error;
 	GtkWidget* fixed;
 
-	if (inState == NULL || inOutPanel == NULL)
+	if (inState == NULL || inPanel == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Setup GTK widget, used fixed as we want exact placements. */
@@ -49,7 +49,7 @@ sjme_errorCode sjme_scritchui_gtk2_panelNew(
 	gtk_fixed_set_has_window(GTK_FIXED(fixed), FALSE);
 	
 	/* Store information. */
-	inOutPanel->component.common.handle = fixed;
+	inPanel->component.common.handle = fixed;
 	
 	/* Success! */
 	return SJME_ERROR_NONE;

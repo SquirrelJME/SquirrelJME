@@ -49,33 +49,20 @@ sjme_errorCode sjme_scritchui_gtk2_windowContentMinimumSize(
 
 sjme_errorCode sjme_scritchui_gtk2_windowNew(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInOutNotNull sjme_scritchui_uiWindow* outWindow)
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow)
 {
-	sjme_errorCode error;
-	sjme_scritchui_uiWindow window;
 	GtkWindow* gtkWindow;
 	
-	if (inState == NULL || outWindow == NULL)
+	if (inState == NULL || inWindow == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Allocate resultant window. */
-	window = NULL;
-	if (sjme_error_is(error = sjme_alloc(inState->pool, sizeof(*window),
-		&window)) ||
-		window == NULL)
-		goto fail_alloc;
 	
 	/* We only care for top-level windows. */
 	gtkWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	if (gtkWindow == NULL)
-	{
-		error = SJME_ERROR_CANNOT_CREATE;
-		goto fail_newWindow;
-	}
+		return SJME_ERROR_CANNOT_CREATE;
 	
 	/* Setup window. */
-	window->component.common.type = SJME_SCRITCHUI_TYPE_WINDOW;
-	window->component.common.handle = gtkWindow;
+	inWindow->component.common.handle = gtkWindow;
 	
 	/* Set default title. */
 	gtk_window_set_title(gtkWindow,
@@ -87,18 +74,7 @@ sjme_errorCode sjme_scritchui_gtk2_windowNew(
 		inState->wmInfo->xwsClass);
 	
 	/* Success! */
-	*outWindow = window;
 	return SJME_ERROR_NONE;
-
-fail_newWindow:
-fail_alloc:
-	if (window != NULL)
-	{
-		sjme_alloc_free(window);
-		window = NULL;
-	}
-	
-	return sjme_error_default(error);
 }
 
 sjme_errorCode sjme_scritchui_gtk2_windowSetVisible(

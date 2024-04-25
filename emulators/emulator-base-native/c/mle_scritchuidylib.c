@@ -69,7 +69,7 @@ typedef struct mle_loopExecuteData
 
 static sjme_errorCode mle_scritchUiPaintListener(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiComponent component,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInNotNull sjme_gfx_pixelFormat pf,
 	sjme_attrInPositive sjme_jint bw,
 	sjme_attrInPositive sjme_jint bh,
@@ -84,6 +84,22 @@ static sjme_errorCode mle_scritchUiPaintListener(
 	sjme_attrInPositive sjme_jint sh,
 	sjme_attrInValue sjme_jint special)
 {
+	jint error;
+	JavaVM* vm;
+	JNIEnv* env;
+	
+	if (inState == NULL || inComponent == NULL || buf == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Restore VM. */
+	vm = (JavaVM*)inState->common.frontEnd.data;
+		
+	/* Relocate env. */
+	env = NULL;
+	error = (*vm)->GetEnv(vm, &env, JNI_VERSION_1_1);
+	if (env == NULL)
+		sjme_die("Could not relocate env: %d??", error);
+	
 	sjme_todo("Implement paint");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
@@ -94,10 +110,10 @@ static sjme_thread_result mle_loopExecuteMain(
 	mle_loopExecuteData* data;
 	JavaVM* vm;
 	JNIEnv* env;
+	jint error;
 	jobject runnable;
 	jclass classy;
 	jmethodID runId;
-	jint error;
 	
 	/* Recover data. */
 	data = (mle_loopExecuteData*)anything;

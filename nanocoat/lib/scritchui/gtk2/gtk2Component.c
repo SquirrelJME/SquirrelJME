@@ -13,7 +13,62 @@
 static gboolean sjme_scritchui_gtk2_exposeHandler(GtkWidget* widget,
 	GdkEventExpose* event, gpointer data)
 {
-	sjme_todo("Expose?");
+	sjme_scritchui inState;
+	sjme_scritchui_uiComponent inComponent;
+	sjme_scritchui_uiPaintable paint;
+	sjme_scritchui_paintListenerFunc listener;
+	sjme_jint rawArea, x, y, w, h;
+	sjme_jint* rawPixels;
+	
+	/* Restore component. */
+	inComponent = (sjme_scritchui_uiComponent)data;
+	if (inComponent == NULL)
+		return TRUE;
+	
+	/* Restore state. */
+	inState = inComponent->common.state;
+	
+	/* Not something we can paint? */
+	paint = NULL;
+	if (sjme_error_is(inState->intern->getPaintable(inState,
+		inComponent, &paint)) || paint == NULL)
+		return TRUE;
+	
+	/* No actual paint listener? */
+	listener = paint->listener;
+	if (listener == NULL)
+		return TRUE;
+	
+	/* Determine area to draw. */
+	x = event->area.x;
+	y = event->area.y;
+	w = event->area.width;
+	h = event->area.height;
+	rawArea = w * h;
+	
+	/* Allocate raw pixel data, because we cannot directly access */
+	/* the pixels used by a GtkWidget. */
+	rawPixels = sjme_alloca(sizeof(*rawPixels) * rawArea);
+	if (rawPixels == NULL)
+		return TRUE;
+	
+	/* Clear it. */
+	memset(rawPixels, 0, sizeof(*rawPixels) * rawArea);
+	
+	/* Forward to callback. */
+	if (sjme_error_is(listener(inState, inComponent,
+		SJME_GFX_PIXEL_FORMAT_INT_RGB888,
+		w, h,
+		rawPixels, 0, rawArea,
+		NULL, 0,
+		0, 0, w, h, 0)))
+		return TRUE;
+	
+	/* Draw the data we have. */
+	gdk_draw_rgb_32_image(GDK_DRAWABLE(widget),
+		widget->style->fg_gc[widget->state],
+		x, y, w, h,
+		GDK_RGB_DITHER_MAX, (guchar*)rawPixels, w);
 	
 	/* Do not perform standard drawing. */
 	return FALSE;
@@ -94,7 +149,7 @@ sjme_errorCode sjme_scritchui_gtk2_componentSetPaintListener(
 	/* Connect new handler. */
 	if (inListener != NULL)
 		inPaint->extra = g_signal_connect(widget, "expose-event",
-			G_CALLBACK(sjme_scritchui_gtk2_exposeHandler), NULL);
+			G_CALLBACK(sjme_scritchui_gtk2_exposeHandler), inComponent);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;

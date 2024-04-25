@@ -91,7 +91,7 @@ sjme_errorCode sjme_scritchui_gtk2_panelEnableFocus(
 
 sjme_errorCode sjme_scritchui_gtk2_panelNew(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInOutNotNull sjme_scritchui_uiPanel inOutPanel);
+	sjme_attrInNotNull sjme_scritchui_uiPanel inPanel);
 
 sjme_errorCode sjme_scritchui_gtk2_screens(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -106,7 +106,7 @@ sjme_errorCode sjme_scritchui_gtk2_windowContentMinimumSize(
 
 sjme_errorCode sjme_scritchui_gtk2_windowNew(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInOutNotNull sjme_scritchui_uiWindow* outWindow);
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow);
 	
 sjme_errorCode sjme_scritchui_gtk2_windowSetVisible(
 	sjme_attrInNotNull sjme_scritchui inState,

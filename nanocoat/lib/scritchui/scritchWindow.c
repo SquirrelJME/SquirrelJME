@@ -9,6 +9,7 @@
 
 #include "lib/scritchui/core/core.h"
 #include "lib/scritchui/scritchuiTypes.h"
+#include "sjme/alloc.h"
 
 sjme_errorCode sjme_scritchui_core_windowContentMinimumSize(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -35,15 +36,44 @@ sjme_errorCode sjme_scritchui_core_windowNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_scritchui_uiWindow* outWindow)
 {
+	sjme_errorCode error;
+	sjme_scritchui_uiWindow result;
+	
 	if (inState == NULL || outWindow == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Not implemented? */
 	if (inState->impl->windowNew == NULL)
 		return SJME_ERROR_NOT_IMPLEMENTED;
+		
+	/* Allocate result. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_alloc(inState->pool, sizeof(*result),
+		&result)) || result == NULL)
+		goto fail_alloc;
+	
+	/* Set base properties. */
+	result->component.common.state = inState;
+	result->component.common.type = SJME_SCRITCHUI_TYPE_WINDOW;
 	
 	/* Forward call. */
-	return inState->impl->windowNew(inState, outWindow);
+	if (sjme_error_is(error = inState->impl->windowNew(inState,
+		result)))
+		goto fail_newWidget;
+	
+	/* Success! */
+	*outWindow = result;
+	return SJME_ERROR_NONE;
+
+fail_newWidget:
+fail_alloc:
+	if (result != NULL)
+	{
+		sjme_alloc_free(result);
+		result = NULL;
+	}
+	
+	return sjme_error_default(error);
 }
 
 sjme_errorCode sjme_scritchui_core_windowSetVisible(
