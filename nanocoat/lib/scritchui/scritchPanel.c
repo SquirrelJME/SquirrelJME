@@ -52,6 +52,7 @@ sjme_errorCode sjme_scritchui_core_panelNew(
 		return sjme_error_default(error);
 	
 	/* Set base properties. */
+	result->component.common.state = inState;
 	result->component.common.type = SJME_SCRITCHUI_TYPE_PANEL;
 	
 	/* Setup native widget. */
