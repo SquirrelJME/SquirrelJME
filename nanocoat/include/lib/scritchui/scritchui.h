@@ -500,6 +500,9 @@ struct sjme_scritchui_apiFunctions
 	/** Execute callback within the event loop. */
 	sjme_scritchui_loopExecuteFunc loopExecute;
 	
+	/** Execute callback later in the event loop. */
+	sjme_scritchui_loopExecuteFunc loopExecuteLater;
+	
 	/** Execute callback within the event loop and wait until termination. */
 	sjme_scritchui_loopExecuteFunc loopExecuteWait;
 	

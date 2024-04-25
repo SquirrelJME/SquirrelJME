@@ -71,8 +71,8 @@
 	DESC_STRING DESC_STRING ")" DESC_LONG
 #define FORWARD_DESC___loopExecute "(" \
 	DESC_LONG DESC_CLASS("java/lang/Runnable") ")" DESC_VOID
-#define FORWARD_DESC___loopExecuteWait "(" \
-	DESC_LONG DESC_CLASS("java/lang/Runnable") ")" DESC_VOID
+#define FORWARD_DESC___loopExecuteLater FORWARD_DESC___loopExecute
+#define FORWARD_DESC___loopExecuteWait FORWARD_DESC___loopExecute
 #define FORWARD_DESC___loopIsInThread "(" \
 	DESC_LONG ")" DESC_BOOLEAN
 #define FORWARD_DESC___panelEnableFocus "(" \
@@ -228,31 +228,19 @@ static sjme_thread_result mle_loopExecuteMain(
 	if (env == NULL)
 		sjme_die("Could not relocate env: %d??", error);
 	
-	/* Debug. */
-	sjme_message("Lookup Runnable...");
-	
 	/* Locate Runnable Class. */
 	classy = (*env)->FindClass(env, "java/lang/Runnable");
 	if (classy == NULL)
 		sjme_die("Did not find Runnable??");
 
-	/* Debug. */
-	sjme_message("Lookup Runnable:run()...");
-	
 	/* Locate run() method. */
 	runId = (*env)->GetMethodID(env, classy, "run", "()V");
 	if (runId == NULL)
 		sjme_die("Did not find Runnable:run()??");
 
-	/* Debug. */
-	sjme_message("Execute Runnable!");
-	
 	/* Call it. */
 	(*env)->CallVoidMethod(env, runnable, runId);
 
-	/* Debug. */
-	sjme_message("Cleanup Reference...");
-	
 	/* Remove reference when the call is done. */
 	(*env)->DeleteGlobalRef(env, runnable);
 
@@ -607,6 +595,45 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __loopExecute)
 	}
 }
 
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__loopExecuteLater)(JNIEnv* env, jclass classy, jlong stateP,
+	jobject runnable)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	mle_loopExecuteData* data;
+	
+	if (stateP == 0)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	
+	/* Allocate data for call. */
+	data = malloc(sizeof(*data));
+	if (data == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_OUT_OF_MEMORY);
+		return;
+	}
+	
+	/* Fill in data. */
+	data->vm = NULL;
+	(*env)->GetJavaVM(env, &data->vm);
+	data->runnable = (*env)->NewGlobalRef(env, runnable);
+	
+	/* Perform call. */
+	if (sjme_error_is(error = state->api->loopExecuteLater(
+		state, mle_loopExecuteMain, data)))
+	{
+		free(data);
+		sjme_jni_throwMLECallError(env, error);
+	}
+}
+
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __loopExecuteWait)
 	(JNIEnv* env, jclass classy, jlong stateP, jobject runnable)
 {
@@ -925,6 +952,7 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 	FORWARD_list(NativeScritchDylib, __containerSetBounds),
 	FORWARD_list(NativeScritchDylib, __linkInit),
 	FORWARD_list(NativeScritchDylib, __loopExecute),
+	FORWARD_list(NativeScritchDylib, __loopExecuteLater),
 	FORWARD_list(NativeScritchDylib, __loopExecuteWait),
 	FORWARD_list(NativeScritchDylib, __loopIsInThread),
 	FORWARD_list(NativeScritchDylib, __panelEnableFocus),

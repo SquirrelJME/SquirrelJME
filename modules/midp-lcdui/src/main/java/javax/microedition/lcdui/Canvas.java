@@ -31,6 +31,7 @@ import cc.squirreljme.runtime.lcdui.scritchui.DisplayScale;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
 import cc.squirreljme.runtime.lcdui.scritchui.ScritchLcdUiUtils;
+import java.lang.ref.WeakReference;
 import org.jetbrains.annotations.Async;
 
 /**
@@ -269,6 +270,9 @@ public abstract class Canvas
 	private final Object _repaintLock =
 		new Object();
 	
+	/** Callback for repainting. */
+	private final __ExecCanvasRepainter__ _repainter;
+	
 	/** The current image buffer. */
 	volatile Image _buffer;
 	
@@ -310,6 +314,9 @@ public abstract class Canvas
 		
 		// Canvases take focus and inputs, so enable it
 		panelApi.enableFocus(scritchPanel, true);
+		
+		// Setup repaint callback
+		this._repainter = new __ExecCanvasRepainter__(new WeakReference<>(this));
 	}
 	
 	/**
@@ -658,9 +665,10 @@ public abstract class Canvas
 	@Api
 	public final void repaint()
 	{
-		// Froward repaint call
-		DisplayableState state = this._state;
-		state.scritchApi().panel().repaint(state.scritchPanel());
+		// We need to actually queue the repaint rather than doing the
+		// repaint in the event loop potentially because MIDP expects it
+		// to be queued.
+		this._state.scritchApi().eventLoop().executeLater(this._repainter);
 	}
 	
 	/**

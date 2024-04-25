@@ -25,10 +25,6 @@ public interface ScritchEventLoopInterface
 	/**
 	 * Executes the given task in the event loop, if the current thread is
 	 * the event loop then this will run it immediately.
-	 * 
-	 * There is no {@code executeLater} as that may produce deadlocks between
-	 * the native UI and whatever task is running, additionally this may also
-	 * cause cooperatively tasked systems to deadlock more easily.
 	 *
 	 * @param __task The task to run.
 	 * @throws MLECallError On null arguments or execution of the given task
@@ -39,6 +35,18 @@ public interface ScritchEventLoopInterface
 	@Async.Execute
 	@Async.Schedule
 	void execute(@NotNull Runnable __task)
+		throws MLECallError;
+	
+	/**
+	 * Executes a call for a run later in the event loop.
+	 *
+	 * @param __task The task to execute later.
+	 * @throws MLECallError On null arguments.
+	 * @since 2024/04/25
+	 */
+	@SquirrelJMEVendorApi
+	@Async.Schedule
+	void executeLater(@NotNull Runnable __task)
 		throws MLECallError;
 	
 	/**

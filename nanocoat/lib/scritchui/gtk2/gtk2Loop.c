@@ -57,7 +57,7 @@ static gboolean sjme_scritchui_gtk2_onceExecute(gpointer inData)
 	return G_SOURCE_REMOVE;
 }
 
-sjme_errorCode sjme_scritchui_gtk2_loopExecute(
+sjme_errorCode sjme_scritchui_gtk2_loopExecuteLater(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_thread_mainFunc callback,
 	sjme_attrInNullable sjme_thread_parameter anything)

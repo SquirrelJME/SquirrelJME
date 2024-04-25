@@ -51,14 +51,52 @@ sjme_errorCode sjme_scritchui_core_loopExecute(
 	sjme_attrInNotNull sjme_thread_mainFunc callback,
 	sjme_attrInNullable sjme_thread_parameter anything)
 {
+	sjme_errorCode error;
+	sjme_jboolean inThread;
+	
 	if (inState == NULL || callback == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	if (inState->impl->loopExecute == NULL)
+	/* If there is a native implementation of this, use it as it probably */
+	/* knows more about how things should be executed directly or scheduled. */
+	if (inState->impl->loopExecute != NULL)
+		return inState->impl->loopExecute(inState, callback, anything);
+	
+	/* Check if we are in the loop thread. */
+	inThread = SJME_JNI_FALSE;
+	if (sjme_error_is(error = inState->api->loopIsInThread(inState,
+		&inThread)))
+		return sjme_error_default(error);
+	
+	/* Are we in the execution loop? Then call directly */
+	if (inThread)
+		return (sjme_errorCode)callback(anything);
+	
+	/* Not implemented? */
+	if (inState->impl->loopExecuteLater == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
+
+	/* We are not, so it must be scheduled. */
+	return inState->impl->loopExecuteLater(inState, callback, anything);
+}
+
+sjme_errorCode sjme_scritchui_core_loopExecuteLater(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_thread_mainFunc callback,
+	sjme_attrInNullable sjme_thread_parameter anything)
+{
+	sjme_errorCode error;
+	sjme_scritchui_core_waitData waitData;
+	
+	if (inState == NULL || callback == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Not implemented? */
+	if (inState->impl->loopExecuteLater == NULL)
 		return SJME_ERROR_NOT_IMPLEMENTED;
 	
-	/* Forward call. */
-	return inState->impl->loopExecute(inState, callback, anything);
+	/* Call execution directly. */
+	return inState->impl->loopExecuteLater(inState, callback, anything);
 }
 
 sjme_errorCode sjme_scritchui_core_loopExecuteWait(
@@ -72,7 +110,8 @@ sjme_errorCode sjme_scritchui_core_loopExecuteWait(
 	if (inState == NULL || callback == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* If executed wait is directly available we do not need a shim. */
+	/* If executed wait is directly available we do not need a shim as */
+	/* the implementation probably knows more than we do. */
 	if (inState->impl->loopExecuteWait != NULL)
 		return inState->impl->loopExecuteWait(inState, callback, anything);
 	

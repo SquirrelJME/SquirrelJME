@@ -79,7 +79,7 @@ sjme_errorCode sjme_scritchui_gtk2_containerSetBounds(
 	sjme_attrInPositiveNonZero sjme_jint width,
 	sjme_attrInPositiveNonZero sjme_jint height);
 
-sjme_errorCode sjme_scritchui_gtk2_loopExecute(
+sjme_errorCode sjme_scritchui_gtk2_loopExecuteLater(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_thread_mainFunc callback,
 	sjme_attrInNullable sjme_thread_parameter anything);

@@ -205,10 +205,23 @@ public final class NativeScritchDylib
 		if (__task == null)
 			throw new MLECallError("NARG");
 		
-		if (this.loopIsInThread())
-			__task.run();
-		else
-			NativeScritchDylib.__loopExecute(this._stateP, __task);
+		NativeScritchDylib.__loopExecute(this._stateP, __task);
+	}
+	
+	/**
+	 * Executes the given task in the event loop at a later time.
+	 *
+	 * @param __task The task to run
+	 * @throws MLECallError On null arguments.
+	 * @since 2024/04/25
+	 */
+	public void loopExecuteLater(Runnable __task)
+		throws MLECallError
+	{
+		if (__task == null)
+			throw new MLECallError("NARG");
+		
+		NativeScritchDylib.__loopExecuteLater(this._stateP, __task);
 	}
 	
 	/**
@@ -449,6 +462,16 @@ public final class NativeScritchDylib
 	 * @since 2024/04/16
 	 */
 	private static native void __loopExecute(long __stateP, Runnable __task);
+	
+	/**
+	 * Executes the given runnable in the loop.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __task The task to run.
+	 * @since 2024/04/16
+	 */
+	private static native void __loopExecuteLater(long __stateP,
+		Runnable __task);
 	
 	/**
 	 * Executes the given runnable in the loop.

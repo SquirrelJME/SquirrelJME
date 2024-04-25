@@ -145,8 +145,11 @@ struct sjme_scritchui_implFunctions
 	/** Set bounds of component in container. */
 	sjme_scritchui_impl_containerSetBoundsFunc containerSetBounds;
 	
-	/** Execute callback within the event loop. */
+	/** Execute callback within the event loop or schedule later. */
 	sjme_scritchui_loopExecuteFunc loopExecute;
+	
+	/** Execute call later in the loop. */
+	sjme_scritchui_loopExecuteFunc loopExecuteLater;
 	
 	/** Execute callback within the event loop and wait until termination. */
 	sjme_scritchui_loopExecuteFunc loopExecuteWait;

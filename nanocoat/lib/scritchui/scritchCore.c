@@ -35,6 +35,7 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 	
 	/* Loops are unchanged. */
 	.loopExecute = sjme_scritchui_core_loopExecute,
+	.loopExecuteLater = sjme_scritchui_core_loopExecuteLater,
 	.loopExecuteWait = sjme_scritchui_core_loopExecuteWait,
 	.loopIsInThread = sjme_scritchui_core_loopIsInThread,
 	.loopIterate = sjme_scritchui_core_loopIterate,
@@ -60,6 +61,7 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 	.containerAdd = sjme_scritchui_core_containerAdd,
 	.containerSetBounds = sjme_scritchui_core_containerSetBounds,
 	.loopExecute = sjme_scritchui_core_loopExecute,
+	.loopExecuteLater = sjme_scritchui_core_loopExecuteLater,
 	.loopExecuteWait = sjme_scritchui_core_loopExecuteWait,
 	.loopIsInThread = sjme_scritchui_core_loopIsInThread,
 	.loopIterate = sjme_scritchui_core_loopIterate,

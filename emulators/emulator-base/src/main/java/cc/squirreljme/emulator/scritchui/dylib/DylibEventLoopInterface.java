@@ -53,6 +53,19 @@ public class DylibEventLoopInterface
 		this.dyLib.loopExecute(__task);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/04/25
+	 */
+	@Override
+	public void executeLater(@NotNull Runnable __task)
+		throws MLECallError
+	{
+		if (__task == null)
+			throw new MLECallError("Null arguments.");
+		
+		this.dyLib.loopExecuteLater(__task);
+	}
 	
 	/**
 	 * {@inheritDoc}
