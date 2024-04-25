@@ -50,23 +50,8 @@ executors:
   #      JAVA_OPTS: -Xmx3g
 
   build-on-macos:
-    macos:
-      xcode: 13.4.1
-    resource_class: macos.x86.medium.gen2
-    environment:
-      # Do not auto-update brew as this takes forever, and we really just want
-      # a single package
-      HOMEBREW_NO_AUTO_UPDATE: 1
-
-      # Do not auto-clean brew, this wastes time and everything will be thrown
-      # out when the container finishes anyway
-      HOMEBREW_CLEANUP_MAX_AGE_DAYS: 730
-
-      # Do not send analytics
-      HOMEBREW_NO_ANALYTICS: 1
-
-      # Do not clean up after installation
-      HOMEBREW_NO_INSTALL_CLEANUP: 1
+    machine: true
+    resource_class: squirreljme/squirreljme-macos-x86
 
   build-on-macos-m1:
     machine: true
@@ -366,7 +351,6 @@ jobs:
     executor: build-on-macos
     steps:
       - checkout
-      - macos-install-required
       - run:
           name: Gradle Build and Test
           command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
@@ -402,7 +386,6 @@ jobs:
     executor: build-on-macos
     steps:
       - checkout
-      - macos-install-required
       - attach_workspace:
           at: .
       - standalone-unix-common-build
