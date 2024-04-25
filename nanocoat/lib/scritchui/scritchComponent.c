@@ -112,6 +112,11 @@ sjme_errorCode sjme_scritchui_core_componentSetPaintListener(
 		return sjme_error_default(error);
 	}
 	
+	/* If there is a repaint handler, then run it but ignore any errors. */
+	if (inState->apiInThread->componentRepaint != NULL)
+		inState->apiInThread->componentRepaint(inState, inComponent,
+			0, 0, INT32_MAX, INT32_MAX);
+	
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
