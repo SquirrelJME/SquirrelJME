@@ -127,6 +127,7 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 #define DESC_VOID "V"
 #define DESC_OBJECT DESC_CLASS("java/lang/Object")
 #define DESC_STRING DESC_CLASS("java/lang/String")
+#define DESC_BYTE_BUFFER DESC_CLASS("java/nio/ByteBuffer")
 
 /**
  * Checks to see if a virtual machine call failed.
@@ -136,6 +137,19 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
  * @since 2023/12/29
  */
 sjme_jboolean sjme_jni_checkVMException(JNIEnv* env);
+
+/**
+ * Directly map integer array.
+ * 
+ * @param env The Java environment.
+ * @param buf The input array to map.
+ * @param off The offset into the array.
+ * @param len The length of the array.
+ * @return The resultant raw object for the array.
+ * @since 2024/04/24
+ */
+jintArray sjme_jni_mappedArrayInt(JNIEnv* env,
+	jint* buf, jint off, jint len);
 
 /**
  * Throws a @c MLECallError .

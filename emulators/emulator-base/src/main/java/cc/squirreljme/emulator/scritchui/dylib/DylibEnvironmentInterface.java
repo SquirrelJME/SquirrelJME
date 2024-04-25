@@ -24,6 +24,9 @@ public class DylibEnvironmentInterface
 	extends DylibBaseInterface
 	implements ScritchEnvironmentInterface
 {
+	/** Look and feel interface. */
+	protected ScritchLAFInterface lookAndFeel;
+	
 	/**
 	 * Initializes the interface.
 	 *
@@ -38,6 +41,8 @@ public class DylibEnvironmentInterface
 		throws NullPointerException
 	{
 		super(__selfApi, __dyLib);
+		
+		this.lookAndFeel = new DylibLookAndFeelInterface(__selfApi, __dyLib);
 	}
 	
 	/**
@@ -57,7 +62,7 @@ public class DylibEnvironmentInterface
 	@Override
 	public ScritchLAFInterface lookAndFeel()
 	{
-		throw Debugging.todo();
+		return this.lookAndFeel;
 	}
 	
 	/**

@@ -28,6 +28,26 @@ sjme_jboolean sjme_jni_checkVMException(JNIEnv* env)
 	return SJME_JNI_FALSE;
 }
 
+jintArray sjme_jni_mappedArrayInt(JNIEnv* env,
+	jint* buf, jint off, jint len)
+{
+#if 0 
+	/* We need this to get raw arrays. */
+	byteBufferClassy = (*env)->FindClass(env, "java/nio/ByteBuffer");
+	if (byteBufferClassy == NULL)
+		sjme_die("No ByteBuffer?");
+	
+	/* Create a byte buffer around the buffer. */
+	byteBuffer = (*env)->NewDirectByteBuffer(env,
+		(void*)(((sjme_intPointer)buf) + ((sjme_intPointer)bufOff)), bufLen);
+	if (byteBuffer == NULL)
+		return SJME_ERROR_CANNOT_CREATE;
+#endif
+		
+	sjme_todo("Impl?");
+	return NULL;
+}
+
 void sjme_jni_throwMLECallError(JNIEnv* env, sjme_errorCode code)
 {
 	sjme_jni_throwThrowable(env, code,

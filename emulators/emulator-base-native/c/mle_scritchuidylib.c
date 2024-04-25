@@ -8,9 +8,11 @@
 // ------------------------------------------------------------------------ */
 
 #include <string.h>
+#include <sjme/nvm.h>
 
 #include "squirreljme.h"
 #include "lib/scritchui/scritchui.h"
+#include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/dylib.h"
 #include "sjme/debug.h"
 #include "sjme/alloc.h"
@@ -20,15 +22,46 @@
 	"NativeScritchDylib"
 #define FORWARD_CLASS IMPL_CLASS
 
-#define DESC_SCRITCH_PAINT_LISTENER DESC_CLASS( \
+#define DESC_SCRITCHUI_COMPONENT DESC_CLASS( \
+	"cc/squirreljme/jvm/mle/scritchui/brackets/ScritchComponentBracket")
+#define DESC_SCRITCHUI_DYLIB_PAINT_LISTENER DESC_CLASS( \
+	"cc/squirreljme/emulator/scritchui/dylib/DylibPaintListener")
+#define DESC_SCRITCHUI_PAINT_LISTENER DESC_CLASS( \
 	"cc/squirreljme/jvm/mle/scritchui/callbacks/ScritchPaintListener")
+
+#define DESC_SCRITCHUI_DYLIB_PAINT_LISTENER_FUNC "(" \
+	DESC_SCRITCHUI_COMPONENT /*__component*/ \
+	DESC_INTEGER /*__pf*/ \
+	DESC_INTEGER /*__bw*/ \
+	DESC_INTEGER /*__bh*/ \
+	DESC_BYTE_BUFFER /*__buf*/ \
+	DESC_INTEGER /*__offset*/ \
+	DESC_BYTE_BUFFER /*__pal*/ \
+	DESC_INTEGER /*__sx*/ \
+	DESC_INTEGER /*__sy*/ \
+	DESC_INTEGER /*__sw*/ \
+	DESC_INTEGER /*__sh*/ \
+	DESC_INTEGER /*__special*/ ")" DESC_VOID
+#define DESC_SCRITCHUI_PAINT_LISTENER_FUNC "(" \
+	DESC_SCRITCHUI_COMPONENT /*__component*/ \
+	DESC_INTEGER /*__pf*/ \
+	DESC_INTEGER /*__bw*/ \
+	DESC_INTEGER /*__bh*/ \
+	DESC_OBJECT /*__buf*/ \
+	DESC_INTEGER /*__offset*/ \
+	DESC_ARRAY(DESC_INTEGER) /*__pal*/ \
+	DESC_INTEGER /*__sx*/ \
+	DESC_INTEGER /*__sy*/ \
+	DESC_INTEGER /*__sw*/ \
+	DESC_INTEGER /*__sh*/ \
+	DESC_INTEGER /*__special*/ ")" DESC_VOID
 
 #define FORWARD_DESC___componentRepaint "(" \
 	DESC_LONG DESC_LONG DESC_INT DESC_INT DESC_INT DESC_INT ")" DESC_VOID
 #define FORWARD_DESC___componentRevalidate "(" \
 	DESC_LONG DESC_LONG ")" DESC_VOID
 #define FORWARD_DESC___componentSetPaintListener "(" \
-	DESC_LONG DESC_LONG DESC_SCRITCH_PAINT_LISTENER ")" DESC_VOID
+	DESC_LONG DESC_LONG DESC_SCRITCHUI_DYLIB_PAINT_LISTENER ")" DESC_VOID
 #define FORWARD_DESC___containerAdd "(" \
 	DESC_LONG DESC_LONG DESC_LONG ")" DESC_VOID
 #define FORWARD_DESC___containerSetBounds "(" \
@@ -70,6 +103,7 @@ typedef struct mle_loopExecuteData
 static sjme_errorCode mle_scritchUiPaintListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNotNull sjme_scritchui_uiPaintable inPaintable,
 	sjme_attrInNotNull sjme_gfx_pixelFormat pf,
 	sjme_attrInPositive sjme_jint bw,
 	sjme_attrInPositive sjme_jint bh,
@@ -87,8 +121,15 @@ static sjme_errorCode mle_scritchUiPaintListener(
 	jint error;
 	JavaVM* vm;
 	JNIEnv* env;
+	jclass javaListenerClassy;
+	jobject componentObject;
+	jobject javaListener;
+	jobject bufBuffer;
+	jobject palBuffer;
+	jmethodID methodId;
 	
-	if (inState == NULL || inComponent == NULL || buf == NULL)
+	if (inState == NULL || inPaintable == NULL || inComponent == NULL ||
+		buf == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Restore VM. */
@@ -99,9 +140,62 @@ static sjme_errorCode mle_scritchUiPaintListener(
 	error = (*vm)->GetEnv(vm, &env, JNI_VERSION_1_1);
 	if (env == NULL)
 		sjme_die("Could not relocate env: %d??", error);
+
+	/* Get our wrapper callback back. */
+	componentObject = (jobject)inComponent->common.frontEnd.wrapper;
+	javaListener = (jobject)inPaintable->frontEnd.wrapper;
 	
-	sjme_todo("Implement paint");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Get class of object. */
+	javaListenerClassy = (*env)->GetObjectClass(env, javaListener);
+	if (javaListenerClassy == NULL)
+		sjme_die("Listener has no class?");
+	
+	/* Get method to call. */
+	methodId = (*env)->GetMethodID(env, javaListenerClassy,
+		"paint", DESC_SCRITCHUI_DYLIB_PAINT_LISTENER_FUNC);
+	if (methodId == NULL)
+		sjme_die("No ByteBuffer based callback exists (%s)?",
+			DESC_SCRITCHUI_DYLIB_PAINT_LISTENER_FUNC);
+		
+	/* Create buffers for buffer and palette. */
+	bufBuffer = (*env)->NewDirectByteBuffer(env,
+		SJME_POINTER_OFFSET(buf, bufOff), bufLen);
+	palBuffer = NULL;
+	if (pal != NULL)
+		palBuffer = (*env)->NewDirectByteBuffer(env,
+			SJME_POINTER_OFFSET(buf, bufOff), numPal * 4);
+	
+	/* Forward call. */
+	(*env)->CallVoidMethod(env, javaListener, methodId,
+		componentObject,
+		pf,
+		bw,
+		bh,
+		
+		/* buf. */
+		bufBuffer,
+		0,
+		
+		/* pal. */
+		palBuffer,
+		
+		/* Surface. */
+		sx, sy, sw, sh,
+		
+		/* Special. */
+		special);
+
+	/* We no longer need the byte buffer. */
+	(*env)->DeleteLocalRef(env, bufBuffer);
+	if (palBuffer != NULL)
+		(*env)->DeleteLocalRef(env, palBuffer);
+	
+	/* Failed? */
+	if (sjme_jni_checkVMException(env))
+		return SJME_ERROR_UNKNOWN;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 static sjme_thread_result mle_loopExecuteMain(

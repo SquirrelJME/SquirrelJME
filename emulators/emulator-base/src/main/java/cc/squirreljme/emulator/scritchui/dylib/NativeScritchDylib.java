@@ -102,7 +102,7 @@ public final class NativeScritchDylib
 	 * @since 2024/04/06
 	 */
 	public void componentSetPaintListener(DylibPaintableObject __component,
-		ScritchPaintListener __listener)
+		DylibPaintListener __listener)
 		throws MLECallError
 	{
 		if (__component == null)
@@ -396,7 +396,7 @@ public final class NativeScritchDylib
 	 * @since 2024/04/06
 	 */
 	private static native void __componentSetPaintListener(long __stateP,
-		long __componentP, ScritchPaintListener __listener)
+		long __componentP, DylibPaintListener __listener)
 		throws MLECallError;
 	
 	/**

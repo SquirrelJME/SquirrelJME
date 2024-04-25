@@ -607,6 +607,10 @@ typedef void* sjme_pointer;
  */
 typedef intptr_t sjme_intPointer;
 
+/** Calculates a pointer offset. */
+#define SJME_POINTER_OFFSET(base, off) \
+	(void*)(((sjme_intPointer)(base)) + ((sjme_intPointer)(off)))
+
 /**
  * Long value.
  * 
@@ -1730,8 +1734,14 @@ typedef enum sjme_errorCode
 	/** Not a sub component. */
 	SJME_ERROR_NOT_SUB_COMPONENT = -50,
 	
+	/** No such class exists. */
+	SJME_ERROR_NO_CLASS = -51,
+	
+	/** No such method exists. */
+	SJME_ERROR_NO_METHOD = -52,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -51
+	SJME_NUM_ERROR_CODES = -53
 } sjme_errorCode;
 
 /**

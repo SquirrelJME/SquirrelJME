@@ -191,14 +191,16 @@ typedef struct sjme_scritchui_uiWindowBase* sjme_scritchui_uiWindow;
  * Callback that is used to draw the given component.
  *
  * @param inState The ScritchUI state.
- * @param component The component to draw on.
+ * @param inComponent The component to draw on.
+ * @param inPaintable The paintable data.
  * @param pf The @c sjme_gfx_pixelFormat used for the draw.
  * @param bw The buffer width, this is the scanline width of the buffer.
  * @param bh The buffer height.
  * @param buf The target buffer to draw to, this is cast to the correct
  * buffer format.
  * @param bufOff The offset to the start of the buffer.
- * @param bufLen The length of @c buf .
+ * @param bufLen The length of @c buf in bytes, this means that if there
+ * are 4 bytes per pixel then this would be @c bw @c * @c 4 .
  * @param pal The color palette, may be @c NULL .
  * @param numPal The number of colors in the palette, may be @c 0 if
  * the argument @c pal is @c NULL .
@@ -214,6 +216,7 @@ typedef struct sjme_scritchui_uiWindowBase* sjme_scritchui_uiWindow;
 typedef sjme_errorCode (*sjme_scritchui_paintListenerFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent component,
+	sjme_attrInNotNull sjme_scritchui_uiPaintable inPaintable,
 	sjme_attrInNotNull sjme_gfx_pixelFormat pf,
 	sjme_attrInPositive sjme_jint bw,
 	sjme_attrInPositive sjme_jint bh,

@@ -15,9 +15,10 @@ static gboolean sjme_scritchui_gtk2_exposeHandler(GtkWidget* widget,
 {
 	sjme_scritchui inState;
 	sjme_scritchui_uiComponent inComponent;
-	sjme_scritchui_uiPaintable paint;
+	sjme_scritchui_uiPaintable inPaintable;
 	sjme_scritchui_paintListenerFunc listener;
 	sjme_jint rawArea, x, y, w, h;
+	sjme_jint bufLen;
 	sjme_jint* rawPixels;
 	
 	/* Restore component. */
@@ -29,13 +30,14 @@ static gboolean sjme_scritchui_gtk2_exposeHandler(GtkWidget* widget,
 	inState = inComponent->common.state;
 	
 	/* Not something we can paint? */
-	paint = NULL;
+	inPaintable = NULL;
 	if (sjme_error_is(inState->intern->getPaintable(inState,
-		inComponent, &paint)) || paint == NULL)
+		inComponent, &inPaintable)) ||
+		inPaintable == NULL)
 		return TRUE;
 	
 	/* No actual paint listener? */
-	listener = paint->listener;
+	listener = inPaintable->listener;
 	if (listener == NULL)
 		return TRUE;
 	
@@ -48,24 +50,26 @@ static gboolean sjme_scritchui_gtk2_exposeHandler(GtkWidget* widget,
 	
 	/* Allocate raw pixel data, because we cannot directly access */
 	/* the pixels used by a GtkWidget. */
-	rawPixels = sjme_alloca(sizeof(*rawPixels) * rawArea);
+	bufLen = sizeof(*rawPixels) * rawArea;
+	rawPixels = sjme_alloca(bufLen);
 	if (rawPixels == NULL)
 		return TRUE;
 	
 	/* Clear it. */
-	memset(rawPixels, 0, sizeof(*rawPixels) * rawArea);
+	memset(rawPixels, 0, bufLen);
 	
 	/* Forward to callback. */
 	if (sjme_error_is(listener(inState, inComponent,
+		inPaintable,
 		SJME_GFX_PIXEL_FORMAT_INT_RGB888,
 		w, h,
-		rawPixels, 0, rawArea,
+		rawPixels, 0, bufLen,
 		NULL, 0,
 		0, 0, w, h, 0)))
 		return TRUE;
 	
 	/* Draw the data we have. */
-	gdk_draw_rgb_32_image(GDK_DRAWABLE(widget),
+	gdk_draw_rgb_32_image(GDK_DRAWABLE(widget->window),
 		widget->style->fg_gc[widget->state],
 		x, y, w, h,
 		GDK_RGB_DITHER_MAX, (guchar*)rawPixels, w);
