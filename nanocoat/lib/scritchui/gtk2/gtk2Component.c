@@ -72,7 +72,7 @@ static gboolean sjme_scritchui_gtk2_exposeHandler(GtkWidget* widget,
 	gdk_draw_rgb_32_image(GDK_DRAWABLE(widget->window),
 		widget->style->fg_gc[widget->state],
 		x, y, w, h,
-		GDK_RGB_DITHER_MAX, (guchar*)rawPixels, w);
+		GDK_RGB_DITHER_MAX, (guchar*)rawPixels, w * 4);
 	
 	/* Do not perform standard drawing. */
 	return FALSE;
