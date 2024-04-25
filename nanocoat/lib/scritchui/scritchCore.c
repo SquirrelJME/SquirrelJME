@@ -14,6 +14,13 @@
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/alloc.h"
 
+/** Window manager information. */
+static const sjme_scritchui_wmInfo sjme_scritchUI_coreWmInfo =
+{
+	.defaultTitle = "SquirrelJME",
+	.xwsClass = "squirreljme",
+};
+
 /** Core dispatch functions for serial calls. */
 static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 {
@@ -97,6 +104,7 @@ sjme_errorCode sjme_scritchui_core_apiInit(
 	state->apiInThread = &sjme_scritchUI_coreFunctions;
 	state->intern = &sjme_scritchUI_coreIntern;
 	state->impl = inImplFunc;
+	state->wmInfo = &sjme_scritchUI_coreWmInfo;
 	
 	/* Copy frontend over, if set. */
 	if (initFrontEnd != NULL)

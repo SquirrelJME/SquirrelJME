@@ -548,10 +548,27 @@ typedef struct sjme_scritchui_commonBase
 	sjme_scritchui_handle handle;
 } sjme_scritchui_commonBase;
 
+/**
+ * Window manager details to use.
+ * 
+ * @since 2024/04/24
+ */
+typedef struct sjme_scritchui_wmInfo
+{
+	/** Default title. */
+	sjme_lpcstr defaultTitle;
+	
+	/** X Window System Class. */
+	sjme_lpcstr xwsClass;
+} sjme_scritchui_wmInfo;
+
 struct sjme_scritchui_stateBase
 {
 	/** Common data. */
 	sjme_scritchui_commonBase common;
+	
+	/** Window manager information. */
+	const sjme_scritchui_wmInfo* wmInfo;
 	
 	/** API functions to use. */
 	const sjme_scritchui_apiFunctions* api;

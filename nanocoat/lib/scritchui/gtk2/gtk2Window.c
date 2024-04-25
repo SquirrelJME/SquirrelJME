@@ -77,6 +77,15 @@ sjme_errorCode sjme_scritchui_gtk2_windowNew(
 	window->component.common.type = SJME_SCRITCHUI_TYPE_WINDOW;
 	window->component.common.handle = gtkWindow;
 	
+	/* Set default title. */
+	gtk_window_set_title(gtkWindow,
+		inState->wmInfo->defaultTitle);
+	
+	/* Need to set window class for consistency. */
+	gtk_window_set_wmclass(gtkWindow,
+		inState->wmInfo->xwsClass,
+		inState->wmInfo->xwsClass);
+	
 	/* Success! */
 	*outWindow = window;
 	return SJME_ERROR_NONE;
