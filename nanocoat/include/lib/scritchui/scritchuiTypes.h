@@ -18,6 +18,7 @@
 
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiImpl.h"
+#include "sjme/atomic.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -65,6 +66,15 @@ typedef struct sjme_scritchui_uiPaintableBase
 	
 	/** Extra data if needed. */
 	sjme_intPointer extra;
+	
+	/** Is this currently in paint? */
+	sjme_atomic_sjme_jint inPaint;
+	
+	/** Belayed painting. */
+	sjme_scritchui_rect belayRect;
+	
+	/** Last error while in paint. */
+	sjme_errorCode lastError;
 } sjme_scritchui_uiPaintableBase;
 
 typedef struct sjme_scritchui_uiPanelBase

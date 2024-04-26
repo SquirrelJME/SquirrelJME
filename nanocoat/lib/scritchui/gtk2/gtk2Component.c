@@ -13,6 +13,7 @@
 static gboolean sjme_scritchui_gtk2_exposeHandler(GtkWidget* widget,
 	GdkEventExpose* event, gpointer data)
 {
+	sjme_errorCode error;
 	sjme_scritchui inState;
 	sjme_scritchui_uiComponent inComponent;
 	sjme_scritchui_uiPaintable inPaintable;
@@ -39,7 +40,10 @@ static gboolean sjme_scritchui_gtk2_exposeHandler(GtkWidget* widget,
 	/* No actual paint listener? */
 	listener = inPaintable->listener;
 	if (listener == NULL)
+	{
+		inPaintable->lastError = SJME_ERROR_NO_LISTENER;
 		return TRUE;
+	}
 	
 	/* Determine area to draw. */
 	x = event->area.x;
@@ -53,26 +57,33 @@ static gboolean sjme_scritchui_gtk2_exposeHandler(GtkWidget* widget,
 	bufLen = sizeof(*rawPixels) * rawArea;
 	rawPixels = sjme_alloca(bufLen);
 	if (rawPixels == NULL)
+	{
+		inPaintable->lastError = SJME_ERROR_OUT_OF_MEMORY;
 		return TRUE;
+	}
 	
 	/* Clear it. */
 	memset(rawPixels, 0, bufLen);
 	
 	/* Forward to callback. */
-	if (sjme_error_is(listener(inState, inComponent,
+	sjme_atomic_sjme_jint_set(&inPaintable->inPaint, 1);
+	error = listener(inState, inComponent,
 		inPaintable,
 		SJME_GFX_PIXEL_FORMAT_INT_RGB888,
 		w, h,
 		rawPixels, 0, bufLen,
 		NULL, 0,
-		0, 0, w, h, 0)))
-		return TRUE;
+		0, 0, w, h, 0);
 	
 	/* Draw the data we have. */
 	gdk_draw_rgb_32_image(GDK_DRAWABLE(widget->window),
 		widget->style->fg_gc[widget->state],
 		x, y, w, h,
 		GDK_RGB_DITHER_MAX, (guchar*)rawPixels, w * 4);
+	
+	/* No longer painting. */
+	inPaintable->lastError = error;
+	sjme_atomic_sjme_jint_set(&inPaintable->inPaint, 0);
 	
 	/* Do not perform standard drawing. */
 	return FALSE;

@@ -115,6 +115,26 @@ typedef enum sjme_scritchui_windowManagerType
 } sjme_scritchui_windowManagerType;
 
 /**
+ * Represents a rectangle.
+ * 
+ * @since 2024/04/26
+ */
+typedef struct sjme_scritchui_rect
+{
+	/** The X position. */
+	sjme_jint x;
+	
+	/** The Y position. */
+	sjme_jint y;
+	
+	/** The width. */
+	sjme_jint width;
+	
+	/** The height. */
+	sjme_jint height;
+} sjme_scritchui_rect;
+
+/**
  * ScritchUI state.
  * 
  * @since 2024/03/27

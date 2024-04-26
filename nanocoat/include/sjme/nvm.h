@@ -1740,8 +1740,11 @@ typedef enum sjme_errorCode
 	/** No such method exists. */
 	SJME_ERROR_NO_METHOD = -52,
 	
+	/** There is no listener. */
+	SJME_ERROR_NO_LISTENER = -53,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -53
+	SJME_NUM_ERROR_CODES = -54
 } sjme_errorCode;
 
 /**

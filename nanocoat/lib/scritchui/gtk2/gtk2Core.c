@@ -11,7 +11,7 @@
 #include "lib/scritchui/core/core.h"
 
 /** GTK Function set for Scritch UI. */
-static const sjme_scritchui_implFunctions sjme_scritchUI_gtkFunctions =
+static const sjme_scritchui_implFunctions sjme_scritchui_gtkFunctions =
 {
 	.apiInit = sjme_scritchui_gtk2_apiInit,
 	.componentRepaint = sjme_scritchui_gtk2_componentRepaint,
@@ -34,6 +34,8 @@ static sjme_thread_result sjme_scritchui_gtk2_loopMain(
 	sjme_attrInNullable sjme_thread_parameter anything)
 {
 	sjme_scritchui state;
+	int argc;
+	char** argv;
 	
 	if (anything == NULL)
 		return SJME_THREAD_RESULT(SJME_ERROR_NULL_ARGUMENTS);
@@ -48,8 +50,17 @@ static sjme_thread_result sjme_scritchui_gtk2_loopMain(
 	/* Debug. */
 	sjme_message("GTK Init...");
 	
+	/* Enable debug options. */
+	argc = 5;
+	argv = sjme_alloca(argc * sizeof(*argv));
+	argv[0] = "squirreljme";
+	argv[1] = "--gtk-debug";
+	argv[2] = "misc,modules,geometry";
+	argv[3] = "--gdk-debug";
+	argv[4] = "misc,events,draw,eventloop";
+	
 	/* Initialize, we do not care for the arguments. */
-	gtk_init(0, NULL);
+	gtk_init(&argc, &argv);
 	
 	/* Debug. */
 	sjme_message("GTK Main Loop...");
@@ -89,7 +100,7 @@ sjme_errorCode SJME_SCRITCHUI_DYLIB_SYMBOL(gtk2)(
 	/* Forward to core call. */
 	state = NULL;
 	if (sjme_error_is(error = sjme_scritchui_core_apiInit(inPool,
-		&sjme_scritchUI_gtkFunctions, initFrontEnd,
+		&sjme_scritchui_gtkFunctions, initFrontEnd,
 		&state)) || state == NULL)
 		return sjme_error_default(error);
 		

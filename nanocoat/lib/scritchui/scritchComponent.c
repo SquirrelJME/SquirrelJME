@@ -13,6 +13,42 @@
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/debug.h"
 
+/**
+ * Belayed repainting.
+ * 
+ * @param anything The input component. 
+ * @return On any error.
+ * @since 2024/04/26
+ */
+static sjme_thread_result sjme_scritchui_core_componentRepaintBelay(
+	sjme_attrInNullable sjme_thread_parameter anything)
+{
+	sjme_errorCode error;
+	sjme_scritchui inState;
+	sjme_scritchui_uiComponent inComponent;
+	sjme_scritchui_uiPaintable paint;
+	sjme_scritchui_rect rect;
+	
+	if (anything == NULL)
+		return SJME_THREAD_RESULT(SJME_ERROR_NULL_ARGUMENTS);
+	
+	/* Recover component and state. */
+	inComponent = (sjme_scritchui_uiComponent)anything;
+	inState = inComponent->common.state;
+	
+	/* Only certain types are paintable. */
+	paint = NULL;
+	if (sjme_error_is(error = inState->intern->getPaintable(inState,
+		inComponent, &paint)) || paint == NULL)
+		return SJME_THREAD_RESULT(sjme_error_default(error));
+	
+	/* Call paint now. */
+	rect = paint->belayRect;
+	error = inState->impl->componentRepaint(inState, inComponent,
+		rect.x, rect.y, rect.width, rect.height);
+	return SJME_THREAD_RESULT(error);
+}
+
 sjme_errorCode sjme_scritchui_core_componentRepaint(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
@@ -46,6 +82,24 @@ sjme_errorCode sjme_scritchui_core_componentRepaint(
 		width = INT32_MAX;
 	if (height <= 0)
 		height = INT32_MAX;
+	
+	/* If we are in a paint, we need to delay painting by a single frame */
+	/* otherwise the native UI might get stuck not repainting or end up */
+	/* in an infinite loop. */
+	if (sjme_atomic_sjme_jint_get(&paint->inPaint) != 0)
+	{
+		/* Store paint properties. */
+		paint->belayRect.x = x;
+		paint->belayRect.y = y;
+		paint->belayRect.width = width;
+		paint->belayRect.height = height;
+		
+		/* Schedule for later, if it errors fall through to paint. */
+		if (!sjme_error_is(inState->api->loopExecuteLater(inState,
+			sjme_scritchui_core_componentRepaintBelay,
+			inComponent)))
+			return SJME_ERROR_NONE;
+	}
 	
 	/* Forward. */
 	return inState->impl->componentRepaint(inState, inComponent,
