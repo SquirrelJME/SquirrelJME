@@ -133,6 +133,13 @@ sjme_errorCode sjme_scritchui_core_intern_getPaintable(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInOutNotNull sjme_scritchui_uiPaintable* outPaintable);
+	
+sjme_errorCode sjme_scritchui_core_intern_initComponent(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInValue sjme_jboolean postCreate,
+	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_UI_TYPES)
+		sjme_scritchui_uiType uiType);
 
 sjme_errorCode sjme_scritchui_core_intern_mapScreen(
 	sjme_attrInNotNull sjme_scritchui inState,

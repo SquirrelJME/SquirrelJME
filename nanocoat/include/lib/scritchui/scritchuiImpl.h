@@ -202,6 +202,23 @@ typedef sjme_errorCode (*sjme_scritchui_intern_getPaintableFunc)(
 	sjme_attrInOutNotNull sjme_scritchui_uiPaintable* outPaintable);
 
 /**
+ * Common component initialization function for before and after create.
+ * 
+ * @param inState The input state.
+ * @param inComponent The input component.
+ * @param postCreate Is this after the create call?
+ * @param uiType The type of component this is.
+ * @return Any resultant error, if any.
+ * @since 2024/04/26
+ */
+typedef sjme_errorCode (*sjme_scritchui_intern_initComponentFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInValue sjme_jboolean postCreate,
+	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_UI_TYPES)
+		sjme_scritchui_uiType uiType);
+
+/**
  * Maps the given screen internally.
  * 
  * @param inState The input state.
@@ -225,7 +242,10 @@ struct sjme_scritchui_internFunctions
 	
 	/** Returns the paintable for the given component. */
 	sjme_scritchui_intern_getPaintableFunc getPaintable;
-		
+	
+	/** Common post-component initialization. */
+	sjme_scritchui_intern_initComponentFunc initComponent;
+	
 	/** Maps the given screen. */
 	sjme_scritchui_intern_mapScreenFunc mapScreen;
 };

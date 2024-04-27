@@ -79,6 +79,7 @@ static const sjme_scritchui_internFunctions sjme_scritchUI_coreIntern =
 {
 	.getContainer = sjme_scritchui_core_intern_getContainer,
 	.getPaintable = sjme_scritchui_core_intern_getPaintable,
+	.initComponent = sjme_scritchui_core_intern_initComponent,
 	.mapScreen = sjme_scritchui_core_intern_mapScreen,
 };
 

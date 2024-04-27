@@ -52,20 +52,30 @@ sjme_errorCode sjme_scritchui_core_windowNew(
 		&result)) || result == NULL)
 		goto fail_alloc;
 	
-	/* Set base properties. */
-	result->component.common.state = inState;
-	result->component.common.type = SJME_SCRITCHUI_TYPE_WINDOW;
+	/* Pre-initialize. */
+	if (sjme_error_is(error = inState->intern->initComponent(inState,
+		&result->component, SJME_JNI_FALSE,
+		SJME_SCRITCHUI_TYPE_WINDOW)))
+		goto fail_preInit;
 	
 	/* Forward call. */
 	if (sjme_error_is(error = inState->impl->windowNew(inState,
 		result)))
 		goto fail_newWidget;
 	
+	/* Post-initialize. */
+	if (sjme_error_is(error = inState->intern->initComponent(inState,
+		&result->component, SJME_JNI_TRUE,
+		SJME_SCRITCHUI_TYPE_WINDOW)))
+		goto fail_postInit;
+	
 	/* Success! */
 	*outWindow = result;
 	return SJME_ERROR_NONE;
 
+fail_postInit:
 fail_newWidget:
+fail_preInit:
 fail_alloc:
 	if (result != NULL)
 	{

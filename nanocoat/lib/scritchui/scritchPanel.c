@@ -49,11 +49,13 @@ sjme_errorCode sjme_scritchui_core_panelNew(
 	result = NULL;
 	if (sjme_error_is(error = sjme_alloc(inState->pool, sizeof(*result),
 		&result)) || result == NULL)
-		return sjme_error_default(error);
+		goto fail_alloc;
 	
-	/* Set base properties. */
-	result->component.common.state = inState;
-	result->component.common.type = SJME_SCRITCHUI_TYPE_PANEL;
+	/* Pre-initialize. */
+	if (sjme_error_is(error = inState->intern->initComponent(inState,
+		&result->component, SJME_JNI_FALSE,
+		SJME_SCRITCHUI_TYPE_PANEL)))
+		goto fail_preInit;
 	
 	/* Setup native widget. */
 	if (inState->impl->panelNew == NULL ||
@@ -61,11 +63,20 @@ sjme_errorCode sjme_scritchui_core_panelNew(
 		result)) || result->component.common.handle == NULL)
 		goto fail_newWidget;
 	
+	/* Post-initialize. */
+	if (sjme_error_is(error = inState->intern->initComponent(inState,
+		&result->component, SJME_JNI_TRUE,
+		SJME_SCRITCHUI_TYPE_PANEL)))
+		goto fail_postInit;
+	
 	/* Success! */
 	*outPanel = result;
 	return SJME_ERROR_NONE;
-	
+
+fail_postInit:
 fail_newWidget:
+fail_alloc:
+fail_preInit:
 	if (result != NULL)
 		sjme_alloc_free(result);
 	

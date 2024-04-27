@@ -267,6 +267,22 @@ typedef sjme_errorCode (*sjme_scritchui_screenListenerFunc)(
 	sjme_attrInNotNull sjme_scritchui_uiScreen inScreen);
 
 /**
+ * Listener that is called when the size of a component changes.
+ * 
+ * @param inState The input state.
+ * @param inComponent The component that was resized.
+ * @param newWidth The new component width.
+ * @param newHeight The new component height.
+ * @return On any error if applicable.
+ * @since 2024/04/26
+ */
+typedef sjme_errorCode (*sjme_scritchui_sizeListenerFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInPositiveNonZero sjme_jint newWidth,
+	sjme_attrInPositiveNonZero sjme_jint newHeight);
+
+/**
  * Obtains the flags which describe the interface.
  * 
  * @param inState The input ScritchUI state.
@@ -339,6 +355,22 @@ typedef sjme_errorCode (*sjme_scritchui_componentSetPaintListenerFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInNullable sjme_scritchui_paintListenerFunc inListener,
+	sjme_attrInNullable sjme_frontEnd* copyFrontEnd);
+
+/**
+ * Sets the listener for size events.
+ * 
+ * @param inState The input state.
+ * @param inComponent The component to set the listener for.
+ * @param inListener The listener to set to or to clear.
+ * @param copyFrontEnd Any front end data to be copied.
+ * @return Any resultant error, if any.
+ * @since 2024/04/26
+ */
+typedef sjme_errorCode (*sjme_scritchui_componentSetSizeListenerFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNullable sjme_scritchui_sizeListenerFunc inListener,
 	sjme_attrInNullable sjme_frontEnd* copyFrontEnd);
 
 /**
@@ -510,6 +542,9 @@ struct sjme_scritchui_apiFunctions
 	
 	/** Sets the paint listener for a component. */
 	sjme_scritchui_componentSetPaintListenerFunc componentSetPaintListener;
+	
+	/** Sets the listener for component size events. */
+	sjme_scritchui_componentSetSizeListenerFunc componentSetSizeListener;
 	
 	/** Adds component to container. */
 	sjme_scritchui_containerAddFunc containerAdd;

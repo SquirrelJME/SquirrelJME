@@ -200,3 +200,54 @@ sjme_errorCode sjme_scritchui_core_intern_getPaintable(
 	*outPaintable = paint;
 	return SJME_ERROR_NONE;
 }
+
+sjme_errorCode sjme_scritchui_core_intern_initComponent(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInValue sjme_jboolean postCreate,
+	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_UI_TYPES)
+		sjme_scritchui_uiType uiType)
+{
+	sjme_errorCode error;
+	sjme_scritchui_uiPaintable paint;
+	sjme_scritchui_uiContainer container;
+	
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Post-initialize? */
+	if (postCreate)
+	{
+		/* Common paintable base initialization. */
+		paint = NULL;
+		if (!sjme_error_is(error = inState->intern->getPaintable(
+			inState, inComponent, &paint)) &&
+			paint != NULL)
+		{
+		}
+		
+		/* Common container base initialization. */
+		container = NULL;
+		if (!sjme_error_is(error = inState->intern->getContainer(
+			inState, inComponent, &container)) &&
+			container != NULL)
+		{
+		}
+	}
+	
+	/* Pre-initialize? */
+	else
+	{
+		/* Type must be valid. */
+		if (uiType <= SJME_SCRITCHUI_TYPE_RESERVED ||
+			uiType >= SJME_NUM_SCRITCHUI_UI_TYPES)
+			return SJME_ERROR_INVALID_ARGUMENT;
+		
+		/* Set base properties. */
+		inComponent->common.state = inState;
+		inComponent->common.type = uiType;
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
