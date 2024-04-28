@@ -11,6 +11,7 @@ package cc.squirreljme.emulator.scritchui.dylib;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchComponentInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchSizeListener;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
@@ -65,6 +66,21 @@ public class DylibComponentInterface
 			throw new MLECallError("Null arguments.");
 		
 		this.dyLib.componentRevalidate((DylibComponentObject)__component);
+	}
+	=
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/04/28
+	 */
+	@Override
+	public void setSizeListener(ScritchComponentBracket __component,
+		ScritchSizeListener __listener)
+		throws MLECallError
+	{
+		if (__component == null || __listener == null)
+			throw new MLECallError("Null arguments.");
+		
+		throw Debugging.todo();
 	}
 	
 	/**

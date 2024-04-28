@@ -68,6 +68,12 @@ sjme_errorCode sjme_scritchui_core_containerSetBounds(
 	sjme_attrInPositiveNonZero sjme_jint width,
 	sjme_attrInPositiveNonZero sjme_jint height);
 
+sjme_errorCode sjme_scritchui_core_componentSetSizeListener(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNullable sjme_scritchui_sizeListenerFunc inListener,
+	sjme_attrInNullable sjme_frontEnd* copyFrontEnd);
+
 sjme_errorCode sjme_scritchui_core_loopExecute(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_thread_mainFunc callback,

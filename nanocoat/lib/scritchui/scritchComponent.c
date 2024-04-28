@@ -13,6 +13,34 @@
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/debug.h"
 
+static sjme_errorCode sjme_scritchui_core_baseSizeListener(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInPositiveNonZero sjme_jint newWidth,
+	sjme_attrInPositiveNonZero sjme_jint newHeight)
+{
+	sjme_errorCode error;
+	sjme_scritchui_sizeListenerFunc forward;
+	
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Call user handler */
+	forward = inComponent->listeners[SJME_SCRITCHUI_UI_LISTENER_CLASS_USER]
+		.size;
+	if (forward != NULL)
+		if (sjme_error_is(error = forward(inState, inComponent,
+			newWidth, newHeight)))
+			return sjme_error_default(error);
+	
+	/* Schedule repaint, ignore any errors. */
+	inState->api->componentRepaint(inState, inComponent,
+		0, 0, INT32_MAX, INT32_MAX);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 /**
  * Belayed repainting.
  * 
@@ -175,6 +203,19 @@ sjme_errorCode sjme_scritchui_core_componentSetPaintListener(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_scritchui_core_componentSetSizeListener(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNullable sjme_scritchui_sizeListenerFunc inListener,
+	sjme_attrInNullable sjme_frontEnd* copyFrontEnd)
+{
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
 sjme_errorCode sjme_scritchui_core_intern_getPaintable(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
@@ -218,6 +259,13 @@ sjme_errorCode sjme_scritchui_core_intern_initComponent(
 	/* Post-initialize? */
 	if (postCreate)
 	{
+		/* Install core size listener. */
+		if (inState->impl->componentSetSizeListener != NULL)
+			if (sjme_error_is(error =
+				inState->impl->componentSetSizeListener(inState, inComponent,
+				sjme_scritchui_core_baseSizeListener, NULL)))
+				return sjme_error_default(error);
+		
 		/* Common paintable base initialization. */
 		paint = NULL;
 		if (!sjme_error_is(error = inState->intern->getPaintable(

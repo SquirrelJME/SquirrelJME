@@ -36,7 +36,7 @@ extern "C" {
  * @return Any resultant error, if any.
  * @since 2024/04/15
  */
-typedef sjme_errorCode (*sjme_scritchui_impl_apiInit)(
+typedef sjme_errorCode (*sjme_scritchui_impl_apiInitFunc)(
 	sjme_attrInNotNull sjme_scritchui inState);
 
 /** Repaint component. */
@@ -65,6 +65,10 @@ typedef sjme_errorCode (*sjme_scritchui_impl_componentSetPaintListenerFunc)(
 	sjme_attrInNotNull sjme_scritchui_uiPaintable inPaint,
 	sjme_attrInNullable sjme_frontEnd* copyFrontEnd);
 
+/** Set size listener for components. */
+typedef sjme_scritchui_componentSetSizeListenerFunc
+	sjme_scritchui_impl_componentSetSizeListenerFunc;
+
 /**
  * Adds the given component to the specified container.
  * 
@@ -83,6 +87,10 @@ typedef sjme_errorCode (*sjme_scritchui_impl_containerAddFunc)(
 /** Set bounds of component in container. */
 typedef sjme_scritchui_containerSetBoundsFunc
 	sjme_scritchui_impl_containerSetBoundsFunc;
+
+/** Loop execution function. */
+typedef sjme_scritchui_loopExecuteFunc 
+	sjme_scritchui_impl_loopExecuteFunc;
 
 /** Enables or disables focus on a panel. */
 typedef sjme_scritchui_panelEnableFocusFunc
@@ -124,29 +132,34 @@ typedef sjme_errorCode (*sjme_scritchui_impl_windowNewFunc)(
 typedef sjme_scritchui_windowSetVisibleFunc
 	sjme_scritchui_impl_windowSetVisibleFunc;
 
+#define SJME_SCRITCHUI_QUICK_IMPL(x) \
+	SJME_TOKEN_PASTE3(sjme_scritchui_impl_, x, Func) x
+
 struct sjme_scritchui_implFunctions
 {
 	/** Initialize implementation API instance. */
-	sjme_scritchui_impl_apiInit apiInit;
+	SJME_SCRITCHUI_QUICK_IMPL(apiInit);
 	
 	/** Repaint component. */
-	sjme_scritchui_impl_componentRepaintFunc componentRepaint;
+	SJME_SCRITCHUI_QUICK_IMPL(componentRepaint);
 	
 	/** Revalidate component. */
-	sjme_scritchui_impl_componentRevalidateFunc componentRevalidate;
+	SJME_SCRITCHUI_QUICK_IMPL(componentRevalidate);
 	
 	/** Set paint listener for component. */
-	sjme_scritchui_impl_componentSetPaintListenerFunc
-		componentSetPaintListener;
+	SJME_SCRITCHUI_QUICK_IMPL(componentSetPaintListener);
+
+	/** Set size listener for component. */
+	SJME_SCRITCHUI_QUICK_IMPL(componentSetSizeListener);
 	
 	/** Add component to container. */
-	sjme_scritchui_impl_containerAddFunc containerAdd;
+	SJME_SCRITCHUI_QUICK_IMPL(containerAdd);
 	
 	/** Set bounds of component in container. */
-	sjme_scritchui_impl_containerSetBoundsFunc containerSetBounds;
+	SJME_SCRITCHUI_QUICK_IMPL(containerSetBounds);
 	
 	/** Execute callback within the event loop or schedule later. */
-	sjme_scritchui_loopExecuteFunc loopExecute;
+	SJME_SCRITCHUI_QUICK_IMPL(loopExecute);
 	
 	/** Execute call later in the loop. */
 	sjme_scritchui_loopExecuteFunc loopExecuteLater;
@@ -155,23 +168,25 @@ struct sjme_scritchui_implFunctions
 	sjme_scritchui_loopExecuteFunc loopExecuteWait;
 	
 	/** Enable/disable focus on a panel. */
-	sjme_scritchui_impl_panelEnableFocusFunc panelEnableFocus;
+	SJME_SCRITCHUI_QUICK_IMPL(panelEnableFocus);
 	
 	/** Creates a new native panel. */
-	sjme_scritchui_impl_panelNewFunc panelNew;
+	SJME_SCRITCHUI_QUICK_IMPL(panelNew);
 	
 	/** The available screens. */
-	sjme_scritchui_impl_screensFunc screens;
+	SJME_SCRITCHUI_QUICK_IMPL(screens);
 	
 	/** Set minimum size of content window. */
-	sjme_scritchui_impl_windowContentMinimumSizeFunc windowContentMinimumSize;
+	SJME_SCRITCHUI_QUICK_IMPL(windowContentMinimumSize);
 	
 	/** Creates a new window. */
-	sjme_scritchui_impl_windowNewFunc windowNew;
+	SJME_SCRITCHUI_QUICK_IMPL(windowNew);
 	
 	/** Sets visibility of the window. */
-	sjme_scritchui_impl_windowSetVisibleFunc windowSetVisible;
+	SJME_SCRITCHUI_QUICK_IMPL(windowSetVisible);
 };
+
+#undef SJME_SCRITCHUI_QUICK_IMPL
 
 /**
  * Returns the container for the given component.

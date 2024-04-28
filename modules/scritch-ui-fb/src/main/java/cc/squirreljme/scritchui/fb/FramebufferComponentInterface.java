@@ -12,6 +12,7 @@ package cc.squirreljme.scritchui.fb;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchComponentInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchSizeListener;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -75,6 +76,18 @@ public class FramebufferComponentInterface
 			(FramebufferComponentObject)__component;
 		
 		component.__revalidate();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/04/28
+	 */
+	@Override
+	public void setSizeListener(ScritchComponentBracket __component,
+		ScritchSizeListener __listener)
+		throws MLECallError
+	{
+		throw Debugging.todo();
 	}
 	
 	/**

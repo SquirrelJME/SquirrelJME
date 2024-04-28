@@ -387,6 +387,19 @@ typedef sjme_errorCode (*sjme_scritchui_containerAddFunc)(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
 
+/**
+ * Sets the bounds of a component within the container.
+ * 
+ * @param inState The input state.
+ * @param inContainer The container to set the component within.
+ * @param inComponent The component to be placed and resized.
+ * @param x The X position.
+ * @param y The Y position.
+ * @param width The width.
+ * @param height The height.
+ * @return Any error code if applicable.
+ * @since 2024/04/28
+ */
 typedef sjme_errorCode (*sjme_scritchui_containerSetBoundsFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,

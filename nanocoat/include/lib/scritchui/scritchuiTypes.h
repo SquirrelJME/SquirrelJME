@@ -31,6 +31,34 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
+/**
+ * Represents a class for a listener for common operation.
+ * 
+ * @since 2024/04/28
+ */
+typedef enum sjme_scritchui_uiListenerClass
+{
+	/** User based listener. */
+	SJME_SCRITCHUI_UI_LISTENER_CLASS_USER,
+	
+	/** Core based listener. */
+	SJME_SCRITCHUI_UI_LISTENER_CLASS_CORE,
+	
+	/** The number of listener classes. */
+	SJME_NUM_SCRITCHUI_UI_LISTENER_CLASS,
+} sjme_scritchui_uiListenerClass;
+
+/**
+ * Listeners for components.
+ * 
+ * @since 2024/04/28
+ */
+typedef struct sjme_scritchui_uiComponentListeners
+{
+	/** Listener for when size changes. */
+	sjme_scritchui_sizeListenerFunc size;
+} sjme_scritchui_uiComponentListeners;
+
 typedef struct sjme_scritchui_uiComponentBase
 {
 	/** Common data. */
@@ -38,6 +66,10 @@ typedef struct sjme_scritchui_uiComponentBase
 	
 	/** The parent of this component. */
 	sjme_scritchui_uiComponent parent;
+	
+	/** User and core listeners for the component. */
+	sjme_scritchui_uiComponentListeners listeners[
+		SJME_NUM_SCRITCHUI_UI_LISTENER_CLASS];
 } sjme_scritchui_uiComponentBase;
 
 /**

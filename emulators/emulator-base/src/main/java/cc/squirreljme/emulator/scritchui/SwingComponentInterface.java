@@ -11,6 +11,7 @@ package cc.squirreljme.emulator.scritchui;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchComponentInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchSizeListener;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.swing.JComponent;
@@ -57,6 +58,18 @@ public class SwingComponentInterface
 		// Make sure it is updated and appears updated as well
 		component.revalidate();
 		component.repaint();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/04/28
+	 */
+	@Override
+	public void setSizeListener(ScritchComponentBracket __component,
+		ScritchSizeListener __listener)
+		throws MLECallError
+	{
+		throw Debugging.todo();
 	}
 	
 	/**

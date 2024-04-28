@@ -49,6 +49,9 @@ typedef enum sjme_scritchui_serialType
 	/** @c componentSetPaintListener . */
 	SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_PAINT_LISTENER,
 	
+	/** @c componentSetSizeListener . */
+	SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_SIZE_LISTENER,
+	
 	/** @c containerAdd . */
 	SJME_SCRITCHUI_SERIAL_TYPE_CONTAINER_ADD,
 	
@@ -115,6 +118,18 @@ typedef struct sjme_scritchui_serialData_componentSetPaintListener
 	/** Any front-end data to set as needed. */
 	sjme_frontEnd* volatile copyFrontEnd;
 } sjme_scritchui_serialData_componentSetPaintListener;
+
+typedef struct sjme_scritchui_serialData_componentSetSizeListener
+{
+	/** The input component. */
+	volatile sjme_scritchui_uiComponent inComponent;
+	
+	/** The listener to set. */
+	volatile sjme_scritchui_sizeListenerFunc inListener;
+	
+	/** Any front-end data to set as needed. */
+	sjme_frontEnd* volatile copyFrontEnd;
+} sjme_scritchui_serialData_componentSetSizeListener;
 
 typedef struct sjme_scritchui_serialData_containerAdd
 {
@@ -223,6 +238,9 @@ typedef union sjme_scritchui_serialDataUnion
 	/** @c componentSetPaintListener . */
 	SJME_SCRITCHUI_SDU_DEF(componentSetPaintListener);
 	
+	/** @c componentSetSizeListener . */
+	SJME_SCRITCHUI_SDU_DEF(componentSetSizeListener);
+	
 	/** @c containerAdd . */
 	SJME_SCRITCHUI_SDU_DEF(containerAdd);
 	
@@ -291,6 +309,12 @@ sjme_errorCode sjme_scritchui_coreSerial_componentSetPaintListener(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInNullable sjme_scritchui_paintListenerFunc inListener,
 	sjme_frontEnd* copyFrontEnd);
+	
+sjme_errorCode sjme_scritchui_coreSerial_componentSetSizeListener(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNullable sjme_scritchui_sizeListenerFunc inListener,
+	sjme_attrInNullable sjme_frontEnd* copyFrontEnd);
 
 sjme_errorCode sjme_scritchui_coreSerial_containerAdd(
 	sjme_attrInNotNull sjme_scritchui inState,

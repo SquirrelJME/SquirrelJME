@@ -49,6 +49,19 @@ public interface ScritchComponentInterface
 		throws MLECallError;
 	
 	/**
+	 * Sets the listener to be called when the size of the component changes.
+	 *
+	 * @param __component The component to set the listener to.
+	 * @param __listener The listener to use, may be {@code null} to clear.
+	 * @throws MLECallError On null arguments or the component is not valid.
+	 * @since 2024/04/28
+	 */
+	@SquirrelJMEVendorApi
+	void setSizeListener(ScritchComponentBracket __component,
+		ScritchSizeListener __listener)
+		throws MLECallError;
+	
+	/**
 	 * Returns the width of the component.
 	 *
 	 * @param __component The component to access.
