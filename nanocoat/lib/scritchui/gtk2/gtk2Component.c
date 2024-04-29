@@ -16,7 +16,7 @@ static gboolean sjme_scritchui_gtk2_exposeHandler(GtkWidget* widget,
 	sjme_errorCode error;
 	sjme_scritchui inState;
 	sjme_scritchui_uiComponent inComponent;
-	sjme_scritchui_uiPaintable inPaintable;
+	sjme_scritchui_uiPaintable paint;
 	sjme_scritchui_paintListenerFunc listener;
 	sjme_jint rawArea, x, y, w, h;
 	sjme_jint bufLen;
@@ -31,19 +31,16 @@ static gboolean sjme_scritchui_gtk2_exposeHandler(GtkWidget* widget,
 	inState = inComponent->common.state;
 	
 	/* Not something we can paint? */
-	inPaintable = NULL;
+	paint = NULL;
 	if (sjme_error_is(inState->intern->getPaintable(inState,
-		inComponent, &inPaintable)) ||
-		inPaintable == NULL)
+		inComponent, &paint)) ||
+		paint == NULL)
 		return TRUE;
 	
 	/* No actual paint listener? */
-	listener = inPaintable->listener;
+	listener = paint->listeners[SJME_SCRITCHUI_LISTENER_CORE].paint;
 	if (listener == NULL)
-	{
-		inPaintable->lastError = SJME_ERROR_NO_LISTENER;
 		return TRUE;
-	}
 	
 	/* Determine area to draw. */
 	x = event->area.x;
@@ -57,18 +54,13 @@ static gboolean sjme_scritchui_gtk2_exposeHandler(GtkWidget* widget,
 	bufLen = sizeof(*rawPixels) * rawArea;
 	rawPixels = sjme_alloca(bufLen);
 	if (rawPixels == NULL)
-	{
-		inPaintable->lastError = SJME_ERROR_OUT_OF_MEMORY;
 		return TRUE;
-	}
 	
 	/* Clear it. */
 	memset(rawPixels, 0, bufLen);
 	
 	/* Forward to callback. */
-	sjme_atomic_sjme_jint_set(&inPaintable->inPaint, 1);
 	error = listener(inState, inComponent,
-		inPaintable,
 		SJME_GFX_PIXEL_FORMAT_INT_RGB888,
 		w, h,
 		rawPixels, 0, bufLen,
@@ -81,11 +73,9 @@ static gboolean sjme_scritchui_gtk2_exposeHandler(GtkWidget* widget,
 		x, y, w, h,
 		GDK_RGB_DITHER_MAX, (guchar*)rawPixels, w * 4);
 	
-	/* No longer painting. */
-	inPaintable->lastError = error;
-	sjme_atomic_sjme_jint_set(&inPaintable->inPaint, 0);
-	
-	/* Do not perform standard drawing. */
+	/* Do not perform standard drawing, unless an error occurs. */
+	if (sjme_error_is(error))
+		return TRUE;
 	return FALSE;
 }
 
@@ -144,13 +134,20 @@ sjme_errorCode sjme_scritchui_gtk2_componentSetPaintListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInNullable sjme_scritchui_paintListenerFunc inListener,
-	sjme_attrInNotNull sjme_scritchui_uiPaintable inPaint,
 	sjme_attrInNullable sjme_frontEnd* copyFrontEnd)
 {
+	sjme_errorCode error;
 	GtkWidget* widget;
+	sjme_scritchui_uiPaintable paint;
 	
-	if (inState == NULL || inComponent == NULL || inPaint == NULL)
+	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Get the component's paint. */
+	paint = NULL;
+	if (sjme_error_is(error = inState->intern->getPaintable(inState,
+		inComponent, &paint)) || paint == NULL)
+		return sjme_error_default(error);
 	
 	/* For GTK we do not give it a listener, we just say we paint on it. */
 	widget = (GtkWidget*)inComponent->common.handle;
@@ -158,12 +155,15 @@ sjme_errorCode sjme_scritchui_gtk2_componentSetPaintListener(
 		inListener != NULL);
 	
 	/* Disconnect old handler if one was used. */
-	if (inPaint->extra != 0)
-		gtk_signal_disconnect(widget, (gulong)inPaint->extra);
+	if (paint->extra != 0)
+	{
+		gtk_signal_disconnect(widget, (gulong)paint->extra);
+		paint->extra = 0;
+	}
 	
 	/* Connect new handler. */
 	if (inListener != NULL)
-		inPaint->extra = g_signal_connect(widget, "expose-event",
+		paint->extra = g_signal_connect(widget, "expose-event",
 			G_CALLBACK(sjme_scritchui_gtk2_exposeHandler), inComponent);
 	
 	/* Success! */

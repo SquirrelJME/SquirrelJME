@@ -47,23 +47,9 @@ typedef sjme_scritchui_componentRepaintFunc
 typedef sjme_scritchui_componentRevalidateFunc
 	sjme_scritchui_impl_componentRevalidateFunc;
 
-/**
- * Sets the paint listener for the given component.
- * 
- * @param inState The input state.
- * @param inComponent The component to set the listener for.
- * @param inListener The listener for paint events, may be @c NULL to clear
- * the existing listener.
- * @param copyFrontEnd The front end data to copy, may be @c NULL .
- * @return Any error if applicable.
- * @since 2024/04/06
- */
-typedef sjme_errorCode (*sjme_scritchui_impl_componentSetPaintListenerFunc)(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrInNullable sjme_scritchui_paintListenerFunc inListener,
-	sjme_attrInNotNull sjme_scritchui_uiPaintable inPaint,
-	sjme_attrInNullable sjme_frontEnd* copyFrontEnd);
+/** Set the paint listener for the given component. */
+typedef sjme_scritchui_componentSetPaintListenerFunc
+	sjme_scritchui_impl_componentSetPaintListenerFunc;
 
 /** Set size listener for components. */
 typedef sjme_scritchui_componentSetSizeListenerFunc

@@ -36,17 +36,17 @@ extern "C" {
  * 
  * @since 2024/04/28
  */
-typedef enum sjme_scritchui_uiListenerClass
+typedef enum sjme_scritchui_listenerClass
 {
 	/** User based listener. */
-	SJME_SCRITCHUI_UI_LISTENER_CLASS_USER,
+	SJME_SCRITCHUI_LISTENER_USER,
 	
 	/** Core based listener. */
-	SJME_SCRITCHUI_UI_LISTENER_CLASS_CORE,
+	SJME_SCRITCHUI_LISTENER_CORE,
 	
 	/** The number of listener classes. */
-	SJME_NUM_SCRITCHUI_UI_LISTENER_CLASS,
-} sjme_scritchui_uiListenerClass;
+	SJME_NUM_SCRITCHUI_LISTENER,
+} sjme_scritchui_listenerClass;
 
 /**
  * Listeners for components.
@@ -68,8 +68,7 @@ typedef struct sjme_scritchui_uiComponentBase
 	sjme_scritchui_uiComponent parent;
 	
 	/** User and core listeners for the component. */
-	sjme_scritchui_uiComponentListeners listeners[
-		SJME_NUM_SCRITCHUI_UI_LISTENER_CLASS];
+	sjme_scritchui_uiComponentListeners listeners[SJME_NUM_SCRITCHUI_LISTENER];
 } sjme_scritchui_uiComponentBase;
 
 /**
@@ -83,6 +82,12 @@ typedef struct sjme_scritchui_uiContainerBase
 	sjme_jint todo;
 } sjme_scritchui_uiContainerBase; 
 
+typedef struct sjme_scritchui_uiPaintableListeners
+{
+	/** Paint listener. */
+	sjme_scritchui_paintListenerFunc paint;
+} sjme_scritchui_uiPaintableListeners;
+
 /**
  * Base data for paintable components.
  * 
@@ -90,8 +95,8 @@ typedef struct sjme_scritchui_uiContainerBase
  */
 typedef struct sjme_scritchui_uiPaintableBase
 {
-	/** Paint listener. */
-	sjme_scritchui_paintListenerFunc listener;
+	/** Listeners. */
+	sjme_scritchui_uiPaintableListeners listeners[SJME_NUM_SCRITCHUI_LISTENER];
 	
 	/** Front end for paint listener. */
 	sjme_frontEnd frontEnd;

@@ -103,7 +103,6 @@ typedef struct mle_loopExecuteData
 static sjme_errorCode mle_scritchUiPaintListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrInNotNull sjme_scritchui_uiPaintable inPaintable,
 	sjme_attrInNotNull sjme_gfx_pixelFormat pf,
 	sjme_attrInPositive sjme_jint bw,
 	sjme_attrInPositive sjme_jint bh,
@@ -121,6 +120,7 @@ static sjme_errorCode mle_scritchUiPaintListener(
 	jint error;
 	JavaVM* vm;
 	JNIEnv* env;
+	sjme_scritchui_uiPaintable paint;
 	jclass javaListenerClassy;
 	jobject componentObject;
 	jobject javaListener;
@@ -128,9 +128,8 @@ static sjme_errorCode mle_scritchUiPaintListener(
 	jobject palBuffer;
 	jmethodID methodId;
 	
-	if (inState == NULL || inPaintable == NULL || inComponent == NULL ||
-		buf == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
+	if (inState == NULL || inComponent == NULL || buf == NULL)
+		sjme_die("Null arguments to paint");
 
 	/* Restore VM. */
 	vm = (JavaVM*)inState->common.frontEnd.data;
@@ -143,7 +142,15 @@ static sjme_errorCode mle_scritchUiPaintListener(
 
 	/* Get our wrapper callback back. */
 	componentObject = (jobject)inComponent->common.frontEnd.wrapper;
-	javaListener = (jobject)inPaintable->frontEnd.wrapper;
+	
+	/* Get paint information. */
+	paint = NULL;
+	if (sjme_error_is(inState->intern->getPaintable(inState,
+		inComponent, &paint)) || paint == NULL)
+		sjme_die("Not paintable?");
+	
+	/* Get listener from paint. */
+	javaListener = (jobject)paint->frontEnd.wrapper;
 	
 	/* Get class of object. */
 	javaListenerClassy = (*env)->GetObjectClass(env, javaListener);

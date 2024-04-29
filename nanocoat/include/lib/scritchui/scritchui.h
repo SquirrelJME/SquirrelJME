@@ -212,7 +212,6 @@ typedef struct sjme_scritchui_uiWindowBase* sjme_scritchui_uiWindow;
  *
  * @param inState The ScritchUI state.
  * @param inComponent The component to draw on.
- * @param inPaintable The paintable data.
  * @param pf The @c sjme_gfx_pixelFormat used for the draw.
  * @param bw The buffer width, this is the scanline width of the buffer.
  * @param bh The buffer height.
@@ -235,8 +234,7 @@ typedef struct sjme_scritchui_uiWindowBase* sjme_scritchui_uiWindow;
  */
 typedef sjme_errorCode (*sjme_scritchui_paintListenerFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiComponent component,
-	sjme_attrInNotNull sjme_scritchui_uiPaintable inPaintable,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInNotNull sjme_gfx_pixelFormat pf,
 	sjme_attrInPositive sjme_jint bw,
 	sjme_attrInPositive sjme_jint bh,

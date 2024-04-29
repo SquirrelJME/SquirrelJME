@@ -13,6 +13,63 @@
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/debug.h"
 
+static sjme_errorCode sjme_scritchui_basePaintListener(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNotNull sjme_gfx_pixelFormat pf,
+	sjme_attrInPositive sjme_jint bw,
+	sjme_attrInPositive sjme_jint bh,
+	sjme_attrInNotNull const void* buf,
+	sjme_attrInPositive sjme_jint bufOff,
+	sjme_attrInPositive sjme_jint bufLen,
+	sjme_attrInNullable const sjme_jint* pal,
+	sjme_attrInPositive sjme_jint numPal,
+	sjme_attrInPositive sjme_jint sx,
+	sjme_attrInPositive sjme_jint sy,
+	sjme_attrInPositive sjme_jint sw,
+	sjme_attrInPositive sjme_jint sh,
+	sjme_attrInValue sjme_jint special)
+{
+	sjme_errorCode error;
+	sjme_scritchui_uiPaintable paint;
+	sjme_scritchui_paintListenerFunc listener;
+	
+	if (inState == NULL || inComponent == NULL || buf == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Not something we can paint? */
+	paint = NULL;
+	if (sjme_error_is(error = inState->intern->getPaintable(inState,
+		inComponent, &paint)) || paint == NULL)
+		return sjme_error_defaultOr(error,
+			SJME_ERROR_INVALID_ARGUMENT);
+	
+	/* No actual paint listener? */
+	listener = paint->listeners[SJME_SCRITCHUI_LISTENER_USER].paint;
+	if (listener == NULL)
+	{
+		error = SJME_ERROR_NO_LISTENER;
+		goto fail_noListener;
+	}
+	
+	/* Forward to callback. */
+	sjme_atomic_sjme_jint_set(&paint->inPaint, 1);
+	error = listener(inState, inComponent,
+		pf,
+		bw, bh,
+		buf, bufOff, bufLen,
+		pal, numPal,
+		sx, sy, sw, sh, special);
+	
+	/* No longer painting. */
+	sjme_atomic_sjme_jint_set(&paint->inPaint, 0);
+	
+	/* Success or failure! */
+fail_noListener:
+	paint->lastError = error;
+	return error;
+}
+
 static sjme_errorCode sjme_scritchui_core_baseSizeListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
@@ -26,7 +83,7 @@ static sjme_errorCode sjme_scritchui_core_baseSizeListener(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Call user handler */
-	forward = inComponent->listeners[SJME_SCRITCHUI_UI_LISTENER_CLASS_USER]
+	forward = inComponent->listeners[SJME_SCRITCHUI_LISTENER_USER]
 		.size;
 	if (forward != NULL)
 		if (sjme_error_is(error = forward(inState, inComponent,
@@ -157,7 +214,9 @@ sjme_errorCode sjme_scritchui_core_componentSetPaintListener(
 	sjme_errorCode error;
 	sjme_scritchui_uiPaintable paint;
 	sjme_frontEnd oldFrontEnd;
-	sjme_scritchui_paintListenerFunc oldListener;
+	sjme_scritchui_paintListenerFunc oldUserListener, oldCoreListener;
+	sjme_scritchui_uiPaintableListeners* coreListener;
+	sjme_scritchui_uiPaintableListeners* userListener;
 
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -169,14 +228,24 @@ sjme_errorCode sjme_scritchui_core_componentSetPaintListener(
 		return sjme_error_default(error);
 	
 	/* Set new listener. */
-	oldListener = paint->listener;
-	paint->listener = inListener;
+	userListener = &paint->listeners[SJME_SCRITCHUI_LISTENER_USER];
+	oldUserListener = userListener->paint;
+	userListener->paint = inListener;
+	
+	/* Set core callback for common handling. */
+	coreListener = &paint->listeners[SJME_SCRITCHUI_LISTENER_CORE];
+	oldCoreListener = coreListener->paint;
+	if (inListener != NULL)
+		coreListener->paint = sjme_scritchui_basePaintListener;
+	else
+		coreListener->paint = NULL;
 	
 	/* Copy old front end in the event of an error. */
-	memmove(&oldFrontEnd, &paint->frontEnd, sizeof(sjme_frontEnd));
+	memmove(&oldFrontEnd, &paint->frontEnd,
+		sizeof(sjme_frontEnd));
 	
 	/* Replace with new front end data before the call. */
-	if (copyFrontEnd != NULL)
+	if (copyFrontEnd != NULL && inListener != NULL)
 		memmove(&paint->frontEnd, copyFrontEnd,
 			sizeof(sjme_frontEnd));
 	
@@ -184,10 +253,12 @@ sjme_errorCode sjme_scritchui_core_componentSetPaintListener(
 	error = SJME_ERROR_NOT_IMPLEMENTED;
 	if (inState->impl->componentSetPaintListener == NULL ||
 		sjme_error_is(error = inState->impl->componentSetPaintListener(
-			inState, inComponent, inListener, paint, copyFrontEnd)))
+			inState, inComponent, sjme_scritchui_basePaintListener,
+			copyFrontEnd)))
 	{
 		/* Error, copy old value back. */
-		paint->listener = oldListener;
+		userListener->paint = oldUserListener;
+		coreListener->paint = oldCoreListener;
 		memmove(&paint->frontEnd, &oldFrontEnd,
 			sizeof(sjme_frontEnd));
 		

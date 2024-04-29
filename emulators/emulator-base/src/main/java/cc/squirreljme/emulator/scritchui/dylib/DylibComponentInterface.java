@@ -67,7 +67,7 @@ public class DylibComponentInterface
 		
 		this.dyLib.componentRevalidate((DylibComponentObject)__component);
 	}
-	=
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2024/04/28
