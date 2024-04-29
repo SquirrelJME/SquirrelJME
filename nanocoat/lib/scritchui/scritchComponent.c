@@ -83,8 +83,7 @@ static sjme_errorCode sjme_scritchui_core_baseSizeListener(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Call user handler */
-	forward = inComponent->listeners[SJME_SCRITCHUI_LISTENER_USER]
-		.size;
+	forward = SJME_SCRITCHUI_LISTENER_USER(inComponent).size;
 	if (forward != NULL)
 		if (sjme_error_is(error = forward(inState, inComponent,
 			newWidth, newHeight)))
@@ -228,12 +227,12 @@ sjme_errorCode sjme_scritchui_core_componentSetPaintListener(
 		return sjme_error_default(error);
 	
 	/* Set new listener. */
-	userListener = &paint->listeners[SJME_SCRITCHUI_LISTENER_USER];
+	userListener = &SJME_SCRITCHUI_LISTENER_USER(paint);
 	oldUserListener = userListener->paint;
 	userListener->paint = inListener;
 	
 	/* Set core callback for common handling. */
-	coreListener = &paint->listeners[SJME_SCRITCHUI_LISTENER_CORE];
+	coreListener = &SJME_SCRITCHUI_LISTENER_CORE(paint);
 	oldCoreListener = coreListener->paint;
 	if (inListener != NULL)
 		coreListener->paint = sjme_scritchui_basePaintListener;
@@ -241,12 +240,12 @@ sjme_errorCode sjme_scritchui_core_componentSetPaintListener(
 		coreListener->paint = NULL;
 	
 	/* Copy old front end in the event of an error. */
-	memmove(&oldFrontEnd, &paint->frontEnd,
+	memmove(&oldFrontEnd, &userListener->paintFrontEnd,
 		sizeof(sjme_frontEnd));
 	
 	/* Replace with new front end data before the call. */
 	if (copyFrontEnd != NULL && inListener != NULL)
-		memmove(&paint->frontEnd, copyFrontEnd,
+		memmove(&userListener->paintFrontEnd, copyFrontEnd,
 			sizeof(sjme_frontEnd));
 	
 	/* Inform component of updated listener. */
@@ -259,7 +258,7 @@ sjme_errorCode sjme_scritchui_core_componentSetPaintListener(
 		/* Error, copy old value back. */
 		userListener->paint = oldUserListener;
 		coreListener->paint = oldCoreListener;
-		memmove(&paint->frontEnd, &oldFrontEnd,
+		memmove(&userListener->paintFrontEnd, &oldFrontEnd,
 			sizeof(sjme_frontEnd));
 		
 		return sjme_error_default(error);
@@ -283,8 +282,16 @@ sjme_errorCode sjme_scritchui_core_componentSetSizeListener(
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* The core listener is always set, so we can just set this here. */
+	SJME_SCRITCHUI_LISTENER_USER(inComponent).size = inListener;
+	
+	/* Copy front end data over. */
+	if (copyFrontEnd != NULL)
+		memmove(&SJME_SCRITCHUI_LISTENER_USER(inComponent).sizeFrontEnd,
+			copyFrontEnd, sizeof(*copyFrontEnd));
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchui_core_intern_getPaintable(
@@ -330,7 +337,7 @@ sjme_errorCode sjme_scritchui_core_intern_initComponent(
 	/* Post-initialize? */
 	if (postCreate)
 	{
-		/* Install core size listener. */
+		/* Install size listener to emit repaints on resize. */
 		if (inState->impl->componentSetSizeListener != NULL)
 			if (sjme_error_is(error =
 				inState->impl->componentSetSizeListener(inState, inComponent,

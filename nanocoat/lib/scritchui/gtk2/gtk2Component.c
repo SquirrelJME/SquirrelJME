@@ -10,7 +10,32 @@
 #include "lib/scritchui/gtk2/gtk2.h"
 #include "lib/scritchui/core/core.h"
 
-static gboolean sjme_scritchui_gtk2_exposeHandler(GtkWidget* widget,
+static gboolean sjme_scritchui_gtk2_eventConfigure(GtkWidget* widget,
+	GdkEventConfigure* event, gpointer data)
+{
+	sjme_scritchui inState;
+	sjme_scritchui_uiComponent inComponent;
+	sjme_scritchui_sizeListenerFunc listener;
+	
+	/* Restore component. */
+	inComponent = (sjme_scritchui_uiComponent)data;
+	if (inComponent == NULL)
+		return TRUE;
+	
+	/* Restore state. */
+	inState = inComponent->common.state;
+	
+	/* Forward accordingly. */
+	listener = SJME_SCRITCHUI_LISTENER_CORE(inComponent).size;
+	if (listener != NULL)
+		listener(inState, inComponent,
+			event->width, event->height);
+	
+	/* Always continue handling. */
+	return TRUE;
+}
+
+static gboolean sjme_scritchui_gtk2_eventExpose(GtkWidget* widget,
 	GdkEventExpose* event, gpointer data)
 {
 	sjme_errorCode error;
@@ -164,7 +189,46 @@ sjme_errorCode sjme_scritchui_gtk2_componentSetPaintListener(
 	/* Connect new handler. */
 	if (inListener != NULL)
 		paint->extra = g_signal_connect(widget, "expose-event",
-			G_CALLBACK(sjme_scritchui_gtk2_exposeHandler), inComponent);
+			G_CALLBACK(sjme_scritchui_gtk2_eventExpose), inComponent);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_scritchui_gtk2_componentSetSizeListener(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNullable sjme_scritchui_sizeListenerFunc inListener,
+	sjme_attrInNullable sjme_frontEnd* copyFrontEnd)
+{
+	sjme_errorCode error;
+	GtkWidget* widget;
+	sjme_scritchui_uiComponentListeners* listeners;
+	
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Get listener base. */
+	listeners = &SJME_SCRITCHUI_LISTENER_CORE(inComponent);
+	
+	/* Recover widget. */	
+	widget = (GtkWidget*)inComponent->common.handle;
+	
+	/* Disconnect old signal? */
+	if (listeners->sizeExtra != 0)
+	{
+		gtk_signal_disconnect(widget, (gulong)listeners->sizeExtra);
+		listeners->size = NULL;
+		listeners->sizeExtra = 0;
+	}
+	
+	/* Connect signal. */
+	if (inListener != NULL)
+	{
+		listeners->size = inListener;
+		listeners->sizeExtra = g_signal_connect(widget, "configure-event",
+			G_CALLBACK(sjme_scritchui_gtk2_eventConfigure), inComponent);
+	}
 	
 	/* Success! */
 	return SJME_ERROR_NONE;

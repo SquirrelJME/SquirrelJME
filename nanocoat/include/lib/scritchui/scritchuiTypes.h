@@ -57,6 +57,12 @@ typedef struct sjme_scritchui_uiComponentListeners
 {
 	/** Listener for when size changes. */
 	sjme_scritchui_sizeListenerFunc size;
+	
+	/** Front end for size. */
+	sjme_frontEnd sizeFrontEnd;
+	
+	/** Extra data for size if needed. */
+	sjme_intPointer sizeExtra;
 } sjme_scritchui_uiComponentListeners;
 
 typedef struct sjme_scritchui_uiComponentBase
@@ -86,6 +92,9 @@ typedef struct sjme_scritchui_uiPaintableListeners
 {
 	/** Paint listener. */
 	sjme_scritchui_paintListenerFunc paint;
+	
+	/** Front end for paint listener. */
+	sjme_frontEnd paintFrontEnd;
 } sjme_scritchui_uiPaintableListeners;
 
 /**
@@ -97,9 +106,6 @@ typedef struct sjme_scritchui_uiPaintableBase
 {
 	/** Listeners. */
 	sjme_scritchui_uiPaintableListeners listeners[SJME_NUM_SCRITCHUI_LISTENER];
-	
-	/** Front end for paint listener. */
-	sjme_frontEnd frontEnd;
 	
 	/** Extra data if needed. */
 	sjme_intPointer extra;

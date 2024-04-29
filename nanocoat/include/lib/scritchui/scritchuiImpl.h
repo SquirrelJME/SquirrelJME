@@ -29,6 +29,14 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
+/** Core listeners. */
+#define SJME_SCRITCHUI_LISTENER_CORE(x) \
+	((x)->listeners[SJME_SCRITCHUI_LISTENER_CORE])
+
+/** User listeners. */
+#define SJME_SCRITCHUI_LISTENER_USER(x) \
+	((x)->listeners[SJME_SCRITCHUI_LISTENER_USER])
+
 /**
  * Implementation specific initialization.
  * 

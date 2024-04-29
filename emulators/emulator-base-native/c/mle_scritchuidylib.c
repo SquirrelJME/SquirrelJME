@@ -121,6 +121,7 @@ static sjme_errorCode mle_scritchUiPaintListener(
 	JavaVM* vm;
 	JNIEnv* env;
 	sjme_scritchui_uiPaintable paint;
+	sjme_scritchui_uiPaintableListeners* paintListener;
 	jclass javaListenerClassy;
 	jobject componentObject;
 	jobject javaListener;
@@ -150,7 +151,8 @@ static sjme_errorCode mle_scritchUiPaintListener(
 		sjme_die("Not paintable?");
 	
 	/* Get listener from paint. */
-	javaListener = (jobject)paint->frontEnd.wrapper;
+	paintListener = &SJME_SCRITCHUI_LISTENER_USER(paint);
+	javaListener = (jobject)paintListener->paintFrontEnd.wrapper;
 	
 	/* Get class of object. */
 	javaListenerClassy = (*env)->GetObjectClass(env, javaListener);
