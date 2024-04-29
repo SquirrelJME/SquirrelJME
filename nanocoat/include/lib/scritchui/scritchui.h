@@ -540,31 +540,35 @@ typedef sjme_errorCode (*sjme_scritchui_windowSetVisibleFunc)(
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
 	sjme_attrInValue sjme_jboolean isVisible);
 
+/** Quicker API declaration in struct. */
+#define SJME_SCRITCHUI_QUICK_API(x) \
+	SJME_TOKEN_PASTE3(sjme_scritchui_, x, Func) x
+
 struct sjme_scritchui_apiFunctions
 {
 	/** API flags. */
-	sjme_scritchui_apiFlagsFunc apiFlags;
+	SJME_SCRITCHUI_QUICK_API(apiFlags);
 	
 	/** Repaints the given component. */
-	sjme_scritchui_componentRepaintFunc componentRepaint;
+	SJME_SCRITCHUI_QUICK_API(componentRepaint);
 	
 	/** Revalidates the given component. */
-	sjme_scritchui_componentRevalidateFunc componentRevalidate;
+	SJME_SCRITCHUI_QUICK_API(componentRevalidate);
 	
 	/** Sets the paint listener for a component. */
-	sjme_scritchui_componentSetPaintListenerFunc componentSetPaintListener;
+	SJME_SCRITCHUI_QUICK_API(componentSetPaintListener);
 	
 	/** Sets the listener for component size events. */
-	sjme_scritchui_componentSetSizeListenerFunc componentSetSizeListener;
+	SJME_SCRITCHUI_QUICK_API(componentSetSizeListener);
 	
 	/** Adds component to container. */
-	sjme_scritchui_containerAddFunc containerAdd;
+	SJME_SCRITCHUI_QUICK_API(containerAdd);
 	
 	/** Set bounds of component in a container. */
-	sjme_scritchui_containerSetBoundsFunc containerSetBounds;
+	SJME_SCRITCHUI_QUICK_API(containerSetBounds);
 	
 	/** Execute callback within the event loop. */
-	sjme_scritchui_loopExecuteFunc loopExecute;
+	SJME_SCRITCHUI_QUICK_API(loopExecute);
 	
 	/** Execute callback later in the event loop. */
 	sjme_scritchui_loopExecuteFunc loopExecuteLater;
@@ -573,32 +577,34 @@ struct sjme_scritchui_apiFunctions
 	sjme_scritchui_loopExecuteFunc loopExecuteWait;
 	
 	/** Is the current thread in the loop? */
-	sjme_scritchui_loopIsInThreadFunc loopIsInThread;
+	SJME_SCRITCHUI_QUICK_API(loopIsInThread);
 	
 	/** Iterates a single run of the event loop. */
-	sjme_scritchui_loopIterateFunc loopIterate;
+	SJME_SCRITCHUI_QUICK_API(loopIterate);
 	
 	/** Enable focus on a panel. */
-	sjme_scritchui_panelEnableFocusFunc panelEnableFocus;
+	SJME_SCRITCHUI_QUICK_API(panelEnableFocus);
 	
 	/** Creates a new panel. */
-	sjme_scritchui_panelNewFunc panelNew;
+	SJME_SCRITCHUI_QUICK_API(panelNew);
 	
 	/** Register listener. */
-	sjme_scritchui_screenSetListenerFunc screenSetListener;
+	SJME_SCRITCHUI_QUICK_API(screenSetListener);
 	
 	/** Screens available. */
-	sjme_scritchui_screensFunc screens;
+	SJME_SCRITCHUI_QUICK_API(screens);
 	
 	/** Sets minimum size of the window contents. */
-	sjme_scritchui_windowContentMinimumSizeFunc windowContentMinimumSize;
+	SJME_SCRITCHUI_QUICK_API(windowContentMinimumSize);
 	
 	/** Creates a new window. */
-	sjme_scritchui_windowNewFunc windowNew;
+	SJME_SCRITCHUI_QUICK_API(windowNew);
 	
 	/** Sets visibility of window. */
-	sjme_scritchui_windowSetVisibleFunc windowSetVisible;
+	SJME_SCRITCHUI_QUICK_API(windowSetVisible);
 };
+
+#undef SJME_SCRITCHUI_QUICK_API
 
 /**
  * Common data structure shared by everything.
