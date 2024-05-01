@@ -59,14 +59,16 @@ public class CMakeUpToDateWhen
 				case "MSYS Makefiles":
 				case "MinGW Makefiles":
 				case "Unix Makefiles":
-					if (CMakeUtils.cmakeExecutePipe(false,
+					if (CMakeUtils.cmakeExecutePipe(
+						cmakeTask.cmakeBuild, false,
 						null, null, null,
 						"up-to-date", "--", "-q") != 0)
 						return false;
 					break;
 					
 				case "NMake Makefiles":
-					if (CMakeUtils.cmakeExecutePipe(false,
+					if (CMakeUtils.cmakeExecutePipe(
+						cmakeTask.cmakeBuild, false,
 						null, null, null,
 						"up-to-date", "--", "/Q") != 0)
 						return false;

@@ -18,7 +18,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.Reader;
 import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -31,7 +30,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import org.gradle.api.Task;
 import org.gradle.api.logging.LogLevel;
 import org.gradle.api.logging.Logger;
 import org.gradle.internal.os.OperatingSystem;
@@ -112,8 +110,8 @@ public final class CMakeUtils
 		
 		try
 		{
-			String rawStr = CMakeUtils.cmakeExecuteOutput("version",
-				"--version");
+			String rawStr = CMakeUtils.cmakeExecuteOutput(null,
+				"version", "--version");
 			
 			// Read in what looks like a version number
 			try (BufferedReader buf = new BufferedReader(
@@ -150,6 +148,7 @@ public final class CMakeUtils
 	/**
 	 * Executes a CMake task.
 	 *
+	 * @param __workDir The working directory.
 	 * @param __logger The logger to use.
 	 * @param __logName The name of the log.
 	 * @param __logDir The CMake build directory.
@@ -158,8 +157,8 @@ public final class CMakeUtils
 	 * @throws IOException On read/write or execution errors.
 	 * @since 2024/03/15
 	 */
-	public static int cmakeExecute(Logger __logger, String __logName,
-		Path __logDir, String... __args)
+	public static int cmakeExecute(Path __workDir, Logger __logger,
+		String __logName, Path __logDir, String... __args)
 		throws IOException
 	{
 		if (__logDir == null)
@@ -182,8 +181,8 @@ public final class CMakeUtils
 				StandardOpenOption.TRUNCATE_EXISTING))
 		{
 			// Execute CMake
-			return CMakeUtils.cmakeExecutePipe(null, stdOut, stdErr,
-				__logName, __args);
+			return CMakeUtils.cmakeExecutePipe(__workDir, null,
+				stdOut, stdErr, __logName, __args);
 		}
 		
 		// Dump logs to Gradle
@@ -199,19 +198,20 @@ public final class CMakeUtils
 	/**
 	 * Executes a CMake task and returns the output as a string.
 	 *
+	 * @param __workDir The working directory.
 	 * @param __buildType The build type used.
 	 * @param __args CMake arguments.
 	 * @throws IOException On read/write or execution errors.
 	 * @since 2024/04/01
 	 */
-	public static String cmakeExecuteOutput(String __buildType,
+	public static String cmakeExecuteOutput(Path __workDir, String __buildType,
 		String... __args)
 		throws IOException
 	{
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
 		{
 			// Run command
-			CMakeUtils.cmakeExecutePipe(null, baos, null,
+			CMakeUtils.cmakeExecutePipe(__workDir, null, baos, null,
 				__buildType, __args);
 			
 			// Decode to output
@@ -222,6 +222,7 @@ public final class CMakeUtils
 	/**
 	 * Executes a CMake task to the given pipe.
 	 *
+	 * @param __workDir The working directory.
 	 * @param __in The standard input for the task.
 	 * @param __out The standard output for the task.
 	 * @param __err The standard error for the task.
@@ -231,18 +232,20 @@ public final class CMakeUtils
 	 * @throws IOException On read/write or execution errors.
 	 * @since 2024/04/01
 	 */
-	public static int cmakeExecutePipe(InputStream __in,
+	public static int cmakeExecutePipe(Path __workDir, InputStream __in,
 		OutputStream __out, OutputStream __err, String __buildType,
 		String... __args)
 		throws IOException
 	{
-		return CMakeUtils.cmakeExecutePipe(true, __in, __out, __err,
+		return CMakeUtils.cmakeExecutePipe(__workDir, true,
+			__in, __out, __err,
 			__buildType, __args);
 	}
 	
 	/**
 	 * Executes a CMake task to the given pipe.
 	 *
+	 * @param __workDir The working directory.
 	 * @param __fail Emit failure if exit status is non-zero.
 	 * @param __in The standard input for the task.
 	 * @param __out The standard output for the task.
@@ -253,7 +256,8 @@ public final class CMakeUtils
 	 * @throws IOException On read/write or execution errors.
 	 * @since 2024/04/01
 	 */
-	public static int cmakeExecutePipe(boolean __fail, InputStream __in,
+	public static int cmakeExecutePipe(Path __workDir, boolean __fail,
+		InputStream __in,
 		OutputStream __out, OutputStream __err, String __buildType,
 		String... __args)
 		throws IOException
@@ -272,6 +276,10 @@ public final class CMakeUtils
 		// Set executable process
 		ProcessBuilder procBuilder = new ProcessBuilder();
 		procBuilder.command(args);
+		
+		// Working directory, if specified
+		if (__workDir != null)
+			procBuilder.directory(__workDir.toFile());
 		
 		// Log the output somewhere
 		if (__in != null)
@@ -339,10 +347,25 @@ public final class CMakeUtils
 		Files.createDirectories(cmakeBuild);
 		
 		// Configure CMake first before we continue with anything
-		CMakeUtils.cmakeExecute(__task.getLogger(),
-			"configure", __task.getProject().getBuildDir().toPath(),
-			"-S", cmakeSource.toAbsolutePath().toString(),
-			"-B", cmakeBuild.toAbsolutePath().toString());
+		// Note that newer CMake has a better means of specifying the path
+		VersionNumber version = CMakeUtils.cmakeExeVersion();
+		if (version != null && version.compareTo(
+			VersionNumber.parse("3.13")) >= 0)
+			CMakeUtils.cmakeExecute(__task.cmakeBuild, __task.getLogger(),
+				"configure",
+				__task.getProject().getBuildDir().toPath(),
+				"-DCMAKE_BUILD_TYPE=RelWithDebInfo",
+				"-S", cmakeSource.toAbsolutePath().toString(),
+				"-B", cmakeBuild.toAbsolutePath().toString());
+		
+		// Otherwise fallback to the old method which is a bit more tricky
+		// as we need to set our working directory accordingly
+		else
+			CMakeUtils.cmakeExecute(__task.cmakeBuild, __task.getLogger(),
+				"configure",
+				__task.getProject().getBuildDir().toPath(),
+				"-DCMAKE_BUILD_TYPE=RelWithDebInfo",
+				cmakeSource.toAbsolutePath().toString());
 	}
 	/**
 	 * Is configuration needed?

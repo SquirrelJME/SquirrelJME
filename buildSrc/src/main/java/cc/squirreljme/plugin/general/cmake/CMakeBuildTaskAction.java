@@ -48,12 +48,13 @@ public class CMakeBuildTaskAction
 					CMakeUtils.configure(from);
 				
 				// Run normal CMake build
-				CMakeUtils.cmakeExecute(__task.getLogger(),
+				CMakeUtils.cmakeExecute(from.cmakeBuild, __task.getLogger(),
 					"build-" + cmakeRule,
 					__task.getProject().getBuildDir().toPath(),
 					"--build",
 					cmakeBuild.toAbsolutePath().toString(),
-					"-t", cmakeRule);
+					"--config", "RelWithDebInfo",
+					"--target", cmakeRule);
 			}
 			
 			// Was the output file even created?
