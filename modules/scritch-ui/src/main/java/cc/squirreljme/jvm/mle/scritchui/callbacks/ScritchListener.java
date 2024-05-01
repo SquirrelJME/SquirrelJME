@@ -9,27 +9,15 @@
 
 package cc.squirreljme.jvm.mle.scritchui.callbacks;
 
-import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
+import cc.squirreljme.jvm.mle.annotation.GhostObject;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
- * Listener for resize events within ScritchUI.
+ * Base interface for all ScritchUI listeners.
  *
- * @since 2024/04/28
+ * @since 2024/04/30
  */
 @SquirrelJMEVendorApi
-public interface ScritchSizeListener
-	extends ScritchListener
+public interface ScritchListener
 {
-	/**
-	 * This is called when the given component has changed size.
-	 *
-	 * @param __component The component that changed size.
-	 * @param __newWidth The new width.
-	 * @param __newHeight The new height.
-	 * @since 2024/04/28
-	 */
-	@SquirrelJMEVendorApi
-	void sizeChanged(ScritchComponentBracket __component,
-		int __newWidth, int __newHeight);
 }

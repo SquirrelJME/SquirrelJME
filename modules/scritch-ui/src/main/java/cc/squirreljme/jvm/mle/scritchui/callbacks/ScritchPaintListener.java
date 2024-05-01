@@ -26,6 +26,7 @@ import org.jetbrains.annotations.Range;
  */
 @SquirrelJMEVendorApi
 public interface ScritchPaintListener
+	extends ScritchListener
 {
 	/**
 	 * Callback that is used to draw the given component.

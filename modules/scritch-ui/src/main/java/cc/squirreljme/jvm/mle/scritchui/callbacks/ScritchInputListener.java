@@ -18,5 +18,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  */
 @SquirrelJMEVendorApi
 public interface ScritchInputListener
+	extends ScritchListener
 {
 }
