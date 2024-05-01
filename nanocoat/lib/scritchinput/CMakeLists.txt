@@ -6,12 +6,13 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 
-# The SquirrelJME base library is added in the base root project and not
-# by this one
+# Include common macros to make things easier
+squirreljme_include("scritchui.cmake")
 
-# Third party support libraries that come from outside SquirrelJME
-add_subdirectory(3rdparty)
+# Core ScritchInput Library
+squirreljme_multilib_add_library(ScritchInputCore
+	inputCore.c)
 
-# ScritchUI and related
-add_subdirectory(scritchinput)
-add_subdirectory(scritchui)
+# Include main headers
+squirreljme_multilib_target_include_directories(ScritchInputCore PUBLIC
+	"${CMAKE_SOURCE_DIR}/include")
