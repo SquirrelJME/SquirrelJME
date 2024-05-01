@@ -48,69 +48,69 @@ typedef struct sjme_scritchui_pencilBase* sjme_scritchui_pencil;
  * overlap at all, this means that the destination will be an exact copy of
  * the source.
  *
- * @param __g The hardware graphics to draw with.
- * @param __sx The source X position, will be translated.
- * @param __sy The source Y position, will be translated.
- * @param __w The width to copy.
- * @param __h The height to copy.
- * @param __dx The destination X position, will be translated.
- * @param __dy The destination Y position, will be translated.
- * @param __anchor The anchor point of the destination.
+ * @param g The hardware graphics to draw with.
+ * @param sx The source X position, will be translated.
+ * @param sy The source Y position, will be translated.
+ * @param w The width to copy.
+ * @param h The height to copy.
+ * @param dx The destination X position, will be translated.
+ * @param dy The destination Y position, will be translated.
+ * @param anchor The anchor point of the destination.
  * @return An error if the call is not valid or the native graphics
  * does not support this operation.
  * @since 2024/05/01
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilCopyAreaFunc)(
-	sjme_attrInNotNull sjme_scritchui_pencil __g,
-	sjme_attrInValue sjme_jint __sx,
-	sjme_attrInValue sjme_jint __sy,
-	sjme_attrInPositive sjme_jint __w,
-	sjme_attrInPositive sjme_jint __h,
-	sjme_attrInValue sjme_jint __dx,
-	sjme_attrInValue sjme_jint __dy,
-	sjme_attrInValue sjme_jint __anchor);
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint sx,
+	sjme_attrInValue sjme_jint sy,
+	sjme_attrInPositive sjme_jint w,
+	sjme_attrInPositive sjme_jint h,
+	sjme_attrInValue sjme_jint dx,
+	sjme_attrInValue sjme_jint dy,
+	sjme_attrInValue sjme_jint anchor);
 
 /**
  * Draws the given characters.
  *
- * @param __g The hardware graphics to draw with.
- * @param __s The characters to draw.
- * @param __o The offset into the buffer.
- * @param __l The number of characters to draw.
- * @param __x The X position.
- * @param __y The Y position.
- * @param __anchor The anchor point.
+ * @param g The hardware graphics to draw with.
+ * @param s The characters to draw.
+ * @param o The offset into the buffer.
+ * @param l The number of characters to draw.
+ * @param x The X position.
+ * @param y The Y position.
+ * @param anchor The anchor point.
  * @return An error if the graphics is not valid, does not support
  * the given operation, if the anchor point is not valid, or if the
  * offset and/or length are out of bounds.
  * @since 2024/05/01
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilDrawCharsFunc)(
-	sjme_attrInNotNull sjme_scritchui_pencil __g,
-	sjme_attrInNotNull sjme_jchar* __s,
-	sjme_attrInPositive sjme_jint __o,
-	sjme_attrInPositive sjme_jint __l,
-	sjme_attrInValue sjme_jint __x,
-	sjme_attrInValue sjme_jint __y,
-	sjme_attrInValue sjme_jint __anchor);
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInNotNull sjme_jchar* s,
+	sjme_attrInPositive sjme_jint o,
+	sjme_attrInPositive sjme_jint l,
+	sjme_attrInValue sjme_jint x,
+	sjme_attrInValue sjme_jint y,
+	sjme_attrInValue sjme_jint anchor);
 
 /**
  * Draws a line in hardware.
  * 
- * @param __g The hardware graphics to draw with.
- * @param __x1 The starting X coordinate.
- * @param __y1 The starting Y coordinate.
- * @param __x2 The ending X coordinate.
- * @param __y2 The ending Y coordinate.
+ * @param g The hardware graphics to draw with.
+ * @param x1 The starting X coordinate.
+ * @param y1 The starting Y coordinate.
+ * @param x2 The ending X coordinate.
+ * @param y2 The ending Y coordinate.
  * @return An error on null arguments.
  * @since 2024/05/01
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilDrawLineFunc)(
-	sjme_attrInNotNull sjme_scritchui_pencil __g,
-	sjme_attrInValue sjme_jint __x1,
-	sjme_attrInValue sjme_jint __y1,
-	sjme_attrInValue sjme_jint __x2,
-	sjme_attrInValue sjme_jint __y2);
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint x1,
+	sjme_attrInValue sjme_jint y1,
+	sjme_attrInValue sjme_jint x2,
+	sjme_attrInValue sjme_jint y2);
 
 /**
  * Draws the outline of the given rectangle using the current color and
@@ -119,257 +119,257 @@ typedef sjme_errorCode (*sjme_scritchui_pencilDrawLineFunc)(
  *
  * Nothing is drawn if the width and/or height are zero.
  *
- * @param __g The hardware graphics to draw with.
- * @param __x The X coordinate.
- * @param __y The Y coordinate.
- * @param __w The width.
- * @param __h The height.
+ * @param g The hardware graphics to draw with.
+ * @param x The X coordinate.
+ * @param y The Y coordinate.
+ * @param w The width.
+ * @param h The height.
  * @return An error if the graphics is not valid or does not support
  * the given operation.
  * @since 22024/05/01
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilDrawRectFunc)(
-	sjme_attrInNotNull sjme_scritchui_pencil __g,
-	sjme_attrInValue sjme_jint __x,
-	sjme_attrInValue sjme_jint __y,
-	sjme_attrInPositive sjme_jint __w,
-	sjme_attrInPositive sjme_jint __h);
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint x,
+	sjme_attrInValue sjme_jint y,
+	sjme_attrInPositive sjme_jint w,
+	sjme_attrInPositive sjme_jint h);
 
 /**
  * Draws the given substring.
  *
- * @param __g The hardware graphics to draw with.
- * @param __s The string to draw.
- * @param __o The offset into the string.
- * @param __l The offset into the length.
- * @param __x The X coordinate.
- * @param __y The Y coordinate.
- * @param __anchor The anchor point.
+ * @param g The hardware graphics to draw with.
+ * @param s The string to draw.
+ * @param o The offset into the string.
+ * @param l The offset into the length.
+ * @param x The X coordinate.
+ * @param y The Y coordinate.
+ * @param anchor The anchor point.
  * @return An error if the graphics is not valid, this operation is
  * not supported, or on null arguments, or if the offset and/or length are
  * negative or exceed the string bounds.
  * @since 2024/05/01
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilDrawSubstringFunc)(
-	sjme_attrInNotNull sjme_scritchui_pencil __g,
-	sjme_attrInNotNull sjme_lpcstr __s,
-	sjme_attrInPositive sjme_jint __o, 
-	sjme_attrInPositive sjme_jint __l,
-	sjme_attrInValue sjme_jint __x,
-	sjme_attrInValue sjme_jint __y,
-	sjme_attrInValue sjme_jint __anchor);
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInNotNull sjme_lpcstr s,
+	sjme_attrInPositive sjme_jint o, 
+	sjme_attrInPositive sjme_jint l,
+	sjme_attrInValue sjme_jint x,
+	sjme_attrInValue sjme_jint y,
+	sjme_attrInValue sjme_jint anchor);
 
 /**
  * Draws a region of 32-bit RGB data into the target.
  *
- * @param __g The hardware graphics to draw with.
- * @param __data The source buffer.
- * @param __off The offset into the buffer.
- * @param __scanLen The scanline length.
- * @param __alpha Drawing with the alpha channel?
- * @param __xSrc The source X position.
- * @param __ySrc The source Y position.
- * @param __wSrc The width of the source region.
- * @param __hSrc The height of the source region.
- * @param __trans Sprite translation and/or rotation,
+ * @param g The hardware graphics to draw with.
+ * @param data The source buffer.
+ * @param off The offset into the buffer.
+ * @param scanLen The scanline length.
+ * @param alpha Drawing with the alpha channel?
+ * @param xSrc The source X position.
+ * @param ySrc The source Y position.
+ * @param wSrc The width of the source region.
+ * @param hSrc The height of the source region.
+ * @param trans Sprite translation and/or rotation,
  * see @c javax.microedition.lcdui.game.Sprite.
- * @param __xDest The destination X position, is translated.
- * @param __yDest The destination Y position, is translated.
- * @param __anch The anchor point.
- * @param __wDest The destination width.
- * @param __hDest The destination height.
- * @param __origImgWidth Original image width.
- * @param __origImgHeight Original image height.
+ * @param xDest The destination X position, is translated.
+ * @param yDest The destination Y position, is translated.
+ * @param anch The anchor point.
+ * @param wDest The destination width.
+ * @param hDest The destination height.
+ * @param origImgWidth Original image width.
+ * @param origImgHeight Original image height.
  * @return An error on null arguments.
  * @since 2024/05/01
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilDrawXRGB32RegionFunc)(
-	sjme_attrInNotNull sjme_scritchui_pencil __g,
-	sjme_attrInNotNull int* __data,
-	sjme_attrInPositive sjme_jint __off,
-	sjme_attrInPositive sjme_jint __scanLen,
-	sjme_attrInValue sjme_jboolean __alpha,
-	sjme_attrInValue sjme_jint __xSrc,
-	sjme_attrInValue sjme_jint __ySrc,
-	sjme_attrInPositive sjme_jint __wSrc,
-	sjme_attrInPositive sjme_jint __hSrc,
-	sjme_attrInValue sjme_jint __trans,
-	sjme_attrInValue sjme_jint __xDest,
-	sjme_attrInValue sjme_jint __yDest,
-	sjme_attrInValue sjme_jint __anch,
-	sjme_attrInPositive sjme_jint __wDest,
-	sjme_attrInPositive sjme_jint __hDest,
-	sjme_attrInPositive sjme_jint __origImgWidth,
-	sjme_attrInPositive sjme_jint __origImgHeight);
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInNotNull int* data,
+	sjme_attrInPositive sjme_jint off,
+	sjme_attrInPositive sjme_jint scanLen,
+	sjme_attrInValue sjme_jboolean alpha,
+	sjme_attrInValue sjme_jint xSrc,
+	sjme_attrInValue sjme_jint ySrc,
+	sjme_attrInPositive sjme_jint wSrc,
+	sjme_attrInPositive sjme_jint hSrc,
+	sjme_attrInValue sjme_jint trans,
+	sjme_attrInValue sjme_jint xDest,
+	sjme_attrInValue sjme_jint yDest,
+	sjme_attrInValue sjme_jint anch,
+	sjme_attrInPositive sjme_jint wDest,
+	sjme_attrInPositive sjme_jint hDest,
+	sjme_attrInPositive sjme_jint origImgWidth,
+	sjme_attrInPositive sjme_jint origImgHeight);
 
 /**
  * Performs rectangular fill in hardware.
  * 
- * @param __g The hardware graphics to draw with.
- * @param __x The X coordinate.
- * @param __y The Y coordinate.
- * @param __w The width.
- * @param __h The height.
+ * @param g The hardware graphics to draw with.
+ * @param x The X coordinate.
+ * @param y The Y coordinate.
+ * @param w The width.
+ * @param h The height.
  * @return An error on @c NULL arguments.
  * @since 2024/05/01
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilFillRectFunc)(
-	sjme_attrInNotNull sjme_scritchui_pencil __g,
-	sjme_attrInValue sjme_jint __x,
-	sjme_attrInValue sjme_jint __y,
-	sjme_attrInPositive sjme_jint __w,
-	sjme_attrInPositive sjme_jint __h);
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint x,
+	sjme_attrInValue sjme_jint y,
+	sjme_attrInPositive sjme_jint w,
+	sjme_attrInPositive sjme_jint h);
 
 /**
  * Draws a filled triangle using the current color, the lines which make
  * up the triangle are included in the filled area.
  *
- * @param __g The graphics to use for drawing.
- * @param __x1 First X coordinate.
- * @param __y1 First Y coordinate.
- * @param __x2 Second X coordinate.
- * @param __y2 Second Y coordinate.
- * @param __x3 Third X coordinate.
- * @param __y3 Third Y coordinate.
+ * @param g The graphics to use for drawing.
+ * @param x1 First X coordinate.
+ * @param y1 First Y coordinate.
+ * @param x2 Second X coordinate.
+ * @param y2 Second Y coordinate.
+ * @param x3 Third X coordinate.
+ * @param y3 Third Y coordinate.
  * @return An error if no graphics were specified or the graphics does
  * not actually support the given operation.
  * @since 2024/05/01
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilFillTriangleFunc)(
-	sjme_attrInNotNull sjme_scritchui_pencil __g,
-	sjme_attrInValue sjme_jint __x1,
-	sjme_attrInValue sjme_jint __y1,
-	sjme_attrInValue sjme_jint __x2,
-	sjme_attrInValue sjme_jint __y2,
-	sjme_attrInValue sjme_jint __x3,
-	sjme_attrInValue sjme_jint __y3);
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint x1,
+	sjme_attrInValue sjme_jint y1,
+	sjme_attrInValue sjme_jint x2,
+	sjme_attrInValue sjme_jint y2,
+	sjme_attrInValue sjme_jint x3,
+	sjme_attrInValue sjme_jint y3);
 
 /**
  * Creates a hardware reference bracket to the native hardware graphics.
  * 
- * @param __pf The @c sjme_gfx_pixelFormat used for the draw.
- * @param __bw The buffer width, this is the scanline width of the buffer.
- * @param __bh The buffer height.
- * @param __buf The target buffer to draw to, this is cast to the correct
+ * @param pf The @c sjme_gfx_pixelFormat used for the draw.
+ * @param bw The buffer width, this is the scanline width of the buffer.
+ * @param bh The buffer height.
+ * @param buf The target buffer to draw to, this is cast to the correct
  * buffer format.
- * @param __offset The offset to the start of the buffer.
- * @param __pal The color palette, may be @c NULL. 
- * @param __sx Starting surface X coordinate.
- * @param __sy Starting surface Y coordinate.
- * @param __sw Surface width.
- * @param __sh Surface height.
+ * @param offset The offset to the start of the buffer.
+ * @param pal The color palette, may be @c NULL. 
+ * @param sx Starting surface X coordinate.
+ * @param sy Starting surface Y coordinate.
+ * @param sw Surface width.
+ * @param sh Surface height.
  * @return The bracket capable of drawing hardware accelerated graphics.
  * @return An error if the requested graphics are not valid.
  * @since 2024/05/01
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilGraphicsFunc)(
 	sjme_attrInOutNotNull sjme_scritchui_pencil* outPencil,
-	sjme_attrInValue sjme_gfx_pixelFormat __pf,
-	sjme_attrInPositive sjme_jint __bw,
-	sjme_attrInPositive sjme_jint __bh,
-	sjme_attrInNotNull void* __buf,
-	sjme_attrInPositive sjme_jint __offset,
-	sjme_attrInNullable sjme_jint __pal,
-	sjme_attrInValue sjme_jint __sx,
-	sjme_attrInValue sjme_jint __sy,
-	sjme_attrInPositive sjme_jint __sw,
-	sjme_attrInPositive sjme_jint __sh);
+	sjme_attrInValue sjme_gfx_pixelFormat pf,
+	sjme_attrInPositive sjme_jint bw,
+	sjme_attrInPositive sjme_jint bh,
+	sjme_attrInNotNull void* buf,
+	sjme_attrInPositive sjme_jint offset,
+	sjme_attrInNullable sjme_jint pal,
+	sjme_attrInValue sjme_jint sx,
+	sjme_attrInValue sjme_jint sy,
+	sjme_attrInPositive sjme_jint sw,
+	sjme_attrInPositive sjme_jint sh);
 
 /**
  * Sets the alpha color for graphics.
  * 
- * @param __g The hardware graphics to draw with.
- * @param __argb The color to set.
+ * @param g The hardware graphics to draw with.
+ * @param argb The color to set.
  * @return An error on @c NULL arguments.
  * @since 2024/05/01
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilSetAlphaColorFunc)(
-	sjme_attrInNotNull sjme_scritchui_pencil __g,
-	sjme_attrInValue sjme_jint __argb);
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint argb);
 
 /**
  * Sets the blending mode to use.
  * 
- * @param __g The hardware graphics to draw with.
- * @param __mode The blending mode to use.
+ * @param g The hardware graphics to draw with.
+ * @param mode The blending mode to use.
  * @return An error on @c NULL arguments.
  * @since 2024/05/01
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilSetBlendingModeFunc)(
-	sjme_attrInNotNull sjme_scritchui_pencil __g,
-	sjme_attrInValue sjme_jint __mode);
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint mode);
 
 /**
  * Sets the clipping rectangle position.
  * 
- * @param __g The hardware graphics to draw with.
- * @param __x The X coordinate.
- * @param __y The Y coordinate.
- * @param __w The width.
- * @param __h The height.
+ * @param g The hardware graphics to draw with.
+ * @param x The X coordinate.
+ * @param y The Y coordinate.
+ * @param w The width.
+ * @param h The height.
  * @return An error on @c NULL arguments.
  * @since 2024/05/01
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilSetClipFunc)(
-	sjme_attrInNotNull sjme_scritchui_pencil __g,
-	sjme_attrInValue sjme_jint __x,
-	sjme_attrInValue sjme_jint __y,
-	sjme_attrInPositive sjme_jint __w,
-	sjme_attrInPositive sjme_jint __h);
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint x,
+	sjme_attrInValue sjme_jint y,
+	sjme_attrInPositive sjme_jint w,
+	sjme_attrInPositive sjme_jint h);
 
 /**
  * Sets that the graphics should now use the default font.
  * 
- * @param __g The graphics used.
+ * @param g The graphics used.
  * @return An error if the graphics is not valid or does not support
  * this operation.
  * @since 2024/05/01
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilSetDefaultFontFunc)(
-	sjme_attrInNotNull sjme_scritchui_pencil __g);
+	sjme_attrInNotNull sjme_scritchui_pencil g);
 
 /**
  * Sets to use the specified font.
  *
- * @param __g The graphics used.
- * @param __name The font name.
- * @param __style The style of the font.
- * @param __pixelSize The pixel size of the font.
+ * @param g The graphics used.
+ * @param name The font name.
+ * @param style The style of the font.
+ * @param pixelSize The pixel size of the font.
  * @return An error if the graphics is not valid or does not support
  * this operation.
  * @since 2024/05/01
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilSetFontFunc)(
-	sjme_attrInNotNull sjme_scritchui_pencil __g,
-	sjme_attrInNotNull sjme_lpcstr __name,
-	sjme_attrInValue sjme_jint __style,
-	sjme_attrInPositiveNonZero sjme_jint __pixelSize);
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInNotNull sjme_lpcstr name,
+	sjme_attrInValue sjme_jint style,
+	sjme_attrInPositiveNonZero sjme_jint pixelSize);
 
 /**
  * Sets the stroke style for the hardware graphics.
  * 
- * @param __g The hardware graphics to draw with.
- * @param __style The stroke type to set.
+ * @param g The hardware graphics to draw with.
+ * @param style The stroke type to set.
  * @return An error on @c NULL arguments.
  * @since 2024/05/01
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilSetStrokeStyleFunc)(
-	sjme_attrInNotNull sjme_scritchui_pencil __g,
-	sjme_attrInValue sjme_jint __style);
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint style);
 
 /**
  * Translates drawing operations.
  * 
- * @param __g The hardware graphics to draw with.
- * @param __x The X translation.
- * @param __y The Y translation.
+ * @param g The hardware graphics to draw with.
+ * @param x The X translation.
+ * @param y The Y translation.
  * @return An error on @c NULL arguments.
  * @since 2024/05/01
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilTranslateFunc)(
-	sjme_attrInNotNull sjme_scritchui_pencil __g,
-	sjme_attrInValue sjme_jint __x,
-	sjme_attrInValue sjme_jint __y);
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint x,
+	sjme_attrInValue sjme_jint y);
 
 /** Quick definition for functions. */
 #define SJME_SCRITCHUI_QUICK_PENCIL(what) \
