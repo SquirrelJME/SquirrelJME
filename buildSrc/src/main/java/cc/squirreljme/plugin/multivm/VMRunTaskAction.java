@@ -58,6 +58,9 @@ public class VMRunTaskAction
 	@Override
 	public void execute(Task __task)
 	{
+		// The task owning this
+		VMRunTask runTask = (VMRunTask)__task;
+		
 		// Need this to get the program details
 		SquirrelJMEPluginConfiguration config =
 			SquirrelJMEPluginConfiguration.configuration(__task.getProject());
@@ -72,7 +75,7 @@ public class VMRunTaskAction
 		__task.getLogger().debug("Classpath: {}", Arrays.asList(classPath));
 		
 		// Determine the main entry class or MIDlet to use
-		JavaMEMidlet midlet = JavaMEMidlet.find(config.midlets);
+		JavaMEMidlet midlet = runTask.midlet;
 		String mainClass = VMHelpers.mainClass(config, midlet);
 		
 		// Debug
