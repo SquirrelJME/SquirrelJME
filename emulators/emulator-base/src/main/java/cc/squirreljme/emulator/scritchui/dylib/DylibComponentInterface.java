@@ -11,12 +11,10 @@ package cc.squirreljme.emulator.scritchui.dylib;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchComponentInterface;
-import cc.squirreljme.jvm.mle.scritchui.ScritchSizeListener;
+import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchSizeListener;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Range;
 
 /**
  * Not Described.

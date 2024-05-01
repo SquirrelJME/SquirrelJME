@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.mle.scritchui;
+package cc.squirreljme.jvm.mle.scritchui.callbacks;
 
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 

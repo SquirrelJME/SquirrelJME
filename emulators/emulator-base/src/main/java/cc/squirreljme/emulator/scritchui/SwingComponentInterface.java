@@ -11,12 +11,11 @@ package cc.squirreljme.emulator.scritchui;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchComponentInterface;
-import cc.squirreljme.jvm.mle.scritchui.ScritchSizeListener;
+import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchSizeListener;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.swing.JComponent;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Range;
 
 /**
  * The interface for generic components under Swing.
