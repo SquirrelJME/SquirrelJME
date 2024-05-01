@@ -17,7 +17,6 @@
 #define SQUIRRELJME_SCRITCHUIPENCIL_H
 
 #include "lib/scritchui/scritchui.h"
-#include "sjme/error.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -29,6 +28,13 @@ extern "C" {
 #endif     /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
+
+/**
+ * ScritchUI Pencil state.
+ * 
+ * @since 2024/05/01
+ */
+typedef struct sjme_scritchui_pencilBase* sjme_scritchui_pencil;
 
 /**
  * This copies one region of the image to another region.
@@ -54,11 +60,15 @@ extern "C" {
  * does not support this operation.
  * @since 2024/05/01
  */
-typedef sjme_errorCode (*hardwareCopyArea)(@NotNull PencilBracket __g,
-	int __sx, int __sy,
-	@Range(from = 0, to = Integer.MAX_VALUE) int __w,
-	@Range(from = 0, to = Integer.MAX_VALUE) int __h,
-	int __dx, int __dy, int __anchor);
+typedef sjme_errorCode (*sjme_scritchui_pencilCopyAreaFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil __g,
+	sjme_attrInValue sjme_jint __sx,
+	sjme_attrInValue sjme_jint __sy,
+	sjme_attrInPositive sjme_jint __w,
+	sjme_attrInPositive sjme_jint __h,
+	sjme_attrInValue sjme_jint __dx,
+	sjme_attrInValue sjme_jint __dy,
+	sjme_attrInValue sjme_jint __anchor);
 
 /**
  * Draws the given characters.
@@ -75,11 +85,14 @@ typedef sjme_errorCode (*hardwareCopyArea)(@NotNull PencilBracket __g,
  * offset and/or length are out of bounds.
  * @since 2024/05/01
  */
-typedef sjme_errorCode (*hardwareDrawChars)(@NotNull PencilBracket __g,
-	@NotNull char[] __s,
-	@Range(from = 0, to = Integer.MAX_VALUE) int __o,
-	@Range(from = 0, to = Integer.MAX_VALUE) int __l,
-	int __x, int __y, int __anchor);
+typedef sjme_errorCode (*sjme_scritchui_pencilDrawCharsFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil __g,
+	sjme_attrInNotNull sjme_jchar* __s,
+	sjme_attrInPositive sjme_jint __o,
+	sjme_attrInPositive sjme_jint __l,
+	sjme_attrInValue sjme_jint __x,
+	sjme_attrInValue sjme_jint __y,
+	sjme_attrInValue sjme_jint __anchor);
 
 /**
  * Draws a line in hardware.
@@ -92,8 +105,12 @@ typedef sjme_errorCode (*hardwareDrawChars)(@NotNull PencilBracket __g,
  * @return An error on null arguments.
  * @since 2024/05/01
  */
-typedef sjme_errorCode (*hardwareDrawLine)(@NotNull PencilBracket __g,
-	int __x1, int __y1, int __x2, int __y2);
+typedef sjme_errorCode (*sjme_scritchui_pencilDrawLineFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil __g,
+	sjme_attrInValue sjme_jint __x1,
+	sjme_attrInValue sjme_jint __y1,
+	sjme_attrInValue sjme_jint __x2,
+	sjme_attrInValue sjme_jint __y2);
 
 /**
  * Draws the outline of the given rectangle using the current color and
@@ -111,10 +128,12 @@ typedef sjme_errorCode (*hardwareDrawLine)(@NotNull PencilBracket __g,
  * the given operation.
  * @since 22024/05/01
  */
-typedef sjme_errorCode (*hardwareDrawRect)(@NotNull PencilBracket __g,
-	int __x, int __y,
-	@Range(from = 0, to = Integer.MAX_VALUE) int __w,
-	@Range(from = 0, to = Integer.MAX_VALUE) int __h);
+typedef sjme_errorCode (*sjme_scritchui_pencilDrawRectFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil __g,
+	sjme_attrInValue sjme_jint __x,
+	sjme_attrInValue sjme_jint __y,
+	sjme_attrInPositive sjme_jint __w,
+	sjme_attrInPositive sjme_jint __h);
 
 /**
  * Draws the given substring.
@@ -131,16 +150,19 @@ typedef sjme_errorCode (*hardwareDrawRect)(@NotNull PencilBracket __g,
  * negative or exceed the string bounds.
  * @since 2024/05/01
  */
-typedef sjme_errorCode (*hardwareDrawSubstring)(@NotNull PencilBracket __g,
-	@NotNull String __s,
-	@Range(from = 0, to = Integer.MAX_VALUE) int __o, 
-	@Range(from = 0, to = Integer.MAX_VALUE) int __l,
-	int __x, int __y, int __anchor);
+typedef sjme_errorCode (*sjme_scritchui_pencilDrawSubstringFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil __g,
+	sjme_attrInNotNull sjme_lpcstr __s,
+	sjme_attrInPositive sjme_jint __o, 
+	sjme_attrInPositive sjme_jint __l,
+	sjme_attrInValue sjme_jint __x,
+	sjme_attrInValue sjme_jint __y,
+	sjme_attrInValue sjme_jint __anchor);
 
 /**
  * Draws a region of 32-bit RGB data into the target.
  *
- * @param __hardware The hardware graphics to draw with.
+ * @param __g The hardware graphics to draw with.
  * @param __data The source buffer.
  * @param __off The offset into the buffer.
  * @param __scanLen The scanline length.
@@ -149,8 +171,8 @@ typedef sjme_errorCode (*hardwareDrawSubstring)(@NotNull PencilBracket __g,
  * @param __ySrc The source Y position.
  * @param __wSrc The width of the source region.
  * @param __hSrc The height of the source region.
- * @param __trans Sprite translation and/or rotation, see
- * @c javax.microedition.lcdui.game.Sprite.
+ * @param __trans Sprite translation and/or rotation,
+ * see @c javax.microedition.lcdui.game.Sprite.
  * @param __xDest The destination X position, is translated.
  * @param __yDest The destination Y position, is translated.
  * @param __anch The anchor point.
@@ -161,18 +183,24 @@ typedef sjme_errorCode (*hardwareDrawSubstring)(@NotNull PencilBracket __g,
  * @return An error on null arguments.
  * @since 2024/05/01
  */
-typedef sjme_errorCode (*hardwareDrawXRGB)32Region(
-	@NotNull PencilBracket __hardware, @NotNull int[] __data,
-	@Range(from = 0, to = Integer.MAX_VALUE) int __off,
-	@Range(from = 0, to = Integer.MAX_VALUE) int __scanLen,
-	boolean __alpha, int __xSrc, int __ySrc,
-	@Range(from = 0, to = Integer.MAX_VALUE) int __wSrc,
-	@Range(from = 0, to = Integer.MAX_VALUE) int __hSrc,
-	int __trans, int __xDest, int __yDest, int __anch,
-	@Range(from = 0, to = Integer.MAX_VALUE) int __wDest,
-	@Range(from = 0, to = Integer.MAX_VALUE) int __hDest,
-	@Range(from = 0, to = Integer.MAX_VALUE) int __origImgWidth,
-	@Range(from = 0, to = Integer.MAX_VALUE) int __origImgHeight);
+typedef sjme_errorCode (*sjme_scritchui_pencilDrawXRGB32RegionFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil __g,
+	sjme_attrInNotNull int* __data,
+	sjme_attrInPositive sjme_jint __off,
+	sjme_attrInPositive sjme_jint __scanLen,
+	sjme_attrInValue sjme_jboolean __alpha,
+	sjme_attrInValue sjme_jint __xSrc,
+	sjme_attrInValue sjme_jint __ySrc,
+	sjme_attrInPositive sjme_jint __wSrc,
+	sjme_attrInPositive sjme_jint __hSrc,
+	sjme_attrInValue sjme_jint __trans,
+	sjme_attrInValue sjme_jint __xDest,
+	sjme_attrInValue sjme_jint __yDest,
+	sjme_attrInValue sjme_jint __anch,
+	sjme_attrInPositive sjme_jint __wDest,
+	sjme_attrInPositive sjme_jint __hDest,
+	sjme_attrInPositive sjme_jint __origImgWidth,
+	sjme_attrInPositive sjme_jint __origImgHeight);
 
 /**
  * Performs rectangular fill in hardware.
@@ -185,10 +213,12 @@ typedef sjme_errorCode (*hardwareDrawXRGB)32Region(
  * @return An error on @c NULL arguments.
  * @since 2024/05/01
  */
-typedef sjme_errorCode (*hardwareFillRect)(@NotNull PencilBracket __g,
-	int __x, int __y,
-	@Range(from = 0, to = Integer.MAX_VALUE) int __w,
-	@Range(from = 0, to = Integer.MAX_VALUE) int __h);
+typedef sjme_errorCode (*sjme_scritchui_pencilFillRectFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil __g,
+	sjme_attrInValue sjme_jint __x,
+	sjme_attrInValue sjme_jint __y,
+	sjme_attrInPositive sjme_jint __w,
+	sjme_attrInPositive sjme_jint __h);
 
 /**
  * Draws a filled triangle using the current color, the lines which make
@@ -205,13 +235,19 @@ typedef sjme_errorCode (*hardwareFillRect)(@NotNull PencilBracket __g,
  * not actually support the given operation.
  * @since 2024/05/01
  */
-typedef sjme_errorCode (*hardwareFillTriangle)(@NotNull PencilBracket __g,
-	int __x1, int __y1, int __x2, int __y2, int __x3, int __y3);
+typedef sjme_errorCode (*sjme_scritchui_pencilFillTriangleFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil __g,
+	sjme_attrInValue sjme_jint __x1,
+	sjme_attrInValue sjme_jint __y1,
+	sjme_attrInValue sjme_jint __x2,
+	sjme_attrInValue sjme_jint __y2,
+	sjme_attrInValue sjme_jint __x3,
+	sjme_attrInValue sjme_jint __y3);
 
 /**
  * Creates a hardware reference bracket to the native hardware graphics.
  * 
- * @param __pf The {@link UIPixelFormat} used for the draw.
+ * @param __pf The @c sjme_gfx_pixelFormat used for the draw.
  * @param __bw The buffer width, this is the scanline width of the buffer.
  * @param __bh The buffer height.
  * @param __buf The target buffer to draw to, this is cast to the correct
@@ -226,16 +262,18 @@ typedef sjme_errorCode (*hardwareFillTriangle)(@NotNull PencilBracket __g,
  * @return An error if the requested graphics are not valid.
  * @since 2024/05/01
  */
-public static native PencilBracket hardwareGraphics(
-	@MagicConstant(valuesFromClass = UIPixelFormat.class) int __pf,
-	@Range(from = 0, to = Integer.MAX_VALUE) int __bw,
-	@Range(from = 0, to = Integer.MAX_VALUE) int __bh,
-	@NotNull Object __buf,
-	@Range(from = 0, to = Integer.MAX_VALUE) int __offset,
-	@Nullable int[] __pal,
-	int __sx, int __sy,
-	@Range(from = 0, to = Integer.MAX_VALUE) int __sw,
-	@Range(from = 0, to = Integer.MAX_VALUE) int __sh);
+typedef sjme_errorCode (*sjme_scritchui_pencilGraphicsFunc)(
+	sjme_attrInOutNotNull sjme_scritchui_pencil* outPencil,
+	sjme_attrInValue sjme_gfx_pixelFormat __pf,
+	sjme_attrInPositive sjme_jint __bw,
+	sjme_attrInPositive sjme_jint __bh,
+	sjme_attrInNotNull void* __buf,
+	sjme_attrInPositive sjme_jint __offset,
+	sjme_attrInNullable sjme_jint __pal,
+	sjme_attrInValue sjme_jint __sx,
+	sjme_attrInValue sjme_jint __sy,
+	sjme_attrInPositive sjme_jint __sw,
+	sjme_attrInPositive sjme_jint __sh);
 
 /**
  * Sets the alpha color for graphics.
@@ -245,8 +283,9 @@ public static native PencilBracket hardwareGraphics(
  * @return An error on @c NULL arguments.
  * @since 2024/05/01
  */
-typedef sjme_errorCode (*hardwareSetAlphaColor)(@NotNull PencilBracket __g,
-	int __argb);
+typedef sjme_errorCode (*sjme_scritchui_pencilSetAlphaColorFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil __g,
+	sjme_attrInValue sjme_jint __argb);
 
 /**
  * Sets the blending mode to use.
@@ -256,8 +295,9 @@ typedef sjme_errorCode (*hardwareSetAlphaColor)(@NotNull PencilBracket __g,
  * @return An error on @c NULL arguments.
  * @since 2024/05/01
  */
-typedef sjme_errorCode (*hardwareSetBlendingMode)(
-	@NotNull PencilBracket __g, int __mode);
+typedef sjme_errorCode (*sjme_scritchui_pencilSetBlendingModeFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil __g,
+	sjme_attrInValue sjme_jint __mode);
 
 /**
  * Sets the clipping rectangle position.
@@ -270,10 +310,12 @@ typedef sjme_errorCode (*hardwareSetBlendingMode)(
  * @return An error on @c NULL arguments.
  * @since 2024/05/01
  */
-typedef sjme_errorCode (*hardwareSetClip)(@NotNull PencilBracket __g,
-	int __x, int __y,
-	@Range(from = 0, to = Integer.MAX_VALUE) int __w,
-	@Range(from = 0, to = Integer.MAX_VALUE) int __h);
+typedef sjme_errorCode (*sjme_scritchui_pencilSetClipFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil __g,
+	sjme_attrInValue sjme_jint __x,
+	sjme_attrInValue sjme_jint __y,
+	sjme_attrInPositive sjme_jint __w,
+	sjme_attrInPositive sjme_jint __h);
 
 /**
  * Sets that the graphics should now use the default font.
@@ -283,8 +325,8 @@ typedef sjme_errorCode (*hardwareSetClip)(@NotNull PencilBracket __g,
  * this operation.
  * @since 2024/05/01
  */
-typedef sjme_errorCode (*hardwareSetDefaultFont)(
-	@NotNull PencilBracket __g);
+typedef sjme_errorCode (*sjme_scritchui_pencilSetDefaultFontFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil __g);
 
 /**
  * Sets to use the specified font.
@@ -297,9 +339,11 @@ typedef sjme_errorCode (*hardwareSetDefaultFont)(
  * this operation.
  * @since 2024/05/01
  */
-typedef sjme_errorCode (*hardwareSetFont)(@NotNull PencilBracket __g,
-	@NotNull String __name, int __style,
-	@Range(from = 1, to = Integer.MAX_VALUE) int __pixelSize);
+typedef sjme_errorCode (*sjme_scritchui_pencilSetFontFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil __g,
+	sjme_attrInNotNull sjme_lpcstr __name,
+	sjme_attrInValue sjme_jint __style,
+	sjme_attrInPositiveNonZero sjme_jint __pixelSize);
 
 /**
  * Sets the stroke style for the hardware graphics.
@@ -309,9 +353,9 @@ typedef sjme_errorCode (*hardwareSetFont)(@NotNull PencilBracket __g,
  * @return An error on @c NULL arguments.
  * @since 2024/05/01
  */
-typedef sjme_errorCode (*hardwareSetStrokeStyle)(
-	@NotNull PencilBracket __g,
-	int __style);
+typedef sjme_errorCode (*sjme_scritchui_pencilSetStrokeStyleFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil __g,
+	sjme_attrInValue sjme_jint __style);
 
 /**
  * Translates drawing operations.
@@ -322,8 +366,10 @@ typedef sjme_errorCode (*hardwareSetStrokeStyle)(
  * @return An error on @c NULL arguments.
  * @since 2024/05/01
  */
-typedef sjme_errorCode (*hardwareTranslate)(@NotNull PencilBracket __g,
-	int __x, int __y);
+typedef sjme_errorCode (*sjme_scritchui_pencilTranslateFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil __g,
+	sjme_attrInValue sjme_jint __x,
+	sjme_attrInValue sjme_jint __y);
 
 /*--------------------------------------------------------------------------*/
 
