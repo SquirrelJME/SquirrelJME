@@ -371,6 +371,68 @@ typedef sjme_errorCode (*sjme_scritchui_pencilTranslateFunc)(
 	sjme_attrInValue sjme_jint __x,
 	sjme_attrInValue sjme_jint __y);
 
+/** Quick definition for functions. */
+#define SJME_SCRITCHUI_QUICK_PENCIL(what) \
+	SJME_TOKEN_PASTE3(sjme_scritchui_pencil, what, Func) what
+
+/**
+ * ScritchUI Pencil implementation functions.
+ * 
+ * @since 2024/05/01
+ */
+typedef struct sjme_scritchui_pencilFunctions
+{
+	/** @c CopyArea . */
+	SJME_SCRITCHUI_QUICK_PENCIL(CopyArea);
+	
+	/** @c DrawChars . */
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawChars);
+	
+	/** @c DrawLine . */
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawLine);
+	
+	/** @c DrawRect . */
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawRect);
+	
+	/** @c DrawSubstring . */
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawSubstring);
+	
+	/** @c DrawXRGB32Region . */
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawXRGB32Region);
+	
+	/** @c FillRect . */
+	SJME_SCRITCHUI_QUICK_PENCIL(FillRect);
+	
+	/** @c FillTriangle . */
+	SJME_SCRITCHUI_QUICK_PENCIL(FillTriangle);
+	
+	/** @c Graphics . */
+	SJME_SCRITCHUI_QUICK_PENCIL(Graphics);
+	
+	/** @c SetAlphaColor . */
+	SJME_SCRITCHUI_QUICK_PENCIL(SetAlphaColor);
+	
+	/** @c SetBlendingMode . */
+	SJME_SCRITCHUI_QUICK_PENCIL(SetBlendingMode);
+	
+	/** @c SetClip . */
+	SJME_SCRITCHUI_QUICK_PENCIL(SetClip);
+	
+	/** @c SetDefaultFont . */
+	SJME_SCRITCHUI_QUICK_PENCIL(SetDefaultFont);
+	
+	/** @c SetFont . */
+	SJME_SCRITCHUI_QUICK_PENCIL(SetFont);
+	
+	/** @c SetStrokeStyle . */
+	SJME_SCRITCHUI_QUICK_PENCIL(SetStrokeStyle);
+	
+	/** @c Translate . */
+	SJME_SCRITCHUI_QUICK_PENCIL(Translate);
+} sjme_scritchui_pencilFunctions;
+
+#undef SJME_SCRITCHUI_QUICK_PENCIL
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
