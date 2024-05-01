@@ -98,7 +98,7 @@ public final class CMakeUtils
 	 * Requests the version of CMake.
 	 *
 	 * @return The resultant CMake version or {@code null} if there is no
-	 * CMake available.
+	 * CMake available or the version could not be parsed.
 	 * @since 2024/04/01
 	 */
 	public static VersionNumber cmakeExeVersion()
@@ -108,9 +108,10 @@ public final class CMakeUtils
 		if (cmakeExe == null)
 			return null;
 		
+		String rawStr = null;
 		try
 		{
-			String rawStr = CMakeUtils.cmakeExecuteOutput(null,
+			rawStr = CMakeUtils.cmakeExecuteOutput(null,
 				"version", "--version");
 			
 			// Read in what looks like a version number
@@ -131,17 +132,31 @@ public final class CMakeUtils
 					if (ln.startsWith("cmake version"))
 						return VersionNumber.parse(
 							ln.substring("cmake version".length()).trim());
+					
+					// Are there digits in here?
+					int firstDig = -1;
+					for (char c = '0'; c <= '9'; c++)
+					{
+						int maybeDig = ln.indexOf(c);
+						if (maybeDig >= 0)
+							if (firstDig < 0 || maybeDig < firstDig)
+								firstDig = maybeDig;
+					}
+					
+					// Was a digit actually found?
+					if (firstDig >= 0)
+						return VersionNumber.parse(
+							ln.substring(firstDig).trim());
 				}
 			}
 			
 			// Failed
-			throw new RuntimeException(
-				"CMake executed but there was no version.");
+			return null;
 		}
 		catch (IOException __e)
 		{
-			throw new RuntimeException("Could not determine CMake version.",
-				__e);
+			throw new RuntimeException(
+				"Could not determine CMake version: " + rawStr, __e);
 		}
 	}
 	
@@ -208,14 +223,17 @@ public final class CMakeUtils
 		String... __args)
 		throws IOException
 	{
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
+		try (ByteArrayOutputStream out = new ByteArrayOutputStream();
+			ByteArrayOutputStream err = new ByteArrayOutputStream())
 		{
 			// Run command
-			CMakeUtils.cmakeExecutePipe(__workDir, null, baos, null,
+			CMakeUtils.cmakeExecutePipe(__workDir, null, out, err,
 				__buildType, __args);
 			
-			// Decode to output
-			return baos.toString("utf-8");
+			// Return output for later decoding
+			return out.toString("utf-8") +
+				System.getProperty("line.separator") +
+				err.toString("utf-8");
 		}
 	}
 	
@@ -346,9 +364,12 @@ public final class CMakeUtils
 		// Make sure the output build directory exists
 		Files.createDirectories(cmakeBuild);
 		
+		// Debug version
+		VersionNumber version = CMakeUtils.cmakeExeVersion();
+		__task.getLogger().lifecycle("CMake version: " + version);
+		
 		// Configure CMake first before we continue with anything
 		// Note that newer CMake has a better means of specifying the path
-		VersionNumber version = CMakeUtils.cmakeExeVersion();
 		if (version != null && version.compareTo(
 			VersionNumber.parse("3.13")) >= 0)
 			CMakeUtils.cmakeExecute(__task.cmakeBuild, __task.getLogger(),
