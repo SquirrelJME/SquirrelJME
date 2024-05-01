@@ -283,3 +283,8 @@ macro(squirreljme_target_binary_output target where)
 			ARCHIVE_OUTPUT_DIRECTORY_${outputConfig} "${where}")
 	endforeach()
 endmacro()
+
+# Turn some warnings into errors
+if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+	add_compile_options("-Werror=implicit-function-declaration")
+endif()

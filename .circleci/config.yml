@@ -50,23 +50,8 @@ executors:
   #      JAVA_OPTS: -Xmx3g
 
   build-on-macos:
-    macos:
-      xcode: 13.4.1
-    resource_class: macos.x86.medium.gen2
-    environment:
-      # Do not auto-update brew as this takes forever, and we really just want
-      # a single package
-      HOMEBREW_NO_AUTO_UPDATE: 1
-
-      # Do not auto-clean brew, this wastes time and everything will be thrown
-      # out when the container finishes anyway
-      HOMEBREW_CLEANUP_MAX_AGE_DAYS: 730
-
-      # Do not send analytics
-      HOMEBREW_NO_ANALYTICS: 1
-
-      # Do not clean up after installation
-      HOMEBREW_NO_INSTALL_CLEANUP: 1
+    machine: true
+    resource_class: squirreljme/squirreljme-macos-x86
 
   build-on-macos-m1:
     machine: true
@@ -149,19 +134,40 @@ commands:
       - store_artifacts:
           path: <<parameters.store-home>>/test-results
 
+  # Standard apt-get install
+  linux-debian-apt-get-install:
+    parameters:
+      packages:
+        type: string
+    steps:
+      - run:
+          name: Install packages
+          environment:
+            DEBIAN_FRONTEND: noninteractive
+            NEEDRESTART_MODE: l
+            NEEDRESTART_SUSPEND: 1
+          command: |
+            sudo apt-get install -yqq --no-install-recommends <<parameters.packages>>
+
   # Install standard packages in Debian/Ubuntu
   linux-install-required:
     steps:
       - run:
           name: Install Sudo
-          command: apt-get update -y && apt-get -y install sudo || echo "Failed, but ignoring..."
+          environment:
+            DEBIAN_FRONTEND: noninteractive
+            NEEDRESTART_MODE: l
+            NEEDRESTART_SUSPEND: 1
+          command: apt-get update -y && apt-get -yqq install sudo || echo "Failed, but ignoring..."
       - run:
           name: Update package lists
+          environment:
+            DEBIAN_FRONTEND: noninteractive
+            NEEDRESTART_MODE: l
+            NEEDRESTART_SUSPEND: 1
           command: sudo apt-get update -y
-      - run:
-          name: Install required dependencies
-          command: |
-            sudo apt-get install -y --no-install-recommends cmake build-essential curl wget openjdk-17-jdk gcc g++ make clang git openssh-client
+      - linux-debian-apt-get-install:
+          packages: cmake build-essential curl wget openjdk-17-jdk gcc g++ make clang git openssh-client
 
   # Install required packages on Windows
   windows-install-required:
@@ -183,9 +189,8 @@ commands:
   # Install what is required by Flatpak
   flatpak-install-required:
     steps:
-      - run:
-          name: Flatpak Base
-          command: sudo apt-get install -y flatpak flatpak-builder
+      - linux-debian-apt-get-install:
+          packages: flatpak flatpak-builder
       - run:
           name: Register Flathub
           command: flatpak remote-add --user flathub https://dl.flathub.org/repo/flathub.flatpakrepo
@@ -346,7 +351,6 @@ jobs:
     executor: build-on-macos
     steps:
       - checkout
-      - macos-install-required
       - run:
           name: Gradle Build and Test
           command: timeout --foreground 60m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
@@ -382,7 +386,6 @@ jobs:
     executor: build-on-macos
     steps:
       - checkout
-      - macos-install-required
       - attach_workspace:
           at: .
       - standalone-unix-common-build

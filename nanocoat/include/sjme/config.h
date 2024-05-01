@@ -43,7 +43,10 @@ extern "C" {
 #endif
 
 /* The current operating system. */
-#if defined(__linux__) || defined(linux) || defined(__linux)
+#if defined(__3DS__) || defined(_3DS)
+	/** Nintendo 3DS is available. */
+	#define SJME_CONFIG_HAS_NINTENDO_3DS
+#elif defined(__linux__) || defined(linux) || defined(__linux)
 	/** Linux is available. */
 	#define SJME_CONFIG_HAS_LINUX
 #elif defined(__CYGWIN__)
@@ -514,17 +517,30 @@ extern "C" {
 #if defined(SJME_CONFIG_HAS_LINUX) || \
 	defined(SJME_CONFIG_HAS_BSD) || \
     defined(SJME_CONFIG_HAS_BEOS)
+	/** Dynamic library path name as static define. */
 	#define SJME_CONFIG_DYLIB_PATHNAME(x) \
 		"lib" x ".so"
 #elif defined(SJME_CONFIG_HAS_CYGWIN)
+	/** Dynamic library path name as static define. */
 	#define SJME_CONFIG_DYLIB_PATHNAME(x) \
 		"lib" x ".dll"
 #elif defined(SJME_CONFIG_HAS_WINDOWS)
+	/** Dynamic library path name as static define. */
 	#define SJME_CONFIG_DYLIB_PATHNAME(x) \
 		"" x ".dll"
 #elif defined(SJME_CONFIG_HAS_MACOS)
+	/** Dynamic library path name as static define. */
 	#define SJME_CONFIG_DYLIB_PATHNAME(x) \
 		"lib" x ".dylib"
+#else
+	/** Dynamic library path name as static define. */
+	#define SJME_CONFIG_DYLIB_PATHNAME(x) NULL
+#endif
+
+/* Nintendo 3DS: devkitPro has broken/unimplemented pthreads. */
+#if defined(SJME_CONFIG_HAS_NINTENDO_3DS)
+	/** Use fallback threading regardless of the system. */
+	#define SJME_CONFIG_HAS_THREADS_FALLBACK
 #endif
 
 /*--------------------------------------------------------------------------*/

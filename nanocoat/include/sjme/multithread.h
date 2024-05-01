@@ -16,6 +16,20 @@
 #ifndef SQUIRRELJME_MULTITHREAD_H
 #define SQUIRRELJME_MULTITHREAD_H
 
+#include "sjme/config.h"
+
+#if defined(SJME_CONFIG_HAS_THREADS_FALLBACK)
+	/* Clear pthreads. */
+	#if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
+		#undef SJME_CONFIG_HAS_THREADS_PTHREAD
+	#endif
+
+	/* Clear Win32 threads. */ 
+	#if defined(SJME_CONFIG_HAS_THREADS_WIN32)
+		#undef SJME_CONFIG_HAS_THREADS_WIN32
+	#endif
+#endif
+
 #if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
 	#include <pthread.h>
 	#include <errno.h>
@@ -73,7 +87,28 @@ extern "C" {
 	#define SJME_THREAD_NULL NULL
 	
 	/** Error as thread result. */
-	#define SJME_THREAD_RESULT(err) ((DWORD)(err));
+	#define SJME_THREAD_RESULT(err) ((DWORD)(err))
+#else
+	/** Threads not supported. */
+	typedef struct sjme_thread_unsupported
+	{
+		int unsupported;
+	} sjme_thread_unsupported;
+	
+	/** A single thread. */
+	typedef sjme_thread_unsupported* sjme_thread;
+	
+	/** Thread result. */
+	typedef int sjme_thread_result;
+	
+	/** Thread parameter. */
+	typedef void* sjme_thread_parameter;
+	
+	/** Null thread handle. */
+	#define SJME_THREAD_NULL NULL
+	
+	/** Error as thread result. */
+	#define SJME_THREAD_RESULT(err) ((int)(err))
 #endif
 
 /**

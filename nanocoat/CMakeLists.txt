@@ -69,11 +69,6 @@ squirreljme_include("assets.cmake")
 # Multi-library declarations
 squirreljme_include("multilib.cmake")
 
-# Turn some warnings into errors
-if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-	add_compile_options("-Werror=implicit-function-declaration")
-endif()
-
 # Visual studio does not like a bunch of standard C functions, even those
 # that take sizes...
 if(MSVC)

@@ -19,6 +19,11 @@ import java.util.Locale;
  */
 public final class JavaMEMidlet
 {
+	/** Pseudo none class. */
+	public static final JavaMEMidlet NONE =
+		new JavaMEMidlet("XSQUIRRELJMENONE", null,
+			"XSQUIRRELJMENONE");
+	
 	/** Which MIDlet is to be run? */
 	public static final String MIDLET_PROPERTY =
 		"squirreljme.midlet";
