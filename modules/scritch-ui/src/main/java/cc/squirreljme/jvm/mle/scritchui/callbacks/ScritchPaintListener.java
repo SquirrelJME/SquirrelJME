@@ -9,9 +9,9 @@
 
 package cc.squirreljme.jvm.mle.scritchui.callbacks;
 
-import cc.squirreljme.jvm.mle.brackets.UIDrawableBracket;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPencilBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.Async;
@@ -60,5 +60,23 @@ public interface ScritchPaintListener
 		@Range(from = 0, to = Integer.MAX_VALUE) int __sy,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __sw,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __sh,
+		int __special);
+	
+	/**
+	 * Callback that is used to draw the given component.
+	 *
+	 * @param __component The component to draw on.
+	 * @param __pencil The pencil to draw with.
+	 * @param __sw Surface width.
+	 * @param __sh Surface height.
+	 * @param __special Special value for painting, may be {@code 0} or any
+	 * other value if it is meaningful to what is being painted.
+	 * @since 2024/05/01
+	 */
+	@SquirrelJMEVendorApi
+	@Async.Execute
+	void paint(@NotNull ScritchComponentBracket __component,
+		ScritchPencilBracket __pencil,
+		int __sw, int __sh,
 		int __special);
 }

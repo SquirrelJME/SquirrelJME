@@ -12,10 +12,11 @@ package cc.squirreljme.emulator.scritchui.dylib;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchPaintListener;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.IntBuffer;
-import java.nio.ShortBuffer;
+import java.util.function.Supplier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -73,26 +74,21 @@ public class DylibPaintListener
 		int __sx, int __sy, int __sw, int __sh,
 		int __special)
 	{
-		// Get backing array
-		Object array;
-		boolean isCopy = false;
+		// Make sure the buffer is always in native order
+		__buf.order(ByteOrder.nativeOrder());
+		if (__pal != null)
+			__pal.order(ByteOrder.nativeOrder());
+		
+		// Map array to base type
+		Buffer mappedBuf, arrayBuf;
+		Supplier<Buffer> makeArrayBuf;
 		switch (__pf)
 		{
 			case UIPixelFormat.INT_RGBA8888:
 			case UIPixelFormat.INT_RGB888:
-				try
-				{
-					array = __buf.asIntBuffer().array();
-				}
-				catch (UnsupportedOperationException ignored)
-				{
-					IntBuffer mapped = __buf.asIntBuffer();
-					int n = mapped.capacity();
-					int[] copy = new int[n];
-					mapped.get(copy);
-					array = copy;
-					isCopy = true;
-				}
+				mappedBuf = __buf.asIntBuffer();
+				makeArrayBuf = () -> IntBuffer.wrap(
+					new int[__buf.limit() / 4]);
 				break;
 			
 			case UIPixelFormat.SHORT_RGBA4444:
@@ -100,63 +96,51 @@ public class DylibPaintListener
 			case UIPixelFormat.SHORT_RGB555:
 			case UIPixelFormat.SHORT_ABGR1555:
 			case UIPixelFormat.SHORT_INDEXED65536:
-				try
-				{
-					array = __buf.asShortBuffer().array();
-				}
-				catch (UnsupportedOperationException ignored)
-				{
-					ShortBuffer mapped = __buf.asShortBuffer();
-					int n = mapped.capacity();
-					short[] copy = new short[n];
-					mapped.get(copy);
-					array = copy;
-					isCopy = true;
-				}
+				mappedBuf = __buf.asShortBuffer();
+				makeArrayBuf = () -> IntBuffer.wrap(
+					new int[__buf.limit() / 2]);
 				break;
 				
 			case UIPixelFormat.BYTE_INDEXED256:
 			case UIPixelFormat.PACKED_INDEXED4:
 			case UIPixelFormat.PACKED_INDEXED2:
 			case UIPixelFormat.PACKED_INDEXED1:
-				array = __buf.array();
+				mappedBuf = __buf;
+				makeArrayBuf = null;
 				break;
 				
 			default:
-				return;
+				throw new IllegalArgumentException("Invalid pf: " + __pf);
 		}
 		
-		// Forward
+		// We cannot directly access the array, so do we need to clone it?
+		if (mappedBuf.hasArray() || makeArrayBuf == null)
+			arrayBuf = mappedBuf;
+		else
+		{
+			
+		}
+		
 		try
 		{
+			// Forward
 			this.listener.paint(__component, __pf, __bw, __bh,
-				array, __offset,
+				arrayBuf.array(), __offset,
 				(__pal != null ? __pal.asIntBuffer().array() : null),
 				__sx, __sy, __sw, __sh, __special);
 		}
 		
-		// Copy back the written buffer
+		// Copy data back to the buffer
 		finally
 		{
-			if (isCopy)
+			if (!mappedBuf.hasArray() && makeArrayBuf != null)
 			{
-				if (array instanceof int[])
-				{
-					IntBuffer mapped = __buf.asIntBuffer();
-					mapped.position(0);
-					mapped.put((int[])array);
-				}
-				else if (array instanceof short[])
-				{
-					ShortBuffer mapped = __buf.asShortBuffer();
-					mapped.position(0);
-					mapped.put((short[])array);
-				}
-				else
-				{
-					__buf.position(0);
-					__buf.put((byte[])array);
-				}
+				// Rewind back to the start
+				mappedBuf.rewind();
+				
+				// Copy everything in from the old buffer
+				mappedBuf.rewind();
+				
 			}
 		}
 	}

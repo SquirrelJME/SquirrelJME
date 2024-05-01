@@ -48,6 +48,26 @@ typedef enum sjme_scritchui_listenerClass
 	SJME_NUM_SCRITCHUI_LISTENER,
 } sjme_scritchui_listenerClass;
 
+/** Declares a ScritchUI listener set. */
+#define SJME_SCRITCHUI_LISTENER_DECLARE(what) \
+	typedef struct SJME_TOKEN_PASTE(sjme_scritchui_listener_, what) \
+	{ \
+		/** Front end data. */ \
+		sjme_frontEnd frontEnd; \
+		 \
+		/** Extra data as required. */ \
+		sjme_intPointer extra; \
+		 \
+		/** Listener callback. */ \
+		SJME_TOKEN_PASTE3(sjme_scritchui_, what, ListenerFunc) callback; \
+	} SJME_TOKEN_PASTE(sjme_scritchui_listener_, what)
+
+/** Size listener. */
+SJME_SCRITCHUI_LISTENER_DECLARE(size);
+
+/** Paint listener. */
+SJME_SCRITCHUI_LISTENER_DECLARE(paint);
+
 /**
  * Listeners for components.
  * 
@@ -56,13 +76,7 @@ typedef enum sjme_scritchui_listenerClass
 typedef struct sjme_scritchui_uiComponentListeners
 {
 	/** Listener for when size changes. */
-	sjme_scritchui_sizeListenerFunc size;
-	
-	/** Front end for size. */
-	sjme_frontEnd sizeFrontEnd;
-	
-	/** Extra data for size if needed. */
-	sjme_intPointer sizeExtra;
+	sjme_scritchui_listener_size size;
 } sjme_scritchui_uiComponentListeners;
 
 typedef struct sjme_scritchui_uiComponentBase
@@ -91,10 +105,7 @@ typedef struct sjme_scritchui_uiContainerBase
 typedef struct sjme_scritchui_uiPaintableListeners
 {
 	/** Paint listener. */
-	sjme_scritchui_paintListenerFunc paint;
-	
-	/** Front end for paint listener. */
-	sjme_frontEnd paintFrontEnd;
+	sjme_scritchui_listener_paint paint;
 } sjme_scritchui_uiPaintableListeners;
 
 /**

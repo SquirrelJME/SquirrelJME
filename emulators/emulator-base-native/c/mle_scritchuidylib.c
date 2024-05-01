@@ -100,6 +100,56 @@ typedef struct mle_loopExecuteData
 	jobject runnable;
 } mle_loopExecuteData;
 
+static void mle_scritchUiRecoverCallback(JNIEnv* env,
+	sjme_scritchui_uiComponent inComponent,
+	sjme_frontEnd* frontEndP,
+	sjme_lpcstr methodName,
+	sjme_lpcstr methodType,
+	jobject* componentObjectP,
+	jobject* javaCallbackP,
+	jmethodID* javaCallbackIdP)
+{
+	jclass listenerClass;
+	
+	/* Get the object that represents the component. */
+	*componentObjectP = (jobject)inComponent->common.frontEnd.wrapper;
+	
+	/* Recover the callback we want to call. */
+	*javaCallbackP = frontEndP->wrapper;
+	
+	/* Get class of the listener. */
+	listenerClass = (*env)->GetObjectClass(env, *javaCallbackP);
+	if (listenerClass == NULL)
+		sjme_die("Listener has no class?");
+	
+	/* Get method to call. */
+	*javaCallbackIdP = (*env)->GetMethodID(env, listenerClass,
+		methodName, methodType);
+	if (*javaCallbackIdP == NULL)
+		sjme_die("Missing method %s %s?", methodName, methodType);
+}
+
+static void mle_scritchUiRecoverEnv(
+	sjme_scritchui inState,
+	JNIEnv** outEnv)
+{
+	JavaVM* vm;
+	JNIEnv* env;
+	jint error;
+	
+	/* Restore VM. */
+	vm = (JavaVM*)inState->common.frontEnd.data;
+		
+	/* Relocate env. */
+	env = NULL;
+	error = (*vm)->GetEnv(vm, &env, JNI_VERSION_1_1);
+	if (env == NULL)
+		sjme_die("Could not relocate env: %d??", error);
+	
+	/* Success! */
+	*outEnv = env;
+}
+
 static sjme_errorCode mle_scritchUiPaintListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
@@ -117,33 +167,21 @@ static sjme_errorCode mle_scritchUiPaintListener(
 	sjme_attrInPositive sjme_jint sh,
 	sjme_attrInValue sjme_jint special)
 {
-	jint error;
-	JavaVM* vm;
 	JNIEnv* env;
 	sjme_scritchui_uiPaintable paint;
-	sjme_scritchui_uiPaintableListeners* paintListener;
-	jclass javaListenerClassy;
+	sjme_scritchui_listener_paint* infoUser;
 	jobject componentObject;
-	jobject javaListener;
 	jobject bufBuffer;
 	jobject palBuffer;
-	jmethodID methodId;
+	jobject javaCallback;
+	jmethodID javaCallbackId;
 	
 	if (inState == NULL || inComponent == NULL || buf == NULL)
 		sjme_die("Null arguments to paint");
-
-	/* Restore VM. */
-	vm = (JavaVM*)inState->common.frontEnd.data;
-		
-	/* Relocate env. */
-	env = NULL;
-	error = (*vm)->GetEnv(vm, &env, JNI_VERSION_1_1);
-	if (env == NULL)
-		sjme_die("Could not relocate env: %d??", error);
-
-	/* Get our wrapper callback back. */
-	componentObject = (jobject)inComponent->common.frontEnd.wrapper;
 	
+	/* Relocate env. */
+	mle_scritchUiRecoverEnv(inState, &env);
+		
 	/* Get paint information. */
 	paint = NULL;
 	if (sjme_error_is(inState->intern->getPaintable(inState,
@@ -151,31 +189,27 @@ static sjme_errorCode mle_scritchUiPaintListener(
 		sjme_die("Not paintable?");
 	
 	/* Get listener from paint. */
-	paintListener = &SJME_SCRITCHUI_LISTENER_USER(paint);
-	javaListener = (jobject)paintListener->paintFrontEnd.wrapper;
+	infoUser = &SJME_SCRITCHUI_LISTENER_USER(paint, paint);
 	
-	/* Get class of object. */
-	javaListenerClassy = (*env)->GetObjectClass(env, javaListener);
-	if (javaListenerClassy == NULL)
-		sjme_die("Listener has no class?");
+	/* Recover callback information. */
+	componentObject = NULL;
+	javaCallback = NULL;
+	javaCallbackId = NULL;
+	mle_scritchUiRecoverCallback(env, inComponent,
+		&infoUser->frontEnd,
+		"paint",
+		DESC_SCRITCHUI_DYLIB_PAINT_LISTENER_FUNC,
+		&componentObject, &javaCallback,
+		&javaCallbackId);
 	
-	/* Get method to call. */
-	methodId = (*env)->GetMethodID(env, javaListenerClassy,
-		"paint", DESC_SCRITCHUI_DYLIB_PAINT_LISTENER_FUNC);
-	if (methodId == NULL)
-		sjme_die("No ByteBuffer based callback exists (%s)?",
-			DESC_SCRITCHUI_DYLIB_PAINT_LISTENER_FUNC);
-		
 	/* Create buffers for buffer and palette. */
 	bufBuffer = (*env)->NewDirectByteBuffer(env,
 		SJME_POINTER_OFFSET(buf, bufOff), bufLen);
-	palBuffer = NULL;
-	if (pal != NULL)
-		palBuffer = (*env)->NewDirectByteBuffer(env,
-			SJME_POINTER_OFFSET(buf, bufOff), numPal * 4);
+	palBuffer = (pal == NULL ? NULL : (*env)->NewDirectByteBuffer(env,
+		SJME_POINTER_OFFSET(buf, bufOff), numPal * 4));
 	
 	/* Forward call. */
-	(*env)->CallVoidMethod(env, javaListener, methodId,
+	(*env)->CallVoidMethod(env, javaCallback, javaCallbackId,
 		componentObject,
 		pf,
 		bw,

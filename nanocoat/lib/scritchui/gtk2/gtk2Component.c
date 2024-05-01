@@ -10,12 +10,13 @@
 #include "lib/scritchui/gtk2/gtk2.h"
 #include "lib/scritchui/core/core.h"
 
-static gboolean sjme_scritchui_gtk2_eventConfigure(GtkWidget* widget,
+static gboolean sjme_scritchui_gtk2_eventConfigure(
+	sjme_attrUnused GtkWidget* widget,
 	GdkEventConfigure* event, gpointer data)
 {
 	sjme_scritchui inState;
 	sjme_scritchui_uiComponent inComponent;
-	sjme_scritchui_sizeListenerFunc listener;
+	sjme_scritchui_listener_size* infoCore;
 	
 	/* Restore component. */
 	inComponent = (sjme_scritchui_uiComponent)data;
@@ -25,24 +26,26 @@ static gboolean sjme_scritchui_gtk2_eventConfigure(GtkWidget* widget,
 	/* Restore state. */
 	inState = inComponent->common.state;
 	
+	/* Get listener info. */
+	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(inComponent, size);
+	
 	/* Forward accordingly. */
-	listener = SJME_SCRITCHUI_LISTENER_CORE(inComponent).size;
-	if (listener != NULL)
-		listener(inState, inComponent,
+	if (infoCore->callback != NULL)
+		infoCore->callback(inState, inComponent,
 			event->width, event->height);
 	
 	/* Always continue handling. */
 	return TRUE;
 }
 
-static gboolean sjme_scritchui_gtk2_eventExpose(GtkWidget* widget,
-	GdkEventExpose* event, gpointer data)
+static gboolean sjme_scritchui_gtk2_eventExpose(
+	GtkWidget* widget, GdkEventExpose* event, gpointer data)
 {
 	sjme_errorCode error;
 	sjme_scritchui inState;
 	sjme_scritchui_uiComponent inComponent;
 	sjme_scritchui_uiPaintable paint;
-	sjme_scritchui_paintListenerFunc listener;
+	sjme_scritchui_listener_paint* infoCore;
 	sjme_jint rawArea, x, y, w, h;
 	sjme_jint bufLen;
 	sjme_jint* rawPixels;
@@ -62,9 +65,11 @@ static gboolean sjme_scritchui_gtk2_eventExpose(GtkWidget* widget,
 		paint == NULL)
 		return TRUE;
 	
+	/* Get listener info. */
+	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(paint, paint);
+	
 	/* No actual paint listener? */
-	listener = paint->listeners[SJME_SCRITCHUI_LISTENER_CORE].paint;
-	if (listener == NULL)
+	if (infoCore->callback == NULL)
 		return TRUE;
 	
 	/* Determine area to draw. */
@@ -85,7 +90,7 @@ static gboolean sjme_scritchui_gtk2_eventExpose(GtkWidget* widget,
 	memset(rawPixels, 0, bufLen);
 	
 	/* Forward to callback. */
-	error = listener(inState, inComponent,
+	error = infoCore->callback(inState, inComponent,
 		SJME_GFX_PIXEL_FORMAT_INT_RGB888,
 		w, h,
 		rawPixels, 0, bufLen,
@@ -164,6 +169,7 @@ sjme_errorCode sjme_scritchui_gtk2_componentSetPaintListener(
 	sjme_errorCode error;
 	GtkWidget* widget;
 	sjme_scritchui_uiPaintable paint;
+	sjme_scritchui_listener_paint* infoCore;
 	
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -174,22 +180,43 @@ sjme_errorCode sjme_scritchui_gtk2_componentSetPaintListener(
 		inComponent, &paint)) || paint == NULL)
 		return sjme_error_default(error);
 	
-	/* For GTK we do not give it a listener, we just say we paint on it. */
-	widget = (GtkWidget*)inComponent->common.handle;
-	gtk_widget_set_app_paintable(widget,
-		inListener != NULL);
+	/* Get listener info. */
+	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(paint, paint);
 	
-	/* Disconnect old handler if one was used. */
+	/* Recover widget. */
+	widget = (GtkWidget*)inComponent->common.handle;
+	
+	/* Disconnect old signal. */
 	if (paint->extra != 0)
 	{
+		/* No longer painted by us. */
+		gtk_widget_set_app_paintable(widget, FALSE);
+			
+		/* Disconnect. */
 		gtk_signal_disconnect(widget, (gulong)paint->extra);
-		paint->extra = 0;
+		
+		/* Clear data. */
+		infoCore->extra = 0;
+		infoCore->callback = 0;
+		memset(&infoCore->frontEnd, 0, sizeof(infoCore->frontEnd));
 	}
 	
 	/* Connect new handler. */
 	if (inListener != NULL)
+	{
+		/* Fill in. */
+		infoCore->callback = inListener;
+		if (copyFrontEnd != NULL)
+			memmove(&infoCore->frontEnd, copyFrontEnd,
+				sizeof(*copyFrontEnd));
+		
+		/* Connect signal. */
 		paint->extra = g_signal_connect(widget, "expose-event",
 			G_CALLBACK(sjme_scritchui_gtk2_eventExpose), inComponent);
+		
+		/* We want to handle paints now. */
+		gtk_widget_set_app_paintable(widget, TRUE);
+	}
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -201,32 +228,41 @@ sjme_errorCode sjme_scritchui_gtk2_componentSetSizeListener(
 	sjme_attrInNullable sjme_scritchui_sizeListenerFunc inListener,
 	sjme_attrInNullable sjme_frontEnd* copyFrontEnd)
 {
-	sjme_errorCode error;
 	GtkWidget* widget;
-	sjme_scritchui_uiComponentListeners* listeners;
+	sjme_scritchui_listener_size* infoCore;
 	
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Get listener base. */
-	listeners = &SJME_SCRITCHUI_LISTENER_CORE(inComponent);
+	/* Get listener info. */
+	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(inComponent, size);
 	
 	/* Recover widget. */	
 	widget = (GtkWidget*)inComponent->common.handle;
 	
 	/* Disconnect old signal? */
-	if (listeners->sizeExtra != 0)
+	if (infoCore->extra != 0)
 	{
-		gtk_signal_disconnect(widget, (gulong)listeners->sizeExtra);
-		listeners->size = NULL;
-		listeners->sizeExtra = 0;
+		/* Disconnect. */
+		gtk_signal_disconnect(widget, (gulong)infoCore->extra);
+		
+		/* Clear data. */
+		infoCore->extra = 0;
+		infoCore->callback = 0;
+		memset(&infoCore->frontEnd, 0, sizeof(infoCore->frontEnd));
 	}
 	
 	/* Connect signal. */
 	if (inListener != NULL)
 	{
-		listeners->size = inListener;
-		listeners->sizeExtra = g_signal_connect(widget, "configure-event",
+		/* Fill in. */
+		infoCore->callback = inListener;
+		if (copyFrontEnd != NULL)
+			memmove(&infoCore->frontEnd, copyFrontEnd,
+				sizeof(*copyFrontEnd));
+		
+		/* Connect signal now. */
+		infoCore->extra = g_signal_connect(widget, "configure-event",
 			G_CALLBACK(sjme_scritchui_gtk2_eventConfigure), inComponent);
 	}
 	

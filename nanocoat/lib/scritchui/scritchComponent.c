@@ -32,7 +32,8 @@ static sjme_errorCode sjme_scritchui_basePaintListener(
 {
 	sjme_errorCode error;
 	sjme_scritchui_uiPaintable paint;
-	sjme_scritchui_paintListenerFunc listener;
+	sjme_scritchui_listener_paint* info;
+	sjme_scritchui_paintListenerFunc callback;
 	
 	if (inState == NULL || inComponent == NULL || buf == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -44,9 +45,12 @@ static sjme_errorCode sjme_scritchui_basePaintListener(
 		return sjme_error_defaultOr(error,
 			SJME_ERROR_INVALID_ARGUMENT);
 	
+	/* Base info. */		
+	info = &SJME_SCRITCHUI_LISTENER_USER(paint, paint);
+	
 	/* No actual paint listener? */
-	listener = paint->listeners[SJME_SCRITCHUI_LISTENER_USER].paint;
-	if (listener == NULL)
+	callback = info->callback;
+	if (callback == NULL)
 	{
 		error = SJME_ERROR_NO_LISTENER;
 		goto fail_noListener;
@@ -54,7 +58,7 @@ static sjme_errorCode sjme_scritchui_basePaintListener(
 	
 	/* Forward to callback. */
 	sjme_atomic_sjme_jint_set(&paint->inPaint, 1);
-	error = listener(inState, inComponent,
+	error = callback(inState, inComponent,
 		pf,
 		bw, bh,
 		buf, bufOff, bufLen,
@@ -77,15 +81,19 @@ static sjme_errorCode sjme_scritchui_core_baseSizeListener(
 	sjme_attrInPositiveNonZero sjme_jint newHeight)
 {
 	sjme_errorCode error;
-	sjme_scritchui_sizeListenerFunc forward;
+	sjme_scritchui_listener_size* info;
+	sjme_scritchui_sizeListenerFunc callback;
 	
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Call user handler */
-	forward = SJME_SCRITCHUI_LISTENER_USER(inComponent).size;
-	if (forward != NULL)
-		if (sjme_error_is(error = forward(inState, inComponent,
+	/* Base info. */		
+	info = &SJME_SCRITCHUI_LISTENER_USER(inComponent, size);
+	
+	/* Call user handler, if there is one */
+	callback = info->callback;
+	if (callback != NULL)
+		if (sjme_error_is(error = callback(inState, inComponent,
 			newWidth, newHeight)))
 			return sjme_error_default(error);
 	
@@ -212,13 +220,17 @@ sjme_errorCode sjme_scritchui_core_componentSetPaintListener(
 {
 	sjme_errorCode error;
 	sjme_scritchui_uiPaintable paint;
-	sjme_frontEnd oldFrontEnd;
-	sjme_scritchui_paintListenerFunc oldUserListener, oldCoreListener;
-	sjme_scritchui_uiPaintableListeners* coreListener;
-	sjme_scritchui_uiPaintableListeners* userListener;
+	sjme_scritchui_listener_paint undo;
+	sjme_scritchui_listener_paint* infoCore;
+	sjme_scritchui_listener_paint* infoUser;
+	sjme_scritchui_paintListenerFunc coreCallback;
 
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Not supported? */
+	if (inState->impl->componentSetPaintListener == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
 	
 	/* Only certain types can be painted on. */
 	paint = NULL;
@@ -226,43 +238,29 @@ sjme_errorCode sjme_scritchui_core_componentSetPaintListener(
 		inComponent, &paint)) || paint == NULL)
 		return sjme_error_default(error);
 	
-	/* Set new listener. */
-	userListener = &SJME_SCRITCHUI_LISTENER_USER(paint);
-	oldUserListener = userListener->paint;
-	userListener->paint = inListener;
+	/* Get listener information. */
+	infoUser = &SJME_SCRITCHUI_LISTENER_USER(paint, paint);
+	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(paint, paint);
 	
-	/* Set core callback for common handling. */
-	coreListener = &SJME_SCRITCHUI_LISTENER_CORE(paint);
-	oldCoreListener = coreListener->paint;
-	if (inListener != NULL)
-		coreListener->paint = sjme_scritchui_basePaintListener;
-	else
-		coreListener->paint = NULL;
+	/* Copy data for undo. */
+	memmove(&undo, infoUser, sizeof(undo));
 	
-	/* Copy old front end in the event of an error. */
-	memmove(&oldFrontEnd, &userListener->paintFrontEnd,
-		sizeof(sjme_frontEnd));
+	/* Set new listener data. */
+	infoUser->callback = inListener;
+	if (copyFrontEnd != NULL)
+		memmove(&infoUser->frontEnd, copyFrontEnd,
+			sizeof(*copyFrontEnd));
 	
-	/* Replace with new front end data before the call. */
-	if (copyFrontEnd != NULL && inListener != NULL)
-		memmove(&userListener->paintFrontEnd, copyFrontEnd,
-			sizeof(sjme_frontEnd));
+	/* Which core callback is being used? */
+	coreCallback = (inListener != NULL ? sjme_scritchui_basePaintListener :
+		NULL);
 	
-	/* Inform component of updated listener. */
-	error = SJME_ERROR_NOT_IMPLEMENTED;
-	if (inState->impl->componentSetPaintListener == NULL ||
-		sjme_error_is(error = inState->impl->componentSetPaintListener(
-			inState, inComponent, sjme_scritchui_basePaintListener,
-			copyFrontEnd)))
-	{
-		/* Error, copy old value back. */
-		userListener->paint = oldUserListener;
-		coreListener->paint = oldCoreListener;
-		memmove(&userListener->paintFrontEnd, &oldFrontEnd,
-			sizeof(sjme_frontEnd));
-		
-		return sjme_error_default(error);
-	}
+	/* Is this callback changing? We need to set a new one! */
+	if (infoCore->callback != coreCallback)
+		if (sjme_error_is(error =
+			inState->impl->componentSetPaintListener(inState, inComponent,
+				coreCallback, NULL)))
+			goto fail_coreSet;
 	
 	/* If there is a repaint handler, then run it but ignore any errors. */
 	if (inState->apiInThread->componentRepaint != NULL)
@@ -271,6 +269,12 @@ sjme_errorCode sjme_scritchui_core_componentSetPaintListener(
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
+
+fail_coreSet:
+	/* Undo change. */
+	memmove(infoUser, &undo, sizeof(undo));
+	
+	return sjme_error_default(error);
 }
 
 sjme_errorCode sjme_scritchui_core_componentSetSizeListener(
@@ -279,16 +283,21 @@ sjme_errorCode sjme_scritchui_core_componentSetSizeListener(
 	sjme_attrInNullable sjme_scritchui_sizeListenerFunc inListener,
 	sjme_attrInNullable sjme_frontEnd* copyFrontEnd)
 {
+	sjme_scritchui_listener_size undo;
+	sjme_scritchui_listener_size* infoUser;
+	
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* The core listener is always set, so we can just set this here. */
-	SJME_SCRITCHUI_LISTENER_USER(inComponent).size = inListener;
+	/* Get listener information. */
+	infoUser = &SJME_SCRITCHUI_LISTENER_USER(inComponent, size);
 	
-	/* Copy front end data over. */
+	/* The core listener is always set, so we can just set this here */
+	/* and any future size calls will use this callback. */
+	infoUser->callback = inListener;
 	if (copyFrontEnd != NULL)
-		memmove(&SJME_SCRITCHUI_LISTENER_USER(inComponent).sizeFrontEnd,
-			copyFrontEnd, sizeof(*copyFrontEnd));
+		memmove(&infoUser->frontEnd, copyFrontEnd,
+			sizeof(*copyFrontEnd));
 	
 	/* Success! */
 	return SJME_ERROR_NONE;

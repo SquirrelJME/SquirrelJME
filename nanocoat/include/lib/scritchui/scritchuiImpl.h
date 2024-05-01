@@ -29,13 +29,27 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
-/** Core listeners. */
-#define SJME_SCRITCHUI_LISTENER_CORE(x) \
-	((x)->listeners[SJME_SCRITCHUI_LISTENER_CORE])
+/**
+ * Obtains the core listener for the given type.
+ * 
+ * @param item The structure to access.
+ * @param specific The specific listener that is wanted.
+ * @return A pointer to the listener info.
+ * @since 2024/05/01
+ */
+#define SJME_SCRITCHUI_LISTENER_CORE(item, specific) \
+	((item)->listeners[SJME_SCRITCHUI_LISTENER_CORE].specific)
 
-/** User listeners. */
-#define SJME_SCRITCHUI_LISTENER_USER(x) \
-	((x)->listeners[SJME_SCRITCHUI_LISTENER_USER])
+/**
+ * Obtains the user listener for the given type.
+ * 
+ * @param item The structure to access.
+ * @param specific The specific listener that is wanted.
+ * @return A pointer to the listener info.
+ * @since 2024/05/01
+ */
+#define SJME_SCRITCHUI_LISTENER_USER(item, specific) \
+	((item)->listeners[SJME_SCRITCHUI_LISTENER_USER].specific)
 
 /**
  * Implementation specific initialization.
