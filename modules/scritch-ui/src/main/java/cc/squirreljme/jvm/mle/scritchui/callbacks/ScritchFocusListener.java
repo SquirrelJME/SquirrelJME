@@ -7,19 +7,17 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.mle.scritchui.brackets;
+package cc.squirreljme.jvm.mle.scritchui.callbacks;
 
-import cc.squirreljme.jvm.mle.annotation.GhostObject;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
- * Represents a base component which is the root of everything.
+ * Listener to be called when focus changes.
  *
- * @since 2024/03/01
+ * @since 2024/04/30
  */
-@GhostObject
 @SquirrelJMEVendorApi
-public interface ScritchComponentBracket
-	extends ScritchBaseBracket
+public interface ScritchFocusListener
+	extends ScritchListener
 {
 }

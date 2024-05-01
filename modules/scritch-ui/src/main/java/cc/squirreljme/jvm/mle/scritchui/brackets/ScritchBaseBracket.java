@@ -13,13 +13,12 @@ import cc.squirreljme.jvm.mle.annotation.GhostObject;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
- * Represents a base component which is the root of everything.
+ * Base bracket for all ScritchUI types.
  *
- * @since 2024/03/01
+ * @since 2024/04/30
  */
 @GhostObject
 @SquirrelJMEVendorApi
-public interface ScritchComponentBracket
-	extends ScritchBaseBracket
+public interface ScritchBaseBracket
 {
 }
