@@ -114,8 +114,8 @@ typedef sjme_errorCode (*sjme_scritchui_pencilDrawLineFunc)(
 
 /**
  * Draws the outline of the given rectangle using the current color and
- * stroke style. The rectangle will cover an area that is
- * @c [width + 1, height + 1].
+ * stroke style. The rectangle will cover an area that
+ * is @code \[width + 1, height + 1\] @endcode .
  *
  * Nothing is drawn if the width and/or height are zero.
  *
@@ -126,7 +126,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilDrawLineFunc)(
  * @param h The height.
  * @return An error if the graphics is not valid or does not support
  * the given operation.
- * @since 22024/05/01
+ * @since 2024/05/01
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilDrawRectFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
@@ -243,37 +243,6 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFillTriangleFunc)(
 	sjme_attrInValue sjme_jint y2,
 	sjme_attrInValue sjme_jint x3,
 	sjme_attrInValue sjme_jint y3);
-
-/**
- * Creates a hardware reference bracket to the native hardware graphics.
- * 
- * @param pf The @c sjme_gfx_pixelFormat used for the draw.
- * @param bw The buffer width, this is the scanline width of the buffer.
- * @param bh The buffer height.
- * @param buf The target buffer to draw to, this is cast to the correct
- * buffer format.
- * @param offset The offset to the start of the buffer.
- * @param pal The color palette, may be @c NULL. 
- * @param sx Starting surface X coordinate.
- * @param sy Starting surface Y coordinate.
- * @param sw Surface width.
- * @param sh Surface height.
- * @return The bracket capable of drawing hardware accelerated graphics.
- * @return An error if the requested graphics are not valid.
- * @since 2024/05/01
- */
-typedef sjme_errorCode (*sjme_scritchui_pencilGraphicsFunc)(
-	sjme_attrInOutNotNull sjme_scritchui_pencil* outPencil,
-	sjme_attrInValue sjme_gfx_pixelFormat pf,
-	sjme_attrInPositive sjme_jint bw,
-	sjme_attrInPositive sjme_jint bh,
-	sjme_attrInNotNull void* buf,
-	sjme_attrInPositive sjme_jint offset,
-	sjme_attrInNullable sjme_jint pal,
-	sjme_attrInValue sjme_jint sx,
-	sjme_attrInValue sjme_jint sy,
-	sjme_attrInPositive sjme_jint sw,
-	sjme_attrInPositive sjme_jint sh);
 
 /**
  * Sets the alpha color for graphics.
@@ -406,9 +375,6 @@ typedef struct sjme_scritchui_pencilFunctions
 	/** @c FillTriangle . */
 	SJME_SCRITCHUI_QUICK_PENCIL(FillTriangle);
 	
-	/** @c Graphics . */
-	SJME_SCRITCHUI_QUICK_PENCIL(Graphics);
-	
 	/** @c SetAlphaColor . */
 	SJME_SCRITCHUI_QUICK_PENCIL(SetAlphaColor);
 	
@@ -432,6 +398,37 @@ typedef struct sjme_scritchui_pencilFunctions
 } sjme_scritchui_pencilFunctions;
 
 #undef SJME_SCRITCHUI_QUICK_PENCIL
+
+/**
+ * Creates a hardware reference bracket to the native hardware graphics.
+ * 
+ * @param pf The @c sjme_gfx_pixelFormat used for the draw.
+ * @param bw The buffer width, this is the scanline width of the buffer.
+ * @param bh The buffer height.
+ * @param buf The target buffer to draw to, this is cast to the correct
+ * buffer format.
+ * @param offset The offset to the start of the buffer.
+ * @param pal The color palette, may be @c NULL. 
+ * @param sx Starting surface X coordinate.
+ * @param sy Starting surface Y coordinate.
+ * @param sw Surface width.
+ * @param sh Surface height.
+ * @return The bracket capable of drawing hardware accelerated graphics.
+ * @return An error if the requested graphics are not valid.
+ * @since 2024/05/01
+ */
+sjme_errorCode sjme_scritchui_pencilGraphicsFunc(
+	sjme_attrInOutNotNull sjme_scritchui_pencil* outPencil,
+	sjme_attrInValue sjme_gfx_pixelFormat pf,
+	sjme_attrInPositive sjme_jint bw,
+	sjme_attrInPositive sjme_jint bh,
+	sjme_attrInNotNull void* buf,
+	sjme_attrInPositive sjme_jint offset,
+	sjme_attrInNullable sjme_jint pal,
+	sjme_attrInValue sjme_jint sx,
+	sjme_attrInValue sjme_jint sy,
+	sjme_attrInPositive sjme_jint sw,
+	sjme_attrInPositive sjme_jint sh);
 
 /*--------------------------------------------------------------------------*/
 

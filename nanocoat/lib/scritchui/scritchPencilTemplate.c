@@ -7,3 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+/* Remove definitions for next inclusion. */
+#undef SJME_PENCIL_NAME
+#undef SJME_PENCIL_PIXEL_FORMAT
+#undef pencilPixelType
