@@ -30,13 +30,6 @@ extern "C" {
 /*--------------------------------------------------------------------------*/
 
 /**
- * ScritchUI Pencil state.
- * 
- * @since 2024/05/01
- */
-typedef struct sjme_scritchui_pencilBase* sjme_scritchui_pencil;
-
-/**
  * This copies one region of the image to another region.
  *
  * Copying to a display device is not permitted because it may impact how

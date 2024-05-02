@@ -208,23 +208,18 @@ SJME_LIST_DECLARE(sjme_scritchui_uiScreen, 0);
 typedef struct sjme_scritchui_uiWindowBase* sjme_scritchui_uiWindow;
 
 /**
+ * ScritchUI Pencil state.
+ * 
+ * @since 2024/05/01
+ */
+typedef struct sjme_scritchui_pencilBase* sjme_scritchui_pencil;
+
+/**
  * Callback that is used to draw the given component.
  *
  * @param inState The ScritchUI state.
  * @param inComponent The component to draw on.
- * @param pf The @c sjme_gfx_pixelFormat used for the draw.
- * @param bw The buffer width, this is the scanline width of the buffer.
- * @param bh The buffer height.
- * @param buf The target buffer to draw to, this is cast to the correct
- * buffer format.
- * @param bufOff The offset to the start of the buffer.
- * @param bufLen The length of @c buf in bytes, this means that if there
- * are 4 bytes per pixel then this would be @c bw @c * @c 4 .
- * @param pal The color palette, may be @c NULL .
- * @param numPal The number of colors in the palette, may be @c 0 if
- * the argument @c pal is @c NULL .
- * @param sx Starting surface X coordinate.
- * @param sy Starting surface Y coordinate.
+ * @param g The graphics used for drawing.
  * @param sw Surface width.
  * @param sh Surface height.
  * @param special Special value for painting, may be @c 0 or any
@@ -235,16 +230,7 @@ typedef struct sjme_scritchui_uiWindowBase* sjme_scritchui_uiWindow;
 typedef sjme_errorCode (*sjme_scritchui_paintListenerFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrInNotNull sjme_gfx_pixelFormat pf,
-	sjme_attrInPositive sjme_jint bw,
-	sjme_attrInPositive sjme_jint bh,
-	sjme_attrInNotNull const void* buf,
-	sjme_attrInPositive sjme_jint bufOff,
-	sjme_attrInPositive sjme_jint bufLen,
-	sjme_attrInNullable const sjme_jint* pal,
-	sjme_attrInPositive sjme_jint numPal,
-	sjme_attrInPositive sjme_jint sx,
-	sjme_attrInPositive sjme_jint sy,
+	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint sw,
 	sjme_attrInPositive sjme_jint sh,
 	sjme_attrInValue sjme_jint special);
