@@ -153,16 +153,7 @@ static void mle_scritchUiRecoverEnv(
 static sjme_errorCode mle_scritchUiPaintListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrInNotNull sjme_gfx_pixelFormat pf,
-	sjme_attrInPositive sjme_jint bw,
-	sjme_attrInPositive sjme_jint bh,
-	sjme_attrInNotNull const void* buf,
-	sjme_attrInPositive sjme_jint bufOff,
-	sjme_attrInPositive sjme_jint bufLen,
-	sjme_attrInNullable const sjme_jint* pal,
-	sjme_attrInPositive sjme_jint numPal,
-	sjme_attrInPositive sjme_jint sx,
-	sjme_attrInPositive sjme_jint sy,
+	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint sw,
 	sjme_attrInPositive sjme_jint sh,
 	sjme_attrInValue sjme_jint special)
@@ -176,7 +167,7 @@ static sjme_errorCode mle_scritchUiPaintListener(
 	jobject javaCallback;
 	jmethodID javaCallbackId;
 	
-	if (inState == NULL || inComponent == NULL || buf == NULL)
+	if (inState == NULL || inComponent == NULL || g == NULL)
 		sjme_die("Null arguments to paint");
 	
 	/* Relocate env. */
