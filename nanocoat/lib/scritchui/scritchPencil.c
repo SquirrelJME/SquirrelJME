@@ -21,6 +21,9 @@ sjme_errorCode sjme_scritchui_core_pencilCopyArea(
 	sjme_attrInValue sjme_jint dy,
 	sjme_attrInValue sjme_jint anchor)
 {
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
@@ -34,6 +37,9 @@ sjme_errorCode sjme_scritchui_core_pencilDrawChars(
 	sjme_attrInValue sjme_jint y,
 	sjme_attrInValue sjme_jint anchor)
 {
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
@@ -45,6 +51,9 @@ sjme_errorCode sjme_scritchui_core_pencilDrawLine(
 	sjme_attrInValue sjme_jint x2,
 	sjme_attrInValue sjme_jint y2)
 {
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
@@ -56,6 +65,9 @@ sjme_errorCode sjme_scritchui_core_pencilDrawRect(
 	sjme_attrInPositive sjme_jint w,
 	sjme_attrInPositive sjme_jint h)
 {
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
@@ -69,6 +81,9 @@ sjme_errorCode sjme_scritchui_core_pencilDrawSubstring(
 	sjme_attrInValue sjme_jint y,
 	sjme_attrInValue sjme_jint anchor)
 {
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
@@ -92,6 +107,9 @@ sjme_errorCode sjme_scritchui_core_pencilDrawXRGB32Region(
 	sjme_attrInPositive sjme_jint origImgWidth,
 	sjme_attrInPositive sjme_jint origImgHeight)
 {
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
@@ -103,6 +121,9 @@ sjme_errorCode sjme_scritchui_core_pencilFillRect(
 	sjme_attrInPositive sjme_jint w,
 	sjme_attrInPositive sjme_jint h)
 {
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
@@ -116,6 +137,9 @@ sjme_errorCode sjme_scritchui_core_pencilFillTriangle(
 	sjme_attrInValue sjme_jint x3,
 	sjme_attrInValue sjme_jint y3)
 {
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
@@ -124,6 +148,9 @@ sjme_errorCode sjme_scritchui_core_pencilSetAlphaColor(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint argb)
 {
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
@@ -132,6 +159,9 @@ sjme_errorCode sjme_scritchui_core_pencilSetBlendingMode(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint mode)
 {
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
@@ -143,6 +173,9 @@ sjme_errorCode sjme_scritchui_core_pencilSetClip(
 	sjme_attrInPositive sjme_jint w,
 	sjme_attrInPositive sjme_jint h)
 {
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
@@ -150,6 +183,9 @@ sjme_errorCode sjme_scritchui_core_pencilSetClip(
 sjme_errorCode sjme_scritchui_core_pencilSetDefaultFont(
 	sjme_attrInNotNull sjme_scritchui_pencil g)
 {
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
@@ -160,6 +196,9 @@ sjme_errorCode sjme_scritchui_core_pencilSetFont(
 	sjme_attrInValue sjme_jint style,
 	sjme_attrInPositiveNonZero sjme_jint pixelSize)
 {
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
@@ -168,6 +207,9 @@ sjme_errorCode sjme_scritchui_core_pencilSetStrokeStyle(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint style)
 {
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
@@ -177,6 +219,9 @@ sjme_errorCode sjme_scritchui_core_pencilTranslate(
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y)
 {
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
@@ -188,6 +233,9 @@ sjme_errorCode sjme_scritchui_pencilInitStatic(
 	sjme_attrInPositiveNonZero sjme_jint sw,
 	sjme_attrInPositiveNonZero sjme_jint sh)
 {
+	if (inPencil == NULL || inFunctions == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
