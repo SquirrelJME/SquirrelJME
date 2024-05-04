@@ -410,18 +410,36 @@ typedef struct sjme_scritchui_pencilFunctions
  * @return An error if the requested graphics are not valid.
  * @since 2024/05/01
  */
-sjme_errorCode sjme_scritchui_pencilGraphicsFunc(
+sjme_errorCode sjme_scritchui_pencilInitBuffer(
 	sjme_attrInOutNotNull sjme_scritchui_pencil* outPencil,
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
-	sjme_attrInPositive sjme_jint bw,
-	sjme_attrInPositive sjme_jint bh,
+	sjme_attrInPositiveNonZero sjme_jint bw,
+	sjme_attrInPositiveNonZero sjme_jint bh,
 	sjme_attrInNotNull void* buf,
 	sjme_attrInPositive sjme_jint offset,
 	sjme_attrInNullable sjme_jint pal,
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,
-	sjme_attrInPositive sjme_jint sw,
-	sjme_attrInPositive sjme_jint sh);
+	sjme_attrInPositiveNonZero sjme_jint sw,
+	sjme_attrInPositiveNonZero sjme_jint sh);
+
+/**
+ * Static pencil function initialization.
+ * 
+ * @param inPencil The pencil to be initialized.
+ * @param inFunctions The functions to set.
+ * @param pf The pixel format used.
+ * @param sw The surface width.
+ * @param sh The surface height.
+ * @return Any error code if applicable.
+ * @since 2024/05/04
+ */
+sjme_errorCode sjme_scritchui_pencilInitStatic(
+	sjme_attrInOutNotNull sjme_scritchui_pencil inPencil,
+	sjme_attrInNotNull const sjme_scritchui_pencilFunctions* inFunctions,
+	sjme_attrInValue sjme_gfx_pixelFormat pf,
+	sjme_attrInPositiveNonZero sjme_jint sw,
+	sjme_attrInPositiveNonZero sjme_jint sh);
 
 typedef struct sjme_scritchui_pencilColor
 {

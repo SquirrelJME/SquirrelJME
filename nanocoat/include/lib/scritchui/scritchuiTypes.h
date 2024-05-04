@@ -79,8 +79,14 @@ typedef struct sjme_scritchui_pencilBase
 	/** The current state of the pencil. */
 	sjme_scritchui_pencilState state;
 	
+	/** External API. */
+	const sjme_scritchui_pencilFunctions* api;
+	
+	/** Implementation API. */
+	const sjme_scritchui_pencilFunctions* impl;
+	
 	/** Front end information for paint. */
-	sjme_frontEnd gc;
+	sjme_frontEnd frontEnd;
 } sjme_scritchui_pencilBase;
 
 /**
