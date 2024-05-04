@@ -26,7 +26,7 @@ static sjme_errorCode sjme_scritchui_basePaintListener(
 	sjme_scritchui_listener_paint* info;
 	sjme_scritchui_paintListenerFunc callback;
 	
-	if (inState == NULL || inComponent == NULL || buf == NULL)
+	if (inState == NULL || inComponent == NULL || g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Not something we can paint? */
@@ -50,11 +50,7 @@ static sjme_errorCode sjme_scritchui_basePaintListener(
 	/* Forward to callback. */
 	sjme_atomic_sjme_jint_set(&paint->inPaint, 1);
 	error = callback(inState, inComponent,
-		pf,
-		bw, bh,
-		buf, bufOff, bufLen,
-		pal, numPal,
-		sx, sy, sw, sh, special);
+		g, sw, sh, special);
 	
 	/* No longer painting. */
 	sjme_atomic_sjme_jint_set(&paint->inPaint, 0);

@@ -423,6 +423,38 @@ sjme_errorCode sjme_scritchui_pencilGraphicsFunc(
 	sjme_attrInPositive sjme_jint sw,
 	sjme_attrInPositive sjme_jint sh);
 
+typedef struct sjme_scritchui_pencilColor
+{
+	/** The RGBA color. */
+	sjme_jint rgba;
+	
+	/** Red. */
+	sjme_jubyte r;
+	
+	/** Green. */
+	sjme_jubyte g;
+	
+	/** Blue. */
+	sjme_jubyte b;
+	
+	/** Alpha. */
+	sjme_jubyte a;
+	
+	/** Indexed color. */
+	sjme_jchar i;
+} sjme_scritchui_pencilColor;
+
+/**
+ * Pencil drawing state, such as colors or otherwise.
+ * 
+ * @since 2024/05/04
+ */
+typedef struct sjme_scritchui_pencilState
+{
+	/** The current color used. */
+	sjme_scritchui_pencilColor color;
+} sjme_scritchui_pencilState;
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

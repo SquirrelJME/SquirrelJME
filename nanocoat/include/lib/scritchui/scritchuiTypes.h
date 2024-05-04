@@ -18,6 +18,7 @@
 
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiImpl.h"
+#include "lib/scritchui/scritchuiPencil.h"
 #include "sjme/atomic.h"
 
 /* Anti-C++. */
@@ -67,6 +68,20 @@ SJME_SCRITCHUI_LISTENER_DECLARE(size);
 
 /** Paint listener. */
 SJME_SCRITCHUI_LISTENER_DECLARE(paint);
+
+/**
+ * Base pencil drawing structure.
+ * 
+ * @since 2024/05/04
+ */
+typedef struct sjme_scritchui_pencilBase
+{
+	/** The current state of the pencil. */
+	sjme_scritchui_pencilState state;
+	
+	/** Front end information for paint. */
+	sjme_frontEnd gc;
+} sjme_scritchui_pencilBase;
 
 /**
  * Listeners for components.
@@ -129,6 +144,9 @@ typedef struct sjme_scritchui_uiPaintableBase
 	
 	/** Last error while in paint. */
 	sjme_errorCode lastError;
+	
+	/** Pencil drawing information. */
+	sjme_scritchui_pencilBase pencil;
 } sjme_scritchui_uiPaintableBase;
 
 typedef struct sjme_scritchui_uiPanelBase
