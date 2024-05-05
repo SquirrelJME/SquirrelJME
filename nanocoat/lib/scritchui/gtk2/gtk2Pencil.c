@@ -182,3 +182,7 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilTranslate(
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
+
+const sjme_scritchui_pencilFunctions sjme_scritchui_gtk2_pencilFunctions =
+{
+};

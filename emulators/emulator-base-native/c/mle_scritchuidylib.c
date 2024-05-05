@@ -192,9 +192,17 @@ static sjme_errorCode mle_scritchUiPaintListener(
 	/* Setup pencil object. */
 	pencilClass = (*env)->FindClass(env,
 		"cc/squirreljme/emulator/scritchui/dylib/DylibPencilObject");
+	if (pencilClass == NULL)
+		sjme_die("No DylibPencilObject?");
+	
 	pencilNew = (*env)->GetMethodID(env, pencilClass, "<init>", "(J)V");
+	if (pencilNew == NULL)
+		sjme_die("No default constructor for DylibPencilObject?");
+	
 	pencilObject = (*env)->NewObject(env, pencilClass, pencilNew,
 		(jlong)g);
+	if (pencilObject == NULL)
+		sjme_die("Could not allocate DylibPencilObject.");
 	
 	/* Forward call. */
 	(*env)->CallVoidMethod(env, javaCallback, javaCallbackId,

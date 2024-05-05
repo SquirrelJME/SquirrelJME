@@ -78,7 +78,8 @@ static gboolean sjme_scritchui_gtk2_eventExpose(
 	/* Setup pencil for drawing. */
 	memset(&pencil, 0, sizeof(pencil));
 	if (sjme_error_is(sjme_scritchui_pencilInitStatic(&pencil,
-		NULL, SJME_GFX_PIXEL_FORMAT_INT_RGBA8888,
+		&sjme_scritchui_gtk2_pencilFunctions,
+		SJME_GFX_PIXEL_FORMAT_INT_RGBA8888,
 		w, h)))
 		return TRUE;
 	

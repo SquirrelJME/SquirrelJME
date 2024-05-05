@@ -18,10 +18,11 @@
 
 #include <gtk-2.0/gtk/gtk.h>
 
-#include "sjme/config.h"
-#include "sjme/debug.h"
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiImpl.h"
+#include "lib/scritchui/scritchuiPencil.h"
+#include "sjme/config.h"
+#include "sjme/debug.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -41,6 +42,10 @@ extern "C" {
 /** Maps a @c gboolean to @c sjme_jboolean . */
 #define GBOOLEAN_TO_SJME_JBOOLEAN(b) \
 	((b) == FALSE ? SJME_JNI_FALSE : SJME_JNI_TRUE)
+
+/** Pencil functions for GTK2. */
+extern const sjme_scritchui_pencilFunctions
+	sjme_scritchui_gtk2_pencilFunctions;
 
 sjme_errorCode sjme_scritchui_gtk2_apiInit(
 	sjme_attrInNotNull sjme_scritchui inState);
