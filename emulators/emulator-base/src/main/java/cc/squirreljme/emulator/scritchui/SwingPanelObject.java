@@ -197,6 +197,8 @@ public class SwingPanelObject
 			}
 			
 			// Send to callback
+			throw Debugging.todo();
+			/*
 			listener.paint(panel, UIPixelFormat.INT_RGB888,
 				pW, pH, ((DataBufferInt)pixelImage.getRaster()
 					.getDataBuffer()).getData(), 0,
@@ -205,6 +207,7 @@ public class SwingPanelObject
 			// Draw the buffer directly onto the panel
 			__g.drawImage(pixelImage, 0, 0, pW, pH,
 				0, 0, pW, pH, null);
+			 */
 		}
 	}
 }

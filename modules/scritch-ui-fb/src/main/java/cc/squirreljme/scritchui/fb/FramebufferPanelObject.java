@@ -12,10 +12,11 @@ package cc.squirreljme.scritchui.fb;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchContainerBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPencilBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchPaintListener;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Framebuffer panel, which is generally used for general drawing onto with
@@ -79,15 +80,13 @@ public class FramebufferPanelObject
 	 * @since 2024/03/26
 	 */
 	@Override
-	void __paintInternal(int __pf, int __bw, int __bh,
-		Object __buf, int __offset, int[] __pal, int __sx, int __sy,
-		int __sw, int __sh, int __special)
+	void __paintInternal(ScritchPencilBracket __g, int __sw, int __sh,
+		int __special)
 	{
 		// Forward to the canvas listener
 		ScritchPaintListener listener = this._paintListener;
 		if (listener != null)
-			listener.paint(this, __pf, __bw, __bh, __buf, __offset,
-				__pal, __sx, __sy, __sw, __sh, __special);
+			listener.paint(this, __g, __sw, __sh, __special);
 	}
 	
 	/**

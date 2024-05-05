@@ -46,9 +46,8 @@ static gboolean sjme_scritchui_gtk2_eventExpose(
 	sjme_scritchui_uiComponent inComponent;
 	sjme_scritchui_uiPaintable paint;
 	sjme_scritchui_listener_paint* infoCore;
-	sjme_jint rawArea, x, y, w, h;
-	sjme_jint bufLen;
-	sjme_jint* rawPixels;
+	sjme_scritchui_pencilBase pencil;
+	sjme_jint w, h;
 	
 	/* Restore component. */
 	inComponent = (sjme_scritchui_uiComponent)data;
@@ -73,35 +72,20 @@ static gboolean sjme_scritchui_gtk2_eventExpose(
 		return TRUE;
 	
 	/* Determine area to draw. */
-	x = event->area.x;
-	y = event->area.y;
 	w = event->area.width;
 	h = event->area.height;
-	rawArea = w * h;
 	
-	/* Allocate raw pixel data, because we cannot directly access */
-	/* the pixels used by a GtkWidget. */
-	bufLen = sizeof(*rawPixels) * rawArea;
-	rawPixels = sjme_alloca(bufLen);
-	if (rawPixels == NULL)
+	/* Setup pencil for drawing. */
+	memset(&pencil, 0, sizeof(pencil));
+	if (sjme_error_is(sjme_scritchui_pencilInitStatic(&pencil,
+		NULL, SJME_GFX_PIXEL_FORMAT_INT_RGBA8888,
+		w, h)))
 		return TRUE;
-	
-	/* Clear it. */
-	memset(rawPixels, 0, bufLen);
 	
 	/* Forward to callback. */
 	error = infoCore->callback(inState, inComponent,
-		SJME_GFX_PIXEL_FORMAT_INT_RGB888,
-		w, h,
-		rawPixels, 0, bufLen,
-		NULL, 0,
-		0, 0, w, h, 0);
-	
-	/* Draw the data we have. */
-	gdk_draw_rgb_32_image(GDK_DRAWABLE(widget->window),
-		widget->style->fg_gc[widget->state],
-		x, y, w, h,
-		GDK_RGB_DITHER_MAX, (guchar*)rawPixels, w * 4);
+		&pencil,
+		w, h, 0);
 	
 	/* Do not perform standard drawing, unless an error occurs. */
 	if (sjme_error_is(error))

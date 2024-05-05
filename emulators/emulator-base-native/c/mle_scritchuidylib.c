@@ -28,17 +28,12 @@
 	"cc/squirreljme/emulator/scritchui/dylib/DylibPaintListener")
 #define DESC_SCRITCHUI_PAINT_LISTENER DESC_CLASS( \
 	"cc/squirreljme/jvm/mle/scritchui/callbacks/ScritchPaintListener")
+#define DESC_SCRITCHUI_PAINT DESC_CLASS( \
+	"cc/squirreljme/jvm/mle/scritchui/brackets/ScritchPencilBracket")
 
 #define DESC_SCRITCHUI_DYLIB_PAINT_LISTENER_FUNC "(" \
 	DESC_SCRITCHUI_COMPONENT /*__component*/ \
-	DESC_INTEGER /*__pf*/ \
-	DESC_INTEGER /*__bw*/ \
-	DESC_INTEGER /*__bh*/ \
-	DESC_BYTE_BUFFER /*__buf*/ \
-	DESC_INTEGER /*__offset*/ \
-	DESC_BYTE_BUFFER /*__pal*/ \
-	DESC_INTEGER /*__sx*/ \
-	DESC_INTEGER /*__sy*/ \
+    DESC_SCRITCHUI_PAINT /* __g */ \
 	DESC_INTEGER /*__sw*/ \
 	DESC_INTEGER /*__sh*/ \
 	DESC_INTEGER /*__special*/ ")" DESC_VOID
@@ -162,8 +157,9 @@ static sjme_errorCode mle_scritchUiPaintListener(
 	sjme_scritchui_uiPaintable paint;
 	sjme_scritchui_listener_paint* infoUser;
 	jobject componentObject;
-	jobject bufBuffer;
-	jobject palBuffer;
+	jclass pencilClass;
+	jmethodID pencilNew;
+	jobject pencilObject;
 	jobject javaCallback;
 	jmethodID javaCallbackId;
 	
@@ -193,36 +189,28 @@ static sjme_errorCode mle_scritchUiPaintListener(
 		&componentObject, &javaCallback,
 		&javaCallbackId);
 	
-	/* Create buffers for buffer and palette. */
-	bufBuffer = (*env)->NewDirectByteBuffer(env,
-		SJME_POINTER_OFFSET(buf, bufOff), bufLen);
-	palBuffer = (pal == NULL ? NULL : (*env)->NewDirectByteBuffer(env,
-		SJME_POINTER_OFFSET(buf, bufOff), numPal * 4));
+	/* Setup pencil object. */
+	pencilClass = (*env)->FindClass(env,
+		"cc/squirreljme/emulator/scritchui/dylib/DylibPencilObject");
+	pencilNew = (*env)->GetMethodID(env, pencilClass, "<init>", "(J)V");
+	pencilObject = (*env)->NewObject(env, pencilClass, pencilNew,
+		(jlong)g);
 	
 	/* Forward call. */
 	(*env)->CallVoidMethod(env, javaCallback, javaCallbackId,
 		componentObject,
-		pf,
-		bw,
-		bh,
 		
-		/* buf. */
-		bufBuffer,
-		0,
-		
-		/* pal. */
-		palBuffer,
+		/* Pencil state and drawer. */
+		pencilObject,
 		
 		/* Surface. */
-		sx, sy, sw, sh,
+		sw, sh,
 		
 		/* Special. */
 		special);
 
-	/* We no longer need the byte buffer. */
-	(*env)->DeleteLocalRef(env, bufBuffer);
-	if (palBuffer != NULL)
-		(*env)->DeleteLocalRef(env, palBuffer);
+	/* We no longer need the graphics reference. */
+	(*env)->DeleteLocalRef(env, pencilObject);
 	
 	/* Failed? */
 	if (sjme_jni_checkVMException(env))

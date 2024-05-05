@@ -9,16 +9,14 @@
 
 package cc.squirreljme.scritchui.fb;
 
-import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPencilBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.lang.ref.Reference;
-import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.Async;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 /**
@@ -68,32 +66,16 @@ public abstract class FramebufferComponentObject
 	/**
 	 * Internal painting logic for this component.
 	 *
-	 * @param __pf The {@link UIPixelFormat} used for the draw.
-	 * @param __bw The buffer width, this is the scanline width of the buffer.
-	 * @param __bh The buffer height.
-	 * @param __buf The target buffer to draw to, this is cast to the correct
-	 * buffer format.
-	 * @param __offset The offset to the start of the buffer.
-	 * @param __pal The color palette, may be {@code null}.
-	 * @param __sx Starting surface X coordinate.
-	 * @param __sy Starting surface Y coordinate.
-	 * @param __sw Surface width.
-	 * @param __sh Surface height.
-	 * @param __special Special value for painting, may be {@code 0} or any
-	 * other value if it is meaningful to what is being painted.
+	 * @param __g The target pencil to draw with.
+	 * @param __sw The surface width.
+	 * @param __sh The surface height.
+	 * @param __special Special value.
 	 * @since 2024/03/26
 	 */
 	@SquirrelJMEVendorApi
 	@Async.Execute
 	abstract void __paintInternal(
-		@MagicConstant(valuesFromClass = UIPixelFormat.class) int __pf,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __bw,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __bh,
-		@NotNull Object __buf,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __offset,
-		@Nullable int[] __pal,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __sx,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __sy,
+		@NotNull ScritchPencilBracket __g,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __sw,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __sh,
 		int __special);

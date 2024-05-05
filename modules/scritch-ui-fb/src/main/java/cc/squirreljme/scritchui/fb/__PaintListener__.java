@@ -10,6 +10,7 @@
 package cc.squirreljme.scritchui.fb;
 
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPencilBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchPaintListener;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
@@ -50,16 +51,8 @@ final class __PaintListener__
 	 * @since 2024/03/26
 	 */
 	@Override
-	public void paint(@NotNull ScritchComponentBracket __component, int __pf,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __bw,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __bh,
-		@NotNull Object __buf,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __offset,
-		@Nullable int[] __pal,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __sx,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __sy,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __sw,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __sh, int __special)
+	public void paint(ScritchComponentBracket __component,
+		ScritchPencilBracket __g, int __sw, int __sh, int __special)
 	{
 		// Do nothing if it was GCed
 		FramebufferComponentObject forward = this.component.get();
@@ -67,7 +60,6 @@ final class __PaintListener__
 			return;
 		
 		// Forward
-		forward.__paintInternal(__pf, __bw, __bh, __buf, __offset,
-			__pal, __sx, __sy, __sw, __sh, __special);
+		forward.__paintInternal(__g, __sw, __sh, __special);
 	}
 }

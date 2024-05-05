@@ -34,17 +34,6 @@ import javax.microedition.lcdui.game.Sprite;
 public final class PencilGraphics
 	extends Graphics
 {
-	/**
-	 * {@squirreljme.property cc.squirreljme.lcdui.software=boolean
-	 * If set to {@code true} then software graphics will be forced to be
-	 * used.}
-	 */
-	private static final String _FORCE_SOFTWARE_PROPERTY =
-		"cc.squirreljme.lcdui.software";
-	
-	/** Forcing software rasterization */
-	private static final boolean _IS_FORCE_SOFTWARE;
-	
 	/** Software graphics backend. */
 	protected final Graphics software;
 	
@@ -96,12 +85,6 @@ public final class PencilGraphics
 	
 	/** The current Y translation. */
 	private int _transY;
-	
-	static
-	{
-		_IS_FORCE_SOFTWARE =
-			Boolean.getBoolean(PencilGraphics._FORCE_SOFTWARE_PROPERTY);
-	}
 	
 	/**
 	 * Initializes the pencil graphics system.
@@ -1104,6 +1087,8 @@ public final class PencilGraphics
 		int __sw, int __sh)
 		throws NullPointerException
 	{
+		throw Debugging.todo();
+		/*
 		// Setup software graphics
 		Graphics software = SoftwareGraphicsFactory.softwareGraphics(__pf,
 			__bw, __bh, __buf, __offset, __pal, __sx, __sy, __sw, __sh);
@@ -1119,5 +1104,6 @@ public final class PencilGraphics
 		return new PencilGraphics(caps, software, __sw, __sh,
 			PencilShelf.hardwareGraphics(__pf,
 			__bw, __bh, __buf, __offset, __pal, __sx, __sy, __sw, __sh), __pf);
+		 */
 	}
 }
