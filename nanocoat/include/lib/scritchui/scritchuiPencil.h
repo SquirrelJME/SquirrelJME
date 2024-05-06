@@ -30,6 +30,40 @@ extern "C" {
 /*--------------------------------------------------------------------------*/
 
 /**
+ * The blending mode for a pencil.
+ * 
+ * @since 2024/05/06
+ */
+typedef enum sjme_scritchui_pencilBlendingMode
+{
+	/** Overwrite source. */
+	SJME_SCRITCHUI_PENCIL_BLEND_SRC_OVER,
+	
+	/** Source. */
+	SJME_SCRITCHUI_PENCIL_BLEND_SRC,
+	
+	/** The number of blending modes. */
+	SJME_NUM_SCRITCHUI_PENCIL_BLENDS
+} sjme_scritchui_pencilBlendingMode;
+
+/**
+ * Stroke style for lines.
+ * 
+ * @since 2024/05/06
+ */
+typedef enum sjme_scritchui_pencilStrokeMode
+{
+	/** Solid line. */
+	SJME_SCRITCHUI_PENCIL_STROKE_SOLID,
+	
+	/** Dotted line. */
+	SJME_SCRITCHUI_PENCIL_STROKE_DOTTED,
+	
+	/** The number of stroke modes. */
+	SJME_NUM_SCRITCHUI_PENCIL_STROKES
+} sjme_scritchui_pencilStrokeMode;
+
+/**
  * This copies one region of the image to another region.
  *
  * Copying to a display device is not permitted because it may impact how
@@ -259,7 +293,8 @@ typedef sjme_errorCode (*sjme_scritchui_pencilSetAlphaColorFunc)(
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilSetBlendingModeFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInValue sjme_jint mode);
+	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_PENCIL_BLENDS)
+		sjme_scritchui_pencilBlendingMode mode);
 
 /**
  * Sets the clipping rectangle position.
@@ -317,7 +352,8 @@ typedef sjme_errorCode (*sjme_scritchui_pencilSetFontFunc)(
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilSetStrokeStyleFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInValue sjme_jint style);
+	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_PENCIL_STROKES)
+		sjme_scritchui_pencilStrokeMode style);
 
 /**
  * Translates drawing operations.

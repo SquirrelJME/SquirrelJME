@@ -48,6 +48,7 @@ static gboolean sjme_scritchui_gtk2_eventExpose(
 	sjme_scritchui_listener_paint* infoCore;
 	sjme_scritchui_pencilBase pencil;
 	sjme_jint w, h;
+	sjme_frontEnd frontEnd;
 	
 	/* Restore component. */
 	inComponent = (sjme_scritchui_uiComponent)data;
@@ -75,12 +76,17 @@ static gboolean sjme_scritchui_gtk2_eventExpose(
 	w = event->area.width;
 	h = event->area.height;
 	
+	/* Setup frontend info. */
+	memset(&frontEnd, 0, sizeof(frontEnd));
+	frontEnd.wrapper = widget->window;
+	frontEnd.data = widget->style->fg_gc[widget->state];
+	
 	/* Setup pencil for drawing. */
 	memset(&pencil, 0, sizeof(pencil));
 	if (sjme_error_is(sjme_scritchui_pencilInitStatic(&pencil,
 		&sjme_scritchui_gtk2_pencilFunctions,
 		SJME_GFX_PIXEL_FORMAT_INT_RGBA8888,
-		w, h)))
+		w, h, &frontEnd)))
 		return TRUE;
 	
 	/* Forward to callback. */

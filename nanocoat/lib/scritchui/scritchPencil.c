@@ -160,7 +160,8 @@ sjme_errorCode sjme_scritchui_core_pencilSetAlphaColor(
 
 sjme_errorCode sjme_scritchui_core_pencilSetBlendingMode(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInValue sjme_jint mode)
+	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_PENCIL_BLENDS)
+		sjme_scritchui_pencilBlendingMode mode)
 {
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -208,7 +209,8 @@ sjme_errorCode sjme_scritchui_core_pencilSetFont(
 
 sjme_errorCode sjme_scritchui_core_pencilSetStrokeStyle(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInValue sjme_jint style)
+	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_PENCIL_STROKES)
+		sjme_scritchui_pencilStrokeMode style)
 {
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -257,7 +259,6 @@ sjme_errorCode sjme_scritchui_pencilInitStatic(
 	sjme_attrInPositiveNonZero sjme_jint sh,
 	sjme_attrInNullable sjme_frontEnd* copyFrontEnd)
 {
-	sjme_errorCode error;
 	sjme_scritchui_pencilBase result;
 	
 	if (inPencil == NULL || inFunctions == NULL)
@@ -279,8 +280,13 @@ sjme_errorCode sjme_scritchui_pencilInitStatic(
 		memmove(&result.frontEnd, copyFrontEnd,
 			sizeof(*copyFrontEnd));
 	
-	/* Set initial color, ignore any errors. */
+	/* Set initial state, ignore any errors. */
 	result.api->setAlphaColor(&result, 0xFF000000);
+	result.api->setStrokeStyle(&result,
+		SJME_SCRITCHUI_PENCIL_STROKE_SOLID);
+	result.api->setBlendingMode(&result,
+		SJME_SCRITCHUI_PENCIL_BLEND_SRC_OVER);
+	result.api->setDefaultFont(&result);
 	
 	/* Success! Copy back. */
 	memmove(inPencil, &result, sizeof(result));

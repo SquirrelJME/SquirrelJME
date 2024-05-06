@@ -132,7 +132,8 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilSetAlphaColor(
 
 static sjme_errorCode sjme_scritchui_gtk2_pencilSetBlendingMode(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInValue sjme_jint mode)
+	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_PENCIL_BLENDS)
+		sjme_scritchui_pencilBlendingMode mode)
 {
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
@@ -168,7 +169,8 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilSetFont(
 
 static sjme_errorCode sjme_scritchui_gtk2_pencilSetStrokeStyle(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInValue sjme_jint style)
+	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_PENCIL_STROKES)
+		sjme_scritchui_pencilStrokeMode style)
 {
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
