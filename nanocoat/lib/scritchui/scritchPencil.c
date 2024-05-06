@@ -151,11 +151,29 @@ sjme_errorCode sjme_scritchui_core_pencilSetAlphaColor(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint argb)
 {
+	sjme_scritchui_pencilColor* target;
+	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Implementation must have. */
+	if (g->impl->setAlphaColor == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Set base color properties. */
+	target = &g->state.color;
+	target->argb = argb;
+	target->a = (argb >> 24) & 0xFF;
+	target->r = (argb >> 16) & 0xFF;
+	target->g = (argb >> 8) & 0xFF;
+	target->b = (argb) & 0xFF;
+	
+	/* Find closest indexed color. */
+	if (g->palette.colors != NULL && g->palette.numColors > 0)
+		sjme_todo("Color search?");
+	
+	/* Forward. */
+	return g->impl->setAlphaColor(g, argb);
 }
 
 sjme_errorCode sjme_scritchui_core_pencilSetBlendingMode(

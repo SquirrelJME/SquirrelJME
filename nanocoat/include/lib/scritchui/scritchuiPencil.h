@@ -526,7 +526,7 @@ sjme_errorCode sjme_scritchui_pencilInitStatic(
 typedef struct sjme_scritchui_pencilColor
 {
 	/** The RGBA color. */
-	sjme_jint rgba;
+	sjme_jint argb;
 	
 	/** Red. */
 	sjme_jubyte r;

@@ -87,6 +87,16 @@ typedef struct sjme_scritchui_pencilBase
 	
 	/** Front end information for paint. */
 	sjme_frontEnd frontEnd;
+	
+	/** Color palette. */
+	struct
+	{
+		/** The colors available. */
+		const sjme_jint* colors;
+		
+		/** The number of colors used. */
+		sjme_jint numColors;
+	} palette;
 } sjme_scritchui_pencilBase;
 
 /**
