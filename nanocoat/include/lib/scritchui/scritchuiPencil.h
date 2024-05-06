@@ -334,8 +334,8 @@ typedef sjme_errorCode (*sjme_scritchui_pencilTranslateFunc)(
 	sjme_attrInValue sjme_jint y);
 
 /** Quick definition for functions. */
-#define SJME_SCRITCHUI_QUICK_PENCIL(what) \
-	SJME_TOKEN_PASTE3(sjme_scritchui_pencil, what, Func) what
+#define SJME_SCRITCHUI_QUICK_PENCIL(what, lWhat) \
+	SJME_TOKEN_PASTE3(sjme_scritchui_pencil, what, Func) lWhat
 
 /**
  * ScritchUI Pencil implementation functions.
@@ -345,49 +345,49 @@ typedef sjme_errorCode (*sjme_scritchui_pencilTranslateFunc)(
 typedef struct sjme_scritchui_pencilFunctions
 {
 	/** @c CopyArea . */
-	SJME_SCRITCHUI_QUICK_PENCIL(CopyArea);
+	SJME_SCRITCHUI_QUICK_PENCIL(CopyArea, copyArea);
 	
 	/** @c DrawChars . */
-	SJME_SCRITCHUI_QUICK_PENCIL(DrawChars);
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawChars, drawChars);
 	
 	/** @c DrawLine . */
-	SJME_SCRITCHUI_QUICK_PENCIL(DrawLine);
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawLine, drawLine);
 	
 	/** @c DrawRect . */
-	SJME_SCRITCHUI_QUICK_PENCIL(DrawRect);
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawRect, drawRect);
 	
 	/** @c DrawSubstring . */
-	SJME_SCRITCHUI_QUICK_PENCIL(DrawSubstring);
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawSubstring, drawSubstring);
 	
 	/** @c DrawXRGB32Region . */
-	SJME_SCRITCHUI_QUICK_PENCIL(DrawXRGB32Region);
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawXRGB32Region, drawXRGB32Region);
 	
 	/** @c FillRect . */
-	SJME_SCRITCHUI_QUICK_PENCIL(FillRect);
+	SJME_SCRITCHUI_QUICK_PENCIL(FillRect, fillRect);
 	
 	/** @c FillTriangle . */
-	SJME_SCRITCHUI_QUICK_PENCIL(FillTriangle);
+	SJME_SCRITCHUI_QUICK_PENCIL(FillTriangle, fillTriangle);
 	
 	/** @c SetAlphaColor . */
-	SJME_SCRITCHUI_QUICK_PENCIL(SetAlphaColor);
+	SJME_SCRITCHUI_QUICK_PENCIL(SetAlphaColor, setAlphaColor);
 	
 	/** @c SetBlendingMode . */
-	SJME_SCRITCHUI_QUICK_PENCIL(SetBlendingMode);
+	SJME_SCRITCHUI_QUICK_PENCIL(SetBlendingMode, setBlendingMode);
 	
 	/** @c SetClip . */
-	SJME_SCRITCHUI_QUICK_PENCIL(SetClip);
+	SJME_SCRITCHUI_QUICK_PENCIL(SetClip, setClip);
 	
 	/** @c SetDefaultFont . */
-	SJME_SCRITCHUI_QUICK_PENCIL(SetDefaultFont);
+	SJME_SCRITCHUI_QUICK_PENCIL(SetDefaultFont, setDefaultFont);
 	
 	/** @c SetFont . */
-	SJME_SCRITCHUI_QUICK_PENCIL(SetFont);
+	SJME_SCRITCHUI_QUICK_PENCIL(SetFont, setFont);
 	
 	/** @c SetStrokeStyle . */
-	SJME_SCRITCHUI_QUICK_PENCIL(SetStrokeStyle);
+	SJME_SCRITCHUI_QUICK_PENCIL(SetStrokeStyle, setStrokeStyle);
 	
 	/** @c Translate . */
-	SJME_SCRITCHUI_QUICK_PENCIL(Translate);
+	SJME_SCRITCHUI_QUICK_PENCIL(Translate, translate);
 } sjme_scritchui_pencilFunctions;
 
 #undef SJME_SCRITCHUI_QUICK_PENCIL
@@ -431,6 +431,7 @@ sjme_errorCode sjme_scritchui_pencilInitBuffer(
  * @param pf The pixel format used.
  * @param sw The surface width.
  * @param sh The surface height.
+ * @param copyFrontEnd Optional front end data to copy.
  * @return Any error code if applicable.
  * @since 2024/05/04
  */
@@ -439,7 +440,8 @@ sjme_errorCode sjme_scritchui_pencilInitStatic(
 	sjme_attrInNotNull const sjme_scritchui_pencilFunctions* inFunctions,
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInPositiveNonZero sjme_jint sw,
-	sjme_attrInPositiveNonZero sjme_jint sh);
+	sjme_attrInPositiveNonZero sjme_jint sh,
+	sjme_attrInNullable sjme_frontEnd* copyFrontEnd);
 
 typedef struct sjme_scritchui_pencilColor
 {
