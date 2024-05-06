@@ -374,7 +374,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilTranslateFunc)(
 	SJME_TOKEN_PASTE3(sjme_scritchui_pencil, what, Func) lWhat
 
 /**
- * ScritchUI Pencil implementation functions.
+ * ScritchUI Pencil API functions.
  * 
  * @since 2024/05/01
  */
@@ -426,6 +426,50 @@ typedef struct sjme_scritchui_pencilFunctions
 	SJME_SCRITCHUI_QUICK_PENCIL(Translate, translate);
 } sjme_scritchui_pencilFunctions;
 
+/**
+ * ScritchUI Pencil implementation functions.
+ * 
+ * @since 2024/05/01
+ */
+typedef struct sjme_scritchui_pencilImplFunctions
+{
+	/** @c CopyArea . */
+	SJME_SCRITCHUI_QUICK_PENCIL(CopyArea, copyArea);
+	
+	/** @c DrawChars . */
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawChars, drawChars);
+	
+	/** @c DrawLine . */
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawLine, drawLine);
+	
+	/** @c DrawXRGB32Region . */
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawXRGB32Region, drawXRGB32Region);
+	
+	/** @c FillRect . */
+	SJME_SCRITCHUI_QUICK_PENCIL(FillRect, fillRect);
+	
+	/** @c FillTriangle . */
+	SJME_SCRITCHUI_QUICK_PENCIL(FillTriangle, fillTriangle);
+	
+	/** @c SetAlphaColor . */
+	SJME_SCRITCHUI_QUICK_PENCIL(SetAlphaColor, setAlphaColor);
+	
+	/** @c SetBlendingMode . */
+	SJME_SCRITCHUI_QUICK_PENCIL(SetBlendingMode, setBlendingMode);
+	
+	/** @c SetClip . */
+	SJME_SCRITCHUI_QUICK_PENCIL(SetClip, setClip);
+	
+	/** @c SetDefaultFont . */
+	SJME_SCRITCHUI_QUICK_PENCIL(SetDefaultFont, setDefaultFont);
+	
+	/** @c SetFont . */
+	SJME_SCRITCHUI_QUICK_PENCIL(SetFont, setFont);
+	
+	/** @c SetStrokeStyle . */
+	SJME_SCRITCHUI_QUICK_PENCIL(SetStrokeStyle, setStrokeStyle);
+} sjme_scritchui_pencilImplFunctions;
+
 #undef SJME_SCRITCHUI_QUICK_PENCIL
 
 /**
@@ -473,7 +517,7 @@ sjme_errorCode sjme_scritchui_pencilInitBuffer(
  */
 sjme_errorCode sjme_scritchui_pencilInitStatic(
 	sjme_attrInOutNotNull sjme_scritchui_pencil inPencil,
-	sjme_attrInNotNull const sjme_scritchui_pencilFunctions* inFunctions,
+	sjme_attrInNotNull const sjme_scritchui_pencilImplFunctions* inFunctions,
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInPositiveNonZero sjme_jint sw,
 	sjme_attrInPositiveNonZero sjme_jint sh,

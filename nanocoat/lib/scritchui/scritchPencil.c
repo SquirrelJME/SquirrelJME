@@ -253,7 +253,7 @@ static const sjme_scritchui_pencilFunctions sjme_scritchui_core_pencil =
 
 sjme_errorCode sjme_scritchui_pencilInitStatic(
 	sjme_attrInOutNotNull sjme_scritchui_pencil inPencil,
-	sjme_attrInNotNull const sjme_scritchui_pencilFunctions* inFunctions,
+	sjme_attrInNotNull const sjme_scritchui_pencilImplFunctions* inFunctions,
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInPositiveNonZero sjme_jint sw,
 	sjme_attrInPositiveNonZero sjme_jint sh,

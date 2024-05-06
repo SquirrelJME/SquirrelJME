@@ -51,30 +51,6 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilDrawLine(
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
-static sjme_errorCode sjme_scritchui_gtk2_pencilDrawRect(
-	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInValue sjme_jint x,
-	sjme_attrInValue sjme_jint y,
-	sjme_attrInPositive sjme_jint w,
-	sjme_attrInPositive sjme_jint h)
-{
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
-}
-
-static sjme_errorCode sjme_scritchui_gtk2_pencilDrawSubstring(
-	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInNotNull sjme_lpcstr s,
-	sjme_attrInPositive sjme_jint o, 
-	sjme_attrInPositive sjme_jint l,
-	sjme_attrInValue sjme_jint x,
-	sjme_attrInValue sjme_jint y,
-	sjme_attrInValue sjme_jint anchor)
-{
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
-}
-
 static sjme_errorCode sjme_scritchui_gtk2_pencilDrawXRGB32Region(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNull int* data,
@@ -176,15 +152,18 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilSetStrokeStyle(
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
-static sjme_errorCode sjme_scritchui_gtk2_pencilTranslate(
-	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInValue sjme_jint x,
-	sjme_attrInValue sjme_jint y)
+const sjme_scritchui_pencilImplFunctions sjme_scritchui_gtk2_pencilFunctions =
 {
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
-}
-
-const sjme_scritchui_pencilFunctions sjme_scritchui_gtk2_pencilFunctions =
-{
+	.copyArea = sjme_scritchui_gtk2_pencilCopyArea,
+	.drawChars = sjme_scritchui_gtk2_pencilDrawChars,
+	.drawLine = sjme_scritchui_gtk2_pencilDrawLine,
+	.drawXRGB32Region = sjme_scritchui_gtk2_pencilDrawXRGB32Region,
+	.fillRect = sjme_scritchui_gtk2_pencilFillRect,
+	.fillTriangle = sjme_scritchui_gtk2_pencilFillTriangle,
+	.setAlphaColor = sjme_scritchui_gtk2_pencilSetAlphaColor,
+	.setBlendingMode = sjme_scritchui_gtk2_pencilSetBlendingMode,
+	.setClip = sjme_scritchui_gtk2_pencilSetClip,
+	.setDefaultFont = sjme_scritchui_gtk2_pencilSetDefaultFont,
+	.setFont = sjme_scritchui_gtk2_pencilSetFont,
+	.setStrokeStyle = sjme_scritchui_gtk2_pencilSetStrokeStyle,
 };

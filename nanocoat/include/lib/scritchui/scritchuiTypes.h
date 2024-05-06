@@ -83,7 +83,7 @@ typedef struct sjme_scritchui_pencilBase
 	const sjme_scritchui_pencilFunctions* api;
 	
 	/** Implementation API. */
-	const sjme_scritchui_pencilFunctions* impl;
+	const sjme_scritchui_pencilImplFunctions* impl;
 	
 	/** Front end information for paint. */
 	sjme_frontEnd frontEnd;

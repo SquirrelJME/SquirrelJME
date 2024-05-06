@@ -44,7 +44,7 @@ extern "C" {
 	((b) == FALSE ? SJME_JNI_FALSE : SJME_JNI_TRUE)
 
 /** Pencil functions for GTK2. */
-extern const sjme_scritchui_pencilFunctions
+extern const sjme_scritchui_pencilImplFunctions
 	sjme_scritchui_gtk2_pencilFunctions;
 
 sjme_errorCode sjme_scritchui_gtk2_apiInit(
