@@ -23,6 +23,9 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilCopyArea(
 	sjme_attrInValue sjme_jint dy,
 	sjme_attrInValue sjme_jint anchor)
 {
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
@@ -36,6 +39,9 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilDrawChars(
 	sjme_attrInValue sjme_jint y,
 	sjme_attrInValue sjme_jint anchor)
 {
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
@@ -47,6 +53,9 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilDrawLine(
 	sjme_attrInValue sjme_jint x2,
 	sjme_attrInValue sjme_jint y2)
 {
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
@@ -70,6 +79,9 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilDrawXRGB32Region(
 	sjme_attrInPositive sjme_jint origImgWidth,
 	sjme_attrInPositive sjme_jint origImgHeight)
 {
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
@@ -81,6 +93,9 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilFillRect(
 	sjme_attrInPositive sjme_jint w,
 	sjme_attrInPositive sjme_jint h)
 {
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
@@ -94,6 +109,9 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilFillTriangle(
 	sjme_attrInValue sjme_jint x3,
 	sjme_attrInValue sjme_jint y3)
 {
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
@@ -102,6 +120,9 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilSetAlphaColor(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint argb)
 {
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
@@ -111,6 +132,9 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilSetBlendingMode(
 	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_PENCIL_BLENDS)
 		sjme_scritchui_pencilBlendingMode mode)
 {
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
@@ -122,6 +146,9 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilSetClip(
 	sjme_attrInPositive sjme_jint w,
 	sjme_attrInPositive sjme_jint h)
 {
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
@@ -129,6 +156,9 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilSetClip(
 static sjme_errorCode sjme_scritchui_gtk2_pencilSetDefaultFont(
 	sjme_attrInNotNull sjme_scritchui_pencil g)
 {
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
@@ -139,6 +169,9 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilSetFont(
 	sjme_attrInValue sjme_jint style,
 	sjme_attrInPositiveNonZero sjme_jint pixelSize)
 {
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
@@ -148,6 +181,9 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilSetStrokeStyle(
 	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_PENCIL_STROKES)
 		sjme_scritchui_pencilStrokeMode style)
 {
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
