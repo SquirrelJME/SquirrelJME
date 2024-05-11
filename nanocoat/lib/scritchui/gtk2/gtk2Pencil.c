@@ -202,11 +202,28 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilSetStrokeStyle(
 	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_PENCIL_STROKES)
 		sjme_scritchui_pencilStrokeMode style)
 {
+	GdkGC* gdk;
+	GdkLineStyle gdkStyle;
+	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Recover context. */
+	gdk = (GdkGC*)g->frontEnd.data;
+	
+	/* Which style is used? */
+	if (style == SJME_SCRITCHUI_PENCIL_STROKE_DOTTED)
+		gdkStyle = GDK_LINE_ON_OFF_DASH;
+	else
+		gdkStyle = GDK_LINE_SOLID;
+	
+	/* Set style. */
+	gdk_gc_set_line_attributes(gdk, 1,
+		gdkStyle, GDK_CAP_BUTT,
+		GDK_JOIN_MITER);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 const sjme_scritchui_pencilImplFunctions sjme_scritchui_gtk2_pencilFunctions =

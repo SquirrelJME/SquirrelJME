@@ -553,6 +553,9 @@ typedef struct sjme_scritchui_pencilState
 {
 	/** The current color used. */
 	sjme_scritchui_pencilColor color;
+	
+	/** The style for strokes. */
+	sjme_scritchui_pencilStrokeMode stroke;
 } sjme_scritchui_pencilState;
 
 /*--------------------------------------------------------------------------*/

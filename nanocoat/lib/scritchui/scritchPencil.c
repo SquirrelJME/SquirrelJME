@@ -233,8 +233,17 @@ sjme_errorCode sjme_scritchui_core_pencilSetStrokeStyle(
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	if (style < 0 || style >= SJME_NUM_SCRITCHUI_PENCIL_STROKES)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	if (g->impl->setStrokeStyle == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Set stroke mode. */
+	g->state.stroke = style;
+	
+	/* Forward to native. */
+	return g->impl->setStrokeStyle(g, style);
 }
 
 sjme_errorCode sjme_scritchui_core_pencilTranslate(
