@@ -120,11 +120,32 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilSetAlphaColor(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint argb)
 {
+	GdkGC* gdk;
+	GdkColor color;
+	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Recover context. */
+	gdk = (GdkGC*)g->frontEnd.data;
+	
+	/* Setup color, note that GTK is 16-bit. */
+	memset(&color, 0, sizeof(color));
+	color.red = (argb >> 16) & 0xFF;
+	color.green = (argb >> 8) & 0xFF;
+	color.blue = (argb) & 0xFF;
+	
+	/* Shift up for 16-bit. */
+	color.red |= color.red << 8;
+	color.green |= color.green << 8;
+	color.blue |= color.blue << 8;
+	
+	/* Set colors. */
+	gdk_gc_set_rgb_fg_color(gdk, &color);
+	gdk_gc_set_rgb_bg_color(gdk, &color);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_scritchui_gtk2_pencilSetBlendingMode(
