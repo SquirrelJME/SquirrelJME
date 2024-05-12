@@ -7,53 +7,399 @@
 // See license.mkd for licensing and copyright information.
 // ------------------------------------------------------------------------ */
 
+#include "sjme/debug.h"
 #include "squirreljme.h"
+#include <lib/scritchui/scritchui.h>
 
-// The class to forward to
-#define SWINGPENCIL_CLASSNAME "cc/squirreljme/emulator/uiform/SwingPencilShelf"
+/* The class being implemented. */
+#define FORWARD_CLASS "cc/squirreljme/jvm/mle/PencilShelf"
+#define FORWARD_NATIVE_CLASS "cc/squirreljme/emulator/uiform/SwingPencilShelf"
 
-// Descriptors
-#define SWINGPENCIL_CAPABILITIES_DESC "(I)I"
-#define SWINGPENCIL_NATIVEIMAGELOADTYPES_DESC "()I"
-#define SWINGPENCIL_NATIVEIMAGELOADRGBA_DESC "(I[BIILcc/squirreljme/jvm/mle/callbacks/NativeImageLoadCallback;)Ljava/lang/Object;"
+/* Natives. */
+#define FORWARD_DESC_hardwareCopyArea "(" \
+	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT \
+	DESC_INT DESC_INT ")" DESC_VOID
+#define FORWARD_DESC_hardwareDrawChars "(" \
+	DESC_PENCIL DESC_ARRAY(DESC_CHAR) DESC_INT DESC_INT DESC_INT DESC_INT \
+	DESC_INT ")" DESC_VOID
+#define FORWARD_DESC_hardwareDrawLine "(" \
+	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT ")" DESC_VOID
+#define FORWARD_DESC_hardwareDrawRect "(" \
+	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT ")" DESC_VOID
+#define FORWARD_DESC_hardwareDrawSubstring "(" \
+	DESC_PENCIL DESC_STRING DESC_INT DESC_INT DESC_INT DESC_INT \
+	DESC_INT ")" DESC_VOID
+#define FORWARD_DESC_hardwareDrawXRGB32Region "(" \
+	DESC_PENCIL DESC_ARRAY(DESC_INT) DESC_INT DESC_INT DESC_BOOLEAN \
+	DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT \
+	DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT ")" DESC_VOID
+#define FORWARD_DESC_hardwareFillRect "(" \
+	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT ")" DESC_VOID
+#define FORWARD_DESC_hardwareFillTriangle "(" \
+	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT \
+	DESC_INT ")" DESC_VOID
+#define FORWARD_DESC_hardwareGraphics "(" \
+	DESC_INT DESC_INT DESC_INT DESC_OBJECT DESC_INT \
+	DESC_ARRAY(DESC_INT) DESC_INT DESC_INT DESC_INT DESC_INT ")" DESC_PENCIL
+#define FORWARD_DESC_hardwareHasAlpha "(" \
+	DESC_PENCIL ")" DESC_BOOLEAN
+#define FORWARD_DESC_hardwareSetAlphaColor "(" \
+	DESC_PENCIL DESC_INT ")" DESC_VOID
+#define FORWARD_DESC_hardwareSetBlendingMode "(" \
+	DESC_PENCIL DESC_INT ")" DESC_VOID
+#define FORWARD_DESC_hardwareSetClip "(" \
+	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT ")" DESC_VOID
+#define FORWARD_DESC_hardwareSetDefaultFont "(" \
+	DESC_PENCIL ")" DESC_VOID
+#define FORWARD_DESC_hardwareSetFont "(" \
+	DESC_PENCIL DESC_STRING DESC_INT DESC_INT ")" DESC_VOID
+#define FORWARD_DESC_hardwareSetStrokeStyle "(" \
+	DESC_PENCIL DESC_INT ")" DESC_VOID
+#define FORWARD_DESC_hardwareTranslate "(" \
+	DESC_PENCIL DESC_INT DESC_INT ")" DESC_VOID
 
-JNIEXPORT jint JNICALL Impl_mle_PencilShelf_capabilities(JNIEnv* env,
-	jclass classy, jint pixelFormat)
+/* Forwards */
+#define FORWARD_DESC_capabilities "(I)I"
+#define FORWARD_DESC_nativeImageLoadRGBA \
+	"(I[BIILcc/squirreljme/jvm/mle/callbacks/NativeImageLoadCallback;)" \
+	"Ljava/lang/Object;"
+#define FORWARD_DESC_nativeImageLoadTypes "()I"
+
+static sjme_scritchui_pencil recoverPencil(JNIEnv* env, jobject g)
 {
-	return forwardCallStaticInteger(env,  SWINGPENCIL_CLASSNAME,
-		"capabilities", SWINGPENCIL_CAPABILITIES_DESC,
-		pixelFormat);
+	jclass classy;
+	jfieldID pointerField;
+	
+	/* Does not map. */
+	if (g == NULL)
+		return NULL;
+
+	/* Locate class. */
+	classy = (*env)->FindClass(env,
+		"cc/squirreljme/emulator/scritchui/dylib/DylibPencilObject");
+	if (classy == NULL)
+		sjme_die("Could not find DylibPencilObject.");
+	
+	/* Incorrect type. */
+	if (!(*env)->IsInstanceOf(env, g, classy))
+		sjme_die("Not a DylibPencilObject");
+	
+	/* Get the pointer data. */
+	pointerField = (*env)->GetFieldID(env, classy, "objectP", "J");
+	if (pointerField == NULL)
+		sjme_die("No objectP in DylibPencilObject");
+	
+	/* Cast pencil data. */
+	return (sjme_scritchui_pencil)
+		((intptr_t)((*env)->GetLongField(env, g, pointerField)));
 }
 
-JNIEXPORT jobject JNICALL Impl_mle_PencilShelf_nativeImageLoadRGBA(JNIEnv* env,
-	jclass classy, jint type, jbyteArray buf, jint off, jint len,
-	jobject callback)
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareCopyArea)
+	(JNIEnv* env, jclass classy, jobject g, jint sx, jint sy, jint w, jint h,
+	jint dw, jint dh, jint anchor)
 {
-	return forwardCallStaticObject(env, SWINGPENCIL_CLASSNAME,
-		"nativeImageLoadRGBA", SWINGPENCIL_NATIVEIMAGELOADRGBA_DESC,
-		type, buf, off, len, callback);
+	sjme_scritchui_pencil p;
+	
+	/* Recover. */
+	p = recoverPencil(env, g);
+	if (g == NULL || p == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+	
+	sjme_todo("Impl?");
 }
 
-JNIEXPORT jint JNICALL Impl_mle_PencilShelf_nativeImageLoadTypes(JNIEnv* env,
-	jclass classy)
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawChars)
+	(JNIEnv* env, jclass classy, jobject g, jcharArray s, jint o, jint l,
+	jint x, jint y, jint anchor)
 {
-	return forwardCallStaticInteger(env, SWINGPENCIL_CLASSNAME,
-		"nativeImageLoadTypes", SWINGPENCIL_NATIVEIMAGELOADTYPES_DESC);
+	sjme_scritchui_pencil p;
+	
+	/* Recover. */
+	p = recoverPencil(env, g);
+	if (g == NULL || p == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+	
+	sjme_todo("Impl?");
 }
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawLine)
+	(JNIEnv* env, jclass classy, jobject g, jint x1, jint y1, jint x2, jint y2)
+{
+	sjme_scritchui_pencil p;
+	
+	/* Recover. */
+	p = recoverPencil(env, g);
+	if (g == NULL || p == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+	
+	sjme_todo("Impl?");
+}
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawRect)
+	(JNIEnv* env, jclass classy, jobject g, jint x, jint y, jint w, jint h)
+{
+	sjme_scritchui_pencil p;
+	
+	/* Recover. */
+	p = recoverPencil(env, g);
+	if (g == NULL || p == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+	
+	sjme_todo("Impl?");
+}
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawSubstring)
+	(JNIEnv* env, jclass classy, jobject g, jstring s, jint o, jint l,
+	jint x, jint y, jint anchor)
+{
+	sjme_scritchui_pencil p;
+	
+	/* Recover. */
+	p = recoverPencil(env, g);
+	if (g == NULL || p == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+	
+	sjme_todo("Impl?");
+}
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawXRGB32Region)
+	(JNIEnv* env, jclass classy, jobject g, jintArray data, jint off,
+	jint scanLen, jboolean alpha, jint xSrc, jint ySrc, jint wSrc, jint hSrc,
+	jint trans, jint xDest, jint yDest, jint wDest, jint hDest,
+	jint origImgWidth, jint origImgHeight)
+{
+	sjme_scritchui_pencil p;
+	
+	/* Recover. */
+	p = recoverPencil(env, g);
+	if (g == NULL || p == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+	
+	sjme_todo("Impl?");
+}
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareFillRect)
+	(JNIEnv* env, jclass classy, jobject g, jint x, jint y, jint w, jint h)
+{
+	sjme_scritchui_pencil p;
+	
+	/* Recover. */
+	p = recoverPencil(env, g);
+	if (g == NULL || p == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+	
+	sjme_todo("Impl?");
+}
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareFillTriangle)
+	(JNIEnv* env, jclass classy, jobject g, jint x1, jint y1, jint x2, jint y2,
+	jint x3, jint y3)
+{
+	sjme_scritchui_pencil p;
+	
+	/* Recover. */
+	p = recoverPencil(env, g);
+	if (g == NULL || p == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+	
+	sjme_todo("Impl?");
+}
+
+JNIEXPORT jobject JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareGraphics)
+	(JNIEnv* env, jclass classy, jint pf, jint bw, jint bh, jobject buf,
+	jint offset, jintArray pal, jint sx, jint sy, jint sw, jint sh)
+{
+	sjme_todo("Impl?");
+	return NULL;
+}
+
+JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareHasAlpha)
+	(JNIEnv* env, jclass classy, jobject g)
+{
+	sjme_scritchui_pencil p;
+	
+	/* Recover. */
+	p = recoverPencil(env, g);
+	if (g == NULL || p == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return JNI_FALSE;
+	}
+	
+	sjme_todo("Impl?");
+	return JNI_FALSE;
+}
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetAlphaColor)
+	(JNIEnv* env, jclass classy, jobject g, jint argb)
+{
+	sjme_scritchui_pencil p;
+	
+	/* Recover. */
+	p = recoverPencil(env, g);
+	if (g == NULL || p == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+	
+	sjme_todo("Impl?");
+}
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetBlendingMode)
+	(JNIEnv* env, jclass classy, jobject g, jint mode)
+{
+	sjme_scritchui_pencil p;
+	
+	/* Recover. */
+	p = recoverPencil(env, g);
+	if (g == NULL || p == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+	
+	sjme_todo("Impl?");
+}
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetClip)
+	(JNIEnv* env, jclass classy, jobject g, jint x, jint y, jint w, jint h)
+{
+	sjme_scritchui_pencil p;
+	
+	/* Recover. */
+	p = recoverPencil(env, g);
+	if (g == NULL || p == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+	
+	sjme_todo("Impl?");
+}
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetDefaultFont)
+	(JNIEnv* env, jclass classy, jobject g)
+{
+	sjme_scritchui_pencil p;
+	
+	/* Recover. */
+	p = recoverPencil(env, g);
+	if (g == NULL || p == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+	
+	sjme_todo("Impl?");
+}
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetFont)
+	(JNIEnv* env, jclass classy, jobject g, jstring name, jint style,
+	jint pixelSize)
+{
+	sjme_scritchui_pencil p;
+	
+	/* Recover. */
+	p = recoverPencil(env, g);
+	if (g == NULL || p == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+	
+	sjme_todo("Impl?");
+}
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetStrokeStyle)
+	(JNIEnv* env, jclass classy, jobject g, jint style)
+{
+	sjme_scritchui_pencil p;
+	
+	/* Recover. */
+	p = recoverPencil(env, g);
+	if (g == NULL || p == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+	
+	sjme_todo("Impl?");
+}
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareTranslate)
+	(JNIEnv* env, jclass classy, jobject g, jint x, jint y)
+{
+	sjme_scritchui_pencil p;
+	
+	/* Recover. */
+	p = recoverPencil(env, g);
+	if (g == NULL || p == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+	
+	sjme_todo("Impl?");
+}
+	
+FORWARD_IMPL(PencilShelf, capabilities, jint, Integer, \
+	FORWARD_IMPL_args(jint pixelFormat), \
+	FORWARD_IMPL_pass(pixelFormat))
+FORWARD_IMPL(PencilShelf, nativeImageLoadRGBA, jobject, Object, \
+	FORWARD_IMPL_args(jint type, jbyteArray buf, jint off, jint len, \
+		jobject callback), \
+	FORWARD_IMPL_pass(type, buf, off, len, callback))
+FORWARD_IMPL(PencilShelf, nativeImageLoadTypes, jint, Integer, \
+	FORWARD_IMPL_none(), FORWARD_IMPL_none())
 
 static const JNINativeMethod mlePencilMethods[] =
 {
-	{"capabilities", SWINGPENCIL_CAPABILITIES_DESC,
-		(void*)Impl_mle_PencilShelf_capabilities},
-	{"nativeImageLoadRGBA", SWINGPENCIL_NATIVEIMAGELOADRGBA_DESC,
-		(void*)Impl_mle_PencilShelf_nativeImageLoadRGBA},
-	{"nativeImageLoadTypes", SWINGPENCIL_NATIVEIMAGELOADTYPES_DESC,
-		(void*)Impl_mle_PencilShelf_nativeImageLoadTypes},
+	FORWARD_list(PencilShelf, capabilities),
+	FORWARD_list(PencilShelf, hardwareCopyArea),
+	FORWARD_list(PencilShelf, hardwareDrawChars),
+	FORWARD_list(PencilShelf, hardwareDrawLine),
+	FORWARD_list(PencilShelf, hardwareDrawRect),
+	FORWARD_list(PencilShelf, hardwareDrawSubstring),
+	FORWARD_list(PencilShelf, hardwareDrawXRGB32Region),
+	FORWARD_list(PencilShelf, hardwareFillRect),
+	FORWARD_list(PencilShelf, hardwareFillTriangle),
+	FORWARD_list(PencilShelf, hardwareGraphics),
+	FORWARD_list(PencilShelf, hardwareHasAlpha),
+	FORWARD_list(PencilShelf, hardwareSetAlphaColor),
+	FORWARD_list(PencilShelf, hardwareSetBlendingMode),
+	FORWARD_list(PencilShelf, hardwareSetClip),
+	FORWARD_list(PencilShelf, hardwareSetDefaultFont),
+	FORWARD_list(PencilShelf, hardwareSetFont),
+	FORWARD_list(PencilShelf, hardwareSetStrokeStyle),
+	FORWARD_list(PencilShelf, hardwareTranslate),
+	FORWARD_list(PencilShelf, nativeImageLoadRGBA),
+	FORWARD_list(PencilShelf, nativeImageLoadTypes),
 };
 
-jint JNICALL mlePencilInit(JNIEnv* env, jclass classy)
-{
-	return (*env)->RegisterNatives(env,
-		(*env)->FindClass(env, "cc/squirreljme/jvm/mle/PencilShelf"),
-		mlePencilMethods, sizeof(mlePencilMethods) / sizeof(JNINativeMethod));
-}
+FORWARD_init(mlePencilInit, mlePencilMethods)
+
