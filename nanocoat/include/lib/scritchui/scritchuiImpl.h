@@ -77,6 +77,10 @@ typedef sjme_scritchui_componentSetPaintListenerFunc
 typedef sjme_scritchui_componentSetSizeListenerFunc
 	sjme_scritchui_impl_componentSetSizeListenerFunc;
 
+/** Get size of component. */
+typedef sjme_scritchui_componentSizeFunc
+	sjme_scritchui_impl_componentSizeFunc;
+
 /**
  * Adds the given component to the specified container.
  * 
@@ -159,6 +163,9 @@ struct sjme_scritchui_implFunctions
 
 	/** Set size listener for component. */
 	SJME_SCRITCHUI_QUICK_IMPL(componentSetSizeListener);
+	
+	/** Get size of component. */
+	SJME_SCRITCHUI_QUICK_IMPL(componentSize);
 	
 	/** Add component to container. */
 	SJME_SCRITCHUI_QUICK_IMPL(containerAdd);

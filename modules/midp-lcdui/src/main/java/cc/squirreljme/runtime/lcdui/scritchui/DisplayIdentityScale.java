@@ -57,6 +57,16 @@ public class DisplayIdentityScale
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2024/05/12
+	 */
+	@Override
+	public boolean requiresBuffer()
+	{
+		return false;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2024/03/09
 	 */
 	@Override

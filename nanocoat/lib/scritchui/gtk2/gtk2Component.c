@@ -85,7 +85,7 @@ static gboolean sjme_scritchui_gtk2_eventExpose(
 	memset(&pencil, 0, sizeof(pencil));
 	if (sjme_error_is(sjme_scritchui_pencilInitStatic(&pencil,
 		&sjme_scritchui_gtk2_pencilFunctions,
-		SJME_GFX_PIXEL_FORMAT_INT_RGBA8888,
+		SJME_GFX_PIXEL_FORMAT_INT_RGB888,
 		w, h, &frontEnd)))
 		return TRUE;
 	
@@ -256,6 +256,35 @@ sjme_errorCode sjme_scritchui_gtk2_componentSetSizeListener(
 		infoCore->extra = g_signal_connect(widget, "configure-event",
 			G_CALLBACK(sjme_scritchui_gtk2_eventConfigure), inComponent);
 	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_scritchui_gtk2_componentSize(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNullable sjme_jint* outWidth,
+	sjme_attrOutNullable sjme_jint* outHeight)
+{
+	GtkWidget* widget;
+	GtkAllocation alloc;
+	
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover widget. */	
+	widget = (GtkWidget*)inComponent->common.handle;
+	
+	/* Get widget allocation. */
+	memset(&alloc, 0, sizeof(alloc));
+	gtk_widget_get_allocation(widget, &alloc);
+	
+	/* Copy sizes. */
+	if (outWidth != NULL)
+		*outWidth = alloc.width;
+	if (outHeight != NULL)
+		*outHeight = alloc.height;
 	
 	/* Success! */
 	return SJME_ERROR_NONE;

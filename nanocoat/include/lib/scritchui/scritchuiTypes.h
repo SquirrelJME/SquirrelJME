@@ -88,6 +88,12 @@ typedef struct sjme_scritchui_pencilBase
 	/** Front end information for paint. */
 	sjme_frontEnd frontEnd;
 	
+	/** The pixel format used. */
+	sjme_gfx_pixelFormat pixelFormat;
+	
+	/** Is there an alpha channel? */
+	sjme_jboolean hasAlpha;
+	
 	/** Color palette. */
 	struct
 	{

@@ -56,6 +56,25 @@ public final class NativeScritchDylib
 	}
 	
 	/**
+	 * Returns the component height.
+	 *
+	 * @param __component The component to get.
+	 * @return The height of the given component.
+	 * @throws MLECallError If the component is not valid.
+	 * @since 2024/05/12
+	 */
+	public int componentHeight(DylibComponentObject __component)
+		throws MLECallError
+	{
+		if (__component == null)
+			throw new MLECallError("NARG");
+		
+		// Forward
+		return NativeScritchDylib.__componentHeight(this._stateP,
+			__component.objectP);
+	}
+	
+	/**
 	 * Repaints the given component.
 	 *
 	 * @param __component The component to repaint.
@@ -90,7 +109,8 @@ public final class NativeScritchDylib
 		if (__component == null)
 			throw new MLECallError("Null arguments");
 		
-		NativeScritchDylib.__componentRevalidate(this._stateP, __component.objectP);
+		NativeScritchDylib.__componentRevalidate(this._stateP,
+			__component.objectP);
 	}
 	
 	/**
@@ -112,6 +132,25 @@ public final class NativeScritchDylib
 		NativeScritchDylib.__componentSetPaintListener(this._stateP,
 			((DylibBaseObject)__component).objectP,
 			__listener);
+	}
+	
+	/**
+	 * Returns the component width.
+	 *
+	 * @param __component The component to get.
+	 * @return The width of the given component.
+	 * @throws MLECallError If the component is not valid.
+	 * @since 2024/05/12
+	 */
+	public int componentWidth(DylibComponentObject __component)
+		throws MLECallError
+	{
+		if (__component == null)
+			throw new MLECallError("NARG");
+		
+		// Forward
+		return NativeScritchDylib.__componentWidth(this._stateP,
+			__component.objectP);
 	}
 	
 	/**
@@ -370,6 +409,18 @@ public final class NativeScritchDylib
 		NativeScritchDylib.__windowSetVisible(this._stateP, __window.objectP,
 			__visible);
 	}
+	/**
+	 * Returns the component height. 
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __componentP The component pointer.
+	 * @return The component's height.
+	 * @throws MLECallError If it could not be obtained.
+	 * @since 2024/05/12
+	 */
+	private static native int __componentHeight(long __stateP,
+		long __componentP)
+		throws MLECallError;
 	
 	/**
 	 * Repaints the given component.
@@ -410,6 +461,19 @@ public final class NativeScritchDylib
 	 */
 	private static native void __componentSetPaintListener(long __stateP,
 		long __componentP, DylibPaintListener __listener)
+		throws MLECallError;
+	
+	/**
+	 * Returns the component width. 
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __componentP The component pointer.
+	 * @return The component's width.
+	 * @throws MLECallError If it could not be obtained.
+	 * @since 2024/05/12
+	 */
+	private static native int __componentWidth(long __stateP,
+		long __componentP)
 		throws MLECallError;
 	
 	/**

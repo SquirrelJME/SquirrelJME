@@ -40,6 +40,16 @@ public class DisplayFixedFlatScale
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2024/05/12
+	 */
+	@Override
+	public boolean requiresBuffer()
+	{
+		return false;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2024/03/21
 	 */
 	@Override

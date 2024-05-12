@@ -316,7 +316,8 @@ public abstract class Canvas
 		panelApi.enableFocus(scritchPanel, true);
 		
 		// Setup repaint callback
-		this._repainter = new __ExecCanvasRepainter__(new WeakReference<>(this));
+		this._repainter = new __ExecCanvasRepainter__(
+			new WeakReference<>(this));
 	}
 	
 	/**
@@ -945,9 +946,12 @@ public abstract class Canvas
 			__parent.scritchWindow(),
 			state.scritchPanel(), 0, 0, w, h);
 		
-		// Setup new image with a raw buffer
-		this._buffer = new Image(new int[w * h], 0, w * h, w, h,
-			true, false);
+		// Setup new image with a raw buffer, if scaling is required
+		if (scale.requiresBuffer())
+			this._buffer = new Image(new int[w * h], 0, w * h, w, h,
+				true, false);
+		else
+			this._buffer = null;
 	}
 	
 	/**
@@ -968,13 +972,36 @@ public abstract class Canvas
 	@Override
 	final void __paint(Graphics __gfx, int __sw, int __sh, int __special)
 	{
-		// Only paint if there is a buffer
-		Image buffer = this._buffer;
-		if (buffer == null)
+		// Not on screen?
+		DisplayState display = this._state.currentDisplay();
+		if (display == null)
 			return;
 		
-		// We want to draw into the buffer so that we may scale it
-		Graphics bufferGfx = buffer.getGraphics();
+		// The target graphics to use
+		Graphics subGfx;
+		
+		// Is a buffer used for scaling?
+		Image buffer;
+		if (!display.display()._scale.requiresBuffer())
+		{
+			// No buffer is used
+			buffer = null;
+			
+			// Use the directly passed graphics
+			subGfx = __gfx;
+		}
+		else
+		{
+			// Use this buffer
+			buffer = this._buffer;
+		
+			// Only paint if there is a buffer
+			if (buffer == null)
+				return;
+			
+			// Draw onto this image instead for scaling
+			subGfx = buffer.getGraphics();
+		}
 		
 		// Draw background?
 		if (!this._isOpaque)
@@ -984,23 +1011,24 @@ public abstract class Canvas
 				.panelBackgroundColor();
 			
 			// Draw entire background
-			bufferGfx.setAlphaColor(bgColor | 0xFF_000000);
-			bufferGfx.fillRect(0, 0, __sw, __sh);
+			subGfx.setAlphaColor(bgColor | 0xFF_000000);
+			subGfx.fillRect(0, 0, __sw, __sh);
 			
 			// Use a default pen color
 			int fgColor = this._state.scritchApi().environment().lookAndFeel()
 				.panelForegroundColor();
-			bufferGfx.setAlphaColor(fgColor | 0xFF_000000);
+			subGfx.setAlphaColor(fgColor | 0xFF_000000);
 		}
 		
 		// Forward Draw
 		try
 		{
 			// Use buffer paint
-			this.paint(bufferGfx);
+			this.paint(subGfx);
 			
-			// Draw image accordingly with scaling
-			__gfx.drawImage(buffer, 0, 0, 0);
+			// Draw image accordingly with scaling, if needed
+			if (buffer != null)
+				__gfx.drawImage(buffer, 0, 0, 0);
 		}
 		
 		// Handle repaint servicing

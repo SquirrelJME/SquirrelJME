@@ -57,8 +57,11 @@ sjme_errorCode sjme_scritchui_core_pencilDrawLine(
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	if (g->impl->drawLine == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Forward. */
+	return g->impl->drawLine(g, x1, y1, x2, y2);
 }
 
 sjme_errorCode sjme_scritchui_core_pencilDrawRect(
@@ -127,8 +130,17 @@ sjme_errorCode sjme_scritchui_core_pencilFillRect(
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	if (g->impl->fillRect == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Cap width and height to 1 always. */
+	if (w <= 0)
+		w = 1;
+	if (h <= 0)
+		h = 1;
+	
+	/* Forward. */
+	return g->impl->fillRect(g, x, y, w, h);
 }
 
 sjme_errorCode sjme_scritchui_core_pencilFillTriangle(
@@ -189,6 +201,10 @@ sjme_errorCode sjme_scritchui_core_pencilSetBlendingMode(
 	
 	if (g->impl->setBlendingMode == NULL)
 		return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Source blending cannot be used if there is no alpha channel. */
+	if (!g->hasAlpha && mode == SJME_SCRITCHUI_PENCIL_BLEND_SRC)
+		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* Set mode. */
 	g->state.blending = mode;
@@ -323,6 +339,13 @@ sjme_errorCode sjme_scritchui_pencilInitStatic(
 	memset(&result, 0, sizeof(result));
 	result.api = &sjme_scritchui_core_pencil;
 	result.impl = inFunctions;
+	result.pixelFormat = pf;
+	
+	/* Is there an alpha channel? */
+	result.hasAlpha = (pf == SJME_GFX_PIXEL_FORMAT_INT_RGBA8888 ||
+		pf == SJME_GFX_PIXEL_FORMAT_SHORT_RGBA4444 ||
+		pf == SJME_GFX_PIXEL_FORMAT_SHORT_ABGR1555 ? SJME_JNI_TRUE :
+		SJME_JNI_FALSE);
 	
 	/* Copy in front end? */
 	if (copyFrontEnd != NULL)

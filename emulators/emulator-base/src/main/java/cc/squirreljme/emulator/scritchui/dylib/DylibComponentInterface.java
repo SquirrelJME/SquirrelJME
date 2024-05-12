@@ -49,7 +49,10 @@ public class DylibComponentInterface
 		ScritchComponentBracket __component)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__component == null)
+			throw new MLECallError("Null arguments.");
+		
+		return this.dyLib.componentHeight((DylibComponentObject)__component);
 	}
 	
 	/**
@@ -90,6 +93,9 @@ public class DylibComponentInterface
 		ScritchComponentBracket __component)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__component == null)
+			throw new MLECallError("Null arguments.");
+		
+		return this.dyLib.componentWidth((DylibComponentObject)__component);
 	}
 }

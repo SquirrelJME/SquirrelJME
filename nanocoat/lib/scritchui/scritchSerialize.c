@@ -104,6 +104,7 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 	SJME_SCRITCHUI_DISPATCH_DECL(componentRevalidate);
 	SJME_SCRITCHUI_DISPATCH_DECL(componentSetPaintListener);
 	SJME_SCRITCHUI_DISPATCH_DECL(componentSetSizeListener);
+	SJME_SCRITCHUI_DISPATCH_DECL(componentSize);
 	SJME_SCRITCHUI_DISPATCH_DECL(containerAdd);
 	SJME_SCRITCHUI_DISPATCH_DECL(containerSetBounds);
 	SJME_SCRITCHUI_DISPATCH_DECL(panelNew);
@@ -155,6 +156,13 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 			componentSetSizeListener->inComponent,
 			componentSetSizeListener->inListener,
 			componentSetSizeListener->copyFrontEnd));
+		
+		SJME_SCRITCHUI_DISPATCH_CASE(componentSize,
+			SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SIZE,
+			(state,
+			componentSize->inComponent,
+			componentSize->outWidth,
+			componentSize->outHeight));
 			
 		SJME_SCRITCHUI_DISPATCH_CASE(containerAdd,
 			SJME_SCRITCHUI_SERIAL_TYPE_CONTAINER_ADD,
@@ -288,6 +296,24 @@ sjme_errorCode sjme_scritchui_coreSerial_componentSetSizeListener(
 	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
 	SJME_SCRITCHUI_SERIAL_PASS(inListener);
 	SJME_SCRITCHUI_SERIAL_PASS(copyFrontEnd);
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
+}
+
+sjme_errorCode sjme_scritchui_coreSerial_componentSize(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNullable sjme_jint* outWidth,
+	sjme_attrOutNullable sjme_jint* outHeight)
+{
+	SJME_SCRITCHUI_SERIAL_CHUNK(componentSize,
+		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SIZE,
+		(inState, inComponent, outWidth, outHeight));
+		
+	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
+	SJME_SCRITCHUI_SERIAL_PASS(outWidth);
+	SJME_SCRITCHUI_SERIAL_PASS(outHeight);
 	
 	/* Invoke and wait. */
 	SJME_SCRITCHUI_INVOKE_WAIT;

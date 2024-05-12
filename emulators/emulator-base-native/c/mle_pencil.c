@@ -9,7 +9,8 @@
 
 #include "sjme/debug.h"
 #include "squirreljme.h"
-#include <lib/scritchui/scritchui.h>
+#include "lib/scritchui/scritchuiTypes.h"
+#include "lib/scritchui/scritchui.h"
 
 /* The class being implemented. */
 #define FORWARD_CLASS "cc/squirreljme/jvm/mle/PencilShelf"
@@ -131,6 +132,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawChars)
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawLine)
 	(JNIEnv* env, jclass classy, jobject g, jint x1, jint y1, jint x2, jint y2)
 {
+	sjme_errorCode error;
 	sjme_scritchui_pencil p;
 	
 	/* Recover. */
@@ -141,7 +143,9 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawLine)
 		return;
 	}
 	
-	sjme_todo("Impl?");
+	/* Forward. */
+	if (sjme_error_is(error = p->api->drawLine(p, x1, y1, x2, y2)))
+		sjme_jni_throwMLECallError(env, error);
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawRect)
@@ -199,6 +203,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawXRGB32Region)
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareFillRect)
 	(JNIEnv* env, jclass classy, jobject g, jint x, jint y, jint w, jint h)
 {
+	sjme_errorCode error;
 	sjme_scritchui_pencil p;
 	
 	/* Recover. */
@@ -209,7 +214,9 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareFillRect)
 		return;
 	}
 	
-	sjme_todo("Impl?");
+	/* Forward. */
+	if (sjme_error_is(error = p->api->fillRect(p, x, y, w, h)))
+		sjme_jni_throwMLECallError(env, error);
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareFillTriangle)
@@ -250,13 +257,14 @@ JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareHasAlpha)
 		return JNI_FALSE;
 	}
 	
-	sjme_todo("Impl?");
-	return JNI_FALSE;
+	/* Is there an alpha channel? */
+	return (p->hasAlpha ? JNI_TRUE : JNI_FALSE);
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetAlphaColor)
 	(JNIEnv* env, jclass classy, jobject g, jint argb)
 {
+	sjme_errorCode error;
 	sjme_scritchui_pencil p;
 	
 	/* Recover. */
@@ -267,12 +275,15 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetAlphaColor)
 		return;
 	}
 	
-	sjme_todo("Impl?");
+	/* Forward. */
+	if (sjme_error_is(error = p->api->setAlphaColor(p, argb)))
+		sjme_jni_throwMLECallError(env, error);
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetBlendingMode)
 	(JNIEnv* env, jclass classy, jobject g, jint mode)
 {
+	sjme_errorCode error;
 	sjme_scritchui_pencil p;
 	
 	/* Recover. */
@@ -283,7 +294,9 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetBlendingMode)
 		return;
 	}
 	
-	sjme_todo("Impl?");
+	/* Forward. */
+	if (sjme_error_is(error = p->api->setBlendingMode(p, mode)))
+		sjme_jni_throwMLECallError(env, error);
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetClip)
@@ -305,6 +318,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetClip)
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetDefaultFont)
 	(JNIEnv* env, jclass classy, jobject g)
 {
+	sjme_errorCode error;
 	sjme_scritchui_pencil p;
 	
 	/* Recover. */
@@ -315,7 +329,9 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetDefaultFont)
 		return;
 	}
 	
-	sjme_todo("Impl?");
+	/* Forward. */
+	if (sjme_error_is(error = p->api->setDefaultFont(p)))
+		sjme_jni_throwMLECallError(env, error);
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetFont)
@@ -338,6 +354,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetFont)
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetStrokeStyle)
 	(JNIEnv* env, jclass classy, jobject g, jint style)
 {
+	sjme_errorCode error;
 	sjme_scritchui_pencil p;
 	
 	/* Recover. */
@@ -348,7 +365,9 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetStrokeStyle)
 		return;
 	}
 	
-	sjme_todo("Impl?");
+	/* Forward. */
+	if (sjme_error_is(error = p->api->setStrokeStyle(p, style)))
+		sjme_jni_throwMLECallError(env, error);
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareTranslate)

@@ -68,6 +68,16 @@ public class DisplayFloatScale
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2024/05/12
+	 */
+	@Override
+	public boolean requiresBuffer()
+	{
+		return true;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2024/03/09
 	 */
 	@Override

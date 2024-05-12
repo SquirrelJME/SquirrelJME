@@ -358,6 +358,22 @@ typedef sjme_errorCode (*sjme_scritchui_componentSetSizeListenerFunc)(
 	sjme_attrInNullable sjme_frontEnd* copyFrontEnd);
 
 /**
+ * Returns the size of the given component.
+ * 
+ * @param inState The input state.
+ * @param inComponent The component to get the size of.
+ * @param outWidth The output width.
+ * @param outHeight The output height.
+ * @return Any resultant error, if any.
+ * @since 2024/05/12
+ */
+typedef sjme_errorCode (*sjme_scritchui_componentSizeFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNullable sjme_jint* outWidth,
+	sjme_attrOutNullable sjme_jint* outHeight);
+
+/**
  * Adds the given component to the specified container.
  * 
  * @param inState The input state.
@@ -546,6 +562,9 @@ struct sjme_scritchui_apiFunctions
 	
 	/** Sets the listener for component size events. */
 	SJME_SCRITCHUI_QUICK_API(componentSetSizeListener);
+
+	/** Get size of component. */
+	SJME_SCRITCHUI_QUICK_API(componentSize);
 	
 	/** Adds component to container. */
 	SJME_SCRITCHUI_QUICK_API(containerAdd);

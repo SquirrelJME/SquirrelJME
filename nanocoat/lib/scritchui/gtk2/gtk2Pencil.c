@@ -53,11 +53,21 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilDrawLine(
 	sjme_attrInValue sjme_jint x2,
 	sjme_attrInValue sjme_jint y2)
 {
+	GdkDrawable* drawable;
+	GdkGC* gc;
+	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Recover context. */
+	drawable = (GdkDrawable*)g->frontEnd.wrapper;
+	gc = (GdkGC*)g->frontEnd.data;
+	
+	/* Forward. */
+	gdk_draw_line(drawable, gc, x1, y1, x2, y2);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_scritchui_gtk2_pencilDrawXRGB32Region(
@@ -93,11 +103,22 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilFillRect(
 	sjme_attrInPositive sjme_jint w,
 	sjme_attrInPositive sjme_jint h)
 {
+	GdkDrawable* drawable;
+	GdkGC* gc;
+	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Recover context. */
+	drawable = (GdkDrawable*)g->frontEnd.wrapper;
+	gc = (GdkGC*)g->frontEnd.data;
+
+	/* Forward. */
+	gdk_draw_rectangle(drawable, gc, TRUE,
+		x, y, w, h);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_scritchui_gtk2_pencilFillTriangle(
@@ -120,14 +141,14 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilSetAlphaColor(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint argb)
 {
-	GdkGC* gdk;
+	GdkGC* gc;
 	GdkColor color;
 	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover context. */
-	gdk = (GdkGC*)g->frontEnd.data;
+	gc = (GdkGC*)g->frontEnd.data;
 	
 	/* Setup color, note that GTK is 16-bit. */
 	memset(&color, 0, sizeof(color));
@@ -141,8 +162,8 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilSetAlphaColor(
 	color.blue |= color.blue << 8;
 	
 	/* Set colors. */
-	gdk_gc_set_rgb_fg_color(gdk, &color);
-	gdk_gc_set_rgb_bg_color(gdk, &color);
+	gdk_gc_set_rgb_fg_color(gc, &color);
+	gdk_gc_set_rgb_bg_color(gc, &color);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -202,14 +223,14 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilSetStrokeStyle(
 	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_PENCIL_STROKES)
 		sjme_scritchui_pencilStrokeMode style)
 {
-	GdkGC* gdk;
+	GdkGC* gc;
 	GdkLineStyle gdkStyle;
 	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover context. */
-	gdk = (GdkGC*)g->frontEnd.data;
+	gc = (GdkGC*)g->frontEnd.data;
 	
 	/* Which style is used? */
 	if (style == SJME_SCRITCHUI_PENCIL_STROKE_DOTTED)
@@ -218,7 +239,7 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilSetStrokeStyle(
 		gdkStyle = GDK_LINE_SOLID;
 	
 	/* Set style. */
-	gdk_gc_set_line_attributes(gdk, 1,
+	gdk_gc_set_line_attributes(gc, 1,
 		gdkStyle, GDK_CAP_BUTT,
 		GDK_JOIN_MITER);
 	

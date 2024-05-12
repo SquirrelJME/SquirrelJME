@@ -18,6 +18,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_gtkFunctions =
 	.componentRevalidate = sjme_scritchui_gtk2_componentRevalidate,
 	.componentSetPaintListener = sjme_scritchui_gtk2_componentSetPaintListener,
 	.componentSetSizeListener = sjme_scritchui_gtk2_componentSetSizeListener,
+	.componentSize = sjme_scritchui_gtk2_componentSize,
 	.containerAdd = sjme_scritchui_gtk2_containerAdd,
 	.containerSetBounds = sjme_scritchui_gtk2_containerSetBounds,
 	.loopExecute = NULL,

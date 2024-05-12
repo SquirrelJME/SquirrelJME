@@ -23,6 +23,15 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 public abstract class DisplayScale
 {
 	/**
+	 * Does this display scale require a buffer?
+	 *
+	 * @return If a buffer is required for scaling.
+	 * @since 2024/05/12
+	 */
+	@SquirrelJMEVendorApi
+	public abstract boolean requiresBuffer();
+	
+	/**
 	 * Projects a texture coordinate to a screen coordinate.
 	 *
 	 * @param __x The input texture coordinate.
