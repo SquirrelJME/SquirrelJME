@@ -287,6 +287,18 @@ public final class PencilShelf
 		throws MLECallError;
 	
 	/**
+	 * Is there an alpha channel for this pencil?
+	 *
+	 * @param __g The graphics to check.
+	 * @return If there is an alpha channel or not.
+	 * @throws MLECallError On null arguments or if the pencil is not valid.
+	 * @since 2024/05/12
+	 */
+	@SquirrelJMEVendorApi
+	public static native boolean hardwareHasAlpha(@NotNull PencilBracket __g)
+		throws MLECallError;
+	
+	/**
 	 * Sets the alpha color for graphics.
 	 * 
 	 * @param __g The hardware graphics to draw with.

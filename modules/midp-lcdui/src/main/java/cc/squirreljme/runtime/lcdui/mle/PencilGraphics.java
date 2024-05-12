@@ -11,10 +11,10 @@ package cc.squirreljme.runtime.lcdui.mle;
 
 import cc.squirreljme.jvm.mle.PencilShelf;
 import cc.squirreljme.jvm.mle.brackets.PencilBracket;
-import cc.squirreljme.jvm.mle.constants.PencilCapabilities;
 import cc.squirreljme.jvm.mle.constants.PencilShelfError;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPencilBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
@@ -23,8 +23,7 @@ import javax.microedition.lcdui.Text;
 import javax.microedition.lcdui.game.Sprite;
 
 /**
- * This delegates drawing operations to either the hardware graphics layer
- * or the software graphics layer.
+ * This delegates drawing operations to the hardware graphics layer.
  * 
  * This utilizes both {@link PencilShelf} and {@link PencilBracket} for native
  * graphics.
@@ -34,14 +33,8 @@ import javax.microedition.lcdui.game.Sprite;
 public final class PencilGraphics
 	extends Graphics
 {
-	/** Software graphics backend. */
-	protected final Graphics software;
-	
 	/** The hardware bracket reference. */
 	protected final PencilBracket hardware;
-	
-	/** The capabilities of the graphics hardware. */
-	protected final int capabilities;
 	
 	/** Surface width. */
 	protected final int surfaceW;
@@ -49,7 +42,7 @@ public final class PencilGraphics
 	/** Surface height. */
 	protected final int surfaceH;
 	
-	/** Does this have alpha channel support? */
+	/** Is there an alpha channel? */
 	protected final boolean hasAlpha;
 	
 	/** Single character. */
@@ -89,41 +82,28 @@ public final class PencilGraphics
 	/**
 	 * Initializes the pencil graphics system.
 	 *
-	 * @param __caps Capabilities of the hardware, this determines the
-	 * functions that are available.
-	 * @param __software The fallback software graphics rasterizer.
 	 * @param __sw The surface width.
 	 * @param __sh The surface height.
 	 * @param __hardware The hardware bracket reference for drawing.
-	 * @param __pf The pixel format used.
 	 * @throws IllegalArgumentException If hardware graphics are not capable
 	 * enough to be used at all.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/09/25
 	 */
-	private PencilGraphics(int __caps, Graphics __software, int __sw, int __sh,
-		PencilBracket __hardware, int __pf)
+	private PencilGraphics(int __sw, int __sh, PencilBracket __hardware)
 		throws IllegalArgumentException, NullPointerException
 	{
-		if (__software == null || __hardware == null)
+		if (__hardware == null)
 			throw new NullPointerException("NARG");
 		
-		/* {@squirreljme.error EB3g Hardware graphics not capable enough.} */
-		if ((__caps & PencilCapabilities.MINIMUM) == 0)
-			throw new IllegalArgumentException("EB3g " + __caps);
-		
-		this.software = __software;
 		this.hardware = __hardware;
-		this.capabilities = __caps;
 		
 		// These are used to manage the clip
 		this.surfaceW = __sw;
 		this.surfaceH = __sh;
 		
-		// Does this use alpha?
-		this.hasAlpha = (__pf == UIPixelFormat.INT_RGBA8888 ||
-			__pf == UIPixelFormat.SHORT_ABGR1555 ||
-			__pf == UIPixelFormat.SHORT_RGBA4444);
+		// Determines which blending modes are valid
+		this.hasAlpha = PencilShelf.hardwareHasAlpha(__hardware);
 		
 		// Set initial parameters for the graphics and make sure they are
 		// properly forwarded as well
@@ -152,12 +132,6 @@ public final class PencilGraphics
 		int __dy, int __anchor)
 		throws IllegalArgumentException, IllegalStateException
 	{
-		if (0 == (this.capabilities & PencilCapabilities.COPY_AREA))
-		{
-			this.software.copyArea(__sx, __sy, __w, __h, __dx, __dy, __anchor);
-			return;
-		}
-		
 		// Forward to native call
 		try
 		{
@@ -190,12 +164,6 @@ public final class PencilGraphics
 	public void drawArc(int __x, int __y, int __w, int __h, int __startAngle,
 	 int __arcAngle)
 	{
-		if (0 == (this.capabilities & PencilCapabilities.DRAW_ARC))
-		{
-			this.software.drawArc(__x, __y, __w, __h, __startAngle, __arcAngle);
-			return;
-		}
-		
 		throw Debugging.todo();
 	}
 	
@@ -208,13 +176,6 @@ public final class PencilGraphics
 		int __x, int __y, int __w, int __h)
 		throws NullPointerException
 	{
-		if (0 == (this.capabilities & PencilCapabilities.DRAW_XRGB16_SIMPLE))
-		{
-			this.software.drawARGB16(__data, __off, __scanlen, __x, __y, __w,
-				__h);
-			return;
-		}
-		
 		throw Debugging.todo();
 	}
 	
@@ -225,12 +186,6 @@ public final class PencilGraphics
 	@Override
 	public void drawChar(char __s, int __x, int __y, int __anchor)
 	{
-		if (0 == (this.capabilities & PencilCapabilities.TEXT_BASIC))
-		{
-			this.software.drawChar(__s, __x, __y, __anchor);
-			return;
-		}
-		
 		// Fill single character first
 		char[] singleChar = this._singleChar;
 		singleChar[0] = __s;
@@ -269,12 +224,6 @@ public final class PencilGraphics
 			throw new NullPointerException("NARG");
 		if (__o < 0 || __l < 0 || (__o + __l) > __s.length)
 			throw new IndexOutOfBoundsException("IOOB");
-		
-		if (0 == (this.capabilities & PencilCapabilities.TEXT_BASIC))
-		{
-			this.software.drawChars(__s, __o, __l, __x, __y, __anchor);
-			return;
-		}
 		
 		// Forward
 		try
@@ -321,12 +270,6 @@ public final class PencilGraphics
 	@Override
 	public void drawLine(int __x1, int __y1, int __x2, int __y2)
 	{
-		if (0 == (this.capabilities & PencilCapabilities.DRAW_LINE))
-		{
-			this.software.drawLine(__x1, __y1, __x2, __y2);
-			return;
-		}
-		
 		PencilShelf.hardwareDrawLine(this.hardware, __x1, __y1, __x2, __y2);
 	}
 	
@@ -339,13 +282,6 @@ public final class PencilGraphics
 		int __y, int __w, int __h, boolean __alpha)
 		throws NullPointerException
 	{
-		if (0 == (this.capabilities & PencilCapabilities.DRAW_XRGB32_REGION))
-		{
-			this.software.drawRGB(__data, __off, __scanlen, __x, __y, __w,
-				__h, __alpha);
-			return;
-		}
-		
 		// Forward Call
 		this.__drawRegion(__data, __off, __scanlen, __alpha,
 			0, 0, __w, __h, Sprite.TRANS_NONE,
@@ -362,13 +298,6 @@ public final class PencilGraphics
 		int __x, int __y, int __w, int __h)
 		throws NullPointerException
 	{
-		if (0 == (this.capabilities & PencilCapabilities.DRAW_XRGB16_SIMPLE))
-		{
-			this.software.drawRGB16(__data, __off, __scanlen, __x, __y,
-				__w, __h);
-			return;
-		}
-		
 		throw Debugging.todo();
 	}
 	
@@ -379,12 +308,6 @@ public final class PencilGraphics
 	@Override
 	public void drawRect(int __x, int __y, int __w, int __h)
 	{
-		if (0 == (this.capabilities & PencilCapabilities.DRAW_RECT))
-		{
-			this.software.drawRect(__x, __y, __w, __h);
-			return;
-		}
-		
 		// Forward to hardware
 		PencilShelf.hardwareDrawRect(this.hardware, __x, __y, __w, __h);
 	}
@@ -416,13 +339,6 @@ public final class PencilGraphics
 	{
 		if (__src == null)
 			throw new NullPointerException("NARG");
-		
-		if (0 == (this.capabilities & PencilCapabilities.DRAW_XRGB32_REGION))
-		{
-			this.software.drawRegion(__src, __xsrc, __ysrc, __wsrc, __hsrc,
-				__trans, __xdest, __ydest, __anch, __wdest, __hdest);
-			return;
-		}
 		
 		// If the image is direct, use the buffer that is inside rather than
 		// a copy, so we do not waste time copying from it!
@@ -466,12 +382,6 @@ public final class PencilGraphics
 	public void drawRoundRect(int __x, int __y, int __w, int __h,
 		int __aw, int __ah)
 	{
-		if (0 == (this.capabilities & PencilCapabilities.DRAW_ROUND_RECT))
-		{
-			this.software.drawRoundRect(__x, __y, __w, __h, __aw, __ah);
-			return;
-		}
-		
 		throw Debugging.todo();
 	}
 	
@@ -485,12 +395,6 @@ public final class PencilGraphics
 	{
 		if (__s == null)
 			throw new NullPointerException("NARG");
-		
-		if (0 == (this.capabilities & PencilCapabilities.TEXT_BASIC))
-		{
-			this.software.drawString(__s, __x, __y, __anchor);
-			return;
-		}
 		
 		// Forward
 		try
@@ -525,12 +429,6 @@ public final class PencilGraphics
 		if (__o < 0 || __l < 0 || (__o + __l) > __s.length())
 			throw new StringIndexOutOfBoundsException("IOOB");
 		
-		if (0 == (this.capabilities & PencilCapabilities.TEXT_BASIC))
-		{
-			this.software.drawSubstring(__s, __o, __l, __x, __y, __anchor);
-			return;
-		}
-		
 		// Forward
 		try
 		{
@@ -557,12 +455,6 @@ public final class PencilGraphics
 	@Override
 	public void drawText(Text __t, int __x, int __y)
 	{
-		if (0 == (this.capabilities & PencilCapabilities.TEXT_ADVANCED))
-		{
-			this.software.drawText(__t, __x, __y);
-			return;
-		}
-		
 		throw Debugging.todo();
 	}
 	
@@ -574,12 +466,6 @@ public final class PencilGraphics
 	public void fillArc(int __x, int __y, int __w, int __h, int __startAngle,
 	 int __arcAngle)
 	{
-		if (0 == (this.capabilities & PencilCapabilities.FILL_ARC))
-		{
-			this.software.fillArc(__x, __y, __w, __h, __startAngle, __arcAngle);
-			return;
-		}
-		
 		throw Debugging.todo();
 	}
 	
@@ -590,12 +476,6 @@ public final class PencilGraphics
 	@Override
 	public void fillRect(int __x, int __y, int __w, int __h)
 	{
-		if (0 == (this.capabilities & PencilCapabilities.FILL_RECT))
-		{
-			this.software.fillRect(__x, __y, __w, __h);
-			return;
-		}
-		
 		// Forward to hardware
 		PencilShelf.hardwareFillRect(this.hardware, __x, __y, __w, __h);
 	}
@@ -608,12 +488,6 @@ public final class PencilGraphics
 	public void fillRoundRect(int __x, int __y, int __w, int __h,
 		int __aw, int __ah)
 	{
-		if (0 == (this.capabilities & PencilCapabilities.FILL_ROUND_RECT))
-		{
-			this.software.fillRoundRect(__x, __y, __w, __h, __aw, __ah);
-			return;
-		}
-		
 		throw Debugging.todo();
 	}
 	
@@ -625,12 +499,6 @@ public final class PencilGraphics
 	public void fillTriangle(int __x1, int __y1, int __x2, int __y2,
 		int __x3, int __y3)
 	{
-		if (0 == (this.capabilities & PencilCapabilities.FILL_TRIANGLE))
-		{
-			this.software.fillTriangle(__x1, __y1, __x2, __y2, __x3, __y3);
-			return;
-		}
-		
 		// Forward to hardware
 		PencilShelf.hardwareFillTriangle(this.hardware, __x1, __y1, __x2, __y2,
 			__x3, __y3);
@@ -733,9 +601,10 @@ public final class PencilGraphics
 	@Override
 	public int getDisplayColor(int __rgb)
 	{
-		// We can just ask the software graphics for the color we are using
+		throw Debugging.todo();
+		/*// We can just ask the software graphics for the color we are using
 		// since it should hopefully match the hardware one.
-		return this.software.getDisplayColor(__rgb);
+		return this.software.getDisplayColor(__rgb);*/
 	}
 	
 	/**
@@ -745,9 +614,6 @@ public final class PencilGraphics
 	@Override
 	public Font getFont()
 	{
-		if (0 == (this.capabilities & PencilCapabilities.TEXT_BASIC))
-			return this.software.getFont();
-		
 		return this._font;
 	}
 	
@@ -837,8 +703,7 @@ public final class PencilGraphics
 		// Mirror locally
 		this._argbColor = __argb;
 		
-		// Set on the remote software and hardware graphics
-		this.software.setAlphaColor(__argb);
+		// Set on the hardware side
 		PencilShelf.hardwareSetAlphaColor(this.hardware, __argb);
 	}
 	
@@ -878,7 +743,6 @@ public final class PencilGraphics
 		this._blendingMode = __m;
 		
 		// Forward to both software and hardware graphics
-		this.software.setBlendingMode(__m);
 		PencilShelf.hardwareSetBlendingMode(this.hardware, __m);
 	}
 	
@@ -924,7 +788,6 @@ public final class PencilGraphics
 		this._clipHeight = clipEndY - clipY;
 		
 		// Forward to both software and hardware graphics
-		this.software.setClip(__x, __y, __w, __h);
 		PencilShelf.hardwareSetClip(this.hardware, __x, __y, __w, __h);
 	}
 	
@@ -961,22 +824,15 @@ public final class PencilGraphics
 		// Cache locally
 		this._font = __font;
 		
-		// This is always set in software
-		this.software.setFont(__font);
+		// Clearing the font?
+		if (__font == null)
+			PencilShelf.hardwareSetDefaultFont(this.hardware);
 		
-		// If supported by hardware, set it here
-		if (0 != (this.capabilities & PencilCapabilities.TEXT_BASIC))
-		{
-			// Clearing the font?
-			if (__font == null)
-				PencilShelf.hardwareSetDefaultFont(this.hardware);
-			
-			// Set font natively from the font details
-			else
-				PencilShelf.hardwareSetFont(this.hardware,
-					__font.getFontName(), __font.getStyle(),
-					__font.getPixelSize());
-		}
+		// Set font natively from the font details
+		else
+			PencilShelf.hardwareSetFont(this.hardware,
+				__font.getFontName(), __font.getStyle(),
+				__font.getPixelSize());
 	}
 	
 	/**
@@ -1005,7 +861,6 @@ public final class PencilGraphics
 		this._strokeStyle = __style;
 		
 		// Forward to both software and hardware graphics
-		this.software.setStrokeStyle(__style);
 		PencilShelf.hardwareSetStrokeStyle(this.hardware, __style);
 	}
 	
@@ -1021,7 +876,6 @@ public final class PencilGraphics
 		this._transY += __y;
 		
 		// Forward to both software and hardware graphics
-		this.software.translate(__x, __y);
 		PencilShelf.hardwareTranslate(this.hardware, __x, __y);
 	}
 	
@@ -1105,5 +959,24 @@ public final class PencilGraphics
 			PencilShelf.hardwareGraphics(__pf,
 			__bw, __bh, __buf, __offset, __pal, __sx, __sy, __sw, __sh), __pf);
 		 */
+	}
+	
+	/**
+	 * Initializes a new graphics interface.
+	 *
+	 * @param __hw The hardware graphics to use.
+	 * @param __sw The surface width.
+	 * @param __sh The surface height.
+	 * @return The wrapped graphics.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/05/12
+	 */
+	public static Graphics of(ScritchPencilBracket __hw, int __sw, int __sh)
+		throws NullPointerException
+	{
+		if (__hw == null)
+			throw new NullPointerException("NARG");
+		
+		return new PencilGraphics(__sw, __sh, __hw);
 	}
 }

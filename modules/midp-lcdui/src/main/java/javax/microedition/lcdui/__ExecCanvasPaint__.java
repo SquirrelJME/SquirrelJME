@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPencilBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchPaintListener;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import java.lang.ref.WeakReference;
 
 /**
@@ -56,15 +57,8 @@ class __ExecCanvasPaint__
 		if (canvas == null)
 			return;
 		
-		throw Debugging.todo();
-		/*
-		// Try to use hardware accelerated graphics where possible
-		Graphics gfx = PencilGraphics.hardwareGraphics(__pf,
-			__bw, __bh, __buf, __offset, __pal, __sx, __sy,
-			__sw, __sh);
-		
 		// Forward paint
-		canvas.__paint(gfx, __sw, __sh, __special);
-		 */
+		canvas.__paint(PencilGraphics.of(__g, __sw, __sh),
+			__sw, __sh, __special);
 	}
 }
