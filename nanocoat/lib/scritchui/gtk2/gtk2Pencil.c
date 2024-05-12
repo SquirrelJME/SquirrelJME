@@ -156,8 +156,8 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilSetBlendingMode(
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* This is a no-op as GDK does not support alpha blending. */
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_scritchui_gtk2_pencilSetClip(
@@ -180,8 +180,8 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilSetDefaultFont(
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Nothing needs to actually be done here. */
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_scritchui_gtk2_pencilSetFont(

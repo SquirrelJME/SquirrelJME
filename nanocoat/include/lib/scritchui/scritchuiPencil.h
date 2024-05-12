@@ -64,6 +64,13 @@ typedef enum sjme_scritchui_pencilStrokeMode
 } sjme_scritchui_pencilStrokeMode;
 
 /**
+ * Font structure for ScritchUI Pencil.
+ * 
+ * @since 2024/05/12
+ */
+typedef struct sjme_scritchui_pencilFontBase* sjme_scritchui_pencilFont;
+
+/**
  * This copies one region of the image to another region.
  *
  * Copying to a display device is not permitted because it may impact how
@@ -556,6 +563,12 @@ typedef struct sjme_scritchui_pencilState
 	
 	/** The style for strokes. */
 	sjme_scritchui_pencilStrokeMode stroke;
+	
+	/** Blending mode for lines. */
+	sjme_scritchui_pencilBlendingMode blending;
+	
+	/** The font used for text. */
+	sjme_scritchui_pencilFont font;
 } sjme_scritchui_pencilState;
 
 /*--------------------------------------------------------------------------*/

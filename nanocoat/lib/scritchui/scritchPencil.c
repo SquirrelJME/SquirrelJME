@@ -184,8 +184,17 @@ sjme_errorCode sjme_scritchui_core_pencilSetBlendingMode(
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	if (mode < 0 || mode >= SJME_NUM_SCRITCHUI_PENCIL_BLENDS)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	if (g->impl->setBlendingMode == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Set mode. */
+	g->state.blending = mode;
+	
+	/* Forward. */
+	return g->impl->setBlendingMode(g, mode);
 }
 
 sjme_errorCode sjme_scritchui_core_pencilSetClip(
@@ -205,11 +214,24 @@ sjme_errorCode sjme_scritchui_core_pencilSetClip(
 sjme_errorCode sjme_scritchui_core_pencilSetDefaultFont(
 	sjme_attrInNotNull sjme_scritchui_pencil g)
 {
+	sjme_errorCode error;
+	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	if (g->impl->setDefaultFont == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Set default font in the implementation, call that first since */
+	/* there might need to be cleanup or otherwise. */
+	if (sjme_error_is(error = g->impl->setDefaultFont(g)))
+		return sjme_error_default(error);
+	
+	/* Clear font now. */
+	g->state.font = NULL;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchui_core_pencilSetFont(
