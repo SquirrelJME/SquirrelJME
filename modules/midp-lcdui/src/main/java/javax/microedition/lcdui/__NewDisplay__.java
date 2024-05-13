@@ -35,6 +35,6 @@ final class __NewDisplay__
 		if (__scritch == null || __window == null || __screen == null)
 			throw new NullPointerException("NARG");
 		
-		return new Display(__scritch, __window, __screen)._state;
+		return new Display(__scritch, __window, __screen).__state();
 	}
 }

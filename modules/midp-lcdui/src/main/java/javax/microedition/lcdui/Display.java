@@ -26,6 +26,8 @@ import cc.squirreljme.runtime.lcdui.scritchui.DisplayScale;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayManager;
 import cc.squirreljme.runtime.lcdui.scritchui.ScritchLcdUiUtils;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -264,7 +266,7 @@ public class Display
 		4;
 	
 	/** The display state. */
-	final DisplayState _state;
+	final Reference<DisplayState> _state;
 	
 	/** The associated screen this display is for. */
 	private final ScritchScreenBracket _screen;
@@ -316,8 +318,8 @@ public class Display
 			throw new NullPointerException("NARG");
 		
 		// Initialize Display state
-		this._state = new DisplayState(this, __window,
-			__screen);
+		this._state = new WeakReference<>(new DisplayState(
+			this, __window, __screen));
 		this._scritch = __scritch;
 		this._screen = __screen;
 		this._window = __window;
@@ -1267,6 +1269,23 @@ public class Display
 				this.notifyAll();
 			}
 		}
+	}
+	
+	/**
+	 * Returns the display state.
+	 *
+	 * @return The display state.
+	 * @throws IllegalStateException If the state has been GCed.
+	 * @since 2024/05/12
+	 */
+	DisplayState __state()
+		throws IllegalStateException
+	{
+		DisplayState rv = this._state.get();
+		if (rv == null)
+			throw new IllegalStateException("GCGC");
+		
+		return rv;
 	}
 	
 	/**

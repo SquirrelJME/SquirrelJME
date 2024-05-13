@@ -26,7 +26,7 @@ public final class DisplayState
 {
 	/** The display this is linked to. */
 	@SquirrelJMEVendorApi
-	protected final Reference<Display> lcduiDisplay;
+	protected final Display lcduiDisplay;
 	
 	/** The scritch window which this display represents. */
 	@SquirrelJMEVendorApi
@@ -61,7 +61,7 @@ public final class DisplayState
 		
 		this.scritchWindow = __window;
 		this.scritchScreen = __screen;
-		this.lcduiDisplay = new WeakReference<>(__display);
+		this.lcduiDisplay = __display;
 	}
 	
 	/**
@@ -73,12 +73,7 @@ public final class DisplayState
 	@SquirrelJMEVendorApi
 	public final Display display()
 	{
-		Display result = this.lcduiDisplay.get();
-		
-		if (result == null)
-			throw new IllegalStateException("GCGC");
-		
-		return result;
+		return this.lcduiDisplay;
 	}
 	
 	/**

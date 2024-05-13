@@ -93,7 +93,7 @@ class __ExecDisplaySetCurrent__
 		
 		// Get the ScritchUI window
 		Display display = this.display;
-		DisplayState displayState = display._state;
+		DisplayState displayState = display.__state();
 		ScritchWindowBracket window =
 			displayState.scritchWindow();
 		
