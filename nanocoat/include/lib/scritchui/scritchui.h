@@ -547,6 +547,21 @@ typedef sjme_errorCode (*sjme_scritchui_windowNewFunc)(
 	sjme_attrInOutNotNull sjme_scritchui_uiWindow* outWindow);
 
 /**
+ * Sets the close listener for a window.
+ * 
+ * @param inState The input state.
+ * @param inWindow The window to set for.
+ * @param inListener The listener to use.
+ * @param copyFrontEnd The front end data to use.
+ * @return Any resultant error, if any.
+ * @since 2024/05/13
+ */
+typedef sjme_errorCode (*sjme_scritchui_windowSetCloseListenerFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(close));
+
+/**
  * Sets the visibility of a window.
  * 
  * @param inState The input state.
@@ -622,6 +637,9 @@ struct sjme_scritchui_apiFunctions
 	
 	/** Creates a new window. */
 	SJME_SCRITCHUI_QUICK_API(windowNew);
+	
+	/** Sets the close listener for a window. */
+	SJME_SCRITCHUI_QUICK_API(windowSetCloseListener);
 	
 	/** Sets visibility of window. */
 	SJME_SCRITCHUI_QUICK_API(windowSetVisible);

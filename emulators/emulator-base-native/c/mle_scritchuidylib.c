@@ -24,29 +24,20 @@
 
 #define DESC_SCRITCHUI_COMPONENT DESC_CLASS( \
 	"cc/squirreljme/jvm/mle/scritchui/brackets/ScritchComponentBracket")
-#define DESC_SCRITCHUI_DYLIB_PAINT_LISTENER DESC_CLASS( \
-	"cc/squirreljme/emulator/scritchui/dylib/DylibPaintListener")
+#define DESC_SCRITCHUI_CLOSE_LISTENER DESC_CLASS( \
+	"cc/squirreljme/jvm/mle/scritchui/callbacks/ScritchCloseListener")
 #define DESC_SCRITCHUI_PAINT_LISTENER DESC_CLASS( \
 	"cc/squirreljme/jvm/mle/scritchui/callbacks/ScritchPaintListener")
-#define DESC_SCRITCHUI_PAINT DESC_CLASS( \
+#define DESC_SCRITCHUI_PENCIL DESC_CLASS( \
 	"cc/squirreljme/jvm/mle/scritchui/brackets/ScritchPencilBracket")
+#define DESC_SCRITCHUI_WINDOW DESC_CLASS( \
+	"cc/squirreljme/jvm/mle/scritchui/brackets/ScritchWindowBracket")
 
-#define DESC_SCRITCHUI_DYLIB_PAINT_LISTENER_FUNC "(" \
+#define DESC_ScritchCloseListener_closed "(" \
+	DESC_SCRITCHUI_WINDOW ")" DESC_BOOLEAN
+#define DESC_ScritchPaintListener_paint "(" \
 	DESC_SCRITCHUI_COMPONENT /*__component*/ \
-    DESC_SCRITCHUI_PAINT /* __g */ \
-	DESC_INTEGER /*__sw*/ \
-	DESC_INTEGER /*__sh*/ \
-	DESC_INTEGER /*__special*/ ")" DESC_VOID
-#define DESC_SCRITCHUI_PAINT_LISTENER_FUNC "(" \
-	DESC_SCRITCHUI_COMPONENT /*__component*/ \
-	DESC_INTEGER /*__pf*/ \
-	DESC_INTEGER /*__bw*/ \
-	DESC_INTEGER /*__bh*/ \
-	DESC_OBJECT /*__buf*/ \
-	DESC_INTEGER /*__offset*/ \
-	DESC_ARRAY(DESC_INTEGER) /*__pal*/ \
-	DESC_INTEGER /*__sx*/ \
-	DESC_INTEGER /*__sy*/ \
+    DESC_SCRITCHUI_PENCIL /* __g */ \
 	DESC_INTEGER /*__sw*/ \
 	DESC_INTEGER /*__sh*/ \
 	DESC_INTEGER /*__special*/ ")" DESC_VOID
@@ -58,7 +49,7 @@
 #define FORWARD_DESC___componentRevalidate "(" \
 	DESC_LONG DESC_LONG ")" DESC_VOID
 #define FORWARD_DESC___componentSetPaintListener "(" \
-	DESC_LONG DESC_LONG DESC_SCRITCHUI_DYLIB_PAINT_LISTENER ")" DESC_VOID
+	DESC_LONG DESC_LONG DESC_SCRITCHUI_PAINT_LISTENER ")" DESC_VOID
 #define FORWARD_DESC___componentWidth FORWARD_DESC___componentHeight
 #define FORWARD_DESC___containerAdd "(" \
 	DESC_LONG DESC_LONG DESC_LONG ")" DESC_VOID
@@ -85,6 +76,8 @@
 	DESC_LONG ")" DESC_INTEGER
 #define FORWARD_DESC___windowNew "(" \
 	DESC_LONG ")" DESC_LONG
+#define FORWARD_DESC___windowSetCloseListener "(" \
+	DESC_LONG DESC_LONG DESC_SCRITCHUI_CLOSE_LISTENER ")" DESC_VOID
 #define FORWARD_DESC___windowSetVisible "(" \
 	DESC_LONG DESC_LONG DESC_BOOLEAN ")" DESC_VOID
 
@@ -98,32 +91,58 @@ typedef struct mle_loopExecuteData
 	jobject runnable;
 } mle_loopExecuteData;
 
+/** Callback data. */
+typedef struct mle_callbackData
+{
+	/** The Java object used. */
+	jobject onWhat;
+	
+	/** The Java callback. */
+	jobject javaCallback;
+	
+	/** The java callback method ID. */
+	jmethodID javaCallbackId;
+} mle_callbackData;
+
+static void mle_scritchUiStoreCallback(JNIEnv* env, sjme_frontEnd* outFrontEnd,
+	jobject javaListener)
+{
+	JavaVM* vm;
+	
+	/* Get the current JVM, we need to store that. */
+	vm = NULL;
+	(*env)->GetJavaVM(env, &vm);
+	
+	/* Store frontend data. */
+	memset(outFrontEnd, 0, sizeof(*outFrontEnd));
+	outFrontEnd->data = vm;
+	outFrontEnd->wrapper = (*env)->NewGlobalRef(env, javaListener);
+}
+
 static void mle_scritchUiRecoverCallback(JNIEnv* env,
 	sjme_scritchui_uiComponent inComponent,
 	sjme_frontEnd* frontEndP,
 	sjme_lpcstr methodName,
 	sjme_lpcstr methodType,
-	jobject* componentObjectP,
-	jobject* javaCallbackP,
-	jmethodID* javaCallbackIdP)
+	mle_callbackData* callbackData)
 {
 	jclass listenerClass;
 	
 	/* Get the object that represents the component. */
-	*componentObjectP = (jobject)inComponent->common.frontEnd.wrapper;
+	callbackData->onWhat = (jobject)inComponent->common.frontEnd.wrapper;
 	
 	/* Recover the callback we want to call. */
-	*javaCallbackP = frontEndP->wrapper;
+	callbackData->javaCallback = frontEndP->wrapper;
 	
 	/* Get class of the listener. */
-	listenerClass = (*env)->GetObjectClass(env, *javaCallbackP);
+	listenerClass = (*env)->GetObjectClass(env, callbackData->javaCallback);
 	if (listenerClass == NULL)
 		sjme_die("Listener has no class?");
 	
 	/* Get method to call. */
-	*javaCallbackIdP = (*env)->GetMethodID(env, listenerClass,
+	callbackData->javaCallbackId = (*env)->GetMethodID(env, listenerClass,
 		methodName, methodType);
-	if (*javaCallbackIdP == NULL)
+	if (callbackData->javaCallbackId == NULL)
 		sjme_die("Missing method %s %s?", methodName, methodType);
 }
 
@@ -148,7 +167,46 @@ static void mle_scritchUiRecoverEnv(
 	*outEnv = env;
 }
 
-static sjme_errorCode mle_scritchUiPaintListener(
+static sjme_errorCode mle_scritchUiListenerClose(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow)
+{
+	JNIEnv* env;
+	sjme_scritchui_listener_close* infoUser;
+	mle_callbackData callbackData;
+	jboolean skippy;
+	
+	/* Relocate env. */
+	mle_scritchUiRecoverEnv(inState, &env);
+	
+	/* Get listener from window. */
+	infoUser = &SJME_SCRITCHUI_LISTENER_USER(inWindow, close);
+	
+	/* Recover callback information. */
+	mle_scritchUiRecoverCallback(env, &inWindow->component,
+		&infoUser->frontEnd,
+		"closed",
+		DESC_ScritchCloseListener_closed,
+		&callbackData);
+	
+	/* Forward call. */
+	skippy = (*env)->CallBooleanMethod(env,
+		callbackData.javaCallback, callbackData.javaCallbackId,
+		
+		/* Component. */
+		callbackData.onWhat);
+		
+	/* Failed? */
+	if (sjme_jni_checkVMException(env))
+		return SJME_ERROR_UNKNOWN;
+	
+	/* Success! */
+	if (skippy)
+		return SJME_ERROR_CANCEL_WINDOW_CLOSE;
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode mle_scritchUiListenerPaint(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInNotNull sjme_scritchui_pencil g,
@@ -159,12 +217,10 @@ static sjme_errorCode mle_scritchUiPaintListener(
 	JNIEnv* env;
 	sjme_scritchui_uiPaintable paint;
 	sjme_scritchui_listener_paint* infoUser;
-	jobject componentObject;
 	jclass pencilClass;
 	jmethodID pencilNew;
 	jobject pencilObject;
-	jobject javaCallback;
-	jmethodID javaCallbackId;
+	mle_callbackData callbackData;
 	
 	if (inState == NULL || inComponent == NULL || g == NULL)
 		sjme_die("Null arguments to paint");
@@ -182,15 +238,11 @@ static sjme_errorCode mle_scritchUiPaintListener(
 	infoUser = &SJME_SCRITCHUI_LISTENER_USER(paint, paint);
 	
 	/* Recover callback information. */
-	componentObject = NULL;
-	javaCallback = NULL;
-	javaCallbackId = NULL;
 	mle_scritchUiRecoverCallback(env, inComponent,
 		&infoUser->frontEnd,
 		"paint",
-		DESC_SCRITCHUI_DYLIB_PAINT_LISTENER_FUNC,
-		&componentObject, &javaCallback,
-		&javaCallbackId);
+		DESC_ScritchPaintListener_paint,
+		&callbackData);
 	
 	/* Setup pencil object. */
 	pencilClass = (*env)->FindClass(env,
@@ -208,8 +260,11 @@ static sjme_errorCode mle_scritchUiPaintListener(
 		sjme_die("Could not allocate DylibPencilObject.");
 	
 	/* Forward call. */
-	(*env)->CallVoidMethod(env, javaCallback, javaCallbackId,
-		componentObject,
+	(*env)->CallVoidMethod(env,
+		callbackData.javaCallback, callbackData.javaCallbackId,
+		
+		/* Component. */
+		callbackData.onWhat,
 		
 		/* Pencil state and drawer. */
 		pencilObject,
@@ -420,7 +475,6 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	sjme_scritchui state;
 	sjme_scritchui_uiComponent component;
 	sjme_frontEnd newFrontEnd;
-	JavaVM* vm;
 	
 	if (stateP == 0 || componentP == 0)
 	{
@@ -433,18 +487,14 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	component = (sjme_scritchui_uiComponent)componentP;
 	
 	/* Setup new front-end to refer to this component. */
-	memset(&newFrontEnd, 0, sizeof(newFrontEnd));
-	vm = NULL;
-	(*env)->GetJavaVM(env, &vm);
-	newFrontEnd.data = vm;
-	newFrontEnd.wrapper = (*env)->NewGlobalRef(env, javaListener);
+	mle_scritchUiStoreCallback(env, &newFrontEnd, javaListener);
 	
 	/* Forward. */
 	error = SJME_ERROR_NOT_IMPLEMENTED;
 	if (state->api->componentSetPaintListener == NULL ||
 		sjme_error_is(error = state->api->componentSetPaintListener(
 			state, component,
-			mle_scritchUiPaintListener, &newFrontEnd)))
+			mle_scritchUiListenerPaint, &newFrontEnd)))
 	{
 		sjme_jni_throwMLECallError(env, error);
 		return;
@@ -1020,6 +1070,42 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__windowSetCloseListener)(JNIEnv* env, jclass classy, jlong stateP,
+	jlong windowP, jobject javaListener)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	sjme_scritchui_uiWindow window;
+	sjme_frontEnd newFrontEnd;
+	
+	if (stateP == 0 || windowP == 0)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+	
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	window = (sjme_scritchui_uiWindow)windowP;
+	
+	/* Not implemented? */
+	if (state->api->windowSetCloseListener == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
+		return;
+	}
+	
+	/* Setup new front-end to refer to this component. */
+	mle_scritchUiStoreCallback(env, &newFrontEnd, javaListener);
+	
+	/* Forward. */
+	if (sjme_error_is(error = state->api->windowSetCloseListener(
+		state, window, mle_scritchUiListenerClose,
+		&newFrontEnd)))
+		sjme_jni_throwMLECallError(env, error);
+}
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	__windowSetVisible)(JNIEnv* env, jclass classy, jlong stateP,
 	jlong windowP, jboolean visible)
 {
@@ -1070,6 +1156,7 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 	FORWARD_list(NativeScritchDylib, __windowContentMinimumSize),
 	FORWARD_list(NativeScritchDylib, __windowManagerType),
 	FORWARD_list(NativeScritchDylib, __windowNew),
+	FORWARD_list(NativeScritchDylib, __windowSetCloseListener),
 	FORWARD_list(NativeScritchDylib, __windowSetVisible),
 };
 

@@ -13,9 +13,12 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchWindowInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
+import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchCloseListener;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Interface for windows.
@@ -156,6 +159,14 @@ public class FramebufferWindowInterface
 		ScritchInterface coreApi = this.coreApi;
 		return new FramebufferWindowObject(this.selfApi, coreApi,
 			coreApi.window().newWindow());
+	}
+	
+	@Override
+	public void setCloseListener(@NotNull ScritchWindowBracket __window,
+		@Nullable ScritchCloseListener __listener)
+		throws MLECallError
+	{
+		throw Debugging.todo();
 	}
 	
 	/**

@@ -12,8 +12,11 @@ package cc.squirreljme.emulator.scritchui.dylib;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchWindowInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
+import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchCloseListener;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Window interface.
@@ -133,6 +136,22 @@ public class DylibWindowInterface
 	public ScritchWindowBracket newWindow()
 	{
 		return this.dyLib.windowNew();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/05/13
+	 */
+	@Override
+	public void setCloseListener(@NotNull ScritchWindowBracket __window,
+		@Nullable ScritchCloseListener __listener)
+		throws MLECallError
+	{
+		if (__window == null)
+			throw new MLECallError("Null arguments.");
+		
+		this.dyLib.windowSetCloseListener((DylibWindowObject)__window,
+			__listener);
 	}
 	
 	/**

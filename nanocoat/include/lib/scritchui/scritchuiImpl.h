@@ -140,6 +140,10 @@ typedef sjme_errorCode (*sjme_scritchui_impl_windowNewFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow);
 
+/** Set the close listener for a window. */
+typedef sjme_scritchui_windowSetCloseListenerFunc
+	sjme_scritchui_impl_windowSetCloseListenerFunc;
+
 /** Sets visibility of window. */
 typedef sjme_scritchui_windowSetVisibleFunc
 	sjme_scritchui_impl_windowSetVisibleFunc;
@@ -196,6 +200,9 @@ struct sjme_scritchui_implFunctions
 	
 	/** Creates a new window. */
 	SJME_SCRITCHUI_QUICK_IMPL(windowNew);
+	
+	/** Set close listener for a window. */
+	SJME_SCRITCHUI_QUICK_IMPL(windowSetCloseListener);
 	
 	/** Sets visibility of the window. */
 	SJME_SCRITCHUI_QUICK_IMPL(windowSetVisible);

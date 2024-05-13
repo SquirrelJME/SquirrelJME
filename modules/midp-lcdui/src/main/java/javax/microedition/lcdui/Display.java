@@ -21,7 +21,6 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.Vibration;
-import cc.squirreljme.runtime.lcdui.scritchui.DisplayIdentityScale;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayScale;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayManager;
@@ -318,13 +317,18 @@ public class Display
 			throw new NullPointerException("NARG");
 		
 		// Initialize Display state
-		this._state = new WeakReference<>(new DisplayState(
-			this, __window, __screen));
+		DisplayState state = new DisplayState(this, __window,
+			__screen);
+		this._state = new WeakReference<>(state);
 		this._scritch = __scritch;
 		this._screen = __screen;
 		this._window = __window;
-		this._scale = DisplayScale.currentScale(this._scritch,
-			this._screen, this._window);
+		this._scale = DisplayScale.currentScale(__scritch,
+			__screen, __window);
+		
+		// Handle window closing for the display
+		__scritch.window().setCloseListener(__window,
+			new __ExecDisplayClose__(state));
 	}
 	
 	/**

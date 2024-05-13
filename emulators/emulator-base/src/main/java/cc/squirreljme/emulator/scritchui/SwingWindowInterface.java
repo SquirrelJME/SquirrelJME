@@ -12,10 +12,12 @@ package cc.squirreljme.emulator.scritchui;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchWindowInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
+import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchCloseListener;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.awt.Dimension;
 import javax.swing.JFrame;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 /**
@@ -138,6 +140,14 @@ public class SwingWindowInterface
 	public ScritchWindowBracket newWindow()
 	{
 		return new SwingWindowObject();
+	}
+	
+	@Override
+	public void setCloseListener(@NotNull ScritchWindowBracket __window,
+		@Nullable ScritchCloseListener __listener)
+		throws MLECallError
+	{
+		throw Debugging.todo();
 	}
 	
 	/**

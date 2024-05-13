@@ -12,6 +12,7 @@ package cc.squirreljme.emulator.scritchui.dylib;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
+import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchCloseListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchPaintListener;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchWindowManagerType;
 import java.nio.file.Path;
@@ -122,7 +123,7 @@ public final class NativeScritchDylib
 	 * @since 2024/04/06
 	 */
 	public void componentSetPaintListener(DylibPaintableObject __component,
-		DylibPaintListener __listener)
+		ScritchPaintListener __listener)
 		throws MLECallError
 	{
 		if (__component == null)
@@ -392,6 +393,25 @@ public final class NativeScritchDylib
 	}
 	
 	/**
+	 * Sets the close listener for a window.
+	 *
+	 * @param __window The window to set the listener for.
+	 * @param __listener The listener to call on close.
+	 * @throws MLECallError If it could not be set or the window is not valid.
+	 * @since 2024/05/13
+	 */
+	public void windowSetCloseListener(DylibWindowObject __window,
+		ScritchCloseListener __listener)
+		throws MLECallError
+	{
+		if (__window == null)
+			throw new MLECallError("NARG");
+		
+		NativeScritchDylib.__windowSetCloseListener(this._stateP,
+			__window.objectP, __listener);
+	}
+	
+	/**
 	 * Sets the visibility of the specified window.
 	 *
 	 * @param __window The window to set the visibility of.
@@ -460,7 +480,7 @@ public final class NativeScritchDylib
 	 * @since 2024/04/06
 	 */
 	private static native void __componentSetPaintListener(long __stateP,
-		long __componentP, DylibPaintListener __listener)
+		long __componentP, ScritchPaintListener __listener)
 		throws MLECallError;
 	
 	/**
@@ -622,6 +642,19 @@ public final class NativeScritchDylib
 	 * @since 2024/04/16
 	 */
 	private static native long __windowNew(long __stateP);
+	
+	/**
+	 * Sets the close listener for a window.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __windowP The window to set the listener for.
+	 * @param __listener The listener to be called on close.
+	 * @throws MLECallError If it could not be set.
+	 * @since 2024/05/13
+	 */
+	private static native void __windowSetCloseListener(long __stateP,
+		long __windowP, ScritchCloseListener __listener)
+		throws MLECallError;
 	
 	/**
 	 * Sets the visibility of the window.

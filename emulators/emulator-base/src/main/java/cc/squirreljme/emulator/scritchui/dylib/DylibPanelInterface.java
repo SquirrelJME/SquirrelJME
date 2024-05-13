@@ -96,7 +96,6 @@ public class DylibPanelInterface
 		
 		// Forward
 		this.dyLib.componentSetPaintListener(
-			(DylibPaintableObject)__component,
-			new DylibPaintListener(__listener));
+			(DylibPaintableObject)__component, __listener);
 	}
 }

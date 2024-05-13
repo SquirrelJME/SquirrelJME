@@ -12,10 +12,12 @@ package cc.squirreljme.jvm.mle.scritchui;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
+import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchCloseListener;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchInputMethodType;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 /**
@@ -129,6 +131,20 @@ public interface ScritchWindowInterface
 	@SquirrelJMEVendorApi
 	@NotNull
 	ScritchWindowBracket newWindow();
+	
+	/**
+	 * Sets the listener to be called when a window is requested to be closed.
+	 *
+	 * @param __window The window to set the listener on.
+	 * @param __listener The listener to call on close events,
+	 * may be {@code null} if it should be removed.
+	 * @throws MLECallError If it could not be set.
+	 * @since 2024/05/13
+	 */
+	@SquirrelJMEVendorApi
+	void setCloseListener(@NotNull ScritchWindowBracket __window,
+		@Nullable ScritchCloseListener __listener)
+		throws MLECallError;
 	
 	/**
 	 * Sets the visibility of the given window.
