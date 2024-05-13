@@ -19,6 +19,7 @@ import javax.swing.JList;
  *
  * @since 2020/11/17
  */
+@Deprecated
 public class ListRenderer
 	extends DefaultListCellRenderer
 {

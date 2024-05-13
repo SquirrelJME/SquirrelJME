@@ -29,6 +29,7 @@ import javax.swing.WindowConstants;
  *
  * @since 2020/07/01
  */
+@Deprecated
 public final class SwingDisplay
 	implements UIDisplayBracket
 {

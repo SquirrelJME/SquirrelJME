@@ -19,6 +19,7 @@ import javax.swing.JFrame;
  *
  * @since 2024/03/14
  */
+@Deprecated
 public class SwingWindowObject
 	implements ScritchWindowBracket, SwingContainerObject
 {

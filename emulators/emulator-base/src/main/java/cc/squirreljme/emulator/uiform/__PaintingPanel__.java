@@ -28,6 +28,7 @@ import javax.swing.JPanel;
  *
  * @since 2020/09/20
  */
+@Deprecated
 class __PaintingPanel__
 	extends JPanel
 {

@@ -25,6 +25,7 @@ import cc.squirreljme.runtime.lcdui.mle.pure.NativeUIBackend;
  *
  * @since 2020/07/19
  */
+@Deprecated
 @SquirrelJMEVendorApi
 public final class UIBackendFactory
 {
@@ -33,6 +34,7 @@ public final class UIBackendFactory
 	 * Force the usage of the fallback UIForm in the event that native form
 	 * handling should NOT be used.}
 	 */
+	@Deprecated
 	@SquirrelJMEVendorApi
 	public static final String FORCE_FALLBACK_PROPERTY =
 		"cc.squirreljme.runtime.lcdui.mle.fallback";
@@ -42,11 +44,13 @@ public final class UIBackendFactory
 	 * Force that the headless UIForm be used, this will mean that nothing
 	 * will be displayed on the screen.}
 	 */
+	@Deprecated
 	@SquirrelJMEVendorApi
 	public static final String FORCE_HEADLESS_PROPERTY =
 		"cc.squirreljme.runtime.lcdui.mle.headless";
 	
 	/** The instance of the form engine to be used. */
+	@Deprecated
 	@SuppressWarnings({"StaticVariableMayNotBeInitialized", 
 		"NonConstantFieldWithUpperCaseName"})
 	private static UIBackend _DEFAULT;
@@ -58,6 +62,7 @@ public final class UIBackendFactory
 	 * @return The instance of the engine to use.
 	 * @since 2020/06/30
 	 */
+	@Deprecated
 	@SuppressWarnings("StaticVariableUsedBeforeInitialization")
 	@SquirrelJMEVendorApi
 	public static UIBackend getInstance(boolean __allowHeadless)

@@ -39,6 +39,7 @@ import javax.swing.UIManager;
  *
  * @since 2020/07/01
  */
+@Deprecated
 public final class SwingFormShelf
 {
 	/** Alpha transparency mask. */

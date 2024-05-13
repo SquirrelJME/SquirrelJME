@@ -14,15 +14,19 @@ package cc.squirreljme.runtime.lcdui.mle;
  *
  * @since 2020/10/09
  */
+@Deprecated
 public enum UIBackendType
 {
 	/** Native backend, uses system widgets if supported/possible. */
+	@Deprecated
 	NATIVE,
 	
 	/** Framebuffer backend, uses a pre-existing image/graphics to draw on. */
+	@Deprecated
 	FRAMEBUFFER,
 	
 	/** Headless (no-op) backend, uses an inaccessible framebuffer. */
+	@Deprecated
 	HEADLESS,
 	
 	/* End. */

@@ -23,6 +23,7 @@ import org.jetbrains.annotations.Range;
  *
  * @since 2024/03/26
  */
+@Deprecated
 public class FramebufferLAFInterface
 	extends FramebufferBaseInterface
 	implements ScritchLAFInterface

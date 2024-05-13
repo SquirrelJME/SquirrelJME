@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 2024/03/16
  */
+@Deprecated
 public class SwingPanelInterface
 	implements ScritchPanelInterface
 {

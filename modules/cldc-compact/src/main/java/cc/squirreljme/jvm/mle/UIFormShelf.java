@@ -38,6 +38,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 2020/06/30
  */
+@Deprecated
 @SquirrelJMEVendorApi
 public final class UIFormShelf
 {
@@ -60,6 +61,7 @@ public final class UIFormShelf
 	 * @see UIDisplayCallback
 	 * @since 2023/01/14
 	 */
+	@Deprecated
 	@SquirrelJMEVendorApi
 	public static native void callback(
 		@NotNull UIDisplayBracket __display,
@@ -77,6 +79,7 @@ public final class UIFormShelf
 	 * @see UIFormCallback
 	 * @since 2020/07/03
 	 */
+	@Deprecated
 	@SquirrelJMEVendorApi
 	public static native void callback(@NotNull UIFormBracket __form,
 		@Flow(target = "__display",
@@ -91,6 +94,7 @@ public final class UIFormShelf
 	 * @throws MLECallError If there are no displays.
 	 * @since 2020/07/01
 	 */
+	@Deprecated
 	@SquirrelJMEVendorApi
 	@Flow(sourceIsContainer = true)
 	public static native UIDisplayBracket[] displays()
@@ -104,6 +108,7 @@ public final class UIFormShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2020/07/01
 	 */
+	@Deprecated
 	@SquirrelJMEVendorApi
 	@Flow(source = "__display", sourceIsContainer = true)
 	public static native UIFormBracket displayCurrent(
@@ -121,6 +126,7 @@ public final class UIFormShelf
 	 * an error showing the display.
 	 * @since 2023/01/14
 	 */
+	@Deprecated
 	@SquirrelJMEVendorApi
 	public static native void displayShow(@NotNull UIDisplayBracket __display,
 		boolean __show)
@@ -135,6 +141,7 @@ public final class UIFormShelf
 	 * @throws MLECallError On {@code __display} is {@code null}.
 	 * @since 2020/07/01
 	 */
+	@Deprecated
 	@SquirrelJMEVendorApi
 	public static native void displayShow(@NotNull UIDisplayBracket __display,
 		@Flow(target = "__display",
@@ -150,6 +157,7 @@ public final class UIFormShelf
 	 * @throws MLECallError If either is {@code null}.
 	 * @since 2020/07/01
 	 */
+	@Deprecated
 	@SquirrelJMEVendorApi
 	public static native boolean equals(UIDisplayBracket __a,
 		UIDisplayBracket __b)
@@ -165,6 +173,7 @@ public final class UIFormShelf
 	 * @throws MLECallError If either is {@code null}.
 	 * @since 2023/01/13
 	 */
+	@Deprecated
 	@SquirrelJMEVendorApi
 	public static native boolean equals(UIDrawableBracket __a,
 		UIDrawableBracket __b)
@@ -179,6 +188,7 @@ public final class UIFormShelf
 	 * @throws MLECallError If either is {@code null}.
 	 * @since 2020/07/01
 	 */
+	@Deprecated
 	@SquirrelJMEVendorApi
 	public static native boolean equals(UIFormBracket __a,
 		UIFormBracket __b)
@@ -193,6 +203,7 @@ public final class UIFormShelf
 	 * @throws MLECallError If either is {@code null}.
 	 * @since 2020/07/01
 	 */
+	@Deprecated
 	@SquirrelJMEVendorApi
 	public static native boolean equals(UIItemBracket __a,
 		UIItemBracket __b)
@@ -207,6 +218,7 @@ public final class UIFormShelf
 	 * @throws MLECallError If either is {@code null}.
 	 * @since 2020/09/20
 	 */
+	@Deprecated
 	@SquirrelJMEVendorApi
 	public static native boolean equals(UIWidgetBracket __a,
 		UIWidgetBracket __b)
@@ -218,6 +230,7 @@ public final class UIFormShelf
 	 * @throws MLECallError If events could not be flushed.
 	 * @since 2020/07/26
 	 */
+	@Deprecated
 	@SquirrelJMEVendorApi
 	public static native void flushEvents()
 		throws MLECallError;
@@ -229,6 +242,7 @@ public final class UIFormShelf
 	 * @throws MLECallError On null arguments or the form could not be deleted.
 	 * @since 2020/07/01
 	 */
+	@Deprecated
 	@SquirrelJMEVendorApi
 	public static native void formDelete(@NotNull UIFormBracket __form)
 		throws MLECallError;
@@ -244,6 +258,7 @@ public final class UIFormShelf
 	 * not valid.
 	 * @since 2020/07/19
 	 */
+	@Deprecated
 	@SquirrelJMEVendorApi
 	@Flow(source = "__form", sourceIsContainer = true)
 	public static native UIItemBracket formItemAtPosition(
@@ -259,6 +274,7 @@ public final class UIFormShelf
 	 * @throws MLECallError If the form is null or not valid.
 	 * @since 2020/07/19
 	 */
+	@Deprecated
 	@SquirrelJMEVendorApi
 	public static native int formItemCount(@NotNull UIFormBracket __form)
 		throws MLECallError;
@@ -275,6 +291,7 @@ public final class UIFormShelf
 	 * @throws MLECallError If the form and item are null.
 	 * @since 2020/07/18
 	 */
+	@Deprecated
 	@SquirrelJMEVendorApi
 	public static native int formItemPosition(@NotNull UIFormBracket __form,
 		@NotNull UIItemBracket __item)
@@ -291,6 +308,7 @@ public final class UIFormShelf
 	 * is not valid.
 	 * @since 2020/07/18
 	 */
+	@Deprecated
 	@SquirrelJMEVendorApi
 	public static native void formItemPosition(@NotNull UIFormBracket __form,
 		@Flow(target = "__form",
@@ -307,6 +325,7 @@ public final class UIFormShelf
 	 * not valid, or there was no item at the position.
 	 * @since 2020/07/18
 	 */
+	@Deprecated
 	@SquirrelJMEVendorApi
 	@Flow(source = "__form", sourceIsContainer = true)
 	public static native UIItemBracket formItemRemove(
@@ -320,6 +339,7 @@ public final class UIFormShelf
 	 * @throws MLECallError If the form could not be created.
 	 * @since 2020/07/01
 	 */
+	@Deprecated
 	@SquirrelJMEVendorApi
 	public static native UIFormBracket formNew()
 		throws MLECallError;
@@ -331,6 +351,7 @@ public final class UIFormShelf
 	 * @throws MLECallError On null arguments or the form is not valid.
 	 * @since 2022/07/20
 	 */
+	@Deprecated
 	@SquirrelJMEVendorApi
 	public static native void formRefresh(@NotNull UIFormBracket __form)
 		throws MLECallError;
@@ -342,6 +363,7 @@ public final class UIFormShelf
 	 * @throws MLECallError If injecting is not supported.
 	 * @since 2020/07/26
 	 */
+	@Deprecated
 	@SquirrelJMEVendorApi
 	public static native UIFormCallback injector()
 		throws MLECallError;
@@ -355,6 +377,7 @@ public final class UIFormShelf
 	 * active within a form.
 	 * @since 2020/07/18
 	 */
+	@Deprecated
 	@SquirrelJMEVendorApi
 	public static native void itemDelete(@NotNull UIItemBracket __item)
 		throws MLECallError;
@@ -367,6 +390,7 @@ public final class UIFormShelf
 	 * @throws MLECallError If {@code __item} is {@code null}.
 	 * @since 2021/01/03
 	 */
+	@Deprecated
 	@SquirrelJMEVendorApi
 	public static native UIFormBracket itemForm(@NotNull UIItemBracket __item)
 		throws MLECallError;
@@ -380,6 +404,7 @@ public final class UIFormShelf
 	 * not valid.
 	 * @since 2020/07/17
 	 */
+	@Deprecated
 	@SquirrelJMEVendorApi
 	public static native UIItemBracket itemNew(
 		@MagicConstant(valuesFromClass = UIItemType.class) int __type)
@@ -398,6 +423,7 @@ public final class UIFormShelf
 	 * supported and the metric is not {@link UIMetricType#UIFORMS_SUPPORTED}.
 	 * @since 2020/06/30
 	 */
+	@Deprecated
 	@SquirrelJMEVendorApi
 	public static native int metric(@NotNull UIDisplayBracket __display,
 		@MagicConstant(valuesFromClass = UIMetricType.class) int __metric)
@@ -411,6 +437,7 @@ public final class UIFormShelf
 	 * @throws MLECallError If the call is not valid.
 	 * @since 2020/10/03
 	 */
+	@Deprecated
 	@SquirrelJMEVendorApi
 	@Async.Schedule
 	public static native void later(@NotNull UIDisplayBracket __display,
@@ -428,6 +455,7 @@ public final class UIFormShelf
 	 * valid or not an integer property.
 	 * @since 2020/09/13
 	 */
+	@Deprecated
 	@SquirrelJMEVendorApi
 	public static native void widgetProperty(@NotNull UIWidgetBracket __widget,
 		@MagicConstant(valuesFromClass = UIWidgetProperty.class) int __intProp,
@@ -445,6 +473,7 @@ public final class UIFormShelf
 	 * valid or not a string property.
 	 * @since 2020/09/13
 	 */
+	@Deprecated
 	@SquirrelJMEVendorApi
 	public static native void widgetProperty(@NotNull UIWidgetBracket __widget,
 		@MagicConstant(valuesFromClass = UIWidgetProperty.class) int __strProp,
@@ -461,6 +490,7 @@ public final class UIFormShelf
 	 * @throws MLECallError If the widget or property is not valid.
 	 * @since 2020/09/21
 	 */
+	@Deprecated
 	@SquirrelJMEVendorApi
 	public static native int widgetPropertyInt(
 		@NotNull UIWidgetBracket __widget,
@@ -478,6 +508,7 @@ public final class UIFormShelf
 	 * @throws MLECallError If the widget or property is not valid.
 	 * @since 2020/09/21
 	 */
+	@Deprecated
 	@SquirrelJMEVendorApi
 	public static native String widgetPropertyStr(
 		@NotNull UIWidgetBracket __widget,

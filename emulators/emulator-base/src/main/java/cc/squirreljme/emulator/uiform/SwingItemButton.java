@@ -24,6 +24,7 @@ import javax.swing.JButton;
  *
  * @since 2020/07/18
  */
+@Deprecated
 public class SwingItemButton
 	extends SwingItem
 	implements ActionListener

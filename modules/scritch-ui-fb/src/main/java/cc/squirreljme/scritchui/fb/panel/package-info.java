@@ -13,4 +13,5 @@
  * @since 2024/03/24
  */
 
+@Deprecated
 package cc.squirreljme.scritchui.fb.panel;

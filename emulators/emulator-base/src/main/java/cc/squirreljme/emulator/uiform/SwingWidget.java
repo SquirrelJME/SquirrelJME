@@ -21,6 +21,7 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
  *
  * @since 2020/09/21
  */
+@Deprecated
 public interface SwingWidget
 	extends UIWidgetBracket
 {

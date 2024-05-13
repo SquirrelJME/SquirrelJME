@@ -18,6 +18,7 @@ import java.lang.ref.Reference;
  *
  * @since 2024/03/24
  */
+@Deprecated
 @SquirrelJMEVendorApi
 public abstract class FramebufferBaseInterface
 {

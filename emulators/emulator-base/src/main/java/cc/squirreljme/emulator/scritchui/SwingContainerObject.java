@@ -17,6 +17,7 @@ import java.awt.Container;
  *
  * @since 2024/03/17
  */
+@Deprecated
 public interface SwingContainerObject
 	extends ScritchContainerBracket
 {

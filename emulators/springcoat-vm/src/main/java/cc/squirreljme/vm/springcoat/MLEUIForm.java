@@ -29,6 +29,7 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
  *
  * @since 2020/06/30
  */
+@Deprecated
 public enum MLEUIForm
 	implements MLEFunction
 {

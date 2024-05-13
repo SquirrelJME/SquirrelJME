@@ -18,6 +18,7 @@ import java.awt.event.WindowListener;
  *
  * @since 2020/09/13
  */
+@Deprecated
 public class HandleDisplayWindowEvent
 	implements WindowListener
 {

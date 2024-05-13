@@ -20,6 +20,7 @@ import java.lang.ref.Reference;
  *
  * @since 2024/03/26
  */
+@Deprecated
 @SquirrelJMEVendorApi
 public class FramebufferScreenObject
 	extends FramebufferBaseObject

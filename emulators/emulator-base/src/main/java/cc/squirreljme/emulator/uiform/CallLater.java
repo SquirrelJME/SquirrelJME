@@ -22,6 +22,7 @@ import java.util.Map;
  *
  * @since 2020/10/03
  */
+@Deprecated
 public class CallLater
 	implements Runnable
 {

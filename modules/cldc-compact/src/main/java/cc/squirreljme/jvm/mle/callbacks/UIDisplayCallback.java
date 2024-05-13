@@ -21,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 2020/10/03
  */
+@Deprecated
 @SquirrelJMEVendorApi
 public interface UIDisplayCallback
 	extends ShelfCallback, UIDrawableCallback
@@ -32,6 +33,7 @@ public interface UIDisplayCallback
 	 * @param __serialId The identity of the serialized call.
 	 * @since 2020/10/03
 	 */
+	@Deprecated
 	@SquirrelJMEVendorApi
 	@Async.Execute
 	void later(@NotNull UIDisplayBracket __display, int __serialId);

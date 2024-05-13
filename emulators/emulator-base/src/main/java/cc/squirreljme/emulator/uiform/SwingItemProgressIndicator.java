@@ -19,6 +19,7 @@ import javax.swing.JProgressBar;
  *
  * @since 2020/07/18
  */
+@Deprecated
 public class SwingItemProgressIndicator
 	extends SwingItem
 {

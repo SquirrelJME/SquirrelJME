@@ -19,6 +19,7 @@ import javax.swing.JPanel;
  *
  * @since 2020/07/18
  */
+@Deprecated
 public class SwingItemSpacer
 	extends SwingItem
 {

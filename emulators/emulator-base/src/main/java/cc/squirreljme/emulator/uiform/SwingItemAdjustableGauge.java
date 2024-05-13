@@ -19,6 +19,7 @@ import javax.swing.JSlider;
  *
  * @since 2020/07/18
  */
+@Deprecated
 public class SwingItemAdjustableGauge
 	extends SwingItem
 {

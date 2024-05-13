@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 2024/03/26
  */
+@Deprecated
 @SquirrelJMEVendorApi
 public class FramebufferPanelObject
 	extends FramebufferComponentObject

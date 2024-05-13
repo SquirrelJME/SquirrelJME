@@ -34,6 +34,7 @@ import javax.swing.border.EtchedBorder;
  *
  * @since 2024/03/16
  */
+@Deprecated
 public class SwingPanelObject
 	extends SwingComponentObject
 	implements ScritchPanelBracket

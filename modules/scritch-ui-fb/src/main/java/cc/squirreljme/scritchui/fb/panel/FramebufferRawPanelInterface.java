@@ -26,6 +26,7 @@ import cc.squirreljme.scritchui.fb.FramebufferScreensProvider;
  *
  * @since 2024/03/24
  */
+@Deprecated
 @SquirrelJMEVendorApi
 public class FramebufferRawPanelInterface
 	implements ScritchInterface

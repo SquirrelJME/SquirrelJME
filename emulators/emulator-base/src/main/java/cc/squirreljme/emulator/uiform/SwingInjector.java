@@ -21,6 +21,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2020/10/03
  */
+@Deprecated
 public class SwingInjector
 	implements UIFormCallback
 {

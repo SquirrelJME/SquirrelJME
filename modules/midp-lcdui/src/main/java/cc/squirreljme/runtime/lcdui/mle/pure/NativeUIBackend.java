@@ -26,6 +26,7 @@ import cc.squirreljme.runtime.lcdui.mle.UIBackend;
  *
  * @since 2020/06/30
  */
+@Deprecated
 public class NativeUIBackend
 	implements UIBackend
 {
@@ -34,6 +35,7 @@ public class NativeUIBackend
 	 * @since 2023/01/14
 	 */
 	@Override
+	@Deprecated
 	public void callback(UIDisplayBracket __display,
 		UIDisplayCallback __callback)
 		throws MLECallError
@@ -46,6 +48,7 @@ public class NativeUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
+	@Deprecated
 	public void callback(UIFormBracket __form, UIFormCallback __callback)
 		throws MLECallError
 	{
@@ -57,6 +60,7 @@ public class NativeUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
+	@Deprecated
 	public UIDisplayBracket[] displays()
 		throws MLECallError
 	{
@@ -68,6 +72,7 @@ public class NativeUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
+	@Deprecated
 	public UIFormBracket displayCurrent(UIDisplayBracket __display)
 		throws MLECallError
 	{
@@ -79,6 +84,7 @@ public class NativeUIBackend
 	 * @since 2023/01/14
 	 */
 	@Override
+	@Deprecated
 	public void displayShow(UIDisplayBracket __display, boolean __show)
 		throws MLECallError
 	{
@@ -90,6 +96,7 @@ public class NativeUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
+	@Deprecated
 	public void displayShow(UIDisplayBracket __display, UIFormBracket __form)
 		throws MLECallError
 	{
@@ -101,6 +108,7 @@ public class NativeUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
+	@Deprecated
 	public boolean equals(UIDisplayBracket __a, UIDisplayBracket __b)
 		throws MLECallError
 	{
@@ -112,6 +120,7 @@ public class NativeUIBackend
 	 * @since 2023/01/13
 	 */
 	@Override
+	@Deprecated
 	public boolean equals(UIDrawableBracket __a, UIDrawableBracket __b)
 		throws MLECallError
 	{
@@ -123,6 +132,7 @@ public class NativeUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
+	@Deprecated
 	public boolean equals(UIFormBracket __a, UIFormBracket __b)
 		throws MLECallError
 	{
@@ -134,6 +144,7 @@ public class NativeUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
+	@Deprecated
 	public boolean equals(UIItemBracket __a, UIItemBracket __b)
 		throws MLECallError
 	{
@@ -145,6 +156,7 @@ public class NativeUIBackend
 	 * @since 2020/09/20
 	 */
 	@Override
+	@Deprecated
 	public boolean equals(UIWidgetBracket __a, UIWidgetBracket __b)
 		throws MLECallError
 	{
@@ -156,6 +168,7 @@ public class NativeUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
+	@Deprecated
 	public void flushEvents()
 		throws MLECallError
 	{
@@ -167,6 +180,7 @@ public class NativeUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
+	@Deprecated
 	public void formDelete(UIFormBracket __form)
 		throws MLECallError
 	{
@@ -178,6 +192,7 @@ public class NativeUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
+	@Deprecated
 	public UIItemBracket formItemAtPosition(UIFormBracket __form, int __pos)
 		throws MLECallError
 	{
@@ -189,6 +204,7 @@ public class NativeUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
+	@Deprecated
 	public int formItemCount(UIFormBracket __form)
 		throws MLECallError
 	{
@@ -200,6 +216,7 @@ public class NativeUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
+	@Deprecated
 	public int formItemPosition(UIFormBracket __form, UIItemBracket __item)
 		throws MLECallError
 	{
@@ -211,6 +228,7 @@ public class NativeUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
+	@Deprecated
 	public void formItemPosition(UIFormBracket __form, UIItemBracket __item,
 		int __pos)
 		throws MLECallError
@@ -223,6 +241,7 @@ public class NativeUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
+	@Deprecated
 	public UIItemBracket formItemRemove(UIFormBracket __form, int __pos)
 		throws MLECallError
 	{
@@ -234,6 +253,7 @@ public class NativeUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
+	@Deprecated
 	public UIFormBracket formNew()
 		throws MLECallError
 	{
@@ -245,6 +265,7 @@ public class NativeUIBackend
 	 * @since 2022/07/20
 	 */
 	@Override
+	@Deprecated
 	public void formRefresh(UIFormBracket __form)
 		throws MLECallError
 	{
@@ -256,6 +277,7 @@ public class NativeUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
+	@Deprecated
 	public UIFormCallback injector()
 		throws MLECallError
 	{
@@ -267,6 +289,7 @@ public class NativeUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
+	@Deprecated
 	public void itemDelete(UIItemBracket __item)
 		throws MLECallError
 	{
@@ -278,6 +301,7 @@ public class NativeUIBackend
 	 * @since 2021/01/03
 	 */
 	@Override
+	@Deprecated
 	public UIFormBracket itemForm(UIItemBracket __item)
 		throws MLECallError
 	{
@@ -289,6 +313,7 @@ public class NativeUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
+	@Deprecated
 	public UIItemBracket itemNew(int __type)
 		throws MLECallError
 	{
@@ -300,6 +325,7 @@ public class NativeUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
+	@Deprecated
 	public void later(UIDisplayBracket __display, int __serialId)
 		throws MLECallError
 	{
@@ -311,6 +337,7 @@ public class NativeUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
+	@Deprecated
 	public int metric(UIDisplayBracket __display, int __metric)
 		throws MLECallError
 	{
@@ -322,6 +349,7 @@ public class NativeUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
+	@Deprecated
 	public void widgetProperty(UIWidgetBracket __item, int __intProp,
 		int __sub, int __newValue)
 	{
@@ -333,6 +361,7 @@ public class NativeUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
+	@Deprecated
 	public void widgetProperty(UIWidgetBracket __item, int __strProp,
 		int __sub, String __newValue)
 	{
@@ -344,6 +373,7 @@ public class NativeUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
+	@Deprecated
 	public int widgetPropertyInt(UIWidgetBracket __widget, int __intProp,
 		int __sub)
 		throws MLECallError
@@ -355,6 +385,7 @@ public class NativeUIBackend
 	 * {@inheritDoc}
 	 * @since 2020/07/19
 	 */
+	@Deprecated
 	@Override
 	public String widgetPropertyStr(UIWidgetBracket __widget, int __strProp,
 		int __sub)

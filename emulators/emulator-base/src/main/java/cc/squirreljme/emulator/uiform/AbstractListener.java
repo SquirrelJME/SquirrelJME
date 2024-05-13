@@ -18,6 +18,7 @@ import java.lang.ref.WeakReference;
  *
  * @since 2020/10/17
  */
+@Deprecated
 public abstract class AbstractListener
 {
 	/** Reference to the widget item. */

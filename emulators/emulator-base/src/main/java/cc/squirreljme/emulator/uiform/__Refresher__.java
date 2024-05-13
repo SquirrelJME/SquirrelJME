@@ -14,6 +14,7 @@ package cc.squirreljme.emulator.uiform;
  *
  * @since 2020/10/09
  */
+@Deprecated
 final class __Refresher__
 	implements Runnable
 {

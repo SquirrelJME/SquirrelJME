@@ -26,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 2024/03/01
  */
+@Deprecated
 public class SwingScritchInterface
 	implements ScritchInterface
 {

@@ -23,6 +23,7 @@ import javax.swing.JComponent;
  *
  * @since 2024/03/16
  */
+@Deprecated
 public class SwingContainerInterface
 	implements ScritchContainerInterface
 {	

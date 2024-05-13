@@ -35,6 +35,7 @@ import javax.imageio.ImageIO;
  *
  * @since 2020/09/26
  */
+@Deprecated
 public final class SwingPencilShelf
 {
 	/**

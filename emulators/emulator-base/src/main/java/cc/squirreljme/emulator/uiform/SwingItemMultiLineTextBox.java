@@ -19,6 +19,7 @@ import javax.swing.JTextField;
  *
  * @since 2020/07/18
  */
+@Deprecated
 public class SwingItemMultiLineTextBox
 	extends SwingItem
 {

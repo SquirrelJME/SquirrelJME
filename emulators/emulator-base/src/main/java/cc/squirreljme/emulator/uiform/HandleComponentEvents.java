@@ -20,6 +20,7 @@ import java.awt.event.ComponentListener;
  *
  * @since 2020/10/17
  */
+@Deprecated
 public class HandleComponentEvents
 	extends AbstractListener
 	implements ComponentListener

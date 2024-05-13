@@ -14,6 +14,7 @@ package cc.squirreljme.emulator.uiform;
  *
  * @since 2020/10/03
  */
+@Deprecated
 class NothingRunnable
 	implements Runnable
 {

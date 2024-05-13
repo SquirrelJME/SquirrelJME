@@ -26,6 +26,7 @@ import org.jetbrains.annotations.Range;
  *
  * @since 2024/03/13
  */
+@Deprecated
 public class SwingEnvironmentInterface
 	implements ScritchEnvironmentInterface
 {

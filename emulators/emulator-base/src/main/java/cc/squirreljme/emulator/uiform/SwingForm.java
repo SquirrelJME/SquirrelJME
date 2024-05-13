@@ -36,6 +36,7 @@ import javax.swing.SwingUtilities;
  *
  * @since 2020/07/01
  */
+@Deprecated
 public final class SwingForm
 	implements UIFormBracket, SwingWidget
 {

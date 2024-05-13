@@ -34,6 +34,7 @@ import javax.swing.event.ListSelectionListener;
  *
  * @since 2020/07/18
  */
+@Deprecated
 public class SwingItemList
 	extends SwingItem
 	implements ListSelectionListener, KeyListener, MouseListener

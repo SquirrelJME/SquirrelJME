@@ -21,6 +21,7 @@ import cc.squirreljme.jvm.mle.constants.UIItemType;
  *
  * @since 2022/07/20
  */
+@Deprecated
 public class UIFormAttachment
 	implements FBAttachment
 {

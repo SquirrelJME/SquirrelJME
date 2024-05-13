@@ -20,6 +20,7 @@ import java.awt.Toolkit;
  *
  * @since 2024/03/14
  */
+@Deprecated
 public class SwingScreenObject
 	implements ScritchScreenBracket
 {

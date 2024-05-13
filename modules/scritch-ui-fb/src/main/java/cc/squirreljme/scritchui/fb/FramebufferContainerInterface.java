@@ -25,6 +25,7 @@ import org.jetbrains.annotations.Range;
  *
  * @since 2024/03/24
  */
+@Deprecated
 @SquirrelJMEVendorApi
 public class FramebufferContainerInterface
 	extends FramebufferBaseInterface

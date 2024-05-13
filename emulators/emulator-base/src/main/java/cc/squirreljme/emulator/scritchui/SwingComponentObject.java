@@ -18,6 +18,7 @@ import javax.swing.JComponent;
  *
  * @since 2024/03/16
  */
+@Deprecated
 public abstract class SwingComponentObject
 	implements ScritchComponentBracket
 {

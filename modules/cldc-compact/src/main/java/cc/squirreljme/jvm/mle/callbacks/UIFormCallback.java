@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Range;
  *
  * @since 2020/07/03
  */
+@Deprecated
 @SquirrelJMEVendorApi
 public interface UIFormCallback
 	extends ShelfCallback, UIDrawableCallback
@@ -43,6 +44,7 @@ public interface UIFormCallback
 	 * @param __sh Surface height.
 	 * @since 2022/07/20
 	 */
+	@Deprecated
 	@SquirrelJMEVendorApi
 	@Async.Execute
 	void formRefresh(@NotNull UIFormBracket __form, int __sx, int __sy,
@@ -60,6 +62,7 @@ public interface UIFormCallback
 	 * @param __new The new value.
 	 * @since 2020/07/19
 	 */
+	@Deprecated
 	@SquirrelJMEVendorApi
 	@Async.Execute
 	void propertyChange(@NotNull UIFormBracket __form,
@@ -78,6 +81,7 @@ public interface UIFormCallback
 	 * @param __new The new value.
 	 * @since 2020/07/19
 	 */
+	@Deprecated
 	@SquirrelJMEVendorApi
 	@Async.Execute
 	void propertyChange(@NotNull UIFormBracket __form,

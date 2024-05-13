@@ -16,6 +16,7 @@ import javax.swing.ImageIcon;
  *
  * @since 2020/10/31
  */
+@Deprecated
 public final class ListEntry
 {
 	/** The dimension of the icon. */

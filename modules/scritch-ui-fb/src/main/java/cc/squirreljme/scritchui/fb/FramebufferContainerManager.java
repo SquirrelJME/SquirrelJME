@@ -21,6 +21,7 @@ import java.util.ArrayList;
  *
  * @since 2024/03/26
  */
+@Deprecated
 @SquirrelJMEVendorApi
 public final class FramebufferContainerManager
 	extends FramebufferBaseObject

@@ -1,13 +1,13 @@
 import cc.squirreljme.plugin.swm.JavaMEMidletType
 
-description = "Scritch UI Pure Framebuffer Implementation."
+description = "DEPRECATED Scritch UI Pure Framebuffer Implementation."
 version = rootProject.version
 
 squirreljme
 {
 	javaDocErrorCode = "UY"
 	swmType = JavaMEMidletType.API
-	swmName = "Scritch UI Framebuffer"
+	swmName = "DEPRECATED Scritch UI Framebuffer"
 	swmVendor = "Stephanie Gawroriski"
 	tags += "graphics"
 	tags += "scritchui"

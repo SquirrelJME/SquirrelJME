@@ -16,6 +16,7 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2024/03/07
  */
+@Deprecated
 @SquirrelJMEVendorApi
 public interface FramebufferScreensProvider
 {

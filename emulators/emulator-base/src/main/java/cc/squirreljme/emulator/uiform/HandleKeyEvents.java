@@ -27,6 +27,7 @@ import java.util.concurrent.ConcurrentSkipListSet;
  *
  * @since 2021/02/16
  */
+@Deprecated
 public class HandleKeyEvents
 	extends AbstractListener
 	implements KeyListener, ActionListener

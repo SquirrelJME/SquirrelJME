@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 2024/03/24
  */
+@Deprecated
 @SquirrelJMEVendorApi
 public class FramebufferEventLoopInterface
 	extends FramebufferBaseInterface

@@ -18,6 +18,7 @@ package cc.squirreljme.jvm.mle.constants;
  *
  * @since 2020/06/30
  */
+@Deprecated
 public interface UIItemPosition
 {
 	/** The left command button. */
@@ -44,22 +45,27 @@ public interface UIItemPosition
 		-4;
 	
 	/** The body of the form, this acts as a "full-screen" view. */
+	@Deprecated
 	byte BODY =
 		-5;
 	
 	/** The touch-screen control interface. */
+	@Deprecated
 	byte TOUCH_CONTROLS =
 		-6;
 	
 	/** The lowest permitted value, no value can be lower than this. */
+	@Deprecated
 	byte MIN_VALUE =
 		-6;
 	
 	/** The number of special items, for shifting. */
+	@Deprecated
 	byte SPECIAL_SHIFT =
 		6;
 	
 	/** The item is not on the form. */
+	@Deprecated
 	int NOT_ON_FORM =
 		Integer.MIN_VALUE;
 }

@@ -14,6 +14,7 @@ package cc.squirreljme.emulator.uiform;
  *
  * @since 2020/07/01
  */
+@Deprecated
 public interface SwingHardMetrics
 {
 	/** The minimum display width. */

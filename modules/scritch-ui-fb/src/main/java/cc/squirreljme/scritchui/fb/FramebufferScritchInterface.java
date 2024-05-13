@@ -27,6 +27,7 @@ import java.lang.ref.WeakReference;
  *
  * @since 2024/03/07
  */
+@Deprecated
 @SquirrelJMEVendorApi
 public class FramebufferScritchInterface
 	implements ScritchInterface

@@ -25,6 +25,7 @@ import javax.swing.UIManager;
  *
  * @since 2024/03/13
  */
+@Deprecated
 public class SwingLAFInterface
 	implements ScritchLAFInterface
 {

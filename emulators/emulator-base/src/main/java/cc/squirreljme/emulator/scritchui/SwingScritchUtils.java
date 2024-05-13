@@ -14,6 +14,7 @@ package cc.squirreljme.emulator.scritchui;
  *
  * @since 2024/03/17
  */
+@Deprecated
 public final class SwingScritchUtils
 {
 	/**

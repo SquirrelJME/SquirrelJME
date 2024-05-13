@@ -29,6 +29,7 @@ import org.jetbrains.annotations.Range;
  *
  * @since 2023/01/13
  */
+@Deprecated
 @SquirrelJMEVendorApi
 public interface UIDrawableCallback
 	extends ShelfCallback
@@ -40,6 +41,7 @@ public interface UIDrawableCallback
 	 * @param __drawable The form being exited.
 	 * @since 2020/09/12
 	 */
+	@Deprecated
 	@SquirrelJMEVendorApi
 	@Async.Execute
 	void exitRequest(@NotNull UIDrawableBracket __drawable);
@@ -53,6 +55,7 @@ public interface UIDrawableCallback
 	 * @param __modifiers Bit mask of {@link UIKeyModifier}.
 	 * @since 2020/07/19
 	 */
+	@Deprecated
 	@SquirrelJMEVendorApi
 	@Async.Execute
 	void eventKey(@NotNull UIDrawableBracket __drawable,
@@ -71,6 +74,7 @@ public interface UIDrawableCallback
 	 * @param __modifiers Bit mask of {@link UIKeyModifier}.
 	 * @since 2020/07/19
 	 */
+	@Deprecated
 	@SquirrelJMEVendorApi
 	@Async.Execute
 	void eventMouse(@NotNull UIDrawableBracket __drawable,
@@ -98,6 +102,7 @@ public interface UIDrawableCallback
 	 * other value if it is meaningful to what is being painted.
 	 * @since 2022/01/05
 	 */
+	@Deprecated
 	@SquirrelJMEVendorApi
 	@Async.Execute
 	void paint(@NotNull UIDrawableBracket __drawable,

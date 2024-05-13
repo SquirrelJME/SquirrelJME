@@ -19,6 +19,7 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2020/07/01
  */
+@Deprecated
 @SquirrelJMEVendorApi
 @GhostObject
 public interface UIDisplayBracket
