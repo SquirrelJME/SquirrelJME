@@ -1743,8 +1743,11 @@ typedef enum sjme_errorCode
 	/** There is no listener. */
 	SJME_ERROR_NO_LISTENER = -53,
 	
+	/** Cancel close of window. */
+	SJME_ERROR_CANCEL_WINDOW_CLOSE = -54,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -54
+	SJME_NUM_ERROR_CODES = -55
 } sjme_errorCode;
 
 /**

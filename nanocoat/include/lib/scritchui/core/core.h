@@ -51,8 +51,7 @@ sjme_errorCode sjme_scritchui_core_componentRevalidate(
 sjme_errorCode sjme_scritchui_core_componentSetPaintListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrInNullable sjme_scritchui_paintListenerFunc inListener,
-	sjme_frontEnd* copyFrontEnd);
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(paint));
 
 sjme_errorCode sjme_scritchui_core_componentSize(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -77,8 +76,7 @@ sjme_errorCode sjme_scritchui_core_containerSetBounds(
 sjme_errorCode sjme_scritchui_core_componentSetSizeListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrInNullable sjme_scritchui_sizeListenerFunc inListener,
-	sjme_attrInNullable sjme_frontEnd* copyFrontEnd);
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(size));
 
 sjme_errorCode sjme_scritchui_core_loopExecute(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -114,7 +112,7 @@ sjme_errorCode sjme_scritchui_core_panelNew(
 
 sjme_errorCode sjme_scritchui_core_screenSetListener(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_screenListenerFunc callback);
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(screen));
 
 sjme_errorCode sjme_scritchui_core_screens(
 	sjme_attrInNotNull sjme_scritchui inState,

@@ -194,7 +194,8 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 		SJME_SCRITCHUI_DISPATCH_CASE(screenSetListener,
 			SJME_SCRITCHUI_SERIAL_TYPE_SCREEN_SET_LISTENER,
 			(state,
-			screenSetListener->callback));
+			screenSetListener->inListener,
+			screenSetListener->copyFrontEnd));
 	
 		SJME_SCRITCHUI_DISPATCH_CASE(screens,
 			SJME_SCRITCHUI_SERIAL_TYPE_SCREENS,
@@ -268,8 +269,7 @@ sjme_errorCode sjme_scritchui_coreSerial_componentRevalidate(
 sjme_errorCode sjme_scritchui_coreSerial_componentSetPaintListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrInNullable sjme_scritchui_paintListenerFunc inListener,
-	sjme_frontEnd* copyFrontEnd)
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(paint))
 {
 	SJME_SCRITCHUI_SERIAL_CHUNK(componentSetPaintListener,
 		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_PAINT_LISTENER,
@@ -286,8 +286,7 @@ sjme_errorCode sjme_scritchui_coreSerial_componentSetPaintListener(
 sjme_errorCode sjme_scritchui_coreSerial_componentSetSizeListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrInNullable sjme_scritchui_sizeListenerFunc inListener,
-	sjme_attrInNullable sjme_frontEnd* copyFrontEnd)
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(size))
 {
 	SJME_SCRITCHUI_SERIAL_CHUNK(componentSetSizeListener,
 		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_SIZE_LISTENER,
@@ -391,13 +390,14 @@ sjme_errorCode sjme_scritchui_coreSerial_panelNew(
 
 sjme_errorCode sjme_scritchui_coreSerial_screenSetListener(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_screenListenerFunc callback)
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(screen))
 {
 	SJME_SCRITCHUI_SERIAL_CHUNK(screenSetListener,
 		SJME_SCRITCHUI_SERIAL_TYPE_SCREEN_SET_LISTENER,
-		(inState, callback));
+		(inState, inListener, copyFrontEnd));
 		
-	SJME_SCRITCHUI_SERIAL_PASS(callback);
+	SJME_SCRITCHUI_SERIAL_PASS(inListener);
+	SJME_SCRITCHUI_SERIAL_PASS(copyFrontEnd);
 	
 	/* Invoke and wait. */
 	SJME_SCRITCHUI_INVOKE_WAIT;

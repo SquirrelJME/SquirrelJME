@@ -214,6 +214,26 @@ typedef struct sjme_scritchui_uiWindowBase* sjme_scritchui_uiWindow;
  */
 typedef struct sjme_scritchui_pencilBase* sjme_scritchui_pencil;
 
+/** Arguments to pass for setting of listeners. */
+#define SJME_SCRITCHUI_SET_LISTENER_ARGS(what) \
+	sjme_attrInNullable SJME_TOKEN_PASTE3(sjme_scritchui_, what, \
+		ListenerFunc) inListener, \
+	sjme_attrInNullable sjme_frontEnd* copyFrontEnd
+
+/**
+ * Listener that is called when a window closes.
+ * 
+ * @param inState The input state.
+ * @param inWindow The window being closed.
+ * @return Any resultant error, @c SJME_ERROR_CANCEL_WINDOW_CLOSE is handled
+ * specifically in that it will not be treated as an error however normal
+ * application exit will not happen.
+ * @since 2024/05/13
+ */
+typedef sjme_errorCode (*sjme_scritchui_closeListenerFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow);
+
 /**
  * Callback that is used to draw the given component.
  *
@@ -338,8 +358,7 @@ typedef sjme_errorCode (*sjme_scritchui_componentRevalidateFunc)(
 typedef sjme_errorCode (*sjme_scritchui_componentSetPaintListenerFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrInNullable sjme_scritchui_paintListenerFunc inListener,
-	sjme_attrInNullable sjme_frontEnd* copyFrontEnd);
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(paint));
 
 /**
  * Sets the listener for size events.
@@ -354,8 +373,7 @@ typedef sjme_errorCode (*sjme_scritchui_componentSetPaintListenerFunc)(
 typedef sjme_errorCode (*sjme_scritchui_componentSetSizeListenerFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrInNullable sjme_scritchui_sizeListenerFunc inListener,
-	sjme_attrInNullable sjme_frontEnd* copyFrontEnd);
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(size));
 
 /**
  * Returns the size of the given component.
@@ -483,7 +501,7 @@ typedef sjme_errorCode (*sjme_scritchui_panelNewFunc)(
  */
 typedef sjme_errorCode (*sjme_scritchui_screenSetListenerFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_screenListenerFunc callback);
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(screen));
 
 /**
  * Obtains and queries the screens which are attached to the system displays.

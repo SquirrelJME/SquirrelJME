@@ -121,7 +121,7 @@ fail_alloc:
 
 sjme_errorCode sjme_scritchui_core_screenSetListener(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_screenListenerFunc callback)
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(screen))
 {
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;

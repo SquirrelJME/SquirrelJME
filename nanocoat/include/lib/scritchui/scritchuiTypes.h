@@ -63,6 +63,9 @@ typedef enum sjme_scritchui_listenerClass
 		SJME_TOKEN_PASTE3(sjme_scritchui_, what, ListenerFunc) callback; \
 	} SJME_TOKEN_PASTE(sjme_scritchui_listener_, what)
 
+/** Close listener. */
+SJME_SCRITCHUI_LISTENER_DECLARE(close);
+
 /** Size listener. */
 SJME_SCRITCHUI_LISTENER_DECLARE(size);
 
@@ -198,6 +201,12 @@ typedef struct sjme_scritchui_uiScreenBase
 	sjme_scritchui_handle displayHandle;
 } sjme_scritchui_uiScreenBase;
 
+typedef struct sjme_scritchui_uiWindowListeners
+{
+	/** Listener for when a window is closed. */
+	sjme_scritchui_listener_close close;
+} sjme_scritchui_uiWindowListeners;
+
 typedef struct sjme_scritchui_uiWindowBase
 {
 	/** Common data. */
@@ -205,6 +214,9 @@ typedef struct sjme_scritchui_uiWindowBase
 	
 	/** Container related. */
 	sjme_scritchui_uiContainerBase container;
+	
+	/** Listeners. */
+	sjme_scritchui_uiWindowListeners listeners[SJME_NUM_SCRITCHUI_LISTENER];
 } sjme_scritchui_uiWindowBase;
 
 /*--------------------------------------------------------------------------*/

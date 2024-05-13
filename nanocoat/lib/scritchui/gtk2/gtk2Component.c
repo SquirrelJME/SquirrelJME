@@ -154,8 +154,7 @@ sjme_errorCode sjme_scritchui_gtk2_componentRevalidate(
 sjme_errorCode sjme_scritchui_gtk2_componentSetPaintListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrInNullable sjme_scritchui_paintListenerFunc inListener,
-	sjme_attrInNullable sjme_frontEnd* copyFrontEnd)
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(paint))
 {
 	sjme_errorCode error;
 	GtkWidget* widget;
@@ -216,8 +215,7 @@ sjme_errorCode sjme_scritchui_gtk2_componentSetPaintListener(
 sjme_errorCode sjme_scritchui_gtk2_componentSetSizeListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrInNullable sjme_scritchui_sizeListenerFunc inListener,
-	sjme_attrInNullable sjme_frontEnd* copyFrontEnd)
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(size))
 {
 	GtkWidget* widget;
 	sjme_scritchui_listener_size* infoCore;

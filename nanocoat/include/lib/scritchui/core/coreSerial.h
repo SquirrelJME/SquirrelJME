@@ -86,6 +86,15 @@ typedef enum sjme_scritchui_serialType
 	SJME_SCRITCHUI_NUM_SERIAL_TYPES
 } sjme_scritchui_serialType;
 
+/** Serial set listener. */
+#define SJME_SCRITCHUI_SERIAL_SET_LISTENER(what) \
+	/** The listener to set. */ \
+	volatile SJME_TOKEN_PASTE3(sjme_scritchui_, what, ListenerFunc) \
+	inListener; \
+	 \
+	/** Any front-end data to set as needed. */ \
+	sjme_frontEnd* volatile copyFrontEnd; \
+
 typedef struct sjme_scritchui_serialData_componentRepaint
 {
 	/** The input component. */
@@ -116,10 +125,7 @@ typedef struct sjme_scritchui_serialData_componentSetPaintListener
 	volatile sjme_scritchui_uiComponent inComponent;
 	
 	/** The listener to set. */
-	volatile sjme_scritchui_paintListenerFunc inListener;
-	
-	/** Any front-end data to set as needed. */
-	sjme_frontEnd* volatile copyFrontEnd;
+	SJME_SCRITCHUI_SERIAL_SET_LISTENER(paint);
 } sjme_scritchui_serialData_componentSetPaintListener;
 
 typedef struct sjme_scritchui_serialData_componentSetSizeListener
@@ -128,10 +134,7 @@ typedef struct sjme_scritchui_serialData_componentSetSizeListener
 	volatile sjme_scritchui_uiComponent inComponent;
 	
 	/** The listener to set. */
-	volatile sjme_scritchui_sizeListenerFunc inListener;
-	
-	/** Any front-end data to set as needed. */
-	sjme_frontEnd* volatile copyFrontEnd;
+	SJME_SCRITCHUI_SERIAL_SET_LISTENER(size);
 } sjme_scritchui_serialData_componentSetSizeListener;
 
 typedef struct sjme_scritchui_serialData_componentSize
@@ -194,7 +197,7 @@ typedef struct sjme_scritchui_serialData_panelNew
 typedef struct sjme_scritchui_serialData_screenSetListener
 {
 	/** The callback for screen listener. */
-	volatile sjme_scritchui_screenListenerFunc callback;
+	SJME_SCRITCHUI_SERIAL_SET_LISTENER(screen);
 } sjme_scritchui_serialData_screenSetListener;
 
 typedef struct sjme_scritchui_serialData_screens
@@ -325,14 +328,12 @@ sjme_errorCode sjme_scritchui_coreSerial_componentRevalidate(
 sjme_errorCode sjme_scritchui_coreSerial_componentSetPaintListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrInNullable sjme_scritchui_paintListenerFunc inListener,
-	sjme_frontEnd* copyFrontEnd);
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(paint));
 	
 sjme_errorCode sjme_scritchui_coreSerial_componentSetSizeListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrInNullable sjme_scritchui_sizeListenerFunc inListener,
-	sjme_attrInNullable sjme_frontEnd* copyFrontEnd);
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(size));
 	
 sjme_errorCode sjme_scritchui_coreSerial_componentSize(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -365,7 +366,7 @@ sjme_errorCode sjme_scritchui_coreSerial_panelNew(
 
 sjme_errorCode sjme_scritchui_coreSerial_screenSetListener(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_screenListenerFunc callback);
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(screen));
 
 sjme_errorCode sjme_scritchui_coreSerial_screens(
 	sjme_attrInNotNull sjme_scritchui inState,
