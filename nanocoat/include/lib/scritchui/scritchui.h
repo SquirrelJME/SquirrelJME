@@ -286,6 +286,9 @@ typedef sjme_errorCode (*sjme_scritchui_sizeListenerFunc)(
 	sjme_attrInPositiveNonZero sjme_jint newWidth,
 	sjme_attrInPositiveNonZero sjme_jint newHeight);
 
+/** Void listener function. */
+typedef sjme_errorCode (*sjme_scritchui_voidListenerFunc)(void);
+
 /**
  * Obtains the flags which describe the interface.
  * 
@@ -648,6 +651,14 @@ struct sjme_scritchui_apiFunctions
 #undef SJME_SCRITCHUI_QUICK_API
 
 /**
+ * Opaque internal implementation functions.
+ * 
+ * @since 2024/05/14
+ */
+typedef struct sjme_scritchui_implInternFunctions
+	sjme_scritchui_implInternFunctions;
+
+/**
  * Common data structure shared by everything.
  * 
  * @since 2024/04/02
@@ -698,11 +709,14 @@ struct sjme_scritchui_stateBase
 	/** In thread API functions. */
 	const sjme_scritchui_apiFunctions* apiInThread;
 	
+	/** Internal implementation functions to use. */
+	const sjme_scritchui_internFunctions* intern;
+	
 	/** Implementation functions to use. */
 	const sjme_scritchui_implFunctions* impl;
 	
-	/** Internal implementation functions to use. */
-	const sjme_scritchui_internFunctions* intern;
+	/** Internal implementation functions, which are opaque. */
+	const sjme_scritchui_implInternFunctions* implIntern;
 	
 	/** The allocation pool to use for allocations. */
 	sjme_alloc_pool* pool;

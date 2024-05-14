@@ -63,6 +63,9 @@ typedef enum sjme_scritchui_listenerClass
 		SJME_TOKEN_PASTE3(sjme_scritchui_, what, ListenerFunc) callback; \
 	} SJME_TOKEN_PASTE(sjme_scritchui_listener_, what)
 
+/** Void listener. */
+SJME_SCRITCHUI_LISTENER_DECLARE(void);
+
 /** Close listener. */
 SJME_SCRITCHUI_LISTENER_DECLARE(close);
 

@@ -17,6 +17,7 @@
 #define SQUIRRELJME_GTK2_H
 
 #include <gtk-2.0/gtk/gtk.h>
+#include <gdk/gdk.h>
 
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiImpl.h"
@@ -121,6 +122,11 @@ sjme_errorCode sjme_scritchui_gtk2_windowContentMinimumSize(
 sjme_errorCode sjme_scritchui_gtk2_windowNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow);
+	
+sjme_errorCode sjme_scritchui_gtk2_windowSetCloseListenerFunc(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(close));
 	
 sjme_errorCode sjme_scritchui_gtk2_windowSetVisible(
 	sjme_attrInNotNull sjme_scritchui inState,

@@ -8,6 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 #include "lib/scritchui/gtk2/gtk2.h"
+#include "lib/scritchui/gtk2/gtk2Intern.h"
 #include "lib/scritchui/core/core.h"
 
 /** GTK Function set for Scritch UI. */
@@ -29,7 +30,15 @@ static const sjme_scritchui_implFunctions sjme_scritchui_gtkFunctions =
 	.screens = sjme_scritchui_gtk2_screens,
 	.windowContentMinimumSize = sjme_scritchui_gtk2_windowContentMinimumSize,
 	.windowNew = sjme_scritchui_gtk2_windowNew,
+	.windowSetCloseListener = sjme_scritchui_gtk2_windowSetCloseListenerFunc,
 	.windowSetVisible = sjme_scritchui_gtk2_windowSetVisible,
+};
+
+/** Internal implementation functions. */
+static const sjme_scritchui_implInternFunctions
+	sjme_scritchui_gtkInternFunctions =
+{
+	.reconnectSignal = sjme_scritchui_gtk2_intern_reconnectSignal,
 };
 
 static sjme_thread_result sjme_scritchui_gtk2_loopMain(
@@ -112,7 +121,8 @@ sjme_errorCode SJME_SCRITCHUI_DYLIB_SYMBOL(gtk2)(
 	/* Start main GTK thread. */
 	state->loopThread = SJME_THREAD_NULL;
 	state->loopThreadInit = loopExecute;
-	if (sjme_error_is(error = sjme_thread_new(&state->loopThread,
+	if (sjme_error_is(error = sjme_thread_new(
+		&state->loopThread,
 		sjme_scritchui_gtk2_loopMain, state)) ||
 		state->loopThread == SJME_THREAD_NULL)
 		return sjme_error_default(error);
@@ -127,6 +137,9 @@ sjme_errorCode sjme_scritchui_gtk2_apiInit(
 {
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Internal functions to use specifically for GTK. */
+	inState->implIntern = &sjme_scritchui_gtkInternFunctions;
 	
 	/* This is a standard desktop. */
 	inState->wmType = SJME_SCRITCHUI_WM_TYPE_STANDARD_DESKTOP;

@@ -14,6 +14,9 @@ import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchCloseListener;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
+import cc.squirreljme.runtime.midlet.ApplicationHandler;
+import cc.squirreljme.runtime.midlet.ApplicationInterface;
+import javax.microedition.midlet.MIDlet;
 
 /**
  * Callback for when a display is closed.
@@ -46,10 +49,37 @@ class __ExecDisplayClose__
 	 * {@inheritDoc}
 	 * @since 2024/05/13
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean closed(ScritchWindowBracket __window)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		/* Debug. */
+		Debugging.debugNote("TODO: Check for exit command!");
+		
+		// Obtain the application we are actually running, since this
+		// could be done different for different ones
+		Object currentInstance = ApplicationHandler.currentInstance();
+		ApplicationInterface<Object> currentInterface =
+			(ApplicationInterface<Object>)
+				ApplicationHandler.currentInterface();
+		if (currentInstance != null && currentInterface != null)
+		{
+			// Request destruction, ignore any failures
+			try
+			{
+				currentInterface.destroy(currentInstance, null);
+			}
+			catch (Throwable __e)
+			{
+				__e.printStackTrace();
+			}
+			
+			// Application should terminate!
+			return false;
+		}
+		
+		// Not cancelling termination
+		return true;
 	}
 }

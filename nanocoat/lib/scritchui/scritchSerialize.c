@@ -113,6 +113,7 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 	SJME_SCRITCHUI_DISPATCH_DECL(screens);
 	SJME_SCRITCHUI_DISPATCH_DECL(windowContentMinimumSize);
 	SJME_SCRITCHUI_DISPATCH_DECL(windowNew);
+	SJME_SCRITCHUI_DISPATCH_DECL(windowSetCloseListener);
 	SJME_SCRITCHUI_DISPATCH_DECL(windowSetVisible);
 	sjme_scritchui state;
 	
@@ -214,6 +215,13 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 			SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_NEW,
 			(state,
 			windowNew->outWindow));
+	
+		SJME_SCRITCHUI_DISPATCH_CASE(windowSetCloseListener,
+			SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_SET_CLOSE_LISTENER,
+			(state,
+			windowSetCloseListener->inWindow,
+			windowSetCloseListener->inListener,
+			windowSetCloseListener->copyFrontEnd));
 			
 		SJME_SCRITCHUI_DISPATCH_CASE(windowSetVisible,
 			SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_SET_VISIBLE,

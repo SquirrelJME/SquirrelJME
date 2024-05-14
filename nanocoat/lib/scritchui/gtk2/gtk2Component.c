@@ -8,6 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 #include "lib/scritchui/gtk2/gtk2.h"
+#include "lib/scritchui/gtk2/gtk2Intern.h"
 #include "lib/scritchui/core/core.h"
 
 static gboolean sjme_scritchui_gtk2_eventConfigure(
@@ -181,29 +182,22 @@ sjme_errorCode sjme_scritchui_gtk2_componentSetPaintListener(
 	{
 		/* No longer painted by us. */
 		gtk_widget_set_app_paintable(widget, FALSE);
-			
-		/* Disconnect. */
-		gtk_signal_disconnect(widget, (gulong)paint->extra);
-		
-		/* Clear data. */
-		infoCore->extra = 0;
-		infoCore->callback = 0;
-		memset(&infoCore->frontEnd, 0, sizeof(infoCore->frontEnd));
 	}
+	
+	/* Basic signal connection. */
+	if (sjme_error_is(error = inState->implIntern->reconnectSignal(
+		widget,
+		inComponent,
+		infoCore,
+		inListener,
+		copyFrontEnd,
+		"expose-event",
+		G_CALLBACK(sjme_scritchui_gtk2_eventExpose))))
+		return sjme_error_default(error);
 	
 	/* Connect new handler. */
 	if (inListener != NULL)
 	{
-		/* Fill in. */
-		infoCore->callback = inListener;
-		if (copyFrontEnd != NULL)
-			memmove(&infoCore->frontEnd, copyFrontEnd,
-				sizeof(*copyFrontEnd));
-		
-		/* Connect signal. */
-		paint->extra = g_signal_connect(widget, "expose-event",
-			G_CALLBACK(sjme_scritchui_gtk2_eventExpose), inComponent);
-		
 		/* We want to handle paints now. */
 		gtk_widget_set_app_paintable(widget, TRUE);
 	}
@@ -229,34 +223,14 @@ sjme_errorCode sjme_scritchui_gtk2_componentSetSizeListener(
 	/* Recover widget. */	
 	widget = (GtkWidget*)inComponent->common.handle;
 	
-	/* Disconnect old signal? */
-	if (infoCore->extra != 0)
-	{
-		/* Disconnect. */
-		gtk_signal_disconnect(widget, (gulong)infoCore->extra);
-		
-		/* Clear data. */
-		infoCore->extra = 0;
-		infoCore->callback = 0;
-		memset(&infoCore->frontEnd, 0, sizeof(infoCore->frontEnd));
-	}
-	
-	/* Connect signal. */
-	if (inListener != NULL)
-	{
-		/* Fill in. */
-		infoCore->callback = inListener;
-		if (copyFrontEnd != NULL)
-			memmove(&infoCore->frontEnd, copyFrontEnd,
-				sizeof(*copyFrontEnd));
-		
-		/* Connect signal now. */
-		infoCore->extra = g_signal_connect(widget, "configure-event",
-			G_CALLBACK(sjme_scritchui_gtk2_eventConfigure), inComponent);
-	}
-	
-	/* Success! */
-	return SJME_ERROR_NONE;
+	/* Basic signal connection. */
+	return inState->implIntern->reconnectSignal(widget,
+		inComponent,
+		infoCore,
+		inListener,
+		copyFrontEnd,
+		"configure-event",
+		G_CALLBACK(sjme_scritchui_gtk2_eventConfigure));
 }
 
 sjme_errorCode sjme_scritchui_gtk2_componentSize(

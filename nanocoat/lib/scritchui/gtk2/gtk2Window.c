@@ -8,8 +8,42 @@
 // -------------------------------------------------------------------------*/
 
 #include "lib/scritchui/gtk2/gtk2.h"
+#include "lib/scritchui/gtk2/gtk2Intern.h"
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/alloc.h"
+
+static gboolean sjme_scritchui_gtk2_eventDelete(GtkWidget* widget,
+	GdkEvent* event,
+	gpointer data)
+{
+	sjme_errorCode error;
+	sjme_scritchui inState;
+	sjme_scritchui_uiWindow inWindow;
+	sjme_scritchui_listener_close* infoCore;
+	
+	/* Restore component. */
+	inWindow = (sjme_scritchui_uiComponent)data;
+	if (inWindow == NULL)
+		return TRUE;
+	
+	/* Restore state. */
+	inState = inWindow->component.common.state;
+	
+	/* Get listener info. */
+	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(inWindow, close);
+	
+	/* Forward to callback. */
+	error = SJME_ERROR_NONE;
+	if (infoCore->callback != NULL)
+		error = infoCore->callback(inState, inWindow);
+	
+	/* Cancel deletion? */
+	if (error == SJME_ERROR_CANCEL_WINDOW_CLOSE)
+		return TRUE;
+	
+	/* False will destroy the window! */
+	return FALSE;
+}
 
 sjme_errorCode sjme_scritchui_gtk2_windowContentMinimumSize(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -75,6 +109,33 @@ sjme_errorCode sjme_scritchui_gtk2_windowNew(
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_scritchui_gtk2_windowSetCloseListenerFunc(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(close))
+{
+	GtkWindow* gtkWindow;
+	sjme_scritchui_listener_close* infoCore;
+	
+	if (inState == NULL || inWindow == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover window. */
+	gtkWindow = inWindow->component.common.handle;
+	
+	/* Get listener info. */
+	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(inWindow, close);
+	
+	/* Basic signal connection. */
+	return inState->implIntern->reconnectSignal(GTK_WIDGET(gtkWindow),
+		inWindow,
+		infoCore,
+		inListener,
+		copyFrontEnd,
+		"delete-event",
+		G_CALLBACK(sjme_scritchui_gtk2_eventDelete));
 }
 
 sjme_errorCode sjme_scritchui_gtk2_windowSetVisible(

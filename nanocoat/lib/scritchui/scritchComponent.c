@@ -287,7 +287,6 @@ sjme_errorCode sjme_scritchui_core_componentSetSizeListener(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(size))
 {
-	sjme_scritchui_listener_size undo;
 	sjme_scritchui_listener_size* infoUser;
 	
 	if (inState == NULL || inComponent == NULL)

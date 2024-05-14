@@ -17,6 +17,7 @@ add_library(ScritchUIGTK2 SHARED
 	gtk2Component.c
 	gtk2Container.c
 	gtk2Core.c
+	gtk2Intern.c
 	gtk2Loop.c
 	gtk2Panel.c
 	gtk2Pencil.c

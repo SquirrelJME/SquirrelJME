@@ -7,9 +7,34 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <string.h>
+
 #include "lib/scritchui/core/core.h"
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/alloc.h"
+
+static sjme_errorCode sjme_scritchui_baseCloseListener(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow)
+{
+	sjme_scritchui_listener_close* infoUser;
+	
+	if (inState == NULL || inWindow == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Get listener information. */
+	infoUser = &SJME_SCRITCHUI_LISTENER_USER(inWindow, close);
+	
+	/* Debug. */
+	sjme_message("Close requested?");
+	
+	/* Call user callback if set. */
+	if (infoUser->callback != NULL)
+		return infoUser->callback(inState, inWindow);
+	
+	/* Do nothing, which destroys the window. */
+	return SJME_ERROR_NONE;
+}
 
 sjme_errorCode sjme_scritchui_core_windowContentMinimumSize(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -69,10 +94,17 @@ sjme_errorCode sjme_scritchui_core_windowNew(
 		SJME_SCRITCHUI_TYPE_WINDOW)))
 		goto fail_postInit;
 	
+	/* Set close listener to use. */
+	if (inState->impl->windowSetCloseListener != NULL)
+		if (sjme_error_is(error = inState->impl->windowSetCloseListener(
+			inState, result, sjme_scritchui_baseCloseListener, NULL)))
+			goto fail_postCloseSet;
+	
 	/* Success! */
 	*outWindow = result;
 	return SJME_ERROR_NONE;
 
+fail_postCloseSet:
 fail_postInit:
 fail_newWidget:
 fail_preInit:
@@ -84,6 +116,30 @@ fail_alloc:
 	}
 	
 	return sjme_error_default(error);
+}
+
+sjme_errorCode sjme_scritchui_core_windowSetCloseListener(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(close))
+{
+	sjme_scritchui_listener_close* infoUser;
+	
+	if (inState == NULL || inWindow == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Get listener information. */
+	infoUser = &SJME_SCRITCHUI_LISTENER_USER(inWindow, close);
+	
+	/* The core listener is always set, so we can just set this here */
+	/* and any future size calls will use this callback. */
+	infoUser->callback = inListener;
+	if (copyFrontEnd != NULL)
+		memmove(&infoUser->frontEnd, copyFrontEnd,
+			sizeof(*copyFrontEnd));
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchui_core_windowSetVisible(
