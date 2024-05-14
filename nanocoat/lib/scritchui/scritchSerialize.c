@@ -451,6 +451,23 @@ sjme_errorCode sjme_scritchui_coreSerial_windowNew(
 	SJME_SCRITCHUI_INVOKE_WAIT;
 }
 
+sjme_errorCode sjme_scritchui_coreSerial_windowSetCloseListener(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(close))
+{
+	SJME_SCRITCHUI_SERIAL_CHUNK(windowSetCloseListener,
+		SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_SET_CLOSE_LISTENER,
+		(inState, inWindow, inListener, copyFrontEnd));
+		
+	SJME_SCRITCHUI_SERIAL_PASS(inWindow);
+	SJME_SCRITCHUI_SERIAL_PASS(inListener);
+	SJME_SCRITCHUI_SERIAL_PASS(copyFrontEnd);
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
+}
+
 sjme_errorCode sjme_scritchui_coreSerial_windowSetVisible(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,

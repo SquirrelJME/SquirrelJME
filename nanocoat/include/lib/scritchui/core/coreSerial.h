@@ -79,6 +79,9 @@ typedef enum sjme_scritchui_serialType
 	/** @c windowNew . */
 	SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_NEW,
 	
+	/** @c windowSetCloseListener . */
+	SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_SET_CLOSE_LISTENER,
+	
 	/** @c windowSetVisible . */
 	SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_SET_VISIBLE,
 	
@@ -227,6 +230,15 @@ typedef struct sjme_scritchui_serialData_windowNew
 	sjme_scritchui_uiWindow* volatile outWindow;
 } sjme_scritchui_serialData_windowNew;
 
+typedef struct sjme_scritchui_serialData_windowSetCloseListener
+{
+	/** The input window. */
+	volatile sjme_scritchui_uiWindow inWindow;
+	
+	/** The callback for the close listener. */
+	SJME_SCRITCHUI_SERIAL_SET_LISTENER(close);
+} sjme_scritchui_serialData_windowSetCloseListener;
+
 typedef struct sjme_scritchui_serialData_windowSetVisible
 {
 	/** The input window. */
@@ -285,6 +297,9 @@ typedef union sjme_scritchui_serialDataUnion
 	
 	/** @c windowNew . */
 	SJME_SCRITCHUI_SDU_DEF(windowNew);
+	
+	/** @c windowSetCloseListener . */
+	SJME_SCRITCHUI_SDU_DEF(windowSetCloseListener);
 	
 	/** @c windowSetVisible . */
 	SJME_SCRITCHUI_SDU_DEF(windowSetVisible);
@@ -382,7 +397,12 @@ sjme_errorCode sjme_scritchui_coreSerial_windowContentMinimumSize(
 sjme_errorCode sjme_scritchui_coreSerial_windowNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_scritchui_uiWindow* outWindow);
-	
+
+sjme_errorCode sjme_scritchui_coreSerial_windowSetCloseListener(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(close));
+
 sjme_errorCode sjme_scritchui_coreSerial_windowSetVisible(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
