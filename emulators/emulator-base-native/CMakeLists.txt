@@ -41,6 +41,7 @@ add_library(libEmulatorBase SHARED
 	c/mle_nativearchive.c
 	c/mle_object.c
 	c/mle_pencil.c
+    c/mle_pencilfont.c
 	c/mle_reflection.c
 	c/mle_runtime.c
 	c/mle_scritchui.c

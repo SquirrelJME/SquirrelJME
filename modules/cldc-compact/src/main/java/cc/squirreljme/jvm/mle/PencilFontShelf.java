@@ -35,28 +35,87 @@ public final class PencilFontShelf
 	{
 	}
 	
+	/**
+	 * Returns the direction of the given character in the font.
+	 *
+	 * @param __font The font to check.
+	 * @param __c The character.
+	 * @return The direction of the character, will be {@code -1} or {@code 1}.
+	 * @throws MLECallError If the font is not valid.
+	 * @since 2024/05/14
+	 */
+	@SquirrelJMEVendorApi
+	@Range(from = -1, to = 1)
+	public static native int metricCharDirection(
+		@NotNull PencilFontBracket __font,
+		char __c)
+		throws MLECallError;
+	
+	/**
+	 * Returns the ascent of the font.
+	 *
+	 * @param __font The font to check.
+	 * @param __max Should the max be obtained.
+	 * @return The ascent of the font in pixels.
+	 * @throws MLECallError If the font is not valid.
+	 * @since 2024/05/14
+	 */
 	@SquirrelJMEVendorApi
 	public static native int metricPixelAscent(
 		@NotNull PencilFontBracket __font,
 		boolean __max)
 		throws MLECallError;
 	
+	/**
+	 * Returns the baseline of the font.
+	 *
+	 * @param __font The font to check.
+	 * @return The baseline of the font in pixels.
+	 * @throws MLECallError If the font is not valid.
+	 * @since 2024/05/14
+	 */
 	@SquirrelJMEVendorApi
 	public static native int metricPixelBaseline(
 		@NotNull PencilFontBracket __font)
 		throws MLECallError;
 	
+	/**
+	 * Returns the descent of the font.
+	 *
+	 * @param __font The font to check.
+	 * @param __max Should the max be obtained.
+	 * @return The descent of the font in pixels.
+	 * @throws MLECallError If the font is not valid.
+	 * @since 2024/05/14
+	 */
 	@SquirrelJMEVendorApi
 	public static native int metricPixelDescent(
 		@NotNull PencilFontBracket __font,
 		boolean __max)
 		throws MLECallError;
 	
+	/**
+	 * Returns the leading of the font.
+	 *
+	 * @param __font The font to obtain from.
+	 * @return The leading amount in pixels.
+	 * @throws MLECallError If the font is not valid.
+	 * @since 2024/05/14
+	 */
 	@SquirrelJMEVendorApi
 	public static native int metricPixelLeading(
 		@NotNull PencilFontBracket __font)
 		throws MLECallError;
 	
+	/**
+	 * Returns the height of the given character.
+	 *
+	 * @param __font The font to obtain from.
+	 * @param __char The character.
+	 * @return The height of the font in pixels.
+	 * @throws MLECallError If the font is not valid.
+	 * @since 2024/05/14
+	 */
 	@SquirrelJMEVendorApi
 	@Range(from = 0, to = Integer.MAX_VALUE)
 	public static native int pixelCharHeight(
@@ -64,6 +123,15 @@ public final class PencilFontShelf
 		char __char)
 		throws MLECallError;
 	
+	/**
+	 * Returns the width of the given character.
+	 *
+	 * @param __font The font to obtain from.
+	 * @param __char The character.
+	 * @return The width of the font in pixels.
+	 * @throws MLECallError If the font is not valid.
+	 * @since 2024/05/14
+	 */
 	@SquirrelJMEVendorApi
 	@Range(from = 0, to = Integer.MAX_VALUE)
 	public static native int pixelCharWidth(
@@ -71,6 +139,23 @@ public final class PencilFontShelf
 		char __char)
 		throws MLECallError;
 	
+	/**
+	 * Renders the font glyph to a bitmap represented in a byte array. Each
+	 * byte within the array represents 8 pixels.
+	 *
+	 * @param __font The font to render to the bitmap.
+	 * @param __char The character to render.
+	 * @param __buf The resultant buffer.
+	 * @param __bufOff The offset into the buffer.
+	 * @param __scanLen The scanline length of the buffer.
+	 * @param __sx The surface X.
+	 * @param __sy The surface Y.
+	 * @param __sw The surface width.
+	 * @param __sh The surface height.
+	 * @throws MLECallError On null arguments, the font is not valid, or
+	 * if the positions and/or offsets are negative or out of bounds.
+	 * @since 2024/05/14
+	 */
 	@SquirrelJMEVendorApi
 	public static native void renderBitmap(
 		@NotNull PencilFontBracket __font,
@@ -84,6 +169,20 @@ public final class PencilFontShelf
 		@Range(from = 0, to = Integer.MAX_VALUE) int __sh)
 		throws MLECallError;
 	
+	/**
+	 * Renders the given character to the resultant pencil.
+	 *
+	 * @param __font The font to render from.
+	 * @param __char The character to render.
+	 * @param __pencil The pencil to draw into.
+	 * @param __x The target X position.
+	 * @param __y The target Y position.
+	 * @param __nextXY Optional output which contains the next X and Y
+	 * coordinates accordingly for continual drawing.
+	 * @throws MLECallError On null arguments, if the font is not valid, or if
+	 * the pencil is not valid.
+	 * @since 2024/05/14
+	 */
 	@SquirrelJMEVendorApi
 	public static native void renderChar(
 		@NotNull PencilFontBracket __font,
