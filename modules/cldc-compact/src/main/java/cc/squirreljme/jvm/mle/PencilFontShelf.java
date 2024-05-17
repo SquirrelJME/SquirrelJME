@@ -55,6 +55,22 @@ public final class PencilFontShelf
 		throws MLECallError;
 	
 	/**
+	 * Checks whether the character in the given font is valid, as in it has
+	 * a render-able glyph.
+	 *
+	 * @param __font The font to check within.
+	 * @param __c The character to check.
+	 * @return If the character in the font has a glyph and is valid.
+	 * @throws MLECallError On null arguments or if the font is not valid.
+	 * @since 2024/05/17
+	 */
+	@SquirrelJMEVendorApi
+	public static native boolean metricCharValid(
+		@NotNull PencilFontBracket __font,
+		int __c)
+		throws MLECallError;
+	
+	/**
 	 * Returns the {@link PencilFontFace} of a font. 
 	 *
 	 * @param __font The font to request from.
