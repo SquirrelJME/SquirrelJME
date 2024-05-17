@@ -39,6 +39,49 @@ public final class PencilFontShelf
 	}
 	
 	/**
+	 * Looks up the given font by name, face, style, and pixel size.
+	 *
+	 * @param __name The name of the font.
+	 * @param __face The face of the font.
+	 * @param __style The style of font.
+	 * @param __pixelSize The pixel size of the font.
+	 * @return The resultant found font or {@code null} if no such font
+	 * exists.
+	 * @throws MLECallError On null arguments or values are out of range or
+	 * not valid.
+	 * @since 2024/05/17
+	 */
+	@Nullable
+	@SquirrelJMEVendorApi
+	public static native PencilFontBracket lookup(
+		@NotNull String __name,
+		@MagicConstant(flagsFromClass = PencilFontFace.class) int __face,
+		@MagicConstant(flagsFromClass = PencilFontStyle.class) int __style,
+		@Range(from = 1, to = Integer.MAX_VALUE) int __pixelSize)
+		throws MLECallError;
+	
+	/**
+	 * Looks up an internal SquirrelJME font that acts as a fallback for
+	 * when a system font is not available.
+	 *
+	 * @param __face The face of the font.
+	 * @param __style The style of font.
+	 * @param __pixelSize The pixel size of the font.
+	 * @return The resultant found font or {@code null} if no such font
+	 * exists.
+	 * @throws MLECallError On null arguments or values are out of range or
+	 * not valid.
+	 * @since 2024/05/17
+	 */
+	@Nullable
+	@SquirrelJMEVendorApi
+	public static native PencilFontBracket lookupFallback(
+		@MagicConstant(flagsFromClass = PencilFontFace.class) int __face,
+		@MagicConstant(flagsFromClass = PencilFontStyle.class) int __style,
+		@Range(from = 1, to = Integer.MAX_VALUE) int __pixelSize)
+		throws MLECallError;
+	
+	/**
 	 * Returns the direction of the given character in the font.
 	 *
 	 * @param __font The font to check.
