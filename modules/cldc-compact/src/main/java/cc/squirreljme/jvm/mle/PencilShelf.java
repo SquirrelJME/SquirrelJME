@@ -118,6 +118,22 @@ public final class PencilShelf
 		throws MLECallError;
 	
 	/**
+	 * Draws a horizontal line in hardware.
+	 *
+	 * @param __g The graphics to draw with.
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __w The width of the line.
+	 * @throws MLECallError On null arguments; if the pencil is not valid; or
+	 * the width is negative.
+	 * @since 2024/05/17
+	 */
+	@SquirrelJMEVendorApi
+	public static native void hardwareDrawHoriz(@NotNull PencilBracket __g,
+		int __x, int __y, @Range(from = 1, to = Integer.MAX_VALUE) int __w)
+		throws MLECallError;
+	
+	/**
 	 * Draws a line in hardware.
 	 * 
 	 * @param __g The hardware graphics to draw with.
@@ -131,6 +147,20 @@ public final class PencilShelf
 	@SquirrelJMEVendorApi
 	public static native void hardwareDrawLine(@NotNull PencilBracket __g,
 		int __x1, int __y1, int __x2, int __y2)
+		throws MLECallError;
+	
+	/**
+	 * Draws a single pixel.
+	 *
+	 * @param __g The graphics to draw on.
+	 * @param __x The X coordinate.
+	 * @param __y The y coordinate.
+	 * @throws MLECallError On null arguments or if the pencil is not valid.
+	 * @since 2024/05/17
+	 */
+	@SquirrelJMEVendorApi
+	public static native void hardwareDrawPixel(@NotNull PencilBracket __g,
+		int __x, int __y)
 		throws MLECallError;
 	
 	/**

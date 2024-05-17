@@ -23,8 +23,12 @@
 #define FORWARD_DESC_hardwareDrawChars "(" \
 	DESC_PENCIL DESC_ARRAY(DESC_CHAR) DESC_INT DESC_INT DESC_INT DESC_INT \
 	DESC_INT ")" DESC_VOID
+#define FORWARD_DESC_hardwareDrawHoriz "(" \
+	DESC_PENCIL DESC_INT DESC_INT DESC_INT ")" DESC_VOID
 #define FORWARD_DESC_hardwareDrawLine "(" \
 	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT ")" DESC_VOID
+#define FORWARD_DESC_hardwareDrawPixel "(" \
+	DESC_PENCIL DESC_INT DESC_INT ")" DESC_VOID
 #define FORWARD_DESC_hardwareDrawRect "(" \
 	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT ")" DESC_VOID
 #define FORWARD_DESC_hardwareDrawSubstring "(" \
@@ -129,6 +133,25 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawChars)
 	sjme_todo("Impl?");
 }
 
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawHoriz)
+	(JNIEnv* env, jclass classy, jobject g, jint x, jint y, jint w)
+{
+	sjme_errorCode error;
+	sjme_scritchui_pencil p;
+	
+	/* Recover. */
+	p = recoverPencil(env, g);
+	if (g == NULL || p == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+	
+	/* Forward. */
+	if (sjme_error_is(error = p->api->drawHoriz(p, x, y, w)))
+		sjme_jni_throwMLECallError(env, error);
+}
+
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawLine)
 	(JNIEnv* env, jclass classy, jobject g, jint x1, jint y1, jint x2, jint y2)
 {
@@ -145,6 +168,25 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawLine)
 	
 	/* Forward. */
 	if (sjme_error_is(error = p->api->drawLine(p, x1, y1, x2, y2)))
+		sjme_jni_throwMLECallError(env, error);
+}
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawPixel)
+	(JNIEnv* env, jclass classy, jobject g, jint x, jint y)
+{
+	sjme_errorCode error;
+	sjme_scritchui_pencil p;
+	
+	/* Recover. */
+	p = recoverPencil(env, g);
+	if (g == NULL || p == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+	
+	/* Forward. */
+	if (sjme_error_is(error = p->api->drawPixel(p, x, y)))
 		sjme_jni_throwMLECallError(env, error);
 }
 
@@ -400,7 +442,9 @@ static const JNINativeMethod mlePencilMethods[] =
 	FORWARD_list(PencilShelf, capabilities),
 	FORWARD_list(PencilShelf, hardwareCopyArea),
 	FORWARD_list(PencilShelf, hardwareDrawChars),
+	FORWARD_list(PencilShelf, hardwareDrawHoriz),
 	FORWARD_list(PencilShelf, hardwareDrawLine),
+	FORWARD_list(PencilShelf, hardwareDrawPixel),
 	FORWARD_list(PencilShelf, hardwareDrawRect),
 	FORWARD_list(PencilShelf, hardwareDrawSubstring),
 	FORWARD_list(PencilShelf, hardwareDrawXRGB32Region),
