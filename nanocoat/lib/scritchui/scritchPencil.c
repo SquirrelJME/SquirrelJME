@@ -203,6 +203,37 @@ static sjme_errorCode sjme_scritchui_core_pencilDrawSubstring(
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
+static sjme_errorCode sjme_scritchui_core_pencilDrawTriangle(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint x1,
+	sjme_attrInValue sjme_jint y1,
+	sjme_attrInValue sjme_jint x2,
+	sjme_attrInValue sjme_jint y2,
+	sjme_attrInValue sjme_jint x3,
+	sjme_attrInValue sjme_jint y3)
+{
+	sjme_errorCode error;
+	
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Transform. */
+	sjme_scritchui_core_transform(g, &x1, &y1);
+	sjme_scritchui_core_transform(g, &x2, &y2);
+	sjme_scritchui_core_transform(g, &x3, &y3);
+	
+	/* Clear error state. */
+	error = SJME_ERROR_NONE;
+	
+	/* Draw lines via primitives. */
+	g->prim.drawLine(g, x1, y1, x2, y2);
+	g->prim.drawLine(g, x2, y2, x3, y3);
+	g->prim.drawLine(g, x3, y3, x1, y1);
+	
+	/* Success? */
+	return error;
+}
+
 static sjme_errorCode sjme_scritchui_core_pencilDrawXRGB32Region(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNull int* data,
@@ -358,14 +389,6 @@ static sjme_errorCode sjme_scritchui_core_pencilSetDefaultFont(
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	if (g->impl->setDefaultFont == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
-	
-	/* Set default font in the implementation, call that first since */
-	/* there might need to be cleanup or otherwise. */
-	if (sjme_error_is(error = g->impl->setDefaultFont(g)))
-		return sjme_error_default(error);
-	
 	/* Clear font now. */
 	g->state.font = NULL;
 	
@@ -427,6 +450,7 @@ static const sjme_scritchui_pencilFunctions sjme_scritchui_core_pencil =
 	.drawPixel = sjme_scritchui_core_pencilDrawPixel,
 	.drawRect = sjme_scritchui_core_pencilDrawRect,
 	.drawSubstring = sjme_scritchui_core_pencilDrawSubstring,
+	.drawTriangle = sjme_scritchui_core_pencilDrawTriangle,
 	.drawXRGB32Region = sjme_scritchui_core_pencilDrawXRGB32Region,
 	.fillRect = sjme_scritchui_core_pencilFillRect,
 	.fillTriangle = sjme_scritchui_core_pencilFillTriangle,

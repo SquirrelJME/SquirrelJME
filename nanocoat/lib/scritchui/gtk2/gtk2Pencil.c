@@ -28,22 +28,6 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilCopyArea(
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
-static sjme_errorCode sjme_scritchui_gtk2_pencilDrawChars(
-	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInNotNull sjme_jchar* s,
-	sjme_attrInPositive sjme_jint o,
-	sjme_attrInPositive sjme_jint l,
-	sjme_attrInValue sjme_jint x,
-	sjme_attrInValue sjme_jint y,
-	sjme_attrInValue sjme_jint anchor)
-{
-	if (g == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
-}
-
 static sjme_errorCode sjme_scritchui_gtk2_pencilDrawLine(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x1,
@@ -215,27 +199,6 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilSetClip(
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
-static sjme_errorCode sjme_scritchui_gtk2_pencilSetDefaultFont(
-	sjme_attrInNotNull sjme_scritchui_pencil g)
-{
-	if (g == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Nothing needs to actually be done here. */
-	return SJME_ERROR_NONE;
-}
-
-static sjme_errorCode sjme_scritchui_gtk2_pencilSetFont(
-	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInNotNull sjme_scritchui_pencilFont font)
-{
-	if (g == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
-}
-
 static sjme_errorCode sjme_scritchui_gtk2_pencilSetStrokeStyle(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_PENCIL_STROKES)
@@ -268,7 +231,6 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilSetStrokeStyle(
 const sjme_scritchui_pencilImplFunctions sjme_scritchui_gtk2_pencilFunctions =
 {
 	.copyArea = sjme_scritchui_gtk2_pencilCopyArea,
-	.drawChars = sjme_scritchui_gtk2_pencilDrawChars,
 	.drawLine = sjme_scritchui_gtk2_pencilDrawLine,
 	.drawPixel = sjme_scritchui_gtk2_pencilDrawPixel,
 	.drawXRGB32Region = sjme_scritchui_gtk2_pencilDrawXRGB32Region,
@@ -277,7 +239,5 @@ const sjme_scritchui_pencilImplFunctions sjme_scritchui_gtk2_pencilFunctions =
 	.setAlphaColor = sjme_scritchui_gtk2_pencilSetAlphaColor,
 	.setBlendingMode = sjme_scritchui_gtk2_pencilSetBlendingMode,
 	.setClip = sjme_scritchui_gtk2_pencilSetClip,
-	.setDefaultFont = sjme_scritchui_gtk2_pencilSetDefaultFont,
-	.setFont = sjme_scritchui_gtk2_pencilSetFont,
 	.setStrokeStyle = sjme_scritchui_gtk2_pencilSetStrokeStyle,
 };

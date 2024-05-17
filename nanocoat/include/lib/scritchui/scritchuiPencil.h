@@ -224,6 +224,29 @@ typedef sjme_errorCode (*sjme_scritchui_pencilDrawSubstringFunc)(
 	sjme_attrInValue sjme_jint anchor);
 
 /**
+ * Draws a triangle using the current color.
+ *
+ * @param g The graphics to use for drawing.
+ * @param x1 First X coordinate.
+ * @param y1 First Y coordinate.
+ * @param x2 Second X coordinate.
+ * @param y2 Second Y coordinate.
+ * @param x3 Third X coordinate.
+ * @param y3 Third Y coordinate.
+ * @return An error if no graphics were specified or the graphics does
+ * not actually support the given operation.
+ * @since 2024/05/17
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilDrawTriangleFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint x1,
+	sjme_attrInValue sjme_jint y1,
+	sjme_attrInValue sjme_jint x2,
+	sjme_attrInValue sjme_jint y2,
+	sjme_attrInValue sjme_jint x3,
+	sjme_attrInValue sjme_jint y3);
+
+/**
  * Draws a region of 32-bit RGB data into the target.
  *
  * @param g The hardware graphics to draw with.
@@ -436,6 +459,9 @@ typedef struct sjme_scritchui_pencilFunctions
 	/** @c DrawSubstring . */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawSubstring, drawSubstring);
 	
+	/** @c DrawTriangle . */
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawTriangle, drawTriangle);
+	
 	/** @c DrawXRGB32Region . */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawXRGB32Region, drawXRGB32Region);
 	
@@ -494,9 +520,6 @@ typedef struct sjme_scritchui_pencilImplFunctions
 	/** @c CopyArea . */
 	SJME_SCRITCHUI_QUICK_PENCIL(CopyArea, copyArea);
 	
-	/** @c DrawChars . */
-	SJME_SCRITCHUI_QUICK_PENCIL(DrawChars, drawChars);
-	
 	/** @c DrawHoriz . */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawHoriz, drawHoriz);
 	
@@ -523,12 +546,6 @@ typedef struct sjme_scritchui_pencilImplFunctions
 	
 	/** @c SetClip . */
 	SJME_SCRITCHUI_QUICK_PENCIL(SetClip, setClip);
-	
-	/** @c SetDefaultFont . */
-	SJME_SCRITCHUI_QUICK_PENCIL(SetDefaultFont, setDefaultFont);
-	
-	/** @c SetFont . */
-	SJME_SCRITCHUI_QUICK_PENCIL(SetFont, setFont);
 	
 	/** @c SetStrokeStyle . */
 	SJME_SCRITCHUI_QUICK_PENCIL(SetStrokeStyle, setStrokeStyle);
