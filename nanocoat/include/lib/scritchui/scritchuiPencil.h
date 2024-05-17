@@ -345,9 +345,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilSetDefaultFontFunc)(
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilSetFontFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInNotNull sjme_lpcstr name,
-	sjme_attrInValue sjme_jint style,
-	sjme_attrInPositiveNonZero sjme_jint pixelSize);
+	sjme_attrInNotNull sjme_scritchui_pencilFont font);
 
 /**
  * Sets the stroke style for the hardware graphics.

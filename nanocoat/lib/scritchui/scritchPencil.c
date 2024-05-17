@@ -252,9 +252,7 @@ sjme_errorCode sjme_scritchui_core_pencilSetDefaultFont(
 
 sjme_errorCode sjme_scritchui_core_pencilSetFont(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInNotNull sjme_lpcstr name,
-	sjme_attrInValue sjme_jint style,
-	sjme_attrInPositiveNonZero sjme_jint pixelSize)
+	sjme_attrInNotNull sjme_scritchui_pencilFont font)
 {
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
