@@ -9,10 +9,12 @@
 
 package cc.squirreljme.emulator.scritchui.dylib;
 
+import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchLAFInterface;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 /**
@@ -36,6 +38,17 @@ public class DylibLookAndFeelInterface
 		NativeScritchDylib __dyLib)
 	{
 		super(__selfApi, __dyLib);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/05/17
+	 */
+	@Override
+	public PencilFontBracket font(int __element)
+		throws MLECallError
+	{
+		throw Debugging.todo();
 	}
 	
 	@Override

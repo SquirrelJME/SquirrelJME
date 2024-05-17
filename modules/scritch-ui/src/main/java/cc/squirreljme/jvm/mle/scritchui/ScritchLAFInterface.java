@@ -9,12 +9,15 @@
 
 package cc.squirreljme.jvm.mle.scritchui;
 
+import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFElementColor;
+import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFFontElementType;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFImageElementType;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLineStyle;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.intellij.lang.annotations.MagicConstant;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 /**
@@ -26,16 +29,33 @@ import org.jetbrains.annotations.Range;
 public interface ScritchLAFInterface
 {
 	/**
+	 * Looks up the given font for a given element.
+	 *
+	 * @param __element The element to get the front from.
+	 * @return The resultant font or {@code null} if it is unknown.
+	 * @throws MLECallError If the requested element is not valid.
+	 * @since 2024/05/17
+	 */
+	@SquirrelJMEVendorApi
+	@Nullable
+	PencilFontBracket font(
+		@MagicConstant(valuesFromClass = ScritchLAFFontElementType.class)
+			int __element)
+		throws MLECallError;
+	
+	/**
 	 * Returns the color of the given element.
 	 *
 	 * @param __element One of {@link ScritchLAFElementColor}.
 	 * @return A 32-bit ARGB color.
+	 * @throws MLECallError If the constant is not valid.
 	 * @since 2024/03/09
 	 */
 	@SquirrelJMEVendorApi
 	int elementColor(
 		@MagicConstant(valuesFromClass = ScritchLAFElementColor.class)
-		int __element);
+		int __element)
+		throws MLECallError;
 	
 	/**
 	 * Returns the border style for focused items.

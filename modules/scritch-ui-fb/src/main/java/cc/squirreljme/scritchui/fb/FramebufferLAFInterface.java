@@ -9,6 +9,7 @@
 
 package cc.squirreljme.scritchui.fb;
 
+import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchLAFInterface;
@@ -16,6 +17,7 @@ import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFElementColor;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 /**
@@ -71,6 +73,13 @@ public class FramebufferLAFInterface
 			this.foreground = 0xFF000000;
 			this.background = 0xFFFFFFFF;
 		}
+	}
+	
+	@Override
+	public @Nullable PencilFontBracket font(int __element)
+		throws MLECallError
+	{
+		throw Debugging.todo();
 	}
 	
 	/**

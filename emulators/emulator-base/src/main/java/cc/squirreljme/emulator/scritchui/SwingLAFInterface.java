@@ -9,6 +9,7 @@
 
 package cc.squirreljme.emulator.scritchui;
 
+import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchLAFInterface;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFImageElementType;
@@ -19,6 +20,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.image.BufferedImage;
 import javax.swing.UIManager;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Swing look and feel interface.
@@ -36,6 +38,13 @@ public class SwingLAFInterface
 	/** The size of message icons. */
 	public static final int MESSAGE_ICON_SIZE = 
 		32;
+	
+	@Override
+	public @Nullable PencilFontBracket font(int __element)
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * {@inheritDoc}
