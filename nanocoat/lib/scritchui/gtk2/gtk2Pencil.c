@@ -68,6 +68,28 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilDrawLine(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_scritchui_gtk2_pencilDrawPixel(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint x,
+	sjme_attrInValue sjme_jint y)
+{
+	GdkDrawable* drawable;
+	GdkGC* gc;
+	
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover context. */
+	drawable = (GdkDrawable*)g->frontEnd.wrapper;
+	gc = (GdkGC*)g->frontEnd.data;
+	
+	/* Forward. */
+	gdk_draw_point(drawable, gc, x, y);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_scritchui_gtk2_pencilDrawXRGB32Region(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNull int* data,
@@ -248,6 +270,7 @@ const sjme_scritchui_pencilImplFunctions sjme_scritchui_gtk2_pencilFunctions =
 	.copyArea = sjme_scritchui_gtk2_pencilCopyArea,
 	.drawChars = sjme_scritchui_gtk2_pencilDrawChars,
 	.drawLine = sjme_scritchui_gtk2_pencilDrawLine,
+	.drawPixel = sjme_scritchui_gtk2_pencilDrawPixel,
 	.drawXRGB32Region = sjme_scritchui_gtk2_pencilDrawXRGB32Region,
 	.fillRect = sjme_scritchui_gtk2_pencilFillRect,
 	.fillTriangle = sjme_scritchui_gtk2_pencilFillTriangle,
