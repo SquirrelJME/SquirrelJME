@@ -39,6 +39,18 @@ public final class PencilFontShelf
 	}
 	
 	/**
+	 * Checks if two brackets refer to the same font.
+	 *
+	 * @param __a The first font.
+	 * @param __b The second font.
+	 * @return If the two fonts are the same.
+	 * @since 2024/05/17
+	 */
+	@SquirrelJMEVendorApi
+	public static native boolean equals(@Nullable PencilFontBracket __a,
+		@Nullable PencilFontBracket __b);
+	
+	/**
 	 * Looks up the given font by name, face, style, and pixel size.
 	 *
 	 * @param __name The name of the font.
