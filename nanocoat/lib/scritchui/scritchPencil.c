@@ -47,6 +47,31 @@ sjme_errorCode sjme_scritchui_core_pencilDrawChars(
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
+sjme_errorCode sjme_scritchui_core_pencilDrawHoriz(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint x,
+	sjme_attrInValue sjme_jint y,
+	sjme_attrInValue sjme_jint w)
+{
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* If there is no native implementation of drawing horizontal lines, */
+	/* then we can just fall back to drawing normal lines. */
+	if (g->impl->drawHoriz == NULL)
+	{
+		/* Cannot draw lines at all? */
+		if (g->impl->drawLine == NULL)
+			return SJME_ERROR_NOT_IMPLEMENTED;
+		
+		/* Use generic line draw. */
+		return g->impl->drawLine(g, x, y, x + w, y);
+	}
+	
+	/* Otherwise use native drawing. */
+	return g->impl->drawHoriz(g, x, y, w);
+}
+
 sjme_errorCode sjme_scritchui_core_pencilDrawLine(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x1,
@@ -64,6 +89,30 @@ sjme_errorCode sjme_scritchui_core_pencilDrawLine(
 	return g->impl->drawLine(g, x1, y1, x2, y2);
 }
 
+sjme_errorCode sjme_scritchui_core_pencilDrawPixel(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint x,
+	sjme_attrInValue sjme_jint y)
+{
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* If there is no native implementation of drawing pixels, */
+	/* then we can just fall back to drawing a very short line. */
+	if (g->impl->drawPixel == NULL)
+	{
+		/* Cannot draw lines at all? */
+		if (g->impl->drawLine == NULL)
+			return SJME_ERROR_NOT_IMPLEMENTED;
+		
+		/* Use generic line draw. */
+		return g->impl->drawLine(g, x, y, x + 1, y);
+	}
+	
+	/* Otherwise use native drawing. */
+	return g->impl->drawPixel(g, x, y);
+}
+
 sjme_errorCode sjme_scritchui_core_pencilDrawRect(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
@@ -71,11 +120,44 @@ sjme_errorCode sjme_scritchui_core_pencilDrawRect(
 	sjme_attrInPositive sjme_jint w,
 	sjme_attrInPositive sjme_jint h)
 {
+	sjme_errorCode error;
+	sjme_scritchui_pencilDrawLineFunc drawLine;
+	sjme_scritchui_pencilDrawHorizFunc drawHoriz;
+	sjme_jint xw, yh;
+	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Get line drawer. */
+	drawLine = g->impl->drawLine;
+	if (drawLine == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
+		
+	/* Pre-calculate coordinates. */
+	xw = x + w;
+	yh = y + h;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Can horizontal lines be drawn? */
+	drawHoriz = g->impl->drawHoriz;
+	if (drawHoriz != NULL)
+	{
+		error |= drawHoriz(g, x, y, w);
+		error |= drawHoriz(g, x, yh, w);
+	}
+	
+	/* No, just use normal line drawing. */
+	else
+	{
+		error |= drawLine(g, x, y, xw, y);
+		error |= drawLine(g, x, yh, xw, yh);
+	}
+	
+	/* Draw vertical connections. */	
+	error |= drawLine(g, xw, y, x, yh);
+	error |= drawLine(g, x, y, x, yh);
+	
+	/* Success? */
+	return error;
 }
 
 sjme_errorCode sjme_scritchui_core_pencilDrawSubstring(
@@ -299,7 +381,9 @@ static const sjme_scritchui_pencilFunctions sjme_scritchui_core_pencil =
 {
 	.copyArea = sjme_scritchui_core_pencilCopyArea,
 	.drawChars = sjme_scritchui_core_pencilDrawChars,
+	.drawHoriz = sjme_scritchui_core_pencilDrawHoriz,
 	.drawLine = sjme_scritchui_core_pencilDrawLine,
+	.drawPixel = sjme_scritchui_core_pencilDrawPixel,
 	.drawRect = sjme_scritchui_core_pencilDrawRect,
 	.drawSubstring = sjme_scritchui_core_pencilDrawSubstring,
 	.drawXRGB32Region = sjme_scritchui_core_pencilDrawXRGB32Region,

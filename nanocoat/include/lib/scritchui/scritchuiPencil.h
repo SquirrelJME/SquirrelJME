@@ -163,6 +163,20 @@ typedef sjme_errorCode (*sjme_scritchui_pencilDrawLineFunc)(
 	sjme_attrInValue sjme_jint y2);
 
 /**
+ * Draws a single pixel in hardware.
+ * 
+ * @param g The hardware graphics to draw with.
+ * @param x The starting X coordinate.
+ * @param y The starting Y coordinate.
+ * @return An error on null arguments.
+ * @since 2024/05/17
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilDrawPixelFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint x,
+	sjme_attrInValue sjme_jint y);
+	
+/**
  * Draws the outline of the given rectangle using the current color and
  * stroke style. The rectangle will cover an area that
  * is @code \[width + 1, height + 1\] @endcode .
@@ -416,6 +430,9 @@ typedef struct sjme_scritchui_pencilFunctions
 	/** @c DrawRect . */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawRect, drawRect);
 	
+	/** @c DrawPixel . */
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawPixel, drawPixel);
+	
 	/** @c DrawSubstring . */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawSubstring, drawSubstring);
 	
@@ -468,6 +485,9 @@ typedef struct sjme_scritchui_pencilImplFunctions
 	
 	/** @c DrawLine . */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawLine, drawLine);
+	
+	/** @c DrawPixel . */
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawPixel, drawPixel);
 	
 	/** @c DrawXRGB32Region . */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawXRGB32Region, drawXRGB32Region);
