@@ -468,6 +468,23 @@ typedef struct sjme_scritchui_pencilFunctions
 } sjme_scritchui_pencilFunctions;
 
 /**
+ * Lowest level drawing primitives.
+ * 
+ * @since 2024/05/17
+ */
+typedef struct sjme_scritchui_pencilPrimFunctions
+{
+	/** @c DrawHoriz . */
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawHoriz, drawHoriz);
+	
+	/** @c DrawLine . */
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawLine, drawLine);
+	
+	/** @c DrawPixel . */
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawPixel, drawPixel);
+} sjme_scritchui_pencilPrimFunctions;
+
+/**
  * ScritchUI Pencil implementation functions.
  * 
  * @since 2024/05/01
@@ -592,6 +609,20 @@ typedef struct sjme_scritchui_pencilColor
 } sjme_scritchui_pencilColor;
 
 /**
+ * Represents a single point.
+ * 
+ * @since 2024/05/17
+ */
+typedef struct sjme_scritchui_pencilPoint
+{
+	/** The X coordinate. */
+	sjme_jint x;
+	
+	/** The Y coordinate. */
+	sjme_jint y;
+} sjme_scritchui_pencilPoint;
+
+/**
  * Pencil drawing state, such as colors or otherwise.
  * 
  * @since 2024/05/04
@@ -609,6 +640,9 @@ typedef struct sjme_scritchui_pencilState
 	
 	/** The font used for text. */
 	sjme_scritchui_pencilFont font;
+	
+	/** Transformation coordinates. */
+	sjme_scritchui_pencilPoint transform;
 } sjme_scritchui_pencilState;
 
 /*--------------------------------------------------------------------------*/

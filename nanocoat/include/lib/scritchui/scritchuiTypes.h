@@ -91,6 +91,9 @@ typedef struct sjme_scritchui_pencilBase
 	/** Implementation API. */
 	const sjme_scritchui_pencilImplFunctions* impl;
 	
+	/** Lowest level primitive pencil functions. */
+	sjme_scritchui_pencilPrimFunctions prim;
+	
 	/** Front end information for paint. */
 	sjme_frontEnd frontEnd;
 	

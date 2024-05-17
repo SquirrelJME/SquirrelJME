@@ -14,7 +14,63 @@
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/debug.h"
 
-sjme_errorCode sjme_scritchui_core_pencilCopyArea(
+static sjme_errorCode sjme_scritchui_corePrim_lineViaPixel(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint x1,
+	sjme_attrInValue sjme_jint y1,
+	sjme_attrInValue sjme_jint x2,
+	sjme_attrInValue sjme_jint y2)
+{
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+static sjme_errorCode sjme_scritchui_corePrim_horizViaLine(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint x,
+	sjme_attrInValue sjme_jint y,
+	sjme_attrInValue sjme_jint w)
+{
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Forward. */
+	return g->impl->drawLine(g, x, y, x + w, y);
+}
+
+static sjme_errorCode sjme_scritchui_corePrim_pixelViaLine(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint x,
+	sjme_attrInValue sjme_jint y)
+{
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Forward. */
+	return g->impl->drawLine(g, x, y, x + 1, y);
+}
+
+/**
+ * Transforms coordinates.
+ * 
+ * @param g The graphics to transform via. 
+ * @param x The X coordinate.
+ * @param y The Y coordinate.
+ * @since 2024/05/17
+ */
+static void sjme_scritchui_core_transform(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInOutNotNull sjme_jint* x,
+	sjme_attrInOutNotNull sjme_jint* y)
+{
+	(*x) += g->state.transform.x;
+	(*y) += g->state.transform.y;
+}
+
+static sjme_errorCode sjme_scritchui_core_pencilCopyArea(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,
@@ -31,7 +87,7 @@ sjme_errorCode sjme_scritchui_core_pencilCopyArea(
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
-sjme_errorCode sjme_scritchui_core_pencilDrawChars(
+static sjme_errorCode sjme_scritchui_core_pencilDrawChars(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNull sjme_jchar* s,
 	sjme_attrInPositive sjme_jint o,
@@ -47,7 +103,7 @@ sjme_errorCode sjme_scritchui_core_pencilDrawChars(
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
-sjme_errorCode sjme_scritchui_core_pencilDrawHoriz(
+static sjme_errorCode sjme_scritchui_core_pencilDrawHoriz(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y,
@@ -55,24 +111,15 @@ sjme_errorCode sjme_scritchui_core_pencilDrawHoriz(
 {
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* If there is no native implementation of drawing horizontal lines, */
-	/* then we can just fall back to drawing normal lines. */
-	if (g->impl->drawHoriz == NULL)
-	{
-		/* Cannot draw lines at all? */
-		if (g->impl->drawLine == NULL)
-			return SJME_ERROR_NOT_IMPLEMENTED;
 		
-		/* Use generic line draw. */
-		return g->impl->drawLine(g, x, y, x + w, y);
-	}
+	/* Transform. */
+	sjme_scritchui_core_transform(g, &x, &y);
 	
-	/* Otherwise use native drawing. */
-	return g->impl->drawHoriz(g, x, y, w);
+	/* Use primitive. */
+	return g->prim.drawHoriz(g, x, y, w);
 }
 
-sjme_errorCode sjme_scritchui_core_pencilDrawLine(
+static sjme_errorCode sjme_scritchui_core_pencilDrawLine(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x1,
 	sjme_attrInValue sjme_jint y1,
@@ -81,39 +128,31 @@ sjme_errorCode sjme_scritchui_core_pencilDrawLine(
 {
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Transform. */
+	sjme_scritchui_core_transform(g, &x1, &y1);
+	sjme_scritchui_core_transform(g, &x2, &y2);
 	
-	if (g->impl->drawLine == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
-	
-	/* Forward. */
-	return g->impl->drawLine(g, x1, y1, x2, y2);
+	/* Use primitive. */
+	return g->prim.drawLine(g, x1, y1, x2, y2);
 }
 
-sjme_errorCode sjme_scritchui_core_pencilDrawPixel(
+static sjme_errorCode sjme_scritchui_core_pencilDrawPixel(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y)
 {
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* If there is no native implementation of drawing pixels, */
-	/* then we can just fall back to drawing a very short line. */
-	if (g->impl->drawPixel == NULL)
-	{
-		/* Cannot draw lines at all? */
-		if (g->impl->drawLine == NULL)
-			return SJME_ERROR_NOT_IMPLEMENTED;
 		
-		/* Use generic line draw. */
-		return g->impl->drawLine(g, x, y, x + 1, y);
-	}
+	/* Transform. */
+	sjme_scritchui_core_transform(g, &x, &y);
 	
-	/* Otherwise use native drawing. */
-	return g->impl->drawPixel(g, x, y);
+	/* Use primitive. */
+	return g->prim.drawPixel(g, x, y);
 }
 
-sjme_errorCode sjme_scritchui_core_pencilDrawRect(
+static sjme_errorCode sjme_scritchui_core_pencilDrawRect(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y,
@@ -121,47 +160,34 @@ sjme_errorCode sjme_scritchui_core_pencilDrawRect(
 	sjme_attrInPositive sjme_jint h)
 {
 	sjme_errorCode error;
-	sjme_scritchui_pencilDrawLineFunc drawLine;
-	sjme_scritchui_pencilDrawHorizFunc drawHoriz;
 	sjme_jint xw, yh;
 	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* Get line drawer. */
-	drawLine = g->impl->drawLine;
-	if (drawLine == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
 		
+	/* Transform. */
+	sjme_scritchui_core_transform(g, &x, &y);
+	
 	/* Pre-calculate coordinates. */
 	xw = x + w;
 	yh = y + h;
 	
-	/* Can horizontal lines be drawn? */
+	/* Clear error state. */
 	error = SJME_ERROR_NONE;
-	drawHoriz = g->impl->drawHoriz;
-	if (drawHoriz != NULL)
-	{
-		error |= drawHoriz(g, x, y, w);
-		error |= drawHoriz(g, x, yh, w);
-	}
 	
-	/* No, just use normal line drawing. */
-	else
-	{
-		error |= drawLine(g, x, y, xw, y);
-		error |= drawLine(g, x, yh, xw, yh);
-	}
+	/* Draw horizontal spans first. */
+	error |= g->prim.drawHoriz(g, x, y, w);
+	error |= g->prim.drawHoriz(g, x, yh, w);
 	
-	/* Draw vertical connections. */	
-	error |= drawLine(g, xw, y, x, yh);
-	error |= drawLine(g, x, y, x, yh);
+	/* Draw vertical spans. */
+	error |= g->prim.drawLine(g, x, y, x, yh);
+	error |= g->prim.drawLine(g, xw, y, xw, yh);
 	
 	/* Success? */
 	return error;
 }
 
-sjme_errorCode sjme_scritchui_core_pencilDrawSubstring(
+static sjme_errorCode sjme_scritchui_core_pencilDrawSubstring(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNull sjme_lpcstr s,
 	sjme_attrInPositive sjme_jint o, 
@@ -177,7 +203,7 @@ sjme_errorCode sjme_scritchui_core_pencilDrawSubstring(
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
-sjme_errorCode sjme_scritchui_core_pencilDrawXRGB32Region(
+static sjme_errorCode sjme_scritchui_core_pencilDrawXRGB32Region(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNull int* data,
 	sjme_attrInPositive sjme_jint off,
@@ -203,18 +229,22 @@ sjme_errorCode sjme_scritchui_core_pencilDrawXRGB32Region(
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
-sjme_errorCode sjme_scritchui_core_pencilFillRect(
+static sjme_errorCode sjme_scritchui_core_pencilFillRect(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y,
 	sjme_attrInPositive sjme_jint w,
 	sjme_attrInPositive sjme_jint h)
 {
+	sjme_errorCode error;
+	sjme_scritchui_pencilDrawHorizFunc drawHoriz;
+	sjme_jint yz, yze;
+
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	if (g->impl->fillRect == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Transform. */
+	sjme_scritchui_core_transform(g, &x, &y);
 	
 	/* Cap width and height to 1 always. */
 	if (w <= 0)
@@ -222,11 +252,21 @@ sjme_errorCode sjme_scritchui_core_pencilFillRect(
 	if (h <= 0)
 		h = 1;
 	
-	/* Forward. */
-	return g->impl->fillRect(g, x, y, w, h);
+	/* Natively supported? */
+	if (g->impl->fillRect != NULL)
+		return g->impl->fillRect(g, x, y, w, h);
+	
+	/* Use primitives otherwise. */
+	error = SJME_ERROR_NONE;
+	drawHoriz = g->prim.drawHoriz;
+	for (yz = y, yze = y + h; yz < yze; yz++)
+		error |= drawHoriz(g, x, yz, w);
+	
+	/* Success? */
+	return error;
 }
 
-sjme_errorCode sjme_scritchui_core_pencilFillTriangle(
+static sjme_errorCode sjme_scritchui_core_pencilFillTriangle(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x1,
 	sjme_attrInValue sjme_jint y1,
@@ -242,7 +282,7 @@ sjme_errorCode sjme_scritchui_core_pencilFillTriangle(
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
-sjme_errorCode sjme_scritchui_core_pencilSetAlphaColor(
+static sjme_errorCode sjme_scritchui_core_pencilSetAlphaColor(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint argb)
 {
@@ -271,7 +311,7 @@ sjme_errorCode sjme_scritchui_core_pencilSetAlphaColor(
 	return g->impl->setAlphaColor(g, argb);
 }
 
-sjme_errorCode sjme_scritchui_core_pencilSetBlendingMode(
+static sjme_errorCode sjme_scritchui_core_pencilSetBlendingMode(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_PENCIL_BLENDS)
 		sjme_scritchui_pencilBlendingMode mode)
@@ -296,7 +336,7 @@ sjme_errorCode sjme_scritchui_core_pencilSetBlendingMode(
 	return g->impl->setBlendingMode(g, mode);
 }
 
-sjme_errorCode sjme_scritchui_core_pencilSetClip(
+static sjme_errorCode sjme_scritchui_core_pencilSetClip(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y,
@@ -310,7 +350,7 @@ sjme_errorCode sjme_scritchui_core_pencilSetClip(
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
-sjme_errorCode sjme_scritchui_core_pencilSetDefaultFont(
+static sjme_errorCode sjme_scritchui_core_pencilSetDefaultFont(
 	sjme_attrInNotNull sjme_scritchui_pencil g)
 {
 	sjme_errorCode error;
@@ -333,7 +373,7 @@ sjme_errorCode sjme_scritchui_core_pencilSetDefaultFont(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_scritchui_core_pencilSetFont(
+static sjme_errorCode sjme_scritchui_core_pencilSetFont(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNull sjme_scritchui_pencilFont font)
 {
@@ -344,7 +384,7 @@ sjme_errorCode sjme_scritchui_core_pencilSetFont(
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
-sjme_errorCode sjme_scritchui_core_pencilSetStrokeStyle(
+static sjme_errorCode sjme_scritchui_core_pencilSetStrokeStyle(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_PENCIL_STROKES)
 		sjme_scritchui_pencilStrokeMode style)
@@ -365,7 +405,7 @@ sjme_errorCode sjme_scritchui_core_pencilSetStrokeStyle(
 	return g->impl->setStrokeStyle(g, style);
 }
 
-sjme_errorCode sjme_scritchui_core_pencilTranslate(
+static sjme_errorCode sjme_scritchui_core_pencilTranslate(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y)
@@ -418,6 +458,10 @@ sjme_errorCode sjme_scritchui_pencilInitStatic(
 	if (pf < 0 || pf >= SJME_NUM_GFX_PIXEL_FORMATS)
 		return SJME_ERROR_INVALID_ARGUMENT;
 		
+	/* These are required at the minimum. */
+	if (inFunctions->drawLine == NULL && inFunctions->drawPixel == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
+		
 	/* Setup base result. */
 	memset(&result, 0, sizeof(result));
 	result.api = &sjme_scritchui_core_pencil;
@@ -434,6 +478,31 @@ sjme_errorCode sjme_scritchui_pencilInitStatic(
 	if (copyFrontEnd != NULL)
 		memmove(&result.frontEnd, copyFrontEnd,
 			sizeof(*copyFrontEnd));
+	
+	/* Determine core pixel primitive. */
+	if (result.impl->drawPixel != NULL)
+	{
+		result.prim.drawPixel = result.impl->drawPixel;
+		
+		/* Use efficient line drawing? */
+		if (result.impl->drawLine != NULL)
+			result.prim.drawLine = result.impl->drawLine;
+		else
+			result.prim.drawLine = sjme_scritchui_corePrim_lineViaPixel;
+	}
+	
+	/* Implement pixel via line operation. */
+	else if (result.impl->drawLine != NULL)
+	{
+		result.prim.drawLine = result.impl->drawLine;
+		result.prim.drawPixel = sjme_scritchui_corePrim_pixelViaLine;
+	}
+	
+	/* Horizontal line via the line function. */
+	if (result.impl->drawHoriz != NULL)
+		result.prim.drawHoriz = result.impl->drawHoriz;
+	else
+		result.prim.drawHoriz = sjme_scritchui_corePrim_horizViaLine;
 	
 	/* Set initial state, ignore any errors. */
 	result.api->setAlphaColor(&result, 0xFF000000);
