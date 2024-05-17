@@ -11,8 +11,11 @@ package cc.squirreljme.jvm.mle;
 
 import cc.squirreljme.jvm.mle.brackets.PencilBracket;
 import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
+import cc.squirreljme.jvm.mle.constants.PencilFontFace;
+import cc.squirreljme.jvm.mle.constants.PencilFontStyle;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -49,6 +52,34 @@ public final class PencilFontShelf
 	public static native int metricCharDirection(
 		@NotNull PencilFontBracket __font,
 		int __c)
+		throws MLECallError;
+	
+	/**
+	 * Returns the {@link PencilFontFace} of a font. 
+	 *
+	 * @param __font The font to request from.
+	 * @return The font face, any flag from {@link PencilFontFace}.
+	 * @throws MLECallError On null arguments or the font is not valid.
+	 * @since 2024/05/17
+	 */
+	@SquirrelJMEVendorApi
+	@MagicConstant(flagsFromClass = PencilFontFace.class)
+	public static native int metricFontFace(
+		@NotNull PencilFontBracket __font)
+		throws MLECallError;
+	
+	/**
+	 * Returns the style of the font.
+	 *
+	 * @param __font The style of the font to request.
+	 * @return The font style, will be flags from {@link PencilFontStyle}.
+	 * @throws MLECallError On null arguments or the font is not valid.
+	 * @since 2024/05/17
+	 */
+	@SquirrelJMEVendorApi
+	@MagicConstant(flagsFromClass = PencilFontStyle.class)
+	public static native int metricFontStyle(
+		@NotNull PencilFontBracket __font)
 		throws MLECallError;
 	
 	/**
