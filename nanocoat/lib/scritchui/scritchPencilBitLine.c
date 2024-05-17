@@ -27,14 +27,16 @@ typedef sjme_errorCode (*sjme_scritchui_pencilBitLineFunc)(
 
 #define SJME_BITLINE_DEF \
 	sjme_errorCode error = SJME_ERROR_NONE; \
+	sjme_scritchui_pencilDrawPixelFunc pixel; \
 	sjme_scritchui_pencilDrawHorizFunc horiz; \
 	 \
+	pixel = g->api->drawPixel; \
 	horiz = g->api->drawHoriz
 
 #define SJME_BITLINE_RET return error
 
 #define SJME_BITPIXL(d) \
-	error |= horiz(g, x + d, y, 1)
+	error |= pixel(g, x + d, y)
 
 #define SJME_BITLINE(d, l) \
 	error |= horiz(g, x + d, y, l)
