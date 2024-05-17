@@ -48,7 +48,7 @@ public final class PencilFontShelf
 	@Range(from = -1, to = 1)
 	public static native int metricCharDirection(
 		@NotNull PencilFontBracket __font,
-		char __c)
+		int __c)
 		throws MLECallError;
 	
 	/**
@@ -120,7 +120,7 @@ public final class PencilFontShelf
 	@Range(from = 0, to = Integer.MAX_VALUE)
 	public static native int pixelCharHeight(
 		@NotNull PencilFontBracket __font,
-		char __char)
+		int __char)
 		throws MLECallError;
 	
 	/**
@@ -136,7 +136,7 @@ public final class PencilFontShelf
 	@Range(from = 0, to = Integer.MAX_VALUE)
 	public static native int pixelCharWidth(
 		@NotNull PencilFontBracket __font,
-		char __char)
+		int __char)
 		throws MLECallError;
 	
 	/**
@@ -159,7 +159,7 @@ public final class PencilFontShelf
 	@SquirrelJMEVendorApi
 	public static native void renderBitmap(
 		@NotNull PencilFontBracket __font,
-		char __char,
+		int __char,
 		@NotNull byte[] __buf,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __bufOff,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __scanLen,
@@ -186,7 +186,7 @@ public final class PencilFontShelf
 	@SquirrelJMEVendorApi
 	public static native void renderChar(
 		@NotNull PencilFontBracket __font,
-		char __char,
+		int __char,
 		@NotNull PencilBracket __pencil,
 		int __x, int __y,
 		@Nullable int[] __nextXY)
