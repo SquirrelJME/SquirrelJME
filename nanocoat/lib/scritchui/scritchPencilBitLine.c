@@ -14,7 +14,6 @@
 
 typedef sjme_errorCode (*sjme_scritchui_pencilBitLineFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInNotNull sjme_scritchui_pencilDrawLineFunc lineFunc,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y);
 
@@ -23,18 +22,22 @@ typedef sjme_errorCode (*sjme_scritchui_pencilBitLineFunc)(
 
 #define SJME_BITLINE_BEGIN(id) \
 	static sjme_errorCode SJME_BITLINE_SET_USE(id) \
-	(sjme_scritchui_pencil g, sjme_scritchui_pencilDrawLineFunc lineFunc, \
+	(sjme_scritchui_pencil g, \
 	sjme_jint x, sjme_jint y)
 
-#define SJME_BITLINE_DEF sjme_errorCode error = SJME_ERROR_NONE
+#define SJME_BITLINE_DEF \
+	sjme_errorCode error = SJME_ERROR_NONE; \
+	sjme_scritchui_pencilDrawHorizFunc horiz; \
+	 \
+	horiz = g->api->drawHoriz
 
 #define SJME_BITLINE_RET return error
 
 #define SJME_BITPIXL(d) \
-	error |= lineFunc(g, x + d, y, x + d + 1, y)
+	error |= horiz(g, x + d, y, 1)
 
 #define SJME_BITLINE(d, l) \
-	error |= lineFunc(g, x + d, y, x + d + l, y)
+	error |= horiz(g, x + d, y, l)
 
 /** Bitline 0 (00000000). */
 SJME_BITLINE_BEGIN(0)

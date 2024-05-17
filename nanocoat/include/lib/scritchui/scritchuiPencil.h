@@ -129,6 +129,22 @@ typedef sjme_errorCode (*sjme_scritchui_pencilDrawCharsFunc)(
 	sjme_attrInValue sjme_jint anchor);
 
 /**
+ * Draws a horizontal line in hardware.
+ * 
+ * @param g The hardware graphics to draw with.
+ * @param x The starting X coordinate.
+ * @param y The starting Y coordinate.
+ * @param w The width of the line.
+ * @return An error on null arguments.
+ * @since 2024/05/17
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilDrawHorizFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint x,
+	sjme_attrInValue sjme_jint y,
+	sjme_attrInValue sjme_jint w);
+
+/**
  * Draws a line in hardware.
  * 
  * @param g The hardware graphics to draw with.
@@ -391,6 +407,9 @@ typedef struct sjme_scritchui_pencilFunctions
 	/** @c DrawChars . */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawChars, drawChars);
 	
+	/** @c DrawHoriz . */
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawHoriz, drawHoriz);
+	
 	/** @c DrawLine . */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawLine, drawLine);
 	
@@ -443,6 +462,9 @@ typedef struct sjme_scritchui_pencilImplFunctions
 	
 	/** @c DrawChars . */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawChars, drawChars);
+	
+	/** @c DrawHoriz . */
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawHoriz, drawHoriz);
 	
 	/** @c DrawLine . */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawLine, drawLine);
