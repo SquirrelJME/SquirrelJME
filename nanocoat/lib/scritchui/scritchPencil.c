@@ -138,6 +138,7 @@ sjme_errorCode sjme_scritchui_core_pencilDrawRect(
 	yh = y + h;
 	
 	/* Can horizontal lines be drawn? */
+	error = SJME_ERROR_NONE;
 	drawHoriz = g->impl->drawHoriz;
 	if (drawHoriz != NULL)
 	{
