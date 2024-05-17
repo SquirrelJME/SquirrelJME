@@ -30,8 +30,8 @@ typedef sjme_errorCode (*sjme_scritchui_pencilBitLineFunc)(
 	sjme_scritchui_pencilDrawPixelFunc pixel; \
 	sjme_scritchui_pencilDrawHorizFunc horiz; \
 	 \
-	pixel = g->api->drawPixel; \
-	horiz = g->api->drawHoriz
+	pixel = g->prim.drawPixel; \
+	horiz = g->prim.drawHoriz
 
 #define SJME_BITLINE_RET return error
 
