@@ -66,8 +66,8 @@ static void sjme_scritchui_core_transform(
 	sjme_attrInOutNotNull sjme_jint* x,
 	sjme_attrInOutNotNull sjme_jint* y)
 {
-	(*x) += g->state.transform.x;
-	(*y) += g->state.transform.y;
+	(*x) += g->state.translate.x;
+	(*y) += g->state.translate.y;
 }
 
 static sjme_errorCode sjme_scritchui_core_pencilCopyArea(
@@ -436,8 +436,12 @@ static sjme_errorCode sjme_scritchui_core_pencilTranslate(
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Add to the translation. */
+	g->state.translate.x += x;
+	g->state.translate.y += y;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 /** Core pencil functions. */

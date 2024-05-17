@@ -659,7 +659,7 @@ typedef struct sjme_scritchui_pencilState
 	sjme_scritchui_pencilFont font;
 	
 	/** Transformation coordinates. */
-	sjme_scritchui_pencilPoint transform;
+	sjme_scritchui_pencilPoint translate;
 } sjme_scritchui_pencilState;
 
 /*--------------------------------------------------------------------------*/

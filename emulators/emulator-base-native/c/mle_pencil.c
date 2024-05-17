@@ -193,6 +193,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawPixel)
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawRect)
 	(JNIEnv* env, jclass classy, jobject g, jint x, jint y, jint w, jint h)
 {
+	sjme_errorCode error;
 	sjme_scritchui_pencil p;
 	
 	/* Recover. */
@@ -203,7 +204,9 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawRect)
 		return;
 	}
 	
-	sjme_todo("Impl?");
+	/* Forward. */
+	if (sjme_error_is(error = p->api->drawRect(p, x, y, w, h)))
+		sjme_jni_throwMLECallError(env, error);
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawSubstring)
@@ -265,6 +268,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareFillTriangle)
 	(JNIEnv* env, jclass classy, jobject g, jint x1, jint y1, jint x2, jint y2,
 	jint x3, jint y3)
 {
+	sjme_errorCode error;
 	sjme_scritchui_pencil p;
 	
 	/* Recover. */
@@ -275,7 +279,10 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareFillTriangle)
 		return;
 	}
 	
-	sjme_todo("Impl?");
+	/* Forward. */
+	if (sjme_error_is(error = p->api->fillTriangle(p,
+		x1, y1, x2, y2, x3, y3)))
+		sjme_jni_throwMLECallError(env, error);
 }
 
 JNIEXPORT jobject JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareGraphics)
@@ -414,6 +421,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetStrokeStyle)
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareTranslate)
 	(JNIEnv* env, jclass classy, jobject g, jint x, jint y)
 {
+	sjme_errorCode error;
 	sjme_scritchui_pencil p;
 	
 	/* Recover. */
@@ -424,7 +432,8 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareTranslate)
 		return;
 	}
 	
-	sjme_todo("Impl?");
+	if (sjme_error_is(error = p->api->translate(p, x, y)))
+		sjme_jni_throwMLECallError(env, error);\
 }
 	
 FORWARD_IMPL(PencilShelf, capabilities, jint, Integer, \
