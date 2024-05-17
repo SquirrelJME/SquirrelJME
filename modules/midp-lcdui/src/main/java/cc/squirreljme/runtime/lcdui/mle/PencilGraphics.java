@@ -830,9 +830,11 @@ public final class PencilGraphics
 		
 		// Set font natively from the font details
 		else
-			PencilShelf.hardwareSetFont(this.hardware,
-				__font.getFontName(), __font.getStyle(),
-				__font.getPixelSize());
+		{
+			if (true)
+				throw Debugging.todo();
+			PencilShelf.hardwareSetFont(this.hardware, null);
+		}
 	}
 	
 	/**

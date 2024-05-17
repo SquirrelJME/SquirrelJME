@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.mle;
 
 import cc.squirreljme.jvm.mle.brackets.PencilBracket;
+import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.jvm.mle.callbacks.NativeImageLoadCallback;
 import cc.squirreljme.jvm.mle.constants.NativeImageLoadType;
 import cc.squirreljme.jvm.mle.constants.PencilCapabilities;
@@ -359,17 +360,14 @@ public final class PencilShelf
 	 * Sets to use the specified font.
 	 *
 	 * @param __g The graphics used.
-	 * @param __name The font name.
-	 * @param __style The style of the font.
-	 * @param __pixelSize The pixel size of the font.
+	 * @param __font The font to set.
 	 * @throws MLECallError If the graphics is not valid or does not support
 	 * this operation.
 	 * @since 2023/02/19
 	 */
 	@SquirrelJMEVendorApi
 	public static native void hardwareSetFont(@NotNull PencilBracket __g,
-		@NotNull String __name, int __style,
-		@Range(from = 1, to = Integer.MAX_VALUE) int __pixelSize)
+		@NotNull PencilFontBracket __font)
 		throws MLECallError;
 	
 	/**

@@ -53,7 +53,7 @@
 #define FORWARD_DESC_hardwareSetDefaultFont "(" \
 	DESC_PENCIL ")" DESC_VOID
 #define FORWARD_DESC_hardwareSetFont "(" \
-	DESC_PENCIL DESC_STRING DESC_INT DESC_INT ")" DESC_VOID
+	DESC_PENCIL DESC_PENCILFONT ")" DESC_VOID
 #define FORWARD_DESC_hardwareSetStrokeStyle "(" \
 	DESC_PENCIL DESC_INT ")" DESC_VOID
 #define FORWARD_DESC_hardwareTranslate "(" \
@@ -335,8 +335,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetDefaultFont)
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetFont)
-	(JNIEnv* env, jclass classy, jobject g, jstring name, jint style,
-	jint pixelSize)
+	(JNIEnv* env, jclass classy, jobject g, jobject font)
 {
 	sjme_scritchui_pencil p;
 	
