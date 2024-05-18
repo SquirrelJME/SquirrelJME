@@ -1,0 +1,29 @@
+import cc.squirreljme.plugin.tasks.MimeDecodeResourcesTask
+
+plugins {
+	id "java"
+	id "application"
+}
+
+apply plugin: "com.github.johnrengelman.shadow"
+
+description = "SquirrelJME Font Compiler."
+mainClassName = "cc.squirreljme.fontcompile.Main"
+
+tasks.register("mimeDecode", MimeDecodeResourcesTask.class,
+	"main",
+	tasks.named("processResources").get(),
+	tasks.named("clean").get())
+
+processResources.dependsOn("mimeDecode")
+jar.dependsOn("mimeDecode")
+
+dependencies {
+	implementation project(":emulators:emulator-base")
+	implementation project(":modules:cldc-compact")
+	implementation project(":modules:io")
+	
+	// Lombok for simpler getters/setters
+	implementation 'org.projectlombok:lombok:1.18.30'
+	annotationProcessor 'org.projectlombok:lombok:1.18.30'
+}
