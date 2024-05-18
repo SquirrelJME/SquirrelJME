@@ -9,6 +9,8 @@
 
 package cc.squirreljme.fontcompile;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * Main entry point for the font compiler.
  *
