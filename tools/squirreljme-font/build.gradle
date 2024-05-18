@@ -27,3 +27,8 @@ dependencies {
 	implementation 'org.projectlombok:lombok:1.18.30'
 	annotationProcessor 'org.projectlombok:lombok:1.18.30'
 }
+
+tasks.register("compileFonts") {
+	it.group = "squirreljme"
+	it.description = "Compiles all of the fonts in SquirrelJME."
+}
