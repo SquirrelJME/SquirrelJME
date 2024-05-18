@@ -9,7 +9,11 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.jvm.mle.PencilFontShelf;
+import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
+import cc.squirreljme.jvm.mle.constants.PencilFontFace;
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.font.FontUtilities;
 import cc.squirreljme.runtime.lcdui.font.SQFFont;
@@ -107,8 +111,8 @@ public final class Font
 	/** The default font. */
 	private static Font _DEFAULT_FONT;
 	
-	/** SQF font data. */
-	private final SQFFont _sqf;
+	/** The bracket used to access the font. */
+	final PencilFontBracket _font;
 	
 	/** The name of this font. */
 	private final String _name;
@@ -127,33 +131,36 @@ public final class Font
 		-1;
 	
 	/**
-	 * Initializes the font.
+	 * Initializes a font that wraps a bracket.
 	 *
-	 * @param __n The name of this font.
-	 * @param __st The style of this font.
-	 * @param __px The pixel size of this font.
-	 * @since 2017/10/20
+	 * @param __bracket The bracket to wrap.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/05/17
 	 */
-	private Font(String __n, int __st, int __px)
+	Font(PencilFontBracket __bracket)
 		throws NullPointerException
 	{
-		if (__n == null)
+		if (__bracket == null)
 			throw new NullPointerException("NARG");
 		
-		this._name = __n;
-		this._style = __st;
-		this._pixelsize = __px;
+		// Store for later
+		this._font = __bracket;
 		
-		// Load SQF
-		SQFFont sqf;
-		this._sqf = (sqf = SQFFont.cacheFont(__n, __px));
+		// Get information on the font
+		this._name = PencilFontShelf.metricFontName(__bracket);
 		
-		// Determine if the font is monospaced or proportional
-		int totalwidth = 0;
-		for (char c = 0; c < 128; c++)
-			totalwidth += sqf.charWidth(c);
-		this._face = ((totalwidth / 128) == sqf.charWidth('\0') ?
-			Font.FACE_MONOSPACE : Font.FACE_PROPORTIONAL);
+		// What is the face of this font?
+		int face = PencilFontShelf.metricFontFace(__bracket);
+		if ((face & PencilFontFace.MONOSPACE) != 0)
+			this._face = Font.FACE_MONOSPACE;
+		else
+			this._face = Font.FACE_PROPORTIONAL;
+		
+		// Get pixel size of font
+		this._pixelsize = PencilFontShelf.metricFontPixelSize(__bracket);
+		
+		// Font style directly maps
+		this._style = PencilFontShelf.metricFontStyle(__bracket);
 	}
 	
 	/**
@@ -166,7 +173,11 @@ public final class Font
 	@Api
 	public int charWidth(char __c)
 	{
+		throw Debugging.todo();
+		/*
 		return this._sqf.charWidth(SQFFont.mapChar(__c));
+		
+		 */
 	}
 	
 	/**
@@ -191,6 +202,8 @@ public final class Font
 		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __c.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
+		throw Debugging.todo();
+		/*
 		SQFFont sqf = this._sqf;
 		
 		// Calculate width
@@ -219,6 +232,8 @@ public final class Font
 		
 		// Return the higher of the two
 		return (x > max ? x : max);
+		
+		 */
 	}
 	
 	/**
@@ -265,12 +280,16 @@ public final class Font
 		else if (__pxs < 0)
 			throw new IllegalArgumentException("EB1u");
 		
+		throw Debugging.todo();
+		/*
 		// Same exact font?
 		if (this._style == __style && this._pixelsize == __pxs)
 			return this;
 		
 		// Create font handle
 		return new Font(this._name, __style, __pxs);
+		
+		 */
 	}
 	
 	/**
@@ -291,7 +310,8 @@ public final class Font
 		Font o = (Font)__o;
 		return this._pixelsize == o._pixelsize &&
 			this._style == o._style &&
-			this._name.equals(o._name);
+			this._name.equals(o._name) &&
+			PencilFontShelf.equals(this._font, o._font);
 	}
 	
 	/**
@@ -304,7 +324,11 @@ public final class Font
 	@Api
 	public int getAscent()
 	{
+		throw Debugging.todo();
+		/*
 		return this._sqf.ascent;
+		
+		 */
 	}
 	
 	/**
@@ -316,7 +340,11 @@ public final class Font
 	@Api
 	public int getBaselinePosition()
 	{
+		throw Debugging.todo();
+		/*
 		return this._sqf.maxascent;
+		
+		 */
 	}
 	
 	/**
@@ -329,7 +357,11 @@ public final class Font
 	@Api
 	public int getDescent()
 	{
+		throw Debugging.todo();
+		/*
 		return this._sqf.descent;
+		
+		 */
 	}
 	
 	/**
@@ -391,7 +423,11 @@ public final class Font
 	@Api
 	public int getLeading()
 	{
+		throw Debugging.todo();
+		/*
 		return this._sqf.leading;
+		
+		 */
 	}
 	
 	@Api
@@ -512,6 +548,8 @@ public final class Font
 	public int substringWidth(String __s, int __o, int __l)
 		throws NullPointerException, StringIndexOutOfBoundsException
 	{
+		throw Debugging.todo();
+		/*
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
@@ -555,6 +593,8 @@ public final class Font
 			t.initCause(e);
 			throw t;
 		}
+		
+		 */
 	}
 	
 	@Api
@@ -565,9 +605,9 @@ public final class Font
 	}
 	
 	/**
-	 * Returns all of the fonts which are available.
+	 * Returns all the fonts which are available.
 	 *
-	 * @return All of the available fonts.
+	 * @return All the available fonts.
 	 * @since 2018/11/24
 	 */
 	@Api
@@ -578,19 +618,22 @@ public final class Font
 		if (rv != null)
 			return rv.clone();
 		
-		// There are currently just three built-in fonts
-		Font._BUILTIN_FONTS = (rv = new Font[]
-			{
-				new Font("sansserif", 0, Font._DEFAULT_FONT_SIZE),
-				new Font("serif", 0, Font._DEFAULT_FONT_SIZE),
-				new Font("monospace", 0, Font._DEFAULT_FONT_SIZE),
-				new Font("symbol", 0, Font._DEFAULT_FONT_SIZE),
-			});
+		// Obtain built-in fonts
+		PencilFontBracket[] builtin = PencilFontShelf.builtin();
+		
+		// Wrap built-in fonts
+		int n = builtin.length;
+		rv = new Font[n]; 
+		for (int i = 0; i < n; i++)
+			rv[i] = new Font(builtin[i]);
+		
+		// Cache and use
+		Font._BUILTIN_FONTS = rv;
 		return rv.clone();
 	}
 	
 	/**
-	 * Returns all of the fonts which are available on the system using the
+	 * Returns all the fonts which are available on the system using the
 	 * standard font size.
 	 *
 	 * @param __style The style of the font, may be a combination of styles.
@@ -622,7 +665,7 @@ public final class Font
 	}
 	
 	/**
-	 * Returns all of the fonts which are available in the given format.
+	 * Returns all the fonts which are available in the given format.
 	 *
 	 * @param __face The font face, this is a single value, one of:
 	 * {@link Font#FACE_SYSTEM}, {@link Font#FACE_MONOSPACE}, or

@@ -19,15 +19,15 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  */
 public interface PencilFontStyle
 {
+	/** Bold text. */
+	@SquirrelJMEVendorApi
+	byte BOLD =
+		1;
+	
 	/** Italic (slanted) text. */
 	@SquirrelJMEVendorApi
 	byte ITALIC =
 		2;
-	
-	/** Plain style text. */
-	@SquirrelJMEVendorApi
-	byte PLAIN =
-		0;
 	
 	/** Underlined text. */
 	@SquirrelJMEVendorApi
