@@ -24,6 +24,11 @@ executors:
       # Allow Gradle to be fully cached
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
 
+      # Fix Debian package install
+      DEBIAN_FRONTEND: noninteractive
+      NEEDRESTART_MODE: l
+      NEEDRESTART_SUSPEND: 1
+
   build-on-linux-arm64:
     #docker:
     #  - image: debian:bookworm
@@ -33,6 +38,11 @@ executors:
     environment:
       # Allow Gradle to be fully cached
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
+
+      # Fix Debian package install
+      DEBIAN_FRONTEND: noninteractive
+      NEEDRESTART_MODE: l
+      NEEDRESTART_SUSPEND: 1
 
   build-on-linux-riscv64:
     machine: true
@@ -147,7 +157,7 @@ commands:
             NEEDRESTART_MODE: l
             NEEDRESTART_SUSPEND: 1
           command: |
-            sudo apt-get install -yqq --no-install-recommends <<parameters.packages>>
+            sudo apt-get install -y --no-install-recommends <<parameters.packages>>
 
   # Install standard packages in Debian/Ubuntu
   linux-install-required:

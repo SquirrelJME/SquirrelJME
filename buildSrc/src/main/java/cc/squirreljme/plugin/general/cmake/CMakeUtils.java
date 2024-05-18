@@ -18,7 +18,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.Reader;
 import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -31,7 +30,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import org.gradle.api.Task;
 import org.gradle.api.logging.LogLevel;
 import org.gradle.api.logging.Logger;
 import org.gradle.internal.os.OperatingSystem;
@@ -100,7 +98,7 @@ public final class CMakeUtils
 	 * Requests the version of CMake.
 	 *
 	 * @return The resultant CMake version or {@code null} if there is no
-	 * CMake available.
+	 * CMake available or the version could not be parsed.
 	 * @since 2024/04/01
 	 */
 	public static VersionNumber cmakeExeVersion()
@@ -110,10 +108,11 @@ public final class CMakeUtils
 		if (cmakeExe == null)
 			return null;
 		
+		String rawStr = null;
 		try
 		{
-			String rawStr = CMakeUtils.cmakeExecuteOutput("version",
-				"--version");
+			rawStr = CMakeUtils.cmakeExecuteOutput(null,
+				"version", "--version");
 			
 			// Read in what looks like a version number
 			try (BufferedReader buf = new BufferedReader(
@@ -133,23 +132,38 @@ public final class CMakeUtils
 					if (ln.startsWith("cmake version"))
 						return VersionNumber.parse(
 							ln.substring("cmake version".length()).trim());
+					
+					// Are there digits in here?
+					int firstDig = -1;
+					for (char c = '0'; c <= '9'; c++)
+					{
+						int maybeDig = ln.indexOf(c);
+						if (maybeDig >= 0)
+							if (firstDig < 0 || maybeDig < firstDig)
+								firstDig = maybeDig;
+					}
+					
+					// Was a digit actually found?
+					if (firstDig >= 0)
+						return VersionNumber.parse(
+							ln.substring(firstDig).trim());
 				}
 			}
 			
 			// Failed
-			throw new RuntimeException(
-				"CMake executed but there was no version.");
+			return null;
 		}
 		catch (IOException __e)
 		{
-			throw new RuntimeException("Could not determine CMake version.",
-				__e);
+			throw new RuntimeException(
+				"Could not determine CMake version: " + rawStr, __e);
 		}
 	}
 	
 	/**
 	 * Executes a CMake task.
 	 *
+	 * @param __workDir The working directory.
 	 * @param __logger The logger to use.
 	 * @param __logName The name of the log.
 	 * @param __logDir The CMake build directory.
@@ -158,8 +172,8 @@ public final class CMakeUtils
 	 * @throws IOException On read/write or execution errors.
 	 * @since 2024/03/15
 	 */
-	public static int cmakeExecute(Logger __logger, String __logName,
-		Path __logDir, String... __args)
+	public static int cmakeExecute(Path __workDir, Logger __logger,
+		String __logName, Path __logDir, String... __args)
 		throws IOException
 	{
 		if (__logDir == null)
@@ -182,8 +196,8 @@ public final class CMakeUtils
 				StandardOpenOption.TRUNCATE_EXISTING))
 		{
 			// Execute CMake
-			return CMakeUtils.cmakeExecutePipe(null, stdOut, stdErr,
-				__logName, __args);
+			return CMakeUtils.cmakeExecutePipe(__workDir, null,
+				stdOut, stdErr, __logName, __args);
 		}
 		
 		// Dump logs to Gradle
@@ -199,29 +213,34 @@ public final class CMakeUtils
 	/**
 	 * Executes a CMake task and returns the output as a string.
 	 *
+	 * @param __workDir The working directory.
 	 * @param __buildType The build type used.
 	 * @param __args CMake arguments.
 	 * @throws IOException On read/write or execution errors.
 	 * @since 2024/04/01
 	 */
-	public static String cmakeExecuteOutput(String __buildType,
+	public static String cmakeExecuteOutput(Path __workDir, String __buildType,
 		String... __args)
 		throws IOException
 	{
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
+		try (ByteArrayOutputStream out = new ByteArrayOutputStream();
+			ByteArrayOutputStream err = new ByteArrayOutputStream())
 		{
 			// Run command
-			CMakeUtils.cmakeExecutePipe(null, baos, null,
+			CMakeUtils.cmakeExecutePipe(__workDir, null, out, err,
 				__buildType, __args);
 			
-			// Decode to output
-			return baos.toString("utf-8");
+			// Return output for later decoding
+			return out.toString("utf-8") +
+				System.getProperty("line.separator") +
+				err.toString("utf-8");
 		}
 	}
 	
 	/**
 	 * Executes a CMake task to the given pipe.
 	 *
+	 * @param __workDir The working directory.
 	 * @param __in The standard input for the task.
 	 * @param __out The standard output for the task.
 	 * @param __err The standard error for the task.
@@ -231,18 +250,20 @@ public final class CMakeUtils
 	 * @throws IOException On read/write or execution errors.
 	 * @since 2024/04/01
 	 */
-	public static int cmakeExecutePipe(InputStream __in,
+	public static int cmakeExecutePipe(Path __workDir, InputStream __in,
 		OutputStream __out, OutputStream __err, String __buildType,
 		String... __args)
 		throws IOException
 	{
-		return CMakeUtils.cmakeExecutePipe(true, __in, __out, __err,
+		return CMakeUtils.cmakeExecutePipe(__workDir, true,
+			__in, __out, __err,
 			__buildType, __args);
 	}
 	
 	/**
 	 * Executes a CMake task to the given pipe.
 	 *
+	 * @param __workDir The working directory.
 	 * @param __fail Emit failure if exit status is non-zero.
 	 * @param __in The standard input for the task.
 	 * @param __out The standard output for the task.
@@ -253,7 +274,8 @@ public final class CMakeUtils
 	 * @throws IOException On read/write or execution errors.
 	 * @since 2024/04/01
 	 */
-	public static int cmakeExecutePipe(boolean __fail, InputStream __in,
+	public static int cmakeExecutePipe(Path __workDir, boolean __fail,
+		InputStream __in,
 		OutputStream __out, OutputStream __err, String __buildType,
 		String... __args)
 		throws IOException
@@ -272,6 +294,10 @@ public final class CMakeUtils
 		// Set executable process
 		ProcessBuilder procBuilder = new ProcessBuilder();
 		procBuilder.command(args);
+		
+		// Working directory, if specified
+		if (__workDir != null)
+			procBuilder.directory(__workDir.toFile());
 		
 		// Log the output somewhere
 		if (__in != null)
@@ -338,11 +364,29 @@ public final class CMakeUtils
 		// Make sure the output build directory exists
 		Files.createDirectories(cmakeBuild);
 		
+		// Debug version
+		VersionNumber version = CMakeUtils.cmakeExeVersion();
+		__task.getLogger().lifecycle("CMake version: " + version);
+		
 		// Configure CMake first before we continue with anything
-		CMakeUtils.cmakeExecute(__task.getLogger(),
-			"configure", __task.getProject().getBuildDir().toPath(),
-			"-S", cmakeSource.toAbsolutePath().toString(),
-			"-B", cmakeBuild.toAbsolutePath().toString());
+		// Note that newer CMake has a better means of specifying the path
+		if (version != null && version.compareTo(
+			VersionNumber.parse("3.13")) >= 0)
+			CMakeUtils.cmakeExecute(__task.cmakeBuild, __task.getLogger(),
+				"configure",
+				__task.getProject().getBuildDir().toPath(),
+				"-DCMAKE_BUILD_TYPE=RelWithDebInfo",
+				"-S", cmakeSource.toAbsolutePath().toString(),
+				"-B", cmakeBuild.toAbsolutePath().toString());
+		
+		// Otherwise fallback to the old method which is a bit more tricky
+		// as we need to set our working directory accordingly
+		else
+			CMakeUtils.cmakeExecute(__task.cmakeBuild, __task.getLogger(),
+				"configure",
+				__task.getProject().getBuildDir().toPath(),
+				"-DCMAKE_BUILD_TYPE=RelWithDebInfo",
+				cmakeSource.toAbsolutePath().toString());
 	}
 	/**
 	 * Is configuration needed?

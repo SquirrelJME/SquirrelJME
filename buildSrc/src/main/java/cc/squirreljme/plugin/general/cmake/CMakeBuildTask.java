@@ -72,7 +72,7 @@ public class CMakeBuildTask
 		
 		// The build root is based on the task
 		Path cmakeBuild = this.getProject().getBuildDir().toPath()
-			.resolve("cmake-" + this.getName());
+			.resolve("cmake-" + this.getName()).toAbsolutePath();
 		this.cmakeBuild = cmakeBuild;
 		
 		// The desired output we want
@@ -80,7 +80,7 @@ public class CMakeBuildTask
 			this.cmakeOutFile = null;
 		else
 			this.cmakeOutFile = this.cmakeBuild.resolve(
-				Paths.get(__outputFile));
+				Paths.get(__outputFile)).toAbsolutePath();
 		
 		// Description
 		this.setGroup("squirreljme");

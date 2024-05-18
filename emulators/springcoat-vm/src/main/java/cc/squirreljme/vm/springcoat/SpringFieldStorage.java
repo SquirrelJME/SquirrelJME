@@ -88,8 +88,9 @@ public final class SpringFieldStorage
 		}
 		
 		// If the field starts with a constant, it must be initialized
+		// But this is only considered for static variables
 		ConstantValue cv = __f.field.constantValue();
-		if (cv != null)
+		if (cv != null && __f.flags().isStatic())
 			init = cv.boxedValue();
 		
 		// Set initial value

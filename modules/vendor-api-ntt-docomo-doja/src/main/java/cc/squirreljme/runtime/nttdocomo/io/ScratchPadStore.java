@@ -340,10 +340,19 @@ public final class ScratchPadStore
 					// Always at the baseline position
 					position[i] = at;
 					
-					// Read in size, it is little endian
-					int padSize = Integer.reverseBytes(dos.readInt());
+					// Read in size, if it is negative or larger than the
+					// size of the scratchpad file then it is likely in
+					// little endian and not big endian
+					int padSize = dos.readInt();
+					if (padSize > seedLen || padSize < 0)
+						padSize = Integer.reverseBytes(padSize);
+					
+					// Keep it mapped in size
+					int limit = Math.max(0, dataLen - at);
 					if (padSize < 0)
 						padSize = 0;
+					else if (padSize > limit)
+						padSize = limit;
 					
 					// Set current size
 					size[i] = padSize;

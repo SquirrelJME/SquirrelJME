@@ -72,8 +72,8 @@ public class JasminAssembleTask
 					try
 					{
 						jasClass.readJasmin(new BufferedInputStream(in),
-							output.input.getRelative().getFileName().toString(),
-							true);
+							output.input.getRelative().getFileName()
+							.toString(), true);
 					}
 					
 					// This could fail
@@ -89,11 +89,16 @@ public class JasminAssembleTask
 					if (jasClass.errorCount() > 0)
 						throw new RuntimeException(String.format(
 							"Error assembling: %s (%d errors)",
-							output.input.getAbsolute(), jasClass.errorCount()));
+							output.input.getAbsolute(),
+							jasClass.errorCount()));
 					
 					// Write class file
 					jasClass.write(target);
 				}
+				
+				// Make sure the target directory actually exists so we can
+				// write to it
+				Files.createDirectories(output.output.getParent());
 				
 				// Write to output file
 				try (OutputStream out = Files.newOutputStream(output.output,
