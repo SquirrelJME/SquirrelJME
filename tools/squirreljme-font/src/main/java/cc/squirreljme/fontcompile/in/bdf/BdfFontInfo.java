@@ -7,13 +7,16 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.fontcompile.in;
+package cc.squirreljme.fontcompile.in.bdf;
+
+import cc.squirreljme.fontcompile.in.FontInfo;
 
 /**
- * Base class for character information.
+ * Not Described.
  *
- * @since 2024/05/17
+ * @since 2024/05/18
  */
-public abstract class CharInfo
+public class BdfFontInfo
+	extends FontInfo
 {
 }
