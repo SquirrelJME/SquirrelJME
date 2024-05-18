@@ -12,6 +12,11 @@ cmake_minimum_required(VERSION 3.5)
 # Declare project
 project(libEmulatorBase)
 
+# Where is NanoCoat?
+get_filename_component(nanocoatIncludePath
+	"${CMAKE_SOURCE_DIR}/../../nanocoat/include" ABSOLUTE)
+message(STATUS "NanoCoat include is: ${nanocoatIncludePath}")
+
 # Use standard JNI search
 find_package(JNI QUIET)
 
@@ -19,7 +24,7 @@ find_package(JNI QUIET)
 if(NOT JNI_FOUND)
 	# Where are the headers?
 	set(JNI_INCLUDE_DIRS
-		"headers/jni")
+		"${nanocoatIncludePath}/3rdparty/jni")
 
 	# Set as found
 	set(JNI_FOUND ON)
@@ -46,9 +51,6 @@ add_library(libEmulatorBase SHARED
 	c/utils.c)
 
 # Includes for the build
-get_filename_component(nanocoatIncludePath
-	"${CMAKE_SOURCE_DIR}/../../nanocoat/include" ABSOLUTE)
-message(STATUS "NanoCoat include is: ${nanocoatIncludePath}")
 target_include_directories(libEmulatorBase PUBLIC
 	"headers"
 	"${nanocoatIncludePath}"
