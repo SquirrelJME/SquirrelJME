@@ -35,7 +35,7 @@ dependencies {
 class CompileFontTask extends DefaultTask {
 	/** The font path. */
 	@Getter
-	java.nio.file.Path fontPath
+	final java.nio.file.Path fontPath
 	
 	@Inject
 	public CompileFontTask(String __pathy) {
