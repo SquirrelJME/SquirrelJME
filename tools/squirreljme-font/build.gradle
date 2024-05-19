@@ -34,6 +34,7 @@ dependencies {
 
 class CompileFontTask extends DefaultTask {
 	/** The font path. */
+	@Getter
 	java.nio.file.Path fontPath
 	
 	@Inject
@@ -44,6 +45,10 @@ class CompileFontTask extends DefaultTask {
 		
 		this.group = "squirreljme"
 		this.description = "Compiles font ${__pathy}."
+		
+		// We need the actual program first
+		this.dependsOn(this.project.provider({ ->
+			this.project.tasks.getByName("shadowJar")}))
 		
 		// Determine where the font is
 		java.nio.file.Path fontPath = this.project.rootProject.rootDir
@@ -56,6 +61,10 @@ class CompileFontTask extends DefaultTask {
 		} else {
 			this.inputs.file(fontPath)
 		}
+		
+		this.doFirst({Task tasky ->
+			
+		})
 	}
 }
 
