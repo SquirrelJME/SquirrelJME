@@ -13,7 +13,7 @@ import cc.squirreljme.fontcompile.in.GlyphInfo;
 import cc.squirreljme.fontcompile.util.GlyphId;
 
 /**
- * Not Described.
+ * Represents a {@code .sfdir} glyph.
  *
  * @since 2024/05/18
  */

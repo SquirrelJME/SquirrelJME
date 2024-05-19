@@ -1,4 +1,8 @@
 import cc.squirreljme.plugin.tasks.MimeDecodeResourcesTask
+import lombok.Getter
+
+import javax.inject.Inject
+import java.nio.file.Files
 
 plugins {
 	id "java"
@@ -28,7 +32,62 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok:1.18.30'
 }
 
-tasks.register("compileFonts") {
-	it.group = "squirreljme"
-	it.description = "Compiles all of the fonts in SquirrelJME."
+class CompileFontTask extends DefaultTask {
+	/** The font path. */
+	java.nio.file.Path fontPath
+	
+	@Inject
+	public CompileFontTask(String __pathy) {
+		if (__pathy == null) {
+			throw new NullPointerException("No path.")
+		}
+		
+		this.group = "squirreljme"
+		this.description = "Compiles font ${__pathy}."
+		
+		// Determine where the font is
+		java.nio.file.Path fontPath = this.project.rootProject.rootDir
+			.toPath().resolve("assets").resolve("font").resolve(__pathy)
+		this.fontPath = fontPath
+		
+		// Set as input
+		if (Files.isDirectory(fontPath)) {
+			this.inputs.dir(fontPath)
+		} else {
+			this.inputs.file(fontPath)
+		}
+	}
+}
+
+// Generic task to compile all fonts
+TaskProvider<Task> compileFonts = tasks.register("compileFonts") {
+	this.group = "squirreljme"
+	this.description = "Compiles all fonts."
+}
+
+for (String fn in [
+	"monospace.sfdir/8.strike",
+	"monospace.sfdir/16.strike",
+	"monospace.sfdir/24.strike",
+	"sansserif.sfdir/8.strike",
+	"sansserif.sfdir/16.strike",
+	"sansserif.sfdir/24.strike",
+	"serif.sfdir/8.strike",
+	"serif.sfdir/16.strike",
+	"serif.sfdir/24.strike",
+	"misaki8.bdf",
+	"misaki12.bdf",
+	"unifont16.bdf",
+	"unifont-upper16.bdf"]) {
+	// Determine a better name for it
+	String shortish = fn.substring(0, 1).toUpperCase() + fn.replaceAll(
+		"(\\.sfdir|\\.strike|\\.bdf|/)", "").substring(1)
+	
+	// Register it
+	TaskProvider<Task> compileFont = tasks.register("compileFont${shortish}",
+		CompileFontTask.class,
+		fn)
+	
+	// Include in compilation of all fonts
+	compileFonts.get().dependsOn(compileFont)
 }

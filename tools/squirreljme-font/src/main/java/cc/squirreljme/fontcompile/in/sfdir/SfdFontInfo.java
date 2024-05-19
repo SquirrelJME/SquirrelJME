@@ -12,7 +12,7 @@ package cc.squirreljme.fontcompile.in.sfdir;
 import cc.squirreljme.fontcompile.in.FontInfo;
 
 /**
- * Not Described.
+ * Represents a {@code .sfdir} font.
  *
  * @since 2024/05/18
  */

@@ -12,7 +12,7 @@ package cc.squirreljme.fontcompile.in.bdf;
 import cc.squirreljme.fontcompile.in.FontInfo;
 
 /**
- * Not Described.
+ * Represents a BDF font.
  *
  * @since 2024/05/18
  */
