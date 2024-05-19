@@ -9,7 +9,10 @@
 
 package cc.squirreljme.fontcompile;
 
+import cc.squirreljme.emulator.NativeBinding;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.Arrays;
+import javax.swing.JFrame;
 
 /**
  * Main entry point for the font compiler.
@@ -18,6 +21,12 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  */
 public class Main
 {
+	static
+	{
+		// We need to poke native binding, so it loads our emulation backend
+		NativeBinding.loadedLibraryPath();
+	}
+	
 	/**
 	 * Main entry point.
 	 *
@@ -26,6 +35,6 @@ public class Main
 	 */
 	public static void main(String... __args)
 	{
-		throw Debugging.todo();
+		throw Debugging.todo(Arrays.asList(__args));
 	}
 }
