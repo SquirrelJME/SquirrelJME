@@ -64,7 +64,7 @@ class CompileFontTask extends DefaultTask {
 		}
 		
 		this.doFirst({Task tasky ->
-			
+			throw new Error("TODO")
 		})
 	}
 }
