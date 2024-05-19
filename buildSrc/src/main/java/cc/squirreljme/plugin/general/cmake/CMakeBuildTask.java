@@ -93,18 +93,6 @@ public class CMakeBuildTask
 		// Build action
 		CMakeBuildTaskAction action = new CMakeBuildTaskAction();
 		
-		// Need to get some details about the CMake build
-		try
-		{
-			// Configure CMake first before we continue with anything
-			CMakeUtils.configure(this);
-		}
-		catch (IOException __e)
-		{
-			throw new RuntimeException(String.format(
-				"Could not configure CMake for task %s", this.getName()), __e);
-		}
-		
 		// Check if out of date
 		this.getOutputs().upToDateWhen(new CMakeUpToDateWhen());
 		
