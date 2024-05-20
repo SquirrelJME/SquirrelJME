@@ -7,35 +7,51 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.fontcompile.in.bdf;
+package cc.squirreljme.fontcompile.out;
 
 import cc.squirreljme.fontcompile.in.FontInfo;
-import java.io.IOException;
-import java.nio.file.Path;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.io.OutputStream;
 
 /**
- * Represents a BDF font.
+ * Font compiler.
  *
- * @since 2024/05/18
+ * @since 2024/05/19
  */
-public class BdfFontInfo
-	extends FontInfo
+public class FontCompiler
+	implements Runnable
 {
+	/** The input font. */
+	protected final FontInfo in;
+	
+	/** The output SQF. */
+	protected final OutputStream out;
+	
 	/**
-	 * Parses the given font.
+	 * Initializes the font compiler.
 	 *
-	 * @param __in The input path.
-	 * @return The parsed font.
-	 * @throws IOException On read errors.
+	 * @param __in The input font.
+	 * @param __out The output font.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/05/19
 	 */
-	public static BdfFontInfo parse(Path __in)
-		throws IOException, NullPointerException
+	public FontCompiler(FontInfo __in, OutputStream __out)
+		throws NullPointerException
 	{
-		if (__in == null)
+		if (__in == null || __out == null)
 			throw new NullPointerException("NARG");
 		
-		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
+		this.in = __in;
+		this.out = __out;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/05/19
+	 */
+	@Override
+	public void run()
+	{
+		throw Debugging.todo();
 	}
 }
