@@ -348,7 +348,7 @@ jobs:
       JAVA_OPTS: -Xmx3g
 
       # Use older JDK for CircleCI
-      JAVA_HOME: c:/users/circleci/project/jdk-11.0.22/
+      JAVA_HOME: c:/users/circleci/project/<<pipeline.parameters.windows-jdk-base-dir>>/
     steps:
       - checkout
       - attach_workspace:
@@ -432,7 +432,7 @@ jobs:
       JAVA_OPTS: -Xmx3g
 
       # Use older JDK for CircleCI
-      JAVA_HOME: c:/users/circleci/project/jdk-11.0.22/
+      JAVA_HOME: c:/users/circleci/project/<<pipeline.parameters.windows-jdk-base-dir>>/
     steps:
       - checkout
       - attach_workspace:
