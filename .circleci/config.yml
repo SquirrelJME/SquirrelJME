@@ -300,10 +300,6 @@ jobs:
       shell: cmd.exe
       size: medium
     environment:
-      # Use a reduced amount of memory to all the VMs so that it does not
-      # try grabbing all the memory that is available to the system.
-      JAVA_OPTS: -Xmx3g
-
       # Use older JDK for CircleCI
       JAVA_HOME: c:/users/circleci/project/<<pipeline.parameters.windows-jdk-base-dir>>/
     steps:
@@ -343,10 +339,6 @@ jobs:
       shell: cmd.exe
       size: medium
     environment:
-      # Use a reduced amount of memory to all the VMs so that it does not
-      # try grabbing all the memory that is available to the system.
-      JAVA_OPTS: -Xmx3g
-
       # Use older JDK for CircleCI
       JAVA_HOME: c:/users/circleci/project/<<pipeline.parameters.windows-jdk-base-dir>>/
     steps:
