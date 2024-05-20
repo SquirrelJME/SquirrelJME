@@ -33,6 +33,7 @@ import java.util.concurrent.TimeUnit;
 import org.gradle.api.logging.LogLevel;
 import org.gradle.api.logging.Logger;
 import org.gradle.internal.os.OperatingSystem;
+import org.gradle.platform.Architecture;
 import org.gradle.util.internal.VersionNumber;
 
 /**
@@ -295,6 +296,12 @@ public final class CMakeUtils
 		ProcessBuilder procBuilder = new ProcessBuilder();
 		procBuilder.command(args);
 		
+		// If building on Windows, detect the bit type we are using
+		Map<String, String> env = procBuilder.environment();
+		if (OperatingSystem.current().isWindows() &&
+			CMakeUtils.is32bit())
+			env.put("CMAKE_GENERATOR_PLATFORM", "Win32");
+		
 		// Working directory, if specified
 		if (__workDir != null)
 			procBuilder.directory(__workDir.toFile());
@@ -343,6 +350,42 @@ public final class CMakeUtils
 			// Destroy the task
 			proc.destroy();
 		}
+	}
+	
+	/**
+	 * Is this a 32-bit architecture?
+	 *
+	 * @return If this is a 32-bit architecture.
+	 * @since 2024/05/19
+	 */
+	public static boolean is32bit()
+	{
+		// Was an architecture data model defined?
+		String model = System.getProperty("sun.arch.data.model");
+		if (model != null && model.equals("32"))
+			return true;
+		
+		// Get architecture
+		String arch = System.getProperty("os.arch")
+			.toLowerCase(Locale.ROOT).trim();
+		
+		// Should be one of these
+		switch (arch)
+		{
+			case "ia32":
+			case "i386":
+			case "i486":
+			case "i586":
+			case "i686":
+			case "x86":
+			case "ppc":
+			case "powerpc":
+			case "mips":
+				return true;
+		}
+		
+		// Assume not
+		return false;
 	}
 	
 	/**

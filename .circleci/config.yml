@@ -82,6 +82,17 @@ parameters:
     type: string
     default: build testHosted -x testSpringCoat -x testSpringCoatRelease -x testSpringCoatDebug -x javadoc -x javadocJar -x sourcesJar -x markdownJavaDoc
 
+  # Windows JDK versions
+  windows-jdk-base-dir:
+    type: string
+    default: jdk-11.0.23
+  windows-jdk-i386:
+    type: string
+    default: https://download.bell-sw.com/java/11.0.23+12/bellsoft-jdk11.0.23+12-windows-i586.zip
+  windows-jdk-amd64:
+    type: string
+    default: https://download.bell-sw.com/java/11.0.23+12/bellsoft-jdk11.0.23+12-windows-amd64.zip
+
 # Commands that are used by almost everything
 commands:
   # Save Gradle cache and such so subsequent builds are faster
@@ -187,6 +198,25 @@ commands:
           shell: cmd.exe
           command: choco install cmake -y
 
+  # Windows JDK Install
+  windows-install-jdk:
+    parameters:
+      jdk-url:
+        type: string
+    steps:
+      - run:
+          shell: bash.exe
+          name: Download Older JDK
+          command: curl -o /c/users/circleci/jdk.zip <<parameters.jdk-url>>
+      - run:
+          shell: bash.exe
+          name: Extract Older JDK
+          command: unzip /c/users/circleci/jdk.zip
+      - persist_to_workspace:
+          root: .
+          paths:
+            - <<pipeline.parameters.windows-jdk-base-dir>>/
+
   # Install required packages on macOS
   macos-install-required:
     steps:
@@ -255,32 +285,16 @@ jobs:
       - linux-install-required
 
   ################################## WINDOWS #################################
-  build_windows_setup:
+  build_windows_i386_setup:
     executor:
       name: win/default
       shell: cmd.exe
       size: medium
-    environment:
-      # Use older JDK for CircleCI
-      JAVA_HOME: c:/users/circleci/project/jdk-11.0.22/
     steps:
-      - run:
-          shell: bash.exe
-          name: Download Older JDK
-          command: curl -o /c/users/circleci/jdk.zip https://download.bell-sw.com/java/11.0.22+12/bellsoft-jdk11.0.22+12-windows-amd64.zip
-      - run:
-          shell: bash.exe
-          name: Extract Older JDK
-          command: unzip /c/users/circleci/jdk.zip
-      - run:
-          shell: cmd.exe
-          name: Java Version
-          command: java -version
-      - persist_to_workspace:
-          root: .
-          paths:
-            - 'jdk-11.0.22/'
-  build_windows:
+      - windows-install-jdk:
+          jdk-url: <<pipeline.parameters.windows-jdk-i386>>
+
+  build_windows_i386:
     executor:
       name: win/default
       shell: cmd.exe
@@ -291,16 +305,12 @@ jobs:
       JAVA_OPTS: -Xmx3g
 
       # Use older JDK for CircleCI
-      JAVA_HOME: c:/users/circleci/project/jdk-11.0.22/
+      JAVA_HOME: c:/users/circleci/project/<<pipeline.parameters.windows-jdk-base-dir>>/
     steps:
       - checkout
       - attach_workspace:
           at: .
       - windows-install-required
-      - run:
-          shell: cmd.exe
-          name: Java Version
-          command: java -version
       - run:
           shell: cmd.exe
           name: Gradle Build and Test
@@ -327,7 +337,91 @@ jobs:
           home: "/c/users/circleci/"
           store-home: "c:/users/circleci/"
 
-  build_windows_standalone:
+  build_windows_i386_standalone:
+    executor:
+      name: win/default
+      shell: cmd.exe
+      size: medium
+    environment:
+      # Use a reduced amount of memory to all the VMs so that it does not
+      # try grabbing all the memory that is available to the system.
+      JAVA_OPTS: -Xmx3g
+
+      # Use older JDK for CircleCI
+      JAVA_HOME: c:/users/circleci/project/jdk-11.0.22/
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - windows-install-required
+      - run:
+          shell: bash.exe
+          name: Construct Standalone
+          command: ./gradlew :emulators:standalone:shadowJar <<pipeline.parameters.standard-gradle-options >>
+      - run:
+          shell: bash.exe
+          name: Remove distracting JAR, if any
+          command: rm emulators/standalone/build/libs/standalone-*.jar
+      - store_artifacts:
+          path: emulators/standalone/build/libs/
+          destination: .
+
+  build_windows_amd64_setup:
+    executor:
+      name: win/default
+      shell: cmd.exe
+      size: medium
+    environment:
+      # Use older JDK for CircleCI
+      JAVA_HOME: c:/users/circleci/project/<<pipeline.parameters.windows-jdk-base-dir>>/
+    steps:
+      - windows-install-jdk:
+          jdk-url: <<pipeline.parameters.windows-jdk-amd64>>
+
+  build_windows_amd64:
+    executor:
+      name: win/default
+      shell: cmd.exe
+      size: medium
+    environment:
+      # Use a reduced amount of memory to all the VMs so that it does not
+      # try grabbing all the memory that is available to the system.
+      JAVA_OPTS: -Xmx3g
+
+      # Use older JDK for CircleCI
+      JAVA_HOME: c:/users/circleci/project/<<pipeline.parameters.windows-jdk-base-dir>>/
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - windows-install-required
+      - run:
+          shell: cmd.exe
+          name: Gradle Build and Test
+          # According to documentation, Gradle on Windows has trouble and tries
+          # to make way too many workers which causes extreme resource.
+          # contention --max-workers=2
+          command: gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 60m
+      - persist-gradle
+      - save-test-results:
+          where: "vm-test-hosted-debug"
+          os: "windows"
+          vm: "hosted"
+          shell: bash.exe
+          find: /usr/bin/find
+          home: "/c/users/circleci/"
+          store-home: "c:/users/circleci/"
+      - save-test-results:
+          where: "vm-test-hosted-release"
+          os: "windows"
+          vm: "hosted"
+          shell: bash.exe
+          find: /usr/bin/find
+          home: "/c/users/circleci/"
+          store-home: "c:/users/circleci/"
+
+  build_windows_amd64_standalone:
     executor:
       name: win/default
       shell: cmd.exe
@@ -357,7 +451,7 @@ jobs:
           destination: .
 
   ################################# MAC OS X #################################
-  build_macosx:
+  build_macosx_amd64:
     executor: build-on-macos
     steps:
       - checkout
@@ -374,7 +468,7 @@ jobs:
           where: "vm-test-hosted-release"
           os: "macosx"
           vm: "hosted"
-  build_macosx_m1:
+  build_macosx_arm64:
     executor: build-on-macos-m1
     steps:
       - checkout
@@ -392,14 +486,14 @@ jobs:
           os: "macosx-m1"
           vm: "hosted"
 
-  build_macosx_standalone:
+  build_macosx_amd64_standalone:
     executor: build-on-macos
     steps:
       - checkout
       - attach_workspace:
           at: .
       - standalone-unix-common-build
-  build_macosx_m1_standalone:
+  build_macosx_arm64_standalone:
     executor: build-on-macos-m1
     steps:
       - checkout
@@ -652,16 +746,27 @@ workflows:
 #              only:
 #                - trunk
 
-      # Building on Windows is currently expensive and takes longer, so only
-      # run these builds on trunk to lower costs.
-      # Currently, have an overabundance of credits...
-      - build_windows_setup
-      - build_windows:
+      # Windows 32-bit
+      - build_windows_i386_setup
+      - build_windows_i386:
           requires:
-            - build_windows_setup
-      - build_windows_standalone:
+            - build_windows_i386_setup
+      - build_windows_i386_standalone:
           requires:
-            - build_windows
+            - build_windows_i386
+          filters:
+            branches:
+              only:
+                - trunk
+
+      # Windows 64-bit
+      - build_windows_amd64_setup
+      - build_windows_amd64:
+          requires:
+            - build_windows_amd64_setup
+      - build_windows_amd64_standalone:
+          requires:
+            - build_windows_amd64
           filters:
             branches:
               only:
@@ -670,18 +775,18 @@ workflows:
       # Mac OS X runs decently however the jobs for it have a higher cost, so
       # only perform builds and tests for trunk to lower costs.
       # Currently, I have an overabundance of credits...
-      - build_macosx
-      - build_macosx_m1
-      - build_macosx_standalone:
+      - build_macosx_amd64
+      - build_macosx_arm64
+      - build_macosx_amd64_standalone:
           requires:
-            - build_macosx
+            - build_macosx_amd64
           filters:
             branches:
               only:
                 - trunk
-      - build_macosx_m1_standalone:
+      - build_macosx_arm64_standalone:
           requires:
-            - build_macosx_m1
+            - build_macosx_arm64
           filters:
             branches:
               only:
@@ -706,9 +811,9 @@ workflows:
       - bundle:
           requires:
             - build_linux_amd64_standalone
-            - build_windows_standalone
-            - build_macosx_standalone
-            - build_macosx_m1_standalone
+            - build_windows_amd64_standalone
+            - build_macosx_amd64_standalone
+            - build_macosx_arm64_standalone
           filters:
             branches:
               only:
