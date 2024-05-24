@@ -10,8 +10,13 @@
 package cc.squirreljme.fontcompile.in.bdf;
 
 import cc.squirreljme.fontcompile.in.FontInfo;
+import cc.squirreljme.fontcompile.util.LineTokenizer;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 
 /**
  * Represents a BDF font.
@@ -36,6 +41,12 @@ public class BdfFontInfo
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
-		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
+		try (InputStream in = Files.newInputStream(__in,
+				StandardOpenOption.READ); 
+			LineTokenizer tokenizer = new LineTokenizer(in))
+		{
+			if (true)
+				throw Debugging.todo();
+		}
 	}
 }
