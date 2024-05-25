@@ -9,6 +9,7 @@
 
 package cc.squirreljme.fontcompile.in;
 
+import cc.squirreljme.fontcompile.util.GlyphBitmap;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -18,6 +19,17 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  */
 public abstract class GlyphInfo
 {
+	/**
+	 * Returns the glyph bitmap.
+	 *
+	 * @return The glyph's bitmap.
+	 * @since 2024/05/24
+	 */
+	public final GlyphBitmap bitmap()
+	{
+		throw Debugging.todo();
+	}
+	
 	/**
 	 * Returns the codepoint of this glyph.
 	 *

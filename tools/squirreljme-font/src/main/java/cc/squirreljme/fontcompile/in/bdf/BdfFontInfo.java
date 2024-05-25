@@ -64,6 +64,54 @@ public class BdfFontInfo
 				// Which token to handle?
 				switch (tokens[0])
 				{
+						// We do not care about these
+					case "STARTFONT":
+					case "FONT":
+					case "STARTPROPERTIES":
+					case "FONTNAME_REGISTRY":
+					case "FOUNDRY":
+					case "FAMILY_NAME":
+					case "WEIGHT_NAME":
+					case "SLANT":
+					case "SETWIDTH_NAME":
+					case "ADD_STYLE_NAME":
+					case "POINT_SIZE":
+					case "RESOLUTION_X":
+					case "RESOLUTION_Y":
+					case "SPACING":
+					case "AVERAGE_WIDTH":
+					case "CHARSET_REGISTRY":
+					case "CHARSET_ENCODING":
+					case "COPYRIGHT":
+					case "ENDPROPERTIES":
+					case "CHARS":
+					case "ENDFONT":
+						continue;
+						
+						// Font size (SIZE 8 75 75)
+					case "SIZE":
+						throw Debugging.todo();
+						
+						// Bounding box (FONTBOUNDINGBOX 8 8 0 -2)
+					case "FONTBOUNDINGBOX":
+						throw Debugging.todo();
+						
+						// Pixel size (PIXEL_SIZE 8)
+					case "PIXELSIZE":
+						throw Debugging.todo();
+						
+						// Default character if invalid (DEFAULT_CHAR 3000)
+					case "DEFAULT_CHAR":
+						throw Debugging.todo();
+						
+						// Descent (FONT_DESCENT 2)
+					case "FONT_DESCENT":
+						throw Debugging.todo();
+						
+						// Ascent (FONT_ASCENT 6)
+					case "FONT_ASCENT":
+						throw Debugging.todo();
+					
 						// Start of glyph?
 					case "STARTCHAR":
 						// Load glyph
