@@ -7,25 +7,26 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.fontcompile.in;
+package cc.squirreljme.fontcompile;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.io.IOException;
 
 /**
- * Base class for glyph information.
+ * Thrown when the font is not valid.
  *
- * @since 2024/05/17
+ * @since 2024/05/24
  */
-public abstract class GlyphInfo
+public class InvalidFontException
+	extends IOException
 {
 	/**
-	 * Returns the codepoint of this glyph.
+	 * Initializes the exception.
 	 *
-	 * @return The glyph codepoint.
+	 * @param __m The message for the exception.
 	 * @since 2024/05/24
 	 */
-	public final int codepoint()
+	public InvalidFontException(String __m)
 	{
-		throw Debugging.todo();
+		super(__m);
 	}
 }

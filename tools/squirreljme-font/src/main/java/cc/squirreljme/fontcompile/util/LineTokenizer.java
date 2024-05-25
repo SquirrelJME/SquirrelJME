@@ -10,6 +10,7 @@
 package cc.squirreljme.fontcompile.util;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.StringUtils;
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.IOException;
@@ -82,6 +83,35 @@ public class LineTokenizer
 		throws IOException
 	{
 		this.in.close();
+	}
+	
+	/**
+	 * Returns the next set of tokens.
+	 *
+	 * @return The tokens or {@code null} if there are none left, there will
+	 * always be at least a single token.
+	 * @throws IOException On read errors.
+	 * @since 2024/05/24
+	 */
+	public String[] next()
+		throws IOException
+	{
+		for (;;)
+		{
+			String ln = this.in.readLine();
+			
+			// EOF?
+			if (ln == null)
+				return null;
+			
+			// Is this line blank?
+			ln = ln.trim();
+			if (ln.isEmpty())
+				continue;
+			
+			// Parse using simple delimitation
+			return StringUtils.fieldSplitAndTrim(' ', ln);
+		}
 	}
 	
 	/**

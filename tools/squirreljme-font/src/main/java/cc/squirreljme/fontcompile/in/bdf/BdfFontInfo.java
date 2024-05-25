@@ -9,14 +9,18 @@
 
 package cc.squirreljme.fontcompile.in.bdf;
 
+import cc.squirreljme.fontcompile.InvalidFontException;
 import cc.squirreljme.fontcompile.in.FontInfo;
 import cc.squirreljme.fontcompile.util.LineTokenizer;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.Arrays;
+import java.util.Map;
 
 /**
  * Represents a BDF font.
@@ -41,12 +45,43 @@ public class BdfFontInfo
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
+		// Glyphs in the font
+		Map<Integer, BdfGlyphInfo> glyphs = new SortedTreeMap<>();
+		
+		// Parse BDF file
 		try (InputStream in = Files.newInputStream(__in,
 				StandardOpenOption.READ); 
 			LineTokenizer tokenizer = new LineTokenizer(in))
 		{
-			if (true)
-				throw Debugging.todo();
+			for (;;)
+			{
+				String[] tokens = tokenizer.next();
+				
+				// EOF?
+				if (tokens == null)
+					break;
+				
+				// Which token to handle?
+				switch (tokens[0])
+				{
+						// Start of glyph?
+					case "STARTCHAR":
+						// Load glyph
+						BdfGlyphInfo glyph = BdfGlyphInfo.parse(tokens,
+							tokenizer);
+						
+						// Store
+						glyphs.put(glyph.codepoint(), glyph);
+						break;
+					
+						// Unknown
+					default:
+						throw new InvalidFontException(String.format(
+							"Unknown BDF data: %s", Arrays.asList(tokens[0])));
+				}
+			}
+			
+			throw Debugging.todo();
 		}
 	}
 }
