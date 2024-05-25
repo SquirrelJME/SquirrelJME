@@ -11,6 +11,7 @@ package cc.squirreljme.fontcompile.in.bdf;
 
 import cc.squirreljme.fontcompile.InvalidFontException;
 import cc.squirreljme.fontcompile.in.FontInfo;
+import cc.squirreljme.fontcompile.util.FontUtils;
 import cc.squirreljme.fontcompile.util.LineTokenizer;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
@@ -48,6 +49,12 @@ public class BdfFontInfo
 		// Glyphs in the font
 		Map<Integer, BdfGlyphInfo> glyphs = new SortedTreeMap<>();
 		
+		// Partial font information
+		int pixelSize = -1;
+		
+		// Temporaries
+		int t = 0;
+		
 		// Parse BDF file
 		try (InputStream in = Files.newInputStream(__in,
 				StandardOpenOption.READ); 
@@ -65,32 +72,29 @@ public class BdfFontInfo
 				switch (tokens[0])
 				{
 						// We do not care about these
-					case "STARTFONT":
+					case "ADD_STYLE_NAME":
+					case "AVERAGE_WIDTH":
+					case "CHARS":
+					case "CHARSET_ENCODING":
+					case "CHARSET_REGISTRY":
+					case "COPYRIGHT":
+					case "ENDFONT":
+					case "ENDPROPERTIES":
+					case "FAMILY_NAME":
 					case "FONT":
-					case "STARTPROPERTIES":
 					case "FONTNAME_REGISTRY":
 					case "FOUNDRY":
-					case "FAMILY_NAME":
-					case "WEIGHT_NAME":
-					case "SLANT":
-					case "SETWIDTH_NAME":
-					case "ADD_STYLE_NAME":
 					case "POINT_SIZE":
 					case "RESOLUTION_X":
 					case "RESOLUTION_Y":
-					case "SPACING":
-					case "AVERAGE_WIDTH":
-					case "CHARSET_REGISTRY":
-					case "CHARSET_ENCODING":
-					case "COPYRIGHT":
-					case "ENDPROPERTIES":
-					case "CHARS":
-					case "ENDFONT":
-						continue;
-						
-						// Font size (SIZE 8 75 75)
+					case "SETWIDTH_NAME":
 					case "SIZE":
-						throw Debugging.todo();
+					case "SLANT":
+					case "SPACING":
+					case "STARTFONT":
+					case "STARTPROPERTIES":
+					case "WEIGHT_NAME":
+						continue;
 						
 						// Bounding box (FONTBOUNDINGBOX 8 8 0 -2)
 					case "FONTBOUNDINGBOX":
@@ -98,7 +102,17 @@ public class BdfFontInfo
 						
 						// Pixel size (PIXEL_SIZE 8)
 					case "PIXELSIZE":
-						throw Debugging.todo();
+						t = FontUtils.parseInteger(tokens, 1);
+						if (t <= 0)
+							throw new InvalidFontException(String.format(
+								"Invalid pixel size %d.", t));
+						if (pixelSize <= 0)
+							pixelSize = t;
+						else if (t != pixelSize)
+							throw new InvalidFontException(String.format(
+								"Mismatched pixel size %d != %d.", t,
+								pixelSize));
+						break;
 						
 						// Default character if invalid (DEFAULT_CHAR 3000)
 					case "DEFAULT_CHAR":
