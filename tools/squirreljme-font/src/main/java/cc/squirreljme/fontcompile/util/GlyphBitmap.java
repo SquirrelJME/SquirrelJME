@@ -49,7 +49,7 @@ public class GlyphBitmap
 		
 		this.width = __width;
 		this.height = __height;
-		this.scanLen = (__width / 8) + ((__width % 8) != 0 ? 1 : 0);
+		this.scanLen = GlyphBitmap.calcScan(__width);
 		this._bitmap = __bitmap;
 	}
 	
@@ -68,31 +68,112 @@ public class GlyphBitmap
 		
 		int w = this.width;
 		int h = this.height;
-		int scanLen = this.scanLen;
 		
 		for (int x = 0; x < w; x++)
 			__ps.print('-');
 		__ps.printf("(%d x %d)%n", w, h);
 		
-		byte[] bitmap = this._bitmap;
 		for (int y = 0; y < h; y++)
 		{
-			int base = scanLen * y;
-			
 			for (int x = 0; x < w; x++)
-			{
-				if (((bitmap[base + (x / 8)] >> (x % 8)) & 1) != 0)
-					__ps.print('#');
-				else
-					__ps.print('.');
-			}
-				
+				__ps.print((this.get(x, y) ? '#' : '.'));
 			__ps.println();
 		}
 		
 		for (int x = 0; x < w; x++)
 			__ps.print('-');
 		__ps.println();
+	}
+	
+	/**
+	 * Gets the pixel value from the given position.
+	 *
+	 * @param __x The X position.
+	 * @param __y The Y position.
+	 * @return If the pixel is set, if out of bounds this will return
+	 * always {@code false}.
+	 * @since 2024/05/26
+	 */
+	public boolean get(int __x, int __y)
+	{
+		// Check bounds first, treat outside of bitmap as always unset
+		int w = this.width;
+		int h = this.height;
+		if (__x < 0 || __x >= w || __y < 0 || __y >= h)
+			return false;
+		
+		// Get pixel here
+		return ((this._bitmap[this.getIndex(__x, __y)] >>>
+			this.getShift(__x, __y)) & 1) != 0;
+	}
+	
+	/**
+	 * Returns the index position
+	 *
+	 * @param __x The X position.
+	 * @param __y The Y position.
+	 * @return The index position.
+	 * @since 2024/05/26
+	 */
+	public int getIndex(int __x, int __y)
+	{
+		return GlyphBitmap.calcIndex(__x, __y, this.width, this.height);
+	}
+	
+	/**
+	 * Returns the shift position
+	 *
+	 * @param __x The X position.
+	 * @param __y The Y position.
+	 * @return The shift position.
+	 * @since 2024/05/26
+	 */
+	public int getShift(int __x, int __y)
+	{
+		return GlyphBitmap.calcShift(__x, __y, this.width, this.height);
+	}
+	
+	/**
+	 * Returns the index position
+	 *
+	 * @param __x The X position.
+	 * @param __y The Y position.
+	 * @param __w The bitmap width.
+	 * @param __h The bitmap height.
+	 * @return The index position.
+	 * @since 2024/05/26
+	 */
+	public static int calcIndex(int __x, int __y, int __w, int __h)
+	{
+		int scanLen = GlyphBitmap.calcScan(__w);
+		return (__y * scanLen) + (__x / 8);
+	}
+	
+	/**
+	 * Calculates the scanline.
+	 *
+	 * @param __w The width.
+	 * @return The scanline width in bytes.
+	 * @since 2024/05/26
+	 */
+	public static int calcScan(int __w)
+	{
+		return (__w / 8) + ((__w % 8) != 0 ? 1 : 0);
+	}
+	
+	/**
+	 * Returns the shift position
+	 *
+	 * @param __x The X position.
+	 * @param __y The Y position.
+	 * @param __w The bitmap width.
+	 * @param __h The bitmap height.
+	 * @return The shift position.
+	 * @since 2024/05/26
+	 */
+	public static int calcShift(int __x, int __y, int __w, int __h)
+	{
+		return __x & 7;
 	}
 	
 	/**
@@ -127,7 +208,7 @@ public class GlyphBitmap
 		byte[] bitmap = new byte[bytesPerRow * __bbh];
 		
 		// Read each bitmap row
-		for (int y = 0, s = 0; y < __bbh; y++)
+		for (int y = 0; y < __bbh; y++)
 		{
 			// Get next token sequence
 			String[] init = __tokenizer.next();
@@ -142,16 +223,23 @@ public class GlyphBitmap
 					hex, hexPerRow));
 			
 			// Copy in hex bytes
-			for (int x = 0; x < hexPerRow; x++, s += 4)
+			for (int h = 0, x = 0; h < hexPerRow; h++)
 			{
 				// Decode hex digit
-				int dig = Character.digit(hex.charAt(x), 16);
+				int dig = Character.digit(hex.charAt(h), 16);
 				if (dig < 0)
 					throw new InvalidFontException(String.format(
 						"Token %s has invalid hex character.", hex));
 				
-				// Place into bitmap
-				bitmap[(s / 8)] |= (byte)(dig << (s % 8));
+				// BDF is MSB
+				dig = Integer.reverse(dig) >>> 28;
+				
+				// Mask into bitmap
+				for (int s = 0; s < 4; s++, x++)
+					if ((dig & (1 << s)) != 0)
+						bitmap[GlyphBitmap.calcIndex(x, y, __bbw, __bbh)] |=
+							(byte)(1 <<
+								GlyphBitmap.calcShift(x, y, __bbw, __bbh));
 			}
 		}
 		
