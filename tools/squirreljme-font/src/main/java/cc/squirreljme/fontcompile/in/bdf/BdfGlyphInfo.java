@@ -13,6 +13,7 @@ import cc.squirreljme.fontcompile.InvalidFontException;
 import cc.squirreljme.fontcompile.in.GlyphInfo;
 import cc.squirreljme.fontcompile.util.FontUtils;
 import cc.squirreljme.fontcompile.util.GlyphBitmap;
+import cc.squirreljme.fontcompile.util.GlyphId;
 import cc.squirreljme.fontcompile.util.LineTokenizer;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
@@ -26,6 +27,24 @@ import java.util.Arrays;
 public class BdfGlyphInfo
 	extends GlyphInfo
 {
+	/**
+	 * Initializes the glyph.
+	 *
+	 * @param __codepoint The glyph codepoint.
+	 * @param __displayWidth The display width of the glyph.
+	 * @param __bitmap The glyph bitmap.
+	 * @param __offX The X offset.
+	 * @param __offY The Y offset.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/05/26
+	 */
+	public BdfGlyphInfo(GlyphId __codepoint, int __displayWidth,
+		GlyphBitmap __bitmap, int __offX, int __offY)
+		throws NullPointerException
+	{
+		super(__codepoint, __displayWidth, __bitmap, __offX, __offY);
+	}
+	
 	/**
 	 * Parses the BDF glyph information.
 	 *
@@ -44,8 +63,16 @@ public class BdfGlyphInfo
 		if (__tokens == null || __tokenizer == null)
 			throw new NullPointerException("NARG");
 		
-		// Bitmap for the glyph
+		if (__tokens.length != 2 || __tokens[1] == null)
+			throw new InvalidFontException(String.format(
+				"Expected glyph ID in %s.", Arrays.asList(__tokens)));
+		
+		// Which codepoint is this?
+		GlyphId codepoint = GlyphId.parse(__tokens[1]);
+		
+		// Bitmap data for the glyph
 		GlyphBitmap bitmap = null;
+		int dwidth = Integer.MIN_VALUE;
 		int bbw = Integer.MIN_VALUE;
 		int bbh = Integer.MIN_VALUE;
 		int bbx = Integer.MIN_VALUE;
@@ -67,8 +94,12 @@ __outer:
 					// We do not care about these
 				case "ENCODING":
 				case "SWIDTH":
-				case "DWIDTH":
 					continue;
+					
+					// Display width
+				case "DWIDTH":
+					dwidth = FontUtils.parseInteger(tokens, 1);
+					break;
 					
 					// Font bounding box (BBX 2 7 0 -1)
 				case "BBX":
@@ -78,14 +109,11 @@ __outer:
 					bby = FontUtils.parseInteger(tokens, 4);
 					break;
 					
-					// Font bitmap
+					// Font bitmap, after this is read there is nothing
+					// left to parse
 				case "BITMAP":
 					bitmap = GlyphBitmap.parseBdf(bbw, bbh, bbx, bby,
 						__tokenizer);
-					break;
-						
-					// End of character
-				case "ENDCHAR":
 					break __outer;
 				
 				default:
@@ -98,6 +126,14 @@ __outer:
 		if (bitmap == null)
 			throw new InvalidFontException("Glyph has no bitmap.");
 		
-		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
+		// Thee must also be set
+		if (dwidth == Integer.MIN_VALUE ||
+			bbw == Integer.MIN_VALUE || bbh == Integer.MIN_VALUE ||
+			bbx == Integer.MIN_VALUE || bby == Integer.MIN_VALUE)
+			throw new InvalidFontException(
+				"Missing important glyph properties.");
+		
+		// Setup glyph
+		return new BdfGlyphInfo(codepoint, dwidth, bitmap, bbx, bby);
 	}
 }

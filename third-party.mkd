@@ -1080,6 +1080,7 @@ For more information, please refer to <http://unlicense.org/>
 
  * Site: <https://littlelimit.net/misaki.htm>
  * License: _M+ Font License_
+ * Copyright: 2002-2021 _Num Kadoma_
 
 This license applies to:
 

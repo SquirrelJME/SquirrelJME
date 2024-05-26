@@ -12,6 +12,7 @@ package cc.squirreljme.fontcompile.in.bdf;
 import cc.squirreljme.fontcompile.InvalidFontException;
 import cc.squirreljme.fontcompile.in.FontInfo;
 import cc.squirreljme.fontcompile.util.FontUtils;
+import cc.squirreljme.fontcompile.util.GlyphId;
 import cc.squirreljme.fontcompile.util.LineTokenizer;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
@@ -20,7 +21,9 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,6 +34,30 @@ import java.util.Map;
 public class BdfFontInfo
 	extends FontInfo
 {
+	/**
+	 * Initializes the base font info.
+	 *
+	 * @param __glyphs The glyphs to use.
+	 * @param __invalidCodepoint The invalid glyph ID.
+	 * @param __pixelSize The pixel size of the font.
+	 * @param __bbw The bounding box width.
+	 * @param __bbh The bounding box height.
+	 * @param __bbx The X offset.
+	 * @param __bby The Y offset.
+	 * @param __ascent The font ascent.
+	 * @param __descent The font descent.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/05/26
+	 */
+	BdfFontInfo(Map<GlyphId, BdfGlyphInfo> __glyphs,
+		GlyphId __invalidCodepoint, int __pixelSize, int __bbw, int __bbh,
+		int __bbx, int __bby, int __ascent, int __descent)
+		throws NullPointerException
+	{
+		super(__glyphs, __invalidCodepoint, __pixelSize, __bbw, __bbh,
+			__bbx, __bby, __ascent, __descent);
+	}
+	
 	/**
 	 * Parses the given font.
 	 *
@@ -47,7 +74,10 @@ public class BdfFontInfo
 			throw new NullPointerException("NARG");
 		
 		// Glyphs in the font
-		Map<Integer, BdfGlyphInfo> glyphs = new SortedTreeMap<>();
+		Map<GlyphId, BdfGlyphInfo> glyphs = new SortedTreeMap<>();
+		
+		// Glyphs by their order
+		List<BdfGlyphInfo> byOrder = new ArrayList<>();
 		
 		// Font information
 		int pixelSize = Integer.MIN_VALUE;
@@ -148,6 +178,9 @@ public class BdfFontInfo
 						
 						// Store
 						glyphs.put(glyph.codepoint(), glyph);
+						
+						// Put in order
+						byOrder.add(glyph);
 						break;
 					
 						// Unknown
@@ -157,7 +190,16 @@ public class BdfFontInfo
 				}
 			}
 			
-			throw Debugging.todo();
+			// Determine actual default glyph
+			if (defaultChar < 0 || defaultChar >= byOrder.size())
+				throw new InvalidFontException(String.format(
+					"Unknown default character %d, not within %d.",
+					defaultChar, byOrder.size()));
+			
+			// Setup font
+			return new BdfFontInfo(glyphs,
+				byOrder.get(defaultChar).codepoint(),
+				pixelSize, bbw, bbh, bbx, bby, ascent, descent);
 		}
 	}
 }

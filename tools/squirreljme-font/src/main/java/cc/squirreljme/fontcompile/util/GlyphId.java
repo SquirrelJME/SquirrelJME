@@ -9,6 +9,7 @@
 
 package cc.squirreljme.fontcompile.util;
 
+import cc.squirreljme.fontcompile.InvalidFontException;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -116,11 +117,12 @@ public final class GlyphId
 	 *
 	 * @param __in The input string.
 	 * @return The resultant glyph id.
+	 * @throws InvalidFontException If the ID is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/05/18
 	 */
 	public static GlyphId parse(String __in)
-		throws NullPointerException
+		throws InvalidFontException, NullPointerException
 	{
 		if (__in == null)
 			throw new NullPointerException("NARG");
@@ -141,9 +143,8 @@ public final class GlyphId
 		// Otherwise will be a character in the AGL
 		Integer agl = GlyphId._AGL.get(__in);
 		if (agl == null)
-			throw new NoSuchElementException("Unknown glyph: " + __in);
+			throw new InvalidFontException("Unknown glyph: " + __in);
 		return GlyphId.of(agl);
-		
 	}
 	
 	/**
@@ -185,9 +186,15 @@ public final class GlyphId
 					if (semi < 0)
 						throw new RuntimeException("Invalid AGL: " + ln);
 					
+					// Multi-character hex, we have no idea how to handle this
+					// currently
+					String hex = ln.substring(semi + 1).trim();
+					if (hex.indexOf(' ') >= 0)
+						continue;
+					
 					// Parse and store
 					result.put(ln.substring(0, semi).trim(), Integer.parseInt(
-						ln.substring(semi + 1).trim(), 16));
+						hex, 16));
 				}
 			}
 		}
