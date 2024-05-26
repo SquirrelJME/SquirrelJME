@@ -133,14 +133,6 @@ __outer:
 			throw new InvalidFontException(
 				"Missing important glyph properties.");
 		
-		// Debug
-		if (Debugging.ENABLED)
-		{
-			System.err.printf("CHAR %s %d%n",
-				__tokens[1], codepoint.codepoint);
-			bitmap.dump(System.err);
-		}
-		
 		// Setup glyph
 		return new BdfGlyphInfo(codepoint, dwidth, bitmap, bbx, bby);
 	}
