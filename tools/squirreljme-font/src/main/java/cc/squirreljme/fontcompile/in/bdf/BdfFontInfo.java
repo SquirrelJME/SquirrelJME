@@ -111,6 +111,7 @@ public class BdfFontInfo
 						// We do not care about these
 					case "ADD_STYLE_NAME":
 					case "AVERAGE_WIDTH":
+					case "CAP_HEIGHT":
 					case "CHARS":
 					case "CHARSET_ENCODING":
 					case "CHARSET_REGISTRY":
@@ -119,6 +120,8 @@ public class BdfFontInfo
 					case "ENDPROPERTIES":
 					case "FAMILY_NAME":
 					case "FONT":
+					case "FONT_TYPE":
+					case "FONT_VERSION":
 					case "FONTNAME_REGISTRY":
 					case "FOUNDRY":
 					case "POINT_SIZE":
@@ -130,7 +133,11 @@ public class BdfFontInfo
 					case "SPACING":
 					case "STARTFONT":
 					case "STARTPROPERTIES":
+					case "UNDERLINE_POSITION":
+					case "UNDERLINE_THICKNESS":
 					case "WEIGHT_NAME":
+					case "X_HEIGHT":
+					case "Y_HEIGHT":
 						continue;
 						
 						// Bounding box (FONTBOUNDINGBOX 8 8 0 -2)

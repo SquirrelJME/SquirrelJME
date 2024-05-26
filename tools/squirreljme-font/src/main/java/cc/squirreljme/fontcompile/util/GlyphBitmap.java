@@ -10,10 +10,8 @@
 package cc.squirreljme.fontcompile.util;
 
 import cc.squirreljme.fontcompile.InvalidFontException;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.cldc.util.ByteIntegerArray;
-import cc.squirreljme.runtime.cldc.util.IntegerArrayList;
 import java.io.IOException;
+import java.io.PrintStream;
 
 /**
  * Bitmap that represents the glyph.
@@ -27,6 +25,9 @@ public class GlyphBitmap
 	
 	/** The glyph height. */
 	protected final int height;
+	
+	/** The scanline length. */
+	protected final int scanLen;
 	
 	/** The font bitmap. */
 	private final byte[] _bitmap;
@@ -48,7 +49,50 @@ public class GlyphBitmap
 		
 		this.width = __width;
 		this.height = __height;
+		this.scanLen = (__width / 8) + ((__width % 8) != 0 ? 1 : 0);
 		this._bitmap = __bitmap;
+	}
+	
+	/**
+	 * Dumps the bitmap.
+	 *
+	 * @param __ps The stream to output to.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/05/26
+	 */
+	public void dump(PrintStream __ps)
+		throws NullPointerException
+	{
+		if (__ps == null)
+			throw new NullPointerException("NARG");
+		
+		int w = this.width;
+		int h = this.height;
+		int scanLen = this.scanLen;
+		
+		for (int x = 0; x < w; x++)
+			__ps.print('-');
+		__ps.printf("(%d x %d)%n", w, h);
+		
+		byte[] bitmap = this._bitmap;
+		for (int y = 0; y < h; y++)
+		{
+			int base = scanLen * y;
+			
+			for (int x = 0; x < w; x++)
+			{
+				if (((bitmap[base + (x / 8)] >> (x % 8)) & 1) != 0)
+					__ps.print('#');
+				else
+					__ps.print('.');
+			}
+				
+			__ps.println();
+		}
+		
+		for (int x = 0; x < w; x++)
+			__ps.print('-');
+		__ps.println();
 	}
 	
 	/**
