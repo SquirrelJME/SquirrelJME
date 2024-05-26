@@ -49,8 +49,15 @@ public class BdfFontInfo
 		// Glyphs in the font
 		Map<Integer, BdfGlyphInfo> glyphs = new SortedTreeMap<>();
 		
-		// Partial font information
-		int pixelSize = -1;
+		// Font information
+		int pixelSize = Integer.MIN_VALUE;
+		int bbw = Integer.MIN_VALUE;
+		int bbh = Integer.MIN_VALUE;
+		int bbx = Integer.MIN_VALUE;
+		int bby = Integer.MIN_VALUE;
+		int defaultChar = Integer.MIN_VALUE;
+		int ascent = Integer.MIN_VALUE;
+		int descent = Integer.MIN_VALUE;
 		
 		// Temporaries
 		int t = 0;
@@ -98,10 +105,14 @@ public class BdfFontInfo
 						
 						// Bounding box (FONTBOUNDINGBOX 8 8 0 -2)
 					case "FONTBOUNDINGBOX":
-						throw Debugging.todo();
+						bbw = FontUtils.parseInteger(tokens, 1);
+						bbh = FontUtils.parseInteger(tokens, 2);
+						bbx = FontUtils.parseInteger(tokens, 3);
+						bby = FontUtils.parseInteger(tokens, 4);
+						break;
 						
 						// Pixel size (PIXEL_SIZE 8)
-					case "PIXELSIZE":
+					case "PIXEL_SIZE":
 						t = FontUtils.parseInteger(tokens, 1);
 						if (t <= 0)
 							throw new InvalidFontException(String.format(
@@ -116,15 +127,18 @@ public class BdfFontInfo
 						
 						// Default character if invalid (DEFAULT_CHAR 3000)
 					case "DEFAULT_CHAR":
-						throw Debugging.todo();
+						defaultChar = FontUtils.parseInteger(tokens, 1);
+						break;
 						
 						// Descent (FONT_DESCENT 2)
 					case "FONT_DESCENT":
-						throw Debugging.todo();
+						descent = FontUtils.parseInteger(tokens, 1);
+						break;
 						
 						// Ascent (FONT_ASCENT 6)
 					case "FONT_ASCENT":
-						throw Debugging.todo();
+						ascent = FontUtils.parseInteger(tokens, 1);
+						break;
 					
 						// Start of glyph?
 					case "STARTCHAR":

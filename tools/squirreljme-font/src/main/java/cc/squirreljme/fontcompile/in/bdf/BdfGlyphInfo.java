@@ -11,6 +11,7 @@ package cc.squirreljme.fontcompile.in.bdf;
 
 import cc.squirreljme.fontcompile.InvalidFontException;
 import cc.squirreljme.fontcompile.in.GlyphInfo;
+import cc.squirreljme.fontcompile.util.FontUtils;
 import cc.squirreljme.fontcompile.util.GlyphBitmap;
 import cc.squirreljme.fontcompile.util.LineTokenizer;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -71,7 +72,11 @@ __outer:
 					
 					// Font bounding box (BBX 2 7 0 -1)
 				case "BBX":
-					throw Debugging.todo();
+					bbw = FontUtils.parseInteger(tokens, 1);
+					bbh = FontUtils.parseInteger(tokens, 2);
+					bbx = FontUtils.parseInteger(tokens, 3);
+					bby = FontUtils.parseInteger(tokens, 4);
+					break;
 					
 					// Font bitmap
 				case "BITMAP":
@@ -85,7 +90,7 @@ __outer:
 				
 				default:
 					throw new InvalidFontException(String.format(
-						"Invalid BDF glyph.", Arrays.asList(tokens)));
+						"Invalid BDF glyph: %s", Arrays.asList(tokens)));
 			}
 		}
 		
