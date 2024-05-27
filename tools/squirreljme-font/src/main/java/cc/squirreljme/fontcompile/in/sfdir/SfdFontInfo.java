@@ -41,7 +41,7 @@ public class SfdFontInfo
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/05/26
 	 */
-	protected SfdFontInfo(Map<GlyphId, BdfGlyphInfo> __glyphs,
+	protected SfdFontInfo(Map<GlyphId, SfdGlyphInfo> __glyphs,
 		GlyphId __invalidCodepoint, int __pixelSize, int __bbw, int __bbh,
 		int __bbx, int __bby, int __ascent, int __descent)
 		throws NullPointerException

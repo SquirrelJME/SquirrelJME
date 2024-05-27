@@ -27,7 +27,7 @@ public abstract class FontInfo
 	implements Iterable<GlyphInfo>
 {
 	/** The glyphs in the font. */
-	protected final Map<GlyphId, BdfGlyphInfo> glyphs;
+	protected final Map<GlyphId, GlyphInfo> glyphs;
 	
 	/** The invalid codepoint. */
 	protected final GlyphId invalidCodepoint;
@@ -68,7 +68,7 @@ public abstract class FontInfo
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/05/26
 	 */
-	protected FontInfo(Map<GlyphId, BdfGlyphInfo> __glyphs,
+	protected FontInfo(Map<GlyphId, ? extends GlyphInfo> __glyphs,
 		GlyphId __invalidCodepoint,
 		int __pixelSize, int __bbw, int __bbh,
 		int __bbx, int __bby, int __ascent, int __descent)
@@ -133,8 +133,8 @@ public abstract class FontInfo
 	 * @since 2024/05/24
 	 */
 	@Override
-	public Iterator<GlyphInfo> iterator()
+	public final Iterator<GlyphInfo> iterator()
 	{
-		throw Debugging.todo();
+		return this.glyphs.values().iterator();
 	}
 }

@@ -10,8 +10,16 @@
 package cc.squirreljme.fontcompile.out;
 
 import cc.squirreljme.fontcompile.in.FontInfo;
+import cc.squirreljme.fontcompile.in.GlyphInfo;
+import cc.squirreljme.fontcompile.out.rafoces.PixelScan;
+import cc.squirreljme.fontcompile.out.rafoces.VectorChain;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Font compiler.
@@ -52,6 +60,23 @@ public class FontCompiler
 	@Override
 	public void run()
 	{
+		Set<VectorChain> allChains = new LinkedHashSet<>();
+		
+		// Go through each glyph
+		for (GlyphInfo glyph : this.in)
+		{
+			// Process vectors
+			PixelScan scan = new PixelScan(glyph.bitmap());
+			
+			// Calculate chains
+			VectorChain[] chains = scan.calculate();
+			
+			// Store all unique chains
+			allChains.addAll(Arrays.asList(chains));
+			
+			throw Debugging.todo();
+		}
+		
 		throw Debugging.todo();
 	}
 }

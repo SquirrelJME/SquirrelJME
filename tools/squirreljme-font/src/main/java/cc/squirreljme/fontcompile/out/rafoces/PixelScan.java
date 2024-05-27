@@ -10,9 +10,12 @@
 package cc.squirreljme.fontcompile.out.rafoces;
 
 import cc.squirreljme.fontcompile.util.GlyphBitmap;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Not Described.
+ * Scans the pixels within the glyph.
  *
  * @since 2024/05/27
  */
@@ -39,6 +42,41 @@ public final class PixelScan
 			throw new NullPointerException("NARG");
 		
 		this.bitmap = __bitmap;
-		this._ident = new byte[__bitmap.width * __bitmap.height];
+		
+		// Initialize pixel identity
+		byte[] ident = new byte[__bitmap.width * __bitmap.height];
+		for (int i = 0, n = ident.length; i < n; i++)
+			ident[i] = -1;
+		this._ident = ident;
+	}
+	
+	/**
+	 * Calculates the vector chain for the image.
+	 *
+	 * @return Returns the vector chain.
+	 * @since 2024/05/27
+	 */
+	public VectorChain[] calculate()
+	{
+		// Input and output processing
+		GlyphBitmap bitmap = this.bitmap;
+		byte[] ident = this._ident;
+		int w = bitmap.width;
+		int h = bitmap.height;
+		
+		// Find vector chains
+		List<VectorChain> result = new ArrayList<>();
+		for (int y = 0; y < h; y++)
+			for (int x = 0, i = (y * h); x < w; x++, i++)
+			{
+				// Skip already processed pixels
+				if (ident[i] >= 0)
+					continue;
+				
+				throw Debugging.todo();
+			}
+		
+		// Return all resultant chains
+		return result.toArray(new VectorChain[result.size()]);
 	}
 }
