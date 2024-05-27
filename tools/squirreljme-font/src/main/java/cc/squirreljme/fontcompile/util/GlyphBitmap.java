@@ -21,10 +21,10 @@ import java.io.PrintStream;
 public class GlyphBitmap
 {
 	/** The glyph width. */ 
-	protected final int width;
+	public final int width;
 	
 	/** The glyph height. */
-	protected final int height;
+	public final int height;
 	
 	/** The scanline length. */
 	protected final int scanLen;
