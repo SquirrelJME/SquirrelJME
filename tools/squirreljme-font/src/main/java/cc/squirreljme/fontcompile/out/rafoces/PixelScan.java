@@ -24,7 +24,7 @@ public final class PixelScan
 {
 	/** ID for pixels that are on the outer edge. */
 	private static final short _EDGE_HOLE_ID =
-		32767;
+		Short.MAX_VALUE;
 	
 	/** The bitmap to be parsed. */
 	protected final GlyphBitmap bitmap;
@@ -123,7 +123,7 @@ public final class PixelScan
 		int w = bitmap.width;
 		int h = bitmap.height;
 		
-		// Find pixel fills
+		// Find pixel fills/holes
 		for (int y = 0; y <= h; y++)
 			for (int x = 0; x <= w; x++)
 			{
@@ -153,8 +153,51 @@ public final class PixelScan
 					this.__write(hole, x, y, (short)-1);
 			}
 		
+		// Calculate holes that are next to the edges of the bitmap, this
+		// area becomes the void space
+		this.__calcAdjacentEdge();
+		
 		// Debug
 		PixelScan.__dump(System.err, fill, hole, w, h);
+	}
+	
+	/**
+	 * Calculates holes which are adjacent to bitmap edges, which become voids.
+	 *
+	 * @since 2024/05/29
+	 */
+	private void __calcAdjacentEdge()
+	{
+		GlyphBitmap bitmap = this.bitmap;
+		short[] fill = this._fill;
+		short[] hole = this._hole;
+		int w = bitmap.width;
+		int h = bitmap.height;
+		
+		// Find all holes that are next to an edge
+		boolean[] edge = new boolean[Short.MAX_VALUE];
+		for (int y = 0; y < h; y++)
+			for (int x = 0; x < w; x++)
+			{
+				// Not on edge
+				if (!(x == 0 || x == (w - 1) ||
+					y == 0 || y == (h - 1)))
+					continue;
+				
+				// Mark ID as being on the edge
+				int id = this.__read(hole, x, y);
+				if (id >= 0)
+					edge[id] = true;
+			}
+		
+		// Go through again and turn all edge adjacent IDs to edges
+		for (int y = 0; y < h; y++)
+			for (int x = 0; x < w; x++)
+			{
+				int id = this.__read(hole, x, y);
+				if (id >= 0 && edge[id])
+					this.__write(hole, x, y, PixelScan._EDGE_HOLE_ID);
+			}
 	}
 	
 	/**
@@ -177,30 +220,6 @@ public final class PixelScan
 		short l = this.__read(__data, __x - 1, __y);
 		short u = this.__read(__data, __x, __y - 1);
 		
-		// If the upper or left is on the edge of the bitmap, then it is
-		// in the void area, thus those should get the same ID
-		/*if (!__fill)
-		{
-			// We also need to consider pixels that are on an exact edge as
-			// well
-			if ((u < 0 && __y - 1 < 0) || (__y == h - 1))
-			{
-				u = PixelScan._EDGE_HOLE_ID;
-				
-				// Correct pixel
-				this.__write(__data, __x - 1, __y, u);
-			}
-			
-			// Same for left
-			if ((l < 0 && __x - 1 < 0) || (__x == w - 1))
-			{
-				l = PixelScan._EDGE_HOLE_ID;
-				
-				// Correct pixel
-				this.__write(__data, __x, __y - 1, l);
-			}
-		}*/
-		
 		// If both adjacent pixels are valid, we need to go back and remap
 		// accordingly, note that we need to go through all pixels in the cases
 		// of symbols like hash `#` or `h` where the left tip may have a
@@ -218,14 +237,14 @@ public final class PixelScan
 				}
 		}
 		
-		// Determine the ID of the hole
+		// Determine the ID of the fill/hole
 		short id;
 		if (u >= 0)
 			id = u;
 		else if (l >= 0)
 			id = l;
 		
-		// No other hole is adjacent
+		// No other fill/hole is adjacent
 		else
 		{
 			if (__fill)
