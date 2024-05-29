@@ -22,6 +22,10 @@ import java.util.List;
  */
 public final class PixelScan
 {
+	/** ID for pixels that are on the outer edge. */
+	private static final short _EDGE_HOLE_ID =
+		32767;
+	
 	/** The bitmap to be parsed. */
 	protected final GlyphBitmap bitmap;
 	
@@ -36,7 +40,7 @@ public final class PixelScan
 	
 	/** Next hole ID. */
 	private short _nextHole =
-		32767; 
+		PixelScan._EDGE_HOLE_ID - 1; 
 	
 	/** The next fill ID. */
 	private short _nextFill =
@@ -99,7 +103,7 @@ public final class PixelScan
 		
 		// Calculate vector chains
 		List<VectorChain> result = new ArrayList<>();
-		if (true)
+		if (false)
 			throw Debugging.todo();
 		
 		// Return all resultant chains
@@ -119,9 +123,9 @@ public final class PixelScan
 		int w = bitmap.width;
 		int h = bitmap.height;
 		
-		// Find vector chains
-		for (int y = 0; y < h; y++)
-			for (int x = 0, i = (y * w); x < w; x++, i++)
+		// Find pixel fills
+		for (int y = 0; y <= h; y++)
+			for (int x = 0; x <= w; x++)
 			{
 				// Only consider opaque pixels
 				if (!bitmap.get(x, y))
@@ -135,6 +139,18 @@ public final class PixelScan
 				
 				// Calculate spread of fill
 				this.__calcSpread(fill, true, x, y);
+			}
+		
+		// Take fills over priority of holes
+		for (int y = 0; y <= h; y++)
+			for (int x = 0; x <= w; x++)
+			{
+				int f = this.__read(fill, x, y);
+				int o = this.__read(hole, x, y);
+				
+				// Invalidate hole if there is also a fill
+				if (f >= 0 && o >= 0)
+					this.__write(hole, x, y, (short)-1);
 			}
 		
 		// Debug
@@ -152,10 +168,38 @@ public final class PixelScan
 	 */
 	private void __calcSpread(short[] __data, boolean __fill, int __x, int __y)
 	{
+		GlyphBitmap bitmap = this.bitmap;
+		int w = bitmap.width;
+		int h = bitmap.height;
+		
 		// Since we scan from top to bottom, we only need the left and above
 		// pixel to determine which fill/hole we are in
 		short l = this.__read(__data, __x - 1, __y);
 		short u = this.__read(__data, __x, __y - 1);
+		
+		// If the upper or left is on the edge of the bitmap, then it is
+		// in the void area, thus those should get the same ID
+		/*if (!__fill)
+		{
+			// We also need to consider pixels that are on an exact edge as
+			// well
+			if ((u < 0 && __y - 1 < 0) || (__y == h - 1))
+			{
+				u = PixelScan._EDGE_HOLE_ID;
+				
+				// Correct pixel
+				this.__write(__data, __x - 1, __y, u);
+			}
+			
+			// Same for left
+			if ((l < 0 && __x - 1 < 0) || (__x == w - 1))
+			{
+				l = PixelScan._EDGE_HOLE_ID;
+				
+				// Correct pixel
+				this.__write(__data, __x, __y - 1, l);
+			}
+		}*/
 		
 		// If both adjacent pixels are valid, we need to go back and remap
 		// accordingly, note that we need to go through all pixels in the cases
@@ -163,8 +207,8 @@ public final class PixelScan
 		// different ID
 		if (u >= 0 && l >= 0)
 		{
-			for (int dy = __y; dy >= 0; dy--)
-				for (int dx = __x - 1; dx >= 0; dx--)
+			for (int dy = h; dy >= 0; dy--)
+				for (int dx = w; dx >= 0; dx--)
 				{
 					// Write, prioritizing upper because it is likely to
 					// have a lower ID
@@ -172,7 +216,6 @@ public final class PixelScan
 					if (was == l || was == u)
 						this.__write(__data, dx, dy, u);
 				}
-			
 		}
 		
 		// Determine the ID of the hole
@@ -269,8 +312,12 @@ public final class PixelScan
 				int fill = __fill[i];
 				int hole = __hole[i];
 				
-				if (fill >= 0)
+				if (fill >= 0 && hole >= 0)
+					__ps.print('?');
+				else if (fill >= 0)
 					__ps.print((char)('A' + (fill % 26)));
+				else if (hole == PixelScan._EDGE_HOLE_ID)
+					__ps.print('-');
 				else
 					__ps.print((char)('a' + ((-(hole - 32768)) % 26)));
 			}
