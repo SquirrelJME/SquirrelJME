@@ -90,7 +90,6 @@ public final class PixelScan
 	{
 		// Input and output processing
 		GlyphBitmap bitmap = this.bitmap;
-		short[] fill = this._fill;
 		int w = bitmap.width;
 		int h = bitmap.height;
 		
@@ -101,13 +100,11 @@ public final class PixelScan
 		// First calculate the adjacency group for the various pixels
 		this.__calcAdjacent();
 		
-		// Calculate vector chains
-		List<VectorChain> result = new ArrayList<>();
-		if (false)
-			throw Debugging.todo();
+		// Calculate vector points
+		VectorPoint[] points = this.__calcPoints();
 		
-		// Return all resultant chains
-		return result.toArray(new VectorChain[result.size()]);
+		// Calculate vector chains
+		return this.__calcVector(points);
 	}
 	
 	/**
@@ -201,6 +198,21 @@ public final class PixelScan
 	}
 	
 	/**
+	 * Calculates vector points.
+	 *
+	 * @since 2024/05/29
+	 */
+	private VectorPoint[] __calcPoints()
+	{
+		List<VectorPoint> result = new ArrayList<>();
+		if (true)
+			throw Debugging.todo();
+		
+		// Return all resultant chains
+		return result.toArray(new VectorPoint[result.size()]);
+	}
+	
+	/**
 	 * Calculates the spread this is in.
 	 *
 	 * @param __data The data to access.
@@ -255,6 +267,28 @@ public final class PixelScan
 		
 		// Store the index
 		this.__write(__data, __x, __y, id);
+	}
+	
+	/**
+	 * Calculates vector chains.
+	 *
+	 * @param __points The points which make up a vector.
+	 * @return The resultant vector chains.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/05/29
+	 */
+	private VectorChain[] __calcVector(VectorPoint[] __points)
+		throws NullPointerException
+	{
+		if (__points == null)
+			throw new NullPointerException("NARG");
+		
+		List<VectorChain> result = new ArrayList<>();
+		if (true)
+			throw Debugging.todo();
+		
+		// Return all resultant chains
+		return result.toArray(new VectorChain[result.size()]);
 	}
 	
 	/**
