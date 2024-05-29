@@ -318,12 +318,19 @@ public final class PixelScan
 		if (__points == null)
 			throw new NullPointerException("NARG");
 		
-		List<VectorChain> result = new ArrayList<>();
-		if (true)
+		// There is a one to one mapping between chains and points
+		int n = __points.length;
+		VectorChain[] result = new VectorChain[n];
+		for (int i = 0; i < n; i++)
+		{
+			// Get point we are starting at
+			VectorPoint point = __points[i];
+			
 			throw Debugging.todo();
+		}
 		
 		// Return all resultant chains
-		return result.toArray(new VectorChain[result.size()]);
+		return result;
 	}
 	
 	/**
