@@ -18,6 +18,15 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  */
 public class VectorPoint
 {
+	/** Is this a hole? */
+	public final boolean hole;
+	
+	/** The X coordinate. */
+	public final int x;
+	
+	/** The Y coordinate. */
+	public final int y;
+	
 	/**
 	 * Initializes the vector point.
 	 *
@@ -30,7 +39,9 @@ public class VectorPoint
 	public VectorPoint(int __x, int __y, boolean __hole)
 		throws NullPointerException
 	{
-		throw Debugging.todo();
+		this.x = __x;
+		this.y = __y;
+		this.hole = __hole;
 	}
 	
 	/**
@@ -51,5 +62,16 @@ public class VectorPoint
 	public int hashCode()
 	{
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/05/29
+	 */
+	@Override
+	public String toString()
+	{
+		return String.format("%c(%d, %d)",
+			(this.hole ? 'h' : 'F'), this.x, this.y);
 	}
 }

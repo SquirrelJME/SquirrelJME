@@ -13,6 +13,7 @@ import cc.squirreljme.fontcompile.util.GlyphBitmap;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -102,6 +103,10 @@ public final class PixelScan
 		
 		// Calculate vector points
 		VectorPoint[] points = this.__calcPoints();
+		
+		// Debug
+		Debugging.debugNote("Points: %s",
+			Arrays.asList(points));
 		
 		// Calculate vector chains
 		return this.__calcVector(points);
@@ -204,9 +209,39 @@ public final class PixelScan
 	 */
 	private VectorPoint[] __calcPoints()
 	{
+		GlyphBitmap bitmap = this.bitmap;
+		short[] fill = this._fill;
+		short[] hole = this._hole;
+		int w = bitmap.width;
+		int h = bitmap.height;
+		
+		// Go through bitmap and find starting points for all pixels and
+		// holes, since we process from top to bottom, all holes should
+		// follow fills since we ignore edge holes
 		List<VectorPoint> result = new ArrayList<>();
-		if (true)
-			throw Debugging.todo();
+		boolean[] hit = new boolean[Short.MAX_VALUE];
+		for (int y = 0; y < h; y++)
+			for (int x = 0; x < w; x++)
+			{
+				// Read details
+				short f = this.__read(fill, x, y);
+				short o = this.__read(hole, x, y);
+				
+				// Ignore edges
+				if (o == PixelScan._EDGE_HOLE_ID)
+					continue;
+				
+				// Already processed?
+				short id = (f >= 0 ? f : o);
+				if (hit[id])
+					continue;
+				
+				// Do not process this ID again
+				hit[id] = true;
+				
+				// Add in fill or short
+				result.add(new VectorPoint(x, y, o >= 0));
+			}
 		
 		// Return all resultant chains
 		return result.toArray(new VectorPoint[result.size()]);
