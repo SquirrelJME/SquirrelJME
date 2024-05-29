@@ -70,6 +70,8 @@ public class FontCompiler
 			
 			// Calculate chains
 			VectorChain[] chains = scan.calculate();
+			if (chains.length == 0)
+				continue;
 			
 			// Store all unique chains
 			allChains.addAll(Arrays.asList(chains));

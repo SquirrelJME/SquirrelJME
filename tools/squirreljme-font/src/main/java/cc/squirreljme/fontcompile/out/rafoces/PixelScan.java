@@ -73,6 +73,10 @@ public final class PixelScan
 				if (ident[i] >= 0)
 					continue;
 				
+				// Only consider opaque pixels
+				if (!bitmap.get(x, y))
+					continue;
+				
 				throw Debugging.todo();
 			}
 		
