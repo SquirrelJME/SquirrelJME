@@ -90,6 +90,10 @@ public final class PixelScan
 		int w = bitmap.width;
 		int h = bitmap.height;
 		
+		// If the bitmap has no size, this is pointless then
+		if (w == 0 || h == 0)
+			return new VectorChain[0];
+		
 		// First calculate the adjacency group for the various pixels
 		this.__calcAdjacent();
 		
@@ -119,10 +123,6 @@ public final class PixelScan
 		for (int y = 0; y < h; y++)
 			for (int x = 0, i = (y * w); x < w; x++, i++)
 			{
-				// Skip already processed pixels
-				if (fill[i] >= 0)
-					continue;
-				
 				// Only consider opaque pixels
 				if (!bitmap.get(x, y))
 				{
