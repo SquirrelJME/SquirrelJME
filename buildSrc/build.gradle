@@ -35,6 +35,6 @@ dependencies {
 	implementation 'gradle.plugin.com.github.johnrengelman:shadow:7.1.2'
 	
 	// Jackson, for JSON APIs
-	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr353:2.11.0'
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr353:2.17.1'
 	implementation 'org.glassfish:javax.json:1.1'
 }
