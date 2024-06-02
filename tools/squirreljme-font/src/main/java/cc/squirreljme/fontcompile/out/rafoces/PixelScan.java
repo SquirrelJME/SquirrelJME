@@ -39,6 +39,12 @@ public final class PixelScan
 	/** Hole pixels. */
 	private final short[] _hole;
 	
+	/** Next counts for fill. */
+	private final short[] _fillNextTo;
+	
+	/** Next counts for holes. */
+	private final short[] _holeNextTo;
+	
 	/** Next hole ID. */
 	private short _nextHole =
 		PixelScan._EDGE_HOLE_ID - 1; 
@@ -79,6 +85,10 @@ public final class PixelScan
 		// Store
 		this._fill = fill;
 		this._hole = hole;
+		
+		// The next to count already starts at zero
+		this._fillNextTo = new short[area];
+		this._holeNextTo = new short[area];
 	}
 	
 	/**
@@ -107,6 +117,10 @@ public final class PixelScan
 		// Debug
 		Debugging.debugNote("Points: %s",
 			Arrays.asList(points));
+		
+		// Calculate the number of adjacent pixels on the same fill
+		this.__calcNextTo(this._fill, this._fillNextTo);
+		this.__calcNextTo(this._hole, this._holeNextTo);
 		
 		// Calculate vector chains
 		return this.__calcVector(points);
@@ -199,6 +213,43 @@ public final class PixelScan
 				int id = this.__read(hole, x, y);
 				if (id >= 0 && edge[id])
 					this.__write(hole, x, y, PixelScan._EDGE_HOLE_ID);
+			}
+	}
+	
+	/**
+	 * Calculates the number of pixels adjacent to the same shape.
+	 *
+	 * @param __data The data to use.
+	 * @param __count The output counts;
+	 * @since 2024/06/02
+	 */
+	private void __calcNextTo(short[] __data, short[] __count)
+	{
+		GlyphBitmap bitmap = this.bitmap;
+		int w = bitmap.width;
+		int h = bitmap.height;
+		
+		// Go through each pixel
+		for (int y = 0; y < h; y++)
+			for (int x = 0; x < w; x++)
+			{
+				// Not filled or is the edge fill?
+				int id = this.__read(__data, x, y);
+				if (id < 0 || id == PixelScan._EDGE_HOLE_ID)
+					continue;
+				
+				// Get direct neighbor IDs
+				int u = this.__read(__data, x, y - 1);
+				int d = this.__read(__data, x, y + 1);
+				int l = this.__read(__data, x - 1, y);
+				int r = this.__read(__data, x + 1, y);
+				
+				// Determine total adjacency
+				short total = (short)((u == id ? 1 : 0) +
+					(d == id ? 1 : 0) +
+					(l == id ? 1 : 0) +
+					(r == id ? 1 : 0));
+				this.__write(__count, x, y, total);
 			}
 	}
 	
@@ -318,6 +369,12 @@ public final class PixelScan
 		if (__points == null)
 			throw new NullPointerException("NARG");
 		
+		// Used to quickly determine the shape edge
+		short[] fill = this._fill;
+		short[] fillNextTo = this._fillNextTo;
+		short[] hole = this._hole;
+		short[] holeNextTo = this._holeNextTo;
+		
 		// There is a one to one mapping between chains and points
 		int n = __points.length;
 		VectorChain[] result = new VectorChain[n];
@@ -326,11 +383,36 @@ public final class PixelScan
 			// Get point we are starting at
 			VectorPoint point = __points[i];
 			
-			throw Debugging.todo();
+			// Run sub-calculation using the specific fill or hole next to
+			// counts
+			if (point.hole)
+				result[i] = this.__calcVector(point, hole, holeNextTo);
+			else
+				result[i] = this.__calcVector(point, fill, fillNextTo);
 		}
 		
 		// Return all resultant chains
 		return result;
+	}
+	
+	/**
+	 * Calculates a specific vector point.
+	 *
+	 * @param __point The point to base from.
+	 * @param __data The data for the shape ID.
+	 * @param __count The next to counts for the shape.
+	 * @return The resultant parsed vector chain.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/06/02
+	 */
+	private VectorChain __calcVector(VectorPoint __point,
+		short[] __data, short[] __count)
+		throws NullPointerException
+	{
+		if (__point == null || __data == null || __count == null)
+			throw new NullPointerException("NARG");
+		
+		throw Debugging.todo();
 	}
 	
 	/**
