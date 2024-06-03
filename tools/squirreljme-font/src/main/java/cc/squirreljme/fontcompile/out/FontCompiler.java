@@ -28,7 +28,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.jetbrains.annotations.Debug;
 
 /**
  * Font compiler.
@@ -91,12 +90,36 @@ public class FontCompiler
 		Debugging.debugNote("Huffman: %d -> %s",
 			huffman.size(), huffman);
 		
+		// Compress all the various chains for every glyph
+		Map<ChainList, List<HuffBits>> huffedChains =
+			this.__compressChains(glyphVectors, huffman);
+		
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Compress the chains for every glyph.
+	 *
+	 * @param __glyphVectors The vectors to list.
+	 * @param __huffman The input huffman tree.
+	 * @return The compressed chains.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/06/03
+	 */
+	private Map<ChainList, List<HuffBits>> __compressChains(
+		Map<GlyphInfo, VectorChain[]> __glyphVectors,
+		HuffTable __huffman)
+		throws NullPointerException
+	{
+		if (__glyphVectors == null || __huffman == null)
+			throw new NullPointerException("NARG");
+		
 		// Pre-compressed duplicate chains
-		Map<ChainList, List<HuffBits>> preCompressed = new SortedTreeMap<>(); 
+		Map<ChainList, List<HuffBits>> result = new SortedTreeMap<>();
 		
 		// Compress all vector chains for every glyph
 		for (Map.Entry<GlyphInfo, VectorChain[]> entry :
-			glyphVectors.entrySet())
+			__glyphVectors.entrySet())
 		{
 			// What are we working on?
 			GlyphInfo glyph = entry.getKey();
@@ -106,12 +129,12 @@ public class FontCompiler
 			for (VectorChain chain : vectors)
 			{
 				// Does this chain need compressing?
-				List<HuffBits> bits = preCompressed.get(chain.codes);
+				List<HuffBits> bits = result.get(chain.codes);
 				if (bits == null)
 				{
 					// Compress and cache
-					bits = this.__compress(huffman, chain.codes);
-					preCompressed.put(chain.codes, bits);
+					bits = this.__compressSingle(__huffman, chain.codes);
+					result.put(chain.codes, bits);
 					
 					// Note new chain
 					Debugging.debugNote("Compressed %s -> %s",
@@ -120,11 +143,11 @@ public class FontCompiler
 			}
 		}
 		
-		throw Debugging.todo();
+		return result;
 	}
 	
 	/**
-	 * Compresses all vector chains.
+	 * Compresses a single vector chain.
 	 *
 	 * @param __huffman The huffman table to compress with.
 	 * @param __codes The codes to compress.
@@ -132,7 +155,8 @@ public class FontCompiler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/06/03
 	 */
-	private List<HuffBits> __compress(HuffTable __huffman, ChainList __codes)
+	private List<HuffBits> __compressSingle(HuffTable __huffman,
+		ChainList __codes)
 		throws NullPointerException
 	{
 		if (__huffman == null || __codes == null)
