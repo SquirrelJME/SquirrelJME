@@ -10,8 +10,11 @@
 package cc.squirreljme.fontcompile.util;
 
 import cc.squirreljme.fontcompile.InvalidFontException;
+import cc.squirreljme.fontcompile.out.rafoces.HuffBits;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Bitmap that represents the glyph.
@@ -51,17 +54,6 @@ public class GlyphBitmap
 		this.height = __height;
 		this.scanLen = GlyphBitmap.calcScan(__width);
 		this._bitmap = __bitmap;
-	}
-	
-	/**
-	 * Returns the number of uncompressed bytes needed for the bitmap.
-	 *
-	 * @return The number of bytes requires.
-	 * @since 2024/06/03
-	 */
-	public int byteSize()
-	{
-		return this.scanLen * this.height;
 	}
 	
 	/**
@@ -142,6 +134,22 @@ public class GlyphBitmap
 	public int getShift(int __x, int __y)
 	{
 		return GlyphBitmap.calcShift(__x, __y, this.width, this.height);
+	}
+	
+	/**
+	 * Returns the uncompressed bits that make up a glyph.
+	 *
+	 * @return The uncompressed glyph bits.
+	 * @since 2024/06/03
+	 */
+	public List<HuffBits> uncompressedBits()
+	{
+		List<HuffBits> result = new ArrayList<>();
+		
+		for (byte in : this._bitmap)
+			result.add(HuffBits.of(in & 0xFF, 8));
+		
+		return result;
 	}
 	
 	/**

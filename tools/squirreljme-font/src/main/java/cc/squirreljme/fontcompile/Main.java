@@ -13,6 +13,7 @@ import cc.squirreljme.emulator.NativeBinding;
 import cc.squirreljme.fontcompile.in.FontInfo;
 import cc.squirreljme.fontcompile.in.bdf.BdfFontInfo;
 import cc.squirreljme.fontcompile.in.sfdir.SfdFontInfo;
+import cc.squirreljme.fontcompile.out.CompiledFont;
 import cc.squirreljme.fontcompile.out.FontCompiler;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
@@ -77,7 +78,11 @@ public class Main
 				FontCompiler compiler = new FontCompiler(inFont, out);
 				
 				// Perform compilation
-				compiler.run();
+				CompiledFont compiled = compiler.run();
+				
+				// Output resultant compiled font
+				if (true)
+					throw Debugging.todo();
 			}
 			
 			// Was a success, so move over

@@ -9,6 +9,7 @@
 
 package cc.squirreljme.fontcompile.out;
 
+import cc.squirreljme.fontcompile.InvalidFontException;
 import cc.squirreljme.fontcompile.in.FontInfo;
 import cc.squirreljme.fontcompile.in.GlyphInfo;
 import cc.squirreljme.fontcompile.out.rafoces.ChainList;
@@ -35,7 +36,6 @@ import java.util.Set;
  * @since 2024/05/19
  */
 public class FontCompiler
-	implements Runnable
 {
 	/** Zero One sequence, used for not in table sequences. */
 	private static final HuffBits _ZERO_ONE =
@@ -66,11 +66,14 @@ public class FontCompiler
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Compiles the input font.
+	 * 
+	 * @return The resultant compiled font.
+	 * @throws InvalidFontException If the font is not valid.
 	 * @since 2024/05/19
 	 */
-	@Override
-	public void run()
+	public CompiledFont run()
+		throws InvalidFontException
 	{
 		// Glyphs
 		Map<GlyphInfo, VectorChain[]> glyphVectors = new LinkedHashMap<>();
@@ -94,10 +97,8 @@ public class FontCompiler
 		Map<ChainList, List<HuffBits>> huffedChains =
 			this.__compressChains(glyphVectors, huffman);
 		
-		
-		
-		
-		throw Debugging.todo();
+		// Build finalized compiled font
+		return CompiledFont.__finalize(glyphVectors, allPoints, huffedChains);
 	}
 	
 	/**

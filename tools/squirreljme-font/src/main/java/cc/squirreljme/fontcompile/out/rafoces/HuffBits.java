@@ -10,6 +10,8 @@
 package cc.squirreljme.fontcompile.out.rafoces;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Huffman bit sequence.
@@ -157,5 +159,44 @@ public final class HuffBits
 		throws IndexOutOfBoundsException
 	{
 		return new HuffBits(__val, __shift);
+	}
+	
+	/**
+	 * Returns the number of total bits used.
+	 *
+	 * @param __in The input huffman bits.
+	 * @return The bit count.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/06/03
+	 */
+	public static int length(List<HuffBits> __in)
+		throws NullPointerException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		// Count total
+		int total = 0;
+		for (int i = 0, n = __in.size(); i < n; i++)
+			total += __in.get(i).length();
+		
+		return total;
+	}
+	
+	/**
+	 * Returns the number of total bits used.
+	 *
+	 * @param __in The input huffman bits.
+	 * @return The bit count.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/06/03
+	 */
+	public static int length(HuffBits... __in)
+		throws NullPointerException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		return HuffBits.length(Arrays.asList(__in));
 	}
 }

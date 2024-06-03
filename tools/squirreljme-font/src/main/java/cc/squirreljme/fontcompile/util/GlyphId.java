@@ -10,6 +10,7 @@
 package cc.squirreljme.fontcompile.util;
 
 import cc.squirreljme.fontcompile.InvalidFontException;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -84,6 +85,16 @@ public final class GlyphId
 	public int hashCode()
 	{
 		return this.codepoint;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/06/03
+	 */
+	@Override
+	public String toString()
+	{
+		return Integer.toString(this.codepoint); 
 	}
 	
 	/**

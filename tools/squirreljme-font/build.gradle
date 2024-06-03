@@ -29,6 +29,7 @@ dependencies {
 	implementation project(":emulators:emulator-base")
 	implementation project(":modules:cldc-compact")
 	implementation project(":modules:io")
+	implementation project(":modules:zip")
 	
 	// Lombok for simpler getters/setters
 	implementation 'org.projectlombok:lombok:1.18.30'
