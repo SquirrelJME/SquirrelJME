@@ -464,9 +464,6 @@ public final class PixelScan
 				code = ChainCode.STRAIGHT;
 			else
 				code = ChainCode.RIGHT;
-				
-			// Store code for current position
-			chain.add(code);
 			
 			// Adjust angle accordingly
 			VectorAngle newAngle = angle.moveAngle(code);
@@ -486,6 +483,9 @@ public final class PixelScan
 			{
 				x = checkX;
 				y = checkY;
+				
+				// Store code for current position
+				chain.add(code);
 			}
 			
 			// Otherwise, since we cannot move there set the new angle 
