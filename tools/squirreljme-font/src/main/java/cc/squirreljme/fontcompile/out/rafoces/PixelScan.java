@@ -412,7 +412,89 @@ public final class PixelScan
 		if (__point == null || __data == null || __count == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		// Determine width and height
+		GlyphBitmap bitmap = this.bitmap;
+		int w = bitmap.width;
+		int h = bitmap.height;
+		
+		// Base start and end points
+		int x = __point.x;
+		int y = __point.y;
+		int ex = __point.x;
+		int ey = __point.y;
+		
+		// Our own shape ID
+		int id = this.__read(__data, x, y);
+		
+		// Debug
+		Debugging.debugNote("Start %s.", __point);
+		
+		// Resultant chain
+		List<ChainCode> chain = new ArrayList<>();
+		
+		// Run around until back at the start
+		VectorAngle angle = VectorAngle.LEFT;
+		do
+		{
+			// Debug
+			Debugging.debugNote("At (%d, %d) facing %s.",
+				x, y, angle);
+			
+			// Fell out of bounds?
+			if (x < 0 || y < 0 || x >= w || y >= h)
+				throw new IllegalStateException(String.format(
+					"Fell outside bounds at (%d, %d), " +
+					"limit ([0, %d], [0, %d]).",
+					x, y, w, h));
+			
+			// Get number of pixels here
+			short count = this.__read(__count, x, y);
+			if (count <= 0 || count >= 4)
+				throw new IllegalStateException(String.format(
+					"Wrong point (%d, %d) on path, count is %d?",
+					x, y, count));
+			
+			// Determine chain code
+			ChainCode code;
+			if (count == 1)
+				code = ChainCode.LEFT;
+			else if (count == 2)
+				code = ChainCode.STRAIGHT;
+			else
+				code = ChainCode.RIGHT;
+			
+			// Adjust angle accordingly
+			VectorAngle newAngle = angle.moveAngle(code);
+			
+			// Get id of where we will be moving
+			int checkX = angle.moveX(x);
+			int checkY = angle.moveY(y);
+			
+			// If the ID matches, thus it is valid, we can move there
+			int checkId = this.__read(__data, checkX, checkY);
+			if (checkId == id)
+			{
+				x = checkX;
+				y = checkY;
+				
+				// Point is valid, so we use the chain code
+				chain.add(code);
+			}
+			
+			// Otherwise, since we cannot move there set the new angle 
+			else
+			{
+				angle = newAngle;
+				
+				// We changed angle, so we use the chain code here
+				chain.add(code);
+			}
+		} while (!(x == ex && y == ey && angle == VectorAngle.LEFT));
+		
+		// Debug
+		Debugging.debugNote("End %s: %s", __point, chain);
+		
+		return new VectorChain(__point, new ChainList(chain));
 	}
 	
 	/**
