@@ -155,6 +155,19 @@ public final class HuffSpliceTable
 			}
 		}
 		
+		// Remove all entries which are beyond the reduce limit, but never
+		// the first one as that is the special zero-zero code. This is done
+		// so that way very small values can just be used with normal
+		// uncompressed variable width sequences instead of relying on
+		// the table
+		for (int i = all.size() - 1;
+			 i >= 1 && all.size() > HuffSpliceTable._TABLE_LIMIT; i--)
+		{
+			int count = all.get(i).count();
+			if (count < HuffSpliceTable._NO_REDUCE_LIMIT)
+				all.remove(i);
+		}
+		
 		// Remove everything that is past the end of the table, since we do
 		// not want a very large huffman table
 		while (all.size() > HuffSpliceTable._TABLE_LIMIT)
@@ -170,7 +183,7 @@ public final class HuffSpliceTable
 	 * @return The table to use for compression.
 	 * @since 2024/06/03
 	 */
-	public Map<ChainList, HuffBits> huffmanTable()
+	public HuffTable huffmanTable()
 	{
 		// Start with the optimized table
 		List<HuffSpliceItem> all = this.allOptimized();
@@ -193,7 +206,7 @@ public final class HuffSpliceTable
 		}
 		
 		// Use this tree for compression
-		return result;
+		return new HuffTable(result);
 	}
 	
 	/**

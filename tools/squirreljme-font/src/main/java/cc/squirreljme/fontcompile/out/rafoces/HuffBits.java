@@ -66,6 +66,36 @@ public final class HuffBits
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2024/06/03
+	 */
+	@Override
+	public boolean equals(Object __o)
+	{
+		if (this == __o)
+			return true;
+		else if (!(__o instanceof HuffBits))
+			return false;
+		
+		HuffBits o = (HuffBits)__o;
+		return this.value == o.value &&
+			this.mask == o.mask &&
+			this.shift == o.shift;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/06/03
+	 */
+	@Override
+	public int hashCode()
+	{
+		return this.shift ^
+			(int)(((this.mask | this.value) >>> 32L) |
+				(this.mask | this.value));
+	}
+	
+	/**
 	 * Increments the bits by 1.
 	 *
 	 * @return The bits incremented by one.

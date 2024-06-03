@@ -135,17 +135,14 @@ public final class ChainList
 	@Override
 	public int compareTo(ChainList __o)
 	{
-		ChainCode[] ac = this._codes;
-		ChainCode[] bc = __o._codes;
-		
-		int an = ac.length;
-		int bn = bc.length;
+		int an = this.size();
+		int bn = __o.size();
 		
 		// Compare individual entries
 		int limit = (an < bn ? an : bn);
 		for (int i = 0; i < limit; i++)
 		{
-			int cmp = ac[i].compareTo(bc[i]);
+			int cmp = this.get(i).compareTo(__o.get(i));
 			if (cmp != 0)
 				return cmp;
 		}
