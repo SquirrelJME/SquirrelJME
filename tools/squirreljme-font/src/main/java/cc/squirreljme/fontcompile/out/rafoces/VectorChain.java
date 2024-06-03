@@ -21,6 +21,12 @@ import java.util.List;
 public class VectorChain
 	implements Iterable<ChainCode>
 {
+	/** Chain codes. */
+	protected final ChainList codes;
+	
+	/** The starting point for this chain. */
+	protected final VectorPoint point;
+	
 	/**
 	 * Initializes the vector chain.
 	 *
@@ -54,7 +60,8 @@ public class VectorChain
 		if (__point == null || __codes == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		this.point = __point;
+		this.codes = __codes;
 	}
 	
 	/**
@@ -74,7 +81,7 @@ public class VectorChain
 	@Override
 	public int hashCode()
 	{
-		throw Debugging.todo();
+		return this.point.hashCode() ^ this.codes.hashCode();
 	}
 	
 	/**

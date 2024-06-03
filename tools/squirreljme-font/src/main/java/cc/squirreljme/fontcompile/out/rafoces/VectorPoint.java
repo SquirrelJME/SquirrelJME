@@ -61,7 +61,7 @@ public class VectorPoint
 	@Override
 	public int hashCode()
 	{
-		throw Debugging.todo();
+		return (this.x ^ this.y) ^ (this.hole ? -1 : 0);
 	}
 	
 	/**

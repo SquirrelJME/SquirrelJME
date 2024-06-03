@@ -10,6 +10,7 @@
 package cc.squirreljme.fontcompile.out.rafoces;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -22,6 +23,12 @@ import java.util.List;
 public final class ChainList
 	implements Iterable<ChainCode>
 {
+	/** Chain codes. */
+	private final ChainCode[] _codes;
+	
+	/** The hashcode. */
+	private volatile int _hash;
+	
 	/**
 	 * Initializes the chain list.
 	 *
@@ -45,7 +52,23 @@ public final class ChainList
 	public ChainList(List<ChainCode> __codes)
 		throws NullPointerException
 	{
-		throw Debugging.todo();
+		if (__codes == null)
+			throw new NullPointerException("NARG");
+		
+		// Copy in
+		int n = __codes.size();
+		ChainCode[] codes = new ChainCode[n];
+		for (int i = 0; i < n; i++)
+		{
+			ChainCode code = __codes.get(i);
+			if (code == null)
+				throw new NullPointerException("NARG");
+			
+			codes[i] = code;
+		}
+		
+		// Set
+		this._codes = codes;
 	}
 	
 	/**
@@ -65,7 +88,13 @@ public final class ChainList
 	@Override
 	public int hashCode()
 	{
-		throw Debugging.todo();
+		int result = this._hash;
+		if (result != 0)
+			return result;
+		
+		result = Arrays.asList(this._codes).hashCode();
+		this._hash = result;
+		return result;
 	}
 	
 	/**
