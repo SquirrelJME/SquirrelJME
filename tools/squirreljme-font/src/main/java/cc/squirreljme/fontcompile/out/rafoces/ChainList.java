@@ -72,6 +72,36 @@ public final class ChainList
 	}
 	
 	/**
+	 * The number of flat bits needed to represent this chain.
+	 *
+	 * @return Flattened bits needed to represent chain.
+	 * @since 2024/06/03
+	 */
+	public int bitsFlat()
+	{
+		return this._codes.length * 2;
+	}
+	
+	/**
+	 * Bits needed using simple huffman compression.
+	 *
+	 * @return The number of bits needed for simple huffman compression.
+	 * @since 2024/06/03
+	 */
+	public int bitsSimpleHuffman()
+	{
+		int total = 0;
+		
+		for (ChainCode code : this._codes)
+			if (code == ChainCode.STRAIGHT)
+				total += 1;
+			else
+				total += 2;
+		
+		return total;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2024/05/27
 	 */
@@ -113,5 +143,16 @@ public final class ChainList
 	public Iterator<ChainCode> iterator()
 	{
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Returns the number of codes in the list.
+	 *
+	 * @return The code list size.
+	 * @since 2024/06/03
+	 */
+	public int size()
+	{
+		return this._codes.length;
 	}
 }

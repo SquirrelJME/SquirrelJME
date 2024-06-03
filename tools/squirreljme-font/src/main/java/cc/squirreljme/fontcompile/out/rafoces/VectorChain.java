@@ -22,10 +22,10 @@ public class VectorChain
 	implements Iterable<ChainCode>
 {
 	/** Chain codes. */
-	protected final ChainList codes;
+	public final ChainList codes;
 	
 	/** The starting point for this chain. */
-	protected final VectorPoint point;
+	public final VectorPoint point;
 	
 	/**
 	 * Initializes the vector chain.

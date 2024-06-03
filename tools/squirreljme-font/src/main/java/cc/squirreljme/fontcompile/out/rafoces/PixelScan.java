@@ -23,6 +23,10 @@ import java.util.List;
  */
 public final class PixelScan
 {
+	/** Debugging? */
+	public static final boolean DEBUG =
+		Boolean.getBoolean("cc.squirreljme.fontcompile.debug");
+	
 	/** ID for pixels that are on the outer edge. */
 	private static final short _EDGE_HOLE_ID =
 		Short.MAX_VALUE;
@@ -105,8 +109,9 @@ public final class PixelScan
 		VectorPoint[] points = this.__calcPoints();
 		
 		// Debug
-		Debugging.debugNote("Points: %s",
-			Arrays.asList(points));
+		if (PixelScan.DEBUG)
+			Debugging.debugNote("Points: %s",
+				Arrays.asList(points));
 		
 		// Calculate vector chains
 		return this.__calcVector(points);
@@ -160,7 +165,8 @@ public final class PixelScan
 		this.__calcAdjacentEdge();
 		
 		// Debug
-		PixelScan.__dump(System.err, fill, hole, w, h);
+		if (PixelScan.DEBUG)
+			PixelScan.__dump(System.err, fill, hole, w, h);
 	}
 	
 	/**
@@ -372,7 +378,8 @@ public final class PixelScan
 		int id = this.__read(__data, x, y);
 		
 		// Debug
-		Debugging.debugNote("Start %s", __point);
+		if (PixelScan.DEBUG)
+			Debugging.debugNote("Start %s", __point);
 		
 		// Resultant chain
 		List<ChainCode> chain = new ArrayList<>();
@@ -427,8 +434,9 @@ public final class PixelScan
 				code = ChainCode.RIGHT;
 			
 			// Debug
-			Debugging.debugNote("SEQ (%d, %d) facing %s -> %s",
-				x, y, angle, code);
+			if (PixelScan.DEBUG)
+				Debugging.debugNote("SEQ (%d, %d) facing %s -> %s",
+					x, y, angle, code);
 			
 			// Adjust angle and coordinate to follow the edge
 			angle = angle.moveAngle(code);
@@ -440,7 +448,8 @@ public final class PixelScan
 		} while (!(x == ex && y == ey && angle == VectorAngle.LEFT));
 		
 		// Debug
-		Debugging.debugNote("End %s: %s", __point, chain);
+		if (PixelScan.DEBUG)
+			Debugging.debugNote("End %s: %s", __point, chain);
 		
 		return new VectorChain(__point, new ChainList(chain));
 	}

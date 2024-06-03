@@ -54,6 +54,17 @@ public class GlyphBitmap
 	}
 	
 	/**
+	 * Returns the number of uncompressed bytes needed for the bitmap.
+	 *
+	 * @return The number of bytes requires.
+	 * @since 2024/06/03
+	 */
+	public int byteSize()
+	{
+		return this.scanLen * this.height;
+	}
+	
+	/**
 	 * Dumps the bitmap.
 	 *
 	 * @param __ps The stream to output to.

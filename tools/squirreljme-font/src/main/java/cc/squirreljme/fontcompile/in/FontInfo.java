@@ -137,4 +137,15 @@ public abstract class FontInfo
 	{
 		return this.glyphs.values().iterator();
 	}
+	
+	/**
+	 * Returns the number of glyphs.
+	 *
+	 * @return The glyph count.
+	 * @since 2024/06/03
+	 */
+	public int size()
+	{
+		return this.glyphs.size();
+	}
 }
