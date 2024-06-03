@@ -307,6 +307,7 @@
       <option name="m_minLength" value="1" />
       <option name="m_maxLength" value="20" />
     </inspection_tool>
+    <inspection_tool class="LombokGetterMayBeUsed" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="LongLine" enabled="true" level="TYPO" enabled_by_default="true" />
     <inspection_tool class="MagicConstant" enabled="true" level="WARNING" enabled_by_default="true" editorAttributes="TYPO" />
     <inspection_tool class="MagicNumber" enabled="true" level="TYPO" enabled_by_default="true" editorAttributes="TEXT_STYLE_SUGGESTION">

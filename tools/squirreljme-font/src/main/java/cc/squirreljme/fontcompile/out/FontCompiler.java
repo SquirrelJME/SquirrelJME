@@ -11,22 +11,20 @@ package cc.squirreljme.fontcompile.out;
 
 import cc.squirreljme.fontcompile.in.FontInfo;
 import cc.squirreljme.fontcompile.in.GlyphInfo;
-import cc.squirreljme.fontcompile.out.rafoces.ChainCode;
 import cc.squirreljme.fontcompile.out.rafoces.ChainList;
+import cc.squirreljme.fontcompile.out.rafoces.HuffSpliceItem;
+import cc.squirreljme.fontcompile.out.rafoces.HuffSpliceTable;
 import cc.squirreljme.fontcompile.out.rafoces.PixelScan;
 import cc.squirreljme.fontcompile.out.rafoces.VectorChain;
 import cc.squirreljme.fontcompile.out.rafoces.VectorPoint;
 import cc.squirreljme.fontcompile.util.GlyphBitmap;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.jetbrains.annotations.Debug;
 
 /**
  * Font compiler.
@@ -79,7 +77,9 @@ public class FontCompiler
 		// Codes
 		Set<ChainList> allCodes = new LinkedHashSet<>();
 		long bitsFlat = 0;
-		long bitsSimple = 0;
+		
+		// Used to build a huffman table with vector splices
+		HuffSpliceTable splice = new HuffSpliceTable();
 		
 		// Debug
 		Debugging.debugNote("Calculating on %d glyphs.",
@@ -107,13 +107,18 @@ public class FontCompiler
 			// Store all unique chains
 			for (VectorChain vector : vectors)
 			{
+				ChainList codes = vector.codes;
+				
+				// Add base vectors
 				allVectors.add(vector);
 				allPoints.add(vector.point);
-				allCodes.add(vector.codes);
+				allCodes.add(codes);
 				
 				// Size estimation
-				bitsFlat += vector.codes.bitsFlat();
-				bitsSimple += vector.codes.bitsSimpleHuffman();
+				bitsFlat += codes.bitsFlat();
+				
+				// Register into the splice table
+				splice.spliceFrom(codes);
 			}
 		}
 		
@@ -127,9 +132,14 @@ public class FontCompiler
 		Debugging.debugNote("%d unique point starts.",
 			allPoints.size());
 		Debugging.debugNote("%d unique code chains " +
-			"(Flat: %dkiB; Simple: %dkiB).",
+			"(Flat: %dkiB).",
 			allCodes.size(),
-			bitsFlat / 8192, bitsSimple / 8192);
+			bitsFlat / 8192);
+		
+		// Debug
+		List<HuffSpliceItem> optimized = splice.allOptimized();
+		Debugging.debugNote("Splice: %d -> %s",
+			optimized.size(), optimized);
 		
 		throw Debugging.todo();
 	}
