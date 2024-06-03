@@ -372,7 +372,7 @@ public final class PixelScan
 		int id = this.__read(__data, x, y);
 		
 		// Debug
-		Debugging.debugNote("Start %s.", __point);
+		Debugging.debugNote("Start %s", __point);
 		
 		// Resultant chain
 		List<ChainCode> chain = new ArrayList<>();
@@ -415,8 +415,11 @@ public final class PixelScan
 				// |B|h|B
 				// > ^=<
 				//  B B B
-				if (this.__calcVectorHole(__data, id, x, y))
+				int type = this.__calcVectorHole(__data, id, x, y); 
+				if (type > 0)
 					code = ChainCode.LEFT;
+				else if (type < 0)
+					code = ChainCode.RIGHT;
 				else
 					code = ChainCode.STRAIGHT;
 			}
@@ -478,11 +481,12 @@ public final class PixelScan
 	 * @param __id The ID of the shape we are interested in.
 	 * @param __x The X coordinate.
 	 * @param __y The Y coordinate.
-	 * @return If there is a hole here.
+	 * @return Positive value if there is a normal hole here, otherwise
+	 * negative for inverted hole.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/06/02
 	 */
-	private boolean __calcVectorHole(short[] __data, int __id,
+	private int __calcVectorHole(short[] __data, int __id,
 		int __x, int __y)
 		throws NullPointerException
 	{
@@ -497,8 +501,17 @@ public final class PixelScan
 		
 		// -X
 		// X-
-		return ul != __id && ur == __id &&
-			dl == __id && dr != __id;
+		if (ul != __id && ur == __id &&
+			dl == __id && dr != __id)
+			return 1;
+		
+		// X-
+		// -X
+		else if (ul == __id && ur != __id &&
+			dl != __id && dr == __id)
+			return -1;
+		
+		return 0;
 	}
 	
 	/**
