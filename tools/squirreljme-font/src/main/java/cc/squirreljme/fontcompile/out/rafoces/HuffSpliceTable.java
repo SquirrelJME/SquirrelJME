@@ -165,6 +165,56 @@ public final class HuffSpliceTable
 	}
 	
 	/**
+	 * Returns the huffman table to use for compression.
+	 *
+	 * @return The table to use for compression.
+	 * @since 2024/06/03
+	 */
+	public Map<ChainList, HuffBits> huffmanTable()
+	{
+		// Start with the optimized table
+		List<HuffSpliceItem> all = this.allOptimized();
+		
+		// Setup resultant map, the first item is the 00 index, which ends
+		// up being the most common
+		Map<ChainList, HuffBits> result = new LinkedHashMap<>();
+		result.put(all.get(0).list, HuffBits.of(0b00, 2));
+		
+		// Then sequentially build the tree on the 10 side
+		HuffBits bits = HuffBits.of(0b10, 2);
+		for (int i = 1, n = all.size(); i < n; i++)
+		{
+			// Store into the table
+			result.put(all.get(i).list, bits);
+			
+			// Then increment the bits by 1, this will build a continually
+			// adjacent tree
+			bits = bits.increment();
+		}
+		
+		// Use this tree for compression
+		return result;
+	}
+	
+	/**
+	 * Injects the chain codes into the list.
+	 *
+	 * @param __codes The codes to inject.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/06/03
+	 */
+	public void inject(ChainList __codes)
+		throws NullPointerException
+	{
+		if (__codes == null)
+			throw new NullPointerException("NARG");
+		
+		Map<ChainList, Integer> counts = this._counts;
+		Integer current = counts.get(__codes);
+		counts.put(__codes, (current == null ? 1 : current + 1));
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2024/06/03
 	 */
@@ -198,24 +248,6 @@ public final class HuffSpliceTable
 				if (at - base > 0)
 					this.inject(__codes.subSequence(0, at - base));
 			}
-	}
-	
-	/**
-	 * Injects the chain codes into the list.
-	 *
-	 * @param __codes The codes to inject.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2024/06/03
-	 */
-	public void inject(ChainList __codes)
-		throws NullPointerException
-	{
-		if (__codes == null)
-			throw new NullPointerException("NARG");
-		
-		Map<ChainList, Integer> counts = this._counts;
-		Integer current = counts.get(__codes);
-		counts.put(__codes, (current == null ? 1 : current + 1));
 	}
 	
 	/**

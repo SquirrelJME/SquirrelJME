@@ -12,6 +12,7 @@ package cc.squirreljme.fontcompile.out;
 import cc.squirreljme.fontcompile.in.FontInfo;
 import cc.squirreljme.fontcompile.in.GlyphInfo;
 import cc.squirreljme.fontcompile.out.rafoces.ChainList;
+import cc.squirreljme.fontcompile.out.rafoces.HuffBits;
 import cc.squirreljme.fontcompile.out.rafoces.HuffSpliceItem;
 import cc.squirreljme.fontcompile.out.rafoces.HuffSpliceTable;
 import cc.squirreljme.fontcompile.out.rafoces.PixelScan;
@@ -140,6 +141,11 @@ public class FontCompiler
 		List<HuffSpliceItem> optimized = splice.allOptimized();
 		Debugging.debugNote("Splice: %d -> %s",
 			optimized.size(), optimized);
+		
+		// Debug
+		Map<ChainList, HuffBits> huffman = splice.huffmanTable();
+		Debugging.debugNote("Huffman: %d -> %s",
+			huffman.size(), huffman);
 		
 		throw Debugging.todo();
 	}
