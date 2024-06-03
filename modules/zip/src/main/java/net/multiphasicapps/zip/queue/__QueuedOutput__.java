@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.aot.queue;
+package net.multiphasicapps.zip.queue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

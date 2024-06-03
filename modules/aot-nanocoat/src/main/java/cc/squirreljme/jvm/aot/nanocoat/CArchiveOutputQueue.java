@@ -11,7 +11,7 @@ package cc.squirreljme.jvm.aot.nanocoat;
 
 import cc.squirreljme.c.CFile;
 import cc.squirreljme.c.CFileName;
-import cc.squirreljme.jvm.aot.queue.ArchiveOutputQueue;
+import net.multiphasicapps.zip.queue.ArchiveOutputQueue;
 import java.io.IOException;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 

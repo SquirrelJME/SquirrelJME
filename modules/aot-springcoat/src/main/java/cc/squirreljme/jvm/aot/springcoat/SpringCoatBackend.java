@@ -14,26 +14,14 @@ import cc.squirreljme.jvm.aot.Backend;
 import cc.squirreljme.jvm.aot.CompileSettings;
 import cc.squirreljme.jvm.aot.LinkGlob;
 import cc.squirreljme.jvm.aot.RomSettings;
-import cc.squirreljme.jvm.aot.pack.ChunkUtils;
-import cc.squirreljme.jvm.aot.pack.HeaderStructWriter;
-import cc.squirreljme.jvm.aot.pack.StandardPackWriter;
-import cc.squirreljme.jvm.aot.pack.TableOfContentsEntry;
-import cc.squirreljme.jvm.aot.pack.TableOfContentsWriter;
-import cc.squirreljme.jvm.aot.queue.ArchiveOutputQueue;
-import cc.squirreljme.jvm.pack.constants.ClassInfoConstants;
-import cc.squirreljme.jvm.pack.constants.PackFlag;
-import cc.squirreljme.jvm.pack.constants.PackProperty;
-import cc.squirreljme.jvm.pack.constants.PackTocProperty;
+import net.multiphasicapps.zip.queue.ArchiveOutputQueue;
 import cc.squirreljme.jvm.suite.SuiteUtils;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
-import cc.squirreljme.vm.DataContainerLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import net.multiphasicapps.io.ChunkSection;
-import net.multiphasicapps.io.ChunkWriter;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
 /**

@@ -13,4 +13,4 @@
  * @since 2023/12/04
  */
 
-package cc.squirreljme.jvm.aot.queue;
+package net.multiphasicapps.zip.queue;
