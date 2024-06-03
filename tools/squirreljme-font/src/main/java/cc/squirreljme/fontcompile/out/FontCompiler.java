@@ -141,8 +141,8 @@ public class FontCompiler
 					result.put(chain.codes, bits);
 					
 					// Note new chain
-					Debugging.debugNote("Compressed %s -> %s",
-						chain.codes, bits);
+					/*Debugging.debugNote("Compressed %s -> %s",
+						chain.codes, bits);*/
 				}
 			}
 		}

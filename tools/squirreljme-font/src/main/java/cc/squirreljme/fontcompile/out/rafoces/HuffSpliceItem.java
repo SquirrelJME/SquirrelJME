@@ -10,6 +10,8 @@
 package cc.squirreljme.fontcompile.out.rafoces;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Huffman splice item.

@@ -10,6 +10,7 @@
 package cc.squirreljme.fontcompile.out.rafoces;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -109,7 +110,7 @@ public final class HuffSpliceTable
 			ChainList list = all.get(i).getList();
 			int count = all.get(i).count();
 			
-			// Reduce anything smaller than the cuttoff
+			// Reduce anything smaller than the cutoff
 			if (count < HuffSpliceTable._CUTOFF_COUNT)
 				all.remove(i);
 		}
@@ -168,6 +169,24 @@ public final class HuffSpliceTable
 				all.remove(i);
 		}
 		
+		// Go through the table and make all singlets first, this is so they
+		// take up the least amount of bit space
+		// These also need to become the most common, otherwise the mean
+		// splitting will break, give them more weight, so they take less bits?
+		for (int i = all.size() - 1, splat = 0; i >= 3; i--)
+		{
+			HuffSpliceItem item = all.get(i);
+			if (item.list.size() == 1)
+			{
+				// Remove from this spot
+				all.remove(i);
+				
+				// Then add it back in
+				all.add(0, new HuffSpliceItem(item.list,
+					(mostCommon.count - (splat++)) * 2));
+			}
+		}
+		
 		// Remove everything that is past the end of the table, since we do
 		// not want a very large huffman table
 		while (all.size() > HuffSpliceTable._TABLE_LIMIT)
@@ -188,22 +207,9 @@ public final class HuffSpliceTable
 		// Start with the optimized table
 		List<HuffSpliceItem> all = this.allOptimized();
 		
-		// Setup resultant map, the first item is the 00 index, which ends
-		// up being the most common
+		// Recursive split of the tree
 		Map<ChainList, HuffBits> result = new LinkedHashMap<>();
-		result.put(all.get(0).list, HuffBits.of(0b00, 2));
-		
-		// Then sequentially build the tree on the 10 side
-		HuffBits bits = HuffBits.of(0b10, 2);
-		for (int i = 1, n = all.size(); i < n; i++)
-		{
-			// Store into the table
-			result.put(all.get(i).list, bits);
-			
-			// Then increment the bits by 1, this will build a continually
-			// adjacent tree
-			bits = bits.increment();
-		}
+		HuffSpliceTable.__huffmanDive(result, all, null);
 		
 		// Use this tree for compression
 		return new HuffTable(result);
@@ -271,5 +277,80 @@ public final class HuffSpliceTable
 	public String toString()
 	{
 		return this._counts.toString();
+	}
+	
+	/**
+	 * Dives into and builds the huffman tree.
+	 *
+	 * @param __result The resultant map of codes.
+	 * @param __slice The slice to calculate.
+	 * @param __baseBits The base bits to use for the tree, if {@code null}
+	 * then this is the very top of the tree.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/06/03
+	 */
+	private static void __huffmanDive(Map<ChainList, HuffBits> __result,
+		List<HuffSpliceItem> __slice, HuffBits __baseBits)
+		throws NullPointerException
+	{
+		if (__result == null || __slice == null)
+			throw new NullPointerException("NARG");
+		
+		// There is only a single entry in the slice, so this is a node
+		if (__slice.size() == 1)
+		{
+			// Debug
+			Debugging.debugNote("Huff INJECT: [%s] <- %s",
+				__baseBits, __slice);
+			
+			__result.put(__slice.get(0).list, __baseBits);
+			return;
+		}
+		
+		// Get the total count for this entire slice
+		int total = 0;
+		int count = __slice.size();
+		for (HuffSpliceItem item : __slice)
+			total += item.count;
+		
+		// Determine the index that is the closest to the given mean
+		int mean = total / count;
+		int meanDx = 0;
+		int meanDist = Integer.MAX_VALUE;
+		for (int i = 0; i < count; i++)
+		{
+			// If the difference from the mean is smaller then get to the
+			// closest possible
+			int dist = Math.abs(mean - __slice.get(i).count);
+			if (dist < meanDist)
+			{
+				meanDx = i;
+				meanDist = dist;
+			}
+		}
+		
+		// If the mean index is zero, always make it one otherwise we would
+		// dive with a zero size list
+		if (meanDx == 0)
+			meanDx = 1;
+		
+		// Split the tree in half
+		List<HuffSpliceItem> left = __slice.subList(0, meanDx);
+		List<HuffSpliceItem> right = __slice.subList(meanDx, __slice.size());
+		
+		// Which bits for the left and right side?
+		HuffBits leftBits = (__baseBits == null ?
+			HuffBits.of(0, 1) : __baseBits.shiftIn(false));
+		HuffBits rightBits = (__baseBits == null ?
+			HuffBits.of(1, 1) : __baseBits.shiftIn(true));
+		
+		// Debug
+		/*Debugging.debugNote("Huff split: (%d~%d~%d) [%s]|[%s]; %s|%s",
+			0, meanDx, __slice.size(),
+			leftBits, rightBits, left, right);*/
+		
+		// Dive deeper into the tree on both sides
+		HuffSpliceTable.__huffmanDive(__result, left, leftBits);
+		HuffSpliceTable.__huffmanDive(__result, right, rightBits);
 	}
 }

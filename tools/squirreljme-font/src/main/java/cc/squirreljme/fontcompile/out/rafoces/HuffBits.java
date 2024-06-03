@@ -128,6 +128,22 @@ public final class HuffBits
 	}
 	
 	/**
+	 * Shifts in a single bit.
+	 *
+	 * @param __b The bit to shift in.
+	 * @return The resultant shifted in bit.
+	 * @since 2024/06/03
+	 */
+	public HuffBits shiftIn(boolean __b)
+	{
+		int shift = this.shift;
+		long value = this.value;
+		
+		return HuffBits.of((value << 1L) | (__b ? 1L : 0L),
+			shift + 1);
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2024/06/03
 	 */
@@ -136,11 +152,11 @@ public final class HuffBits
 	{
 		StringBuilder sb = new StringBuilder();
 		
-		for (int i = 0, n = this.length(); i < n; i++)
+		for (int i = this.length() - 1; i >= 0; i--)
 			if (this.get(i))
-				sb.insert(0, '1');
+				sb.append('1');
 			else
-				sb.insert(0, '0');
+				sb.append('0');
 			
 		return sb.toString();
 	}
