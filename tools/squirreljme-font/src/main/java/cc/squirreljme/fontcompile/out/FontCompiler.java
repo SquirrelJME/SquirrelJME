@@ -17,8 +17,10 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -61,6 +63,7 @@ public class FontCompiler
 	public void run()
 	{
 		Set<VectorChain> allChains = new LinkedHashSet<>();
+		Map<GlyphInfo, VectorChain[]> glyphChains = new LinkedHashMap<>();
 		
 		// Go through each glyph
 		for (GlyphInfo glyph : this.in)
@@ -73,10 +76,11 @@ public class FontCompiler
 			if (chains.length == 0)
 				continue;
 			
+			// Remember individual chains for later
+			glyphChains.put(glyph, chains);
+			
 			// Store all unique chains
 			allChains.addAll(Arrays.asList(chains));
-			
-			throw Debugging.todo();
 		}
 		
 		throw Debugging.todo();

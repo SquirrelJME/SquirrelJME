@@ -49,6 +49,9 @@ public enum VectorAngle
 		if (__code == ChainCode.STRAIGHT)
 			return this;
 		
+		//    ^U
+		// <L +  >R
+		//    vD
 		switch (this)
 		{
 			case LEFT:

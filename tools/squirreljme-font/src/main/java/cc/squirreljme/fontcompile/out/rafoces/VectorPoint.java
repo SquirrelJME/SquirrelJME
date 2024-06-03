@@ -51,7 +51,15 @@ public class VectorPoint
 	@Override
 	public boolean equals(Object __o)
 	{
-		throw Debugging.todo();
+		if (this == __o)
+			return true;
+		else if ((!(__o instanceof VectorPoint)))
+			return false;
+		
+		VectorPoint o = (VectorPoint)__o;
+		return this.hole == o.hole &&
+			this.x == o.x &&
+			this.y == o.y;
 	}
 	
 	/**

@@ -71,7 +71,14 @@ public class VectorChain
 	@Override
 	public boolean equals(Object __o)
 	{
-		throw Debugging.todo();
+		if (this == __o)
+			return true;
+		else if ((!(__o instanceof VectorChain)))
+			return false;
+		
+		VectorChain o = (VectorChain)__o;
+		return this.point.equals(o.point) &&
+			this.codes.equals(o.codes);
 	}
 	
 	/**

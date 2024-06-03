@@ -379,7 +379,7 @@ public final class PixelScan
 		
 		// Run around until back at the start
 		int cycle = 0;
-		VectorAngle angle = VectorAngle.DOWN;
+		VectorAngle angle = VectorAngle.LEFT;
 		do
 		{
 			if (((++cycle) >= 100))
@@ -410,33 +410,18 @@ public final class PixelScan
 			else
 				code = ChainCode.RIGHT;
 			
-			// Adjust angle accordingly
-			VectorAngle newAngle = angle.moveAngle(code);
-			
 			// Debug
-			Debugging.debugNote("At (%d, %d) facing %s -> %s.",
-				x, y, angle, newAngle);
+			Debugging.debugNote("SEQ (%d, %d) facing %s -> %s",
+				x, y, angle, code);
 			
-			// Get id of where we will be moving
-			int checkX = angle.moveX(x);
-			int checkY = angle.moveY(y);
+			// Adjust angle and coordinate to follow the edge
+			angle = angle.moveAngle(code);
+			x = angle.moveX(x);
+			y = angle.moveY(y);
 			
-			// If the number of pixels on the edge is actually valid then
-			// we can traverse onto that edge
-			int checkCount = this.__calcVectorEdge(__data, id, checkX, checkY);
-			if (checkCount > 0)
-			{
-				x = checkX;
-				y = checkY;
-				
-				// Store code for current position
-				chain.add(code);
-			}
-			
-			// Otherwise, since we cannot move there set the new angle 
-			else
-				angle = newAngle;
-		} while (!(x == ex && y == ey && angle == VectorAngle.DOWN));
+			// Store code for current position
+			chain.add(code);
+		} while (!(x == ex && y == ey && angle == VectorAngle.LEFT));
 		
 		// Debug
 		Debugging.debugNote("End %s: %s", __point, chain);
