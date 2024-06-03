@@ -199,9 +199,13 @@ public class BdfFontInfo
 			
 			// Determine actual default glyph
 			if (defaultChar < 0 || defaultChar >= byOrder.size())
-				throw new InvalidFontException(String.format(
+			{
+				// Use something else but do not fail
+				defaultChar = 0;
+				/*throw new InvalidFontException(String.format(
 					"Unknown default character %d, not within %d.",
-					defaultChar, byOrder.size()));
+					defaultChar, byOrder.size()));*/
+			}
 			
 			// Setup font
 			return new BdfFontInfo(glyphs,

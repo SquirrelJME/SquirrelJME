@@ -65,6 +65,11 @@ public final class HuffSpliceTable
 		for (Map.Entry<ChainList, Integer> entry : this._counts.entrySet())
 			result.add(new HuffSpliceItem(entry.getKey(), entry.getValue()));
 		
+		// Never have an empty huffman tree
+		if (result.isEmpty())
+			result.add(new HuffSpliceItem(new ChainList(ChainCode.LEFT),
+				1));
+		
 		return result;
 	}
 	
@@ -169,28 +174,47 @@ public final class HuffSpliceTable
 				all.remove(i);
 		}
 		
-		// Go through the table and make all singlets first, this is so they
-		// take up the least amount of bit space
-		// These also need to become the most common, otherwise the mean
-		// splitting will break, give them more weight, so they take less bits?
-		for (int i = all.size() - 1, splat = 0; i >= 3; i--)
+		// Process multiple times so single codes get higher priority
+		for (int run = 0; run < 2; run++)
 		{
-			HuffSpliceItem item = all.get(i);
-			if (item.list.size() == 1)
+			// Go through the table and make all singlets first, this is so
+			// they take up the least amount of bit space
+			// These also need to become the most common, otherwise the mean
+			// splitting will break, give them more weight, so they take less
+			// bits?
+			ChainCode[] hasSingles = new ChainCode[ChainCode.values().length];
+			for (int i = all.size() - 1, splat = 0; i >= 3; i--)
 			{
-				// Remove from this spot
-				all.remove(i);
-				
-				// Then add it back in
-				all.add(0, new HuffSpliceItem(item.list,
-					(mostCommon.count - (splat++)) * 2));
+				HuffSpliceItem item = all.get(i);
+				if (item.list.size() == 1)
+				{
+					// Store it in
+					ChainList list = item.list;
+					ChainCode code = list.get(0);
+					
+					// This is here
+					hasSingles[code.ordinal()] = code;
+					
+					// Remove from this spot
+					all.remove(i);
+					
+					// Then add it back in
+					all.add(0, new HuffSpliceItem(list,
+						100 + (mostCommon.count - (splat++)) * 2));
+				}
 			}
+			
+			// Are any of the single codes missing? They need to be in the tree
+			for (ChainCode code : ChainCode.values())
+				if (hasSingles[code.ordinal()] == null)
+					all.add(0, new HuffSpliceItem(
+						new ChainList(code), 9001));
+			
+			// Remove everything that is past the end of the table, since we do
+			// not want a very large huffman table
+			while (all.size() > HuffSpliceTable._TABLE_LIMIT)
+				all.remove(all.size() - 1);
 		}
-		
-		// Remove everything that is past the end of the table, since we do
-		// not want a very large huffman table
-		while (all.size() > HuffSpliceTable._TABLE_LIMIT)
-			all.remove(all.size() - 1);
 		
 		// Put back into map form
 		return all;
@@ -300,9 +324,10 @@ public final class HuffSpliceTable
 		if (__slice.size() == 1)
 		{
 			// Debug
-			Debugging.debugNote("Huff INJECT: [%s] <- %s",
-				__baseBits, __slice);
+			/*Debugging.debugNote("Huff INJECT: [%s] <- %s",
+				__baseBits, __slice);*/
 			
+			// Put it in
 			__result.put(__slice.get(0).list, __baseBits);
 			return;
 		}
@@ -329,10 +354,10 @@ public final class HuffSpliceTable
 			}
 		}
 		
-		// If the mean index is zero, always make it one otherwise we would
-		// dive with a zero size list
+		// If the mean index is zero, put it in the middle otherwise
+		// things will get extremely lopsided
 		if (meanDx == 0)
-			meanDx = 1;
+			meanDx = Math.max(1, count / 2);
 		
 		// Split the tree in half
 		List<HuffSpliceItem> left = __slice.subList(0, meanDx);

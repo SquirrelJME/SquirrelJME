@@ -389,10 +389,10 @@ public final class PixelScan
 		VectorAngle angle = VectorAngle.LEFT;
 		do
 		{
-			if (((++cycle) >= 100))
+			/*if (((++cycle) >= 100))
 				throw new IllegalStateException(String.format(
 					"Too many cycles at (%d, %d) facing %s!",
-					x, y, angle));
+					x, y, angle));*/
 			
 			// Fell out of bounds?
 			if (x < 0 || y < 0 || x > w || y > h)
