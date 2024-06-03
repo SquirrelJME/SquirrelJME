@@ -406,7 +406,20 @@ public final class PixelScan
 			if (count == 1)
 				code = ChainCode.LEFT;
 			else if (count == 2)
-				code = ChainCode.STRAIGHT;
+			{
+				// There might be two pixels next to the vertex however
+				// without checking this would go straight when we should
+				// instead go left.
+				//  -vB B
+				// v=\=v   <-- go left here
+				// |B|h|B
+				// > ^=<
+				//  B B B
+				if (this.__calcVectorHole(__data, id, x, y))
+					code = ChainCode.LEFT;
+				else
+					code = ChainCode.STRAIGHT;
+			}
 			else
 				code = ChainCode.RIGHT;
 			
@@ -456,6 +469,36 @@ public final class PixelScan
 			(ur == __id ? 1 : 0) +
 			(dl == __id ? 1 : 0) +
 			(dr == __id ? 1 : 0));
+	}
+	
+	/**
+	 * Calculates the vector hole.
+	 *
+	 * @param __data The input pixel data.
+	 * @param __id The ID of the shape we are interested in.
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @return If there is a hole here.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/06/02
+	 */
+	private boolean __calcVectorHole(short[] __data, int __id,
+		int __x, int __y)
+		throws NullPointerException
+	{
+		if (__data == null)
+			throw new NullPointerException("NARG");
+		
+		// Get pixels for the specific point
+		int ul = this.__read(__data, __x - 1, __y - 1);
+		int ur = this.__read(__data, __x, __y - 1);
+		int dl = this.__read(__data, __x - 1, __y);
+		int dr = this.__read(__data, __x, __y);
+		
+		// -X
+		// X-
+		return ul != __id && ur == __id &&
+			dl == __id && dr != __id;
 	}
 	
 	/**
