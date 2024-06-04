@@ -9,7 +9,6 @@
 
 package cc.squirreljme.fontcompile.out.rc;
 
-import cc.squirreljme.fontcompile.out.CompiledFont;
 import cc.squirreljme.fontcompile.out.struct.SqfFontStruct;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.Closeable;
@@ -26,9 +25,6 @@ import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 public class SqfResourceWriter
 	implements Closeable
 {
-	/** The input font. */
-	protected final SqfFontStruct in;
-	
 	/** The resultant output. */
 	protected final OutputStream out;
 	
@@ -38,18 +34,16 @@ public class SqfResourceWriter
 	/**
 	 * Initializes the SQF writer.
 	 *
-	 * @param __in The input font.
 	 * @param __out The output stream.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/06/04
 	 */
-	public SqfResourceWriter(SqfFontStruct __in, OutputStream __out)
+	public SqfResourceWriter(OutputStream __out)
 		throws NullPointerException
 	{
-		if (__in == null || __out == null)
+		if (__out == null)
 			throw new NullPointerException("NARG");
 		
-		this.in = __in;
 		this.out = __out;
 		this.archive = new ArchiveOutputQueue(new ZipStreamWriter(__out));
 	}
@@ -68,10 +62,16 @@ public class SqfResourceWriter
 	/**
 	 * Writes the SQF output.
 	 *
+	 * @param __struct The struct to write.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2024/06/04
 	 */
-	public void run()
+	public void write(SqfFontStruct __struct)
+		throws NullPointerException
 	{
+		if (__struct == null)
+			throw new NullPointerException("NARG");
+		
 		throw Debugging.todo();
 	}
 }

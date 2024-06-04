@@ -16,7 +16,7 @@ import cc.squirreljme.fontcompile.in.sfdir.SfdFontInfo;
 import cc.squirreljme.fontcompile.out.CompiledFont;
 import cc.squirreljme.fontcompile.out.FontCompiler;
 import cc.squirreljme.fontcompile.out.rc.SqfResourceWriter;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.fontcompile.out.struct.SqfFontStruct;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -88,11 +88,15 @@ public class Main
 				// Perform compilation
 				CompiledFont compiled = compiler.run();
 				
-				// Output resultant compiled font
+				// Parse into structured binary format
+				SqfFontStruct[] structs = SqfFontStruct.parse(compiled);
+				
+				// Write all the structs
 				try (SqfResourceWriter writer =
-					 new SqfResourceWriter(Debugging.todoObject(), out))
+					 new SqfResourceWriter(out))
 				{
-					writer.run();
+					for (SqfFontStruct struct : structs)
+						writer.write(struct);
 				}
 			}
 			

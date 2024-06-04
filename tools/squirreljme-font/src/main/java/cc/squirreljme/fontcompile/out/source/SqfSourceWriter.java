@@ -23,7 +23,7 @@ import net.multiphasicapps.zip.queue.ArchiveOutputQueue;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
 /**
- * Not Described.
+ * Writes a SQF structure as C source code.
  *
  * @since 2024/06/04
  */

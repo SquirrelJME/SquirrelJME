@@ -9,6 +9,9 @@
 
 package cc.squirreljme.fontcompile.out.struct;
 
+import cc.squirreljme.fontcompile.out.CompiledFont;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * Represents a raw structure of a SQF Font.
  *
@@ -83,5 +86,22 @@ public class SqfFontStruct
 		this._charFlags = __charFlags;
 		this._charBmpOffset = __charBmpOffset;
 		this._charBmp = __charBmp;
+	}
+	
+	/**
+	 * Parses the given compiled font into a SQF structure.
+	 *
+	 * @param __font The compiled font to parse.
+	 * @return The resultant font structures.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/06/04
+	 */
+	public static SqfFontStruct[] parse(CompiledFont __font)
+		throws NullPointerException
+	{
+		if (__font == null)
+			throw new NullPointerException("NARG");
+		
+		throw Debugging.todo();
 	}
 }
