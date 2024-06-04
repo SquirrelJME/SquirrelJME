@@ -71,13 +71,31 @@ public final class CMakeUtils
 		if (cmakePath == null &&
 			OperatingSystem.current() == OperatingSystem.WINDOWS)
 		{
-			String programFiles = System.getenv("PROGRAMFILES");
-			if (programFiles != null)
+			for (String var : Arrays.asList("PROGRAMFILES",
+				"PROGRAMFILES(x86)", "PROGRAMW6432"))
 			{
-				Path maybe = Paths.get(programFiles).resolve("CMake")
-					.resolve("bin").resolve("cmake.exe");
-				if (Files.exists(maybe))
-					cmakePath = maybe;
+				// Was determined already?
+				if (cmakePath != null)
+					break;
+				
+				// Try looking in this specific directory
+				String programFiles = System.getenv(var);
+				if (programFiles != null)
+				{
+					Path cmakeBase = Paths.get(programFiles)
+						.resolve("CMake");
+					
+					// In the bin directory?
+					Path maybe = cmakeBase.resolve("bin")
+						.resolve("cmake.exe");
+					if (cmakePath == null && Files.exists(maybe))
+						cmakePath = maybe;
+					
+					// In the base directory?
+					maybe = cmakeBase.resolve("cmake.exe");
+					if (cmakePath == null && Files.exists(maybe))
+						cmakePath = maybe;
+				}
 			}
 		}
 		
