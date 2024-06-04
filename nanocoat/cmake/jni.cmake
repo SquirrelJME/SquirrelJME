@@ -22,13 +22,16 @@ endif()
 
 # Debugging
 message(STATUS "JNI Found? ${JNI_FOUND}")
+
+# Enable JAWT?
 if(JNI_FOUND)
 	message(STATUS "JAWT Library: ${JAVA_AWT_LIBRARY}")
 	message(STATUS "JAWT Include: ${JAVA_AWT_INCLUDE_PATH}")
 
 	if(NOT "${JAVA_AWT_LIBRARY}" STREQUAL "" OR
 		NOT "${JAVA_AWT_INCLUDE_PATH}" STREQUAL "")
-		# Set JAWT as found if not specified as found
+		# Set JAWT was found, set this if it was not set since on older CMake
+		# this will not be set despite being technically valid
 		if(NOT DEFINED JNI_AWT_FOUND)
 			set(JNI_AWT_FOUND TRUE)
 		endif()
