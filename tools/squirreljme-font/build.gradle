@@ -6,6 +6,8 @@ import lombok.Getter
 
 import javax.inject.Inject
 import java.nio.file.Files
+import java.nio.file.StandardCopyOption
+import java.nio.file.StandardOpenOption
 
 plugins {
 	id "java"
@@ -87,31 +89,48 @@ class CompileFontTask extends DefaultTask {
 		this.outputs.file(compiledPath)
 		
 		this.doFirst({Task tasky ->
-			// Setup task for execution
-			ExecResult exitResult = tasky.project.javaexec(
-				{ JavaExecSpec spec ->
-					// Use the output Jar
-					spec.classpath(
-						shadowTask.get().outputs.files.singleFile)
-					spec.main("cc.squirreljme.fontcompile.Main")
+			java.nio.file.Path temp = null
+			try {
+				// Write to a temporary file first to keep things clean
+				temp = Files.createTempFile("font", ".sqf")
+				
+				// Setup task for execution then execute it
+				ExecResult exitResult
+				try (OutputStream out = Files.newOutputStream(
+					temp, StandardOpenOption.WRITE,
+					StandardOpenOption.CREATE_NEW,
+					StandardOpenOption.TRUNCATE_EXISTING)) {
+					exitResult = tasky.project.javaexec(
+						{ JavaExecSpec spec ->
+							// Use the output Jar
+							spec.classpath(
+								shadowTask.get().outputs.files.singleFile)
+							spec.main("cc.squirreljme.fontcompile.Main")
+							
+							// Input and output
+							spec.args(fontPath.toAbsolutePath().toString(),
+								"-")
+							
+							// Use these streams directly
+							spec.setStandardOutput(out)
+							spec.setErrorOutput(new GradleLoggerOutputStream(
+								tasky.getLogger(), LogLevel.ERROR,
+								-1, -1))
+						})
+				}
 					
-					// Input and output
-					spec.args(fontPath.toAbsolutePath().toString(),
-						compiledPath.toAbsolutePath().toString())
-					
-					// Use these streams directly
-					spec.setStandardOutput(new GradleLoggerOutputStream(
-						tasky.getLogger(), LogLevel.LIFECYCLE,
-						-1, -1))
-					spec.setErrorOutput(new GradleLoggerOutputStream(
-						tasky.getLogger(), LogLevel.ERROR,
-						-1, -1))
-				})
-			
-			// Did the task fail?
-			int exitValue = exitResult.getExitValue()
-			if (exitValue != 0)
-				throw new RuntimeException("Task exited with: " + exitValue)
+				// Did the task fail?
+				int exitValue = exitResult.getExitValue()
+				if (exitValue != 0)
+					throw new RuntimeException("Task exited with: " +
+						exitValue)
+				
+				// Move it over
+				Files.move(temp, compiledPath,
+					StandardCopyOption.REPLACE_EXISTING)
+			} finally {
+				Files.deleteIfExists(temp)
+			}
 		})
 	}
 }

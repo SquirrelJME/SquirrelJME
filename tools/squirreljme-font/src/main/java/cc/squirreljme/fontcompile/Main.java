@@ -52,11 +52,14 @@ public class Main
 		if (__args == null || __args.length != 2 ||
 			__args[0] == null || __args[1] == null)
 			throw new IllegalArgumentException(
-				"Usage: [in.bdf/in.strike] [out.sqf]");
+				"Usage: [in.bdf|in.strike] [out.sqf|-]");
+		
+		// Writing to stdout?
+		boolean stdout = "-".equals(__args[1]);
 		
 		// Input and output files
 		Path inBase = Paths.get(__args[0]);
-		Path outSqf = Paths.get(__args[1]);
+		Path outSqf = (stdout ? null : Paths.get(__args[1]));
 		
 		// Parse input font
 		FontInfo inFont;
@@ -66,14 +69,19 @@ public class Main
 			inFont = BdfFontInfo.parse(inBase);
 		
 		// Compile the font
-		Path temp = Files.createTempFile("font", ".sqf");
+		Path temp = null;
 		try
 		{
+			// Only create temporary file if not writing to stdout
+			if (!stdout)
+				temp = Files.createTempFile("font", ".sqf");
+			
 			// Setup output for compilation
-			try (OutputStream out = Files.newOutputStream(temp,
+			try (OutputStream out = (stdout ? System.out :
+				Files.newOutputStream(temp,
 				StandardOpenOption.CREATE,
 				StandardOpenOption.TRUNCATE_EXISTING,
-				StandardOpenOption.WRITE))
+				StandardOpenOption.WRITE)))
 			{
 				// Setup compiler
 				FontCompiler compiler = new FontCompiler(inFont);
@@ -89,13 +97,16 @@ public class Main
 			}
 			
 			// Was a success, so move over
-			Files.move(temp, outSqf, StandardCopyOption.REPLACE_EXISTING);
+			if (!stdout)
+				Files.move(temp, outSqf,
+					StandardCopyOption.REPLACE_EXISTING);
 		}
 		finally
 		{
 			// Either failed or finished, in which case it gets deleted
 			// if it is still lying around for some reason
-			Files.deleteIfExists(temp);
+			if (temp != null)
+				Files.deleteIfExists(temp);
 		}
 	}
 }
