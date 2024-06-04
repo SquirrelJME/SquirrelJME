@@ -30,6 +30,7 @@ jar.dependsOn("mimeDecode")
 dependencies {
 	implementation project(":emulators:emulator-base")
 	implementation project(":modules:cldc-compact")
+	implementation project(":modules:c-source-writer")
 	implementation project(":modules:io")
 	implementation project(":modules:zip")
 	

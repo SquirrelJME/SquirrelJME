@@ -15,7 +15,7 @@ import cc.squirreljme.fontcompile.in.bdf.BdfFontInfo;
 import cc.squirreljme.fontcompile.in.sfdir.SfdFontInfo;
 import cc.squirreljme.fontcompile.out.CompiledFont;
 import cc.squirreljme.fontcompile.out.FontCompiler;
-import cc.squirreljme.fontcompile.out.rc.SqfWriter;
+import cc.squirreljme.fontcompile.out.rc.SqfResourceWriter;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -24,7 +24,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
-import java.util.Arrays;
 
 /**
  * Main entry point for the font compiler.
@@ -90,7 +89,8 @@ public class Main
 				CompiledFont compiled = compiler.run();
 				
 				// Output resultant compiled font
-				try (SqfWriter writer = new SqfWriter(compiled, out))
+				try (SqfResourceWriter writer =
+					 new SqfResourceWriter(Debugging.todoObject(), out))
 				{
 					writer.run();
 				}

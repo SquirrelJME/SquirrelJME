@@ -7,33 +7,34 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.fontcompile.out.rc;
+package cc.squirreljme.fontcompile.out.source;
 
-import cc.squirreljme.fontcompile.out.CompiledFont;
+import cc.squirreljme.c.CFile;
+import cc.squirreljme.c.out.AppendableCTokenOutput;
+import cc.squirreljme.c.out.PrettyCTokenOutput;
+import cc.squirreljme.fontcompile.out.struct.SqfFontStruct;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.zip.ZipOutputStream;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import net.multiphasicapps.zip.queue.ArchiveOutputQueue;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
 /**
- * Writes the resultant output SQF file which stores a SquirrelJME font.
+ * Not Described.
  *
  * @since 2024/06/04
  */
-public class SqfWriter
+public class SqfSourceWriter
 	implements Closeable
 {
 	/** The input font. */
-	protected final CompiledFont in;
+	protected final SqfFontStruct in;
 	
 	/** The resultant output. */
-	protected final OutputStream out;
-	
-	/** The archive being written. */
-	protected final ArchiveOutputQueue archive;
+	protected final CFile out;
 	
 	/**
 	 * Initializes the SQF writer.
@@ -43,15 +44,23 @@ public class SqfWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/06/04
 	 */
-	public SqfWriter(CompiledFont __in, OutputStream __out)
+	public SqfSourceWriter(SqfFontStruct __in, OutputStream __out)
 		throws NullPointerException
 	{
 		if (__in == null || __out == null)
 			throw new NullPointerException("NARG");
 		
 		this.in = __in;
-		this.out = __out;
-		this.archive = new ArchiveOutputQueue(new ZipStreamWriter(__out));
+		try
+		{
+			this.out = new CFile(new PrettyCTokenOutput(
+				new AppendableCTokenOutput(new PrintStream(__out,
+					true, "utf-8"))));
+		}
+		catch (UnsupportedEncodingException __e)
+		{
+			throw new RuntimeException(__e);
+		}
 	}
 	
 	/**
