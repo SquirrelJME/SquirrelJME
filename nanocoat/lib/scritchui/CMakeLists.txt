@@ -38,13 +38,26 @@ if(NOT SQUIRRELJME_SCRITCHUI_NO_DYLIB)
 	set(SQUIRRELJME_SCRITCHUI_COLLECT_TARGETS)
 	set(SQUIRRELJME_SCRITCHUI_COLLECT_LIBS)
 
+	# JAWT?
+	option(SQUIRRELJME_ENABLE_GUI_JAWT "Enable JAWT GUI" ON)
+	if(SQUIRRELJME_ENABLE_GUI_JAWT)
+		squirreljme_scritchui_build(JNI_AWT_FOUND jawt JAWT)
+	endif()
+
 	# Windows?
-	squirreljme_scritchui_build(WIN32 win32 Win32)
+	option(SQUIRRELJME_ENABLE_GUI_WIN32 "Enable Win32 GUI"
+		${SQUIRRELJME_ON_IF_WIN32})
+	if(SQUIRRELJME_ENABLE_GUI_WIN32)
+		squirreljme_scritchui_build(WIN32 win32 Win32)
+	endif()
 
 	# Motif?
 	find_package(Motif)
 
-	squirreljme_scritchui_build(MOTIF_FOUND motif Motif)
+	option(SQUIRRELJME_ENABLE_GUI_MOTIF "Enable Motif GUI" ON)
+	if(SQUIRRELJME_ENABLE_GUI_MOTIF)
+		squirreljme_scritchui_build(MOTIF_FOUND motif Motif)
+	endif()
 
 	# Include pkg-config finder
 	find_package(PkgConfig)
@@ -54,17 +67,26 @@ if(NOT SQUIRRELJME_SCRITCHUI_NO_DYLIB)
 		# X11?
 		pkg_check_modules(X11 x11)
 
-		squirreljme_scritchui_build(X11_FOUND x11 X11)
+		option(SQUIRRELJME_ENABLE_GUI_X11 "Enable X11 GUI" ON)
+		if(SQUIRRELJME_ENABLE_GUI_X11)
+			squirreljme_scritchui_build(X11_FOUND x11 X11)
+		endif()
 
 		# GTK2?
 		pkg_check_modules(GTK2 gtk+-2.0)
 
-		squirreljme_scritchui_build(GTK2_FOUND gtk2 GTK2)
+		option(SQUIRRELJME_ENABLE_GUI_GTK2 "Enable GTK2 GUI" ON)
+		if(SQUIRRELJME_ENABLE_GUI_GTK2)
+			squirreljme_scritchui_build(GTK2_FOUND gtk2 GTK2)
+		endif()
 
 		# GTK3?
 		pkg_check_modules(GTK3 gtk+-3.0)
 
-		squirreljme_scritchui_build(GTK3_FOUND gtk3 GTK3)
+		option(SQUIRRELJME_ENABLE_GUI_GTK3 "Enable GTK3 GUI" OFF)
+		if(SQUIRRELJME_ENABLE_GUI_GTK3)
+			squirreljme_scritchui_build(GTK3_FOUND gtk3 GTK3)
+		endif()
 	else()
 		message("ScritchUI: pkg-config not found...")
 	endif()

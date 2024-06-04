@@ -32,9 +32,6 @@ public class SqfWriter
 	/** The resultant output. */
 	protected final OutputStream out;
 	
-	/** The ZIP output. */
-	protected final ZipStreamWriter zip;
-	
 	/** The archive being written. */
 	protected final ArchiveOutputQueue archive;
 	

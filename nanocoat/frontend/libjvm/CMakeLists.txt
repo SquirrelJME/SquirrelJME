@@ -6,9 +6,6 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 
-# We need JNI for this to work
-squirreljme_include("jni.cmake")
-
 # Docker is used for testing
 squirreljme_include("docker.cmake")
 

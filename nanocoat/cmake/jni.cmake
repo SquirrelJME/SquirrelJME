@@ -5,7 +5,7 @@
 # SquirrelJME is under the Mozilla Public License Version 2.0.
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
-# DESCRIPTION: Attempts to find JNI
+# DESCRIPTION: Attempts to find JNI and related headers
 
 # Use standard JNI search
 find_package(JNI QUIET)
@@ -18,4 +18,19 @@ if(NOT JNI_FOUND)
 
 	# Set as found
 	set(JNI_FOUND ON)
+endif()
+
+# Debugging
+message(STATUS "JNI Found? ${JNI_FOUND}")
+if(JNI_FOUND)
+	message(STATUS "JAWT Library: ${JAVA_AWT_LIBRARY}")
+	message(STATUS "JAWT Include: ${JAVA_AWT_INCLUDE_PATH}")
+
+	if(NOT "${JAVA_AWT_LIBRARY}" STREQUAL "" OR
+		NOT "${JAVA_AWT_INCLUDE_PATH}" STREQUAL "")
+		# Set JAWT as found if not specified as found
+		if(NOT DEFINED JNI_AWT_FOUND)
+			set(JNI_AWT_FOUND TRUE)
+		endif()
+	endif()
 endif()
