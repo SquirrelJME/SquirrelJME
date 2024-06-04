@@ -25,7 +25,6 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -50,25 +49,20 @@ public class FontCompiler
 	/** The input font. */
 	protected final FontInfo in;
 	
-	/** The output SQF. */
-	protected final OutputStream out;
-	
 	/**
 	 * Initializes the font compiler.
 	 *
 	 * @param __in The input font.
-	 * @param __out The output font.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/05/19
 	 */
-	public FontCompiler(FontInfo __in, OutputStream __out)
+	public FontCompiler(FontInfo __in)
 		throws NullPointerException
 	{
-		if (__in == null || __out == null)
+		if (__in == null)
 			throw new NullPointerException("NARG");
 		
 		this.in = __in;
-		this.out = __out;
 	}
 	
 	/**

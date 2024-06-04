@@ -15,6 +15,7 @@ import cc.squirreljme.fontcompile.in.bdf.BdfFontInfo;
 import cc.squirreljme.fontcompile.in.sfdir.SfdFontInfo;
 import cc.squirreljme.fontcompile.out.CompiledFont;
 import cc.squirreljme.fontcompile.out.FontCompiler;
+import cc.squirreljme.fontcompile.out.rc.SqfWriter;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -75,14 +76,16 @@ public class Main
 				StandardOpenOption.WRITE))
 			{
 				// Setup compiler
-				FontCompiler compiler = new FontCompiler(inFont, out);
+				FontCompiler compiler = new FontCompiler(inFont);
 				
 				// Perform compilation
 				CompiledFont compiled = compiler.run();
 				
 				// Output resultant compiled font
-				if (true)
-					throw Debugging.todo();
+				try (SqfWriter writer = new SqfWriter(compiled, out))
+				{
+					writer.run();
+				}
 			}
 			
 			// Was a success, so move over
