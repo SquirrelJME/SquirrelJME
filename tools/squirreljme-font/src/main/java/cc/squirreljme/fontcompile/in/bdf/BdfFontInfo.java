@@ -37,6 +37,7 @@ public class BdfFontInfo
 	/**
 	 * Initializes the base font info.
 	 *
+	 * @param __name The name of the font.
 	 * @param __glyphs The glyphs to use.
 	 * @param __invalidCodepoint The invalid glyph ID.
 	 * @param __pixelSize The pixel size of the font.
@@ -49,12 +50,12 @@ public class BdfFontInfo
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/05/26
 	 */
-	BdfFontInfo(Map<GlyphId, BdfGlyphInfo> __glyphs,
+	BdfFontInfo(String __name, Map<GlyphId, BdfGlyphInfo> __glyphs,
 		GlyphId __invalidCodepoint, int __pixelSize, int __bbw, int __bbh,
 		int __bbx, int __bby, int __ascent, int __descent)
 		throws NullPointerException
 	{
-		super(__glyphs, __invalidCodepoint, __pixelSize, __bbw, __bbh,
+		super(__name, __glyphs, __invalidCodepoint, __pixelSize, __bbw, __bbh,
 			__bbx, __bby, __ascent, __descent);
 	}
 	
@@ -80,6 +81,7 @@ public class BdfFontInfo
 		List<BdfGlyphInfo> byOrder = new ArrayList<>();
 		
 		// Font information
+		String name = null;
 		int pixelSize = Integer.MIN_VALUE;
 		int bbw = Integer.MIN_VALUE;
 		int bbh = Integer.MIN_VALUE;
@@ -118,7 +120,6 @@ public class BdfFontInfo
 					case "COPYRIGHT":
 					case "ENDFONT":
 					case "ENDPROPERTIES":
-					case "FAMILY_NAME":
 					case "FONT":
 					case "FONT_TYPE":
 					case "FONT_VERSION":
@@ -139,6 +140,11 @@ public class BdfFontInfo
 					case "X_HEIGHT":
 					case "Y_HEIGHT":
 						continue;
+						
+						// The name of the font
+					case "FAMILY_NAME":
+						name = BdfFontInfo.__parseName(tokens);
+						break;
 						
 						// Bounding box (FONTBOUNDINGBOX 8 8 0 -2)
 					case "FONTBOUNDINGBOX":
@@ -208,9 +214,42 @@ public class BdfFontInfo
 			}
 			
 			// Setup font
-			return new BdfFontInfo(glyphs,
+			return new BdfFontInfo(name, glyphs,
 				byOrder.get(defaultChar).codepoint(),
 				pixelSize, bbw, bbh, bbx, bby, ascent, descent);
 		}
+	}
+	
+	/**
+	 * Parses the family name.
+	 *
+	 * @param __tokens The input tokens.
+	 * @return The resultant name.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/06/04
+	 */
+	private static String __parseName(String[] __tokens)
+		throws NullPointerException
+	{
+		if (__tokens == null)
+			throw new NullPointerException("NARG");
+		
+		// Get the string back from tokens.
+		StringBuilder sb = new StringBuilder();
+		for (int i = 1, n = __tokens.length; i < n; i++)
+		{
+			if (i > 1)
+				sb.append(' ');
+			sb.append(__tokens[i]);
+		}
+		
+		// Remove any quotes
+		if (sb.charAt(0) == '\"')
+			sb.deleteCharAt(0);
+		if (sb.charAt(sb.length() - 1) == '\"')
+			sb.deleteCharAt(sb.length() - 1);
+		
+		// Use this parsed string
+		return sb.toString();
 	}
 }

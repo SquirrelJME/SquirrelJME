@@ -19,6 +19,9 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  */
 public class SqfFontStruct
 {
+	/** The name of the font. */
+	public final String name;
+	
 	/** The pixel height of the font. */
 	public final int pixelHeight;
 	
@@ -52,6 +55,7 @@ public class SqfFontStruct
 	/**
 	 * Initializes the font structure.
 	 *
+	 * @param __name The name of the font.
 	 * @param __pixelHeight The pixel height of the font.
 	 * @param __ascent The ascent of the font.
 	 * @param __descent The descent of the font.
@@ -66,16 +70,18 @@ public class SqfFontStruct
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/06/04
 	 */
-	public SqfFontStruct(int __pixelHeight, int __ascent, int __descent,
+	public SqfFontStruct(String __name,
+		int __pixelHeight, int __ascent, int __descent,
 		int __bytesPerScan, int __codepointStart, int __codepointCount,
 		byte[] __charWidths, byte[] __charFlags, short[] __charBmpOffset,
 		byte[] __charBmp)
 		throws NullPointerException
 	{
-		if (__charWidths == null || __charFlags == null ||
+		if (__name == null || __charWidths == null || __charFlags == null ||
 			__charBmpOffset == null || __charBmp == null)
 			throw new NullPointerException("NARG");
 		
+		this.name = __name;
 		this.pixelHeight = __pixelHeight;
 		this.ascent = __ascent;
 		this.descent = __descent;
@@ -103,5 +109,43 @@ public class SqfFontStruct
 			throw new NullPointerException("NARG");
 		
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Normalizes the name of the font.
+	 *
+	 * @param __s The input font name.
+	 * @return The resultant name.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/06/04
+	 */
+	public static final String normalizeName(String __s)
+		throws NullPointerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Lowercase and remove any special characters
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0, n = __s.length(); i < n; i++)
+		{
+			char c = __s.charAt(0);
+			
+			if (c >= 'A' && c <= 'Z')
+				sb.append('a' + (c - 'A'));
+			else if (c == ' ' || c == '\t')
+				continue;
+			else if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') ||
+				c == '_')
+				sb.append(c);
+			else
+				sb.append('_');
+		}
+		
+		// Truncate the length down
+		while (sb.length() > 8)
+			sb.deleteCharAt(4);
+			
+		return sb.toString();
 	}
 }

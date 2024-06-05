@@ -12,15 +12,13 @@ package cc.squirreljme.fontcompile.out.source;
 import cc.squirreljme.c.CFile;
 import cc.squirreljme.c.out.AppendableCTokenOutput;
 import cc.squirreljme.c.out.PrettyCTokenOutput;
+import cc.squirreljme.fontcompile.out.SqfWriter;
 import cc.squirreljme.fontcompile.out.struct.SqfFontStruct;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
-import net.multiphasicapps.zip.queue.ArchiveOutputQueue;
-import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
 /**
  * Writes a SQF structure as C source code.
@@ -28,29 +26,24 @@ import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
  * @since 2024/06/04
  */
 public class SqfSourceWriter
-	implements Closeable
+	implements SqfWriter
 {
-	/** The input font. */
-	protected final SqfFontStruct in;
-	
 	/** The resultant output. */
 	protected final CFile out;
 	
 	/**
 	 * Initializes the SQF writer.
 	 *
-	 * @param __in The input font.
 	 * @param __out The output stream.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/06/04
 	 */
-	public SqfSourceWriter(SqfFontStruct __in, OutputStream __out)
+	public SqfSourceWriter(OutputStream __out)
 		throws NullPointerException
 	{
-		if (__in == null || __out == null)
+		if (__out == null)
 			throw new NullPointerException("NARG");
 		
-		this.in = __in;
 		try
 		{
 			this.out = new CFile(new PrettyCTokenOutput(
@@ -75,12 +68,16 @@ public class SqfSourceWriter
 	}
 	
 	/**
-	 * Writes the SQF output.
-	 *
+	 * {@inheritDoc}
 	 * @since 2024/06/04
 	 */
-	public void run()
+	@Override
+	public void write(SqfFontStruct __struct)
+		throws IOException, NullPointerException
 	{
+		if (__struct == null)
+			throw new NullPointerException("NARG");
+		
 		throw Debugging.todo();
 	}
 }

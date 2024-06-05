@@ -50,6 +50,9 @@ typedef enum sjme_sqf_flag
  */
 typedef struct sjme_sqf
 {
+	/** The name of the font. */
+	sjme_lpcstr name;
+	
 	/** The pixel height of the font. */
 	sjme_jint pixelHeight;
 	

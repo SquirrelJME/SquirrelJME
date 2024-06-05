@@ -9,6 +9,7 @@
 
 package cc.squirreljme.fontcompile.out.rc;
 
+import cc.squirreljme.fontcompile.out.SqfWriter;
 import cc.squirreljme.fontcompile.out.struct.SqfFontStruct;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.Closeable;
@@ -23,7 +24,7 @@ import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
  * @since 2024/06/04
  */
 public class SqfResourceWriter
-	implements Closeable
+	implements SqfWriter
 {
 	/** The resultant output. */
 	protected final OutputStream out;
@@ -60,14 +61,12 @@ public class SqfResourceWriter
 	}
 	
 	/**
-	 * Writes the SQF output.
-	 *
-	 * @param __struct The struct to write.
-	 * @throws NullPointerException On null arguments.
+	 * {@inheritDoc}
 	 * @since 2024/06/04
 	 */
+	@Override
 	public void write(SqfFontStruct __struct)
-		throws NullPointerException
+		throws IOException, NullPointerException
 	{
 		if (__struct == null)
 			throw new NullPointerException("NARG");

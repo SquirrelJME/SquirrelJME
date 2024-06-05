@@ -29,6 +29,7 @@ public class SfdFontInfo
 	/**
 	 * Initializes the base font info.
 	 *
+	 * @param __name The name of the font.
 	 * @param __glyphs The glyphs to use.
 	 * @param __invalidCodepoint The invalid glyph ID.
 	 * @param __pixelSize The pixel size of the font.
@@ -41,13 +42,13 @@ public class SfdFontInfo
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/05/26
 	 */
-	protected SfdFontInfo(Map<GlyphId, SfdGlyphInfo> __glyphs,
+	protected SfdFontInfo(String __name, Map<GlyphId, SfdGlyphInfo> __glyphs,
 		GlyphId __invalidCodepoint, int __pixelSize, int __bbw, int __bbh,
 		int __bbx, int __bby, int __ascent, int __descent)
 		throws NullPointerException
 	{
-		super(__glyphs, __invalidCodepoint, __pixelSize, __bbw, __bbh, __bbx,
-			__bby, __ascent, __descent);
+		super(__name, __glyphs, __invalidCodepoint, __pixelSize, __bbw, __bbh,
+			__bbx, __bby, __ascent, __descent);
 		
 		throw Debugging.todo();
 	}
