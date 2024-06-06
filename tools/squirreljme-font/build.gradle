@@ -99,7 +99,7 @@ class CompileFontTask extends DefaultTask {
 				ExecResult exitResult
 				try (OutputStream out = Files.newOutputStream(
 					temp, StandardOpenOption.WRITE,
-					StandardOpenOption.CREATE_NEW,
+					StandardOpenOption.CREATE,
 					StandardOpenOption.TRUNCATE_EXISTING)) {
 					exitResult = tasky.project.javaexec(
 						{ JavaExecSpec spec ->
