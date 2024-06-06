@@ -40,7 +40,7 @@ public class FontCompiler
 {
 	/** Initial reject division. */
 	private static final int _REJECT_DIV =
-		64;
+		32;
 	
 	/** Limit on the reject division. */
 	private static final int _REJECT_DIV_LIMIT =
