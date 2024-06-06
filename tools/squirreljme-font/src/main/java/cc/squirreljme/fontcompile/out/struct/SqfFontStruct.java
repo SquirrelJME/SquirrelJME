@@ -10,7 +10,13 @@
 package cc.squirreljme.fontcompile.out.struct;
 
 import cc.squirreljme.fontcompile.out.CompiledFont;
+import cc.squirreljme.fontcompile.out.CompiledGlyph;
+import cc.squirreljme.fontcompile.util.GlyphId;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Represents a raw structure of a SQF Font.
@@ -106,6 +112,53 @@ public class SqfFontStruct
 		throws NullPointerException
 	{
 		if (__font == null)
+			throw new NullPointerException("NARG");
+		
+		// Map glyphs to pages first, these are 256 codepoint regions
+		// accordingly that should have similar characters to each other
+		Map<GlyphId, CompiledGlyph[]> pages = new LinkedHashMap<>();
+		for (CompiledGlyph compiledGlyph : __font)
+		{
+			// Where is this glyph?
+			GlyphId pageId = compiledGlyph.glyph.codepoint().page();
+			int pageOffset = compiledGlyph.glyph.codepoint().pageOffset();
+			
+			// Get the page for all the characters
+			CompiledGlyph[] page = pages.get(pageId);
+			if (page == null)
+			{
+				page = new CompiledGlyph[256];
+				pages.put(pageId, page);
+			}
+			
+			// Store in the page
+			page[pageOffset] = compiledGlyph;
+		}
+		
+		// Process glyphs into the structured format
+		List<SqfFontStruct> result = new ArrayList<>();
+		for (Map.Entry<GlyphId, CompiledGlyph[]> entry : pages.entrySet())
+			result.add(SqfFontStruct.parse(__font,
+				entry.getKey(), entry.getValue()));
+		
+		return result.toArray(new SqfFontStruct[result.size()]);
+	}
+	
+	/**
+	 * Parses the given page within the font structure.
+	 *
+	 * @param __font The font this is within.
+	 * @param __pageId The page ID of these glyphs.
+	 * @param __glyphs The glyphs.
+	 * @return The font structure.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/06/05
+	 */
+	private static SqfFontStruct parse(CompiledFont __font, GlyphId __pageId,
+		CompiledGlyph[] __glyphs)
+		throws NullPointerException
+	{
+		if (__font == null || __pageId == null || __glyphs == null)
 			throw new NullPointerException("NARG");
 		
 		throw Debugging.todo();

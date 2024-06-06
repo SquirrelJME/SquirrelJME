@@ -88,6 +88,31 @@ public final class GlyphId
 	}
 	
 	/**
+	 * Returns the first glyph that is the start of this glyph's page.
+	 *
+	 * @return The glyph page.
+	 * @since 2024/06/05
+	 */
+	public GlyphId page()
+	{
+		int page = this.codepoint & (~0xFF);
+		if (page == this.codepoint)
+			return this;
+		return GlyphId.of(page);
+	}
+	
+	/**
+	 * Returns the offset of this ID in the page.
+	 *
+	 * @return The page offset.
+	 * @since 2024/06/05
+	 */
+	public int pageOffset()
+	{
+		return this.codepoint & 0xFF;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2024/06/03
 	 */

@@ -15,7 +15,9 @@ import cc.squirreljme.fontcompile.out.rafoces.HuffBits;
 import cc.squirreljme.fontcompile.out.rafoces.HuffTable;
 import cc.squirreljme.fontcompile.out.rafoces.VectorChain;
 import cc.squirreljme.fontcompile.out.rafoces.VectorPoint;
+import cc.squirreljme.fontcompile.util.GlyphId;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -32,7 +34,7 @@ public class CompiledFont
 	implements Iterable<CompiledGlyph>
 {
 	/** The compiled glyphs. */
-	public final Map<GlyphInfo, CompiledGlyph> glyphs;
+	public final Map<GlyphId, CompiledGlyph> glyphs;
 	
 	/**
 	 * Initializes the compiled font.
@@ -41,7 +43,7 @@ public class CompiledFont
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/06/03
 	 */
-	private CompiledFont(Map<GlyphInfo, CompiledGlyph> __glyphs)
+	private CompiledFont(Map<GlyphId, CompiledGlyph> __glyphs)
 		throws NullPointerException
 	{
 		if (__glyphs == null)
@@ -98,7 +100,7 @@ public class CompiledFont
 			throw new NullPointerException("NARG");
 		
 		// Process each glyph
-		Map<GlyphInfo, CompiledGlyph> result = new LinkedHashMap<>();
+		Map<GlyphId, CompiledGlyph> result = new SortedTreeMap<>();
 		for (Map.Entry<GlyphInfo, VectorChain[]> entry :
 			__glyphVectors.entrySet())
 		{
@@ -108,7 +110,7 @@ public class CompiledFont
 				__huffedChains);
 			
 			// Store info
-			result.put(entry.getKey(), compiled);
+			result.put(entry.getKey().codepoint(), compiled);
 		}
 		
 		// Final compiled font
