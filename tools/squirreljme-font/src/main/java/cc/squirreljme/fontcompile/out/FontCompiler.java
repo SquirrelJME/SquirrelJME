@@ -229,7 +229,7 @@ public class FontCompiler
 			normal, forced, tables.size());
 		
 		// Setup font with only okay glyphs
-		return new CompiledFont(okay);
+		return new CompiledFont(okay, this.in);
 	}
 	
 	/**
@@ -400,7 +400,7 @@ public class FontCompiler
 		
 		// Build finalized compiled font
 		return CompiledFont.__finalize(glyphVectors, allPoints, huffman,
-			huffedChains);
+			huffedChains, this.in);
 	}
 	
 	/**

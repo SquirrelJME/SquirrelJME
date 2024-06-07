@@ -309,6 +309,35 @@ __outer:
 	}
 	
 	/**
+	 * Returns the chain list as a compacted byte array.
+	 *
+	 * @return The chain list as a compacted byte array.
+	 * @since 2024/06/07
+	 */
+	public byte[] toByteArray()
+	{
+		return HuffBits.toByteArray(this.toHuffBits());
+	}
+	
+	/**
+	 * Returns the chain list as a compacted list of huffman bits.
+	 *
+	 * @return The chain list as a compacted list of huffman bits.
+	 * @since 2024/06/07
+	 */
+	public HuffBits[] toHuffBits()
+	{
+		int n = this.size();
+		HuffBits[] result = new HuffBits[n];
+		
+		// Fill in
+		for (int i = 0; i < n; i++)
+			result[i] = HuffBits.of(this.get(i).ordinal(), 2);
+		
+		return result;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2024/06/03
 	 */

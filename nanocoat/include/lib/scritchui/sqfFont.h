@@ -62,8 +62,17 @@ typedef struct sjme_sqf
 	/** The descent of the font. */
 	sjme_jint descent;
 	
-	/** The bytes per scanline. */
-	sjme_jint bytesPerScan;
+	/** Bounding box X offset. */
+	sjme_jint bbx;
+	
+	/** Bounding box Y offset. */
+	sjme_jint bby;
+	
+	/** Bounding box width. */
+	sjme_jint bbw;
+	
+	/** Bounding box height. */
+	sjme_jint bbh;
 	
 	/** The starting codepoint for this font. */
 	sjme_jint codepointStart;
@@ -71,14 +80,26 @@ typedef struct sjme_sqf
 	/** The number of codepoints which are in this font. */
 	sjme_jint codepointCount;
 	
+	/** The size of the @c charBmp member. */
+	sjme_jint charBmpSize;
+	
 	/** Widths for each character. */
 	const sjme_jbyte* charWidths;
+	
+	/** X offset for character. */
+	const sjme_jbyte* charXOffset;
+	
+	/** Y offset for character. */
+	const sjme_jbyte* charYOffset;
 	
 	/** SQF Font Flags, per character. */
 	const sjme_jbyte* charFlags;
 	
 	/** Offset to the character bitmap for the given character. */
 	const sjme_jshort* charBmpOffset;
+	
+	/** The bytes per scanline for each character. */
+	const sjme_jbyte* charBmpScan;
 	
 	/** Which characters make up the bitmap? */
 	const sjme_jbyte* charBmp;

@@ -27,13 +27,13 @@ public abstract class GlyphInfo
 	protected final GlyphId codepoint;
 	
 	/** The display width of the glyph. */
-	protected final int displayWidth;
+	public final int displayWidth;
 	
 	/** The X offset. */
-	protected final int offX;
+	public final int offX;
 	
 	/** The Y offset. */
-	protected final int offY;
+	public final int offY;
 	
 	/**
 	 * Initializes the glyph.

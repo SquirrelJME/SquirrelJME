@@ -14,6 +14,7 @@ import cc.squirreljme.fontcompile.out.rafoces.HuffBits;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -30,7 +31,7 @@ public class GlyphBitmap
 	public final int height;
 	
 	/** The scanline length. */
-	protected final int scanLen;
+	public final int scanLen;
 	
 	/** The font bitmap. */
 	private final byte[] _bitmap;
@@ -53,7 +54,8 @@ public class GlyphBitmap
 		this.width = __width;
 		this.height = __height;
 		this.scanLen = GlyphBitmap.calcScan(__width);
-		this._bitmap = __bitmap;
+		this._bitmap = Arrays.copyOf(__bitmap,
+			__height * this.scanLen);
 	}
 	
 	/**
@@ -134,6 +136,17 @@ public class GlyphBitmap
 	public int getShift(int __x, int __y)
 	{
 		return GlyphBitmap.calcShift(__x, __y, this.width, this.height);
+	}
+	
+	/**
+	 * Returns the bytes which make up the bitmap.
+	 *
+	 * @return The bytes which make up the bitmap.
+	 * @since 2024/06/07
+	 */
+	public byte[] toByteArray()
+	{
+		return this._bitmap.clone();
 	}
 	
 	/**

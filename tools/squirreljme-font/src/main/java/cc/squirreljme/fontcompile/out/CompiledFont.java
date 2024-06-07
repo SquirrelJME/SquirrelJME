@@ -9,6 +9,7 @@
 
 package cc.squirreljme.fontcompile.out;
 
+import cc.squirreljme.fontcompile.in.FontInfo;
 import cc.squirreljme.fontcompile.in.GlyphInfo;
 import cc.squirreljme.fontcompile.out.rafoces.ChainList;
 import cc.squirreljme.fontcompile.out.rafoces.HuffBits;
@@ -19,7 +20,6 @@ import cc.squirreljme.fontcompile.util.GlyphId;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -36,19 +36,25 @@ public class CompiledFont
 	/** The compiled glyphs. */
 	public final Map<GlyphId, CompiledGlyph> glyphs;
 	
+	/** The original font. */
+	public final FontInfo original;
+	
 	/**
 	 * Initializes the compiled font.
 	 *
 	 * @param __glyphs The resultant glyph map.
+	 * @param __original The original font.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/06/03
 	 */
-	private CompiledFont(Map<GlyphId, CompiledGlyph> __glyphs)
+	private CompiledFont(Map<GlyphId, CompiledGlyph> __glyphs,
+		FontInfo __original)
 		throws NullPointerException
 	{
-		if (__glyphs == null)
+		if (__glyphs == null || __original == null)
 			throw new NullPointerException("NARG");
 		
+		this.original = __original;
 		this.glyphs = UnmodifiableMap.of(__glyphs);
 	}
 	
@@ -56,16 +62,22 @@ public class CompiledFont
 	 * Initializes compiled glyphs.
 	 *
 	 * @param __glyphs The input glyphs.
+	 * @param __original The original font.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/06/03
 	 */
-	public CompiledFont(List<CompiledGlyph> __glyphs)
+	public CompiledFont(List<CompiledGlyph> __glyphs, FontInfo __original)
 		throws NullPointerException
 	{
-		if (__glyphs == null)
+		if (__glyphs == null || __original == null)
 			throw new NullPointerException("NARG");
-
-		throw Debugging.todo();
+		
+		Map<GlyphId, CompiledGlyph> glyphs = new SortedTreeMap<>();
+		for (CompiledGlyph glyph : __glyphs)
+			glyphs.put(glyph.glyph.codepoint(), glyph);
+		
+		this.original = __original;
+		this.glyphs = UnmodifiableMap.of(glyphs);
 	}
 	
 	/**
@@ -85,6 +97,7 @@ public class CompiledFont
 	 * @param __allPoints All the input points.
 	 * @param __huffman The huffman table used.
 	 * @param __huffedChains The huffed chains.
+	 * @param __original The original font.
 	 * @return The resultant compiled font.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/06/03
@@ -92,7 +105,7 @@ public class CompiledFont
 	static CompiledFont __finalize(
 		Map<GlyphInfo, VectorChain[]> __glyphVectors,
 		Set<VectorPoint> __allPoints, HuffTable __huffman,
-		Map<ChainList, List<HuffBits>> __huffedChains)
+		Map<ChainList, List<HuffBits>> __huffedChains, FontInfo __original)
 		throws NullPointerException
 	{
 		if (__glyphVectors == null || __allPoints == null ||
@@ -114,6 +127,6 @@ public class CompiledFont
 		}
 		
 		// Final compiled font
-		return new CompiledFont(result);
+		return new CompiledFont(result, __original);
 	}
 }

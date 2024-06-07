@@ -144,6 +144,17 @@ public final class HuffBits
 	}
 	
 	/**
+	 * Returns the huffman bits as a byte array.
+	 *
+	 * @return The bits as a byte array.
+	 * @since 2024/06/07
+	 */
+	public byte[] toByteArray()
+	{
+		return HuffBits.toByteArray(this);
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2024/06/03
 	 */
@@ -214,5 +225,39 @@ public final class HuffBits
 			throw new NullPointerException("NARG");
 		
 		return HuffBits.length(Arrays.asList(__in));
+	}
+	
+	/**
+	 * Translates huffman bytes to the given byte array.
+	 *
+	 * @param __in The input bits.
+	 * @return The resultant byte array.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/06/07
+	 */
+	public static byte[] toByteArray(List<HuffBits> __in)
+		throws NullPointerException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+	
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Translates huffman bytes to the given byte array.
+	 *
+	 * @param __in The input bits.
+	 * @return The resultant byte array.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/06/07
+	 */
+	public static byte[] toByteArray(HuffBits... __in)
+		throws NullPointerException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		return HuffBits.toByteArray(Arrays.asList(__in));
 	}
 }

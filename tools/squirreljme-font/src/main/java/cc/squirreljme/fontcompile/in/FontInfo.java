@@ -26,32 +26,35 @@ import org.jetbrains.annotations.NotNull;
 public abstract class FontInfo
 	implements Iterable<GlyphInfo>
 {
-	/** The glyphs in the font. */
-	protected final Map<GlyphId, GlyphInfo> glyphs;
+	/** The name of this font. */
+	public final String name;
 	
 	/** The invalid codepoint. */
-	protected final GlyphId invalidCodepoint;
+	public final GlyphId invalidCodepoint;
 	
 	/** The font ascent. */
-	protected final int ascent;
+	public final int ascent;
 	
 	/** The font descent. */
-	protected final int descent;
+	public final int descent;
 	
 	/** Bounding box width. */
-	protected final int bbw;
+	public final int bbw;
 	
 	/** Bounding box height. */
-	protected final int bbh;
+	public final int bbh;
 	
 	/** X offset. */
-	protected final int bbx;
+	public final int bbx;
 	
 	/** Y offset. */
-	protected final int bby;
+	public final int bby;
 	
 	/** The pixel size of the font. */
-	protected final int pixelSize;
+	public final int pixelSize;
+	
+	/** The glyphs in the font. */
+	protected final Map<GlyphId, GlyphInfo> glyphs;
 	
 	/**
 	 * Initializes the base font info.
@@ -79,6 +82,7 @@ public abstract class FontInfo
 		if (__glyphs == null || __invalidCodepoint == null)
 			throw new NullPointerException("NARG");
 		
+		this.name = __name;
 		this.glyphs = UnmodifiableMap.of(new SortedTreeMap<>(__glyphs));
 		this.invalidCodepoint = __invalidCodepoint;
 		this.pixelSize = __pixelSize;
