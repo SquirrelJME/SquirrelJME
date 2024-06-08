@@ -33,6 +33,66 @@ public class CBasicExpression
 	}
 	
 	/**
+	 * Creates a byte array expression.
+	 *
+	 * @param __values Input values.
+	 * @return The resultant expression.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/06/08
+	 */
+	public static CExpression array(byte... __values)
+		throws IOException, NullPointerException
+	{
+		if (__values == null)
+			throw new NullPointerException("NARG");
+		
+		return CExpressionBuilder.builder()
+			.array(__values)
+			.build();
+	}
+	
+	/**
+	 * Creates a short array expression.
+	 *
+	 * @param __values Input values.
+	 * @return The resultant expression.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/06/08
+	 */
+	public static CExpression array(short... __values)
+		throws IOException, NullPointerException
+	{
+		if (__values == null)
+			throw new NullPointerException("NARG");
+		
+		return CExpressionBuilder.builder()
+			.array(__values)
+			.build();
+	}
+	
+	/**
+	 * Creates an integer array expression.
+	 *
+	 * @param __values Input values.
+	 * @return The resultant expression.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/06/08
+	 */
+	public static CExpression array(int... __values)
+		throws IOException, NullPointerException
+	{
+		if (__values == null)
+			throw new NullPointerException("NARG");
+		
+		return CExpressionBuilder.builder()
+			.array(__values)
+			.build();
+	}
+	
+	/**
 	 * Returns a number expression.
 	 * 
 	 * @param __value The value to use.

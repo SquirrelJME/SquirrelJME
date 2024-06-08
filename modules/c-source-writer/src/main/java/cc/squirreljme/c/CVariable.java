@@ -190,6 +190,21 @@ public class CVariable
 	}
 	
 	/**
+	 * Makes this variable {@code static}.
+	 *
+	 * @return This variable as a {@code static}.
+	 * @since 2024/06/08
+	 */
+	public CVariable staticize()
+	{
+		if (this.isStatic())
+			return this;
+		
+		return CVariable.of(
+			CModifiedType.of(CStaticModifier.STATIC, this.type), this.name);
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2023/07/03
 	 */

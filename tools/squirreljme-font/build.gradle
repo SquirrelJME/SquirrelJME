@@ -157,14 +157,14 @@ TaskProvider<Task> compileFonts = tasks.register("compileFonts") {
 
 for (String fn in [
 	"monospace.sfdir/8.strike",
+	"monospace.sfdir/12.strike",
 	"monospace.sfdir/16.strike",
-	"monospace.sfdir/24.strike",
 	"sansserif.sfdir/8.strike",
+	"sansserif.sfdir/12.strike",
 	"sansserif.sfdir/16.strike",
-	"sansserif.sfdir/24.strike",
 	"serif.sfdir/8.strike",
+	"serif.sfdir/12.strike",
 	"serif.sfdir/16.strike",
-	"serif.sfdir/24.strike",
 	"misaki8.bdf",
 	"misaki12.bdf",
 	"unifont16.bdf",
