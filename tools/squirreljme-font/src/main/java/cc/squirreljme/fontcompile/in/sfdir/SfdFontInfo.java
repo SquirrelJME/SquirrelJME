@@ -13,9 +13,13 @@ import cc.squirreljme.fontcompile.in.FontInfo;
 import cc.squirreljme.fontcompile.in.bdf.BdfFontInfo;
 import cc.squirreljme.fontcompile.in.bdf.BdfGlyphInfo;
 import cc.squirreljme.fontcompile.util.GlyphId;
+import cc.squirreljme.fontcompile.util.LineTokenizer;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.Map;
 
 /**
@@ -67,6 +71,42 @@ public class SfdFontInfo
 	{
 		if (__in == null)
 			throw new NullPointerException("NARG");
+		
+		// Process font properties
+		try (InputStream in = Files.newInputStream(
+				__in.resolveSibling("font.props"),
+				StandardOpenOption.READ);
+			LineTokenizer tokenizer = new LineTokenizer(in))
+		{
+			for (;;)
+			{
+				String[] tokens = tokenizer.next();
+				
+				// EOF?
+				if (tokens == null)
+					break;
+				
+				throw Debugging.todo();
+			}
+		}
+		
+		// Process strike properties
+		try (InputStream in = Files.newInputStream(
+				__in.resolve("strike.props"),
+				StandardOpenOption.READ);
+			LineTokenizer tokenizer = new LineTokenizer(in))
+		{
+			for (;;)
+			{
+				String[] tokens = tokenizer.next();
+				
+				// EOF?
+				if (tokens == null)
+					break;
+				
+				throw Debugging.todo();
+			}
+		}
 		
 		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
 	}
