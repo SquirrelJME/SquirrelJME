@@ -71,7 +71,7 @@ public class SqfFontStruct
 	public final int charBmpSize;
 	
 	/** Huffman bits for huffman tables. */
-	private final byte[] huffBits;
+	private final byte[] _huffBits;
 	
 	/** Widths for each character. */
 	private final byte[] _charWidths;
@@ -136,7 +136,7 @@ public class SqfFontStruct
 			__charYOffset == null)
 			throw new NullPointerException("NARG");
 		
-		this.name = __name;
+		this.name = SqfFontStruct.normalizeName(__name);
 		this.pixelHeight = __pixelHeight;
 		this.ascent = __ascent;
 		this.descent = __descent;
@@ -148,7 +148,7 @@ public class SqfFontStruct
 		this.codepointCount = __codepointCount;
 		this.huffBitsSize = (__huffBits == null ? 0 : __huffBits.length);
 		this.charBmpSize = __charBmp.length;
-		this.huffBits = __huffBits;
+		this._huffBits = __huffBits;
 		this._charXOffset = __charXOffset;
 		this._charYOffset = __charYOffset;
 		this._charWidths = __charWidths;
@@ -156,6 +156,94 @@ public class SqfFontStruct
 		this._charBmpOffset = __charBmpOffset;
 		this._charBmpScan = __charBmpScan;
 		this._charBmp = __charBmp;
+	}
+	
+	/**
+	 * Returns the bitmap offsets.
+	 *
+	 * @return The bitmap offsets.
+	 * @since 2024/06/07
+	 */
+	public int[] charBmpOffset()
+	{
+		return this._charBmpOffset.clone();
+	}
+	
+	/**
+	 * Returns the bitmap scan lengths.
+	 *
+	 * @return The bitmap scan lengths.
+	 * @since 2024/06/07
+	 */
+	public byte[] charBmpScan()
+	{
+		return this._charBmpScan.clone();
+	}
+	
+	/**
+	 * Returns the bitmap data.
+	 *
+	 * @return The bitmap data.
+	 * @since 2024/06/07
+	 */
+	public byte[] charBmp()
+	{
+		return this._charBmp.clone();
+	}
+	
+	/**
+	 * Returns the character flags.
+	 *
+	 * @return The character flags.
+	 * @since 2024/06/07
+	 */
+	public byte[] charFlags()
+	{
+		return this._charFlags.clone();
+	}
+	
+	/**
+	 * Returns the X offset.
+	 *
+	 * @return The X offset.
+	 * @since 2024/06/07
+	 */
+	public byte[] charXOffset()
+	{
+		return this._charXOffset.clone();
+	}
+	
+	/**
+	 * Returns the Y offset.
+	 *
+	 * @return The Y offset.
+	 * @since 2024/06/07
+	 */
+	public byte[] charYOffset()
+	{
+		return this._charYOffset.clone();
+	}
+	
+	/**
+	 * Returns the character widths.
+	 *
+	 * @return The character widths.
+	 * @since 2024/06/07
+	 */
+	public byte[] charWidths()
+	{
+		return this._charWidths.clone();
+	}
+	
+	/**
+	 * Returns the huffman bits.
+	 *
+	 * @return The huffman bits.
+	 * @since 2024/06/07
+	 */
+	public byte[] huffBits()
+	{
+		return this._huffBits.clone();
 	}
 	
 	/**

@@ -86,6 +86,18 @@ public class ArchiveOutputQueue
 	}
 	
 	/**
+	 * Flushes the output archive.
+	 *
+	 * @throws IOException On write errors.
+	 * @since 2024/06/07
+	 */
+	public void flush()
+		throws IOException
+	{
+		this.zip.flush();
+	}
+	
+	/**
 	 * Has this file been output?
 	 *
 	 * @param __file The file to check.
@@ -142,5 +154,27 @@ public class ArchiveOutputQueue
 		return new PrintStream(this.nextEntry(__name),
 			true,
 			"utf-8");
+	}
+	
+	/**
+	 * Writes a byte array entry.
+	 *
+	 * @param __name The name of the entry.
+	 * @param __bytes The bytes to write.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/06/07
+	 */
+	public void writeEntry(String __name, byte... __bytes)
+		throws IOException, NullPointerException
+	{
+		if (__name == null || __bytes == null)
+			throw new NullPointerException("NARG");
+		
+		// Just write everything directly
+		try (OutputStream out = this.nextEntry(__name))
+		{
+			out.write(__bytes);
+		}
 	}
 }

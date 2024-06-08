@@ -127,6 +127,7 @@ class CompileFontTask extends DefaultTask {
 						exitValue)
 				
 				// Move it over
+				Files.createDirectories(compiledPath.getParent())
 				Files.move(temp, compiledPath,
 					StandardCopyOption.REPLACE_EXISTING)
 			} finally {

@@ -98,12 +98,21 @@ public class Main
 					for (SqfFontStruct struct : structs)
 						writer.write(struct);
 				}
+				
+				// Make sure it is flushed
+				out.flush();
 			}
 			
 			// Was a success, so move over
 			if (!stdout)
+			{
+				// Make sure resultant directories exist
+				Files.createDirectories(outSqf.getParent());
+				
+				// Move it over
 				Files.move(temp, outSqf,
 					StandardCopyOption.REPLACE_EXISTING);
+			}
 		}
 		finally
 		{

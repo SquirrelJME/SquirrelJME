@@ -13,6 +13,7 @@ import cc.squirreljme.fontcompile.out.SqfWriter;
 import cc.squirreljme.fontcompile.out.struct.SqfFontStruct;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.Closeable;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import net.multiphasicapps.zip.queue.ArchiveOutputQueue;
@@ -57,7 +58,11 @@ public class SqfResourceWriter
 	public void close()
 		throws IOException
 	{
-		throw Debugging.todo();
+		this.archive.flush();
+		this.archive.close();
+		
+		this.out.flush();
+		this.out.close();
 	}
 	
 	/**
@@ -71,6 +76,53 @@ public class SqfResourceWriter
 		if (__struct == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		ArchiveOutputQueue archive = this.archive;
+		
+		// Determine base name for files
+		String baseName = String.format("%s/%d/%X/",
+			__struct.name, __struct.pixelHeight,
+			__struct.codepointStart / 256);
+		
+		// Write base struct details
+		try (OutputStream out = archive.nextEntry(baseName + "struct");
+			DataOutputStream ds = new DataOutputStream(out))
+		{
+			ds.writeInt(__struct.pixelHeight);
+			ds.writeInt(__struct.ascent);
+			ds.writeInt(__struct.descent);
+			ds.writeInt(__struct.bbx);
+			ds.writeInt(__struct.bby);
+			ds.writeInt(__struct.bbw);
+			ds.writeInt(__struct.bbh);
+			ds.writeInt(__struct.codepointStart);
+			ds.writeInt(__struct.codepointCount);
+			ds.writeInt(__struct.huffBitsSize);
+			ds.writeInt(__struct.charBmpSize);
+		}
+		
+		// Write array based data
+		archive.writeEntry(baseName + "huffBits",
+			__struct.huffBits());
+		archive.writeEntry(baseName + "charWidths",
+			__struct.charWidths());
+		archive.writeEntry(baseName + "charXOffset",
+			__struct.charXOffset());
+		archive.writeEntry(baseName + "charYOffset",
+			__struct.charYOffset());
+		archive.writeEntry(baseName + "charFlags",
+			__struct.charFlags());
+		
+		try (OutputStream out = archive.nextEntry(
+				baseName + "charBmpOffset");
+			DataOutputStream ds = new DataOutputStream(out))
+		{
+			for (int offset : __struct.charBmpOffset())
+				ds.writeInt(offset);
+		}
+		
+		archive.writeEntry(baseName + "charBmpScan",
+			__struct.charBmpScan());
+		archive.writeEntry(baseName + "charBmp",
+			__struct.charBmp());
 	}
 }
