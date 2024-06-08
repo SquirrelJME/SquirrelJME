@@ -455,7 +455,7 @@ public class SqfFontStruct
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0, n = __s.length(); i < n; i++)
 		{
-			char c = __s.charAt(0);
+			char c = __s.charAt(i);
 			
 			if (c >= 'A' && c <= 'Z')
 				sb.append((char)('a' + (c - 'A')));
