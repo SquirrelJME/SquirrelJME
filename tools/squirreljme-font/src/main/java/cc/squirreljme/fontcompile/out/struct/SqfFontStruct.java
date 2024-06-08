@@ -458,7 +458,7 @@ public class SqfFontStruct
 			char c = __s.charAt(0);
 			
 			if (c >= 'A' && c <= 'Z')
-				sb.append('a' + (c - 'A'));
+				sb.append((char)('a' + (c - 'A')));
 			else if (c == ' ' || c == '\t')
 				continue;
 			else if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') ||
