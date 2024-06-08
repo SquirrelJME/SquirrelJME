@@ -232,12 +232,11 @@ public class GlyphBitmap
 		if (__bbw < 0 || __bbh < 0)
 			throw new InvalidFontException("Invalid BDF bounding box.");
 		
-		// Determine hex count per row
-		int bytesPerRow = (__bbw / 8) + ((__bbw % 8) != 0 ? 1 : 0); 
-		int hexPerRow = bytesPerRow * 2;
+		// Initialize mutable bitmap
+		MutableGlyphBitmap bitmap = new MutableGlyphBitmap(__bbw, __bbh);
 		
-		// Allocate target bitmap
-		byte[] bitmap = new byte[bytesPerRow * __bbh];
+		// Determine hex count per row 
+		int hexPerRow = bitmap.bytesPerRow * 2;
 		
 		// Read each bitmap row
 		for (int y = 0; y < __bbh; y++)
@@ -269,9 +268,7 @@ public class GlyphBitmap
 				// Mask into bitmap
 				for (int s = 0; s < 4; s++, x++)
 					if ((dig & (1 << s)) != 0)
-						bitmap[GlyphBitmap.calcIndex(x, y, __bbw, __bbh)] |=
-							(byte)(1 <<
-								GlyphBitmap.calcShift(x, y, __bbw, __bbh));
+						bitmap.draw(x, y);
 			}
 		}
 		
@@ -281,6 +278,28 @@ public class GlyphBitmap
 			throw new InvalidFontException("Expected ENDCHAR.");
 		
 		// Create bitmap
-		return new GlyphBitmap(__bbw, __bbh, bitmap);
+		return new GlyphBitmap(__bbw, __bbh, bitmap.bitmap);
+	}
+	
+	/**
+	 * Parses an SFD Glyph.
+	 *
+	 * @param __tokenizer The tokenizer used.
+	 * @param __w The glyph width.
+	 * @param __h The glyph height.
+	 * @return The parsed bitmap.
+	 * @throws InvalidFontException If the bitmap is not valid.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/06/08
+	 */
+	public static GlyphBitmap parseSfd(LineTokenizer __tokenizer,
+		int __w, int __h)
+		throws InvalidFontException, IOException, NullPointerException
+	{
+		if (__tokenizer == null)
+			throw new NullPointerException("NARG");
+		
+		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
 	}
 }
