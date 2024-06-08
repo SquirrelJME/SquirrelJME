@@ -358,7 +358,7 @@ public class SqfFontStruct
 			charBmpScan[i] = scanLen;
 			
 			// Raw bitmap?
-			if (glyph.isReject())
+			if (true || glyph.isReject())
 			{
 				// Mark valid
 				charFlags[i] = SqfFontCharFlag.VALID;
