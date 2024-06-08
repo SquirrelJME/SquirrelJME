@@ -50,14 +50,26 @@ class CompileFontTask extends DefaultTask {
 	@Internal
 	final java.nio.file.Path compiledPath
 	
+	/** Writing C source? */
+	@Getter
+	@Internal
+	final boolean cSource
+	
 	@Inject
-	public CompileFontTask(String __pathy, String __outName) {
+	public CompileFontTask(String __pathy, String __outName,
+		boolean __cSource) {
 		if (__pathy == null || __outName == null) {
 			throw new NullPointerException("No path.")
 		}
 		
 		this.group = "squirreljme"
 		this.description = "Compiles font ${__pathy}."
+		
+		this.cSource = __cSource
+		
+		// Clean must always be done first
+		this.mustRunAfter(this.project.provider({ ->
+			this.project.tasks.named("clean")}))
 		
 		// We need the actual program first
 		Provider<Task> shadowTask = this.project.provider({ ->
@@ -71,7 +83,7 @@ class CompileFontTask extends DefaultTask {
 		
 		// Where does this go?
 		java.nio.file.Path compiledPath = this.project.buildDir.toPath()
-			.resolve("fonts").resolve(__outName + ".sqf")
+			.resolve("fonts").resolve(__outName + (__cSource ? ".c" : ".sqf"))
 		this.compiledPath = compiledPath
 		
 		// Make the shadow Jar input for the task just to make sure that
@@ -110,7 +122,7 @@ class CompileFontTask extends DefaultTask {
 							
 							// Input and output
 							spec.args(fontPath.toAbsolutePath().toString(),
-								"-")
+								(__cSource ? "-.c" : "-"))
 							
 							// Use these streams directly
 							spec.setStandardOutput(out)
@@ -161,11 +173,16 @@ for (String fn in [
 	String shortish = fn.substring(0, 1).toUpperCase() + fn.replaceAll(
 		"(\\.sfdir|\\.strike|\\.bdf|/)", "").substring(1)
 	
-	// Register it
+	// Register base SQF compiler
 	TaskProvider<Task> compileFont = tasks.register("compileFont${shortish}",
 		CompileFontTask.class,
-		fn, shortish.toLowerCase(Locale.ROOT))
+		fn, shortish.toLowerCase(Locale.ROOT), false)
 	
-	// Include in compilation of all fonts
+	// Include all SQFs in the default compile
 	compileFonts.get().dependsOn(compileFont)
+	
+	// Add source code compilation
+	tasks.register("sourceFont${shortish}",
+		CompileFontTask.class,
+		fn, shortish.toLowerCase(Locale.ROOT), true)
 }

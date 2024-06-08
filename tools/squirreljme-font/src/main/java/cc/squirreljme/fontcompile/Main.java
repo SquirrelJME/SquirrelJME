@@ -15,7 +15,9 @@ import cc.squirreljme.fontcompile.in.bdf.BdfFontInfo;
 import cc.squirreljme.fontcompile.in.sfdir.SfdFontInfo;
 import cc.squirreljme.fontcompile.out.CompiledFont;
 import cc.squirreljme.fontcompile.out.FontCompiler;
+import cc.squirreljme.fontcompile.out.SqfWriter;
 import cc.squirreljme.fontcompile.out.rc.SqfResourceWriter;
+import cc.squirreljme.fontcompile.out.source.SqfSourceWriter;
 import cc.squirreljme.fontcompile.out.struct.SqfFontStruct;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -51,10 +53,14 @@ public class Main
 		if (__args == null || __args.length != 2 ||
 			__args[0] == null || __args[1] == null)
 			throw new IllegalArgumentException(
-				"Usage: [in.bdf|in.strike] [out.sqf|-]");
+				"Usage: [in.bdf|in.strike] [out.sqf|-|out.c|-.c]");
 		
 		// Writing to stdout?
-		boolean stdout = "-".equals(__args[1]);
+		boolean stdout = "-".equals(__args[1]) ||
+			"-.c".equals(__args[1]);
+		
+		// Writing C source code?
+		boolean cSource = __args[1].endsWith(".c");
 		
 		// Input and output files
 		Path inBase = Paths.get(__args[0]);
@@ -92,8 +98,8 @@ public class Main
 				SqfFontStruct[] structs = SqfFontStruct.parse(compiled);
 				
 				// Write all the structs
-				try (SqfResourceWriter writer =
-					 new SqfResourceWriter(out))
+				try (SqfWriter writer = (cSource ? new SqfSourceWriter(out) :
+					 new SqfResourceWriter(out)))
 				{
 					for (SqfFontStruct struct : structs)
 						writer.write(struct);
