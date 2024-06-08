@@ -179,7 +179,18 @@ public final class GlyphId
 		// Otherwise will be a character in the AGL
 		Integer agl = GlyphId._AGL.get(__in);
 		if (agl == null)
+		{
+			// FontForge prefixed _ due to case-insensitive filesystems
+			if (__in.startsWith("_"))
+			{
+				agl = GlyphId._AGL.get(__in.substring(1));
+				if (agl != null)
+					return GlyphId.of(agl);
+			}
+			
 			throw new InvalidFontException("Unknown glyph: " + __in);
+		}
+		
 		return GlyphId.of(agl);
 	}
 	
