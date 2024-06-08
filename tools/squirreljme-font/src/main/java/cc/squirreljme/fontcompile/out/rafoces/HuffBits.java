@@ -10,8 +10,11 @@
 package cc.squirreljme.fontcompile.out.rafoces;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Huffman bit sequence.
@@ -19,6 +22,7 @@ import java.util.List;
  * @since 2024/06/03
  */
 public final class HuffBits
+	implements Iterable<Boolean>
 {
 	/** The mask for the value. */
 	private final long mask;
@@ -114,6 +118,16 @@ public final class HuffBits
 		if ((next & (~mask)) != 0)
 			return HuffBits.of(next, shift + 1);
 		return HuffBits.of(next, shift);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/06/07
+	 */
+	@Override
+	public Iterator<Boolean> iterator()
+	{
+		return new __HuffBitsIterator__(this);
 	}
 	
 	/**
@@ -228,7 +242,8 @@ public final class HuffBits
 	}
 	
 	/**
-	 * Translates huffman bytes to the given byte array.
+	 * Translates huffman bits to the given byte array, this outputs in a
+	 * packed form.
 	 *
 	 * @param __in The input bits.
 	 * @return The resultant byte array.
@@ -240,12 +255,44 @@ public final class HuffBits
 	{
 		if (__in == null)
 			throw new NullPointerException("NARG");
-	
-		throw Debugging.todo();
+		
+		// The resultant byte array
+		ByteArrayOutputStream result = new ByteArrayOutputStream();
+		
+		// The current byte and bit to fill
+		byte current = 0;
+		int shift = 0;
+		
+		// Fill in bits
+		for (HuffBits bits : __in)
+			for (boolean bit : bits)
+			{
+				// Set bit?
+				if (bit)
+					current |= (byte)(1 << shift);
+				
+				// Move shift up
+				if ((++shift) >= 8)
+				{
+					// Store into result
+					result.write(current);
+					
+					// Move shift up and reset
+					current = 0;
+					shift = 0;
+				}
+			}
+		
+		// Left over?
+		if (shift > 0)
+			result.write(current);
+		
+		return result.toByteArray();
 	}
 	
 	/**
-	 * Translates huffman bytes to the given byte array.
+	 * Translates huffman bits to the given byte array, this outputs in a
+	 * packed form.
 	 *
 	 * @param __in The input bits.
 	 * @return The resultant byte array.

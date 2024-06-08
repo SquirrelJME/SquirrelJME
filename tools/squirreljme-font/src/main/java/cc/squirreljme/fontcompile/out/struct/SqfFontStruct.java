@@ -15,8 +15,6 @@ import cc.squirreljme.fontcompile.out.rafoces.ChainList;
 import cc.squirreljme.fontcompile.out.rafoces.HuffBits;
 import cc.squirreljme.fontcompile.out.rafoces.HuffTable;
 import cc.squirreljme.fontcompile.util.GlyphId;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -66,8 +64,14 @@ public class SqfFontStruct
 	/** The number of codepoints which are in this SQF font. */
 	public final int codepointCount;
 	
+	/** The size of the {@code huffBits} member. */
+	public final int huffBitsSize;
+	
 	/** The size of the {@code _charBmp} member. */
 	public final int charBmpSize;
+	
+	/** Huffman bits for huffman tables. */
+	private final byte[] huffBits;
 	
 	/** Widths for each character. */
 	private final byte[] _charWidths;
@@ -103,6 +107,7 @@ public class SqfFontStruct
 	 * @param __bbh Bounding box height.
 	 * @param __codepointStart The starting codepoint for this font.
 	 * @param __codepointCount The number of codepoints which are in this font.
+	 * @param __huffBits Huffman bits.
 	 * @param __charWidths Widths for each character.
 	 * @param __charXOffset X offset for each character.
 	 * @param __charYOffset Y offset for each character.
@@ -118,14 +123,13 @@ public class SqfFontStruct
 		int __pixelHeight, int __ascent, int __descent,
 		int __bbx, int __bby, int __bbw, int __bbh,
 		int __codepointStart, int __codepointCount,
-		byte[] __charWidths, byte[] __charXOffset, byte[] __charYOffset,
+		byte[] __huffBits, byte[] __charWidths,
+		byte[] __charXOffset, byte[] __charYOffset,
 		byte[] __charFlags, int[] __charBmpOffset,
 		byte[] __charBmpScan,
 		byte[] __charBmp)
 		throws NullPointerException
 	{
-		this._charXOffset = __charXOffset;
-		this._charYOffset = __charYOffset;
 		if (__name == null || __charWidths == null || __charFlags == null ||
 			__charBmpOffset == null || __charBmp == null ||
 			__charBmpScan == null || __charXOffset == null ||
@@ -142,7 +146,11 @@ public class SqfFontStruct
 		this.bbh = __bbh;
 		this.codepointStart = __codepointStart;
 		this.codepointCount = __codepointCount;
+		this.huffBitsSize = (__huffBits == null ? 0 : __huffBits.length);
 		this.charBmpSize = __charBmp.length;
+		this.huffBits = __huffBits;
+		this._charXOffset = __charXOffset;
+		this._charYOffset = __charYOffset;
 		this._charWidths = __charWidths;
 		this._charFlags = __charFlags;
 		this._charBmpOffset = __charBmpOffset;
@@ -228,6 +236,10 @@ public class SqfFontStruct
 		int[] charBmpOffset = new int[n];
 		byte[] charBmpScan = new byte[n];
 		
+		// Huffman bits
+		ChunkWriter huffBitsChunk = new ChunkWriter();
+		ChunkSection huffBits = huffBitsChunk.addSection();
+		
 		// Bitmap data is variable
 		ChunkWriter charBmpChunk = new ChunkWriter();
 		ChunkSection charBmp = charBmpChunk.addSection();
@@ -286,18 +298,18 @@ public class SqfFontStruct
 				if (huffOffsetBox == null)
 				{
 					// Is stored here
-					huffOffset = charBmp.size();
+					huffOffset = huffBits.size();
 					huffOffsets.put(huffman, huffOffset);
 					
 					// Place down table size
-					charBmp.writeInt(huffman.size());
+					huffBits.writeInt(huffman.size());
 					
 					// Go through and write all sequences
 					for (Map.Entry<ChainList, HuffBits> entry : huffman)
 					{
-						SqfFontStruct.__writeHuff(charBmp,
+						SqfFontStruct.__writeHuff(huffBits,
 							entry.getKey().toHuffBits());
-						SqfFontStruct.__writeHuff(charBmp,
+						SqfFontStruct.__writeHuff(huffBits,
 							new HuffBits[]{entry.getValue()});
 					}
 				}
@@ -327,6 +339,7 @@ public class SqfFontStruct
 			__font.original.bbh,
 			__pageId.codepoint,
 			n,
+			huffBitsChunk.toByteArray(),
 			charWidths,
 			charXOffset,
 			charYOffset,

@@ -80,8 +80,14 @@ typedef struct sjme_sqf
 	/** The number of codepoints which are in this font. */
 	sjme_jint codepointCount;
 	
+	/** The size of the @c huffBits member. */
+	sjme_jint huffBitsSize;
+	
 	/** The size of the @c charBmp member. */
 	sjme_jint charBmpSize;
+	
+	/** Huffman bits for huffman tables. */
+	const sjme_jbyte* huffBits;
 	
 	/** Widths for each character. */
 	const sjme_jbyte* charWidths;
