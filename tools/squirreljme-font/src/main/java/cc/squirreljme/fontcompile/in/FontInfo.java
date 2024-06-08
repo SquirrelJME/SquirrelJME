@@ -9,14 +9,12 @@
 
 package cc.squirreljme.fontcompile.in;
 
-import cc.squirreljme.fontcompile.in.bdf.BdfGlyphInfo;
 import cc.squirreljme.fontcompile.util.GlyphId;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.util.Iterator;
 import java.util.Map;
 import net.multiphasicapps.collections.UnmodifiableMap;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Base class for font information.

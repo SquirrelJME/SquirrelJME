@@ -40,11 +40,11 @@ public class FontCompiler
 {
 	/** Initial reject division. */
 	private static final int _REJECT_DIV =
-		64;
+		256;
 	
 	/** Limit on the reject division. */
 	private static final int _REJECT_DIV_LIMIT =
-		8;
+		64;
 	
 	/** The input font. */
 	protected final FontInfo in;
