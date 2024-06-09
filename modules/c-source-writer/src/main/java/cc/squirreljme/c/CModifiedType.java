@@ -99,6 +99,14 @@ public final class CModifiedType
 			result.addAll(this.type.declareTokens(__name));
 		}
 		
+		// Make static first if it is not first
+		int staticDx = result.indexOf("static");
+		if (staticDx > 0)
+		{
+			result.remove(staticDx);
+			result.add(0, "static");
+		}
+		
 		return UnmodifiableList.of(result);
 	}
 	

@@ -370,7 +370,7 @@ public class CFile
 		if (__variable == null || __expression == null)
 			throw new NullPointerException("NARG");
 		
-		return this.tokens(__variable.declareTokens(), "=",
+		return this.tokens(__variable.declareTokens(true), "=",
 			__expression, ";");
 	}
 	

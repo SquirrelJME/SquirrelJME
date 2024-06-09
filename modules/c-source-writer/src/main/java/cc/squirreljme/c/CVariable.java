@@ -63,12 +63,31 @@ public class CVariable
 	 */
 	public List<String> declareTokens()
 	{
+		return this.declareTokens(false);
+	}
+	
+	/**
+	 * The tokens used to define this variable.
+	 * 
+	 * @param __define Is this being defined?
+	 * @return The tokens used for declaration.
+	 * @since 2024/06/09
+	 */
+	public List<String> declareTokens(boolean __define)
+	{
 		Reference<List<String>> ref = this._declareTokens;
 		List<String> rv;
 		
+		// If we are defining this type and this is a pointer type, change
+		// it to an array type
+		CType target = this.type;
+		if (__define && target.isPointer())
+			target = target.dereferenceType().arrayType(
+				CArrayType.UNDEFINED_SIZE);
+		
 		if (ref == null || (rv = ref.get()) == null)
 		{
-			rv = UnmodifiableList.of(this.type.declareTokens(this.name));
+			rv = UnmodifiableList.of(target.declareTokens(this.name));
 			this._declareTokens = new WeakReference<>(rv);
 		}
 		
@@ -150,11 +169,11 @@ public class CVariable
 		{
 			CModifiedType modifiedType = (CModifiedType)type;
 			
-			// Already static?
-			return modifiedType.modifier instanceof CStaticModifier;
+			// Is static?
+			return (modifiedType.modifier instanceof CStaticModifier);
 		}
 		
-		// Not extern
+		// Not static
 		return false;
 	}
 	
