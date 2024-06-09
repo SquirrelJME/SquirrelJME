@@ -93,6 +93,52 @@ public class CBasicExpression
 	}
 	
 	/**
+	 * Creates an identifier array expression.
+	 *
+	 * @param __values Input values.
+	 * @return The resultant expression.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/06/09
+	 */
+	public static CExpression array(CIdentifier... __values)
+		throws IOException, NullPointerException
+	{
+		if (__values == null)
+			throw new NullPointerException("NARG");
+	
+		return CExpressionBuilder.builder()
+			.array((Object[])__values)
+			.build();
+	}
+	
+	/**
+	 * Creates an identifier reference array expression.
+	 *
+	 * @param __values Input values.
+	 * @return The resultant expression.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/06/09
+	 */
+	public static CExpression arrayReferences(CIdentifier... __values)
+		throws IOException, NullPointerException
+	{
+		if (__values == null)
+			throw new NullPointerException("NARG");
+		
+		// Wrap in references
+		int n = __values.length;
+		CExpression[] refs = new CExpression[n];
+		for (int i = 0; i < n; i++)
+			refs[i] = CBasicExpression.reference(__values[i]);
+	
+		return CExpressionBuilder.builder()
+			.array((Object[])refs)
+			.build();
+	}
+	
+	/**
 	 * Returns a number expression.
 	 * 
 	 * @param __value The value to use.

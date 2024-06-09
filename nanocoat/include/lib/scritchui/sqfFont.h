@@ -111,7 +111,7 @@ typedef struct sjme_sqf
 	const sjme_jbyte* charBmp;
 } sjme_sqf;
 
-typedef struct sjme_sqf_codepages
+typedef struct sjme_sqf_codepage
 {
 	/** The name of the font. */
 	sjme_lpcstr name;
@@ -120,8 +120,8 @@ typedef struct sjme_sqf_codepages
 	sjme_jint numCodepages;
 	
 	/** The codepages for the font. */
-	const sjme_sqf* codepages;
-} sjme_sqf_codepages;
+	const sjme_sqf* const* codepages;
+} sjme_sqf_codepage;
 
 /*--------------------------------------------------------------------------*/
 

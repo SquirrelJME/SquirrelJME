@@ -125,4 +125,19 @@ public class SqfResourceWriter
 		archive.writeEntry(baseName + "charBmp",
 			__struct.charBmp());
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/06/09
+	 */
+	@Override
+	public void write(SqfFontStruct... __structs)
+		throws IOException, NullPointerException
+	{
+		if (__structs == null)
+			throw new NullPointerException("NARG");
+		
+		for (SqfFontStruct struct : __structs)
+			this.write(struct);
+	}
 }

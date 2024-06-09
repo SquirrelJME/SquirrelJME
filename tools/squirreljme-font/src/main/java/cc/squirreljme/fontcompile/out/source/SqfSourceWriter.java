@@ -9,6 +9,8 @@
 
 package cc.squirreljme.fontcompile.out.source;
 
+import cc.squirreljme.c.CArrayBlock;
+import cc.squirreljme.c.CArrayType;
 import cc.squirreljme.c.CBasicExpression;
 import cc.squirreljme.c.CExpression;
 import cc.squirreljme.c.CFile;
@@ -118,6 +120,16 @@ public class SqfSourceWriter
 			.member(SqfSourceWriter._VAR_CHAR_BMP)
 			.build();
 	
+	/** SQF Codepage structure type. */
+	private static final CType _TYPE_SQF_CODEPAGE =
+		CStructTypeBuilder.builder(CStructKind.STRUCT,
+			"sjme_sqf_codepage")
+			.member(SqfSourceWriter._TYPE_LPCSTR, "name")
+			.member(SqfSourceWriter._TYPE_INT, "numCodepages")
+			.member(SqfSourceWriter._TYPE_SQF.constType().pointerType(),
+				"codepages")
+			.build();
+	
 	/** The resultant output. */
 	protected final CFile cFile;
 	
@@ -172,55 +184,64 @@ public class SqfSourceWriter
 		CFile cFile = this.cFile;
 		
 		// Base name of constants
-		String baseName = String.format("sqf_font_%s_%d_%X",
-			__struct.name, __struct.pixelHeight,
-			__struct.codepointStart / 256);
+		String baseName = SqfSourceWriter.__baseName(__struct);
 		
 		String identHuffBits = baseName + "_huffBits";
 		cFile.define(SqfSourceWriter._VAR_HUFF_BITS.rename(
 			identHuffBits).staticize(),
 			CBasicExpression.array(__struct.huffBits()));
+		cFile.newLine(true);
 		
 		String identCharWidths = baseName + "_charWidths";
 		cFile.define(SqfSourceWriter._VAR_CHAR_WIDTHS.rename(
 			identCharWidths).staticize(),
 			CBasicExpression.array(__struct.charWidths()));
+		cFile.newLine(true);
 		
 		String identCharXOffset = baseName + "_charXOffset";
 		cFile.define(SqfSourceWriter._VAR_CHAR_X_OFFSETS.rename(
 			identCharXOffset).staticize(),
 			CBasicExpression.array(__struct.charXOffset()));
+		cFile.newLine(true);
 		
 		String identCharYOffset = baseName + "_charYOffset";
 		cFile.define(SqfSourceWriter._VAR_CHAR_Y_OFFSETS.rename(
 			identCharYOffset).staticize(),
 			CBasicExpression.array(__struct.charYOffset()));
+		cFile.newLine(true);
 		
 		String identCharFlags = baseName + "_charFlags";
 		cFile.define(SqfSourceWriter._VAR_CHAR_FLAGS.rename(
 			identCharFlags).staticize(),
 			CBasicExpression.array(__struct.charFlags()));
+		cFile.newLine(true);
 		
 		String identCharBmpOffset = baseName + "_charBmpOffset";
 		cFile.define(SqfSourceWriter._VAR_CHAR_BMP_OFFSETS.rename(
 			identCharBmpOffset).staticize(),
 			CBasicExpression.array(__struct.charBmpOffset()));
+		cFile.newLine(true);
 		
 		String identCharBmpScan = baseName + "_charBmpScan";
 		cFile.define(SqfSourceWriter._VAR_CHAR_BMP_SCAN.rename(
 			identCharBmpScan).staticize(),
 			CBasicExpression.array(__struct.charBmpScan()));
+		cFile.newLine(true);
 		
 		String identCharBmp = baseName + "_charBmp";
 		cFile.define(SqfSourceWriter._VAR_CHAR_BMP.rename(
 			identCharBmp).staticize(),
 			CBasicExpression.array(__struct.charBmp()));
+		cFile.newLine(true);
 		
 		// Open structure for defining
 		try (CStructVariableBlock sqf = cFile.define(
 				CStructVariableBlock.class,
 				CVariable.of(SqfSourceWriter._TYPE_SQF.constType(), baseName)))
 		{
+			// Cleaner at the start
+			cFile.newLine(true);
+			
 			sqf.memberSet("name",
 				CBasicExpression.string(__struct.name));
 			sqf.memberSet("pixelHeight",
@@ -245,7 +266,6 @@ public class SqfSourceWriter
 				CBasicExpression.number(__struct.huffBitsSize));
 			sqf.memberSet("charBmpSize",
 				CBasicExpression.number(__struct.charBmpSize));
-			
 			sqf.memberSet("huffBits",
 				CBasicExpression.of(identHuffBits));
 			sqf.memberSet("charWidths",
@@ -265,6 +285,79 @@ public class SqfSourceWriter
 		}
 		
 		// Padding
-		cFile.newLine(false);
+		cFile.newLine(true);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/06/09
+	 */
+	@Override
+	public void write(SqfFontStruct... __structs)
+		throws IOException, NullPointerException
+	{
+		if (__structs == null)
+			throw new NullPointerException("NARG");
+		
+		// Write individual structs
+		int n = __structs.length;
+		CIdentifier[] structsId = new CIdentifier[n];
+		for (int i = 0; i < n; i++)
+		{
+			this.write(__structs[i]);
+			structsId[i] = CIdentifier.of(
+				SqfSourceWriter.__baseName(__structs[i]));
+		}
+		
+		CFile cFile = this.cFile;
+		
+		// Base name of constants
+		String baseName = String.format("sqf_font_%s_%d", __structs[0].name,
+			__structs[0].pixelHeight);
+		
+		// Sequence of fonts
+		CIdentifier sqfs = CIdentifier.of(baseName + "_sqfs");
+		CVariable sqfsVar = CVariable.of(
+			SqfSourceWriter._TYPE_SQF.constType().pointerType().arrayType(n),
+			sqfs);
+		cFile.define(sqfsVar, CBasicExpression.arrayReferences(structsId));
+		
+		// Write codepages
+		try (CStructVariableBlock sqf = cFile.define(
+				CStructVariableBlock.class,
+				CVariable.of(SqfSourceWriter._TYPE_SQF_CODEPAGE.constType(),
+					baseName)))
+		{
+			// Cleaner at the start
+			cFile.newLine(true);
+			
+			sqf.memberSet("name",
+				CBasicExpression.string(__structs[0].name));
+			sqf.memberSet("numCodepages",
+				CBasicExpression.number(n));
+			sqf.memberSet("codepages",
+				sqfs);
+		}
+		
+		// Padding
+		cFile.newLine(true);
+	}
+	
+	/**
+	 * Calculates the base name of the structure.
+	 *
+	 * @param __struct The structure.
+	 * @return The base name of the structure.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/06/09
+	 */
+	private static String __baseName(SqfFontStruct __struct)
+		throws NullPointerException
+	{
+		if (__struct == null)
+			throw new NullPointerException("NARG");
+		
+		return String.format("sqf_font_%s_%d_%X", __struct.name,
+			__struct.pixelHeight, __struct.codepointStart / 256);
 	}
 }

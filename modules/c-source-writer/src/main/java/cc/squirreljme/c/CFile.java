@@ -233,7 +233,7 @@ public class CFile
 		throws IOException
 	{
 		// Output open block
-		CBlock rv = new CBlock(this, "}");
+		CBlock rv = new CBlock(this, "}", false);
 		this.token("{");
 		
 		// Setup new block
@@ -370,8 +370,10 @@ public class CFile
 		if (__variable == null || __expression == null)
 			throw new NullPointerException("NARG");
 		
-		return this.tokens(__variable.declareTokens(true), "=",
+		// Declare and emit soft newline after declaration, to add some space
+		this.tokens(__variable.declareTokens(true), "=",
 			__expression, ";");
+		return this.newLine(false);
 	}
 	
 	/**
@@ -1048,11 +1050,16 @@ public class CFile
 		// Remove it
 		blocks.pop();
 		
+		// Indent before the finisher?
+		if (__cBlock.indentBeforeFinish)
+			this.out.indent(-(1 + __cBlock.extraIndent));
+		
 		// Write finisher
 		__cBlock.__finish();
 		
 		// Indent down, with any potential extra indentation that was added
-		this.out.indent(-(1 + __cBlock.extraIndent));
+		if (!__cBlock.indentBeforeFinish)
+			this.out.indent(-(1 + __cBlock.extraIndent));
 	}
 	
 	/**

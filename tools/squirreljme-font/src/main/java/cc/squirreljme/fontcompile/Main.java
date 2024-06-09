@@ -101,8 +101,7 @@ public class Main
 				try (SqfWriter writer = (cSource ? new SqfSourceWriter(out) :
 					 new SqfResourceWriter(out)))
 				{
-					for (SqfFontStruct struct : structs)
-						writer.write(struct);
+					writer.write(structs);
 				}
 				
 				// Make sure it is flushed
