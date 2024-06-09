@@ -9,6 +9,8 @@
 
 package cc.squirreljme.javap;
 
+import cc.squirreljme.runtime.cldc.io.HexDumpOutputStream;
+import cc.squirreljme.runtime.cldc.util.IntegerArrayList;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -23,6 +25,7 @@ import net.multiphasicapps.classfile.ConstantValue;
 import net.multiphasicapps.classfile.Contexual;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.Pool;
+import net.multiphasicapps.classfile.UTFConstantEntry;
 import net.multiphasicapps.markdownwriter.MarkdownWriter;
 
 /**
@@ -59,7 +62,7 @@ public class Main
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/06/09
 	 */
-	private static void dumpConstantValue(MarkdownWriter __w,
+	public static void dumpConstantValue(MarkdownWriter __w,
 		ConstantValue __value)
 		throws IOException, NullPointerException
 	{
@@ -68,6 +71,25 @@ public class Main
 		
 		__w.printf("Constant value %s: %s",
 			__value.type(), __value.boxedValue());
+	}
+	
+	/**
+	 * Dumps the constant value.
+	 *
+	 * @param __w Where to write to.
+	 * @param __value The constant value to dump.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/06/09
+	 */
+	public static void dumpConstantValue(MarkdownWriter __w,
+		UTFConstantEntry __value)
+		throws IOException, NullPointerException
+	{
+		if (__w == null || __value == null)
+			throw new NullPointerException("NARG");
+			
+		__w.printf("UTF: %s",__value.toString());
 	}
 	
 	/**
@@ -92,6 +114,8 @@ public class Main
 			Main.dumpPool(__w, (Pool)__contexual);
 		else if (__contexual instanceof ConstantValue)
 			Main.dumpConstantValue(__w, (ConstantValue)__contexual);
+		else if (__contexual instanceof UTFConstantEntry)
+			Main.dumpConstantValue(__w, (UTFConstantEntry)__contexual);
 		
 		// Unknown
 		else
@@ -118,6 +142,8 @@ public class Main
 			__w.println("null");
 		else if (__object instanceof Contexual)
 			Main.dumpContextual(__w, (Contexual)__object);
+		else if (__object instanceof int[])
+			__w.println(IntegerArrayList.asList((int[])__object));
 		else
 			__w.println(__object);
 	}
@@ -140,6 +166,11 @@ public class Main
 		// Header
 		__w.paragraph();
 		__w.println("Constant pool");
+		__w.paragraph();
+		
+		// Raw data
+		HexDumpOutputStream.dump(__w, __pool.rawData());
+		__w.paragraph();
 		
 		// Start list
 		__w.listStart();
@@ -153,8 +184,17 @@ public class Main
 		for (int i = 0, n = __pool.size(); i < n; i++)
 		{
 			// Dump it
-			__w.printf("%d: ", i);
+			__w.printf("%d (%d):", i, __pool.tags()[i]);
+			
+			__w.listStart();
+			
+			Main.dumpObject(__w, __pool.rawData(i));
+			__w.listNext();
+			
 			Main.dumpObject(__w, __pool.get(Object.class, i));
+			__w.listNext();
+			
+			__w.listEnd();
 			
 			// Go to next item
 			__w.listNext();

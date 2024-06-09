@@ -324,9 +324,21 @@ public final class Method
 			int rawflags = __in.readUnsignedShort();
 			
 			// Parse name, this is needed to see if it is a constructor
-			MethodName name = new MethodName(
-				__pool.<UTFConstantEntry>require(UTFConstantEntry.class,
-				__in.readUnsignedShort()).toString());
+			MethodName name;
+			int nameDx = __in.readUnsignedShort();
+			try
+			{
+				name = new MethodName(
+					__pool.<UTFConstantEntry>require(UTFConstantEntry.class,
+						nameDx).toString());
+			}
+			catch (InvalidClassFormatException __e)
+			{
+				/* {@squirreljme.error JC5a. */
+				throw new InvalidClassFormatException(String.format(
+					"JC5a %d %d %s", nm, nameDx,
+					__pool.get(Object.class, nameDx)), __e);
+			}
 			
 			// Initialize the flags now that we know the class name, this way
 			// we can determine if this is a constructor or not

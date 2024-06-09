@@ -123,6 +123,8 @@ public class InvalidClassFormatException
 	 */
 	public final Contexual[] context()
 	{
+		if (this._context == null)
+			return new Contexual[0];
 		return this._context.clone();
 	}
 }
