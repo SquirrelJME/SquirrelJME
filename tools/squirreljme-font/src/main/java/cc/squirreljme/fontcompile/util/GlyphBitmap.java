@@ -11,11 +11,16 @@ package cc.squirreljme.fontcompile.util;
 
 import cc.squirreljme.fontcompile.InvalidFontException;
 import cc.squirreljme.fontcompile.out.rafoces.HuffBits;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import net.multiphasicapps.io.ASCII85Decoder;
+import net.multiphasicapps.io.StringReader;
 
 /**
  * Bitmap that represents the glyph.
@@ -300,6 +305,37 @@ public class GlyphBitmap
 		if (__tokenizer == null)
 			throw new NullPointerException("NARG");
 		
-		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
+		// Read in entire ASCII85 sequence
+		StringBuilder seq = new StringBuilder();
+		for (;;)
+		{
+			// Read in next set of tokens
+			String[] tokens = __tokenizer.next();
+			if (tokens == null)
+				break;
+			
+			// There should be only a single set
+			if (tokens.length != 1)
+				throw new InvalidFontException(String.format(
+					"Unexpected multiple tokens: %s", Arrays.asList(tokens)));
+			
+			// Append to the sequence to be decoded
+			seq.append(tokens[0]);
+		}
+		
+		// Decode everything
+		byte[] decoded;
+		try (InputStream in = new ASCII85Decoder(
+			new StringReader(seq.toString())))
+		{
+			decoded = StreamUtils.readAll(in);
+		}
+		
+		// FontForge encodes everything in reverse order
+		for (int i = 0, n = decoded.length; i < n; i++)
+			decoded[i] = (byte)(Integer.reverse(decoded[i]) >>> 24);
+		
+		// Directly load bitmap
+		return new GlyphBitmap(__w, __h, decoded);
 	}
 }

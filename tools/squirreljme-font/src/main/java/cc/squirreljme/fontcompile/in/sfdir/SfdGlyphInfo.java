@@ -15,7 +15,6 @@ import cc.squirreljme.fontcompile.util.FontUtils;
 import cc.squirreljme.fontcompile.util.GlyphBitmap;
 import cc.squirreljme.fontcompile.util.GlyphId;
 import cc.squirreljme.fontcompile.util.LineTokenizer;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -53,12 +52,13 @@ public class SfdGlyphInfo
 	 * Parses the SFD Glyph.
 	 *
 	 * @param __path The input glyph data.
+	 * @param __pixelSize The pixel size of the font.
 	 * @return The resultant glyph.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/06/08
 	 */
-	public static SfdGlyphInfo parse(Path __path)
+	public static SfdGlyphInfo parse(Path __path, int __pixelSize)
 		throws IOException, NullPointerException
 	{
 		if (__path == null)
@@ -72,8 +72,8 @@ public class SfdGlyphInfo
 		// Glyph properties
 		GlyphBitmap bitmap = null;
 		int width = Integer.MIN_VALUE;
-		int offX = Integer.MIN_VALUE;
-		int offY = Integer.MIN_VALUE;
+		int minX = Integer.MIN_VALUE;
+		int minY = Integer.MIN_VALUE;
 		
 		// Parse glyph bitmap data
 		try (InputStream in = Files.newInputStream(__path,
@@ -101,21 +101,28 @@ public class SfdGlyphInfo
 				// 5 the minimum y value,
 				// 6 the maximum x value and
 				// 7 the maximum y value.
-				// BDFChar: 2 33 2 0 0 0 7
+				// BDFChar: 5   65  6 0 4 0 8 <-- A
+				// BDFChar: 174 198 8 0 6 0 8 <-- AE
+				// BDFChar: 144 122 6 0 4 0 4 <-- z
 				if ("BDFChar".equals(tokens[0]))
 				{
 					// Read in offsets
-					offX = FontUtils.parseInteger(tokens, 4);
-					offY = FontUtils.parseInteger(tokens, 5);
+					minX = FontUtils.parseInteger(tokens, 4);
+					minY = FontUtils.parseInteger(tokens, 5);
 					int maxX = FontUtils.parseInteger(tokens, 6);
 					int maxY = FontUtils.parseInteger(tokens, 7);
 					
-					// The bitmap width is based on the offsets
-					width = maxX - offX;
+					// The FontForge reference says that the bitmap data is
+					// (maxX - minX), however in practice this is never the
+					// case and the width specified is the one that is valid
+					width = FontUtils.parseInteger(tokens, 3);
 					
 					// Parse SFD bitmap
+					// Use the pixel size as the height since although
+					// the documentation says the height is ((maxY - minY) * 1)
+					// this in practice is not the case
 					bitmap = GlyphBitmap.parseSfd(tokenizer,
-						width, maxY - offY);
+						width, __pixelSize);
 				}
 				
 				// Unknown?
@@ -130,7 +137,7 @@ public class SfdGlyphInfo
 		return new SfdGlyphInfo(id,
 			width,
 			bitmap,
-			offX,
-			offY);
+			minX,
+			__pixelSize - minY);
 	}
 }

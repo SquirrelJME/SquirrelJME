@@ -12,6 +12,7 @@ package cc.squirreljme.fontcompile.util;
 import cc.squirreljme.fontcompile.InvalidFontException;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
+import cc.squirreljme.runtime.cldc.util.StringUtils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -180,10 +181,24 @@ public final class GlyphId
 		Integer agl = GlyphId._AGL.get(__in);
 		if (agl == null)
 		{
-			// FontForge prefixed _ due to case-insensitive filesystems
-			if (__in.startsWith("_"))
+			// FontForge prefixes capitalized letters with _ because of
+			// filesystems which are case-insensitive, glyphs with the same
+			// name are not possible
+			if (__in.indexOf('_') >= 0)
 			{
-				agl = GlyphId._AGL.get(__in.substring(1));
+				// Remove all underscores
+				StringBuilder sb = new StringBuilder(__in);
+				for (;;)
+				{
+					int next = sb.indexOf("_");
+					if (next >= 0)
+						sb.deleteCharAt(next);
+					else
+						break;
+				}
+				
+				// Try again
+				agl = GlyphId._AGL.get(sb.toString());
 				if (agl != null)
 					return GlyphId.of(agl);
 			}
