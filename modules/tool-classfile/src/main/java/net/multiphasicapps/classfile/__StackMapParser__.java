@@ -22,6 +22,7 @@ import java.util.Map;
  * @since 2017/04/16
  */
 final class __StackMapParser__
+	implements Contexual
 {
 	/** The stream to decode from. */
 	protected final DataInputStream in;
@@ -108,7 +109,7 @@ final class __StackMapParser__
 		int jn = jis.length;
 		if (jn > maxlocals)
 			throw new InvalidClassFormatException(
-				String.format("JC43 %s %d %d", handle, jn, maxlocals));
+				String.format("JC43 %s %d %d", handle, jn, maxlocals), this);
 		
 		// Setup entries
 		// If this is an instance initializer method then only the first
@@ -192,7 +193,7 @@ final class __StackMapParser__
 					verification type. (The verification type)} */
 					else
 						throw new InvalidClassFormatException(
-							String.format("JC44 %d", type));
+							String.format("JC44 %d", type), this);
 					
 					// Setup next
 					this.__next(addr, false, type, i);
@@ -203,7 +204,7 @@ final class __StackMapParser__
 		/* {@squirreljme.error JC45 Failed to parse the stack map table.} */
 		catch (IOException e)
 		{
-			throw new InvalidClassFormatException("JC45", e);
+			throw new InvalidClassFormatException("JC45", e, this);
 		}
 	}
 	
@@ -263,7 +264,7 @@ final class __StackMapParser__
 		however there is no room to place them. (The remaining local count)} */
 		if (__addlocs != 0)
 			throw new InvalidClassFormatException(
-				String.format("JC46 %d", __addlocs));
+				String.format("JC46 %d", __addlocs), this);
 		
 		return rv;
 	}
@@ -313,7 +314,7 @@ final class __StackMapParser__
 		remaining variables to remove)} */
 		if (__chops != 0)
 			throw new InvalidClassFormatException(
-				String.format("JC47 %d", __chops));
+				String.format("JC47 %d", __chops), this);
 		
 		return rv;
 	}
@@ -343,7 +344,7 @@ final class __StackMapParser__
 			maxstack = this.maxstack;
 		if (nl > maxlocals)
 			throw new InvalidClassFormatException(
-				String.format("JC48 %d %d", nl, maxlocals));
+				String.format("JC48 %d %d", nl, maxlocals), this);
 		int i, o;
 		StackMapTableEntry[] nextlocals = this._nextlocals;
 		for (i = 0, o = 0; i < nl; i++)
@@ -441,7 +442,7 @@ final class __StackMapParser__
 				/* {@squirreljme.error JC49 The verification tag in the
 				StackMap/StackMapTable attribute is not valid. (The tag)} */
 				throw new InvalidClassFormatException(
-					String.format("JC49 %d", tag));
+					String.format("JC49 %d", tag), this);
 		}
 	}
 	
@@ -475,7 +476,7 @@ final class __StackMapParser__
 			absolute?; The placement address; The type of entry which
 			was just handled, -1 means it was old-style or initial state.)} */
 			throw new InvalidClassFormatException(String.format(
-				"JC4a %d %b %d %d", __au, __abs, naddr, __type), e);
+				"JC4a %d %b %d %d", __au, __abs, naddr, __type), e, this);
 		}
 		
 		// Set new placement address, the first is always absolute

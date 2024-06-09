@@ -65,7 +65,7 @@ public final class FieldDescriptor
 		int n = __n.length();
 		if (n <= 0)
 			throw new InvalidClassFormatException(
-				String.format("JC2q %s", __n));
+				String.format("JC2q %s", __n), this);
 		
 		// Depends on the first character
 		char c = __n.charAt(0);
@@ -114,7 +114,7 @@ public final class FieldDescriptor
 				must end with a semicolon. (The field descriptor)} */
 				if (';' != __n.charAt(n - 1))
 					throw new InvalidClassFormatException(
-						String.format("JC2r %s", __n));
+						String.format("JC2r %s", __n), this);
 				
 				// Decode
 				this.classname = new ClassName(__n.substring(1, n - 1));
@@ -124,7 +124,7 @@ public final class FieldDescriptor
 				(The field descriptor)} */
 			default:
 				throw new InvalidClassFormatException(
-					String.format("JC2s %s", __n));
+					String.format("JC2s %s", __n), this);
 		}
 	}
 	

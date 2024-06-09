@@ -25,6 +25,7 @@ import java.util.Arrays;
  * @since 2017/06/08
  */
 public final class Pool
+	implements Contexual
 {
 	/** The UTF constant tag. */
 	public static final int TAG_UTF8 =
@@ -139,7 +140,7 @@ public final class Pool
 		Object[] entries = this._entries;
 		if (__i < 0 || __i >= entries.length)
 			throw new InvalidClassFormatException(
-				String.format("JC3o %d", __i));
+				String.format("JC3o %d", __i), this);
 		
 		/* {@squirreljme.error JC3p The specified entry's class is not of the
 		expected class. (The index of the entry; The class the entry is; The
@@ -147,7 +148,7 @@ public final class Pool
 		Object val = entries[__i];
 		if (val != null && !__cl.isInstance(val))
 			throw new InvalidClassFormatException(
-				String.format("JC3p %d %s %s", __i, val.getClass(), __cl));
+				String.format("JC3p %d %s %s", __i, val.getClass(), __cl), this);
 		
 		return __cl.cast(val);
 	}
@@ -184,7 +185,7 @@ public final class Pool
 		C rv = this.<C>get(__cl, __i);
 		if (rv == null)
 			throw new InvalidClassFormatException(
-				String.format("JC3q %d %s", __i, __cl));
+				String.format("JC3q %d %s", __i, __cl), this);
 		return rv;
 	}
 	

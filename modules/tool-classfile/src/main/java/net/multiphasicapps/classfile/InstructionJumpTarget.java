@@ -18,7 +18,7 @@ import java.lang.ref.WeakReference;
  * @since 2018/09/15
  */
 public final class InstructionJumpTarget
-	implements Comparable<InstructionJumpTarget>
+	implements Contexual, Comparable<InstructionJumpTarget>
 {
 	/** Does this have a key? */
 	protected final boolean hasKey;

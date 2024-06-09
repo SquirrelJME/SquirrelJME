@@ -16,6 +16,7 @@ package net.multiphasicapps.classfile;
  * @since 2016/05/12
  */
 public interface AccessibleFlags
+	extends Contexual
 {
 	/**
 	 * Is the current accessible object package private?

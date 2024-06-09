@@ -58,7 +58,7 @@ public final class TableSwitch
 		equal to the low index. (The low index; The high index)} */
 		if (__hi <= __lo)
 			throw new InvalidClassFormatException(String.format("JC42 %d %d",
-				__lo, __hi));
+				__lo, __hi), this);
 		
 		// Check for null
 		__jumps = __jumps.clone();

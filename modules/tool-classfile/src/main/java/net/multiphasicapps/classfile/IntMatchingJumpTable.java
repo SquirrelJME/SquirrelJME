@@ -16,6 +16,7 @@ package net.multiphasicapps.classfile;
  * @since 2018/09/20
  */
 public interface IntMatchingJumpTable
+	extends Contexual
 {
 	/**
 	 * Matches the input key with the given jump target or returns the default.

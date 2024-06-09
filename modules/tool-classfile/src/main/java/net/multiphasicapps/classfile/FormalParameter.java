@@ -18,6 +18,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  * @since 2018/05/14
  */
 public final class FormalParameter
+	implements Contexual
 {
 	/**
 	 * {@inheritDoc}

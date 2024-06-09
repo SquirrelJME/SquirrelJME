@@ -18,6 +18,7 @@ import java.lang.ref.WeakReference;
  * @since 2017/06/12
  */
 public final class NameAndType
+	implements Contexual
 {
 	/** The name. */
 	protected final String name;

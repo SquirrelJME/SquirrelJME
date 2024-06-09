@@ -16,6 +16,7 @@ package net.multiphasicapps.classfile;
  * @since 2017/06/12
  */
 public abstract class Identifier
+	implements Contexual
 {
 	/** The string which makes up the identifier. */
 	protected final String string;
@@ -47,7 +48,7 @@ public abstract class Identifier
 			invalid character. (The identifier)} */
 			if (c == '.' || c == ';' || c == '[' || c == '/')
 				throw new InvalidClassFormatException(
-					String.format("JC2x %s", __n));
+					String.format("JC2x %s", __n), this);
 		}
 	}
 	

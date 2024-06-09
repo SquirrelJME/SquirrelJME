@@ -223,7 +223,7 @@ public final class MethodFlags
 			if (this.isPrivate() || this.isStatic() || this.isFinal() || this
 				.isSynchronized() || this.isNative() || this.isStrict())
 				throw new InvalidClassFormatException(
-					String.format("JC3l %s", this));
+					String.format("JC3l %s", this), this);
 		
 		// If the class is an interface it cannot have specific flags set
 		// Ignore checking these interface flags if we are in an interface and
@@ -247,7 +247,7 @@ public final class MethodFlags
 				incorrect set of flags. (The method flags)} */
 				if (must != has && !maybe)
 					throw new InvalidClassFormatException(
-						String.format("JC3m %s", this));
+						String.format("JC3m %s", this), this);
 			}
 	}
 }

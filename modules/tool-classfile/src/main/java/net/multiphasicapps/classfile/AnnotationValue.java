@@ -16,6 +16,7 @@ package net.multiphasicapps.classfile;
  * @since 2018/06/16
  */
 public interface AnnotationValue
+	extends Contexual
 {
 }
 

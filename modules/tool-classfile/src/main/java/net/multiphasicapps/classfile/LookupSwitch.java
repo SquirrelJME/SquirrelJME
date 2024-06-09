@@ -72,7 +72,7 @@ public final class LookupSwitch
 			int k = __keys[i];
 			if (k < last)
 				throw new InvalidClassFormatException(
-					String.format("JC3d %d %d %d", i, k, last));
+					String.format("JC3d %d %d %d", i, k, last), this);
 			last = k;
 			
 			if (__jumps[i] == null)

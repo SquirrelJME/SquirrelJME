@@ -22,6 +22,7 @@ import java.util.Map;
  * @since 2018/05/14
  */
 public final class AttributeTable
+	implements Contexual
 {
 	/** The attribute table. */
 	private final Map<String, Attribute> _attributes;

@@ -181,7 +181,7 @@ public final class FieldFlags
 		`volatile`. (The field flags)} */
 		if (this.isFinal() && this.isVolatile())
 			throw new InvalidClassFormatException(
-				String.format("JC2u %s", this));
+				String.format("JC2u %s", this), this);
 		
 		// If the class is an interface, some flags cannot be set
 		if (__oc.isInterface())
@@ -201,7 +201,7 @@ public final class FieldFlags
 				incorrect set of flags. (The field flags)} */
 				if (must != has && !maybe)
 					throw new InvalidClassFormatException(
-						String.format("JC2v %s", this));
+						String.format("JC2v %s", this), this);
 			}
 	}
 }
