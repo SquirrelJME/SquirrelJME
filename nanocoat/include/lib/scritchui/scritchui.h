@@ -214,6 +214,13 @@ typedef struct sjme_scritchui_uiWindowBase* sjme_scritchui_uiWindow;
  */
 typedef struct sjme_scritchui_pencilBase* sjme_scritchui_pencil;
 
+/**
+ * A single link within a loaded/known font chain.
+ * 
+ * @since 2024/06/10
+ */
+typedef struct sjme_scritchui_pencilFontLink sjme_scritchui_pencilFontLink;
+
 /** Arguments to pass for setting of listeners. */
 #define SJME_SCRITCHUI_SET_LISTENER_ARGS(what) \
 	sjme_attrInNullable SJME_TOKEN_PASTE3(sjme_scritchui_, what, \
@@ -732,6 +739,9 @@ struct sjme_scritchui_stateBase
 	
 	/** The window manager type used. */
 	sjme_scritchui_windowManagerType wmType;
+	
+	/** The fonts which are loaded and known to the state. */
+	sjme_scritchui_pencilFontLink* fontChain;
 };
 
 /* If dynamic libraries are not supported, we cannot do this. */

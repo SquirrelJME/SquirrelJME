@@ -19,6 +19,7 @@
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiImpl.h"
 #include "lib/scritchui/scritchuiPencil.h"
+#include "lib/scritchui/scritchuiPencilFont.h"
 #include "sjme/atomic.h"
 
 /* Anti-C++. */
@@ -224,6 +225,15 @@ typedef struct sjme_scritchui_uiWindowBase
 	/** Listeners. */
 	sjme_scritchui_uiWindowListeners listeners[SJME_NUM_SCRITCHUI_LISTENER];
 } sjme_scritchui_uiWindowBase;
+
+struct sjme_scritchui_pencilFontBase
+{
+	/** External API. */
+	const sjme_scritchui_pencilFontFunctions* api;
+	
+	/** Internal implementation. */
+	const sjme_scritchui_pencilFontFunctions* impl;
+};
 
 /*--------------------------------------------------------------------------*/
 

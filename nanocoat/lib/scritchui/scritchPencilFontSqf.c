@@ -7,5 +7,24 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiPencilFont.h"
+#include "lib/scritchui/sqfFont.h"
+
+/** Functions for native SQF support. */
+static const sjme_scritchui_pencilFontFunctions sjme_scritch_sqfFontFunctions =
+{
+	.equals = NULL,
+	.metricCharDirection = NULL,
+	.metricCharValid = NULL,
+	.metricFontFace = NULL,
+	.metricFontStyle = NULL,
+	.metricPixelAscent = NULL,
+	.metricPixelBaseline = NULL,
+	.metricPixelDescent = NULL,
+	.metricPixelLeading = NULL,
+	.pixelCharHeight = NULL,
+	.pixelCharWidth = NULL,
+	.renderBitmap = NULL,
+	.renderChar = NULL,
+};
+

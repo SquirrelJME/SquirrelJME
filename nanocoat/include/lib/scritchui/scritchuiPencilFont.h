@@ -108,6 +108,18 @@ typedef struct sjme_scritchui_pencilFontFunctions
 
 #undef SJME_SCRITCHUI_QUICK_PENCIL
 
+struct sjme_scritchui_pencilFontLink
+{
+	/** The loaded font for this link. */
+	sjme_scritchui_pencilFont font;
+	
+	/** The previous link. */
+	sjme_scritchui_pencilFontLink* prev;
+	
+	/** The next link. */
+	sjme_scritchui_pencilFontLink* next;
+};
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

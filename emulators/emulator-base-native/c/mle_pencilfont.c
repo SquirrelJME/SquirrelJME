@@ -17,10 +17,6 @@
 	")" DESC_ARRAY(DESC_PENCILFONT)
 #define FORWARD_DESC_equals "(" \
 	DESC_PENCILFONT DESC_PENCILFONT ")" DESC_BOOLEAN
-#define FORWARD_DESC_lookup "(" \
-	DESC_STRING DESC_INT DESC_INT DESC_INT ")" DESC_PENCILFONT
-#define FORWARD_DESC_lookupFallback "(" \
-	DESC_INT DESC_INT DESC_INT ")" DESC_PENCILFONT
 #define FORWARD_DESC_metricCharDirection "(" \
 	DESC_PENCILFONT DESC_INT ")" DESC_INT
 #define FORWARD_DESC_metricCharValid "(" \
@@ -64,21 +60,6 @@ JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(PencilFontShelf, equals)
 {
 	sjme_todo("Impl?");
 	return JNI_FALSE;
-}
-
-JNIEXPORT jobject JNICALL FORWARD_FUNC_NAME(PencilFontShelf, lookup)
-	(JNIEnv* env, jclass classy, jstring name, jint face, jint style,
-	jint pixelSize)
-{
-	sjme_todo("Impl?");
-	return NULL;
-}
-
-JNIEXPORT jobject JNICALL FORWARD_FUNC_NAME(PencilFontShelf, lookupFallback)
-	(JNIEnv* env, jclass classy, jint face, jint style, jint pixelSize)
-{
-	sjme_todo("Impl?");
-	return NULL;
 }
 
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricCharDirection)
@@ -183,8 +164,6 @@ static const JNINativeMethod mlePencilFontMethods[] =
 {
 	FORWARD_list(PencilFontShelf, builtin),
 	FORWARD_list(PencilFontShelf, equals),
-	FORWARD_list(PencilFontShelf, lookup),
-	FORWARD_list(PencilFontShelf, lookupFallback),
 	FORWARD_list(PencilFontShelf, metricCharDirection),
 	FORWARD_list(PencilFontShelf, metricCharValid),
 	FORWARD_list(PencilFontShelf, metricFontFace),
