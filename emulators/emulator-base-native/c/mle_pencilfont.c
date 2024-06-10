@@ -58,6 +58,7 @@ JNIEXPORT jobjectArray JNICALL FORWARD_FUNC_NAME(PencilFontShelf, builtin)
 	sjme_todo("Impl?");
 	return NULL;
 }
+
 JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(PencilFontShelf, equals)
 	(JNIEnv* env, jclass classy, jobject a, jobject b)
 {
