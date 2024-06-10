@@ -25,6 +25,7 @@ jint JNICALL mleNativeScritchDylibInit(JNIEnv* env, jclass classy);
 jint JNICALL mleNativeScritchInterfaceInit(JNIEnv* env, jclass classy);
 jint JNICALL mleObjectInit(JNIEnv* env, jclass classy);
 jint JNICALL mlePencilInit(JNIEnv* env, jclass classy);
+jint JNICALL mlePencilFontInit(JNIEnv* env, jclass classy);
 jint JNICALL mleReflectionInit(JNIEnv* env, jclass classy);
 jint JNICALL mleRuntimeInit(JNIEnv* env, jclass classy);
 jint JNICALL mleTaskInit(JNIEnv* env, jclass classy);
