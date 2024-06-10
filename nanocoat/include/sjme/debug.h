@@ -36,6 +36,9 @@ extern "C" {
 	sjme_attrInValue int line, \
 	sjme_attrInNullable sjme_lpcstr func
 
+/** File, line, and function. */
+#define SJME_DEBUG_FILE_LINE_FUNC_ALWAYS __FILE__, __LINE__, __func__
+
 #if defined(SJME_CONFIG_RELEASE)
 	/** Debug comma. */
 	#define SJME_DEBUG_ONLY_COMMA
@@ -69,7 +72,7 @@ extern "C" {
 		SJME_DEBUG_DECL_FILE_LINE_FUNC
 
 	/** File, line, and function. */
-	#define SJME_DEBUG_FILE_LINE_FUNC __FILE__, __LINE__, __func__
+	#define SJME_DEBUG_FILE_LINE_FUNC SJME_DEBUG_FILE_LINE_FUNC_ALWAYS
 	
 	/** Copy of file line and function. */
 	#define SJME_DEBUG_FILE_LINE_COPY file, line, func
@@ -190,7 +193,8 @@ void sjme_todoR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * @return Never returns.
  * @since 2021/02/28 
  */
-#define sjme_todo(...) sjme_todoR(SJME_DEBUG_FILE_LINE_FUNC, __VA_ARGS__)
+#define sjme_todo(...) sjme_todoR(SJME_DEBUG_FILE_LINE_FUNC_ALWAYS, \
+	__VA_ARGS__)
 
 /**
  * Potentially debug aborts.
