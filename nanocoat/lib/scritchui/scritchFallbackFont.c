@@ -10,7 +10,7 @@
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiPencil.h"
 #include "lib/scritchui/scritchuiPencilFont.h"
-#include "lib/scritchui/sqfFont.h"
+#include "lib/scritchui/scritchuiPencilFontSqf.h"
 
 const sjme_jbyte sqf_font_sanserif_12_0_huffBits[] = 
 {

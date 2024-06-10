@@ -10,19 +10,20 @@
 /**
  * SQF Font Structure.
  * 
- * @since 2024/06/04
+ * @since 2024/06/10
  */
 
-#ifndef SQUIRRELJME_SQFFONT_H
-#define SQUIRRELJME_SQFFONT_H
+#ifndef SQUIRRELJME_SCRITCHUIPENCILFONTSQF_H
+#define SQUIRRELJME_SCRITCHUIPENCILFONTSQF_H
 
 #include "sjme/nvm.h"
+#include "sjme/alloc.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
 	#ifndef SJME_CXX_IS_EXTERNED
 		#define SJME_CXX_IS_EXTERNED
-		#define SJME_CXX_SQUIRRELJME_SQFFONT_H
+		#define SJME_CXX_SQUIRRELJME_SCRITCHUIPENCILFONTSQF_H
 extern "C" {
 	#endif /* #ifdef SJME_CXX_IS_EXTERNED */
 #endif     /* #ifdef __cplusplus */
@@ -123,15 +124,29 @@ typedef struct sjme_sqf_codepage
 	const sjme_sqf* const* codepages;
 } sjme_sqf_codepage;
 
+/**
+ * Initializes a new pencil font using the given SQF codepage set.
+ * 
+ * @param outFont The resultant font.
+ * @param inPool The pool to allocate within.
+ * @param inSqfCodepage The input SQF codepage to use.
+ * @return Any resultant error, if any.
+ * @since 2024/06/10
+ */
+sjme_errorCode sjme_sqf_newPencilFont(
+	sjme_attrOutNotNull sjme_scritchui_pencilFont* outFont,
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull const sjme_sqf_codepage* inSqfCodepage);
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
 #ifdef __cplusplus
-	#ifdef SJME_CXX_SQUIRRELJME_SQFFONT_H
+	#ifdef SJME_CXX_SQUIRRELJME_SCRITCHUIPENCILFONTSQF_H
 }
-		#undef SJME_CXX_SQUIRRELJME_SQFFONT_H
+		#undef SJME_CXX_SQUIRRELJME_SCRITCHUIPENCILFONTSQF_H
 		#undef SJME_CXX_IS_EXTERNED
-	#endif /* #ifdef SJME_CXX_SQUIRRELJME_SQFFONT_H */
+	#endif /* #ifdef SJME_CXX_SQUIRRELJME_SCRITCHUIPENCILFONTSQF_H */
 #endif     /* #ifdef __cplusplus */
 
-#endif /* SQUIRRELJME_SQFFONT_H */
+#endif /* SQUIRRELJME_SCRITCHUIPENCILFONTSQF_H */

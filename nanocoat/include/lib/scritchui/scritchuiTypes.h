@@ -228,6 +228,12 @@ typedef struct sjme_scritchui_uiWindowBase
 
 struct sjme_scritchui_pencilFontBase
 {
+	/** Front end information for the font. */
+	sjme_frontEnd frontEnd;
+	
+	/** Internal context pointer for implementation needs. */
+	void* context;
+	
 	/** External API. */
 	const sjme_scritchui_pencilFontFunctions* api;
 	
