@@ -35,9 +35,7 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 	.componentSize = sjme_scritchui_coreSerial_componentSize,
 	.containerAdd = sjme_scritchui_coreSerial_containerAdd,
 	.containerSetBounds = sjme_scritchui_coreSerial_containerSetBounds,
-	
-	/* Safe static. */
-	.fontBuiltin = sjme_scritchui_core_fontBuiltin,
+	.fontBuiltin = sjme_scritchui_coreSerial_fontBuiltin,
 	
 	/* Loops are unchanged. */
 	.loopExecute = sjme_scritchui_core_loopExecute,

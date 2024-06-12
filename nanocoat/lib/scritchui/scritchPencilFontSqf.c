@@ -8,19 +8,41 @@
 // -------------------------------------------------------------------------*/
 
 #include <string.h>
+#include <stdio.h>
 
 #include "lib/scritchui/scritchuiExtern.h"
 #include "lib/scritchui/scritchuiPencilFont.h"
 #include "lib/scritchui/scritchuiPencilFontSqf.h"
 #include "sjme/debug.h"
 
+static sjme_errorCode sjme_scritchui_sqfFontMetricFontName(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInOutNotNull sjme_lpcstr* outName)
+{
+	const sjme_scritchui_sqf* sqf;
+	
+	if (inFont == NULL || outName == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover SQF. */
+	sqf = inFont->context;
+	if (sqf == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
+	/* Give the name of the SQF. */
+	*outName = sqf->name;
+	return SJME_ERROR_NONE;
+}
+
 /** Functions for native SQF support. */
-static const sjme_scritchui_pencilFontFunctions sjme_scritch_sqfFontFunctions =
+static const sjme_scritchui_pencilFontFunctions
+	sjme_scritchui_sqfFontFunctions =
 {
 	.equals = NULL,
 	.metricCharDirection = NULL,
 	.metricCharValid = NULL,
 	.metricFontFace = NULL,
+	.metricFontName = sjme_scritchui_sqfFontMetricFontName,
 	.metricFontStyle = NULL,
 	.metricPixelAscent = NULL,
 	.metricPixelBaseline = NULL,
@@ -43,21 +65,21 @@ sjme_errorCode sjme_scritchui_core_fontBuiltin(
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
 	/* Does the font need initialization? */
-	only = NULL;
-	if (inState->builtinFont == NULL)
+	only = inState->builtinFont;
+	if (only == NULL)
 	{
 		if (sjme_error_is(error = sjme_alloc(inState->pool,
-			sizeof(*only), &only)))
+			sizeof(*only), &only)) || only == NULL)
 			return sjme_error_default(error);
 		
 		/* Initialize font. */
 		if (sjme_error_is(error = sjme_scritchui_newPencilFontSqfStatic(
-			only,
-			&sqf_font_sanserif_12)))
+			only, &sqf_font_sanserif_12)))
 		{
 			/* Cleanup. */
 			sjme_alloc_free(only);
-		
+			
+			/* Fail. */
 			return sjme_error_default(error);
 		}
 		
@@ -66,7 +88,7 @@ sjme_errorCode sjme_scritchui_core_fontBuiltin(
 	}
 	
 	/* Success, or already cached! */
-	*outFont = inState->builtinFont;
+	*outFont = only;
 	return SJME_ERROR_NONE;
 }
 
@@ -82,10 +104,11 @@ sjme_errorCode sjme_scritchui_newPencilFontSqfStatic(
 	
 	/* Initialize font. */
 	memset(&init, 0, sizeof(init));
-	init.impl = &sjme_scritch_sqfFontFunctions;
+	init.impl = &sjme_scritchui_sqfFontFunctions;
 	init.context = (sjme_pointer)inSqfCodepage;
 	
-	if (sjme_error_is(error = sjme_scritchui_newPencilFontStatic(
+	/* Perform default initialization. */
+	if (sjme_error_is(error = sjme_scritchui_newPencilFontInit(
 		&init)))
 		return sjme_error_default(error);
 	

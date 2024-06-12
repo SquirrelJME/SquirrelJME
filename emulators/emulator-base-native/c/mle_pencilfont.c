@@ -7,12 +7,14 @@
 // See license.mkd for licensing and copyright information.
 // ------------------------------------------------------------------------ */
 
+#include <string.h>
+
+#include "lib/scritchui/scritchuiExtern.h"
 #include "lib/scritchui/scritchuiPencilFont.h"
 #include "lib/scritchui/scritchuiPencilFontSqf.h"
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/debug.h"
 #include "squirreljme.h"
-#include "lib/scritchui/scritchuiExtern.h"
 
 #define FORWARD_CLASS "cc/squirreljme/jvm/mle/PencilFontShelf"
 
@@ -49,6 +51,17 @@
 	DESC_PENCILFONT DESC_INT DESC_PENCIL DESC_INT DESC_INT \
 	DESC_ARRAY(DESC_INT) ")" DESC_VOID
 
+static sjme_scritchui_pencilFont sjme_jni_recoverFont(JNIEnv* env,
+	jobject fontInstance)
+{
+	/* Does not map. */
+	if (fontInstance == NULL)
+		return NULL;
+	
+	return (sjme_scritchui_pencilFont)sjme_jni_recoverPointer(env,
+		DESC_DYLIB_PENCILFONT, fontInstance);
+}
+
 JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(PencilFontShelf, equals)
 	(JNIEnv* env, jclass classy, jobject a, jobject b)
 {
@@ -57,8 +70,12 @@ JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(PencilFontShelf, equals)
 }
 
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricCharDirection)
-	(JNIEnv* env, jclass classy, jobject font, jint c)
+	(JNIEnv* env, jclass classy, jobject fontInstance, jint c)
 {
+	sjme_scritchui_pencilFont font;
+	
+	/* Recover font. */
+	font = sjme_jni_recoverFont(env, fontInstance);
 	if (font == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
@@ -70,12 +87,16 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricCharDirection)
 }
 
 JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricCharValid)
-	(JNIEnv* env, jclass classy, jobject font, jint c)
+	(JNIEnv* env, jclass classy, jobject fontInstance, jint c)
 {
+	sjme_scritchui_pencilFont font;
+	
+	/* Recover font. */
+	font = sjme_jni_recoverFont(env, fontInstance);
 	if (font == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
-		return JNI_FALSE;
+		return 0;
 	}
 	
 	sjme_todo("Impl?");
@@ -83,8 +104,12 @@ JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricCharValid)
 }
 
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricFontFace)
-	(JNIEnv* env, jclass classy, jobject font)
+	(JNIEnv* env, jclass classy, jobject fontInstance)
 {
+	sjme_scritchui_pencilFont font;
+	
+	/* Recover font. */
+	font = sjme_jni_recoverFont(env, fontInstance);
 	if (font == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
@@ -96,21 +121,53 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricFontFace)
 }
 
 JNIEXPORT jstring JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricFontName)
-	(JNIEnv* env, jclass classy, jobject font)
+	(JNIEnv* env, jclass classy, jobject fontInstance)
 {
+	sjme_scritchui_pencilFont font;
+	sjme_errorCode error;
+	sjme_lpcstr name;
+	
+	if (fontInstance == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return NULL;
+	}
+	
+	/* Recover font. */
+	font = sjme_jni_recoverFont(env, fontInstance);
 	if (font == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
-		return 0;
+		return NULL;
 	}
 	
-	sjme_todo("Impl?");
-	return NULL;
+	/* Not implemented? */
+	if (font->api->metricFontName == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
+		return NULL;
+	}
+	
+	/* Get name. */
+	name = NULL;
+	if (sjme_error_is(error = font->api->metricFontName(font,
+		&name)) || name == NULL)
+	{
+		sjme_jni_throwMLECallError(env, error);
+		return NULL;
+	}
+	
+	/* Wrap in string. */
+	return (*env)->NewStringUTF(env, name);
 }
 
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricFontPixelSize)
-	(JNIEnv* env, jclass classy, jobject font)
+	(JNIEnv* env, jclass classy, jobject fontInstance)
 {
+	sjme_scritchui_pencilFont font;
+	
+	/* Recover font. */
+	font = sjme_jni_recoverFont(env, fontInstance);
 	if (font == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
@@ -122,8 +179,12 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricFontPixelSize)
 }
 
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricFontStyle)
-	(JNIEnv* env, jclass classy, jobject font)
+	(JNIEnv* env, jclass classy, jobject fontInstance)
 {
+	sjme_scritchui_pencilFont font;
+	
+	/* Recover font. */
+	font = sjme_jni_recoverFont(env, fontInstance);
 	if (font == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
@@ -135,8 +196,12 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricFontStyle)
 }
 
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricPixelAscent)
-	(JNIEnv* env, jclass classy, jobject font, jboolean max)
+	(JNIEnv* env, jclass classy, jobject fontInstance, jboolean max)
 {
+	sjme_scritchui_pencilFont font;
+	
+	/* Recover font. */
+	font = sjme_jni_recoverFont(env, fontInstance);
 	if (font == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
@@ -148,8 +213,12 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricPixelAscent)
 }
 
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricPixelBaseline)
-	(JNIEnv* env, jclass classy, jobject font)
+	(JNIEnv* env, jclass classy, jobject fontInstance)
 {
+	sjme_scritchui_pencilFont font;
+	
+	/* Recover font. */
+	font = sjme_jni_recoverFont(env, fontInstance);
 	if (font == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
@@ -161,8 +230,12 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricPixelBaseline)
 }
 
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricPixelDescent)
-	(JNIEnv* env, jclass classy, jobject font, jboolean max)
+	(JNIEnv* env, jclass classy, jobject fontInstance, jboolean max)
 {
+	sjme_scritchui_pencilFont font;
+	
+	/* Recover font. */
+	font = sjme_jni_recoverFont(env, fontInstance);
 	if (font == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
@@ -174,8 +247,12 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricPixelDescent)
 }
 
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricPixelLeading)
-	(JNIEnv* env, jclass classy, jobject font)
+	(JNIEnv* env, jclass classy, jobject fontInstance)
 {
+	sjme_scritchui_pencilFont font;
+	
+	/* Recover font. */
+	font = sjme_jni_recoverFont(env, fontInstance);
 	if (font == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
@@ -187,8 +264,12 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricPixelLeading)
 }
 
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, pixelCharHeight)
-	(JNIEnv* env, jclass classy, jobject font, jint c)
+	(JNIEnv* env, jclass classy, jobject fontInstance, jint c)
 {
+	sjme_scritchui_pencilFont font;
+	
+	/* Recover font. */
+	font = sjme_jni_recoverFont(env, fontInstance);
 	if (font == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
@@ -200,8 +281,12 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, pixelCharHeight)
 }
 
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, pixelCharWidth)
-	(JNIEnv* env, jclass classy, jobject font, jint c)
+	(JNIEnv* env, jclass classy, jobject fontInstance, jint c)
 {
+	sjme_scritchui_pencilFont font;
+	
+	/* Recover font. */
+	font = sjme_jni_recoverFont(env, fontInstance);
 	if (font == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
@@ -213,14 +298,14 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, pixelCharWidth)
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilFontShelf, renderBitmap)
-	(JNIEnv* env, jclass classy, jobject font, jint c, jbyteArray buf,
+	(JNIEnv* env, jclass classy, jobject fontInstance, jint c, jbyteArray buf,
 	jint bufOff, jint scanLen, jint sx, jint sy, jint sw, jint sh)
 {
 	sjme_todo("Impl?");
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilFontShelf, renderChar)
-	(JNIEnv* env, jclass classy, jobject font, jint c, jobject pencil,
+	(JNIEnv* env, jclass classy, jobject fontInstance, jint c, jobject pencil,
 	jint x, jint y, jintArray nextXY)
 {
 	sjme_todo("Impl?");

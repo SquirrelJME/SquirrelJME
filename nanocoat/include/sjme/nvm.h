@@ -733,14 +733,14 @@ typedef struct sjme_pointerLen
  * 
  * @since 2023/12/06
  */
-typedef void* sjme_frontEndWrapper;
+typedef sjme_pointer sjme_frontEndWrapper;
 
 /**
  * Any data that is needed by the front end, which is reserved for use.
  *
  * @since 2023/12/14
  */
-typedef void* sjme_frontEndData;
+typedef sjme_pointer sjme_frontEndData;
 
 /**
  * This structure stores any front end data as needed.
@@ -1746,8 +1746,11 @@ typedef enum sjme_errorCode
 	/** Cancel close of window. */
 	SJME_ERROR_CANCEL_WINDOW_CLOSE = -54,
 	
+	/** The class cannot be casted. */
+	SJME_ERROR_CLASS_CAST = -55,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -55
+	SJME_NUM_ERROR_CODES = -56
 } sjme_errorCode;
 
 /**

@@ -86,3 +86,48 @@ void sjme_jni_throwVMException(JNIEnv* env, sjme_errorCode code)
 	sjme_jni_throwThrowable(env, code,
 		"cc/squirreljme/emulator/vm/VMException");
 }
+
+void* sjme_jni_recoverPointer(JNIEnv* env, sjme_lpcstr className,
+	jobject instance)
+{
+	jclass classy;
+	jclass baseClassy;
+	jfieldID pointerField;
+	
+	/* Does not map. */
+	if (instance == NULL)
+		return NULL;
+	
+	/* Fail. */
+	if (env == NULL || className == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return NULL;
+	}
+
+	/* Locate class. */
+	classy = (*env)->FindClass(env, className);
+	baseClassy = (*env)->FindClass(env, DESC_DYLIB_BASE);
+	if (classy == NULL || baseClassy == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_INVALID_CLASS_NAME);
+		return NULL;
+	}
+	
+	/* Incorrect type. */
+	if (!(*env)->IsInstanceOf(env, instance, classy) ||
+		!(*env)->IsInstanceOf(env, instance, baseClassy))
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_CLASS_CAST);
+		return NULL;
+	}
+	
+	/* Get the pointer data. */
+	pointerField = (*env)->GetFieldID(env, baseClassy, "objectP", "J");
+	if (pointerField == NULL)
+		sjme_die("No objectP in DylibBaseObject?");
+	
+	/* Cast pencil data. */
+	return (void*)((intptr_t)((*env)->GetLongField(
+		env, instance, pointerField)));
+}

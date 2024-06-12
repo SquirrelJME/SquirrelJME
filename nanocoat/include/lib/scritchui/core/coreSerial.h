@@ -60,6 +60,9 @@ typedef enum sjme_scritchui_serialType
 	
 	/** @c containerSetBounds . */
 	SJME_SCRITCHUI_SERIAL_TYPE_CONTAINER_SET_BOUNDS,
+	
+	/** @c fontBuiltin . */
+	SJME_SCRITCHUI_SERIAL_TYPE_FONT_BUILTIN,
 		
 	/** @c panelEnableFocus . */
 	SJME_SCRITCHUI_SERIAL_TYPE_PANEL_ENABLE_FOCUS,
@@ -182,6 +185,12 @@ typedef struct sjme_scritchui_serialData_containerSetBounds
 	volatile sjme_jint height;
 } sjme_scritchui_serialData_containerSetBounds;
 
+typedef struct sjme_scritchui_serialData_fontBuiltin
+{
+	/** The resultant font. */
+	volatile sjme_scritchui_pencilFont* outFont;
+} sjme_scritchui_serialData_fontBuiltin;
+	
 typedef struct sjme_scritchui_serialData_panelEnableFocus
 {
 	/** The input panel. */
@@ -279,6 +288,9 @@ typedef union sjme_scritchui_serialDataUnion
 	
 	/** @c containerSetBounds . */
 	SJME_SCRITCHUI_SDU_DEF(containerSetBounds);
+	
+	/** @c fontBuiltin . */
+	SJME_SCRITCHUI_SDU_DEF(fontBuiltin);
 		
 	/** @c panelEnableFocus . */
 	SJME_SCRITCHUI_SDU_DEF(panelEnableFocus);
@@ -369,6 +381,10 @@ sjme_errorCode sjme_scritchui_coreSerial_containerSetBounds(
 	sjme_attrInPositive sjme_jint y,
 	sjme_attrInPositiveNonZero sjme_jint width,
 	sjme_attrInPositiveNonZero sjme_jint height);
+
+sjme_errorCode sjme_scritchui_coreSerial_fontBuiltin(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_scritchui_pencilFont* outFont);
 
 sjme_errorCode sjme_scritchui_coreSerial_panelEnableFocus(
 	sjme_attrInNotNull sjme_scritchui inState,

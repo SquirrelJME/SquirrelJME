@@ -250,7 +250,7 @@ static sjme_errorCode mle_scritchUiListenerPaint(
 	
 	/* Setup pencil object. */
 	pencilClass = (*env)->FindClass(env,
-		"cc/squirreljme/emulator/scritchui/dylib/DylibPencilObject");
+		DESC_DYLIB_PENCIL);
 	if (pencilClass == NULL)
 		sjme_die("No DylibPencilObject?");
 	
@@ -386,13 +386,13 @@ JNIEXPORT jobjectArray JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	__builtinFonts)
 	(JNIEnv* env, jclass classy, jlong stateP)
 {
+	sjme_scritchui_pencilFont font;
 	sjme_errorCode error;
 	sjme_scritchui state;
 	JavaVM* vm;
 	jobject instance;
 	jclass instanceClass;
 	jmethodID instanceNew;
-	sjme_scritchui_pencilFont font;
 	
 	if (stateP == 0)
 	{
@@ -411,20 +411,20 @@ JNIEXPORT jobjectArray JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 		sjme_jni_throwMLECallError(env, SJME_ERROR_UNKNOWN);
 		return NULL;
 	}
-
-	/* Need to initialize? */
-	font = state->builtinFont;
-	if (font == NULL || font->frontEnd.wrapper == NULL)
+	
+	/* Locate font. */
+	font = NULL;
+	if (sjme_error_is(error = state->api->fontBuiltin(state,
+		&font)) || font == NULL)
 	{
-		/* Initialize font. */
-		font = NULL;
-		if (sjme_error_is(error = state->api->fontBuiltin(
-			state, &font)) || font == NULL)
-		{
-			sjme_jni_throwMLECallError(env, error);
-			return NULL;
-		}
-		
+		sjme_jni_throwMLECallError(env, error);
+		return NULL;
+	}
+
+	/* Need to attach an object to it? */
+	instance = font->common.frontEnd.wrapper;
+	if (instance == NULL)
+	{
 		/* Find constructor. */
 		instanceNew = (*env)->GetMethodID(env, instanceClass,
 			"<init>", "(J)V");
@@ -443,16 +443,7 @@ JNIEXPORT jobjectArray JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 			sjme_jni_throwMLECallError(env, SJME_ERROR_JNI_EXCEPTION);
 			return NULL;
 		}
-	
-		/* Store object information. */
-		(*env)->GetJavaVM(env, &vm);
-		font->frontEnd.data = vm;
-		font->frontEnd.wrapper = (*env)->NewGlobalRef(env, instance);
 	}
-	
-	/* We just need the wrapped instance. */
-	else
-		instance = font->frontEnd.wrapper;
 	
 	/* Wrap array. */
 	return (*env)->NewObjectArray(env, 1, instanceClass, instance);

@@ -228,8 +228,8 @@ typedef struct sjme_scritchui_uiWindowBase
 
 struct sjme_scritchui_pencilFontBase
 {
-	/** Front end information for the font. */
-	sjme_frontEnd frontEnd;
+	/** Common data. */
+	sjme_scritchui_commonBase common;
 	
 	/** Internal context pointer for implementation needs. */
 	sjme_pointer context;
@@ -239,6 +239,13 @@ struct sjme_scritchui_pencilFontBase
 	
 	/** Internal implementation. */
 	const sjme_scritchui_pencilFontFunctions* impl;
+	
+	/** Font cache details. */
+	struct
+	{
+		/** The name of the font. */
+		sjme_lpcstr name;
+	} cache;
 };
 
 /*--------------------------------------------------------------------------*/

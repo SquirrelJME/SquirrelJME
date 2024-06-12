@@ -70,33 +70,14 @@
 	"Ljava/lang/Object;"
 #define FORWARD_DESC_nativeImageLoadTypes "()I"
 
-static sjme_scritchui_pencil recoverPencil(JNIEnv* env, jobject g)
+static sjme_scritchui_pencil sjme_jni_recoverPencil(JNIEnv* env, jobject g)
 {
-	jclass classy;
-	jfieldID pointerField;
-	
 	/* Does not map. */
 	if (g == NULL)
 		return NULL;
-
-	/* Locate class. */
-	classy = (*env)->FindClass(env,
-		"cc/squirreljme/emulator/scritchui/dylib/DylibPencilObject");
-	if (classy == NULL)
-		sjme_die("Could not find DylibPencilObject.");
 	
-	/* Incorrect type. */
-	if (!(*env)->IsInstanceOf(env, g, classy))
-		sjme_die("Not a DylibPencilObject");
-	
-	/* Get the pointer data. */
-	pointerField = (*env)->GetFieldID(env, classy, "objectP", "J");
-	if (pointerField == NULL)
-		sjme_die("No objectP in DylibPencilObject");
-	
-	/* Cast pencil data. */
-	return (sjme_scritchui_pencil)
-		((intptr_t)((*env)->GetLongField(env, g, pointerField)));
+	return (sjme_scritchui_pencil)sjme_jni_recoverPointer(env,
+		DESC_DYLIB_PENCIL, g);
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareCopyArea)
@@ -106,7 +87,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareCopyArea)
 	sjme_scritchui_pencil p;
 	
 	/* Recover. */
-	p = recoverPencil(env, g);
+	p = sjme_jni_recoverPencil(env, g);
 	if (g == NULL || p == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
@@ -123,7 +104,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawChars)
 	sjme_scritchui_pencil p;
 	
 	/* Recover. */
-	p = recoverPencil(env, g);
+	p = sjme_jni_recoverPencil(env, g);
 	if (g == NULL || p == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
@@ -140,7 +121,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawHoriz)
 	sjme_scritchui_pencil p;
 	
 	/* Recover. */
-	p = recoverPencil(env, g);
+	p = sjme_jni_recoverPencil(env, g);
 	if (g == NULL || p == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
@@ -159,7 +140,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawLine)
 	sjme_scritchui_pencil p;
 	
 	/* Recover. */
-	p = recoverPencil(env, g);
+	p = sjme_jni_recoverPencil(env, g);
 	if (g == NULL || p == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
@@ -178,7 +159,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawPixel)
 	sjme_scritchui_pencil p;
 	
 	/* Recover. */
-	p = recoverPencil(env, g);
+	p = sjme_jni_recoverPencil(env, g);
 	if (g == NULL || p == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
@@ -197,7 +178,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawRect)
 	sjme_scritchui_pencil p;
 	
 	/* Recover. */
-	p = recoverPencil(env, g);
+	p = sjme_jni_recoverPencil(env, g);
 	if (g == NULL || p == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
@@ -216,7 +197,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawSubstring)
 	sjme_scritchui_pencil p;
 	
 	/* Recover. */
-	p = recoverPencil(env, g);
+	p = sjme_jni_recoverPencil(env, g);
 	if (g == NULL || p == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
@@ -235,7 +216,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawXRGB32Region)
 	sjme_scritchui_pencil p;
 	
 	/* Recover. */
-	p = recoverPencil(env, g);
+	p = sjme_jni_recoverPencil(env, g);
 	if (g == NULL || p == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
@@ -252,7 +233,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareFillRect)
 	sjme_scritchui_pencil p;
 	
 	/* Recover. */
-	p = recoverPencil(env, g);
+	p = sjme_jni_recoverPencil(env, g);
 	if (g == NULL || p == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
@@ -272,7 +253,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareFillTriangle)
 	sjme_scritchui_pencil p;
 	
 	/* Recover. */
-	p = recoverPencil(env, g);
+	p = sjme_jni_recoverPencil(env, g);
 	if (g == NULL || p == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
@@ -299,7 +280,7 @@ JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareHasAlpha)
 	sjme_scritchui_pencil p;
 	
 	/* Recover. */
-	p = recoverPencil(env, g);
+	p = sjme_jni_recoverPencil(env, g);
 	if (g == NULL || p == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
@@ -317,7 +298,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetAlphaColor)
 	sjme_scritchui_pencil p;
 	
 	/* Recover. */
-	p = recoverPencil(env, g);
+	p = sjme_jni_recoverPencil(env, g);
 	if (g == NULL || p == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
@@ -336,7 +317,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetBlendingMode)
 	sjme_scritchui_pencil p;
 	
 	/* Recover. */
-	p = recoverPencil(env, g);
+	p = sjme_jni_recoverPencil(env, g);
 	if (g == NULL || p == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
@@ -354,7 +335,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetClip)
 	sjme_scritchui_pencil p;
 	
 	/* Recover. */
-	p = recoverPencil(env, g);
+	p = sjme_jni_recoverPencil(env, g);
 	if (g == NULL || p == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
@@ -371,7 +352,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetDefaultFont)
 	sjme_scritchui_pencil p;
 	
 	/* Recover. */
-	p = recoverPencil(env, g);
+	p = sjme_jni_recoverPencil(env, g);
 	if (g == NULL || p == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
@@ -389,7 +370,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetFont)
 	sjme_scritchui_pencil p;
 	
 	/* Recover. */
-	p = recoverPencil(env, g);
+	p = sjme_jni_recoverPencil(env, g);
 	if (g == NULL || p == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
@@ -406,7 +387,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetStrokeStyle)
 	sjme_scritchui_pencil p;
 	
 	/* Recover. */
-	p = recoverPencil(env, g);
+	p = sjme_jni_recoverPencil(env, g);
 	if (g == NULL || p == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
@@ -425,7 +406,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareTranslate)
 	sjme_scritchui_pencil p;
 	
 	/* Recover. */
-	p = recoverPencil(env, g);
+	p = sjme_jni_recoverPencil(env, g);
 	if (g == NULL || p == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);

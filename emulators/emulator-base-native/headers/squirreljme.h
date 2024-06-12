@@ -134,6 +134,11 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 	DESC_CLASS("cc/squirreljme/jvm/mle/brackets/PencilBracket")
 #define DESC_PENCILFONT \
 	DESC_CLASS("cc/squirreljme/jvm/mle/brackets/PencilFontBracket")
+
+#define DESC_DYLIB_BASE \
+	DESC_CLASS("cc/squirreljme/emulator/scritchui/dylib/DylibBaseObject")
+#define DESC_DYLIB_PENCIL \
+	DESC_CLASS("cc/squirreljme/emulator/scritchui/dylib/DylibPencilObject")
 #define DESC_DYLIB_PENCILFONT \
 	DESC_CLASS("cc/squirreljme/emulator/scritchui/dylib/DylibPencilFontObject")
 
@@ -187,6 +192,18 @@ void sjme_jni_throwThrowable(JNIEnv* env, sjme_errorCode code,
  * @since 2023/12/08
  */
 void sjme_jni_throwVMException(JNIEnv* env, sjme_errorCode code);
+
+/**
+ * Recovers a pointer from a @c DylibBaseObject .
+ * 
+ * @param env The current Java environment. 
+ * @param className The class this must be.
+ * @param instance The @c DylibBaseObject instance. 
+ * @return The resultant pointer.
+ * @since 2024/06/12
+ */
+void* sjme_jni_recoverPointer(JNIEnv* env, sjme_lpcstr className,
+	jobject instance);
 
 #endif /* __SQUIRRELJME_H__ */
 

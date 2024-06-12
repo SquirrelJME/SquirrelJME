@@ -37,6 +37,16 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricCharValidFunc)();
 
 typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricFontFaceFunc)();
 
+/**
+ * Returns the name of the font.
+ * 
+ * @return The font name.
+ * @since 2024/06/12
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricFontNameFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInOutNotNull sjme_lpcstr* outName);
+
 typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricFontStyleFunc)();
 
 typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricPixelAscentFunc)();
@@ -77,6 +87,9 @@ typedef struct sjme_scritchui_pencilFontFunctions
 	
 	/** Returns the face of the font. */
 	SJME_SCRITCHUI_QUICK_PENCIL(MetricFontFace, metricFontFace);
+	
+	/** Returns the name of the font. */
+	SJME_SCRITCHUI_QUICK_PENCIL(MetricFontName, metricFontName);
 	
 	/** Returns the style of the font. */
 	SJME_SCRITCHUI_QUICK_PENCIL(MetricFontStyle, metricFontStyle);
@@ -127,7 +140,7 @@ struct sjme_scritchui_pencilFontLink
  * @return Any resultant error, if any.
  * @since 2024/06/12
  */
-sjme_errorCode sjme_scritchui_newPencilFontStatic(
+sjme_errorCode sjme_scritchui_newPencilFontInit(
 	sjme_scritchui_pencilFont inOutFont);
 
 /*--------------------------------------------------------------------------*/
