@@ -128,7 +128,6 @@ typedef struct sjme_scritchui_sqfCodepage
  * Initializes a new pencil font using the given SQF codepage set.
  * 
  * @param inOutFont The resultant font.
- * @param inPool The pool to allocate within.
  * @param inSqfCodepage The input SQF codepage to use.
  * @return Any resultant error, if any.
  * @since 2024/06/10

@@ -120,6 +120,16 @@ struct sjme_scritchui_pencilFontLink
 	sjme_scritchui_pencilFontLink* next;
 };
 
+/**
+ * Initializes a static pencil font.
+ * 
+ * @param inOutFont The resultant font.
+ * @return Any resultant error, if any.
+ * @since 2024/06/12
+ */
+sjme_errorCode sjme_scritchui_newPencilFontStatic(
+	sjme_scritchui_pencilFont inOutFont);
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

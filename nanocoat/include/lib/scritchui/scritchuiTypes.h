@@ -232,7 +232,7 @@ struct sjme_scritchui_pencilFontBase
 	sjme_frontEnd frontEnd;
 	
 	/** Internal context pointer for implementation needs. */
-	void* context;
+	sjme_pointer context;
 	
 	/** External API. */
 	const sjme_scritchui_pencilFontFunctions* api;

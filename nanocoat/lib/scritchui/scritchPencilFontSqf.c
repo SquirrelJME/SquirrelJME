@@ -7,6 +7,8 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <string.h>
+
 #include "lib/scritchui/scritchuiExtern.h"
 #include "lib/scritchui/scritchuiPencilFont.h"
 #include "lib/scritchui/scritchuiPencilFontSqf.h"
@@ -72,9 +74,22 @@ sjme_errorCode sjme_scritchui_newPencilFontSqfStatic(
 	sjme_scritchui_pencilFont inOutFont,
 	const sjme_scritchui_sqfCodepage* inSqfCodepage)
 {
+	struct sjme_scritchui_pencilFontBase init;
+	sjme_errorCode error;
+
 	if (inOutFont == NULL || inSqfCodepage == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Initialize font. */
+	memset(&init, 0, sizeof(init));
+	init.impl = &sjme_scritch_sqfFontFunctions;
+	init.context = (sjme_pointer)inSqfCodepage;
+	
+	if (sjme_error_is(error = sjme_scritchui_newPencilFontStatic(
+		&init)))
+		return sjme_error_default(error);
+	
+	/* Success! */
+	memmove(inOutFont, &init, sizeof(init));
+	return SJME_ERROR_NONE;
 }
