@@ -14,10 +14,34 @@
 #include "cc_squirreljme_emulator_NativeBinding.h"
 #include "squirreljme.h"
 
+static sjme_jboolean sjme_jni_abortHandler(void)
+{
+	jsize resultLen;
+	JavaVM* vm;
+	JNIEnv* env;
+	
+	/* Recover JVM. */
+	resultLen = 0;
+	vm = NULL;
+	if (JNI_OK != JNI_GetCreatedJavaVMs(&vm, 1, &resultLen) ||
+		resultLen == 0)
+		return SJME_JNI_FALSE;
+	
+	/* Recover env, attach if not attached. */
+	if (JNI_OK != (*vm)->GetEnv(vm, (void**)&env, JNI_VERSION_1_1))
+		return SJME_JNI_FALSE;
+	
+	/* Print stack trace, would use FatalError, however that prints to */
+	/* stdout for some reason. */
+	sjme_jni_throwVMException(env, SJME_ERROR_NOT_IMPLEMENTED);
+	(*env)->ExceptionDescribe(env);
+	
+	/* Continue aborting. */
+	return SJME_JNI_FALSE;
+}
+
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 {
-	JNIEnv* env;
-
 	// Used to indicate that something might be happened
 	fprintf(stderr, "JNI Sub-Level: Loading Library...\n");
 
@@ -25,14 +49,21 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 	return JNI_VERSION_1_6;
 }
 
-JNIEXPORT jint JNICALL Java_cc_squirreljme_emulator_NativeBinding__1_1bindMethods
+JNIEXPORT jint JNICALL sjme_attrUnused
+	Java_cc_squirreljme_emulator_NativeBinding__1_1bindMethods
 	(JNIEnv* env, jclass classy)
 {
 	jint rv = 0;
 	
 	/* It is happening! */
 	fprintf(stderr, "JNI Sub-Level: Binding Methods...\n");
+	
+	/* Use this abort handler. */
+	sjme_debug_abortHandler = sjme_jni_abortHandler;
+	fprintf(stderr, "JNI Abort handler: %p\n",
+		sjme_debug_abortHandler);
 
+	/* Initialize all functions. */
 	rv |= mleDebugInit(env, classy);
 	rv |= mleFormInit(env, classy);
 	rv |= mleJarInit(env, classy);

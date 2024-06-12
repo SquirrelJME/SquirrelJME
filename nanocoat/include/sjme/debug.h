@@ -19,6 +19,7 @@
 #include <stdarg.h>
 
 #include "sjme/nvm.h"
+#include "sjme/dylib.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -215,13 +216,15 @@ sjme_lpcstr sjme_debug_shortenFile(sjme_lpcstr file);
 /**
  * Handles specific debug abort scenarios.
  *
- * @return Return @c SJME_JNI_TRUE if it was handled.
+ * @return Return @c SJME_JNI_TRUE if it was handled and abort should be
+ * cancelled, otherwise @c SJME_JNI_FALSE will continue aborting.
  * @since 2023/12/21
  */
 typedef sjme_jboolean (*sjme_debug_abortHandlerFunc)(void);
 
 /** The handler for debug aborts. */
-extern sjme_debug_abortHandlerFunc sjme_debug_abortHandler;
+extern SJME_DYLIB_EXPORT
+	sjme_debug_abortHandlerFunc sjme_debug_abortHandler;
 
 /**
  * Handler for specific debug exit scenarios.
@@ -233,7 +236,8 @@ extern sjme_debug_abortHandlerFunc sjme_debug_abortHandler;
 typedef sjme_jboolean (*sjme_debug_exitHandlerFunc)(int exitCode);
 
 /** The handler for debug exits. */
-extern sjme_debug_exitHandlerFunc sjme_debug_exitHandler;
+extern SJME_DYLIB_EXPORT
+	sjme_debug_exitHandlerFunc sjme_debug_exitHandler;
 
 /**
  * Emits a dangling reference message.
@@ -248,7 +252,8 @@ typedef sjme_jboolean (*sjme_debug_messageHandlerFunc)(sjme_lpcstr fullMessage,
 	sjme_lpcstr partMessage);
 
 /** The dangling message implementation to use. */
-extern sjme_debug_messageHandlerFunc sjme_debug_messageHandler;
+extern SJME_DYLIB_EXPORT
+	sjme_debug_messageHandlerFunc sjme_debug_messageHandler;
 
 /*--------------------------------------------------------------------------*/
 

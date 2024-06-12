@@ -59,6 +59,12 @@ JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(PencilFontShelf, equals)
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricCharDirection)
 	(JNIEnv* env, jclass classy, jobject font, jint c)
 {
+	if (font == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return 0;
+	}
+	
 	sjme_todo("Impl?");
 	return 0;
 }
@@ -66,13 +72,25 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricCharDirection)
 JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricCharValid)
 	(JNIEnv* env, jclass classy, jobject font, jint c)
 {
+	if (font == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return JNI_FALSE;
+	}
+	
 	sjme_todo("Impl?");
-	return 0;
+	return JNI_FALSE;
 }
 
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricFontFace)
 	(JNIEnv* env, jclass classy, jobject font)
 {
+	if (font == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return 0;
+	}
+	
 	sjme_todo("Impl?");
 	return 0;
 }
@@ -80,6 +98,12 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricFontFace)
 JNIEXPORT jstring JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricFontName)
 	(JNIEnv* env, jclass classy, jobject font)
 {
+	if (font == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return 0;
+	}
+	
 	sjme_todo("Impl?");
 	return NULL;
 }
@@ -87,6 +111,12 @@ JNIEXPORT jstring JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricFontName)
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricFontPixelSize)
 	(JNIEnv* env, jclass classy, jobject font)
 {
+	if (font == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return 0;
+	}
+	
 	sjme_todo("Impl?");
 	return 0;
 }
@@ -94,6 +124,12 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricFontPixelSize)
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricFontStyle)
 	(JNIEnv* env, jclass classy, jobject font)
 {
+	if (font == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return 0;
+	}
+	
 	sjme_todo("Impl?");
 	return 0;
 }
@@ -101,6 +137,12 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricFontStyle)
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricPixelAscent)
 	(JNIEnv* env, jclass classy, jobject font, jboolean max)
 {
+	if (font == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return 0;
+	}
+	
 	sjme_todo("Impl?");
 	return 0;
 }
@@ -108,6 +150,12 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricPixelAscent)
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricPixelBaseline)
 	(JNIEnv* env, jclass classy, jobject font)
 {
+	if (font == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return 0;
+	}
+	
 	sjme_todo("Impl?");
 	return 0;
 }
@@ -115,6 +163,12 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricPixelBaseline)
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricPixelDescent)
 	(JNIEnv* env, jclass classy, jobject font, jboolean max)
 {
+	if (font == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return 0;
+	}
+	
 	sjme_todo("Impl?");
 	return 0;
 }
@@ -122,6 +176,12 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricPixelDescent)
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricPixelLeading)
 	(JNIEnv* env, jclass classy, jobject font)
 {
+	if (font == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return 0;
+	}
+	
 	sjme_todo("Impl?");
 	return 0;
 }
@@ -129,6 +189,12 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricPixelLeading)
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, pixelCharHeight)
 	(JNIEnv* env, jclass classy, jobject font, jint c)
 {
+	if (font == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return 0;
+	}
+	
 	sjme_todo("Impl?");
 	return 0;
 }
@@ -136,6 +202,12 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, pixelCharHeight)
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, pixelCharWidth)
 	(JNIEnv* env, jclass classy, jobject font, jint c)
 {
+	if (font == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return 0;
+	}
+	
 	sjme_todo("Impl?");
 	return 0;
 }

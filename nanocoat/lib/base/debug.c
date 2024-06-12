@@ -34,7 +34,6 @@ sjme_debug_messageHandlerFunc sjme_debug_messageHandler = NULL;
 
 void sjme_debug_abort(void)
 {
-#if !defined(SJME_CONFIG_RELEASE)
 	/* Use specific abort handler? */
 	if (sjme_debug_abortHandler != NULL)
 		if (sjme_debug_abortHandler())
@@ -49,7 +48,6 @@ void sjme_debug_abort(void)
 
 	/* Otherwise use C abort handler. */
 	abort();
-#endif
 }
 
 /**
