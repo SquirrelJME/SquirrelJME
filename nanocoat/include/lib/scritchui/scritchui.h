@@ -215,6 +215,13 @@ typedef struct sjme_scritchui_uiWindowBase* sjme_scritchui_uiWindow;
 typedef struct sjme_scritchui_pencilBase* sjme_scritchui_pencil;
 
 /**
+ * Font structure for ScritchUI Pencil.
+ * 
+ * @since 2024/05/12
+ */
+typedef struct sjme_scritchui_pencilFontBase* sjme_scritchui_pencilFont;
+
+/**
  * A single link within a loaded/known font chain.
  * 
  * @since 2024/06/10
@@ -438,6 +445,18 @@ typedef sjme_errorCode (*sjme_scritchui_containerSetBoundsFunc)(
 	sjme_attrInPositiveNonZero sjme_jint height);
 
 /**
+ * Returns the default built-in font.
+ * 
+ * @param inState The input state.
+ * @param outFont The resultant font.
+ * @return Any resultant error, if any.
+ * @since 2024/06/12
+ */
+typedef sjme_errorCode (*sjme_scritchui_fontBuiltinFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_scritchui_pencilFont* outFont);
+
+/**
  * Execute the given callback within the event loop of the GUI.
  * 
  * @param inState The input state.
@@ -614,6 +633,9 @@ struct sjme_scritchui_apiFunctions
 	
 	/** Set bounds of component in a container. */
 	SJME_SCRITCHUI_QUICK_API(containerSetBounds);
+
+	/** Returns the default built-in font. */
+	SJME_SCRITCHUI_QUICK_API(fontBuiltin);
 	
 	/** Execute callback within the event loop. */
 	SJME_SCRITCHUI_QUICK_API(loopExecute);
@@ -739,6 +761,9 @@ struct sjme_scritchui_stateBase
 	
 	/** The window manager type used. */
 	sjme_scritchui_windowManagerType wmType;
+	
+	/** The internal built-in font. */
+	sjme_scritchui_pencilFont builtinFont; 
 	
 	/** The fonts which are loaded and known to the state. */
 	sjme_scritchui_pencilFontLink* fontChain;

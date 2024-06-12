@@ -153,7 +153,7 @@ public final class DisplayManager
 	 */
 	public ScritchInterface scritch()
 	{
-		throw Debugging.todo();
+		return this.scritch;
 	}
 	
 	/**

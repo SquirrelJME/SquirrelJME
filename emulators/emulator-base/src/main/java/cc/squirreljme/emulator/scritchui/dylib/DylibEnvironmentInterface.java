@@ -9,11 +9,13 @@
 
 package cc.squirreljme.emulator.scritchui.dylib;
 
+import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.jvm.mle.scritchui.ScritchEnvironmentInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchLAFInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Not Described.
@@ -93,5 +95,15 @@ public class DylibEnvironmentInterface
 	public int windowManagerType()
 	{
 		return this.dyLib.windowManagerType();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/06/12
+	 */
+	@Override
+	public @NotNull PencilFontBracket[] builtinFonts()
+	{
+		return this.dyLib.builtinFonts();
 	}
 }

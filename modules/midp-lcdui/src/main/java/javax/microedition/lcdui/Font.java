@@ -17,6 +17,7 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.font.FontUtilities;
 import cc.squirreljme.runtime.lcdui.font.SQFFont;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayManager;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -618,8 +619,12 @@ public final class Font
 		if (rv != null)
 			return rv.clone();
 		
+		DisplayManager manager = DisplayManager.instance();
+		;
+		
 		// Obtain built-in fonts
-		PencilFontBracket[] builtin = PencilFontShelf.builtin();
+		PencilFontBracket[] builtin = manager.scritch().environment()
+			.builtinFonts();
 		
 		// Wrap built-in fonts
 		int n = builtin.length;

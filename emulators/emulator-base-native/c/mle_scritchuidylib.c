@@ -8,14 +8,16 @@
 // ------------------------------------------------------------------------ */
 
 #include <string.h>
-#include <sjme/nvm.h>
 
-#include "squirreljme.h"
+#include "lib/scritchui/scritchuiExtern.h"
+#include "lib/scritchui/scritchuiPencilFontSqf.h"
+#include "sjme/nvm.h"
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiTypes.h"
-#include "sjme/dylib.h"
-#include "sjme/debug.h"
 #include "sjme/alloc.h"
+#include "sjme/debug.h"
+#include "sjme/dylib.h"
+#include "squirreljme.h"
 
 /** The class being implemented. */
 #define IMPL_CLASS "cc/squirreljme/emulator/scritchui/dylib/" \
@@ -42,6 +44,8 @@
 	DESC_INTEGER /*__sh*/ \
 	DESC_INTEGER /*__special*/ ")" DESC_VOID
 
+#define FORWARD_DESC___builtinFonts "(" \
+	DESC_LONG ")" DESC_ARRAY(DESC_PENCILFONT)
 #define FORWARD_DESC___componentHeight "(" \
 	DESC_LONG DESC_LONG ")" DESC_INT
 #define FORWARD_DESC___componentRepaint "(" \
@@ -376,6 +380,82 @@ static sjme_thread_result mle_bindEventThread(
 	
 	/* Success! */
 	return SJME_THREAD_RESULT(SJME_ERROR_NONE);
+}
+
+JNIEXPORT jobjectArray JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__builtinFonts)
+	(JNIEnv* env, jclass classy, jlong stateP)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	JavaVM* vm;
+	jobject instance;
+	jclass instanceClass;
+	jmethodID instanceNew;
+	sjme_scritchui_pencilFont font;
+	
+	if (stateP == 0)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return 0;
+	}
+	
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	
+	/* Find wrapper class. */
+	instanceClass = (*env)->FindClass(env, DESC_DYLIB_PENCILFONT);
+	if (instanceClass == NULL)
+	{
+		sjme_die("No DylibPencilFontObject?");
+		sjme_jni_throwMLECallError(env, SJME_ERROR_UNKNOWN);
+		return NULL;
+	}
+
+	/* Need to initialize? */
+	font = state->builtinFont;
+	if (font == NULL || font->frontEnd.wrapper == NULL)
+	{
+		/* Initialize font. */
+		font = NULL;
+		if (sjme_error_is(error = state->api->fontBuiltin(
+			state, &font)) || font == NULL)
+		{
+			sjme_jni_throwMLECallError(env, error);
+			return NULL;
+		}
+		
+		/* Find constructor. */
+		instanceNew = (*env)->GetMethodID(env, instanceClass,
+			"<init>", "(J)V");
+		if (instanceNew == NULL)
+		{
+			sjme_die("Could not find new for pencil font wrapper.");
+			sjme_jni_throwMLECallError(env, SJME_ERROR_UNKNOWN);
+			return NULL;
+		}
+		
+		/* Setup instance. */
+		instance = (*env)->NewObject(env, instanceClass, instanceNew,
+			font);
+		if (instance == NULL)
+		{
+			sjme_jni_throwMLECallError(env, SJME_ERROR_JNI_EXCEPTION);
+			return NULL;
+		}
+	
+		/* Store object information. */
+		(*env)->GetJavaVM(env, &vm);
+		font->frontEnd.data = vm;
+		font->frontEnd.wrapper = (*env)->NewGlobalRef(env, instance);
+	}
+	
+	/* We just need the wrapped instance. */
+	else
+		instance = font->frontEnd.wrapper;
+	
+	/* Wrap array. */
+	return (*env)->NewObjectArray(env, 1, instanceClass, instance);
 }
 
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
@@ -1138,6 +1218,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 
 static const JNINativeMethod mleNativeScritchDylibMethods[] =
 {
+	FORWARD_list(NativeScritchDylib, __builtinFonts),
 	FORWARD_list(NativeScritchDylib, __componentHeight),
 	FORWARD_list(NativeScritchDylib, __componentRepaint),
 	FORWARD_list(NativeScritchDylib, __componentRevalidate),

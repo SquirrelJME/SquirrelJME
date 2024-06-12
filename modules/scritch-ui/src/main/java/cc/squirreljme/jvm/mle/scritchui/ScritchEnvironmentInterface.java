@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.mle.scritchui;
 
+import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchWindowManagerType;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
@@ -72,4 +73,15 @@ public interface ScritchEnvironmentInterface
 	@Range(from = 0, to = ScritchWindowManagerType.NUM_TYPES)
 	@MagicConstant(valuesFromClass = ScritchWindowManagerType.class)
 	int windowManagerType();
+	
+	/**
+	 * Returns all the fonts which are internally built into the UI
+	 * interface.
+	 *
+	 * @return The internal built-in fonts.
+	 * @since 2024/06/12
+	 */
+	@SquirrelJMEVendorApi
+	@NotNull
+	PencilFontBracket[] builtinFonts();
 }

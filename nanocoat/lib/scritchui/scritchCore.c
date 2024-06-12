@@ -36,6 +36,9 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 	.containerAdd = sjme_scritchui_coreSerial_containerAdd,
 	.containerSetBounds = sjme_scritchui_coreSerial_containerSetBounds,
 	
+	/* Safe static. */
+	.fontBuiltin = sjme_scritchui_core_fontBuiltin,
+	
 	/* Loops are unchanged. */
 	.loopExecute = sjme_scritchui_core_loopExecute,
 	.loopExecuteLater = sjme_scritchui_core_loopExecuteLater,
@@ -66,6 +69,7 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 	.componentSize = sjme_scritchui_core_componentSize,
 	.containerAdd = sjme_scritchui_core_containerAdd,
 	.containerSetBounds = sjme_scritchui_core_containerSetBounds,
+	.fontBuiltin = sjme_scritchui_core_fontBuiltin,
 	.loopExecute = sjme_scritchui_core_loopExecute,
 	.loopExecuteLater = sjme_scritchui_core_loopExecuteLater,
 	.loopExecuteWait = sjme_scritchui_core_loopExecuteWait,

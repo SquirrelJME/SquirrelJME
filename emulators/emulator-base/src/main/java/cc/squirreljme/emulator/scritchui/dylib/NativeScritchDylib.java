@@ -9,6 +9,7 @@
 
 package cc.squirreljme.emulator.scritchui.dylib;
 
+import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
@@ -54,6 +55,19 @@ public final class NativeScritchDylib
 				"Could not initialize ScritchUI library '%s' (%s)",
 				__libPath, __name));
 		this._stateP = stateP;
+	}
+	
+	/**
+	 * Returns all the fonts which are internally built into the UI
+	 * interface.
+	 *
+	 * @return The internal built-in fonts.
+	 * @since 2024/06/12
+	 */
+	public PencilFontBracket[] builtinFonts()
+	{
+		// Forward
+		return NativeScritchDylib.__builtinFonts(this._stateP);
 	}
 	
 	/**
@@ -429,6 +443,16 @@ public final class NativeScritchDylib
 		NativeScritchDylib.__windowSetVisible(this._stateP, __window.objectP,
 			__visible);
 	}
+	
+	/**
+	 * Returns all the fonts which are internally built into the UI
+	 * interface.
+	 *
+	 * @return The ScritchUI state pointer.
+	 * @since 2024/06/12
+	 */
+	private static native PencilFontBracket[] __builtinFonts(long __stateP);
+	
 	/**
 	 * Returns the component height. 
 	 *

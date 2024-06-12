@@ -9,6 +9,7 @@
 
 package cc.squirreljme.scritchui.fb;
 
+import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.jvm.mle.scritchui.ScritchEnvironmentInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchLAFInterface;
@@ -145,6 +146,12 @@ public class FramebufferEnvironmentInterface
 	 */
 	@Override
 	public int windowManagerType()
+	{
+		throw Debugging.todo();
+	}
+	
+	@Override
+	public @NotNull PencilFontBracket[] builtinFonts()
 	{
 		throw Debugging.todo();
 	}

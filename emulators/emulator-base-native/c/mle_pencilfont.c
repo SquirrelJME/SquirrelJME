@@ -16,8 +16,6 @@
 
 #define FORWARD_CLASS "cc/squirreljme/jvm/mle/PencilFontShelf"
 
-#define FORWARD_DESC_builtin "(" \
-	")" DESC_ARRAY(DESC_PENCILFONT)
 #define FORWARD_DESC_equals "(" \
 	DESC_PENCILFONT DESC_PENCILFONT ")" DESC_BOOLEAN
 #define FORWARD_DESC_metricCharDirection "(" \
@@ -50,70 +48,6 @@
 #define FORWARD_DESC_renderChar "(" \
 	DESC_PENCILFONT DESC_INT DESC_PENCIL DESC_INT DESC_INT \
 	DESC_ARRAY(DESC_INT) ")" DESC_VOID
-
-JNIEXPORT jobjectArray JNICALL FORWARD_FUNC_NAME(PencilFontShelf, builtin)
-	(JNIEnv* env, jclass classy)
-{
-	static struct sjme_scritchui_pencilFontBase onlyBase;
-	sjme_errorCode error;
-	JavaVM* vm;
-	jobject instance;
-	jclass instanceClass;
-	jmethodID instanceNew;
-	
-	/* Find wrapper class. */
-	instanceClass = (*env)->FindClass(env, DESC_DYLIB_PENCILFONT);
-	if (instanceClass == NULL)
-	{
-		sjme_die("No DylibPencilFontObject?");
-		sjme_jni_throwMLECallError(env, SJME_ERROR_UNKNOWN);
-		return NULL;
-	}
-
-	/* Need to initialize? */
-	if (onlyBase.frontEnd.wrapper == NULL)
-	{
-		/* Initialize font. */
-		if (sjme_error_is(error = sjme_scritchui_newPencilFontSqfStatic(
-			&onlyBase,
-			&sqf_font_sanserif_12)))
-		{
-			sjme_jni_throwMLECallError(env, error);
-			return NULL;
-		}
-		
-		/* Find constructor. */
-		instanceNew = (*env)->GetMethodID(env, instanceClass,
-			"<init>", "(J)V");
-		if (instanceNew == NULL)
-		{
-			sjme_die("Could not find new for pencil font wrapper.");
-			sjme_jni_throwMLECallError(env, SJME_ERROR_UNKNOWN);
-			return NULL;
-		}
-		
-		/* Setup instance. */
-		instance = (*env)->NewObject(env, instanceClass, instanceNew,
-			(jlong)&onlyBase);
-		if (instance == NULL)
-		{
-			sjme_jni_throwMLECallError(env, SJME_ERROR_JNI_EXCEPTION);
-			return NULL;
-		}
-	
-		/* Store object information. */
-		(*env)->GetJavaVM(env, &vm);
-		onlyBase.frontEnd.data = vm;
-		onlyBase.frontEnd.wrapper = (*env)->NewGlobalRef(env, instance);
-	}
-	
-	/* We just need the wrapped instance. */
-	else
-		instance = onlyBase.frontEnd.wrapper;
-	
-	/* Wrap array. */
-	return (*env)->NewObjectArray(env, 1, instanceClass, instance);
-}
 
 JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(PencilFontShelf, equals)
 	(JNIEnv* env, jclass classy, jobject a, jobject b)
@@ -222,7 +156,6 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilFontShelf, renderChar)
 
 static const JNINativeMethod mlePencilFontMethods[] =
 {
-	FORWARD_list(PencilFontShelf, builtin),
 	FORWARD_list(PencilFontShelf, equals),
 	FORWARD_list(PencilFontShelf, metricCharDirection),
 	FORWARD_list(PencilFontShelf, metricCharValid),
