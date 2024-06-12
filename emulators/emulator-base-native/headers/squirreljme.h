@@ -134,6 +134,8 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 	DESC_CLASS("cc/squirreljme/jvm/mle/brackets/PencilBracket")
 #define DESC_PENCILFONT \
 	DESC_CLASS("cc/squirreljme/jvm/mle/brackets/PencilFontBracket")
+#define DESC_DYLIB_PENCILFONT \
+	DESC_CLASS("cc/squirreljme/emulator/scritchui/dylib/DylibPencilFontObject")
 
 /**
  * Checks to see if a virtual machine call failed.

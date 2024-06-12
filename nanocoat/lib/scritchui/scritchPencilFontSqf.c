@@ -29,12 +29,11 @@ static const sjme_scritchui_pencilFontFunctions sjme_scritch_sqfFontFunctions =
 	.renderChar = NULL,
 };
 
-sjme_errorCode sjme_sqf_newPencilFont(
-	sjme_attrOutNotNull sjme_scritchui_pencilFont* outFont,
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrInNotNull const sjme_sqf_codepage* inSqfCodepage)
+sjme_errorCode sjme_scritchui_newPencilFontSqfStatic(
+	sjme_scritchui_pencilFont inOutFont,
+	const sjme_scritchui_sqfCodepage* inSqfCodepage)
 {
-	if (outFont == NULL || inPool == NULL || inSqfCodepage == NULL)
+	if (inOutFont == NULL || inSqfCodepage == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	sjme_todo("Impl?");

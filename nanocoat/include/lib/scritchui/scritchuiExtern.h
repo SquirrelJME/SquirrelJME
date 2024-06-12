@@ -17,6 +17,7 @@
 #define SQUIRRELJME_SCRITCHUIEXTERN_H
 
 #include "lib/scritchui/scritchuiTypes.h"
+#include "sjme/dylib.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -30,7 +31,8 @@ extern "C" {
 /*--------------------------------------------------------------------------*/
 
 /** The internal builtin fallback font. */
-extern const struct sjme_sqf_codepage sqf_font_sanserif_12;
+extern SJME_DYLIB_EXPORT const
+	struct sjme_scritchui_sqfCodepage sqf_font_sanserif_12;
 
 /*--------------------------------------------------------------------------*/
 

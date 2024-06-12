@@ -20,6 +20,7 @@ squirreljme_multilib_add_library(Base
 	multithread.c
 	recycle.c
 	refcount.c
+	scritchFallbackFont.c
 	seekable.c
 	stream.c
 	tree.c

@@ -35,21 +35,21 @@ extern "C" {
  * 
  * @since 2024/06/04
  */
-typedef enum sjme_sqf_flag
+typedef enum sjme_scritchui_sqfFlag
 {
 	/** Character is valid. */
-	SJME_SQF_FLAG_VALID = 1,
+	sjme_scritchui_sqfFlag_VALID = 1,
 	
 	/** Compressed with RaFoCES w/ huffman table. */
-	SJME_SQF_FLAG_RAFOCES = 2,
-} sjme_sqf_flag;
+	sjme_scritchui_sqfFlag_RAFOCES = 2,
+} sjme_scritchui_sqfFlag;
 
 /**
  * SQF Font information.
  *
  * @since 2019/06/20
  */
-typedef struct sjme_sqf
+typedef struct sjme_scritchui_sqf
 {
 	/** The name of the font. */
 	sjme_lpcstr name;
@@ -110,9 +110,9 @@ typedef struct sjme_sqf
 	
 	/** Which characters make up the bitmap? */
 	const sjme_jbyte* charBmp;
-} sjme_sqf;
+} sjme_scritchui_sqf;
 
-typedef struct sjme_sqf_codepage
+typedef struct sjme_scritchui_sqfCodepage
 {
 	/** The name of the font. */
 	sjme_lpcstr name;
@@ -121,22 +121,21 @@ typedef struct sjme_sqf_codepage
 	sjme_jint numCodepages;
 	
 	/** The codepages for the font. */
-	const sjme_sqf* const* codepages;
-} sjme_sqf_codepage;
+	const sjme_scritchui_sqf* const* codepages;
+} sjme_scritchui_sqfCodepage;
 
 /**
  * Initializes a new pencil font using the given SQF codepage set.
  * 
- * @param outFont The resultant font.
+ * @param inOutFont The resultant font.
  * @param inPool The pool to allocate within.
  * @param inSqfCodepage The input SQF codepage to use.
  * @return Any resultant error, if any.
  * @since 2024/06/10
  */
-sjme_errorCode sjme_sqf_newPencilFont(
-	sjme_attrOutNotNull sjme_scritchui_pencilFont* outFont,
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrInNotNull const sjme_sqf_codepage* inSqfCodepage);
+sjme_errorCode sjme_scritchui_newPencilFontSqfStatic(
+	sjme_scritchui_pencilFont inOutFont,
+	const sjme_scritchui_sqfCodepage* inSqfCodepage);
 
 /*--------------------------------------------------------------------------*/
 

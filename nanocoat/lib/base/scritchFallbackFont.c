@@ -11,6 +11,7 @@
 #include "lib/scritchui/scritchuiPencil.h"
 #include "lib/scritchui/scritchuiPencilFont.h"
 #include "lib/scritchui/scritchuiPencilFontSqf.h"
+#include "sjme/dylib.h"
 
 const sjme_jbyte sqf_font_sanserif_12_0_huffBits[] = 
 {
@@ -221,7 +222,7 @@ const sjme_jbyte sqf_font_sanserif_12_0_charBmp[] =
 4, 0, 17, 17, 17, 30, 16, 15, 0, 0, 0, 1, 1, 7, 9, 9, 9, 7, 1, 1, 0, 
 0, 0, 10, 0, 17, 17, 17, 30, 16, 15, 0, 0, 0, 0
 };
-const struct sjme_sqf sqf_font_sanserif_12_0 = 
+const struct sjme_scritchui_sqf sqf_font_sanserif_12_0 = 
 {
 	.name = "sanserif", 
 	.pixelHeight = 12, 
@@ -345,7 +346,7 @@ const sjme_jbyte sqf_font_sanserif_12_1_charBmp[] =
 63, 16, 8, 4, 2, 1, 63, 0, 0, 0, 10, 4, 0, 0, 15, 8, 6, 1, 15, 0, 0, 
 0
 };
-const struct sjme_sqf sqf_font_sanserif_12_1 = 
+const struct sjme_scritchui_sqf sqf_font_sanserif_12_1 = 
 {
 	.name = "sanserif", 
 	.pixelHeight = 12, 
@@ -465,7 +466,7 @@ const sjme_jbyte sqf_font_sanserif_12_20_charBmp[] =
 {
 28, 34, 2, 15, 2, 15, 2, 34, 28, 0, 0, 0
 };
-const struct sjme_sqf sqf_font_sanserif_12_20 = 
+const struct sjme_scritchui_sqf sqf_font_sanserif_12_20 = 
 {
 	.name = "sanserif", 
 	.pixelHeight = 12, 
@@ -488,11 +489,11 @@ const struct sjme_sqf sqf_font_sanserif_12_20 =
 	.charBmpScan = sqf_font_sanserif_12_20_charBmpScan, 
 	.charBmp = sqf_font_sanserif_12_20_charBmp
 };
-const struct sjme_sqf* sqf_font_sanserif_12_sqfs[] = 
+const struct sjme_scritchui_sqf* sqf_font_sanserif_12_sqfs[] = 
 {
 &(sqf_font_sanserif_12_0), &(sqf_font_sanserif_12_1), &(sqf_font_sanserif_12_20)
 };
-const struct sjme_sqf_codepage sqf_font_sanserif_12 = 
+const SJME_DYLIB_EXPORT struct sjme_scritchui_sqfCodepage sqf_font_sanserif_12 = 
 {
 	.name = "sanserif", 
 	.numCodepages = 3, 

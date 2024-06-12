@@ -14,7 +14,6 @@ squirreljme_multilib_add_library(ScritchUICore
 	scritchComponent.c
 	scritchContainer.c
 	scritchCore.c
-	scritchFallbackFont.c
 	scritchLoop.c
 	scritchPanel.c
 	scritchPencil.c

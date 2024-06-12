@@ -10,6 +10,7 @@
 #include "lib/scritchui/gtk2/gtk2.h"
 #include "lib/scritchui/gtk2/gtk2Intern.h"
 #include "lib/scritchui/core/core.h"
+#include "sjme/dylib.h"
 
 /** GTK Function set for Scritch UI. */
 static const sjme_scritchui_implFunctions sjme_scritchui_gtkFunctions =
@@ -93,7 +94,7 @@ static sjme_thread_result sjme_scritchui_gtk2_loopMain(
  * @return The library interface.
  * @since 2024/03/29 
  */
-sjme_errorCode SJME_SCRITCHUI_DYLIB_SYMBOL(gtk2)(
+sjme_errorCode SJME_DYLIB_EXPORT SJME_SCRITCHUI_DYLIB_SYMBOL(gtk2)(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
 	sjme_attrInNullable sjme_frontEnd* initFrontEnd,
