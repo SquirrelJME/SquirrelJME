@@ -1749,8 +1749,11 @@ typedef enum sjme_errorCode
 	/** The class cannot be casted. */
 	SJME_ERROR_CLASS_CAST = -55,
 	
+	/** The font is not valid. */
+	SJME_ERROR_INVALID_FONT = -56,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -56
+	SJME_NUM_ERROR_CODES = -57
 } sjme_errorCode;
 
 /**
