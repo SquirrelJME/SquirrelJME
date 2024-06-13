@@ -26,17 +26,13 @@
 /** Debug buffer size for messages. */
 #define DEBUG_BUF 512
 
-sjme_debug_abortHandlerFunc sjme_debug_abortHandler = NULL;
-
-sjme_debug_exitHandlerFunc sjme_debug_exitHandler = NULL;
-
-sjme_debug_messageHandlerFunc sjme_debug_messageHandler = NULL;
+sjme_debug_handlerFunctions* sjme_debug_handlers = NULL;
 
 void sjme_debug_abort(void)
 {
 	/* Use specific abort handler? */
-	if (sjme_debug_abortHandler != NULL)
-		if (sjme_debug_abortHandler())
+	if (sjme_debug_handlers != NULL && sjme_debug_handlers->abort != NULL)
+		if (sjme_debug_handlers->abort())
 			return;
 
 #if defined(SJME_CONFIG_HAS_WINDOWS)
@@ -59,8 +55,8 @@ void sjme_debug_abort(void)
 static void sjme_debug_exit(int exitCode)
 {
 	/* Use specific exit handler? */
-	if (sjme_debug_exitHandler != NULL)
-		if (sjme_debug_exitHandler(exitCode))
+	if (sjme_debug_handlers != NULL && sjme_debug_handlers->exit != NULL)
+		if (sjme_debug_handlers->exit(exitCode))
 			return;
 
 	/* Fallback to normal exit. */
@@ -95,6 +91,7 @@ void sjme_genericMessage(sjme_lpcstr file, int line,
 	char buf[DEBUG_BUF];
 	char fullBuf[DEBUG_BUF];
 	int hasPrefix;
+	sjme_jboolean handled;
 	
 	/* Need to copy because this works differently on other arches. */
 	va_copy(copy, args);
@@ -125,8 +122,12 @@ void sjme_genericMessage(sjme_lpcstr file, int line,
 			prefix, (hasPrefix ? " " : ""), buf);
 		
 	/* First try to print to the frontend callback, if any. */
-	if (sjme_debug_messageHandler == NULL ||
-		!sjme_debug_messageHandler(fullBuf, buf))
+	handled = SJME_JNI_FALSE;
+	if (sjme_debug_handlers != NULL && sjme_debug_handlers->message != NULL)
+		handled = sjme_debug_handlers->message(
+			fullBuf, buf);
+	
+	if (!handled)
 		fprintf(stderr, "%s\n", fullBuf);
 	
 	/* Make sure it gets written. */

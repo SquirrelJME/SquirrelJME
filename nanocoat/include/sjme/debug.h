@@ -222,10 +222,6 @@ sjme_lpcstr sjme_debug_shortenFile(sjme_lpcstr file);
  */
 typedef sjme_jboolean (*sjme_debug_abortHandlerFunc)(void);
 
-/** The handler for debug aborts. */
-extern SJME_DYLIB_EXPORT
-	sjme_debug_abortHandlerFunc sjme_debug_abortHandler;
-
 /**
  * Handler for specific debug exit scenarios.
  *
@@ -234,10 +230,6 @@ extern SJME_DYLIB_EXPORT
  * @since 2023/12/21
  */
 typedef sjme_jboolean (*sjme_debug_exitHandlerFunc)(int exitCode);
-
-/** The handler for debug exits. */
-extern SJME_DYLIB_EXPORT
-	sjme_debug_exitHandlerFunc sjme_debug_exitHandler;
 
 /**
  * Emits a dangling reference message.
@@ -251,9 +243,26 @@ extern SJME_DYLIB_EXPORT
 typedef sjme_jboolean (*sjme_debug_messageHandlerFunc)(sjme_lpcstr fullMessage,
 	sjme_lpcstr partMessage);
 
-/** The dangling message implementation to use. */
+/**
+ * The set of functions to use for debugging functions.
+ * 
+ * @since 2024/06/13
+ */
+typedef struct sjme_debug_handlerFunctions
+{
+	/** The handler for debug aborts. */
+	sjme_debug_abortHandlerFunc abort;
+	
+	/** The handler for debug exits. */
+	sjme_debug_exitHandlerFunc exit;
+		
+	/** The dangling message implementation to use. */
+	sjme_debug_messageHandlerFunc message;
+} sjme_debug_handlerFunctions;
+
+/** The debug handlers to use. */
 extern SJME_DYLIB_EXPORT
-	sjme_debug_messageHandlerFunc sjme_debug_messageHandler;
+	sjme_debug_handlerFunctions* sjme_debug_handlers;
 
 /*--------------------------------------------------------------------------*/
 

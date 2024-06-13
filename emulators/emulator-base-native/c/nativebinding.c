@@ -40,6 +40,13 @@ static sjme_jboolean sjme_jni_abortHandler(void)
 	return SJME_JNI_FALSE;
 }
 
+static sjme_debug_handlerFunctions sjme_jni_debugHandlers =
+{
+	.abort = sjme_jni_abortHandler,
+	.exit = NULL,
+	.message = NULL,
+};
+
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 {
 	// Used to indicate that something might be happened
@@ -59,9 +66,7 @@ JNIEXPORT jint JNICALL sjme_attrUnused
 	fprintf(stderr, "JNI Sub-Level: Binding Methods...\n");
 	
 	/* Use this abort handler. */
-	sjme_debug_abortHandler = sjme_jni_abortHandler;
-	fprintf(stderr, "JNI Abort handler: %p\n",
-		sjme_debug_abortHandler);
+	sjme_debug_handlers = &sjme_jni_debugHandlers;
 
 	/* Initialize all functions. */
 	rv |= mleDebugInit(env, classy);
