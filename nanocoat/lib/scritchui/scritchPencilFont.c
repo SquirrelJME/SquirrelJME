@@ -66,6 +66,9 @@ sjme_errorCode sjme_scritchui_newPencilFontInit(
 {
 	if (inOutFont == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (inOutFont->impl == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
 		
 	/* Set base fields. */
 	inOutFont->api = &sjme_scritchui_fontFunctions;
