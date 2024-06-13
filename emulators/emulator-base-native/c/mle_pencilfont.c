@@ -28,7 +28,7 @@
 	DESC_PENCILFONT ")" DESC_INT
 #define FORWARD_DESC_metricFontName "(" \
 	DESC_PENCILFONT ")" DESC_STRING
-#define FORWARD_DESC_metricFontPixelSize "(" \
+#define FORWARD_DESC_metricPixelSize "(" \
 	DESC_PENCILFONT ")" DESC_INT
 #define FORWARD_DESC_metricFontStyle "(" \
 	DESC_PENCILFONT ")" DESC_INT
@@ -51,6 +51,14 @@
 	DESC_PENCILFONT DESC_INT DESC_PENCIL DESC_INT DESC_INT \
 	DESC_ARRAY(DESC_INT) ")" DESC_VOID
 
+#define RECOVER_FONT() \
+	do { font = sjme_jni_recoverFont(env, fontInstance); \
+	if (font == NULL) \
+	{ \
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS); \
+		return 0; \
+	} } while(0)
+
 static sjme_scritchui_pencilFont sjme_jni_recoverFont(JNIEnv* env,
 	jobject fontInstance)
 {
@@ -65,59 +73,63 @@ static sjme_scritchui_pencilFont sjme_jni_recoverFont(JNIEnv* env,
 JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(PencilFontShelf, equals)
 	(JNIEnv* env, jclass classy, jobject a, jobject b)
 {
-	sjme_todo("Impl?");
-	return JNI_FALSE;
+	sjme_scritchui_pencilFont fontA;
+	sjme_scritchui_pencilFont fontB;
+	
+	/* Recover fonts. */
+	fontA = sjme_jni_recoverFont(env, a);
+	fontB = sjme_jni_recoverFont(env, b);
+	
+	/* Call which one? */
+	if (fontA != NULL)
+		return fontA->api->equals(fontA, fontB);
+	else if (fontB != NULL)
+		return fontB->api->equals(fontA, fontB);
+		
+	/* Both would be NULL at this point. */
+	return JNI_TRUE;
 }
 
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricCharDirection)
 	(JNIEnv* env, jclass classy, jobject fontInstance, jint c)
 {
+	sjme_errorCode error;
 	sjme_scritchui_pencilFont font;
+	sjme_jint result;
 	
-	/* Recover font. */
-	font = sjme_jni_recoverFont(env, fontInstance);
-	if (font == NULL)
-	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
-		return 0;
-	}
-	
-	sjme_todo("Impl?");
-	return 0;
+	/* Forward. */
+	RECOVER_FONT();
+	CHECK_AND_FORWARD(0, font->api->metricCharDirection,
+		(font, c, &result));
+	return result;
 }
 
 JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricCharValid)
 	(JNIEnv* env, jclass classy, jobject fontInstance, jint c)
 {
+	sjme_errorCode error;
 	sjme_scritchui_pencilFont font;
+	sjme_jboolean result;
 	
-	/* Recover font. */
-	font = sjme_jni_recoverFont(env, fontInstance);
-	if (font == NULL)
-	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
-		return 0;
-	}
-	
-	sjme_todo("Impl?");
-	return JNI_FALSE;
+	/* Forward. */
+	RECOVER_FONT();
+	CHECK_AND_FORWARD(0, font->api->metricCharValid,
+		(font, c, &result));
+	return result;
 }
 
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricFontFace)
 	(JNIEnv* env, jclass classy, jobject fontInstance)
 {
+	sjme_errorCode error;
 	sjme_scritchui_pencilFont font;
+	sjme_scritchui_pencilFontFace result;
 	
-	/* Recover font. */
-	font = sjme_jni_recoverFont(env, fontInstance);
-	if (font == NULL)
-	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
-		return 0;
-	}
-	
-	sjme_todo("Impl?");
-	return 0;
+	/* Forward. */
+	RECOVER_FONT();
+	CHECK_AND_FORWARD(0, font->api->metricFontFace,
+		(font, &result));
+	return result;
 }
 
 JNIEXPORT jstring JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricFontName)
@@ -161,140 +173,116 @@ JNIEXPORT jstring JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricFontName)
 	return (*env)->NewStringUTF(env, name);
 }
 
-JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricFontPixelSize)
-	(JNIEnv* env, jclass classy, jobject fontInstance)
-{
-	sjme_scritchui_pencilFont font;
-	
-	/* Recover font. */
-	font = sjme_jni_recoverFont(env, fontInstance);
-	if (font == NULL)
-	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
-		return 0;
-	}
-	
-	sjme_todo("Impl?");
-	return 0;
-}
-
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricFontStyle)
 	(JNIEnv* env, jclass classy, jobject fontInstance)
 {
+	sjme_errorCode error;
 	sjme_scritchui_pencilFont font;
+	sjme_scritchui_pencilFontStyle result;
 	
-	/* Recover font. */
-	font = sjme_jni_recoverFont(env, fontInstance);
-	if (font == NULL)
-	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
-		return 0;
-	}
-	
-	sjme_todo("Impl?");
-	return 0;
+	/* Forward. */
+	RECOVER_FONT();
+	CHECK_AND_FORWARD(0, font->api->metricFontStyle,
+		(font, &result));
+	return result;
 }
 
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricPixelAscent)
 	(JNIEnv* env, jclass classy, jobject fontInstance, jboolean max)
 {
+	sjme_errorCode error;
 	sjme_scritchui_pencilFont font;
+	sjme_jint result;
 	
-	/* Recover font. */
-	font = sjme_jni_recoverFont(env, fontInstance);
-	if (font == NULL)
-	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
-		return 0;
-	}
-	
-	sjme_todo("Impl?");
-	return 0;
+	/* Forward. */
+	RECOVER_FONT();
+	CHECK_AND_FORWARD(0, font->api->metricPixelAscent,
+		(font, max, &result));
+	return result;
 }
 
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricPixelBaseline)
 	(JNIEnv* env, jclass classy, jobject fontInstance)
 {
+	sjme_errorCode error;
 	sjme_scritchui_pencilFont font;
+	sjme_jint result;
 	
-	/* Recover font. */
-	font = sjme_jni_recoverFont(env, fontInstance);
-	if (font == NULL)
-	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
-		return 0;
-	}
-	
-	sjme_todo("Impl?");
-	return 0;
+	/* Forward. */
+	RECOVER_FONT();
+	CHECK_AND_FORWARD(0, font->api->metricPixelBaseline,
+		(font, &result));
+	return result;
 }
 
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricPixelDescent)
 	(JNIEnv* env, jclass classy, jobject fontInstance, jboolean max)
 {
+	sjme_errorCode error;
 	sjme_scritchui_pencilFont font;
+	sjme_jint result;
 	
-	/* Recover font. */
-	font = sjme_jni_recoverFont(env, fontInstance);
-	if (font == NULL)
-	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
-		return 0;
-	}
-	
-	sjme_todo("Impl?");
-	return 0;
+	/* Forward. */
+	RECOVER_FONT();
+	CHECK_AND_FORWARD(0, font->api->metricPixelDescent,
+		(font, max, &result));
+	return result;
 }
 
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricPixelLeading)
 	(JNIEnv* env, jclass classy, jobject fontInstance)
 {
+	sjme_errorCode error;
 	sjme_scritchui_pencilFont font;
+	sjme_jint result;
 	
-	/* Recover font. */
-	font = sjme_jni_recoverFont(env, fontInstance);
-	if (font == NULL)
-	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
-		return 0;
-	}
+	/* Forward. */
+	RECOVER_FONT();
+	CHECK_AND_FORWARD(0, font->api->metricPixelLeading,
+		(font, &result));
+	return result;
+}
+
+JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricPixelSize)
+	(JNIEnv* env, jclass classy, jobject fontInstance)
+{
+	sjme_errorCode error;
+	sjme_scritchui_pencilFont font;
+	sjme_jint result;
 	
-	sjme_todo("Impl?");
-	return 0;
+	/* Forward. */
+	RECOVER_FONT();
+	CHECK_AND_FORWARD(0, font->api->metricPixelSize,
+		(font, &result));
+	return result;
 }
 
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, pixelCharHeight)
 	(JNIEnv* env, jclass classy, jobject fontInstance, jint c)
 {
+	sjme_errorCode error;
 	sjme_scritchui_pencilFont font;
+	sjme_jint result;
 	
-	/* Recover font. */
-	font = sjme_jni_recoverFont(env, fontInstance);
-	if (font == NULL)
-	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
-		return 0;
-	}
-	
-	sjme_todo("Impl?");
-	return 0;
+	/* Forward. */
+	RECOVER_FONT();
+	CHECK_AND_FORWARD(0, font->api->pixelCharHeight,
+		(font, c, &result));
+	return result;
 }
 
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, pixelCharWidth)
 	(JNIEnv* env, jclass classy, jobject fontInstance, jint c)
 {
+	sjme_errorCode error;
 	sjme_scritchui_pencilFont font;
+	sjme_jint result;
 	
-	/* Recover font. */
-	font = sjme_jni_recoverFont(env, fontInstance);
-	if (font == NULL)
-	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
-		return 0;
-	}
-	
-	sjme_todo("Impl?");
-	return 0;
+	/* Forward. */
+	RECOVER_FONT();
+	CHECK_AND_FORWARD(0, font->api->pixelCharWidth,
+		(font, c, &result));
+	return result;
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilFontShelf, renderBitmap)
@@ -318,7 +306,7 @@ static const JNINativeMethod mlePencilFontMethods[] =
 	FORWARD_list(PencilFontShelf, metricCharValid),
 	FORWARD_list(PencilFontShelf, metricFontFace),
 	FORWARD_list(PencilFontShelf, metricFontName),
-	FORWARD_list(PencilFontShelf, metricFontPixelSize),
+	FORWARD_list(PencilFontShelf, metricPixelSize),
 	FORWARD_list(PencilFontShelf, metricFontStyle),
 	FORWARD_list(PencilFontShelf, metricPixelAscent),
 	FORWARD_list(PencilFontShelf, metricPixelBaseline),

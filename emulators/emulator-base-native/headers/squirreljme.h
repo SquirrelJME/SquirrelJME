@@ -143,6 +143,29 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 	DESC_CLASS("cc/squirreljme/emulator/scritchui/dylib/DylibPencilFontObject")
 
 /**
+ * Common check and forward call.
+ * 
+ * @param failRet The failing return value.
+ * @param funcMember The function member to check and to call.
+ * @param args Arguments to the function.
+ * @since 2024/06/13
+ */
+#define CHECK_AND_FORWARD(failRet, funcMember, args) \
+	do { if (funcMember == NULL) \
+	{ \
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED); \
+		return (failRet); \
+	} \
+	 \
+	/* Forward. */ \
+	result = (failRet); \
+	if (sjme_error_is(error = funcMember args)) \
+	{ \
+		sjme_jni_throwMLECallError(env, error); \
+		return (failRet); \
+	} } while(0)
+
+/**
  * Checks to see if a virtual machine call failed.
  *
  * @param env The Java environment.

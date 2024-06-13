@@ -13,6 +13,55 @@
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiPencilFont.h"
 #include "lib/scritchui/scritchuiTypes.h"
+#include "sjme/debug.h"
+
+static sjme_jboolean sjme_scritchui_fontEquals(
+	sjme_attrInNullable sjme_scritchui_pencilFont a,
+	sjme_attrInNullable sjme_scritchui_pencilFont b)
+{
+	if (a == NULL)
+		return b == NULL;
+	else if (b == NULL)
+		return SJME_JNI_FALSE;
+	
+	sjme_todo("Impl?");
+	return SJME_JNI_FALSE;
+}
+
+static sjme_errorCode sjme_scritchui_fontMetricCharDirection(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInPositive sjme_jint inCodepoint,
+	sjme_attrOutNotNull sjme_attrInRange(-1, 1) sjme_jint* outDirection)
+{
+	if (inFont == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+static sjme_errorCode sjme_scritchui_fontMetricCharValid(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInPositive sjme_jint inCodepoint,
+	sjme_attrOutNotNull sjme_jboolean* outValid)
+{
+	if (inFont == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+static sjme_errorCode sjme_scritchui_fontMetricFontFace(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrOutNotNull sjme_scritchui_pencilFontFace* outFace)
+{
+	if (inFont == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
 
 static sjme_errorCode sjme_scritchui_fontMetricFontName(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
@@ -41,24 +90,150 @@ static sjme_errorCode sjme_scritchui_fontMetricFontName(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_scritchui_fontMetricFontStyle(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrOutNotNull sjme_scritchui_pencilFontStyle* outStyle)
+{
+	if (inFont == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+static sjme_errorCode sjme_scritchui_fontMetricPixelAscent(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInValue sjme_jboolean isMax,
+	sjme_attrOutNotNull sjme_jint* outAscent)
+{
+	if (inFont == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+static sjme_errorCode sjme_scritchui_fontMetricPixelBaseline(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrOutNotNull sjme_jint* outBaseline)
+{
+	if (inFont == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+static sjme_errorCode sjme_scritchui_fontMetricPixelDescent(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInValue sjme_jboolean isMax,
+	sjme_attrOutNotNull sjme_jint* outDescent)
+{
+	if (inFont == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+static sjme_errorCode sjme_scritchui_fontMetricPixelLeading(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outLeading)
+{
+	if (inFont == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+static sjme_errorCode sjme_scritchui_fontMetricPixelSize(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outSize)
+{
+	if (inFont == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+static sjme_errorCode sjme_scritchui_fontPixelCharHeight(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInPositive sjme_jint inCodepoint,
+	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outHeight)
+{
+	if (inFont == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+static sjme_errorCode sjme_scritchui_fontPixelCharWidth(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInPositive sjme_jint inCodepoint,
+	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outWidth)
+{
+	if (inFont == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+static sjme_errorCode sjme_scritchui_fontRenderBitmap(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInPositive sjme_jint inCodepoint,
+	sjme_attrInNotNull sjme_jbyte* buf,
+	sjme_attrInPositive sjme_jint bufOff,
+	sjme_attrInPositive sjme_jint bufScanLen,
+	sjme_attrInPositive sjme_jint surfaceX,
+	sjme_attrInPositive sjme_jint surfaceY,
+	sjme_attrInPositive sjme_jint surfaceW,
+	sjme_attrInPositive sjme_jint surfaceH)
+{
+	if (inFont == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+static sjme_errorCode sjme_scritchui_fontRenderChar(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInPositive sjme_jint inCodepoint,
+	sjme_attrInNotNull sjme_scritchui_pencil inPencil,
+	sjme_attrInValue sjme_jint xPos,
+	sjme_attrInNotNull sjme_jint yPos,
+	sjme_attrOutNullable sjme_jint* nextXPos,
+	sjme_attrOutNullable sjme_jint* nextYPos)
+{
+	if (inFont == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
 /** Functions for basic font support. */
 static const sjme_scritchui_pencilFontFunctions sjme_scritchui_fontFunctions =
 {
-	.equals = NULL,
-	.metricCharDirection = NULL,
-	.metricCharValid = NULL,
-	.metricFontFace = NULL,
+	.equals = sjme_scritchui_fontEquals,
+	.metricCharDirection = sjme_scritchui_fontMetricCharDirection,
+	.metricCharValid = sjme_scritchui_fontMetricCharValid,
+	.metricFontFace = sjme_scritchui_fontMetricFontFace,
 	.metricFontName = sjme_scritchui_fontMetricFontName,
-	.metricFontStyle = NULL,
-	.metricPixelAscent = NULL,
-	.metricPixelBaseline = NULL,
-	.metricPixelDescent = NULL,
-	.metricPixelLeading = NULL,
-	.metricPixelSize = NULL,
-	.pixelCharHeight = NULL,
-	.pixelCharWidth = NULL,
-	.renderBitmap = NULL,
-	.renderChar = NULL,
+	.metricFontStyle = sjme_scritchui_fontMetricFontStyle,
+	.metricPixelAscent = sjme_scritchui_fontMetricPixelAscent,
+	.metricPixelBaseline = sjme_scritchui_fontMetricPixelBaseline,
+	.metricPixelDescent = sjme_scritchui_fontMetricPixelDescent,
+	.metricPixelLeading = sjme_scritchui_fontMetricPixelLeading,
+	.metricPixelSize = sjme_scritchui_fontMetricPixelSize,
+	.pixelCharHeight = sjme_scritchui_fontPixelCharHeight,
+	.pixelCharWidth = sjme_scritchui_fontPixelCharWidth,
+	.renderBitmap = sjme_scritchui_fontRenderBitmap,
+	.renderChar = sjme_scritchui_fontRenderChar,
 };
 
 sjme_errorCode sjme_scritchui_newPencilFontInit(
