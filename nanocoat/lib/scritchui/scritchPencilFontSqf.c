@@ -48,6 +48,7 @@ static const sjme_scritchui_pencilFontFunctions
 	.metricPixelBaseline = NULL,
 	.metricPixelDescent = NULL,
 	.metricPixelLeading = NULL,
+	.metricPixelSize = NULL,
 	.pixelCharHeight = NULL,
 	.pixelCharWidth = NULL,
 	.renderBitmap = NULL,

@@ -13,10 +13,8 @@ import cc.squirreljme.jvm.mle.PencilFontShelf;
 import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.jvm.mle.constants.PencilFontFace;
 import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.font.FontUtilities;
-import cc.squirreljme.runtime.lcdui.font.SQFFont;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayManager;
 import java.io.IOException;
 import java.io.InputStream;
@@ -158,7 +156,7 @@ public final class Font
 			this._face = Font.FACE_PROPORTIONAL;
 		
 		// Get pixel size of font
-		this._pixelsize = PencilFontShelf.metricFontPixelSize(__bracket);
+		this._pixelsize = PencilFontShelf.metricPixelSize(__bracket);
 		
 		// Font style directly maps
 		this._style = PencilFontShelf.metricFontStyle(__bracket);

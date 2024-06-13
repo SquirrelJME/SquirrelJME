@@ -39,17 +39,6 @@ public final class PencilFontShelf
 	}
 	
 	/**
-	 * Returns all the built-in fonts to SquirrelJME.
-	 *
-	 * @return All the built-in fonts.
-	 * @throws MLECallError If the fonts could not be obtained.
-	 * @since 2024/05/17
-	 */
-	@SquirrelJMEVendorApi
-	public static native PencilFontBracket[] builtin()
-		throws MLECallError;
-	
-	/**
 	 * Checks if two brackets refer to the same font.
 	 *
 	 * @param __a The first font.
@@ -122,20 +111,6 @@ public final class PencilFontShelf
 		throws MLECallError;
 	
 	/**
-	 * Returns the pixel size of the font.
-	 *
-	 * @param __font The font to get the size of.
-	 * @return The pixel size of the font.
-	 * @throws MLECallError On null arguments or the font is invalid.
-	 * @since 2024/05/17
-	 */
-	@SquirrelJMEVendorApi
-	@Range(from = 1, to = Integer.MAX_VALUE)
-	public static native int metricFontPixelSize(
-		@NotNull PencilFontBracket __font)
-		throws MLECallError;
-	
-	/**
 	 * Returns the style of the font.
 	 *
 	 * @param __font The style of the font to request.
@@ -202,6 +177,20 @@ public final class PencilFontShelf
 	 */
 	@SquirrelJMEVendorApi
 	public static native int metricPixelLeading(
+		@NotNull PencilFontBracket __font)
+		throws MLECallError;
+	
+	/**
+	 * Returns the pixel size of the font.
+	 *
+	 * @param __font The font to get the size of.
+	 * @return The pixel size of the font.
+	 * @throws MLECallError On null arguments or the font is invalid.
+	 * @since 2024/05/17
+	 */
+	@SquirrelJMEVendorApi
+	@Range(from = 1, to = Integer.MAX_VALUE)
+	public static native int metricPixelSize(
 		@NotNull PencilFontBracket __font)
 		throws MLECallError;
 	

@@ -29,41 +29,261 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
-typedef sjme_errorCode (*sjme_scritchui_pencilFontEqualsFunc)();
+/**
+ * Font face for pencil fonts.
+ * 
+ * @since 2024/06/13
+ */
+typedef enum sjme_scritchui_pencilFontFace
+{
+	/** Monospaced. */
+	SJME_SCRITCHUI_PENCIL_FONT_FACE_MONOSPACE = 1,
+	
+	/** Serifs. */
+	SJME_SCRITCHUI_PENCIL_FONT_FACE_SERIF = 2,
+	
+	/** Symbol. */
+	SJME_SCRITCHUI_PENCIL_FONT_FACE_SYMBOL = 4,
+} sjme_scritchui_pencilFontFace;
 
-typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricCharDirectionFunc)();
+/**
+ * Font style for pencil fonts.
+ * 
+ * @since 2024/06/13
+ */
+typedef enum sjme_scritchui_pencilFontStyle
+{
+	/** Bold text. */
+	SJME_SCRITCHUI_PENCIL_FONT_STYLE_BOLD = 1,
+	
+	/** Italic (slanted) text. */
+	SJME_SCRITCHUI_PENCIL_FONT_STYLE_ITALIC = 2,
+	
+	/** Underlined text. */
+	SJME_SCRITCHUI_PENCIL_FONT_STYLE_UNDERLINED = 4,
+} sjme_scritchui_pencilFontStyle;
 
-typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricCharValidFunc)();
+/**
+ * Checks if two brackets refer to the same font.
+ *
+ * @param a The first font.
+ * @param b The second font.
+ * @return If the two fonts are the same.
+ * @since 2024/05/17
+ */
+typedef sjme_jboolean (*sjme_scritchui_pencilFontEqualsFunc)(
+	sjme_attrInNullable sjme_scritchui_pencilFont a,
+	sjme_attrInNullable sjme_scritchui_pencilFont b);
 
-typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricFontFaceFunc)();
+/**
+ * Returns the direction of the given character in the font.
+ *
+ * @param inFont The font to check.
+ * @param inCodepoint The character.
+ * @param outDirection The direction of the character, will be @c -1  or @c 1 .
+ * @return Any resultant error, if any.
+ * @since 2024/05/14
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricCharDirectionFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInPositive sjme_jint inCodepoint,
+	sjme_attrOutNotNull sjme_attrInRange(-1, 1) sjme_jint* outDirection);
+
+/**
+ * Checks whether the character in the given font is valid, as in it has
+ * a render-able glyph.
+ *
+ * @param inFont The font to check within.
+ * @param inCodepoint The character to check.
+ * @param outValid If the character in the font has a glyph and is valid.
+ * @return Any resultant error, if any.
+ * @since 2024/05/17
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricCharValidFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInPositive sjme_jint inCodepoint,
+	sjme_attrOutNotNull sjme_jboolean* outValid);
+
+/**
+ * Returns the @c sjme_scritchui_pencilFontFace of a font. 
+ *
+ * @param inFont The font to request from.
+ * @param outFace The font face, any flag
+ * from @c sjme_scritchui_pencilFontFace .
+ * @return Any resultant error, if any.
+ * @since 2024/05/17
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricFontFaceFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrOutNotNull sjme_scritchui_pencilFontFace* outFace);
 
 /**
  * Returns the name of the font.
  * 
- * @return The font name.
+ * @param inFont The font to get the name of.
+ * @param outName The font name.
+ * @return Any resultant error, if any.
  * @since 2024/06/12
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricFontNameFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
-	sjme_attrInOutNotNull sjme_lpcstr* outName);
+	sjme_attrOutNotNull sjme_lpcstr* outName);
 
-typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricFontStyleFunc)();
+/**
+ * Returns the style of the font.
+ *
+ * @param inFont The style of the font to request.
+ * @param outStyle The font style, will be flags
+ * from @c sjme_scritchui_pencilFontStyle .
+ * @return Any resultant error, if any.
+ * @since 2024/05/17
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricFontStyleFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrOutNotNull sjme_scritchui_pencilFontStyle* outStyle);
 
-typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricPixelAscentFunc)();
+/**
+ * Returns the ascent of the font.
+ *
+ * @param inFont The font to check.
+ * @param isMax Should the max be obtained.
+ * @param outAscent The ascent of the font in pixels.
+ * @return Any resultant error, if any.
+ * @since 2024/05/14
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricPixelAscentFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInValue sjme_jboolean isMax,
+	sjme_attrOutNotNull sjme_jint* outAscent);
 
-typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricPixelBaselineFunc)();
+/**
+ * Returns the baseline of the font.
+ *
+ * @param inFont The font to check.
+ * @param outBaseline The baseline of the font in pixels.
+ * @return Any resultant error, if any.
+ * @since 2024/05/14
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricPixelBaselineFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrOutNotNull sjme_jint* outBaseline);
 
-typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricPixelDescentFunc)();
+/**
+ * Returns the descent of the font.
+ *
+ * @param inFont The font to check.
+ * @param isMax Should the max be obtained.
+ * @param outDescent The descent of the font in pixels.
+ * @return Any resultant error, if any.
+ * @since 2024/05/14
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricPixelDescentFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInValue sjme_jboolean isMax,
+	sjme_attrOutNotNull sjme_jint* outDescent);
+	
+/**
+ * Returns the leading of the font.
+ *
+ * @param inFont The font to obtain from.
+ * @param outLeading The leading amount in pixels.
+ * @return Any resultant error, if any.
+ * @since 2024/05/14
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricPixelLeadingFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outLeading);
+	
+/**
+ * Returns the pixel size of the font.
+ *
+ * @param inFont The font to get the size of.
+ * @param outSize The pixel size of the font.
+ * @return Any resultant error, if any.
+ * @since 2024/05/17
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricPixelSizeFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outSize);
 
-typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricPixelLeadingFunc)();
+/**
+ * Returns the height of the given character.
+ *
+ * @param inFont The font to obtain from.
+ * @param inCodepoint The character.
+ * @param outHeight The height of the font in pixels.
+ * @return Any resultant error, if any.
+ * @since 2024/05/14
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilFontPixelCharHeightFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInPositive sjme_jint inCodepoint,
+	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outHeight);
 
-typedef sjme_errorCode (*sjme_scritchui_pencilFontPixelCharHeightFunc)();
+/**
+ * Returns the width of the given character.
+ *
+ * @param inFont The font to obtain from.
+ * @param inCodepoint The character.
+ * @param outWidth The width of the font in pixels.
+ * @return Any resultant error, if any.
+ * @since 2024/05/14
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilFontPixelCharWidthFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInPositive sjme_jint inCodepoint,
+	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outWidth);
 
-typedef sjme_errorCode (*sjme_scritchui_pencilFontPixelCharWidthFunc)();
+/**
+ * Renders the font glyph to a bitmap represented in a byte array. Each
+ * byte within the array represents 8 pixels.
+ *
+ * @param inFont The font to render to the bitmap.
+ * @param inCodepoint The character to render.
+ * @param buf The resultant buffer.
+ * @param bufOff The offset into the buffer.
+ * @param bufScanLen The scanline length of the buffer.
+ * @param surfaceX The surface X.
+ * @param surfaceY The surface Y.
+ * @param surfaceW The surface width.
+ * @param surfaceH The surface height.
+ * @return Any resultant error, if any.
+ * @since 2024/05/14
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilFontRenderBitmapFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInPositive sjme_jint inCodepoint,
+	sjme_attrInNotNull sjme_jbyte* buf,
+	sjme_attrInPositive sjme_jint bufOff,
+	sjme_attrInPositive sjme_jint bufScanLen,
+	sjme_attrInPositive sjme_jint surfaceX,
+	sjme_attrInPositive sjme_jint surfaceY,
+	sjme_attrInPositive sjme_jint surfaceW,
+	sjme_attrInPositive sjme_jint surfaceH);
 
-typedef sjme_errorCode (*sjme_scritchui_pencilFontRenderBitmapFunc)();
-
-typedef sjme_errorCode (*sjme_scritchui_pencilFontRenderCharFunc)();
+/**
+ * Renders the given character to the resultant pencil.
+ *
+ * @param inFont The font to render from.
+ * @param inCodepoint The character to render.
+ * @param inPencil The pencil to draw into.
+ * @param xPos The target X position.
+ * @param yPos The target Y position.
+ * @param nextXPos Optional output which contains the next X
+ * coordinate accordingly for continual drawing.
+ * @param nextYPos Optional output which contains the next Y
+ * coordinate accordingly for continual drawing.
+ * @return Any resultant error, if any.
+ * @since 2024/05/14
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilFontRenderCharFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInPositive sjme_jint inCodepoint,
+	sjme_attrInNotNull sjme_scritchui_pencil inPencil,
+	sjme_attrInValue sjme_jint xPos,
+	sjme_attrInNotNull sjme_jint yPos,
+	sjme_attrOutNullable sjme_jint* nextXPos,
+	sjme_attrOutNullable sjme_jint* nextYPos);
 
 /** Quick definition for functions. */
 #define SJME_SCRITCHUI_QUICK_PENCIL(what, lWhat) \
@@ -105,6 +325,9 @@ typedef struct sjme_scritchui_pencilFontFunctions
 	
 	/** Returns the leading of the font. */
 	SJME_SCRITCHUI_QUICK_PENCIL(MetricPixelLeading, metricPixelLeading);
+	
+	/** Returns the pixel size of the font. */
+	SJME_SCRITCHUI_QUICK_PENCIL(MetricPixelSize, metricPixelSize);
 	
 	/** Returns the height of the font character. */
 	SJME_SCRITCHUI_QUICK_PENCIL(PixelCharHeight, pixelCharHeight);
