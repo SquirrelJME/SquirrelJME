@@ -246,6 +246,27 @@ public final class NativeScritchDylib
 	}
 	
 	/**
+	 * Derives the given font.
+	 *
+	 * @param __font The font to derive.
+	 * @param __style The new style to select.
+	 * @param __pixelSize The pixel size of the font.
+	 * @return The resultant font.
+	 * @throws MLECallError On null arguments, if the style is not valid,
+	 * or the pixel size is zero or negative.
+	 * @since 2024/06/14
+	 */
+	public PencilFontBracket fontDerive(DylibPencilFontObject __font,
+		int __style, int __pixelSize)
+	{
+		if (__font == null)
+			throw new MLECallError("NARG");
+		
+		return new DylibPencilFontObject(NativeScritchDylib.__fontDerive(
+			this._stateP, __font.objectP, __style, __pixelSize));
+	}
+	
+	/**
 	 * Executes the given task in the event loop or the current thread if
 	 * this is the event loop.
 	 *
@@ -550,6 +571,22 @@ public final class NativeScritchDylib
 	private static native void __containerSetBounds(long __stateP,
 		long __containerP, long __componentP,
 		int __x, int __y, int __w, int __h)
+		throws MLECallError;
+	
+	/**
+	 * Derives the given font.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __fontP The font to derive.
+	 * @param __style The new style to select.
+	 * @param __pixelSize The pixel size of the font.
+	 * @return The resultant font pointer.
+	 * @throws MLECallError On null arguments, if the style is not valid,
+	 * or the pixel size is zero or negative.
+	 * @since 2024/06/14
+	 */
+	private static native long __fontDerive(long __stateP, long __fontP,
+		int __style, int __pixelSize)
 		throws MLECallError;
 	
 	/**

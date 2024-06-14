@@ -115,6 +115,23 @@ typedef enum sjme_scritchui_windowManagerType
 } sjme_scritchui_windowManagerType;
 
 /**
+ * Font style for pencil fonts.
+ * 
+ * @since 2024/06/13
+ */
+typedef enum sjme_scritchui_pencilFontStyle
+{
+	/** Bold text. */
+	SJME_SCRITCHUI_PENCIL_FONT_STYLE_BOLD = 1,
+	
+	/** Italic (slanted) text. */
+	SJME_SCRITCHUI_PENCIL_FONT_STYLE_ITALIC = 2,
+	
+	/** Underlined text. */
+	SJME_SCRITCHUI_PENCIL_FONT_STYLE_UNDERLINED = 4,
+} sjme_scritchui_pencilFontStyle;
+
+/**
  * Represents a rectangle.
  * 
  * @since 2024/04/26
@@ -457,6 +474,24 @@ typedef sjme_errorCode (*sjme_scritchui_fontBuiltinFunc)(
 	sjme_attrOutNotNull sjme_scritchui_pencilFont* outFont);
 
 /**
+ * Derives a new font from an existing font.
+ * 
+ * @param inState The input state.
+ * @param inFont The input font to derive.
+ * @param inStyle The style to switch to.
+ * @param inPixelSize The pixel size to use.
+ * @param outDerived The resultant derived font.
+ * @return Any resultant error, if any.
+ * @since 2024/06/14
+ */
+typedef sjme_errorCode (*sjme_scritchui_fontDeriveFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInValue sjme_scritchui_pencilFontStyle inStyle,
+	sjme_attrInPositiveNonZero sjme_jint inPixelSize,
+	sjme_attrOutNotNull sjme_scritchui_pencilFont* outDerived);
+
+/**
  * Execute the given callback within the event loop of the GUI.
  * 
  * @param inState The input state.
@@ -636,6 +671,9 @@ struct sjme_scritchui_apiFunctions
 
 	/** Returns the default built-in font. */
 	SJME_SCRITCHUI_QUICK_API(fontBuiltin);
+	
+	/** Derive a similar font. */
+	SJME_SCRITCHUI_QUICK_API(fontDerive);
 	
 	/** Execute callback within the event loop. */
 	SJME_SCRITCHUI_QUICK_API(loopExecute);

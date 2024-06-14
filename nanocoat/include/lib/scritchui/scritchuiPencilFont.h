@@ -50,23 +50,6 @@ typedef enum sjme_scritchui_pencilFontFace
 } sjme_scritchui_pencilFontFace;
 
 /**
- * Font style for pencil fonts.
- * 
- * @since 2024/06/13
- */
-typedef enum sjme_scritchui_pencilFontStyle
-{
-	/** Bold text. */
-	SJME_SCRITCHUI_PENCIL_FONT_STYLE_BOLD = 1,
-	
-	/** Italic (slanted) text. */
-	SJME_SCRITCHUI_PENCIL_FONT_STYLE_ITALIC = 2,
-	
-	/** Underlined text. */
-	SJME_SCRITCHUI_PENCIL_FONT_STYLE_UNDERLINED = 4,
-} sjme_scritchui_pencilFontStyle;
-
-/**
  * Checks if two brackets refer to the same font.
  *
  * @param a The first font.

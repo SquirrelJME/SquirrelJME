@@ -108,6 +108,7 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 	SJME_SCRITCHUI_DISPATCH_DECL(containerAdd);
 	SJME_SCRITCHUI_DISPATCH_DECL(containerSetBounds);
 	SJME_SCRITCHUI_DISPATCH_DECL(fontBuiltin);
+	SJME_SCRITCHUI_DISPATCH_DECL(fontDerive);
 	SJME_SCRITCHUI_DISPATCH_DECL(panelNew);
 	SJME_SCRITCHUI_DISPATCH_DECL(panelEnableFocus);
 	SJME_SCRITCHUI_DISPATCH_DECL(screenSetListener);
@@ -186,6 +187,14 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 			SJME_SCRITCHUI_SERIAL_TYPE_FONT_BUILTIN,
 			(state,
 			fontBuiltin->outFont));
+		
+		SJME_SCRITCHUI_DISPATCH_CASE(fontDerive,
+			SJME_SCRITCHUI_SERIAL_TYPE_FONT_DERIVE,
+			(state,
+			fontDerive->inFont,
+			fontDerive->inStyle,
+			fontDerive->inPixelSize,
+			fontDerive->outDerived));
 	
 		SJME_SCRITCHUI_DISPATCH_CASE(panelEnableFocus,
 			SJME_SCRITCHUI_SERIAL_TYPE_PANEL_ENABLE_FOCUS,
@@ -381,6 +390,26 @@ sjme_errorCode sjme_scritchui_coreSerial_fontBuiltin(
 		(inState, outFont));
 		
 	SJME_SCRITCHUI_SERIAL_PASS(outFont);
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
+}
+
+sjme_errorCode sjme_scritchui_coreSerial_fontDerive(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInValue sjme_scritchui_pencilFontStyle inStyle,
+	sjme_attrInPositiveNonZero sjme_jint inPixelSize,
+	sjme_attrOutNotNull sjme_scritchui_pencilFont* outDerived)
+{
+	SJME_SCRITCHUI_SERIAL_CHUNK(fontDerive,
+		SJME_SCRITCHUI_SERIAL_TYPE_FONT_DERIVE,
+		(inState, inFont, inStyle, inPixelSize, outDerived));
+		
+	SJME_SCRITCHUI_SERIAL_PASS(inFont);
+	SJME_SCRITCHUI_SERIAL_PASS(inStyle);
+	SJME_SCRITCHUI_SERIAL_PASS(inPixelSize);
+	SJME_SCRITCHUI_SERIAL_PASS(outDerived);
 	
 	/* Invoke and wait. */
 	SJME_SCRITCHUI_INVOKE_WAIT;

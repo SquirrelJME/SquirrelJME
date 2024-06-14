@@ -12,6 +12,7 @@ package javax.microedition.lcdui;
 import cc.squirreljme.jvm.mle.PencilFontShelf;
 import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.jvm.mle.constants.PencilFontFace;
+import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.font.FontUtilities;
@@ -116,6 +117,9 @@ public final class Font
 	/** The name of this font. */
 	private final String _name;
 	
+	/** The ScritchUI interface used. */
+	private final ScritchInterface _scritch;
+	
 	/** The style of this font. */
 	private final int _style;
 	
@@ -132,17 +136,19 @@ public final class Font
 	/**
 	 * Initializes a font that wraps a bracket.
 	 *
+	 * @param __scritch The ScritchUI API.
 	 * @param __bracket The bracket to wrap.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/05/17
 	 */
-	Font(PencilFontBracket __bracket)
+	Font(ScritchInterface __scritch, PencilFontBracket __bracket)
 		throws NullPointerException
 	{
-		if (__bracket == null)
+		if (__scritch == null || __bracket == null)
 			throw new NullPointerException("NARG");
 		
 		// Store for later
+		this._scritch = __scritch;
 		this._font = __bracket;
 		
 		// Get information on the font
@@ -238,58 +244,58 @@ public final class Font
 	/**
 	 * Derives a font using the given pixel size.
 	 *
-	 * @param __pxs The pixel size of the font.
+	 * @param __pixelSize The pixel size of the font.
 	 * @return The derived font.
 	 * @throws IllegalArgumentException If this font is a bitmap font and
 	 * no font is available using that size.
 	 * @since 2018/11/24
 	 */
 	@Api
-	public Font deriveFont(int __pxs)
+	public Font deriveFont(int __pixelSize)
 		throws IllegalArgumentException
 	{
-		return this.deriveFont(this.getStyle(), __pxs);
+		return this.deriveFont(this.getStyle(), __pixelSize);
 	}
 	
 	/**
 	 * Derives a font using the given style and pixel size.
 	 *
 	 * @param __style The style of the font.
-	 * @param __pxs The pixel size of the font.
+	 * @param __pixelSize The pixel size of the font.
 	 * @return The derived font.
 	 * @throws IllegalArgumentException If this font is a bitmap font and
 	 * no font is available using that size, or the style is not valid.
 	 * @since 2018/11/24
 	 */
 	@Api
-	public Font deriveFont(int __style, int __pxs)
+	public Font deriveFont(int __style, int __pixelSize)
 		throws IllegalArgumentException
 	{
-		/* {@squirreljme.error EB1t Invalid font style specified. (The style)} */
+		/* {@squirreljme.error EB1t Invalid font style specified.
+		(The style)} */
 		if ((__style & ~(Font.STYLE_PLAIN | Font.STYLE_UNDERLINED |
 			Font.STYLE_BOLD)) != 0)
 			throw new IllegalArgumentException(String.format("EB1t %d",
 				__style));
 		
 		// Use default font size?
-		if (__pxs == 0)
-			__pxs = FontUtilities.logicalSizeToPixelSize(Font.SIZE_MEDIUM);
+		if (__pixelSize == 0)
+			__pixelSize = FontUtilities.logicalSizeToPixelSize(
+				Font.SIZE_MEDIUM);
 		
 		/* {@squirreljme.error EB1u The pixel size of a font cannot be
 		negative.} */
-		else if (__pxs < 0)
+		else if (__pixelSize < 0)
 			throw new IllegalArgumentException("EB1u");
 		
-		throw Debugging.todo();
-		/*
 		// Same exact font?
-		if (this._style == __style && this._pixelsize == __pxs)
+		if (this._style == __style && this._pixelsize == __pixelSize)
 			return this;
 		
-		// Create font handle
-		return new Font(this._name, __style, __pxs);
-		
-		 */
+		// Derive font
+		ScritchInterface scritch = this._scritch;
+		return new Font(scritch, scritch.environment()
+			.fontDerive(this._font, __style, __pixelSize));
 	}
 	
 	/**
@@ -622,14 +628,15 @@ public final class Font
 		;
 		
 		// Obtain built-in fonts
-		PencilFontBracket[] builtin = manager.scritch().environment()
+		ScritchInterface scritch = manager.scritch();
+		PencilFontBracket[] builtin = scritch.environment()
 			.builtinFonts();
 		
 		// Wrap built-in fonts
 		int n = builtin.length;
 		rv = new Font[n]; 
 		for (int i = 0; i < n; i++)
-			rv[i] = new Font(builtin[i]);
+			rv[i] = new Font(scritch, builtin[i]);
 		
 		// Cache and use
 		Font._BUILTIN_FONTS = rv;

@@ -10,6 +10,8 @@
 package cc.squirreljme.jvm.mle.scritchui;
 
 import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
+import cc.squirreljme.jvm.mle.constants.PencilFontStyle;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchWindowManagerType;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
@@ -25,6 +27,35 @@ import org.jetbrains.annotations.Range;
 @SquirrelJMEVendorApi
 public interface ScritchEnvironmentInterface
 {
+	/**
+	 * Returns all the fonts which are internally built into the UI
+	 * interface.
+	 *
+	 * @return The internal built-in fonts.
+	 * @since 2024/06/12
+	 */
+	@SquirrelJMEVendorApi
+	@NotNull
+	PencilFontBracket[] builtinFonts();
+	
+	/**
+	 * Derives the given font.
+	 *
+	 * @param __font The font to derive.
+	 * @param __style The new style to select.
+	 * @param __pixelSize The pixel size of the font.
+	 * @return The resultant font.
+	 * @throws MLECallError On null arguments, if the style is not valid,
+	 * or the pixel size is zero or negative.
+	 * @since 2024/06/14
+	 */
+	@SquirrelJMEVendorApi
+	@NotNull
+	PencilFontBracket fontDerive(@NotNull PencilFontBracket __font,
+		@MagicConstant(flagsFromClass = PencilFontStyle.class) int __style,
+		@Range(from = 1, to = Integer.MAX_VALUE) int __pixelSize)
+		throws MLECallError;
+	
 	/**
 	 * Is this inhibiting sleep and/or screensaver? 
 	 *
@@ -73,15 +104,4 @@ public interface ScritchEnvironmentInterface
 	@Range(from = 0, to = ScritchWindowManagerType.NUM_TYPES)
 	@MagicConstant(valuesFromClass = ScritchWindowManagerType.class)
 	int windowManagerType();
-	
-	/**
-	 * Returns all the fonts which are internally built into the UI
-	 * interface.
-	 *
-	 * @return The internal built-in fonts.
-	 * @since 2024/06/12
-	 */
-	@SquirrelJMEVendorApi
-	@NotNull
-	PencilFontBracket[] builtinFonts();
 }

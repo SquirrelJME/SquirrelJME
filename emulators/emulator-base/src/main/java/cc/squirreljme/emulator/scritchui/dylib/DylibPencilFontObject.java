@@ -18,6 +18,7 @@ import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
  */
 public class DylibPencilFontObject
 	extends DylibBaseObject
+	implements PencilFontBracket
 {
 	/**
 	 * Initializes the base object.

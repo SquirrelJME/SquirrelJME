@@ -86,7 +86,14 @@ sjme_errorCode sjme_scritchui_core_loopExecute(
 sjme_errorCode sjme_scritchui_core_fontBuiltin(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_scritchui_pencilFont* outFont);
-
+	
+sjme_errorCode sjme_scritchui_core_fontDerive(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInValue sjme_scritchui_pencilFontStyle inStyle,
+	sjme_attrInPositiveNonZero sjme_jint inPixelSize,
+	sjme_attrOutNotNull sjme_scritchui_pencilFont* outDerived);
+	
 sjme_errorCode sjme_scritchui_core_loopExecuteLater(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_thread_mainFunc callback,

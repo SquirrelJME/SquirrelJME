@@ -97,8 +97,8 @@ static sjme_errorCode sjme_scritchui_pseudoMetricFontName(
 	if (wrapped == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Forward. */
+	return wrapped->api->metricFontName(inFont, outName);
 }
 
 static sjme_errorCode sjme_scritchui_pseudoMetricFontStyle(
@@ -134,8 +134,8 @@ static sjme_errorCode sjme_scritchui_pseudoMetricPixelAscent(
 	if (wrapped == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Forward. */
+	return wrapped->api->metricPixelAscent(inFont, isMax, outAscent);
 }
 
 static sjme_errorCode sjme_scritchui_pseudoMetricPixelBaseline(
@@ -152,8 +152,8 @@ static sjme_errorCode sjme_scritchui_pseudoMetricPixelBaseline(
 	if (wrapped == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Forward. */
+	return wrapped->api->metricPixelBaseline(inFont, outBaseline);
 }
 
 static sjme_errorCode sjme_scritchui_pseudoMetricPixelDescent(
@@ -171,8 +171,8 @@ static sjme_errorCode sjme_scritchui_pseudoMetricPixelDescent(
 	if (wrapped == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Forward. */
+	return wrapped->api->metricPixelDescent(inFont, isMax, outDescent);
 }
 
 static sjme_errorCode sjme_scritchui_pseudoMetricPixelLeading(
@@ -189,8 +189,8 @@ static sjme_errorCode sjme_scritchui_pseudoMetricPixelLeading(
 	if (wrapped == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Forward. */
+	return wrapped->api->metricPixelLeading(inFont, outLeading);
 }
 
 static sjme_errorCode sjme_scritchui_pseudoMetricPixelSize(
@@ -207,8 +207,8 @@ static sjme_errorCode sjme_scritchui_pseudoMetricPixelSize(
 	if (wrapped == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Forward. */
+	return wrapped->api->metricPixelSize(inFont, outSize);
 }
 
 static sjme_errorCode sjme_scritchui_pseudoPixelCharHeight(
@@ -226,8 +226,8 @@ static sjme_errorCode sjme_scritchui_pseudoPixelCharHeight(
 	if (wrapped == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Forward. */
+	return wrapped->api->pixelCharHeight(inFont, inCodepoint, outHeight);
 }
 
 static sjme_errorCode sjme_scritchui_pseudoPixelCharWidth(
@@ -245,8 +245,8 @@ static sjme_errorCode sjme_scritchui_pseudoPixelCharWidth(
 	if (wrapped == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Forward. */
+	return wrapped->api->pixelCharWidth(inFont, inCodepoint, outWidth);
 }
 
 static sjme_errorCode sjme_scritchui_pseudoRenderBitmap(

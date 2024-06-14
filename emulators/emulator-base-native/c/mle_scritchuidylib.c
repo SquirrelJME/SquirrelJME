@@ -60,6 +60,8 @@
 #define FORWARD_DESC___containerSetBounds "(" \
 	DESC_LONG DESC_LONG DESC_LONG \
 	DESC_INTEGER DESC_INTEGER DESC_INTEGER DESC_INTEGER ")" DESC_VOID
+#define FORWARD_DESC___fontDerive "(" \
+	DESC_LONG DESC_LONG DESC_INT DESC_INT ")" DESC_LONG
 #define FORWARD_DESC___linkInit "(" \
 	DESC_STRING DESC_STRING ")" DESC_LONG
 #define FORWARD_DESC___loopExecute "(" \
@@ -682,6 +684,39 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	}
 }
 
+JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__fontDerive)(JNIEnv* env, jclass classy, jlong stateP,
+	jlong fontP, jint style, jint pixelSize)
+{
+	sjme_scritchui state;
+	sjme_scritchui_pencilFont font;
+	sjme_scritchui_pencilFont derived;
+	sjme_errorCode error;
+	
+	if (stateP == 0 || fontP == 0)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+	
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	font = (sjme_scritchui_pencilFont)fontP;
+	
+	/* Forward. */
+	derived = NULL;
+	if (sjme_error_is(error = state->api->fontDerive(state,
+		font, style, pixelSize,
+		&derived)) ||
+		derived == NULL)
+	{
+		sjme_jni_throwMLECallError(env, error);
+		return 0;
+	}
+	
+	return (jlong)derived;
+}
+
 JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __linkInit)
 	(JNIEnv* env, jclass classy, jstring libPath, jstring name)
 {
@@ -1227,6 +1262,7 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 	FORWARD_list(NativeScritchDylib, __componentWidth),
 	FORWARD_list(NativeScritchDylib, __containerAdd),
 	FORWARD_list(NativeScritchDylib, __containerSetBounds),
+	FORWARD_list(NativeScritchDylib, __fontDerive),
 	FORWARD_list(NativeScritchDylib, __linkInit),
 	FORWARD_list(NativeScritchDylib, __loopExecute),
 	FORWARD_list(NativeScritchDylib, __loopExecuteLater),

@@ -63,6 +63,9 @@ typedef enum sjme_scritchui_serialType
 	
 	/** @c fontBuiltin . */
 	SJME_SCRITCHUI_SERIAL_TYPE_FONT_BUILTIN,
+	
+	/** @c fontDerive . */
+	SJME_SCRITCHUI_SERIAL_TYPE_FONT_DERIVE,
 		
 	/** @c panelEnableFocus . */
 	SJME_SCRITCHUI_SERIAL_TYPE_PANEL_ENABLE_FOCUS,
@@ -190,6 +193,21 @@ typedef struct sjme_scritchui_serialData_fontBuiltin
 	/** The resultant font. */
 	volatile sjme_scritchui_pencilFont* outFont;
 } sjme_scritchui_serialData_fontBuiltin;
+
+typedef struct sjme_scritchui_serialData_fontDerive
+{
+	/** The font to derive. */
+	volatile sjme_scritchui_pencilFont inFont;
+	
+	/** The new font style. */
+	volatile sjme_scritchui_pencilFontStyle inStyle;
+	
+	/** The new pixel size. */
+	volatile sjme_jint inPixelSize;
+	
+	/** The resultant derived font. */
+	sjme_scritchui_pencilFont* volatile outDerived;
+} sjme_scritchui_serialData_fontDerive;
 	
 typedef struct sjme_scritchui_serialData_panelEnableFocus
 {
@@ -291,6 +309,9 @@ typedef union sjme_scritchui_serialDataUnion
 	
 	/** @c fontBuiltin . */
 	SJME_SCRITCHUI_SDU_DEF(fontBuiltin);
+	
+	/** @c fontDerive . */
+	SJME_SCRITCHUI_SDU_DEF(fontDerive);
 		
 	/** @c panelEnableFocus . */
 	SJME_SCRITCHUI_SDU_DEF(panelEnableFocus);
@@ -385,6 +406,13 @@ sjme_errorCode sjme_scritchui_coreSerial_containerSetBounds(
 sjme_errorCode sjme_scritchui_coreSerial_fontBuiltin(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_scritchui_pencilFont* outFont);
+	
+sjme_errorCode sjme_scritchui_coreSerial_fontDerive(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInValue sjme_scritchui_pencilFontStyle inStyle,
+	sjme_attrInPositiveNonZero sjme_jint inPixelSize,
+	sjme_attrOutNotNull sjme_scritchui_pencilFont* outDerived);
 
 sjme_errorCode sjme_scritchui_coreSerial_panelEnableFocus(
 	sjme_attrInNotNull sjme_scritchui inState,

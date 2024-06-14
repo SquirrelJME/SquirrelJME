@@ -10,6 +10,7 @@
 package cc.squirreljme.scritchui.fb;
 
 import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchEnvironmentInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchLAFInterface;
@@ -152,6 +153,15 @@ public class FramebufferEnvironmentInterface
 	
 	@Override
 	public @NotNull PencilFontBracket[] builtinFonts()
+	{
+		throw Debugging.todo();
+	}
+	
+	@Override
+	public @NotNull PencilFontBracket fontDerive(
+		@NotNull PencilFontBracket __font, int __style,
+		@Range(from = 1, to = Integer.MAX_VALUE) int __pixelSize)
+		throws MLECallError
 	{
 		throw Debugging.todo();
 	}
