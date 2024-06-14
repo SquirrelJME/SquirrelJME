@@ -15,7 +15,7 @@
 #include "lib/scritchui/scritchuiPencilFontSqf.h"
 #include "sjme/debug.h"
 
-static sjme_errorCode sjme_scritchui_sqfFontMetricFontFace(
+static sjme_errorCode sjme_scritchui_sqfMetricFontFace(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
 	sjme_attrOutNotNull sjme_scritchui_pencilFontFace* outFace)
 {
@@ -56,7 +56,7 @@ static sjme_errorCode sjme_scritchui_sqfFontMetricFontFace(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_scritchui_sqfFontMetricFontName(
+static sjme_errorCode sjme_scritchui_sqfMetricFontName(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
 	sjme_attrInOutNotNull sjme_lpcstr* outName)
 {
@@ -75,7 +75,7 @@ static sjme_errorCode sjme_scritchui_sqfFontMetricFontName(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_scritchui_sqfFontMetricPixelSize(
+static sjme_errorCode sjme_scritchui_sqfMetricPixelSize(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outSize)
 {
@@ -95,20 +95,19 @@ static sjme_errorCode sjme_scritchui_sqfFontMetricPixelSize(
 }
 
 /** Functions for native SQF support. */
-static const sjme_scritchui_pencilFontFunctions
-	sjme_scritchui_sqfFontFunctions =
+static const sjme_scritchui_pencilFontFunctions sjme_scritchui_sqfFunctions =
 {
 	.equals = NULL,
 	.metricCharDirection = NULL,
 	.metricCharValid = NULL,
-	.metricFontFace = sjme_scritchui_sqfFontMetricFontFace,
-	.metricFontName = sjme_scritchui_sqfFontMetricFontName,
+	.metricFontFace = sjme_scritchui_sqfMetricFontFace,
+	.metricFontName = sjme_scritchui_sqfMetricFontName,
 	.metricFontStyle = NULL,
 	.metricPixelAscent = NULL,
 	.metricPixelBaseline = NULL,
 	.metricPixelDescent = NULL,
 	.metricPixelLeading = NULL,
-	.metricPixelSize = sjme_scritchui_sqfFontMetricPixelSize,
+	.metricPixelSize = sjme_scritchui_sqfMetricPixelSize,
 	.pixelCharHeight = NULL,
 	.pixelCharWidth = NULL,
 	.renderBitmap = NULL,
@@ -165,7 +164,7 @@ sjme_errorCode sjme_scritchui_newPencilFontSqfStatic(
 	
 	/* Initialize font. */
 	memset(&init, 0, sizeof(init));
-	init.impl = &sjme_scritchui_sqfFontFunctions;
+	init.impl = &sjme_scritchui_sqfFunctions;
 	init.context = (sjme_pointer)inSqfCodepage;
 	
 	/* Perform default initialization. */
