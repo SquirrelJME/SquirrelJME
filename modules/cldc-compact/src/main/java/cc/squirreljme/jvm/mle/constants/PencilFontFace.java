@@ -34,4 +34,9 @@ public interface PencilFontFace
 	@SquirrelJMEVendorApi
 	byte SYMBOL =
 		4;
+	
+	/** Normal, nothing different from anything. */
+	@SquirrelJMEVendorApi
+	byte NORMAL =
+		8;
 }

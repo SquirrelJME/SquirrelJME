@@ -99,6 +99,7 @@ public class SqfSourceWriter
 	private static final CType _TYPE_SQF =
 		CStructTypeBuilder.builder(CStructKind.STRUCT, "sjme_sqf")
 			.member(SqfSourceWriter._TYPE_LPCSTR, "name")
+			.member(SqfSourceWriter._TYPE_INT, "family")
 			.member(SqfSourceWriter._TYPE_INT, "pixelHeight")
 			.member(SqfSourceWriter._TYPE_INT, "ascent")
 			.member(SqfSourceWriter._TYPE_INT, "descent")
@@ -244,6 +245,8 @@ public class SqfSourceWriter
 			
 			sqf.memberSet("name",
 				CBasicExpression.string(__struct.name));
+			sqf.memberSet("family",
+				CBasicExpression.number(__struct.family.ordinal()));
 			sqf.memberSet("pixelHeight",
 				CBasicExpression.number(__struct.pixelHeight));
 			sqf.memberSet("ascent",

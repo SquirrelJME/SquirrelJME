@@ -11,10 +11,10 @@ package cc.squirreljme.fontcompile.in.bdf;
 
 import cc.squirreljme.fontcompile.InvalidFontException;
 import cc.squirreljme.fontcompile.in.FontInfo;
+import cc.squirreljme.fontcompile.util.FontFamily;
 import cc.squirreljme.fontcompile.util.FontUtils;
 import cc.squirreljme.fontcompile.util.GlyphId;
 import cc.squirreljme.fontcompile.util.LineTokenizer;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,6 +38,7 @@ public class BdfFontInfo
 	 * Initializes the base font info.
 	 *
 	 * @param __name The name of the font.
+	 * @param __family The font family.
 	 * @param __glyphs The glyphs to use.
 	 * @param __invalidCodepoint The invalid glyph ID.
 	 * @param __pixelSize The pixel size of the font.
@@ -50,12 +51,14 @@ public class BdfFontInfo
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/05/26
 	 */
-	BdfFontInfo(String __name, Map<GlyphId, BdfGlyphInfo> __glyphs,
+	BdfFontInfo(String __name, FontFamily __family,
+		Map<GlyphId, BdfGlyphInfo> __glyphs,
 		GlyphId __invalidCodepoint, int __pixelSize, int __bbw, int __bbh,
 		int __bbx, int __bby, int __ascent, int __descent)
 		throws NullPointerException
 	{
-		super(__name, __glyphs, __invalidCodepoint, __pixelSize, __bbw, __bbh,
+		super(__name, __family,
+			__glyphs, __invalidCodepoint, __pixelSize, __bbw, __bbh,
 			__bbx, __bby, __ascent, __descent);
 	}
 	
@@ -214,7 +217,7 @@ public class BdfFontInfo
 			}
 			
 			// Setup font
-			return new BdfFontInfo(name, glyphs,
+			return new BdfFontInfo(name, FontFamily.of(name), glyphs,
 				byOrder.get(defaultChar).codepoint(),
 				pixelSize, bbw, bbh, bbx, bby, ascent, descent);
 		}

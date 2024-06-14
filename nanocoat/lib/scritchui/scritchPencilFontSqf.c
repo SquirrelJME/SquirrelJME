@@ -15,11 +15,52 @@
 #include "lib/scritchui/scritchuiPencilFontSqf.h"
 #include "sjme/debug.h"
 
+static sjme_errorCode sjme_scritchui_sqfFontMetricFontFace(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrOutNotNull sjme_scritchui_pencilFontFace* outFace)
+{
+	const sjme_scritchui_sqfCodepage* sqf;
+	
+	if (inFont == NULL || outFace == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover SQF. */
+	sqf = inFont->context;
+	if (sqf == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+		
+	/* Give the face based on the family. */
+	sjme_scritchui_pencilFontFace face;
+	switch (sqf->codepages[0]->family)
+	{
+			/* Monospace font. */
+		case SJME_SCRITCHUI_SQF_FAMILY_MONOSPACE:
+			face = SJME_SCRITCHUI_PENCIL_FONT_FACE_MONOSPACE;
+			break;
+			
+			/* Serif font. */
+		case SJME_SCRITCHUI_SQF_FAMILY_SERIF:
+			face = SJME_SCRITCHUI_PENCIL_FONT_FACE_SERIF;
+			break;
+		
+			/* Regular otherwise. */
+		case SJME_SCRITCHUI_SQF_FAMILY_REGULAR:
+		case SJME_SCRITCHUI_SQF_FAMILY_SANS_SERIF:
+		default:
+			face = SJME_SCRITCHUI_PENCIL_FONT_FACE_NORMAL;
+			break;
+	}
+	
+	/* Success! */
+	*outFace = face;
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_scritchui_sqfFontMetricFontName(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
 	sjme_attrInOutNotNull sjme_lpcstr* outName)
 {
-	const sjme_scritchui_sqf* sqf;
+	const sjme_scritchui_sqfCodepage* sqf;
 	
 	if (inFont == NULL || outName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -34,6 +75,25 @@ static sjme_errorCode sjme_scritchui_sqfFontMetricFontName(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_scritchui_sqfFontMetricPixelSize(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outSize)
+{
+	const sjme_scritchui_sqfCodepage* sqf;
+	
+	if (inFont == NULL || outSize == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Recover SQF. */
+	sqf = inFont->context;
+	if (sqf == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
+	/* Give the size. */
+	*outSize = sqf->codepages[0]->pixelHeight;
+	return SJME_ERROR_NONE;
+}
+
 /** Functions for native SQF support. */
 static const sjme_scritchui_pencilFontFunctions
 	sjme_scritchui_sqfFontFunctions =
@@ -41,14 +101,14 @@ static const sjme_scritchui_pencilFontFunctions
 	.equals = NULL,
 	.metricCharDirection = NULL,
 	.metricCharValid = NULL,
-	.metricFontFace = NULL,
+	.metricFontFace = sjme_scritchui_sqfFontMetricFontFace,
 	.metricFontName = sjme_scritchui_sqfFontMetricFontName,
 	.metricFontStyle = NULL,
 	.metricPixelAscent = NULL,
 	.metricPixelBaseline = NULL,
 	.metricPixelDescent = NULL,
 	.metricPixelLeading = NULL,
-	.metricPixelSize = NULL,
+	.metricPixelSize = sjme_scritchui_sqfFontMetricPixelSize,
 	.pixelCharHeight = NULL,
 	.pixelCharWidth = NULL,
 	.renderBitmap = NULL,

@@ -266,7 +266,8 @@ public final class Font
 		throws IllegalArgumentException
 	{
 		/* {@squirreljme.error EB1t Invalid font style specified. (The style)} */
-		if ((__style & ~(Font.STYLE_PLAIN | Font.STYLE_UNDERLINED | Font.STYLE_BOLD)) != 0)
+		if ((__style & ~(Font.STYLE_PLAIN | Font.STYLE_UNDERLINED |
+			Font.STYLE_BOLD)) != 0)
 			throw new IllegalArgumentException(String.format("EB1t %d",
 				__style));
 		

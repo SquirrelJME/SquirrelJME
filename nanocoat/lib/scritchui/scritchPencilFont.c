@@ -56,11 +56,33 @@ static sjme_errorCode sjme_scritchui_fontMetricFontFace(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
 	sjme_attrOutNotNull sjme_scritchui_pencilFontFace* outFace)
 {
-	if (inFont == NULL)
+	sjme_errorCode error;
+	sjme_scritchui_pencilFontFace result;
+	
+	if (inFont == NULL || outFace == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Cached? */
+	if (inFont->cache.face != 0)
+	{
+		*outFace = inFont->cache.face;
+		return SJME_ERROR_NONE;
+	}
+	
+	/* Not implemented? */
+	if (inFont->impl->metricFontFace == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Load into cache. */
+	result = 0;
+	if (sjme_error_is(error = inFont->impl->metricFontFace(inFont,
+		&result)) || result == 0)
+		return sjme_error_default(error);
+	
+	/* Cache and use it. */
+	inFont->cache.face = result;
+	*outFace = result;
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_scritchui_fontMetricFontName(
@@ -94,11 +116,37 @@ static sjme_errorCode sjme_scritchui_fontMetricFontStyle(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
 	sjme_attrOutNotNull sjme_scritchui_pencilFontStyle* outStyle)
 {
+	sjme_errorCode error;
+	sjme_scritchui_pencilFontStyle result;
+	
 	if (inFont == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Cached? */
+	if (inFont->cache.style != 0)
+	{
+		*outStyle = inFont->cache.style;
+		return SJME_ERROR_NONE;
+	}
+	
+	/* Not implemented? */
+	if (inFont->impl->metricFontStyle != NULL)
+	{
+		/* Load into cache. */
+		result = -1;
+		if (sjme_error_is(error = inFont->impl->metricFontStyle(inFont,
+			&result)) || result == -1)
+			return sjme_error_default(error);
+	}
+	
+	/* Font has no style otherwise. */
+	else
+		result = 0;
+	
+	/* Cache and use it. */
+	inFont->cache.style = result;
+	*outStyle = result;
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_scritchui_fontMetricPixelAscent(
@@ -151,11 +199,33 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelSize(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outSize)
 {
+	sjme_errorCode error;
+	sjme_jint result;
+	
 	if (inFont == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Cached? */
+	if (inFont->cache.pixelSize != 0)
+	{
+		*outSize = inFont->cache.pixelSize;
+		return SJME_ERROR_NONE;
+	}
+	
+	/* Not implemented? */
+	if (inFont->impl->metricPixelSize == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Load into cache. */
+	result = 0;
+	if (sjme_error_is(error = inFont->impl->metricPixelSize(inFont,
+		&result)) || result == 0)
+		return sjme_error_default(error);
+	
+	/* Cache and use it. */
+	inFont->cache.pixelSize = result;
+	*outSize = result;
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_scritchui_fontPixelCharHeight(

@@ -44,6 +44,9 @@ typedef enum sjme_scritchui_pencilFontFace
 	
 	/** Symbol. */
 	SJME_SCRITCHUI_PENCIL_FONT_FACE_SYMBOL = 4,
+	
+	/** Normal, nothing different from anything. */
+	SJME_SCRITCHUI_PENCIL_FONT_FACE_NORMAL = 8,
 } sjme_scritchui_pencilFontFace;
 
 /**

@@ -88,6 +88,7 @@ public class SqfResourceWriter
 			DataOutputStream ds = new DataOutputStream(out))
 		{
 			ds.writeInt(__struct.pixelHeight);
+			ds.writeInt(__struct.family.ordinal());
 			ds.writeInt(__struct.ascent);
 			ds.writeInt(__struct.descent);
 			ds.writeInt(__struct.bbx);

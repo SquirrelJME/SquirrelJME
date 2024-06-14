@@ -9,6 +9,7 @@
 
 package cc.squirreljme.fontcompile.in;
 
+import cc.squirreljme.fontcompile.util.FontFamily;
 import cc.squirreljme.fontcompile.util.GlyphId;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
@@ -26,6 +27,9 @@ public abstract class FontInfo
 {
 	/** The name of this font. */
 	public final String name;
+	
+	/** The font family. */
+	public final FontFamily family;
 	
 	/** The invalid codepoint. */
 	public final GlyphId invalidCodepoint;
@@ -70,17 +74,18 @@ public abstract class FontInfo
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/05/26
 	 */
-	protected FontInfo(String __name,
+	protected FontInfo(String __name, FontFamily __family,
 		Map<GlyphId, ? extends GlyphInfo> __glyphs,
 		GlyphId __invalidCodepoint,
 		int __pixelSize, int __bbw, int __bbh,
 		int __bbx, int __bby, int __ascent, int __descent)
 		throws NullPointerException
 	{
-		if (__glyphs == null || __invalidCodepoint == null)
+		if (__family == null || __glyphs == null || __invalidCodepoint == null)
 			throw new NullPointerException("NARG");
 		
 		this.name = __name;
+		this.family = __family;
 		this.glyphs = UnmodifiableMap.of(new SortedTreeMap<>(__glyphs));
 		this.invalidCodepoint = __invalidCodepoint;
 		this.pixelSize = __pixelSize;

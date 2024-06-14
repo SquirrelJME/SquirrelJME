@@ -245,6 +245,15 @@ struct sjme_scritchui_pencilFontBase
 	{
 		/** The name of the font. */
 		sjme_lpcstr name;
+		
+		/** The face of the font. */
+		sjme_scritchui_pencilFontFace face;
+		
+		/** The style of the font. */
+		sjme_scritchui_pencilFontStyle style;
+		
+		/** The pixel size of the font. */
+		sjme_jint pixelSize;
 	} cache;
 };
 

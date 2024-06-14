@@ -14,6 +14,7 @@ import cc.squirreljme.fontcompile.out.CompiledGlyph;
 import cc.squirreljme.fontcompile.out.rafoces.ChainList;
 import cc.squirreljme.fontcompile.out.rafoces.HuffBits;
 import cc.squirreljme.fontcompile.out.rafoces.HuffTable;
+import cc.squirreljme.fontcompile.util.FontFamily;
 import cc.squirreljme.fontcompile.util.GlyphId;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,6 +37,9 @@ public class SqfFontStruct
 	
 	/** The name of the font. */
 	public final String name;
+	
+	/** The font family. */
+	public final FontFamily family;
 	
 	/** The pixel height of the font. */
 	public final int pixelHeight;
@@ -98,6 +102,7 @@ public class SqfFontStruct
 	 * Initializes the font structure.
 	 *
 	 * @param __name The name of the font.
+	 * @param __family
 	 * @param __pixelHeight The pixel height of the font.
 	 * @param __ascent The ascent of the font.
 	 * @param __descent The descent of the font.
@@ -119,7 +124,7 @@ public class SqfFontStruct
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/06/04
 	 */
-	public SqfFontStruct(String __name,
+	public SqfFontStruct(String __name, FontFamily __family,
 		int __pixelHeight, int __ascent, int __descent,
 		int __bbx, int __bby, int __bbw, int __bbh,
 		int __codepointStart, int __codepointCount,
@@ -133,10 +138,11 @@ public class SqfFontStruct
 		if (__name == null || __charWidths == null || __charFlags == null ||
 			__charBmpOffset == null || __charBmp == null ||
 			__charBmpScan == null || __charXOffset == null ||
-			__charYOffset == null)
+			__charYOffset == null || __family == null)
 			throw new NullPointerException("NARG");
 		
 		this.name = SqfFontStruct.normalizeName(__name);
+		this.family = __family;
 		this.pixelHeight = __pixelHeight;
 		this.ascent = __ascent;
 		this.descent = __descent;
@@ -417,24 +423,12 @@ public class SqfFontStruct
 		}
 		
 		// Initialize font structure
-		return new SqfFontStruct(__font.original.name,
-			__font.original.pixelSize,
-			__font.original.ascent,
-			__font.original.descent,
-			__font.original.bbx,
-			__font.original.bby,
-			__font.original.bbw,
-			__font.original.bbh,
-			__pageId.codepoint,
-			n,
-			huffBitsChunk.toByteArray(),
-			charWidths,
-			charXOffset,
-			charYOffset,
-			charFlags,
-			charBmpOffset,
-			charBmpScan,
-			charBmpChunk.toByteArray());
+		return new SqfFontStruct(__font.original.name, __font.original.family,
+			__font.original.pixelSize, __font.original.ascent,
+			__font.original.descent, __font.original.bbx, __font.original.bby,
+			__font.original.bbw, __font.original.bbh, __pageId.codepoint, n,
+			huffBitsChunk.toByteArray(), charWidths, charXOffset, charYOffset,
+			charFlags, charBmpOffset, charBmpScan, charBmpChunk.toByteArray());
 	}
 	
 	/**

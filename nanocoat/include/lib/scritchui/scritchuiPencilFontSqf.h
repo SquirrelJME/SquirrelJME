@@ -38,11 +38,34 @@ extern "C" {
 typedef enum sjme_scritchui_sqfFlag
 {
 	/** Character is valid. */
-	sjme_scritchui_sqfFlag_VALID = 1,
+	SJME_SCRITCHUI_SQF_FLAG_VALID = 1,
 	
 	/** Compressed with RaFoCES w/ huffman table. */
-	sjme_scritchui_sqfFlag_RAFOCES = 2,
+	SJME_SCRITCHUI_SQF_FLAG_RAFOCES = 2,
 } sjme_scritchui_sqfFlag;
+
+/**
+ * Represents the SQF family.
+ * 
+ * @since 2024/06/14
+ */
+typedef enum sjme_scritchui_sqfFamily
+{
+	/** Regular font. */
+	SJME_SCRITCHUI_SQF_FAMILY_REGULAR,
+	
+	/** Monospace. */
+	SJME_SCRITCHUI_SQF_FAMILY_MONOSPACE,
+	
+	/** Sans Serif. */
+	SJME_SCRITCHUI_SQF_FAMILY_SANS_SERIF,
+	
+	/** Serif. */
+	SJME_SCRITCHUI_SQF_FAMILY_SERIF,
+	
+	/** The number of families. */
+	SJME_SCRITCHUI_NUM_SQF_FAMILY
+} sjme_scritchui_sqfFamily;
 
 /**
  * SQF Font information.
@@ -53,6 +76,9 @@ typedef struct sjme_scritchui_sqf
 {
 	/** The name of the font. */
 	sjme_lpcstr name;
+	
+	/** The font family. */
+	sjme_jint family;
 	
 	/** The pixel height of the font. */
 	sjme_jint pixelHeight;
