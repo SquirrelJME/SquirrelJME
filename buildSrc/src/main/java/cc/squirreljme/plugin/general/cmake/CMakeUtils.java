@@ -59,39 +59,8 @@ public final class CMakeUtils
 	 */
 	public static Path cmakeExePath()
 	{
-		// Standard executable?
-		Path cmakePath = PathUtils.findPath("cmake");
-		
-		// Windows executable?
-		if (cmakePath == null)
-			cmakePath = PathUtils.findPath("cmake.exe");
-		
-		// Standard installation on Windows?
-		if (cmakePath == null &&
-			OperatingSystem.current() == OperatingSystem.WINDOWS)
-		{
-			String programFiles = System.getenv("PROGRAMFILES");
-			if (programFiles != null)
-			{
-				Path maybe = Paths.get(programFiles).resolve("CMake")
-					.resolve("bin").resolve("cmake.exe");
-				if (Files.exists(maybe))
-					cmakePath = maybe;
-			}
-		}
-		
-		// Homebrew on macOS?
-		if (cmakePath == null &&
-			OperatingSystem.current() == OperatingSystem.MAC_OS)
-		{
-			Path maybe = Paths.get("/").resolve("opt")
-				.resolve("homebrew").resolve("bin")
-				.resolve("cmake");
-			if (Files.exists(maybe))
-				cmakePath = maybe;
-		}
-		
-		return cmakePath;
+		return PathUtils.findPathInstalled("cmake",
+			"CMake");
 	}
 	
 	/**

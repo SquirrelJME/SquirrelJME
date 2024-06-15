@@ -7,9 +7,12 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <string.h>
+
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiPencilFont.h"
 #include "lib/scritchui/scritchuiTypes.h"
+#include "sjme/alloc.h"
 #include "sjme/debug.h"
 
 static sjme_jboolean sjme_scritchui_pseudoEquals(
@@ -115,8 +118,9 @@ static sjme_errorCode sjme_scritchui_pseudoMetricFontStyle(
 	if (wrapped == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Always use the cached base. */
+	*outStyle = inFont->cache.style;
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_scritchui_pseudoMetricPixelAscent(
@@ -207,8 +211,9 @@ static sjme_errorCode sjme_scritchui_pseudoMetricPixelSize(
 	if (wrapped == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
-	/* Forward. */
-	return wrapped->api->metricPixelSize(inFont, outSize);
+	/* Always use the cached base. */
+	*outSize = inFont->cache.pixelSize;
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_scritchui_pseudoPixelCharHeight(
@@ -325,6 +330,9 @@ sjme_errorCode sjme_scritchui_core_fontPseudo(
 	sjme_attrInPositiveNonZero sjme_jint inPixelSize,
 	sjme_attrOutNotNull sjme_scritchui_pencilFont* outDerived)
 {
+	sjme_scritchui_pencilFont result;
+	sjme_errorCode error;
+	
 	if (inState == NULL || inFont == NULL || outDerived == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
@@ -337,7 +345,32 @@ sjme_errorCode sjme_scritchui_core_fontPseudo(
 		return sjme_scritchui_core_fontPseudo(inState,
 			(sjme_scritchui_pencilFont)inFont->context, inStyle,
 			inPixelSize, outDerived);
-
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Allocate. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_alloc(inState->pool,
+		sizeof(*result), &result)))
+		goto fail_alloc;
+	
+	/* Setup new font. */
+	result->impl = &sjme_scritchui_pseudoFontFunctions;
+	result->context = inFont;
+	result->cache.style = inStyle;
+	result->cache.pixelSize = inPixelSize;
+	
+	/* Initialize base font. */
+	if (sjme_error_is(error = sjme_scritchui_newPencilFontInit(
+		result)))
+		goto fail_initBase;
+	
+	/* Give the font. */
+	*outDerived = result;
+	return SJME_ERROR_NONE;
+	
+fail_initBase:
+fail_alloc:
+	if (result != NULL)
+		sjme_alloc_free(result);
+	
+	return sjme_error_default(error);
 }
