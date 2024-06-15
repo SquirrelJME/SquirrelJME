@@ -37,10 +37,25 @@ public abstract class SpringProxyObject
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/02/25
 	 */
+	public SpringProxyObject(Class<?> __type, SpringMachine __machine)
+		throws NullPointerException
+	{
+		this(new ClassName(__type.getName().replace('.', '/')),
+			__machine);
+	}
+	
+	/**
+	 * Initializes the proxy object.
+	 *
+	 * @param __type The class type that this is.
+	 * @param __machine The machine used for the proxy.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/02/25
+	 */
 	public SpringProxyObject(ClassName __type, SpringMachine __machine)
 		throws NullPointerException
 	{
-		if (__machine == null)
+		if (__type == null || __machine == null)
 			throw new NullPointerException("NARG");
 		
 		this.type = __type;
