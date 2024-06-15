@@ -25,6 +25,7 @@ import cc.squirreljme.vm.springcoat.brackets.PencilObject;
 import cc.squirreljme.vm.springcoat.brackets.PipeObject;
 import cc.squirreljme.vm.springcoat.brackets.RefLinkObject;
 import cc.squirreljme.vm.springcoat.brackets.TaskObject;
+import cc.squirreljme.vm.springcoat.brackets.TracePointObject;
 import cc.squirreljme.vm.springcoat.brackets.TypeObject;
 import cc.squirreljme.vm.springcoat.brackets.UIDisplayObject;
 import cc.squirreljme.vm.springcoat.brackets.UIFormObject;
@@ -127,6 +128,23 @@ public final class MLEObjects
 				"Not a NativeArchiveEntryObject.");
 		
 		return (NativeArchiveEntryObject)__object; 
+	}
+	
+	/**
+	 * Checks if this is a trace point object.
+	 * 
+	 * @param __object The object to check.
+	 * @return As a trace point if this is one.
+	 * @throws SpringMLECallError If this is not a trace point object.
+	 * @since 2020/06/22
+	 */
+	public static TracePointObject debugTrace(Object __object)
+		throws SpringMLECallError
+	{
+		if (!(__object instanceof TracePointObject))
+			throw new SpringMLECallError("Not a trace point.");
+		
+		return (TracePointObject)__object; 
 	}
 	
 	/**

@@ -15,7 +15,8 @@ import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodNameAndType;
 
 /**
- * This is a method that acts as a proxy around for out of VM calls.
+ * This class allows for interfaces/objects within SpringCoat to be called
+ * to an external object or interface that is within the host VM.
  *
  * @since 2021/02/25
  */

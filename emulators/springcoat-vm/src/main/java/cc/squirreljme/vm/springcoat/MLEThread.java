@@ -426,7 +426,7 @@ public enum MLEThread
 			int n = gen.length;
 			CallTraceElement[] trace = new CallTraceElement[n];
 			for (int i = 0; i < n; i++)
-				trace[i] = MLEDebug.__trace(gen[i]).getTrace();
+				trace[i] = MLEObjects.debugTrace(gen[i]).getTrace();
 			
 			// Store the call trace for other tasks to get
 			__thread.machine.storeTrace(message, trace);
