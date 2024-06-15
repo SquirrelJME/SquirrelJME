@@ -42,7 +42,7 @@ public enum MLENativeArchive
 			try
 			{
 				NativeArchiveShelf.archiveClose(
-					MLENativeArchive.__archiveObject(archive).wrapped);
+					MLEObjects.archive(archive).wrapped);
 			}
 			catch (MLECallError __e)
 			{
@@ -76,7 +76,7 @@ public enum MLENativeArchive
 			{
 				NativeArchiveEntryBracket entry =
 					NativeArchiveShelf.archiveEntry(
-						MLENativeArchive.__archiveObject(archive).wrapped,
+						MLEObjects.archive(archive).wrapped,
 						name);
 				if (entry == null)
 					return SpringNullObject.NULL;
@@ -133,7 +133,7 @@ public enum MLENativeArchive
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			NativeArchiveEntryObject entry =
-				MLENativeArchive.__entryObject(__args[0]);
+				MLEObjects.archiveEntry(__args[0]);
 			
 			try
 			{
@@ -159,7 +159,7 @@ public enum MLENativeArchive
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			NativeArchiveEntryObject entry =
-				MLENativeArchive.__entryObject(__args[0]);
+				MLEObjects.archiveEntry(__args[0]);
 			
 			try
 			{
@@ -188,7 +188,7 @@ public enum MLENativeArchive
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			NativeArchiveEntryObject entry =
-				MLENativeArchive.__entryObject(__args[0]);
+				MLEObjects.archiveEntry(__args[0]);
 			
 			try
 			{
@@ -233,38 +233,4 @@ public enum MLENativeArchive
 		return this.key;
 	}
 	
-	/**
-	 * Checks if this is a {@link NativeArchiveObject}.
-	 * 
-	 * @param __object The object to check.
-	 * @return As one if this is one.
-	 * @throws SpringMLECallError If this is not one.
-	 * @since 2024/03/05
-	 */
-	static NativeArchiveObject __archiveObject(Object __object)
-		throws SpringMLECallError
-	{
-		if (!(__object instanceof NativeArchiveObject))
-			throw new SpringMLECallError("Not a NativeArchiveObject.");
-		
-		return (NativeArchiveObject)__object; 
-	}
-	
-	/**
-	 * Checks if this is a {@link NativeArchiveEntryObject}.
-	 * 
-	 * @param __object The object to check.
-	 * @return As one if this is one.
-	 * @throws SpringMLECallError If this is not one.
-	 * @since 2024/03/05
-	 */
-	static NativeArchiveEntryObject __entryObject(Object __object)
-		throws SpringMLECallError
-	{
-		if (!(__object instanceof NativeArchiveEntryObject))
-			throw new SpringMLECallError(
-				"Not a NativeArchiveEntryObject.");
-		
-		return (NativeArchiveEntryObject)__object; 
-	}
 }

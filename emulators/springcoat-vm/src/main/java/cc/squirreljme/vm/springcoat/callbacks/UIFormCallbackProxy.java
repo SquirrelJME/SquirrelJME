@@ -7,10 +7,16 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.vm.springcoat;
+package cc.squirreljme.vm.springcoat.callbacks;
 
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.vm.springcoat.MLEObjects;
+import cc.squirreljme.vm.springcoat.SpringArrayObject;
+import cc.squirreljme.vm.springcoat.SpringArrayObjectInteger;
+import cc.squirreljme.vm.springcoat.SpringMachine;
+import cc.squirreljme.vm.springcoat.SpringProxyObject;
+import cc.squirreljme.vm.springcoat.SpringThreadWorker;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodNameAndType;
 
@@ -61,7 +67,7 @@ public class UIFormCallbackProxy
 			case "eventKey:(Lcc/squirreljme/jvm/mle/brackets/" +
 				"UIDrawableBracket;III)V":
 				this.callback.eventKey(
-					MLEUIForm.__drawable(__args[0]),
+					MLEObjects.uiDrawable(__args[0]),
 					(int)__args[1],
 					(int)__args[2],
 					(int)__args[3]);
@@ -70,7 +76,7 @@ public class UIFormCallbackProxy
 			case "eventMouse:(Lcc/squirreljme/jvm/mle/brackets/" +
 				"UIDrawableBracket;IIIII)V":
 				this.callback.eventMouse(
-					MLEUIForm.__drawable(__args[0]),
+					MLEObjects.uiDrawable(__args[0]),
 					(int)__args[1],
 					(int)__args[2],
 					(int)__args[3],
@@ -81,7 +87,7 @@ public class UIFormCallbackProxy
 			case "exitRequest:(Lcc/squirreljme/jvm/mle/brackets/" +
 				"UIDrawableBracket;)V":
 				this.callback.exitRequest(
-					MLEUIForm.__drawable(__args[0]));
+					MLEObjects.uiDrawable(__args[0]));
 				return null;
 				
 			case "paint:(Lcc/squirreljme/jvm/mle/brackets/" +
@@ -91,7 +97,7 @@ public class UIFormCallbackProxy
 					SpringArrayObjectInteger pal =
 						(SpringArrayObjectInteger)__args[6];
 					this.callback.paint(
-						MLEUIForm.__drawable(__args[0]),
+						MLEObjects.uiDrawable(__args[0]),
 						(int)__args[1],
 						(int)__args[2],
 						(int)__args[3],
@@ -110,8 +116,8 @@ public class UIFormCallbackProxy
 				"UIFormBracket;Lcc/squirreljme/jvm/mle/brackets/" +
 				"UIItemBracket;IIII)V":
 				this.callback.propertyChange(
-					MLEUIForm.__form(__args[0]).form,
-					MLEUIForm.__item(__args[1]).item,
+					MLEObjects.uiForm(__args[0]).form,
+					MLEObjects.uiItem(__args[1]).item,
 					(int)__args[2],
 					(int)__args[3],
 					(int)__args[4],
@@ -122,8 +128,8 @@ public class UIFormCallbackProxy
 				"UIFormBracket;Lcc/squirreljme/jvm/mle/brackets/" +
 				"UIItemBracket;IILjava/lang/String;Ljava/lang/String;)V":
 				this.callback.propertyChange(
-					MLEUIForm.__form(__args[0]).form,
-					MLEUIForm.__item(__args[1]).item,
+					MLEObjects.uiForm(__args[0]).form,
+					MLEObjects.uiItem(__args[1]).item,
 					(int)__args[2],
 					(int)__args[3],
 					__thread.asNativeObject(String.class, __args[4]),

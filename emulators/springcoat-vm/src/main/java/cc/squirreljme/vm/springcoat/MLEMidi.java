@@ -36,7 +36,7 @@ public enum MLEMidi
 		{
 			try
 			{
-				MidiPortBracket port = MLEMidi.__port(__args[0]);
+				MidiPortBracket port = MLEObjects.midiPort(__args[0]);
 				SpringArrayObjectByte buf = (SpringArrayObjectByte)__args[1];
 				int off = (Integer)__args[2];
 				int len = (Integer)__args[3];
@@ -62,7 +62,7 @@ public enum MLEMidi
 		{
 			try
 			{
-				MidiPortBracket port = MLEMidi.__port(__args[0]);
+				MidiPortBracket port = MLEObjects.midiPort(__args[0]);
 				SpringArrayObjectByte buf = (SpringArrayObjectByte)__args[1];
 				int off = (Integer)__args[2];
 				int len = (Integer)__args[3];
@@ -89,7 +89,7 @@ public enum MLEMidi
 		{
 			try
 			{
-				MidiDeviceBracket device = MLEMidi.__device(__args[0]);
+				MidiDeviceBracket device = MLEObjects.midiDevice(__args[0]);
 				
 				return MidiShelf.deviceName(device);
 			}
@@ -148,7 +148,7 @@ public enum MLEMidi
 		{
 			try
 			{
-				MidiDeviceBracket device = MLEMidi.__device(__args[0]);
+				MidiDeviceBracket device = MLEObjects.midiDevice(__args[0]);
 				boolean isTransmit = (((int)__args[1]) != 0);
 				
 				// Get ports the device has
@@ -206,39 +206,4 @@ public enum MLEMidi
 		return this.key;
 	}
 	
-	/**
-	 * Ensures that this is a {@link MidiDeviceObject} and returns the
-	 * MIDI device.
-	 * 
-	 * @param __object The object to check.
-	 * @return As a {@link MidiDeviceBracket}.
-	 * @throws SpringMLECallError If this is not one.
-	 * @since 2022/04/22
-	 */
-	static MidiDeviceBracket __device(Object __object)
-		throws SpringMLECallError
-	{
-		if (!(__object instanceof MidiDeviceObject))
-			throw new SpringMLECallError("Not a MidiDeviceObject.");
-		
-		return ((MidiDeviceObject)__object).device; 
-	}
-	
-	/**
-	 * Ensures that this is a {@link MidiDeviceObject} and returns the
-	 * MIDI port.
-	 * 
-	 * @param __object The object to check.
-	 * @return As a {@link MidiPortBracket}.
-	 * @throws SpringMLECallError If this is not one.
-	 * @since 2022/04/22
-	 */
-	static MidiPortBracket __port(Object __object)
-		throws SpringMLECallError
-	{
-		if (!(__object instanceof MidiPortObject))
-			throw new SpringMLECallError("Not a MidiPortObject.");
-		
-		return ((MidiPortObject)__object).port; 
-	}
 }

@@ -7,9 +7,12 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.vm.springcoat;
+package cc.squirreljme.vm.springcoat.callbacks;
 
 import cc.squirreljme.jvm.mle.callbacks.NativeImageLoadCallback;
+import cc.squirreljme.vm.springcoat.SpringCallbackAdapter;
+import cc.squirreljme.vm.springcoat.SpringMachine;
+import cc.squirreljme.vm.springcoat.SpringObject;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodNameAndType;
 
