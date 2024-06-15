@@ -25,6 +25,7 @@ import java.util.Set;
  */
 public abstract class Flags<F extends Flag>
 	extends AbstractSet<F>
+	implements Contexual
 {
 	/** The class type to use. */
 	protected final Class<F> cast;

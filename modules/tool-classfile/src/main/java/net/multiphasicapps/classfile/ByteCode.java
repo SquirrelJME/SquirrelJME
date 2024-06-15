@@ -35,7 +35,7 @@ import java.util.Set;
  * @since 2017/10/09
  */
 public final class ByteCode
-	implements Iterable<Instruction>
+	implements Contexual, Iterable<Instruction>
 {
 	/** The code is always at this offset. */
 	public static final int CODE_OFFSET =
@@ -156,7 +156,7 @@ public final class ByteCode
 			int codeLen = in.readInt();
 			if (codeLen <= 0 || codeLen > ByteCode._MAX_CODE_LENGTH)
 				throw new InvalidClassFormatException(
-					String.format("JC1y %d", codeLen));
+					String.format("JC1y %d", codeLen), this);
 		
 			// Ignore that many bytes
 			for (int i = 0; i < codeLen; i++)
@@ -195,7 +195,7 @@ public final class ByteCode
 				if ((i += opLen) > codeLen)
 					throw new InvalidClassFormatException(
 						String.format("JC1z %d %d %d %d",
-							i, opLen, codeLen, li));
+							i, opLen, codeLen, li), this);
 			}
 			
 			// The stack map table is used for verification
@@ -291,7 +291,7 @@ public final class ByteCode
 		/* {@squirreljme.error JC20 Failed to read from the code attribute.} */
 		catch (IOException e)
 		{
-			throw new InvalidClassFormatException("JC20", e);
+			throw new InvalidClassFormatException("JC20", e, this);
 		}
 	}
 	
@@ -313,7 +313,7 @@ public final class ByteCode
 		not valid. (The address)} */
 		if (!this.isValidAddress(__a))
 			throw new InvalidClassFormatException(
-				String.format("JC21 %d", __a));
+				String.format("JC21 %d", __a), this);
 		
 		int result = __a + this._lengths[__a];
 		if (result >= this._lengths.length)
@@ -394,7 +394,7 @@ public final class ByteCode
 					this.methodname, this.methodtype,
 					new IntegerArrayList(this._lengths),
 					new IntegerArrayList(this._index),
-					Arrays.asList(cache)));
+					Arrays.asList(cache)), this);
 		}
 		
 		Reference<Instruction>[] icache = this._icache;
@@ -831,7 +831,7 @@ public final class ByteCode
 				throw new InvalidClassFormatException(
 					String.format("JC9a %s %s",
 						method.inClass(),
-						method.nameAndType()), __e);
+						method.nameAndType()), __e, this);
 			}
 		
 		return rv;
@@ -1372,7 +1372,7 @@ public final class ByteCode
 						instruction,
 						this.lineOfAddress(instruction.address()),
 						input,
-						current), __e);
+						current), __e, this);
 			}
 			
 			// Debug

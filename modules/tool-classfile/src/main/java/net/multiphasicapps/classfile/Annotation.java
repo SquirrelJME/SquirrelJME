@@ -22,7 +22,7 @@ import net.multiphasicapps.collections.UnmodifiableMap;
  * @since 2018/06/16
  */
 public final class Annotation
-	implements AnnotationValue
+	implements AnnotationValue, Contexual
 {
 	/** The type name of the annotation. */
 	protected final ClassName typename;
@@ -63,7 +63,7 @@ public final class Annotation
 			key)} */
 			if (null != values.put(k, v))
 				throw new InvalidClassFormatException(String.format(
-					"JC1t %s", k));
+					"JC1t %s", k), this);
 		}
 	}
 	

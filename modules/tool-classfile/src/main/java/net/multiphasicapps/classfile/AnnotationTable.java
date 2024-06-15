@@ -28,7 +28,7 @@ import java.util.Map;
  * @since 2018/05/15
  */
 public final class AnnotationTable
-	implements Iterable<Annotation>
+	implements Contexual, Iterable<Annotation>
 {
 	/** The annotations which have been declared. */
 	private final Map<ClassName, Annotation> _annotations;
@@ -70,7 +70,7 @@ public final class AnnotationTable
 			ClassName name = e.type();
 			if (rv.containsKey(name))
 				throw new InvalidClassFormatException(String.format("JC1w %s",
-					name));
+					name), this);
 			
 			rv.put(name, e);
 		}

@@ -29,7 +29,7 @@ import java.util.Map;
  * @since 2017/02/09
  */
 public final class ExceptionHandlerTable
-	implements Iterable<ExceptionHandler>
+	implements Contexual, Iterable<ExceptionHandler>
 {
 	/** The exception handler table. */
 	private final ExceptionHandler[] _table;

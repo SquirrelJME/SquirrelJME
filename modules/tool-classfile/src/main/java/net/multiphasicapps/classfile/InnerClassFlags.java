@@ -183,7 +183,7 @@ public final class InnerClassFlags
 			because they would produce invalid standard outer class
 			flags. (The flags)} */
 			throw new InvalidClassFormatException(String.format("JC2y %s",
-				this), e);
+				this), e, this);
 		}
 		
 		/* {@squirreljme.error JC2z Multiple access modifiers, inner classes
@@ -194,7 +194,7 @@ public final class InnerClassFlags
 			(this.isPrivate() ? 1 : 0);
 		if (count > 1)
 			throw new InvalidClassFormatException(String.format("JC2z %s",
-				this));
+				this), this);
 	}
 }
 

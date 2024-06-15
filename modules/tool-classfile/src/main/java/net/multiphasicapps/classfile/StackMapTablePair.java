@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
  * @since 2023/07/03
  */
 public final class StackMapTablePair
-	implements Iterable<StackMapTableState>
+	implements Contexual, Iterable<StackMapTableState>
 {
 	/** The input table. */
 	public final StackMapTableState input;

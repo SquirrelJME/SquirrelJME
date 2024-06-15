@@ -24,7 +24,7 @@ import java.util.List;
  * @since 2018/05/15
  */
 public final class InnerClasses
-	implements Iterable<InnerClass>
+	implements Contexual, Iterable<InnerClass>
 {
 	/** The declared inner classes. */
 	private final InnerClass[] _inners;

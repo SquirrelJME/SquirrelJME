@@ -42,7 +42,7 @@ public final class MethodName
 				than or greater than signs. (The method name)} */
 				if (c == '<' || c == '>')
 					throw new InvalidClassFormatException(
-						String.format("JC3n %s", __s));
+						String.format("JC3n %s", __s), this);
 			}
 	}
 	

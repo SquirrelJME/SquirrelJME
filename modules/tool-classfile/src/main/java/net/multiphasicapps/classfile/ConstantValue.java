@@ -15,6 +15,7 @@ package net.multiphasicapps.classfile;
  * @since 2018/05/16
  */
 public abstract class ConstantValue
+	implements Contexual
 {
 	/** The represented object. */
 	protected final Object value;

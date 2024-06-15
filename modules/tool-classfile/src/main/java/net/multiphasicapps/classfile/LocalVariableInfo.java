@@ -17,6 +17,7 @@ import java.util.Objects;
  * @since 2022/09/23
  */
 public final class LocalVariableInfo
+	implements Contexual
 {
 	/** Start PC address. */
 	public final int startPc;

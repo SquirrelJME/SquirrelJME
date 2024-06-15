@@ -16,6 +16,7 @@ package net.multiphasicapps.classfile;
  * @since 2017/06/09
  */
 public final class WideConstantTopEntry
+	implements Contexual
 {
 }
 

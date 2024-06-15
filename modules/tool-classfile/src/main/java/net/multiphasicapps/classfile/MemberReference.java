@@ -15,6 +15,7 @@ package net.multiphasicapps.classfile;
  * @since 2017/06/12
  */
 public abstract class MemberReference
+	implements Contexual
 {
 	/** The class this refers to. */
 	protected final ClassName classname;

@@ -28,7 +28,7 @@ import net.multiphasicapps.collections.UnmodifiableList;
  * @since 2017/09/27
  */
 public final class BinaryName
-	implements Comparable<BinaryName>, Iterable<ClassIdentifier>
+	implements Comparable<BinaryName>, Contexual, Iterable<ClassIdentifier>
 {
 	/** The identifiers in the name. */
 	private final ClassIdentifier[] _identifiers;
