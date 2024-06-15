@@ -12,6 +12,7 @@
 
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiPencilFont.h"
+#include "lib/scritchui/scritchuiPencilFontPseudo.h"
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/debug.h"
 
@@ -313,14 +314,38 @@ sjme_errorCode sjme_scritchui_core_fontDerive(
 	sjme_attrInPositiveNonZero sjme_jint inPixelSize,
 	sjme_attrOutNotNull sjme_scritchui_pencilFont* outDerived)
 {
+	sjme_errorCode error;
+	sjme_scritchui_pencilFontStyle wasStyle;
+	sjme_jint wasPixelSize;
+	
 	if (inState == NULL || inFont == NULL || outDerived == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (inPixelSize <= 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
-		
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Limit. */
+	inStyle &= SJME_SCRITCHUI_PENCIL_FONT_STYLE_ALL;
+	
+	/* Get old font properties. */
+	wasStyle = 0;
+	wasPixelSize = 0;
+	if (sjme_error_is( error = inFont->api->metricFontStyle(inFont,
+			&wasStyle)) ||
+		sjme_error_is(error = inFont->api->metricPixelSize(inFont,
+			&wasPixelSize)))
+		return sjme_error_default(error);
+	
+	/* If the font is the same, do nothing. */
+	if (wasStyle == inStyle && wasPixelSize == inPixelSize)
+	{
+		*outDerived = inFont;
+		return SJME_ERROR_NONE;
+	}
+	
+	/* Create pseudo font. */
+	return sjme_scritchui_core_fontPseudo(inState, inFont, inStyle,
+		inPixelSize, outDerived);
 }
 
 sjme_errorCode sjme_scritchui_newPencilFontInit(

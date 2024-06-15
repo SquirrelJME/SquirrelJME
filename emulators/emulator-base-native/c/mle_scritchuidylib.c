@@ -696,7 +696,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	if (stateP == 0 || fontP == 0)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
-		return;
+		return 0;
 	}
 	
 	/* Restore. */

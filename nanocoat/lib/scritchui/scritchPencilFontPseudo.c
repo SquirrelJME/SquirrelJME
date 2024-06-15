@@ -317,3 +317,27 @@ static const sjme_scritchui_pencilFontFunctions
 	.renderBitmap = sjme_scritchui_pseudoRenderBitmap,
 	.renderChar = sjme_scritchui_pseudoRenderChar,
 };
+
+sjme_errorCode sjme_scritchui_core_fontPseudo(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInValue sjme_scritchui_pencilFontStyle inStyle,
+	sjme_attrInPositiveNonZero sjme_jint inPixelSize,
+	sjme_attrOutNotNull sjme_scritchui_pencilFont* outDerived)
+{
+	if (inState == NULL || inFont == NULL || outDerived == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (inPixelSize <= 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Is this already a pseudo font? */
+	/* If it is then we do not want to derive from a derivation. */
+	if (inFont->impl == &sjme_scritchui_pseudoFontFunctions)
+		return sjme_scritchui_core_fontPseudo(inState,
+			(sjme_scritchui_pencilFont)inFont->context, inStyle,
+			inPixelSize, outDerived);
+
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}

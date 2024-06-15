@@ -18,6 +18,7 @@
 
 #include "sjme/nvm.h"
 #include "sjme/alloc.h"
+#include "lib/scritchui/scritchuiPencilFont.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus

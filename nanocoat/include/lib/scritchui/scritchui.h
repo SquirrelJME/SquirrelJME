@@ -129,6 +129,12 @@ typedef enum sjme_scritchui_pencilFontStyle
 	
 	/** Underlined text. */
 	SJME_SCRITCHUI_PENCIL_FONT_STYLE_UNDERLINED = 4,
+	
+	/** All styles. */
+	SJME_SCRITCHUI_PENCIL_FONT_STYLE_ALL =
+		SJME_SCRITCHUI_PENCIL_FONT_STYLE_BOLD |
+		SJME_SCRITCHUI_PENCIL_FONT_STYLE_ITALIC |
+		SJME_SCRITCHUI_PENCIL_FONT_STYLE_UNDERLINED,
 } sjme_scritchui_pencilFontStyle;
 
 /**
