@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui;
 
+import cc.squirreljme.jvm.mle.scritchui.NativeScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchEnvironmentInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchScreenInterface;
@@ -18,7 +19,6 @@ import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchWindowManagerType;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.scritchui.fb.DefaultScritchInterface;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -210,7 +210,7 @@ public final class DisplayManager
 		if (instance != null)
 			return instance;
 		
-		instance = new DisplayManager(DefaultScritchInterface.instance());
+		instance = new DisplayManager(NativeScritchInterface.nativeInterface());
 		DisplayManager._INSTANCE = instance;
 		
 		return instance;

@@ -9,12 +9,12 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui;
 
+import cc.squirreljme.jvm.mle.scritchui.NativeScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.annotation.ScritchEventLoop;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.scritchui.fb.DefaultScritchInterface;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import javax.microedition.lcdui.Displayable;
@@ -64,7 +64,7 @@ public final class DisplayableState
 		this.displayable = new WeakReference<>(__displayable);
 		
 		// Initialize basic panel
-		ScritchInterface scritchApi = DefaultScritchInterface.instance();
+		ScritchInterface scritchApi = NativeScritchInterface.nativeInterface();
 		this.scritchApi = scritchApi;
 		this.panel = scritchApi.panel().newPanel(); 
 	}
