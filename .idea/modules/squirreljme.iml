@@ -312,6 +312,9 @@
       <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../nanocoat/cmake-build-relwithdebinfo" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-font/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-font/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-font/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-javap/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-javap/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-javap/out" />

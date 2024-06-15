@@ -62,6 +62,10 @@ public enum MLEMidi
 		{
 			try
 			{
+				if (__args[0] == SpringNullObject.NULL ||
+					__args[1] == SpringNullObject.NULL)
+					throw new SpringMLECallError("Null arguments.");
+				
 				MidiPortBracket port = MLEObjects.midiPort(__args[0]);
 				SpringArrayObjectByte buf = (SpringArrayObjectByte)__args[1];
 				int off = (Integer)__args[2];
