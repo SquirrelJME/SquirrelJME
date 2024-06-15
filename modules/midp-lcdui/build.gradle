@@ -17,9 +17,6 @@ squirreljme
 	tags += "graphics"
 	tags += "j2me"
 	
-	// Framebuffer support
-	optionalDependencies += project(":modules:scritch-ui-fb")
-	
 	// ProGuard thinks this method has no side effects so it removes this
 	// however, we really do need to keep this method but we can obfuscate it
 	proGuardOptions += ["-keepclassmembers,allowobfuscation",
@@ -90,5 +87,4 @@ dependencies
 	api project(":modules:io")
 	api project(":modules:collections")
 	api project(":modules:scritch-ui")
-	api project(":modules:scritch-ui-fb")
 }

@@ -39,9 +39,7 @@ public class EmulatedNativeScritchInterface
 	public static ScritchInterface nativeInterface()
 		throws MLECallError
 	{
-		if (true)
-			return DylibScritchInterface.instance();
-		return new SwingScritchInterface();
+		return DylibScritchInterface.instance();
 	}
 	
 	/**
