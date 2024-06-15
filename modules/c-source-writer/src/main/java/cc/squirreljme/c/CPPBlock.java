@@ -10,7 +10,6 @@
 package cc.squirreljme.c;
 
 import java.io.IOException;
-import java.lang.ref.Reference;
 
 /**
  * Used to handle preprocessor if-blocks.
@@ -33,7 +32,7 @@ public class CPPBlock
 	CPPBlock(CSourceWriter __writer)
 		throws NullPointerException
 	{
-		super(__writer, null);
+		super(__writer, null, false);
 	}
 	
 	/**

@@ -32,7 +32,7 @@ import cc.squirreljme.jvm.aot.nanocoat.csv.SharedCsvEntry;
 import cc.squirreljme.jvm.aot.nanocoat.table.StaticTable;
 import cc.squirreljme.jvm.aot.nanocoat.table.StaticTableManager;
 import cc.squirreljme.jvm.aot.nanocoat.table.StaticTableType;
-import cc.squirreljme.jvm.aot.queue.ArchiveOutputQueue;
+import net.multiphasicapps.zip.queue.ArchiveOutputQueue;
 import cc.squirreljme.jvm.manifest.JavaManifest;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.io.IOException;

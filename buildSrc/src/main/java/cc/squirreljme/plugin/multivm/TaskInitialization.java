@@ -11,6 +11,7 @@ package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import cc.squirreljme.plugin.general.UpdateFossilJavaDoc;
+import cc.squirreljme.plugin.multivm.gdb.GdbUtils;
 import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import cc.squirreljme.plugin.swm.JavaMEMidlet;
 import cc.squirreljme.plugin.tasks.AdditionalManifestPropertiesTask;
@@ -514,6 +515,9 @@ public final class TaskInitialization
 		// Tasks for registration and otherwise
 		TaskContainer tasks = __project.getTasks();
 		
+		// Is there GDB?
+		Path gdbServer = GdbUtils.gdbServerExePath();
+		
 		// Handle all source sets
 		if (hasMain || hasMidlets)
 			for (String sourceSet : TaskInitialization._SOURCE_SETS)
@@ -558,7 +562,15 @@ public final class TaskInitialization
 							// Create task
 							tasks.create(name,
 								VMRunTask.class, classifier, libTask,
-								config.mainClass, JavaMEMidlet.NONE);
+								config.mainClass, JavaMEMidlet.NONE,
+								VMRunTask.NO_GDB_SERVER);
+							
+							// Debugging?
+							if (gdbServer != null)
+								tasks.create(name + "Gdb",
+									VMRunTask.class, classifier, libTask,
+									config.mainClass, JavaMEMidlet.NONE,
+									gdbServer);
 							
 							// Count up
 							index++;
@@ -575,7 +587,14 @@ public final class TaskInitialization
 								// Create task
 								tasks.create(realName, VMRunTask.class,
 									classifier, libTask,
-									"", midlet);
+									"", midlet, VMRunTask.NO_GDB_SERVER);
+								
+								// Debugging?
+								if (gdbServer != null)
+									tasks.create(realName + "Gdb",
+										VMRunTask.class,
+										classifier, libTask,
+										"", midlet, gdbServer);
 								
 								// Count up
 								index++;

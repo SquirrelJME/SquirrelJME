@@ -22,6 +22,14 @@ import org.gradle.internal.os.OperatingSystem;
  */
 public class PathUtils
 {
+	/** Program files environment directories. */
+	private static final String[] _PROGRAM_FILES_ENV =
+		{
+			"PROGRAMFILES",
+			"PROGRAMFILES(X86)",
+			"PROGRAMW6432"
+		};
+	
 	/**
 	 * Not used.
 	 * 
@@ -84,7 +92,7 @@ public class PathUtils
 			// Get path extensions that exist
 			String pathExts = System.getenv("PathExt");
 			if (pathExts == null)
-				pathExts = ".EXE";
+				pathExts = ".exe";
 			
 			// Go through each extension and try to find it
 			for (String pathExt : pathExts.split(Pattern.quote(";")))
@@ -97,5 +105,64 @@ public class PathUtils
 		
 		// Otherwise just the exact name
 		return PathUtils.findPath(__name);
+	}
+	
+	/**
+	 * Finds installed path of the given executable.
+	 *
+	 * @param __exe The executable to find.
+	 * @param __programFiles The program files directory to look within.
+	 * @return The found path or {@code null} if it was not found.
+	 * @throws NullPointerException If {@code __exe} was not specified.
+	 * @since 2024/06/15
+	 */
+	public static Path findPathInstalled(String __exe,
+		String __programFiles)
+		throws NullPointerException
+	{
+		if (__exe == null)
+			throw new NullPointerException("NARG");
+		
+		// Standard executable?
+		Path cmakePath = PathUtils.findPath(__exe);
+		
+		// Windows executable?
+		String exeName = __exe + ".exe";
+		if (cmakePath == null)
+			cmakePath = PathUtils.findPath(exeName);
+		
+		// Standard installation on Windows?
+		if (cmakePath == null && __programFiles != null &&
+			OperatingSystem.current() == OperatingSystem.WINDOWS)
+		{
+			for (String env : PathUtils._PROGRAM_FILES_ENV)
+			{
+				if (cmakePath != null)
+					break;
+				
+				String programFiles = System.getenv(env);
+				if (programFiles != null)
+				{
+					Path maybe = Paths.get(programFiles)
+						.resolve(__programFiles).resolve("bin")
+						.resolve(exeName);
+					if (Files.exists(maybe))
+						cmakePath = maybe;
+				}
+			}
+		}
+		
+		// Homebrew on macOS?
+		if (cmakePath == null &&
+			OperatingSystem.current() == OperatingSystem.MAC_OS)
+		{
+			Path maybe = Paths.get("/").resolve("opt")
+				.resolve("homebrew").resolve("bin")
+				.resolve(__exe);
+			if (Files.exists(maybe))
+				cmakePath = maybe;
+		}
+		
+		return cmakePath;
 	}
 }

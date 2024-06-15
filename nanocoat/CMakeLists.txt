@@ -44,6 +44,12 @@ endif()
 # Fixes and otherwise for compatibility
 squirreljme_include("fixes.cmake")
 
+# Win32 Options
+squirreljme_include("win32.cmake")
+
+# Is the system JNI available?
+squirreljme_include("jni.cmake")
+
 # Hardening options
 squirreljme_include("hardening.cmake")
 

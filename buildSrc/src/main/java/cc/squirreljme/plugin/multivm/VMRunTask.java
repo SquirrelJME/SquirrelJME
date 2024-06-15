@@ -11,6 +11,8 @@ package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import cc.squirreljme.plugin.swm.JavaMEMidlet;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import javax.inject.Inject;
 import lombok.Getter;
 import org.gradle.api.DefaultTask;
@@ -25,6 +27,10 @@ public class VMRunTask
 	extends DefaultTask
 	implements VMBaseTask, VMExecutableTask
 {
+	/** Not valid for a path. */
+	public static final Path NO_GDB_SERVER =
+		Paths.get("there-is-no-gdb-server");
+	
 	/** The classifier used. */
 	@Internal
 	@Getter
@@ -40,6 +46,11 @@ public class VMRunTask
 	@Getter
 	protected final JavaMEMidlet midlet;
 	
+	/** GDB Server location. */
+	@Internal
+	@Getter
+	protected final Path gdbServer;
+	
 	/**
 	 * Initializes the task.
 	 * 
@@ -48,11 +59,13 @@ public class VMRunTask
 	 * depended upon.
 	 * @param __mainClass The main class used.
 	 * @param __midlet The midlet used.
+	 * @param __gdbServer Optional location of where GDB is. 
 	 * @since 2020/08/07
 	 */
 	@Inject
 	public VMRunTask(SourceTargetClassifier __classifier,
-		VMLibraryTask __libTask, String __mainClass, JavaMEMidlet __midlet)
+		VMLibraryTask __libTask, String __mainClass, JavaMEMidlet __midlet,
+		Path __gdbServer)
 		throws NullPointerException
 	{
 		// Normalize
@@ -73,6 +86,14 @@ public class VMRunTask
 		this.classifier = __classifier;
 		this.mainClass = __mainClass;
 		this.midlet = __midlet;
+		
+		// Was this actually specified?
+		if (__gdbServer == null ||
+			__gdbServer == VMRunTask.NO_GDB_SERVER || 
+			VMRunTask.NO_GDB_SERVER.equals(__gdbServer))
+			this.gdbServer = null;
+		else
+			this.gdbServer = __gdbServer;
 		
 		// Set details of this task
 		this.setGroup("squirreljme");

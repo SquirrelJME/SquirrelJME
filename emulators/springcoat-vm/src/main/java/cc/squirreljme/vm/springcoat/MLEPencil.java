@@ -19,13 +19,13 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.SoftwareGraphicsFactory;
 import cc.squirreljme.vm.springcoat.brackets.PencilObject;
+import cc.squirreljme.vm.springcoat.callbacks.NativeImageLoadCallbackAdapter;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.microedition.lcdui.AnimatedImage;
 import javax.microedition.lcdui.Font;
-import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.ScalableImage;
 
@@ -79,7 +79,7 @@ public enum MLEPencil
 		{
 			try
 			{
-				MLEPencil.__graphics(__args[0])
+				MLEObjects.pencilGraphics(__args[0])
 					.copyArea((Integer)__args[1],
 						(Integer)__args[2],
 						(Integer)__args[3],
@@ -119,7 +119,7 @@ public enum MLEPencil
 		{
 			try
 			{
-				MLEPencil.__graphics(__args[0])
+				MLEObjects.pencilGraphics(__args[0])
 					.drawChars(((SpringArrayObjectChar)__args[1]).array(),
 						(Integer)__args[2],
 						(Integer)__args[3],
@@ -155,7 +155,7 @@ public enum MLEPencil
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			MLEPencil.__graphics(__args[0])
+			MLEObjects.pencilGraphics(__args[0])
 				.drawLine((Integer)__args[1],
 					(Integer)__args[2],
 					(Integer)__args[3],
@@ -178,7 +178,7 @@ public enum MLEPencil
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			MLEPencil.__graphics(__args[0])
+			MLEObjects.pencilGraphics(__args[0])
 				.drawRect((Integer)__args[1],
 					(Integer)__args[2],
 					(Integer)__args[3],
@@ -205,7 +205,7 @@ public enum MLEPencil
 		{
 			try
 			{
-				MLEPencil.__graphics(__args[0])
+				MLEObjects.pencilGraphics(__args[0])
 					.drawSubstring(
 						__thread.asNativeObject(String.class, __args[1]),
 						(Integer)__args[2],
@@ -313,7 +313,7 @@ public enum MLEPencil
 			
 			// Forward to normal call and have our own graphics code handle
 			// this one
-			MLEPencil.__graphics(__args[0])
+			MLEObjects.pencilGraphics(__args[0])
 				.drawRegion(wrapped, __xSrc, __ySrc, __wSrc, __hSrc,
 					__trans, __xDest, __yDest, __anch, __wDest, __hDest);
 			
@@ -335,7 +335,7 @@ public enum MLEPencil
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			MLEPencil.__graphics(__args[0])
+			MLEObjects.pencilGraphics(__args[0])
 				.fillRect((Integer)__args[1],
 					(Integer)__args[2],
 					(Integer)__args[3],
@@ -359,7 +359,7 @@ public enum MLEPencil
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			MLEPencil.__graphics(__args[0])
+			MLEObjects.pencilGraphics(__args[0])
 				.fillTriangle((Integer)__args[1],
 					(Integer)__args[2],
 					(Integer)__args[3],
@@ -429,7 +429,7 @@ public enum MLEPencil
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			MLEPencil.__graphics(__args[0])
+			MLEObjects.pencilGraphics(__args[0])
 				.setAlphaColor((Integer)__args[1]);
 			
 			return null;
@@ -447,7 +447,7 @@ public enum MLEPencil
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			MLEPencil.__graphics(__args[0])
+			MLEObjects.pencilGraphics(__args[0])
 				.setBlendingMode((Integer)__args[1]);
 			
 			return null;
@@ -467,7 +467,7 @@ public enum MLEPencil
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			MLEPencil.__graphics(__args[0])
+			MLEObjects.pencilGraphics(__args[0])
 				.setClip((Integer)__args[1],
 					(Integer)__args[2],
 					(Integer)__args[3],
@@ -488,7 +488,7 @@ public enum MLEPencil
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			MLEPencil.__graphics(__args[0])
+			MLEObjects.pencilGraphics(__args[0])
 				.setFont(null);
 			
 			return null;
@@ -509,7 +509,7 @@ public enum MLEPencil
 			@Override
 			public Object handle(SpringThreadWorker __thread, Object... __args)
 			{
-				MLEPencil.__graphics(__args[0])
+				MLEObjects.pencilGraphics(__args[0])
 					.setFont(Font.getFont(
 						__thread.asNativeObject(String.class, __args[1]),
 						(Integer)__args[2],
@@ -530,7 +530,7 @@ public enum MLEPencil
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			MLEPencil.__graphics(__args[0])
+			MLEObjects.pencilGraphics(__args[0])
 				.setStrokeStyle((Integer)__args[1]);
 			
 			return null;
@@ -548,7 +548,7 @@ public enum MLEPencil
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			MLEPencil.__graphics(__args[0])
+			MLEObjects.pencilGraphics(__args[0])
 				.translate((Integer)__args[1],
 					(Integer)__args[2]);
 			
@@ -644,7 +644,7 @@ public enum MLEPencil
 					for (int i = 0; i >= 0; i++)
 						try
 						{
-							MLEPencil.__addImage(callback,
+							MLEObjects.addImage(callback,
 								animated.getFrame(i),
 								animated.getFrameDelay(i));
 						}
@@ -656,7 +656,7 @@ public enum MLEPencil
 				
 				// Still image
 				else
-					MLEPencil.__addImage(callback, image, -1);
+					MLEObjects.addImage(callback, image, -1);
 				
 				// Check if it was cancelled
 				Object finished = callback.finish();
@@ -708,63 +708,4 @@ public enum MLEPencil
 		return this.key;
 	}
 	
-	/**
-	 * Adds an image to be passed to the image loading callback.
-	 * 
-	 * @param __callback The callback to send to.
-	 * @param __frame The frame.
-	 * @param __frameDelay The frame delay.
-	 * @since 2022/06/28
-	 */
-	static void __addImage(NativeImageLoadCallbackAdapter __callback,
-		Image __frame, int __frameDelay)
-		throws NullPointerException
-	{
-		if (__callback == null || __frame == null)
-			throw new NullPointerException("NARG");
-		
-		// Try to get a direct RGB buffer from the image, this is faster
-		// than doing an RGB copy of it
-		int[] buf;
-		int off, len;
-		if (__frame.squirreljmeIsDirect())
-		{
-			buf = __frame.squirreljmeDirectRGBInt();
-			off = __frame.squirreljmeDirectOffset();
-			len = __frame.squirreljmeDirectScanLen() * __frame.getHeight();
-		}
-		
-		// Otherwise, we need to load the RGB data from the image
-		else
-		{
-			buf = new int[__frame.getWidth() * __frame.getHeight()];
-			off = 0;
-			len = buf.length;
-			
-			// Read in all the data
-			__frame.getRGB(buf, 0, __frame.getWidth(),
-				0, 0, __frame.getWidth(), __frame.getHeight());
-		}
-		
-		// Send to the callback
-		__callback.addImage(buf, off, len, __frameDelay, __frame.hasAlpha());
-	}
-	
-	/**
-	 * Ensures that this is a {@link PencilObject} and returns the graphics
-	 * object for it.
-	 * 
-	 * @param __object The object to check.
-	 * @return As a {@link PencilObject}.
-	 * @throws SpringMLECallError If this is not one.
-	 * @since 2021/12/05
-	 */
-	static Graphics __graphics(Object __object)
-		throws SpringMLECallError
-	{
-		if (!(__object instanceof PencilObject))
-			throw new SpringMLECallError("Not a PencilObject.");
-		
-		return ((PencilObject)__object).graphics; 
-	}
 }

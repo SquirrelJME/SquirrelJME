@@ -103,6 +103,7 @@
             <option value="$PROJECT_DIR$/tools/pcf-to-sqf" />
             <option value="$PROJECT_DIR$/tools/sqf-to-c" />
             <option value="$PROJECT_DIR$/tools/squirreljme-debugger" />
+            <option value="$PROJECT_DIR$/tools/squirreljme-font" />
             <option value="$PROJECT_DIR$/tools/squirreljme-javap" />
             <option value="$PROJECT_DIR$/tools/txt-to-pbm" />
             <option value="$PROJECT_DIR$/tools/unzip" />

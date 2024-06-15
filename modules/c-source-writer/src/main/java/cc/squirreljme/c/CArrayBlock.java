@@ -36,7 +36,7 @@ public class CArrayBlock
 	CArrayBlock(CSourceWriter __ref, CType __elementType)
 		throws NullPointerException
 	{
-		super(__ref, "}");
+		super(__ref, "}", false);
 		
 		if (__elementType == null)
 			throw new NullPointerException("NARG");

@@ -124,6 +124,42 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 #define DESC_VOID "V"
 #define DESC_OBJECT DESC_CLASS("java/lang/Object")
 #define DESC_STRING DESC_CLASS("java/lang/String")
+#define DESC_BYTE_BUFFER DESC_CLASS("java/nio/ByteBuffer")
+
+#define DESC_PENCIL \
+	DESC_CLASS("cc/squirreljme/jvm/mle/brackets/PencilBracket")
+#define DESC_PENCILFONT \
+	DESC_CLASS("cc/squirreljme/jvm/mle/brackets/PencilFontBracket")
+
+#define DESC_DYLIB_BASE \
+	DESC_CLASS("cc/squirreljme/emulator/scritchui/dylib/DylibBaseObject")
+#define DESC_DYLIB_PENCIL \
+	DESC_CLASS("cc/squirreljme/emulator/scritchui/dylib/DylibPencilObject")
+#define DESC_DYLIB_PENCILFONT \
+	DESC_CLASS("cc/squirreljme/emulator/scritchui/dylib/DylibPencilFontObject")
+
+/**
+ * Common check and forward call.
+ * 
+ * @param failRet The failing return value.
+ * @param funcMember The function member to check and to call.
+ * @param args Arguments to the function.
+ * @since 2024/06/13
+ */
+#define CHECK_AND_FORWARD(failRet, funcMember, args) \
+	do { if (funcMember == NULL) \
+	{ \
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED); \
+		return (failRet); \
+	} \
+	 \
+	/* Forward. */ \
+	result = (failRet); \
+	if (sjme_error_is(error = funcMember args)) \
+	{ \
+		sjme_jni_throwMLECallError(env, error); \
+		return (failRet); \
+	} } while(0)
 
 /**
  * Checks to see if a virtual machine call failed.
@@ -133,6 +169,19 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
  * @since 2023/12/29
  */
 sjme_jboolean sjme_jni_checkVMException(JNIEnv* env);
+
+/**
+ * Directly map integer array.
+ * 
+ * @param env The Java environment.
+ * @param buf The input array to map.
+ * @param off The offset into the array.
+ * @param len The length of the array.
+ * @return The resultant raw object for the array.
+ * @since 2024/04/24
+ */
+jintArray sjme_jni_mappedArrayInt(JNIEnv* env,
+	jint* buf, jint off, jint len);
 
 /**
  * Throws a @c MLECallError .

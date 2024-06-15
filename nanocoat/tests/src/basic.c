@@ -50,6 +50,13 @@ static sjme_jboolean sjme_test_exitHandler(int exitCode)
 	return SJME_JNI_FALSE;
 }
 
+static sjme_debug_handlerFunctions sjme_test_debugHandlers =
+{
+	.abort = sjme_test_abortHandler,
+	.exit = sjme_test_exitHandler,
+	.message = NULL,
+};
+
 #if defined(SJME_CONFIG_DEBUG)
 void sjme_test_leakCheck(sjme_alloc_pool* pool)
 {
@@ -144,9 +151,9 @@ int sjme_test_main(int argc, sjme_lpstr* argv, sjme_lpcstr* nextTest)
 	/* Store test base. */
 	sjme_test_currentTest = &test;
 
-	/* Use a different exit handler? */
-	if (sjme_debug_exitHandler == NULL)
-		sjme_debug_exitHandler = sjme_test_exitHandler;
+	/* Use a different debug handlers? */
+	if (sjme_debug_handlers == NULL)
+		sjme_debug_handlers = &sjme_test_debugHandlers;
 
 	/* Setup base allocation pool. */
 	for (chunkLen = 65536; chunkLen >= 1024; chunkLen /= 2)

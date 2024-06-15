@@ -29,6 +29,14 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
+#if defined(SJME_CONFIG_HAS_WINDOWS)
+	#define SJME_DYLIB_EXPORT __declspec(dllexport)
+#elif defined(SJME_CONFIG_HAS_GCC)
+	#define SJME_DYLIB_EXPORT __attribute__((visibility("default")))
+#else
+	#define SJME_DYLIB_EXPORT
+#endif
+
 /**
  * Opaque dynamic library type.
  * 

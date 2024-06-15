@@ -15,7 +15,6 @@ import cc.squirreljme.c.CIdentifier;
 import cc.squirreljme.c.CPPBlock;
 import cc.squirreljme.c.CVariable;
 import cc.squirreljme.jvm.aot.nanocoat.CArchiveOutputQueue;
-import cc.squirreljme.jvm.aot.queue.ArchiveOutputQueue;
 import cc.squirreljme.jvm.aot.nanocoat.csv.SharedCsvEntry;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.io.IOException;

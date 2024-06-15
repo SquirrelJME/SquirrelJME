@@ -7,9 +7,6 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: SquirrelJME emulator interface (Java SE)
 
-# We need JNI for this to work
-squirreljme_include("jni.cmake")
-
 # Declare library
 add_library(libEmulator SHARED
 	$<TARGET_OBJECTS:BasePIC>

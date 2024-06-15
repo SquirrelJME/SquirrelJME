@@ -27,23 +27,6 @@ static const struct retro_variable sjme_libretro_coreVariables[] =
 	{NULL, NULL}
 };
 
-static sjme_jboolean sjme_libretro_exitHandler(int exitCode)
-{
-	/* If there is no environment callback, then do nothing here. */
-	if (sjme_libretro_envCallback == NULL)
-		return SJME_JNI_FALSE;
-
-	/* Tell the front end to stop the core. */
-	sjme_libretro_envCallback(RETRO_ENVIRONMENT_SHUTDOWN, NULL);
-	return SJME_JNI_TRUE;
-}
-
-static sjme_jboolean sjme_libretro_abortHandler(void)
-{
-	/* Forward to the exit handler. */
-	return sjme_libretro_exitHandler(1);
-}
-
 sjme_attrUnused RETRO_API void retro_cheat_reset(void)
 {
 	static sjme_jint trigger;
@@ -91,10 +74,6 @@ sjme_attrUnused RETRO_API void retro_set_environment(
 	
 	/* Store the callback pointer. */
 	sjme_libretro_envCallback = environment;
-
-	/* Set abort and exit handler. */
-	sjme_debug_abortHandler = sjme_libretro_abortHandler;
-	sjme_debug_exitHandler = sjme_libretro_exitHandler;
 
 	/* Control input. */
 	retro_set_controller_port_device(0, 0);

@@ -41,7 +41,7 @@ public class Mystify
 	public static final int WAY_OFF =
 		50;
 	
-	/** How oftens the colors shift. */
+	/** How often the colors shift. */
 	public static final int COLOR_SHIFT =
 		2;
 	
