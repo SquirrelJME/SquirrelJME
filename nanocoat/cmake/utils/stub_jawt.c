@@ -10,7 +10,7 @@
 #include <stdlib.h>
 
 #include "../../include/3rdparty/jni/jni.h"
-#include "../../include/3rdparty/jni/jawt_md.h"
+#include "../../include/3rdparty/jni/jawt.h"
 
 JNIEXPORT jboolean JNICALL JAWT_GetAWT(JNIEnv* env, JAWT* awt)
 {
