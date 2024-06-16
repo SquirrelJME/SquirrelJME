@@ -220,6 +220,10 @@ commands:
           name: Install CMake
           shell: cmd.exe
           command: choco install cmake -y
+      - run:
+          name: Install Mingw-w64
+          shell: cmd.exe
+          command: choco install mingw -y
 
   # Windows JDK Install
   windows-install-jdk:
