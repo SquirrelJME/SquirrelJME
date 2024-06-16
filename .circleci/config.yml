@@ -168,7 +168,7 @@ commands:
             NEEDRESTART_MODE: l
             NEEDRESTART_SUSPEND: 1
           command: |
-            sudo apt-get install -yqq --no-install-recommends <<parameters.packages>>
+            sudo apt-get install -y --no-install-recommends <<parameters.packages>>
 
   # Standard apt-get install, optional
   linux-debian-apt-get-install-optional:
@@ -183,7 +183,7 @@ commands:
             NEEDRESTART_MODE: l
             NEEDRESTART_SUSPEND: 1
           command: |
-            sudo apt-get install -yqq --no-install-recommends <<parameters.packages>> || echo "Failed, but ignoring..."
+            sudo apt-get install -y --no-install-recommends <<parameters.packages>> || echo "Failed, but ignoring..."
 
   # Install standard packages in Debian/Ubuntu
   linux-install-required:
