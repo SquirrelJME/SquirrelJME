@@ -341,7 +341,7 @@ public final class CMakeUtils
 		String genPlatform;
 		if (OperatingSystem.current().isWindows() &&
 			CMakeUtils.is32BitHost() && CMakeUtils.isX86Host())
-			genPlatform = "-DCMAKE_GENERATOR_PLATFORM=x86";
+			genPlatform = "-DCMAKE_GENERATOR_PLATFORM=Win32";
 		else
 			genPlatform = "-DXXIGNORETHISXX=1";
 		
