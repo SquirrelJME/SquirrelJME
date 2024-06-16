@@ -7,20 +7,22 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdarg.h>
 #include <string.h>
+
+#include "sjme/nvm.h"
 
 #if defined(SJME_CONFIG_HAS_WINDOWS)
 	#define WIN32_LEAN_AND_MEAN 1
 	
 	#include <windows.h>
+	#include <debugapi.h>
 
 	#undef WIN32_LEAN_AND_MEAN
 #endif
 
-#include "sjme/nvm.h"
 #include "sjme/debug.h"
 
 /** Debug buffer size for messages. */
