@@ -19,6 +19,7 @@ import java.lang.ref.WeakReference;
  * @since 2017/09/02
  */
 public final class StackMapTableEntry
+	implements Contexual
 {
 	/** The top of a long. */
 	public static final StackMapTableEntry TOP_LONG =
@@ -105,7 +106,7 @@ public final class StackMapTableEntry
 			(The type)} */
 			if (__init && __t.equals(JavaType.NOTHING))
 				throw new InvalidClassFormatException(
-					String.format("JI3w %s", __t));
+					String.format("JI3w %s", __t), this);
 		}
 		
 		// Otherwise only objects may be initialized
@@ -115,7 +116,7 @@ public final class StackMapTableEntry
 			uninitialized (The type)} */
 			if (!__init && !__t.isObject())
 				throw new InvalidClassFormatException(
-					String.format("JC3w %s", __t));
+					String.format("JC3w %s", __t), this);
 		}
 		
 		// Set

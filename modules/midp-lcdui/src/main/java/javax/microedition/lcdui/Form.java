@@ -11,6 +11,7 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
@@ -418,6 +419,7 @@ public class Form
 	 * 
 	 * @since 2021/11/26
 	 */
+	@SquirrelJMEVendorApi
 	void __update()
 	{
 		// Indicate that the layout is now stale and must be updated

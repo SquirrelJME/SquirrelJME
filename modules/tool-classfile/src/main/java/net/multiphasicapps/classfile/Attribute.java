@@ -19,6 +19,7 @@ import java.io.DataInputStream;
  * @since 2018/05/14
  */
 public final class Attribute
+	implements Contexual
 {
 	/** The attribute name. */
 	protected final String name;

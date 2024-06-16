@@ -7,11 +7,9 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: SquirrelJME emulator interface (Java SE)
 
-# We need JNI for this to work
-squirreljme_include("jni.cmake")
-
 # Declare library
 add_library(libEmulator SHARED
+	$<TARGET_OBJECTS:BasePIC>
 	$<TARGET_OBJECTS:CorePIC>
 	emu.c
 	jniHelper.c
@@ -37,17 +35,19 @@ add_dependencies(libEmulator
 # We need to find all of the includes and such
 target_include_directories(libEmulator PUBLIC
 	"${CMAKE_SOURCE_DIR}/include"
-	${JNI_INCLUDE_DIRS})
+	"${JNI_INCLUDE_DIRS}"
+	"${JAVA_INCLUDE_PATH}"
+	"${JAVA_INCLUDE_PATH2}")
+
+# Libraries needed to be linked with for the DyLib to function
+target_link_libraries(libEmulator PUBLIC
+	${SQUIRRELJME_LINK_LIBRARIES_Base}
+	${SQUIRRELJME_LINK_LIBRARIES_Core})
 
 # It is easier to find this when it is in the build root
-set_target_properties(libEmulator PROPERTIES
-	RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
-	LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
-	ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
+squirreljme_target_binary_output(libEmulator
+	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
 
 # Use a simpler name for the library
-set_target_properties(libEmulator PROPERTIES
-	LIBRARY_OUTPUT_NAME
-	"emulator-nanocoat"
-	ARCHIVE_OUTPUT_NAME
+squirreljme_target_binary_name(libEmulator
 	"emulator-nanocoat")

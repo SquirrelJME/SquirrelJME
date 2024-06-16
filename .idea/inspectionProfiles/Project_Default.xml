@@ -278,7 +278,7 @@
     <inspection_tool class="JavaRequiresAutoModule" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="JavadocBlankLines" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="JavadocDeclaration" enabled="true" level="WARNING" enabled_by_default="true">
-      <option name="ADDITIONAL_TAGS" value="squirreljme.syscallparam,squirreljme.syscallreturn,squirreljme.property,squirreljme.error,squirreljme.property,squirreljme.configtype" />
+      <option name="ADDITIONAL_TAGS" value="squirreljme.syscallparam,squirreljme.syscallreturn,squirreljme.property,squirreljme.error,squirreljme.property,squirreljme.configtype,squirreljme.env" />
     </inspection_tool>
     <inspection_tool class="LambdaBodyCanBeCodeBlock" enabled="false" level="INFORMATION" enabled_by_default="false" />
     <inspection_tool class="LambdaCanBeMethodCall" enabled="false" level="INFORMATION" enabled_by_default="false" />
@@ -573,28 +573,28 @@
         <constraint name="__context__" within="" contains="" />
         <constraint name="expr" within="" contains="" />
       </replaceConfiguration>
-      <replaceConfiguration name="C Source Writer: Expression can be simplified" order="1" text="cc.squirreljme.c.CExpressionBuilder.builder().reference($expr$).build()" recursive="false" caseInsensitive="false" type="JAVA" pattern_context="default" reformatAccordingToStyle="false" shortenFQN="true" replacement="cc.squirreljme.c.CBasicExpression.reference($expr$)">
+      <replaceConfiguration name="C Source Writer: Expression can be simplified" text="cc.squirreljme.c.CExpressionBuilder.builder().reference($expr$).build()" recursive="false" caseInsensitive="false" type="JAVA" pattern_context="default" reformatAccordingToStyle="false" shortenFQN="true" replacement="cc.squirreljme.c.CBasicExpression.reference($expr$)">
         <constraint name="__context__" within="" contains="" />
         <constraint name="expr" within="" contains="" />
       </replaceConfiguration>
-      <replaceConfiguration name="C Source Writer: Expression can be simplified" order="2" text="cc.squirreljme.c.CExpressionBuilder.builder().number($expr$).build()" recursive="false" caseInsensitive="false" type="JAVA" pattern_context="default" reformatAccordingToStyle="false" shortenFQN="true" replacement="cc.squirreljme.c.CBasicExpression.number($expr$)">
+      <replaceConfiguration name="C Source Writer: Expression can be simplified" text="cc.squirreljme.c.CExpressionBuilder.builder().number($expr$).build()" recursive="false" caseInsensitive="false" type="JAVA" pattern_context="default" reformatAccordingToStyle="false" shortenFQN="true" replacement="cc.squirreljme.c.CBasicExpression.number($expr$)">
         <constraint name="__context__" within="" contains="" />
         <constraint name="expr" within="" contains="" />
       </replaceConfiguration>
-      <replaceConfiguration name="C Source Writer: Expression can be simplified" order="3" text="cc.squirreljme.c.CExpressionBuilder.builder().number($type$, $expr$).build()" recursive="false" caseInsensitive="false" type="JAVA" pattern_context="default" reformatAccordingToStyle="false" shortenFQN="true" replacement="cc.squirreljme.c.CBasicExpression.number($type$, $expr$)">
+      <replaceConfiguration name="C Source Writer: Expression can be simplified" text="cc.squirreljme.c.CExpressionBuilder.builder().number($type$, $expr$).build()" recursive="false" caseInsensitive="false" type="JAVA" pattern_context="default" reformatAccordingToStyle="false" shortenFQN="true" replacement="cc.squirreljme.c.CBasicExpression.number($type$, $expr$)">
         <constraint name="__context__" within="" contains="" />
         <constraint name="expr" within="" contains="" />
         <constraint name="type" within="" contains="" />
-      </replaceConfiguration>
-      <replaceConfiguration name="SquirrelJME: __error__ is qualified." description="__error__ is the only special&#10;static import, for error code&#10;composition." suppressId="squirreljme_qualifiedError" problemDescriptor="SquirrelJME: __error__ is qualified." text="$errorCodeClass$.__error__($args$)" recursive="false" caseInsensitive="true" type="JAVA" pattern_context="default" reformatAccordingToStyle="false" shortenFQN="true" useStaticImport="true" replacement="ErrorCode.__error__($args$)">
-        <constraint name="__context__" within="" contains="" />
-        <constraint name="args" minCount="0" maxCount="2147483647" within="" contains="" />
-        <constraint name="errorCodeClass" regexp="ErrorCode" within="" contains="" />
       </replaceConfiguration>
       <searchConfiguration name="Java ME: There is no Arrays.hashCode()" description="Java ME: There is no Arrays.hashCode()." suppressId="squirrejme_javaMe_noArraysHashCode" problemDescriptor="Java ME: There is no Arrays.hashCode()" text="java.util.Arrays.hashCode($expr$)" recursive="true" caseInsensitive="false" type="JAVA" pattern_context="default">
         <constraint name="__context__" within="" contains="" />
         <constraint name="expr" within="" contains="" />
       </searchConfiguration>
+      <replaceConfiguration name="SquirrelJME: __error__ is qualified." description="__error__ is the only special&#10;static import, for error code&#10;composition." suppressId="squirreljme_qualifiedError" problemDescriptor="SquirrelJME: __error__ is qualified." text="$errorCodeClass$.__error__($args$)" recursive="false" caseInsensitive="true" type="JAVA" pattern_context="default" reformatAccordingToStyle="false" shortenFQN="true" useStaticImport="true" replacement="ErrorCode.__error__($args$)">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="args" minCount="0" maxCount="2147483647" within="" contains="" />
+        <constraint name="errorCodeClass" regexp="ErrorCode" within="" contains="" />
+      </replaceConfiguration>
       <searchConfiguration name="SquirrelJME: Call to API defined deprecated method." description="These are marked as actually deprecated in the API code and should not be used." suppressId="squirreljme_apiDefinedDeprecated" problemDescriptor="SquirrelJME: Call to API defined deprecated method." text="@cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated&#10;$ReturnType$ $Method$($ParameterType$ $Parameter$);" recursive="true" caseInsensitive="true" type="JAVA" pattern_context="member">
         <constraint name="__context__" within="" contains="" />
         <constraint name="ReturnType" within="" contains="" />
@@ -607,20 +607,20 @@
         <constraint name="code" within="" contains="" />
         <constraint name="message" within="" contains="" />
       </searchConfiguration>
-      <searchConfiguration name="SquirrelJME: Error definition" uuid="64b983f1-24ea-3e21-ab1a-d1f799d73f9b" order="1" text="&quot;$code$&quot;" recursive="true" caseInsensitive="true" type="JAVA" pattern_context="default">
+      <searchConfiguration name="SquirrelJME: Error definition" uuid="64b983f1-24ea-3e21-ab1a-d1f799d73f9b" text="&quot;$code$&quot;" recursive="true" caseInsensitive="true" type="JAVA" pattern_context="default">
         <constraint name="__context__" within="" contains="" />
         <constraint name="code" regexp="[A-Z]{2}[0-9a-z]{2}" within="" contains="" />
       </searchConfiguration>
-      <searchConfiguration name="SquirrelJME: Error definition" uuid="64b983f1-24ea-3e21-ab1a-d1f799d73f9b" order="2" text="&quot;$code$&quot;" recursive="true" caseInsensitive="true" type="JAVA" pattern_context="default">
+      <searchConfiguration name="SquirrelJME: Error definition" uuid="64b983f1-24ea-3e21-ab1a-d1f799d73f9b" text="&quot;$code$&quot;" recursive="true" caseInsensitive="true" type="JAVA" pattern_context="default">
         <constraint name="__context__" within="" contains="" />
         <constraint name="code" regexp="[A-Z]{2}[0-9a-z]{2} (%[^ ])+" within="" contains="" />
       </searchConfiguration>
-      <searchConfiguration name="SquirrelJME: Error definition" uuid="64b983f1-24ea-3e21-ab1a-d1f799d73f9b" order="3" text="cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__($format$, $args$)" recursive="true" caseInsensitive="false" type="JAVA" pattern_context="default" search_injected="false">
+      <searchConfiguration name="SquirrelJME: Error definition" uuid="64b983f1-24ea-3e21-ab1a-d1f799d73f9b" text="cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__($format$, $args$)" recursive="true" caseInsensitive="false" type="JAVA" pattern_context="default" search_injected="false">
         <constraint name="__context__" within="" contains="" />
         <constraint name="format" regexp="[0-9]+" within="" contains="" />
         <constraint name="args" minCount="0" maxCount="2147483647" within="" contains="" />
       </searchConfiguration>
-      <searchConfiguration name="SquirrelJME: Error definition" uuid="64b983f1-24ea-3e21-ab1a-d1f799d73f9b" order="4" text="cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__($format$)" recursive="true" caseInsensitive="false" type="JAVA" pattern_context="default" search_injected="false">
+      <searchConfiguration name="SquirrelJME: Error definition" uuid="64b983f1-24ea-3e21-ab1a-d1f799d73f9b" text="cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__($format$)" recursive="true" caseInsensitive="false" type="JAVA" pattern_context="default" search_injected="false">
         <constraint name="__context__" within="" contains="" />
         <constraint name="format" regexp="[0-9]+" within="" contains="" />
       </searchConfiguration>
@@ -629,12 +629,12 @@
         <constraint name="Class" target="true" within="" contains="" />
         <constraint name="Interface" regexp="java.io.Flushable" within="" contains="" />
       </searchConfiguration>
-      <searchConfiguration name="SquirrelJME: Flushable does not exist in Java ME, cannot implement or extend it." uuid="9be1bd10-89f8-3737-88e5-9b5e0640e57e" order="1" text="interface $Class$ extends $Interface$ {}" recursive="true" caseInsensitive="true" type="JAVA" pattern_context="default">
+      <searchConfiguration name="SquirrelJME: Flushable does not exist in Java ME, cannot implement or extend it." uuid="9be1bd10-89f8-3737-88e5-9b5e0640e57e" text="interface $Class$ extends $Interface$ {}" recursive="true" caseInsensitive="true" type="JAVA" pattern_context="default">
         <constraint name="__context__" within="" contains="" />
         <constraint name="Class" target="true" within="" contains="" />
         <constraint name="Interface" regexp="java.io.Flushable" within="" contains="" />
       </searchConfiguration>
-      <searchConfiguration name="SquirrelJME: Flushable does not exist in Java ME, cannot implement or extend it." uuid="9be1bd10-89f8-3737-88e5-9b5e0640e57e" order="2" text="((java.io.Flushable)$instance$).flush()" recursive="true" caseInsensitive="true" type="JAVA" pattern_context="default">
+      <searchConfiguration name="SquirrelJME: Flushable does not exist in Java ME, cannot implement or extend it." uuid="9be1bd10-89f8-3737-88e5-9b5e0640e57e" text="((java.io.Flushable)$instance$).flush()" recursive="true" caseInsensitive="true" type="JAVA" pattern_context="default">
         <constraint name="__context__" within="" contains="" />
         <constraint name="instance" within="" contains="" />
       </searchConfiguration>
@@ -643,7 +643,7 @@
         <constraint name="code" regexp="[A-Z]{2}[0-9a-z]{2}" within="" contains="" />
         <constraint name="message" within="" contains="" />
       </searchConfiguration>
-      <searchConfiguration name="SquirrelJME: Old-style error code." order="1" text="cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__(&quot;$code$&quot;)" recursive="true" caseInsensitive="true" type="JAVA" pattern_context="default">
+      <searchConfiguration name="SquirrelJME: Old-style error code." text="cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__(&quot;$code$&quot;)" recursive="true" caseInsensitive="true" type="JAVA" pattern_context="default">
         <constraint name="__context__" within="" contains="" />
         <constraint name="code" regexp="[A-Z]{2}[0-9a-z]{2}" within="" contains="" />
       </searchConfiguration>
@@ -654,32 +654,32 @@
         <constraint name="format" regexp="[A-Z]{2}[a-z0-9]{2} (%[^ ] *)+" within="" contains="" />
         <constraint name="cause" minCount="0" within="" contains="" />
       </replaceConfiguration>
-      <replaceConfiguration name="SquirrelJME: Parameterized string in error should be __error__." uuid="a5974be9-ecc1-37f0-8b8c-6f23c72c1291" order="1" text="new $throwable$(java.lang.String.format(&quot;$format$&quot;, $args$))" recursive="false" caseInsensitive="true" type="JAVA" pattern_context="default" reformatAccordingToStyle="false" shortenFQN="true" useStaticImport="true" replacement="new $throwable$(cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__(&quot;$format$&quot;, $args$))">
+      <replaceConfiguration name="SquirrelJME: Parameterized string in error should be __error__." uuid="a5974be9-ecc1-37f0-8b8c-6f23c72c1291" text="new $throwable$(java.lang.String.format(&quot;$format$&quot;, $args$))" recursive="false" caseInsensitive="true" type="JAVA" pattern_context="default" reformatAccordingToStyle="false" shortenFQN="true" useStaticImport="true" replacement="new $throwable$(cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__(&quot;$format$&quot;, $args$))">
         <constraint name="__context__" within="" contains="" />
         <constraint name="args" minCount="0" maxCount="2147483647" within="" contains="" />
         <constraint name="throwable" regexp="java.lang.Throwable" withinHierarchy="true" within="" contains="" />
         <constraint name="format" regexp="[A-Z]{2}[a-z0-9]{2} (%[^ ])+" within="" contains="" />
       </replaceConfiguration>
-      <replaceConfiguration name="SquirrelJME: Parameterized string in error should be __error__." uuid="a5974be9-ecc1-37f0-8b8c-6f23c72c1291" order="2" text="new $throwable$(&quot;$format$&quot; + $args$, $cause$)" recursive="false" caseInsensitive="true" type="JAVA" pattern_context="default" reformatAccordingToStyle="false" shortenFQN="true" useStaticImport="true" replacement="new $throwable$(cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__(&quot;$format$&quot;, $args$), $cause$)">
+      <replaceConfiguration name="SquirrelJME: Parameterized string in error should be __error__." uuid="a5974be9-ecc1-37f0-8b8c-6f23c72c1291" text="new $throwable$(&quot;$format$&quot; + $args$, $cause$)" recursive="false" caseInsensitive="true" type="JAVA" pattern_context="default" reformatAccordingToStyle="false" shortenFQN="true" useStaticImport="true" replacement="new $throwable$(cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__(&quot;$format$&quot;, $args$), $cause$)">
         <constraint name="__context__" within="" contains="" />
         <constraint name="throwable" within="" contains="" />
         <constraint name="cause" minCount="0" within="" contains="" />
         <constraint name="format" regexp="[A-Z]{2}[a-z0-9]{2} *" within="" contains="" />
         <constraint name="args" maxCount="2147483647" within="" contains="" />
       </replaceConfiguration>
-      <replaceConfiguration name="SquirrelJME: Parameterized string in error should be __error__." uuid="a5974be9-ecc1-37f0-8b8c-6f23c72c1291" order="3" text="new $throwable$(&quot;$format$&quot; + $args$)" recursive="false" caseInsensitive="true" type="JAVA" pattern_context="default" reformatAccordingToStyle="false" shortenFQN="true" useStaticImport="true" replacement="new $throwable$(cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__(&quot;$format$&quot;, $args$))">
+      <replaceConfiguration name="SquirrelJME: Parameterized string in error should be __error__." uuid="a5974be9-ecc1-37f0-8b8c-6f23c72c1291" text="new $throwable$(&quot;$format$&quot; + $args$)" recursive="false" caseInsensitive="true" type="JAVA" pattern_context="default" reformatAccordingToStyle="false" shortenFQN="true" useStaticImport="true" replacement="new $throwable$(cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__(&quot;$format$&quot;, $args$))">
         <constraint name="__context__" within="" contains="" />
         <constraint name="throwable" within="" contains="" />
         <constraint name="format" regexp="[A-Z]{2}[a-z0-9]{2} *" within="" contains="" />
         <constraint name="args" maxCount="2147483647" within="" contains="" />
       </replaceConfiguration>
-      <replaceConfiguration name="SquirrelJME: Parameterized string in error should be __error__." uuid="a5974be9-ecc1-37f0-8b8c-6f23c72c1291" order="4" text="new $throwable$(&quot;$format$&quot;, $cause$)" recursive="false" caseInsensitive="true" type="JAVA" pattern_context="default" reformatAccordingToStyle="false" shortenFQN="true" useStaticImport="true" replacement="new $throwable$(cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__(&quot;$format$&quot;), $cause$)">
+      <replaceConfiguration name="SquirrelJME: Parameterized string in error should be __error__." uuid="a5974be9-ecc1-37f0-8b8c-6f23c72c1291" text="new $throwable$(&quot;$format$&quot;, $cause$)" recursive="false" caseInsensitive="true" type="JAVA" pattern_context="default" reformatAccordingToStyle="false" shortenFQN="true" useStaticImport="true" replacement="new $throwable$(cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__(&quot;$format$&quot;), $cause$)">
         <constraint name="__context__" within="" contains="" />
         <constraint name="throwable" regexp="java.lang.Throwable" withinHierarchy="true" within="" contains="" />
         <constraint name="format" regexp="[A-Z]{2}[a-z0-9]{2} *" within="" contains="" />
         <constraint name="cause" minCount="0" within="" contains="" />
       </replaceConfiguration>
-      <replaceConfiguration name="SquirrelJME: Parameterized string in error should be __error__." uuid="a5974be9-ecc1-37f0-8b8c-6f23c72c1291" order="5" text="new $throwable$(&quot;$format$&quot;)" recursive="false" caseInsensitive="true" type="JAVA" pattern_context="default" reformatAccordingToStyle="false" shortenFQN="true" useStaticImport="true" replacement="new $throwable$(cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__(&quot;$format$&quot;))">
+      <replaceConfiguration name="SquirrelJME: Parameterized string in error should be __error__." uuid="a5974be9-ecc1-37f0-8b8c-6f23c72c1291" text="new $throwable$(&quot;$format$&quot;)" recursive="false" caseInsensitive="true" type="JAVA" pattern_context="default" reformatAccordingToStyle="false" shortenFQN="true" useStaticImport="true" replacement="new $throwable$(cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__(&quot;$format$&quot;))">
         <constraint name="__context__" within="" contains="" />
         <constraint name="throwable" regexp="java.lang.Throwable" withinHierarchy="true" within="" contains="" />
         <constraint name="format" regexp="[A-Z]{2}[a-z0-9]{2} *" within="" contains="" />
@@ -688,33 +688,37 @@
         <constraint name="__context__" within="" contains="" />
         <constraint name="value" within="" contains="" />
       </searchConfiguration>
-      <searchConfiguration name="SquirrelJME: Serializable is not supported." order="1" text="class $Class$ implements $Interface$ {}" recursive="true" caseInsensitive="true" type="JAVA" pattern_context="default">
+      <searchConfiguration name="SquirrelJME: Serializable is not supported." text="class $Class$ implements $Interface$ {}" recursive="true" caseInsensitive="true" type="JAVA" pattern_context="default">
         <constraint name="__context__" within="" contains="" />
         <constraint name="Class" target="true" within="" contains="" />
         <constraint name="Interface" regexp="java.io.Serializable" within="" contains="" />
       </searchConfiguration>
-      <searchConfiguration name="SquirrelJME: Serializable is not supported." order="2" text="interface $Class$ extends $Interface$ {}" recursive="true" caseInsensitive="true" type="JAVA" pattern_context="default">
+      <searchConfiguration name="SquirrelJME: Serializable is not supported." text="interface $Class$ extends $Interface$ {}" recursive="true" caseInsensitive="true" type="JAVA" pattern_context="default">
         <constraint name="__context__" within="" contains="" />
         <constraint name="Class" target="true" within="" contains="" />
         <constraint name="Interface" regexp="java.io.Serializable" within="" contains="" />
       </searchConfiguration>
-      <searchConfiguration name="SquirrelJME: Serializable is not supported." order="3" text="$ReturnType$ writeObject$(java.io.ObjectOutputStream $Parameter$);" recursive="true" caseInsensitive="true" type="JAVA" pattern_context="member">
+      <searchConfiguration name="SquirrelJME: Serializable is not supported." text="$ReturnType$ writeObject$(java.io.ObjectOutputStream $Parameter$);" recursive="true" caseInsensitive="true" type="JAVA" pattern_context="member">
         <constraint name="__context__" within="" contains="" />
         <constraint name="ReturnType" within="" contains="" />
         <constraint name="Parameter" within="" contains="" />
       </searchConfiguration>
-      <searchConfiguration name="SquirrelJME: Serializable is not supported." order="4" text="$ReturnType$ readObject(java.io.ObjectInputStream $Parameter$);" recursive="true" caseInsensitive="true" type="JAVA" pattern_context="member">
+      <searchConfiguration name="SquirrelJME: Serializable is not supported." text="$ReturnType$ readObject(java.io.ObjectInputStream $Parameter$);" recursive="true" caseInsensitive="true" type="JAVA" pattern_context="member">
         <constraint name="__context__" within="" contains="" />
         <constraint name="ReturnType" within="" contains="" />
         <constraint name="Parameter" within="" contains="" />
       </searchConfiguration>
-      <searchConfiguration name="SquirrelJME: Serializable is not supported." order="5" text="$ReturnType$ readObjectNoData();" recursive="true" caseInsensitive="true" type="JAVA" pattern_context="member">
+      <searchConfiguration name="SquirrelJME: Serializable is not supported." text="$ReturnType$ readObjectNoData();" recursive="true" caseInsensitive="true" type="JAVA" pattern_context="member">
         <constraint name="__context__" within="" contains="" />
         <constraint name="ReturnType" within="" contains="" />
       </searchConfiguration>
       <replaceConfiguration name="SquirrelJME: Thrown Error TODO instead of Debugging.todo()." suppressId="squirreljme_thrownErrorToDo" problemDescriptor="SquirrelJME: Thrown Error TODO instead of Debugging.todo()." text="throw new Error(&quot;TODO&quot;);" recursive="false" caseInsensitive="true" type="JAVA" pattern_context="default" reformatAccordingToStyle="false" shortenFQN="true" replacement="throw Debugging.todo();">
         <constraint name="__context__" within="" contains="" />
       </replaceConfiguration>
+      <searchConfiguration name="SquirrelJME: TODO Thrown" description="TODO Thrown" suppressId="squirreljme_thrown_todo" problemDescriptor="SquirrelJME: TODO Thrown" text="throw cc.squirreljme.runtime.cldc.debug.Debugging.todo($any$);" recursive="true" caseInsensitive="false" type="JAVA" pattern_context="default">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="any" minCount="0" maxCount="2147483647" within="" contains="" />
+      </searchConfiguration>
     </inspection_tool>
     <inspection_tool class="SamePackageImport" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="ShellCheck" enabled="false" level="ERROR" enabled_by_default="false" />
@@ -805,6 +809,7 @@
     </inspection_tool>
     <inspection_tool class="VariableTypeCanBeExplicit" enabled="false" level="INFORMATION" enabled_by_default="false" />
     <inspection_tool class="WaitNotifyNotInSynchronizedContext" enabled="true" level="WEAK WARNING" enabled_by_default="true" editorAttributes="INFO_ATTRIBUTES" />
+    <inspection_tool class="a0354417-3b94-3018-9ae2-d07f9a5a442a" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="ced03fc8-111a-390f-8655-ed7465debd5f" enabled="true" level="GRAMMAR_ERROR" enabled_by_default="true" editorAttributes="TEXT_STYLE_ERROR" />
     <inspection_tool class="f93a96c1-2c44-3074-aa46-c5bbec2c6b07" enabled="true" level="ERROR" enabled_by_default="true" editorAttributes="ERRORS_ATTRIBUTES" />
     <inspection_tool class="unused" enabled="true" level="WARNING" enabled_by_default="true" checkParameterExcludingHierarchy="false" test_entries="false">
@@ -818,6 +823,7 @@
       <option name="ADD_APPLET_TO_ENTRIES" value="true" />
       <option name="ADD_SERVLET_TO_ENTRIES" value="true" />
       <option name="ADD_NONJAVA_TO_ENTRIES" value="true" />
+      <option name="selected" value="true" />
     </inspection_tool>
   </profile>
 </component>

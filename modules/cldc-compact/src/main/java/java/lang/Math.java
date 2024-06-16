@@ -13,6 +13,7 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.FDMLMath;
+import java.util.Random;
 
 /**
  * This class contains mathematical functions.
@@ -196,22 +197,55 @@ public final strictfp class Math
 		return __b;
 	}
 	
+	/**
+	 * Returns the higher of the two values.
+	 *
+	 * @param __a The first.
+	 * @param __b The second.
+	 * @return The higher value.
+	 * @since 2024/03/05
+	 */
 	@Api
+	@SuppressWarnings("ManualMinMaxCalculation")
 	public static strictfp long max(long __a, long __b)
 	{
-		throw Debugging.todo();
+		if (__a > __b)
+			return __a;
+		return __b;
 	}
 	
+	/**
+	 * Returns the higher of the two values.
+	 *
+	 * @param __a The first.
+	 * @param __b The second.
+	 * @return The higher value.
+	 * @since 2024/03/05
+	 */
 	@Api
+	@SuppressWarnings("ManualMinMaxCalculation")
 	public static strictfp float max(float __a, float __b)
 	{
-		throw Debugging.todo();
+		if (__a > __b)
+			return __a;
+		return __b;
 	}
 	
+	/**
+	 * Returns the higher of the two values.
+	 *
+	 * @param __a The first.
+	 * @param __b The second.
+	 * @return The higher value.
+	 * @since 2024/03/05
+	 */
 	@Api
+	@SuppressWarnings("ManualMinMaxCalculation")
 	public static strictfp double max(double __a, double __b)
 	{
-		throw Debugging.todo();
+		if (__a > __b)
+			return __a;
+		return __b;
 	}
 	
 	/**
@@ -282,10 +316,19 @@ public final strictfp class Math
 		return __b;
 	}
 	
+	/**
+	 * Returns a random number using the same means
+	 * as {@link Random#nextDouble()}. A new instance of {@link Random} is
+	 * created just to obtain the value, so its seed will be the same
+	 * as specified in {@link Random#Random()}.
+	 *
+	 * @return The same as {@link Random#nextDouble()}.
+	 * @since 2024/03/05
+	 */
 	@Api
 	public static strictfp double random()
 	{
-		throw Debugging.todo();
+		return new Random().nextDouble();
 	}
 	
 	@Api

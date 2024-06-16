@@ -24,6 +24,7 @@ import java.util.Set;
  */
 public final class InstructionJumpTargets
 	extends AbstractList<InstructionJumpTarget>
+	implements Contexual
 {
 	/** Normal jumps. */
 	private final InstructionJumpTarget[] _normal;

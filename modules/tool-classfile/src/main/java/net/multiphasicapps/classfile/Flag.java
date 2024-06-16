@@ -15,6 +15,7 @@ package net.multiphasicapps.classfile;
  * @since 2016/04/23
  */
 public interface Flag
+	extends Contexual
 {
 	/**
 	 * Returns the bit mask of the given flag.

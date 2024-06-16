@@ -43,13 +43,17 @@ public class SwingItemCanvas
 		final __PaintingPanel__ panel = new __PaintingPanel__(this);
 		this.panel = panel;
 		
-		panel.addComponentListener(new HandleComponentEvents(this));
-		panel.addKeyListener(new HandleKeyEvents(this));
+		// Setup key handler with optional controller support
+		HandleKeyEvents keyHandler = new HandleKeyEvents(this);
 		
-		// We control all of the drawn pixels here
+		// Add basic listener
+		panel.addComponentListener(new HandleComponentEvents(this));
+		panel.addKeyListener(keyHandler);
+		
+		// We control all the drawn pixels here
 		panel.setOpaque(true);
 		
-		// Allow this to be focused so it can have key events within
+		// Allow this to be focused, so it can have key events within
 		panel.setFocusable(true);
 		panel.setRequestFocusEnabled(true);
 		panel.setFocusTraversalKeysEnabled(true);

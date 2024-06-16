@@ -24,6 +24,7 @@ import cc.squirreljme.jdwp.host.trips.JDWPTripField;
 import cc.squirreljme.jdwp.host.trips.JDWPTripThread;
 import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.vm.springcoat.brackets.TypeObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringArithmeticException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassCastException;
@@ -39,6 +40,8 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchFieldException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchMethodException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNullPointerException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Map;
@@ -1152,6 +1155,28 @@ public final class SpringThreadWorker
 		
 		// Return the resulting object
 		return rv;
+	}
+	
+	/**
+	 * Proxies an input stream.
+	 *
+	 * @param __in The stream to proxy.
+	 * @return The proxied stream.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/03/05
+	 */
+	public SpringObject proxyInputStream(InputStream __in)
+		throws IOException, NullPointerException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		// Use this as the stream input
+		return this.newInstance(this.loadClass(
+			"java/io/ByteArrayInputStream"),
+			new MethodDescriptor("([B)V"),
+			this.asVMObject(StreamUtils.readAll(__in)));
 	}
 	
 	/**
@@ -3959,15 +3984,7 @@ public final class SpringThreadWorker
 		null.} */
 		SpringObject instance = (SpringObject)args[0];
 		if (instance == null || instance == SpringNullObject.NULL)
-		{
-			SpringNullPointerException toss =
-				new SpringNullPointerException("BK39");
-			
-			Debugging.debugNote("Class is incorrect?");
-			toss.printStackTrace(System.err);
-			
-			throw toss;
-		}
+			throw new SpringNullPointerException("BK39");
 		
 		// Re-resolve method for this object's class
 		refmethod = instance.type().lookupMethod(false,

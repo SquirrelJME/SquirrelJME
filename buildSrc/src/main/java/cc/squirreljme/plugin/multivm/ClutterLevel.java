@@ -50,6 +50,19 @@ public enum ClutterLevel
 	}
 	
 	/**
+	 * Returns the proper noun of the clutter level.
+	 *
+	 * @return The proper noun of the clutter level.
+	 * @since 2024/03/04
+	 */
+	public String properNoun()
+	{
+		if (this == ClutterLevel.RELEASE)
+			return "Release";
+		return "Debug";
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2023/01/28
 	 */

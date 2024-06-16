@@ -25,6 +25,7 @@ import java.util.Arrays;
  * @since 2017/06/08
  */
 public final class Pool
+	implements Contexual
 {
 	/** The UTF constant tag. */
 	public static final int TAG_UTF8 =
@@ -86,6 +87,9 @@ public final class Pool
 	public static final int TAG_WIDETOP =
 		-1;
 	
+	/** Combined raw data. */
+	private final Object[] _combined;
+	
 	/** Entries within the constant pool. */
 	private final Object[] _entries;
 	
@@ -99,13 +103,15 @@ public final class Pool
 	 * Parses and initializes the constant pool structures.
 	 *
 	 * @param __rawBytes Raw constant pool bytes.
+	 * @param __combined Combined data.
 	 * @param __tags The pool tags.
 	 * @param __e The entries which make up the pool, this is used directly.
 	 * @since 2017/06/08
 	 */
-	Pool(byte[] __rawBytes, int[] __tags, Object... __e)
+	Pool(byte[] __rawBytes, Object[] __combined, int[] __tags, Object... __e)
 	{
 		this._rawBytes = __rawBytes;
+		this._combined = __combined;
 		this._tags = __tags;
 		this._entries = (__e == null ? new Object[0] : __e);
 	}
@@ -139,7 +145,7 @@ public final class Pool
 		Object[] entries = this._entries;
 		if (__i < 0 || __i >= entries.length)
 			throw new InvalidClassFormatException(
-				String.format("JC3o %d", __i));
+				String.format("JC3o %d", __i), this);
 		
 		/* {@squirreljme.error JC3p The specified entry's class is not of the
 		expected class. (The index of the entry; The class the entry is; The
@@ -147,7 +153,7 @@ public final class Pool
 		Object val = entries[__i];
 		if (val != null && !__cl.isInstance(val))
 			throw new InvalidClassFormatException(
-				String.format("JC3p %d %s %s", __i, val.getClass(), __cl));
+				String.format("JC3p %d %s %s", __i, val.getClass(), __cl), this);
 		
 		return __cl.cast(val);
 	}
@@ -161,6 +167,23 @@ public final class Pool
 	public byte[] rawData()
 	{
 		return this._rawBytes;
+	}
+	
+	/**
+	 * Returns the raw data for the given entry.
+	 *
+	 * @param __i The index.
+	 * @return The raw data.
+	 * @since 2024/06/09
+	 */
+	public Object rawData(int __i)
+	{
+		Object[] combined = this._combined;
+		if (__i < 0 || __i >= combined.length)
+			throw new InvalidClassFormatException(
+				String.format("JC3o %d", __i), this);
+		
+		return combined[__i];
 	}
 	
 	/**
@@ -184,7 +207,7 @@ public final class Pool
 		C rv = this.<C>get(__cl, __i);
 		if (rv == null)
 			throw new InvalidClassFormatException(
-				String.format("JC3q %d %s", __i, __cl));
+				String.format("JC3q %d %s", __i, __cl), this);
 		return rv;
 	}
 	
@@ -254,6 +277,9 @@ public final class Pool
 			count = __in.readUnsignedShort();
 		else
 			count = __count;
+		
+		// Raw parsed data
+		Object[] combinedData = new Object[count];
 		
 		// Read the raw constant pool contents first
 		int[] tags = new int[count];
@@ -376,6 +402,9 @@ public final class Pool
 			}
 			rawdata[i] = data;
 			
+			// Combine
+			combinedData[i] = data;
+			
 			// Skip long/double?
 			if (tag == Pool.TAG_LONG || tag == Pool.TAG_DOUBLE)
 			{
@@ -400,7 +429,7 @@ public final class Pool
 		}
 		
 		// Setup
-		return new Pool(rawBytes.toByteArray(), tags, entries);
+		return new Pool(rawBytes.toByteArray(), combinedData, tags, entries);
 	}
 	
 	/**

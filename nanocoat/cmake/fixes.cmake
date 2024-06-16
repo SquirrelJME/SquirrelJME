@@ -244,3 +244,47 @@ macro(squirreljme_static_executable target)
 		#	"/NODEFAULTLIB:library")
 	endif()
 endmacro()
+
+# Force a specific name for the output resultant binary
+macro(squirreljme_target_binary_name target what)
+	# Base properties
+	set_target_properties(${target} PROPERTIES
+		RUNTIME_OUTPUT_NAME "${what}"
+		LIBRARY_OUTPUT_NAME "${what}"
+		ARCHIVE_OUTPUT_NAME "${what}")
+
+	# Then for each configuration
+	foreach(outputConfig ${CMAKE_CONFIGURATION_TYPES})
+		string(TOUPPER "${outputConfig}" outputConfig)
+
+		set_target_properties(${target} PROPERTIES
+			RUNTIME_OUTPUT_NAME_${outputConfig} "${what}"
+			LIBRARY_OUTPUT_NAME_${outputConfig} "${what}"
+			ARCHIVE_OUTPUT_NAME_${outputConfig} "${what}")
+	endforeach()
+endmacro()
+
+# Need to set specific locations for output libraries?
+# Note that RUNTIME_OUTPUT_DIRECTORY is needed for the Windows build to output
+# directories since .DLL files are output there and not where shared libraries
+# go??? No idea really.
+macro(squirreljme_target_binary_output target where)
+	set_target_properties(${target} PROPERTIES
+		RUNTIME_OUTPUT_DIRECTORY "${where}"
+		LIBRARY_OUTPUT_DIRECTORY "${where}"
+		ARCHIVE_OUTPUT_DIRECTORY "${where}")
+
+	foreach(outputConfig ${CMAKE_CONFIGURATION_TYPES})
+		string(TOUPPER "${outputConfig}" outputConfig)
+
+		set_target_properties(${target} PROPERTIES
+			RUNTIME_OUTPUT_DIRECTORY_${outputConfig} "${where}"
+			LIBRARY_OUTPUT_DIRECTORY_${outputConfig} "${where}"
+			ARCHIVE_OUTPUT_DIRECTORY_${outputConfig} "${where}")
+	endforeach()
+endmacro()
+
+# Turn some warnings into errors
+if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+	add_compile_options("-Werror=implicit-function-declaration")
+endif()

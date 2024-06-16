@@ -179,14 +179,14 @@ public class ClassFlags
 			(The class flags)} */
 			if (!this.isAbstract())
 				throw new InvalidClassFormatException(
-					String.format("JC2f %s", this));
+					String.format("JC2f %s", this), this);
 			
 			/* {@squirreljme.error JC2g An interface cannot be {@code final} or
 			{@code enum} and it must not have the special flag set. (The
 			class flags)} */
 			if (this.isFinal() || this.isSpecialInvokeSpecial() || this.isEnum())
 				throw new InvalidClassFormatException(
-					String.format("JC2g %s", this));
+					String.format("JC2g %s", this), this);
 		}
 		
 		// Normal class
@@ -196,13 +196,13 @@ public class ClassFlags
 			class flags)} */
 			if (this.isAnnotation())
 				throw new InvalidClassFormatException(
-					String.format("JC2h %s", this));
+					String.format("JC2h %s", this), this);
 				
 			/* {@squirreljme.error JC2i A class cannot be both {@code abstract} */
 			// and {@code final}. (The class flags)}
 			if (this.isAbstract() && this.isFinal())
 				throw new InvalidClassFormatException(
-					String.format("JC2i %s", this));
+					String.format("JC2i %s", this), this);
 		}
 	}
 }

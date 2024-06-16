@@ -15,6 +15,7 @@ package net.multiphasicapps.classfile;
  * @since 2017/06/09
  */
 public final class UTFConstantEntry
+	implements Contexual
 {
 	/** The string representation. */
 	protected final String string;

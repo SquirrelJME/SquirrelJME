@@ -72,7 +72,7 @@ bad idea.
 
 The following system property can be set:
 
- * ` `
+ * `net.multiphasicapps.tac.resultManifest=true`
 
 ## Expectation Specifiers
 

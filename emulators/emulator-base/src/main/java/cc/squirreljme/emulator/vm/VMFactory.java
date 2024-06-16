@@ -14,18 +14,23 @@ import cc.squirreljme.jdwp.host.JDWPHostFactory;
 import cc.squirreljme.jvm.launch.Application;
 import cc.squirreljme.jvm.launch.AvailableSuites;
 import cc.squirreljme.jvm.launch.SuiteScanner;
+import cc.squirreljme.jvm.manifest.JavaManifest;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.suite.EntryPoint;
 import cc.squirreljme.jvm.suite.SuiteUtils;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.full.SystemPathProvider;
 import cc.squirreljme.vm.DataContainerLibrary;
 import cc.squirreljme.vm.JarClassLibrary;
 import cc.squirreljme.vm.NameOverrideClassLibrary;
 import cc.squirreljme.vm.SummerCoatJarLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.StreamTokenizer;
+import java.io.StringReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.FileVisitOption;
@@ -43,6 +48,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.jar.Manifest;
 
@@ -79,6 +85,10 @@ public abstract class VMFactory
 	/** Internal JAR directory root. */
 	private static final String STANDALONE_DIRECTORY =
 		"X-SquirrelJME-Standalone-Internal-Jar-Root";
+	
+	/** Internal JAR directory root (debug). */
+	private static final String STANDALONE_DIRECTORY_DEBUG =
+		"X-SquirrelJME-Standalone-Internal-Debug-Jar-Root";
 	
 	/** The separator character. */
 	private static final char SEPARATOR_CHAR;
@@ -160,13 +170,13 @@ public abstract class VMFactory
 		VMThreadModel threadModel = VMThreadModel.DEFAULT;
 		
 		// Load our own META-INF/MANIFEST.MF for some special properties
-		Manifest metaManifest = null;
+		JavaManifest metaManifest = null;
 		try (InputStream in = VMFactory.class
 			.getResourceAsStream("/META-INF/MANIFEST.MF"))
 		{
 			Debugging.debugNote("GOT MANIFEST: %s", in);
 			if (in != null)
-				metaManifest = new Manifest(in);
+				metaManifest = new JavaManifest(in);
 		}
 		catch (IOException e)
 		{
@@ -181,6 +191,15 @@ public abstract class VMFactory
 		String rawJarPath = null;
 		String rawJarEntry = null;
 		
+		// Clutter level of the library
+		String clutterLevel = "release";
+		
+		// Load in standard system properties
+		VMFactory.__standardSysProps(systemProperties);
+		
+		// Load in standard paths
+		VMFactory.__standardPaths(libraries);
+		
 		// Command line format is:
 		// -Xemulator:(vm)
 		// -Xsnapshot:(path-to-nps)
@@ -190,6 +209,7 @@ public abstract class VMFactory
 		// -Xthread:(single|coop|multi|smt)
 		// -Dsysprop=value
 		// -classpath (class:path:...)
+		// -Xclutter:(release|debug)
 		// -Xtrace=(flag|...)
 		// Optionally `-jar`
 		// Main-class
@@ -275,6 +295,10 @@ public abstract class VMFactory
 				initTraceBits = VMTraceFlagTracker.parseBits(
 					item.substring("-Xtrace:".length()));
 			}
+			
+			// Clutter level to use
+			else if (item.startsWith("-Xclutter:"))
+				clutterLevel = item.substring("-Xclutter:".length());
 			
 			// JARs to load
 			else if (item.equals("-classpath") || item.equals("-cp"))
@@ -384,8 +408,13 @@ public abstract class VMFactory
 		ResourceBasedSuiteManager standaloneDir = null;
 		if (metaManifest != null)
 		{
-			String prefix = metaManifest.getMainAttributes()
-				.getValue(VMFactory.STANDALONE_DIRECTORY);
+			String prefix;
+			if (Objects.equals("debug", clutterLevel))
+				prefix = metaManifest.getMainAttributes()
+					.getValue(VMFactory.STANDALONE_DIRECTORY_DEBUG);
+			else
+				prefix = metaManifest.getMainAttributes()
+					.getValue(VMFactory.STANDALONE_DIRECTORY);
 			
 			// If it exists, use it!
 			if (prefix != null)
@@ -730,32 +759,67 @@ public abstract class VMFactory
 			return;
 		}
 		
-		// Try searching for JAR files in a directory
+		// Try multiple different wildcard types
+		String basePath;
+		if (__path.startsWith("wildcard="))
+			basePath = __path.substring("wildcard=".length());
+		else if (__path.endsWith("*.*"))
+			basePath = __path.substring(0, __path.length() - 3);
+		else if (__path.endsWith("**"))
+			basePath = __path.substring(0, __path.length() - 2);
+		else
+			basePath = __path.substring(0, __path.length() - 1);
+		
+		// Realize it
+		VMFactory.__addPathsWildcard(__files, basePath);
+	}
+	
+	/**
+	 * Adds wildcard directory.
+	 *
+	 * @param __files The files to place into.
+	 * @param __basePath The base path.
+	 * @since 2024/02/25
+	 */
+	private static void __addPathsWildcard(Collection<String> __files,
+		String __basePath)
+		throws NullPointerException
+	{
+		if (__files == null || __basePath == null)
+			throw new NullPointerException("NARG");
+		
+		VMFactory.__addPathsWildcard(__files, Paths.get(__basePath));
+	}
+	
+	/**
+	 * Adds wildcard directory.
+	 *
+	 * @param __files The files to place into.
+	 * @param __basePath The base path.
+	 * @since 2024/02/25
+	 */
+	private static void __addPathsWildcard(Collection<String> __files,
+		Path __basePath)
+		throws NullPointerException
+	{
+		if (__files == null || __basePath == null)
+			throw new NullPointerException("NARG");
+		
 		try
 		{
-			// Try multiple different wildcard types
-			String basePath;
-			if (__path.startsWith("wildcard="))
-				basePath = __path.substring("wildcard=".length());
-			else if (__path.endsWith("*.*"))
-				basePath = __path.substring(0, __path.length() - 3);
-			else if (__path.endsWith("**"))
-				basePath = __path.substring(0, __path.length() - 2);
-			else
-				basePath = __path.substring(0, __path.length() - 1);
+			// Ignore if not a directory
+			if (!Files.isDirectory(__basePath))
+				return;
 			
-			// Realize it
-			Path startPath = Paths.get(basePath);
-			Files.walkFileTree(startPath,
+			Files.walkFileTree(__basePath,
 				new HashSet<FileVisitOption>(
 					Arrays.asList(FileVisitOption.FOLLOW_LINKS)),
 				64,
 				new __JarWalker__(__files));
 		}
-		catch (IOException e)
+		catch (IOException __e)
 		{
-			throw new RuntimeException(String.format(
-				"Could not load wildcard JARs: %s", __path), e);
+			__e.printStackTrace();
 		}
 	}
 	
@@ -946,6 +1010,152 @@ public abstract class VMFactory
 		
 		// Not found, does nothing
 		return null;
+	}
+	
+	/**
+	 * Load in standard paths.
+	 *
+	 * @param __libraries The libraries to load into.
+	 * @since 2024/02/25
+	 */
+	private static void __standardPaths(Collection<String> __libraries)
+	{
+		// Class path to the environment?
+		String classPath = System.getenv("SQUIRRELJME_CLASSPATH");
+		if (classPath != null)
+			for (String path : VMFactory.__unSeparateClassPath(classPath))
+				VMFactory.__addPathsWildcard(__libraries, path);
+		
+		// Java Home Directory?
+		String rawJavaHome = System.getenv("SQUIRRELJME_JAVA_HOME");
+		if (rawJavaHome != null)
+		{
+			Path javaHome = Paths.get(rawJavaHome);
+			
+			VMFactory.__addPathsWildcard(__libraries,
+				javaHome.resolve("lib"));
+			VMFactory.__addPathsWildcard(__libraries,
+				javaHome.resolve("jre").resolve("lib"));
+		}
+		
+		// Standard data libraries?
+		SystemPathProvider paths = SystemPathProvider.provider();
+		Path dataPath = paths.data();
+		if (dataPath != null)
+			VMFactory.__addPathsWildcard(__libraries,
+				dataPath.resolve("lib"));
+	}
+	
+	/**
+	 * Loads standard system properties from the environment and
+	 * configuration.
+	 *
+	 * @param __sysProps The system properties to load into.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/02/25
+	 */
+	private static void __standardSysProps(
+		Map<String, String> __sysProps)
+		throws NullPointerException
+	{
+		if (__sysProps == null)
+			throw new NullPointerException("NARG");
+		
+		SystemPathProvider paths = SystemPathProvider.provider();
+		
+		// Configuration file, if it exists?
+		Path configDir = paths.config();
+		if (configDir != null)
+		{
+			Path configFile = configDir.resolve(
+				"squirreljme.properties");
+			if (Files.exists(configFile))
+				try
+				{
+					for (String line : Files.readAllLines(configFile))
+					{
+						// Comment?
+						line = line.trim();
+						if (line.isEmpty() || line.startsWith("#"))
+							continue;
+						
+						// Add property?
+						int eq = line.indexOf('=');
+						if (eq > 0)
+							__sysProps.put(line.substring(0, eq).trim(),
+								line.substring(eq + 1).trim());
+					}
+				}
+				catch (IOException __e)
+				{
+					__e.printStackTrace();
+				}
+		}
+		
+		// Extra Java VM options
+		String javaOpts = System.getenv("SQUIRRELJME_JAVA_OPTS");
+		if (javaOpts != null)
+			try
+			{
+				// Setup tokenizer
+				StreamTokenizer tokenizer = new StreamTokenizer(
+					new StringReader(javaOpts));
+				tokenizer.resetSyntax();
+				tokenizer.quoteChar('\"');
+				tokenizer.quoteChar('\'');
+				tokenizer.wordChars('.', '.');
+				tokenizer.wordChars('-', '-');
+				tokenizer.wordChars('_', '_');
+				tokenizer.wordChars('a', 'z');
+				tokenizer.wordChars('A', 'Z');
+				tokenizer.wordChars('0', '9');
+				
+				// Handle all tokens
+				String key = null;
+				String val = null;
+				boolean wantKey = true;
+				boolean wantVal = false;
+				for (;;)
+				{
+					// Read in more tokens
+					int token = tokenizer.nextToken();
+					if (token == StreamTokenizer.TT_EOF)
+						break;
+					
+					// Token string?
+					if (tokenizer.sval != null)
+					{
+						if (wantKey && tokenizer.sval.startsWith("-D"))
+							key = tokenizer.sval.substring(2);
+						else if (wantVal)
+						{
+							// Add in key
+							val = tokenizer.sval;
+							__sysProps.put(key, val);
+							
+							// Clear
+							key = null;
+							val = null;
+							
+							// Reset
+							wantKey = true;
+							wantVal = false;
+						}
+					}
+					else if (token == '=')
+					{
+						if (wantKey)
+						{
+							wantKey = false;
+							wantVal = true;
+						}
+					}
+				}
+			}
+			catch (IOException __e)
+			{
+				__e.printStackTrace();
+			}
 	}
 	
 	/**

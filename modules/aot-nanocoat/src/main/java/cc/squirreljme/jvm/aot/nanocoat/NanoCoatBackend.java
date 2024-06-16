@@ -29,7 +29,7 @@ import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
 import cc.squirreljme.jvm.aot.nanocoat.csv.CsvType;
 import cc.squirreljme.jvm.aot.nanocoat.csv.ModuleCsvEntry;
-import cc.squirreljme.jvm.aot.queue.ArchiveOutputQueue;
+import net.multiphasicapps.zip.queue.ArchiveOutputQueue;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeSet;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;

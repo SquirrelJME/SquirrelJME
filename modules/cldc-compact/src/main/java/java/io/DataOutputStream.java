@@ -160,9 +160,9 @@ public class DataOutputStream
 	public final void writeChar(int __v)
 		throws IOException
 	{
-		if (false)
-			throw new IOException();
-		throw Debugging.todo();
+		this.write((__v >> 8) & 0xFF);
+		this.write(__v & 0xFF);
+		this.written += 2;
 	}
 	
 	/**
@@ -171,11 +171,21 @@ public class DataOutputStream
 	 */
 	@Override
 	public final void writeChars(String __v)
-		throws IOException
+		throws IOException, NullPointerException
 	{
-		if (false)
-			throw new IOException();
-		throw Debugging.todo();
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		for (int i = 0, n = __v.length(); i < n; i++)
+		{
+			char c = __v.charAt(i);
+			
+			// Exactly in the manner of writeChar(), so this is a bit
+			// inefficient, but it must be this way
+			this.write((c >> 8) & 0xFF);
+			this.write(c & 0xFF);
+			this.written += 2;
+		}
 	}
 	
 	/**
@@ -189,14 +199,14 @@ public class DataOutputStream
 		long v = Double.doubleToRawLongBits(__v);
 		
 		OutputStream out = this.out;
-		out.write((int)(v >> 56));
-		out.write((int)(v >> 48));
-		out.write((int)(v >> 40));
-		out.write((int)(v >> 32));
-		out.write((int)(v >> 24));
-		out.write((int)(v >> 16));
-		out.write((int)(v >> 8));
-		out.write((int)(v));
+		out.write(((int)(v >> 56)) & 0xFF);
+		out.write(((int)(v >> 48)) & 0xFF);
+		out.write(((int)(v >> 40)) & 0xFF);
+		out.write(((int)(v >> 32)) & 0xFF);
+		out.write(((int)(v >> 24)) & 0xFF);
+		out.write(((int)(v >> 16)) & 0xFF);
+		out.write(((int)(v >> 8)) & 0xFF);
+		out.write(((int)(v)) & 0xFF);
 		this.written += 8;
 	}
 	
@@ -211,10 +221,10 @@ public class DataOutputStream
 		int v = Float.floatToRawIntBits(__v);
 		
 		OutputStream out = this.out;
-		out.write(v >> 24);
-		out.write(v >> 16);
-		out.write(v >> 8);
-		out.write(v);
+		out.write((v >> 24) & 0xFF);
+		out.write((v >> 16) & 0xFF);
+		out.write((v >> 8) & 0xFF);
+		out.write(v & 0xFF);
 		this.written += 4;
 	}
 	
@@ -227,10 +237,10 @@ public class DataOutputStream
 		throws IOException
 	{
 		OutputStream out = this.out;
-		out.write(__v >> 24);
-		out.write(__v >> 16);
-		out.write(__v >> 8);
-		out.write(__v);
+		out.write((__v >> 24) & 0xFF);
+		out.write((__v >> 16) & 0xFF);
+		out.write((__v >> 8) & 0xFF);
+		out.write(__v & 0xFF);
 		this.written += 4;
 	}
 	
@@ -243,14 +253,14 @@ public class DataOutputStream
 		throws IOException
 	{
 		OutputStream out = this.out;
-		out.write((int)(__v >> 56));
-		out.write((int)(__v >> 48));
-		out.write((int)(__v >> 40));
-		out.write((int)(__v >> 32));
-		out.write((int)(__v >> 24));
-		out.write((int)(__v >> 16));
-		out.write((int)(__v >> 8));
-		out.write((int)(__v));
+		out.write((int)(__v >> 56) & 0xFF);
+		out.write((int)(__v >> 48) & 0xFF);
+		out.write((int)(__v >> 40) & 0xFF);
+		out.write((int)(__v >> 32) & 0xFF);
+		out.write((int)(__v >> 24) & 0xFF);
+		out.write((int)(__v >> 16) & 0xFF);
+		out.write((int)(__v >> 8) & 0xFF);
+		out.write((int)(__v) & 0xFF);
 		this.written += 8;
 	}
 	
@@ -263,8 +273,8 @@ public class DataOutputStream
 		throws IOException
 	{
 		OutputStream out = this.out;
-		out.write(__v >> 8);
-		out.write(__v);
+		out.write((__v >> 8) & 0xFF);
+		out.write(__v & 0xFF);
 		this.written += 2;
 	}
 	
@@ -283,8 +293,8 @@ public class DataOutputStream
 		
 		// Write length of string
 		int n = __v.length();
-		out.write(n >> 8);
-		out.write(n);
+		out.write((n >> 8) & 0xFF);
+		out.write(n & 0xFF);
 		
 		// Load string into character array to more quickly access it
 		char[] chars = __v.toCharArray();

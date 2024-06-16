@@ -20,7 +20,7 @@ import java.util.Objects;
  * @since 2017/09/27
  */
 public class ClassName
-	implements Comparable<ClassName>
+	implements Contexual, Comparable<ClassName>
 {
 	/** The binary name of the class. */
 	protected final BinaryName binary;

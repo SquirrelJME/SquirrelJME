@@ -9,17 +9,16 @@
 
 package com.nttdocomo.util;
 
+import cc.squirreljme.jvm.mle.NativeArchiveShelf;
+import cc.squirreljme.jvm.mle.brackets.NativeArchiveBracket;
+import cc.squirreljme.jvm.mle.brackets.NativeArchiveEntryBracket;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.DubiousImplementationError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.debug.ErrorCode;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import java.io.IOException;
 import java.io.InputStream;
-import net.multiphasicapps.zip.blockreader.ZipBlockEntry;
-import net.multiphasicapps.zip.blockreader.ZipBlockReader;
-import net.multiphasicapps.zip.blockreader.ZipEntryNotFoundException;
 
 /**
  * This utility is used to decompress Jar files, or Zip files, from a byte
@@ -39,7 +38,7 @@ import net.multiphasicapps.zip.blockreader.ZipEntryNotFoundException;
 public class JarInflater
 {
 	/** The wrapped Zip blocks. */
-	private final ZipBlockReader _zip;
+	private final NativeArchiveBracket _zip;
 	
 	/** Is this closed? */
 	private volatile boolean _isClosed;
@@ -62,9 +61,10 @@ public class JarInflater
 		// Initialize the block reader
 		try
 		{
-			this._zip = new ZipBlockReader(__buffer);
+			this._zip = NativeArchiveShelf.archiveOpenZip(
+				__buffer, 0, __buffer.length);
 		}
-		catch (IOException __e)
+		catch (MLECallError __e)
 		{
 			/* {@squirreljme.error AH17 Malformed Zip file.} */
 			JarFormatException toss = new JarFormatException(
@@ -119,9 +119,9 @@ public class JarInflater
 		// Close the Zip
 		try
 		{
-			this._zip.close();
+			NativeArchiveShelf.archiveClose(this._zip);
 		}
-		catch (IOException __e)
+		catch (MLECallError __e)
 		{
 			/* {@squirreljme.error AH12 Closing array based Zip should not
 			have failed, however there is no definitive source on what
@@ -158,19 +158,20 @@ public class JarInflater
 		
 		try
 		{
-			ZipBlockEntry entry = this.__entry(__name, true);
+			NativeArchiveEntryBracket entry = this.__entry(__name,
+				true);
 			
 			// Not found, or is a directory? Then just fail
-			if (entry == null || entry.isDirectory())
+			if (entry == null || NativeArchiveShelf.entryIsDirectory(entry))
 				return null;
 			
 			// Return stream to access the file
-			return entry.open();
+			return NativeArchiveShelf.entryOpen(entry);
 		}
 		
 		/* {@squirreljme.error AH15 Could not open the given entry as a
 		stream. (The entry name)} */
-		catch (IOException __e)
+		catch (MLECallError __e)
 		{
 			JarFormatException toss = new JarFormatException(
 				ErrorCode.__error__("AH15", __name));
@@ -206,23 +207,24 @@ public class JarInflater
 		
 		try
 		{
-			ZipBlockEntry entry = this.__entry(__name, true);
+			NativeArchiveEntryBracket entry = this.__entry(__name,
+				true);
 			
 			// Not found
 			if (entry == null)
 				return -1;
 			
 			// Directories are considered as empty files in terms of size
-			else if (entry.isDirectory())
+			else if (NativeArchiveShelf.entryIsDirectory(entry))
 				return 0;
 			
 			// Otherwise request the uncompressed size
-			return entry.uncompressedSize();
+			return NativeArchiveShelf.entryUncompressedSize(entry);
 		}
 		
 		/* {@squirreljme.error AH16 Could not get the size of the
 		given entry. (The entry name)} */
-		catch (IOException __e)
+		catch (MLECallError __e)
 		{
 			JarFormatException toss = new JarFormatException(
 				ErrorCode.__error__("AH16", __name));
@@ -245,7 +247,8 @@ public class JarInflater
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/13
 	 */
-	private final ZipBlockEntry __entry(String __name, boolean __relCheck)
+	private final NativeArchiveEntryBracket __entry(String __name,
+		boolean __relCheck)
 		throws IllegalArgumentException, JarFormatException,
 			NullPointerException
 	{
@@ -265,18 +268,16 @@ public class JarInflater
 		// Obtain the given entry
 		try
 		{
-			return this._zip.get(__name);
-		}
-		catch (ZipEntryNotFoundException ignored)
-		{
+			NativeArchiveEntryBracket entry =
+				NativeArchiveShelf.archiveEntry(this._zip, __name);
+			
 			// Could we potentially be requesting a directory?
-			if (!wantDir)
+			if (entry == null && !wantDir)
 				return this.__entry(__name, __relCheck);
 			
-			// Otherwise, not found
-			return null;
+			return entry;
 		}
-		catch (IOException __e)
+		catch (MLECallError __e)
 		{
 			/* {@squirreljme.error AH14 Could not obtain entry from the Zip,
 			it may be corrupted or invalid. (The entry name)} */

@@ -34,6 +34,12 @@ public abstract class Canvas
 	final Map<Integer, Reference<ShortTimer>> _shortTimers =
 		new LinkedHashMap<>();
 	
+	/**
+	 * Paints the given canvas.
+	 *
+	 * @param __g The graphics to use for drawing.
+	 * @since 2024/03/05
+	 */
 	@Api
 	public abstract void paint(Graphics __g);
 	

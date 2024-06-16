@@ -601,6 +601,17 @@ typedef void* sjme_pointer;
 #define SJME_TYPEOF_IS_POINTER_sjme_pointer 1
 
 /**
+ * Integer based pointer.
+ * 
+ * @since 2024/04/06
+ */
+typedef intptr_t sjme_intPointer;
+
+/** Calculates a pointer offset. */
+#define SJME_POINTER_OFFSET(base, off) \
+	(void*)(((sjme_intPointer)(base)) + ((sjme_intPointer)(off)))
+
+/**
  * Long value.
  * 
  * @since 2023/07/25
@@ -722,14 +733,14 @@ typedef struct sjme_pointerLen
  * 
  * @since 2023/12/06
  */
-typedef void* sjme_frontEndWrapper;
+typedef sjme_pointer sjme_frontEndWrapper;
 
 /**
  * Any data that is needed by the front end, which is reserved for use.
  *
  * @since 2023/12/14
  */
-typedef void* sjme_frontEndData;
+typedef sjme_pointer sjme_frontEndData;
 
 /**
  * This structure stores any front end data as needed.
@@ -1702,8 +1713,47 @@ typedef enum sjme_errorCode
 	/** Invalid class name. */
 	SJME_ERROR_INVALID_CLASS_NAME = -43,
 	
+	/** Could not load library. */
+	SJME_ERROR_COULD_NOT_LOAD_LIBRARY = -44,
+	
+	/** Invalid library symbol. */
+	SJME_ERROR_INVALID_LIBRARY_SYMBOL = -45,
+	
+	/** There is no graphics display. */
+	SJME_ERROR_HEADLESS_DISPLAY = -46,
+	
+	/** Cannot create something. */
+	SJME_ERROR_CANNOT_CREATE = -47,
+	
+	/** Invalid thread state. */
+	SJME_ERROR_INVALID_THREAD_STATE = -48,
+	
+	/** Component is already in a container. */
+	SJME_ERROR_ALREADY_IN_CONTAINER = -49,
+	
+	/** Not a sub component. */
+	SJME_ERROR_NOT_SUB_COMPONENT = -50,
+	
+	/** No such class exists. */
+	SJME_ERROR_NO_CLASS = -51,
+	
+	/** No such method exists. */
+	SJME_ERROR_NO_METHOD = -52,
+	
+	/** There is no listener. */
+	SJME_ERROR_NO_LISTENER = -53,
+	
+	/** Cancel close of window. */
+	SJME_ERROR_CANCEL_WINDOW_CLOSE = -54,
+	
+	/** The class cannot be casted. */
+	SJME_ERROR_CLASS_CAST = -55,
+	
+	/** The font is not valid. */
+	SJME_ERROR_INVALID_FONT = -56,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -44
+	SJME_NUM_ERROR_CODES = -57
 } sjme_errorCode;
 
 /**

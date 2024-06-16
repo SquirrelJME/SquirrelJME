@@ -137,6 +137,23 @@ public final class CStructTypeBuilder
 	}
 	
 	/**
+	 * Declares member of struct.
+	 *
+	 * @param __var The variable to declare.
+	 * @return {@code this}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/06/08
+	 */
+	public CStructTypeBuilder member(CVariable __var)
+		throws NullPointerException
+	{
+		if (__var == null)
+			throw new NullPointerException("NARG");
+		
+		return this.member(__var.type, __var.name);
+	}
+	
+	/**
 	 * Initializes the struct __builder.
 	 * 
 	 * @param __kind The kind of struct this is.

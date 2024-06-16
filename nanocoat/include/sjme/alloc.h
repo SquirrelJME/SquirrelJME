@@ -17,6 +17,7 @@
 #define SQUIRRELJME_ALLOC_H
 
 #include "sjme/nvm.h"
+#include "sjme/debug.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -53,6 +54,17 @@ typedef enum sjme_alloc_poolSpace
 	SJME_NUM_ALLOC_POOL_SPACE
 } sjme_alloc_poolSpace;
 
+/**
+ * Special link flags.
+ * 
+ * @since 2024/02/08
+ */
+typedef enum sjme_alloc_linkFlag
+{
+	/** Nested allocation pool. */
+	SJME_ALLOC_LINK_FLAG_NESTED_POOL = 1,
+} sjme_alloc_linkFlag;
+
 struct sjme_alloc_link
 {
 	/** The pool this is in. */
@@ -78,6 +90,20 @@ struct sjme_alloc_link
 	
 	/** The size of the data area of this block. */
 	sjme_jint blockSize;
+	
+	/** Link flags. */
+	sjme_jint flags;
+
+#if defined(SJME_CONFIG_DEBUG)
+	/** The file of this allocation. */
+	sjme_lpcstr debugFile;
+	
+	/** The line of this allocation. */
+	sjme_jint debugLine;
+	
+	/** The function of this allocation. */
+	sjme_lpcstr debugFunction;
+#endif
 	
 	/** The memory block. */
 	sjme_jubyte block[sjme_flexibleArrayCount];
@@ -116,6 +142,12 @@ struct sjme_alloc_pool
 		/** Space that is actually reserved due to overhead. */
 		sjme_jint reserved;
 	} space[SJME_NUM_ALLOC_POOL_SPACE];
+	
+	/** Previous pool in multi-pool chain allocation. */
+	sjme_alloc_pool* prevPool;
+	
+	/** Next pool in multi-pool chain allocation. */
+	sjme_alloc_pool* nextPool;
 	
 	/** The front chain link. */
 	sjme_alloc_link* frontLink;
@@ -197,10 +229,11 @@ sjme_errorCode sjme_alloc_poolSpaceTotalSize(
  * @return Returns an error code.
  * @since 2023/11/19
  */
-sjme_errorCode sjme_alloc(
+sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc)(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrInPositiveNonZero sjme_jint size,
-	sjme_attrOutNotNull void** outAddr);
+	sjme_attrOutNotNull void** outAddr
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
 
 /**
  * Allocates a copy of the given data.
@@ -212,11 +245,102 @@ sjme_errorCode sjme_alloc(
  * @return Returns an error code.
  * @since 2023/12/13
  */
-sjme_errorCode sjme_alloc_copy(
+sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_copy)(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrInPositiveNonZero sjme_jint size,
 	sjme_attrOutNotNull void** outAddr,
-	sjme_attrInNotNull void* inAddr);
+	sjme_attrInNotNull void* inAddr
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
+
+/**
+ * Allocates a formatted string.
+ *
+ * @param inPool The pool to allocate within.
+ * @param outString The output string.
+ * @param format The format string.
+ * @param ...
+ * @return Any resultant error.
+ * @since 2023/12/22
+ */
+sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_format)(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrOutNotNull sjme_lpstr* outString,
+	SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL SJME_DEBUG_ONLY_COMMA
+	sjme_attrInNotNull sjme_attrFormatArg const char* format,
+	...) SJME_DEBUG_TERNARY(sjme_attrFormatOuter(5, 6),
+		sjme_attrFormatOuter(2, 3));
+
+/**
+ * Reallocates memory, either growing it or shrinking... the pointer will be
+ * adjusted accordingly.
+ * 
+ * @param inOutAddr The address to reallocate.
+ * @param newSize The new size of the allocation, if @c 0 then the pointer
+ * is freed instead.
+ * @return Returns an error code.
+ * @since 2023/11/28
+ */
+sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_realloc)(
+	sjme_attrInOutNotNull void** inOutAddr,
+	sjme_attrInPositive sjme_jint newSize
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
+
+#if defined(SJME_CONFIG_DEBUG)
+
+/**
+ * Allocates memory within the given pool.
+ * 
+ * @param pool The pool to allocate within.
+ * @param size The number of bytes to allocate.
+ * @param outAddr The output address.
+ * @return Returns an error code.
+ * @since 2023/11/19
+ */
+#define sjme_alloc(pool, size, outAddr) \
+	sjme_allocR((pool), (size), (outAddr), SJME_DEBUG_FILE_LINE_FUNC)
+
+/**
+ * Allocates a copy of the given data.
+ *
+ * @param pool The pool to allocate within.
+ * @param size The allocation size.
+ * @param outAddr The output address.
+ * @param inAddr The input address.
+ * @return Returns an error code.
+ * @since 2023/12/13
+ */
+#define sjme_alloc_copy(pool, size, outAddr, inAddr) \
+	sjme_alloc_copyR((pool), (size), (outAddr), (inAddr), \
+		SJME_DEBUG_FILE_LINE_FUNC)
+
+/**
+ * Allocates a formatted string.
+ *
+ * @param inPool The pool to allocate within.
+ * @param outString The output string.
+ * @param format The format string.
+ * @param ...
+ * @return Any resultant error.
+ * @since 2023/12/22
+ */
+#define sjme_alloc_format(inPool, outString, ...) \
+	sjme_alloc_formatR((inPool), (outString), SJME_DEBUG_FILE_LINE_FUNC, \
+		__VA_ARGS__)
+
+/**
+ * Reallocates memory, either growing it or shrinking... the pointer will be
+ * adjusted accordingly.
+ * 
+ * @param inOutAddr The address to reallocate.
+ * @param newSize The new size of the allocation, if @c 0 then the pointer
+ * is freed instead.
+ * @return Returns an error code.
+ * @since 2023/11/28
+ */
+#define sjme_alloc_realloc(inOutAddr, newSize) \
+	sjme_alloc_reallocR((inOutAddr), (newSize), SJME_DEBUG_FILE_LINE_FUNC)
+
+#endif
 
 /**
  * Frees memory.
@@ -229,22 +353,6 @@ sjme_errorCode sjme_alloc_free(
 	sjme_attrInNotNull void* addr);
 
 /**
- * Allocates a formatted string.
- *
- * @param inPool The pool to allocate within.
- * @param outString The output string.
- * @param format The format string.
- * @param ...
- * @return Any resultant error.
- * @since 2023/12/22
- */
-sjme_errorCode sjme_alloc_format(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull sjme_lpstr* outString,
-	sjme_attrInNotNull sjme_attrFormatArg const char* format,
-	...) sjme_attrFormatOuter(2, 3);
-
-/**
  * Returns the link of the given memory block
  * 
  * @param addr The pointer to get the link from.
@@ -255,20 +363,6 @@ sjme_errorCode sjme_alloc_format(
 sjme_errorCode sjme_alloc_getLink(
 	sjme_attrInNotNull void* addr,
 	sjme_attrOutNotNull sjme_alloc_link** outLink);
-
-/**
- * Reallocates memory, either growing it or shrinking... the pointer will be
- * adjusted accordingly.
- * 
- * @param inOutAddr The address to reallocate.
- * @param newSize The new size of the allocation, if @c 0 then the pointer
- * is freed instead.
- * @return Returns an error code.
- * @since 2023/11/28
- */
-sjme_errorCode sjme_alloc_realloc(
-	sjme_attrInOutNotNull void** inOutAddr,
-	sjme_attrInPositive sjme_jint newSize);
 
 /*--------------------------------------------------------------------------*/
 

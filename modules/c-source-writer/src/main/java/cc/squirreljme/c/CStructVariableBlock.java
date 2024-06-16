@@ -45,7 +45,7 @@ public class CStructVariableBlock
 		String __close)
 		throws NullPointerException
 	{
-		super(__writer, __close);
+		super(__writer, __close, true);
 		
 		if (__struct == null)
 			throw new NullPointerException("NARG");
@@ -246,6 +246,9 @@ public class CStructVariableBlock
 		int index = this._index;
 		if (index > 0)
 			this.token(",");
+		
+		// Soft newline following member
+		this.newLine(false);
 		
 		// Write out member setting
 		this.tokens(".", __memberName.identifier, "=");

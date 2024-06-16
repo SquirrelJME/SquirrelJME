@@ -25,6 +25,7 @@ import net.multiphasicapps.collections.UnmodifiableList;
  * @since 2017/07/28
  */
 public final class StackMapTableState
+	implements Contexual
 {
 	/** The depth of the stack. */
 	protected final int depth;
@@ -79,7 +80,7 @@ public final class StackMapTableState
 		int ns = __s.length;
 		if (__d < 0 || __d > ns)
 			throw new InvalidClassFormatException(
-				String.format("JC3x %d %d", __d, ns));
+				String.format("JC3x %d %d", __d, ns), this);
 		
 		// Duplicate, if doing defensive copy
 		if (__copyDefensive)
@@ -145,7 +146,7 @@ public final class StackMapTableState
 		/* {@squirreljme.error JC02 New local state would not be valid.} */
 		if (__dx < 0 || __dx >= this.maxLocals() ||
 			(__entry.isWide() && __dx >= this.maxLocals() - 1))
-			throw new InvalidClassFormatException("JC02");
+			throw new InvalidClassFormatException("JC02", this);
 		
 		StackMapTableEntry[] newLocals = this._locals.clone();
 		
@@ -221,7 +222,7 @@ public final class StackMapTableState
 		/* {@squirreljme.error JC03 Stack is empty.} */
 		int depth = this.depth;
 		if (depth < 0)
-			throw new InvalidClassFormatException("JC03");
+			throw new InvalidClassFormatException("JC03", this);
 		
 		// Get top most item to add accordingly and determine if it is wide
 		// or not...
@@ -322,7 +323,7 @@ public final class StackMapTableState
 		{
 			/* {@squirreljme.error JC04 Stack overflow.} */
 			if (newDepth + (entry.isWide() ? 2 : 1) > newStack.length)
-				throw new InvalidClassFormatException("JC04");
+				throw new InvalidClassFormatException("JC04", this);
 			
 			newStack[newDepth++] = entry;
 			
@@ -386,7 +387,7 @@ public final class StackMapTableState
 		StackMapTableEntry[] locals = this._locals;
 		if (__i < 0 || __i >= locals.length)
 			throw new InvalidClassFormatException(
-				String.format("JC3y %d", __i));
+				String.format("JC3y %d", __i), this);
 		return locals[__i];
 	}
 	
@@ -416,7 +417,7 @@ public final class StackMapTableState
 		range. (The index)} */
 		if (__i < 0 || __i >= this.depth)
 			throw new InvalidClassFormatException(
-				String.format("JC3z %d", __i));
+				String.format("JC3z %d", __i), this);
 		return this._stack[__i];
 	}
 	
@@ -467,7 +468,7 @@ public final class StackMapTableState
 		The depth)} */
 		if (__i < 0 || __i >= this.depth)
 			throw new InvalidClassFormatException(
-				String.format("JC79 %d %d", __i, this.depth));
+				String.format("JC79 %d %d", __i, this.depth), this);
 		
 		return this.getStack((this.depth - 1) - __i);
 	}

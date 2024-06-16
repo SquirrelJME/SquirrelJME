@@ -15,6 +15,7 @@ package net.multiphasicapps.classfile;
  * @since 2018/09/09
  */
 public interface HasAccessibleFlags
+	extends Contexual
 {
 	/**
 	 * Returns accessible flags.

@@ -141,7 +141,8 @@ public abstract class AbstractResourceTask
 		File outDirFile = outSet.getResourcesDir();
 		if (outDirFile == null)
 			outSet.setResourcesDir((outDirFile = project.getBuildDir()
-			.toPath().resolve(this.getClass().getName() + "-" + this.sourceSet)
+			.toPath().resolve(this.getClass().getName() + "-" +
+				this.sourceSet)
 			.toFile()));
 		
 		return outDirFile.toPath();
@@ -240,7 +241,8 @@ public abstract class AbstractResourceTask
 		Collection<__Output__> result = new LinkedList<>();
 		for (FileLocation input : this.taskInputs())
 			result.add(new __Output__(input, outDir.resolve(
-				this.removeExtension(input.getRelative()) + outputExtension)));
+				this.removeExtension(input.getRelative()) +
+					outputExtension)));
 		
 		return result;
 	}

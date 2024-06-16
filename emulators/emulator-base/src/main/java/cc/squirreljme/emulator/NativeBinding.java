@@ -37,6 +37,9 @@ public final class NativeBinding
 	/** The path where the library is. */
 	private static volatile Path loadedLibPath;
 	
+	/** The path where temporary libraries go. */
+	private static volatile Path tempLibPath;
+	
 	static
 	{
 		// Try to set some properties for macOS, although it might not work if
@@ -83,7 +86,7 @@ public final class NativeBinding
 			Path libFile = NativeBinding.__checkPreload();
 			if (libFile == null)
 				libFile = NativeBinding.libFromResources(
-					"emulator-base");
+					"emulator-base", true);
 			
 			// Store for later
 			NativeBinding.loadedLibPath = libFile;
@@ -129,15 +132,21 @@ public final class NativeBinding
 	/**
 	 * Tries to load the library from resources.
 	 *
+	 * @param __libBaseName The library base name.
+	 * @param __map Should the name be mapped?
 	 * @return The loaded library.
 	 * @throws IOException On read/write errors.
 	 * @since 2020/12/01
 	 */
-	public static Path libFromResources(String __libBaseName)
+	public static Path libFromResources(String __libBaseName, boolean __map)
 		throws IOException
 	{
 		// Find the library to load
-		String libName = System.mapLibraryName(__libBaseName);
+		String libName;
+		if (__map)
+			libName = System.mapLibraryName(__libBaseName);
+		else
+			libName = __libBaseName;
 		
 		// Debug
 		System.err.printf("Java Over-Layer: Locating %s...%n", libName);
@@ -146,8 +155,8 @@ public final class NativeBinding
 		long startNs = System.nanoTime();
 		
 		// Copy resource to the output
-		Path tempDir = null,
-			libFile = null;
+		Path tempDir = null;
+		Path libFile = null;
 		try (InputStream in = NativeBinding.class.
 			getResourceAsStream("/" + libName))
 		{
@@ -155,8 +164,15 @@ public final class NativeBinding
 				throw new RuntimeException(String.format(
 					"Library %s not found in resource.", libName));
 			
-			// Store the library as a given file
-			tempDir = Files.createTempDirectory("squirreljme-lib");
+			// Place all of the native libraries in the same location
+			tempDir = NativeBinding.tempLibPath;
+			if (tempDir == null)
+			{
+				tempDir = Files.createTempDirectory("squirreljme-lib");
+				NativeBinding.tempLibPath = tempDir;
+			}
+			
+			// Store the library as the given file
 			libFile = tempDir.resolve(libName);
 			
 			// Debug

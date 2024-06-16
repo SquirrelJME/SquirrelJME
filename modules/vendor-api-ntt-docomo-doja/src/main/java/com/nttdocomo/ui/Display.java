@@ -223,46 +223,65 @@ public class Display
 		switch (__code)
 		{
 			case Canvas.KEY_UP:
+			case NonStandardKey.VGAME_UP:
 				return Display.KEY_UP;
 			case Canvas.KEY_DOWN:
+			case NonStandardKey.VGAME_DOWN:
 				return Display.KEY_DOWN;
 			case Canvas.KEY_LEFT:
+			case NonStandardKey.VGAME_LEFT:
 				return Display.KEY_LEFT;
 			case Canvas.KEY_RIGHT:
+			case NonStandardKey.VGAME_RIGHT:
 				return Display.KEY_RIGHT;
 			case Canvas.KEY_NUM0:
+			case NonStandardKey.NUMPAD_0:
 				return Display.KEY_0;
 			case Canvas.KEY_NUM1:
+			case NonStandardKey.NUMPAD_1:
 				return Display.KEY_1;
 			case Canvas.KEY_NUM2:
+			case NonStandardKey.NUMPAD_2:
 				return Display.KEY_2;
 			case Canvas.KEY_NUM3:
+			case NonStandardKey.NUMPAD_3:
 				return Display.KEY_3;
 			case Canvas.KEY_NUM4:
+			case NonStandardKey.NUMPAD_4:
 				return Display.KEY_4;
 			case Canvas.KEY_NUM5:
+			case NonStandardKey.NUMPAD_5:
 				return Display.KEY_5;
 			case Canvas.KEY_NUM6:
+			case NonStandardKey.NUMPAD_6:
 				return Display.KEY_6;
 			case Canvas.KEY_NUM7:
+			case NonStandardKey.NUMPAD_7:
 				return Display.KEY_7;
 			case Canvas.KEY_NUM8:
+			case NonStandardKey.NUMPAD_8:
 				return Display.KEY_8;
 			case Canvas.KEY_NUM9:
+			case NonStandardKey.NUMPAD_9:
 				return Display.KEY_9;
 			case Canvas.KEY_STAR:
+			case NonStandardKey.NUMPAD_MULTIPLY:
 				return Display.KEY_ASTERISK;
 			case Canvas.KEY_POUND:
+			case NonStandardKey.NUMPAD_DIVIDE:
 				return Display.KEY_POUND;
 			
 			case Canvas.KEY_SELECT:
 			case Canvas.KEY_ENTER:
+			case NonStandardKey.NUMPAD_ENTER:
 				return Display.KEY_SELECT;
 			
 			// SquirrelJME specific keys
 			case NonStandardKey.F1:
+			case NonStandardKey.VGAME_COMMAND_LEFT:
 				return Display.KEY_SOFT1;
 			case NonStandardKey.F2:
+			case NonStandardKey.VGAME_COMMAND_RIGHT:
 				return Display.KEY_SOFT2;
 		}
 		

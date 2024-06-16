@@ -91,7 +91,7 @@ public final class MethodDescriptor
 		parenthesis. (The method descriptor)} */
 		if (!__n.startsWith("("))
 			throw new InvalidClassFormatException(
-				String.format("JC3h %s", __n));
+				String.format("JC3h %s", __n), this);
 		
 		// Parse all input arguments
 		List<FieldDescriptor> args = new ArrayList<>();
@@ -114,7 +114,7 @@ public final class MethodDescriptor
 			arguments. (The method descriptor)} */
 			if (at >= n)
 				throw new InvalidClassFormatException(
-					String.format("JC3i %s", __n));
+					String.format("JC3i %s", __n), this);
 			
 			// Find end sequence
 			switch (__n.charAt(at))
@@ -141,7 +141,7 @@ public final class MethodDescriptor
 					method descriptor argument. (The descriptor)} */
 				default:
 					throw new InvalidClassFormatException(
-						String.format("JC3j %s", __n));
+						String.format("JC3j %s", __n), this);
 			}
 			
 			// Parse field
@@ -160,7 +160,7 @@ public final class MethodDescriptor
 		value. (The method descriptor)} */
 		if (i >= n)
 			throw new InvalidClassFormatException(
-				String.format("JC3k %s", __n));
+				String.format("JC3k %s", __n), this);
 		
 		// No return value?
 		char c = __n.charAt(i);

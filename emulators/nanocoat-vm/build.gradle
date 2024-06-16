@@ -1,8 +1,6 @@
-import cc.squirreljme.plugin.util.PathUtils
+import cc.squirreljme.plugin.general.cmake.CMakeBuildTask
 
 import java.nio.file.Files
-import java.nio.file.Paths
-import java.util.concurrent.TimeUnit
 
 plugins
 {
@@ -25,47 +23,16 @@ dependencies
 	api project(":tools:squirreljme-debugger")
 }
 
-static java.nio.file.Path cmakeExePath(){
-	java.nio.file.Path cmakePath = PathUtils.findPath("cmake")
-	if (cmakePath == null) {
-		return PathUtils.findPath("cmake.exe")
-	}
-	
-	return cmakePath
-}
+Provider<CMakeBuildTask> libNativeNanoCoat = tasks.register(
+	"libNativeNanoCoat",
+	CMakeBuildTask.class,
+	gradle.rootProject.projectDir.toPath().resolve("nanocoat"),
+	System.mapLibraryName("emulator-nanocoat"),
+	["libEmulator"])
 
-// Only perform the build if CMake exists
-Spec<Task> nanoCoatOnlyIf = (taskIsh) -> {
-	// This is only valid if there is CMake
-	return cmakeExePath() != null
-}
-
-// CMake related files
-java.nio.file.Path cmakeRoot =
-	gradle.rootProject.projectDir.toPath().resolve("nanocoat")
-java.nio.file.Path cmakeBuild =
-	project.buildDir.toPath().resolve("cmake")
-java.nio.file.Path emuLib =
-	cmakeBuild.resolve(Paths.get(
-		System.mapLibraryName("emulator-nanocoat")))
-
-static void dumpLog(Logger logger, LogLevel level, java.nio.file.Path pathy) {
-	try {
-		for (String ln : Files.readAllLines(pathy))
-			logger.log(level, ln)
-	} catch (Throwable e) {
-		e.printStackTrace()
-	}
-}
-
-// Compiles the NanoCoat binary library
-tasks.register("libNativeNanoCoat", (taskIsh) -> {
-	// Info
-	group = "squirreljme"
-	description = "Builds the native NanoCoat library."
-	
-	// Needs CMake
-	taskIsh.onlyIf = nanoCoatOnlyIf
+libNativeNanoCoat.configure { taskIsh ->
+	// Get source root for extra dependency checking
+	java.nio.file.Path cmakeRoot = taskIsh.cmakeSource
 	
 	// Where is the CMake root? It depends on it
 	taskIsh.inputs.files(
@@ -76,89 +43,7 @@ tasks.register("libNativeNanoCoat", (taskIsh) -> {
 	taskIsh.inputs.dir(cmakeRoot.resolve("include"))
 	taskIsh.inputs.dir(cmakeRoot.resolve("src"))
 	taskIsh.inputs.dir(cmakeRoot.resolve("frontend").resolve("emulator"))
-	
-	// Where do the sourced CMake files go?
-	taskIsh.outputs.dir(cmakeBuild)
-	
-	// The library that is actually created
-	taskIsh.outputs.file(emuLib)
-	
-	// When is this up to date?
-	taskIsh.outputs.upToDateWhen (taskX) -> {
-		return Files.isDirectory(cmakeBuild)
-	}
-	
-	// Perform configuration and compilation step
-	taskIsh.doLast {
-		// Make sure the target exists
-		Files.createDirectories(cmakeBuild)
-		
-		// Debug
-		System.err.printf("CMake is at %s%n", cmakeExePath())
-		
-		// Set executable
-		ProcessBuilder procBuilder = new ProcessBuilder()
-		procBuilder.command(new String[]{
-			cmakeExePath().toAbsolutePath().toString(),
-			"-S", cmakeRoot.toAbsolutePath().toString(),
-			"-B", cmakeBuild.toAbsolutePath().toString()
-		})
-		
-		// Log the output somewhere
-		procBuilder.redirectOutput(
-			cmakeBuild.resolve("configure.out").toFile())
-		procBuilder.redirectError(
-			cmakeBuild.resolve("configure.err").toFile())
-		
-		// Start the process
-		Process proc = procBuilder.start()
-		
-		// Wait for it to complete
-		try {
-			if (!proc.waitFor(5, TimeUnit.MINUTES) ||
-				proc.exitValue() != 0)
-				throw new RuntimeException("CMake failed to configure...")
-		} finally {
-			dumpLog(logger,
-				LogLevel.LIFECYCLE, cmakeBuild.resolve("configure.out"))
-			dumpLog(logger,
-				LogLevel.ERROR, cmakeBuild.resolve("configure.err"))
-		}
-		
-		// Set executable
-		procBuilder = new ProcessBuilder()
-		procBuilder.command(new String[]{
-			cmakeExePath().toAbsolutePath().toString(),
-			"--build", cmakeBuild.toAbsolutePath().toString(),
-			"-t", "libEmulator"
-		})
-		
-		// We do not care for the output really
-		procBuilder.redirectOutput(
-			cmakeBuild.resolve("build.out").toFile())
-		procBuilder.redirectError(
-			cmakeBuild.resolve("build.err").toFile())
-		
-		// Start the process
-		proc = procBuilder.start()
-		
-		// Wait for it to complete
-		try {
-			if (!proc.waitFor(5, TimeUnit.MINUTES) ||
-				proc.exitValue() != 0)
-				throw new RuntimeException("CMake failed to build...")
-		} finally {
-			dumpLog(logger, LogLevel.LIFECYCLE,
-				cmakeBuild.resolve("configure.out"))
-			dumpLog(logger, LogLevel.ERROR,
-				cmakeBuild.resolve("configure.err"))
-		}
-		
-		// We need the library for this to even work
-		if (!Files.exists(emuLib))
-			throw new FileNotFoundException("Could not find output library.")
-	}
-})
+}
 
 // We need to include the native library here so NanoCoat actually works
 jar {
@@ -166,7 +51,7 @@ jar {
 	dependsOn libNativeNanoCoat
 	
 	// Include library into the root
-	from emuLib.toFile()
+	from libNativeNanoCoat.get().cmakeOutFile.toFile()
 	into "/"
 }
 

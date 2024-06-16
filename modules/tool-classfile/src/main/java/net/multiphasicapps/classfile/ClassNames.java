@@ -23,7 +23,7 @@ import java.util.RandomAccess;
  */
 public final class ClassNames
 	extends AbstractList<ClassName>
-	implements RandomAccess
+	implements Contexual, RandomAccess
 {
 	/** Names. */
 	private final ClassName[] _names;

@@ -204,6 +204,8 @@ public abstract class CExpressionBuilder
 					this.number((Number)value);
 				else if (value instanceof String)
 					this.string((String)value);
+				else if (value instanceof CExpression)
+					this.__add(((CExpression)value).tokens());
 				else
 					this.__add(Objects.toString(value));
 			}

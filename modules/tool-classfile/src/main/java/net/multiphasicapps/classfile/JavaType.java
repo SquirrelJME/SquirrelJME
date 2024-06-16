@@ -21,6 +21,7 @@ import java.util.Objects;
  * @since 2017/07/26
  */
 public final class JavaType
+	implements Contexual
 {
 	/** The top of a long. */
 	public static final JavaType TOP_LONG =

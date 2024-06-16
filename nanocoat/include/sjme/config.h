@@ -42,6 +42,39 @@ extern "C" {
 	#undef SJME_CONFIG_RELEASE
 #endif
 
+/* The current operating system. */
+#if defined(__3DS__) || defined(_3DS)
+	/** Nintendo 3DS is available. */
+	#define SJME_CONFIG_HAS_NINTENDO_3DS
+#elif defined(__linux__) || defined(linux) || defined(__linux)
+	/** Linux is available. */
+	#define SJME_CONFIG_HAS_LINUX
+#elif defined(__CYGWIN__)
+	/** Cygwin is available. */
+	#define SJME_CONFIG_HAS_CYGWIN
+#elif defined(_WIN32) || defined(__WIN32__) || \
+	defined(__WIN32) || defined(_WINDOWS)
+	/** Windows is available. */
+	#define SJME_CONFIG_HAS_WINDOWS
+#elif defined(__APPLE__) && defined(__MACH__)
+	/** macOS 10+ is available. */
+	#define SJME_CONFIG_HAS_MACOS
+#elif defined(macintosh)
+	/** macOS Classic is available. */
+	#define SJME_CONFIG_HAS_MACOS_CLASSIC
+#elif defined(__palmos__)
+	/** PalmOS is available. */
+	#define SJME_CONFIG_HAS_PALMOS
+#elif defined(__FreeBSD__) || defined(__NetBSD__) || \
+	defined(__OpenBSD__) || defined(__bsdi__) || \
+	defined(__DragonFly__) || defined(__MidnightBSD__)
+	/** BSD is available. */
+	#define SJME_CONFIG_HAS_BSD
+#elif defined(__BEOS__) || defined(__HAIKU__)
+	/** BeOS/Haiku is available. */
+	#define SJME_CONFIG_HAS_BEOS
+#endif
+
 /** Possibly detect endianess. */
 #if !defined(SJME_CONFIG_HAS_BIG_ENDIAN) && \
 	!defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)
@@ -236,8 +269,13 @@ extern "C" {
 	#define sjme_attrOutRange(lo, hi) _Out_range_((lo), (hi))
 
 	#if !defined(sjme_flexibleArrayCount)
-		/** Flexible array count, MSVC assumes blank. */
-		#define sjme_flexibleArrayCount
+		/** Flexible array count, MSVC requires 1 because C2233. */
+		#define sjme_flexibleArrayCount 1
+	#endif
+	
+	#if !defined(sjme_flexibleArrayCountUnion)
+		/** Flexible array count for union, MSVC requires 1 because C2233. */
+		#define sjme_flexibleArrayCountUnion 1
 	#endif
 
 	/** Allocate on the stack. */
@@ -414,6 +452,11 @@ extern "C" {
 	#define sjme_flexibleArrayCount 0
 #endif
 
+#if !defined(sjme_flexibleArrayCountUnion)
+	/** Flexible array count but for unions. */
+	#define sjme_flexibleArrayCountUnion 0
+#endif
+
 #if !defined(sjme_attrUnused)
 	/** Unused value. */
 	#define sjme_attrUnused
@@ -428,9 +471,6 @@ extern "C" {
 	/** Artificial function. */
 	#define sjme_attrArtificial
 #endif
-
-/** Flexible array count but for unions. */
-#define sjme_flexibleArrayCountUnion 0
 
 #if !defined(sjme_alloca)
 	/** Allocate on the stack. */
@@ -447,8 +487,7 @@ extern "C" {
 	#define SJME_CONFIG_HAS_GCC
 #endif
 
-#if defined(_WIN32) || defined(__WIN32__) || \
-	defined(__WIN32) || defined(_WINDOWS)
+#if defined(SJME_CONFIG_HAS_WINDOWS)
 	/** Supports Windows Atomic Access. */
 	#define SJME_CONFIG_HAS_ATOMIC_WIN32
 #elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L && \
@@ -473,6 +512,35 @@ extern "C" {
 		/** Atomics are supported. */
 		#define SJME_CONFIG_HAS_ATOMIC
 	#endif
+#endif
+
+#if defined(SJME_CONFIG_HAS_LINUX) || \
+	defined(SJME_CONFIG_HAS_BSD) || \
+    defined(SJME_CONFIG_HAS_BEOS)
+	/** Dynamic library path name as static define. */
+	#define SJME_CONFIG_DYLIB_PATHNAME(x) \
+		"lib" x ".so"
+#elif defined(SJME_CONFIG_HAS_CYGWIN)
+	/** Dynamic library path name as static define. */
+	#define SJME_CONFIG_DYLIB_PATHNAME(x) \
+		"lib" x ".dll"
+#elif defined(SJME_CONFIG_HAS_WINDOWS)
+	/** Dynamic library path name as static define. */
+	#define SJME_CONFIG_DYLIB_PATHNAME(x) \
+		"" x ".dll"
+#elif defined(SJME_CONFIG_HAS_MACOS)
+	/** Dynamic library path name as static define. */
+	#define SJME_CONFIG_DYLIB_PATHNAME(x) \
+		"lib" x ".dylib"
+#else
+	/** Dynamic library path name as static define. */
+	#define SJME_CONFIG_DYLIB_PATHNAME(x) NULL
+#endif
+
+/* Nintendo 3DS: devkitPro has broken/unimplemented pthreads. */
+#if defined(SJME_CONFIG_HAS_NINTENDO_3DS)
+	/** Use fallback threading regardless of the system. */
+	#define SJME_CONFIG_HAS_THREADS_FALLBACK
 #endif
 
 /*--------------------------------------------------------------------------*/

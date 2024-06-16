@@ -4,6 +4,7 @@
     <exclude-output />
     <content url="file://$MODULE_DIR$/../..">
       <excludeFolder url="file://$MODULE_DIR$/../../.circleci" />
+      <excludeFolder url="file://$MODULE_DIR$/../../.flatpak-builder" />
       <excludeFolder url="file://$MODULE_DIR$/../../.fossil-settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../.github" />
       <excludeFolder url="file://$MODULE_DIR$/../../.gradle" />
@@ -12,6 +13,7 @@
       <excludeFolder url="file://$MODULE_DIR$/../../.vscode" />
       <excludeFolder url="file://$MODULE_DIR$/../../bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../build" />
+      <excludeFolder url="file://$MODULE_DIR$/../../build-dir" />
       <excludeFolder url="file://$MODULE_DIR$/../../config" />
       <excludeFolder url="file://$MODULE_DIR$/../../emulators/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../emulators/bin" />
@@ -259,16 +261,18 @@
       <excludeFolder url="file://$MODULE_DIR$/../../modules/zip/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/zip/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/zip/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../nanocoat/build" />
+      <excludeFolder url="file://$MODULE_DIR$/../../nanocoat/cmake-build-debug" />
+      <excludeFolder url="file://$MODULE_DIR$/../../nanocoat/cmake-build-release" />
       <excludeFolder url="file://$MODULE_DIR$/../../out" />
-      <excludeFolder url="file://$MODULE_DIR$/../../ratufacoat/.sample" />
-      <excludeFolder url="file://$MODULE_DIR$/../../ratufacoat/build" />
-      <excludeFolder url="file://$MODULE_DIR$/../../ratufacoat/cmake-build-debug" />
-      <excludeFolder url="file://$MODULE_DIR$/../../ratufacoat/cmake-build-release" />
       <excludeFolder url="file://$MODULE_DIR$/../../sdk/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../sdk/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../sdk/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/fake-javadoc-sdk/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/fake-javadoc-sdk/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/fake-javadoc-sdk/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/markdown-javadoc/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/markdown-javadoc/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/markdown-javadoc/out" />
@@ -289,6 +293,31 @@
       <excludeFolder url="file://$MODULE_DIR$/../../tools/unzip/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/unzip/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../utils-dev" />
+      <excludeFolder url="file://$MODULE_DIR$/../../emulators/emulator-base-native/cmake-build-debug" />
+      <excludeFolder url="file://$MODULE_DIR$/../../emulators/emulator-base-native/cmake-build-release" />
+      <excludeFolder url="file://$MODULE_DIR$/../../emulators/emulator-base-native/cmake-build-relwithdebinfo" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-applet/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-applet/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-applet/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-pbp-awt-heavy/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-pbp-awt-heavy/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-pbp-awt-heavy/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-pbp/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-pbp/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-pbp/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-xlet/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-xlet/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc-xlet/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/cdc/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../nanocoat/cmake-build-relwithdebinfo" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-font/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-font/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-font/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-javap/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-javap/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-javap/out" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

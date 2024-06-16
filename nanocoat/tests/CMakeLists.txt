@@ -17,6 +17,7 @@ squirreljme_sourceize_dir("${CMAKE_CURRENT_BINARY_DIR}/blobs/binary"
 
 # Setup main test execution wrapper which runs within TAC
 add_library(TACTestExecutorCore STATIC
+	$<TARGET_OBJECTS:Base>
 	$<TARGET_OBJECTS:Core>
 	src/tac.c)
 
@@ -74,6 +75,7 @@ add_library(BasicTestLibPIC OBJECT
 # Initialize executable for basic tests, which contains everything
 add_executable(BasicTest
 	src/basicMain.c
+	$<TARGET_OBJECTS:Base>
 	$<TARGET_OBJECTS:Core>
 	$<TARGET_OBJECTS:BasicTestLib>)
 
@@ -106,6 +108,21 @@ target_include_directories(BasicTest PUBLIC
 # Depend on the core
 target_link_libraries(BasicTest PUBLIC
 	Core)
+
+# Include debugging info for tests
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+	if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+		target_compile_options(BasicTestLib PRIVATE
+			"-g")
+		target_compile_options(BasicTestLibPIC PRIVATE
+			"-g")
+	elseif(MSVC)
+		target_compile_options(BasicTestLib PRIVATE
+			"/DEBUG")
+		target_compile_options(BasicTestLibPIC PRIVATE
+			"/DEBUG")
+	endif()
+endif()
 
 # Process each individual test accordingly
 message(DEBUG "Looking for tests...")

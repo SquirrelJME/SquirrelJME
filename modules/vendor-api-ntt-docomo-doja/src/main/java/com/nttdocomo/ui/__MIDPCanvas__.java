@@ -25,7 +25,8 @@ final class __MIDPCanvas__
 	private final Reference<Canvas> _imodeCanvas;
 	
 	/** Double buffered image for drawing operations. */
-	final DoubleBuffer _doubleBuffer = new DoubleBuffer(0xFFFFFFFF);
+	final DoubleBuffer _doubleBuffer =
+		new DoubleBuffer(0xFFFFFFFF);
 	
 	/**
 	 * Initializes the base canvas.

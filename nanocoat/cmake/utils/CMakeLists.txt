@@ -25,6 +25,10 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE
 # Dump executable suffix, since target could be different from host
 file(WRITE "${CMAKE_BINARY_DIR}/suffix"
 	"${CMAKE_EXECUTABLE_SUFFIX_C}")
+file(WRITE "${CMAKE_BINARY_DIR}/dylibprefix"
+	"${CMAKE_SHARED_LIBRARY_PREFIX}")
+file(WRITE "${CMAKE_BINARY_DIR}/dylibsuffix"
+	"${CMAKE_SHARED_LIBRARY_SUFFIX}")
 
 # Hex decoding to binary
 add_executable(decode
@@ -37,3 +41,9 @@ add_executable(simple
 # Turn binary file into source code
 add_executable(sourceize
 	sourceize.c)
+
+# JVM and JAWT stubs
+add_library(jvm SHARED
+	stub_jvm.c)
+add_library(jawt SHARED
+	stub_jawt.c)

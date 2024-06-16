@@ -1,0 +1,41 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+
+plugins
+{
+	id "java"
+}
+
+version = "1.8.$squirreljmeVMVersion"
+description = "Reserved for CDC."
+
+squirreljme
+{
+	javaDocErrorCode = "ZE"
+	swmType = JavaMEMidletType.API
+	swmName = "Connected Device Configuration"
+	swmVendor = "Stephanie Gawroriski"
+}
+
+java {
+	// No classes are available for this project, however this completely
+	// relies on CLDC-Compact as it acts as a patch
+	compileJava.options.bootstrapClasspath = (
+		project.objects.fileCollection() + 
+			project(":modules:cldc").objects.fileCollection() +
+			project(":modules:cldc-compact").objects.fileCollection())
+}
+
+compileJava {
+	dependsOn project(":modules:cldc-compact").tasks.named("jar")
+	dependsOn project(":modules:cldc").tasks.named("jar")
+}
+
+dependencies
+{
+	// For IDE related information
+	api "org.jetbrains:annotations:24.0.1"
+	
+	// Base API
+	api project(":modules:cldc-compact")
+	api project(":modules:cldc")
+}

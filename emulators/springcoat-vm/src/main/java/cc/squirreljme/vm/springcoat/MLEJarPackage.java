@@ -11,7 +11,6 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.jvm.manifest.JavaManifest;
-import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.runtime.cldc.debug.ErrorCode;
@@ -20,13 +19,8 @@ import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.springcoat.brackets.JarPackageObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
-import net.multiphasicapps.classfile.MethodDescriptor;
 
 /**
  * Functions for {@link JarPackageShelf}.
@@ -75,8 +69,8 @@ public enum MLEJarPackage
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return MLEJarPackage.__jarObject(__args[0]).library() ==
-				MLEJarPackage.__jarObject(__args[1]).library();
+			return MLEObjects.jarPackage(__args[0]).library() ==
+				MLEObjects.jarPackage(__args[1]).library();
 		}
 	},
 	
@@ -120,7 +114,7 @@ public enum MLEJarPackage
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			return __thread.machine.suites.libraryId(
-				MLEJarPackage.__jarObject(__args[0]).library());
+				MLEObjects.jarPackage(__args[0]).library());
 		}
 	},
 	
@@ -135,7 +129,7 @@ public enum MLEJarPackage
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return MLEJarPackage.__jarObject(__args[0]).library().name();
+			return MLEObjects.jarPackage(__args[0]).library().name();
 		}
 	},
 	
@@ -150,7 +144,7 @@ public enum MLEJarPackage
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			JarPackageObject jar = MLEJarPackage.__jarObject(__args[0]);
+			JarPackageObject jar = MLEObjects.jarPackage(__args[0]);
 			
 			String rcName = __thread.<String>asNativeObject(
 				String.class, __args[1]);
@@ -164,30 +158,7 @@ public enum MLEJarPackage
 				if (in == null)
 					return SpringNullObject.NULL;
 				
-				// Copy everything to the a byte array, since it is easier to
-				// handle resources without juggling special resource streams
-				// and otherwise
-				try (ByteArrayOutputStream baos = new ByteArrayOutputStream(
-					Math.max(1024, in.available())))
-				{
-					// Copy all the data
-					byte[] copy = new byte[4096];
-					for (;;)
-					{
-						int rc = in.read(copy);
-						
-						if (rc < 0)
-							break;
-						
-						baos.write(copy, 0, rc);
-					}
-					
-					// Use this as the stream input
-					return __thread.newInstance(__thread.loadClass(
-						"java/io/ByteArrayInputStream"),
-						new MethodDescriptor("([B)V"),
-						__thread.asVMObject(baos.toByteArray()));
-				}
+				return __thread.proxyInputStream(in);
 			}
 			
 			// Could not read it
@@ -213,7 +184,7 @@ public enum MLEJarPackage
 			if (__args[0] == null)
 				throw new SpringMLECallError("No JAR specified.");
 			
-			JarPackageObject __jar = MLEJarPackage.__jarObject(__args[0]);
+			JarPackageObject __jar = MLEObjects.jarPackage(__args[0]);
 			
 			// Load manifest to get the info
 			try (InputStream in = __jar.library()
@@ -268,7 +239,7 @@ public enum MLEJarPackage
 			if (__args[0] == null)
 				throw new SpringMLECallError("No JAR specified.");
 			
-			JarPackageObject __jar = MLEJarPackage.__jarObject(__args[0]);
+			JarPackageObject __jar = MLEObjects.jarPackage(__args[0]);
 			int __jarOffset = (int)__args[1];
 			byte[] __b = ((SpringArrayObjectByte)__args[2]).array();
 			int __o = (int)__args[3];
@@ -278,16 +249,16 @@ public enum MLEJarPackage
 				__o + __l > __b.length)
 				throw new SpringMLECallError("Invalid parameters.");
 			
-			// Check to see if it is supported.
-			VMClassLibrary lib = __jar.library();
-			if (!(lib instanceof RawVMClassLibrary))
+			// Check to see if it is supported...
+			RawVMClassLibrary lib = MLEObjects.libraryRaw(
+				__jar.library());
+			if (lib == null)
 				return -1;
 			
 			// Otherwise request it
 			try
 			{
-				((RawVMClassLibrary)lib).rawData(__jarOffset,
-					__b, __o, __l);
+				lib.rawData(__jarOffset, __b, __o, __l);
 				return __l;
 			}
 			catch (Throwable __t)
@@ -314,17 +285,17 @@ public enum MLEJarPackage
 				throw new SpringMLECallError("No JAR specified.");
 			
 			// Determine the path to the JAR
-			JarPackageObject jar = MLEJarPackage.__jarObject(__args[0]);
+			JarPackageObject jar = MLEObjects.jarPackage(__args[0]);
 			
-			// Check to see if it is supported.
-			VMClassLibrary lib = jar.library();
-			if (!(lib instanceof RawVMClassLibrary))
+			// Check to see if it is supported...
+			RawVMClassLibrary lib = MLEObjects.libraryRaw(jar.library());
+			if (lib == null)
 				return -1;
 			
 			// Otherwise request it
 			try
 			{
-				return ((RawVMClassLibrary)lib).rawSize();
+				return lib.rawSize();
 			}
 			catch (Throwable __t)
 			{
@@ -367,20 +338,4 @@ public enum MLEJarPackage
 		return this.key;
 	}
 	
-	/**
-	 * Checks if this is a {@link JarPackageObject}.
-	 * 
-	 * @param __object The object to check.
-	 * @return As a jar if this is one.
-	 * @throws SpringMLECallError If this is not a jar.
-	 * @since 2020/06/22
-	 */
-	static JarPackageObject __jarObject(Object __object)
-		throws SpringMLECallError
-	{
-		if (!(__object instanceof JarPackageObject))
-			throw new SpringMLECallError("Not a JarPackageObject.");
-		
-		return (JarPackageObject)__object; 
-	}
 }

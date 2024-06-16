@@ -22,6 +22,9 @@ public class CBlock
 	extends CFileProxy
 	implements Closeable
 {
+	/** Indent before finishing? */
+	protected final boolean indentBeforeFinish;
+	
 	/** Extra indentation that was performed here. */
 	protected int extraIndent;
 	
@@ -30,17 +33,19 @@ public class CBlock
 	
 	/**
 	 * Initializes the C Block.
-	 * 
+	 *
 	 * @param __ref The reference to use.
 	 * @param __close The close string to use.
+	 * @param __indentPreFinish Indent before finishing?
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/29
 	 */
-	CBlock(CSourceWriter __ref, String __close)
+	CBlock(CSourceWriter __ref, String __close, boolean __indentPreFinish)
 		throws NullPointerException
 	{
 		super(__ref);
 		
+		this.indentBeforeFinish = __indentPreFinish;
 		this._closeString = __close;
 	}
 	

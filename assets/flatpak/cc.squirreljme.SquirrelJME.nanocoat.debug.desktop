@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=SquirrelJME (Debug; NanoCoat)
+Comment=Java ME 8 Virtual Machine with debugging, via NanoCoat.
+Type=Application
+Categories=Utility;Emulator;
+Exec=/app/bin/squirreljme.sh -Xemulator:nanocoat -Xdebug -Xclutter:debug
+Terminal=false
+Icon=cc.squirreljme.SquirrelJME

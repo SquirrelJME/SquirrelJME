@@ -9,10 +9,11 @@
 
 package cc.squirreljme.debugger;
 
+import cc.squirreljme.runtime.cldc.full.SystemPath;
+import cc.squirreljme.runtime.cldc.full.SystemPathProvider;
 import com.oracle.json.JsonArrayBuilder;
 import com.oracle.json.JsonObject;
 import com.oracle.json.JsonReader;
-import com.oracle.json.JsonStructure;
 import com.oracle.json.JsonValue;
 import com.oracle.json.JsonWriter;
 import com.oracle.json.spi.JsonProvider;
@@ -26,7 +27,6 @@ import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Manager for preferences.
@@ -45,8 +45,8 @@ public class PreferencesManager
 	 */
 	public PreferencesManager()
 	{
-		this.configPath = PreferencesManager.baseDirectory()
-			.resolve("debugger.json");
+		this.configPath = SystemPathProvider.provider()
+			.ofFallback(SystemPath.CONFIG).resolve("debugger.json");
 	}
 	
 	/**
@@ -162,73 +162,5 @@ public class PreferencesManager
 					// Ignored
 				}
 		}
-	}
-	
-	/**
-	 * The base program directory for preference storage.
-	 *
-	 * @return The base program directory for preference storage.
-	 * @since 2024/01/28
-	 */
-	public static Path baseDirectory()
-	{
-		return PreferencesManager.baseSystemDirectory()
-			.resolve("squirreljme");
-	}
-	
-	/**
-	 * The base system directory for preference storage.
-	 *
-	 * @return The base system directory for preference storage.
-	 * @since 2024/01/28
-	 */
-	public static Path baseSystemDirectory()
-	{
-		// Need to know which OS we are on
-		String osName = System.getProperty("os.name")
-			.toLowerCase(Locale.ROOT);
-		String osVersion = System.getProperty("os.version")
-			.toLowerCase(Locale.ROOT);
-		
-		// Windows
-		if (osName.contains("windows") || osName.contains("reactos"))
-		{
-			// Where do we shove our data?
-			String appDataEnv;
-			if (osName.contains("95") || osName.contains("98") ||
-				osName.contains("me"))
-				appDataEnv = System.getenv("APPDATA");
-			else
-				appDataEnv = System.getenv("LOCALAPPDATA");
-			
-			// Resolve it
-			if (appDataEnv != null)
-				return Paths.get(appDataEnv);
-			
-			// Fallback here for Windows
-			String programData = System.getenv("PROGRAMDATA");
-			if (programData != null)
-				return Paths.get(programData);
-		}
-		
-		// Everything else
-		else
-		{
-			// XDG Configuration
-			String xdg = System.getenv("XDG_CONFIG_HOME");
-			if (xdg != null)
-				return Paths.get(xdg);
-			
-			// Home directory
-			String homeDir = System.getenv("HOME");
-			if (homeDir != null)
-				return Paths.get(homeDir).resolve(".config");
-		}
-		
-		// Unknown, assume home, then fallback to pwd otherwise
-		String homeDir = System.getProperty("user.home");
-		if (homeDir != null)
-			return Paths.get(homeDir).resolve(".config");
-		return Paths.get("user.dir");
 	}
 }

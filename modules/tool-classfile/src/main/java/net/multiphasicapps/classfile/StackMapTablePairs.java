@@ -21,6 +21,7 @@ import net.multiphasicapps.collections.UnmodifiableMap;
  * @since 2023/07/03
  */
 public final class StackMapTablePairs
+	implements Contexual
 {
 	/** Stack map pairs. */
 	private final Map<Integer, StackMapTablePair> _pairs;

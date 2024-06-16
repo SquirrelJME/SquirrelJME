@@ -385,8 +385,9 @@ public class CPointerType
 				else if (nowArray != null)
 				{
 					currentLayer.right.add("[");
-					currentLayer.right.add(
-						Integer.toString(nowArray.size, 10));
+					if (nowArray.size != CArrayType.UNDEFINED_SIZE)
+						currentLayer.right.add(
+							Integer.toString(nowArray.size, 10));
 					currentLayer.right.add("]");
 				}
 				
@@ -443,7 +444,8 @@ public class CPointerType
 		for (CArrayType endArray : endArrays)
 		{
 			result.add("[");
-			result.add(Integer.toString(endArray.size, 10));
+			if (endArray.size != CArrayType.UNDEFINED_SIZE)
+				result.add(Integer.toString(endArray.size, 10));
 			result.add("]");
 		}
 		

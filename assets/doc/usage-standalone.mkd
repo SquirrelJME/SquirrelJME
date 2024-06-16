@@ -65,6 +65,11 @@ The available options are:
      remote host that is a listening JDWP debugger.
    * Otherwise, if only `port` is specified then the debugger will wait and
      listen on the given port for an incoming connection.
+ * `-Xclutter:(release|debug)`
+   * Use the given core libraries with the given clutter level.
+   * `release` includes obfuscation and no debugging and thus runs faster.
+   * `debug` does not have any obfuscation and may work in cases where
+     obfuscation and optimization may cause issues.
  * `-Xdebug`
    * Enable debugging but with the internal built-in SquirrelJME debugger and
      not a JDWP connection over TCP.
@@ -96,3 +101,45 @@ The available options are:
  * `-classpath (class:path:...)`
    * Specifies the class path to use for the current application, the entries
      must be visible from the library path.
+
+## Default Configuration and Library Paths
+
+SquirrelJME may be configured automatically via files on the file system. The
+following paths are considered for automatic configuration and classpath
+inclusion.
+
+ * Windows:
+   * Cache: `%LOCALAPPDATA%/squirreljme/cache`
+     * Or otherwise `%PROGRAMDATA%/squirreljme/cache`
+   * Configuration: `%APPDATA%/squirreljme/config`
+     * Or otherwise `%PROGRAMDATA%/squirreljme/config`
+   * Data: `%APPDATA%/squirreljme/data`
+     * Or otherwise `%PROGRAMDATA%/squirreljme/data`
+ * Linux, macOS, BSD, and other UNIX/UNIX-like systems:
+  * Cache: `$XDG_CACHE_HOME/squirreljme`
+    * Or otherwise `$HOME/.cache/squirreljme`
+  * Configuration: `$XDG_CONFIG_HOME/squirreljme`
+    * Or otherwise `$HOME/.config/squirreljme`
+  * Data: `$XDG_DATA_HOME/squirreljme`
+    * Or otherwise `$HOME/.local/share/squirreljme`
+
+To override the defaults, you may instead use the following, if any start
+with `~` that is replaced with `$HOME` or `%USERPROFILE%`:
+
+ * `SQUIRRELJME_CACHE_HOME` for _Cache_ path.
+ * `SQUIRRELJME_CONFIG_HOME` for _Configuration_ path.
+ * `SQUIRRELJME_DATA_HOME` for _Data_ path.
+
+SquirrelJME will automatically add to system properties for a properties file:
+
+ * `$SQUIRRELJME_JAVA_OPTS`
+   * In the form of `"-Dproperty=value -Dcute=squirrel"`
+ * `{Configuration}/squirreljme.properties`
+   * In the form of `property=value` on individual lines.
+
+SquirrelJME will automatically add to the classpath from:
+
+ * `$SQUIRRELJME_CLASSPATH/`
+ * `$SQUIRRELJME_JAVA_HOME/lib/`
+ * `$SQUIRRELJME_JAVA_HOME/jre/lib/`
+ * `{Data}/lib/`

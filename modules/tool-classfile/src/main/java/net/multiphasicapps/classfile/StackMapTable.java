@@ -23,7 +23,7 @@ import net.multiphasicapps.collections.UnmodifiableMap;
  * @since 2017/10/09
  */
 public final class StackMapTable
-	implements Iterable<Map.Entry<Integer, StackMapTableState>>
+	implements Contexual, Iterable<Map.Entry<Integer, StackMapTableState>>
 {
 	/** Stack map states. */
 	private final Map<Integer, StackMapTableState> _states;
