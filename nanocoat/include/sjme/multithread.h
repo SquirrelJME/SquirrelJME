@@ -73,6 +73,9 @@ extern "C" {
 	
 	/** Error as thread result. */
 	#define SJME_THREAD_RESULT(err) ((void*)(err))
+	
+	/** Calling convention to use for thread entry points. */
+	#define SJME_THREAD_CONVENTION
 #elif defined(SJME_CONFIG_HAS_THREADS_WIN32)
 	/** A single thread. */
 	typedef HANDLE sjme_thread;
@@ -88,6 +91,9 @@ extern "C" {
 	
 	/** Error as thread result. */
 	#define SJME_THREAD_RESULT(err) ((DWORD)(err))
+	
+	/** Calling convention to use for thread entry points. */
+	#define SJME_THREAD_CONVENTION __stdcall
 #else
 	/** Threads not supported. */
 	typedef struct sjme_thread_unsupported
@@ -109,6 +115,9 @@ extern "C" {
 	
 	/** Error as thread result. */
 	#define SJME_THREAD_RESULT(err) ((int)(err))
+	
+	/** Calling convention to use for thread entry points. */
+	#define SJME_THREAD_CONVENTION
 #endif
 
 /**
@@ -118,7 +127,7 @@ extern "C" {
  * @return Thread resultant value.
  * @since 2024/04/16
  */
-typedef sjme_thread_result (*sjme_thread_mainFunc)(
+typedef sjme_thread_result (SJME_THREAD_CONVENTION *sjme_thread_mainFunc)(
 	sjme_attrInNullable sjme_thread_parameter anything);
 
 /**

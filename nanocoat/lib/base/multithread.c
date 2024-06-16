@@ -11,6 +11,8 @@
 
 #if defined(SJME_CONFIG_HAS_LINUX)
 	#include <sched.h>
+#elif defined(SJME_CONFIG_HAS_WINDOWS)
+	#include <processthreadsapi.h>
 #endif
 
 #include "sjme/multithread.h"
@@ -90,12 +92,13 @@ sjme_errorCode sjme_thread_new(
 
 #if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
 	/* Setup new thread. */
-	if (0 != pthread_create(&result, NULL, inMain,
-		anything))
+	if (0 != pthread_create(&result, NULL,
+		inMain, anything))
 		return SJME_ERROR_CANNOT_CREATE;
 #elif defined(SJME_CONFIG_HAS_THREADS_WIN32)
 	/* Setup new thread. */
-	result = CreateThread(NULL, 0, inMain, anything, 0, NULL);
+	result = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)inMain,
+		anything, 0, NULL);
 	if (result == NULL || result == SJME_THREAD_NULL)
 		return SJME_ERROR_CANNOT_CREATE;
 #else
