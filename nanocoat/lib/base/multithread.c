@@ -8,6 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 #include "sjme/config.h"
+#include "sjme/multithread.h"
 
 #if defined(SJME_CONFIG_HAS_LINUX)
 	#include <sched.h>
@@ -15,7 +16,6 @@
 	#include <processthreadsapi.h>
 #endif
 
-#include "sjme/multithread.h"
 #include "sjme/debug.h"
 
 void sjme_thread_barrier(void)
