@@ -19,20 +19,31 @@ endif()
 # Use standard JNI search
 find_package(JNI QUIET)
 
+# Used to remove any NOTFOUNDs from variables
+macro(squirreljme_notfound_strip var)
+	unset(${var}-NOTFOUND)
+	unset(${var}-NOTFOUND CACHE)
+
+	if (${var} MATCHES "-NOTFOUND$")
+		unset(${var})
+		unset(${var} CACHE)
+	endif()
+
+	if("${CMAKE_VERSION}" VERSION_GREATER_EQUAL "3.13")
+		if("$CACHE{${var}}" MATCHES "-NOTFOUND$")
+			unset(${var} CACHE)
+		endif()
+	endif()
+endmacro()
+
 # Clear always the NOTFOUND variables, since these will cause CMake to
 # just fail if it is missing
-unset(JNI_INCLUDE_DIRS-NOTFOUND)
-unset(JAVA_JVM_LIBRARY-NOTFOUND)
-unset(JAVA_INCLUDE_PATH-NOTFOUND)
-unset(JAVA_INCLUDE_PATH2-NOTFOUND)
-unset(JAVA_AWT_LIBRARY-NOTFOUND)
-unset(JAVA_AWT_INCLUDE_PATH-NOTFOUND)
-unset(JNI_INCLUDE_DIRS-NOTFOUND CACHE)
-unset(JAVA_JVM_LIBRARY-NOTFOUND CACHE)
-unset(JAVA_INCLUDE_PATH-NOTFOUND CACHE)
-unset(JAVA_INCLUDE_PATH2-NOTFOUND CACHE)
-unset(JAVA_AWT_LIBRARY-NOTFOUND CACHE)
-unset(JAVA_AWT_INCLUDE_PATH-NOTFOUND CACHE)
+squirreljme_notfound_strip(JNI_INCLUDE_DIRS)
+squirreljme_notfound_strip(JAVA_JVM_LIBRARY)
+squirreljme_notfound_strip(JAVA_INCLUDE_PATH)
+squirreljme_notfound_strip(JAVA_INCLUDE_PATH2)
+squirreljme_notfound_strip(JAVA_AWT_LIBRARY)
+squirreljme_notfound_strip(JAVA_AWT_INCLUDE_PATH)
 
 # If found, use specific host variables then remove them all
 if(JNI_FOUND)
