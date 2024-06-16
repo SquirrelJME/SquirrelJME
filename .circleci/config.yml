@@ -175,15 +175,17 @@ commands:
     parameters:
       packages:
         type: string
+      look:
+        type: string
     steps:
       - run:
-          name: Install packages
+          name: Install packages (optional)
           environment:
             DEBIAN_FRONTEND: noninteractive
             NEEDRESTART_MODE: l
             NEEDRESTART_SUSPEND: 1
           command: |
-            sudo apt-get install -y --no-install-recommends <<parameters.packages>> || echo "Failed, but ignoring..."
+            if ! which "<<parameters.look>>"; then sudo apt-get install -y --no-install-recommends <<parameters.packages>> || echo "Failed, but ignoring..."; fi
 
   # Install standard packages in Debian/Ubuntu
   linux-install-required:
@@ -205,12 +207,16 @@ commands:
       - linux-debian-apt-get-install:
           packages: cmake build-essential curl wget gcc g++ make clang git openssh-client
       - linux-debian-apt-get-install-optional:
+          look: javac
           packages: openjdk-17-jdk
       - linux-debian-apt-get-install-optional:
+          look: javac
           packages: openjdk-11-jdk
       - linux-debian-apt-get-install-optional:
+          look: javac
           packages: openjdk-8-jdk
       - linux-debian-apt-get-install-optional:
+          look: javac
           packages: openjdk-7-jdk
 
   # Install required packages on Windows
