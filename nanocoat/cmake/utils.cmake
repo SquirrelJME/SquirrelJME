@@ -183,6 +183,21 @@ if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Windows")
 	endif()
 endif()
 
+## macOS
+if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
+	if(NOT DEFINED SQUIRRELJME_HOST_EXE_SUFFIX)
+		set(SQUIRRELJME_HOST_EXE_SUFFIX "")
+	endif()
+
+	if(NOT DEFINED SQUIRRELJME_HOST_DYLIB_PREFIX)
+		set(SQUIRRELJME_HOST_DYLIB_PREFIX "lib")
+	endif()
+
+	if(NOT DEFINED SQUIRRELJME_HOST_DYLIB_SUFFIX)
+		set(SQUIRRELJME_HOST_DYLIB_SUFFIX ".dylib")
+	endif()
+endif()
+
 if (NOT cmakeUtilConfigResult AND
 	NOT EMSCRIPTEN)
 	# Build the utilities, just in case it is out of date
