@@ -7,8 +7,8 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <jni.h>
-#include <jawt_md.h>
+#include "../include/3rdparty/jni/jni.h"
+#include "../include/3rdparty/jni/jawt.h"
 
 int main(int argc, char** argv)
 {
