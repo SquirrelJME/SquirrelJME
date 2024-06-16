@@ -50,7 +50,7 @@ add_library(libEmulatorBase SHARED
 target_include_directories(libEmulatorBase PUBLIC
 	"headers"
 	"${nanocoatIncludePath}"
-	${JNI_INCLUDE_DIRS})
+	"${JNI_INCLUDE_DIRS}")
 
 # Libraries for the build
 get_filename_component(nanocoatLibPath

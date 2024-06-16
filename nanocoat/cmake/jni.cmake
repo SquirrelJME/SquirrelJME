@@ -7,6 +7,15 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Attempts to find JNI and related headers
 
+# Where are we?
+if(NOT DEFINED SQUIRRELJME_JNI_CMAKE_WHERE)
+	set(SQUIRRELJME_JNI_CMAKE_WHERE "${CMAKE_CURRENT_LIST_DIR}")
+endif()
+
+if(NOT DEFINED SQUIRRELJME_JNI_CMAKE_WHERE)
+	set(SQUIRRELJME_JNI_CMAKE_WHERE "${CMAKE_SOURCE_DIR}")
+endif()
+
 # Use standard JNI search
 find_package(JNI QUIET)
 
@@ -17,9 +26,9 @@ if(NOT JNI_FOUND)
 
 	# Where are the headers?
 	set(JNI_INCLUDE_DIRS
-		"${CMAKE_SOURCE_DIR}/include/3rdparty/jni")
+		"${SQUIRRELJME_JNI_CMAKE_WHERE}/../include/3rdparty/jni")
 	set(JAVA_AWT_INCLUDE_PATH
-		"${CMAKE_SOURCE_DIR}/include/3rdparty/jni")
+		"${SQUIRRELJME_JNI_CMAKE_WHERE}/../include/3rdparty/jni")
 endif()
 
 # Debugging
@@ -34,7 +43,7 @@ if(JNI_FOUND)
 		if(NOT DEFINED JNI_AWT_FOUND)
 			# Use fallbacks
 			set(JAVA_AWT_INCLUDE_PATH
-				"${CMAKE_SOURCE_DIR}/include/3rdparty/jni")
+				"${SQUIRRELJME_JNI_CMAKE_WHERE}/../include/3rdparty/jni")
 		endif()
 	endif()
 endif()
@@ -81,12 +90,12 @@ endif()
 
 if(NOT DEFINED JNI_INCLUDE_DIRS)
 	set(JNI_INCLUDE_DIRS
-		"${CMAKE_SOURCE_DIR}/include/3rdparty/jni")
+		"${SQUIRRELJME_JNI_CMAKE_WHERE}/../include/3rdparty/jni")
 endif()
 
 if(NOT DEFINED JAVA_AWT_INCLUDE_PATH)
 	set(JAVA_AWT_INCLUDE_PATH
-		"${CMAKE_SOURCE_DIR}/include/3rdparty/jni")
+		"${SQUIRRELJME_JNI_CMAKE_WHERE}/../include/3rdparty/jni")
 endif()
 
 # Debugging
