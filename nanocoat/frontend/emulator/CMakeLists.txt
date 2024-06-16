@@ -35,7 +35,9 @@ add_dependencies(libEmulator
 # We need to find all of the includes and such
 target_include_directories(libEmulator PUBLIC
 	"${CMAKE_SOURCE_DIR}/include"
-	${JNI_INCLUDE_DIRS})
+	"${JNI_INCLUDE_DIRS}"
+	"${JAVA_INCLUDE_PATH}"
+	"${JAVA_INCLUDE_PATH2}")
 
 # Libraries needed to be linked with for the DyLib to function
 target_link_libraries(libEmulator PUBLIC

@@ -337,6 +337,14 @@ public final class CMakeUtils
 		VersionNumber version = CMakeUtils.cmakeExeVersion();
 		__task.getLogger().lifecycle("CMake version: " + version);
 		
+		// Force 32-bit compile?
+		String genPlatform;
+		if (OperatingSystem.current().isWindows() &&
+			CMakeUtils.is32BitHost() && CMakeUtils.isX86Host())
+			genPlatform = "-DCMAKE_GENERATOR_PLATFORM=Win32";
+		else
+			genPlatform = "-DXXIGNORETHISXX=1";
+		
 		// Configure CMake first before we continue with anything
 		// Note that newer CMake has a better means of specifying the path
 		if (version != null && version.compareTo(
@@ -345,6 +353,7 @@ public final class CMakeUtils
 				"configure",
 				__task.getProject().getBuildDir().toPath(),
 				"-DCMAKE_BUILD_TYPE=RelWithDebInfo",
+				genPlatform,
 				"-S", cmakeSource.toAbsolutePath().toString(),
 				"-B", cmakeBuild.toAbsolutePath().toString());
 		
@@ -355,8 +364,10 @@ public final class CMakeUtils
 				"configure",
 				__task.getProject().getBuildDir().toPath(),
 				"-DCMAKE_BUILD_TYPE=RelWithDebInfo",
+				genPlatform,
 				cmakeSource.toAbsolutePath().toString());
 	}
+	
 	/**
 	 * Is configuration needed?
 	 *
@@ -424,6 +435,62 @@ public final class CMakeUtils
 		{
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * Is this a 32-bit host?
+	 *
+	 * @return If this is a 32-bit host.
+	 * @since 2024/06/16
+	 */
+	public static boolean is32BitHost()
+	{
+		switch (System.getProperty("os.arch").toLowerCase())
+		{
+			case "x86":
+			case "x86_32":
+			case "x86-32":
+			case "i386":
+			case "i486":
+			case "i586":
+			case "i686":
+			case "ia32":
+			case "ppc":
+			case "powerpc":
+			case "arm32":
+				return true;
+		}
+		
+		// It is not or unknown
+		return false;
+	}
+	
+	/**
+	 * Is this an x86 host?
+	 *
+	 * @return If this is a x86 host.
+	 * @since 2024/06/16
+	 */
+	private static boolean isX86Host()
+	{
+		switch (System.getProperty("os.arch").toLowerCase())
+		{
+			case "x86":
+			case "x86_32":
+			case "x86-32":
+			case "x86_64":
+			case "x86-64":
+			case "amd64":
+			case "i386":
+			case "i486":
+			case "i586":
+			case "i686":
+			case "ia32":
+				return true;
+		}
+		
+		// It is not or unknown
+		return false;
 	}
 	
 	/**

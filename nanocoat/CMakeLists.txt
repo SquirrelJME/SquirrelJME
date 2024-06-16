@@ -47,14 +47,14 @@ squirreljme_include("fixes.cmake")
 # Win32 Options
 squirreljme_include("win32.cmake")
 
-# Is the system JNI available?
-squirreljme_include("jni.cmake")
-
 # Hardening options
 squirreljme_include("hardening.cmake")
 
 # CMake Utilities, compiled and used during build
 squirreljme_include("utils.cmake")
+
+# Is the system JNI available?
+squirreljme_include("jni.cmake")
 
 # Doxygen
 squirreljme_include("doxygen.cmake")
