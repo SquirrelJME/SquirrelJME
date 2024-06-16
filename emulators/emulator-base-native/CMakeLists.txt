@@ -69,7 +69,7 @@ message(STATUS "NanoCoat lib is: ${nanocoatLibPath}")
 target_link_directories(libEmulatorBase PUBLIC
 	"${nanocoatLibPath}")
 target_link_libraries(libEmulatorBase PUBLIC
-	"BaseStatic")
+	"BaseStatic" "${JNI_LIBRARIES}")
 
 # It is easier to find this when it is in the build root
 set_target_properties(libEmulatorBase PROPERTIES
