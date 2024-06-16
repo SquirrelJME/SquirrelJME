@@ -62,8 +62,10 @@ endif()
 # Not valid?
 if(NOT SQUIRRELJME_FOUND_JNI_VALID)
 	unset(JNI_FOUND)
-	unset(JNI_INCLUDE_DIRS)
 	unset(JAVA_JVM_LIBRARY)
+	unset(JNI_INCLUDE_DIRS)
+	unset(JAVA_AWT_LIBRARY)
+	unset(JAVA_AWT_INCLUDE_PATH)
 endif()
 
 # Do we need a library stub?
