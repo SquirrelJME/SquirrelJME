@@ -27,9 +27,6 @@ message(STATUS "JNI Found? ${JNI_FOUND}")
 
 # Enable JAWT?
 if(JNI_FOUND)
-	message(STATUS "JAWT Library: ${JAVA_AWT_LIBRARY}")
-	message(STATUS "JAWT Include: ${JAVA_AWT_INCLUDE_PATH}")
-
 	if(NOT "${JAVA_AWT_LIBRARY}" STREQUAL "" OR
 		NOT "${JAVA_AWT_INCLUDE_PATH}" STREQUAL "")
 		# Set JAWT was found, set this if it was not set since on older CMake
@@ -63,3 +60,18 @@ if(DEFINED JAVA_AWT_LIBRARY-NOTFOUND)
 	set(JAVA_JVM_LIBRARY
 		"${SQUIRRELJME_UTIL_DIR}/${SQUIRRELJME_HOST_DYLIB_PREFIX}jawt${SQUIRRELJME_HOST_DYLIB_SUFFIX}")
 endif()
+
+if(NOT DEFINED JNI_INCLUDE_DIRS)
+	set(JNI_INCLUDE_DIRS
+		"${CMAKE_SOURCE_DIR}/include/3rdparty/jni")
+endif()
+
+if(NOT DEFINED JAVA_AWT_INCLUDE_PATH)
+	set(JAVA_AWT_INCLUDE_PATH
+		"${CMAKE_SOURCE_DIR}/include/3rdparty/jni")
+endif()
+
+message(STATUS "JNI Library: ${JAVA_JVM_LIBRARY}")
+message(STATUS "JNI Include: ${JNI_INCLUDE_DIRS}")
+message(STATUS "JAWT Library: ${JAVA_AWT_LIBRARY}")
+message(STATUS "JAWT Include: ${JAVA_AWT_INCLUDE_PATH}")
