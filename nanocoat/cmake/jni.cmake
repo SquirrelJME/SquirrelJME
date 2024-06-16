@@ -19,94 +19,110 @@ endif()
 # Use standard JNI search
 find_package(JNI QUIET)
 
-# If JNI was not found, use a local copy as a fallback
-if(NOT JNI_FOUND)
-	# Set as found
-	set(JNI_FOUND ON)
-
-	# Where are the headers?
-	set(JNI_INCLUDE_DIRS
-		"${SQUIRRELJME_JNI_CMAKE_WHERE}/../include/3rdparty/jni")
-	set(JAVA_AWT_INCLUDE_PATH
-		"${SQUIRRELJME_JNI_CMAKE_WHERE}/../include/3rdparty/jni")
-endif()
-
-# Debugging
-message(STATUS "JNI Found? ${JNI_FOUND}")
-
-# Enable JAWT?
+# If found, use specific host variables then remove them all
 if(JNI_FOUND)
-	if(NOT "${JAVA_AWT_LIBRARY}" STREQUAL "" OR
-		NOT "${JAVA_AWT_INCLUDE_PATH}" STREQUAL "")
-		# Set JAWT was found, set this if it was not set since on older CMake
-		# this will not be set despite being technically valid
-		if(NOT DEFINED JNI_AWT_FOUND)
-			# Use fallbacks
-			set(JAVA_AWT_INCLUDE_PATH
-				"${SQUIRRELJME_JNI_CMAKE_WHERE}/../include/3rdparty/jni")
-		endif()
+	set(HOST_JNI_FOUND "${JNI_FOUND}")
+	unset(JNI_FOUND)
+
+	if(DEFINED JNI_INCLUDE_DIRS)
+		set(HOST_JNI_INCLUDE_DIRS "${JNI_INCLUDE_DIRS}")
+		unset(JNI_INCLUDE_DIRS)
+	endif()
+
+	if(DEFINED JAVA_INCLUDE_PATH)
+		set(HOST_JAVA_INCLUDE_PATH "${JAVA_INCLUDE_PATH}")
+		unset(JAVA_INCLUDE_PATH)
+	endif()
+
+	if(DEFINED JAVA_AWT_INCLUDE_PATH)
+		set(HOST_JAVA_AWT_INCLUDE_PATH "${JAVA_AWT_INCLUDE_PATH}")
+		unset(JAVA_AWT_INCLUDE_PATH)
+	endif()
+
+	if(DEFINED JAVA_JVM_LIBRARY)
+		set(HOST_JAVA_JVM_LIBRARY "${JAVA_JVM_LIBRARY}")
+		unset(JAVA_JVM_LIBRARY)
+	endif()
+
+	if(DEFINED JAVA_AWT_LIBRARY)
+		set(HOST_JAVA_AWT_LIBRARY "${JAVA_AWT_LIBRARY}")
+		unset(JAVA_AWT_LIBRARY)
 	endif()
 endif()
 
-# Try compiling with JNI
-if(JAVA_JVM_LIBRARY)
-	try_compile(SQUIRRELJME_FOUND_JNI_VALID
+# Check to see if the host can compile or not
+if(HOST_JNI_FOUND)
+	# JVM?
+	try_compile(SQUIRRELJME_HOST_JVM_VALID
 		"${CMAKE_CURRENT_BINARY_DIR}"
 		SOURCES "${CMAKE_CURRENT_LIST_DIR}/tryJni.c"
 		CMAKE_FLAGS "-DCMAKE_TRY_COMPILE_TARGET_TYPE=EXECUTABLE"
-		LINK_LIBRARIES ${JAVA_JVM_LIBRARY}
-		OUTPUT_VARIABLE SQUIRRELJME_FOUND_JNI_VALID_OUTPUT)
-	message("JNI Valid?: ${SQUIRRELJME_FOUND_JNI_VALID_OUTPUT}")
+		LINK_LIBRARIES "${JAVA_JVM_LIBRARY}"
+		OUTPUT_VARIABLE SQUIRRELJME_HOST_JVM_VALID_DEBUG)
+	message(STATUS "JNI Valid?: ${SQUIRRELJME_HOST_JVM_VALID}")
+	message(NOTICE "${SQUIRRELJME_HOST_JVM_VALID_DEBUG}")
+
+	# JAWT?
+	try_compile(SQUIRRELJME_HOST_AWT_VALID
+		"${CMAKE_CURRENT_BINARY_DIR}"
+		SOURCES "${CMAKE_CURRENT_LIST_DIR}/tryJawt.c"
+		CMAKE_FLAGS "-DCMAKE_TRY_COMPILE_TARGET_TYPE=EXECUTABLE"
+		LINK_LIBRARIES "${JAVA_JVM_LIBRARY}" "${JAVA_AWT_LIBRARY}"
+		OUTPUT_VARIABLE SQUIRRELJME_HOST_AWT_VALID_DEBUG)
+	message(STATUS "JAWT Valid?: ${SQUIRRELJME_HOST_AWT_VALID}")
+	message(NOTICE "${SQUIRRELJME_HOST_AWT_VALID_DEBUG}")
+else()
+	set(SQUIRRELJME_HOST_JVM_VALID NO)
+	set(SQUIRRELJME_HOST_AWT_VALID NO)
 endif()
 
-# Not valid?
-if(NOT SQUIRRELJME_FOUND_JNI_VALID)
-	unset(JNI_FOUND)
-	unset(JAVA_JVM_LIBRARY)
-	unset(JNI_INCLUDE_DIRS)
-	unset(JAVA_AWT_LIBRARY)
-	unset(JAVA_AWT_INCLUDE_PATH)
-endif()
+# JNI is always valid
+set(JNI_FOUND YES)
 
-# Do we need a library stub?
-## For JNI
-if(DEFINED JAVA_JVM_LIBRARY-NOTFOUND OR NOT DEFINED JAVA_JVM_LIBRARY)
-	# Make sure these are cleared
-	unset(JAVA_JVM_LIBRARY-NOTFOUND)
-	unset(JAVA_JVM_LIBRARY-NOTFOUND CACHE)
+# Use the host JNI or our own?
+if(SQUIRRELJME_HOST_JVM_VALID)
+	# Includes
+	set(JNI_INCLUDE_DIRS "${HOST_JAVA_INCLUDE_PATH}")
+	set(JAVA_INCLUDE_PATH "${HOST_JAVA_INCLUDE_PATH}")
 
-	# Use stubbed version
+	# Libraries
+	set(JAVA_JVM_LIBRARY "${HOST_JAVA_JVM_LIBRARY}")
+
+# Use our own
+else()
+	# Includes
+	set(JNI_INCLUDE_DIRS
+		"${SQUIRRELJME_JNI_CMAKE_WHERE}/../include/3rdparty/jni")
+	set(JAVA_INCLUDE_PATH
+		"${SQUIRRELJME_JNI_CMAKE_WHERE}/../include/3rdparty/jni")
+
+	# Use stubbed libraries
 	set(JAVA_JVM_LIBRARY
 		"${SQUIRRELJME_UTIL_DIR}/${SQUIRRELJME_HOST_DYLIB_PREFIX}jvm${SQUIRRELJME_HOST_DYLIB_SUFFIX}")
 endif()
 
-## For JAWT
-if(DEFINED JAVA_AWT_LIBRARY-NOTFOUND OR NOT DEFINED JAVA_AWT_LIBRARY)
-	unset(JAVA_AWT_LIBRARY-NOTFOUND)
-	unset(JAVA_AWT_LIBRARY-NOTFOUND CACHE)
+# Use host AWT?
+if(SQUIRRELJME_HOST_AWT_VALID)
+	# Includes
+	set(JAVA_AWT_INCLUDE_PATH "${HOST_JAVA_AWT_INCLUDE_PATH}")
 
-	# Use stubbed version
-	set(JAVA_JVM_LIBRARY
+	# Libraries
+	set(JAVA_AWT_LIBRARY "${HOST_JAVA_AWT_LIBRARY}")
+
+# Use our own
+else()
+	# Includes
+	set(JAVA_AWT_INCLUDE_PATH
+		"${SQUIRRELJME_JNI_CMAKE_WHERE}/../include/3rdparty/jni")
+
+	# Stubbed library
+	set(JAVA_AWT_LIBRARY
 		"${SQUIRRELJME_UTIL_DIR}/${SQUIRRELJME_HOST_DYLIB_PREFIX}jawt${SQUIRRELJME_HOST_DYLIB_SUFFIX}")
 endif()
 
-if(NOT DEFINED JNI_INCLUDE_DIRS)
-	set(JNI_INCLUDE_DIRS
-		"${SQUIRRELJME_JNI_CMAKE_WHERE}/../include/3rdparty/jni")
-endif()
-
-if(NOT DEFINED JAVA_AWT_INCLUDE_PATH)
-	set(JAVA_AWT_INCLUDE_PATH
-		"${SQUIRRELJME_JNI_CMAKE_WHERE}/../include/3rdparty/jni")
-endif()
-
 # Debugging
-message(STATUS "JNI Library: ${JAVA_JVM_LIBRARY}")
 message(STATUS "JNI Include: ${JNI_INCLUDE_DIRS}")
+message(STATUS "JVM Library: ${JAVA_JVM_LIBRARY}")
+message(STATUS "JVM Include: ${JAVA_INCLUDE_PATH}")
 message(STATUS "JAWT Library: ${JAVA_AWT_LIBRARY}")
 message(STATUS "JAWT Include: ${JAVA_AWT_INCLUDE_PATH}")
-
-# After everything, this will always be true
-if(NOT JNI_FOUND)
-	set(JNI_FOUND TRUE)
-endif()
