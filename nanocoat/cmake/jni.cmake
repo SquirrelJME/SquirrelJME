@@ -131,6 +131,7 @@ endif()
 # Debugging
 message(STATUS "JNI Include: ${JNI_INCLUDE_DIRS}")
 message(STATUS "JVM Library: ${JAVA_JVM_LIBRARY}")
-message(STATUS "JVM Include: ${JAVA_INCLUDE_PATH} ${JAVA_INCLUDE_PATH2}")
+message(STATUS "JVM Include 1: ${JAVA_INCLUDE_PATH}")
+message(STATUS "JVM Include 2: ${JAVA_INCLUDE_PATH2}")
 message(STATUS "JAWT Library: ${JAVA_AWT_LIBRARY}")
 message(STATUS "JAWT Include: ${JAVA_AWT_INCLUDE_PATH}")

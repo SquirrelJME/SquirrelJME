@@ -28,6 +28,7 @@ add_dependencies(libJvm
 # We need to find all of the includes and such
 target_include_directories(libJvm PUBLIC
 	"${CMAKE_SOURCE_DIR}/include"
+	"${JNI_INCLUDE_DIRS}"
 	"${JAVA_INCLUDE_PATH}"
 	"${JAVA_INCLUDE_PATH2}")
 
