@@ -13,7 +13,11 @@ cmake_minimum_required(VERSION 3.5)
 project(libEmulatorBase
     LANGUAGES C)
 
-# Threading support
+# Support bases
+include("${CMAKE_SOURCE_DIR}/../../nanocoat/cmake/utils.cmake"
+    NO_POLICY_SCOPE)
+include("${CMAKE_SOURCE_DIR}/../../nanocoat/cmake/jni.cmake"
+    NO_POLICY_SCOPE)
 include("${CMAKE_SOURCE_DIR}/../../nanocoat/cmake/threads.cmake"
     NO_POLICY_SCOPE)
 
@@ -21,19 +25,6 @@ include("${CMAKE_SOURCE_DIR}/../../nanocoat/cmake/threads.cmake"
 get_filename_component(nanocoatIncludePath
 	"${CMAKE_SOURCE_DIR}/../../nanocoat/include" ABSOLUTE)
 message(STATUS "NanoCoat include is: ${nanocoatIncludePath}")
-
-# Use standard JNI search
-find_package(JNI QUIET)
-
-# If JNI was not found, use a local copy as a fallback
-if(NOT JNI_FOUND)
-	# Where are the headers?
-	set(JNI_INCLUDE_DIRS
-		"${nanocoatIncludePath}/3rdparty/jni")
-
-	# Set as found
-	set(JNI_FOUND ON)
-endif()
 
 # Declare library
 add_library(libEmulatorBase SHARED
@@ -69,7 +60,7 @@ message(STATUS "NanoCoat lib is: ${nanocoatLibPath}")
 target_link_directories(libEmulatorBase PUBLIC
 	"${nanocoatLibPath}")
 target_link_libraries(libEmulatorBase PUBLIC
-	"BaseStatic" "${JNI_LIBRARIES}")
+	"BaseStatic" "${JAVA_JVM_LIBRARY}")
 
 # It is easier to find this when it is in the build root
 set_target_properties(libEmulatorBase PROPERTIES

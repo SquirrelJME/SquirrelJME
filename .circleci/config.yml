@@ -168,7 +168,22 @@ commands:
             NEEDRESTART_MODE: l
             NEEDRESTART_SUSPEND: 1
           command: |
-            sudo apt-get install -y --no-install-recommends <<parameters.packages>>
+            sudo apt-get install -yqq --no-install-recommends <<parameters.packages>>
+
+  # Standard apt-get install, optional
+  linux-debian-apt-get-install-optional:
+    parameters:
+      packages:
+        type: string
+    steps:
+      - run:
+          name: Install packages
+          environment:
+            DEBIAN_FRONTEND: noninteractive
+            NEEDRESTART_MODE: l
+            NEEDRESTART_SUSPEND: 1
+          command: |
+            sudo apt-get install -yqq --no-install-recommends <<parameters.packages>> || echo "Failed, but ignoring..."
 
   # Install standard packages in Debian/Ubuntu
   linux-install-required:
@@ -188,7 +203,15 @@ commands:
             NEEDRESTART_SUSPEND: 1
           command: sudo apt-get update -y
       - linux-debian-apt-get-install:
-          packages: cmake build-essential curl wget openjdk-17-jdk gcc g++ make clang git openssh-client
+          packages: cmake build-essential curl wget gcc g++ make clang git openssh-client
+      - linux-debian-apt-get-install-optional:
+          packages: openjdk-17-jdk
+      - linux-debian-apt-get-install-optional:
+          packages: openjdk-11-jdk
+      - linux-debian-apt-get-install-optional:
+          packages: openjdk-8-jdk
+      - linux-debian-apt-get-install-optional:
+          packages: openjdk-7-jdk
 
   # Install required packages on Windows
   windows-install-required:
