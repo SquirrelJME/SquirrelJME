@@ -9,6 +9,7 @@
 
 #include <stdlib.h>
 
+#define _JNI_IMPLEMENTATION_
 #include "../../include/3rdparty/jni/jni.h"
 
 JNIEXPORT jint JNICALL JNI_GetDefaultJavaVMInitArgs(void* args)
