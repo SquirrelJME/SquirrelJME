@@ -19,6 +19,9 @@ if(NOT EMSCRIPTEN AND NOT SQUIRRELJME_CROSS_BUILD)
 	endif()
 endif()
 
+# Netscape JRI (Usually for retro systems such as MacOS Classic)
+add_subdirectory(libjri)
+
 # Netscape Plugin API (NPAPI)
 if(SQUIRRELJME_IS_UNIX OR SQUIRRELJME_IS_WINDOWS)
 	add_subdirectory(npapi)
