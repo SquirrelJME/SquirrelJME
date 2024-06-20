@@ -392,6 +392,86 @@ typedef struct sjme_stream_resultByteArray
 	void** optResult;
 } sjme_stream_resultByteArray;
 
+typedef struct sjme_stream_outputData sjme_stream_outputData;
+
+/**
+ * Name of data output function type.
+ * 
+ * @param type The type.
+ * @param noun The proper noun of the type.
+ * @since 2024/06/20
+ */
+#define SJME_DATA_OUTPUT_NAME_FUNC(type, noun) \
+	SJME_TOKEN_PASTE3_PP(sjme_stream_outputDataWrite, noun, Func)
+
+/**
+ * Simplified data output stream.
+ * 
+ * @param type The type.
+ * @param noun The proper noun of the type.
+ * @since 2024/06/20
+ */
+#define SJME_DATA_OUTPUT_PROTOTYPE(type, noun) \
+	typedef sjme_errorCode (*SJME_DATA_OUTPUT_NAME_FUNC(type, noun)) \
+		(sjme_attrInNotNull sjme_stream_outputData* out, \
+		sjme_attrInValue type value)
+
+/**
+ * Quick output data type.
+ * 
+ * @param type The type.
+ * @param noun The proper noun of the type.
+ * @since 2024/06/20
+ */
+#define SJME_DATA_OUTPUT_TYPE(type, noun) \
+	SJME_DATA_OUTPUT_NAME_FUNC(type, noun) SJME_TOKEN_PASTE_PP(w, noun)
+
+SJME_DATA_OUTPUT_PROTOTYPE(sjme_jbyte, Byte);
+SJME_DATA_OUTPUT_PROTOTYPE(sjme_jubyte, UByte);
+SJME_DATA_OUTPUT_PROTOTYPE(sjme_jshort, Short);
+SJME_DATA_OUTPUT_PROTOTYPE(sjme_jchar, Character);
+SJME_DATA_OUTPUT_PROTOTYPE(sjme_jint, Integer);
+SJME_DATA_OUTPUT_PROTOTYPE(sjme_juint, UInteger);
+
+/**
+ * Functions for simplified data output.
+ * 
+ * @since 2024/06/20
+ */
+typedef struct sjme_stream_outputDataFunctions
+{
+	/** Writes a @c sjme_jbyte . */
+	SJME_DATA_OUTPUT_TYPE(sjme_jbyte, Byte);
+	
+	/** Writes a @c sjme_jubyte . */
+	SJME_DATA_OUTPUT_TYPE(sjme_jubyte, UByte);
+	
+	/** Writes a @c sjme_jshort . */
+	SJME_DATA_OUTPUT_TYPE(sjme_jshort, Short);
+	
+	/** Writes a @c sjme_jchar . */
+	SJME_DATA_OUTPUT_TYPE(sjme_jchar, Character);
+	
+	/** Writes a @c sjme_jint . */
+	SJME_DATA_OUTPUT_TYPE(sjme_jint, Integer);
+	
+	/** Writes a @c sjme_juint . */
+	SJME_DATA_OUTPUT_TYPE(sjme_juint, UInteger);
+} sjme_stream_outputDataFunctions;
+
+#undef SJME_DATA_OUTPUT_NAME_FUNC
+#undef SJME_DATA_OUTPUT_PROTOTYPE
+#undef SJME_DATA_OUTPUT_TYPE
+
+struct sjme_stream_outputData
+{
+	/** The stream to write to. */
+	sjme_stream_output stream;
+	
+	/** Functions for data output. */
+	const sjme_stream_outputDataFunctions df;
+};
+
 /**
  * This function is called back when the output byte array stream has been
  * closed, which provides the byte array for access.
@@ -423,6 +503,18 @@ sjme_errorCode sjme_stream_outputOpenByteArray(
 	sjme_attrInPositive sjme_jint initialLimit,
 	sjme_attrInNotNull sjme_stream_outputByteArrayFinishFunc finish,
 	sjme_attrInNullable void* whatever);
+
+/**
+ * Initializes a simplified data output stream.
+ * 
+ * @param inStream The input stream.
+ * @param outData The data output to initialize.
+ * @return Any resultant error, if any.
+ * @since 2024/06/20
+ */
+sjme_errorCode sjme_stream_outputOpenDataStatic(
+	sjme_attrInNotNull sjme_stream_output inStream,
+	sjme_attrInOutNotNull sjme_stream_outputData outData);
 
 /**
  * Opens an output stream which writes to the given block of memory, note that

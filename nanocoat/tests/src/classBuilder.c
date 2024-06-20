@@ -150,7 +150,8 @@ sjme_errorCode sjme_classBuilder_build(
 	
 	/* Allocate output array. */
 	if (sjme_error_is(error = sjme_stream_outputOpenByteArray(inPool,
-		&result->stream, 1024, NULL, result)))
+		&result->stream, 1024, NULL,
+		result)))
 		goto fail_outputStream;
 
 	sjme_todo("Implement this?");

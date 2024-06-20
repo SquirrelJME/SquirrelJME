@@ -645,6 +645,14 @@ fail_initBufAlloc:
 	return sjme_error_default(error);
 }
 
+sjme_errorCode sjme_stream_outputOpenDataStatic(
+	sjme_attrInNotNull sjme_stream_output inStream,
+	sjme_attrInOutNotNull sjme_stream_outputData outData)
+{
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
 sjme_errorCode sjme_stream_outputOpenMemory(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrOutNotNull sjme_stream_output* outStream,
@@ -837,19 +845,19 @@ sjme_errorCode sjme_stream_outputWriteValueJ(
 	switch (typeId)
 	{
 		case SJME_BASIC_TYPE_ID_BOOLEAN:
-			value.z = !!va_arg(va, sjme_jboolean);
+			value.z = va_arg(va, sjme_jboolean) != SJME_JNI_FALSE;
 			break;
 
 		case SJME_BASIC_TYPE_ID_BYTE:
-			value.b = va_arg(va, sjme_jbyte);
+			value.b = va_arg(va, sjme_jbyte_promoted);
 			break;
 
 		case SJME_BASIC_TYPE_ID_SHORT:
-			value.s = va_arg(va, sjme_jshort);
+			value.s = va_arg(va, sjme_jshort_promoted);
 			break;
 
 		case SJME_BASIC_TYPE_ID_CHARACTER:
-			value.c = va_arg(va, sjme_jchar);
+			value.c = va_arg(va, sjme_jchar_promoted);
 			break;
 
 		case SJME_BASIC_TYPE_ID_INTEGER:

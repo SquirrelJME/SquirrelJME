@@ -458,6 +458,13 @@ typedef int8_t sjme_jbyte;
 #define SJME_TYPEOF_IS_POINTER_sjme_jbyte 0
 
 /**
+ * Promoted @c sjme_jbyte .
+ * 
+ * @since 2024/06/20
+ */
+typedef int sjme_jbyte_promoted;
+
+/**
  * Unsigned byte type.
  * 
  * @since 2023/08/09
@@ -472,6 +479,13 @@ typedef uint8_t sjme_jubyte;
 
 /** Is a pointer for @c sjme_jubyte ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_jubyte 0
+
+/**
+ * Promoted @c sjme_jubyte .
+ * 
+ * @since 2024/06/20
+ */
+typedef int sjme_jubyte_promoted;
 
 /**
  * Short type.
@@ -490,6 +504,13 @@ typedef int16_t sjme_jshort;
 #define SJME_TYPEOF_IS_POINTER_sjme_jshort 0
 
 /**
+ * Promoted @c sjme_jshort .
+ * 
+ * @since 2024/06/20
+ */
+typedef int sjme_jshort_promoted;
+
+/**
  * Character type.
  * 
  * @since 2023/07/25
@@ -504,6 +525,13 @@ typedef uint16_t sjme_jchar;
 
 /** Is a pointer for @c sjme_jchar ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_jchar 0
+
+/**
+ * Promoted @c sjme_jchar .
+ * 
+ * @since 2024/06/20
+ */
+typedef int sjme_jchar_promoted;
 
 /**
  * Integer type.
