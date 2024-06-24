@@ -177,7 +177,8 @@ public enum VMType
 			List<Object> classPath = new ArrayList<>();
 			Set<Path> vmSupportPath = new LinkedHashSet<>();
 			for (File file : VMHelpers.projectRuntimeClasspath(
-				__task.getProject().findProject(":emulators:emulator-base")))
+				__task.getProject()
+					.findProject(":emulators:emulator-base")))
 				vmSupportPath.add(file.toPath());
 			
 			// Add all the emulator outputs
@@ -265,7 +266,8 @@ public enum VMType
 				// debugged rather than just the emulated environment.
 				String xjdwpProp = System.getProperty("squirreljme.xjdwp");
 				String jdwpProp = (xjdwpProp != null ? xjdwpProp :
-					System.getProperty("squirreljme.jdwp"));
+					Objects.toString(System.getProperty("squirreljme.jdwp"),
+						__sysProps.get("squirreljme.jdwp")));
 				if ((xjdwpProp != null && !xjdwpProp.isEmpty()) ||
 					(!hasDebug && jdwpProp != null && !jdwpProp.isEmpty()))
 				{

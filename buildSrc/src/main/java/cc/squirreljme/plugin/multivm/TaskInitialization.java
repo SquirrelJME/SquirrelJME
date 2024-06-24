@@ -20,6 +20,7 @@ import cc.squirreljme.plugin.tasks.JasminAssembleTask;
 import cc.squirreljme.plugin.tasks.MimeDecodeResourcesTask;
 import cc.squirreljme.plugin.tasks.TestsJarTask;
 import java.io.File;
+import java.net.URI;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -34,10 +35,8 @@ import org.gradle.api.file.FileCollection;
 import org.gradle.api.internal.AbstractTask;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.provider.Provider;
-import org.gradle.api.tasks.Delete;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskContainer;
-import org.gradle.api.tasks.bundling.AbstractArchiveTask;
 import org.gradle.api.tasks.javadoc.Javadoc;
 import org.gradle.api.tasks.testing.Test;
 import org.gradle.external.javadoc.CoreJavadocOptions;
@@ -516,7 +515,9 @@ public final class TaskInitialization
 		TaskContainer tasks = __project.getTasks();
 		
 		// Is there GDB?
-		Path gdbServer = GdbUtils.gdbServerExePath();
+		Path gdbServerPath = GdbUtils.gdbServerExePath();
+		URI gdbServer = (gdbServerPath != null ?
+			gdbServerPath.toUri() : null);
 		
 		// Handle all source sets
 		if (hasMain || hasMidlets)
@@ -563,9 +564,15 @@ public final class TaskInitialization
 							tasks.create(name,
 								VMRunTask.class, classifier, libTask,
 								config.mainClass, JavaMEMidlet.NONE,
-								VMRunTask.NO_GDB_SERVER);
+								VMRunTask.NO_DEBUG_SERVER);
 							
-							// Debugging?
+							// Debugging with JDWP?
+							tasks.create(name + "Jdwp",
+								VMRunTask.class, classifier, libTask,
+								config.mainClass, JavaMEMidlet.NONE,
+								VMRunTask.JDWP_HOST);
+							
+							// Debugging with GDB?
 							if (gdbServer != null)
 								tasks.create(name + "Gdb",
 									VMRunTask.class, classifier, libTask,
@@ -587,7 +594,13 @@ public final class TaskInitialization
 								// Create task
 								tasks.create(realName, VMRunTask.class,
 									classifier, libTask,
-									"", midlet, VMRunTask.NO_GDB_SERVER);
+									"", midlet, VMRunTask.NO_DEBUG_SERVER);
+								
+								// Debugging with JDWP?
+								tasks.create(realName + "Jdwp",
+									VMRunTask.class,
+									classifier, libTask,
+									"", midlet, VMRunTask.JDWP_HOST);
 								
 								// Debugging?
 								if (gdbServer != null)

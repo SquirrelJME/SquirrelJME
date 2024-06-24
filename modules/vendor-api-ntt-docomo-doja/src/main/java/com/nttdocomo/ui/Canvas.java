@@ -67,7 +67,8 @@ public abstract class Canvas
 		// Use the backing double buffered graphics, but without a draw
 		return new Graphics(
 			this._midpCanvas._doubleBuffer.getGraphics(this.getWidth(),
-				this.getHeight()), this._bgColor);
+				this.getHeight()), this._bgColor,
+				new __LockFlush__(this));
 	}
 	
 	@Api
@@ -76,10 +77,19 @@ public abstract class Canvas
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * Processes a given event.
+	 *
+	 * @param __type The event type, from {@link Display}.
+	 * @param __param The event parameter, typically the key that has been
+	 * pressed but is dependent on {@code __type}.
+	 * @since 2024/06/24
+	 */
 	@Api
 	public void processEvent(int __type, int __param)
 	{
-		throw Debugging.todo();
+		// This is implemented by subclasses and as such does nothing
+		// by default
 	}
 	
 	@Api
