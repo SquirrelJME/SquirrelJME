@@ -234,6 +234,7 @@ public class Display
 			case Canvas.KEY_RIGHT:
 			case NonStandardKey.VGAME_RIGHT:
 				return Display.KEY_RIGHT;
+				
 			case Canvas.KEY_NUM0:
 			case NonStandardKey.NUMPAD_0:
 				return Display.KEY_0;

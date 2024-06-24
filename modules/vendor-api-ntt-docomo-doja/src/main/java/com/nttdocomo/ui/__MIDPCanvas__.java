@@ -107,7 +107,7 @@ final class __MIDPCanvas__
 		DoubleBuffer doubleBuffer = this._doubleBuffer;
 		rv.paint(new com.nttdocomo.ui.Graphics(
 			doubleBuffer.getGraphics(rv.getWidth(), rv.getHeight()),
-			rv._bgColor));
+			rv._bgColor, null));
 		
 		// Paint the buffer to the given target
 		doubleBuffer.flush();
