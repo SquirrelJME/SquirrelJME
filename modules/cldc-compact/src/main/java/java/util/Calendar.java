@@ -234,16 +234,38 @@ public abstract class Calendar
 	@Api
 	public abstract void roll(int __a, boolean __b);
 	
+	/**
+	 * Checks if this is after the given {@link Calendar} instance.
+	 *
+	 * @param __against The {@link Calendar} to check against.
+	 * @return If this is after another {@link Calendar}, if the other
+	 * object is not one then this returns {@link false}.
+	 * @since 2024/06/24
+	 */
 	@Api
-	public boolean after(Object __a)
+	public boolean after(Object __against)
 	{
-		throw Debugging.todo();
+		if (!(__against instanceof Calendar))
+			return false;
+		
+		return this.compareTo((Calendar)__against) > 0;
 	}
 	
+	/**
+	 * Checks if this is before the given {@link Calendar} instance.
+	 *
+	 * @param __against The {@link Calendar} to check against.
+	 * @return If this is before another {@link Calendar}, if the other
+	 * object is not one then this returns {@link false}.
+	 * @since 2024/06/24
+	 */
 	@Api
-	public boolean before(Object __a)
+	public boolean before(Object __against)
 	{
-		throw Debugging.todo();
+		if (!(__against instanceof Calendar))
+			return false;
+		
+		return this.compareTo((Calendar)__against) < 0;
 	}
 	
 	/**
@@ -280,10 +302,30 @@ public abstract class Calendar
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * Compares this {@link #getTimeInMillis()} against the other
+	 * calendar's {@link #getTimeInMillis()}.
+	 *
+	 * @param __other The other calendar.
+	 * @return The comparison value.
+	 * @throws IllegalArgumentException If this or the other calendar
+	 * is not valid.
+	 * @since 2024/06/24
+	 */
 	@Override
-	public int compareTo(Calendar __a)
+	public int compareTo(Calendar __other)
+		throws IllegalArgumentException, NullPointerException
 	{
-		throw Debugging.todo();
+		if (__other == null)
+			throw new NullPointerException("NARG");
+		
+		long a = this.getTimeInMillis();
+		long b = __other.getTimeInMillis();
+		if (a < b)
+			return -1;
+		else if (a > b)
+			return 1;
+		return 0;
 	}
 	
 	@Api
