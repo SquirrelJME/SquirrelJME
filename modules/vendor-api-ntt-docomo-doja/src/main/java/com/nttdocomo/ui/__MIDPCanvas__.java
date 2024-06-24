@@ -9,6 +9,7 @@
 
 package com.nttdocomo.ui;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.gfx.DoubleBuffer;
 import java.lang.ref.Reference;
 import javax.microedition.lcdui.Graphics;
@@ -57,6 +58,8 @@ final class __MIDPCanvas__
 		if (rv == null)
 			return;
 		
+		Debugging.debugNote("DoJa Key %d -> %d",
+			__code, Display.__mapKey(__code));
 		rv.processEvent(Display.KEY_PRESSED_EVENT, Display.__mapKey(__code));
 	}
 	
@@ -84,8 +87,8 @@ final class __MIDPCanvas__
 	@Override
 	protected void keyRepeated(int __code)
 	{
-		// There are no key repeats in i-mode, so say it is a press
-		this.keyPressed(__code);
+		// There are no key repeats in i-mode, so ignore it as most
+		// applications will get very confused by them
 	}
 	
 	/**

@@ -87,8 +87,7 @@ final class __LockFlush__
 			if (target == null)
 				return;
 			
-			// Force flush and repaint to follow
-			target._midpCanvas._doubleBuffer.flush();
+			// Tell canvas to repaint itself
 			target.__displayable().repaint();
 		}
 	}

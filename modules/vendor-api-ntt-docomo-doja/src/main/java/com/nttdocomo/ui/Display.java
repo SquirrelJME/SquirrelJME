@@ -212,7 +212,7 @@ public class Display
 	}
 	
 	/**
-	 * Maps a MIDP Key to i-mode.
+	 * Maps a MIDP Key to DoJa.
 	 *
 	 * @param __code The code to map.
 	 * @return The mapped key.
@@ -275,6 +275,7 @@ public class Display
 			case Canvas.KEY_SELECT:
 			case Canvas.KEY_ENTER:
 			case NonStandardKey.NUMPAD_ENTER:
+			case NonStandardKey.VGAME_FIRE:
 				return Display.KEY_SELECT;
 			
 			// SquirrelJME specific keys
