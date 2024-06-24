@@ -13,20 +13,22 @@ import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import cc.squirreljme.plugin.swm.JavaMEMidlet;
 import cc.squirreljme.plugin.util.ForwardInputToOutput;
-import cc.squirreljme.plugin.util.GradleJavaExecSpecFiller;
 import cc.squirreljme.plugin.util.GradleLoggerOutputStream;
 import cc.squirreljme.plugin.util.JavaExecSpecFiller;
 import cc.squirreljme.plugin.util.SimpleJavaExecSpecFiller;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
 import org.gradle.api.logging.LogLevel;
-import org.gradle.process.ExecResult;
 
 /**
  * Runs the program within the virtual machine.
@@ -86,9 +88,33 @@ public class VMRunTaskAction
 		__task.getLogger().debug("MIDlet: {}", midlet);
 		__task.getLogger().debug("MainClass: {}", mainClass);
 		
+		// Debugger being used?
+		URI debugServer = runTask.debugServer;
+		
+		// Standard SquirrelJME command line arguments to use
+		List<String> args = new ArrayList<>();
+		
+		// Which command line is used?
+		List<String> procArgs = new ArrayList<>();
+		Map<String, String> sysProps = new LinkedHashMap<>();
+		if (debugServer != null)
+		{
+			// Debug server?
+			if ("file".equals(debugServer.getScheme()))
+			{
+				procArgs.add(Paths.get(debugServer).toAbsolutePath()
+					.toString());
+				procArgs.add("localhost:2345");
+			}
+			
+			// JDWP?
+			else if ("jdwp".equals(debugServer.getScheme()))
+				sysProps.put("squirreljme.jdwp",
+					debugServer.getSchemeSpecificPart());
+		}
+		
 		// If executing a MIDlet, then the single main argument is the actual
 		// name of the MIDlet to execute
-		List<String> args = new ArrayList<>();
 		if (midlet != null)
 			args.add(midlet.mainClass);
 		
@@ -102,17 +128,9 @@ public class VMRunTaskAction
 		vmType.spawnJvmArguments((VMBaseTask)__task, true,
 			execSpec, mainClass,
 			(midlet != null ? midlet.mainClass : mainClass),
-			Collections.<String, String>emptyMap(),
+			sysProps,
 			classPath, classPath,
 			args.<String>toArray(new String[args.size()]));
-		
-		// Which command line is used?
-		List<String> procArgs = new ArrayList<>();
-		if (runTask.gdbServer != null)
-		{
-			procArgs.add(runTask.gdbServer.toAbsolutePath().toString());
-			procArgs.add("localhost:2345");
-		}
 		
 		// Add normal command line
 		for (String arg : execSpec.getCommandLine())
