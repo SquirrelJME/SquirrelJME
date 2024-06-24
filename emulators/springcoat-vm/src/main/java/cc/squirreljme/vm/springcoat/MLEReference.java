@@ -11,7 +11,6 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.ReferenceShelf;
 import cc.squirreljme.jvm.mle.brackets.RefLinkBracket;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.RefLinkHolder;
 import cc.squirreljme.vm.springcoat.brackets.RefLinkObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
@@ -38,7 +37,7 @@ public enum MLEReference
 			synchronized (GlobalState.class)
 			{
 				// Check it, but otherwise do nothing
-				MLEReference.__refLink(__args[0]);
+				MLEObjects.refLink(__args[0]);
 			}
 			
 			return null;
@@ -56,7 +55,7 @@ public enum MLEReference
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			RefLinkObject link = MLEReference.__refLink(__args[0]);
+			RefLinkObject link = MLEObjects.refLink(__args[0]);
 			
 			if (__args[1] == null)
 				throw new SpringMLECallError("Null object.");
@@ -104,7 +103,7 @@ public enum MLEReference
 		{
 			synchronized (GlobalState.class)
 			{
-				return MLEReference.__refLink(__args[0]).getNext();
+				return MLEObjects.refLink(__args[0]).getNext();
 			}
 		}
 	},
@@ -122,7 +121,7 @@ public enum MLEReference
 		{
 			synchronized (GlobalState.class)
 			{
-				return MLEReference.__refLink(__args[0]).getObject();
+				return MLEObjects.refLink(__args[0]).getObject();
 			}
 		}
 	},
@@ -140,7 +139,7 @@ public enum MLEReference
 		{
 			synchronized (GlobalState.class)
 			{
-				return MLEReference.__refLink(__args[0]).getPrev();
+				return MLEObjects.refLink(__args[0]).getPrev();
 			}
 		}
 	},
@@ -158,8 +157,8 @@ public enum MLEReference
 		{
 			synchronized (GlobalState.class)
 			{
-				MLEReference.__refLink(__args[0]).setNext(
-					MLEReference.__refLink(__args[1]));
+				MLEObjects.refLink(__args[0]).setNext(
+					MLEObjects.refLink(__args[1]));
 			}
 			
 			return null;
@@ -179,7 +178,7 @@ public enum MLEReference
 		{
 			synchronized (GlobalState.class)
 			{
-				MLEReference.__refLink(__args[0])
+				MLEObjects.refLink(__args[0])
 					.setObject((SpringObject)__args[1]);
 			}
 			
@@ -200,8 +199,8 @@ public enum MLEReference
 		{
 			synchronized (GlobalState.class)
 			{
-				MLEReference.__refLink(__args[0]).setPrev(
-					MLEReference.__refLink(__args[1]));
+				MLEObjects.refLink(__args[0]).setPrev(
+					MLEObjects.refLink(__args[1]));
 			}
 			
 			return null;
@@ -219,7 +218,7 @@ public enum MLEReference
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			RefLinkObject thisLink = MLEReference.__refLink(__args[0]);
+			RefLinkObject thisLink = MLEObjects.refLink(__args[0]);
 			
 			synchronized (GlobalState.class)
 			{
@@ -251,7 +250,7 @@ public enum MLEReference
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			RefLinkObject thisLink = MLEReference.__refLink(__args[0]);
+			RefLinkObject thisLink = MLEObjects.refLink(__args[0]);
 			
 			synchronized (GlobalState.class)
 			{
@@ -329,7 +328,7 @@ public enum MLEReference
 				if (!(object instanceof SpringSimpleObject))
 					throw new SpringMLECallError("Invalid object"); 
 				
-				object.refLink().set(MLEReference.__refLink(__args[1]));
+				object.refLink().set(MLEObjects.refLink(__args[1]));
 			}
 			
 			return null;
@@ -368,20 +367,4 @@ public enum MLEReference
 		return this.key;
 	}
 	
-	/**
-	 * Checks if this is a {@link RefLinkObject}.
-	 * 
-	 * @param __object The object to check.
-	 * @return As a {@link RefLinkObject} if this is one.
-	 * @throws SpringMLECallError If this is not a {@link RefLinkObject}.
-	 * @since 2020/06/28
-	 */
-	static RefLinkObject __refLink(Object __object)
-		throws SpringMLECallError
-	{
-		if (!(__object instanceof RefLinkObject))
-			throw new SpringMLECallError("Not a RefLinkObject.");
-		
-		return (RefLinkObject)__object; 
-	}
 }

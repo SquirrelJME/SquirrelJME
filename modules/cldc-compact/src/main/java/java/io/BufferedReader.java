@@ -49,6 +49,9 @@ public class BufferedReader
 	/** The write position of the buffer (the valid characters). */
 	private int _wp;
 	
+	/** Internal string buffer to prevent allocations. */
+	private StringBuilder _sBuffer;
+	
 	/**
 	 * Initializes the reader.
 	 *
@@ -265,7 +268,20 @@ public class BufferedReader
 		// But do not make a super tiny string builder, make a guess as to
 		// what the average line length is.
 		int diff = wp - rp;
-		StringBuilder sb = new StringBuilder((Math.max(diff, 64)));
+		
+		// Do we need to allocate the buffer?
+		StringBuilder sb = this._sBuffer;
+		if (sb == null)
+		{
+			sb = new StringBuilder(64);
+			this._sBuffer = sb;
+		}
+		
+		// Wipe before read
+		sb.setLength(0);
+		
+		// Ensure we can fit everything
+		sb.ensureCapacity(Math.max(diff, 64));
 		
 		// Continually read data
 		Reader in = this._in;

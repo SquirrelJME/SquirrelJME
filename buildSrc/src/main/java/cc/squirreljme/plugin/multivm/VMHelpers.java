@@ -10,6 +10,7 @@
 package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
+import cc.squirreljme.plugin.general.cmake.CMakeBuildTask;
 import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import cc.squirreljme.plugin.multivm.ident.TargetClassifier;
 import cc.squirreljme.plugin.swm.JavaMEMidlet;
@@ -47,6 +48,7 @@ import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
@@ -479,6 +481,79 @@ public final class VMHelpers
 	}
 	
 	/**
+	 * Deletes the given directory tree.
+	 *
+	 * @param __task The task deleting for.
+	 * @param __path The path to delete.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/04/08
+	 */
+	public static void deleteDirTree(Task __task, Path __path)
+		throws NullPointerException
+	{
+		if (__task == null || __path == null)
+			throw new NullPointerException("NARG");
+		
+		// Ignore if not a directory
+		Path base = __path.toAbsolutePath().normalize();
+		if (!Files.isDirectory(__path))
+			return;
+		
+		// Collect files to delete
+		Set<Path> deleteFiles = new LinkedHashSet<>();
+		Set<Path> deleteDirs = new LinkedHashSet<>();
+		
+		// Perform the walk to collect files
+		try (Stream<Path> walk = Files.walk(__path))
+		{
+			walk.forEach((__it) -> {
+				Path normal = __it.toAbsolutePath().normalize();
+				
+				if (Files.isDirectory(normal))
+					deleteDirs.add(normal);
+				else
+					deleteFiles.add(normal);
+			});
+		}
+		catch (IOException __e)
+		{
+			__e.printStackTrace();
+		}
+		
+		// Run through and delete files then directories
+		for (Set<Path> rawByes : Arrays.asList(deleteFiles, deleteDirs))
+		{
+			List<Path> byes = new ArrayList<>(rawByes);
+			Collections.reverse(byes);
+			
+			for (Path bye : byes)
+			{
+				// Note
+				__task.getLogger().lifecycle(
+					String.format("Cleaning %s...", bye));
+				
+				// Skip out of tree files
+				if (!bye.startsWith(base))
+				{
+					__task.getLogger().lifecycle(
+						String.format("%s is out of tree, skipping...", bye));
+					continue;
+				}
+				
+				// Perform deletion
+				try
+				{
+					Files.deleteIfExists(bye);
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	/**
 	 * Attempts to find the emulator library so that can be loaded directly
 	 * instead of being extracted by each test process, if possible.
 	 * 
@@ -501,15 +576,12 @@ public final class VMHelpers
 		Project emuBase = __task.getProject().getRootProject()
 			.findProject(":emulators:emulator-base");
 		
-		// Is this valid?
-		Object raw = emuBase.getExtensions().getExtraProperties()
-			.get("libPathBase");
-		if (!(raw instanceof Path))
-			return null;
+		// Get the CMake Task for this
+		CMakeBuildTask cmake = (CMakeBuildTask)emuBase.getTasks()
+			.getByName("libNativeEmulatorBase");
 		
-		// Library is here?
-		return ((Path)raw).resolve(
-			System.mapLibraryName("emulator-base")).toAbsolutePath();
+		// Use the resultant library
+		return cmake.cmakeOutFile;
 	}
 	
 	/**

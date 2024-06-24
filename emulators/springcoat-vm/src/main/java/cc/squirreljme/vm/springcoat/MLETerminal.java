@@ -37,7 +37,7 @@ public enum MLETerminal
 		{
 			try
 			{
-				MLETerminal.__pipe(__args[0]).pipe.close();
+				MLEObjects.pipe(__args[0]).pipe.close();
 				
 				return null;
 			}
@@ -60,7 +60,7 @@ public enum MLETerminal
 		{
 			try
 			{
-				MLETerminal.__pipe(__args[0]).pipe.flush();
+				MLEObjects.pipe(__args[0]).pipe.flush();
 				
 				return PipeErrorType.NO_ERROR;
 			}
@@ -106,7 +106,7 @@ public enum MLETerminal
 		{
 			try
 			{
-				MLETerminal.__pipe(__args[0]).pipe
+				MLEObjects.pipe(__args[0]).pipe
 					.write((int)__args[1]);
 				
 				return 1;
@@ -138,7 +138,7 @@ public enum MLETerminal
 				int off = (int)__args[2];
 				int len = (int)__args[3];
 				
-				MLETerminal.__pipe(__args[0]).pipe
+				MLEObjects.pipe(__args[0]).pipe
 					.write(buf.array(), off, len);
 				return len;
 			}
@@ -181,20 +181,4 @@ public enum MLETerminal
 		return this.key;
 	}
 	
-	/**
-	 * Ensures that this is a {@link PipeObject}.
-	 * 
-	 * @param __object The object to check.
-	 * @return As a {@link PipeObject}.
-	 * @throws SpringMLECallError If this is not one.
-	 * @since 2022/03/19
-	 */
-	static PipeObject __pipe(Object __object)
-		throws SpringMLECallError
-	{
-		if (!(__object instanceof PipeObject))
-			throw new SpringMLECallError("Not a PipeObject.");
-		
-		return (PipeObject)__object; 
-	}
 }

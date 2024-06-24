@@ -11,13 +11,16 @@ package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import cc.squirreljme.plugin.general.UpdateFossilJavaDoc;
+import cc.squirreljme.plugin.multivm.gdb.GdbUtils;
 import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
+import cc.squirreljme.plugin.swm.JavaMEMidlet;
 import cc.squirreljme.plugin.tasks.AdditionalManifestPropertiesTask;
 import cc.squirreljme.plugin.tasks.GenerateTestsListTask;
 import cc.squirreljme.plugin.tasks.JasminAssembleTask;
 import cc.squirreljme.plugin.tasks.MimeDecodeResourcesTask;
 import cc.squirreljme.plugin.tasks.TestsJarTask;
 import java.io.File;
+import java.net.URI;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -32,10 +35,8 @@ import org.gradle.api.file.FileCollection;
 import org.gradle.api.internal.AbstractTask;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.provider.Provider;
-import org.gradle.api.tasks.Delete;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskContainer;
-import org.gradle.api.tasks.bundling.AbstractArchiveTask;
 import org.gradle.api.tasks.javadoc.Javadoc;
 import org.gradle.api.tasks.testing.Test;
 import org.gradle.external.javadoc.CoreJavadocOptions;
@@ -92,6 +93,8 @@ public final class TaskInitialization
 			__project.getLogger().debug("Could not defunct test task.", e);
 		}
 		
+		// The "check" task also depends on "test" which we do not want to
+		// run that way
 		Task check = __project.getTasks().getByName("check");
 		for (Iterator<Object> it = check.getDependsOn().iterator();
 			it.hasNext();)
@@ -306,12 +309,11 @@ public final class TaskInitialization
 		// Emulator targets, which run the VM with the resultant code
 		if (__classifier.getVmType().hasEmulator())
 		{
-			// Running the target
+			// Running the target, we want to be smarter and handle the
+			// various entry points but at this point there is no
+			// configuration information loaded yet... so do this later.
 			if (__classifier.isMainSourceSet())
 			{
-				tasks.create(
-					TaskInitialization.task("run", __classifier),
-					VMRunTask.class, __classifier, libTask);
 			}
 			
 			// Testing the target
@@ -500,9 +502,120 @@ public final class TaskInitialization
 			throw new NullPointerException("NARG");
 		
 		// Configuration, for modifiers
-		SquirrelJMEPluginConfiguration squirreljmeConf =
+		SquirrelJMEPluginConfiguration config =
 			SquirrelJMEPluginConfiguration.configuration(__project);
-			
+		
+		// Do we have main class and midlets?
+		boolean hasMain = (config.mainClass != null &&
+			!config.mainClass.isEmpty());
+		boolean hasMidlets = (config.midlets != null &&
+			!config.midlets.isEmpty());
+		
+		// Tasks for registration and otherwise
+		TaskContainer tasks = __project.getTasks();
+		
+		// Is there GDB?
+		Path gdbServerPath = GdbUtils.gdbServerExePath();
+		URI gdbServer = (gdbServerPath != null ?
+			gdbServerPath.toUri() : null);
+		
+		// Handle all source sets
+		if (hasMain || hasMidlets)
+			for (String sourceSet : TaskInitialization._SOURCE_SETS)
+			{
+				// Only consider the main source set
+				if (!sourceSet.equals(SourceSet.MAIN_SOURCE_SET_NAME))
+					continue;
+				
+				// Handle each virtual machine
+				for (VMType vmType : VMType.values())
+				{
+					// We cannot run on something that has no emulator
+					if (!vmType.hasEmulator())
+						continue;
+					
+					// We then have release/debug
+					for (ClutterLevel clutterLevel : ClutterLevel.values())
+					{
+						// Build classifier
+						SourceTargetClassifier classifier =
+							new SourceTargetClassifier(sourceSet, vmType,
+								BangletVariant.NONE, clutterLevel);
+						
+						// Dependent library task
+						VMLibraryTask libTask =
+							(VMLibraryTask)tasks.findByName(
+								TaskInitialization.task("lib",
+									classifier));
+						if (libTask == null)
+							continue;
+						
+						// Index for base IDs
+						int index = 0;
+						
+						// Base name for task
+						String name = TaskInitialization.task("run",
+							classifier);
+						
+						// Consider standard Java mains first
+						if (hasMain)
+						{
+							// Create task
+							tasks.create(name,
+								VMRunTask.class, classifier, libTask,
+								config.mainClass, JavaMEMidlet.NONE,
+								VMRunTask.NO_DEBUG_SERVER);
+							
+							// Debugging with JDWP?
+							tasks.create(name + "Jdwp",
+								VMRunTask.class, classifier, libTask,
+								config.mainClass, JavaMEMidlet.NONE,
+								VMRunTask.JDWP_HOST);
+							
+							// Debugging with GDB?
+							if (gdbServer != null)
+								tasks.create(name + "Gdb",
+									VMRunTask.class, classifier, libTask,
+									config.mainClass, JavaMEMidlet.NONE,
+									gdbServer);
+							
+							// Count up
+							index++;
+						}
+						
+						// Then any MIDlets
+						if (hasMidlets)
+							for (JavaMEMidlet midlet : config.midlets)
+							{
+								// Add digit following for different midlets
+								String realName = (index > 0 ?
+									name + index : name);
+								
+								// Create task
+								tasks.create(realName, VMRunTask.class,
+									classifier, libTask,
+									"", midlet, VMRunTask.NO_DEBUG_SERVER);
+								
+								// Debugging with JDWP?
+								tasks.create(realName + "Jdwp",
+									VMRunTask.class,
+									classifier, libTask,
+									"", midlet, VMRunTask.JDWP_HOST);
+								
+								// Debugging?
+								if (gdbServer != null)
+									tasks.create(realName + "Gdb",
+										VMRunTask.class,
+										classifier, libTask,
+										"", midlet, gdbServer);
+								
+								// Count up
+								index++;
+							}
+					}
+				}
+			}
+		
 		// We need to evaluate the Doclet project first since we need
 		// the Jar task, which if we use normal evaluation does not exist
 		// yet...
@@ -510,7 +623,7 @@ public final class TaskInitialization
 			__project.evaluationDependsOn(":tools:markdown-javadoc");
 		
 		// Setup task for creating JavaDoc
-		Javadoc mdJavaDoc = __project.getTasks()
+		Javadoc mdJavaDoc = tasks
 			.create("markdownJavaDoc", Javadoc.class);
 		
 		// What does this do?
@@ -532,13 +645,14 @@ public final class TaskInitialization
 				classifier));
 				
 		// We need to know how to make the classes
-		Task classes = __project.getTasks().getByName(TaskInitialization.task(
+		Task classes = tasks.getByName(TaskInitialization.task(
 			"", SourceSet.MAIN_SOURCE_SET_NAME, "classes"));
 		
 		// Where do we find the JAR?
 		Provider<Task> jarProvider = __project.provider(() ->
 			__project.getRootProject().findProject(
-			":tools:markdown-javadoc").getTasks().getByName("shadowJar"));
+			":tools:markdown-javadoc").getTasks()
+				.getByName("shadowJar"));
 		
 		// SpringCoat related tasks
 		Provider<Iterable<Task>> springCoatTasks = __project.provider(() ->
@@ -585,7 +699,7 @@ public final class TaskInitialization
 			.toFile());
 		mdJavaDoc.source(sourceSet.getAllJava());
 		mdJavaDoc.setClasspath(useClassPath);
-		mdJavaDoc.setTitle(squirreljmeConf.swmName);
+		mdJavaDoc.setTitle(config.swmName);
 		
 		// Determine the paths where all markdown JavaDocs are being stored
 		List<Path> projectPaths = new ArrayList<>();

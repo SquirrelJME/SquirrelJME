@@ -110,7 +110,7 @@ public final class ClassFile
 			__tn.equals(objectcn)) != (__sn == null))
 			throw new InvalidClassFormatException(String.format(
 				"JC29 %s %s %s %s",
-				__tn, __sn, objectcn, __tn.isPrimitive()));
+				__tn, __sn, objectcn, __tn.isPrimitive()), this);
 		
 		// Set
 		this.version = __ver;

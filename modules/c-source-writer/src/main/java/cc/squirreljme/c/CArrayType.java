@@ -21,6 +21,10 @@ import net.multiphasicapps.collections.UnmodifiableList;
 public final class CArrayType
 	extends __CAbstractType__
 {
+	/** The array is of undefined size. */
+	public static final int UNDEFINED_SIZE =
+		Integer.MIN_VALUE;
+	
 	/** The element type. */
 	protected final CType elementType;
 	
@@ -38,7 +42,7 @@ public final class CArrayType
 	private CArrayType(CType __type, int __size)
 		throws IllegalArgumentException
 	{
-		if (__size < 0)
+		if (__size < 0 && __size != CArrayType.UNDEFINED_SIZE)
 			throw new IllegalArgumentException("NEGI");
 		
 		this.elementType = __type;
@@ -77,7 +81,8 @@ public final class CArrayType
 		
 		// Array size
 		result.add("[");
-		result.add(Integer.toString(this.size, 10));
+		if (this.size != CArrayType.UNDEFINED_SIZE)
+			result.add(Integer.toString(this.size, 10));
 		result.add("]");
 		
 		return UnmodifiableList.of(result);
@@ -145,7 +150,7 @@ public final class CArrayType
 	public static CType of(CType __type, int __size)
 		throws IllegalArgumentException
 	{
-		if (__size < 0)
+		if (__size < 0 && __size != CArrayType.UNDEFINED_SIZE)
 			throw new IllegalArgumentException("NEGI");
 		
 		/* {@squirreljme.error CW3h Cannot get array of function.} */

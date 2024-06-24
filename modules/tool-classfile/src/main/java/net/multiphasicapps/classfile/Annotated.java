@@ -15,6 +15,7 @@ package net.multiphasicapps.classfile;
  * @since 2018/03/06
  */
 public interface Annotated
+	extends Contexual
 {
 	/**
 	 * Returns all of the annotations which have been specified for this.

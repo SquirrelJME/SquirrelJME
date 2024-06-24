@@ -36,7 +36,7 @@ public class HexDumpOutputStream
 	protected final OutputStream pipe;
 	
 	/** Where to write characters to. */
-	protected final Writer dump;
+	protected final Appendable dump;
 	
 	/** The write queue. */
 	private final byte[] _queue =
@@ -65,7 +65,7 @@ public class HexDumpOutputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/12
 	 */
-	public HexDumpOutputStream(Writer __dump)
+	public HexDumpOutputStream(Appendable __dump)
 		throws NullPointerException
 	{
 		// Check
@@ -101,7 +101,7 @@ public class HexDumpOutputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/12
 	 */
-	public HexDumpOutputStream(OutputStream __pipe, Writer __dump)
+	public HexDumpOutputStream(OutputStream __pipe, Appendable __dump)
 		throws NullPointerException
 	{
 		// Check
@@ -145,7 +145,11 @@ public class HexDumpOutputStream
 		this.pipe.flush();
 		
 		// And the dump
-		this.dump.flush();
+		Appendable dump = this.dump;
+		if (dump instanceof OutputStream)
+			((OutputStream)dump).flush();
+		else if (dump instanceof Writer)
+			((Writer)dump).flush();
 	}
 	
 	/**
@@ -197,7 +201,7 @@ public class HexDumpOutputStream
 		int at = this._at;
 		try
 		{
-			Writer w = this.dump;
+			Appendable w = this.dump;
 			
 			// Print starting hex data
 			for (int i = 0; i < cols; i++)
@@ -205,28 +209,28 @@ public class HexDumpOutputStream
 				// Padding
 				if (i > 0)
 				{
-					w.write(' ');
+					w.append(' ');
 				
 					// Extra space?
 					if ((i & 3) == 0)
-						w.write(' ');
+						w.append(' ');
 				}
 				
 				// No data?
 				if (i >= at)
 				{
-					w.write("  ");
+					w.append("  ");
 					continue;
 				}
 				
 				// Write both bytes
 				int x = queue[i] & 0xFF;
-				w.write(Character.forDigit(((x >>> 4) & 0xF), 16));
-				w.write(Character.forDigit((x & 0xF), 16));
+				w.append(Character.forDigit(((x >>> 4) & 0xF), 16));
+				w.append(Character.forDigit((x & 0xF), 16));
 			}
 			
 			// Print ASCII version of it
-			w.write("  |");
+			w.append("  |");
 			for (int i = 0; i < cols; i++)
 			{
 				// No data?
@@ -238,10 +242,10 @@ public class HexDumpOutputStream
 				if (c < ' ' || c > 0x7E)
 					c = '.';
 				
-				w.write(c);
+				w.append(c);
 			}
-			w.write('|');
-			w.write('\n');
+			w.append('|');
+			w.append('\n');
 		}
 	
 		// Always clear the position
@@ -260,7 +264,7 @@ public class HexDumpOutputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/021
 	 */
-	public static boolean dump(PrintStream __dump, InputStream __in)
+	public static boolean dump(Appendable __dump, InputStream __in)
 		throws NullPointerException
 	{
 		if (__dump == null || __in == null)
@@ -300,7 +304,7 @@ public class HexDumpOutputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/26
 	 */
-	public static boolean dump(PrintStream __dump, byte[] __b)
+	public static boolean dump(Appendable __dump, byte[] __b)
 		throws NullPointerException
 	{
 		if (__dump == null || __b == null)
@@ -322,7 +326,7 @@ public class HexDumpOutputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/26
 	 */
-	public static boolean dump(PrintStream __dump, byte[] __b, int __o,
+	public static boolean dump(Appendable __dump, byte[] __b, int __o,
 		int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{

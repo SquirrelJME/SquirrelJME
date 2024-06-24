@@ -9,6 +9,7 @@
 
 package cc.squirreljme.plugin.general;
 
+import cc.squirreljme.plugin.multivm.VMHelpers;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -95,42 +96,7 @@ public class CollateResourceJarsTaskAction
 		
 		// Delete old directory set first since it will have a bunch of
 		// old files in it and such...
-		if (Files.isDirectory(outBase))
-		{
-			Set<Path> deleteFiles = new LinkedHashSet<>();
-			Set<Path> deleteDirs = new LinkedHashSet<>();
-			
-			try (Stream<Path> walk = Files.walk(outBase))
-			{
-				walk.forEach((__it) -> {
-						if (Files.isDirectory(__it))
-							deleteDirs.add(__it);
-						else
-							deleteFiles.add(__it);
-					});
-			}
-			
-			for (Set<Path> rawByes : Arrays.asList(deleteFiles, deleteDirs))
-			{
-				List<Path> byes = new ArrayList<>(rawByes);
-				Collections.reverse(byes);
-				
-				for (Path bye : byes)
-				{
-					__task.getLogger().lifecycle(
-						String.format("Cleaning %s...", bye));
-					
-					try
-					{
-						Files.deleteIfExists(bye);
-					}
-					catch (IOException e)
-					{
-						e.printStackTrace();
-					}
-				}
-			}
-		}
+		VMHelpers.deleteDirTree(__task, outBase);
 		
 		// Make sure it exists
 		Files.createDirectories(outBase);

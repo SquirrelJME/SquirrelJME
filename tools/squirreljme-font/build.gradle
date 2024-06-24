@@ -1,0 +1,189 @@
+import cc.squirreljme.plugin.tasks.MimeDecodeResourcesTask
+import cc.squirreljme.plugin.util.GradleLoggerOutputStream
+import cc.squirreljme.plugin.util.JavaExecSpecFiller
+import cc.squirreljme.plugin.util.SimpleJavaExecSpecFiller
+import lombok.Getter
+
+import javax.inject.Inject
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
+import java.nio.file.StandardOpenOption
+
+plugins {
+	id "java"
+	id "application"
+}
+
+apply plugin: "com.github.johnrengelman.shadow"
+
+description = "SquirrelJME Font Compiler."
+mainClassName = "cc.squirreljme.fontcompile.Main"
+
+tasks.register("mimeDecode", MimeDecodeResourcesTask.class,
+	"main",
+	tasks.named("processResources").get(),
+	tasks.named("clean").get())
+
+processResources.dependsOn("mimeDecode")
+jar.dependsOn("mimeDecode")
+
+dependencies {
+	implementation project(":emulators:emulator-base")
+	implementation project(":modules:cldc-compact")
+	implementation project(":modules:c-source-writer")
+	implementation project(":modules:io")
+	implementation project(":modules:io-file")
+	implementation project(":modules:zip")
+	
+	// Lombok for simpler getters/setters
+	implementation 'org.projectlombok:lombok:1.18.30'
+	annotationProcessor 'org.projectlombok:lombok:1.18.30'
+}
+
+class CompileFontTask extends DefaultTask {
+	/** The font path. */
+	@Getter
+	@Internal
+	final java.nio.file.Path fontPath
+	
+	/** The output path. */
+	@Getter
+	@Internal
+	final java.nio.file.Path compiledPath
+	
+	/** Writing C source? */
+	@Getter
+	@Internal
+	final boolean cSource
+	
+	@Inject
+	public CompileFontTask(String __pathy, String __outName,
+		boolean __cSource) {
+		if (__pathy == null || __outName == null) {
+			throw new NullPointerException("No path.")
+		}
+		
+		this.group = "squirreljme"
+		this.description = "Compiles font ${__pathy}."
+		
+		this.cSource = __cSource
+		
+		// Clean must always be done first
+		this.mustRunAfter(this.project.provider({ ->
+			this.project.tasks.named("clean")}))
+		
+		// We need the actual program first
+		Provider<Task> shadowTask = this.project.provider({ ->
+			this.project.tasks.getByName("shadowJar")})
+		this.dependsOn(shadowTask)
+		
+		// Determine where the font is
+		java.nio.file.Path fontPath = this.project.rootProject.rootDir
+			.toPath().resolve("assets").resolve("font").resolve(__pathy)
+		this.fontPath = fontPath
+		
+		// Where does this go?
+		java.nio.file.Path compiledPath = this.project.buildDir.toPath()
+			.resolve("fonts").resolve(__outName + (__cSource ? ".c" : ".sqf"))
+		this.compiledPath = compiledPath
+		
+		// Make the shadow Jar input for the task just to make sure that
+		// is up to date!
+		this.inputs.file(this.project.provider({ ->
+			shadowTask.get().outputs.files.singleFile}))
+		
+		// Set font data as input
+		if (Files.isDirectory(fontPath)) {
+			this.inputs.dir(fontPath)
+		} else {
+			this.inputs.file(fontPath)
+		}
+		
+		// Compiled output is an output for this
+		this.outputs.file(compiledPath)
+		
+		this.doFirst({Task tasky ->
+			java.nio.file.Path temp = null
+			try {
+				// Write to a temporary file first to keep things clean
+				temp = Files.createTempFile("font", ".sqf")
+				
+				// Setup task for execution then execute it
+				ExecResult exitResult
+				try (OutputStream out = Files.newOutputStream(
+					temp, StandardOpenOption.WRITE,
+					StandardOpenOption.CREATE,
+					StandardOpenOption.TRUNCATE_EXISTING)) {
+					exitResult = tasky.project.javaexec(
+						{ JavaExecSpec spec ->
+							// Use the output Jar
+							spec.classpath(
+								shadowTask.get().outputs.files.singleFile)
+							spec.main("cc.squirreljme.fontcompile.Main")
+							
+							// Input and output
+							spec.args(fontPath.toAbsolutePath().toString(),
+								(__cSource ? "-.c" : "-"))
+							
+							// Use these streams directly
+							spec.setStandardOutput(out)
+							spec.setErrorOutput(new GradleLoggerOutputStream(
+								tasky.getLogger(), LogLevel.ERROR,
+								-1, -1))
+						})
+				}
+					
+				// Did the task fail?
+				int exitValue = exitResult.getExitValue()
+				if (exitValue != 0)
+					throw new RuntimeException("Task exited with: " +
+						exitValue)
+				
+				// Move it over
+				Files.createDirectories(compiledPath.getParent())
+				Files.move(temp, compiledPath,
+					StandardCopyOption.REPLACE_EXISTING)
+			} finally {
+				Files.deleteIfExists(temp)
+			}
+		})
+	}
+}
+
+// Generic task to compile all fonts
+TaskProvider<Task> compileFonts = tasks.register("compileFonts") {
+	this.group = "squirreljme"
+	this.description = "Compiles all fonts."
+}
+
+for (String fn in [
+	"monospace.sfdir/8.strike",
+	"monospace.sfdir/12.strike",
+	"monospace.sfdir/16.strike",
+	"sansserif.sfdir/8.strike",
+	"sansserif.sfdir/12.strike",
+	"sansserif.sfdir/16.strike",
+	"serif.sfdir/8.strike",
+	"serif.sfdir/12.strike",
+	"serif.sfdir/16.strike",
+	"misaki8.bdf",
+	"misaki12.bdf",
+	"unifont16.bdf",
+	"unifont-upper16.bdf"]) {
+	// Determine a better name for it
+	String shortish = fn.substring(0, 1).toUpperCase() + fn.replaceAll(
+		"(\\.sfdir|\\.strike|\\.bdf|/)", "").substring(1)
+	
+	// Register base SQF compiler
+	TaskProvider<Task> compileFont = tasks.register("compileFont${shortish}",
+		CompileFontTask.class,
+		fn, shortish.toLowerCase(Locale.ROOT), false)
+	
+	// Include all SQFs in the default compile
+	compileFonts.get().dependsOn(compileFont)
+	
+	// Add source code compilation
+	tasks.register("sourceFont${shortish}",
+		CompileFontTask.class,
+		fn, shortish.toLowerCase(Locale.ROOT), true)
+}

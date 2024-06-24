@@ -143,6 +143,12 @@ struct sjme_alloc_pool
 		sjme_jint reserved;
 	} space[SJME_NUM_ALLOC_POOL_SPACE];
 	
+	/** Previous pool in multi-pool chain allocation. */
+	sjme_alloc_pool* prevPool;
+	
+	/** Next pool in multi-pool chain allocation. */
+	sjme_alloc_pool* nextPool;
+	
 	/** The front chain link. */
 	sjme_alloc_link* frontLink;
 	

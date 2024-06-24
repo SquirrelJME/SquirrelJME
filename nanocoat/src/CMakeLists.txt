@@ -6,58 +6,30 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 
-list(APPEND coreSources
-	alloc.c
-	allocSizeOf.c
-	atomic.c
+# Declare library
+squirreljme_multilib_add_library(Core
 	boot.c
 	bytecode.c
 	classy.c
-	comparator.c
-	debug.c
 	descriptor.c
-	error.c
-	except.c
 	gfx.c
 	jdwp.c
-	list.c
 	loop.c
 	modelessStars.c
-	multithread.c
 	native.c
 	nvm.c
-	recycle.c
-	refcount.c
 	rom.c
-	seekable.c
-	stream.c
 	task.c
 	tread.c
-	tree.c
-	util.c
-	vmConfig.c
-	zip.c)
-
-# The core library contains the main logic for the virtual machine
-# For non-PIC:
-add_library(Core OBJECT
-	${coreSources})
-# For PIC:
-add_library(CorePIC OBJECT
-	${coreSources})
-
-# Needs to be position independent when included in other parts
-set_property(TARGET CorePIC
-	PROPERTY POSITION_INDEPENDENT_CODE ON)
+	vmConfig.c)
 
 # Include main headers
-target_include_directories(Core PUBLIC
+squirreljme_multilib_target_include_directories(Core
 	"${CMAKE_SOURCE_DIR}/include")
-target_include_directories(CorePIC PUBLIC
-	"${CMAKE_SOURCE_DIR}/include")
+
+# Libraries for linking
+squirreljme_multilib_target_link_libraries(Core
+	$<TARGET_PROPERTY:Base,SQUIRRELJME_LINK_LIBRARIES>)
 
 # Doxygen
 squirreljme_doxygen(Core)
-
-# Third party support libraries
-add_subdirectory(3rdparty)

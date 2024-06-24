@@ -20,6 +20,7 @@ import java.util.Set;
  * @since 2017/10/15
  */
 public final class Instruction
+	implements Contexual
 {
 	/** The instruction address. */
 	protected final int address;

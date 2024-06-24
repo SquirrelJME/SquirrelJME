@@ -44,8 +44,17 @@ endif()
 # Fixes and otherwise for compatibility
 squirreljme_include("fixes.cmake")
 
+# Win32 Options
+squirreljme_include("win32.cmake")
+
+# Hardening options
+squirreljme_include("hardening.cmake")
+
 # CMake Utilities, compiled and used during build
 squirreljme_include("utils.cmake")
+
+# Is the system JNI available?
+squirreljme_include("jni.cmake")
 
 # Doxygen
 squirreljme_include("doxygen.cmake")
@@ -63,10 +72,8 @@ set(CMAKE_C_STANDARD_REQUIRED True)
 # Assets and otherwise, such as icons, etc.
 squirreljme_include("assets.cmake")
 
-# Turn some warnings into errors
-if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-	add_compile_options("-Werror=implicit-function-declaration")
-endif()
+# Multi-library declarations
+squirreljme_include("multilib.cmake")
 
 # Visual studio does not like a bunch of standard C functions, even those
 # that take sizes...
@@ -87,11 +94,17 @@ if(SQUIRRELJME_IS_DEBUG)
 	endif()
 endif()
 
-# Valgrind Support on UNIX OSes, if debugging
+# Valgrind Support on UNIX OSes, if debugging is enabled
 if(ANDROID OR SQUIRRELJME_IS_UNIX)
 	if(SQUIRRELJME_IS_DEBUG)
 		squirreljme_include("valgrind.cmake")
 	endif()
+endif()
+
+# Where should dynamic libraries go when output?
+if(NOT DEFINED SQUIRRELJME_DYLIB_OUTPUT_DIR)
+	set(SQUIRRELJME_DYLIB_OUTPUT_DIR
+		"${CMAKE_BINARY_DIR}")
 endif()
 
 # Enable support for testing, this is needed here otherwise testing will not
@@ -113,9 +126,15 @@ if(SQUIRRELJME_ENABLE_PACKING OR
 	squirreljme_include("packing.cmake")
 endif()
 
+# SquirrelJME Base Library, everything depends on this essentially
+add_subdirectory(lib/base)
+
 # Include the base core first because it is completely standalone and it
 # uses nothing else
 add_subdirectory(src)
+
+# Internal Libraries other than Base
+add_subdirectory(lib)
 
 # Tests first since we add to these and when the ROMs register themselves
 # they will get their tests added accordingly

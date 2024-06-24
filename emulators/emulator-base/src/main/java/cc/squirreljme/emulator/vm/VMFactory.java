@@ -14,6 +14,7 @@ import cc.squirreljme.jdwp.host.JDWPHostFactory;
 import cc.squirreljme.jvm.launch.Application;
 import cc.squirreljme.jvm.launch.AvailableSuites;
 import cc.squirreljme.jvm.launch.SuiteScanner;
+import cc.squirreljme.jvm.manifest.JavaManifest;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.suite.EntryPoint;
 import cc.squirreljme.jvm.suite.SuiteUtils;
@@ -169,13 +170,13 @@ public abstract class VMFactory
 		VMThreadModel threadModel = VMThreadModel.DEFAULT;
 		
 		// Load our own META-INF/MANIFEST.MF for some special properties
-		Manifest metaManifest = null;
+		JavaManifest metaManifest = null;
 		try (InputStream in = VMFactory.class
 			.getResourceAsStream("/META-INF/MANIFEST.MF"))
 		{
 			Debugging.debugNote("GOT MANIFEST: %s", in);
 			if (in != null)
-				metaManifest = new Manifest(in);
+				metaManifest = new JavaManifest(in);
 		}
 		catch (IOException e)
 		{

@@ -19,7 +19,7 @@ import java.lang.ref.WeakReference;
  * @since 2019/03/21
  */
 public final class InstructionAddressRange
-	implements Comparable<InstructionAddressRange>
+	implements Contexual, Comparable<InstructionAddressRange>
 {
 	/** The start address. */
 	protected final int start;

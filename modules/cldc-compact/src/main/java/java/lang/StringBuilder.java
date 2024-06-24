@@ -839,8 +839,6 @@ public final class StringBuilder
 	 * @since 2018/10/13
 	 */
 	@Api
-	@ImplementationNote("This does not actually even pad NULs it just " +
-		"sets the length or regrows the buffer as needed.")
 	public void setLength(int __nl)
 		throws IndexOutOfBoundsException
 	{

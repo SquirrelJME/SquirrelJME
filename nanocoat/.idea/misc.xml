@@ -19,6 +19,7 @@
     <excludeRoots>
       <file path="$PROJECT_DIR$/.idea" />
       <file path="$PROJECT_DIR$/build" />
+      <file path="$PROJECT_DIR$/cc/cmake-build-debug" />
     </excludeRoots>
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />

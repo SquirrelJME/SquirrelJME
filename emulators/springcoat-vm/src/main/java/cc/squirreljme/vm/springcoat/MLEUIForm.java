@@ -17,11 +17,12 @@ import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIDisplayCallback;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.UIDisplayObject;
 import cc.squirreljme.vm.springcoat.brackets.UIFormObject;
 import cc.squirreljme.vm.springcoat.brackets.UIItemObject;
-import cc.squirreljme.vm.springcoat.brackets.UIWidgetObject;
+import cc.squirreljme.vm.springcoat.callbacks.UIDisplayCallbackAdapter;
+import cc.squirreljme.vm.springcoat.callbacks.UIFormCallbackAdapter;
+import cc.squirreljme.vm.springcoat.callbacks.UIFormCallbackProxy;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 
 /**
@@ -29,6 +30,7 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
  *
  * @since 2020/06/30
  */
+@Deprecated
 public enum MLEUIForm
 	implements MLEFunction
 {
@@ -44,7 +46,7 @@ public enum MLEUIForm
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			UIDisplayObject display = MLEUIForm.__display(__args[0]);
+			UIDisplayObject display = MLEObjects.uiDisplay(__args[0]);
 			
 			SpringObject callback = (SpringObject)__args[1];
 			if (callback == null || callback == SpringNullObject.NULL)
@@ -68,7 +70,7 @@ public enum MLEUIForm
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			UIFormObject form = MLEUIForm.__form(__args[0]);
+			UIFormObject form = MLEObjects.uiForm(__args[0]);
 			
 			SpringObject callback = (SpringObject)__args[1];
 			if (callback == null || callback == SpringNullObject.NULL)
@@ -122,7 +124,7 @@ public enum MLEUIForm
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			UIFormBracket form = UIFormShelf.displayCurrent(
-				MLEUIForm.__display(__args[0]).display);
+				MLEObjects.uiDisplay(__args[0]).display);
 			
 			return (form == null ? null : new UIFormObject(__thread.machine,
 				form));
@@ -136,7 +138,7 @@ public enum MLEUIForm
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			UIFormShelf.displayShow(MLEUIForm.__display(__args[0]).display,
+			UIFormShelf.displayShow(MLEObjects.uiDisplay(__args[0]).display,
 				(int)__args[1] != 0);
 			return null;
 		}
@@ -151,9 +153,9 @@ public enum MLEUIForm
 		{
 			SpringObject form = (SpringObject)__args[1];
 			
-			UIFormShelf.displayShow(MLEUIForm.__display(__args[0]).display,
+			UIFormShelf.displayShow(MLEObjects.uiDisplay(__args[0]).display,
 				(form == null || form == SpringNullObject.NULL ? null :
-				MLEUIForm.__form(__args[1]).form));
+				MLEObjects.uiForm(__args[1]).form));
 			return null;
 		}
 	},
@@ -170,8 +172,8 @@ public enum MLEUIForm
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return UIFormShelf.equals(MLEUIForm.__drawable(__args[0]),
-				MLEUIForm.__drawable(__args[1]));
+			return UIFormShelf.equals(MLEObjects.uiDrawable(__args[0]),
+				MLEObjects.uiDrawable(__args[1]));
 		}
 	},
 	
@@ -187,8 +189,8 @@ public enum MLEUIForm
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return UIFormShelf.equals(MLEUIForm.__display(__args[0]).display,
-				MLEUIForm.__display(__args[1]).display);
+			return UIFormShelf.equals(MLEObjects.uiDisplay(__args[0]).display,
+				MLEObjects.uiDisplay(__args[1]).display);
 		}
 	},
 	
@@ -204,8 +206,8 @@ public enum MLEUIForm
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return UIFormShelf.equals(MLEUIForm.__form(__args[0]).form,
-				MLEUIForm.__form(__args[1]).form);
+			return UIFormShelf.equals(MLEObjects.uiForm(__args[0]).form,
+				MLEObjects.uiForm(__args[1]).form);
 		}
 	},
 	
@@ -221,8 +223,8 @@ public enum MLEUIForm
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return UIFormShelf.equals(MLEUIForm.__item(__args[0]).item,
-				MLEUIForm.__item(__args[1]).item);
+			return UIFormShelf.equals(MLEObjects.uiItem(__args[0]).item,
+				MLEObjects.uiItem(__args[1]).item);
 		}
 	},
 	
@@ -238,8 +240,8 @@ public enum MLEUIForm
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return UIFormShelf.equals(MLEUIForm.__widget(__args[0]).widget(),
-				MLEUIForm.__widget(__args[1]).widget());
+			return UIFormShelf.equals(MLEObjects.uiWidget(__args[0]).widget(),
+				MLEObjects.uiWidget(__args[1]).widget());
 		}
 	},
 	
@@ -269,7 +271,7 @@ public enum MLEUIForm
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			UIFormShelf.formDelete(MLEUIForm.__form(__args[0]).form);
+			UIFormShelf.formDelete(MLEObjects.uiForm(__args[0]).form);
 			return null;
 		}
 	},
@@ -287,7 +289,7 @@ public enum MLEUIForm
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			UIItemBracket rv = UIFormShelf.formItemAtPosition(
-				MLEUIForm.__form(__args[0]).form, (int)__args[1]);
+				MLEObjects.uiForm(__args[0]).form, (int)__args[1]);
 			
 			return (rv == null ? null : new UIItemObject(__thread.machine, rv));
 		}
@@ -304,7 +306,7 @@ public enum MLEUIForm
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return UIFormShelf.formItemCount(MLEUIForm.__form(__args[0]).form);
+			return UIFormShelf.formItemCount(MLEObjects.uiForm(__args[0]).form);
 		}
 	},
 	
@@ -321,8 +323,8 @@ public enum MLEUIForm
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			return UIFormShelf.formItemPosition(
-				MLEUIForm.__form(__args[0]).form,
-				MLEUIForm.__item(__args[1]).item);
+				MLEObjects.uiForm(__args[0]).form,
+				MLEObjects.uiItem(__args[1]).item);
 		}
 	},
 	
@@ -342,8 +344,8 @@ public enum MLEUIForm
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			UIFormShelf.formItemPosition(
-				MLEUIForm.__form(__args[0]).form,
-				MLEUIForm.__item(__args[1]).item,
+				MLEObjects.uiForm(__args[0]).form,
+				MLEObjects.uiItem(__args[1]).item,
 				(int)__args[2]);
 			return null;
 		}
@@ -362,7 +364,7 @@ public enum MLEUIForm
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			return new UIItemObject(__thread.machine, UIFormShelf.formItemRemove(
-				MLEUIForm.__form(__args[0]).form, (int)__args[1]));
+				MLEObjects.uiForm(__args[0]).form, (int)__args[1]));
 		}
 	},
 	
@@ -391,7 +393,7 @@ public enum MLEUIForm
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			UIFormShelf.formRefresh(MLEUIForm.__form(__args[0]).form);
+			UIFormShelf.formRefresh(MLEObjects.uiForm(__args[0]).form);
 			return null;
 		}
 	},
@@ -424,7 +426,7 @@ public enum MLEUIForm
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			UIFormShelf.itemDelete(MLEUIForm.__item(__args[0]).item);
+			UIFormShelf.itemDelete(MLEObjects.uiItem(__args[0]).item);
 			return null;
 		}
 	},
@@ -441,7 +443,7 @@ public enum MLEUIForm
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			UIFormBracket form = UIFormShelf.itemForm(
-				MLEUIForm.__item(__args[0]).item);
+				MLEObjects.uiItem(__args[0]).item);
 			return (form == null ? null : new UIFormObject(__thread.machine,
 				form));
 		}
@@ -472,7 +474,7 @@ public enum MLEUIForm
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			UIFormShelf.later(MLEUIForm.__display(__args[0]).display,
+			UIFormShelf.later(MLEObjects.uiDisplay(__args[0]).display,
 				(int)__args[1]);
 			return null;
 		}
@@ -491,7 +493,7 @@ public enum MLEUIForm
 		{
 			int metric = (int)__args[1];
 			
-			return UIFormShelf.metric(MLEUIForm.__display(__args[0]).display,
+			return UIFormShelf.metric(MLEObjects.uiDisplay(__args[0]).display,
 				metric);
 		}
 	},
@@ -508,7 +510,7 @@ public enum MLEUIForm
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			return UIFormShelf.widgetPropertyInt(
-				MLEUIForm.__widget(__args[0]).widget(),
+				MLEObjects.uiWidget(__args[0]).widget(),
 				(int)__args[1], (int)__args[2]);
 		}
 	},
@@ -525,7 +527,7 @@ public enum MLEUIForm
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			return UIFormShelf.widgetPropertyStr(
-				MLEUIForm.__widget(__args[0]).widget(),
+				MLEObjects.uiWidget(__args[0]).widget(),
 				(int)__args[1], (int)__args[2]);
 		}
 	},
@@ -542,7 +544,7 @@ public enum MLEUIForm
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			UIFormShelf.widgetProperty(
-				MLEUIForm.__widget(__args[0]).widget(),
+				MLEObjects.uiWidget(__args[0]).widget(),
 				(int)__args[1], (int)__args[2], (int)__args[3]);
 			return null;
 		}
@@ -560,7 +562,7 @@ public enum MLEUIForm
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			UIFormShelf.widgetProperty(
-				MLEUIForm.__widget(__args[0]).widget(),
+				MLEObjects.uiWidget(__args[0]).widget(),
 				(int)__args[1], (int)__args[2],
 				__thread.<String>asNativeObject(String.class, __args[3]));
 			return null;
@@ -597,92 +599,5 @@ public enum MLEUIForm
 	public String key()
 	{
 		return this.key;
-	}
-	
-	/**
-	 * Gets the object as a {@link UIDisplayObject}.
-	 * 
-	 * @param __o The object.
-	 * @return As the desired {@link UIDisplayObject}.
-	 * @throws SpringMLECallError If the object is not this type.
-	 * @since 2020/07/01
-	 */
-	static UIDisplayObject __display(Object __o)
-		throws SpringMLECallError
-	{
-		if (!(__o instanceof UIDisplayObject))
-			throw new SpringMLECallError("Not a UIDisplayObject.");
-		
-		return (UIDisplayObject)__o;
-	}
-	
-	/**
-	 * Maps the drawable bracket.
-	 *
-	 * @param __arg The argument to map.
-	 * @return The drawable bracket.
-	 * @since 2023/01/13
-	 */
-	static UIDrawableBracket __drawable(Object __arg)
-	{
-		if (__arg instanceof UIFormObject)
-			return MLEUIForm.__form(__arg).form;
-		else if (__arg instanceof UIItemObject)
-			return MLEUIForm.__item(__arg).item;
-		else if (__arg instanceof UIDisplayObject)
-			return MLEUIForm.__display(__arg).display;
-		else
-			throw Debugging.todo(__arg.getClass().toString());
-	}
-	
-	/**
-	 * Gets the object as a {@link UIFormObject}.
-	 * 
-	 * @param __o The object.
-	 * @return As the desired {@link UIFormObject}.
-	 * @throws SpringMLECallError If the object is not this type.
-	 * @since 2020/07/01
-	 */
-	static UIFormObject __form(Object __o)
-		throws SpringMLECallError
-	{
-		if (!(__o instanceof UIFormObject))
-			throw new SpringMLECallError("Not a UIFormObject.");
-		
-		return (UIFormObject)__o;
-	}
-	
-	/**
-	 * Gets the object as a {@link UIItemObject}.
-	 * 
-	 * @param __o The object.
-	 * @return As the desired {@link UIItemObject}.
-	 * @throws SpringMLECallError If the object is not this type.
-	 * @since 2020/07/01
-	 */
-	static UIItemObject __item(Object __o)
-		throws SpringMLECallError
-	{
-		if (!(__o instanceof UIItemObject))
-			throw new SpringMLECallError("Not a UIItemObject.");
-		
-		return (UIItemObject)__o;
-	}
-	
-	/**
-	 * Gets the widget from this object.
-	 * 
-	 * @param __o The object to get from.
-	 * @throws SpringMLECallError If not one.
-	 * @return The widget.
-	 * @since 2020/09/20
-	 */
-	static UIWidgetObject __widget(Object __o)
-		throws SpringMLECallError
-	{
-		if (!(__o instanceof UIWidgetObject))
-			throw new SpringMLECallError("Not a UIWidgetObject.");
-		
-		return (UIWidgetObject)__o;
 	}
 }

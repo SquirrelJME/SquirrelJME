@@ -1,0 +1,29 @@
+import cc.squirreljme.plugin.tasks.MimeDecodeResourcesTask
+
+plugins {
+	id "java"
+	id "application"
+}
+
+apply plugin: "com.github.johnrengelman.shadow"
+
+description = "SquirrelJME Java Class Dumper."
+mainClassName = "cc.squirreljme.javap.Main"
+
+tasks.register("mimeDecode", MimeDecodeResourcesTask.class,
+	"main",
+	tasks.named("processResources").get(),
+	tasks.named("clean").get())
+
+processResources.dependsOn("mimeDecode")
+jar.dependsOn("mimeDecode")
+
+dependencies {
+	implementation project(":emulators:emulator-base")
+	implementation project(":modules:tool-classfile")
+	implementation project(":modules:markdown-writer")
+	
+	// Lombok for simpler getters/setters
+	implementation 'org.projectlombok:lombok:1.18.30'
+	annotationProcessor 'org.projectlombok:lombok:1.18.30'
+}

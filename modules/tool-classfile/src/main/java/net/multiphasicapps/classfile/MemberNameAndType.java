@@ -15,6 +15,7 @@ package net.multiphasicapps.classfile;
  * @since 2018/09/09
  */
 public interface MemberNameAndType
+	extends Contexual
 {
 	/**
 	 * Returns the name of the member.

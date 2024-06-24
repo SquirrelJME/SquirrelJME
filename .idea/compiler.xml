@@ -15,8 +15,10 @@
         <processorPath useClasspath="false">
           <entry name="$PROJECT_DIR$/../.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.30/f195ee86e6c896ea47a1d39defbe20eb59cd149d/lombok-1.18.30.jar" />
         </processorPath>
-        <module name="squirreljme.tools.squirreljme-debugger.main" />
+        <module name="squirreljme.tools.squirreljme-font.main" />
         <module name="squirreljme.buildSrc.main" />
+        <module name="squirreljme.tools.squirreljme-debugger.main" />
+        <module name="squirreljme.tools.squirreljme-javap.main" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
@@ -44,6 +46,12 @@
       <module name="squirreljme.tools.squirreljme-debugger" target="17" />
       <module name="squirreljme.tools.squirreljme-debugger.main" target="17" />
       <module name="squirreljme.tools.squirreljme-debugger.test" target="17" />
+      <module name="squirreljme.tools.squirreljme-font" target="17" />
+      <module name="squirreljme.tools.squirreljme-font.main" target="17" />
+      <module name="squirreljme.tools.squirreljme-font.test" target="17" />
+      <module name="squirreljme.tools.squirreljme-javap" target="17" />
+      <module name="squirreljme.tools.squirreljme-javap.main" target="17" />
+      <module name="squirreljme.tools.squirreljme-javap.test" target="17" />
       <module name="squirreljme.tools.txt-to-pbm" target="17" />
       <module name="squirreljme.tools.txt-to-pbm.main" target="17" />
       <module name="squirreljme.tools.txt-to-pbm.test" target="17" />

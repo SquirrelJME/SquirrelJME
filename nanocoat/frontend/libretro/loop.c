@@ -71,6 +71,13 @@ sjme_jboolean sjme_libretro_unitTestAbortHandler(void)
 	return SJME_JNI_TRUE;
 }
 
+static sjme_debug_handlerFunctions sjme_libretro_unitTestDebugHandlers =
+{
+	.abort = sjme_libretro_unitTestAbortHandler,
+	.exit = NULL,
+	.message = NULL,
+};
+
 /**
  * Runs unit tests.
  *
@@ -90,8 +97,7 @@ static sjme_jboolean sjme_libretro_runUnitTests(void)
 		return SJME_JNI_TRUE;
 
 	/* Clear the abort and exit handlers so the tests do not just end. */
-	sjme_debug_abortHandler = sjme_libretro_unitTestAbortHandler;
-	sjme_debug_exitHandler = NULL;
+	sjme_debug_handlers = &sjme_libretro_unitTestDebugHandlers;
 
 	/* Run unit tests. */
 	argv[0] = "libretro";

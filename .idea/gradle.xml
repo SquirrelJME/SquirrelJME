@@ -21,6 +21,11 @@
             <option value="$PROJECT_DIR$/modules/aot-springcoat" />
             <option value="$PROJECT_DIR$/modules/bluetooth" />
             <option value="$PROJECT_DIR$/modules/c-source-writer" />
+            <option value="$PROJECT_DIR$/modules/cdc" />
+            <option value="$PROJECT_DIR$/modules/cdc-applet" />
+            <option value="$PROJECT_DIR$/modules/cdc-pbp" />
+            <option value="$PROJECT_DIR$/modules/cdc-pbp-awt-heavy" />
+            <option value="$PROJECT_DIR$/modules/cdc-xlet" />
             <option value="$PROJECT_DIR$/modules/cldc" />
             <option value="$PROJECT_DIR$/modules/cldc-compact" />
             <option value="$PROJECT_DIR$/modules/collections" />
@@ -93,10 +98,13 @@
             <option value="$PROJECT_DIR$/modules/zip" />
             <option value="$PROJECT_DIR$/sdk" />
             <option value="$PROJECT_DIR$/tools" />
+            <option value="$PROJECT_DIR$/tools/fake-javadoc-sdk" />
             <option value="$PROJECT_DIR$/tools/markdown-javadoc" />
             <option value="$PROJECT_DIR$/tools/pcf-to-sqf" />
             <option value="$PROJECT_DIR$/tools/sqf-to-c" />
             <option value="$PROJECT_DIR$/tools/squirreljme-debugger" />
+            <option value="$PROJECT_DIR$/tools/squirreljme-font" />
+            <option value="$PROJECT_DIR$/tools/squirreljme-javap" />
             <option value="$PROJECT_DIR$/tools/txt-to-pbm" />
             <option value="$PROJECT_DIR$/tools/unzip" />
           </set>

@@ -26,6 +26,10 @@ public final class BacklightControl
 	public static final byte MAX_LEVEL =
 		100;
 	
+	/** The last backlight level, remove this. */
+	@Deprecated
+	private static volatile int _lastLevel;
+	
 	/**
 	 * Sets the level of the backlight.
 	 * 
@@ -35,6 +39,10 @@ public final class BacklightControl
 	 */
 	public static void setLevel(int __level)
 	{
-		Debugging.todoNote("Implement backlight set: %d", __level);
+		if (BacklightControl._lastLevel != __level)
+		{
+			Debugging.todoNote("Implement backlight set: %d", __level);
+			BacklightControl._lastLevel = __level;
+		}
 	}
 }

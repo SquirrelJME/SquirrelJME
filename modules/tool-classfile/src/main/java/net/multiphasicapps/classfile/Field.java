@@ -67,7 +67,7 @@ public final class Field
 		the given field type. (The value; The value type; The field type)} */
 		if (__cv != null && !__cv.type().isCompatibleWith(__t))
 			throw new InvalidClassFormatException(String.format(
-				"JC2o %s %s %s", __cv, __cv.type(), __t));
+				"JC2o %s %s %s", __cv, __cv.type(), __t), this);
 		
 		this.flags = __f;
 		this.name = __n;

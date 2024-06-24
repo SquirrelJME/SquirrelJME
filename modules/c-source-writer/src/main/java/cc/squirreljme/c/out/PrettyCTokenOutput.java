@@ -120,6 +120,13 @@ public class PrettyCTokenOutput
 		boolean forgetIndent = (last == ',' || last == ';' || last == '.' ||
 			last == ':' || last == ')');
 		
+		// Space before?
+		boolean spaceBefore = (len == 1 && (first == '='));
+		
+		// Space after?
+		boolean spaceAfter = (len == 1 && (first == '=' || first == ',' ||
+			first == '*'));
+		
 		// If we were pending a post newline, emit it now accordingly
 		if (this._pendingPostNewline)
 		{
@@ -150,9 +157,17 @@ public class PrettyCTokenOutput
 				this.out.tab();
 				this.column += PrettyCTokenOutput._TAB_SIZE;
 			}
-			
+		
+		// Pad space before?
+		if (spaceBefore)
+			super.token(" ", false);
+		
 		// Emit token
 		super.token(__cq, __forceNewline);
+		
+		// Pad space after?
+		if (spaceAfter)
+			super.token(" ", false);
 		
 		// Always add indentation after this token, put post it instead of
 		// actually adding it.

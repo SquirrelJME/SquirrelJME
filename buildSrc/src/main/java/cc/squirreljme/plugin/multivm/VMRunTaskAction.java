@@ -12,17 +12,23 @@ package cc.squirreljme.plugin.multivm;
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import cc.squirreljme.plugin.swm.JavaMEMidlet;
-import cc.squirreljme.plugin.util.GradleJavaExecSpecFiller;
+import cc.squirreljme.plugin.util.ForwardInputToOutput;
 import cc.squirreljme.plugin.util.GradleLoggerOutputStream;
+import cc.squirreljme.plugin.util.JavaExecSpecFiller;
+import cc.squirreljme.plugin.util.SimpleJavaExecSpecFiller;
+import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
 import org.gradle.api.logging.LogLevel;
-import org.gradle.process.ExecResult;
 
 /**
  * Runs the program within the virtual machine.
@@ -58,6 +64,9 @@ public class VMRunTaskAction
 	@Override
 	public void execute(Task __task)
 	{
+		// The task owning this
+		VMRunTask runTask = (VMRunTask)__task;
+		
 		// Need this to get the program details
 		SquirrelJMEPluginConfiguration config =
 			SquirrelJMEPluginConfiguration.configuration(__task.getProject());
@@ -72,16 +81,40 @@ public class VMRunTaskAction
 		__task.getLogger().debug("Classpath: {}", Arrays.asList(classPath));
 		
 		// Determine the main entry class or MIDlet to use
-		JavaMEMidlet midlet = JavaMEMidlet.find(config.midlets);
+		JavaMEMidlet midlet = runTask.midlet;
 		String mainClass = VMHelpers.mainClass(config, midlet);
 		
 		// Debug
 		__task.getLogger().debug("MIDlet: {}", midlet);
 		__task.getLogger().debug("MainClass: {}", mainClass);
 		
+		// Debugger being used?
+		URI debugServer = runTask.debugServer;
+		
+		// Standard SquirrelJME command line arguments to use
+		List<String> args = new ArrayList<>();
+		
+		// Which command line is used?
+		List<String> procArgs = new ArrayList<>();
+		Map<String, String> sysProps = new LinkedHashMap<>();
+		if (debugServer != null)
+		{
+			// Debug server?
+			if ("file".equals(debugServer.getScheme()))
+			{
+				procArgs.add(Paths.get(debugServer).toAbsolutePath()
+					.toString());
+				procArgs.add("localhost:2345");
+			}
+			
+			// JDWP?
+			else if ("jdwp".equals(debugServer.getScheme()))
+				sysProps.put("squirreljme.jdwp",
+					debugServer.getSchemeSpecificPart());
+		}
+		
 		// If executing a MIDlet, then the single main argument is the actual
 		// name of the MIDlet to execute
-		List<String> args = new ArrayList<>();
 		if (midlet != null)
 			args.add(midlet.mainClass);
 		
@@ -91,28 +124,86 @@ public class VMRunTaskAction
 		
 		// Execute the virtual machine, if the exit status is non-zero then
 		// the task execution will be considered as a failure
-		ExecResult exitResult = __task.getProject().javaexec(__spec ->
-			{
-				// Use filled JVM arguments
-				vmType.spawnJvmArguments((VMBaseTask)__task, true,
-					new GradleJavaExecSpecFiller(__spec), mainClass,
-					(midlet != null ? midlet.mainClass : mainClass),
-					Collections.<String, String>emptyMap(),
-					classPath, classPath,
-					args.<String>toArray(new String[args.size()]));
-				
-				// Use these streams directly
-				__spec.setStandardOutput(new GradleLoggerOutputStream(
+		JavaExecSpecFiller execSpec = new SimpleJavaExecSpecFiller();
+		vmType.spawnJvmArguments((VMBaseTask)__task, true,
+			execSpec, mainClass,
+			(midlet != null ? midlet.mainClass : mainClass),
+			sysProps,
+			classPath, classPath,
+			args.<String>toArray(new String[args.size()]));
+		
+		// Add normal command line
+		for (String arg : execSpec.getCommandLine())
+			procArgs.add(arg);
+		
+		// Setup process
+		ProcessBuilder procBuilder = new ProcessBuilder(procArgs);
+		
+		// Working directory in the build directory, for any logs or
+		// otherwise
+		procBuilder.directory(runTask.getProject().getBuildDir());
+		
+		// Pipe output
+		procBuilder.redirectOutput(ProcessBuilder.Redirect.PIPE);
+		procBuilder.redirectError(ProcessBuilder.Redirect.PIPE);
+		
+		// Run task
+		Process proc = null;
+		ForwardInputToOutput stdOut = null;
+		ForwardInputToOutput stdErr = null;
+		try
+		{
+			// Start it
+			proc = procBuilder.start();
+			
+			// Forward streams
+			stdOut = new ForwardInputToOutput(
+				proc.getInputStream(), new GradleLoggerOutputStream(
 					__task.getLogger(), LogLevel.LIFECYCLE,
 					-1, -1));
-				__spec.setErrorOutput(new GradleLoggerOutputStream(
+			stdErr = new ForwardInputToOutput(
+				proc.getErrorStream(), new GradleLoggerOutputStream(
 					__task.getLogger(), LogLevel.ERROR,
 					-1, -1));
-			});
-		
-		// Did the task fail?
-		int exitValue = exitResult.getExitValue();
-		if (exitValue != 0)
-			throw new RuntimeException("Task exited with: " + exitValue);
+			
+			// Run them
+			stdOut.runThread("stdOutPipe");
+			stdErr.runThread("stdErrPipe");
+			
+			// Did the task fail?
+			int exitValue = proc.waitFor();
+			if (exitValue != 0)
+				throw new RuntimeException("Task exited with: " + exitValue);
+		}
+		catch (IOException|InterruptedException __e)
+		{
+			// Make sure it really dies
+			if (proc != null)
+				proc.destroyForcibly();
+			
+			// Now fail
+			throw new RuntimeException("Task run failed or was interrupted.",
+				__e);
+		}
+		finally
+		{
+			if (stdOut != null)
+				try
+				{
+					stdOut.close();
+				}
+				catch (IOException __ignored)
+				{
+				}
+			
+			if (stdErr != null)
+				try
+				{
+					stdErr.close();
+				}
+				catch (IOException __ignored)
+				{
+				}
+		}
 	}
 }

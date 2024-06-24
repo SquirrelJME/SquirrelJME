@@ -1,3 +1,4 @@
+import cc.squirreljme.plugin.general.cmake.CMakeBuildTask
 import cc.squirreljme.plugin.tasks.MimeDecodeResourcesTask
 
 import java.nio.file.Files
@@ -8,8 +9,6 @@ import java.util.regex.Pattern
 
 plugins
 {
-	// C++ needs to be first otherwise the build will break
-	id "cpp-library"
 	id "java-library"
 }
 
@@ -17,73 +16,64 @@ description = "This library provides the base support for testing and " +
 	"running SquirrelJME on a Java SE host, which is normally not " +
 	"capable of doing as such."
 
-// If running on Termux on Android, we need to do some changes accordingly
-// so that the C compiler is found and things link... We technically are not
-// on x86_64 but it really does not matter anyway as long as it passes
-// -m64 correctly when on Android.
-// The same is the case for other architectures as well
-if ((project.hasProperty("squirreljmeTermuxCompiler") &&
-		project.squirreljmeTermuxCompiler) ||
-	(project.hasProperty("squirreljmeClaimX8664") &&
-		project.squirreljmeClaimX8664)) {
-	library {
-			targetMachines.add(machines.linux.x86_64)
-	}
-}
-
-// Gradle does not support C++ compilation on M1 Macs currently, so this
-// is a bit of a workaround
-if (project.hasProperty("squirreljmeMacOsArmCpp") &&
-	project.squirreljmeMacOsArmCpp) {
-	library {
-		targetMachines.add(machines.macOS.x86_64)
-	}
-}
-
 // Due to the combination of C++ and Java these dependencies have to be very
 // specific in that they only refer to the Java or C++ portion. So
 // "implementation" and "compile" cannot be used because the C++ library will
 // try to use them during compilation.
 dependencies
 {
-	// We need these two modules to obtain the SquirrelJME specific classes
-	compileClasspath project(":modules:cldc-compact")
-	compileClasspath project(":modules:common-vm")
-	compileClasspath project(":modules:io")
-	compileClasspath project(":modules:tac")
-	compileClasspath project(":modules:zip")
-	compileClasspath project(":modules:debug-jdwp")
-	compileClasspath project(":modules:debug-jdwp-vm-host")
-
-	// And for run-time to be able to be ran
-	runtimeClasspath project(":modules:cldc-compact")
-	runtimeClasspath project(":modules:common-vm")
-	runtimeClasspath project(":modules:io")
-	runtimeClasspath project(":modules:tac")
-	runtimeClasspath project(":modules:zip")
-	runtimeClasspath project(":modules:debug-jdwp")
-	runtimeClasspath project(":modules:debug-jdwp-vm-host")
+	api project(":modules:cldc-compact")
+	api project(":modules:common-vm")
+	api project(":modules:io")
+	api project(":modules:tac")
+	api project(":modules:zip")
+	api project(":modules:debug-jdwp")
+	api project(":modules:debug-jdwp-vm-host")
 }
 
-tasks.register("mimeDecode", MimeDecodeResourcesTask.class,
+// Native emulator support library
+Provider<CMakeBuildTask> libNativeEmulatorBase = tasks.register(
+	"libNativeEmulatorBase",
+	CMakeBuildTask.class,
+	project.getProjectDir().toPath().getParent()
+		.resolve("emulator-base-native"),
+	System.mapLibraryName("emulator-base"),
+	["libEmulatorBase"])
+
+// Native implementations
+Provider<CMakeBuildTask> libsNativeNanoCoat = tasks.register(
+	"libsNativeNanoCoat",
+	CMakeBuildTask.class,
+	rootProject.getProjectDir().toPath().resolve("nanocoat"),
+	"",
+	["BaseStatic"])
+
+// The base library needs to exist first
+libNativeEmulatorBase.get().dependsOn(libsNativeNanoCoat)
+
+// Decoding of mime resources
+Provider<MimeDecodeResourcesTask> mimeDecode = tasks.register(
+	"mimeDecode", MimeDecodeResourcesTask.class,
 	"main",
 	tasks.named("processResources").get(),
 	tasks.named("clean").get())
 
-processResources.dependsOn("mimeDecode")
-jar.dependsOn("mimeDecode")
+processResources.dependsOn(mimeDecode)
+processResources.dependsOn(libNativeEmulatorBase)
+processResources.dependsOn(libsNativeNanoCoat)
+
+compileJava.dependsOn(libNativeEmulatorBase)
+compileJava.dependsOn(libsNativeNanoCoat)
+
+mimeDecode.get().dependsOn(libNativeEmulatorBase)
+mimeDecode.get().dependsOn(libsNativeNanoCoat)
 
 // We need the native library in the JAR before we can properly use it
 // But we can compile the Java code just fine without it
-boolean useDebugLib = false
 jar {
-	dependsOn (useDebugLib ? "assembleDebug" : "assembleRelease")
-	
-	java.nio.file.Path libPath = buildDir.toPath().resolve("lib")
-		.resolve("main").resolve((useDebugLib ? "debug" : "release"))
-	project.ext.libPathBase = libPath
+	dependsOn mimeDecode, libNativeEmulatorBase, libsNativeNanoCoat
 
-	from libPath.toFile()
+	from libNativeEmulatorBase.get().cmakeOutFile.toFile()
 	into "/"
 }
 
@@ -114,195 +104,4 @@ java {
 		"squirreljme.tsiparam",
 		"squirreljme.configtype",
 		"squirreljme.uiwidgetparam" ]
-}
-
-// Are we on Mac OS?
-def isOnMacOs = project.hasProperty("squirreljmeIsOnMacOs") &&
-	project.squirreljmeIsOnMacOs
-
-// Method to check which arches are available for compile on Mac OS
-boolean checkMacOsArch(ToolChain toolChain, String arch) {
-	java.nio.file.Path tempSource, tempOutput
-	try {
-		// Try to find the clang executable
-		java.nio.file.Path clangExe = null
-		for (String pathLet in System.getenv("PATH")
-			.split(Pattern.quote(File.pathSeparator))) {
-			java.nio.file.Path tryPath = Paths.get(pathLet).resolve("clang")
-			
-			if (Files.exists(tryPath) && Files.isExecutable(tryPath)) {
-				clangExe = tryPath
-				break
-			}
-		}
-		
-		// Nothing found? Then we could not detect at all
-		if (clangExe == null) {
-			return false
-		}
-		
-		// Create temporary file to compile
-		tempSource = Files.createTempFile(
-			"squirreljme-test-arch", ".c")
-		tempOutput = Files.createTempFile(
-			"squirreljme-test-arch", ".out")
-		Files.write(tempSource,
-			Arrays.asList(
-				"int main(int argc, char** argv) { return 0; }"
-			),
-			StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING,
-			StandardOpenOption.WRITE)
-		
-		// Just assume we are using the default clang
-		ProcessBuilder processBuilder = new ProcessBuilder()
-		processBuilder.command(
-			clangExe.toAbsolutePath().toString(),
-			"-arch",
-			arch,
-			"-o",
-			tempOutput.toAbsolutePath().toString(),
-			"--",
-			tempSource.toAbsolutePath().toString())
-		processBuilder.redirectOutput(ProcessBuilder.Redirect.PIPE)
-		processBuilder.redirectError(ProcessBuilder.Redirect.PIPE)
-		
-		// Run and check for success
-		Process process = processBuilder.start()
-		if (!process.waitFor(6, TimeUnit.SECONDS)) {
-			return false
-		}
-		
-		// Did this work or fail?
-		int exitCode = process.exitValue()
-		
-		// Some debugging
-		String stdOut = new String(process.getInputStream().bytes)
-		String stdErr = new String(process.getErrorStream().bytes)
-		
-		logger.debug("Clang ExitCode: " + exitCode)
-		if (stdOut.length() > 0) {
-			logger.lifecycle("Clang StdOut: " + stdOut)
-		}
-		if (stdErr.length() > 0) {
-			logger.error("Clang StdErr: " + stdErr)
-		}
-		
-		// Did this work?
-		if (0 == exitCode) {
-			return true
-		}
-	} catch (IOException e) {
-		logger.error("Could not determine compiler support.", e)
-	} finally {
-		try {
-			if (tempSource != null)
-				Files.deleteIfExists(tempSource)
-		} catch (IOException ignored) {
-		}
-
-		try {
-			if (tempOutput != null)
-				Files.deleteIfExists(tempOutput)
-		} catch (IOException ignored) {
-		}
-	}
-	
-	// Failure here
-	return false
-}
-
-// Collects all of the arches available for Mac OS
-List<String> getMacOsArchArguments(ToolChain toolChain) {
-	List<String> result = new ArrayList<>()
-	
-	// Check all of these at once! If none found will default to nothing.
-	for (String arch in [ "ppc", "i686", "x86_64", "arm64" ]) {
-		logger.debug(String.format("Checking %s%n", arch))
-		
-		if (checkMacOsArch(toolChain, arch)) {
-			result.add("-arch")
-			result.add(arch)
-		}
-	}
-		
-	return result
-}
-
-// Improve debugging with native code compiles, these are only used by the
-// build system tests so these do not impact users at all
-tasks.withType(CppCompile).configureEach() {item ->
-	// Only set for non-debugging targets
-	boolean isRelease = item.name.toLowerCase().contains("release")
-	if (!isRelease) {
-		item.debuggable = true
-		item.optimized = false
-	}
-	
-	// Additional compiler options for each compiler
-	item.compilerArgs.addAll toolChain.map { toolChain ->
-		// Clang on Mac OS
-		if (isOnMacOs && "clang".equalsIgnoreCase(toolChain.name)) {
-			return getMacOsArchArguments(toolChain)
-		}
-		
-		// Microsoft Visual C++
-		if ("visualCpp".equalsIgnoreCase(toolChain.name)) {
-			if (!isRelease) {
-				return [
-					// Disable optimization
-					"/Od",
-				
-					// Buffer security check
-					"/GS",
-					
-					// Run-time error checking
-					"/RTC",
-					
-					// Enable all warnings
-					"/Wall",
-					
-					// Our object files contain _full_ debug info
-					"/Z7",
-					
-					// End
-					]
-			}
-		}
-		
-		return []
-	}
-}
-
-// Ensure debugging information is used when linking
-tasks.withType(LinkSharedLibrary).configureEach() { item ->
-	// Only set for non-debugging targets
-	boolean isRelease = item.name.toLowerCase().contains("release")
-	if (!isRelease) {
-		item.getDebuggable().set(true)
-	}
-	
-	// Additional compiler options for each compiler
-	item.linkerArgs.addAll toolChain.map { toolChain ->
-		// Clang on Mac OS
-		if (isOnMacOs && "clang".equalsIgnoreCase(toolChain.name)) {
-			return getMacOsArchArguments(toolChain)
-		}
-		
-		// Microsoft Visual C++
-		if ("visualCpp".equalsIgnoreCase(toolChain.name)) {
-			if (!isRelease) {
-				return [
-					// Full debug info
-					"/DEBUG:FULL",
-					
-					// Create map file
-					"/MAP"
-				
-					// End
-					]
-			}
-		}
-		
-		return []
-	}
 }

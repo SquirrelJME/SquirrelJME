@@ -584,7 +584,7 @@ public class DebugViewType
 			return null;
 		
 		// Read the value here
-		return MLEType.__type(field.get()).type();
+		return MLEObjects.type(field.get()).type();
 	}
 	
 	/**

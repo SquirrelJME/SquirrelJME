@@ -25,7 +25,7 @@ public abstract class AbstractIntegerArray
 	 * @since 2023/08/09
 	 */
 	@Override
-	public boolean equals(Object __o)
+	public final boolean equals(Object __o)
 	{
 		if (this == __o)
 			return true;
@@ -52,7 +52,7 @@ public abstract class AbstractIntegerArray
 	 * @since 2023/08/09
 	 */
 	@Override
-	public int hashCode()
+	public final int hashCode()
 	{
 		int rv = 1;
 		

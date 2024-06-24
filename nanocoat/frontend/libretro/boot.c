@@ -33,9 +33,11 @@ static sjme_jboolean sjme_libretro_debugMessageHandler(sjme_lpcstr fullMessage,
 		/* Is logging also available? */
 		memset(&retroLogCallback, 0, sizeof(retroLogCallback));
 		if (true == sjme_libretro_envCallback(
-			RETRO_ENVIRONMENT_GET_LOG_INTERFACE, &retroLogCallback) &&
+			RETRO_ENVIRONMENT_GET_LOG_INTERFACE,
+				&retroLogCallback) &&
 			retroLogCallback.log != NULL)
-			retroLogCallback.log(RETRO_LOG_INFO, "%s\n", fullMessage);
+			retroLogCallback.log(RETRO_LOG_INFO, "%s\n",
+			fullMessage);
 		
 		/* We handled it here, so SquirrelJME does not have to print it. */
 		return SJME_JNI_TRUE;
@@ -44,6 +46,30 @@ static sjme_jboolean sjme_libretro_debugMessageHandler(sjme_lpcstr fullMessage,
 	/* Not handled. */
 	return SJME_JNI_FALSE;
 }
+
+static sjme_jboolean sjme_libretro_exitHandler(int exitCode)
+{
+	/* If there is no environment callback, then do nothing here. */
+	if (sjme_libretro_envCallback == NULL)
+		return SJME_JNI_FALSE;
+
+	/* Tell the front end to stop the core. */
+	sjme_libretro_envCallback(RETRO_ENVIRONMENT_SHUTDOWN, NULL);
+	return SJME_JNI_TRUE;
+}
+
+static sjme_jboolean sjme_libretro_abortHandler(void)
+{
+	/* Forward to the exit handler. */
+	return sjme_libretro_exitHandler(1);
+}
+
+static sjme_debug_handlerFunctions sjme_libretro_debugHandlers =
+{
+	.abort = sjme_libretro_abortHandler,
+	.exit = sjme_libretro_exitHandler,
+	.message = sjme_libretro_debugMessageHandler,
+};
 
 sjme_attrUnused RETRO_API unsigned retro_api_version(void)
 {
@@ -56,8 +82,8 @@ sjme_attrUnused RETRO_API void retro_deinit(void)
 
 sjme_attrUnused RETRO_API void retro_init(void)
 {
-	/* Used for log reporting. */
-	sjme_debug_messageHandler = sjme_libretro_debugMessageHandler;
+	/* Setup handlers for debug calls. */
+	sjme_debug_handlers = &sjme_libretro_debugHandlers;
 }
 
 sjme_attrUnused RETRO_API bool retro_load_game(

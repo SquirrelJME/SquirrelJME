@@ -19,6 +19,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  * @since 2018/05/15
  */
 public final class InnerClass
+	implements Contexual
 {
 	/** The name of the inner class. */
 	protected final ClassName name;

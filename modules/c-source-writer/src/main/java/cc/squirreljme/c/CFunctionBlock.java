@@ -45,7 +45,7 @@ public class CFunctionBlock
 	CFunctionBlock(CSourceWriter __ref, String __closing)
 		throws NullPointerException
 	{
-		super(__ref, __closing);
+		super(__ref, __closing, true);
 	}
 	
 	/**

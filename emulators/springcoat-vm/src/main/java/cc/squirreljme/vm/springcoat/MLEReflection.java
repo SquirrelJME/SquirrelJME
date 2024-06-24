@@ -11,8 +11,6 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.ReflectionShelf;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.vm.springcoat.brackets.TypeObject;
 import net.multiphasicapps.classfile.MethodNameAndType;
 
 /**
@@ -35,9 +33,9 @@ public enum MLEReflection
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			// Get parameters
-			SpringClass type = MLEType.__type(__args[0]).getSpringClass();
+			SpringClass type = MLEObjects.type(__args[0]).getSpringClass();
 			SpringArrayObject args =
-				(SpringArrayObject)MLEType.__notNullObject(__args[1]);
+				(SpringArrayObject)MLEObjects.notNull(__args[1]);
 			
 			// Lookup the main method
 			SpringMethod main = type.lookupMethod(true,

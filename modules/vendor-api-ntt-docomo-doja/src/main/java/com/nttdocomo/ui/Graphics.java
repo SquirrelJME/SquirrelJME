@@ -91,6 +91,9 @@ public class Graphics
 	/** The background color for {@link #clearRect(int, int, int, int)}. */
 	private final __BGColor__ _bgColor;
 	
+	/** The flush handler, which is optional. */
+	private final __LockFlush__ _lockFlush;
+	
 	/** The base graphics to forward to. */
 	private final javax.microedition.lcdui.Graphics _graphics;
 	
@@ -100,10 +103,13 @@ public class Graphics
 	 * @param __g The graphics to wrap.
 	 * @param __bgColor The background color for
 	 * {@link #clearRect(int, int, int, int)}.
+	 * @param __flush Optional flush callback to be executed when this
+	 * occurs.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/02/14
 	 */
-	Graphics(javax.microedition.lcdui.Graphics __g, __BGColor__ __bgColor)
+	Graphics(javax.microedition.lcdui.Graphics __g, __BGColor__ __bgColor,
+		__LockFlush__ __flush)
 		throws NullPointerException
 	{
 		if (__g == null)
@@ -111,6 +117,7 @@ public class Graphics
 		
 		this._graphics = __g;
 		this._bgColor = __bgColor;
+		this._lockFlush = __flush;
 	}
 	
 	@Api
@@ -355,10 +362,18 @@ public class Graphics
 		this._graphics.fillRect(__x, __y, __w, __h);
 	}
 	
+	/**
+	 * Specifies that a double buffered draw operation has started. If
+	 * double buffering is not supported, this does nothing.
+	 *
+	 * @since 2024/06/24
+	 */
 	@Api
 	public void lock()
 	{
-		// Has no effect on SquirrelJME
+		__LockFlush__ lockFlush = this._lockFlush;
+		if (lockFlush != null)
+			lockFlush.__lock();
 	}
 	
 	/**
@@ -424,10 +439,20 @@ public class Graphics
 			__y - graphics.getTranslateY());
 	}
 	
+	/**
+	 * Unlocks the double buffering operation.
+	 *
+	 * @param __forced If the operation is forced
+	 * then the buffer is immediately drawn and the lock count is set to
+	 * zero, otherwise this will only draw when the lock count is zero. 
+	 * @since 2024/06/24
+	 */
 	@Api
 	public void unlock(boolean __forced)
 	{
-		// Has no effect on SquirrelJME
+		__LockFlush__ lockFlush = this._lockFlush;
+		if (lockFlush != null)
+			lockFlush.__unlock(__forced);
 	}
 	
 	@SuppressWarnings("MagicNumber")
