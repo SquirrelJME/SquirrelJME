@@ -44,7 +44,7 @@ static sjme_errorCode sjme_scritchui_pseudoMetricCharDirection(
 		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Forward. */
-	return wrapped->api->metricCharDirection(inFont, inCodepoint,
+	return wrapped->api->metricCharDirection(wrapped, inCodepoint,
 		outDirection);
 }
 
@@ -64,7 +64,7 @@ static sjme_errorCode sjme_scritchui_pseudoMetricCharValid(
 		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Forward. */
-	return wrapped->api->metricCharValid(inFont, inCodepoint,
+	return wrapped->api->metricCharValid(wrapped, inCodepoint,
 		outValid);
 }
 
@@ -83,7 +83,7 @@ static sjme_errorCode sjme_scritchui_pseudoMetricFontFace(
 		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Forward. */
-	return wrapped->api->metricFontFace(inFont, outFace);
+	return wrapped->api->metricFontFace(wrapped, outFace);
 }
 
 static sjme_errorCode sjme_scritchui_pseudoMetricFontName(
@@ -101,7 +101,7 @@ static sjme_errorCode sjme_scritchui_pseudoMetricFontName(
 		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Forward. */
-	return wrapped->api->metricFontName(inFont, outName);
+	return wrapped->api->metricFontName(wrapped, outName);
 }
 
 static sjme_errorCode sjme_scritchui_pseudoMetricFontStyle(
@@ -139,7 +139,7 @@ static sjme_errorCode sjme_scritchui_pseudoMetricPixelAscent(
 		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Forward. */
-	return wrapped->api->metricPixelAscent(inFont, isMax, outAscent);
+	return wrapped->api->metricPixelAscent(wrapped, isMax, outAscent);
 }
 
 static sjme_errorCode sjme_scritchui_pseudoMetricPixelBaseline(
@@ -157,7 +157,7 @@ static sjme_errorCode sjme_scritchui_pseudoMetricPixelBaseline(
 		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Forward. */
-	return wrapped->api->metricPixelBaseline(inFont, outBaseline);
+	return wrapped->api->metricPixelBaseline(wrapped, outBaseline);
 }
 
 static sjme_errorCode sjme_scritchui_pseudoMetricPixelDescent(
@@ -176,7 +176,7 @@ static sjme_errorCode sjme_scritchui_pseudoMetricPixelDescent(
 		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Forward. */
-	return wrapped->api->metricPixelDescent(inFont, isMax, outDescent);
+	return wrapped->api->metricPixelDescent(wrapped, isMax, outDescent);
 }
 
 static sjme_errorCode sjme_scritchui_pseudoMetricPixelLeading(
@@ -194,7 +194,7 @@ static sjme_errorCode sjme_scritchui_pseudoMetricPixelLeading(
 		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Forward. */
-	return wrapped->api->metricPixelLeading(inFont, outLeading);
+	return wrapped->api->metricPixelLeading(wrapped, outLeading);
 }
 
 static sjme_errorCode sjme_scritchui_pseudoMetricPixelSize(
@@ -232,7 +232,7 @@ static sjme_errorCode sjme_scritchui_pseudoPixelCharHeight(
 		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Forward. */
-	return wrapped->api->pixelCharHeight(inFont, inCodepoint, outHeight);
+	return wrapped->api->pixelCharHeight(wrapped, inCodepoint, outHeight);
 }
 
 static sjme_errorCode sjme_scritchui_pseudoPixelCharWidth(
@@ -251,7 +251,7 @@ static sjme_errorCode sjme_scritchui_pseudoPixelCharWidth(
 		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Forward. */
-	return wrapped->api->pixelCharWidth(inFont, inCodepoint, outWidth);
+	return wrapped->api->pixelCharWidth(wrapped, inCodepoint, outWidth);
 }
 
 static sjme_errorCode sjme_scritchui_pseudoRenderBitmap(
