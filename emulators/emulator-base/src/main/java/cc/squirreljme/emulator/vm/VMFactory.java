@@ -15,7 +15,9 @@ import cc.squirreljme.jvm.launch.Application;
 import cc.squirreljme.jvm.launch.AvailableSuites;
 import cc.squirreljme.jvm.launch.SuiteScanner;
 import cc.squirreljme.jvm.manifest.JavaManifest;
+import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
+import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
 import cc.squirreljme.jvm.suite.EntryPoint;
 import cc.squirreljme.jvm.suite.SuiteUtils;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -25,7 +27,6 @@ import cc.squirreljme.vm.JarClassLibrary;
 import cc.squirreljme.vm.NameOverrideClassLibrary;
 import cc.squirreljme.vm.SummerCoatJarLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -49,8 +50,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
 import java.util.ServiceLoader;
-import java.util.jar.Manifest;
 
 /**
  * This class is used to initialize virtual machines based on a set of factory
@@ -165,6 +166,7 @@ public abstract class VMFactory
 		String jdwpHost = null; 
 		int jdwpPort = -1;
 		boolean internalDebug = false;
+		boolean internalDebugFork = true;
 		
 		// Threading model
 		VMThreadModel threadModel = VMThreadModel.DEFAULT;
@@ -249,10 +251,23 @@ public abstract class VMFactory
 			}
 			
 			// Direct debugger usage
-			else if (item.startsWith("-Xdebug"))
+			else if (item.startsWith("-Xdebug") ||
+				item.startsWith("-Xdebug:"))
 			{
 				// Just set this flag
 				internalDebug = true;
+				
+				// Should the debugger be forked?
+				int col = item.indexOf(':');
+				if (col >= 0)
+				{
+					String param = item.substring(col + 1);
+					
+					if ("fork".equals(param))
+						internalDebugFork = true;
+					else if ("nofork".equals(param))
+						internalDebugFork = false;
+				}	
 			}
 			
 			// Select a VM
@@ -587,9 +602,10 @@ public abstract class VMFactory
 			// Run the VM
 			VirtualMachine vm = VMFactory.mainVm(vmName,
 				profilerSnapshot,
-				(internalDebug ? VMFactory.__setupJdwpInternal() :
-					(jdwpPort >= 1 ?
-						VMFactory.__setupJdwp(jdwpHost, jdwpPort) : null)),
+				(internalDebug ?
+					VMFactory.__setupJdwpInternal(internalDebugFork) :
+					(jdwpPort >= 1 ? VMFactory.__setupJdwp(jdwpHost,
+						jdwpPort) : null)),
 				threadModel,
 				new ArraySuiteManager(suites.values()),
 				classpath.<String>toArray(new String[classpath.size()]),
@@ -943,7 +959,7 @@ public abstract class VMFactory
 	
 	/**
 	 * Sets up JDWP stream for connection.
-	 * 
+	 *
 	 * @param __host The hostname to use, if {@code null} this will be
 	 * a server.
 	 * @param __port The port to listen on.
@@ -951,12 +967,6 @@ public abstract class VMFactory
 	 */
 	private static JDWPHostFactory __setupJdwp(String __host, int __port)
 	{
-		// Listening?
-		if (__host == null)
-		{
-			throw Debugging.todo();
-		}
-		
 		// Try opening the socket
 		Socket socket = null;
 		try
@@ -971,7 +981,7 @@ public abstract class VMFactory
 			
 			// Use factory to create it
 			return new JDWPHostFactory(socket.getInputStream(),
-				socket.getOutputStream());
+				socket.getOutputStream(), __port);
 		}
 		
 		// Could not open the socket?
@@ -996,15 +1006,68 @@ public abstract class VMFactory
 	/**
 	 * Sets up an internal JDWP based debugger that is built into SquirrelJME. 
 	 *
+	 * @param __fork Should the debugger be forked?
 	 * @return The factory for creating the buffer.
 	 * @since 2024/01/19
 	 */
-	private static JDWPHostFactory __setupJdwpInternal()
+	private static JDWPHostFactory __setupJdwpInternal(boolean __fork)
 	{
 		// Look for service for it
 		for (VMDebuggerService service :
 			ServiceLoader.load(VMDebuggerService.class))
 		{
+			// Running forked VM?
+			if (__fork)
+			{
+				// Choose random port that is not likely to be used
+				int port = 32767 +
+					new Random(System.currentTimeMillis())
+						.nextInt(32767);
+				
+				// Determine arguments for the debugger
+				List<String> args = new ArrayList<>();
+				
+				// Use this Java command
+				args.add(Objects.toString(RuntimeShelf.vmDescription(
+					VMDescriptionType.EXECUTABLE_PATH), "java"));
+				
+				// Use the same classpath as the host
+				args.add("-classpath");
+				args.add(System.getProperty("java.class.path"));
+				
+				// Launch into the debugger instead
+				args.add("cc.squirreljme.debugger.Main");
+				args.add("localhost:" + port);
+				
+				// Fork process with the debugger
+				ProcessBuilder builder = new ProcessBuilder(args);
+				
+				// Use our terminal and pipes for the output
+				builder.inheritIO();
+				
+				// Use the same working directory as the host
+				builder.directory(Paths
+					.get(System.getProperty("user.dir")).toFile());
+				
+				// Start the debugger
+				try
+				{
+					// Start the debugger
+					builder.start();
+				
+					// Start listening for the connection
+					return VMFactory.__setupJdwp(null, port);
+				}
+				
+				// It failed, so fallback to internal debugger
+				catch (IOException __e)
+				{
+					new RuntimeException("Could not fork debugger.", __e)
+						.printStackTrace(System.err);
+				}
+			}
+			
+			// Otherwise use non-forked debugger
 			return service.jdwpFactory();
 		}
 		

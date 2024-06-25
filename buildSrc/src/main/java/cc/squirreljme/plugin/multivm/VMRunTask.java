@@ -36,6 +36,10 @@ public class VMRunTask
 	public static final URI JDWP_HOST =
 		URI.create("jdwp::5005");
 	
+	/** Internal Debugger. */
+	public static final URI INTERNAL =
+		URI.create("internal:internal");
+	
 	/** The classifier used. */
 	@Internal
 	@Getter
@@ -116,6 +120,12 @@ public class VMRunTask
 			new VMRunDependencies(this, __classifier)),
 			new VMEmulatorDependencies(this,
 				__classifier.getTargetClassifier()));
+		
+		// If using the internal debugger, it needs to be built first
+		if (__debugServer != null &&
+			"internal".equals(__debugServer.getScheme()))
+			this.dependsOn(this.getProject().provider(
+				new __FindInternalDebugger__(this.getProject())));
 		
 		// Only run if entry points are valid
 		this.onlyIf(new CheckForEntryPoints());

@@ -26,6 +26,8 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Random;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
 import org.gradle.api.logging.LogLevel;
@@ -94,6 +96,9 @@ public class VMRunTaskAction
 		// Standard SquirrelJME command line arguments to use
 		List<String> args = new ArrayList<>();
 		
+		// Process for the debugger, to kill if the main task exits
+		Process debuggerProc = null;
+		
 		// Which command line is used?
 		List<String> procArgs = new ArrayList<>();
 		Map<String, String> sysProps = new LinkedHashMap<>();
@@ -111,6 +116,62 @@ public class VMRunTaskAction
 			else if ("jdwp".equals(debugServer.getScheme()))
 				sysProps.put("squirreljme.jdwp",
 					debugServer.getSchemeSpecificPart());
+			
+			// Internal debugger?
+			else if ("internal".equals(debugServer.getScheme()))
+			{
+				// Choose random port that is not likely to be used
+				int port = 32767 +
+					new Random(System.currentTimeMillis())
+						.nextInt(32767);
+				
+				// Listen on this port
+				sysProps.put("squirreljme.jdwp",
+					":" + port);
+				
+				// Use this task as the base and find its output Jar
+				Task debuggerTask = new __FindInternalDebugger__(
+					runTask.getProject()).call();
+				Path debuggerJar = debuggerTask.getOutputs().getFiles()
+					.getSingleFile().toPath();
+				
+				// Use this Java command
+				List<String> debuggerArgs = new ArrayList<>();
+				Path javaExe = SimpleJavaExecSpecFiller.findJavaExe();
+				debuggerArgs.add((javaExe == null ? "java" :
+					javaExe.toAbsolutePath().toString()));
+				
+				// Use the same classpath as the host
+				debuggerArgs.add("-classpath");
+				debuggerArgs.add(debuggerJar.toAbsolutePath().toString());
+				
+				// Launch into the debugger instead
+				debuggerArgs.add("cc.squirreljme.debugger.Main");
+				debuggerArgs.add("localhost:" + port);
+				
+				// Fork process with the debugger
+				ProcessBuilder builder = new ProcessBuilder(debuggerArgs);
+				
+				// Use our terminal and pipes for the output
+				builder.inheritIO();
+				
+				// Working directory in the build directory
+				builder.directory(runTask.getProject().getBuildDir());
+				
+				// Start the debugger
+				try
+				{
+					// Start the debugger
+					debuggerProc = builder.start();
+				}
+				
+				// It failed, so cannot debug
+				catch (IOException __e)
+				{
+					throw new RuntimeException("Could not launch debugger.",
+						__e);
+				}
+			}
 		}
 		
 		// If executing a MIDlet, then the single main argument is the actual
@@ -181,12 +242,20 @@ public class VMRunTaskAction
 			if (proc != null)
 				proc.destroyForcibly();
 			
+			// Always kill the debugger process
+			if (debuggerProc != null)
+				debuggerProc.destroyForcibly();
+			
 			// Now fail
 			throw new RuntimeException("Task run failed or was interrupted.",
 				__e);
 		}
 		finally
 		{
+			// Always kill the debugger process
+			if (debuggerProc != null)
+				debuggerProc.destroyForcibly();
+			
 			if (stdOut != null)
 				try
 				{

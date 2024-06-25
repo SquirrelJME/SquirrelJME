@@ -73,6 +73,10 @@ public interface VMDescriptionType
 	byte THIRD_PARTY_LEGAL_DOCUMENT =
 		12;
 	
+	/** The path separator used. */
+	byte PATH_SEPARATOR =
+		13;
+	
 	/** The current number of properties. */
 	byte NUM_TYPES =
 		13;
