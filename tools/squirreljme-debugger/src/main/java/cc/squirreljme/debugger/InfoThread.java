@@ -14,6 +14,10 @@ import cc.squirreljme.jdwp.JDWPCommandSetThreadReference;
 import cc.squirreljme.jdwp.JDWPId;
 import cc.squirreljme.jdwp.JDWPIdKind;
 import cc.squirreljme.jdwp.JDWPPacket;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -123,6 +127,23 @@ public class InfoThread
 	{
 		// Consider as valid unless otherwise
 		return true;
+	}
+	
+	/**
+	 * Prints the stack trace for the given thread.
+	 *
+	 * @param __state The debugger state.
+	 * @param __ps The stream to write to.
+	 * @since 2024/06/25
+	 */
+	public void printStackTrace(DebuggerState __state, PrintStream __ps)
+		throws NullPointerException
+	{
+		if (__state == null || __ps == null)
+			throw new NullPointerException("NARG");
+		
+		// Debug
+		Debugging.todoNote("Implement debugger printStackTrace().");
 	}
 	
 	/**
