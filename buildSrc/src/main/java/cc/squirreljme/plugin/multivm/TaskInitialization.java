@@ -572,6 +572,12 @@ public final class TaskInitialization
 								config.mainClass, JavaMEMidlet.NONE,
 								VMRunTask.JDWP_HOST);
 							
+							// Debugging with internal debugger?
+							tasks.create(name + "JdwpInternal",
+								VMRunTask.class, classifier, libTask,
+								config.mainClass, JavaMEMidlet.NONE,
+								VMRunTask.INTERNAL);
+							
 							// Debugging with GDB?
 							if (gdbServer != null)
 								tasks.create(name + "Gdb",
@@ -601,6 +607,12 @@ public final class TaskInitialization
 									VMRunTask.class,
 									classifier, libTask,
 									"", midlet, VMRunTask.JDWP_HOST);
+								
+								// Debugging with Internal Debugger?
+								tasks.create(realName + "JdwpInternal",
+									VMRunTask.class,
+									classifier, libTask,
+									"", midlet, VMRunTask.INTERNAL);
 								
 								// Debugging?
 								if (gdbServer != null)
