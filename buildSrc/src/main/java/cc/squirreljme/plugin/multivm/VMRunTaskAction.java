@@ -99,6 +99,9 @@ public class VMRunTaskAction
 		// Process for the debugger, to kill if the main task exits
 		Process debuggerProc = null;
 		
+		// Force interpreter?
+		boolean forceInterpreter = false;
+		
 		// Which command line is used?
 		List<String> procArgs = new ArrayList<>();
 		Map<String, String> sysProps = new LinkedHashMap<>();
@@ -110,6 +113,9 @@ public class VMRunTaskAction
 				procArgs.add(Paths.get(debugServer).toAbsolutePath()
 					.toString());
 				procArgs.add("localhost:2345");
+				
+				// Force interpreter to be used
+				forceInterpreter = true;
 			}
 			
 			// JDWP?
@@ -193,9 +199,24 @@ public class VMRunTaskAction
 			classPath, classPath,
 			args.<String>toArray(new String[args.size()]));
 		
-		// Add normal command line
+		// Get command line to use
+		List<String> cmdLine = new ArrayList<>();
 		for (String arg : execSpec.getCommandLine())
+			cmdLine.add(arg);
+		
+		// Pull in command line
+		for (int i = 0, n = cmdLine.size(); i < n; i++)
+		{
+			// Normally add the command line
+			String arg = cmdLine.get(i);
 			procArgs.add(arg);
+			
+			// If this is the executable, we want to possibly inject
+			// -zero to prevent compilation from being performed if doing
+			// GDB
+			if (i == 0 && forceInterpreter)
+				procArgs.add("-zero");
+		}
 		
 		// Setup process
 		ProcessBuilder procBuilder = new ProcessBuilder(procArgs);

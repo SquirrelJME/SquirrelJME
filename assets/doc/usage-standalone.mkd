@@ -104,6 +104,9 @@ The available options are:
  * `-classpath (class:path:...)`
    * Specifies the class path to use for the current application, the entries
      must be visible from the library path.
+ * `-zero` -- Alias for `-Xemulator:springcoat`.
+ * `-client` -- Ignored.
+ * `-server` -- Ignored.
 
 ## Default Configuration and Library Paths
 
