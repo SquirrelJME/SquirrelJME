@@ -280,6 +280,9 @@ public enum MLERuntime
 					
 				case VMDescriptionType.VM_VENDOR:
 					return "Stephanie Gawroriski";
+					
+				case VMDescriptionType.PATH_SEPARATOR:
+					return System.getProperty("file.separator");
 			}
 			
 			return null;

@@ -57,6 +57,6 @@ public class BuiltInDebuggerService
 		
 		// JDWP factory gets the other end
 		BidirectionalPipeSide b = pipe.side(true);
-		return new JDWPHostFactory(b.in(), b.out());
+		return new JDWPHostFactory(b.in(), b.out(), 0);
 	}
 }

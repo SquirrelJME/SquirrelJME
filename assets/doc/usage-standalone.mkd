@@ -70,12 +70,14 @@ The available options are:
    * `release` includes obfuscation and no debugging and thus runs faster.
    * `debug` does not have any obfuscation and may work in cases where
      obfuscation and optimization may cause issues.
- * `-Xdebug`
+ * `-Xdebug[:fork|nofork]`
    * Enable debugging but with the internal built-in SquirrelJME debugger and
      not a JDWP connection over TCP.
    * This is supported under the `hosted` emulator, however if you launch
      another application within it will not debug that process, therefor if
      you wish to debug you should use `-jar`.
+   * Optionally, `fork` or `nofork` can be specified to where the
+     internal debugger to launched as a separate process or not.
  * `-Xthread:(single|coop|multi|smt)`
    * Sets the threading mode of the virtual machine.
    * `single`/`coop` -- Single threaded using cooperative multitasking.
