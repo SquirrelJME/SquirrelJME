@@ -16,6 +16,7 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.font.FontUtilities;
+import cc.squirreljme.runtime.lcdui.mle.PencilFontProvider;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayManager;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,6 +31,7 @@ import java.util.List;
  */
 @Api
 public final class Font
+	extends PencilFontProvider
 {
 	/** The monospace font. */
 	@Api
@@ -601,6 +603,16 @@ public final class Font
 		}
 		
 		 */
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/06/25
+	 */
+	@Override
+	protected PencilFontBracket __squirreljmePencilFont()
+	{
+		return this._font;
 	}
 	
 	@Api

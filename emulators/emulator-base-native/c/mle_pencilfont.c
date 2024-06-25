@@ -59,16 +59,6 @@
 		return 0; \
 	} } while(0)
 
-static sjme_scritchui_pencilFont sjme_jni_recoverFont(JNIEnv* env,
-	jobject fontInstance)
-{
-	/* Does not map. */
-	if (fontInstance == NULL)
-		return NULL;
-	
-	return (sjme_scritchui_pencilFont)sjme_jni_recoverPointer(env,
-		DESC_DYLIB_PENCILFONT, fontInstance);
-}
 
 JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(PencilFontShelf, equals)
 	(JNIEnv* env, jclass classy, jobject a, jobject b)

@@ -400,11 +400,14 @@ static sjme_errorCode sjme_scritchui_core_pencilSetFont(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNull sjme_scritchui_pencilFont font)
 {
-	if (g == NULL)
+	if (g == NULL || font == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Set font used. */
+	g->state.font = font;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_scritchui_core_pencilSetStrokeStyle(

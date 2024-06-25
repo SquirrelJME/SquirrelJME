@@ -11,6 +11,7 @@
 #define __SQUIRRELJME_H__
 
 #include "jni.h"
+#include "lib/scritchui/scritchui.h"
 #include "sjme/debug.h"
 
 /** Initializing methods. */
@@ -227,6 +228,27 @@ void sjme_jni_throwVMException(JNIEnv* env, sjme_errorCode code);
  */
 void* sjme_jni_recoverPointer(JNIEnv* env, sjme_lpcstr className,
 	jobject instance);
+	
+/**
+ * Recovers a pointer from a @c DylibPencilObject .
+ * 
+ * @param env The current Java environment. 
+ * @param g The @c DylibPencilObject instance. 
+ * @return The resultant pointer.
+ * @since 2024/06/25
+ */
+sjme_scritchui_pencil sjme_jni_recoverPencil(JNIEnv* env, jobject g);	
 
+/**
+ * Recovers a pointer from a @c DylibPencilFontObject .
+ * 
+ * @param env The current Java environment. 
+ * @param fontInstance The @c DylibPencilFontObject instance. 
+ * @return The resultant pointer.
+ * @since 2024/06/25
+ */
+sjme_scritchui_pencilFont sjme_jni_recoverFont(JNIEnv* env,
+	jobject fontInstance);
+	
 #endif /* __SQUIRRELJME_H__ */
 

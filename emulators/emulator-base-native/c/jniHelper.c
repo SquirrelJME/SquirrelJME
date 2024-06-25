@@ -131,3 +131,24 @@ void* sjme_jni_recoverPointer(JNIEnv* env, sjme_lpcstr className,
 	return (void*)((intptr_t)((*env)->GetLongField(
 		env, instance, pointerField)));
 }
+
+sjme_scritchui_pencil sjme_jni_recoverPencil(JNIEnv* env, jobject g)
+{
+	/* Does not map. */
+	if (g == NULL)
+		return NULL;
+	
+	return (sjme_scritchui_pencil)sjme_jni_recoverPointer(env,
+		DESC_DYLIB_PENCIL, g);
+}
+
+sjme_scritchui_pencilFont sjme_jni_recoverFont(JNIEnv* env,
+	jobject fontInstance)
+{
+	/* Does not map. */
+	if (fontInstance == NULL)
+		return NULL;
+	
+	return (sjme_scritchui_pencilFont)sjme_jni_recoverPointer(env,
+		DESC_DYLIB_PENCILFONT, fontInstance);
+}

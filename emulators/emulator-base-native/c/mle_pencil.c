@@ -70,16 +70,6 @@
 	"Ljava/lang/Object;"
 #define FORWARD_DESC_nativeImageLoadTypes "()I"
 
-static sjme_scritchui_pencil sjme_jni_recoverPencil(JNIEnv* env, jobject g)
-{
-	/* Does not map. */
-	if (g == NULL)
-		return NULL;
-	
-	return (sjme_scritchui_pencil)sjme_jni_recoverPointer(env,
-		DESC_DYLIB_PENCIL, g);
-}
-
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareCopyArea)
 	(JNIEnv* env, jclass classy, jobject g, jint sx, jint sy, jint w, jint h,
 	jint dw, jint dh, jint anchor)
@@ -367,17 +357,22 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetDefaultFont)
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetFont)
 	(JNIEnv* env, jclass classy, jobject g, jobject font)
 {
+	sjme_errorCode error;
 	sjme_scritchui_pencil p;
+	sjme_scritchui_pencilFont fp;
 	
 	/* Recover. */
 	p = sjme_jni_recoverPencil(env, g);
-	if (g == NULL || p == NULL)
+	fp = sjme_jni_recoverFont(env, font);
+	if (g == NULL || p == NULL || fp == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return;
 	}
 	
-	sjme_todo("Impl?");
+	/* Forward. */
+	if (sjme_error_is(error = p->api->setFont(p, fp)))
+		sjme_jni_throwMLECallError(env, error);
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetStrokeStyle)

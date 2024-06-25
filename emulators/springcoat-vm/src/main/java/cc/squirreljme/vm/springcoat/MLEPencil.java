@@ -11,6 +11,7 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.PencilShelf;
 import cc.squirreljme.jvm.mle.brackets.PencilBracket;
+import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.jvm.mle.constants.NativeImageLoadType;
 import cc.squirreljme.jvm.mle.constants.PencilCapabilities;
 import cc.squirreljme.jvm.mle.constants.PencilShelfError;
@@ -496,11 +497,11 @@ public enum MLEPencil
 	},
 	
 	/**
-	 * {@link PencilShelf#hardwareSetFont(PencilBracket, String, int, int)}.
+	 * {@link PencilShelf#hardwareSetFont(PencilBracket, PencilFontBracket)}.
 	 */
 	HARDWARE_SET_FONT("hardwareSetFont:" +
 		"(Lcc/squirreljme/jvm/mle/brackets/PencilBracket;" +
-		"Ljava/lang/String;II)V")
+		"Lcc/squirreljme/jvm/mle/brackets/PencilFontBracket;)V")
 		{
 			/**
 			 * {@inheritDoc}
@@ -509,13 +510,15 @@ public enum MLEPencil
 			@Override
 			public Object handle(SpringThreadWorker __thread, Object... __args)
 			{
+				throw Debugging.todo();
+				/*
 				MLEObjects.pencilGraphics(__args[0])
 					.setFont(Font.getFont(
 						__thread.asNativeObject(String.class, __args[1]),
 						(Integer)__args[2],
 						(Integer)__args[3]));
 				
-				return null;
+				return null;*/
 			}
 		},
 	
