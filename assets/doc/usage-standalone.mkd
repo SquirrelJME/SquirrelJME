@@ -84,20 +84,21 @@ The available options are:
    * `multi`/`smt` -- Multi threaded using asynchronous multitasking.
  * `-Xtrace=option[,option[,...]]` -- Trace options
    * `all` -- Enable all.
-   * `instructions` -- Instructions being executed.
-   * `methodEntry` -- Entry of methods.
-   * `methodExit` -- Exit of methods.
-   * `mleCall` -- SquirrelJME MLE Native Calls.
-   * `invokeStatic` -- Static invocations.
    * `allocation` -- Allocations such as `new`.
    * `classInitialize` -- Class is initialized.
-   * `vmException` -- Virtual machine exceptions.
+   * `ignoredExceptions` -- Exceptions that were ignored.
+   * `instructions` -- Instructions being executed.
+   * `invokeStatic` -- Static invocations.
+   * `methodEntry` -- Entry of methods.
+   * `methodExit` -- Exit of methods.
    * `missingClass` -- Class does not exist.
+   * `mleCall` -- SquirrelJME MLE Native Calls.
    * `monitorEnter` -- Monitor is entered.
    * `monitorExit` -- Exiting a monitor.
-   * `monitorWait` -- Monitor is waited on.
    * `monitorNotify` -- Monitor is notified.
+   * `monitorWait` -- Monitor is waited on.
    * `threadNew` -- New thread is created.
+   * `vmException` -- Virtual machine exceptions.
  * `-Dsysprop=value`
    * Defines the given system property. 
  * `-classpath (class:path:...)`

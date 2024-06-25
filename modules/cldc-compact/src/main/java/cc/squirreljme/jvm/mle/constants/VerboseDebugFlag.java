@@ -87,4 +87,8 @@ public interface VerboseDebugFlag
 	/** Method with many execution cycles. */
 	int METHOD_CYCLES =
 		0x1_0000;
+	
+	/** Ignored exceptions. */
+	int IGNORED_EXCEPTIONS =
+		0x2_0000;
 }

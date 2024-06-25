@@ -69,6 +69,10 @@ public enum VMTraceFlag
 	
 	/** Method cycles. */
 	METHOD_CYCLES("methodCycles", VerboseDebugFlag.METHOD_CYCLES),
+	
+	/** Ignored exceptions. */
+	IGNORED_EXCEPTIONS("ignoredExceptions",
+		VerboseDebugFlag.IGNORED_EXCEPTIONS),
 
 	/* End. */
 	;
