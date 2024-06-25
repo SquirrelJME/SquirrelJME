@@ -213,6 +213,9 @@ public abstract class VMFactory
 		// -classpath (class:path:...)
 		// -Xclutter:(release|debug)
 		// -Xtrace=(flag|...)
+		// -zero
+		// -client
+		// -server
 		// Optionally `-jar`
 		// Main-class
 		// Arguments...
@@ -344,6 +347,16 @@ public abstract class VMFactory
 				// directly...
 				didJar = true;
 				break;
+			}
+			
+			// Alias for SpringCoat
+			else if (item.equals("-zero"))
+				vmName = "springcoat";
+			
+			// Ignored
+			else if (item.equals("-client") || item.equals("-server"))
+			{
+				// Ignored
 			}
 			
 			// Unknown
