@@ -86,7 +86,7 @@ The available options are:
    * `all` -- Enable all.
    * `allocation` -- Allocations such as `new`.
    * `classInitialize` -- Class is initialized.
-   * `ignoredExceptions` -- Exceptions that were ignored.
+   * `ignoredException` -- Exception that may be ignored.
    * `instructions` -- Instructions being executed.
    * `invokeStatic` -- Static invocations.
    * `methodEntry` -- Entry of methods.
