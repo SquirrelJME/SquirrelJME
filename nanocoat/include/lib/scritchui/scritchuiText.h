@@ -8,7 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 /**
- * Text rendering support.
+ * Text rendering support, equivalent to @c javax.microedition.lcdui.Text .
  * 
  * @since 2024/06/25
  */
