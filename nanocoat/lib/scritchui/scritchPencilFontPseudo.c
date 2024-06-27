@@ -14,6 +14,7 @@
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/alloc.h"
 #include "sjme/debug.h"
+#include "sjme/fixed.h"
 
 static sjme_jboolean sjme_scritchui_pseudoEquals(
 	sjme_attrInNullable sjme_scritchui_pencilFont a,
@@ -108,7 +109,9 @@ static sjme_errorCode sjme_scritchui_pseudoMetricPixelAscent(
 	sjme_attrInValue sjme_jboolean isMax,
 	sjme_attrOutNotNull sjme_jint* outAscent)
 {
+	sjme_errorCode error;
 	sjme_scritchui_pencilFont wrapped;
+	sjme_jint orig;
 	
 	if (inFont == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -118,15 +121,25 @@ static sjme_errorCode sjme_scritchui_pseudoMetricPixelAscent(
 	if (wrapped == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
-	/* Forward. */
-	return wrapped->api->metricPixelAscent(wrapped, isMax, outAscent);
+	/* Obtain original value. */
+	orig = 0;
+	if (sjme_error_is(error = wrapped->api->metricPixelAscent(
+		wrapped, isMax, &orig)))
+		return sjme_error_default(error);
+	
+	/* Perform fraction math on it, to normalize. */
+	*outAscent = sjme_fixed_int(sjme_fixed_mul(sjme_fixed_hi(orig),
+		inFont->cache.fraction));
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_scritchui_pseudoMetricPixelBaseline(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
 	sjme_attrOutNotNull sjme_jint* outBaseline)
 {
+	sjme_errorCode error;
 	sjme_scritchui_pencilFont wrapped;
+	sjme_jint orig;
 	
 	if (inFont == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -136,8 +149,16 @@ static sjme_errorCode sjme_scritchui_pseudoMetricPixelBaseline(
 	if (wrapped == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
-	/* Forward. */
-	return wrapped->api->metricPixelBaseline(wrapped, outBaseline);
+	/* Obtain original value. */
+	orig = 0;
+	if (sjme_error_is(error = wrapped->api->metricPixelBaseline(
+		wrapped, &orig)))
+		return sjme_error_default(error);
+	
+	/* Perform fraction math on it, to normalize. */
+	*outBaseline = sjme_fixed_int(sjme_fixed_mul(
+		sjme_fixed_hi(orig), inFont->cache.fraction));
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_scritchui_pseudoMetricPixelDescent(
@@ -145,7 +166,9 @@ static sjme_errorCode sjme_scritchui_pseudoMetricPixelDescent(
 	sjme_attrInValue sjme_jboolean isMax,
 	sjme_attrOutNotNull sjme_jint* outDescent)
 {
+	sjme_errorCode error;
 	sjme_scritchui_pencilFont wrapped;
+	sjme_jint orig;
 	
 	if (inFont == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -155,15 +178,25 @@ static sjme_errorCode sjme_scritchui_pseudoMetricPixelDescent(
 	if (wrapped == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
-	/* Forward. */
-	return wrapped->api->metricPixelDescent(wrapped, isMax, outDescent);
+	/* Obtain original value. */
+	orig = 0;
+	if (sjme_error_is(error = wrapped->api->metricPixelDescent(
+		wrapped, isMax, &orig)))
+		return sjme_error_default(error);
+	
+	/* Perform fraction math on it, to normalize. */
+	*outDescent = sjme_fixed_int(sjme_fixed_mul(
+		sjme_fixed_hi(orig), inFont->cache.fraction));
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_scritchui_pseudoMetricPixelLeading(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outLeading)
 {
+	sjme_errorCode error;
 	sjme_scritchui_pencilFont wrapped;
+	sjme_jint orig;
 	
 	if (inFont == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -173,8 +206,16 @@ static sjme_errorCode sjme_scritchui_pseudoMetricPixelLeading(
 	if (wrapped == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
-	/* Forward. */
-	return wrapped->api->metricPixelLeading(wrapped, outLeading);
+	/* Obtain original value. */
+	orig = 0;
+	if (sjme_error_is(error = wrapped->api->metricPixelLeading(
+		wrapped, &orig)))
+		return sjme_error_default(error);
+	
+	/* Perform fraction math on it, to normalize. */
+	*outLeading = sjme_fixed_int(sjme_fixed_mul(
+		sjme_fixed_hi(orig), inFont->cache.fraction));
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_scritchui_pseudoMetricPixelSize(
@@ -267,6 +308,8 @@ sjme_errorCode sjme_scritchui_core_fontPseudo(
 {
 	sjme_scritchui_pencilFont result;
 	sjme_errorCode error;
+	sjme_jint origPixelSize;
+	sjme_fixed fraction;
 	
 	if (inState == NULL || inFont == NULL || outDerived == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -281,6 +324,15 @@ sjme_errorCode sjme_scritchui_core_fontPseudo(
 			(sjme_scritchui_pencilFont)inFont->context, inStyle,
 			inPixelSize, outDerived);
 	
+	/* We need the original pixel size to calculate the fraction. */
+	origPixelSize = -1;
+	if (sjme_error_is(error = inFont->api->metricPixelSize(inFont,
+		&origPixelSize)) || origPixelSize < 0)
+		return sjme_error_default(error);
+	
+	/* Calculate the font fraction. */
+	fraction = sjme_fixed_fraction(inPixelSize, origPixelSize);
+	
 	/* Allocate. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_alloc(inState->pool,
@@ -292,6 +344,7 @@ sjme_errorCode sjme_scritchui_core_fontPseudo(
 	result->context = inFont;
 	result->cache.style = inStyle;
 	result->cache.pixelSize = inPixelSize;
+	result->cache.fraction = fraction;
 	
 	/* Initialize base font. */
 	if (sjme_error_is(error = sjme_scritchui_newPencilFontStatic(

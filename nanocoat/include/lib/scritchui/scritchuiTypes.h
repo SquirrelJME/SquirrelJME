@@ -270,6 +270,9 @@ struct sjme_scritchui_pencilFontBase
 		
 		/** The descent of the font. */
 		sjme_jint descent[2];
+		
+		/** Font fraction, for pseudo fonts. */
+		sjme_fixed fraction;
 	} cache;
 };
 

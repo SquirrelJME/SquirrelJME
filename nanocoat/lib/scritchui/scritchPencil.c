@@ -330,7 +330,11 @@ static sjme_errorCode sjme_scritchui_core_pencilDrawSubstring(
 	lineHeight = -1;
 	if (sjme_error_is(error = font->api->metricPixelHeight(font,
 		&lineHeight)) || lineHeight < 0)
+	{
+		error = sjme_error_defaultOr(error,
+			SJME_ERROR_FONT_NEGATIVE_HEIGHT);
 		goto fail_fontHeight;
+	}
 	
 	/* Need the font baseline. */
 	baseline = 0;

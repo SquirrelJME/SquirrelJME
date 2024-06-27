@@ -317,17 +317,17 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelHeight(
 	}
 	
 	/* Get all of these parameters. */
-	leading = -1;
+	leading = 0;
 	if (sjme_error_is(error = inFont->api->metricPixelLeading(inFont,
 		&leading)))
 		return sjme_error_default(error);
 		
-	ascent = -1;
+	ascent = 0;
 	if (sjme_error_is(error = inFont->api->metricPixelAscent(inFont,
 		SJME_JNI_FALSE, &ascent)))
 		return sjme_error_default(error);
 		
-	descent = -1;
+	descent = 0;
 	if (sjme_error_is(error = inFont->api->metricPixelDescent(inFont,
 		SJME_JNI_FALSE, &descent)))
 		return sjme_error_default(error);

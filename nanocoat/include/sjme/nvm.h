@@ -538,6 +538,13 @@ typedef uint32_t sjme_juint;
 #define SJME_TYPEOF_IS_POINTER_sjme_juint 0
 
 /**
+ * Fixed point.
+ * 
+ * @since 2024/06/27 
+ */
+typedef sjme_jint sjme_fixed;
+
+/**
  * C Character.
  *
  * @since 2024/01/03
@@ -1755,8 +1762,11 @@ typedef enum sjme_errorCode
 	/** There is no Java environment. */
 	SJME_ERROR_NO_JAVA_ENVIRONMENT = -57,
 	
+	/** Font has negative height. */
+	SJME_ERROR_FONT_NEGATIVE_HEIGHT = -58,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -58
+	SJME_NUM_ERROR_CODES = -59
 } sjme_errorCode;
 
 /**
