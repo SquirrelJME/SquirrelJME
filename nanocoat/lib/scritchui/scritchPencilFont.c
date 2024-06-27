@@ -424,14 +424,63 @@ static sjme_errorCode sjme_scritchui_fontStringWidth(
 	sjme_attrInPositive sjme_jint l,
 	sjme_attrOutNotNull sjme_jint* outWidth)
 {
+	sjme_errorCode error;
+	sjme_jint seqLen, at, cw, result, maxResult;
+	sjme_jchar c;
+	
 	if (inFont == NULL || s == NULL || outWidth == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
 	if (o < 0 || l < 0 || (o + l) < 0)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+		
+	/* Get sequence length for further checking. */
+	seqLen = -1;
+	if (sjme_error_is(error = sjme_charSeq_length(s,
+		&seqLen)) || seqLen < 0)
+		return sjme_error_default(error);
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Out of bounds? */
+	if ((o + l) > seqLen)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+		
+	/* Defaults to zero length. */
+	result = 0;
+	maxResult = 0;
+	
+	/* Process each character within the sequence. */
+	for (at = 0; at < l; at++)
+	{
+		/* Get the next character to check. */
+		c = 0;
+		if (sjme_error_is(error = sjme_charSeq_charAt(
+			s, o + at, &c)))
+			return sjme_error_default(error);
+		
+		/* Reset width? */
+		if (c == '\r' || c == '\n')
+		{
+			result = 0;
+			continue;
+		}
+		
+		/* Determine character width. */
+		cw = 0;
+		if (sjme_error_is(error = inFont->api->pixelCharWidth(inFont,
+			c, &cw)))
+			return sjme_error_default(error);
+		
+		/* Add onto. */
+		result += cw;
+		
+		/* New max? */
+		if (result > maxResult)
+			maxResult = result;
+	}
+	
+	/* Success! */
+	*outWidth = maxResult;
+	return SJME_ERROR_NONE;
 }
 
 /** Functions for basic font support. */
