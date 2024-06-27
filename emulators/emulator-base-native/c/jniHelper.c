@@ -152,3 +152,12 @@ sjme_scritchui_pencilFont sjme_jni_recoverFont(JNIEnv* env,
 	return (sjme_scritchui_pencilFont)sjme_jni_recoverPointer(env,
 		DESC_DYLIB_PENCILFONT, fontInstance);
 }
+
+sjme_errorCode sjme_jni_jstringCharSeq(
+	sjme_attrInNotNull JNIEnv* env,
+	sjme_attrInNotNull sjme_charSeq* inOutSeq,
+	sjme_attrInNotNull jstring inString)
+{
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}

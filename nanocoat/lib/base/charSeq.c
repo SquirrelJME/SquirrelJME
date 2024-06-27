@@ -8,3 +8,14 @@
 // -------------------------------------------------------------------------*/
 
 #include "sjme/charSeq.h"
+#include "sjme/debug.h"
+
+sjme_errorCode sjme_charSeq_deleteStatic(
+	sjme_attrInNotNull sjme_charSeq* inOutSeq)
+{
+	if (inOutSeq == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}

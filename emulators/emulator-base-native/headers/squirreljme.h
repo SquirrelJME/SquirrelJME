@@ -13,6 +13,7 @@
 #include "jni.h"
 #include "lib/scritchui/scritchui.h"
 #include "sjme/debug.h"
+#include "sjme/charSeq.h"
 
 /** Initializing methods. */
 jint JNICALL mleDebugInit(JNIEnv* env, jclass classy);
@@ -249,6 +250,20 @@ sjme_scritchui_pencil sjme_jni_recoverPencil(JNIEnv* env, jobject g);
  */
 sjme_scritchui_pencilFont sjme_jni_recoverFont(JNIEnv* env,
 	jobject fontInstance);
-	
+
+/**
+ * Initializes a character sequence from a Java String.
+ * 
+ * @param env The Java environment.
+ * @param inOutSeq The input/output character sequence.
+ * @param inString The input string to wrap.
+ * @return Any resultant error, if any.
+ * @since 2024/06/26
+ */
+sjme_errorCode sjme_jni_jstringCharSeq(
+	sjme_attrInNotNull JNIEnv* env,
+	sjme_attrInNotNull sjme_charSeq* inOutSeq,
+	sjme_attrInNotNull jstring inString);
+
 #endif /* __SQUIRRELJME_H__ */
 

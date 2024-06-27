@@ -7,6 +7,8 @@
 // See license.mkd for licensing and copyright information.
 // ------------------------------------------------------------------------ */
 
+#include <string.h>
+
 #include "sjme/debug.h"
 #include "squirreljme.h"
 #include "lib/scritchui/scritchuiTypes.h"
@@ -186,6 +188,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawSubstring)
 {
 	sjme_scritchui_pencil p;
 	sjme_errorCode error;
+	sjme_charSeq seq;
 	
 	/* Recover. */
 	p = sjme_jni_recoverPencil(env, g);
@@ -195,18 +198,27 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawSubstring)
 		return;
 	}
 	
-	sjme_todo("Impl?");
+	/* Get wrapping string sequence. */
+	memset(&seq, 0, sizeof(seq));
+	if (sjme_error_is(error = sjme_jni_jstringCharSeq(env,
+		&seq, s)))
+		goto fail_makeSeq;
 	
 	/* Forward. */
 	if (sjme_error_is(error = p->api->drawSubstring(p,
-		NULL, o, l, x, y, anchor)))
+		&seq, o, l, x, y, anchor)))
 		goto fail_drawOp;
 	
-	sjme_todo("Impl?");
+	/* Cleanup sequence. */
+	if (sjme_error_is(error = sjme_charSeq_deleteStatic(&seq)))
+		goto fail_delete;
 	
 	return;
 	
+fail_delete:
 fail_drawOp:
+	sjme_charSeq_deleteStatic(&seq);
+fail_makeSeq:
 	sjme_jni_throwMLECallError(env, error);
 }
 

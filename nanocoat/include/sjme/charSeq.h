@@ -55,6 +55,16 @@ struct sjme_charSeq
 	sjme_pointer context;
 };
 
+/**
+ * Deletes the given static character sequence.
+ * 
+ * @param inOutSeq The input/output sequence. 
+ * @return Any resultant error, if any.
+ * @since 2024/06/26
+ */
+sjme_errorCode sjme_charSeq_deleteStatic(
+	sjme_attrInNotNull sjme_charSeq* inOutSeq);
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
