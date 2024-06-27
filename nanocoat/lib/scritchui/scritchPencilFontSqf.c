@@ -192,7 +192,9 @@ static sjme_errorCode sjme_scritchui_sqfMetricPixelBaseline(
 		return SJME_ERROR_ILLEGAL_STATE;
 		
 	/* Give the value. */
-	*outBaseline = sqf->codepages[0]->bby;
+	/* MIDP says this is the max ascent of the font, since there is only */
+	/* a single ascent, it becomes this. */
+	*outBaseline = sqf->codepages[0]->ascent;
 	return SJME_ERROR_NONE;
 }
 
