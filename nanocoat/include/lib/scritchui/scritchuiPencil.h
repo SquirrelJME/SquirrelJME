@@ -141,6 +141,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilCopyAreaFunc)(
  * @param x The X position.
  * @param y The Y position.
  * @param anchor The anchor point.
+ * @param outCw The output codepoint width, this is optional.
  * @return An error if the graphics is not valid, does not support
  * the given operation, or if the anchor point is not valid.
  * @since 2024/06/27
@@ -150,7 +151,8 @@ typedef sjme_errorCode (*sjme_scritchui_pencilDrawCharFunc)(
 	sjme_attrInPositive sjme_jint c,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y,
-	sjme_attrInValue sjme_jint anchor);
+	sjme_attrInValue sjme_jint anchor,
+	sjme_attrOutNullable sjme_jint* outCw);
 
 /**
  * Draws the given characters.

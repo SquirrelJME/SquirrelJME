@@ -196,25 +196,6 @@ static sjme_errorCode sjme_scritchui_pseudoMetricPixelSize(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_scritchui_pseudoPixelCharHeight(
-	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
-	sjme_attrInPositive sjme_jint inCodepoint,
-	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outHeight)
-{
-	sjme_scritchui_pencilFont wrapped;
-	
-	if (inFont == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Recover wrapper. */
-	wrapped = inFont->context;
-	if (wrapped == NULL)
-		return SJME_ERROR_ILLEGAL_STATE;
-	
-	/* Forward. */
-	return wrapped->api->pixelCharHeight(wrapped, inCodepoint, outHeight);
-}
-
 static sjme_errorCode sjme_scritchui_pseudoPixelCharWidth(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
 	sjme_attrInPositive sjme_jint inCodepoint,
@@ -273,7 +254,6 @@ static const sjme_scritchui_pencilFontImplFunctions
 	.metricPixelDescent = sjme_scritchui_pseudoMetricPixelDescent,
 	.metricPixelLeading = sjme_scritchui_pseudoMetricPixelLeading,
 	.metricPixelSize = sjme_scritchui_pseudoMetricPixelSize,
-	.pixelCharHeight = sjme_scritchui_pseudoPixelCharHeight,
 	.pixelCharWidth = sjme_scritchui_pseudoPixelCharWidth,
 	.renderBitmap = sjme_scritchui_pseudoRenderBitmap,
 };

@@ -298,7 +298,6 @@ static const sjme_scritchui_pencilFontImplFunctions
 	.metricPixelDescent = sjme_scritchui_sqfMetricPixelDescent,
 	.metricPixelLeading = sjme_scritchui_sqfMetricPixelLeading,
 	.metricPixelSize = sjme_scritchui_sqfMetricPixelSize,
-	.pixelCharHeight = NULL,
 	.pixelCharWidth = sjme_scritchui_sqfMetricPixelCharWidth,
 	.renderBitmap = NULL,
 };

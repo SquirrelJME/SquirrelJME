@@ -332,15 +332,12 @@ public final class Font
 	@Api
 	public int getAscent()
 	{
-		throw Debugging.todo();
-		/*
-		return this._sqf.ascent;
-		
-		 */
+		return PencilFontShelf.metricPixelAscent(this._font, false);
 	}
 	
 	/**
-	 * Returns the baseline position of the font which is the maximum baseline.
+	 * Returns the baseline position of the font which will be the maximum
+	 * baseline position of every character.
 	 *
 	 * @return The baseline of the font.
 	 * @since 2018/11/29
@@ -348,11 +345,7 @@ public final class Font
 	@Api
 	public int getBaselinePosition()
 	{
-		throw Debugging.todo();
-		/*
-		return this._sqf.maxascent;
-		
-		 */
+		return PencilFontShelf.metricPixelBaseline(this._font);
 	}
 	
 	/**
@@ -365,11 +358,7 @@ public final class Font
 	@Api
 	public int getDescent()
 	{
-		throw Debugging.todo();
-		/*
-		return this._sqf.descent;
-		
-		 */
+		return PencilFontShelf.metricPixelDescent(this._font, false);
 	}
 	
 	/**
@@ -431,11 +420,7 @@ public final class Font
 	@Api
 	public int getLeading()
 	{
-		throw Debugging.todo();
-		/*
-		return this._sqf.leading;
-		
-		 */
+		return PencilFontShelf.metricPixelLeading(this._font);
 	}
 	
 	@Api

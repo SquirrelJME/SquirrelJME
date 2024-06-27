@@ -149,13 +149,56 @@ static sjme_errorCode sjme_scritchui_core_pencilDrawChar(
 	sjme_attrInPositive sjme_jint c,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y,
-	sjme_attrInValue sjme_jint anchor)
+	sjme_attrInValue sjme_jint anchor,
+	sjme_attrOutNullable sjme_jint* outCw)
 {
+	sjme_errorCode error;
+	sjme_scritchui_pencilFont font;
+	sjme_jint cw, ch, area, dx, dy, sx, sy;
+	sjme_jubyte* bitmap;
+	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* We need the font for rendering. */
+	font = g->state.font;
+	if (font == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
+	/* Need character width. */
+	cw = 0;
+	if (sjme_error_is(error = font->api->pixelCharWidth(
+		font, c, &cw)))
+		return sjme_error_default(error);
+	
+	/* And the pixel height, since this is a bitmap font. */
+	ch = 0;
+	if (sjme_error_is(error = font->api->metricPixelSize(
+		font, &ch)))
+		return sjme_error_default(error);
+	
+	/* Calculate anchor point accordingly. */
+	if (anchor != 0)
+		if (sjme_error_is(error = sjme_scritchui_core_anchor(anchor,
+			x, y, cw, ch, 0, &x, &y)))
+			return sjme_error_default(error);
+	
+	/* Allocate bitmap. */
+	area = sizeof(*bitmap) * (cw * ch);
+	bitmap = sjme_alloca(area);
+	if (bitmap == NULL)
+		return SJME_ERROR_OUT_OF_MEMORY;
+	
+	/* Initialize. */
+	memset(bitmap, 0, area);
+	
+	/* Test render. */
+	g->api->drawRect(g, x, y, cw, ch);
+	
+	/* Success! */
+	if (outCw != NULL)
+		*outCw = cw;
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_scritchui_core_pencilDrawChars(
@@ -344,36 +387,26 @@ static sjme_errorCode sjme_scritchui_core_pencilDrawSubstring(
 		}
 		
 		/* Render character, note always at top+left anchor. */
+		cw = 0;
 		if (sjme_error_is(error = g->api->drawChar(g, c, dx, dy,
-			0)))
+			0, &cw)))
 			goto fail_drawChar;
 		
-		/* Move right. */
-		cw = -1;
-		if (sjme_error_is(error = font->api->pixelCharWidth(font,
-			c, &cw)) || cw < 0)
-			goto fail_charWidth;
+		/* Move over. */
+		dx += cw;
 	}
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
 
 fail_charWidth:
-	sjme_message("H");
 fail_drawChar:
-	sjme_message("G");
 fail_charAt:
-	sjme_message("F");
 fail_anchor:
-	sjme_message("E");
 fail_blockDim:
-	sjme_message("D");
 fail_seqLen:
-	sjme_message("C");
 fail_fontBaseline:
-	sjme_message("B");
 fail_fontHeight:
-	sjme_message("A");
 	return sjme_error_default(error);
 }
 

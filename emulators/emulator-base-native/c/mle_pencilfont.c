@@ -247,20 +247,6 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricPixelSize)
 	return result;
 }
 
-JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, pixelCharHeight)
-	(JNIEnv* env, jclass classy, jobject fontInstance, jint c)
-{
-	sjme_errorCode error;
-	sjme_scritchui_pencilFont font;
-	sjme_jint result;
-	
-	/* Forward. */
-	RECOVER_FONT();
-	CHECK_AND_FORWARD(0, font->api->pixelCharHeight,
-		(font, c, &result));
-	return result;
-}
-
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, pixelCharWidth)
 	(JNIEnv* env, jclass classy, jobject fontInstance, jint c)
 {
@@ -302,7 +288,6 @@ static const JNINativeMethod mlePencilFontMethods[] =
 	FORWARD_list(PencilFontShelf, metricPixelBaseline),
 	FORWARD_list(PencilFontShelf, metricPixelDescent),
 	FORWARD_list(PencilFontShelf, metricPixelLeading),
-	FORWARD_list(PencilFontShelf, pixelCharHeight),
 	FORWARD_list(PencilFontShelf, pixelCharWidth),
 	FORWARD_list(PencilFontShelf, renderBitmap),
 	FORWARD_list(PencilFontShelf, renderChar),

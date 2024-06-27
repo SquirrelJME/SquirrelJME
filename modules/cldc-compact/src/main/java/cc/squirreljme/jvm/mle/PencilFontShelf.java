@@ -195,22 +195,6 @@ public final class PencilFontShelf
 		throws MLECallError;
 	
 	/**
-	 * Returns the height of the given character.
-	 *
-	 * @param __font The font to obtain from.
-	 * @param __char The character.
-	 * @return The height of the font in pixels.
-	 * @throws MLECallError If the font is not valid.
-	 * @since 2024/05/14
-	 */
-	@SquirrelJMEVendorApi
-	@Range(from = 0, to = Integer.MAX_VALUE)
-	public static native int pixelCharHeight(
-		@NotNull PencilFontBracket __font,
-		int __char)
-		throws MLECallError;
-	
-	/**
 	 * Returns the width of the given character.
 	 *
 	 * @param __font The font to obtain from.

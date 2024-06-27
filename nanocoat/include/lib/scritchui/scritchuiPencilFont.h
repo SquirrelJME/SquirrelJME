@@ -205,20 +205,6 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricPixelSizeFunc)(
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outSize);
 
 /**
- * Returns the height of the given character.
- *
- * @param inFont The font to obtain from.
- * @param inCodepoint The character.
- * @param outHeight The height of the font in pixels.
- * @return Any resultant error, if any.
- * @since 2024/05/14
- */
-typedef sjme_errorCode (*sjme_scritchui_pencilFontPixelCharHeightFunc)(
-	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
-	sjme_attrInPositive sjme_jint inCodepoint,
-	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outHeight);
-
-/**
  * Returns the width of the given character.
  *
  * @param inFont The font to obtain from.
@@ -348,9 +334,6 @@ typedef struct sjme_scritchui_pencilFontFunctions
 	/** Returns the pixel size of the font. */
 	SJME_SCRITCHUI_QUICK_PENCIL(MetricPixelSize, metricPixelSize);
 	
-	/** Returns the height of the font character. */
-	SJME_SCRITCHUI_QUICK_PENCIL(PixelCharHeight, pixelCharHeight);
-	
 	/** Returns the width of the font character. */
 	SJME_SCRITCHUI_QUICK_PENCIL(PixelCharWidth, pixelCharWidth);
 	
@@ -400,9 +383,6 @@ typedef struct sjme_scritchui_pencilFontImplFunctions
 	
 	/** Returns the pixel size of the font. */
 	SJME_SCRITCHUI_QUICK_PENCIL(MetricPixelSize, metricPixelSize);
-	
-	/** Returns the height of the font character. */
-	SJME_SCRITCHUI_QUICK_PENCIL(PixelCharHeight, pixelCharHeight);
 	
 	/** Returns the width of the font character. */
 	SJME_SCRITCHUI_QUICK_PENCIL(PixelCharWidth, pixelCharWidth);
