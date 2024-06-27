@@ -454,19 +454,40 @@ static sjme_errorCode sjme_scritchui_fontPixelCharWidth(
 static sjme_errorCode sjme_scritchui_fontRenderBitmap(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
 	sjme_attrInPositive sjme_jint inCodepoint,
-	sjme_attrInNotNull sjme_jbyte* buf,
+	sjme_attrInNotNull sjme_jubyte* buf,
 	sjme_attrInPositive sjme_jint bufOff,
 	sjme_attrInPositive sjme_jint bufScanLen,
-	sjme_attrInPositive sjme_jint surfaceX,
-	sjme_attrInPositive sjme_jint surfaceY,
-	sjme_attrInPositive sjme_jint surfaceW,
-	sjme_attrInPositive sjme_jint surfaceH)
+	sjme_attrInPositive sjme_jint bufHeight)
 {
-	if (inFont == NULL)
+	sjme_errorCode error;
+	
+	if (inFont == NULL || buf == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	if (inCodepoint < 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	if (bufOff < 0 || bufScanLen <= 0 || bufHeight <= 0 ||
+		(bufHeight * bufScanLen) < 0 ||
+		(bufOff + (bufHeight * bufScanLen)) < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Not implemented? */
+	if (inFont->impl->renderBitmap == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Validate glyph. */
+	if (sjme_error_is(error = sjme_scritchui_validateChar(inFont,
+		&inCodepoint)))
+		return sjme_error_default(error);
+	
+	/* Render resultant bitmap. */
+	if (sjme_error_is(error = inFont->impl->renderBitmap(inFont,
+		inCodepoint, buf, bufOff, bufScanLen, bufHeight)))
+		return sjme_error_default(error);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_scritchui_fontRenderChar(
@@ -611,6 +632,12 @@ sjme_errorCode sjme_scritchui_core_fontDerive(
 	/* Create pseudo font. */
 	return sjme_scritchui_core_fontPseudo(inState, inFont, inStyle,
 		inPixelSize, outDerived);
+}
+
+sjme_jint sjme_scritchui_pencilFontScanLen(
+	sjme_attrInPositive sjme_jint w)
+{
+	return (w >> 3) + ((w & 7) != 0 ? 1 : 0);
 }
 
 sjme_errorCode sjme_scritchui_newPencilFontStatic(

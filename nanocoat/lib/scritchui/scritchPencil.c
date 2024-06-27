@@ -154,8 +154,9 @@ static sjme_errorCode sjme_scritchui_core_pencilDrawChar(
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencilFont font;
-	sjme_jint cw, ch, area, dx, dy, sx, sy;
+	sjme_jint cw, ch, area, dx, dy, sx, sy, v, scanLen;
 	sjme_jubyte* bitmap;
+	sjme_scritchui_pencilBitLineFunc bitline;
 	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -177,14 +178,21 @@ static sjme_errorCode sjme_scritchui_core_pencilDrawChar(
 		font, &ch)))
 		return sjme_error_default(error);
 	
+	/** Do not bother drawing nothing. */
+	if (cw == 0 || ch == 0)
+		return SJME_ERROR_NONE;
+	
 	/* Calculate anchor point accordingly. */
 	if (anchor != 0)
 		if (sjme_error_is(error = sjme_scritchui_core_anchor(anchor,
 			x, y, cw, ch, 0, &x, &y)))
 			return sjme_error_default(error);
+		
+	/* Determine scanline length for each bitmap row. */
+	scanLen = sjme_scritchui_pencilFontScanLen(cw);
 	
 	/* Allocate bitmap. */
-	area = sizeof(*bitmap) * (cw * ch);
+	area = sizeof(*bitmap) * (scanLen * ch);
 	bitmap = sjme_alloca(area);
 	if (bitmap == NULL)
 		return SJME_ERROR_OUT_OF_MEMORY;
@@ -192,8 +200,23 @@ static sjme_errorCode sjme_scritchui_core_pencilDrawChar(
 	/* Initialize. */
 	memset(bitmap, 0, area);
 	
-	/* Test render. */
-	g->api->drawRect(g, x, y, cw, ch);
+	/* Get glyph bitmap. */
+	if (sjme_error_is(error = font->api->renderBitmap(font,
+		c, bitmap, 0, scanLen,
+		ch)))
+		return sjme_error_default(error);
+	
+	/* Draw bit-lines for the glyphs. */
+	for (sy = 0, dy = y, v = 0; sy < ch; sy++, dy++)
+		for (sx = 0, dx = x; sx < scanLen; sx++, dx += 8, v++)
+		{
+			/* Which bitline to use? */
+			bitline = sjme_scritchui_pencilBitLines[bitmap[v]];
+			
+			/* Render the bitline. */
+			if (sjme_error_is(error = bitline(g, dx, dy)))
+				return sjme_error_default(error);
+		}
 	
 	/* Success! */
 	if (outCw != NULL)

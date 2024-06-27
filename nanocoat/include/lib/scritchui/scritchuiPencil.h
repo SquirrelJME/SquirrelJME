@@ -607,6 +607,24 @@ typedef struct sjme_scritchui_pencilImplFunctions
 #undef SJME_SCRITCHUI_QUICK_PENCIL
 
 /**
+ * Function used for bit-line drawing operations.
+ * 
+ * @param g The pencil to draw onto.
+ * @param x The X coordinate.
+ * @param y The Y coordinate.
+ * @return Any resultant error, if any.
+ * @since 2024/06/27
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilBitLineFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint x,
+	sjme_attrInValue sjme_jint y);
+	
+/** The bit-line functions which are available. */
+extern const sjme_scritchui_pencilBitLineFunc
+	sjme_scritchui_pencilBitLines[256];
+
+/**
  * Creates a hardware reference bracket to the native hardware graphics.
  * 
  * @param pf The @c sjme_gfx_pixelFormat used for the draw.

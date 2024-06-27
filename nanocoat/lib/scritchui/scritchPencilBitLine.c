@@ -12,11 +12,6 @@
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/debug.h"
 
-typedef sjme_errorCode (*sjme_scritchui_pencilBitLineFunc)(
-	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInValue sjme_jint x,
-	sjme_attrInValue sjme_jint y);
-
 #define SJME_BITLINE_SET_USE(id) \
 	SJME_TOKEN_PASTE_PP(sjme_scritchui_bitLine, id)
 

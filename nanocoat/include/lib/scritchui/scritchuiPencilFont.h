@@ -227,23 +227,17 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontPixelCharWidthFunc)(
  * @param buf The resultant buffer.
  * @param bufOff The offset into the buffer.
  * @param bufScanLen The scanline length of the buffer.
- * @param surfaceX The surface X.
- * @param surfaceY The surface Y.
- * @param surfaceW The surface width.
- * @param surfaceH The surface height.
+ * @param bufHeight The buffer height.
  * @return Any resultant error, if any.
  * @since 2024/05/14
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilFontRenderBitmapFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
 	sjme_attrInPositive sjme_jint inCodepoint,
-	sjme_attrInNotNull sjme_jbyte* buf,
+	sjme_attrInNotNull sjme_jubyte* buf,
 	sjme_attrInPositive sjme_jint bufOff,
 	sjme_attrInPositive sjme_jint bufScanLen,
-	sjme_attrInPositive sjme_jint surfaceX,
-	sjme_attrInPositive sjme_jint surfaceY,
-	sjme_attrInPositive sjme_jint surfaceW,
-	sjme_attrInPositive sjme_jint surfaceH);
+	sjme_attrInPositive sjme_jint bufHeight);
 
 /**
  * Renders the given character to the resultant pencil.
@@ -404,6 +398,16 @@ struct sjme_scritchui_pencilFontLink
 	/** The next link. */
 	sjme_scritchui_pencilFontLink* next;
 };
+
+/**
+ * Determines the scanline length of a bitmap.
+ * 
+ * @param w The bitmap width.
+ * @return The result scanline length.
+ * @since 2024/06/27
+ */
+sjme_jint sjme_scritchui_pencilFontScanLen(
+	sjme_attrInPositive sjme_jint w);
 
 /**
  * Initializes a static pencil font.

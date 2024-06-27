@@ -86,7 +86,9 @@ static sjme_errorCode sjme_scritchui_sqfMetricCharValid(
 	}
 	
 	/* Need to check the character's validity flag. */
-	if ((codepage->charFlags[index] & SJME_SCRITCHUI_SQF_FLAG_VALID) != 0)
+	/* Currently consider RaFoCES compressed glyphs as not valid. */
+	if ((codepage->charFlags[index] & SJME_SCRITCHUI_SQF_FLAG_VALID) != 0 &&
+		(codepage->charFlags[index] & SJME_SCRITCHUI_SQF_FLAG_RAFOCES) == 0)
 		*outValid = SJME_JNI_TRUE;
 	else
 		*outValid = SJME_JNI_FALSE;
@@ -258,13 +260,12 @@ static sjme_errorCode sjme_scritchui_sqfMetricPixelCharWidth(
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outWidth)
 {
 	sjme_errorCode error;
-	const sjme_scritchui_sqfCodepage* sqf;
 	const sjme_scritchui_sqf* codepage;
 	sjme_jint index;
 	
 	if (inFont == NULL || outWidth == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-		
+	
 	/* Try locating it. */
 	codepage = NULL;
 	index = -1;
@@ -284,6 +285,57 @@ static sjme_errorCode sjme_scritchui_sqfMetricPixelCharWidth(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_scritchui_sqfRenderBitmap(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInPositive sjme_jint inCodepoint,
+	sjme_attrInNotNull sjme_jubyte* buf,
+	sjme_attrInPositive sjme_jint bufOff,
+	sjme_attrInPositive sjme_jint bufScanLen,
+	sjme_attrInPositive sjme_jint bufHeight)
+{
+	sjme_errorCode error;
+	const sjme_scritchui_sqf* codepage;
+	const sjme_jubyte* src;
+	const sjme_jubyte* sp;
+	sjme_jubyte* dp;
+	sjme_jint index, scanLen, bh, sx, sy, dx, dy;
+	
+	if (inFont == NULL || buf == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Try locating it. */
+	codepage = NULL;
+	index = -1;
+	if (sjme_error_is(error = sjme_scritchui_sqfLocate(inFont,
+		inCodepoint, &codepage, &index)))
+		return sjme_error_default(error);
+	
+	/* Do nothing if missing. */
+	if (codepage == NULL || index < 0)
+		return SJME_ERROR_NONE;
+	
+	/* Get source bitmap data. */
+	scanLen = ((sjme_jint)codepage->charBmpScan[index]) & 0xFF;
+	bh = codepage->pixelHeight;
+	src = (const sjme_jubyte*)&codepage->charBmp[
+		codepage->charBmpOffset[index]];
+	
+	/* Copy over. */
+	for (sy = 0, dy = 0; sy < bh && dy < bufHeight; sy++, dy++)
+	{
+		/* Determine source and destination pointers. */
+		dp = &buf[bufOff + (dy * bufScanLen)];
+		sp = &src[sy * scanLen];
+		
+		/* Copy. */
+		for (sx = 0, dx = 0; sx < scanLen && dx < bufScanLen; sx++, dx++)
+			(*(dp++)) = (*(sp++));
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 /** Functions for native SQF support. */
 static const sjme_scritchui_pencilFontImplFunctions
 	sjme_scritchui_sqfFunctions =
@@ -299,7 +351,7 @@ static const sjme_scritchui_pencilFontImplFunctions
 	.metricPixelLeading = sjme_scritchui_sqfMetricPixelLeading,
 	.metricPixelSize = sjme_scritchui_sqfMetricPixelSize,
 	.pixelCharWidth = sjme_scritchui_sqfMetricPixelCharWidth,
-	.renderBitmap = NULL,
+	.renderBitmap = sjme_scritchui_sqfRenderBitmap,
 };
 
 sjme_errorCode sjme_scritchui_core_fontBuiltin(

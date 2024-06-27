@@ -259,13 +259,10 @@ static sjme_errorCode sjme_scritchui_pseudoPixelCharWidth(
 static sjme_errorCode sjme_scritchui_pseudoRenderBitmap(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
 	sjme_attrInPositive sjme_jint inCodepoint,
-	sjme_attrInNotNull sjme_jbyte* buf,
+	sjme_attrInNotNull sjme_jubyte* buf,
 	sjme_attrInPositive sjme_jint bufOff,
 	sjme_attrInPositive sjme_jint bufScanLen,
-	sjme_attrInPositive sjme_jint surfaceX,
-	sjme_attrInPositive sjme_jint surfaceY,
-	sjme_attrInPositive sjme_jint surfaceW,
-	sjme_attrInPositive sjme_jint surfaceH)
+	sjme_attrInPositive sjme_jint bufHeight)
 {
 	sjme_scritchui_pencilFont wrapped;
 	
@@ -277,6 +274,7 @@ static sjme_errorCode sjme_scritchui_pseudoRenderBitmap(
 	if (wrapped == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
+	return SJME_ERROR_NONE;
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
