@@ -101,9 +101,10 @@ public class SfdGlyphInfo
 				// 5 the minimum y value,
 				// 6 the maximum x value and
 				// 7 the maximum y value.
-				// BDFChar: 5   65  6 0 4 0 8 <-- A
-				// BDFChar: 174 198 8 0 6 0 8 <-- AE
-				// BDFChar: 144 122 6 0 4 0 4 <-- z
+				// BDFChar: 5   65  6 0 4 0 8  <-- A
+				// BDFChar: 174 198 8 0 6 0 8  <-- AE
+				// BDFChar: 130 103 6 0 4 -2 4 <-- g
+				// BDFChar: 144 122 6 0 4 0 4  <-- z
 				if ("BDFChar".equals(tokens[0]))
 				{
 					// Read in offsets

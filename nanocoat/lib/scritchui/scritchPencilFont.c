@@ -457,7 +457,9 @@ static sjme_errorCode sjme_scritchui_fontRenderBitmap(
 	sjme_attrInNotNull sjme_jubyte* buf,
 	sjme_attrInPositive sjme_jint bufOff,
 	sjme_attrInPositive sjme_jint bufScanLen,
-	sjme_attrInPositive sjme_jint bufHeight)
+	sjme_attrInPositive sjme_jint bufHeight,
+	sjme_attrOutNullable sjme_jint* outOffX,
+	sjme_attrOutNullable sjme_jint* outOffY)
 {
 	sjme_errorCode error;
 	
@@ -483,7 +485,7 @@ static sjme_errorCode sjme_scritchui_fontRenderBitmap(
 	
 	/* Render resultant bitmap. */
 	if (sjme_error_is(error = inFont->impl->renderBitmap(inFont,
-		inCodepoint, buf, bufOff, bufScanLen, bufHeight)))
+		inCodepoint, buf, bufOff, bufScanLen, bufHeight, outOffX, outOffY)))
 		return sjme_error_default(error);
 	
 	/* Success! */

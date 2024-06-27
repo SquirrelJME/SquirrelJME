@@ -262,7 +262,9 @@ static sjme_errorCode sjme_scritchui_pseudoRenderBitmap(
 	sjme_attrInNotNull sjme_jubyte* buf,
 	sjme_attrInPositive sjme_jint bufOff,
 	sjme_attrInPositive sjme_jint bufScanLen,
-	sjme_attrInPositive sjme_jint bufHeight)
+	sjme_attrInPositive sjme_jint bufHeight,
+	sjme_attrOutNullable sjme_jint* outOffX,
+	sjme_attrOutNullable sjme_jint* outOffY)
 {
 	sjme_scritchui_pencilFont wrapped;
 	

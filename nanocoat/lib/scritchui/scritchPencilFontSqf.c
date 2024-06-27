@@ -291,7 +291,9 @@ static sjme_errorCode sjme_scritchui_sqfRenderBitmap(
 	sjme_attrInNotNull sjme_jubyte* buf,
 	sjme_attrInPositive sjme_jint bufOff,
 	sjme_attrInPositive sjme_jint bufScanLen,
-	sjme_attrInPositive sjme_jint bufHeight)
+	sjme_attrInPositive sjme_jint bufHeight,
+	sjme_attrOutNullable sjme_jint* outOffX,
+	sjme_attrOutNullable sjme_jint* outOffY)
 {
 	sjme_errorCode error;
 	const sjme_scritchui_sqf* codepage;
@@ -331,6 +333,12 @@ static sjme_errorCode sjme_scritchui_sqfRenderBitmap(
 		for (sx = 0, dx = 0; sx < scanLen && dx < bufScanLen; sx++, dx++)
 			(*(dp++)) = (*(sp++));
 	}
+	
+	/* These are needed for proper rendering. */
+	if (outOffX != NULL)
+		*outOffX = codepage->charXOffset[index];
+	if (outOffY != NULL)
+		*outOffY = codepage->charYOffset[index];
 	
 	/* Success! */
 	return SJME_ERROR_NONE;

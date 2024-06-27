@@ -155,6 +155,7 @@ static sjme_errorCode sjme_scritchui_core_pencilDrawChar(
 	sjme_errorCode error;
 	sjme_scritchui_pencilFont font;
 	sjme_jint cw, ch, area, dx, dy, sx, sy, v, scanLen;
+	sjme_jint offX, offY;
 	sjme_jubyte* bitmap;
 	sjme_scritchui_pencilBitLineFunc bitline;
 	
@@ -171,6 +172,16 @@ static sjme_errorCode sjme_scritchui_core_pencilDrawChar(
 	if (sjme_error_is(error = font->api->pixelCharWidth(
 		font, c, &cw)))
 		return sjme_error_default(error);
+	
+	/* Do not draw space characters. */
+	if (c == '\t' || c == ' ')
+	{
+		/* Do report their length however! */
+		if (outCw != NULL)
+			*outCw = cw;
+		
+		return SJME_ERROR_NONE;
+	}
 	
 	/* And the pixel height, since this is a bitmap font. */
 	ch = 0;
@@ -200,15 +211,19 @@ static sjme_errorCode sjme_scritchui_core_pencilDrawChar(
 	/* Initialize. */
 	memset(bitmap, 0, area);
 	
+	/* Offsets for proper glyph drawing. */
+	offX = 0;
+	offY = 0;
+	
 	/* Get glyph bitmap. */
 	if (sjme_error_is(error = font->api->renderBitmap(font,
 		c, bitmap, 0, scanLen,
-		ch)))
+		ch, &offX, &offY)))
 		return sjme_error_default(error);
 	
 	/* Draw bit-lines for the glyphs. */
-	for (sy = 0, dy = y, v = 0; sy < ch; sy++, dy++)
-		for (sx = 0, dx = x; sx < scanLen; sx++, dx += 8, v++)
+	for (sy = 0, dy = y + offY, v = 0; sy < ch; sy++, dy++)
+		for (sx = 0, dx = x + offX; sx < scanLen; sx++, dx += 8, v++)
 		{
 			/* Which bitline to use? */
 			bitline = sjme_scritchui_pencilBitLines[bitmap[v]];

@@ -114,7 +114,7 @@ public class Fonts
 				// here to spite them.
 				__g.drawString("The quick gray squirrel Xer burried all " +
 					"of their acorns! <3 0123456789",
-					x, y, Graphics.BASELINE);
+					x, y, 0/*Graphics.BASELINE*/);
 				
 				// Move position up
 				y += f.getHeight();

@@ -228,6 +228,8 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontPixelCharWidthFunc)(
  * @param bufOff The offset into the buffer.
  * @param bufScanLen The scanline length of the buffer.
  * @param bufHeight The buffer height.
+ * @param outOffX X offset of glyph, for proper rendering.
+ * @param outOffY Y offset of glyph, for proper rendering.
  * @return Any resultant error, if any.
  * @since 2024/05/14
  */
@@ -237,7 +239,9 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontRenderBitmapFunc)(
 	sjme_attrInNotNull sjme_jubyte* buf,
 	sjme_attrInPositive sjme_jint bufOff,
 	sjme_attrInPositive sjme_jint bufScanLen,
-	sjme_attrInPositive sjme_jint bufHeight);
+	sjme_attrInPositive sjme_jint bufHeight,
+	sjme_attrOutNullable sjme_jint* outOffX,
+	sjme_attrOutNullable sjme_jint* outOffY);
 
 /**
  * Renders the given character to the resultant pencil.
