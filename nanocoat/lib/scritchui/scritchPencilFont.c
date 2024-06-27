@@ -85,9 +85,20 @@ static sjme_errorCode sjme_scritchui_fontMetricCharValid(
 {
 	if (inFont == NULL || outValid == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Not implemented? */
+	if (inFont->impl->metricCharValid == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Negative codepoints are always invalid. */
+	if (inCodepoint < 0)
+	{
+		*outValid = SJME_JNI_FALSE;
+		return SJME_ERROR_NONE;
+	}
+	
+	/* Forward. */
+	return inFont->impl->metricCharValid(inFont, inCodepoint, outValid);
 }
 
 static sjme_errorCode sjme_scritchui_fontMetricFontFace(

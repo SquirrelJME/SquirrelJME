@@ -28,26 +28,6 @@ static sjme_jboolean sjme_scritchui_pseudoEquals(
 	return SJME_JNI_FALSE;
 }
 
-static sjme_errorCode sjme_scritchui_pseudoMetricCharDirection(
-	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
-	sjme_attrInPositive sjme_jint inCodepoint,
-	sjme_attrOutNotNull sjme_attrInRange(-1, 1) sjme_jint* outDirection)
-{
-	sjme_scritchui_pencilFont wrapped;
-	
-	if (inFont == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Recover wrapper. */
-	wrapped = inFont->context;
-	if (wrapped == NULL)
-		return SJME_ERROR_ILLEGAL_STATE;
-	
-	/* Forward. */
-	return wrapped->api->metricCharDirection(wrapped, inCodepoint,
-		outDirection);
-}
-
 static sjme_errorCode sjme_scritchui_pseudoMetricCharValid(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
 	sjme_attrInPositive sjme_jint inCodepoint,
@@ -279,35 +259,11 @@ static sjme_errorCode sjme_scritchui_pseudoRenderBitmap(
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
-static sjme_errorCode sjme_scritchui_pseudoRenderChar(
-	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
-	sjme_attrInPositive sjme_jint inCodepoint,
-	sjme_attrInNotNull sjme_scritchui_pencil inPencil,
-	sjme_attrInValue sjme_jint xPos,
-	sjme_attrInNotNull sjme_jint yPos,
-	sjme_attrOutNullable sjme_jint* nextXPos,
-	sjme_attrOutNullable sjme_jint* nextYPos)
-{
-	sjme_scritchui_pencilFont wrapped;
-	
-	if (inFont == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Recover wrapper. */
-	wrapped = inFont->context;
-	if (wrapped == NULL)
-		return SJME_ERROR_ILLEGAL_STATE;
-	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
-}
-
 /** Functions for basic font support. */
 static const sjme_scritchui_pencilFontImplFunctions
 	sjme_scritchui_pseudoFontFunctions =
 {
 	.equals = sjme_scritchui_pseudoEquals,
-	.metricCharDirection = sjme_scritchui_pseudoMetricCharDirection,
 	.metricCharValid = sjme_scritchui_pseudoMetricCharValid,
 	.metricFontFace = sjme_scritchui_pseudoMetricFontFace,
 	.metricFontName = sjme_scritchui_pseudoMetricFontName,
@@ -320,7 +276,6 @@ static const sjme_scritchui_pencilFontImplFunctions
 	.pixelCharHeight = sjme_scritchui_pseudoPixelCharHeight,
 	.pixelCharWidth = sjme_scritchui_pseudoPixelCharWidth,
 	.renderBitmap = sjme_scritchui_pseudoRenderBitmap,
-	.renderChar = sjme_scritchui_pseudoRenderChar,
 };
 
 sjme_errorCode sjme_scritchui_core_fontPseudo(

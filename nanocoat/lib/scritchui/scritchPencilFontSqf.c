@@ -15,6 +15,86 @@
 #include "lib/scritchui/scritchuiPencilFontSqf.h"
 #include "sjme/debug.h"
 
+static sjme_errorCode sjme_scritchui_sqfLocate(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInPositive sjme_jint inCodepoint,
+	sjme_attrOutNotNull const sjme_scritchui_sqf** outCodepage,
+	sjme_attrOutNotNull sjme_jint* outIndex)
+{
+	const sjme_scritchui_sqfCodepage* sqf;
+	sjme_jint pageId, at, n;
+	
+	if (inFont == NULL || outCodepage == NULL || outIndex == 0)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (inCodepoint < 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Recover SQF. */
+	sqf = inFont->context;
+	if (sqf == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
+	/* Determine the page id of the codepoint. */
+	pageId = inCodepoint & (~0xFF);
+	
+	/* Go through each codepage to find it. */
+	for (at = 0, n = sqf->numCodepages; at < n; at++)
+		if (pageId == sqf->codepages[at]->codepointStart)
+		{
+			*outCodepage = sqf->codepages[at];
+			*outIndex = inCodepoint & 0xFF;
+			return SJME_ERROR_NONE;
+		}
+	
+	/* Not found. */
+	*outCodepage = NULL;
+	*outIndex = -1;
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_scritchui_sqfMetricCharValid(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInPositive sjme_jint inCodepoint,
+	sjme_attrOutNotNull sjme_jboolean* outValid)
+{
+	sjme_errorCode error;
+	const sjme_scritchui_sqfCodepage* sqf;
+	const sjme_scritchui_sqf* codepage;
+	sjme_jint index;
+	
+	if (inFont == NULL || outValid == NULL)
+		return SJME_ERROR_NONE;
+		
+	/* Recover SQF. */
+	sqf = inFont->context;
+	if (sqf == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
+	/* Try locating it. */
+	codepage = NULL;
+	index = -1;
+	if (sjme_error_is(error = sjme_scritchui_sqfLocate(inFont,
+		inCodepoint, &codepage, &index)))
+		return sjme_error_default(error);
+	
+	/* Not valid if missing. */
+	if (codepage == NULL || index < 0)
+	{
+		*outValid = SJME_JNI_FALSE;
+		return SJME_ERROR_NONE;
+	}
+	
+	/* Need to check the character's validity flag. */
+	if ((codepage->charFlags[index] & SJME_SCRITCHUI_SQF_FLAG_VALID) != 0)
+		*outValid = SJME_JNI_TRUE;
+	else
+		*outValid = SJME_JNI_FALSE;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_scritchui_sqfMetricFontFace(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
 	sjme_attrOutNotNull sjme_scritchui_pencilFontFace* outFace)
@@ -172,13 +252,44 @@ static sjme_errorCode sjme_scritchui_sqfMetricPixelSize(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_scritchui_sqfMetricPixelCharWidth(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInPositive sjme_jint inCodepoint,
+	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outWidth)
+{
+	sjme_errorCode error;
+	const sjme_scritchui_sqfCodepage* sqf;
+	const sjme_scritchui_sqf* codepage;
+	sjme_jint index;
+	
+	if (inFont == NULL || outWidth == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Try locating it. */
+	codepage = NULL;
+	index = -1;
+	if (sjme_error_is(error = sjme_scritchui_sqfLocate(inFont,
+		inCodepoint, &codepage, &index)))
+		return sjme_error_default(error);
+	
+	/* Consider it zero width if it is missing. */
+	if (codepage == NULL || index < 0)
+	{
+		*outWidth = SJME_JNI_FALSE;
+		return SJME_ERROR_NONE;
+	}
+	
+	/* Get width from codepage information. */
+	*outWidth = ((sjme_jint)codepage->charWidths[index]) & 0xFF;
+	return SJME_ERROR_NONE;
+}
+
 /** Functions for native SQF support. */
 static const sjme_scritchui_pencilFontImplFunctions
 	sjme_scritchui_sqfFunctions =
 {
 	.equals = NULL,
-	.metricCharDirection = NULL,
-	.metricCharValid = NULL,
+	.metricCharValid = sjme_scritchui_sqfMetricCharValid,
 	.metricFontFace = sjme_scritchui_sqfMetricFontFace,
 	.metricFontName = sjme_scritchui_sqfMetricFontName,
 	.metricFontStyle = NULL,
@@ -188,9 +299,8 @@ static const sjme_scritchui_pencilFontImplFunctions
 	.metricPixelLeading = sjme_scritchui_sqfMetricPixelLeading,
 	.metricPixelSize = sjme_scritchui_sqfMetricPixelSize,
 	.pixelCharHeight = NULL,
-	.pixelCharWidth = NULL,
+	.pixelCharWidth = sjme_scritchui_sqfMetricPixelCharWidth,
 	.renderBitmap = NULL,
-	.renderChar = NULL,
 };
 
 sjme_errorCode sjme_scritchui_core_fontBuiltin(

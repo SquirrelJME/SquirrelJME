@@ -374,9 +374,6 @@ typedef struct sjme_scritchui_pencilFontImplFunctions
 	/** Checks font equality. */
 	SJME_SCRITCHUI_QUICK_PENCIL(Equals, equals);
 	
-	/** Returns the direction of the character. */
-	SJME_SCRITCHUI_QUICK_PENCIL(MetricCharDirection, metricCharDirection);
-	
 	/** Checks the validity of a glyph. */
 	SJME_SCRITCHUI_QUICK_PENCIL(MetricCharValid, metricCharValid);
 	
@@ -412,9 +409,6 @@ typedef struct sjme_scritchui_pencilFontImplFunctions
 	
 	/** Renders the font character to a bitmap. */
 	SJME_SCRITCHUI_QUICK_PENCIL(RenderBitmap, renderBitmap);
-	
-	/** Renders the font character to the given pencil. */
-	SJME_SCRITCHUI_QUICK_PENCIL(RenderChar, renderChar);
 } sjme_scritchui_pencilFontImplFunctions;
 
 #undef SJME_SCRITCHUI_QUICK_PENCIL
