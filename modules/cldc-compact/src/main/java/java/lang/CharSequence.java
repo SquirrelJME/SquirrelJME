@@ -45,7 +45,7 @@ public interface CharSequence
 	 *
 	 * @param __s The start index.
 	 * @param __e The end index.
-	 * @return The sub sequence of this one.
+	 * @return The sub-sequence of this one.
 	 * @throws IndexOutOfBoundsException If the start or end exceed the
 	 * sequence bounds or start is greater than end.
 	 * @since 2018/12/07

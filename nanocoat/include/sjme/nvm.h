@@ -1752,8 +1752,11 @@ typedef enum sjme_errorCode
 	/** The font is not valid. */
 	SJME_ERROR_INVALID_FONT = -56,
 	
+	/** There is no Java environment. */
+	SJME_ERROR_NO_JAVA_ENVIRONMENT = -57,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -57
+	SJME_NUM_ERROR_CODES = -58
 } sjme_errorCode;
 
 /**

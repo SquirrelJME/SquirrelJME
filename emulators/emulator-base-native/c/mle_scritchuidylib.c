@@ -113,16 +113,11 @@ typedef struct mle_callbackData
 static void mle_scritchUiStoreCallback(JNIEnv* env, sjme_frontEnd* outFrontEnd,
 	jobject javaListener)
 {
-	JavaVM* vm;
+	sjme_errorCode error;
 	
-	/* Get the current JVM, we need to store that. */
-	vm = NULL;
-	(*env)->GetJavaVM(env, &vm);
-	
-	/* Store frontend data. */
-	memset(outFrontEnd, 0, sizeof(*outFrontEnd));
-	outFrontEnd->data = vm;
-	outFrontEnd->wrapper = (*env)->NewGlobalRef(env, javaListener);
+	if (sjme_error_is(error = sjme_jni_fillFrontEnd(env,
+		outFrontEnd, javaListener)))
+		sjme_jni_throwMLECallError(env, error);
 }
 
 static void mle_scritchUiRecoverCallback(JNIEnv* env,
@@ -732,7 +727,6 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __linkInit)
 	sjme_alloc_pool* pool;
 	sjme_scritchui state;
 	sjme_frontEnd frontEnd;
-	JavaVM* vm;
 	sjme_debug_handlerFunctions** dylibDebugHandlers;
 	
 	/* Debug. */
@@ -796,9 +790,9 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __linkInit)
 	
 	/* Setup front end. */
 	memset(&frontEnd, 0, sizeof(frontEnd));
-	vm = NULL;
-	(*env)->GetJavaVM(env, &vm);
-	frontEnd.data = vm;
+	if (sjme_error_is(error = sjme_jni_fillFrontEnd(env,
+		&frontEnd, NULL)))
+		goto fail_initFrontEnd;
 
 	/* Initialize ScritchUI. */
 	state = NULL;
@@ -812,6 +806,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __linkInit)
 #undef BUF_SIZE
 
 fail_apiInit:
+fail_initFrontEnd:
 fail_dyLibLookup:
 fail_dyLibOpen:
 	if (libPathChars != NULL)

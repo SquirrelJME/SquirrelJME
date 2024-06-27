@@ -153,11 +153,184 @@ sjme_scritchui_pencilFont sjme_jni_recoverFont(JNIEnv* env,
 		DESC_DYLIB_PENCILFONT, fontInstance);
 }
 
-sjme_errorCode sjme_jni_jstringCharSeq(
+sjme_errorCode sjme_jni_fillFrontEnd(JNIEnv* env, sjme_frontEnd* into,
+	jobject ref)
+{
+	JavaVM* vm;
+	
+	if (env == NULL || into == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Store referenced VM. */
+	vm = NULL;
+	(*env)->GetJavaVM(env, &vm);
+	into->data = vm;
+	
+	/* Need to reference an object? */
+	if (ref != NULL)
+		into->wrapper = (*env)->NewGlobalRef(env, ref);
+	else
+		into->wrapper = NULL;
+	
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_jni_recoverEnv(
+	sjme_attrInOutNotNull JNIEnv** outEnv,
+	sjme_attrInNotNull JavaVM* inVm)
+{
+	JNIEnv* env;
+	jint jniError;
+	
+	if (outEnv == NULL || inVm == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Try to get the environment for the current thread. */
+	env = NULL;
+	jniError = (*inVm)->GetEnv(inVm, &env, JNI_VERSION_1_1);
+	if (jniError != JNI_OK || env == NULL)
+		return SJME_ERROR_NO_JAVA_ENVIRONMENT;
+	
+	/* Success! */
+	*outEnv = env;
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_jni_recoverEnvFrontEnd(
+	sjme_attrInOutNotNull JNIEnv** outEnv,
+	sjme_attrInNotNull const sjme_frontEnd* inFrontEnd)
+{
+	if (outEnv == NULL || inFrontEnd == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Forward. */
+	return sjme_jni_recoverEnv(outEnv, inFrontEnd->data);
+}
+
+static sjme_errorCode sjme_jni_jstringCharAt(
+	sjme_attrInNotNull const sjme_charSeq* inSeq,
+	sjme_attrInPositive sjme_jint inIndex,
+	sjme_attrOutNotNull sjme_jchar* outChar)
+{
+	sjme_errorCode error;
+	JNIEnv* env;
+	jstring string;
+	const jchar* stringChars;
+	jboolean isCopy;
+	jint len;
+	
+	if (inSeq == NULL || outChar == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover env. */
+	env = NULL;
+	if (sjme_error_is(error = sjme_jni_recoverEnvFrontEnd(
+		&env, &inSeq->frontEnd)) || env == NULL)
+		return sjme_error_default(error);
+	
+	/* Get string. */
+	string = inSeq->frontEnd.wrapper;
+	
+	/* Not within the string bounds? */
+	len = (*env)->GetStringLength(env, string);
+	if (inIndex < 0 || inIndex >= len)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Need to access characters just to read one, sadly. */
+	isCopy = JNI_FALSE;
+	stringChars = (*env)->GetStringChars(env, string, &isCopy);
+	
+	/* Copy character. */
+	*outChar = stringChars[inIndex];
+	
+	/* Cleanup. */
+	(*env)->ReleaseStringChars(env, string, stringChars);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_jni_jstringDelete(
+	sjme_attrInNotNull sjme_charSeq* inSeq)
+{
+	sjme_errorCode error;
+	JNIEnv* env;
+	jstring string;
+	
+	if (inSeq == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover env. */
+	env = NULL;
+	if (sjme_error_is(error = sjme_jni_recoverEnvFrontEnd(
+		&env, &inSeq->frontEnd)) || env == NULL)
+		return sjme_error_default(error);
+	
+	/* Get string. */
+	string = inSeq->frontEnd.wrapper;
+	
+	/* Remove global reference. */
+	(*env)->DeleteGlobalRef(env, string);
+	inSeq->frontEnd.wrapper = NULL;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_jni_jstringLength(
+	sjme_attrInNotNull const sjme_charSeq* inSeq,
+	sjme_attrOutNotNull sjme_jint* outLen)
+{
+	sjme_errorCode error;
+	JNIEnv* env;
+	jstring string;
+	
+	if (inSeq == NULL || outLen == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover env. */
+	env = NULL;
+	if (sjme_error_is(error = sjme_jni_recoverEnvFrontEnd(
+		&env, &inSeq->frontEnd)) || env == NULL)
+		return sjme_error_default(error);
+	
+	/* Get string. */
+	string = inSeq->frontEnd.wrapper;
+	
+	/* Get string length. */
+	*outLen = (*env)->GetStringLength(env, string);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static const sjme_charSeq_functions sjme_jni_jstringFunctions =
+{
+	.charAt = sjme_jni_jstringCharAt,
+	.delete = sjme_jni_jstringDelete,
+	.length = sjme_jni_jstringLength,
+};
+
+sjme_errorCode sjme_jni_jstringCharSeqStatic(
 	sjme_attrInNotNull JNIEnv* env,
 	sjme_attrInNotNull sjme_charSeq* inOutSeq,
 	sjme_attrInNotNull jstring inString)
 {
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	sjme_frontEnd frontEnd;
+	sjme_errorCode error;
+	
+	if (env == NULL || inOutSeq == NULL || inString == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Setup front end. */
+	memset(&frontEnd, 0, sizeof(frontEnd));
+	if (sjme_error_is(error = sjme_jni_fillFrontEnd(env,
+		&frontEnd, inString)))
+		return sjme_error_default(error);
+	
+	/* Initialize via forward. */
+	return sjme_charSeq_newStatic(
+		inOutSeq, &sjme_jni_jstringFunctions,
+		NULL,
+		&frontEnd);
 }

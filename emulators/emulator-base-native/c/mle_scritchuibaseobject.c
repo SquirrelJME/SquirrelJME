@@ -24,7 +24,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(DylibBaseObject, __bind)
 	(JNIEnv* env, jclass classy, jlong componentP, jobject bindTo)
 {
 	sjme_scritchui_uiComponent component;
-	JavaVM* vm;
+	sjme_errorCode error;
 	
 	if (componentP == 0 || bindTo == NULL)
 	{
@@ -36,10 +36,9 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(DylibBaseObject, __bind)
 	component = (sjme_scritchui_uiComponent)componentP;
 	
 	/* Set forward states. */
-	vm = NULL;
-	(*env)->GetJavaVM(env, &vm);
-	component->common.frontEnd.data = vm;
-	component->common.frontEnd.wrapper = (*env)->NewGlobalRef(env, bindTo);
+	if (sjme_error_is(error = sjme_jni_fillFrontEnd(env,
+		&component->common.frontEnd, bindTo)))
+		sjme_jni_throwMLECallError(env, error);
 }
 
 static const JNINativeMethod mleDylibBaseObjectMethods[] =

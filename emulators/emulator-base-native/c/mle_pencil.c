@@ -200,7 +200,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawSubstring)
 	
 	/* Get wrapping string sequence. */
 	memset(&seq, 0, sizeof(seq));
-	if (sjme_error_is(error = sjme_jni_jstringCharSeq(env,
+	if (sjme_error_is(error = sjme_jni_jstringCharSeqStatic(env,
 		&seq, s)))
 		goto fail_makeSeq;
 	
