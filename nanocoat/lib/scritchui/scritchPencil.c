@@ -70,6 +70,63 @@ static void sjme_scritchui_core_transform(
 	(*y) += g->state.translate.y;
 }
 
+/**
+ * Calculates the anchor position of a box on a point.
+ * 
+ * @param anchor 
+ * @param x The X coordinate. 
+ * @param y The Y coordinate.
+ * @param w The width.
+ * @param h The height.
+ * @param baseline The baseline, if this is a font.
+ * @param outX The resultant X coordinate.
+ * @param outY The resultant Y coordinate.
+ * @return Any resultant error, if any.
+ * @since 2024/06/27
+ */
+static sjme_errorCode sjme_scritchui_core_anchor(
+	sjme_attrInValue sjme_jint anchor,
+	sjme_attrInValue sjme_jint x,
+	sjme_attrInValue sjme_jint y,
+	sjme_attrInPositive sjme_jint w,
+	sjme_attrInPositive sjme_jint h,
+	sjme_attrInValue sjme_jint baseline,
+	sjme_attrOutNotNull sjme_jint* outX,
+	sjme_attrOutNotNull sjme_jint* outY)
+{
+	if (outX == NULL || outY == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Cannot be negative. */
+	if (w < 0 || h < 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Horizontal anchoring. */
+	if ((anchor & SJME_SCRITCHUI_ANCHOR_LEFT) == 0)
+	{
+		if ((anchor & SJME_SCRITCHUI_ANCHOR_HCENTER) != 0)
+			x -= w / 2;
+		else if ((anchor & SJME_SCRITCHUI_ANCHOR_RIGHT) != 0)
+			x -= w;
+	}
+	
+	/* Vertical anchoring. */
+	if ((anchor & SJME_SCRITCHUI_ANCHOR_TOP) == 0)
+	{
+		if ((anchor & SJME_SCRITCHUI_ANCHOR_VCENTER) != 0)
+			y -= h / 2;
+		else if ((anchor & SJME_SCRITCHUI_ANCHOR_BOTTOM) != 0)
+			y -= h;
+		else if ((anchor & SJME_SCRITCHUI_ANCHOR_BASELINE) != 0)
+			y -= baseline;
+	}
+	
+	/* Success! */
+	*outX = x;
+	*outY = y;
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_scritchui_core_pencilCopyArea(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint sx,
@@ -78,6 +135,20 @@ static sjme_errorCode sjme_scritchui_core_pencilCopyArea(
 	sjme_attrInPositive sjme_jint h,
 	sjme_attrInValue sjme_jint dx,
 	sjme_attrInValue sjme_jint dy,
+	sjme_attrInValue sjme_jint anchor)
+{
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+static sjme_errorCode sjme_scritchui_core_pencilDrawChar(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInPositive sjme_jint c,
+	sjme_attrInValue sjme_jint x,
+	sjme_attrInValue sjme_jint y,
 	sjme_attrInValue sjme_jint anchor)
 {
 	if (g == NULL)
@@ -196,31 +267,105 @@ static sjme_errorCode sjme_scritchui_core_pencilDrawSubstring(
 	sjme_attrInValue sjme_jint y,
 	sjme_attrInValue sjme_jint anchor)
 {
-	struct sjme_scritchui_textBase textBase;
-	sjme_scritchui_text text;
 	sjme_errorCode error;
+	sjme_jint seqLen, at, dx, dy, bx, lineHeight, tw, cw, baseline;
+	sjme_jchar c;
+	sjme_scritchui_pencilFont font;
 	
 	if (g == NULL || s == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (o < 0 || l < 0 || (o + l) < 0)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
-		
-	/* Initialize text renderer. */
-	memset(&textBase, 0, sizeof(textBase));
-	text = &textBase;
-	if (sjme_error_is(error = sjme_scritchui_textNewStatic(
-		text)))
-		return sjme_error_default(error);
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* We need the font for rendering. */
+	font = g->state.font;
+	if (font == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
+	/* Need to get the height of a line. */
+	lineHeight = -1;
+	if (sjme_error_is(error = font->api->metricPixelHeight(font,
+		&lineHeight)) || lineHeight < 0)
+		goto fail_fontHeight;
+	
+	/* Need the font baseline. */
+	baseline = 0;
+	if (sjme_error_is(error = font->api->metricPixelBaseline(
+		font, &baseline)))
+		goto fail_fontBaseline;
+	
+	/* Get sequence length for further checking. */
+	seqLen = -1;
+	if (sjme_error_is(error = sjme_charSeq_length(s,
+		&seqLen)) || seqLen < 0)
+		goto fail_seqLen;
+	
+	/* Out of bounds? */
+	if ((o + l) > seqLen)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Determine visual size of this block of text. */
+	tw = -1;
+	if (sjme_error_is(error = font->api->stringWidth(font,
+		s, o, l, &tw)) || tw < 0)
+		goto fail_blockDim;
+	
+	/* Determine anchor point of this block of text. */
+	dx = x;
+	dy = y;
+	if (anchor != 0 && sjme_error_is(error = sjme_scritchui_core_anchor(
+		anchor & SJME_SCRITCHUI_ANCHOR_TEXT_MASK, x, y,
+		tw, lineHeight, baseline, &dx, &dy)))
+		goto fail_anchor;
+	
+	/* Base X is the initial starting coordinate. */
+	bx = dx;
 
-fail_any:
-	if (text != NULL)
-		sjme_scritchui_textDeleteStatic(text);
-	text = NULL;
+	/* Draw each character in the string. */
+	for (at = 0; at < l; at++)
+	{
+		/* Get the next character to render. */
+		c = 0;
+		if (sjme_error_is(error = sjme_charSeq_charAt(
+			s, o + at, &c)))
+			goto fail_charAt;
+		
+		/* Reset to start of line or next line? */
+		if (c == '\r' || c == '\n')
+		{
+			/* Go to next line? */
+			if (c == '\n')
+				dy += lineHeight;
+			
+			/* Reset to line base. */
+			dx = bx;
+			continue;
+		}
+		
+		/* Render character, note always at top+left anchor. */
+		if (sjme_error_is(error = g->api->drawChar(g, c, dx, dy,
+			0)))
+			goto fail_drawChar;
+		
+		/* Move right. */
+		cw = -1;
+		if (sjme_error_is(error = font->api->pixelCharWidth(font,
+			c, &cw)) || cw < 0)
+			goto fail_charWidth;
+	}
 	
+	/* Success! */
+	return SJME_ERROR_NONE;
+
+fail_charWidth:
+fail_drawChar:
+fail_charAt:
+fail_anchor:
+fail_blockDim:
+fail_seqLen:
+fail_fontBaseline:
+fail_fontHeight:
 	return sjme_error_default(error);
 }
 
@@ -472,6 +617,7 @@ static sjme_errorCode sjme_scritchui_core_pencilTranslate(
 static const sjme_scritchui_pencilFunctions sjme_scritchui_core_pencil =
 {
 	.copyArea = sjme_scritchui_core_pencilCopyArea,
+	.drawChar = sjme_scritchui_core_pencilDrawChar,
 	.drawChars = sjme_scritchui_core_pencilDrawChars,
 	.drawHoriz = sjme_scritchui_core_pencilDrawHoriz,
 	.drawLine = sjme_scritchui_core_pencilDrawLine,

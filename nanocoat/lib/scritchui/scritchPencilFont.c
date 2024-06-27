@@ -185,6 +185,17 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelDescent(
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
+static sjme_errorCode sjme_scritchui_fontMetricPixelHeight(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrOutNotNull sjme_jint* outHeight)
+{
+	if (inFont == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
 static sjme_errorCode sjme_scritchui_fontMetricPixelLeading(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outLeading)
@@ -287,6 +298,23 @@ static sjme_errorCode sjme_scritchui_fontRenderChar(
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
+static sjme_errorCode sjme_scritchui_fontStringWidth(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNotNull const sjme_charSeq* s,
+	sjme_attrInPositive sjme_jint o,
+	sjme_attrInPositive sjme_jint l,
+	sjme_attrOutNotNull sjme_jint* outWidth)
+{
+	if (inFont == NULL || s == NULL || outWidth == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	if (o < 0 || l < 0 || (o + l) < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
 /** Functions for basic font support. */
 static const sjme_scritchui_pencilFontFunctions sjme_scritchui_fontFunctions =
 {
@@ -299,12 +327,14 @@ static const sjme_scritchui_pencilFontFunctions sjme_scritchui_fontFunctions =
 	.metricPixelAscent = sjme_scritchui_fontMetricPixelAscent,
 	.metricPixelBaseline = sjme_scritchui_fontMetricPixelBaseline,
 	.metricPixelDescent = sjme_scritchui_fontMetricPixelDescent,
+	.metricPixelHeight = sjme_scritchui_fontMetricPixelHeight,
 	.metricPixelLeading = sjme_scritchui_fontMetricPixelLeading,
 	.metricPixelSize = sjme_scritchui_fontMetricPixelSize,
 	.pixelCharHeight = sjme_scritchui_fontPixelCharHeight,
 	.pixelCharWidth = sjme_scritchui_fontPixelCharWidth,
 	.renderBitmap = sjme_scritchui_fontRenderBitmap,
 	.renderChar = sjme_scritchui_fontRenderChar,
+	.stringWidth = sjme_scritchui_fontStringWidth,
 };
 
 sjme_errorCode sjme_scritchui_core_fontDerive(
@@ -330,7 +360,7 @@ sjme_errorCode sjme_scritchui_core_fontDerive(
 	/* Get old font properties. */
 	wasStyle = 0;
 	wasPixelSize = 0;
-	if (sjme_error_is( error = inFont->api->metricFontStyle(inFont,
+	if (sjme_error_is(error = inFont->api->metricFontStyle(inFont,
 			&wasStyle)) ||
 		sjme_error_is(error = inFont->api->metricPixelSize(inFont,
 			&wasPixelSize)))
@@ -348,7 +378,7 @@ sjme_errorCode sjme_scritchui_core_fontDerive(
 		inPixelSize, outDerived);
 }
 
-sjme_errorCode sjme_scritchui_newPencilFontInit(
+sjme_errorCode sjme_scritchui_newPencilFontStatic(
 	sjme_scritchui_pencilFont inOutFont)
 {
 	if (inOutFont == NULL)

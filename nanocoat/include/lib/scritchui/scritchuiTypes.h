@@ -239,7 +239,7 @@ struct sjme_scritchui_pencilFontBase
 	const sjme_scritchui_pencilFontFunctions* api;
 	
 	/** Internal implementation. */
-	const sjme_scritchui_pencilFontFunctions* impl;
+	const sjme_scritchui_pencilFontImplFunctions* impl;
 	
 	/** Font cache details. */
 	struct

@@ -155,6 +155,18 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricPixelBaselineFunc)(
 	sjme_attrOutNotNull sjme_jint* outBaseline);
 
 /**
+ * Returns the height of the font.
+ *
+ * @param inFont The font to check.
+ * @param outHeight The height of the font in pixels.
+ * @return Any resultant error, if any.
+ * @since 2024/06/27
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricPixelHeightFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrOutNotNull sjme_jint* outHeight);
+
+/**
  * Returns the descent of the font.
  *
  * @param inFont The font to check.
@@ -271,6 +283,24 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontRenderCharFunc)(
 	sjme_attrOutNullable sjme_jint* nextXPos,
 	sjme_attrOutNullable sjme_jint* nextYPos);
 
+/**
+ * Calculates the width of the given string.
+ * 
+ * @param inFont The font to calculate for.
+ * @param s The input character sequence.
+ * @param o The offset into the sequence.
+ * @param l The length of the sequence.
+ * @param outWidth The resultant pixel width.
+ * @return Any resultant error, if any.
+ * @since 2024/06/27
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilFontStringWidthFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNotNull const sjme_charSeq* s,
+	sjme_attrInPositive sjme_jint o,
+	sjme_attrInPositive sjme_jint l,
+	sjme_attrOutNotNull sjme_jint* outWidth);
+
 /** Quick definition for functions. */
 #define SJME_SCRITCHUI_QUICK_PENCIL(what, lWhat) \
 	SJME_TOKEN_PASTE3(sjme_scritchui_pencilFont, what, Func) lWhat
@@ -281,6 +311,65 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontRenderCharFunc)(
  * @since 2024/05/17
  */
 typedef struct sjme_scritchui_pencilFontFunctions
+{
+	/** Checks font equality. */
+	SJME_SCRITCHUI_QUICK_PENCIL(Equals, equals);
+	
+	/** Returns the direction of the character. */
+	SJME_SCRITCHUI_QUICK_PENCIL(MetricCharDirection, metricCharDirection);
+	
+	/** Checks the validity of a glyph. */
+	SJME_SCRITCHUI_QUICK_PENCIL(MetricCharValid, metricCharValid);
+	
+	/** Returns the face of the font. */
+	SJME_SCRITCHUI_QUICK_PENCIL(MetricFontFace, metricFontFace);
+	
+	/** Returns the name of the font. */
+	SJME_SCRITCHUI_QUICK_PENCIL(MetricFontName, metricFontName);
+	
+	/** Returns the style of the font. */
+	SJME_SCRITCHUI_QUICK_PENCIL(MetricFontStyle, metricFontStyle);
+	
+	/** Returns the ascent of the font. */
+	SJME_SCRITCHUI_QUICK_PENCIL(MetricPixelAscent, metricPixelAscent);
+	
+	/** Returns the baseline of the font. */
+	SJME_SCRITCHUI_QUICK_PENCIL(MetricPixelBaseline, metricPixelBaseline);
+	
+	/** Returns the descent of the font. */
+	SJME_SCRITCHUI_QUICK_PENCIL(MetricPixelDescent, metricPixelDescent);
+	
+	/** Returns the height of the font. */
+	SJME_SCRITCHUI_QUICK_PENCIL(MetricPixelHeight, metricPixelHeight);
+	
+	/** Returns the leading of the font. */
+	SJME_SCRITCHUI_QUICK_PENCIL(MetricPixelLeading, metricPixelLeading);
+	
+	/** Returns the pixel size of the font. */
+	SJME_SCRITCHUI_QUICK_PENCIL(MetricPixelSize, metricPixelSize);
+	
+	/** Returns the height of the font character. */
+	SJME_SCRITCHUI_QUICK_PENCIL(PixelCharHeight, pixelCharHeight);
+	
+	/** Returns the width of the font character. */
+	SJME_SCRITCHUI_QUICK_PENCIL(PixelCharWidth, pixelCharWidth);
+	
+	/** Renders the font character to a bitmap. */
+	SJME_SCRITCHUI_QUICK_PENCIL(RenderBitmap, renderBitmap);
+	
+	/** Renders the font character to the given pencil. */
+	SJME_SCRITCHUI_QUICK_PENCIL(RenderChar, renderChar);
+	
+	/** Calculates the length of the given string. */
+	SJME_SCRITCHUI_QUICK_PENCIL(StringWidth, stringWidth);
+} sjme_scritchui_pencilFontFunctions;
+
+/**
+ * Functions to native implementation access pencil fonts.
+ * 
+ * @since 2024/06/27
+ */
+typedef struct sjme_scritchui_pencilFontImplFunctions
 {
 	/** Checks font equality. */
 	SJME_SCRITCHUI_QUICK_PENCIL(Equals, equals);
@@ -326,7 +415,7 @@ typedef struct sjme_scritchui_pencilFontFunctions
 	
 	/** Renders the font character to the given pencil. */
 	SJME_SCRITCHUI_QUICK_PENCIL(RenderChar, renderChar);
-} sjme_scritchui_pencilFontFunctions;
+} sjme_scritchui_pencilFontImplFunctions;
 
 #undef SJME_SCRITCHUI_QUICK_PENCIL
 
@@ -349,7 +438,7 @@ struct sjme_scritchui_pencilFontLink
  * @return Any resultant error, if any.
  * @since 2024/06/12
  */
-sjme_errorCode sjme_scritchui_newPencilFontInit(
+sjme_errorCode sjme_scritchui_newPencilFontStatic(
 	sjme_scritchui_pencilFont inOutFont);
 
 /*--------------------------------------------------------------------------*/

@@ -99,9 +99,8 @@ struct sjme_charSeq
 	sjme_pointer context;
 	
 	/** The API for accessing the character sequence. */
-	const sjme_charSeq_functions* api;
+	const sjme_charSeq_functions* impl;
 };
-
 
 /**
  * Returns the character at the given index.

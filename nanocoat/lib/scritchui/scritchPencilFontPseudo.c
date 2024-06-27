@@ -303,7 +303,7 @@ static sjme_errorCode sjme_scritchui_pseudoRenderChar(
 }
 
 /** Functions for basic font support. */
-static const sjme_scritchui_pencilFontFunctions
+static const sjme_scritchui_pencilFontImplFunctions
 	sjme_scritchui_pseudoFontFunctions =
 {
 	.equals = sjme_scritchui_pseudoEquals,
@@ -359,7 +359,7 @@ sjme_errorCode sjme_scritchui_core_fontPseudo(
 	result->cache.pixelSize = inPixelSize;
 	
 	/* Initialize base font. */
-	if (sjme_error_is(error = sjme_scritchui_newPencilFontInit(
+	if (sjme_error_is(error = sjme_scritchui_newPencilFontStatic(
 		result)))
 		goto fail_initBase;
 	

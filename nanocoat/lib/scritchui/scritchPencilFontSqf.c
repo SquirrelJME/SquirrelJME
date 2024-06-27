@@ -95,7 +95,8 @@ static sjme_errorCode sjme_scritchui_sqfMetricPixelSize(
 }
 
 /** Functions for native SQF support. */
-static const sjme_scritchui_pencilFontFunctions sjme_scritchui_sqfFunctions =
+static const sjme_scritchui_pencilFontImplFunctions
+	sjme_scritchui_sqfFunctions =
 {
 	.equals = NULL,
 	.metricCharDirection = NULL,
@@ -168,7 +169,7 @@ sjme_errorCode sjme_scritchui_newPencilFontSqfStatic(
 	init.context = (sjme_pointer)inSqfCodepage;
 	
 	/* Perform default initialization. */
-	if (sjme_error_is(error = sjme_scritchui_newPencilFontInit(
+	if (sjme_error_is(error = sjme_scritchui_newPencilFontStatic(
 		&init)))
 		return sjme_error_default(error);
 	

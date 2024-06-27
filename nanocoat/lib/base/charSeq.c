@@ -23,11 +23,11 @@ sjme_errorCode sjme_charSeq_charAt(
 	if (inIndex < 0)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
-	if (inSeq->api->charAt == NULL)
+	if (inSeq->impl->charAt == NULL)
 		return SJME_ERROR_NOT_IMPLEMENTED;
 	
 	/* Forward. */
-	return inSeq->api->charAt(inSeq, inIndex, outChar);
+	return inSeq->impl->charAt(inSeq, inIndex, outChar);
 }
 
 sjme_errorCode sjme_charSeq_deleteStatic(
@@ -39,12 +39,12 @@ sjme_errorCode sjme_charSeq_deleteStatic(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Already deleted? */
-	if (inOutSeq->api == NULL)
+	if (inOutSeq->impl == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* If there is a deletion function, then call it. */
-	if (inOutSeq->api->delete != NULL)
-		if (sjme_error_is(error = inOutSeq->api->delete(inOutSeq)))
+	if (inOutSeq->impl->delete != NULL)
+		if (sjme_error_is(error = inOutSeq->impl->delete(inOutSeq)))
 			return sjme_error_default(error);
 	
 	/* Clear out. */
@@ -59,11 +59,11 @@ sjme_errorCode sjme_charSeq_length(
 	if (inSeq == NULL || outLen == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	if (inSeq->api->length == NULL)
+	if (inSeq->impl->length == NULL)
 		return SJME_ERROR_NOT_IMPLEMENTED;
 	
 	/* Forward. */
-	return inSeq->api->length(inSeq, outLen);
+	return inSeq->impl->length(inSeq, outLen);
 }
 	
 sjme_errorCode sjme_charSeq_newStatic(
@@ -79,7 +79,7 @@ sjme_errorCode sjme_charSeq_newStatic(
 	memset(inOutSeq, 0, sizeof(*inOutSeq));
 	
 	/* Fill in. */
-	inOutSeq->api = inFunctions;
+	inOutSeq->impl = inFunctions;
 	inOutSeq->context = inOptContext;
 	
 	/* Copy front end data? */

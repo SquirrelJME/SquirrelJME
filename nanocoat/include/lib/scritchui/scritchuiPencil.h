@@ -31,6 +31,41 @@ extern "C" {
 /*--------------------------------------------------------------------------*/
 
 /**
+ * The flags indicating the anchor point when rendering.
+ * 
+ * @since 2024/06/27
+ */
+typedef enum sjme_scritchui_pencilAnchor
+{
+	/** Horizontal center. */
+	SJME_SCRITCHUI_ANCHOR_HCENTER = 1,
+	
+	/** Vertical center. */
+	SJME_SCRITCHUI_ANCHOR_VCENTER = 2,
+	
+	/** Left. */
+	SJME_SCRITCHUI_ANCHOR_LEFT = 4,
+	
+	/** Right. */
+	SJME_SCRITCHUI_ANCHOR_RIGHT = 8,
+	
+	/** Top. */
+	SJME_SCRITCHUI_ANCHOR_TOP = 16,
+	
+	/** Bottom. */
+	SJME_SCRITCHUI_ANCHOR_BOTTOM = 32,
+	
+	/** Baseline. */
+	SJME_SCRITCHUI_ANCHOR_BASELINE = 64,
+} sjme_scritchui_pencilAnchor;
+
+/** Mask for anchor points which are valid for text rendering. */
+#define SJME_SCRITCHUI_ANCHOR_TEXT_MASK \
+	((SJME_SCRITCHUI_ANCHOR_HCENTER | SJME_SCRITCHUI_ANCHOR_LEFT | \
+	SJME_SCRITCHUI_ANCHOR_RIGHT | SJME_SCRITCHUI_ANCHOR_TOP | \
+	SJME_SCRITCHUI_ANCHOR_BOTTOM | SJME_SCRITCHUI_ANCHOR_BASELINE))
+
+/**
  * The blending mode for a pencil.
  * 
  * @since 2024/05/06
@@ -96,6 +131,25 @@ typedef sjme_errorCode (*sjme_scritchui_pencilCopyAreaFunc)(
 	sjme_attrInPositive sjme_jint h,
 	sjme_attrInValue sjme_jint dx,
 	sjme_attrInValue sjme_jint dy,
+	sjme_attrInValue sjme_jint anchor);
+
+/**
+ * Draws the given character.
+ *
+ * @param g The hardware graphics to draw with.
+ * @param c The codepoint to draw.
+ * @param x The X position.
+ * @param y The Y position.
+ * @param anchor The anchor point.
+ * @return An error if the graphics is not valid, does not support
+ * the given operation, or if the anchor point is not valid.
+ * @since 2024/06/27
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilDrawCharFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInPositive sjme_jint c,
+	sjme_attrInValue sjme_jint x,
+	sjme_attrInValue sjme_jint y,
 	sjme_attrInValue sjme_jint anchor);
 
 /**
@@ -434,6 +488,9 @@ typedef struct sjme_scritchui_pencilFunctions
 {
 	/** @c CopyArea . */
 	SJME_SCRITCHUI_QUICK_PENCIL(CopyArea, copyArea);
+	
+	/** @c DrawChar . */
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawChar, drawChar);
 	
 	/** @c DrawChars . */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawChars, drawChars);
