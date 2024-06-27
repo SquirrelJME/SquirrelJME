@@ -266,7 +266,14 @@ static sjme_errorCode sjme_scritchui_pseudoRenderBitmap(
 	sjme_attrOutNullable sjme_jint* outOffX,
 	sjme_attrOutNullable sjme_jint* outOffY)
 {
+	sjme_errorCode error;
 	sjme_scritchui_pencilFont wrapped;
+	sjme_jint origOffX, origOffY, scanLen, area, cw, ch;
+	sjme_jubyte* src;
+	sjme_jubyte* sp;
+	sjme_jubyte* dp;
+	sjme_jint dy, th, minScanLen;
+	sjme_fixed sy, ifrac;
 	
 	if (inFont == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -276,9 +283,71 @@ static sjme_errorCode sjme_scritchui_pseudoRenderBitmap(
 	if (wrapped == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
+	/* Need character width. */
+	cw = 0;
+	if (sjme_error_is(error = wrapped->api->pixelCharWidth(
+		wrapped, inCodepoint, &cw)))
+		return sjme_error_default(error);
+		
+	/* And the pixel height, since this is a bitmap font. */
+	ch = 0;
+	if (sjme_error_is(error = wrapped->api->metricPixelSize(
+		wrapped, &ch)))
+		return sjme_error_default(error);
+	
+	/* Determine scanline length for each bitmap row. */
+	scanLen = sjme_scritchui_pencilFontScanLen(cw);
+	
+	/* Allocate source bitmap. */
+	area = sizeof(*src) * (scanLen * ch);
+	src = sjme_alloca(area);
+	if (src == NULL)
+		return SJME_ERROR_OUT_OF_MEMORY;
+	
+	/* Initialize. */
+	memset(src, 0, area);
+	
+	/* Get original glyph bitmap. */
+	origOffX = 0;
+	origOffY = 0;
+	if (sjme_error_is(error = wrapped->api->renderBitmap(wrapped,
+		inCodepoint,
+		src, 0, scanLen,
+		ch, &origOffX, &origOffY)))
+		return sjme_error_default(error);
+	
+	/* Target desired pixel size. */
+	th = inFont->cache.pixelSize;
+	
+	/* We do not want to write over other rows. */
+	if (bufScanLen < scanLen)
+		minScanLen = bufScanLen;
+	else
+		minScanLen = scanLen;
+	
+	/* Copy rows, for every change in dy we grab from the source. */
+	ifrac = inFont->cache.ifraction;
+	for (dy = 0, sy = 0; dy < th && dy < bufHeight; dy++, sy += ifrac)
+	{
+		/* Determine where to move and copy from. */
+		dp = &buf[bufOff + (dy * bufScanLen)];
+		sp = &src[sjme_fixed_int(sy) * scanLen];
+		
+		/* Copy entire scanline over. */
+		memmove(dp, sp, minScanLen);
+	}
+	
+	/* X-axis is unchanged. */
+	if (outOffX)
+		*outOffX = origOffX;
+	
+	/* Translate height, so it actually offsets correctly! */
+	if (outOffY)
+		*outOffY = sjme_fixed_int(sjme_fixed_mul(
+			sjme_fixed_hi(origOffY), inFont->cache.fraction));
+	
+	/* Success! */
 	return SJME_ERROR_NONE;
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
 /** Functions for basic font support. */
@@ -309,7 +378,7 @@ sjme_errorCode sjme_scritchui_core_fontPseudo(
 	sjme_scritchui_pencilFont result;
 	sjme_errorCode error;
 	sjme_jint origPixelSize;
-	sjme_fixed fraction;
+	sjme_fixed fraction, ifraction;
 	
 	if (inState == NULL || inFont == NULL || outDerived == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -332,6 +401,7 @@ sjme_errorCode sjme_scritchui_core_fontPseudo(
 	
 	/* Calculate the font fraction. */
 	fraction = sjme_fixed_fraction(inPixelSize, origPixelSize);
+	ifraction = sjme_fixed_fraction(origPixelSize, inPixelSize);
 	
 	/* Allocate. */
 	result = NULL;
@@ -345,6 +415,7 @@ sjme_errorCode sjme_scritchui_core_fontPseudo(
 	result->cache.style = inStyle;
 	result->cache.pixelSize = inPixelSize;
 	result->cache.fraction = fraction;
+	result->cache.ifraction = ifraction;
 	
 	/* Initialize base font. */
 	if (sjme_error_is(error = sjme_scritchui_newPencilFontStatic(

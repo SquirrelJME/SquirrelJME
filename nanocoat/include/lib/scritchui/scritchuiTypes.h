@@ -273,6 +273,9 @@ struct sjme_scritchui_pencilFontBase
 		
 		/** Font fraction, for pseudo fonts. */
 		sjme_fixed fraction;
+		
+		/** Inverted font fraction, for pseudo fonts. */
+		sjme_fixed ifraction;
 	} cache;
 };
 
