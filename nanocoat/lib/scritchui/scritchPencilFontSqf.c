@@ -75,6 +75,84 @@ static sjme_errorCode sjme_scritchui_sqfMetricFontName(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_scritchui_sqfMetricPixelAscent(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInValue sjme_jboolean isMax,
+	sjme_attrOutNotNull sjme_jint* outAscent)
+{
+	const sjme_scritchui_sqfCodepage* sqf;
+	
+	if (inFont == NULL || outAscent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover SQF. */
+	sqf = inFont->context;
+	if (sqf == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+		
+	/* Give the value. */
+	*outAscent = sqf->codepages[0]->ascent;
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_scritchui_sqfMetricPixelBaseline(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrOutNotNull sjme_jint* outBaseline)
+{
+	const sjme_scritchui_sqfCodepage* sqf;
+	
+	if (inFont == NULL || outBaseline == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover SQF. */
+	sqf = inFont->context;
+	if (sqf == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+		
+	/* Give the value. */
+	*outBaseline = sqf->codepages[0]->bby;
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_scritchui_sqfMetricPixelDescent(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInValue sjme_jboolean isMax,
+	sjme_attrOutNotNull sjme_jint* outDescent)
+{
+	const sjme_scritchui_sqfCodepage* sqf;
+	
+	if (inFont == NULL || outDescent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover SQF. */
+	sqf = inFont->context;
+	if (sqf == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+		
+	/* Give the value. */
+	*outDescent = sqf->codepages[0]->descent;
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_scritchui_sqfMetricPixelLeading(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outLeading)
+{
+	const sjme_scritchui_sqfCodepage* sqf;
+	
+	if (inFont == NULL || outLeading == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover SQF. */
+	sqf = inFont->context;
+	if (sqf == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+		
+	/* Give the value. */
+	*outLeading = sqf->codepages[0]->bbx;
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_scritchui_sqfMetricPixelSize(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outSize)
@@ -104,10 +182,10 @@ static const sjme_scritchui_pencilFontImplFunctions
 	.metricFontFace = sjme_scritchui_sqfMetricFontFace,
 	.metricFontName = sjme_scritchui_sqfMetricFontName,
 	.metricFontStyle = NULL,
-	.metricPixelAscent = NULL,
-	.metricPixelBaseline = NULL,
-	.metricPixelDescent = NULL,
-	.metricPixelLeading = NULL,
+	.metricPixelAscent = sjme_scritchui_sqfMetricPixelAscent,
+	.metricPixelBaseline = sjme_scritchui_sqfMetricPixelBaseline,
+	.metricPixelDescent = sjme_scritchui_sqfMetricPixelDescent,
+	.metricPixelLeading = sjme_scritchui_sqfMetricPixelLeading,
 	.metricPixelSize = sjme_scritchui_sqfMetricPixelSize,
 	.pixelCharHeight = NULL,
 	.pixelCharWidth = NULL,

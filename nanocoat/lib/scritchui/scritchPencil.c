@@ -359,13 +359,21 @@ static sjme_errorCode sjme_scritchui_core_pencilDrawSubstring(
 	return SJME_ERROR_NONE;
 
 fail_charWidth:
+	sjme_message("H");
 fail_drawChar:
+	sjme_message("G");
 fail_charAt:
+	sjme_message("F");
 fail_anchor:
+	sjme_message("E");
 fail_blockDim:
+	sjme_message("D");
 fail_seqLen:
+	sjme_message("C");
 fail_fontBaseline:
+	sjme_message("B");
 fail_fontHeight:
+	sjme_message("A");
 	return sjme_error_default(error);
 }
 

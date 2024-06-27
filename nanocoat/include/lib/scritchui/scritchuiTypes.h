@@ -258,6 +258,18 @@ struct sjme_scritchui_pencilFontBase
 		
 		/** The height of the font. */
 		sjme_jint height;
+		
+		/** The baseline of the font. */
+		sjme_jint baseline;
+		
+		/** The leading of the font. */
+		sjme_jint leading;
+		
+		/** The ascent of the font. */
+		sjme_jint ascent[2];
+		
+		/** The descent of the font. */
+		sjme_jint descent[2];
 	} cache;
 };
 

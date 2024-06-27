@@ -155,22 +155,66 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelAscent(
 	sjme_attrInValue sjme_jboolean isMax,
 	sjme_attrOutNotNull sjme_jint* outAscent)
 {
+	sjme_errorCode error;
+	sjme_jint result;
+	
 	if (inFont == NULL || outAscent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Cached? */
+	if (inFont->cache.ascent[!!isMax] != 0)
+	{
+		*outAscent = inFont->cache.ascent[!!isMax];
+		return SJME_ERROR_NONE;
+	}
+	
+	/* Not implemented? */
+	if (inFont->impl->metricPixelAscent == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Load into cache. */
+	result = 0;
+	if (sjme_error_is(error = inFont->impl->metricPixelAscent(inFont,
+		isMax, &result)))
+		return sjme_error_default(error);
+	
+	/* Cache and use it. */
+	inFont->cache.ascent[!!isMax] = result;
+	*outAscent = result;
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_scritchui_fontMetricPixelBaseline(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
 	sjme_attrOutNotNull sjme_jint* outBaseline)
 {
+	sjme_errorCode error;
+	sjme_jint result;
+	
 	if (inFont == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Cached? */
+	if (inFont->cache.baseline != 0)
+	{
+		*outBaseline = inFont->cache.baseline;
+		return SJME_ERROR_NONE;
+	}
+	
+	/* Not implemented? */
+	if (inFont->impl->metricPixelBaseline == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Load into cache. */
+	result = 0;
+	if (sjme_error_is(error = inFont->impl->metricPixelBaseline(inFont,
+		&result)))
+		return sjme_error_default(error);
+	
+	/* Cache and use it. */
+	inFont->cache.baseline = result;
+	*outBaseline = result;
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_scritchui_fontMetricPixelDescent(
@@ -178,11 +222,33 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelDescent(
 	sjme_attrInValue sjme_jboolean isMax,
 	sjme_attrOutNotNull sjme_jint* outDescent)
 {
+	sjme_errorCode error;
+	sjme_jint result;
+	
 	if (inFont == NULL || outDescent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Cached? */
+	if (inFont->cache.descent[!!isMax] != 0)
+	{
+		*outDescent = inFont->cache.descent[!!isMax];
+		return SJME_ERROR_NONE;
+	}
+	
+	/* Not implemented? */
+	if (inFont->impl->metricPixelDescent == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Load into cache. */
+	result = 0;
+	if (sjme_error_is(error = inFont->impl->metricPixelDescent(inFont,
+		isMax, &result)))
+		return sjme_error_default(error);
+	
+	/* Cache and use it. */
+	inFont->cache.descent[!!isMax] = result;
+	*outDescent = result;
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_scritchui_fontMetricPixelHeight(
@@ -204,15 +270,20 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelHeight(
 	
 	/* Get all of these parameters. */
 	leading = -1;
-	ascent = -1;
-	descent = -1;
 	if (sjme_error_is(error = inFont->api->metricPixelLeading(inFont,
-			&leading)) ||
-		sjme_error_is(error = inFont->api->metricPixelAscent(inFont,
-			SJME_JNI_FALSE, &ascent)) ||
-		sjme_error_is(error = inFont->api->metricPixelDescent(inFont,
-			SJME_JNI_FALSE, &descent)))
+		&leading)))
 		return sjme_error_default(error);
+		
+	ascent = -1;
+	if (sjme_error_is(error = inFont->api->metricPixelAscent(inFont,
+		SJME_JNI_FALSE, &ascent)))
+		return sjme_error_default(error);
+		
+	descent = -1;
+	if (sjme_error_is(error = inFont->api->metricPixelDescent(inFont,
+		SJME_JNI_FALSE, &descent)))
+		return sjme_error_default(error);
+	sjme_message("!");
 	
 	/* Calculate. */
 	inFont->cache.height = leading + ascent + descent; 
@@ -226,11 +297,33 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelLeading(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outLeading)
 {
+	sjme_errorCode error;
+	sjme_jint result;
+	
 	if (inFont == NULL || outLeading == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Cached? */
+	if (inFont->cache.leading != 0)
+	{
+		*outLeading = inFont->cache.leading;
+		return SJME_ERROR_NONE;
+	}
+	
+	/* Not implemented? */
+	if (inFont->impl->metricPixelLeading == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Load into cache. */
+	result = 0;
+	if (sjme_error_is(error = inFont->impl->metricPixelLeading(inFont,
+		&result)))
+		return sjme_error_default(error);
+	
+	/* Cache and use it. */
+	inFont->cache.leading = result;
+	*outLeading = result;
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_scritchui_fontMetricPixelSize(
@@ -255,9 +348,9 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelSize(
 		return SJME_ERROR_NOT_IMPLEMENTED;
 	
 	/* Load into cache. */
-	result = 0;
+	result = -1;
 	if (sjme_error_is(error = inFont->impl->metricPixelSize(inFont,
-		&result)) || result == 0)
+		&result)) || result <= 0)
 		return sjme_error_default(error);
 	
 	/* Cache and use it. */
