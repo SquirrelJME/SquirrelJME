@@ -34,7 +34,7 @@ static sjme_errorCode sjme_scritchui_fontMetricCharDirection(
 	sjme_attrInPositive sjme_jint inCodepoint,
 	sjme_attrOutNotNull sjme_attrInRange(-1, 1) sjme_jint* outDirection)
 {
-	if (inFont == NULL)
+	if (inFont == NULL || outDirection == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	sjme_todo("Impl?");
@@ -46,7 +46,7 @@ static sjme_errorCode sjme_scritchui_fontMetricCharValid(
 	sjme_attrInPositive sjme_jint inCodepoint,
 	sjme_attrOutNotNull sjme_jboolean* outValid)
 {
-	if (inFont == NULL)
+	if (inFont == NULL || outValid == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	sjme_todo("Impl?");
@@ -120,7 +120,7 @@ static sjme_errorCode sjme_scritchui_fontMetricFontStyle(
 	sjme_errorCode error;
 	sjme_scritchui_pencilFontStyle result;
 	
-	if (inFont == NULL)
+	if (inFont == NULL || outStyle == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Cached? */
@@ -155,7 +155,7 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelAscent(
 	sjme_attrInValue sjme_jboolean isMax,
 	sjme_attrOutNotNull sjme_jint* outAscent)
 {
-	if (inFont == NULL)
+	if (inFont == NULL || outAscent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	sjme_todo("Impl?");
@@ -178,7 +178,7 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelDescent(
 	sjme_attrInValue sjme_jboolean isMax,
 	sjme_attrOutNotNull sjme_jint* outDescent)
 {
-	if (inFont == NULL)
+	if (inFont == NULL || outDescent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	sjme_todo("Impl?");
@@ -189,18 +189,44 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelHeight(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
 	sjme_attrOutNotNull sjme_jint* outHeight)
 {
-	if (inFont == NULL)
+	sjme_errorCode error;
+	sjme_jint leading, ascent, descent;
+	
+	if (inFont == NULL || outHeight == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Cached? */
+	if (inFont->cache.height != 0)
+	{
+		*outHeight = inFont->cache.height;
+		return SJME_ERROR_NONE;
+	}
+	
+	/* Get all of these parameters. */
+	leading = -1;
+	ascent = -1;
+	descent = -1;
+	if (sjme_error_is(error = inFont->api->metricPixelLeading(inFont,
+			&leading)) ||
+		sjme_error_is(error = inFont->api->metricPixelAscent(inFont,
+			SJME_JNI_FALSE, &ascent)) ||
+		sjme_error_is(error = inFont->api->metricPixelDescent(inFont,
+			SJME_JNI_FALSE, &descent)))
+		return sjme_error_default(error);
+	
+	/* Calculate. */
+	inFont->cache.height = leading + ascent + descent; 
+	
+	/* Success! */
+	*outHeight = inFont->cache.height;
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_scritchui_fontMetricPixelLeading(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outLeading)
 {
-	if (inFont == NULL)
+	if (inFont == NULL || outLeading == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	sjme_todo("Impl?");
@@ -214,7 +240,7 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelSize(
 	sjme_errorCode error;
 	sjme_jint result;
 	
-	if (inFont == NULL)
+	if (inFont == NULL || outSize == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Cached? */
@@ -245,7 +271,7 @@ static sjme_errorCode sjme_scritchui_fontPixelCharHeight(
 	sjme_attrInPositive sjme_jint inCodepoint,
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outHeight)
 {
-	if (inFont == NULL)
+	if (inFont == NULL || outHeight == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	sjme_todo("Impl?");
@@ -257,7 +283,7 @@ static sjme_errorCode sjme_scritchui_fontPixelCharWidth(
 	sjme_attrInPositive sjme_jint inCodepoint,
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outWidth)
 {
-	if (inFont == NULL)
+	if (inFont == NULL || outWidth == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	sjme_todo("Impl?");

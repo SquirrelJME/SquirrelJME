@@ -255,6 +255,9 @@ struct sjme_scritchui_pencilFontBase
 		
 		/** The pixel size of the font. */
 		sjme_jint pixelSize;
+		
+		/** The height of the font. */
+		sjme_jint height;
 	} cache;
 };
 
