@@ -189,18 +189,39 @@ static sjme_errorCode sjme_scritchui_core_pencilDrawRect(
 
 static sjme_errorCode sjme_scritchui_core_pencilDrawSubstring(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInNotNull sjme_lpcstr s,
+	sjme_attrInNotNull const sjme_charSeq* s,
 	sjme_attrInPositive sjme_jint o, 
 	sjme_attrInPositive sjme_jint l,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y,
 	sjme_attrInValue sjme_jint anchor)
 {
-	if (g == NULL)
+	struct sjme_scritchui_textBase textBase;
+	sjme_scritchui_text text;
+	sjme_errorCode error;
+	
+	if (g == NULL || s == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (o < 0 || l < 0 || (o + l) < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+		
+	/* Initialize text renderer. */
+	memset(&textBase, 0, sizeof(textBase));
+	text = &textBase;
+	if (sjme_error_is(error = sjme_scritchui_textNewStatic(
+		text)))
+		return sjme_error_default(error);
 	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
+
+fail_any:
+	if (text != NULL)
+		sjme_scritchui_textDeleteStatic(text);
+	text = NULL;
+	
+	return sjme_error_default(error);
 }
 
 static sjme_errorCode sjme_scritchui_core_pencilDrawTriangle(

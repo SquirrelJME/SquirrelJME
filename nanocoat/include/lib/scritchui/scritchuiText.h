@@ -29,6 +29,33 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
+/**
+ * Contains the state of the text renderer.
+ * 
+ * @since 2024/06/26
+ */
+typedef struct sjme_scritchui_textBase* sjme_scritchui_text;
+
+/**
+ * Destroys a static text instance.
+ * 
+ * @param inOutText The input and output text to destroy. 
+ * @return Any resultant error, if any.
+ * @since 2024/06/26
+ */
+sjme_errorCode sjme_scritchui_textDeleteStatic(
+	sjme_attrInOutNotNull sjme_scritchui_text inOutText);
+
+/**
+ * Initializes a new static text instance.
+ * 
+ * @param inOutText The input and output text to initialize. 
+ * @return Any resultant error, if any.
+ * @since 2024/06/26
+ */
+sjme_errorCode sjme_scritchui_textNewStatic(
+	sjme_attrInOutNotNull sjme_scritchui_text inOutText);
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

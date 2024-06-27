@@ -20,6 +20,7 @@
 #include "lib/scritchui/scritchuiImpl.h"
 #include "lib/scritchui/scritchuiPencil.h"
 #include "lib/scritchui/scritchuiPencilFont.h"
+#include "lib/scritchui/scritchuiText.h"
 #include "sjme/atomic.h"
 
 /* Anti-C++. */
@@ -255,6 +256,12 @@ struct sjme_scritchui_pencilFontBase
 		/** The pixel size of the font. */
 		sjme_jint pixelSize;
 	} cache;
+};
+
+struct sjme_scritchui_textBase
+{
+	/** Common data. */
+	sjme_scritchui_commonBase common;
 };
 
 /*--------------------------------------------------------------------------*/

@@ -8,3 +8,24 @@
 // -------------------------------------------------------------------------*/
 
 #include "lib/scritchui/scritchuiText.h"
+#include "sjme/debug.h"
+
+sjme_errorCode sjme_scritchui_textDeleteStatic(
+	sjme_attrInOutNotNull sjme_scritchui_text inOutText)
+{
+	if (inOutText == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+sjme_errorCode sjme_scritchui_textNewStatic(
+	sjme_attrInOutNotNull sjme_scritchui_text inOutText)
+{
+	if (inOutText == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}

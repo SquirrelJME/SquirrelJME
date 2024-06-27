@@ -17,6 +17,7 @@
 #define SQUIRRELJME_SCRITCHUIPENCIL_H
 
 #include "lib/scritchui/scritchui.h"
+#include "sjme/charSeq.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -209,7 +210,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilDrawRectFunc)(
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilDrawSubstringFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInNotNull sjme_lpcstr s,
+	sjme_attrInNotNull const sjme_charSeq* s,
 	sjme_attrInPositive sjme_jint o, 
 	sjme_attrInPositive sjme_jint l,
 	sjme_attrInValue sjme_jint x,

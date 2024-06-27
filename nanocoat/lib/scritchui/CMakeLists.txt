@@ -25,6 +25,7 @@ squirreljme_multilib_add_library(ScritchUICore
 	scritchPencilFontSqf.c
 	scritchScreen.c
 	scritchSerialize.c
+	scritchText.c
 	scritchWindow.c)
 
 # Include main headers

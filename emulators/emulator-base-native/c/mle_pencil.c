@@ -185,6 +185,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawSubstring)
 	jint x, jint y, jint anchor)
 {
 	sjme_scritchui_pencil p;
+	sjme_errorCode error;
 	
 	/* Recover. */
 	p = sjme_jni_recoverPencil(env, g);
@@ -195,6 +196,18 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawSubstring)
 	}
 	
 	sjme_todo("Impl?");
+	
+	/* Forward. */
+	if (sjme_error_is(error = p->api->drawSubstring(p,
+		NULL, o, l, x, y, anchor)))
+		goto fail_drawOp;
+	
+	sjme_todo("Impl?");
+	
+	return;
+	
+fail_drawOp:
+	sjme_jni_throwMLECallError(env, error);
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawXRGB32Region)
