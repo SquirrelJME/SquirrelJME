@@ -16,6 +16,43 @@
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/debug.h"
 
+static sjme_errorCode sjme_scritchui_validateChar(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInOutNotNull sjme_jint* inOutCodepoint)
+{
+	sjme_errorCode error;
+	sjme_jboolean isValid;
+	
+	if (inFont == NULL || inOutCodepoint == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Determine if this character is even valid. */
+	isValid = SJME_JNI_FALSE;
+	if (sjme_error_is(error = inFont->api->metricCharValid(inFont,
+		*inOutCodepoint, &isValid)))
+		return sjme_error_default(error);
+	
+	/* If it is not valid, then replace with the invalid character. */
+	if (!isValid)
+	{
+		/* Try zero first. */
+		*inOutCodepoint = 0;
+		
+		/* Check to see if zero is valid. */
+		isValid = SJME_JNI_FALSE;
+		if (sjme_error_is(error = inFont->api->metricCharValid(inFont,
+			*inOutCodepoint, &isValid)))
+			return sjme_error_default(error);
+		
+		/* If it is not, then likely the Unicode bad character is used. */
+		if (!isValid)
+			*inOutCodepoint = 0xFFFD;
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_jboolean sjme_scritchui_fontEquals(
 	sjme_attrInNullable sjme_scritchui_pencilFont a,
 	sjme_attrInNullable sjme_scritchui_pencilFont b)
@@ -376,11 +413,44 @@ static sjme_errorCode sjme_scritchui_fontPixelCharWidth(
 	sjme_attrInPositive sjme_jint inCodepoint,
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outWidth)
 {
+	sjme_errorCode error;
+	sjme_jint result;
+	
 	if (inFont == NULL || outWidth == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Not implemented? */
+	if (inFont->impl->pixelCharWidth == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Codepoints with no actual length. */
+	if (inCodepoint == '\r' || inCodepoint == '\n' ||
+		inCodepoint == '\v' || inCodepoint == '\f' ||
+		inCodepoint == 0x2060 || inCodepoint == 0xFEFF ||
+		inCodepoint == 0x200D || inCodepoint == 0x200C)
+	{
+		*outWidth = 0;
+		return SJME_ERROR_NONE;
+	}
+	
+	/* Treat tabs as spaces. */
+	if (inCodepoint == '\t')
+		inCodepoint = ' ';
+	
+	/* Validate character to use. */
+	if (sjme_error_is(error = sjme_scritchui_validateChar(inFont,
+		&inCodepoint)))
+		return sjme_error_default(error);
+	
+	/* Forward. */
+	result = -1;
+	if (sjme_error_is(error = inFont->impl->pixelCharWidth(inFont,
+		inCodepoint, &result)) || result < 0)
+		return sjme_error_default(error);
+	
+	/* Success! */
+	*outWidth = result;
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_scritchui_fontRenderBitmap(
