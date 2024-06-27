@@ -50,6 +50,7 @@ static gboolean sjme_scritchui_gtk2_eventExpose(
 	sjme_scritchui_pencilBase pencil;
 	sjme_jint w, h;
 	sjme_frontEnd frontEnd;
+	sjme_scritchui_pencilFont defaultFont;
 	
 	/* Restore component. */
 	inComponent = (sjme_scritchui_uiComponent)data;
@@ -82,12 +83,18 @@ static gboolean sjme_scritchui_gtk2_eventExpose(
 	frontEnd.wrapper = widget->window;
 	frontEnd.data = widget->style->fg_gc[widget->state];
 	
+	/* A default font is required. */
+	defaultFont = NULL;
+	if (sjme_error_is(inState->api->fontBuiltin(inState,
+		&defaultFont)) || defaultFont == NULL)
+		return TRUE;
+	
 	/* Setup pencil for drawing. */
 	memset(&pencil, 0, sizeof(pencil));
 	if (sjme_error_is(sjme_scritchui_pencilInitStatic(&pencil,
 		&sjme_scritchui_gtk2_pencilFunctions,
 		SJME_GFX_PIXEL_FORMAT_INT_RGB888,
-		w, h, &frontEnd)))
+		w, h, defaultFont, &frontEnd)))
 		return TRUE;
 	
 	/* Forward to callback. */

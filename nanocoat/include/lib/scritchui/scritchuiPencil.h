@@ -663,6 +663,7 @@ sjme_errorCode sjme_scritchui_pencilInitBuffer(
  * @param pf The pixel format used.
  * @param sw The surface width.
  * @param sh The surface height.
+ * @param defaultFont The default font to use.
  * @param copyFrontEnd Optional front end data to copy.
  * @return Any error code if applicable.
  * @since 2024/05/04
@@ -673,6 +674,7 @@ sjme_errorCode sjme_scritchui_pencilInitStatic(
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInPositiveNonZero sjme_jint sw,
 	sjme_attrInPositiveNonZero sjme_jint sh,
+	sjme_attrInNotNull sjme_scritchui_pencilFont defaultFont,
 	sjme_attrInNullable sjme_frontEnd* copyFrontEnd);
 
 typedef struct sjme_scritchui_pencilColor

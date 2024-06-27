@@ -638,8 +638,8 @@ static sjme_errorCode sjme_scritchui_core_pencilSetDefaultFont(
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Clear font now. */
-	g->state.font = NULL;
+	/* Reset to use the default font. */
+	g->state.font = g->defaultFont;
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -726,11 +726,12 @@ sjme_errorCode sjme_scritchui_pencilInitStatic(
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInPositiveNonZero sjme_jint sw,
 	sjme_attrInPositiveNonZero sjme_jint sh,
+	sjme_attrInNotNull sjme_scritchui_pencilFont defaultFont,
 	sjme_attrInNullable sjme_frontEnd* copyFrontEnd)
 {
 	sjme_scritchui_pencilBase result;
 	
-	if (inPencil == NULL || inFunctions == NULL)
+	if (inPencil == NULL || inFunctions == NULL || defaultFont == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (sw <= 0 || sh <= 0)
@@ -747,6 +748,7 @@ sjme_errorCode sjme_scritchui_pencilInitStatic(
 	memset(&result, 0, sizeof(result));
 	result.api = &sjme_scritchui_core_pencil;
 	result.impl = inFunctions;
+	result.defaultFont = defaultFont;
 	result.pixelFormat = pf;
 	
 	/* Is there an alpha channel? */

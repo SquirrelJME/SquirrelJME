@@ -105,6 +105,9 @@ typedef struct sjme_scritchui_pencilBase
 	/** Is there an alpha channel? */
 	sjme_jboolean hasAlpha;
 	
+	/** The default font to use. */
+	sjme_scritchui_pencilFont defaultFont;
+	
 	/** Color palette. */
 	struct
 	{

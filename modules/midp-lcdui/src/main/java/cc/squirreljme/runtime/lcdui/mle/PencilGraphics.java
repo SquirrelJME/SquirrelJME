@@ -822,17 +822,16 @@ public final class PencilGraphics
 	@Override
 	public void setFont(Font __font)
 	{
+		// Clearing the font?
+		if (__font == null)
+			__font = Font.getDefaultFont();
+		
 		// Cache locally
 		this._font = __font;
 		
-		// Clearing the font?
-		if (__font == null)
-			PencilShelf.hardwareSetDefaultFont(this.hardware);
-		
 		// Set font natively from the font details
-		else
-			PencilShelf.hardwareSetFont(this.hardware,
-				((PencilFontProvider)__font).__squirreljmePencilFont());
+		PencilShelf.hardwareSetFont(this.hardware,
+			((PencilFontProvider)__font).__squirreljmePencilFont());
 	}
 	
 	/**

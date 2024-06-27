@@ -622,7 +622,6 @@ public final class Font
 			return rv.clone();
 		
 		DisplayManager manager = DisplayManager.instance();
-		;
 		
 		// Obtain built-in fonts
 		ScritchInterface scritch = manager.scritch();
