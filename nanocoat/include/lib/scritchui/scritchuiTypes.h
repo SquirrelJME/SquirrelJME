@@ -71,11 +71,14 @@ SJME_SCRITCHUI_LISTENER_DECLARE(void);
 /** Close listener. */
 SJME_SCRITCHUI_LISTENER_DECLARE(close);
 
+/** Paint listener. */
+SJME_SCRITCHUI_LISTENER_DECLARE(paint);
+
 /** Size listener. */
 SJME_SCRITCHUI_LISTENER_DECLARE(size);
 
-/** Paint listener. */
-SJME_SCRITCHUI_LISTENER_DECLARE(paint);
+/** Size listener. */
+SJME_SCRITCHUI_LISTENER_DECLARE(visible);
 
 /**
  * Base pencil drawing structure.
@@ -128,6 +131,9 @@ typedef struct sjme_scritchui_uiComponentListeners
 {
 	/** Listener for when size changes. */
 	sjme_scritchui_listener_size size;
+	
+	/** Visibility changes. */
+	sjme_scritchui_listener_visible visible; 
 } sjme_scritchui_uiComponentListeners;
 
 typedef struct sjme_scritchui_uiComponentBase

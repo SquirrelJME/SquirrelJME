@@ -323,6 +323,22 @@ typedef sjme_errorCode (*sjme_scritchui_sizeListenerFunc)(
 	sjme_attrInPositiveNonZero sjme_jint newWidth,
 	sjme_attrInPositiveNonZero sjme_jint newHeight);
 
+/**
+ * Listener for changes in if a component becomes visible or not.
+ * 
+ * @param inState The input state.
+ * @param inComponent The component which has its visibility changed.
+ * @param fromVisible The previous visible state.
+ * @param toVisible The current visible state.
+ * @return Any resultant error, if any.
+ * @since 2024/06/28
+ */
+typedef sjme_errorCode (*sjme_scritchui_visibleListenerFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInValue sjme_jboolean fromVisible,
+	sjme_attrInValue sjme_jboolean toVisible);
+
 /** Void listener function. */
 typedef sjme_errorCode (*sjme_scritchui_voidListenerFunc)(void);
 
@@ -414,6 +430,21 @@ typedef sjme_errorCode (*sjme_scritchui_componentSetSizeListenerFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(size));
+
+/**
+ * Sets the listener to call when the visibility of a component changes.
+ * 
+ * @param inState The input state.
+ * @param inComponent The component to set for.
+ * @param inListener The listener to use.
+ * @param copyFrontEnd The front end data to use.
+ * @return Any resultant error, if any.
+ * @since 2024/06/28
+ */
+typedef sjme_errorCode (*sjme_scritchui_componentSetVisibleListenerFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(visible));
 
 /**
  * Returns the size of the given component.
@@ -665,6 +696,9 @@ struct sjme_scritchui_apiFunctions
 	
 	/** Sets the listener for component size events. */
 	SJME_SCRITCHUI_QUICK_API(componentSetSizeListener);
+	
+	/** Sets the listener for component visible events. */
+	SJME_SCRITCHUI_QUICK_API(componentSetVisibleListener);
 
 	/** Get size of component. */
 	SJME_SCRITCHUI_QUICK_API(componentSize);

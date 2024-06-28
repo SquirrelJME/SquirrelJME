@@ -77,6 +77,10 @@ typedef sjme_scritchui_componentSetPaintListenerFunc
 typedef sjme_scritchui_componentSetSizeListenerFunc
 	sjme_scritchui_impl_componentSetSizeListenerFunc;
 
+/** Set visible listener for components. */
+typedef sjme_scritchui_componentSetVisibleListenerFunc
+	sjme_scritchui_impl_componentSetVisibleListenerFunc;
+
 /** Get size of component. */
 typedef sjme_scritchui_componentSizeFunc
 	sjme_scritchui_impl_componentSizeFunc;
@@ -167,6 +171,9 @@ struct sjme_scritchui_implFunctions
 
 	/** Set size listener for component. */
 	SJME_SCRITCHUI_QUICK_IMPL(componentSetSizeListener);
+	
+	/** Sets the listener for component visible events. */
+	SJME_SCRITCHUI_QUICK_IMPL(componentSetVisibleListener);
 	
 	/** Get size of component. */
 	SJME_SCRITCHUI_QUICK_IMPL(componentSize);
