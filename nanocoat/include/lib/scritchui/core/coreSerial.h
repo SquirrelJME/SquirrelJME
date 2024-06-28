@@ -102,31 +102,35 @@ typedef enum sjme_scritchui_serialType
 	inListener; \
 	 \
 	/** Any front-end data to set as needed. */ \
-	sjme_frontEnd* volatile copyFrontEnd; \
+	sjme_frontEnd* volatile copyFrontEnd;
 
-typedef struct sjme_scritchui_serialData_componentRepaint
-{
-	/** The input component. */
-	volatile sjme_scritchui_uiComponent inComponent;
-	
-	/** The X position. */
-	volatile sjme_jint x;
-	
-	/** The Y position. */
-	volatile sjme_jint y;
-	
-	/** The width. */
-	volatile sjme_jint width;
-	
-	/** The height. */
-	volatile sjme_jint height;
-} sjme_scritchui_serialData_componentRepaint;
+/** The name for serial data. */
+#define SJME_SCRITCHUI_SERIAL_DATA_NAME(what) \
+	SJME_TOKEN_PASTE(sjme_scritchui_serialData_, what)
 
-typedef struct sjme_scritchui_serialData_componentRevalidate
-{
-	/** The input component. */
-	volatile sjme_scritchui_uiComponent inComponent;
-} sjme_scritchui_serialData_componentRevalidate;
+#define SUD_STRUCT_DEF(what, items) \
+	typedef struct SJME_SCRITCHUI_SERIAL_DATA_NAME(what) \
+	{ \
+		items \
+	} SJME_SCRITCHUI_SERIAL_DATA_NAME(what)
+
+#define SDU_VAR(type, name) \
+	volatile type name
+
+#define SDU_VARP(type, name) \
+	type* volatile name
+
+/* ------------------------------------------------------------------------ */
+
+SUD_STRUCT_DEF(componentRepaint,
+	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
+	SDU_VAR(sjme_jint, x);
+	SDU_VAR(sjme_jint, y);
+	SDU_VAR(sjme_jint, width);
+	SDU_VAR(sjme_jint, height););
+
+SUD_STRUCT_DEF(componentRevalidate,
+	SDU_VAR(sjme_scritchui_uiComponent, inComponent););
 
 typedef struct sjme_scritchui_serialData_componentSetPaintListener
 {
@@ -275,9 +279,15 @@ typedef struct sjme_scritchui_serialData_windowSetVisible
 	volatile sjme_jboolean isVisible;
 } sjme_scritchui_serialData_windowSetVisible;
 
+/* ------------------------------------------------------------------------ */
+
+#undef SUD_STRUCT_DEF
+#undef SDU_VAR
+#undef SDU_VARP
+
 /** Define serial data union quicker. */
 #define SJME_SCRITCHUI_SDU_DEF(what) \
-	volatile SJME_TOKEN_PASTE(sjme_scritchui_serialData_, what) what
+	volatile SJME_SCRITCHUI_SERIAL_DATA_NAME(what) what
 
 /**
  * Union for serial data.
