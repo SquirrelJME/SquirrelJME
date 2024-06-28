@@ -132,35 +132,18 @@ SUD_STRUCT_DEF(componentRepaint,
 SUD_STRUCT_DEF(componentRevalidate,
 	SDU_VAR(sjme_scritchui_uiComponent, inComponent););
 
-typedef struct sjme_scritchui_serialData_componentSetPaintListener
-{
-	/** The input component. */
-	volatile sjme_scritchui_uiComponent inComponent;
-	
-	/** The listener to set. */
-	SJME_SCRITCHUI_SERIAL_SET_LISTENER(paint);
-} sjme_scritchui_serialData_componentSetPaintListener;
+SUD_STRUCT_DEF(componentSetPaintListener,
+	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
+	SJME_SCRITCHUI_SERIAL_SET_LISTENER(paint););
 
-typedef struct sjme_scritchui_serialData_componentSetSizeListener
-{
-	/** The input component. */
-	volatile sjme_scritchui_uiComponent inComponent;
-	
-	/** The listener to set. */
-	SJME_SCRITCHUI_SERIAL_SET_LISTENER(size);
-} sjme_scritchui_serialData_componentSetSizeListener;
+SUD_STRUCT_DEF(componentSetSizeListener,
+	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
+	SJME_SCRITCHUI_SERIAL_SET_LISTENER(size););
 
-typedef struct sjme_scritchui_serialData_componentSize
-{
-	/** The input component. */
-	volatile sjme_scritchui_uiComponent inComponent;
-	
-	/** The output width. */
-	sjme_jint* volatile outWidth;
-	
-	/** The output height. */
-	sjme_jint* volatile outHeight;
-} sjme_scritchui_serialData_componentSize;
+SUD_STRUCT_DEF(componentSize,
+	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
+	SDU_VARP(sjme_jint*, outWidth);
+	SDU_VARP(sjme_jint*, outHeight););
 
 typedef struct sjme_scritchui_serialData_containerAdd
 {

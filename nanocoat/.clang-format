@@ -88,11 +88,14 @@ AttributeMacros:
   - SJME_DYLIB_EXPORT
   - SJME_DYLIB_IMPORT
   - SJME_THREAD_CONVENTION
+  - JNIEXPORT
+  - JNIIMPORT
+  - JNICALL
 BinPackArguments: false
 BinPackParameters: false
 BitFieldColonSpacing: Both
 BraceWrapping:
-  AfterCaseLabel: false
+  AfterCaseLabel: true
   AfterClass: true
   AfterControlStatement: Always
   AfterEnum: true
@@ -101,7 +104,7 @@ BraceWrapping:
   AfterObjCDeclaration: false
   AfterStruct: true
   AfterUnion: true
-  AfterExternBlock: false
+  AfterExternBlock: true
   BeforeCatch: false
   BeforeElse: true
   BeforeLambdaBody: false
@@ -183,14 +186,14 @@ PPIndentWidth: -1
 PackConstructorInitializers: BinPack
 PenaltyBreakAssignment: 2
 PenaltyBreakBeforeFirstCallParameter: 19
-PenaltyBreakComment: 300
+PenaltyBreakComment: 1000000
 PenaltyBreakFirstLessLess: 120
 PenaltyBreakOpenParenthesis: 0
 PenaltyBreakString: 1000
 PenaltyBreakTemplateDeclaration: 10
 PenaltyExcessCharacter: 1000000
 PenaltyIndentedWhitespace: 0
-PenaltyReturnTypeOnItsOwnLine: 60
+PenaltyReturnTypeOnItsOwnLine: 10
 PointerAlignment: Left
 QualifierAlignment: Leave
 ReferenceAlignment: Left
@@ -202,7 +205,7 @@ RequiresClausePosition: OwnLine
 RequiresExpressionIndentation: OuterScope
 SeparateDefinitionBlocks: Leave
 ShortNamespaceLines: 1
-SortIncludes: CaseSensitive
+SortIncludes: Never
 SortJavaStaticImport: Before
 SortUsingDeclarations: LexicographicNumeric
 SpaceAfterCStyleCast: false
@@ -242,7 +245,7 @@ SpacesInParensOptions:
   InEmptyParentheses: false
   Other: false
 SpacesInSquareBrackets: false
-Standard: Latest
+Standard: c++11
 StatementAttributeLikeMacros:
   - SJME_DEPRECATED
 StatementMacros:
@@ -254,6 +257,7 @@ StatementMacros:
   - SJME_SCRITCHUI_SERIAL_CHUNK
   - SJME_SCRITCHUI_SERIAL_PASS
   - SJME_SCRITCHUI_INVOKE_WAIT
+  - RECOVER_FONT
 TabWidth: 4
 UseTab: Always
 VerilogBreakBetweenInstancePorts: true
@@ -265,6 +269,7 @@ WhitespaceSensitiveMacros:
   - SDU_VARP
   - SJME_SCRITCHUI_SERIAL_CHUNK
   - sjme_error_is
+  - CHECK_AND_FORWARD
 AllowAllConstructorInitializersOnNextLine: false
 SpaceInEmptyParentheses: false
 SpacesInCStyleCastParentheses: false
