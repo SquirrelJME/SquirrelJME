@@ -86,6 +86,7 @@ sjme_errorCode sjme_scritchui_gtk2_windowNew(
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow)
 {
 	GtkWindow* gtkWindow;
+	GdkEventMask eventMask;
 	
 	if (inState == NULL || inWindow == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -106,6 +107,23 @@ sjme_errorCode sjme_scritchui_gtk2_windowNew(
 	gtk_window_set_wmclass(gtkWindow,
 		inState->wmInfo->xwsClass,
 		inState->wmInfo->xwsClass);
+	
+	/* Get the event mask, so we can get certain events. */
+	eventMask = gdk_window_get_events(gtkWindow->frame);
+	
+	/* Enable visibility events. */
+	eventMask |= GDK_VISIBILITY_NOTIFY_MASK;
+	
+	/* Also enable all the input events. */
+	eventMask |= GDK_POINTER_MOTION_MASK |
+		GDK_BUTTON_PRESS_MASK |
+		GDK_BUTTON_RELEASE_MASK |
+		GDK_KEY_PRESS_MASK |
+		GDK_KEY_RELEASE_MASK |
+		GDK_BUTTON_MOTION_MASK;
+	
+	/* Now update the event mask. */
+	gdk_window_set_events(gtkWindow->frame, eventMask);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
