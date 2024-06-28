@@ -145,122 +145,56 @@ SUD_STRUCT_DEF(componentSize,
 	SDU_VARP(sjme_jint*, outWidth);
 	SDU_VARP(sjme_jint*, outHeight););
 
-typedef struct sjme_scritchui_serialData_containerAdd
-{
-	/** The input container. */
-	volatile sjme_scritchui_uiComponent inContainer;
-	
-	/** The input component. */
-	volatile sjme_scritchui_uiComponent inComponent;
-} sjme_scritchui_serialData_containerAdd;
+SUD_STRUCT_DEF(containerAdd,
+	SDU_VAR(sjme_scritchui_uiComponent, inContainer);
+	SDU_VAR(sjme_scritchui_uiComponent, inComponent););
 
-typedef struct sjme_scritchui_serialData_containerSetBounds
-{
-	/** The input container. */
-	volatile sjme_scritchui_uiComponent inContainer;
-	
-	/** The input component. */
-	volatile sjme_scritchui_uiComponent inComponent;
-	
-	/** The X position. */
-	volatile sjme_jint x;
-	
-	/** The Y position. */
-	volatile sjme_jint y;
-	
-	/** The width. */
-	volatile sjme_jint width;
-	
-	/** The height. */
-	volatile sjme_jint height;
-} sjme_scritchui_serialData_containerSetBounds;
+SUD_STRUCT_DEF(containerSetBounds,
+	SDU_VAR(sjme_scritchui_uiComponent, inContainer);
+	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
+	SDU_VAR(sjme_jint, x);
+	SDU_VAR(sjme_jint, y);
+	SDU_VAR(sjme_jint, width);
+	SDU_VAR(sjme_jint, height););
 
-typedef struct sjme_scritchui_serialData_fontBuiltin
-{
-	/** The resultant font. */
-	volatile sjme_scritchui_pencilFont* outFont;
-} sjme_scritchui_serialData_fontBuiltin;
+SUD_STRUCT_DEF(fontBuiltin,
+	SDU_VARP(sjme_scritchui_pencilFont*, outFont););
 
-typedef struct sjme_scritchui_serialData_fontDerive
-{
-	/** The font to derive. */
-	volatile sjme_scritchui_pencilFont inFont;
+SUD_STRUCT_DEF(fontDerive,
+	SDU_VAR(sjme_scritchui_pencilFont, inFont);
+	SDU_VAR(sjme_scritchui_pencilFontStyle, inStyle);
+	SDU_VAR(sjme_jint, inPixelSize);
+	SDU_VARP(sjme_scritchui_pencilFont*, outDerived););
 	
-	/** The new font style. */
-	volatile sjme_scritchui_pencilFontStyle inStyle;
-	
-	/** The new pixel size. */
-	volatile sjme_jint inPixelSize;
-	
-	/** The resultant derived font. */
-	sjme_scritchui_pencilFont* volatile outDerived;
-} sjme_scritchui_serialData_fontDerive;
-	
-typedef struct sjme_scritchui_serialData_panelEnableFocus
-{
-	/** The input panel. */
-	volatile sjme_scritchui_uiPanel inPanel;
-	
-	/** Should focus be enabled? */
-	volatile sjme_jboolean enableFocus;
-} sjme_scritchui_serialData_panelEnableFocus;
+SUD_STRUCT_DEF(panelEnableFocus,
+	SDU_VAR(sjme_scritchui_uiPanel, inPanel);
+	SDU_VAR(sjme_jboolean, enableFocus););
 
-typedef struct sjme_scritchui_serialData_panelNew
-{
-	/** The resultant panel. */
-	sjme_scritchui_uiPanel* volatile outPanel;
-} sjme_scritchui_serialData_panelNew;
+SUD_STRUCT_DEF(panelNew,
+	SDU_VARP(sjme_scritchui_uiPanel*, outPanel););
 
-typedef struct sjme_scritchui_serialData_screenSetListener
-{
-	/** The callback for screen listener. */
-	SJME_SCRITCHUI_SERIAL_SET_LISTENER(screen);
-} sjme_scritchui_serialData_screenSetListener;
+SUD_STRUCT_DEF(screenSetListener,
+	SJME_SCRITCHUI_SERIAL_SET_LISTENER(screen););
 
-typedef struct sjme_scritchui_serialData_screens
-{
-	/** The resultant screen array. */
-	sjme_scritchui_uiScreen* volatile outScreens;
-	
-	/** The size of the input array then the number of total screens. */
-	sjme_jint* volatile inOutNumScreens;
-} sjme_scritchui_serialData_screens;
+SUD_STRUCT_DEF(screens,
+	SDU_VARP(sjme_scritchui_uiScreen*, outScreens);
+	SDU_VARP(sjme_jint*, inOutNumScreens););
 
-typedef struct sjme_scritchui_serialData_windowContentMinimumSize
-{
-	/** The input window. */
-	volatile sjme_scritchui_uiWindow inWindow;
-	
-	/** The width. */
-	volatile sjme_jint width;
-	
-	/** The height. */
-	volatile sjme_jint height;
-} sjme_scritchui_serialData_windowContentMinimumSize;
+SUD_STRUCT_DEF(windowContentMinimumSize,
+	SDU_VAR(sjme_scritchui_uiWindow, inWindow);
+	SDU_VAR(sjme_jint, width);
+	SDU_VAR(sjme_jint, height););
 
-typedef struct sjme_scritchui_serialData_windowNew
-{
-	/** The resultant window. */
-	sjme_scritchui_uiWindow* volatile outWindow;
-} sjme_scritchui_serialData_windowNew;
+SUD_STRUCT_DEF(windowNew,
+	SDU_VARP(sjme_scritchui_uiWindow*, outWindow););
 
-typedef struct sjme_scritchui_serialData_windowSetCloseListener
-{
-	/** The input window. */
-	volatile sjme_scritchui_uiWindow inWindow;
-	
-	/** The callback for the close listener. */
-	SJME_SCRITCHUI_SERIAL_SET_LISTENER(close);
-} sjme_scritchui_serialData_windowSetCloseListener;
+SUD_STRUCT_DEF(windowSetCloseListener,
+	SDU_VAR(sjme_scritchui_uiWindow, inWindow);
+	SJME_SCRITCHUI_SERIAL_SET_LISTENER(close););
 
-typedef struct sjme_scritchui_serialData_windowSetVisible
-{
-	/** The input window. */
-	volatile sjme_scritchui_uiWindow inWindow;
-	
-	/** Should it be visible? */
-	volatile sjme_jboolean isVisible;
-} sjme_scritchui_serialData_windowSetVisible;
+SUD_STRUCT_DEF(windowSetVisible,
+	SDU_VAR(sjme_scritchui_uiWindow, inWindow);
+	SDU_VAR(sjme_jboolean, isVisible););
 
 /* ------------------------------------------------------------------------ */
 
