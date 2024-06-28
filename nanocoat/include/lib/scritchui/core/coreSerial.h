@@ -52,6 +52,9 @@ typedef enum sjme_scritchui_serialType
 	/** @c componentSetSizeListener . */
 	SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_SIZE_LISTENER,
 	
+	/** @c componentSetVisibleListener . */
+	SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_VISIBLE_LISTENER,
+	
 	/** @c componentSize . */
 	SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SIZE,
 	
@@ -120,6 +123,7 @@ typedef enum sjme_scritchui_serialType
 #define SDU_VARP(type, name) \
 	type* volatile name
 
+/* clang-format off */
 /* ------------------------------------------------------------------------ */
 
 SUD_STRUCT_DEF(componentRepaint,
@@ -139,6 +143,10 @@ SUD_STRUCT_DEF(componentSetPaintListener,
 SUD_STRUCT_DEF(componentSetSizeListener,
 	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
 	SJME_SCRITCHUI_SERIAL_SET_LISTENER(size););
+
+SUD_STRUCT_DEF(componentSetVisibleListener,
+	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
+	SJME_SCRITCHUI_SERIAL_SET_LISTENER(visible););
 
 SUD_STRUCT_DEF(componentSize,
 	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
@@ -197,6 +205,7 @@ SUD_STRUCT_DEF(windowSetVisible,
 	SDU_VAR(sjme_jboolean, isVisible););
 
 /* ------------------------------------------------------------------------ */
+/* clang-format on */
 
 #undef SUD_STRUCT_DEF
 #undef SDU_VAR
@@ -224,6 +233,9 @@ typedef union sjme_scritchui_serialDataUnion
 	
 	/** @c componentSetSizeListener . */
 	SJME_SCRITCHUI_SDU_DEF(componentSetSizeListener);
+	
+	/** @c componentSetVisibleListener . */
+	SJME_SCRITCHUI_SDU_DEF(componentSetVisibleListener);
 	
 	/** @c componentSize . */
 	SJME_SCRITCHUI_SDU_DEF(componentSize);
@@ -309,6 +321,11 @@ sjme_errorCode sjme_scritchui_coreSerial_componentSetSizeListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(size));
+
+sjme_errorCode sjme_scritchui_coreSerial_componentSetVisibleListener(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(visible));
 	
 sjme_errorCode sjme_scritchui_coreSerial_componentSize(
 	sjme_attrInNotNull sjme_scritchui inState,

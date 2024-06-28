@@ -77,6 +77,11 @@ sjme_errorCode sjme_scritchui_core_componentSetSizeListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(size));
+	
+sjme_errorCode sjme_scritchui_core_componentSetVisibleListener(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(visible));
 
 sjme_errorCode sjme_scritchui_core_loopExecute(
 	sjme_attrInNotNull sjme_scritchui inState,

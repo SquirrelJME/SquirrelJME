@@ -32,6 +32,8 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 		sjme_scritchui_coreSerial_componentSetPaintListener,
 	.componentSetSizeListener =
 		sjme_scritchui_coreSerial_componentSetSizeListener,
+	.componentSetVisibleListener =
+		sjme_scritchui_coreSerial_componentSetVisibleListener,
 	.componentSize = sjme_scritchui_coreSerial_componentSize,
 	.containerAdd = sjme_scritchui_coreSerial_containerAdd,
 	.containerSetBounds = sjme_scritchui_coreSerial_containerSetBounds,
@@ -65,6 +67,8 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 	.componentRevalidate = sjme_scritchui_core_componentRevalidate,
 	.componentSetPaintListener = sjme_scritchui_core_componentSetPaintListener,
 	.componentSetSizeListener = sjme_scritchui_core_componentSetSizeListener,
+	.componentSetVisibleListener =
+		sjme_scritchui_core_componentSetVisibleListener,
 	.componentSize = sjme_scritchui_core_componentSize,
 	.containerAdd = sjme_scritchui_core_containerAdd,
 	.containerSetBounds = sjme_scritchui_core_containerSetBounds,

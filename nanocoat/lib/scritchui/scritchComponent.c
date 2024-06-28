@@ -92,6 +92,16 @@ static sjme_errorCode sjme_scritchui_core_baseSizeListener(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_scritchui_core_baseVisibleListener(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInValue sjme_jboolean fromVisible,
+	sjme_attrInValue sjme_jboolean toVisible)
+{
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
 /**
  * Belayed repainting.
  * 
@@ -126,6 +136,26 @@ static sjme_thread_result sjme_scritchui_core_componentRepaintBelay(
 	error = inState->impl->componentRepaint(inState, inComponent,
 		rect.x, rect.y, rect.width, rect.height);
 	return SJME_THREAD_RESULT(error);
+}
+
+static sjme_errorCode sjme_scritchui_core_componentSetSimpleUserListener(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNotNull sjme_scritchui_listener_void* infoUser,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(void))
+{
+	if (inState == NULL || inComponent == NULL || infoUser == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* The core listener is always set, so we can just set this here */
+	/* and any future size calls will use this callback. */
+	infoUser->callback = inListener;
+	if (copyFrontEnd != NULL)
+		memmove(&infoUser->frontEnd, copyFrontEnd,
+			sizeof(*copyFrontEnd));
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchui_core_componentRepaint(
@@ -287,23 +317,33 @@ sjme_errorCode sjme_scritchui_core_componentSetSizeListener(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(size))
 {
-	sjme_scritchui_listener_size* infoUser;
-	
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Get listener information. */
-	infoUser = &SJME_SCRITCHUI_LISTENER_USER(inComponent, size);
+	return sjme_scritchui_core_componentSetSimpleUserListener(
+		inState,
+		inComponent,
+		(sjme_scritchui_listener_void*)&SJME_SCRITCHUI_LISTENER_USER(
+			inComponent, size),
+		(sjme_scritchui_voidListenerFunc)inListener,
+		copyFrontEnd);
+}
+
+sjme_errorCode sjme_scritchui_core_componentSetVisibleListener(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(visible))
+{
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* The core listener is always set, so we can just set this here */
-	/* and any future size calls will use this callback. */
-	infoUser->callback = inListener;
-	if (copyFrontEnd != NULL)
-		memmove(&infoUser->frontEnd, copyFrontEnd,
-			sizeof(*copyFrontEnd));
-	
-	/* Success! */
-	return SJME_ERROR_NONE;
+	return sjme_scritchui_core_componentSetSimpleUserListener(
+		inState,
+		inComponent,
+		(sjme_scritchui_listener_void*)&SJME_SCRITCHUI_LISTENER_USER(
+			inComponent, visible),
+		(sjme_scritchui_voidListenerFunc)inListener,
+		copyFrontEnd);
 }
 
 sjme_errorCode sjme_scritchui_core_intern_getPaintable(
@@ -353,7 +393,16 @@ sjme_errorCode sjme_scritchui_core_intern_initComponent(
 		if (inState->impl->componentSetSizeListener != NULL)
 			if (sjme_error_is(error =
 				inState->impl->componentSetSizeListener(inState, inComponent,
-				sjme_scritchui_core_baseSizeListener, NULL)))
+				sjme_scritchui_core_baseSizeListener,
+				NULL)))
+				return sjme_error_default(error);
+		
+		/* Set base visibility listener. */
+		if (inState->impl->componentSetVisibleListener != NULL)
+			if (sjme_error_is(error =
+				inState->impl->componentSetVisibleListener(inState, inComponent,
+				sjme_scritchui_core_baseVisibleListener,
+				NULL)))
 				return sjme_error_default(error);
 		
 		/* Common paintable base initialization. */
