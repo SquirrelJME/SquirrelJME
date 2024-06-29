@@ -15,6 +15,7 @@ import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchCloseListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchPaintListener;
+import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchVisibleListener;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchWindowManagerType;
 import java.nio.file.Path;
 
@@ -145,6 +146,27 @@ public final class NativeScritchDylib
 		
 		// Forward
 		NativeScritchDylib.__componentSetPaintListener(this._stateP,
+			((DylibBaseObject)__component).objectP,
+			__listener);
+	}
+	
+	/**
+	 * Sets the visibility listener for the component.
+	 *
+	 * @param __component The component to set.
+	 * @param __listener The listener to set.
+	 * @throws MLECallError If the component is not valid.
+	 * @since 2024/06/28
+	 */
+	public void componentSetVisibleListener(
+		DylibComponentObject __component, ScritchVisibleListener __listener)
+		throws MLECallError
+	{
+		if (__component == null)
+			throw new MLECallError("Null arguments.");
+		
+		// Forward
+		NativeScritchDylib.__componentSetVisibleListener(this._stateP,
 			((DylibBaseObject)__component).objectP,
 			__listener);
 	}
@@ -526,6 +548,20 @@ public final class NativeScritchDylib
 	 */
 	private static native void __componentSetPaintListener(long __stateP,
 		long __componentP, ScritchPaintListener __listener)
+		throws MLECallError;
+	
+	/**
+	 * Sets the visibility listener for a component. 
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __componentP The component pointer.
+	 * @param __listener The listener to set.
+	 * @throws MLECallError If the component is not valid or on null
+	 * arguments.
+	 * @since 2024/06/28
+	 */
+	private static native void __componentSetVisibleListener(long __stateP,
+		long __componentP, ScritchVisibleListener __listener)
 		throws MLECallError;
 	
 	/**

@@ -9,15 +9,6 @@
 
 package cc.squirreljme.jvm.mle.scritchui.constants;
 
-import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchInputDialPadListener;
-import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchInputGamepadListener;
-import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchInputImeListener;
-import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchInputKeyboardListener;
-import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchInputMouseListener;
-import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchInputNumPadListener;
-import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchInputRockerListener;
-import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchInputTouchScreenListener;
-import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchInputTrackPointListener;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
@@ -28,48 +19,98 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 @SquirrelJMEVendorApi
 public interface ScritchInputMethodType
 {
-	/** Full Keyboard, {@link ScritchInputKeyboardListener}. */
+	/** Unknown event. */
 	@SquirrelJMEVendorApi
-	byte FULL_KEYBOARD =
+	int UNKNOWN =
+		0;
+	
+	/** Key event: Pressed. */
+	@SquirrelJMEVendorApi
+	int KEY_PRESSED =
 		1;
 	
-	/** Mouse, {@link ScritchInputMouseListener}. */
+	/** Key event: Released. */
 	@SquirrelJMEVendorApi
-	byte MOUSE =
+	int KEY_RELEASED =
 		2;
 	
-	/** Track-point/Joystick, {@link ScritchInputTrackPointListener}. */
+	/** Key event: Repeated. */
 	@SquirrelJMEVendorApi
-	byte TRACK_POINT =
+	int KEY_REPEATED =
 		4;
 	
-	/** Touchscreen/Tablet. {@link ScritchInputTouchScreenListener}. */
+	/** Mouse event: Button pressed. */
 	@SquirrelJMEVendorApi
-	byte TOUCHSCREEN =
+	int MOUSE_BUTTON_PRESSED =
 		8;
 	
-	/** Phone dial pad, {@link ScritchInputDialPadListener}. */
+	/** Mouse event: Button released. */
 	@SquirrelJMEVendorApi
-	byte DIAL_PAD =
+	int MOUSE_BUTTON_RELEASED =
 		16;
 	
-	/** Number pad only, {@link ScritchInputNumPadListener}. */
+	/** Mouse event: Motion. */
 	@SquirrelJMEVendorApi
-	byte NUMPAD_ONLY =
+	int MOUSE_MOTION =
 		32;
 	
-	/** Game controller, {@link ScritchInputGamepadListener}. */
+	/** Gamepad event: Button pressed. */
 	@SquirrelJMEVendorApi
-	byte GAMEPAD =
+	int GAMEPAD_BUTTON_PRESSED =
 		64;
 	
-	/** Rocker, left/right and select, {@link ScritchInputRockerListener}. */
+	/** Gamepad event: Button released. */
 	@SquirrelJMEVendorApi
-	short ROCKER =
+	int GAMEPAD_BUTTON_RELEASED =
 		128;
 	
-	/** System enabled IME, {@link ScritchInputImeListener}. */
+	/** Gamepad event: Motion on axis. */
 	@SquirrelJMEVendorApi
-	short IME =
+	int GAMEPAD_AXIS_MOTION =
 		256;
+	
+	/** Touch event: Finger pressed. */
+	@SquirrelJMEVendorApi
+	int TOUCH_FINGER_PRESSED =
+		512;
+	
+	/** Touch event: Finger released. */
+	@SquirrelJMEVendorApi
+	int TOUCH_FINGER_RELEASED =
+		1024;
+	
+	/** Touch event: Drag motion. */
+	@SquirrelJMEVendorApi
+	int TOUCH_DRAG_MOTION =
+		2048;
+	
+	/** Stylus event: Pressed. */
+	@SquirrelJMEVendorApi
+	int STYLUS_PEN_PRESSED =
+		4096;
+	
+	/** Stylus event: Released. */
+	@SquirrelJMEVendorApi
+	int STYLUS_PEN_RELEASED =
+		8192;
+	
+	/** Stylus event: Dragging motion. */
+	@SquirrelJMEVendorApi
+	int STYLUS_DRAG_MOTION =
+		16384;
+	
+	/** Stylus event: Hovering over display. */
+	@SquirrelJMEVendorApi
+	int STYLUS_HOVER_MOTION =
+		32768;
+	
+	/** Gyroscope event: Axis motion. */
+	@SquirrelJMEVendorApi
+	int GYRO_AXIS_MOTION =
+		65536;
+	
+	/** Device action (flip open/close, shaken, not stirred). */
+	@SquirrelJMEVendorApi
+	int DEVICE_ACTION =
+		131072;
 }

@@ -98,8 +98,49 @@ static sjme_errorCode sjme_scritchui_core_baseVisibleListener(
 	sjme_attrInValue sjme_jboolean fromVisible,
 	sjme_attrInValue sjme_jboolean toVisible)
 {
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	sjme_scritchui_listener_visible* infoUser;
+	sjme_jboolean wasVisible;
+	sjme_jboolean wasUserVisible;
+	
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_message("VISIBILITY CORE %d %d %d %p %p",
+		inComponent->isVisible,
+		inComponent->isUserVisible,
+		toVisible,
+		SJME_SCRITCHUI_LISTENER_CORE(inComponent, visible).callback,
+		SJME_SCRITCHUI_LISTENER_USER(inComponent, visible).callback);
+	
+	/* Has core visibility changed? We do not want to spam visibility */
+	/* changes to our components if there is no point to it. */
+	wasVisible = inComponent->isVisible;
+	if (toVisible != wasVisible)
+	{
+		/* Update visibility state. */
+		inComponent->isVisible = toVisible;
+	}
+	
+	/* There may be a delay before a listener is set for a user listener */
+	/* so wait until that occurs. */
+	wasUserVisible = inComponent->isUserVisible;
+	if (toVisible != wasUserVisible)
+	{
+		/* Send to callback accordingly, if one is set. */
+		infoUser = &SJME_SCRITCHUI_LISTENER_USER(inComponent, visible);
+		if (infoUser->callback != NULL)
+		{
+			/* Update state. */
+			inComponent->isUserVisible = toVisible;
+			
+			sjme_message("VISIBILITY CALL %d %d", wasVisible, toVisible);
+			return infoUser->callback(inState, inComponent,
+				wasVisible, toVisible);
+		}
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 /**
@@ -150,9 +191,13 @@ static sjme_errorCode sjme_scritchui_core_componentSetSimpleUserListener(
 	/* The core listener is always set, so we can just set this here */
 	/* and any future size calls will use this callback. */
 	infoUser->callback = inListener;
-	if (copyFrontEnd != NULL)
+	if (inListener != NULL && copyFrontEnd != NULL)
 		memmove(&infoUser->frontEnd, copyFrontEnd,
 			sizeof(*copyFrontEnd));
+	
+	/* Clear old front end data for the user if the listener was cleared. */
+	if (inListener == NULL)
+		memset(&infoUser->frontEnd, 0, sizeof(infoUser->frontEnd));
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -337,6 +382,8 @@ sjme_errorCode sjme_scritchui_core_componentSetVisibleListener(
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+	sjme_message("VISIBILITY LISTENER SET %p", inListener);
+	
 	return sjme_scritchui_core_componentSetSimpleUserListener(
 		inState,
 		inComponent,
@@ -392,7 +439,8 @@ sjme_errorCode sjme_scritchui_core_intern_initComponent(
 		/* Install size listener to emit repaints on resize. */
 		if (inState->impl->componentSetSizeListener != NULL)
 			if (sjme_error_is(error =
-				inState->impl->componentSetSizeListener(inState, inComponent,
+				inState->impl->componentSetSizeListener(inState,
+				inComponent,
 				sjme_scritchui_core_baseSizeListener,
 				NULL)))
 				return sjme_error_default(error);
@@ -400,7 +448,8 @@ sjme_errorCode sjme_scritchui_core_intern_initComponent(
 		/* Set base visibility listener. */
 		if (inState->impl->componentSetVisibleListener != NULL)
 			if (sjme_error_is(error =
-				inState->impl->componentSetVisibleListener(inState, inComponent,
+				inState->impl->componentSetVisibleListener(inState,
+				inComponent,
 				sjme_scritchui_core_baseVisibleListener,
 				NULL)))
 				return sjme_error_default(error);

@@ -22,7 +22,7 @@ static gboolean sjme_scritchui_gtk2_eventConfigure(
 	/* Restore component. */
 	inComponent = (sjme_scritchui_uiComponent)data;
 	if (inComponent == NULL)
-		return TRUE;
+		return FALSE;
 	
 	/* Restore state. */
 	inState = inComponent->common.state;
@@ -36,11 +36,13 @@ static gboolean sjme_scritchui_gtk2_eventConfigure(
 			event->width, event->height);
 	
 	/* Always continue handling. */
-	return TRUE;
+	return FALSE;
 }
 
 static gboolean sjme_scritchui_gtk2_eventExpose(
-	GtkWidget* widget, GdkEventExpose* event, gpointer data)
+	GtkWidget* widget,
+	GdkEventExpose* event,
+	gpointer data)
 {
 	sjme_errorCode error;
 	sjme_scritchui inState;
@@ -52,12 +54,12 @@ static gboolean sjme_scritchui_gtk2_eventExpose(
 	sjme_frontEnd frontEnd;
 	sjme_scritchui_pencilFont defaultFont;
 	
-	/* Restore component. */
-	inComponent = (sjme_scritchui_uiComponent)data;
-	if (inComponent == NULL)
-		return TRUE;
+	/* Check nulls before proceeding. */
+	if (widget == NULL || event == NULL || data == NULL)
+		return FALSE;
 	
-	/* Restore state. */
+	/* Restore. */
+	inComponent = (sjme_scritchui_uiComponent)data;
 	inState = inComponent->common.state;
 	
 	/* Not something we can paint? */
@@ -65,14 +67,14 @@ static gboolean sjme_scritchui_gtk2_eventExpose(
 	if (sjme_error_is(inState->intern->getPaintable(inState,
 		inComponent, &paint)) ||
 		paint == NULL)
-		return TRUE;
+		return FALSE;
 	
 	/* Get listener info. */
 	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(paint, paint);
 	
 	/* No actual paint listener? */
 	if (infoCore->callback == NULL)
-		return TRUE;
+		return FALSE;
 	
 	/* Determine area to draw. */
 	w = event->area.width;
@@ -87,7 +89,7 @@ static gboolean sjme_scritchui_gtk2_eventExpose(
 	defaultFont = NULL;
 	if (sjme_error_is(inState->api->fontBuiltin(inState,
 		&defaultFont)) || defaultFont == NULL)
-		return TRUE;
+		return FALSE;
 	
 	/* Setup pencil for drawing. */
 	memset(&pencil, 0, sizeof(pencil));
@@ -95,7 +97,7 @@ static gboolean sjme_scritchui_gtk2_eventExpose(
 		&sjme_scritchui_gtk2_pencilFunctions,
 		SJME_GFX_PIXEL_FORMAT_INT_RGB888,
 		w, h, defaultFont, &frontEnd)))
-		return TRUE;
+		return FALSE;
 	
 	/* Forward to callback. */
 	error = infoCore->callback(inState, inComponent,
@@ -103,9 +105,64 @@ static gboolean sjme_scritchui_gtk2_eventExpose(
 		w, h, 0);
 	
 	/* Do not perform standard drawing, unless an error occurs. */
-	if (sjme_error_is(error))
+	if (!sjme_error_is(error))
 		return TRUE;
 	return FALSE;
+}
+
+static gboolean sjme_scritchui_gtk2_eventMapUnmap(
+	GtkWidget* widget,
+	GdkEvent* event,
+	gpointer data,
+	sjme_jboolean mapped)
+{
+	sjme_scritchui inState;
+	sjme_scritchui_uiComponent inComponent;
+	sjme_scritchui_listener_visible* infoCore;
+	
+	sjme_message("MAPPED GTK? %p %p %p %d", widget, event, data, mapped);
+	
+	/* Check nulls before proceeding. */
+	if (widget == NULL || event == NULL || data == NULL)
+		return FALSE;
+	
+	/* Restore. */
+	inComponent = (sjme_scritchui_uiComponent)data;
+	inState = inComponent->common.state;
+	
+	sjme_message("VISIBILITY GTK %d %d %d %p %p",
+		inComponent->isVisible,
+		inComponent->isUserVisible,
+		mapped,
+		SJME_SCRITCHUI_LISTENER_CORE(inComponent, visible).callback,
+		SJME_SCRITCHUI_LISTENER_USER(inComponent, visible).callback);
+
+	/* Note that mapping always a widget visible. */
+	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(inComponent, visible);
+	if (infoCore->callback != NULL)
+		infoCore->callback(inState, inComponent,
+			!mapped, mapped);
+	
+	/* Always continue handling. */
+	return FALSE;
+}
+
+static gboolean sjme_scritchui_gtk2_eventMap(
+	GtkWidget* widget,
+	GdkEvent* event,
+	gpointer data)
+{
+	return sjme_scritchui_gtk2_eventMapUnmap(widget, event, data,
+		SJME_JNI_TRUE);
+}
+
+static gboolean sjme_scritchui_gtk2_eventUnmap(
+	GtkWidget* widget,
+	GdkEvent* event,
+	gpointer data)
+{
+	return sjme_scritchui_gtk2_eventMapUnmap(widget, event, data,
+		SJME_JNI_FALSE);
 }
 
 sjme_errorCode sjme_scritchui_gtk2_componentRepaint(
@@ -219,13 +276,9 @@ sjme_errorCode sjme_scritchui_gtk2_componentSetSizeListener(
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(size))
 {
 	GtkWidget* widget;
-	sjme_scritchui_listener_size* infoCore;
 	
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Get listener info. */
-	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(inComponent, size);
 	
 	/* Recover widget. */	
 	widget = (GtkWidget*)inComponent->common.handle;
@@ -233,11 +286,51 @@ sjme_errorCode sjme_scritchui_gtk2_componentSetSizeListener(
 	/* Basic signal connection. */
 	return inState->implIntern->reconnectSignal(widget,
 		inComponent,
-		infoCore,
+		(sjme_scritchui_listener_void*)&SJME_SCRITCHUI_LISTENER_CORE(
+			inComponent, size),
 		inListener,
 		copyFrontEnd,
 		"configure-event",
 		G_CALLBACK(sjme_scritchui_gtk2_eventConfigure));
+}
+
+sjme_errorCode sjme_scritchui_gtk2_componentSetVisibleListener(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(visible))
+{
+	sjme_errorCode error;
+	GtkWidget* widget;
+	
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	sjme_message("VISIBLE LISTENER SET GTK %p", inListener);
+	
+	/* Recover widget. */	
+	widget = (GtkWidget*)inComponent->common.handle;
+	
+	/* Basic signal connection, for map and unmap. */
+	error = SJME_ERROR_NONE;
+	error |= inState->implIntern->reconnectSignal(widget,
+		inComponent,
+		(sjme_scritchui_listener_void*)&SJME_SCRITCHUI_LISTENER_CORE(
+			inComponent, visible),
+		inListener,
+		copyFrontEnd,
+		"map-event",
+		G_CALLBACK(sjme_scritchui_gtk2_eventMap));
+	error |= inState->implIntern->reconnectSignal(widget,
+		inComponent,
+		(sjme_scritchui_listener_void*)&SJME_SCRITCHUI_LISTENER_CORE(
+			inComponent, visible),
+		inListener,
+		copyFrontEnd,
+		"unmap-event",
+		G_CALLBACK(sjme_scritchui_gtk2_eventUnmap));
+	
+	/* Was there an error? */
+	return error;
 }
 
 sjme_errorCode sjme_scritchui_gtk2_componentSize(

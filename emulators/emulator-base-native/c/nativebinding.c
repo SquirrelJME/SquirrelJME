@@ -40,11 +40,20 @@ static sjme_jboolean sjme_jni_abortHandler(void)
 	return SJME_JNI_FALSE;
 }
 
+static sjme_jboolean sjme_jni_messageHandler(sjme_lpcstr fullMessage,
+	sjme_lpcstr partMessage)
+{
+    fprintf(stderr, "%s\n", fullMessage);
+    fflush(stderr);
+    
+    return SJME_JNI_TRUE;
+}
+
 static sjme_debug_handlerFunctions sjme_jni_debugHandlers =
 {
 	.abort = sjme_jni_abortHandler,
 	.exit = NULL,
-	.message = NULL,
+	.message = sjme_jni_messageHandler,
 };
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)

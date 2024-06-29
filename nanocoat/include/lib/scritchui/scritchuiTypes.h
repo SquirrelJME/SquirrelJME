@@ -42,13 +42,13 @@ extern "C" {
 typedef enum sjme_scritchui_listenerClass
 {
 	/** User based listener. */
-	SJME_SCRITCHUI_LISTENER_USER,
+	SJME_SCRITCHUI_LISTENER_USER = 0,
 	
 	/** Core based listener. */
-	SJME_SCRITCHUI_LISTENER_CORE,
+	SJME_SCRITCHUI_LISTENER_CORE = 1,
 	
 	/** The number of listener classes. */
-	SJME_NUM_SCRITCHUI_LISTENER,
+	SJME_NUM_SCRITCHUI_LISTENER = 2,
 } sjme_scritchui_listenerClass;
 
 /** Declares a ScritchUI listener set. */
@@ -143,6 +143,12 @@ typedef struct sjme_scritchui_uiComponentBase
 	
 	/** The parent of this component. */
 	sjme_scritchui_uiComponent parent;
+	
+	/** Is this component currently visible? */
+	sjme_jboolean isVisible;
+	
+	/** Is this visible to the user? */
+	sjme_jboolean isUserVisible;
 	
 	/** User and core listeners for the component. */
 	sjme_scritchui_uiComponentListeners listeners[SJME_NUM_SCRITCHUI_LISTENER];

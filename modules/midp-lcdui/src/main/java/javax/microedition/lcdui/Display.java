@@ -762,8 +762,16 @@ public class Display
 	public boolean hasPointerEvents()
 	{
 		int types = this._scritch.window().inputTypes(this._window);
-		return 0 != (types & (ScritchInputMethodType.MOUSE |
-			ScritchInputMethodType.TOUCHSCREEN));
+		return 0 != (types & (ScritchInputMethodType.MOUSE_BUTTON_PRESSED |
+			ScritchInputMethodType.MOUSE_BUTTON_RELEASED |
+			ScritchInputMethodType.MOUSE_MOTION |
+			ScritchInputMethodType.TOUCH_FINGER_PRESSED |
+			ScritchInputMethodType.TOUCH_FINGER_RELEASED |
+			ScritchInputMethodType.TOUCH_DRAG_MOTION |
+			ScritchInputMethodType.STYLUS_PEN_PRESSED |
+			ScritchInputMethodType.STYLUS_PEN_RELEASED |
+			ScritchInputMethodType.STYLUS_DRAG_MOTION |
+			ScritchInputMethodType.STYLUS_HOVER_MOTION));
 	}
 	
 	/**
@@ -776,7 +784,10 @@ public class Display
 	public boolean hasPointerMotionEvents()
 	{
 		int types = this._scritch.window().inputTypes(this._window);
-		return 0 != (types & (ScritchInputMethodType.MOUSE));
+		return 0 != (types & (ScritchInputMethodType.MOUSE_MOTION |
+			ScritchInputMethodType.TOUCH_DRAG_MOTION |
+			ScritchInputMethodType.STYLUS_DRAG_MOTION |
+			ScritchInputMethodType.STYLUS_HOVER_MOTION));
 	}
 	
 	/**

@@ -8,6 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 #include "lib/scritchui/gtk2/gtk2.h"
+#include "lib/scritchui/gtk2/gtk2Intern.h"
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/alloc.h"
 
@@ -48,8 +49,20 @@ sjme_errorCode sjme_scritchui_gtk2_panelNew(
 	/* Does not have a window component. */
 	gtk_fixed_set_has_window(GTK_FIXED(fixed), FALSE);
 	
+	/* Common widget init. */
+	inState->implIntern->widgetInit(GTK_WIDGET(fixed));
+	
 	/* Store information. */
 	inPanel->component.common.handle = fixed;
+	
+	/* For this panel, we want to handle these events. */
+	gtk_widget_add_events(GTK_WIDGET(fixed),
+		GDK_POINTER_MOTION_MASK |
+		GDK_BUTTON_PRESS_MASK |
+		GDK_BUTTON_RELEASE_MASK |
+		GDK_KEY_PRESS_MASK |
+		GDK_KEY_RELEASE_MASK |
+		GDK_BUTTON_MOTION_MASK);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;

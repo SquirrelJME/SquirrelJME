@@ -22,8 +22,6 @@ sjme_errorCode sjme_scritchui_gtk2_intern_reconnectSignal(
 	sjme_attrInNotNull sjme_lpcstr inSignal,
 	sjme_attrInNotNull GCallback inGtkCallback)
 {
-	
-	
 	/* Disconnect old signal? */
 	if (infoCore->extra != 0)
 	{
@@ -51,5 +49,19 @@ sjme_errorCode sjme_scritchui_gtk2_intern_reconnectSignal(
 	}
 	
 	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_scritchui_gtk2_intern_widgetInit(
+	sjme_attrInNotNull GtkWidget* inWidget)
+{
+	if (inWidget == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Setup visibility events. */
+	gtk_widget_add_events(inWidget,
+		GDK_VISIBILITY_NOTIFY_MASK |
+		GDK_STRUCTURE_MASK);
+	
 	return SJME_ERROR_NONE;
 }

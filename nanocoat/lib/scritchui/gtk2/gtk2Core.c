@@ -20,6 +20,8 @@ static const sjme_scritchui_implFunctions sjme_scritchui_gtkFunctions =
 	.componentRevalidate = sjme_scritchui_gtk2_componentRevalidate,
 	.componentSetPaintListener = sjme_scritchui_gtk2_componentSetPaintListener,
 	.componentSetSizeListener = sjme_scritchui_gtk2_componentSetSizeListener,
+	.componentSetVisibleListener =
+		sjme_scritchui_gtk2_componentSetVisibleListener,
 	.componentSize = sjme_scritchui_gtk2_componentSize,
 	.containerAdd = sjme_scritchui_gtk2_containerAdd,
 	.containerSetBounds = sjme_scritchui_gtk2_containerSetBounds,
@@ -40,6 +42,7 @@ static const sjme_scritchui_implInternFunctions
 	sjme_scritchui_gtkInternFunctions =
 {
 	.reconnectSignal = sjme_scritchui_gtk2_intern_reconnectSignal,
+	.widgetInit = sjme_scritchui_gtk2_intern_widgetInit,
 };
 
 static sjme_thread_result sjme_scritchui_gtk2_loopMain(

@@ -40,11 +40,17 @@ typedef sjme_errorCode (*sjme_scritchui_gtk2_reconnectSignalFunc)(
 	sjme_attrInNotNull sjme_lpcstr inSignal,
 	sjme_attrInNotNull GCallback inGtkCallback);
 
+typedef sjme_errorCode (*sjme_scritchui_gtk2_intern_widgetInitFunc)(
+	sjme_attrInNotNull GtkWidget* inWidget);
+
 /** Internal GTK implementation functions. */	
 struct sjme_scritchui_implInternFunctions
 {
 	/** Reconnect a signal. */
 	sjme_scritchui_gtk2_reconnectSignalFunc reconnectSignal;
+	
+	/** Widget init func. */
+	sjme_scritchui_gtk2_intern_widgetInitFunc widgetInit;
 };
 
 sjme_errorCode sjme_scritchui_gtk2_intern_reconnectSignal(
@@ -55,6 +61,9 @@ sjme_errorCode sjme_scritchui_gtk2_intern_reconnectSignal(
 	sjme_attrInNullable sjme_frontEnd* copyFrontEnd,
 	sjme_attrInNotNull sjme_lpcstr inSignal,
 	sjme_attrInNotNull GCallback inGtkCallback);
+
+sjme_errorCode sjme_scritchui_gtk2_intern_widgetInit(
+	sjme_attrInNotNull GtkWidget* inWidget);
 
 /*--------------------------------------------------------------------------*/
 

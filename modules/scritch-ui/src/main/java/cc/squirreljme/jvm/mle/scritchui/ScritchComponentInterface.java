@@ -12,6 +12,7 @@ package cc.squirreljme.jvm.mle.scritchui;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchSizeListener;
+import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchVisibleListener;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
@@ -59,6 +60,19 @@ public interface ScritchComponentInterface
 	@SquirrelJMEVendorApi
 	void setSizeListener(ScritchComponentBracket __component,
 		ScritchSizeListener __listener)
+		throws MLECallError;
+	
+	/**
+	 * Sets the visibility listener to use for the widget.
+	 *
+	 * @param __component The component to set the listener for.
+	 * @param __listener The listener to set or clear.
+	 * @throws MLECallError If the component is not valid.
+	 * @since 2024/06/28
+	 */
+	@SquirrelJMEVendorApi
+	void setVisibleListener(ScritchComponentBracket __component,
+		ScritchVisibleListener __listener)
 		throws MLECallError;
 	
 	/**

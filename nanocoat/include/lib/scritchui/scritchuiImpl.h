@@ -51,9 +51,6 @@ extern "C" {
 #define SJME_SCRITCHUI_LISTENER_USER(item, specific) \
 	((item)->listeners[SJME_SCRITCHUI_LISTENER_USER].specific)
 
-#define SJME_SCRITCHUI_LISTENER_USER_OFFSET(fromType, type, specific) \
-	SJME_POINTER_OFFSET()
-
 /**
  * Implementation specific initialization.
  * 

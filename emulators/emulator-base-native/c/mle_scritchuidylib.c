@@ -24,25 +24,18 @@
 	"NativeScritchDylib"
 #define FORWARD_CLASS IMPL_CLASS
 
-#define DESC_SCRITCHUI_COMPONENT DESC_CLASS( \
-	"cc/squirreljme/jvm/mle/scritchui/brackets/ScritchComponentBracket")
-#define DESC_SCRITCHUI_CLOSE_LISTENER DESC_CLASS( \
-	"cc/squirreljme/jvm/mle/scritchui/callbacks/ScritchCloseListener")
-#define DESC_SCRITCHUI_PAINT_LISTENER DESC_CLASS( \
-	"cc/squirreljme/jvm/mle/scritchui/callbacks/ScritchPaintListener")
-#define DESC_SCRITCHUI_PENCIL DESC_CLASS( \
-	"cc/squirreljme/jvm/mle/scritchui/brackets/ScritchPencilBracket")
-#define DESC_SCRITCHUI_WINDOW DESC_CLASS( \
-	"cc/squirreljme/jvm/mle/scritchui/brackets/ScritchWindowBracket")
-
 #define DESC_ScritchCloseListener_closed "(" \
 	DESC_SCRITCHUI_WINDOW ")" DESC_BOOLEAN
 #define DESC_ScritchPaintListener_paint "(" \
-	DESC_SCRITCHUI_COMPONENT /*__component*/ \
+	DESC_SCRITCHUI_COMPONENT /* __component */ \
     DESC_SCRITCHUI_PENCIL /* __g */ \
-	DESC_INTEGER /*__sw*/ \
-	DESC_INTEGER /*__sh*/ \
-	DESC_INTEGER /*__special*/ ")" DESC_VOID
+	DESC_INTEGER /* __sw */ \
+	DESC_INTEGER /* __sh */ \
+	DESC_INTEGER /* __special */ ")" DESC_VOID
+#define DESC_ScritchVisibleListener_visibilityChanged "(" \
+    DESC_SCRITCHUI_COMPONENT /* __component */ \
+    DESC_BOOLEAN /* __from */ \
+	DESC_BOOLEAN /* __to */ ")" DESC_VOID
 
 #define FORWARD_DESC___builtinFonts "(" \
 	DESC_LONG ")" DESC_ARRAY(DESC_PENCILFONT)
@@ -54,6 +47,8 @@
 	DESC_LONG DESC_LONG ")" DESC_VOID
 #define FORWARD_DESC___componentSetPaintListener "(" \
 	DESC_LONG DESC_LONG DESC_SCRITCHUI_PAINT_LISTENER ")" DESC_VOID
+#define FORWARD_DESC___componentSetVisibleListener "(" \
+    DESC_LONG DESC_LONG DESC_SCRITCHUI_VISIBLE_LISTENER ")" DESC_VOID
 #define FORWARD_DESC___componentWidth FORWARD_DESC___componentHeight
 #define FORWARD_DESC___containerAdd "(" \
 	DESC_LONG DESC_LONG DESC_LONG ")" DESC_VOID
@@ -279,6 +274,46 @@ static sjme_errorCode mle_scritchUiListenerPaint(
 	/* We no longer need the graphics reference. */
 	(*env)->DeleteLocalRef(env, pencilObject);
 	
+	/* Failed? */
+	if (sjme_jni_checkVMException(env))
+		return SJME_ERROR_UNKNOWN;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode mle_scritchUiListenerVisible(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInValue sjme_jboolean fromVisible,
+	sjme_attrInValue sjme_jboolean toVisible)
+{
+	JNIEnv* env;
+	sjme_scritchui_listener_visible* infoUser;
+	mle_callbackData callbackData;
+	
+	/* Relocate env. */
+	mle_scritchUiRecoverEnv(inState, &env);
+	
+	/* Get listener from window. */
+	infoUser = &SJME_SCRITCHUI_LISTENER_USER(inComponent, visible);
+	
+	/* Recover callback information. */
+	mle_scritchUiRecoverCallback(env, inComponent,
+		&infoUser->frontEnd,
+		"visibilityChanged",
+		DESC_ScritchVisibleListener_visibilityChanged,
+		&callbackData);
+	
+	sjme_message("VISIBILITY JAVA");
+	
+	/* Forward call. */
+	(*env)->CallVoidMethod(env,
+		callbackData.javaCallback, callbackData.javaCallbackId,
+		
+		callbackData.onWhat,
+		fromVisible, toVisible);
+		
 	/* Failed? */
 	if (sjme_jni_checkVMException(env))
 		return SJME_ERROR_UNKNOWN;
@@ -563,6 +598,43 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 		sjme_error_is(error = state->api->componentSetPaintListener(
 			state, component,
 			mle_scritchUiListenerPaint, &newFrontEnd)))
+	{
+		sjme_jni_throwMLECallError(env, error);
+		return;
+	}
+}
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__componentSetVisibleListener)(JNIEnv* env, jclass classy, jlong stateP,
+	jlong componentP, jobject javaListener)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	sjme_scritchui_uiComponent component;
+	sjme_frontEnd newFrontEnd;
+	
+	if (stateP == 0 || componentP == 0)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	component = (sjme_scritchui_uiComponent)componentP;
+	
+	/* Setup new front-end to refer to this component. */
+	mle_scritchUiStoreCallback(env, &newFrontEnd, javaListener);
+
+	sjme_message("VISIBILITY LISTENER SET JAVA");
+	
+	/* Forward. */
+	error = SJME_ERROR_NOT_IMPLEMENTED;
+	if (state->api->componentSetVisibleListener == NULL ||
+		sjme_error_is(error = state->api->componentSetVisibleListener(
+			state, component,
+			mle_scritchUiListenerVisible,
+			&newFrontEnd)))
 	{
 		sjme_jni_throwMLECallError(env, error);
 		return;
@@ -1254,6 +1326,7 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 	FORWARD_list(NativeScritchDylib, __componentRepaint),
 	FORWARD_list(NativeScritchDylib, __componentRevalidate),
 	FORWARD_list(NativeScritchDylib, __componentSetPaintListener),
+		FORWARD_list(NativeScritchDylib, __componentSetVisibleListener),
 	FORWARD_list(NativeScritchDylib, __componentWidth),
 	FORWARD_list(NativeScritchDylib, __containerAdd),
 	FORWARD_list(NativeScritchDylib, __containerSetBounds),

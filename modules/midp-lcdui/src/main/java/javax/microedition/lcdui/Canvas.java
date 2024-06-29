@@ -312,6 +312,10 @@ public abstract class Canvas
 		panelApi.setPaintListener(scritchPanel,
 			new __ExecCanvasPaint__(this));
 		
+		// Listener for visibility changes
+		scritchApi.component().setVisibleListener(scritchPanel,
+			new __ExecCanvasVisible__(this));
+		
 		// Canvases take focus and inputs, so enable it
 		panelApi.enableFocus(scritchPanel, true);
 		
