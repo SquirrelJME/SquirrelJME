@@ -467,14 +467,14 @@ typedef sjme_errorCode (*sjme_scritchui_componentSizeFunc)(
  * 
  * @param inState The input state.
  * @param inContainer The container to place the component within.
- * @param inComponent The component to add to the container.
+ * @param addComponent The component to add to the container.
  * @return Any error code if applicable.
  * @since 2024/04/20
  */
 typedef sjme_errorCode (*sjme_scritchui_containerAddFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
+	sjme_attrInNotNull sjme_scritchui_uiComponent addComponent);
 
 /**
  * Sets the bounds of a component within the container.

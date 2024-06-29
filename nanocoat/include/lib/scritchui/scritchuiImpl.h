@@ -66,7 +66,7 @@ typedef sjme_errorCode (*sjme_scritchui_impl_apiInitFunc)(
  * 
  * @param inState The input state.
  * @param inContainer The container to place the component within.
- * @param inComponent The component to add to the container.
+ * @param addComponent The component to add to the container.
  * @return Any error code if applicable.
  * @since 2024/04/20
  */
@@ -74,7 +74,7 @@ typedef sjme_errorCode (*sjme_scritchui_impl_containerAddFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
 	sjme_attrInNotNull sjme_scritchui_uiContainer inContainerData,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
+	sjme_attrInNotNull sjme_scritchui_uiComponent addComponent);
 
 /**
  * Creates a new native panel.
@@ -232,6 +232,45 @@ typedef sjme_errorCode (*sjme_scritchui_intern_mapScreenFunc)(
 	sjme_attrInOutNotNull sjme_scritchui_uiScreen* outScreen,
 	sjme_attrInNullable sjme_scritchui_handle updateHandle);
 
+/**
+ * Updates the visibility state of a container.
+ * 
+ * @param inState The input state.
+ * @param inContainer The input container.
+ * @param isVisible Is this now visible?
+ * @since 2024/06/28
+ */
+typedef sjme_errorCode (*sjme_scritchui_intern_updateVisibleContainerFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrInValue sjme_jboolean isVisible);
+
+/**
+ * Updates the visibility state of a container.
+ * 
+ * @param inState The input state.
+ * @param inComponent The input component.
+ * @param isVisible Is this now visible?
+ * @since 2024/06/28
+ */
+typedef sjme_errorCode (*sjme_scritchui_intern_updateVisibleComponentFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInValue sjme_jboolean isVisible);
+
+/**
+ * Updates the visibility state of a window.
+ * 
+ * @param inState The input state.
+ * @param inWindow The input window.
+ * @param isVisible Is this now visible?
+ * @since 2024/06/28
+ */
+typedef sjme_errorCode (*sjme_scritchui_intern_updateVisibleWindowFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInValue sjme_jboolean isVisible);
+
 struct sjme_scritchui_internFunctions
 {
 	/** Returns the container for the given component. */
@@ -245,6 +284,15 @@ struct sjme_scritchui_internFunctions
 	
 	/** Maps the given screen. */
 	sjme_scritchui_intern_mapScreenFunc mapScreen;
+	
+	/** Update visibility recursively on container. */
+	sjme_scritchui_intern_updateVisibleContainerFunc updateVisibleContainer;
+	
+	/** Update visibility on component. */
+	sjme_scritchui_intern_updateVisibleComponentFunc updateVisibleComponent;
+	
+	/** Update visibility recursively on window. */
+	sjme_scritchui_intern_updateVisibleWindowFunc updateVisibleWindow;
 };
 
 /*--------------------------------------------------------------------------*/

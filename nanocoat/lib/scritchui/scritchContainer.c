@@ -12,42 +12,102 @@
 #include "lib/scritchui/core/core.h"
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/debug.h"
+#include "sjme/alloc.h"
 
 sjme_errorCode sjme_scritchui_core_containerAdd(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent)
+	sjme_attrInNotNull sjme_scritchui_uiComponent addComponent)
 {
 	sjme_scritchui_uiContainer container;
+	sjme_list_sjme_scritchui_uiComponent* list;
+	sjme_list_sjme_scritchui_uiComponent* newList;
 	sjme_errorCode error;
+	sjme_jint freeSlot, i, n;
 	
-	if (inState == NULL || inContainer == NULL || inComponent == NULL)
+	if (inState == NULL || inContainer == NULL || addComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Cannot add a window to a container despite windows being components. */
-	if (inComponent->common.type == SJME_SCRITCHUI_TYPE_WINDOW)
+	if (addComponent->common.type == SJME_SCRITCHUI_TYPE_WINDOW)
 		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Not implemented? */
+	if (inState->impl->containerAdd == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
 	
 	/* Only certain types are containers. */
 	if (sjme_error_is(error = inState->intern->getContainer(inState,
-		inComponent, &container)) || container == NULL)
+		inContainer, &container)) ||
+		container == NULL)
 		return sjme_error_default(error);
 	
 	/* Cannot add a component to multiple containers, they must be removed */
 	/* manually for consistency purposes. */
-	if (inComponent->parent != NULL)
+	if (addComponent->parent != NULL)
 		return SJME_ERROR_ALREADY_IN_CONTAINER;
 	
-	/* Forward call. */	
-	error = SJME_ERROR_NOT_IMPLEMENTED;
-	if (inState->impl->containerAdd == NULL ||
-		sjme_error_is(error = inState->impl->containerAdd(inState,
+	/* Find free slot in child set. */
+	freeSlot = -1;
+	list = container->components;
+	n = (list == NULL ? 0 : list->length);
+	if (list != NULL)
+		for (i = 0; i < n; i++)
+			if (list->elements[i] == NULL)
+			{
+				freeSlot = i;
+				break;
+			}
+	
+	/* No free slot? Need to alloc list... */
+	if (freeSlot < 0)
+	{
+		/* Setup new list. */
+		newList = NULL;
+		if (sjme_error_is(error = sjme_list_alloc(inState->pool, n + 4,
+			&newList, sjme_scritchui_uiComponent, 0)) || newList == NULL)
+			return sjme_error_default(error);
+		
+		/* Need to copy everything over? */
+		if (list != NULL)
+			for (i = 0; i < n; i++)
+				newList->elements[i] = list->elements[i];
+		
+		/* Free slot is at the end. */
+		freeSlot = n;
+		
+		/* Set new list. */
+		container->components = newList;
+		
+		/* Free old list. */
+		sjme_alloc_free(list);
+		
+		/* Need to use this one! */
+		list = newList;
+	}
+	
+	/* Debug. */
+	sjme_message("CONTAINER ADD %p (%p) <- %p at %d %p (%p)",
 		inContainer, container,
-		inComponent)))
+		addComponent, freeSlot, list,
+		container->components);
+	
+	/* Set free slot in component. */
+	list->elements[freeSlot] = addComponent;
+	
+	/* Forward call. */	
+	if (sjme_error_is(error = inState->impl->containerAdd(inState,
+		inContainer, container,
+		addComponent)))
+	{
+		/* Undo. */
+		list->elements[freeSlot] = NULL;
+		
 		return sjme_error_default(error);
+	}
 	
 	/* Update parent. */
-	inComponent->parent = inContainer;
+	addComponent->parent = inContainer;
 		
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -109,4 +169,65 @@ sjme_errorCode sjme_scritchui_core_intern_getContainer(
 	/* Success! */
 	*outContainer = container;
 	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_scritchui_core_intern_updateVisibleContainer(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrInValue sjme_jboolean isVisible)
+{
+	sjme_errorCode error;
+	sjme_list_sjme_scritchui_uiComponent* list;
+	sjme_scritchui_uiComponent sub;
+	sjme_scritchui_uiContainer container;
+	sjme_jint i, n;
+	
+	if (inState == NULL || inContainer == NULL)
+		return SJME_ERROR_NONE;
+	
+	/* We need the container itself. */
+	container = NULL;
+	if (sjme_error_is(error = inState->intern->getContainer(inState,
+		inContainer, &container)) ||
+		container == NULL)
+		return sjme_error_default(error);
+	
+	/* Do not fail on the first call! */
+	error = SJME_ERROR_NONE;
+	
+	/* Debug. */
+	sjme_message("VISIBLE CONTAINER %p (%p) (list=%p)",
+		inContainer, container, container->components);
+	
+	/* Update our own component. */
+	error |= inState->intern->updateVisibleComponent(inState,
+		inContainer, isVisible);
+	
+	/* Need to go through the list. */
+	list = container->components;
+	if (list != NULL)
+	{
+		/* Go through everything. */
+		for (i = 0, n = list->length; i < n; i++)
+		{
+			/* If there is no component in this slot, just ignore. */
+			sub = list->elements[i];
+			if (sub == NULL)
+				continue;
+			
+			/* Send update for callback. */
+			error |= inState->intern->updateVisibleComponent(inState,
+				sub, isVisible);
+		}
+		
+		/* If the list has changed, due to callback?, free it. */
+		if (container->components != list)
+		{
+			sjme_alloc_free(list);
+			list = NULL;
+		}
+	}
+	
+	/* Return whatever error state there was. */
+	return error;
 }

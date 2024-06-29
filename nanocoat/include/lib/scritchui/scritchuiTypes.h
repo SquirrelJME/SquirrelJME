@@ -154,6 +154,13 @@ typedef struct sjme_scritchui_uiComponentBase
 	sjme_scritchui_uiComponentListeners listeners[SJME_NUM_SCRITCHUI_LISTENER];
 } sjme_scritchui_uiComponentBase;
 
+/** List of component. */
+SJME_LIST_DECLARE(sjme_scritchui_uiComponent, 0);
+
+/** Type that component pointers are. */
+#define SJME_TYPEOF_BASIC_sjme_scritchui_uiComponent \
+	SJME_TYPEOF_BASIC_sjme_pointer
+
 /**
  * Base data for containers which may contain components.
  * 
@@ -161,8 +168,8 @@ typedef struct sjme_scritchui_uiComponentBase
  */
 typedef struct sjme_scritchui_uiContainerBase
 {
-	/** Todo. */
-	sjme_jint todo;
+	/** Components within the container. */
+	sjme_list_sjme_scritchui_uiComponent* components;
 } sjme_scritchui_uiContainerBase; 
 
 typedef struct sjme_scritchui_uiPaintableListeners

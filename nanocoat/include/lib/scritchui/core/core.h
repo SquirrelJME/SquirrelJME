@@ -62,7 +62,7 @@ sjme_errorCode sjme_scritchui_core_componentSize(
 sjme_errorCode sjme_scritchui_core_containerAdd(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
+	sjme_attrInNotNull sjme_scritchui_uiComponent addComponent);
 	
 sjme_errorCode sjme_scritchui_core_containerSetBounds(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -177,6 +177,21 @@ sjme_errorCode sjme_scritchui_core_intern_mapScreen(
 	sjme_attrInValue sjme_jint screenId,
 	sjme_attrInOutNotNull sjme_scritchui_uiScreen* outScreen,
 	sjme_attrInNullable sjme_scritchui_handle updateHandle);
+
+sjme_errorCode sjme_scritchui_core_intern_updateVisibleComponent(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInValue sjme_jboolean isVisible);
+
+sjme_errorCode sjme_scritchui_core_intern_updateVisibleContainer(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrInValue sjme_jboolean isVisible);
+
+sjme_errorCode sjme_scritchui_core_intern_updateVisibleWindow(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInValue sjme_jboolean isVisible);
 
 /*--------------------------------------------------------------------------*/
 

@@ -155,7 +155,7 @@ SUD_STRUCT_DEF(componentSize,
 
 SUD_STRUCT_DEF(containerAdd,
 	SDU_VAR(sjme_scritchui_uiComponent, inContainer);
-	SDU_VAR(sjme_scritchui_uiComponent, inComponent););
+	SDU_VAR(sjme_scritchui_uiComponent, addComponent););
 
 SUD_STRUCT_DEF(containerSetBounds,
 	SDU_VAR(sjme_scritchui_uiComponent, inContainer);
@@ -336,7 +336,7 @@ sjme_errorCode sjme_scritchui_coreSerial_componentSize(
 sjme_errorCode sjme_scritchui_coreSerial_containerAdd(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
+	sjme_attrInNotNull sjme_scritchui_uiComponent addComponent);
 	
 sjme_errorCode sjme_scritchui_coreSerial_containerSetBounds(
 	sjme_attrInNotNull sjme_scritchui inState,

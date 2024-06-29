@@ -157,3 +157,17 @@ sjme_errorCode sjme_scritchui_core_windowSetVisible(
 	/* Forward call. */
 	return inState->impl->windowSetVisible(inState, inWindow, isVisible);
 }
+
+sjme_errorCode sjme_scritchui_core_intern_updateVisibleWindow(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInValue sjme_jboolean isVisible)
+{
+	if (inState == NULL || inWindow == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Windows are container components, so we do not need to do anything */
+	/* unique at all. */
+	return inState->intern->updateVisibleContainer(inState,
+		(sjme_scritchui_uiComponent)inWindow, isVisible);
+}

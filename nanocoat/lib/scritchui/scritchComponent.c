@@ -447,12 +447,20 @@ sjme_errorCode sjme_scritchui_core_intern_initComponent(
 		
 		/* Set base visibility listener. */
 		if (inState->impl->componentSetVisibleListener != NULL)
+		{
 			if (sjme_error_is(error =
 				inState->impl->componentSetVisibleListener(inState,
 				inComponent,
 				sjme_scritchui_core_baseVisibleListener,
 				NULL)))
 				return sjme_error_default(error);
+		}
+		
+		/* If there is no native support for listeners, still set it */
+		/* as we will handle visibility ourselves manually. */
+		else
+			SJME_SCRITCHUI_LISTENER_CORE(inComponent, visible)
+				.callback = sjme_scritchui_core_baseVisibleListener;
 		
 		/* Common paintable base initialization. */
 		paint = NULL;
@@ -485,5 +493,28 @@ sjme_errorCode sjme_scritchui_core_intern_initComponent(
 	}
 	
 	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_scritchui_core_intern_updateVisibleComponent(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInValue sjme_jboolean isVisible)
+{
+	sjme_scritchui_listener_visible* infoUser;
+	
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Debug. */
+	sjme_message("VISIBLE COMPONENT %p", inComponent);
+
+	/* There always is a core interface! */
+	infoUser = &SJME_SCRITCHUI_LISTENER_CORE(inComponent, visible);
+	if (infoUser->callback != NULL)
+		return infoUser->callback(inState, inComponent,
+			inComponent->isVisible, isVisible);
+	
+	/* There was no callback, so just success. */
 	return SJME_ERROR_NONE;
 }

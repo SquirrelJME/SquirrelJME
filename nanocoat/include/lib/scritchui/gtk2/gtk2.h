@@ -72,11 +72,6 @@ sjme_errorCode sjme_scritchui_gtk2_componentSetSizeListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(size));
-	
-sjme_errorCode sjme_scritchui_gtk2_componentSetVisibleListener(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	SJME_SCRITCHUI_SET_LISTENER_ARGS(visible));
 
 sjme_errorCode sjme_scritchui_gtk2_componentSize(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -88,7 +83,7 @@ sjme_errorCode sjme_scritchui_gtk2_containerAdd(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
 	sjme_attrInNotNull sjme_scritchui_uiContainer inContainerData,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
+	sjme_attrInNotNull sjme_scritchui_uiComponent addComponent);
 	
 sjme_errorCode sjme_scritchui_gtk2_containerSetBounds(
 	sjme_attrInNotNull sjme_scritchui inState,

@@ -96,6 +96,11 @@ static const sjme_scritchui_internFunctions sjme_scritchUI_coreIntern =
 	.getPaintable = sjme_scritchui_core_intern_getPaintable,
 	.initComponent = sjme_scritchui_core_intern_initComponent,
 	.mapScreen = sjme_scritchui_core_intern_mapScreen,
+	.updateVisibleContainer =
+		sjme_scritchui_core_intern_updateVisibleContainer,
+	.updateVisibleComponent =
+		sjme_scritchui_core_intern_updateVisibleComponent,
+	.updateVisibleWindow = sjme_scritchui_core_intern_updateVisibleWindow,
 };
 
 sjme_errorCode sjme_scritchui_core_apiInit(

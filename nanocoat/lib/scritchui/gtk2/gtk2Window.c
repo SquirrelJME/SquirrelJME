@@ -45,6 +45,34 @@ static gboolean sjme_scritchui_gtk2_eventDelete(GtkWidget* widget,
 	return FALSE;
 }
 
+static gboolean sjme_scritchui_gtk2_eventVisibilityNotify(
+	GtkWidget* widget,
+	GdkEventVisibility* event,
+	gpointer data)
+{
+	sjme_scritchui inState;
+	sjme_scritchui_uiWindow inWindow;
+	
+	/* Check nulls before proceeding. */
+	if (widget == NULL || event == NULL || data == NULL)
+		return FALSE;
+	
+	/* Restore. */
+	inWindow = (sjme_scritchui_uiComponent)data;
+	inState = inWindow->component.common.state;
+	
+	sjme_message("VISIBLE GTK %p %d", inWindow,
+		event->state != GDK_VISIBILITY_FULLY_OBSCURED);
+	
+	/* We need to recurse and have ScritchUI handle this. */
+	inState->intern->updateVisibleWindow(
+		inState, inWindow,
+		event->state != GDK_VISIBILITY_FULLY_OBSCURED);
+	
+	/* Always continue handling. */
+	return FALSE;
+}
+
 sjme_errorCode sjme_scritchui_gtk2_windowContentMinimumSize(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
@@ -109,6 +137,10 @@ sjme_errorCode sjme_scritchui_gtk2_windowNew(
 	gtk_window_set_wmclass(gtkWindow,
 		inState->wmInfo->xwsClass,
 		inState->wmInfo->xwsClass);
+	
+	/* Set visibility change listener, which requires some logic. */
+	g_signal_connect(gtkWindow, "visibility-notify-event",
+		G_CALLBACK(sjme_scritchui_gtk2_eventVisibilityNotify), inWindow);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;

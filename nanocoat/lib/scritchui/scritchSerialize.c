@@ -191,7 +191,7 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 		SJME_SCRITCHUI_SERIAL_TYPE_CONTAINER_ADD,
 		(state,
 		containerAdd->inContainer,
-		containerAdd->inComponent));
+		containerAdd->addComponent));
 		
 	SJME_SCRITCHUI_DISPATCH_CASE(containerSetBounds,
 		SJME_SCRITCHUI_SERIAL_TYPE_CONTAINER_SET_BOUNDS,
@@ -382,14 +382,14 @@ sjme_errorCode sjme_scritchui_coreSerial_componentSize(
 sjme_errorCode sjme_scritchui_coreSerial_containerAdd(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent)
+	sjme_attrInNotNull sjme_scritchui_uiComponent addComponent)
 {
 	SJME_SCRITCHUI_SERIAL_CHUNK(containerAdd,
 		SJME_SCRITCHUI_SERIAL_TYPE_CONTAINER_ADD,
-		(inState, inContainer, inComponent));
+		(inState, inContainer, addComponent));
 		
 	SJME_SCRITCHUI_SERIAL_PASS(inContainer);
-	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
+	SJME_SCRITCHUI_SERIAL_PASS(addComponent);
 	
 	/* Invoke and wait. */
 	SJME_SCRITCHUI_INVOKE_WAIT;
