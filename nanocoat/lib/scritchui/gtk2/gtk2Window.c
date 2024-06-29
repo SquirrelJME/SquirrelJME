@@ -61,9 +61,6 @@ static gboolean sjme_scritchui_gtk2_eventVisibilityNotify(
 	inWindow = (sjme_scritchui_uiComponent)data;
 	inState = inWindow->component.common.state;
 	
-	sjme_message("VISIBLE GTK %p %d", inWindow,
-		event->state != GDK_VISIBILITY_FULLY_OBSCURED);
-	
 	/* We need to recurse and have ScritchUI handle this. */
 	inState->intern->updateVisibleWindow(
 		inState, inWindow,

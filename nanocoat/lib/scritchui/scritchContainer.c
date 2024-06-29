@@ -86,12 +86,6 @@ sjme_errorCode sjme_scritchui_core_containerAdd(
 		list = newList;
 	}
 	
-	/* Debug. */
-	sjme_message("CONTAINER ADD %p (%p) <- %p at %d %p (%p)",
-		inContainer, container,
-		addComponent, freeSlot, list,
-		container->components);
-	
 	/* Set free slot in component. */
 	list->elements[freeSlot] = addComponent;
 	
@@ -194,10 +188,6 @@ sjme_errorCode sjme_scritchui_core_intern_updateVisibleContainer(
 	
 	/* Do not fail on the first call! */
 	error = SJME_ERROR_NONE;
-	
-	/* Debug. */
-	sjme_message("VISIBLE CONTAINER %p (%p) (list=%p)",
-		inContainer, container, container->components);
 	
 	/* Update our own component. */
 	error |= inState->intern->updateVisibleComponent(inState,

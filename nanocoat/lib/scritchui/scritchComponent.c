@@ -105,13 +105,6 @@ static sjme_errorCode sjme_scritchui_core_baseVisibleListener(
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_message("VISIBILITY CORE %d %d %d %p %p",
-		inComponent->isVisible,
-		inComponent->isUserVisible,
-		toVisible,
-		SJME_SCRITCHUI_LISTENER_CORE(inComponent, visible).callback,
-		SJME_SCRITCHUI_LISTENER_USER(inComponent, visible).callback);
-	
 	/* Has core visibility changed? We do not want to spam visibility */
 	/* changes to our components if there is no point to it. */
 	wasVisible = inComponent->isVisible;
@@ -133,7 +126,6 @@ static sjme_errorCode sjme_scritchui_core_baseVisibleListener(
 			/* Update state. */
 			inComponent->isUserVisible = toVisible;
 			
-			sjme_message("VISIBILITY CALL %d %d", wasVisible, toVisible);
 			return infoUser->callback(inState, inComponent,
 				wasVisible, toVisible);
 		}
@@ -382,8 +374,6 @@ sjme_errorCode sjme_scritchui_core_componentSetVisibleListener(
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_message("VISIBILITY LISTENER SET %p", inListener);
-	
 	return sjme_scritchui_core_componentSetSimpleUserListener(
 		inState,
 		inComponent,
@@ -505,9 +495,6 @@ sjme_errorCode sjme_scritchui_core_intern_updateVisibleComponent(
 	
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Debug. */
-	sjme_message("VISIBLE COMPONENT %p", inComponent);
 
 	/* There always is a core interface! */
 	infoUser = &SJME_SCRITCHUI_LISTENER_CORE(inComponent, visible);
