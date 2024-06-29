@@ -15,7 +15,6 @@ import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPaintableBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchPaintListener;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 
 /**
@@ -48,13 +47,14 @@ public class DylibPanelInterface
 	 */
 	@Override
 	public void enableFocus(ScritchPanelBracket __panel,
-		boolean __enabled)
+		boolean __enabled, boolean __default)
 		throws MLECallError
 	{
 		if (__panel == null)
 			throw new MLECallError("NARG");
 		
-		this.dyLib.enableFocus((DylibPanelObject)__panel, __enabled);
+		this.dyLib.enableFocus((DylibPanelObject)__panel, __enabled,
+			__default);
 	}
 	
 	/**

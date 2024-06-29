@@ -11,10 +11,8 @@ package cc.squirreljme.jvm.mle.scritchui;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
-import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchPaintListener;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Interface for panels.
@@ -30,11 +28,13 @@ public interface ScritchPanelInterface
 	 *
 	 * @param __panel The panel to modify.
 	 * @param __enabled Whether focus and tab traversal should be enabled.
+	 * @param __default
 	 * @throws MLECallError On null arguments.
 	 * @since 2024/03/24
 	 */
 	@SquirrelJMEVendorApi
-	void enableFocus(@NotNull ScritchPanelBracket __panel, boolean __enabled)
+	void enableFocus(ScritchPanelBracket __panel, boolean __enabled,
+		boolean __default)
 		throws MLECallError;
 	
 	/**

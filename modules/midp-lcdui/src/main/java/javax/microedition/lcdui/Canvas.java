@@ -317,7 +317,9 @@ public abstract class Canvas
 			new __ExecCanvasVisible__(this));
 		
 		// Canvases take focus and inputs, so enable it
-		panelApi.enableFocus(scritchPanel, true);
+		// There should also be the default so that it is selected without
+		// needing to tab to it
+		panelApi.enableFocus(scritchPanel, true, true);
 		
 		// Setup repaint callback
 		this._repainter = new __ExecCanvasRepainter__(

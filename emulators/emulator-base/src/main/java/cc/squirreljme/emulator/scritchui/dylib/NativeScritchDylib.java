@@ -254,17 +254,19 @@ public final class NativeScritchDylib
 	 *
 	 * @param __panel The panel to modify.
 	 * @param __enabled If focus should be enabled or not.
+	 * @param __default Should this be the default focus item.
 	 * @throws MLECallError On any errors.
 	 * @since 2024/04/06
 	 */
-	public void enableFocus(DylibPanelObject __panel, boolean __enabled)
+	public void enableFocus(DylibPanelObject __panel, boolean __enabled,
+		boolean __default)
 		throws MLECallError
 	{
 		if (__panel == null)
 			throw new MLECallError("NARG");
 		
 		NativeScritchDylib.__panelEnableFocus(this._stateP,
-			__panel.objectP, __enabled);
+			__panel.objectP, __enabled, __default);
 	}
 	
 	/**
@@ -679,11 +681,12 @@ public final class NativeScritchDylib
 	 * @param __stateP The current state pointer.
 	 * @param __panelP The component pointer.
 	 * @param __enabled Should focus be enabled?
+	 * @param __default Should this be the default focus item?
 	 * @throws MLECallError On any errors.
 	 * @since 2024/04/06
 	 */
 	private static native void __panelEnableFocus(long __stateP,
-		long __panelP, boolean __enabled)
+		long __panelP, boolean __enabled, boolean __default)
 		throws MLECallError;
 	
 	/**

@@ -15,7 +15,8 @@
 sjme_errorCode sjme_scritchui_gtk2_panelEnableFocus(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiPanel inPanel,
-	sjme_attrInValue sjme_jboolean enableFocus)
+	sjme_attrInValue sjme_jboolean enableFocus,
+	sjme_attrInValue sjme_jboolean defaultFocus)
 {
 	GtkWidget* widget;
 	
@@ -26,6 +27,11 @@ sjme_errorCode sjme_scritchui_gtk2_panelEnableFocus(
 	widget = inPanel->component.common.handle;
 	gtk_widget_set_can_focus(widget,
 		SJME_JBOOLEAN_TO_GBOOLEAN(enableFocus));
+	
+	/* Set the default focus for this panel? */
+	gtk_widget_set_can_default(widget, defaultFocus);
+	if (defaultFocus)
+		gtk_widget_grab_default(widget);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;

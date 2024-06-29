@@ -120,7 +120,8 @@ sjme_errorCode sjme_scritchui_core_loopIterate(
 sjme_errorCode sjme_scritchui_core_panelEnableFocus(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiPanel inPanel,
-	sjme_attrInValue sjme_jboolean enableFocus);
+	sjme_attrInValue sjme_jboolean enableFocus,
+	sjme_attrInValue sjme_jboolean defaultFocus);
 
 sjme_errorCode sjme_scritchui_core_panelNew(
 	sjme_attrInNotNull sjme_scritchui inState,

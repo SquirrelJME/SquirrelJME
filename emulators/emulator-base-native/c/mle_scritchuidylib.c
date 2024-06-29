@@ -66,7 +66,7 @@
 #define FORWARD_DESC___loopIsInThread "(" \
 	DESC_LONG ")" DESC_BOOLEAN
 #define FORWARD_DESC___panelEnableFocus "(" \
-	DESC_LONG DESC_LONG DESC_BOOLEAN ")" DESC_VOID
+	DESC_LONG DESC_LONG DESC_BOOLEAN DESC_BOOLEAN ")" DESC_VOID
 #define FORWARD_DESC___panelNew "(" \
 	DESC_LONG ")" DESC_LONG
 #define FORWARD_DESC___screens "(" \
@@ -1045,7 +1045,7 @@ JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	__panelEnableFocus)(JNIEnv* env, jclass classy, jlong stateP,
-	jlong panelP, jboolean enableFocus)
+	jlong panelP, jboolean enableFocus, jboolean defaultFocus)
 {
 	sjme_errorCode error;
 	sjme_scritchui state;
@@ -1065,7 +1065,8 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	error = SJME_ERROR_NOT_IMPLEMENTED;
 	if (state->api->panelEnableFocus == NULL ||
 		sjme_error_is(error = state->api->panelEnableFocus(state,
-			panel, (sjme_jboolean)enableFocus)))
+			panel, (sjme_jboolean)enableFocus,
+			(sjme_jboolean)defaultFocus)))
 		goto fail_panelFocus;
 
 	/* Success! */

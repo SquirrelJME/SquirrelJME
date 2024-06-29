@@ -176,7 +176,8 @@ SUD_STRUCT_DEF(fontDerive,
 	
 SUD_STRUCT_DEF(panelEnableFocus,
 	SDU_VAR(sjme_scritchui_uiPanel, inPanel);
-	SDU_VAR(sjme_jboolean, enableFocus););
+	SDU_VAR(sjme_jboolean, enableFocus);
+	SDU_VAR(sjme_jboolean, defaultFocus););
 
 SUD_STRUCT_DEF(panelNew,
 	SDU_VARP(sjme_scritchui_uiPanel*, outPanel););
@@ -361,7 +362,8 @@ sjme_errorCode sjme_scritchui_coreSerial_fontDerive(
 sjme_errorCode sjme_scritchui_coreSerial_panelEnableFocus(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiPanel inPanel,
-	sjme_attrInValue sjme_jboolean enableFocus);
+	sjme_attrInValue sjme_jboolean enableFocus,
+	sjme_attrInValue sjme_jboolean defaultFocus);
 
 sjme_errorCode sjme_scritchui_coreSerial_panelNew(
 	sjme_attrInNotNull sjme_scritchui inState,

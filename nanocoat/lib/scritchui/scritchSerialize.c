@@ -220,7 +220,8 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 		SJME_SCRITCHUI_SERIAL_TYPE_PANEL_ENABLE_FOCUS,
 		(state,
 		panelEnableFocus->inPanel,
-		panelEnableFocus->enableFocus));
+		panelEnableFocus->enableFocus,
+		panelEnableFocus->defaultFocus));
 
 	SJME_SCRITCHUI_DISPATCH_CASE(panelNew,
 		SJME_SCRITCHUI_SERIAL_TYPE_PANEL_NEW,
@@ -456,14 +457,16 @@ sjme_errorCode sjme_scritchui_coreSerial_fontDerive(
 sjme_errorCode sjme_scritchui_coreSerial_panelEnableFocus(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiPanel inPanel,
-	sjme_attrInValue sjme_jboolean enableFocus)
+	sjme_attrInValue sjme_jboolean enableFocus,
+	sjme_attrInValue sjme_jboolean defaultFocus)
 {
 	SJME_SCRITCHUI_SERIAL_CHUNK(panelEnableFocus,
 		SJME_SCRITCHUI_SERIAL_TYPE_PANEL_ENABLE_FOCUS,
-		(inState, inPanel, enableFocus));
+		(inState, inPanel, enableFocus, defaultFocus));
 		
 	SJME_SCRITCHUI_SERIAL_PASS(inPanel);
 	SJME_SCRITCHUI_SERIAL_PASS(enableFocus);
+	SJME_SCRITCHUI_SERIAL_PASS(defaultFocus);
 	
 	/* Invoke and wait. */
 	SJME_SCRITCHUI_INVOKE_WAIT;
