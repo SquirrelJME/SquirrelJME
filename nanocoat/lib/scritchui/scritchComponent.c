@@ -266,6 +266,15 @@ sjme_errorCode sjme_scritchui_core_componentRevalidate(
 	return inState->impl->componentRevalidate(inState, inComponent);
 }
 
+sjme_errorCode sjme_scritchui_core_componentSetInputListener(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(input))
+{
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
 sjme_errorCode sjme_scritchui_core_componentSetPaintListener(
 	sjme_scritchui inState,
 	sjme_scritchui_uiComponent inComponent,

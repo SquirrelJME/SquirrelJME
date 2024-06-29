@@ -99,6 +99,15 @@
 		SJME_SCRITCHUI_DISPATCH_CALL(what, args); \
 		break
 
+/** Simplified listener dispatch call. */
+#define SJME_SCRITCHUI_DISPATCH_CASE_LISTENER(what, whatType) \
+	SJME_SCRITCHUI_DISPATCH_CASE(what, \
+		whatType, \
+		(state, \
+		what->inComponent, \
+		what->inListener, \
+		what->copyFrontEnd))
+
 /* ------------------------------------------------------------------------ */
 /* clang-format on */
 
@@ -113,6 +122,7 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 	volatile sjme_scritchui_serialData* data;
 	SJME_SCRITCHUI_DISPATCH_DECL(componentRepaint);
 	SJME_SCRITCHUI_DISPATCH_DECL(componentRevalidate);
+	SJME_SCRITCHUI_DISPATCH_DECL(componentSetInputListener);
 	SJME_SCRITCHUI_DISPATCH_DECL(componentSetPaintListener);
 	SJME_SCRITCHUI_DISPATCH_DECL(componentSetSizeListener);
 	SJME_SCRITCHUI_DISPATCH_DECL(componentSetVisibleListener);
@@ -159,26 +169,17 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 		(state,
 		componentRevalidate->inComponent));
 	
-	SJME_SCRITCHUI_DISPATCH_CASE(componentSetPaintListener,
-		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_PAINT_LISTENER,
-		(state,
-		componentSetPaintListener->inComponent,
-		componentSetPaintListener->inListener,
-		componentSetPaintListener->copyFrontEnd));
-	
-	SJME_SCRITCHUI_DISPATCH_CASE(componentSetSizeListener,
-		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_SIZE_LISTENER,
-		(state,
-		componentSetSizeListener->inComponent,
-		componentSetSizeListener->inListener,
-		componentSetSizeListener->copyFrontEnd));
+	SJME_SCRITCHUI_DISPATCH_CASE_LISTENER(componentSetInputListener,
+		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_INPUT_LISTENER);
 		
-	SJME_SCRITCHUI_DISPATCH_CASE(componentSetVisibleListener,
-		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_VISIBLE_LISTENER,
-		(state,
-		componentSetVisibleListener->inComponent,
-		componentSetVisibleListener->inListener,
-		componentSetVisibleListener->copyFrontEnd));
+	SJME_SCRITCHUI_DISPATCH_CASE_LISTENER(componentSetPaintListener,
+		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_PAINT_LISTENER);
+	
+	SJME_SCRITCHUI_DISPATCH_CASE_LISTENER(componentSetSizeListener,
+		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_SIZE_LISTENER);
+		
+	SJME_SCRITCHUI_DISPATCH_CASE_LISTENER(componentSetVisibleListener,
+		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_VISIBLE_LISTENER);
 	
 	SJME_SCRITCHUI_DISPATCH_CASE(componentSize,
 		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SIZE,
@@ -275,6 +276,26 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 #undef SJME_SCRITCHUI_DISPATCH_SWITCH_END
 }
 
+/** Generic listener dispatch. */
+#define SJME_SCRITCHUI_DISPATCH_GENERIC_LISTENER(id, idCode, type, arg, \
+	listener) \
+	sjme_errorCode SJME_TOKEN_PASTE_PP(sjme_scritchui_coreSerial_, id)( \
+		sjme_attrInNotNull sjme_scritchui inState, \
+		sjme_attrInNotNull type arg, \
+		SJME_SCRITCHUI_SET_LISTENER_ARGS(listener)) \
+	{ \
+		SJME_SCRITCHUI_SERIAL_CHUNK(id, \
+			idCode, \
+			(inState, arg, inListener, copyFrontEnd)); \
+		 \
+		SJME_SCRITCHUI_SERIAL_PASS(arg); \
+		SJME_SCRITCHUI_SERIAL_PASS(inListener); \
+		SJME_SCRITCHUI_SERIAL_PASS(copyFrontEnd); \
+		 \
+		/* Invoke and wait. */ \
+		SJME_SCRITCHUI_INVOKE_WAIT; \
+	}
+
 sjme_errorCode sjme_scritchui_coreSerial_componentRepaint(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
@@ -311,56 +332,21 @@ sjme_errorCode sjme_scritchui_coreSerial_componentRevalidate(
 	SJME_SCRITCHUI_INVOKE_WAIT;
 }
 
-sjme_errorCode sjme_scritchui_coreSerial_componentSetPaintListener(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	SJME_SCRITCHUI_SET_LISTENER_ARGS(paint))
-{
-	SJME_SCRITCHUI_SERIAL_CHUNK(componentSetPaintListener,
-		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_PAINT_LISTENER,
-		(inState, inComponent, inListener, copyFrontEnd));
-		
-	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
-	SJME_SCRITCHUI_SERIAL_PASS(inListener);
-	SJME_SCRITCHUI_SERIAL_PASS(copyFrontEnd);
-	
-	/* Invoke and wait. */
-	SJME_SCRITCHUI_INVOKE_WAIT;
-}
+SJME_SCRITCHUI_DISPATCH_GENERIC_LISTENER(componentSetInputListener,
+	SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_INPUT_LISTENER,
+	sjme_scritchui_uiComponent, inComponent, input)
 
-sjme_errorCode sjme_scritchui_coreSerial_componentSetSizeListener(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	SJME_SCRITCHUI_SET_LISTENER_ARGS(size))
-{
-	SJME_SCRITCHUI_SERIAL_CHUNK(componentSetSizeListener,
-		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_SIZE_LISTENER,
-		(inState, inComponent, inListener, copyFrontEnd));
-		
-	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
-	SJME_SCRITCHUI_SERIAL_PASS(inListener);
-	SJME_SCRITCHUI_SERIAL_PASS(copyFrontEnd);
-	
-	/* Invoke and wait. */
-	SJME_SCRITCHUI_INVOKE_WAIT;
-}
+SJME_SCRITCHUI_DISPATCH_GENERIC_LISTENER(componentSetPaintListener,
+	SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_PAINT_LISTENER,
+	sjme_scritchui_uiComponent, inComponent, paint)
 
-sjme_errorCode sjme_scritchui_coreSerial_componentSetVisibleListener(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	SJME_SCRITCHUI_SET_LISTENER_ARGS(visible))
-{
-	SJME_SCRITCHUI_SERIAL_CHUNK(componentSetVisibleListener,
-		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_VISIBLE_LISTENER,
-		(inState, inComponent, inListener, copyFrontEnd));
-		
-	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
-	SJME_SCRITCHUI_SERIAL_PASS(inListener);
-	SJME_SCRITCHUI_SERIAL_PASS(copyFrontEnd);
-	
-	/* Invoke and wait. */
-	SJME_SCRITCHUI_INVOKE_WAIT;
-}
+SJME_SCRITCHUI_DISPATCH_GENERIC_LISTENER(componentSetSizeListener,
+	SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_SIZE_LISTENER,
+	sjme_scritchui_uiComponent, inComponent, size)
+
+SJME_SCRITCHUI_DISPATCH_GENERIC_LISTENER(componentSetVisibleListener,
+	SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_VISIBLE_LISTENER,
+	sjme_scritchui_uiComponent, inComponent, visible)
 
 sjme_errorCode sjme_scritchui_coreSerial_componentSize(
 	sjme_attrInNotNull sjme_scritchui inState,

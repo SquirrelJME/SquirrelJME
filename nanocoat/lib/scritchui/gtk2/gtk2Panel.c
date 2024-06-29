@@ -12,6 +12,15 @@
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/alloc.h"
 
+gboolean sjme_scritchui_gtk2_eventKey(
+	GtkWidget* widget,
+	GdkEventKey* event,
+	gpointer data)
+{
+	sjme_todo("Impl?");
+	return FALSE;
+}
+
 sjme_errorCode sjme_scritchui_gtk2_panelEnableFocus(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiPanel inPanel,

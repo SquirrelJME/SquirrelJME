@@ -46,6 +46,9 @@ typedef enum sjme_scritchui_serialType
 	/** @c componentRevalidate . */
 	SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_REVALIDATE,
 	
+	/** @c componentSetInputListener . */
+	SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_INPUT_LISTENER,
+	
 	/** @c componentSetPaintListener . */
 	SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_PAINT_LISTENER,
 	
@@ -135,6 +138,10 @@ SUD_STRUCT_DEF(componentRepaint,
 
 SUD_STRUCT_DEF(componentRevalidate,
 	SDU_VAR(sjme_scritchui_uiComponent, inComponent););
+
+SUD_STRUCT_DEF(componentSetInputListener,
+	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
+	SJME_SCRITCHUI_SERIAL_SET_LISTENER(input););
 
 SUD_STRUCT_DEF(componentSetPaintListener,
 	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
@@ -229,6 +236,9 @@ typedef union sjme_scritchui_serialDataUnion
 	/** @c componentRevalidate . */
 	SJME_SCRITCHUI_SDU_DEF(componentRevalidate);
 	
+	/** @c componentSetInputListener . */
+	SJME_SCRITCHUI_SDU_DEF(componentSetInputListener);
+	
 	/** @c componentSetPaintListener . */
 	SJME_SCRITCHUI_SDU_DEF(componentSetPaintListener);
 	
@@ -312,6 +322,11 @@ sjme_errorCode sjme_scritchui_coreSerial_componentRepaint(
 sjme_errorCode sjme_scritchui_coreSerial_componentRevalidate(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
+
+sjme_errorCode sjme_scritchui_coreSerial_componentSetInputListener(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(input));
 
 sjme_errorCode sjme_scritchui_coreSerial_componentSetPaintListener(
 	sjme_attrInNotNull sjme_scritchui inState,

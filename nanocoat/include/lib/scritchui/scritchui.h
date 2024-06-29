@@ -21,6 +21,7 @@
 #include "sjme/gfxConst.h"
 #include "sjme/nvm.h"
 #include "sjme/list.h"
+#include "lib/scritchinput/scritchinput.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -272,6 +273,20 @@ typedef sjme_errorCode (*sjme_scritchui_closeListenerFunc)(
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow);
 
 /**
+ * Listener for input events.
+ * 
+ * @param inState The input state.
+ * @param inComponent The component this event is for.
+ * @param inEvent The event which occurred.
+ * @return Any resultant error, if any.
+ * @since 2024/06/29
+ */
+typedef sjme_errorCode (*sjme_scritchui_inputListenerFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNotNull const sjme_scritchinput_event* inEvent);
+
+/**
  * Callback that is used to draw the given component.
  *
  * @param inState The ScritchUI state.
@@ -399,6 +414,22 @@ typedef sjme_errorCode (*sjme_scritchui_componentRepaintFunc)(
 typedef sjme_errorCode (*sjme_scritchui_componentRevalidateFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
+
+/**
+ * Sets the input listener for the given component.
+ * 
+ * @param inState The input state.
+ * @param inComponent The component to set the listener for.
+ * @param inListener The listener for events, may be @c NULL to clear
+ * the existing listener.
+ * @param copyFrontEnd The front end data to copy, may be @c NULL .
+ * @return Any resultant error, if any.
+ * @since 2024/06/29
+ */
+typedef sjme_errorCode (*sjme_scritchui_componentSetInputListenerFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(input));
 
 /**
  * Sets the paint listener for the given component.
@@ -691,6 +722,9 @@ struct sjme_scritchui_apiFunctions
 	
 	/** Revalidates the given component. */
 	SJME_SCRITCHUI_QUICK_API(componentRevalidate);
+	
+	/** Sets the input listener for a component. */
+	SJME_SCRITCHUI_QUICK_API(componentSetInputListener);
 	
 	/** Sets the paint listener for a component. */
 	SJME_SCRITCHUI_QUICK_API(componentSetPaintListener);

@@ -28,6 +28,8 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 	.apiFlags = NULL,
 	.componentRepaint = sjme_scritchui_coreSerial_componentRepaint,
 	.componentRevalidate = sjme_scritchui_coreSerial_componentRevalidate,
+	.componentSetInputListener =
+		sjme_scritchui_coreSerial_componentSetInputListener,
 	.componentSetPaintListener =
 		sjme_scritchui_coreSerial_componentSetPaintListener,
 	.componentSetSizeListener =
@@ -65,6 +67,7 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 	.apiFlags = NULL,
 	.componentRepaint = sjme_scritchui_core_componentRepaint,
 	.componentRevalidate = sjme_scritchui_core_componentRevalidate,
+	.componentSetInputListener = sjme_scritchui_core_componentSetInputListener,
 	.componentSetPaintListener = sjme_scritchui_core_componentSetPaintListener,
 	.componentSetSizeListener = sjme_scritchui_core_componentSetSizeListener,
 	.componentSetVisibleListener =
