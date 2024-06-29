@@ -26,7 +26,7 @@ sjme_errorCode sjme_scritchui_core_panelEnableFocus(
 	error = SJME_ERROR_NOT_IMPLEMENTED;
 	if (inState->impl->panelEnableFocus == NULL ||
 		sjme_error_is(error = inState->impl->panelEnableFocus(inState,
-		inPanel, enableFocus, defaultFocus)))
+		inPanel, enableFocus, enableFocus && defaultFocus)))
 		return sjme_error_default(error);
 	
 	/* Set new state. */
