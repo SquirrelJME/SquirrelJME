@@ -29,8 +29,9 @@ sjme_errorCode sjme_scritchui_gtk2_panelEnableFocus(
 		SJME_JBOOLEAN_TO_GBOOLEAN(enableFocus));
 	
 	/* Set the default focus for this panel? */
-	gtk_widget_set_can_default(widget, defaultFocus);
-	if (defaultFocus)
+	gtk_widget_set_can_default(widget,
+		enableFocus && defaultFocus);
+	if (enableFocus && defaultFocus)
 		gtk_widget_grab_default(widget);
 	
 	/* Success! */
