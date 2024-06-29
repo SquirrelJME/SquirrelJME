@@ -192,11 +192,27 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilSetClip(
 	sjme_attrInPositive sjme_jint w,
 	sjme_attrInPositive sjme_jint h)
 {
+	GdkGC* gc;
+	GdkRectangle rect;
+	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Recover context. */
+	gc = (GdkGC*)g->frontEnd.data;
+	
+	/* Fill in clip. */
+	memset(&rect, 0, sizeof(rect));
+	rect.x = x;
+	rect.y = y;
+	rect.width = w;
+	rect.height = h;
+	
+	/* Set clipping bounds. */
+	gdk_gc_set_clip_rectangle(gc, &rect);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_scritchui_gtk2_pencilSetStrokeStyle(

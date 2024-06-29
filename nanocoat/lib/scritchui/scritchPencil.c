@@ -623,11 +623,53 @@ static sjme_errorCode sjme_scritchui_core_pencilSetClip(
 	sjme_attrInPositive sjme_jint w,
 	sjme_attrInPositive sjme_jint h)
 {
+	sjme_scritchui_rect* rect;
+	sjme_jint ex, ey;
+	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	if (g->impl->setClip == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Translate coordinats. */
+	sjme_scritchui_core_transform(g, &x, &y);
+	
+	/* Minimum bounds. */
+	if (w <= 0)
+		w = 1;
+	if (h <= 0)
+		h = 1;
+	
+	/* Get actual coordinates of clip end. */
+	ex = x + w;
+	ey = y + h;
+	
+	/* If the clip is negative, normalize to zero. */
+	if (x < 0)
+		x = 0;
+	if (y < 0)
+		y = 0;
+	
+	/* Translate back. */
+	w = ex - x;
+	h = ey - y;
+	
+	/* Minimum bounds. */
+	if (w <= 0)
+		w = 1;
+	if (h <= 0)
+		h = 1;
+	
+	/* Copy clip. */
+	rect = &g->state.clip;
+	rect->x = x;
+	rect->y = y;
+	rect->width = w;
+	rect->height = h;
+	
+	/* Forward to native call. */
+	return g->impl->setClip(g, x, y, w, h);
 }
 
 static sjme_errorCode sjme_scritchui_core_pencilSetDefaultFont(

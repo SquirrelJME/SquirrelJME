@@ -99,6 +99,10 @@ static gboolean sjme_scritchui_gtk2_eventExpose(
 		w, h, defaultFont, &frontEnd)))
 		return FALSE;
 	
+	/* The clipping area is set to the region that needs redrawing. */
+	pencil.api->setClip(&pencil, event->area.x, event->area.y,
+		event->area.width, event->area.height);
+	
 	/* Forward to callback. */
 	error = infoCore->callback(inState, inComponent,
 		&pencil,

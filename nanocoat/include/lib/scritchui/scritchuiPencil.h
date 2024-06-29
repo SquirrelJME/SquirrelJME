@@ -733,6 +733,9 @@ typedef struct sjme_scritchui_pencilState
 	
 	/** Transformation coordinates. */
 	sjme_scritchui_pencilPoint translate;
+	
+	/** The clipping region. */
+	sjme_scritchui_rect clip;
 } sjme_scritchui_pencilState;
 
 /*--------------------------------------------------------------------------*/
