@@ -102,6 +102,15 @@ sjme_errorCode sjme_scritchui_core_containerAdd(
 	
 	/* Update parent. */
 	addComponent->parent = inContainer;
+	
+	/* If a component is added to a container which is actually visible */
+	/* but the native UI system does not support visibility at this level */
+	/* then we need to call the visibility update ourselves. */
+	/* That is at the subcomponent granularity and not windows themselves. */
+	if (inState->impl->componentSetVisibleListener == NULL)
+		if (inContainer->isVisible || inContainer->isUserVisible)
+			inState->intern->updateVisibleComponent(inState,
+			addComponent, SJME_JNI_TRUE);
 		
 	/* Success! */
 	return SJME_ERROR_NONE;
