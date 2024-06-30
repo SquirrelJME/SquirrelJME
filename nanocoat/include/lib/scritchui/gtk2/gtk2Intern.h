@@ -31,14 +31,21 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
+typedef sjme_errorCode (*sjme_scritchui_gtk2_disconnectSignalFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull GtkWidget* inWidget,
+	sjme_attrInNotNull sjme_scritchui_listener_void* infoCore);
+
 typedef sjme_errorCode (*sjme_scritchui_gtk2_reconnectSignalFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull GtkWidget* inWidget,
 	sjme_attrInNotNull void* inOnWhat,
 	sjme_attrInNotNull sjme_scritchui_listener_void* infoCore,
 	sjme_attrInNotNull void* inListener,
 	sjme_attrInNullable sjme_frontEnd* copyFrontEnd,
-	sjme_attrInNotNull sjme_lpcstr inSignal,
-	sjme_attrInNotNull GCallback inGtkCallback);
+	sjme_attrInNotNull GCallback inGtkCallback,
+	sjme_attrInPositiveNonZero sjme_jint numSignals,
+	...);
 
 typedef sjme_errorCode (*sjme_scritchui_gtk2_intern_widgetInitFunc)(
 	sjme_attrInNotNull GtkWidget* inWidget);
@@ -46,6 +53,9 @@ typedef sjme_errorCode (*sjme_scritchui_gtk2_intern_widgetInitFunc)(
 /** Internal GTK implementation functions. */	
 struct sjme_scritchui_implInternFunctions
 {
+	/** Disconnect a signal. */
+	sjme_scritchui_gtk2_disconnectSignalFunc disconnectSignal;
+	
 	/** Reconnect a signal. */
 	sjme_scritchui_gtk2_reconnectSignalFunc reconnectSignal;
 	
@@ -53,14 +63,21 @@ struct sjme_scritchui_implInternFunctions
 	sjme_scritchui_gtk2_intern_widgetInitFunc widgetInit;
 };
 
+sjme_errorCode sjme_scritchui_gtk2_intern_disconnectSignal(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull GtkWidget* inWidget,
+	sjme_attrInNotNull sjme_scritchui_listener_void* infoCore);
+
 sjme_errorCode sjme_scritchui_gtk2_intern_reconnectSignal(
+	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull GtkWidget* inWidget,
 	sjme_attrInNotNull void* inOnWhat,
 	sjme_attrInNotNull sjme_scritchui_listener_void* infoCore,
 	sjme_attrInNotNull void* inListener,
 	sjme_attrInNullable sjme_frontEnd* copyFrontEnd,
-	sjme_attrInNotNull sjme_lpcstr inSignal,
-	sjme_attrInNotNull GCallback inGtkCallback);
+	sjme_attrInNotNull GCallback inGtkCallback,
+	sjme_attrInPositiveNonZero sjme_jint numSignals,
+	...);
 
 sjme_errorCode sjme_scritchui_gtk2_intern_widgetInit(
 	sjme_attrInNotNull GtkWidget* inWidget);

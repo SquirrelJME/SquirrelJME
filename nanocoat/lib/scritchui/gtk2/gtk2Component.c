@@ -441,25 +441,14 @@ sjme_errorCode sjme_scritchui_gtk2_componentSetInputListener(
 			gtk_widget_get_events(widget) & (~mask));
 	
 	/* Set event for key press. */
-	error = SJME_ERROR_NONE;
-	error |= inState->implIntern->reconnectSignal(widget,
+	return inState->implIntern->reconnectSignal(inState, widget,
 		inComponent,
 		(sjme_scritchui_listener_void*)&SJME_SCRITCHUI_LISTENER_CORE(
 			inComponent, input),
 		inListener,
 		copyFrontEnd,
-		"key-press-event",
-		G_CALLBACK(sjme_scritchui_gtk2_eventKey));
-	
-	/* And key release. */
-	error |= inState->implIntern->reconnectSignal(widget,
-		inComponent,
-		(sjme_scritchui_listener_void*)&SJME_SCRITCHUI_LISTENER_CORE(
-			inComponent, input),
-		inListener,
-		copyFrontEnd,
-		"key-release-event",
-		G_CALLBACK(sjme_scritchui_gtk2_eventKey));
+		G_CALLBACK(sjme_scritchui_gtk2_eventKey),
+		2, "key-press-event", "key-release-event");
 	
 	/* Did this fail? */
 	return error;
@@ -499,13 +488,14 @@ sjme_errorCode sjme_scritchui_gtk2_componentSetPaintListener(
 	
 	/* Basic signal connection. */
 	if (sjme_error_is(error = inState->implIntern->reconnectSignal(
+		inState,
 		widget,
 		inComponent,
 		infoCore,
 		inListener,
 		copyFrontEnd,
-		"expose-event",
-		G_CALLBACK(sjme_scritchui_gtk2_eventExpose))))
+		G_CALLBACK(sjme_scritchui_gtk2_eventExpose),
+		1, "expose-event")))
 		return sjme_error_default(error);
 	
 	/* Connect new handler. */
@@ -533,14 +523,14 @@ sjme_errorCode sjme_scritchui_gtk2_componentSetSizeListener(
 	widget = (GtkWidget*)inComponent->common.handle;
 	
 	/* Basic signal connection. */
-	return inState->implIntern->reconnectSignal(widget,
+	return inState->implIntern->reconnectSignal(inState, widget,
 		inComponent,
 		(sjme_scritchui_listener_void*)&SJME_SCRITCHUI_LISTENER_CORE(
 			inComponent, size),
 		inListener,
 		copyFrontEnd,
-		"configure-event",
-		G_CALLBACK(sjme_scritchui_gtk2_eventConfigure));
+		G_CALLBACK(sjme_scritchui_gtk2_eventConfigure),
+		1, "configure-event");
 }
 
 sjme_errorCode sjme_scritchui_gtk2_componentSize(

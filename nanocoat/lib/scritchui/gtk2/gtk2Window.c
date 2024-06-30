@@ -161,13 +161,14 @@ sjme_errorCode sjme_scritchui_gtk2_windowSetCloseListenerFunc(
 	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(inWindow, close);
 	
 	/* Basic signal connection. */
-	return inState->implIntern->reconnectSignal(GTK_WIDGET(gtkWindow),
+	return inState->implIntern->reconnectSignal(inState,
+		GTK_WIDGET(gtkWindow),
 		inWindow,
 		infoCore,
 		inListener,
 		copyFrontEnd,
-		"delete-event",
-		G_CALLBACK(sjme_scritchui_gtk2_eventDelete));
+		G_CALLBACK(sjme_scritchui_gtk2_eventDelete),
+		1, "delete-event");
 }
 
 sjme_errorCode sjme_scritchui_gtk2_windowSetVisible(

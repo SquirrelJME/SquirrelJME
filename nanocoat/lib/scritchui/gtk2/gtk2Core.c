@@ -41,6 +41,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_gtkFunctions =
 static const sjme_scritchui_implInternFunctions
 	sjme_scritchui_gtkInternFunctions =
 {
+	.disconnectSignal = sjme_scritchui_gtk2_intern_disconnectSignal,
 	.reconnectSignal = sjme_scritchui_gtk2_intern_reconnectSignal,
 	.widgetInit = sjme_scritchui_gtk2_intern_widgetInit,
 };
