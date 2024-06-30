@@ -62,9 +62,6 @@ static sjme_thread_result sjme_scritchui_gtk2_loopMain(
 	if (state->loopThreadInit != NULL)
 		state->loopThreadInit(state);
 	
-	/* Debug. */
-	sjme_message("GTK Init...");
-	
 	/* Enable debug options. */
 	argc = 5;
 	argv = sjme_alloca(argc * sizeof(*argv));
@@ -108,9 +105,6 @@ sjme_errorCode SJME_DYLIB_EXPORT SJME_SCRITCHUI_DYLIB_SYMBOL(gtk2)(
 
 	if (outState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-		
-	/* Debug. */
-	sjme_message("Core initialization...");
 	
 	/* Forward to core call. */
 	state = NULL;

@@ -134,10 +134,6 @@ sjme_errorCode sjme_scritchui_core_screens(
 {
 	sjme_jint maxScreens;
 	
-	/* Debug. */
-	sjme_message("sjme_scritchui_core_screens(%p, %p, %p)",
-		inState, outScreens, inOutNumScreens);
-	
 	if (inState == NULL || outScreens == NULL || inOutNumScreens == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	

@@ -335,8 +335,6 @@ static gboolean sjme_scritchui_gtk2_eventKey(
 	/* Get listener info. */
 	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(inComponent, input);
 	
-	sjme_message("Key %d %p", code, infoCore->callback);
-	
 	/* No actual input listener? */
 	if (infoCore->callback == NULL)
 		return FALSE;

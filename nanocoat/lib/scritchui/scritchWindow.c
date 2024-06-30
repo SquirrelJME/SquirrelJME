@@ -25,9 +25,6 @@ static sjme_errorCode sjme_scritchui_baseCloseListener(
 	/* Get listener information. */
 	infoUser = &SJME_SCRITCHUI_LISTENER_USER(inWindow, close);
 	
-	/* Debug. */
-	sjme_message("Close requested?");
-	
 	/* Call user callback if set. */
 	if (infoUser->callback != NULL)
 		return infoUser->callback(inState, inWindow);
