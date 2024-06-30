@@ -114,6 +114,15 @@ static gboolean sjme_scritchui_gtk2_eventExpose(
 	return FALSE;
 }
 
+static gboolean sjme_scritchui_gtk2_eventKey(
+	GtkWidget* widget,
+	GdkEventKey* event,
+	gpointer data)
+{
+	sjme_todo("Impl?");
+	return FALSE;
+}
+
 sjme_errorCode sjme_scritchui_gtk2_componentRepaint(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
@@ -163,6 +172,61 @@ sjme_errorCode sjme_scritchui_gtk2_componentRevalidate(
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_scritchui_gtk2_componentSetInputListener(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(input))
+{
+	sjme_errorCode error;
+	GtkWidget* widget;
+	GdkEventMask mask;
+	
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Recover widget. */
+	widget = (GtkWidget*)inComponent->common.handle;
+	
+	/* Mask for wanting events. */
+	mask = GDK_POINTER_MOTION_MASK |
+		GDK_BUTTON_PRESS_MASK |
+		GDK_BUTTON_RELEASE_MASK |
+		GDK_KEY_PRESS_MASK |
+		GDK_KEY_RELEASE_MASK |
+		GDK_BUTTON_MOTION_MASK;
+	
+	/* Either remove the event mask or add them in. */
+	if (inListener != NULL)
+		gtk_widget_add_events(widget, mask);
+	else
+		gtk_widget_set_events(widget,
+			gtk_widget_get_events(widget) & (~mask));
+	
+	/* Set event for key press. */
+	error = SJME_ERROR_NONE;
+	error |= inState->implIntern->reconnectSignal(widget,
+		inComponent,
+		(sjme_scritchui_listener_void*)&SJME_SCRITCHUI_LISTENER_CORE(
+			inComponent, size),
+		inListener,
+		copyFrontEnd,
+		"key-press-event",
+		G_CALLBACK(sjme_scritchui_gtk2_eventKey));
+	
+	/* And key release. */
+	error |= inState->implIntern->reconnectSignal(widget,
+		inComponent,
+		(sjme_scritchui_listener_void*)&SJME_SCRITCHUI_LISTENER_CORE(
+			inComponent, size),
+		inListener,
+		copyFrontEnd,
+		"key-release-event",
+		G_CALLBACK(sjme_scritchui_gtk2_eventKey));
+	
+	/* Did this fail? */
+	return error;
 }
 
 sjme_errorCode sjme_scritchui_gtk2_componentSetPaintListener(

@@ -1765,8 +1765,11 @@ typedef enum sjme_errorCode
 	/** Font has negative height. */
 	SJME_ERROR_FONT_NEGATIVE_HEIGHT = -58,
 	
+	/** Could not create native widget. */
+	SJME_ERROR_NATIVE_WIDGET_CREATE_FAILED = -59,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -59
+	SJME_NUM_ERROR_CODES = -60
 } sjme_errorCode;
 
 /**

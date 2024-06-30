@@ -71,6 +71,9 @@ SJME_SCRITCHUI_LISTENER_DECLARE(void);
 /** Close listener. */
 SJME_SCRITCHUI_LISTENER_DECLARE(close);
 
+/** Input listener. */
+SJME_SCRITCHUI_LISTENER_DECLARE(input);
+
 /** Paint listener. */
 SJME_SCRITCHUI_LISTENER_DECLARE(paint);
 
@@ -129,6 +132,9 @@ typedef struct sjme_scritchui_pencilBase
  */
 typedef struct sjme_scritchui_uiComponentListeners
 {
+	/** Input events. */
+	sjme_scritchui_listener_input input;
+	
 	/** Listener for when size changes. */
 	sjme_scritchui_listener_size size;
 	

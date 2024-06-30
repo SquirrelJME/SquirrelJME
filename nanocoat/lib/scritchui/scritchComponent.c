@@ -13,6 +13,18 @@
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/debug.h"
 
+static sjme_errorCode sjme_scritchui_baseInputListener(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNotNull const sjme_scritchinput_event* inEvent)
+{
+	if (inState == NULL || inComponent == NULL || inEvent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
 static sjme_errorCode sjme_scritchui_basePaintListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
@@ -271,8 +283,27 @@ sjme_errorCode sjme_scritchui_core_componentSetInputListener(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(input))
 {
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	sjme_errorCode error;
+	
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Set core listener events which is forwarded to for handling. */
+	if (inState->impl->componentSetInputListener != NULL)
+		if (sjme_error_is(error = inState->impl->
+			componentSetInputListener(inState, inComponent,
+			(inListener != NULL ? sjme_scritchui_baseInputListener :
+				NULL), NULL)))
+			return sjme_error_default(error);
+
+	/* Set user listener. */
+	return sjme_scritchui_core_componentSetSimpleUserListener(
+		inState,
+		inComponent,
+		(sjme_scritchui_listener_void*)&SJME_SCRITCHUI_LISTENER_USER(
+			inComponent, input),
+		(sjme_scritchui_voidListenerFunc)inListener,
+		copyFrontEnd);
 }
 
 sjme_errorCode sjme_scritchui_core_componentSetPaintListener(

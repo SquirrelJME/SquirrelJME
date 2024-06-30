@@ -12,15 +12,6 @@
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/alloc.h"
 
-gboolean sjme_scritchui_gtk2_eventKey(
-	GtkWidget* widget,
-	GdkEventKey* event,
-	gpointer data)
-{
-	sjme_todo("Impl?");
-	return FALSE;
-}
-
 sjme_errorCode sjme_scritchui_gtk2_panelEnableFocus(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiPanel inPanel,
@@ -60,7 +51,7 @@ sjme_errorCode sjme_scritchui_gtk2_panelNew(
 	/* Setup GTK widget, used fixed as we want exact placements. */
 	fixed = NULL;
 	if ((fixed = gtk_fixed_new()) == NULL)
-		goto fail_gtkWidget;
+		return SJME_ERROR_NATIVE_WIDGET_CREATE_FAILED;
 	
 	/* Does not have a window component. */
 	gtk_fixed_set_has_window(GTK_FIXED(fixed), FALSE);
@@ -71,18 +62,6 @@ sjme_errorCode sjme_scritchui_gtk2_panelNew(
 	/* Store information. */
 	inPanel->component.common.handle = fixed;
 	
-	/* For this panel, we want to handle these events. */
-	gtk_widget_add_events(GTK_WIDGET(fixed),
-		GDK_POINTER_MOTION_MASK |
-		GDK_BUTTON_PRESS_MASK |
-		GDK_BUTTON_RELEASE_MASK |
-		GDK_KEY_PRESS_MASK |
-		GDK_KEY_RELEASE_MASK |
-		GDK_BUTTON_MOTION_MASK);
-	
 	/* Success! */
 	return SJME_ERROR_NONE;
-	
-fail_gtkWidget:
-	return sjme_error_default(error);
 }
