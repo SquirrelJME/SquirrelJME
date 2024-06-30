@@ -11,6 +11,7 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchInputListener;
+import cc.squirreljme.jvm.mle.scritchui.constants.ScritchInputMethodType;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,10 +42,30 @@ class __ExecCanvasInput__
 	 * @since 2024/06/30
 	 */
 	@Override
-	public void inputEvent(@NotNull ScritchComponentBracket __component,
+	public void inputEvent(ScritchComponentBracket __component,
 		int __type, long __time, int __a, int __b, int __c, int __d, int __e,
 		int __f, int __g, int __h, int __i, int __j, int __k, int __l)
 	{
-		throw Debugging.todo();
+		Canvas canvas = this._canvas.get();
+		if (canvas == null)
+			return;
+		
+		KeyListener keyDefault = canvas.__defaultKeyListener();
+		KeyListener keyCustom = canvas._keyListener;
+		
+		switch (__type)
+		{
+			case ScritchInputMethodType.KEY_PRESSED:
+				keyDefault.keyPressed(__a, __b);
+				if (keyCustom != null)
+					keyCustom.keyPressed(__a, __b);
+				break;
+				
+			case ScritchInputMethodType.KEY_RELEASED:
+				keyDefault.keyReleased(__a, __b);
+				if (keyCustom != null)
+					keyCustom.keyReleased(__a, __b);
+				break;
+		}
 	}
 }

@@ -95,12 +95,27 @@ typedef enum sjme_scritchinput_type
 } sjme_scritchinput_type;
 
 typedef enum sjme_scritchinput_key
-{
+{	
+	/** Backspace. */
+	SJME_SCRITCHINPUT_KEY_BACKSPACE = 8,
+		
+	/** Tab. */
+	SJME_SCRITCHINPUT_KEY_TAB = 9,
+	
+	/** Enter. */
+	SJME_SCRITCHINPUT_KEY_ENTER = 10,
+		
+	/** Escape. */
+	SJME_SCRITCHINPUT_KEY_ESCAPE = 27,
+	
 	/** Star key. */
 	SJME_SCRITCHINPUT_KEY_STAR = 42,
 	
 	/** Pound key. */
 	SJME_SCRITCHINPUT_KEY_POUND = 35,
+	
+	/** Delete key. */
+	SJME_SCRITCHINPUT_KEY_DELETE = 127,
 	
 	/** Unknown, zero is the invalid index so always make it known. */
 	SJME_SCRITCHINPUT_KEY_UNKNOWN = 0,
@@ -325,6 +340,27 @@ typedef enum sjme_scritchinput_key
 	SJME_SCRITCHINPUT_KEY_F1 = -87,
 } sjme_scritchinput_key;
 
+typedef enum sjme_scritchinput_modifier
+{
+	/** Alt key modifier. */
+	SJME_SCRITCHINPUT_MODIFIER_ALT = 65536,
+		
+	/** Function (Fn/Chr) key modifier. */
+	SJME_SCRITCHINPUT_MODIFIER_CHR = 8388608,
+	
+	/** Command key modifier. */
+	SJME_SCRITCHINPUT_MODIFIER_COMMAND = 4194304,
+	
+	/** Ctrl key modifier. */
+	SJME_SCRITCHINPUT_MODIFIER_CTRL = 262144,
+	
+	/** Shift key modifier. */
+	SJME_SCRITCHINPUT_MODIFIER_SHIFT = 131072,
+	
+	/** Mask for all the modifier keys. */
+	SJME_SCRITCHINPUT_MODIFIER_MASK = 13041664,
+} sjme_scritchinput_modifier;
+
 typedef struct sjme_scritchinput_eventDataUnknown
 {
 	/** Value 1. */
@@ -364,8 +400,18 @@ typedef struct sjme_scritchinput_eventDataUnknown
 	sjme_jint l;
 } sjme_scritchinput_eventDataUnknown;
 
+/**
+ * Event data for key events.
+ * 
+ * @since 2024/06/30
+ */
 typedef struct sjme_scritchinput_eventDataKey
 {
+	/** Unicode key core or @c sjme_scritchinput_key . */
+	sjme_jint code;
+	
+	/** The modifiers for the key, from @c sjme_scritchinput_modifier . */
+	sjme_jint modifiers;
 } sjme_scritchinput_eventDataKey;
 
 typedef struct sjme_scritchinput_eventDataMouseButton

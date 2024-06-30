@@ -21,6 +21,7 @@
 #include "sjme/gfxConst.h"
 #include "sjme/nvm.h"
 #include "sjme/list.h"
+#include "sjme/native.h"
 #include "lib/scritchinput/scritchinput.h"
 
 /* Anti-C++. */
@@ -880,6 +881,9 @@ struct sjme_scritchui_stateBase
 	
 	/** The fonts which are loaded and known to the state. */
 	sjme_scritchui_pencilFontLink* fontChain;
+	
+	/** Function to obtain the current nanotime, for input events. */
+	sjme_nal_nanoTimeFunc nanoTime;
 };
 
 /* If dynamic libraries are not supported, we cannot do this. */

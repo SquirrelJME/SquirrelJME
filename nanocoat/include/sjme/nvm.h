@@ -623,21 +623,28 @@ typedef intptr_t sjme_intPointer;
  * 
  * @since 2023/07/25
  */
-typedef struct sjme_jlong
+typedef union sjme_jlong
 {
+	/** Parts of the long. */
+	struct
+	{
 #if defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)
-	/** Low value. */
-	sjme_juint lo;
-
-	/** High value. */
-	sjme_jint hi;
-#else
-	/** High value. */
-	sjme_jint hi;
+		/** Low value. */
+		sjme_juint lo;
 	
-	/** Low value. */
-	sjme_juint lo;
+		/** High value. */
+		sjme_jint hi;
+#else
+		/** High value. */
+		sjme_jint hi;
+		
+		/** Low value. */
+		sjme_juint lo;
 #endif
+	} part;
+	
+	/** The full long. */
+	int64_t full;
 } sjme_jlong;
 
 /** Basic @c sjme_jlong type identifier. */
@@ -1768,8 +1775,11 @@ typedef enum sjme_errorCode
 	/** Could not create native widget. */
 	SJME_ERROR_NATIVE_WIDGET_CREATE_FAILED = -59,
 	
+	/** Clock failure. */
+	SJME_ERROR_NATIVE_SYSTEM_CLOCK_FAILURE = -60,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -60
+	SJME_NUM_ERROR_CODES = -61
 } sjme_errorCode;
 
 /**

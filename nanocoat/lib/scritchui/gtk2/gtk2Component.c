@@ -264,7 +264,19 @@ static sjme_jint sjme_scritchui_gtk_eventKeyMap(guint in)
 		case GDK_KEY_Return:
 		case GDK_KEY_ISO_Enter:
 		case GDK_KEY_3270_Enter:
-			return '\n';
+			return SJME_SCRITCHINPUT_KEY_ENTER;
+		
+		case GDK_KEY_BackSpace:
+			return SJME_SCRITCHINPUT_KEY_BACKSPACE;
+		
+		case GDK_KEY_Delete:
+			return SJME_SCRITCHINPUT_KEY_DELETE;
+		
+		case GDK_KEY_Tab:
+			return SJME_SCRITCHINPUT_KEY_TAB;
+		
+		case GDK_KEY_Escape:
+			return SJME_SCRITCHINPUT_KEY_ESCAPE;
 	}
 	
 	/* Is this a unicode key? Map to char if so... */
@@ -276,23 +288,77 @@ static sjme_jint sjme_scritchui_gtk_eventKeyMap(guint in)
 	return SJME_SCRITCHINPUT_KEY_UNKNOWN;
 }
 
+static sjme_jint sjme_scritchui_gtk_eventModifierMap(guint state)
+{
+	sjme_jint result;
+	
+	/* Map all modifiers. */
+	result = 0;
+	if (state & GDK_SHIFT_MASK)
+		result |= SJME_SCRITCHINPUT_MODIFIER_SHIFT;
+	if (state & GDK_MOD1_MASK)
+		result |= SJME_SCRITCHINPUT_MODIFIER_ALT;
+	if (state & GDK_MOD2_MASK)
+		result |= SJME_SCRITCHINPUT_MODIFIER_CHR;
+	if (state & GDK_CONTROL_MASK)
+		result |= SJME_SCRITCHINPUT_MODIFIER_CTRL;
+	if (state & (GDK_SUPER_MASK | GDK_HYPER_MASK | GDK_META_MASK))
+		result |= SJME_SCRITCHINPUT_MODIFIER_COMMAND;
+	
+	return result;
+}
+
 static gboolean sjme_scritchui_gtk2_eventKey(
 	GtkWidget* widget,
 	GdkEventKey* event,
 	gpointer data)
 {
-	sjme_jint code;
+	sjme_scritchui inState;
+	sjme_scritchui_uiComponent inComponent;
+	sjme_jint code, modifier;
+	sjme_scritchui_listener_input* infoCore;
+	sjme_scritchinput_event fill;
 	
 	if (widget == NULL || event == NULL || data == NULL)
-		return TRUE;
+		return FALSE;
+	
+	/* Restore. */
+	inComponent = (sjme_scritchui_uiComponent)data;
+	inState = inComponent->common.state;
 	
 	/* Map to standard key */
 	code = sjme_scritchui_gtk_eventKeyMap(event->keyval);
+	modifier = sjme_scritchui_gtk_eventModifierMap(event->state);
 	if (code == SJME_SCRITCHINPUT_KEY_UNKNOWN)
-		return TRUE;
+		return FALSE;
 	
-	sjme_todo("Impl?");
-	return FALSE;
+	/* Get listener info. */
+	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(inComponent, input);
+	
+	sjme_message("Key %d %p", code, infoCore->callback);
+	
+	/* No actual input listener? */
+	if (infoCore->callback == NULL)
+		return FALSE;
+	
+	/* Fill in data. */
+	memset(&fill, 0, sizeof(fill));
+	if (event->type == GDK_KEY_PRESS)
+		fill.type = SJME_SCRITCHINPUT_TYPE_KEY_PRESSED;
+	else if (event->type == GDK_KEY_RELEASE)
+		fill.type = SJME_SCRITCHINPUT_TYPE_KEY_RELEASED;
+	else
+		return FALSE;
+	inState->nanoTime(&fill.time);
+	fill.data.key.code = code;
+	
+	/* Forward accordingly. */
+	if (sjme_error_is(infoCore->callback(inState, inComponent,
+		&fill)))
+		return FALSE;
+	
+	/* We handled this. */
+	return TRUE;
 }
 
 sjme_errorCode sjme_scritchui_gtk2_componentRepaint(
@@ -381,7 +447,7 @@ sjme_errorCode sjme_scritchui_gtk2_componentSetInputListener(
 	error |= inState->implIntern->reconnectSignal(widget,
 		inComponent,
 		(sjme_scritchui_listener_void*)&SJME_SCRITCHUI_LISTENER_CORE(
-			inComponent, size),
+			inComponent, input),
 		inListener,
 		copyFrontEnd,
 		"key-press-event",
@@ -391,7 +457,7 @@ sjme_errorCode sjme_scritchui_gtk2_componentSetInputListener(
 	error |= inState->implIntern->reconnectSignal(widget,
 		inComponent,
 		(sjme_scritchui_listener_void*)&SJME_SCRITCHUI_LISTENER_CORE(
-			inComponent, size),
+			inComponent, input),
 		inListener,
 		copyFrontEnd,
 		"key-release-event",

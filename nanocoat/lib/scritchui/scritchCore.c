@@ -118,6 +118,9 @@ sjme_errorCode sjme_scritchui_core_apiInit(
 	if (inPool == NULL || inImplFunc == NULL || outState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+	if (inImplFunc->apiInit == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
+	
 	/* Allocate state. */
 	state = NULL;
 	if (sjme_error_is(error = sjme_alloc(inPool, sizeof(*state),
@@ -131,6 +134,7 @@ sjme_errorCode sjme_scritchui_core_apiInit(
 	state->intern = &sjme_scritchUI_coreIntern;
 	state->impl = inImplFunc;
 	state->wmInfo = &sjme_scritchUI_coreWmInfo;
+	state->nanoTime = sjme_nal_default_nanoTime;
 	
 	/* Copy frontend over, if set. */
 	if (initFrontEnd != NULL)
@@ -139,8 +143,7 @@ sjme_errorCode sjme_scritchui_core_apiInit(
 	
 	/* Perform API specific initialization. */
 	error = SJME_ERROR_NOT_IMPLEMENTED;
-	if (state->impl->apiInit == NULL ||
-		sjme_error_is(error = state->impl->apiInit(state)))
+	if (sjme_error_is(error = state->impl->apiInit(state)))
 		goto fail_apiInit;
 	
 	/* Return resultant state. */

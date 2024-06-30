@@ -18,11 +18,18 @@ static sjme_errorCode sjme_scritchui_baseInputListener(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInNotNull const sjme_scritchinput_event* inEvent)
 {
+	sjme_scritchui_listener_input* infoUser;
+	
 	if (inState == NULL || inComponent == NULL || inEvent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Get callback information. */
+	infoUser = &SJME_SCRITCHUI_LISTENER_USER(inComponent, input);
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Forward to callback! */
+	if (infoUser->callback != NULL)
+		return infoUser->callback(inState, inComponent, inEvent);
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_scritchui_basePaintListener(
@@ -35,7 +42,7 @@ static sjme_errorCode sjme_scritchui_basePaintListener(
 {
 	sjme_errorCode error;
 	sjme_scritchui_uiPaintable paint;
-	sjme_scritchui_listener_paint* info;
+	sjme_scritchui_listener_paint* infoUser;
 	sjme_scritchui_paintListenerFunc callback;
 	
 	if (inState == NULL || inComponent == NULL || g == NULL)
@@ -48,11 +55,11 @@ static sjme_errorCode sjme_scritchui_basePaintListener(
 		return sjme_error_defaultOr(error,
 			SJME_ERROR_INVALID_ARGUMENT);
 	
-	/* Base info. */		
-	info = &SJME_SCRITCHUI_LISTENER_USER(paint, paint);
+	/* Base info. */
+	infoUser = &SJME_SCRITCHUI_LISTENER_USER(paint, paint);
 	
 	/* No actual paint listener? */
-	callback = info->callback;
+	callback = infoUser->callback;
 	if (callback == NULL)
 	{
 		error = SJME_ERROR_NO_LISTENER;

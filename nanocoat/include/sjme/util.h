@@ -272,13 +272,13 @@ static sjme_inline sjme_attrArtificial sjme_jlong sjme_swap_long(
 	sjme_juint temp;
 
 	/* Swap high and low first. */
-	temp = in.hi;
-	in.hi = (sjme_jint)in.lo;
-	in.lo = temp;
+	temp = in.part.hi;
+	in.part.hi = (sjme_jint)in.part.lo;
+	in.part.lo = temp;
 
 	/* Then finish swap each side. */
-	in.hi = sjme_swap_int(in.hi);
-	in.lo = sjme_swap_uint(in.lo);
+	in.part.hi = sjme_swap_int(in.part.hi);
+	in.part.lo = sjme_swap_uint(in.part.lo);
 
 	/* Return the result. */
 	return in;

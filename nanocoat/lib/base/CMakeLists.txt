@@ -20,6 +20,7 @@ squirreljme_multilib_add_library(Base
 	fixed.c
 	list.c
 	multithread.c
+	native.c
 	recycle.c
 	refcount.c
 	seekable.c
