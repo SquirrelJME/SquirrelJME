@@ -94,6 +94,237 @@ typedef enum sjme_scritchinput_type
 	SJME_SCRITCHINPUT_TYPE_DEVICE_ACTION = 131072,
 } sjme_scritchinput_type;
 
+typedef enum sjme_scritchinput_key
+{
+	/** Star key. */
+	SJME_SCRITCHINPUT_KEY_STAR = 42,
+	
+	/** Pound key. */
+	SJME_SCRITCHINPUT_KEY_POUND = 35,
+	
+	/** Unknown, zero is the invalid index so always make it known. */
+	SJME_SCRITCHINPUT_KEY_UNKNOWN = 0,
+	
+	/** The up arrow key. */
+	SJME_SCRITCHINPUT_KEY_UP = -1,
+	
+	/** Down arrow key. */
+	SJME_SCRITCHINPUT_KEY_DOWN = -2,
+	
+	/** Left arrow key. */
+	SJME_SCRITCHINPUT_KEY_LEFT = -3,
+	
+	/** Right arrow key. */
+	SJME_SCRITCHINPUT_KEY_RIGHT = -4,
+	
+	/** Game Up. */
+	SJME_SCRITCHINPUT_KEY_VGAME_UP = -9,
+	
+	/** Game Down. */
+	SJME_SCRITCHINPUT_KEY_VGAME_DOWN = -10,
+	
+	/** Game Left. */
+	SJME_SCRITCHINPUT_KEY_VGAME_LEFT = -11,
+	
+	/** Game Right. */
+	SJME_SCRITCHINPUT_KEY_VGAME_RIGHT = -12,
+	
+	/** Game fire. */
+	SJME_SCRITCHINPUT_KEY_VGAME_FIRE = -13,
+	
+	/** Game A. */
+	SJME_SCRITCHINPUT_KEY_VGAME_A = -14,
+	
+	/** Game B. */
+	SJME_SCRITCHINPUT_KEY_VGAME_B = -15,
+	
+	/** Game C. */
+	SJME_SCRITCHINPUT_KEY_VGAME_C = -16,
+	
+	/** Game D. */
+	SJME_SCRITCHINPUT_KEY_VGAME_D = -17,
+	
+	/** Shift. */
+	SJME_SCRITCHINPUT_KEY_SHIFT = -18,
+	
+	/** Control. */
+	SJME_SCRITCHINPUT_KEY_CONTROL = -19,
+	
+	/** Alt. */
+	SJME_SCRITCHINPUT_KEY_ALT = -20,
+	
+	/** Logo. */
+	SJME_SCRITCHINPUT_KEY_LOGO = -21,
+	
+	/** Caps lock. */
+	SJME_SCRITCHINPUT_KEY_CAPSLOCK = -22,
+	
+	/** Context menu. */
+	SJME_SCRITCHINPUT_KEY_CONTEXT_MENU = -23,
+	
+	/** Home. */
+	SJME_SCRITCHINPUT_KEY_HOME = -24,
+	
+	/** End. */
+	SJME_SCRITCHINPUT_KEY_END = -25,
+	
+	/** Page Up. */
+	SJME_SCRITCHINPUT_KEY_PAGE_UP = -26,
+	
+	/** Page Down. */
+	SJME_SCRITCHINPUT_KEY_PAGE_DOWN = -27,
+	
+	/** Meta. */
+	SJME_SCRITCHINPUT_KEY_META = -28,
+	
+	/** Numlock. */
+	SJME_SCRITCHINPUT_KEY_NUMLOCK = -29,
+	
+	/** Pause. */
+	SJME_SCRITCHINPUT_KEY_PAUSE = -30,
+	
+	/** Print Screen. */
+	SJME_SCRITCHINPUT_KEY_PRINTSCREEN = -31,
+	
+	/** Scroll lock. */
+	SJME_SCRITCHINPUT_KEY_SCROLLLOCK = -32,
+	
+	/** Insert. */
+	SJME_SCRITCHINPUT_KEY_INSERT = -33,
+	
+	/** Game Virtual Left Command. */
+	SJME_SCRITCHINPUT_KEY_VGAME_COMMAND_LEFT = -34,
+	
+	/** Game Virtual Right Command. */
+	SJME_SCRITCHINPUT_KEY_VGAME_COMMAND_RIGHT = -35,
+	
+	/** Game virtual Center Command. */
+	SJME_SCRITCHINPUT_KEY_VGAME_COMMAND_CENTER = -36,
+	
+	/** Game virtual open LCDUI inspector. */
+	SJME_SCRITCHINPUT_KEY_VGAME_LCDUI_INSPECTOR = -37,
+	
+	/** Number pad divide. */
+	SJME_SCRITCHINPUT_KEY_NUMPAD_DIVIDE = -38,
+	
+	/** Number pad multiply. */
+	SJME_SCRITCHINPUT_KEY_NUMPAD_MULTIPLY = -39,
+	
+	/** Number pad minus. */
+	SJME_SCRITCHINPUT_KEY_NUMPAD_MINUS = -40,
+	
+	/** Number pad plus. */
+	SJME_SCRITCHINPUT_KEY_NUMPAD_PLUS = -41,
+	
+	/** Number pad decimal. */
+	SJME_SCRITCHINPUT_KEY_NUMPAD_DECIMAL = -42,
+	
+	/** Number pad enter. */
+	SJME_SCRITCHINPUT_KEY_NUMPAD_ENTER = -43,
+	
+	/** Number pad 0. */
+	SJME_SCRITCHINPUT_KEY_NUMPAD_0 = -50,
+	
+	/** Number pad 1. */
+	SJME_SCRITCHINPUT_KEY_NUMPAD_1 = -51,
+	
+	/** Number pad 2. */
+	SJME_SCRITCHINPUT_KEY_NUMPAD_2 = -52,
+	
+	/** Number pad 3. */
+	SJME_SCRITCHINPUT_KEY_NUMPAD_3 = -53,
+	
+	/** Number pad 4. */
+	SJME_SCRITCHINPUT_KEY_NUMPAD_4 = -54,
+	
+	/** Number pad 5. */
+	SJME_SCRITCHINPUT_KEY_NUMPAD_5 = -55,
+	
+	/** Number pad 6. */
+	SJME_SCRITCHINPUT_KEY_NUMPAD_6 = -56,
+	
+	/** Number pad 7. */
+	SJME_SCRITCHINPUT_KEY_NUMPAD_7 = -57,
+	
+	/** Number pad 8. */
+	SJME_SCRITCHINPUT_KEY_NUMPAD_8 = -58,
+	
+	/** Number pad 9. */
+	SJME_SCRITCHINPUT_KEY_NUMPAD_9 = -59,
+	
+	/** F24. */
+	SJME_SCRITCHINPUT_KEY_F24 = -64,
+	
+	/** F23. */
+	SJME_SCRITCHINPUT_KEY_F23 = -65,
+	
+	/** F22. */
+	SJME_SCRITCHINPUT_KEY_F22 = -66,
+	
+	/** F21. */
+	SJME_SCRITCHINPUT_KEY_F21 = -67,
+	
+	/** F20. */
+	SJME_SCRITCHINPUT_KEY_F20 = -68,
+	
+	/** F19. */
+	SJME_SCRITCHINPUT_KEY_F19 = -69,
+	
+	/** F18. */
+	SJME_SCRITCHINPUT_KEY_F18 = -70,
+	
+	/** F17. */
+	SJME_SCRITCHINPUT_KEY_F17 = -71,
+	
+	/** F16. */
+	SJME_SCRITCHINPUT_KEY_F16 = -72,
+	
+	/** F15. */
+	SJME_SCRITCHINPUT_KEY_F15 = -73,
+	
+	/** F14. */
+	SJME_SCRITCHINPUT_KEY_F14 = -74,
+	
+	/** F13. */
+	SJME_SCRITCHINPUT_KEY_F13 = -75,
+	
+	/** F12. */
+	SJME_SCRITCHINPUT_KEY_F12 = -76,
+	
+	/** F11. */
+	SJME_SCRITCHINPUT_KEY_F11 = -77,
+	
+	/** F10. */
+	SJME_SCRITCHINPUT_KEY_F10 = -78,
+	
+	/** F9. */
+	SJME_SCRITCHINPUT_KEY_F9 = -79,
+	
+	/** F8. */
+	SJME_SCRITCHINPUT_KEY_F8 = -80,
+	
+	/** F7. */
+	SJME_SCRITCHINPUT_KEY_F7 = -81,
+	
+	/** F6. */
+	SJME_SCRITCHINPUT_KEY_F6 = -82,
+	
+	/** F5. */
+	SJME_SCRITCHINPUT_KEY_F5 = -83,
+	
+	/** F4. */
+	SJME_SCRITCHINPUT_KEY_F4 = -84,
+	
+	/** F3. */
+	SJME_SCRITCHINPUT_KEY_F3 = -85,
+	
+	/** F2. */
+	SJME_SCRITCHINPUT_KEY_F2 = -86,
+	
+	/** F1. */
+	SJME_SCRITCHINPUT_KEY_F1 = -87,
+} sjme_scritchinput_key;
+
 typedef struct sjme_scritchinput_eventDataUnknown
 {
 	/** Value 1. */
