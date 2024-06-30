@@ -10,9 +10,12 @@
 package cc.squirreljme.jvm.mle.scritchui;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
+import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchInputListener;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Interface for panels.
@@ -28,7 +31,7 @@ public interface ScritchPanelInterface
 	 *
 	 * @param __panel The panel to modify.
 	 * @param __enabled Whether focus and tab traversal should be enabled.
-	 * @param __default
+	 * @param __default Should default focus be used?
 	 * @throws MLECallError On null arguments.
 	 * @since 2024/03/24
 	 */
@@ -47,5 +50,19 @@ public interface ScritchPanelInterface
 	@SquirrelJMEVendorApi
 	@NotNull
 	ScritchPanelBracket newPanel()
+		throws MLECallError;
+	
+	/**
+	 * Sets the listener for input events.
+	 *
+	 * @param __panel The panel to set for.
+	 * @param __listener The listener to call to, {@code null} will clear it.
+	 * @throws MLECallError If the component is not valid or if the listener
+	 * could not be set.
+	 * @since 2024/06/30
+	 */
+	@SquirrelJMEVendorApi
+	void setInputListener(@NotNull ScritchPanelBracket __panel,
+		@Nullable ScritchInputListener __listener)
 		throws MLECallError;
 }

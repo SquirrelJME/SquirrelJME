@@ -20,11 +20,9 @@ import java.lang.ref.WeakReference;
  * @since 2024/06/28
  */
 final class __ExecCanvasVisible__
+	extends __ExecCanvas__
 	implements ScritchVisibleListener
 {
-	/** The canvas to inform. */
-	private final Reference<Canvas> _canvas;
-	
 	/**
 	 * Initializes the callback.
 	 *
@@ -35,10 +33,7 @@ final class __ExecCanvasVisible__
 	__ExecCanvasVisible__(Canvas __canvas)
 		throws NullPointerException
 	{
-		if (__canvas == null)
-			throw new NullPointerException("NARG");
-		
-		this._canvas = new WeakReference<>(__canvas);
+		super(__canvas);
 	}
 	
 	@Override

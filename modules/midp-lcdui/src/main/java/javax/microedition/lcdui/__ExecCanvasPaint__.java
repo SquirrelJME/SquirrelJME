@@ -22,11 +22,9 @@ import java.lang.ref.WeakReference;
  * @since 2024/03/19
  */
 class __ExecCanvasPaint__
+	extends __ExecCanvas__
 	implements ScritchPaintListener
 {
-	/** The canvas to paint on. */
-	protected final WeakReference<Canvas> _canvas;
-	
 	/**
 	 * Initializes the painter.
 	 *
@@ -37,10 +35,7 @@ class __ExecCanvasPaint__
 	__ExecCanvasPaint__(Canvas __canvas)
 		throws NullPointerException
 	{
-		if (__canvas == null)
-			throw new NullPointerException("NARG");
-		
-		this._canvas = new WeakReference<>(__canvas);
+		super(__canvas);
 	}
 	
 	/**

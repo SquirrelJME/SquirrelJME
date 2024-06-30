@@ -94,6 +94,45 @@ typedef enum sjme_scritchinput_type
 	SJME_SCRITCHINPUT_TYPE_DEVICE_ACTION = 131072,
 } sjme_scritchinput_type;
 
+typedef struct sjme_scritchinput_eventDataUnknown
+{
+	/** Value 1. */
+	sjme_jint a;
+	
+	/** Value 2. */
+	sjme_jint b;
+	
+	/** Value 3. */
+	sjme_jint c;
+	
+	/** Value 4. */
+	sjme_jint d;
+	
+	/** Value 5. */
+	sjme_jint e;
+	
+	/** Value 6. */
+	sjme_jint f;
+	
+	/** Value 7. */
+	sjme_jint g;
+	
+	/** Value 8. */
+	sjme_jint h;
+	
+	/** Value 9. */
+	sjme_jint i;
+	
+	/** Value 10. */
+	sjme_jint j;
+	
+	/** Value 11. */
+	sjme_jint k;
+	
+	/** Value 12. */
+	sjme_jint l;
+} sjme_scritchinput_eventDataUnknown;
+
 typedef struct sjme_scritchinput_eventDataKey
 {
 } sjme_scritchinput_eventDataKey;
@@ -150,6 +189,9 @@ typedef struct sjme_scritchinput_event
 	/** The event data. */
 	union
 	{
+		/** Unknown event. */
+		sjme_scritchinput_eventDataUnknown unknown;
+		
 		/** Key events. */
 		sjme_scritchinput_eventDataKey key;
 		

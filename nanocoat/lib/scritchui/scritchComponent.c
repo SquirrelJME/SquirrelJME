@@ -288,6 +288,10 @@ sjme_errorCode sjme_scritchui_core_componentSetInputListener(
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+	/* Can only be set for panels. */
+	if (inComponent->common.type != SJME_SCRITCHUI_TYPE_PANEL)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
 	/* Set core listener events which is forwarded to for handling. */
 	if (inState->impl->componentSetInputListener != NULL)
 		if (sjme_error_is(error = inState->impl->

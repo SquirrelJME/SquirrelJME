@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchCloseListener;
+import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchInputListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchPaintListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchVisibleListener;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchWindowManagerType;
@@ -127,6 +128,26 @@ public final class NativeScritchDylib
 		
 		NativeScritchDylib.__componentRevalidate(this._stateP,
 			__component.objectP);
+	}
+	
+	/**
+	 * Sets the input listener for a component.
+	 *
+	 * @param __component The component to set for.
+	 * @param __listener The listener to set.
+	 * @throws MLECallError On null arguments or if the listener could not
+	 * be set.
+	 * @since 2024/06/30
+	 */
+	public void componentSetInputListener(DylibComponentObject __component,
+		ScritchInputListener __listener)
+		throws MLECallError
+	{
+		if (__component == null)
+			throw new MLECallError("Null arguments.");
+		
+		NativeScritchDylib.__componentSetInputListener(this._stateP,
+			__component.objectP, __listener);
 	}
 	
 	/**
@@ -537,6 +558,19 @@ public final class NativeScritchDylib
 	 */
 	private static native void __componentRevalidate(long __stateP,
 		long __componentP)
+		throws MLECallError;
+	
+	/**
+	 * Sets the input listener for a given component.
+	 *
+	 * @param __stateP The current state pointer.
+	 * @param __componentP The component to set for.
+	 * @param __listener The listener to set.
+	 * @throws MLECallError On any errors.
+	 * @since 2024/06/30
+	 */
+	private static native void __componentSetInputListener(long __stateP,
+		long __componentP, ScritchInputListener __listener)
 		throws MLECallError;
 	
 	/**

@@ -9,45 +9,32 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
 import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 
 /**
- * Repainter for canvases.
+ * Not Described.
  *
- * @since 2024/04/25
+ * @since 2024/06/30
  */
-class __ExecCanvasRepainter__
-	extends __ExecCanvas__
-	implements Runnable
+abstract class __ExecCanvas__
 {
-	/**
-	 * Initializes the repainter.
-	 *
-	 * @param __canvas The canvas to repaint.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2024/04/25
-	 */
-	__ExecCanvasRepainter__(Canvas __canvas)
-		throws NullPointerException
-	{
-		super(__canvas);
-	}
+	/** The canvas to inform. */
+	final Reference<Canvas> _canvas;
 	
 	/**
-	 * {@inheritDoc}
-	 * @since 2024/04/25
+	 * Initializes the callback.
+	 *
+	 * @param __canvas The canvas to call for.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/06/30
 	 */
-	@Override
-	public void run()
+	__ExecCanvas__(Canvas __canvas)
+		throws NullPointerException
 	{
-		// Do we have the canvas still?
-		Canvas canvas = this._canvas.get();
-		if (canvas == null)
-			return;
+		if (__canvas == null)
+			throw new NullPointerException("NARG");
 		
-		// Forward repaint call
-		DisplayableState state = canvas._state;
-		state.scritchApi().panel().repaint(state.scritchPanel());
+		this._canvas = new WeakReference<>(__canvas);
 	}
 }

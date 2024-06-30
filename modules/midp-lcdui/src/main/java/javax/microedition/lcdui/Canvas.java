@@ -316,14 +316,17 @@ public abstract class Canvas
 		scritchApi.component().setVisibleListener(scritchPanel,
 			new __ExecCanvasVisible__(this));
 		
+		// Input events
+		panelApi.setInputListener(scritchPanel,
+			new __ExecCanvasInput__(this));
+		
 		// Canvases take focus and inputs, so enable it
 		// There should also be the default so that it is selected without
 		// needing to tab to it
 		panelApi.enableFocus(scritchPanel, true, true);
 		
 		// Setup repaint callback
-		this._repainter = new __ExecCanvasRepainter__(
-			new WeakReference<>(this));
+		this._repainter = new __ExecCanvasRepainter__(this);
 	}
 	
 	/**

@@ -14,8 +14,12 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchPanelInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPaintableBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
+import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchInputListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchPaintListener;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Not Described.
@@ -80,6 +84,22 @@ public class DylibPanelInterface
 		
 		this.dyLib.componentRepaint((DylibComponentObject)__component,
 			0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/06/30
+	 */
+	@Override
+	public void setInputListener(@NotNull ScritchPanelBracket __component,
+		@Nullable ScritchInputListener __listener)
+		throws MLECallError
+	{
+		if (__component == null)
+			throw new MLECallError("Null arguments.");
+		
+		this.dyLib.componentSetInputListener(
+			(DylibComponentObject)__component, __listener);
 	}
 	
 	/**

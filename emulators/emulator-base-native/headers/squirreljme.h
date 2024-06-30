@@ -148,6 +148,8 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 	"cc/squirreljme/jvm/mle/scritchui/brackets/ScritchComponentBracket")
 #define DESC_SCRITCHUI_CLOSE_LISTENER DESC_CLASS( \
 	"cc/squirreljme/jvm/mle/scritchui/callbacks/ScritchCloseListener")
+#define DESC_SCRITCHUI_INPUT_LISTENER DESC_CLASS( \
+	"cc/squirreljme/jvm/mle/scritchui/callbacks/ScritchInputListener")
 #define DESC_SCRITCHUI_PAINT_LISTENER DESC_CLASS( \
 	"cc/squirreljme/jvm/mle/scritchui/callbacks/ScritchPaintListener")
 #define DESC_SCRITCHUI_VISIBLE_LISTENER DESC_CLASS( \
@@ -313,6 +315,15 @@ sjme_errorCode sjme_jni_jstringCharSeqStatic(
 	sjme_attrInNotNull JNIEnv* env,
 	sjme_attrInNotNull sjme_charSeq* inOutSeq,
 	sjme_attrInNotNull jstring inString);
+
+/**
+ * Maps input @c sjme_jlong to @c jlong .
+ * 
+ * @param value The input value. 
+ * @return The resultant value.
+ * @since 2024/06/30
+ */
+jlong sjme_jni_jlong(sjme_jlong value);
 
 #endif /* __SQUIRRELJME_H__ */
 

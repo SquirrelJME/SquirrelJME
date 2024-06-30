@@ -334,3 +334,8 @@ sjme_errorCode sjme_jni_jstringCharSeqStatic(
 		NULL,
 		&frontEnd);
 }
+
+jlong sjme_jni_jlong(sjme_jlong value)
+{
+    return ((jlong)value.lo) | (((jlong)value.hi) << 32L);
+}

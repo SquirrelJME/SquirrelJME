@@ -9,26 +9,28 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
-import java.lang.ref.Reference;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
+import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchInputListener;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import org.jetbrains.annotations.NotNull;
 
 /**
- * Repainter for canvases.
+ * Input event handler for canvases.
  *
- * @since 2024/04/25
+ * @since 2024/06/30
  */
-class __ExecCanvasRepainter__
+class __ExecCanvasInput__
 	extends __ExecCanvas__
-	implements Runnable
+	implements ScritchInputListener
 {
 	/**
-	 * Initializes the repainter.
+	 * Initializes the listener.
 	 *
-	 * @param __canvas The canvas to repaint.
+	 * @param __canvas The canvas to handle events for.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2024/04/25
+	 * @since 2024/06/30
 	 */
-	__ExecCanvasRepainter__(Canvas __canvas)
+	__ExecCanvasInput__(Canvas __canvas)
 		throws NullPointerException
 	{
 		super(__canvas);
@@ -36,18 +38,13 @@ class __ExecCanvasRepainter__
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2024/04/25
+	 * @since 2024/06/30
 	 */
 	@Override
-	public void run()
+	public void inputEvent(@NotNull ScritchComponentBracket __component,
+		int __type, long __time, int __a, int __b, int __c, int __d, int __e,
+		int __f, int __g, int __h, int __i, int __j, int __k, int __l)
 	{
-		// Do we have the canvas still?
-		Canvas canvas = this._canvas.get();
-		if (canvas == null)
-			return;
-		
-		// Forward repaint call
-		DisplayableState state = canvas._state;
-		state.scritchApi().panel().repaint(state.scritchPanel());
+		throw Debugging.todo();
 	}
 }

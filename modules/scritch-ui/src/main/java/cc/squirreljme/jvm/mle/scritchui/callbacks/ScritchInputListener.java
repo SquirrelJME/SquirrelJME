@@ -41,7 +41,7 @@ public interface ScritchInputListener
 	 * @param __i Value 9.
 	 * @param __j Value 10.
 	 * @param __k Value 11.
-	 * @param __m Value 12.
+	 * @param __l Value 12.
 	 * @since 2024/06/29
 	 */
 	@SquirrelJMEVendorApi
@@ -50,5 +50,5 @@ public interface ScritchInputListener
 		@MagicConstant(valuesFromClass = ScritchInputMethodType.class)
 			int __type, long __time, int __a, int __b, int __c, int __d,
 		int __e, int __f, int __g, int __h,
-		int __i, int __j, int __k, int __m);
+		int __i, int __j, int __k, int __l);
 }
