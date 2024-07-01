@@ -568,6 +568,10 @@ static sjme_errorCode sjme_scritchui_core_pencilSetAlphaColor(
 {
 	sjme_scritchui_pencilColor* target;
 	sjme_jint v, aa, rr, gg, bb, ii;
+	sjme_jint i, numCol, d, bestCol, bestColScore, thisColScore;
+	sjme_jint pargb, prr, pgg, pbb;
+	sjme_jint mrr, mgg, mbb;
+	const sjme_jint* colors;
 	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -588,9 +592,54 @@ static sjme_errorCode sjme_scritchui_core_pencilSetAlphaColor(
 	target->b = bb;
 	
 	/* Find closest indexed color. */
-	ii = 0;
-	if (g->palette.colors != NULL && g->palette.numColors > 0)
-		sjme_todo("Color search?");
+	ii = -1;
+	numCol = g->palette.numColors;
+	if (g->palette.colors != NULL && numCol > 0)
+	{
+		/* Clear alpha. */
+		d = argb & 0xFFFFFF;
+		
+		/* Determine the most important color channel. */
+		mrr = (rr >= gg && rr >= bb ? 1 : 2);
+		mgg = (gg >= rr && gg >= bb ? 1 : 2);
+		mbb = (bb >= rr && bb >= gg ? 1 : 2);
+		
+		/* Start with a horrible color score. */
+		bestCol = 0;
+		bestColScore = 134217728;
+		
+		/* Find exact color match? */
+		colors = g->palette.colors;
+		for (i = 0; i < numCol; i++)
+		{
+			/* Exact match? */
+			pargb = colors[i] & 0xFFFFFF;
+			if (d == pargb)
+			{
+				ii = i;
+				break;
+			}
+			
+			/* Get original RGB value. */
+			prr = (pargb >> 16) & 0xFF;
+			pgg = (pargb >> 8) & 0xFF;
+			pbb = (pargb) & 0xFF;
+			
+			/* Calculate this color score, use if it is better. */
+			thisColScore = (abs(prr - rr) * mrr) +
+				(abs(pgg - gg) * mgg) +
+				(abs(pbb - bb) * mbb);
+			if (thisColScore < bestColScore)
+			{
+				bestCol = i;
+				bestColScore = thisColScore;
+			}
+		}
+		
+		/* If no exact color was found, use the best scoring one. */ 
+		if (ii < 0)
+			ii = bestCol;
+	}
 	
 	/* Determine raw pixel color. */
 	switch (g->pixelFormat)
@@ -630,8 +679,11 @@ static sjme_errorCode sjme_scritchui_core_pencilSetAlphaColor(
 			break;
 		
 		case SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536:
+			v = ii & 0xFFFF;
+			break;
+			
 		case SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256:
-			v = ii;
+			v = ii & 0xFF;
 			break;
 		
 		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4:
@@ -647,7 +699,8 @@ static sjme_errorCode sjme_scritchui_core_pencilSetAlphaColor(
 			break;
 	}
 		
-	/* Store raw color. */
+	/* Store raw colors. */
+	target->i = ii;
 	target->v = v;
 	
 	/* Forward. */

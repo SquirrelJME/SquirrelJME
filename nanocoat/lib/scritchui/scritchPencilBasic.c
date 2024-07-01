@@ -110,9 +110,51 @@
 #define pencilPixelMask 0x1
 
 #include "scritchPencilTemplate.c"
+#include "sjme/alloc.h"
+
+sjme_errorCode sjme_scritchui_pencilInitBuffer(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrOutNotNull sjme_scritchui_pencil* outPencil,
+	sjme_attrInValue sjme_gfx_pixelFormat pf,
+	sjme_attrInPositiveNonZero sjme_jint bw,
+	sjme_attrInPositiveNonZero sjme_jint bh,
+	sjme_attrInNotNull void* buf,
+	sjme_attrInPositive sjme_jint offset,
+	sjme_attrInNullable const sjme_jint* pal,
+	sjme_attrInValue sjme_jint sx,
+	sjme_attrInValue sjme_jint sy,
+	sjme_attrInPositiveNonZero sjme_jint sw,
+	sjme_attrInPositiveNonZero sjme_jint sh)
+{
+	sjme_errorCode error;
+	sjme_scritchui_pencil result;
+	
+	if (inPool == NULL || outPencil == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Allocate pencil. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_alloc(inPool, sizeof(*result),
+		&result)) || result == NULL)
+		return sjme_error_default(error);
+	
+	/* Initialize it. */
+	if (sjme_error_is(error = sjme_scritchui_pencilInitBufferStatic(
+		result, pf, bw, bh, buf, offset, pal, sx, sy, sw, sh)))
+	{
+		/* Free before failing. */
+		sjme_alloc_free(result);
+		
+		return sjme_error_default(error);
+	}
+	
+	/* Success! */
+	*outPencil = result;
+	return SJME_ERROR_NONE;
+}
 
 sjme_errorCode sjme_scritchui_pencilInitBufferStatic(
-	sjme_attrInOutNotNull sjme_scritchui_pencil* outPencil,
+	sjme_attrInOutNotNull sjme_scritchui_pencil inOutPencil,
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInPositive sjme_jint bw,
 	sjme_attrInPositive sjme_jint bh,
@@ -126,7 +168,7 @@ sjme_errorCode sjme_scritchui_pencilInitBufferStatic(
 {
 	const sjme_scritchui_pencilImplFunctions* chosen;
 	
-	if (outPencil == NULL || buf == NULL)
+	if (inOutPencil == NULL || buf == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (bw <= 0 || bh <= 0 || sx < 0 || sy < 0 || sw <= 0 || sh <= 0 ||

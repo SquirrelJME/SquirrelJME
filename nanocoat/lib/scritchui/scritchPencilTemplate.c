@@ -19,6 +19,9 @@ static sjme_errorCode pencilFunc_NAME(DrawPixel)(
 {
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return SJME_ERROR_NULL_ARGUMENTS;
 }
 
 static const struct sjme_scritchui_pencilImplFunctions pencilFunc_NAME(_) =

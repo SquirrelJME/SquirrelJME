@@ -629,6 +629,41 @@ extern const sjme_scritchui_pencilBitLineFunc
 /**
  * Creates a hardware reference bracket to the native hardware graphics.
  * 
+ * @param inPool The tool to allocate within.
+ * @param OutPencil The resultant pencil.
+ * @param pf The @c sjme_gfx_pixelFormat used for the draw.
+ * @param bw The buffer width, this is the scanline width of the buffer.
+ * @param bh The buffer height.
+ * @param buf The target buffer to draw to, this is cast to the correct
+ * buffer format.
+ * @param offset The offset to the start of the buffer.
+ * @param pal The color palette, may be @c NULL. 
+ * @param sx Starting surface X coordinate.
+ * @param sy Starting surface Y coordinate.
+ * @param sw Surface width.
+ * @param sh Surface height.
+ * @return The bracket capable of drawing hardware accelerated graphics.
+ * @return An error if the requested graphics are not valid.
+ * @since 2024/05/01
+ */
+sjme_errorCode sjme_scritchui_pencilInitBuffer(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrOutNotNull sjme_scritchui_pencil* outPencil,
+	sjme_attrInValue sjme_gfx_pixelFormat pf,
+	sjme_attrInPositiveNonZero sjme_jint bw,
+	sjme_attrInPositiveNonZero sjme_jint bh,
+	sjme_attrInNotNull void* buf,
+	sjme_attrInPositive sjme_jint offset,
+	sjme_attrInNullable const sjme_jint* pal,
+	sjme_attrInValue sjme_jint sx,
+	sjme_attrInValue sjme_jint sy,
+	sjme_attrInPositiveNonZero sjme_jint sw,
+	sjme_attrInPositiveNonZero sjme_jint sh);
+
+/**
+ * Creates a hardware reference bracket to the native hardware graphics.
+ * 
+ * @param inOutPencil The input and output pencil.
  * @param pf The @c sjme_gfx_pixelFormat used for the draw.
  * @param bw The buffer width, this is the scanline width of the buffer.
  * @param bh The buffer height.
@@ -645,7 +680,7 @@ extern const sjme_scritchui_pencilBitLineFunc
  * @since 2024/05/01
  */
 sjme_errorCode sjme_scritchui_pencilInitBufferStatic(
-	sjme_attrInOutNotNull sjme_scritchui_pencil* outPencil,
+	sjme_attrInOutNotNull sjme_scritchui_pencil inOutPencil,
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInPositiveNonZero sjme_jint bw,
 	sjme_attrInPositiveNonZero sjme_jint bh,
