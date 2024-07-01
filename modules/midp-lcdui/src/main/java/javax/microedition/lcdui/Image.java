@@ -141,7 +141,7 @@ public class Image
 		
 		// Create hardware accelerated graphics where possible
 		return PencilGraphics.hardwareGraphics(
-			(this._alpha ? UIPixelFormat.INT_RGBA8888 :
+			(this._alpha ? UIPixelFormat.INT_ARGB8888 :
 				UIPixelFormat.INT_RGB888),
 			this._width, this._height,
 			this._data, this._offset, null,

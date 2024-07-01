@@ -17,15 +17,15 @@ package cc.squirreljme.jvm.mle.constants;
 public interface UIPixelFormat
 {
 	/** 32-bit RGBA ({@code int}) [Java ME Standard]. */
-	byte INT_RGBA8888 =
+	byte INT_ARGB8888 =
 		0;
 	
 	/** 32-bit RGB ({@code int}) [Java ME Standard]. */
 	byte INT_RGB888 =
 		1;
 	
-	/** 16-bit RGBA4444. ({@code short}) [Java ME Standard]. */
-	byte SHORT_RGBA4444 =
+	/** 16-bit ARGB4444. ({@code short}) [Java ME Standard]. */
+	byte SHORT_ARGB4444 =
 		2;
 	
 	/** 16-bit RGB565. ({@code short}) [Java ME Standard]. */

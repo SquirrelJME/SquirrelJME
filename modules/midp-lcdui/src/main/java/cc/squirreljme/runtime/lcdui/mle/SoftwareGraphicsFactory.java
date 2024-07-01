@@ -62,10 +62,10 @@ public final class SoftwareGraphicsFactory
 		{
 				// 32-bit RGB(A)
 			case UIPixelFormat.INT_RGB888:
-			case UIPixelFormat.INT_RGBA8888:
+			case UIPixelFormat.INT_ARGB8888:
 				return new AdvancedGraphics(
 					(int[])__buf,
-					(__pf == UIPixelFormat.INT_RGBA8888),
+					(__pf == UIPixelFormat.INT_ARGB8888),
 					null,
 					__sw, __sh,
 					__bw,

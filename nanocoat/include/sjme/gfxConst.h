@@ -35,13 +35,13 @@ extern "C" {
 typedef enum sjme_gfx_pixelFormat
 {
 	/** 32-bit RGBA (@c uint32_t ) [Java ME Standard]. */
-	SJME_GFX_PIXEL_FORMAT_INT_RGBA8888 = 0,
+	SJME_GFX_PIXEL_FORMAT_INT_ARGB8888 = 0,
 	
 	/** 32-bit RGB (@c uint32_t ) [Java ME Standard]. */
 	SJME_GFX_PIXEL_FORMAT_INT_RGB888 = 1,
 	
 	/** 16-bit RGBA4444. (@c uint16_t ) [Java ME Standard]. */
-	SJME_GFX_PIXEL_FORMAT_SHORT_RGBA4444 = 2,
+	SJME_GFX_PIXEL_FORMAT_SHORT_ARGB4444 = 2,
 	
 	/** 16-bit RGB565. (@c uint16_t ) [Java ME Standard]. */
 	SJME_GFX_PIXEL_FORMAT_SHORT_RGB565 = 3,

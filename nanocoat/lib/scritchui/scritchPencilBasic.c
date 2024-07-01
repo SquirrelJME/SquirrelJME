@@ -9,20 +9,50 @@
 
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiPencil.h"
+#include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/debug.h"
 
-#define pencilPutPixelI_jint(pColor, pIndex)
-#define pencilPutPixelI_jshort(pColor, pIndex)
-#define pencilPutPixelI_jbyte(pColor, pIndex)
+#define pencilPixelType sjme_jint
+#define pencilPixelBits 32
+#define pencilPixelMask 0xFFFFFFFF
 
-#define pencilPutPixelXY_jint(pColor, pX, pY)
-#define pencilPutPixelXY_jshort(pColor, pX, pY)
-#define pencilPutPixelXY_jbyte(pColor, pX, pY)
+#include "scritchPencilTemplatePrim.c"
+
+#define pencilPixelType sjme_jshort
+#define pencilPixelBits 16
+#define pencilPixelMask 0xFFFF
+
+#include "scritchPencilTemplatePrim.c"
+
+#define pencilPixelType sjme_jbyte
+#define pencilPixelBits 8
+#define pencilPixelMask 0xFF
+
+#include "scritchPencilTemplatePrim.c"
+
+#define pencilPixelType sjme_jbyte
+#define pencilPixelBits 4
+#define pencilPixelMask 0xF
+
+#include "scritchPencilTemplatePrim.c"
+
+#define pencilPixelType sjme_jbyte
+#define pencilPixelBits 2
+#define pencilPixelMask 0x3
+
+#include "scritchPencilTemplatePrim.c"
+
+#define pencilPixelType sjme_jbyte
+#define pencilPixelBits 1
+#define pencilPixelMask 0x1
+
+#include "scritchPencilTemplatePrim.c"
 
 /* 32-bit RGBA (@c uint32_t ) [Java ME Standard]. */
 #define SJME_PENCIL_NAME rgba8888
-#define SJME_PENCIL_PIXEL_FORMAT SJME_GFX_PIXEL_FORMAT_INT_RGBA8888
+#define SJME_PENCIL_PIXEL_FORMAT SJME_GFX_PIXEL_FORMAT_INT_ARGB8888
 #define pencilPixelType sjme_jint
+#define pencilPixelBits 32
 
 #include "scritchPencilTemplate.c"
 
@@ -30,13 +60,15 @@
 #define SJME_PENCIL_NAME rgb888
 #define SJME_PENCIL_PIXEL_FORMAT SJME_GFX_PIXEL_FORMAT_INT_RGB888
 #define pencilPixelType sjme_jint
+#define pencilPixelBits 32
 
 #include "scritchPencilTemplate.c"
 
 /* 16-bit RGBA4444. (@c uint16_t ) [Java ME Standard]. */
 #define SJME_PENCIL_NAME rgba4444
-#define SJME_PENCIL_PIXEL_FORMAT SJME_GFX_PIXEL_FORMAT_SHORT_RGBA4444
+#define SJME_PENCIL_PIXEL_FORMAT SJME_GFX_PIXEL_FORMAT_SHORT_ARGB4444
 #define pencilPixelType sjme_jshort
+#define pencilPixelBits 16
 
 #include "scritchPencilTemplate.c"
 
@@ -44,6 +76,7 @@
 #define SJME_PENCIL_NAME rgb565
 #define SJME_PENCIL_PIXEL_FORMAT SJME_GFX_PIXEL_FORMAT_SHORT_RGB565
 #define pencilPixelType sjme_jshort
+#define pencilPixelBits 16
 
 #include "scritchPencilTemplate.c"
 
@@ -51,6 +84,7 @@
 #define SJME_PENCIL_NAME rgb555
 #define SJME_PENCIL_PIXEL_FORMAT SJME_GFX_PIXEL_FORMAT_SHORT_RGB555
 #define pencilPixelType sjme_jshort
+#define pencilPixelBits 16
 
 #include "scritchPencilTemplate.c"
 
@@ -58,6 +92,7 @@
 #define SJME_PENCIL_NAME abgr1555
 #define SJME_PENCIL_PIXEL_FORMAT SJME_GFX_PIXEL_FORMAT_SHORT_ABGR1555
 #define pencilPixelType sjme_jshort
+#define pencilPixelBits 16
 
 #include "scritchPencilTemplate.c"
 
@@ -65,6 +100,7 @@
 #define SJME_PENCIL_NAME indexed65536
 #define SJME_PENCIL_PIXEL_FORMAT SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536
 #define pencilPixelType sjme_jshort
+#define pencilPixelBits 8
 
 #include "scritchPencilTemplate.c"
 
@@ -72,6 +108,7 @@
 #define SJME_PENCIL_NAME indexed256
 #define SJME_PENCIL_PIXEL_FORMAT SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256
 #define pencilPixelType sjme_jbyte
+#define pencilPixelBits 8
 
 #include "scritchPencilTemplate.c"
 
@@ -79,6 +116,7 @@
 #define SJME_PENCIL_NAME indexed4
 #define SJME_PENCIL_PIXEL_FORMAT SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4
 #define pencilPixelType sjme_jbyte
+#define pencilPixelBits 4
 
 #include "scritchPencilTemplate.c"
 
@@ -86,6 +124,7 @@
 #define SJME_PENCIL_NAME indexed2
 #define SJME_PENCIL_PIXEL_FORMAT SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2
 #define pencilPixelType sjme_jbyte
+#define pencilPixelBits 2
 
 #include "scritchPencilTemplate.c"
 
@@ -93,6 +132,7 @@
 #define SJME_PENCIL_NAME indexed1
 #define SJME_PENCIL_PIXEL_FORMAT SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1
 #define pencilPixelType sjme_jbyte
+#define pencilPixelBits 1
 
 #include "scritchPencilTemplate.c"
 

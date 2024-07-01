@@ -567,6 +567,7 @@ static sjme_errorCode sjme_scritchui_core_pencilSetAlphaColor(
 	sjme_attrInValue sjme_jint argb)
 {
 	sjme_scritchui_pencilColor* target;
+	sjme_jint v, aa, rr, gg, bb, ii;
 	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -577,15 +578,77 @@ static sjme_errorCode sjme_scritchui_core_pencilSetAlphaColor(
 	
 	/* Set base color properties. */
 	target = &g->state.color;
-	target->argb = argb;
-	target->a = (argb >> 24) & 0xFF;
-	target->r = (argb >> 16) & 0xFF;
-	target->g = (argb >> 8) & 0xFF;
-	target->b = (argb) & 0xFF;
+	aa = (argb >> 24) & 0xFF;
+	target->a = aa;
+	rr = (argb >> 16) & 0xFF;
+	target->r = rr;
+	gg = (argb >> 8) & 0xFF;
+	target->g = gg;
+	bb = (argb) & 0xFF;
+	target->b = bb;
 	
 	/* Find closest indexed color. */
+	ii = 0;
 	if (g->palette.colors != NULL && g->palette.numColors > 0)
 		sjme_todo("Color search?");
+	
+	/* Determine raw pixel color. */
+	switch (g->pixelFormat)
+	{
+		case SJME_GFX_PIXEL_FORMAT_INT_ARGB8888:
+			v = argb;
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_INT_RGB888:
+			v = argb & 0x00FFFFFF;
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_SHORT_ARGB4444:
+			v = (((aa >> 4) & 0xF) << 12) |
+				(((rr >> 4) & 0xF) << 8) |
+				(((gg >> 4) & 0xF) << 4) |
+				((bb >> 4) & 0xF);
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB565:
+			v = (((rr >> 3) & 0x1F) << 11) |
+				(((gg >> 2) & 0x3F) << 5) |
+				((bb >> 3) & 0x1F);
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB555:
+			v = (((rr >> 3) & 0x1F) << 10) |
+				(((gg >> 3) & 0x1F) << 5) |
+				((bb >> 3) & 0x1F);
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_SHORT_ABGR1555:
+			v = (((aa >> 7) & 0x1) << 15) |
+				(((rr >> 3) & 0x1F) << 10) |
+				(((gg >> 3) & 0x1F) << 5) |
+				((bb >> 3) & 0x1F);
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536:
+		case SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256:
+			v = ii;
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4:
+			v = ii & 0xF;
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2:
+			v = ii & 0x3;
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1:
+			v = ii & 0x1;
+			break;
+	}
+		
+	/* Store raw color. */
+	target->v = v;
 	
 	/* Forward. */
 	return g->impl->setAlphaColor(g, argb);
@@ -632,7 +695,7 @@ static sjme_errorCode sjme_scritchui_core_pencilSetClip(
 	if (g->impl->setClip == NULL)
 		return SJME_ERROR_NOT_IMPLEMENTED;
 	
-	/* Translate coordinats. */
+	/* Translate coordinates. */
 	sjme_scritchui_core_transform(g, &x, &y);
 	
 	/* Minimum bounds. */
@@ -768,6 +831,7 @@ sjme_errorCode sjme_scritchui_pencilInitStatic(
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInPositiveNonZero sjme_jint sw,
 	sjme_attrInPositiveNonZero sjme_jint sh,
+	sjme_attrInPositiveNonZero sjme_jint bw,
 	sjme_attrInNotNull sjme_scritchui_pencilFont defaultFont,
 	sjme_attrInNullable sjme_frontEnd* copyFrontEnd)
 {
@@ -776,7 +840,7 @@ sjme_errorCode sjme_scritchui_pencilInitStatic(
 	if (inPencil == NULL || inFunctions == NULL || defaultFont == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	if (sw <= 0 || sh <= 0)
+	if (sw <= 0 || sh <= 0 || bw <= 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	if (pf < 0 || pf >= SJME_NUM_GFX_PIXEL_FORMATS)
@@ -792,10 +856,13 @@ sjme_errorCode sjme_scritchui_pencilInitStatic(
 	result.impl = inFunctions;
 	result.defaultFont = defaultFont;
 	result.pixelFormat = pf;
+	result.width = sw;
+	result.height = sh;
+	result.scanLen = bw;
 	
 	/* Is there an alpha channel? */
-	result.hasAlpha = (pf == SJME_GFX_PIXEL_FORMAT_INT_RGBA8888 ||
-		pf == SJME_GFX_PIXEL_FORMAT_SHORT_RGBA4444 ||
+	result.hasAlpha = (pf == SJME_GFX_PIXEL_FORMAT_INT_ARGB8888 ||
+		pf == SJME_GFX_PIXEL_FORMAT_SHORT_ARGB4444 ||
 		pf == SJME_GFX_PIXEL_FORMAT_SHORT_ABGR1555 ? SJME_JNI_TRUE :
 		SJME_JNI_FALSE);
 	

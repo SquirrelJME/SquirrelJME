@@ -114,6 +114,15 @@ typedef struct sjme_scritchui_pencilBase
 	/** The default font to use. */
 	sjme_scritchui_pencilFont defaultFont;
 	
+	/** The width of the surface. */
+	sjme_jint width;
+	
+	/** The height of the surface. */
+	sjme_jint height;
+	
+	/** The scanline length. */
+	sjme_jint scanLen;
+	
 	/** Color palette. */
 	struct
 	{

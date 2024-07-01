@@ -547,7 +547,8 @@ typedef struct sjme_scritchui_pencilFunctions
 } sjme_scritchui_pencilFunctions;
 
 /**
- * Lowest level drawing primitives.
+ * Lowest level drawing primitives, note that none of these
+ * accept transformations however they may accept clipping.
  * 
  * @since 2024/05/17
  */
@@ -564,7 +565,8 @@ typedef struct sjme_scritchui_pencilPrimFunctions
 } sjme_scritchui_pencilPrimFunctions;
 
 /**
- * ScritchUI Pencil implementation functions.
+ * ScritchUI Pencil implementation functions, note that none of these
+ * accept transformations however they may accept clipping.
  * 
  * @since 2024/05/01
  */
@@ -663,6 +665,7 @@ sjme_errorCode sjme_scritchui_pencilInitBuffer(
  * @param pf The pixel format used.
  * @param sw The surface width.
  * @param sh The surface height.
+ * @param bw The buffer width, the scanline length.
  * @param defaultFont The default font to use.
  * @param copyFrontEnd Optional front end data to copy.
  * @return Any error code if applicable.
@@ -674,13 +677,14 @@ sjme_errorCode sjme_scritchui_pencilInitStatic(
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInPositiveNonZero sjme_jint sw,
 	sjme_attrInPositiveNonZero sjme_jint sh,
+	sjme_attrInPositiveNonZero sjme_jint bw,
 	sjme_attrInNotNull sjme_scritchui_pencilFont defaultFont,
 	sjme_attrInNullable sjme_frontEnd* copyFrontEnd);
 
 typedef struct sjme_scritchui_pencilColor
 {
-	/** The RGBA color. */
-	sjme_jint argb;
+	/** The raw pencil color, which is placed in the buffer. */
+	sjme_jint v;
 	
 	/** Red. */
 	sjme_jubyte r;
