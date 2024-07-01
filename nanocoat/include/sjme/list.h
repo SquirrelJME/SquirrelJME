@@ -122,6 +122,9 @@ SJME_LIST_DECLARE(sjme_cchar, 0);
 /** List of @c sjme_pointerLen . */
 SJME_LIST_DECLARE(sjme_pointerLen, 0);
 
+/** List of @c sjme_intPointer . */
+SJME_LIST_DECLARE(sjme_intPointer, 0);
+
 /**
  * Allocates a given list generically.
  *

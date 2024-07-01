@@ -58,6 +58,8 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
+/* clang-format off */
+
 #if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
 	/** A single thread. */
 	typedef pthread_t sjme_thread;
@@ -119,6 +121,8 @@ extern "C" {
 	/** Calling convention to use for thread entry points. */
 	#define SJME_THREAD_CONVENTION
 #endif
+
+/* clang-format on */
 
 /**
  * Main thread function type.

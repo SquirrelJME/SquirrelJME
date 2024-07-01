@@ -118,6 +118,33 @@ extern "C" {
 #define SJME_TOKEN_PASTE5_PP(a, b, c, d, e) SJME_TOKEN_PASTE5(a, b, c, d, e)
 
 /**
+ * Pastes six tokens together.
+ *
+ * @param a The first token.
+ * @param b The second token.
+ * @param c The third token.
+ * @param d The fourth token.
+ * @param e The fifth token.
+ * @param f The sixth token.
+ * @since 2024/07/01
+ */
+#define SJME_TOKEN_PASTE6(a, b, c, d, e, f) a##b##c##d##e##f
+
+/**
+ * Pasting six tokens but with preprocessing.
+ *
+ * @param a The first token.
+ * @param b The second token.
+ * @param c The third token.
+ * @param d The fourth token.
+ * @param e The fifth token.
+ * @param f The sixth token.
+ * @since 2024/07/01
+ */
+#define SJME_TOKEN_PASTE6_PP(a, b, c, d, e, f) \
+	SJME_TOKEN_PASTE6(a, b, c, d, e, f)
+
+/**
  * Stringifies the given token.
  * 
  * @param s The token to stringify.
@@ -538,6 +565,13 @@ typedef uint32_t sjme_juint;
 #define SJME_TYPEOF_IS_POINTER_sjme_juint 0
 
 /**
+ * Fixed point.
+ * 
+ * @since 2024/06/27 
+ */
+typedef sjme_jint sjme_fixed;
+
+/**
  * C Character.
  *
  * @since 2024/01/03
@@ -616,21 +650,28 @@ typedef intptr_t sjme_intPointer;
  * 
  * @since 2023/07/25
  */
-typedef struct sjme_jlong
+typedef union sjme_jlong
 {
+	/** Parts of the long. */
+	struct
+	{
 #if defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)
-	/** Low value. */
-	sjme_juint lo;
-
-	/** High value. */
-	sjme_jint hi;
-#else
-	/** High value. */
-	sjme_jint hi;
+		/** Low value. */
+		sjme_juint lo;
 	
-	/** Low value. */
-	sjme_juint lo;
+		/** High value. */
+		sjme_jint hi;
+#else
+		/** High value. */
+		sjme_jint hi;
+		
+		/** Low value. */
+		sjme_juint lo;
 #endif
+	} part;
+	
+	/** The full long. */
+	int64_t full;
 } sjme_jlong;
 
 /** Basic @c sjme_jlong type identifier. */
@@ -1752,8 +1793,20 @@ typedef enum sjme_errorCode
 	/** The font is not valid. */
 	SJME_ERROR_INVALID_FONT = -56,
 	
+	/** There is no Java environment. */
+	SJME_ERROR_NO_JAVA_ENVIRONMENT = -57,
+	
+	/** Font has negative height. */
+	SJME_ERROR_FONT_NEGATIVE_HEIGHT = -58,
+	
+	/** Could not create native widget. */
+	SJME_ERROR_NATIVE_WIDGET_CREATE_FAILED = -59,
+	
+	/** Clock failure. */
+	SJME_ERROR_NATIVE_SYSTEM_CLOCK_FAILURE = -60,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -57
+	SJME_NUM_ERROR_CODES = -61
 } sjme_errorCode;
 
 /**

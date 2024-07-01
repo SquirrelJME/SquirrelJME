@@ -34,10 +34,10 @@ extern "C" {
  * method @c System::currentTimeMillis() .
  * 
  * @param result The resultant time.
- * @return If the operation was successful.
+ * @return any resultant error code.
  * @since 2023/05/23
  */
-typedef sjme_jboolean (*sjme_nal_currentTimeMillisFunc)(
+typedef sjme_errorCode (*sjme_nal_currentTimeMillisFunc)(
 	sjme_attrOutNotNull sjme_jlong* result)
 	sjme_attrCheckReturn;
 
@@ -48,9 +48,10 @@ typedef sjme_jboolean (*sjme_nal_currentTimeMillisFunc)(
  * @param off The offset into the buffer.
  * @param len The length of the buffer, used for both input and output where
  * the output is the true length of the returned buffer.
+ * @return Any resultant error code.
  * @since 2023/08/05
  */
-typedef sjme_jboolean (*sjme_nal_getEnv)(
+typedef sjme_errorCode (*sjme_nal_getEnvFunc)(
 	sjme_attrInNotNull sjme_attrOutNotNullBuf(len) sjme_jbyte* buf,
 	sjme_attrInValue sjme_attrInPositive sjme_jint off,
 	sjme_attrInOutNotNull sjme_attrInPositive sjme_jint* len)
@@ -61,10 +62,10 @@ typedef sjme_jboolean (*sjme_nal_getEnv)(
  * method @c System::nanoTime() .
  * 
  * @param result The resultant time.
- * @return If the operation was successful.
+ * @return Any resultant error code.
  * @since 2023/05/23
  */
-typedef sjme_jboolean (*sjme_nal_nanoTime)(
+typedef sjme_errorCode (*sjme_nal_nanoTimeFunc)(
 	sjme_attrOutNotNull sjme_jlong* result)
 	sjme_attrCheckReturn;
 
@@ -77,6 +78,16 @@ typedef struct sjme_nal
 {
 	int todo;
 } sjme_nal;
+
+/**
+ * Default implementation of the current nanosecond time.
+ * 
+ * @param result The resultant time. 
+ * @return Any resultant error code.
+ * @since 2024/06/30
+ */
+sjme_errorCode sjme_nal_default_nanoTime(
+	sjme_attrOutNotNull sjme_jlong* result);
 
 /*--------------------------------------------------------------------------*/
 

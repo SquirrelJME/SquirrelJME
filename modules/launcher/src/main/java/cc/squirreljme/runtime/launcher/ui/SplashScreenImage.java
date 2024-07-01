@@ -88,7 +88,8 @@ public class SplashScreenImage
 		int centerY = height / 2;
 		
 		// Version number font
-		Font verFont = Font.getFont("sansserif", 0, 16);
+		Font verFont;
+		verFont = Font.getFont("sansserif", 0, 16);
 		int verHeight = verFont.getPixelSize();
 		this._verFont = verFont;
 		this._verHeight = verHeight;

@@ -98,7 +98,6 @@
             <option value="$PROJECT_DIR$/modules/zip" />
             <option value="$PROJECT_DIR$/sdk" />
             <option value="$PROJECT_DIR$/tools" />
-            <option value="$PROJECT_DIR$/tools/fake-javadoc-sdk" />
             <option value="$PROJECT_DIR$/tools/markdown-javadoc" />
             <option value="$PROJECT_DIR$/tools/pcf-to-sqf" />
             <option value="$PROJECT_DIR$/tools/sqf-to-c" />

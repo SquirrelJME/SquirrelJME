@@ -16,7 +16,6 @@ squirreljme_multilib_add_library(Core
 	jdwp.c
 	loop.c
 	modelessStars.c
-	native.c
 	nvm.c
 	rom.c
 	task.c

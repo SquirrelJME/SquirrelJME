@@ -79,6 +79,32 @@ public final class KeyNames
 			case NonStandardKey.SCROLLLOCK:	return "ScrollLock";
 			case NonStandardKey.SHIFT:		return "Shift";
 			
+				// Function keys
+			case NonStandardKey.F1:			return "F1";
+			case NonStandardKey.F2:			return "F2";
+			case NonStandardKey.F3:			return "F3";
+			case NonStandardKey.F4:			return "F4";
+			case NonStandardKey.F5:			return "F5";
+			case NonStandardKey.F6:			return "F6";
+			case NonStandardKey.F7:			return "F7";
+			case NonStandardKey.F8:			return "F8";
+			case NonStandardKey.F9:			return "F9";
+			case NonStandardKey.F10:		return "F10";
+			case NonStandardKey.F11:		return "F11";
+			case NonStandardKey.F12:		return "F12";
+			case NonStandardKey.F13:		return "F13";
+			case NonStandardKey.F14:		return "F14";
+			case NonStandardKey.F15:		return "F15";
+			case NonStandardKey.F16:		return "F16";
+			case NonStandardKey.F17:		return "F17";
+			case NonStandardKey.F18:		return "F18";
+			case NonStandardKey.F19:		return "F19";
+			case NonStandardKey.F20:		return "F20";
+			case NonStandardKey.F21:		return "F21";
+			case NonStandardKey.F22:		return "F22";
+			case NonStandardKey.F23:		return "F23";
+			case NonStandardKey.F24:		return "F24";
+			
 				// Non-standard game keys (used by the VM perhaps)
 			case NonStandardKey.VGAME_UP:	return "VirtualGameUp";
 			case NonStandardKey.VGAME_DOWN:	return "VirtualGameDown";
