@@ -150,14 +150,27 @@ typedef struct sjme_scritchui_uiComponentBase
 	/** The parent of this component. */
 	sjme_scritchui_uiComponent parent;
 	
-	/** Is this component currently visible? */
-	sjme_jboolean isVisible;
-	
-	/** Is this visible to the user? */
-	sjme_jboolean isUserVisible;
-	
 	/** User and core listeners for the component. */
 	sjme_scritchui_uiComponentListeners listeners[SJME_NUM_SCRITCHUI_LISTENER];
+	
+	/** General component state. */
+	struct
+	{
+		/** Is this component currently visible? */
+		sjme_jboolean isVisible;
+		
+		/** Is this visible to the user? */
+		sjme_jboolean isUserVisible;
+		
+		/** The mouse buttons being held down. */
+		sjme_jint mouseButtons;
+		
+		/** Last mouse X position. */
+		sjme_jint mouseX;
+		
+		/** Last mouse Y position. */
+		sjme_jint mouseY;
+	} state;
 } sjme_scritchui_uiComponentBase;
 
 /** List of component. */

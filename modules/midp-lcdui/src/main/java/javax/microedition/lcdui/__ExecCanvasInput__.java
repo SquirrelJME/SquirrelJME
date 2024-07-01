@@ -53,6 +53,14 @@ class __ExecCanvasInput__
 		KeyListener keyDefault = canvas.__defaultKeyListener();
 		KeyListener keyCustom = canvas._keyListener;
 		
+		// Debug
+		/*
+		Debugging.debugNote("Event %d %d %d %d %d %d %d %d %d %d %d %d " +
+			"%d %d",
+			__type, __time, __a, __b, __c, __d, __e, __f, __g, __h, __i, __j,
+			__k, __l);*/
+		
+		// Depends on the actual event that occurred
 		switch (__type)
 		{
 			case ScritchInputMethodType.KEY_PRESSED:
@@ -65,6 +73,24 @@ class __ExecCanvasInput__
 				keyDefault.keyReleased(__a, __b);
 				if (keyCustom != null)
 					keyCustom.keyReleased(__a, __b);
+				break;
+				
+			case ScritchInputMethodType.MOUSE_MOTION:
+				// Only care for the first mouse button
+				if ((__a & 2) != 0)
+					canvas.pointerDragged(__c, __d);
+				break;
+				
+			case ScritchInputMethodType.MOUSE_BUTTON_PRESSED:
+				// Only care for the first mouse button
+				if (__a == 1)
+					canvas.pointerPressed(__c, __d);
+				break;
+				
+			case ScritchInputMethodType.MOUSE_BUTTON_RELEASED:
+				// Only care for the first mouse button
+				if (__a == 1)
+					canvas.pointerReleased(__c, __d);
 				break;
 		}
 	}

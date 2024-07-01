@@ -13,110 +13,8 @@
 #include "lib/scritchui/gtk2/gtk2Intern.h"
 #include "lib/scritchui/core/core.h"
 
-static gboolean sjme_scritchui_gtk2_eventConfigure(
-	sjme_attrUnused GtkWidget* widget,
-	GdkEventConfigure* event, gpointer data)
-{
-	sjme_scritchui inState;
-	sjme_scritchui_uiComponent inComponent;
-	sjme_scritchui_listener_size* infoCore;
-	
-	/* Restore component. */
-	inComponent = (sjme_scritchui_uiComponent)data;
-	if (inComponent == NULL || event == NULL || data == NULL)
-		return FALSE;
-	
-	/* Restore state. */
-	inState = inComponent->common.state;
-	
-	/* Get listener info. */
-	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(inComponent, size);
-	
-	/* Forward accordingly. */
-	if (infoCore->callback != NULL)
-		infoCore->callback(inState, inComponent,
-			event->width, event->height);
-	
-	/* Always continue handling. */
-	return FALSE;
-}
 
-static gboolean sjme_scritchui_gtk2_eventExpose(
-	GtkWidget* widget,
-	GdkEventExpose* event,
-	gpointer data)
-{
-	sjme_errorCode error;
-	sjme_scritchui inState;
-	sjme_scritchui_uiComponent inComponent;
-	sjme_scritchui_uiPaintable paint;
-	sjme_scritchui_listener_paint* infoCore;
-	sjme_scritchui_pencilBase pencil;
-	sjme_jint w, h;
-	sjme_frontEnd frontEnd;
-	sjme_scritchui_pencilFont defaultFont;
-	
-	/* Check nulls before proceeding. */
-	if (widget == NULL || event == NULL || data == NULL)
-		return FALSE;
-	
-	/* Restore. */
-	inComponent = (sjme_scritchui_uiComponent)data;
-	inState = inComponent->common.state;
-	
-	/* Not something we can paint? */
-	paint = NULL;
-	if (sjme_error_is(inState->intern->getPaintable(inState,
-		inComponent, &paint)) ||
-		paint == NULL)
-		return FALSE;
-	
-	/* Get listener info. */
-	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(paint, paint);
-	
-	/* No actual paint listener? */
-	if (infoCore->callback == NULL)
-		return FALSE;
-	
-	/* Determine area to draw. */
-	w = event->area.width;
-	h = event->area.height;
-	
-	/* Setup frontend info. */
-	memset(&frontEnd, 0, sizeof(frontEnd));
-	frontEnd.wrapper = widget->window;
-	frontEnd.data = widget->style->fg_gc[widget->state];
-	
-	/* A default font is required. */
-	defaultFont = NULL;
-	if (sjme_error_is(inState->api->fontBuiltin(inState,
-		&defaultFont)) || defaultFont == NULL)
-		return FALSE;
-	
-	/* Setup pencil for drawing. */
-	memset(&pencil, 0, sizeof(pencil));
-	if (sjme_error_is(sjme_scritchui_pencilInitStatic(&pencil,
-		&sjme_scritchui_gtk2_pencilFunctions,
-		SJME_GFX_PIXEL_FORMAT_INT_RGB888,
-		w, h, defaultFont, &frontEnd)))
-		return FALSE;
-	
-	/* The clipping area is set to the region that needs redrawing. */
-	pencil.api->setClip(&pencil, event->area.x, event->area.y,
-		event->area.width, event->area.height);
-	
-	/* Forward to callback. */
-	error = infoCore->callback(inState, inComponent,
-		&pencil,
-		w, h, 0);
-	
-	/* Do not perform standard drawing, unless an error occurs. */
-	if (!sjme_error_is(error))
-		return TRUE;
-	return FALSE;
-}
-
-static sjme_jint sjme_scritchui_gtk_eventKeyMap(guint in)
+static sjme_jint sjme_scritchui_gtk_mapKey(guint in)
 {
 	guint32 unicode;
 	
@@ -288,7 +186,7 @@ static sjme_jint sjme_scritchui_gtk_eventKeyMap(guint in)
 	return SJME_SCRITCHINPUT_KEY_UNKNOWN;
 }
 
-static sjme_jint sjme_scritchui_gtk_eventModifierMap(guint state)
+static sjme_jint sjme_scritchui_gtk_mapModifier(guint state)
 {
 	sjme_jint result;
 	
@@ -308,14 +206,203 @@ static sjme_jint sjme_scritchui_gtk_eventModifierMap(guint state)
 	return result;
 }
 
-static gboolean sjme_scritchui_gtk2_eventKey(
-	GtkWidget* widget,
-	GdkEventKey* event,
-	gpointer data)
+static gboolean sjme_scritchui_gtk2_eventConfigure(
+	sjme_attrUnused GtkWidget* widget,
+	GdkEventConfigure* event, gpointer data)
 {
 	sjme_scritchui inState;
 	sjme_scritchui_uiComponent inComponent;
-	sjme_jint code, modifier;
+	sjme_scritchui_listener_size* infoCore;
+	
+	/* Restore component. */
+	inComponent = (sjme_scritchui_uiComponent)data;
+	if (inComponent == NULL || event == NULL || data == NULL)
+		return FALSE;
+	
+	/* Restore state. */
+	inState = inComponent->common.state;
+	
+	/* Get listener info. */
+	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(inComponent, size);
+	
+	/* Forward accordingly. */
+	if (infoCore->callback != NULL)
+		infoCore->callback(inState, inComponent,
+			event->width, event->height);
+	
+	/* Always continue handling. */
+	return FALSE;
+}
+
+static gboolean sjme_scritchui_gtk2_eventExpose(
+	GtkWidget* widget,
+	GdkEventExpose* event,
+	gpointer data)
+{
+	sjme_errorCode error;
+	sjme_scritchui inState;
+	sjme_scritchui_uiComponent inComponent;
+	sjme_scritchui_uiPaintable paint;
+	sjme_scritchui_listener_paint* infoCore;
+	sjme_scritchui_pencilBase pencil;
+	sjme_jint w, h;
+	sjme_frontEnd frontEnd;
+	sjme_scritchui_pencilFont defaultFont;
+	
+	/* Check nulls before proceeding. */
+	if (widget == NULL || event == NULL || data == NULL)
+		return FALSE;
+	
+	/* Restore. */
+	inComponent = (sjme_scritchui_uiComponent)data;
+	inState = inComponent->common.state;
+	
+	/* Not something we can paint? */
+	paint = NULL;
+	if (sjme_error_is(inState->intern->getPaintable(inState,
+		inComponent, &paint)) ||
+		paint == NULL)
+		return FALSE;
+	
+	/* Get listener info. */
+	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(paint, paint);
+	
+	/* No actual paint listener? */
+	if (infoCore->callback == NULL)
+		return FALSE;
+	
+	/* Determine area to draw. */
+	w = event->area.width;
+	h = event->area.height;
+	
+	/* Setup frontend info. */
+	memset(&frontEnd, 0, sizeof(frontEnd));
+	frontEnd.wrapper = widget->window;
+	frontEnd.data = widget->style->fg_gc[widget->state];
+	
+	/* A default font is required. */
+	defaultFont = NULL;
+	if (sjme_error_is(inState->api->fontBuiltin(inState,
+		&defaultFont)) || defaultFont == NULL)
+		return FALSE;
+	
+	/* Setup pencil for drawing. */
+	memset(&pencil, 0, sizeof(pencil));
+	if (sjme_error_is(sjme_scritchui_pencilInitStatic(&pencil,
+		&sjme_scritchui_gtk2_pencilFunctions,
+		SJME_GFX_PIXEL_FORMAT_INT_RGB888,
+		w, h, defaultFont, &frontEnd)))
+		return FALSE;
+	
+	/* The clipping area is set to the region that needs redrawing. */
+	pencil.api->setClip(&pencil, event->area.x, event->area.y,
+		event->area.width, event->area.height);
+	
+	/* Forward to callback. */
+	error = infoCore->callback(inState, inComponent,
+		&pencil,
+		w, h, 0);
+	
+	/* Do not perform standard drawing, unless an error occurs. */
+	if (!sjme_error_is(error))
+		return TRUE;
+	return FALSE;
+}
+
+static sjme_errorCode sjme_scritchui_gtk2_eventInputButton(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	GdkEventButton* event,
+	sjme_attrInNotNull sjme_scritchinput_event* fill)
+{
+	if (inState == NULL || inComponent == NULL || event == NULL ||
+		fill == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Determine type. */
+	if (event->type == GDK_BUTTON_PRESS)
+		fill->type = SJME_SCRITCHINPUT_TYPE_MOUSE_BUTTON_PRESSED;
+	else if (event->type == GDK_BUTTON_RELEASE)
+		fill->type = SJME_SCRITCHINPUT_TYPE_MOUSE_BUTTON_RELEASED;
+	else
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Map button and modifiers. */
+	fill->data.mouseButton.button = event->button;
+	fill->data.mouseButton.modifiers =
+		sjme_scritchui_gtk_mapModifier(event->state);
+	fill->data.mouseButton.x = event->x;
+	fill->data.mouseButton.y = event->y;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_scritchui_gtk2_eventInputKey(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	GdkEventKey* event,
+	sjme_attrInNotNull sjme_scritchinput_event* fill)
+{
+	sjme_jint code;
+	
+	if (inState == NULL || inComponent == NULL || event == NULL ||
+		fill == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Map to standard key */
+	code = sjme_scritchui_gtk_mapKey(event->keyval);
+	if (code == SJME_SCRITCHINPUT_KEY_UNKNOWN)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Determine type. */
+	if (event->type == GDK_KEY_PRESS)
+		fill->type = SJME_SCRITCHINPUT_TYPE_KEY_PRESSED;
+	else if (event->type == GDK_KEY_RELEASE)
+		fill->type = SJME_SCRITCHINPUT_TYPE_KEY_RELEASED;
+	else
+		return SJME_ERROR_INVALID_ARGUMENT;
+		
+	/* Setup data. */
+	fill->data.key.code = code;
+	fill->data.key.modifiers = sjme_scritchui_gtk_mapModifier(event->state);
+	
+	/* Success!. */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_scritchui_gtk2_eventInputMotion(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	GdkEventMotion* event,
+	sjme_attrInNotNull sjme_scritchinput_event* fill)
+{
+	if (inState == NULL || inComponent == NULL || event == NULL ||
+		fill == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* There is only a single type. */
+	fill->type = SJME_SCRITCHINPUT_TYPE_MOUSE_MOTION;
+	
+	/* Map. */
+	fill->data.mouseMotion.buttonMask = 0;
+	fill->data.mouseMotion.modifiers =
+		sjme_scritchui_gtk_mapModifier(event->state);
+	fill->data.mouseMotion.x = event->x;
+	fill->data.mouseMotion.y = event->y;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static gboolean sjme_scritchui_gtk2_eventInput(
+	GtkWidget* widget,
+	GdkEvent* event,
+	gpointer data)
+{
+	sjme_errorCode error;
+	sjme_scritchui inState;
+	sjme_scritchui_uiComponent inComponent;
 	sjme_scritchui_listener_input* infoCore;
 	sjme_scritchinput_event fill;
 	
@@ -326,11 +413,9 @@ static gboolean sjme_scritchui_gtk2_eventKey(
 	inComponent = (sjme_scritchui_uiComponent)data;
 	inState = inComponent->common.state;
 	
-	/* Map to standard key */
-	code = sjme_scritchui_gtk_eventKeyMap(event->keyval);
-	modifier = sjme_scritchui_gtk_eventModifierMap(event->state);
-	if (code == SJME_SCRITCHINPUT_KEY_UNKNOWN)
-		return FALSE;
+	/* Setup base event. */
+	memset(&fill, 0, sizeof(fill));
+	inState->nanoTime(&fill.time);
 	
 	/* Get listener info. */
 	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(inComponent, input);
@@ -339,23 +424,40 @@ static gboolean sjme_scritchui_gtk2_eventKey(
 	if (infoCore->callback == NULL)
 		return FALSE;
 	
-	/* Fill in data. */
-	memset(&fill, 0, sizeof(fill));
-	if (event->type == GDK_KEY_PRESS)
-		fill.type = SJME_SCRITCHINPUT_TYPE_KEY_PRESSED;
-	else if (event->type == GDK_KEY_RELEASE)
-		fill.type = SJME_SCRITCHINPUT_TYPE_KEY_RELEASED;
+	/* Key event. */
+	if (event->type == GDK_BUTTON_PRESS ||
+		event->type == GDK_BUTTON_RELEASE)
+		error = sjme_scritchui_gtk2_eventInputButton(
+			inState, inComponent,
+			(GdkEventButton*)event, &fill);
+	
+	/* Mouse button. */
+	else if (event->type == GDK_KEY_PRESS ||
+		event->type == GDK_KEY_RELEASE)
+		error = sjme_scritchui_gtk2_eventInputKey(
+			inState, inComponent,
+			(GdkEventKey*)event, &fill);
+		
+	/* Mouse motion. */
+	else if (event->type == GDK_MOTION_NOTIFY)
+		error = sjme_scritchui_gtk2_eventInputMotion(
+			inState, inComponent,
+			(GdkEventMotion*)event, &fill);
+	
+	/* Unknown, so ignore. */
 	else
 		return FALSE;
-	inState->nanoTime(&fill.time);
-	fill.data.key.code = code;
+	
+	/* Failed? */
+	if (sjme_error_is(error))
+		return FALSE;
 	
 	/* Forward accordingly. */
 	if (sjme_error_is(infoCore->callback(inState, inComponent,
 		&fill)))
 		return FALSE;
 	
-	/* We handled this. */
+	/* We handled this, so stop. */
 	return TRUE;
 }
 
@@ -422,16 +524,18 @@ sjme_errorCode sjme_scritchui_gtk2_componentSetInputListener(
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
-	/* Recover widget. */
-	widget = (GtkWidget*)inComponent->common.handle;
+	/* Recover widget, use secondary if there is one. */
+	if (inComponent->common.handleB != NULL)
+		widget = (GtkWidget*)inComponent->common.handleB;
+	else
+		widget = (GtkWidget*)inComponent->common.handle;
 	
 	/* Mask for wanting events. */
 	mask = GDK_POINTER_MOTION_MASK |
 		GDK_BUTTON_PRESS_MASK |
 		GDK_BUTTON_RELEASE_MASK |
 		GDK_KEY_PRESS_MASK |
-		GDK_KEY_RELEASE_MASK |
-		GDK_BUTTON_MOTION_MASK;
+		GDK_KEY_RELEASE_MASK;
 	
 	/* Either remove the event mask or add them in. */
 	if (inListener != NULL)
@@ -441,14 +545,18 @@ sjme_errorCode sjme_scritchui_gtk2_componentSetInputListener(
 			gtk_widget_get_events(widget) & (~mask));
 	
 	/* Set event for key press. */
-	return inState->implIntern->reconnectSignal(inState, widget,
+	return inState->implIntern->reconnectSignal(
+		inState,
+		widget,
 		inComponent,
 		(sjme_scritchui_listener_void*)&SJME_SCRITCHUI_LISTENER_CORE(
 			inComponent, input),
 		inListener,
 		copyFrontEnd,
-		G_CALLBACK(sjme_scritchui_gtk2_eventKey),
-		2, "key-press-event", "key-release-event");
+		G_CALLBACK(sjme_scritchui_gtk2_eventInput),
+		5,
+		"button-press-event", "button-release-event",
+		"motion-notify-event", "key-press-event", "key-release-event");
 	
 	/* Did this fail? */
 	return error;

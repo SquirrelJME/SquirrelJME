@@ -108,7 +108,7 @@ sjme_errorCode sjme_scritchui_core_containerAdd(
 	/* then we need to call the visibility update ourselves. */
 	/* That is at the subcomponent granularity and not windows themselves. */
 	if (inState->impl->componentSetVisibleListener == NULL)
-		if (inContainer->isVisible || inContainer->isUserVisible)
+		if (inContainer->state.isVisible || inContainer->state.isUserVisible)
 			inState->intern->updateVisibleComponent(inState,
 			addComponent, SJME_JNI_TRUE);
 		

@@ -44,6 +44,7 @@ sjme_errorCode sjme_scritchui_gtk2_panelNew(
 {
 	sjme_errorCode error;
 	GtkWidget* fixed;
+	GtkWidget* eventBox;
 
 	if (inState == NULL || inPanel == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -53,14 +54,23 @@ sjme_errorCode sjme_scritchui_gtk2_panelNew(
 	if ((fixed = gtk_fixed_new()) == NULL)
 		return SJME_ERROR_NATIVE_WIDGET_CREATE_FAILED;
 	
+	/* And event box as well. */
+	eventBox = NULL;
+	if ((eventBox = gtk_event_box_new()) == NULL)
+		return SJME_ERROR_NATIVE_WIDGET_CREATE_FAILED;
+	
 	/* Does not have a window component. */
 	gtk_fixed_set_has_window(GTK_FIXED(fixed), FALSE);
+	
+	/* Put fixed in the box. */
+	gtk_container_add(GTK_CONTAINER(eventBox), fixed);
 	
 	/* Common widget init. */
 	inState->implIntern->widgetInit(GTK_WIDGET(fixed));
 	
 	/* Store information. */
 	inPanel->component.common.handle = fixed;
+	inPanel->component.common.handleB = eventBox;
 	
 	/* Success! */
 	return SJME_ERROR_NONE;

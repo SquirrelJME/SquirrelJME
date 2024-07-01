@@ -410,16 +410,38 @@ typedef struct sjme_scritchinput_eventDataKey
 	/** Unicode key core or @c sjme_scritchinput_key . */
 	sjme_jint code;
 	
-	/** The modifiers for the key, from @c sjme_scritchinput_modifier . */
+	/** The modifiers held down, from @c sjme_scritchinput_modifier . */
 	sjme_jint modifiers;
 } sjme_scritchinput_eventDataKey;
 
 typedef struct sjme_scritchinput_eventDataMouseButton
 {
+	/** The button being pressed. */
+	sjme_jint button;
+	
+	/** The modifiers held down, from @c sjme_scritchinput_modifier . */
+	sjme_jint modifiers;
+	
+	/** The X coordinate. */
+	sjme_jint x;
+	
+	/** The Y coordinate. */
+	sjme_jint y;
 } sjme_scritchinput_eventDataMouseButton;
 
 typedef struct sjme_scritchinput_eventDataMouseMotion
 {
+	/** The buttons being pressed. */
+	sjme_jint buttonMask;
+	
+	/** The modifiers held down, from @c sjme_scritchinput_modifier . */
+	sjme_jint modifiers;
+	
+	/** The X coordinate. */
+	sjme_jint x;
+	
+	/** The Y coordinate. */
+	sjme_jint y;
 } sjme_scritchinput_eventDataMouseMotion;
 
 typedef struct sjme_scritchinput_eventDataGamePadButton

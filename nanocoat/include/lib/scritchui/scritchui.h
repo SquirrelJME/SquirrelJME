@@ -822,6 +822,9 @@ typedef struct sjme_scritchui_commonBase
 	
 	/** Opaque native handle for this. */
 	sjme_scritchui_handle handle;
+	
+	/** Secondary opaque native handle for this, as needed. */
+	sjme_scritchui_handle handleB;
 } sjme_scritchui_commonBase;
 
 /**

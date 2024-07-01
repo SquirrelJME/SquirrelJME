@@ -19,6 +19,7 @@ static sjme_errorCode sjme_scritchui_baseInputListener(
 	sjme_attrInNotNull const sjme_scritchinput_event* inEvent)
 {
 	sjme_scritchui_listener_input* infoUser;
+	sjme_scritchinput_event clone;
 	
 	if (inState == NULL || inComponent == NULL || inEvent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -26,9 +27,50 @@ static sjme_errorCode sjme_scritchui_baseInputListener(
 	/* Get callback information. */
 	infoUser = &SJME_SCRITCHUI_LISTENER_USER(inComponent, input);
 	
+	/* Clone event data for normalization. */
+	memmove(&clone, inEvent, sizeof(clone));
+	
+	/* Store last mouse position for any motion. */
+	if (clone.type == SJME_SCRITCHINPUT_TYPE_MOUSE_MOTION)
+	{
+		/* Remember position of last motion. */
+		inComponent->state.mouseX = clone.data.mouseMotion.x;
+		inComponent->state.mouseY = clone.data.mouseMotion.y;
+		
+		/* Do we need to restore a button mask? Some GUIs do not have this */
+		/* information during motion events. */
+		if (clone.data.mouseMotion.buttonMask == 0)
+			clone.data.mouseMotion.buttonMask =
+				inComponent->state.mouseButtons;
+	}
+	
+	/* Do we need to set the position for mouse button clicks? */
+	else if (clone.type == SJME_SCRITCHINPUT_TYPE_MOUSE_BUTTON_PRESSED ||
+		clone.type == SJME_SCRITCHINPUT_TYPE_MOUSE_BUTTON_RELEASED)
+	{
+		/* Either set or clear the mouse button bit. */
+		sjme_jint bit = (1 << clone.data.mouseButton.button); 
+		if (clone.type == SJME_SCRITCHINPUT_TYPE_MOUSE_BUTTON_PRESSED)
+			inComponent->state.mouseButtons |= bit;
+		else
+			inComponent->state.mouseButtons &= ~bit;
+		
+		/* Restore X or save it? */
+		if (clone.data.mouseButton.x == 0)
+			clone.data.mouseButton.x = inComponent->state.mouseX;
+		else
+			inComponent->state.mouseX = clone.data.mouseButton.x;
+			
+		/* Restore Y or save it? */
+		if (clone.data.mouseButton.y == 0)
+			clone.data.mouseButton.y = inComponent->state.mouseY;
+		else
+			inComponent->state.mouseY = clone.data.mouseButton.y;
+	}
+	
 	/* Forward to callback! */
 	if (infoUser->callback != NULL)
-		return infoUser->callback(inState, inComponent, inEvent);
+		return infoUser->callback(inState, inComponent, &clone);
 	return SJME_ERROR_NONE;
 }
 
@@ -126,16 +168,16 @@ static sjme_errorCode sjme_scritchui_core_baseVisibleListener(
 	
 	/* Has core visibility changed? We do not want to spam visibility */
 	/* changes to our components if there is no point to it. */
-	wasVisible = inComponent->isVisible;
+	wasVisible = inComponent->state.isVisible;
 	if (toVisible != wasVisible)
 	{
 		/* Update visibility state. */
-		inComponent->isVisible = toVisible;
+		inComponent->state.isVisible = toVisible;
 	}
 	
 	/* There may be a delay before a listener is set for a user listener */
 	/* so wait until that occurs. */
-	wasUserVisible = inComponent->isUserVisible;
+	wasUserVisible = inComponent->state.isUserVisible;
 	if (toVisible != wasUserVisible)
 	{
 		/* Send to callback accordingly, if one is set. */
@@ -143,7 +185,7 @@ static sjme_errorCode sjme_scritchui_core_baseVisibleListener(
 		if (infoUser->callback != NULL)
 		{
 			/* Update state. */
-			inComponent->isUserVisible = toVisible;
+			inComponent->state.isUserVisible = toVisible;
 			
 			return infoUser->callback(inState, inComponent,
 				wasVisible, toVisible);
@@ -551,7 +593,7 @@ sjme_errorCode sjme_scritchui_core_intern_updateVisibleComponent(
 	infoUser = &SJME_SCRITCHUI_LISTENER_CORE(inComponent, visible);
 	if (infoUser->callback != NULL)
 		return infoUser->callback(inState, inComponent,
-			inComponent->isVisible, isVisible);
+			inComponent->state.isVisible, isVisible);
 	
 	/* There was no callback, so just success. */
 	return SJME_ERROR_NONE;

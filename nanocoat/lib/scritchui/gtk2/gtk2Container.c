@@ -18,14 +18,18 @@ sjme_errorCode sjme_scritchui_gtk2_containerAdd(
 {
 	GtkWindow* window;
 	GtkFixed* fixed;
-	GtkWidget* widget;
+	GtkWidget* addWidget;
 	
 	if (inState == NULL || inContainer == NULL || inContainerData == NULL ||
 		addComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Widget should always be the same. */
-	widget = (GtkWidget*)addComponent->common.handle;
+	/* Use secondary handle for adding, if used. */
+	if (addComponent->common.handleB != NULL)
+		addWidget = (GtkWidget*)addComponent->common.handleB;
+	else
+		addWidget = (GtkWidget*)addComponent->common.handle;
 
 	/* Debug. */
 	sjme_message("containerAdd(%p (%d), %p (%d))",
@@ -38,13 +42,15 @@ sjme_errorCode sjme_scritchui_gtk2_containerAdd(
 	{
 		case SJME_SCRITCHUI_TYPE_WINDOW:
 			window = (GtkWindow*)inContainer->common.handle;
-			gtk_container_add(GTK_CONTAINER(window), widget);
+			gtk_container_add(GTK_CONTAINER(window),
+				addWidget);
 			break;
 		
 			/* Place into fixed at basic coordinates. */
 		case SJME_SCRITCHUI_TYPE_PANEL:
 			fixed = (GtkFixed*)inContainer->common.handle;
-			gtk_fixed_put(GTK_FIXED(fixed), widget, 0, 0);
+			gtk_fixed_put(GTK_FIXED(fixed),
+				addWidget, 0, 0);
 			break;
 		
 		default:
@@ -52,14 +58,14 @@ sjme_errorCode sjme_scritchui_gtk2_containerAdd(
 	}
 	
 	/* The widget needs to be shown for it to appear. */
-	gtk_widget_show(widget);
+	gtk_widget_show(addWidget);
 	
 	/* If this widget has the default focus, then force grab it. */
 	/* But only if it can actually get focus. */
-	if (gtk_widget_get_can_focus(widget))
-		if (gtk_widget_has_default(widget) ||
-			gtk_widget_get_can_default(widget))
-			gtk_widget_grab_focus(widget);
+	if (gtk_widget_get_can_focus(addWidget))
+		if (gtk_widget_has_default(addWidget) ||
+			gtk_widget_get_can_default(addWidget))
+			gtk_widget_grab_focus(addWidget);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -74,9 +80,8 @@ sjme_errorCode sjme_scritchui_gtk2_containerSetBounds(
 	sjme_attrInPositiveNonZero sjme_jint width,
 	sjme_attrInPositiveNonZero sjme_jint height)
 {
-	sjme_errorCode error;
 	GtkFixed* gtkFixed;
-	GtkWidget* componentWidget;
+	GtkWidget* moveWidget;
 	
 	if (inState == NULL || inContainer == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -84,8 +89,11 @@ sjme_errorCode sjme_scritchui_gtk2_containerSetBounds(
 	if (width <= 0 || height <= 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
-	/* Recover widget. */
-	componentWidget = (GtkWidget*)inComponent->common.handle;
+	/* Recover widget, we might have an alternate in use. */
+	if (inComponent->common.handleB != NULL)
+		moveWidget = (GtkWidget*)inComponent->common.handleB;
+	else
+		moveWidget = (GtkWidget*)inComponent->common.handle;
 	
 	/* Depends on the container type. */
 	switch (inContainer->common.type)
@@ -93,8 +101,8 @@ sjme_errorCode sjme_scritchui_gtk2_containerSetBounds(
 			/* Need to move within the panel but also set widget size. */
 		case SJME_SCRITCHUI_TYPE_PANEL:
 			gtkFixed = (GtkFixed*)inContainer->common.handle;
-			gtk_fixed_move(gtkFixed, componentWidget, x, y);
-			gtk_widget_set_size_request(componentWidget, width, height);
+			gtk_fixed_move(gtkFixed, moveWidget, x, y);
+			gtk_widget_set_size_request(moveWidget, width, height);
 			break;
 		
 			/* Nothing needs to be done for windows. */
