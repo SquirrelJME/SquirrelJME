@@ -1805,8 +1805,11 @@ typedef enum sjme_errorCode
 	/** Clock failure. */
 	SJME_ERROR_NATIVE_SYSTEM_CLOCK_FAILURE = -60,
 	
+	/** A weak reference it attached. */
+	SJME_ERROR_WEAK_REFERENCE_ATTACHED = -61,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -61
+	SJME_NUM_ERROR_CODES = -62
 } sjme_errorCode;
 
 /**

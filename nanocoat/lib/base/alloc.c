@@ -18,6 +18,7 @@
 
 #include "sjme/alloc.h"
 #include "sjme/debug.h"
+#include "sjme/atomic.h"
 
 /** The minimum size permitted for allocation pools. */
 #define SJME_ALLOC_MIN_SIZE (((SJME_SIZEOF_ALLOC_POOL(0) + \
@@ -57,6 +58,7 @@ static sjme_inline sjme_jboolean sjme_alloc_corruptFail(
 		sjme_message("link->space: NUM");
 	else
 		sjme_message("link->space: %d", (int)atLink->space);
+	sjme_message("link->weak: %p", atLink->weak);
 	sjme_message("link->freePrev: %p", atLink->freePrev);
 	sjme_message("link->freeNext: %p", atLink->freeNext);
 	sjme_message("link->allocSize: %d", (int)atLink->allocSize);
@@ -617,6 +619,7 @@ sjme_errorCode sjme_alloc_free(
 	sjme_alloc_link* link;
 	sjme_alloc_pool* pool;
 	sjme_errorCode error;
+	sjme_alloc_weak* weak;
 
 	if (addr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -630,6 +633,15 @@ sjme_errorCode sjme_alloc_free(
 	pool = link->pool;
 	if (sjme_alloc_checkCorruption(pool, link))
 		return SJME_ERROR_MEMORY_CORRUPTION;
+	
+	/* If there is a weak reference, clear it. */
+	weak = link->weak;
+	if (weak != NULL)
+	{
+		link->weak = NULL;
+		weak->link = NULL;
+		weak->pointer = NULL;
+	}
 
 	/* Mark block as free. */
 	link->space = SJME_ALLOC_POOL_SPACE_FREE;
@@ -701,6 +713,10 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_realloc)(
 	if (sjme_error_is(error = sjme_alloc_getLink(source,
 		&link)) || link == NULL)
 		return sjme_error_default(error);
+	
+	/* If there is a weak reference, then we cannot touch this. */
+	if (link->weak != NULL)
+		return SJME_ERROR_WEAK_REFERENCE_ATTACHED;
 
 	/* Pointless operation. */
 	if (newSize == link->allocSize)
@@ -749,4 +765,72 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_realloc)(
 		*inOutAddr = result;
 		return SJME_ERROR_NONE;
 	}
+}
+
+sjme_errorCode sjme_alloc_weakDelete(
+	sjme_attrInOutNotNull sjme_alloc_weak** inOutWeak)
+{
+	if (inOutWeak == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+sjme_errorCode sjme_alloc_weakGet(
+	sjme_attrInNotNull sjme_alloc_weak* inWeak,
+	sjme_attrOutNotNull sjme_pointer* outPointer)
+{
+	if (inWeak == NULL || outPointer == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+sjme_errorCode sjme_alloc_weakRef(
+	sjme_attrInNotNull void* addr,
+	sjme_attrOutNotNull sjme_alloc_weak** outWeak)
+{
+	sjme_errorCode error;
+	sjme_alloc_link* link;
+	sjme_alloc_weak* result;
+	
+	if (addr == NULL || outWeak == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Recover the link. */
+	link = NULL;
+	if (sjme_error_is(error = sjme_alloc_getLink(addr,
+		&link)) || link == NULL)
+		return sjme_error_default(error);
+	
+	/* Is there already a weak reference? */
+	result = link->weak;
+	if (result != NULL)
+	{
+		/* Count up. */
+		sjme_atomic_sjme_jint_getAdd(&result->count, 1);
+		
+		/* Use it. */
+		*outWeak = result;
+		return SJME_ERROR_NONE;
+	}
+	
+	/* We need to allocate the link. */
+	if (sjme_error_is(error = sjme_alloc(link->pool, sizeof(result),
+		&result)))
+		return sjme_error_default(error);
+	
+	/* Setup link information. */
+	result->link = link;
+	result->pointer = addr;
+	sjme_atomic_sjme_jint_set(&result->count, 1);
+	
+	/* Join link back to this. */
+	link->weak = result;
+	
+	/* Success! */
+	*outWeak = result;
+	return SJME_ERROR_NONE;
 }

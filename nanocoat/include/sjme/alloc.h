@@ -65,6 +65,23 @@ typedef enum sjme_alloc_linkFlag
 	SJME_ALLOC_LINK_FLAG_NESTED_POOL = 1,
 } sjme_alloc_linkFlag;
 
+/**
+ * Object for referenced counted weak pointer references.
+ * 
+ * @since 2024/07/01
+ */
+typedef struct sjme_alloc_weak
+{
+	/** The link this points to, @c NULL if freed. */
+	sjme_alloc_link* link;
+	
+	/** The count for this weak reference, zero will free this reference. */
+	sjme_atomic_sjme_jint count;
+	
+	/** The pointer this points to, @c NULL if freed. */
+	sjme_pointer pointer;
+} sjme_alloc_weak;
+
 struct sjme_alloc_link
 {
 	/** The pool this is in. */
@@ -78,6 +95,9 @@ struct sjme_alloc_link
 	
 	/** The space this is in. */
 	sjme_alloc_poolSpace space;
+	
+	/** The weak reference this is attached to. */
+	sjme_alloc_weak* weak;
 	
 	/** The previous free link. */
 	sjme_alloc_link* freePrev;
@@ -363,6 +383,46 @@ sjme_errorCode sjme_alloc_free(
 sjme_errorCode sjme_alloc_getLink(
 	sjme_attrInNotNull void* addr,
 	sjme_attrOutNotNull sjme_alloc_link** outLink);
+
+/**
+ * Deletes a weak reference by un-counting it, if the count reaches zero
+ * then this weak will be freed.
+ * 
+ * @param inOutWeak The weak reference to delete, if the count reaches
+ * zero then the pointer will be set to @c NULL .
+ * @return Any resultant error, if any.
+ * @since 2024/07/01
+ */
+sjme_errorCode sjme_alloc_weakDelete(
+	sjme_attrInOutNotNull sjme_alloc_weak** inOutWeak);
+
+/**
+ * Gets the pointer pointed to by the given weak reference, if this returns
+ * the value @c NULL then @c sjme_alloc_weakDelete should be called to
+ * remove any stale weak references.
+ * 
+ * @param inWeak The weak reference to get from.
+ * @param outPointer The pointer to the referenced memory, if it has been
+ * freed then this will return @c NULL .
+ * @return Any resultant error, if any.
+ * @since 2024/07/01
+ */
+sjme_errorCode sjme_alloc_weakGet(
+	sjme_attrInNotNull sjme_alloc_weak* inWeak,
+	sjme_attrOutNotNull sjme_pointer* outPointer);
+
+/**
+ * Creates or returns a weak reference to the given block. If the reference
+ * already exists, then it will be incremented.
+ * 
+ * @param addr The address to reference.
+ * @param outWeak The resultant weak reference for the type.
+ * @return Any resultant error, if any.
+ * @since 2024/07/01
+ */
+sjme_errorCode sjme_alloc_weakRef(
+	sjme_attrInNotNull void* addr,
+	sjme_attrOutNotNull sjme_alloc_weak** outWeak);
 
 /*--------------------------------------------------------------------------*/
 
