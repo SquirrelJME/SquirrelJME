@@ -940,24 +940,9 @@ public final class PencilGraphics
 		int __sw, int __sh)
 		throws NullPointerException
 	{
-		throw Debugging.todo();
-		/*
-		// Setup software graphics
-		Graphics software = SoftwareGraphicsFactory.softwareGraphics(__pf,
-			__bw, __bh, __buf, __offset, __pal, __sx, __sy, __sw, __sh);
-		
-		// Get the capabilities of the native system, if it is not supported
-		// then operations will purely be implemented in software
-		// It can also be disabled via a system property
-		int caps = PencilShelf.capabilities(__pf); 
-		if (PencilGraphics._IS_FORCE_SOFTWARE ||
-			(caps & PencilCapabilities.MINIMUM) == 0)
-			return software;
-		
-		return new PencilGraphics(caps, software, __sw, __sh,
-			PencilShelf.hardwareGraphics(__pf,
-			__bw, __bh, __buf, __offset, __pal, __sx, __sy, __sw, __sh), __pf);
-		 */
+		return new PencilGraphics(__sw, __sh,
+			PencilShelf.hardwareGraphics(__pf, __bw, __bh, 
+				__buf, __offset, __pal, __sx, __sy, __sw, __sh));
 	}
 	
 	/**
