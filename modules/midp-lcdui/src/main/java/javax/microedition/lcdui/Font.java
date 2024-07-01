@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 
 /**
  * This class represents a font which is a representation of the glyphs which
@@ -843,14 +844,42 @@ public final class Font
 		if (__name == null)
 			throw new NullPointerException("NARG");
 		
-		// Find the font then derive it
+		Font first = null;
+		Font closest = null;
+		
+		// Find the closest font then derive it
 		for (Font f : Font.getAvailableFonts())
+		{
+			// Same name?
 			if (__name.equals(f.getFontName()))
-				return f.deriveFont(__style, __pxs);
+			{
+				// First font of this name?
+				if (closest == null)
+					closest = f;
+				
+				// Closest in terms of size?
+				else if (Math.abs(f.getPixelSize() - __pxs) <
+					Math.abs(closest.getPixelSize() - __pxs))
+					closest = f;
+			}
+			
+			// Fallback font
+			else if (first == null)
+				first = f;
+		}
+		
+		// Derive the closest font
+		if (closest != null)
+			return closest.deriveFont(__style, __pxs);
+		
+		// Or the first font?
+		if (first != null)
+			return first.deriveFont(__style, __pxs);
 		
 		/* {@squirreljme.error EB20 Could not locate a font by the given
-		name. (The font name)} */
-		throw new IllegalArgumentException("EB20 " + __name);
+		name. (The font name; The style; The pixel size)} */
+		throw new IllegalArgumentException(__error__("EB20",
+			__name, __style, __pxs));
 	}
 	
 	/**
