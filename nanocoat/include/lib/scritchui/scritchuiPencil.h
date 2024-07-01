@@ -644,14 +644,14 @@ extern const sjme_scritchui_pencilBitLineFunc
  * @return An error if the requested graphics are not valid.
  * @since 2024/05/01
  */
-sjme_errorCode sjme_scritchui_pencilInitBuffer(
+sjme_errorCode sjme_scritchui_pencilInitBufferStatic(
 	sjme_attrInOutNotNull sjme_scritchui_pencil* outPencil,
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInPositiveNonZero sjme_jint bw,
 	sjme_attrInPositiveNonZero sjme_jint bh,
 	sjme_attrInNotNull void* buf,
 	sjme_attrInPositive sjme_jint offset,
-	sjme_attrInNullable sjme_jint pal,
+	sjme_attrInNullable const sjme_jint* pal,
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,
 	sjme_attrInPositiveNonZero sjme_jint sw,

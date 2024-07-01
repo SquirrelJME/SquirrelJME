@@ -624,9 +624,9 @@ static sjme_errorCode sjme_scritchui_core_pencilSetAlphaColor(
 			
 		case SJME_GFX_PIXEL_FORMAT_SHORT_ABGR1555:
 			v = (((aa >> 7) & 0x1) << 15) |
-				(((rr >> 3) & 0x1F) << 10) |
+				(((bb >> 3) & 0x1F) << 10) |
 				(((gg >> 3) & 0x1F) << 5) |
-				((bb >> 3) & 0x1F);
+				((rr >> 3) & 0x1F);
 			break;
 		
 		case SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536:

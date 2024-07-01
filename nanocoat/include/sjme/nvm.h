@@ -118,6 +118,33 @@ extern "C" {
 #define SJME_TOKEN_PASTE5_PP(a, b, c, d, e) SJME_TOKEN_PASTE5(a, b, c, d, e)
 
 /**
+ * Pastes six tokens together.
+ *
+ * @param a The first token.
+ * @param b The second token.
+ * @param c The third token.
+ * @param d The fourth token.
+ * @param e The fifth token.
+ * @param f The sixth token.
+ * @since 2024/07/01
+ */
+#define SJME_TOKEN_PASTE6(a, b, c, d, e, f) a##b##c##d##e##f
+
+/**
+ * Pasting six tokens but with preprocessing.
+ *
+ * @param a The first token.
+ * @param b The second token.
+ * @param c The third token.
+ * @param d The fourth token.
+ * @param e The fifth token.
+ * @param f The sixth token.
+ * @since 2024/07/01
+ */
+#define SJME_TOKEN_PASTE6_PP(a, b, c, d, e, f) \
+	SJME_TOKEN_PASTE6(a, b, c, d, e, f)
+
+/**
  * Stringifies the given token.
  * 
  * @param s The token to stringify.
