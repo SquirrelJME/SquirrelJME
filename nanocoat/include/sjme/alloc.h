@@ -18,6 +18,7 @@
 
 #include "sjme/nvm.h"
 #include "sjme/debug.h"
+#include "sjme/atomic.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -96,14 +97,14 @@ struct sjme_alloc_link
 	/** The space this is in. */
 	sjme_alloc_poolSpace space;
 	
-	/** The weak reference this is attached to. */
-	sjme_alloc_weak* weak;
-	
 	/** The previous free link. */
 	sjme_alloc_link* freePrev;
 	
 	/** The next free link. */
 	sjme_alloc_link* freeNext;
+	
+	/** The weak reference this is attached to. */
+	sjme_alloc_weak* weak;
 	
 	/** The allocation size of the link, @code{allocSize <= blockSize}. */
 	sjme_jint allocSize;

@@ -73,8 +73,8 @@ static sjme_jboolean sjme_unit_operatorLessThan(size_t size, void* a, void* b)
 	
 	ja = a;
 	jb = b;
-	if (ja->hi <= jb->hi)
-		return ja->lo < jb->lo;
+	if (ja->part.hi <= jb->part.hi)
+		return ja->part.lo < jb->part.lo;
 	return SJME_JNI_FALSE;  
 }
 
@@ -88,8 +88,8 @@ static sjme_jboolean sjme_unit_operatorLessEqual(size_t size, void* a, void* b)
 	
 	ja = a;
 	jb = b;
-	if (ja->hi <= jb->hi)
-		return ja->lo <= jb->lo;
+	if (ja->part.hi <= jb->part.hi)
+		return ja->part.lo <= jb->part.lo;
 	return SJME_JNI_FALSE;
 }
 
@@ -103,12 +103,13 @@ static sjme_jboolean sjme_unit_operatorGreaterThan(size_t size, void* a, void* b
 	
 	ja = a;
 	jb = b;
-	if (ja->hi >= jb->hi)
-		return ja->lo > jb->lo;
+	if (ja->part.hi >= jb->part.hi)
+		return ja->part.lo > jb->part.lo;
 	return SJME_JNI_FALSE;
 }
 
-static sjme_jboolean sjme_unit_operatorGreaterEqual(size_t size, void* a, void* b)
+static sjme_jboolean sjme_unit_operatorGreaterEqual(size_t size,
+	void* a, void* b)
 {
 	sjme_jlong *ja;
 	sjme_jlong *jb;
@@ -118,8 +119,8 @@ static sjme_jboolean sjme_unit_operatorGreaterEqual(size_t size, void* a, void* 
 	
 	ja = a;
 	jb = b;
-	if (ja->hi >= jb->hi)
-		return ja->lo >= jb->lo;
+	if (ja->part.hi >= jb->part.hi)
+		return ja->part.lo >= jb->part.lo;
 	return SJME_JNI_FALSE;
 }
 
