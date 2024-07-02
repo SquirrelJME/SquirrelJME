@@ -613,6 +613,66 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_format)(
 #undef BUF_SIZE
 }
 
+static sjme_errorCode sjme_alloc_mergeFree(sjme_alloc_link* link)
+{
+	sjme_alloc_pool* pool;
+	sjme_alloc_link* right;
+	sjme_alloc_link* oldRightFreeNext;
+	sjme_alloc_link* rightRight;
+	sjme_alloc_link* checkLeft;
+	sjme_jint addedSize;
+	
+	if (link == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Need pool for all operations. */
+	pool = link->pool;
+	
+	/* If the previous block is free, pivot to there. */
+	checkLeft = link->prev;
+	if (checkLeft->space == SJME_ALLOC_POOL_SPACE_FREE)
+		return sjme_alloc_mergeFree(checkLeft);
+	
+	/* Is the block on the right a candidate for merge? */
+	right = link->next;
+	if (right->space != SJME_ALLOC_POOL_SPACE_FREE)
+		return SJME_ERROR_NONE;
+	
+	/* We need the block after to relink. */
+	rightRight = right->next;
+	
+	/* Disconnect in the middle. */
+	link->next = rightRight;
+	rightRight->prev = link;
+	
+	/* Remove from the free chain. */
+	oldRightFreeNext = right->freeNext;
+	right->freePrev->freeNext = right->freeNext;
+	oldRightFreeNext->freePrev = right->freePrev;
+	
+	/* Reclaim the right link data area. */
+	addedSize = right->blockSize + SJME_SIZEOF_ALLOC_LINK(0);
+	link->blockSize += addedSize;
+	
+	/* Update pool sizes. */
+	pool->space[SJME_ALLOC_POOL_SPACE_FREE].usable += addedSize;
+	pool->space[SJME_ALLOC_POOL_SPACE_FREE].reserved -=
+		SJME_SIZEOF_ALLOC_LINK(0);
+	
+	/* Synchronize allocation size. */
+	link->allocSize = link->blockSize;
+	
+	/* Wipe next side block to remove any stale data. */
+	memset(right, 0, sizeof(*right));
+	
+	/* Should not have corrupted the block. */
+	if (sjme_alloc_checkCorruption(pool, link))
+		return SJME_ERROR_MEMORY_CORRUPTION;
+	
+	/* We merged a block, so check again. */
+	return sjme_alloc_mergeFree(link);
+}
+
 sjme_errorCode sjme_alloc_free(
 	sjme_attrInNotNull void* addr)
 {
@@ -648,6 +708,9 @@ sjme_errorCode sjme_alloc_free(
 	
 	/* Clear flags, if any. */
 	link->flags = 0;
+	
+	/* Restore allocation size to block size. */
+	link->allocSize = link->blockSize;
 
 #if defined(SJME_CONFIG_DEBUG)
 	/* Remove debug information. */
@@ -657,12 +720,14 @@ sjme_errorCode sjme_alloc_free(
 #endif
 
 	/* Link into free chain. */
-	link->freeNext = pool->freeFirstLink;
-	pool->freeFirstLink->freePrev = link;
-	pool->freeFirstLink = link;
+	link->freeNext = pool->freeFirstLink->freeNext;
+	pool->freeFirstLink->freeNext = link;
+	link->freeNext->freePrev = link;
+	link->freePrev = pool->freeFirstLink;
 
 	/* TODO: Implement merging of free blocks. */
-	sjme_message("Implement free merging...");
+	if (sjme_error_is(error = sjme_alloc_mergeFree(link)))
+		return sjme_error_default(error);
 
 	/* Success! */
 	return SJME_ERROR_NONE;
