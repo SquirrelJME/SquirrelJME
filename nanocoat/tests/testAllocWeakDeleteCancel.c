@@ -12,14 +12,12 @@
 #include "mock.h"
 #include "unit.h"
 
-#define TEST_BLOCK_SIZE 1024
-
 /**
- * Tests counting of weak references.
+ * Tests cancelling an enqueue.
  *  
- * @since 2024/07/01 
+ * @since 2024/07/02 
  */
-SJME_TEST_DECLARE(testAllocWeakCounting)
+SJME_TEST_DECLARE(testAllocWeakDeleteCancel)
 {
 	/* Setup pool. */
 	sjme_todo("Impl?");
@@ -30,13 +28,10 @@ SJME_TEST_DECLARE(testAllocWeakCounting)
 	/* Create weak reference, with enqueue. */
 	sjme_todo("Impl?");
 	
-	/* Create another weak reference, to count up. */
+	/* Delete the link itself. */
 	sjme_todo("Impl?");
 	
-	/* Delete weak reference. */
-	sjme_todo("Impl?");
-	
-	/* Delete the other weak reference. */
+	/* Ensure enqueue was called and that the link was not freed. */
 	sjme_todo("Impl?");
 	
 	sjme_todo("Implement %s", __func__);

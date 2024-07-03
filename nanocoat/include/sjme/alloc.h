@@ -73,6 +73,18 @@ typedef enum sjme_alloc_linkFlag
  */
 typedef struct sjme_alloc_weak sjme_alloc_weak;
 
+/**
+ * This is called when a weak reference has been freed or is about to be
+ * freed.
+ * 
+ * @param weak The weak reference being freed.
+ * @param data The data for the free.
+ * @return Any resultant error code. If this function
+ * returns @c SJME_ERROR_ENQUEUE_DO_NOT_FREE and it is eligible for free,
+ * then it will not free. If the block has already been freed then it will
+ * have no effect.
+ * @since 2024/07/02
+ */
 typedef sjme_errorCode (*sjme_alloc_weakEnqueueFunc)(
 	sjme_attrInNotNull sjme_alloc_weak* weak,
 	sjme_attrInNullable sjme_pointer data);
@@ -431,7 +443,9 @@ sjme_errorCode sjme_alloc_weakGet(
  * @param addr The address to reference.
  * @param outWeak The resultant weak reference for the type.
  * @param inEnqueue The optional function to call when this reference is
- * enqueued.
+ * enqueued. If this function returns @c SJME_ERROR_ENQUEUE_DO_NOT_FREE and
+ * it is eligible for free, then it will not free. If the block has already
+ * been freed then it will have no effect. 
  * @param inEnqueueData Optional data to pass to @c inEnqueue .
  * @return Any resultant error, if any.
  * @since 2024/07/01

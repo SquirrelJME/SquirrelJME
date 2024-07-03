@@ -21,6 +21,21 @@
  */
 SJME_TEST_DECLARE(testAllocWeakRef)
 {
+	/* Setup pool. */
+	sjme_todo("Impl?");
+	
+	/* Allocate. */
+	sjme_todo("Impl?");
+	
+	/* Create weak reference. */
+	sjme_todo("Impl?");
+	
+	/* Create weak reference with enqueue, to add. */
+	sjme_todo("Impl?");
+	
+	/* Try weak reference with different enqueue, to fail. */
+	sjme_todo("Impl?");
+	
 	sjme_todo("Implement %s", __func__);
 	return SJME_TEST_RESULT_FAIL;
 }
