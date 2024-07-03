@@ -1808,8 +1808,11 @@ typedef enum sjme_errorCode
 	/** A weak reference it attached. */
 	SJME_ERROR_WEAK_REFERENCE_ATTACHED = -61,
 	
+	/** An enqueue has already been set for the weak reference. */
+	SJME_ERROR_ENQUEUE_ALREADY_SET = 62,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -62
+	SJME_NUM_ERROR_CODES = -63
 } sjme_errorCode;
 
 /**

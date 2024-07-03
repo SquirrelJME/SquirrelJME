@@ -12,6 +12,8 @@
 #include "mock.h"
 #include "unit.h"
 
+#define TEST_BLOCK_SIZE 1024
+
 /**
  * Tests counting of weak references.
  *  

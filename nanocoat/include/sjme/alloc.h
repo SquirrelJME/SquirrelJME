@@ -71,7 +71,13 @@ typedef enum sjme_alloc_linkFlag
  * 
  * @since 2024/07/01
  */
-typedef struct sjme_alloc_weak
+typedef struct sjme_alloc_weak sjme_alloc_weak;
+
+typedef sjme_errorCode (*sjme_alloc_weakEnqueueFunc)(
+	sjme_attrInNotNull sjme_alloc_weak* weak,
+	sjme_attrInNullable sjme_pointer data);
+
+struct sjme_alloc_weak
 {
 	/** The link this points to, @c NULL if freed. */
 	sjme_alloc_link* link;
@@ -81,7 +87,13 @@ typedef struct sjme_alloc_weak
 	
 	/** The pointer this points to, @c NULL if freed. */
 	sjme_pointer pointer;
-} sjme_alloc_weak;
+	
+	/** The data to call for when this is removed. */
+	sjme_alloc_weakEnqueueFunc enqueue;
+	
+	/** The pointer for enqueue. */
+	sjme_pointer enqueueData;
+};
 
 struct sjme_alloc_link
 {
@@ -387,7 +399,7 @@ sjme_errorCode sjme_alloc_getLink(
 
 /**
  * Deletes a weak reference by un-counting it, if the count reaches zero
- * then this weak will be freed.
+ * then this weak will be freed if that was requested.
  * 
  * @param inOutWeak The weak reference to delete, if the count reaches
  * zero then the pointer will be set to @c NULL .
@@ -418,12 +430,17 @@ sjme_errorCode sjme_alloc_weakGet(
  * 
  * @param addr The address to reference.
  * @param outWeak The resultant weak reference for the type.
+ * @param inEnqueue The optional function to call when this reference is
+ * enqueued.
+ * @param inEnqueueData Optional data to pass to @c inEnqueue .
  * @return Any resultant error, if any.
  * @since 2024/07/01
  */
 sjme_errorCode sjme_alloc_weakRef(
 	sjme_attrInNotNull void* addr,
-	sjme_attrOutNotNull sjme_alloc_weak** outWeak);
+	sjme_attrOutNotNull sjme_alloc_weak** outWeak,
+	sjme_attrInNullable sjme_alloc_weakEnqueueFunc inEnqueue,
+	sjme_attrInNullable sjme_pointer inEnqueueData);
 
 /*--------------------------------------------------------------------------*/
 

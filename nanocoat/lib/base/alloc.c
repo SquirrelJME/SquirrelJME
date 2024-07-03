@@ -19,6 +19,7 @@
 #include "sjme/alloc.h"
 #include "sjme/debug.h"
 #include "sjme/atomic.h"
+#include "sjme/multithread.h"
 
 /** The minimum size permitted for allocation pools. */
 #define SJME_ALLOC_MIN_SIZE (((SJME_SIZEOF_ALLOC_POOL(0) + \
@@ -541,7 +542,10 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc)(
 	/* Make sure we did not cause corruption. */
 	if (sjme_alloc_checkCorruption(pool, scanLink))
 		return SJME_ERROR_MEMORY_CORRUPTION;
-
+	
+	/* Emit barrier. */
+	sjme_thread_barrier();
+	
 	/* Use the given link. */
 	*outAddr = &scanLink->block[0];
 	return SJME_ERROR_NONE;
@@ -725,9 +729,12 @@ sjme_errorCode sjme_alloc_free(
 	link->freeNext->freePrev = link;
 	link->freePrev = pool->freeFirstLink;
 
-	/* TODO: Implement merging of free blocks. */
+	/* Merge together free blocks. */
 	if (sjme_error_is(error = sjme_alloc_mergeFree(link)))
 		return sjme_error_default(error);
+		
+	/* Emit barrier. */
+	sjme_thread_barrier();
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -792,6 +799,9 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_realloc)(
 	{
 		/* Just set the new allocation size. */
 		link->allocSize = newSize;
+		
+		/* Emit barrier. */
+		sjme_thread_barrier();
 
 		/* Success! */
 		return SJME_ERROR_NONE;
@@ -825,6 +835,9 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_realloc)(
 		/* Free the old block. */
 		if (sjme_error_is(error = sjme_alloc_free(source)))
 			return sjme_error_default(error);
+		
+		/* Emit barrier. */
+		sjme_thread_barrier();
 
 		/* Success! */
 		*inOutAddr = result;
@@ -855,13 +868,16 @@ sjme_errorCode sjme_alloc_weakGet(
 
 sjme_errorCode sjme_alloc_weakRef(
 	sjme_attrInNotNull void* addr,
-	sjme_attrOutNotNull sjme_alloc_weak** outWeak)
+	sjme_attrOutNotNull sjme_alloc_weak** outWeak,
+	sjme_attrInNullable sjme_alloc_weakEnqueueFunc inEnqueue,
+	sjme_attrInNullable sjme_pointer inEnqueueData)
 {
 	sjme_errorCode error;
 	sjme_alloc_link* link;
 	sjme_alloc_weak* result;
 	
-	if (addr == NULL || outWeak == NULL)
+	if (addr == NULL || outWeak == NULL ||
+		(inEnqueue == NULL && inEnqueueData != NULL))
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
 	/* Recover the link. */
@@ -874,8 +890,26 @@ sjme_errorCode sjme_alloc_weakRef(
 	result = link->weak;
 	if (result != NULL)
 	{
+		/* Enqueue can be set, but not overwritten. */
+		if (inEnqueue != NULL)
+		{
+			/* Set it? */
+			if (result->enqueue == NULL)
+			{
+				result->enqueue = inEnqueue;
+				result->enqueueData = inEnqueueData;
+			}
+			
+			/* Must be the same function. */
+			else if (result->enqueue != inEnqueue)
+				return SJME_ERROR_ENQUEUE_ALREADY_SET;
+		}
+		
 		/* Count up. */
 		sjme_atomic_sjme_jint_getAdd(&result->count, 1);
+		
+		/* Emit barrier. */
+		sjme_thread_barrier();
 		
 		/* Use it. */
 		*outWeak = result;
@@ -890,10 +924,15 @@ sjme_errorCode sjme_alloc_weakRef(
 	/* Setup link information. */
 	result->link = link;
 	result->pointer = addr;
+	result->enqueue = inEnqueue;
+	result->enqueueData = inEnqueueData;
 	sjme_atomic_sjme_jint_set(&result->count, 1);
 	
 	/* Join link back to this. */
 	link->weak = result;
+	
+	/* Emit barrier. */
+	sjme_thread_barrier();
 	
 	/* Success! */
 	*outWeak = result;
