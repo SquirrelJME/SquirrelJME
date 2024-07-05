@@ -52,6 +52,12 @@ extern "C" {
 #elif defined(__CYGWIN__)
 	/** Cygwin is available. */
 	#define SJME_CONFIG_HAS_CYGWIN
+#elif defined(_WIN16) || defined(__WIN16__) || defined(__WIN16)
+	/** Using Windows 16-bit. */
+	#define SJME_CONFIG_HAS_WINDOWS_16
+
+	/** Windows is available however. */
+	#define SJME_CONFIG_HAS_WINDOWS
 #elif defined(_WIN32) || defined(__WIN32__) || \
 	defined(__WIN32) || defined(_WINDOWS)
 	/** Windows is available. */
@@ -541,6 +547,15 @@ extern "C" {
 #if defined(SJME_CONFIG_HAS_NINTENDO_3DS)
 	/** Use fallback threading regardless of the system. */
 	#define SJME_CONFIG_HAS_THREADS_FALLBACK
+#endif
+
+#if defined(SJME_CONFIG_HAS_WINDOWS_16)
+	#define SJME_CALL FAR PASCAL
+#elif defined(SJME_CONFIG_HAS_WINDOWS)
+	#define SJME_CALL __stdcall 
+#else
+	/** SquirrelJME calling convention. */
+	#define SJME_CALL
 #endif
 
 /*--------------------------------------------------------------------------*/
