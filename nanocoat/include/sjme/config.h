@@ -57,11 +57,14 @@ extern "C" {
 	#define SJME_CONFIG_HAS_WINDOWS_16
 
 	/** Windows is available however. */
-	#define SJME_CONFIG_HAS_WINDOWS
+	#define SJME_CONFIG_HAS_WINDOWS 16
 #elif defined(_WIN32) || defined(__WIN32__) || \
 	defined(__WIN32) || defined(_WINDOWS)
+	/** Using Windows 32-bit. */
+	#define SJME_CONFIG_HAS_WINDOWS_32
+	
 	/** Windows is available. */
-	#define SJME_CONFIG_HAS_WINDOWS
+	#define SJME_CONFIG_HAS_WINDOWS 32
 #elif defined(__APPLE__) && defined(__MACH__)
 	/** macOS 10+ is available. */
 	#define SJME_CONFIG_HAS_MACOS

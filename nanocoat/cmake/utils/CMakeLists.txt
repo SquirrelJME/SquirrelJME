@@ -42,6 +42,10 @@ add_executable(simple
 add_executable(sourceize
 	sourceize.c)
 
+# Print compiler platform
+add_executable(platform
+	platform.c)
+
 # JVM and JAWT stubs
 add_library(jvm SHARED
 	stub_jvm.c)

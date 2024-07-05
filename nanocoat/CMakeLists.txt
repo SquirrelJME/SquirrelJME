@@ -53,6 +53,9 @@ squirreljme_include("hardening.cmake")
 # CMake Utilities, compiled and used during build
 squirreljme_include("utils.cmake")
 
+# Platform information
+squirreljme_include("platform.cmake")
+
 # Is the system JNI available?
 squirreljme_include("jni.cmake")
 
@@ -74,6 +77,9 @@ squirreljme_include("assets.cmake")
 
 # Multi-library declarations
 squirreljme_include("multilib.cmake")
+
+# Distribution
+squirreljme_include("distrib.cmake")
 
 # Visual studio does not like a bunch of standard C functions, even those
 # that take sizes...
