@@ -184,6 +184,24 @@ SJME_ATOMIC_DECLARE(sjme_jobject, 0);
 /** Atomic @c sjme_pointer. */
 SJME_ATOMIC_DECLARE(sjme_pointer, 0);
 
+#if defined(SJME_CONFIG_HAS_ATOMIC_OLD)
+
+/**
+ * Disable interrupts.
+ * 
+ * @since 2024/07/07
+ */
+void sjme_atomic_interruptsDisable(void);
+
+/**
+ * Enable interrupts.
+ * 
+ * @since 2024/07/07
+ */
+void sjme_atomic_interruptsEnable(void);
+
+#endif
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
