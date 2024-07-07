@@ -7,7 +7,8 @@
 # ---------------------------------------------------------------------------
 
 # SquirrelJME Java SE Emulator Front-End
-if(NOT EMSCRIPTEN AND NOT SQUIRRELJME_CROSS_COMPILE)
+if(NOT EMSCRIPTEN AND NOT SQUIRRELJME_CROSS_COMPILE AND
+	SQUIRRELJME_ENABLE_DYLIB)
 	squirreljme_include("jni.cmake")
 
 	if(JNI_FOUND)
@@ -25,7 +26,8 @@ if(SQUIRRELJME_ENABLE_FRONTEND_JRI)
 endif()
 
 # Netscape Plugin API (NPAPI)
-if(SQUIRRELJME_IS_UNIX OR SQUIRRELJME_IS_WINDOWS)
+if(SQUIRRELJME_ENABLE_DYLIB AND
+	(SQUIRRELJME_IS_UNIX OR SQUIRRELJME_IS_WINDOWS))
 	add_subdirectory(npapi)
 endif()
 
