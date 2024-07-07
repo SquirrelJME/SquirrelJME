@@ -52,7 +52,7 @@ if(NOT EXISTS "${SQUIRRELJME_UTIL_DIR}" OR
 
 	# Emscripten breaks here, so do not use it with nested CMake
 	# Also nested CMake breaks here as well
-	if(EMSCRIPTEN OR SQUIRRELJME_CROSS_BUILD)
+	if(EMSCRIPTEN OR SQUIRRELJME_CROSS_COMPILE)
 		set(cmakeUtilConfigResult 1)
 	else()
 		# Note

@@ -41,6 +41,12 @@ Virtual Machine for embedded and Internet of Things devices."
 		LANGUAGES C)
 endif()
 
+# CMake Utilities, compiled and used during build
+squirreljme_include("utils.cmake")
+
+# Platform information
+squirreljme_include("platform.cmake")
+
 # Fixes and otherwise for compatibility
 squirreljme_include("fixes.cmake")
 
@@ -49,9 +55,6 @@ squirreljme_include("win32.cmake")
 
 # Hardening options
 squirreljme_include("hardening.cmake")
-
-# CMake Utilities, compiled and used during build
-squirreljme_include("utils.cmake")
 
 # Is the system JNI available?
 squirreljme_include("jni.cmake")
@@ -74,6 +77,9 @@ squirreljme_include("assets.cmake")
 
 # Multi-library declarations
 squirreljme_include("multilib.cmake")
+
+# Distribution
+squirreljme_include("distrib.cmake")
 
 # Visual studio does not like a bunch of standard C functions, even those
 # that take sizes...

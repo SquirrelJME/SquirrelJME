@@ -16,7 +16,7 @@
 
 /**
  * Tests freeing a weak reference by freeing the weak reference.
- *  
+ * 
  * @since 2024/07/01 
  */
 SJME_TEST_DECLARE(testAllocWeakDelete)

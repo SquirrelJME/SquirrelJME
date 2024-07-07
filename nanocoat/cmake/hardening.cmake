@@ -8,7 +8,7 @@
 # DESCRIPTION: Various hardening options.
 
 # For RetroArch disable specific features so they cannot be used
-if(LIBRETRO)
+if(SQUIRRELJME_IS_LIBRETRO)
 	# Disable dynamic library support, we do not want to allow loading
 	# native libraries of any kind
 	add_compile_definitions(SJME_CONFIG_HAS_NO_DYLIB_SUPPORT=1)
