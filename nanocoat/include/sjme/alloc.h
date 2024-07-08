@@ -84,9 +84,8 @@ typedef struct sjme_alloc_weak sjme_alloc_weak;
  * @param data The data for the free.
  * @param isBlockFree Was this called because the underlying block was freed?
  * @return Any resultant error code. If this function
- * returns @c SJME_ERROR_ENQUEUE_DO_NOT_FREE and it is eligible for free,
- * then it will not free. If the block has already been freed then it will
- * have no effect.
+ * returns @c SJME_ERROR_ENQUEUE_KEEP_WEAK and the weak reference reaches
+ * zero references, then it will not be freed.
  * @since 2024/07/02
  */
 typedef sjme_errorCode (*sjme_alloc_weakEnqueueFunc)(
@@ -297,9 +296,8 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc)(
  * @param pool The pool to allocate within.
  * @param size The number of bytes to allocate.
  * @param inEnqueue The optional function to call when this reference is
- * enqueued. If this function returns @c SJME_ERROR_ENQUEUE_DO_NOT_FREE and
- * it is eligible for free, then it will not free. If the block has already
- * been freed then it will have no effect. 
+ * enqueued. If this function returns @c SJME_ERROR_ENQUEUE_KEEP_WEAK and the
+ * weak reference count is zero, then the weak reference will not be freed.
  * @param inEnqueueData Optional data to pass to @c inEnqueue .
  * @param outAddr The output address.
  * @param outWeak The resultant weak reference.
@@ -385,9 +383,8 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_realloc)(
  * @param pool The pool to allocate within.
  * @param size The number of bytes to allocate.
  * @param inEnqueue The optional function to call when this reference is
- * enqueued. If this function returns @c SJME_ERROR_ENQUEUE_DO_NOT_FREE and
- * it is eligible for free, then it will not free. If the block has already
- * been freed then it will have no effect. 
+ * enqueued. If this function returns @c SJME_ERROR_ENQUEUE_KEEP_WEAK and the
+ * weak reference count is zero, then the weak reference will not be freed.
  * @param inEnqueueData Optional data to pass to @c inEnqueue .
  * @param outAddr The output address.
  * @param outWeak The resultant weak reference.
@@ -498,9 +495,8 @@ sjme_errorCode sjme_alloc_weakGet(
  * @param addr The address to reference.
  * @param outWeak The resultant weak reference for the type.
  * @param inEnqueue The optional function to call when this reference is
- * enqueued. If this function returns @c SJME_ERROR_ENQUEUE_DO_NOT_FREE and
- * it is eligible for free, then it will not free. If the block has already
- * been freed then it will have no effect. 
+ * enqueued. If this function returns @c SJME_ERROR_ENQUEUE_KEEP_WEAK and the
+ * weak reference count is zero, then the weak reference will not be freed.
  * @param inEnqueueData Optional data to pass to @c inEnqueue .
  * @return Any resultant error, if any.
  * @since 2024/07/01

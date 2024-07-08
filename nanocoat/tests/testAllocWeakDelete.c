@@ -17,7 +17,16 @@ static sjme_errorCode testEnqueue(
 	sjme_attrInNullable sjme_pointer data,
 	sjme_attrInValue sjme_jboolean isBlockFree)
 {
-	((sjme_test*)data)->global = data;
+	sjme_test* test;
+	
+	test = data;
+	
+	test->global = data;
+	
+	/* Should not be free block free. */
+	sjme_unit_equalZ(test, isBlockFree, SJME_JNI_FALSE,
+		"Was from block free?");
+	
 	return SJME_ERROR_NONE;
 }
 
