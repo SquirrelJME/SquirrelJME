@@ -12,15 +12,23 @@
 #include "mock.h"
 #include "unit.h"
 
+static sjme_errorCode testEnqueue(
+	sjme_attrInNotNull sjme_alloc_weak* weak,
+	sjme_attrInNullable sjme_pointer data,
+	sjme_attrInValue sjme_jboolean isBlockFree)
+{
+	return SJME_ERROR_NONE;
+}
+
 /**
- * Tests general creation of a weak reference.
+ * Tests second set of enqueue.
  *  
- * @since 2024/07/01 
+ * @since 2024/07/08 
  */
-SJME_TEST_DECLARE(testAllocWeakRef)
+SJME_TEST_DECLARE(testAllocWeakEnqueueSetSecond)
 {
 	sjme_alloc_weak* weak;
-	sjme_alloc_link* link;
+	sjme_alloc_weak* weakB;
 	void* p;
 	
 	/* Allocate weak reference. */
@@ -29,35 +37,24 @@ SJME_TEST_DECLARE(testAllocWeakRef)
 	if (sjme_error_is(sjme_alloc_weakNew(test->pool, 512,
 		NULL, NULL, &p, &weak)))
 		return sjme_unit_fail(test, "Failed to allocate weak?");
-
-	/* These should be set. */
-	sjme_unit_notEqualP(test, p, NULL,
-		"Did not set p?");
-	sjme_unit_notEqualP(test, weak, NULL,
-		"Did not set weak?");
 	
-	/* Get the block link. */
-	link = NULL;
-	if (sjme_error_is(sjme_alloc_getLink(p, &link)))
-		return sjme_unit_fail(test, "Could not get block link?");
-	
-	/* Should be this pointer. */
-	sjme_unit_equalP(test, weak->pointer, p,
-		"Weak pointer not allocated pointer?");
-	sjme_unit_equalP(test, weak->link, link,
-		"Weak pointer not allocated link?");
-	sjme_unit_equalP(test, link->weak, weak,
-		"Link weak not allocated weak?");
-	
-	/* These should not be set. */
+	/* The enqueues should be set. */
 	sjme_unit_equalP(test, weak->enqueue, NULL,
-		"Enqueue was set?");
+		"Enqueue function was set?");
 	sjme_unit_equalP(test, weak->enqueueData, NULL,
-		"Enqueue data was set?");
+		"Enqueue data was was set?");
 	
-	/* Reference count should be one. */
-	sjme_unit_equalI(test, sjme_atomic_sjme_jint_get(&weak->count), 1,
-		"Reference count not one?");
+	/* Add enqueue and data in. */
+	weakB = NULL;
+	if (sjme_error_is(sjme_alloc_weakRef(p, &weakB,
+		testEnqueue, test)))
+		return sjme_unit_fail(test, "Weak ref failed?");
+	
+	/* The enqueues should be set. */
+	sjme_unit_equalP(test, weak->enqueue, testEnqueue,
+		"Enqueue function not set?");
+	sjme_unit_equalP(test, weak->enqueueData, test,
+		"Enqueue data was not set?");
 	
 	/* Success! */
 	return SJME_TEST_RESULT_PASS;

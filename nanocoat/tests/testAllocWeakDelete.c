@@ -12,8 +12,6 @@
 #include "mock.h"
 #include "unit.h"
 
-#define TEST_BLOCK_SIZE 1024
-
 /**
  * Tests freeing a weak reference by freeing the weak reference.
  * 
@@ -21,9 +19,6 @@
  */
 SJME_TEST_DECLARE(testAllocWeakDelete)
 {
-	/* Setup pool. */
-	sjme_todo("Impl?");
-	
 	/* Allocate. */
 	sjme_todo("Impl?");
 	

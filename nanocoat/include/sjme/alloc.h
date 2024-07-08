@@ -79,6 +79,7 @@ typedef struct sjme_alloc_weak sjme_alloc_weak;
  * 
  * @param weak The weak reference being freed.
  * @param data The data for the free.
+ * @param isBlockFree Was this called because the underlying block was freed?
  * @return Any resultant error code. If this function
  * returns @c SJME_ERROR_ENQUEUE_DO_NOT_FREE and it is eligible for free,
  * then it will not free. If the block has already been freed then it will
@@ -87,7 +88,8 @@ typedef struct sjme_alloc_weak sjme_alloc_weak;
  */
 typedef sjme_errorCode (*sjme_alloc_weakEnqueueFunc)(
 	sjme_attrInNotNull sjme_alloc_weak* weak,
-	sjme_attrInNullable sjme_pointer data);
+	sjme_attrInNullable sjme_pointer data,
+	sjme_attrInValue sjme_jboolean isBlockFree);
 
 struct sjme_alloc_weak
 {

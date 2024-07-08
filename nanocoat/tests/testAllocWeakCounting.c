@@ -21,9 +21,6 @@
  */
 SJME_TEST_DECLARE(testAllocWeakCounting)
 {
-	/* Setup pool. */
-	sjme_todo("Impl?");
-	
 	/* Allocate. */
 	sjme_todo("Impl?");
 	

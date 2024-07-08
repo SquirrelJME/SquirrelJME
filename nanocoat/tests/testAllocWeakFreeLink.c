@@ -12,8 +12,6 @@
 #include "mock.h"
 #include "unit.h"
 
-#define TEST_BLOCK_SIZE 1024
-
 /**
  * Tests freeing a link and any changes to the resulting weak link.
  *  
@@ -21,21 +19,40 @@
  */
 SJME_TEST_DECLARE(testAllocWeakFreeLink)
 {
-	/* Setup pool. */
-	sjme_todo("Impl?");
+	sjme_alloc_weak* weak;
+	sjme_alloc_link* link;
+	void* p;
 	
-	/* Allocate. */
-	sjme_todo("Impl?");
-	
-	/* Create weak reference, with enqueue. */
-	sjme_todo("Impl?");
+	/* Allocate weak reference. */
+	p = NULL;
+	weak = NULL;
+	if (sjme_error_is(sjme_alloc_weakNew(test->pool, 512,
+		NULL, NULL, &p, &weak)))
+		return sjme_unit_fail(test, "Failed to allocate weak?");
+		
+	/* Get the block link. */
+	link = NULL;
+	if (sjme_error_is(sjme_alloc_getLink(p, &link)))
+		return sjme_unit_fail(test, "Could not get block link?");
 	
 	/* Free the underlying block. */
-	sjme_todo("Impl?");
+	if (sjme_error_is(sjme_alloc_free(p)))
+		return sjme_unit_fail(test, "Could not free block?");
 	
-	/* Ensure enqueue was called. */
-	sjme_todo("Impl?");
+	/* Reading invalid memory, but the weak should be cleared. */
+	sjme_unit_notEqualP(test, link->weak, weak,
+		"Weak ref in link not cleared?");
 	
-	sjme_todo("Implement %s", __func__);
-	return SJME_TEST_RESULT_FAIL;
+	/* The weak ref should still have a count. */
+	sjme_unit_equalI(test, sjme_atomic_sjme_jint_get(&weak->count), 1,
+		"Weak reference has no count?");
+	
+	/* These should be cleared out. */
+	sjme_unit_equalP(test, weak->pointer, NULL,
+		"Pointer not cleared?");
+	sjme_unit_equalP(test, weak->link, NULL,
+		"Link not cleared?");
+	
+	/* Success! */
+	return SJME_TEST_RESULT_PASS;
 }
