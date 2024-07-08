@@ -50,6 +50,10 @@ squirreljme_include("platform.cmake")
 # Fixes and otherwise for compatibility
 squirreljme_include("fixes.cmake")
 
+# Use for all builds
+add_compile_definitions(SJME_CONFIG_BUILD_ARCH=${SQUIRRELJME_ARCH})
+add_compile_definitions(SJME_CONFIG_BUILD_PLATFORM=${SQUIRRELJME_PLATFORM})
+
 # Win32 Options
 squirreljme_include("win32.cmake")
 
