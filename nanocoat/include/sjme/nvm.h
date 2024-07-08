@@ -952,7 +952,7 @@ typedef struct sjme_nvm_frame sjme_nvm_frame;
  *
  * @since 2023/12/08
  */
-typedef volatile struct sjme_exceptTrace sjme_exceptTrace;
+typedef struct sjme_exceptTrace sjme_exceptTrace;
 
 typedef struct sjme_nvm_thread
 {
@@ -1102,7 +1102,7 @@ typedef struct sjme_static_methodType
 	sjme_jint argCount;
 	
 	/** The arguments to the method. */
-	const sjme_static_fieldType* argTypes[0];
+	const sjme_static_fieldType* argTypes[sjme_flexibleArrayCount];
 } sjme_static_methodType;
 
 typedef struct sjme_static_classMethod

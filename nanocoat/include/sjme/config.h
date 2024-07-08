@@ -377,6 +377,12 @@ extern "C" {
 		/** Flexible array size count, GCC is fine with blank. */
 		#define sjme_flexibleArrayCount
 	#endif
+#elif defined(__WATCOMC__)
+	/** Flexible array size count. */
+	#define sjme_flexibleArrayCount
+
+	/** Flexible array count but for unions. */
+	#define sjme_flexibleArrayCountUnion 1
 #endif
 
 #if !defined(sjme_attrCallback)

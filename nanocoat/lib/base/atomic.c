@@ -126,6 +126,54 @@
 					(SJME_ATOMIC_WIN32_TYPE(type, numPointerStars))value); \
 		}
 
+#elif defined(SJME_CONFIG_HAS_ATOMIC_OLD)
+
+	#define SJME_ATOMIC_FUNCTION_COMPARE_SET(type, numPointerStars) \
+		SJME_ATOMIC_PROTOTYPE_COMPARE_SET(type, numPointerStars) \
+		{ \
+			sjme_jboolean result; \
+			 \
+			sjme_atomic_interruptsDisable(); \
+			 \
+			result = (atomic->value == expected); \
+			if (result) \
+				atomic->value = set; \
+			 \
+			sjme_atomic_interruptsEnable(); \
+			 \
+			return result; \
+		}
+
+	#define SJME_ATOMIC_FUNCTION_GET_ADD(type, numPointerStars) \
+		SJME_ATOMIC_PROTOTYPE_GET_ADD(type, numPointerStars) \
+		{ \
+			type result; \
+			 \
+			sjme_atomic_interruptsDisable(); \
+			 \
+			result = atomic->value; \
+			atomic->value = (type)(((intptr_t)result) + add); \
+			 \
+			sjme_atomic_interruptsEnable(); \
+			 \
+			return result; \
+		}
+
+	#define SJME_ATOMIC_FUNCTION_SET(type, numPointerStars) \
+		SJME_ATOMIC_PROTOTYPE_SET(type, numPointerStars) \
+		{ \
+			type result; \
+			 \
+			sjme_atomic_interruptsDisable(); \
+			 \
+			result = atomic->value; \
+			atomic->value = value; \
+			 \
+			sjme_atomic_interruptsEnable(); \
+			 \
+			return result; \
+		}
+
 #else
 
 #error No atomic access functions.

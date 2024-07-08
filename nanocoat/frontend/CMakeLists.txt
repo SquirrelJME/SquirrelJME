@@ -7,7 +7,8 @@
 # ---------------------------------------------------------------------------
 
 # SquirrelJME Java SE Emulator Front-End
-if(NOT EMSCRIPTEN AND NOT SQUIRRELJME_CROSS_COMPILE)
+if(NOT EMSCRIPTEN AND NOT SQUIRRELJME_CROSS_COMPILE AND
+	SQUIRRELJME_ENABLE_DYLIB)
 	squirreljme_include("jni.cmake")
 
 	if(JNI_FOUND)
@@ -20,15 +21,20 @@ if(NOT EMSCRIPTEN AND NOT SQUIRRELJME_CROSS_COMPILE)
 endif()
 
 # Netscape JRI (Usually for retro systems such as MacOS Classic)
-add_subdirectory(libjri)
+if(SQUIRRELJME_ENABLE_FRONTEND_JRI)
+	add_subdirectory(libjri)
+endif()
 
 # Netscape Plugin API (NPAPI)
-if(SQUIRRELJME_IS_UNIX OR SQUIRRELJME_IS_WINDOWS)
+if(SQUIRRELJME_ENABLE_DYLIB AND
+	(SQUIRRELJME_IS_UNIX OR SQUIRRELJME_IS_WINDOWS))
 	add_subdirectory(npapi)
 endif()
 
 # RetroArch/LibRetro
-add_subdirectory(libretro)
+if(SQUIRRELJME_ENABLE_FRONTEND_LIBRETRO)
+	add_subdirectory(libretro)
+endif()
 
 # Not doing a special build for RetroArch only...
 if(NOT DEFINED ENV{SQUIRRELJME_SPECIAL_BUILD_LIBRETRO} OR

@@ -62,13 +62,15 @@ int main(int argc, char** argv)
 		platform = "amd64";
 #elif defined(SJME_CONFIG_HAS_ARCH_ARM64)
 		platform = "arm64";
-#elif define(SJME_CONFIG_HAS_ARCH_IA32)
+#elif defined(SJME_CONFIG_HAS_ARCH_IA16)
+		platform = "ia16";
+#elif defined(SJME_CONFIG_HAS_ARCH_IA32)
 		platform = "ia32";
-#elif define(SJME_CONFIG_HAS_ARCH_IA64)
+#elif defined(SJME_CONFIG_HAS_ARCH_IA64)
 		platform = "ia64";
 #elif defined(SJME_CONFIG_HAS_ARCH_POWERPC) && \
 	SJME_CONFIG_HAS_ARCH_POWERPC == 32
-		platform = "powerpc";
+		platform = "powerpc32";
 #elif defined(SJME_CONFIG_HAS_ARCH_POWERPC) && \
 	SJME_CONFIG_HAS_ARCH_POWERPC == 64
 		platform = "powerpc64";
