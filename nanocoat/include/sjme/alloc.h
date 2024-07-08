@@ -45,6 +45,9 @@ typedef struct sjme_alloc_link sjme_alloc_link;
  */
 typedef enum sjme_alloc_poolSpace
 {
+	/** Invalid space. */
+	SJME_ALLOC_POOL_SPACE_INVALID,
+	
 	/** Free space. */
 	SJME_ALLOC_POOL_SPACE_FREE,
 	

@@ -294,6 +294,9 @@ sjme_errorCode sjme_alloc_poolInitStatic(
 	/* Determine size of the middle link, which is free space. */
 	midLink->blockSize = (sjme_jint)((uintptr_t)backLink -
 		(uintptr_t)&midLink->block[0]);
+	
+	/* The mid-link is considered free. */
+	midLink->space = SJME_ALLOC_POOL_SPACE_FREE;
 		
 	/* The front and back links are in the "invalid" space. */
 	frontLink->space = SJME_NUM_ALLOC_POOL_SPACE;
