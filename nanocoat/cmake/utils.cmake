@@ -53,18 +53,37 @@ endif()
 file(MAKE_DIRECTORY "${SQUIRRELJME_UTIL_DIR}")
 
 # Try to find the host CMake as a first choice
-find_program(SQUIRRELJME_FIRST_CMAKE "cmake" NO_DEFAULT_PATH)
-if(NOT SQUIRRELJME_FIRST_CMAKE)
-	find_program(SQUIRRELJME_FIRST_CMAKE "cmake")
+find_program(SJME_FIRST_CMAKE "cmake" NO_DEFAULT_PATH)
+if(NOT SJME_FIRST_CMAKE)
+	find_program(SJME_FIRST_CMAKE "cmake")
 
-	if(NOT SQUIRRELJME_FIRST_CMAKE)
-		set(SQUIRRELJME_FIRST_CMAKE "${CMAKE_COMMAND}")
+	if(NOT SJME_FIRST_CMAKE)
+		set(SJME_FIRST_CMAKE "${CMAKE_COMMAND}")
 	endif()
+endif()
+
+# Double check version
+execute_process(COMMAND "${SJME_FIRST_CMAKE}" "-version"
+	OUTPUT_FILE "${CMAKE_BINARY_DIR}/first-cmake-version")
+file(STRINGS "${CMAKE_BINARY_DIR}/first-cmake-version" SJME_FIRST_CMAKE_VER
+	LIMIT_COUNT 1)
+string(TOLOWER "${SJME_FIRST_CMAKE_VER}" SJME_FIRST_CMAKE_VER)
+string(REPLACE "cmake version " ""
+	SJME_FIRST_CMAKE_VER "${SJME_FIRST_CMAKE_VER}")
+
+# If the CMake we found is too old, ignore it and use our current one
+message(STATUS "CMake ${SJME_FIRST_CMAKE} is ${SJME_FIRST_CMAKE_VER}")
+if("${SJME_FIRST_CMAKE_VER}" VERSION_LESS 3.0)
+	# Note
+	message(STATUS "Using ${CMAKE_COMMAND} as it is too old...")
+
+	# Just use our version
+	set(SJME_FIRST_CMAKE "${CMAKE_COMMAND}")
 endif()
 
 # Setup command to run
 set(SJME_UTIL_CFG)
-list(APPEND SJME_UTIL_CFG "${SQUIRRELJME_FIRST_CMAKE}")
+list(APPEND SJME_UTIL_CFG "${SJME_FIRST_CMAKE}")
 list(APPEND SJME_UTIL_CFG "-E")
 list(APPEND SJME_UTIL_CFG "env")
 list(APPEND SJME_UTIL_CFG "--unset=CMAKE_TOOLCHAIN")
@@ -88,14 +107,15 @@ list(APPEND SJME_UTIL_CFG "--unset=CXXFLAGS")
 list(APPEND SJME_UTIL_CFG "--unset=LDFLAGS")
 
 # Target CMake Command
-list(APPEND SJME_UTIL_CFG "${SQUIRRELJME_FIRST_CMAKE}")
+list(APPEND SJME_UTIL_CFG "${SJME_FIRST_CMAKE}")
 list(APPEND SJME_UTIL_CFG "-DCMAKE_BUILD_TYPE=Debug")
 list(APPEND SJME_UTIL_CFG "-DCMAKE_SYSTEM_NAME=${CMAKE_HOST_SYSTEM_NAME}")
 list(APPEND SJME_UTIL_CFG
 	"-DCMAKE_SYSTEM_PROCESSOR=${CMAKE_HOST_SYSTEM_PROCESSOR}")
 list(APPEND SJME_UTIL_CFG ${SQUIRRELJME_SWITCH_CMAKE_GENERATOR_PLATFORM_SET})
 
-if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.13")
+if("${CMAKE_VERSION}" VERSION_GREATER_EQUAL "3.13" AND
+	"${SJME_FIRST_CMAKE_VER}"  VERSION_GREATER_EQUAL "3.13")
 	list(APPEND SJME_UTIL_CFG "-S" "${SQUIRRELJME_UTIL_SOURCE_DIR}")
 	list(APPEND SJME_UTIL_CFG "-B" "${SQUIRRELJME_UTIL_DIR}")
 else()
@@ -106,6 +126,9 @@ endif()
 message(STATUS "Bootstrapping utils into "
 	"${SQUIRRELJME_UTIL_DIR}...")
 message(STATUS "Current generator is ${CMAKE_GENERATOR}...")
+
+# Divider
+message(STATUS "CONFIGURE: -------------------------------------------------")
 
 # Run Configuration
 execute_process(
@@ -118,9 +141,12 @@ if(NOT SJME_UTIL_CFG_RESULT EQUAL 0)
 	message(FATAL_ERROR "Configure failed with: ${SJME_UTIL_CFG_RESULT}")
 endif()
 
+# Divider
+message(STATUS "BUILD: -----------------------------------------------------")
+
 # Run build step
 execute_process(
-	COMMAND "${SQUIRRELJME_FIRST_CMAKE}"
+	COMMAND "${SJME_FIRST_CMAKE}"
 		"--build" "${SQUIRRELJME_UTIL_DIR}"
 	RESULT_VARIABLE SJME_UTIL_BLD_RESULT
 	WORKING_DIRECTORY "${SQUIRRELJME_UTIL_DIR}")
@@ -129,6 +155,9 @@ execute_process(
 if(NOT SJME_UTIL_BLD_RESULT EQUAL 0)
 	message(FATAL_ERROR "Build failed with: ${SJME_UTIL_BLD_RESULT}")
 endif()
+
+# Divider
+message(STATUS "PREFIX/SUFFIX: ---------------------------------------------")
 
 # Determine executable suffix
 if(EXISTS "${SQUIRRELJME_UTIL_DIR}/suffix")
@@ -153,6 +182,23 @@ if(EXISTS "${SQUIRRELJME_UTIL_DIR}/dylibsuffix")
 	message(DEBUG "Host library suffix is "
 		"'${SQUIRRELJME_HOST_DYLIB_SUFFIX}'.")
 endif()
+
+# Divider
+message(STATUS "SIMPLE CHECK: ----------------------------------------------")
+
+# Try running simple utility to make sure it compiled under the host
+squirreljme_util(SJME_UTIL_SIMPLE simple)
+execute_process(COMMAND "${SJME_UTIL_SIMPLE}"
+	RESULT_VARIABLE SJME_UTIL_CHK_RESULT
+	WORKING_DIRECTORY "${SQUIRRELJME_UTIL_DIR}")
+
+# Make sure it is actually valid
+if(NOT SJME_UTIL_CHK_RESULT EQUAL 0)
+	message(FATAL_ERROR "Simple run failed with: ${SJME_UTIL_CHK_RESULT}")
+endif()
+
+# Divider
+message(STATUS "------------------------------------------------------------")
 
 # ----------------------------------------------------------------------------
 
