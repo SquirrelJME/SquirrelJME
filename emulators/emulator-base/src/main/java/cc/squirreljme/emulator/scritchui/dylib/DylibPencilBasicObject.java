@@ -10,13 +10,23 @@
 package cc.squirreljme.emulator.scritchui.dylib;
 
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPencilBracket;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
- * Base interface for pencil based objects.
+ * Base class for basic pencil buffers.
  *
  * @since 2024/07/08
  */
-public interface DylibPencilObject
-	extends DylibHasObjectPointer, ScritchPencilBracket
+public class DylibPencilBasicObject
+	implements DylibPencilObject
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/07/08
+	 */
+	@Override
+	public long objectPointer()
+	{
+		throw Debugging.todo();
+	}
 }

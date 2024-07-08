@@ -139,8 +139,14 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 
 #define DESC_DYLIB_BASE \
 	DESC_CLASS("cc/squirreljme/emulator/scritchui/dylib/DylibBaseObject")
+#define DESC_DYLIB_HAS_OBJECT_POINTER \
+	DESC_CLASS("cc/squirreljme/emulator/scritchui/dylib/DylibHasObjectPointer")
 #define DESC_DYLIB_PENCIL \
 	DESC_CLASS("cc/squirreljme/emulator/scritchui/dylib/DylibPencilObject")
+#define DESC_DYLIB_PENCIL_BASE \
+	DESC_CLASS("cc/squirreljme/emulator/scritchui/dylib/DylibPencilBaseObject")
+#define DESC_DYLIB_PENCIL_UI \
+	DESC_CLASS("cc/squirreljme/emulator/scritchui/dylib/DylibPencilUiObject")
 #define DESC_DYLIB_PENCILFONT \
 	DESC_CLASS("cc/squirreljme/emulator/scritchui/dylib/DylibPencilFontObject")
 

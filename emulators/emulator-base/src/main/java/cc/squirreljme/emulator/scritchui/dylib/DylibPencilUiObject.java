@@ -12,11 +12,24 @@ package cc.squirreljme.emulator.scritchui.dylib;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPencilBracket;
 
 /**
- * Base interface for pencil based objects.
+ * Dynamic library based pencil drawing state.
  *
- * @since 2024/07/08
+ * @since 2024/05/04
  */
-public interface DylibPencilObject
-	extends DylibHasObjectPointer, ScritchPencilBracket
+public class DylibPencilUiObject
+	extends DylibBaseObject
+	implements DylibPencilObject
 {
+	/**
+	 * Initializes the pencil object.
+	 *
+	 * @param __objectP The object pointer.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/04/04
+	 */
+	public DylibPencilUiObject(long __objectP)
+		throws NullPointerException
+	{
+		super(__objectP);
+	}
 }

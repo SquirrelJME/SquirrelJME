@@ -305,13 +305,13 @@ static sjme_errorCode mle_scritchUiListenerPaint(
 	
 	/* Setup pencil object. */
 	pencilClass = (*env)->FindClass(env,
-		DESC_DYLIB_PENCIL);
+		DESC_DYLIB_PENCIL_UI);
 	if (pencilClass == NULL)
-		sjme_die("No DylibPencilObject?");
+		sjme_die("No DylibPencilUiObject?");
 	
 	pencilNew = (*env)->GetMethodID(env, pencilClass, "<init>", "(J)V");
 	if (pencilNew == NULL)
-		sjme_die("No default constructor for DylibPencilObject?");
+		sjme_die("No default constructor for DylibPencilUiObject?");
 	
 	pencilObject = (*env)->NewObject(env, pencilClass, pencilNew,
 		(jlong)g);

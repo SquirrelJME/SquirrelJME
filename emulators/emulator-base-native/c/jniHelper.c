@@ -92,7 +92,7 @@ void* sjme_jni_recoverPointer(JNIEnv* env, sjme_lpcstr className,
 {
 	jclass classy;
 	jclass baseClassy;
-	jfieldID pointerField;
+	jmethodID pointerMethod;
 	
 	/* Does not map. */
 	if (instance == NULL)
@@ -107,7 +107,7 @@ void* sjme_jni_recoverPointer(JNIEnv* env, sjme_lpcstr className,
 
 	/* Locate class. */
 	classy = (*env)->FindClass(env, className);
-	baseClassy = (*env)->FindClass(env, DESC_DYLIB_BASE);
+	baseClassy = (*env)->FindClass(env, DESC_DYLIB_HAS_OBJECT_POINTER);
 	if (classy == NULL || baseClassy == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_INVALID_CLASS_NAME);
@@ -122,14 +122,15 @@ void* sjme_jni_recoverPointer(JNIEnv* env, sjme_lpcstr className,
 		return NULL;
 	}
 	
-	/* Get the pointer data. */
-	pointerField = (*env)->GetFieldID(env, baseClassy, "objectP", "J");
-	if (pointerField == NULL)
-		sjme_die("No objectP in DylibBaseObject?");
+	/* Get pointer object method. */
+	pointerMethod = (*env)->GetMethodID(env, baseClassy,
+	    "objectPointer", "()J");
+	if (pointerMethod == NULL)
+		sjme_die("No objectPointer() in instance?");
 	
 	/* Cast pencil data. */
-	return (void*)((intptr_t)((*env)->GetLongField(
-		env, instance, pointerField)));
+	return (void*)((intptr_t)((*env)->CallLongMethod(
+		env, instance, pointerMethod)));
 }
 
 sjme_scritchui_pencil sjme_jni_recoverPencil(JNIEnv* env, jobject g)
