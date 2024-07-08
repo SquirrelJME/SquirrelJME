@@ -36,6 +36,11 @@ SJME_TEST_DECLARE(testAllocWeakRef)
 	sjme_unit_notEqualP(test, weak, NULL,
 		"Did not set weak?");
 	
+	/* This should be marked valid. */
+	sjme_unit_equalI(test,
+		sjme_atomic_sjme_jint_get(&weak->valid), SJME_ALLOC_WEAK_VALID,
+		"Weak reference not marked valid?");
+	
 	/* Get the block link. */
 	link = NULL;
 	if (sjme_error_is(sjme_alloc_getLink(p, &link)))

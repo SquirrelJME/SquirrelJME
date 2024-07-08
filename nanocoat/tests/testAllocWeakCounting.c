@@ -12,8 +12,6 @@
 #include "mock.h"
 #include "unit.h"
 
-#define TEST_BLOCK_SIZE 1024
-
 /**
  * Tests counting of weak references.
  *  
@@ -21,21 +19,56 @@
  */
 SJME_TEST_DECLARE(testAllocWeakCounting)
 {
-	/* Allocate. */
-	sjme_todo("Impl?");
+	sjme_alloc_weak* weak;
+	sjme_alloc_weak* weakB;
+	void* p;
 	
-	/* Create weak reference, with enqueue. */
-	sjme_todo("Impl?");
+	/* Allocate weak reference. */
+	p = NULL;
+	weak = NULL;
+	if (sjme_error_is(sjme_alloc_weakNew(test->pool, 512,
+		NULL, NULL, &p, &weak)))
+		return sjme_unit_fail(test, "Failed to allocate weak?");
 	
-	/* Create another weak reference, to count up. */
-	sjme_todo("Impl?");
+	/* Reference count should be one. */
+	sjme_unit_equalI(test, sjme_atomic_sjme_jint_get(&weak->count), 1,
+		"Reference count not one?");
+	
+	/* Reference again. */
+	weakB = NULL;
+	if (sjme_error_is(sjme_alloc_weakRef(p, &weakB,
+		NULL, NULL)))
+		return sjme_unit_fail(test, "Could not re-ref weak?");
+	
+	/* Reference count should be two. */
+	sjme_unit_equalI(test, sjme_atomic_sjme_jint_get(&weak->count), 2,
+		"Reference count not two?");
 	
 	/* Delete weak reference. */
-	sjme_todo("Impl?");
+	if (sjme_error_is(sjme_alloc_weakDelete(&weakB)))
+		return sjme_unit_fail(test, "Could not delete weak?");
 	
-	/* Delete the other weak reference. */
-	sjme_todo("Impl?");
+	/* Since it was two, it should still be there. */
+	sjme_unit_equalP(test, weakB, weak,
+		"Second weak pointer changed?");
+		
+	/* Reference count should be one. */
+	sjme_unit_equalI(test, sjme_atomic_sjme_jint_get(&weak->count), 1,
+		"Reference count not one?");
 	
-	sjme_todo("Implement %s", __func__);
-	return SJME_TEST_RESULT_FAIL;
+	/* Delete weak reference again. */
+	if (sjme_error_is(sjme_alloc_weakDelete(&weakB)))
+		return sjme_unit_fail(test, "Could not delete weak?");
+		
+	/* Since it was one, it should be gone now. */
+	sjme_unit_equalP(test, weakB, NULL,
+		"Weak pointer on last delete not cleared?");
+	
+	/* This should be marked invalid. */
+	sjme_unit_notEqualI(test,
+		sjme_atomic_sjme_jint_get(&weak->valid), SJME_ALLOC_WEAK_VALID,
+		"Weak reference not marked invalid?");
+	
+	/* Success! */
+	return SJME_TEST_RESULT_PASS;
 }

@@ -91,8 +91,14 @@ typedef sjme_errorCode (*sjme_alloc_weakEnqueueFunc)(
 	sjme_attrInNullable sjme_pointer data,
 	sjme_attrInValue sjme_jboolean isBlockFree);
 
+/** Weak reference is valid. */
+#define SJME_ALLOC_WEAK_VALID UINT32_C(0x58657221)
+
 struct sjme_alloc_weak
 {
+	/** Is this weak reference valid? */
+	sjme_atomic_sjme_jint valid;
+	
 	/** The link this points to, @c NULL if freed. */
 	sjme_alloc_link* link;
 	
