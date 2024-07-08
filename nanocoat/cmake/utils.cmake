@@ -45,7 +45,8 @@ endif()
 
 # Need to cleanup any previous configuration run before building
 if(EXISTS "${SQUIRRELJME_UTIL_DIR}/CMakeCache.txt" OR
-	EXISTS "${SQUIRRELJME_UTIL_DIR}/")
+	(EXISTS "${SQUIRRELJME_UTIL_DIR}" AND
+		IS_DIRECTORY "${SQUIRRELJME_UTIL_DIR}"))
 	file(REMOVE_RECURSE "${SQUIRRELJME_UTIL_DIR}/")
 endif()
 
