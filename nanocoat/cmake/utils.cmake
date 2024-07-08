@@ -243,6 +243,25 @@ if(cmakeUtilBuildResult)
 		endif()
 	endforeach()
 
+	# Clean before build
+	execute_process(
+		COMMAND "${CMAKE_COMMAND}"
+		"-E" "env"
+		"--unset=CC"
+		"--unset=CFLAGS"
+		"--unset=CXX"
+		"--unset=CPP"
+		"--unset=LD"
+		"--unset=LDFLAGS"
+		"make" "clean"
+		"CC=${HOST_CC}"
+		"OUTPUT_DIR=${SQUIRRELJME_UTIL_DIR}"
+		"HOST_EXE_SUFFIX=${SQUIRRELJME_HOST_EXE_SUFFIX}"
+		"SQUIRRELJME_HOST_DYLIB_PREFIX=${SQUIRRELJME_HOST_DYLIB_PREFIX}"
+		"SQUIRRELJME_HOST_DYLIB_SUFFIX=${SQUIRRELJME_HOST_DYLIB_SUFFIX}"
+		RESULT_VARIABLE makeUtilCleanResult
+		WORKING_DIRECTORY "${SQUIRRELJME_UTIL_SOURCE_DIR}")
+
 	# Fallback to regular make, maybe it will work
 	execute_process(
 		COMMAND "${CMAKE_COMMAND}"
