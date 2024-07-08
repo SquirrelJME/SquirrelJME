@@ -24,6 +24,9 @@ endif()
 # Determine version information
 squirreljme_include("identify-squirreljme-version.cmake")
 
+# Soft patching of CMake for older version support
+squirreljme_include("cmake-patch.cmake")
+
 # Fixes and otherwise for compatibility
 squirreljme_include("pre-fixes.cmake")
 
