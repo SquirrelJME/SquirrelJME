@@ -43,251 +43,115 @@ else()
 	unset(SQUIRRELJME_SWITCH_CMAKE_GENERATOR_PLATFORM_SET)
 endif()
 
-# Only run this if the directory does not exist, because there might be a
-# cache from a previous run?
-if(NOT EXISTS "${SQUIRRELJME_UTIL_DIR}" OR
-	NOT EXISTS "${SQUIRRELJME_UTIL_DIR}/CMakeCache.txt")
-	# Make sure the directory exists
-	file(MAKE_DIRECTORY "${SQUIRRELJME_UTIL_DIR}")
+# Need to cleanup any previous configuration run before building
+if(EXISTS "${SQUIRRELJME_UTIL_DIR}/CMakeCache.txt" OR
+	EXISTS "${SQUIRRELJME_UTIL_DIR}/")
+	file(REMOVE_RECURSE "${SQUIRRELJME_UTIL_DIR}/")
+endif()
 
-	# Emscripten breaks here, so do not use it with nested CMake
-	# Also nested CMake breaks here as well
-	if(EMSCRIPTEN OR SQUIRRELJME_IS_CROSS_COMPILE)
-		set(cmakeUtilConfigResult 1)
-	else()
-		# Note
-		message(STATUS "Bootstrapping utils into "
-			"${SQUIRRELJME_UTIL_DIR}...")
-		message(STATUS "Current generator is ${CMAKE_GENERATOR}...")
+# Make sure the resultant utility directory exists
+file(MAKE_DIRECTORY "${SQUIRRELJME_UTIL_DIR}")
 
-		# Run nested CMake to build the utilities
-		if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.13")
-			# CMake 3.13 added the -S and -B switches
-			execute_process(
-				COMMAND "${CMAKE_COMMAND}"
-					"-E" "env"
-					"--unset=CMAKE_TOOLCHAIN_FILE"
-					"--unset=CMAKE_SOURCE_ROOT"
-					"--unset=CMAKE_FRAMEWORK_PATH"
-					"--unset=CMAKE_INCLUDE_PATH"
-					"--unset=CMAKE_LIBRARY_PATH"
-					"--unset=CMAKE_PROGRAM_PATH"
-					"--unset=CMAKE_BUILD_TYPE"
-					"--unset=CMAKE_GENERATOR"
-					"--unset=CMAKE_GENERATOR_INSTANCE"
-					${SQUIRRELJME_SWITCH_CMAKE_GENERATOR_PLATFORM_UNSET}
-					"--unset=CMAKE_GENERATOR_TOOLSET"
-					"--unset=CMAKE_C_COMPILER_LAUNCHER"
-					"--unset=CMAKE_C_LINKER_LAUNCHER"
-					"--unset=LDFLAGS"
-					"${CMAKE_COMMAND}"
-					"-DCMAKE_BUILD_TYPE=Debug"
-					${SQUIRRELJME_SWITCH_CMAKE_GENERATOR_PLATFORM_SET}
-					#"-G" "${CMAKE_GENERATOR}"
-					"-S" "${SQUIRRELJME_UTIL_SOURCE_DIR}"
-					"-B" "${SQUIRRELJME_UTIL_DIR}"
-				RESULT_VARIABLE cmakeUtilBuildResult)
-		else()
-			# Need to initialize the project the old way, by just being in
-			# a different working directory and referring to the source
-			execute_process(
-				COMMAND "${CMAKE_COMMAND}"
-					"-E" "env"
-					"--unset=CMAKE_TOOLCHAIN_FILE"
-					"--unset=CMAKE_SOURCE_ROOT"
-					"--unset=CMAKE_FRAMEWORK_PATH"
-					"--unset=CMAKE_INCLUDE_PATH"
-					"--unset=CMAKE_LIBRARY_PATH"
-					"--unset=CMAKE_PROGRAM_PATH"
-					"--unset=CMAKE_BUILD_TYPE"
-					"--unset=CMAKE_GENERATOR"
-					"--unset=CMAKE_GENERATOR_INSTANCE"
-					${SQUIRRELJME_SWITCH_CMAKE_GENERATOR_PLATFORM_UNSET}
-					"--unset=CMAKE_GENERATOR_TOOLSET"
-					"--unset=CMAKE_C_COMPILER_LAUNCHER"
-					"--unset=CMAKE_C_LINKER_LAUNCHER"
-					"--unset=LDFLAGS"
-					"${CMAKE_COMMAND}"
-					"-DCMAKE_BUILD_TYPE=Debug"
-					${SQUIRRELJME_SWITCH_CMAKE_GENERATOR_PLATFORM_SET}
-					#"-G" "${CMAKE_GENERATOR}"
-					"${SQUIRRELJME_UTIL_SOURCE_DIR}"
-				WORKING_DIRECTORY "${SQUIRRELJME_UTIL_DIR}"
-				RESULT_VARIABLE cmakeUtilConfigResult)
-		endif()
+# Try to find the host CMake as a first choice
+find_program(SQUIRRELJME_FIRST_CMAKE "cmake" NO_DEFAULT_PATH)
+if(NOT SQUIRRELJME_FIRST_CMAKE)
+	find_program(SQUIRRELJME_FIRST_CMAKE "cmake")
+
+	if(NOT SQUIRRELJME_FIRST_CMAKE)
+		set(SQUIRRELJME_FIRST_CMAKE "${CMAKE_COMMAND}")
 	endif()
+endif()
 
-	# Did this fail?
-	if(cmakeUtilConfigResult)
-		message(WARNING "Cannot configure utils: "
-			"${cmakeUtilConfigResult}...")
-	else()
-		# Determine executable suffix
-		if(EXISTS "${SQUIRRELJME_UTIL_DIR}/suffix")
-			file(STRINGS "${SQUIRRELJME_UTIL_DIR}/suffix"
-				SQUIRRELJME_HOST_EXE_SUFFIX)
-			message(DEBUG "Host executable suffix is "
-				"'${SQUIRRELJME_HOST_EXE_SUFFIX}'.")
-		endif()
+# Setup command to run
+set(SJME_UTIL_CFG)
+list(APPEND SJME_UTIL_CFG "${SQUIRRELJME_FIRST_CMAKE}")
+list(APPEND SJME_UTIL_CFG "-E")
+list(APPEND SJME_UTIL_CFG "env")
+list(APPEND SJME_UTIL_CFG "--unset=CMAKE_TOOLCHAIN")
+list(APPEND SJME_UTIL_CFG "--unset=CMAKE_TOOLCHAIN_FILE")
+list(APPEND SJME_UTIL_CFG "--unset=CMAKE_SOURCE_ROOT")
+list(APPEND SJME_UTIL_CFG "--unset=CMAKE_FRAMEWORK_PATH")
+list(APPEND SJME_UTIL_CFG "--unset=CMAKE_INCLUDE_PATH")
+list(APPEND SJME_UTIL_CFG "--unset=CMAKE_LIBRARY_PATH")
+list(APPEND SJME_UTIL_CFG "--unset=CMAKE_PROGRAM_PATH")
+list(APPEND SJME_UTIL_CFG "--unset=CMAKE_BUILD_TYPE")
+list(APPEND SJME_UTIL_CFG "--unset=CMAKE_GENERATOR")
+list(APPEND SJME_UTIL_CFG "--unset=CMAKE_GENERATOR_INSTANCE")
+list(APPEND SJME_UTIL_CFG ${SQUIRRELJME_SWITCH_CMAKE_GENERATOR_PLATFORM_UNSET})
+list(APPEND SJME_UTIL_CFG "--unset=CMAKE_GENERATOR_TOOLSET")
+list(APPEND SJME_UTIL_CFG "--unset=CMAKE_C_COMPILER_LAUNCHER")
+list(APPEND SJME_UTIL_CFG "--unset=CMAKE_C_LINKER_LAUNCHER")
+list(APPEND SJME_UTIL_CFG "--unset=CC")
+list(APPEND SJME_UTIL_CFG "--unset=CXX")
+list(APPEND SJME_UTIL_CFG "--unset=CFLAGS")
+list(APPEND SJME_UTIL_CFG "--unset=CXXFLAGS")
+list(APPEND SJME_UTIL_CFG "--unset=LDFLAGS")
 
-		# Determine dynamic library prefix
-		if(EXISTS "${SQUIRRELJME_UTIL_DIR}/dylibprefix")
-			file(STRINGS "${SQUIRRELJME_UTIL_DIR}/dylibprefix"
-				SQUIRRELJME_HOST_DYLIB_PREFIX)
-			message(DEBUG "Host library prefix is "
-				"'${SQUIRRELJME_HOST_DYLIB_PREFIX}'.")
-		endif()
+# Target CMake Command
+list(APPEND SJME_UTIL_CFG "${SQUIRRELJME_FIRST_CMAKE}")
+list(APPEND SJME_UTIL_CFG "-DCMAKE_BUILD_TYPE=Debug")
+list(APPEND SJME_UTIL_CFG ${SQUIRRELJME_SWITCH_CMAKE_GENERATOR_PLATFORM_SET})
 
-		# Determine dynamic library suffix
-		if(EXISTS "${SQUIRRELJME_UTIL_DIR}/dylibsuffix")
-			file(STRINGS "${SQUIRRELJME_UTIL_DIR}/dylibsuffix"
-				SQUIRRELJME_HOST_DYLIB_SUFFIX)
-			message(DEBUG "Host library suffix is "
-				"'${SQUIRRELJME_HOST_DYLIB_SUFFIX}'.")
-		endif()
-	endif()
+if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.13")
+	list(APPEND SJME_UTIL_CFG "-S" "${SQUIRRELJME_UTIL_SOURCE_DIR}")
+	list(APPEND SJME_UTIL_CFG "-B" "${SQUIRRELJME_UTIL_DIR}")
 else()
-	message(STATUS
-		"No need to configure utilities, already there...")
-	set(cmakeUtilConfigResult 0)
+	list(APPEND SJME_UTIL_CFG "${SQUIRRELJME_UTIL_SOURCE_DIR}")
 endif()
 
-# Library and executable assumptions
-## Linux
-if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux")
-	if(NOT DEFINED SQUIRRELJME_HOST_EXE_SUFFIX)
-		set(SQUIRRELJME_HOST_EXE_SUFFIX "")
-	endif()
+# Note
+message(STATUS "Bootstrapping utils into "
+	"${SQUIRRELJME_UTIL_DIR}...")
+message(STATUS "Current generator is ${CMAKE_GENERATOR}...")
 
-	if(NOT DEFINED SQUIRRELJME_HOST_DYLIB_PREFIX)
-		set(SQUIRRELJME_HOST_DYLIB_PREFIX "lib")
-	endif()
+# Run Configuration
+execute_process(
+	COMMAND ${SJME_UTIL_CFG}
+	WORKING_DIRECTORY "${SQUIRRELJME_UTIL_DIR}"
+	RESULT_VARIABLE SJME_UTIL_CFG_RESULT)
 
-	if(NOT DEFINED SQUIRRELJME_HOST_DYLIB_SUFFIX)
-		set(SQUIRRELJME_HOST_DYLIB_SUFFIX ".so")
-	endif()
+# Configure Failed?
+if(NOT SJME_UTIL_CFG_RESULT EQUAL 0)
+	message(FATAL_ERROR "Configure failed with: ${SJME_UTIL_CFG_RESULT}")
 endif()
 
-## Windows
-if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Windows")
-	if(NOT DEFINED SQUIRRELJME_HOST_EXE_SUFFIX)
-		set(SQUIRRELJME_HOST_EXE_SUFFIX ".exe")
-	endif()
+# Run build step
+execute_process(
+	COMMAND "${SQUIRRELJME_FIRST_CMAKE}"
+		"--build" "${SQUIRRELJME_UTIL_DIR}"
+	RESULT_VARIABLE SJME_UTIL_BLD_RESULT
+	WORKING_DIRECTORY "${SQUIRRELJME_UTIL_DIR}")
 
-	if(NOT DEFINED SQUIRRELJME_HOST_DYLIB_PREFIX)
-		set(SQUIRRELJME_HOST_DYLIB_PREFIX "")
-	endif()
-
-	if(NOT DEFINED SQUIRRELJME_HOST_DYLIB_SUFFIX)
-		set(SQUIRRELJME_HOST_DYLIB_SUFFIX ".dll")
-	endif()
+# Build Failed?
+if(NOT SJME_UTIL_BLD_RESULT EQUAL 0)
+	message(FATAL_ERROR "Build failed with: ${SJME_UTIL_BLD_RESULT}")
 endif()
 
-## macOS
-if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
-	if(NOT DEFINED SQUIRRELJME_HOST_EXE_SUFFIX)
-		set(SQUIRRELJME_HOST_EXE_SUFFIX "")
-	endif()
-
-	if(NOT DEFINED SQUIRRELJME_HOST_DYLIB_PREFIX)
-		set(SQUIRRELJME_HOST_DYLIB_PREFIX "lib")
-	endif()
-
-	if(NOT DEFINED SQUIRRELJME_HOST_DYLIB_SUFFIX)
-		set(SQUIRRELJME_HOST_DYLIB_SUFFIX ".dylib")
-	endif()
+# Determine executable suffix
+if(EXISTS "${SQUIRRELJME_UTIL_DIR}/suffix")
+	file(STRINGS "${SQUIRRELJME_UTIL_DIR}/suffix"
+		SQUIRRELJME_HOST_EXE_SUFFIX)
+	message(DEBUG "Host executable suffix is "
+		"'${SQUIRRELJME_HOST_EXE_SUFFIX}'.")
 endif()
 
-if (NOT cmakeUtilConfigResult AND
-	NOT EMSCRIPTEN)
-	# Build the utilities, just in case it is out of date
-	message(STATUS "Building utilities, if out of date...")
-	execute_process(
-		COMMAND "${CMAKE_COMMAND}"
-			"--build" "${SQUIRRELJME_UTIL_DIR}"
-		RESULT_VARIABLE cmakeUtilBuildResult
-		WORKING_DIRECTORY "${SQUIRRELJME_UTIL_DIR}")
-
-	# Make sure the executable actually runs since it might have built
-	if(NOT cmakeUtilBuildResult)
-		# Determine path where simple exists
-		squirreljme_util(cmakeSimpleExe simple)
-
-		# Execute it and check if it works
-		execute_process(COMMAND "${cmakeSimpleExe}"
-			RESULT_VARIABLE cmakeUtilBuildResult
-			WORKING_DIRECTORY "${SQUIRRELJME_UTIL_DIR}")
-
-		if(cmakeUtilBuildResult)
-			message(WARNING "Failed to run simple test utility.")
-		else()
-			message(STATUS "Simple test ran okay.")
-		endif()
-	endif()
-else()
-	set(cmakeUtilBuildResult 1)
+# Determine dynamic library prefix
+if(EXISTS "${SQUIRRELJME_UTIL_DIR}/dylibprefix")
+	file(STRINGS "${SQUIRRELJME_UTIL_DIR}/dylibprefix"
+		SQUIRRELJME_HOST_DYLIB_PREFIX)
+	message(DEBUG "Host library prefix is "
+		"'${SQUIRRELJME_HOST_DYLIB_PREFIX}'.")
 endif()
 
-# Did this fail?
-if(cmakeUtilBuildResult)
-	# Ignore for now
-	message(WARNING "Cannot build and run utils (CMake): "
-		"${cmakeUtilBuildResult}...")
-
-	# Try to find a compiler
-	foreach(maybe "cc" "gcc" "clang")
-		find_program(HOST_CC "${maybe}")
-
-		if(HOST_CC)
-			break()
-		endif()
-	endforeach()
-
-	# Clean before build
-	execute_process(
-		COMMAND "${CMAKE_COMMAND}"
-		"-E" "env"
-		"--unset=CC"
-		"--unset=CFLAGS"
-		"--unset=CXX"
-		"--unset=CPP"
-		"--unset=LD"
-		"--unset=LDFLAGS"
-		"make" "clean"
-		"CC=${HOST_CC}"
-		"OUTPUT_DIR=${SQUIRRELJME_UTIL_DIR}"
-		"HOST_EXE_SUFFIX=${SQUIRRELJME_HOST_EXE_SUFFIX}"
-		"SQUIRRELJME_HOST_DYLIB_PREFIX=${SQUIRRELJME_HOST_DYLIB_PREFIX}"
-		"SQUIRRELJME_HOST_DYLIB_SUFFIX=${SQUIRRELJME_HOST_DYLIB_SUFFIX}"
-		RESULT_VARIABLE makeUtilCleanResult
-		WORKING_DIRECTORY "${SQUIRRELJME_UTIL_SOURCE_DIR}")
-
-	# Fallback to regular make, maybe it will work
-	execute_process(
-		COMMAND "${CMAKE_COMMAND}"
-			"-E" "env"
-			"--unset=CC"
-			"--unset=CFLAGS"
-			"--unset=CXX"
-			"--unset=CPP"
-			"--unset=LD"
-			"--unset=LDFLAGS"
-			"make" "all"
-			"CC=${HOST_CC}"
-			"OUTPUT_DIR=${SQUIRRELJME_UTIL_DIR}"
-			"HOST_EXE_SUFFIX=${SQUIRRELJME_HOST_EXE_SUFFIX}"
-			"SQUIRRELJME_HOST_DYLIB_PREFIX=${SQUIRRELJME_HOST_DYLIB_PREFIX}"
-			"SQUIRRELJME_HOST_DYLIB_SUFFIX=${SQUIRRELJME_HOST_DYLIB_SUFFIX}"
-		RESULT_VARIABLE makeUtilBuildResult
-		WORKING_DIRECTORY "${SQUIRRELJME_UTIL_SOURCE_DIR}")
-
-	# This failed too...
-	if(makeUtilBuildResult)
-		message(FATAL_ERROR
-			"Cannot build utils (Make): "
-				"${makeUtilBuildResult}...")
-	endif()
+# Determine dynamic library suffix
+if(EXISTS "${SQUIRRELJME_UTIL_DIR}/dylibsuffix")
+	file(STRINGS "${SQUIRRELJME_UTIL_DIR}/dylibsuffix"
+		SQUIRRELJME_HOST_DYLIB_SUFFIX)
+	message(DEBUG "Host library suffix is "
+		"'${SQUIRRELJME_HOST_DYLIB_SUFFIX}'.")
 endif()
+
+# ----------------------------------------------------------------------------
 
 # Checks if a given file is out of date according to a checksum
 function(squirreljme_check_file_checksum upToDateVar
