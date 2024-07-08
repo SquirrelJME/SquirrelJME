@@ -1814,8 +1814,11 @@ typedef enum sjme_errorCode
 	/** Do not free an enqued reference, if applicable. */
 	SJME_ERROR_ENQUEUE_DO_NOT_FREE = -63,
 	
+	/** Not a weak reference. */
+	SJME_ERROR_NOT_WEAK_REFERENCE = -64,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -64
+	SJME_NUM_ERROR_CODES = -65
 } sjme_errorCode;
 
 /**

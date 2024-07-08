@@ -21,21 +21,46 @@
  */
 SJME_TEST_DECLARE(testAllocWeakRef)
 {
-	/* Setup pool. */
-	sjme_todo("Impl?");
+	sjme_alloc_weak* weak;
+	sjme_alloc_link* link;
+	void* p;
 	
-	/* Allocate. */
-	sjme_todo("Impl?");
+	/* Allocate weak reference. */
+	p = NULL;
+	weak = NULL;
+	if (sjme_error_is(sjme_alloc_weakNew(test->pool, 512,
+		NULL, NULL, &p, &weak)))
+		return sjme_unit_fail(test, "Failed to allocate weak?");
+
+	/* These should be set. */
+	sjme_unit_notEqualP(test, p, NULL,
+		"Did not set p?");
+	sjme_unit_notEqualP(test, weak, NULL,
+		"Did not set weak?");
 	
-	/* Create weak reference. */
-	sjme_todo("Impl?");
+	/* Get the block link. */
+	link = NULL;
+	if (sjme_error_is(sjme_alloc_getLink(p, &link)))
+		return sjme_unit_fail(test, "Could not get block link?");
 	
-	/* Create weak reference with enqueue, to add. */
-	sjme_todo("Impl?");
+	/* Should be this pointer. */
+	sjme_unit_equalP(test, weak->pointer, p,
+		"Weak pointer not allocated pointer?");
+	sjme_unit_equalP(test, weak->link, link,
+		"Weak pointer not allocated link?");
+	sjme_unit_equalP(test, link->weak, weak,
+		"Link weak not allocated weak?");
 	
-	/* Try weak reference with different enqueue, to fail. */
-	sjme_todo("Impl?");
+	/* These should not be set. */
+	sjme_unit_equalP(test, weak->enqueue, NULL,
+		"Enqueue was set?");
+	sjme_unit_equalP(test, weak->enqueueData, NULL,
+		"Enqueue data was set?");
 	
-	sjme_todo("Implement %s", __func__);
-	return SJME_TEST_RESULT_FAIL;
+	/* Reference count should be one. */
+	sjme_unit_equalI(test, sjme_atomic_sjme_jint_get(&weak->count), 1,
+		"Reference count not set to zero?");
+	
+	/* Success! */
+	return SJME_TEST_RESULT_PASS;
 }

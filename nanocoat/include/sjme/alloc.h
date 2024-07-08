@@ -281,6 +281,30 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc)(
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
 
 /**
+ * Allocates a weak reference within the given pool.
+ * 
+ * @param pool The pool to allocate within.
+ * @param size The number of bytes to allocate.
+ * @param inEnqueue The optional function to call when this reference is
+ * enqueued. If this function returns @c SJME_ERROR_ENQUEUE_DO_NOT_FREE and
+ * it is eligible for free, then it will not free. If the block has already
+ * been freed then it will have no effect. 
+ * @param inEnqueueData Optional data to pass to @c inEnqueue .
+ * @param outAddr The output address.
+ * @param outWeak The resultant weak reference.
+ * @return Returns an error code.
+ * @since 2024/07/08
+ */
+sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_weakNew)(
+	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrInPositiveNonZero sjme_jint size,
+	sjme_attrInNullable sjme_alloc_weakEnqueueFunc inEnqueue,
+	sjme_attrInNullable sjme_pointer inEnqueueData,
+	sjme_attrOutNotNull void** outAddr,
+	sjme_attrOutNotNull sjme_alloc_weak** outWeak
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
+
+/**
  * Allocates a copy of the given data.
  *
  * @param pool The pool to allocate within.
@@ -343,6 +367,26 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_realloc)(
  */
 #define sjme_alloc(pool, size, outAddr) \
 	sjme_allocR((pool), (size), (outAddr), SJME_DEBUG_FILE_LINE_FUNC)
+
+/**
+ * Allocates a weak reference within the given pool.
+ * 
+ * @param pool The pool to allocate within.
+ * @param size The number of bytes to allocate.
+ * @param inEnqueue The optional function to call when this reference is
+ * enqueued. If this function returns @c SJME_ERROR_ENQUEUE_DO_NOT_FREE and
+ * it is eligible for free, then it will not free. If the block has already
+ * been freed then it will have no effect. 
+ * @param inEnqueueData Optional data to pass to @c inEnqueue .
+ * @param outAddr The output address.
+ * @param outWeak The resultant weak reference.
+ * @return Returns an error code.
+ * @since 2024/07/08
+ */
+#define sjme_alloc_weakNew(pool, size, inEnqueue, inEnqueueData, \
+		outAddr, outWeak) \
+	sjme_alloc_weakNewR((pool), (size), (inEnqueue), (inEnqueueData), \
+		(outAddr), (outWeak), SJME_DEBUG_FILE_LINE_FUNC)
 
 /**
  * Allocates a copy of the given data.

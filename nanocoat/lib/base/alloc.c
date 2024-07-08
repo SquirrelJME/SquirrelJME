@@ -866,7 +866,7 @@ sjme_errorCode sjme_alloc_weakGet(
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
-sjme_errorCode sjme_alloc_weakRef(
+static sjme_errorCode sjme_alloc_weakRefInternal(
 	sjme_attrInNotNull void* addr,
 	sjme_attrOutNotNull sjme_alloc_weak** outWeak,
 	sjme_attrInNullable sjme_alloc_weakEnqueueFunc inEnqueue,
@@ -937,4 +937,70 @@ sjme_errorCode sjme_alloc_weakRef(
 	/* Success! */
 	*outWeak = result;
 	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_weakNew)(
+	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrInPositiveNonZero sjme_jint size,
+	sjme_attrInNullable sjme_alloc_weakEnqueueFunc inEnqueue,
+	sjme_attrInNullable sjme_pointer inEnqueueData,
+	sjme_attrOutNotNull void** outAddr,
+	sjme_attrOutNotNull sjme_alloc_weak** outWeak
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
+{
+	void* resultPtr;
+	sjme_alloc_weak* resultWeak;
+	sjme_errorCode error;
+	
+	if (pool == NULL || outAddr == NULL || outWeak == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Attempt block allocation first. */
+	resultPtr = NULL;
+	if (sjme_error_is(error = sjme_alloc(pool, size, &resultPtr)) ||
+		resultPtr == NULL)
+		return sjme_error_default(error);
+	
+	/* Then create the weak reference. */
+	resultWeak = NULL;
+	if (sjme_error_is(error = sjme_alloc_weakRefInternal(resultPtr,
+		&resultWeak, inEnqueue, inEnqueueData)) || resultWeak == NULL)
+	{
+		/* Cleanup old allocation. */
+		sjme_alloc_free(resultPtr);
+		
+		return sjme_error_default(error);
+	}
+	
+	/* Success! */
+	*outAddr = resultPtr;
+	*outWeak = resultWeak;
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_alloc_weakRef(
+	sjme_attrInNotNull void* addr,
+	sjme_attrOutNotNull sjme_alloc_weak** outWeak,
+	sjme_attrInNullable sjme_alloc_weakEnqueueFunc inEnqueue,
+	sjme_attrInNullable sjme_pointer inEnqueueData)
+{
+	sjme_errorCode error;
+	sjme_alloc_link* link;
+	
+	if (addr == NULL || outWeak == NULL ||
+		(inEnqueue == NULL && inEnqueueData != NULL))
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Recover the link. */
+	link = NULL;
+	if (sjme_error_is(error = sjme_alloc_getLink(addr,
+		&link)) || link == NULL)
+		return sjme_error_default(error);
+	
+	/* No weak reference here? */
+	if (link->weak == NULL)
+		return SJME_ERROR_NOT_WEAK_REFERENCE;
+	
+	/* Forward. */
+	return sjme_alloc_weakRefInternal(addr, outWeak, inEnqueue, inEnqueueData);
 }
