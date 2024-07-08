@@ -88,7 +88,7 @@ target_include_directories(squirreljme_libretro PUBLIC
 find_program(retroArchExe "retroarch")
 if(retroArchExe AND NOT libRetroIsStatic AND
 	NOT EMSCRIPTEN AND
-	NOT SQUIRRELJME_CROSS_COMPILE)
+	NOT SQUIRRELJME_IS_CROSS_COMPILE)
 	# Add target to run accordingly
 	add_custom_target(LibRetroRun
 		COMMAND "${retroArchExe}"

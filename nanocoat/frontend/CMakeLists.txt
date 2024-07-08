@@ -7,7 +7,7 @@
 # ---------------------------------------------------------------------------
 
 # SquirrelJME Java SE Emulator Front-End
-if(NOT EMSCRIPTEN AND NOT SQUIRRELJME_CROSS_COMPILE AND
+if(NOT EMSCRIPTEN AND NOT SQUIRRELJME_IS_CROSS_COMPILE AND
 	SQUIRRELJME_ENABLE_DYLIB)
 	squirreljme_include("jni.cmake")
 

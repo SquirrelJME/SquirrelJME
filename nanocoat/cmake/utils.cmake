@@ -52,7 +52,7 @@ if(NOT EXISTS "${SQUIRRELJME_UTIL_DIR}" OR
 
 	# Emscripten breaks here, so do not use it with nested CMake
 	# Also nested CMake breaks here as well
-	if(EMSCRIPTEN OR SQUIRRELJME_CROSS_COMPILE)
+	if(EMSCRIPTEN OR SQUIRRELJME_IS_CROSS_COMPILE)
 		set(cmakeUtilConfigResult 1)
 	else()
 		# Note
@@ -235,10 +235,13 @@ if(cmakeUtilBuildResult)
 		"${cmakeUtilBuildResult}...")
 
 	# Try to find a compiler
-	find_program(HOST_CC "cc")
-	if(NOT HOST_CC)
-		find_program(HOST_CC "gcc")
-	endif()
+	foreach(maybe "cc" "gcc" "clang")
+		find_program(HOST_CC "${maybe}")
+
+		if(HOST_CC)
+			break()
+		endif()
+	endforeach()
 
 	# Fallback to regular make, maybe it will work
 	execute_process(
@@ -251,6 +254,7 @@ if(cmakeUtilBuildResult)
 			"--unset=LD"
 			"--unset=LDFLAGS"
 			"make" "all"
+			"CC=${HOST_CC}"
 			"OUTPUT_DIR=${SQUIRRELJME_UTIL_DIR}"
 			"HOST_EXE_SUFFIX=${SQUIRRELJME_HOST_EXE_SUFFIX}"
 			"SQUIRRELJME_HOST_DYLIB_PREFIX=${SQUIRRELJME_HOST_DYLIB_PREFIX}"
