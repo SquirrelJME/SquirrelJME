@@ -705,6 +705,18 @@ sjme_errorCode sjme_alloc_free(
 	weak = link->weak;
 	if (weak != NULL)
 	{
+		/* Call enqueue handler. */
+		if (weak->enqueue != NULL)
+			if (sjme_error_is(error = weak->enqueue(weak,
+				weak->enqueueData, SJME_JNI_TRUE)))
+			{
+				/* Keeping a weak reference is not considered an error */
+				/* although at this point it has no effect. */
+				if (error != SJME_ERROR_ENQUEUE_KEEP_WEAK)
+					return sjme_error_default(error);
+			}
+		
+		/* Remove everything. */
 		link->weak = NULL;
 		weak->link = NULL;
 		weak->pointer = NULL;
@@ -925,6 +937,8 @@ static sjme_errorCode sjme_alloc_weakRefInternal(
 		return sjme_error_default(error);
 	
 	/* Setup link information. */
+	sjme_atomic_sjme_jint_set(&result->valid,
+		SJME_ALLOC_WEAK_VALID);
 	result->link = link;
 	result->pointer = addr;
 	result->enqueue = inEnqueue;
