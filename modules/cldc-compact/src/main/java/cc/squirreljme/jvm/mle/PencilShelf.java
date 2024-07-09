@@ -294,7 +294,6 @@ public final class PencilShelf
 	 * @param __bh The buffer height.
 	 * @param __buf The target buffer to draw to, this is cast to the correct
 	 * buffer format.
-	 * @param __offset The offset to the start of the buffer.
 	 * @param __pal The color palette, may be {@code null}. 
 	 * @param __sx Starting surface X coordinate.
 	 * @param __sy Starting surface Y coordinate.
@@ -310,7 +309,6 @@ public final class PencilShelf
 		@Range(from = 0, to = Integer.MAX_VALUE) int __bw,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __bh,
 		@NotNull Object __buf,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __offset,
 		@Nullable int[] __pal,
 		int __sx, int __sy,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __sw,

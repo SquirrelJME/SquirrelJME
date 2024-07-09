@@ -133,7 +133,7 @@ public final class SingleBuffer
 		// Create graphics to wrap it, alpha is not used for buffers!
 		return PencilGraphics.hardwareGraphics(UIPixelFormat.INT_RGB888,
 			__width, __height,
-			pixels, 0, null,
+			pixels, null,
 			0, 0, __width, __height);
 	}
 	

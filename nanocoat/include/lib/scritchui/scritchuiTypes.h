@@ -92,6 +92,15 @@ typedef struct sjme_scritchui_pencilLockState
 {
 	/** The current lock count. */
 	sjme_atomic_sjme_jint count;
+	
+	/** The front end source for drawing. */
+	sjme_frontEnd source;
+	
+	/** The base address where drawing should occur. */
+	void* base;
+	
+	/** The base of the page where locking occured, not used for drawing. */
+	void* pageBase;
 } sjme_scritchui_pencilLockState;
 
 /**

@@ -1,6 +1,6 @@
 /* ---------------------------------------------------------------------------
 // SquirrelJME
-//     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+//	 Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
@@ -43,10 +43,10 @@ static sjme_jboolean sjme_jni_abortHandler(void)
 static sjme_jboolean sjme_jni_messageHandler(sjme_lpcstr fullMessage,
 	sjme_lpcstr partMessage)
 {
-    fprintf(stderr, "%s\n", fullMessage);
-    fflush(stderr);
-    
-    return SJME_JNI_TRUE;
+	fprintf(stderr, "%s\n", fullMessage);
+	fflush(stderr);
+	
+	return SJME_JNI_TRUE;
 }
 
 static sjme_debug_handlerFunctions sjme_jni_debugHandlers =

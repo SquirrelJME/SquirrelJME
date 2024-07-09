@@ -31,7 +31,6 @@ import cc.squirreljme.runtime.lcdui.scritchui.DisplayScale;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
 import cc.squirreljme.runtime.lcdui.scritchui.ScritchLcdUiUtils;
-import java.lang.ref.WeakReference;
 import org.jetbrains.annotations.Async;
 
 /**
@@ -957,7 +956,7 @@ public abstract class Canvas
 		
 		// Setup new image with a raw buffer, if scaling is required
 		if (scale.requiresBuffer())
-			this._buffer = new Image(new int[w * h], 0, w * h, w, h,
+			this._buffer = new Image(new int[w * h], w * h, w, h,
 				true, false);
 		else
 			this._buffer = null;

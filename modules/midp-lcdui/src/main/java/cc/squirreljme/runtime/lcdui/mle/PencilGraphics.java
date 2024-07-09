@@ -926,7 +926,6 @@ public final class PencilGraphics
 	 * @param __bh The buffer height.
 	 * @param __buf The target buffer to draw to, this is cast to the correct
 	 * buffer format.
-	 * @param __offset The offset to the start of the buffer.
 	 * @param __pal The color palette, may be {@code null}. 
 	 * @param __sx Starting surface X coordinate.
 	 * @param __sy Starting surface Y coordinate.
@@ -936,13 +935,13 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	public static Graphics hardwareGraphics(int __pf, int __bw,
-		int __bh, Object __buf, int __offset, int[] __pal, int __sx, int __sy,
+		int __bh, Object __buf, int[] __pal, int __sx, int __sy,
 		int __sw, int __sh)
 		throws NullPointerException
 	{
 		return new PencilGraphics(__sw, __sh,
 			PencilShelf.hardwareGraphics(__pf, __bw, __bh, 
-				__buf, __offset, __pal, __sx, __sy, __sw, __sh));
+				__buf, __pal, __sx, __sy, __sw, __sh));
 	}
 	
 	/**

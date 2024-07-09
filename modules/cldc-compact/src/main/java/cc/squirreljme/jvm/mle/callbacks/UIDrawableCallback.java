@@ -15,7 +15,6 @@ import cc.squirreljme.jvm.mle.constants.UIKeyModifier;
 import cc.squirreljme.jvm.mle.constants.UIMouseButton;
 import cc.squirreljme.jvm.mle.constants.UIMouseEventType;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
-import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.Async;
@@ -92,7 +91,6 @@ public interface UIDrawableCallback
 	 * @param __bh The buffer height.
 	 * @param __buf The target buffer to draw to, this is cast to the correct
 	 * buffer format.
-	 * @param __offset The offset to the start of the buffer.
 	 * @param __pal The color palette, may be {@code null}.
 	 * @param __sx Starting surface X coordinate.
 	 * @param __sy Starting surface Y coordinate.
@@ -109,8 +107,7 @@ public interface UIDrawableCallback
 		@MagicConstant(valuesFromClass = UIPixelFormat.class) int __pf,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __bw,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __bh,
-		@NotNull Object __buf, int __offset,
-		@Nullable int[] __pal, int __sx, int __sy,
+		@NotNull Object __buf, @Nullable int[] __pal, int __sx, int __sy,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __sw,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __sh,
 		int __special);

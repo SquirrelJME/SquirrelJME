@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
 // SquirrelJME
-//     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+//	 Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
@@ -124,7 +124,7 @@ void* sjme_jni_recoverPointer(JNIEnv* env, sjme_lpcstr className,
 	
 	/* Get pointer object method. */
 	pointerMethod = (*env)->GetMethodID(env, baseClassy,
-	    "objectPointer", "()J");
+		"objectPointer", "()J");
 	if (pointerMethod == NULL)
 		sjme_die("No objectPointer() in instance?");
 	
@@ -338,5 +338,5 @@ sjme_errorCode sjme_jni_jstringCharSeqStatic(
 
 jlong sjme_jni_jlong(sjme_jlong value)
 {
-    return value.full;
+	return value.full;
 }

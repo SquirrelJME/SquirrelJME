@@ -11,7 +11,6 @@ package cc.squirreljme.emulator.uiform;
 
 import cc.squirreljme.jvm.mle.brackets.UIDrawableBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIDrawableCallback;
-import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import java.awt.AlphaComposite;
 import java.awt.Graphics;
@@ -142,8 +141,7 @@ class __PaintingPanel__
 		if (callback != null)
 			callback.paint(callbackItem, UIPixelFormat.INT_RGB888,
 				pW, pH, ((DataBufferInt)pixelImage.getRaster()
-					.getDataBuffer()).getData(), 0,
-					null, 0, 0, pW, pH, 0);
+					.getDataBuffer()).getData(), null, 0, 0, pW, pH, 0);
 		
 		// Draw the buffer directly onto the panel
 		__g.drawImage(pixelImage, 0, 0, pW, pH,

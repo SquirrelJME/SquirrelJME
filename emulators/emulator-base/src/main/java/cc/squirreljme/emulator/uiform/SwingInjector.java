@@ -9,7 +9,6 @@
 
 package cc.squirreljme.emulator.uiform;
 
-import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDrawableBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
@@ -86,14 +85,13 @@ public class SwingInjector
 	 */
 	@Override
 	public void paint(UIDrawableBracket __drawable, int __pf,
-		int __bw, int __bh, Object __buf, int __offset, int[] __pal, int __sx,
+		int __bw, int __bh, Object __buf, int[] __pal, int __sx,
 		int __sy, int __sw, int __sh, int __special)
 	{
 		UIFormCallback callback = SwingInjector.__drawableCallback(__drawable);
 		
 		if (callback != null)
-			callback.paint(__drawable, __pf, __bw, __bh, __buf, __offset,
-				__pal, __sx, __sy, __sw, __sh, __special);
+			callback.paint(__drawable, __pf, __bw, __bh, __buf, __pal, __sx, __sy, __sw, __sh, __special);
 	}
 	
 	/**

@@ -83,7 +83,7 @@ public class ListIconUpdate
 		int[] pixelBuffer = new int[dimension * dimension];
 		this.callback.paint(list,
 			UIPixelFormat.INT_RGB888, dimension, dimension,
-			pixelBuffer,0, null,
+			pixelBuffer, null,
 			0, 0, dimension, dimension, this.subIndex);
 		
 		// Load image from the pixels

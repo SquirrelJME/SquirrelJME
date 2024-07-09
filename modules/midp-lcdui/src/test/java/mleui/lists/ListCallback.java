@@ -71,7 +71,7 @@ public class ListCallback
 	 */
 	@Override
 	public void paint(UIDrawableBracket __drawable, int __pf,
-		int __bw, int __bh, Object __buf, int __offset, int[] __pal, int __sx,
+		int __bw, int __bh, Object __buf, int[] __pal, int __sx,
 		int __sy, int __sw, int __sh, int __special)
 	{
 		int hob = Integer.highestOneBit(Math.max(__sw, __sh));

@@ -118,7 +118,8 @@ sjme_errorCode sjme_scritchui_pencilInitBuffer(
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInPositiveNonZero sjme_jint bw,
 	sjme_attrInPositiveNonZero sjme_jint bh,
-	sjme_attrInNotNull const sjme_scritchui_pencilLockFunctions* inLockFuncs,
+	sjme_attrInNullable const sjme_scritchui_pencilLockFunctions* inLockFuncs,
+	sjme_attrInNullable const sjme_frontEnd* inLockFrontEndCopy,
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,
 	sjme_attrInPositiveNonZero sjme_jint sw,
@@ -138,7 +139,8 @@ sjme_errorCode sjme_scritchui_pencilInitBuffer(
 	
 	/* Initialize it. */
 	if (sjme_error_is(error = sjme_scritchui_pencilInitBufferStatic(
-		result, pf, bw, bh, inLockFuncs, sx, sy, sw, sh)))
+		result, pf, bw, bh, inLockFuncs, inLockFrontEndCopy,
+		sx, sy, sw, sh)))
 	{
 		/* Free before failing. */
 		sjme_alloc_free(result);
@@ -156,7 +158,8 @@ sjme_errorCode sjme_scritchui_pencilInitBufferStatic(
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInPositive sjme_jint bw,
 	sjme_attrInPositive sjme_jint bh,
-	sjme_attrInNotNull const sjme_scritchui_pencilLockFunctions* inLockFuncs,
+	sjme_attrInNullable const sjme_scritchui_pencilLockFunctions* inLockFuncs,
+	sjme_attrInNullable const sjme_frontEnd* inLockFrontEndCopy,
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,
 	sjme_attrInPositive sjme_jint sw,

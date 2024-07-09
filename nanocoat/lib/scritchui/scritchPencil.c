@@ -1161,7 +1161,8 @@ static const sjme_scritchui_pencilFunctions sjme_scritchui_core_pencil =
 sjme_errorCode sjme_scritchui_pencilInitStatic(
 	sjme_attrInOutNotNull sjme_scritchui_pencil inPencil,
 	sjme_attrInNotNull const sjme_scritchui_pencilImplFunctions* inFunctions,
-	sjme_attrInNotNull const sjme_scritchui_pencilLockFunctions* inLockFuncs,
+	sjme_attrInNullable const sjme_scritchui_pencilLockFunctions* inLockFuncs,
+	sjme_attrInNullable const sjme_frontEnd* inLockFrontEndCopy,
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInPositiveNonZero sjme_jint sw,
 	sjme_attrInPositiveNonZero sjme_jint sh,
@@ -1171,7 +1172,8 @@ sjme_errorCode sjme_scritchui_pencilInitStatic(
 {
 	sjme_scritchui_pencilBase result;
 	
-	if (inPencil == NULL || inFunctions == NULL || defaultFont == NULL)
+	if (inPencil == NULL || inFunctions == NULL || defaultFont == NULL ||
+		(inLockFrontEndCopy != NULL && inLockFuncs == NULL))
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (sw <= 0 || sh <= 0 || bw <= 0)
@@ -1183,6 +1185,11 @@ sjme_errorCode sjme_scritchui_pencilInitStatic(
 	/* These are required at the minimum. */
 	if (inFunctions->drawLine == NULL && inFunctions->drawPixel == NULL)
 		return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Locking functions which are required. */
+	if (inLockFuncs != NULL)
+		if (inLockFuncs->lock == NULL || inLockFuncs->lockRelease == NULL)
+			return SJME_ERROR_NOT_IMPLEMENTED;
 		
 	/* Setup base result. */
 	memset(&result, 0, sizeof(result));
@@ -1194,6 +1201,11 @@ sjme_errorCode sjme_scritchui_pencilInitStatic(
 	result.width = sw;
 	result.height = sh;
 	result.scanLen = bw;
+	
+	/* Copy lock front end source? */
+	if (inLockFuncs != NULL && inLockFrontEndCopy != NULL)
+		memmove(&result.lockState.source, inLockFrontEndCopy,
+			sizeof(result.lockState.source));
 	
 	/* Is there an alpha channel? */
 	result.hasAlpha = (pf == SJME_GFX_PIXEL_FORMAT_INT_ARGB8888 ||

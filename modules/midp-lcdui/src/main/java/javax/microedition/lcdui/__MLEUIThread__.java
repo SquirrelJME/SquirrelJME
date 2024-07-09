@@ -30,7 +30,6 @@ import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import cc.squirreljme.runtime.midlet.ApplicationInterface;
-import java.util.Objects;
 import org.jetbrains.annotations.Async;
 
 /**
@@ -268,7 +267,7 @@ final class __MLEUIThread__
 	 */
 	@Override
 	public void paint(UIDrawableBracket __drawable, int __pf,
-		int __bw, int __bh, Object __buf, int __offset, int[] __pal, int __sx,
+		int __bw, int __bh, Object __buf, int[] __pal, int __sx,
 		int __sy, int __sw, int __sh, int __special)
 	{
 		// Debug
@@ -310,7 +309,7 @@ final class __MLEUIThread__
 			{
 				// Try to use hardware accelerated graphics where possible
 				Graphics gfx = PencilGraphics.hardwareGraphics(__pf,
-					__bw, __bh, __buf, __offset, __pal, __sx, __sy,
+					__bw, __bh, __buf, __pal, __sx, __sy,
 					__sw, __sh);
 				
 				// Forward the paint call

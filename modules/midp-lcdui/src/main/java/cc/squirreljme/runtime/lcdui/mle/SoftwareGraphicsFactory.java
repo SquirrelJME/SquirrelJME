@@ -39,7 +39,6 @@ public final class SoftwareGraphicsFactory
 	 * @param __bh The buffer height.
 	 * @param __buf The target buffer to draw to, this is cast to the correct
 	 * buffer format.
-	 * @param __offset The offset to the start of the buffer.
 	 * @param __pal The color palette, may be {@code null}. 
 	 * @param __sx Starting surface X coordinate.
 	 * @param __sy Starting surface Y coordinate.
@@ -51,7 +50,7 @@ public final class SoftwareGraphicsFactory
 	 * @since 2020/09/25
 	 */
 	public static Graphics softwareGraphics(int __pf, int __bw,
-		int __bh, Object __buf, int __offset, int[] __pal, int __sx, int __sy,
+		int __bh, Object __buf, int[] __pal, int __sx, int __sy,
 		int __sw, int __sh)
 		throws IllegalArgumentException, NullPointerException
 	{
@@ -69,7 +68,7 @@ public final class SoftwareGraphicsFactory
 					null,
 					__sw, __sh,
 					__bw,
-					__offset,
+					0,
 					__sx, __sy);
 			
 			/* {@squirreljme.error EB3f Unsupported software pixel format.

@@ -122,7 +122,7 @@ public class SplashScreenImage
 		Graphics g = PencilGraphics.hardwareGraphics(
 			UIPixelFormat.INT_RGB888, 
 			SplashScreenImage.WIDTH, SplashScreenImage.HEIGHT,
-			image, 0, null, 0, 0,
+			image, null, 0, 0,
 			SplashScreenImage.WIDTH, SplashScreenImage.HEIGHT);
 		
 		// Load splash image onto the data

@@ -670,6 +670,7 @@ extern const sjme_scritchui_pencilBitLineFunc
  * @param bw The buffer width, this is the scanline width of the buffer.
  * @param bh The buffer height.
  * @param inLockFuncs The locking functions to use for buffer access.
+ * @param inLockFrontEndCopy Front end copy data for locks.
  * @param sx Starting surface X coordinate.
  * @param sy Starting surface Y coordinate.
  * @param sw Surface width.
@@ -684,7 +685,8 @@ sjme_errorCode sjme_scritchui_pencilInitBuffer(
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInPositiveNonZero sjme_jint bw,
 	sjme_attrInPositiveNonZero sjme_jint bh,
-	sjme_attrInNotNull const sjme_scritchui_pencilLockFunctions* inLockFuncs,
+	sjme_attrInNullable const sjme_scritchui_pencilLockFunctions* inLockFuncs,
+	sjme_attrInNullable const sjme_frontEnd* inLockFrontEndCopy,
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,
 	sjme_attrInPositiveNonZero sjme_jint sw,
@@ -698,6 +700,7 @@ sjme_errorCode sjme_scritchui_pencilInitBuffer(
  * @param bw The buffer width, this is the scanline width of the buffer.
  * @param bh The buffer height.
  * @param inLockFuncs The locking functions to use for buffer access.
+ * @param inLockFrontEndCopy Front end copy data for locks.
  * @param sx Starting surface X coordinate.
  * @param sy Starting surface Y coordinate.
  * @param sw Surface width.
@@ -711,7 +714,8 @@ sjme_errorCode sjme_scritchui_pencilInitBufferStatic(
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInPositiveNonZero sjme_jint bw,
 	sjme_attrInPositiveNonZero sjme_jint bh,
-	sjme_attrInNotNull const sjme_scritchui_pencilLockFunctions* inLockFuncs,
+	sjme_attrInNullable const sjme_scritchui_pencilLockFunctions* inLockFuncs,
+	sjme_attrInNullable const sjme_frontEnd* inLockFrontEndCopy,
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,
 	sjme_attrInPositiveNonZero sjme_jint sw,
@@ -722,6 +726,8 @@ sjme_errorCode sjme_scritchui_pencilInitBufferStatic(
  * 
  * @param inPencil The pencil to be initialized.
  * @param inFunctions The functions to set.
+ * @param inLockFuncs Functions for native locking.
+ * @param inLockFrontEndCopy Front end copy data for locks.
  * @param pf The pixel format used.
  * @param sw The surface width.
  * @param sh The surface height.
@@ -734,7 +740,8 @@ sjme_errorCode sjme_scritchui_pencilInitBufferStatic(
 sjme_errorCode sjme_scritchui_pencilInitStatic(
 	sjme_attrInOutNotNull sjme_scritchui_pencil inPencil,
 	sjme_attrInNotNull const sjme_scritchui_pencilImplFunctions* inFunctions,
-	sjme_attrInNotNull const sjme_scritchui_pencilLockFunctions* inLockFuncs,
+	sjme_attrInNullable const sjme_scritchui_pencilLockFunctions* inLockFuncs,
+	sjme_attrInNullable const sjme_frontEnd* inLockFrontEndCopy,
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInPositiveNonZero sjme_jint sw,
 	sjme_attrInPositiveNonZero sjme_jint sh,
