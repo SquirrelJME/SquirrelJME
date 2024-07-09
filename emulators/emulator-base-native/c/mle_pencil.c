@@ -254,17 +254,38 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawXRGB32Region)
 	jint trans, jint xDest, jint yDest, jint wDest, jint hDest,
 	jint origImgWidth, jint origImgHeight)
 {
+	sjme_errorCode error;
 	sjme_scritchui_pencil p;
+	jboolean isCopy;
+	jint* elem;
 	
 	/* Recover. */
 	p = sjme_jni_recoverPencil(env, g);
-	if (g == NULL || p == NULL)
+	if (g == NULL || p == NULL || data == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return;
 	}
 	
-	sjme_todo("Impl?");
+	/* Need this. */
+	isCopy = JNI_FALSE;
+	elem = (*env)->GetIntArrayElements(env, data, &isCopy);
+	if (elem == NULL)
+	{
+		sjme_jni_throwMLECallError(env,
+			SJME_ERROR_NATIVE_ARRAY_ACCESS_FAILED);
+		return;
+	}
+	
+	/* Forward. */
+	if (sjme_error_is(error = p->api->drawXRGB32Region(p,
+		elem, off, (*env)->GetArrayLength(env, data), scanLen,
+		alpha, xSrc, ySrc, wSrc, hSrc, trans,
+		xDest, yDest, 0, wDest, hDest, origImgWidth, origImgHeight)))
+		sjme_jni_throwMLECallError(env, error);
+	
+	/* Cleanup. */
+	(*env)->ReleaseIntArrayElements(env, data, elem, 0);
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareFillRect)

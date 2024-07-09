@@ -100,6 +100,32 @@ typedef enum sjme_scritchui_pencilStrokeMode
 } sjme_scritchui_pencilStrokeMode;
 
 /**
+ * Represents the color of a pixel.
+ * 
+ * @since 2024/07/09
+ */
+typedef struct sjme_scritchui_pencilColor
+{
+	/** The raw pencil color, which is placed in the buffer. */
+	sjme_jint v;
+	
+	/** Red. */
+	sjme_jubyte r;
+	
+	/** Green. */
+	sjme_jubyte g;
+	
+	/** Blue. */
+	sjme_jubyte b;
+	
+	/** Alpha. */
+	sjme_jubyte a;
+	
+	/** Indexed color. */
+	sjme_jchar i;
+} sjme_scritchui_pencilColor;
+
+/**
  * This copies one region of the image to another region.
  *
  * Copying to a display device is not permitted because it may impact how
@@ -302,6 +328,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilDrawTriangleFunc)(
  * @param g The hardware graphics to draw with.
  * @param data The source buffer.
  * @param off The offset into the buffer.
+ * @param dataLen The total length of the data buffer.
  * @param scanLen The scanline length.
  * @param alpha Drawing with the alpha channel?
  * @param xSrc The source X position.
@@ -322,8 +349,9 @@ typedef sjme_errorCode (*sjme_scritchui_pencilDrawTriangleFunc)(
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilDrawXRGB32RegionFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInNotNull int* data,
+	sjme_attrInNotNull sjme_jint* data,
 	sjme_attrInPositive sjme_jint off,
+	sjme_attrInPositive sjme_jint dataLen,
 	sjme_attrInPositive sjme_jint scanLen,
 	sjme_attrInValue sjme_jboolean alpha,
 	sjme_attrInValue sjme_jint xSrc,
@@ -400,6 +428,121 @@ typedef sjme_errorCode (*sjme_scritchui_pencilLockFunc)(
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilLockReleaseFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencil g);
+
+/**
+ * Maps a color to or from a raw color.
+ * 
+ * @param g The pencil to operate within.
+ * @param fromRaw If @c SJME_JNI_TRUE the input color is considered to be
+ * a raw pixel.
+ * @param inRgbOrRaw The input value to map.
+ * @param outColor The resultant full color set.
+ * @return Any resultant error.
+ * @since 2024/07/09
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilMapColorFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jboolean fromRaw,
+	sjme_attrInValue sjme_jint inRgbOrRaw,
+	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor);
+
+/**
+ * Maps a the number of bytes needed to represent the specified number of
+ * pixels in the raw buffer.
+ * 
+ * @param g The pencil to operate with.
+ * @param inPixel The number of pixels to map.
+ * @param outBytes The number of bytes used to represent the pixel data.
+ * @return Any resultant error.
+ * @since 2024/07/09
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilMapRawScanBytesFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInPositiveNonZero sjme_jint inPixels,
+	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outBytes);
+
+/**
+ * Maps a raw scanline from raw RGB data.
+ * 
+ * @param g The graphics to operate within.
+ * @param outRaw The output raw scan buffer.
+ * @param outRawOff Offset into the raw scan buffer.
+ * @param outRawLen Length of the raw scan buffer.
+ * @param inRgb The input RGB data.
+ * @param inRgbOff The offset into the RGB buffer.
+ * @param inRgbLen The length of the RGB buffer.
+ * @return Any resultant error, if any.
+ * @since 2024/07/09
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilMapRawScanFromRGBFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrOutNotNullBuf(rawLen) void* outRaw,
+	sjme_attrInPositive sjme_jint outRawOff,
+	sjme_attrInPositive sjme_jint outRawLen,
+	sjme_attrInNotNullBuf(rgbLen) sjme_jint* inRgb,
+	sjme_attrInPositive sjme_jint inRgbOff,
+	sjme_attrInPositive sjme_jint inRgbLen);
+
+/**
+ * Maps a raw scanline from raw RGB data.
+ * 
+ * @param g The graphics to operate within.
+ * @param outRgb The output RGB data.
+ * @param outRgbOff The offset into the RGB buffer.
+ * @param outRgbLen The length of the RGB buffer.
+ * @param inRaw The input raw scan buffer.
+ * @param inRawOff Offset into the raw scan buffer.
+ * @param inRawLen Length of the raw scan buffer.
+ * @return Any resultant error, if any.
+ * @since 2024/07/09
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilMapRGBFromRawScanFunc)(
+	sjme_attrInNotNullBuf(rgbLen) sjme_jint* outRgb,
+	sjme_attrInPositive sjme_jint outRgbOff,
+	sjme_attrInPositive sjme_jint outRgbLen,
+	sjme_attrOutNotNullBuf(rawLen) void* inRaw,
+	sjme_attrInPositive sjme_jint inRawOff,
+	sjme_attrInPositive sjme_jint inRawLen);
+
+/**
+ * Reads raw data from a single scanline at the given position. 
+ * 
+ * @param g The graphics to read from.
+ * @param inX The X coordinate to access.
+ * @param inY The Y coordinate to access.
+ * @param outData The resultant pixel data.
+ * @param inDataLen Length of the data buffer.
+ * @param inNumPixels The number of pixels to read.
+ * @return Any resultant error code.
+ * @since 2024/07/09
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilRawScanGetFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInPositive sjme_jint inX,
+	sjme_attrInPositive sjme_jint inY,
+	sjme_attrOutNotNullBuf(inLen) void* outData,
+	sjme_attrInPositiveNonZero sjme_jint inDataLen,
+	sjme_attrInPositiveNonZero sjme_jint inNumPixels);
+
+/**
+ * Writes raw data to a single scanline at the given position. 
+ * 
+ * @param g The graphics to write to.
+ * @param inX The X coordinate to access.
+ * @param inY The Y coordinate to access.
+ * @param inData The raw pixel data to write.
+ * @param inDataLen Length of the data buffer.
+ * @param inNumPixels The number of pixels to read.
+ * @return Any resultant error code.
+ * @since 2024/07/09
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilRawScanPutFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInPositive sjme_jint inX,
+	sjme_attrInPositive sjme_jint inY,
+	sjme_attrInNotNullBuf(inLen) const void* inData,
+	sjme_attrInPositiveNonZero sjme_jint inDataLen,
+	sjme_attrInPositiveNonZero sjme_jint inNumPixels);
 
 /**
  * Sets the alpha color for graphics.
@@ -544,6 +687,18 @@ typedef struct sjme_scritchui_pencilFunctions
 	/** @c FillTriangle . */
 	SJME_SCRITCHUI_QUICK_PENCIL(FillTriangle, fillTriangle);
 	
+	/** @c MapColor . */
+	SJME_SCRITCHUI_QUICK_PENCIL(MapColor, mapColor);
+	
+	/** @c MapRawScanBytes . */
+	SJME_SCRITCHUI_QUICK_PENCIL(MapRawScanBytes, mapRawScanBytes);
+	
+	/** @c MapRawScanFromRGB . */
+	SJME_SCRITCHUI_QUICK_PENCIL(MapRawScanFromRGB, mapRawScanFromRGB);
+	
+	/** @c MapRGBFromRawScan . */
+	SJME_SCRITCHUI_QUICK_PENCIL(MapRGBFromRawScan, mapRGBFromRawScan);
+	
 	/** @c SetAlphaColor . */
 	SJME_SCRITCHUI_QUICK_PENCIL(SetAlphaColor, setAlphaColor);
 	
@@ -582,6 +737,15 @@ typedef struct sjme_scritchui_pencilPrimFunctions
 	
 	/** @c DrawPixel . */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawPixel, drawPixel);
+	
+	/** @c MapColor . */
+	SJME_SCRITCHUI_QUICK_PENCIL(MapColor, mapColor);
+	
+	/** @c RawScanGet . */
+	SJME_SCRITCHUI_QUICK_PENCIL(RawScanGet, rawScanGet);
+	
+	/** @c RawScanPut . */
+	SJME_SCRITCHUI_QUICK_PENCIL(RawScanPut, rawScanPut);
 } sjme_scritchui_pencilPrimFunctions;
 
 /**
@@ -627,6 +791,15 @@ typedef struct sjme_scritchui_pencilImplFunctions
 	
 	/** @c FillTriangle . */
 	SJME_SCRITCHUI_QUICK_PENCIL(FillTriangle, fillTriangle);
+	
+	/** @c MapColor . */
+	SJME_SCRITCHUI_QUICK_PENCIL(MapColor, mapColor);
+	
+	/** @c RawScanGet . */
+	SJME_SCRITCHUI_QUICK_PENCIL(RawScanGet, rawScanGet);
+	
+	/** @c RawScanPut . */
+	SJME_SCRITCHUI_QUICK_PENCIL(RawScanPut, rawScanPut);
 	
 	/** @c SetAlphaColor . */
 	SJME_SCRITCHUI_QUICK_PENCIL(SetAlphaColor, setAlphaColor);
@@ -748,27 +921,6 @@ sjme_errorCode sjme_scritchui_pencilInitStatic(
 	sjme_attrInPositiveNonZero sjme_jint bw,
 	sjme_attrInNotNull sjme_scritchui_pencilFont defaultFont,
 	sjme_attrInNullable sjme_frontEnd* copyFrontEnd);
-
-typedef struct sjme_scritchui_pencilColor
-{
-	/** The raw pencil color, which is placed in the buffer. */
-	sjme_jint v;
-	
-	/** Red. */
-	sjme_jubyte r;
-	
-	/** Green. */
-	sjme_jubyte g;
-	
-	/** Blue. */
-	sjme_jubyte b;
-	
-	/** Alpha. */
-	sjme_jubyte a;
-	
-	/** Indexed color. */
-	sjme_jchar i;
-} sjme_scritchui_pencilColor;
 
 /**
  * Represents a single point.

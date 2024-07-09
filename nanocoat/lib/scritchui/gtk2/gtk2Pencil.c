@@ -74,32 +74,6 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilDrawPixel(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_scritchui_gtk2_pencilDrawXRGB32Region(
-	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInNotNull int* data,
-	sjme_attrInPositive sjme_jint off,
-	sjme_attrInPositive sjme_jint scanLen,
-	sjme_attrInValue sjme_jboolean alpha,
-	sjme_attrInValue sjme_jint xSrc,
-	sjme_attrInValue sjme_jint ySrc,
-	sjme_attrInPositive sjme_jint wSrc,
-	sjme_attrInPositive sjme_jint hSrc,
-	sjme_attrInValue sjme_jint trans,
-	sjme_attrInValue sjme_jint xDest,
-	sjme_attrInValue sjme_jint yDest,
-	sjme_attrInValue sjme_jint anchor,
-	sjme_attrInPositive sjme_jint wDest,
-	sjme_attrInPositive sjme_jint hDest,
-	sjme_attrInPositive sjme_jint origImgWidth,
-	sjme_attrInPositive sjme_jint origImgHeight)
-{
-	if (g == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
-}
-
 static sjme_errorCode sjme_scritchui_gtk2_pencilFillRect(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
@@ -249,7 +223,6 @@ const sjme_scritchui_pencilImplFunctions sjme_scritchui_gtk2_pencilFunctions =
 	.copyArea = sjme_scritchui_gtk2_pencilCopyArea,
 	.drawLine = sjme_scritchui_gtk2_pencilDrawLine,
 	.drawPixel = sjme_scritchui_gtk2_pencilDrawPixel,
-	.drawXRGB32Region = sjme_scritchui_gtk2_pencilDrawXRGB32Region,
 	.fillRect = sjme_scritchui_gtk2_pencilFillRect,
 	.fillTriangle = sjme_scritchui_gtk2_pencilFillTriangle,
 	.setAlphaColor = sjme_scritchui_gtk2_pencilSetAlphaColor,

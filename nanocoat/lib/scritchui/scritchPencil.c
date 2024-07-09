@@ -115,6 +115,204 @@ static sjme_errorCode sjme_scritchui_corePrim_pixelViaLine(
 	return g->impl->drawLine(g, x, y, x + 1, y);
 }
 
+static sjme_errorCode sjme_scritchui_corePrim_mapColorFromRaw(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint inRaw,
+	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor)
+{
+	if (g == NULL || outColor == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+	
+static sjme_errorCode sjme_scritchui_corePrim_mapColorFromRGB(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint argb,
+	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor)
+{
+	sjme_jint v, aa, rr, gg, bb, ii;
+	sjme_jint i, numCol, d, bestCol, bestColScore, thisColScore;
+	sjme_jint pargb, prr, pgg, pbb;
+	sjme_jint mrr, mgg, mbb;
+	const sjme_jint* colors;
+
+	if (g == NULL || outColor == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Set base color properties. */
+	aa = (argb >> 24) & 0xFF;
+	outColor->a = aa;
+	rr = (argb >> 16) & 0xFF;
+	outColor->r = rr;
+	gg = (argb >> 8) & 0xFF;
+	outColor->g = gg;
+	bb = (argb) & 0xFF;
+	outColor->b = bb;
+	
+	/* Find closest indexed color. */
+	ii = -1;
+	numCol = g->palette.numColors;
+	if (g->palette.colors != NULL && numCol > 0)
+	{
+		/* Clear alpha. */
+		d = argb & 0xFFFFFF;
+		
+		/* Determine the most important color channel. */
+		mrr = (rr >= gg && rr >= bb ? 1 : 2);
+		mgg = (gg >= rr && gg >= bb ? 1 : 2);
+		mbb = (bb >= rr && bb >= gg ? 1 : 2);
+		
+		/* Start with a horrible color score. */
+		bestCol = 0;
+		bestColScore = 134217728;
+		
+		/* Find exact color match? */
+		colors = g->palette.colors;
+		for (i = 0; i < numCol; i++)
+		{
+			/* Exact match? */
+			pargb = colors[i] & 0xFFFFFF;
+			if (d == pargb)
+			{
+				ii = i;
+				break;
+			}
+			
+			/* Get original RGB value. */
+			prr = (pargb >> 16) & 0xFF;
+			pgg = (pargb >> 8) & 0xFF;
+			pbb = (pargb) & 0xFF;
+			
+			/* Calculate this color score, use if it is better. */
+			thisColScore = (abs(prr - rr) * mrr) +
+				(abs(pgg - gg) * mgg) +
+				(abs(pbb - bb) * mbb);
+			if (thisColScore < bestColScore)
+			{
+				bestCol = i;
+				bestColScore = thisColScore;
+			}
+		}
+		
+		/* If no exact color was found, use the best scoring one. */ 
+		if (ii < 0)
+			ii = bestCol;
+	}
+	
+	/* Determine raw pixel color. */
+	switch (g->pixelFormat)
+	{
+		case SJME_GFX_PIXEL_FORMAT_INT_ARGB8888:
+			v = argb;
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_INT_RGB888:
+			v = argb & 0x00FFFFFF;
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_SHORT_ARGB4444:
+			v = (((aa >> 4) & 0xF) << 12) |
+				(((rr >> 4) & 0xF) << 8) |
+				(((gg >> 4) & 0xF) << 4) |
+				((bb >> 4) & 0xF);
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB565:
+			v = (((rr >> 3) & 0x1F) << 11) |
+				(((gg >> 2) & 0x3F) << 5) |
+				((bb >> 3) & 0x1F);
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB555:
+			v = (((rr >> 3) & 0x1F) << 10) |
+				(((gg >> 3) & 0x1F) << 5) |
+				((bb >> 3) & 0x1F);
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_SHORT_ABGR1555:
+			v = (((aa >> 7) & 0x1) << 15) |
+				(((bb >> 3) & 0x1F) << 10) |
+				(((gg >> 3) & 0x1F) << 5) |
+				((rr >> 3) & 0x1F);
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536:
+			v = ii & 0xFFFF;
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256:
+			v = ii & 0xFF;
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4:
+			v = ii & 0xF;
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2:
+			v = ii & 0x3;
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1:
+			v = ii & 0x1;
+			break;
+	}
+		
+	/* Store raw colors. */
+	outColor->i = ii;
+	outColor->v = v;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_scritchui_corePrim_mapColor(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jboolean fromRaw,
+	sjme_attrInValue sjme_jint inRgbOrRaw,
+	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor)
+{
+	if (g == NULL || outColor == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (fromRaw)
+		return sjme_scritchui_corePrim_mapColorFromRaw(g,
+			inRgbOrRaw, outColor);
+	return sjme_scritchui_corePrim_mapColorFromRGB(g,
+		inRgbOrRaw, outColor);
+}
+
+static sjme_errorCode sjme_scritchui_corePrim_rawScanGetNull(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInPositive sjme_jint inX,
+	sjme_attrInPositive sjme_jint inY,
+	sjme_attrOutNotNullBuf(inLen) void* outData,
+	sjme_attrInPositiveNonZero sjme_jint inDataLen,
+	sjme_attrInPositiveNonZero sjme_jint inNumPixels)
+{
+	if (g == NULL || outData == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Do nothing, there is no reading function. */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_scritchui_corePrim_rawScanPutSlow(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInPositive sjme_jint inX,
+	sjme_attrInPositive sjme_jint inY,
+	sjme_attrInNotNullBuf(inLen) const void* inData,
+	sjme_attrInPositiveNonZero sjme_jint inDataLen,
+	sjme_attrInPositiveNonZero sjme_jint inNumPixels)
+{
+	if (g == NULL || inData == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
 /**
  * Transforms coordinates.
  * 
@@ -711,8 +909,9 @@ fail_any:
 
 static sjme_errorCode sjme_scritchui_core_pencilDrawXRGB32Region(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInNotNull int* data,
+	sjme_attrInNotNull sjme_jint* data,
 	sjme_attrInPositive sjme_jint off,
+	sjme_attrInPositive sjme_jint dataLen,
 	sjme_attrInPositive sjme_jint scanLen,
 	sjme_attrInValue sjme_jboolean alpha,
 	sjme_attrInValue sjme_jint xSrc,
@@ -730,8 +929,51 @@ static sjme_errorCode sjme_scritchui_core_pencilDrawXRGB32Region(
 {
 	sjme_errorCode error;
 	
-	if (g == NULL)
+	if (g == NULL || data == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (wDest < 0 || hDest < 0 || wSrc < 0 || hSrc < 0 ||
+		origImgWidth < 0 || origImgHeight < 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+		
+	/* Drawing nothing? */
+	if (wDest == 0 || hDest == 0 || wSrc == 0 || hSrc == 0 ||
+		origImgWidth == 0 || origImgHeight == 0)
+		return SJME_ERROR_NONE;
+	
+	if (off < 0 || dataLen < 0 || (off + dataLen) < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Transform. */
+	sjme_scritchui_core_transform(g, &xDest, &yDest);
+	
+	/* Anchor. */
+	if (sjme_error_is(error = sjme_scritchui_core_anchor(anchor,
+		xDest, yDest, wSrc, hSrc, 0,
+		&xDest, &yDest)))
+		return sjme_error_default(error);
+		
+	/* Lock. */
+	if (sjme_error_is(error = sjme_scritchui_core_lock(g)))
+		return sjme_error_default(error);
+	
+	/* If there is native drawing, use that as it will likely be faster. */
+	if (g->impl->drawXRGB32Region != NULL)
+	{
+		/* Forward. */
+		if (sjme_error_is(error = g->impl->drawXRGB32Region(
+			g, data, off, dataLen, scanLen, alpha, xSrc, ySrc,
+			wSrc, hSrc, trans, xDest, yDest, 0, wDest, hDest,
+			origImgWidth, origImgHeight)))
+			goto fail_any;
+		
+		/* Release lock. */
+		if (sjme_error_is(error = sjme_scritchui_core_lockRelease(g)))
+			return sjme_error_default(error);
+		
+		/* Success! */
+		return SJME_ERROR_NONE;
+	}
 	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
@@ -842,16 +1084,106 @@ fail_any:
 	return sjme_error_default(error);
 }
 
+static sjme_errorCode sjme_scritchui_core_pencilMapColor(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jboolean fromRaw,
+	sjme_attrInValue sjme_jint inRgbOrRaw,
+	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor)
+{
+	if (g == NULL || outColor == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Use primitive function. */
+	return g->prim.mapColor(g, fromRaw, inRgbOrRaw, outColor);
+}
+
+static sjme_errorCode sjme_scritchui_core_pencilMapRawScanBytes(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInPositiveNonZero sjme_jint inPixels,
+	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outBytes)
+{
+	sjme_jint result;
+	
+	if (g == NULL || outBytes == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (inPixels < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Depends on the pixel format. */
+	result = -1;
+	switch (g->pixelFormat)
+	{
+		case SJME_GFX_PIXEL_FORMAT_INT_ARGB8888:
+		case SJME_GFX_PIXEL_FORMAT_INT_RGB888:
+			result = inPixels * 4;
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_SHORT_ARGB4444:
+		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB565:
+		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB555:
+		case SJME_GFX_PIXEL_FORMAT_SHORT_ABGR1555:
+		case SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536:
+			result = inPixels * 2;
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256:
+			result = inPixels;
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4:
+			result = (inPixels >> 1) + (inPixels & 1);
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2:
+			result = (inPixels >> 2) + ((inPixels >> 1) & 1);
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1:
+			result = (inPixels >> 3) + ((inPixels >> 2) & 1);
+			break;
+	}
+	
+	/* Make sure what was calculated did not overflow. */
+	if (result < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Success! */
+	*outBytes = result;
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_scritchui_core_pencilMapRawScanFromRGB(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrOutNotNullBuf(rawLen) void* outRaw,
+	sjme_attrInPositive sjme_jint outRawOff,
+	sjme_attrInPositive sjme_jint outRawLen,
+	sjme_attrInNotNullBuf(rgbLen) sjme_jint* inRgb,
+	sjme_attrInPositive sjme_jint inRgbOff,
+	sjme_attrInPositive sjme_jint inRgbLen)
+{
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+static sjme_errorCode sjme_scritchui_core_pencilMapRGBFromRawScan(
+	sjme_attrInNotNullBuf(rgbLen) sjme_jint* outRgb,
+	sjme_attrInPositive sjme_jint outRgbOff,
+	sjme_attrInPositive sjme_jint outRgbLen,
+	sjme_attrOutNotNullBuf(rawLen) void* inRaw,
+	sjme_attrInPositive sjme_jint inRawOff,
+	sjme_attrInPositive sjme_jint inRawLen)
+{
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
 static sjme_errorCode sjme_scritchui_core_pencilSetAlphaColor(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint argb)
 {
+	sjme_errorCode error;
 	sjme_scritchui_pencilColor* target;
-	sjme_jint v, aa, rr, gg, bb, ii;
-	sjme_jint i, numCol, d, bestCol, bestColScore, thisColScore;
-	sjme_jint pargb, prr, pgg, pbb;
-	sjme_jint mrr, mgg, mbb;
-	const sjme_jint* colors;
 	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -860,128 +1192,11 @@ static sjme_errorCode sjme_scritchui_core_pencilSetAlphaColor(
 	if (g->impl->setAlphaColor == NULL)
 		return SJME_ERROR_NOT_IMPLEMENTED;
 	
-	/* Set base color properties. */
+	/* Map color natively, if possible. */
 	target = &g->state.color;
-	aa = (argb >> 24) & 0xFF;
-	target->a = aa;
-	rr = (argb >> 16) & 0xFF;
-	target->r = rr;
-	gg = (argb >> 8) & 0xFF;
-	target->g = gg;
-	bb = (argb) & 0xFF;
-	target->b = bb;
-	
-	/* Find closest indexed color. */
-	ii = -1;
-	numCol = g->palette.numColors;
-	if (g->palette.colors != NULL && numCol > 0)
-	{
-		/* Clear alpha. */
-		d = argb & 0xFFFFFF;
-		
-		/* Determine the most important color channel. */
-		mrr = (rr >= gg && rr >= bb ? 1 : 2);
-		mgg = (gg >= rr && gg >= bb ? 1 : 2);
-		mbb = (bb >= rr && bb >= gg ? 1 : 2);
-		
-		/* Start with a horrible color score. */
-		bestCol = 0;
-		bestColScore = 134217728;
-		
-		/* Find exact color match? */
-		colors = g->palette.colors;
-		for (i = 0; i < numCol; i++)
-		{
-			/* Exact match? */
-			pargb = colors[i] & 0xFFFFFF;
-			if (d == pargb)
-			{
-				ii = i;
-				break;
-			}
-			
-			/* Get original RGB value. */
-			prr = (pargb >> 16) & 0xFF;
-			pgg = (pargb >> 8) & 0xFF;
-			pbb = (pargb) & 0xFF;
-			
-			/* Calculate this color score, use if it is better. */
-			thisColScore = (abs(prr - rr) * mrr) +
-				(abs(pgg - gg) * mgg) +
-				(abs(pbb - bb) * mbb);
-			if (thisColScore < bestColScore)
-			{
-				bestCol = i;
-				bestColScore = thisColScore;
-			}
-		}
-		
-		/* If no exact color was found, use the best scoring one. */ 
-		if (ii < 0)
-			ii = bestCol;
-	}
-	
-	/* Determine raw pixel color. */
-	switch (g->pixelFormat)
-	{
-		case SJME_GFX_PIXEL_FORMAT_INT_ARGB8888:
-			v = argb;
-			break;
-		
-		case SJME_GFX_PIXEL_FORMAT_INT_RGB888:
-			v = argb & 0x00FFFFFF;
-			break;
-		
-		case SJME_GFX_PIXEL_FORMAT_SHORT_ARGB4444:
-			v = (((aa >> 4) & 0xF) << 12) |
-				(((rr >> 4) & 0xF) << 8) |
-				(((gg >> 4) & 0xF) << 4) |
-				((bb >> 4) & 0xF);
-			break;
-		
-		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB565:
-			v = (((rr >> 3) & 0x1F) << 11) |
-				(((gg >> 2) & 0x3F) << 5) |
-				((bb >> 3) & 0x1F);
-			break;
-			
-		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB555:
-			v = (((rr >> 3) & 0x1F) << 10) |
-				(((gg >> 3) & 0x1F) << 5) |
-				((bb >> 3) & 0x1F);
-			break;
-			
-		case SJME_GFX_PIXEL_FORMAT_SHORT_ABGR1555:
-			v = (((aa >> 7) & 0x1) << 15) |
-				(((bb >> 3) & 0x1F) << 10) |
-				(((gg >> 3) & 0x1F) << 5) |
-				((rr >> 3) & 0x1F);
-			break;
-		
-		case SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536:
-			v = ii & 0xFFFF;
-			break;
-			
-		case SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256:
-			v = ii & 0xFF;
-			break;
-		
-		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4:
-			v = ii & 0xF;
-			break;
-		
-		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2:
-			v = ii & 0x3;
-			break;
-			
-		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1:
-			v = ii & 0x1;
-			break;
-	}
-		
-	/* Store raw colors. */
-	target->i = ii;
-	target->v = v;
+	if (sjme_error_is(error = g->prim.mapColor(g,
+		SJME_JNI_FALSE, argb, target)))
+		return sjme_error_default(error);
 	
 	/* Forward. */
 	return g->impl->setAlphaColor(g, argb);
@@ -1149,6 +1364,10 @@ static const sjme_scritchui_pencilFunctions sjme_scritchui_core_pencil =
 	.drawXRGB32Region = sjme_scritchui_core_pencilDrawXRGB32Region,
 	.fillRect = sjme_scritchui_core_pencilFillRect,
 	.fillTriangle = sjme_scritchui_core_pencilFillTriangle,
+	.mapColor = sjme_scritchui_core_pencilMapColor,
+	.mapRawScanBytes = sjme_scritchui_core_pencilMapRawScanBytes,
+	.mapRawScanFromRGB = sjme_scritchui_core_pencilMapRawScanFromRGB,
+	.mapRGBFromRawScan = sjme_scritchui_core_pencilMapRGBFromRawScan,
 	.setAlphaColor = sjme_scritchui_core_pencilSetAlphaColor,
 	.setBlendingMode = sjme_scritchui_core_pencilSetBlendingMode,
 	.setClip = sjme_scritchui_core_pencilSetClip,
@@ -1242,6 +1461,24 @@ sjme_errorCode sjme_scritchui_pencilInitStatic(
 		result.prim.drawHoriz = result.impl->drawHoriz;
 	else
 		result.prim.drawHoriz = sjme_scritchui_corePrim_horizViaLine;
+	
+	/* Raw scan get. */
+	if (result.impl->rawScanGet != NULL)
+		result.prim.rawScanGet = result.impl->rawScanGet;
+	else
+		result.prim.rawScanGet = sjme_scritchui_corePrim_rawScanGetNull;
+	
+	/* Raw scan put. */
+	if (result.impl->rawScanPut != NULL)
+		result.prim.rawScanPut = result.impl->rawScanPut;
+	else
+		result.prim.rawScanPut = sjme_scritchui_corePrim_rawScanPutSlow;
+	
+	/* Color mapping. */
+	if (result.impl->mapColor != NULL)
+		result.prim.mapColor = result.impl->mapColor;
+	else
+		result.prim.mapColor = sjme_scritchui_corePrim_mapColor;
 	
 	/* Set initial state, ignore any errors. */
 	result.api->setAlphaColor(&result, 0xFF000000);

@@ -1817,8 +1817,11 @@ typedef enum sjme_errorCode
 	/** Not a weak reference. */
 	SJME_ERROR_NOT_WEAK_REFERENCE = -64,
 	
+	/** Could not access array natively. */
+	SJME_ERROR_NATIVE_ARRAY_ACCESS_FAILED = -65,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -65
+	SJME_NUM_ERROR_CODES = -66
 } sjme_errorCode;
 
 /**
