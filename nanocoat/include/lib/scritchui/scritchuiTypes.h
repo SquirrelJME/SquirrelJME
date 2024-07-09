@@ -84,6 +84,17 @@ SJME_SCRITCHUI_LISTENER_DECLARE(size);
 SJME_SCRITCHUI_LISTENER_DECLARE(visible);
 
 /**
+ * The state of the pencil lock.
+ * 
+ * @since 2024/07/08
+ */
+typedef struct sjme_scritchui_pencilLockState
+{
+	/** The current lock count. */
+	sjme_atomic_sjme_jint count;
+} sjme_scritchui_pencilLockState;
+
+/**
  * Base pencil drawing structure.
  * 
  * @since 2024/05/04
@@ -101,6 +112,9 @@ typedef struct sjme_scritchui_pencilBase
 	
 	/** Optional locking functions, for buffer access as required. */
 	const sjme_scritchui_pencilLockFunctions* lock;
+	
+	/** The lock state. */
+	sjme_scritchui_pencilLockState lockState;
 	
 	/** Lowest level primitive pencil functions. */
 	sjme_scritchui_pencilPrimFunctions prim;

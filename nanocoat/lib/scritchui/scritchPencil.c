@@ -17,6 +17,9 @@
 static sjme_errorCode sjme_scritchui_core_lock(
 	sjme_attrInNotNull sjme_scritchui_pencil g)
 {
+	sjme_scritchui_pencilLockState* state;
+	sjme_errorCode error;
+	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
@@ -27,8 +30,13 @@ static sjme_errorCode sjme_scritchui_core_lock(
 		if (g->lock->lock == NULL || g->lock->lockRelease == NULL)
 			return SJME_ERROR_NOT_IMPLEMENTED;
 		
-		/* Forward. */
-		return g->lock->lock(g);
+		/* Restore state. */
+		state = &g->lockState;
+		
+		/* Forward if locking is needed. */
+		if (sjme_atomic_sjme_jint_getAdd(&state->count, 1) == 0)
+			if (sjme_error_is(error = g->lock->lock(g)))
+				return sjme_error_default(error);
 	}
 	
 	/* Nothing to do! */
@@ -38,6 +46,9 @@ static sjme_errorCode sjme_scritchui_core_lock(
 static sjme_errorCode sjme_scritchui_core_lockRelease(
 	sjme_attrInNotNull sjme_scritchui_pencil g)
 {
+	sjme_scritchui_pencilLockState* state;
+	sjme_errorCode error;
+	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
@@ -48,8 +59,17 @@ static sjme_errorCode sjme_scritchui_core_lockRelease(
 		if (g->lock->lock == NULL || g->lock->lockRelease == NULL)
 			return SJME_ERROR_NOT_IMPLEMENTED;
 		
-		/* Forward. */
-		return g->lock->lockRelease(g);
+		/* Restore state. */
+		state = &g->lockState;
+		
+		/* Already released? Do nothing... */
+		if (sjme_atomic_sjme_jint_get(&state->count) == 0)
+			return SJME_ERROR_NONE;
+		
+		/* Forward if release is needed. */
+		if (sjme_atomic_sjme_jint_getAdd(&state->count, -1) == 1)
+			if (sjme_error_is(error = g->lock->lockRelease(g)))
+				return sjme_error_default(error);
 	}
 	
 	/* Nothing to do! */
