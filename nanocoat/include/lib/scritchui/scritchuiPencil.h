@@ -312,7 +312,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilDrawTriangleFunc)(
  * see @c javax.microedition.lcdui.game.Sprite.
  * @param xDest The destination X position, is translated.
  * @param yDest The destination Y position, is translated.
- * @param anch The anchor point.
+ * @param anchor The anchor point.
  * @param wDest The destination width.
  * @param hDest The destination height.
  * @param origImgWidth Original image width.
@@ -333,7 +333,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilDrawXRGB32RegionFunc)(
 	sjme_attrInValue sjme_jint trans,
 	sjme_attrInValue sjme_jint xDest,
 	sjme_attrInValue sjme_jint yDest,
-	sjme_attrInValue sjme_jint anch,
+	sjme_attrInValue sjme_jint anchor,
 	sjme_attrInPositive sjme_jint wDest,
 	sjme_attrInPositive sjme_jint hDest,
 	sjme_attrInPositive sjme_jint origImgWidth,
@@ -380,6 +380,26 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFillTriangleFunc)(
 	sjme_attrInValue sjme_jint y2,
 	sjme_attrInValue sjme_jint x3,
 	sjme_attrInValue sjme_jint y3);
+
+/**
+ * Locks the pencil for drawing.
+ * 
+ * @param g The pencil to lock.
+ * @return Any resultant error, if any.
+ * @since 2024/07/08
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilLockFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g);
+
+/**
+ * Releases the pencil drawing lock.
+ * 
+ * @param g The pencil to unlock.
+ * @return Any resultant error, if any.
+ * @since 2024/07/08
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilLockReleaseFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g);
 
 /**
  * Sets the alpha color for graphics.
@@ -565,6 +585,21 @@ typedef struct sjme_scritchui_pencilPrimFunctions
 } sjme_scritchui_pencilPrimFunctions;
 
 /**
+ * Functions which are used to lock and unlock access to the backing pencil
+ * buffer, if applicable.
+ * 
+ * @since 2024/07/08
+ */
+typedef struct sjme_scritchui_pencilLockFunctions
+{
+	/** @c Lock . */
+	SJME_SCRITCHUI_QUICK_PENCIL(Lock, lock);
+	
+	/** @c LockRelease . */
+	SJME_SCRITCHUI_QUICK_PENCIL(LockRelease, lockRelease);
+} sjme_scritchui_pencilLockFunctions;
+
+/**
  * ScritchUI Pencil implementation functions, note that none of these
  * accept transformations however they may accept clipping.
  * 
@@ -634,10 +669,7 @@ extern const sjme_scritchui_pencilBitLineFunc
  * @param pf The @c sjme_gfx_pixelFormat used for the draw.
  * @param bw The buffer width, this is the scanline width of the buffer.
  * @param bh The buffer height.
- * @param buf The target buffer to draw to, this is cast to the correct
- * buffer format.
- * @param offset The offset to the start of the buffer.
- * @param pal The color palette, may be @c NULL. 
+ * @param inLockFuncs The locking functions to use for buffer access.
  * @param sx Starting surface X coordinate.
  * @param sy Starting surface Y coordinate.
  * @param sw Surface width.
@@ -652,9 +684,7 @@ sjme_errorCode sjme_scritchui_pencilInitBuffer(
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInPositiveNonZero sjme_jint bw,
 	sjme_attrInPositiveNonZero sjme_jint bh,
-	sjme_attrInNotNull void* buf,
-	sjme_attrInPositive sjme_jint offset,
-	sjme_attrInNullable const sjme_jint* pal,
+	sjme_attrInNotNull const sjme_scritchui_pencilLockFunctions* inLockFuncs,
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,
 	sjme_attrInPositiveNonZero sjme_jint sw,
@@ -667,10 +697,7 @@ sjme_errorCode sjme_scritchui_pencilInitBuffer(
  * @param pf The @c sjme_gfx_pixelFormat used for the draw.
  * @param bw The buffer width, this is the scanline width of the buffer.
  * @param bh The buffer height.
- * @param buf The target buffer to draw to, this is cast to the correct
- * buffer format.
- * @param offset The offset to the start of the buffer.
- * @param pal The color palette, may be @c NULL. 
+ * @param inLockFuncs The locking functions to use for buffer access.
  * @param sx Starting surface X coordinate.
  * @param sy Starting surface Y coordinate.
  * @param sw Surface width.
@@ -684,9 +711,7 @@ sjme_errorCode sjme_scritchui_pencilInitBufferStatic(
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInPositiveNonZero sjme_jint bw,
 	sjme_attrInPositiveNonZero sjme_jint bh,
-	sjme_attrInNotNull void* buf,
-	sjme_attrInPositive sjme_jint offset,
-	sjme_attrInNullable const sjme_jint* pal,
+	sjme_attrInNotNull const sjme_scritchui_pencilLockFunctions* inLockFuncs,
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,
 	sjme_attrInPositiveNonZero sjme_jint sw,
@@ -709,6 +734,7 @@ sjme_errorCode sjme_scritchui_pencilInitBufferStatic(
 sjme_errorCode sjme_scritchui_pencilInitStatic(
 	sjme_attrInOutNotNull sjme_scritchui_pencil inPencil,
 	sjme_attrInNotNull const sjme_scritchui_pencilImplFunctions* inFunctions,
+	sjme_attrInNotNull const sjme_scritchui_pencilLockFunctions* inLockFuncs,
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInPositiveNonZero sjme_jint sw,
 	sjme_attrInPositiveNonZero sjme_jint sh,

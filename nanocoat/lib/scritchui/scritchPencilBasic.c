@@ -118,9 +118,7 @@ sjme_errorCode sjme_scritchui_pencilInitBuffer(
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInPositiveNonZero sjme_jint bw,
 	sjme_attrInPositiveNonZero sjme_jint bh,
-	sjme_attrInNotNull void* buf,
-	sjme_attrInPositive sjme_jint offset,
-	sjme_attrInNullable const sjme_jint* pal,
+	sjme_attrInNotNull const sjme_scritchui_pencilLockFunctions* inLockFuncs,
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,
 	sjme_attrInPositiveNonZero sjme_jint sw,
@@ -140,7 +138,7 @@ sjme_errorCode sjme_scritchui_pencilInitBuffer(
 	
 	/* Initialize it. */
 	if (sjme_error_is(error = sjme_scritchui_pencilInitBufferStatic(
-		result, pf, bw, bh, buf, offset, pal, sx, sy, sw, sh)))
+		result, pf, bw, bh, inLockFuncs, sx, sy, sw, sh)))
 	{
 		/* Free before failing. */
 		sjme_alloc_free(result);
@@ -158,9 +156,7 @@ sjme_errorCode sjme_scritchui_pencilInitBufferStatic(
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInPositive sjme_jint bw,
 	sjme_attrInPositive sjme_jint bh,
-	sjme_attrInNotNull void* buf,
-	sjme_attrInPositive sjme_jint offset,
-	sjme_attrInNullable const sjme_jint* pal,
+	sjme_attrInNotNull const sjme_scritchui_pencilLockFunctions* inLockFuncs,
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,
 	sjme_attrInPositive sjme_jint sw,
@@ -168,16 +164,13 @@ sjme_errorCode sjme_scritchui_pencilInitBufferStatic(
 {
 	const sjme_scritchui_pencilImplFunctions* chosen;
 	
-	if (inOutPencil == NULL || buf == NULL)
+	if (inOutPencil == NULL || inLockFuncs == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (bw <= 0 || bh <= 0 || sx < 0 || sy < 0 || sw <= 0 || sh <= 0 ||
 		sx >= sw || sy >= sh || sx >= bw || sy >= bh ||
 		sw > bw || sh > bh || (sx + sw) > bw || (sy + sh) > bh ||
 		(sx + sw) < 0 || (sy + sh) < 0)
-		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
-	
-	if (offset < 0)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	/* Which drawing operations to use? */

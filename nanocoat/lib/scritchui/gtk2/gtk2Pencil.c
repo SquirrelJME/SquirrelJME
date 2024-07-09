@@ -87,7 +87,7 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilDrawXRGB32Region(
 	sjme_attrInValue sjme_jint trans,
 	sjme_attrInValue sjme_jint xDest,
 	sjme_attrInValue sjme_jint yDest,
-	sjme_attrInValue sjme_jint anch,
+	sjme_attrInValue sjme_jint anchor,
 	sjme_attrInPositive sjme_jint wDest,
 	sjme_attrInPositive sjme_jint hDest,
 	sjme_attrInPositive sjme_jint origImgWidth,

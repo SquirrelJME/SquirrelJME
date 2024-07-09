@@ -14,6 +14,48 @@
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/debug.h"
 
+static sjme_errorCode sjme_scritchui_core_lock(
+	sjme_attrInNotNull sjme_scritchui_pencil g)
+{
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Try locking. */
+	if (g->lock != NULL)
+	{
+		/* Not implemented? */
+		if (g->lock->lock == NULL || g->lock->lockRelease == NULL)
+			return SJME_ERROR_NOT_IMPLEMENTED;
+		
+		/* Forward. */
+		return g->lock->lock(g);
+	}
+	
+	/* Nothing to do! */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_scritchui_core_lockRelease(
+	sjme_attrInNotNull sjme_scritchui_pencil g)
+{
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Try locking. */
+	if (g->lock != NULL)
+	{
+		/* Not implemented? */
+		if (g->lock->lock == NULL || g->lock->lockRelease == NULL)
+			return SJME_ERROR_NOT_IMPLEMENTED;
+		
+		/* Forward. */
+		return g->lock->lockRelease(g);
+	}
+	
+	/* Nothing to do! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_scritchui_corePrim_lineViaPixel(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x1,
@@ -73,7 +115,7 @@ static void sjme_scritchui_core_transform(
 /**
  * Calculates the anchor position of a box on a point.
  * 
- * @param anchor 
+ * @param anchor The anchor point to use.
  * @param x The X coordinate. 
  * @param y The Y coordinate.
  * @param w The width.
@@ -137,11 +179,29 @@ static sjme_errorCode sjme_scritchui_core_pencilCopyArea(
 	sjme_attrInValue sjme_jint dy,
 	sjme_attrInValue sjme_jint anchor)
 {
+	sjme_errorCode error;
+	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+	/* Need to lock? */
+	if (sjme_error_is(error = sjme_scritchui_core_lock(g)))
+		return sjme_error_default(error);
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Release lock. */
+	if (sjme_error_is(error = sjme_scritchui_core_lockRelease(g)))
+		return sjme_error_default(error);
+	return SJME_ERROR_NOT_IMPLEMENTED;
+	
+fail_any:
+	/* Need to release the lock? */
+	if (sjme_error_is(sjme_scritchui_core_lockRelease(g)))
+		return sjme_error_default(error);
+	
+	return sjme_error_default(error);
 }
 
 static sjme_errorCode sjme_scritchui_core_pencilDrawChar(
@@ -183,11 +243,15 @@ static sjme_errorCode sjme_scritchui_core_pencilDrawChar(
 		return SJME_ERROR_NONE;
 	}
 	
+	/* Need to lock? */
+	if (sjme_error_is(error = sjme_scritchui_core_lock(g)))
+		return sjme_error_default(error);
+	
 	/* And the pixel height, since this is a bitmap font. */
 	ch = 0;
 	if (sjme_error_is(error = font->api->metricPixelSize(
 		font, &ch)))
-		return sjme_error_default(error);
+		goto fail_any;
 	
 	/** Do not bother drawing nothing. */
 	if (cw == 0 || ch == 0)
@@ -197,7 +261,7 @@ static sjme_errorCode sjme_scritchui_core_pencilDrawChar(
 	if (anchor != 0)
 		if (sjme_error_is(error = sjme_scritchui_core_anchor(anchor,
 			x, y, cw, ch, 0, &x, &y)))
-			return sjme_error_default(error);
+			goto fail_any;
 		
 	/* Determine scanline length for each bitmap row. */
 	scanLen = sjme_scritchui_pencilFontScanLen(cw);
@@ -206,7 +270,10 @@ static sjme_errorCode sjme_scritchui_core_pencilDrawChar(
 	area = sizeof(*bitmap) * (scanLen * ch);
 	bitmap = sjme_alloca(area);
 	if (bitmap == NULL)
-		return SJME_ERROR_OUT_OF_MEMORY;
+	{
+		error = SJME_ERROR_OUT_OF_MEMORY;
+		goto fail_any;
+	}
 	
 	/* Initialize. */
 	memset(bitmap, 0, area);
@@ -219,7 +286,7 @@ static sjme_errorCode sjme_scritchui_core_pencilDrawChar(
 	if (sjme_error_is(error = font->api->renderBitmap(font,
 		c, bitmap, 0, scanLen,
 		ch, &offX, &offY)))
-		return sjme_error_default(error);
+		goto fail_any;
 	
 	/* Draw bit-lines for the glyphs. */
 	for (sy = 0, dy = y + offY, v = 0; sy < ch; sy++, dy++)
@@ -230,13 +297,25 @@ static sjme_errorCode sjme_scritchui_core_pencilDrawChar(
 			
 			/* Render the bitline. */
 			if (sjme_error_is(error = bitline(g, dx, dy)))
-				return sjme_error_default(error);
+				goto fail_any;
 		}
+		
+	/* Release lock. */
+	if (sjme_error_is(error = sjme_scritchui_core_lockRelease(g)))
+		return sjme_error_default(error);
 	
 	/* Success! */
 	if (outCw != NULL)
 		*outCw = cw;
+		
 	return SJME_ERROR_NONE;
+
+fail_any:
+	/* Need to release the lock? */
+	if (sjme_error_is(sjme_scritchui_core_lockRelease(g)))
+		return sjme_error_default(error);
+	
+	return sjme_error_default(error);
 }
 
 static sjme_errorCode sjme_scritchui_core_pencilDrawChars(
@@ -248,11 +327,30 @@ static sjme_errorCode sjme_scritchui_core_pencilDrawChars(
 	sjme_attrInValue sjme_jint y,
 	sjme_attrInValue sjme_jint anchor)
 {
+	sjme_errorCode error;
+	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Need to lock? */
+	if (sjme_error_is(error = sjme_scritchui_core_lock(g)))
+		return sjme_error_default(error);
 	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Release lock. */
+	if (sjme_error_is(error = sjme_scritchui_core_lockRelease(g)))
+		return sjme_error_default(error);
+	
+	return SJME_ERROR_NOT_IMPLEMENTED;
+	
+fail_any:
+	/* Need to release the lock? */
+	if (sjme_error_is(sjme_scritchui_core_lockRelease(g)))
+		return sjme_error_default(error);
+	
+	return sjme_error_default(error);
 }
 
 static sjme_errorCode sjme_scritchui_core_pencilDrawHoriz(
@@ -261,14 +359,35 @@ static sjme_errorCode sjme_scritchui_core_pencilDrawHoriz(
 	sjme_attrInValue sjme_jint y,
 	sjme_attrInValue sjme_jint w)
 {
+	sjme_errorCode error;
+	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Need to lock? */
+	if (sjme_error_is(error = sjme_scritchui_core_lock(g)))
+		return sjme_error_default(error);
 		
 	/* Transform. */
 	sjme_scritchui_core_transform(g, &x, &y);
 	
 	/* Use primitive. */
-	return g->prim.drawHoriz(g, x, y, w);
+	if (sjme_error_is(error = g->prim.drawHoriz(g, x, y, w)))
+		goto fail_any;
+		
+	/* Release lock. */
+	if (sjme_error_is(error = sjme_scritchui_core_lockRelease(g)))
+		return sjme_error_default(error);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+	
+fail_any:
+	/* Need to release the lock? */
+	if (sjme_error_is(sjme_scritchui_core_lockRelease(g)))
+		return sjme_error_default(error);
+	
+	return sjme_error_default(error);
 }
 
 static sjme_errorCode sjme_scritchui_core_pencilDrawLine(
@@ -278,15 +397,36 @@ static sjme_errorCode sjme_scritchui_core_pencilDrawLine(
 	sjme_attrInValue sjme_jint x2,
 	sjme_attrInValue sjme_jint y2)
 {
+	sjme_errorCode error;
+	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Lock. */
+	if (sjme_error_is(error = sjme_scritchui_core_lock(g)))
+		return sjme_error_default(error);
 		
 	/* Transform. */
 	sjme_scritchui_core_transform(g, &x1, &y1);
 	sjme_scritchui_core_transform(g, &x2, &y2);
 	
 	/* Use primitive. */
-	return g->prim.drawLine(g, x1, y1, x2, y2);
+	if (sjme_error_is(error = g->prim.drawLine(g, x1, y1, x2, y2)))
+		goto fail_any;
+	
+	/* Release lock. */
+	if (sjme_error_is(error = sjme_scritchui_core_lockRelease(g)))
+		return sjme_error_default(error);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+	
+fail_any:
+	/* Need to release the lock? */
+	if (sjme_error_is(sjme_scritchui_core_lockRelease(g)))
+		return sjme_error_default(error);
+	
+	return sjme_error_default(error);
 }
 
 static sjme_errorCode sjme_scritchui_core_pencilDrawPixel(
@@ -294,6 +434,8 @@ static sjme_errorCode sjme_scritchui_core_pencilDrawPixel(
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y)
 {
+	sjme_errorCode error;
+	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
@@ -301,7 +443,22 @@ static sjme_errorCode sjme_scritchui_core_pencilDrawPixel(
 	sjme_scritchui_core_transform(g, &x, &y);
 	
 	/* Use primitive. */
-	return g->prim.drawPixel(g, x, y);
+	if (sjme_error_is(error = g->prim.drawPixel(g, x, y)))
+		goto fail_any;
+	
+	/* Release lock. */
+	if (sjme_error_is(error = sjme_scritchui_core_lockRelease(g)))
+		return sjme_error_default(error);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+	
+fail_any:
+	/* Need to release the lock? */
+	if (sjme_error_is(sjme_scritchui_core_lockRelease(g)))
+		return sjme_error_default(error);
+	
+	return sjme_error_default(error);
 }
 
 static sjme_errorCode sjme_scritchui_core_pencilDrawRect(
@@ -316,6 +473,10 @@ static sjme_errorCode sjme_scritchui_core_pencilDrawRect(
 	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Lock. */
+	if (sjme_error_is(error = sjme_scritchui_core_lock(g)))
+		return sjme_error_default(error);
 		
 	/* Transform. */
 	sjme_scritchui_core_transform(g, &x, &y);
@@ -335,8 +496,23 @@ static sjme_errorCode sjme_scritchui_core_pencilDrawRect(
 	error |= g->prim.drawLine(g, x, y, x, yh);
 	error |= g->prim.drawLine(g, xw, y, xw, yh);
 	
-	/* Success? */
-	return error;
+	/* Failed? */
+	if (sjme_error_is(error))
+		goto fail_any;
+	
+	/* Release lock. */
+	if (sjme_error_is(error = sjme_scritchui_core_lockRelease(g)))
+		return sjme_error_default(error);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+	
+fail_any:
+	/* Need to release the lock? */
+	if (sjme_error_is(sjme_scritchui_core_lockRelease(g)))
+		return sjme_error_default(error);
+	
+	return sjme_error_default(error);
 }
 
 static sjme_errorCode sjme_scritchui_core_pencilDrawSubstring(
@@ -363,6 +539,10 @@ static sjme_errorCode sjme_scritchui_core_pencilDrawSubstring(
 	font = g->state.font;
 	if (font == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
+		
+	/* Lock. */
+	if (sjme_error_is(error = sjme_scritchui_core_lock(g)))
+		return sjme_error_default(error);
 	
 	/* Need to get the height of a line. */
 	lineHeight = -1;
@@ -438,10 +618,13 @@ static sjme_errorCode sjme_scritchui_core_pencilDrawSubstring(
 		dx += cw;
 	}
 	
+	/* Release lock. */
+	if (sjme_error_is(error = sjme_scritchui_core_lockRelease(g)))
+		return sjme_error_default(error);
+	
 	/* Success! */
 	return SJME_ERROR_NONE;
 
-fail_charWidth:
 fail_drawChar:
 fail_charAt:
 fail_anchor:
@@ -449,6 +632,10 @@ fail_blockDim:
 fail_seqLen:
 fail_fontBaseline:
 fail_fontHeight:
+	/* Need to release the lock? */
+	if (sjme_error_is(sjme_scritchui_core_lockRelease(g)))
+		return sjme_error_default(error);
+	
 	return sjme_error_default(error);
 }
 
@@ -466,6 +653,10 @@ static sjme_errorCode sjme_scritchui_core_pencilDrawTriangle(
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
+	/* Lock. */
+	if (sjme_error_is(error = sjme_scritchui_core_lock(g)))
+		return sjme_error_default(error);
+		
 	/* Transform. */
 	sjme_scritchui_core_transform(g, &x1, &y1);
 	sjme_scritchui_core_transform(g, &x2, &y2);
@@ -475,12 +666,27 @@ static sjme_errorCode sjme_scritchui_core_pencilDrawTriangle(
 	error = SJME_ERROR_NONE;
 	
 	/* Draw lines via primitives. */
-	g->prim.drawLine(g, x1, y1, x2, y2);
-	g->prim.drawLine(g, x2, y2, x3, y3);
-	g->prim.drawLine(g, x3, y3, x1, y1);
+	error |= g->prim.drawLine(g, x1, y1, x2, y2);
+	error |= g->prim.drawLine(g, x2, y2, x3, y3);
+	error |= g->prim.drawLine(g, x3, y3, x1, y1);
 	
-	/* Success? */
-	return error;
+	/* Failed? */
+	if (sjme_error_is(error))
+		goto fail_any;
+	
+	/* Release lock. */
+	if (sjme_error_is(error = sjme_scritchui_core_lockRelease(g)))
+		return sjme_error_default(error);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+	
+fail_any:
+	/* Need to release the lock? */
+	if (sjme_error_is(sjme_scritchui_core_lockRelease(g)))
+		return sjme_error_default(error);
+	
+	return sjme_error_default(error);
 }
 
 static sjme_errorCode sjme_scritchui_core_pencilDrawXRGB32Region(
@@ -496,17 +702,32 @@ static sjme_errorCode sjme_scritchui_core_pencilDrawXRGB32Region(
 	sjme_attrInValue sjme_jint trans,
 	sjme_attrInValue sjme_jint xDest,
 	sjme_attrInValue sjme_jint yDest,
-	sjme_attrInValue sjme_jint anch,
+	sjme_attrInValue sjme_jint anchor,
 	sjme_attrInPositive sjme_jint wDest,
 	sjme_attrInPositive sjme_jint hDest,
 	sjme_attrInPositive sjme_jint origImgWidth,
 	sjme_attrInPositive sjme_jint origImgHeight)
 {
+	sjme_errorCode error;
+	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Release lock. */
+	if (sjme_error_is(error = sjme_scritchui_core_lockRelease(g)))
+		return sjme_error_default(error);
+		
+	return SJME_ERROR_NOT_IMPLEMENTED;
+	
+fail_any:
+	/* Need to release the lock? */
+	if (sjme_error_is(sjme_scritchui_core_lockRelease(g)))
+		return sjme_error_default(error);
+	
+	return sjme_error_default(error);
 }
 
 static sjme_errorCode sjme_scritchui_core_pencilFillRect(
@@ -522,6 +743,10 @@ static sjme_errorCode sjme_scritchui_core_pencilFillRect(
 
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Lock. */
+	if (sjme_error_is(error = sjme_scritchui_core_lock(g)))
+		return sjme_error_default(error);
 	
 	/* Transform. */
 	sjme_scritchui_core_transform(g, &x, &y);
@@ -534,7 +759,8 @@ static sjme_errorCode sjme_scritchui_core_pencilFillRect(
 	
 	/* Natively supported? */
 	if (g->impl->fillRect != NULL)
-		return g->impl->fillRect(g, x, y, w, h);
+		if (sjme_error_is(error = g->impl->fillRect(g, x, y, w, h)))
+			goto fail_any;
 	
 	/* Use primitives otherwise. */
 	error = SJME_ERROR_NONE;
@@ -542,8 +768,23 @@ static sjme_errorCode sjme_scritchui_core_pencilFillRect(
 	for (yz = y, yze = y + h; yz < yze; yz++)
 		error |= drawHoriz(g, x, yz, w);
 	
+	/* Failed? */
+	if (sjme_error_is(error))
+		goto fail_any;
+		
+	/* Release lock. */
+	if (sjme_error_is(error = sjme_scritchui_core_lockRelease(g)))
+		return sjme_error_default(error);
+	
 	/* Success? */
 	return error;
+	
+fail_any:
+	/* Need to release the lock? */
+	if (sjme_error_is(sjme_scritchui_core_lockRelease(g)))
+		return sjme_error_default(error);
+	
+	return sjme_error_default(error);
 }
 
 static sjme_errorCode sjme_scritchui_core_pencilFillTriangle(
@@ -555,11 +796,30 @@ static sjme_errorCode sjme_scritchui_core_pencilFillTriangle(
 	sjme_attrInValue sjme_jint x3,
 	sjme_attrInValue sjme_jint y3)
 {
+	sjme_errorCode error;
+	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Lock. */
+	if (sjme_error_is(error = sjme_scritchui_core_lock(g)))
+		return sjme_error_default(error);
 	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Release lock. */
+	if (sjme_error_is(error = sjme_scritchui_core_lockRelease(g)))
+		return sjme_error_default(error);
+		
+	return SJME_ERROR_NOT_IMPLEMENTED;
+	
+fail_any:
+	/* Need to release the lock? */
+	if (sjme_error_is(sjme_scritchui_core_lockRelease(g)))
+		return sjme_error_default(error);
+	
+	return sjme_error_default(error);
 }
 
 static sjme_errorCode sjme_scritchui_core_pencilSetAlphaColor(
@@ -881,6 +1141,7 @@ static const sjme_scritchui_pencilFunctions sjme_scritchui_core_pencil =
 sjme_errorCode sjme_scritchui_pencilInitStatic(
 	sjme_attrInOutNotNull sjme_scritchui_pencil inPencil,
 	sjme_attrInNotNull const sjme_scritchui_pencilImplFunctions* inFunctions,
+	sjme_attrInNotNull const sjme_scritchui_pencilLockFunctions* inLockFuncs,
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInPositiveNonZero sjme_jint sw,
 	sjme_attrInPositiveNonZero sjme_jint sh,
@@ -907,6 +1168,7 @@ sjme_errorCode sjme_scritchui_pencilInitStatic(
 	memset(&result, 0, sizeof(result));
 	result.api = &sjme_scritchui_core_pencil;
 	result.impl = inFunctions;
+	result.lock = inLockFuncs;
 	result.defaultFont = defaultFont;
 	result.pixelFormat = pf;
 	result.width = sw;

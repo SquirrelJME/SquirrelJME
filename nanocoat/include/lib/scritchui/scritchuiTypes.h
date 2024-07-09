@@ -99,6 +99,9 @@ typedef struct sjme_scritchui_pencilBase
 	/** Implementation API. */
 	const sjme_scritchui_pencilImplFunctions* impl;
 	
+	/** Optional locking functions, for buffer access as required. */
+	const sjme_scritchui_pencilLockFunctions* lock;
+	
 	/** Lowest level primitive pencil functions. */
 	sjme_scritchui_pencilPrimFunctions prim;
 	
