@@ -42,6 +42,16 @@ sjme_fixed sjme_fixed_div(
 	sjme_attrInValue sjme_fixed den);
 
 /**
+ * Floors a fixed point number, removing any fractional value.
+ * 
+ * @param v The value to floor.
+ * @return The resultant floored value.
+ * @since 2024/07/10
+ */
+sjme_fixed sjme_fixed_floor(
+	sjme_attrInValue sjme_jint v);
+
+/**
  * Calculates a fraction from two integers.
  * 
  * @param num The numerator.

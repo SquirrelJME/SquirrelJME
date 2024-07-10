@@ -15,6 +15,9 @@
 /** The number of bits in an entire fixed value. */
 #define SJME_FIXED_FULL_BITS 32
 
+/** The masked for shifted values. */
+#define SJME_FIXED_MASK 0xFFFF
+
 sjme_fixed sjme_fixed_div(
 	sjme_attrInValue sjme_fixed num,
 	sjme_attrInValue sjme_fixed den)
@@ -23,6 +26,12 @@ sjme_fixed sjme_fixed_div(
 		return 0;
 	
 	return (sjme_fixed)((((int64_t)num) << SJME_FIXED_SHIFT) / den);
+}
+
+sjme_fixed sjme_fixed_floor(
+	sjme_attrInValue sjme_jint v)
+{
+	return v & (~SJME_FIXED_MASK);
 }
 
 sjme_fixed sjme_fixed_fraction(

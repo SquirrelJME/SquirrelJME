@@ -13,6 +13,7 @@
 #include "lib/scritchui/scritchuiPencil.h"
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/debug.h"
+#include "sjme/fixed.h"
 
 static sjme_errorCode sjme_scritchui_core_lock(
 	sjme_attrInNotNull sjme_scritchui_pencil g)
@@ -995,11 +996,11 @@ static sjme_errorCode sjme_scritchui_core_pencilDrawXRGB32Region(
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencilMatrix m;
-	sjme_jint wx, zy, wxBase;
-	sjme_jint dx, dy;
+	sjme_fixed wx, zy, wxBase;
+	sjme_jint dx, dy, iwx, izy, at;
 	sjme_jint* flatRgb;
 	void* rawScan;
-	sjme_jint rawScanLen, flatRgbBytes;
+	sjme_jint rawScanBytes, flatRgbBytes;
 	
 	if (g == NULL || data == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -1065,23 +1066,23 @@ static sjme_errorCode sjme_scritchui_core_pencilDrawXRGB32Region(
 		return sjme_error_default(error);
 	
 	/* Determine how large our raw scan buffer actually is. */
-	rawScanLen = -1;
+	rawScanBytes = -1;
 	if (sjme_error_is(error = g->api->mapRawScanBytes(g,
-		m.tw, &rawScanLen)) || rawScanLen < 0)
+		m.tw, &rawScanBytes)) || rawScanBytes < 0)
 		return sjme_error_default(error);
 	
 	/* RGB buffer is this many bytes. */
 	flatRgbBytes = m.tw * sizeof(*flatRgb);
 	
 	/* Setup input and output RGB buffers. */
-	rawScan = sjme_alloca(rawScanLen);
+	rawScan = sjme_alloca(rawScanBytes);
 	flatRgb = sjme_alloca(flatRgbBytes);
 	if (rawScan == NULL || flatRgb == NULL)
 		return sjme_error_defaultOr(error,
 			SJME_ERROR_OUT_OF_MEMORY);
 	
 	/* Clear buffers. */
-	memset(rawScan, 0, rawScanLen);
+	memset(rawScan, 0, rawScanBytes);
 	memset(flatRgb, 0, flatRgbBytes); 
 	
 	/* Lock. */
@@ -1090,26 +1091,42 @@ static sjme_errorCode sjme_scritchui_core_pencilDrawXRGB32Region(
 	
 	/* Figure out the position of our base pointer. */
 	/* Matrix multiplication? Squeak? */
-	wxBase = (xSrc * m.x.wx) + (ySrc * m.x.zy);
+	wxBase = sjme_fixed_mul(sjme_fixed_hi(xSrc), m.x.wx) +
+		sjme_fixed_mul(sjme_fixed_hi(ySrc), m.x.zy);
 	wx = wxBase;
-	zy = (xSrc * m.y.wx) + (ySrc * m.y.zy);
+	zy = sjme_fixed_mul(sjme_fixed_hi(xSrc), m.y.wx) +
+		sjme_fixed_mul(sjme_fixed_hi(ySrc), m.y.zy);
 	
 	/* Scan copy, rotate, and stretch by destination scans. */
-	for (dy = 0; dy < m.th; dy++)
+	for (dy = 0; dy < m.th; dy++, wx += m.y.wx, zy += m.y.zy)
 	{
-		sjme_todo("Impl?");
+		/* Reset wx to base for start of scan. */
+		wx = wxBase;
 		
 		/* Scan in RGB line. */
-		for (dx = 0; dx < m.tw; dx++)
+		for (dx = 0; dx < m.tw; dx++, wx += m.x.wx, zy += m.x.zy)
 		{
-			sjme_todo("Impl?");
+			/* Get pixel from source buffer. */
+			iwx = sjme_fixed_int(wx);
+			izy = sjme_fixed_int(zy);
+			
+			/* Copy pixel from source? */
+			at = off + ((izy * scanLen) + iwx);
+			flatRgb[dx] = data[at];
 		}
 		
-		sjme_todo("Impl?");
+		/* Map RGB line. */
+		if (sjme_error_is(error = g->api->mapRawScanFromRGB(
+			g, rawScan, 0, rawScanBytes,
+			flatRgb, 0, m.tw)))
+			goto fail_any;
+		
+		/* Render RGB line at destination. */
+		if (sjme_error_is(error = g->prim.rawScanPut(g,
+			xDest, yDest + dy,
+			rawScan, rawScanBytes, m.tw)))
+			goto fail_any;
 	}
-	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
 	
 	/* Release lock. */
 	if (sjme_error_is(error = sjme_scritchui_core_lockRelease(g)))
