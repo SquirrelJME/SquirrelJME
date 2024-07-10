@@ -338,8 +338,7 @@ static sjme_errorCode sjme_scritchui_core_translateRotateScale(
 	sjme_attrInPositive sjme_jint hDest)
 {
 	sjme_scritchui_pencilMatrix result;
-	sjme_fixed scaleX, scaleY;
-	sjme_fixed a1, b1, c1, d1, a2, b2, c2, d2;
+	sjme_fixed scaleX, scaleY, temp;
 	sjme_jint xform;
 	
 	if (outMatrix == NULL)
@@ -388,27 +387,16 @@ static sjme_errorCode sjme_scritchui_core_translateRotateScale(
 		
 	/* Rotate 90 degrees clockwise */
 	/* Thanks to jercos for helping out with the matrix math! */
+	/* The math here has been simplified to remove constants and otherwise. */
 	if ((xform & 0b100) != 0)
 	{
-		a1 = result.x.wx;
-		b1 = result.x.zy;
-		c1 = result.y.wx;
-		d1 = result.y.zy;
+		temp = result.x.wx;
+		result.x.wx = result.x.zy;
+		result.x.zy = -temp;
 		
-		a2 = 0;
-		b2 = sjme_fixed_hi(-1);
-		c2 = sjme_fixed_hi(1);
-		d2 = 0;
-		
-		result.x.wx = sjme_fixed_mul(a1, a2) +
-			sjme_fixed_mul(b1, c2);
-		result.x.zy = sjme_fixed_mul(a1, b2) +
-			sjme_fixed_mul(b1, d2);
-		
-		result.y.wx = sjme_fixed_mul(c1, a2) +
-			sjme_fixed_mul(d1, c2);
-		result.y.zy = sjme_fixed_mul(c1, b2) +
-			sjme_fixed_mul(d1, d2);
+		temp = result.y.wx;
+		result.y.wx = result.y.zy;
+		result.y.zy = -temp;
 	}
 	
 	/* Success! */
