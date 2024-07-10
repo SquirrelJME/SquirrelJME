@@ -497,6 +497,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilMapRawScanFromRGBFunc)(
  * @since 2024/07/09
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilMapRGBFromRawScanFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNullBuf(rgbLen) sjme_jint* outRgb,
 	sjme_attrInPositive sjme_jint outRgbOff,
 	sjme_attrInPositive sjme_jint outRgbLen,

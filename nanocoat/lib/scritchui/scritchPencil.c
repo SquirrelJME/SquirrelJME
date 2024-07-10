@@ -1162,11 +1162,48 @@ static sjme_errorCode sjme_scritchui_core_pencilMapRawScanFromRGB(
 	sjme_attrInPositive sjme_jint inRgbOff,
 	sjme_attrInPositive sjme_jint inRgbLen)
 {
+	sjme_errorCode error;
+	sjme_jint byteLimit, inRgbOffRaw, inRgbLenRaw;
+	
+	if (g == NULL || outRaw == NULL || inRgb == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	inRgbOffRaw = inRgbOff * 4;
+	if (outRawOff < 0 || outRawLen < 0 || (outRawOff + outRawLen) < 0 ||
+		inRgbOff < 0 || inRgbLen < 0 || (inRgbOff + inRgbLen) < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Double check RGB count. */
+	inRgbLenRaw = -1;
+	if (sjme_error_is(error = g->api->mapRawScanBytes(g,
+		inRgbLen, &inRgbLenRaw)) || inRgbLenRaw < 0)
+		return sjme_error_default(error);
+	
+	/* Use the smaller of the two. */
+	if (inRgbLenRaw < outRawLen)
+		byteLimit = inRgbLenRaw;
+	else
+		byteLimit = outRawLen;
+	
+	/* Optimal format for direct copy? */
+	if (g->pixelFormat == SJME_GFX_PIXEL_FORMAT_INT_ARGB8888 ||
+		g->pixelFormat == SJME_GFX_PIXEL_FORMAT_INT_RGB888)
+	{
+		/* Copy over efficiently. */
+		memmove(SJME_POINTER_OFFSET(outRaw, outRawOff),
+			SJME_POINTER_OFFSET(inRgb, inRgbOffRaw),
+			byteLimit);
+		
+		/* Success! */
+		return SJME_ERROR_NONE;
+	}
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
 static sjme_errorCode sjme_scritchui_core_pencilMapRGBFromRawScan(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNullBuf(rgbLen) sjme_jint* outRgb,
 	sjme_attrInPositive sjme_jint outRgbOff,
 	sjme_attrInPositive sjme_jint outRgbLen,
@@ -1174,6 +1211,43 @@ static sjme_errorCode sjme_scritchui_core_pencilMapRGBFromRawScan(
 	sjme_attrInPositive sjme_jint inRawOff,
 	sjme_attrInPositive sjme_jint inRawLen)
 {
+	sjme_errorCode error;
+	sjme_jint byteLimit, outRgbOffRaw, outRgbLenRaw;
+	
+	if (g == NULL || outRgb == NULL || inRaw == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	outRgbOffRaw = outRgbOff * 4;
+	if (outRgbOff < 0 || outRgbLen < 0 || (outRgbOff + outRgbLen) < 0 ||
+		inRawOff < 0 || inRawLen < 0 || (inRawOff + inRawLen) < 0 ||
+		outRgbOffRaw < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+		
+	/* Double check RGB count. */
+	outRgbLenRaw = -1;
+	if (sjme_error_is(error = g->api->mapRawScanBytes(g,
+		outRgbLen, &outRgbLenRaw)) || outRgbLenRaw < 0)
+		return sjme_error_default(error);
+		
+	/* Use the smaller of the two. */
+	if (outRgbLenRaw < inRawLen)
+		byteLimit = outRgbLenRaw;
+	else
+		byteLimit = inRawLen;
+	
+	/* Optimal format for direct copy? */
+	if (g->pixelFormat == SJME_GFX_PIXEL_FORMAT_INT_ARGB8888 ||
+		g->pixelFormat == SJME_GFX_PIXEL_FORMAT_INT_RGB888)
+	{
+		/* Copy over efficiently. */
+		memmove(SJME_POINTER_OFFSET(outRgb, outRgbOffRaw),
+			SJME_POINTER_OFFSET(inRaw, inRawOff),
+			byteLimit);
+		
+		/* Success! */
+		return SJME_ERROR_NONE;
+	}
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
