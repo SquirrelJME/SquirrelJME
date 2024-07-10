@@ -325,6 +325,9 @@ static sjme_errorCode sjme_scritchui_core_translateRotateScale(
 	sjme_attrInPositive sjme_jint hDest)
 {
 	sjme_scritchui_pencilMatrix result;
+	sjme_fixed scaleX, scaleY;
+	sjme_fixed a1, b1, c1, d1, a2, b2, c2, d2;
+	sjme_jint xform;
 	
 	if (outMatrix == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -332,70 +335,68 @@ static sjme_errorCode sjme_scritchui_core_translateRotateScale(
 	/* Initialize. */
 	memset(&result, 0, sizeof(result));
 	
-	result.tw = wSrc;
-	result.th = hSrc;
-	result.y.wx = sjme_fixed_hi(-1);
-	result.x.zy = sjme_fixed_hi(-1);
+	/* Perform total image scaling first. */
+	scaleX = sjme_fixed_fraction(wSrc, wDest);
+	scaleY = sjme_fixed_fraction(hSrc, hDest);
 	
-#if 0
-	/* Perform scaling. */
-	if (wSrc != wDest && hSrc != hDest)
-		sjme_todo("Impl?");
+	/* This is simple enough to calculate, is just the destination. */
+	result.tw = wDest;
+	result.th = hDest;
 	
-	/* Identity scale. */
-	else
-	{
-		result.tw = wDest;
-		result.th = hDest;
-	}
-	
-	/* Perform initial rotation. */
+	/* Determine the transformation functions to use. There are just three */
+	/* primitive transformation functions: flip horizontally, then */
+	/* flip vertically, then rotate 90 degrees clockwise. This handles */
+	/* every transformation which fill every single bit. */
 	switch (inTrans)
 	{
-		case SJME_SCRITCHUI_TRANS_NONE:
-		case SJME_SCRITCHUI_TRANS_MIRROR:
-			break;
-			
-		case SJME_SCRITCHUI_TRANS_ROT90:
-		case SJME_SCRITCHUI_TRANS_MIRROR_ROT90:
-			sjme_todo("Impl?");
-			break;
-			
-		case SJME_SCRITCHUI_TRANS_ROT180:
-		case SJME_SCRITCHUI_TRANS_MIRROR_ROT180:
-			sjme_todo("Impl?");
-			break;
-			
-		case SJME_SCRITCHUI_TRANS_ROT270:
-		case SJME_SCRITCHUI_TRANS_MIRROR_ROT270:
-			sjme_todo("Impl?");
-			break;
-		
-		default:
-			return SJME_ERROR_INVALID_ARGUMENT;
+		/* These bits represent the stuff to do! == 0b9VH; */
+		case SJME_SCRITCHUI_TRANS_NONE:				xform = 0b000; break;
+		case SJME_SCRITCHUI_TRANS_MIRROR:			xform = 0b001; break;
+		case SJME_SCRITCHUI_TRANS_MIRROR_ROT180:	xform = 0b010; break;
+		case SJME_SCRITCHUI_TRANS_ROT180:			xform = 0b011; break;
+		case SJME_SCRITCHUI_TRANS_ROT90:			xform = 0b100; break;
+		case SJME_SCRITCHUI_TRANS_MIRROR_ROT90:		xform = 0b101; break;
+		case SJME_SCRITCHUI_TRANS_MIRROR_ROT270:	xform = 0b110; break;
+		case SJME_SCRITCHUI_TRANS_ROT270:			xform = 0b111; break;
+		/* These bits represent the stuff to do! == 0b9VH; */
 	}
 	
-	/* Perform mirroring? */
-	switch (inTrans)
+	/* Start with this. */
+	result.x.wx = scaleX;
+	result.y.zy = scaleY;
+	
+	/* Mirror horizontally? */
+	if ((xform & 0b001) != 0)
+		result.x.wx = -result.x.wx;
+		
+	/* Mirror vertically? */
+	if ((xform & 0b010) != 0)
+		result.y.zy = -result.y.zy;
+		
+	/* Rotate 90 degrees clockwise */
+	/* Thanks to jercos for helping out with the matrix math! */
+	if ((xform & 0b100) != 0)
 	{
-		case SJME_SCRITCHUI_TRANS_NONE:
-		case SJME_SCRITCHUI_TRANS_ROT90:
-		case SJME_SCRITCHUI_TRANS_ROT180:
-		case SJME_SCRITCHUI_TRANS_ROT270:
-			break;
+		a1 = result.x.wx;
+		b1 = result.x.zy;
+		c1 = result.y.wx;
+		d1 = result.y.zy;
 		
-		case SJME_SCRITCHUI_TRANS_MIRROR:
-		case SJME_SCRITCHUI_TRANS_MIRROR_ROT90:
-		case SJME_SCRITCHUI_TRANS_MIRROR_ROT180:
-		case SJME_SCRITCHUI_TRANS_MIRROR_ROT270:
-			result.x.wx = -result.x.wx;
-			result.x.zy = -result.x.zy;
-			break;
+		a2 = 0;
+		b2 = sjme_fixed_hi(-1);
+		c2 = sjme_fixed_hi(1);
+		d2 = 0;
 		
-		default:
-			return SJME_ERROR_INVALID_ARGUMENT;
+		result.x.wx = sjme_fixed_mul(a1, a2) +
+			sjme_fixed_mul(b1, c2);
+		result.x.zy = sjme_fixed_mul(a1, b2) +
+			sjme_fixed_mul(b1, d2);
+		
+		result.y.wx = sjme_fixed_mul(c1, a2) +
+			sjme_fixed_mul(d1, c2);
+		result.y.zy = sjme_fixed_mul(c1, b2) +
+			sjme_fixed_mul(d1, d2);
 	}
-#endif
 	
 	/* Success! */
 	memmove(outMatrix, &result, sizeof(result));

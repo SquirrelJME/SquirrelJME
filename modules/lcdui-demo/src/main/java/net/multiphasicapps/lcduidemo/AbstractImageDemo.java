@@ -172,6 +172,25 @@ public abstract class AbstractImageDemo
 			// Plain image drawing
 			__g.drawImage(image, 0, basey,
 				Graphics.TOP | Graphics.LEFT);
+			basey += h;
+			
+			// Big Lex
+			__g.drawRegion(image, 0, 0, w, h,
+				0, 0, basey, 0,
+				w * 2, h * 2);
+			basey += (h * 2);
+			
+			// Little Lex
+			__g.drawRegion(image, 0, 0, w, h,
+				0, 0, basey, 0,
+				w / 2, h / 2);
+			basey += h / 2;
+			
+			// Thicc Lex
+			__g.drawRegion(image, 0, 0, w, h,
+				0, 0, basey, 0,
+				w * 4, h / 2);
+			basey += h / 2;
 		}
 	}
 }
