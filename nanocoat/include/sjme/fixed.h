@@ -30,6 +30,16 @@ extern "C" {
 /*--------------------------------------------------------------------------*/
 
 /**
+ * Ceiling a fixed point number, removing any fractional value.
+ * 
+ * @param v The value to ceiling.
+ * @return The resultant ceiling value.
+ * @since 2024/07/10
+ */
+sjme_fixed sjme_fixed_ceil(
+	sjme_attrInValue sjme_jint v);
+	
+/**
  * Divides two fixed values.
  * 
  * @param num The numerator.
@@ -94,6 +104,16 @@ sjme_jint sjme_fixed_int(
 sjme_fixed sjme_fixed_mul(
 	sjme_attrInValue sjme_fixed a,
 	sjme_attrInValue sjme_fixed b);
+
+/**
+ * Rounds a fixed point number, removing any fractional value.
+ * 
+ * @param v The value to round.
+ * @return The resultant rounded value.
+ * @since 2024/07/10
+ */
+sjme_fixed sjme_fixed_round(
+	sjme_attrInValue sjme_jint v);
 
 /*--------------------------------------------------------------------------*/
 

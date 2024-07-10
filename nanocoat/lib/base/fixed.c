@@ -15,8 +15,25 @@
 /** The number of bits in an entire fixed value. */
 #define SJME_FIXED_FULL_BITS 32
 
+/** The value one. */
+#define SJME_FIXED_ONE 0x10000
+
 /** The masked for shifted values. */
 #define SJME_FIXED_MASK 0xFFFF
+
+/** The masked for rounding values. */
+#define SJME_FIXED_ROUND_MASK 0x800
+
+sjme_fixed sjme_fixed_ceil(
+	sjme_attrInValue sjme_jint v)
+{
+	sjme_fixed z;
+	
+	z = v & (~SJME_FIXED_MASK);
+	if ((v & SJME_FIXED_MASK) != 0)
+		return z + SJME_FIXED_ONE;
+	return z;
+}
 
 sjme_fixed sjme_fixed_div(
 	sjme_attrInValue sjme_fixed num,
@@ -62,4 +79,12 @@ sjme_fixed sjme_fixed_mul(
 	sjme_attrInValue sjme_fixed b)
 {
 	return (sjme_fixed)(((int64_t)a) * ((int64_t)b) >> SJME_FIXED_SHIFT);
+}
+
+sjme_fixed sjme_fixed_round(
+	sjme_attrInValue sjme_jint v)
+{
+	if (((v & SJME_FIXED_ROUND_MASK) != 0) == (v < 0))
+		return sjme_fixed_ceil(v);
+	return sjme_fixed_floor(v);
 }

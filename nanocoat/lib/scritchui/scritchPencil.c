@@ -334,8 +334,8 @@ static sjme_errorCode sjme_scritchui_core_translateRotateScale(
 	
 	result.tw = wSrc;
 	result.th = hSrc;
-	result.x.wx = sjme_fixed_hi(1);
-	result.y.zy = sjme_fixed_hi(1);
+	result.y.wx = sjme_fixed_hi(-1);
+	result.x.zy = sjme_fixed_hi(-1);
 	
 #if 0
 	/* Perform scaling. */
@@ -1001,7 +1001,7 @@ static sjme_errorCode sjme_scritchui_core_pencilDrawXRGB32Region(
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencilMatrix m;
-	sjme_fixed wx, zy, wxBase;
+	sjme_fixed wx, zy, wxBase, zyMajor;
 	sjme_jint dx, dy, iwx, izy, at;
 	sjme_jint* flatRgb;
 	void* rawScan;
@@ -1099,21 +1099,29 @@ static sjme_errorCode sjme_scritchui_core_pencilDrawXRGB32Region(
 	wxBase = sjme_fixed_mul(sjme_fixed_hi(xSrc), m.x.wx) +
 		sjme_fixed_mul(sjme_fixed_hi(ySrc), m.x.zy);
 	wx = wxBase;
-	zy = sjme_fixed_mul(sjme_fixed_hi(xSrc), m.y.wx) +
+	zyMajor = sjme_fixed_mul(sjme_fixed_hi(xSrc), m.y.wx) +
 		sjme_fixed_mul(sjme_fixed_hi(ySrc), m.y.zy);
+	zy = zyMajor;
 	
 	/* Scan copy, rotate, and stretch by destination scans. */
-	for (dy = 0; dy < m.th; dy++, wx += m.y.wx, zy += m.y.zy)
+	for (dy = 0; dy < m.th; dy++, wxBase += m.y.wx, zyMajor += m.y.zy)
 	{
 		/* Reset wx to base for start of scan. */
 		wx = wxBase;
+		zy = zyMajor;
 		
 		/* Scan in RGB line. */
 		for (dx = 0; dx < m.tw; dx++, wx += m.x.wx, zy += m.x.zy)
 		{
 			/* Get pixel from source buffer. */
-			iwx = sjme_fixed_int(wx);
-			izy = sjme_fixed_int(zy);
+			iwx = sjme_fixed_int(sjme_fixed_round(wx)) % wSrc;
+			izy = sjme_fixed_int(sjme_fixed_round(zy)) % hSrc;
+			
+			/* Keep in bounds. */
+			if (iwx < 0)
+				iwx += (wSrc - 1);
+			if (izy < 0)
+				izy += (hSrc - 1);
 			
 			/* Copy pixel from source? */
 			at = off + ((izy * scanLen) + iwx);
