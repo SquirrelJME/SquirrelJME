@@ -348,14 +348,23 @@ static sjme_errorCode sjme_scritchui_core_translateRotateScale(
 	memset(&result, 0, sizeof(result));
 	
 	/* Perform scaling. */
-	sjme_todo("Impl?");
+	if (wSrc != wDest && hSrc != hDest)
+		sjme_todo("Impl?");
+	
+	/* Identity scale. */
+	else
+	{
+		result.tw = wDest;
+		result.th = hDest;
+	}
 	
 	/* Perform initial rotation. */
 	switch (inTrans)
 	{
 		case SJME_SCRITCHUI_TRANS_NONE:
 		case SJME_SCRITCHUI_TRANS_MIRROR:
-			sjme_todo("Impl?");
+			result.x.wx = sjme_fixed_hi(1);
+			result.y.zy = sjme_fixed_hi(1);
 			break;
 			
 		case SJME_SCRITCHUI_TRANS_ROT90:
@@ -380,20 +389,26 @@ static sjme_errorCode sjme_scritchui_core_translateRotateScale(
 	/* Perform mirroring? */
 	switch (inTrans)
 	{
+		case SJME_SCRITCHUI_TRANS_NONE:
+		case SJME_SCRITCHUI_TRANS_ROT90:
+		case SJME_SCRITCHUI_TRANS_ROT180:
+		case SJME_SCRITCHUI_TRANS_ROT270:
+			break;
+		
 		case SJME_SCRITCHUI_TRANS_MIRROR:
 		case SJME_SCRITCHUI_TRANS_MIRROR_ROT90:
 		case SJME_SCRITCHUI_TRANS_MIRROR_ROT180:
 		case SJME_SCRITCHUI_TRANS_MIRROR_ROT270:
-			sjme_todo("Impl?");
+			result.x.wx = -result.x.wx;
+			result.x.zy = -result.x.zy;
 			break;
 		
 		default:
 			return SJME_ERROR_INVALID_ARGUMENT;
 	}
 	
-	sjme_todo("Impl?");
-	
 	/* Success! */
+	memmove(outMatrix, &result, sizeof(result));
 	return SJME_ERROR_NONE;
 }
 
