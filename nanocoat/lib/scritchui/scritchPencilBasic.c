@@ -30,6 +30,33 @@
 
 #include "scritchPencilTemplate.c"
 
+/* 32-bit BGRA (@c uint32_t ). */
+#define SJME_PENCIL_NAME bgra8888
+#define SJME_PENCIL_PIXEL_FORMAT SJME_GFX_PIXEL_FORMAT_INT_BGRA8888
+#define pencilPixelType sjme_jint
+#define pencilPixelBits 32
+#define pencilPixelMask 0xFFFFFFFF
+
+#include "scritchPencilTemplate.c"
+
+/* 32-bit BGRX (@c uint32_t ). */
+#define SJME_PENCIL_NAME bgrx8888
+#define SJME_PENCIL_PIXEL_FORMAT SJME_GFX_PIXEL_FORMAT_INT_BGRX8888
+#define pencilPixelType sjme_jint
+#define pencilPixelBits 32
+#define pencilPixelMask 0xFFFFFFFF
+
+#include "scritchPencilTemplate.c"
+
+/* 32-bit XBGR (@c uint32_t ). */
+#define SJME_PENCIL_NAME xbgr8888
+#define SJME_PENCIL_PIXEL_FORMAT SJME_GFX_PIXEL_FORMAT_INT_XBGR8888
+#define pencilPixelType sjme_jint
+#define pencilPixelBits 32
+#define pencilPixelMask 0xFFFFFFFF
+
+#include "scritchPencilTemplate.c"
+
 /* 16-bit RGBA4444. (@c uint16_t ) [Java ME Standard]. */
 #define SJME_PENCIL_NAME argb4444
 #define SJME_PENCIL_PIXEL_FORMAT SJME_GFX_PIXEL_FORMAT_SHORT_ARGB4444
@@ -185,6 +212,18 @@ sjme_errorCode sjme_scritchui_pencilInitBufferStatic(
 			
 		case SJME_GFX_PIXEL_FORMAT_INT_RGB888:
 			chosen = &sjme_scritchui_pencil___rgb888;
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_INT_BGRA8888:
+			chosen = &sjme_scritchui_pencil___bgra8888;
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_INT_BGRX8888:
+			chosen = &sjme_scritchui_pencil___bgrx8888;
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_INT_XBGR8888:
+			chosen = &sjme_scritchui_pencil___xbgr8888;
 			break;
 		
 		case SJME_GFX_PIXEL_FORMAT_SHORT_ARGB4444:

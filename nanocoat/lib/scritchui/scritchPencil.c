@@ -7,6 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include "sjme/util.h"
 #include <string.h>
 
 #include "lib/scritchui/scritchui.h"
@@ -207,6 +208,18 @@ static sjme_errorCode sjme_scritchui_corePrim_mapColorFromRGB(
 	{
 		case SJME_GFX_PIXEL_FORMAT_INT_ARGB8888:
 			v = argb;
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_INT_BGRA8888:
+			v = (bb << 24) | (gg << 16) | (rr << 8) | aa;
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_INT_BGRX8888:
+			v = (bb << 24) | (gg << 16) | (rr << 8);
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_INT_XBGR8888:
+			v = (bb << 16) | (gg << 8) | (rr);
 			break;
 		
 		case SJME_GFX_PIXEL_FORMAT_INT_RGB888:
@@ -1281,6 +1294,9 @@ static sjme_errorCode sjme_scritchui_core_pencilMapRawScanBytes(
 	{
 		case SJME_GFX_PIXEL_FORMAT_INT_ARGB8888:
 		case SJME_GFX_PIXEL_FORMAT_INT_RGB888:
+		case SJME_GFX_PIXEL_FORMAT_INT_BGRA8888:
+		case SJME_GFX_PIXEL_FORMAT_INT_BGRX8888:
+		case SJME_GFX_PIXEL_FORMAT_INT_XBGR8888:
 			result = inPixels * 4;
 			break;
 			
@@ -1363,6 +1379,25 @@ static sjme_errorCode sjme_scritchui_core_pencilMapRawScanFromRGB(
 		return SJME_ERROR_NONE;
 	}
 	
+	/* Simple byte swap. */
+	else if (g->pixelFormat == SJME_GFX_PIXEL_FORMAT_INT_BGRA8888 ||
+		g->pixelFormat == SJME_GFX_PIXEL_FORMAT_INT_BGRX8888)
+	{
+		return sjme_swap_uint_memmove(
+			SJME_POINTER_OFFSET(outRaw, outRawOff),
+			SJME_POINTER_OFFSET(inRgb, inRgbOffRaw),
+			byteLimit);
+	}
+	
+	/* Shift up by 8. */
+	else if (g->pixelFormat == SJME_GFX_PIXEL_FORMAT_INT_XBGR8888)
+	{
+		return sjme_swap_shu8_uint_memmove(
+			SJME_POINTER_OFFSET(outRaw, outRawOff),
+			SJME_POINTER_OFFSET(inRgb, inRgbOffRaw),
+			byteLimit);
+	}
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
@@ -1411,6 +1446,16 @@ static sjme_errorCode sjme_scritchui_core_pencilMapRGBFromRawScan(
 		
 		/* Success! */
 		return SJME_ERROR_NONE;
+	}
+	
+	/* Simple byte swap. */
+	else if (g->pixelFormat == SJME_GFX_PIXEL_FORMAT_INT_BGRA8888 ||
+		g->pixelFormat == SJME_GFX_PIXEL_FORMAT_INT_BGRX8888)
+	{
+		return sjme_swap_uint_memmove(
+			SJME_POINTER_OFFSET(outRgb, outRgbOffRaw),
+			SJME_POINTER_OFFSET(inRaw, inRawOff),
+			byteLimit);
 	}
 	
 	sjme_todo("Impl?");
@@ -1671,7 +1716,8 @@ sjme_errorCode sjme_scritchui_pencilInitStatic(
 	/* Is there an alpha channel? */
 	result.hasAlpha = (pf == SJME_GFX_PIXEL_FORMAT_INT_ARGB8888 ||
 		pf == SJME_GFX_PIXEL_FORMAT_SHORT_ARGB4444 ||
-		pf == SJME_GFX_PIXEL_FORMAT_SHORT_ABGR1555 ? SJME_JNI_TRUE :
+		pf == SJME_GFX_PIXEL_FORMAT_SHORT_ABGR1555 ||
+		pf == SJME_GFX_PIXEL_FORMAT_INT_BGRA8888 ? SJME_JNI_TRUE :
 		SJME_JNI_FALSE);
 	
 	/* Copy in front end? */

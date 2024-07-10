@@ -60,7 +60,19 @@ public interface UIPixelFormat
 	byte PACKED_INDEXED1 =
 		10;
 	
+	/** 32-bit BGRA ({@code int}). */
+	byte INT_BGRA8888 =
+		11;
+	
+	/** 32-bit BGRX ({@code int}). */
+	byte INT_BGRX8888 =
+		12;
+	
+	/** 32-bit XBGR ({@code int}). */
+	byte INT_XBGR8888 =
+		13;
+	
 	/** The number of pixel formats. */
 	byte NUM_PIXEL_FORMATS =
-		11;
+		14;
 }

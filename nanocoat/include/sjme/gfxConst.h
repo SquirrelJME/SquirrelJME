@@ -67,8 +67,17 @@ typedef enum sjme_gfx_pixelFormat
 	/** Packed 2 colors (1-bit). (packed @c uint8_t ) */
 	SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1 = 10,
 	
+	/** 32-bit BGRA ({@code int}). */
+	SJME_GFX_PIXEL_FORMAT_INT_BGRA8888 = 11,
+	
+	/** 32-bit BGRX ({@code int}). */
+	SJME_GFX_PIXEL_FORMAT_INT_BGRX8888 = 12,
+	
+	/** 32-bit RGBX ({@code int}). */
+	SJME_GFX_PIXEL_FORMAT_INT_XBGR8888 = 13,
+	
 	/** The number of pixel formats. */
-	SJME_NUM_GFX_PIXEL_FORMATS = 11
+	SJME_NUM_GFX_PIXEL_FORMATS = 14
 } sjme_gfx_pixelFormat;
 
 /*--------------------------------------------------------------------------*/

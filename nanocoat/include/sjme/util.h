@@ -311,6 +311,35 @@ static sjme_inline sjme_attrArtificial sjme_jshort sjme_swap_short(
 }
 
 /**
+ * Performs @c memmove() followed by shifting up by 8 the destination buffer,
+ * then following a byte swap.
+ * 
+ * @param dest The destination.
+ * @param src The source.
+ * @param n The number of bytes to copy.
+ * @return Any resultant error, if any.
+ * @since 2024/07/10
+ */
+sjme_errorCode sjme_swap_shu8_uint_memmove(
+	sjme_attrInNotNull void* dest,
+	sjme_attrInNotNull void* src,
+	sjme_attrInPositiveNonZero sjme_jint n);
+	
+/**
+ * Performs @c memmove() followed by swapping the destination buffer.
+ * 
+ * @param dest The destination.
+ * @param src The source.
+ * @param n The number of bytes to copy.
+ * @return Any resultant error, if any.
+ * @since 2024/07/10
+ */
+sjme_errorCode sjme_swap_uint_memmove(
+	sjme_attrInNotNull void* dest,
+	sjme_attrInNotNull void* src,
+	sjme_attrInPositiveNonZero sjme_jint n);
+
+/**
  * Locates an item within a tree.
  * 
  * @param tree The tree to search in.

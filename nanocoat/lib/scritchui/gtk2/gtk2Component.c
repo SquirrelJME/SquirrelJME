@@ -291,7 +291,11 @@ static gboolean sjme_scritchui_gtk2_eventExpose(
 	if (sjme_error_is(sjme_scritchui_pencilInitStatic(&pencil,
 		&sjme_scritchui_gtk2_pencilFunctions,
 		NULL, NULL,
-		SJME_GFX_PIXEL_FORMAT_INT_RGB888,
+#if defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)
+		SJME_GFX_PIXEL_FORMAT_INT_XBGR8888,
+#else
+		SJME_GFX_PIXEL_FORMAT_INT_XBGR8888,
+#endif
 		w, h, w, defaultFont, &frontEnd)))
 		return FALSE;
 	
