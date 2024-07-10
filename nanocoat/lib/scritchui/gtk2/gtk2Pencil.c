@@ -115,6 +115,34 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilFillTriangle(
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
+static sjme_errorCode sjme_scritchui_gtk2_pencilRawScanPut(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInPositive sjme_jint inX,
+	sjme_attrInPositive sjme_jint inY,
+	sjme_attrInNotNullBuf(inLen) const void* inData,
+	sjme_attrInPositiveNonZero sjme_jint inDataLen,
+	sjme_attrInPositiveNonZero sjme_jint inNumPixels)
+{
+	GdkDrawable* drawable;
+	GdkGC* gc;
+	
+	if (g == NULL || inData == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover context. */
+	drawable = (GdkDrawable*)g->frontEnd.wrapper;
+	gc = (GdkGC*)g->frontEnd.data;
+	
+	/* Just draw it like if it were an image. */
+	gdk_draw_rgb_32_image(drawable, gc,
+		inX, inY, inNumPixels, 1,
+		GDK_RGB_DITHER_NONE,
+		inData, inDataLen);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_scritchui_gtk2_pencilSetAlphaColor(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint argb)
@@ -225,6 +253,7 @@ const sjme_scritchui_pencilImplFunctions sjme_scritchui_gtk2_pencilFunctions =
 	.drawPixel = sjme_scritchui_gtk2_pencilDrawPixel,
 	.fillRect = sjme_scritchui_gtk2_pencilFillRect,
 	.fillTriangle = sjme_scritchui_gtk2_pencilFillTriangle,
+	.rawScanPut = sjme_scritchui_gtk2_pencilRawScanPut,
 	.setAlphaColor = sjme_scritchui_gtk2_pencilSetAlphaColor,
 	.setBlendingMode = sjme_scritchui_gtk2_pencilSetBlendingMode,
 	.setClip = sjme_scritchui_gtk2_pencilSetClip,

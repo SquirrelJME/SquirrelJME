@@ -141,10 +141,10 @@ typedef enum sjme_scritchui_pencilStrokeMode
  */
 typedef struct sjme_scritchui_pencilMatrixSub
 {
-	/** Step for X coordinates. */
+	/** Step for source X coordinate. */
 	sjme_fixed wx;
 	
-	/** Step for Y coordinates. */
+	/** Step for source Y coordinate. */
 	sjme_fixed zy;
 } sjme_scritchui_pencilMatrixSub;
 

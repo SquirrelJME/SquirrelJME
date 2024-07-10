@@ -299,21 +299,6 @@ static sjme_errorCode sjme_scritchui_corePrim_rawScanGetNull(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_scritchui_corePrim_rawScanPutSlow(
-	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInPositive sjme_jint inX,
-	sjme_attrInPositive sjme_jint inY,
-	sjme_attrInNotNullBuf(inLen) const void* inData,
-	sjme_attrInPositiveNonZero sjme_jint inDataLen,
-	sjme_attrInPositiveNonZero sjme_jint inNumPixels)
-{
-	if (g == NULL || inData == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
-}
-
 /**
  * Transforms coordinates.
  * 
@@ -347,6 +332,12 @@ static sjme_errorCode sjme_scritchui_core_translateRotateScale(
 	/* Initialize. */
 	memset(&result, 0, sizeof(result));
 	
+	result.tw = wSrc;
+	result.th = hSrc;
+	result.x.wx = sjme_fixed_hi(1);
+	result.y.zy = sjme_fixed_hi(1);
+	
+#if 0
 	/* Perform scaling. */
 	if (wSrc != wDest && hSrc != hDest)
 		sjme_todo("Impl?");
@@ -363,8 +354,6 @@ static sjme_errorCode sjme_scritchui_core_translateRotateScale(
 	{
 		case SJME_SCRITCHUI_TRANS_NONE:
 		case SJME_SCRITCHUI_TRANS_MIRROR:
-			result.x.wx = sjme_fixed_hi(1);
-			result.y.zy = sjme_fixed_hi(1);
 			break;
 			
 		case SJME_SCRITCHUI_TRANS_ROT90:
@@ -406,6 +395,7 @@ static sjme_errorCode sjme_scritchui_core_translateRotateScale(
 		default:
 			return SJME_ERROR_INVALID_ARGUMENT;
 	}
+#endif
 	
 	/* Success! */
 	memmove(outMatrix, &result, sizeof(result));
@@ -1147,7 +1137,8 @@ static sjme_errorCode sjme_scritchui_core_pencilDrawXRGB32Region(
 	if (sjme_error_is(error = sjme_scritchui_core_lockRelease(g)))
 		return sjme_error_default(error);
 		
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Success! */
+	return SJME_ERROR_NONE;
 	
 fail_any:
 	/* Need to release the lock? */
@@ -1644,6 +1635,9 @@ sjme_errorCode sjme_scritchui_pencilInitStatic(
 	if (inFunctions->drawLine == NULL && inFunctions->drawPixel == NULL)
 		return SJME_ERROR_NOT_IMPLEMENTED;
 	
+	if (inFunctions->rawScanPut == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
+	
 	/* Locking functions which are required. */
 	if (inLockFuncs != NULL)
 		if (inLockFuncs->lock == NULL || inLockFuncs->lockRelease == NULL)
@@ -1707,11 +1701,8 @@ sjme_errorCode sjme_scritchui_pencilInitStatic(
 	else
 		result.prim.rawScanGet = sjme_scritchui_corePrim_rawScanGetNull;
 	
-	/* Raw scan put. */
-	if (result.impl->rawScanPut != NULL)
-		result.prim.rawScanPut = result.impl->rawScanPut;
-	else
-		result.prim.rawScanPut = sjme_scritchui_corePrim_rawScanPutSlow;
+	/* Raw scan put, must be implemented always. */
+	result.prim.rawScanPut = result.impl->rawScanPut;
 	
 	/* Color mapping. */
 	if (result.impl->mapColor != NULL)
