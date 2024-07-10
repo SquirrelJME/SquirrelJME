@@ -39,7 +39,7 @@
 #define FORWARD_DESC_hardwareDrawXRGB32Region "(" \
 	DESC_PENCIL DESC_ARRAY(DESC_INT) DESC_INT DESC_INT DESC_BOOLEAN \
 	DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT \
-	DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT ")" DESC_VOID
+	DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT ")" DESC_VOID
 #define FORWARD_DESC_hardwareFillRect "(" \
 	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT ")" DESC_VOID
 #define FORWARD_DESC_hardwareFillTriangle "(" \
@@ -251,7 +251,7 @@ fail_makeSeq:
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawXRGB32Region)
 	(JNIEnv* env, jclass classy, jobject g, jintArray data, jint off,
 	jint scanLen, jboolean alpha, jint xSrc, jint ySrc, jint wSrc, jint hSrc,
-	jint trans, jint xDest, jint yDest, jint wDest, jint hDest,
+	jint trans, jint xDest, jint yDest, jint anchor, jint wDest, jint hDest,
 	jint origImgWidth, jint origImgHeight)
 {
 	sjme_errorCode error;
@@ -281,7 +281,8 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawXRGB32Region)
 	if (sjme_error_is(error = p->api->drawXRGB32Region(p,
 		elem, off, (*env)->GetArrayLength(env, data), scanLen,
 		alpha, xSrc, ySrc, wSrc, hSrc, trans,
-		xDest, yDest, 0, wDest, hDest, origImgWidth, origImgHeight)))
+		xDest, yDest, anchor, wDest, hDest,
+		origImgWidth, origImgHeight)))
 		sjme_jni_throwMLECallError(env, error);
 	
 	/* Cleanup. */

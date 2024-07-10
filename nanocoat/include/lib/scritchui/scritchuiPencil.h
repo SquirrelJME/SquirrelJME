@@ -66,6 +66,41 @@ typedef enum sjme_scritchui_pencilAnchor
 	SJME_SCRITCHUI_ANCHOR_BOTTOM | SJME_SCRITCHUI_ANCHOR_BASELINE))
 
 /**
+ * Translations which may be performed on images.
+ * 
+ * @since 2024/07/09
+ */
+typedef enum sjme_scritchui_pencilTranslate
+{
+	/** None. */
+	SJME_SCRITCHUI_TRANS_NONE = 0,
+	
+	/** Mirror and rotate 180 degrees. */
+	SJME_SCRITCHUI_TRANS_MIRROR_ROT180 = 1,
+	
+	/** Mirror. */
+	SJME_SCRITCHUI_TRANS_MIRROR = 2,
+	
+	/** Rotate 180 degrees. */
+	SJME_SCRITCHUI_TRANS_ROT180 = 3,
+	
+	/** Mirror and rotate 270 degrees. */ 
+	SJME_SCRITCHUI_TRANS_MIRROR_ROT270 = 4,
+	
+	/** Rotate 90 degrees. */
+	SJME_SCRITCHUI_TRANS_ROT90 = 5,
+	
+	/** Rotate 270 degrees. */
+	SJME_SCRITCHUI_TRANS_ROT270 = 6,
+	
+	/** Mirror and rotate 90 degrees. */
+	SJME_SCRITCHUI_TRANS_MIRROR_ROT90 = 7,
+	
+	/** The number of translations available. */
+	SJME_SCRITCHUI_NUM_TRANS = 8,
+} sjme_scritchui_pencilTranslate;
+
+/**
  * The blending mode for a pencil.
  * 
  * @since 2024/05/06
@@ -98,6 +133,40 @@ typedef enum sjme_scritchui_pencilStrokeMode
 	/** The number of stroke modes. */
 	SJME_NUM_SCRITCHUI_PENCIL_STROKES
 } sjme_scritchui_pencilStrokeMode;
+
+/**
+ * Pencil drawing sub-translation matrix.
+ * 
+ * @since 2024/07/09
+ */
+typedef struct sjme_scritchui_pencilMatrixSub
+{
+	/** Step for X coordinates. */
+	sjme_fixed wx;
+	
+	/** Step for Y coordinates. */
+	sjme_fixed zy;
+} sjme_scritchui_pencilMatrixSub;
+
+/**
+ * Pencil drawing matrix, for any translations, rotations, and mirroring.
+ * 
+ * @since 2024/07/09
+ */
+typedef struct sjme_scritchui_pencilMatrix
+{
+	/** Translation for input X coordinates. */
+	sjme_scritchui_pencilMatrixSub x;
+	
+	/** Translation for input Y coordinates. */
+	sjme_scritchui_pencilMatrixSub y;
+	
+	/** Target width after transformations. */
+	sjme_jint tw;
+	
+	/** Target width after transformations. */
+	sjme_jint th;
+} sjme_scritchui_pencilMatrix;
 
 /**
  * Represents the color of a pixel.

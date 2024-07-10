@@ -225,7 +225,7 @@ public final class PencilShelf
 	 * {@code javax.microedition.lcdui.game.Sprite}.
 	 * @param __xDest The destination X position, is translated.
 	 * @param __yDest The destination Y position, is translated.
-	 * @param __anch The anchor point.
+	 * @param __anchor The anchor point.
 	 * @param __wDest The destination width.
 	 * @param __hDest The destination height.
 	 * @param __origImgWidth Original image width.
@@ -241,7 +241,7 @@ public final class PencilShelf
 		boolean __alpha, int __xSrc, int __ySrc,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __wSrc,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __hSrc,
-		int __trans, int __xDest, int __yDest, int __anch,
+		int __trans, int __xDest, int __yDest, int __anchor,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __wDest,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __hDest,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __origImgWidth,

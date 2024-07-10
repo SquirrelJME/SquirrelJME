@@ -332,7 +332,7 @@ public abstract class Graphics
 		int __xsrc, int __ysrc,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __wsrc,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __hsrc,
-		@MagicConstant(valuesFromClass = Graphics.class) int __trans,
+		@MagicConstant(valuesFromClass = Sprite.class) int __trans,
 		int __xdest, int __ydest,
 		@MagicConstant(valuesFromClass = Graphics.class) int __anch)
 		throws IllegalArgumentException, NullPointerException;
@@ -363,7 +363,7 @@ public abstract class Graphics
 		int __xsrc, int __ysrc,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __wsrc,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __hsrc,
-		@MagicConstant(valuesFromClass = Graphics.class) int __trans,
+		@MagicConstant(valuesFromClass = Sprite.class) int __trans,
 		int __xdest, int __ydest,
 		@MagicConstant(valuesFromClass = Graphics.class) int __anch,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __wdest,

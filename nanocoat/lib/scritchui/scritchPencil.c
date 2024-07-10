@@ -330,6 +330,72 @@ static void sjme_scritchui_core_transform(
 	(*y) += g->state.translate.y;
 }
 
+static sjme_errorCode sjme_scritchui_core_translateRotateScale(
+	sjme_attrOutNotNull sjme_scritchui_pencilMatrix* outMatrix,
+	sjme_attrInValue sjme_scritchui_pencilTranslate inTrans,
+	sjme_attrInPositive sjme_jint wSrc,
+	sjme_attrInPositive sjme_jint hSrc,
+	sjme_attrInPositive sjme_jint wDest,
+	sjme_attrInPositive sjme_jint hDest)
+{
+	sjme_scritchui_pencilMatrix result;
+	
+	if (outMatrix == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Initialize. */
+	memset(&result, 0, sizeof(result));
+	
+	/* Perform scaling. */
+	sjme_todo("Impl?");
+	
+	/* Perform initial rotation. */
+	switch (inTrans)
+	{
+		case SJME_SCRITCHUI_TRANS_NONE:
+		case SJME_SCRITCHUI_TRANS_MIRROR:
+			sjme_todo("Impl?");
+			break;
+			
+		case SJME_SCRITCHUI_TRANS_ROT90:
+		case SJME_SCRITCHUI_TRANS_MIRROR_ROT90:
+			sjme_todo("Impl?");
+			break;
+			
+		case SJME_SCRITCHUI_TRANS_ROT180:
+		case SJME_SCRITCHUI_TRANS_MIRROR_ROT180:
+			sjme_todo("Impl?");
+			break;
+			
+		case SJME_SCRITCHUI_TRANS_ROT270:
+		case SJME_SCRITCHUI_TRANS_MIRROR_ROT270:
+			sjme_todo("Impl?");
+			break;
+		
+		default:
+			return SJME_ERROR_INVALID_ARGUMENT;
+	}
+	
+	/* Perform mirroring? */
+	switch (inTrans)
+	{
+		case SJME_SCRITCHUI_TRANS_MIRROR:
+		case SJME_SCRITCHUI_TRANS_MIRROR_ROT90:
+		case SJME_SCRITCHUI_TRANS_MIRROR_ROT180:
+		case SJME_SCRITCHUI_TRANS_MIRROR_ROT270:
+			sjme_todo("Impl?");
+			break;
+		
+		default:
+			return SJME_ERROR_INVALID_ARGUMENT;
+	}
+	
+	sjme_todo("Impl?");
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 /**
  * Calculates the anchor position of a box on a point.
  * 
@@ -928,39 +994,43 @@ static sjme_errorCode sjme_scritchui_core_pencilDrawXRGB32Region(
 	sjme_attrInPositive sjme_jint origImgHeight)
 {
 	sjme_errorCode error;
+	sjme_scritchui_pencilMatrix m;
 	
 	if (g == NULL || data == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	if (wDest < 0 || hDest < 0 || wSrc < 0 || hSrc < 0 ||
+	/* The source rectangle must always be in bounds. */
+	if (xSrc < 0 || ySrc < 0 || wSrc <= 0 || hSrc <= 0 ||
+		(xSrc + wSrc) > origImgWidth || (ySrc + hSrc) > origImgHeight ||
+		(xSrc + wSrc) < 0 || (ySrc + hSrc) < 0 ||
 		origImgWidth < 0 || origImgHeight < 0)
-		return SJME_ERROR_INVALID_ARGUMENT;
-		
-	/* Drawing nothing? */
-	if (wDest == 0 || hDest == 0 || wSrc == 0 || hSrc == 0 ||
-		origImgWidth == 0 || origImgHeight == 0)
-		return SJME_ERROR_NONE;
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	if (off < 0 || dataLen < 0 || (off + dataLen) < 0)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
+	/* Drawing nothing? */
+	if (wDest <= 0 || hDest <= 0)
+		return SJME_ERROR_NONE;
+	
 	/* Transform. */
 	sjme_scritchui_core_transform(g, &xDest, &yDest);
 	
-	/* Anchor. */
+	/* Anchor to target coordinates. */
 	if (sjme_error_is(error = sjme_scritchui_core_anchor(anchor,
 		xDest, yDest, wSrc, hSrc, 0,
 		&xDest, &yDest)))
 		return sjme_error_default(error);
-		
-	/* Lock. */
-	if (sjme_error_is(error = sjme_scritchui_core_lock(g)))
-		return sjme_error_default(error);
 	
-	/* If there is native drawing, use that as it will likely be faster. */
+	/* If there is native drawing, use that as it will likely be faster */
+	/* or more efficient for the API. */
 	if (g->impl->drawXRGB32Region != NULL)
 	{
-		/* Forward. */
+		/* Lock. */
+		if (sjme_error_is(error = sjme_scritchui_core_lock(g)))
+			return sjme_error_default(error);
+			
+		/* Forward, note that this is pre-anchored. */
 		if (sjme_error_is(error = g->impl->drawXRGB32Region(
 			g, data, off, dataLen, scanLen, alpha, xSrc, ySrc,
 			wSrc, hSrc, trans, xDest, yDest, 0, wDest, hDest,
@@ -974,6 +1044,17 @@ static sjme_errorCode sjme_scritchui_core_pencilDrawXRGB32Region(
 		/* Success! */
 		return SJME_ERROR_NONE;
 	}
+	
+	/* We are now doing the transforming and drawing ourselves. */
+	/* Calculate transformation matrix. */
+	memset(&m, 0, sizeof(m));
+	if (sjme_error_is(error = sjme_scritchui_core_translateRotateScale(
+		&m, trans, wSrc, hSrc, wDest, hDest)))
+		return sjme_error_default(error);
+	
+	/* Lock. */
+	if (sjme_error_is(error = sjme_scritchui_core_lock(g)))
+		return sjme_error_default(error);
 	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
