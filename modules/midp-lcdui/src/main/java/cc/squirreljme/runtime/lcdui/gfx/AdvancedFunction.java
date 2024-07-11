@@ -477,13 +477,13 @@ public enum AdvancedFunction
 				for (int spend = src + __w, dp = dest; src < spend;
 					dp++, src++)
 				{
-					int pac = __b[src] | 0xFF_000000,
-						srb = ((pac & 0xFF00FF) * 0xFF),
-						sgg = (((pac >>> 8) & 0xFF) * 0xFF),
-						dcc = data[dp],
-						xrb = (srb + ((dcc & 0xFF00FF) * 0x00)) >>> 8,
-						xgg = (((sgg +
-							(((dcc >>> 8) & 0xFF) * 0x00)) + 1) * 257) >>> 16;
+					int pac = __b[src] | 0xFF_000000;
+					int srb = ((pac & 0xFF00FF) * 0xFF);
+					int sgg = (((pac >>> 8) & 0xFF) * 0xFF);
+					int dcc = data[dp];
+					int xrb = (srb + ((dcc & 0xFF00FF) * 0x00)) >>> 8;
+					int xgg = (((sgg +
+						(((dcc >>> 8) & 0xFF) * 0x00)) + 1) * 257) >>> 16;
 					
 					data[dp] = ((xrb & 0xFF00FF) | ((xgg & 0xFF) << 8));
 				}
@@ -575,15 +575,15 @@ public enum AdvancedFunction
 				for (int spend = src + __w, dp = dest; src < spend;
 					dp++, src++)
 				{
-					int pac = __b[src],
-						sa = pac >>> 24,
-						na = (sa ^ 0xFF),
-						srb = ((pac & 0xFF00FF) * sa),
-						sgg = (((pac >>> 8) & 0xFF) * sa),
-						dcc = data[dp],
-						xrb = (srb + ((dcc & 0xFF00FF) * na)) >>> 8,
-						xgg = (((sgg + (((dcc >>> 8) & 0xFF) * na)) + 1) * 257)
-							>>> 16;
+					int pac = __b[src];
+					int sa = pac >>> 24;
+					int na = (sa ^ 0xFF);
+					int srb = ((pac & 0xFF00FF) * sa);
+					int sgg = (((pac >>> 8) & 0xFF) * sa);
+					int dcc = data[dp];
+					int xrb = (srb + ((dcc & 0xFF00FF) * na)) >>> 8;
+					int xgg = (((sgg + (((dcc >>> 8) & 0xFF) * na)) + 1) *
+						257) >>> 16;
 					
 					data[dp] = ((xrb & 0xFF00FF) | ((xgg & 0xFF) << 8));
 				}

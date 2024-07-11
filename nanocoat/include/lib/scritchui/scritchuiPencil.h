@@ -196,6 +196,24 @@ typedef struct sjme_scritchui_pencilColor
 } sjme_scritchui_pencilColor;
 
 /**
+ * This blends RGB data from a source buffer into the target buffer.
+ * 
+ * @param g The graphics to operate under.
+ * @param srcAlpha Does the source utilize an alpha channel?
+ * @param dest The destination buffer which is written over.
+ * @param src The source buffer.
+ * @param numPixels The number of pixels to blend.
+ * @return Any resultant error, if any.
+ * @since 2024/07/11
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilBlendRGBIntoFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jboolean srcAlpha,
+	sjme_attrInNotNullBuf(numPixels) sjme_jint* dest,
+	sjme_attrInNotNullBuf(numPixels) sjme_jint* src,
+	sjme_attrInPositive sjme_jint numPixels);
+
+/**
  * This copies one region of the image to another region.
  *
  * Copying to a display device is not permitted because it may impact how
@@ -742,6 +760,9 @@ typedef sjme_errorCode (*sjme_scritchui_pencilTranslateFunc)(
  */
 typedef struct sjme_scritchui_pencilFunctions
 {
+	/** @c BlendRGBInto . */
+	SJME_SCRITCHUI_QUICK_PENCIL(BlendRGBInto, blendRGBInto);
+	
 	/** @c CopyArea . */
 	SJME_SCRITCHUI_QUICK_PENCIL(CopyArea, copyArea);
 	
