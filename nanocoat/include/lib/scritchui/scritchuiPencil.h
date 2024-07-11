@@ -575,6 +575,26 @@ typedef sjme_errorCode (*sjme_scritchui_pencilMapRGBFromRawScanFunc)(
 	sjme_attrInPositive sjme_jint inRawLen);
 
 /**
+ * Fills a buffer with the given value. 
+ * 
+ * @param g The graphics owning this.
+ * @param outRaw The output raw scan buffer.
+ * @param outRawOff Offset into the raw scan buffer.
+ * @param outRawLen Length of the raw scan buffer.
+ * @param rawPixel The raw pixel to fill with.
+ * @param inNumPixels The number of pixels to fill.
+ * @return Any resultant error code.
+ * @since 2024/07/10
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilRawScanFillFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrOutNotNullBuf(rawLen) void* outRaw,
+	sjme_attrInPositive sjme_jint outRawOff,
+	sjme_attrInPositive sjme_jint outRawLen,
+	sjme_attrInValue sjme_jint rawPixel,
+	sjme_attrInPositiveNonZero sjme_jint inNumPixels);
+
+/**
  * Reads raw data from a single scanline at the given position. 
  * 
  * @param g The graphics to read from.
@@ -810,6 +830,9 @@ typedef struct sjme_scritchui_pencilPrimFunctions
 	
 	/** @c MapColor . */
 	SJME_SCRITCHUI_QUICK_PENCIL(MapColor, mapColor);
+	
+	/** @c RawScanFill. */
+	SJME_SCRITCHUI_QUICK_PENCIL(RawScanFill, rawScanFill);
 	
 	/** @c RawScanGet . */
 	SJME_SCRITCHUI_QUICK_PENCIL(RawScanGet, rawScanGet);

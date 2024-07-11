@@ -149,6 +149,9 @@ typedef struct sjme_scritchui_pencilBase
 	/** The scanline length. */
 	sjme_jint scanLen;
 	
+	/** The bytes per pixel. */
+	sjme_jint bytesPerPixel;
+	
 	/** Color palette. */
 	struct
 	{

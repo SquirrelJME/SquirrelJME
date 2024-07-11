@@ -78,7 +78,61 @@ static sjme_errorCode sjme_scritchui_core_lockRelease(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_scritchui_corePrim_lineViaPixel(
+static sjme_errorCode sjme_scritchui_corePrim_drawHoriz(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint x,
+	sjme_attrInValue sjme_jint y,
+	sjme_attrInValue sjme_jint w)
+{
+	sjme_errorCode error;
+	sjme_scritchui_rect* rect;
+	sjme_jint numBytes, ex;
+	void* outRaw;
+	
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Off top or bottom? */
+	rect = &g->state.clip;
+	if (y < 0 || y < rect->y ||
+		y >= g->height || y >= rect->y + rect->height)
+		return SJME_ERROR_NONE;
+	
+	/* Normalize horizontal coordinates. */
+	ex = x + w;
+	
+	if (x < 0)
+		x = 0;
+	if (ex >= g->width)
+		ex = g->width;
+	if (ex >= rect->x + rect->width)
+		ex = rect->x + rect->width;
+	
+	w = ex - x;
+	
+	/* Not visible? */
+	if (w <= 0 || ex < 0 || x >= g->width || x >= rect->x + rect->width)
+		return SJME_ERROR_NONE;
+	
+	/* Setup raw pixel buffer. */
+	numBytes = g->bytesPerPixel * w;
+	outRaw = sjme_alloca(numBytes);
+	if (outRaw == NULL)
+		return SJME_ERROR_OUT_OF_MEMORY;
+	
+	/* Map it. */
+	memset(outRaw, 0, numBytes);
+	if (sjme_error_is(error = g->prim.rawScanFill(g,
+		outRaw, 0, numBytes,
+		g->state.color.v, w)))
+		return sjme_error_default(error);
+	
+	/* Render line. */
+	return g->prim.rawScanPut(g, x, y,
+		outRaw, numBytes, w);
+}
+
+static sjme_errorCode sjme_scritchui_corePrim_drawLine(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x1,
 	sjme_attrInValue sjme_jint y1,
@@ -92,20 +146,7 @@ static sjme_errorCode sjme_scritchui_corePrim_lineViaPixel(
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
-static sjme_errorCode sjme_scritchui_corePrim_horizViaLine(
-	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInValue sjme_jint x,
-	sjme_attrInValue sjme_jint y,
-	sjme_attrInValue sjme_jint w)
-{
-	if (g == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Forward. */
-	return g->impl->drawLine(g, x, y, x + w, y);
-}
-
-static sjme_errorCode sjme_scritchui_corePrim_pixelViaLine(
+static sjme_errorCode sjme_scritchui_corePrim_drawPixel(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y)
@@ -113,8 +154,8 @@ static sjme_errorCode sjme_scritchui_corePrim_pixelViaLine(
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Forward. */
-	return g->impl->drawLine(g, x, y, x + 1, y);
+	/* Use horizontal line drawing. */
+	return g->prim.drawHoriz(g, x, y, 1);
 }
 
 static sjme_errorCode sjme_scritchui_corePrim_mapColorFromRaw(
@@ -297,7 +338,115 @@ static sjme_errorCode sjme_scritchui_corePrim_mapColor(
 		inRgbOrRaw, outColor);
 }
 
-static sjme_errorCode sjme_scritchui_corePrim_rawScanGetNull(
+static sjme_errorCode sjme_scritchui_corePrim_rawScanFillInt(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrOutNotNullBuf(rawLen) void* outRaw,
+	sjme_attrInPositive sjme_jint outRawOff,
+	sjme_attrInPositive sjme_jint outRawLen,
+	sjme_attrInValue sjme_jint rawPixel,
+	sjme_attrInPositiveNonZero sjme_jint inNumPixels)
+{
+	sjme_jint limit, i;
+	sjme_jint* p;
+	
+	if (g == NULL || outRaw == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (outRawOff < 0 || outRawLen < 0 || (outRawOff + outRawLen) < 0 ||
+		(inNumPixels < 0))
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Determine number of pixels to actually draw. */
+	limit = inNumPixels * g->bytesPerPixel;
+	
+	if (limit < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	if (outRawLen < limit)
+		limit = outRawLen;
+	
+	/* Fill in. */
+	p = SJME_POINTER_OFFSET(outRaw, outRawOff);
+	for (i = 0; i < limit; i += 4)
+		*(p++) = rawPixel;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_scritchui_corePrim_rawScanFillShort(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrOutNotNullBuf(rawLen) void* outRaw,
+	sjme_attrInPositive sjme_jint outRawOff,
+	sjme_attrInPositive sjme_jint outRawLen,
+	sjme_attrInValue sjme_jint rawPixel,
+	sjme_attrInPositiveNonZero sjme_jint inNumPixels)
+{
+	sjme_jint limit, i;
+	sjme_jshort* p;
+	
+	if (g == NULL || outRaw == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (outRawOff < 0 || outRawLen < 0 || (outRawOff + outRawLen) < 0 ||
+		(inNumPixels < 0))
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Determine number of pixels to actually draw. */
+	limit = inNumPixels * g->bytesPerPixel;
+	
+	if (limit < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	if (outRawLen < limit)
+		limit = outRawLen;
+	
+	/* Fill in. */
+	p = SJME_POINTER_OFFSET(outRaw, outRawOff);
+	for (i = 0; i < limit; i += 2)
+		*(p++) = rawPixel;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_scritchui_corePrim_rawScanFillByte(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrOutNotNullBuf(rawLen) void* outRaw,
+	sjme_attrInPositive sjme_jint outRawOff,
+	sjme_attrInPositive sjme_jint outRawLen,
+	sjme_attrInValue sjme_jint rawPixel,
+	sjme_attrInPositiveNonZero sjme_jint inNumPixels)
+{
+	sjme_jint limit, i;
+	sjme_jbyte* p;
+	
+	if (g == NULL || outRaw == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (outRawOff < 0 || outRawLen < 0 || (outRawOff + outRawLen) < 0 ||
+		(inNumPixels < 0))
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Determine number of pixels to actually draw. */
+	limit = inNumPixels * g->bytesPerPixel;
+	
+	if (limit < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	if (outRawLen < limit)
+		limit = outRawLen;
+	
+	/* Fill in. */
+	p = SJME_POINTER_OFFSET(outRaw, outRawOff);
+	for (i = 0; i < limit; i += 1)
+		*(p++) = rawPixel;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_scritchui_corePrim_rawScanGet(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint inX,
 	sjme_attrInPositive sjme_jint inY,
@@ -1534,6 +1683,12 @@ static sjme_errorCode sjme_scritchui_core_pencilSetClip(
 	if (y < 0)
 		y = 0;
 	
+	/* If the clip exceeds the buffer bounds, clip it. */
+	if (ex > g->width)
+		ex = g->width;
+	if (ey > g->height)
+		ey = g->height;
+	
 	/* Translate back. */
 	w = ex - x;
 	h = ey - y;
@@ -1673,10 +1828,7 @@ sjme_errorCode sjme_scritchui_pencilInitStatic(
 	if (pf < 0 || pf >= SJME_NUM_GFX_PIXEL_FORMATS)
 		return SJME_ERROR_INVALID_ARGUMENT;
 		
-	/* These are required at the minimum. */
-	if (inFunctions->drawLine == NULL && inFunctions->drawPixel == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
-	
+	/* Raw scan putting are required at a minimum. */
 	if (inFunctions->rawScanPut == NULL)
 		return SJME_ERROR_NOT_IMPLEMENTED;
 	
@@ -1713,45 +1865,50 @@ sjme_errorCode sjme_scritchui_pencilInitStatic(
 		memmove(&result.frontEnd, copyFrontEnd,
 			sizeof(*copyFrontEnd));
 	
-	/* Determine core pixel primitive. */
-	if (result.impl->drawPixel != NULL)
-	{
-		result.prim.drawPixel = result.impl->drawPixel;
-		
-		/* Use efficient line drawing? */
-		if (result.impl->drawLine != NULL)
-			result.prim.drawLine = result.impl->drawLine;
-		else
-			result.prim.drawLine = sjme_scritchui_corePrim_lineViaPixel;
-	}
+	/* Raw scan put, must be implemented always. */
+	result.prim.rawScanPut = result.impl->rawScanPut;
 	
-	/* Implement pixel via line operation. */
-	else if (result.impl->drawLine != NULL)
-	{
-		result.prim.drawLine = result.impl->drawLine;
-		result.prim.drawPixel = sjme_scritchui_corePrim_pixelViaLine;
-	}
-	
-	/* Horizontal line via the line function. */
+	/* Need a primitive draw horizontal line? */
 	if (result.impl->drawHoriz != NULL)
 		result.prim.drawHoriz = result.impl->drawHoriz;
 	else
-		result.prim.drawHoriz = sjme_scritchui_corePrim_horizViaLine;
+		result.prim.drawHoriz = sjme_scritchui_corePrim_drawHoriz;
+		
+	/* Need a primitive draw line? */
+	if (result.impl->drawLine != NULL)
+		result.prim.drawLine = result.impl->drawLine;
+	else
+		result.prim.drawLine = sjme_scritchui_corePrim_drawLine;
+	
+	/* Need a primitive draw pixel? */
+	if (result.impl->drawPixel != NULL)
+		result.prim.drawPixel = result.impl->drawPixel;
+	else
+		result.prim.drawPixel = sjme_scritchui_corePrim_drawPixel;
 	
 	/* Raw scan get. */
 	if (result.impl->rawScanGet != NULL)
 		result.prim.rawScanGet = result.impl->rawScanGet;
 	else
-		result.prim.rawScanGet = sjme_scritchui_corePrim_rawScanGetNull;
-	
-	/* Raw scan put, must be implemented always. */
-	result.prim.rawScanPut = result.impl->rawScanPut;
+		result.prim.rawScanGet = sjme_scritchui_corePrim_rawScanGet;
 	
 	/* Color mapping. */
 	if (result.impl->mapColor != NULL)
 		result.prim.mapColor = result.impl->mapColor;
 	else
 		result.prim.mapColor = sjme_scritchui_corePrim_mapColor;
+	
+	/* Determine bytes per pixel. */
+	result.api->mapRawScanBytes(&result, 1,
+		&result.bytesPerPixel);
+	
+	/* Basic filling of raw value. */
+	if (result.bytesPerPixel == 4)
+		result.prim.rawScanFill = sjme_scritchui_corePrim_rawScanFillInt;
+	else if (result.bytesPerPixel == 2)
+		result.prim.rawScanFill = sjme_scritchui_corePrim_rawScanFillShort;
+	else
+		result.prim.rawScanFill = sjme_scritchui_corePrim_rawScanFillByte;
 	
 	/* Set initial state, ignore any errors. */
 	result.api->setAlphaColor(&result, 0xFF000000);
