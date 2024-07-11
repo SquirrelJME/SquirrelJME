@@ -72,6 +72,9 @@ typedef enum sjme_scritchui_serialType
 	
 	/** @c fontDerive . */
 	SJME_SCRITCHUI_SERIAL_TYPE_FONT_DERIVE,
+	
+	/** @c hardwareGraphics . */
+	SJME_SCRITCHUI_SERIAL_TYPE_HARDWARE_GRAPHICS,
 		
 	/** @c panelEnableFocus . */
 	SJME_SCRITCHUI_SERIAL_TYPE_PANEL_ENABLE_FOCUS,
@@ -180,6 +183,18 @@ SUD_STRUCT_DEF(fontDerive,
 	SDU_VAR(sjme_scritchui_pencilFontStyle, inStyle);
 	SDU_VAR(sjme_jint, inPixelSize);
 	SDU_VARP(sjme_scritchui_pencilFont*, outDerived););
+
+SUD_STRUCT_DEF(hardwareGraphics,
+	SDU_VARP(sjme_scritchui_pencil*, outPencil);
+	SDU_VAR(sjme_gfx_pixelFormat, pf);
+	SDU_VAR(sjme_jint, bw);
+	SDU_VAR(sjme_jint, bh);
+	SDU_VARP(const sjme_scritchui_pencilLockFunctions*, inLockFuncs);
+	SDU_VARP(const sjme_frontEnd*, inLockFrontEndCopy);
+	SDU_VAR(sjme_jint, sx);
+	SDU_VAR(sjme_jint, sy);
+	SDU_VAR(sjme_jint, sw);
+	SDU_VAR(sjme_jint, sh););
 	
 SUD_STRUCT_DEF(panelEnableFocus,
 	SDU_VAR(sjme_scritchui_uiPanel, inPanel);
@@ -262,6 +277,9 @@ typedef union sjme_scritchui_serialDataUnion
 	
 	/** @c fontDerive . */
 	SJME_SCRITCHUI_SDU_DEF(fontDerive);
+	
+	/** @c hardwareGraphics . */
+	SJME_SCRITCHUI_SDU_DEF(hardwareGraphics);
 		
 	/** @c panelEnableFocus . */
 	SJME_SCRITCHUI_SDU_DEF(panelEnableFocus);
@@ -373,7 +391,20 @@ sjme_errorCode sjme_scritchui_coreSerial_fontDerive(
 	sjme_attrInValue sjme_scritchui_pencilFontStyle inStyle,
 	sjme_attrInPositiveNonZero sjme_jint inPixelSize,
 	sjme_attrOutNotNull sjme_scritchui_pencilFont* outDerived);
-
+	
+sjme_errorCode sjme_scritchui_coreSerial_hardwareGraphics(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_scritchui_pencil* outPencil,
+	sjme_attrInValue sjme_gfx_pixelFormat pf,
+	sjme_attrInPositiveNonZero sjme_jint bw,
+	sjme_attrInPositiveNonZero sjme_jint bh,
+	sjme_attrInNullable const sjme_scritchui_pencilLockFunctions* inLockFuncs,
+	sjme_attrInNullable const sjme_frontEnd* inLockFrontEndCopy,
+	sjme_attrInValue sjme_jint sx,
+	sjme_attrInValue sjme_jint sy,
+	sjme_attrInPositiveNonZero sjme_jint sw,
+	sjme_attrInPositiveNonZero sjme_jint sh);
+	
 sjme_errorCode sjme_scritchui_coreSerial_panelEnableFocus(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiPanel inPanel,

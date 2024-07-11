@@ -63,6 +63,9 @@
 	DESC_INTEGER DESC_INTEGER DESC_INTEGER DESC_INTEGER ")" DESC_VOID
 #define FORWARD_DESC___fontDerive "(" \
 	DESC_LONG DESC_LONG DESC_INT DESC_INT ")" DESC_LONG
+#define FORWARD_DESC___hardwareGraphics "(" \
+	DESC_LONG DESC_INT DESC_INT DESC_INT DESC_OBJECT \
+	DESC_ARRAY(DESC_INT) DESC_INT DESC_INT DESC_INT DESC_INT ")" DESC_PENCIL
 #define FORWARD_DESC___linkInit "(" \
 	DESC_STRING DESC_STRING ")" DESC_LONG
 #define FORWARD_DESC___loopExecute "(" \
@@ -478,6 +481,32 @@ static sjme_thread_result mle_bindEventThread(
 	return SJME_THREAD_RESULT(SJME_ERROR_NONE);
 }
 
+static sjme_errorCode mlePencilLock(
+	sjme_attrInNotNull sjme_scritchui_pencil g)
+{
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+static sjme_errorCode mlePencilLockRelease(
+	sjme_attrInNotNull sjme_scritchui_pencil g)
+{
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+static const sjme_scritchui_pencilLockFunctions mlePencilLockFuncs =
+{
+	.lock = mlePencilLock,
+	.lockRelease = mlePencilLockRelease,
+};
+
 JNIEXPORT jobjectArray JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	__builtinFonts)
 	(JNIEnv* env, jclass classy, jlong stateP)
@@ -887,6 +916,51 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	}
 	
 	return (jlong)derived;
+}
+
+JNIEXPORT jobject JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__hardwareGraphics)(JNIEnv* env, jclass classy, jlong stateP,
+	jint pf, jint bw, jint bh, jobject buf,
+	jintArray pal, jint sx, jint sy, jint sw, jint sh)
+{
+	sjme_errorCode error;
+	sjme_frontEnd source;
+	sjme_scritchui_pencil result;
+	sjme_scritchui state;
+	
+	if (buf == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return NULL;
+	}
+	
+	if (stateP == 0)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return 0;
+	}
+	
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	
+	/** Fill in source. */
+	memset(&source, 0, sizeof(source));
+	sjme_jni_fillFrontEnd(env, &source, buf);
+	
+	/* Setup pencil. */
+	result = NULL;
+	if (sjme_error_is(error = state->api->hardwareGraphics(
+		state,
+		&result, pf, bw, bh,
+		&mlePencilLockFuncs, &source,
+		sx, sy, sw, sh)))
+	{
+		sjme_jni_throwMLECallError(env, error);
+		return NULL;
+	}
+	
+	sjme_todo("Impl?");
+	return NULL;
 }
 
 JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __linkInit)
@@ -1438,6 +1512,7 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 	FORWARD_list(NativeScritchDylib, __containerAdd),
 	FORWARD_list(NativeScritchDylib, __containerSetBounds),
 	FORWARD_list(NativeScritchDylib, __fontDerive),
+	FORWARD_list(NativeScritchDylib, __hardwareGraphics),
 	FORWARD_list(NativeScritchDylib, __linkInit),
 	FORWARD_list(NativeScritchDylib, __loopExecute),
 	FORWARD_list(NativeScritchDylib, __loopExecuteLater),

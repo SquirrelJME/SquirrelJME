@@ -253,6 +253,15 @@ typedef struct sjme_scritchui_pencilFontBase* sjme_scritchui_pencilFont;
  */
 typedef struct sjme_scritchui_pencilFontLink sjme_scritchui_pencilFontLink;
 
+/**
+ * Functions which are used to lock and unlock access to the backing pencil
+ * buffer, if applicable.
+ * 
+ * @since 2024/07/08
+ */
+typedef struct sjme_scritchui_pencilLockFunctions
+	sjme_scritchui_pencilLockFunctions;
+
 /** Arguments to pass for setting of listeners. */
 #define SJME_SCRITCHUI_SET_LISTENER_ARGS(what) \
 	sjme_attrInNullable SJME_TOKEN_PASTE3(sjme_scritchui_, what, \
@@ -561,6 +570,36 @@ typedef sjme_errorCode (*sjme_scritchui_fontDeriveFunc)(
 	sjme_attrOutNotNull sjme_scritchui_pencilFont* outDerived);
 
 /**
+ * Creates a hardware reference bracket to the native hardware graphics.
+ * 
+ * @param inState The UI state.
+ * @param OutPencil The resultant pencil.
+ * @param pf The @c sjme_gfx_pixelFormat used for the draw.
+ * @param bw The buffer width, this is the scanline width of the buffer.
+ * @param bh The buffer height.
+ * @param inLockFuncs The locking functions to use for buffer access.
+ * @param inLockFrontEndCopy Front end copy data for locks.
+ * @param sx Starting surface X coordinate.
+ * @param sy Starting surface Y coordinate.
+ * @param sw Surface width.
+ * @param sh Surface height.
+ * @return An error if the requested graphics are not valid.
+ * @since 2024/05/01
+ */
+typedef sjme_errorCode (*sjme_scritchui_hardwareGraphicsFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_scritchui_pencil* outPencil,
+	sjme_attrInValue sjme_gfx_pixelFormat pf,
+	sjme_attrInPositiveNonZero sjme_jint bw,
+	sjme_attrInPositiveNonZero sjme_jint bh,
+	sjme_attrInNullable const sjme_scritchui_pencilLockFunctions* inLockFuncs,
+	sjme_attrInNullable const sjme_frontEnd* inLockFrontEndCopy,
+	sjme_attrInValue sjme_jint sx,
+	sjme_attrInValue sjme_jint sy,
+	sjme_attrInPositiveNonZero sjme_jint sw,
+	sjme_attrInPositiveNonZero sjme_jint sh);
+
+/**
  * Execute the given callback within the event loop of the GUI.
  * 
  * @param inState The input state.
@@ -750,6 +789,9 @@ struct sjme_scritchui_apiFunctions
 	
 	/** Derive a similar font. */
 	SJME_SCRITCHUI_QUICK_API(fontDerive);
+	
+	/** Hardware graphics support on arbitrary buffers. */
+	SJME_SCRITCHUI_QUICK_API(hardwareGraphics);
 	
 	/** Execute callback within the event loop. */
 	SJME_SCRITCHUI_QUICK_API(loopExecute);

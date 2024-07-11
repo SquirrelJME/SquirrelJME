@@ -139,6 +139,9 @@ struct sjme_scritchui_implFunctions
 	/** Set bounds of component in container. */
 	SJME_SCRITCHUI_QUICK_SAME(containerSetBounds);
 	
+	/** Hardware graphics support on arbitrary buffers. */
+	SJME_SCRITCHUI_QUICK_SAME(hardwareGraphics);
+	
 	/** Execute callback within the event loop or schedule later. */
 	SJME_SCRITCHUI_QUICK_SAME(loopExecute);
 	

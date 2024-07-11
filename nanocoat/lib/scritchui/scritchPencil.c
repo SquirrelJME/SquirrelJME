@@ -1922,3 +1922,41 @@ sjme_errorCode sjme_scritchui_pencilInitStatic(
 	memmove(inPencil, &result, sizeof(result));
 	return SJME_ERROR_NONE;
 }
+
+sjme_errorCode sjme_scritchui_core_hardwareGraphics(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_scritchui_pencil* outPencil,
+	sjme_attrInValue sjme_gfx_pixelFormat pf,
+	sjme_attrInPositiveNonZero sjme_jint bw,
+	sjme_attrInPositiveNonZero sjme_jint bh,
+	sjme_attrInNullable const sjme_scritchui_pencilLockFunctions* inLockFuncs,
+	sjme_attrInNullable const sjme_frontEnd* inLockFrontEndCopy,
+	sjme_attrInValue sjme_jint sx,
+	sjme_attrInValue sjme_jint sy,
+	sjme_attrInPositiveNonZero sjme_jint sw,
+	sjme_attrInPositiveNonZero sjme_jint sh)
+{
+	sjme_errorCode error;
+	
+	if (inState == NULL || outPencil == NULL ||
+		(inLockFrontEndCopy != NULL && inLockFuncs == NULL))
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (bw <= 0 || bh <= 0 || sx < 0 || sy < 0 || sw <= 0 || sh <= 0 ||
+		sw > bw || sh > bh || (sx + sw) < 0 || (sx + sw) > bw ||
+		(sy + sh) < 0 || (sy + sh) > bh)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* If natively supported, see if it can create a graphics context. */
+	if (inState->impl->hardwareGraphics != NULL)
+	{
+		/* If this does not fail, use native graphics. */
+		if (!sjme_error_is(inState->impl->hardwareGraphics(
+			inState, outPencil, pf, bw, bh, inLockFuncs, inLockFrontEndCopy,
+			sx, sy, sw, sh)))
+			return SJME_ERROR_NONE;
+	}
+	
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}

@@ -45,9 +45,6 @@
 #define FORWARD_DESC_hardwareFillTriangle "(" \
 	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT \
 	DESC_INT ")" DESC_VOID
-#define FORWARD_DESC_hardwareGraphics "(" \
-	DESC_INT DESC_INT DESC_INT DESC_OBJECT \
-	DESC_ARRAY(DESC_INT) DESC_INT DESC_INT DESC_INT DESC_INT ")" DESC_PENCIL
 #define FORWARD_DESC_hardwareHasAlpha "(" \
 	DESC_PENCIL ")" DESC_BOOLEAN
 #define FORWARD_DESC_hardwareSetAlphaColor "(" \
@@ -71,32 +68,6 @@
 	"(I[BIILcc/squirreljme/jvm/mle/callbacks/NativeImageLoadCallback;)" \
 	"Ljava/lang/Object;"
 #define FORWARD_DESC_nativeImageLoadTypes "()I"
-
-static sjme_errorCode mlePencilLock(
-	sjme_attrInNotNull sjme_scritchui_pencil g)
-{
-	if (g == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
-}
-
-static sjme_errorCode mlePencilLockRelease(
-	sjme_attrInNotNull sjme_scritchui_pencil g)
-{
-	if (g == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-		
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
-}
-
-static const sjme_scritchui_pencilLockFunctions mlePencilLockFuncs =
-{
-	.lock = mlePencilLock,
-	.lockRelease = mlePencilLockRelease,
-};
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareCopyArea)
 	(JNIEnv* env, jclass classy, jobject g, jint sx, jint sy, jint w, jint h,
@@ -329,40 +300,6 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareFillTriangle)
 		sjme_jni_throwMLECallError(env, error);
 }
 
-JNIEXPORT jobject JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareGraphics)
-	(JNIEnv* env, jclass classy, jint pf, jint bw, jint bh, jobject buf,
-	jintArray pal, jint sx, jint sy, jint sw, jint sh)
-{
-	sjme_errorCode error;
-	sjme_frontEnd source;
-	sjme_scritchui_pencil result;
-	
-	if (buf == NULL)
-	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
-		return NULL;
-	}
-	
-	/** Fill in source. */
-	memset(&source, 0, sizeof(source));
-	sjme_jni_fillFrontEnd(env, &source, buf);
-	
-	/* Setup pencil. */
-	result = NULL;
-	if (sjme_error_is(error = sjme_scritchui_pencilInitBuffer(
-		NULL,
-		&result, pf, bw, bh,
-		&mlePencilLockFuncs, &source,
-		sx, sy, sw, sh)))
-	{
-		sjme_jni_throwMLECallError(env, error);
-		return NULL;
-	}
-	
-	sjme_todo("Impl?");
-	return NULL;
-}
-
 JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareHasAlpha)
 	(JNIEnv* env, jclass classy, jobject g)
 {
@@ -534,7 +471,6 @@ static const JNINativeMethod mlePencilMethods[] =
 	FORWARD_list(PencilShelf, hardwareDrawXRGB32Region),
 	FORWARD_list(PencilShelf, hardwareFillRect),
 	FORWARD_list(PencilShelf, hardwareFillTriangle),
-	FORWARD_list(PencilShelf, hardwareGraphics),
 	FORWARD_list(PencilShelf, hardwareHasAlpha),
 	FORWARD_list(PencilShelf, hardwareSetAlphaColor),
 	FORWARD_list(PencilShelf, hardwareSetBlendingMode),

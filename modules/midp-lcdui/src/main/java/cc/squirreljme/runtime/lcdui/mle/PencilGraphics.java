@@ -15,8 +15,10 @@ import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.jvm.mle.constants.PencilShelfError;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.jvm.mle.scritchui.NativeScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPencilBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayManager;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
@@ -940,8 +942,8 @@ public final class PencilGraphics
 		throws NullPointerException
 	{
 		return new PencilGraphics(__sw, __sh,
-			PencilShelf.hardwareGraphics(__pf, __bw, __bh, 
-				__buf, __pal, __sx, __sy, __sw, __sh));
+			DisplayManager.instance().scritch().hardwareGraphics(
+				__pf, __bw, __bh, __buf, __pal, __sx, __sy, __sw, __sh));
 	}
 	
 	/**

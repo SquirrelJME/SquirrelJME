@@ -287,35 +287,6 @@ public final class PencilShelf
 		throws MLECallError;
 	
 	/**
-	 * Creates a hardware reference bracket to the native hardware graphics.
-	 * 
-	 * @param __pf The {@link UIPixelFormat} used for the draw.
-	 * @param __bw The buffer width, this is the scanline width of the buffer.
-	 * @param __bh The buffer height.
-	 * @param __buf The target buffer to draw to, this is cast to the correct
-	 * buffer format.
-	 * @param __pal The color palette, may be {@code null}. 
-	 * @param __sx Starting surface X coordinate.
-	 * @param __sy Starting surface Y coordinate.
-	 * @param __sw Surface width.
-	 * @param __sh Surface height.
-	 * @return The bracket capable of drawing hardware accelerated graphics.
-	 * @throws MLECallError If the requested graphics are not valid.
-	 * @since 2020/09/25
-	 */
-	@SquirrelJMEVendorApi
-	public static native PencilBracket hardwareGraphics(
-		@MagicConstant(valuesFromClass = UIPixelFormat.class) int __pf,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __bw,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __bh,
-		@NotNull Object __buf,
-		@Nullable int[] __pal,
-		int __sx, int __sy,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __sw,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __sh)
-		throws MLECallError;
-	
-	/**
 	 * Is there an alpha channel for this pencil?
 	 *
 	 * @param __g The graphics to check.

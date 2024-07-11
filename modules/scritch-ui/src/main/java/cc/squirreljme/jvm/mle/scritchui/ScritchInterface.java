@@ -9,11 +9,16 @@
 
 package cc.squirreljme.jvm.mle.scritchui;
 
+import cc.squirreljme.jvm.mle.brackets.PencilBracket;
+import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.annotation.ScritchEventLoop;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchContainerBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 /**
  * Main interface for ScritchUI, all the logic calls are made through this
@@ -63,6 +68,35 @@ public interface ScritchInterface
 	@SquirrelJMEVendorApi
 	@NotNull
 	ScritchEventLoopInterface eventLoop();
+	
+	/**
+	 * Creates a hardware reference bracket to the native hardware graphics.
+	 * 
+	 * @param __pf The {@link UIPixelFormat} used for the draw.
+	 * @param __bw The buffer width, this is the scanline width of the buffer.
+	 * @param __bh The buffer height.
+	 * @param __buf The target buffer to draw to, this is cast to the correct
+	 * buffer format.
+	 * @param __pal The color palette, may be {@code null}. 
+	 * @param __sx Starting surface X coordinate.
+	 * @param __sy Starting surface Y coordinate.
+	 * @param __sw Surface width.
+	 * @param __sh Surface height.
+	 * @return The bracket capable of drawing hardware accelerated graphics.
+	 * @throws MLECallError If the requested graphics are not valid.
+	 * @since 2020/09/25
+	 */
+	@SquirrelJMEVendorApi
+	PencilBracket hardwareGraphics(
+		@MagicConstant(valuesFromClass = UIPixelFormat.class) int __pf,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __bw,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __bh,
+		@NotNull Object __buf,
+		@Nullable int[] __pal,
+		int __sx, int __sy,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __sw,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __sh)
+		throws MLECallError;
 	
 	/**
 	 * Return the interface for panels.

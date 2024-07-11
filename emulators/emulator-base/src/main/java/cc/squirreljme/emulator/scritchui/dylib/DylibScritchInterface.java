@@ -10,6 +10,8 @@
 package cc.squirreljme.emulator.scritchui.dylib;
 
 import cc.squirreljme.emulator.NativeBinding;
+import cc.squirreljme.jvm.mle.brackets.PencilBracket;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchComponentInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchContainerInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchEnvironmentInterface;
@@ -30,6 +32,8 @@ import java.util.Arrays;
 import java.util.List;
 import net.multiphasicapps.collections.UnmodifiableList;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 /**
  * Dynamic library based ScritchUI interface.
@@ -137,6 +141,23 @@ public class DylibScritchInterface
 	public ScritchEventLoopInterface eventLoop()
 	{
 		return this.eventLoop;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/07/10
+	 */
+	@Override
+	public PencilBracket hardwareGraphics(int __pf,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __bw,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __bh,
+		@NotNull Object __buf, @Nullable int[] __pal, int __sx, int __sy,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __sw,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __sh)
+		throws MLECallError
+	{
+		return this.dyLib.hardwareGraphics(__pf, __bw, __bh, __buf, __pal,
+			__sx, __sy, __sw, __sh);
 	}
 	
 	/**

@@ -841,20 +841,14 @@ typedef struct sjme_scritchui_pencilPrimFunctions
 	SJME_SCRITCHUI_QUICK_PENCIL(RawScanPut, rawScanPut);
 } sjme_scritchui_pencilPrimFunctions;
 
-/**
- * Functions which are used to lock and unlock access to the backing pencil
- * buffer, if applicable.
- * 
- * @since 2024/07/08
- */
-typedef struct sjme_scritchui_pencilLockFunctions
+struct sjme_scritchui_pencilLockFunctions
 {
 	/** @c Lock . */
 	SJME_SCRITCHUI_QUICK_PENCIL(Lock, lock);
 	
 	/** @c LockRelease . */
 	SJME_SCRITCHUI_QUICK_PENCIL(LockRelease, lockRelease);
-} sjme_scritchui_pencilLockFunctions;
+};
 
 /**
  * ScritchUI Pencil implementation functions, note that none of these
