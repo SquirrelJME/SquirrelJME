@@ -199,6 +199,7 @@ typedef struct sjme_scritchui_pencilColor
  * This blends RGB data from a source buffer into the target buffer.
  * 
  * @param g The graphics to operate under.
+ * @param destAlpha Does the destination utilize an alpha channel?
  * @param srcAlpha Does the source utilize an alpha channel?
  * @param dest The destination buffer which is written over.
  * @param src The source buffer.
@@ -208,6 +209,7 @@ typedef struct sjme_scritchui_pencilColor
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilBlendRGBIntoFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jboolean destAlpha,
 	sjme_attrInValue sjme_jboolean srcAlpha,
 	sjme_attrInNotNullBuf(numPixels) sjme_jint* dest,
 	sjme_attrInNotNullBuf(numPixels) sjme_jint* src,
