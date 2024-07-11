@@ -146,8 +146,14 @@ typedef struct sjme_scritchui_pencilBase
 	/** The height of the surface. */
 	sjme_jint height;
 	
-	/** The scanline length. */
+	/** The scanline length, in pixels. */
 	sjme_jint scanLen;
+	
+	/** The scan line length, in bytes. */
+	sjme_jint scanLenBytes;
+	
+	/** Bits per pixel. */
+	sjme_jint bitsPerPixel;
 	
 	/** The bytes per pixel. */
 	sjme_jint bytesPerPixel;

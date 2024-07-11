@@ -142,6 +142,8 @@ static sjme_errorCode sjme_scritchui_corePrim_drawLine(
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+	return SJME_ERROR_NONE;
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
@@ -1842,6 +1844,46 @@ sjme_errorCode sjme_scritchui_pencilInitStatic(
 	result.width = sw;
 	result.height = sh;
 	result.scanLen = bw;
+	
+	/* Determine bits per pixel. */
+	result.bitsPerPixel = -1;
+	switch (pf)
+	{
+		case SJME_GFX_PIXEL_FORMAT_INT_ARGB8888:
+		case SJME_GFX_PIXEL_FORMAT_INT_RGB888:
+		case SJME_GFX_PIXEL_FORMAT_INT_BGRA8888:
+		case SJME_GFX_PIXEL_FORMAT_INT_BGRX8888:
+		case SJME_GFX_PIXEL_FORMAT_INT_XBGR8888:
+			result.bitsPerPixel = 32;
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_SHORT_ARGB4444:
+		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB565:
+		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB555:
+		case SJME_GFX_PIXEL_FORMAT_SHORT_ABGR1555:
+		case SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536:
+			result.bitsPerPixel = 16;
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256:
+			result.bitsPerPixel = 8;
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4:
+			result.bitsPerPixel = 4;
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2:
+			result.bitsPerPixel = 2;
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1:
+			result.bitsPerPixel = 1;
+			break;
+	}
+	
+	/* Determine raw scan line length. */
+	result.scanLenBytes = (result.scanLen * result.bitsPerPixel) / 8;
 	
 	/* Copy lock front end source? */
 	if (inLockFuncs != NULL && inLockFrontEndCopy != NULL)

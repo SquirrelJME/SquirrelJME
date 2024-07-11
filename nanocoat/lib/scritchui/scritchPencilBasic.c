@@ -7,13 +7,15 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <string.h>
+
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiPencil.h"
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/debug.h"
 #include "sjme/alloc.h"
 
-static sjme_errorCode sjme_scritchui_basicRawScan_sjme_jint32(
+static sjme_errorCode sjme_scritchui_basicRawScan(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint inX,
 	sjme_attrInPositive sjme_jint inY,
@@ -21,32 +23,45 @@ static sjme_errorCode sjme_scritchui_basicRawScan_sjme_jint32(
 	sjme_attrInPositiveNonZero sjme_jint inDataLen,
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels)
 {
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
-}
-
-static sjme_errorCode sjme_scritchui_basicRawScan_sjme_jshort16(
-	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInPositive sjme_jint inX,
-	sjme_attrInPositive sjme_jint inY,
-	sjme_attrInNotNullBuf(inLen) const void* inData,
-	sjme_attrInPositiveNonZero sjme_jint inDataLen,
-	sjme_attrInPositiveNonZero sjme_jint inNumPixels)
-{
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
-}
-
-static sjme_errorCode sjme_scritchui_basicRawScan_sjme_jbyte8(
-	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInPositive sjme_jint inX,
-	sjme_attrInPositive sjme_jint inY,
-	sjme_attrInNotNullBuf(inLen) const void* inData,
-	sjme_attrInPositiveNonZero sjme_jint inDataLen,
-	sjme_attrInPositiveNonZero sjme_jint inNumPixels)
-{
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	sjme_errorCode error;
+	sjme_jint pixelBytes, limit;
+	void* targetP;
+	
+	if (g == NULL || inData == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (inX < 0 || inY < 0 || inX >= g->width || inY >= g->height ||
+		inDataLen < 0 || inNumPixels < 0 ||
+		(inX + inNumPixels) < 0 || (inX + inNumPixels) > g->width)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Buffer not locked? */
+	if (g->lockState.base == NULL)
+		return SJME_ERROR_BUFFER_NOT_LOCKED;
+	
+	/* Determine the number of pixels to be drawn. */
+	pixelBytes = -1;
+	if (sjme_error_is(error = g->api->mapRawScanBytes(g,
+		inNumPixels, &pixelBytes)) || pixelBytes < 0)
+		return sjme_error_default(error);
+	
+	/* Use the smaller of the two. */
+	if (pixelBytes < inDataLen)
+		limit = pixelBytes;
+	else
+		limit = inDataLen;
+	
+	/* Nothing to do? */
+	if (limit == 0)
+		return SJME_ERROR_NONE;
+	
+	/* Direct memory copy over. */
+	targetP = SJME_POINTER_OFFSET(g->lockState.base,
+		(inY * g->scanLenBytes) + inX);
+	memmove(targetP, inData, limit);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_scritchui_basicRawScan_sjme_jbyte4(
@@ -57,6 +72,13 @@ static sjme_errorCode sjme_scritchui_basicRawScan_sjme_jbyte4(
 	sjme_attrInPositiveNonZero sjme_jint inDataLen,
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels)
 {
+	if (g == NULL || inData == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (inX < 0 || inY < 0 || inX >= g->width || inY >= g->height ||
+		inDataLen < 0 || inNumPixels < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
@@ -69,6 +91,13 @@ static sjme_errorCode sjme_scritchui_basicRawScan_sjme_jbyte2(
 	sjme_attrInPositiveNonZero sjme_jint inDataLen,
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels)
 {
+	if (g == NULL || inData == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (inX < 0 || inY < 0 || inX >= g->width || inY >= g->height ||
+		inDataLen < 0 || inNumPixels < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
@@ -89,6 +118,7 @@ static sjme_errorCode sjme_scritchui_basicRawScan_sjme_jbyte1(
 #define pencilPixelType sjme_jint
 #define pencilPixelBits 32
 #define pencilPixelMask 0xFFFFFFFF
+#define pencilRawScanCopy
 
 #include "scritchPencilTemplate.c"
 
@@ -96,6 +126,7 @@ static sjme_errorCode sjme_scritchui_basicRawScan_sjme_jbyte1(
 #define pencilPixelType sjme_jshort
 #define pencilPixelBits 16
 #define pencilPixelMask 0xFFFF
+#define pencilRawScanCopy
 
 #include "scritchPencilTemplate.c"
 
@@ -103,6 +134,7 @@ static sjme_errorCode sjme_scritchui_basicRawScan_sjme_jbyte1(
 #define pencilPixelType sjme_jbyte
 #define pencilPixelBits 8
 #define pencilPixelMask 0xFF
+#define pencilRawScanCopy
 
 #include "scritchPencilTemplate.c"
 

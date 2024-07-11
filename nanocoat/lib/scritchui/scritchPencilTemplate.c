@@ -14,7 +14,11 @@
 
 static const struct sjme_scritchui_pencilImplFunctions pencilFunc_NAME(_) =
 {
+#if defined(pencilRawScanCopy)
+	.rawScanPut = sjme_scritchui_basicRawScan,
+#else
 	.rawScanPut = pencilFunc_NAME(RawScan),
+#endif
 };
 
 /* From this template. */
@@ -24,3 +28,7 @@ static const struct sjme_scritchui_pencilImplFunctions pencilFunc_NAME(_) =
 #undef pencilPixelType
 #undef pencilPixelBits
 #undef pencilPixelMask
+
+#if defined(pencilRawScanCopy)
+	#undef pencilRawScanCopy
+#endif

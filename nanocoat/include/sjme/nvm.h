@@ -1820,8 +1820,11 @@ typedef enum sjme_errorCode
 	/** Could not access array natively. */
 	SJME_ERROR_NATIVE_ARRAY_ACCESS_FAILED = -65,
 	
+	/** The graphics buffer is not locked. */
+	SJME_ERROR_BUFFER_NOT_LOCKED = -66,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -66
+	SJME_NUM_ERROR_CODES = -67
 } sjme_errorCode;
 
 /**
