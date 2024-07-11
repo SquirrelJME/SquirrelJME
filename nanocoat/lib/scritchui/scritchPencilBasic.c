@@ -154,7 +154,8 @@ sjme_errorCode sjme_scritchui_pencilInitBuffer(
 	result = NULL;
 	resultWeak = NULL;
 	if (sjme_error_is(error = sjme_alloc_weakNew(inPool,
-		sizeof(*result), NULL, NULL, &result, &resultWeak)) || result == NULL)
+		sizeof(*result), NULL, NULL, &result, &resultWeak)) ||
+		result == NULL || resultWeak == NULL)
 		return sjme_error_default(error);
 	
 	/* Initialize it. */

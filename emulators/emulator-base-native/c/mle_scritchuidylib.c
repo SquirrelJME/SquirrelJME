@@ -930,16 +930,10 @@ JNIEXPORT jobject JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	sjme_alloc_weak resultWeak;
 	sjme_scritchui state;
 	
-	if (buf == NULL)
+	if (stateP == 0 || buf == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return NULL;
-	}
-	
-	if (stateP == 0)
-	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
-		return 0;
 	}
 	
 	/* Restore. */

@@ -1980,10 +1980,12 @@ sjme_errorCode sjme_scritchui_core_hardwareGraphics(
 		inState->pool, &result, &resultWeak,
 		pf, bw, bh,
 		inLockFuncs, inLockFrontEndCopy, sx, sy, sw, sh,
-		defaultFont, pencilFrontEndCopy)) || result == NULL)
+		defaultFont, pencilFrontEndCopy)) ||
+		result == NULL || resultWeak == NULL)
 		return sjme_error_default(error);
 	
 	/* Success! */
+	*outPencil = result;
 	if (outWeakPencil != NULL)
 		*outWeakPencil = resultWeak;
 	return SJME_ERROR_NONE;
