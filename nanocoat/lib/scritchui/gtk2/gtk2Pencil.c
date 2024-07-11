@@ -115,6 +115,53 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilFillTriangle(
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
+static sjme_errorCode sjme_scritchui_gtk2_pencilRawScanGet(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInPositive sjme_jint inX,
+	sjme_attrInPositive sjme_jint inY,
+	sjme_attrOutNotNullBuf(inLen) void* outData,
+	sjme_attrInPositiveNonZero sjme_jint inDataLen,
+	sjme_attrInPositiveNonZero sjme_jint inNumPixels)
+{
+	sjme_errorCode error;
+	GdkDrawable* drawable;
+	GdkPixbuf* pix;
+	GdkGC* gc;
+	sjme_jint pixelBytes, limit;
+	
+	if (g == NULL || outData == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover context. */
+	drawable = (GdkDrawable*)g->frontEnd.wrapper;
+	gc = (GdkGC*)g->frontEnd.data;
+	
+	/* Get region from the server. */
+	pix = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE,
+		32, inNumPixels, 1);
+	gdk_pixbuf_get_from_drawable(pix, drawable, NULL,
+		inX, inY, 0, 0,
+		inNumPixels, 1);
+		
+	/* Determine the number of pixels to be drawn. */
+	pixelBytes = -1;
+	if (sjme_error_is(error = g->api->mapRawScanBytes(g,
+		inNumPixels, &pixelBytes)) || pixelBytes < 0)
+		return sjme_error_default(error);
+	
+	/* Use the smaller of the two. */
+	if (pixelBytes < inDataLen)
+		limit = pixelBytes;
+	else
+		limit = inDataLen;
+	
+	/* Read from the pixbuf directly. */
+	memmove(outData, gdk_pixbuf_get_pixels(pix), limit);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_scritchui_gtk2_pencilRawScanPut(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint inX,
@@ -253,6 +300,7 @@ const sjme_scritchui_pencilImplFunctions sjme_scritchui_gtk2_pencilFunctions =
 	.drawPixel = sjme_scritchui_gtk2_pencilDrawPixel,
 	.fillRect = sjme_scritchui_gtk2_pencilFillRect,
 	.fillTriangle = sjme_scritchui_gtk2_pencilFillTriangle,
+	.rawScanGet = sjme_scritchui_gtk2_pencilRawScanGet,
 	.rawScanPut = sjme_scritchui_gtk2_pencilRawScanPut,
 	.setAlphaColor = sjme_scritchui_gtk2_pencilSetAlphaColor,
 	.setBlendingMode = sjme_scritchui_gtk2_pencilSetBlendingMode,
