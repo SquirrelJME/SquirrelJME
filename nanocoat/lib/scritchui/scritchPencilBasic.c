@@ -11,100 +11,95 @@
 #include "lib/scritchui/scritchuiPencil.h"
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/debug.h"
+#include "sjme/alloc.h"
 
-/* 32-bit RGBA (@c uint32_t ) [Java ME Standard]. */
-#define SJME_PENCIL_NAME argb8888
-#define SJME_PENCIL_PIXEL_FORMAT SJME_GFX_PIXEL_FORMAT_INT_ARGB8888
+static sjme_errorCode sjme_scritchui_basicRawScan_sjme_jint32(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInPositive sjme_jint inX,
+	sjme_attrInPositive sjme_jint inY,
+	sjme_attrInNotNullBuf(inLen) const void* inData,
+	sjme_attrInPositiveNonZero sjme_jint inDataLen,
+	sjme_attrInPositiveNonZero sjme_jint inNumPixels)
+{
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+static sjme_errorCode sjme_scritchui_basicRawScan_sjme_jshort16(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInPositive sjme_jint inX,
+	sjme_attrInPositive sjme_jint inY,
+	sjme_attrInNotNullBuf(inLen) const void* inData,
+	sjme_attrInPositiveNonZero sjme_jint inDataLen,
+	sjme_attrInPositiveNonZero sjme_jint inNumPixels)
+{
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+static sjme_errorCode sjme_scritchui_basicRawScan_sjme_jbyte8(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInPositive sjme_jint inX,
+	sjme_attrInPositive sjme_jint inY,
+	sjme_attrInNotNullBuf(inLen) const void* inData,
+	sjme_attrInPositiveNonZero sjme_jint inDataLen,
+	sjme_attrInPositiveNonZero sjme_jint inNumPixels)
+{
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+static sjme_errorCode sjme_scritchui_basicRawScan_sjme_jbyte4(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInPositive sjme_jint inX,
+	sjme_attrInPositive sjme_jint inY,
+	sjme_attrInNotNullBuf(inLen) const void* inData,
+	sjme_attrInPositiveNonZero sjme_jint inDataLen,
+	sjme_attrInPositiveNonZero sjme_jint inNumPixels)
+{
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+static sjme_errorCode sjme_scritchui_basicRawScan_sjme_jbyte2(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInPositive sjme_jint inX,
+	sjme_attrInPositive sjme_jint inY,
+	sjme_attrInNotNullBuf(inLen) const void* inData,
+	sjme_attrInPositiveNonZero sjme_jint inDataLen,
+	sjme_attrInPositiveNonZero sjme_jint inNumPixels)
+{
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+static sjme_errorCode sjme_scritchui_basicRawScan_sjme_jbyte1(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInPositive sjme_jint inX,
+	sjme_attrInPositive sjme_jint inY,
+	sjme_attrInNotNullBuf(inLen) const void* inData,
+	sjme_attrInPositiveNonZero sjme_jint inDataLen,
+	sjme_attrInPositiveNonZero sjme_jint inNumPixels)
+{
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+/* Integer. */
 #define pencilPixelType sjme_jint
 #define pencilPixelBits 32
 #define pencilPixelMask 0xFFFFFFFF
 
 #include "scritchPencilTemplate.c"
 
-/* 32-bit RGB (@c uint32_t ) [Java ME Standard]. */
-#define SJME_PENCIL_NAME rgb888
-#define SJME_PENCIL_PIXEL_FORMAT SJME_GFX_PIXEL_FORMAT_INT_RGB888
-#define pencilPixelType sjme_jint
-#define pencilPixelBits 32
-#define pencilPixelMask 0xFFFFFFFF
-
-#include "scritchPencilTemplate.c"
-
-/* 32-bit BGRA (@c uint32_t ). */
-#define SJME_PENCIL_NAME bgra8888
-#define SJME_PENCIL_PIXEL_FORMAT SJME_GFX_PIXEL_FORMAT_INT_BGRA8888
-#define pencilPixelType sjme_jint
-#define pencilPixelBits 32
-#define pencilPixelMask 0xFFFFFFFF
-
-#include "scritchPencilTemplate.c"
-
-/* 32-bit BGRX (@c uint32_t ). */
-#define SJME_PENCIL_NAME bgrx8888
-#define SJME_PENCIL_PIXEL_FORMAT SJME_GFX_PIXEL_FORMAT_INT_BGRX8888
-#define pencilPixelType sjme_jint
-#define pencilPixelBits 32
-#define pencilPixelMask 0xFFFFFFFF
-
-#include "scritchPencilTemplate.c"
-
-/* 32-bit XBGR (@c uint32_t ). */
-#define SJME_PENCIL_NAME xbgr8888
-#define SJME_PENCIL_PIXEL_FORMAT SJME_GFX_PIXEL_FORMAT_INT_XBGR8888
-#define pencilPixelType sjme_jint
-#define pencilPixelBits 32
-#define pencilPixelMask 0xFFFFFFFF
-
-#include "scritchPencilTemplate.c"
-
-/* 16-bit RGBA4444. (@c uint16_t ) [Java ME Standard]. */
-#define SJME_PENCIL_NAME argb4444
-#define SJME_PENCIL_PIXEL_FORMAT SJME_GFX_PIXEL_FORMAT_SHORT_ARGB4444
+/* Short. */
 #define pencilPixelType sjme_jshort
 #define pencilPixelBits 16
 #define pencilPixelMask 0xFFFF
 
 #include "scritchPencilTemplate.c"
 
-/* 16-bit RGB565. (@c uint16_t ) [Java ME Standard]. */
-#define SJME_PENCIL_NAME rgb565
-#define SJME_PENCIL_PIXEL_FORMAT SJME_GFX_PIXEL_FORMAT_SHORT_RGB565
-#define pencilPixelType sjme_jshort
-#define pencilPixelBits 16
-#define pencilPixelMask 0xFFFF
-
-#include "scritchPencilTemplate.c"
-
-/* 16-bit RGB555. (@c uint16_t ). */
-#define SJME_PENCIL_NAME rgb555
-#define SJME_PENCIL_PIXEL_FORMAT SJME_GFX_PIXEL_FORMAT_SHORT_RGB555
-#define pencilPixelType sjme_jshort
-#define pencilPixelBits 16
-#define pencilPixelMask 0xFFFF
-
-#include "scritchPencilTemplate.c"
-
-/* 16-bit ABGR1555. (@c uint16_t ) [PlayStation 2]. */
-#define SJME_PENCIL_NAME abgr1555
-#define SJME_PENCIL_PIXEL_FORMAT SJME_GFX_PIXEL_FORMAT_SHORT_ABGR1555
-#define pencilPixelType sjme_jshort
-#define pencilPixelBits 16
-#define pencilPixelMask 0xFFFF
-
-#include "scritchPencilTemplate.c"
-
-/* 65536 Colors (@c uint16_t ). */
-#define SJME_PENCIL_NAME indexed65536
-#define SJME_PENCIL_PIXEL_FORMAT SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536
-#define pencilPixelType sjme_jshort
-#define pencilPixelBits 8
-#define pencilPixelMask 0xFFFF
-
-#include "scritchPencilTemplate.c"
-
-/* 256 Colors (@c uint8_t ). */
-#define SJME_PENCIL_NAME indexed256
-#define SJME_PENCIL_PIXEL_FORMAT SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256
+/* Byte. */
 #define pencilPixelType sjme_jbyte
 #define pencilPixelBits 8
 #define pencilPixelMask 0xFF
@@ -112,8 +107,6 @@
 #include "scritchPencilTemplate.c"
 
 /* Packed 16 colors (4-bit). (packed @c uint8_t ) */
-#define SJME_PENCIL_NAME indexed4
-#define SJME_PENCIL_PIXEL_FORMAT SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4
 #define pencilPixelType sjme_jbyte
 #define pencilPixelBits 4
 #define pencilPixelMask 0xF
@@ -121,8 +114,6 @@
 #include "scritchPencilTemplate.c"
 
 /* Packed 4 Colors (2-bit). (packed @c uint8_t ) */
-#define SJME_PENCIL_NAME indexed2
-#define SJME_PENCIL_PIXEL_FORMAT SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2
 #define pencilPixelType sjme_jbyte
 #define pencilPixelBits 2
 #define pencilPixelMask 0x3
@@ -130,18 +121,16 @@
 #include "scritchPencilTemplate.c"
 
 /* Packed 2 colors (1-bit). (packed @c uint8_t ) */
-#define SJME_PENCIL_NAME indexed1
-#define SJME_PENCIL_PIXEL_FORMAT SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1
 #define pencilPixelType sjme_jbyte
 #define pencilPixelBits 1
 #define pencilPixelMask 0x1
 
 #include "scritchPencilTemplate.c"
-#include "sjme/alloc.h"
 
 sjme_errorCode sjme_scritchui_pencilInitBuffer(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrOutNotNull sjme_scritchui_pencil* outPencil,
+	sjme_attrOutNullable sjme_alloc_weak* outWeakPencil,
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInPositiveNonZero sjme_jint bw,
 	sjme_attrInPositiveNonZero sjme_jint bh,
@@ -150,33 +139,40 @@ sjme_errorCode sjme_scritchui_pencilInitBuffer(
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,
 	sjme_attrInPositiveNonZero sjme_jint sw,
-	sjme_attrInPositiveNonZero sjme_jint sh)
+	sjme_attrInPositiveNonZero sjme_jint sh,
+	sjme_attrInNotNull sjme_scritchui_pencilFont defaultFont,
+	sjme_attrInNullable const sjme_frontEnd* copyFrontEnd)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencil result;
+	sjme_alloc_weak resultWeak;
 	
 	if (inPool == NULL || outPencil == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Allocate pencil. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_alloc(inPool, sizeof(*result),
-		&result)) || result == NULL)
+	resultWeak = NULL;
+	if (sjme_error_is(error = sjme_alloc_weakNew(inPool,
+		sizeof(*result), NULL, NULL, &result, &resultWeak)) || result == NULL)
 		return sjme_error_default(error);
 	
 	/* Initialize it. */
 	if (sjme_error_is(error = sjme_scritchui_pencilInitBufferStatic(
 		result, pf, bw, bh, inLockFuncs, inLockFrontEndCopy,
-		sx, sy, sw, sh)))
+		sx, sy, sw, sh, defaultFont, copyFrontEnd)))
 	{
 		/* Free before failing. */
 		sjme_alloc_free(result);
 		
+		/* Then fail. */
 		return sjme_error_default(error);
 	}
 	
 	/* Success! */
 	*outPencil = result;
+	if (outWeakPencil != NULL)
+		*outWeakPencil = resultWeak;
 	return SJME_ERROR_NONE;
 }
 
@@ -190,11 +186,13 @@ sjme_errorCode sjme_scritchui_pencilInitBufferStatic(
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,
 	sjme_attrInPositive sjme_jint sw,
-	sjme_attrInPositive sjme_jint sh)
+	sjme_attrInPositive sjme_jint sh,
+	sjme_attrInNotNull sjme_scritchui_pencilFont defaultFont,
+	sjme_attrInNullable const sjme_frontEnd* copyFrontEnd)
 {
 	const sjme_scritchui_pencilImplFunctions* chosen;
 	
-	if (inOutPencil == NULL || inLockFuncs == NULL)
+	if (inOutPencil == NULL || inLockFuncs == NULL || defaultFont == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (bw <= 0 || bh <= 0 || sx < 0 || sy < 0 || sw <= 0 || sh <= 0 ||
@@ -207,65 +205,43 @@ sjme_errorCode sjme_scritchui_pencilInitBufferStatic(
 	switch (pf)
 	{
 		case SJME_GFX_PIXEL_FORMAT_INT_ARGB8888:
-			chosen = &sjme_scritchui_pencil___argb8888;
-			break;
-			
 		case SJME_GFX_PIXEL_FORMAT_INT_RGB888:
-			chosen = &sjme_scritchui_pencil___rgb888;
-			break;
-		
 		case SJME_GFX_PIXEL_FORMAT_INT_BGRA8888:
-			chosen = &sjme_scritchui_pencil___bgra8888;
-			break;
-		
 		case SJME_GFX_PIXEL_FORMAT_INT_BGRX8888:
-			chosen = &sjme_scritchui_pencil___bgrx8888;
-			break;
-		
 		case SJME_GFX_PIXEL_FORMAT_INT_XBGR8888:
-			chosen = &sjme_scritchui_pencil___xbgr8888;
+			chosen = &sjme_scritchui_basic__sjme_jint32;
 			break;
 		
 		case SJME_GFX_PIXEL_FORMAT_SHORT_ARGB4444:
-			chosen = &sjme_scritchui_pencil___argb4444;
-			break;
-			
 		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB565:
-			chosen = &sjme_scritchui_pencil___rgb565;
-			break;
-			
 		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB555:
-			chosen = &sjme_scritchui_pencil___rgb555;
-			break;
-			
 		case SJME_GFX_PIXEL_FORMAT_SHORT_ABGR1555:
-			chosen = &sjme_scritchui_pencil___abgr1555;
-			break;
-			
 		case SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536:
-			chosen = &sjme_scritchui_pencil___indexed65536;
+			chosen = &sjme_scritchui_basic__sjme_jshort16;
 			break;
 		
 		case SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256:
-			chosen = &sjme_scritchui_pencil___indexed256;
+			chosen = &sjme_scritchui_basic__sjme_jbyte8;
 			break;
 		
 		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4:
-			chosen = &sjme_scritchui_pencil___indexed4;
+			chosen = &sjme_scritchui_basic__sjme_jbyte4;
 			break;
 		
 		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2:
-			chosen = &sjme_scritchui_pencil___indexed2;
+			chosen = &sjme_scritchui_basic__sjme_jbyte2;
 			break;
 			
 		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1:
-			chosen = &sjme_scritchui_pencil___indexed1;
+			chosen = &sjme_scritchui_basic__sjme_jbyte1;
 			break;
 		
 		default:
 			return SJME_ERROR_INVALID_ARGUMENT;
 	}
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Forward. */
+	return sjme_scritchui_pencilInitStatic(inOutPencil,
+		chosen, inLockFuncs, inLockFrontEndCopy, pf,
+		sw, sh, bw, defaultFont, copyFrontEnd);
 }

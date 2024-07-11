@@ -222,6 +222,7 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 		SJME_SCRITCHUI_SERIAL_TYPE_HARDWARE_GRAPHICS,
 		(state,
 		hardwareGraphics->outPencil,
+		hardwareGraphics->outWeakPencil,
 		hardwareGraphics->pf,
 		hardwareGraphics->bw,
 		hardwareGraphics->bh,
@@ -230,7 +231,8 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 		hardwareGraphics->sx,
 		hardwareGraphics->sy,
 		hardwareGraphics->sw,
-		hardwareGraphics->sh));
+		hardwareGraphics->sh,
+		hardwareGraphics->pencilFrontEndCopy));
 
 	SJME_SCRITCHUI_DISPATCH_CASE(panelEnableFocus,
 		SJME_SCRITCHUI_SERIAL_TYPE_PANEL_ENABLE_FOCUS,
@@ -458,6 +460,7 @@ sjme_errorCode sjme_scritchui_coreSerial_fontDerive(
 sjme_errorCode sjme_scritchui_coreSerial_hardwareGraphics(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_scritchui_pencil* outPencil,
+	sjme_attrOutNullable sjme_alloc_weak* outWeakPencil,
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInPositiveNonZero sjme_jint bw,
 	sjme_attrInPositiveNonZero sjme_jint bh,
@@ -466,14 +469,17 @@ sjme_errorCode sjme_scritchui_coreSerial_hardwareGraphics(
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,
 	sjme_attrInPositiveNonZero sjme_jint sw,
-	sjme_attrInPositiveNonZero sjme_jint sh)
+	sjme_attrInPositiveNonZero sjme_jint sh,
+	sjme_attrInNullable const sjme_frontEnd* pencilFrontEndCopy)
 {
 	SJME_SCRITCHUI_SERIAL_CHUNK(hardwareGraphics,
 		SJME_SCRITCHUI_SERIAL_TYPE_HARDWARE_GRAPHICS,
-		(inState, outPencil, pf, bw, bh, inLockFuncs, inLockFrontEndCopy,
-			sx, sy, sw, sh));
+		(inState, outPencil, outWeakPencil, pf, bw, bh,
+			inLockFuncs, inLockFrontEndCopy,
+			sx, sy, sw, sh, pencilFrontEndCopy));
 		
 	SJME_SCRITCHUI_SERIAL_PASS(outPencil);
+	SJME_SCRITCHUI_SERIAL_PASS(outWeakPencil);
 	SJME_SCRITCHUI_SERIAL_PASS(pf);
 	SJME_SCRITCHUI_SERIAL_PASS(bw);
 	SJME_SCRITCHUI_SERIAL_PASS(bh);
@@ -483,6 +489,7 @@ sjme_errorCode sjme_scritchui_coreSerial_hardwareGraphics(
 	SJME_SCRITCHUI_SERIAL_PASS(sy);
 	SJME_SCRITCHUI_SERIAL_PASS(sw);
 	SJME_SCRITCHUI_SERIAL_PASS(sh);
+	SJME_SCRITCHUI_SERIAL_PASS(pencilFrontEndCopy);
 	
 	/* Invoke and wait. */
 	SJME_SCRITCHUI_INVOKE_WAIT;

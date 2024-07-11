@@ -345,9 +345,13 @@ public final class NativeScritchDylib
 		@Range(from = 0, to = Integer.MAX_VALUE) int __sh)
 		throws MLECallError
 	{
-		return NativeScritchDylib.__hardwareGraphics(
-			this._stateP, __pf, __bw, __bh, __buf, __pal,
-			__sx, __sy, __sw, __sh);
+		PencilBracket result = NativeScritchDylib.__hardwareGraphics(
+			this._stateP, __pf, __bw, __bh, __buf, __pal, __sx, __sy, __sw,
+			__sh);
+		if (result == null)
+			throw new MLECallError("Did not make a pencil?");
+		
+		return result;
 	}
 	
 	/**

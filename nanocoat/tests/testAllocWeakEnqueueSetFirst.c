@@ -13,7 +13,7 @@
 #include "unit.h"
 
 static sjme_errorCode testEnqueue(
-	sjme_attrInNotNull sjme_alloc_weak* weak,
+	sjme_attrInNotNull sjme_alloc_weak weak,
 	sjme_attrInNullable sjme_pointer data,
 	sjme_attrInValue sjme_jboolean isBlockFree)
 {
@@ -21,7 +21,7 @@ static sjme_errorCode testEnqueue(
 }
 
 static sjme_errorCode testEnqueueOther(
-	sjme_attrInNotNull sjme_alloc_weak* weak,
+	sjme_attrInNotNull sjme_alloc_weak weak,
 	sjme_attrInNullable sjme_pointer data,
 	sjme_attrInValue sjme_jboolean isBlockFree)
 {
@@ -36,8 +36,8 @@ static sjme_errorCode testEnqueueOther(
 SJME_TEST_DECLARE(testAllocWeakEnqueueSetFirst)
 {
 	sjme_errorCode error;
-	sjme_alloc_weak* weak;
-	sjme_alloc_weak* weakB;
+	sjme_alloc_weak weak;
+	sjme_alloc_weak weakB;
 	void* p;
 	
 	/* Allocate weak reference. */

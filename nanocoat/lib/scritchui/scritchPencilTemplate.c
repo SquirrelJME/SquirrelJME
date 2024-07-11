@@ -9,30 +9,18 @@
 
 /** Primitive function name. */
 #define pencilFunc_NAME(func) \
-	SJME_TOKEN_PASTE4_PP(sjme_scritchui_pencil_, func, _, \
-		SJME_PENCIL_NAME)
- 
-static sjme_errorCode pencilFunc_NAME(DrawPixel)(
-	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInValue sjme_jint x,
-	sjme_attrInValue sjme_jint y)
-{
-	if (g == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NULL_ARGUMENTS;
-}
+	SJME_TOKEN_PASTE5_PP(sjme_scritchui_basic, func, _, \
+		pencilPixelType, pencilPixelBits)
 
 static const struct sjme_scritchui_pencilImplFunctions pencilFunc_NAME(_) =
 {
-	.drawPixel = pencilFunc_NAME(DrawPixel),
+	.rawScanPut = pencilFunc_NAME(RawScan),
 };
 
+/* From this template. */
+#undef pencilFunc_NAME
+
 /* Remove definitions for next inclusion. */
-#undef SJME_PENCIL_NAME
-#undef SJME_PENCIL_PIXEL_FORMAT
 #undef pencilPixelType
 #undef pencilPixelBits
 #undef pencilPixelMask
-#undef pencilFunc_NAME

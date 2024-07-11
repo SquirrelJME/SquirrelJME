@@ -924,8 +924,10 @@ JNIEXPORT jobject JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	jintArray pal, jint sx, jint sy, jint sw, jint sh)
 {
 	sjme_errorCode error;
-	sjme_frontEnd source;
+	sjme_frontEnd frontPencil;
+	sjme_frontEnd frontSource;
 	sjme_scritchui_pencil result;
+	sjme_alloc_weak resultWeak;
 	sjme_scritchui state;
 	
 	if (buf == NULL)
@@ -943,23 +945,26 @@ JNIEXPORT jobject JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
 	
-	/** Fill in source. */
-	memset(&source, 0, sizeof(source));
-	sjme_jni_fillFrontEnd(env, &source, buf);
+	/* Fill in source. */
+	memset(&frontSource, 0, sizeof(frontSource));
+	sjme_jni_fillFrontEnd(env, &frontSource, buf);
 	
 	/* Setup pencil. */
 	result = NULL;
+	resultWeak = NULL;
 	if (sjme_error_is(error = state->api->hardwareGraphics(
 		state,
-		&result, pf, bw, bh,
-		&mlePencilLockFuncs, &source,
-		sx, sy, sw, sh)))
+		&result, &resultWeak, pf, bw, bh,
+		&mlePencilLockFuncs, &frontSource,
+		sx, sy, sw, sh, NULL)) ||
+		result == NULL || resultWeak == NULL)
 	{
 		sjme_jni_throwMLECallError(env, error);
 		return NULL;
 	}
 	
 	sjme_todo("Impl?");
+	sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
 	return NULL;
 }
 

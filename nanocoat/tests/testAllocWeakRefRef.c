@@ -19,8 +19,8 @@
  */
 SJME_TEST_DECLARE(testAllocWeakRefRef)
 {
-	sjme_alloc_weak* weak;
-	sjme_alloc_weak* weakB;
+	sjme_alloc_weak weak;
+	sjme_alloc_weak weakB;
 	void* p;
 	
 	/* Allocate weak reference. */

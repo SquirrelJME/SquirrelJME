@@ -13,7 +13,7 @@
 #include "unit.h"
 
 static sjme_errorCode testEnqueue(
-	sjme_attrInNotNull sjme_alloc_weak* weak,
+	sjme_attrInNotNull sjme_alloc_weak weak,
 	sjme_attrInNullable sjme_pointer data,
 	sjme_attrInValue sjme_jboolean isBlockFree)
 {
@@ -37,7 +37,7 @@ static sjme_errorCode testEnqueue(
  */
 SJME_TEST_DECLARE(testAllocWeakDelete)
 {
-	sjme_alloc_weak* weak;
+	sjme_alloc_weak weak;
 	sjme_alloc_link* link;
 	sjme_alloc_link* weakLink;
 	void* p;

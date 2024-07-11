@@ -74,7 +74,7 @@ typedef enum sjme_alloc_linkFlag
  * 
  * @since 2024/07/01
  */
-typedef struct sjme_alloc_weak sjme_alloc_weak;
+typedef struct sjme_alloc_weakBase* sjme_alloc_weak;
 
 /**
  * This is called when a weak reference has been freed or is about to be
@@ -89,14 +89,14 @@ typedef struct sjme_alloc_weak sjme_alloc_weak;
  * @since 2024/07/02
  */
 typedef sjme_errorCode (*sjme_alloc_weakEnqueueFunc)(
-	sjme_attrInNotNull sjme_alloc_weak* weak,
+	sjme_attrInNotNull sjme_alloc_weak weak,
 	sjme_attrInNullable sjme_pointer data,
 	sjme_attrInValue sjme_jboolean isBlockFree);
 
 /** Weak reference is valid. */
 #define SJME_ALLOC_WEAK_VALID UINT32_C(0x58657221)
 
-struct sjme_alloc_weak
+struct sjme_alloc_weakBase
 {
 	/** Is this weak reference valid? */
 	sjme_atomic_sjme_jint valid;
@@ -138,7 +138,7 @@ struct sjme_alloc_link
 	sjme_alloc_link* freeNext;
 	
 	/** The weak reference this is attached to. */
-	sjme_alloc_weak* weak;
+	sjme_alloc_weak weak;
 	
 	/** The allocation size of the link, @code{allocSize <= blockSize}. */
 	sjme_jint allocSize;
@@ -310,7 +310,7 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_weakNew)(
 	sjme_attrInNullable sjme_alloc_weakEnqueueFunc inEnqueue,
 	sjme_attrInNullable sjme_pointer inEnqueueData,
 	sjme_attrOutNotNull void** outAddr,
-	sjme_attrOutNotNull sjme_alloc_weak** outWeak
+	sjme_attrOutNotNull sjme_alloc_weak* outWeak
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
 
 /**
@@ -471,7 +471,7 @@ sjme_errorCode sjme_alloc_getLink(
  * @since 2024/07/01
  */
 sjme_errorCode sjme_alloc_weakDelete(
-	sjme_attrInOutNotNull sjme_alloc_weak** inOutWeak);
+	sjme_attrInOutNotNull sjme_alloc_weak* inOutWeak);
 
 /**
  * Gets the pointer pointed to by the given weak reference, if this returns
@@ -485,7 +485,7 @@ sjme_errorCode sjme_alloc_weakDelete(
  * @since 2024/07/01
  */
 sjme_errorCode sjme_alloc_weakGet(
-	sjme_attrInNotNull sjme_alloc_weak* inWeak,
+	sjme_attrInNotNull sjme_alloc_weak inWeak,
 	sjme_attrOutNotNull sjme_pointer* outPointer);
 
 /**
@@ -503,7 +503,7 @@ sjme_errorCode sjme_alloc_weakGet(
  */
 sjme_errorCode sjme_alloc_weakRef(
 	sjme_attrInNotNull void* addr,
-	sjme_attrOutNotNull sjme_alloc_weak** outWeak,
+	sjme_attrOutNotNull sjme_alloc_weak* outWeak,
 	sjme_attrInNullable sjme_alloc_weakEnqueueFunc inEnqueue,
 	sjme_attrInNullable sjme_pointer inEnqueueData);
 

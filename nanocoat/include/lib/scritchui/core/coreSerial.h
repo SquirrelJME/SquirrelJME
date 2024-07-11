@@ -186,6 +186,7 @@ SUD_STRUCT_DEF(fontDerive,
 
 SUD_STRUCT_DEF(hardwareGraphics,
 	SDU_VARP(sjme_scritchui_pencil*, outPencil);
+	SDU_VARP(sjme_alloc_weak*, outWeakPencil);
 	SDU_VAR(sjme_gfx_pixelFormat, pf);
 	SDU_VAR(sjme_jint, bw);
 	SDU_VAR(sjme_jint, bh);
@@ -194,7 +195,8 @@ SUD_STRUCT_DEF(hardwareGraphics,
 	SDU_VAR(sjme_jint, sx);
 	SDU_VAR(sjme_jint, sy);
 	SDU_VAR(sjme_jint, sw);
-	SDU_VAR(sjme_jint, sh););
+	SDU_VAR(sjme_jint, sh);
+	SDU_VARP(const sjme_frontEnd*, pencilFrontEndCopy););
 	
 SUD_STRUCT_DEF(panelEnableFocus,
 	SDU_VAR(sjme_scritchui_uiPanel, inPanel);
@@ -395,6 +397,7 @@ sjme_errorCode sjme_scritchui_coreSerial_fontDerive(
 sjme_errorCode sjme_scritchui_coreSerial_hardwareGraphics(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_scritchui_pencil* outPencil,
+	sjme_attrOutNullable sjme_alloc_weak* outWeakPencil,
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInPositiveNonZero sjme_jint bw,
 	sjme_attrInPositiveNonZero sjme_jint bh,
@@ -403,7 +406,8 @@ sjme_errorCode sjme_scritchui_coreSerial_hardwareGraphics(
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,
 	sjme_attrInPositiveNonZero sjme_jint sw,
-	sjme_attrInPositiveNonZero sjme_jint sh);
+	sjme_attrInPositiveNonZero sjme_jint sh,
+	sjme_attrInNullable const sjme_frontEnd* pencilFrontEndCopy);
 	
 sjme_errorCode sjme_scritchui_coreSerial_panelEnableFocus(
 	sjme_attrInNotNull sjme_scritchui inState,

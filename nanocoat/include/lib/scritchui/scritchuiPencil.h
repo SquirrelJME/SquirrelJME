@@ -18,6 +18,7 @@
 
 #include "lib/scritchui/scritchui.h"
 #include "sjme/charSeq.h"
+#include "sjme/alloc.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -925,7 +926,8 @@ extern const sjme_scritchui_pencilBitLineFunc
  * Creates a hardware reference bracket to the native hardware graphics.
  * 
  * @param inPool The tool to allocate within.
- * @param OutPencil The resultant pencil.
+ * @param outPencil The resultant pencil.
+ * @param outWeakPencil The output weak reference to the pencil.
  * @param pf The @c sjme_gfx_pixelFormat used for the draw.
  * @param bw The buffer width, this is the scanline width of the buffer.
  * @param bh The buffer height.
@@ -942,6 +944,7 @@ extern const sjme_scritchui_pencilBitLineFunc
 sjme_errorCode sjme_scritchui_pencilInitBuffer(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrOutNotNull sjme_scritchui_pencil* outPencil,
+	sjme_attrOutNullable sjme_alloc_weak* outWeakPencil,
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInPositiveNonZero sjme_jint bw,
 	sjme_attrInPositiveNonZero sjme_jint bh,
@@ -950,7 +953,9 @@ sjme_errorCode sjme_scritchui_pencilInitBuffer(
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,
 	sjme_attrInPositiveNonZero sjme_jint sw,
-	sjme_attrInPositiveNonZero sjme_jint sh);
+	sjme_attrInPositiveNonZero sjme_jint sh,
+	sjme_attrInNotNull sjme_scritchui_pencilFont defaultFont,
+	sjme_attrInNullable const sjme_frontEnd* copyFrontEnd);
 
 /**
  * Creates a hardware reference bracket to the native hardware graphics.
@@ -979,7 +984,9 @@ sjme_errorCode sjme_scritchui_pencilInitBufferStatic(
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,
 	sjme_attrInPositiveNonZero sjme_jint sw,
-	sjme_attrInPositiveNonZero sjme_jint sh);
+	sjme_attrInPositiveNonZero sjme_jint sh,
+	sjme_attrInNotNull sjme_scritchui_pencilFont defaultFont,
+	sjme_attrInNullable const sjme_frontEnd* copyFrontEnd);
 
 /**
  * Static pencil function initialization.
@@ -1007,7 +1014,7 @@ sjme_errorCode sjme_scritchui_pencilInitStatic(
 	sjme_attrInPositiveNonZero sjme_jint sh,
 	sjme_attrInPositiveNonZero sjme_jint bw,
 	sjme_attrInNotNull sjme_scritchui_pencilFont defaultFont,
-	sjme_attrInNullable sjme_frontEnd* copyFrontEnd);
+	sjme_attrInNullable const sjme_frontEnd* copyFrontEnd);
 
 /**
  * Represents a single point.

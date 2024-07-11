@@ -1814,7 +1814,7 @@ sjme_errorCode sjme_scritchui_pencilInitStatic(
 	sjme_attrInPositiveNonZero sjme_jint sh,
 	sjme_attrInPositiveNonZero sjme_jint bw,
 	sjme_attrInNotNull sjme_scritchui_pencilFont defaultFont,
-	sjme_attrInNullable sjme_frontEnd* copyFrontEnd)
+	sjme_attrInNullable const sjme_frontEnd* copyFrontEnd)
 {
 	sjme_scritchui_pencilBase result;
 	
@@ -1926,6 +1926,7 @@ sjme_errorCode sjme_scritchui_pencilInitStatic(
 sjme_errorCode sjme_scritchui_core_hardwareGraphics(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_scritchui_pencil* outPencil,
+	sjme_attrOutNullable sjme_alloc_weak* outWeakPencil,
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInPositiveNonZero sjme_jint bw,
 	sjme_attrInPositiveNonZero sjme_jint bh,
@@ -1934,9 +1935,13 @@ sjme_errorCode sjme_scritchui_core_hardwareGraphics(
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,
 	sjme_attrInPositiveNonZero sjme_jint sw,
-	sjme_attrInPositiveNonZero sjme_jint sh)
+	sjme_attrInPositiveNonZero sjme_jint sh,
+	sjme_attrInNullable const sjme_frontEnd* pencilFrontEndCopy)
 {
 	sjme_errorCode error;
+	sjme_scritchui_pencil result;
+	sjme_alloc_weak resultWeak;
+	sjme_scritchui_pencilFont defaultFont;
 	
 	if (inState == NULL || outPencil == NULL ||
 		(inLockFrontEndCopy != NULL && inLockFuncs == NULL))
@@ -1952,11 +1957,34 @@ sjme_errorCode sjme_scritchui_core_hardwareGraphics(
 	{
 		/* If this does not fail, use native graphics. */
 		if (!sjme_error_is(inState->impl->hardwareGraphics(
-			inState, outPencil, pf, bw, bh, inLockFuncs, inLockFrontEndCopy,
-			sx, sy, sw, sh)))
+			inState, outPencil, outWeakPencil, pf, bw, bh,
+			inLockFuncs, inLockFrontEndCopy,
+			sx, sy, sw, sh, pencilFrontEndCopy)))
 			return SJME_ERROR_NONE;
 	}
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* At this point locking functions are required. */
+	if (inLockFuncs == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Get default font. */
+	defaultFont = NULL;
+	if (sjme_error_is(error = inState->api->fontBuiltin(inState,
+		&defaultFont)) || defaultFont == NULL)
+		return sjme_error_default(error);
+	
+	/* Forward to basic operations. */
+	result = NULL;
+	resultWeak = NULL;
+	if (sjme_error_is(error = sjme_scritchui_pencilInitBuffer(
+		inState->pool, &result, &resultWeak,
+		pf, bw, bh,
+		inLockFuncs, inLockFrontEndCopy, sx, sy, sw, sh,
+		defaultFont, pencilFrontEndCopy)) || result == NULL)
+		return sjme_error_default(error);
+	
+	/* Success! */
+	if (outWeakPencil != NULL)
+		*outWeakPencil = resultWeak;
+	return SJME_ERROR_NONE;
 }

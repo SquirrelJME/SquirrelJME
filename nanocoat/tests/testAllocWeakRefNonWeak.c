@@ -22,7 +22,7 @@
 SJME_TEST_DECLARE(testAllocWeakRefNonWeak)
 {
 	sjme_errorCode error;
-	sjme_alloc_weak* weak;
+	sjme_alloc_weak weak;
 	void* p;
 	
 	/* Allocate. */

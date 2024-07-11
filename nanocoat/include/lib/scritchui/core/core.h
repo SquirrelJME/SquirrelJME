@@ -107,6 +107,7 @@ sjme_errorCode sjme_scritchui_core_fontDerive(
 sjme_errorCode sjme_scritchui_core_hardwareGraphics(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_scritchui_pencil* outPencil,
+	sjme_attrOutNullable sjme_alloc_weak* outWeakPencil,
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInPositiveNonZero sjme_jint bw,
 	sjme_attrInPositiveNonZero sjme_jint bh,
@@ -115,7 +116,8 @@ sjme_errorCode sjme_scritchui_core_hardwareGraphics(
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,
 	sjme_attrInPositiveNonZero sjme_jint sw,
-	sjme_attrInPositiveNonZero sjme_jint sh);
+	sjme_attrInPositiveNonZero sjme_jint sh,
+	sjme_attrInNullable const sjme_frontEnd* pencilFrontEndCopy);
 
 sjme_errorCode sjme_scritchui_core_loopExecuteLater(
 	sjme_attrInNotNull sjme_scritchui inState,

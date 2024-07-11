@@ -23,6 +23,7 @@
 #include "sjme/list.h"
 #include "sjme/native.h"
 #include "lib/scritchinput/scritchinput.h"
+#include "sjme/alloc.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -573,7 +574,8 @@ typedef sjme_errorCode (*sjme_scritchui_fontDeriveFunc)(
  * Creates a hardware reference bracket to the native hardware graphics.
  * 
  * @param inState The UI state.
- * @param OutPencil The resultant pencil.
+ * @param outPencil The resultant pencil.
+ * @param outWeakPencil The weak reference to the pencil.
  * @param pf The @c sjme_gfx_pixelFormat used for the draw.
  * @param bw The buffer width, this is the scanline width of the buffer.
  * @param bh The buffer height.
@@ -583,12 +585,14 @@ typedef sjme_errorCode (*sjme_scritchui_fontDeriveFunc)(
  * @param sy Starting surface Y coordinate.
  * @param sw Surface width.
  * @param sh Surface height.
+ * @param pencilFrontEndCopy Front end data that goes into the pencil.
  * @return An error if the requested graphics are not valid.
  * @since 2024/05/01
  */
 typedef sjme_errorCode (*sjme_scritchui_hardwareGraphicsFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_scritchui_pencil* outPencil,
+	sjme_attrOutNullable sjme_alloc_weak* outWeakPencil,
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInPositiveNonZero sjme_jint bw,
 	sjme_attrInPositiveNonZero sjme_jint bh,
@@ -597,7 +601,8 @@ typedef sjme_errorCode (*sjme_scritchui_hardwareGraphicsFunc)(
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,
 	sjme_attrInPositiveNonZero sjme_jint sw,
-	sjme_attrInPositiveNonZero sjme_jint sh);
+	sjme_attrInPositiveNonZero sjme_jint sh,
+	sjme_attrInNullable const sjme_frontEnd* pencilFrontEndCopy);
 
 /**
  * Execute the given callback within the event loop of the GUI.

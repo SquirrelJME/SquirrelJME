@@ -686,7 +686,7 @@ sjme_errorCode sjme_alloc_free(
 	sjme_alloc_link* link;
 	sjme_alloc_pool* pool;
 	sjme_errorCode error;
-	sjme_alloc_weak* weak;
+	sjme_alloc_weak weak;
 
 	if (addr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -861,7 +861,7 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_realloc)(
 }
 
 sjme_errorCode sjme_alloc_weakDelete(
-	sjme_attrInOutNotNull sjme_alloc_weak** inOutWeak)
+	sjme_attrInOutNotNull sjme_alloc_weak* inOutWeak)
 {
 	if (inOutWeak == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -871,7 +871,7 @@ sjme_errorCode sjme_alloc_weakDelete(
 }
 
 sjme_errorCode sjme_alloc_weakGet(
-	sjme_attrInNotNull sjme_alloc_weak* inWeak,
+	sjme_attrInNotNull sjme_alloc_weak inWeak,
 	sjme_attrOutNotNull sjme_pointer* outPointer)
 {
 	if (inWeak == NULL || outPointer == NULL)
@@ -883,13 +883,13 @@ sjme_errorCode sjme_alloc_weakGet(
 
 static sjme_errorCode sjme_alloc_weakRefInternal(
 	sjme_attrInNotNull void* addr,
-	sjme_attrOutNotNull sjme_alloc_weak** outWeak,
+	sjme_attrOutNotNull sjme_alloc_weak* outWeak,
 	sjme_attrInNullable sjme_alloc_weakEnqueueFunc inEnqueue,
 	sjme_attrInNullable sjme_pointer inEnqueueData)
 {
 	sjme_errorCode error;
 	sjme_alloc_link* link;
-	sjme_alloc_weak* result;
+	sjme_alloc_weak result;
 	
 	if (addr == NULL || outWeak == NULL ||
 		(inEnqueue == NULL && inEnqueueData != NULL))
@@ -962,11 +962,11 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_weakNew)(
 	sjme_attrInNullable sjme_alloc_weakEnqueueFunc inEnqueue,
 	sjme_attrInNullable sjme_pointer inEnqueueData,
 	sjme_attrOutNotNull void** outAddr,
-	sjme_attrOutNotNull sjme_alloc_weak** outWeak
+	sjme_attrOutNotNull sjme_alloc_weak* outWeak
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
 {
 	void* resultPtr;
-	sjme_alloc_weak* resultWeak;
+	sjme_alloc_weak resultWeak;
 	sjme_errorCode error;
 	
 	if (pool == NULL || outAddr == NULL || outWeak == NULL)
@@ -997,7 +997,7 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_weakNew)(
 
 sjme_errorCode sjme_alloc_weakRef(
 	sjme_attrInNotNull void* addr,
-	sjme_attrOutNotNull sjme_alloc_weak** outWeak,
+	sjme_attrOutNotNull sjme_alloc_weak* outWeak,
 	sjme_attrInNullable sjme_alloc_weakEnqueueFunc inEnqueue,
 	sjme_attrInNullable sjme_pointer inEnqueueData)
 {
