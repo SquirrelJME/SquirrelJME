@@ -137,14 +137,16 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 #define DESC_PENCILFONT \
 	DESC_CLASS("cc/squirreljme/jvm/mle/brackets/PencilFontBracket")
 
+#define DESC_DYLIB_COLLECTOR \
+	DESC_CLASS("cc/squirreljme/emulator/scritchui/dylib/__Collector__")
 #define DESC_DYLIB_BASE \
 	DESC_CLASS("cc/squirreljme/emulator/scritchui/dylib/DylibBaseObject")
 #define DESC_DYLIB_HAS_OBJECT_POINTER \
 	DESC_CLASS("cc/squirreljme/emulator/scritchui/dylib/DylibHasObjectPointer")
 #define DESC_DYLIB_PENCIL \
 	DESC_CLASS("cc/squirreljme/emulator/scritchui/dylib/DylibPencilObject")
-#define DESC_DYLIB_PENCIL_BASE \
-	DESC_CLASS("cc/squirreljme/emulator/scritchui/dylib/DylibPencilBaseObject")
+#define DESC_DYLIB_PENCIL_BASIC \
+	DESC_CLASS("cc/squirreljme/emulator/scritchui/dylib/DylibPencilBasicObject")
 #define DESC_DYLIB_PENCIL_UI \
 	DESC_CLASS("cc/squirreljme/emulator/scritchui/dylib/DylibPencilUiObject")
 #define DESC_DYLIB_PENCILFONT \
@@ -330,6 +332,64 @@ sjme_errorCode sjme_jni_jstringCharSeqStatic(
  * @since 2024/06/30
  */
 jlong sjme_jni_jlong(sjme_jlong value);
+
+/**
+ * Pushes a weak link bound to an object.
+ * 
+ * @param env The Java environment.
+ * @param javaObject The object to bind.
+ * @param nativeWeak The native weak to bind from.
+ * @return Any resultant error, if any.
+ * @since 2024/07/11
+ */
+sjme_errorCode sjme_jni_pushWeakLink(
+	sjme_attrInNotNull JNIEnv* env,
+	sjme_attrInNotNull jobject javaObject,
+	sjme_attrInNotNull sjme_alloc_weak nativeWeak);
+
+/**
+ * Returns the Java type of the given array.
+ * 
+ * @param env The Java environment. 
+ * @param array The array to get the type of.
+ * @param outJavaType The resultant type.
+ * @return Any resultant error.
+ * @since 2024/07/11
+ */
+sjme_errorCode sjme_jni_arrayType(
+	sjme_attrInNotNull JNIEnv* env,
+	sjme_attrInNotNull jobject array,
+	sjme_attrOutNotNull sjme_basicTypeId* outType);
+
+/**
+ * Gets the elements of an array.
+ * 
+ * @param env The environment. 
+ * @param array The array object.
+ * @param rawBuf The raw output buffer.
+ * @param isCopy Is the array a copy?
+ * @return Any resultant error.
+ * @since 2024/07/11
+ */
+sjme_errorCode sjme_jni_arrayGetElements(
+	sjme_attrInNotNull JNIEnv* env,
+	sjme_attrInNotNull jobject array,
+	sjme_attrOutNotNull sjme_pointer* rawBuf,
+	sjme_attrOutNotNull jboolean* isCopy);
+
+/**
+ * Gets the elements of an array.
+ * 
+ * @param env The environment. 
+ * @param array The array object.
+ * @param rawBuf The raw output buffer.
+ * @return Any resultant error.
+ * @since 2024/07/11
+ */
+sjme_errorCode sjme_jni_arrayReleaseElements(
+	sjme_attrInNotNull JNIEnv* env,
+	sjme_attrInNotNull jarray array,
+	sjme_attrInNotNull sjme_pointer rawBuf);
 
 #endif /* __SQUIRRELJME_H__ */
 

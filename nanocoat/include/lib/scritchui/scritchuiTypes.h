@@ -97,10 +97,10 @@ typedef struct sjme_scritchui_pencilLockState
 	sjme_frontEnd source;
 	
 	/** The base address where drawing should occur. */
-	void* base;
+	sjme_pointer base;
 	
-	/** The base of the page where locking occured, not used for drawing. */
-	void* pageBase;
+	/** Is this a copy? */
+	sjme_jboolean isCopy;
 } sjme_scritchui_pencilLockState;
 
 /**

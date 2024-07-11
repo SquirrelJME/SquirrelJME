@@ -80,6 +80,8 @@
 	DESC_LONG ")" DESC_LONG
 #define FORWARD_DESC___screens "(" \
 	DESC_LONG DESC_ARRAY(DESC_LONG) ")" DESC_INTEGER
+#define FORWARD_DESC___weakDelete "(" \
+	DESC_LONG ")" DESC_VOID
 #define FORWARD_DESC___windowContentMinimumSize "(" \
 	DESC_LONG DESC_LONG DESC_INTEGER DESC_INTEGER ")" DESC_VOID
 #define FORWARD_DESC___windowManagerType "(" \
@@ -484,21 +486,77 @@ static sjme_thread_result mle_bindEventThread(
 static sjme_errorCode mlePencilLock(
 	sjme_attrInNotNull sjme_scritchui_pencil g)
 {
+	sjme_errorCode error;
+	JNIEnv* env;
+	sjme_scritchui_pencilLockState* state;
+	jarray buf;
+	jboolean isCopy;
+	sjme_pointer bufElem;
+	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* We need to operate on this state. */
+	state = &g->lockState;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Recover environment. */
+	env = NULL;
+	if (sjme_error_is(error = sjme_jni_recoverEnvFrontEnd(&env,
+		&state->source)))
+		return sjme_error_default(error);
+
+	/* Get buffer to access. */
+	buf = state->source.wrapper;
+	
+	/* Obtain buffer. */
+	bufElem = NULL;
+	isCopy = JNI_FALSE;
+	if (sjme_error_is(error = sjme_jni_arrayGetElements(env,
+		buf, &bufElem, &isCopy)) || bufElem == NULL)
+		return sjme_error_default(error);
+	
+	/* Store state. */
+	state->base = bufElem;
+	state->isCopy = isCopy;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode mlePencilLockRelease(
 	sjme_attrInNotNull sjme_scritchui_pencil g)
 {
+	sjme_errorCode error;
+	JNIEnv* env;
+	sjme_scritchui_pencilLockState* state;
+	jarray buf;
+	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* We need to operate on this state. */
+	state = &g->lockState;
+	
+	/* Recover environment. */
+	env = NULL;
+	if (sjme_error_is(error = sjme_jni_recoverEnvFrontEnd(&env,
+		&state->source)))
+		return sjme_error_default(error);
+
+	/* Get buffer to access. */
+	buf = state->source.wrapper;
+	
+	/* Release buffer. */
+	if (sjme_error_is(error = sjme_jni_arrayReleaseElements(env,
+		buf, state->base)))
+		return sjme_error_default(error);
+	
+	/* Buffer no longer valid. */
+	state->base = NULL;
+	state->isCopy = SJME_JNI_FALSE;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 static const sjme_scritchui_pencilLockFunctions mlePencilLockFuncs =
@@ -924,11 +982,13 @@ JNIEXPORT jobject JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	jintArray pal, jint sx, jint sy, jint sw, jint sh)
 {
 	sjme_errorCode error;
-	sjme_frontEnd frontPencil;
 	sjme_frontEnd frontSource;
 	sjme_scritchui_pencil result;
 	sjme_alloc_weak resultWeak;
 	sjme_scritchui state;
+	jclass pencilClass;
+	jmethodID pencilNewId;
+	jobject pencilObject;
 	
 	if (stateP == 0 || buf == NULL)
 	{
@@ -952,13 +1012,41 @@ JNIEXPORT jobject JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 		&mlePencilLockFuncs, &frontSource,
 		sx, sy, sw, sh, NULL)) ||
 		result == NULL || resultWeak == NULL)
-	{
-		sjme_jni_throwMLECallError(env, error);
-		return NULL;
-	}
+		goto fail;
 	
-	sjme_todo("Impl?");
-	sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
+	/* Find pencil class. */
+	pencilClass = (*env)->FindClass(env, DESC_DYLIB_PENCIL_BASIC);
+	if (pencilClass == NULL)
+		goto fail;
+	
+	/* Find constructor. */
+	pencilNewId = (*env)->GetMethodID(env, pencilClass,
+		"<init>", "(JJ)V");
+	if (pencilNewId == NULL)
+		goto fail;
+	
+	/* Construct. */
+	pencilObject = (*env)->NewObject(env, pencilClass, pencilNewId,
+		(jlong)result, (jlong)resultWeak);
+	if (pencilObject == NULL)
+		goto fail;
+	
+	/* Set front end. */
+	sjme_jni_fillFrontEnd(env, &result->frontEnd, pencilObject);
+	
+	/* Setup weak object binding. */
+	if (sjme_error_is(error = sjme_jni_pushWeakLink(env,
+		pencilObject, resultWeak)))
+		goto fail;
+	
+	/* Success! */
+	return pencilObject;
+	
+fail:
+	if (result != NULL)
+		sjme_todo("Impl?");
+		
+	sjme_jni_throwMLECallError(env, error);
 	return NULL;
 }
 
@@ -1290,6 +1378,24 @@ fail_nullArgs:
 	return 0L;
 }
 
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __weakDelete)
+	(JNIEnv* env, jclass classy, jlong weakP)
+{
+	sjme_errorCode error;
+	sjme_alloc_weak weak;
+	
+	if (weakP == 0)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+
+	/* Call deletion handler. */
+	weak = (sjme_alloc_weak)weakP;
+	if (sjme_error_is(error = sjme_alloc_weakDelete(&weak)))
+		sjme_jni_throwMLECallError(env, error);
+}
+
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __screens)
 	(JNIEnv* env, jclass classy, jlong stateP, jlongArray screenPs)
 {
@@ -1520,6 +1626,7 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 	FORWARD_list(NativeScritchDylib, __panelEnableFocus),
 	FORWARD_list(NativeScritchDylib, __panelNew),
 	FORWARD_list(NativeScritchDylib, __screens),
+	FORWARD_list(NativeScritchDylib, __weakDelete),
 	FORWARD_list(NativeScritchDylib, __windowContentMinimumSize),
 	FORWARD_list(NativeScritchDylib, __windowManagerType),
 	FORWARD_list(NativeScritchDylib, __windowNew),

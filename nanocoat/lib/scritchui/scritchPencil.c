@@ -1609,10 +1609,6 @@ static sjme_errorCode sjme_scritchui_core_pencilSetAlphaColor(
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Implementation must have. */
-	if (g->impl->setAlphaColor == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
-	
 	/* Map color natively, if possible. */
 	target = &g->state.color;
 	if (sjme_error_is(error = g->prim.mapColor(g,
@@ -1620,7 +1616,9 @@ static sjme_errorCode sjme_scritchui_core_pencilSetAlphaColor(
 		return sjme_error_default(error);
 	
 	/* Forward. */
-	return g->impl->setAlphaColor(g, argb);
+	if (g->impl->setAlphaColor != NULL)
+		return g->impl->setAlphaColor(g, argb);
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_scritchui_core_pencilSetBlendingMode(
@@ -1634,9 +1632,6 @@ static sjme_errorCode sjme_scritchui_core_pencilSetBlendingMode(
 	if (mode < 0 || mode >= SJME_NUM_SCRITCHUI_PENCIL_BLENDS)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
-	if (g->impl->setBlendingMode == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
-	
 	/* Source blending cannot be used if there is no alpha channel. */
 	if (!g->hasAlpha && mode == SJME_SCRITCHUI_PENCIL_BLEND_SRC)
 		return SJME_ERROR_INVALID_ARGUMENT;
@@ -1645,7 +1640,9 @@ static sjme_errorCode sjme_scritchui_core_pencilSetBlendingMode(
 	g->state.blending = mode;
 	
 	/* Forward. */
-	return g->impl->setBlendingMode(g, mode);
+	if (g->impl->setBlendingMode != NULL)
+		return g->impl->setBlendingMode(g, mode);
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_scritchui_core_pencilSetClip(
@@ -1660,9 +1657,6 @@ static sjme_errorCode sjme_scritchui_core_pencilSetClip(
 	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	if (g->impl->setClip == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
 	
 	/* Translate coordinates. */
 	sjme_scritchui_core_transform(g, &x, &y);
@@ -1707,7 +1701,9 @@ static sjme_errorCode sjme_scritchui_core_pencilSetClip(
 	rect->height = h;
 	
 	/* Forward to native call. */
-	return g->impl->setClip(g, x, y, w, h);
+	if (g->impl->setClip != NULL)
+		return g->impl->setClip(g, x, y, w, h);
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_scritchui_core_pencilSetDefaultFont(
@@ -1750,14 +1746,13 @@ static sjme_errorCode sjme_scritchui_core_pencilSetStrokeStyle(
 	if (style < 0 || style >= SJME_NUM_SCRITCHUI_PENCIL_STROKES)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
-	if (g->impl->setStrokeStyle == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
-	
 	/* Set stroke mode. */
 	g->state.stroke = style;
 	
 	/* Forward to native. */
-	return g->impl->setStrokeStyle(g, style);
+	if (g->impl->setStrokeStyle != NULL)
+		return g->impl->setStrokeStyle(g, style);
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_scritchui_core_pencilTranslate(
@@ -1854,11 +1849,13 @@ sjme_errorCode sjme_scritchui_pencilInitStatic(
 			sizeof(result.lockState.source));
 	
 	/* Is there an alpha channel? */
+	/* Note that alpha can only be supported if we can read the underlying */
+	/* pixel data. */
 	result.hasAlpha = (pf == SJME_GFX_PIXEL_FORMAT_INT_ARGB8888 ||
 		pf == SJME_GFX_PIXEL_FORMAT_SHORT_ARGB4444 ||
 		pf == SJME_GFX_PIXEL_FORMAT_SHORT_ABGR1555 ||
 		pf == SJME_GFX_PIXEL_FORMAT_INT_BGRA8888 ? SJME_JNI_TRUE :
-		SJME_JNI_FALSE);
+		SJME_JNI_FALSE) && (result.impl->rawScanGet != NULL);
 	
 	/* Copy in front end? */
 	if (copyFrontEnd != NULL)

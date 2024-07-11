@@ -816,6 +816,16 @@ public final class NativeScritchDylib
 	private static native int __screens(long __stateP, long[] __screenPs);
 	
 	/**
+	 * Deletes the given weak pointer.
+	 *
+	 * @param __weakP The weak pointer to delete.
+	 * @throws MLECallError If it could not be deleted.
+	 * @since 2024/07/11
+	 */
+	static native void __weakDelete(long __weakP)
+		throws MLECallError;
+	
+	/**
 	 * Sets the minimum size for contents in windows.
 	 *
 	 * @param __stateP The state pointer.
