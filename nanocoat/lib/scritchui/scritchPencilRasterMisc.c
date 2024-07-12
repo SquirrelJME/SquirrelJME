@@ -281,6 +281,7 @@ sjme_errorCode sjme_scritchui_corePrim_mapColor(
 	if (g == NULL || outColor == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+	/* Otherwise, use our own colormapping code. */
 	if (fromRaw)
 		return sjme_scritchui_corePrim_mapColorFromRaw(g,
 			inRgbOrRaw, outColor);

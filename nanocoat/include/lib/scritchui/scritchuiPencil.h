@@ -912,24 +912,6 @@ typedef struct sjme_scritchui_pencilImplFunctions
 	/** @c CopyArea . */
 	SJME_SCRITCHUI_QUICK_PENCIL(CopyArea, copyArea);
 	
-	/** @c DrawHoriz . */
-	SJME_SCRITCHUI_QUICK_PENCIL(DrawHoriz, drawHoriz);
-	
-	/** @c DrawLine . */
-	SJME_SCRITCHUI_QUICK_PENCIL(DrawLine, drawLine);
-	
-	/** @c DrawPixel . */
-	SJME_SCRITCHUI_QUICK_PENCIL(DrawPixel, drawPixel);
-	
-	/** @c DrawXRGB32Region . */
-	SJME_SCRITCHUI_QUICK_PENCIL(DrawXRGB32Region, drawXRGB32Region);
-	
-	/** @c FillRect . */
-	SJME_SCRITCHUI_QUICK_PENCIL(FillRect, fillRect);
-	
-	/** @c FillTriangle . */
-	SJME_SCRITCHUI_QUICK_PENCIL(FillTriangle, fillTriangle);
-	
 	/** @c MapColor . */
 	SJME_SCRITCHUI_QUICK_PENCIL(MapColor, mapColor);
 	

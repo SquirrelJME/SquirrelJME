@@ -310,35 +310,6 @@ sjme_errorCode sjme_scritchui_core_pencilDrawXRGB32Region(
 	/* Transform. */
 	sjme_scritchui_core_transform(g, &xDest, &yDest);
 	
-	/* If there is native drawing, use that as it will likely be faster */
-	/* or more efficient for the API. */
-	if (g->impl->drawXRGB32Region != NULL)
-	{
-		/* Anchor to target coordinates. */
-		if (sjme_error_is(error = sjme_scritchui_core_anchor(anchor,
-			xDest, yDest, wSrc, hSrc, 0,
-			&xDest, &yDest)))
-			return sjme_error_default(error);
-		
-		/* Lock. */
-		if (sjme_error_is(error = sjme_scritchui_core_lock(g)))
-			return sjme_error_default(error);
-			
-		/* Forward, note that this is pre-anchored. */
-		if (sjme_error_is(error = g->impl->drawXRGB32Region(
-			g, data, off, dataLen, scanLen, alpha, xSrc, ySrc,
-			wSrc, hSrc, trans, xDest, yDest, 0, wDest, hDest,
-			origImgWidth, origImgHeight)))
-			goto fail_any;
-		
-		/* Release lock. */
-		if (sjme_error_is(error = sjme_scritchui_core_lockRelease(g)))
-			return sjme_error_default(error);
-		
-		/* Success! */
-		return SJME_ERROR_NONE;
-	}
-	
 	/* We are now doing the transforming and drawing ourselves. */
 	/* Calculate transformation matrix. */
 	memset(&m, 0, sizeof(m));

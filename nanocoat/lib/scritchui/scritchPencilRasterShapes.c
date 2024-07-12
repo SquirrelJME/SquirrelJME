@@ -148,11 +148,6 @@ sjme_errorCode sjme_scritchui_core_pencilFillRect(
 	if (h <= 0)
 		h = 1;
 	
-	/* Natively supported? */
-	if (g->impl->fillRect != NULL)
-		if (sjme_error_is(error = g->impl->fillRect(g, x, y, w, h)))
-			goto fail_any;
-	
 	/* Use primitives otherwise. */
 	error = SJME_ERROR_NONE;
 	drawHoriz = g->prim.drawHoriz;

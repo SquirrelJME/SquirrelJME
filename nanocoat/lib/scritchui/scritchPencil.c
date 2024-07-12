@@ -220,23 +220,10 @@ sjme_errorCode sjme_scritchui_pencilInitStatic(
 	else
 		result.prim.rawScanPut = sjme_scritchui_corePrim_rawScanPutSkipBlend;
 	
-	/* Need a primitive draw horizontal line? */
-	if (result.impl->drawHoriz != NULL)
-		result.prim.drawHoriz = result.impl->drawHoriz;
-	else
-		result.prim.drawHoriz = sjme_scritchui_corePrim_drawHoriz;
-		
-	/* Need a primitive draw line? */
-	if (result.impl->drawLine != NULL)
-		result.prim.drawLine = result.impl->drawLine;
-	else
-		result.prim.drawLine = sjme_scritchui_corePrim_drawLine;
-	
-	/* Need a primitive draw pixel? */
-	if (result.impl->drawPixel != NULL)
-		result.prim.drawPixel = result.impl->drawPixel;
-	else
-		result.prim.drawPixel = sjme_scritchui_corePrim_drawPixel;
+	/* These are always handled by us. */
+	result.prim.drawHoriz = sjme_scritchui_corePrim_drawHoriz;
+	result.prim.drawLine = sjme_scritchui_corePrim_drawLine;
+	result.prim.drawPixel = sjme_scritchui_corePrim_drawPixel;
 	
 	/* Raw scan get. */
 	if (result.impl->rawScanGet != NULL)

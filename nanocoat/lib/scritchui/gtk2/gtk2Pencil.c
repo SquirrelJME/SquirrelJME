@@ -181,10 +181,6 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilSetStrokeStyle(
 const sjme_scritchui_pencilImplFunctions sjme_scritchui_gtk2_pencilFunctions =
 {
 	.copyArea = NULL,
-	.drawLine = NULL,
-	.drawPixel = NULL,
-	.fillRect = NULL,
-	.fillTriangle = NULL,
 	.rawScanGet = sjme_scritchui_gtk2_pencilRawScanGet,
 	.rawScanPutPure = sjme_scritchui_gtk2_pencilRawScanPutPure,
 	.setAlphaColor = sjme_scritchui_gtk2_pencilSetAlphaColor,
