@@ -68,7 +68,8 @@ sjme_errorCode sjme_scritchui_corePrim_drawHoriz(
 	
 	/* Render line. */
 	return g->prim.rawScanPut(g, x, y,
-		outRaw, numBytes, w);
+		outRaw, numBytes, w,
+		SJME_JNI_FALSE);
 }
 
 sjme_errorCode sjme_scritchui_corePrim_drawLine(

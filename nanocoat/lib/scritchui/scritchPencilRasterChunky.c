@@ -146,7 +146,21 @@ sjme_errorCode sjme_scritchui_corePrim_rawScanPut(
 	sjme_attrInPositive sjme_jint inY,
 	sjme_attrInNotNullBuf(inLen) const void* inData,
 	sjme_attrInPositiveNonZero sjme_jint inDataLen,
-	sjme_attrInPositiveNonZero sjme_jint inNumPixels)
+	sjme_attrInPositiveNonZero sjme_jint inNumPixels,
+	sjme_attrInValue sjme_jboolean mulAlpha)
+{
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+sjme_errorCode sjme_scritchui_corePrim_rawScanPutSkipBlend(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInPositive sjme_jint inX,
+	sjme_attrInPositive sjme_jint inY,
+	sjme_attrInNotNullBuf(inLen) const void* inData,
+	sjme_attrInPositiveNonZero sjme_jint inDataLen,
+	sjme_attrInPositiveNonZero sjme_jint inNumPixels,
+	sjme_attrInValue sjme_jboolean mulAlpha)
 {
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
@@ -293,11 +307,6 @@ sjme_errorCode sjme_scritchui_core_pencilDrawXRGB32Region(
 	if (wDest <= 0 || hDest <= 0)
 		return SJME_ERROR_NONE;
 	
-	/* Apply alpha? */
-	destAlpha = g->hasAlpha;
-	alpha = (alpha && g->impl->rawScanGet != NULL &&
-		g->state.blending == SJME_SCRITCHUI_PENCIL_BLEND_SRC_OVER);
-	
 	/* Transform. */
 	sjme_scritchui_core_transform(g, &xDest, &yDest);
 	
@@ -356,22 +365,13 @@ sjme_errorCode sjme_scritchui_core_pencilDrawXRGB32Region(
 	/* Setup input and output RGB buffers. */
 	rawScan = sjme_alloca(rawScanBytes);
 	flatRgb = sjme_alloca(flatRgbBytes);
-	srcRgb = (alpha ? sjme_alloca(flatRgbBytes) : NULL);
-	srcRaw = (alpha ? sjme_alloca(rawScanBytes) : NULL);
-	if (rawScan == NULL || flatRgb == NULL ||
-		(alpha && (srcRgb == NULL || srcRaw == NULL)))
+	if (rawScan == NULL || flatRgb == NULL)
 		return sjme_error_defaultOr(error,
 			SJME_ERROR_OUT_OF_MEMORY);
 	
 	/* Clear buffers. */
 	memset(rawScan, 0, rawScanBytes);
 	memset(flatRgb, 0, flatRgbBytes);
-	
-	if (alpha)
-	{
-		memset(srcRaw, 0, rawScanBytes);
-		memset(srcRgb, 0, flatRgbBytes);
-	}
 	
 	/* Lock. */
 	if (sjme_error_is(error = sjme_scritchui_core_lock(g)))
@@ -411,28 +411,6 @@ sjme_errorCode sjme_scritchui_core_pencilDrawXRGB32Region(
 			flatRgb[dx] = data[at];
 		}
 		
-		/* Perform alpha blending? */
-		if (alpha)
-		{
-			/* Get raw scanline data. */
-			if (sjme_error_is(error = g->prim.rawScanGet(g,
-				xDest, yDest + dy,
-				srcRaw, rawScanBytes, m.tw)))
-				goto fail_any;
-			
-			/* Map from Native to RGB. */
-			if (sjme_error_is(error = g->api->mapRGBFromRawScan(
-				g, srcRgb, 0, m.tw,
-				srcRaw, 0, rawScanBytes)))
-				goto fail_any;
-			
-			/* Blend? */
-			if (sjme_error_is(error = g->api->blendRGBInto(
-				g, destAlpha, SJME_JNI_TRUE,
-				flatRgb, srcRgb, m.tw)))
-				goto fail_any;
-		}
-		
 		/* Map RGB to Native. */
 		if (sjme_error_is(error = g->api->mapRawScanFromRGB(
 			g, rawScan, 0, rawScanBytes,
@@ -442,7 +420,8 @@ sjme_errorCode sjme_scritchui_core_pencilDrawXRGB32Region(
 		/* Render RGB line at destination. */
 		if (sjme_error_is(error = g->prim.rawScanPut(g,
 			xDest, yDest + dy,
-			rawScan, rawScanBytes, m.tw)))
+			rawScan, rawScanBytes, m.tw,
+			alpha)))
 			goto fail_any;
 	}
 	

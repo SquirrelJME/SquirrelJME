@@ -218,7 +218,7 @@ sjme_errorCode sjme_scritchui_pencilInitStatic(
 	if (result.impl->rawScanGet != NULL)
 		result.prim.rawScanPut = sjme_scritchui_corePrim_rawScanPut;
 	else
-		result.prim.rawScanPut = result.prim.rawScanPutPure;
+		result.prim.rawScanPut = sjme_scritchui_corePrim_rawScanPutSkipBlend;
 	
 	/* Need a primitive draw horizontal line? */
 	if (result.impl->drawHoriz != NULL)

@@ -108,10 +108,10 @@ typedef enum sjme_scritchui_pencilTranslate
  */
 typedef enum sjme_scritchui_pencilBlendingMode
 {
-	/** Overwrite source. */
+	/** Blend with source and multiply. */
 	SJME_SCRITCHUI_PENCIL_BLEND_SRC_OVER,
 	
-	/** Source. */
+	/** Use only the source alpha color. */
 	SJME_SCRITCHUI_PENCIL_BLEND_SRC,
 	
 	/** The number of blending modes. */
@@ -644,10 +644,34 @@ typedef sjme_errorCode (*sjme_scritchui_pencilRawScanGetFunc)(
  * @param inData The raw pixel data to write.
  * @param inDataLen Length of the data buffer.
  * @param inNumPixels The number of pixels to read.
+ * @param mulAlpha Should alpha values in the input buffer be multiplied by
+ * the current alpha value? That is the buffer has significant alpha values.
+ * @return Any resultant error code.
+ * @since 2024/07/12
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilRawScanPutFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInPositive sjme_jint inX,
+	sjme_attrInPositive sjme_jint inY,
+	sjme_attrInNotNullBuf(inLen) const void* inData,
+	sjme_attrInPositiveNonZero sjme_jint inDataLen,
+	sjme_attrInPositiveNonZero sjme_jint inNumPixels,
+	sjme_attrInValue sjme_jboolean mulAlpha);
+
+/**
+ * Writes raw data to a single scanline at the given position, no alpha
+ * blending is performed. 
+ * 
+ * @param g The graphics to write to.
+ * @param inX The X coordinate to access.
+ * @param inY The Y coordinate to access.
+ * @param inData The raw pixel data to write.
+ * @param inDataLen Length of the data buffer.
+ * @param inNumPixels The number of pixels to read.
  * @return Any resultant error code.
  * @since 2024/07/09
  */
-typedef sjme_errorCode (*sjme_scritchui_pencilRawScanPutFunc)(
+typedef sjme_errorCode (*sjme_scritchui_pencilRawScanPutPureFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint inX,
 	sjme_attrInPositive sjme_jint inY,
@@ -865,7 +889,7 @@ typedef struct sjme_scritchui_pencilPrimFunctions
 	SJME_SCRITCHUI_QUICK_PENCIL(RawScanPut, rawScanPut);
 	
 	/** @c RawScanPut without any alpha blending . */
-	SJME_SCRITCHUI_QUICK_PENCIL(RawScanPut, rawScanPutPure);
+	SJME_SCRITCHUI_QUICK_PENCIL(RawScanPutPure, rawScanPutPure);
 } sjme_scritchui_pencilPrimFunctions;
 
 struct sjme_scritchui_pencilLockFunctions
@@ -913,7 +937,7 @@ typedef struct sjme_scritchui_pencilImplFunctions
 	SJME_SCRITCHUI_QUICK_PENCIL(RawScanGet, rawScanGet);
 	
 	/** @c RawScanPutPure , to place without blending . */
-	SJME_SCRITCHUI_QUICK_PENCIL(RawScanPut, rawScanPutPure);
+	SJME_SCRITCHUI_QUICK_PENCIL(RawScanPutPure, rawScanPutPure);
 	
 	/** @c SetAlphaColor . */
 	SJME_SCRITCHUI_QUICK_PENCIL(SetAlphaColor, setAlphaColor);

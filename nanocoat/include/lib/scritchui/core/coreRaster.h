@@ -103,7 +103,18 @@ sjme_errorCode sjme_scritchui_corePrim_rawScanPut(
 	sjme_attrInPositive sjme_jint inY,
 	sjme_attrInNotNullBuf(inLen) const void* inData,
 	sjme_attrInPositiveNonZero sjme_jint inDataLen,
-	sjme_attrInPositiveNonZero sjme_jint inNumPixels);
+	sjme_attrInPositiveNonZero sjme_jint inNumPixels,
+	sjme_attrInValue sjme_jboolean mulAlpha);
+
+sjme_errorCode sjme_scritchui_corePrim_rawScanPutSkipBlend(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInPositive sjme_jint inX,
+	sjme_attrInPositive sjme_jint inY,
+	sjme_attrInNotNullBuf(inLen) const void* inData,
+	sjme_attrInPositiveNonZero sjme_jint inDataLen,
+	sjme_attrInPositiveNonZero sjme_jint inNumPixels,
+	sjme_attrInValue sjme_jboolean mulAlpha);
+
 /**
  * Calculates the anchor position of a box on a point.
  * 
