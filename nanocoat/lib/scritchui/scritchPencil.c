@@ -13,10 +13,11 @@
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiPencil.h"
 #include "lib/scritchui/scritchuiTypes.h"
+#include "lib/scritchui/core/coreRaster.h"
 #include "sjme/debug.h"
 #include "sjme/fixed.h"
 
-static sjme_errorCode sjme_scritchui_core_lock(
+sjme_errorCode sjme_scritchui_core_lock(
 	sjme_attrInNotNull sjme_scritchui_pencil g)
 {
 	sjme_scritchui_pencilLockState* state;
@@ -45,7 +46,7 @@ static sjme_errorCode sjme_scritchui_core_lock(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_scritchui_core_lockRelease(
+sjme_errorCode sjme_scritchui_core_lockRelease(
 	sjme_attrInNotNull sjme_scritchui_pencil g)
 {
 	sjme_scritchui_pencilLockState* state;

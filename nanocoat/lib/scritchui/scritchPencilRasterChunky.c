@@ -6,15 +6,18 @@
 // SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
+
 #include <string.h>
+
 #include "sjme/util.h"
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiPencil.h"
 #include "lib/scritchui/scritchuiTypes.h"
+#include "lib/scritchui/core/coreRaster.h"
 #include "sjme/debug.h"
 #include "sjme/fixed.h"
 
-static sjme_errorCode sjme_scritchui_corePrim_rawScanFillInt(
+sjme_errorCode sjme_scritchui_corePrim_rawScanFillInt(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrOutNotNullBuf(rawLen) void* outRaw,
 	sjme_attrInPositive sjme_jint outRawOff,
@@ -50,7 +53,7 @@ static sjme_errorCode sjme_scritchui_corePrim_rawScanFillInt(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_scritchui_corePrim_rawScanFillShort(
+sjme_errorCode sjme_scritchui_corePrim_rawScanFillShort(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrOutNotNullBuf(rawLen) void* outRaw,
 	sjme_attrInPositive sjme_jint outRawOff,
@@ -86,7 +89,7 @@ static sjme_errorCode sjme_scritchui_corePrim_rawScanFillShort(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_scritchui_corePrim_rawScanFillByte(
+sjme_errorCode sjme_scritchui_corePrim_rawScanFillByte(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrOutNotNullBuf(rawLen) void* outRaw,
 	sjme_attrInPositive sjme_jint outRawOff,
@@ -122,7 +125,7 @@ static sjme_errorCode sjme_scritchui_corePrim_rawScanFillByte(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_scritchui_corePrim_rawScanGet(
+sjme_errorCode sjme_scritchui_corePrim_rawScanGet(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint inX,
 	sjme_attrInPositive sjme_jint inY,
@@ -137,7 +140,7 @@ static sjme_errorCode sjme_scritchui_corePrim_rawScanGet(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_scritchui_core_pencilBlendRGBInto(
+sjme_errorCode sjme_scritchui_core_pencilBlendRGBInto(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jboolean destAlpha,
 	sjme_attrInValue sjme_jboolean srcAlpha,
@@ -195,7 +198,7 @@ static sjme_errorCode sjme_scritchui_core_pencilBlendRGBInto(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_scritchui_core_pencilCopyArea(
+sjme_errorCode sjme_scritchui_core_pencilCopyArea(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,
@@ -230,7 +233,7 @@ fail_any:
 	return sjme_error_default(error);
 }
 
-static sjme_errorCode sjme_scritchui_core_pencilDrawXRGB32Region(
+sjme_errorCode sjme_scritchui_core_pencilDrawXRGB32Region(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNull sjme_jint* data,
 	sjme_attrInPositive sjme_jint off,
@@ -446,7 +449,7 @@ fail_any:
 	return sjme_error_default(error);
 }
 
-static sjme_errorCode sjme_scritchui_core_pencilMapRawScanBytes(
+sjme_errorCode sjme_scritchui_core_pencilMapRawScanBytes(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositiveNonZero sjme_jint inPixels,
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outBytes)
@@ -505,7 +508,7 @@ static sjme_errorCode sjme_scritchui_core_pencilMapRawScanBytes(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_scritchui_core_pencilMapRawScanFromRGB(
+sjme_errorCode sjme_scritchui_core_pencilMapRawScanFromRGB(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrOutNotNullBuf(rawLen) void* outRaw,
 	sjme_attrInPositive sjme_jint outRawOff,
@@ -573,7 +576,7 @@ static sjme_errorCode sjme_scritchui_core_pencilMapRawScanFromRGB(
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
-static sjme_errorCode sjme_scritchui_core_pencilMapRGBFromRawScan(
+sjme_errorCode sjme_scritchui_core_pencilMapRGBFromRawScan(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNullBuf(rgbLen) sjme_jint* outRgb,
 	sjme_attrInPositive sjme_jint outRgbOff,

@@ -13,10 +13,11 @@
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiPencil.h"
 #include "lib/scritchui/scritchuiTypes.h"
+#include "lib/scritchui/core/coreRaster.h"
 #include "sjme/debug.h"
 #include "sjme/fixed.h"
 
-static sjme_errorCode sjme_scritchui_corePrim_drawHoriz(
+sjme_errorCode sjme_scritchui_corePrim_drawHoriz(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y,
@@ -70,7 +71,7 @@ static sjme_errorCode sjme_scritchui_corePrim_drawHoriz(
 		outRaw, numBytes, w);
 }
 
-static sjme_errorCode sjme_scritchui_corePrim_drawLine(
+sjme_errorCode sjme_scritchui_corePrim_drawLine(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x1,
 	sjme_attrInValue sjme_jint y1,
@@ -86,7 +87,7 @@ static sjme_errorCode sjme_scritchui_corePrim_drawLine(
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
-static sjme_errorCode sjme_scritchui_corePrim_drawPixel(
+sjme_errorCode sjme_scritchui_corePrim_drawPixel(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y)
@@ -98,7 +99,7 @@ static sjme_errorCode sjme_scritchui_corePrim_drawPixel(
 	return g->prim.drawHoriz(g, x, y, 1);
 }
 
-static sjme_errorCode sjme_scritchui_core_pencilDrawHoriz(
+sjme_errorCode sjme_scritchui_core_pencilDrawHoriz(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y,
@@ -135,7 +136,7 @@ fail_any:
 	return sjme_error_default(error);
 }
 
-static sjme_errorCode sjme_scritchui_core_pencilDrawLine(
+sjme_errorCode sjme_scritchui_core_pencilDrawLine(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x1,
 	sjme_attrInValue sjme_jint y1,
@@ -174,7 +175,7 @@ fail_any:
 	return sjme_error_default(error);
 }
 
-static sjme_errorCode sjme_scritchui_core_pencilDrawPixel(
+sjme_errorCode sjme_scritchui_core_pencilDrawPixel(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y)

@@ -6,15 +6,18 @@
 // SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
+
 #include <string.h>
+
 #include "sjme/util.h"
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiPencil.h"
 #include "lib/scritchui/scritchuiTypes.h"
+#include "lib/scritchui/core/coreRaster.h"
 #include "sjme/debug.h"
 #include "sjme/fixed.h"
 
-static sjme_errorCode sjme_scritchui_core_pencilDrawRect(
+sjme_errorCode sjme_scritchui_core_pencilDrawRect(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y,
@@ -68,7 +71,7 @@ fail_any:
 	return sjme_error_default(error);
 }
 
-static sjme_errorCode sjme_scritchui_core_pencilDrawTriangle(
+sjme_errorCode sjme_scritchui_core_pencilDrawTriangle(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x1,
 	sjme_attrInValue sjme_jint y1,
@@ -118,7 +121,7 @@ fail_any:
 	return sjme_error_default(error);
 }
 
-static sjme_errorCode sjme_scritchui_core_pencilFillRect(
+sjme_errorCode sjme_scritchui_core_pencilFillRect(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y,
@@ -175,7 +178,7 @@ fail_any:
 	return sjme_error_default(error);
 }
 
-static sjme_errorCode sjme_scritchui_core_pencilFillTriangle(
+sjme_errorCode sjme_scritchui_core_pencilFillTriangle(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x1,
 	sjme_attrInValue sjme_jint y1,

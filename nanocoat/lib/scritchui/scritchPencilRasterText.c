@@ -6,15 +6,18 @@
 // SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
+
 #include <string.h>
+
 #include "sjme/util.h"
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiPencil.h"
 #include "lib/scritchui/scritchuiTypes.h"
+#include "lib/scritchui/core/coreRaster.h"
 #include "sjme/debug.h"
 #include "sjme/fixed.h"
 
-static sjme_errorCode sjme_scritchui_core_pencilDrawChar(
+sjme_errorCode sjme_scritchui_core_pencilDrawChar(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint c,
 	sjme_attrInValue sjme_jint x,
@@ -128,7 +131,7 @@ fail_any:
 	return sjme_error_default(error);
 }
 
-static sjme_errorCode sjme_scritchui_core_pencilDrawChars(
+sjme_errorCode sjme_scritchui_core_pencilDrawChars(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNull sjme_jchar* s,
 	sjme_attrInPositive sjme_jint o,
@@ -163,7 +166,7 @@ fail_any:
 	return sjme_error_default(error);
 }
 
-static sjme_errorCode sjme_scritchui_core_pencilDrawSubstring(
+sjme_errorCode sjme_scritchui_core_pencilDrawSubstring(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNull const sjme_charSeq* s,
 	sjme_attrInPositive sjme_jint o, 
@@ -287,7 +290,7 @@ fail_fontHeight:
 	return sjme_error_default(error);
 }
 
-static sjme_errorCode sjme_scritchui_core_pencilSetFont(
+sjme_errorCode sjme_scritchui_core_pencilSetFont(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNull sjme_scritchui_pencilFont font)
 {

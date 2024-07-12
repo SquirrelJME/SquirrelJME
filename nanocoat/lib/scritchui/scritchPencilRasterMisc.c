@@ -6,15 +6,18 @@
 // SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
+
 #include <string.h>
+
 #include "sjme/util.h"
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiPencil.h"
 #include "lib/scritchui/scritchuiTypes.h"
+#include "lib/scritchui/core/coreRaster.h"
 #include "sjme/debug.h"
 #include "sjme/fixed.h"
 
-static sjme_errorCode sjme_scritchui_corePrim_mapColorFromRGB(
+sjme_errorCode sjme_scritchui_corePrim_mapColorFromRGB(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint argb,
 	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor)
@@ -166,7 +169,7 @@ static sjme_errorCode sjme_scritchui_corePrim_mapColorFromRGB(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_scritchui_corePrim_mapColorFromRaw(
+sjme_errorCode sjme_scritchui_corePrim_mapColorFromRaw(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint v,
 	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor)
@@ -269,7 +272,7 @@ static sjme_errorCode sjme_scritchui_corePrim_mapColorFromRaw(
 		(aa << 24) | (rr << 16) | (gg << 8) | bb, outColor);
 }
 
-static sjme_errorCode sjme_scritchui_corePrim_mapColor(
+sjme_errorCode sjme_scritchui_corePrim_mapColor(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jboolean fromRaw,
 	sjme_attrInValue sjme_jint inRgbOrRaw,
@@ -293,7 +296,7 @@ static sjme_errorCode sjme_scritchui_corePrim_mapColor(
  * @param y The Y coordinate.
  * @since 2024/05/17
  */
-static void sjme_scritchui_core_transform(
+void sjme_scritchui_core_transform(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInOutNotNull sjme_jint* x,
 	sjme_attrInOutNotNull sjme_jint* y)
@@ -302,7 +305,7 @@ static void sjme_scritchui_core_transform(
 	(*y) += g->state.translate.y;
 }
 
-static sjme_errorCode sjme_scritchui_core_translateRotateScale(
+sjme_errorCode sjme_scritchui_core_translateRotateScale(
 	sjme_attrOutNotNull sjme_scritchui_pencilMatrix* outMatrix,
 	sjme_attrInValue sjme_scritchui_pencilTranslate inTrans,
 	sjme_attrInPositive sjme_jint wSrc,
@@ -377,21 +380,7 @@ static sjme_errorCode sjme_scritchui_core_translateRotateScale(
 	return SJME_ERROR_NONE;
 }
 
-/**
- * Calculates the anchor position of a box on a point.
- * 
- * @param anchor The anchor point to use.
- * @param x The X coordinate. 
- * @param y The Y coordinate.
- * @param w The width.
- * @param h The height.
- * @param baseline The baseline, if this is a font.
- * @param outX The resultant X coordinate.
- * @param outY The resultant Y coordinate.
- * @return Any resultant error, if any.
- * @since 2024/06/27
- */
-static sjme_errorCode sjme_scritchui_core_anchor(
+sjme_errorCode sjme_scritchui_core_anchor(
 	sjme_attrInValue sjme_jint anchor,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y,
@@ -434,7 +423,7 @@ static sjme_errorCode sjme_scritchui_core_anchor(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_scritchui_core_pencilMapColor(
+sjme_errorCode sjme_scritchui_core_pencilMapColor(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jboolean fromRaw,
 	sjme_attrInValue sjme_jint inRgbOrRaw,
@@ -447,7 +436,7 @@ static sjme_errorCode sjme_scritchui_core_pencilMapColor(
 	return g->prim.mapColor(g, fromRaw, inRgbOrRaw, outColor);
 }
 
-static sjme_errorCode sjme_scritchui_core_pencilSetAlphaColor(
+sjme_errorCode sjme_scritchui_core_pencilSetAlphaColor(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint argb)
 {
@@ -469,7 +458,7 @@ static sjme_errorCode sjme_scritchui_core_pencilSetAlphaColor(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_scritchui_core_pencilSetBlendingMode(
+sjme_errorCode sjme_scritchui_core_pencilSetBlendingMode(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_PENCIL_BLENDS)
 		sjme_scritchui_pencilBlendingMode mode)
@@ -493,7 +482,7 @@ static sjme_errorCode sjme_scritchui_core_pencilSetBlendingMode(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_scritchui_core_pencilSetClip(
+sjme_errorCode sjme_scritchui_core_pencilSetClip(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y,
@@ -554,7 +543,7 @@ static sjme_errorCode sjme_scritchui_core_pencilSetClip(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_scritchui_core_pencilSetDefaultFont(
+sjme_errorCode sjme_scritchui_core_pencilSetDefaultFont(
 	sjme_attrInNotNull sjme_scritchui_pencil g)
 {
 	sjme_errorCode error;
@@ -569,7 +558,7 @@ static sjme_errorCode sjme_scritchui_core_pencilSetDefaultFont(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_scritchui_core_pencilSetStrokeStyle(
+sjme_errorCode sjme_scritchui_core_pencilSetStrokeStyle(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_PENCIL_STROKES)
 		sjme_scritchui_pencilStrokeMode style)
@@ -589,7 +578,7 @@ static sjme_errorCode sjme_scritchui_core_pencilSetStrokeStyle(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_scritchui_core_pencilTranslate(
+sjme_errorCode sjme_scritchui_core_pencilTranslate(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y)
