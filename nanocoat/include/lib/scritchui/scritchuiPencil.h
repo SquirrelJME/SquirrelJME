@@ -901,6 +901,10 @@ struct sjme_scritchui_pencilLockFunctions
 	SJME_SCRITCHUI_QUICK_PENCIL(LockRelease, lockRelease);
 };
 
+struct sjme_scritchui_pencilUtilFunctions
+{
+};
+
 /**
  * ScritchUI Pencil implementation functions, note that none of these
  * accept transformations however they may accept clipping.

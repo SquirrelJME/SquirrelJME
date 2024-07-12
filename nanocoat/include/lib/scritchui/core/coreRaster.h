@@ -65,14 +65,6 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColor(
 	sjme_attrInValue sjme_jint inRgbOrRaw,
 	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor);
 
-sjme_errorCode sjme_scritchpen_corePrim_rawScanFillByte(
-	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrOutNotNullBuf(rawLen) void* outRaw,
-	sjme_attrInPositive sjme_jint outRawOff,
-	sjme_attrInPositive sjme_jint outRawLen,
-	sjme_attrInValue sjme_jint rawPixel,
-	sjme_attrInPositiveNonZero sjme_jint inNumPixels);
-
 sjme_errorCode sjme_scritchpen_corePrim_rawScanFillInt(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrOutNotNullBuf(rawLen) void* outRaw,
@@ -80,7 +72,7 @@ sjme_errorCode sjme_scritchpen_corePrim_rawScanFillInt(
 	sjme_attrInPositive sjme_jint outRawLen,
 	sjme_attrInValue sjme_jint rawPixel,
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels);
-
+	
 sjme_errorCode sjme_scritchpen_corePrim_rawScanFillShort(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrOutNotNullBuf(rawLen) void* outRaw,
@@ -88,7 +80,15 @@ sjme_errorCode sjme_scritchpen_corePrim_rawScanFillShort(
 	sjme_attrInPositive sjme_jint outRawLen,
 	sjme_attrInValue sjme_jint rawPixel,
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels);
-
+	
+sjme_errorCode sjme_scritchpen_corePrim_rawScanFillByte(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrOutNotNullBuf(rawLen) void* outRaw,
+	sjme_attrInPositive sjme_jint outRawOff,
+	sjme_attrInPositive sjme_jint outRawLen,
+	sjme_attrInValue sjme_jint rawPixel,
+	sjme_attrInPositiveNonZero sjme_jint inNumPixels);
+	
 sjme_errorCode sjme_scritchpen_corePrim_rawScanGet(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint inX,
@@ -105,7 +105,7 @@ sjme_errorCode sjme_scritchpen_corePrim_rawScanPut(
 	sjme_attrInPositiveNonZero sjme_jint inDataLen,
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels,
 	sjme_attrInValue sjme_jboolean mulAlpha);
-
+	
 sjme_errorCode sjme_scritchpen_corePrim_rawScanPutSkipBlend(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint inX,
@@ -114,7 +114,7 @@ sjme_errorCode sjme_scritchpen_corePrim_rawScanPutSkipBlend(
 	sjme_attrInPositiveNonZero sjme_jint inDataLen,
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels,
 	sjme_attrInValue sjme_jboolean mulAlpha);
-
+	
 /**
  * Calculates the anchor position of a box on a point.
  * 
@@ -144,12 +144,6 @@ void sjme_scritchpen_coreUtil_applyTranslate(
 	sjme_attrInOutNotNull sjme_jint* x,
 	sjme_attrInOutNotNull sjme_jint* y);
 
-sjme_errorCode sjme_scritchpen_core_lock(
-	sjme_attrInNotNull sjme_scritchui_pencil g);
-
-sjme_errorCode sjme_scritchpen_core_lockRelease(
-	sjme_attrInNotNull sjme_scritchui_pencil g);
-
 sjme_errorCode sjme_scritchpen_core_blendRGBInto(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jboolean destAlpha,
@@ -157,6 +151,12 @@ sjme_errorCode sjme_scritchpen_core_blendRGBInto(
 	sjme_attrInNotNullBuf(numPixels) sjme_jint* dest,
 	sjme_attrInNotNullBuf(numPixels) sjme_jint* src,
 	sjme_attrInPositive sjme_jint numPixels);
+
+sjme_errorCode sjme_scritchpen_core_lock(
+	sjme_attrInNotNull sjme_scritchui_pencil g);
+
+sjme_errorCode sjme_scritchpen_core_lockRelease(
+	sjme_attrInNotNull sjme_scritchui_pencil g);
 
 sjme_errorCode sjme_scritchpen_core_copyArea(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
@@ -274,7 +274,7 @@ sjme_errorCode sjme_scritchpen_core_mapRawScanBytes(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositiveNonZero sjme_jint inPixels,
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outBytes);
-
+	
 sjme_errorCode sjme_scritchpen_core_mapRawScanFromRGB(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrOutNotNullBuf(rawLen) void* outRaw,
@@ -283,7 +283,7 @@ sjme_errorCode sjme_scritchpen_core_mapRawScanFromRGB(
 	sjme_attrInNotNullBuf(rgbLen) sjme_jint* inRgb,
 	sjme_attrInPositive sjme_jint inRgbOff,
 	sjme_attrInPositive sjme_jint inRgbLen);
-
+	
 sjme_errorCode sjme_scritchpen_core_mapRGBFromRawScan(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNullBuf(rgbLen) sjme_jint* outRgb,

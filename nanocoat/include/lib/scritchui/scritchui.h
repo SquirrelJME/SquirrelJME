@@ -291,6 +291,15 @@ typedef struct sjme_scritchui_pencilFontBase* sjme_scritchui_pencilFont;
 typedef struct sjme_scritchui_pencilFontLink sjme_scritchui_pencilFontLink;
 
 /**
+ * Utility functions to help in implementations or otherwise perform some
+ * common logic.
+ * 
+ * @since 2024/07/12
+ */
+typedef struct sjme_scritchui_pencilUtilFunctions
+	sjme_scritchui_pencilUtilFunctions;
+
+/**
  * Functions which are used to lock and unlock access to the backing pencil
  * buffer, if applicable.
  * 
