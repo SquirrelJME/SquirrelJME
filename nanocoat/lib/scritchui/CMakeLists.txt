@@ -23,6 +23,10 @@ squirreljme_multilib_add_library(ScritchUICore
 	scritchPencilFont.c
 	scritchPencilFontPseudo.c
 	scritchPencilFontSqf.c
+	scritchPencilRasterChunky.c
+	scritchPencilRasterMisc.c
+	scritchPencilRasterShapes.c
+	scritchPencilRasterSimple.c
 	scritchScreen.c
 	scritchSerialize.c
 	scritchText.c
