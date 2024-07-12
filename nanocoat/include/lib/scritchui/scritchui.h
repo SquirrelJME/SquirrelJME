@@ -141,23 +141,59 @@ typedef enum sjme_scritchui_pencilFontStyle
 } sjme_scritchui_pencilFontStyle;
 
 /**
+ * Represents a point.
+ * 
+ * @since 2024/07/12
+ */
+typedef struct sjme_scritchui_point
+{
+	/** X coordinate. */
+	sjme_jint x;
+	
+	/** Y coordinate. */
+	sjme_jint y;
+} sjme_scritchui_point;
+
+/**
+ * Represents a line.
+ * 
+ * @since 2024/07/12
+ */
+typedef struct sjme_scritchui_line
+{
+	/** Starting point. */
+	sjme_scritchui_point s;
+	
+	/** End point. */
+	sjme_scritchui_point e;
+} sjme_scritchui_line;
+
+/**
+ * Represents a dimension.
+ * 
+ * @since 2024/07/12
+ */
+typedef struct sjme_scritchui_dim
+{
+	/** The width. */
+	sjme_jint width;
+	
+	/** The height. */
+	sjme_jint height;
+} sjme_scritchui_dim;
+
+/**
  * Represents a rectangle.
  * 
  * @since 2024/04/26
  */
 typedef struct sjme_scritchui_rect
 {
-	/** The X position. */
-	sjme_jint x;
+	/** The starting point of the rectangle. */
+	sjme_scritchui_point s;
 	
-	/** The Y position. */
-	sjme_jint y;
-	
-	/** The width. */
-	sjme_jint width;
-	
-	/** The height. */
-	sjme_jint height;
+	/** The dimension of the rect. */
+	sjme_scritchui_dim d;
 } sjme_scritchui_rect;
 
 /**

@@ -249,7 +249,12 @@ sjme_errorCode sjme_scritchui_pencilInitStatic(
 	else
 		result.prim.rawScanFill = sjme_scritchui_corePrim_rawScanFillByte;
 	
+	/* Reset translation. */
+	result.state.translate.x = 0;
+	result.state.translate.y = 0;
+	
 	/* Set initial state, ignore any errors. */
+	result.api->setClip(&result, 0, 0, sw, sh);
 	result.api->setAlphaColor(&result, 0xFF000000);
 	result.api->setStrokeStyle(&result,
 		SJME_SCRITCHUI_PENCIL_STROKE_SOLID);

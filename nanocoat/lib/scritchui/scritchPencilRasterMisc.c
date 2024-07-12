@@ -497,6 +497,7 @@ sjme_errorCode sjme_scritchui_core_pencilSetClip(
 	sjme_attrInPositive sjme_jint h)
 {
 	sjme_scritchui_rect* rect;
+	sjme_scritchui_line* line;
 	sjme_jint ex, ey;
 	
 	if (g == NULL)
@@ -531,18 +532,19 @@ sjme_errorCode sjme_scritchui_core_pencilSetClip(
 	w = ex - x;
 	h = ey - y;
 	
-	/* Minimum bounds. */
-	if (w <= 0)
-		w = 1;
-	if (h <= 0)
-		h = 1;
-	
 	/* Copy clip. */
 	rect = &g->state.clip;
-	rect->x = x;
-	rect->y = y;
-	rect->width = w;
-	rect->height = h;
+	rect->s.x = x;
+	rect->s.y = y;
+	rect->d.width = w;
+	rect->d.height = h;
+	
+	/* Set end coordinates. */
+	line = &g->state.clipLine;
+	line->s.x = x;
+	line->s.y = y;
+	line->e.x = ex;
+	line->e.y = ey;
 	
 	/* Forward to native call. */
 	if (g->impl->setClip != NULL)

@@ -167,6 +167,9 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 #define DESC_SCRITCHUI_WINDOW DESC_CLASS( \
 	"cc/squirreljme/jvm/mle/scritchui/brackets/ScritchWindowBracket")
 
+/** Debug handlers for JNI code. */
+extern sjme_debug_handlerFunctions sjme_jni_debugHandlers;
+
 /**
  * Common check and forward call.
  * 

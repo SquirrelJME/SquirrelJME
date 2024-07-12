@@ -228,7 +228,7 @@ static sjme_thread_result sjme_scritchui_core_componentRepaintBelay(
 	/* Call paint now. */
 	rect = paint->belayRect;
 	error = inState->impl->componentRepaint(inState, inComponent,
-		rect.x, rect.y, rect.width, rect.height);
+		rect.s.x, rect.s.y, rect.d.width, rect.d.height);
 	return SJME_THREAD_RESULT(error);
 }
 
@@ -296,10 +296,10 @@ sjme_errorCode sjme_scritchui_core_componentRepaint(
 	if (sjme_atomic_sjme_jint_get(&paint->inPaint) != 0)
 	{
 		/* Store paint properties. */
-		paint->belayRect.x = x;
-		paint->belayRect.y = y;
-		paint->belayRect.width = width;
-		paint->belayRect.height = height;
+		paint->belayRect.s.x = x;
+		paint->belayRect.s.y = y;
+		paint->belayRect.d.width = width;
+		paint->belayRect.d.height = height;
 		
 		/* Schedule for later, if it errors fall through to paint. */
 		if (!sjme_error_is(inState->api->loopExecuteLater(inState,

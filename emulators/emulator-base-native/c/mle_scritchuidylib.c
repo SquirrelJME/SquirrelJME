@@ -1067,6 +1067,9 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __linkInit)
 	sjme_frontEnd frontEnd;
 	sjme_debug_handlerFunctions** dylibDebugHandlers;
 	
+	/* Use these debug handlers. */
+	sjme_debug_handlers = &sjme_jni_debugHandlers;
+	
 	/* Debug. */
 	sjme_message("Initializing pool...");
 	
@@ -1101,6 +1104,13 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __linkInit)
 		&lib)) || lib == NULL)
 		goto fail_dyLibOpen;
 	
+	/* Copy debug handlers since it may be in a different symbol domain. */
+	dylibDebugHandlers = NULL;
+	if (!sjme_error_is(sjme_dylib_lookup(lib,
+		"sjme_debug_handlers",
+		(void**)&dylibDebugHandlers)))
+		*dylibDebugHandlers = &sjme_jni_debugHandlers;
+	
 	/* Debug. */
 	sjme_message("Attempting lookup of '%s'...", buf);
 	
@@ -1113,15 +1123,6 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __linkInit)
 	/* Release path. */
 	(*env)->ReleaseStringUTFChars(env, libPath, libPathChars);
 	libPathChars = NULL;
-	
-	/* Copy debug handlers since it may be in a different symbol domain. */
-	dylibDebugHandlers = NULL;
-	if (!sjme_error_is(sjme_dylib_lookup(lib,
-		"sjme_debug_handlers",
-		(void**)&dylibDebugHandlers)))
-		if (dylibDebugHandlers != NULL &&
-			*dylibDebugHandlers != sjme_debug_handlers)
-			*dylibDebugHandlers = sjme_debug_handlers;
 	
 	/* Debug. */
 	sjme_message("Initializing ScritchUI Interface...");

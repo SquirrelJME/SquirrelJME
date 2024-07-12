@@ -1087,6 +1087,9 @@ typedef struct sjme_scritchui_pencilState
 	/** The clipping region. */
 	sjme_scritchui_rect clip;
 	
+	/** Clip coordinates. */
+	sjme_scritchui_line clipLine;
+	
 	/** Is blending applicable? */
 	sjme_jboolean applyAlpha;
 } sjme_scritchui_pencilState;

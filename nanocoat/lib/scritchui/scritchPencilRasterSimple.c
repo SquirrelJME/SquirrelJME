@@ -24,17 +24,23 @@ sjme_errorCode sjme_scritchui_corePrim_drawHoriz(
 	sjme_attrInValue sjme_jint w)
 {
 	sjme_errorCode error;
-	sjme_scritchui_rect* rect;
+	sjme_scritchui_line* clipLine;
 	sjme_jint numBytes, ex;
 	void* outRaw;
 	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+	/* Debug. */
+	sjme_message("primHoriz(%p, %d, %d, %d) in [(%d, %d), (%d, %d)]",
+		g, x, y, w,
+		g->state.clipLine.s.x, g->state.clipLine.s.y,
+		g->state.clipLine.e.x, g->state.clipLine.e.y);
+	
 	/* Off top or bottom? */
-	rect = &g->state.clip;
-	if (y < 0 || y < rect->y ||
-		y >= g->height || y >= rect->y + rect->height)
+	clipLine = &g->state.clipLine;
+	if (y < 0 || y < clipLine->s.y ||
+		y >= g->height || y >= clipLine->e.y)
 		return SJME_ERROR_NONE;
 	
 	/* Normalize horizontal coordinates. */
@@ -44,13 +50,13 @@ sjme_errorCode sjme_scritchui_corePrim_drawHoriz(
 		x = 0;
 	if (ex >= g->width)
 		ex = g->width;
-	if (ex >= rect->x + rect->width)
-		ex = rect->x + rect->width;
+	if (ex >= clipLine->e.x)
+		ex = clipLine->e.x;
 	
 	w = ex - x;
 	
 	/* Not visible? */
-	if (w <= 0 || ex < 0 || x >= g->width || x >= rect->x + rect->width)
+	if (w <= 0 || ex < 0 || x >= g->width || x >= clipLine->e.x)
 		return SJME_ERROR_NONE;
 	
 	/* Setup raw pixel buffer. */
