@@ -27,6 +27,7 @@ squirreljme_multilib_add_library(ScritchUICore
 	scritchPencilRasterMisc.c
 	scritchPencilRasterShapes.c
 	scritchPencilRasterSimple.c
+	scritchPencilRasterText.c
 	scritchScreen.c
 	scritchSerialize.c
 	scritchText.c
