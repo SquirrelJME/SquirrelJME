@@ -452,6 +452,12 @@ sjme_errorCode sjme_scritchui_core_pencilSetAlphaColor(
 		SJME_JNI_FALSE, argb, target)))
 		return sjme_error_default(error);
 	
+	/* Is alpha applicable? */
+	/* Note that if we cannot read from the source buffer, we cannot */
+	/* apply alpha correctly so we just ignore it. */
+	g->state.applyAlpha = (target->a != 0xFF &&
+		g->prim.rawScanGet != NULL);
+	
 	/* Forward. */
 	if (g->impl->setAlphaColor != NULL)
 		return g->impl->setAlphaColor(g, argb);

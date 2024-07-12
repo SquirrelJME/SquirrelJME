@@ -64,7 +64,7 @@ static sjme_errorCode sjme_scritchui_basicRawScanGet(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_scritchui_basicRawScanPut(
+static sjme_errorCode sjme_scritchui_basicRawScanPutPure(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint inX,
 	sjme_attrInPositive sjme_jint inY,
@@ -125,7 +125,7 @@ static sjme_errorCode sjme_scritchui_basicRawScanGet_sjme_jbyte4(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_scritchui_basicRawScanPut_sjme_jbyte4(
+static sjme_errorCode sjme_scritchui_basicRawScanPutPure_sjme_jbyte4(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint inX,
 	sjme_attrInPositive sjme_jint inY,
@@ -156,7 +156,7 @@ static sjme_errorCode sjme_scritchui_basicRawScanGet_sjme_jbyte2(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_scritchui_basicRawScanPut_sjme_jbyte2(
+static sjme_errorCode sjme_scritchui_basicRawScanPutPure_sjme_jbyte2(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint inX,
 	sjme_attrInPositive sjme_jint inY,
@@ -187,7 +187,7 @@ static sjme_errorCode sjme_scritchui_basicRawScanGet_sjme_jbyte1(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_scritchui_basicRawScanPut_sjme_jbyte1(
+static sjme_errorCode sjme_scritchui_basicRawScanPutPure_sjme_jbyte1(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint inX,
 	sjme_attrInPositive sjme_jint inY,

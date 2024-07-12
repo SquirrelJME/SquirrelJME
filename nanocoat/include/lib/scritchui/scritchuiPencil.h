@@ -863,6 +863,9 @@ typedef struct sjme_scritchui_pencilPrimFunctions
 	
 	/** @c RawScanPut . */
 	SJME_SCRITCHUI_QUICK_PENCIL(RawScanPut, rawScanPut);
+	
+	/** @c RawScanPut without any alpha blending . */
+	SJME_SCRITCHUI_QUICK_PENCIL(RawScanPut, rawScanPutPure);
 } sjme_scritchui_pencilPrimFunctions;
 
 struct sjme_scritchui_pencilLockFunctions
@@ -909,8 +912,8 @@ typedef struct sjme_scritchui_pencilImplFunctions
 	/** @c RawScanGet . */
 	SJME_SCRITCHUI_QUICK_PENCIL(RawScanGet, rawScanGet);
 	
-	/** @c RawScanPut . */
-	SJME_SCRITCHUI_QUICK_PENCIL(RawScanPut, rawScanPut);
+	/** @c RawScanPutPure , to place without blending . */
+	SJME_SCRITCHUI_QUICK_PENCIL(RawScanPut, rawScanPutPure);
 	
 	/** @c SetAlphaColor . */
 	SJME_SCRITCHUI_QUICK_PENCIL(SetAlphaColor, setAlphaColor);
@@ -1077,6 +1080,9 @@ typedef struct sjme_scritchui_pencilState
 	
 	/** The clipping region. */
 	sjme_scritchui_rect clip;
+	
+	/** Is blending applicable? */
+	sjme_jboolean applyAlpha;
 } sjme_scritchui_pencilState;
 
 /*--------------------------------------------------------------------------*/

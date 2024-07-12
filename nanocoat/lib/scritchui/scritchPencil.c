@@ -132,8 +132,8 @@ sjme_errorCode sjme_scritchui_pencilInitStatic(
 	if (pf < 0 || pf >= SJME_NUM_GFX_PIXEL_FORMATS)
 		return SJME_ERROR_INVALID_ARGUMENT;
 		
-	/* Raw scan putting are required at a minimum. */
-	if (inFunctions->rawScanPut == NULL)
+	/* Raw scan putting is required at a minimum. */
+	if (inFunctions->rawScanPutPure == NULL)
 		return SJME_ERROR_NOT_IMPLEMENTED;
 	
 	/* Locking functions which are required. */
@@ -212,7 +212,13 @@ sjme_errorCode sjme_scritchui_pencilInitStatic(
 			sizeof(*copyFrontEnd));
 	
 	/* Raw scan put, must be implemented always. */
-	result.prim.rawScanPut = result.impl->rawScanPut;
+	result.prim.rawScanPutPure = result.impl->rawScanPutPure;
+	
+	/* We do handle alpha blending in our own wrapper, however. */
+	if (result.impl->rawScanGet != NULL)
+		result.prim.rawScanPut = sjme_scritchui_corePrim_rawScanPut;
+	else
+		result.prim.rawScanPut = result.prim.rawScanPutPure;
 	
 	/* Need a primitive draw horizontal line? */
 	if (result.impl->drawHoriz != NULL)

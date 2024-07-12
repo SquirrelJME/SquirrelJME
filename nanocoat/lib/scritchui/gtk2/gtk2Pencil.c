@@ -162,7 +162,7 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilRawScanGet(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_scritchui_gtk2_pencilRawScanPut(
+static sjme_errorCode sjme_scritchui_gtk2_pencilRawScanPutPure(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint inX,
 	sjme_attrInPositive sjme_jint inY,
@@ -301,7 +301,7 @@ const sjme_scritchui_pencilImplFunctions sjme_scritchui_gtk2_pencilFunctions =
 	.fillRect = sjme_scritchui_gtk2_pencilFillRect,
 	.fillTriangle = sjme_scritchui_gtk2_pencilFillTriangle,
 	.rawScanGet = sjme_scritchui_gtk2_pencilRawScanGet,
-	.rawScanPut = sjme_scritchui_gtk2_pencilRawScanPut,
+	.rawScanPutPure = sjme_scritchui_gtk2_pencilRawScanPutPure,
 	.setAlphaColor = sjme_scritchui_gtk2_pencilSetAlphaColor,
 	.setBlendingMode = sjme_scritchui_gtk2_pencilSetBlendingMode,
 	.setClip = sjme_scritchui_gtk2_pencilSetClip,
