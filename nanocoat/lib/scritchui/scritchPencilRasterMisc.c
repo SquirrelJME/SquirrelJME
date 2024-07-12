@@ -17,7 +17,7 @@
 #include "sjme/debug.h"
 #include "sjme/fixed.h"
 
-sjme_errorCode sjme_scritchui_corePrim_mapColorFromRGB(
+sjme_errorCode sjme_scritchpen_corePrim_mapColorFromRGB(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint argb,
 	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor)
@@ -169,7 +169,7 @@ sjme_errorCode sjme_scritchui_corePrim_mapColorFromRGB(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_scritchui_corePrim_mapColorFromRaw(
+sjme_errorCode sjme_scritchpen_corePrim_mapColorFromRaw(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint v,
 	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor)
@@ -184,11 +184,11 @@ sjme_errorCode sjme_scritchui_corePrim_mapColorFromRaw(
 	if (g->palette.colors != NULL && numCol > 0)
 	{
 		if (v > 0 && v < numCol)
-			return sjme_scritchui_corePrim_mapColorFromRGB(g,
+			return sjme_scritchpen_corePrim_mapColorFromRGB(g,
 				g->palette.colors[v], outColor);
 		
 		/* Invalid color, render to black or close to it. */
-		return sjme_scritchui_corePrim_mapColorFromRGB(g,
+		return sjme_scritchpen_corePrim_mapColorFromRGB(g,
 			0, outColor);
 	}
 	
@@ -268,11 +268,11 @@ sjme_errorCode sjme_scritchui_corePrim_mapColorFromRaw(
 	}
 	
 	/* Map back to normalize. */
-	return sjme_scritchui_corePrim_mapColorFromRGB(g,
+	return sjme_scritchpen_corePrim_mapColorFromRGB(g,
 		(aa << 24) | (rr << 16) | (gg << 8) | bb, outColor);
 }
 
-sjme_errorCode sjme_scritchui_corePrim_mapColor(
+sjme_errorCode sjme_scritchpen_corePrim_mapColor(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jboolean fromRaw,
 	sjme_attrInValue sjme_jint inRgbOrRaw,
@@ -283,9 +283,9 @@ sjme_errorCode sjme_scritchui_corePrim_mapColor(
 	
 	/* Otherwise, use our own colormapping code. */
 	if (fromRaw)
-		return sjme_scritchui_corePrim_mapColorFromRaw(g,
+		return sjme_scritchpen_corePrim_mapColorFromRaw(g,
 			inRgbOrRaw, outColor);
-	return sjme_scritchui_corePrim_mapColorFromRGB(g,
+	return sjme_scritchpen_corePrim_mapColorFromRGB(g,
 		inRgbOrRaw, outColor);
 }
 
@@ -297,7 +297,7 @@ sjme_errorCode sjme_scritchui_corePrim_mapColor(
  * @param y The Y coordinate.
  * @since 2024/05/17
  */
-void sjme_scritchui_core_transform(
+void sjme_scritchpen_coreUtil_applyTranslate(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInOutNotNull sjme_jint* x,
 	sjme_attrInOutNotNull sjme_jint* y)
@@ -306,7 +306,7 @@ void sjme_scritchui_core_transform(
 	(*y) += g->state.translate.y;
 }
 
-sjme_errorCode sjme_scritchui_core_translateRotateScale(
+sjme_errorCode sjme_scritchpen_coreUtil_scaleRotate(
 	sjme_attrOutNotNull sjme_scritchui_pencilMatrix* outMatrix,
 	sjme_attrInValue sjme_scritchui_pencilTranslate inTrans,
 	sjme_attrInPositive sjme_jint wSrc,
@@ -381,7 +381,7 @@ sjme_errorCode sjme_scritchui_core_translateRotateScale(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_scritchui_core_anchor(
+sjme_errorCode sjme_scritchpen_coreUtil_anchor(
 	sjme_attrInValue sjme_jint anchor,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y,
@@ -424,7 +424,7 @@ sjme_errorCode sjme_scritchui_core_anchor(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_scritchui_core_pencilMapColor(
+sjme_errorCode sjme_scritchpen_core_mapColor(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jboolean fromRaw,
 	sjme_attrInValue sjme_jint inRgbOrRaw,
@@ -437,7 +437,7 @@ sjme_errorCode sjme_scritchui_core_pencilMapColor(
 	return g->prim.mapColor(g, fromRaw, inRgbOrRaw, outColor);
 }
 
-sjme_errorCode sjme_scritchui_core_pencilSetAlphaColor(
+sjme_errorCode sjme_scritchpen_core_setAlphaColor(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint argb)
 {
@@ -465,7 +465,7 @@ sjme_errorCode sjme_scritchui_core_pencilSetAlphaColor(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_scritchui_core_pencilSetBlendingMode(
+sjme_errorCode sjme_scritchpen_core_setBlendingMode(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_PENCIL_BLENDS)
 		sjme_scritchui_pencilBlendingMode mode)
@@ -489,7 +489,7 @@ sjme_errorCode sjme_scritchui_core_pencilSetBlendingMode(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_scritchui_core_pencilSetClip(
+sjme_errorCode sjme_scritchpen_core_setClip(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y,
@@ -504,7 +504,7 @@ sjme_errorCode sjme_scritchui_core_pencilSetClip(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Translate coordinates. */
-	sjme_scritchui_core_transform(g, &x, &y);
+	sjme_scritchpen_coreUtil_applyTranslate(g, &x, &y);
 	
 	/* Minimum bounds. */
 	if (w <= 0)
@@ -552,7 +552,7 @@ sjme_errorCode sjme_scritchui_core_pencilSetClip(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_scritchui_core_pencilSetDefaultFont(
+sjme_errorCode sjme_scritchpen_core_setDefaultFont(
 	sjme_attrInNotNull sjme_scritchui_pencil g)
 {
 	sjme_errorCode error;
@@ -567,7 +567,7 @@ sjme_errorCode sjme_scritchui_core_pencilSetDefaultFont(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_scritchui_core_pencilSetStrokeStyle(
+sjme_errorCode sjme_scritchpen_core_setStrokeStyle(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_PENCIL_STROKES)
 		sjme_scritchui_pencilStrokeMode style)
@@ -587,7 +587,7 @@ sjme_errorCode sjme_scritchui_core_pencilSetStrokeStyle(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_scritchui_core_pencilTranslate(
+sjme_errorCode sjme_scritchpen_core_translate(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y)

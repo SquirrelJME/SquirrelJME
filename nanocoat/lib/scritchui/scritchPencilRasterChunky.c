@@ -17,7 +17,7 @@
 #include "sjme/debug.h"
 #include "sjme/fixed.h"
 
-sjme_errorCode sjme_scritchui_corePrim_rawScanFillInt(
+sjme_errorCode sjme_scritchpen_corePrim_rawScanFillInt(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrOutNotNullBuf(rawLen) void* outRaw,
 	sjme_attrInPositive sjme_jint outRawOff,
@@ -53,7 +53,7 @@ sjme_errorCode sjme_scritchui_corePrim_rawScanFillInt(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_scritchui_corePrim_rawScanFillShort(
+sjme_errorCode sjme_scritchpen_corePrim_rawScanFillShort(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrOutNotNullBuf(rawLen) void* outRaw,
 	sjme_attrInPositive sjme_jint outRawOff,
@@ -89,7 +89,7 @@ sjme_errorCode sjme_scritchui_corePrim_rawScanFillShort(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_scritchui_corePrim_rawScanFillByte(
+sjme_errorCode sjme_scritchpen_corePrim_rawScanFillByte(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrOutNotNullBuf(rawLen) void* outRaw,
 	sjme_attrInPositive sjme_jint outRawOff,
@@ -125,7 +125,7 @@ sjme_errorCode sjme_scritchui_corePrim_rawScanFillByte(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_scritchui_corePrim_rawScanGet(
+sjme_errorCode sjme_scritchpen_corePrim_rawScanGet(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint inX,
 	sjme_attrInPositive sjme_jint inY,
@@ -140,7 +140,7 @@ sjme_errorCode sjme_scritchui_corePrim_rawScanGet(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_scritchui_corePrim_rawScanPut(
+sjme_errorCode sjme_scritchpen_corePrim_rawScanPut(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint inX,
 	sjme_attrInPositive sjme_jint inY,
@@ -149,11 +149,14 @@ sjme_errorCode sjme_scritchui_corePrim_rawScanPut(
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels,
 	sjme_attrInValue sjme_jboolean mulAlpha)
 {
+	if (g == NULL || inData == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
-sjme_errorCode sjme_scritchui_corePrim_rawScanPutSkipBlend(
+sjme_errorCode sjme_scritchpen_corePrim_rawScanPutSkipBlend(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint inX,
 	sjme_attrInPositive sjme_jint inY,
@@ -162,11 +165,14 @@ sjme_errorCode sjme_scritchui_corePrim_rawScanPutSkipBlend(
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels,
 	sjme_attrInValue sjme_jboolean mulAlpha)
 {
+	if (g == NULL || inData == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
-sjme_errorCode sjme_scritchui_core_pencilBlendRGBInto(
+sjme_errorCode sjme_scritchpen_core_blendRGBInto(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jboolean destAlpha,
 	sjme_attrInValue sjme_jboolean srcAlpha,
@@ -224,7 +230,7 @@ sjme_errorCode sjme_scritchui_core_pencilBlendRGBInto(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_scritchui_core_pencilCopyArea(
+sjme_errorCode sjme_scritchpen_core_copyArea(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,
@@ -240,26 +246,26 @@ sjme_errorCode sjme_scritchui_core_pencilCopyArea(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Need to lock? */
-	if (sjme_error_is(error = sjme_scritchui_core_lock(g)))
+	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
 		return sjme_error_default(error);
 	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 	
 	/* Release lock. */
-	if (sjme_error_is(error = sjme_scritchui_core_lockRelease(g)))
+	if (sjme_error_is(error = sjme_scritchpen_core_lockRelease(g)))
 		return sjme_error_default(error);
 	return SJME_ERROR_NOT_IMPLEMENTED;
 	
 fail_any:
 	/* Need to release the lock? */
-	if (sjme_error_is(sjme_scritchui_core_lockRelease(g)))
+	if (sjme_error_is(sjme_scritchpen_core_lockRelease(g)))
 		return sjme_error_default(error);
 	
 	return sjme_error_default(error);
 }
 
-sjme_errorCode sjme_scritchui_core_pencilDrawXRGB32Region(
+sjme_errorCode sjme_scritchpen_core_drawXRGB32Region(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNull sjme_jint* data,
 	sjme_attrInPositive sjme_jint off,
@@ -308,18 +314,18 @@ sjme_errorCode sjme_scritchui_core_pencilDrawXRGB32Region(
 		return SJME_ERROR_NONE;
 	
 	/* Transform. */
-	sjme_scritchui_core_transform(g, &xDest, &yDest);
+	sjme_scritchpen_coreUtil_applyTranslate(g, &xDest, &yDest);
 	
 	/* We are now doing the transforming and drawing ourselves. */
 	/* Calculate transformation matrix. */
 	memset(&m, 0, sizeof(m));
-	if (sjme_error_is(error = sjme_scritchui_core_translateRotateScale(
+	if (sjme_error_is(error = sjme_scritchpen_coreUtil_scaleRotate(
 		&m, trans, wSrc, hSrc, wDest, hDest)))
 		return sjme_error_default(error);
 	
 	/* Anchor to target coordinates after scaling, because we need */
 	/* to know what our target scale is. */
-	if (sjme_error_is(error = sjme_scritchui_core_anchor(anchor,
+	if (sjme_error_is(error = sjme_scritchpen_coreUtil_anchor(anchor,
 		xDest, yDest, m.tw, m.th, 0,
 		&xDest, &yDest)))
 		return sjme_error_default(error);
@@ -345,7 +351,7 @@ sjme_errorCode sjme_scritchui_core_pencilDrawXRGB32Region(
 	memset(flatRgb, 0, flatRgbBytes);
 	
 	/* Lock. */
-	if (sjme_error_is(error = sjme_scritchui_core_lock(g)))
+	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
 		return sjme_error_default(error);
 	
 	/* Figure out the position of our base pointer. */
@@ -397,7 +403,7 @@ sjme_errorCode sjme_scritchui_core_pencilDrawXRGB32Region(
 	}
 	
 	/* Release lock. */
-	if (sjme_error_is(error = sjme_scritchui_core_lockRelease(g)))
+	if (sjme_error_is(error = sjme_scritchpen_core_lockRelease(g)))
 		return sjme_error_default(error);
 		
 	/* Success! */
@@ -405,13 +411,13 @@ sjme_errorCode sjme_scritchui_core_pencilDrawXRGB32Region(
 	
 fail_any:
 	/* Need to release the lock? */
-	if (sjme_error_is(sjme_scritchui_core_lockRelease(g)))
+	if (sjme_error_is(sjme_scritchpen_core_lockRelease(g)))
 		return sjme_error_default(error);
 	
 	return sjme_error_default(error);
 }
 
-sjme_errorCode sjme_scritchui_core_pencilMapRawScanBytes(
+sjme_errorCode sjme_scritchpen_core_mapRawScanBytes(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositiveNonZero sjme_jint inPixels,
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outBytes)
@@ -470,7 +476,7 @@ sjme_errorCode sjme_scritchui_core_pencilMapRawScanBytes(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_scritchui_core_pencilMapRawScanFromRGB(
+sjme_errorCode sjme_scritchpen_core_mapRawScanFromRGB(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrOutNotNullBuf(rawLen) void* outRaw,
 	sjme_attrInPositive sjme_jint outRawOff,
@@ -538,7 +544,7 @@ sjme_errorCode sjme_scritchui_core_pencilMapRawScanFromRGB(
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
-sjme_errorCode sjme_scritchui_core_pencilMapRGBFromRawScan(
+sjme_errorCode sjme_scritchpen_core_mapRGBFromRawScan(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNullBuf(rgbLen) sjme_jint* outRgb,
 	sjme_attrInPositive sjme_jint outRgbOff,

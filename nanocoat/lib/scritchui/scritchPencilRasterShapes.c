@@ -17,7 +17,7 @@
 #include "sjme/debug.h"
 #include "sjme/fixed.h"
 
-sjme_errorCode sjme_scritchui_core_pencilDrawRect(
+sjme_errorCode sjme_scritchpen_core_drawRect(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y,
@@ -31,11 +31,11 @@ sjme_errorCode sjme_scritchui_core_pencilDrawRect(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Lock. */
-	if (sjme_error_is(error = sjme_scritchui_core_lock(g)))
+	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
 		return sjme_error_default(error);
 		
 	/* Transform. */
-	sjme_scritchui_core_transform(g, &x, &y);
+	sjme_scritchpen_coreUtil_applyTranslate(g, &x, &y);
 	
 	/* Pre-calculate coordinates. */
 	xw = x + w;
@@ -57,7 +57,7 @@ sjme_errorCode sjme_scritchui_core_pencilDrawRect(
 		goto fail_any;
 	
 	/* Release lock. */
-	if (sjme_error_is(error = sjme_scritchui_core_lockRelease(g)))
+	if (sjme_error_is(error = sjme_scritchpen_core_lockRelease(g)))
 		return sjme_error_default(error);
 	
 	/* Success! */
@@ -65,13 +65,13 @@ sjme_errorCode sjme_scritchui_core_pencilDrawRect(
 	
 fail_any:
 	/* Need to release the lock? */
-	if (sjme_error_is(sjme_scritchui_core_lockRelease(g)))
+	if (sjme_error_is(sjme_scritchpen_core_lockRelease(g)))
 		return sjme_error_default(error);
 	
 	return sjme_error_default(error);
 }
 
-sjme_errorCode sjme_scritchui_core_pencilDrawTriangle(
+sjme_errorCode sjme_scritchpen_core_drawTriangle(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x1,
 	sjme_attrInValue sjme_jint y1,
@@ -86,13 +86,13 @@ sjme_errorCode sjme_scritchui_core_pencilDrawTriangle(
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
 	/* Lock. */
-	if (sjme_error_is(error = sjme_scritchui_core_lock(g)))
+	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
 		return sjme_error_default(error);
 		
 	/* Transform. */
-	sjme_scritchui_core_transform(g, &x1, &y1);
-	sjme_scritchui_core_transform(g, &x2, &y2);
-	sjme_scritchui_core_transform(g, &x3, &y3);
+	sjme_scritchpen_coreUtil_applyTranslate(g, &x1, &y1);
+	sjme_scritchpen_coreUtil_applyTranslate(g, &x2, &y2);
+	sjme_scritchpen_coreUtil_applyTranslate(g, &x3, &y3);
 	
 	/* Clear error state. */
 	error = SJME_ERROR_NONE;
@@ -107,7 +107,7 @@ sjme_errorCode sjme_scritchui_core_pencilDrawTriangle(
 		goto fail_any;
 	
 	/* Release lock. */
-	if (sjme_error_is(error = sjme_scritchui_core_lockRelease(g)))
+	if (sjme_error_is(error = sjme_scritchpen_core_lockRelease(g)))
 		return sjme_error_default(error);
 	
 	/* Success! */
@@ -115,13 +115,13 @@ sjme_errorCode sjme_scritchui_core_pencilDrawTriangle(
 	
 fail_any:
 	/* Need to release the lock? */
-	if (sjme_error_is(sjme_scritchui_core_lockRelease(g)))
+	if (sjme_error_is(sjme_scritchpen_core_lockRelease(g)))
 		return sjme_error_default(error);
 	
 	return sjme_error_default(error);
 }
 
-sjme_errorCode sjme_scritchui_core_pencilFillRect(
+sjme_errorCode sjme_scritchpen_core_fillRect(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y,
@@ -136,11 +136,11 @@ sjme_errorCode sjme_scritchui_core_pencilFillRect(
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
 	/* Lock. */
-	if (sjme_error_is(error = sjme_scritchui_core_lock(g)))
+	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
 		return sjme_error_default(error);
 	
 	/* Transform. */
-	sjme_scritchui_core_transform(g, &x, &y);
+	sjme_scritchpen_coreUtil_applyTranslate(g, &x, &y);
 	
 	/* Cap width and height to 1 always. */
 	if (w <= 0)
@@ -159,7 +159,7 @@ sjme_errorCode sjme_scritchui_core_pencilFillRect(
 		goto fail_any;
 		
 	/* Release lock. */
-	if (sjme_error_is(error = sjme_scritchui_core_lockRelease(g)))
+	if (sjme_error_is(error = sjme_scritchpen_core_lockRelease(g)))
 		return sjme_error_default(error);
 	
 	/* Success? */
@@ -167,13 +167,13 @@ sjme_errorCode sjme_scritchui_core_pencilFillRect(
 	
 fail_any:
 	/* Need to release the lock? */
-	if (sjme_error_is(sjme_scritchui_core_lockRelease(g)))
+	if (sjme_error_is(sjme_scritchpen_core_lockRelease(g)))
 		return sjme_error_default(error);
 	
 	return sjme_error_default(error);
 }
 
-sjme_errorCode sjme_scritchui_core_pencilFillTriangle(
+sjme_errorCode sjme_scritchpen_core_fillTriangle(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x1,
 	sjme_attrInValue sjme_jint y1,
@@ -188,21 +188,21 @@ sjme_errorCode sjme_scritchui_core_pencilFillTriangle(
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
 	/* Lock. */
-	if (sjme_error_is(error = sjme_scritchui_core_lock(g)))
+	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
 		return sjme_error_default(error);
 	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 	
 	/* Release lock. */
-	if (sjme_error_is(error = sjme_scritchui_core_lockRelease(g)))
+	if (sjme_error_is(error = sjme_scritchpen_core_lockRelease(g)))
 		return sjme_error_default(error);
 		
 	return SJME_ERROR_NOT_IMPLEMENTED;
 	
 fail_any:
 	/* Need to release the lock? */
-	if (sjme_error_is(sjme_scritchui_core_lockRelease(g)))
+	if (sjme_error_is(sjme_scritchpen_core_lockRelease(g)))
 		return sjme_error_default(error);
 	
 	return sjme_error_default(error);

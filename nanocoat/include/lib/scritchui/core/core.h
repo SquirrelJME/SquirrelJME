@@ -104,7 +104,7 @@ sjme_errorCode sjme_scritchui_core_fontDerive(
 	sjme_attrInPositiveNonZero sjme_jint inPixelSize,
 	sjme_attrOutNotNull sjme_scritchui_pencilFont* outDerived);
 
-sjme_errorCode sjme_scritchui_core_hardwareGraphics(
+sjme_errorCode sjme_scritchpen_core_hardwareGraphics(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_scritchui_pencil* outPencil,
 	sjme_attrOutNullable sjme_alloc_weak* outWeakPencil,

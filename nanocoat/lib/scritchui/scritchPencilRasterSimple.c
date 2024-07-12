@@ -17,7 +17,7 @@
 #include "sjme/debug.h"
 #include "sjme/fixed.h"
 
-sjme_errorCode sjme_scritchui_corePrim_drawHoriz(
+sjme_errorCode sjme_scritchpen_corePrim_drawHoriz(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y,
@@ -78,7 +78,7 @@ sjme_errorCode sjme_scritchui_corePrim_drawHoriz(
 		SJME_JNI_FALSE);
 }
 
-sjme_errorCode sjme_scritchui_corePrim_drawLine(
+sjme_errorCode sjme_scritchpen_corePrim_drawLine(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x1,
 	sjme_attrInValue sjme_jint y1,
@@ -94,7 +94,7 @@ sjme_errorCode sjme_scritchui_corePrim_drawLine(
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
-sjme_errorCode sjme_scritchui_corePrim_drawPixel(
+sjme_errorCode sjme_scritchpen_corePrim_drawPixel(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y)
@@ -106,7 +106,7 @@ sjme_errorCode sjme_scritchui_corePrim_drawPixel(
 	return g->prim.drawHoriz(g, x, y, 1);
 }
 
-sjme_errorCode sjme_scritchui_core_pencilDrawHoriz(
+sjme_errorCode sjme_scritchpen_core_drawHoriz(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y,
@@ -118,18 +118,18 @@ sjme_errorCode sjme_scritchui_core_pencilDrawHoriz(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Need to lock? */
-	if (sjme_error_is(error = sjme_scritchui_core_lock(g)))
+	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
 		return sjme_error_default(error);
 		
 	/* Transform. */
-	sjme_scritchui_core_transform(g, &x, &y);
+	sjme_scritchpen_coreUtil_applyTranslate(g, &x, &y);
 	
 	/* Use primitive. */
 	if (sjme_error_is(error = g->prim.drawHoriz(g, x, y, w)))
 		goto fail_any;
 		
 	/* Release lock. */
-	if (sjme_error_is(error = sjme_scritchui_core_lockRelease(g)))
+	if (sjme_error_is(error = sjme_scritchpen_core_lockRelease(g)))
 		return sjme_error_default(error);
 	
 	/* Success! */
@@ -137,13 +137,13 @@ sjme_errorCode sjme_scritchui_core_pencilDrawHoriz(
 	
 fail_any:
 	/* Need to release the lock? */
-	if (sjme_error_is(sjme_scritchui_core_lockRelease(g)))
+	if (sjme_error_is(sjme_scritchpen_core_lockRelease(g)))
 		return sjme_error_default(error);
 	
 	return sjme_error_default(error);
 }
 
-sjme_errorCode sjme_scritchui_core_pencilDrawLine(
+sjme_errorCode sjme_scritchpen_core_drawLine(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x1,
 	sjme_attrInValue sjme_jint y1,
@@ -156,19 +156,19 @@ sjme_errorCode sjme_scritchui_core_pencilDrawLine(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Lock. */
-	if (sjme_error_is(error = sjme_scritchui_core_lock(g)))
+	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
 		return sjme_error_default(error);
 		
 	/* Transform. */
-	sjme_scritchui_core_transform(g, &x1, &y1);
-	sjme_scritchui_core_transform(g, &x2, &y2);
+	sjme_scritchpen_coreUtil_applyTranslate(g, &x1, &y1);
+	sjme_scritchpen_coreUtil_applyTranslate(g, &x2, &y2);
 	
 	/* Use primitive. */
 	if (sjme_error_is(error = g->prim.drawLine(g, x1, y1, x2, y2)))
 		goto fail_any;
 	
 	/* Release lock. */
-	if (sjme_error_is(error = sjme_scritchui_core_lockRelease(g)))
+	if (sjme_error_is(error = sjme_scritchpen_core_lockRelease(g)))
 		return sjme_error_default(error);
 	
 	/* Success! */
@@ -176,13 +176,13 @@ sjme_errorCode sjme_scritchui_core_pencilDrawLine(
 	
 fail_any:
 	/* Need to release the lock? */
-	if (sjme_error_is(sjme_scritchui_core_lockRelease(g)))
+	if (sjme_error_is(sjme_scritchpen_core_lockRelease(g)))
 		return sjme_error_default(error);
 	
 	return sjme_error_default(error);
 }
 
-sjme_errorCode sjme_scritchui_core_pencilDrawPixel(
+sjme_errorCode sjme_scritchpen_core_drawPixel(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y)
@@ -193,14 +193,14 @@ sjme_errorCode sjme_scritchui_core_pencilDrawPixel(
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
 	/* Transform. */
-	sjme_scritchui_core_transform(g, &x, &y);
+	sjme_scritchpen_coreUtil_applyTranslate(g, &x, &y);
 	
 	/* Use primitive. */
 	if (sjme_error_is(error = g->prim.drawPixel(g, x, y)))
 		goto fail_any;
 	
 	/* Release lock. */
-	if (sjme_error_is(error = sjme_scritchui_core_lockRelease(g)))
+	if (sjme_error_is(error = sjme_scritchpen_core_lockRelease(g)))
 		return sjme_error_default(error);
 	
 	/* Success! */
@@ -208,7 +208,7 @@ sjme_errorCode sjme_scritchui_core_pencilDrawPixel(
 	
 fail_any:
 	/* Need to release the lock? */
-	if (sjme_error_is(sjme_scritchui_core_lockRelease(g)))
+	if (sjme_error_is(sjme_scritchpen_core_lockRelease(g)))
 		return sjme_error_default(error);
 	
 	return sjme_error_default(error);

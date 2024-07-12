@@ -251,7 +251,7 @@ static sjme_errorCode sjme_scritchui_basicRawScanPutPure_sjme_jbyte1(
 
 #include "scritchPencilTemplate.c"
 
-sjme_errorCode sjme_scritchui_pencilInitBuffer(
+sjme_errorCode sjme_scritchpen_initBuffer(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrOutNotNull sjme_scritchui_pencil* outPencil,
 	sjme_attrOutNullable sjme_alloc_weak* outWeakPencil,
@@ -283,7 +283,7 @@ sjme_errorCode sjme_scritchui_pencilInitBuffer(
 		return sjme_error_default(error);
 	
 	/* Initialize it. */
-	if (sjme_error_is(error = sjme_scritchui_pencilInitBufferStatic(
+	if (sjme_error_is(error = sjme_scritchpen_initBufferStatic(
 		result, pf, bw, bh, inLockFuncs, inLockFrontEndCopy,
 		sx, sy, sw, sh, defaultFont, copyFrontEnd)))
 	{
@@ -301,7 +301,7 @@ sjme_errorCode sjme_scritchui_pencilInitBuffer(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_scritchui_pencilInitBufferStatic(
+sjme_errorCode sjme_scritchpen_initBufferStatic(
 	sjme_attrInOutNotNull sjme_scritchui_pencil inOutPencil,
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInPositive sjme_jint bw,
@@ -366,7 +366,7 @@ sjme_errorCode sjme_scritchui_pencilInitBufferStatic(
 	}
 	
 	/* Forward. */
-	return sjme_scritchui_pencilInitStatic(inOutPencil,
+	return sjme_scritchpen_initStatic(inOutPencil,
 		chosen, inLockFuncs, inLockFrontEndCopy, pf,
 		sw, sh, bw, defaultFont, copyFrontEnd);
 }

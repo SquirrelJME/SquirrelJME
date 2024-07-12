@@ -973,7 +973,7 @@ extern const sjme_scritchui_pencilBitLineFunc
  * @return An error if the requested graphics are not valid.
  * @since 2024/05/01
  */
-sjme_errorCode sjme_scritchui_pencilInitBuffer(
+sjme_errorCode sjme_scritchpen_initBuffer(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrOutNotNull sjme_scritchui_pencil* outPencil,
 	sjme_attrOutNullable sjme_alloc_weak* outWeakPencil,
@@ -1006,7 +1006,7 @@ sjme_errorCode sjme_scritchui_pencilInitBuffer(
  * @return An error if the requested graphics are not valid.
  * @since 2024/05/01
  */
-sjme_errorCode sjme_scritchui_pencilInitBufferStatic(
+sjme_errorCode sjme_scritchpen_initBufferStatic(
 	sjme_attrInOutNotNull sjme_scritchui_pencil inOutPencil,
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInPositiveNonZero sjme_jint bw,
@@ -1036,7 +1036,7 @@ sjme_errorCode sjme_scritchui_pencilInitBufferStatic(
  * @return Any error code if applicable.
  * @since 2024/05/04
  */
-sjme_errorCode sjme_scritchui_pencilInitStatic(
+sjme_errorCode sjme_scritchpen_initStatic(
 	sjme_attrInOutNotNull sjme_scritchui_pencil inPencil,
 	sjme_attrInNotNull const sjme_scritchui_pencilImplFunctions* inFunctions,
 	sjme_attrInNullable const sjme_scritchui_pencilLockFunctions* inLockFuncs,

@@ -17,7 +17,7 @@
 #include "sjme/debug.h"
 #include "sjme/fixed.h"
 
-sjme_errorCode sjme_scritchui_core_lock(
+sjme_errorCode sjme_scritchpen_core_lock(
 	sjme_attrInNotNull sjme_scritchui_pencil g)
 {
 	sjme_scritchui_pencilLockState* state;
@@ -46,7 +46,7 @@ sjme_errorCode sjme_scritchui_core_lock(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_scritchui_core_lockRelease(
+sjme_errorCode sjme_scritchpen_core_lockRelease(
 	sjme_attrInNotNull sjme_scritchui_pencil g)
 {
 	sjme_scritchui_pencilLockState* state;
@@ -80,35 +80,35 @@ sjme_errorCode sjme_scritchui_core_lockRelease(
 }
 
 /** Core pencil functions. */
-static const sjme_scritchui_pencilFunctions sjme_scritchui_core_pencil =
+static const sjme_scritchui_pencilFunctions sjme_scritchpen_core_functions =
 {
-	.blendRGBInto = sjme_scritchui_core_pencilBlendRGBInto,
-	.copyArea = sjme_scritchui_core_pencilCopyArea,
-	.drawChar = sjme_scritchui_core_pencilDrawChar,
-	.drawChars = sjme_scritchui_core_pencilDrawChars,
-	.drawHoriz = sjme_scritchui_core_pencilDrawHoriz,
-	.drawLine = sjme_scritchui_core_pencilDrawLine,
-	.drawPixel = sjme_scritchui_core_pencilDrawPixel,
-	.drawRect = sjme_scritchui_core_pencilDrawRect,
-	.drawSubstring = sjme_scritchui_core_pencilDrawSubstring,
-	.drawTriangle = sjme_scritchui_core_pencilDrawTriangle,
-	.drawXRGB32Region = sjme_scritchui_core_pencilDrawXRGB32Region,
-	.fillRect = sjme_scritchui_core_pencilFillRect,
-	.fillTriangle = sjme_scritchui_core_pencilFillTriangle,
-	.mapColor = sjme_scritchui_core_pencilMapColor,
-	.mapRawScanBytes = sjme_scritchui_core_pencilMapRawScanBytes,
-	.mapRawScanFromRGB = sjme_scritchui_core_pencilMapRawScanFromRGB,
-	.mapRGBFromRawScan = sjme_scritchui_core_pencilMapRGBFromRawScan,
-	.setAlphaColor = sjme_scritchui_core_pencilSetAlphaColor,
-	.setBlendingMode = sjme_scritchui_core_pencilSetBlendingMode,
-	.setClip = sjme_scritchui_core_pencilSetClip,
-	.setDefaultFont = sjme_scritchui_core_pencilSetDefaultFont,
-	.setFont = sjme_scritchui_core_pencilSetFont,
-	.setStrokeStyle = sjme_scritchui_core_pencilSetStrokeStyle,
-	.translate = sjme_scritchui_core_pencilTranslate,
+	.blendRGBInto = sjme_scritchpen_core_blendRGBInto,
+	.copyArea = sjme_scritchpen_core_copyArea,
+	.drawChar = sjme_scritchpen_core_drawChar,
+	.drawChars = sjme_scritchpen_core_drawChars,
+	.drawHoriz = sjme_scritchpen_core_drawHoriz,
+	.drawLine = sjme_scritchpen_core_drawLine,
+	.drawPixel = sjme_scritchpen_core_drawPixel,
+	.drawRect = sjme_scritchpen_core_drawRect,
+	.drawSubstring = sjme_scritchpen_core_drawSubstring,
+	.drawTriangle = sjme_scritchpen_core_drawTriangle,
+	.drawXRGB32Region = sjme_scritchpen_core_drawXRGB32Region,
+	.fillRect = sjme_scritchpen_core_fillRect,
+	.fillTriangle = sjme_scritchpen_core_fillTriangle,
+	.mapColor = sjme_scritchpen_core_mapColor,
+	.mapRawScanBytes = sjme_scritchpen_core_mapRawScanBytes,
+	.mapRawScanFromRGB = sjme_scritchpen_core_mapRawScanFromRGB,
+	.mapRGBFromRawScan = sjme_scritchpen_core_mapRGBFromRawScan,
+	.setAlphaColor = sjme_scritchpen_core_setAlphaColor,
+	.setBlendingMode = sjme_scritchpen_core_setBlendingMode,
+	.setClip = sjme_scritchpen_core_setClip,
+	.setDefaultFont = sjme_scritchpen_core_setDefaultFont,
+	.setFont = sjme_scritchpen_core_setFont,
+	.setStrokeStyle = sjme_scritchpen_core_setStrokeStyle,
+	.translate = sjme_scritchpen_core_translate,
 };
 
-sjme_errorCode sjme_scritchui_pencilInitStatic(
+sjme_errorCode sjme_scritchpen_initStatic(
 	sjme_attrInOutNotNull sjme_scritchui_pencil inPencil,
 	sjme_attrInNotNull const sjme_scritchui_pencilImplFunctions* inFunctions,
 	sjme_attrInNullable const sjme_scritchui_pencilLockFunctions* inLockFuncs,
@@ -143,7 +143,7 @@ sjme_errorCode sjme_scritchui_pencilInitStatic(
 		
 	/* Setup base result. */
 	memset(&result, 0, sizeof(result));
-	result.api = &sjme_scritchui_core_pencil;
+	result.api = &sjme_scritchpen_core_functions;
 	result.impl = inFunctions;
 	result.lock = inLockFuncs;
 	result.defaultFont = defaultFont;
@@ -216,26 +216,26 @@ sjme_errorCode sjme_scritchui_pencilInitStatic(
 	
 	/* We do handle alpha blending in our own wrapper, however. */
 	if (result.impl->rawScanGet != NULL)
-		result.prim.rawScanPut = sjme_scritchui_corePrim_rawScanPut;
+		result.prim.rawScanPut = sjme_scritchpen_corePrim_rawScanPut;
 	else
-		result.prim.rawScanPut = sjme_scritchui_corePrim_rawScanPutSkipBlend;
+		result.prim.rawScanPut = sjme_scritchpen_corePrim_rawScanPutSkipBlend;
 	
 	/* These are always handled by us. */
-	result.prim.drawHoriz = sjme_scritchui_corePrim_drawHoriz;
-	result.prim.drawLine = sjme_scritchui_corePrim_drawLine;
-	result.prim.drawPixel = sjme_scritchui_corePrim_drawPixel;
+	result.prim.drawHoriz = sjme_scritchpen_corePrim_drawHoriz;
+	result.prim.drawLine = sjme_scritchpen_corePrim_drawLine;
+	result.prim.drawPixel = sjme_scritchpen_corePrim_drawPixel;
 	
 	/* Raw scan get. */
 	if (result.impl->rawScanGet != NULL)
 		result.prim.rawScanGet = result.impl->rawScanGet;
 	else
-		result.prim.rawScanGet = sjme_scritchui_corePrim_rawScanGet;
+		result.prim.rawScanGet = sjme_scritchpen_corePrim_rawScanGet;
 	
 	/* Color mapping. */
 	if (result.impl->mapColor != NULL)
 		result.prim.mapColor = result.impl->mapColor;
 	else
-		result.prim.mapColor = sjme_scritchui_corePrim_mapColor;
+		result.prim.mapColor = sjme_scritchpen_corePrim_mapColor;
 	
 	/* Determine bytes per pixel. */
 	result.api->mapRawScanBytes(&result, 1,
@@ -243,11 +243,11 @@ sjme_errorCode sjme_scritchui_pencilInitStatic(
 	
 	/* Basic filling of raw value. */
 	if (result.bytesPerPixel == 4)
-		result.prim.rawScanFill = sjme_scritchui_corePrim_rawScanFillInt;
+		result.prim.rawScanFill = sjme_scritchpen_corePrim_rawScanFillInt;
 	else if (result.bytesPerPixel == 2)
-		result.prim.rawScanFill = sjme_scritchui_corePrim_rawScanFillShort;
+		result.prim.rawScanFill = sjme_scritchpen_corePrim_rawScanFillShort;
 	else
-		result.prim.rawScanFill = sjme_scritchui_corePrim_rawScanFillByte;
+		result.prim.rawScanFill = sjme_scritchpen_corePrim_rawScanFillByte;
 	
 	/* Reset translation. */
 	result.state.translate.x = 0;
@@ -267,7 +267,7 @@ sjme_errorCode sjme_scritchui_pencilInitStatic(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_scritchui_core_hardwareGraphics(
+sjme_errorCode sjme_scritchpen_core_hardwareGraphics(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_scritchui_pencil* outPencil,
 	sjme_attrOutNullable sjme_alloc_weak* outWeakPencil,
@@ -320,7 +320,7 @@ sjme_errorCode sjme_scritchui_core_hardwareGraphics(
 	/* Forward to basic operations. */
 	result = NULL;
 	resultWeak = NULL;
-	if (sjme_error_is(error = sjme_scritchui_pencilInitBuffer(
+	if (sjme_error_is(error = sjme_scritchpen_initBuffer(
 		inState->pool, &result, &resultWeak,
 		pf, bw, bh,
 		inLockFuncs, inLockFrontEndCopy, sx, sy, sw, sh,

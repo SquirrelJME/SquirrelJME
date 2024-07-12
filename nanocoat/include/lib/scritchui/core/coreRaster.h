@@ -31,41 +31,41 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
-sjme_errorCode sjme_scritchui_corePrim_drawHoriz(
+sjme_errorCode sjme_scritchpen_corePrim_drawHoriz(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y,
 	sjme_attrInValue sjme_jint w);
 
-sjme_errorCode sjme_scritchui_corePrim_drawLine(
+sjme_errorCode sjme_scritchpen_corePrim_drawLine(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x1,
 	sjme_attrInValue sjme_jint y1,
 	sjme_attrInValue sjme_jint x2,
 	sjme_attrInValue sjme_jint y2);
 
-sjme_errorCode sjme_scritchui_corePrim_drawPixel(
+sjme_errorCode sjme_scritchpen_corePrim_drawPixel(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y);
 
-sjme_errorCode sjme_scritchui_corePrim_mapColorFromRGB(
+sjme_errorCode sjme_scritchpen_corePrim_mapColorFromRGB(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint argb,
 	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor);
 
-sjme_errorCode sjme_scritchui_corePrim_mapColorFromRaw(
+sjme_errorCode sjme_scritchpen_corePrim_mapColorFromRaw(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint v,
 	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor);
 
-sjme_errorCode sjme_scritchui_corePrim_mapColor(
+sjme_errorCode sjme_scritchpen_corePrim_mapColor(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jboolean fromRaw,
 	sjme_attrInValue sjme_jint inRgbOrRaw,
 	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor);
 
-sjme_errorCode sjme_scritchui_corePrim_rawScanFillByte(
+sjme_errorCode sjme_scritchpen_corePrim_rawScanFillByte(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrOutNotNullBuf(rawLen) void* outRaw,
 	sjme_attrInPositive sjme_jint outRawOff,
@@ -73,7 +73,7 @@ sjme_errorCode sjme_scritchui_corePrim_rawScanFillByte(
 	sjme_attrInValue sjme_jint rawPixel,
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels);
 
-sjme_errorCode sjme_scritchui_corePrim_rawScanFillInt(
+sjme_errorCode sjme_scritchpen_corePrim_rawScanFillInt(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrOutNotNullBuf(rawLen) void* outRaw,
 	sjme_attrInPositive sjme_jint outRawOff,
@@ -81,7 +81,7 @@ sjme_errorCode sjme_scritchui_corePrim_rawScanFillInt(
 	sjme_attrInValue sjme_jint rawPixel,
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels);
 
-sjme_errorCode sjme_scritchui_corePrim_rawScanFillShort(
+sjme_errorCode sjme_scritchpen_corePrim_rawScanFillShort(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrOutNotNullBuf(rawLen) void* outRaw,
 	sjme_attrInPositive sjme_jint outRawOff,
@@ -89,7 +89,7 @@ sjme_errorCode sjme_scritchui_corePrim_rawScanFillShort(
 	sjme_attrInValue sjme_jint rawPixel,
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels);
 
-sjme_errorCode sjme_scritchui_corePrim_rawScanGet(
+sjme_errorCode sjme_scritchpen_corePrim_rawScanGet(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint inX,
 	sjme_attrInPositive sjme_jint inY,
@@ -97,7 +97,7 @@ sjme_errorCode sjme_scritchui_corePrim_rawScanGet(
 	sjme_attrInPositiveNonZero sjme_jint inDataLen,
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels);
 	
-sjme_errorCode sjme_scritchui_corePrim_rawScanPut(
+sjme_errorCode sjme_scritchpen_corePrim_rawScanPut(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint inX,
 	sjme_attrInPositive sjme_jint inY,
@@ -106,7 +106,7 @@ sjme_errorCode sjme_scritchui_corePrim_rawScanPut(
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels,
 	sjme_attrInValue sjme_jboolean mulAlpha);
 
-sjme_errorCode sjme_scritchui_corePrim_rawScanPutSkipBlend(
+sjme_errorCode sjme_scritchpen_corePrim_rawScanPutSkipBlend(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint inX,
 	sjme_attrInPositive sjme_jint inY,
@@ -129,7 +129,7 @@ sjme_errorCode sjme_scritchui_corePrim_rawScanPutSkipBlend(
  * @return Any resultant error, if any.
  * @since 2024/06/27
  */
-sjme_errorCode sjme_scritchui_core_anchor(
+sjme_errorCode sjme_scritchpen_coreUtil_anchor(
 	sjme_attrInValue sjme_jint anchor,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y,
@@ -138,14 +138,19 @@ sjme_errorCode sjme_scritchui_core_anchor(
 	sjme_attrInValue sjme_jint baseline,
 	sjme_attrOutNotNull sjme_jint* outX,
 	sjme_attrOutNotNull sjme_jint* outY);
+	
+void sjme_scritchpen_coreUtil_applyTranslate(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInOutNotNull sjme_jint* x,
+	sjme_attrInOutNotNull sjme_jint* y);
 
-sjme_errorCode sjme_scritchui_core_lock(
+sjme_errorCode sjme_scritchpen_core_lock(
 	sjme_attrInNotNull sjme_scritchui_pencil g);
 
-sjme_errorCode sjme_scritchui_core_lockRelease(
+sjme_errorCode sjme_scritchpen_core_lockRelease(
 	sjme_attrInNotNull sjme_scritchui_pencil g);
 
-sjme_errorCode sjme_scritchui_core_pencilBlendRGBInto(
+sjme_errorCode sjme_scritchpen_core_blendRGBInto(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jboolean destAlpha,
 	sjme_attrInValue sjme_jboolean srcAlpha,
@@ -153,7 +158,7 @@ sjme_errorCode sjme_scritchui_core_pencilBlendRGBInto(
 	sjme_attrInNotNullBuf(numPixels) sjme_jint* src,
 	sjme_attrInPositive sjme_jint numPixels);
 
-sjme_errorCode sjme_scritchui_core_pencilCopyArea(
+sjme_errorCode sjme_scritchpen_core_copyArea(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,
@@ -163,20 +168,20 @@ sjme_errorCode sjme_scritchui_core_pencilCopyArea(
 	sjme_attrInValue sjme_jint dy,
 	sjme_attrInValue sjme_jint anchor);
 
-sjme_errorCode sjme_scritchui_core_pencilDrawHoriz(
+sjme_errorCode sjme_scritchpen_core_drawHoriz(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y,
 	sjme_attrInValue sjme_jint w);
 
-sjme_errorCode sjme_scritchui_core_pencilDrawRect(
+sjme_errorCode sjme_scritchpen_core_drawRect(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y,
 	sjme_attrInPositive sjme_jint w,
 	sjme_attrInPositive sjme_jint h);
 
-sjme_errorCode sjme_scritchui_core_pencilDrawTriangle(
+sjme_errorCode sjme_scritchpen_core_drawTriangle(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x1,
 	sjme_attrInValue sjme_jint y1,
@@ -185,7 +190,7 @@ sjme_errorCode sjme_scritchui_core_pencilDrawTriangle(
 	sjme_attrInValue sjme_jint x3,
 	sjme_attrInValue sjme_jint y3);
 
-sjme_errorCode sjme_scritchui_core_pencilDrawChar(
+sjme_errorCode sjme_scritchpen_core_drawChar(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint c,
 	sjme_attrInValue sjme_jint x,
@@ -193,7 +198,7 @@ sjme_errorCode sjme_scritchui_core_pencilDrawChar(
 	sjme_attrInValue sjme_jint anchor,
 	sjme_attrOutNullable sjme_jint* outCw);
 
-sjme_errorCode sjme_scritchui_core_pencilDrawChars(
+sjme_errorCode sjme_scritchpen_core_drawChars(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNull sjme_jchar* s,
 	sjme_attrInPositive sjme_jint o,
@@ -202,19 +207,19 @@ sjme_errorCode sjme_scritchui_core_pencilDrawChars(
 	sjme_attrInValue sjme_jint y,
 	sjme_attrInValue sjme_jint anchor);
 
-sjme_errorCode sjme_scritchui_core_pencilDrawLine(
+sjme_errorCode sjme_scritchpen_core_drawLine(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x1,
 	sjme_attrInValue sjme_jint y1,
 	sjme_attrInValue sjme_jint x2,
 	sjme_attrInValue sjme_jint y2);
 
-sjme_errorCode sjme_scritchui_core_pencilDrawPixel(
+sjme_errorCode sjme_scritchpen_core_drawPixel(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y);
 	
-sjme_errorCode sjme_scritchui_core_pencilDrawSubstring(
+sjme_errorCode sjme_scritchpen_core_drawSubstring(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNull const sjme_charSeq* s,
 	sjme_attrInPositive sjme_jint o, 
@@ -223,7 +228,7 @@ sjme_errorCode sjme_scritchui_core_pencilDrawSubstring(
 	sjme_attrInValue sjme_jint y,
 	sjme_attrInValue sjme_jint anchor);
 
-sjme_errorCode sjme_scritchui_core_pencilDrawXRGB32Region(
+sjme_errorCode sjme_scritchpen_core_drawXRGB32Region(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNull sjme_jint* data,
 	sjme_attrInPositive sjme_jint off,
@@ -243,14 +248,14 @@ sjme_errorCode sjme_scritchui_core_pencilDrawXRGB32Region(
 	sjme_attrInPositive sjme_jint origImgWidth,
 	sjme_attrInPositive sjme_jint origImgHeight);
 
-sjme_errorCode sjme_scritchui_core_pencilFillRect(
+sjme_errorCode sjme_scritchpen_core_fillRect(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y,
 	sjme_attrInPositive sjme_jint w,
 	sjme_attrInPositive sjme_jint h);
 
-sjme_errorCode sjme_scritchui_core_pencilFillTriangle(
+sjme_errorCode sjme_scritchpen_core_fillTriangle(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x1,
 	sjme_attrInValue sjme_jint y1,
@@ -259,18 +264,18 @@ sjme_errorCode sjme_scritchui_core_pencilFillTriangle(
 	sjme_attrInValue sjme_jint x3,
 	sjme_attrInValue sjme_jint y3);
 
-sjme_errorCode sjme_scritchui_core_pencilMapColor(
+sjme_errorCode sjme_scritchpen_core_mapColor(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jboolean fromRaw,
 	sjme_attrInValue sjme_jint inRgbOrRaw,
 	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor);
 
-sjme_errorCode sjme_scritchui_core_pencilMapRawScanBytes(
+sjme_errorCode sjme_scritchpen_core_mapRawScanBytes(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositiveNonZero sjme_jint inPixels,
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outBytes);
 
-sjme_errorCode sjme_scritchui_core_pencilMapRawScanFromRGB(
+sjme_errorCode sjme_scritchpen_core_mapRawScanFromRGB(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrOutNotNullBuf(rawLen) void* outRaw,
 	sjme_attrInPositive sjme_jint outRawOff,
@@ -279,7 +284,7 @@ sjme_errorCode sjme_scritchui_core_pencilMapRawScanFromRGB(
 	sjme_attrInPositive sjme_jint inRgbOff,
 	sjme_attrInPositive sjme_jint inRgbLen);
 
-sjme_errorCode sjme_scritchui_core_pencilMapRGBFromRawScan(
+sjme_errorCode sjme_scritchpen_core_mapRGBFromRawScan(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNullBuf(rgbLen) sjme_jint* outRgb,
 	sjme_attrInPositive sjme_jint outRgbOff,
@@ -288,45 +293,40 @@ sjme_errorCode sjme_scritchui_core_pencilMapRGBFromRawScan(
 	sjme_attrInPositive sjme_jint inRawOff,
 	sjme_attrInPositive sjme_jint inRawLen);
 
-sjme_errorCode sjme_scritchui_core_pencilSetAlphaColor(
+sjme_errorCode sjme_scritchpen_core_setAlphaColor(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint argb);
 
-sjme_errorCode sjme_scritchui_core_pencilSetBlendingMode(
+sjme_errorCode sjme_scritchpen_core_setBlendingMode(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_PENCIL_BLENDS)
 		sjme_scritchui_pencilBlendingMode mode);
 
-sjme_errorCode sjme_scritchui_core_pencilSetClip(
+sjme_errorCode sjme_scritchpen_core_setClip(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y,
 	sjme_attrInPositive sjme_jint w,
 	sjme_attrInPositive sjme_jint h);
 
-sjme_errorCode sjme_scritchui_core_pencilSetDefaultFont(
+sjme_errorCode sjme_scritchpen_core_setDefaultFont(
 	sjme_attrInNotNull sjme_scritchui_pencil g);
 	
-sjme_errorCode sjme_scritchui_core_pencilSetStrokeStyle(
+sjme_errorCode sjme_scritchpen_core_setStrokeStyle(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_PENCIL_STROKES)
 		sjme_scritchui_pencilStrokeMode style);
 	
-sjme_errorCode sjme_scritchui_core_pencilSetFont(
+sjme_errorCode sjme_scritchpen_core_setFont(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNull sjme_scritchui_pencilFont font);
 	
-sjme_errorCode sjme_scritchui_core_pencilTranslate(
+sjme_errorCode sjme_scritchpen_core_translate(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y);
-	
-void sjme_scritchui_core_transform(
-	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInOutNotNull sjme_jint* x,
-	sjme_attrInOutNotNull sjme_jint* y);
 
-sjme_errorCode sjme_scritchui_core_translateRotateScale(
+sjme_errorCode sjme_scritchpen_coreUtil_scaleRotate(
 	sjme_attrOutNotNull sjme_scritchui_pencilMatrix* outMatrix,
 	sjme_attrInValue sjme_scritchui_pencilTranslate inTrans,
 	sjme_attrInPositive sjme_jint wSrc,

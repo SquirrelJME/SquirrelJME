@@ -17,7 +17,7 @@
 #include "sjme/debug.h"
 #include "sjme/fixed.h"
 
-sjme_errorCode sjme_scritchui_core_pencilDrawChar(
+sjme_errorCode sjme_scritchpen_core_drawChar(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint c,
 	sjme_attrInValue sjme_jint x,
@@ -57,7 +57,7 @@ sjme_errorCode sjme_scritchui_core_pencilDrawChar(
 	}
 	
 	/* Need to lock? */
-	if (sjme_error_is(error = sjme_scritchui_core_lock(g)))
+	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
 		return sjme_error_default(error);
 	
 	/* And the pixel height, since this is a bitmap font. */
@@ -72,7 +72,7 @@ sjme_errorCode sjme_scritchui_core_pencilDrawChar(
 	
 	/* Calculate anchor point accordingly. */
 	if (anchor != 0)
-		if (sjme_error_is(error = sjme_scritchui_core_anchor(anchor,
+		if (sjme_error_is(error = sjme_scritchpen_coreUtil_anchor(anchor,
 			x, y, cw, ch, 0, &x, &y)))
 			goto fail_any;
 		
@@ -114,7 +114,7 @@ sjme_errorCode sjme_scritchui_core_pencilDrawChar(
 		}
 		
 	/* Release lock. */
-	if (sjme_error_is(error = sjme_scritchui_core_lockRelease(g)))
+	if (sjme_error_is(error = sjme_scritchpen_core_lockRelease(g)))
 		return sjme_error_default(error);
 	
 	/* Success! */
@@ -125,13 +125,13 @@ sjme_errorCode sjme_scritchui_core_pencilDrawChar(
 
 fail_any:
 	/* Need to release the lock? */
-	if (sjme_error_is(sjme_scritchui_core_lockRelease(g)))
+	if (sjme_error_is(sjme_scritchpen_core_lockRelease(g)))
 		return sjme_error_default(error);
 	
 	return sjme_error_default(error);
 }
 
-sjme_errorCode sjme_scritchui_core_pencilDrawChars(
+sjme_errorCode sjme_scritchpen_core_drawChars(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNull sjme_jchar* s,
 	sjme_attrInPositive sjme_jint o,
@@ -146,27 +146,27 @@ sjme_errorCode sjme_scritchui_core_pencilDrawChars(
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
 	/* Need to lock? */
-	if (sjme_error_is(error = sjme_scritchui_core_lock(g)))
+	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
 		return sjme_error_default(error);
 	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 	
 	/* Release lock. */
-	if (sjme_error_is(error = sjme_scritchui_core_lockRelease(g)))
+	if (sjme_error_is(error = sjme_scritchpen_core_lockRelease(g)))
 		return sjme_error_default(error);
 	
 	return SJME_ERROR_NOT_IMPLEMENTED;
 	
 fail_any:
 	/* Need to release the lock? */
-	if (sjme_error_is(sjme_scritchui_core_lockRelease(g)))
+	if (sjme_error_is(sjme_scritchpen_core_lockRelease(g)))
 		return sjme_error_default(error);
 	
 	return sjme_error_default(error);
 }
 
-sjme_errorCode sjme_scritchui_core_pencilDrawSubstring(
+sjme_errorCode sjme_scritchpen_core_drawSubstring(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNull const sjme_charSeq* s,
 	sjme_attrInPositive sjme_jint o, 
@@ -192,7 +192,7 @@ sjme_errorCode sjme_scritchui_core_pencilDrawSubstring(
 		return SJME_ERROR_ILLEGAL_STATE;
 		
 	/* Lock. */
-	if (sjme_error_is(error = sjme_scritchui_core_lock(g)))
+	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
 		return sjme_error_default(error);
 	
 	/* Need to get the height of a line. */
@@ -230,7 +230,7 @@ sjme_errorCode sjme_scritchui_core_pencilDrawSubstring(
 	/* Determine anchor point of this block of text. */
 	dx = x;
 	dy = y;
-	if (anchor != 0 && sjme_error_is(error = sjme_scritchui_core_anchor(
+	if (anchor != 0 && sjme_error_is(error = sjme_scritchpen_coreUtil_anchor(
 		anchor & SJME_SCRITCHUI_ANCHOR_TEXT_MASK, x, y,
 		tw, lineHeight, baseline, &dx, &dy)))
 		goto fail_anchor;
@@ -270,7 +270,7 @@ sjme_errorCode sjme_scritchui_core_pencilDrawSubstring(
 	}
 	
 	/* Release lock. */
-	if (sjme_error_is(error = sjme_scritchui_core_lockRelease(g)))
+	if (sjme_error_is(error = sjme_scritchpen_core_lockRelease(g)))
 		return sjme_error_default(error);
 	
 	/* Success! */
@@ -284,13 +284,13 @@ fail_seqLen:
 fail_fontBaseline:
 fail_fontHeight:
 	/* Need to release the lock? */
-	if (sjme_error_is(sjme_scritchui_core_lockRelease(g)))
+	if (sjme_error_is(sjme_scritchpen_core_lockRelease(g)))
 		return sjme_error_default(error);
 	
 	return sjme_error_default(error);
 }
 
-sjme_errorCode sjme_scritchui_core_pencilSetFont(
+sjme_errorCode sjme_scritchpen_core_setFont(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNull sjme_scritchui_pencilFont font)
 {

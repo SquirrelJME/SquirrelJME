@@ -288,7 +288,7 @@ static gboolean sjme_scritchui_gtk2_eventExpose(
 	
 	/* Setup pencil for drawing. */
 	memset(&pencil, 0, sizeof(pencil));
-	if (sjme_error_is(sjme_scritchui_pencilInitStatic(&pencil,
+	if (sjme_error_is(sjme_scritchpen_initStatic(&pencil,
 		&sjme_scritchui_gtk2_pencilFunctions,
 		NULL, NULL,
 #if defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)
