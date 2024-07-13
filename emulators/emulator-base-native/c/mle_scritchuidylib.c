@@ -492,6 +492,7 @@ static sjme_errorCode mlePencilLock(
 	jarray buf;
 	jboolean isCopy;
 	sjme_pointer bufElem;
+	sjme_jint typeSize;
 	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -511,12 +512,15 @@ static sjme_errorCode mlePencilLock(
 	/* Obtain buffer. */
 	bufElem = NULL;
 	isCopy = JNI_FALSE;
+	typeSize = -1;
 	if (sjme_error_is(error = sjme_jni_arrayGetElements(env,
-		buf, &bufElem, &isCopy)) || bufElem == NULL)
+		buf, &bufElem, &isCopy, &typeSize)) ||
+		bufElem == NULL || typeSize < 0)
 		return sjme_error_default(error);
 	
 	/* Store state. */
 	state->base = bufElem;
+	state->baseLimitBytes = (*env)->GetArrayLength(env, buf) * typeSize;
 	state->isCopy = isCopy;
 	
 	/* Success! */
@@ -553,6 +557,7 @@ static sjme_errorCode mlePencilLockRelease(
 	
 	/* Buffer no longer valid. */
 	state->base = NULL;
+	state->baseLimitBytes = 0;
 	state->isCopy = SJME_JNI_FALSE;
 	
 	/* Success! */

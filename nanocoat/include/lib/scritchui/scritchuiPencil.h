@@ -669,9 +669,8 @@ typedef sjme_errorCode (*sjme_scritchui_pencilRawScanGetFunc)(
  * @param g The graphics to write to.
  * @param inX The X coordinate to access.
  * @param inY The Y coordinate to access.
- * @param inData The raw pixel data to write.
- * @param inDataLen Length of the data buffer.
- * @param inNumPixels The number of pixels to read.
+ * @param srcRaw The raw pixel data to write.
+ * @param srcRawLen Length of the data buffer.
  * @return Any resultant error code.
  * @since 2024/07/09
  */
@@ -679,9 +678,8 @@ typedef sjme_errorCode (*sjme_scritchui_pencilRawScanPutPureFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint inX,
 	sjme_attrInPositive sjme_jint inY,
-	sjme_attrInNotNullBuf(inLen) const void* inData,
-	sjme_attrInPositiveNonZero sjme_jint inDataLen,
-	sjme_attrInPositiveNonZero sjme_jint inNumPixels);
+	sjme_attrInNotNullBuf(inLen) const void* srcRaw,
+	sjme_attrInPositiveNonZero sjme_jint srcRawLen);
 
 /**
  * Maps a raw scanline from raw RGB data.

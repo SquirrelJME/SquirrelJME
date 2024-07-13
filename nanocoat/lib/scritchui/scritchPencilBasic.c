@@ -65,43 +65,32 @@ static sjme_errorCode sjme_scritchui_basicRawScanPutPure(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint x,
 	sjme_attrInPositive sjme_jint y,
-	sjme_attrInNotNullBuf(inLen) const void* inData,
-	sjme_attrInPositiveNonZero sjme_jint inDataLen,
-	sjme_attrInPositiveNonZero sjme_jint inNumPixels)
+	sjme_attrInNotNullBuf(inLen) const void* srcRaw,
+	sjme_attrInPositiveNonZero sjme_jint srcRawLen)
 {
 	sjme_errorCode error;
 	sjme_jint pixelBytes, limit;
+	sjme_jint targetI;
 	void* targetP;
 	
-	if (g == NULL || inData == NULL)
+	if (g == NULL || srcRaw == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	if (x < 0 || y < 0 || x >= g->width || y >= g->height ||
-		inDataLen < 0 || inNumPixels < 0 ||
-		(x + inNumPixels) < 0 || (x + inNumPixels) > g->width)
-		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
-	
+		
 	/* Buffer not locked? */
 	if (g->lockState.base == NULL)
 		return SJME_ERROR_BUFFER_NOT_LOCKED;
 	
-	/* Determine the number of pixels to be drawn. */
-	pixelBytes = -1;
-	limit = -1;
-	if (sjme_error_is(error = g->util->rawScanBytes(g,
-		inNumPixels, inDataLen,
-		&pixelBytes, &limit)) ||
-		pixelBytes < 0 || limit < 0)
-		return sjme_error_default(error);
+	/* Outside of image bounds? */
+	targetI = (y * g->scanLenBytes) + ((x * g->bitsPerPixel) / 8);
+	if (x < 0 || y < 0 || x >= g->width || y >= g->height ||
+		targetI < 0 || targetI > g->lockState.baseLimitBytes ||
+		(targetI + srcRawLen) < 0 ||
+		(targetI + srcRawLen) > g->lockState.baseLimitBytes)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
-	/* Nothing to do? */
-	if (limit == 0)
-		return SJME_ERROR_NONE;
-	
-	/* Direct memory copy over. */
-	targetP = SJME_POINTER_OFFSET(g->lockState.base,
-		(y * g->scanLenBytes) + x);
-	memmove(targetP, inData, limit);
+	/* Copy over the buffer directly. */
+	targetP = SJME_POINTER_OFFSET(g->lockState.base, targetI);
+	memmove(targetP, srcRaw, srcRawLen);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -121,18 +110,13 @@ static sjme_errorCode sjme_scritchui_basicRawScanGet_sjme_jbyte4(
 
 static sjme_errorCode sjme_scritchui_basicRawScanPutPure_sjme_jbyte4(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInPositive sjme_jint inX,
-	sjme_attrInPositive sjme_jint inY,
-	sjme_attrInNotNullBuf(inLen) const void* inData,
-	sjme_attrInPositiveNonZero sjme_jint inDataLen,
-	sjme_attrInPositiveNonZero sjme_jint inNumPixels)
+	sjme_attrInPositive sjme_jint x,
+	sjme_attrInPositive sjme_jint y,
+	sjme_attrInNotNullBuf(inLen) const void* srcRaw,
+	sjme_attrInPositiveNonZero sjme_jint srcRawLen)
 {
-	if (g == NULL || inData == NULL)
+	if (g == NULL || srcRaw == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	if (inX < 0 || inY < 0 || inX >= g->width || inY >= g->height ||
-		inDataLen < 0 || inNumPixels < 0)
-		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
@@ -152,18 +136,13 @@ static sjme_errorCode sjme_scritchui_basicRawScanGet_sjme_jbyte2(
 
 static sjme_errorCode sjme_scritchui_basicRawScanPutPure_sjme_jbyte2(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInPositive sjme_jint inX,
-	sjme_attrInPositive sjme_jint inY,
-	sjme_attrInNotNullBuf(inLen) const void* inData,
-	sjme_attrInPositiveNonZero sjme_jint inDataLen,
-	sjme_attrInPositiveNonZero sjme_jint inNumPixels)
+	sjme_attrInPositive sjme_jint x,
+	sjme_attrInPositive sjme_jint y,
+	sjme_attrInNotNullBuf(inLen) const void* srcRaw,
+	sjme_attrInPositiveNonZero sjme_jint srcRawLen)
 {
-	if (g == NULL || inData == NULL)
+	if (g == NULL || srcRaw == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	if (inX < 0 || inY < 0 || inX >= g->width || inY >= g->height ||
-		inDataLen < 0 || inNumPixels < 0)
-		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
@@ -183,18 +162,13 @@ static sjme_errorCode sjme_scritchui_basicRawScanGet_sjme_jbyte1(
 
 static sjme_errorCode sjme_scritchui_basicRawScanPutPure_sjme_jbyte1(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInPositive sjme_jint inX,
-	sjme_attrInPositive sjme_jint inY,
-	sjme_attrInNotNullBuf(inLen) const void* inData,
-	sjme_attrInPositiveNonZero sjme_jint inDataLen,
-	sjme_attrInPositiveNonZero sjme_jint inNumPixels)
+	sjme_attrInPositive sjme_jint x,
+	sjme_attrInPositive sjme_jint y,
+	sjme_attrInNotNullBuf(inLen) const void* srcRaw,
+	sjme_attrInPositiveNonZero sjme_jint srcRawLen)
 {
-	if (g == NULL || inData == NULL)
+	if (g == NULL || srcRaw == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	if (inX < 0 || inY < 0 || inX >= g->width || inY >= g->height ||
-		inDataLen < 0 || inNumPixels < 0)
-		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;

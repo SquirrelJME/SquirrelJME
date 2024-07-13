@@ -371,6 +371,7 @@ sjme_errorCode sjme_jni_arrayType(
  * @param array The array object.
  * @param rawBuf The raw output buffer.
  * @param isCopy Is the array a copy?
+ * @param typeSize The size of the element type.
  * @return Any resultant error.
  * @since 2024/07/11
  */
@@ -378,7 +379,8 @@ sjme_errorCode sjme_jni_arrayGetElements(
 	sjme_attrInNotNull JNIEnv* env,
 	sjme_attrInNotNull jobject array,
 	sjme_attrOutNotNull sjme_pointer* rawBuf,
-	sjme_attrOutNotNull jboolean* isCopy);
+	sjme_attrOutNotNull jboolean* isCopy,
+	sjme_attrOutNullable sjme_jint* typeSize);
 
 /**
  * Gets the elements of an array.

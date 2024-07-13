@@ -412,7 +412,8 @@ sjme_errorCode sjme_jni_arrayGetElements(
 	sjme_attrInNotNull JNIEnv* env,
 	sjme_attrInNotNull jobject array,
 	sjme_attrOutNotNull sjme_pointer* rawBuf,
-	sjme_attrOutNotNull jboolean* isCopy)
+	sjme_attrOutNotNull jboolean* isCopy,
+	sjme_attrOutNullable sjme_jint* typeSize)
 {
 	sjme_errorCode error;
 	sjme_javaTypeId type;
@@ -431,34 +432,50 @@ sjme_errorCode sjme_jni_arrayGetElements(
 	{
 		case SJME_BASIC_TYPE_ID_BOOLEAN:
 			*rawBuf = (*env)->GetBooleanArrayElements(env, array, isCopy);
+			if (typeSize != NULL)
+				*typeSize = 1;
 			break;
 			
 		case SJME_BASIC_TYPE_ID_BYTE:
 			*rawBuf = (*env)->GetByteArrayElements(env, array, isCopy);
+			if (typeSize != NULL)
+				*typeSize = 1;
 			break;
 			
 		case SJME_BASIC_TYPE_ID_SHORT:
 			*rawBuf = (*env)->GetShortArrayElements(env, array, isCopy);
+			if (typeSize != NULL)
+				*typeSize = 2;
 			break;
 			
 		case SJME_BASIC_TYPE_ID_CHARACTER:
 			*rawBuf = (*env)->GetCharArrayElements(env, array, isCopy);
+			if (typeSize != NULL)
+				*typeSize = 2;
 			break;
 			
 		case SJME_BASIC_TYPE_ID_INTEGER:
 			*rawBuf = (*env)->GetIntArrayElements(env, array, isCopy);
+			if (typeSize != NULL)
+				*typeSize = 4;
 			break;
 			
 		case SJME_BASIC_TYPE_ID_LONG:
 			*rawBuf = (*env)->GetLongArrayElements(env, array, isCopy);
+			if (typeSize != NULL)
+				*typeSize = 8;
 			break;
 			
 		case SJME_BASIC_TYPE_ID_FLOAT:
 			*rawBuf = (*env)->GetFloatArrayElements(env, array, isCopy);
+			if (typeSize != NULL)
+				*typeSize = 4;
 			break;
 			
 		case SJME_BASIC_TYPE_ID_DOUBLE:
 			*rawBuf = (*env)->GetDoubleArrayElements(env, array, isCopy);
+			if (typeSize != NULL)
+				*typeSize = 8;
 			break;
 		
 		default:

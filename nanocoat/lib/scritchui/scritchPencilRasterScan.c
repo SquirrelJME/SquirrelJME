@@ -456,7 +456,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_rgbScanPut(
 	/* Write direct image data. */
 	return g->prim.rawScanPutPure(g,
 		x, y,
-		rawScan, rawScanBytes, inNumPixels);
+		rawScan, rawScanBytes);
 }
 
 sjme_errorCode sjme_scritchpen_coreUtil_rgbToRawScan(

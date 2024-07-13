@@ -99,6 +99,9 @@ typedef struct sjme_scritchui_pencilLockState
 	/** The base address where drawing should occur. */
 	sjme_pointer base;
 	
+	/** The buffer limit of the base, in bytes. */
+	sjme_jint baseLimitBytes;
+	
 	/** Is this a copy? */
 	sjme_jboolean isCopy;
 } sjme_scritchui_pencilLockState;
