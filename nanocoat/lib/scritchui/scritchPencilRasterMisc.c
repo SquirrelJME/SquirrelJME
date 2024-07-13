@@ -456,7 +456,8 @@ sjme_errorCode sjme_scritchpen_core_setAlphaColor(
 	/* Note that if we cannot read from the source buffer, we cannot */
 	/* apply alpha correctly so we just ignore it. */
 	g->state.applyAlpha = (target->a != 0xFF &&
-		g->prim.rawScanGet != NULL);
+		g->prim.rawScanGet != NULL &&
+		g->state.blending != SJME_SCRITCHUI_PENCIL_BLEND_SRC);
 	
 	/* Forward. */
 	if (g->impl->setAlphaColor != NULL)
@@ -469,6 +470,8 @@ sjme_errorCode sjme_scritchpen_core_setBlendingMode(
 	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_PENCIL_BLENDS)
 		sjme_scritchui_pencilBlendingMode mode)
 {
+	sjme_scritchui_pencilColor* color;
+	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
@@ -481,6 +484,12 @@ sjme_errorCode sjme_scritchpen_core_setBlendingMode(
 	
 	/* Set mode. */
 	g->state.blending = mode;
+	
+	/* Set color again, to reset alpha blending state. */
+	color = &g->state.color;
+	g->api->setAlphaColor(g,
+		(color->a << 24) | (color->r << 16) | (color->g << 8) |
+		color->b);
 	
 	/* Forward. */
 	if (g->impl->setBlendingMode != NULL)

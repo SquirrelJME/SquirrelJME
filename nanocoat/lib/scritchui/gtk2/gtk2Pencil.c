@@ -41,15 +41,12 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilRawScanGet(
 		
 	/* Determine the number of pixels to be drawn. */
 	pixelBytes = -1;
+	limit = -1;
 	if (sjme_error_is(error = g->util->rawScanBytes(g,
-		inNumPixels, &pixelBytes)) || pixelBytes < 0)
+		inNumPixels, inDataLen,
+		&pixelBytes, &limit)) ||
+		pixelBytes < 0 || limit < 0)
 		return sjme_error_default(error);
-	
-	/* Use the smaller of the two. */
-	if (pixelBytes < inDataLen)
-		limit = pixelBytes;
-	else
-		limit = inDataLen;
 	
 	/* Read from the pixbuf directly. */
 	memmove(outData, gdk_pixbuf_get_pixels(pix), limit);

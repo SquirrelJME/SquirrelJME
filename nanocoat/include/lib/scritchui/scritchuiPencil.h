@@ -601,14 +601,19 @@ typedef sjme_errorCode (*sjme_scritchui_pencilMapColorFunc)(
  * 
  * @param g The pencil to operate with.
  * @param inPixel The number of pixels to map.
+ * @param inBytes The number of bytes to use for limit calculation.
  * @param outBytes The number of bytes used to represent the pixel data.
+ * @param outLimit Optional output value for the smaller of @c outBytes
+ * and @c inBytes .
  * @return Any resultant error.
  * @since 2024/07/09
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilRawScanBytesFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositiveNonZero sjme_jint inPixels,
-	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outBytes);
+	sjme_attrInPositiveNonZero sjme_jint inBytes,
+	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outBytes,
+	sjme_attrOutNullable sjme_attrOutPositiveNonZero sjme_jint* outLimit);
 
 /**
  * Fills a buffer with the given value. 

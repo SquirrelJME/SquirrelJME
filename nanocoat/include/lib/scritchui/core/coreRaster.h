@@ -281,7 +281,9 @@ sjme_errorCode sjme_scritchpen_core_mapColor(
 sjme_errorCode sjme_scritchpen_coreUtil_rawScanBytes(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositiveNonZero sjme_jint inPixels,
-	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outBytes);
+	sjme_attrInPositiveNonZero sjme_jint inBytes,
+	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outBytes,
+	sjme_attrOutNullable sjme_attrOutPositiveNonZero sjme_jint* outLimit);
 	
 sjme_errorCode sjme_scritchpen_coreUtil_rgbToRawScan(
 	sjme_attrInNotNull sjme_scritchui_pencil g,

@@ -120,7 +120,9 @@ sjme_errorCode sjme_scritchpen_core_drawXRGB32Region(
 	/* Determine how large our raw scan buffer actually is. */
 	rawScanBytes = -1;
 	if (sjme_error_is(error = g->util->rawScanBytes(g,
-		m.tw, &rawScanBytes)) || rawScanBytes < 0)
+		m.tw, 0,
+		&rawScanBytes, NULL)) ||
+		rawScanBytes < 0)
 		return sjme_error_default(error);
 	
 	/* RGB buffer is this many bytes. */

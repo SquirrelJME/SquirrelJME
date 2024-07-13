@@ -248,8 +248,9 @@ sjme_errorCode sjme_scritchpen_initStatic(
 		result.prim.mapColor = sjme_scritchpen_corePrim_mapColor;
 	
 	/* Determine bytes per pixel. */
-	result.util->rawScanBytes(&result, 1,
-		&result.bytesPerPixel);
+	result.util->rawScanBytes(&result,
+		1, 0,
+		&result.bytesPerPixel, NULL);
 	
 	/* Basic filling of raw value. */
 	if (result.bytesPerPixel == 4)

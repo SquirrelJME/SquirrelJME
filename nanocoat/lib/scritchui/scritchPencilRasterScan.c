@@ -151,6 +151,13 @@ sjme_errorCode sjme_scritchpen_corePrim_rawScanPut(
 	if (g == NULL || inData == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+	/* If we are not applying alpha or doing SRC mode, just skip. */
+	if (!g->state.applyAlpha)
+		return g->prim.rawScanPutPure(g, inX, inY, inData,
+			inDataLen, inNumPixels);
+	
+	/*  */
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
@@ -232,14 +239,16 @@ sjme_errorCode sjme_scritchpen_coreUtil_blendRGBInto(
 sjme_errorCode sjme_scritchpen_coreUtil_rawScanBytes(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositiveNonZero sjme_jint inPixels,
-	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outBytes)
+	sjme_attrInPositiveNonZero sjme_jint inBytes,
+	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outBytes,
+	sjme_attrOutNullable sjme_attrOutPositiveNonZero sjme_jint* outLimit)
 {
 	sjme_jint result;
 	
 	if (g == NULL || outBytes == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	if (inPixels < 0)
+	if (inPixels < 0 || (outLimit != NULL && inBytes < 0))
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	/* Depends on the pixel format. */
@@ -283,6 +292,16 @@ sjme_errorCode sjme_scritchpen_coreUtil_rawScanBytes(
 	if (result < 0)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
+	/* Calculate smaller value? */
+	if (outLimit != NULL)
+	{
+		/* Use the smaller of the two. */
+		if (result < inBytes)
+			*outLimit = inBytes;
+		else
+			*outLimit = result;
+	}
+	
 	/* Success! */
 	*outBytes = result;
 	return SJME_ERROR_NONE;
@@ -311,15 +330,12 @@ sjme_errorCode sjme_scritchpen_coreUtil_rawScanToRgb(
 		
 	/* Double check RGB count. */
 	outRgbLenRaw = -1;
+	byteLimit = -1;
 	if (sjme_error_is(error = g->util->rawScanBytes(g,
-		outRgbLen, &outRgbLenRaw)) || outRgbLenRaw < 0)
+		outRgbLen, inRawLen,
+		&outRgbLenRaw, &byteLimit)) ||
+		outRgbLenRaw < 0 || byteLimit < 0)
 		return sjme_error_default(error);
-		
-	/* Use the smaller of the two. */
-	if (outRgbLenRaw < inRawLen)
-		byteLimit = outRgbLenRaw;
-	else
-		byteLimit = inRawLen;
 	
 	/* Optimal format for direct copy? */
 	if (g->pixelFormat == SJME_GFX_PIXEL_FORMAT_INT_ARGB8888 ||
@@ -370,15 +386,12 @@ sjme_errorCode sjme_scritchpen_coreUtil_rgbToRawScan(
 	
 	/* Double check RGB count. */
 	inRgbLenRaw = -1;
+	byteLimit = -1;
 	if (sjme_error_is(error = g->util->rawScanBytes(g,
-		inRgbLen, &inRgbLenRaw)) || inRgbLenRaw < 0)
+		inRgbLen, outRawLen, 
+		&inRgbLenRaw, &byteLimit)) ||
+		inRgbLenRaw < 0 || byteLimit > 0)
 		return sjme_error_default(error);
-	
-	/* Use the smaller of the two. */
-	if (inRgbLenRaw < outRawLen)
-		byteLimit = inRgbLenRaw;
-	else
-		byteLimit = outRawLen;
 	
 	/* Optimal format for direct copy? */
 	if (g->pixelFormat == SJME_GFX_PIXEL_FORMAT_INT_ARGB8888 ||
