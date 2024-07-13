@@ -37,7 +37,7 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilRawScanGet(
 	gdk_pixbuf_get_from_drawable(pix, drawable, NULL,
 		x, y, 0, 0,
 		inNumPixels, 1);
-	
+
 	/* Read from the pixbuf directly, note that we might not be on */
 	/* the remote display yet, so this will do nothing. */
 	rawPix = gdk_pixbuf_get_pixels(pix);

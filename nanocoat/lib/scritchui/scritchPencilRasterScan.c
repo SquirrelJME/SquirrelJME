@@ -410,9 +410,9 @@ sjme_errorCode sjme_scritchpen_coreUtil_rawScanToRgb(
 	{
 		for (i = 0; i < limit; i++)
 		{
-			t = ((sjme_juint)(*(sb++) & 0xFF)) << 16;
-			t |= ((sjme_juint)((*(sb++) & 0xFF))) << 8;
-			t |= (sjme_juint)(*(sb++) & 0xFF);
+			t = ((sjme_juint)(((*(sb++)) & 0xFF))) << 16;
+			t |= ((sjme_juint)(((*(sb++)) & 0xFF))) << 8;
+			t |= ((sjme_juint)(((*(sb++)) & 0xFF)));
 			
 			error |= sjme_scritchpen_corePrim_mapColorFromRaw(g,
 				t, &color);
@@ -567,7 +567,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_rgbScanPut(
 		
 		/* Perform blending. */
 		if (sjme_error_is(error = g->util->blendRGBInto(g,
-			g->hasAlpha, SJME_JNI_TRUE,
+			g->hasAlpha, srcAlpha,
 			mulAlpha, mulAlphaValue,
 			destRgb, srcRgb, inNumPixels)))
 			return sjme_error_default(error);
@@ -730,7 +730,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_rgbToRawScan(
 			
 			*(db++) = (color.v >> 16) & 0xFF;
 			*(db++) = (color.v >> 8) & 0xFF;
-			*(db++) = color.v & 0xFF;
+			*(db++) = (color.v) & 0xFF;
 		}
 	}
 	

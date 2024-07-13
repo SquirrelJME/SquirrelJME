@@ -114,16 +114,16 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColorFromRGB(
 			v = (rr << 24) | (gg << 16) | (bb << 8) | 0xFF;
 			break;
 		
+		case SJME_GFX_PIXEL_FORMAT_INT_RGB888:
+			v = argb | 0xFF000000;
+			break;
+		
 		case SJME_GFX_PIXEL_FORMAT_BYTE3_RGB888:
 			v = (rr << 16) | (gg << 8) | bb;
 			break;
 		
 		case SJME_GFX_PIXEL_FORMAT_BYTE3_BGR888:
 			v = (rr) | (gg << 8) | (bb << 16);
-			break;
-		
-		case SJME_GFX_PIXEL_FORMAT_INT_RGB888:
-			v = argb | 0xFF000000;
 			break;
 		
 		case SJME_GFX_PIXEL_FORMAT_SHORT_ARGB4444:
