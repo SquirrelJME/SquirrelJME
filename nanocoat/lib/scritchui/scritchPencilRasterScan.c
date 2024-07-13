@@ -285,9 +285,9 @@ sjme_errorCode sjme_scritchpen_coreUtil_rawScanToRgb(
 	sjme_errorCode error;
 	sjme_juint destAlphaMask;
 	sjme_jint limit, i, t;
-	sjme_jint* si;
-	sjme_jshort* ss;
-	sjme_jbyte* sb;
+	const sjme_jint* si;
+	const sjme_jshort* ss;
+	const sjme_jbyte* sb;
 	sjme_jint* d;
 	sjme_scritchui_pencilColor color;
 	
@@ -353,6 +353,14 @@ sjme_errorCode sjme_scritchpen_coreUtil_rawScanToRgb(
 	/* Already in the most native format? */
 	if (g->pixelFormat == SJME_GFX_PIXEL_FORMAT_INT_ARGB8888 && si != NULL)
 		memmove(d, si, limit * 4);
+	
+	/* Almost there. */
+	else if (g->pixelFormat == SJME_GFX_PIXEL_FORMAT_INT_RGB888 && si != NULL)
+	{
+		/* Copy and put in the mask. */
+		for (i = 0; i < limit; i++)
+			*(d++) = *(si++) | destAlphaMask;
+	}
 	
 	/* Integer mapping. */
 	else if (si != NULL)
@@ -566,57 +574,131 @@ sjme_errorCode sjme_scritchpen_coreUtil_rgbToRawScan(
 	sjme_attrInPositive sjme_jint inRgbLen)
 {
 	sjme_errorCode error;
-	sjme_jint byteLimit, inRgbOffRaw, inRgbLenRaw;
+	sjme_jint limit, i, t;
+	sjme_jint* di;
+	sjme_jshort* ds;
+	sjme_jbyte* db;
+	const sjme_jint* s;
+	sjme_scritchui_pencilColor color;
 	
-	if (g == NULL || outRaw == NULL || inRgb == NULL)
+	if (g == NULL || inRgb == NULL || outRaw == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	inRgbOffRaw = inRgbOff * 4;
-	if (outRawOff < 0 || outRawLen < 0 || (outRawOff + outRawLen) < 0 ||
-		inRgbOff < 0 || inRgbLen < 0 || (inRgbOff + inRgbLen) < 0)
+	if (inRgbOff < 0 || inRgbLen < 0 || (inRgbOff + inRgbLen) < 0 ||
+		outRawOff < 0 || outRawLen < 0 || (outRawOff + outRawLen) < 0)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
-	/* Double check RGB count. */
-	inRgbLenRaw = -1;
-	byteLimit = -1;
-	if (sjme_error_is(error = g->util->rawScanBytes(g,
-		inRgbLen, outRawLen, 
-		&inRgbLenRaw, &byteLimit)) ||
-		inRgbLenRaw < 0 || byteLimit < 0)
-		return sjme_error_default(error);
-	
-	/* Optimal format for direct copy? */
-	if (g->pixelFormat == SJME_GFX_PIXEL_FORMAT_INT_ARGB8888 ||
-		g->pixelFormat == SJME_GFX_PIXEL_FORMAT_INT_RGB888)
+	/* Determine the type to use for scan reading. */
+	di = NULL;
+	ds = NULL;
+	db = NULL;
+	switch (g->pixelFormat)
 	{
-		/* Copy over efficiently. */
-		memmove(SJME_POINTER_OFFSET(outRaw, outRawOff),
-			SJME_POINTER_OFFSET(inRgb, inRgbOffRaw),
-			byteLimit);
+		case SJME_GFX_PIXEL_FORMAT_INT_ARGB8888:
+		case SJME_GFX_PIXEL_FORMAT_INT_RGB888:
+		case SJME_GFX_PIXEL_FORMAT_INT_BGRA8888:
+		case SJME_GFX_PIXEL_FORMAT_INT_BGRX8888:
+		case SJME_GFX_PIXEL_FORMAT_INT_XBGR8888:
+			di = SJME_POINTER_OFFSET(outRaw, outRawOff);
+			limit = outRawLen / 4;
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_SHORT_ARGB4444:
+		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB565:
+		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB555:
+		case SJME_GFX_PIXEL_FORMAT_SHORT_ABGR1555:
+		case SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536:
+			ds = SJME_POINTER_OFFSET(outRaw, outRawOff);
+			limit = outRawLen / 2;
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256:
+			db = SJME_POINTER_OFFSET(outRaw, outRawOff);
+			limit = outRawLen;
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1:
+			sjme_todo("Impl?");
+			break;
 		
-		/* Success! */
-		return SJME_ERROR_NONE;
+		default:
+			return SJME_ERROR_INVALID_ARGUMENT;
 	}
 	
-	/* Simple byte swap. */
-	else if (g->pixelFormat == SJME_GFX_PIXEL_FORMAT_INT_BGRA8888 ||
-		g->pixelFormat == SJME_GFX_PIXEL_FORMAT_INT_BGRX8888)
+	/* Reading what? */
+	s = &inRgb[inRgbOff];
+	
+	/* If the output RGB is smaller than the raw input, limit to it. */
+	if (inRgbLen < limit)
+		limit = inRgbLen;
+	
+	/* Clear error state. */
+	error = SJME_ERROR_NONE;
+	
+	/* Already in the most native format? */
+	if (g->pixelFormat == SJME_GFX_PIXEL_FORMAT_INT_ARGB8888 && di != NULL)
+		memmove(di, s, limit * 4);
+	
+	/* Almost there. */
+	else if (g->pixelFormat == SJME_GFX_PIXEL_FORMAT_INT_RGB888 && di != NULL)
 	{
-		return sjme_swap_uint_memmove(
-			SJME_POINTER_OFFSET(outRaw, outRawOff),
-			SJME_POINTER_OFFSET(inRgb, inRgbOffRaw),
-			byteLimit);
+		/* Copy and put in the mask. */
+		for (i = 0; i < limit; i++)
+			*(di++) = *(s++);
 	}
 	
-	/* Shift up by 8. */
-	else if (g->pixelFormat == SJME_GFX_PIXEL_FORMAT_INT_XBGR8888)
+	/* Integer mapping. */
+	else if (di != NULL)
 	{
-		return sjme_swap_shu8_uint_memmove(
-			SJME_POINTER_OFFSET(outRaw, outRawOff),
-			SJME_POINTER_OFFSET(inRgb, inRgbOffRaw),
-			byteLimit);
+		for (i = 0; i < limit; i++)
+		{
+			t = *(s++);
+			
+			error |= sjme_scritchpen_corePrim_mapColorFromRGB(g,
+				t, &color);
+			
+			*(di++) = color.v;
+		}
 	}
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Short mapping. */
+	else if (ds != NULL)
+	{
+		for (i = 0; i < limit; i++)
+		{
+			t = *(s++);
+			
+			error |= sjme_scritchpen_corePrim_mapColorFromRGB(g,
+				t, &color);
+			
+			*(ds++) = color.v & 0xFFFF;
+		}
+	}
+	
+	/* Byte mapping. */
+	else if (db != NULL)
+	{
+		for (i = 0; i < limit; i++)
+		{
+			t = *(s++);
+			
+			error |= sjme_scritchpen_corePrim_mapColorFromRGB(g,
+				t, &color);
+			
+			*(db++) = color.v & 0xFF;
+		}
+	}
+	
+	/* Unknown. */
+	else
+	{
+		sjme_todo("Impl?");
+	}
+	
+	/* Failed or success? */
+	if (sjme_error_is(error))
+		return sjme_error_default(error);
+	return SJME_ERROR_NONE;
 }

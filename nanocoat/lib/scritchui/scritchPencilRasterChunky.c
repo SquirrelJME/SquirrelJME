@@ -75,13 +75,10 @@ sjme_errorCode sjme_scritchpen_core_drawXRGB32Region(
 	sjme_errorCode error;
 	sjme_scritchui_pencilMatrix m;
 	sjme_fixed wx, zy, wxBase, zyMajor;
-	sjme_jint dx, dy, iwx, izy, at, q;
-	sjme_jint* flatRgb;
+	sjme_jint dx, dy, iwx, izy, at;
 	sjme_jint* srcRgb;
-	void* rawScan;
-	void* srcRaw;
-	sjme_jint rawScanBytes, flatRgbBytes;
-	sjme_jboolean destAlpha;
+	sjme_jint srcRgbBytes;
+	sjme_jint mulAlphaVal;
 	
 	if (g == NULL || data == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -112,45 +109,37 @@ sjme_errorCode sjme_scritchpen_core_drawXRGB32Region(
 	
 	/* Anchor to target coordinates after scaling, because we need */
 	/* to know what our target scale is. */
-	if (sjme_error_is(error = sjme_scritchpen_coreUtil_applyAnchor(anchor,
+	if (sjme_error_is(error = sjme_scritchpen_coreUtil_applyAnchor(
+		anchor,
 		xDest, yDest, m.tw, m.th, 0,
 		&xDest, &yDest)))
 		return sjme_error_default(error);
 	
-	/* Determine how large our raw scan buffer actually is. */
-	rawScanBytes = -1;
-	if (sjme_error_is(error = g->util->rawScanBytes(g,
-		m.tw, 0,
-		&rawScanBytes, NULL)) ||
-		rawScanBytes < 0)
-		return sjme_error_default(error);
-	
 	/* RGB buffer is this many bytes. */
-	flatRgbBytes = m.tw * sizeof(*flatRgb);
+	srcRgbBytes = m.tw * sizeof(*srcRgb);
 	
 	/* Setup input and output RGB buffers. */
-	rawScan = sjme_alloca(rawScanBytes);
-	flatRgb = sjme_alloca(flatRgbBytes);
-	if (rawScan == NULL || flatRgb == NULL)
+	srcRgb = sjme_alloca(srcRgbBytes);
+	if (srcRgb == NULL)
 		return sjme_error_defaultOr(error,
 			SJME_ERROR_OUT_OF_MEMORY);
 	
 	/* Clear buffers. */
-	memset(rawScan, 0, rawScanBytes);
-	memset(flatRgb, 0, flatRgbBytes);
+	memset(srcRgb, 0, srcRgbBytes);
 	
 	/* Lock. */
 	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
 		return sjme_error_default(error);
 	
+	/* The value to use to multiply the source. */
+	mulAlphaVal = g->state.color.a;
+	
 	/* Figure out the position of our base pointer. */
 	/* Matrix multiplication? Squeak? */
 	wxBase = sjme_fixed_mul(sjme_fixed_hi(xSrc), m.x.wx) +
 		sjme_fixed_mul(sjme_fixed_hi(ySrc), m.x.zy);
-	wx = wxBase;
 	zyMajor = sjme_fixed_mul(sjme_fixed_hi(xSrc), m.y.wx) +
 		sjme_fixed_mul(sjme_fixed_hi(ySrc), m.y.zy);
-	zy = zyMajor;
 	
 	/* Scan copy, rotate, and stretch by destination scans. */
 	for (dy = 0; dy < m.th; dy++, wxBase += m.y.wx, zyMajor += m.y.zy)
@@ -174,24 +163,15 @@ sjme_errorCode sjme_scritchpen_core_drawXRGB32Region(
 			
 			/* Copy pixel from source? */
 			at = off + ((izy * scanLen) + iwx);
-			flatRgb[dx] = data[at];
+			srcRgb[dx] = data[at];
 		}
 		
-		/* Map RGB to Native. */
-		if (sjme_error_is(error = g->util->rgbToRawScan(
-			g, rawScan, 0, rawScanBytes,
-			flatRgb, 0, m.tw)))
-			goto fail_any;
-		
-		/* Render RGB line at destination. */
-		sjme_todo("Impl?");
-#if 0
-		if (sjme_error_is(error = g->prim.rawScanPut(g,
+		/* Render RGB to buffer. */
+		if (sjme_error_is(error = g->util->rgbScanPut(g,
 			xDest, yDest + dy,
-			rawScan, rawScanBytes, m.tw,
-			alpha)))
+			srcRgb, m.tw,
+			alpha, mulAlphaVal)))
 			goto fail_any;
-#endif
 	}
 	
 	/* Release lock. */

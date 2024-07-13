@@ -24,6 +24,7 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilRawScanGet(
 	GdkPixbuf* pix;
 	GdkGC* gc;
 	sjme_jint pixelBytes, limit;
+	guchar* rawPix;
 	
 	if (g == NULL || outData == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -48,8 +49,11 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilRawScanGet(
 		pixelBytes < 0 || limit < 0)
 		return sjme_error_default(error);
 	
-	/* Read from the pixbuf directly. */
-	memmove(outData, gdk_pixbuf_get_pixels(pix), limit);
+	/* Read from the pixbuf directly, note that we might not be on */
+	/* the remote display yet, so this will do nothing. */
+	rawPix = gdk_pixbuf_get_pixels(pix);
+	if (rawPix != NULL)
+		memmove(outData, rawPix, limit);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -76,7 +80,7 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilRawScanPutPure(
 	gdk_draw_rgb_32_image(drawable, gc,
 		x, y, srcRawLen / 4, 1,
 		GDK_RGB_DITHER_NONE,
-		srcRaw, srcRawLen);
+		srcRaw, g->scanLenBytes);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
