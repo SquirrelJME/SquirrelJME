@@ -189,10 +189,6 @@ sjme_errorCode sjme_scritchpen_coreUtil_blendRGBInto(
 		sg = ((src[i]) >> 8) & 0xFF;
 		sb = src[i] & 0xFF;
 		
-		/* Only 4 bits of alpha is required. */
-		da = (da & 0xF0) | ((da >> 4) & 0x0F);
-		sa = (sa & 0xF0) | ((sa >> 4) & 0x0F);
-		
 		/* Inverse alpha. */
 		iA = sjme_fixed_fraction(255 - sa, 255);
 		
@@ -220,10 +216,10 @@ sjme_errorCode sjme_scritchpen_coreUtil_blendRGBInto(
 		cb = sjme_fixed_mul(sb, sa) + sjme_fixed_mul(db, iA);
 		
 		/* Return the original factor. */
-		ca = sjme_fixed_round(sjme_fixed_mul(ca, tff));
-		cr = sjme_fixed_round(sjme_fixed_mul(cr, tff));
-		cg = sjme_fixed_round(sjme_fixed_mul(cg, tff));
-		cb = sjme_fixed_round(sjme_fixed_mul(cb, tff));
+		ca = sjme_fixed_mul(ca, tff);
+		cr = sjme_fixed_mul(cr, tff);
+		cg = sjme_fixed_mul(cg, tff);
+		cb = sjme_fixed_mul(cb, tff);
 		
 		/* Recompose. */
 		ca = sjme_fixed_int(ca) & 0xFF;

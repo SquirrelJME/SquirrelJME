@@ -82,8 +82,8 @@ public final class RGBAlpha
 				int[] toB = ((DataBufferInt)to.getRaster().getDataBuffer())
 					.getData();
 				
-				int actA = (fromA & (~0b1111)) | (fromA >>> 4);
-				int actB = (toA & (~0b1111)) | (toA >>> 4);
+				int actA = fromA;/*(fromA & (~0b1111)) | (fromA >>> 4);*/
+				int actB = toA;/*(toA & (~0b1111)) | (toA >>> 4);*/
 				
 				for (int i = 0, q = rgb.length; i < q; i++)
 				{
