@@ -163,6 +163,7 @@ sjme_errorCode sjme_scritchpen_corePrim_rawScanPut(
 			inDataLen, inNumPixels);
 	
 	/* Determine how much data to read for RGB blending. */
+	sjme_message("A");
 	bufRgbBytes = -1;
 	limit = -1;
 	if (sjme_error_is(error = g->util->rawScanBytes(g,
@@ -172,6 +173,7 @@ sjme_errorCode sjme_scritchpen_corePrim_rawScanPut(
 		return sjme_error_default(error);
 	
 	/* Allocate buffers. */
+	sjme_message("B");
 	destRaw = sjme_alloca(inDataLen);
 	destRgb = sjme_alloca(bufRgbBytes);
 	srcRgb = sjme_alloca(bufRgbBytes);
@@ -179,40 +181,47 @@ sjme_errorCode sjme_scritchpen_corePrim_rawScanPut(
 		return SJME_ERROR_OUT_OF_MEMORY;
 	
 	/* Clear. */
+	sjme_message("C");
 	memset(destRaw, 0, inDataLen);
 	memset(destRgb, 0, bufRgbBytes);
 	memset(srcRgb, 0, bufRgbBytes);
 	
 	/* Read in raw image data from dest buffer. */
+	sjme_message("D");
 	if (sjme_error_is(error = g->prim.rawScanGet(g,
 		inX, inY, destRaw, inDataLen, inNumPixels)))
 		return sjme_error_default(error);
 	
 	/* Map dest to RGB. */
+	sjme_message("E");
 	if (sjme_error_is(error = g->util->rawScanToRgb(g,
 		destRgb, 0, inNumPixels,
 		destRaw, 0, inDataLen)))
 		return sjme_error_default(error);
 	
 	/* Map source to RGB. */
+	sjme_message("F");
 	if (sjme_error_is(error = g->util->rawScanToRgb(g,
 		srcRgb, 0, inNumPixels,
 		inData, 0, inDataLen)))
 		return sjme_error_default(error);
 	
 	/* RGB blend source onto dest. */
+	sjme_message("G");
 	if (sjme_error_is(error = g->util->blendRGBInto(g,
 		g->hasAlpha, mulAlpha,
 		destRgb, srcRgb, inNumPixels)))
 		return sjme_error_default(error);
 	
 	/* Map dest from RGB to raw data. */
+	sjme_message("H");
 	if (sjme_error_is(error = g->util->rgbToRawScan(g,
 		destRaw, 0, inDataLen,
 		destRgb, 0, inNumPixels)))
 		return sjme_error_default(error);
 	
 	/* Put in raw data. */
+	sjme_message("I");
 	return g->prim.rawScanPutPure(g, inX, inY, destRaw,
 		inDataLen, inNumPixels);
 }
@@ -445,7 +454,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_rgbToRawScan(
 	if (sjme_error_is(error = g->util->rawScanBytes(g,
 		inRgbLen, outRawLen, 
 		&inRgbLenRaw, &byteLimit)) ||
-		inRgbLenRaw < 0 || byteLimit > 0)
+		inRgbLenRaw < 0 || byteLimit < 0)
 		return sjme_error_default(error);
 	
 	/* Optimal format for direct copy? */
