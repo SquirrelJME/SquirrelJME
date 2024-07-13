@@ -165,7 +165,7 @@ sjme_errorCode sjme_scritchpen_corePrim_rawScanPutSkipBlend(
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
-sjme_errorCode sjme_scritchpen_core_blendRGBInto(
+sjme_errorCode sjme_scritchpen_coreUtil_blendRGBInto(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jboolean destAlpha,
 	sjme_attrInValue sjme_jboolean srcAlpha,
@@ -222,7 +222,7 @@ sjme_errorCode sjme_scritchpen_core_blendRGBInto(
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
-sjme_errorCode sjme_scritchpen_core_mapRawScanBytes(
+sjme_errorCode sjme_scritchpen_coreUtil_rawScanBytes(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositiveNonZero sjme_jint inPixels,
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outBytes)
@@ -280,7 +280,7 @@ sjme_errorCode sjme_scritchpen_core_mapRawScanBytes(
 	*outBytes = result;
 	return SJME_ERROR_NONE;
 }
-sjme_errorCode sjme_scritchpen_core_mapRawScanFromRGB(
+sjme_errorCode sjme_scritchpen_coreUtil_rgbToRawScan(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrOutNotNullBuf(rawLen) void* outRaw,
 	sjme_attrInPositive sjme_jint outRawOff,
@@ -302,7 +302,7 @@ sjme_errorCode sjme_scritchpen_core_mapRawScanFromRGB(
 	
 	/* Double check RGB count. */
 	inRgbLenRaw = -1;
-	if (sjme_error_is(error = g->api->mapRawScanBytes(g,
+	if (sjme_error_is(error = g->util->rawScanBytes(g,
 		inRgbLen, &inRgbLenRaw)) || inRgbLenRaw < 0)
 		return sjme_error_default(error);
 	
@@ -347,7 +347,7 @@ sjme_errorCode sjme_scritchpen_core_mapRawScanFromRGB(
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
-sjme_errorCode sjme_scritchpen_core_mapRGBFromRawScan(
+sjme_errorCode sjme_scritchpen_coreUtil_rawScanToRgb(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNullBuf(rgbLen) sjme_jint* outRgb,
 	sjme_attrInPositive sjme_jint outRgbOff,
@@ -370,7 +370,7 @@ sjme_errorCode sjme_scritchpen_core_mapRGBFromRawScan(
 		
 	/* Double check RGB count. */
 	outRgbLenRaw = -1;
-	if (sjme_error_is(error = g->api->mapRawScanBytes(g,
+	if (sjme_error_is(error = g->util->rawScanBytes(g,
 		outRgbLen, &outRgbLenRaw)) || outRgbLenRaw < 0)
 		return sjme_error_default(error);
 		

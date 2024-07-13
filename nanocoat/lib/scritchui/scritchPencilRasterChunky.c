@@ -106,20 +106,20 @@ sjme_errorCode sjme_scritchpen_core_drawXRGB32Region(
 	/* We are now doing the transforming and drawing ourselves. */
 	/* Calculate transformation matrix. */
 	memset(&m, 0, sizeof(m));
-	if (sjme_error_is(error = sjme_scritchpen_coreUtil_scaleRotate(
+	if (sjme_error_is(error = sjme_scritchpen_coreUtil_applyRotateScale(
 		&m, trans, wSrc, hSrc, wDest, hDest)))
 		return sjme_error_default(error);
 	
 	/* Anchor to target coordinates after scaling, because we need */
 	/* to know what our target scale is. */
-	if (sjme_error_is(error = sjme_scritchpen_coreUtil_anchor(anchor,
+	if (sjme_error_is(error = sjme_scritchpen_coreUtil_applyAnchor(anchor,
 		xDest, yDest, m.tw, m.th, 0,
 		&xDest, &yDest)))
 		return sjme_error_default(error);
 	
 	/* Determine how large our raw scan buffer actually is. */
 	rawScanBytes = -1;
-	if (sjme_error_is(error = g->api->mapRawScanBytes(g,
+	if (sjme_error_is(error = g->util->rawScanBytes(g,
 		m.tw, &rawScanBytes)) || rawScanBytes < 0)
 		return sjme_error_default(error);
 	
@@ -176,7 +176,7 @@ sjme_errorCode sjme_scritchpen_core_drawXRGB32Region(
 		}
 		
 		/* Map RGB to Native. */
-		if (sjme_error_is(error = g->api->mapRawScanFromRGB(
+		if (sjme_error_is(error = g->util->rgbToRawScan(
 			g, rawScan, 0, rawScanBytes,
 			flatRgb, 0, m.tw)))
 			goto fail_any;

@@ -72,7 +72,7 @@ sjme_errorCode sjme_scritchpen_core_drawChar(
 	
 	/* Calculate anchor point accordingly. */
 	if (anchor != 0)
-		if (sjme_error_is(error = sjme_scritchpen_coreUtil_anchor(anchor,
+		if (sjme_error_is(error = sjme_scritchpen_coreUtil_applyAnchor(anchor,
 			x, y, cw, ch, 0, &x, &y)))
 			goto fail_any;
 		
@@ -230,7 +230,7 @@ sjme_errorCode sjme_scritchpen_core_drawSubstring(
 	/* Determine anchor point of this block of text. */
 	dx = x;
 	dy = y;
-	if (anchor != 0 && sjme_error_is(error = sjme_scritchpen_coreUtil_anchor(
+	if (anchor != 0 && sjme_error_is(error = sjme_scritchpen_coreUtil_applyAnchor(
 		anchor & SJME_SCRITCHUI_ANCHOR_TEXT_MASK, x, y,
 		tw, lineHeight, baseline, &dx, &dy)))
 		goto fail_anchor;

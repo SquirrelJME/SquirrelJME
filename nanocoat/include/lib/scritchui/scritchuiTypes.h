@@ -119,6 +119,9 @@ typedef struct sjme_scritchui_pencilBase
 	/** Implementation API. */
 	const sjme_scritchui_pencilImplFunctions* impl;
 	
+	/** Utility functions. */
+	const sjme_scritchui_pencilUtilFunctions* util;
+	
 	/** Optional locking functions, for buffer access as required. */
 	const sjme_scritchui_pencilLockFunctions* lock;
 	

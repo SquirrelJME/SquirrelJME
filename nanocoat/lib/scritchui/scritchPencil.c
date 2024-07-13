@@ -82,7 +82,6 @@ sjme_errorCode sjme_scritchpen_core_lockRelease(
 /** Core pencil functions. */
 static const sjme_scritchui_pencilFunctions sjme_scritchpen_core_functions =
 {
-	.blendRGBInto = sjme_scritchpen_core_blendRGBInto,
 	.copyArea = sjme_scritchpen_core_copyArea,
 	.drawChar = sjme_scritchpen_core_drawChar,
 	.drawChars = sjme_scritchpen_core_drawChars,
@@ -96,9 +95,6 @@ static const sjme_scritchui_pencilFunctions sjme_scritchpen_core_functions =
 	.fillRect = sjme_scritchpen_core_fillRect,
 	.fillTriangle = sjme_scritchpen_core_fillTriangle,
 	.mapColor = sjme_scritchpen_core_mapColor,
-	.mapRawScanBytes = sjme_scritchpen_core_mapRawScanBytes,
-	.mapRawScanFromRGB = sjme_scritchpen_core_mapRawScanFromRGB,
-	.mapRGBFromRawScan = sjme_scritchpen_core_mapRGBFromRawScan,
 	.setAlphaColor = sjme_scritchpen_core_setAlphaColor,
 	.setBlendingMode = sjme_scritchpen_core_setBlendingMode,
 	.setClip = sjme_scritchpen_core_setClip,
@@ -106,6 +102,19 @@ static const sjme_scritchui_pencilFunctions sjme_scritchpen_core_functions =
 	.setFont = sjme_scritchpen_core_setFont,
 	.setStrokeStyle = sjme_scritchpen_core_setStrokeStyle,
 	.translate = sjme_scritchpen_core_translate,
+};
+
+/** Utility functions. */
+static const sjme_scritchui_pencilUtilFunctions
+	sjme_scritchpen_coreUtil_functions =
+{
+	.blendRGBInto = sjme_scritchpen_coreUtil_blendRGBInto,
+	.applyAnchor = sjme_scritchpen_coreUtil_applyAnchor,
+	.applyRotateScale = sjme_scritchpen_coreUtil_applyRotateScale,
+	.applyTranslate = sjme_scritchpen_coreUtil_applyTranslate,
+	.rawScanBytes = sjme_scritchpen_coreUtil_rawScanBytes,
+	.rgbToRawScan = sjme_scritchpen_coreUtil_rgbToRawScan,
+	.rawScanToRgb = sjme_scritchpen_coreUtil_rawScanToRgb,
 };
 
 sjme_errorCode sjme_scritchpen_initStatic(
@@ -144,6 +153,7 @@ sjme_errorCode sjme_scritchpen_initStatic(
 	/* Setup base result. */
 	memset(&result, 0, sizeof(result));
 	result.api = &sjme_scritchpen_core_functions;
+	result.util = &sjme_scritchpen_coreUtil_functions;
 	result.impl = inFunctions;
 	result.lock = inLockFuncs;
 	result.defaultFont = defaultFont;
@@ -238,7 +248,7 @@ sjme_errorCode sjme_scritchpen_initStatic(
 		result.prim.mapColor = sjme_scritchpen_corePrim_mapColor;
 	
 	/* Determine bytes per pixel. */
-	result.api->mapRawScanBytes(&result, 1,
+	result.util->rawScanBytes(&result, 1,
 		&result.bytesPerPixel);
 	
 	/* Basic filling of raw value. */

@@ -297,16 +297,23 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColor(
  * @param y The Y coordinate.
  * @since 2024/05/17
  */
-void sjme_scritchpen_coreUtil_applyTranslate(
+sjme_errorCode sjme_scritchpen_coreUtil_applyTranslate(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInOutNotNull sjme_jint* x,
 	sjme_attrInOutNotNull sjme_jint* y)
 {
+	if (g == NULL || x == NULL || y == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Apply translation. */
 	(*x) += g->state.translate.x;
 	(*y) += g->state.translate.y;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_scritchpen_coreUtil_scaleRotate(
+sjme_errorCode sjme_scritchpen_coreUtil_applyRotateScale(
 	sjme_attrOutNotNull sjme_scritchui_pencilMatrix* outMatrix,
 	sjme_attrInValue sjme_scritchui_pencilTranslate inTrans,
 	sjme_attrInPositive sjme_jint wSrc,
@@ -381,7 +388,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_scaleRotate(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_scritchpen_coreUtil_anchor(
+sjme_errorCode sjme_scritchpen_coreUtil_applyAnchor(
 	sjme_attrInValue sjme_jint anchor,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y,

@@ -546,7 +546,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilMapColorFunc)(
  * @return Any resultant error.
  * @since 2024/07/09
  */
-typedef sjme_errorCode (*sjme_scritchui_pencilMapRawScanBytesFunc)(
+typedef sjme_errorCode (*sjme_scritchui_pencilRawScanBytesFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositiveNonZero sjme_jint inPixels,
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outBytes);
@@ -564,7 +564,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilMapRawScanBytesFunc)(
  * @return Any resultant error, if any.
  * @since 2024/07/09
  */
-typedef sjme_errorCode (*sjme_scritchui_pencilMapRawScanFromRGBFunc)(
+typedef sjme_errorCode (*sjme_scritchui_pencilRgbToRawScanFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrOutNotNullBuf(rawLen) void* outRaw,
 	sjme_attrInPositive sjme_jint outRawOff,
@@ -586,7 +586,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilMapRawScanFromRGBFunc)(
  * @return Any resultant error, if any.
  * @since 2024/07/09
  */
-typedef sjme_errorCode (*sjme_scritchui_pencilMapRGBFromRawScanFunc)(
+typedef sjme_errorCode (*sjme_scritchui_pencilRawScanToRgbFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNullBuf(rgbLen) sjme_jint* outRgb,
 	sjme_attrInPositive sjme_jint outRgbOff,
@@ -775,6 +775,29 @@ typedef sjme_errorCode (*sjme_scritchui_pencilTranslateFunc)(
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y);
 
+typedef sjme_errorCode (*sjme_scritchui_pencilApplyAnchorFunc)(
+	sjme_attrInValue sjme_jint anchor,
+	sjme_attrInValue sjme_jint x,
+	sjme_attrInValue sjme_jint y,
+	sjme_attrInPositive sjme_jint w,
+	sjme_attrInPositive sjme_jint h,
+	sjme_attrInValue sjme_jint baseline,
+	sjme_attrOutNotNull sjme_jint* outX,
+	sjme_attrOutNotNull sjme_jint* outY);
+
+typedef sjme_errorCode (*sjme_scritchui_pencilApplyRotateScaleFunc)(
+	sjme_attrOutNotNull sjme_scritchui_pencilMatrix* outMatrix,
+	sjme_attrInValue sjme_scritchui_pencilTranslate inTrans,
+	sjme_attrInPositive sjme_jint wSrc,
+	sjme_attrInPositive sjme_jint hSrc,
+	sjme_attrInPositive sjme_jint wDest,
+	sjme_attrInPositive sjme_jint hDest);
+
+typedef sjme_errorCode (*sjme_scritchui_pencilApplyTranslateFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInOutNotNull sjme_jint* x,
+	sjme_attrInOutNotNull sjme_jint* y);
+
 /** Quick definition for functions. */
 #define SJME_SCRITCHUI_QUICK_PENCIL(what, lWhat) \
 	SJME_TOKEN_PASTE3(sjme_scritchui_pencil, what, Func) lWhat
@@ -786,9 +809,6 @@ typedef sjme_errorCode (*sjme_scritchui_pencilTranslateFunc)(
  */
 typedef struct sjme_scritchui_pencilFunctions
 {
-	/** @c BlendRGBInto . */
-	SJME_SCRITCHUI_QUICK_PENCIL(BlendRGBInto, blendRGBInto);
-	
 	/** @c CopyArea . */
 	SJME_SCRITCHUI_QUICK_PENCIL(CopyArea, copyArea);
 	
@@ -827,15 +847,6 @@ typedef struct sjme_scritchui_pencilFunctions
 	
 	/** @c MapColor . */
 	SJME_SCRITCHUI_QUICK_PENCIL(MapColor, mapColor);
-	
-	/** @c MapRawScanBytes . */
-	SJME_SCRITCHUI_QUICK_PENCIL(MapRawScanBytes, mapRawScanBytes);
-	
-	/** @c MapRawScanFromRGB . */
-	SJME_SCRITCHUI_QUICK_PENCIL(MapRawScanFromRGB, mapRawScanFromRGB);
-	
-	/** @c MapRGBFromRawScan . */
-	SJME_SCRITCHUI_QUICK_PENCIL(MapRGBFromRawScan, mapRGBFromRawScan);
 	
 	/** @c SetAlphaColor . */
 	SJME_SCRITCHUI_QUICK_PENCIL(SetAlphaColor, setAlphaColor);
@@ -903,6 +914,26 @@ struct sjme_scritchui_pencilLockFunctions
 
 struct sjme_scritchui_pencilUtilFunctions
 {
+	/** @c ApplyAnchor . */
+	SJME_SCRITCHUI_QUICK_PENCIL(ApplyAnchor, applyAnchor);
+	
+	/** @c ApplyRotateScale . */
+	SJME_SCRITCHUI_QUICK_PENCIL(ApplyRotateScale, applyRotateScale);
+	
+	/** @c ApplyTranslate . */
+	SJME_SCRITCHUI_QUICK_PENCIL(ApplyTranslate, applyTranslate);
+	
+	/** @c BlendRGBInto . */
+	SJME_SCRITCHUI_QUICK_PENCIL(BlendRGBInto, blendRGBInto);
+	
+	/** @c RawScanBytes . */
+	SJME_SCRITCHUI_QUICK_PENCIL(RawScanBytes, rawScanBytes);
+	
+	/** @c RawScanToRgb . */
+	SJME_SCRITCHUI_QUICK_PENCIL(RawScanToRgb, rawScanToRgb);
+	
+	/** @c RgbToRawScan . */
+	SJME_SCRITCHUI_QUICK_PENCIL(RgbToRawScan, rgbToRawScan);
 };
 
 /**

@@ -41,7 +41,7 @@ static sjme_errorCode sjme_scritchui_basicRawScanGet(
 	
 	/* Determine the number of pixels to be drawn. */
 	pixelBytes = -1;
-	if (sjme_error_is(error = g->api->mapRawScanBytes(g,
+	if (sjme_error_is(error = g->util->rawScanBytes(g,
 		inNumPixels, &pixelBytes)) || pixelBytes < 0)
 		return sjme_error_default(error);
 	
@@ -90,7 +90,7 @@ static sjme_errorCode sjme_scritchui_basicRawScanPutPure(
 	
 	/* Determine the number of pixels to be drawn. */
 	pixelBytes = -1;
-	if (sjme_error_is(error = g->api->mapRawScanBytes(g,
+	if (sjme_error_is(error = g->util->rawScanBytes(g,
 		inNumPixels, &pixelBytes)) || pixelBytes < 0)
 		return sjme_error_default(error);
 	
