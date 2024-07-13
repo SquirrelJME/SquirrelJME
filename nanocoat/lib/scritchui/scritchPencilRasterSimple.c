@@ -52,9 +52,6 @@ sjme_errorCode sjme_scritchpen_corePrim_drawHoriz(
 	
 	/* Outside the clip? */
 	w = ex - x;
-	sjme_message("horiz(%d, %d, %d (%d, %d)) -> clip(%d, %d):(%d, %d)",
-		x, y, w, ex, y,
-		clipLine->s.x, clipLine->s.y, clipLine->e.x, clipLine->e.y);
 	if (w <= 0 || y < 0 || y > g->height ||
 		y < clipLine->s.y || y > clipLine->e.y)
 		return SJME_ERROR_NONE;

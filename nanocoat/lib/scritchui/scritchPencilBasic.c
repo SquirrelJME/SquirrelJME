@@ -55,8 +55,6 @@ static sjme_errorCode sjme_scritchui_basicRawScanGet(
 	/* Direct memory copy over. */
 	targetP = SJME_POINTER_OFFSET(g->lockState.base,
 		(y * g->scanLenBytes) + ((x * g->bitsPerPixel) / 8));
-	sjme_message("RawScanGet(%d, %d, %p, %d, %d) <- %p, %d",
-		x, y, outData, inDataLen, inNumPixels, targetP, limit);
 	memmove(outData, targetP, limit);
 	
 	/* Success! */

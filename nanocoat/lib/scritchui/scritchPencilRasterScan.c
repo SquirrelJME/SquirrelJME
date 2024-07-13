@@ -185,8 +185,6 @@ sjme_errorCode sjme_scritchpen_coreUtil_blendRGBInto(
 		s = src[i] | srcMask;
 		d = dest[i] | destMask;
 		
-		sjme_message("Blend #%08x <- #%08x", d, s);
-		
 		a = (s & AM) >> 24U;
 		na = 255U - a;
 		rb = ((na * (d & RBM)) + (a * (s & RBM))) >> 8U;
