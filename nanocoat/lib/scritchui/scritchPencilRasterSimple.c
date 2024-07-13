@@ -116,13 +116,13 @@ sjme_errorCode sjme_scritchpen_core_drawHoriz(
 	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Transform. */
+	sjme_scritchpen_coreUtil_applyTranslate(g, &x, &y);
 	
 	/* Need to lock? */
 	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
 		return sjme_error_default(error);
-		
-	/* Transform. */
-	sjme_scritchpen_coreUtil_applyTranslate(g, &x, &y);
 	
 	/* Use primitive. */
 	if (sjme_error_is(error = g->prim.drawHoriz(g, x, y, w)))
@@ -194,6 +194,10 @@ sjme_errorCode sjme_scritchpen_core_drawPixel(
 		
 	/* Transform. */
 	sjme_scritchpen_coreUtil_applyTranslate(g, &x, &y);
+	
+	/* Lock. */
+	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
+		return sjme_error_default(error);
 	
 	/* Use primitive. */
 	if (sjme_error_is(error = g->prim.drawPixel(g, x, y)))
