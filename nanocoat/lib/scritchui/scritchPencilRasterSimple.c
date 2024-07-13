@@ -43,10 +43,6 @@ sjme_errorCode sjme_scritchpen_corePrim_drawHoriz(
 		x = clipLine->s.x;
 	else if (x > clipLine->e.x)
 		x = clipLine->e.x;
-	if (y < clipLine->s.y)
-		y = clipLine->s.y;
-	else if (y > clipLine->e.y)
-		y = clipLine->e.y;
 	
 	/* Clip end into bounds. */
 	if (ex < clipLine->s.x)
@@ -56,8 +52,11 @@ sjme_errorCode sjme_scritchpen_corePrim_drawHoriz(
 	
 	/* Outside the clip? */
 	w = ex - x;
-	if (w <= 0 || y < 0 || y < clipLine->s.x ||
-		y > g->height || y > clipLine->s.y)
+	sjme_message("horiz(%d, %d, %d (%d, %d)) -> clip(%d, %d):(%d, %d)",
+		x, y, w, ex, y,
+		clipLine->s.x, clipLine->s.y, clipLine->e.x, clipLine->e.y);
+	if (w <= 0 || y < 0 || y > g->height ||
+		y < clipLine->s.y || y > clipLine->e.y)
 		return SJME_ERROR_NONE;
 	
 	/* Allocate buffer. */
