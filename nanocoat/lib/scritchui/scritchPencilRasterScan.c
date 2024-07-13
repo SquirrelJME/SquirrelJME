@@ -189,6 +189,9 @@ sjme_errorCode sjme_scritchpen_coreUtil_blendRGBInto(
 		sg = ((src[i]) >> 8) & 0xFF;
 		sb = src[i] & 0xFF;
 		
+		/* Inverse alpha. */
+		iA = sjme_fixed_fraction(255 - sa, 255);
+		
 		/* Extract components. */
 		da = sjme_fixed_fraction(da, 255);
 		dr = sjme_fixed_fraction(dr, 255);
@@ -199,8 +202,6 @@ sjme_errorCode sjme_scritchpen_coreUtil_blendRGBInto(
 		sr = sjme_fixed_fraction(sr, 255);
 		sg = sjme_fixed_fraction(sg, 255);
 		sb = sjme_fixed_fraction(sb, 255);
-		
-		iA = sjme_fixed_hi(1) - sa;
 		
 		/* A(dest) = A(src) + A(dest) - (A(src) * A(dest)) */
 		ca = sa + da - sjme_fixed_mul(sa, da);
