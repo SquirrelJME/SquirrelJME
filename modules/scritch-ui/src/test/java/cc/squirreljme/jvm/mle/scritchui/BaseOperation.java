@@ -133,20 +133,38 @@ public abstract class BaseOperation
 		if (__pixelFormat == UIPixelFormat.INT_RGB888)
 			__c |= 0xFF000000;
 		
-		// Base for background and foreground color
-		if (__c == 0xFFFFFFFF)
-			return "bg";
-		else if (__c == 0xFF000000)
-			return "fg";
+		boolean prefix = false;
 		
-		// Otherwise use an HTML color code
-		int a = ((__c >>> 24) & 0xF0) >>> 4;
-		int r = ((__c >>> 16) & 0xF0) >>> 4;
-		int g = ((__c >>> 8) & 0xF0) >>> 4;
-		int b = ((__c) & 0xF0) >>> 4;
+		// Get base color and determine its code
+		int base = __c & 0x00FFFFFF;
+		String baseCode;
+		if (base == 0xFFFFFF)
+			baseCode = "bg";
+		else if (base == 0x000000)
+			baseCode = "fg";
+		else
+		{
+			prefix = true;
+			baseCode = "88";
+		}
 		
-		if (a == 0x0F || a == 0xF0 || a == 0xFF)
-			return String.format("#%01x%01x%01x", r, g, b);
-		return String.format("#%01X%01x%01x%01x", a, r, g, b);
+		// Then do the same for alpha
+		int a = ((__c >>> 24) & 0xF0);
+		String alphaCode;
+		if (a == 0xF0)
+			alphaCode = "";
+		else if (a == 0x00)
+		{
+			prefix = true;
+			alphaCode = "0";
+		}
+		else
+		{
+			prefix = true;
+			alphaCode = "8";
+		}
+		
+		return String.format("%s%s%s",
+			(prefix ? "#" : ""), alphaCode, baseCode);
 	}
 }
