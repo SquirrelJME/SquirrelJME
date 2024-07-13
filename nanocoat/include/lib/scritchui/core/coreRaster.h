@@ -285,24 +285,24 @@ sjme_errorCode sjme_scritchpen_coreUtil_rawScanBytes(
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outBytes,
 	sjme_attrOutNullable sjme_attrOutPositiveNonZero sjme_jint* outLimit);
 	
-sjme_errorCode sjme_scritchpen_coreUtil_rgbToRawScan(
-	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrOutNotNullBuf(rawLen) void* outRaw,
-	sjme_attrInPositive sjme_jint outRawOff,
-	sjme_attrInPositive sjme_jint outRawLen,
-	sjme_attrInNotNullBuf(rgbLen) sjme_jint* inRgb,
-	sjme_attrInPositive sjme_jint inRgbOff,
-	sjme_attrInPositive sjme_jint inRgbLen);
-	
 sjme_errorCode sjme_scritchpen_coreUtil_rawScanToRgb(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNullBuf(rgbLen) sjme_jint* outRgb,
 	sjme_attrInPositive sjme_jint outRgbOff,
 	sjme_attrInPositive sjme_jint outRgbLen,
-	sjme_attrOutNotNullBuf(rawLen) void* inRaw,
+	sjme_attrOutNotNullBuf(rawLen) const void* inRaw,
 	sjme_attrInPositive sjme_jint inRawOff,
 	sjme_attrInPositive sjme_jint inRawLen);
 
+sjme_errorCode sjme_scritchpen_coreUtil_rgbToRawScan(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrOutNotNullBuf(rawLen) void* outRaw,
+	sjme_attrInPositive sjme_jint outRawOff,
+	sjme_attrInPositive sjme_jint outRawLen,
+	sjme_attrInNotNullBuf(rgbLen) const sjme_jint* inRgb,
+	sjme_attrInPositive sjme_jint inRgbOff,
+	sjme_attrInPositive sjme_jint inRgbLen);
+	
 sjme_errorCode sjme_scritchpen_core_setAlphaColor(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint argb);

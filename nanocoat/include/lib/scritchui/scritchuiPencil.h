@@ -717,7 +717,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilRawScanToRgbFunc)(
 	sjme_attrInNotNullBuf(rgbLen) sjme_jint* outRgb,
 	sjme_attrInPositive sjme_jint outRgbOff,
 	sjme_attrInPositive sjme_jint outRgbLen,
-	sjme_attrOutNotNullBuf(rawLen) void* inRaw,
+	sjme_attrOutNotNullBuf(rawLen) const void* inRaw,
 	sjme_attrInPositive sjme_jint inRawOff,
 	sjme_attrInPositive sjme_jint inRawLen);
 
@@ -739,7 +739,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilRgbToRawScanFunc)(
 	sjme_attrOutNotNullBuf(rawLen) void* outRaw,
 	sjme_attrInPositive sjme_jint outRawOff,
 	sjme_attrInPositive sjme_jint outRawLen,
-	sjme_attrInNotNullBuf(rgbLen) sjme_jint* inRgb,
+	sjme_attrInNotNullBuf(rgbLen) const sjme_jint* inRgb,
 	sjme_attrInPositive sjme_jint inRgbOff,
 	sjme_attrInPositive sjme_jint inRgbLen);
 

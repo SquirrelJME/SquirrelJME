@@ -31,12 +31,6 @@ sjme_errorCode sjme_scritchpen_corePrim_drawHoriz(
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Debug. */
-	sjme_message("primHoriz(%p, %d, %d, %d) in [(%d, %d), (%d, %d)]",
-		g, x, y, w,
-		g->state.clipLine.s.x, g->state.clipLine.s.y,
-		g->state.clipLine.e.x, g->state.clipLine.e.y);
-	
 	/* Off top or bottom? */
 	clipLine = &g->state.clipLine;
 	if (y < 0 || y < clipLine->s.y ||

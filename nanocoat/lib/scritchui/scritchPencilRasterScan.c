@@ -148,6 +148,12 @@ sjme_errorCode sjme_scritchpen_corePrim_rawScanPut(
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels,
 	sjme_attrInValue sjme_jboolean mulAlpha)
 {
+	sjme_errorCode error;
+	sjme_jint bufRgbBytes, limit;
+	void* destRaw;
+	sjme_jint* destRgb;
+	sjme_jint* srcRgb;
+	
 	if (g == NULL || inData == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
@@ -156,10 +162,59 @@ sjme_errorCode sjme_scritchpen_corePrim_rawScanPut(
 		return g->prim.rawScanPutPure(g, inX, inY, inData,
 			inDataLen, inNumPixels);
 	
-	/*  */
+	/* Determine how much data to read for RGB blending. */
+	bufRgbBytes = -1;
+	limit = -1;
+	if (sjme_error_is(error = g->util->rawScanBytes(g,
+		inNumPixels, inDataLen,
+		&bufRgbBytes, &limit)) ||
+		bufRgbBytes < 0 || limit < 0)
+		return sjme_error_default(error);
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Allocate buffers. */
+	destRaw = sjme_alloca(inDataLen);
+	destRgb = sjme_alloca(bufRgbBytes);
+	srcRgb = sjme_alloca(bufRgbBytes);
+	if (destRaw == NULL || destRgb == NULL || srcRgb == NULL)
+		return SJME_ERROR_OUT_OF_MEMORY;
+	
+	/* Clear. */
+	memset(destRaw, 0, inDataLen);
+	memset(destRgb, 0, bufRgbBytes);
+	memset(srcRgb, 0, bufRgbBytes);
+	
+	/* Read in raw image data. */
+	if (sjme_error_is(error = g->prim.rawScanGet(g,
+		inX, inY, destRaw, inDataLen, inNumPixels)))
+		return sjme_error_default(error);
+	
+	/* Map source to RGB. */
+	if (sjme_error_is(error = g->util->rawScanToRgb(g,
+		srcRgb, 0, inNumPixels,
+		inData, 0, inDataLen)))
+		return sjme_error_default(error);
+	
+	/* Map dest to RGB. */
+	if (sjme_error_is(error = g->util->rawScanToRgb(g,
+		destRgb, 0, inNumPixels,
+		destRaw, 0, inDataLen)))
+		return sjme_error_default(error);
+	
+	/* RGB blend source onto dest. */
+	if (sjme_error_is(error = g->util->blendRGBInto(g,
+		SJME_JNI_TRUE, mulAlpha,
+		destRgb, srcRgb, inNumPixels)))
+		return sjme_error_default(error);
+	
+	/* Map dest from RGB to raw data. */
+	if (sjme_error_is(error = g->util->rawScanToRgb(g,
+		destRgb, 0, inNumPixels,
+		destRaw, 0, inDataLen)))
+		return sjme_error_default(error);
+	
+	/* Put in raw data. */
+	return g->prim.rawScanPutPure(g, inX, inY, destRaw,
+		inDataLen, inNumPixels);
 }
 
 sjme_errorCode sjme_scritchpen_corePrim_rawScanPutSkipBlend(
@@ -312,7 +367,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_rawScanToRgb(
 	sjme_attrInNotNullBuf(rgbLen) sjme_jint* outRgb,
 	sjme_attrInPositive sjme_jint outRgbOff,
 	sjme_attrInPositive sjme_jint outRgbLen,
-	sjme_attrOutNotNullBuf(rawLen) void* inRaw,
+	sjme_attrOutNotNullBuf(rawLen) const void* inRaw,
 	sjme_attrInPositive sjme_jint inRawOff,
 	sjme_attrInPositive sjme_jint inRawLen)
 {
@@ -369,7 +424,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_rgbToRawScan(
 	sjme_attrOutNotNullBuf(rawLen) void* outRaw,
 	sjme_attrInPositive sjme_jint outRawOff,
 	sjme_attrInPositive sjme_jint outRawLen,
-	sjme_attrInNotNullBuf(rgbLen) sjme_jint* inRgb,
+	sjme_attrInNotNullBuf(rgbLen) const sjme_jint* inRgb,
 	sjme_attrInPositive sjme_jint inRgbOff,
 	sjme_attrInPositive sjme_jint inRgbLen)
 {
