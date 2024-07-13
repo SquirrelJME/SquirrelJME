@@ -289,27 +289,46 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColor(
 		inRgbOrRaw, outColor);
 }
 
-/**
- * Transforms coordinates.
- * 
- * @param g The graphics to transform via. 
- * @param x The X coordinate.
- * @param y The Y coordinate.
- * @since 2024/05/17
- */
-sjme_errorCode sjme_scritchpen_coreUtil_applyTranslate(
-	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInOutNotNull sjme_jint* x,
-	sjme_attrInOutNotNull sjme_jint* y)
+sjme_errorCode sjme_scritchpen_coreUtil_applyAnchor(
+	sjme_attrInValue sjme_jint anchor,
+	sjme_attrInValue sjme_jint x,
+	sjme_attrInValue sjme_jint y,
+	sjme_attrInPositive sjme_jint w,
+	sjme_attrInPositive sjme_jint h,
+	sjme_attrInValue sjme_jint baseline,
+	sjme_attrOutNotNull sjme_jint* outX,
+	sjme_attrOutNotNull sjme_jint* outY)
 {
-	if (g == NULL || x == NULL || y == NULL)
+	if (outX == NULL || outY == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Apply translation. */
-	(*x) += g->state.translate.x;
-	(*y) += g->state.translate.y;
+	/* Cannot be negative. */
+	if (w < 0 || h < 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Horizontal anchoring. */
+	if ((anchor & SJME_SCRITCHUI_ANCHOR_LEFT) == 0)
+	{
+		if ((anchor & SJME_SCRITCHUI_ANCHOR_HCENTER) != 0)
+			x -= w / 2;
+		else if ((anchor & SJME_SCRITCHUI_ANCHOR_RIGHT) != 0)
+			x -= w;
+	}
+	
+	/* Vertical anchoring. */
+	if ((anchor & SJME_SCRITCHUI_ANCHOR_TOP) == 0)
+	{
+		if ((anchor & SJME_SCRITCHUI_ANCHOR_VCENTER) != 0)
+			y -= h / 2;
+		else if ((anchor & SJME_SCRITCHUI_ANCHOR_BOTTOM) != 0)
+			y -= h;
+		else if ((anchor & SJME_SCRITCHUI_ANCHOR_BASELINE) != 0)
+			y -= baseline;
+	}
 	
 	/* Success! */
+	*outX = x;
+	*outY = y;
 	return SJME_ERROR_NONE;
 }
 
@@ -388,46 +407,19 @@ sjme_errorCode sjme_scritchpen_coreUtil_applyRotateScale(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_scritchpen_coreUtil_applyAnchor(
-	sjme_attrInValue sjme_jint anchor,
-	sjme_attrInValue sjme_jint x,
-	sjme_attrInValue sjme_jint y,
-	sjme_attrInPositive sjme_jint w,
-	sjme_attrInPositive sjme_jint h,
-	sjme_attrInValue sjme_jint baseline,
-	sjme_attrOutNotNull sjme_jint* outX,
-	sjme_attrOutNotNull sjme_jint* outY)
+sjme_errorCode sjme_scritchpen_coreUtil_applyTranslate(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInOutNotNull sjme_jint* x,
+	sjme_attrInOutNotNull sjme_jint* y)
 {
-	if (outX == NULL || outY == NULL)
+	if (g == NULL || x == NULL || y == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Cannot be negative. */
-	if (w < 0 || h < 0)
-		return SJME_ERROR_INVALID_ARGUMENT;
-	
-	/* Horizontal anchoring. */
-	if ((anchor & SJME_SCRITCHUI_ANCHOR_LEFT) == 0)
-	{
-		if ((anchor & SJME_SCRITCHUI_ANCHOR_HCENTER) != 0)
-			x -= w / 2;
-		else if ((anchor & SJME_SCRITCHUI_ANCHOR_RIGHT) != 0)
-			x -= w;
-	}
-	
-	/* Vertical anchoring. */
-	if ((anchor & SJME_SCRITCHUI_ANCHOR_TOP) == 0)
-	{
-		if ((anchor & SJME_SCRITCHUI_ANCHOR_VCENTER) != 0)
-			y -= h / 2;
-		else if ((anchor & SJME_SCRITCHUI_ANCHOR_BOTTOM) != 0)
-			y -= h;
-		else if ((anchor & SJME_SCRITCHUI_ANCHOR_BASELINE) != 0)
-			y -= baseline;
-	}
+	/* Apply translation. */
+	(*x) += g->state.translate.x;
+	(*y) += g->state.translate.y;
 	
 	/* Success! */
-	*outX = x;
-	*outY = y;
 	return SJME_ERROR_NONE;
 }
 

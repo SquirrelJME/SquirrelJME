@@ -51,6 +51,7 @@ sjme_errorCode sjme_scritchpen_corePrim_rawScanFillInt(
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
+
 sjme_errorCode sjme_scritchpen_corePrim_rawScanFillShort(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrOutNotNullBuf(rawLen) void* outRaw,
@@ -86,6 +87,7 @@ sjme_errorCode sjme_scritchpen_corePrim_rawScanFillShort(
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
+
 sjme_errorCode sjme_scritchpen_corePrim_rawScanFillByte(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrOutNotNullBuf(rawLen) void* outRaw,
@@ -121,6 +123,7 @@ sjme_errorCode sjme_scritchpen_corePrim_rawScanFillByte(
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
+
 sjme_errorCode sjme_scritchpen_corePrim_rawScanGet(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint inX,
@@ -135,6 +138,7 @@ sjme_errorCode sjme_scritchpen_corePrim_rawScanGet(
 	/* Do nothing, there is no reading function. */
 	return SJME_ERROR_NONE;
 }
+
 sjme_errorCode sjme_scritchpen_corePrim_rawScanPut(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint inX,
@@ -150,6 +154,7 @@ sjme_errorCode sjme_scritchpen_corePrim_rawScanPut(
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
+
 sjme_errorCode sjme_scritchpen_corePrim_rawScanPutSkipBlend(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint inX,
@@ -165,6 +170,7 @@ sjme_errorCode sjme_scritchpen_corePrim_rawScanPutSkipBlend(
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
+
 sjme_errorCode sjme_scritchpen_coreUtil_blendRGBInto(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jboolean destAlpha,
@@ -222,6 +228,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_blendRGBInto(
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
+
 sjme_errorCode sjme_scritchpen_coreUtil_rawScanBytes(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositiveNonZero sjme_jint inPixels,
@@ -280,6 +287,67 @@ sjme_errorCode sjme_scritchpen_coreUtil_rawScanBytes(
 	*outBytes = result;
 	return SJME_ERROR_NONE;
 }
+
+sjme_errorCode sjme_scritchpen_coreUtil_rawScanToRgb(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInNotNullBuf(rgbLen) sjme_jint* outRgb,
+	sjme_attrInPositive sjme_jint outRgbOff,
+	sjme_attrInPositive sjme_jint outRgbLen,
+	sjme_attrOutNotNullBuf(rawLen) void* inRaw,
+	sjme_attrInPositive sjme_jint inRawOff,
+	sjme_attrInPositive sjme_jint inRawLen)
+{
+	sjme_errorCode error;
+	sjme_jint byteLimit, outRgbOffRaw, outRgbLenRaw;
+	
+	if (g == NULL || outRgb == NULL || inRaw == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	outRgbOffRaw = outRgbOff * 4;
+	if (outRgbOff < 0 || outRgbLen < 0 || (outRgbOff + outRgbLen) < 0 ||
+		inRawOff < 0 || inRawLen < 0 || (inRawOff + inRawLen) < 0 ||
+		outRgbOffRaw < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+		
+	/* Double check RGB count. */
+	outRgbLenRaw = -1;
+	if (sjme_error_is(error = g->util->rawScanBytes(g,
+		outRgbLen, &outRgbLenRaw)) || outRgbLenRaw < 0)
+		return sjme_error_default(error);
+		
+	/* Use the smaller of the two. */
+	if (outRgbLenRaw < inRawLen)
+		byteLimit = outRgbLenRaw;
+	else
+		byteLimit = inRawLen;
+	
+	/* Optimal format for direct copy? */
+	if (g->pixelFormat == SJME_GFX_PIXEL_FORMAT_INT_ARGB8888 ||
+		g->pixelFormat == SJME_GFX_PIXEL_FORMAT_INT_RGB888)
+	{
+		/* Copy over efficiently. */
+		memmove(SJME_POINTER_OFFSET(outRgb, outRgbOffRaw),
+			SJME_POINTER_OFFSET(inRaw, inRawOff),
+			byteLimit);
+		
+		/* Success! */
+		return SJME_ERROR_NONE;
+	}
+	
+	/* Simple byte swap. */
+	else if (g->pixelFormat == SJME_GFX_PIXEL_FORMAT_INT_BGRA8888 ||
+		g->pixelFormat == SJME_GFX_PIXEL_FORMAT_INT_BGRX8888)
+	{
+		return sjme_swap_uint_memmove(
+			SJME_POINTER_OFFSET(outRgb, outRgbOffRaw),
+			SJME_POINTER_OFFSET(inRaw, inRawOff),
+			byteLimit);
+	}
+	
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
 sjme_errorCode sjme_scritchpen_coreUtil_rgbToRawScan(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrOutNotNullBuf(rawLen) void* outRaw,
@@ -341,65 +409,6 @@ sjme_errorCode sjme_scritchpen_coreUtil_rgbToRawScan(
 		return sjme_swap_shu8_uint_memmove(
 			SJME_POINTER_OFFSET(outRaw, outRawOff),
 			SJME_POINTER_OFFSET(inRgb, inRgbOffRaw),
-			byteLimit);
-	}
-	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
-}
-sjme_errorCode sjme_scritchpen_coreUtil_rawScanToRgb(
-	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInNotNullBuf(rgbLen) sjme_jint* outRgb,
-	sjme_attrInPositive sjme_jint outRgbOff,
-	sjme_attrInPositive sjme_jint outRgbLen,
-	sjme_attrOutNotNullBuf(rawLen) void* inRaw,
-	sjme_attrInPositive sjme_jint inRawOff,
-	sjme_attrInPositive sjme_jint inRawLen)
-{
-	sjme_errorCode error;
-	sjme_jint byteLimit, outRgbOffRaw, outRgbLenRaw;
-	
-	if (g == NULL || outRgb == NULL || inRaw == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	outRgbOffRaw = outRgbOff * 4;
-	if (outRgbOff < 0 || outRgbLen < 0 || (outRgbOff + outRgbLen) < 0 ||
-		inRawOff < 0 || inRawLen < 0 || (inRawOff + inRawLen) < 0 ||
-		outRgbOffRaw < 0)
-		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
-		
-	/* Double check RGB count. */
-	outRgbLenRaw = -1;
-	if (sjme_error_is(error = g->util->rawScanBytes(g,
-		outRgbLen, &outRgbLenRaw)) || outRgbLenRaw < 0)
-		return sjme_error_default(error);
-		
-	/* Use the smaller of the two. */
-	if (outRgbLenRaw < inRawLen)
-		byteLimit = outRgbLenRaw;
-	else
-		byteLimit = inRawLen;
-	
-	/* Optimal format for direct copy? */
-	if (g->pixelFormat == SJME_GFX_PIXEL_FORMAT_INT_ARGB8888 ||
-		g->pixelFormat == SJME_GFX_PIXEL_FORMAT_INT_RGB888)
-	{
-		/* Copy over efficiently. */
-		memmove(SJME_POINTER_OFFSET(outRgb, outRgbOffRaw),
-			SJME_POINTER_OFFSET(inRaw, inRawOff),
-			byteLimit);
-		
-		/* Success! */
-		return SJME_ERROR_NONE;
-	}
-	
-	/* Simple byte swap. */
-	else if (g->pixelFormat == SJME_GFX_PIXEL_FORMAT_INT_BGRA8888 ||
-		g->pixelFormat == SJME_GFX_PIXEL_FORMAT_INT_BGRX8888)
-	{
-		return sjme_swap_uint_memmove(
-			SJME_POINTER_OFFSET(outRgb, outRgbOffRaw),
-			SJME_POINTER_OFFSET(inRaw, inRawOff),
 			byteLimit);
 	}
 	

@@ -139,6 +139,14 @@ sjme_errorCode sjme_scritchpen_coreUtil_applyAnchor(
 	sjme_attrOutNotNull sjme_jint* outX,
 	sjme_attrOutNotNull sjme_jint* outY);
 	
+/**
+ * Translates coordinates.
+ * 
+ * @param g The graphics to transform via. 
+ * @param x The X coordinate.
+ * @param y The Y coordinate.
+ * @since 2024/05/17
+ */
 sjme_errorCode sjme_scritchpen_coreUtil_applyTranslate(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInOutNotNull sjme_jint* x,

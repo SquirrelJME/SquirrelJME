@@ -196,6 +196,65 @@ typedef struct sjme_scritchui_pencilColor
 } sjme_scritchui_pencilColor;
 
 /**
+ * Applies an anchor point.
+ * 
+ * @param anchor The anchor point.
+ * @param x The input X coordinate.
+ * @param y The output Y coordinate.
+ * @param w The width of the drawable.
+ * @param h The height of the drawable.
+ * @param baseline The baseline position of the font, if this is one. If
+ * set to a negative value this will be considered invalid to use.
+ * @param outX The resultant X coordinate.
+ * @param outY The resultant Y coordinate.
+ * @return Any error, if applicable.
+ * @since 2024/07/12
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilApplyAnchorFunc)(
+	sjme_attrInValue sjme_jint anchor,
+	sjme_attrInValue sjme_jint x,
+	sjme_attrInValue sjme_jint y,
+	sjme_attrInPositive sjme_jint w,
+	sjme_attrInPositive sjme_jint h,
+	sjme_attrInValue sjme_jint baseline,
+	sjme_attrOutNotNull sjme_jint* outX,
+	sjme_attrOutNotNull sjme_jint* outY);
+
+/**
+ * Applies rotation and scaling.
+ * 
+ * @param outMatrix The resultant matrix.
+ * @param inTrans The translation to use.
+ * @param wSrc The source width.
+ * @param hSrc The source height.
+ * @param wDest The destination width.
+ * @param hDest The destination height.
+ * @return Any resultant error, if any.
+ * @since 2024/07/12
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilApplyRotateScaleFunc)(
+	sjme_attrOutNotNull sjme_scritchui_pencilMatrix* outMatrix,
+	sjme_attrInValue sjme_scritchui_pencilTranslate inTrans,
+	sjme_attrInPositive sjme_jint wSrc,
+	sjme_attrInPositive sjme_jint hSrc,
+	sjme_attrInPositive sjme_jint wDest,
+	sjme_attrInPositive sjme_jint hDest);
+
+/**
+ * Applies translation to the given coordinates.
+ * 
+ * @param g The graphics to apply from.
+ * @param x The X coordinate to translate.
+ * @param y The Y coordinate to translate.
+ * @return Any resultant error, if any.
+ * @since 2024/07/12
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilApplyTranslateFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInOutNotNull sjme_jint* x,
+	sjme_attrInOutNotNull sjme_jint* y);
+
+/**
  * This blends RGB data from a source buffer into the target buffer.
  * 
  * @param g The graphics to operate under.
@@ -552,50 +611,6 @@ typedef sjme_errorCode (*sjme_scritchui_pencilRawScanBytesFunc)(
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outBytes);
 
 /**
- * Maps a raw scanline from raw RGB data.
- * 
- * @param g The graphics to operate within.
- * @param outRaw The output raw scan buffer.
- * @param outRawOff Offset into the raw scan buffer.
- * @param outRawLen Length of the raw scan buffer.
- * @param inRgb The input RGB data.
- * @param inRgbOff The offset into the RGB buffer.
- * @param inRgbLen The length of the RGB buffer.
- * @return Any resultant error, if any.
- * @since 2024/07/09
- */
-typedef sjme_errorCode (*sjme_scritchui_pencilRgbToRawScanFunc)(
-	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrOutNotNullBuf(rawLen) void* outRaw,
-	sjme_attrInPositive sjme_jint outRawOff,
-	sjme_attrInPositive sjme_jint outRawLen,
-	sjme_attrInNotNullBuf(rgbLen) sjme_jint* inRgb,
-	sjme_attrInPositive sjme_jint inRgbOff,
-	sjme_attrInPositive sjme_jint inRgbLen);
-
-/**
- * Maps a raw scanline from raw RGB data.
- * 
- * @param g The graphics to operate within.
- * @param outRgb The output RGB data.
- * @param outRgbOff The offset into the RGB buffer.
- * @param outRgbLen The length of the RGB buffer.
- * @param inRaw The input raw scan buffer.
- * @param inRawOff Offset into the raw scan buffer.
- * @param inRawLen Length of the raw scan buffer.
- * @return Any resultant error, if any.
- * @since 2024/07/09
- */
-typedef sjme_errorCode (*sjme_scritchui_pencilRawScanToRgbFunc)(
-	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInNotNullBuf(rgbLen) sjme_jint* outRgb,
-	sjme_attrInPositive sjme_jint outRgbOff,
-	sjme_attrInPositive sjme_jint outRgbLen,
-	sjme_attrOutNotNullBuf(rawLen) void* inRaw,
-	sjme_attrInPositive sjme_jint inRawOff,
-	sjme_attrInPositive sjme_jint inRawLen);
-
-/**
  * Fills a buffer with the given value. 
  * 
  * @param g The graphics owning this.
@@ -678,6 +693,50 @@ typedef sjme_errorCode (*sjme_scritchui_pencilRawScanPutPureFunc)(
 	sjme_attrInNotNullBuf(inLen) const void* inData,
 	sjme_attrInPositiveNonZero sjme_jint inDataLen,
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels);
+
+/**
+ * Maps a raw scanline from raw RGB data.
+ * 
+ * @param g The graphics to operate within.
+ * @param outRgb The output RGB data.
+ * @param outRgbOff The offset into the RGB buffer.
+ * @param outRgbLen The length of the RGB buffer.
+ * @param inRaw The input raw scan buffer.
+ * @param inRawOff Offset into the raw scan buffer.
+ * @param inRawLen Length of the raw scan buffer.
+ * @return Any resultant error, if any.
+ * @since 2024/07/09
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilRawScanToRgbFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInNotNullBuf(rgbLen) sjme_jint* outRgb,
+	sjme_attrInPositive sjme_jint outRgbOff,
+	sjme_attrInPositive sjme_jint outRgbLen,
+	sjme_attrOutNotNullBuf(rawLen) void* inRaw,
+	sjme_attrInPositive sjme_jint inRawOff,
+	sjme_attrInPositive sjme_jint inRawLen);
+
+/**
+ * Maps a raw scanline from raw RGB data.
+ * 
+ * @param g The graphics to operate within.
+ * @param outRaw The output raw scan buffer.
+ * @param outRawOff Offset into the raw scan buffer.
+ * @param outRawLen Length of the raw scan buffer.
+ * @param inRgb The input RGB data.
+ * @param inRgbOff The offset into the RGB buffer.
+ * @param inRgbLen The length of the RGB buffer.
+ * @return Any resultant error, if any.
+ * @since 2024/07/09
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilRgbToRawScanFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrOutNotNullBuf(rawLen) void* outRaw,
+	sjme_attrInPositive sjme_jint outRawOff,
+	sjme_attrInPositive sjme_jint outRawLen,
+	sjme_attrInNotNullBuf(rgbLen) sjme_jint* inRgb,
+	sjme_attrInPositive sjme_jint inRgbOff,
+	sjme_attrInPositive sjme_jint inRgbLen);
 
 /**
  * Sets the alpha color for graphics.
@@ -774,29 +833,6 @@ typedef sjme_errorCode (*sjme_scritchui_pencilTranslateFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y);
-
-typedef sjme_errorCode (*sjme_scritchui_pencilApplyAnchorFunc)(
-	sjme_attrInValue sjme_jint anchor,
-	sjme_attrInValue sjme_jint x,
-	sjme_attrInValue sjme_jint y,
-	sjme_attrInPositive sjme_jint w,
-	sjme_attrInPositive sjme_jint h,
-	sjme_attrInValue sjme_jint baseline,
-	sjme_attrOutNotNull sjme_jint* outX,
-	sjme_attrOutNotNull sjme_jint* outY);
-
-typedef sjme_errorCode (*sjme_scritchui_pencilApplyRotateScaleFunc)(
-	sjme_attrOutNotNull sjme_scritchui_pencilMatrix* outMatrix,
-	sjme_attrInValue sjme_scritchui_pencilTranslate inTrans,
-	sjme_attrInPositive sjme_jint wSrc,
-	sjme_attrInPositive sjme_jint hSrc,
-	sjme_attrInPositive sjme_jint wDest,
-	sjme_attrInPositive sjme_jint hDest);
-
-typedef sjme_errorCode (*sjme_scritchui_pencilApplyTranslateFunc)(
-	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInOutNotNull sjme_jint* x,
-	sjme_attrInOutNotNull sjme_jint* y);
 
 /** Quick definition for functions. */
 #define SJME_SCRITCHUI_QUICK_PENCIL(what, lWhat) \
