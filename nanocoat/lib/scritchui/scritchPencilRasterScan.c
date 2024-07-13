@@ -157,7 +157,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_blendRGBInto(
 	sjme_attrInPositive sjme_jint numPixels)
 {
 	sjme_jint i;
-	sjme_juint d, s, a, na, rb, ag;
+	sjme_fixed sa, sr, sg, sb, da, dr, dg, db, iA, ca, cr, cg, cb, tff;
 	sjme_juint srcMask, destMask;
 	
 	if (g == NULL || dest == NULL || src == NULL)
@@ -175,27 +175,51 @@ sjme_errorCode sjme_scritchpen_coreUtil_blendRGBInto(
 	/* G(dest) = (G(src) * A(src)) + (G(dest) * (1 - A(src))) */
 	/* B(dest) = (B(src) * A(src)) + (B(dest) * (1 - A(src))) */
 	/* A(dest) = A(src) + A(dest) - (A(src) * A(dest)) */
+	tff = sjme_fixed_hi(255);
 	for (i = 0; i < numPixels; i++)
 	{
-#define AM UINT32_C(0xFF000000)
-#define RBM UINT32_C(0x00FF00FF)
-#define GM UINT32_C(0x0000FF00)
-#define AGM UINT32_C(0xFF00FF00)
-#define ONE UINT32_C(0xFF)
-		s = src[i] | srcMask;
-		d = dest[i] | destMask;
+		/* Extract as integers first. */
+		da = ((dest[i] | destMask) >> 24) & 0xFF;
+		dr = ((dest[i]) >> 16) & 0xFF;
+		dg = ((dest[i]) >> 8) & 0xFF;
+		db = dest[i] & 0xFF;
 		
-		a = (s & AM) >> 24U;
-		na = 255U - a;
-		rb = ((na * (d & RBM)) + (a * (s & RBM))) >> 8U;
-		ag = (na * ((d & AGM) >> 8U)) + (a * (ONE | ((s & GM) >> 8U)));
+		sa = ((src[i] | srcMask) >> 24) & 0xFF;
+		sr = ((src[i]) >> 16) & 0xFF;
+		sg = ((src[i]) >> 8) & 0xFF;
+		sb = src[i] & 0xFF;
 		
-		dest[i] = ((rb & RBM) | (ag & AGM)) | destMask;
-#undef AM
-#undef RBM
-#undef GM
-#undef AGM
-#undef ONE
+		/* Extract components. */
+		da = sjme_fixed_fraction(da, 255);
+		dr = sjme_fixed_fraction(dr, 255);
+		dg = sjme_fixed_fraction(dg, 255);
+		db = sjme_fixed_fraction(db, 255);
+		
+		sa = sjme_fixed_fraction(sa, 255);
+		sr = sjme_fixed_fraction(sr, 255);
+		sg = sjme_fixed_fraction(sg, 255);
+		sb = sjme_fixed_fraction(sb, 255);
+		
+		iA = sjme_fixed_hi(1) - sa;
+		
+		/* A(dest) = A(src) + A(dest) - (A(src) * A(dest)) */
+		ca = sa + da - sjme_fixed_mul(sa, da);
+		
+		/* R(dest) = (R(src) * A(src)) + (R(dest) * (1 - A(src))) */
+		cr = sjme_fixed_mul(sr, sa) + sjme_fixed_mul(dr, iA);
+		
+		/* G(dest) = (G(src) * A(src)) + (G(dest) * (1 - A(src))) */
+		cg = sjme_fixed_mul(sg, sa) + sjme_fixed_mul(dg, iA);
+		
+		/* B(dest) = (B(src) * A(src)) + (B(dest) * (1 - A(src))) */
+		cb = sjme_fixed_mul(sb, sa) + sjme_fixed_mul(db, iA);
+		
+		/* Recompose. */
+		ca = sjme_fixed_int(sjme_fixed_mul(ca, tff)) & 0xFF;
+		cr = sjme_fixed_int(sjme_fixed_mul(cr, tff)) & 0xFF;
+		cg = sjme_fixed_int(sjme_fixed_mul(cg, tff)) & 0xFF;
+		cb = sjme_fixed_int(sjme_fixed_mul(cb, tff)) & 0xFF;
+		dest[i] = (ca << 24) | (cr << 16) | (cg << 8) | cb | destMask;
 	}
 	
 	/* Success! */
