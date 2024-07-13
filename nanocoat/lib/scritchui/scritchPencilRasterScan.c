@@ -214,11 +214,17 @@ sjme_errorCode sjme_scritchpen_coreUtil_blendRGBInto(
 		/* B(dest) = (B(src) * A(src)) + (B(dest) * (1 - A(src))) */
 		cb = sjme_fixed_mul(sb, sa) + sjme_fixed_mul(db, iA);
 		
+		/* Return the original factor. */
+		ca = sjme_fixed_ceil(sjme_fixed_mul(ca, tff));
+		cr = sjme_fixed_ceil(sjme_fixed_mul(cr, tff));
+		cg = sjme_fixed_ceil(sjme_fixed_mul(cg, tff));
+		cb = sjme_fixed_ceil(sjme_fixed_mul(cb, tff));
+		
 		/* Recompose. */
-		ca = sjme_fixed_int(sjme_fixed_mul(ca, tff)) & 0xFF;
-		cr = sjme_fixed_int(sjme_fixed_mul(cr, tff)) & 0xFF;
-		cg = sjme_fixed_int(sjme_fixed_mul(cg, tff)) & 0xFF;
-		cb = sjme_fixed_int(sjme_fixed_mul(cb, tff)) & 0xFF;
+		ca = sjme_fixed_int(ca) & 0xFF;
+		cr = sjme_fixed_int(cr) & 0xFF;
+		cg = sjme_fixed_int(cg) & 0xFF;
+		cb = sjme_fixed_int(cb) & 0xFF;
 		dest[i] = (ca << 24) | (cr << 16) | (cg << 8) | cb | destMask;
 	}
 	

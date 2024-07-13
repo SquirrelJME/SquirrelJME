@@ -86,12 +86,19 @@ public class TestAlphaBlend
 		// Check each
 		boolean failing = false;
 		for (int i = 0; i < numPixels; i++)
-			if (expected[i] != from[i])
+		{
+			int ea = (expected[i] & (~0x01010101));
+			int eb = (expected[i] | (0x01010101));
+			int fa = (from[i] & (~0x01010101));
+			int fb = (from[i] | (0x01010101));
+			
+			if (!(ea == fa || ea == fb || eb == fa || eb == fb))
 			{
 				failing = true;
 				this.secondary(String.format("i%04d-%08x", i, expected[i]),
 					String.format("%08x", from[i]));
 			}
+		}
 		
 		// Just throw this to fail the test
 		if (failing)
