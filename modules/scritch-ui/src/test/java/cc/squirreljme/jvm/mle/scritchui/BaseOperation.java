@@ -106,6 +106,15 @@ public abstract class BaseOperation
 			case "INT_RGB888":
 				return UIPixelFormat.INT_RGB888;
 				
+			case "SHORT_ARGB4444":
+				return UIPixelFormat.SHORT_ARGB4444;
+			
+			case "SHORT_RGB565": 
+				return UIPixelFormat.SHORT_RGB565;
+			
+			case "SHORT_RGB555":
+				return UIPixelFormat.SHORT_RGB555;
+				
 			default:
 				throw new RuntimeException("Unknown PF: " + __pf);
 		}

@@ -259,25 +259,28 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColorFromRaw(
 			break;
 		
 		case SJME_GFX_PIXEL_FORMAT_SHORT_ARGB4444:
-			sjme_todo("Impl?");
-			v = (((aa >> 4) & 0xF) << 12) |
-				(((rr >> 4) & 0xF) << 8) |
-				(((gg >> 4) & 0xF) << 4) |
-				((bb >> 4) & 0xF);
+			aa = ((v >> 12) & 0xF);
+			aa |= aa << 4;
+			rr = ((v >> 8) & 0xF);
+			rr |= rr << 4;
+			gg = ((v >> 4) & 0xF);
+			gg |= gg << 4;
+			bb = ((v) & 0xF);
+			bb |= bb << 4;
 			break;
 		
 		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB565:
-			sjme_todo("Impl?");
-			v = (((rr >> 3) & 0x1F) << 11) |
-				(((gg >> 2) & 0x3F) << 5) |
-				((bb >> 3) & 0x1F);
+			aa = 0xFF;
+			rr = ((v >> 11) & 0x1F) << 3;
+			gg = ((v >> 4) & 0x3F) << 2;
+			bb = ((v) & 0x1F) << 3;
 			break;
 			
 		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB555:
-			sjme_todo("Impl?");
-			v = (((rr >> 3) & 0x1F) << 10) |
-				(((gg >> 3) & 0x1F) << 5) |
-				((bb >> 3) & 0x1F);
+			aa = 0xFF;
+			rr = ((v >> 10) & 0x1F) << 3;
+			gg = ((v >> 5) & 0x1F) << 3;
+			bb = ((v) & 0x1F) << 3;
 			break;
 			
 		case SJME_GFX_PIXEL_FORMAT_SHORT_ABGR1555:
