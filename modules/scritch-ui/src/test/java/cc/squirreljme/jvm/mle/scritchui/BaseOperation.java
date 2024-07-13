@@ -131,13 +131,13 @@ public abstract class BaseOperation
 			return "fg";
 		
 		// Otherwise use an HTML color code
-		int a = (__c >>> 24) & 0xFF;
-		int r = (__c >>> 16) & 0xFF;
-		int g = (__c >>> 8) & 0xFF;
-		int b = (__c) & 0xFF;
+		int a = ((__c >>> 24) & 0xF0) >>> 4;
+		int r = ((__c >>> 16) & 0xF0) >>> 4;
+		int g = ((__c >>> 8) & 0xF0) >>> 4;
+		int b = ((__c) & 0xF0) >>> 4;
 		
-		if (a == 0xFF)
-			return String.format("#%02x%02x%02x", r, g, b);
-		return String.format("#%02X%02x%02x%02x", a, r, g, b);
+		if (a == 0x0F || a == 0xF0 || a == 0xFF)
+			return String.format("#%01x%01x%01x", r, g, b);
+		return String.format("#%01X%01x%01x%01x", a, r, g, b);
 	}
 }
