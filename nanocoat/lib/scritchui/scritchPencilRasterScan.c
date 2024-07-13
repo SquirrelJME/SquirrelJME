@@ -6,6 +6,7 @@
 // SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
+
 #include <string.h>
 
 #include "sjme/util.h"
@@ -156,7 +157,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_blendRGBInto(
 	sjme_attrInPositive sjme_jint numPixels)
 {
 	sjme_jint i;
-	sjme_juint pac, sa, na, srb, sgg, dcc, xrb, xgg;
+	sjme_juint d, s, a, na, rb, ag;
 	sjme_juint srcMask, destMask;
 	
 	if (g == NULL || dest == NULL || src == NULL)
@@ -166,8 +167,8 @@ sjme_errorCode sjme_scritchpen_coreUtil_blendRGBInto(
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	/* Source and dest mask, if alpha is applicable. */
-	destMask = (destAlpha ? 0 : 0xFF000000);
-	srcMask = (srcAlpha ? 0 : 0xFF000000);
+	destMask = (destAlpha ? 0 : UINT32_C(0xFF000000));
+	srcMask = (srcAlpha ? 0 : UINT32_C(0xFF000000));
 	
 	/* Blend each pixel individually. */
 	/* R(dest) = (R(src) * A(src)) + (R(dest) * (1 - A(src))) */
@@ -176,7 +177,27 @@ sjme_errorCode sjme_scritchpen_coreUtil_blendRGBInto(
 	/* A(dest) = A(src) + A(dest) - (A(src) * A(dest)) */
 	for (i = 0; i < numPixels; i++)
 	{
-		dest[i] = src[i] | (destMask | srcMask);
+#define AM UINT32_C(0xFF000000)
+#define RBM UINT32_C(0x00FF00FF)
+#define GM UINT32_C(0x0000FF00)
+#define AGM UINT32_C(0xFF00FF00)
+#define ONE UINT32_C(0xFF)
+		s = src[i] | srcMask;
+		d = dest[i] | destMask;
+		
+		sjme_message("Blend #%08x <- #%08x", d, s);
+		
+		a = (s & AM) >> 24U;
+		na = 255U - a;
+		rb = ((na * (d & RBM)) + (a * (s & RBM))) >> 8U;
+		ag = (na * ((d & AGM) >> 8U)) + (a * (ONE | ((s & GM) >> 8U)));
+		
+		dest[i] = ((rb & RBM) | (ag & AGM)) | destMask;
+#undef AM
+#undef RBM
+#undef GM
+#undef AGM
+#undef ONE
 	}
 	
 	/* Success! */
@@ -256,59 +277,137 @@ sjme_errorCode sjme_scritchpen_coreUtil_rawScanBytes(
 
 sjme_errorCode sjme_scritchpen_coreUtil_rawScanToRgb(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInNotNullBuf(rgbLen) sjme_jint* outRgb,
+	sjme_attrInNotNullBuf(outRgbLen) sjme_jint* outRgb,
 	sjme_attrInPositive sjme_jint outRgbOff,
 	sjme_attrInPositive sjme_jint outRgbLen,
-	sjme_attrOutNotNullBuf(rawLen) const void* inRaw,
+	sjme_attrOutNotNullBuf(inRawLen) const void* inRaw,
 	sjme_attrInPositive sjme_jint inRawOff,
 	sjme_attrInPositive sjme_jint inRawLen)
 {
 	sjme_errorCode error;
-	sjme_jint byteLimit, outRgbOffRaw, outRgbLenRaw;
+	sjme_juint destAlphaMask;
+	sjme_jint limit, i, t;
+	sjme_jint* si;
+	sjme_jshort* ss;
+	sjme_jbyte* sb;
+	sjme_jint* d;
+	sjme_scritchui_pencilColor color;
 	
 	if (g == NULL || outRgb == NULL || inRaw == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	outRgbOffRaw = outRgbOff * 4;
 	if (outRgbOff < 0 || outRgbLen < 0 || (outRgbOff + outRgbLen) < 0 ||
-		inRawOff < 0 || inRawLen < 0 || (inRawOff + inRawLen) < 0 ||
-		outRgbOffRaw < 0)
+		inRawOff < 0 || inRawLen < 0 || (inRawOff + inRawLen) < 0)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Destination alpha mask. */
+	destAlphaMask = (g->hasAlpha ? 0 : 0xFF000000);
+	
+	/* Determine the type to use for scan reading. */
+	si = NULL;
+	ss = NULL;
+	sb = NULL;
+	switch (g->pixelFormat)
+	{
+		case SJME_GFX_PIXEL_FORMAT_INT_ARGB8888:
+		case SJME_GFX_PIXEL_FORMAT_INT_RGB888:
+		case SJME_GFX_PIXEL_FORMAT_INT_BGRA8888:
+		case SJME_GFX_PIXEL_FORMAT_INT_BGRX8888:
+		case SJME_GFX_PIXEL_FORMAT_INT_XBGR8888:
+			si = SJME_POINTER_OFFSET(inRaw, inRawOff);
+			limit = inRawLen / 4;
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_SHORT_ARGB4444:
+		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB565:
+		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB555:
+		case SJME_GFX_PIXEL_FORMAT_SHORT_ABGR1555:
+		case SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536:
+			ss = SJME_POINTER_OFFSET(inRaw, inRawOff);
+			limit = inRawLen / 2;
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256:
+			sb = SJME_POINTER_OFFSET(inRaw, inRawOff);
+			limit = inRawLen;
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1:
+			sjme_todo("Impl?");
+			break;
 		
-	/* Double check RGB count. */
-	outRgbLenRaw = -1;
-	byteLimit = -1;
-	if (sjme_error_is(error = g->util->rawScanBytes(g,
-		outRgbLen, inRawLen,
-		&outRgbLenRaw, &byteLimit)) ||
-		outRgbLenRaw < 0 || byteLimit < 0)
+		default:
+			return SJME_ERROR_INVALID_ARGUMENT;
+	}
+	
+	/* Writing where? */
+	d = &outRgb[outRgbOff];
+	
+	/* If the output RGB is smaller than the raw input, limit to it. */
+	if (outRgbLen < limit)
+		limit = outRgbLen;
+	
+	/* Clear error state. */
+	error = SJME_ERROR_NONE;
+	
+	/* Already in the most native format? */
+	if (g->pixelFormat == SJME_GFX_PIXEL_FORMAT_INT_ARGB8888 && si != NULL)
+		memmove(d, si, limit * 4);
+	
+	/* Integer mapping. */
+	else if (si != NULL)
+	{
+		for (i = 0; i < limit; i++)
+		{
+			t = *(si++);
+			
+			error |= sjme_scritchpen_corePrim_mapColorFromRaw(g,
+				t, &color);
+			
+			*(d++) = color.argb | destAlphaMask;
+		}
+	}
+	
+	/* Short mapping. */
+	else if (ss != NULL)
+	{
+		for (i = 0; i < limit; i++)
+		{
+			t = *(ss++) & 0xFFFF;
+			
+			error |= sjme_scritchpen_corePrim_mapColorFromRaw(g,
+				t, &color);
+			
+			*(d++) = color.argb | destAlphaMask;
+		}
+	}
+	
+	/* Byte mapping. */
+	else if (sb != NULL)
+	{
+		for (i = 0; i < limit; i++)
+		{
+			t = *(sb++) & 0xFF;
+			
+			error |= sjme_scritchpen_corePrim_mapColorFromRaw(g,
+				t, &color);
+			
+			*(d++) = color.argb | destAlphaMask;
+		}
+	}
+	
+	/* Unknown. */
+	else
+	{
+		sjme_todo("Impl?");
+	}
+	
+	/* Failed or success? */
+	if (sjme_error_is(error))
 		return sjme_error_default(error);
-	
-	/* Optimal format for direct copy? */
-	if (g->pixelFormat == SJME_GFX_PIXEL_FORMAT_INT_ARGB8888 ||
-		g->pixelFormat == SJME_GFX_PIXEL_FORMAT_INT_RGB888)
-	{
-		/* Copy over efficiently. */
-		memmove(SJME_POINTER_OFFSET(outRgb, outRgbOffRaw),
-			SJME_POINTER_OFFSET(inRaw, inRawOff),
-			byteLimit);
-		
-		/* Success! */
-		return SJME_ERROR_NONE;
-	}
-	
-	/* Simple byte swap. */
-	else if (g->pixelFormat == SJME_GFX_PIXEL_FORMAT_INT_BGRA8888 ||
-		g->pixelFormat == SJME_GFX_PIXEL_FORMAT_INT_BGRX8888)
-	{
-		return sjme_swap_uint_memmove(
-			SJME_POINTER_OFFSET(outRgb, outRgbOffRaw),
-			SJME_POINTER_OFFSET(inRaw, inRawOff),
-			byteLimit);
-	}
-	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchpen_coreUtil_rgbScanFill(

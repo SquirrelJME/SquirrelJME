@@ -75,18 +75,18 @@ public enum AdvancedFunction
 		{
 			int pac = __ag.paintalphacolor;
 			int[] buffer = __ag.buffer;
-			int pitch = __ag.pitch,
-				offset = __ag.offset,
-				__x = __vi[0],
-				__y = __vi[1],
-				__ex = __vi[2],
-				__ey = __vi[3],
-				__w = __vi[4],
-				__h = __vi[5],
-				sa = __ag.paintalpha,
-				na = (sa ^ 0xFF),
-				srb = ((pac & 0xFF00FF) * sa),
-				sgg = (((pac >>> 8) & 0xFF) * sa);
+			int pitch = __ag.pitch;
+			int offset = __ag.offset;
+			int __x = __vi[0];
+			int __y = __vi[1];
+			int __ex = __vi[2];
+			int __ey = __vi[3];
+			int __w = __vi[4];
+			int __h = __vi[5];
+			int sa = __ag.paintalpha;
+			int na = (sa ^ 0xFF);
+			int srb = ((pac & 0xFF00FF) * sa);
+			int sgg = (((pac >>> 8) & 0xFF) * sa);
 			
 			// Blend each color
 			int mod = 0;

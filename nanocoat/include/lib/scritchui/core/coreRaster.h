@@ -294,10 +294,10 @@ sjme_errorCode sjme_scritchpen_coreUtil_rawScanBytes(
 	
 sjme_errorCode sjme_scritchpen_coreUtil_rawScanToRgb(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInNotNullBuf(rgbLen) sjme_jint* outRgb,
+	sjme_attrInNotNullBuf(outRgbLen) sjme_jint* outRgb,
 	sjme_attrInPositive sjme_jint outRgbOff,
 	sjme_attrInPositive sjme_jint outRgbLen,
-	sjme_attrOutNotNullBuf(rawLen) const void* inRaw,
+	sjme_attrOutNotNullBuf(inRawLen) const void* inRaw,
 	sjme_attrInPositive sjme_jint inRawOff,
 	sjme_attrInPositive sjme_jint inRawLen);
 
