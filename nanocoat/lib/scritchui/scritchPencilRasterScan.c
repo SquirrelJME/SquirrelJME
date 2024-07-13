@@ -189,6 +189,10 @@ sjme_errorCode sjme_scritchpen_coreUtil_blendRGBInto(
 		sg = ((src[i]) >> 8) & 0xFF;
 		sb = src[i] & 0xFF;
 		
+		/* Only 4 bits of alpha is required. */
+		da = (da & 0xF0) | ((da >> 4) & 0x0F);
+		sa = (sa & 0xF0) | ((sa >> 4) & 0x0F);
+		
 		/* Inverse alpha. */
 		iA = sjme_fixed_fraction(255 - sa, 255);
 		

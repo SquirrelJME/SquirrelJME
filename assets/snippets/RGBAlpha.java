@@ -82,10 +82,13 @@ public final class RGBAlpha
 				int[] toB = ((DataBufferInt)to.getRaster().getDataBuffer())
 					.getData();
 				
+				int actA = (fromA & (~0b1111)) | (fromA >>> 4);
+				int actB = (toA & (~0b1111)) | (toA >>> 4);
+				
 				for (int i = 0, q = rgb.length; i < q; i++)
 				{
-					fromB[i] = (fromA << 24) | rgb[i];
-					toB[(rgb.length - 1) - i] = (toA << 24) | rgb[i];
+					fromB[i] = (actA << 24) | rgb[i];
+					toB[(rgb.length - 1) - i] = (actB << 24) | rgb[i];
 				}
 				
 				// Blend into the target
