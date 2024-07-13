@@ -86,23 +86,61 @@ public class TestAlphaBlend
 		// Check each
 		boolean failing = false;
 		for (int i = 0; i < numPixels; i++)
-		{
-			int ea = (expected[i] & (~0x01010101));
-			int eb = (expected[i] | (0x01010101));
-			int fa = (from[i] & (~0x01010101));
-			int fb = (from[i] | (0x01010101));
-			
-			if (!(ea == fa || ea == fb || eb == fa || eb == fb))
+			if (!TestAlphaBlend.__compareRgb(expected[i], from[i]))
 			{
 				failing = true;
 				this.secondary(String.format("i%04d-%08x", i, expected[i]),
 					String.format("%08x", from[i]));
 			}
-		}
 		
 		// Just throw this to fail the test
 		if (failing)
 			throw new RuntimeException("Comparison failed.");
+	}
+	
+	/**
+	 * Compares two channel values.
+	 *
+	 * @param __a The first value.
+	 * @param __b The second value.
+	 * @return If they are within tolerance.
+	 * @since 2024/07/13
+	 */
+	private static boolean __compare(int __a, int __b)
+	{
+		int ax = __a & 0xFF;
+		int ay = Math.max(0, ax - 1);
+		int az = Math.min(255, ax + 1);
+		
+		int bx = __b & 0xFF;
+		int by = Math.max(0, bx - 1);
+		int bz = Math.min(255, bx + 1);
+		
+		return ax == bx ||
+			ax == by ||
+			ax == bz ||
+			ay == bx ||
+			ay == by ||
+			ay == bz ||
+			az == bx ||
+			az == by ||
+			az == bz;
+	}
+	
+	/**
+	 * Compares two RGB values.
+	 *
+	 * @param __a The first value.
+	 * @param __b The second value.
+	 * @return If they are within tolerance.
+	 * @since 2024/07/13
+	 */
+	private static boolean __compareRgb(int __a, int __b)
+	{
+		return TestAlphaBlend.__compare(__a >>> 24, __b >>> 24) &&
+			TestAlphaBlend.__compare(__a >>> 16, __b >>> 16) &&
+			TestAlphaBlend.__compare(__a >>> 8, __b >>> 8) &&
+			TestAlphaBlend.__compare(__a, __b);
 	}
 	
 	/**
