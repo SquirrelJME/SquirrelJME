@@ -77,7 +77,8 @@ sjme_errorCode sjme_scritchpen_core_drawXRGB32Region(
 	sjme_fixed wx, zy, wxBase, zyMajor;
 	sjme_jint dx, dy, iwx, izy, at;
 	sjme_jint* srcRgb;
-	sjme_jint srcRgbBytes;
+	sjme_jint srcRgbBytes, srcAlphaMask;
+	sjme_jboolean srcAlpha, mulAlpha;
 	sjme_jint mulAlphaVal;
 	
 	if (g == NULL || data == NULL)
@@ -131,8 +132,15 @@ sjme_errorCode sjme_scritchpen_core_drawXRGB32Region(
 	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
 		return sjme_error_default(error);
 	
+	/* Do we draw with alpha? */
+	srcAlpha = alpha;
+	mulAlpha = g->hasAlpha || alpha;
+	
 	/* The value to use to multiply the source. */
 	mulAlphaVal = g->state.color.a;
+	
+	/* Does the source have a valid alpha value? */
+	srcAlphaMask = (alpha ? 0 : 0xFF000000);
 	
 	/* Figure out the position of our base pointer. */
 	/* Matrix multiplication? Squeak? */
@@ -163,14 +171,15 @@ sjme_errorCode sjme_scritchpen_core_drawXRGB32Region(
 			
 			/* Copy pixel from source? */
 			at = off + ((izy * scanLen) + iwx);
-			srcRgb[dx] = data[at];
+			srcRgb[dx] = data[at] | srcAlphaMask;
 		}
 		
-		/* Render RGB to buffer. */
+		/* Render RGB to buffer, it only has alpha if the source data */
+		/* has alpha data. If it does, we want to multiply it. */
 		if (sjme_error_is(error = g->util->rgbScanPut(g,
 			xDest, yDest + dy,
 			srcRgb, m.tw,
-			alpha, mulAlphaVal)))
+			srcAlpha, mulAlpha, mulAlphaVal)))
 			goto fail_any;
 	}
 	

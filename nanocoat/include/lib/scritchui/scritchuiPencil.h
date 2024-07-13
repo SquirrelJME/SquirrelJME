@@ -667,19 +667,21 @@ typedef sjme_errorCode (*sjme_scritchui_pencilRawScanGetFunc)(
  * blending is performed. 
  * 
  * @param g The graphics to write to.
- * @param inX The X coordinate to access.
- * @param inY The Y coordinate to access.
+ * @param x The X coordinate to access.
+ * @param y The Y coordinate to access.
  * @param srcRaw The raw pixel data to write.
  * @param srcRawLen Length of the data buffer.
+ * @param srcNumPixels The number of source pixels.
  * @return Any resultant error code.
  * @since 2024/07/09
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilRawScanPutPureFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInPositive sjme_jint inX,
-	sjme_attrInPositive sjme_jint inY,
+	sjme_attrInPositive sjme_jint x,
+	sjme_attrInPositive sjme_jint y,
 	sjme_attrInNotNullBuf(inLen) const void* srcRaw,
-	sjme_attrInPositiveNonZero sjme_jint srcRawLen);
+	sjme_attrInPositiveNonZero sjme_jint srcRawLen,
+	sjme_attrInPositiveNonZero sjme_jint srcNumPixels);
 
 /**
  * Maps a raw scanline from raw RGB data.
@@ -748,6 +750,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilRgbScanGetFunc)(
  * @param y The Y coordinate to access.
  * @param srcRgb Source RGB data to write.
  * @param inNumPixels The number of pixels to read.
+ * @param srcAlpha Does the source data have an alpha channel?
  * @param mulAlpha Should alpha values in the input buffer be multiplied by
  * the current alpha value? That is the buffer has significant alpha values.
  * @param mulAlphaValue The value to multiply with.
@@ -760,6 +763,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilRgbScanPutFunc)(
 	sjme_attrInPositive sjme_jint y,
 	sjme_attrInNotNullBuf(inLen) const sjme_jint* srcRgb,
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels,
+	sjme_attrInValue sjme_jboolean srcAlpha,
 	sjme_attrInValue sjme_jboolean mulAlpha,
 	sjme_attrInRange(0, 255) sjme_jint mulAlphaValue);
 

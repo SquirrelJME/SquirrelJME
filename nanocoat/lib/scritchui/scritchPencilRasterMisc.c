@@ -103,15 +103,27 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColorFromRGB(
 			break;
 		
 		case SJME_GFX_PIXEL_FORMAT_INT_BGRX8888:
-			v = (bb << 24) | (gg << 16) | (rr << 8);
+			v = (bb << 24) | (gg << 16) | (rr << 8) | 0xFF;
 			break;
 		
-		case SJME_GFX_PIXEL_FORMAT_INT_XBGR8888:
-			v = (bb << 16) | (gg << 8) | (rr);
+		case SJME_GFX_PIXEL_FORMAT_INT_BGR888:
+			v = 0xFF000000 | (bb << 16) | (gg << 8) | (rr);
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_INT_RGBX8888:
+			v = (rr << 24) | (gg << 16) | (bb << 8) | 0xFF;
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_BYTE3_RGB888:
+			v = (rr << 16) | (gg << 8) | bb;
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_BYTE3_BGR888:
+			v = (rr) | (gg << 8) | (bb << 16);
 			break;
 		
 		case SJME_GFX_PIXEL_FORMAT_INT_RGB888:
-			v = argb & 0x00FFFFFF;
+			v = argb | 0xFF000000;
 			break;
 		
 		case SJME_GFX_PIXEL_FORMAT_SHORT_ARGB4444:
@@ -223,7 +235,8 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColorFromRaw(
 			bb = (v >> 24) & 0xFF;
 			break;
 		
-		case SJME_GFX_PIXEL_FORMAT_INT_XBGR8888:
+		case SJME_GFX_PIXEL_FORMAT_INT_BGR888:
+		case SJME_GFX_PIXEL_FORMAT_BYTE3_BGR888:
 			aa = 0xFF;
 			rr = (v) & 0xFF;
 			gg = (v >> 8) & 0xFF;
@@ -231,10 +244,18 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColorFromRaw(
 			break;
 		
 		case SJME_GFX_PIXEL_FORMAT_INT_RGB888:
+		case SJME_GFX_PIXEL_FORMAT_BYTE3_RGB888:
 			aa = 0xFF;
 			rr = (v >> 16) & 0xFF;
 			gg = (v >> 8) & 0xFF;
 			bb = (v) & 0xFF;
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_INT_RGBX8888:
+			aa = 0xFF;
+			rr = (v >> 24) & 0xFF;
+			gg = (v >> 16) & 0xFF;
+			bb = (v >> 8) & 0xFF;
 			break;
 		
 		case SJME_GFX_PIXEL_FORMAT_SHORT_ARGB4444:

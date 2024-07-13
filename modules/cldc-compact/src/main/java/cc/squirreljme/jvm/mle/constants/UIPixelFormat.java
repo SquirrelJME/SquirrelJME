@@ -69,10 +69,22 @@ public interface UIPixelFormat
 		12;
 	
 	/** 32-bit XBGR ({@code int}). */
-	byte INT_XBGR8888 =
+	byte INT_BGR888 =
 		13;
+	
+	/** 32-bit RGBX ({@code int}). */
+	byte INT_RGBX8888 =
+		14;
+	
+	/** 24-bit RGB consisting of three bytes. */
+	byte BYTE3_RGB888 =
+		15;
+	
+	/** 24-bit BGR consisting of three bytes. */
+	byte BYTE3_BGR888 =
+		16;
 	
 	/** The number of pixel formats. */
 	byte NUM_PIXEL_FORMATS =
-		14;
+		17;
 }

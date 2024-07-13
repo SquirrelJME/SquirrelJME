@@ -225,8 +225,14 @@ sjme_errorCode sjme_scritchpen_coreUtil_rawScanBytes(
 		case SJME_GFX_PIXEL_FORMAT_INT_RGB888:
 		case SJME_GFX_PIXEL_FORMAT_INT_BGRA8888:
 		case SJME_GFX_PIXEL_FORMAT_INT_BGRX8888:
-		case SJME_GFX_PIXEL_FORMAT_INT_XBGR8888:
+		case SJME_GFX_PIXEL_FORMAT_INT_BGR888:
+		case SJME_GFX_PIXEL_FORMAT_INT_RGBX8888:
 			result = inPixels * 4;
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_BYTE3_RGB888:
+		case SJME_GFX_PIXEL_FORMAT_BYTE3_BGR888:
+			result = inPixels * 3;
 			break;
 			
 		case SJME_GFX_PIXEL_FORMAT_SHORT_ARGB4444:
@@ -284,7 +290,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_rawScanToRgb(
 {
 	sjme_errorCode error;
 	sjme_juint destAlphaMask;
-	sjme_jint limit, i, t;
+	sjme_jint limit, i, t, mulShift, j;
 	const sjme_jint* si;
 	const sjme_jshort* ss;
 	const sjme_jbyte* sb;
@@ -305,15 +311,24 @@ sjme_errorCode sjme_scritchpen_coreUtil_rawScanToRgb(
 	si = NULL;
 	ss = NULL;
 	sb = NULL;
+	mulShift = 1;
 	switch (g->pixelFormat)
 	{
 		case SJME_GFX_PIXEL_FORMAT_INT_ARGB8888:
 		case SJME_GFX_PIXEL_FORMAT_INT_RGB888:
 		case SJME_GFX_PIXEL_FORMAT_INT_BGRA8888:
 		case SJME_GFX_PIXEL_FORMAT_INT_BGRX8888:
-		case SJME_GFX_PIXEL_FORMAT_INT_XBGR8888:
+		case SJME_GFX_PIXEL_FORMAT_INT_BGR888:
+		case SJME_GFX_PIXEL_FORMAT_INT_RGBX8888:
 			si = SJME_POINTER_OFFSET(inRaw, inRawOff);
 			limit = inRawLen / 4;
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_BYTE3_RGB888:
+		case SJME_GFX_PIXEL_FORMAT_BYTE3_BGR888:
+			sb = SJME_POINTER_OFFSET(inRaw, inRawOff);
+			limit = inRawLen / 3;
+			mulShift = 3;
 			break;
 			
 		case SJME_GFX_PIXEL_FORMAT_SHORT_ARGB4444:
@@ -382,6 +397,22 @@ sjme_errorCode sjme_scritchpen_coreUtil_rawScanToRgb(
 		for (i = 0; i < limit; i++)
 		{
 			t = *(ss++) & 0xFFFF;
+			
+			error |= sjme_scritchpen_corePrim_mapColorFromRaw(g,
+				t, &color);
+			
+			*(d++) = color.argb | destAlphaMask;
+		}
+	}
+	
+	/* Triple byte? */
+	else if (sb != NULL && mulShift == 3)
+	{
+		for (i = 0; i < limit; i++)
+		{
+			t = ((sjme_juint)(*(sb++) & 0xFF)) << 16;
+			t |= ((sjme_juint)((*(sb++) & 0xFF))) << 8;
+			t |= (sjme_juint)(*(sb++) & 0xFF);
 			
 			error |= sjme_scritchpen_corePrim_mapColorFromRaw(g,
 				t, &color);
@@ -493,6 +524,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_rgbScanPut(
 	sjme_attrInPositive sjme_jint y,
 	sjme_attrInNotNullBuf(inLen) const sjme_jint* srcRgb,
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels,
+	sjme_attrInValue sjme_jboolean srcAlpha,
 	sjme_attrInValue sjme_jboolean mulAlpha,
 	sjme_attrInRange(0, 255) sjme_jint mulAlphaValue)
 {
@@ -518,7 +550,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_rgbScanPut(
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	/* Do we need to alpha blend? */
-	if (mulAlpha || g->state.applyAlpha)
+	if (srcAlpha || mulAlpha)
 	{
 		/* Allocate dest RGB data. */
 		destRgb = sjme_alloca(rgbBytes);
@@ -561,7 +593,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_rgbScanPut(
 	/* Write direct image data. */
 	return g->prim.rawScanPutPure(g,
 		x, y,
-		rawScan, rawScanBytes);
+		rawScan, rawScanBytes, inNumPixels);
 }
 
 sjme_errorCode sjme_scritchpen_coreUtil_rgbToRawScan(
@@ -574,7 +606,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_rgbToRawScan(
 	sjme_attrInPositive sjme_jint inRgbLen)
 {
 	sjme_errorCode error;
-	sjme_jint limit, i, t;
+	sjme_jint limit, i, t, mulShift, j;
 	sjme_jint* di;
 	sjme_jshort* ds;
 	sjme_jbyte* db;
@@ -592,15 +624,24 @@ sjme_errorCode sjme_scritchpen_coreUtil_rgbToRawScan(
 	di = NULL;
 	ds = NULL;
 	db = NULL;
+	mulShift = 1;
 	switch (g->pixelFormat)
 	{
 		case SJME_GFX_PIXEL_FORMAT_INT_ARGB8888:
 		case SJME_GFX_PIXEL_FORMAT_INT_RGB888:
 		case SJME_GFX_PIXEL_FORMAT_INT_BGRA8888:
 		case SJME_GFX_PIXEL_FORMAT_INT_BGRX8888:
-		case SJME_GFX_PIXEL_FORMAT_INT_XBGR8888:
+		case SJME_GFX_PIXEL_FORMAT_INT_BGR888:
+		case SJME_GFX_PIXEL_FORMAT_INT_RGBX8888:
 			di = SJME_POINTER_OFFSET(outRaw, outRawOff);
 			limit = outRawLen / 4;
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_BYTE3_RGB888:
+		case SJME_GFX_PIXEL_FORMAT_BYTE3_BGR888:
+			db = SJME_POINTER_OFFSET(outRaw, outRawOff);
+			limit = outRawLen / 3;
+			mulShift = 3;
 			break;
 			
 		case SJME_GFX_PIXEL_FORMAT_SHORT_ARGB4444:
@@ -674,6 +715,22 @@ sjme_errorCode sjme_scritchpen_coreUtil_rgbToRawScan(
 				t, &color);
 			
 			*(ds++) = color.v & 0xFFFF;
+		}
+	}
+	
+	/* Triple byte? */
+	else if (db != NULL && mulShift == 3)
+	{
+		for (i = 0; i < limit; i++)
+		{
+			t = *(s++);
+			
+			error |= sjme_scritchpen_corePrim_mapColorFromRGB(g,
+				t, &color);
+			
+			*(db++) = (color.v >> 16) & 0xFF;
+			*(db++) = (color.v >> 8) & 0xFF;
+			*(db++) = color.v & 0xFF;
 		}
 	}
 	

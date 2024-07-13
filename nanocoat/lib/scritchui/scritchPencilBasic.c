@@ -66,7 +66,8 @@ static sjme_errorCode sjme_scritchui_basicRawScanPutPure(
 	sjme_attrInPositive sjme_jint x,
 	sjme_attrInPositive sjme_jint y,
 	sjme_attrInNotNullBuf(inLen) const void* srcRaw,
-	sjme_attrInPositiveNonZero sjme_jint srcRawLen)
+	sjme_attrInPositiveNonZero sjme_jint srcRawLen,
+	sjme_attrInPositiveNonZero sjme_jint srcNumPixels)
 {
 	sjme_errorCode error;
 	sjme_jint pixelBytes, limit;
@@ -96,6 +97,18 @@ static sjme_errorCode sjme_scritchui_basicRawScanPutPure(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_scritchui_basicRawScanGet_sjme_jbyte24(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInPositive sjme_jint x,
+	sjme_attrInPositive sjme_jint y,
+	sjme_attrOutNotNullBuf(inLen) void* outData,
+	sjme_attrInPositiveNonZero sjme_jint inDataLen,
+	sjme_attrInPositiveNonZero sjme_jint inNumPixels)
+{
+	sjme_todo("Impl?");
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_scritchui_basicRawScanGet_sjme_jbyte4(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint x,
@@ -113,7 +126,8 @@ static sjme_errorCode sjme_scritchui_basicRawScanPutPure_sjme_jbyte4(
 	sjme_attrInPositive sjme_jint x,
 	sjme_attrInPositive sjme_jint y,
 	sjme_attrInNotNullBuf(inLen) const void* srcRaw,
-	sjme_attrInPositiveNonZero sjme_jint srcRawLen)
+	sjme_attrInPositiveNonZero sjme_jint srcRawLen,
+	sjme_attrInPositiveNonZero sjme_jint srcNumPixels)
 {
 	if (g == NULL || srcRaw == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -139,7 +153,8 @@ static sjme_errorCode sjme_scritchui_basicRawScanPutPure_sjme_jbyte2(
 	sjme_attrInPositive sjme_jint x,
 	sjme_attrInPositive sjme_jint y,
 	sjme_attrInNotNullBuf(inLen) const void* srcRaw,
-	sjme_attrInPositiveNonZero sjme_jint srcRawLen)
+	sjme_attrInPositiveNonZero sjme_jint srcRawLen,
+	sjme_attrInPositiveNonZero sjme_jint srcNumPixels)
 {
 	if (g == NULL || srcRaw == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -165,7 +180,8 @@ static sjme_errorCode sjme_scritchui_basicRawScanPutPure_sjme_jbyte1(
 	sjme_attrInPositive sjme_jint x,
 	sjme_attrInPositive sjme_jint y,
 	sjme_attrInNotNullBuf(inLen) const void* srcRaw,
-	sjme_attrInPositiveNonZero sjme_jint srcRawLen)
+	sjme_attrInPositiveNonZero sjme_jint srcRawLen,
+	sjme_attrInPositiveNonZero sjme_jint srcNumPixels)
 {
 	if (g == NULL || srcRaw == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -186,6 +202,14 @@ static sjme_errorCode sjme_scritchui_basicRawScanPutPure_sjme_jbyte1(
 #define pencilPixelType sjme_jshort
 #define pencilPixelBits 16
 #define pencilPixelMask 0xFFFF
+#define pencilRawScanCopy
+
+#include "scritchPencilTemplate.c"
+
+/* Triple Byte. */
+#define pencilPixelType sjme_jbyte
+#define pencilPixelBits 24
+#define pencilPixelMask 0xFFFFFF
 #define pencilRawScanCopy
 
 #include "scritchPencilTemplate.c"
@@ -301,8 +325,14 @@ sjme_errorCode sjme_scritchpen_initBufferStatic(
 		case SJME_GFX_PIXEL_FORMAT_INT_RGB888:
 		case SJME_GFX_PIXEL_FORMAT_INT_BGRA8888:
 		case SJME_GFX_PIXEL_FORMAT_INT_BGRX8888:
-		case SJME_GFX_PIXEL_FORMAT_INT_XBGR8888:
+		case SJME_GFX_PIXEL_FORMAT_INT_BGR888:
+		case SJME_GFX_PIXEL_FORMAT_INT_RGBX8888:
 			chosen = &sjme_scritchui_basic__sjme_jint32;
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_BYTE3_RGB888:
+		case SJME_GFX_PIXEL_FORMAT_BYTE3_BGR888:
+			chosen = &sjme_scritchui_basic__sjme_jbyte24;
 			break;
 		
 		case SJME_GFX_PIXEL_FORMAT_SHORT_ARGB4444:

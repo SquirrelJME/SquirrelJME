@@ -164,6 +164,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_rgbScanPut(
 	sjme_attrInPositive sjme_jint y,
 	sjme_attrInNotNullBuf(inLen) const sjme_jint* srcRgb,
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels,
+	sjme_attrInValue sjme_jboolean srcAlpha,
 	sjme_attrInValue sjme_jboolean mulAlpha,
 	sjme_attrInRange(0, 255) sjme_jint mulAlphaValue);
 

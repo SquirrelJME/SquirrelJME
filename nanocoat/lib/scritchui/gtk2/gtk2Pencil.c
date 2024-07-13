@@ -19,11 +19,9 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilRawScanGet(
 	sjme_attrInPositiveNonZero sjme_jint inDataLen,
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels)
 {
-	sjme_errorCode error;
 	GdkDrawable* drawable;
-	GdkPixbuf* pix;
 	GdkGC* gc;
-	sjme_jint pixelBytes, limit;
+	GdkPixbuf* pix;
 	guchar* rawPix;
 	
 	if (g == NULL || outData == NULL)
@@ -35,25 +33,16 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilRawScanGet(
 	
 	/* Get region from the server. */
 	pix = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE,
-		32, inNumPixels, 1);
+		8, inNumPixels, 1);
 	gdk_pixbuf_get_from_drawable(pix, drawable, NULL,
 		x, y, 0, 0,
 		inNumPixels, 1);
-		
-	/* Determine the number of pixels to be drawn. */
-	pixelBytes = -1;
-	limit = -1;
-	if (sjme_error_is(error = g->util->rawScanBytes(g,
-		inNumPixels, inDataLen,
-		&pixelBytes, &limit)) ||
-		pixelBytes < 0 || limit < 0)
-		return sjme_error_default(error);
 	
 	/* Read from the pixbuf directly, note that we might not be on */
 	/* the remote display yet, so this will do nothing. */
 	rawPix = gdk_pixbuf_get_pixels(pix);
 	if (rawPix != NULL)
-		memmove(outData, rawPix, limit);
+		memmove(outData, rawPix, inDataLen);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -64,10 +53,13 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilRawScanPutPure(
 	sjme_attrInPositive sjme_jint x,
 	sjme_attrInPositive sjme_jint y,
 	sjme_attrInNotNullBuf(inLen) const void* srcRaw,
-	sjme_attrInPositiveNonZero sjme_jint srcRawLen)
+	sjme_attrInPositiveNonZero sjme_jint srcRawLen,
+	sjme_attrInPositiveNonZero sjme_jint srcNumPixels)
 {
 	GdkDrawable* drawable;
 	GdkGC* gc;
+	GdkPixbuf* pix;
+	guchar* rawPix;
 	
 	if (g == NULL || srcRaw == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -76,11 +68,17 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilRawScanPutPure(
 	drawable = (GdkDrawable*)g->frontEnd.wrapper;
 	gc = (GdkGC*)g->frontEnd.data;
 	
-	/* Just draw it like if it were an image. */
-	gdk_draw_rgb_32_image(drawable, gc,
-		x, y, srcRawLen / 4, 1,
-		GDK_RGB_DITHER_NONE,
-		srcRaw, g->scanLenBytes);
+	/* Setup pixbuf for raw drawing. */
+	pix = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE,
+		8, srcNumPixels, 1);
+	
+	/* Draw into it directly. */
+	rawPix = gdk_pixbuf_get_pixels(pix);
+	if (rawPix != NULL)
+		memmove(rawPix, srcRaw, srcRawLen);
+	gdk_pixbuf_render_to_drawable(pix, drawable, gc,
+		0, 0, x, y, srcNumPixels, 1,
+		GDK_RGB_DITHER_NONE, 0, 0);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;

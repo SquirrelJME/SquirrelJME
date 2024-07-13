@@ -72,6 +72,7 @@ sjme_errorCode sjme_scritchpen_corePrim_drawHoriz(
 	/* is already the correct alpha value and this is not an image. */
 	return g->util->rgbScanPut(g, x, y,
 		rgbScan, w,
+		g->state.applyAlpha,
 		SJME_JNI_FALSE, 0);
 }
 
