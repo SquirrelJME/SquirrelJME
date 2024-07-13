@@ -184,11 +184,14 @@ sjme_errorCode sjme_scritchpen_core_drawXRGB32Region(
 			goto fail_any;
 		
 		/* Render RGB line at destination. */
+		sjme_todo("Impl?");
+#if 0
 		if (sjme_error_is(error = g->prim.rawScanPut(g,
 			xDest, yDest + dy,
 			rawScan, rawScanBytes, m.tw,
 			alpha)))
 			goto fail_any;
+#endif
 	}
 	
 	/* Release lock. */

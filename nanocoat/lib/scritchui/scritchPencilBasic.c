@@ -17,8 +17,8 @@
 
 static sjme_errorCode sjme_scritchui_basicRawScanGet(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInPositive sjme_jint inX,
-	sjme_attrInPositive sjme_jint inY,
+	sjme_attrInPositive sjme_jint x,
+	sjme_attrInPositive sjme_jint y,
 	sjme_attrOutNotNullBuf(inLen) void* outData,
 	sjme_attrInPositiveNonZero sjme_jint inDataLen,
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels)
@@ -30,9 +30,9 @@ static sjme_errorCode sjme_scritchui_basicRawScanGet(
 	if (g == NULL || outData == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	if (inX < 0 || inY < 0 || inX >= g->width || inY >= g->height ||
+	if (x < 0 || y < 0 || x >= g->width || y >= g->height ||
 		inDataLen < 0 || inNumPixels < 0 ||
-		(inX + inNumPixels) < 0 || (inX + inNumPixels) > g->width)
+		(x + inNumPixels) < 0 || (x + inNumPixels) > g->width)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	/* Buffer not locked? */
@@ -54,7 +54,7 @@ static sjme_errorCode sjme_scritchui_basicRawScanGet(
 	
 	/* Direct memory copy over. */
 	targetP = SJME_POINTER_OFFSET(g->lockState.base,
-		(inY * g->scanLenBytes) + inX);
+		(y * g->scanLenBytes) + x);
 	memmove(outData, targetP, limit);
 	
 	/* Success! */
@@ -63,8 +63,8 @@ static sjme_errorCode sjme_scritchui_basicRawScanGet(
 
 static sjme_errorCode sjme_scritchui_basicRawScanPutPure(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInPositive sjme_jint inX,
-	sjme_attrInPositive sjme_jint inY,
+	sjme_attrInPositive sjme_jint x,
+	sjme_attrInPositive sjme_jint y,
 	sjme_attrInNotNullBuf(inLen) const void* inData,
 	sjme_attrInPositiveNonZero sjme_jint inDataLen,
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels)
@@ -76,9 +76,9 @@ static sjme_errorCode sjme_scritchui_basicRawScanPutPure(
 	if (g == NULL || inData == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	if (inX < 0 || inY < 0 || inX >= g->width || inY >= g->height ||
+	if (x < 0 || y < 0 || x >= g->width || y >= g->height ||
 		inDataLen < 0 || inNumPixels < 0 ||
-		(inX + inNumPixels) < 0 || (inX + inNumPixels) > g->width)
+		(x + inNumPixels) < 0 || (x + inNumPixels) > g->width)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	/* Buffer not locked? */
@@ -100,7 +100,7 @@ static sjme_errorCode sjme_scritchui_basicRawScanPutPure(
 	
 	/* Direct memory copy over. */
 	targetP = SJME_POINTER_OFFSET(g->lockState.base,
-		(inY * g->scanLenBytes) + inX);
+		(y * g->scanLenBytes) + x);
 	memmove(targetP, inData, limit);
 	
 	/* Success! */
@@ -109,8 +109,8 @@ static sjme_errorCode sjme_scritchui_basicRawScanPutPure(
 
 static sjme_errorCode sjme_scritchui_basicRawScanGet_sjme_jbyte4(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInPositive sjme_jint inX,
-	sjme_attrInPositive sjme_jint inY,
+	sjme_attrInPositive sjme_jint x,
+	sjme_attrInPositive sjme_jint y,
 	sjme_attrOutNotNullBuf(inLen) void* outData,
 	sjme_attrInPositiveNonZero sjme_jint inDataLen,
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels)
@@ -140,8 +140,8 @@ static sjme_errorCode sjme_scritchui_basicRawScanPutPure_sjme_jbyte4(
 
 static sjme_errorCode sjme_scritchui_basicRawScanGet_sjme_jbyte2(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInPositive sjme_jint inX,
-	sjme_attrInPositive sjme_jint inY,
+	sjme_attrInPositive sjme_jint x,
+	sjme_attrInPositive sjme_jint y,
 	sjme_attrOutNotNullBuf(inLen) void* outData,
 	sjme_attrInPositiveNonZero sjme_jint inDataLen,
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels)
@@ -171,8 +171,8 @@ static sjme_errorCode sjme_scritchui_basicRawScanPutPure_sjme_jbyte2(
 
 static sjme_errorCode sjme_scritchui_basicRawScanGet_sjme_jbyte1(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInPositive sjme_jint inX,
-	sjme_attrInPositive sjme_jint inY,
+	sjme_attrInPositive sjme_jint x,
+	sjme_attrInPositive sjme_jint y,
 	sjme_attrOutNotNullBuf(inLen) void* outData,
 	sjme_attrInPositiveNonZero sjme_jint inDataLen,
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels)

@@ -13,8 +13,8 @@
 
 static sjme_errorCode sjme_scritchui_gtk2_pencilRawScanGet(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInPositive sjme_jint inX,
-	sjme_attrInPositive sjme_jint inY,
+	sjme_attrInPositive sjme_jint x,
+	sjme_attrInPositive sjme_jint y,
 	sjme_attrOutNotNullBuf(inLen) void* outData,
 	sjme_attrInPositiveNonZero sjme_jint inDataLen,
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels)
@@ -36,7 +36,7 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilRawScanGet(
 	pix = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE,
 		32, inNumPixels, 1);
 	gdk_pixbuf_get_from_drawable(pix, drawable, NULL,
-		inX, inY, 0, 0,
+		x, y, 0, 0,
 		inNumPixels, 1);
 		
 	/* Determine the number of pixels to be drawn. */

@@ -25,51 +25,58 @@ sjme_errorCode sjme_scritchpen_corePrim_drawHoriz(
 {
 	sjme_errorCode error;
 	sjme_scritchui_line* clipLine;
-	sjme_jint numBytes, ex;
-	void* outRaw;
+	sjme_jint ex;
+	sjme_jint* rgbScan;
 	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	if (w < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
-	/* Off top or bottom? */
-	clipLine = &g->state.clipLine;
-	if (y < 0 || y < clipLine->s.y ||
-		y >= g->height || y >= clipLine->e.y)
-		return SJME_ERROR_NONE;
-	
-	/* Normalize horizontal coordinates. */
+	/* Determine end coordinate. */
 	ex = x + w;
 	
-	if (x < 0)
-		x = 0;
-	if (ex >= g->width)
-		ex = g->width;
-	if (ex >= clipLine->e.x)
+	/* Clip into bounds. */
+	clipLine = &g->state.clipLine;
+	if (x < clipLine->s.x)
+		x = clipLine->s.x;
+	else if (x > clipLine->e.x)
+		x = clipLine->e.x;
+	if (y < clipLine->s.y)
+		y = clipLine->s.y;
+	else if (y > clipLine->e.y)
+		y = clipLine->e.y;
+	
+	/* Clip end into bounds. */
+	if (ex < clipLine->s.x)
+		ex = clipLine->s.x;
+	else if (ex > clipLine->e.x)
 		ex = clipLine->e.x;
 	
+	/* Outside the clip? */
 	w = ex - x;
-	
-	/* Not visible? */
-	if (w <= 0 || ex < 0 || x >= g->width || x >= clipLine->e.x)
+	if (w <= 0 || y < 0 || y < clipLine->s.x ||
+		y > g->height || y > clipLine->s.y)
 		return SJME_ERROR_NONE;
 	
-	/* Setup raw pixel buffer. */
-	numBytes = g->bytesPerPixel * w;
-	outRaw = sjme_alloca(numBytes);
-	if (outRaw == NULL)
+	/* Allocate buffer. */
+	rgbScan = sjme_alloca(sizeof(*rgbScan) * w);
+	if (rgbScan == NULL)
 		return SJME_ERROR_OUT_OF_MEMORY;
 	
-	/* Map it. */
-	memset(outRaw, 0, numBytes);
-	if (sjme_error_is(error = g->prim.rawScanFill(g,
-		outRaw, 0, numBytes,
-		g->state.color.v, w)))
+	/* Fill RGB buffer. */
+	memset(rgbScan, 0, sizeof(*rgbScan) * w);
+	if (sjme_error_is(error = g->util->rgbScanFill(g,
+		rgbScan, 0, w,
+		g->state.color.argb)))
 		return sjme_error_default(error);
 	
-	/* Render line. */
-	return g->prim.rawScanPut(g, x, y,
-		outRaw, numBytes, w,
-		SJME_JNI_FALSE);
+	/* Put onto image, we do not multiply alpha as the alpha in source */
+	/* is already the correct alpha value and this is not an image. */
+	return g->util->rgbScanPut(g, x, y,
+		rgbScan, w,
+		SJME_JNI_FALSE, 0);
 }
 
 sjme_errorCode sjme_scritchpen_corePrim_drawLine(

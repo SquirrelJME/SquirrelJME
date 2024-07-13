@@ -179,6 +179,9 @@ typedef struct sjme_scritchui_pencilColor
 	/** The raw pencil color, which is placed in the buffer. */
 	sjme_jint v;
 	
+	/** The RGBA color. */
+	sjme_jint argb;
+	
 	/** Red. */
 	sjme_jubyte r;
 	
@@ -260,6 +263,8 @@ typedef sjme_errorCode (*sjme_scritchui_pencilApplyTranslateFunc)(
  * @param g The graphics to operate under.
  * @param destAlpha Does the destination utilize an alpha channel?
  * @param srcAlpha Does the source utilize an alpha channel?
+ * @param mulAlpha Should alpha values be multiplied?
+ * @param mulAlphaValue The alpha value to multiply with.
  * @param dest The destination buffer which is written over.
  * @param src The source buffer.
  * @param numPixels The number of pixels to blend.
@@ -270,8 +275,10 @@ typedef sjme_errorCode (*sjme_scritchui_pencilBlendRGBIntoFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jboolean destAlpha,
 	sjme_attrInValue sjme_jboolean srcAlpha,
+	sjme_attrInValue sjme_jboolean mulAlpha,
+	sjme_attrInRange(0, 255) sjme_jint mulAlphaValue,
 	sjme_attrInNotNullBuf(numPixels) sjme_jint* dest,
-	sjme_attrInNotNullBuf(numPixels) sjme_jint* src,
+	sjme_attrInNotNullBuf(numPixels) const sjme_jint* src,
 	sjme_attrInPositive sjme_jint numPixels);
 
 /**
@@ -639,8 +646,8 @@ typedef sjme_errorCode (*sjme_scritchui_pencilRawScanFillFunc)(
  * Reads raw data from a single scanline at the given position. 
  * 
  * @param g The graphics to read from.
- * @param inX The X coordinate to access.
- * @param inY The Y coordinate to access.
+ * @param x The X coordinate to access.
+ * @param y The Y coordinate to access.
  * @param outData The resultant pixel data.
  * @param inDataLen Length of the data buffer.
  * @param inNumPixels The number of pixels to read.
@@ -649,34 +656,11 @@ typedef sjme_errorCode (*sjme_scritchui_pencilRawScanFillFunc)(
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilRawScanGetFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInPositive sjme_jint inX,
-	sjme_attrInPositive sjme_jint inY,
+	sjme_attrInPositive sjme_jint x,
+	sjme_attrInPositive sjme_jint y,
 	sjme_attrOutNotNullBuf(inLen) void* outData,
 	sjme_attrInPositiveNonZero sjme_jint inDataLen,
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels);
-
-/**
- * Writes raw data to a single scanline at the given position. 
- * 
- * @param g The graphics to write to.
- * @param inX The X coordinate to access.
- * @param inY The Y coordinate to access.
- * @param inData The raw pixel data to write.
- * @param inDataLen Length of the data buffer.
- * @param inNumPixels The number of pixels to read.
- * @param mulAlpha Should alpha values in the input buffer be multiplied by
- * the current alpha value? That is the buffer has significant alpha values.
- * @return Any resultant error code.
- * @since 2024/07/12
- */
-typedef sjme_errorCode (*sjme_scritchui_pencilRawScanPutFunc)(
-	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInPositive sjme_jint inX,
-	sjme_attrInPositive sjme_jint inY,
-	sjme_attrInNotNullBuf(inLen) const void* inData,
-	sjme_attrInPositiveNonZero sjme_jint inDataLen,
-	sjme_attrInPositiveNonZero sjme_jint inNumPixels,
-	sjme_attrInValue sjme_jboolean mulAlpha);
 
 /**
  * Writes raw data to a single scanline at the given position, no alpha
@@ -720,6 +704,66 @@ typedef sjme_errorCode (*sjme_scritchui_pencilRawScanToRgbFunc)(
 	sjme_attrOutNotNullBuf(rawLen) const void* inRaw,
 	sjme_attrInPositive sjme_jint inRawOff,
 	sjme_attrInPositive sjme_jint inRawLen);
+
+/**
+ * Fills a scan with the given RGB value. 
+ * 
+ * @param g The graphics owning this.
+ * @param outRgb The output RGB scan buffer.
+ * @param outRgbOff Offset into the RGB scan buffer.
+ * @param outRawLen Length of the RGB scan buffer.
+ * @param inNumPixels The number of pixels to fill.
+ * @param inValue The raw pixel to fill with.
+ * @return Any resultant error code.
+ * @since 2024/07/10
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilRgbScanFillFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrOutNotNullBuf(inNumPixels) sjme_jint* outRgb,
+	sjme_attrInPositiveNonZero sjme_jint outRgbOff,
+	sjme_attrInPositiveNonZero sjme_jint inNumPixels,
+	sjme_attrInValue sjme_jint inValue);
+
+/**
+ * Reads raw data from a single scanline at the given position. 
+ * 
+ * @param g The graphics to read from.
+ * @param x The X coordinate to access.
+ * @param y The Y coordinate to access.
+ * @param destRgb The RGB data that has come from the image.
+ * @param inNumPixels The number of pixels to read.
+ * @return Any resultant error code.
+ * @since 2024/07/09
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilRgbScanGetFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInPositive sjme_jint x,
+	sjme_attrInPositive sjme_jint y,
+	sjme_attrOutNotNullBuf(inLen) sjme_jint* destRgb,
+	sjme_attrInPositiveNonZero sjme_jint inNumPixels);
+
+/**
+ * Writes raw data to a single scanline at the given position. 
+ * 
+ * @param g The graphics to write to.
+ * @param x The X coordinate to access.
+ * @param y The Y coordinate to access.
+ * @param srcRgb Source RGB data to write.
+ * @param inNumPixels The number of pixels to read.
+ * @param mulAlpha Should alpha values in the input buffer be multiplied by
+ * the current alpha value? That is the buffer has significant alpha values.
+ * @param mulAlphaValue The value to multiply with.
+ * @return Any resultant error code.
+ * @since 2024/07/12
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilRgbScanPutFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInPositive sjme_jint x,
+	sjme_attrInPositive sjme_jint y,
+	sjme_attrInNotNullBuf(inLen) const sjme_jint* srcRgb,
+	sjme_attrInPositiveNonZero sjme_jint inNumPixels,
+	sjme_attrInValue sjme_jboolean mulAlpha,
+	sjme_attrInRange(0, 255) sjme_jint mulAlphaValue);
 
 /**
  * Maps a raw scanline from raw RGB data.
@@ -937,9 +981,6 @@ typedef struct sjme_scritchui_pencilPrimFunctions
 	/** @c RawScanGet . */
 	SJME_SCRITCHUI_QUICK_PENCIL(RawScanGet, rawScanGet);
 	
-	/** @c RawScanPut . */
-	SJME_SCRITCHUI_QUICK_PENCIL(RawScanPut, rawScanPut);
-	
 	/** @c RawScanPut without any alpha blending . */
 	SJME_SCRITCHUI_QUICK_PENCIL(RawScanPutPure, rawScanPutPure);
 } sjme_scritchui_pencilPrimFunctions;
@@ -972,6 +1013,15 @@ struct sjme_scritchui_pencilUtilFunctions
 	
 	/** @c RawScanToRgb . */
 	SJME_SCRITCHUI_QUICK_PENCIL(RawScanToRgb, rawScanToRgb);
+	
+	/** @c RgbScanFill . */
+	SJME_SCRITCHUI_QUICK_PENCIL(RgbScanFill, rgbScanFill);
+	
+	/** @c RgbScanGet . */
+	SJME_SCRITCHUI_QUICK_PENCIL(RgbScanGet, rgbScanGet);
+	
+	/** @c RgbScanPut . */
+	SJME_SCRITCHUI_QUICK_PENCIL(RgbScanPut, rgbScanPut);
 	
 	/** @c RgbToRawScan . */
 	SJME_SCRITCHUI_QUICK_PENCIL(RgbToRawScan, rgbToRawScan);

@@ -1,6 +1,7 @@
 Manifest-Version: 1.0
 result: NoResult
 thrown: NoExceptionThrown
+hyper-parameters: INT_ARGB8888 INT_RGB888
 secondary-y00: string[8]:bg,bg,bg,bg,bg,bg,bg,bg
 secondary-y01: string[8]:bg,bg,bg,bg,bg,bg,bg,bg
 secondary-y02: string[8]:bg,bg,bg,bg,bg,bg,bg,bg

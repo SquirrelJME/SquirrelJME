@@ -124,10 +124,10 @@ sjme_errorCode sjme_scritchpen_corePrim_rawScanFillByte(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_scritchpen_corePrim_rawScanGet(
+sjme_errorCode sjme_scritchpen_corePrim_rawScanGetNoDest(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInPositive sjme_jint inX,
-	sjme_attrInPositive sjme_jint inY,
+	sjme_attrInPositive sjme_jint x,
+	sjme_attrInPositive sjme_jint y,
 	sjme_attrOutNotNullBuf(inLen) void* outData,
 	sjme_attrInPositiveNonZero sjme_jint inDataLen,
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels)
@@ -135,119 +135,24 @@ sjme_errorCode sjme_scritchpen_corePrim_rawScanGet(
 	if (g == NULL || outData == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+	if (inDataLen < 0 || inNumPixels < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Just set everything to the first default value. */
+	memset(outData, 0, inDataLen);
+	
 	/* Do nothing, there is no reading function. */
 	return SJME_ERROR_NONE;
-}
-
-sjme_errorCode sjme_scritchpen_corePrim_rawScanPut(
-	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInPositive sjme_jint inX,
-	sjme_attrInPositive sjme_jint inY,
-	sjme_attrInNotNullBuf(inLen) const void* inData,
-	sjme_attrInPositiveNonZero sjme_jint inDataLen,
-	sjme_attrInPositiveNonZero sjme_jint inNumPixels,
-	sjme_attrInValue sjme_jboolean mulAlpha)
-{
-	sjme_errorCode error;
-	sjme_jint bufRgbBytes, limit;
-	void* destRaw;
-	sjme_jint* destRgb;
-	sjme_jint* srcRgb;
-	
-	if (g == NULL || inData == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* If we are not applying alpha or doing SRC mode, just skip. */
-	if (!g->state.applyAlpha)
-		return g->prim.rawScanPutPure(g, inX, inY, inData,
-			inDataLen, inNumPixels);
-	
-	/* Determine how much data to read for RGB blending. */
-	sjme_message("A");
-	bufRgbBytes = -1;
-	limit = -1;
-	if (sjme_error_is(error = g->util->rawScanBytes(g,
-		inNumPixels, inDataLen,
-		&bufRgbBytes, &limit)) ||
-		bufRgbBytes < 0 || limit < 0)
-		return sjme_error_default(error);
-	
-	/* Allocate buffers. */
-	sjme_message("B");
-	destRaw = sjme_alloca(inDataLen);
-	destRgb = sjme_alloca(bufRgbBytes);
-	srcRgb = sjme_alloca(bufRgbBytes);
-	if (destRaw == NULL || destRgb == NULL || srcRgb == NULL)
-		return SJME_ERROR_OUT_OF_MEMORY;
-	
-	/* Clear. */
-	sjme_message("C");
-	memset(destRaw, 0, inDataLen);
-	memset(destRgb, 0, bufRgbBytes);
-	memset(srcRgb, 0, bufRgbBytes);
-	
-	/* Read in raw image data from dest buffer. */
-	sjme_message("D");
-	if (sjme_error_is(error = g->prim.rawScanGet(g,
-		inX, inY, destRaw, inDataLen, inNumPixels)))
-		return sjme_error_default(error);
-	
-	/* Map dest to RGB. */
-	sjme_message("E");
-	if (sjme_error_is(error = g->util->rawScanToRgb(g,
-		destRgb, 0, inNumPixels,
-		destRaw, 0, inDataLen)))
-		return sjme_error_default(error);
-	
-	/* Map source to RGB. */
-	sjme_message("F");
-	if (sjme_error_is(error = g->util->rawScanToRgb(g,
-		srcRgb, 0, inNumPixels,
-		inData, 0, inDataLen)))
-		return sjme_error_default(error);
-	
-	/* RGB blend source onto dest. */
-	sjme_message("G");
-	if (sjme_error_is(error = g->util->blendRGBInto(g,
-		g->hasAlpha, mulAlpha,
-		destRgb, srcRgb, inNumPixels)))
-		return sjme_error_default(error);
-	
-	/* Map dest from RGB to raw data. */
-	sjme_message("H");
-	if (sjme_error_is(error = g->util->rgbToRawScan(g,
-		destRaw, 0, inDataLen,
-		destRgb, 0, inNumPixels)))
-		return sjme_error_default(error);
-	
-	/* Put in raw data. */
-	sjme_message("I");
-	return g->prim.rawScanPutPure(g, inX, inY, destRaw,
-		inDataLen, inNumPixels);
-}
-
-sjme_errorCode sjme_scritchpen_corePrim_rawScanPutSkipBlend(
-	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInPositive sjme_jint inX,
-	sjme_attrInPositive sjme_jint inY,
-	sjme_attrInNotNullBuf(inLen) const void* inData,
-	sjme_attrInPositiveNonZero sjme_jint inDataLen,
-	sjme_attrInPositiveNonZero sjme_jint inNumPixels,
-	sjme_attrInValue sjme_jboolean mulAlpha)
-{
-	if (g == NULL || inData == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
 sjme_errorCode sjme_scritchpen_coreUtil_blendRGBInto(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jboolean destAlpha,
 	sjme_attrInValue sjme_jboolean srcAlpha,
+	sjme_attrInValue sjme_jboolean mulAlpha,
+	sjme_attrInRange(0, 255) sjme_jint mulAlphaValue,
 	sjme_attrInNotNullBuf(numPixels) sjme_jint* dest,
-	sjme_attrInNotNullBuf(numPixels) sjme_jint* src,
+	sjme_attrInNotNullBuf(numPixels) const sjme_jint* src,
 	sjme_attrInPositive sjme_jint numPixels)
 {
 	sjme_jint i;
@@ -271,29 +176,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_blendRGBInto(
 	/* A(dest) = A(src) + A(dest) - (A(src) * A(dest)) */
 	for (i = 0; i < numPixels; i++)
 	{
-		/* From my existing Java code... */
-		/* int pac = __b[src]; */
-		/* int sa = pac >>> 24; */
-		/* int na = (sa ^ 0xFF); */
-		/* int srb = ((pac & 0xFF00FF) * sa); */
-		/* int sgg = (((pac >>> 8) & 0xFF) * sa); */
-		/* int dcc = data[dp]; */
-		/* int xrb = (srb + ((dcc & 0xFF00FF) * na)) >>> 8; */
-		/* int xgg = (((sgg + (((dcc >>> 8) & 0xFF) * na)) + 1) *  ... */
-		/* 	257) >>> 16; */
-		/*  */
-		/* data[dp] = ((xrb & 0xFF00FF) | ((xgg & 0xFF) << 8)); */
-		pac = src[i] | srcMask;
-		dcc = dest[i] | destMask;
-		
-		sa = (pac >> 24);
-		na = (sa ^ 0xFF);
-		srb = ((pac & 0xFF00FF) * sa);
-		sgg = (((pac >> 8) & 0xFF) * sa);
-		xrb = (srb + ((dcc & 0xFF00FF) * na)) >> 8;
-		xgg = (((sgg + (((dcc >> 8) & 0xFF) * na)) + 1) * 257) >> 16;
-		
-		dest[i] = ((xrb & 0xFF00FF) | ((xgg & 0xFF) << 8)) | destMask;
+		dest[i] = src[i] | (destMask | srcMask);
 	}
 	
 	/* Success! */
@@ -426,6 +309,154 @@ sjme_errorCode sjme_scritchpen_coreUtil_rawScanToRgb(
 	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+sjme_errorCode sjme_scritchpen_coreUtil_rgbScanFill(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrOutNotNullBuf(inNumPixels) sjme_jint* outRgb,
+	sjme_attrInPositiveNonZero sjme_jint outRgbOff,
+	sjme_attrInPositiveNonZero sjme_jint inNumPixels,
+	sjme_attrInValue sjme_jint inValue)
+{
+	sjme_jint i;
+	sjme_jint* p;
+	
+	if (g == NULL || outRgb == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (outRgbOff < 0 || inNumPixels < 0 ||
+		(outRgbOff + inNumPixels) < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Fill in, which is a rather simple operation. */
+	p = &outRgb[outRgbOff];
+	for (i = 0; i < inNumPixels; i++)
+		*(p++) = inValue;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_scritchpen_coreUtil_rgbScanGet(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInPositive sjme_jint x,
+	sjme_attrInPositive sjme_jint y,
+	sjme_attrOutNotNullBuf(inLen) sjme_jint* destRgb,
+	sjme_attrInPositiveNonZero sjme_jint inNumPixels)
+{
+	sjme_errorCode error;
+	sjme_jint ex, rgbBytes, rawScanBytes;
+	void* rawScan;
+	
+	if (g == NULL || destRgb == NULL)
+		return SJME_ERROR_NONE;
+	
+	/* We cannot access a region outside the image bounds. */
+	ex = x + inNumPixels;
+	rgbBytes = inNumPixels * sizeof(*destRgb);
+	if (x < 0 || y < 0 || inNumPixels < 0 ||
+		ex < 0 || ex > g->width || rgbBytes < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* How much data is to be read? */
+	rawScanBytes = (inNumPixels * g->bitsPerPixel) / 8;
+	if (rawScanBytes < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Allocate. */
+	rawScan = sjme_alloca(rawScanBytes);
+	if (rawScan == NULL)
+		return SJME_ERROR_OUT_OF_MEMORY;
+	
+	/* Clear. */
+	memset(rawScan, 0, rawScanBytes);
+	
+	/* Load in from image directly. */
+	if (sjme_error_is(error = g->prim.rawScanGet(g,
+		x, y, rawScan, rawScanBytes, inNumPixels)))
+		return sjme_error_default(error);
+	
+	/* Map to RGB. */
+	return g->util->rawScanToRgb(g,
+		destRgb, 0, inNumPixels,
+		rawScan, 0, rawScanBytes);
+}
+
+sjme_errorCode sjme_scritchpen_coreUtil_rgbScanPut(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInPositive sjme_jint x,
+	sjme_attrInPositive sjme_jint y,
+	sjme_attrInNotNullBuf(inLen) const sjme_jint* srcRgb,
+	sjme_attrInPositiveNonZero sjme_jint inNumPixels,
+	sjme_attrInValue sjme_jboolean mulAlpha,
+	sjme_attrInRange(0, 255) sjme_jint mulAlphaValue)
+{
+	sjme_errorCode error;
+	sjme_jint ex, rawScanBytes, rgbBytes;
+	void* rawScan;
+	sjme_jint* destRgb;
+	
+	if (g == NULL || srcRgb == NULL)
+		return SJME_ERROR_NONE;
+	
+	/* We cannot access a region outside the image bounds. */
+	ex = x + inNumPixels;
+	rgbBytes = inNumPixels * sizeof(*destRgb);
+	if (x < 0 || y < 0 || inNumPixels < 0 ||
+		ex < 0 || ex > g->width || rgbBytes < 0 ||
+		(mulAlpha && (mulAlphaValue < 0 || mulAlphaValue > 255)))
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* How much data is to be written? */
+	rawScanBytes = (inNumPixels * g->bitsPerPixel) / 8;
+	if (rawScanBytes < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Do we need to alpha blend? */
+	if (mulAlpha || g->state.applyAlpha)
+	{
+		/* Allocate dest RGB data. */
+		destRgb = sjme_alloca(rgbBytes);
+		if (destRgb == NULL)
+			return SJME_ERROR_OUT_OF_MEMORY;
+		
+		/* Clear. */
+		memset(destRgb, 0, rgbBytes);
+		
+		/* Load in RGB data from image, which might be lossy. */
+		if (sjme_error_is(error = g->util->rgbScanGet(g,
+			x, y, destRgb, inNumPixels)))
+			return sjme_error_default(error);
+		
+		/* Perform blending. */
+		if (sjme_error_is(error = g->util->blendRGBInto(g,
+			g->hasAlpha, SJME_JNI_TRUE,
+			mulAlpha, mulAlphaValue,
+			destRgb, srcRgb, inNumPixels)))
+			return sjme_error_default(error);
+		
+		/* The destination becomes the new source. */
+		srcRgb = destRgb;
+	}
+	
+	/* Allocate raw scan data. */
+	rawScan = sjme_alloca(rawScanBytes);
+	if (rawScan == NULL)
+		return SJME_ERROR_OUT_OF_MEMORY;
+	
+	/* Clear. */
+	memset(rawScan, 0, rawScanBytes);
+	
+	/* Map from RGB to raw pixels. */
+	if (sjme_error_is(error = g->util->rgbToRawScan(g,
+		rawScan, 0, rawScanBytes,
+		srcRgb, 0, inNumPixels)))
+		return sjme_error_default(error);
+	
+	/* Write direct image data. */
+	return g->prim.rawScanPutPure(g,
+		x, y,
+		rawScan, rawScanBytes, inNumPixels);
 }
 
 sjme_errorCode sjme_scritchpen_coreUtil_rgbToRawScan(

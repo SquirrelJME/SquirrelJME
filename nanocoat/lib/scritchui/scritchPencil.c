@@ -113,6 +113,9 @@ static const sjme_scritchui_pencilUtilFunctions
 	.applyRotateScale = sjme_scritchpen_coreUtil_applyRotateScale,
 	.applyTranslate = sjme_scritchpen_coreUtil_applyTranslate,
 	.rawScanBytes = sjme_scritchpen_coreUtil_rawScanBytes,
+	.rgbScanFill = sjme_scritchpen_coreUtil_rgbScanFill,
+	.rgbScanGet = sjme_scritchpen_coreUtil_rgbScanGet,
+	.rgbScanPut = sjme_scritchpen_coreUtil_rgbScanPut,
 	.rgbToRawScan = sjme_scritchpen_coreUtil_rgbToRawScan,
 	.rawScanToRgb = sjme_scritchpen_coreUtil_rawScanToRgb,
 };
@@ -160,7 +163,7 @@ sjme_errorCode sjme_scritchpen_initStatic(
 	result.pixelFormat = pf;
 	result.width = sw;
 	result.height = sh;
-	result.scanLen = bw;
+	result.scanLenPixels = bw;
 	
 	/* Determine bits per pixel. */
 	result.bitsPerPixel = -1;
@@ -200,7 +203,7 @@ sjme_errorCode sjme_scritchpen_initStatic(
 	}
 	
 	/* Determine raw scan line length. */
-	result.scanLenBytes = (result.scanLen * result.bitsPerPixel) / 8;
+	result.scanLenBytes = (result.scanLenPixels * result.bitsPerPixel) / 8;
 	
 	/* Copy lock front end source? */
 	if (inLockFuncs != NULL && inLockFrontEndCopy != NULL)
@@ -224,12 +227,6 @@ sjme_errorCode sjme_scritchpen_initStatic(
 	/* Raw scan put, must be implemented always. */
 	result.prim.rawScanPutPure = result.impl->rawScanPutPure;
 	
-	/* We do handle alpha blending in our own wrapper, however. */
-	if (result.impl->rawScanGet != NULL)
-		result.prim.rawScanPut = sjme_scritchpen_corePrim_rawScanPut;
-	else
-		result.prim.rawScanPut = sjme_scritchpen_corePrim_rawScanPutSkipBlend;
-	
 	/* These are always handled by us. */
 	result.prim.drawHoriz = sjme_scritchpen_corePrim_drawHoriz;
 	result.prim.drawLine = sjme_scritchpen_corePrim_drawLine;
@@ -239,7 +236,7 @@ sjme_errorCode sjme_scritchpen_initStatic(
 	if (result.impl->rawScanGet != NULL)
 		result.prim.rawScanGet = result.impl->rawScanGet;
 	else
-		result.prim.rawScanGet = sjme_scritchpen_corePrim_rawScanGet;
+		result.prim.rawScanGet = sjme_scritchpen_corePrim_rawScanGetNoDest;
 	
 	/* Color mapping. */
 	if (result.impl->mapColor != NULL)

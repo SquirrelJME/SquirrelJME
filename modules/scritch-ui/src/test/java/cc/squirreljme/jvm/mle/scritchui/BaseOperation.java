@@ -12,7 +12,7 @@ package cc.squirreljme.jvm.mle.scritchui;
 import cc.squirreljme.jvm.mle.brackets.PencilBracket;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import java.util.Arrays;
-import net.multiphasicapps.tac.TestRunnable;
+import net.multiphasicapps.tac.TestConsumer;
 
 /**
  * Base class for rendering operations.
@@ -20,7 +20,7 @@ import net.multiphasicapps.tac.TestRunnable;
  * @since 2024/07/12
  */
 public abstract class BaseOperation
-	extends TestRunnable
+	extends TestConsumer<String>
 {
 	/** Buffer width. */
 	public static final int WIDTH =
@@ -51,7 +51,7 @@ public abstract class BaseOperation
 	 * @since 2024/07/12
 	 */
 	@Override
-	public void test()
+	public void test(String __pf)
 		throws Throwable
 	{
 		// Initialize raw buffer with initial white color
@@ -59,9 +59,10 @@ public abstract class BaseOperation
 		Arrays.fill(raw, 0xFFFFFFFF);
 		
 		// Setup pencil graphics for drawing
+		int pixelFormat = BaseOperation.__nameToFormat(__pf);
 		PencilBracket g = NativeScritchInterface.nativeInterface()
 			.hardwareGraphics(
-				UIPixelFormat.INT_ARGB8888,
+				pixelFormat,
 				BaseOperation.WIDTH, BaseOperation.HEIGHT,
 				raw, null,
 				0, 0,
@@ -81,7 +82,7 @@ public abstract class BaseOperation
 			
 			// Determine names
 			for (int x = 0; x < BaseOperation.WIDTH; x++)
-				rowS[x] = BaseOperation.__string(row[x]);
+				rowS[x] = BaseOperation.__string(pixelFormat, row[x]);
 			
 			// Emit pixel data on it
 			this.secondary(String.format("y%02d", y), rowS);
@@ -89,14 +90,40 @@ public abstract class BaseOperation
 	}
 	
 	/**
+	 * Returns the pixel format to use for the given name.
+	 *
+	 * @param __pf The pixel format to use.
+	 * @return The pixel format code.
+	 * @since 2024/07/12
+	 */
+	private static int __nameToFormat(String __pf)
+	{
+		switch (__pf)
+		{
+			case "INT_ARGB8888":
+				return UIPixelFormat.INT_ARGB8888;
+				
+			case "INT_RGB888":
+				return UIPixelFormat.INT_RGB888;
+				
+			default:
+				throw new RuntimeException("Unknown PF: " + __pf);
+		}
+	}
+	
+	/**
 	 * Maps the color to the given name
 	 *
+	 * @param __pixelFormat The pixel format used.
 	 * @param __c The color to convert.
 	 * @return The resultant string.
 	 * @since 2024/07/12
 	 */
-	private static String __string(int __c)
+	private static String __string(int __pixelFormat, int __c)
 	{
+		if (__pixelFormat == UIPixelFormat.INT_RGB888)
+			__c |= 0xFF000000;
+		
 		// Base for background and foreground color
 		if (__c == 0xFFFFFFFF)
 			return "bg";

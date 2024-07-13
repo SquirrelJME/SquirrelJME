@@ -164,6 +164,7 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColorFromRGB(
 	/* Store raw colors. */
 	outColor->i = ii;
 	outColor->v = v;
+	outColor->argb = argb;
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -174,7 +175,7 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColorFromRaw(
 	sjme_attrInValue sjme_jint v,
 	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor)
 {
-	sjme_jint numCol, aa, rr, gg, bb;
+	sjme_jint numCol, aa, rr, gg, bb, argb;
 	
 	if (g == NULL || outColor == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -268,8 +269,9 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColorFromRaw(
 	}
 	
 	/* Map back to normalize. */
-	return sjme_scritchpen_corePrim_mapColorFromRGB(g,
-		(aa << 24) | (rr << 16) | (gg << 8) | bb, outColor);
+	argb = (aa << 24) | (rr << 16) | (gg << 8) | bb;
+	outColor->argb = argb;
+	return sjme_scritchpen_corePrim_mapColorFromRGB(g, argb, outColor);
 }
 
 sjme_errorCode sjme_scritchpen_corePrim_mapColor(

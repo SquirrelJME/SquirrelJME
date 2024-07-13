@@ -89,32 +89,14 @@ sjme_errorCode sjme_scritchpen_corePrim_rawScanFillByte(
 	sjme_attrInValue sjme_jint rawPixel,
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels);
 	
-sjme_errorCode sjme_scritchpen_corePrim_rawScanGet(
+sjme_errorCode sjme_scritchpen_corePrim_rawScanGetNoDest(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInPositive sjme_jint inX,
-	sjme_attrInPositive sjme_jint inY,
+	sjme_attrInPositive sjme_jint x,
+	sjme_attrInPositive sjme_jint y,
 	sjme_attrOutNotNullBuf(inLen) void* outData,
 	sjme_attrInPositiveNonZero sjme_jint inDataLen,
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels);
-	
-sjme_errorCode sjme_scritchpen_corePrim_rawScanPut(
-	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInPositive sjme_jint inX,
-	sjme_attrInPositive sjme_jint inY,
-	sjme_attrInNotNullBuf(inLen) const void* inData,
-	sjme_attrInPositiveNonZero sjme_jint inDataLen,
-	sjme_attrInPositiveNonZero sjme_jint inNumPixels,
-	sjme_attrInValue sjme_jboolean mulAlpha);
-	
-sjme_errorCode sjme_scritchpen_corePrim_rawScanPutSkipBlend(
-	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInPositive sjme_jint inX,
-	sjme_attrInPositive sjme_jint inY,
-	sjme_attrInNotNullBuf(inLen) const void* inData,
-	sjme_attrInPositiveNonZero sjme_jint inDataLen,
-	sjme_attrInPositiveNonZero sjme_jint inNumPixels,
-	sjme_attrInValue sjme_jboolean mulAlpha);
-	
+
 /**
  * Calculates the anchor position of a box on a point.
  * 
@@ -156,9 +138,34 @@ sjme_errorCode sjme_scritchpen_coreUtil_blendRGBInto(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jboolean destAlpha,
 	sjme_attrInValue sjme_jboolean srcAlpha,
+	sjme_attrInValue sjme_jboolean mulAlpha,
+	sjme_attrInRange(0, 255) sjme_jint mulAlphaValue,
 	sjme_attrInNotNullBuf(numPixels) sjme_jint* dest,
-	sjme_attrInNotNullBuf(numPixels) sjme_jint* src,
+	sjme_attrInNotNullBuf(numPixels) const sjme_jint* src,
 	sjme_attrInPositive sjme_jint numPixels);
+
+sjme_errorCode sjme_scritchpen_coreUtil_rgbScanFill(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrOutNotNullBuf(inNumPixels) sjme_jint* outRgb,
+	sjme_attrInPositiveNonZero sjme_jint outRgbOff,
+	sjme_attrInPositiveNonZero sjme_jint inNumPixels,
+	sjme_attrInValue sjme_jint inValue);
+
+sjme_errorCode sjme_scritchpen_coreUtil_rgbScanGet(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInPositive sjme_jint x,
+	sjme_attrInPositive sjme_jint y,
+	sjme_attrOutNotNullBuf(inLen) sjme_jint* destRgb,
+	sjme_attrInPositiveNonZero sjme_jint inNumPixels);
+
+sjme_errorCode sjme_scritchpen_coreUtil_rgbScanPut(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInPositive sjme_jint x,
+	sjme_attrInPositive sjme_jint y,
+	sjme_attrInNotNullBuf(inLen) const sjme_jint* srcRgb,
+	sjme_attrInPositiveNonZero sjme_jint inNumPixels,
+	sjme_attrInValue sjme_jboolean mulAlpha,
+	sjme_attrInRange(0, 255) sjme_jint mulAlphaValue);
 
 sjme_errorCode sjme_scritchpen_core_lock(
 	sjme_attrInNotNull sjme_scritchui_pencil g);
