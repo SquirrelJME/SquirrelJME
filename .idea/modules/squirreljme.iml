@@ -185,9 +185,6 @@
       <excludeFolder url="file://$MODULE_DIR$/../../modules/midp-lcdui/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/midp-lcdui/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/midp-lcdui/out" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/opengles/.settings" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/opengles/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/opengles/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/profile-meep/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/profile-meep/bin" />
@@ -315,6 +312,9 @@
       <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-javap/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-javap/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-javap/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-khronos-opengles/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-khronos-opengles/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-khronos-opengles/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-softbank-mexa/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-softbank-mexa/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-softbank-mexa/out" />

@@ -71,7 +71,6 @@
             <option value="$PROJECT_DIR$/modules/meep-securityframework" />
             <option value="$PROJECT_DIR$/modules/meep-swm" />
             <option value="$PROJECT_DIR$/modules/midp-lcdui" />
-            <option value="$PROJECT_DIR$/modules/opengles" />
             <option value="$PROJECT_DIR$/modules/profile-meep" />
             <option value="$PROJECT_DIR$/modules/squirrel-quarrel" />
             <option value="$PROJECT_DIR$/modules/std-apps-core" />
@@ -83,6 +82,7 @@
             <option value="$PROJECT_DIR$/modules/vendor-api-danger-hiptop" />
             <option value="$PROJECT_DIR$/modules/vendor-api-jblend" />
             <option value="$PROJECT_DIR$/modules/vendor-api-jphone" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-khronos-opengles" />
             <option value="$PROJECT_DIR$/modules/vendor-api-kwisf-wipi" />
             <option value="$PROJECT_DIR$/modules/vendor-api-lg-mmpp" />
             <option value="$PROJECT_DIR$/modules/vendor-api-mascot-capsule-3d" />
