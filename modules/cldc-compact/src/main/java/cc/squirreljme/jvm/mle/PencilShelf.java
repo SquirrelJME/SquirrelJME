@@ -382,7 +382,7 @@ public final class PencilShelf
 	 * @since 2024/07/14
 	 */
 	@SquirrelJMEVendorApi
-	public static native void hardwareFilledPolygon(@NotNull PencilBracket __g,
+	public static native void hardwareFillPolygon(@NotNull PencilBracket __g,
 		@NotNull int[] __x,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __xOff,
 		@NotNull int[] __y,
