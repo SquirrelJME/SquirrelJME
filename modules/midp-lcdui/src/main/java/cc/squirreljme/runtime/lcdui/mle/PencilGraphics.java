@@ -383,7 +383,7 @@ public final class PencilGraphics
 	 */
 	@Override
 	public void drawRoundRect(int __x, int __y, int __w, int __h,
-		int __aw, int __ah)
+		int __arcWidth, int __arcHeight)
 	{
 		throw Debugging.todo();
 	}
@@ -489,7 +489,7 @@ public final class PencilGraphics
 	 */
 	@Override
 	public void fillRoundRect(int __x, int __y, int __w, int __h,
-		int __aw, int __ah)
+		int __arcWidth, int __arcHeight)
 	{
 		throw Debugging.todo();
 	}

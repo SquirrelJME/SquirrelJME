@@ -699,7 +699,7 @@ public class AdvancedGraphics
 	 */
 	@Override
 	public void drawRoundRect(int __x, int __y, int __w, int __h,
-		int __aw, int __ah)
+		int __arcWidth, int __arcHeight)
 	{
 		this.__unimplemented(__x, __y, "drawRoundRect");
 	}
@@ -831,7 +831,7 @@ public class AdvancedGraphics
 	 */
 	@Override
 	public void fillRoundRect(int __x, int __y, int __w, int __h,
-		int __aw, int __ah)
+		int __arcWidth, int __arcHeight)
 	{
 		this.__unimplemented(__x, __y, "fillRoundRect");
 	}

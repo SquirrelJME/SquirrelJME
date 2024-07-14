@@ -372,14 +372,14 @@ public final class EnforcedDrawingAreaGraphics
 	 */
 	@Override
 	public final void drawRoundRect(int __x, int __y, int __w, int __h,
-		int __aw, int __ah)
+		int __arcWidth, int __arcHeight)
 	{
 		// Initialize?
 		if (!this._beeninit)
 			this.initialize();
 		
 		this.graphics.drawRoundRect(this._dx + __x, this._dy + __y,
-			__w, __h, __aw, __ah);
+			__w, __h, __arcWidth, __arcHeight);
 	}
 	
 	/**
@@ -467,14 +467,14 @@ public final class EnforcedDrawingAreaGraphics
 	 */
 	@Override
 	public final void fillRoundRect(int __x, int __y, int __w, int __h,
-		int __aw, int __ah)
+		int __arcWidth, int __arcHeight)
 	{
 		// Initialize?
 		if (!this._beeninit)
 			this.initialize();
 		
 		this.graphics.fillRoundRect(this._dx + __x, this._dy + __y,
-			__w, __h, __aw, __ah);
+			__w, __h, __arcWidth, __arcHeight);
 	}
 	
 	/**

@@ -14,44 +14,43 @@ import cc.squirreljme.jvm.mle.brackets.PencilBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
- * Tests drawing of a pixel.
+ * Tests drawing a horizontal line.
  *
- * @since 2024/07/12
+ * @since 2024/07/14
  */
-public class TestDrawPixel
+public class TestDrawHoriz
 	extends BaseOperation
 {
 	/**
 	 * {@inheritDoc}
-	 * @since 2024/07/12
+	 * @since 2024/07/14
 	 */
 	@Override
 	protected void test(PencilBracket __g, int __w, int __h)
 		throws Throwable
 	{
-		// Full
-		PencilShelf.hardwareSetAlphaColor(__g, 0xFF_000000);
-		PencilShelf.hardwareDrawPixel(__g, 0, 0);
-		PencilShelf.hardwareDrawPixel(__g, 1, 1);
+		// Left side
+		PencilShelf.hardwareDrawHoriz(__g, -1, 0, 3);
+		PencilShelf.hardwareDrawHoriz(__g, 0, 1, 3);
+		PencilShelf.hardwareDrawHoriz(__g, 1, 2, 3);
+		
+		// Right side
+		PencilShelf.hardwareDrawHoriz(__g, __w - 3, 3, 3);
+		PencilShelf.hardwareDrawHoriz(__g, __w - 2, 4, 3);
 		
 		// Clipping
-		PencilShelf.hardwareDrawPixel(__g, -1, 0);
-		PencilShelf.hardwareDrawPixel(__g, 0, -1);
-		PencilShelf.hardwareDrawPixel(__g, __w, 0);
-		PencilShelf.hardwareDrawPixel(__g, __w + 1, 0);
-		PencilShelf.hardwareDrawPixel(__g, __w, -1);
-		PencilShelf.hardwareDrawPixel(__g, __w + 1, -1);
-		PencilShelf.hardwareDrawPixel(__g, __w, __h);
-		PencilShelf.hardwareDrawPixel(__g, __w + 1, __h + 1);
+		PencilShelf.hardwareDrawHoriz(__g, 0, -1, 3);
+		PencilShelf.hardwareDrawHoriz(__g, 0, __h, 3);
+		PencilShelf.hardwareDrawHoriz(__g, 0, __h + 1, 3);
+		PencilShelf.hardwareDrawHoriz(__g, __w, 0, 3);
+		PencilShelf.hardwareDrawHoriz(__g, __w + 1, 0, 3);
 		
-		// Half
+		// Transparency
 		PencilShelf.hardwareSetAlphaColor(__g, 0x80_000000);
-		PencilShelf.hardwareDrawPixel(__g, 1, 0);
-		PencilShelf.hardwareDrawPixel(__g, 2, 1);
+		PencilShelf.hardwareDrawHoriz(__g, 1, 5, 3);
 		
-		// None
+		// Fully transparent
 		PencilShelf.hardwareSetAlphaColor(__g, 0x00_000000);
-		PencilShelf.hardwareDrawPixel(__g, 2, 0);
-		PencilShelf.hardwareDrawPixel(__g, 3, 1);
+		PencilShelf.hardwareDrawHoriz(__g, __w - 3, 0, 3);
 	}
 }

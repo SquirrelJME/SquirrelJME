@@ -95,6 +95,47 @@ public final class PencilShelf
 		throws MLECallError;
 	
 	/**
+	 * This draws the outer edge of the ellipse from the given angles using
+	 * the color, alpha, and stroke style.
+	 *
+	 * The coordinates are treated as if they were in a rectangular region. As
+	 * such the center of the ellipse to draw the outline of is in the center
+	 * of the specified rectangle.
+	 *
+	 * Note that no lines are drawn to the center point, so the shape does not
+	 * result in a pie slice.
+	 *
+	 * The angles are in degrees and visually the angles match those of the
+	 * unit circle correctly transformed to the output surface. As such, zero
+	 * degrees has the point of {@code (__w, __h / 2)}, that is it points to
+	 * the right. An angle at 45 degrees will always point to the top right
+	 * corner.
+	 *
+	 * If the width or height are zero, then nothing is drawn. The arc will
+	 * cover an area of {@code __w + 1} and {@code __h + 1}.
+	 *
+	 * @param __g The hardware graphics to draw with.
+	 * @param __x The X position of the upper left corner, will be translated.
+	 * @param __y The Y position of the upper left corner, will be translated.
+	 * @param __w The width of the arc.
+	 * @param __h The height of the arc.
+	 * @param __startAngle The starting angle in degrees, 
+	 * @param __arcAngle The offset from the starting angle, negative values
+	 * indicate clockwise direction while positive values are counterclockwise.
+	 * @throws MLECallError If the pencil is not valid; or the arc requested
+	 * to draw is not valid.
+	 * @since 2024/07/14
+	 */
+	@SquirrelJMEVendorApi
+	public static native void hardwareDrawArc(@NotNull PencilBracket __g,
+		int __x, int __y,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __h,
+		int __startAngle,
+		int __arcAngle)
+		throws MLECallError;
+	
+	/**
 	 * Draws the given characters.
 	 *
 	 * @param __g The hardware graphics to draw with.
@@ -164,6 +205,28 @@ public final class PencilShelf
 		throws MLECallError;
 	
 	/**
+	 * Draws the outline of a polygon. 
+	 *
+	 * @param __g The graphics to draw with.
+	 * @param __x The X coordinate.
+	 * @param __xOff The offset into the X array.
+	 * @param __y The Y coordinate.
+	 * @param __yOff The offset into the Y array.
+	 * @param __n The number of sides to draw.
+	 * @throws MLECallError If the graphics is not valid; or if the sides
+	 * are not valid.
+	 * @since 2024/07/14
+	 */
+	@SquirrelJMEVendorApi
+	public static native void hardwareDrawPolyline(@NotNull PencilBracket __g,
+		@NotNull int[] __x,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __xOff,
+		@NotNull int[] __y,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __yOff,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __n)
+		throws MLECallError;
+	
+	/**
 	 * Draws the outline of the given rectangle using the current color and
 	 * stroke style. The rectangle will cover an area that is
 	 * {@code [width + 1, height + 1]}.
@@ -184,6 +247,30 @@ public final class PencilShelf
 		int __x, int __y,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __h)
+		throws MLECallError;
+	
+	/**
+	 * Draws a round rectangle.
+	 * 
+	 * If the width and/or height are zero or negative, nothing is drawn.
+	 *
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __w The width of the rectangle.
+	 * @param __h The height of the rectangle.
+	 * @param __arcWidth The horizontal diameter of the arc on the corners.
+	 * @param __arcHeight The vertical diameter of the arc on the corners.
+	 * @throws MLECallError If the pencil is invalid; or if the requested
+	 * round rectangle is not valid.
+	 * @since 2024/07/14
+	 */
+	@SquirrelJMEVendorApi
+	public static native void hardwareDrawRoundRect(@NotNull PencilBracket __g,
+		int __x, int __y,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __h,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __arcWidth,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __arcHeight)
 		throws MLECallError;
 	
 	/**
@@ -249,6 +336,61 @@ public final class PencilShelf
 		throws MLECallError;
 	
 	/**
+	 * This draws the filled slice of an ellipse (like a pie slice) from the
+	 * given angles using the color, alpha, and stroke style.
+	 *
+	 * Unlike {@link #hardwareDrawArc(PencilBracket, int, int, int, int, int,
+	 * int)}, the width and height are not increased by a single pixel.
+	 *
+	 * Otherwise, this follows the same set of rules as
+	 * {@link #hardwareDrawArc(PencilBracket, int, int, int, int, int, int)}.
+	 *
+	 * @param __g The hardware graphics to draw with.
+	 * @param __x The X position of the upper left corner, will be translated.
+	 * @param __y The Y position of the upper left corner, will be translated.
+	 * @param __w The width of the arc.
+	 * @param __h The height of the arc.
+	 * @param __startAngle The starting angle in degrees, 
+	 * @param __arcAngle The offset from the starting angle, negative values
+	 * indicate clockwise direction while positive values are counterclockwise.
+	 * @see #hardwareDrawArc(PencilBracket, int, int, int, int, int, int)
+	 * @throws MLECallError If the pencil is not valid; or if the requested
+	 * arc is not valid.
+	 * @since 2024/07/14
+	 */
+	@Api
+	public static native void hardwareFillArc(@NotNull PencilBracket __g,
+		int __x, int __y,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __h,
+		int __startAngle, int __arcAngle)
+		throws MLECallError;
+	
+	/**
+	 * Draws a filled polygon in the same manner
+	 * as {@link #hardwareDrawPolyline(PencilBracket, int[], int, int[],
+	 * int, int)}.
+	 *
+	 * @param __g The graphics to draw with.
+	 * @param __x The X coordinate.
+	 * @param __xOff The offset into the X array.
+	 * @param __y The Y coordinate.
+	 * @param __yOff The offset into the Y array.
+	 * @param __n The number of sides to draw.
+	 * @throws MLECallError If the graphics is not valid; if the sides
+	 * are not valid; or if the values are out of bounds of the array.
+	 * @since 2024/07/14
+	 */
+	@SquirrelJMEVendorApi
+	public static native void hardwareFilledPolygon(@NotNull PencilBracket __g,
+		@NotNull int[] __x,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __xOff,
+		@NotNull int[] __y,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __yOff,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __n)
+		throws MLECallError;
+	
+	/**
 	 * Performs rectangular fill in hardware.
 	 * 
 	 * @param __g The hardware graphics to draw with.
@@ -264,6 +406,31 @@ public final class PencilShelf
 		int __x, int __y,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __h)
+		throws MLECallError;
+	
+	/**
+	 * Draws a filled round rectangle in the same manner
+	 * as {@link #hardwareDrawRoundRect(PencilBracket, int, int, int, int,
+	 * int, int)} 
+	 *
+	 * @param __g The graphics to use.
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @param __arcWidth The width of the arc at each corner.
+	 * @param __arcHeight The height of the arc at each corner.
+	 * @throws MLECallError If the graphics is not valid; or the requested
+	 * round rectangle is not valid.
+	 * @since 2024/07/14
+	 */
+	@Api
+	public static native void hardwareFillRoundRect(@NotNull PencilBracket __g,
+		int __x, int __y,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __h,
+		int __arcWidth,
+		int __arcHeight)
 		throws MLECallError;
 	
 	/**

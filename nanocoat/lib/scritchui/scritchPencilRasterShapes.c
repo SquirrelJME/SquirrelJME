@@ -30,6 +30,10 @@ sjme_errorCode sjme_scritchpen_core_drawRect(
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+	/* Nothing to draw? */
+	if (w <= 0 || h <= 0)
+		return SJME_ERROR_NONE;
+	
 	/* Lock. */
 	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
 		return sjme_error_default(error);
