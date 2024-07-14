@@ -38,7 +38,7 @@ squirreljme
 	optionalDependencies += project(":modules:bluetooth")
 	optionalDependencies += project(":modules:m3g")
 	optionalDependencies += project(":modules:wireless-messaging")
-	optionalDependencies += project(":modules:opengles")
+	optionalDependencies += project(":modules:vendor-api-khronos-opengles")
 	
 	// Third Party APIs, which are optionally included
 	optionalDependencies += project(":modules:vendor-api-jblend")
