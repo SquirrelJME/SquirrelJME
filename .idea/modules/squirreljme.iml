@@ -315,6 +315,9 @@
       <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-javap/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-javap/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-javap/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-softbank-mexa/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-softbank-mexa/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-softbank-mexa/out" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

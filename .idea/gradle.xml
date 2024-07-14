@@ -92,6 +92,7 @@
             <option value="$PROJECT_DIR$/modules/vendor-api-samsung" />
             <option value="$PROJECT_DIR$/modules/vendor-api-siemens" />
             <option value="$PROJECT_DIR$/modules/vendor-api-skt" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-softbank-mexa" />
             <option value="$PROJECT_DIR$/modules/vendor-api-sprintpcs" />
             <option value="$PROJECT_DIR$/modules/vendor-api-vodafone" />
             <option value="$PROJECT_DIR$/modules/wireless-messaging" />
