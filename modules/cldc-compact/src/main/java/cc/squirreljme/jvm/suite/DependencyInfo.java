@@ -271,6 +271,13 @@ public final class DependencyInfo
 			depends.add(new SuiteDependency(value));
 		}
 		
+		// MEXA OpenGL
+		value = attr.getValue("midxlet-opgl");
+		if (value != null && value.equalsIgnoreCase("y"))
+			depends.add(new SuiteDependency(SuiteDependencyType.PROPRIETARY,
+				SuiteDependencyLevel.REQUIRED,
+				"squirreljme.project@vendor-api-softbank-mexa;;"));
+		
 		// Build
 		return new DependencyInfo(depends);
 	}
