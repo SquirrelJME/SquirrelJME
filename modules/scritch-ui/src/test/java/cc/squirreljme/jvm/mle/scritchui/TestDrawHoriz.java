@@ -38,6 +38,9 @@ public class TestDrawHoriz
 		PencilShelf.hardwareDrawHoriz(__g, __w - 3, 3, 3);
 		PencilShelf.hardwareDrawHoriz(__g, __w - 2, 4, 3);
 		
+		// Nothing
+		PencilShelf.hardwareDrawHoriz(__g, 6, 6, 0);
+		
 		// Clipping
 		PencilShelf.hardwareDrawHoriz(__g, 0, -1, 3);
 		PencilShelf.hardwareDrawHoriz(__g, 0, __h, 3);
