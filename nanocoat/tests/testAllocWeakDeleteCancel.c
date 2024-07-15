@@ -38,6 +38,7 @@ static sjme_errorCode testEnqueue(
  */
 SJME_TEST_DECLARE(testAllocWeakDeleteCancel)
 {
+	sjme_errorCode error;
 	sjme_alloc_weak weak;
 	sjme_alloc_weak weakWas;
 	sjme_alloc_link* link;
@@ -64,8 +65,8 @@ SJME_TEST_DECLARE(testAllocWeakDeleteCancel)
 	/* Delete it. */
 	weakWas = weak;
 	test->global = NULL;
-	if (sjme_error_is(sjme_alloc_weakDelete(&weak)))
-		return sjme_unit_fail(test, "Could not delete weak?");
+	if (sjme_error_is(error = sjme_alloc_weakDelete(&weak)))
+		return sjme_unit_fail(test, "Could not delete weak? %d", error);
 	
 	/* Should be cleared and enqueue called. */
 	sjme_unit_equalP(test, test->global, test,

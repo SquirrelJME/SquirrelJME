@@ -38,6 +38,7 @@ static sjme_errorCode testEnqueue(
 SJME_TEST_DECLARE(testAllocWeakDelete)
 {
 	sjme_alloc_weak weak;
+	sjme_alloc_weak wasWeak;
 	sjme_alloc_link* link;
 	sjme_alloc_link* weakLink;
 	void* p;
@@ -60,6 +61,7 @@ SJME_TEST_DECLARE(testAllocWeakDelete)
 		return sjme_unit_fail(test, "Could not get weak link?");
 	
 	/* Delete it. */
+	wasWeak = weak;
 	test->global = NULL;
 	if (sjme_error_is(sjme_alloc_weakDelete(&weak)))
 		return sjme_unit_fail(test, "Could not delete weak?");
@@ -72,7 +74,8 @@ SJME_TEST_DECLARE(testAllocWeakDelete)
 	
 	/* Weak reference should be invalid. */
 	sjme_unit_notEqualI(test,
-		sjme_atomic_sjme_jint_get(&weak->valid), SJME_ALLOC_WEAK_VALID,
+		sjme_atomic_sjme_jint_get(&wasWeak->valid),
+		SJME_ALLOC_WEAK_VALID,
 		"Weak reference not marked invalid?");
 	
 	/* Block and weak links should be free too. */

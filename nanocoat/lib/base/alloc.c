@@ -397,6 +397,9 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc)(
 	if (pool == NULL || size <= 0 || outAddr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+	/* Emit barrier. */
+	sjme_thread_barrier();
+	
 	/* Determine the size this will actually take up, which includes the */
 	/* link to be created following this. */
 	roundSize = (((size & 7) != 0) ? ((size | 7) + 1) : size);
@@ -690,13 +693,16 @@ sjme_errorCode sjme_alloc_free(
 
 	if (addr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Emit barrier. */
+	sjme_thread_barrier();
 
 	/* Get the link. */
 	link = NULL;
 	if (sjme_error_is(error = sjme_alloc_getLink(addr, &link)))
 		return sjme_error_default(error);
 
-	/* Check the integrity of it. */
+	/* Check the integrity of the block before we free it. */
 	pool = link->pool;
 	if (sjme_alloc_checkCorruption(pool, link))
 		return SJME_ERROR_MEMORY_CORRUPTION;
@@ -727,6 +733,9 @@ sjme_errorCode sjme_alloc_free(
 	
 	/* Clear flags, if any. */
 	link->flags = 0;
+	
+	/* Clear block memory so stale memory is not around. */
+	memset(&link->block[0], 0, link->blockSize);
 	
 	/* Restore allocation size to block size. */
 	link->allocSize = link->blockSize;
@@ -779,6 +788,9 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_realloc)(
 
 	if (newSize < 0)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Emit barrier. */
+	sjme_thread_barrier();
 
 	/* Alias for free. */
 	source = *inOutAddr;
@@ -863,11 +875,81 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_realloc)(
 sjme_errorCode sjme_alloc_weakDelete(
 	sjme_attrInOutNotNull sjme_alloc_weak* inOutWeak)
 {
+	sjme_errorCode error;
+	sjme_alloc_weak weak;
+	sjme_jint count;
+	sjme_jboolean keepWeak;
+	sjme_alloc_link* link;
+	sjme_pointer block;
+	
 	if (inOutWeak == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Operate on this weak. */
+	weak = *inOutWeak;
+	
+	/* Already free? */
+	if (weak == NULL)
+		return SJME_ERROR_NONE;
+	
+	/* Emit barrier. */
+	sjme_thread_barrier();
+	
+	/* Get the current count. */
+	count = sjme_atomic_sjme_jint_get(&weak->count);
+	
+	/* If zero is reached, it is eligible for free. */
+	/* Provided, the data is still there. */
+	link = weak->link;
+	block = weak->pointer;
+	if (count <= 1 && link != NULL && block != NULL)
+	{
+		/* Call enqueue handler if it exists. */
+		keepWeak = SJME_JNI_FALSE;
+		if (weak->enqueue != NULL)
+			if (sjme_error_is(error = weak->enqueue(weak,
+				weak->enqueueData, SJME_JNI_FALSE)))
+			{
+				/* Only fail if we are not keeping it. */
+				keepWeak = (error == SJME_ERROR_ENQUEUE_KEEP_WEAK);
+				if (!keepWeak)
+					return sjme_error_default(error);
+			}
+		
+		/* Clear weak count to zero. */
+		sjme_atomic_sjme_jint_set(&weak->count, 0);
+		
+		/* Unlink weak reference from block. */
+		/* So that enqueue is not called multiple times. */
+		link->weak = NULL;
+		weak->link = NULL;
+		weak->pointer = NULL;
+		
+		/* Free the block we point to. */
+		if (sjme_error_is(error = sjme_alloc_free(block)))
+			return sjme_error_default(error);
+		
+		/* Delete the weak reference as well? */
+		if (!keepWeak)
+		{
+			/* Inform our pointer that it is gone. */
+			*inOutWeak = NULL;
+			
+			/* Free the weak reference itself. */
+			if (sjme_error_is(error = sjme_alloc_free(weak)))
+				return sjme_error_default(error);
+		}
+	}
+	
+	/* Otherwise, just count it down. */
+	else if (count > 1)
+		sjme_atomic_sjme_jint_set(&weak->count, count - 1);
+	
+	/* Emit barrier. */
+	sjme_thread_barrier();
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_alloc_weakGet(
@@ -876,9 +958,20 @@ sjme_errorCode sjme_alloc_weakGet(
 {
 	if (inWeak == NULL || outPointer == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Emit barrier. */
+	sjme_thread_barrier();
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	if (inWeak->link == NULL || inWeak->pointer == NULL)
+		*outPointer = NULL;
+	else
+		*outPointer = inWeak->pointer;
+	
+	/* Emit barrier. */
+	sjme_thread_barrier();
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_alloc_weakRefInternal(
@@ -894,6 +987,9 @@ static sjme_errorCode sjme_alloc_weakRefInternal(
 	if (addr == NULL || outWeak == NULL ||
 		(inEnqueue == NULL && inEnqueueData != NULL))
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Emit barrier. */
+	sjme_thread_barrier();
 		
 	/* Recover the link. */
 	link = NULL;
@@ -916,7 +1012,8 @@ static sjme_errorCode sjme_alloc_weakRefInternal(
 			}
 			
 			/* Must be the same function. */
-			else if (result->enqueue != inEnqueue)
+			else if (result->enqueue != inEnqueue ||
+				result->enqueueData != inEnqueueData)
 				return SJME_ERROR_ENQUEUE_ALREADY_SET;
 		}
 		
@@ -969,8 +1066,12 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_weakNew)(
 	sjme_alloc_weak resultWeak;
 	sjme_errorCode error;
 	
-	if (pool == NULL || outAddr == NULL || outWeak == NULL)
+	if (pool == NULL || outAddr == NULL || outWeak == NULL ||
+		(inEnqueueData != NULL && inEnqueue == NULL))
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Emit barrier. */
+	sjme_thread_barrier();
 	
 	/* Attempt block allocation first. */
 	resultPtr = NULL;
@@ -988,6 +1089,9 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_weakNew)(
 		
 		return sjme_error_default(error);
 	}
+	
+	/* Emit barrier. */
+	sjme_thread_barrier();
 	
 	/* Success! */
 	*outAddr = resultPtr;
@@ -1007,6 +1111,9 @@ sjme_errorCode sjme_alloc_weakRef(
 	if (addr == NULL || outWeak == NULL ||
 		(inEnqueue == NULL && inEnqueueData != NULL))
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Emit barrier. */
+	sjme_thread_barrier();
 		
 	/* Recover the link. */
 	link = NULL;
