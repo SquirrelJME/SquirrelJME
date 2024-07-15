@@ -11,7 +11,9 @@
 #define __SQUIRRELJME_H__
 
 #include "jni.h"
+#include "sjme/alloc.h"
 #include "sjme/debug.h"
+#include "sjme/charSeq.h"
 
 /** Initializing methods. */
 jint JNICALL mleDebugInit(JNIEnv* env, jclass classy);
@@ -131,6 +133,8 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 #define DESC_PENCILFONT \
 	DESC_CLASS("cc/squirreljme/jvm/mle/brackets/PencilFontBracket")
 
+#define DESC_DYLIB_COLLECTOR \
+	DESC_CLASS("cc/squirreljme/emulator/scritchui/dylib/__Collector__")
 #define DESC_DYLIB_BASE \
 	DESC_CLASS("cc/squirreljme/emulator/scritchui/dylib/DylibBaseObject")
 #define DESC_DYLIB_PENCIL \
@@ -211,6 +215,125 @@ void sjme_jni_throwThrowable(JNIEnv* env, sjme_errorCode code,
  * @since 2023/12/08
  */
 void sjme_jni_throwVMException(JNIEnv* env, sjme_errorCode code);
+
+/**
+ * Fills in the front end information.
+ * 
+ * @param env The environment used. 
+ * @param into What is being written to.
+ * @param ref The object reference, if any.
+ * @return Any resultant error, if any.
+ * @since 2024/06/27
+ */
+sjme_errorCode sjme_jni_fillFrontEnd(JNIEnv* env, sjme_frontEnd* into,
+	jobject ref);
+
+/**
+ * Recovers the Java environment pointer.
+ * 
+ * @param outEnv The resultant environment. 
+ * @param inVm The input virtual machine.
+ * @return Any resultant error, if any.
+ * @since 2024/06/27
+ */
+sjme_errorCode sjme_jni_recoverEnv(
+	sjme_attrInOutNotNull JNIEnv** outEnv,
+	sjme_attrInNotNull JavaVM* inVm);
+
+/**
+ * Recovers the Java environment pointer.
+ * 
+ * @param outEnv The resultant environment. 
+ * @param inFrontEnd The input front end.
+ * @return Any resultant error, if any.
+ * @since 2024/06/27
+ */
+sjme_errorCode sjme_jni_recoverEnvFrontEnd(
+	sjme_attrInOutNotNull JNIEnv** outEnv,
+	sjme_attrInNotNull const sjme_frontEnd* inFrontEnd);
+
+/**
+ * Initializes a character sequence from a Java String.
+ * 
+ * @param env The Java environment.
+ * @param inOutSeq The input/output character sequence.
+ * @param inString The input string to wrap.
+ * @return Any resultant error, if any.
+ * @since 2024/06/26
+ */
+sjme_errorCode sjme_jni_jstringCharSeqStatic(
+	sjme_attrInNotNull JNIEnv* env,
+	sjme_attrInNotNull sjme_charSeq* inOutSeq,
+	sjme_attrInNotNull jstring inString);
+
+/**
+ * Maps input @c sjme_jlong to @c jlong .
+ * 
+ * @param value The input value. 
+ * @return The resultant value.
+ * @since 2024/06/30
+ */
+jlong sjme_jni_jlong(sjme_jlong value);
+
+/**
+ * Pushes a weak link bound to an object.
+ * 
+ * @param env The Java environment.
+ * @param javaObject The object to bind.
+ * @param nativeWeak The native weak to bind from.
+ * @return Any resultant error, if any.
+ * @since 2024/07/11
+ */
+sjme_errorCode sjme_jni_pushWeakLink(
+	sjme_attrInNotNull JNIEnv* env,
+	sjme_attrInNotNull jobject javaObject,
+	sjme_attrInNotNull sjme_alloc_weak nativeWeak);
+
+/**
+ * Returns the Java type of the given array.
+ * 
+ * @param env The Java environment. 
+ * @param array The array to get the type of.
+ * @param outJavaType The resultant type.
+ * @return Any resultant error.
+ * @since 2024/07/11
+ */
+sjme_errorCode sjme_jni_arrayType(
+	sjme_attrInNotNull JNIEnv* env,
+	sjme_attrInNotNull jobject array,
+	sjme_attrOutNotNull sjme_basicTypeId* outType);
+
+/**
+ * Gets the elements of an array.
+ * 
+ * @param env The environment. 
+ * @param array The array object.
+ * @param rawBuf The raw output buffer.
+ * @param isCopy Is the array a copy?
+ * @param typeSize The size of the element type.
+ * @return Any resultant error.
+ * @since 2024/07/11
+ */
+sjme_errorCode sjme_jni_arrayGetElements(
+	sjme_attrInNotNull JNIEnv* env,
+	sjme_attrInNotNull jobject array,
+	sjme_attrOutNotNull sjme_pointer* rawBuf,
+	sjme_attrOutNotNull jboolean* isCopy,
+	sjme_attrOutNullable sjme_jint* typeSize);
+
+/**
+ * Gets the elements of an array.
+ * 
+ * @param env The environment. 
+ * @param array The array object.
+ * @param rawBuf The raw output buffer.
+ * @return Any resultant error.
+ * @since 2024/07/11
+ */
+sjme_errorCode sjme_jni_arrayReleaseElements(
+	sjme_attrInNotNull JNIEnv* env,
+	sjme_attrInNotNull jarray array,
+	sjme_attrInNotNull sjme_pointer rawBuf);
 
 #endif /* __SQUIRRELJME_H__ */
 

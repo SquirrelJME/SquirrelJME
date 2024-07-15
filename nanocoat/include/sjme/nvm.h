@@ -1805,8 +1805,26 @@ typedef enum sjme_errorCode
 	/** Clock failure. */
 	SJME_ERROR_NATIVE_SYSTEM_CLOCK_FAILURE = -60,
 	
+	/** A weak reference it attached. */
+	SJME_ERROR_WEAK_REFERENCE_ATTACHED = -61,
+	
+	/** An enqueue has already been set for the weak reference. */
+	SJME_ERROR_ENQUEUE_ALREADY_SET = -62,
+	
+	/** Keep the weak reference, do not free it on zero references. */
+	SJME_ERROR_ENQUEUE_KEEP_WEAK = -63,
+	
+	/** Not a weak reference. */
+	SJME_ERROR_NOT_WEAK_REFERENCE = -64,
+	
+	/** Could not access array natively. */
+	SJME_ERROR_NATIVE_ARRAY_ACCESS_FAILED = -65,
+	
+	/** The graphics buffer is not locked. */
+	SJME_ERROR_BUFFER_NOT_LOCKED = -66,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -61
+	SJME_NUM_ERROR_CODES = -67
 } sjme_errorCode;
 
 /**

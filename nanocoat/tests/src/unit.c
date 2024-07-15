@@ -108,7 +108,8 @@ static sjme_jboolean sjme_unit_operatorGreaterThan(size_t size, void* a, void* b
 	return SJME_JNI_FALSE;
 }
 
-static sjme_jboolean sjme_unit_operatorGreaterEqual(size_t size, void* a, void* b)
+static sjme_jboolean sjme_unit_operatorGreaterEqual(size_t size,
+	void* a, void* b)
 {
 	sjme_jlong *ja;
 	sjme_jlong *jb;
