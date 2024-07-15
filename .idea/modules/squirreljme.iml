@@ -34,9 +34,6 @@
       <excludeFolder url="file://$MODULE_DIR$/../../manifest" />
       <excludeFolder url="file://$MODULE_DIR$/../../manifest.uuid" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/.settings" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/aot-nanocoat/.settings" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/aot-nanocoat/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/aot-nanocoat/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/aot-springcoat/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/aot-springcoat/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/aot-springcoat/out" />

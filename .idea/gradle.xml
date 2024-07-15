@@ -17,7 +17,6 @@
             <option value="$PROJECT_DIR$/emulators/standalone" />
             <option value="$PROJECT_DIR$/modules" />
             <option value="$PROJECT_DIR$/modules/aot" />
-            <option value="$PROJECT_DIR$/modules/aot-nanocoat" />
             <option value="$PROJECT_DIR$/modules/aot-springcoat" />
             <option value="$PROJECT_DIR$/modules/bluetooth" />
             <option value="$PROJECT_DIR$/modules/c-source-writer" />

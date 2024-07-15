@@ -866,13 +866,6 @@ public final class TaskInitialization
 				String taskName;
 				switch (nativePort)
 				{
-					case RATUFACOAT:
-						taskName = baseName + "RatufaCoat";
-						nativeTask = tasks.create(
-							taskName,
-							RatufaCoatBuiltInTask.class, __classifier, rom);
-						break;
-					
 					case NANOCOAT:
 						// Create task
 						taskName = baseName + "NanoCoat";
