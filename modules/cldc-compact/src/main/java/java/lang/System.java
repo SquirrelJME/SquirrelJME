@@ -20,6 +20,7 @@ import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.i18n.DefaultLocale;
 import cc.squirreljme.runtime.cldc.io.CodecFactory;
 import cc.squirreljme.runtime.cldc.io.ConsoleOutputStream;
@@ -481,6 +482,22 @@ public final class System
 			case "os.version":
 				return RuntimeShelf.vmDescription(
 					VMDescriptionType.OS_VERSION);
+				
+				// TODO: J-Phone/JSCL Properties
+			case "jscl.system.mannermode":
+			case "jscl.system.offlinemode":
+			case "jscl.system.javasetting.volume":
+			case "jscl.system.javasetting.vibration":
+			case "jscl.system.wakeupmode":
+			case "jscl.system.display.colordepth":
+			case "jscl.supports.subdisplay":
+			case "jscl.supports.subdisplay.dualdraw":
+			case "jscl.supports.external_storage":
+			case "jscl.supports.barcode":
+			case "jscl.supports.irda":
+			case "jscl.supports.remote_control":
+			case "jscl.supports.voice_recognition":
+				throw Debugging.todo(__k);
 				
 				// Unknown, use system call
 			default:
