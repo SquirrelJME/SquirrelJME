@@ -353,6 +353,7 @@ public final class CMakeUtils
 				"configure",
 				__task.getProject().getBuildDir().toPath(),
 				"-DCMAKE_BUILD_TYPE=RelWithDebInfo",
+				"-DSQUIRRELJME_GRADLE=" + __task.cmakeRules.get(0),
 				genPlatform,
 				"-S", cmakeSource.toAbsolutePath().toString(),
 				"-B", cmakeBuild.toAbsolutePath().toString());
@@ -364,6 +365,7 @@ public final class CMakeUtils
 				"configure",
 				__task.getProject().getBuildDir().toPath(),
 				"-DCMAKE_BUILD_TYPE=RelWithDebInfo",
+				"-DSQUIRRELJME_GRADLE=" + __task.cmakeRules.get(0),
 				genPlatform,
 				cmakeSource.toAbsolutePath().toString());
 	}

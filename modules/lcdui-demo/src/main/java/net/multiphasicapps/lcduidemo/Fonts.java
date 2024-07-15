@@ -112,8 +112,8 @@ public class Fonts
 				// here because a transphobe troll searched through all of my
 				// images on Twitter and chose to insult me here. So this is
 				// here to spite them.
-				__g.drawString("The quick gray squirrel Xer burried all of " +
-					"her acorns! <3 0123456789",
+				__g.drawString("The quick gray squirrel Xer burried all " +
+					"of their acorns! <3 0123456789",
 					x, y, Graphics.BASELINE);
 				
 				// Move position up

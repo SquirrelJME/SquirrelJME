@@ -17,7 +17,6 @@
             <option value="$PROJECT_DIR$/emulators/standalone" />
             <option value="$PROJECT_DIR$/modules" />
             <option value="$PROJECT_DIR$/modules/aot" />
-            <option value="$PROJECT_DIR$/modules/aot-nanocoat" />
             <option value="$PROJECT_DIR$/modules/aot-springcoat" />
             <option value="$PROJECT_DIR$/modules/bluetooth" />
             <option value="$PROJECT_DIR$/modules/c-source-writer" />
@@ -71,7 +70,6 @@
             <option value="$PROJECT_DIR$/modules/meep-securityframework" />
             <option value="$PROJECT_DIR$/modules/meep-swm" />
             <option value="$PROJECT_DIR$/modules/midp-lcdui" />
-            <option value="$PROJECT_DIR$/modules/opengles" />
             <option value="$PROJECT_DIR$/modules/profile-meep" />
             <option value="$PROJECT_DIR$/modules/squirrel-quarrel" />
             <option value="$PROJECT_DIR$/modules/std-apps-core" />
@@ -83,6 +81,7 @@
             <option value="$PROJECT_DIR$/modules/vendor-api-danger-hiptop" />
             <option value="$PROJECT_DIR$/modules/vendor-api-jblend" />
             <option value="$PROJECT_DIR$/modules/vendor-api-jphone" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-khronos-opengles" />
             <option value="$PROJECT_DIR$/modules/vendor-api-kwisf-wipi" />
             <option value="$PROJECT_DIR$/modules/vendor-api-lg-mmpp" />
             <option value="$PROJECT_DIR$/modules/vendor-api-mascot-capsule-3d" />
@@ -92,13 +91,13 @@
             <option value="$PROJECT_DIR$/modules/vendor-api-samsung" />
             <option value="$PROJECT_DIR$/modules/vendor-api-siemens" />
             <option value="$PROJECT_DIR$/modules/vendor-api-skt" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-softbank-mexa" />
             <option value="$PROJECT_DIR$/modules/vendor-api-sprintpcs" />
             <option value="$PROJECT_DIR$/modules/vendor-api-vodafone" />
             <option value="$PROJECT_DIR$/modules/wireless-messaging" />
             <option value="$PROJECT_DIR$/modules/zip" />
             <option value="$PROJECT_DIR$/sdk" />
             <option value="$PROJECT_DIR$/tools" />
-            <option value="$PROJECT_DIR$/tools/fake-javadoc-sdk" />
             <option value="$PROJECT_DIR$/tools/markdown-javadoc" />
             <option value="$PROJECT_DIR$/tools/pcf-to-sqf" />
             <option value="$PROJECT_DIR$/tools/sqf-to-c" />

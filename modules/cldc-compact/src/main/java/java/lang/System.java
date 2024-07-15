@@ -9,20 +9,24 @@
 
 package java.lang;
 
+import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
+import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.jvm.mle.constants.PhoneModelType;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.i18n.DefaultLocale;
 import cc.squirreljme.runtime.cldc.io.CodecFactory;
 import cc.squirreljme.runtime.cldc.io.ConsoleOutputStream;
 import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
 import java.io.PrintStream;
+import java.util.Objects;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -253,6 +257,10 @@ public final class System
 	 * its value. System properties are declared by the system and are used
 	 * by applications to potentially modify their behavior.
 	 *
+	 * {@squirreljme.property file.separator The separator to use for
+	 * path entries.}
+	 * {@squirreljme.property java.class.path The current classpath used
+	 * for this application.}
 	 * {@squirreljme.property java.io.tmpdir This is the temporary directory
 	 * which indicates where temporary files (those that are deleted after
 	 * an unspecified duration) are to be placed. If there is no filesystem
@@ -361,6 +369,15 @@ public final class System
 				// SquirrelJME free memory
 			case "cc.squirreljme.vm.maxmem":
 				return Long.toString(Runtime.getRuntime().maxMemory());
+				
+				// File/Path separator
+			case "file.separator":
+				return RuntimeShelf.vmDescription(
+					VMDescriptionType.PATH_SEPARATOR);
+				
+				// The current classpath
+			case "java.class.path":
+				return System.__classPath();
 			
 				// The version of the Java virtual machine (fixed value)
 			case "java.version":
@@ -465,6 +482,22 @@ public final class System
 			case "os.version":
 				return RuntimeShelf.vmDescription(
 					VMDescriptionType.OS_VERSION);
+				
+				// TODO: J-Phone/JSCL Properties
+			case "jscl.system.mannermode":
+			case "jscl.system.offlinemode":
+			case "jscl.system.javasetting.volume":
+			case "jscl.system.javasetting.vibration":
+			case "jscl.system.wakeupmode":
+			case "jscl.system.display.colordepth":
+			case "jscl.supports.subdisplay":
+			case "jscl.supports.subdisplay.dualdraw":
+			case "jscl.supports.external_storage":
+			case "jscl.supports.barcode":
+			case "jscl.supports.irda":
+			case "jscl.supports.remote_control":
+			case "jscl.supports.voice_recognition":
+				throw Debugging.todo(__k);
 				
 				// Unknown, use system call
 			default:
@@ -620,6 +653,38 @@ public final class System
 		
 		// Use a wrapped class to prevent final abuse.
 		((__CanSetPrintStream__)System.out).__set(__a);
+	}
+	
+	/**
+	 * Calculates and returns the classpath used.
+	 *
+	 * @return The classpath currently being used.
+	 * @since 2024/06/24
+	 */
+	private static String __classPath()
+	{
+		// Separator used for path entries
+		String sep = Objects.toString(RuntimeShelf.vmDescription(
+			VMDescriptionType.PATH_SEPARATOR), ":");
+		
+		// Go through each Jar in the classpath
+		StringBuilder sb = new StringBuilder();
+		for (JarPackageBracket jar : JarPackageShelf.classPath())
+		{
+			// Need separator?
+			if (sb.length() > 0)
+				sb.append(sep);
+			
+			// Use the path to the Jar, or fallback to the ID otherwise
+			String path = JarPackageShelf.libraryPath(jar);
+			if (path != null)
+				sb.append(path);
+			else
+				sb.append(JarPackageShelf.libraryId(jar));
+		}
+		
+		// Use the built classpath
+		return sb.toString();
 	}
 }
 

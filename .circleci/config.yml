@@ -77,10 +77,14 @@ parameters:
     type: string
     default: --console plain --continue --parallel --no-daemon --stacktrace
 
+  standard-exclusion:
+    type: string
+    default: -x testSpringCoat -x testSpringCoatRelease -x testSpringCoatDebug -x javadoc -x javadocJar -x sourcesJar -x markdownJavaDoc
+
   # Standard build for systems
   standard-build-options:
     type: string
-    default: build testHosted -x testSpringCoat -x testSpringCoatRelease -x testSpringCoatDebug -x javadoc -x javadocJar -x sourcesJar -x markdownJavaDoc
+    default: build testHosted <<pipeline.parameters.standard-exclusion>>
 
   # Windows JDK versions
   windows-jdk-base-dir:
@@ -316,6 +320,12 @@ jobs:
     steps:
       - checkout
       - linux-install-required
+      - run:
+          name: Build NanoCoat squirreljme.jar
+          command: ./gradlew :romNanoCoatRelease <<pipeline.parameters.standard-gradle-options>> <<pipeline.parameters.standard-exclusion>>
+      - store_artifacts:
+          path: build/squirreljme/vm-main-nanocoat-release/squirreljme.jar
+          destination: .
 
   ################################## WINDOWS #################################
   build_windows_i386_setup:

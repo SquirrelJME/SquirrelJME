@@ -53,12 +53,14 @@ public class SfdGlyphInfo
 	 *
 	 * @param __path The input glyph data.
 	 * @param __pixelSize The pixel size of the font.
+	 * @param __ascent The font ascent.
 	 * @return The resultant glyph.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/06/08
 	 */
-	public static SfdGlyphInfo parse(Path __path, int __pixelSize)
+	public static SfdGlyphInfo parse(Path __path, int __pixelSize,
+		int __ascent)
 		throws IOException, NullPointerException
 	{
 		if (__path == null)
@@ -73,7 +75,11 @@ public class SfdGlyphInfo
 		GlyphBitmap bitmap = null;
 		int width = Integer.MIN_VALUE;
 		int minX = Integer.MIN_VALUE;
+		int maxX = Integer.MIN_VALUE;
 		int minY = Integer.MIN_VALUE;
+		int maxY = Integer.MIN_VALUE;
+		int offX = Integer.MIN_VALUE;
+		int offY = Integer.MIN_VALUE;
 		
 		// Parse glyph bitmap data
 		try (InputStream in = Files.newInputStream(__path,
@@ -96,26 +102,37 @@ public class SfdGlyphInfo
 				// Character details?
 				// 1 the original position (glyph ID),
 				// 2 the encoding (local),
-				// 3 the width,
+				// 3 the width, <-- NOT THERE????
 				// 4 the minimum x value,
-				// 5 the minimum y value,
-				// 6 the maximum x value and
+				// 5 the minimum y value, <-- MAX X
+				// 6 the maximum x value and <-- MIN Y
 				// 7 the maximum y value.
-				// BDFChar: 5   65  6 0 4 0 8 <-- A
-				// BDFChar: 174 198 8 0 6 0 8 <-- AE
-				// BDFChar: 144 122 6 0 4 0 4 <-- z
+				// According to the source code for FontForge, this is
+				// `int16 xmin,xmax,ymin,ymax;`... so the documentation is
+				// likely just incorrect... this just makes more sense this
+				// way!!! a maxY of zero is at the baseline, negatives are
+				// past it near the bottom of the image.
+				//                  w mx Mx my mY
+				// BDFChar: 5   65  6  0 4  0 8  <-- A ?? lowercase a???
+				// BDFChar: 174 198 8  0 6  0 8  <-- AE
+				// BDFChar: 130 103 6  0 4 -2 4  <-- g
+				// BDFChar: 144 122 6  0 4  0 4  <-- z
 				if ("BDFChar".equals(tokens[0]))
 				{
-					// Read in offsets
-					minX = FontUtils.parseInteger(tokens, 4);
-					minY = FontUtils.parseInteger(tokens, 5);
-					int maxX = FontUtils.parseInteger(tokens, 6);
-					int maxY = FontUtils.parseInteger(tokens, 7);
-					
-					// The FontForge reference says that the bitmap data is
-					// (maxX - minX), however in practice this is never the
-					// case and the width specified is the one that is valid
+					// Glyph width
 					width = FontUtils.parseInteger(tokens, 3);
+					
+					// Read in min/max
+					minX = FontUtils.parseInteger(tokens, 4);
+					maxX = FontUtils.parseInteger(tokens, 5);
+					minY = FontUtils.parseInteger(tokens, 6);
+					maxY = FontUtils.parseInteger(tokens, 7);
+					
+					// X offset
+					offX = minX;
+					
+					// Y position on screen
+					offY = __ascent - (maxY + 1);
 					
 					// Parse SFD bitmap
 					// Use the pixel size as the height since although
@@ -137,7 +154,7 @@ public class SfdGlyphInfo
 		return new SfdGlyphInfo(id,
 			width,
 			bitmap,
-			minX,
-			__pixelSize - minY);
+			offX,
+			offY);
 	}
 }

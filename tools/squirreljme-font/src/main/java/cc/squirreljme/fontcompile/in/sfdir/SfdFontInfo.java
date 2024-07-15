@@ -242,7 +242,7 @@ public class SfdFontInfo
 				continue;
 			
 			// Parse it
-			SfdGlyphInfo glyph = SfdGlyphInfo.parse(path, pixelSize);
+			SfdGlyphInfo glyph = SfdGlyphInfo.parse(path, pixelSize, ascent);
 			glyphs.put(glyph.codepoint(), glyph);
 		}
 		

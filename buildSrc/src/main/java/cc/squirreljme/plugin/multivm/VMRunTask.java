@@ -11,6 +11,7 @@ package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import cc.squirreljme.plugin.swm.JavaMEMidlet;
+import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import javax.inject.Inject;
@@ -27,9 +28,17 @@ public class VMRunTask
 	extends DefaultTask
 	implements VMBaseTask, VMExecutableTask
 {
-	/** Not valid for a path. */
-	public static final Path NO_GDB_SERVER =
-		Paths.get("there-is-no-gdb-server");
+	/** Not valid for debug server. */
+	public static final URI NO_DEBUG_SERVER =
+		URI.create("none:none");
+	
+	/** JDWP Host. */
+	public static final URI JDWP_HOST =
+		URI.create("jdwp::5005");
+	
+	/** Internal Debugger. */
+	public static final URI INTERNAL =
+		URI.create("internal:internal");
 	
 	/** The classifier used. */
 	@Internal
@@ -49,7 +58,7 @@ public class VMRunTask
 	/** GDB Server location. */
 	@Internal
 	@Getter
-	protected final Path gdbServer;
+	protected final URI debugServer;
 	
 	/**
 	 * Initializes the task.
@@ -59,13 +68,13 @@ public class VMRunTask
 	 * depended upon.
 	 * @param __mainClass The main class used.
 	 * @param __midlet The midlet used.
-	 * @param __gdbServer Optional location of where GDB is. 
+	 * @param __debugServer Optional location of where GDB/JDWP is. 
 	 * @since 2020/08/07
 	 */
 	@Inject
 	public VMRunTask(SourceTargetClassifier __classifier,
 		VMLibraryTask __libTask, String __mainClass, JavaMEMidlet __midlet,
-		Path __gdbServer)
+		URI __debugServer)
 		throws NullPointerException
 	{
 		// Normalize
@@ -88,12 +97,12 @@ public class VMRunTask
 		this.midlet = __midlet;
 		
 		// Was this actually specified?
-		if (__gdbServer == null ||
-			__gdbServer == VMRunTask.NO_GDB_SERVER || 
-			VMRunTask.NO_GDB_SERVER.equals(__gdbServer))
-			this.gdbServer = null;
+		if (__debugServer == null ||
+			__debugServer == VMRunTask.NO_DEBUG_SERVER || 
+			VMRunTask.NO_DEBUG_SERVER.equals(__debugServer))
+			this.debugServer = null;
 		else
-			this.gdbServer = __gdbServer;
+			this.debugServer = __debugServer;
 		
 		// Set details of this task
 		this.setGroup("squirreljme");
@@ -111,6 +120,12 @@ public class VMRunTask
 			new VMRunDependencies(this, __classifier)),
 			new VMEmulatorDependencies(this,
 				__classifier.getTargetClassifier()));
+		
+		// If using the internal debugger, it needs to be built first
+		if (__debugServer != null &&
+			"internal".equals(__debugServer.getScheme()))
+			this.dependsOn(this.getProject().provider(
+				new __FindInternalDebugger__(this.getProject())));
 		
 		// Only run if entry points are valid
 		this.onlyIf(new CheckForEntryPoints());

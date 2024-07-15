@@ -24,6 +24,9 @@ endif()
 # Determine version information
 squirreljme_include("identify-squirreljme-version.cmake")
 
+# Soft patching of CMake for older version support
+squirreljme_include("cmake-patch.cmake")
+
 # Fixes and otherwise for compatibility
 squirreljme_include("pre-fixes.cmake")
 
@@ -41,17 +44,24 @@ Virtual Machine for embedded and Internet of Things devices."
 		LANGUAGES C)
 endif()
 
+# CMake Utilities, compiled and used during build
+squirreljme_include("utils.cmake")
+
+# Platform information
+squirreljme_include("platform.cmake")
+
 # Fixes and otherwise for compatibility
 squirreljme_include("fixes.cmake")
+
+# Use for all builds
+add_compile_definitions(SJME_CONFIG_BUILD_ARCH=${SQUIRRELJME_ARCH})
+add_compile_definitions(SJME_CONFIG_BUILD_PLATFORM=${SQUIRRELJME_PLATFORM})
 
 # Win32 Options
 squirreljme_include("win32.cmake")
 
 # Hardening options
 squirreljme_include("hardening.cmake")
-
-# CMake Utilities, compiled and used during build
-squirreljme_include("utils.cmake")
 
 # Is the system JNI available?
 squirreljme_include("jni.cmake")
@@ -74,6 +84,9 @@ squirreljme_include("assets.cmake")
 
 # Multi-library declarations
 squirreljme_include("multilib.cmake")
+
+# Distribution
+squirreljme_include("distrib.cmake")
 
 # Visual studio does not like a bunch of standard C functions, even those
 # that take sizes...
@@ -112,8 +125,7 @@ endif()
 # From: https://cmake.org/cmake/help/v3.13/command/enable_testing.html
 # > Note that ctest expects to find a test file in the build directory root.
 # > Therefore, this command should be in the source directory root.
-if(SQUIRRELJME_ENABLE_TESTING OR
-	NOT DEFINED SQUIRRELJME_ENABLE_TESTING)
+if(SQUIRRELJME_ENABLE_TESTING)
 	enable_testing()
 else()
 	message(WARNING "Testing was disabled "
@@ -138,8 +150,7 @@ add_subdirectory(lib)
 
 # Tests first since we add to these and when the ROMs register themselves
 # they will get their tests added accordingly
-if(SQUIRRELJME_ENABLE_TESTING OR
-	NOT DEFINED SQUIRRELJME_ENABLE_TESTING)
+if(SQUIRRELJME_ENABLE_TESTING)
 	add_subdirectory(tests)
 else()
 	message(WARNING "Testing was disabled "

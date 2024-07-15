@@ -39,11 +39,13 @@ macro(squirreljme_multilib_add_library libBase)
 		PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 	# Shared Library
-	add_library(${libBase}DyLib SHARED
-		${libBaseSources})
+	if(SQUIRRELJME_ENABLE_DYLIB)
+		add_library(${libBase}DyLib SHARED
+			${libBaseSources})
 
-	set_property(TARGET ${libBase}DyLib
-		PROPERTY POSITION_INDEPENDENT_CODE ON)
+		set_property(TARGET ${libBase}DyLib
+			PROPERTY POSITION_INDEPENDENT_CODE ON)
+	endif()
 endmacro()
 
 # Add include directories to multilib library
@@ -65,8 +67,11 @@ macro(squirreljme_multilib_target_include_directories libBase)
 		${libBaseIncludes})
 	target_include_directories(${libBase}Static PUBLIC
 		${libBaseIncludes})
-	target_include_directories(${libBase}DyLib PUBLIC
-		${libBaseIncludes})
+
+	if(SQUIRRELJME_ENABLE_DYLIB)
+		target_include_directories(${libBase}DyLib PUBLIC
+			${libBaseIncludes})
+	endif()
 endmacro()
 
 # Multi-lib library directories
@@ -83,8 +88,10 @@ macro(squirreljme_multilib_target_link_directories libBase)
 	endforeach()
 
 	# Only link for the dynamic library
-	target_link_directories(${libBase}DyLib PUBLIC
-		${libBaseLibDirs})
+	if(SQUIRRELJME_ENABLE_DYLIB)
+		target_link_directories(${libBase}DyLib PUBLIC
+			${libBaseLibDirs})
+	endif()
 
 	# Otherwise set transient library directories to be included, for use with
 	# $<TARGET_PROPERTY:Target,SQUIRRELJME_LINK_DIRECTORIES>
@@ -108,8 +115,10 @@ macro(squirreljme_multilib_target_link_libraries libBase)
 	endforeach()
 
 	# Only link for the dynamic library
-	target_link_libraries(${libBase}DyLib PUBLIC
-		${libBaseLibs})
+	if(SQUIRRELJME_ENABLE_DYLIB)
+		target_link_libraries(${libBase}DyLib PUBLIC
+			${libBaseLibs})
+	endif()
 
 	# Otherwise set transient libraries to be included, for use with
 	# $<TARGET_PROPERTY:Target,SQUIRRELJME_LINK_LIBRARIES>
@@ -126,6 +135,8 @@ macro(squirreljme_multilib_target_binary_output libBase where)
 		${where})
 
 	# Dynamic library output
-	squirreljme_target_binary_output(${libBase}DyLib
-		${where})
+	if(SQUIRRELJME_ENABLE_DYLIB)
+		squirreljme_target_binary_output(${libBase}DyLib
+			${where})
+	endif()
 endmacro()

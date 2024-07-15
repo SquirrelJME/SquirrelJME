@@ -6,6 +6,7 @@
 // See license.mkd for licensing and copyright information.
 // --------------------------------------------------------------------------*/
 
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -19,6 +20,9 @@ static sjme_jboolean sjme_jni_abortHandler(void)
 	jsize resultLen;
 	JavaVM* vm;
 	JNIEnv* env;
+	
+	/* Debug. */
+	sjme_message("JNI Aborting...");
 	
 	/* Recover JVM. */
 	resultLen = 0;
@@ -36,15 +40,27 @@ static sjme_jboolean sjme_jni_abortHandler(void)
 	sjme_jni_throwVMException(env, SJME_ERROR_NOT_IMPLEMENTED);
 	(*env)->ExceptionDescribe(env);
 	
+	/* Call abort! */
+	abort();
+	
 	/* Continue aborting. */
 	return SJME_JNI_FALSE;
 }
 
-static sjme_debug_handlerFunctions sjme_jni_debugHandlers =
+static sjme_jboolean sjme_jni_messageHandler(sjme_lpcstr fullMessage,
+	sjme_lpcstr partMessage)
+{
+	fprintf(stderr, "%s\n", fullMessage);
+	fflush(stderr);
+	
+	return SJME_JNI_TRUE;
+}
+
+sjme_debug_handlerFunctions sjme_jni_debugHandlers =
 {
 	.abort = sjme_jni_abortHandler,
 	.exit = NULL,
-	.message = NULL,
+	.message = sjme_jni_messageHandler,
 };
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
@@ -65,7 +81,7 @@ JNIEXPORT jint JNICALL sjme_attrUnused
 	/* It is happening! */
 	fprintf(stderr, "JNI Sub-Level: Binding Methods...\n");
 	
-	/* Use this abort handler. */
+	/* Use these debug handlers. */
 	sjme_debug_handlers = &sjme_jni_debugHandlers;
 
 	/* Initialize all functions. */

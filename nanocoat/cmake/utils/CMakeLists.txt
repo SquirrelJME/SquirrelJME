@@ -10,6 +10,8 @@
 # Just allow a very early 3.0 release so all utilities work regardless
 cmake_minimum_required(VERSION 3.0)
 
+message(STATUS "Util generator is ${CMAKE_GENERATOR}...")
+
 # Declare Project
 project(CMakeUtils)
 
@@ -41,6 +43,10 @@ add_executable(simple
 # Turn binary file into source code
 add_executable(sourceize
 	sourceize.c)
+
+# Print compiler platform
+add_executable(platform
+	platform.c)
 
 # JVM and JAWT stubs
 add_library(jvm SHARED

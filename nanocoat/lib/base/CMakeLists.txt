@@ -11,15 +11,16 @@ squirreljme_multilib_add_library(Base
 	alloc.c
 	allocSizeOf.c
 	atomic.c
+	charSeq.c
 	comparator.c
 	debug.c
 	dylib.c
 	error.c
 	except.c
+	fixed.c
 	list.c
 	multithread.c
-	recycle.c
-	refcount.c
+	native.c
 	seekable.c
 	stream.c
 	tree.c

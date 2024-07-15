@@ -23,40 +23,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
       <module name="Projects.squirreljme.buildSrc.main" target="11" />
-      <module name="squirreljme.buildSrc" target="17" />
-      <module name="squirreljme.buildSrc.main" target="17" />
-      <module name="squirreljme.buildSrc.test" target="17" />
-      <module name="squirreljme.emulators.emulator-base" target="17" />
-      <module name="squirreljme.emulators.emulator-base.test" target="17" />
-      <module name="squirreljme.emulators.nanocoat-vm" target="17" />
-      <module name="squirreljme.emulators.nanocoat-vm.test" target="17" />
-      <module name="squirreljme.emulators.springcoat-vm" target="17" />
-      <module name="squirreljme.emulators.springcoat-vm.test" target="17" />
-      <module name="squirreljme.emulators.standalone" target="17" />
-      <module name="squirreljme.emulators.standalone.test" target="17" />
-      <module name="squirreljme.sdk" target="17" />
-      <module name="squirreljme.sdk.main" target="17" />
       <module name="squirreljme.sdk.test" target="17" />
-      <module name="squirreljme.tools.pcf-to-sqf" target="17" />
-      <module name="squirreljme.tools.pcf-to-sqf.main" target="17" />
-      <module name="squirreljme.tools.pcf-to-sqf.test" target="17" />
-      <module name="squirreljme.tools.sqf-to-c" target="17" />
-      <module name="squirreljme.tools.sqf-to-c.main" target="17" />
-      <module name="squirreljme.tools.sqf-to-c.test" target="17" />
-      <module name="squirreljme.tools.squirreljme-debugger" target="17" />
-      <module name="squirreljme.tools.squirreljme-debugger.main" target="17" />
-      <module name="squirreljme.tools.squirreljme-debugger.test" target="17" />
-      <module name="squirreljme.tools.squirreljme-font" target="17" />
-      <module name="squirreljme.tools.squirreljme-font.main" target="17" />
-      <module name="squirreljme.tools.squirreljme-font.test" target="17" />
-      <module name="squirreljme.tools.squirreljme-javap" target="17" />
-      <module name="squirreljme.tools.squirreljme-javap.main" target="17" />
-      <module name="squirreljme.tools.squirreljme-javap.test" target="17" />
-      <module name="squirreljme.tools.txt-to-pbm" target="17" />
-      <module name="squirreljme.tools.txt-to-pbm.main" target="17" />
-      <module name="squirreljme.tools.txt-to-pbm.test" target="17" />
-      <module name="squirreljme.tools.unzip" target="17" />
-      <module name="squirreljme.tools.unzip.main" target="17" />
       <module name="squirreljme.tools.unzip.test" target="17" />
       <module name="Stephanie Gawroriski.squirreljme.buildSrc.main" target="11" />
       <module name="stephanie.squirreljme.buildSrc" target="11" />
@@ -72,7 +39,6 @@
       <module name="stephanie.squirreljme.emulators.springcoat-vm.test" target="11" />
       <module name="stephanie.squirreljme.emulators.standalone" target="11" />
       <module name="stephanie.squirreljme.emulators.standalone.test" target="11" />
-      <module name="stephanie.squirreljme.sdk.test" target="17" />
       <module name="stephanie.squirreljme.tools.pcf-to-sqf" target="11" />
       <module name="stephanie.squirreljme.tools.pcf-to-sqf.main" target="11" />
       <module name="stephanie.squirreljme.tools.pcf-to-sqf.test" target="11" />
@@ -82,7 +48,6 @@
       <module name="stephanie.squirreljme.tools.txt-to-pbm" target="11" />
       <module name="stephanie.squirreljme.tools.txt-to-pbm.main" target="11" />
       <module name="stephanie.squirreljme.tools.txt-to-pbm.test" target="11" />
-      <module name="unzip.squirreljme.tools.unzip.test" target="17" />
     </bytecodeTargetLevel>
   </component>
 </project>

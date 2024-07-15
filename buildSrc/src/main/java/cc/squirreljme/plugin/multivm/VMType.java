@@ -177,7 +177,8 @@ public enum VMType
 			List<Object> classPath = new ArrayList<>();
 			Set<Path> vmSupportPath = new LinkedHashSet<>();
 			for (File file : VMHelpers.projectRuntimeClasspath(
-				__task.getProject().findProject(":emulators:emulator-base")))
+				__task.getProject()
+					.findProject(":emulators:emulator-base")))
 				vmSupportPath.add(file.toPath());
 			
 			// Add all the emulator outputs
@@ -265,7 +266,8 @@ public enum VMType
 				// debugged rather than just the emulated environment.
 				String xjdwpProp = System.getProperty("squirreljme.xjdwp");
 				String jdwpProp = (xjdwpProp != null ? xjdwpProp :
-					System.getProperty("squirreljme.jdwp"));
+					Objects.toString(System.getProperty("squirreljme.jdwp"),
+						__sysProps.get("squirreljme.jdwp")));
 				if ((xjdwpProp != null && !xjdwpProp.isEmpty()) ||
 					(!hasDebug && jdwpProp != null && !jdwpProp.isEmpty()))
 				{
@@ -342,8 +344,8 @@ public enum VMType
 		@Override
 		public NativePortSupport[] hasNativePortSupport()
 		{
-			// Can be run in RatufaCoat
-			return new NativePortSupport[]{NativePortSupport.RATUFACOAT};
+			// Can be run in NanoCoat
+			return new NativePortSupport[]{NativePortSupport.NANOCOAT};
 		}
 		
 		/**
@@ -734,15 +736,21 @@ public enum VMType
 		BangletVariant __variant)
 		throws NullPointerException
 	{
+		Collection<Task> rv = new LinkedList<>();
+		
 		Project project = __task.getProject().getRootProject()
-			.project(":modules:aot-" +
+			.findProject(":modules:aot-" +
 				this.vmName(VMNameFormat.LOWERCASE));
-		Project rootProject = project.getRootProject();
+		
+		// If there is no AOT, then fallback to SpringCoat
+		if (project == null)
+			project = __task.getProject().getRootProject()
+				.findProject(":modules:aot-springcoat");
 		
 		// Make sure the AOT compiler is always up-to-date when this is
 		// ran, otherwise things can be very weird if it is not updated
 		// which would not be a good thing at all
-		Collection<Task> rv = new LinkedList<>();
+		Project rootProject = project.getRootProject();
 		for (ProjectAndTaskName task : VMHelpers.runClassTasks(project,
 			new SourceTargetClassifier(SourceSet.MAIN_SOURCE_SET_NAME,
 				VMType.HOSTED, BangletVariant.NONE, ClutterLevel.DEBUG)))

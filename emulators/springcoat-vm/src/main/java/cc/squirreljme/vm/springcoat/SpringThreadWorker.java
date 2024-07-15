@@ -1491,6 +1491,24 @@ public final class SpringThreadWorker
 			}
 		}
 		
+		// Possibly ignored exception?
+		if (this.verboseCheck(VerboseDebugFlag.IGNORED_EXCEPTION) &&
+			useeh != null)
+		{
+			// Catching these is pretty 
+			switch (useeh.type().toString())
+			{
+				case "java/lang/Throwable":
+				case "java/lang/Exception":
+				case "java/lang/RuntimeException":
+				case "java/lang/Error":
+					this.verboseEmit("Possible ignored exception?: %s",
+						__o);
+					this.thread.printStackTrace(System.err);
+					break;
+			}
+		}
+		
 		// Verbose debug?
 		if (this.verboseCheck(VerboseDebugFlag.VM_EXCEPTION))
 			this.verboseEmit("Frame handles %s? %b",

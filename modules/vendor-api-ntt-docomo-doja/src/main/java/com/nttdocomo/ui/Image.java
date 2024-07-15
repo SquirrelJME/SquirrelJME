@@ -81,7 +81,8 @@ public abstract class Image
 		// Try to wrap the graphics
 		try
 		{
-			return new Graphics(midpImage.getGraphics(), this._bgColor);
+			return new Graphics(midpImage.getGraphics(), this._bgColor,
+				null);
 		}
 		
 		// MIDP gives IllegalStateException instead...
@@ -92,11 +93,23 @@ public abstract class Image
 		}
 	}
 	
+	/**
+	 * Returns the image height.
+	 *
+	 * @return The image height.
+	 * @throws UIException If the image has been disposed, this will
+	 * be {@link UIException#ILLEGAL_STATE}.
+	 * @since 2024/06/24
+	 */
 	@Api
 	public int getHeight()
 		throws UIException
 	{
-		throw Debugging.todo();
+		javax.microedition.lcdui.Image midpImage = this._midpImage;
+		if (midpImage == null)
+			throw new UIException(UIException.ILLEGAL_STATE);
+		
+		return midpImage.getHeight();
 	}
 	
 	@Api
@@ -106,11 +119,23 @@ public abstract class Image
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * Returns the image width.
+	 *
+	 * @return The image width.
+	 * @throws UIException If the image has been disposed, this will
+	 * be {@link UIException#ILLEGAL_STATE}.
+	 * @since 2024/06/24
+	 */
 	@Api
 	public int getWidth()
 		throws UIException
 	{
-		throw Debugging.todo();
+		javax.microedition.lcdui.Image midpImage = this._midpImage;
+		if (midpImage == null)
+			throw new UIException(UIException.ILLEGAL_STATE);
+		
+		return midpImage.getWidth();
 	}
 	
 	@Api

@@ -34,9 +34,6 @@
       <excludeFolder url="file://$MODULE_DIR$/../../manifest" />
       <excludeFolder url="file://$MODULE_DIR$/../../manifest.uuid" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/.settings" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/aot-nanocoat/.settings" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/aot-nanocoat/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/aot-nanocoat/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/aot-springcoat/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/aot-springcoat/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/aot-springcoat/out" />
@@ -185,9 +182,6 @@
       <excludeFolder url="file://$MODULE_DIR$/../../modules/midp-lcdui/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/midp-lcdui/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/midp-lcdui/out" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/opengles/.settings" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/opengles/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/opengles/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/profile-meep/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/profile-meep/bin" />
@@ -270,9 +264,6 @@
       <excludeFolder url="file://$MODULE_DIR$/../../sdk/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../tools/fake-javadoc-sdk/.settings" />
-      <excludeFolder url="file://$MODULE_DIR$/../../tools/fake-javadoc-sdk/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../tools/fake-javadoc-sdk/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/markdown-javadoc/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/markdown-javadoc/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/markdown-javadoc/out" />
@@ -318,6 +309,12 @@
       <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-javap/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-javap/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/squirreljme-javap/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-khronos-opengles/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-khronos-opengles/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-khronos-opengles/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-softbank-mexa/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-softbank-mexa/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/vendor-api-softbank-mexa/out" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
