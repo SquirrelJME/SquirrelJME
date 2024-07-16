@@ -109,7 +109,7 @@ public class UIDrawableCallbackAdapter
 				"I", "I", "I", "Ljava/lang/Object;", "I", "[I",
 				"I", "I", "I", "I", "I"),
 			this.mapDrawable(__drawable),
-			__pf, __bw, __bh, __buf, __offset, __pal, __sx, __sy, __sw, __sh,
+			__pf, __bw, __bh, __buf, __pal, __sx, __sy, __sw, __sh,
 			__special);
 	}
 	

@@ -430,14 +430,19 @@ typedef sjme_errorCode (*sjme_scritchui_apiFlagsFunc)(
  * 
  * @param inPool The allocation pool to use.
  * @param outState The resultant state.
+ * @param inImplFunc The implementation functions to use.
+ * @param loopExecute Optional callback for loop execution, may be @c NULL ,
+ * the passed argument is always the state.
+ * @param initFrontEnd Optional initial front end data.
  * @return Any error code if applicable.
  * @since 2024/03/27
  */
 typedef sjme_errorCode (*sjme_scritchui_apiInitFunc)(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrInNotNull const sjme_scritchui_apiFunctions* inApiFunc,
+	sjme_attrInOutNotNull sjme_scritchui* outState,
 	sjme_attrInNotNull const sjme_scritchui_implFunctions* inImplFunc,
-	sjme_attrInOutNotNull sjme_scritchui* outState);
+	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
+	sjme_attrInNullable sjme_frontEnd* initFrontEnd);
 
 /**
  * Repaints the given component.
@@ -964,6 +969,9 @@ struct sjme_scritchui_stateBase
 	
 	/** Loop thread initializer if one was passed. */
 	sjme_thread_mainFunc loopThreadInit;
+	
+	/** Indicator that the main loop is ready for execution. */
+	sjme_atomic_sjme_jint loopThreadReady;
 	
 	/** The available screens. */
 	sjme_list_sjme_scritchui_uiScreen* screens;

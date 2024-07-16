@@ -64,7 +64,8 @@ sjme_errorCode sjme_scritchui_gtk2_screens(
 		/* Setup new screen. */
 		makeScreen = NULL;
 		if (sjme_error_is(error = inState->intern->mapScreen(inState,
-				i, &makeScreen, gdkScreens[i])) ||
+				i, &makeScreen,
+				gdkScreens[i])) ||
 				makeScreen == NULL)
 			return sjme_error_default(error);
 		

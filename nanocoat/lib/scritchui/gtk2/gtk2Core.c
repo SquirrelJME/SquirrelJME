@@ -59,10 +59,6 @@ static sjme_thread_result sjme_scritchui_gtk2_loopMain(
 	/* Restore state. */
 	state = (sjme_scritchui)anything;
 	
-	/* Need to initialize? */
-	if (state->loopThreadInit != NULL)
-		state->loopThreadInit(state);
-	
 	/* Enable debug options. */
 	argc = 5;
 	argv = sjme_alloca(argc * sizeof(*argv));
@@ -75,8 +71,16 @@ static sjme_thread_result sjme_scritchui_gtk2_loopMain(
 	/* Initialize, we do not care for the arguments. */
 	gtk_init(&argc, &argv);
 	
+	/* Need to call thread specific initializer? */
+	/* Usually this is for binding a thread to a JavaVM. */
+	if (state->loopThreadInit != NULL)
+		state->loopThreadInit(state);
+	
 	/* Debug. */
 	sjme_message("GTK Main Loop...");
+	
+	/* Before we go into the main loop, signal it is ready. */
+	sjme_atomic_sjme_jint_set(&state->loopThreadReady, 1);
 	
 	/* Run main loop. */
 	gtk_main();
@@ -110,20 +114,8 @@ sjme_errorCode SJME_DYLIB_EXPORT SJME_SCRITCHUI_DYLIB_SYMBOL(gtk2)(
 	/* Forward to core call. */
 	state = NULL;
 	if (sjme_error_is(error = sjme_scritchui_core_apiInit(inPool,
-		&sjme_scritchui_gtkFunctions, initFrontEnd,
-		&state)) || state == NULL)
-		return sjme_error_default(error);
-		
-	/* Debug. */
-	sjme_message("GTK thread setup...");
-	
-	/* Start main GTK thread. */
-	state->loopThread = SJME_THREAD_NULL;
-	state->loopThreadInit = loopExecute;
-	if (sjme_error_is(error = sjme_thread_new(
-		&state->loopThread,
-		sjme_scritchui_gtk2_loopMain, state)) ||
-		state->loopThread == SJME_THREAD_NULL)
+		&state, &sjme_scritchui_gtkFunctions, loopExecute,
+		initFrontEnd)) || state == NULL)
 		return sjme_error_default(error);
 	
 	/* Success! */
@@ -134,6 +126,8 @@ sjme_errorCode SJME_DYLIB_EXPORT SJME_SCRITCHUI_DYLIB_SYMBOL(gtk2)(
 sjme_errorCode sjme_scritchui_gtk2_apiInit(
 	sjme_attrInNotNull sjme_scritchui inState)
 {
+	sjme_errorCode error;
+	
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
@@ -142,6 +136,16 @@ sjme_errorCode sjme_scritchui_gtk2_apiInit(
 	
 	/* This is a standard desktop. */
 	inState->wmType = SJME_SCRITCHUI_WM_TYPE_STANDARD_DESKTOP;
+		
+	/* Debug. */
+	sjme_message("GTK thread setup...");
+	
+	/* Start main GTK thread. */
+	if (sjme_error_is(error = sjme_thread_new(
+		&inState->loopThread,
+		sjme_scritchui_gtk2_loopMain, inState)) ||
+		inState->loopThread == SJME_THREAD_NULL)
+		return sjme_error_default(error);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;

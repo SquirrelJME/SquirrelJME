@@ -110,9 +110,10 @@ static const sjme_scritchui_internFunctions sjme_scritchUI_coreIntern =
 
 sjme_errorCode sjme_scritchui_core_apiInit(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInOutNotNull sjme_scritchui* outState,
 	sjme_attrInNotNull const sjme_scritchui_implFunctions* inImplFunc,
-	sjme_attrInNullable sjme_frontEnd* initFrontEnd,
-	sjme_attrInOutNotNull sjme_scritchui* outState)
+	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
+	sjme_attrInNullable sjme_frontEnd* initFrontEnd)
 {
 	sjme_errorCode error;
 	sjme_scritchui state;
@@ -138,6 +139,10 @@ sjme_errorCode sjme_scritchui_core_apiInit(
 	state->wmInfo = &sjme_scritchUI_coreWmInfo;
 	state->nanoTime = sjme_nal_default_nanoTime;
 	
+	/* Execution thread information. */
+	state->loopThread = SJME_THREAD_NULL;
+	state->loopThreadInit = loopExecute;
+	
 	/* Copy frontend over, if set. */
 	if (initFrontEnd != NULL)
 		memmove(&state->common.frontEnd, initFrontEnd,
@@ -147,6 +152,10 @@ sjme_errorCode sjme_scritchui_core_apiInit(
 	error = SJME_ERROR_NOT_IMPLEMENTED;
 	if (sjme_error_is(error = state->impl->apiInit(state)))
 		goto fail_apiInit;
+	
+	/* Wait for the ready signal. */
+	while (0 == sjme_atomic_sjme_jint_get(&state->loopThreadReady))
+		sjme_thread_yield();
 	
 	/* Return resultant state. */
 	*outState = state;

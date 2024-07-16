@@ -210,7 +210,8 @@ public final class DisplayManager
 		if (instance != null)
 			return instance;
 		
-		instance = new DisplayManager(NativeScritchInterface.nativeInterface());
+		instance = new DisplayManager(
+			NativeScritchInterface.nativeInterface());
 		DisplayManager._INSTANCE = instance;
 		
 		return instance;
