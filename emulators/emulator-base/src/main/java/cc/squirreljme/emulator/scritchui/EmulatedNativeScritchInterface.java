@@ -44,7 +44,6 @@ public class EmulatedNativeScritchInterface
 	
 	/**
 	 * Same as {@link NativeScritchInterface#panelOnly()}.
-	 * 
 	 *
 	 * @return Same as {@link NativeScritchInterface#panelOnly()}.
 	 * @throws MLECallError Same as {@link NativeScritchInterface#panelOnly()}.
@@ -54,6 +53,7 @@ public class EmulatedNativeScritchInterface
 	public static boolean panelOnly()
 		throws MLECallError
 	{
-		return false;
+		return DylibScritchInterface.instance().environment()
+			.isPanelOnly();
 	}
 }

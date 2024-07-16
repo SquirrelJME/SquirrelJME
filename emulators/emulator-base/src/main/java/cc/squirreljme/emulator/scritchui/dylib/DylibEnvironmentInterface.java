@@ -88,6 +88,16 @@ public class DylibEnvironmentInterface
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2024/07/16
+	 */
+	@Override
+	public boolean isPanelOnly()
+	{
+		return this.dyLib.isPanelOnly();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2024/04/02
 	 */
 	@Override

@@ -38,7 +38,7 @@ public final class NativeScritchDylib
 		16;
 	
 	/** The state pointer. */
-	private final long _stateP;
+	final long _stateP;
 	
 	/**
 	 * Initializes the native library layer for ScritchUI.
@@ -353,6 +353,17 @@ public final class NativeScritchDylib
 			throw new MLECallError("Did not make a pencil?");
 		
 		return result;
+	}
+	
+	/**
+	 * Is this a panel only interface?
+	 *
+	 * @return If this is a panel only interface.
+	 * @since 2024/07/16
+	 */
+	public boolean isPanelOnly()
+	{
+		return NativeScritchDylib.__envIsPanelOnly(this._stateP);
 	}
 	
 	/**
@@ -699,6 +710,17 @@ public final class NativeScritchDylib
 	private static native void __containerSetBounds(long __stateP,
 		long __containerP, long __componentP,
 		int __x, int __y, int __w, int __h)
+		throws MLECallError;
+	
+	/**
+	 * Checks to see if this is a panel only interface. 
+	 *
+	 * @param __stateP The state pointer.
+	 * @return If this is panel only.
+	 * @throws MLECallError If the state pointer is invalid.
+	 * @since 2024/07/16
+	 */
+	private static native boolean __envIsPanelOnly(long __stateP)
 		throws MLECallError;
 	
 	/**

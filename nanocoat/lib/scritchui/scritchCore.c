@@ -143,6 +143,9 @@ sjme_errorCode sjme_scritchui_core_apiInit(
 	state->wmInfo = &sjme_scritchUI_coreWmInfo;
 	state->nanoTime = sjme_nal_default_nanoTime;
 	
+	/* By default, everything is panel only .*/
+	state->isPanelOnly = SJME_JNI_TRUE;
+	
 	/* Execution thread information. */
 	state->loopThread = SJME_THREAD_NULL;
 	state->loopThreadInit = loopExecute;

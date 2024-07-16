@@ -66,6 +66,15 @@ public interface ScritchEnvironmentInterface
 	boolean isInhibitingSleep();
 	
 	/**
+	 * Is this a panel only interface?
+	 *
+	 * @return If this is a panel only interface.
+	 * @since 2024/07/16
+	 */
+	@SquirrelJMEVendorApi
+	boolean isPanelOnly();
+	
+	/**
 	 * Returns the look and feel interface.
 	 *
 	 * @return The look and feel interface.

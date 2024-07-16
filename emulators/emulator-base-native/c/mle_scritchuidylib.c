@@ -63,6 +63,8 @@
 #define FORWARD_DESC___containerSetBounds "(" \
 	DESC_LONG DESC_LONG DESC_LONG \
 	DESC_INTEGER DESC_INTEGER DESC_INTEGER DESC_INTEGER ")" DESC_VOID
+#define FORWARD_DESC___envIsPanelOnly "(" \
+	DESC_LONG ")" DESC_BOOLEAN
 #define FORWARD_DESC___fontDerive "(" \
 	DESC_LONG DESC_LONG DESC_INT DESC_INT ")" DESC_LONG
 #define FORWARD_DESC___hardwareGraphics "(" \
@@ -984,6 +986,24 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	}
 }
 
+JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__envIsPanelOnly)(JNIEnv* env, jclass classy, jlong stateP)
+{
+	sjme_scritchui state;
+	
+	if (stateP == 0)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return 0;
+	}
+	
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	
+	/* Depends on whatever is in the state. */
+	return state->isPanelOnly;
+}
+
 JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	__fontDerive)(JNIEnv* env, jclass classy, jlong stateP,
 	jlong fontP, jint style, jint pixelSize)
@@ -1659,6 +1679,7 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 	FORWARD_list(NativeScritchDylib, __containerAdd),
 	FORWARD_list(NativeScritchDylib, __containerRemoveAll),
 	FORWARD_list(NativeScritchDylib, __containerSetBounds),
+	FORWARD_list(NativeScritchDylib, __envIsPanelOnly),
 	FORWARD_list(NativeScritchDylib, __fontDerive),
 	FORWARD_list(NativeScritchDylib, __hardwareGraphics),
 	FORWARD_list(NativeScritchDylib, __linkInit),

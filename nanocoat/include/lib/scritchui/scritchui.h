@@ -1019,6 +1019,9 @@ struct sjme_scritchui_stateBase
 	
 	/** Function to obtain the current nanotime, for input events. */
 	sjme_nal_nanoTimeFunc nanoTime;
+	
+	/** Is this a panel only interface? */
+	sjme_jboolean isPanelOnly;
 };
 
 /* If dynamic libraries are not supported, we cannot do this. */
