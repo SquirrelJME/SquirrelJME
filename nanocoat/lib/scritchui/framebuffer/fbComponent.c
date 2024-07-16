@@ -13,27 +13,31 @@
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/core/core.h"
 
-static sjme_errorCode sjme_scritchui_fb_inputListener(
+static sjme_errorCode sjme_scritchui_fb_listenerInput(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInNotNull const sjme_scritchinput_event* inEvent)
 {
 	sjme_scritchui topState;
 	sjme_scritchui_uiComponent topComponent;
-	sjme_errorCode error;
+	sjme_scritchui_listener_input* infoCore;
 	
-	if (inState == NULL || inComponent == NULL || inEvent == NULL)
+	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
+		
 	/* Get owning state and component. */
 	topState = inComponent->common.frontEnd.data;
 	topComponent = inComponent->common.frontEnd.wrapper;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NONE;
+	/* Get target listener. */
+	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(topComponent, input);
+
+	/* Forward call. */
+	return infoCore->callback(topState, topComponent,
+		inEvent);
 }
 
-static sjme_errorCode sjme_scritchui_fb_paintListener(
+static sjme_errorCode sjme_scritchui_fb_listenerPaint(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInNotNull sjme_scritchui_pencil g,
@@ -67,6 +71,56 @@ static sjme_errorCode sjme_scritchui_fb_paintListener(
 	/* Forward call. */
 	return infoCore->callback(topState, topComponent,
 		g, sw, sh, special);
+}
+
+static sjme_errorCode sjme_scritchui_fb_listenerSize(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInPositiveNonZero sjme_jint newWidth,
+	sjme_attrInPositiveNonZero sjme_jint newHeight)
+{
+	sjme_scritchui topState;
+	sjme_scritchui_uiComponent topComponent;
+	sjme_scritchui_listener_size* infoCore;
+	
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Get owning state and component. */
+	topState = inComponent->common.frontEnd.data;
+	topComponent = inComponent->common.frontEnd.wrapper;
+	
+	/* Get target listener. */
+	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(topComponent, size);
+
+	/* Forward call. */
+	return infoCore->callback(topState, topComponent,
+		newWidth, newHeight);
+}
+
+static sjme_errorCode sjme_scritchui_fb_listenerVisible(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInValue sjme_jboolean fromVisible,
+	sjme_attrInValue sjme_jboolean toVisible)
+{
+	sjme_scritchui topState;
+	sjme_scritchui_uiComponent topComponent;
+	sjme_scritchui_listener_visible* infoCore;
+	
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Get owning state and component. */
+	topState = inComponent->common.frontEnd.data;
+	topComponent = inComponent->common.frontEnd.wrapper;
+	
+	/* Get target listener. */
+	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(topComponent, visible);
+
+	/* Forward call. */
+	return infoCore->callback(topState, topComponent,
+		fromVisible, toVisible);
 }
 
 sjme_errorCode sjme_scritchui_fb_componentRepaint(
@@ -106,7 +160,7 @@ sjme_errorCode sjme_scritchui_fb_componentRevalidate(
 	wrappedState = inState->wrappedState;
 	wrappedComponent = inComponent->common.handle;
 	
-	/* Forward repaint. */
+	/* Forward call. */
 	return wrappedState->api->componentRevalidate(wrappedState,
 		wrappedComponent);
 }
@@ -116,8 +170,34 @@ sjme_errorCode sjme_scritchui_fb_componentSetInputListener(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(input))
 {
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	sjme_errorCode error;
+	sjme_scritchui wrappedState;
+	sjme_scritchui_uiComponent wrappedComponent;
+	sjme_frontEnd wrappedFrontEnd;
+	
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover wrapped state. */
+	wrappedState = inState->wrappedState;
+	wrappedComponent = inComponent->common.handle;
+	
+	/* Set listener information. */
+	memset(&wrappedFrontEnd, 0, sizeof(wrappedFrontEnd));
+	if (sjme_error_is(error = sjme_scritchui_fb_biSetListener(
+		inState, inComponent,
+		(sjme_scritchui_listener_void*)
+			&SJME_SCRITCHUI_LISTENER_CORE(inComponent, input),
+		(sjme_scritchui_voidListenerFunc)inListener,
+		copyFrontEnd, &wrappedFrontEnd)))
+		return sjme_error_default(error);
+		
+	/* Have wrapped handler call our wrapped listener. */
+	return wrappedState->api->componentSetInputListener(wrappedState,
+		wrappedComponent,
+		(inListener == NULL ? NULL :
+			sjme_scritchui_fb_listenerInput), 
+			&wrappedFrontEnd);
 }
 
 sjme_errorCode sjme_scritchui_fb_componentSetPaintListener(
@@ -155,11 +235,12 @@ sjme_errorCode sjme_scritchui_fb_componentSetPaintListener(
 		return sjme_error_default(error);
 		
 	/* Have wrapped handler call our wrapped listener. */
-	return wrappedState->api->componentSetPaintListener(wrappedState,
+	return wrappedState->api->componentSetPaintListener(
+		wrappedState,
 		wrappedComponent,
 		(inListener == NULL ? NULL :
-			sjme_scritchui_fb_paintListener), 
-			&wrappedFrontEnd);
+			sjme_scritchui_fb_listenerPaint),
+		&wrappedFrontEnd);
 }
 
 sjme_errorCode sjme_scritchui_fb_componentSetSizeListener(
@@ -167,8 +248,34 @@ sjme_errorCode sjme_scritchui_fb_componentSetSizeListener(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(size))
 {
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	sjme_errorCode error;
+	sjme_scritchui wrappedState;
+	sjme_scritchui_uiComponent wrappedComponent;
+	sjme_frontEnd wrappedFrontEnd;
+	
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover wrapped state. */
+	wrappedState = inState->wrappedState;
+	wrappedComponent = inComponent->common.handle;
+	
+	/* Set listener information. */
+	memset(&wrappedFrontEnd, 0, sizeof(wrappedFrontEnd));
+	if (sjme_error_is(error = sjme_scritchui_fb_biSetListener(
+		inState, inComponent,
+		(sjme_scritchui_listener_void*)
+			&SJME_SCRITCHUI_LISTENER_CORE(inComponent, size),
+		(sjme_scritchui_voidListenerFunc)inListener,
+		copyFrontEnd, &wrappedFrontEnd)))
+		return sjme_error_default(error);
+		
+	/* Have wrapped handler call our wrapped listener. */
+	return wrappedState->api->componentSetSizeListener(wrappedState,
+		wrappedComponent,
+		(inListener == NULL ? NULL :
+			sjme_scritchui_fb_listenerSize), 
+			&wrappedFrontEnd);
 }
 
 sjme_errorCode sjme_scritchui_fb_componentSetVisibleListener(
@@ -176,8 +283,34 @@ sjme_errorCode sjme_scritchui_fb_componentSetVisibleListener(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(visible))
 {
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	sjme_errorCode error;
+	sjme_scritchui wrappedState;
+	sjme_scritchui_uiComponent wrappedComponent;
+	sjme_frontEnd wrappedFrontEnd;
+	
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover wrapped state. */
+	wrappedState = inState->wrappedState;
+	wrappedComponent = inComponent->common.handle;
+	
+	/* Set listener information. */
+	memset(&wrappedFrontEnd, 0, sizeof(wrappedFrontEnd));
+	if (sjme_error_is(error = sjme_scritchui_fb_biSetListener(
+		inState, inComponent,
+		(sjme_scritchui_listener_void*)
+			&SJME_SCRITCHUI_LISTENER_CORE(inComponent, visible),
+		(sjme_scritchui_voidListenerFunc)inListener,
+		copyFrontEnd, &wrappedFrontEnd)))
+		return sjme_error_default(error);
+		
+	/* Have wrapped handler call our wrapped listener. */
+	return wrappedState->api->componentSetVisibleListener(wrappedState,
+		wrappedComponent,
+		(inListener == NULL ? NULL :
+			sjme_scritchui_fb_listenerVisible), 
+			&wrappedFrontEnd);
 }
 
 sjme_errorCode sjme_scritchui_fb_componentSize(
