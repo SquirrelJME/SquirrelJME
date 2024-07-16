@@ -319,6 +319,17 @@ sjme_errorCode sjme_scritchui_fb_componentSize(
 	sjme_attrOutNullable sjme_jint* outWidth,
 	sjme_attrOutNullable sjme_jint* outHeight)
 {
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	sjme_scritchui wrappedState;
+	sjme_scritchui_uiComponent wrappedComponent;
+	
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NONE;
+	
+	/* Recover wrapped state. */
+	wrappedState = inState->wrappedState;
+	wrappedComponent = inComponent->common.handle;
+	
+	/* Forward call. */
+	return wrappedState->api->componentSize(wrappedState,
+		wrappedComponent, outWidth, outHeight);
 }
