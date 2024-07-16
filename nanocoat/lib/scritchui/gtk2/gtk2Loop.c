@@ -76,7 +76,7 @@ sjme_errorCode sjme_scritchui_gtk2_loopExecuteLater(
 	
 	/* Add to the event loop. */
 	/* We want to make sure it gets executed as soon as possible! */
-#if GTK_CHECK_VERSION(2, 2, 28)
+#if 0 && GTK_CHECK_VERSION(2, 2, 28)
 	g_main_context_invoke_full(NULL, G_PRIORITY_HIGH,
 		sjme_scritchui_gtk2_onceExecute, data, NULL);
 #else

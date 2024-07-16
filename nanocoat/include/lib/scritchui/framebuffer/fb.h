@@ -42,24 +42,6 @@ sjme_errorCode sjme_scritchui_fb_apiInit(
 	sjme_attrInNotNull sjme_scritchui inState);
 
 /**
- * Returns the Framebuffer ScritchUI interface.
- * 
- * @param inPool The allocation pool used.
- * @param outState The newly created state.
- * @param wrappedState The wrapped state to use.
- * @param loopExecute The loop execution to run after init.
- * @param initFrontEnd Optional initial frontend data.
- * @return The library interface.
- * @since 2024/07/16 
- */
-sjme_errorCode sjme_scritchui_fb_apiInitBase(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull sjme_scritchui* outState,
-	sjme_attrInNotNull sjme_scritchui wrappedState,
-	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
-	sjme_attrInNullable sjme_frontEnd* initFrontEnd);
-
-/**
  * Maps the front end for the given base component info.
  * 
  * @param inState The input state.
@@ -144,6 +126,10 @@ sjme_errorCode sjme_scritchui_fb_screens(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_scritchui_uiScreen* outScreens,
 	sjme_attrInOutNotNull sjme_jint* inOutNumScreens);
+
+sjme_errorCode sjme_scritchui_fb_windowNew(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow);
 
 /*--------------------------------------------------------------------------*/
 

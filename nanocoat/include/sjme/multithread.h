@@ -78,6 +78,9 @@ extern "C" {
 	
 	/** Calling convention to use for thread entry points. */
 	#define SJME_THREAD_CONVENTION
+
+	/** Thread memory barrier. */
+	#define sjme_thread_barrier() __sync_synchronize()
 #elif defined(SJME_CONFIG_HAS_THREADS_WIN32)
 	/** A single thread. */
 	typedef HANDLE sjme_thread;
@@ -96,6 +99,9 @@ extern "C" {
 	
 	/** Calling convention to use for thread entry points. */
 	#define SJME_THREAD_CONVENTION __stdcall
+
+	/** Thread memory barrier. */
+	#define sjme_thread_barrier() MemoryBarrier()
 #else
 	/** Threads not supported. */
 	typedef struct sjme_thread_unsupported
@@ -120,6 +126,9 @@ extern "C" {
 	
 	/** Calling convention to use for thread entry points. */
 	#define SJME_THREAD_CONVENTION
+
+	/** Thread memory barrier. */
+	#define sjme_thread_barrier() do {} while(0)
 #endif
 
 /* clang-format on */
@@ -133,13 +142,6 @@ extern "C" {
  */
 typedef sjme_thread_result (SJME_THREAD_CONVENTION *sjme_thread_mainFunc)(
 	sjme_attrInNullable sjme_thread_parameter anything);
-
-/**
- * Memory barrier.
- * 
- * @since 2024/04/17
- */
-void sjme_thread_barrier(void);
 
 /**
  * Returns the current thread.

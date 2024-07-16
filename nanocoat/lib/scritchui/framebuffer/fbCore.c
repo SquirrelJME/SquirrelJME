@@ -34,7 +34,7 @@ const sjme_scritchui_implFunctions sjme_scritchui_fbFunctions =
 	.panelNew = sjme_scritchui_fb_panelNew,
 	.screens = sjme_scritchui_fb_screens,
 	.windowContentMinimumSize = NULL,
-	.windowNew = NULL,
+	.windowNew = sjme_scritchui_fb_windowNew,
 	.windowSetCloseListener = NULL,
 	.windowSetVisible = NULL,
 };
@@ -49,32 +49,6 @@ sjme_errorCode sjme_scritchui_fb_apiInit(
 	sjme_message("Framebuffer wrapper initialized!");
 	
 	/* We need not do anything special. */
-	return SJME_ERROR_NONE;
-}
-
-sjme_errorCode sjme_scritchui_fb_apiInitBase(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
-	sjme_attrOutNotNull sjme_scritchui* outState,
-	sjme_attrInNotNull sjme_scritchui wrappedState,
-	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
-	sjme_attrInNullable sjme_frontEnd* initFrontEnd)
-{
-	sjme_errorCode error;
-	sjme_scritchui state;
-
-	if (outState == NULL || wrappedState == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Forward to core call. */
-	state = NULL;
-	if (sjme_error_is(error = sjme_scritchui_core_apiInit(inPool,
-		&state,
-		&sjme_scritchui_fbFunctions, loopExecute,
-		initFrontEnd, wrappedState)) || state == NULL)
-		return sjme_error_default(error);
-	
-	/* Success! */
-	*outState = state;
 	return SJME_ERROR_NONE;
 }
 

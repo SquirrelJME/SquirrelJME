@@ -457,6 +457,10 @@ static sjme_thread_result mle_bindEventThread(
 	JavaVMAttachArgs attachArgs;
 	jint error;
 	
+	/* Debug. */
+	sjme_message("mle_bindEventThread called... %p",
+		anything);
+	
 	/* Restore state. */
 	state = (sjme_scritchui)anything;
 	if (state == NULL)
@@ -469,7 +473,11 @@ static sjme_thread_result mle_bindEventThread(
 	checkEnv = NULL;
 	error = (*vm)->GetEnv(vm, &checkEnv, JNI_VERSION_1_1);
 	if (error == JNI_OK)
+	{
+		sjme_message("ScritchUI already attached.");
+		
 		return SJME_THREAD_RESULT(SJME_ERROR_NONE);
+	}
 	
 	/* Setup arguments. */
 	memset(&attachArgs, 0, sizeof(attachArgs));

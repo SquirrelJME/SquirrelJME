@@ -434,7 +434,6 @@ typedef sjme_errorCode (*sjme_scritchui_apiFlagsFunc)(
  * @param loopExecute Optional callback for loop execution, may be @c NULL ,
  * the passed argument is always the state.
  * @param initFrontEnd Optional initial front end data.
- * @param extra Optional extra data.
  * @return Any error code if applicable.
  * @since 2024/03/27
  */
@@ -443,8 +442,7 @@ typedef sjme_errorCode (*sjme_scritchui_apiInitFunc)(
 	sjme_attrInOutNotNull sjme_scritchui* outState,
 	sjme_attrInNotNull const sjme_scritchui_implFunctions* inImplFunc,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
-	sjme_attrInNullable sjme_frontEnd* initFrontEnd,
-	sjme_attrInNullable sjme_pointer extra);
+	sjme_attrInNullable sjme_frontEnd* initFrontEnd);
 
 /**
  * Repaints the given component.
@@ -1027,6 +1025,9 @@ struct sjme_scritchui_stateBase
 	
 	/** Wrapped ScritchUI state, if this is a wrapper. */
 	sjme_scritchui wrappedState;
+	
+	/** Reference to owning state. */
+	sjme_atomic_sjme_pointer topState;
 };
 
 /* If dynamic libraries are not supported, we cannot do this. */

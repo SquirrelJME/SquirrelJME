@@ -18,15 +18,6 @@
 
 #include "sjme/debug.h"
 
-void sjme_thread_barrier(void)
-{
-#if defined(SJME_CONFIG_HAS_GCC)
-	__sync_synchronize();
-#elif defined(SJME_CONFIG_HAS_WINDOWS)
-	MemoryBarrier();
-#endif
-}
-
 sjme_errorCode sjme_thread_current(
 	sjme_attrInOutNotNull sjme_thread* outThread)
 {

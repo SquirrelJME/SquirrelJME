@@ -40,7 +40,9 @@ static sjme_thread_result sjme_scritchui_core_waitAdapter(
 	result = waitData->callback(waitData->anything);
 	
 	/* Signal that wait is complete. */
+	sjme_thread_barrier();
 	sjme_atomic_sjme_jint_set(&waitData->signal, 1);
+	sjme_thread_barrier();
 	
 	/* Use result from callback. */
 	return result;
@@ -130,12 +132,13 @@ sjme_errorCode sjme_scritchui_core_loopExecuteWait(
 	/* Wait for termination. */
 	for (;;)
 	{
+		/* Yield to let other threads run. */
+		sjme_thread_yield();
+		sjme_thread_barrier();
+		
 		/* Done? */
 		if (0 != sjme_atomic_sjme_jint_get(&waitData.signal))
 			break;
-		
-		/* Yield to let other threads run. */
-		sjme_thread_yield();
 	}
 	
 	/* Success! */
@@ -160,7 +163,8 @@ sjme_errorCode sjme_scritchui_core_loopIsInThread(
 			SJME_ERROR_INVALID_THREAD_STATE);
 	
 	/* Are we in the loop? */
-	*outInThread = sjme_thread_equal(self, inState->loopThread);
+	*outInThread = sjme_thread_equal(self,
+		inState->loopThread);
 	return SJME_ERROR_NONE;
 }
 

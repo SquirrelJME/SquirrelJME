@@ -113,31 +113,68 @@ static const sjme_scritchui_internFunctions sjme_scritchUI_coreIntern =
 	.updateVisibleWindow = sjme_scritchui_core_intern_updateVisibleWindow,
 };
 
-sjme_errorCode sjme_scritchui_core_apiInit(
+static sjme_thread_result SJME_THREAD_CONVENTION sjme_scritchui_core_fbBelay(
+	sjme_attrInNullable sjme_thread_parameter anything)
+{
+	sjme_scritchui topState;
+	sjme_scritchui wrappedState;
+	
+	if (anything == NULL)
+		return SJME_THREAD_RESULT(SJME_ERROR_NULL_ARGUMENTS);
+	
+	/* Recover wrapped state, which is calling this one. */
+	wrappedState = (sjme_scritchui)anything;
+	
+	/* Debug. */
+	sjme_message("Waiting for top state to become mapped...");
+	
+	/* Recover wrapped state. */
+	topState = NULL;
+	while (topState == NULL)
+	{
+		/* Barrier for other thread to run. */
+		sjme_thread_barrier();
+		sjme_thread_yield();
+		sjme_thread_barrier();
+		
+		/* Read it in. */
+		topState = sjme_atomic_sjme_pointer_get(
+			&wrappedState->topState);
+	}
+	
+	/* Debug. */
+	sjme_message("Calling top initializer, if applicable...");
+	
+	/* Call the intended wrapper in this event thread? */
+	if (topState->loopThreadInit != NULL)
+		topState->loopThreadInit(topState);
+	
+	/* Debug. */
+	sjme_message("Marking framebuffer as ready!");
+	
+	/* Mark as ready so initialization continues and gets finished. */
+	sjme_atomic_sjme_jint_set(&topState->loopThreadReady, 1);
+	
+	/* Success! */
+	return SJME_THREAD_RESULT(SJME_ERROR_NONE);
+}
+
+static sjme_errorCode sjme_scritchui_core_apiInitActual(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInOutNotNull sjme_scritchui* outState,
 	sjme_attrInNotNull const sjme_scritchui_implFunctions* inImplFunc,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
 	sjme_attrInNullable sjme_frontEnd* initFrontEnd,
-	sjme_attrInNullable sjme_pointer extra)
+	sjme_attrInNullable sjme_scritchui wrappedState)
 {
 	sjme_errorCode error;
 	sjme_scritchui state;
-	sjme_scritchui fbState;
-	sjme_jboolean isFbWrapper; 
 	
 	if (inPool == NULL || inImplFunc == NULL || outState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (inImplFunc->apiInit == NULL)
 		return SJME_ERROR_NOT_IMPLEMENTED;
-	
-	/* Is this the framebuffer wrapper? */
-	isFbWrapper = (inImplFunc == &sjme_scritchui_fbFunctions);
-	
-	/* Extra needs to be specified if a wrapper. */
-	if (isFbWrapper && extra == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Allocate state. */
 	state = NULL;
@@ -154,32 +191,46 @@ sjme_errorCode sjme_scritchui_core_apiInit(
 	state->wmInfo = &sjme_scritchUI_coreWmInfo;
 	state->nanoTime = sjme_nal_default_nanoTime;
 	
-	/* By default, everything is panel only, unless framebuffer. */
-	if (isFbWrapper)
-		state->isPanelOnly = SJME_JNI_FALSE;
+	/* By default, everything is panel only. */
+	state->isPanelOnly = SJME_JNI_TRUE;
+	
+	/* Loop initialization. */
+	if (wrappedState != NULL)
+		state->loopThread = wrappedState->loopThread;
 	else
-		state->isPanelOnly = SJME_JNI_TRUE;
-	
-	/* If we are a core interface, we use the front end and loop init. */
-	if (!state->isPanelOnly)
-	{
-		/* We want to call the loop handler here. */
 		state->loopThread = SJME_THREAD_NULL;
-		state->loopThreadInit = loopExecute;
-		
-		/* Use provided front end if a core interface. */
-		if (initFrontEnd != NULL)
-			memmove(&state->common.frontEnd, initFrontEnd,
-				sizeof(*initFrontEnd));
-	}
+	state->loopThreadInit = loopExecute;
 	
-	/* As a wrapper we need to keep track of what we wrap. */
-	if (isFbWrapper)
-		state->wrappedState = extra;
+	/* Use provided front end if a core interface. */
+	if (initFrontEnd != NULL)
+		memmove(&state->common.frontEnd, initFrontEnd,
+			sizeof(*initFrontEnd));
 	
 	/* Perform API specific initialization. */
 	if (sjme_error_is(error = state->impl->apiInit(state)))
 		goto fail_apiInit;
+		
+	/* Link back states. */
+	if (wrappedState != NULL)
+	{
+		/* Debug. */
+		sjme_message("Linking in wrapped state (%p -> %p)...",
+			state, wrappedState);
+		
+		/* Link together. */
+		state->wrappedState = wrappedState;
+		sjme_atomic_sjme_pointer_set(&wrappedState->topState,
+			state);
+		
+		/* Barrier here for wrapped init. */
+		sjme_thread_barrier();
+		sjme_thread_yield();
+		sjme_thread_barrier();
+	}
+	
+	/* Debug. */
+	sjme_message("Waiting for thread ready (%p)...",
+		state);
 	
 	/* Wait for the ready signal, but only if required. */
 	if (state->loopThread == SJME_THREAD_NULL)
@@ -187,27 +238,11 @@ sjme_errorCode sjme_scritchui_core_apiInit(
 	else
 	{
 		while (0 == sjme_atomic_sjme_jint_get(&state->loopThreadReady))
+		{
+			sjme_thread_barrier();
 			sjme_thread_yield();
-	}
-	
-	/* If this is a panel only interface, wrap it with the framebuffer */
-	/* interface so we can get access to all the widgets we lack. */
-	if (state->isPanelOnly && !isFbWrapper)
-	{
-		/* Initialize framebuffer interface. */
-		fbState = NULL;
-		if (sjme_error_is(error = sjme_scritchui_fb_apiInitBase(inPool,
-			&fbState, state, loopExecute,
-			initFrontEnd)) || fbState == NULL)
-			return sjme_error_default(error);
-			
-		/* Since we wrapped, we need to link back to this one. */
-		state->common.frontEnd.wrapper = extra;
-		state->common.frontEnd.data = extra;
-		
-		/* Use this one instead! */
-		*outState = fbState;
-		return SJME_ERROR_NONE;
+			sjme_thread_barrier();
+		}
 	}
 	
 	/* Return resultant state. */
@@ -223,4 +258,69 @@ fail_alloc:
 	}
 	
 	return sjme_error_default(error);
+}
+
+sjme_errorCode sjme_scritchui_core_apiInit(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInOutNotNull sjme_scritchui* outState,
+	sjme_attrInNotNull const sjme_scritchui_implFunctions* inImplFunc,
+	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
+	sjme_attrInNullable sjme_frontEnd* initFrontEnd)
+{
+	sjme_errorCode error;
+	sjme_jboolean isFbWrapper; 
+	sjme_jboolean needFbWrapper;
+	sjme_scritchui state;
+	sjme_scritchui wrappedState;
+	
+	if (inPool == NULL || inImplFunc == NULL || outState == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (inImplFunc->apiInit == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Do we need the framebuffer wrapper? */
+	isFbWrapper = (inImplFunc == &sjme_scritchui_fbFunctions);
+	needFbWrapper = !isFbWrapper;
+	
+	/* Normal top-level initialization. */
+	if (!needFbWrapper)
+	{
+		return sjme_scritchui_core_apiInitActual(inPool, outState,
+			inImplFunc, loopExecute, initFrontEnd, NULL);
+	}
+	
+	/* Initialize API we are going to wrap. */
+	wrappedState = NULL;
+	if (sjme_error_is(error = sjme_scritchui_core_apiInitActual(inPool,
+		&wrappedState,
+		inImplFunc, NULL,
+		NULL, NULL)) ||
+		wrappedState == NULL)
+		return sjme_error_default(error);
+	
+	/* Debug. */
+	sjme_message("Pre-call init loop belay...");
+	
+	/* We need to initialize our wrapper in the event thread. */
+	if (sjme_error_is(error = wrappedState->api->loopExecuteLater(
+		wrappedState, sjme_scritchui_core_fbBelay,
+		wrappedState)))
+		return sjme_error_default(error);
+	
+	/* Debug. */
+	sjme_message("Now performing framebuffer init...");
+	
+	/* Wrap this with the framebuffer call. */
+	state = NULL;
+	if (sjme_error_is(error = sjme_scritchui_core_apiInitActual(inPool,
+		&state,
+		&sjme_scritchui_fbFunctions,
+		loopExecute, initFrontEnd, wrappedState)) ||
+		state == NULL)
+		return sjme_error_default(error);
+	
+	/* Success! */
+	*outState = state;
+	return SJME_ERROR_NONE;
 }

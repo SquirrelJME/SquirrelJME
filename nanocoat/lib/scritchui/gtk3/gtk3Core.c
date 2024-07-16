@@ -63,7 +63,7 @@ sjme_errorCode SJME_DYLIB_EXPORT SJME_SCRITCHUI_DYLIB_SYMBOL(gtk3)(
 	if (sjme_error_is(error = sjme_scritchui_core_apiInit(inPool,
 		&state,
 		&sjme_scritchui_gtk3Functions, loopExecute,
-		initFrontEnd, NULL)) || state == NULL)
+		initFrontEnd)) || state == NULL)
 		return sjme_error_default(error);
 	
 	/* Success! */
