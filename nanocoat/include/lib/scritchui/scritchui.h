@@ -569,6 +569,32 @@ typedef sjme_errorCode (*sjme_scritchui_containerAddFunc)(
 	sjme_attrInNotNull sjme_scritchui_uiComponent addComponent);
 
 /**
+ * Removes the given component from the specified container.
+ * 
+ * @param inState The input state.
+ * @param inContainer The container to remove the component from.
+ * @param removeComponent The component to remove from the container.
+ * @return Any error code if applicable.
+ * @since 2024/07/15
+ */
+typedef sjme_errorCode (*sjme_scritchui_containerRemoveFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrInNotNull sjme_scritchui_uiComponent removeComponent);
+
+/**
+ * Removes all components from the container.
+ * 
+ * @param inState The input state.
+ * @param inContainer The container to remove everything from.
+ * @return Any error code if applicable.
+ * @since 2024/07/15
+ */
+typedef sjme_errorCode (*sjme_scritchui_containerRemoveAllFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer);
+
+/**
  * Sets the bounds of a component within the container.
  * 
  * @param inState The input state.
@@ -835,6 +861,12 @@ struct sjme_scritchui_apiFunctions
 	
 	/** Adds component to container. */
 	SJME_SCRITCHUI_QUICK_API(containerAdd);
+	
+	/** Remove component from container. */
+	SJME_SCRITCHUI_QUICK_API(containerRemove);
+	
+	/** Remove all components from a container. */
+	SJME_SCRITCHUI_QUICK_API(containerRemoveAll);
 	
 	/** Set bounds of component in a container. */
 	SJME_SCRITCHUI_QUICK_API(containerSetBounds);

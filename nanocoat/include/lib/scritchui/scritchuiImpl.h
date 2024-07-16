@@ -77,6 +77,21 @@ typedef sjme_errorCode (*sjme_scritchui_impl_containerAddFunc)(
 	sjme_attrInNotNull sjme_scritchui_uiComponent addComponent);
 
 /**
+ * Removes the given component from the specified container.
+ * 
+ * @param inState The input state.
+ * @param inContainer The container to remove the component within.
+ * @param removeComponent The component to remove from the container.
+ * @return Any error code if applicable.
+ * @since 2024/07/15
+ */
+typedef sjme_errorCode (*sjme_scritchui_impl_containerRemoveFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrInNotNull sjme_scritchui_uiContainer inContainerData,
+	sjme_attrInNotNull sjme_scritchui_uiComponent removeComponent);
+
+/**
  * Creates a new native panel.
  * 
  * @param inState The input ScritchUI state.
@@ -135,6 +150,9 @@ struct sjme_scritchui_implFunctions
 	
 	/** Add component to container. */
 	SJME_SCRITCHUI_QUICK_IMPL(containerAdd);
+	
+	/** Remove component from container. */
+	SJME_SCRITCHUI_QUICK_IMPL(containerRemove);
 	
 	/** Set bounds of component in container. */
 	SJME_SCRITCHUI_QUICK_SAME(containerSetBounds);

@@ -249,7 +249,8 @@ public final class NativeScritchDylib
 		if (__container == null)
 			throw new MLECallError("Null arguments.");
 		
-		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
+		NativeScritchDylib.__containerRemoveAll(this._stateP,
+			__container.objectPointer());
 	}
 	
 	/**
@@ -668,6 +669,18 @@ public final class NativeScritchDylib
 	 */
 	private static native void __containerAdd(long __stateP,
 		long __containerP, long __componentP)
+		throws MLECallError;
+	
+	/**
+	 * Removes all items from the container.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __containerP The container pointer.
+	 * @throws MLECallError If the state and/or container are invalid.
+	 * @since 2024/07/15
+	 */
+	private static native void __containerRemoveAll(long __stateP,
+		long __containerP)
 		throws MLECallError;
 	
 	/**

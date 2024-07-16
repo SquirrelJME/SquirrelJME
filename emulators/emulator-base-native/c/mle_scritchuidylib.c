@@ -58,6 +58,8 @@
 #define FORWARD_DESC___componentWidth FORWARD_DESC___componentHeight
 #define FORWARD_DESC___containerAdd "(" \
 	DESC_LONG DESC_LONG DESC_LONG ")" DESC_VOID
+#define FORWARD_DESC___containerRemoveAll "(" \
+	DESC_LONG DESC_LONG ")" DESC_VOID
 #define FORWARD_DESC___containerSetBounds "(" \
 	DESC_LONG DESC_LONG DESC_LONG \
 	DESC_INTEGER DESC_INTEGER DESC_INTEGER DESC_INTEGER ")" DESC_VOID
@@ -912,6 +914,40 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__containerRemoveAll)(JNIEnv* env, jclass classy, jlong stateP,
+	jlong containerP)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	sjme_scritchui_uiComponent container;
+	
+	if (stateP == 0 || containerP == 0)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+	
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	container = (sjme_scritchui_uiComponent)containerP;
+	
+	/* Not implemented? */
+	if (state->api->containerRemoveAll == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
+		return;
+	}
+	
+	/* Forward call. */
+	if (sjme_error_is(error = state->api->containerRemoveAll(state,
+		container)))
+	{
+		sjme_jni_throwMLECallError(env, error);
+		return;
+	}
+}
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	__containerSetBounds)(JNIEnv* env, jclass classy, jlong stateP,
 	jlong containerP, jlong componentP, jint x, jint y, jint w, jint h)
 {
@@ -1621,6 +1657,7 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 	FORWARD_list(NativeScritchDylib, __componentSetVisibleListener),
 	FORWARD_list(NativeScritchDylib, __componentWidth),
 	FORWARD_list(NativeScritchDylib, __containerAdd),
+	FORWARD_list(NativeScritchDylib, __containerRemoveAll),
 	FORWARD_list(NativeScritchDylib, __containerSetBounds),
 	FORWARD_list(NativeScritchDylib, __fontDerive),
 	FORWARD_list(NativeScritchDylib, __hardwareGraphics),

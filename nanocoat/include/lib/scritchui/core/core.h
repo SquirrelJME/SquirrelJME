@@ -69,7 +69,16 @@ sjme_errorCode sjme_scritchui_core_containerAdd(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
 	sjme_attrInNotNull sjme_scritchui_uiComponent addComponent);
-	
+
+sjme_errorCode sjme_scritchui_core_containerRemove(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrInNotNull sjme_scritchui_uiComponent removeComponent);
+
+sjme_errorCode sjme_scritchui_core_containerRemoveAll(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer);
+
 sjme_errorCode sjme_scritchui_core_containerSetBounds(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,

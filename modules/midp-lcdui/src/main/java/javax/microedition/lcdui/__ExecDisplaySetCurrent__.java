@@ -104,9 +104,10 @@ class __ExecDisplaySetCurrent__
 		Displayable showNow = this.showNow;
 		if (showNow != null)
 		{
-			// Remove everything from the window
-			// TODO FIXME: For some reason removeAll happens after the add??
-			/*containerApi.removeAll(window);*/
+			// Remove everything from the window, since every display always
+			// has just a single displayable, and we do not care what else
+			// was even here...
+			containerApi.removeAll(window);
 			
 			// Get the needed panel and add it in
 			DisplayableState ourState = this.showNow._state;

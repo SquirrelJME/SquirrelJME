@@ -1823,8 +1823,11 @@ typedef enum sjme_errorCode
 	/** The graphics buffer is not locked. */
 	SJME_ERROR_BUFFER_NOT_LOCKED = -66,
 	
+	/** Component is not in this container. */
+	SJME_ERROR_NOT_IN_CONTAINER = -67,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -67
+	SJME_NUM_ERROR_CODES = -68
 } sjme_errorCode;
 
 /**

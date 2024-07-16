@@ -64,6 +64,12 @@ typedef enum sjme_scritchui_serialType
 	/** @c containerAdd . */
 	SJME_SCRITCHUI_SERIAL_TYPE_CONTAINER_ADD,
 	
+	/** @c containerRemove . */
+	SJME_SCRITCHUI_SERIAL_TYPE_CONTAINER_REMOVE,
+	
+	/** @c containerRemoveAll . */
+	SJME_SCRITCHUI_SERIAL_TYPE_CONTAINER_REMOVE_ALL,
+	
 	/** @c containerSetBounds . */
 	SJME_SCRITCHUI_SERIAL_TYPE_CONTAINER_SET_BOUNDS,
 	
@@ -166,6 +172,13 @@ SUD_STRUCT_DEF(componentSize,
 SUD_STRUCT_DEF(containerAdd,
 	SDU_VAR(sjme_scritchui_uiComponent, inContainer);
 	SDU_VAR(sjme_scritchui_uiComponent, addComponent););
+
+SUD_STRUCT_DEF(containerRemove,
+	SDU_VAR(sjme_scritchui_uiComponent, inContainer);
+	SDU_VAR(sjme_scritchui_uiComponent, removeComponent););
+
+SUD_STRUCT_DEF(containerRemoveAll,
+	SDU_VAR(sjme_scritchui_uiComponent, inContainer););
 
 SUD_STRUCT_DEF(containerSetBounds,
 	SDU_VAR(sjme_scritchui_uiComponent, inContainer);
@@ -271,6 +284,12 @@ typedef union sjme_scritchui_serialDataUnion
 	/** @c containerAdd . */
 	SJME_SCRITCHUI_SDU_DEF(containerAdd);
 	
+	/** @c containerRemove . */
+	SJME_SCRITCHUI_SDU_DEF(containerRemove);
+	
+	/** @c containerRemoveAll. */
+	SJME_SCRITCHUI_SDU_DEF(containerRemoveAll);
+	
 	/** @c containerSetBounds . */
 	SJME_SCRITCHUI_SDU_DEF(containerSetBounds);
 	
@@ -373,6 +392,15 @@ sjme_errorCode sjme_scritchui_coreSerial_containerAdd(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
 	sjme_attrInNotNull sjme_scritchui_uiComponent addComponent);
+	
+sjme_errorCode sjme_scritchui_coreSerial_containerRemove(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrInNotNull sjme_scritchui_uiComponent removeComponent);
+	
+sjme_errorCode sjme_scritchui_coreSerial_containerRemoveAll(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer);
 	
 sjme_errorCode sjme_scritchui_coreSerial_containerSetBounds(
 	sjme_attrInNotNull sjme_scritchui inState,

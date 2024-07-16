@@ -71,6 +71,51 @@ sjme_errorCode sjme_scritchui_gtk2_containerAdd(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_scritchui_gtk2_containerRemove(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrInNotNull sjme_scritchui_uiContainer inContainerData,
+	sjme_attrInNotNull sjme_scritchui_uiComponent removeComponent)
+{
+	GtkWindow* window;
+	GtkFixed* fixed;
+	GtkWidget* removeWidget;
+	
+	if (inState == NULL || inContainer == NULL || inContainerData == NULL ||
+		removeComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Widget should always be the same. */
+	/* Since the secondary handle gets added, we need to remove it. */
+	if (removeComponent->common.handleB != NULL)
+		removeWidget = (GtkWidget*)removeComponent->common.handleB;
+	else
+		removeWidget = (GtkWidget*)removeComponent->common.handle;
+	
+	/* Which type is this? */
+	switch (inContainer->common.type)
+	{
+		case SJME_SCRITCHUI_TYPE_WINDOW:
+			window = (GtkWindow*)inContainer->common.handle;
+			gtk_container_remove(GTK_CONTAINER(window),
+				removeWidget);
+			break;
+		
+			/* Place into fixed at basic coordinates. */
+		case SJME_SCRITCHUI_TYPE_PANEL:
+			fixed = (GtkFixed*)inContainer->common.handle;
+			gtk_container_remove(GTK_CONTAINER(fixed),
+				removeWidget);
+			break;
+		
+		default:
+			return SJME_ERROR_NOT_IMPLEMENTED;
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_scritchui_gtk2_containerSetBounds(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,

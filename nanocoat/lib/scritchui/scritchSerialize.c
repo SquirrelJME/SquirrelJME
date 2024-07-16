@@ -128,6 +128,8 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 	SJME_SCRITCHUI_DISPATCH_DECL(componentSetVisibleListener);
 	SJME_SCRITCHUI_DISPATCH_DECL(componentSize);
 	SJME_SCRITCHUI_DISPATCH_DECL(containerAdd);
+	SJME_SCRITCHUI_DISPATCH_DECL(containerRemove);
+	SJME_SCRITCHUI_DISPATCH_DECL(containerRemoveAll);
 	SJME_SCRITCHUI_DISPATCH_DECL(containerSetBounds);
 	SJME_SCRITCHUI_DISPATCH_DECL(fontBuiltin);
 	SJME_SCRITCHUI_DISPATCH_DECL(fontDerive);
@@ -194,6 +196,17 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 		(state,
 		containerAdd->inContainer,
 		containerAdd->addComponent));
+		
+	SJME_SCRITCHUI_DISPATCH_CASE(containerRemove,
+		SJME_SCRITCHUI_SERIAL_TYPE_CONTAINER_REMOVE,
+		(state,
+		containerRemove->inContainer,
+		containerRemove->removeComponent));
+		
+	SJME_SCRITCHUI_DISPATCH_CASE(containerRemoveAll,
+		SJME_SCRITCHUI_SERIAL_TYPE_CONTAINER_REMOVE_ALL,
+		(state,
+		containerAdd->inContainer));
 		
 	SJME_SCRITCHUI_DISPATCH_CASE(containerSetBounds,
 		SJME_SCRITCHUI_SERIAL_TYPE_CONTAINER_SET_BOUNDS,
@@ -394,6 +407,36 @@ sjme_errorCode sjme_scritchui_coreSerial_containerAdd(
 		
 	SJME_SCRITCHUI_SERIAL_PASS(inContainer);
 	SJME_SCRITCHUI_SERIAL_PASS(addComponent);
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
+}
+
+sjme_errorCode sjme_scritchui_coreSerial_containerRemove(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrInNotNull sjme_scritchui_uiComponent removeComponent)
+{
+	SJME_SCRITCHUI_SERIAL_CHUNK(containerRemove,
+		SJME_SCRITCHUI_SERIAL_TYPE_CONTAINER_REMOVE,
+		(inState, inContainer, removeComponent));
+		
+	SJME_SCRITCHUI_SERIAL_PASS(inContainer);
+	SJME_SCRITCHUI_SERIAL_PASS(removeComponent);
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
+}
+
+sjme_errorCode sjme_scritchui_coreSerial_containerRemoveAll(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer)
+{
+	SJME_SCRITCHUI_SERIAL_CHUNK(containerRemoveAll,
+		SJME_SCRITCHUI_SERIAL_TYPE_CONTAINER_REMOVE_ALL,
+		(inState, inContainer));
+		
+	SJME_SCRITCHUI_SERIAL_PASS(inContainer);
 	
 	/* Invoke and wait. */
 	SJME_SCRITCHUI_INVOKE_WAIT;

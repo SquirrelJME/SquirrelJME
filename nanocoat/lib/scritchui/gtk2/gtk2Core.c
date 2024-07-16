@@ -24,6 +24,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_gtkFunctions =
 	.componentSetVisibleListener = NULL,
 	.componentSize = sjme_scritchui_gtk2_componentSize,
 	.containerAdd = sjme_scritchui_gtk2_containerAdd,
+	.containerRemove = sjme_scritchui_gtk2_containerRemove,
 	.containerSetBounds = sjme_scritchui_gtk2_containerSetBounds,
 	.loopExecute = NULL,
 	.loopExecuteLater = sjme_scritchui_gtk2_loopExecuteLater,

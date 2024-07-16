@@ -110,8 +110,113 @@ sjme_errorCode sjme_scritchui_core_containerAdd(
 	if (inState->impl->componentSetVisibleListener == NULL)
 		if (inContainer->state.isVisible || inContainer->state.isUserVisible)
 			inState->intern->updateVisibleComponent(inState,
-			addComponent, SJME_JNI_TRUE);
+				addComponent, SJME_JNI_TRUE);
 		
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_scritchui_core_containerRemove(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrInNotNull sjme_scritchui_uiComponent removeComponent)
+{
+	sjme_errorCode error;
+	sjme_scritchui_uiContainer container;
+	sjme_list_sjme_scritchui_uiComponent* list;
+	sjme_jint i, n;
+	
+	if (inState == NULL || inContainer == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Not implemented? */
+	if (inState->impl->containerRemove == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
+		
+	/* Only certain types are containers. */
+	if (sjme_error_is(error = inState->intern->getContainer(inState,
+		inContainer, &container)) ||
+		container == NULL)
+		return sjme_error_default(error);
+	
+	/* Get component list, if nothing then it is not here ever. */
+	list = container->components;
+	if (list == NULL)
+		return SJME_ERROR_NOT_IN_CONTAINER;
+	
+	/* Go through and find the index of the item. */
+	for (i = 0, n = list->length; i < n; i++)
+	{
+		/* Ignore ones that are not this one. */
+		if (list->elements[i] != removeComponent)
+			continue;
+		
+		/* Forward call. */
+		if (sjme_error_is(error = inState->impl->containerRemove(
+			inState, inContainer, container, removeComponent)))
+			return sjme_error_default(error);
+		
+		/* Clear component from item set. */
+		list->elements[i] = NULL;
+		
+		/* Remove parent from the component. */
+		removeComponent->parent = NULL;
+		
+		/* Since we removed the component, it is no longer visible. */
+		if (inState->impl->componentSetVisibleListener == NULL)
+			inState->intern->updateVisibleComponent(inState,
+				removeComponent, SJME_JNI_FALSE);
+		
+		/* Success! */
+		return SJME_ERROR_NONE;
+	}
+	
+	/* If this is reached then the component is not here. */
+	return SJME_ERROR_NOT_IN_CONTAINER;
+}
+
+sjme_errorCode sjme_scritchui_core_containerRemoveAll(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer)
+{
+	sjme_errorCode error;
+	sjme_scritchui_uiContainer container;
+	sjme_list_sjme_scritchui_uiComponent* list;
+	sjme_scritchui_uiComponent remove;
+	sjme_jint i, n;
+	
+	if (inState == NULL || inContainer == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Not implemented? */
+	if (inState->impl->containerRemove == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Only certain types are containers. */
+	if (sjme_error_is(error = inState->intern->getContainer(inState,
+		inContainer, &container)) ||
+		container == NULL)
+		return sjme_error_default(error);
+	
+	/* Get component list, if nothing is inside then ignore. */
+	list = container->components;
+	if (list == NULL)
+		return SJME_ERROR_NONE;
+	
+	/* Go through the list and remove individual components. */
+	for (i = 0, n = list->length; i < n; i++)
+	{
+		/* Skip blank slots. */
+		remove = list->elements[i];
+		if (remove == NULL)
+			continue;
+		
+		/* Forward removal. */
+		if (sjme_error_is(error = inState->apiInThread->containerRemove(
+			inState, inContainer, remove)))
+			return sjme_error_default(error);
+	}
+	
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
