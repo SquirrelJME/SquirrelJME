@@ -82,6 +82,8 @@
 	DESC_LONG DESC_LONG DESC_BOOLEAN DESC_BOOLEAN ")" DESC_VOID
 #define FORWARD_DESC___panelNew "(" \
 	DESC_LONG ")" DESC_LONG
+#define FORWARD_DESC___screenId "(" \
+	DESC_LONG DESC_LONG ")" DESC_INTEGER
 #define FORWARD_DESC___screens "(" \
 	DESC_LONG DESC_ARRAY(DESC_LONG) ")" DESC_INTEGER
 #define FORWARD_DESC___weakDelete "(" \
@@ -1458,6 +1460,26 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __weakDelete)
 		sjme_jni_throwMLECallError(env, error);
 }
 
+JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __screenId)
+	(JNIEnv* env, jclass classy, jlong stateP, jlong screenP)
+{
+	sjme_scritchui state;
+	sjme_scritchui_uiScreen screen;
+	
+	if (stateP == 0 || screenP == 0)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return -1;
+	}
+
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	screen = (sjme_scritchui_uiScreen)screenP;
+	
+	/* Return the screen Id. */
+	return screen->id;
+}
+
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __screens)
 	(JNIEnv* env, jclass classy, jlong stateP, jlongArray screenPs)
 {
@@ -1689,6 +1711,7 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 	FORWARD_list(NativeScritchDylib, __loopIsInThread),
 	FORWARD_list(NativeScritchDylib, __panelEnableFocus),
 	FORWARD_list(NativeScritchDylib, __panelNew),
+	FORWARD_list(NativeScritchDylib, __screenId),
 	FORWARD_list(NativeScritchDylib, __screens),
 	FORWARD_list(NativeScritchDylib, __weakDelete),
 	FORWARD_list(NativeScritchDylib, __windowContentMinimumSize),

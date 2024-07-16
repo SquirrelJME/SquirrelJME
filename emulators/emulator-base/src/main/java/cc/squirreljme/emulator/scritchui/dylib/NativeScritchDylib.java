@@ -448,6 +448,23 @@ public final class NativeScritchDylib
 	}
 	
 	/**
+	 * Returns the screen ID.
+	 *
+	 * @param __screen The screen to get the ID of.
+	 * @return The screen ID.
+	 * @throws MLECallError If the screen is not valid.
+	 * @since 2024/07/16
+	 */
+	public int screenId(DylibScreenObject __screen)
+		throws MLECallError
+	{
+		if (__screen == null)
+			throw new MLECallError("NARG");
+		
+		return NativeScritchDylib.__screenId(this._stateP, __screen.objectP);
+	}
+	
+	/**
 	 * Returns the available screens.
 	 *
 	 * @return The available screens.
@@ -838,6 +855,18 @@ public final class NativeScritchDylib
 	 * @since 2024/04/06
 	 */
 	private static native long __panelNew(long __stateP);
+	
+	/**
+	 * Returns the screen ID.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __screenP The screen pointer.
+	 * @return The screen ID.
+	 * @throws MLECallError If the screen is not valid.
+	 * @since 2024/07/16
+	 */
+	private static native int __screenId(long __stateP, long __screenP)
+		throws MLECallError;
 	
 	/**
 	 * Queries the native screens.

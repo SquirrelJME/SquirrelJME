@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
 /**
- * Not Described.
+ * DyLib based screen interface for ScritchUI.
  *
  * @since 2024/04/02
  */
@@ -92,11 +92,13 @@ public class DylibScreenInterface
 	 * @since 2024/04/02
 	 */
 	@Override
-	public int id(
-		ScritchScreenBracket __screen)
+	public int id(ScritchScreenBracket __screen)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__screen == null)
+			throw new MLECallError("NARG");
+		
+		return this.dyLib.screenId((DylibScreenObject)__screen);
 	}
 	
 	/**
