@@ -216,6 +216,7 @@ public abstract class VMFactory
 		// -zero
 		// -client
 		// -server
+		// -Xscritchui:(ui)
 		// Optionally `-jar`
 		// Main-class
 		// Arguments...
@@ -357,6 +358,13 @@ public abstract class VMFactory
 			else if (item.equals("-client") || item.equals("-server"))
 			{
 				// Ignored
+			}
+			
+			// ScritchUI library
+			else if (item.startsWith("-Xscritchui:"))
+			{
+				systemProperties.put("cc.squirreljme.scritchui",
+					item.substring("-Xscritchui:".length()));
 			}
 			
 			// Unknown

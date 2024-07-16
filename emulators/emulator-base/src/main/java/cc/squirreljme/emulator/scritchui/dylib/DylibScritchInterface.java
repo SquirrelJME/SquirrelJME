@@ -43,10 +43,17 @@ import org.jetbrains.annotations.Range;
 public class DylibScritchInterface
 	implements ScritchInterface
 {
+	/**
+	 * {@squirreljme.property cc.squirreljme.scritchui=ui Specifies
+	 * a different UI library to use instead of the default.}
+	 */
+	public static final String PREFER_PROPERTY =
+		"cc.squirreljme.scritchui";
+	
 	/** The internal default order of interfaces. */
 	private static final List<String> _ORDER =
 		UnmodifiableList.of(Arrays.asList("win32", "gtk2", "motif", "gtk3",
-			"x11"));
+			"x11", "jawt", "palmos", "toolbox"));
 	
 	/** The default instance of this. */
 	private static volatile DylibScritchInterface _INSTANCE;
@@ -223,35 +230,79 @@ public class DylibScritchInterface
 			throw new RuntimeException(__e);
 		}
 		
-		// Go through and find the best match
+		// Preferred library
+		String prefer = System.getProperty(
+			DylibScritchInterface.PREFER_PROPERTY);
+		
+		// Deferred exceptions for later failing
+		List<Throwable> defer = new ArrayList<>();
+		
+		// Go through and find all available libraries
+		List<Path> libPaths = new ArrayList<>();
+		List<String> libNames = new ArrayList<>();
 		for (String order : DylibScritchInterface._ORDER)
 			if (potentials.contains(order))
+			{
+				// What library is used?
+				String libName = System.mapLibraryName(
+					"squirreljme-scritchui-" + order);
+				
+				// Find library to load
+				Path libPath;
 				try
 				{
-					// What library is used?
-					String libName = System.mapLibraryName(
-						"squirreljme-scritchui-" + order);
-					
-					// Find library to load
-					Path libPath = NativeBinding.libFromResources(
+					libPath = NativeBinding.libFromResources(
 						libName, false);
-					
-					// Load instance
-					instance = new DylibScritchInterface(
-						new NativeScritchDylib(libPath.toAbsolutePath(),
-							order));
-					
-					// Cache and use it
-					DylibScritchInterface._INSTANCE = instance;
-					return instance;
 				}
+				
+				// If it fails to extract, skip it
 				catch (IOException __e)
 				{
-					throw new RuntimeException(__e);
+					defer.add(__e);
+					continue;
 				}
+				
+				// This library path is valid, so store it for later, the
+				// preferred library is always first
+				if (prefer != null && order.equalsIgnoreCase(prefer))
+				{
+					libPaths.add(0, libPath);
+					libNames.add(0, order);
+				}
+				else
+				{
+					libPaths.add(libPath);
+					libNames.add(order);
+				}
+			}
+		
+		// Use the first one that successfully loads!
+		for (int i = 0; i < libPaths.size(); i++)
+		{
+			Path libPath = libPaths.get(i);
+			String libName = libNames.get(i);
+			
+			try
+			{
+				// Load instance
+				instance = new DylibScritchInterface(
+					new NativeScritchDylib(libPath.toAbsolutePath(), libName));
+				
+				// Cache and use it
+				DylibScritchInterface._INSTANCE = instance;
+				return instance;
+			}
+			catch (RuntimeException __e)
+			{
+				defer.add(__e);
+			}
+		}
 		
 		// Not found
-		throw new UnsupportedOperationException(
+		UnsupportedOperationException fail = new UnsupportedOperationException(
 			"Did not find a ScritchUI library to select.");
+		for (Throwable e : defer)
+			fail.addSuppressed(e);
+		throw fail;
 	}
 }
