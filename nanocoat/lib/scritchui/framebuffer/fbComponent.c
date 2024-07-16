@@ -116,20 +116,8 @@ sjme_errorCode sjme_scritchui_fb_componentSetInputListener(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(input))
 {
-	sjme_errorCode error;
-	sjme_scritchui wrappedState;
-	sjme_scritchui_uiComponent wrappedComponent;
-	sjme_frontEnd frontEnd;
-	
-	if (inState == NULL || inComponent == NULL)
-		return SJME_ERROR_NONE;
-	
-	/* Recover wrapped state. */
-	wrappedState = inState->wrappedState;
-	wrappedComponent = inComponent->common.handle;
-	
 	sjme_todo("Impl?");
-	return SJME_ERROR_NONE;
+	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
 sjme_errorCode sjme_scritchui_fb_componentSetPaintListener(
@@ -172,4 +160,32 @@ sjme_errorCode sjme_scritchui_fb_componentSetPaintListener(
 		(inListener == NULL ? NULL :
 			sjme_scritchui_fb_paintListener), 
 			&wrappedFrontEnd);
+}
+
+sjme_errorCode sjme_scritchui_fb_componentSetSizeListener(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(size))
+{
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+sjme_errorCode sjme_scritchui_fb_componentSetVisibleListener(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(visible))
+{
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+sjme_errorCode sjme_scritchui_fb_componentSize(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNullable sjme_jint* outWidth,
+	sjme_attrOutNullable sjme_jint* outHeight)
+{
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
 }
