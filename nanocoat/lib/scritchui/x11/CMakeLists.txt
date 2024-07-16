@@ -16,8 +16,10 @@ add_library(ScritchUIX11 SHARED
 	x11Core.c)
 
 # Always make it PIC
-set_property(TARGET ScritchUIX11
-	PROPERTY POSITION_INDEPENDENT_CODE ON)
+if(SQUIRRELJME_ENABLE_FPIC)
+	set_property(TARGET ScritchUIX11
+		PROPERTY POSITION_INDEPENDENT_CODE ON)
+endif()
 
 # Include main headers
 target_include_directories(ScritchUIX11 PUBLIC

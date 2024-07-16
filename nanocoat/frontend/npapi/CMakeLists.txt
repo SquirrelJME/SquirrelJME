@@ -16,8 +16,10 @@ add_dependencies(npapi
 	CorePIC)
 
 # Always make this position independent
-set_property(TARGET npapi
-	PROPERTY POSITION_INDEPENDENT_CODE ON)
+if(SQUIRRELJME_ENABLE_FPIC)
+	set_property(TARGET npapi
+		PROPERTY POSITION_INDEPENDENT_CODE ON)
+endif()
 
 # We need to find all of the includes and such
 target_include_directories(npapi PUBLIC

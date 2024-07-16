@@ -17,8 +17,10 @@ add_library(ScritchUIGTK3 SHARED
 	gtk3Core.c)
 
 # Always make it PIC
-set_property(TARGET ScritchUIGTK3
-	PROPERTY POSITION_INDEPENDENT_CODE ON)
+if(SQUIRRELJME_ENABLE_FPIC)
+	set_property(TARGET ScritchUIGTK3
+		PROPERTY POSITION_INDEPENDENT_CODE ON)
+endif()
 
 # Include main headers
 target_include_directories(ScritchUIGTK3 PUBLIC

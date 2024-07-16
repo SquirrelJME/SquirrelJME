@@ -25,8 +25,10 @@ add_library(ScritchUIGTK2 SHARED
 	gtk2Window.c)
 
 # Always make it PIC
-set_property(TARGET ScritchUIGTK2
-	PROPERTY POSITION_INDEPENDENT_CODE ON)
+if(SQUIRRELJME_ENABLE_FPIC)
+	set_property(TARGET ScritchUIGTK2
+		PROPERTY POSITION_INDEPENDENT_CODE ON)
+endif()
 
 # Include main headers
 target_include_directories(ScritchUIGTK2 PUBLIC

@@ -16,8 +16,10 @@ add_library(ScritchUIMotif SHARED
 	motifCore.c)
 
 # Always make it PIC
-set_property(TARGET ScritchUIMotif
-	PROPERTY POSITION_INDEPENDENT_CODE ON)
+if(SQUIRRELJME_ENABLE_FPIC)
+	set_property(TARGET ScritchUIMotif
+		PROPERTY POSITION_INDEPENDENT_CODE ON)
+endif()
 
 # Include main headers
 target_include_directories(ScritchUIMotif PUBLIC

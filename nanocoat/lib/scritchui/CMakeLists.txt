@@ -41,7 +41,7 @@ squirreljme_multilib_target_include_directories(ScritchUICore PUBLIC
 # Framebuffer implementation of ScritchUI, does not require any native
 # libraries other than direct framebuffer access. This library is purely
 # a static library and is included as needed...
-include_directories(framebuffer)
+add_subdirectory(framebuffer)
 
 # We can only build dynamic libraries if requested to
 if(NOT SQUIRRELJME_SCRITCHUI_NO_DYLIB)

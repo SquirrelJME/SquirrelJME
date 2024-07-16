@@ -10,7 +10,7 @@
 #include "lib/scritchui/core/core.h"
 #include "lib/scritchui/scritchui.h"
 
-static const sjme_scritchui_implFunctions sjme_scritchui_gtk3Functions =
+static const sjme_scritchui_implFunctions sjme_scritchui_palmosFunctions =
 {
 	.apiInit = NULL,
 	.componentRepaint = NULL,
@@ -37,7 +37,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_gtk3Functions =
 };
 
 /**
- * Returns the GTK3 ScritchUI interface.
+ * Returns the PalmOS ScritchUI interface.
  * 
  * @param inPool The allocation pool used.
  * @param loopExecute The loop execution to run after init.
@@ -46,7 +46,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_gtk3Functions =
  * @return The library interface.
  * @since 2024/07/16 
  */
-sjme_errorCode SJME_DYLIB_EXPORT SJME_SCRITCHUI_DYLIB_SYMBOL(gtk3)(
+sjme_errorCode SJME_DYLIB_EXPORT SJME_SCRITCHUI_DYLIB_SYMBOL(palmos)(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
 	sjme_attrInNullable sjme_frontEnd* initFrontEnd,
@@ -62,7 +62,7 @@ sjme_errorCode SJME_DYLIB_EXPORT SJME_SCRITCHUI_DYLIB_SYMBOL(gtk3)(
 	state = NULL;
 	if (sjme_error_is(error = sjme_scritchui_core_apiInit(inPool,
 		&state,
-		&sjme_scritchui_gtk3Functions, loopExecute,
+		&sjme_scritchui_palmosFunctions, loopExecute,
 		initFrontEnd)) || state == NULL)
 		return sjme_error_default(error);
 	

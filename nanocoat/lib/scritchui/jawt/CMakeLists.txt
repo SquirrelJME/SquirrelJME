@@ -13,8 +13,10 @@ add_library(ScritchUIJAWT SHARED
 	jawtCore.c)
 
 # Always make it PIC
-set_property(TARGET ScritchUIJAWT
-	PROPERTY POSITION_INDEPENDENT_CODE ON)
+if(SQUIRRELJME_ENABLE_FPIC)
+	set_property(TARGET ScritchUIJAWT
+		PROPERTY POSITION_INDEPENDENT_CODE ON)
+endif()
 
 # Include main headers
 target_include_directories(ScritchUIJAWT PUBLIC
