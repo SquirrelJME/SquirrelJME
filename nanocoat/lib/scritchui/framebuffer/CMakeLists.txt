@@ -8,6 +8,7 @@
 
 # Declare library
 squirreljme_multilib_add_static_library(ScritchUIFB
+	fbComponent.c
 	fbCore.c
 	fbLoop.c
 	fbPanel.c)

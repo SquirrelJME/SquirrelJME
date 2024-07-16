@@ -11,6 +11,27 @@
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiTypes.h"
 
+sjme_errorCode sjme_scritchui_fb_panelEnableFocus(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiPanel inPanel,
+	sjme_attrInValue sjme_jboolean enableFocus,
+	sjme_attrInValue sjme_jboolean defaultFocus)
+{
+	sjme_scritchui wrappedState;
+	sjme_scritchui_uiPanel wrappedPanel;
+	
+	if (inState == NULL || inPanel == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Recover wrapped state. */
+	wrappedState = inState->wrappedState;
+	wrappedPanel = inPanel->component.common.handle;
+	
+	/* Forward call. */
+	return wrappedState->api->panelEnableFocus(wrappedState,
+		wrappedPanel, enableFocus, defaultFocus);
+}
+
 sjme_errorCode sjme_scritchui_fb_panelNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiPanel inPanel)
