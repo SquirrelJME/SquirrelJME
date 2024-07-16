@@ -154,6 +154,9 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 	/* Restore info. */
 	state = data->state;
 	
+	/* Debug. */
+	sjme_message("ScritchUI Serial: %d", data->type);
+	
 	/* Begin cases. */
 	SJME_SCRITCHUI_DISPATCH_SWITCH_BEGIN
 

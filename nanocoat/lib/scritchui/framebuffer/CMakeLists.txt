@@ -8,7 +8,9 @@
 
 # Declare library
 squirreljme_multilib_add_static_library(ScritchUIFB
-	fbCore.c)
+	fbCore.c
+	fbLoop.c
+	fbPanel.c)
 
 # Include main headers
 squirreljme_multilib_static_target_include_directories(ScritchUIFB PUBLIC

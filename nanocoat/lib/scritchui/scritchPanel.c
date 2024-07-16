@@ -45,6 +45,10 @@ sjme_errorCode sjme_scritchui_core_panelNew(
 
 	if (inState == NULL || outPanel == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Missing? */
+	if (inState->impl->panelNew == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
 	
 	/* Allocate result. */
 	result = NULL;
@@ -59,8 +63,7 @@ sjme_errorCode sjme_scritchui_core_panelNew(
 		goto fail_preInit;
 	
 	/* Setup native widget. */
-	if (inState->impl->panelNew == NULL ||
-		sjme_error_is(error = inState->impl->panelNew(inState,
+	if (sjme_error_is(error = inState->impl->panelNew(inState,
 		result)) || result->component.common.handle == NULL)
 		goto fail_newWidget;
 	

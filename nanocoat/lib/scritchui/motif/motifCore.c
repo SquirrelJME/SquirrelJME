@@ -63,7 +63,7 @@ sjme_errorCode SJME_DYLIB_EXPORT SJME_SCRITCHUI_DYLIB_SYMBOL(motif)(
 	if (sjme_error_is(error = sjme_scritchui_core_apiInit(inPool,
 		&state,
 		&sjme_scritchui_motifFunctions, loopExecute,
-		initFrontEnd)) || state == NULL)
+		initFrontEnd, NULL)) || state == NULL)
 		return sjme_error_default(error);
 	
 	/* Success! */

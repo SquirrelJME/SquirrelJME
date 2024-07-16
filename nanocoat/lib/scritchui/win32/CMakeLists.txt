@@ -10,6 +10,7 @@
 add_library(ScritchUIWin32 SHARED
 	$<TARGET_OBJECTS:BasePIC>
 	$<TARGET_OBJECTS:ScritchUICorePIC>
+	$<TARGET_OBJECTS:ScritchUIFBPIC>
 	win32Core.c)
 
 # Always make it PIC

@@ -14,6 +14,7 @@ pkg_check_modules(GTK2 REQUIRED gtk+-2.0)
 add_library(ScritchUIGTK2 SHARED
 	$<TARGET_OBJECTS:BasePIC>
 	$<TARGET_OBJECTS:ScritchUICorePIC>
+	$<TARGET_OBJECTS:ScritchUIFBPIC>
 	gtk2Component.c
 	gtk2Container.c
 	gtk2Core.c

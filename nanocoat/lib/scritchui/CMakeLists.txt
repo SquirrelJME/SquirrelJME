@@ -40,15 +40,8 @@ set(SJME_ScritchUICore_SOURCES
 	scritchWindow.c)
 
 # Core ScritchUI Library
-if(SQUIRRELJME_ENABLE_FPIC)
-	squirreljme_multilib_add_library(ScritchUICore
-		$<TARGET_OBJECTS:ScritchUIFBPIC>
-		${SJME_ScritchUICore_SOURCES})
-else()
-	squirreljme_multilib_add_library(ScritchUICore
-		$<TARGET_OBJECTS:ScritchUIFB>
-		${SJME_ScritchUICore_SOURCES})
-endif()
+squirreljme_multilib_add_library(ScritchUICore
+	${SJME_ScritchUICore_SOURCES})
 
 # Include main headers
 squirreljme_multilib_target_include_directories(ScritchUICore PUBLIC

@@ -10,6 +10,7 @@
 add_library(ScritchUIJAWT SHARED
 	$<TARGET_OBJECTS:BasePIC>
 	$<TARGET_OBJECTS:ScritchUICorePIC>
+	$<TARGET_OBJECTS:ScritchUIFBPIC>
 	jawtCore.c)
 
 # Always make it PIC
