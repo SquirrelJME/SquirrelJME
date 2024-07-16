@@ -126,7 +126,7 @@ sjme_errorCode sjme_scritchui_core_containerRemove(
 	sjme_list_sjme_scritchui_uiComponent* list;
 	sjme_jint i, n;
 	
-	if (inState == NULL || inContainer == NULL)
+	if (inState == NULL || inContainer == NULL || removeComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Not implemented? */
