@@ -9,8 +9,13 @@
 # Include common macros to make things easier
 squirreljme_include("scritchui.cmake")
 
-# Core ScritchUI Library
-squirreljme_multilib_add_library(ScritchUICore
+# Framebuffer implementation of ScritchUI, does not require any native
+# libraries other than direct framebuffer access. This library is purely
+# a static library and is included as needed...
+add_subdirectory(framebuffer)
+
+# Source files for ScritchUI
+set(SJME_ScritchUICore_SOURCES
 	scritchComponent.c
 	scritchContainer.c
 	scritchCore.c
@@ -34,14 +39,20 @@ squirreljme_multilib_add_library(ScritchUICore
 	scritchText.c
 	scritchWindow.c)
 
+# Core ScritchUI Library
+if(SQUIRRELJME_ENABLE_FPIC)
+	squirreljme_multilib_add_library(ScritchUICore
+		$<TARGET_OBJECTS:ScritchUIFBPIC>
+		${SJME_ScritchUICore_SOURCES})
+else()
+	squirreljme_multilib_add_library(ScritchUICore
+		$<TARGET_OBJECTS:ScritchUIFB>
+		${SJME_ScritchUICore_SOURCES})
+endif()
+
 # Include main headers
 squirreljme_multilib_target_include_directories(ScritchUICore PUBLIC
 	"${CMAKE_SOURCE_DIR}/include")
-
-# Framebuffer implementation of ScritchUI, does not require any native
-# libraries other than direct framebuffer access. This library is purely
-# a static library and is included as needed...
-add_subdirectory(framebuffer)
 
 # We can only build dynamic libraries if requested to
 if(NOT SQUIRRELJME_SCRITCHUI_NO_DYLIB)

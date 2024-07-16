@@ -71,8 +71,8 @@ macro(squirreljme_multilib_add_library libBase)
 	endif()
 endmacro()
 
-# Add include directories to multilib library
-macro(squirreljme_multilib_target_include_directories libBase)
+# Add include directories to static multilib library
+macro(squirreljme_multilib_static_target_include_directories libBase)
 	# Load in include paths
 	set(libBaseIncludes)
 	foreach(arg ${ARGV})
@@ -86,12 +86,33 @@ macro(squirreljme_multilib_target_include_directories libBase)
 
 	target_include_directories(${libBase} PUBLIC
 		${libBaseIncludes})
-	target_include_directories(${libBase}PIC PUBLIC
-		${libBaseIncludes})
+
+	if(SQUIRRELJME_ENABLE_FPIC)
+		target_include_directories(${libBase}PIC PUBLIC
+			${libBaseIncludes})
+	endif()
+
 	target_include_directories(${libBase}Static PUBLIC
 		${libBaseIncludes})
+endmacro()
+
+# Add include directories to multilib library
+macro(squirreljme_multilib_target_include_directories libBase)
+	# Use static variant
+	squirreljme_multilib_static_target_include_directories(${ARGV})
 
 	if(SQUIRRELJME_ENABLE_DYLIB)
+		# Load in include paths
+		set(libBaseIncludes)
+		foreach(arg ${ARGV})
+			# Ignore first
+			if("${arg}" STREQUAL "${libBase}")
+				continue()
+			endif()
+
+			list(APPEND libBaseIncludes "${arg}")
+		endforeach()
+
 		target_include_directories(${libBase}DyLib PUBLIC
 			${libBaseIncludes})
 	endif()
