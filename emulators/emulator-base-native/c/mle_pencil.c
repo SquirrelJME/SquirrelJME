@@ -358,6 +358,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetBlendingMode)
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetClip)
 	(JNIEnv* env, jclass classy, jobject g, jint x, jint y, jint w, jint h)
 {
+	sjme_errorCode error;
 	sjme_scritchui_pencil p;
 	
 	/* Recover. */
@@ -368,7 +369,9 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetClip)
 		return;
 	}
 	
-	sjme_todo("Impl?");
+	/* Forward the clip. */
+	if (sjme_error_is(error = p->api->setClip(p, x, y, w, h)))
+		sjme_jni_throwMLECallError(env, error);
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetDefaultFont)
