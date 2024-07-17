@@ -134,6 +134,7 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 	SJME_SCRITCHUI_DISPATCH_DECL(fontBuiltin);
 	SJME_SCRITCHUI_DISPATCH_DECL(fontDerive);
 	SJME_SCRITCHUI_DISPATCH_DECL(hardwareGraphics);
+	SJME_SCRITCHUI_DISPATCH_DECL(listNew);
 	SJME_SCRITCHUI_DISPATCH_DECL(panelNew);
 	SJME_SCRITCHUI_DISPATCH_DECL(panelEnableFocus);
 	SJME_SCRITCHUI_DISPATCH_DECL(screenSetListener);
@@ -249,6 +250,11 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 		hardwareGraphics->sw,
 		hardwareGraphics->sh,
 		hardwareGraphics->pencilFrontEndCopy));
+
+	SJME_SCRITCHUI_DISPATCH_CASE(listNew,
+		SJME_SCRITCHUI_SERIAL_TYPE_LIST_NEW,
+		(state,
+		listNew->outList));
 
 	SJME_SCRITCHUI_DISPATCH_CASE(panelEnableFocus,
 		SJME_SCRITCHUI_SERIAL_TYPE_PANEL_ENABLE_FOCUS,

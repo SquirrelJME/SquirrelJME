@@ -1261,15 +1261,15 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __listNew)
 		error = SJME_ERROR_NULL_ARGUMENTS;
 		goto fail_nullArgs;
 	}
+
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
 	
-	if (state->api->panelNew == NULL)
+	if (state->api->listNew == NULL)
 	{
 		error = SJME_ERROR_NOT_IMPLEMENTED;
 		goto fail_newList;
 	}
-
-	/* Restore. */
-	state = (sjme_scritchui)stateP;
 
 	/* Create new list. */
 	list = NULL;
@@ -1480,15 +1480,15 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __panelNew)
 		error = SJME_ERROR_NULL_ARGUMENTS;
 		goto fail_nullArgs;
 	}
+
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
 	
 	if (state->api->panelNew == NULL)
 	{
 		error = SJME_ERROR_NOT_IMPLEMENTED;
 		goto fail_newPanel;
 	}
-
-	/* Restore. */
-	state = (sjme_scritchui)stateP;
 
 	/* Create new panel. */
 	panel = NULL;
