@@ -732,6 +732,10 @@ workflows:
       - test_springcoat_debug:
           requires:
             - construct_testJars
+          filters:
+            branches:
+              only:
+                - trunk
       - test_springcoat_release:
           requires:
             - construct_testJars
@@ -755,7 +759,11 @@ workflows:
                 - trunk
 
       # ARM64
-      - build_linux_arm64
+      - build_linux_arm64:
+          filters:
+            branches:
+              only:
+                - trunk
       - build_linux_arm64_standalone:
           requires:
             - build_linux_arm64
@@ -782,10 +790,18 @@ workflows:
 #                - trunk
 
       # Windows 32-bit
-      - build_windows_i386_setup
+      - build_windows_i386_setup:
+          filters:
+            branches:
+              only:
+                - trunk
       - build_windows_i386:
           requires:
             - build_windows_i386_setup
+          filters:
+            branches:
+              only:
+                - trunk
       - build_windows_i386_standalone:
           requires:
             - build_windows_i386
@@ -795,10 +811,18 @@ workflows:
                 - trunk
 
       # Windows 64-bit
-      - build_windows_amd64_setup
+      - build_windows_amd64_setup:
+          filters:
+            branches:
+              only:
+                - trunk
       - build_windows_amd64:
           requires:
             - build_windows_amd64_setup
+          filters:
+            branches:
+              only:
+                - trunk
       - build_windows_amd64_standalone:
           requires:
             - build_windows_amd64
@@ -810,8 +834,16 @@ workflows:
       # Mac OS X runs decently however the jobs for it have a higher cost, so
       # only perform builds and tests for trunk to lower costs.
       # Currently, I have an overabundance of credits...
-      - build_macosx_amd64
-      - build_macosx_arm64
+      - build_macosx_amd64:
+          filters:
+            branches:
+              only:
+                - trunk
+      - build_macosx_arm64:
+          filters:
+            branches:
+              only:
+                - trunk
       - build_macosx_amd64_standalone:
           requires:
             - build_macosx_amd64
@@ -841,6 +873,10 @@ workflows:
       - construct_testJars:
           requires:
             - build_linux_amd64
+          filters:
+            branches:
+              only:
+                - trunk
 
       ############################## DEPLOYMENT ##############################
       - bundle:
