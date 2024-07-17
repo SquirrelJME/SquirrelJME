@@ -254,7 +254,8 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 	SJME_SCRITCHUI_DISPATCH_CASE(listNew,
 		SJME_SCRITCHUI_SERIAL_TYPE_LIST_NEW,
 		(state,
-		listNew->outList));
+		listNew->outList,
+		listNew->inChoiceType));
 
 	SJME_SCRITCHUI_DISPATCH_CASE(panelEnableFocus,
 		SJME_SCRITCHUI_SERIAL_TYPE_PANEL_ENABLE_FOCUS,
@@ -617,13 +618,15 @@ sjme_errorCode sjme_scritchui_coreSerial_hardwareGraphics(
 
 sjme_errorCode sjme_scritchui_coreSerial_listNew(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInOutNotNull sjme_scritchui_uiList* outList)
+	sjme_attrInOutNotNull sjme_scritchui_uiList* outList,
+	sjme_attrInValue sjme_scritchui_choiceType inChoiceType)
 {
 	SJME_SCRITCHUI_SERIAL_CHUNK(listNew,
 		SJME_SCRITCHUI_SERIAL_TYPE_LIST_NEW,
-		(inState, outList));
+		(inState, outList, inChoiceType));
 		
 	SJME_SCRITCHUI_SERIAL_PASS(outList);
+	SJME_SCRITCHUI_SERIAL_PASS(inChoiceType);
 	
 	/* Invoke and wait. */
 	SJME_SCRITCHUI_INVOKE_WAIT;

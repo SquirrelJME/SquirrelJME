@@ -101,7 +101,8 @@ typedef sjme_errorCode (*sjme_scritchui_impl_containerRemoveFunc)(
  */
 typedef sjme_errorCode (*sjme_scritchui_impl_listNewFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiList inList);
+	sjme_attrInNotNull sjme_scritchui_uiList inList,
+	sjme_attrInValue sjme_scritchui_choiceType inChoiceType);
 
 /**
  * Creates a new native panel.

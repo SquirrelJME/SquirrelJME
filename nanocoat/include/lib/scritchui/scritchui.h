@@ -144,6 +144,29 @@ typedef enum sjme_scritchui_pencilFontStyle
 } sjme_scritchui_pencilFontStyle;
 
 /**
+ * Represents the type of choice that a choice selection may be.
+ * 
+ * @since 2024/07/17
+ */
+typedef enum sjme_scritchui_choiceType
+{
+	/** Only one element may be selected at a time. */
+	SJME_SCRITCHUI_CHOICE_TYPE_EXCLUSIVE = 0,
+	
+	/**
+	 * The item that is focused is always the only one selected, pressing an
+	 * action key (like enter/space) will activate the item.
+	 */
+	SJME_SCRITCHUI_CHOICE_TYPE_IMPLICIT = 1,
+	
+	/** Any number of items may be selected. */
+	SJME_SCRITCHUI_CHOICE_TYPE_MULTIPLE = 2,
+	
+	/** The number of choice types. */
+	SJME_SCRITCHUI_NUM_CHOICE_TYPES = 3,
+} sjme_scritchui_choiceType;
+
+/**
  * Represents a point.
  * 
  * @since 2024/07/12
@@ -848,12 +871,14 @@ typedef sjme_errorCode (*sjme_scritchui_hardwareGraphicsFunc)(
  * 
  * @param inState The input state.
  * @param outPanel The resultant list.
+ * @param inChoiceType The type of choice this is.
  * @return Any error code if applicable.
  * @since 2024/07/16
  */
 typedef sjme_errorCode (*sjme_scritchui_listNewFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInOutNotNull sjme_scritchui_uiList* outList);
+	sjme_attrInOutNotNull sjme_scritchui_uiList* outList,
+	sjme_attrInValue sjme_scritchui_choiceType inChoiceType);
 
 /**
  * Execute the given callback within the event loop of the GUI.

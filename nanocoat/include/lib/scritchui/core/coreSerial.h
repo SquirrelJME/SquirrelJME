@@ -215,7 +215,8 @@ SUD_STRUCT_DEF(hardwareGraphics,
 	SDU_VARP(const sjme_frontEnd*, pencilFrontEndCopy););
 
 SUD_STRUCT_DEF(listNew,
-	SDU_VARP(sjme_scritchui_uiList*, outList););
+	SDU_VARP(sjme_scritchui_uiList*, outList);
+	SDU_VAR(sjme_scritchui_choiceType, inChoiceType););
 	
 SUD_STRUCT_DEF(panelEnableFocus,
 	SDU_VAR(sjme_scritchui_uiPanel, inPanel);
@@ -486,7 +487,8 @@ sjme_errorCode sjme_scritchui_coreSerial_hardwareGraphics(
 	
 sjme_errorCode sjme_scritchui_coreSerial_listNew(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInOutNotNull sjme_scritchui_uiList* outList);
+	sjme_attrInOutNotNull sjme_scritchui_uiList* outList,
+	sjme_attrInValue sjme_scritchui_choiceType inChoiceType);
 	
 sjme_errorCode sjme_scritchui_coreSerial_panelEnableFocus(
 	sjme_attrInNotNull sjme_scritchui inState,

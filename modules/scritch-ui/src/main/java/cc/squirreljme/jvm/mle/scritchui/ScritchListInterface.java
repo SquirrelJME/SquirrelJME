@@ -9,9 +9,11 @@
 
 package cc.squirreljme.jvm.mle.scritchui;
 
+import cc.squirreljme.jvm.mle.constants.UIListType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchListBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -26,12 +28,14 @@ public interface ScritchListInterface
 	/**
 	 * Returns a newly created list.
 	 *
+	 * @param __type The type of list this is.
 	 * @return The newly created list.
-	 * @throws MLECallError
+	 * @throws MLECallError If the type is not valid.
 	 * @since 2024/07/16
 	 */
 	@SquirrelJMEVendorApi
 	@NotNull
-	ScritchListBracket listNew()
+	ScritchListBracket listNew(
+		@MagicConstant(valuesFromClass = UIListType.class) int __type)
 		throws MLECallError;
 }

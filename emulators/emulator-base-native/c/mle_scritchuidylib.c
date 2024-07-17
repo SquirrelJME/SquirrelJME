@@ -80,7 +80,7 @@
 	DESC_STRING DESC_STRING ")" DESC_LONG
 
 #define FORWARD_DESC___listNew "(" \
-	DESC_LONG ")" DESC_LONG
+	DESC_LONG DESC_INT ")" DESC_LONG
 
 #define FORWARD_DESC___loopExecute "(" \
 	DESC_LONG DESC_CLASS("java/lang/Runnable") ")" DESC_VOID
@@ -1250,7 +1250,7 @@ fail_poolInit:
 }
 
 JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __listNew)
-	(JNIEnv* env, jclass classy, jlong stateP)
+	(JNIEnv* env, jclass classy, jlong stateP, jint type)
 {
 	sjme_errorCode error;
 	sjme_scritchui state;
@@ -1274,7 +1274,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __listNew)
 	/* Create new list. */
 	list = NULL;
 	if (sjme_error_is(error = state->api->listNew(state,
-		&list)) || list == NULL)
+		&list, type)) || list == NULL)
 		goto fail_newList;
 	
 	/* Return the state pointer. */

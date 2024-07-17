@@ -249,12 +249,13 @@ public final class NativeScritchDylib
 	 * Initializes a new list.
 	 *
 	 * @param __stateP The state pointer.
+	 * @param __type The type of list this is.
 	 * @return The resultant list pointer.
 	 * @throws MLECallError If the state pointer is invalid or the list could
 	 * not be created.
 	 * @since 2024/07/16
 	 */
-	static native long __listNew(long __stateP)
+	static native long __listNew(long __stateP, int __type)
 		throws MLECallError;
 	
 	/**

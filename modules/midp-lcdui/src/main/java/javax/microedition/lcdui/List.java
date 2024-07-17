@@ -120,7 +120,7 @@ public class List
 		ScritchListInterface listApi = scritchApi.list();
 		
 		// Create new list
-		ScritchListBracket newList = listApi.listNew();
+		ScritchListBracket newList = listApi.listNew(nativeType);
 		
 		// Put the list in the panel
 		ScritchPanelBracket inPanel = state.scritchPanel();

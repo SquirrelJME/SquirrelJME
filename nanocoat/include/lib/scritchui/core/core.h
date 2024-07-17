@@ -138,7 +138,8 @@ sjme_errorCode sjme_scritchui_core_componentSetVisibleListener(
 
 sjme_errorCode sjme_scritchui_core_listNew(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInOutNotNull sjme_scritchui_uiList* outList);
+	sjme_attrInOutNotNull sjme_scritchui_uiList* outList,
+	sjme_attrInValue sjme_scritchui_choiceType inChoiceType);
 
 sjme_errorCode sjme_scritchui_core_loopExecute(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -173,7 +174,8 @@ sjme_errorCode sjme_scritchpen_core_hardwareGraphics(
 
 sjme_errorCode sjme_scritchui_core_listNew(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInOutNotNull sjme_scritchui_uiList* outList);
+	sjme_attrInOutNotNull sjme_scritchui_uiList* outList,
+	sjme_attrInValue sjme_scritchui_choiceType inChoiceType);
 
 sjme_errorCode sjme_scritchui_core_loopExecuteLater(
 	sjme_attrInNotNull sjme_scritchui inState,

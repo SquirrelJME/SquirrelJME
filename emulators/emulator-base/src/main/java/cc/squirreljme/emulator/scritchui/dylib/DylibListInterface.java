@@ -12,9 +12,7 @@ package cc.squirreljme.emulator.scritchui.dylib;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchListInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchListBracket;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Dynamic library interface for ScritchUI lists.
@@ -44,10 +42,10 @@ public class DylibListInterface
 	 * @since 2024/07/16
 	 */
 	@Override
-	public ScritchListBracket listNew()
+	public ScritchListBracket listNew(int __type)
 		throws MLECallError
 	{
-		long listP = NativeScritchDylib.__listNew(this.dyLib._stateP);
+		long listP = NativeScritchDylib.__listNew(this.dyLib._stateP, __type);
 		if (listP == 0)
 			throw new MLECallError("Could not create list.");
 		
