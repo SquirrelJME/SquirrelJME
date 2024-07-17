@@ -92,6 +92,18 @@ typedef sjme_errorCode (*sjme_scritchui_impl_containerRemoveFunc)(
 	sjme_attrInNotNull sjme_scritchui_uiComponent removeComponent);
 
 /**
+ * Creates a new native list.
+ * 
+ * @param inState The input ScritchUI state.
+ * @param inList The list that was created.
+ * @return Any error code as per implementation.
+ * @since 2024/04/06
+ */
+typedef sjme_errorCode (*sjme_scritchui_impl_listNewFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiList inList);
+
+/**
  * Creates a new native panel.
  * 
  * @param inState The input ScritchUI state.
@@ -159,6 +171,9 @@ struct sjme_scritchui_implFunctions
 	
 	/** Hardware graphics support on arbitrary buffers. */
 	SJME_SCRITCHUI_QUICK_SAME(hardwareGraphics);
+	
+	/** Creates a new native list. */
+	SJME_SCRITCHUI_QUICK_IMPL(listNew);
 	
 	/** Execute callback within the event loop or schedule later. */
 	SJME_SCRITCHUI_QUICK_SAME(loopExecute);

@@ -43,6 +43,7 @@
 
 #define FORWARD_DESC___builtinFonts "(" \
 	DESC_LONG ")" DESC_ARRAY(DESC_PENCILFONT)
+
 #define FORWARD_DESC___componentHeight "(" \
 	DESC_LONG DESC_LONG ")" DESC_INT
 #define FORWARD_DESC___componentRepaint "(" \
@@ -56,6 +57,7 @@
 #define FORWARD_DESC___componentSetVisibleListener "(" \
 	DESC_LONG DESC_LONG DESC_SCRITCHUI_VISIBLE_LISTENER ")" DESC_VOID
 #define FORWARD_DESC___componentWidth FORWARD_DESC___componentHeight
+
 #define FORWARD_DESC___containerAdd "(" \
 	DESC_LONG DESC_LONG DESC_LONG ")" DESC_VOID
 #define FORWARD_DESC___containerRemoveAll "(" \
@@ -63,31 +65,43 @@
 #define FORWARD_DESC___containerSetBounds "(" \
 	DESC_LONG DESC_LONG DESC_LONG \
 	DESC_INTEGER DESC_INTEGER DESC_INTEGER DESC_INTEGER ")" DESC_VOID
+
 #define FORWARD_DESC___envIsPanelOnly "(" \
 	DESC_LONG ")" DESC_BOOLEAN
+
 #define FORWARD_DESC___fontDerive "(" \
 	DESC_LONG DESC_LONG DESC_INT DESC_INT ")" DESC_LONG
+
 #define FORWARD_DESC___hardwareGraphics "(" \
 	DESC_LONG DESC_INT DESC_INT DESC_INT DESC_OBJECT \
 	DESC_ARRAY(DESC_INT) DESC_INT DESC_INT DESC_INT DESC_INT ")" DESC_PENCIL
+
 #define FORWARD_DESC___linkInit "(" \
 	DESC_STRING DESC_STRING ")" DESC_LONG
+
+#define FORWARD_DESC___listNew "(" \
+	DESC_LONG ")" DESC_LONG
+
 #define FORWARD_DESC___loopExecute "(" \
 	DESC_LONG DESC_CLASS("java/lang/Runnable") ")" DESC_VOID
 #define FORWARD_DESC___loopExecuteLater FORWARD_DESC___loopExecute
 #define FORWARD_DESC___loopExecuteWait FORWARD_DESC___loopExecute
 #define FORWARD_DESC___loopIsInThread "(" \
 	DESC_LONG ")" DESC_BOOLEAN
+
 #define FORWARD_DESC___panelEnableFocus "(" \
 	DESC_LONG DESC_LONG DESC_BOOLEAN DESC_BOOLEAN ")" DESC_VOID
 #define FORWARD_DESC___panelNew "(" \
 	DESC_LONG ")" DESC_LONG
+
 #define FORWARD_DESC___screenId "(" \
 	DESC_LONG DESC_LONG ")" DESC_INTEGER
 #define FORWARD_DESC___screens "(" \
 	DESC_LONG DESC_ARRAY(DESC_LONG) ")" DESC_INTEGER
+
 #define FORWARD_DESC___weakDelete "(" \
 	DESC_LONG ")" DESC_VOID
+
 #define FORWARD_DESC___windowContentMinimumSize "(" \
 	DESC_LONG DESC_LONG DESC_INTEGER DESC_INTEGER ")" DESC_VOID
 #define FORWARD_DESC___windowManagerType "(" \
@@ -1235,6 +1249,45 @@ fail_poolInit:
 	return 0;
 }
 
+JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __listNew)
+	(JNIEnv* env, jclass classy, jlong stateP)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	sjme_scritchui_uiList list;
+	
+	if (stateP == 0)
+	{
+		error = SJME_ERROR_NULL_ARGUMENTS;
+		goto fail_nullArgs;
+	}
+	
+	if (state->api->panelNew == NULL)
+	{
+		error = SJME_ERROR_NOT_IMPLEMENTED;
+		goto fail_newList;
+	}
+
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+
+	/* Create new list. */
+	list = NULL;
+	if (sjme_error_is(error = state->api->listNew(state,
+		&list)) || list == NULL)
+		goto fail_newList;
+	
+	/* Return the state pointer. */
+	return (jlong)list;
+
+fail_newList:
+fail_nullArgs:
+	
+	/* Fail. */
+	sjme_jni_throwMLECallError(env, sjme_error_default(error));
+	return 0L;
+}
+
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __loopExecute)
 	(JNIEnv* env, jclass classy, jlong stateP, jobject runnable)
 {
@@ -1427,15 +1480,19 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __panelNew)
 		error = SJME_ERROR_NULL_ARGUMENTS;
 		goto fail_nullArgs;
 	}
+	
+	if (state->api->panelNew == NULL)
+	{
+		error = SJME_ERROR_NOT_IMPLEMENTED;
+		goto fail_newPanel;
+	}
 
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
 
 	/* Create new panel. */
 	panel = NULL;
-	error = SJME_ERROR_NOT_IMPLEMENTED;
-	if (state->api->panelNew == NULL ||
-		sjme_error_is(error = state->api->panelNew(state,
+	if (sjme_error_is(error = state->api->panelNew(state,
 			&panel)) || panel == NULL)
 		goto fail_newPanel;
 	
@@ -1713,6 +1770,7 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 	FORWARD_list(NativeScritchDylib, __fontDerive),
 	FORWARD_list(NativeScritchDylib, __hardwareGraphics),
 	FORWARD_list(NativeScritchDylib, __linkInit),
+	FORWARD_list(NativeScritchDylib, __listNew),
 	FORWARD_list(NativeScritchDylib, __loopExecute),
 	FORWARD_list(NativeScritchDylib, __loopExecuteLater),
 	FORWARD_list(NativeScritchDylib, __loopExecuteWait),

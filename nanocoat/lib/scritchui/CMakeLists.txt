@@ -16,10 +16,12 @@ add_subdirectory(framebuffer)
 
 # Source files for ScritchUI
 set(SJME_ScritchUICore_SOURCES
+	scritchChoice.c
 	scritchComponent.c
 	scritchContainer.c
 	scritchCore.c
 	scritchFallbackFont.c
+	scritchList.c
 	scritchLoop.c
 	scritchPanel.c
 	scritchPencil.c

@@ -82,6 +82,9 @@ typedef enum sjme_scritchui_serialType
 	/** @c hardwareGraphics . */
 	SJME_SCRITCHUI_SERIAL_TYPE_HARDWARE_GRAPHICS,
 		
+	/** @c listNew . */
+	SJME_SCRITCHUI_SERIAL_TYPE_LIST_NEW,
+		
 	/** @c panelEnableFocus . */
 	SJME_SCRITCHUI_SERIAL_TYPE_PANEL_ENABLE_FOCUS,
 		
@@ -210,6 +213,9 @@ SUD_STRUCT_DEF(hardwareGraphics,
 	SDU_VAR(sjme_jint, sw);
 	SDU_VAR(sjme_jint, sh);
 	SDU_VARP(const sjme_frontEnd*, pencilFrontEndCopy););
+
+SUD_STRUCT_DEF(listNew,
+	SDU_VARP(sjme_scritchui_uiList*, outList););
 	
 SUD_STRUCT_DEF(panelEnableFocus,
 	SDU_VAR(sjme_scritchui_uiPanel, inPanel);
@@ -301,6 +307,9 @@ typedef union sjme_scritchui_serialDataUnion
 	
 	/** @c hardwareGraphics . */
 	SJME_SCRITCHUI_SDU_DEF(hardwareGraphics);
+	
+	/** @c listNew . */
+	SJME_SCRITCHUI_SDU_DEF(listNew);
 		
 	/** @c panelEnableFocus . */
 	SJME_SCRITCHUI_SDU_DEF(panelEnableFocus);
@@ -436,6 +445,10 @@ sjme_errorCode sjme_scritchui_coreSerial_hardwareGraphics(
 	sjme_attrInPositiveNonZero sjme_jint sw,
 	sjme_attrInPositiveNonZero sjme_jint sh,
 	sjme_attrInNullable const sjme_frontEnd* pencilFrontEndCopy);
+	
+sjme_errorCode sjme_scritchui_coreSerial_listNew(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_uiList* outList);
 	
 sjme_errorCode sjme_scritchui_coreSerial_panelEnableFocus(
 	sjme_attrInNotNull sjme_scritchui inState,

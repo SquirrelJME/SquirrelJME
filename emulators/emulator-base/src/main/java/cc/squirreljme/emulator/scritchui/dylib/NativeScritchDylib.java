@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.brackets.PencilBracket;
 import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchListBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchCloseListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchInputListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchPaintListener;
@@ -243,6 +244,18 @@ public final class NativeScritchDylib
 	 * @since 2024/03/31
 	 */
 	static native long __linkInit(String __libPath, String __name);
+	
+	/**
+	 * Initializes a new list.
+	 *
+	 * @param __stateP The state pointer.
+	 * @return The resultant list pointer.
+	 * @throws MLECallError If the state pointer is invalid or the list could
+	 * not be created.
+	 * @since 2024/07/16
+	 */
+	static native long __listNew(long __stateP)
+		throws MLECallError;
 	
 	/**
 	 * Executes the given runnable in the loop.

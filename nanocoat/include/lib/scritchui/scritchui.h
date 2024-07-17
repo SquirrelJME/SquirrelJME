@@ -46,6 +46,9 @@ typedef enum sjme_scritchui_uiType
 	/** Reserved. */
 	SJME_SCRITCHUI_TYPE_RESERVED,
 	
+	/** List. */
+	SJME_SCRITCHUI_TYPE_LIST,
+	
 	/** Panel. */
 	SJME_SCRITCHUI_TYPE_PANEL,
 	
@@ -251,6 +254,13 @@ typedef struct sjme_scritchui_uiPaintableBase* sjme_scritchui_uiPaintable;
  * @since 2024/03/27
  */
 typedef struct sjme_scritchui_uiPanelBase* sjme_scritchui_uiPanel;
+
+/**
+ * A list within ScritchUI.
+ * 
+ * @since 2024/07/16
+ */
+typedef struct sjme_scritchui_uiListBase* sjme_scritchui_uiList;
 
 /**
  * A single monitor screen on the display for ScritchUI.
@@ -681,6 +691,18 @@ typedef sjme_errorCode (*sjme_scritchui_hardwareGraphicsFunc)(
 	sjme_attrInNullable const sjme_frontEnd* pencilFrontEndCopy);
 
 /**
+ * Creates a new list.
+ * 
+ * @param inState The input state.
+ * @param outPanel The resultant list.
+ * @return Any error code if applicable.
+ * @since 2024/07/16
+ */
+typedef sjme_errorCode (*sjme_scritchui_listNewFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_uiList* outList);
+
+/**
  * Execute the given callback within the event loop of the GUI.
  * 
  * @param inState The input state.
@@ -879,6 +901,9 @@ struct sjme_scritchui_apiFunctions
 	
 	/** Hardware graphics support on arbitrary buffers. */
 	SJME_SCRITCHUI_QUICK_API(hardwareGraphics);
+	
+	/** Creates a new list. */
+	SJME_SCRITCHUI_QUICK_API(listNew);
 	
 	/** Execute callback within the event loop. */
 	SJME_SCRITCHUI_QUICK_API(loopExecute);

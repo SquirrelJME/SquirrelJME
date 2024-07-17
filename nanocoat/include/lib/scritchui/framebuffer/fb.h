@@ -134,6 +134,10 @@ sjme_errorCode sjme_scritchui_fb_containerSetBounds(
 	sjme_attrInPositiveNonZero sjme_jint width,
 	sjme_attrInPositiveNonZero sjme_jint height);
 
+sjme_errorCode sjme_scritchui_fb_listNew(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiList inList);
+
 sjme_errorCode sjme_scritchui_fb_loopExecute(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_thread_mainFunc callback,

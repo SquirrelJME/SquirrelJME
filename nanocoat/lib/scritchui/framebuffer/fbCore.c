@@ -28,6 +28,7 @@ const sjme_scritchui_implFunctions sjme_scritchui_fbFunctions =
 	.containerRemove = sjme_scritchui_fb_containerRemove,
 	.containerSetBounds = sjme_scritchui_fb_containerSetBounds,
 	.hardwareGraphics = NULL,
+	.listNew = sjme_scritchui_fb_listNew,
 	.loopExecute = sjme_scritchui_fb_loopExecute,
 	.loopExecuteLater = sjme_scritchui_fb_loopExecuteLater,
 	.loopExecuteWait = sjme_scritchui_fb_loopExecuteWait,

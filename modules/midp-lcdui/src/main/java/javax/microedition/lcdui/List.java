@@ -124,6 +124,8 @@ public class List
 		
 		// Put the list in the panel
 		ScritchPanelBracket inPanel = state.scritchPanel();
+		scritchApi.container().add(inPanel,
+			newList);
 		
 		throw Debugging.todo();
 		/*

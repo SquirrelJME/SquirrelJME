@@ -152,8 +152,6 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 #define DESC_DYLIB_PENCILFONT \
 	DESC_CLASS("cc/squirreljme/emulator/scritchui/dylib/DylibPencilFontObject")
 
-#define DESC_SCRITCHUI_COMPONENT DESC_CLASS( \
-	"cc/squirreljme/jvm/mle/scritchui/brackets/ScritchComponentBracket")
 #define DESC_SCRITCHUI_CLOSE_LISTENER DESC_CLASS( \
 	"cc/squirreljme/jvm/mle/scritchui/callbacks/ScritchCloseListener")
 #define DESC_SCRITCHUI_INPUT_LISTENER DESC_CLASS( \
@@ -162,6 +160,11 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 	"cc/squirreljme/jvm/mle/scritchui/callbacks/ScritchPaintListener")
 #define DESC_SCRITCHUI_VISIBLE_LISTENER DESC_CLASS( \
 	"cc/squirreljme/jvm/mle/scritchui/callbacks/ScritchVisibleListener")
+
+#define DESC_SCRITCHUI_COMPONENT DESC_CLASS( \
+	"cc/squirreljme/jvm/mle/scritchui/brackets/ScritchComponentBracket")
+#define DESC_SCRITCHUI_LIST DESC_CLASS( \
+	"cc/squirreljme/jvm/mle/scritchui/brackets/ScritchListBracket")
 #define DESC_SCRITCHUI_PENCIL DESC_CLASS( \
 	"cc/squirreljme/jvm/mle/scritchui/brackets/ScritchPencilBracket")
 #define DESC_SCRITCHUI_WINDOW DESC_CLASS( \

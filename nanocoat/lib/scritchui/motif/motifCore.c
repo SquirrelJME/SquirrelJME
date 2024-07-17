@@ -24,6 +24,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_motifFunctions =
 	.containerRemove = NULL,
 	.containerSetBounds = NULL,
 	.hardwareGraphics = NULL,
+	.listNew = NULL,
 	.loopExecute = NULL,
 	.loopExecuteLater = NULL,
 	.loopExecuteWait = NULL,

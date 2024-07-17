@@ -47,6 +47,10 @@ public class DylibListInterface
 	public ScritchListBracket listNew()
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		long listP = NativeScritchDylib.__listNew(this.dyLib._stateP);
+		if (listP == 0)
+			throw new MLECallError("Could not create list.");
+		
+		return new DylibListObject(listP);
 	}
 }

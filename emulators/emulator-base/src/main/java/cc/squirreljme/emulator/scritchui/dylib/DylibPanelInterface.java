@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Not Described.
+ * Dynamic library interface for panels.
  *
  * @since 2024/04/02
  */

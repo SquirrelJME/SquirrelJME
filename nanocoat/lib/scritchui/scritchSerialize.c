@@ -541,6 +541,20 @@ sjme_errorCode sjme_scritchui_coreSerial_hardwareGraphics(
 	SJME_SCRITCHUI_INVOKE_WAIT;
 }
 
+sjme_errorCode sjme_scritchui_coreSerial_listNew(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_uiList* outList)
+{
+	SJME_SCRITCHUI_SERIAL_CHUNK(listNew,
+		SJME_SCRITCHUI_SERIAL_TYPE_LIST_NEW,
+		(inState, outList));
+		
+	SJME_SCRITCHUI_SERIAL_PASS(outList);
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
+}
+
 sjme_errorCode sjme_scritchui_coreSerial_panelEnableFocus(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiPanel inPanel,
