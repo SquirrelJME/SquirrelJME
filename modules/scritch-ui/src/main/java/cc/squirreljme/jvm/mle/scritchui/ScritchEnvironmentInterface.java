@@ -26,6 +26,7 @@ import org.jetbrains.annotations.Range;
  */
 @SquirrelJMEVendorApi
 public interface ScritchEnvironmentInterface
+	extends ScritchApiInterface
 {
 	/**
 	 * Returns all the fonts which are internally built into the UI

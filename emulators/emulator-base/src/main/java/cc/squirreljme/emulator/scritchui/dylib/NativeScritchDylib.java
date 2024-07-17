@@ -13,8 +13,6 @@ import cc.squirreljme.jvm.mle.brackets.PencilBracket;
 import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
-import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchCloseListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchInputListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchPaintListener;
@@ -31,12 +29,9 @@ import org.jetbrains.annotations.Range;
  *
  * @since 2024/03/29
  */
+@SuppressWarnings("StaticMethodOnlyUsedInOneClass")
 public final class NativeScritchDylib
 {
-	/** Default number of screens to request. */
-	private static final int _REQUEST_SCREENS =
-		16;
-	
 	/** The state pointer. */
 	final long _stateP;
 	
@@ -69,527 +64,10 @@ public final class NativeScritchDylib
 	 * Returns all the fonts which are internally built into the UI
 	 * interface.
 	 *
-	 * @return The internal built-in fonts.
-	 * @since 2024/06/12
-	 */
-	public PencilFontBracket[] builtinFonts()
-	{
-		// Forward
-		return NativeScritchDylib.__builtinFonts(this._stateP);
-	}
-	
-	/**
-	 * Returns the component height.
-	 *
-	 * @param __component The component to get.
-	 * @return The height of the given component.
-	 * @throws MLECallError If the component is not valid.
-	 * @since 2024/05/12
-	 */
-	public int componentHeight(DylibComponentObject __component)
-		throws MLECallError
-	{
-		if (__component == null)
-			throw new MLECallError("NARG");
-		
-		// Forward
-		return NativeScritchDylib.__componentHeight(this._stateP,
-			__component.objectP);
-	}
-	
-	/**
-	 * Repaints the given component.
-	 *
-	 * @param __component The component to repaint.
-	 * @param __x The X coordinate.
-	 * @param __y The Y coordinate.
-	 * @param __w The width.
-	 * @param __h The height.
-	 * @throws MLECallError If the component is not valid.
-	 * @since 2024/04/24
-	 */
-	public void componentRepaint(DylibComponentObject __component,
-		int __x, int __y, int __w, int __h)
-		throws MLECallError
-	{
-		if (__component == null)
-			throw new MLECallError("NARG");
-		
-		NativeScritchDylib.__componentRepaint(this._stateP,
-			__component.objectP, __x, __y, __w, __h);
-	}
-	
-	/**
-	 * Revalidates the given component.
-	 *
-	 * @param __component The component to revalidate.
-	 * @throws MLECallError On null arguments.
-	 * @since 2024/04/21
-	 */
-	public void componentRevalidate(DylibComponentObject __component)
-		throws MLECallError
-	{
-		if (__component == null)
-			throw new MLECallError("Null arguments");
-		
-		NativeScritchDylib.__componentRevalidate(this._stateP,
-			__component.objectP);
-	}
-	
-	/**
-	 * Sets the input listener for a component.
-	 *
-	 * @param __component The component to set for.
-	 * @param __listener The listener to set.
-	 * @throws MLECallError On null arguments or if the listener could not
-	 * be set.
-	 * @since 2024/06/30
-	 */
-	public void componentSetInputListener(DylibComponentObject __component,
-		ScritchInputListener __listener)
-		throws MLECallError
-	{
-		if (__component == null)
-			throw new MLECallError("Null arguments.");
-		
-		NativeScritchDylib.__componentSetInputListener(this._stateP,
-			__component.objectP, __listener);
-	}
-	
-	/**
-	 * Sets the component paint listener.
-	 *
-	 * @param __component The component to draw on.
-	 * @param __listener The listener to use.
-	 * @throws MLECallError On null arguments.
-	 * @since 2024/04/06
-	 */
-	public void componentSetPaintListener(DylibPaintableObject __component,
-		ScritchPaintListener __listener)
-		throws MLECallError
-	{
-		if (__component == null)
-			throw new MLECallError("NARG");
-		
-		// Forward
-		NativeScritchDylib.__componentSetPaintListener(this._stateP,
-			((DylibBaseObject)__component).objectP,
-			__listener);
-	}
-	
-	/**
-	 * Sets the visibility listener for the component.
-	 *
-	 * @param __component The component to set.
-	 * @param __listener The listener to set.
-	 * @throws MLECallError If the component is not valid.
-	 * @since 2024/06/28
-	 */
-	public void componentSetVisibleListener(
-		DylibComponentObject __component, ScritchVisibleListener __listener)
-		throws MLECallError
-	{
-		if (__component == null)
-			throw new MLECallError("Null arguments.");
-		
-		// Forward
-		NativeScritchDylib.__componentSetVisibleListener(this._stateP,
-			((DylibBaseObject)__component).objectP,
-			__listener);
-	}
-	
-	/**
-	 * Returns the component width.
-	 *
-	 * @param __component The component to get.
-	 * @return The width of the given component.
-	 * @throws MLECallError If the component is not valid.
-	 * @since 2024/05/12
-	 */
-	public int componentWidth(DylibComponentObject __component)
-		throws MLECallError
-	{
-		if (__component == null)
-			throw new MLECallError("NARG");
-		
-		// Forward
-		return NativeScritchDylib.__componentWidth(this._stateP,
-			__component.objectP);
-	}
-	
-	/**
-	 * Adds component to the container.
-	 *
-	 * @param __container The container to add to.
-	 * @param __component The component to add.
-	 * @throws MLECallError On null arguments or the add is not valid.
-	 * @since 2024/04/18
-	 */
-	public void containerAdd(DylibContainerObject __container,
-		DylibComponentObject __component)
-		throws MLECallError
-	{
-		if (__container == null || __component == null)
-			throw new MLECallError("Null arguments.");
-		
-		NativeScritchDylib.__containerAdd(this._stateP,
-			__container.objectPointer(), __component.objectP);
-	}
-	
-	/**
-	 * Removes all components from the container.
-	 *
-	 * @param __container The container to remove from.
-	 * @throws MLECallError On null arguments.
-	 * @since 2024/04/18
-	 */
-	public void containerRemoveAll(DylibContainerObject __container)
-		throws MLECallError
-	{
-		if (__container == null)
-			throw new MLECallError("Null arguments.");
-		
-		NativeScritchDylib.__containerRemoveAll(this._stateP,
-			__container.objectPointer());
-	}
-	
-	/**
-	 * Sets the bounds for the component in the container.
-	 *
-	 * @param __container The container to set within.
-	 * @param __component The component to set the bounds of.
-	 * @param __x The X position.
-	 * @param __y The Y position.
-	 * @param __w The width.
-	 * @param __h The height.
-	 * @throws MLECallError On null arguments or the bounds set is not valid.
-	 * @since 2024/04/18
-	 */
-	public void containerSetBounds(DylibContainerObject __container,
-		DylibComponentObject __component, int __x, int __y, int __w, int __h)
-		throws MLECallError
-	{
-		if (__container == null || __component == null)
-			throw new MLECallError("Null arguments.");
-		
-		NativeScritchDylib.__containerSetBounds(this._stateP,
-			__container.objectPointer(), __component.objectP,
-			__x, __y, __w, __h);
-	}
-	
-	/**
-	 * Enable focus on a panel.
-	 *
-	 * @param __panel The panel to modify.
-	 * @param __enabled If focus should be enabled or not.
-	 * @param __default Should this be the default focus item.
-	 * @throws MLECallError On any errors.
-	 * @since 2024/04/06
-	 */
-	public void enableFocus(DylibPanelObject __panel, boolean __enabled,
-		boolean __default)
-		throws MLECallError
-	{
-		if (__panel == null)
-			throw new MLECallError("NARG");
-		
-		NativeScritchDylib.__panelEnableFocus(this._stateP,
-			__panel.objectP, __enabled, __default);
-	}
-	
-	/**
-	 * Derives the given font.
-	 *
-	 * @param __font The font to derive.
-	 * @param __style The new style to select.
-	 * @param __pixelSize The pixel size of the font.
-	 * @return The resultant font.
-	 * @throws MLECallError On null arguments, if the style is not valid,
-	 * or the pixel size is zero or negative.
-	 * @since 2024/06/14
-	 */
-	public PencilFontBracket fontDerive(DylibPencilFontObject __font,
-		int __style, int __pixelSize)
-	{
-		if (__font == null)
-			throw new MLECallError("NARG");
-		
-		return new DylibPencilFontObject(NativeScritchDylib.__fontDerive(
-			this._stateP, __font.objectP, __style, __pixelSize));
-	}
-	
-	/**
-	 * Creates a hardware reference bracket to the native hardware graphics.
-	 * 
-	 * @param __pf The {@link UIPixelFormat} used for the draw.
-	 * @param __bw The buffer width, this is the scanline width of the buffer.
-	 * @param __bh The buffer height.
-	 * @param __buf The target buffer to draw to, this is cast to the correct
-	 * buffer format.
-	 * @param __pal The color palette, may be {@code null}. 
-	 * @param __sx Starting surface X coordinate.
-	 * @param __sy Starting surface Y coordinate.
-	 * @param __sw Surface width.
-	 * @param __sh Surface height.
-	 * @return The bracket capable of drawing hardware accelerated graphics.
-	 * @throws MLECallError If the requested graphics are not valid.
-	 * @since 2020/09/25
-	 */
-	public PencilBracket hardwareGraphics(
-		@MagicConstant(valuesFromClass = UIPixelFormat.class) int __pf,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __bw,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __bh,
-		@NotNull Object __buf,
-		@Nullable int[] __pal,
-		int __sx, int __sy,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __sw,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __sh)
-		throws MLECallError
-	{
-		PencilBracket result = NativeScritchDylib.__hardwareGraphics(
-			this._stateP, __pf, __bw, __bh, __buf, __pal, __sx, __sy, __sw,
-			__sh);
-		if (result == null)
-			throw new MLECallError("Did not make a pencil?");
-		
-		return result;
-	}
-	
-	/**
-	 * Is this a panel only interface?
-	 *
-	 * @return If this is a panel only interface.
-	 * @since 2024/07/16
-	 */
-	public boolean isPanelOnly()
-	{
-		return NativeScritchDylib.__envIsPanelOnly(this._stateP);
-	}
-	
-	/**
-	 * Executes the given task in the event loop or the current thread if
-	 * this is the event loop.
-	 *
-	 * @param __task The task to run
-	 * @throws MLECallError On null arguments.
-	 * @since 2024/04/16
-	 */
-	public void loopExecute(Runnable __task)
-		throws MLECallError
-	{
-		if (__task == null)
-			throw new MLECallError("NARG");
-		
-		NativeScritchDylib.__loopExecute(this._stateP, __task);
-	}
-	
-	/**
-	 * Executes the given task in the event loop at a later time.
-	 *
-	 * @param __task The task to run
-	 * @throws MLECallError On null arguments.
-	 * @since 2024/04/25
-	 */
-	public void loopExecuteLater(Runnable __task)
-		throws MLECallError
-	{
-		if (__task == null)
-			throw new MLECallError("NARG");
-		
-		NativeScritchDylib.__loopExecuteLater(this._stateP, __task);
-	}
-	
-	/**
-	 * Executes the given task in the event loop or the current thread if
-	 * this is the event loop.
-	 *
-	 * @param __task The task to run
-	 * @throws MLECallError On null arguments.
-	 * @since 2024/04/17
-	 */
-	public void loopExecuteWait(Runnable __task)
-		throws MLECallError
-	{
-		if (__task == null)
-			throw new MLECallError("NARG");
-		
-		if (this.loopIsInThread())
-			__task.run();
-		else
-			NativeScritchDylib.__loopExecuteWait(this._stateP, __task);
-	}
-	
-	/**
-	 * Is this in the event loop?
-	 *
-	 * @return If this is in the event loop.
-	 * @since 2024/04/16
-	 */
-	public boolean loopIsInThread()
-	{
-		return NativeScritchDylib.__loopIsInThread(this._stateP);
-	}
-	
-	/**
-	 * Initializes a new panel.
-	 *
-	 * @return The newly created panel.
-	 * @throws MLECallError If the panel could not be created.
-	 * @since 2024/04/06
-	 */
-	public DylibPanelObject panelNew()
-		throws MLECallError
-	{
-		long panelP = NativeScritchDylib.__panelNew(this._stateP);
-		if (panelP == 0)
-			throw new MLECallError("Could not create panel.");
-		
-		return new DylibPanelObject(panelP);
-	}
-	
-	/**
-	 * Returns the screen ID.
-	 *
-	 * @param __screen The screen to get the ID of.
-	 * @return The screen ID.
-	 * @throws MLECallError If the screen is not valid.
-	 * @since 2024/07/16
-	 */
-	public int screenId(DylibScreenObject __screen)
-		throws MLECallError
-	{
-		if (__screen == null)
-			throw new MLECallError("NARG");
-		
-		return NativeScritchDylib.__screenId(this._stateP, __screen.objectP);
-	}
-	
-	/**
-	 * Returns the available screens.
-	 *
-	 * @return The available screens.
-	 * @since 2024/04/06
-	 */
-	public ScritchScreenBracket[] screens()
-	{
-		// Read in screens
-		int numScreens = NativeScritchDylib._REQUEST_SCREENS;
-		for (;;)
-		{
-			// Request all screens
-			long[] screenPs = new long[numScreens];
-			numScreens = NativeScritchDylib.__screens(this._stateP, screenPs);
-			
-			// Not big enough?
-			if (numScreens > screenPs.length)
-				continue;
-			
-			// Map them to objects
-			ScritchScreenBracket[] result =
-				new ScritchScreenBracket[numScreens];
-			for (int i = 0; i < numScreens; i++)
-				result[i] = new DylibScreenObject(screenPs[i]);
-			
-			return result;
-		}
-	}
-	
-	/**
-	 * Sets the minimum size to use for a window's contents.
-	 *
-	 * @param __window The window to set the content size of.
-	 * @param __w The width
-	 * @param __h The height.
-	 * @throws MLECallError On null arguments or the size is not valid.
-	 * @since 2024/04/20
-	 */
-	public void windowContentMinimumSize(DylibWindowObject __window,
-		int __w, int __h)
-		throws MLECallError
-	{
-		if (__window == null)
-			throw new MLECallError("Null arguments");
-		if (__w <= 0 || __h <= 0)
-			throw new MLECallError("Zero or negative size");
-		
-		NativeScritchDylib.__windowContentMinimumSize(this._stateP,
-			__window.objectP, __w, __h);
-	}
-	
-	/**
-	 * Returns the {@link ScritchWindowManagerType}.
-	 *
-	 * @return A {@link ScritchWindowManagerType}.
-	 * @since 2024/04/15
-	 */
-	public int windowManagerType()
-	{
-		return NativeScritchDylib.__windowManagerType(this._stateP);
-	}
-	
-	/**
-	 * Creates a new window.
-	 *
-	 * @return The newly created window.
-	 * @throws MLECallError If the window could not be created.
-	 * @since 2024/04/16
-	 */
-	public ScritchWindowBracket windowNew()
-		throws MLECallError
-	{
-		long windowP = NativeScritchDylib.__windowNew(this._stateP);
-		if (windowP == 0)
-			throw new MLECallError("Could not create window.");
-		
-		return new DylibWindowObject(windowP);
-	}
-	
-	/**
-	 * Sets the close listener for a window.
-	 *
-	 * @param __window The window to set the listener for.
-	 * @param __listener The listener to call on close.
-	 * @throws MLECallError If it could not be set or the window is not valid.
-	 * @since 2024/05/13
-	 */
-	public void windowSetCloseListener(DylibWindowObject __window,
-		ScritchCloseListener __listener)
-		throws MLECallError
-	{
-		if (__window == null)
-			throw new MLECallError("NARG");
-		
-		NativeScritchDylib.__windowSetCloseListener(this._stateP,
-			__window.objectP, __listener);
-	}
-	
-	/**
-	 * Sets the visibility of the specified window.
-	 *
-	 * @param __window The window to set the visibility of.
-	 * @param __visible Should the window be visible?
-	 * @throws MLECallError On any errors.
-	 * @since 2024/04/21
-	 */
-	public void windowSetVisible(DylibWindowObject __window,
-		boolean __visible)
-		throws MLECallError
-	{
-		if (__window == null)
-			throw new MLECallError("Null arguments.");
-		
-		NativeScritchDylib.__windowSetVisible(this._stateP, __window.objectP,
-			__visible);
-	}
-	
-	/**
-	 * Returns all the fonts which are internally built into the UI
-	 * interface.
-	 *
 	 * @return The ScritchUI state pointer.
 	 * @since 2024/06/12
 	 */
-	private static native PencilFontBracket[] __builtinFonts(long __stateP);
+	static native PencilFontBracket[] __builtinFonts(long __stateP);
 	
 	/**
 	 * Returns the component height. 
@@ -600,7 +78,7 @@ public final class NativeScritchDylib
 	 * @throws MLECallError If it could not be obtained.
 	 * @since 2024/05/12
 	 */
-	private static native int __componentHeight(long __stateP,
+	static native int __componentHeight(long __stateP,
 		long __componentP)
 		throws MLECallError;
 	
@@ -616,7 +94,7 @@ public final class NativeScritchDylib
 	 * @throws MLECallError If the component is not valid.
 	 * @since 2024/04/24
 	 */
-	private static native void __componentRepaint(long __stateP,
+	static native void __componentRepaint(long __stateP,
 		long __componentP, int __x, int __y, int __w, int __h)
 		throws MLECallError;
 	
@@ -628,7 +106,7 @@ public final class NativeScritchDylib
 	 * @throws MLECallError On null arguments.
 	 * @since 2024/04/21
 	 */
-	private static native void __componentRevalidate(long __stateP,
+	static native void __componentRevalidate(long __stateP,
 		long __componentP)
 		throws MLECallError;
 	
@@ -641,7 +119,7 @@ public final class NativeScritchDylib
 	 * @throws MLECallError On any errors.
 	 * @since 2024/06/30
 	 */
-	private static native void __componentSetInputListener(long __stateP,
+	static native void __componentSetInputListener(long __stateP,
 		long __componentP, ScritchInputListener __listener)
 		throws MLECallError;
 	
@@ -654,7 +132,7 @@ public final class NativeScritchDylib
 	 * @throws MLECallError On any errors.
 	 * @since 2024/04/06
 	 */
-	private static native void __componentSetPaintListener(long __stateP,
+	static native void __componentSetPaintListener(long __stateP,
 		long __componentP, ScritchPaintListener __listener)
 		throws MLECallError;
 	
@@ -668,7 +146,7 @@ public final class NativeScritchDylib
 	 * arguments.
 	 * @since 2024/06/28
 	 */
-	private static native void __componentSetVisibleListener(long __stateP,
+	static native void __componentSetVisibleListener(long __stateP,
 		long __componentP, ScritchVisibleListener __listener)
 		throws MLECallError;
 	
@@ -681,7 +159,7 @@ public final class NativeScritchDylib
 	 * @throws MLECallError If it could not be obtained.
 	 * @since 2024/05/12
 	 */
-	private static native int __componentWidth(long __stateP,
+	static native int __componentWidth(long __stateP,
 		long __componentP)
 		throws MLECallError;
 	
@@ -695,7 +173,7 @@ public final class NativeScritchDylib
 	 * are not valid.
 	 * @since 2024/04/20
 	 */
-	private static native void __containerAdd(long __stateP,
+	static native void __containerAdd(long __stateP,
 		long __containerP, long __componentP)
 		throws MLECallError;
 	
@@ -707,7 +185,7 @@ public final class NativeScritchDylib
 	 * @throws MLECallError If the state and/or container are invalid.
 	 * @since 2024/07/15
 	 */
-	private static native void __containerRemoveAll(long __stateP,
+	static native void __containerRemoveAll(long __stateP,
 		long __containerP)
 		throws MLECallError;
 	
@@ -724,7 +202,7 @@ public final class NativeScritchDylib
 	 * @throws MLECallError On null arguments or if the bounds are invalid.
 	 * @since 2024/04/22
 	 */
-	private static native void __containerSetBounds(long __stateP,
+	static native void __containerSetBounds(long __stateP,
 		long __containerP, long __componentP,
 		int __x, int __y, int __w, int __h)
 		throws MLECallError;
@@ -737,7 +215,7 @@ public final class NativeScritchDylib
 	 * @throws MLECallError If the state pointer is invalid.
 	 * @since 2024/07/16
 	 */
-	private static native boolean __envIsPanelOnly(long __stateP)
+	static native boolean __envIsPanelOnly(long __stateP)
 		throws MLECallError;
 	
 	/**
@@ -752,7 +230,7 @@ public final class NativeScritchDylib
 	 * or the pixel size is zero or negative.
 	 * @since 2024/06/14
 	 */
-	private static native long __fontDerive(long __stateP, long __fontP,
+	static native long __fontDerive(long __stateP, long __fontP,
 		int __style, int __pixelSize)
 		throws MLECallError;
 	
@@ -764,7 +242,7 @@ public final class NativeScritchDylib
 	 * @return The resultant ScritchUI state pointer.
 	 * @since 2024/03/31
 	 */
-	private static native long __linkInit(String __libPath, String __name);
+	static native long __linkInit(String __libPath, String __name);
 	
 	/**
 	 * Executes the given runnable in the loop.
@@ -773,7 +251,7 @@ public final class NativeScritchDylib
 	 * @param __task The task to run.
 	 * @since 2024/04/16
 	 */
-	private static native void __loopExecute(long __stateP, Runnable __task);
+	static native void __loopExecute(long __stateP, Runnable __task);
 	
 	/**
 	 * Executes the given runnable in the loop.
@@ -782,7 +260,7 @@ public final class NativeScritchDylib
 	 * @param __task The task to run.
 	 * @since 2024/04/16
 	 */
-	private static native void __loopExecuteLater(long __stateP,
+	static native void __loopExecuteLater(long __stateP,
 		Runnable __task);
 	
 	/**
@@ -792,7 +270,7 @@ public final class NativeScritchDylib
 	 * @param __task The task to run.
 	 * @since 2024/04/17
 	 */
-	private static native void __loopExecuteWait(long __stateP,
+	static native void __loopExecuteWait(long __stateP,
 		Runnable __task);
 	
 	/**
@@ -802,7 +280,7 @@ public final class NativeScritchDylib
 	 * @return If this is in the event loop or not.
 	 * @since 2024/04/16
 	 */
-	private static native boolean __loopIsInThread(long __stateP);
+	static native boolean __loopIsInThread(long __stateP);
 	
 	/**
 	 * Creates a hardware reference bracket to the native hardware graphics.
@@ -821,7 +299,7 @@ public final class NativeScritchDylib
 	 * @throws MLECallError If the requested graphics are not valid.
 	 * @since 2020/09/25
 	 */
-	private static native PencilBracket __hardwareGraphics(
+	static native PencilBracket __hardwareGraphics(
 		long __stateP,
 		@MagicConstant(valuesFromClass = UIPixelFormat.class) int __pf,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __bw,
@@ -843,7 +321,7 @@ public final class NativeScritchDylib
 	 * @throws MLECallError On any errors.
 	 * @since 2024/04/06
 	 */
-	private static native void __panelEnableFocus(long __stateP,
+	static native void __panelEnableFocus(long __stateP,
 		long __panelP, boolean __enabled, boolean __default)
 		throws MLECallError;
 	
@@ -854,7 +332,7 @@ public final class NativeScritchDylib
 	 * @return The pointer to the panel.
 	 * @since 2024/04/06
 	 */
-	private static native long __panelNew(long __stateP);
+	static native long __panelNew(long __stateP);
 	
 	/**
 	 * Returns the screen ID.
@@ -865,7 +343,7 @@ public final class NativeScritchDylib
 	 * @throws MLECallError If the screen is not valid.
 	 * @since 2024/07/16
 	 */
-	private static native int __screenId(long __stateP, long __screenP)
+	static native int __screenId(long __stateP, long __screenP)
 		throws MLECallError;
 	
 	/**
@@ -877,7 +355,7 @@ public final class NativeScritchDylib
 	 * if there are more screens.
 	 * @since 2024/04/15
 	 */
-	private static native int __screens(long __stateP, long[] __screenPs);
+	static native int __screens(long __stateP, long[] __screenPs);
 	
 	/**
 	 * Deletes the given weak pointer.
@@ -900,7 +378,7 @@ public final class NativeScritchDylib
 	 * are not valid.
 	 * @since 2024/04/21
 	 */
-	private static native void __windowContentMinimumSize(long __stateP,
+	static native void __windowContentMinimumSize(long __stateP,
 		long __windowP, int __w, int __h)
 		throws MLECallError;
 	
@@ -911,7 +389,7 @@ public final class NativeScritchDylib
 	 * @return A {@link ScritchWindowManagerType}.
 	 * @since 2024/04/15
 	 */
-	private static native int __windowManagerType(long __stateP);
+	static native int __windowManagerType(long __stateP);
 	
 	/**
 	 * Creates a new window.
@@ -921,7 +399,7 @@ public final class NativeScritchDylib
 	 * created.
 	 * @since 2024/04/16
 	 */
-	private static native long __windowNew(long __stateP);
+	static native long __windowNew(long __stateP);
 	
 	/**
 	 * Sets the close listener for a window.
@@ -932,7 +410,7 @@ public final class NativeScritchDylib
 	 * @throws MLECallError If it could not be set.
 	 * @since 2024/05/13
 	 */
-	private static native void __windowSetCloseListener(long __stateP,
+	static native void __windowSetCloseListener(long __stateP,
 		long __windowP, ScritchCloseListener __listener)
 		throws MLECallError;
 	
@@ -945,7 +423,7 @@ public final class NativeScritchDylib
 	 * @throws MLECallError On any errors.
 	 * @since 2024/04/21
 	 */
-	private static native void __windowSetVisible(long __stateP,
+	static native void __windowSetVisible(long __stateP,
 		long __windowP, boolean __visible)
 		throws MLECallError;
 }

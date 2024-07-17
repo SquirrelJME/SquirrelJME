@@ -14,8 +14,6 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchScreenInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Range;
 
 /**
  * DyLib based screen interface for ScritchUI.
@@ -26,6 +24,10 @@ public class DylibScreenInterface
 	extends DylibBaseInterface
 	implements ScritchScreenInterface
 {
+	/** Default number of screens to request. */
+	static final int _REQUEST_SCREENS =
+		16;
+	
 	/**
 	 * Initializes the interface.
 	 *
@@ -98,7 +100,11 @@ public class DylibScreenInterface
 		if (__screen == null)
 			throw new MLECallError("NARG");
 		
-		return this.dyLib.screenId((DylibScreenObject)__screen);
+		if ((DylibScreenObject)__screen == null)
+			throw new MLECallError("NARG");
+		
+		return NativeScritchDylib.__screenId(
+			this.dyLib._stateP, ((DylibScreenObject)__screen).objectP);
 	}
 	
 	/**

@@ -13,13 +13,13 @@ import cc.squirreljme.jvm.mle.annotation.GhostObject;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
- * A list of items.
+ * Represents a set of choices.
  *
- * @since 2024/03/01
+ * @since 2024/07/16
  */
 @GhostObject
 @SquirrelJMEVendorApi
-public interface ScritchListBracket
-	extends ScritchComponentBracket, ScritchChoiceBracket
+public interface ScritchChoiceBracket
+	extends ScritchComponentBracket
 {
 }

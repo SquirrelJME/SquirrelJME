@@ -28,7 +28,18 @@ import org.jetbrains.annotations.Range;
  */
 @SquirrelJMEVendorApi
 public interface ScritchInterface
+	extends ScritchApiInterface
 {
+	/**
+	 * Returns the generic choice interface.
+	 *
+	 * @return The generic choice interface.
+	 * @since 2024/07/16
+	 */
+	@SquirrelJMEVendorApi
+	@NotNull
+	ScritchChoiceInterface choice();
+	
 	/**
 	 * Returns the generic component interface.
 	 *
@@ -97,6 +108,26 @@ public interface ScritchInterface
 		@Range(from = 0, to = Integer.MAX_VALUE) int __sw,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __sh)
 		throws MLECallError;
+	
+	/**
+	 * Returns the list interface.
+	 *
+	 * @return The interface for lists.
+	 * @since 2024/07/16
+	 */
+	@SquirrelJMEVendorApi
+	@NotNull
+	ScritchListInterface list();
+	
+	/**
+	 * Returns the interface for generic paintables.
+	 *
+	 * @return Returns the interface for generic paintables.
+	 * @since 2024/07/16
+	 */
+	@SquirrelJMEVendorApi
+	@NotNull
+	ScritchPaintableInterface paintable();
 	
 	/**
 	 * Return the interface for panels.

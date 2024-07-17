@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Range;
  */
 @SquirrelJMEVendorApi
 public interface ScritchContainerInterface
+	extends ScritchApiInterface
 {
 	/**
 	 * Adds the given component to the container.

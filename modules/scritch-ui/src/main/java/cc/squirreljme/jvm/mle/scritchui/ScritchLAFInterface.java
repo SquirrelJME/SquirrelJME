@@ -27,6 +27,7 @@ import org.jetbrains.annotations.Range;
  */
 @SquirrelJMEVendorApi
 public interface ScritchLAFInterface
+	extends ScritchApiInterface
 {
 	/**
 	 * Looks up the given font for a given element.

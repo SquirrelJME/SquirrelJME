@@ -22,6 +22,7 @@ import org.jetbrains.annotations.Range;
  */
 @SquirrelJMEVendorApi
 public interface ScritchScreenInterface
+	extends ScritchApiInterface
 {
 	/**
 	 * Returns the DPI of the screen.

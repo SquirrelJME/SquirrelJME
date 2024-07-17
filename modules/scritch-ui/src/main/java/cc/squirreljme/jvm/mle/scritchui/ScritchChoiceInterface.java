@@ -7,19 +7,14 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.mle.scritchui.brackets;
-
-import cc.squirreljme.jvm.mle.annotation.GhostObject;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+package cc.squirreljme.jvm.mle.scritchui;
 
 /**
- * A list of items.
+ * Interface for the manipulation of generic choice items.
  *
- * @since 2024/03/01
+ * @since 2024/07/16
  */
-@GhostObject
-@SquirrelJMEVendorApi
-public interface ScritchListBracket
-	extends ScritchComponentBracket, ScritchChoiceBracket
+public interface ScritchChoiceInterface
+	extends ScritchApiInterface
 {
 }

@@ -14,6 +14,10 @@ import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIListType;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
+import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchListInterface;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchListBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -23,6 +27,7 @@ import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.scritchui.ChoiceManager;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
 import org.jetbrains.annotations.Async;
 
 @Api
@@ -98,6 +103,30 @@ public class List
 			__type != Choice.MULTIPLE)
 			throw new IllegalArgumentException("EB2k " + __type);
 		
+		// Determine the native list type
+		int nativeType;
+		switch (__type)
+		{
+			case Choice.IMPLICIT:	nativeType = UIListType.IMPLICIT; break;
+			case Choice.EXCLUSIVE:	nativeType = UIListType.EXCLUSIVE; break;
+			case Choice.MULTIPLE:	nativeType = UIListType.MULTIPLE; break;
+			
+			default:
+				throw Debugging.oops(__type);
+		}
+		
+		DisplayableState state = this._state;
+		ScritchInterface scritchApi = state.scritchApi();
+		ScritchListInterface listApi = scritchApi.list();
+		
+		// Create new list
+		ScritchListBracket newList = listApi.listNew();
+		
+		// Put the list in the panel
+		ScritchPanelBracket inPanel = state.scritchPanel();
+		
+		throw Debugging.todo();
+		/*
 		// Set
 		this._userTitle = __title;
 		this._type = __type;
@@ -113,23 +142,13 @@ public class List
 			this.addCommand(List.SELECT_COMMAND);
 		}
 		
-		// Determine the native list type
-		int nativeType;
-		switch (__type)
-		{
-			case Choice.IMPLICIT:	nativeType = UIListType.IMPLICIT; break;
-			case Choice.EXCLUSIVE:	nativeType = UIListType.EXCLUSIVE; break;
-			case Choice.MULTIPLE:	nativeType = UIListType.MULTIPLE; break;
-			
-			default:
-				throw Debugging.oops(__type);
-		}
-		
 		// Inform the backend that this is the kind of list we want
 		__ListState__ state = this.<__ListState__>__state(
 			__ListState__.class);
 		state._backend.widgetProperty(state._uiList,
 			UIWidgetProperty.INT_LIST_TYPE, 0, nativeType);
+			
+		 */
 	}
 	
 	/**

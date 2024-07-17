@@ -24,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
  */
 @SquirrelJMEVendorApi
 public interface ScritchPanelInterface
-	extends ScritchPaintableInterface
+	extends ScritchApiInterface
 {
 	/**
 	 * Enables or disables focus on the panel along with traversal of tabs.

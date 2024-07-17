@@ -27,6 +27,7 @@ import org.jetbrains.annotations.Range;
  */
 @SquirrelJMEVendorApi
 public interface ScritchWindowInterface
+	extends ScritchApiInterface
 {
 	/**
 	 * Calls attention to this window, it may be through whatever means

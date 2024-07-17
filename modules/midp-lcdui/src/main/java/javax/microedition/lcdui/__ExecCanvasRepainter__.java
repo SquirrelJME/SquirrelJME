@@ -48,6 +48,6 @@ class __ExecCanvasRepainter__
 		
 		// Forward repaint call
 		DisplayableState state = canvas._state;
-		state.scritchApi().panel().repaint(state.scritchPanel());
+		state.scritchApi().paintable().repaint(state.scritchPanel());
 	}
 }

@@ -79,8 +79,13 @@ public class DylibWindowInterface
 		if (__w <= 0 || __h <= 0)
 			throw new MLECallError("Zero or negative size");
 		
-		this.dyLib.windowContentMinimumSize(
-			(DylibWindowObject)__window, __w, __h);
+		if ((DylibWindowObject)__window == null)
+			throw new MLECallError("Null arguments");
+		if (__w <= 0 || __h <= 0)
+			throw new MLECallError("Zero or negative size");
+		
+		NativeScritchDylib.__windowContentMinimumSize(this.dyLib._stateP,
+			((DylibWindowObject)__window).objectP, __w, __h);
 	}
 	
 	/**
@@ -135,7 +140,11 @@ public class DylibWindowInterface
 	@Override
 	public ScritchWindowBracket newWindow()
 	{
-		return this.dyLib.windowNew();
+		long windowP = NativeScritchDylib.__windowNew(this.dyLib._stateP);
+		if (windowP == 0)
+			throw new MLECallError("Could not create window.");
+		
+		return new DylibWindowObject(windowP);
 	}
 	
 	/**
@@ -150,8 +159,11 @@ public class DylibWindowInterface
 		if (__window == null)
 			throw new MLECallError("Null arguments.");
 		
-		this.dyLib.windowSetCloseListener((DylibWindowObject)__window,
-			__listener);
+		if ((DylibWindowObject)__window == null)
+			throw new MLECallError("NARG");
+		
+		NativeScritchDylib.__windowSetCloseListener(this.dyLib._stateP,
+			((DylibWindowObject)__window).objectP, __listener);
 	}
 	
 	/**
@@ -166,6 +178,11 @@ public class DylibWindowInterface
 		if (__window == null)
 			throw new MLECallError("Null arguments.");
 		
-		this.dyLib.windowSetVisible((DylibWindowObject)__window, __visible);
+		if ((DylibWindowObject)__window == null)
+			throw new MLECallError("Null arguments.");
+		
+		NativeScritchDylib.__windowSetVisible(
+			this.dyLib._stateP, ((DylibWindowObject)__window).objectP,
+			__visible);
 	}
 }

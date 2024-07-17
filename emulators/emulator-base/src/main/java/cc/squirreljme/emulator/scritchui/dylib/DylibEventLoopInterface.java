@@ -11,7 +11,6 @@ package cc.squirreljme.emulator.scritchui.dylib;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchEventLoopInterface;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import org.jetbrains.annotations.NotNull;
 
@@ -50,7 +49,10 @@ public class DylibEventLoopInterface
 		if (__task == null)
 			throw new MLECallError("Null arguments.");
 		
-		this.dyLib.loopExecute(__task);
+		if (__task == null)
+			throw new MLECallError("NARG");
+		
+		NativeScritchDylib.__loopExecute(this.dyLib._stateP, __task);
 	}
 	
 	/**
@@ -64,7 +66,10 @@ public class DylibEventLoopInterface
 		if (__task == null)
 			throw new MLECallError("Null arguments.");
 		
-		this.dyLib.loopExecuteLater(__task);
+		if (__task == null)
+			throw new MLECallError("NARG");
+		
+		NativeScritchDylib.__loopExecuteLater(this.dyLib._stateP, __task);
 	}
 	
 	/**
@@ -78,7 +83,13 @@ public class DylibEventLoopInterface
 		if (__task == null)
 			throw new MLECallError("Null arguments.");
 		
-		this.dyLib.loopExecuteWait(__task);
+		if (__task == null)
+			throw new MLECallError("NARG");
+		
+		if (NativeScritchDylib.__loopIsInThread(this.dyLib._stateP))
+			__task.run();
+		else
+			NativeScritchDylib.__loopExecuteWait(this.dyLib._stateP, __task);
 	}
 	
 	/**
@@ -88,6 +99,6 @@ public class DylibEventLoopInterface
 	@Override
 	public boolean inLoop()
 	{
-		return this.dyLib.loopIsInThread();
+		return NativeScritchDylib.__loopIsInThread(this.dyLib._stateP);
 	}
 }

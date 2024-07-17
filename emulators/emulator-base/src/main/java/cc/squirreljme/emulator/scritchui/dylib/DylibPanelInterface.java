@@ -11,12 +11,8 @@ package cc.squirreljme.emulator.scritchui.dylib;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchPanelInterface;
-import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
-import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPaintableBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchInputListener;
-import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchPaintListener;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -57,8 +53,11 @@ public class DylibPanelInterface
 		if (__panel == null)
 			throw new MLECallError("NARG");
 		
-		this.dyLib.enableFocus((DylibPanelObject)__panel, __enabled,
-			__default);
+		if ((DylibPanelObject)__panel == null)
+			throw new MLECallError("NARG");
+		
+		NativeScritchDylib.__panelEnableFocus(this.dyLib._stateP,
+			((DylibPanelObject)__panel).objectP, __enabled, __default);
 	}
 	
 	/**
@@ -68,22 +67,11 @@ public class DylibPanelInterface
 	@Override
 	public ScritchPanelBracket newPanel()
 	{
-		return this.dyLib.panelNew();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/04/02
-	 */
-	@Override
-	public void repaint(ScritchComponentBracket __component)
-		throws MLECallError
-	{
-		if (__component == null)
-			throw new MLECallError("Null arguments.");
+		long panelP = NativeScritchDylib.__panelNew(this.dyLib._stateP);
+		if (panelP == 0)
+			throw new MLECallError("Could not create panel.");
 		
-		this.dyLib.componentRepaint((DylibComponentObject)__component,
-			0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE);
+		return new DylibPanelObject(panelP);
 	}
 	
 	/**
@@ -98,24 +86,10 @@ public class DylibPanelInterface
 		if (__component == null)
 			throw new MLECallError("Null arguments.");
 		
-		this.dyLib.componentSetInputListener(
-			(DylibComponentObject)__component, __listener);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/04/02
-	 */
-	@Override
-	public void setPaintListener(ScritchPaintableBracket __component,
-		ScritchPaintListener __listener)
-		throws MLECallError
-	{
-		if (__component == null)
-			throw new MLECallError("No component given.");
+		if ((DylibComponentObject)__component == null)
+			throw new MLECallError("Null arguments.");
 		
-		// Forward
-		this.dyLib.componentSetPaintListener(
-			(DylibPaintableObject)__component, __listener);
+		NativeScritchDylib.__componentSetInputListener(this.dyLib._stateP,
+			((DylibComponentObject)__component).objectP, __listener);
 	}
 }

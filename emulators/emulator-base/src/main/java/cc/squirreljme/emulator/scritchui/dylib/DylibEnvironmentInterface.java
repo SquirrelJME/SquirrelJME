@@ -56,7 +56,8 @@ public class DylibEnvironmentInterface
 	@Override
 	public @NotNull PencilFontBracket[] builtinFonts()
 	{
-		return this.dyLib.builtinFonts();
+		// Forward
+		return NativeScritchDylib.__builtinFonts(this.dyLib._stateP);
 	}
 	
 	/**
@@ -72,8 +73,12 @@ public class DylibEnvironmentInterface
 		if (__font == null)
 			throw new MLECallError("NARG");
 		
-		return this.dyLib.fontDerive((DylibPencilFontObject)__font,
-			__style, __pixelSize);
+		if ((DylibPencilFontObject)__font == null)
+			throw new MLECallError("NARG");
+		
+		return new DylibPencilFontObject(NativeScritchDylib.__fontDerive(
+			this.dyLib._stateP, ((DylibPencilFontObject)__font).objectP,
+			__style, __pixelSize));
 	}
 	
 	/**
@@ -93,7 +98,7 @@ public class DylibEnvironmentInterface
 	@Override
 	public boolean isPanelOnly()
 	{
-		return this.dyLib.isPanelOnly();
+		return NativeScritchDylib.__envIsPanelOnly(this.dyLib._stateP);
 	}
 	
 	/**
@@ -113,7 +118,26 @@ public class DylibEnvironmentInterface
 	@Override
 	public ScritchScreenBracket[] screens()
 	{
-		return this.dyLib.screens();
+		// Read in screens
+		int numScreens = DylibScreenInterface._REQUEST_SCREENS;
+		for (;;)
+		{
+			// Request all screens
+			long[] screenPs = new long[numScreens];
+			numScreens = NativeScritchDylib.__screens(this.dyLib._stateP, screenPs);
+			
+			// Not big enough?
+			if (numScreens > screenPs.length)
+				continue;
+			
+			// Map them to objects
+			ScritchScreenBracket[] result =
+				new ScritchScreenBracket[numScreens];
+			for (int i = 0; i < numScreens; i++)
+				result[i] = new DylibScreenObject(screenPs[i]);
+			
+			return result;
+		}
 	}
 	
 	/**
@@ -133,6 +157,6 @@ public class DylibEnvironmentInterface
 	@Override
 	public int windowManagerType()
 	{
-		return this.dyLib.windowManagerType();
+		return NativeScritchDylib.__windowManagerType(this.dyLib._stateP);
 	}
 }

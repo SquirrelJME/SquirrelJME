@@ -13,10 +13,7 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchContainerInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchContainerBracket;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Range;
 
 /**
  * Not Described.
@@ -54,8 +51,11 @@ public class DylibContainerInterface
 		if (__container == null || __component == null)
 			throw new MLECallError("Null arguments");
 		
-		this.dyLib.containerAdd((DylibContainerObject)__container,
-			(DylibComponentObject)__component);
+		if ((DylibContainerObject)__container == null || (DylibComponentObject)__component == null)
+			throw new MLECallError("Null arguments.");
+		
+		NativeScritchDylib.__containerAdd(this.dyLib._stateP,
+			((DylibContainerObject)__container).objectPointer(), ((DylibComponentObject)__component).objectP);
 	}
 	
 	/**
@@ -69,7 +69,11 @@ public class DylibContainerInterface
 		if (__container == null)
 			throw new MLECallError("Null arguments");
 		
-		this.dyLib.containerRemoveAll((DylibContainerObject)__container);
+		if ((DylibContainerObject)__container == null)
+			throw new MLECallError("Null arguments.");
+		
+		NativeScritchDylib.__containerRemoveAll(this.dyLib._stateP,
+			((DylibContainerObject)__container).objectPointer());
 	}
 	
 	/**
@@ -86,7 +90,11 @@ public class DylibContainerInterface
 		if (__container == null || __component == null)
 			throw new MLECallError("Null arguments");
 		
-		this.dyLib.containerSetBounds((DylibContainerObject)__container,
-			(DylibComponentObject)__component, __x, __y, __w, __h);
+		if ((DylibContainerObject)__container == null || (DylibComponentObject)__component == null)
+			throw new MLECallError("Null arguments.");
+		
+		NativeScritchDylib.__containerSetBounds(this.dyLib._stateP,
+			((DylibContainerObject)__container).objectPointer(), ((DylibComponentObject)__component).objectP,
+			__x, __y, __w, __h);
 	}
 }

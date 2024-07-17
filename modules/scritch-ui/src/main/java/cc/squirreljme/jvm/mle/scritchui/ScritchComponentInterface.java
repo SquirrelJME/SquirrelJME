@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Range;
  */
 @SquirrelJMEVendorApi
 public interface ScritchComponentInterface
+	extends ScritchApiInterface
 {
 	/**
 	 * Returns the height of the component.

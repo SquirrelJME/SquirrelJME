@@ -12,6 +12,7 @@ package javax.microedition.lcdui;
 import cc.squirreljme.jvm.mle.scritchui.ScritchComponentInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchContainerInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchPaintableInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchPanelInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchWindowInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
@@ -85,7 +86,7 @@ class __ExecDisplaySetCurrent__
 		ScritchInterface scritchApi = this.scritchApi;
 		ScritchContainerInterface containerApi = scritchApi.container();
 		ScritchComponentInterface componentApi = scritchApi.component();
-		ScritchPanelInterface panelApi = scritchApi.panel();
+		ScritchPaintableInterface paintableApi = scritchApi.paintable();
 		ScritchWindowInterface windowApi = scritchApi.window();
 		
 		// Target panel may be set later
@@ -132,7 +133,7 @@ class __ExecDisplaySetCurrent__
 			showNow.__execRevalidate(displayState);
 			
 			// Force it to be painted
-			panelApi.repaint(panel);
+			paintableApi.repaint(panel);
 		}
 		
 		// Hide the window

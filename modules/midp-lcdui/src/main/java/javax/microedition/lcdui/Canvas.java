@@ -308,7 +308,7 @@ public abstract class Canvas
 		ScritchPanelBracket scritchPanel = state.scritchPanel();
 		
 		// Set listener for painting
-		panelApi.setPaintListener(scritchPanel,
+		scritchApi.paintable().setPaintListener(scritchPanel,
 			new __ExecCanvasPaint__(this));
 		
 		// Listener for visibility changes

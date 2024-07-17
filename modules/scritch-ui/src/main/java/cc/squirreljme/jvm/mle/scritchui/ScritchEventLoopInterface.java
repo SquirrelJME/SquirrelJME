@@ -21,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
  */
 @SquirrelJMEVendorApi
 public interface ScritchEventLoopInterface
+	extends ScritchApiInterface
 {
 	/**
 	 * Executes the given task in the event loop, if the current thread is

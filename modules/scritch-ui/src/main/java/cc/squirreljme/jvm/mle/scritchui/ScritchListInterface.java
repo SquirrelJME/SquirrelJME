@@ -7,19 +7,31 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.mle.scritchui.brackets;
+package cc.squirreljme.jvm.mle.scritchui;
 
-import cc.squirreljme.jvm.mle.annotation.GhostObject;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchListBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import org.jetbrains.annotations.NotNull;
 
 /**
- * A list of items.
+ * Interface for the manipulation of lists.
  *
- * @since 2024/03/01
+ * @since 2024/07/16
  */
-@GhostObject
 @SquirrelJMEVendorApi
-public interface ScritchListBracket
-	extends ScritchComponentBracket, ScritchChoiceBracket
+public interface ScritchListInterface
+	extends ScritchApiInterface
 {
+	/**
+	 * Returns a newly created list.
+	 *
+	 * @return The newly created list.
+	 * @throws MLECallError
+	 * @since 2024/07/16
+	 */
+	@SquirrelJMEVendorApi
+	@NotNull
+	ScritchListBracket listNew()
+		throws MLECallError;
 }

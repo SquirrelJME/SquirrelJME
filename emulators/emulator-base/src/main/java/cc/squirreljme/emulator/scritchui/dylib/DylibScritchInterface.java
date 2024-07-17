@@ -12,15 +12,17 @@ package cc.squirreljme.emulator.scritchui.dylib;
 import cc.squirreljme.emulator.NativeBinding;
 import cc.squirreljme.jvm.mle.brackets.PencilBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.jvm.mle.scritchui.ScritchChoiceInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchComponentInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchContainerInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchEnvironmentInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchEventLoopInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchListInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchPaintableInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchPanelInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchScreenInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchWindowInterface;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import java.io.IOException;
 import java.io.InputStream;
@@ -61,6 +63,9 @@ public class DylibScritchInterface
 	/** The native dynamic library to use. */
 	protected final NativeScritchDylib dyLib;
 	
+	/** The choice implementation. */
+	protected final DylibChoiceInterface choice;
+	
 	/** Component interface. */
 	protected final DylibComponentInterface component;
 	
@@ -72,6 +77,12 @@ public class DylibScritchInterface
 	
 	/** Event loop interface. */
 	protected final DylibEventLoopInterface eventLoop;
+	
+	/** List interface. */
+	protected final DylibListInterface list;
+	
+	/** Paintable interface. */
+	protected final DylibPaintableInterface paintable;
 	
 	/** Panel interface. */
 	protected final DylibPanelInterface panel;
@@ -101,13 +112,26 @@ public class DylibScritchInterface
 		// Initialize all sub-interfaces
 		Reference<DylibScritchInterface> self =
 			new WeakReference<>(this);
+		this.choice = new DylibChoiceInterface(self, __dyLib);
 		this.component = new DylibComponentInterface(self, __dyLib);
 		this.container = new DylibContainerInterface(self, __dyLib);
 		this.environment = new DylibEnvironmentInterface(self, __dyLib);
 		this.eventLoop = new DylibEventLoopInterface(self, __dyLib);
+		this.list = new DylibListInterface(self, __dyLib);
+		this.paintable = new DylibPaintableInterface(self, __dyLib);
 		this.panel = new DylibPanelInterface(self, __dyLib);
 		this.screen = new DylibScreenInterface(self, __dyLib);
 		this.window = new DylibWindowInterface(self, __dyLib);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/07/16
+	 */
+	@Override
+	public ScritchChoiceInterface choice()
+	{
+		return this.choice;
 	}
 	
 	/**
@@ -163,8 +187,33 @@ public class DylibScritchInterface
 		@Range(from = 0, to = Integer.MAX_VALUE) int __sh)
 		throws MLECallError
 	{
-		return this.dyLib.hardwareGraphics(__pf, __bw, __bh, __buf, __pal,
-			__sx, __sy, __sw, __sh);
+		PencilBracket result = NativeScritchDylib.__hardwareGraphics(
+			this.dyLib._stateP, __pf, __bw, __bh, __buf, __pal, __sx, __sy,
+			__sw, __sh);
+		if (result == null)
+			throw new MLECallError("Did not make a pencil?");
+		
+		return result;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/07/16
+	 */
+	@Override
+	public @NotNull ScritchListInterface list()
+	{
+		return this.list;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/07/16
+	 */
+	@Override
+	public @NotNull ScritchPaintableInterface paintable()
+	{
+		return this.paintable;
 	}
 	
 	/**

@@ -53,7 +53,12 @@ public class DylibComponentInterface
 		if (__component == null)
 			throw new MLECallError("Null arguments.");
 		
-		return this.dyLib.componentHeight((DylibComponentObject)__component);
+		if ((DylibComponentObject)__component == null)
+			throw new MLECallError("NARG");
+		
+		// Forward
+		return NativeScritchDylib.__componentHeight(this.dyLib._stateP,
+			((DylibComponentObject)__component).objectP);
 	}
 	
 	/**
@@ -67,7 +72,11 @@ public class DylibComponentInterface
 		if (__component == null)
 			throw new MLECallError("Null arguments.");
 		
-		this.dyLib.componentRevalidate((DylibComponentObject)__component);
+		if ((DylibComponentObject)__component == null)
+			throw new MLECallError("Null arguments");
+		
+		NativeScritchDylib.__componentRevalidate(this.dyLib._stateP,
+			((DylibComponentObject)__component).objectP);
 	}
 	
 	/**
@@ -97,8 +106,13 @@ public class DylibComponentInterface
 		if (__component == null)
 			throw new MLECallError("Null arguments.");
 		
-		this.dyLib.componentSetVisibleListener(
-			(DylibComponentObject)__component, __listener);
+		if ((DylibComponentObject)__component == null)
+			throw new MLECallError("Null arguments.");
+		
+		// Forward
+		NativeScritchDylib.__componentSetVisibleListener(this.dyLib._stateP,
+			((DylibBaseObject)(DylibComponentObject)__component).objectP,
+			__listener);
 	}
 	
 	/**
@@ -113,6 +127,11 @@ public class DylibComponentInterface
 		if (__component == null)
 			throw new MLECallError("Null arguments.");
 		
-		return this.dyLib.componentWidth((DylibComponentObject)__component);
+		if ((DylibComponentObject)__component == null)
+			throw new MLECallError("NARG");
+		
+		// Forward
+		return NativeScritchDylib.__componentWidth(this.dyLib._stateP,
+			((DylibComponentObject)__component).objectP);
 	}
 }

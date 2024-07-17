@@ -25,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
  */
 @SquirrelJMEVendorApi
 public interface ScritchPaintableInterface
+	extends ScritchApiInterface
 {
 	/**
 	 * Repaints the given component.
