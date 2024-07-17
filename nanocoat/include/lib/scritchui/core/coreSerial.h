@@ -40,6 +40,27 @@ typedef enum sjme_scritchui_serialType
 	/** Unknown. */
 	SJME_SCRITCHUI_SERIAL_TYPE_UNKNOWN,
 	
+	/** @c choiceItemGet . */
+	SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_ITEM_GET,
+	
+	/** @c choiceItemInsert . */
+	SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_ITEM_INSERT,
+	
+	/** @c choiceItemRemove . */
+	SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_ITEM_REMOVE,
+	
+	/** @c choiceItemSet . */
+	SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_ITEM_SET,
+	
+	/** @c choiceLength . */
+	SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_LENGTH,
+	
+	/** @c choiceSetActivateListener . */
+	SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_SET_ACTIVATE_LISTENER,
+	
+	/** @c choiceSetUpdateListener . */
+	SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_SET_UPDATE_LISTENER,
+	
 	/** @c componentRepaint . */
 	SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_REPAINT,
 	
@@ -140,6 +161,38 @@ typedef enum sjme_scritchui_serialType
 
 /* clang-format off */
 /* ------------------------------------------------------------------------ */
+
+SUD_STRUCT_DEF(choiceItemGet,
+	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
+	SDU_VAR(sjme_jint, atIndex);
+	SDU_VAR(sjme_scritchui_uiChoiceItem, outItemTemplate););
+
+SUD_STRUCT_DEF(choiceItemInsert,
+	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
+	SDU_VAR(sjme_jint, atIndex);
+	SDU_VAR(sjme_scritchui_uiChoiceItem, inItemTemplate););
+	
+SUD_STRUCT_DEF(choiceItemRemove,
+	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
+	SDU_VAR(sjme_jint, atIndex););
+	
+SUD_STRUCT_DEF(choiceItemSet,
+	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
+	SDU_VAR(sjme_jint, atIndex);
+	SDU_VAR(sjme_scritchui_uiChoiceItem, inItemTemplate););
+	
+SUD_STRUCT_DEF(choiceLength,
+	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
+	SDU_VARP(sjme_jint*, outLength););
+	
+SUD_STRUCT_DEF(choiceSetActivateListener,
+	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
+	SJME_SCRITCHUI_SERIAL_SET_LISTENER(choiceActivate););
+	
+SUD_STRUCT_DEF(choiceSetUpdateListener,
+	SDU_VAR(sjme_scritchui, inState);
+	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
+	SJME_SCRITCHUI_SERIAL_SET_LISTENER(choiceUpdate););
 
 SUD_STRUCT_DEF(componentRepaint,
 	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
@@ -267,6 +320,28 @@ SUD_STRUCT_DEF(windowSetVisible,
  */
 typedef union sjme_scritchui_serialDataUnion
 {
+
+	/** @c choiceItemGet . */
+	SJME_SCRITCHUI_SDU_DEF(choiceItemGet);
+
+	/** @c choiceItemInsert . */
+	SJME_SCRITCHUI_SDU_DEF(choiceItemInsert);
+
+	/** @c choiceItemRemove . */
+	SJME_SCRITCHUI_SDU_DEF(choiceItemRemove);
+
+	/** @c choiceItemSet . */
+	SJME_SCRITCHUI_SDU_DEF(choiceItemSet);
+
+	/** @c choiceLength . */
+	SJME_SCRITCHUI_SDU_DEF(choiceLength);
+
+	/** @c choiceSetActivateListener . */
+	SJME_SCRITCHUI_SDU_DEF(choiceSetActivateListener);
+
+	/** @c choiceSetUpdateListener . */
+	SJME_SCRITCHUI_SDU_DEF(choiceSetUpdateListener);
+
 	/** @c componentRepaint . */
 	SJME_SCRITCHUI_SDU_DEF(componentRepaint);
 	

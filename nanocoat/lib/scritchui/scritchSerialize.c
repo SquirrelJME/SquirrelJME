@@ -120,6 +120,13 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 		return SJME_THREAD_RESULT(SJME_ERROR_NOT_IMPLEMENTED); }
 	
 	volatile sjme_scritchui_serialData* data;
+	SJME_SCRITCHUI_DISPATCH_DECL(choiceItemGet);
+	SJME_SCRITCHUI_DISPATCH_DECL(choiceItemInsert);
+	SJME_SCRITCHUI_DISPATCH_DECL(choiceItemRemove);
+	SJME_SCRITCHUI_DISPATCH_DECL(choiceItemSet);
+	SJME_SCRITCHUI_DISPATCH_DECL(choiceLength);
+	SJME_SCRITCHUI_DISPATCH_DECL(choiceSetActivateListener);
+	SJME_SCRITCHUI_DISPATCH_DECL(choiceSetUpdateListener);
 	SJME_SCRITCHUI_DISPATCH_DECL(componentRepaint);
 	SJME_SCRITCHUI_DISPATCH_DECL(componentRevalidate);
 	SJME_SCRITCHUI_DISPATCH_DECL(componentSetInputListener);
@@ -160,6 +167,53 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 	
 	/* Begin cases. */
 	SJME_SCRITCHUI_DISPATCH_SWITCH_BEGIN
+	
+	SJME_SCRITCHUI_DISPATCH_CASE(choiceItemGet,
+		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_ITEM_GET,
+		(state,
+		choiceItemGet->inComponent,
+		choiceItemGet->atIndex,
+		choiceItemGet->outItemTemplate));
+	
+	SJME_SCRITCHUI_DISPATCH_CASE(choiceItemInsert,
+		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_ITEM_INSERT,
+		(state,
+		choiceItemInsert->inComponent,
+		choiceItemInsert->atIndex,
+		choiceItemInsert->inItemTemplate));
+		
+	SJME_SCRITCHUI_DISPATCH_CASE(choiceItemRemove,
+		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_ITEM_REMOVE,
+		(state,
+		choiceItemRemove->inComponent,
+		choiceItemRemove->atIndex));
+		
+	SJME_SCRITCHUI_DISPATCH_CASE(choiceItemSet,
+		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_ITEM_SET,
+		(state,
+		choiceItemSet->inComponent,
+		choiceItemSet->atIndex,
+		choiceItemSet->inItemTemplate));
+		
+	SJME_SCRITCHUI_DISPATCH_CASE(choiceLength,
+		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_LENGTH,
+		(state,
+		choiceLength->inComponent,
+		choiceLength->outLength));
+		
+	SJME_SCRITCHUI_DISPATCH_CASE(choiceSetActivateListener,
+		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_SET_ACTIVATE_LISTENER,
+		(state,
+		choiceSetActivateListener->inComponent,
+		choiceSetActivateListener->inListener,
+		choiceSetActivateListener->copyFrontEnd));
+		
+	SJME_SCRITCHUI_DISPATCH_CASE(choiceSetUpdateListener,
+		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_SET_UPDATE_LISTENER,
+		(state,
+		choiceSetUpdateListener->inComponent,
+		choiceSetUpdateListener->inListener,
+		choiceSetUpdateListener->copyFrontEnd));
 
 	/* Depends on the type... */
 	SJME_SCRITCHUI_DISPATCH_CASE(componentRepaint,
@@ -344,8 +398,16 @@ sjme_errorCode sjme_scritchui_coreSerial_choiceItemGet(
 	sjme_attrInPositive sjme_jint atIndex,
 	sjme_attrOutNotNull sjme_scritchui_uiChoiceItem outItemTemplate)
 {
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	SJME_SCRITCHUI_SERIAL_CHUNK(choiceItemGet,
+		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_ITEM_GET,
+		(inState, inComponent, atIndex, outItemTemplate));
+		
+	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
+	SJME_SCRITCHUI_SERIAL_PASS(atIndex);
+	SJME_SCRITCHUI_SERIAL_PASS(outItemTemplate);
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
 }
 
 sjme_errorCode sjme_scritchui_coreSerial_choiceItemInsert(
@@ -354,8 +416,16 @@ sjme_errorCode sjme_scritchui_coreSerial_choiceItemInsert(
 	sjme_attrInPositive sjme_jint atIndex,
 	sjme_attrInNotNull sjme_scritchui_uiChoiceItem inItemTemplate)
 {
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	SJME_SCRITCHUI_SERIAL_CHUNK(choiceItemInsert,
+		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_ITEM_INSERT,
+		(inState, inComponent, atIndex, inItemTemplate));
+		
+	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
+	SJME_SCRITCHUI_SERIAL_PASS(atIndex);
+	SJME_SCRITCHUI_SERIAL_PASS(inItemTemplate);
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
 }
 
 sjme_errorCode sjme_scritchui_coreSerial_choiceItemRemove(
@@ -363,8 +433,15 @@ sjme_errorCode sjme_scritchui_coreSerial_choiceItemRemove(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInPositive sjme_jint atIndex)
 {
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	SJME_SCRITCHUI_SERIAL_CHUNK(choiceItemRemove,
+		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_ITEM_REMOVE,
+		(inState, inComponent, atIndex));
+		
+	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
+	SJME_SCRITCHUI_SERIAL_PASS(atIndex);
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
 }
 
 sjme_errorCode sjme_scritchui_coreSerial_choiceItemSet(
@@ -373,8 +450,16 @@ sjme_errorCode sjme_scritchui_coreSerial_choiceItemSet(
 	sjme_attrInPositive sjme_jint atIndex,
 	sjme_attrInNotNull sjme_scritchui_uiChoiceItem inItemTemplate)
 {
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	SJME_SCRITCHUI_SERIAL_CHUNK(choiceItemSet,
+		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_ITEM_SET,
+		(inState, inComponent, atIndex, inItemTemplate));
+		
+	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
+	SJME_SCRITCHUI_SERIAL_PASS(atIndex);
+	SJME_SCRITCHUI_SERIAL_PASS(inItemTemplate);
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
 }
 
 sjme_errorCode sjme_scritchui_coreSerial_choiceLength(
@@ -382,8 +467,15 @@ sjme_errorCode sjme_scritchui_coreSerial_choiceLength(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrOutNotNull sjme_jint* outLength)
 {
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	SJME_SCRITCHUI_SERIAL_CHUNK(choiceLength,
+		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_LENGTH,
+		(inState, inComponent, outLength));
+		
+	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
+	SJME_SCRITCHUI_SERIAL_PASS(outLength);
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
 }
 
 sjme_errorCode sjme_scritchui_coreSerial_choiceSetActivateListener(
@@ -391,8 +483,16 @@ sjme_errorCode sjme_scritchui_coreSerial_choiceSetActivateListener(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(choiceActivate))
 {
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	SJME_SCRITCHUI_SERIAL_CHUNK(choiceSetActivateListener,
+		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_SET_ACTIVATE_LISTENER,
+		(inState, inComponent, inListener, copyFrontEnd));
+		
+	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
+	SJME_SCRITCHUI_SERIAL_PASS(inListener);
+	SJME_SCRITCHUI_SERIAL_PASS(copyFrontEnd);
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
 }
 
 sjme_errorCode sjme_scritchui_coreSerial_choiceSetUpdateListener(
@@ -400,8 +500,16 @@ sjme_errorCode sjme_scritchui_coreSerial_choiceSetUpdateListener(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(choiceUpdate))
 {
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	SJME_SCRITCHUI_SERIAL_CHUNK(choiceSetUpdateListener,
+		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_SET_UPDATE_LISTENER,
+		(inState, inComponent, inListener, copyFrontEnd));
+		
+	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
+	SJME_SCRITCHUI_SERIAL_PASS(inListener);
+	SJME_SCRITCHUI_SERIAL_PASS(copyFrontEnd);
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
 }
 
 sjme_errorCode sjme_scritchui_coreSerial_componentRepaint(
