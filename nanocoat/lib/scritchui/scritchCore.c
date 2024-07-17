@@ -27,6 +27,15 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 {
 	/* As normal. */
 	.apiFlags = NULL,
+	.choiceItemGet = sjme_scritchui_coreSerial_choiceItemGet,
+	.choiceItemInsert = sjme_scritchui_coreSerial_choiceItemInsert,
+	.choiceItemRemove = sjme_scritchui_coreSerial_choiceItemRemove,
+	.choiceItemSet = sjme_scritchui_coreSerial_choiceItemSet,
+	.choiceLength = sjme_scritchui_coreSerial_choiceLength,
+	.choiceSetActivateListener =
+		sjme_scritchui_coreSerial_choiceSetActivateListener,
+	.choiceSetUpdateListener = 
+		sjme_scritchui_coreSerial_choiceSetUpdateListener,
 	.componentRepaint = sjme_scritchui_coreSerial_componentRepaint,
 	.componentRevalidate = sjme_scritchui_coreSerial_componentRevalidate,
 	.componentSetInputListener =
@@ -70,6 +79,15 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 {
 	.apiFlags = NULL,
+	.choiceItemGet = sjme_scritchui_core_choiceItemGet,
+	.choiceItemInsert = sjme_scritchui_core_choiceItemInsert,
+	.choiceItemRemove = sjme_scritchui_core_choiceItemRemove,
+	.choiceItemSet = sjme_scritchui_core_choiceItemSet,
+	.choiceLength = sjme_scritchui_core_choiceLength,
+	.choiceSetActivateListener =
+		sjme_scritchui_core_choiceSetActivateListener,
+	.choiceSetUpdateListener = 
+		sjme_scritchui_core_choiceSetUpdateListener,
 	.componentRepaint = sjme_scritchui_core_componentRepaint,
 	.componentRevalidate = sjme_scritchui_core_componentRevalidate,
 	.componentSetInputListener = sjme_scritchui_core_componentSetInputListener,
@@ -105,6 +123,7 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 static const sjme_scritchui_internFunctions sjme_scritchUI_coreIntern =
 {
 	.fontBuiltin = sjme_scritchui_core_intern_fontBuiltin,
+	.getChoice = sjme_scritchui_core_intern_getChoice,
 	.getContainer = sjme_scritchui_core_intern_getContainer,
 	.getPaintable = sjme_scritchui_core_intern_getPaintable,
 	.initComponent = sjme_scritchui_core_intern_initComponent,

@@ -210,6 +210,20 @@ struct sjme_scritchui_implFunctions
 #undef SJME_SCRITCHUI_QUICK_SAME
 
 /**
+ * Returns the choice for the given component.
+ * 
+ * @param inState The input state.
+ * @param inComponent The input component.
+ * @param outChoice The resultant choice.
+ * @return Any error code if applicable, such as the component is not valid.
+ * @since 2024/07/16 
+ */
+typedef sjme_errorCode (*sjme_scritchui_intern_getChoiceFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInOutNotNull sjme_scritchui_uiChoice* outChoice);
+
+/**
  * Returns the container for the given component.
  * 
  * @param inState The input state.
@@ -314,6 +328,9 @@ struct sjme_scritchui_internFunctions
 {
 	/** Returns the built-in font, this can handle layers. */
 	sjme_scritchui_fontBuiltinFunc fontBuiltin;
+		
+	/** Returns the choice for the given component. */
+	sjme_scritchui_intern_getChoiceFunc getChoice;
 		
 	/** Returns the container for the given component. */
 	sjme_scritchui_intern_getContainerFunc getContainer;

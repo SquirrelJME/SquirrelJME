@@ -228,6 +228,23 @@ typedef struct sjme_scritchui_implFunctions sjme_scritchui_implFunctions;
 typedef struct sjme_scritchui_internFunctions sjme_scritchui_internFunctions;
 
 /**
+ * Represents a choice of options such as those in a list.
+ * 
+ * @since 2024/04/20
+ */
+typedef struct sjme_scritchui_uiChoiceBase* sjme_scritchui_uiChoice;
+
+/**
+ * Represents a single choice item.
+ * 
+ * @since 2024/04/20
+ */
+typedef struct sjme_scritchui_uiChoiceItemBase* sjme_scritchui_uiChoiceItem;
+
+/** A list of choice items. */
+SJME_LIST_DECLARE(sjme_scritchui_uiChoiceItem, 0);
+
+/**
  * Component within ScritchUI.
  * 
  * @since 2024/03/27
@@ -323,6 +340,36 @@ typedef struct sjme_scritchui_pencilLockFunctions
 	sjme_attrInNullable SJME_TOKEN_PASTE3(sjme_scritchui_, what, \
 		ListenerFunc) inListener, \
 	sjme_attrInNullable sjme_frontEnd* copyFrontEnd
+
+/**
+ * Listener that is called when a choice item is activated.
+ * 
+ * @param inState The input state.
+ * @param inComponent The choice based component where this event occurred.
+ * @param inChoice The choice information.
+ * @return Any resultant error, if any.
+ * @since 2024/07/16
+ */
+typedef sjme_errorCode (*sjme_scritchui_choiceActivateListenerFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNotNull sjme_scritchui_uiChoice inChoice);
+
+/**
+ * Listener that is called before and after all items have been updated.
+ * 
+ * @param inState The input state.
+ * @param inComponent The choice based component where this event occurred.
+ * @param inChoice The choice information.
+ * @param isAfterUpdate Is this after all items have been updated?
+ * @return Any resultant error, if any.
+ * @since 2024/07/16
+ */
+typedef sjme_errorCode (*sjme_scritchui_choiceUpdateListenerFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNotNull sjme_scritchui_uiChoice inChoice,
+	sjme_attrInValue sjme_jboolean isAfterUpdate);
 
 /**
  * Listener that is called when a window closes.
@@ -453,6 +500,112 @@ typedef sjme_errorCode (*sjme_scritchui_apiInitFunc)(
 	sjme_attrInNotNull const sjme_scritchui_implFunctions* inImplFunc,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
 	sjme_attrInNullable sjme_frontEnd* initFrontEnd);
+
+/**
+ * Gets the specified item template.
+ * 
+ * @param inState The input state.
+ * @param inComponent The choice to read from.
+ * @param atIndex The index to obtain the template of.
+ * @param inItemTemplate A copy of the item template.
+ * @return Any resultant error, if any.
+ * @since 2024/07/17
+ */
+typedef sjme_errorCode (*sjme_scritchui_choiceItemGetFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInPositive sjme_jint atIndex,
+	sjme_attrOutNotNull sjme_scritchui_uiChoiceItem outItemTemplate);
+
+/**
+ * Inserts the specified item template.
+ * 
+ * @param inState The input state.
+ * @param inComponent The choice to modify.
+ * @param atIndex The index to insert at.
+ * @param inItemTemplate The template to use when inserting the item.
+ * @return Any resultant error, if any.
+ * @since 2024/07/17
+ */
+typedef sjme_errorCode (*sjme_scritchui_choiceItemInsertFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInPositive sjme_jint atIndex,
+	sjme_attrInNotNull sjme_scritchui_uiChoiceItem inItemTemplate);
+
+/**
+ * Removes the specified item at the given index.
+ * 
+ * @param inState The input state.
+ * @param inComponent The choice to modify.
+ * @param atIndex The index to remove.
+ * @return Any resultant error, if any.
+ * @since 2024/07/17
+ */
+typedef sjme_errorCode (*sjme_scritchui_choiceItemRemoveFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInPositive sjme_jint atIndex);
+	
+/**
+ * Sets the specified item template.
+ * 
+ * @param inState The input state.
+ * @param inComponent The choice to modify.
+ * @param atIndex The index to modify with the given template.
+ * @param inItemTemplate The template to use when replacing the item.
+ * @return Any resultant error, if any.
+ * @since 2024/07/17
+ */
+typedef sjme_errorCode (*sjme_scritchui_choiceItemSetFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInPositive sjme_jint atIndex,
+	sjme_attrInNotNull sjme_scritchui_uiChoiceItem inItemTemplate);
+
+/**
+ * Returns the length of the choice list.
+ * 
+ * @param inState The input state.
+ * @param inComponent The choice to get the length of.
+ * @param outLength The resultant length.
+ * @return Any resultant error, if any.
+ * @since 2024/07/17
+ */
+typedef sjme_errorCode (*sjme_scritchui_choiceLengthFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNotNull sjme_jint* outLength);
+
+/**
+ * Sets the activation listener for the given choice.
+ * 
+ * @param inState The input state.
+ * @param inComponent The choice to update.
+ * @param inListener The listener to set.
+ * @param copyFrontEnd Any front end data to copy.
+ * @return Any resultant error, if any.
+ * @since 2024/07/17
+ */
+typedef sjme_errorCode (*sjme_scritchui_choiceSetActivateListenerFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(choiceActivate));
+
+/**
+ * Sets the update listener for the given choice.
+ * 
+ * @param inState The input state.
+ * @param inComponent The choice to update.
+ * @param inListener The listener to set.
+ * @param copyFrontEnd Any front end data to copy.
+ * @return Any resultant error, if any.
+ * @since 2024/07/17
+ */
+typedef sjme_errorCode (*sjme_scritchui_choiceSetUpdateListenerFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(choiceUpdate));
 
 /**
  * Repaints the given component.
@@ -859,6 +1012,27 @@ struct sjme_scritchui_apiFunctions
 {
 	/** API flags. */
 	SJME_SCRITCHUI_QUICK_API(apiFlags);
+	
+	/** Gets the item information. */
+	SJME_SCRITCHUI_QUICK_API(choiceItemGet);
+	
+	/** Inserts an item into the given choice. */
+	SJME_SCRITCHUI_QUICK_API(choiceItemInsert);
+	
+	/** Removes an item from the given choice. */
+	SJME_SCRITCHUI_QUICK_API(choiceItemRemove);
+	
+	/** Sets the item at the given choice. */
+	SJME_SCRITCHUI_QUICK_API(choiceItemSet);
+	
+	/** Gets the choice length. */
+	SJME_SCRITCHUI_QUICK_API(choiceLength);
+	
+	/** Set listener for when choice items are activated. */
+	SJME_SCRITCHUI_QUICK_API(choiceSetActivateListener);
+	
+	/** Set listener for when items are updated. */
+	SJME_SCRITCHUI_QUICK_API(choiceSetUpdateListener);
 	
 	/** Repaints the given component. */
 	SJME_SCRITCHUI_QUICK_API(componentRepaint);

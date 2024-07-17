@@ -68,6 +68,12 @@ typedef enum sjme_scritchui_listenerClass
 /** Void listener. */
 SJME_SCRITCHUI_LISTENER_DECLARE(void);
 
+/** Activate choice item. */
+SJME_SCRITCHUI_LISTENER_DECLARE(choiceActivate);
+
+/** Choice items updated, before or after. */
+SJME_SCRITCHUI_LISTENER_DECLARE(choiceUpdate);
+
 /** Close listener. */
 SJME_SCRITCHUI_LISTENER_DECLARE(close);
 
@@ -176,6 +182,20 @@ typedef struct sjme_scritchui_pencilBase
 } sjme_scritchui_pencilBase;
 
 /**
+ * Listeners for list items.
+ * 
+ * @since 2024/07/16
+ */
+typedef struct sjme_scritchui_uiListListeners
+{
+	/** Choice activated. */
+	sjme_scritchui_listener_choiceActivate choiceActivate;
+	
+	/** Items are about to or have been updated. */
+	sjme_scritchui_listener_choiceUpdate choiceUpdate;
+} sjme_scritchui_uiListListeners;
+
+/**
  * Listeners for components.
  * 
  * @since 2024/04/28
@@ -231,6 +251,52 @@ SJME_LIST_DECLARE(sjme_scritchui_uiComponent, 0);
 	SJME_TYPEOF_BASIC_sjme_pointer
 
 /**
+ * Contains all of the information on choice items.
+ * 
+ * @since 2024/07/16
+ */
+typedef struct sjme_scritchui_uiChoiceBase
+{
+	/** The items on this list. */
+	sjme_list_sjme_scritchui_uiChoiceItem* items;
+	
+	/** The number of valid entries on the list. */
+	sjme_jint numItems;
+	
+	/** Listener for list events. */
+	sjme_scritchui_uiListListeners listeners[SJME_NUM_SCRITCHUI_LISTENER];
+} sjme_scritchui_uiChoiceBase;
+
+/**
+ * Contains the information of a single item within a choice.
+ * 
+ * @since 2024/07/16
+ */
+typedef struct sjme_scritchui_uiChoiceItemBase
+{
+	/** The index of this item. */
+	sjme_jint index;
+	
+	/** Is this selected? */
+	sjme_jboolean isSelected;
+	
+	/** Is this enabled? */
+	sjme_jboolean isEnabled;
+	
+	/** The string text for the item. */
+	sjme_lpcstr string;
+	
+	/** The font to display the text in, @c NULL is default. */
+	sjme_scritchui_pencilFont font;
+	
+	/** The image data, if there is one for this. */
+	sjme_jint* imageRgb;
+	
+	/** The number of pixels in the image. */
+	sjme_jint imageRgbNumPixels;
+} sjme_scritchui_uiChoiceItemBase;
+
+/**
  * Base data for containers which may contain components.
  * 
  * @since 2024/04/20
@@ -239,7 +305,21 @@ typedef struct sjme_scritchui_uiContainerBase
 {
 	/** Components within the container. */
 	sjme_list_sjme_scritchui_uiComponent* components;
-} sjme_scritchui_uiContainerBase; 
+} sjme_scritchui_uiContainerBase;
+
+/**
+ * Base data for lists.
+ * 
+ * @since 2024/07/16
+ */
+typedef struct sjme_scritchui_uiListBase
+{
+	/** Common data. */
+	sjme_scritchui_uiComponentBase component;
+	
+	/** Choice information. */
+	sjme_scritchui_uiChoiceBase choice;
+} sjme_scritchui_uiListBase;
 
 typedef struct sjme_scritchui_uiPaintableListeners
 {
