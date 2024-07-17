@@ -297,6 +297,9 @@ typedef sjme_errorCode (*sjme_scritchui_intern_updateVisibleWindowFunc)(
 
 struct sjme_scritchui_internFunctions
 {
+	/** Returns the built-in font, this can handle layers. */
+	sjme_scritchui_fontBuiltinFunc fontBuiltin;
+		
 	/** Returns the container for the given component. */
 	sjme_scritchui_intern_getContainerFunc getContainer;
 	

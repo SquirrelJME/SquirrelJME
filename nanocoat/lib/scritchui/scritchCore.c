@@ -102,6 +102,7 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 /** Internal functions for ScritchUI implementations. */
 static const sjme_scritchui_internFunctions sjme_scritchUI_coreIntern =
 {
+	.fontBuiltin = sjme_scritchui_core_intern_fontBuiltin,
 	.getContainer = sjme_scritchui_core_intern_getContainer,
 	.getPaintable = sjme_scritchui_core_intern_getPaintable,
 	.initComponent = sjme_scritchui_core_intern_initComponent,

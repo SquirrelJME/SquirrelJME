@@ -64,6 +64,10 @@ static sjme_inline sjme_jboolean sjme_alloc_corruptFail(
 	sjme_message("link->freeNext: %p", atLink->freeNext);
 	sjme_message("link->allocSize: %d", (int)atLink->allocSize);
 	sjme_message("link->blockSize: %d", (int)atLink->blockSize);
+	
+	/* Abort. */
+	if (sjme_debug_handlers != NULL && sjme_debug_handlers->abort != NULL)
+		sjme_debug_handlers->abort();
 
 	/* Always indicate failure here. */
 	return SJME_JNI_TRUE;
@@ -397,9 +401,6 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc)(
 	if (pool == NULL || size <= 0 || outAddr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Emit barrier. */
-	sjme_thread_barrier();
-	
 	/* Determine the size this will actually take up, which includes the */
 	/* link to be created following this. */
 	roundSize = (((size & 7) != 0) ? ((size | 7) + 1) : size);
@@ -408,6 +409,9 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc)(
 		(sjme_jint)SJME_SIZEOF_ALLOC_LINK(0);
 	if (size > splitMinSize || splitMinSize < 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Emit barrier. */
+	sjme_thread_barrier();
 	
 	/* Find the first free link that this fits in. */
 	scanLink = NULL;

@@ -282,7 +282,7 @@ static gboolean sjme_scritchui_gtk2_eventExpose(
 	
 	/* A default font is required. */
 	defaultFont = NULL;
-	if (sjme_error_is(inState->api->fontBuiltin(inState,
+	if (sjme_error_is(inState->intern->fontBuiltin(inState,
 		&defaultFont)) || defaultFont == NULL)
 		return FALSE;
 	

@@ -595,6 +595,24 @@ static const sjme_scritchui_pencilFontFunctions sjme_scritchui_fontFunctions =
 	.stringWidth = sjme_scritchui_fontStringWidth,
 };
 
+sjme_errorCode sjme_scritchui_core_intern_fontBuiltin(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_scritchui_pencilFont* outFont)
+{
+	sjme_scritchui topState;
+	
+	if (inState == NULL || outFont == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* If we are using a top level state, grab the font from there so */
+	/* that we have a consistent default to use. */
+	topState = sjme_atomic_sjme_pointer_get(&inState->topState);
+	if (topState != NULL)
+		return topState->api->fontBuiltin(topState, outFont);
+	
+	return inState->api->fontBuiltin(inState, outFont);
+}
+
 sjme_errorCode sjme_scritchui_core_fontDerive(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
