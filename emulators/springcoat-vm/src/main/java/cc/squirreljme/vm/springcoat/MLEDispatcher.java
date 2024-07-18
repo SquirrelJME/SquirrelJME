@@ -103,10 +103,6 @@ public enum MLEDispatcher
 	TYPE("cc/squirreljme/jvm/mle/TypeShelf",
 		MLEType.values()),
 	
-	/** {@link UIFormShelf}. */
-	UI_FORM("cc/squirreljme/jvm/mle/UIFormShelf",
-		MLEUIForm.values()),
-	
 	/* End. */
 	;
 	

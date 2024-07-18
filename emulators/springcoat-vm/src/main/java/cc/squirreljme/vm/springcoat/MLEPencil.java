@@ -18,7 +18,6 @@ import cc.squirreljme.jvm.mle.constants.PencilShelfError;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.lcdui.mle.SoftwareGraphicsFactory;
 import cc.squirreljme.vm.springcoat.brackets.PencilObject;
 import cc.squirreljme.vm.springcoat.callbacks.NativeImageLoadCallbackAdapter;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
@@ -26,7 +25,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.microedition.lcdui.AnimatedImage;
-import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.ScalableImage;
 
@@ -369,52 +367,6 @@ public enum MLEPencil
 					(Integer)__args[6]);
 			
 			return null;
-		}
-	},
-	
-	/**
-	 * {@link PencilShelf#hardwareGraphics(int, int, int, Object, int, int[],
-	 * int, int, int, int)}.
-	 */ 
-	HARDWARE_GRAPHICS("hardwareGraphics:(IIILjava/lang/Object;[IIIII)" +
-		"Lcc/squirreljme/jvm/mle/brackets/PencilBracket;")
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/12/05
-		 */
-		@Override
-		public Object handle(SpringThreadWorker __thread, Object... __args)
-		{
-			// Attempt to initialize the graphics
-			try
-			{
-				int __pf = (Integer)__args[0];
-				int __bw = (Integer)__args[1];
-				int __bh = (Integer)__args[2];
-				SpringArrayObject __buf =
-					SpringNullObject.<SpringArrayObject>checkCast(
-						SpringArrayObject.class, __args[3]);
-				SpringArrayObjectInteger __pal =
-					SpringNullObject.<SpringArrayObjectInteger>checkCast(
-						SpringArrayObjectInteger.class, __args[4]);
-				int __sx = (Integer)__args[5];
-				int __sy = (Integer)__args[6];
-				int __sw = (Integer)__args[7];
-				int __sh = (Integer)__args[8];
-				
-				return new PencilObject(__thread.machine,
-					SoftwareGraphicsFactory.softwareGraphics(
-						__pf, __bw, __bh,
-						(__buf != null ? __buf.array() : null),
-						(__pal != null ? __pal.array() : null),
-						__sx, __sy, __sw, __sh));
-			}
-			catch (ClassCastException|IllegalArgumentException|
-				NullPointerException __e)
-			{
-				throw new SpringMLECallError(__e);
-			}
 		}
 	},
 	
