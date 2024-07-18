@@ -9,12 +9,6 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
-import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
-import cc.squirreljme.jvm.mle.constants.UIItemPosition;
-import cc.squirreljme.jvm.mle.constants.UIItemType;
-import cc.squirreljme.jvm.mle.constants.UISpecialCode;
-import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchPanelInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
@@ -24,9 +18,6 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.event.EventTranslate;
 import cc.squirreljme.runtime.lcdui.event.KeyNames;
-import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
-import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
-import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayScale;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
@@ -444,6 +435,7 @@ public abstract class Canvas
 			__sk != Display._SOFTKEY_RIGHT_COMMAND))
 			throw new IllegalArgumentException("EB17 " + __sk);
 		
+		throw Debugging.todo();/*
 		UIBackend backend = this.__backend();
 		
 		// Use the item's actual position
@@ -476,7 +468,7 @@ public abstract class Canvas
 			
 			default:
 				throw Debugging.oops(__sk);
-		}
+		}*/
 	}
 	
 	/**
@@ -705,6 +697,9 @@ public abstract class Canvas
 		if (__w <= 0 || __h <= 0)
 			return;
 		
+		throw Debugging.todo();
+		/*
+		
 		// Request repainting
 		UIBackend instance = this.__backend();
 		
@@ -732,6 +727,8 @@ public abstract class Canvas
 		instance.widgetProperty(this.__state(__CanvasState__.class)._uiCanvas,
 			UIWidgetProperty.INT_SIGNAL_REPAINT, 0,
 			UISpecialCode.REPAINT_EXECUTE);
+			
+		 */
 	}
 	
 	/**
@@ -803,16 +800,7 @@ public abstract class Canvas
 		// Set new mode
 		this._isFullScreen = __f;
 		
-		// Depending on full-screen either choose the first position or the
-		// full-screen body of the form
-		UIBackend backend = this.__backend();
-		backend.formItemPosition(
-			this.__state(__DisplayableState__.class)._uiForm,
-			this.__state(__CanvasState__.class)._uiCanvas, (__f ?
-			UIItemPosition.BODY : 0));
-		
-		// Update form title
-		this.__updateFormTitle(true, __f);
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -874,20 +862,6 @@ public abstract class Canvas
 			return;
 		
 		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/06/24
-	 */
-	@Override
-	public void setTitle(String __t)
-	{
-		// Set the title
-		super.setTitle(__t);
-		
-		// Update the form's title
-		this.__updateFormTitle(true, this._isFullScreen);
 	}
 	
 	/**
@@ -964,20 +938,9 @@ public abstract class Canvas
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2020/10/17
-	 */
-	@Override
-	boolean __isPainted()
-	{
-		return true;
-	}
-	
-	/**
-	 * {@inheritDoc}
 	 * @since 2020/09/21
 	 */
 	@SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
-	@Override
 	final void __paint(Graphics __gfx, int __sw, int __sh, int __special)
 	{
 		// Not on screen?
@@ -1058,114 +1021,6 @@ public abstract class Canvas
 					repaintLock.notifyAll();
 				}
 			}
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/10/17
-	 */
-	@Override
-	boolean __propertyChange(UIFormBracket __form, UIItemBracket __item,
-		int __intProp, int __sub, int __old, int __new)
-	{
-		UIBackend instance = this.__backend();
-		
-		// Only act on the canvas item
-		if (!instance.equals(__item,
-			this.__state(__CanvasState__.class)._uiCanvas))
-			return false;
-		
-		// Depends on the property
-		switch (__intProp)
-		{
-				// Shown state changed?
-			case UIWidgetProperty.INT_IS_SHOWN:
-				if (__new == 0)
-					this.hideNotify();
-				else
-					this.__showNotifyCanvas();
-				return true;
-			
-				// New width?
-			case UIWidgetProperty.INT_WIDTH:
-				this.sizeChanged(__new, this.getHeight());
-				return true;
-				
-				// Height changed?
-			case UIWidgetProperty.INT_HEIGHT:
-				this.sizeChanged(this.getWidth(), __new);
-				return true;
-				
-				// Both changed?
-			case UIWidgetProperty.INT_WIDTH_AND_HEIGHT:
-				this.sizeChanged(__old, __new);
-				return true;
-			
-				// Un-Handled
-			default:
-				return false;
-		}
-	}
-	
-	/**
-	 * Notifies that this canvas has been shown.
-	 * 
-	 * @since 2021/11/28
-	 */
-	final void __showNotifyCanvas()
-	{
-		// Signal focus on this canvas since it has been shown
-		UIBackend backend = this.__backend();
-		backend.widgetProperty(this.__state(__CanvasState__.class)._uiCanvas,
-			UIWidgetProperty.INT_SIGNAL_FOCUS, 0, 0);
-		
-		// Call the notification handler
-		this.showNotify();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/01/14
-	 */
-	@Override
-	final __CommonState__ __stateInit(UIBackend __backend)
-		throws NullPointerException
-	{
-		return new __CanvasState__(__backend, this);
-	}
-	
-	/**
-	 * File selector state.
-	 * 
-	 * @since 2023/01/14
-	 */
-	static class __CanvasState__
-		extends Displayable.__DisplayableState__
-	{
-		/** The native display instance. */
-		final UIItemBracket _uiCanvas;
-		
-		/**
-		 * Initializes the backend state.
-		 *
-		 * @param __backend The backend used.
-		 * @param __self Self widget.
-		 * @since 2023/01/14
-		 */
-		__CanvasState__(UIBackend __backend, DisplayWidget __self)
-		{
-			super(__backend, __self);
-			
-			// Build new canvas
-			UIItemBracket uiCanvas = __backend.itemNew(UIItemType.CANVAS);
-			this._uiCanvas = uiCanvas;
-			
-			// Register self for future paint events
-			StaticDisplayState.register(__self, uiCanvas);
-			
-			// Show it on the form for this displayable
-			__backend.formItemPosition(this._uiForm, uiCanvas, 0);
 		}
 	}
 }

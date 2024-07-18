@@ -19,11 +19,10 @@ import cc.squirreljme.jvm.mle.scritchui.constants.ScritchInputMethodType;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
-import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.Vibration;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayManager;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayScale;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
-import cc.squirreljme.runtime.lcdui.scritchui.DisplayManager;
 import cc.squirreljme.runtime.lcdui.scritchui.ScritchLcdUiUtils;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -38,7 +37,6 @@ import org.jetbrains.annotations.NonBlocking;
 @SuppressWarnings("OverlyComplexClass")
 @Api
 public class Display
-	implements DisplayWidget
 {
 	/** The soft-key for the left command. */
 	static final int _SOFTKEY_LEFT_COMMAND =

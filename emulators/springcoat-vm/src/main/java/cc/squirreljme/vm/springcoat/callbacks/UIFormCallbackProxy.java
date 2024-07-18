@@ -9,7 +9,6 @@
 
 package cc.squirreljme.vm.springcoat.callbacks;
 
-import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.MLEObjects;
 import cc.squirreljme.vm.springcoat.SpringArrayObject;

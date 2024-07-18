@@ -9,17 +9,11 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
-import cc.squirreljme.jvm.mle.constants.UIItemType;
-import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
-import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 
 @Api
 public abstract class Item
-	extends __CommonWidget__
 {
 	@Api
 	public static final int BUTTON =
@@ -322,6 +316,8 @@ public abstract class Item
 		// Record the string to be used
 		this._label = __l;
 		
+		throw Debugging.todo();
+		/*
 		// Update the label
 		UIBackend backend = this.__backend();
 		backend.widgetProperty(this.__state(__ItemState__.class)._labelItem,
@@ -330,34 +326,7 @@ public abstract class Item
 		// Perform an update on the form
 		Displayable displayable = this._displayable;
 		if (displayable instanceof Form)
-			((Form)displayable).__update();
-	}
-	
-	/**
-	 * Base state for items.
-	 * 
-	 * @since 2023/01/14
-	 */
-	abstract static class __ItemState__
-		extends Displayable.__CommonState__
-	{
-		/** The label item. */
-		final UIItemBracket _labelItem;
-		
-		/**
-		 * Initializes the backend state.
-		 *
-		 * @param __backend The backend used.
-		 * @param __self Self widget.
-		 * @since 2023/01/14
-		 */
-		__ItemState__(UIBackend __backend, DisplayWidget __self)
-		{
-			super(__backend, __self);
-			
-			// Setup label item
-			this._labelItem = __backend.itemNew(UIItemType.LABEL);
-		}
+			((Form)displayable).__update();*/
 	}
 }
 

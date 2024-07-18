@@ -12,8 +12,6 @@ package javax.microedition.lcdui;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchInputListener;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchInputMethodType;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Input event handler for canvases.

@@ -10,7 +10,6 @@
 package cc.squirreljme.vm.springcoat.callbacks;
 
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
-import cc.squirreljme.jvm.mle.callbacks.UIDisplayCallback;
 import cc.squirreljme.vm.springcoat.SpringMachine;
 import cc.squirreljme.vm.springcoat.SpringObject;
 import net.multiphasicapps.classfile.ClassName;

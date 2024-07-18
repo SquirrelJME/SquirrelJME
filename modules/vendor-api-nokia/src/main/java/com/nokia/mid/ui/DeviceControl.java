@@ -9,11 +9,8 @@
 
 package com.nokia.mid.ui;
 
-import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.lcdui.mle.UIBackend;
-import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 import cc.squirreljme.runtime.lcdui.mle.Vibration;
 
 /**
@@ -70,6 +67,8 @@ public class DeviceControl
 		if (__lvl < 0 || __lvl > 100)
 			throw new IllegalArgumentException("EB32 " + __lvl);
 		
+		throw Debugging.todo();
+		/*
 		// If controlling the backlight is supported, allow it to be changed
 		UIBackend backend = UIBackendFactory.getInstance(true);
 		if (backend.metric(backend.displays()[0],

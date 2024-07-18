@@ -9,20 +9,11 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
-import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
-import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
-import cc.squirreljme.jvm.mle.constants.UIItemType;
-import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.scritchui.annotation.ScritchEventLoop;
 import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
-import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
-import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
-import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
@@ -43,16 +34,10 @@ import org.jetbrains.annotations.MustBeInvokedByOverriders;
 @Api
 @SuppressWarnings("OverlyComplexClass")
 public abstract class Displayable
-	extends __CommonWidget__
 {
 	/** The displayable state. */
 	final DisplayableState _state =
 		new DisplayableState(this);
-
-	/** Commands/Menus which have been added to the displayable. */
-	@Deprecated
-	final __VolatileList__<__Action__> _actions =
-		new __VolatileList__<>();
 	
 	/** The display this is attached to, if any. */
 	@Deprecated
@@ -141,6 +126,9 @@ public abstract class Displayable
 			if ((cd.getCapabilities() & Display.SUPPORTS_COMMANDS) == 0)
 				throw new DisplayCapabilityException("EB1s");
 		
+		throw Debugging.todo();
+		/*
+		
 		// Do nothing if the command has already been added
 		__VolatileList__<__Action__> actions = this._actions;
 		if (actions.containsUniqueObjRef(__c))
@@ -153,6 +141,8 @@ public abstract class Displayable
 		// is even visible
 		if (this.__isShown())
 			this.__layoutCommands();
+			
+		 */
 	}
 	
 	@Api
@@ -195,11 +185,15 @@ public abstract class Displayable
 	@Api
 	public Command[] getCommands()
 	{
+		throw Debugging.todo();
+		/*
 		List<Command> rv = new ArrayList<>();
 		for (__Action__ a : this._actions)
 			if (a instanceof Command)
 				rv.add((Command)a);
 		return rv.<Command>toArray(new Command[rv.size()]);
+		
+		 */
 	}
 	
 	/**
@@ -283,6 +277,8 @@ public abstract class Displayable
 		if (__c == null)
 			return;
 		
+		throw Debugging.todo();
+		/*
 		// Remove the command
 		if (this._actions.remove(__c))
 		{
@@ -290,6 +286,8 @@ public abstract class Displayable
 			if (this.__isShown())
 				this.__layoutCommands();
 		}
+		
+		 */
 	}
 	
 	@Api
@@ -378,6 +376,8 @@ public abstract class Displayable
 	@Api
 	public void setTicker(Ticker __t)
 	{
+		throw Debugging.todo();
+		/*
 		// Removing old ticker?
 		Ticker old = this._ticker;
 		if (__t == null)
@@ -412,6 +412,8 @@ public abstract class Displayable
 			// Perform ticker updates
 			this.__updateTicker();
 		}
+		
+		 */
 	}
 	
 	/**
@@ -423,25 +425,7 @@ public abstract class Displayable
 	@Api
 	public void setTitle(String __t)
 	{
-		// Cache it for later return
-		this._userTitle = __t;
-		
-		// If no title is being set, fallback to a default one (derived from
-		// the suite)
-		if (__t == null)
-			__t = Displayable.__defaultTitle();
-		
-		// Store this
-		this._displayTitle = __t;
-		
-		// We can always set the title for the widget as the form should be
-		// allocated
-		this.__backend().widgetProperty(
-			this.__state(__DisplayableState__.class)._uiTitle,
-			UIWidgetProperty.STRING_LABEL, 0, __t);
-		
-		// Update the form title
-		this.__updateFormTitle(false, false);
+		this.__setTitle(__t);
 	}
 	
 	/**
@@ -601,6 +585,8 @@ public abstract class Displayable
 			
 		Display display = this._display;
 		
+		throw Debugging.todo();
+		/*
 		// Go through commands and menu items, try to place them in their
 		// default normal positions where possible
 		for (__Action__ action : this._actions)
@@ -651,7 +637,7 @@ public abstract class Displayable
 			// If we could place the item here, do that placement
 			if (usePlace > 0)
 				__layout.set(action, usePlace);
-		}
+		}*/
 	}
 	
 	/**
@@ -695,106 +681,38 @@ public abstract class Displayable
 		if (__layout == null)
 			throw new NullPointerException("NARG");
 		
-		UIFormBracket form = this.__state(__DisplayableState__.class)._uiForm;
-		UIBackend backend = this.__backend();
-		
-		// If there is nothing here, clear it
-		__Action__ action = __layout.get(__from);
-		if (action == null)
-		{
-			// Remove anything that is in this position
-			if (null != backend.formItemAtPosition(form, __to))
-				backend.formItemRemove(form, __to);
-			
-			return;
-		}
-		
-		// Create new widget that goes into this position
-		if (action instanceof Command)
-		{
-			__CommandWidget__ cm = new __CommandWidget__(
-				this, (Command)action);
-			backend.formItemPosition(form, cm._uiItem, __to);
-		}
-		
-		// Menu item
-		else
-		{
-			throw Debugging.todo();
-		}
+		throw Debugging.todo();
 	}
 	
 	/**
-	 * Does internal work when a form is being shown.
-	 * 
-	 * @param __show The displayable being shown.
-	 * @since 2020/09/27
+	 * Sets the title of this displayable.
+	 *
+	 * @param __title The title to set.
+	 * @since 2024/07/17
 	 */
-	@SerializedEvent
-	@Async.Execute
-	final void __showNotify(Displayable __show)
-		throws NullPointerException
+	final void __setTitle(String __title)
 	{
-		if (__show == null)
-			throw new NullPointerException("NARG");
+		throw Debugging.todo();
+		/*
+		// Cache it for later return
+		this._userTitle = __t;
 		
-		// Layout all the given commands, either they were changed or the
-		// display was shown
-		this.__layoutCommands();
+		// If no title is being set, fallback to a default one (derived from
+		// the suite)
+		if (__t == null)
+			__t = Displayable.__defaultTitle();
 		
-		// Update the ticker for this so it is properly displayed
-		this.__updateTicker();
+		// Store this
+		this._displayTitle = __t;
 		
-		// Inform canvases that they are now hidden
-		if (__show instanceof Canvas)
-			((Canvas)__show).__showNotifyCanvas();
-		
-		// Form layout policies are now in effect
-		else if (__show instanceof Form)
-			((Form)__show).__update();
-	}
-	
-	/**
-	 * Updates the display title of the form.
-	 * 
-	 * @param __knownFull Is setting full-screen known?
-	 * @param __isFull Is this full-screen?
-	 * @since 2021/06/24
-	 */
-	@SquirrelJMEVendorApi
-	final void __updateFormTitle(boolean __knownFull, boolean __isFull)
-	{
-		// If it is unknown whether we are full-screen, then restore the last
-		// known full-screen state. Otherwise if we do know our full-screen
-		// state set that.
-		if (!__knownFull)
-			__isFull = this._titleFullScreen;
-		else
-			this._titleFullScreen = __isFull;
-			
-		// Debug
-		Debugging.debugNote("__updateFormTitle(%b, %b) -> %s",
-			__knownFull, __isFull, this._displayTitle);
-		
-		// If we are not full-screen then the title bar is at the top, so we
-		// can just say our SquirrelJME. Otherwise, that will be hidden, so
-		// we can set the main window title.
-		String useTitle;
-		if (!__isFull)
-			useTitle = "SquirrelJME";
-		else
-			useTitle = this._displayTitle;
-		
-		// Set the form title
+		// We can always set the title for the widget as the form should be
+		// allocated
 		this.__backend().widgetProperty(
-			this.__state(__DisplayableState__.class)._uiForm,
-			UIWidgetProperty.STRING_FORM_TITLE, 0, useTitle);
+			this.__state(__DisplayableState__.class)._uiTitle,
+			UIWidgetProperty.STRING_LABEL, 0, __t);
 		
-		// If this is a form, since we updated the title we should update
-		// all the layout since the title placement could cause the
-		// locations of items to change.
-		if (this instanceof Form)
-			((Form)this).__update();
+		// Update the form title
+		this.__updateFormTitle(false, false);*/
 	}
 	
 	/**
@@ -804,55 +722,7 @@ public abstract class Displayable
 	 */
 	final void __updateTicker()
 	{
-		UIBackend backend = this.__backend();
-		UIFormBracket uiForm = this.__state(
-			__DisplayableState__.class)._uiForm;
-		
-		// Has this changed?
-		boolean hasChanged;
-		
-		// Is the ticker being removed?
-		Ticker ticker = this._ticker;
-		UIItemBracket uiTicker = this.__state(
-			__DisplayableState__.class)._uiTicker;
-		if (ticker == null)
-		{
-			// Remove the ticker if it is currently being displayed
-			hasChanged = backend.formItemAtPosition(uiForm,
-				UIItemPosition.TICKER) == uiTicker;
-			if (hasChanged)
-				backend.formItemRemove(uiForm, UIItemPosition.TICKER);
-		}
-		
-		// Setting or changing the string?
-		else
-		{
-			// If not already set, place it here
-			hasChanged = backend.formItemAtPosition(uiForm,
-				UIItemPosition.TICKER) != uiTicker;
-			if (hasChanged)
-				backend.formItemPosition(uiForm, uiTicker,
-					UIItemPosition.TICKER);
-			
-			// Is the string on the ticker changing at all?
-			String oldString = backend.widgetPropertyStr(uiTicker,
-				UIWidgetProperty.STRING_LABEL, 0);
-			String newString = ticker._text;
-			if (((oldString == null) != (newString == null)) ||
-				(oldString != null && !oldString.equals(newString)))
-			{
-				backend.widgetProperty(uiTicker, UIWidgetProperty.STRING_LABEL,
-					0, newString);
-			}
-		}
-		
-		// Did the state of this ticker change?
-		if (hasChanged)
-		{
-			// Request form update as sizes and such could have changed
-			if (this instanceof Form)
-				((Form)this).__update();
-		}
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -886,110 +756,6 @@ public abstract class Displayable
 		
 		// Fallback to just using SquirrelJME
 		return "SquirrelJME";
-	}
-	
-	/**
-	 * Returns the displayable height.
-	 *
-	 * @param __d The displayable.
-	 * @param __alt
-	 * @return The height.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/05/16
-	 */
-	static int __getHeight(Displayable __d, UIWidgetBracket __alt)
-		throws NullPointerException
-	{
-		if (__d == null)
-			throw new NullPointerException("NARG");
-			
-		// The default maximum display height?
-		Display display = __d._display;
-		if (display == null)
-			return Display.getDisplays(0)[0].getHeight();
-		
-		// Get current form size
-		return __d.__backend().widgetPropertyInt(
-			(__alt != null ? __alt :
-				__d.__state(__DisplayableState__.class)._uiForm),
-			UIWidgetProperty.INT_HEIGHT, 0);
-	}
-	
-	/**
-	 * Returns the displayable width.
-	 *
-	 * @param __d The displayable.
-	 * @param __alt Alternative widget to check.
-	 * @return The width.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/05/16
-	 */
-	static int __getWidth(Displayable __d, UIWidgetBracket __alt)
-	{
-		if (__d == null)
-			throw new NullPointerException("NARG");
-			
-		// The default maximum display height?
-		Display display = __d._display;
-		if (display == null)
-			return Display.getDisplays(0)[0].getWidth();
-		
-		// Get current form size
-		return __d.__backend().widgetPropertyInt(
-			(__alt != null ? __alt :
-				__d.__state(__DisplayableState__.class)._uiForm),
-			UIWidgetProperty.INT_WIDTH, 0);
-	}
-	
-	/**
-	 * State for {@link Displayable}
-	 * 
-	 * @since 2023/01/14
-	 */
-	abstract static class __DisplayableState__
-		extends __CommonWidget__.__CommonState__
-	{
-		/** The native form instance. */
-		final UIFormBracket _uiForm;
-		
-		/** The title of the form. */
-		@Deprecated
-		final UIItemBracket _uiTitle;
-		
-		/** The item used for the ticker on this displayable. */
-		@Deprecated
-		final UIItemBracket _uiTicker;
-		
-		/**
-		 * Initializes the backend state.
-		 * 
-		 * @param __backend The backend used.
-		 * @param __self Self widget.
-		 * @since 2023/01/14
-		 */
-		__DisplayableState__(UIBackend __backend, DisplayWidget __self)
-		{
-			super(__backend, __self);
-			
-			// Create a new form for this displayable
-			UIFormBracket uiForm = __backend.formNew();
-			this._uiForm = uiForm;
-			
-			// Register it with the global state
-			StaticDisplayState.register(__self, uiForm);
-			
-			// Build the title item
-			UIItemBracket uiTitle = __backend.itemNew(UIItemType.LABEL);
-			this._uiTitle = uiTitle;
-			
-			// Set up the title item
-			__backend.formItemPosition(uiForm, uiTitle, UIItemPosition.TITLE);
-			__backend.widgetProperty(uiTitle, UIWidgetProperty.STRING_LABEL,
-				0, Displayable.__defaultTitle());
-			
-			// Each displayable has its own ticker
-			this._uiTicker = __backend.itemNew(UIItemType.LABEL);
-		}
 	}
 }
 

@@ -11,8 +11,6 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
-import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.scritchui.ChoiceManager;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,11 +38,6 @@ public class ChoiceGroup
 	/** Manages and contains choice entries. */
 	final ChoiceManager _choices =
 		new ChoiceManager();
-	
-	/** Entries which are available in the group. */
-	@Deprecated
-	private final List<__ChoiceEntry__> _entries =
-		new ArrayList<>();
 	
 	/** The valid choice selection type. */
 	private final int _type;
@@ -215,8 +208,10 @@ public class ChoiceGroup
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
+		throw Debugging.todo();
+		/*
 		/* {@squirreljme.error EB1e Cannot insert choice at the specified
-		index because it is not within bounds. (The index to add at)} */
+		index because it is not within bounds. (The index to add at)} * /
 		List<__ChoiceEntry__> entries = this._entries;
 		if (__v < 0 || __v > entries.size())
 			throw new IndexOutOfBoundsException(String.format("EB1e %d",
@@ -224,6 +219,8 @@ public class ChoiceGroup
 		
 		// Insert
 		entries.add(__v, new __ChoiceEntry__(__s, __i));
+		
+		 */
 	}
 	
 	@Override
@@ -283,39 +280,11 @@ public class ChoiceGroup
 	@Override
 	public int size()
 	{
+		throw Debugging.todo();
+		/*
 		return this._entries.size();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/01/14
-	 */
-	@Override
-	__CommonState__ __stateInit(UIBackend __backend)
-		throws NullPointerException
-	{
-		return new __ChoiceGroupState__(__backend, this);
-	}
-	
-	/**
-	 * Choice group state.
-	 * 
-	 * @since 2023/01/14
-	 */
-	static class __ChoiceGroupState__
-		extends Item.__ItemState__
-	{
-		/**
-		 * Initializes the backend state.
-		 *
-		 * @param __backend The backend used.
-		 * @param __self Self widget.
-		 * @since 2023/01/14
+		
 		 */
-		__ChoiceGroupState__(UIBackend __backend, DisplayWidget __self)
-		{
-			super(__backend, __self);
-		}
 	}
 }
 

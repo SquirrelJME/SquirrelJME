@@ -12,11 +12,6 @@ package javax.microedition.lcdui;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
 
 @Api
 public class Command
@@ -78,10 +73,6 @@ public class Command
 	
 	/** Is this an implementation specific command with fixed text? */
 	private final boolean _implspec;
-	
-	/** The widgets this command is being used by. */
-	private final Collection<Reference<__CommandWidget__>> _widgets =
-		new LinkedList<>();
 	
 	/**
 	 * Creates a new command with the specified parameters.
@@ -409,39 +400,6 @@ public class Command
 	}
 	
 	/**
-	 * Registers the command widget wrapper for this command.
-	 * 
-	 * @param __wrapper The wrapper to register.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2021/11/30
-	 */
-	final void __register(__CommandWidget__ __wrapper)
-		throws NullPointerException
-	{
-		if (__wrapper == null)
-			throw new NullPointerException("NARG");
-		
-		// Inform any command widgets of the change
-		Collection<Reference<__CommandWidget__>> widgets = this._widgets;
-		for (Iterator<Reference<__CommandWidget__>> it = widgets.iterator();
-			 it.hasNext();)
-		{
-			// Cleanup any old stale widget references
-			Reference<__CommandWidget__> ref = it.next();
-			__CommandWidget__ widget = ref.get();
-			if (widget == null)
-				it.remove();
-			
-			// Is already in here, so do nothing
-			else if (widget == __wrapper)
-				return;
-		}
-		
-		// Add it
-		widgets.add(new WeakReference<>(__wrapper));
-	}
-	
-	/**
 	 * Sets the labels for this command.
 	 * 
 	 * @param __shortLabel The short label.
@@ -457,23 +415,7 @@ public class Command
 		this._longLabel = __longLabel;
 		this._image = __image;
 		
-		// Inform any command widgets of the change
-		Collection<Reference<__CommandWidget__>> widgets = this._widgets;
-		for (Iterator<Reference<__CommandWidget__>> it = widgets.iterator();
-			 it.hasNext();)
-		{
-			// Cleanup any old stale widget references
-			Reference<__CommandWidget__> ref = it.next();
-			__CommandWidget__ widget = ref.get();
-			if (widget == null)
-			{
-				it.remove();
-				continue;
-			}
-			
-			// Inform of the change
-			widget.__update();
-		}
+		throw Debugging.todo();
 	}
 }
 

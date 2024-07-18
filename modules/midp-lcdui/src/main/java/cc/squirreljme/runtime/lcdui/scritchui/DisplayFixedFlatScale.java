@@ -9,8 +9,6 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-
 /**
  * Fixed flat display scale.
  *

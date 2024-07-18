@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jvm.mle.constants;
 
-import cc.squirreljme.jvm.mle.UIFormShelf;
-
 /**
  * This contains information on UI metrics used by
  * {@link UIFormShelf#metric(cc.squirreljme.jvm.mle.brackets.UIDisplayBracket, int)}.

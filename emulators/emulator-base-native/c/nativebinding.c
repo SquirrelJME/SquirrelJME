@@ -86,7 +86,6 @@ JNIEXPORT jint JNICALL sjme_attrUnused
 
 	/* Initialize all functions. */
 	rv |= mleDebugInit(env, classy);
-	rv |= mleFormInit(env, classy);
 	rv |= mleJarInit(env, classy);
 	rv |= mleMathInit(env, classy);
 	rv |= mleMidiInit(env, classy);

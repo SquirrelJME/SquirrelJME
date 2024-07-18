@@ -9,11 +9,7 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
-import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
-import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIListType;
-import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchListInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchListBracket;
@@ -22,10 +18,6 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
-import cc.squirreljme.runtime.lcdui.font.FontUtilities;
-import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
-import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
-import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.scritchui.ChoiceManager;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
 import org.jetbrains.annotations.Async;
@@ -43,11 +35,6 @@ public class List
 	/** Manages and contains choice entries. */
 	final ChoiceManager _choices =
 		new ChoiceManager();
-	
-	/** Items on the list. */
-	@Deprecated
-	final __VolatileList__<__ChoiceEntry__> _items =
-		new __VolatileList__<>();
 	
 	/** The type of list this is. */
 	private final int _type;
@@ -129,13 +116,9 @@ public class List
 		
 		throw Debugging.todo();
 		/*
-		// Set
-		this._userTitle = __title;
-		this._type = __type;
-		
-		// Append all the items to the list
+		// Add all items to the list
 		for (int i = 0, n = __strs.length; i < n; i++)
-			this.append(__strs[i], (__imgs == null ? null : __imgs[i]));
+			this.__insert(i, __strs[i], (__imgs == null ? null : __imgs[i]));
 		
 		// Implicit lists have a specific select command used
 		if (__type == Choice.IMPLICIT)
@@ -144,12 +127,9 @@ public class List
 			this.addCommand(List.SELECT_COMMAND);
 		}
 		
-		// Inform the backend that this is the kind of list we want
-		__ListState__ state = this.<__ListState__>__state(
-			__ListState__.class);
-		state._backend.widgetProperty(state._uiList,
-			UIWidgetProperty.INT_LIST_TYPE, 0, nativeType);
-			
+		// Set title
+		this.__setTitle(__title);
+		
 		 */
 	}
 	
@@ -175,10 +155,14 @@ public class List
 	@Override
 	public void delete(int __dx)
 	{
+		throw Debugging.todo();
+		/*
 		this._items.remove(__dx);
 		
 		// Ensure it is up to date
 		this.__refresh();
+		
+		 */
 	}
 	
 	/**
@@ -189,10 +173,14 @@ public class List
 	@Override
 	public void deleteAll()
 	{
+		throw Debugging.todo();
+		/*
 		this._items.clear();
 		
 		// Update UI
 		this.__refresh();
+		
+		 */
 	}
 	
 	@Override
@@ -213,7 +201,10 @@ public class List
 	public Font getFont(int __i)
 		throws IndexOutOfBoundsException
 	{
+		throw Debugging.todo();
+		/*
 		return this._items.get(__i)._font;
+		 */
 	}
 	
 	/**
@@ -223,7 +214,7 @@ public class List
 	@Override
 	public int getHeight()
 	{
-		return Displayable.__getHeight(this, null);
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -238,7 +229,11 @@ public class List
 	public Image getImage(int __i)
 		throws IndexOutOfBoundsException
 	{
+		throw Debugging.todo();
+		/*
 		return this._items.get(__i)._image;
+		
+		 */
 	}
 	
 	/**
@@ -274,7 +269,11 @@ public class List
 	public String getString(int __i)
 		throws IndexOutOfBoundsException
 	{
+		throw Debugging.todo();
+		/*
 		return this._items.get(__i)._label;
+		
+		 */
 	}
 	
 	/**
@@ -296,7 +295,7 @@ public class List
 	@Override
 	public int getWidth()
 	{
-		return Displayable.__getWidth(this, null);
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -309,6 +308,8 @@ public class List
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
+		throw Debugging.todo();
+		/*
 		// Append item
 		__ChoiceEntry__ e;
 		__VolatileList__<__ChoiceEntry__> items = this._items;
@@ -323,6 +324,8 @@ public class List
 		
 		// Update display
 		this.__refresh();
+		
+		 */
 	}
 	
 	/**
@@ -333,7 +336,11 @@ public class List
 	public boolean isEnabled(int __i)
 		throws IndexOutOfBoundsException
 	{
+		throw Debugging.todo();
+		/*
 		return !this._items.get(__i)._disabled;
+		
+		 */
 	}
 	
 	/**
@@ -344,7 +351,11 @@ public class List
 	public boolean isSelected(int __i)
 		throws IndexOutOfBoundsException
 	{
+		throw Debugging.todo();
+		/*
 		return this._items.get(__i)._selected;
+		
+		 */
 	}
 	
 	/**
@@ -355,6 +366,8 @@ public class List
 	public void set(int __i, String __label, Image __icon)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
+		throw Debugging.todo();
+		/*
 		if (__label == null)
 			throw new NullPointerException("NARG");
 		
@@ -365,6 +378,8 @@ public class List
 		
 		// Update display
 		this.__refresh();
+		
+		 */
 	}
 	
 	/**
@@ -375,10 +390,14 @@ public class List
 	public void setEnabled(int __i, boolean __e)
 		throws IndexOutOfBoundsException
 	{
+		throw Debugging.todo();
+		/*
 		this._items.get(__i)._disabled = !__e;
 		
 		// Update display
 		this.__refresh();
+		
+		 */
 	}
 	
 	@Override
@@ -399,10 +418,14 @@ public class List
 	public void setFont(int __i, Font __f)
 		throws IndexOutOfBoundsException
 	{
+		throw Debugging.todo();
+		/*
 		this._items.get(__i)._font = __f;
 		
 		// Update display
 		this.__refresh();
+		
+		 */
 	}
 	
 	@Api
@@ -419,13 +442,15 @@ public class List
 	public void setSelectedFlags(boolean[] __flags)
 		throws IllegalArgumentException, NullPointerException
 	{
+		throw Debugging.todo();
+		/*
 		if (__flags == null)
 			throw new NullPointerException();
 			
 		java.util.List<__ChoiceEntry__> items = this._items.valuesAsList();
 		
 		/* {@squirreljme.error EB3n Array is longer than the list size.
-		(The list size; the array size)} */
+		(The list size; the array size)} * /
 		int n = items.size();
 		if (n > __flags.length)
 			throw new IllegalArgumentException("EB3n " + n + " " +
@@ -460,7 +485,7 @@ public class List
 			items.get(0)._selected = true;
 		
 		// Send updates to the UI
-		this.__refresh();
+		this.__refresh();*/
 	}
 	
 	/**
@@ -471,7 +496,11 @@ public class List
 	public void setSelectedIndex(int __i, boolean __e)
 		throws IndexOutOfBoundsException
 	{
+		throw Debugging.todo();
+		/*
 		__Utils__.__setSelectedIndex(this, this._type, __i, __e);
+		
+		 */
 	}
 	
 	/**
@@ -481,136 +510,24 @@ public class List
 	@Override
 	public int size()
 	{
+		throw Debugging.todo();
+		/*
 		return this._items.size();
+		
+		 */
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 * @since 2020/11/17
+	 * Inserts the given item at the specified index.
+	 *
+	 * @param __at The index to insert at.
+	 * @param __s The string for the item.
+	 * @param __i The image for the item.
+	 * @since 2024/07/17
 	 */
-	@Override
-	boolean __isPainted()
+	void __insert(int __at, String __s, Image __i)
 	{
-		return true;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/11/17
-	 */
-	@Override
-	void __paint(Graphics __gfx, int __sw, int __sh, int __special)
-	{
-		__ChoiceEntry__ entry;
-		try
-		{
-			entry = this._items.get(__special);
-		}
-		catch (IndexOutOfBoundsException e)
-		{
-			e.printStackTrace();
-			
-			return;
-		}
-		
-		// Draw the image over the buffer
-		Image image = entry._image;
-		if (image != null)
-		{
-			__gfx.drawImage(image, 0, 0,
-				Graphics.TOP | Graphics.LEFT);
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/11/15
-	 */
-	@Override
-	boolean __propertyChange(UIFormBracket __form, UIItemBracket __item,
-		int __intProp, int __sub, int __old, int __new)
-	{
-		switch (__intProp)
-		{
-			case UIWidgetProperty.INT_UPDATE_LIST_SELECTION_LOCK:
-				{
-					// Only allow locking code changes if the old code is zero
-					// and is our matching code
-					int oldCode = this._lockingCode;
-					if (oldCode == __old)
-						this._lockingCode = __new;
-				}
-				return true;
-			
-				// List selection changes, this only updates if the locking
-				// code is a match
-			case UIWidgetProperty.INT_LIST_ITEM_SELECTED:
-				if (__old == this._lockingCode)
-					this.__updateSelection(__sub, __new != 0);
-				return true;
-		}
-		
-		return super.__propertyChange(__form, __item, __intProp, __sub,
-			__old, __new);
-	}
-	
-	/**
-	 * Performs graphical refreshing of the list.
-	 * 
-	 * @since 2020/10/18
-	 */
-	private void __refresh()
-	{
-		UIItemBracket uiList = this.__state(__ListState__.class)._uiList;
-		UIBackend backend = this.__backend();
-		java.util.List<__ChoiceEntry__> choices = this._items.valuesAsList();
-		
-		// Set new size of the list
-		int n = choices.size();
-		backend.widgetProperty(uiList, UIWidgetProperty.INT_NUM_ELEMENTS,
-			0, n); 
-		
-		// Detect any changes that have occurred
-		for (int i = 0; i < n; i++)
-		{
-			// Check to see if the item has changed from what we have
-			// previously cached, used to quickly determine if it needs to
-			// actually be updated.
-			__ChoiceEntry__ current = choices.get(i); 
-			int mId = backend.widgetPropertyInt(uiList,
-				UIWidgetProperty.INT_LIST_ITEM_ID_CODE, i);
-			if (current.hashCode() == mId)
-				continue;
-			
-			// Forward basic properties to the list
-			backend.widgetProperty(uiList,
-				UIWidgetProperty.STRING_LIST_ITEM_LABEL, i, current._label);
-			
-			// Images are always square and based on their highest dimension
-			Image image = current._image;
-			backend.widgetProperty(uiList,
-				UIWidgetProperty.INT_LIST_ITEM_ICON_DIMENSION, i,
-				(image == null ? 0 :
-					Math.max(image.getWidth(), image.getHeight())));
-			
-			// Flag states
-			backend.widgetProperty(uiList,
-				UIWidgetProperty.INT_LIST_ITEM_DISABLED, i,
-				(current._disabled ? 1 : 0));
-			backend.widgetProperty(uiList,
-				UIWidgetProperty.INT_LIST_ITEM_SELECTED, i,
-				(current._selected ? 1 : 0));
-			
-			// Description of the font, if any
-			Font font = current._font;
-			backend.widgetProperty(uiList,
-				UIWidgetProperty.INT_LIST_ITEM_FONT, i, (font == null ? 0 :
-					FontUtilities.fontToSystemFont(font)));
-			
-			// Update the ID code to check for future changes to the list
-			backend.widgetProperty(uiList,
-				UIWidgetProperty.INT_LIST_ITEM_ID_CODE, i, current.hashCode());
-		}
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -635,79 +552,6 @@ public class List
 		
 		// Send in the command action
 		listener.commandAction(selCommand, this);
-	}
-	
-	/**
-	 * Updates the selection of the list.
-	 * 
-	 * @param __i The index to set.
-	 * @param __b Is this set?
-	 * @since 2020/11/15
-	 */
-	@SerializedEvent
-	@Async.Execute
-	private void __updateSelection(int __i, boolean __b)
-	{
-		// Drop any attempts to clear selection if not on multiple choice lists
-		// as implicit/explicit always have a single item selected and we do
-		// not want to end up in a state where only a single item gets selected
-		int type = this._type;
-		if (!__b && type != Choice.MULTIPLE)
-			return;
-		
-		// Determine how items should be selected
-		boolean[] flags = __Utils__.__calculateSetSelectedIndexFlags(this,
-			type, __i, __b);
-		
-		// Update the flags on all the items
-		__VolatileList__<__ChoiceEntry__> items = this._items;
-		for (int i = 0, n = flags.length; i < n; i++)
-			items.get(i)._selected = flags[i];
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/01/14
-	 */
-	@Override
-	__CommonState__ __stateInit(UIBackend __backend)
-		throws NullPointerException
-	{
-		return new __ListState__(__backend, this);
-	}
-	
-	/**
-	 * File selector state.
-	 * 
-	 * @since 2023/01/14
-	 */
-	static class __ListState__
-		extends Screen.__ScreenState__
-	{	
-		/** The user interface list. */
-		final UIItemBracket _uiList;
-		
-		/**
-		 * Initializes the backend state.
-		 *
-		 * @param __backend The backend used.
-		 * @param __self Self widget.
-		 * @since 2023/01/14
-		 */
-		__ListState__(UIBackend __backend, DisplayWidget __self)
-		{
-			super(__backend, __self);
-			
-			// Build new list
-			UIItemBracket uiList = __backend.itemNew(UIItemType.LIST);
-			this._uiList = uiList;
-			
-			// Register self for future events
-			StaticDisplayState.register(__self, uiList);
-			
-			// Show it on the form for this displayable
-			__backend.formItemPosition(this._uiForm, uiList, 0);
-		}
 	}
 }
 

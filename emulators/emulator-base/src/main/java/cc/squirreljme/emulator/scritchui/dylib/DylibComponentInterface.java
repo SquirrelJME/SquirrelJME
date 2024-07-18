@@ -20,7 +20,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 
 /**
- * Not Described.
+ * Dynamic library interfaced for components.
  *
  * @since 2024/04/02
  */

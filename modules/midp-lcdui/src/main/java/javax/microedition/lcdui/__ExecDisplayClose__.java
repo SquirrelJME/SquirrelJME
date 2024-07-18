@@ -16,7 +16,6 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import cc.squirreljme.runtime.midlet.ApplicationInterface;
-import javax.microedition.midlet.MIDlet;
 
 /**
  * Callback for when a display is closed.

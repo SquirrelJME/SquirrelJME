@@ -10,8 +10,6 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
-import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 
 /**
  * This is the base class for all user interactive displays.
@@ -34,26 +32,6 @@ public abstract class Screen
 	{
 	}
 	
-	/**
-	 * State specific to screens.
-	 * 
-	 * @since 2023/01/14
-	 */
-	abstract static class __ScreenState__
-		extends Displayable.__DisplayableState__
-	{
-		/**
-		 * Initializes the backend state.
-		 *
-		 * @param __backend The backend used.
-		 * @param __self Self widget.
-		 * @since 2023/01/14
-		 */
-		__ScreenState__(UIBackend __backend, DisplayWidget __self)
-		{
-			super(__backend, __self);
-		}
-	}
 }
 
 

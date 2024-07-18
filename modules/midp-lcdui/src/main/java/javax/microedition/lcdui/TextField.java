@@ -12,8 +12,6 @@ package javax.microedition.lcdui;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.common.EditableText;
-import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
-import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 
 /**
  * This represents a field of editable or read-only text which may be placed
@@ -329,38 +327,6 @@ public class TextField
 	public int size()
 	{
 		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/01/14
-	 */
-	@Override
-	__CommonState__ __stateInit(UIBackend __backend)
-		throws NullPointerException
-	{
-		return new __TextFieldState__(__backend, this);
-	}
-	
-	/**
-	 * Text field state.
-	 * 
-	 * @since 2023/01/14
-	 */
-	static class __TextFieldState__
-		extends Item.__ItemState__
-	{
-		/**
-		 * Initializes the backend state.
-		 *
-		 * @param __backend The backend used.
-		 * @param __self Self widget.
-		 * @since 2023/01/14
-		 */
-		__TextFieldState__(UIBackend __backend, DisplayWidget __self)
-		{
-			super(__backend, __self);
-		}
 	}
 }
 

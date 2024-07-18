@@ -11,8 +11,6 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchVisibleListener;
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
 
 /**
  * Callback for when a canvas visibility has changed.

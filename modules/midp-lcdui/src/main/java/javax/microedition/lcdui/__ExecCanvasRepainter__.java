@@ -10,7 +10,6 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
-import java.lang.ref.Reference;
 
 /**
  * Repainter for canvases.

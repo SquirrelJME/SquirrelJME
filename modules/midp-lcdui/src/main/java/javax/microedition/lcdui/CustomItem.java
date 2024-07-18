@@ -9,16 +9,9 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
-import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
-import cc.squirreljme.jvm.mle.constants.UIItemType;
-import cc.squirreljme.jvm.mle.constants.UIMetricType;
-import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
-import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
-import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import org.jetbrains.annotations.Async;
 
 @SuppressWarnings("AbstractClassWithOnlyOneDirectInheritor")
@@ -73,9 +66,6 @@ public abstract class CustomItem
 	
 	/** The last width. */
 	private int _lastWidth;
-	
-	/** The last height. */
-	private int _lastHeight;
 	
 	protected CustomItem(String __a)
 	{
@@ -290,38 +280,6 @@ public abstract class CustomItem
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 * @since 2020/09/21
-	 */
-	@Override
-	final void __paint(Graphics __gfx, int __sw, int __sh, int __special)
-	{
-		// Store the last dimensions
-		this._lastHeight = __sw;
-		this._lastHeight = __sh;
-		
-		// Draw background?
-		throw Debugging.todo();
-		/*
-		if (!this._transparent)
-		{
-			int old = __gfx.getAlphaColor();
-			__gfx.setColor(this.__backend().metric(
-				this._displayable._display._uiDisplay, 
-				UIMetricType.COLOR_CANVAS_BACKGROUND));
-			
-			__gfx.fillRect(0, 0, __sw, __sh);
-			
-			__gfx.setAlphaColor(old);
-		}
-		
-		// Forward draw
-		this.paint(__gfx, __sw, __sh);
-		
-		 */
-	}
-	
-	/**
 	 * Returns the default key listener implementation for this class.
 	 * 
 	 * @return The default key listener.
@@ -335,100 +293,6 @@ public abstract class CustomItem
 				(rv = new __CustomItemDefaultKeyListener__(this));
 		
 		return rv;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/10/17
-	 */
-	@Override
-	boolean __propertyChange(UIFormBracket __form, UIItemBracket __item,
-		int __intProp, int __sub, int __old, int __new)
-	{
-		UIBackend instance = this.__backend();
-		
-		// Only act on the canvas item
-		if (!instance.equals(__item,
-			this.__state(__CustomItemState__.class)._uiCanvas))
-			return false;
-		
-		// Depends on the property
-		switch (__intProp)
-		{
-				// Shown state changed?
-			case UIWidgetProperty.INT_IS_SHOWN:
-				if (__new == 0)
-					this.hideNotify();
-				else
-					this.showNotify();
-				return true;
-			
-				// New size?
-			case UIWidgetProperty.INT_WIDTH:
-			case UIWidgetProperty.INT_HEIGHT:
-			case UIWidgetProperty.INT_WIDTH_AND_HEIGHT:
-				if (__intProp == UIWidgetProperty.INT_WIDTH_AND_HEIGHT)
-				{
-					this._lastHeight = __old;
-					this._lastHeight = __new;
-				}
-				else if (__intProp == UIWidgetProperty.INT_WIDTH)
-				{
-					__old = __new;
-					this._lastWidth = __old;
-					__new = this._lastHeight;
-				}
-				else
-				{
-					__old = this._lastWidth;
-					this._lastHeight = __new;
-				}
-			
-				this.sizeChanged(__old, __new);
-				return true;
-			
-				// Un-Handled
-			default:
-				return false;
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/01/14
-	 */
-	@Override
-	final __CommonState__ __stateInit(UIBackend __backend)
-		throws NullPointerException
-	{
-		return new __CustomItemState__(__backend, this);
-	}
-	
-	/**
-	 * Item state.
-	 * 
-	 * @since 2023/01/14
-	 */
-	static class __CustomItemState__
-		extends Item.__ItemState__
-	{
-		/** The native display instance. */
-		final UIItemBracket _uiCanvas;
-		
-		/**
-		 * Initializes the backend state.
-		 *
-		 * @param __backend The backend used.
-		 * @param __self Self widget.
-		 * @since 2023/01/21
-		 */
-		__CustomItemState__(UIBackend __backend, DisplayWidget __self)
-		{
-			super(__backend, __self);
-			
-			// Build new canvas
-			this._uiCanvas = __backend.itemNew(UIItemType.CANVAS);
-		}
 	}
 }
 

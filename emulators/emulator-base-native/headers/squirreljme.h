@@ -18,7 +18,6 @@
 /** Initializing methods. */
 jint JNICALL mleDebugInit(JNIEnv* env, jclass classy);
 jint JNICALL mleDylibBaseObjectInit(JNIEnv* env, jclass classy);
-jint JNICALL mleFormInit(JNIEnv* env, jclass classy);
 jint JNICALL mleJarInit(JNIEnv* env, jclass classy);
 jint JNICALL mleMathInit(JNIEnv* env, jclass classy);
 jint JNICALL mleMidiInit(JNIEnv* env, jclass classy);

@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jvm.mle.constants;
 
-import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
-
 /**
  * Key events for
  * {@link UIFormCallback#eventKey(cc.squirreljme.jvm.mle.brackets.UIDrawableBracket, int, int, int)}.

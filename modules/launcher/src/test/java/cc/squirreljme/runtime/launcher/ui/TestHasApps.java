@@ -9,10 +9,8 @@
 
 package cc.squirreljme.runtime.launcher.ui;
 
-import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import net.multiphasicapps.tac.TestBoolean;
 import net.multiphasicapps.tac.UntestableException;
 

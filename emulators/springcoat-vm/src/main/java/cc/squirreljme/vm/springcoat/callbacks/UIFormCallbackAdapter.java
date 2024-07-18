@@ -11,7 +11,6 @@ package cc.squirreljme.vm.springcoat.callbacks;
 
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
-import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.vm.springcoat.SpringMachine;
 import cc.squirreljme.vm.springcoat.SpringObject;
 import cc.squirreljme.vm.springcoat.brackets.UIFormObject;

@@ -10,7 +10,6 @@
 package cc.squirreljme.runtime.lcdui.image;
 
 import java.io.IOException;
-import javax.microedition.lcdui.Image;
 
 /**
  * Base interface for all image readers.

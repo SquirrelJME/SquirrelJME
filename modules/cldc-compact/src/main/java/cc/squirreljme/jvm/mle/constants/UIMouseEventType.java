@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jvm.mle.constants;
 
-import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
-
 /**
  * Mouse event for {@link UIFormCallback#eventMouse(cc.squirreljme.jvm.mle.brackets.UIDrawableBracket, int, int, int, int, int)}.
  *

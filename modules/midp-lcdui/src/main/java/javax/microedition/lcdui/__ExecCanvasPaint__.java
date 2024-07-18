@@ -12,9 +12,7 @@ package javax.microedition.lcdui;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPencilBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchPaintListener;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
-import java.lang.ref.WeakReference;
 
 /**
  * Paints on a canvas.
