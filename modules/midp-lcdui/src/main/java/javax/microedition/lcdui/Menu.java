@@ -135,7 +135,7 @@ public class Menu
 	 * Returns the depth of this menu, note that this value might not be
 	 * reliable to use as {@link Menu} may be added to
 	 * multiple {@link Displayable}s, and as such this should only be used
-	 * as a suggestion or estimation.
+	 * as a suggestion or approximated.
 	 *
 	 * @return The menu depth.
 	 * @since 2024/07/18
@@ -143,7 +143,10 @@ public class Menu
 	@Api
 	public int getMenuDepth()
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			return this.__squirreljmeApproxDepth;
+		}
 	}
 	
 	/**

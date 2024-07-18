@@ -40,6 +40,10 @@ public abstract class MenuAction<B extends MenuLayoutBindable<?>>
 	/** The long label. */
 	volatile String _longLabel;
 	
+	/** The last calculated approximated depth for this action. */
+	@SuppressWarnings("FieldNamingConvention")
+	protected volatile int __squirreljmeApproxDepth;
+	
 	/**
 	 * Initializes the base action.
 	 *
