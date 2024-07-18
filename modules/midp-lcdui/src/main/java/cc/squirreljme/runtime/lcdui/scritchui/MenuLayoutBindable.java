@@ -25,11 +25,10 @@ import org.jetbrains.annotations.Async;
  * accordingly to a single ScritchUI bracket.
  *
  * @param <M> The MIDP menu type.
- * @param <S> The ScritchUI bracket type.
  * @since 2024/07/18
  */
 @SquirrelJMEVendorApi
-public abstract class MenuLayoutBindable<M, S extends ScritchBaseBracket>
+public abstract class MenuLayoutBindable<M>
 {
 	/**
 	 * Returns the MIDP item for this bindable.
@@ -39,21 +38,6 @@ public abstract class MenuLayoutBindable<M, S extends ScritchBaseBracket>
 	 */
 	@SquirrelJMEVendorApi
 	public final M getMidp()
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * Gets the ScritchUI item for this bindable.
-	 *
-	 * @return The ScritchUI item for this item.
-	 * @throws IllegalStateException If the ScritchUI reference is no longer
-	 * valid.
-	 * @since 2024/07/18
-	 */
-	@SquirrelJMEVendorApi
-	public final S getScritchUi()
-		throws IllegalStateException
 	{
 		throw Debugging.todo();
 	}

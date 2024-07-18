@@ -23,7 +23,7 @@ import javax.microedition.lcdui.Menu;
  */
 @SquirrelJMEVendorApi
 public class MenuLayoutMenu
-	extends MenuLayoutBindableSub<Menu, ScritchMenuBracket>
+	extends MenuLayoutBindableSub<Menu>
 {
 	
 	/**

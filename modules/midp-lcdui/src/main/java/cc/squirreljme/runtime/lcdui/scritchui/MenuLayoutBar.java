@@ -12,6 +12,8 @@ package cc.squirreljme.runtime.lcdui.scritchui;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBarBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.ArrayList;
+import java.util.List;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Menu;
 
@@ -29,8 +31,12 @@ import javax.microedition.lcdui.Menu;
  */
 @SquirrelJMEVendorApi
 public final class MenuLayoutBar
-	extends MenuLayoutBindableSub<Displayable, ScritchMenuBarBracket>
+	extends MenuLayoutBindableSub<Displayable>
 {
+	/** Submenu items from this node. */
+	private final List<MenuLayoutBarNode> _nodes =
+		new ArrayList<>();
+	
 	/**
 	 * Returns the pinned menu, which generally is the default item.
 	 *

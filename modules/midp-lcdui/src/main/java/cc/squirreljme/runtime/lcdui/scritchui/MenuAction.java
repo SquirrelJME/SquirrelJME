@@ -20,7 +20,7 @@ import org.jetbrains.annotations.ApiStatus;
  * @param <B> The bindable to use for the item.
  * @since 2018/03/31
  */
-public abstract class MenuAction<B extends MenuLayoutBindable<?, ?>>
+public abstract class MenuAction<B extends MenuLayoutBindable<?>>
 {
 	/** The priority to use for menu items. */
 	static final int _MENU_PRIORITY =

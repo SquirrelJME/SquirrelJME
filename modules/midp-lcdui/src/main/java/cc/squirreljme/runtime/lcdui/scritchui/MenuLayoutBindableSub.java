@@ -17,12 +17,11 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  * A bindable menu that can also contain submenu items.
  *
  * @param <M> The MIDP menu type.
- * @param <S> The ScritchUI bracket type.
  * @since 2024/07/18
  */
 @SquirrelJMEVendorApi
-public abstract class MenuLayoutBindableSub<M, S extends ScritchBaseBracket>
-	extends MenuLayoutBindable<M, S>
+public abstract class MenuLayoutBindableSub<M>
+	extends MenuLayoutBindable<M>
 {
 	/**
 	 * Inserts the given menu action.

@@ -9,30 +9,30 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui;
 
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuItemBracket;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import javax.microedition.lcdui.Command;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Represents the layout state for a menu item.
+ * Represents a node within the menu tree.
  *
- * @see ScritchMenuItemBracket
  * @since 2024/07/18
  */
-@SquirrelJMEVendorApi
-public class MenuLayoutItem
-	extends MenuLayoutBindable<Command>
+public final class MenuLayoutBarNode
 {
+	/** The action this is for. */
+	protected final MenuAction<?> action;
 	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/07/18
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public void refresh()
-		throws IllegalStateException
+	/** Submenu items from this node. */
+	private final List<MenuLayoutBarNode> _nodes =
+		new ArrayList<>();
+	
+	/** The ScritchUI item. */
+	private volatile ScritchMenuItemBracket _item;
+	
+	public MenuLayoutBarNode(MenuAction<?> __action)
 	{
 		throw Debugging.todo();
 	}
