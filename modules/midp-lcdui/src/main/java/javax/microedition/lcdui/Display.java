@@ -24,6 +24,7 @@ import cc.squirreljme.runtime.lcdui.scritchui.DisplayManager;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayScale;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
 import cc.squirreljme.runtime.lcdui.scritchui.ScritchLcdUiUtils;
+import cc.squirreljme.runtime.lcdui.scritchui.TextTrackerListener;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -268,6 +269,9 @@ public class Display
 	/** The associated screen this display is for. */
 	private final ScritchScreenBracket _screen;
 	
+	/** The listener for title changes. */
+	final TextTrackerListener _listenerTitle;
+	
 	/** The owning native window. */
 	private final ScritchWindowBracket _window;
 	
@@ -323,6 +327,9 @@ public class Display
 		this._window = __window;
 		this._scale = DisplayScale.currentScale(__scritch,
 			__screen, __window);
+		
+		// Set listener for title updates
+		this._listenerTitle = new __ExecDisplaySetText__(state);
 		
 		// Handle window closing for the display
 		__scritch.window().setCloseListener(__window,

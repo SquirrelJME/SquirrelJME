@@ -78,7 +78,10 @@ public final class DisplayableState
 	@SquirrelJMEVendorApi
 	public final DisplayState currentDisplay()
 	{
-		return this._current;
+		synchronized (this)
+		{
+			return this._current;
+		}
 	}
 	
 	/**
@@ -134,22 +137,25 @@ public final class DisplayableState
 	{
 		Debugging.debugNote("%p.setParent(%p)", this, __parent);
 		
-		// Overwrite existing display?
-		DisplayState current = this.currentDisplay();
-		if (current != null)
+		synchronized (this)
 		{
-			// Do nothing if unchanged
-			if (__parent == current)
-				return;
+			// Overwrite existing display?
+			DisplayState current = this.currentDisplay();
+			if (current != null)
+			{
+				// Do nothing if unchanged
+				if (__parent == current)
+					return;
+				
+				throw Debugging.todo();
+			}
 			
-			throw Debugging.todo();
-		}
-		
-		// Set fresh displayable, if any
-		if (__parent != null)
-		{
-			this._current = __parent;
-			__parent._current = this;
+			// Set fresh displayable, if any
+			if (__parent != null)
+			{
+				this._current = __parent;
+				__parent._current = this;
+			}
 		}
 	}
 }

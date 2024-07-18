@@ -10,12 +10,15 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
+import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.annotation.ScritchEventLoop;
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
+import cc.squirreljme.runtime.lcdui.scritchui.TextTracker;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import java.util.ArrayList;
@@ -23,6 +26,7 @@ import java.util.List;
 import javax.microedition.midlet.MIDlet;
 import org.jetbrains.annotations.Async;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A displayable is a primary container such as a form or a canvas that can be
@@ -36,24 +40,11 @@ import org.jetbrains.annotations.MustBeInvokedByOverriders;
 public abstract class Displayable
 {
 	/** The displayable state. */
-	final DisplayableState _state =
-		new DisplayableState(this);
-	
-	/** The display this is attached to, if any. */
-	@Deprecated
-	volatile Display _display;
+	final DisplayableState _state;
 	
 	/** The command listener to call into when commands are generated. */
 	@Deprecated
 	volatile CommandListener _cmdListener;
-	
-	/** The title of the displayable. */
-	@Deprecated
-	volatile String _userTitle;
-	
-	/** Display title to use. */
-	@Deprecated
-	volatile String _displayTitle;
 	
 	/** The ticker of the displayable. */
 	@Deprecated
@@ -67,9 +58,8 @@ public abstract class Displayable
 	@Deprecated
 	private CommandLayoutPolicy _layoutPolicy;
 	
-	/** Was the last time the title update, were we fullscreen? */
-	@Deprecated
-	private boolean _titleFullScreen;
+	/** The tracker for title text. */
+	final TextTracker _trackerTitle;
 	
 	/**
 	 * Initializes the base displayable object.
@@ -78,7 +68,13 @@ public abstract class Displayable
 	 */
 	Displayable()
 	{
-		this._displayTitle = Displayable.__defaultTitle();
+		// Setup new state
+		DisplayableState state = new DisplayableState(this);
+		this._state = state;
+		
+		// Setup tracker for title changes, it needs the event loop handler
+		this._trackerTitle = new TextTracker(state.scritchApi().eventLoop(),
+			Displayable.__defaultTitle());
 	}
 	
 	/**
@@ -205,7 +201,7 @@ public abstract class Displayable
 	@Api
 	public Display getCurrentDisplay()
 	{
-		return this._display;
+		return this.__getCurrentDisplay();
 	}
 	
 	@Api
@@ -235,7 +231,7 @@ public abstract class Displayable
 	@Api
 	public String getTitle()
 	{
-		return this._userTitle;
+		return this._trackerTitle.get();
 	}
 	
 	/**
@@ -425,7 +421,7 @@ public abstract class Displayable
 	@Api
 	public void setTitle(String __t)
 	{
-		this.__setTitle(__t);
+		this._trackerTitle.set(__t);
 	}
 	
 	/**
@@ -460,6 +456,22 @@ public abstract class Displayable
 	}
 	
 	/**
+	 * Returns the display that is associated with this displayable.
+	 *
+	 * @return The owning display or {@code null} if not found.
+	 * @since 2017/07/18
+	 */
+	@SquirrelJMEVendorApi
+	private Display __getCurrentDisplay()
+	{
+		DisplayState display = this._state.currentDisplay();
+		
+		if (display != null)
+			return display.display();
+		return null;
+	}
+	
+	/**
 	 * Returns if this displayable is currently being shown.
 	 *
 	 * @return If the displayable is being shown.
@@ -467,13 +479,13 @@ public abstract class Displayable
 	 */
 	final boolean __isShown()
 	{
+		throw Debugging.todo();
+		/*
 		// If there is no display then this cannot possibly be shown
 		Display display = this._display;
 		if (display == null)
 			return false;
 		
-		throw Debugging.todo();
-		/*
 		// When checking if shown, actually probe the current form on the
 		// display as another task may have taken the display from us
 		UIBackend backend = this.__backend();
@@ -504,8 +516,10 @@ public abstract class Displayable
 		if (__a == null)
 			throw new NullPointerException("NARG");
 		
+		throw Debugging.todo();
+		/*
 		/* {@squirreljme.error EB3i The current display does not support
-		commands.} */
+		commands.} * /
 		Display display = this._display;
 		int caps = (display == null ? Display.__defaultCapabilities() :
 			display.getCapabilities());
@@ -513,13 +527,15 @@ public abstract class Displayable
 			throw new IllegalArgumentException("EB3i");
 		
 		/* {@squirreljme.error EB3h The current displayable is not getting
-		its layout calculated.} */
+		its layout calculated.} * /
 		__Layout__ layout = this._layout;
 		if (layout == null)
 			throw new IllegalStateException("EB3h");
 		
 		// Forward to the layout
 		layout.set(__a, __p);
+		
+		 */
 	}
 	
 	/**
@@ -532,6 +548,8 @@ public abstract class Displayable
 	@Async.Execute
 	private void __layoutCommands()
 	{
+		throw Debugging.todo();
+		/*
 		// Get our own policy or the one specified by the display
 		Display display = this._display;
 		CommandLayoutPolicy policy = this.getCommandLayoutPolicy();
@@ -568,6 +586,8 @@ public abstract class Displayable
 		{
 			this._layout = null;
 		}
+		
+		 */
 	}
 	
 	/**
@@ -583,10 +603,10 @@ public abstract class Displayable
 		if (__layout == null)
 			throw new NullPointerException("NARG");
 			
-		Display display = this._display;
-		
 		throw Debugging.todo();
 		/*
+		Display display = this._display;
+		
 		// Go through commands and menu items, try to place them in their
 		// default normal positions where possible
 		for (__Action__ action : this._actions)
@@ -681,47 +701,6 @@ public abstract class Displayable
 		if (__layout == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * Sets the title of this displayable.
-	 *
-	 * @param __title The title to set.
-	 * @since 2024/07/17
-	 */
-	final void __setTitle(String __title)
-	{
-		throw Debugging.todo();
-		/*
-		// Cache it for later return
-		this._userTitle = __t;
-		
-		// If no title is being set, fallback to a default one (derived from
-		// the suite)
-		if (__t == null)
-			__t = Displayable.__defaultTitle();
-		
-		// Store this
-		this._displayTitle = __t;
-		
-		// We can always set the title for the widget as the form should be
-		// allocated
-		this.__backend().widgetProperty(
-			this.__state(__DisplayableState__.class)._uiTitle,
-			UIWidgetProperty.STRING_LABEL, 0, __t);
-		
-		// Update the form title
-		this.__updateFormTitle(false, false);*/
-	}
-	
-	/**
-	 * Updates the ticker that is displayed on this displayable.
-	 * 
-	 * @since 2021/11/27
-	 */
-	final void __updateTicker()
-	{
 		throw Debugging.todo();
 	}
 	

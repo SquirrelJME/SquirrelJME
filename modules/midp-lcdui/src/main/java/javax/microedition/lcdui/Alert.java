@@ -71,9 +71,13 @@ public class Alert
 		this._type = __type;
 		
 		// Set titles
+		throw Debugging.todo();
+		/*
 		this._userTitle = __title;
 		if (__title != null)
 			this._displayTitle = __title;
+			
+		 */
 	}
 	
 	@Override

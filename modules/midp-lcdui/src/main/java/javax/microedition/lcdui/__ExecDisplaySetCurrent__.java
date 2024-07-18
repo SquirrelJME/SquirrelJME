@@ -125,6 +125,10 @@ class __ExecDisplaySetCurrent__
 			// Revalidate so it gets updated
 			componentApi.revalidate(panel);
 			
+			// Update text tracker of displayable to use the one that is
+			// attached to the display
+			showNow._trackerTitle.connect(display._listenerTitle);
+			
 			// Show the display window
 			windowApi.setVisible(window, true);
 			

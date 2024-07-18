@@ -422,6 +422,8 @@ public abstract class Canvas
 	public int[] getSoftkeyLabelCoordinates(int __sk)
 		throws IllegalArgumentException
 	{
+		throw Debugging.todo();
+		/*
 		// Remove any rotation from the soft key
 		Display display = this._display;
 		if (display != null)
@@ -430,7 +432,7 @@ public abstract class Canvas
 		int index = (__sk & Display.SOFTKEY_INDEX_MASK);
 		
 		/* {@squirreljme.error EB17 The placement is not valid or not supported
-		on this device/implementation. (The placement)} */
+		on this device/implementation. (The placement)} * /
 		if (index == 0 || (__sk != Display._SOFTKEY_LEFT_COMMAND &&
 			__sk != Display._SOFTKEY_RIGHT_COMMAND))
 			throw new IllegalArgumentException("EB17 " + __sk);
@@ -499,9 +501,13 @@ public abstract class Canvas
 	@ApiDefinedDeprecated
 	public boolean hasPointerEvents()
 	{
+		throw Debugging.todo();
+		/*
 		Display d = this._display;
 		return (d != null ? d :
 			Display.getDisplays(0)[0]).hasPointerEvents();
+			
+		 */
 	}
 	
 	/**
@@ -515,9 +521,13 @@ public abstract class Canvas
 	@ApiDefinedDeprecated
 	public boolean hasPointerMotionEvents()
 	{
+		throw Debugging.todo();
+		/*
 		Display d = this._display;
 		return (d != null ? d : Display.getDisplays(0)[0]).
 			hasPointerMotionEvents();
+			
+		 */
 	}
 	
 	/**
@@ -746,6 +756,8 @@ public abstract class Canvas
 	@SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
 	public final void serviceRepaints()
 	{
+		throw Debugging.todo();
+		/*
 		// If there is no current display then nothing can ever be repainted
 		Display display = this._display;
 		if (display == null)
@@ -775,6 +787,8 @@ public abstract class Canvas
 				{
 				}
 			}
+			
+		 */
 	}
 	
 	/**
