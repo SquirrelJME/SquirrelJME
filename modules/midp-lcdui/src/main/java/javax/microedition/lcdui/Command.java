@@ -12,6 +12,7 @@ package javax.microedition.lcdui;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayManager;
 import cc.squirreljme.runtime.lcdui.scritchui.MenuAction;
 import cc.squirreljme.runtime.lcdui.scritchui.MenuLayoutItem;
 
@@ -168,7 +169,8 @@ public class Command
 		boolean __implspec)
 		throws IllegalArgumentException, NullPointerException
 	{
-		super(new MenuLayoutItem(), __sl, __ll, __i);
+		super(new MenuLayoutItem(DisplayManager.instance().scritch()
+			.eventLoop()), __sl, __ll, __i);
 		
 		// Check
 		if (__sl == null)

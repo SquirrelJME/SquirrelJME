@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui;
 
+import cc.squirreljme.jvm.mle.scritchui.ScritchEventLoopInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuItemBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -24,6 +25,18 @@ import javax.microedition.lcdui.Command;
 public class MenuLayoutItem
 	extends MenuLayoutBindable<Command>
 {
+	/**
+	 * Initializes the bindable
+	 *
+	 * @param __loop The loop interface.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/07/18
+	 */
+	public MenuLayoutItem(ScritchEventLoopInterface __loop)
+		throws NullPointerException
+	{
+		super(__loop);
+	}
 	
 	/**
 	 * {@inheritDoc}

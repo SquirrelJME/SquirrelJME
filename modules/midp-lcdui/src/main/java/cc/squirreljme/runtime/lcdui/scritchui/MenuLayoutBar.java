@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui;
 
+import cc.squirreljme.jvm.mle.scritchui.ScritchEventLoopInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBarBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -36,6 +37,19 @@ public final class MenuLayoutBar
 	/** Submenu items from this node. */
 	private final List<MenuLayoutBarNode> _nodes =
 		new ArrayList<>();
+	
+	/**
+	 * Initializes the bindable
+	 *
+	 * @param __loop The loop interface.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/07/18
+	 */
+	public MenuLayoutBar(ScritchEventLoopInterface __loop)
+		throws NullPointerException
+	{
+		super(__loop);
+	}
 	
 	/**
 	 * Returns the pinned menu, which generally is the default item.

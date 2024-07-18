@@ -11,6 +11,7 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayManager;
 import cc.squirreljme.runtime.lcdui.scritchui.MenuAction;
 import cc.squirreljme.runtime.lcdui.scritchui.MenuLayoutMenu;
 
@@ -27,7 +28,9 @@ public class Menu
 	@Api
 	public Menu(String __short, String __long, Image __i)
 	{
-		super(new MenuLayoutMenu(), __short, __long, __i);
+		super(new MenuLayoutMenu(
+			DisplayManager.instance().scritch().eventLoop()),
+			__short, __long, __i);
 	}
 	
 	/**
@@ -332,10 +335,16 @@ public class Menu
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * Returns the max supported menu depth, this is always at least {@code 5}.
+	 * 
+	 * @return The max supported menu depth.
+	 * @since 2024/07/18
+	 */
 	@Api
 	public static int getMaxMenuDepth()
 	{
-		throw Debugging.todo();
+		return 5;
 	}
 }
 

@@ -64,7 +64,7 @@ public final class DisplayableState
 		this.displayable = new WeakReference<>(__displayable);
 		
 		// Initialize basic panel
-		ScritchInterface scritchApi = NativeScritchInterface.nativeInterface();
+		ScritchInterface scritchApi = DisplayManager.instance().scritch();
 		this.scritchApi = scritchApi;
 		this.panel = scritchApi.panel().newPanel(); 
 	}

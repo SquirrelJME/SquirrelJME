@@ -9,7 +9,7 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui;
 
-import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchBaseBracket;
+import cc.squirreljme.jvm.mle.scritchui.ScritchEventLoopInterface;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.lcdui.Command;
@@ -30,16 +30,26 @@ import org.jetbrains.annotations.Async;
 @SquirrelJMEVendorApi
 public abstract class MenuLayoutBindable<M>
 {
+	/** The event loop interface. */
+	protected final ScritchEventLoopInterface loop;
+	
+	/** Triggers that an update should occur. */
+	private volatile boolean _triggerUpdate;
+	
 	/**
-	 * Returns the MIDP item for this bindable.
+	 * Initializes the bindable
 	 *
-	 * @return The MIDP item for this item.
+	 * @param __loop The loop interface.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/18
 	 */
-	@SquirrelJMEVendorApi
-	public final M getMidp()
+	protected MenuLayoutBindable(ScritchEventLoopInterface __loop)
+		throws NullPointerException
 	{
-		throw Debugging.todo();
+		if (__loop == null)
+			throw new NullPointerException("NARG");
+		
+		this.loop = __loop;
 	}
 	
 	/**
@@ -53,4 +63,80 @@ public abstract class MenuLayoutBindable<M>
 	@Async.Execute
 	public abstract void refresh()
 		throws IllegalStateException;
+	
+	/**
+	 * Returns the MIDP item for this bindable.
+	 *
+	 * @return The MIDP item for this item.
+	 * @since 2024/07/18
+	 */
+	@SquirrelJMEVendorApi
+	public final M getMidp()
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Triggers that an update to a menu should occur.
+	 * 
+	 * @since 2024/07/18
+	 */
+	@SquirrelJMEVendorApi
+	@Async.Schedule
+	protected final void triggerUpdate()
+	{
+		// Set trigger flag
+		synchronized (this)
+		{
+			this._triggerUpdate = true;
+		}
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Performs the actual updating logic, which should be called in one
+	 * entire chunk.
+	 *
+	 * @since 2024/07/18
+	 */
+	@Async.Execute
+	final void __execTrigger()
+	{
+		synchronized (this)
+		{
+			// Perform recursive updating
+			boolean trigger = this._triggerUpdate;
+			if (trigger)
+				try
+				{
+					throw Debugging.todo();
+				}
+				
+				// Clear trigger tag
+				finally
+				{
+					this._triggerUpdate = false;
+				}
+		}
+	}
+	
+	/**
+	 * Enqueues a trigger update.
+	 *
+	 * @since 2024/07/18
+	 */
+	@Async.Schedule
+	final void __execTriggerEnqueue()
+	{
+		synchronized (this)
+		{
+			// Do not run if there is no need to update
+			boolean trigger = this._triggerUpdate;
+			if (trigger == false)
+				return;
+			
+			this.loop.executeLater(new __ExecMenuLayoutTrigger__(this.loop,
+				this, false));
+		}
+	}
 }
