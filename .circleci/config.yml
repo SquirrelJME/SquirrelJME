@@ -731,7 +731,7 @@ workflows:
       - build_linux_amd64
       - test_springcoat_debug:
           requires:
-            - construct_testJars:
+            - construct_testJars
           filters:
             branches:
               only:
