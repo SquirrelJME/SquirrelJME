@@ -1,0 +1,79 @@
+// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
+// ---------------------------------------------------------------------------
+// Multi-Phasic Applications: SquirrelJME
+//     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+// ---------------------------------------------------------------------------
+// SquirrelJME is under the Mozilla Public License Version 2.0.
+// See license.mkd for licensing and copyright information.
+// ---------------------------------------------------------------------------
+
+package cc.squirreljme.runtime.lcdui.scritchui;
+
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBarBracket;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import javax.microedition.lcdui.Displayable;
+
+/**
+ * Represents the layout state for a menu bar.
+ * 
+ * It might be awkward that menu bars are bound to {@link Displayable}s,
+ * however {@link Displayable}s always have just a single menu bar.
+ * 
+ * There is a single pinned menu which is used as the default menu for
+ * commands that are added, since they need to go somewhere.
+ *
+ * @see ScritchMenuBarBracket
+ * @since 2024/07/18
+ */
+@SquirrelJMEVendorApi
+public final class MenuLayoutBar
+	extends MenuLayoutBindable<Displayable, ScritchMenuBarBracket>
+{
+	/**
+	 * Returns the menu bar associated with this menu.
+	 *
+	 * @return The resultant bar.
+	 * @since 2024/07/18
+	 */
+	@SquirrelJMEVendorApi
+	public ScritchMenuBarBracket bar()
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Returns the pinned menu, which generally is the default item.
+	 *
+	 * @return The pinned menu, or {@code null} if there is nothing pinned.
+	 * @since 2024/07/18
+	 */
+	public MenuLayoutMenu pin()
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Pins the given menu as the default menu, or clears it.
+	 *
+	 * @param __menu The menu to pin as the default, {@code null} will clear
+	 * the menu.
+	 * @since 2024/07/18
+	 */
+	public void pin(MenuLayoutMenu __menu)
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/07/18
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void refresh()
+		throws IllegalStateException
+	{
+		throw Debugging.todo();
+	}
+}

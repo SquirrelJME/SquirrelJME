@@ -10,7 +10,6 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
-import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.annotation.ScritchEventLoop;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
@@ -18,15 +17,14 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
+import cc.squirreljme.runtime.lcdui.scritchui.MenuLayoutBar;
+import cc.squirreljme.runtime.lcdui.scritchui.MenuLayoutLock;
 import cc.squirreljme.runtime.lcdui.scritchui.TextTracker;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
-import java.util.ArrayList;
-import java.util.List;
 import javax.microedition.midlet.MIDlet;
 import org.jetbrains.annotations.Async;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * A displayable is a primary container such as a form or a canvas that can be
@@ -50,16 +48,20 @@ public abstract class Displayable
 	@Deprecated
 	volatile Ticker _ticker;
 	
-	/** The current layout, if valid this will be set. */
-	@Deprecated
-	private volatile __Layout__ _layout;
-	
 	/** The layout policy of this displayable. */
 	@Deprecated
 	private CommandLayoutPolicy _layoutPolicy;
 	
 	/** The tracker for title text. */
 	final TextTracker _trackerTitle;
+	
+	/** The lock for layout editing and otherwise. */
+	final MenuLayoutLock _layoutLock =
+		new MenuLayoutLock();
+	
+	/** The current menu bar. */
+	private final MenuLayoutBar _menuBar =
+		new MenuLayoutBar();
 	
 	/**
 	 * Initializes the base displayable object.
@@ -116,29 +118,9 @@ public abstract class Displayable
 		if (__c == null)
 			throw new NullPointerException("NARG");
 		
-		/* {@squirreljme.error EB1s The display does not support commands.} */
-		Display cd = this.getCurrentDisplay();
-		if (cd != null)
-			if ((cd.getCapabilities() & Display.SUPPORTS_COMMANDS) == 0)
-				throw new DisplayCapabilityException("EB1s");
-		
-		throw Debugging.todo();
-		/*
-		
-		// Do nothing if the command has already been added
-		__VolatileList__<__Action__> actions = this._actions;
-		if (actions.containsUniqueObjRef(__c))
-			return;
-		
-		// Otherwise make it part of the display
-		actions.addUniqueObjRef(__c);
-		
-		// Re-calculate the commands shown on the display, if the display
-		// is even visible
-		if (this.__isShown())
-			this.__layoutCommands();
-			
-		 */
+		// Have the event loop handle this
+		this._state.scritchApi().eventLoop()
+			.execute(new __ExecDisplayableDefaultCommand__(__c, true));
 	}
 	
 	@Api
@@ -181,6 +163,12 @@ public abstract class Displayable
 	@Api
 	public Command[] getCommands()
 	{
+		try (MenuLayoutLock lock = this._layoutLock.open(false))
+		{
+			if (true)
+				throw Debugging.todo();
+		}
+		
 		throw Debugging.todo();
 		/*
 		List<Command> rv = new ArrayList<>();
@@ -273,17 +261,9 @@ public abstract class Displayable
 		if (__c == null)
 			return;
 		
-		throw Debugging.todo();
-		/*
-		// Remove the command
-		if (this._actions.remove(__c))
-		{
-			// Re-layout any removed commands so they are gone
-			if (this.__isShown())
-				this.__layoutCommands();
-		}
-		
-		 */
+		// Have the event loop handle this
+		this._state.scritchApi().eventLoop()
+			.execute(new __ExecDisplayableDefaultCommand__(__c, false));
 	}
 	
 	@Api
@@ -311,7 +291,17 @@ public abstract class Displayable
 		throws DisplayCapabilityException, IllegalArgumentException,
 			IllegalStateException, NullPointerException 
 	{
+		try (MenuLayoutLock lock = this._layoutLock.open(false))
+		{
+			if (true)
+				throw Debugging.todo();
+		}
+		
+		throw Debugging.todo();
+		/*
 		this.__layoutActionSet(__c, __p);
+		
+		 */
 	}
 	
 	/**
@@ -359,7 +349,17 @@ public abstract class Displayable
 		throws DisplayCapabilityException, IllegalArgumentException,
 			IllegalStateException, NullPointerException 
 	{
+		try (MenuLayoutLock lock = this._layoutLock.open(false))
+		{
+			if (true)
+				throw Debugging.todo();
+		}
+		
+		throw Debugging.todo();
+		/*
 		this.__layoutActionSet(__m, __p);
+		
+		 */
 	}
 	
 	/**
@@ -437,6 +437,19 @@ public abstract class Displayable
 	protected void sizeChanged(int __w, int __h)
 	{
 		// Implemented by subclasses
+	}
+	
+	/**
+	 * Rebuilds the displayable menu.
+	 * 
+	 * @since 2024/07/18
+	 */
+	@ScritchEventLoop
+	@SerializedEvent
+	@Async.Execute
+	void __execMenuRebuild()
+	{
+		throw Debugging.todo();
 	}
 	
 	/**

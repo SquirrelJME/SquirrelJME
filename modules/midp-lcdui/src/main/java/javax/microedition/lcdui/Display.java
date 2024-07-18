@@ -28,9 +28,7 @@ import cc.squirreljme.runtime.lcdui.scritchui.TextTrackerListener;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import javax.microedition.midlet.MIDlet;
 import org.jetbrains.annotations.Async;
 import org.jetbrains.annotations.NonBlocking;
@@ -281,11 +279,6 @@ public class Display
 	/** Display scaling. */
 	final DisplayScale _scale;
 	
-	/** Serial runs of a given method for this display. */
-	@Deprecated
-	final Map<Integer, Runnable> _serialRuns =
-		new LinkedHashMap<>();
-	
 	/** The number of times there has been a non-unique serial run. */
 	@Deprecated
 	private static volatile int _NON_UNIQUE_SERIAL_RUNS;
@@ -355,8 +348,12 @@ public class Display
 	public void callSerially(Runnable __run)
 		throws NullPointerException
 	{
-		// Enqueue serialized call
-		this.__queueSerialRunner(__run);
+		if (__run == null)
+			throw new NullPointerException("NARG");
+		
+		// Always execute later because we do not want to actually block
+		// if we were able to execute now, this strictly schedules.
+		this._scritch.eventLoop().executeLater(__run);
 	}
 	
 	/**
@@ -643,6 +640,8 @@ public class Display
 	public int[] getExactPlacementPositions(int __b)
 		throws IllegalArgumentException
 	{
+		throw Debugging.todo();
+		/*
 		// Un-project the layout to get the correct order
 		__b = this.__layoutProject(__b);
 		
@@ -662,10 +661,11 @@ public class Display
 					this.__layoutProject(Display.SOFTKEY_BOTTOM + 1),
 					this.__layoutProject(Display.SOFTKEY_BOTTOM + 2)};
 			
-				/* {@squirreljme.error EB1p Invalid border. (The border)} */
+				/* {@squirreljme.error EB1p Invalid border. (The border)} * /
 			default:
 				throw new IllegalArgumentException("EB1p " + __b);
 		}
+		*/
 	}
 	
 	/**
@@ -1208,86 +1208,6 @@ public class Display
 				// This should not occur
 			default:
 				throw Debugging.oops("Invalid orientation.");
-		}
-	}
-	
-	/**
-	 * Queues the serial runner.
-	 *
-	 * @param __run The method to run.
-	 * @return The identifier for the runner item.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2020/11/27
-	 */
-	@SuppressWarnings({"WrapperTypeMayBePrimitive"})
-	final int __queueSerialRunner(Runnable __run)
-		throws NullPointerException
-	{
-		throw Debugging.todo();
-		/*
-		if (__run == null)
-			throw new NullPointerException("NARG");
-		
-		// Get next ID to use.
-		Integer idRunner;
-		synchronized (Display.class)
-		{
-			idRunner = (++Display._NON_UNIQUE_SERIAL_RUNS);
-		}
-		
-		// Perform the serialization call
-		synchronized (this)
-		{
-			// Store into the serial runner
-			Map<Integer, Runnable> serialRuns = this._serialRuns;
-			serialRuns.put(idRunner, __run);
-		}
-		
-		// Perform the call so it is done later
-		UIBackendFactory.getInstance(true)
-			.later(this._uiDisplay, idRunner);
-		
-		// This is the ID used to refer to this runner
-		return idRunner;
-		
-		 */
-	}
-	
-	/**
-	 * Performs a serial run.
-	 * 
-	 * @param __serialId The serial run ID.
-	 * @since 2023/01/14
-	 */
-	@SerializedEvent
-	@Async.Execute
-	protected void __serialRun(int __serialId)
-	{
-		// Look to see if it is a valid call
-		Integer key = __serialId;
-		Runnable runner;
-		synchronized (this)
-		{
-			// Locate the runner
-			runner = this._serialRuns.get(key);
-		}
-		
-		// Run it
-		try
-		{
-			if (runner != null)
-				runner.run();
-		}
-		finally
-		{
-			synchronized (this)
-			{
-				// Always clear it, even with failures
-				this._serialRuns.remove(key);
-				
-				// Notify all the display threads that something happened
-				this.notifyAll();
-			}
 		}
 	}
 	

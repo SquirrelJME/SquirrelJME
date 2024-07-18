@@ -14,14 +14,17 @@ package javax.microedition.lcdui;
  *
  * @since 2020/09/27
  */
+@Deprecated
 final class __Layout__
 	implements AutoCloseable
 {
 	/** The number of possible placements. */
+	@Deprecated
 	private static final int _MAX_PLACEMENTS =
 		(Display.SOFTKEY_INDEX_MASK * 5);
 	
 	/** The placements used. */
+	@Deprecated
 	private final __Action__[] _placements =
 		new __Action__[__Layout__._MAX_PLACEMENTS];
 	
@@ -30,6 +33,7 @@ final class __Layout__
 	 * @since 2020/09/27
 	 */
 	@Override
+	@Deprecated
 	public void close()
 	{
 		// Has no effect
@@ -43,6 +47,7 @@ final class __Layout__
 	 * @throws IllegalArgumentException If the position is not valid.
 	 * @since 2020/09/27
 	 */
+	@Deprecated
 	public final __Action__ get(int __pos)
 		throws IllegalArgumentException
 	{
@@ -57,6 +62,7 @@ final class __Layout__
 	 * @throws IllegalArgumentException If the position is not valid.
 	 * @since 2020/09/27
 	 */
+	@Deprecated
 	public final int getPriority(int __pos)
 		throws IllegalArgumentException
 	{
@@ -76,6 +82,7 @@ final class __Layout__
 	 * @throws IllegalArgumentException If the position is not valid.
 	 * @since 2020/09/27
 	 */
+	@Deprecated
 	public final void set(__Action__ __act, int __pos)
 		throws IllegalArgumentException
 	{
@@ -90,6 +97,7 @@ final class __Layout__
 	 * @throws IllegalArgumentException If the position is not valid.
 	 * @since 2020/09/27
 	 */
+	@Deprecated
 	private static int __posToIndex(int __pos)
 		throws IllegalArgumentException
 	{
