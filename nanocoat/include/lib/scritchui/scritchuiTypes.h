@@ -69,10 +69,10 @@ typedef enum sjme_scritchui_listenerClass
 SJME_SCRITCHUI_LISTENER_DECLARE(void);
 
 /** Activate choice item. */
-SJME_SCRITCHUI_LISTENER_DECLARE(choiceActivate);
+SJME_SCRITCHUI_LISTENER_DECLARE(activate);
 
 /** Choice items updated, before or after. */
-SJME_SCRITCHUI_LISTENER_DECLARE(choiceUpdate);
+SJME_SCRITCHUI_LISTENER_DECLARE(valueUpdate);
 
 /** Close listener. */
 SJME_SCRITCHUI_LISTENER_DECLARE(close);
@@ -182,31 +182,23 @@ typedef struct sjme_scritchui_pencilBase
 } sjme_scritchui_pencilBase;
 
 /**
- * Listeners for list items.
- * 
- * @since 2024/07/16
- */
-typedef struct sjme_scritchui_uiListListeners
-{
-	/** Choice activated. */
-	sjme_scritchui_listener_choiceActivate choiceActivate;
-	
-	/** Items are about to or have been updated. */
-	sjme_scritchui_listener_choiceUpdate choiceUpdate;
-} sjme_scritchui_uiListListeners;
-
-/**
  * Listeners for components.
  * 
  * @since 2024/04/28
  */
 typedef struct sjme_scritchui_uiComponentListeners
 {
+	/** Component activated. */
+	sjme_scritchui_listener_activate activate;
+	
 	/** Input events. */
 	sjme_scritchui_listener_input input;
 	
 	/** Listener for when size changes. */
 	sjme_scritchui_listener_size size;
+	
+	/** The value of the component has changed. */
+	sjme_scritchui_listener_valueUpdate valueUpdate;
 	
 	/** Visibility changes. */
 	sjme_scritchui_listener_visible visible; 
@@ -262,9 +254,6 @@ typedef struct sjme_scritchui_uiChoiceBase
 	
 	/** The number of valid entries on the list. */
 	sjme_jint numItems;
-	
-	/** Listener for list events. */
-	sjme_scritchui_uiListListeners listeners[SJME_NUM_SCRITCHUI_LISTENER];
 } sjme_scritchui_uiChoiceBase;
 
 /**

@@ -365,34 +365,16 @@ typedef struct sjme_scritchui_pencilLockFunctions
 	sjme_attrInNullable sjme_frontEnd* copyFrontEnd
 
 /**
- * Listener that is called when a choice item is activated.
+ * Listener that is called when an item is activated.
  * 
  * @param inState The input state.
- * @param inComponent The choice based component where this event occurred.
- * @param inChoice The choice information.
+ * @param inComponent The item which was activated.
  * @return Any resultant error, if any.
  * @since 2024/07/16
  */
-typedef sjme_errorCode (*sjme_scritchui_choiceActivateListenerFunc)(
+typedef sjme_errorCode (*sjme_scritchui_activateListenerFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrInNotNull sjme_scritchui_uiChoice inChoice);
-
-/**
- * Listener that is called before and after all items have been updated.
- * 
- * @param inState The input state.
- * @param inComponent The choice based component where this event occurred.
- * @param inChoice The choice information.
- * @param isAfterUpdate Is this after all items have been updated?
- * @return Any resultant error, if any.
- * @since 2024/07/16
- */
-typedef sjme_errorCode (*sjme_scritchui_choiceUpdateListenerFunc)(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrInNotNull sjme_scritchui_uiChoice inChoice,
-	sjme_attrInValue sjme_jboolean isAfterUpdate);
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
 
 /**
  * Listener that is called when a window closes.
@@ -473,6 +455,22 @@ typedef sjme_errorCode (*sjme_scritchui_sizeListenerFunc)(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInPositiveNonZero sjme_jint newWidth,
 	sjme_attrInPositiveNonZero sjme_jint newHeight);
+
+/**
+ * Listener that is called before and after the state within a component
+ * has changed, when @c isAfterUpdate is @c SJME_JNI_FALSE then the component
+ * is about to be updated.
+ * 
+ * @param inState The input state.
+ * @param inComponent The component where this event occurred.
+ * @param isAfterUpdate Is this after the update has occurred?
+ * @return Any resultant error, if any.
+ * @since 2024/07/16
+ */
+typedef sjme_errorCode (*sjme_scritchui_valueUpdateListenerFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInValue sjme_jboolean isAfterUpdate);
 
 /**
  * Listener for changes in if a component becomes visible or not.
@@ -601,36 +599,6 @@ typedef sjme_errorCode (*sjme_scritchui_choiceLengthFunc)(
 	sjme_attrOutNotNull sjme_jint* outLength);
 
 /**
- * Sets the activation listener for the given choice.
- * 
- * @param inState The input state.
- * @param inComponent The choice to update.
- * @param inListener The listener to set.
- * @param copyFrontEnd Any front end data to copy.
- * @return Any resultant error, if any.
- * @since 2024/07/17
- */
-typedef sjme_errorCode (*sjme_scritchui_choiceSetActivateListenerFunc)(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	SJME_SCRITCHUI_SET_LISTENER_ARGS(choiceActivate));
-
-/**
- * Sets the update listener for the given choice.
- * 
- * @param inState The input state.
- * @param inComponent The choice to update.
- * @param inListener The listener to set.
- * @param copyFrontEnd Any front end data to copy.
- * @return Any resultant error, if any.
- * @since 2024/07/17
- */
-typedef sjme_errorCode (*sjme_scritchui_choiceSetUpdateListenerFunc)(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	SJME_SCRITCHUI_SET_LISTENER_ARGS(choiceUpdate));
-
-/**
  * Repaints the given component.
  * 
  * @param inState The input state.
@@ -661,6 +629,21 @@ typedef sjme_errorCode (*sjme_scritchui_componentRepaintFunc)(
 typedef sjme_errorCode (*sjme_scritchui_componentRevalidateFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
+
+/**
+ * Sets the activation listener for the given choice.
+ * 
+ * @param inState The input state.
+ * @param inComponent The choice to update.
+ * @param inListener The listener to set.
+ * @param copyFrontEnd Any front end data to copy.
+ * @return Any resultant error, if any.
+ * @since 2024/07/17
+ */
+typedef sjme_errorCode (*sjme_scritchui_componentSetActivateListenerFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(activate));
 
 /**
  * Sets the input listener for the given component.
@@ -708,6 +691,21 @@ typedef sjme_errorCode (*sjme_scritchui_componentSetSizeListenerFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(size));
+
+/**
+ * Sets the update listener for the given choice.
+ * 
+ * @param inState The input state.
+ * @param inComponent The choice to update.
+ * @param inListener The listener to set.
+ * @param copyFrontEnd Any front end data to copy.
+ * @return Any resultant error, if any.
+ * @since 2024/07/17
+ */
+typedef sjme_errorCode (*sjme_scritchui_componentSetValueUpdateListenerFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(valueUpdate));
 
 /**
  * Sets the listener to call when the visibility of a component changes.
@@ -1053,17 +1051,14 @@ struct sjme_scritchui_apiFunctions
 	/** Gets the choice length. */
 	SJME_SCRITCHUI_QUICK_API(choiceLength);
 	
-	/** Set listener for when choice items are activated. */
-	SJME_SCRITCHUI_QUICK_API(choiceSetActivateListener);
-	
-	/** Set listener for when items are updated. */
-	SJME_SCRITCHUI_QUICK_API(choiceSetUpdateListener);
-	
 	/** Repaints the given component. */
 	SJME_SCRITCHUI_QUICK_API(componentRepaint);
 	
 	/** Revalidates the given component. */
 	SJME_SCRITCHUI_QUICK_API(componentRevalidate);
+	
+	/** Set listener for when a component is activated. */
+	SJME_SCRITCHUI_QUICK_API(componentSetActivateListener);
 	
 	/** Sets the input listener for a component. */
 	SJME_SCRITCHUI_QUICK_API(componentSetInputListener);
@@ -1073,6 +1068,9 @@ struct sjme_scritchui_apiFunctions
 	
 	/** Sets the listener for component size events. */
 	SJME_SCRITCHUI_QUICK_API(componentSetSizeListener);
+	
+	/** Set listener for when a component value has updated. */
+	SJME_SCRITCHUI_QUICK_API(componentSetValueUpdateListener);
 	
 	/** Sets the listener for component visible events. */
 	SJME_SCRITCHUI_QUICK_API(componentSetVisibleListener);

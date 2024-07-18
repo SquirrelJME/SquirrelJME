@@ -11,8 +11,10 @@ package cc.squirreljme.emulator.scritchui.dylib;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchComponentInterface;
+import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchActivateListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchSizeListener;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
+import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchValueUpdateListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchVisibleListener;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
@@ -53,9 +55,6 @@ public class DylibComponentInterface
 		if (__component == null)
 			throw new MLECallError("Null arguments.");
 		
-		if ((DylibComponentObject)__component == null)
-			throw new MLECallError("NARG");
-		
 		// Forward
 		return NativeScritchDylib.__componentHeight(this.dyLib._stateP,
 			((DylibComponentObject)__component).objectP);
@@ -72,11 +71,20 @@ public class DylibComponentInterface
 		if (__component == null)
 			throw new MLECallError("Null arguments.");
 		
-		if ((DylibComponentObject)__component == null)
-			throw new MLECallError("Null arguments");
-		
 		NativeScritchDylib.__componentRevalidate(this.dyLib._stateP,
 			((DylibComponentObject)__component).objectP);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/07/17
+	 */
+	@Override
+	public void setActivateListener(ScritchComponentBracket __component,
+		ScritchActivateListener __listener)
+		throws MLECallError
+	{
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -96,6 +104,18 @@ public class DylibComponentInterface
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2024/07/17
+	 */
+	@Override
+	public void setValueUpdateListener(ScritchComponentBracket __component,
+		ScritchValueUpdateListener __listener)
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2024/06/28
 	 */
 	@Override
@@ -104,9 +124,6 @@ public class DylibComponentInterface
 		throws MLECallError
 	{
 		if (__component == null)
-			throw new MLECallError("Null arguments.");
-		
-		if ((DylibComponentObject)__component == null)
 			throw new MLECallError("Null arguments.");
 		
 		// Forward
@@ -126,9 +143,6 @@ public class DylibComponentInterface
 	{
 		if (__component == null)
 			throw new MLECallError("Null arguments.");
-		
-		if ((DylibComponentObject)__component == null)
-			throw new MLECallError("NARG");
 		
 		// Forward
 		return NativeScritchDylib.__componentWidth(this.dyLib._stateP,

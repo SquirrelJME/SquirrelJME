@@ -73,20 +73,3 @@ sjme_errorCode sjme_scritchui_core_choiceLength(
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
-sjme_errorCode sjme_scritchui_core_choiceSetActivateListener(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	SJME_SCRITCHUI_SET_LISTENER_ARGS(choiceActivate))
-{
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
-}
-
-sjme_errorCode sjme_scritchui_core_choiceSetUpdateListener(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	SJME_SCRITCHUI_SET_LISTENER_ARGS(choiceUpdate))
-{
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
-}

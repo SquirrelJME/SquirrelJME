@@ -19,6 +19,9 @@ sjme_errorCode sjme_scritchui_core_listNew(
 	if (inState == NULL || outList == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+	if (inChoiceType < 0 || inChoiceType >= SJME_SCRITCHUI_NUM_CHOICE_TYPES)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }

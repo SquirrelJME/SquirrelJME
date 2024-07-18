@@ -55,17 +55,14 @@ typedef enum sjme_scritchui_serialType
 	/** @c choiceLength . */
 	SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_LENGTH,
 	
-	/** @c choiceSetActivateListener . */
-	SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_SET_ACTIVATE_LISTENER,
-	
-	/** @c choiceSetUpdateListener . */
-	SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_SET_UPDATE_LISTENER,
-	
 	/** @c componentRepaint . */
 	SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_REPAINT,
 	
 	/** @c componentRevalidate . */
 	SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_REVALIDATE,
+	
+	/** @c componentSetActivateListener . */
+	SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_ACTIVATE_LISTENER,
 	
 	/** @c componentSetInputListener . */
 	SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_INPUT_LISTENER,
@@ -75,6 +72,9 @@ typedef enum sjme_scritchui_serialType
 	
 	/** @c componentSetSizeListener . */
 	SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_SIZE_LISTENER,
+	
+	/** @c componentSetValueUpdateListener . */
+	SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_VALUE_UPDATE_LISTENER,
 	
 	/** @c componentSetVisibleListener . */
 	SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_VISIBLE_LISTENER,
@@ -184,15 +184,6 @@ SUD_STRUCT_DEF(choiceItemSet,
 SUD_STRUCT_DEF(choiceLength,
 	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
 	SDU_VARP(sjme_jint*, outLength););
-	
-SUD_STRUCT_DEF(choiceSetActivateListener,
-	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
-	SJME_SCRITCHUI_SERIAL_SET_LISTENER(choiceActivate););
-	
-SUD_STRUCT_DEF(choiceSetUpdateListener,
-	SDU_VAR(sjme_scritchui, inState);
-	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
-	SJME_SCRITCHUI_SERIAL_SET_LISTENER(choiceUpdate););
 
 SUD_STRUCT_DEF(componentRepaint,
 	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
@@ -208,6 +199,10 @@ SUD_STRUCT_DEF(componentSetInputListener,
 	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
 	SJME_SCRITCHUI_SERIAL_SET_LISTENER(input););
 
+SUD_STRUCT_DEF(componentSetActivateListener,
+	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
+	SJME_SCRITCHUI_SERIAL_SET_LISTENER(activate););
+	
 SUD_STRUCT_DEF(componentSetPaintListener,
 	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
 	SJME_SCRITCHUI_SERIAL_SET_LISTENER(paint););
@@ -216,6 +211,11 @@ SUD_STRUCT_DEF(componentSetSizeListener,
 	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
 	SJME_SCRITCHUI_SERIAL_SET_LISTENER(size););
 
+SUD_STRUCT_DEF(componentSetValueUpdateListener,
+	SDU_VAR(sjme_scritchui, inState);
+	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
+	SJME_SCRITCHUI_SERIAL_SET_LISTENER(valueUpdate););
+	
 SUD_STRUCT_DEF(componentSetVisibleListener,
 	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
 	SJME_SCRITCHUI_SERIAL_SET_LISTENER(visible););
@@ -336,17 +336,14 @@ typedef union sjme_scritchui_serialDataUnion
 	/** @c choiceLength . */
 	SJME_SCRITCHUI_SDU_DEF(choiceLength);
 
-	/** @c choiceSetActivateListener . */
-	SJME_SCRITCHUI_SDU_DEF(choiceSetActivateListener);
-
-	/** @c choiceSetUpdateListener . */
-	SJME_SCRITCHUI_SDU_DEF(choiceSetUpdateListener);
-
 	/** @c componentRepaint . */
 	SJME_SCRITCHUI_SDU_DEF(componentRepaint);
 	
 	/** @c componentRevalidate . */
 	SJME_SCRITCHUI_SDU_DEF(componentRevalidate);
+
+	/** @c componentSetActivateListener . */
+	SJME_SCRITCHUI_SDU_DEF(componentSetActivateListener);
 	
 	/** @c componentSetInputListener . */
 	SJME_SCRITCHUI_SDU_DEF(componentSetInputListener);
@@ -356,6 +353,9 @@ typedef union sjme_scritchui_serialDataUnion
 	
 	/** @c componentSetSizeListener . */
 	SJME_SCRITCHUI_SDU_DEF(componentSetSizeListener);
+
+	/** @c componentSetValueUpdateListener . */
+	SJME_SCRITCHUI_SDU_DEF(componentSetValueUpdateListener);
 	
 	/** @c componentSetVisibleListener . */
 	SJME_SCRITCHUI_SDU_DEF(componentSetVisibleListener);
@@ -463,16 +463,6 @@ sjme_errorCode sjme_scritchui_coreSerial_choiceLength(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrOutNotNull sjme_jint* outLength);
 
-sjme_errorCode sjme_scritchui_coreSerial_choiceSetActivateListener(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	SJME_SCRITCHUI_SET_LISTENER_ARGS(choiceActivate));
-
-sjme_errorCode sjme_scritchui_coreSerial_choiceSetUpdateListener(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	SJME_SCRITCHUI_SET_LISTENER_ARGS(choiceUpdate));
-
 sjme_errorCode sjme_scritchui_coreSerial_componentRepaint(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
@@ -484,6 +474,11 @@ sjme_errorCode sjme_scritchui_coreSerial_componentRepaint(
 sjme_errorCode sjme_scritchui_coreSerial_componentRevalidate(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
+	
+sjme_errorCode sjme_scritchui_coreSerial_componentSetActivateListener(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(activate));
 
 sjme_errorCode sjme_scritchui_coreSerial_componentSetInputListener(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -499,6 +494,11 @@ sjme_errorCode sjme_scritchui_coreSerial_componentSetSizeListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(size));
+
+sjme_errorCode sjme_scritchui_coreSerial_componentSetValueUpdateListener(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(valueUpdate));
 
 sjme_errorCode sjme_scritchui_coreSerial_componentSetVisibleListener(
 	sjme_attrInNotNull sjme_scritchui inState,

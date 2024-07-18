@@ -327,6 +327,15 @@ sjme_errorCode sjme_scritchui_core_componentRevalidate(
 	return inState->impl->componentRevalidate(inState, inComponent);
 }
 
+sjme_errorCode sjme_scritchui_core_componentSetActivateListener(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(activate))
+{
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
 sjme_errorCode sjme_scritchui_core_componentSetInputListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
@@ -423,25 +432,6 @@ fail_coreSet:
 	return sjme_error_default(error);
 }
 
-sjme_errorCode sjme_scritchui_core_componentSize(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrOutNullable sjme_jint* outWidth,
-	sjme_attrOutNullable sjme_jint* outHeight)
-{
-	if (inState == NULL || inComponent == NULL ||
-		(outWidth == NULL && outHeight == NULL))
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Not supported? */
-	if (inState->impl->componentSize == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Forward. */
-	return inState->impl->componentSize(inState, inComponent,
-		outWidth, outHeight);
-}
-
 sjme_errorCode sjme_scritchui_core_componentSetSizeListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
@@ -459,6 +449,15 @@ sjme_errorCode sjme_scritchui_core_componentSetSizeListener(
 		copyFrontEnd);
 }
 
+sjme_errorCode sjme_scritchui_core_componentSetValueUpdateListener(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(valueUpdate))
+{
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
 sjme_errorCode sjme_scritchui_core_componentSetVisibleListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
@@ -474,6 +473,25 @@ sjme_errorCode sjme_scritchui_core_componentSetVisibleListener(
 			inComponent, visible),
 		(sjme_scritchui_voidListenerFunc)inListener,
 		copyFrontEnd);
+}
+
+sjme_errorCode sjme_scritchui_core_componentSize(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNullable sjme_jint* outWidth,
+	sjme_attrOutNullable sjme_jint* outHeight)
+{
+	if (inState == NULL || inComponent == NULL ||
+		(outWidth == NULL && outHeight == NULL))
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Not supported? */
+	if (inState->impl->componentSize == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Forward. */
+	return inState->impl->componentSize(inState, inComponent,
+		outWidth, outHeight);
 }
 
 sjme_errorCode sjme_scritchui_core_intern_getPaintable(

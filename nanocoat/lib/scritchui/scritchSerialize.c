@@ -125,8 +125,8 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 	SJME_SCRITCHUI_DISPATCH_DECL(choiceItemRemove);
 	SJME_SCRITCHUI_DISPATCH_DECL(choiceItemSet);
 	SJME_SCRITCHUI_DISPATCH_DECL(choiceLength);
-	SJME_SCRITCHUI_DISPATCH_DECL(choiceSetActivateListener);
-	SJME_SCRITCHUI_DISPATCH_DECL(choiceSetUpdateListener);
+	SJME_SCRITCHUI_DISPATCH_DECL(componentSetActivateListener);
+	SJME_SCRITCHUI_DISPATCH_DECL(componentSetValueUpdateListener);
 	SJME_SCRITCHUI_DISPATCH_DECL(componentRepaint);
 	SJME_SCRITCHUI_DISPATCH_DECL(componentRevalidate);
 	SJME_SCRITCHUI_DISPATCH_DECL(componentSetInputListener);
@@ -200,20 +200,6 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 		(state,
 		choiceLength->inComponent,
 		choiceLength->outLength));
-		
-	SJME_SCRITCHUI_DISPATCH_CASE(choiceSetActivateListener,
-		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_SET_ACTIVATE_LISTENER,
-		(state,
-		choiceSetActivateListener->inComponent,
-		choiceSetActivateListener->inListener,
-		choiceSetActivateListener->copyFrontEnd));
-		
-	SJME_SCRITCHUI_DISPATCH_CASE(choiceSetUpdateListener,
-		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_SET_UPDATE_LISTENER,
-		(state,
-		choiceSetUpdateListener->inComponent,
-		choiceSetUpdateListener->inListener,
-		choiceSetUpdateListener->copyFrontEnd));
 
 	/* Depends on the type... */
 	SJME_SCRITCHUI_DISPATCH_CASE(componentRepaint,
@@ -229,6 +215,13 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_REVALIDATE,
 		(state,
 		componentRevalidate->inComponent));
+		
+	SJME_SCRITCHUI_DISPATCH_CASE(componentSetActivateListener,
+		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_ACTIVATE_LISTENER,
+		(state,
+		componentSetActivateListener->inComponent,
+		componentSetActivateListener->inListener,
+		componentSetActivateListener->copyFrontEnd));
 	
 	SJME_SCRITCHUI_DISPATCH_CASE_LISTENER(componentSetInputListener,
 		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_INPUT_LISTENER);
@@ -238,6 +231,13 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 	
 	SJME_SCRITCHUI_DISPATCH_CASE_LISTENER(componentSetSizeListener,
 		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_SIZE_LISTENER);
+		
+	SJME_SCRITCHUI_DISPATCH_CASE(componentSetValueUpdateListener,
+		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_VALUE_UPDATE_LISTENER,
+		(state,
+		componentSetValueUpdateListener->inComponent,
+		componentSetValueUpdateListener->inListener,
+		componentSetValueUpdateListener->copyFrontEnd));
 		
 	SJME_SCRITCHUI_DISPATCH_CASE_LISTENER(componentSetVisibleListener,
 		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_VISIBLE_LISTENER);
@@ -478,40 +478,6 @@ sjme_errorCode sjme_scritchui_coreSerial_choiceLength(
 	SJME_SCRITCHUI_INVOKE_WAIT;
 }
 
-sjme_errorCode sjme_scritchui_coreSerial_choiceSetActivateListener(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	SJME_SCRITCHUI_SET_LISTENER_ARGS(choiceActivate))
-{
-	SJME_SCRITCHUI_SERIAL_CHUNK(choiceSetActivateListener,
-		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_SET_ACTIVATE_LISTENER,
-		(inState, inComponent, inListener, copyFrontEnd));
-		
-	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
-	SJME_SCRITCHUI_SERIAL_PASS(inListener);
-	SJME_SCRITCHUI_SERIAL_PASS(copyFrontEnd);
-	
-	/* Invoke and wait. */
-	SJME_SCRITCHUI_INVOKE_WAIT;
-}
-
-sjme_errorCode sjme_scritchui_coreSerial_choiceSetUpdateListener(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	SJME_SCRITCHUI_SET_LISTENER_ARGS(choiceUpdate))
-{
-	SJME_SCRITCHUI_SERIAL_CHUNK(choiceSetUpdateListener,
-		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_SET_UPDATE_LISTENER,
-		(inState, inComponent, inListener, copyFrontEnd));
-		
-	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
-	SJME_SCRITCHUI_SERIAL_PASS(inListener);
-	SJME_SCRITCHUI_SERIAL_PASS(copyFrontEnd);
-	
-	/* Invoke and wait. */
-	SJME_SCRITCHUI_INVOKE_WAIT;
-}
-
 sjme_errorCode sjme_scritchui_coreSerial_componentRepaint(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
@@ -548,6 +514,10 @@ sjme_errorCode sjme_scritchui_coreSerial_componentRevalidate(
 	SJME_SCRITCHUI_INVOKE_WAIT;
 }
 
+SJME_SCRITCHUI_DISPATCH_GENERIC_LISTENER(componentSetActivateListener,
+	SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_ACTIVATE_LISTENER,
+	sjme_scritchui_uiComponent, inComponent, activate)
+
 SJME_SCRITCHUI_DISPATCH_GENERIC_LISTENER(componentSetInputListener,
 	SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_INPUT_LISTENER,
 	sjme_scritchui_uiComponent, inComponent, input)
@@ -559,6 +529,10 @@ SJME_SCRITCHUI_DISPATCH_GENERIC_LISTENER(componentSetPaintListener,
 SJME_SCRITCHUI_DISPATCH_GENERIC_LISTENER(componentSetSizeListener,
 	SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_SIZE_LISTENER,
 	sjme_scritchui_uiComponent, inComponent, size)
+
+SJME_SCRITCHUI_DISPATCH_GENERIC_LISTENER(componentSetValueUpdateListener,
+	SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_VALUE_UPDATE_LISTENER,
+	sjme_scritchui_uiComponent, inComponent, valueUpdate)
 
 SJME_SCRITCHUI_DISPATCH_GENERIC_LISTENER(componentSetVisibleListener,
 	SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_VISIBLE_LISTENER,

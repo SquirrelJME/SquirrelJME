@@ -11,7 +11,9 @@ package cc.squirreljme.jvm.mle.scritchui;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
+import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchActivateListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchSizeListener;
+import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchValueUpdateListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchVisibleListener;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.jetbrains.annotations.NotNull;
@@ -51,6 +53,19 @@ public interface ScritchComponentInterface
 		throws MLECallError;
 	
 	/**
+	 * Sets the listener to be called when a component is activated.
+	 *
+	 * @param __component The component to set the listener to.
+	 * @param __listener The listener to use, may be {@code null} to clear.
+	 * @throws MLECallError On null arguments or the component is not valid.
+	 * @since 2024/07/17
+	 */
+	@SquirrelJMEVendorApi
+	void setActivateListener(ScritchComponentBracket __component,
+		ScritchActivateListener __listener)
+		throws MLECallError;
+	
+	/**
 	 * Sets the listener to be called when the size of the component changes.
 	 *
 	 * @param __component The component to set the listener to.
@@ -61,6 +76,19 @@ public interface ScritchComponentInterface
 	@SquirrelJMEVendorApi
 	void setSizeListener(ScritchComponentBracket __component,
 		ScritchSizeListener __listener)
+		throws MLECallError;
+	
+	/**
+	 * Sets the listener to be called when a component value has changed.
+	 *
+	 * @param __component The component to set the listener to.
+	 * @param __listener The listener to use, may be {@code null} to clear.
+	 * @throws MLECallError On null arguments or the component is not valid.
+	 * @since 2024/07/17
+	 */
+	@SquirrelJMEVendorApi
+	void setValueUpdateListener(ScritchComponentBracket __component,
+		ScritchValueUpdateListener __listener)
 		throws MLECallError;
 	
 	/**

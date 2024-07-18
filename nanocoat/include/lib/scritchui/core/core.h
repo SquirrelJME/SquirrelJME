@@ -65,16 +65,6 @@ sjme_errorCode sjme_scritchui_core_choiceLength(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrOutNotNull sjme_jint* outLength);
 
-sjme_errorCode sjme_scritchui_core_choiceSetActivateListener(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	SJME_SCRITCHUI_SET_LISTENER_ARGS(choiceActivate));
-
-sjme_errorCode sjme_scritchui_core_choiceSetUpdateListener(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	SJME_SCRITCHUI_SET_LISTENER_ARGS(choiceUpdate));
-
 sjme_errorCode sjme_scritchui_core_componentRepaint(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
@@ -87,6 +77,11 @@ sjme_errorCode sjme_scritchui_core_componentRevalidate(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
 
+sjme_errorCode sjme_scritchui_core_componentSetActivateListener(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(activate));
+
 sjme_errorCode sjme_scritchui_core_componentSetInputListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
@@ -96,6 +91,11 @@ sjme_errorCode sjme_scritchui_core_componentSetPaintListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(paint));
+
+sjme_errorCode sjme_scritchui_core_componentSetValueUpdateListener(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(valueUpdate));
 
 sjme_errorCode sjme_scritchui_core_componentSize(
 	sjme_attrInNotNull sjme_scritchui inState,

@@ -32,18 +32,18 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 	.choiceItemRemove = sjme_scritchui_coreSerial_choiceItemRemove,
 	.choiceItemSet = sjme_scritchui_coreSerial_choiceItemSet,
 	.choiceLength = sjme_scritchui_coreSerial_choiceLength,
-	.choiceSetActivateListener =
-		sjme_scritchui_coreSerial_choiceSetActivateListener,
-	.choiceSetUpdateListener = 
-		sjme_scritchui_coreSerial_choiceSetUpdateListener,
 	.componentRepaint = sjme_scritchui_coreSerial_componentRepaint,
 	.componentRevalidate = sjme_scritchui_coreSerial_componentRevalidate,
+	.componentSetActivateListener =
+		sjme_scritchui_coreSerial_componentSetActivateListener,
 	.componentSetInputListener =
 		sjme_scritchui_coreSerial_componentSetInputListener,
 	.componentSetPaintListener =
 		sjme_scritchui_coreSerial_componentSetPaintListener,
 	.componentSetSizeListener =
 		sjme_scritchui_coreSerial_componentSetSizeListener,
+	.componentSetValueUpdateListener = 
+		sjme_scritchui_coreSerial_componentSetValueUpdateListener,
 	.componentSetVisibleListener =
 		sjme_scritchui_coreSerial_componentSetVisibleListener,
 	.componentSize = sjme_scritchui_coreSerial_componentSize,
@@ -84,15 +84,15 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 	.choiceItemRemove = sjme_scritchui_core_choiceItemRemove,
 	.choiceItemSet = sjme_scritchui_core_choiceItemSet,
 	.choiceLength = sjme_scritchui_core_choiceLength,
-	.choiceSetActivateListener =
-		sjme_scritchui_core_choiceSetActivateListener,
-	.choiceSetUpdateListener = 
-		sjme_scritchui_core_choiceSetUpdateListener,
 	.componentRepaint = sjme_scritchui_core_componentRepaint,
 	.componentRevalidate = sjme_scritchui_core_componentRevalidate,
+	.componentSetActivateListener =
+		sjme_scritchui_core_componentSetActivateListener,
 	.componentSetInputListener = sjme_scritchui_core_componentSetInputListener,
 	.componentSetPaintListener = sjme_scritchui_core_componentSetPaintListener,
 	.componentSetSizeListener = sjme_scritchui_core_componentSetSizeListener,
+	.componentSetValueUpdateListener = 
+		sjme_scritchui_core_componentSetValueUpdateListener,
 	.componentSetVisibleListener =
 		sjme_scritchui_core_componentSetVisibleListener,
 	.componentSize = sjme_scritchui_core_componentSize,
