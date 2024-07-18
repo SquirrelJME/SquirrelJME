@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBarBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.Menu;
 
 /**
  * Represents the layout state for a menu bar.
@@ -28,29 +29,21 @@ import javax.microedition.lcdui.Displayable;
  */
 @SquirrelJMEVendorApi
 public final class MenuLayoutBar
-	extends MenuLayoutBindable<Displayable, ScritchMenuBarBracket>
+	extends MenuLayoutBindableSub<Displayable, ScritchMenuBarBracket>
 {
-	/**
-	 * Returns the menu bar associated with this menu.
-	 *
-	 * @return The resultant bar.
-	 * @since 2024/07/18
-	 */
-	@SquirrelJMEVendorApi
-	public ScritchMenuBarBracket bar()
-	{
-		throw Debugging.todo();
-	}
-	
 	/**
 	 * Returns the pinned menu, which generally is the default item.
 	 *
 	 * @return The pinned menu, or {@code null} if there is nothing pinned.
 	 * @since 2024/07/18
 	 */
+	@SquirrelJMEVendorApi
 	public MenuLayoutMenu pin()
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	/**
@@ -60,9 +53,13 @@ public final class MenuLayoutBar
 	 * the menu.
 	 * @since 2024/07/18
 	 */
-	public void pin(MenuLayoutMenu __menu)
+	@SquirrelJMEVendorApi
+	public void pin(Menu __menu)
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	/**

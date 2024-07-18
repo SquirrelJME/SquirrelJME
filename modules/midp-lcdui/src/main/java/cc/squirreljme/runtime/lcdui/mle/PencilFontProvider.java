@@ -11,6 +11,7 @@ package cc.squirreljme.runtime.lcdui.mle;
 
 import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import org.jetbrains.annotations.ApiStatus;
 
 /**
  * Provider for pencil fonts.
@@ -27,5 +28,6 @@ public abstract class PencilFontProvider
 	 * @since 2024/06/25
 	 */
 	@SquirrelJMEVendorApi
+	@ApiStatus.Internal
 	protected abstract PencilFontBracket __squirreljmePencilFont();
 }

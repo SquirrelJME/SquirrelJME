@@ -9,6 +9,8 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.lcdui.scritchui.MenuAction;
+
 /**
  * This contains the desired command policy layout state.
  *
@@ -25,8 +27,8 @@ final class __Layout__
 	
 	/** The placements used. */
 	@Deprecated
-	private final __Action__[] _placements =
-		new __Action__[__Layout__._MAX_PLACEMENTS];
+	private final MenuAction[] _placements =
+		new MenuAction[__Layout__._MAX_PLACEMENTS];
 	
 	/**
 	 * {@inheritDoc}
@@ -48,7 +50,7 @@ final class __Layout__
 	 * @since 2020/09/27
 	 */
 	@Deprecated
-	public final __Action__ get(int __pos)
+	public final MenuAction get(int __pos)
 		throws IllegalArgumentException
 	{
 		return this._placements[__Layout__.__posToIndex(__pos)];
@@ -67,11 +69,11 @@ final class __Layout__
 		throws IllegalArgumentException
 	{
 		// Blank items always get the lowest priority
-		__Action__ action = this.get(__pos);
+		MenuAction action = this.get(__pos);
 		if (action == null)
 			return Integer.MAX_VALUE;
 		
-		return __Action__.__getPriority(action);
+		return MenuAction.__getPriority(action);
 	}
 	
 	/**
@@ -83,7 +85,7 @@ final class __Layout__
 	 * @since 2020/09/27
 	 */
 	@Deprecated
-	public final void set(__Action__ __act, int __pos)
+	public final void set(MenuAction __act, int __pos)
 		throws IllegalArgumentException
 	{
 		this._placements[__Layout__.__posToIndex(__pos)] = __act;

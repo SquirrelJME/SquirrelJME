@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import org.jetbrains.annotations.ApiStatus;
 import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 
 /**
@@ -596,6 +597,7 @@ public final class Font
 	 * @since 2024/06/25
 	 */
 	@Override
+	@ApiStatus.Internal
 	protected PencilFontBracket __squirreljmePencilFont()
 	{
 		return this._font;

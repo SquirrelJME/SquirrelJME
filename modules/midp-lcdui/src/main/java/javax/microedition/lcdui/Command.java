@@ -12,10 +12,12 @@ package javax.microedition.lcdui;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.scritchui.MenuAction;
+import cc.squirreljme.runtime.lcdui.scritchui.MenuLayoutItem;
 
 @Api
 public class Command
-	extends __Action__
+	extends MenuAction<MenuLayoutItem>
 { 
 	/** Returns the user to the previous screen.. */
 	@Api
@@ -166,6 +168,8 @@ public class Command
 		boolean __implspec)
 		throws IllegalArgumentException, NullPointerException
 	{
+		super(new MenuLayoutItem(), __sl, __ll, __i);
+		
 		// Check
 		if (__sl == null)
 			throw new NullPointerException("NARG");
@@ -180,11 +184,6 @@ public class Command
 		this._implspec = __implspec;
 		this._type = __type;
 		this._priority = __pri;
-		
-		// Part of action
-		this._shortLabel = __sl;
-		this._longLabel = __ll;
-		this._image = __i;
 	}
 	
 	/**
@@ -250,7 +249,11 @@ public class Command
 		if (this._implspec)
 			return "";
 		
+		throw Debugging.todo();
+		/*
 		return this._shortLabel;
+		
+		 */
 	}
 	
 	/**
@@ -266,7 +269,11 @@ public class Command
 		if (this._implspec)
 			return null;
 		
+		throw Debugging.todo();
+		/*
 		return this._longLabel;
+		
+		 */
 	}
 	
 	/**
@@ -380,7 +387,11 @@ public class Command
 		if (this._implspec)
 			return;
 		
+		throw Debugging.todo();
+		/*
 		this.__setLabels(__s, this._longLabel, this._image);
+		
+		 */
 	}
 	
 	/**
@@ -396,26 +407,11 @@ public class Command
 		if (this._implspec)
 			return;
 		
-		this.__setLabels(this._shortLabel, __s, this._image);
-	}
-	
-	/**
-	 * Sets the labels for this command.
-	 * 
-	 * @param __shortLabel The short label.
-	 * @param __longLabel The long label.
-	 * @param __image The image used.
-	 * @since 2021/11/30
-	 */
-	private void __setLabels(String __shortLabel, String __longLabel,
-		Image __image)
-	{
-		// Store the text data
-		this._shortLabel = __shortLabel;
-		this._longLabel = __longLabel;
-		this._image = __image;
-		
 		throw Debugging.todo();
+		/*
+		this.__setLabels(this._shortLabel, __s, this._image);
+		
+		 */
 	}
 }
 

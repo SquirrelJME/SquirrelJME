@@ -19,18 +19,34 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 class __ExecDisplayableDefaultCommand__
 	implements Runnable
 {
+	/** Is this command being added? */
+	private final boolean _add;
+	
+	/** The command to add or remove. */
+	private final Command _command;
+	
+	/** The displayable to modify. */
+	private final Displayable _displayable;
+	
 	/**
 	 * Initializes the execution handler.
 	 *
+	 * @param __displayable The displayable to adjust the menu of.
 	 * @param __command The command being manipulated.
 	 * @param __add Is this command being added or removed?
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/18
 	 */
-	__ExecDisplayableDefaultCommand__(Command __command, boolean __add)
+	__ExecDisplayableDefaultCommand__(Displayable __displayable,
+		Command __command, boolean __add)
 		throws NullPointerException
 	{
-		throw Debugging.todo();
+		if (__displayable == null || __command == null)
+			throw new NullPointerException("NARG");
+		
+		this._displayable = __displayable;
+		this._command = __command;
+		this._add = __add;
 	}
 	
 	/**

@@ -17,6 +17,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
+import cc.squirreljme.runtime.lcdui.scritchui.MenuAction;
 import cc.squirreljme.runtime.lcdui.scritchui.MenuLayoutBar;
 import cc.squirreljme.runtime.lcdui.scritchui.MenuLayoutLock;
 import cc.squirreljme.runtime.lcdui.scritchui.TextTracker;
@@ -60,8 +61,10 @@ public abstract class Displayable
 		new MenuLayoutLock();
 	
 	/** The current menu bar. */
-	private final MenuLayoutBar _menuBar =
-		new MenuLayoutBar();
+	private final MenuLayoutBar _menuBar;
+	
+	/** The default menu. */
+	private final Menu _menuDefault;
 	
 	/**
 	 * Initializes the base displayable object.
@@ -73,6 +76,19 @@ public abstract class Displayable
 		// Setup new state
 		DisplayableState state = new DisplayableState(this);
 		this._state = state;
+		
+		// Setup menu bar
+		MenuLayoutBar menuBar = new MenuLayoutBar();
+		this._menuBar = menuBar;
+		
+		// Setup default menu
+		Menu menuDefault = new Menu("App", "Application",
+			null);
+		this._menuDefault = menuDefault;
+		
+		// Add and use this menu
+		menuBar.insert(Integer.MAX_VALUE, menuDefault);
+		menuBar.pin(menuDefault);
 		
 		// Setup tracker for title changes, it needs the event loop handler
 		this._trackerTitle = new TextTracker(state.scritchApi().eventLoop(),
@@ -120,7 +136,8 @@ public abstract class Displayable
 		
 		// Have the event loop handle this
 		this._state.scritchApi().eventLoop()
-			.execute(new __ExecDisplayableDefaultCommand__(__c, true));
+			.execute(new __ExecDisplayableDefaultCommand__(this,
+				__c, true));
 	}
 	
 	@Api
@@ -263,7 +280,8 @@ public abstract class Displayable
 		
 		// Have the event loop handle this
 		this._state.scritchApi().eventLoop()
-			.execute(new __ExecDisplayableDefaultCommand__(__c, false));
+			.execute(new __ExecDisplayableDefaultCommand__(this,
+				__c, false));
 	}
 	
 	@Api
@@ -522,7 +540,7 @@ public abstract class Displayable
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/09/27
 	 */
-	private void __layoutActionSet(__Action__ __a, int __p)
+	private void __layoutActionSet(MenuAction __a, int __p)
 		throws DisplayCapabilityException, IllegalArgumentException,
 			IllegalStateException, NullPointerException 
 	{

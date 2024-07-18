@@ -37,6 +37,7 @@ public abstract class MenuLayoutBindable<M, S extends ScritchBaseBracket>
 	 * @return The MIDP item for this item.
 	 * @since 2024/07/18
 	 */
+	@SquirrelJMEVendorApi
 	public final M getMidp()
 	{
 		throw Debugging.todo();
@@ -50,6 +51,7 @@ public abstract class MenuLayoutBindable<M, S extends ScritchBaseBracket>
 	 * valid.
 	 * @since 2024/07/18
 	 */
+	@SquirrelJMEVendorApi
 	public final S getScritchUi()
 		throws IllegalStateException
 	{
