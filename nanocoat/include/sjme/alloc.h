@@ -121,7 +121,7 @@ struct sjme_alloc_weakBase
 struct sjme_alloc_link
 {
 	/** The pool this is in. */
-	sjme_alloc_pool* pool;
+	volatile sjme_alloc_pool* pool;
 	
 	/** Previous link. */
 	sjme_alloc_link* prev;
@@ -289,7 +289,7 @@ sjme_errorCode sjme_alloc_poolSpaceTotalSize(
  * @since 2023/11/19
  */
 sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc)(
-	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrInNotNull volatile sjme_alloc_pool* pool,
 	sjme_attrInPositiveNonZero sjme_jint size,
 	sjme_attrOutNotNull sjme_pointer* outAddr
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
@@ -297,7 +297,7 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc)(
 /**
  * Allocates a weak reference within the given pool.
  * 
- * @param pool The pool to allocate within.
+ * @param inPool The pool to allocate within.
  * @param size The number of bytes to allocate.
  * @param inEnqueue The optional function to call when this reference is
  * enqueued. If this function returns @c SJME_ERROR_ENQUEUE_KEEP_WEAK and the
@@ -309,7 +309,7 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc)(
  * @since 2024/07/08
  */
 sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_weakNew)(
-	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrInNotNull volatile sjme_alloc_pool* inPool,
 	sjme_attrInPositiveNonZero sjme_jint size,
 	sjme_attrInNullable sjme_alloc_weakEnqueueFunc inEnqueue,
 	sjme_attrInNullable sjme_pointer inEnqueueData,
@@ -328,7 +328,7 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_weakNew)(
  * @since 2023/12/13
  */
 sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_copy)(
-	sjme_attrInNotNull sjme_alloc_pool* pool,
+	sjme_attrInNotNull volatile sjme_alloc_pool* pool,
 	sjme_attrInPositiveNonZero sjme_jint size,
 	sjme_attrOutNotNull sjme_pointer* outAddr,
 	sjme_attrInNotNull sjme_pointer inAddr

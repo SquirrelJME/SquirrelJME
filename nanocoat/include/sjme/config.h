@@ -349,6 +349,9 @@ extern "C" {
 	/** Deprecated. */
 	#define sjme_attrDeprecated __attribute__((deprecated))
 	
+	/** Disable optimization. */
+	#define sjme_noOptimize __attribute__((optimize("O0")))
+	
 	/**
 	 * Formatted string.
 	 * 
@@ -532,6 +535,11 @@ extern "C" {
 #if !defined(sjme_inline)
 	/** Inline function. */
 	#define sjme_inline inline
+#endif
+
+#if !defined(sjme_noOptimize)
+	/** Disable optimization. */
+	#define sjme_noOptimize
 #endif
 
 #if defined(__GNUC__)
