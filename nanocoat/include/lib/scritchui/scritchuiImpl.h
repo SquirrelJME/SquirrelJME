@@ -253,6 +253,23 @@ typedef sjme_errorCode (*sjme_scritchui_intern_getPaintableFunc)(
 	sjme_attrInOutNotNull sjme_scritchui_uiPaintable* outPaintable);
 
 /**
+ * Common base common initialization for before and after create.
+ * 
+ * @param inState The input state.
+ * @param inCommon The input common.
+ * @param postCreate Is this after the create call?
+ * @param uiType The type of common this is.
+ * @return Any resultant error, if any.
+ * @since 2024/07/19
+ */
+typedef sjme_errorCode (*sjme_scritchui_intern_initCommonFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_common inCommon,
+	sjme_attrInValue sjme_jboolean postCreate,
+	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_UI_TYPES)
+		sjme_scritchui_uiType uiType);
+
+/**
  * Common component initialization function for before and after create.
  * 
  * @param inState The input state.
@@ -339,7 +356,10 @@ struct sjme_scritchui_internFunctions
 	/** Returns the paintable for the given component. */
 	sjme_scritchui_intern_getPaintableFunc getPaintable;
 	
-	/** Common post-component initialization. */
+	/** Common "common" initialization. */
+	sjme_scritchui_intern_initCommonFunc initCommon;
+	
+	/** Common component initialization. */
 	sjme_scritchui_intern_initComponentFunc initComponent;
 	
 	/** Maps the given screen. */

@@ -72,9 +72,9 @@ typedef sjme_jboolean (*sjme_gfx_getGraphics)(
 		sjme_gfx_pixelFormat pixelFormat,
 	sjme_attrInPositiveNonZero sjme_jint bufferWidth,
 	sjme_attrInPositiveNonZero sjme_jint bufferHeight,
-	sjme_attrInNotNull void* buffer,
+	sjme_attrInNotNull sjme_pointer buffer,
 	sjme_attrInPositive sjme_jint offset,
-	sjme_attrInNullable void* palette,
+	sjme_attrInNullable sjme_pointer palette,
 	sjme_attrInValue sjme_jint surfaceX,
 	sjme_attrInValue sjme_jint surfaceY,
 	sjme_attrInPositiveNonZero sjme_jint surfaceWidth,
@@ -106,7 +106,7 @@ struct sjme_gfx_graphics
 struct sjme_gfx_framebuffer
 {
 	/** The pointer to the framebuffer data, may be @c NULL if opaque. */
-	void* pixels;
+	sjme_pointer pixels;
 	
 	/** The width of the framebuffer in pixels. */
 	sjme_jint width;

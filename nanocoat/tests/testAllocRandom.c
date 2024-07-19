@@ -37,7 +37,7 @@ struct testLink
  */
 SJME_TEST_DECLARE(testAllocRandom)
 {
-	void* chunk;
+	sjme_pointer chunk;
 	sjme_jint chunkLen, i, linkLen, desire;
 	sjme_alloc_pool* pool;
 	sjme_random random;
@@ -139,7 +139,7 @@ SJME_TEST_DECLARE(testAllocRandom)
 		linkLen += sizeof(linkLen); 
 		
 		/* Free it. */
-		if (sjme_error_is(sjme_alloc_realloc((void**)&link,
+		if (sjme_error_is(sjme_alloc_realloc((sjme_pointer*)&link,
 			linkLen)))
 			return sjme_unit_fail(test, "Could not realloc link %d at %p.",
 				(int)i, link);

@@ -57,9 +57,9 @@ sjme_errorCode sjme_scritchui_gtk2_intern_disconnectSignal(
 sjme_errorCode sjme_scritchui_gtk2_intern_reconnectSignal(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull GtkWidget* inWidget,
-	sjme_attrInNotNull void* inOnWhat,
+	sjme_attrInNotNull sjme_pointer inOnWhat,
 	sjme_attrInNotNull sjme_scritchui_listener_void* infoCore,
-	sjme_attrInNotNull void* inListener,
+	sjme_attrInNotNull sjme_pointer inListener,
 	sjme_attrInNullable sjme_frontEnd* copyFrontEnd,
 	sjme_attrInNotNull GCallback inGtkCallback,
 	sjme_attrInPositiveNonZero sjme_jint numSignals,

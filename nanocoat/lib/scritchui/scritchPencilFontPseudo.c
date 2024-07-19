@@ -405,9 +405,15 @@ sjme_errorCode sjme_scritchui_core_fontPseudo(
 	
 	/* Allocate. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_alloc(inState->pool,
-		sizeof(*result), &result)))
+	if (sjme_error_is(error = sjme_alloc_weakNew(inState->pool,
+		sizeof(*result), NULL, NULL, &result, NULL)))
 		goto fail_alloc;
+	
+	/* Common initialize. */
+	if (sjme_error_is(error = inState->intern->initCommon(inState,
+		result, SJME_JNI_FALSE,
+		SJME_SCRITCHUI_TYPE_ROOT_STATE)))
+		goto fail_commonInit;
 	
 	/* Setup new font. */
 	result->impl = &sjme_scritchui_pseudoFontFunctions;
@@ -427,6 +433,7 @@ sjme_errorCode sjme_scritchui_core_fontPseudo(
 	return SJME_ERROR_NONE;
 	
 fail_initBase:
+fail_commonInit:
 fail_alloc:
 	if (result != NULL)
 		sjme_alloc_free(result);

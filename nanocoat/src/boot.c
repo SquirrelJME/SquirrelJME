@@ -21,7 +21,7 @@ sjme_errorCode sjme_nvm_allocReservedPool(
 	sjme_attrOutNotNull sjme_alloc_pool** outReservedPool)
 {
 	sjme_errorCode error;
-	void* reservedBase;
+	sjme_pointer reservedBase;
 	sjme_alloc_pool* reservedPool;
 	sjme_jint reservedSize;
 
@@ -35,7 +35,7 @@ sjme_errorCode sjme_nvm_allocReservedPool(
 		SJME_ALLOC_SIZEOF_RESERVED_POOL, 0, &reservedSize)))
 		return sjme_error_default(error);
 	if (sjme_error_is(error = sjme_alloc(mainPool,
-		reservedSize, (void**)&reservedBase) ||
+		reservedSize, (sjme_pointer*)&reservedBase) ||
 		reservedBase == NULL))
 		return sjme_error_default(error);
 
@@ -79,13 +79,13 @@ sjme_errorCode sjme_nvm_boot(sjme_alloc_pool* mainPool,
 	/* Allocate resultant state. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_alloc(reservedPool,
-		sizeof(*result), (void**)&result)) || result == NULL)
+		sizeof(*result), (sjme_pointer*)&result)) || result == NULL)
 		goto fail_resultAlloc;
 
 	/* Make a defensive copy of the boot parameters. */
 	if (sjme_error_is(error = sjme_alloc_copy(reservedPool,
 		sizeof(sjme_nvm_bootParam),
-		(void**)&result->bootParamCopy, param)) ||
+		(sjme_pointer*)&result->bootParamCopy, param)) ||
 		result == NULL)
 		goto fail_bootParamCopy;
 

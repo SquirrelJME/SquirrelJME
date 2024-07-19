@@ -16,6 +16,8 @@ sjme_errorCode sjme_scritchui_core_listNew(
 	sjme_attrInOutNotNull sjme_scritchui_uiList* outList,
 	sjme_attrInValue sjme_scritchui_choiceType inChoiceType)
 {
+	sjme_scritchui_uiList result;
+	
 	if (inState == NULL || outList == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	

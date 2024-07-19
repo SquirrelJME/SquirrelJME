@@ -24,7 +24,7 @@ SJME_TEST_DECLARE(testClassParseBlank)
 	sjme_classBuilder builder;
 	sjme_jint thisName, thisNameUtf;
 	sjme_jint superName, superNameUtf;
-	void* rawClass;
+	sjme_pointer rawClass;
 	
 	/* Setup builder. */
 	memset(&builder, 0, sizeof(builder));

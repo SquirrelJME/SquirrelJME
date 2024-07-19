@@ -126,6 +126,7 @@ static const sjme_scritchui_internFunctions sjme_scritchUI_coreIntern =
 	.getChoice = sjme_scritchui_core_intern_getChoice,
 	.getContainer = sjme_scritchui_core_intern_getContainer,
 	.getPaintable = sjme_scritchui_core_intern_getPaintable,
+	.initCommon = sjme_scritchui_core_intern_initCommon,
 	.initComponent = sjme_scritchui_core_intern_initComponent,
 	.mapScreen = sjme_scritchui_core_intern_mapScreen,
 	.updateVisibleContainer =
@@ -200,8 +201,8 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 	
 	/* Allocate state. */
 	state = NULL;
-	if (sjme_error_is(error = sjme_alloc(inPool, sizeof(*state),
-		&state)) || state == NULL)
+	if (sjme_error_is(error = sjme_alloc_weakNew(inPool, sizeof(*state),
+		NULL, NULL, &state, NULL)) || state == NULL)
 		goto fail_alloc;
 	
 	/* Seed state. */
@@ -212,6 +213,12 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 	state->impl = inImplFunc;
 	state->wmInfo = &sjme_scritchUI_coreWmInfo;
 	state->nanoTime = sjme_nal_default_nanoTime;
+	
+	/* Common initialize. */
+	if (sjme_error_is(error = state->intern->initCommon(state,
+		state, SJME_JNI_FALSE,
+		SJME_SCRITCHUI_TYPE_ROOT_STATE)))
+		goto fail_commonInit;
 	
 	/* By default, everything is panel only. */
 	state->isPanelOnly = SJME_JNI_TRUE;
@@ -272,6 +279,7 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 	return SJME_ERROR_NONE;
 
 fail_apiInit:
+fail_commonInit:
 fail_alloc:
 	if (state != NULL)
 	{

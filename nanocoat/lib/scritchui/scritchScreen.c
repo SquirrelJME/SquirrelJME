@@ -52,9 +52,15 @@ sjme_errorCode sjme_scritchui_core_intern_mapScreen(
 	
 	/* Allocate new screen. */
 	maybe = NULL;
-	if (sjme_error_is(error = sjme_alloc(inState->pool,
-		sizeof(*maybe), &maybe)) || maybe == NULL)
+	if (sjme_error_is(error = sjme_alloc_weakNew(inState->pool,
+		sizeof(*maybe), NULL, NULL, &maybe, NULL)) || maybe == NULL)
 		goto fail_alloc;
+		
+	/* Common initialize. */
+	if (sjme_error_is(error = inState->intern->initCommon(inState,
+		maybe, SJME_JNI_FALSE,
+		SJME_SCRITCHUI_TYPE_SCREEN)))
+		goto fail_commonInit;
 	
 	/* Fill in information. */
 	maybe->common.state = inState;
@@ -109,6 +115,7 @@ fail_newList:
 		newScreens = NULL;
 	}
 	
+fail_commonInit:
 fail_alloc:
 	if (maybe != NULL)
 	{

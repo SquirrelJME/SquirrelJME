@@ -37,7 +37,7 @@ sjme_errorCode sjme_zip_locateEntry(
 sjme_errorCode sjme_zip_open(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrOutNotNull sjme_zip* outZip,
-	sjme_attrInNotNull void* rawData,
+	sjme_attrInNotNull sjme_pointer rawData,
 	sjme_attrInPositive sjme_jint rawSize)
 {
 	sjme_todo("Implement this?");

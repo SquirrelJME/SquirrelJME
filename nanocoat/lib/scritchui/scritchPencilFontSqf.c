@@ -378,20 +378,20 @@ sjme_errorCode sjme_scritchui_core_fontBuiltin(
 	only = inState->builtinFont;
 	if (only == NULL)
 	{
-		if (sjme_error_is(error = sjme_alloc(inState->pool,
-			sizeof(*only), &only)) || only == NULL)
+		if (sjme_error_is(error = sjme_alloc_weakNew(inState->pool,
+			sizeof(*only), NULL, NULL, &only, NULL)) || only == NULL)
 			return sjme_error_default(error);
+			
+		/* Common initialize. */
+		if (sjme_error_is(error = inState->intern->initCommon(inState,
+			only, SJME_JNI_FALSE,
+			SJME_SCRITCHUI_TYPE_ROOT_STATE)))
+			goto fail_commonInit;
 		
 		/* Initialize font. */
 		if (sjme_error_is(error = sjme_scritchui_newPencilFontSqfStatic(
 			only, &sqf_font_sanserif_12)))
-		{
-			/* Cleanup. */
-			sjme_alloc_free(only);
-			
-			/* Fail. */
-			return sjme_error_default(error);
-		}
+			goto fail_init;
 		
 		/* Valid now, so cache. */
 		inState->builtinFont = only;
@@ -400,6 +400,15 @@ sjme_errorCode sjme_scritchui_core_fontBuiltin(
 	/* Success, or already cached! */
 	*outFont = only;
 	return SJME_ERROR_NONE;
+
+fail_commonInit:
+fail_init:
+	/* Cleanup. */
+	if (only != NULL)
+		sjme_alloc_free(only);
+			
+	/* Fail. */
+	return sjme_error_default(error);
 }
 
 sjme_errorCode sjme_scritchui_newPencilFontSqfStatic(

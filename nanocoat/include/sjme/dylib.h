@@ -42,7 +42,7 @@ extern "C" {
  * 
  * @since 2024/03/27
  */
-typedef void* sjme_dylib;
+typedef sjme_pointer sjme_dylib;
 
 /**
  * Closes the given dynamic library.
@@ -66,7 +66,7 @@ sjme_errorCode sjme_dylib_close(
 sjme_errorCode sjme_dylib_lookup(
 	sjme_attrInNotNull sjme_dylib inLib,
 	sjme_attrInNotNull sjme_lpcstr inSymbol,
-	void** outPtr);
+	sjme_pointer* outPtr);
 
 /**
  * Calculates the name of the given library for the current system.

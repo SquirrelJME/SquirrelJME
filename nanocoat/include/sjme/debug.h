@@ -168,7 +168,7 @@ sjme_errorCode sjme_dieR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * @return Never returns.
  * @since 2023/11/11 
  */
-#define sjme_dieP(...) ((void*)((intptr_t)sjme_dieR(\
+#define sjme_dieP(...) ((sjme_pointer)((intptr_t)sjme_dieR(\
 	SJME_DEBUG_FILE_LINE_FUNC, __VA_ARGS__)))
 
 /**

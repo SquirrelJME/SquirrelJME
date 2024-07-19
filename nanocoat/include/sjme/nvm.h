@@ -264,7 +264,7 @@ extern "C" {
  * @since 2024/01/01
  */
 #define SJME_UNCOMMON_MEMBER(structType, uncommonMember, uncommonType, base) \
-	((uncommonType*)(void*)(&((structType*)((base)))->uncommonMember))
+	((uncommonType*)(sjme_pointer)(&((structType*)((base)))->uncommonMember))
 
 /**
  * Basic data type identifier.
@@ -635,6 +635,19 @@ typedef void* sjme_pointer;
 #define SJME_TYPEOF_IS_POINTER_sjme_pointer 1
 
 /**
+ * Generic pointer to const data.
+ *
+ * @since 2023/12/27
+ */
+typedef void* sjme_cpointer;
+
+/** Basic @c sjme_cpointer type identifier. */
+#define SJME_TYPEOF_BASIC_sjme_cpointer SJME_BASIC_TYPE_ID_OBJECT
+
+/** Is a pointer for @c sjme_cpointer ? */
+#define SJME_TYPEOF_IS_POINTER_sjme_cpointer 1
+
+/**
  * Integer based pointer.
  * 
  * @since 2024/04/06
@@ -643,7 +656,15 @@ typedef intptr_t sjme_intPointer;
 
 /** Calculates a pointer offset. */
 #define SJME_POINTER_OFFSET(base, off) \
-	(void*)(((sjme_intPointer)(base)) + ((sjme_intPointer)(off)))
+	(sjme_pointer)(((sjme_intPointer)(base)) + ((sjme_intPointer)(off)))
+
+#if defined(SJME_CONFIG_HAS_POINTER64)
+	#define SJME_TYPEOF_BASIC_sjme_intPointer SJME_TYPEOF_BASIC_sjme_jpointer
+#else
+	#define SJME_TYPEOF_BASIC_sjme_intPointer SJME_TYPEOF_BASIC_sjme_juint
+#endif
+
+#define SJME_TYPEOF_IS_POINTER_sjme_intPointer 0
 
 /**
  * Long value.
@@ -1826,8 +1847,14 @@ typedef enum sjme_errorCode
 	/** Component is not in this container. */
 	SJME_ERROR_NOT_IN_CONTAINER = -67,
 	
+	/** Invalid link. */
+	SJME_ERROR_INVALID_LINK = -68,
+	
+	/** We are not the owner of the lock. */
+	SJME_ERROR_NOT_LOCK_OWNER = -69,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -68
+	SJME_NUM_ERROR_CODES = -70
 } sjme_errorCode;
 
 /**

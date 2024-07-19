@@ -52,7 +52,7 @@ typedef sjme_errorCode (*sjme_nvm_frameTreadAccessorAddress)(
 	sjme_attrInNotNull const sjme_nvm_frameTreadAccessor* accessor,
 	sjme_attrInNotNull sjme_nvm_frameTread* tread,
 	sjme_attrInPositive sjme_jint treadIndex,
-	sjme_attrOutNotNull void** outAddress);
+	sjme_attrOutNotNull sjme_pointer* outAddress);
 
 /**
  * Returns the tread from the given frame.
@@ -83,7 +83,7 @@ typedef sjme_errorCode (*sjme_nvm_frameTreadAccessorRead)(
 	sjme_attrInNotNull const sjme_nvm_frameTreadAccessor* accessor,
 	sjme_attrInNotNull const sjme_nvm_frameTread* tread,
 	sjme_attrInPositive sjme_jint treadIndex,
-	sjme_attrOutNotNull void* outVal);
+	sjme_attrOutNotNull sjme_pointer outVal);
 
 /**
  * Reads from a tread.
@@ -101,7 +101,7 @@ typedef sjme_errorCode (*sjme_nvm_frameTreadAccessorWrite)(
 	sjme_attrInNotNull const sjme_nvm_frameTreadAccessor* accessor,
 	sjme_attrInNotNull sjme_nvm_frameTread* tread,
 	sjme_attrInPositive sjme_jint treadIndex,
-	sjme_attrInNotNull const void* inVal);
+	sjme_attrInNotNull sjme_cpointer inVal);
 
 struct sjme_nvm_frameTreadAccessor
 {

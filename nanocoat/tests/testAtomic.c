@@ -13,7 +13,7 @@
 #include "unit.h"
 #include "sjme/atomic.h"
 
-#define P(x) ((void*)x)
+#define P(x) ((sjme_pointer)x)
 
 /**
  * Tests atomic values.

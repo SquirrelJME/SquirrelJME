@@ -217,7 +217,7 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 		componentRevalidate->inComponent));
 		
 	SJME_SCRITCHUI_DISPATCH_CASE(componentSetActivateListener,
-		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_ACTIVATE_LISTENER,
+		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_SET_ACTIVATE_LISTENER,
 		(state,
 		componentSetActivateListener->inComponent,
 		componentSetActivateListener->inListener,
@@ -515,7 +515,7 @@ sjme_errorCode sjme_scritchui_coreSerial_componentRevalidate(
 }
 
 SJME_SCRITCHUI_DISPATCH_GENERIC_LISTENER(componentSetActivateListener,
-	SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_ACTIVATE_LISTENER,
+	SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_SET_ACTIVATE_LISTENER,
 	sjme_scritchui_uiComponent, inComponent, activate)
 
 SJME_SCRITCHUI_DISPATCH_GENERIC_LISTENER(componentSetInputListener,

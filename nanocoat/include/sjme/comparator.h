@@ -38,7 +38,7 @@ extern "C" {
  * @return The resultant comparison, will be zero, negative, or positive.
  * @since 2024/01/03
  */
-typedef sjme_jint (*sjme_comparator)(const void* a, const void* b,
+typedef sjme_jint (*sjme_comparator)(sjme_cpointer a, sjme_cpointer b,
 	int elementSize);
 
 /**
@@ -74,7 +74,7 @@ typedef sjme_jint (*sjme_comparator)(const void* a, const void* b,
 #define SJME_COMPARATOR_GENERIC(type, numPointerStars) \
 	static sjme_inline sjme_attrArtificial sjme_jint \
 		SJME_COMPARATOR(type, numPointerStars)( \
-		const void* a, const void* b, int elementSize) \
+		sjme_cpointer a, sjme_cpointer b, int elementSize) \
 	{ \
 		return (sjme_jint)(*((const type*)b) - *((const type*)a)); \
 	}
@@ -109,7 +109,7 @@ SJME_COMPARATOR_GENERIC(sjme_cchar, 0)
  * @return The resultant comparison, will be zero, negative, or positive.
  * @since 2024/01/03
  */
-sjme_jint SJME_COMPARATOR(sjme_lpcstr, 0)(const void* a, const void* b,
+sjme_jint SJME_COMPARATOR(sjme_lpcstr, 0)(sjme_cpointer a, sjme_cpointer b,
 	int elementSize);
 
 /**
@@ -122,7 +122,7 @@ sjme_jint SJME_COMPARATOR(sjme_lpcstr, 0)(const void* a, const void* b,
  * @since 2024/01/03
  */
 sjme_jint SJME_COMPARATOR_INSENSITIVE(sjme_lpcstr, 0)(
-	const void* a, const void* b, int elementSize);
+	sjme_cpointer a, sjme_cpointer b, int elementSize);
 
 /*--------------------------------------------------------------------------*/
 

@@ -36,7 +36,7 @@ extern "C" {
  * @return The number of items in the tree.
  * @since 2023/07/26
  */
-typedef sjme_jint (*sjme_tree_findCount)(void* tree);
+typedef sjme_jint (*sjme_tree_findCount)(sjme_pointer tree);
 
 /**
  * Function for returning the hash of the search item.
@@ -100,8 +100,8 @@ typedef struct sjme_tree_findFunc
  * @since 2024/02/14
  */
 sjme_jint sjme_compare_null(
-	sjme_attrInNullable const void* a,
-	sjme_attrInNullable const void* b);
+	sjme_attrInNullable sjme_cpointer a,
+	sjme_attrInNullable sjme_cpointer b);
 
 /**
  * Initializes the random number generator.

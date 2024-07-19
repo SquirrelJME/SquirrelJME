@@ -335,7 +335,7 @@ sjme_errorCode sjme_scritchpen_core_hardwareGraphics(
 	result = NULL;
 	resultWeak = NULL;
 	if (sjme_error_is(error = sjme_scritchpen_initBuffer(
-		inState->pool, &result, &resultWeak,
+		inState, &result, &resultWeak,
 		pf, bw, bh,
 		inLockFuncs, inLockFrontEndCopy, sx, sy, sw, sh,
 		defaultFont, pencilFrontEndCopy)) ||

@@ -15,7 +15,7 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilRawScanGet(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint x,
 	sjme_attrInPositive sjme_jint y,
-	sjme_attrOutNotNullBuf(inLen) void* outData,
+	sjme_attrOutNotNullBuf(inLen) sjme_pointer outData,
 	sjme_attrInPositiveNonZero sjme_jint inDataLen,
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels)
 {
@@ -52,7 +52,7 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilRawScanPutPure(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint x,
 	sjme_attrInPositive sjme_jint y,
-	sjme_attrInNotNullBuf(inLen) const void* srcRaw,
+	sjme_attrInNotNullBuf(inLen) sjme_cpointer srcRaw,
 	sjme_attrInPositiveNonZero sjme_jint srcRawLen,
 	sjme_attrInPositiveNonZero sjme_jint srcNumPixels)
 {

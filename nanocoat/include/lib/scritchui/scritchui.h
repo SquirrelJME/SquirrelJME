@@ -46,11 +46,20 @@ typedef enum sjme_scritchui_uiType
 	/** Reserved. */
 	SJME_SCRITCHUI_TYPE_RESERVED,
 	
+	/** Font. */
+	SJME_SCRITCHUI_TYPE_FONT,
+	
 	/** List. */
 	SJME_SCRITCHUI_TYPE_LIST,
 	
 	/** Panel. */
 	SJME_SCRITCHUI_TYPE_PANEL,
+	
+	/** Pencil. */
+	SJME_SCRITCHUI_TYPE_PENCIL,
+	
+	/** Root state. */
+	SJME_SCRITCHUI_TYPE_ROOT_STATE,
 	
 	/** Screen. */
 	SJME_SCRITCHUI_TYPE_SCREEN,
@@ -67,7 +76,7 @@ typedef enum sjme_scritchui_uiType
  * 
  * @since 2024/04/02
  */
-typedef void* sjme_scritchui_handle;
+typedef sjme_pointer sjme_scritchui_handle;
 
 /**
  * API Flags for ScritchUI.
@@ -249,6 +258,20 @@ typedef struct sjme_scritchui_implFunctions sjme_scritchui_implFunctions;
  * @since 2024/04/15
  */
 typedef struct sjme_scritchui_internFunctions sjme_scritchui_internFunctions;
+
+/**
+ * Common data structure shared by everything in ScritchUI.
+ * 
+ * @since 2024/04/02
+ */
+typedef struct sjme_scritchui_commonBase sjme_scritchui_commonBase;
+
+/**
+ * Common data pointer, which is shared by everything in ScritchUI.
+ * 
+ * @since 2024/04/02
+ */
+typedef sjme_scritchui_commonBase* sjme_scritchui_common;
 
 /**
  * Represents a choice of options such as those in a list.
@@ -1152,12 +1175,7 @@ struct sjme_scritchui_apiFunctions
 typedef struct sjme_scritchui_implInternFunctions
 	sjme_scritchui_implInternFunctions;
 
-/**
- * Common data structure shared by everything.
- * 
- * @since 2024/04/02
- */
-typedef struct sjme_scritchui_commonBase
+struct sjme_scritchui_commonBase
 {
 	/** The type of what this is. */
 	sjme_scritchui_uiType type;
@@ -1176,7 +1194,7 @@ typedef struct sjme_scritchui_commonBase
 	
 	/** Secondary opaque native handle for this, as needed. */
 	sjme_scritchui_handle handleB;
-} sjme_scritchui_commonBase;
+};
 
 /**
  * Window manager details to use.

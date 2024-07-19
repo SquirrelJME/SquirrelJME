@@ -19,6 +19,7 @@
 #include "sjme/nvm.h"
 #include "sjme/debug.h"
 #include "sjme/atomic.h"
+#include "sjme/multithread.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -188,6 +189,9 @@ struct sjme_alloc_pool
 	/** The size of the allocation pool. */
 	sjme_jint size;
 	
+	/** Whole pool spin lock. */
+	sjme_thread_spinLock spinLock;
+	
 	/** Free and used space information. */
 	struct
 	{
@@ -254,7 +258,7 @@ sjme_errorCode sjme_alloc_poolInitMalloc(
  */
 sjme_errorCode sjme_alloc_poolInitStatic(
 	sjme_attrOutNotNull sjme_alloc_pool** outPool,
-	sjme_attrInNotNull void* baseAddr,
+	sjme_attrInNotNull sjme_pointer baseAddr,
 	sjme_attrInPositive sjme_jint size);
 
 /**
@@ -287,7 +291,7 @@ sjme_errorCode sjme_alloc_poolSpaceTotalSize(
 sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc)(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrInPositiveNonZero sjme_jint size,
-	sjme_attrOutNotNull void** outAddr
+	sjme_attrOutNotNull sjme_pointer* outAddr
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
 
 /**
@@ -309,7 +313,7 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_weakNew)(
 	sjme_attrInPositiveNonZero sjme_jint size,
 	sjme_attrInNullable sjme_alloc_weakEnqueueFunc inEnqueue,
 	sjme_attrInNullable sjme_pointer inEnqueueData,
-	sjme_attrOutNotNull void** outAddr,
+	sjme_attrOutNotNull sjme_pointer* outAddr,
 	sjme_attrOutNotNull sjme_alloc_weak* outWeak
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
 
@@ -326,8 +330,8 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_weakNew)(
 sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_copy)(
 	sjme_attrInNotNull sjme_alloc_pool* pool,
 	sjme_attrInPositiveNonZero sjme_jint size,
-	sjme_attrOutNotNull void** outAddr,
-	sjme_attrInNotNull void* inAddr
+	sjme_attrOutNotNull sjme_pointer* outAddr,
+	sjme_attrInNotNull sjme_pointer inAddr
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
 
 /**
@@ -359,7 +363,7 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_format)(
  * @since 2023/11/28
  */
 sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_realloc)(
-	sjme_attrInOutNotNull void** inOutAddr,
+	sjme_attrInOutNotNull sjme_pointer* inOutAddr,
 	sjme_attrInPositive sjme_jint newSize
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
 
@@ -447,7 +451,7 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_realloc)(
  * @since 2023/11/19
  */
 sjme_errorCode sjme_alloc_free(
-	sjme_attrInNotNull void* addr);
+	sjme_attrInNotNull sjme_pointer addr);
 
 /**
  * Returns the link of the given memory block
@@ -458,7 +462,7 @@ sjme_errorCode sjme_alloc_free(
  * @since 2023/11/19
  */
 sjme_errorCode sjme_alloc_getLink(
-	sjme_attrInNotNull void* addr,
+	sjme_attrInNotNull sjme_pointer addr,
 	sjme_attrOutNotNull sjme_alloc_link** outLink);
 
 /**
@@ -484,7 +488,7 @@ sjme_errorCode sjme_alloc_weakDelete(
  * @return Any resultant error, if any.
  * @since 2024/07/01
  */
-sjme_errorCode sjme_alloc_weakGet(
+sjme_errorCode sjme_alloc_weakGetPointer(
 	sjme_attrInNotNull sjme_alloc_weak inWeak,
 	sjme_attrOutNotNull sjme_pointer* outPointer);
 
@@ -502,7 +506,7 @@ sjme_errorCode sjme_alloc_weakGet(
  * @since 2024/07/01
  */
 sjme_errorCode sjme_alloc_weakRef(
-	sjme_attrInNotNull void* addr,
+	sjme_attrInNotNull sjme_pointer addr,
 	sjme_attrOutNotNull sjme_alloc_weak* outWeak,
 	sjme_attrInNullable sjme_alloc_weakEnqueueFunc inEnqueue,
 	sjme_attrInNullable sjme_pointer inEnqueueData);

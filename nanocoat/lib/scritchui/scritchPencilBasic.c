@@ -19,13 +19,13 @@ static sjme_errorCode sjme_scritchui_basicRawScanGet(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint x,
 	sjme_attrInPositive sjme_jint y,
-	sjme_attrOutNotNullBuf(inLen) void* outData,
+	sjme_attrOutNotNullBuf(inLen) sjme_pointer outData,
 	sjme_attrInPositiveNonZero sjme_jint inDataLen,
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels)
 {
 	sjme_errorCode error;
 	sjme_jint pixelBytes, limit;
-	void* targetP;
+	sjme_pointer targetP;
 	
 	if (g == NULL || outData == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -65,14 +65,14 @@ static sjme_errorCode sjme_scritchui_basicRawScanPutPure(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint x,
 	sjme_attrInPositive sjme_jint y,
-	sjme_attrInNotNullBuf(inLen) const void* srcRaw,
+	sjme_attrInNotNullBuf(inLen) sjme_cpointer srcRaw,
 	sjme_attrInPositiveNonZero sjme_jint srcRawLen,
 	sjme_attrInPositiveNonZero sjme_jint srcNumPixels)
 {
 	sjme_errorCode error;
 	sjme_jint pixelBytes, limit;
 	sjme_jint targetI;
-	void* targetP;
+	sjme_pointer targetP;
 	
 	if (g == NULL || srcRaw == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -101,7 +101,7 @@ static sjme_errorCode sjme_scritchui_basicRawScanGet_sjme_jbyte24(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint x,
 	sjme_attrInPositive sjme_jint y,
-	sjme_attrOutNotNullBuf(inLen) void* outData,
+	sjme_attrOutNotNullBuf(inLen) sjme_pointer outData,
 	sjme_attrInPositiveNonZero sjme_jint inDataLen,
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels)
 {
@@ -113,7 +113,7 @@ static sjme_errorCode sjme_scritchui_basicRawScanGet_sjme_jbyte4(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint x,
 	sjme_attrInPositive sjme_jint y,
-	sjme_attrOutNotNullBuf(inLen) void* outData,
+	sjme_attrOutNotNullBuf(inLen) sjme_pointer outData,
 	sjme_attrInPositiveNonZero sjme_jint inDataLen,
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels)
 {
@@ -125,7 +125,7 @@ static sjme_errorCode sjme_scritchui_basicRawScanPutPure_sjme_jbyte4(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint x,
 	sjme_attrInPositive sjme_jint y,
-	sjme_attrInNotNullBuf(inLen) const void* srcRaw,
+	sjme_attrInNotNullBuf(inLen) sjme_cpointer srcRaw,
 	sjme_attrInPositiveNonZero sjme_jint srcRawLen,
 	sjme_attrInPositiveNonZero sjme_jint srcNumPixels)
 {
@@ -140,7 +140,7 @@ static sjme_errorCode sjme_scritchui_basicRawScanGet_sjme_jbyte2(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint x,
 	sjme_attrInPositive sjme_jint y,
-	sjme_attrOutNotNullBuf(inLen) void* outData,
+	sjme_attrOutNotNullBuf(inLen) sjme_pointer outData,
 	sjme_attrInPositiveNonZero sjme_jint inDataLen,
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels)
 {
@@ -152,7 +152,7 @@ static sjme_errorCode sjme_scritchui_basicRawScanPutPure_sjme_jbyte2(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint x,
 	sjme_attrInPositive sjme_jint y,
-	sjme_attrInNotNullBuf(inLen) const void* srcRaw,
+	sjme_attrInNotNullBuf(inLen) sjme_cpointer srcRaw,
 	sjme_attrInPositiveNonZero sjme_jint srcRawLen,
 	sjme_attrInPositiveNonZero sjme_jint srcNumPixels)
 {
@@ -167,7 +167,7 @@ static sjme_errorCode sjme_scritchui_basicRawScanGet_sjme_jbyte1(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint x,
 	sjme_attrInPositive sjme_jint y,
-	sjme_attrOutNotNullBuf(inLen) void* outData,
+	sjme_attrOutNotNullBuf(inLen) sjme_pointer outData,
 	sjme_attrInPositiveNonZero sjme_jint inDataLen,
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels)
 {
@@ -179,7 +179,7 @@ static sjme_errorCode sjme_scritchui_basicRawScanPutPure_sjme_jbyte1(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint x,
 	sjme_attrInPositive sjme_jint y,
-	sjme_attrInNotNullBuf(inLen) const void* srcRaw,
+	sjme_attrInNotNullBuf(inLen) sjme_cpointer srcRaw,
 	sjme_attrInPositiveNonZero sjme_jint srcRawLen,
 	sjme_attrInPositiveNonZero sjme_jint srcNumPixels)
 {
@@ -244,7 +244,7 @@ static sjme_errorCode sjme_scritchui_basicRawScanPutPure_sjme_jbyte1(
 #include "scritchPencilTemplate.c"
 
 sjme_errorCode sjme_scritchpen_initBuffer(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_scritchui_pencil* outPencil,
 	sjme_attrOutNullable sjme_alloc_weak* outWeakPencil,
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
@@ -263,13 +263,13 @@ sjme_errorCode sjme_scritchpen_initBuffer(
 	sjme_scritchui_pencil result;
 	sjme_alloc_weak resultWeak;
 	
-	if (inPool == NULL || outPencil == NULL)
+	if (inState == NULL || outPencil == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Allocate pencil. */
 	result = NULL;
 	resultWeak = NULL;
-	if (sjme_error_is(error = sjme_alloc_weakNew(inPool,
+	if (sjme_error_is(error = sjme_alloc_weakNew(inState->pool,
 		sizeof(*result), NULL, NULL, &result, &resultWeak)) ||
 		result == NULL || resultWeak == NULL)
 		return sjme_error_default(error);
@@ -278,19 +278,28 @@ sjme_errorCode sjme_scritchpen_initBuffer(
 	if (sjme_error_is(error = sjme_scritchpen_initBufferStatic(
 		result, pf, bw, bh, inLockFuncs, inLockFrontEndCopy,
 		sx, sy, sw, sh, defaultFont, copyFrontEnd)))
-	{
-		/* Free before failing. */
-		sjme_alloc_free(result);
-		
-		/* Then fail. */
-		return sjme_error_default(error);
-	}
+		goto fail_initBuffer;
+	
+	/* Common initialize. */
+	if (sjme_error_is(error = inState->intern->initCommon(inState,
+		result, SJME_JNI_FALSE,
+		SJME_SCRITCHUI_TYPE_ROOT_STATE)))
+		goto fail_commonInit;
 	
 	/* Success! */
 	*outPencil = result;
 	if (outWeakPencil != NULL)
 		*outWeakPencil = resultWeak;
 	return SJME_ERROR_NONE;
+
+fail_commonInit:
+fail_initBuffer:
+	/* Free before failing. */
+	if (result != NULL)
+		sjme_alloc_free(result);
+	
+	/* Then fail. */
+	return sjme_error_default(error);
 }
 
 sjme_errorCode sjme_scritchpen_initBufferStatic(

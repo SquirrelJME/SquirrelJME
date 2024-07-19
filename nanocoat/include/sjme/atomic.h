@@ -20,6 +20,7 @@
 	#include <stdatomic.h>
 #endif
 
+#include "sjme/config.h"
 #include "sjme/nvm.h"
 
 /* Anti-C++. */
@@ -183,6 +184,9 @@ SJME_ATOMIC_DECLARE(sjme_jobject, 0);
 
 /** Atomic @c sjme_pointer. */
 SJME_ATOMIC_DECLARE(sjme_pointer, 0);
+
+/** Atomic pointer declaration. */
+SJME_ATOMIC_DECLARE(sjme_intPointer , 0);
 
 #if defined(SJME_CONFIG_HAS_ATOMIC_OLD)
 

@@ -520,6 +520,53 @@ sjme_errorCode sjme_scritchui_core_intern_getPaintable(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_scritchui_core_intern_initCommon(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_common inCommon,
+	sjme_attrInValue sjme_jboolean postCreate,
+	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_UI_TYPES)
+		sjme_scritchui_uiType uiType)
+{
+	sjme_errorCode error;
+	sjme_alloc_link* link;
+	
+	if (inState == NULL || inCommon == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Post-initialize? */
+	if (postCreate)
+	{
+		/* Currently nothing. */
+	}
+	
+	/* Pre-initialize? */
+	else
+	{
+		/* Must be directly linked. */
+		link = NULL;
+		if (sjme_error_is(error = sjme_alloc_getLink(inCommon,
+			&link)) || link == NULL)
+			return sjme_error_defaultOr(error,
+				SJME_ERROR_INVALID_LINK);
+		
+		/* Must be weak referenced. */
+		if (link->weak == NULL)
+			return SJME_ERROR_NOT_WEAK_REFERENCE;
+		
+		/* Type must be valid. */
+		if (uiType <= SJME_SCRITCHUI_TYPE_RESERVED ||
+			uiType >= SJME_NUM_SCRITCHUI_UI_TYPES)
+			return SJME_ERROR_INVALID_ARGUMENT;
+		
+		/* Set base properties. */
+		inCommon->state = inState;
+		inCommon->type = uiType;
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_scritchui_core_intern_initComponent(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
@@ -533,6 +580,11 @@ sjme_errorCode sjme_scritchui_core_intern_initComponent(
 	
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Common initialize. */
+	if (sjme_error_is(error = inState->intern->initCommon(
+		inState, &inComponent->common, postCreate, uiType)))
+		return sjme_error_default(error);
 	
 	/* Post-initialize? */
 	if (postCreate)
@@ -583,14 +635,7 @@ sjme_errorCode sjme_scritchui_core_intern_initComponent(
 	/* Pre-initialize? */
 	else
 	{
-		/* Type must be valid. */
-		if (uiType <= SJME_SCRITCHUI_TYPE_RESERVED ||
-			uiType >= SJME_NUM_SCRITCHUI_UI_TYPES)
-			return SJME_ERROR_INVALID_ARGUMENT;
-		
-		/* Set base properties. */
-		inComponent->common.state = inState;
-		inComponent->common.type = uiType;
+		/* Currently only common initialization. */
 	}
 	
 	/* Success! */

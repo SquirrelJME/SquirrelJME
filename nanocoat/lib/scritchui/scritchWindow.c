@@ -70,8 +70,8 @@ sjme_errorCode sjme_scritchui_core_windowNew(
 		
 	/* Allocate result. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_alloc(inState->pool, sizeof(*result),
-		&result)) || result == NULL)
+	if (sjme_error_is(error = sjme_alloc_weakNew(inState->pool,
+		sizeof(*result), NULL, NULL, &result, NULL)) || result == NULL)
 		goto fail_alloc;
 	
 	/* Pre-initialize. */

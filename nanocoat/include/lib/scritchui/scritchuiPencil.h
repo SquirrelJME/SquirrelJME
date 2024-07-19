@@ -636,7 +636,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilRawScanBytesFunc)(
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilRawScanFillFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrOutNotNullBuf(rawLen) void* outRaw,
+	sjme_attrOutNotNullBuf(rawLen) sjme_pointer outRaw,
 	sjme_attrInPositive sjme_jint outRawOff,
 	sjme_attrInPositive sjme_jint outRawLen,
 	sjme_attrInValue sjme_jint rawPixel,
@@ -658,7 +658,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilRawScanGetFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint x,
 	sjme_attrInPositive sjme_jint y,
-	sjme_attrOutNotNullBuf(inLen) void* outData,
+	sjme_attrOutNotNullBuf(inLen) sjme_pointer outData,
 	sjme_attrInPositiveNonZero sjme_jint inDataLen,
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels);
 
@@ -679,7 +679,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilRawScanPutPureFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint x,
 	sjme_attrInPositive sjme_jint y,
-	sjme_attrInNotNullBuf(inLen) const void* srcRaw,
+	sjme_attrInNotNullBuf(inLen) sjme_cpointer srcRaw,
 	sjme_attrInPositiveNonZero sjme_jint srcRawLen,
 	sjme_attrInPositiveNonZero sjme_jint srcNumPixels);
 
@@ -701,7 +701,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilRawScanToRgbFunc)(
 	sjme_attrInNotNullBuf(outRgbLen) sjme_jint* outRgb,
 	sjme_attrInPositive sjme_jint outRgbOff,
 	sjme_attrInPositive sjme_jint outRgbLen,
-	sjme_attrOutNotNullBuf(inRawLen) const void* inRaw,
+	sjme_attrOutNotNullBuf(inRawLen) sjme_cpointer inRaw,
 	sjme_attrInPositive sjme_jint inRawOff,
 	sjme_attrInPositive sjme_jint inRawLen);
 
@@ -782,7 +782,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilRgbScanPutFunc)(
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilRgbToRawScanFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrOutNotNullBuf(rawLen) void* outRaw,
+	sjme_attrOutNotNullBuf(rawLen) sjme_pointer outRaw,
 	sjme_attrInPositive sjme_jint outRawOff,
 	sjme_attrInPositive sjme_jint outRawLen,
 	sjme_attrInNotNullBuf(rgbLen) const sjme_jint* inRgb,
@@ -1085,7 +1085,7 @@ extern const sjme_scritchui_pencilBitLineFunc
 /**
  * Creates a hardware reference bracket to the native hardware graphics.
  * 
- * @param inPool The tool to allocate within.
+ * @param inState The state this is under.
  * @param outPencil The resultant pencil.
  * @param outWeakPencil The output weak reference to the pencil.
  * @param pf The @c sjme_gfx_pixelFormat used for the draw.
@@ -1102,7 +1102,7 @@ extern const sjme_scritchui_pencilBitLineFunc
  * @since 2024/05/01
  */
 sjme_errorCode sjme_scritchpen_initBuffer(
-	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_scritchui_pencil* outPencil,
 	sjme_attrOutNullable sjme_alloc_weak* outWeakPencil,
 	sjme_attrInValue sjme_gfx_pixelFormat pf,

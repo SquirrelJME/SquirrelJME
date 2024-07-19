@@ -43,7 +43,7 @@ typedef struct sjme_payload_rom
 	sjme_jboolean isLibrary;
 
 	/** The address of the ROM data. */
-	void* address;
+	sjme_pointer address;
 
 	/** The length of the ROM data. */
 	sjme_jint length;

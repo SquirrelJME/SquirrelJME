@@ -37,7 +37,7 @@
  * @return Returns what the comparison is.
  * @since 2023/11/20
  */
-typedef sjme_jboolean (*sjme_unit_operatorFunc)(size_t size, void* a, void* b);
+typedef sjme_jboolean (*sjme_unit_operatorFunc)(size_t size, sjme_pointer a, sjme_pointer b);
 
 /**
  * Operator comparison information.
@@ -53,17 +53,17 @@ typedef struct sjme_unit_operatorInfo
 	sjme_unit_operatorFunc function;
 } sjme_unit_operatorInfo;
 
-static sjme_jboolean sjme_unit_operatorEqual(size_t size, void* a, void* b)
+static sjme_jboolean sjme_unit_operatorEqual(size_t size, sjme_pointer a, sjme_pointer b)
 {
 	return memcmp(a, b, size) == 0;
 }
 
-static sjme_jboolean sjme_unit_operatorNotEqual(size_t size, void* a, void* b)
+static sjme_jboolean sjme_unit_operatorNotEqual(size_t size, sjme_pointer a, sjme_pointer b)
 {
 	return memcmp(a, b, size) != 0;
 }
 
-static sjme_jboolean sjme_unit_operatorLessThan(size_t size, void* a, void* b)
+static sjme_jboolean sjme_unit_operatorLessThan(size_t size, sjme_pointer a, sjme_pointer b)
 {
 	sjme_jlong *ja;
 	sjme_jlong *jb;
@@ -78,7 +78,7 @@ static sjme_jboolean sjme_unit_operatorLessThan(size_t size, void* a, void* b)
 	return SJME_JNI_FALSE;  
 }
 
-static sjme_jboolean sjme_unit_operatorLessEqual(size_t size, void* a, void* b)
+static sjme_jboolean sjme_unit_operatorLessEqual(size_t size, sjme_pointer a, sjme_pointer b)
 {
 	sjme_jlong *ja;
 	sjme_jlong *jb;
@@ -93,7 +93,7 @@ static sjme_jboolean sjme_unit_operatorLessEqual(size_t size, void* a, void* b)
 	return SJME_JNI_FALSE;
 }
 
-static sjme_jboolean sjme_unit_operatorGreaterThan(size_t size, void* a, void* b)
+static sjme_jboolean sjme_unit_operatorGreaterThan(size_t size, sjme_pointer a, sjme_pointer b)
 {
 	sjme_jlong *ja;
 	sjme_jlong *jb;
@@ -109,7 +109,7 @@ static sjme_jboolean sjme_unit_operatorGreaterThan(size_t size, void* a, void* b
 }
 
 static sjme_jboolean sjme_unit_operatorGreaterEqual(size_t size,
-	void* a, void* b)
+	sjme_pointer a, sjme_pointer b)
 {
 	sjme_jlong *ja;
 	sjme_jlong *jb;
@@ -257,8 +257,8 @@ sjme_testResult sjme_unit_operatorLR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 sjme_testResult sjme_unit_operatorPR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	sjme_attrInValue sjme_unit_operator operator,
 	sjme_attrInNotNull sjme_test* test,
-	sjme_attrInNullable void* a,
-	sjme_attrInNullable void* b,
+	sjme_attrInNullable sjme_pointer a,
+	sjme_attrInNullable sjme_pointer b,
 	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr format, ...)
 {
 	SJME_VA_DEF;
@@ -268,7 +268,7 @@ sjme_testResult sjme_unit_operatorPR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 		SJME_VA_SHORT(SJME_TEST_RESULT_FAIL);
 	opInfo = &sjme_unit_operatorInfos[operator];
 	
-	if (!opInfo->function(sizeof(void*), &a, &b))
+	if (!opInfo->function(sizeof(sjme_pointer), &a, &b))
 	{
 		sjme_messageR(file, line, func, SJME_JNI_FALSE,
 			"ASSERT: %p %s %p",

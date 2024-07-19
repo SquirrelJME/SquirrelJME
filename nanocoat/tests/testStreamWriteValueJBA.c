@@ -81,7 +81,7 @@ SJME_TEST_DECLARE(testStreamWriteValueJBA)
 {
 	sjme_jvalue value;
 	sjme_stream_output stream;
-	void* buf;
+	sjme_pointer buf;
 
 	/* Setup buffer to write to. */
 	buf = sjme_alloca(DATA_LEN);

@@ -45,10 +45,10 @@ sjme_errorCode sjme_dylib_close(
 sjme_errorCode sjme_dylib_lookup(
 	sjme_attrInNotNull sjme_dylib inLib,
 	sjme_attrInNotNull sjme_lpcstr inSymbol,
-	void** outPtr)
+	sjme_pointer* outPtr)
 {
 #if defined(SJME_CONFIG_DYLIB_HAS_DLFCN)
-	void* handle;
+	sjme_pointer handle;
 #endif
 
 	if (inLib == NULL || inSymbol == NULL || outPtr == NULL)
@@ -122,7 +122,7 @@ sjme_errorCode sjme_dylib_open(
 	sjme_attrInOutNotNull sjme_dylib* outLib)
 {
 #if defined(SJME_CONFIG_DYLIB_HAS_DLFCN)
-	void* handle;
+	sjme_pointer handle;
 #endif
 	
 	if (libPath == NULL || outLib == NULL)
