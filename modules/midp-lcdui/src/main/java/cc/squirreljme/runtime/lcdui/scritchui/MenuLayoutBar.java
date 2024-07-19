@@ -38,17 +38,22 @@ public final class MenuLayoutBar
 	private final List<MenuLayoutBarNode> _nodes =
 		new ArrayList<>();
 	
+	/** The pinned menu. */
+	private volatile Menu _pinned;
+	
 	/**
-	 * Initializes the bindable
+	 * Initializes the bindable.
 	 *
 	 * @param __loop The loop interface.
+	 * @param __item The item to bind to.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/18
 	 */
-	public MenuLayoutBar(ScritchEventLoopInterface __loop)
+	public MenuLayoutBar(ScritchEventLoopInterface __loop,
+		Displayable __item)
 		throws NullPointerException
 	{
-		super(__loop);
+		super(__loop, __item);
 	}
 	
 	/**
@@ -58,11 +63,11 @@ public final class MenuLayoutBar
 	 * @since 2024/07/18
 	 */
 	@SquirrelJMEVendorApi
-	public MenuLayoutMenu pin()
+	public Menu pin()
 	{
 		synchronized (this)
 		{
-			throw Debugging.todo();
+			return this._pinned;
 		}
 	}
 	
@@ -78,7 +83,7 @@ public final class MenuLayoutBar
 	{
 		synchronized (this)
 		{
-			throw Debugging.todo();
+			this._pinned = __menu;
 		}
 	}
 	

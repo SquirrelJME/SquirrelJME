@@ -79,7 +79,7 @@ public abstract class Displayable
 		
 		// Setup menu bar
 		MenuLayoutBar menuBar = new MenuLayoutBar(
-			state.scritchApi().eventLoop());
+			state.scritchApi().eventLoop(), this);
 		this._menuBar = menuBar;
 		
 		// Setup default menu

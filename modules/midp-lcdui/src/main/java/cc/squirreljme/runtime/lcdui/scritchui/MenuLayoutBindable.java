@@ -12,6 +12,7 @@ package cc.squirreljme.runtime.lcdui.scritchui;
 import cc.squirreljme.jvm.mle.scritchui.ScritchEventLoopInterface;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.lang.ref.WeakReference;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Menu;
@@ -33,23 +34,29 @@ public abstract class MenuLayoutBindable<M>
 	/** The event loop interface. */
 	protected final ScritchEventLoopInterface loop;
 	
+	/** The item this is bound to. */
+	protected final WeakReference<M> item;
+	
 	/** Triggers that an update should occur. */
 	private volatile boolean _triggerUpdate;
 	
 	/**
-	 * Initializes the bindable
+	 * Initializes the bindable.
 	 *
 	 * @param __loop The loop interface.
+	 * @param __item The item this is bound to.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/18
 	 */
-	protected MenuLayoutBindable(ScritchEventLoopInterface __loop)
+	protected MenuLayoutBindable(ScritchEventLoopInterface __loop,
+		M __item)
 		throws NullPointerException
 	{
 		if (__loop == null)
 			throw new NullPointerException("NARG");
 		
 		this.loop = __loop;
+		this.item = new WeakReference<>(__item);
 	}
 	
 	/**
@@ -68,12 +75,17 @@ public abstract class MenuLayoutBindable<M>
 	 * Returns the MIDP item for this bindable.
 	 *
 	 * @return The MIDP item for this item.
+	 * @throws IllegalStateException If this was garbage collected.
 	 * @since 2024/07/18
 	 */
 	@SquirrelJMEVendorApi
 	public final M getMidp()
+		throws IllegalStateException
 	{
-		throw Debugging.todo();
+		M result = this.item.get();
+		if (result == null)
+			throw new IllegalStateException("GCGC");
+		return result;
 	}
 	
 	/**
@@ -88,9 +100,12 @@ public abstract class MenuLayoutBindable<M>
 		// Set trigger flag
 		synchronized (this)
 		{
+			// Set that we want to trigger
 			this._triggerUpdate = true;
+			
+			// Enqueue an update
+			this.__execTriggerEnqueue();
 		}
-		throw Debugging.todo();
 	}
 	
 	/**

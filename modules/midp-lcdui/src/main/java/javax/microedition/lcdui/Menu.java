@@ -28,9 +28,7 @@ public class Menu
 	@Api
 	public Menu(String __short, String __long, Image __i)
 	{
-		super(new MenuLayoutMenu(
-			DisplayManager.instance().scritch().eventLoop()),
-			__short, __long, __i);
+		super(__short, __long, __i);
 	}
 	
 	/**
@@ -50,7 +48,8 @@ public class Menu
 		if (__c == null)
 			throw new NullPointerException("NARG");
 		
-		return this.__squirreljmeBind.insert(Integer.MAX_VALUE, __c);
+		return MenuAction.bind(MenuLayoutMenu.class, this)
+			.insert(Integer.MAX_VALUE, __c);
 	}
 	
 	/**
@@ -70,7 +69,8 @@ public class Menu
 		if (__m == null)
 			throw new NullPointerException("NARG");
 		
-		return this.__squirreljmeBind.insert(Integer.MAX_VALUE, __m);
+		return MenuAction.bind(MenuLayoutMenu.class, this)
+			.insert(Integer.MAX_VALUE, __m);
 	}
 	
 	@Api
@@ -148,7 +148,7 @@ public class Menu
 	{
 		synchronized (this)
 		{
-			return this.__squirreljmeApproxDepth;
+			return MenuAction.approxDepth(this);
 		}
 	}
 	
@@ -176,7 +176,7 @@ public class Menu
 		if (__at == Integer.MAX_VALUE)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		this.__squirreljmeBind.insert(__at, __c);
+		MenuAction.bind(MenuLayoutMenu.class, this).insert(__at, __c);
 	}
 	
 	/**
@@ -203,7 +203,7 @@ public class Menu
 		if (__at == Integer.MAX_VALUE)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		this.__squirreljmeBind.insert(__at, __m);
+		MenuAction.bind(MenuLayoutMenu.class, this).insert(__at, __m);
 	}
 	
 	@Api

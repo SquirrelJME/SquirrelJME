@@ -27,16 +27,18 @@ public class MenuLayoutMenu
 	extends MenuLayoutBindableSub<Menu>
 {
 	/**
-	 * Initializes the bindable
+	 * Initializes the bindable.
 	 *
 	 * @param __loop The loop interface.
+	 * @param __item The item to bind to.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/18
 	 */
-	public MenuLayoutMenu(ScritchEventLoopInterface __loop)
+	protected MenuLayoutMenu(ScritchEventLoopInterface __loop,
+		Menu __item)
 		throws NullPointerException
 	{
-		super(__loop);
+		super(__loop, __item);
 	}
 	
 	/**

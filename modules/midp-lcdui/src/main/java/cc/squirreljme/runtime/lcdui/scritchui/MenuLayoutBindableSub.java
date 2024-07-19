@@ -12,6 +12,8 @@ package cc.squirreljme.runtime.lcdui.scritchui;
 import cc.squirreljme.jvm.mle.scritchui.ScritchEventLoopInterface;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A bindable menu that can also contain submenu items.
@@ -23,17 +25,23 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 public abstract class MenuLayoutBindableSub<M>
 	extends MenuLayoutBindable<M>
 {
+	/** Items which are bound to this menu. */
+	final List<__MenuBind__> _items =
+		new ArrayList<>();
+	
 	/**
-	 * Initializes the bindable
+	 * Initializes the bindable.
 	 *
 	 * @param __loop The loop interface.
+	 * @param __item The item to bind to.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/18
 	 */
-	protected MenuLayoutBindableSub(ScritchEventLoopInterface __loop)
+	protected MenuLayoutBindableSub(ScritchEventLoopInterface __loop,
+		M __item)
 		throws NullPointerException
 	{
-		super(__loop);
+		super(__loop, __item);
 	}
 	
 	/**
@@ -45,21 +53,49 @@ public abstract class MenuLayoutBindableSub<M>
 	 * @return The index the item was added at, in most cases this will match
 	 * the value of {@code __at} except in the case it specifies the end of
 	 * the menu.
+	 * @throws IllegalArgumentException If the action is already a part of
+	 * this menu.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/18
 	 */
 	@SquirrelJMEVendorApi
 	public int insert(int __at, MenuAction<?> __action)
-		throws NullPointerException
+		throws IllegalArgumentException, NullPointerException
 	{
 		if (__action == null)
 			throw new NullPointerException("NARG");
 		if (__at < 0)
 			throw new IndexOutOfBoundsException("IOOB");
 		
+		List<__MenuBind__> items = this._items;
 		synchronized (this)
 		{
-			throw Debugging.todo();
+			// End of list alias?
+			int n = items.size();
+			if (__at == Integer.MAX_VALUE)
+				__at = n;
+			
+			// Must be within bounds
+			if (__at > n)
+				throw new IndexOutOfBoundsException("IOOB");
+			
+			// We need to ensure that the item is not already here
+			for (int i = 0; i < n; i++)
+			{
+				// Actions cannot be added twice
+				/* {@squirreljme.error EB1l Menu item cannot exist multiple
+				times within a menu.} */
+				__MenuBind__ item = items.get(i);
+				if (item.action == __action)
+					throw new IllegalArgumentException("EB1l");
+			}
+				
+			// Setup new binding and add to the correct slot
+			__MenuBind__ item = new __MenuBind__(__action);
+			items.add(__at, item);
 		}
+		
+		// Where it was added
+		return __at;
 	}
 }

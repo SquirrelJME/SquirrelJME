@@ -169,8 +169,7 @@ public class Command
 		boolean __implspec)
 		throws IllegalArgumentException, NullPointerException
 	{
-		super(new MenuLayoutItem(DisplayManager.instance().scritch()
-			.eventLoop()), __sl, __ll, __i);
+		super(__sl, __ll, __i);
 		
 		// Check
 		if (__sl == null)

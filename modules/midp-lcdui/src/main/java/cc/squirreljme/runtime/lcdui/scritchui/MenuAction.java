@@ -9,8 +9,10 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui;
 
+import cc.squirreljme.jvm.mle.scritchui.ScritchEventLoopInterface;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Image;
+import javax.microedition.lcdui.Menu;
 import org.jetbrains.annotations.ApiStatus;
 
 /**
@@ -27,9 +29,8 @@ public abstract class MenuAction<B extends MenuLayoutBindable<?>>
 		Integer.MIN_VALUE;
 	
 	/** The bindable menu item. */
-	@SuppressWarnings("FieldNamingConvention")
 	@ApiStatus.Internal
-	protected final B __squirreljmeBind;
+	final B _bind;
 	
 	/** The image used. */
 	volatile Image _image;
@@ -41,26 +42,24 @@ public abstract class MenuAction<B extends MenuLayoutBindable<?>>
 	volatile String _longLabel;
 	
 	/** The last calculated approximated depth for this action. */
-	@SuppressWarnings("FieldNamingConvention")
-	protected volatile int __squirreljmeApproxDepth;
+	volatile int _approxDepth;
 	
 	/**
 	 * Initializes the base action.
 	 *
-	 * @param __bind The bind to use.
 	 * @param __short The short string.
 	 * @param __long The long string.
 	 * @param __image The image to use for the action.
-	 * @throws NullPointerException If no bind is specified.
 	 * @since 2024/07/18
 	 */
-	protected MenuAction(B __bind, String __short, String __long,
-		Image __image)
+	protected MenuAction(String __short, String __long, Image __image)
 	{
-		if (__bind == null)
-			throw new NullPointerException("NARG");
-		
-		this.__squirreljmeBind = __bind;
+		ScritchEventLoopInterface loop =
+			DisplayManager.instance().scritch().eventLoop();
+		if (this instanceof Menu)
+			this._bind = (B)new MenuLayoutMenu(loop, (Menu)this);
+		else
+			this._bind = (B)new MenuLayoutItem(loop, (Command)this);
 	}
 	
 	/**
@@ -91,7 +90,7 @@ public abstract class MenuAction<B extends MenuLayoutBindable<?>>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/09/27
 	 */
-	public static int __getPriority(MenuAction __action)
+	public static int __getPriority(MenuAction<?> __action)
 		throws NullPointerException
 	{
 		if (__action == null)
@@ -102,6 +101,43 @@ public abstract class MenuAction<B extends MenuLayoutBindable<?>>
 		if (__action instanceof Command)
 			return ((Command)__action).getPriority();
 		return MenuAction._MENU_PRIORITY;
+	}
+	
+	/**
+	 * Returns the menu bind.
+	 *
+	 * @param __action The action to get from.
+	 * @return The bind from the action.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/07/19
+	 */
+	public static int approxDepth(MenuAction<?> __action)
+		throws NullPointerException
+	{
+		if (__action == null)
+			throw new NullPointerException("NARG");
+		
+		return __action._approxDepth;
+	}
+	
+	/**
+	 * Returns the menu bind.
+	 *
+	 * @param <B> The bind type.
+	 * @param __cl The bind type.
+	 * @param __action The action to get from.
+	 * @return The bind from the action.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/07/19
+	 */
+	public static <B extends MenuLayoutBindable<?>> B bind(
+		Class<? extends B> __cl, MenuAction<? extends B> __action)
+		throws NullPointerException
+	{
+		if (__cl == null || __action == null)
+			throw new NullPointerException("NARG");
+		
+		return __cl.cast(__action._bind);
 	}
 }
 
