@@ -119,19 +119,22 @@ public abstract class MenuLayoutBindable<M>
 	{
 		synchronized (this)
 		{
-			// Perform recursive updating
+			// Only update if needed
 			boolean trigger = this._triggerUpdate;
-			if (trigger)
-				try
-				{
-					throw Debugging.todo();
-				}
-				
-				// Clear trigger tag
-				finally
-				{
-					this._triggerUpdate = false;
-				}
+			if (!trigger)
+				return;
+			
+			// Perform recursive updating
+			try
+			{
+				throw Debugging.todo();
+			}
+			
+			// Clear trigger tag
+			finally
+			{
+				this._triggerUpdate = false;
+			}
 		}
 	}
 	
@@ -145,11 +148,13 @@ public abstract class MenuLayoutBindable<M>
 	{
 		synchronized (this)
 		{
-			// Do not run if there is no need to update
+			// Do not enqueue multiple times if not needed
 			boolean trigger = this._triggerUpdate;
-			if (trigger == false)
+			if (trigger)
 				return;
 			
+			// Run trigger for later
+			this._triggerUpdate = true;
 			this.loop.executeLater(new __ExecMenuLayoutTrigger__(this.loop,
 				this, false));
 		}

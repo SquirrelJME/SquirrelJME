@@ -61,7 +61,7 @@ public abstract class Displayable
 		new MenuLayoutLock();
 	
 	/** The current menu bar. */
-	private final MenuLayoutBar _menuBar;
+	final MenuLayoutBar _menuBar;
 	
 	/** The default menu. */
 	private final Menu _menuDefault;

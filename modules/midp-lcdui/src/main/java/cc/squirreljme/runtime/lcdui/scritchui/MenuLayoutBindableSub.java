@@ -67,6 +67,7 @@ public abstract class MenuLayoutBindableSub<M>
 		if (__at < 0)
 			throw new IndexOutOfBoundsException("IOOB");
 		
+		// Insert into menu
 		List<__MenuBind__> items = this._items;
 		synchronized (this)
 		{
@@ -94,6 +95,9 @@ public abstract class MenuLayoutBindableSub<M>
 			__MenuBind__ item = new __MenuBind__(__action);
 			items.add(__at, item);
 		}
+		
+		// We changed our own state, so trigger an enqueue to occur
+		this.__execTriggerEnqueue();
 		
 		// Where it was added
 		return __at;
