@@ -621,12 +621,21 @@ typedef const sjme_cchar* sjme_lpcstr;
 /** Is a pointer for @c sjme_lpcstr ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_lpcstr 1
 
-/**
- * Generic pointer.
- *
- * @since 2023/12/27
- */
-typedef void* sjme_pointer;
+#if defined(SJME_CONFIG_HAS_ARCH_IA16)
+	/**
+	 * Generic pointer.
+	 *
+	 * @since 2023/12/27
+	 */
+	typedef void huge* sjme_pointer;
+#else
+	/**
+	 * Generic pointer.
+	 *
+	 * @since 2023/12/27
+	 */
+	typedef void* sjme_pointer;
+#endif
 
 /** Basic @c sjme_pointer type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_pointer SJME_BASIC_TYPE_ID_OBJECT
@@ -634,12 +643,21 @@ typedef void* sjme_pointer;
 /** Is a pointer for @c sjme_pointer ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_pointer 1
 
-/**
- * Generic pointer to const data.
- *
- * @since 2023/12/27
- */
-typedef void* sjme_cpointer;
+#if defined(SJME_CONFIG_HAS_ARCH_IA16)
+	/**
+	 * Generic pointer to const data.
+	 *
+	 * @since 2023/12/27
+	 */
+	typedef void huge* sjme_cpointer;
+#else
+	/**
+	 * Generic pointer to const data.
+	 *
+	 * @since 2023/12/27
+	 */
+	typedef void* sjme_cpointer;
+#endif
 
 /** Basic @c sjme_cpointer type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_cpointer SJME_BASIC_TYPE_ID_OBJECT
