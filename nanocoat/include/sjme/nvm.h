@@ -595,12 +595,21 @@ typedef char sjme_cchar;
 /** Is a pointer for @c sjme_cchar ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_cchar 0
 
-/**
- * Pointer to C string.
- *
- * @since 2023/12/17
- */
-typedef sjme_cchar* sjme_lpstr;
+#if defined(SJME_CONFIG_HAS_ARCH_IA16)
+	/**
+	 * Pointer to C string.
+	 *
+	 * @since 2023/12/17
+	 */
+	typedef sjme_cchar huge* sjme_lpstr;
+#else
+	/**
+	 * Pointer to C string.
+	 *
+	 * @since 2023/12/17
+	 */
+	typedef sjme_cchar* sjme_lpstr;
+#endif
 
 /** Basic @c sjme_lpstr type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_lpstr SJME_BASIC_TYPE_ID_OBJECT
@@ -608,12 +617,21 @@ typedef sjme_cchar* sjme_lpstr;
 /** Is a pointer for @c sjme_lpstr ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_lpstr 1
 
-/**
- * Pointer to constant C string.
- *
- * @since 2023/12/17
- */
-typedef const sjme_cchar* sjme_lpcstr;
+#if defined(SJME_CONFIG_HAS_ARCH_IA16)
+	/**
+	 * Pointer to constant C string.
+	 *
+	 * @since 2023/12/17
+	 */
+	typedef const sjme_cchar huge* sjme_lpcstr;
+#else
+	/**
+	 * Pointer to constant C string.
+	 *
+	 * @since 2023/12/17
+	 */
+	typedef const sjme_cchar* sjme_lpcstr;
+#endif
 
 /** Basic @c sjme_lpcstr type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_lpcstr SJME_BASIC_TYPE_ID_OBJECT
