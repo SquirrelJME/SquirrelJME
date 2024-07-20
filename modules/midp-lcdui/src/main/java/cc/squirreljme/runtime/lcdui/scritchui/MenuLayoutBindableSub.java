@@ -15,6 +15,7 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A bindable menu that can also contain submenu items.
@@ -94,6 +95,9 @@ public abstract class MenuLayoutBindableSub<M>
 			// Setup new binding and add to the correct slot
 			__MenuBind__ item = new __MenuBind__(__action);
 			items.add(__at, item);
+			
+			// Add us to their parent list
+			__action._bind.__parentAdd(this);
 		}
 		
 		// We changed our own state, so trigger an enqueue to occur

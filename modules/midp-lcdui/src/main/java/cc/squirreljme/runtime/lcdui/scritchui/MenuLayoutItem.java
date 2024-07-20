@@ -41,17 +41,4 @@ public class MenuLayoutItem
 	{
 		super(__scritch, __item);
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/07/18
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	@Async.Execute
-	protected void refreshInLoop()
-		throws IllegalStateException
-	{
-		throw Debugging.todo();
-	}
 }

@@ -84,10 +84,12 @@ public final class MenuLayoutBar
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Performs recursive refreshing of this bindable.
+	 *
+	 * @throws IllegalStateException If this is called outside the event
+	 * loop.
 	 * @since 2024/07/18
 	 */
-	@Override
 	@SquirrelJMEVendorApi
 	@Async.Execute
 	protected void refreshInLoop()

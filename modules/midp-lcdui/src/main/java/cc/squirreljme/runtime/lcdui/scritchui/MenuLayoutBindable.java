@@ -12,10 +12,13 @@ package cc.squirreljme.runtime.lcdui.scritchui;
 import cc.squirreljme.jvm.mle.scritchui.ScritchEventLoopInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Set;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Menu;
+import net.multiphasicapps.collections.IdentityHashSet;
 import org.jetbrains.annotations.Async;
 
 /**
@@ -38,7 +41,11 @@ public abstract class MenuLayoutBindable<M>
 	protected final ScritchInterface scritchApi;
 	
 	/** The MIDP item this is bound to. */
-	protected final WeakReference<M> item;
+	protected final Reference<M> item;
+	
+	/** The parent items, if applicable. */
+	final Set<MenuLayoutBindable<?>> _parents =
+		new IdentityHashSet<>();
 	
 	/** Triggers that an update should occur. */
 	private volatile boolean _triggerUpdate;
@@ -61,18 +68,6 @@ public abstract class MenuLayoutBindable<M>
 		this.loopApi = __scritchApi.eventLoop();
 		this.item = new WeakReference<>(__item);
 	}
-	
-	/**
-	 * Performs recursive refreshing of this bindable.
-	 *
-	 * @throws IllegalStateException If this is called outside the event
-	 * loop.
-	 * @since 2024/07/18
-	 */
-	@SquirrelJMEVendorApi
-	@Async.Execute
-	protected abstract void refreshInLoop()
-		throws IllegalStateException;
 	
 	/**
 	 * Returns the MIDP item for this bindable.
@@ -120,6 +115,10 @@ public abstract class MenuLayoutBindable<M>
 	@Async.Execute
 	final void __execTrigger()
 	{
+		// Only valid for menu bars
+		if (!(this instanceof MenuLayoutBar))
+			return;
+		
 		synchronized (this)
 		{
 			// Only update if needed
@@ -130,7 +129,7 @@ public abstract class MenuLayoutBindable<M>
 			// Perform recursive updating
 			try
 			{
-				this.refreshInLoop();
+				((MenuLayoutBar)this).refreshInLoop();
 			}
 			
 			// Clear trigger tag
@@ -151,6 +150,18 @@ public abstract class MenuLayoutBindable<M>
 	{
 		synchronized (this)
 		{
+			// If we are a menu bar, try to find the bar that owns us
+			if (!(this instanceof MenuLayoutBar))
+			{
+				// Enqueue triggers for any parent
+				MenuLayoutBindable<?>[] parents = this._parents.toArray(
+					new MenuLayoutBindable[this._parents.size()]);
+				for (MenuLayoutBindable<?> parent : parents)
+					parent.__execTriggerEnqueue();
+				
+				return;
+			}
+			
 			// Do not enqueue multiple times if not needed
 			boolean trigger = this._triggerUpdate;
 			if (trigger)
@@ -160,6 +171,25 @@ public abstract class MenuLayoutBindable<M>
 			this._triggerUpdate = true;
 			this.loopApi.executeLater(new __ExecMenuLayoutTrigger__(this.loopApi,
 				this, false));
+		}
+	}
+	
+	/**
+	 * Adds parent to this bindable.
+	 *
+	 * @param __parent The parent to add.
+	 * @throws NullPointerException If no parent was specified.
+	 * @since 2024/07/20
+	 */
+	final void __parentAdd(MenuLayoutBindable<?> __parent)
+		throws NullPointerException
+	{
+		if (__parent == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (this)
+		{
+			this._parents.add(__parent);
 		}
 	}
 }
