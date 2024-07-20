@@ -11,9 +11,9 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.lcdui.scritchui.DisplayManager;
 import cc.squirreljme.runtime.lcdui.scritchui.MenuAction;
-import cc.squirreljme.runtime.lcdui.scritchui.MenuLayoutMenu;
+import cc.squirreljme.runtime.lcdui.scritchui.MenuActionHasChildren;
+import cc.squirreljme.runtime.lcdui.scritchui.MenuActionHasParent;
 
 /**
  * This is a menu which contains sub-menus and menu items made up of
@@ -23,7 +23,8 @@ import cc.squirreljme.runtime.lcdui.scritchui.MenuLayoutMenu;
  */
 @Api
 public class Menu
-	extends MenuAction<MenuLayoutMenu>
+	extends MenuAction
+	implements MenuActionHasChildren, MenuActionHasParent
 {
 	@Api
 	public Menu(String __short, String __long, Image __i)
@@ -48,8 +49,12 @@ public class Menu
 		if (__c == null)
 			throw new NullPointerException("NARG");
 		
+		throw Debugging.todo();
+		/*
 		return MenuAction.bind(MenuLayoutMenu.class, this)
 			.insert(Integer.MAX_VALUE, __c);
+			
+		 */
 	}
 	
 	/**
@@ -69,8 +74,12 @@ public class Menu
 		if (__m == null)
 			throw new NullPointerException("NARG");
 		
+		throw Debugging.todo();
+		/*
 		return MenuAction.bind(MenuLayoutMenu.class, this)
 			.insert(Integer.MAX_VALUE, __m);
+			
+		 */
 	}
 	
 	@Api
@@ -176,7 +185,11 @@ public class Menu
 		if (__at == Integer.MAX_VALUE)
 			throw new IndexOutOfBoundsException("IOOB");
 		
+		throw Debugging.todo();
+		/*
 		MenuAction.bind(MenuLayoutMenu.class, this).insert(__at, __c);
+		
+		 */
 	}
 	
 	/**
@@ -203,7 +216,11 @@ public class Menu
 		if (__at == Integer.MAX_VALUE)
 			throw new IndexOutOfBoundsException("IOOB");
 		
+		throw Debugging.todo();
+		/*
 		MenuAction.bind(MenuLayoutMenu.class, this).insert(__at, __m);
+		
+		 */
 	}
 	
 	@Api

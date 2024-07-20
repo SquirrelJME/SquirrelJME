@@ -12,13 +12,13 @@ package javax.microedition.lcdui;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.lcdui.scritchui.DisplayManager;
 import cc.squirreljme.runtime.lcdui.scritchui.MenuAction;
-import cc.squirreljme.runtime.lcdui.scritchui.MenuLayoutItem;
+import cc.squirreljme.runtime.lcdui.scritchui.MenuActionHasParent;
 
 @Api
 public class Command
-	extends MenuAction<MenuLayoutItem>
+	extends MenuAction
+	implements MenuActionHasParent
 { 
 	/** Returns the user to the previous screen.. */
 	@Api

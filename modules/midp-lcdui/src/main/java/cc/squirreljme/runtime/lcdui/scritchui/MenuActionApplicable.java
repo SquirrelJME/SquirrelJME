@@ -10,28 +10,13 @@
 package cc.squirreljme.runtime.lcdui.scritchui;
 
 /**
- * Internal menu binding.
+ * Flagging interface for classes which are applicable to be used
+ * with {@link MenuAction}.
  *
- * @since 2024/07/19
+ * @see MenuActionHasChildren
+ * @see MenuActionHasParent
+ * @since 2024/07/20
  */
-final class __MenuBind__
+public interface MenuActionApplicable
 {
-	/** This action for this menu bind. */
-	public final MenuAction<?> action;
-	
-	/**
-	 * Initializes the binding.
-	 *
-	 * @param __action The menu action bound to.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2024/07/19
-	 */
-	__MenuBind__(MenuAction<?> __action)
-		throws NullPointerException
-	{
-		if (__action == null)
-			throw new NullPointerException("NARG");
-		
-		this.action = __action;
-	}
 }

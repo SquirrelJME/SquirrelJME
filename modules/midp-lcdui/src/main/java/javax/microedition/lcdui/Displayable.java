@@ -18,7 +18,8 @@ import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
 import cc.squirreljme.runtime.lcdui.scritchui.MenuAction;
-import cc.squirreljme.runtime.lcdui.scritchui.MenuLayoutBar;
+import cc.squirreljme.runtime.lcdui.scritchui.MenuActionHasChildren;
+import cc.squirreljme.runtime.lcdui.scritchui.MenuActionNode;
 import cc.squirreljme.runtime.lcdui.scritchui.MenuLayoutLock;
 import cc.squirreljme.runtime.lcdui.scritchui.TextTracker;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
@@ -37,6 +38,7 @@ import org.jetbrains.annotations.MustBeInvokedByOverriders;
 @Api
 @SuppressWarnings("OverlyComplexClass")
 public abstract class Displayable
+	implements MenuActionHasChildren
 {
 	/** The displayable state. */
 	final DisplayableState _state;
@@ -60,8 +62,9 @@ public abstract class Displayable
 	final MenuLayoutLock _layoutLock =
 		new MenuLayoutLock();
 	
-	/** The current menu bar. */
-	final MenuLayoutBar _menuBar;
+	/** The node of this menu. */
+	final MenuActionNode _menuNode =
+		new MenuActionNode(this);
 	
 	/** The default menu. */
 	private final Menu _menuDefault;
@@ -77,6 +80,12 @@ public abstract class Displayable
 		DisplayableState state = new DisplayableState(this);
 		this._state = state;
 		
+		// Setup tracker for title changes, it needs the event loop handler
+		this._trackerTitle = new TextTracker(state.scritchApi().eventLoop(),
+			Displayable.__defaultTitle());
+		
+		throw Debugging.todo();
+		/*
 		// Setup menu bar
 		MenuLayoutBar menuBar = new MenuLayoutBar(
 			state.scritchApi(), this);
@@ -90,10 +99,7 @@ public abstract class Displayable
 		// Add and use this menu
 		menuBar.insert(Integer.MAX_VALUE, menuDefault);
 		menuBar.pin(menuDefault);
-		
-		// Setup tracker for title changes, it needs the event loop handler
-		this._trackerTitle = new TextTracker(state.scritchApi().eventLoop(),
-			Displayable.__defaultTitle());
+		 */
 	}
 	
 	/**
