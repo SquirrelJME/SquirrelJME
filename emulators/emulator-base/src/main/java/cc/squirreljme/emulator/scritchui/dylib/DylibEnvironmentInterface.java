@@ -77,7 +77,8 @@ public class DylibEnvironmentInterface
 			throw new MLECallError("NARG");
 		
 		return new DylibPencilFontObject(NativeScritchDylib.__fontDerive(
-			this.dyLib._stateP, ((DylibPencilFontObject)__font).objectP,
+			this.dyLib._stateP,
+			((DylibPencilFontObject)__font).objectPointer(),
 			__style, __pixelSize));
 	}
 	

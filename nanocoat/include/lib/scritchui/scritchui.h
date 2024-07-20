@@ -264,14 +264,14 @@ typedef struct sjme_scritchui_internFunctions sjme_scritchui_internFunctions;
  * 
  * @since 2024/04/02
  */
-typedef struct sjme_scritchui_commonBase sjme_scritchui_commonBase;
+typedef struct sjme_scritchui_uiCommonBase sjme_scritchui_uiCommonBase;
 
 /**
  * Common data pointer, which is shared by everything in ScritchUI.
  * 
  * @since 2024/04/02
  */
-typedef sjme_scritchui_commonBase* sjme_scritchui_common;
+typedef sjme_scritchui_uiCommonBase* sjme_scritchui_uiCommon;
 
 /**
  * Represents a choice of options such as those in a list.
@@ -940,6 +940,18 @@ typedef sjme_errorCode (*sjme_scritchui_loopIterateFunc)(
 	sjme_attrOutNullable sjme_jboolean* outHasTerminated);
 
 /**
+ * Deletes the given object.
+ * 
+ * @param inState The input state.
+ * @param inOutObject The object to delete.
+ * @return Any resultant error, if any.
+ * @since 2024/07/20
+ */
+typedef sjme_errorCode (*sjme_scritchui_objectDeleteFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_uiCommon* inOutObject);
+
+/**
  * Enables or disables focus on a panel.
  * 
  * @param inState The input state.
@@ -1140,6 +1152,9 @@ struct sjme_scritchui_apiFunctions
 	/** Iterates a single run of the event loop. */
 	SJME_SCRITCHUI_QUICK_API(loopIterate);
 	
+	/** Deletes an object. */
+	SJME_SCRITCHUI_QUICK_API(objectDelete);
+	
 	/** Enable focus on a panel. */
 	SJME_SCRITCHUI_QUICK_API(panelEnableFocus);
 	
@@ -1175,7 +1190,7 @@ struct sjme_scritchui_apiFunctions
 typedef struct sjme_scritchui_implInternFunctions
 	sjme_scritchui_implInternFunctions;
 
-struct sjme_scritchui_commonBase
+struct sjme_scritchui_uiCommonBase
 {
 	/** The type of what this is. */
 	sjme_scritchui_uiType type;
@@ -1213,7 +1228,7 @@ typedef struct sjme_scritchui_wmInfo
 struct sjme_scritchui_stateBase
 {
 	/** Common data. */
-	sjme_scritchui_commonBase common;
+	sjme_scritchui_uiCommonBase common;
 	
 	/** Window manager information. */
 	const sjme_scritchui_wmInfo* wmInfo;

@@ -522,7 +522,7 @@ sjme_errorCode sjme_scritchui_core_intern_getPaintable(
 
 sjme_errorCode sjme_scritchui_core_intern_initCommon(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_common inCommon,
+	sjme_attrInNotNull sjme_scritchui_uiCommon inCommon,
 	sjme_attrInValue sjme_jboolean postCreate,
 	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_UI_TYPES)
 		sjme_scritchui_uiType uiType)

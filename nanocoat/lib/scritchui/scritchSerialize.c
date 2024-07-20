@@ -88,7 +88,7 @@
 
 /** Performs dispatch call. */
 #define SJME_SCRITCHUI_DISPATCH_CALL(what, args) \
-	do { what = &data->data.what; \
+	do { as.what = &data->data.what; \
 	if (state->apiInThread->what == NULL) \
 		return SJME_THREAD_RESULT(SJME_ERROR_NOT_IMPLEMENTED); \
 	data->error = state->apiInThread->what args; } while (0)
@@ -104,9 +104,9 @@
 	SJME_SCRITCHUI_DISPATCH_CASE(what, \
 		whatType, \
 		(state, \
-		what->inComponent, \
-		what->inListener, \
-		what->copyFrontEnd))
+		as.what->inComponent, \
+		as.what->inListener, \
+		as.what->copyFrontEnd))
 
 /* ------------------------------------------------------------------------ */
 /* clang-format on */
@@ -120,36 +120,40 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 		return SJME_THREAD_RESULT(SJME_ERROR_NOT_IMPLEMENTED); }
 	
 	volatile sjme_scritchui_serialData* data;
-	SJME_SCRITCHUI_DISPATCH_DECL(choiceItemGet);
-	SJME_SCRITCHUI_DISPATCH_DECL(choiceItemInsert);
-	SJME_SCRITCHUI_DISPATCH_DECL(choiceItemRemove);
-	SJME_SCRITCHUI_DISPATCH_DECL(choiceItemSet);
-	SJME_SCRITCHUI_DISPATCH_DECL(choiceLength);
-	SJME_SCRITCHUI_DISPATCH_DECL(componentSetActivateListener);
-	SJME_SCRITCHUI_DISPATCH_DECL(componentSetValueUpdateListener);
-	SJME_SCRITCHUI_DISPATCH_DECL(componentRepaint);
-	SJME_SCRITCHUI_DISPATCH_DECL(componentRevalidate);
-	SJME_SCRITCHUI_DISPATCH_DECL(componentSetInputListener);
-	SJME_SCRITCHUI_DISPATCH_DECL(componentSetPaintListener);
-	SJME_SCRITCHUI_DISPATCH_DECL(componentSetSizeListener);
-	SJME_SCRITCHUI_DISPATCH_DECL(componentSetVisibleListener);
-	SJME_SCRITCHUI_DISPATCH_DECL(componentSize);
-	SJME_SCRITCHUI_DISPATCH_DECL(containerAdd);
-	SJME_SCRITCHUI_DISPATCH_DECL(containerRemove);
-	SJME_SCRITCHUI_DISPATCH_DECL(containerRemoveAll);
-	SJME_SCRITCHUI_DISPATCH_DECL(containerSetBounds);
-	SJME_SCRITCHUI_DISPATCH_DECL(fontBuiltin);
-	SJME_SCRITCHUI_DISPATCH_DECL(fontDerive);
-	SJME_SCRITCHUI_DISPATCH_DECL(hardwareGraphics);
-	SJME_SCRITCHUI_DISPATCH_DECL(listNew);
-	SJME_SCRITCHUI_DISPATCH_DECL(panelNew);
-	SJME_SCRITCHUI_DISPATCH_DECL(panelEnableFocus);
-	SJME_SCRITCHUI_DISPATCH_DECL(screenSetListener);
-	SJME_SCRITCHUI_DISPATCH_DECL(screens);
-	SJME_SCRITCHUI_DISPATCH_DECL(windowContentMinimumSize);
-	SJME_SCRITCHUI_DISPATCH_DECL(windowNew);
-	SJME_SCRITCHUI_DISPATCH_DECL(windowSetCloseListener);
-	SJME_SCRITCHUI_DISPATCH_DECL(windowSetVisible);
+	union
+	{
+		SJME_SCRITCHUI_DISPATCH_DECL(choiceItemGet);
+		SJME_SCRITCHUI_DISPATCH_DECL(choiceItemInsert);
+		SJME_SCRITCHUI_DISPATCH_DECL(choiceItemRemove);
+		SJME_SCRITCHUI_DISPATCH_DECL(choiceItemSet);
+		SJME_SCRITCHUI_DISPATCH_DECL(choiceLength);
+		SJME_SCRITCHUI_DISPATCH_DECL(componentSetActivateListener);
+		SJME_SCRITCHUI_DISPATCH_DECL(componentSetValueUpdateListener);
+		SJME_SCRITCHUI_DISPATCH_DECL(componentRepaint);
+		SJME_SCRITCHUI_DISPATCH_DECL(componentRevalidate);
+		SJME_SCRITCHUI_DISPATCH_DECL(componentSetInputListener);
+		SJME_SCRITCHUI_DISPATCH_DECL(componentSetPaintListener);
+		SJME_SCRITCHUI_DISPATCH_DECL(componentSetSizeListener);
+		SJME_SCRITCHUI_DISPATCH_DECL(componentSetVisibleListener);
+		SJME_SCRITCHUI_DISPATCH_DECL(componentSize);
+		SJME_SCRITCHUI_DISPATCH_DECL(containerAdd);
+		SJME_SCRITCHUI_DISPATCH_DECL(containerRemove);
+		SJME_SCRITCHUI_DISPATCH_DECL(containerRemoveAll);
+		SJME_SCRITCHUI_DISPATCH_DECL(containerSetBounds);
+		SJME_SCRITCHUI_DISPATCH_DECL(fontBuiltin);
+		SJME_SCRITCHUI_DISPATCH_DECL(fontDerive);
+		SJME_SCRITCHUI_DISPATCH_DECL(hardwareGraphics);
+		SJME_SCRITCHUI_DISPATCH_DECL(listNew);
+		SJME_SCRITCHUI_DISPATCH_DECL(objectDelete);
+		SJME_SCRITCHUI_DISPATCH_DECL(panelNew);
+		SJME_SCRITCHUI_DISPATCH_DECL(panelEnableFocus);
+		SJME_SCRITCHUI_DISPATCH_DECL(screenSetListener);
+		SJME_SCRITCHUI_DISPATCH_DECL(screens);
+		SJME_SCRITCHUI_DISPATCH_DECL(windowContentMinimumSize);
+		SJME_SCRITCHUI_DISPATCH_DECL(windowNew);
+		SJME_SCRITCHUI_DISPATCH_DECL(windowSetCloseListener);
+		SJME_SCRITCHUI_DISPATCH_DECL(windowSetVisible);
+	} as;
 	sjme_scritchui state;
 	
 	if (anything == NULL)
@@ -171,57 +175,57 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 	SJME_SCRITCHUI_DISPATCH_CASE(choiceItemGet,
 		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_ITEM_GET,
 		(state,
-		choiceItemGet->inComponent,
-		choiceItemGet->atIndex,
-		choiceItemGet->outItemTemplate));
+		as.choiceItemGet->inComponent,
+		as.choiceItemGet->atIndex,
+		as.choiceItemGet->outItemTemplate));
 	
 	SJME_SCRITCHUI_DISPATCH_CASE(choiceItemInsert,
 		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_ITEM_INSERT,
 		(state,
-		choiceItemInsert->inComponent,
-		choiceItemInsert->atIndex,
-		choiceItemInsert->inItemTemplate));
+		as.choiceItemInsert->inComponent,
+		as.choiceItemInsert->atIndex,
+		as.choiceItemInsert->inItemTemplate));
 		
 	SJME_SCRITCHUI_DISPATCH_CASE(choiceItemRemove,
 		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_ITEM_REMOVE,
 		(state,
-		choiceItemRemove->inComponent,
-		choiceItemRemove->atIndex));
+		as.choiceItemRemove->inComponent,
+		as.choiceItemRemove->atIndex));
 		
 	SJME_SCRITCHUI_DISPATCH_CASE(choiceItemSet,
 		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_ITEM_SET,
 		(state,
-		choiceItemSet->inComponent,
-		choiceItemSet->atIndex,
-		choiceItemSet->inItemTemplate));
+		as.choiceItemSet->inComponent,
+		as.choiceItemSet->atIndex,
+		as.choiceItemSet->inItemTemplate));
 		
 	SJME_SCRITCHUI_DISPATCH_CASE(choiceLength,
 		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_LENGTH,
 		(state,
-		choiceLength->inComponent,
-		choiceLength->outLength));
+		as.choiceLength->inComponent,
+		as.choiceLength->outLength));
 
 	/* Depends on the type... */
 	SJME_SCRITCHUI_DISPATCH_CASE(componentRepaint,
 		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_REPAINT,
 		(state,
-		componentRepaint->inComponent,
-		componentRepaint->x,
-		componentRepaint->y,
-		componentRepaint->width,
-		componentRepaint->height));
+		as.componentRepaint->inComponent,
+		as.componentRepaint->x,
+		as.componentRepaint->y,
+		as.componentRepaint->width,
+		as.componentRepaint->height));
 	
 	SJME_SCRITCHUI_DISPATCH_CASE(componentRevalidate,
 		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_REVALIDATE,
 		(state,
-		componentRevalidate->inComponent));
+		as.componentRevalidate->inComponent));
 		
 	SJME_SCRITCHUI_DISPATCH_CASE(componentSetActivateListener,
 		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_SET_ACTIVATE_LISTENER,
 		(state,
-		componentSetActivateListener->inComponent,
-		componentSetActivateListener->inListener,
-		componentSetActivateListener->copyFrontEnd));
+		as.componentSetActivateListener->inComponent,
+		as.componentSetActivateListener->inListener,
+		as.componentSetActivateListener->copyFrontEnd));
 	
 	SJME_SCRITCHUI_DISPATCH_CASE_LISTENER(componentSetInputListener,
 		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_INPUT_LISTENER);
@@ -235,9 +239,9 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 	SJME_SCRITCHUI_DISPATCH_CASE(componentSetValueUpdateListener,
 		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_VALUE_UPDATE_LISTENER,
 		(state,
-		componentSetValueUpdateListener->inComponent,
-		componentSetValueUpdateListener->inListener,
-		componentSetValueUpdateListener->copyFrontEnd));
+		as.componentSetValueUpdateListener->inComponent,
+		as.componentSetValueUpdateListener->inListener,
+		as.componentSetValueUpdateListener->copyFrontEnd));
 		
 	SJME_SCRITCHUI_DISPATCH_CASE_LISTENER(componentSetVisibleListener,
 		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SET_VISIBLE_LISTENER);
@@ -245,120 +249,125 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 	SJME_SCRITCHUI_DISPATCH_CASE(componentSize,
 		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_SIZE,
 		(state,
-		componentSize->inComponent,
-		componentSize->outWidth,
-		componentSize->outHeight));
+		as.componentSize->inComponent,
+		as.componentSize->outWidth,
+		as.componentSize->outHeight));
 		
 	SJME_SCRITCHUI_DISPATCH_CASE(containerAdd,
 		SJME_SCRITCHUI_SERIAL_TYPE_CONTAINER_ADD,
 		(state,
-		containerAdd->inContainer,
-		containerAdd->addComponent));
+		as.containerAdd->inContainer,
+		as.containerAdd->addComponent));
 		
 	SJME_SCRITCHUI_DISPATCH_CASE(containerRemove,
 		SJME_SCRITCHUI_SERIAL_TYPE_CONTAINER_REMOVE,
 		(state,
-		containerRemove->inContainer,
-		containerRemove->removeComponent));
+		as.containerRemove->inContainer,
+		as.containerRemove->removeComponent));
 		
 	SJME_SCRITCHUI_DISPATCH_CASE(containerRemoveAll,
 		SJME_SCRITCHUI_SERIAL_TYPE_CONTAINER_REMOVE_ALL,
 		(state,
-		containerAdd->inContainer));
+		as.containerAdd->inContainer));
 		
 	SJME_SCRITCHUI_DISPATCH_CASE(containerSetBounds,
 		SJME_SCRITCHUI_SERIAL_TYPE_CONTAINER_SET_BOUNDS,
 		(state,
-		containerSetBounds->inContainer,
-		containerSetBounds->inComponent,
-		containerSetBounds->x,
-		containerSetBounds->y,
-		containerSetBounds->width,
-		containerSetBounds->height));
+		as.containerSetBounds->inContainer,
+		as.containerSetBounds->inComponent,
+		as.containerSetBounds->x,
+		as.containerSetBounds->y,
+		as.containerSetBounds->width,
+		as.containerSetBounds->height));
 	
 	SJME_SCRITCHUI_DISPATCH_CASE(fontBuiltin,
 		SJME_SCRITCHUI_SERIAL_TYPE_FONT_BUILTIN,
 		(state,
-		fontBuiltin->outFont));
+		as.fontBuiltin->outFont));
 	
 	SJME_SCRITCHUI_DISPATCH_CASE(fontDerive,
 		SJME_SCRITCHUI_SERIAL_TYPE_FONT_DERIVE,
 		(state,
-		fontDerive->inFont,
-		fontDerive->inStyle,
-		fontDerive->inPixelSize,
-		fontDerive->outDerived));
+		as.fontDerive->inFont,
+		as.fontDerive->inStyle,
+		as.fontDerive->inPixelSize,
+		as.fontDerive->outDerived));
 		
 	SJME_SCRITCHUI_DISPATCH_CASE(hardwareGraphics,
 		SJME_SCRITCHUI_SERIAL_TYPE_HARDWARE_GRAPHICS,
 		(state,
-		hardwareGraphics->outPencil,
-		hardwareGraphics->outWeakPencil,
-		hardwareGraphics->pf,
-		hardwareGraphics->bw,
-		hardwareGraphics->bh,
-		hardwareGraphics->inLockFuncs,
-		hardwareGraphics->inLockFrontEndCopy,
-		hardwareGraphics->sx,
-		hardwareGraphics->sy,
-		hardwareGraphics->sw,
-		hardwareGraphics->sh,
-		hardwareGraphics->pencilFrontEndCopy));
+		as.hardwareGraphics->outPencil,
+		as.hardwareGraphics->outWeakPencil,
+		as.hardwareGraphics->pf,
+		as.hardwareGraphics->bw,
+		as.hardwareGraphics->bh,
+		as.hardwareGraphics->inLockFuncs,
+		as.hardwareGraphics->inLockFrontEndCopy,
+		as.hardwareGraphics->sx,
+		as.hardwareGraphics->sy,
+		as.hardwareGraphics->sw,
+		as.hardwareGraphics->sh,
+		as.hardwareGraphics->pencilFrontEndCopy));
 
 	SJME_SCRITCHUI_DISPATCH_CASE(listNew,
 		SJME_SCRITCHUI_SERIAL_TYPE_LIST_NEW,
 		(state,
-		listNew->outList,
-		listNew->inChoiceType));
-
+		as.listNew->outList,
+		as.listNew->inChoiceType));
+		
+	SJME_SCRITCHUI_DISPATCH_CASE(objectDelete,
+		SJME_SCRITCHUI_SERIAL_TYPE_OBJECT_DELETE,
+		(state,
+		as.objectDelete->inOutObject));
+	
 	SJME_SCRITCHUI_DISPATCH_CASE(panelEnableFocus,
 		SJME_SCRITCHUI_SERIAL_TYPE_PANEL_ENABLE_FOCUS,
 		(state,
-		panelEnableFocus->inPanel,
-		panelEnableFocus->enableFocus,
-		panelEnableFocus->defaultFocus));
+		as.panelEnableFocus->inPanel,
+		as.panelEnableFocus->enableFocus,
+		as.panelEnableFocus->defaultFocus));
 
 	SJME_SCRITCHUI_DISPATCH_CASE(panelNew,
 		SJME_SCRITCHUI_SERIAL_TYPE_PANEL_NEW,
 		(state,
-		panelNew->outPanel));
+		as.panelNew->outPanel));
 
 	SJME_SCRITCHUI_DISPATCH_CASE(screenSetListener,
 		SJME_SCRITCHUI_SERIAL_TYPE_SCREEN_SET_LISTENER,
 		(state,
-		screenSetListener->inListener,
-		screenSetListener->copyFrontEnd));
+		as.screenSetListener->inListener,
+		as.screenSetListener->copyFrontEnd));
 
 	SJME_SCRITCHUI_DISPATCH_CASE(screens,
 		SJME_SCRITCHUI_SERIAL_TYPE_SCREENS,
 		(state,
-		screens->outScreens,
-		screens->inOutNumScreens));
+		as.screens->outScreens,
+		as.screens->inOutNumScreens));
 	
 	SJME_SCRITCHUI_DISPATCH_CASE(windowContentMinimumSize,
 		SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_CONTENT_MINIMUM_SIZE,
 		(state,
-		windowContentMinimumSize->inWindow,
-		windowContentMinimumSize->width,
-		windowContentMinimumSize->height));
+		as.windowContentMinimumSize->inWindow,
+		as.windowContentMinimumSize->width,
+		as.windowContentMinimumSize->height));
 			
 	SJME_SCRITCHUI_DISPATCH_CASE(windowNew,
 		SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_NEW,
 		(state,
-		windowNew->outWindow));
+		as.windowNew->outWindow));
 
 	SJME_SCRITCHUI_DISPATCH_CASE(windowSetCloseListener,
 		SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_SET_CLOSE_LISTENER,
 		(state,
-		windowSetCloseListener->inWindow,
-		windowSetCloseListener->inListener,
-		windowSetCloseListener->copyFrontEnd));
+		as.windowSetCloseListener->inWindow,
+		as.windowSetCloseListener->inListener,
+		as.windowSetCloseListener->copyFrontEnd));
 		
 	SJME_SCRITCHUI_DISPATCH_CASE(windowSetVisible,
 		SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_SET_VISIBLE,
 		(state,
-		windowSetVisible->inWindow,
-		windowSetVisible->isVisible));
+		as.windowSetVisible->inWindow,
+		as.windowSetVisible->isVisible));
 	
 	/* End. */
 	SJME_SCRITCHUI_DISPATCH_SWITCH_END
@@ -709,6 +718,20 @@ sjme_errorCode sjme_scritchui_coreSerial_listNew(
 		
 	SJME_SCRITCHUI_SERIAL_PASS(outList);
 	SJME_SCRITCHUI_SERIAL_PASS(inChoiceType);
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
+}
+
+sjme_errorCode sjme_scritchui_coreSerial_objectDelete(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_uiCommon* inOutObject)
+{
+	SJME_SCRITCHUI_SERIAL_CHUNK(objectDelete,
+		SJME_SCRITCHUI_SERIAL_TYPE_OBJECT_DELETE,
+		(inState, inOutObject));
+		
+	SJME_SCRITCHUI_SERIAL_PASS(inOutObject);
 	
 	/* Invoke and wait. */
 	SJME_SCRITCHUI_INVOKE_WAIT;

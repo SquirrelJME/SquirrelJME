@@ -85,7 +85,7 @@ public class DylibWindowInterface
 			throw new MLECallError("Zero or negative size");
 		
 		NativeScritchDylib.__windowContentMinimumSize(this.dyLib._stateP,
-			((DylibWindowObject)__window).objectP, __w, __h);
+			((DylibWindowObject)__window).objectPointer(), __w, __h);
 	}
 	
 	/**
@@ -163,7 +163,7 @@ public class DylibWindowInterface
 			throw new MLECallError("NARG");
 		
 		NativeScritchDylib.__windowSetCloseListener(this.dyLib._stateP,
-			((DylibWindowObject)__window).objectP, __listener);
+			((DylibWindowObject)__window).objectPointer(), __listener);
 	}
 	
 	/**
@@ -182,7 +182,7 @@ public class DylibWindowInterface
 			throw new MLECallError("Null arguments.");
 		
 		NativeScritchDylib.__windowSetVisible(
-			this.dyLib._stateP, ((DylibWindowObject)__window).objectP,
+			this.dyLib._stateP, ((DylibWindowObject)__window).objectPointer(),
 			__visible);
 	}
 }

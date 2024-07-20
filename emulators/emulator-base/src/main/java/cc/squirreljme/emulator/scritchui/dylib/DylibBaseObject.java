@@ -10,7 +10,6 @@
 package cc.squirreljme.emulator.scritchui.dylib;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * Base class for all brackets that are wrapped by the ScritchUI Dylib.
@@ -20,8 +19,8 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 public abstract class DylibBaseObject
 	implements DylibHasObjectPointer
 {
-	/** Pointer to the object. */
-	protected final long objectP;
+	/** Internal object pointer. */
+	private volatile long _objectP;
 	
 	/**
 	 * Initializes the base object.
@@ -36,7 +35,7 @@ public abstract class DylibBaseObject
 		if (__objectP == 0)
 			throw new NullPointerException("NARG");
 		
-		this.objectP = __objectP;
+		this._objectP = __objectP;
 		
 		// Bind object to this so native code can find the object again
 		DylibBaseObject.__bind(__objectP, this);
@@ -48,8 +47,16 @@ public abstract class DylibBaseObject
 	 */
 	@Override
 	public final long objectPointer()
+		throws IllegalStateException
 	{
-		return this.objectP;
+		synchronized (this)
+		{
+			long objectP = this._objectP;
+			if (objectP == 0)
+				throw new IllegalStateException("GONE");
+			
+			return objectP;
+		}
 	}
 	
 	/**

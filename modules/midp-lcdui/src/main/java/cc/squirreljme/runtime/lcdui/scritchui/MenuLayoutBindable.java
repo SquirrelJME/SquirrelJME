@@ -10,8 +10,8 @@
 package cc.squirreljme.runtime.lcdui.scritchui;
 
 import cc.squirreljme.jvm.mle.scritchui.ScritchEventLoopInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.WeakReference;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Displayable;
@@ -32,9 +32,12 @@ import org.jetbrains.annotations.Async;
 public abstract class MenuLayoutBindable<M>
 {
 	/** The event loop interface. */
-	protected final ScritchEventLoopInterface loop;
+	protected final ScritchEventLoopInterface loopApi;
 	
-	/** The item this is bound to. */
+	/** The ScritchUI interface. */
+	protected final ScritchInterface scritchApi;
+	
+	/** The MIDP item this is bound to. */
 	protected final WeakReference<M> item;
 	
 	/** Triggers that an update should occur. */
@@ -43,19 +46,19 @@ public abstract class MenuLayoutBindable<M>
 	/**
 	 * Initializes the bindable.
 	 *
-	 * @param __loop The loop interface.
+	 * @param __scritchApi The loop interface.
 	 * @param __item The item this is bound to.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/18
 	 */
-	protected MenuLayoutBindable(ScritchEventLoopInterface __loop,
-		M __item)
+	protected MenuLayoutBindable(ScritchInterface __scritchApi, M __item)
 		throws NullPointerException
 	{
-		if (__loop == null)
+		if (__scritchApi == null)
 			throw new NullPointerException("NARG");
 		
-		this.loop = __loop;
+		this.scritchApi = __scritchApi;
+		this.loopApi = __scritchApi.eventLoop();
 		this.item = new WeakReference<>(__item);
 	}
 	
@@ -68,7 +71,7 @@ public abstract class MenuLayoutBindable<M>
 	 */
 	@SquirrelJMEVendorApi
 	@Async.Execute
-	public abstract void refresh()
+	protected abstract void refreshInLoop()
 		throws IllegalStateException;
 	
 	/**
@@ -127,7 +130,7 @@ public abstract class MenuLayoutBindable<M>
 			// Perform recursive updating
 			try
 			{
-				throw Debugging.todo();
+				this.refreshInLoop();
 			}
 			
 			// Clear trigger tag
@@ -155,7 +158,7 @@ public abstract class MenuLayoutBindable<M>
 			
 			// Run trigger for later
 			this._triggerUpdate = true;
-			this.loop.executeLater(new __ExecMenuLayoutTrigger__(this.loop,
+			this.loopApi.executeLater(new __ExecMenuLayoutTrigger__(this.loopApi,
 				this, false));
 		}
 	}

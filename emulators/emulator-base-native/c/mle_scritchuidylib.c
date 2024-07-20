@@ -89,6 +89,9 @@
 #define FORWARD_DESC___loopIsInThread "(" \
 	DESC_LONG ")" DESC_BOOLEAN
 
+#define FORWARD_DESC___objectDelete "(" \
+	DESC_LONG DESC_LONG ")" DESC_VOID
+
 #define FORWARD_DESC___panelEnableFocus "(" \
 	DESC_LONG DESC_LONG DESC_BOOLEAN DESC_BOOLEAN ")" DESC_VOID
 #define FORWARD_DESC___panelNew "(" \
@@ -1288,6 +1291,29 @@ fail_nullArgs:
 	return 0L;
 }
 
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __objectDelete)
+	(JNIEnv* env, jclass classy, jlong stateP, jlong objectP)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	sjme_scritchui_uiCommon object;
+	
+	if (stateP == 0 || objectP == 0)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+	
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	object = (sjme_scritchui_uiCommon)objectP;
+	
+	/* Call delete handler. */
+	if (sjme_error_is(error = state->api->objectDelete(state,
+		&object)) || object != NULL)
+		sjme_jni_throwMLECallError(env, error);
+}
+
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __loopExecute)
 	(JNIEnv* env, jclass classy, jlong stateP, jobject runnable)
 {
@@ -1775,6 +1801,7 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 	FORWARD_list(NativeScritchDylib, __loopExecuteLater),
 	FORWARD_list(NativeScritchDylib, __loopExecuteWait),
 	FORWARD_list(NativeScritchDylib, __loopIsInThread),
+	FORWARD_list(NativeScritchDylib, __objectDelete),
 	FORWARD_list(NativeScritchDylib, __panelEnableFocus),
 	FORWARD_list(NativeScritchDylib, __panelNew),
 	FORWARD_list(NativeScritchDylib, __screenId),

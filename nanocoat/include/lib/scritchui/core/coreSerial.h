@@ -105,6 +105,9 @@ typedef enum sjme_scritchui_serialType
 		
 	/** @c listNew . */
 	SJME_SCRITCHUI_SERIAL_TYPE_LIST_NEW,
+	
+	/** @c objectDelete . */
+	SJME_SCRITCHUI_SERIAL_TYPE_OBJECT_DELETE,
 		
 	/** @c panelEnableFocus . */
 	SJME_SCRITCHUI_SERIAL_TYPE_PANEL_ENABLE_FOCUS,
@@ -276,6 +279,9 @@ SUD_STRUCT_DEF(panelEnableFocus,
 	SDU_VAR(sjme_jboolean, enableFocus);
 	SDU_VAR(sjme_jboolean, defaultFocus););
 
+SUD_STRUCT_DEF(objectDelete,
+	SDU_VARP(sjme_scritchui_uiCommon*, inOutObject););
+
 SUD_STRUCT_DEF(panelNew,
 	SDU_VARP(sjme_scritchui_uiPanel*, outPanel););
 
@@ -386,6 +392,9 @@ typedef union sjme_scritchui_serialDataUnion
 	
 	/** @c listNew . */
 	SJME_SCRITCHUI_SDU_DEF(listNew);
+	
+	/** @c objectDelete . */
+	SJME_SCRITCHUI_SDU_DEF(objectDelete);
 		
 	/** @c panelEnableFocus . */
 	SJME_SCRITCHUI_SDU_DEF(panelEnableFocus);
@@ -565,6 +574,10 @@ sjme_errorCode sjme_scritchui_coreSerial_listNew(
 	sjme_attrInOutNotNull sjme_scritchui_uiList* outList,
 	sjme_attrInValue sjme_scritchui_choiceType inChoiceType);
 	
+sjme_errorCode sjme_scritchui_coreSerial_objectDelete(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_uiCommon* inOutObject);
+
 sjme_errorCode sjme_scritchui_coreSerial_panelEnableFocus(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiPanel inPanel,

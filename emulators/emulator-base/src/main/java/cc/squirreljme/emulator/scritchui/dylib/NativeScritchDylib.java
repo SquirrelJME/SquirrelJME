@@ -326,6 +326,28 @@ public final class NativeScritchDylib
 		throws MLECallError;
 	
 	/**
+	 * Creates a new menu bar.
+	 *
+	 * @param __stateP The current state pointer.
+	 * @return The resultant menu bar.
+	 * @throws MLECallError If it could not be created.
+	 * @since 2024/07/20
+	 */
+	static native long __menuBarNew(long __stateP)
+		throws MLECallError;
+	
+	/**
+	 * Deletes the given object.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __objectP The object pointer.
+	 * @throws MLECallError On null arguments or the object is not valid.
+	 * @since 2024/07/20
+	 */
+	static native void __objectDelete(long __stateP, long __objectP)
+		throws MLECallError;
+	
+	/**
 	 * Enables or disables a panel being focusable. 
 	 *
 	 * @param __stateP The current state pointer.

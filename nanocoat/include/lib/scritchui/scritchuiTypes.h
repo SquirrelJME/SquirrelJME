@@ -207,7 +207,7 @@ typedef struct sjme_scritchui_uiComponentListeners
 typedef struct sjme_scritchui_uiComponentBase
 {
 	/** Common data. */
-	sjme_scritchui_commonBase common;
+	sjme_scritchui_uiCommonBase common;
 	
 	/** The parent of this component. */
 	sjme_scritchui_uiComponent parent;
@@ -360,7 +360,7 @@ typedef struct sjme_scritchui_uiPanelBase
 typedef struct sjme_scritchui_uiScreenBase
 {
 	/** Common data. */
-	sjme_scritchui_commonBase common;
+	sjme_scritchui_uiCommonBase common;
 	
 	/** The screen Id. */
 	sjme_jint id;
@@ -390,7 +390,7 @@ typedef struct sjme_scritchui_uiWindowBase
 struct sjme_scritchui_pencilFontBase
 {
 	/** Common data. */
-	sjme_scritchui_commonBase common;
+	sjme_scritchui_uiCommonBase common;
 	
 	/** Internal context pointer for implementation needs. */
 	sjme_pointer context;
@@ -442,7 +442,7 @@ struct sjme_scritchui_pencilFontBase
 struct sjme_scritchui_textBase
 {
 	/** Common data. */
-	sjme_scritchui_commonBase common;
+	sjme_scritchui_uiCommonBase common;
 };
 
 /*--------------------------------------------------------------------------*/

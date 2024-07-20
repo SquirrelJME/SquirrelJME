@@ -54,7 +54,7 @@ public class DylibPaintableInterface
 			throw new MLECallError("NARG");
 		
 		NativeScritchDylib.__componentRepaint(this.dyLib._stateP,
-			((DylibComponentObject)__component).objectP, 0, 0,
+			((DylibComponentObject)__component).objectPointer(), 0, 0,
 			Integer.MAX_VALUE, Integer.MAX_VALUE);
 	}
 	
@@ -76,7 +76,7 @@ public class DylibPaintableInterface
 		
 		// Forward
 		NativeScritchDylib.__componentSetPaintListener(this.dyLib._stateP,
-			((DylibBaseObject)(DylibPaintableObject)__component).objectP,
+			((DylibBaseObject)(DylibPaintableObject)__component).objectPointer(),
 			__listener);
 	}
 }

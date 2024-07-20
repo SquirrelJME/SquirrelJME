@@ -12,8 +12,7 @@ package cc.squirreljme.jvm.mle.scritchui;
 import cc.squirreljme.jvm.mle.brackets.PencilBracket;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.jvm.mle.scritchui.annotation.ScritchEventLoop;
-import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchContainerBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchBaseBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
@@ -59,6 +58,18 @@ public interface ScritchInterface
 	@SquirrelJMEVendorApi
 	@NotNull
 	ScritchContainerInterface container();
+	
+	/**
+	 * Deletes the given object.
+	 *
+	 * @param __object The object to delete.
+	 * @throws MLECallError If the object is {@code null} or not valid to be
+	 * deleted.
+	 * @since 2024/07/20
+	 */
+	@SquirrelJMEVendorApi
+	void objectDelete(@NotNull ScritchBaseBracket __object)
+		throws MLECallError;
 	
 	/**
 	 * Returns the interface which contains information on the environment.
@@ -118,6 +129,16 @@ public interface ScritchInterface
 	@SquirrelJMEVendorApi
 	@NotNull
 	ScritchListInterface list();
+	
+	/**
+	 * Interface for menu manipulation.
+	 *
+	 * @return The menu manipulation Api.
+	 * @since 2024/07/20
+	 */
+	@SquirrelJMEVendorApi
+	@NotNull
+	ScritchMenuInterface menu();
 	
 	/**
 	 * Returns the interface for generic paintables.

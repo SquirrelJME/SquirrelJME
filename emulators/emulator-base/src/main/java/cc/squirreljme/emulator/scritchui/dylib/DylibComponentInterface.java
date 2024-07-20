@@ -57,7 +57,7 @@ public class DylibComponentInterface
 		
 		// Forward
 		return NativeScritchDylib.__componentHeight(this.dyLib._stateP,
-			((DylibComponentObject)__component).objectP);
+			((DylibComponentObject)__component).objectPointer());
 	}
 	
 	/**
@@ -72,7 +72,7 @@ public class DylibComponentInterface
 			throw new MLECallError("Null arguments.");
 		
 		NativeScritchDylib.__componentRevalidate(this.dyLib._stateP,
-			((DylibComponentObject)__component).objectP);
+			((DylibComponentObject)__component).objectPointer());
 	}
 	
 	/**
@@ -128,7 +128,7 @@ public class DylibComponentInterface
 		
 		// Forward
 		NativeScritchDylib.__componentSetVisibleListener(this.dyLib._stateP,
-			((DylibBaseObject)(DylibComponentObject)__component).objectP,
+			((DylibBaseObject)(DylibComponentObject)__component).objectPointer(),
 			__listener);
 	}
 	
@@ -146,6 +146,6 @@ public class DylibComponentInterface
 		
 		// Forward
 		return NativeScritchDylib.__componentWidth(this.dyLib._stateP,
-			((DylibComponentObject)__component).objectP);
+			((DylibComponentObject)__component).objectPointer());
 	}
 }

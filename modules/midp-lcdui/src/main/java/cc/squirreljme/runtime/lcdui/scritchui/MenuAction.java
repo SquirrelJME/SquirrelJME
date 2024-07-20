@@ -10,6 +10,7 @@
 package cc.squirreljme.runtime.lcdui.scritchui;
 
 import cc.squirreljme.jvm.mle.scritchui.ScritchEventLoopInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.Menu;
@@ -54,12 +55,11 @@ public abstract class MenuAction<B extends MenuLayoutBindable<?>>
 	 */
 	protected MenuAction(String __short, String __long, Image __image)
 	{
-		ScritchEventLoopInterface loop =
-			DisplayManager.instance().scritch().eventLoop();
+		ScritchInterface api = DisplayManager.instance().scritch;
 		if (this instanceof Menu)
-			this._bind = (B)new MenuLayoutMenu(loop, (Menu)this);
+			this._bind = (B)new MenuLayoutMenu(api, (Menu)this);
 		else
-			this._bind = (B)new MenuLayoutItem(loop, (Command)this);
+			this._bind = (B)new MenuLayoutItem(api, (Command)this);
 	}
 	
 	/**

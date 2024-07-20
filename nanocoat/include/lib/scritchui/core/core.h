@@ -195,6 +195,10 @@ sjme_errorCode sjme_scritchui_core_loopIterate(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNullable sjme_jboolean* outHasTerminated);
 
+sjme_errorCode sjme_scritchui_core_objectDelete(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_uiCommon* inOutObject);
+
 sjme_errorCode sjme_scritchui_core_panelEnableFocus(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiPanel inPanel,
@@ -255,7 +259,7 @@ sjme_errorCode sjme_scritchui_core_intern_getPaintable(
 
 sjme_errorCode sjme_scritchui_core_intern_initCommon(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_common inCommon,
+	sjme_attrInNotNull sjme_scritchui_uiCommon inCommon,
 	sjme_attrInValue sjme_jboolean postCreate,
 	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_UI_TYPES)
 		sjme_scritchui_uiType uiType);

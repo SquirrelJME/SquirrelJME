@@ -19,10 +19,13 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchEnvironmentInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchEventLoopInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchListInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchMenuInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchPaintableInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchPanelInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchScreenInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchWindowInterface;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchBaseBracket;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import java.io.IOException;
 import java.io.InputStream;
@@ -81,6 +84,9 @@ public class DylibScritchInterface
 	/** List interface. */
 	protected final DylibListInterface list;
 	
+	/** Menu interface. */
+	protected final DylibMenuInterface menu;
+	
 	/** Paintable interface. */
 	protected final DylibPaintableInterface paintable;
 	
@@ -118,6 +124,7 @@ public class DylibScritchInterface
 		this.environment = new DylibEnvironmentInterface(self, __dyLib);
 		this.eventLoop = new DylibEventLoopInterface(self, __dyLib);
 		this.list = new DylibListInterface(self, __dyLib);
+		this.menu = new DylibMenuInterface(self, __dyLib);
 		this.paintable = new DylibPaintableInterface(self, __dyLib);
 		this.panel = new DylibPanelInterface(self, __dyLib);
 		this.screen = new DylibScreenInterface(self, __dyLib);
@@ -152,6 +159,21 @@ public class DylibScritchInterface
 	public ScritchContainerInterface container()
 	{
 		return this.container;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/07/20
+	 */
+	@Override
+	public void objectDelete(ScritchBaseBracket __object)
+		throws MLECallError
+	{
+		if (__object == null)
+			throw new MLECallError("Null arguments");
+		
+		NativeScritchDylib.__objectDelete(this.dyLib._stateP,
+			((DylibBaseObject)__object).objectPointer());
 	}
 	
 	/**
@@ -204,6 +226,16 @@ public class DylibScritchInterface
 	public @NotNull ScritchListInterface list()
 	{
 		return this.list;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/07/20
+	 */
+	@Override
+	public @NotNull ScritchMenuInterface menu()
+	{
+		return this.menu;
 	}
 	
 	/**

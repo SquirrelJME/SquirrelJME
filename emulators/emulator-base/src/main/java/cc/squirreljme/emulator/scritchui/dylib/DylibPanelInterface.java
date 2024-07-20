@@ -57,7 +57,7 @@ public class DylibPanelInterface
 			throw new MLECallError("NARG");
 		
 		NativeScritchDylib.__panelEnableFocus(this.dyLib._stateP,
-			((DylibPanelObject)__panel).objectP, __enabled, __default);
+			((DylibPanelObject)__panel).objectPointer(), __enabled, __default);
 	}
 	
 	/**
@@ -90,6 +90,6 @@ public class DylibPanelInterface
 			throw new MLECallError("Null arguments.");
 		
 		NativeScritchDylib.__componentSetInputListener(this.dyLib._stateP,
-			((DylibComponentObject)__component).objectP, __listener);
+			((DylibComponentObject)__component).objectPointer(), __listener);
 	}
 }

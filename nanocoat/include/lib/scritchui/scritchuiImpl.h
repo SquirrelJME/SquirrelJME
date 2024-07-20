@@ -264,7 +264,7 @@ typedef sjme_errorCode (*sjme_scritchui_intern_getPaintableFunc)(
  */
 typedef sjme_errorCode (*sjme_scritchui_intern_initCommonFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_common inCommon,
+	sjme_attrInNotNull sjme_scritchui_uiCommon inCommon,
 	sjme_attrInValue sjme_jboolean postCreate,
 	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_UI_TYPES)
 		sjme_scritchui_uiType uiType);

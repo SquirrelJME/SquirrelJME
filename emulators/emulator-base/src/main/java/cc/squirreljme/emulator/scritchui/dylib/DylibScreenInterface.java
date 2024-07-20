@@ -104,7 +104,7 @@ public class DylibScreenInterface
 			throw new MLECallError("NARG");
 		
 		return NativeScritchDylib.__screenId(
-			this.dyLib._stateP, ((DylibScreenObject)__screen).objectP);
+			this.dyLib._stateP, ((DylibScreenObject)__screen).objectPointer());
 	}
 	
 	/**

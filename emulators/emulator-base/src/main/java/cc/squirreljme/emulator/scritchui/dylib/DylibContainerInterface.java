@@ -55,7 +55,8 @@ public class DylibContainerInterface
 			throw new MLECallError("Null arguments.");
 		
 		NativeScritchDylib.__containerAdd(this.dyLib._stateP,
-			((DylibContainerObject)__container).objectPointer(), ((DylibComponentObject)__component).objectP);
+			((DylibContainerObject)__container).objectPointer(),
+			((DylibComponentObject)__component).objectPointer());
 	}
 	
 	/**
@@ -94,7 +95,8 @@ public class DylibContainerInterface
 			throw new MLECallError("Null arguments.");
 		
 		NativeScritchDylib.__containerSetBounds(this.dyLib._stateP,
-			((DylibContainerObject)__container).objectPointer(), ((DylibComponentObject)__component).objectP,
+			((DylibContainerObject)__container).objectPointer(),
+			((DylibComponentObject)__component).objectPointer(),
 			__x, __y, __w, __h);
 	}
 }

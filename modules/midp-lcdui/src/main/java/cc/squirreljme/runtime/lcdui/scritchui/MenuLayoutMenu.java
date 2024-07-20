@@ -9,12 +9,12 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui;
 
-import cc.squirreljme.jvm.mle.scritchui.ScritchEventLoopInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBracket;
-import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuItemBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.lcdui.Menu;
+import org.jetbrains.annotations.Async;
 
 /**
  * Represents the layout state for a menu.
@@ -29,16 +29,15 @@ public class MenuLayoutMenu
 	/**
 	 * Initializes the bindable.
 	 *
-	 * @param __loop The loop interface.
+	 * @param __scritch The ScritchUI interface.
 	 * @param __item The item to bind to.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/18
 	 */
-	protected MenuLayoutMenu(ScritchEventLoopInterface __loop,
-		Menu __item)
+	protected MenuLayoutMenu(ScritchInterface __scritch, Menu __item)
 		throws NullPointerException
 	{
-		super(__loop, __item);
+		super(__scritch, __item);
 	}
 	
 	/**
@@ -47,7 +46,8 @@ public class MenuLayoutMenu
 	 */
 	@Override
 	@SquirrelJMEVendorApi
-	public void refresh()
+	@Async.Execute
+	protected void refreshInLoop()
 		throws IllegalStateException
 	{
 		throw Debugging.todo();

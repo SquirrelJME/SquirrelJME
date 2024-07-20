@@ -52,8 +52,8 @@ sjme_errorCode sjme_scritchui_fb_apiInit(
  */
 sjme_errorCode sjme_scritchui_fb_biMap(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_commonBase* topLevel,
-	sjme_attrInNotNull sjme_scritchui_commonBase* wrapped);
+	sjme_attrInNotNull sjme_scritchui_uiCommonBase* topLevel,
+	sjme_attrInNotNull sjme_scritchui_uiCommonBase* wrapped);
 	
 /**
  * Sets the listener information for wrapping, this stores the callback

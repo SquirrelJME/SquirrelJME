@@ -9,20 +9,26 @@
 
 package cc.squirreljme.emulator.scritchui.dylib;
 
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBarBracket;
+
 /**
- * This has a native object pointer.
+ * Represents the menu bar.
  *
- * @since 2024/04/20
+ * @since 2024/07/20
  */
-public interface DylibHasObjectPointer
+public class DylibMenuBarObject
+	extends DylibBaseObject
+	implements ScritchMenuBarBracket
 {
 	/**
-	 * Returns the object pointer.
+	 * Initializes the menu bar object.
 	 *
-	 * @return The object pointer.
-	 * @throws IllegalStateException If the object was deleted.
-	 * @since 2024/04/20
+	 * @param __objectP The object pointer.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/07/20
 	 */
-	long objectPointer()
-		throws IllegalStateException;
+	public DylibMenuBarObject(long __objectP)
+	{
+		super(__objectP);
+	}
 }

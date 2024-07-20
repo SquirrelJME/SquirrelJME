@@ -64,6 +64,7 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 	.loopIterate = sjme_scritchui_core_loopIterate,
 	
 	/* As normal. */
+	.objectDelete = sjme_scritchui_coreSerial_objectDelete,
 	.panelEnableFocus = sjme_scritchui_coreSerial_panelEnableFocus,
 	.panelNew = sjme_scritchui_coreSerial_panelNew,
 	.screenSetListener = sjme_scritchui_coreSerial_screenSetListener,
@@ -109,6 +110,7 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 	.loopExecuteWait = sjme_scritchui_core_loopExecuteWait,
 	.loopIsInThread = sjme_scritchui_core_loopIsInThread,
 	.loopIterate = sjme_scritchui_core_loopIterate,
+	.objectDelete = sjme_scritchui_core_objectDelete,
 	.panelEnableFocus = sjme_scritchui_core_panelEnableFocus,
 	.panelNew = sjme_scritchui_core_panelNew,
 	.screenSetListener = sjme_scritchui_core_screenSetListener,
@@ -353,4 +355,19 @@ sjme_errorCode sjme_scritchui_core_apiInit(
 	/* Success! */
 	*outState = state;
 	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_scritchui_core_objectDelete(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_uiCommon* inOutObject)
+{
+	if (inState == NULL || inOutObject == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Already free? */
+	if (*inOutObject == NULL)
+		return SJME_ERROR_NONE;
+		
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
 }
