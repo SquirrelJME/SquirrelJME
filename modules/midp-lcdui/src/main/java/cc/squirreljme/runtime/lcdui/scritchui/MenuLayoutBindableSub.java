@@ -16,6 +16,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import net.multiphasicapps.collections.IdentityHashSet;
 
 /**
  * A bindable menu that can also contain submenu items.
@@ -101,7 +102,9 @@ public abstract class MenuLayoutBindableSub<M>
 		}
 		
 		// We changed our own state, so trigger an enqueue to occur
-		this.__execTriggerEnqueue();
+		Set<MenuLayoutBindable<?>> traversed = new IdentityHashSet<>();
+		this.__execTriggerEnqueue(traversed);
+		traversed.clear();
 		
 		// Where it was added
 		return __at;

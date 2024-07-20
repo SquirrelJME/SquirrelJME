@@ -102,7 +102,9 @@ public abstract class MenuLayoutBindable<M>
 			this._triggerUpdate = true;
 			
 			// Enqueue an update
-			this.__execTriggerEnqueue();
+			Set<MenuLayoutBindable<?>> traversed = new IdentityHashSet<>();
+			this.__execTriggerEnqueue(traversed);
+			traversed.clear();
 		}
 	}
 	
@@ -143,11 +145,23 @@ public abstract class MenuLayoutBindable<M>
 	/**
 	 * Enqueues a trigger update.
 	 *
+	 * @param __traversed The traversed entity list.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/18
 	 */
 	@Async.Schedule
-	final void __execTriggerEnqueue()
+	final void __execTriggerEnqueue(Set<MenuLayoutBindable<?>> __traversed)
+		throws NullPointerException
 	{
+		if (__traversed == null)
+			throw new NullPointerException("NARG");
+		
+		// Add ourselves to the traversal list, so we do not loop
+		if (__traversed.contains(this))
+			return;
+		__traversed.add(this);
+		
+		// Perform logic
 		synchronized (this)
 		{
 			// If we are a menu bar, try to find the bar that owns us
@@ -157,7 +171,7 @@ public abstract class MenuLayoutBindable<M>
 				MenuLayoutBindable<?>[] parents = this._parents.toArray(
 					new MenuLayoutBindable[this._parents.size()]);
 				for (MenuLayoutBindable<?> parent : parents)
-					parent.__execTriggerEnqueue();
+					parent.__execTriggerEnqueue(__traversed);
 				
 				return;
 			}
@@ -169,8 +183,8 @@ public abstract class MenuLayoutBindable<M>
 			
 			// Run trigger for later
 			this._triggerUpdate = true;
-			this.loopApi.executeLater(new __ExecMenuLayoutTrigger__(this.loopApi,
-				this, false));
+			this.loopApi.executeLater(new __ExecMenuLayoutTrigger__(
+				this.loopApi, this, false));
 		}
 	}
 	

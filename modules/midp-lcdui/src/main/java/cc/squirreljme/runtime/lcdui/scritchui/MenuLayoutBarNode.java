@@ -15,6 +15,7 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import org.jetbrains.annotations.Async;
 
 /**
@@ -56,14 +57,19 @@ public final class MenuLayoutBarNode
 	 * Builds the menu.
 	 *
 	 * @param __scritchApi The ScritchUI API.
+	 * @param __traversed The items that have been traversed.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/19
 	 */
 	@SquirrelJMEVendorApi
 	@Async.Execute
-	void __build(ScritchInterface __scritchApi)
+	void __build(ScritchInterface __scritchApi,
+		Set<MenuLayoutBindable<?>> __traversed)
 		throws NullPointerException
 	{
+		if (__scritchApi == null || __traversed == null)
+			throw new NullPointerException("NARG");
+		
 		throw Debugging.todo();
 	}
 	

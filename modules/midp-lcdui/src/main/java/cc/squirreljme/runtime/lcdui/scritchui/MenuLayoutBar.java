@@ -12,8 +12,10 @@ package cc.squirreljme.runtime.lcdui.scritchui;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBarBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import java.util.Set;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Menu;
+import net.multiphasicapps.collections.IdentityHashSet;
 import org.jetbrains.annotations.Async;
 
 /**
@@ -114,7 +116,9 @@ public final class MenuLayoutBar
 			rootNode.__clear(scritchApi, false);
 			
 			// Then rebuild in loop
-			rootNode.__build(scritchApi);
+			Set<MenuLayoutBindable<?>> traversed = new IdentityHashSet<>();
+			rootNode.__build(scritchApi, traversed);
+			traversed.clear();
 		}
 	}
 }
