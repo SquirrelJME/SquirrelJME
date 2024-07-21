@@ -52,6 +52,15 @@ typedef enum sjme_scritchui_uiType
 	/** List. */
 	SJME_SCRITCHUI_TYPE_LIST,
 	
+	/** Menu bar. */
+	SJME_SCRITCHUI_TYPE_MENU_BAR,
+	
+	/** Menu item. */
+	SJME_SCRITCHUI_TYPE_MENU_ITEM,
+	
+	/** Menu. */
+	SJME_SCRITCHUI_TYPE_MENU,
+	
 	/** Panel. */
 	SJME_SCRITCHUI_TYPE_PANEL,
 	
@@ -324,6 +333,27 @@ typedef struct sjme_scritchui_uiPanelBase* sjme_scritchui_uiPanel;
  * @since 2024/07/16
  */
 typedef struct sjme_scritchui_uiListBase* sjme_scritchui_uiList;
+
+/**
+ * A menu bar within ScritchUI.
+ * 
+ * @since 2024/07/21
+ */
+typedef struct sjme_scritchui_uiMenuBarBase* sjme_scritchui_uiMenuBar;
+
+/**
+ * A menu item within ScritchUI.
+ * 
+ * @since 2024/07/21
+ */
+typedef struct sjme_scritchui_uiMenuItemBase* sjme_scritchui_uiMenuItem;
+
+/**
+ * A menu within ScritchUI.
+ * 
+ * @since 2024/07/21
+ */
+typedef struct sjme_scritchui_uiMenuBase* sjme_scritchui_uiMenu;
 
 /**
  * A single monitor screen on the display for ScritchUI.
@@ -940,6 +970,42 @@ typedef sjme_errorCode (*sjme_scritchui_loopIterateFunc)(
 	sjme_attrOutNullable sjme_jboolean* outHasTerminated);
 
 /**
+ * Creates a new menu bar.
+ * 
+ * @param inState The input state.
+ * @param outMenuBar The resultant menu bar.
+ * @return Any error code if applicable.
+ * @since 2024/07/21
+ */
+typedef sjme_errorCode (*sjme_scritchui_menuBarNewFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_uiMenuBar* outMenuBar);
+
+/**
+ * Creates a new menu item.
+ * 
+ * @param inState The input state.
+ * @param outMenuItem The resultant menu item.
+ * @return Any error code if applicable.
+ * @since 2024/07/21
+ */
+typedef sjme_errorCode (*sjme_scritchui_menuItemNewFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_uiMenuItem* outMenuItem);
+
+/**
+ * Creates a new menu.
+ * 
+ * @param inState The input state.
+ * @param outMenu The resultant menu.
+ * @return Any error code if applicable.
+ * @since 2024/07/21
+ */
+typedef sjme_errorCode (*sjme_scritchui_menuNewFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_uiMenu* outMenu);
+
+/**
  * Deletes the given object.
  * 
  * @param inState The input state.
@@ -1165,6 +1231,15 @@ struct sjme_scritchui_apiFunctions
 	
 	/** Iterates a single run of the event loop. */
 	SJME_SCRITCHUI_QUICK_API(loopIterate);
+	
+	/** Creates a new menu bar. */
+	SJME_SCRITCHUI_QUICK_API(menuBarNew);
+	
+	/** Creates a new menu item. */
+	SJME_SCRITCHUI_QUICK_API(menuItemNew);
+	
+	/** Creates a new menu. */
+	SJME_SCRITCHUI_QUICK_API(menuNew);
 	
 	/** Deletes an object. */
 	SJME_SCRITCHUI_QUICK_API(objectDelete);

@@ -144,6 +144,9 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 		SJME_SCRITCHUI_DISPATCH_DECL(fontDerive);
 		SJME_SCRITCHUI_DISPATCH_DECL(hardwareGraphics);
 		SJME_SCRITCHUI_DISPATCH_DECL(listNew);
+		SJME_SCRITCHUI_DISPATCH_DECL(menuBarNew);
+		SJME_SCRITCHUI_DISPATCH_DECL(menuItemNew);
+		SJME_SCRITCHUI_DISPATCH_DECL(menuNew);
 		SJME_SCRITCHUI_DISPATCH_DECL(objectDelete);
 		SJME_SCRITCHUI_DISPATCH_DECL(panelNew);
 		SJME_SCRITCHUI_DISPATCH_DECL(panelEnableFocus);
@@ -315,6 +318,21 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 		(state,
 		as.listNew->outList,
 		as.listNew->inChoiceType));
+			
+	SJME_SCRITCHUI_DISPATCH_CASE(menuBarNew,
+		SJME_SCRITCHUI_SERIAL_TYPE_MENU_BAR_NEW,
+		(state,
+		as.menuBarNew->outMenuBar));
+			
+	SJME_SCRITCHUI_DISPATCH_CASE(menuItemNew,
+		SJME_SCRITCHUI_SERIAL_TYPE_MENU_ITEM_NEW,
+		(state,
+		as.menuItemNew->outMenuItem));
+			
+	SJME_SCRITCHUI_DISPATCH_CASE(menuNew,
+		SJME_SCRITCHUI_SERIAL_TYPE_MENU_NEW,
+		(state,
+		as.menuNew->outMenu));
 		
 	SJME_SCRITCHUI_DISPATCH_CASE(objectDelete,
 		SJME_SCRITCHUI_SERIAL_TYPE_OBJECT_DELETE,
@@ -725,6 +743,48 @@ sjme_errorCode sjme_scritchui_coreSerial_listNew(
 		
 	SJME_SCRITCHUI_SERIAL_PASS(outList);
 	SJME_SCRITCHUI_SERIAL_PASS(inChoiceType);
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
+}
+
+sjme_errorCode sjme_scritchui_coreSerial_menuBarNew(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_uiMenuBar* outMenuBar)
+{
+	SJME_SCRITCHUI_SERIAL_CHUNK(menuBarNew,
+		SJME_SCRITCHUI_SERIAL_TYPE_MENU_BAR_NEW,
+		(inState, outMenuBar));
+		
+	SJME_SCRITCHUI_SERIAL_PASS(outMenuBar);
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
+}
+
+sjme_errorCode sjme_scritchui_coreSerial_menuItemNew(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_uiMenuItem* outMenuItem)
+{
+	SJME_SCRITCHUI_SERIAL_CHUNK(menuItemNew,
+		SJME_SCRITCHUI_SERIAL_TYPE_MENU_ITEM_NEW,
+		(inState, outMenuItem));
+		
+	SJME_SCRITCHUI_SERIAL_PASS(outMenuItem);
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
+}
+
+sjme_errorCode sjme_scritchui_coreSerial_menuNew(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_uiMenu* outMenu)
+{
+	SJME_SCRITCHUI_SERIAL_CHUNK(menuNew,
+		SJME_SCRITCHUI_SERIAL_TYPE_MENU_NEW,
+		(inState, outMenu));
+		
+	SJME_SCRITCHUI_SERIAL_PASS(outMenu);
 	
 	/* Invoke and wait. */
 	SJME_SCRITCHUI_INVOKE_WAIT;

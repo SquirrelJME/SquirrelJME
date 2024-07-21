@@ -194,6 +194,18 @@ sjme_errorCode sjme_scritchui_core_loopIsInThread(
 sjme_errorCode sjme_scritchui_core_loopIterate(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNullable sjme_jboolean* outHasTerminated);
+	
+sjme_errorCode sjme_scritchui_core_menuBarNew(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_uiMenuBar* outMenuBar);
+
+sjme_errorCode sjme_scritchui_core_menuItemNew(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_uiMenuItem* outMenuItem);
+
+sjme_errorCode sjme_scritchui_core_menuNew(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_uiMenu* outMenu);
 
 sjme_errorCode sjme_scritchui_core_objectDelete(
 	sjme_attrInNotNull sjme_scritchui inState,

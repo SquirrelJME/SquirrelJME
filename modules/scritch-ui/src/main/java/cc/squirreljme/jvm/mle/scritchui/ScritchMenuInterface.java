@@ -12,6 +12,8 @@ package cc.squirreljme.jvm.mle.scritchui;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchBaseBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBarBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuItemBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,11 +42,11 @@ public interface ScritchMenuInterface
 	 *
 	 * @return The newly created menu item.
 	 * @throws MLECallError If the menu item could not be created.
-	 * @since 2024/07/21
+	 * @since 2024/07/20
 	 */
 	@SquirrelJMEVendorApi
 	@NotNull
-	ScritchBaseBracket menuItemNew()
+	ScritchMenuItemBracket menuItemNew()
 		throws MLECallError;
 	
 	/**
@@ -56,6 +58,6 @@ public interface ScritchMenuInterface
 	 */
 	@SquirrelJMEVendorApi
 	@NotNull
-	ScritchBaseBracket menuNew()
+	ScritchMenuBracket menuNew()
 		throws MLECallError;
 }

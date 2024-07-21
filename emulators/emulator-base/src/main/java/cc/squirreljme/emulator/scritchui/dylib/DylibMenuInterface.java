@@ -9,14 +9,12 @@
 
 package cc.squirreljme.emulator.scritchui.dylib;
 
-import cc.squirreljme.emulator.MLECallWouldFail;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchMenuInterface;
-import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchBaseBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBarBracket;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuItemBracket;
 import java.lang.ref.Reference;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Dynamic library for ScritchUI menus.
@@ -61,10 +59,14 @@ public class DylibMenuInterface
 	 * @since 2024/07/21
 	 */
 	@Override
-	public ScritchBaseBracket menuItemNew()
+	public ScritchMenuItemBracket menuItemNew()
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		long menuItemP = NativeScritchDylib.__menuItemNew(this.dyLib._stateP);
+		if (menuItemP == 0)
+			throw new MLECallError("Menu item not created?");
+		
+		return new DylibMenuItemObject(menuItemP);
 	}
 	
 	/**
@@ -72,9 +74,13 @@ public class DylibMenuInterface
 	 * @since 2024/07/21
 	 */
 	@Override
-	public ScritchBaseBracket menuNew()
+	public ScritchMenuBracket menuNew()
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		long menuP = NativeScritchDylib.__menuNew(this.dyLib._stateP);
+		if (menuP == 0)
+			throw new MLECallError("Menu not created?");
+		
+		return new DylibMenuObject(menuP);
 	}
 }

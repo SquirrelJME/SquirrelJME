@@ -154,6 +154,18 @@ sjme_errorCode sjme_scritchui_fb_loopExecuteWait(
 	sjme_attrInNotNull sjme_thread_mainFunc callback,
 	sjme_attrInNullable sjme_thread_parameter anything);
 
+sjme_errorCode sjme_scritchui_fb_menuBarNew(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiMenuBar inMenuBar);
+
+sjme_errorCode sjme_scritchui_fb_menuItemNew(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiMenuItem inMenuItem);
+
+sjme_errorCode sjme_scritchui_fb_menuNew(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiMenu inMenu);
+
 sjme_errorCode sjme_scritchui_fb_panelEnableFocus(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiPanel inPanel,

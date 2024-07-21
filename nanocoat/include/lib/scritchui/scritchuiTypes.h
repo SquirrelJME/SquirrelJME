@@ -310,6 +310,39 @@ typedef struct sjme_scritchui_uiListBase
 	sjme_scritchui_uiChoiceBase choice;
 } sjme_scritchui_uiListBase;
 
+/**
+ * Base data for menu bars.
+ * 
+ * @since 2024/07/21
+ */
+typedef struct sjme_scritchui_uiMenuBarBase
+{
+	/** Common data. */
+	sjme_scritchui_uiCommonBase common;
+} sjme_scritchui_uiMenuBarBase;
+
+/**
+ * Base data for menu items.
+ * 
+ * @since 2024/07/21
+ */
+typedef struct sjme_scritchui_uiMenuItemBase
+{
+	/** Common data. */
+	sjme_scritchui_uiCommonBase common;
+} sjme_scritchui_uiMenuItemBase;
+
+/**
+ * Base data for menus.
+ * 
+ * @since 2024/07/21
+ */
+typedef struct sjme_scritchui_uiMenuBase
+{
+	/** Common data. */
+	sjme_scritchui_uiCommonBase common;
+} sjme_scritchui_uiMenuBase;
+
 typedef struct sjme_scritchui_uiPaintableListeners
 {
 	/** Paint listener. */

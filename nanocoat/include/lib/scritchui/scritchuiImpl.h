@@ -105,6 +105,42 @@ typedef sjme_errorCode (*sjme_scritchui_impl_listNewFunc)(
 	sjme_attrInValue sjme_scritchui_choiceType inChoiceType);
 
 /**
+ * Creates a new native menu bar.
+ * 
+ * @param inState The input ScritchUI state.
+ * @param inMenuBar The menu bar that was created.
+ * @return Any resultant error, if any.
+ * @since 2024/07/21
+ */
+typedef sjme_errorCode (*sjme_scritchui_impl_menuBarNewFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiMenuBar inMenuBar);
+
+/**
+ * Creates a new native menu item.
+ * 
+ * @param inState The input ScritchUI state.
+ * @param inMenuItem The menu item that was created.
+ * @return Any resultant error, if any.
+ * @since 2024/07/21
+ */
+typedef sjme_errorCode (*sjme_scritchui_impl_menuItemNewFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiMenuItem inMenuItem);
+
+/**
+ * Creates a new native menu.
+ * 
+ * @param inState The input ScritchUI state.
+ * @param inMenu The menu that was created.
+ * @return Any resultant error, if any.
+ * @since 2024/07/21
+ */
+typedef sjme_errorCode (*sjme_scritchui_impl_menuNewFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiMenu inMenu);
+
+/**
  * Creates a new native panel.
  * 
  * @param inState The input ScritchUI state.
@@ -184,6 +220,15 @@ struct sjme_scritchui_implFunctions
 	
 	/** Execute callback within the event loop and wait until termination. */
 	sjme_scritchui_loopExecuteFunc loopExecuteWait;
+	
+	/** Creates a new menu bar. */
+	SJME_SCRITCHUI_QUICK_IMPL(menuBarNew);
+	
+	/** Creates a new menu item. */
+	SJME_SCRITCHUI_QUICK_IMPL(menuItemNew);
+	
+	/** Creates a new menu. */
+	SJME_SCRITCHUI_QUICK_IMPL(menuNew);
 	
 	/** Enable/disable focus on a panel. */
 	SJME_SCRITCHUI_QUICK_SAME(panelEnableFocus);

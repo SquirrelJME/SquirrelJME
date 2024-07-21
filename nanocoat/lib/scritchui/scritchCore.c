@@ -64,6 +64,9 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 	.loopIterate = sjme_scritchui_core_loopIterate,
 	
 	/* As normal. */
+	.menuBarNew = sjme_scritchui_coreSerial_menuBarNew,
+	.menuItemNew = sjme_scritchui_coreSerial_menuItemNew,
+	.menuNew = sjme_scritchui_coreSerial_menuNew,
 	.objectDelete = sjme_scritchui_coreSerial_objectDelete,
 	.panelEnableFocus = sjme_scritchui_coreSerial_panelEnableFocus,
 	.panelNew = sjme_scritchui_coreSerial_panelNew,
@@ -111,6 +114,9 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 	.loopExecuteWait = sjme_scritchui_core_loopExecuteWait,
 	.loopIsInThread = sjme_scritchui_core_loopIsInThread,
 	.loopIterate = sjme_scritchui_core_loopIterate,
+	.menuBarNew = sjme_scritchui_core_menuBarNew,
+	.menuItemNew = sjme_scritchui_core_menuItemNew,
+	.menuNew = sjme_scritchui_core_menuNew,
 	.objectDelete = sjme_scritchui_core_objectDelete,
 	.panelEnableFocus = sjme_scritchui_core_panelEnableFocus,
 	.panelNew = sjme_scritchui_core_panelNew,

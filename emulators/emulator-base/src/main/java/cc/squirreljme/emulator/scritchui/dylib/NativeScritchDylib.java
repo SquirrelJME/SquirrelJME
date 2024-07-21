@@ -337,6 +337,28 @@ public final class NativeScritchDylib
 		throws MLECallError;
 	
 	/**
+	 * Creates a new menu item.
+	 *
+	 * @param __stateP The current state pointer.
+	 * @return The resultant menu item.
+	 * @throws MLECallError If it could not be created.
+	 * @since 2024/07/21
+	 */
+	static native long __menuItemNew(long __stateP)
+		throws MLECallError;
+	
+	/**
+	 * Creates a new menu.
+	 *
+	 * @param __stateP The current state pointer.
+	 * @return The resultant menu.
+	 * @throws MLECallError If it could not be created.
+	 * @since 2024/07/21
+	 */
+	static native long __menuNew(long __stateP)
+		throws MLECallError;
+	
+	/**
 	 * Deletes the given object.
 	 *
 	 * @param __stateP The state pointer.

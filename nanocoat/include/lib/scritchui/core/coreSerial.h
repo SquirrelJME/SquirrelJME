@@ -105,6 +105,15 @@ typedef enum sjme_scritchui_serialType
 		
 	/** @c listNew . */
 	SJME_SCRITCHUI_SERIAL_TYPE_LIST_NEW,
+		
+	/** @c menuBarNew . */
+	SJME_SCRITCHUI_SERIAL_TYPE_MENU_BAR_NEW,
+		
+	/** @c menuItemNew . */
+	SJME_SCRITCHUI_SERIAL_TYPE_MENU_ITEM_NEW,
+		
+	/** @c menuNew . */
+	SJME_SCRITCHUI_SERIAL_TYPE_MENU_NEW,
 	
 	/** @c objectDelete . */
 	SJME_SCRITCHUI_SERIAL_TYPE_OBJECT_DELETE,
@@ -273,17 +282,26 @@ SUD_STRUCT_DEF(hardwareGraphics,
 	SDU_VAR(sjme_jint, sh);
 	SDU_VARP(const sjme_frontEnd*, pencilFrontEndCopy););
 
+SUD_STRUCT_DEF(menuBarNew,
+	SDU_VARP(sjme_scritchui_uiMenuBar*, outMenuBar););
+
+SUD_STRUCT_DEF(menuItemNew,
+	SDU_VARP(sjme_scritchui_uiMenuItem*, outMenuItem););
+
+SUD_STRUCT_DEF(menuNew,
+	SDU_VARP(sjme_scritchui_uiMenu*, outMenu););
+
 SUD_STRUCT_DEF(listNew,
 	SDU_VARP(sjme_scritchui_uiList*, outList);
 	SDU_VAR(sjme_scritchui_choiceType, inChoiceType););
+
+SUD_STRUCT_DEF(objectDelete,
+	SDU_VARP(sjme_scritchui_uiCommon*, inOutObject););
 	
 SUD_STRUCT_DEF(panelEnableFocus,
 	SDU_VAR(sjme_scritchui_uiPanel, inPanel);
 	SDU_VAR(sjme_jboolean, enableFocus);
 	SDU_VAR(sjme_jboolean, defaultFocus););
-
-SUD_STRUCT_DEF(objectDelete,
-	SDU_VARP(sjme_scritchui_uiCommon*, inOutObject););
 
 SUD_STRUCT_DEF(panelNew,
 	SDU_VARP(sjme_scritchui_uiPanel*, outPanel););
@@ -399,6 +417,15 @@ typedef union sjme_scritchui_serialDataUnion
 	
 	/** @c listNew . */
 	SJME_SCRITCHUI_SDU_DEF(listNew);
+	
+	/** @c menuBarNew . */
+	SJME_SCRITCHUI_SDU_DEF(menuBarNew);
+	
+	/** @c menuItemNew . */
+	SJME_SCRITCHUI_SDU_DEF(menuItemNew);
+	
+	/** @c menuNew . */
+	SJME_SCRITCHUI_SDU_DEF(menuNew);
 	
 	/** @c objectDelete . */
 	SJME_SCRITCHUI_SDU_DEF(objectDelete);
@@ -587,6 +614,18 @@ sjme_errorCode sjme_scritchui_coreSerial_listNew(
 sjme_errorCode sjme_scritchui_coreSerial_objectDelete(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_scritchui_uiCommon* inOutObject);
+
+sjme_errorCode sjme_scritchui_coreSerial_menuBarNew(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_uiMenuBar* outMenuBar);
+
+sjme_errorCode sjme_scritchui_coreSerial_menuItemNew(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_uiMenuItem* outMenuItem);
+
+sjme_errorCode sjme_scritchui_coreSerial_menuNew(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_uiMenu* outMenu);
 
 sjme_errorCode sjme_scritchui_coreSerial_panelEnableFocus(
 	sjme_attrInNotNull sjme_scritchui inState,

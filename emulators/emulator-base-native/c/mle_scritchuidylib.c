@@ -89,6 +89,13 @@
 #define FORWARD_DESC___loopIsInThread "(" \
 	DESC_LONG ")" DESC_BOOLEAN
 
+#define FORWARD_DESC___menuBarNew "(" \
+	DESC_LONG ")" DESC_LONG
+#define FORWARD_DESC___menuItemNew "(" \
+	DESC_LONG ")" DESC_LONG
+#define FORWARD_DESC___menuNew "(" \
+	DESC_LONG ")" DESC_LONG
+
 #define FORWARD_DESC___objectDelete "(" \
 	DESC_LONG DESC_LONG ")" DESC_VOID
 
@@ -1462,6 +1469,123 @@ JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	return inThread;
 }
 
+JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __menuBarNew)
+	(JNIEnv* env, jclass classy, jlong stateP)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	sjme_scritchui_uiMenuBar menuBar;
+	
+	if (stateP == 0)
+	{
+		error = SJME_ERROR_NULL_ARGUMENTS;
+		goto fail_nullArgs;
+	}
+
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	
+	/* Not implemented? */
+	if (state->api->menuBarNew == NULL)
+	{
+		error = SJME_ERROR_NOT_IMPLEMENTED;
+		goto fail_new;
+	}
+
+	/* Create new menu bar. */
+	menuBar = NULL;
+	if (sjme_error_is(error = state->api->menuBarNew(state,
+			&menuBar)) || menuBar == NULL)
+		goto fail_new;
+	
+	/* Return the state pointer. */
+	return (jlong)menuBar;
+
+fail_new:
+fail_nullArgs:
+	/* Fail. */
+	sjme_jni_throwMLECallError(env, sjme_error_default(error));
+	return 0L;
+}
+
+JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __menuItemNew)
+	(JNIEnv* env, jclass classy, jlong stateP)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	sjme_scritchui_uiMenuItem menuItem;
+	
+	if (stateP == 0)
+	{
+		error = SJME_ERROR_NULL_ARGUMENTS;
+		goto fail_nullArgs;
+	}
+
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	
+	/* Not implemented? */
+	if (state->api->menuItemNew == NULL)
+	{
+		error = SJME_ERROR_NOT_IMPLEMENTED;
+		goto fail_new;
+	}
+
+	/* Create new menu item. */
+	menuItem = NULL;
+	if (sjme_error_is(error = state->api->menuItemNew(state,
+			&menuItem)) || menuItem == NULL)
+		goto fail_new;
+	
+	/* Return the state pointer. */
+	return (jlong)menuItem;
+
+fail_new:
+fail_nullArgs:
+	/* Fail. */
+	sjme_jni_throwMLECallError(env, sjme_error_default(error));
+	return 0L;
+}
+
+JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __menuNew)
+	(JNIEnv* env, jclass classy, jlong stateP)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	sjme_scritchui_uiMenu menu;
+	
+	if (stateP == 0)
+	{
+		error = SJME_ERROR_NULL_ARGUMENTS;
+		goto fail_nullArgs;
+	}
+
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	
+	/* Not implemented? */
+	if (state->api->menuNew == NULL)
+	{
+		error = SJME_ERROR_NOT_IMPLEMENTED;
+		goto fail_new;
+	}
+
+	/* Create new menu. */
+	menu = NULL;
+	if (sjme_error_is(error = state->api->menuNew(state,
+			&menu)) || menu == NULL)
+		goto fail_new;
+	
+	/* Return the state pointer. */
+	return (jlong)menu;
+
+fail_new:
+fail_nullArgs:
+	/* Fail. */
+	sjme_jni_throwMLECallError(env, sjme_error_default(error));
+	return 0L;
+}
+
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	__panelEnableFocus)(JNIEnv* env, jclass classy, jlong stateP,
 	jlong panelP, jboolean enableFocus, jboolean defaultFocus)
@@ -1529,7 +1653,6 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __panelNew)
 
 fail_newPanel:
 fail_nullArgs:
-	
 	/* Fail. */
 	sjme_jni_throwMLECallError(env, sjme_error_default(error));
 	return 0L;
@@ -1846,6 +1969,9 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 	FORWARD_list(NativeScritchDylib, __loopExecuteLater),
 	FORWARD_list(NativeScritchDylib, __loopExecuteWait),
 	FORWARD_list(NativeScritchDylib, __loopIsInThread),
+	FORWARD_list(NativeScritchDylib, __menuBarNew),
+	FORWARD_list(NativeScritchDylib, __menuItemNew),
+	FORWARD_list(NativeScritchDylib, __menuNew),
 	FORWARD_list(NativeScritchDylib, __objectDelete),
 	FORWARD_list(NativeScritchDylib, __panelEnableFocus),
 	FORWARD_list(NativeScritchDylib, __panelNew),
