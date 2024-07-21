@@ -11,23 +11,24 @@ package cc.squirreljme.runtime.lcdui.scritchui;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
+import javax.microedition.lcdui.Image;
 import org.jetbrains.annotations.Async;
 
 /**
- * Listener that is called whenever the text changes.
+ * Listener that is called whenever the image changes.
  *
- * @since 2024/07/18
+ * @since 2024/07/20
  */
 @SquirrelJMEVendorApi
-public interface TextTrackerListener
+public interface ImageTrackerListener
 {
 	/**
-	 * This is called whenever the text changes.
+	 * This is called whenever the image changes.
 	 *
-	 * @param __t The text to set.
-	 * @since 2024/07/18
+	 * @param __image The image to set.
+	 * @since 2024/07/20
 	 */
 	@SerializedEvent
 	@Async.Execute
-	void textUpdated(String __t);
+	void imageUpdated(Image __image);
 }

@@ -11,13 +11,10 @@ package cc.squirreljme.runtime.lcdui.scritchui;
 
 import cc.squirreljme.jvm.mle.scritchui.ScritchEventLoopInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import java.util.ArrayList;
-import java.util.List;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Image;
-import javax.microedition.lcdui.Menu;
-import org.jetbrains.annotations.ApiStatus;
 
 /**
  * This represents the base for an action which may be given a label, an
@@ -27,27 +24,34 @@ import org.jetbrains.annotations.ApiStatus;
  * @see MenuActionHasParent
  * @since 2018/03/31
  */
+@SquirrelJMEVendorApi
 public abstract class MenuAction
 	implements MenuActionApplicable
 {
 	/** The priority to use for menu items. */
+	@SquirrelJMEVendorApi
 	static final int _MENU_PRIORITY =
 		Integer.MIN_VALUE;
 	
 	/** The node of this menu. */
+	@SquirrelJMEVendorApi
 	final MenuActionNode _menuNode =
 		new MenuActionNode(this);
 	
-	/** The image used. */
-	volatile Image _image;
-	
 	/** The short label. */
-	volatile String _shortLabel;
+	@SquirrelJMEVendorApi
+	final StringTracker _shortLabel;
 	
 	/** The long label. */
-	volatile String _longLabel;
+	@SquirrelJMEVendorApi
+	final StringTracker _longLabel;
+	
+	/** The image used. */
+	@SquirrelJMEVendorApi
+	final ImageTracker _image;
 	
 	/** The last calculated approximated depth for this action. */
+	@SquirrelJMEVendorApi
 	volatile int _approxDepth;
 	
 	/**
@@ -58,9 +62,15 @@ public abstract class MenuAction
 	 * @param __image The image to use for the action.
 	 * @since 2024/07/18
 	 */
+	@SquirrelJMEVendorApi
 	protected MenuAction(String __short, String __long, Image __image)
 	{
-		throw Debugging.todo();
+		ScritchInterface scritch = DisplayManager.instance().scritch();
+		ScritchEventLoopInterface loop = scritch.eventLoop();
+		
+		this._shortLabel = new StringTracker(loop, __short);
+		this._longLabel = new StringTracker(loop, __long);
+		this._image = new ImageTracker(loop, __image);
 	}
 	
 	/**
@@ -69,6 +79,7 @@ public abstract class MenuAction
 	 * @param __e If the parent is enabled or disabled.
 	 * @since 2018/04/01
 	 */
+	@SquirrelJMEVendorApi
 	protected abstract void onParentEnabled(boolean __e);
 	
 	/**
@@ -79,8 +90,12 @@ public abstract class MenuAction
 	 */
 	public final String __getLabel()
 	{
+		throw Debugging.todo();
+		/*
 		String label = this._longLabel;
 		return (label != null ? label : this._shortLabel);
+		
+		 */
 	}
 	
 	/**

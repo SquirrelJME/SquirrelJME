@@ -11,6 +11,8 @@ package cc.squirreljme.runtime.lcdui.scritchui;
 
 import cc.squirreljme.jvm.mle.scritchui.ScritchEventLoopInterface;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import org.jetbrains.annotations.Async;
 
 /**
  * This keeps track of a text string, if it changes then an update to
@@ -21,17 +23,9 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  * @since 2024/07/18
  */
 @SquirrelJMEVendorApi
-public final class TextTracker
+public final class StringTracker
+	extends ObjectTracker<String, StringTrackerListener>
 {
-	/** The event loop used. */
-	protected final ScritchEventLoopInterface loop;
-	
-	/** The current text value. */
-	private volatile String _text;
-	
-	/** The currently attached listener. */
-	private volatile TextTrackerListener _listener;
-	
 	/**
 	 * Initializes the text tracker with the given initial text.
 	 *
@@ -41,68 +35,26 @@ public final class TextTracker
 	 * @since 2024/07/18
 	 */
 	@SquirrelJMEVendorApi
-	public TextTracker(ScritchEventLoopInterface __loop, String __init)
+	public StringTracker(ScritchEventLoopInterface __loop, String __init)
 		throws NullPointerException
 	{
-		if (__loop == null)
-			throw new NullPointerException("NARG");
-		
-		this.loop = __loop;
-		this._text = __init;
+		super(__loop, __init);
 	}
 	
 	/**
-	 * Connects to the given listener.
-	 *
-	 * @param __listener The listener to connect to.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2024/07/18
+	 * {@inheritDoc}
+	 * @since 2024/07/20
 	 */
-	public void connect(TextTrackerListener __listener)
+	@SquirrelJMEVendorApi
+	@Async.Execute
+	@Override
+	protected void exec(StringTrackerListener __listener, String __value)
 		throws NullPointerException
 	{
 		if (__listener == null)
 			throw new NullPointerException("NARG");
 		
-		synchronized (this)
-		{
-			this._listener = __listener;
-		}
-	}
-	
-	/**
-	 * Gets the current text.
-	 *
-	 * @return The current text.
-	 * @since 2024/07/18
-	 */
-	@SquirrelJMEVendorApi
-	public String get()
-	{
-		synchronized (this)
-		{
-			return this._text;
-		}
-	}
-	
-	/**
-	 * Sets the given text.
-	 *
-	 * @param __t The text to set.
-	 * @since 2024/07/18
-	 */
-	@SquirrelJMEVendorApi
-	public void set(String __t)
-	{
-		TextTrackerListener listener;
-		synchronized (this)
-		{
-			this._text = __t;
-			listener = this._listener;
-		}
-		
-		// Inform listener of the change?
-		if (listener != null)
-			this.loop.execute(new __ExecTextTracker__(listener, __t));
+		// Forward call
+		__listener.stringUpdated(__value);
 	}
 }

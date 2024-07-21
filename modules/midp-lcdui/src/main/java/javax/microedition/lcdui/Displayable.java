@@ -21,7 +21,7 @@ import cc.squirreljme.runtime.lcdui.scritchui.MenuAction;
 import cc.squirreljme.runtime.lcdui.scritchui.MenuActionHasChildren;
 import cc.squirreljme.runtime.lcdui.scritchui.MenuActionNode;
 import cc.squirreljme.runtime.lcdui.scritchui.MenuLayoutLock;
-import cc.squirreljme.runtime.lcdui.scritchui.TextTracker;
+import cc.squirreljme.runtime.lcdui.scritchui.StringTracker;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import javax.microedition.midlet.MIDlet;
@@ -56,7 +56,7 @@ public abstract class Displayable
 	private CommandLayoutPolicy _layoutPolicy;
 	
 	/** The tracker for title text. */
-	final TextTracker _trackerTitle;
+	final StringTracker _trackerTitle;
 	
 	/** The lock for layout editing and otherwise. */
 	final MenuLayoutLock _layoutLock =
@@ -80,7 +80,7 @@ public abstract class Displayable
 		this._state = state;
 		
 		// Setup tracker for title changes, it needs the event loop handler
-		this._trackerTitle = new TextTracker(state.scritchApi().eventLoop(),
+		this._trackerTitle = new StringTracker(state.scritchApi().eventLoop(),
 			Displayable.__defaultTitle());
 		
 		// Setup default menu

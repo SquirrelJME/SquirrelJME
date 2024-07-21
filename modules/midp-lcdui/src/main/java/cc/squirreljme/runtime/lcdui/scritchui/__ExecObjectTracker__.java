@@ -9,38 +9,36 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import org.jetbrains.annotations.Async;
 
 /**
  * Executes text tracker changes in the event loop.
  *
+ * @param <T> The object type.
+ * @param <L> The listener type to use.
  * @since 2024/07/18
  */
-final class __ExecTextTracker__
+final class __ExecObjectTracker__<T, L>
 	implements Runnable
 {
-	/** The listener used. */
-	protected final TextTrackerListener listener;
-	
-	/** The text to set. */
-	protected final String text;
+	/** The tracker used. */
+	protected final ObjectTracker<T, L> tracker;
 	
 	/**
 	 * Initializes the executor.
 	 *
-	 * @param __listener The listener to call.
-	 * @param __t The text being set.
-	 * @throws NullPointerException If no listener was specified.
+	 * @param __tracker The tracker to call.
+	 * @throws NullPointerException If no tracker was specified.
 	 * @since 2024/07/18
 	 */
-	__ExecTextTracker__(TextTrackerListener __listener, String __t)
+	__ExecObjectTracker__(ObjectTracker<T, L> __tracker)
 		throws NullPointerException
 	{
-		if (__listener == null)
+		if (__tracker == null)
 			throw new NullPointerException("NARG");
 		
-		this.listener = __listener;
-		this.text = __t;
+		this.tracker = __tracker;
 	}
 	
 	/**
@@ -48,8 +46,10 @@ final class __ExecTextTracker__
 	 * @since 2024/07/18
 	 */
 	@Override
+	@Async.Execute
 	public void run()
 	{
-		this.listener.textUpdated(this.text);
+		ObjectTracker<T, L> tracker = this.tracker;
+		tracker.exec(tracker._listener, tracker._value);
 	}
 }

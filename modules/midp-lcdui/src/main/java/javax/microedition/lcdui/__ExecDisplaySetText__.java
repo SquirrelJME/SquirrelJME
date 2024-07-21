@@ -11,7 +11,7 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
-import cc.squirreljme.runtime.lcdui.scritchui.TextTrackerListener;
+import cc.squirreljme.runtime.lcdui.scritchui.StringTrackerListener;
 
 /**
  * Handles title changes for {@code Display}.
@@ -19,7 +19,7 @@ import cc.squirreljme.runtime.lcdui.scritchui.TextTrackerListener;
  * @since 2024/07/18
  */
 final class __ExecDisplaySetText__
-	implements TextTrackerListener
+	implements StringTrackerListener
 {
 	/** The display to update for. */
 	final DisplayState _display;
@@ -45,7 +45,7 @@ final class __ExecDisplaySetText__
 	 * @since 2024/07/18
 	 */
 	@Override
-	public void textUpdated(String __t)
+	public void stringUpdated(String __t)
 	{
 		throw Debugging.todo();
 	}
