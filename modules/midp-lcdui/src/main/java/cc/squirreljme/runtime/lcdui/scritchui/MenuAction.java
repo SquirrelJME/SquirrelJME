@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.Menu;
 
@@ -27,17 +28,13 @@ import javax.microedition.lcdui.Menu;
  */
 @SquirrelJMEVendorApi
 public abstract class MenuAction
+	extends MenuActionNodeOnly
 	implements MenuActionApplicable
 {
 	/** The priority to use for menu items. */
 	@SquirrelJMEVendorApi
 	static final int _MENU_PRIORITY =
 		Integer.MIN_VALUE;
-	
-	/** The node of this menu. */
-	@SquirrelJMEVendorApi
-	final MenuActionNode _menuNode =
-		new MenuActionNode(this);
 	
 	/** The short label. */
 	@SquirrelJMEVendorApi
@@ -145,12 +142,12 @@ public abstract class MenuAction
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/20
 	 */
-	protected static MenuActionNode node(MenuAction __action)
+	protected static MenuActionNode node(MenuActionApplicable __action)
 		throws NullPointerException
 	{
 		if (__action == null)
 			throw new NullPointerException("NARG");
 		
-		return __action._menuNode;
+		return ((MenuActionNodeOnly)__action)._menuNode;
 	}
 }

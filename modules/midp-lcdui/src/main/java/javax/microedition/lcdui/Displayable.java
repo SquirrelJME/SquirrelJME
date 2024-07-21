@@ -20,6 +20,7 @@ import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
 import cc.squirreljme.runtime.lcdui.scritchui.MenuAction;
 import cc.squirreljme.runtime.lcdui.scritchui.MenuActionHasChildren;
 import cc.squirreljme.runtime.lcdui.scritchui.MenuActionNode;
+import cc.squirreljme.runtime.lcdui.scritchui.MenuActionNodeOnly;
 import cc.squirreljme.runtime.lcdui.scritchui.MenuLayoutLock;
 import cc.squirreljme.runtime.lcdui.scritchui.StringTracker;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
@@ -38,6 +39,7 @@ import org.jetbrains.annotations.MustBeInvokedByOverriders;
 @Api
 @SuppressWarnings("OverlyComplexClass")
 public abstract class Displayable
+	extends MenuActionNodeOnly
 	implements MenuActionHasChildren
 {
 	/** The displayable state. */

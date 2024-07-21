@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -117,6 +118,9 @@ public class MenuActionNode
 			((MenuAction)__item)._menuNode.__addParent(owner);
 		}
 		
+		// Enqueue an update
+		this.__enqueueUpdate();
+		
 		// Return the index where we added it
 		return __dx;
 	}
@@ -159,6 +163,27 @@ public class MenuActionNode
 		synchronized (this)
 		{
 			parents.add((MenuActionHasChildren)__node);
+		}
+	}
+	
+	/**
+	 * Enqueues an update for this node.
+	 *
+	 * @since 2024/07/20
+	 */
+	private void __enqueueUpdate()
+	{
+		// If we are at the top of the tree then we cannot go any further
+		Set<MenuActionHasChildren> parents = this._parents;
+		if (parents == null)
+			throw Debugging.todo();
+		
+		synchronized (this)
+		{
+			MenuActionHasChildren[] copy = parents.toArray(
+				new MenuActionHasChildren[parents.size()]);
+			for (MenuActionHasChildren parent : copy)
+				MenuAction.node(parent).__enqueueUpdate();
 		}
 	}
 }
