@@ -37,6 +37,7 @@ static gboolean sjme_scritchui_gtk2_onceExecute(gpointer inData)
 	sjme_scritchui_gtk2_onceExecuteData* data;
 	sjme_thread_mainFunc callback;
 	sjme_thread_parameter anything;
+	sjme_errorCode error;
 	
 	data = (sjme_scritchui_gtk2_onceExecuteData*)inData;
 	if (data == NULL)
@@ -51,7 +52,11 @@ static gboolean sjme_scritchui_gtk2_onceExecute(gpointer inData)
 	data = NULL;
 	
 	/* Perform the call. */
-	callback(anything);
+	error = SJME_THREAD_RESULT_AS_ERROR(callback(anything));
+	
+	/* Did it fail? */
+	if (sjme_error_is(error))
+		sjme_message("Native callback error: %d.", error);
 	
 	/* Always remove. */
 	return G_SOURCE_REMOVE;

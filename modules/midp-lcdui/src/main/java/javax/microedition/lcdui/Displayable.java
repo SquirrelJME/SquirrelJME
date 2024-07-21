@@ -64,9 +64,6 @@ public abstract class Displayable
 	final MenuLayoutLock _layoutLock =
 		new MenuLayoutLock();
 	
-	/** The node of this menu. */
-	final MenuActionNode _menuNode;
-	
 	/** The default menu. */
 	final Menu _menuDefault;
 	
@@ -91,8 +88,7 @@ public abstract class Displayable
 		this._menuDefault = menuDefault;
 		
 		// Root menu bar for the displayable
-		MenuActionNode menuNode = new MenuActionNode(this);
-		this._menuNode = menuNode;
+		MenuActionNode menuNode = MenuActionNodeOnly.node(this);
 		
 		// Make sure the menu is actually in it
 		menuNode.insert(0, menuDefault);

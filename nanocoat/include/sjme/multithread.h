@@ -82,6 +82,10 @@ extern "C" {
 	
 	/** Error as thread result. */
 	#define SJME_THREAD_RESULT(err) ((sjme_pointer)(err))
+
+	/** Thread result cast to error. */
+	#define SJME_THREAD_RESULT_AS_ERROR(result) \
+		((sjme_errorCode)((sjme_intPointer)(result)))
 	
 	/** Calling convention to use for thread entry points. */
 	#define SJME_THREAD_CONVENTION
@@ -109,6 +113,9 @@ extern "C" {
 	
 	/** Error as thread result. */
 	#define SJME_THREAD_RESULT(err) ((DWORD)(err))
+
+	/** Thread result cast to error. */
+	#define SJME_THREAD_RESULT_AS_ERROR(result) ((sjme_errorCode)(result))
 	
 	/** Calling convention to use for thread entry points. */
 	#define SJME_THREAD_CONVENTION __stdcall
@@ -142,6 +149,9 @@ extern "C" {
 	
 	/** Error as thread result. */
 	#define SJME_THREAD_RESULT(err) ((int)(err))
+
+	/** Thread result cast to error. */
+	#define SJME_THREAD_RESULT_AS_ERROR(result) ((sjme_errorCode)(result))
 	
 	/** Calling convention to use for thread entry points. */
 	#define SJME_THREAD_CONVENTION

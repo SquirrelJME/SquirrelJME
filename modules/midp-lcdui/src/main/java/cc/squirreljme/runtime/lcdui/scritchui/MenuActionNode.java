@@ -174,6 +174,10 @@ public final class MenuActionNode
 				if (children.get(i) == __item)
 					throw new IllegalArgumentException("EB1m");
 			
+			// Debug
+			Debugging.debugNote("Menu %s.children.add(%d, %s)",
+				this.owner(), __dx, __item);
+			
 			// Insert it here
 			children.add(__dx, __item);
 			
@@ -252,6 +256,10 @@ public final class MenuActionNode
 		Set<MenuActionHasChildren> parents = this._parents;
 		if (parents == null)
 			throw new IllegalStateException("EB1n");
+		
+		// Debug
+		Debugging.debugNote("Menu %s.__addParent(%s)",
+			this.owner(), __node);
 		
 		// Add into parent set
 		synchronized (this)

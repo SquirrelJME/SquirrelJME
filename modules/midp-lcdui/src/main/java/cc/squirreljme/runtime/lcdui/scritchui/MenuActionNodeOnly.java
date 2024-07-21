@@ -40,4 +40,21 @@ public abstract class MenuActionNodeOnly
 		else
 			this._menuRootTree = null;
 	}
+	
+	/**
+	 * Returns the node of the action.
+	 *
+	 * @param __action The action's node.
+	 * @return The node for the action.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/07/20
+	 */
+	public static MenuActionNode node(MenuActionApplicable __action)
+		throws NullPointerException
+	{
+		if (__action == null)
+			throw new NullPointerException("NARG");
+		
+		return ((MenuActionNodeOnly)__action)._menuNode;
+	}
 }

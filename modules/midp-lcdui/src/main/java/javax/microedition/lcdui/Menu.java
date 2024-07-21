@@ -14,6 +14,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.scritchui.MenuAction;
 import cc.squirreljme.runtime.lcdui.scritchui.MenuActionHasChildren;
 import cc.squirreljme.runtime.lcdui.scritchui.MenuActionHasParent;
+import cc.squirreljme.runtime.lcdui.scritchui.MenuActionNodeOnly;
 
 /**
  * This is a menu which contains sub-menus and menu items made up of
@@ -49,7 +50,7 @@ public class Menu
 		if (__c == null)
 			throw new NullPointerException("NARG");
 		
-		return MenuAction.node(this).insert(Integer.MAX_VALUE, __c);
+		return MenuActionNodeOnly.node(this).insert(Integer.MAX_VALUE, __c);
 	}
 	
 	/**
@@ -69,7 +70,7 @@ public class Menu
 		if (__m == null)
 			throw new NullPointerException("NARG");
 		
-		return MenuAction.node(this).insert(Integer.MAX_VALUE, __m);
+		return MenuActionNodeOnly.node(this).insert(Integer.MAX_VALUE, __m);
 	}
 	
 	@Api
@@ -175,7 +176,7 @@ public class Menu
 		if (__at == Integer.MAX_VALUE)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		MenuAction.node(this).insert(__at, __c);
+		MenuActionNodeOnly.node(this).insert(__at, __c);
 	}
 	
 	/**
@@ -202,7 +203,7 @@ public class Menu
 		if (__at == Integer.MAX_VALUE)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		MenuAction.node(this).insert(__at, __m);
+		MenuActionNodeOnly.node(this).insert(__at, __m);
 	}
 	
 	@Api
