@@ -433,6 +433,7 @@ static sjme_thread_result mle_loopExecuteMain(
 	jobject runnable;
 	jclass classy;
 	jmethodID runId;
+	jboolean tossed;
 	
 	/* Recover data. */
 	data = (mle_loopExecuteData*)anything;
@@ -465,11 +466,24 @@ static sjme_thread_result mle_loopExecuteMain(
 
 	/* Call it. */
 	(*env)->CallVoidMethod(env, runnable, runId);
+	
+	/* Check for any exception. */
+	tossed = (*env)->ExceptionCheck(env);
+	if (tossed)
+	{
+		/* Notice. */
+		sjme_message("Exception thrown from Java loopExecute().");
+		
+		/* Describe it. */
+		(*env)->ExceptionDescribe(env);
+	}
 
 	/* Remove reference when the call is done. */
 	(*env)->DeleteGlobalRef(env, runnable);
 
-	/* Success! */
+	/* Success or failed? */
+	if (tossed)
+		return SJME_THREAD_RESULT(SJME_ERROR_JNI_EXCEPTION);
 	return SJME_THREAD_RESULT(SJME_ERROR_NONE);
 }
 
