@@ -90,7 +90,7 @@ public abstract class Displayable
 			null);
 		this._menuDefault = menuDefault;
 		
-		// Node which contains the default menu
+		// Root menu bar for the displayable
 		MenuActionNode menuNode = new MenuActionNode(this);
 		this._menuNode = menuNode;
 		

@@ -20,6 +20,7 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 @GhostObject
 @SquirrelJMEVendorApi
 public interface ScritchMenuItemBracket
-	extends ScritchBaseBracket, ScritchTriggerBracket
+	extends ScritchMenuHasParentBracket, ScritchMenuHasLabelBracket,
+		ScritchTriggerBracket
 {
 }

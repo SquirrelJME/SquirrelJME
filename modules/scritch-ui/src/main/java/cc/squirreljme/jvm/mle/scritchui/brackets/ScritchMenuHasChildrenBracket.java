@@ -13,14 +13,13 @@ import cc.squirreljme.jvm.mle.annotation.GhostObject;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
- * Represents a menu that contains multiple items.
+ * Flagging menu bracket for items which have children.
  *
- * @since 2024/03/01
+ * @since 2024/07/21
  */
 @GhostObject
 @SquirrelJMEVendorApi
-public interface ScritchMenuBracket
-	extends ScritchMenuHasChildrenBracket, ScritchMenuHasLabelBracket,
-		ScritchMenuHasParentBracket
+public interface ScritchMenuHasChildrenBracket
+	extends ScritchMenuBaseBracket
 {
 }

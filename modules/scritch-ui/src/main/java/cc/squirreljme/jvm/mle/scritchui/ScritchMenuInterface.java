@@ -9,13 +9,21 @@
 
 package cc.squirreljme.jvm.mle.scritchui;
 
+import cc.squirreljme.jvm.mle.constants.UIKeyEventType;
+import cc.squirreljme.jvm.mle.constants.UIKeyModifier;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchBaseBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBarBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBaseBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuHasChildrenBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuHasLabelBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuHasParentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuItemBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 /**
  * Interface for the manipulation of menu bars, menus, and menu items.
@@ -38,6 +46,22 @@ public interface ScritchMenuInterface
 		throws MLECallError;
 	
 	/**
+	 * Inserts the given menu item to a parent menu.
+	 *
+	 * @param __into The menu to place into.
+	 * @param __at Where to add the item.
+	 * @param __item The item to add.
+	 * @throws MLECallError On null arguments; if the index is not valid; or
+	 * the item already has a parent.
+	 * @since 2024/07/21
+	 */
+	@SquirrelJMEVendorApi
+	void menuInsert(@NotNull ScritchMenuHasChildrenBracket __into,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __at,
+		@NotNull ScritchMenuHasParentBracket __item)
+		throws MLECallError;
+	
+	/**
 	 * Creates a new menu item.
 	 *
 	 * @return The newly created menu item.
@@ -50,6 +74,24 @@ public interface ScritchMenuInterface
 		throws MLECallError;
 	
 	/**
+	 * Sets the activation key for the given menu item.
+	 *
+	 * @param __item The item to set.
+	 * @param __key The key to set.
+	 * @param __modifier The modifier that must be held.
+	 * @throws MLECallError If the item is not valid, or one of the keys
+	 * or modifiers are not valid.
+	 * @since 2024/07/21
+	 */
+	@SquirrelJMEVendorApi
+	void menuItemSetKey(@NotNull ScritchMenuItemBracket __item,
+		@MagicConstant(valuesFromClass = UIKeyEventType.class)
+			@Range(from = 0, to = 65536) int __key,
+		@MagicConstant(flagsFromClass = UIKeyModifier.class)
+			int __modifier)
+		throws MLECallError;
+	
+	/**
 	 * Creates a new menu.
 	 *
 	 * @return The newly created menu.
@@ -59,5 +101,18 @@ public interface ScritchMenuInterface
 	@SquirrelJMEVendorApi
 	@NotNull
 	ScritchMenuBracket menuNew()
+		throws MLECallError;
+	
+	/**
+	 * Sets the label for a menu item.
+	 *
+	 * @param __item The item to set.
+	 * @param __label The label to use.
+	 * @throws MLECallError If the item is not valid.
+	 * @since 2024/07/21
+	 */
+	@SquirrelJMEVendorApi
+	void menuSetLabel(@NotNull ScritchMenuHasLabelBracket __item,
+		@Nullable String __label)
 		throws MLECallError;
 }

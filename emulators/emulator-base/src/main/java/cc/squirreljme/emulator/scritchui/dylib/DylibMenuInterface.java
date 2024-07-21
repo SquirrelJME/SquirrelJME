@@ -13,8 +13,15 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchMenuInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBarBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuHasChildrenBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuHasLabelBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuHasParentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuItemBracket;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 /**
  * Dynamic library for ScritchUI menus.
@@ -59,6 +66,19 @@ public class DylibMenuInterface
 	 * @since 2024/07/21
 	 */
 	@Override
+	public void menuInsert(@NotNull ScritchMenuHasChildrenBracket __into,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __at,
+		@NotNull ScritchMenuHasParentBracket __item)
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/07/21
+	 */
+	@Override
 	public ScritchMenuItemBracket menuItemNew()
 		throws MLECallError
 	{
@@ -74,6 +94,18 @@ public class DylibMenuInterface
 	 * @since 2024/07/21
 	 */
 	@Override
+	public void menuItemSetKey(@NotNull ScritchMenuItemBracket __item,
+		@Range(from = 0, to = 65536) int __key, int __modifier)
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/07/21
+	 */
+	@Override
 	public ScritchMenuBracket menuNew()
 		throws MLECallError
 	{
@@ -82,5 +114,17 @@ public class DylibMenuInterface
 			throw new MLECallError("Menu not created?");
 		
 		return new DylibMenuObject(menuP);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/07/21
+	 */
+	@Override
+	public void menuSetLabel(ScritchMenuHasLabelBracket __item,
+		String __label)
+		throws MLECallError
+	{
+		throw Debugging.todo();
 	}
 }

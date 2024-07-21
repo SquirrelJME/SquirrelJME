@@ -10,7 +10,12 @@
 package cc.squirreljme.runtime.lcdui.scritchui;
 
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchMenuInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchBaseBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBaseBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuHasChildrenBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuHasLabelBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuHasParentBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.ArrayList;
 import java.util.List;
@@ -103,8 +108,13 @@ public final class MenuActionTree
 		if (__into == null)
 			throw new NullPointerException("NARG");
 		
+		// API for accessing menus
+		ScritchMenuInterface menuApi = DisplayManager.instance().scritch()
+			.menu();
+		
 		// Map ourself into a node
 		Leaf into = this.map(__into);
+		ScritchMenuBaseBracket scritch = into._scritch;
 		
 		// Map all menu nodes to leaves first, so that they have created
 		// ScritchUI objects as required... if applicable
@@ -119,11 +129,22 @@ public final class MenuActionTree
 			for (int i = 0; i < n; i++)
 			{
 				Leaf leaf = leaves[i];
-				this.__update(leaf._node, leaf._node.childrenOptional());
+				MenuActionNode leafNode = leaf._node;
+				
+				// Recursive update of child
+				this.__update(leafNode, leafNode.childrenOptional());
+				
+				// Add leaf node widget to our own widget
+				menuApi.menuInsert(
+					(ScritchMenuHasChildrenBracket)scritch, i,
+					(ScritchMenuHasParentBracket)leaf._scritch);
 			}
 		}
 		
-		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
+		// Set text label for this item?
+		if (scritch instanceof ScritchMenuHasLabelBracket)
+			menuApi.menuSetLabel((ScritchMenuHasLabelBracket)scritch,
+				into._node.owner(MenuAction.class)._longLabel.get());
 	}
 	
 	/**
@@ -140,7 +161,7 @@ public final class MenuActionTree
 		
 		/** The ScritchUI bracket used. */
 		@SquirrelJMEVendorApi
-		final ScritchBaseBracket _scritch;
+		final ScritchMenuBaseBracket _scritch;
 		
 		/**
 		 * Initializes the leaf from the node.
@@ -160,7 +181,7 @@ public final class MenuActionTree
 			ScritchInterface api = DisplayManager.instance().scritch();
 			
 			// Determine the item that should be created
-			ScritchBaseBracket scritch;
+			ScritchMenuBaseBracket scritch;
 			if (owner instanceof Displayable)
 				scritch = api.menu().menuBarNew();
 			else if (owner instanceof Menu)

@@ -200,6 +200,26 @@ public final class MenuActionNode
 	}
 	
 	/**
+	 * Returns the owning node as the given type.
+	 *
+	 * @param <M> The node type.
+	 * @param __cl The node type.
+	 * @return The owning node.
+	 * @throws ClassCastException If the class is incorrect.
+	 * @throws IllegalStateException If the owner was garbage collected.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/07/20
+	 */
+	public final <M extends MenuActionApplicable> M owner(Class<M> __cl)
+		throws ClassCastException, IllegalStateException, NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		return __cl.cast(this.owner());
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2024/07/20
 	 */

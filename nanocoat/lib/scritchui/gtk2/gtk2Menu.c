@@ -15,22 +15,55 @@ sjme_errorCode sjme_scritchui_gtk2_menuBarNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiMenuBar inMenuBar)
 {
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	GtkWidget* widget;
+	
+	if (inState == NULL || inMenuBar == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Create new bar. */
+	widget = gtk_menu_bar_new();
+	
+	/* Store handle for later. */
+	inMenuBar->common.handle = widget;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchui_gtk2_menuItemNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiMenuItem inMenuItem)
 {
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	GtkWidget* widget;
+	
+	if (inState == NULL || inMenuItem == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Create new item. */
+	widget = gtk_menu_item_new();
+	
+	/* Store handle for later. */
+	inMenuItem->common.handle = widget;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchui_gtk2_menuNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiMenu inMenu)
 {
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	GtkWidget* widget;
+	
+	if (inState == NULL || inMenu == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Create new menu. */
+	widget = gtk_menu_new();
+	
+	/* Store handle for later. */
+	inMenu->common.handle = widget;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
