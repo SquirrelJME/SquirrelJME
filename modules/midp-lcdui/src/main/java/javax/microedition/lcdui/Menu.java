@@ -49,12 +49,7 @@ public class Menu
 		if (__c == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
-		/*
-		return MenuAction.bind(MenuLayoutMenu.class, this)
-			.insert(Integer.MAX_VALUE, __c);
-			
-		 */
+		return MenuAction.node(this).insert(Integer.MAX_VALUE, __c);
 	}
 	
 	/**
@@ -74,12 +69,7 @@ public class Menu
 		if (__m == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
-		/*
-		return MenuAction.bind(MenuLayoutMenu.class, this)
-			.insert(Integer.MAX_VALUE, __m);
-			
-		 */
+		return MenuAction.node(this).insert(Integer.MAX_VALUE, __m);
 	}
 	
 	@Api
@@ -185,11 +175,7 @@ public class Menu
 		if (__at == Integer.MAX_VALUE)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		throw Debugging.todo();
-		/*
-		MenuAction.bind(MenuLayoutMenu.class, this).insert(__at, __c);
-		
-		 */
+		MenuAction.node(this).insert(__at, __c);
 	}
 	
 	/**
@@ -216,11 +202,7 @@ public class Menu
 		if (__at == Integer.MAX_VALUE)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		throw Debugging.todo();
-		/*
-		MenuAction.bind(MenuLayoutMenu.class, this).insert(__at, __m);
-		
-		 */
+		MenuAction.node(this).insert(__at, __m);
 	}
 	
 	@Api

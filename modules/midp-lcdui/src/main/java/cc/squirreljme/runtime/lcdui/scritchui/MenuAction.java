@@ -15,6 +15,7 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Image;
+import javax.microedition.lcdui.Menu;
 
 /**
  * This represents the base for an action which may be given a label, an
@@ -127,12 +128,29 @@ public abstract class MenuAction
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/19
 	 */
-	public static int approxDepth(MenuAction __action)
+	protected static int approxDepth(MenuAction __action)
 		throws NullPointerException
 	{
 		if (__action == null)
 			throw new NullPointerException("NARG");
 		
 		return __action._approxDepth;
+	}
+	
+	/**
+	 * Returns the node of the action.
+	 *
+	 * @param __action The action's node.
+	 * @return The node for the action.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/07/20
+	 */
+	protected static MenuActionNode node(MenuAction __action)
+		throws NullPointerException
+	{
+		if (__action == null)
+			throw new NullPointerException("NARG");
+		
+		return __action._menuNode;
 	}
 }
