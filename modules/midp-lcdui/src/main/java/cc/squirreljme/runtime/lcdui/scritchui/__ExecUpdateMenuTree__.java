@@ -52,8 +52,7 @@ final class __ExecUpdateMenuTree__
 	public void run()
 	{
 		// Update the menu tree
-		this.root._rootTree.update();
-		
-		throw Debugging.todo();
+		MenuActionNodeOnly owner = (MenuActionNodeOnly)this.root.owner();
+		owner._menuRootTree.update(owner._menuNode);
 	}
 }

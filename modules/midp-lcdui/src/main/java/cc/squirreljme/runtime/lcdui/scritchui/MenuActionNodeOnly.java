@@ -10,6 +10,7 @@
 package cc.squirreljme.runtime.lcdui.scritchui;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import javax.microedition.lcdui.Displayable;
 
 /**
  * A menu action which only has a single node.
@@ -23,4 +24,20 @@ public abstract class MenuActionNodeOnly
 	@SquirrelJMEVendorApi
 	final MenuActionNode _menuNode =
 		new MenuActionNode(this);
+	
+	/** Root menu tree state. */
+	final MenuActionTree _menuRootTree;
+	
+	/**
+	 * Initializes the base node-only menu tree.
+	 *
+	 * @since 2024/07/21
+	 */
+	protected MenuActionNodeOnly()
+	{
+		if (this instanceof Displayable)
+			this._menuRootTree = new MenuActionTree();
+		else
+			this._menuRootTree = null;
+	}
 }

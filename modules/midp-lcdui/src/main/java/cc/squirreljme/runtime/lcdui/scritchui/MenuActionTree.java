@@ -72,12 +72,57 @@ public final class MenuActionTree
 	/**
 	 * Performs actual update of the menu tree.
 	 *
+	 * @param __context The base context root.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/21
 	 */
 	@SquirrelJMEVendorApi
 	@Async.Execute
-	public void update()
+	public void update(MenuActionNode __context)
+		throws NullPointerException
 	{
+		if (__context == null)
+			throw new NullPointerException("NARG");
+		
+		// Internal recursive logic setup
+		this.__update(__context, __context.children());
+	}
+	
+	/**
+	 * Adds the given children to this given node.
+	 *
+	 * @param __into The node to write into.
+	 * @param __add The children to add.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/07/21
+	 */
+	@Async.Execute
+	private void __update(MenuActionNode __into, MenuActionHasParent... __add)
+		throws NullPointerException
+	{
+		if (__into == null)
+			throw new NullPointerException("NARG");
+		
+		// Map ourself into a node
+		Leaf into = this.map(__into);
+		
+		// Map all menu nodes to leaves first, so that they have created
+		// ScritchUI objects as required... if applicable
+		if (__add != null)
+		{
+			int n = __add.length;
+			Leaf[] leaves = new Leaf[n];
+			for (int i = 0; i < n; i++)
+				leaves[i] = this.map(((MenuActionNodeOnly)__add[i])._menuNode);
+			
+			// Setup leaves first
+			for (int i = 0; i < n; i++)
+			{
+				Leaf leaf = leaves[i];
+				this.__update(leaf._node, leaf._node.childrenOptional());
+			}
+		}
+		
 		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
 	}
 	

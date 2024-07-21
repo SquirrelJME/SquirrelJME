@@ -322,7 +322,7 @@ public class Display
 			__screen, __window);
 		
 		// Set listener for title updates
-		this._listenerTitle = new __ExecDisplaySetText__(state);
+		this._listenerTitle = new __ExecDisplaySetTitle__(state);
 		
 		// Handle window closing for the display
 		__scritch.window().setCloseListener(__window,

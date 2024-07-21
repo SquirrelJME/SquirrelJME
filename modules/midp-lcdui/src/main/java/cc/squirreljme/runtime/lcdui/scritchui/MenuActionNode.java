@@ -10,7 +10,6 @@
 package cc.squirreljme.runtime.lcdui.scritchui;
 
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -39,9 +38,6 @@ public final class MenuActionNode
 	/** Parent actions. */
 	final Set<MenuActionHasChildren> _parents;
 	
-	/** Root menu tree state. */
-	final MenuActionTree _rootTree;
-	
 	/**
 	 * Initializes the node reference.
 	 *
@@ -63,21 +59,54 @@ public final class MenuActionNode
 		
 		// Parental storage
 		if (__ref instanceof MenuActionHasParent)
-		{
 			this._parents = new IdentityHashSet<>();
-			this._rootTree = null;
-		}
 		else
-		{
 			this._parents = null;
-			this._rootTree = new MenuActionTree();
-		}
 		
 		// Children storage
 		if (__ref instanceof MenuActionHasChildren)
 			this._children = new ArrayList<>();
 		else
 			this._children = null;
+	}
+	
+	/**
+	 * Returns the children of this node.
+	 *
+	 * @return The children nodes.
+	 * @throws IllegalStateException If this does not support children.
+	 * @since 2024/07/21
+	 */
+	public MenuActionHasParent[] children()
+		throws IllegalStateException
+	{
+		// Must have children
+		/* {@squirreljme.error EB1n Menu does not support children}. */
+		MenuActionHasParent[] children = this.childrenOptional();
+		if (children == null)
+			throw new IllegalStateException("EB1n");
+		return children;
+	}
+	
+	/**
+	 * Returns the children of this node or {@code null}.
+	 *
+	 * @return The children nodes or {@code null} if not supported.
+	 * @since 2024/07/21
+	 */
+	public MenuActionHasParent[] childrenOptional()
+	{
+		// Must have children
+		/* {@squirreljme.error EB1n Menu does not support children}. */
+		List<MenuActionHasParent> children = this._children;
+		if (children == null)
+			return null;
+		
+		// Get everything from it
+		synchronized (this)
+		{
+			return children.toArray(new MenuActionHasParent[children.size()]);
+		}
 	}
 	
 	/**

@@ -18,7 +18,7 @@ import cc.squirreljme.runtime.lcdui.scritchui.StringTrackerListener;
  *
  * @since 2024/07/18
  */
-final class __ExecDisplaySetText__
+final class __ExecDisplaySetTitle__
 	implements StringTrackerListener
 {
 	/** The display to update for. */
@@ -31,7 +31,7 @@ final class __ExecDisplaySetText__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/18
 	 */
-	__ExecDisplaySetText__(DisplayState __display)
+	__ExecDisplaySetTitle__(DisplayState __display)
 		throws NullPointerException
 	{
 		if (__display == null)
