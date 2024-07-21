@@ -22,12 +22,12 @@ import org.jetbrains.annotations.Async;
 public interface StringTrackerListener
 {
 	/**
-	 * This is called whenever the text changes.
+	 * This is called whenever the string changes.
 	 *
-	 * @param __t The text to set.
+	 * @param __s The string to set.
 	 * @since 2024/07/18
 	 */
 	@SerializedEvent
 	@Async.Execute
-	void stringUpdated(String __t);
+	void stringUpdated(String __s);
 }

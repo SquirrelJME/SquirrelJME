@@ -14,9 +14,7 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Image;
-import javax.microedition.lcdui.Menu;
 
 /**
  * This represents the base for an action which may be given a label, an
@@ -66,9 +64,17 @@ public abstract class MenuAction
 		ScritchInterface scritch = DisplayManager.instance().scritch();
 		ScritchEventLoopInterface loop = scritch.eventLoop();
 		
+		MenuActionNode node = this._menuNode;
+		
+		// Setup trackers
 		this._shortLabel = new StringTracker(loop, __short);
 		this._longLabel = new StringTracker(loop, __long);
 		this._image = new ImageTracker(loop, __image);
+		
+		// Connect signals
+		this._shortLabel.connect(node);
+		this._longLabel.connect(node);
+		this._image.connect(node);
 	}
 	
 	/**

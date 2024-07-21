@@ -84,6 +84,10 @@ public abstract class ObjectTracker<T, L>
 		{
 			this._listener = __listener;
 		}
+		
+		// Since we connected a listener, we want to make sure it has the
+		// most up-to-date information
+		this.loop.execute(new __ExecObjectTracker__<T, L>(this));
 	}
 	
 	/**

@@ -9,12 +9,14 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui;
 
+import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import javax.microedition.lcdui.Image;
 import net.multiphasicapps.collections.IdentityHashSet;
 
 /**
@@ -22,16 +24,23 @@ import net.multiphasicapps.collections.IdentityHashSet;
  *
  * @since 2024/07/20
  */
-public class MenuActionNode
+public final class MenuActionNode
+	implements StringTrackerListener, ImageTrackerListener
 {
 	/** The item that owns this node. */
 	protected final Reference<MenuActionApplicable> owner;
+	
+	/** The ScritchUI API to use for updates. */
+	protected final ScritchInterface scritch;
 	
 	/** Children actions. */
 	final List<MenuActionHasParent> _children;
 	
 	/** Parent actions. */
 	final Set<MenuActionHasChildren> _parents;
+	
+	/** Root menu tree state. */
+	final MenuActionTree _rootTree;
 	
 	/**
 	 * Initializes the node reference.
@@ -49,17 +58,37 @@ public class MenuActionNode
 		// Reference to owning action item
 		this.owner = new WeakReference<>(__ref);
 		
+		// Scritch interface for updates
+		this.scritch = DisplayManager.instance().scritch();
+		
 		// Parental storage
 		if (__ref instanceof MenuActionHasParent)
+		{
 			this._parents = new IdentityHashSet<>();
+			this._rootTree = null;
+		}
 		else
+		{
 			this._parents = null;
+			this._rootTree = new MenuActionTree();
+		}
 		
 		// Children storage
 		if (__ref instanceof MenuActionHasChildren)
 			this._children = new ArrayList<>();
 		else
 			this._children = null;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/07/20
+	 */
+	@Override
+	public void imageUpdated(Image __image)
+	{
+		// Enqueue an update of the entire menu tree
+		this.__enqueueUpdate();
 	}
 	
 	/**
@@ -76,7 +105,7 @@ public class MenuActionNode
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/20
 	 */
-	public int insert(int __dx, MenuActionHasParent __item)
+	public final int insert(int __dx, MenuActionHasParent __item)
 		throws IllegalArgumentException, IllegalStateException,
 			IndexOutOfBoundsException, NullPointerException
 	{
@@ -132,13 +161,24 @@ public class MenuActionNode
 	 * @throws IllegalStateException If the owner was garbage collected.
 	 * @since 2024/07/20
 	 */
-	public MenuActionApplicable owner()
+	public final MenuActionApplicable owner()
 		throws IllegalStateException
 	{
 		MenuActionApplicable owner = this.owner.get();
 		if (owner == null)
 			throw new IllegalStateException("GCGC");
 		return owner;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/07/20
+	 */
+	@Override
+	public final void stringUpdated(String __s)
+	{
+		// Enqueue an update of the entire menu tree
+		this.__enqueueUpdate();
 	}
 	
 	/**
@@ -176,7 +216,13 @@ public class MenuActionNode
 		// If we are at the top of the tree then we cannot go any further
 		Set<MenuActionHasChildren> parents = this._parents;
 		if (parents == null)
-			throw Debugging.todo();
+		{
+			// Setup an actual menu updater
+			this.scritch.eventLoop().executeLater(
+				new __ExecUpdateMenuTree__(this));
+			
+			return;
+		}
 		
 		synchronized (this)
 		{

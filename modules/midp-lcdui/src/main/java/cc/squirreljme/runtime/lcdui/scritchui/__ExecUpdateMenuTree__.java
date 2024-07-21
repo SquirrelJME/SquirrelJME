@@ -7,46 +7,53 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package javax.microedition.lcdui;
+package cc.squirreljme.runtime.lcdui.scritchui;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
-import cc.squirreljme.runtime.lcdui.scritchui.StringTrackerListener;
+import org.jetbrains.annotations.Async;
 
 /**
- * Handles title changes for {@code Display}.
+ * Performs update of the menu tree.
  *
- * @since 2024/07/18
+ * @since 2024/07/21
  */
-final class __ExecDisplaySetText__
-	implements StringTrackerListener
+@SquirrelJMEVendorApi
+final class __ExecUpdateMenuTree__
+	implements Runnable
 {
-	/** The display to update for. */
-	final DisplayState _display;
+	/** The menu root to update. */
+	@SquirrelJMEVendorApi
+	protected final MenuActionNode root;
 	
 	/**
-	 * Updates the text for a display.
+	 * Initializes the menu tree updater.
 	 *
-	 * @param __display The display to update for.
+	 * @param __root The root menu.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2024/07/18
+	 * @since 2024/07/21
 	 */
-	__ExecDisplaySetText__(DisplayState __display)
+	@SquirrelJMEVendorApi
+	__ExecUpdateMenuTree__(MenuActionNode __root)
 		throws NullPointerException
 	{
-		if (__display == null)
+		if (__root == null)
 			throw new NullPointerException("NARG");
-		
-		this._display = __display;
+			
+		this.root = __root;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2024/07/18
+	 * @since 2024/07/21
 	 */
 	@Override
-	public void stringUpdated(String __s)
+	@Async.Execute
+	public void run()
 	{
+		// Update the menu tree
+		this.root._rootTree.update();
+		
 		throw Debugging.todo();
 	}
 }

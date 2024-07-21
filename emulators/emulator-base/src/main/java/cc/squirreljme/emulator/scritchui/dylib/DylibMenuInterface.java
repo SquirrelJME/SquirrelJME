@@ -12,6 +12,7 @@ package cc.squirreljme.emulator.scritchui.dylib;
 import cc.squirreljme.emulator.MLECallWouldFail;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchMenuInterface;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchBaseBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBarBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
@@ -53,5 +54,27 @@ public class DylibMenuInterface
 			throw new MLECallError("Menu bar not created?");
 		
 		return new DylibMenuBarObject(menuBarP);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/07/21
+	 */
+	@Override
+	public ScritchBaseBracket menuItemNew()
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/07/21
+	 */
+	@Override
+	public ScritchBaseBracket menuNew()
+		throws MLECallError
+	{
+		throw Debugging.todo();
 	}
 }

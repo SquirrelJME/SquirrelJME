@@ -1,0 +1,131 @@
+// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
+// ---------------------------------------------------------------------------
+// Multi-Phasic Applications: SquirrelJME
+//     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+// ---------------------------------------------------------------------------
+// SquirrelJME is under the Mozilla Public License Version 2.0.
+// See license.mkd for licensing and copyright information.
+// ---------------------------------------------------------------------------
+
+package cc.squirreljme.runtime.lcdui.scritchui;
+
+import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchBaseBracket;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import java.util.ArrayList;
+import java.util.List;
+import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.Menu;
+import org.jetbrains.annotations.Async;
+
+/**
+ * Menu action tree.
+ *
+ * @since 2024/07/21
+ */
+@SquirrelJMEVendorApi
+public final class MenuActionTree
+{
+	/** Mapping of nodes to leafs, to keep track of natives. */
+	@SquirrelJMEVendorApi
+	private final List<Leaf> _mappings =
+		new ArrayList<>();
+	
+	/**
+	 * Returns the mapping for a given node.
+	 *
+	 * @param __node The node to get for.
+	 * @return The resultant mapping.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/07/21
+	 */
+	@SquirrelJMEVendorApi
+	public final Leaf map(MenuActionNode __node)
+		throws NullPointerException
+	{
+		if (__node == null)
+			throw new NullPointerException("NARG");
+		
+		List<Leaf> mappings = this._mappings;
+		synchronized (this)
+		{
+			// Find the mapping node
+			int n = mappings.size();
+			for (int i = 0; i < n; i++)
+			{
+				Leaf check = mappings.get(i);
+				if (check._node == __node)
+					return check;
+			}
+			
+			// Otherwise it needs creation
+			Leaf result = new Leaf(__node);
+			
+			// Add to mapping set
+			mappings.add(result);
+			
+			// And then use it
+			return result;
+		}
+	}
+	
+	/**
+	 * Performs actual update of the menu tree.
+	 *
+	 * @since 2024/07/21
+	 */
+	@SquirrelJMEVendorApi
+	@Async.Execute
+	public void update()
+	{
+		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
+	}
+	
+	/**
+	 * A single leaf within the tree.
+	 * 
+	 * @since 2024/07/21
+	 */
+	@SquirrelJMEVendorApi
+	public static final class Leaf
+	{
+		/** The node this maps to. */
+		@SquirrelJMEVendorApi
+		final MenuActionNode _node;
+		
+		/** The ScritchUI bracket used. */
+		@SquirrelJMEVendorApi
+		final ScritchBaseBracket _scritch;
+		
+		/**
+		 * Initializes the leaf from the node.
+		 *
+		 * @param __node The node to map to.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2024/07/21
+		 */
+		@SquirrelJMEVendorApi
+		Leaf(MenuActionNode __node)
+			throws NullPointerException
+		{
+			if (__node == null)
+				throw new NullPointerException("NARG");
+			
+			MenuActionApplicable owner = __node.owner();
+			ScritchInterface api = DisplayManager.instance().scritch();
+			
+			// Determine the item that should be created
+			ScritchBaseBracket scritch;
+			if (owner instanceof Displayable)
+				scritch = api.menu().menuBarNew();
+			else if (owner instanceof Menu)
+				scritch = api.menu().menuNew();
+			else
+				scritch = api.menu().menuItemNew();
+			
+			// Store
+			this._node = __node;
+			this._scritch = scritch;
+		}
+	}
+}
