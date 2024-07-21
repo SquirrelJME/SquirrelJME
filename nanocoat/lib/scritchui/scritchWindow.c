@@ -139,6 +139,43 @@ sjme_errorCode sjme_scritchui_core_windowSetCloseListener(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_scritchui_core_windowSetTitle(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNullable sjme_lpcstr inTitle)
+{
+	sjme_errorCode error;
+	
+	if (inState == NULL || inWindow == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Clear title if already allocated. */
+	if (inWindow->title != NULL)
+	{
+		/* Free. */
+		if (sjme_error_is(error = sjme_alloc_free(
+			inWindow->title)))
+			return sjme_error_default(error);
+			
+		/* Wipe. */
+		inWindow->title = NULL;
+	}
+	
+	/* Make copy of title, if there is one to be set. */
+	if (inTitle != NULL)
+		if (sjme_error_is(error = sjme_alloc_strdup(inState->pool,
+			&inWindow->title, inTitle)))
+			return sjme_error_default(error); 
+		
+	/* Ignore if not implemented as it is not too important. */
+	if (inState->impl->windowSetTitle == NULL)
+		return SJME_ERROR_NONE;
+	
+	/* Forward implementation, use stored pointer. */
+	return inState->impl->windowSetTitle(inState, inWindow,
+		inWindow->title);
+}
+
 sjme_errorCode sjme_scritchui_core_windowSetVisible(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,

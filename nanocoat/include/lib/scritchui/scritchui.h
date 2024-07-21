@@ -1049,6 +1049,20 @@ typedef sjme_errorCode (*sjme_scritchui_windowSetCloseListenerFunc)(
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(close));
 
 /**
+ * Sets the title of the specified window.
+ * 
+ * @param inState The input state.
+ * @param inWindow The window to set the title of.
+ * @param inTitle The title to set.
+ * @return Any resultant error, if any.
+ * @since 2024/07/21
+ */
+typedef sjme_errorCode (*sjme_scritchui_windowSetTitleFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNullable sjme_lpcstr inTitle);
+
+/**
  * Sets the visibility of a window.
  * 
  * @param inState The input state.
@@ -1175,6 +1189,9 @@ struct sjme_scritchui_apiFunctions
 	
 	/** Sets the close listener for a window. */
 	SJME_SCRITCHUI_QUICK_API(windowSetCloseListener);
+	
+	/** Sets the close listener for a window. */
+	SJME_SCRITCHUI_QUICK_API(windowSetTitle);
 	
 	/** Sets visibility of window. */
 	SJME_SCRITCHUI_QUICK_API(windowSetVisible);

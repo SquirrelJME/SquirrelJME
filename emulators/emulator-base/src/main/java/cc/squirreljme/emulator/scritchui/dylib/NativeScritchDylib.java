@@ -451,6 +451,19 @@ public final class NativeScritchDylib
 		throws MLECallError;
 	
 	/**
+	 * Set the window title.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __windowP The window pointer.
+	 * @param __title The title to set.
+	 * @throws MLECallError If the title could not be set.
+	 * @since 2024/07/21
+	 */
+	static native void __windowSetTitle(long __stateP,
+		long __windowP, String __title)
+		throws MLECallError;
+	
+	/**
 	 * Sets the visibility of the window.
 	 *
 	 * @param __stateP The state pointer.

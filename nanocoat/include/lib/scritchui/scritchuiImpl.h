@@ -203,6 +203,9 @@ struct sjme_scritchui_implFunctions
 	/** Set close listener for a window. */
 	SJME_SCRITCHUI_QUICK_SAME(windowSetCloseListener);
 	
+	/** Sets the close listener for a window. */
+	SJME_SCRITCHUI_QUICK_SAME(windowSetTitle);
+	
 	/** Sets visibility of the window. */
 	SJME_SCRITCHUI_QUICK_SAME(windowSetVisible);
 };

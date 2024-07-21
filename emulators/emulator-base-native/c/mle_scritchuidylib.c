@@ -113,6 +113,8 @@
 	DESC_LONG ")" DESC_LONG
 #define FORWARD_DESC___windowSetCloseListener "(" \
 	DESC_LONG DESC_LONG DESC_SCRITCHUI_CLOSE_LISTENER ")" DESC_VOID
+#define FORWARD_DESC___windowSetTitle "(" \
+	DESC_LONG DESC_LONG DESC_STRING ")" DESC_VOID
 #define FORWARD_DESC___windowSetVisible "(" \
 	DESC_LONG DESC_LONG DESC_BOOLEAN ")" DESC_VOID
 
@@ -1749,6 +1751,49 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__windowSetTitle)(JNIEnv* env, jclass classy, jlong stateP,
+	jlong windowP, jstring title)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	sjme_scritchui_uiWindow window;
+	sjme_lpcstr chars;
+	jboolean isCopy;
+	
+	if (stateP == 0 || windowP == 0)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	window = (sjme_scritchui_uiWindow)windowP;
+	
+	/* Not implemented? */
+	if (state->api->windowSetTitle == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
+		return;
+	}
+	
+	/* Obtain characters. */
+	isCopy = JNI_FALSE;
+	chars = (*env)->GetStringUTFChars(env, title, &isCopy);
+
+	/* Forward call. */
+	error = state->api->windowSetTitle(
+		state, window, chars);	
+	
+	/* Cleanup. */
+	(*env)->ReleaseStringUTFChars(env, title, chars);
+	
+	/* Fail? */
+	if (sjme_error_is(error))
+		sjme_jni_throwMLECallError(env, error);
+}
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	__windowSetVisible)(JNIEnv* env, jclass classy, jlong stateP,
 	jlong windowP, jboolean visible)
 {
@@ -1811,6 +1856,7 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 	FORWARD_list(NativeScritchDylib, __windowManagerType),
 	FORWARD_list(NativeScritchDylib, __windowNew),
 	FORWARD_list(NativeScritchDylib, __windowSetCloseListener),
+	FORWARD_list(NativeScritchDylib, __windowSetTitle),
 	FORWARD_list(NativeScritchDylib, __windowSetVisible),
 };
 

@@ -38,6 +38,7 @@ const sjme_scritchui_implFunctions sjme_scritchui_fbFunctions =
 	.windowContentMinimumSize = sjme_scritchui_fb_windowContentMinimumSize,
 	.windowNew = sjme_scritchui_fb_windowNew,
 	.windowSetCloseListener = sjme_scritchui_fb_windowSetCloseListener,
+	.windowSetTitle = sjme_scritchui_fb_windowSetTitle,
 	.windowSetVisible = sjme_scritchui_fb_windowSetVisible,
 };
 

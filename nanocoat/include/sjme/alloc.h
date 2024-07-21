@@ -367,6 +367,21 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_realloc)(
 	sjme_attrInPositive sjme_jint newSize
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
 
+/**
+ * Allocates a copy of the given C character sequence.
+ * 
+ * @param inPool The pool to allocate within.
+ * @param outString The output string copy.
+ * @param stringToCopy The string to copy.
+ * @return Any resultant error, if any.
+ * @since 2024/07/21
+ */
+sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_strdup)(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrOutNotNull sjme_lpcstr* outString,
+	sjme_attrInNotNull sjme_lpcstr stringToCopy
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
+
 #if defined(SJME_CONFIG_DEBUG)
 
 /**
@@ -440,6 +455,19 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_realloc)(
  */
 #define sjme_alloc_realloc(inOutAddr, newSize) \
 	sjme_alloc_reallocR((inOutAddr), (newSize), SJME_DEBUG_FILE_LINE_FUNC)
+
+/**
+ * Allocates a copy of the given C character sequence.
+ * 
+ * @param inPool The pool to allocate within.
+ * @param outString The output string copy.
+ * @param stringToCopy The string to copy.
+ * @return Any resultant error, if any.
+ * @since 2024/07/21
+ */
+#define sjme_alloc_strdup(inPool, outString, stringToCopy) \
+	sjme_alloc_strdupR((inPool), (outString), (stringToCopy), \
+	SJME_DEBUG_FILE_LINE_FUNC)
 
 #endif
 

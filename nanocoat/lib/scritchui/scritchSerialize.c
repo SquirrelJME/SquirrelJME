@@ -152,6 +152,7 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 		SJME_SCRITCHUI_DISPATCH_DECL(windowContentMinimumSize);
 		SJME_SCRITCHUI_DISPATCH_DECL(windowNew);
 		SJME_SCRITCHUI_DISPATCH_DECL(windowSetCloseListener);
+		SJME_SCRITCHUI_DISPATCH_DECL(windowSetTitle);
 		SJME_SCRITCHUI_DISPATCH_DECL(windowSetVisible);
 	} as;
 	sjme_scritchui state;
@@ -362,6 +363,12 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 		as.windowSetCloseListener->inWindow,
 		as.windowSetCloseListener->inListener,
 		as.windowSetCloseListener->copyFrontEnd));
+		
+	SJME_SCRITCHUI_DISPATCH_CASE(windowSetTitle,
+		SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_SET_TITLE,
+		(state,
+		as.windowSetTitle->inWindow,
+		as.windowSetTitle->inTitle));
 		
 	SJME_SCRITCHUI_DISPATCH_CASE(windowSetVisible,
 		SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_SET_VISIBLE,
@@ -844,6 +851,22 @@ sjme_errorCode sjme_scritchui_coreSerial_windowSetCloseListener(
 	SJME_SCRITCHUI_SERIAL_PASS(inWindow);
 	SJME_SCRITCHUI_SERIAL_PASS(inListener);
 	SJME_SCRITCHUI_SERIAL_PASS(copyFrontEnd);
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
+}
+	
+sjme_errorCode sjme_scritchui_coreSerial_windowSetTitle(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNullable sjme_lpcstr inTitle)
+{
+	SJME_SCRITCHUI_SERIAL_CHUNK(windowSetTitle,
+		SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_SET_TITLE,
+		(inState, inWindow, inTitle));
+		
+	SJME_SCRITCHUI_SERIAL_PASS(inWindow);
+	SJME_SCRITCHUI_SERIAL_PASS(inTitle);
 	
 	/* Invoke and wait. */
 	SJME_SCRITCHUI_INVOKE_WAIT;

@@ -36,6 +36,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_gtkFunctions =
 	.windowContentMinimumSize = sjme_scritchui_gtk2_windowContentMinimumSize,
 	.windowNew = sjme_scritchui_gtk2_windowNew,
 	.windowSetCloseListener = sjme_scritchui_gtk2_windowSetCloseListenerFunc,
+	.windowSetTitle = sjme_scritchui_gtk2_windowSetTitle,
 	.windowSetVisible = sjme_scritchui_gtk2_windowSetVisible,
 };
 

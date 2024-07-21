@@ -973,6 +973,26 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_realloc)(
 	}
 }
 
+sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_strdup)(
+	sjme_attrInNotNull sjme_alloc_pool* inPool,
+	sjme_attrOutNotNull sjme_lpcstr* outString,
+	sjme_attrInNotNull sjme_lpcstr stringToCopy
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
+{
+	sjme_jint charLen;
+	
+	if (inPool == NULL || outString == NULL || stringToCopy == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Use standard string length, include NUL. */
+	charLen = strlen(stringToCopy) + 1;
+	
+	/* Then just forward to copy. */
+	return sjme_alloc_copyR(inPool, charLen,
+		outString, stringToCopy,
+		file, line, func);
+}
+
 sjme_errorCode sjme_noOptimize sjme_alloc_weakDelete(
 	sjme_attrInOutNotNull sjme_alloc_weak* inOutWeak)
 {

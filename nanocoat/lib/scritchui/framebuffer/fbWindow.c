@@ -121,6 +121,26 @@ sjme_errorCode sjme_scritchui_fb_windowSetCloseListener(
 			&wrappedFrontEnd);
 }
 
+sjme_errorCode sjme_scritchui_fb_windowSetTitle(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNullable sjme_lpcstr inTitle)
+{
+	sjme_scritchui wrappedState;
+	sjme_scritchui_uiWindow wrappedWindow;
+	
+	if (inState == NULL || inWindow == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover wrapped state. */
+	wrappedState = inState->wrappedState;
+	wrappedWindow = inWindow->component.common.handle;
+	
+	/* Just forward to the wrapper. */
+	return wrappedState->api->windowSetTitle(wrappedState,
+		wrappedWindow, inTitle);
+}
+
 sjme_errorCode sjme_scritchui_fb_windowSetVisible(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,

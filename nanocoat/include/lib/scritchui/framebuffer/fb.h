@@ -183,6 +183,11 @@ sjme_errorCode sjme_scritchui_fb_windowSetCloseListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(close));
+	
+sjme_errorCode sjme_scritchui_fb_windowSetTitle(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNullable sjme_lpcstr inTitle);
 
 sjme_errorCode sjme_scritchui_fb_windowSetVisible(
 	sjme_attrInNotNull sjme_scritchui inState,

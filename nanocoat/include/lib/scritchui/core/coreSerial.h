@@ -130,6 +130,9 @@ typedef enum sjme_scritchui_serialType
 	/** @c windowSetCloseListener . */
 	SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_SET_CLOSE_LISTENER,
 	
+	/** @c windowSetTitle . */
+	SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_SET_TITLE,
+	
 	/** @c windowSetVisible . */
 	SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_SET_VISIBLE,
 	
@@ -304,6 +307,10 @@ SUD_STRUCT_DEF(windowSetCloseListener,
 	SDU_VAR(sjme_scritchui_uiWindow, inWindow);
 	SJME_SCRITCHUI_SERIAL_SET_LISTENER(close););
 
+SUD_STRUCT_DEF(windowSetTitle,
+	SDU_VAR(sjme_scritchui_uiWindow, inWindow);
+	SDU_VAR(sjme_lpcstr, inTitle););
+
 SUD_STRUCT_DEF(windowSetVisible,
 	SDU_VAR(sjme_scritchui_uiWindow, inWindow);
 	SDU_VAR(sjme_jboolean, isVisible););
@@ -416,6 +423,9 @@ typedef union sjme_scritchui_serialDataUnion
 	
 	/** @c windowSetCloseListener . */
 	SJME_SCRITCHUI_SDU_DEF(windowSetCloseListener);
+	
+	/** @c windowSetTitle . */
+	SJME_SCRITCHUI_SDU_DEF(windowSetTitle);
 	
 	/** @c windowSetVisible . */
 	SJME_SCRITCHUI_SDU_DEF(windowSetVisible);
@@ -611,6 +621,11 @@ sjme_errorCode sjme_scritchui_coreSerial_windowSetCloseListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(close));
+	
+sjme_errorCode sjme_scritchui_coreSerial_windowSetTitle(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNullable sjme_lpcstr inTitle);
 
 sjme_errorCode sjme_scritchui_coreSerial_windowSetVisible(
 	sjme_attrInNotNull sjme_scritchui inState,

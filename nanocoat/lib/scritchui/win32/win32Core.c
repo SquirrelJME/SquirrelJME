@@ -34,6 +34,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_win32Functions =
 	.windowContentMinimumSize = NULL,
 	.windowNew = NULL,
 	.windowSetCloseListener = NULL,
+	.windowSetTitle = NULL,
 	.windowSetVisible = NULL,
 };
 

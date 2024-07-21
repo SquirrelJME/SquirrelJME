@@ -171,6 +171,27 @@ sjme_errorCode sjme_scritchui_gtk2_windowSetCloseListenerFunc(
 		1, "delete-event");
 }
 
+sjme_errorCode sjme_scritchui_gtk2_windowSetTitle(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNullable sjme_lpcstr inTitle)
+{
+	GtkWindow* gtkWindow;
+	
+	if (inState == NULL || inWindow == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover window. */
+	gtkWindow = inWindow->component.common.handle;
+	
+	/* This is simple enough, nothing fancy. */
+	gtk_window_set_title(gtkWindow,
+		(inTitle != NULL ? inTitle : "SquirrelJME"));
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_scritchui_gtk2_windowSetVisible(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
