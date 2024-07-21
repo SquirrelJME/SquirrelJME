@@ -17,7 +17,9 @@ import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuHasChildrenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuHasLabelBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuHasParentBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Menu;
@@ -108,6 +110,10 @@ public final class MenuActionTree
 		if (__into == null)
 			throw new NullPointerException("NARG");
 		
+		// Debug
+		Debugging.debugNote("Menu __update(%s, %s)",
+			__into.owner(), (__add == null ? null : Arrays.asList(__add)));
+		
 		// API for accessing menus
 		ScritchMenuInterface menuApi = DisplayManager.instance().scritch()
 			.menu();
@@ -116,10 +122,15 @@ public final class MenuActionTree
 		Leaf into = this.map(__into);
 		ScritchMenuBaseBracket scritch = into._scritch;
 		
-		// Map all menu nodes to leaves first, so that they have created
-		// ScritchUI objects as required... if applicable
+		// Children need to be added?
 		if (__add != null)
 		{
+			// Debug
+			Debugging.debugNote("Menu add children %d...",
+				__add.length);
+			
+			// Map all menu nodes to leaves first, so that they have created
+			// ScritchUI objects as required... if applicable
 			int n = __add.length;
 			Leaf[] leaves = new Leaf[n];
 			for (int i = 0; i < n; i++)

@@ -10,6 +10,7 @@
 package cc.squirreljme.runtime.lcdui.scritchui;
 
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -141,6 +142,10 @@ public final class MenuActionNode
 		if (__item == null)
 			throw new NullPointerException("NARG");
 		
+		// Debug
+		Debugging.debugNote("Menu insert %s <- (%d, %s)",
+			this.owner(), __dx, __item);
+		
 		/* {@squirreljme.error EB1l Menu node does not support children.} */
 		List<MenuActionHasParent> children = this._children;
 		if (children == null)
@@ -173,7 +178,7 @@ public final class MenuActionNode
 			children.add(__dx, __item);
 			
 			// Link to parent
-			((MenuAction)__item)._menuNode.__addParent(owner);
+			((MenuActionNodeOnly)__item)._menuNode.__addParent(owner);
 		}
 		
 		// Enqueue an update
@@ -262,6 +267,10 @@ public final class MenuActionNode
 	 */
 	private void __enqueueUpdate()
 	{
+		// Debug
+		Debugging.debugNote("__enqueueUpdate() <- %s",
+			this.owner());
+		
 		// If we are at the top of the tree then we cannot go any further
 		Set<MenuActionHasChildren> parents = this._parents;
 		if (parents == null)
@@ -273,12 +282,15 @@ public final class MenuActionNode
 			return;
 		}
 		
+		// Otherwise we need to update all parents
+		MenuActionHasChildren[] copy;
 		synchronized (this)
 		{
-			MenuActionHasChildren[] copy = parents.toArray(
-				new MenuActionHasChildren[parents.size()]);
-			for (MenuActionHasChildren parent : copy)
-				MenuAction.node(parent).__enqueueUpdate();
+			copy = parents.toArray(new MenuActionHasChildren[parents.size()]);
 		}
+		
+		// Update all parents now
+		for (MenuActionHasChildren parent : copy)
+			MenuAction.node(parent).__enqueueUpdate();
 	}
 }
