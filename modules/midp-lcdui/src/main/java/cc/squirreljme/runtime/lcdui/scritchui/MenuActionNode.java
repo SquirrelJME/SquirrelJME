@@ -14,6 +14,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.Menu;
 
 /**
  * A single node of a {@link MenuAction} tree.
@@ -58,5 +59,29 @@ public class MenuActionNode
 			this._children = new ArrayList<>();
 		else
 			this._children = null;
+	}
+	
+	/**
+	 * Inserts the item at the given index.
+	 *
+	 * @param __dx The index to add at.
+	 * @param __item The item to add.
+	 * @throws IndexOutOfBoundsException If the index is not valid.
+	 * @throws IllegalStateException If this node cannot have children.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/07/20
+	 */
+	public void insert(int __dx, MenuActionHasParent __item)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		if (__item == null)
+			throw new NullPointerException("NARG");
+		
+		/* {@squirreljme.error EB1l Menu node does not support children.} */
+		List<MenuActionHasParent> children = this._children;
+		if (children == null)
+			throw new IllegalStateException("EB1l");
+		
+		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
 	}
 }

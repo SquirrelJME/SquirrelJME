@@ -56,16 +56,12 @@ class __ExecDisplayableDefaultCommand__
 	@Override
 	public void run()
 	{
-		throw Debugging.todo();
-		/*
 		// Either add or remove it from the default menu bar
-		Menu pinned = this._displayable._menuBar.pin();
+		Menu pinned = this._displayable._menuDefault;
 		if (pinned != null)
 			if (this._add)
 				pinned.append(this._command);
 			else
 				pinned.remove(this._command);
-				
-		 */
 	}
 }

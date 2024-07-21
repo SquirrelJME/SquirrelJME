@@ -63,11 +63,10 @@ public abstract class Displayable
 		new MenuLayoutLock();
 	
 	/** The node of this menu. */
-	final MenuActionNode _menuNode =
-		new MenuActionNode(this);
+	final MenuActionNode _menuNode;
 	
 	/** The default menu. */
-	private final Menu _menuDefault;
+	final Menu _menuDefault;
 	
 	/**
 	 * Initializes the base displayable object.
@@ -84,22 +83,17 @@ public abstract class Displayable
 		this._trackerTitle = new TextTracker(state.scritchApi().eventLoop(),
 			Displayable.__defaultTitle());
 		
-		throw Debugging.todo();
-		/*
-		// Setup menu bar
-		MenuLayoutBar menuBar = new MenuLayoutBar(
-			state.scritchApi(), this);
-		this._menuBar = menuBar;
-		
 		// Setup default menu
 		Menu menuDefault = new Menu("App", "Application",
 			null);
 		this._menuDefault = menuDefault;
 		
-		// Add and use this menu
-		menuBar.insert(Integer.MAX_VALUE, menuDefault);
-		menuBar.pin(menuDefault);
-		 */
+		// Node which contains the default menu
+		MenuActionNode menuNode = new MenuActionNode(this);
+		this._menuNode = menuNode;
+		
+		// Make sure the menu is actually in it
+		menuNode.insert(0, menuDefault);
 	}
 	
 	/**
