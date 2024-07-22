@@ -14,6 +14,7 @@
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/alloc.h"
 #include "lib/scritchui/framebuffer/fb.h"
+#include "lib/scritchui/core/coreGeneric.h"
 
 /** Window manager information. */
 static const sjme_scritchui_wmInfo sjme_scritchUI_coreWmInfo =
@@ -379,3 +380,60 @@ sjme_errorCode sjme_scritchui_core_objectDelete(
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
+
+sjme_errorCode sjme_scritchui_coreGeneric_commonNew(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_uiCommon* outCommon,
+	sjme_attrInPositiveNonZero sjme_jint outCommonSize,
+	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_UI_TYPES)
+		sjme_scritchui_uiType uiType,
+	sjme_attrInNotNull sjme_scritchui_coreGeneric_commonNewImplFunc implNew)
+{
+	sjme_errorCode error;
+	sjme_scritchui_uiCommon result;
+
+	if (inState == NULL || outCommon == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (outCommonSize <= 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+		
+	/* Missing? */
+	if (implNew == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Allocate result. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_alloc_weakNew(inState->pool,
+		outCommonSize, NULL, NULL, &result, NULL)) || result == NULL)
+		goto fail_alloc;
+	
+	/* Pre-initialize. */
+	if (sjme_error_is(error = inState->intern->initCommon(inState,
+		result, SJME_JNI_FALSE, uiType)))
+		goto fail_preInit;
+	
+	/* Setup common item. */
+	if (sjme_error_is(error = implNew(inState, result)) ||
+		result->handle == NULL)
+		goto fail_new;
+	
+	/* Post-initialize. */
+	if (sjme_error_is(error = inState->intern->initCommon(inState,
+		result, SJME_JNI_TRUE, uiType)))
+		goto fail_postInit;
+	
+	/* Success! */
+	*outCommon = result;
+	return SJME_ERROR_NONE;
+
+fail_postInit:
+fail_new:
+fail_alloc:
+fail_preInit:
+	if (result != NULL)
+		sjme_alloc_free(result);
+	
+	return sjme_error_default(error);
+}
+
