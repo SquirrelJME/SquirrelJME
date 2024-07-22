@@ -209,6 +209,9 @@ struct sjme_scritchui_implFunctions
 	/** Hardware graphics support on arbitrary buffers. */
 	SJME_SCRITCHUI_QUICK_SAME(hardwareGraphics);
 	
+	/** Sets the close listener for a window. */
+	SJME_SCRITCHUI_QUICK_SAME(labelSetString);
+	
 	/** Creates a new native list. */
 	SJME_SCRITCHUI_QUICK_IMPL(listNew);
 	
@@ -248,9 +251,6 @@ struct sjme_scritchui_implFunctions
 	/** Set close listener for a window. */
 	SJME_SCRITCHUI_QUICK_SAME(windowSetCloseListener);
 	
-	/** Sets the close listener for a window. */
-	SJME_SCRITCHUI_QUICK_SAME(windowSetTitle);
-	
 	/** Sets visibility of the window. */
 	SJME_SCRITCHUI_QUICK_SAME(windowSetVisible);
 };
@@ -285,6 +285,20 @@ typedef sjme_errorCode (*sjme_scritchui_intern_getContainerFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInOutNotNull sjme_scritchui_uiContainer* outContainer);
+
+/**
+ * Returns the labeled item for the given component.
+ * 
+ * @param inState The input state.
+ * @param inComponent The input component.
+ * @param outLabeled The resultant labeled item.
+ * @return Any error code if applicable, such as the component is not valid.
+ * @since 2024/07/22 
+ */
+typedef sjme_errorCode (*sjme_scritchui_intern_getLabeledFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInOutNotNull sjme_scritchui_uiLabeled* outLabeled);
 
 /**
  * Returns the container for the given component.
@@ -400,6 +414,9 @@ struct sjme_scritchui_internFunctions
 		
 	/** Returns the container for the given component. */
 	sjme_scritchui_intern_getContainerFunc getContainer;
+		
+	/** Returns the labeled item for the given component. */
+	sjme_scritchui_intern_getLabeledFunc getLabeled;
 	
 	/** Returns the paintable for the given component. */
 	sjme_scritchui_intern_getPaintableFunc getPaintable;

@@ -148,19 +148,6 @@ public interface ScritchWindowInterface
 		throws MLECallError;
 	
 	/**
-	 * Sets the title of the given window.
-	 *
-	 * @param __window The window to set the title of.
-	 * @param __title The title to set, may be {@code null} to clear it.
-	 * @throws MLECallError If the window is not valid.
-	 * @since 2024/07/21
-	 */
-	@SquirrelJMEVendorApi
-	void setTitle(@NotNull ScritchWindowBracket __window,
-		@Nullable String __title)
-		throws MLECallError;
-	
-	/**
 	 * Sets the visibility of the given window.
 	 *
 	 * @param __window The window to set.

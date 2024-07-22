@@ -55,15 +55,16 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 	.fontBuiltin = sjme_scritchui_coreSerial_fontBuiltin,
 	.fontDerive = sjme_scritchui_coreSerial_fontDerive,
 	.hardwareGraphics = sjme_scritchui_coreSerial_hardwareGraphics,
+	.labelSetString = sjme_scritchui_coreSerial_labelSetString,
 	.listNew = sjme_scritchui_coreSerial_listNew,
-	
+
 	/* Loops are unchanged. */
 	.loopExecute = sjme_scritchui_core_loopExecute,
 	.loopExecuteLater = sjme_scritchui_core_loopExecuteLater,
 	.loopExecuteWait = sjme_scritchui_core_loopExecuteWait,
 	.loopIsInThread = sjme_scritchui_core_loopIsInThread,
 	.loopIterate = sjme_scritchui_core_loopIterate,
-	
+
 	/* As normal. */
 	.menuBarNew = sjme_scritchui_coreSerial_menuBarNew,
 	.menuItemNew = sjme_scritchui_coreSerial_menuItemNew,
@@ -74,10 +75,9 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 	.screenSetListener = sjme_scritchui_coreSerial_screenSetListener,
 	.screens = sjme_scritchui_coreSerial_screens,
 	.windowContentMinimumSize =
-		sjme_scritchui_coreSerial_windowContentMinimumSize,
+	sjme_scritchui_coreSerial_windowContentMinimumSize,
 	.windowNew = sjme_scritchui_coreSerial_windowNew,
 	.windowSetCloseListener = sjme_scritchui_coreSerial_windowSetCloseListener,
-	.windowSetTitle = sjme_scritchui_coreSerial_windowSetTitle,
 	.windowSetVisible = sjme_scritchui_coreSerial_windowSetVisible,
 };
 
@@ -109,6 +109,7 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 	.fontBuiltin = sjme_scritchui_core_fontBuiltin,
 	.fontDerive = sjme_scritchui_core_fontDerive,
 	.hardwareGraphics = sjme_scritchpen_core_hardwareGraphics,
+	.labelSetString = sjme_scritchui_core_labelSetString,
 	.listNew = sjme_scritchui_core_listNew,
 	.loopExecute = sjme_scritchui_core_loopExecute,
 	.loopExecuteLater = sjme_scritchui_core_loopExecuteLater,
@@ -126,7 +127,6 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 	.windowContentMinimumSize = sjme_scritchui_core_windowContentMinimumSize,
 	.windowNew = sjme_scritchui_core_windowNew,
 	.windowSetCloseListener = sjme_scritchui_core_windowSetCloseListener,
-	.windowSetTitle = sjme_scritchui_core_windowSetTitle,
 	.windowSetVisible = sjme_scritchui_core_windowSetVisible,
 };
 
@@ -136,6 +136,7 @@ static const sjme_scritchui_internFunctions sjme_scritchUI_coreIntern =
 	.fontBuiltin = sjme_scritchui_core_intern_fontBuiltin,
 	.getChoice = sjme_scritchui_core_intern_getChoice,
 	.getContainer = sjme_scritchui_core_intern_getContainer,
+	.getLabeled = sjme_scritchui_core_intern_getLabeled,
 	.getPaintable = sjme_scritchui_core_intern_getPaintable,
 	.initCommon = sjme_scritchui_core_intern_initCommon,
 	.initComponent = sjme_scritchui_core_intern_initComponent,

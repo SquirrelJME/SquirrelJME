@@ -79,6 +79,9 @@
 #define FORWARD_DESC___linkInit "(" \
 	DESC_STRING DESC_STRING ")" DESC_LONG
 
+#define FORWARD_DESC___labelSetString "(" \
+	DESC_LONG DESC_LONG DESC_STRING ")" DESC_VOID
+
 #define FORWARD_DESC___listNew "(" \
 	DESC_LONG DESC_INT ")" DESC_LONG
 
@@ -120,8 +123,6 @@
 	DESC_LONG ")" DESC_LONG
 #define FORWARD_DESC___windowSetCloseListener "(" \
 	DESC_LONG DESC_LONG DESC_SCRITCHUI_CLOSE_LISTENER ")" DESC_VOID
-#define FORWARD_DESC___windowSetTitle "(" \
-	DESC_LONG DESC_LONG DESC_STRING ")" DESC_VOID
 #define FORWARD_DESC___windowSetVisible "(" \
 	DESC_LONG DESC_LONG DESC_BOOLEAN ")" DESC_VOID
 
@@ -1888,16 +1889,16 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
-	__windowSetTitle)(JNIEnv* env, jclass classy, jlong stateP,
-	jlong windowP, jstring title)
+	__labelSetString)(JNIEnv* env, jclass classy, jlong stateP,
+	jlong componentP, jstring title)
 {
 	sjme_errorCode error;
 	sjme_scritchui state;
-	sjme_scritchui_uiWindow window;
+	sjme_scritchui_uiComponent component;
 	sjme_lpcstr chars;
 	jboolean isCopy;
 	
-	if (stateP == 0 || windowP == 0)
+	if (stateP == 0 || componentP == 0)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return;
@@ -1905,10 +1906,10 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
-	window = (sjme_scritchui_uiWindow)windowP;
+	component = (sjme_scritchui_uiComponent)componentP;
 	
 	/* Not implemented? */
-	if (state->api->windowSetTitle == NULL)
+	if (state->api->labelSetString == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
 		return;
@@ -1919,8 +1920,8 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	chars = (*env)->GetStringUTFChars(env, title, &isCopy);
 
 	/* Forward call. */
-	error = state->api->windowSetTitle(
-		state, window, chars);	
+	error = state->api->labelSetString(
+		state, component, chars);	
 	
 	/* Cleanup. */
 	(*env)->ReleaseStringUTFChars(env, title, chars);
@@ -1977,6 +1978,7 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 	FORWARD_list(NativeScritchDylib, __envIsPanelOnly),
 	FORWARD_list(NativeScritchDylib, __fontDerive),
 	FORWARD_list(NativeScritchDylib, __hardwareGraphics),
+	FORWARD_list(NativeScritchDylib, __labelSetString),
 	FORWARD_list(NativeScritchDylib, __linkInit),
 	FORWARD_list(NativeScritchDylib, __listNew),
 	FORWARD_list(NativeScritchDylib, __loopExecute),
@@ -1996,7 +1998,6 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 	FORWARD_list(NativeScritchDylib, __windowManagerType),
 	FORWARD_list(NativeScritchDylib, __windowNew),
 	FORWARD_list(NativeScritchDylib, __windowSetCloseListener),
-	FORWARD_list(NativeScritchDylib, __windowSetTitle),
 	FORWARD_list(NativeScritchDylib, __windowSetVisible),
 };
 

@@ -18,7 +18,7 @@ import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuItemBracket;
  */
 public class DylibMenuItemObject
 	extends DylibBaseObject
-	implements ScritchMenuItemBracket
+	implements ScritchMenuItemBracket, DylibLabelObject
 {
 	/**
 	 * Initializes the menu item object.

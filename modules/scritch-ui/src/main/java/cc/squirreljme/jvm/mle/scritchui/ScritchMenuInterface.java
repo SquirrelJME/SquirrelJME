@@ -13,16 +13,13 @@ import cc.squirreljme.jvm.mle.constants.UIKeyEventType;
 import cc.squirreljme.jvm.mle.constants.UIKeyModifier;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBarBracket;
-import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBaseBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuHasChildrenBracket;
-import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuHasLabelBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuHasParentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuItemBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 /**
@@ -101,18 +98,5 @@ public interface ScritchMenuInterface
 	@SquirrelJMEVendorApi
 	@NotNull
 	ScritchMenuBracket menuNew()
-		throws MLECallError;
-	
-	/**
-	 * Sets the label for a menu item.
-	 *
-	 * @param __item The item to set.
-	 * @param __label The label to use.
-	 * @throws MLECallError If the item is not valid.
-	 * @since 2024/07/21
-	 */
-	@SquirrelJMEVendorApi
-	void menuSetLabel(@NotNull ScritchMenuHasLabelBracket __item,
-		@Nullable String __label)
 		throws MLECallError;
 }

@@ -50,7 +50,7 @@ final class __ExecDisplaySetTitle__
 	{
 		DisplayState display = this._display;
 		
-		DisplayManager.instance().scritch().window()
-			.setTitle(display.scritchWindow(), __s);
+		DisplayManager.instance().scritch().label()
+			.setString(display.scritchWindow(), __s);
 	}
 }

@@ -104,6 +104,11 @@ sjme_errorCode sjme_scritchui_gtk2_containerSetBounds(
 	sjme_attrInPositive sjme_jint y,
 	sjme_attrInPositiveNonZero sjme_jint width,
 	sjme_attrInPositiveNonZero sjme_jint height);
+	
+sjme_errorCode sjme_scritchui_gtk2_labelSetString(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNullable sjme_lpcstr inString);
 
 sjme_errorCode sjme_scritchui_gtk2_loopExecuteLater(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -151,11 +156,6 @@ sjme_errorCode sjme_scritchui_gtk2_windowSetCloseListenerFunc(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(close));
-	
-sjme_errorCode sjme_scritchui_gtk2_windowSetTitle(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
-	sjme_attrInNullable sjme_lpcstr inTitle);
 	
 sjme_errorCode sjme_scritchui_gtk2_windowSetVisible(
 	sjme_attrInNotNull sjme_scritchui inState,

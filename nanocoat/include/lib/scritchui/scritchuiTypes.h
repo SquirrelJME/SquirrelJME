@@ -297,6 +297,17 @@ typedef struct sjme_scritchui_uiContainerBase
 } sjme_scritchui_uiContainerBase;
 
 /**
+ * Base data for anything which may have a label.
+ * 
+ * @since 2024/07/22
+ */
+typedef struct sjme_scritchui_uiLabeledBase
+{
+	/** The current label, which is always a copy. */
+	sjme_lpcstr label;
+} sjme_scritchui_uiLabeledBase;
+
+/**
  * Base data for lists.
  * 
  * @since 2024/07/16
@@ -330,6 +341,9 @@ typedef struct sjme_scritchui_uiMenuItemBase
 {
 	/** Common data. */
 	sjme_scritchui_uiCommonBase common;
+	
+	/** Labeled item. */
+	sjme_scritchui_uiLabeledBase labeled;
 } sjme_scritchui_uiMenuItemBase;
 
 /**
@@ -341,6 +355,9 @@ typedef struct sjme_scritchui_uiMenuBase
 {
 	/** Common data. */
 	sjme_scritchui_uiCommonBase common;
+	
+	/** Labeled item. */
+	sjme_scritchui_uiLabeledBase labeled;
 } sjme_scritchui_uiMenuBase;
 
 typedef struct sjme_scritchui_uiPaintableListeners
@@ -416,11 +433,11 @@ typedef struct sjme_scritchui_uiWindowBase
 	/** Container related. */
 	sjme_scritchui_uiContainerBase container;
 	
+	/** Labeled item. */
+	sjme_scritchui_uiLabeledBase labeled;
+	
 	/** Listeners. */
 	sjme_scritchui_uiWindowListeners listeners[SJME_NUM_SCRITCHUI_LISTENER];
-	
-	/** The current window title, which is always a copy. */
-	sjme_lpcstr title;
 } sjme_scritchui_uiWindowBase;
 
 struct sjme_scritchui_pencilFontBase

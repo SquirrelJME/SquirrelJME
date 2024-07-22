@@ -26,6 +26,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_gtkFunctions =
 	.containerAdd = sjme_scritchui_gtk2_containerAdd,
 	.containerRemove = sjme_scritchui_gtk2_containerRemove,
 	.containerSetBounds = sjme_scritchui_gtk2_containerSetBounds,
+	.labelSetString = sjme_scritchui_gtk2_labelSetString,
 	.listNew = NULL,
 	.loopExecute = NULL,
 	.loopExecuteLater = sjme_scritchui_gtk2_loopExecuteLater,
@@ -39,7 +40,6 @@ static const sjme_scritchui_implFunctions sjme_scritchui_gtkFunctions =
 	.windowContentMinimumSize = sjme_scritchui_gtk2_windowContentMinimumSize,
 	.windowNew = sjme_scritchui_gtk2_windowNew,
 	.windowSetCloseListener = sjme_scritchui_gtk2_windowSetCloseListenerFunc,
-	.windowSetTitle = sjme_scritchui_gtk2_windowSetTitle,
 	.windowSetVisible = sjme_scritchui_gtk2_windowSetVisible,
 };
 

@@ -115,16 +115,4 @@ public class DylibMenuInterface
 		
 		return new DylibMenuObject(menuP);
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/07/21
-	 */
-	@Override
-	public void menuSetLabel(ScritchMenuHasLabelBracket __item,
-		String __label)
-		throws MLECallError
-	{
-		throw Debugging.todo();
-	}
 }

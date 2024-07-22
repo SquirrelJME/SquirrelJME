@@ -121,6 +121,16 @@ public interface ScritchInterface
 		throws MLECallError;
 	
 	/**
+	 * Returns the label interface.
+	 *
+	 * @return The label interface.
+	 * @since 2024/07/22
+	 */
+	@SquirrelJMEVendorApi
+	@NotNull
+	ScritchLabelInterface label();
+	
+	/**
 	 * Returns the list interface.
 	 *
 	 * @return The interface for lists.

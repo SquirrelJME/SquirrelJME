@@ -245,10 +245,10 @@ sjme_errorCode sjme_scritchui_core_windowSetCloseListener(
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(close));
 	
-sjme_errorCode sjme_scritchui_core_windowSetTitle(
+sjme_errorCode sjme_scritchui_core_labelSetString(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
-	sjme_attrInNullable sjme_lpcstr inTitle);
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNullable sjme_lpcstr inString);
 
 sjme_errorCode sjme_scritchui_core_windowSetVisible(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -268,6 +268,11 @@ sjme_errorCode sjme_scritchui_core_intern_getContainer(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInOutNotNull sjme_scritchui_uiContainer* outContainer);
+
+sjme_errorCode sjme_scritchui_core_intern_getLabeled(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInOutNotNull sjme_scritchui_uiLabeled* outLabeled);
 
 sjme_errorCode sjme_scritchui_core_intern_getPaintable(
 	sjme_attrInNotNull sjme_scritchui inState,

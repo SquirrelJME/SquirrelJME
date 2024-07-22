@@ -10,6 +10,7 @@
 package cc.squirreljme.runtime.lcdui.scritchui;
 
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchLabelInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchMenuInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchBaseBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBaseBracket;
@@ -115,8 +116,9 @@ public final class MenuActionTree
 			__into.owner(), (__add == null ? null : Arrays.asList(__add)));
 		
 		// API for accessing menus
-		ScritchMenuInterface menuApi = DisplayManager.instance().scritch()
-			.menu();
+		ScritchInterface scritchApi = DisplayManager.instance().scritch();
+		ScritchLabelInterface labelApi = scritchApi.label();
+		ScritchMenuInterface menuApi = scritchApi.menu();
 		
 		// Map ourself into a node
 		Leaf into = this.map(__into);
@@ -154,7 +156,7 @@ public final class MenuActionTree
 		
 		// Set text label for this item?
 		if (scritch instanceof ScritchMenuHasLabelBracket)
-			menuApi.menuSetLabel((ScritchMenuHasLabelBracket)scritch,
+			labelApi.setString((ScritchMenuHasLabelBracket)scritch,
 				into._node.owner(MenuAction.class)._longLabel.get());
 	}
 	

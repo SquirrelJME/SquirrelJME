@@ -7,19 +7,16 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.mle.scritchui.brackets;
+package cc.squirreljme.emulator.scritchui.dylib;
 
-import cc.squirreljme.jvm.mle.annotation.GhostObject;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchLabelBracket;
 
 /**
- * A labeled item.
+ * Base for labels.
  *
- * @since 2024/03/01
+ * @since 2024/07/22
  */
-@GhostObject
-@SquirrelJMEVendorApi
-public interface ScritchLabelBracket
-	extends ScritchComponentBracket
+public interface DylibLabelObject
+	extends DylibHasObjectPointer, ScritchLabelBracket
 {
 }

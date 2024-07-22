@@ -24,6 +24,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_palmosFunctions =
 	.containerRemove = NULL,
 	.containerSetBounds = NULL,
 	.hardwareGraphics = NULL,
+	.labelSetString = NULL,
 	.listNew = NULL,
 	.loopExecute = NULL,
 	.loopExecuteLater = NULL,
@@ -37,7 +38,6 @@ static const sjme_scritchui_implFunctions sjme_scritchui_palmosFunctions =
 	.windowContentMinimumSize = NULL,
 	.windowNew = NULL,
 	.windowSetCloseListener = NULL,
-	.windowSetTitle = NULL,
 	.windowSetVisible = NULL,
 };
 

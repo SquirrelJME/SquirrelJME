@@ -102,6 +102,9 @@ typedef enum sjme_scritchui_serialType
 	
 	/** @c hardwareGraphics . */
 	SJME_SCRITCHUI_SERIAL_TYPE_HARDWARE_GRAPHICS,
+	
+	/** @c labelSetString . */
+	SJME_SCRITCHUI_SERIAL_TYPE_LABEL_SET_STRING,
 		
 	/** @c listNew . */
 	SJME_SCRITCHUI_SERIAL_TYPE_LIST_NEW,
@@ -138,9 +141,6 @@ typedef enum sjme_scritchui_serialType
 	
 	/** @c windowSetCloseListener . */
 	SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_SET_CLOSE_LISTENER,
-	
-	/** @c windowSetTitle . */
-	SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_SET_TITLE,
 	
 	/** @c windowSetVisible . */
 	SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_SET_VISIBLE,
@@ -282,6 +282,14 @@ SUD_STRUCT_DEF(hardwareGraphics,
 	SDU_VAR(sjme_jint, sh);
 	SDU_VARP(const sjme_frontEnd*, pencilFrontEndCopy););
 
+SUD_STRUCT_DEF(labelSetString,
+	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
+	SDU_VAR(sjme_lpcstr, inString););
+
+SUD_STRUCT_DEF(listNew,
+	SDU_VARP(sjme_scritchui_uiList*, outList);
+	SDU_VAR(sjme_scritchui_choiceType, inChoiceType););
+
 SUD_STRUCT_DEF(menuBarNew,
 	SDU_VARP(sjme_scritchui_uiMenuBar*, outMenuBar););
 
@@ -290,10 +298,6 @@ SUD_STRUCT_DEF(menuItemNew,
 
 SUD_STRUCT_DEF(menuNew,
 	SDU_VARP(sjme_scritchui_uiMenu*, outMenu););
-
-SUD_STRUCT_DEF(listNew,
-	SDU_VARP(sjme_scritchui_uiList*, outList);
-	SDU_VAR(sjme_scritchui_choiceType, inChoiceType););
 
 SUD_STRUCT_DEF(objectDelete,
 	SDU_VARP(sjme_scritchui_uiCommon*, inOutObject););
@@ -324,10 +328,6 @@ SUD_STRUCT_DEF(windowNew,
 SUD_STRUCT_DEF(windowSetCloseListener,
 	SDU_VAR(sjme_scritchui_uiWindow, inWindow);
 	SJME_SCRITCHUI_SERIAL_SET_LISTENER(close););
-
-SUD_STRUCT_DEF(windowSetTitle,
-	SDU_VAR(sjme_scritchui_uiWindow, inWindow);
-	SDU_VAR(sjme_lpcstr, inTitle););
 
 SUD_STRUCT_DEF(windowSetVisible,
 	SDU_VAR(sjme_scritchui_uiWindow, inWindow);
@@ -415,6 +415,9 @@ typedef union sjme_scritchui_serialDataUnion
 	/** @c hardwareGraphics . */
 	SJME_SCRITCHUI_SDU_DEF(hardwareGraphics);
 	
+	/** @c labelSetString . */
+	SJME_SCRITCHUI_SDU_DEF(labelSetString);
+	
 	/** @c listNew . */
 	SJME_SCRITCHUI_SDU_DEF(listNew);
 	
@@ -450,9 +453,6 @@ typedef union sjme_scritchui_serialDataUnion
 	
 	/** @c windowSetCloseListener . */
 	SJME_SCRITCHUI_SDU_DEF(windowSetCloseListener);
-	
-	/** @c windowSetTitle . */
-	SJME_SCRITCHUI_SDU_DEF(windowSetTitle);
 	
 	/** @c windowSetVisible . */
 	SJME_SCRITCHUI_SDU_DEF(windowSetVisible);
@@ -606,6 +606,11 @@ sjme_errorCode sjme_scritchui_coreSerial_hardwareGraphics(
 	sjme_attrInPositiveNonZero sjme_jint sh,
 	sjme_attrInNullable const sjme_frontEnd* pencilFrontEndCopy);
 	
+sjme_errorCode sjme_scritchui_coreSerial_labelSetString(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNullable sjme_lpcstr inString);
+	
 sjme_errorCode sjme_scritchui_coreSerial_listNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_scritchui_uiList* outList,
@@ -660,11 +665,6 @@ sjme_errorCode sjme_scritchui_coreSerial_windowSetCloseListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(close));
-	
-sjme_errorCode sjme_scritchui_coreSerial_windowSetTitle(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
-	sjme_attrInNullable sjme_lpcstr inTitle);
 
 sjme_errorCode sjme_scritchui_coreSerial_windowSetVisible(
 	sjme_attrInNotNull sjme_scritchui inState,

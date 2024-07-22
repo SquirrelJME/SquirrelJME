@@ -28,6 +28,7 @@ const sjme_scritchui_implFunctions sjme_scritchui_fbFunctions =
 	.containerRemove = sjme_scritchui_fb_containerRemove,
 	.containerSetBounds = sjme_scritchui_fb_containerSetBounds,
 	.hardwareGraphics = NULL,
+	.labelSetString = sjme_scritchui_fb_labelSetString,
 	.listNew = sjme_scritchui_fb_listNew,
 	.loopExecute = sjme_scritchui_fb_loopExecute,
 	.loopExecuteLater = sjme_scritchui_fb_loopExecuteLater,
@@ -41,7 +42,6 @@ const sjme_scritchui_implFunctions sjme_scritchui_fbFunctions =
 	.windowContentMinimumSize = sjme_scritchui_fb_windowContentMinimumSize,
 	.windowNew = sjme_scritchui_fb_windowNew,
 	.windowSetCloseListener = sjme_scritchui_fb_windowSetCloseListener,
-	.windowSetTitle = sjme_scritchui_fb_windowSetTitle,
 	.windowSetVisible = sjme_scritchui_fb_windowSetVisible,
 };
 

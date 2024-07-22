@@ -314,6 +314,20 @@ typedef struct sjme_scritchui_uiComponentBase* sjme_scritchui_uiComponent;
 typedef struct sjme_scritchui_uiContainerBase* sjme_scritchui_uiContainer;
 
 /**
+ * Represents a component which can have a label.
+ * 
+ * @since 2024/07/22
+ */
+typedef struct sjme_scritchui_uiLabeledBase sjme_scritchui_uiLabeledBase;
+
+/**
+ * Represents a component which can have a label.
+ * 
+ * @since 2024/07/22
+ */
+typedef sjme_scritchui_uiLabeledBase* sjme_scritchui_uiLabeled;
+
+/**
  * Base paintable for ScritchUI.
  * 
  * @since 2024/04/06
@@ -918,6 +932,20 @@ typedef sjme_errorCode (*sjme_scritchui_hardwareGraphicsFunc)(
 	sjme_attrInNullable const sjme_frontEnd* pencilFrontEndCopy);
 
 /**
+ * Sets the label of the specified component.
+ * 
+ * @param inState The input state.
+ * @param inWindow The component to set the label of.
+ * @param inString The label to set.
+ * @return Any resultant error, if any.
+ * @since 2024/07/21
+ */
+typedef sjme_errorCode (*sjme_scritchui_labelSetStringFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNullable sjme_lpcstr inString);
+
+/**
  * Creates a new list.
  * 
  * @param inState The input state.
@@ -1115,20 +1143,6 @@ typedef sjme_errorCode (*sjme_scritchui_windowSetCloseListenerFunc)(
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(close));
 
 /**
- * Sets the title of the specified window.
- * 
- * @param inState The input state.
- * @param inWindow The window to set the title of.
- * @param inTitle The title to set.
- * @return Any resultant error, if any.
- * @since 2024/07/21
- */
-typedef sjme_errorCode (*sjme_scritchui_windowSetTitleFunc)(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
-	sjme_attrInNullable sjme_lpcstr inTitle);
-
-/**
  * Sets the visibility of a window.
  * 
  * @param inState The input state.
@@ -1214,6 +1228,9 @@ struct sjme_scritchui_apiFunctions
 	/** Hardware graphics support on arbitrary buffers. */
 	SJME_SCRITCHUI_QUICK_API(hardwareGraphics);
 	
+	/** Sets the close listener for a window. */
+	SJME_SCRITCHUI_QUICK_API(labelSetString);
+	
 	/** Creates a new list. */
 	SJME_SCRITCHUI_QUICK_API(listNew);
 	
@@ -1264,9 +1281,6 @@ struct sjme_scritchui_apiFunctions
 	
 	/** Sets the close listener for a window. */
 	SJME_SCRITCHUI_QUICK_API(windowSetCloseListener);
-	
-	/** Sets the close listener for a window. */
-	SJME_SCRITCHUI_QUICK_API(windowSetTitle);
 	
 	/** Sets visibility of window. */
 	SJME_SCRITCHUI_QUICK_API(windowSetVisible);

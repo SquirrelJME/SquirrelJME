@@ -159,26 +159,8 @@ public class DylibWindowInterface
 		if (__window == null)
 			throw new MLECallError("Null arguments.");
 		
-		if ((DylibWindowObject)__window == null)
-			throw new MLECallError("NARG");
-		
 		NativeScritchDylib.__windowSetCloseListener(this.dyLib._stateP,
 			((DylibWindowObject)__window).objectPointer(), __listener);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/07/21
-	 */
-	@Override
-	public void setTitle(ScritchWindowBracket __window, String __title)
-		throws MLECallError
-	{
-		if (__window == null)
-			throw new MLECallError("Null arguments.");
-		
-		NativeScritchDylib.__windowSetTitle(this.dyLib._stateP,
-			((DylibWindowObject)__window).objectPointer(), __title);
 	}
 	
 	/**

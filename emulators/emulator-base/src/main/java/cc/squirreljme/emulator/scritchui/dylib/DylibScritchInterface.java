@@ -18,6 +18,7 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchContainerInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchEnvironmentInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchEventLoopInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchLabelInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchListInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchMenuInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchPaintableInterface;
@@ -81,6 +82,9 @@ public class DylibScritchInterface
 	/** Event loop interface. */
 	protected final DylibEventLoopInterface eventLoop;
 	
+	/** The label interface. */
+	protected final DylibLabelInterface label;
+	
 	/** List interface. */
 	protected final DylibListInterface list;
 	
@@ -123,6 +127,7 @@ public class DylibScritchInterface
 		this.container = new DylibContainerInterface(self, __dyLib);
 		this.environment = new DylibEnvironmentInterface(self, __dyLib);
 		this.eventLoop = new DylibEventLoopInterface(self, __dyLib);
+		this.label = new DylibLabelInterface(self, __dyLib);
 		this.list = new DylibListInterface(self, __dyLib);
 		this.menu = new DylibMenuInterface(self, __dyLib);
 		this.paintable = new DylibPaintableInterface(self, __dyLib);
@@ -220,10 +225,20 @@ public class DylibScritchInterface
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2024/07/22
+	 */
+	@Override
+	public ScritchLabelInterface label()
+	{
+		return this.label;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2024/07/16
 	 */
 	@Override
-	public @NotNull ScritchListInterface list()
+	public ScritchListInterface list()
 	{
 		return this.list;
 	}

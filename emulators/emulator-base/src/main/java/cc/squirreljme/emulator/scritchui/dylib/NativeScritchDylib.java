@@ -13,7 +13,6 @@ import cc.squirreljme.jvm.mle.brackets.PencilBracket;
 import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchListBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchCloseListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchInputListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchPaintListener;
@@ -326,6 +325,19 @@ public final class NativeScritchDylib
 		throws MLECallError;
 	
 	/**
+	 * Set the label string.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __labelP The label pointer.
+	 * @param __string The string to set.
+	 * @throws MLECallError If the string could not be set.
+	 * @since 2024/07/21
+	 */
+	static native void __labelSetString(long __stateP,
+		long __labelP, String __string)
+		throws MLECallError;
+	
+	/**
 	 * Creates a new menu bar.
 	 *
 	 * @param __stateP The current state pointer.
@@ -470,19 +482,6 @@ public final class NativeScritchDylib
 	 */
 	static native void __windowSetCloseListener(long __stateP,
 		long __windowP, ScritchCloseListener __listener)
-		throws MLECallError;
-	
-	/**
-	 * Set the window title.
-	 *
-	 * @param __stateP The state pointer.
-	 * @param __windowP The window pointer.
-	 * @param __title The title to set.
-	 * @throws MLECallError If the title could not be set.
-	 * @since 2024/07/21
-	 */
-	static native void __windowSetTitle(long __stateP,
-		long __windowP, String __title)
 		throws MLECallError;
 	
 	/**
