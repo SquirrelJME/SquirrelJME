@@ -34,8 +34,8 @@ sjme_errorCode sjme_scritchui_gtk2_panelEnableFocus(
 	if (enableFocus && defaultFocus)
 		gtk_widget_grab_default(widget);
 	
-	/* Success! */
-	return SJME_ERROR_NONE;
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
 
 sjme_errorCode sjme_scritchui_gtk2_panelNew(
@@ -66,12 +66,12 @@ sjme_errorCode sjme_scritchui_gtk2_panelNew(
 	gtk_container_add(GTK_CONTAINER(eventBox), fixed);
 	
 	/* Common widget init. */
-	inState->implIntern->widgetInit(GTK_WIDGET(fixed));
+	inState->implIntern->widgetInit(inState, GTK_WIDGET(fixed));
 	
 	/* Store information. */
 	inPanel->component.common.handle = fixed;
 	inPanel->component.common.handleB = eventBox;
 	
-	/* Success! */
-	return SJME_ERROR_NONE;
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }

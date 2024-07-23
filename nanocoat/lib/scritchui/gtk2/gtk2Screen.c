@@ -10,6 +10,7 @@
 #include <gdk/gdk.h>
 
 #include "lib/scritchui/gtk2/gtk2.h"
+#include "lib/scritchui/gtk2/gtk2Intern.h"
 #include "lib/scritchui/scritchuiTypes.h"
 
 sjme_errorCode sjme_scritchui_gtk2_screens(
@@ -82,5 +83,5 @@ sjme_errorCode sjme_scritchui_gtk2_screens(
 	
 	/* Return resultant count. */
 	*inOutNumScreens = numScreens;
-	return SJME_ERROR_NONE;
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }

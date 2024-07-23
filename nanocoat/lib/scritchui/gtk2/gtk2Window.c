@@ -102,8 +102,8 @@ sjme_errorCode sjme_scritchui_gtk2_windowContentMinimumSize(
 		&geometry,
 		GDK_HINT_MIN_SIZE | GDK_HINT_BASE_SIZE);
 	
-	/* Success! */
-	return SJME_ERROR_NONE;
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
 
 sjme_errorCode sjme_scritchui_gtk2_windowNew(
@@ -124,7 +124,7 @@ sjme_errorCode sjme_scritchui_gtk2_windowNew(
 	inWindow->component.common.handle = gtkWindow;
 	
 	/* Common widget init. */
-	inState->implIntern->widgetInit(GTK_WIDGET(gtkWindow));
+	inState->implIntern->widgetInit(inState, GTK_WIDGET(gtkWindow));
 	
 	/* Set default title. */
 	gtk_window_set_title(gtkWindow,
@@ -139,8 +139,8 @@ sjme_errorCode sjme_scritchui_gtk2_windowNew(
 	g_signal_connect(gtkWindow, "visibility-notify-event",
 		G_CALLBACK(sjme_scritchui_gtk2_eventVisibilityNotify), inWindow);
 	
-	/* Success! */
-	return SJME_ERROR_NONE;
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
 
 sjme_errorCode sjme_scritchui_gtk2_windowSetCloseListenerFunc(
@@ -191,6 +191,6 @@ sjme_errorCode sjme_scritchui_gtk2_windowSetVisible(
 	else
 		gtk_widget_hide(GTK_WIDGET(gtkWindow));
 	
-	/* Success! */
-	return SJME_ERROR_NONE;
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }

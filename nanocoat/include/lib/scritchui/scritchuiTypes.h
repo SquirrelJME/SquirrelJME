@@ -332,6 +332,9 @@ struct sjme_scritchui_uiMenuKindBase
 
 struct sjme_scritchui_uiMenuHasChildrenBase
 {
+	/** The number of valid children. */
+	sjme_jint numChildren;
+	
 	/** The children to this. */
 	sjme_list_sjme_scritchui_uiMenuHasParent* children;
 };
@@ -357,6 +360,9 @@ typedef struct sjme_scritchui_uiMenuBase
 	
 	/** Menu children. */
 	sjme_scritchui_uiMenuHasChildrenBase children;
+	
+	/** Menu parent. */
+	sjme_scritchui_uiMenuHasParentBase parent;
 } sjme_scritchui_uiMenuBase;
 
 /**

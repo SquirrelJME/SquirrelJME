@@ -16,6 +16,27 @@
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/alloc.h"
 
+sjme_errorCode sjme_scritchui_gtk2_intern_checkError(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInValue sjme_errorCode ifOkay)
+{
+	GError* err;
+	
+	if (inState == NULL)
+		return SJME_ERROR_NONE;
+	
+	/* Get error state. */
+	err = NULL;
+	g_clear_error(&err);
+	
+	/* Was an error set? Try translating it... */
+	if (err != NULL)
+		return SJME_ERROR_NATIVE_WIDGET_FAILURE;
+	
+	/* All fine, use error code we desired. */
+	return ifOkay;
+}
+
 sjme_errorCode sjme_scritchui_gtk2_intern_disconnectSignal(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull GtkWidget* inWidget,
@@ -50,8 +71,8 @@ sjme_errorCode sjme_scritchui_gtk2_intern_disconnectSignal(
 		sjme_alloc_free(idList);
 	}
 	
-	/* Success! */
-	return SJME_ERROR_NONE;
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
 
 sjme_errorCode sjme_scritchui_gtk2_intern_reconnectSignal(
@@ -114,11 +135,12 @@ sjme_errorCode sjme_scritchui_gtk2_intern_reconnectSignal(
 		va_end(argList);
 	}
 	
-	/* Success! */
-	return SJME_ERROR_NONE;
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
 
 sjme_errorCode sjme_scritchui_gtk2_intern_widgetInit(
+	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull GtkWidget* inWidget)
 {
 	if (inWidget == NULL)
@@ -129,5 +151,6 @@ sjme_errorCode sjme_scritchui_gtk2_intern_widgetInit(
 		GDK_VISIBILITY_NOTIFY_MASK |
 		GDK_STRUCTURE_MASK);
 	
-	return SJME_ERROR_NONE;
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }

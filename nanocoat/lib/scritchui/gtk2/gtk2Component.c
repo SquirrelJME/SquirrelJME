@@ -485,9 +485,9 @@ sjme_errorCode sjme_scritchui_gtk2_componentRepaint(
 	else
 		gtk_widget_queue_draw_area(widget,
 			x, y, width, height);
-		
-	/* Success! */
-	return SJME_ERROR_NONE;
+	
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
 
 sjme_errorCode sjme_scritchui_gtk2_componentRevalidate(
@@ -509,8 +509,8 @@ sjme_errorCode sjme_scritchui_gtk2_componentRevalidate(
 	widget = (GtkWidget*)inComponent->common.handle;
 	gtk_widget_show_all(widget);
 	
-	/* Success! */
-	return SJME_ERROR_NONE;
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
 
 sjme_errorCode sjme_scritchui_gtk2_componentSetInputListener(
@@ -558,9 +558,6 @@ sjme_errorCode sjme_scritchui_gtk2_componentSetInputListener(
 		5,
 		"button-press-event", "button-release-event",
 		"motion-notify-event", "key-press-event", "key-release-event");
-	
-	/* Did this fail? */
-	return error;
 }
 
 sjme_errorCode sjme_scritchui_gtk2_componentSetPaintListener(
@@ -614,8 +611,8 @@ sjme_errorCode sjme_scritchui_gtk2_componentSetPaintListener(
 		gtk_widget_set_app_paintable(widget, TRUE);
 	}
 	
-	/* Success! */
-	return SJME_ERROR_NONE;
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
 
 sjme_errorCode sjme_scritchui_gtk2_componentSetSizeListener(
@@ -667,6 +664,6 @@ sjme_errorCode sjme_scritchui_gtk2_componentSize(
 	if (outHeight != NULL)
 		*outHeight = alloc.height;
 	
-	/* Success! */
-	return SJME_ERROR_NONE;
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }

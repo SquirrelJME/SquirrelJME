@@ -8,6 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 #include "lib/scritchui/gtk2/gtk2.h"
+#include "lib/scritchui/gtk2/gtk2Intern.h"
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/alloc.h"
 
@@ -26,8 +27,8 @@ sjme_errorCode sjme_scritchui_gtk2_menuBarNew(
 	/* Store handle for later. */
 	inMenuBar->menuKind.common.handle = widget;
 	
-	/* Success! */
-	return SJME_ERROR_NONE;
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
 
 sjme_errorCode sjme_scritchui_gtk2_menuInsert(
@@ -36,11 +37,22 @@ sjme_errorCode sjme_scritchui_gtk2_menuInsert(
 	sjme_attrInPositive sjme_jint atIndex,
 	sjme_attrInNotNull sjme_scritchui_uiMenuKind childItem)
 {
+	GtkWidget* intoWidget;
+	GtkWidget* childWidget;
+	
 	if (inState == NULL || intoMenu == NULL || childItem == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Get widgets for injection. */
+	intoWidget = intoMenu->common.handle;
+	childWidget = childItem->common.handle;
+	
+	/* Anything that can be inserted into, is just a menu shell. */
+	gtk_menu_shell_insert(GTK_MENU_SHELL(intoWidget),
+		childWidget, atIndex);
+	
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
 
 sjme_errorCode sjme_scritchui_gtk2_menuItemNew(
@@ -58,8 +70,8 @@ sjme_errorCode sjme_scritchui_gtk2_menuItemNew(
 	/* Store handle for later. */
 	inMenuItem->menuKind.common.handle = widget;
 	
-	/* Success! */
-	return SJME_ERROR_NONE;
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
 
 sjme_errorCode sjme_scritchui_gtk2_menuNew(
@@ -77,6 +89,6 @@ sjme_errorCode sjme_scritchui_gtk2_menuNew(
 	/* Store handle for later. */
 	inMenu->menuKind.common.handle = widget;
 	
-	/* Success! */
-	return SJME_ERROR_NONE;
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }

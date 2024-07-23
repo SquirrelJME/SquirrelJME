@@ -8,6 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 #include "lib/scritchui/gtk2/gtk2.h"
+#include "lib/scritchui/gtk2/gtk2Intern.h"
 #include "lib/scritchui/core/core.h"
 
 sjme_errorCode sjme_scritchui_gtk2_containerAdd(
@@ -67,8 +68,8 @@ sjme_errorCode sjme_scritchui_gtk2_containerAdd(
 			gtk_widget_get_can_default(addWidget))
 			gtk_widget_grab_focus(addWidget);
 	
-	/* Success! */
-	return SJME_ERROR_NONE;
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
 
 sjme_errorCode sjme_scritchui_gtk2_containerRemove(
@@ -112,8 +113,8 @@ sjme_errorCode sjme_scritchui_gtk2_containerRemove(
 			return SJME_ERROR_NOT_IMPLEMENTED;
 	}
 	
-	/* Success! */
-	return SJME_ERROR_NONE;
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
 
 sjme_errorCode sjme_scritchui_gtk2_containerSetBounds(
@@ -158,6 +159,6 @@ sjme_errorCode sjme_scritchui_gtk2_containerSetBounds(
 			return SJME_ERROR_NOT_IMPLEMENTED;
 	}
 	
-	/* Success! */
-	return SJME_ERROR_NONE;
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }

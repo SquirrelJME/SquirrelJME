@@ -1893,10 +1893,13 @@ typedef enum sjme_errorCode
 	SJME_ERROR_HAS_PARENT = -70,
 	
 	/** Member already exists. */
-	SJME_ERROR_MEMBER_EXISTS = 71,
+	SJME_ERROR_MEMBER_EXISTS = -71,
+	
+	/** The native widget system failed for some reason. */
+	SJME_ERROR_NATIVE_WIDGET_FAILURE = -72,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -72
+	SJME_NUM_ERROR_CODES = -73
 } sjme_errorCode;
 
 /**

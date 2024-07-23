@@ -31,12 +31,16 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
-typedef sjme_errorCode (*sjme_scritchui_gtk2_disconnectSignalFunc)(
+typedef sjme_errorCode (*sjme_scritchui_gtk2_intern_checkErrorFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInValue sjme_errorCode ifOkay);
+
+typedef sjme_errorCode (*sjme_scritchui_gtk2_intern_disconnectSignalFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull GtkWidget* inWidget,
 	sjme_attrInNotNull sjme_scritchui_listener_void* infoCore);
 
-typedef sjme_errorCode (*sjme_scritchui_gtk2_reconnectSignalFunc)(
+typedef sjme_errorCode (*sjme_scritchui_gtk2_intern_reconnectSignalFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull GtkWidget* inWidget,
 	sjme_attrInNotNull void* inOnWhat,
@@ -48,20 +52,28 @@ typedef sjme_errorCode (*sjme_scritchui_gtk2_reconnectSignalFunc)(
 	...);
 
 typedef sjme_errorCode (*sjme_scritchui_gtk2_intern_widgetInitFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull GtkWidget* inWidget);
 
 /** Internal GTK implementation functions. */	
 struct sjme_scritchui_implInternFunctions
 {
+	/** Checks if an error occurred. */
+	sjme_scritchui_gtk2_intern_checkErrorFunc checkError;
+	
 	/** Disconnect a signal. */
-	sjme_scritchui_gtk2_disconnectSignalFunc disconnectSignal;
+	sjme_scritchui_gtk2_intern_disconnectSignalFunc disconnectSignal;
 	
 	/** Reconnect a signal. */
-	sjme_scritchui_gtk2_reconnectSignalFunc reconnectSignal;
+	sjme_scritchui_gtk2_intern_reconnectSignalFunc reconnectSignal;
 	
 	/** Widget init func. */
 	sjme_scritchui_gtk2_intern_widgetInitFunc widgetInit;
 };
+
+sjme_errorCode sjme_scritchui_gtk2_intern_checkError(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInValue sjme_errorCode ifOkay);
 
 sjme_errorCode sjme_scritchui_gtk2_intern_disconnectSignal(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -80,6 +92,7 @@ sjme_errorCode sjme_scritchui_gtk2_intern_reconnectSignal(
 	...);
 
 sjme_errorCode sjme_scritchui_gtk2_intern_widgetInit(
+	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull GtkWidget* inWidget);
 
 /*--------------------------------------------------------------------------*/

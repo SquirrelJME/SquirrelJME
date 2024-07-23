@@ -1925,7 +1925,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	__labelSetString)(JNIEnv* env, jclass classy, jlong stateP,
-	jlong componentP, jstring title)
+	jlong componentP, jstring string)
 {
 	sjme_errorCode error;
 	sjme_scritchui state;
@@ -1952,14 +1952,18 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	
 	/* Obtain characters. */
 	isCopy = JNI_FALSE;
-	chars = (*env)->GetStringUTFChars(env, title, &isCopy);
+	if (string != NULL)
+		chars = (*env)->GetStringUTFChars(env, string, &isCopy);
+	else
+		chars = NULL;
 
 	/* Forward call. */
 	error = state->api->labelSetString(
 		state, component, chars);	
 	
 	/* Cleanup. */
-	(*env)->ReleaseStringUTFChars(env, title, chars);
+	if (string != NULL)
+		(*env)->ReleaseStringUTFChars(env, string, chars);
 	
 	/* Fail? */
 	if (sjme_error_is(error))

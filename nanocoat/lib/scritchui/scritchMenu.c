@@ -37,8 +37,9 @@ sjme_errorCode sjme_scritchui_core_menuInsert(
 	sjme_errorCode error;
 	sjme_scritchui_uiMenuHasChildren parentMenu;
 	sjme_list_sjme_scritchui_uiMenuHasParent* childList;
+	sjme_list_sjme_scritchui_uiMenuHasParent* newList;
 	sjme_scritchui_uiMenuHasParent childMenu;
-	sjme_jint i, n;
+	sjme_jint i, o, n;
 	
 	if (inState == NULL || intoMenu == NULL || childItem == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -65,6 +66,8 @@ sjme_errorCode sjme_scritchui_core_menuInsert(
 	/* Out of bounds? */
 	childList = parentMenu->children;
 	n = (childList == NULL ? 0 : childList->length);
+	if (parentMenu->numChildren < n)
+		n = parentMenu->numChildren;
 	if (atIndex > n)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
@@ -74,8 +77,39 @@ sjme_errorCode sjme_scritchui_core_menuInsert(
 			if (childList->elements[i] == childItem)
 				return SJME_ERROR_MEMBER_EXISTS;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Not implemented? Fail here so we go through all validity checks */
+	/* first. */
+	if (inState->impl->menuInsert == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Setup new list to store the child in. */
+	if (sjme_error_is(error = sjme_list_alloc(inState->pool, n + 1,
+		&newList, sjme_scritchui_uiMenuHasParent, 0)) || newList == NULL)
+		return sjme_error_default(error);
+	
+	/* Copy entire set over. */
+	for (i = 0, o = 0; i < n; i++)
+	{
+		/* Inject here? */
+		if (i == atIndex)
+			newList->elements[o++] = childItem;
+		
+		/* Copy normal. */
+		if (childList != NULL)
+			newList->elements[o++] = childList->elements[i];
+	}
+	
+	/* Use new list. */
+	parentMenu->children = newList;
+	parentMenu->numChildren = n + 1;
+	
+	/* Clear up old list. */
+	if (childList != NULL)
+		if (sjme_error_is(error = sjme_alloc_free(childList)))
+			return sjme_error_default(error);
+	
+	/* Forward to native implementation. */
+	return inState->impl->menuInsert(inState, intoMenu, atIndex, childItem);
 }
 
 sjme_errorCode sjme_scritchui_core_menuItemNew(
@@ -115,11 +149,31 @@ sjme_errorCode sjme_scritchui_core_intern_getMenuHasChildren(
 	sjme_attrInNotNull sjme_scritchui_uiMenuKind inMenuKind,
 	sjme_attrInOutNotNull sjme_scritchui_uiMenuHasChildren* outHasChildren)
 {
+	sjme_scritchui_uiMenuHasChildren result;
+	
 	if (inState == NULL || inMenuKind == NULL || outHasChildren == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Depends on the type. */
+	result = NULL;
+	switch (inMenuKind->common.type)
+	{
+		case SJME_SCRITCHUI_TYPE_MENU:
+			result = &((sjme_scritchui_uiMenu)inMenuKind)->children;
+			break;
+			
+		case SJME_SCRITCHUI_TYPE_MENU_BAR:
+			result = &((sjme_scritchui_uiMenuBar)inMenuKind)->children;
+			break;
+		
+			/* Invalid. */
+		default:
+			return SJME_ERROR_INVALID_ARGUMENT;
+	}
+	
+	/* Success! */
+	*outHasChildren = result;
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchui_core_intern_getMenuHasParent(
@@ -127,9 +181,29 @@ sjme_errorCode sjme_scritchui_core_intern_getMenuHasParent(
 	sjme_attrInNotNull sjme_scritchui_uiMenuKind inMenuKind,
 	sjme_attrInOutNotNull sjme_scritchui_uiMenuHasParent* outHasParent)
 {
+	sjme_scritchui_uiMenuHasParent result;
+	
 	if (inState == NULL || inMenuKind == NULL || outHasParent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Depends on the type. */
+	result = NULL;
+	switch (inMenuKind->common.type)
+	{
+		case SJME_SCRITCHUI_TYPE_MENU:
+			result = &((sjme_scritchui_uiMenu)inMenuKind)->parent;
+			break;
+			
+		case SJME_SCRITCHUI_TYPE_MENU_ITEM:
+			result = &((sjme_scritchui_uiMenuItem)inMenuKind)->parent;
+			break;
+		
+			/* Invalid. */
+		default:
+			return SJME_ERROR_INVALID_ARGUMENT;
+	}
+	
+	/* Success! */
+	*outHasParent = result;
+	return SJME_ERROR_NONE;
 }

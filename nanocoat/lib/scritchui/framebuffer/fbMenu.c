@@ -46,11 +46,21 @@ sjme_errorCode sjme_scritchui_fb_menuInsert(
 	sjme_attrInPositive sjme_jint atIndex,
 	sjme_attrInNotNull sjme_scritchui_uiMenuKind childItem)
 {
+	sjme_scritchui wrappedState;
+	sjme_scritchui_uiMenuKind wrappedIntoMenu;
+	sjme_scritchui_uiMenuKind wrappedChildItem;
+	
 	if (inState == NULL || intoMenu == NULL || childItem == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Recover wrapped state. */
+	wrappedState = inState->wrappedState;
+	wrappedIntoMenu = intoMenu->common.handle;
+	wrappedChildItem = childItem->common.handle;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Forward. */
+	return wrappedState->api->menuInsert(wrappedState,
+		wrappedIntoMenu, atIndex, wrappedChildItem);
 }
 
 sjme_errorCode sjme_scritchui_fb_menuItemNew(

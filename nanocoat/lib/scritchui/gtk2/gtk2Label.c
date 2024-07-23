@@ -8,6 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 #include "lib/scritchui/gtk2/gtk2.h"
+#include "lib/scritchui/gtk2/gtk2Intern.h"
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/alloc.h"
 
@@ -46,6 +47,6 @@ sjme_errorCode sjme_scritchui_gtk2_labelSetString(
 			return SJME_ERROR_INVALID_ARGUMENT;
 	}
 	
-	/* Success! */
-	return SJME_ERROR_NONE;
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
