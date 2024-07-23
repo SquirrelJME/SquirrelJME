@@ -52,14 +52,14 @@ typedef enum sjme_scritchui_uiType
 	/** List. */
 	SJME_SCRITCHUI_TYPE_LIST,
 	
+	/** Menu. */
+	SJME_SCRITCHUI_TYPE_MENU,
+	
 	/** Menu bar. */
 	SJME_SCRITCHUI_TYPE_MENU_BAR,
 	
 	/** Menu item. */
 	SJME_SCRITCHUI_TYPE_MENU_ITEM,
-	
-	/** Menu. */
-	SJME_SCRITCHUI_TYPE_MENU,
 	
 	/** Panel. */
 	SJME_SCRITCHUI_TYPE_PANEL,
@@ -79,6 +79,29 @@ typedef enum sjme_scritchui_uiType
 	/** The number of possible types. */
 	SJME_NUM_SCRITCHUI_UI_TYPES
 } sjme_scritchui_uiType;
+
+/** Generic cast check. */
+#define SJME_SUI_CAST(uiType, type, v) \
+	((type)sjme_scritchui_checkCast((type), (v)))
+
+/** Check cast to menu kind. */
+#define SJME_SUI_CAST_MENU_KIND(v) \
+	((type)sjme_scritchui_checkCast_menuKind((v)))
+
+/** Check cast to menu. */
+#define SJME_SUI_CAST_MENU(v) \
+	SJME_SUI_CAST(SJME_SCRITCHUI_TYPE_MENU, \
+	sjme_scritchui_uiMenu, (v))
+
+/** Check cast to menu bar. */
+#define SJME_SUI_CAST_MENU_BAR(v) \
+	SJME_SUI_CAST(SJME_SCRITCHUI_TYPE_MENU_BAR, \
+	sjme_scritchui_uiMenuBar, (v))
+
+/** Check cast to menu item. */
+#define SJME_SUI_CAST_MENU_ITEM(v) \
+	SJME_SUI_CAST(SJME_SCRITCHUI_TYPE_MENU_Item, \
+	sjme_scritchui_uiMenuItem, (v))
 
 /**
  * An opaque native handle.
@@ -1539,6 +1562,26 @@ typedef sjme_errorCode (*sjme_scritchui_dylibApiFunc)(
 	SJME_TOKEN_PASTE(sjme_scritchui_dylibApi, x)
 		
 #endif
+
+/**
+ * Check cast of a given type.
+ * 
+ * @param inType The input type.
+ * @param inPtr The input pointer.
+ * @return Always @c inPtr .
+ * @since 2024/07/23
+ */
+sjme_pointer sjme_scritchui_checkCast(sjme_scritchui_uiType inType,
+	sjme_pointer inPtr);
+
+/**
+ * Check cast of a given type against a menu kind.
+ * 
+ * @param inPtr The input pointer.
+ * @return Always @c inPtr .
+ * @since 2024/07/23
+ */
+sjme_pointer sjme_scritchui_checkCast_menuKind(sjme_pointer inPtr);
 
 /*--------------------------------------------------------------------------*/
 

@@ -448,3 +448,44 @@ fail_preInit:
 	return sjme_error_default(error);
 }
 
+sjme_pointer sjme_scritchui_checkCast(sjme_scritchui_uiType inType,
+	sjme_pointer inPtr)
+{
+	sjme_scritchui_uiCommon common;
+	
+	if (inPtr == NULL)
+		return NULL;
+	
+	/* Check type. */
+	common = inPtr;
+	if (common->type != inType)
+		sjme_debug_abort();
+	
+	/* Return passed value. */
+	return inPtr;
+}
+
+/**
+ * Check cast of a given type against a menu kind.
+ * 
+ * @param inPtr The input pointer.
+ * @return Always @c inPtr .
+ * @since 2024/07/23
+ */
+sjme_pointer sjme_scritchui_checkCast_menuKind(sjme_pointer inPtr)
+{
+	sjme_scritchui_uiCommon common;
+	
+	if (inPtr == NULL)
+		return NULL;
+	
+	/* Check type. */
+	common = inPtr;
+	if (common->type != SJME_SCRITCHUI_TYPE_MENU &&
+		common->type != SJME_SCRITCHUI_TYPE_MENU_BAR &&
+		common->type != SJME_SCRITCHUI_TYPE_MENU_ITEM)
+		sjme_debug_abort();
+	
+	/* Return passed value. */
+	return inPtr;
+}
