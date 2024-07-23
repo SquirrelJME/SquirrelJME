@@ -30,6 +30,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_motifFunctions =
 	.loopExecuteLater = NULL,
 	.loopExecuteWait = NULL,
 	.menuBarNew = NULL,
+	.menuInsert = NULL,
 	.menuItemNew = NULL,
 	.menuNew = NULL,
 	.panelEnableFocus = NULL,

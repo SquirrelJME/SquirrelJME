@@ -227,6 +227,9 @@ struct sjme_scritchui_implFunctions
 	/** Creates a new menu bar. */
 	SJME_SCRITCHUI_QUICK_IMPL(menuBarNew);
 	
+	/** Insert menu into menu. */
+	SJME_SCRITCHUI_QUICK_SAME(menuInsert);
+	
 	/** Creates a new menu item. */
 	SJME_SCRITCHUI_QUICK_IMPL(menuItemNew);
 	
@@ -299,6 +302,34 @@ typedef sjme_errorCode (*sjme_scritchui_intern_getLabeledFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInOutNotNull sjme_scritchui_uiLabeled* outLabeled);
+
+/**
+ * Return children information for a given menu kind.
+ * 
+ * @param inState The input state.
+ * @param inMenuKind The input menu kind.
+ * @param outHasChildren The resultant children information.
+ * @return Any error code if applicable, such as the component is not valid.
+ * @since 2024/07/22 
+ */
+typedef sjme_errorCode (*sjme_scritchui_intern_getMenuHasChildrenFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind inMenuKind,
+	sjme_attrInOutNotNull sjme_scritchui_uiMenuHasChildren* outHasChildren);
+	
+/**
+ * Return parent information for a given menu kind.
+ * 
+ * @param inState The input state.
+ * @param inMenuKind The input menu kind.
+ * @param outHasParent The resultant parent information.
+ * @return Any error code if applicable, such as the component is not valid.
+ * @since 2024/07/22 
+ */
+typedef sjme_errorCode (*sjme_scritchui_intern_getMenuHasParentFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind inMenuKind,
+	sjme_attrInOutNotNull sjme_scritchui_uiMenuHasParent* outHasParent);
 
 /**
  * Returns the container for the given component.
@@ -417,6 +448,12 @@ struct sjme_scritchui_internFunctions
 		
 	/** Returns the labeled item for the given component. */
 	sjme_scritchui_intern_getLabeledFunc getLabeled;
+		
+	/** Return children information for a given menu kind. */
+	sjme_scritchui_intern_getMenuHasChildrenFunc getMenuHasChildren;
+		
+	/** Return parent information for a given menu kind. */
+	sjme_scritchui_intern_getMenuHasParentFunc getMenuHasParent;
 	
 	/** Returns the paintable for the given component. */
 	sjme_scritchui_intern_getPaintableFunc getPaintable;

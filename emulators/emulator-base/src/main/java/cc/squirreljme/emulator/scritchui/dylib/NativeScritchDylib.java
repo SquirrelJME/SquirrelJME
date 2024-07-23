@@ -349,6 +349,21 @@ public final class NativeScritchDylib
 		throws MLECallError;
 	
 	/**
+	 * Adds the given menu item to the menu.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __intoP The menu to insert into.
+	 * @param __at The index to insert at.
+	 * @param __itemP The item to be inserted.
+	 * @throws MLECallError If the index is not valid or any other pointer
+	 * is not valid.
+	 * @since 2024/07/23
+	 */
+	static native void __menuInsert(long __stateP, long __intoP, int __at,
+		long __itemP)
+		throws MLECallError;
+	
+	/**
 	 * Creates a new menu item.
 	 *
 	 * @param __stateP The current state pointer.

@@ -146,6 +146,7 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 		SJME_SCRITCHUI_DISPATCH_DECL(labelSetString);
 		SJME_SCRITCHUI_DISPATCH_DECL(listNew);
 		SJME_SCRITCHUI_DISPATCH_DECL(menuBarNew);
+		SJME_SCRITCHUI_DISPATCH_DECL(menuInsert);
 		SJME_SCRITCHUI_DISPATCH_DECL(menuItemNew);
 		SJME_SCRITCHUI_DISPATCH_DECL(menuNew);
 		SJME_SCRITCHUI_DISPATCH_DECL(objectDelete);
@@ -329,6 +330,13 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 		SJME_SCRITCHUI_SERIAL_TYPE_MENU_BAR_NEW,
 		(state,
 		as.menuBarNew->outMenuBar));
+			
+	SJME_SCRITCHUI_DISPATCH_CASE(menuInsert,
+		SJME_SCRITCHUI_SERIAL_TYPE_MENU_INSERT,
+		(state,
+		as.menuInsert->intoMenu,
+		as.menuInsert->atIndex,
+		as.menuInsert->childItem));
 			
 	SJME_SCRITCHUI_DISPATCH_CASE(menuItemNew,
 		SJME_SCRITCHUI_SERIAL_TYPE_MENU_ITEM_NEW,
@@ -773,6 +781,24 @@ sjme_errorCode sjme_scritchui_coreSerial_menuBarNew(
 		(inState, outMenuBar));
 		
 	SJME_SCRITCHUI_SERIAL_PASS(outMenuBar);
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
+}
+
+sjme_errorCode sjme_scritchui_coreSerial_menuInsert(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind intoMenu,
+	sjme_attrInPositive sjme_jint atIndex,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind childItem)
+{
+	SJME_SCRITCHUI_SERIAL_CHUNK(menuInsert,
+		SJME_SCRITCHUI_SERIAL_TYPE_MENU_INSERT,
+		(inState, intoMenu, atIndex, childItem));
+		
+	SJME_SCRITCHUI_SERIAL_PASS(intoMenu);
+	SJME_SCRITCHUI_SERIAL_PASS(atIndex);
+	SJME_SCRITCHUI_SERIAL_PASS(childItem);
 	
 	/* Invoke and wait. */
 	SJME_SCRITCHUI_INVOKE_WAIT;

@@ -94,6 +94,8 @@
 
 #define FORWARD_DESC___menuBarNew "(" \
 	DESC_LONG ")" DESC_LONG
+#define FORWARD_DESC___menuInsert "(" \
+	DESC_LONG DESC_LONG DESC_INT DESC_LONG ")" DESC_VOID
 #define FORWARD_DESC___menuItemNew "(" \
 	DESC_LONG ")" DESC_LONG
 #define FORWARD_DESC___menuNew "(" \
@@ -1523,6 +1525,39 @@ fail_nullArgs:
 	return 0L;
 }
 
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __menuInsert)
+	(JNIEnv* env, jclass classy, jlong stateP, jlong intoP, int at,
+	jlong itemP)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	sjme_scritchui_uiMenuKind into;
+	sjme_scritchui_uiMenuKind item;
+	
+	if (stateP == 0 || intoP == 0 || itemP == 0)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	into = (sjme_scritchui_uiMenuKind)intoP;
+	item = (sjme_scritchui_uiMenuKind)itemP;
+	
+	/* Not implemented? */
+	if (state->api->menuInsert == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
+		return;
+	}
+	
+	/* Forward call. */
+	if (sjme_error_is(error = state->api->menuInsert(state,
+		into, at, item)))
+		sjme_jni_throwMLECallError(env, error);
+}
+
 JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __menuItemNew)
 	(JNIEnv* env, jclass classy, jlong stateP)
 {
@@ -1986,6 +2021,7 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 	FORWARD_list(NativeScritchDylib, __loopExecuteWait),
 	FORWARD_list(NativeScritchDylib, __loopIsInThread),
 	FORWARD_list(NativeScritchDylib, __menuBarNew),
+	FORWARD_list(NativeScritchDylib, __menuInsert),
 	FORWARD_list(NativeScritchDylib, __menuItemNew),
 	FORWARD_list(NativeScritchDylib, __menuNew),
 	FORWARD_list(NativeScritchDylib, __objectDelete),

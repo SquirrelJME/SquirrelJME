@@ -32,6 +32,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_gtkFunctions =
 	.loopExecuteLater = sjme_scritchui_gtk2_loopExecuteLater,
 	.loopExecuteWait = NULL,
 	.menuBarNew = sjme_scritchui_gtk2_menuBarNew,
+	.menuInsert = sjme_scritchui_gtk2_menuInsert,
 	.menuItemNew = sjme_scritchui_gtk2_menuItemNew,
 	.menuNew = sjme_scritchui_gtk2_menuNew,
 	.panelEnableFocus = sjme_scritchui_gtk2_panelEnableFocus,

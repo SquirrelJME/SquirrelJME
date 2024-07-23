@@ -321,6 +321,44 @@ typedef struct sjme_scritchui_uiListBase
 	sjme_scritchui_uiChoiceBase choice;
 } sjme_scritchui_uiListBase;
 
+/** Menu items which have a parent. */
+SJME_LIST_DECLARE(sjme_scritchui_uiMenuHasParent, 0);
+
+struct sjme_scritchui_uiMenuKindBase
+{
+	/** Common data. */
+	sjme_scritchui_uiCommonBase common;
+};
+
+struct sjme_scritchui_uiMenuHasChildrenBase
+{
+	/** The children to this. */
+	sjme_list_sjme_scritchui_uiMenuHasParent* children;
+};
+
+struct sjme_scritchui_uiMenuHasParentBase
+{
+	/** The parent menu. */
+	sjme_scritchui_uiMenuHasChildren parent;
+};
+
+/**
+ * Base data for menus.
+ * 
+ * @since 2024/07/21
+ */
+typedef struct sjme_scritchui_uiMenuBase
+{
+	/** The menu kind information. */
+	sjme_scritchui_uiMenuKindBase menuKind;
+	
+	/** Labeled item. */
+	sjme_scritchui_uiLabeledBase labeled;
+	
+	/** Menu children. */
+	sjme_scritchui_uiMenuHasChildrenBase children;
+} sjme_scritchui_uiMenuBase;
+
 /**
  * Base data for menu bars.
  * 
@@ -328,8 +366,11 @@ typedef struct sjme_scritchui_uiListBase
  */
 typedef struct sjme_scritchui_uiMenuBarBase
 {
-	/** Common data. */
-	sjme_scritchui_uiCommonBase common;
+	/** The menu kind information. */
+	sjme_scritchui_uiMenuKindBase menuKind;
+	
+	/** Menu children. */
+	sjme_scritchui_uiMenuHasChildrenBase children;
 } sjme_scritchui_uiMenuBarBase;
 
 /**
@@ -339,26 +380,18 @@ typedef struct sjme_scritchui_uiMenuBarBase
  */
 typedef struct sjme_scritchui_uiMenuItemBase
 {
-	/** Common data. */
-	sjme_scritchui_uiCommonBase common;
+	/** The menu kind information. */
+	sjme_scritchui_uiMenuKindBase menuKind;
 	
 	/** Labeled item. */
 	sjme_scritchui_uiLabeledBase labeled;
+	
+	/** Menu children. */
+	sjme_scritchui_uiMenuHasChildrenBase children;
+	
+	/** Menu parent. */
+	sjme_scritchui_uiMenuHasParentBase parent;
 } sjme_scritchui_uiMenuItemBase;
-
-/**
- * Base data for menus.
- * 
- * @since 2024/07/21
- */
-typedef struct sjme_scritchui_uiMenuBase
-{
-	/** Common data. */
-	sjme_scritchui_uiCommonBase common;
-	
-	/** Labeled item. */
-	sjme_scritchui_uiLabeledBase labeled;
-} sjme_scritchui_uiMenuBase;
 
 typedef struct sjme_scritchui_uiPaintableListeners
 {

@@ -111,6 +111,9 @@ typedef enum sjme_scritchui_serialType
 		
 	/** @c menuBarNew . */
 	SJME_SCRITCHUI_SERIAL_TYPE_MENU_BAR_NEW,
+	
+	/** @c menuInsert . */
+	SJME_SCRITCHUI_SERIAL_TYPE_MENU_INSERT,
 		
 	/** @c menuItemNew . */
 	SJME_SCRITCHUI_SERIAL_TYPE_MENU_ITEM_NEW,
@@ -293,6 +296,11 @@ SUD_STRUCT_DEF(listNew,
 SUD_STRUCT_DEF(menuBarNew,
 	SDU_VARP(sjme_scritchui_uiMenuBar*, outMenuBar););
 
+SUD_STRUCT_DEF(menuInsert,
+	SDU_VARP(sjme_scritchui_uiMenuKind, intoMenu);
+	SDU_VAR(sjme_jint, atIndex);
+	SDU_VARP(sjme_scritchui_uiMenuKind, childItem););
+	
 SUD_STRUCT_DEF(menuItemNew,
 	SDU_VARP(sjme_scritchui_uiMenuItem*, outMenuItem););
 
@@ -351,110 +359,41 @@ SUD_STRUCT_DEF(windowSetVisible,
  */
 typedef union sjme_scritchui_serialDataUnion
 {
-
-	/** @c choiceItemGet . */
 	SJME_SCRITCHUI_SDU_DEF(choiceItemGet);
-
-	/** @c choiceItemInsert . */
 	SJME_SCRITCHUI_SDU_DEF(choiceItemInsert);
-
-	/** @c choiceItemRemove . */
 	SJME_SCRITCHUI_SDU_DEF(choiceItemRemove);
-
-	/** @c choiceItemSet . */
 	SJME_SCRITCHUI_SDU_DEF(choiceItemSet);
-
-	/** @c choiceLength . */
 	SJME_SCRITCHUI_SDU_DEF(choiceLength);
-
-	/** @c componentRepaint . */
 	SJME_SCRITCHUI_SDU_DEF(componentRepaint);
-	
-	/** @c componentRevalidate . */
 	SJME_SCRITCHUI_SDU_DEF(componentRevalidate);
-
-	/** @c componentSetActivateListener . */
 	SJME_SCRITCHUI_SDU_DEF(componentSetActivateListener);
-	
-	/** @c componentSetInputListener . */
 	SJME_SCRITCHUI_SDU_DEF(componentSetInputListener);
-	
-	/** @c componentSetPaintListener . */
 	SJME_SCRITCHUI_SDU_DEF(componentSetPaintListener);
-	
-	/** @c componentSetSizeListener . */
 	SJME_SCRITCHUI_SDU_DEF(componentSetSizeListener);
-
-	/** @c componentSetValueUpdateListener . */
 	SJME_SCRITCHUI_SDU_DEF(componentSetValueUpdateListener);
-	
-	/** @c componentSetVisibleListener . */
 	SJME_SCRITCHUI_SDU_DEF(componentSetVisibleListener);
-	
-	/** @c componentSize . */
 	SJME_SCRITCHUI_SDU_DEF(componentSize);
-	
-	/** @c containerAdd . */
 	SJME_SCRITCHUI_SDU_DEF(containerAdd);
-	
-	/** @c containerRemove . */
 	SJME_SCRITCHUI_SDU_DEF(containerRemove);
-	
-	/** @c containerRemoveAll. */
 	SJME_SCRITCHUI_SDU_DEF(containerRemoveAll);
-	
-	/** @c containerSetBounds . */
 	SJME_SCRITCHUI_SDU_DEF(containerSetBounds);
-	
-	/** @c fontBuiltin . */
 	SJME_SCRITCHUI_SDU_DEF(fontBuiltin);
-	
-	/** @c fontDerive . */
 	SJME_SCRITCHUI_SDU_DEF(fontDerive);
-	
-	/** @c hardwareGraphics . */
 	SJME_SCRITCHUI_SDU_DEF(hardwareGraphics);
-	
-	/** @c labelSetString . */
 	SJME_SCRITCHUI_SDU_DEF(labelSetString);
-	
-	/** @c listNew . */
 	SJME_SCRITCHUI_SDU_DEF(listNew);
-	
-	/** @c menuBarNew . */
 	SJME_SCRITCHUI_SDU_DEF(menuBarNew);
-	
-	/** @c menuItemNew . */
+	SJME_SCRITCHUI_SDU_DEF(menuInsert);
 	SJME_SCRITCHUI_SDU_DEF(menuItemNew);
-	
-	/** @c menuNew . */
 	SJME_SCRITCHUI_SDU_DEF(menuNew);
-	
-	/** @c objectDelete . */
 	SJME_SCRITCHUI_SDU_DEF(objectDelete);
-		
-	/** @c panelEnableFocus . */
 	SJME_SCRITCHUI_SDU_DEF(panelEnableFocus);
-		
-	/** @c panelNew . */
 	SJME_SCRITCHUI_SDU_DEF(panelNew);
-	
-	/** @c screenSetListener . */
 	SJME_SCRITCHUI_SDU_DEF(screenSetListener);
-		
-	/** @c screens . */
 	SJME_SCRITCHUI_SDU_DEF(screens);
-	
-	/** @c windowContentMinimumSize. */
 	SJME_SCRITCHUI_SDU_DEF(windowContentMinimumSize);
-	
-	/** @c windowNew . */
 	SJME_SCRITCHUI_SDU_DEF(windowNew);
-	
-	/** @c windowSetCloseListener . */
 	SJME_SCRITCHUI_SDU_DEF(windowSetCloseListener);
-	
-	/** @c windowSetVisible . */
 	SJME_SCRITCHUI_SDU_DEF(windowSetVisible);
 } sjme_scritchui_serialDataUnion;
 
@@ -623,6 +562,12 @@ sjme_errorCode sjme_scritchui_coreSerial_objectDelete(
 sjme_errorCode sjme_scritchui_coreSerial_menuBarNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_scritchui_uiMenuBar* outMenuBar);
+	
+sjme_errorCode sjme_scritchui_coreSerial_menuInsert(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind intoMenu,
+	sjme_attrInPositive sjme_jint atIndex,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind childItem);
 
 sjme_errorCode sjme_scritchui_coreSerial_menuItemNew(
 	sjme_attrInNotNull sjme_scritchui inState,

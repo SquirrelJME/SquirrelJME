@@ -14,13 +14,11 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchMenuInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBarBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuHasChildrenBracket;
-import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuHasLabelBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuHasParentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuItemBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 /**
@@ -71,7 +69,13 @@ public class DylibMenuInterface
 		@NotNull ScritchMenuHasParentBracket __item)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__into == null || __item == null)
+			throw new NullPointerException("Null arguments.");
+		
+		NativeScritchDylib.__menuInsert(this.dyLib._stateP,
+			((DylibMenuKindObject)__into).objectPointer(),
+			__at,
+			((DylibMenuKindObject)__item).objectPointer());
 	}
 	
 	/**

@@ -24,10 +24,23 @@ sjme_errorCode sjme_scritchui_gtk2_menuBarNew(
 	widget = gtk_menu_bar_new();
 	
 	/* Store handle for later. */
-	inMenuBar->common.handle = widget;
+	inMenuBar->menuKind.common.handle = widget;
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_scritchui_gtk2_menuInsert(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind intoMenu,
+	sjme_attrInPositive sjme_jint atIndex,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind childItem)
+{
+	if (inState == NULL || intoMenu == NULL || childItem == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
 sjme_errorCode sjme_scritchui_gtk2_menuItemNew(
@@ -43,7 +56,7 @@ sjme_errorCode sjme_scritchui_gtk2_menuItemNew(
 	widget = gtk_menu_item_new();
 	
 	/* Store handle for later. */
-	inMenuItem->common.handle = widget;
+	inMenuItem->menuKind.common.handle = widget;
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -62,7 +75,7 @@ sjme_errorCode sjme_scritchui_gtk2_menuNew(
 	widget = gtk_menu_new();
 	
 	/* Store handle for later. */
-	inMenu->common.handle = widget;
+	inMenu->menuKind.common.handle = widget;
 	
 	/* Success! */
 	return SJME_ERROR_NONE;

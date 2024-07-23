@@ -162,6 +162,12 @@ sjme_errorCode sjme_scritchui_fb_loopExecuteWait(
 sjme_errorCode sjme_scritchui_fb_menuBarNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiMenuBar inMenuBar);
+	
+sjme_errorCode sjme_scritchui_fb_menuInsert(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind intoMenu,
+	sjme_attrInPositive sjme_jint atIndex,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind childItem);
 
 sjme_errorCode sjme_scritchui_fb_menuItemNew(
 	sjme_attrInNotNull sjme_scritchui inState,

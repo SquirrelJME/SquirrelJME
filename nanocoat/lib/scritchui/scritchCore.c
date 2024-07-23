@@ -67,6 +67,7 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 
 	/* As normal. */
 	.menuBarNew = sjme_scritchui_coreSerial_menuBarNew,
+	.menuInsert = sjme_scritchui_coreSerial_menuInsert,
 	.menuItemNew = sjme_scritchui_coreSerial_menuItemNew,
 	.menuNew = sjme_scritchui_coreSerial_menuNew,
 	.objectDelete = sjme_scritchui_coreSerial_objectDelete,
@@ -117,6 +118,7 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 	.loopIsInThread = sjme_scritchui_core_loopIsInThread,
 	.loopIterate = sjme_scritchui_core_loopIterate,
 	.menuBarNew = sjme_scritchui_core_menuBarNew,
+	.menuInsert = sjme_scritchui_core_menuInsert,
 	.menuItemNew = sjme_scritchui_core_menuItemNew,
 	.menuNew = sjme_scritchui_core_menuNew,
 	.objectDelete = sjme_scritchui_core_objectDelete,
@@ -137,6 +139,8 @@ static const sjme_scritchui_internFunctions sjme_scritchUI_coreIntern =
 	.getChoice = sjme_scritchui_core_intern_getChoice,
 	.getContainer = sjme_scritchui_core_intern_getContainer,
 	.getLabeled = sjme_scritchui_core_intern_getLabeled,
+	.getMenuHasChildren = sjme_scritchui_core_intern_getMenuHasChildren,
+	.getMenuHasParent = sjme_scritchui_core_intern_getMenuHasParent,
 	.getPaintable = sjme_scritchui_core_intern_getPaintable,
 	.initCommon = sjme_scritchui_core_intern_initCommon,
 	.initComponent = sjme_scritchui_core_intern_initComponent,

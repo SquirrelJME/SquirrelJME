@@ -13,13 +13,13 @@ import cc.squirreljme.jvm.mle.annotation.GhostObject;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
- * Any ScritchUI menu item which can have a parent.
+ * Base bracket for menu related items.
  *
  * @since 2024/07/21
  */
 @GhostObject
 @SquirrelJMEVendorApi
-public interface ScritchMenuHasParentBracket
-	extends ScritchMenuKindBracket
+public interface ScritchMenuKindBracket
+	extends ScritchBaseBracket
 {
 }

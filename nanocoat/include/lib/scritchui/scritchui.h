@@ -349,6 +349,57 @@ typedef struct sjme_scritchui_uiPanelBase* sjme_scritchui_uiPanel;
 typedef struct sjme_scritchui_uiListBase* sjme_scritchui_uiList;
 
 /**
+ * A menu that has children.
+ * 
+ * @since 2024/07/23
+ */
+typedef struct sjme_scritchui_uiMenuHasChildrenBase
+	sjme_scritchui_uiMenuHasChildrenBase;
+
+/**
+ * A ScritchUI menu kind
+ * 
+ * @since 2024/07/21
+ */
+typedef struct sjme_scritchui_uiMenuKindBase sjme_scritchui_uiMenuKindBase;
+
+/**
+ * A ScritchUI menu kind
+ * 
+ * @since 2024/07/21
+ */
+typedef sjme_scritchui_uiMenuKindBase* sjme_scritchui_uiMenuKind;
+
+/**
+ * A menu that has children.
+ * 
+ * @since 2024/07/23
+ */
+typedef sjme_scritchui_uiMenuHasChildrenBase* sjme_scritchui_uiMenuHasChildren;
+
+/**
+ * A menu that has a parent.
+ * 
+ * @since 2024/07/23
+ */
+typedef struct sjme_scritchui_uiMenuHasParentBase
+	sjme_scritchui_uiMenuHasParentBase;
+
+/**
+ * A menu that has a parent.
+ * 
+ * @since 2024/07/23
+ */
+typedef sjme_scritchui_uiMenuHasParentBase* sjme_scritchui_uiMenuHasParent;
+
+/**
+ * A menu within ScritchUI.
+ * 
+ * @since 2024/07/21
+ */
+typedef struct sjme_scritchui_uiMenuBase* sjme_scritchui_uiMenu;
+
+/**
  * A menu bar within ScritchUI.
  * 
  * @since 2024/07/21
@@ -361,13 +412,6 @@ typedef struct sjme_scritchui_uiMenuBarBase* sjme_scritchui_uiMenuBar;
  * @since 2024/07/21
  */
 typedef struct sjme_scritchui_uiMenuItemBase* sjme_scritchui_uiMenuItem;
-
-/**
- * A menu within ScritchUI.
- * 
- * @since 2024/07/21
- */
-typedef struct sjme_scritchui_uiMenuBase* sjme_scritchui_uiMenu;
 
 /**
  * A single monitor screen on the display for ScritchUI.
@@ -1010,6 +1054,22 @@ typedef sjme_errorCode (*sjme_scritchui_menuBarNewFunc)(
 	sjme_attrInOutNotNull sjme_scritchui_uiMenuBar* outMenuBar);
 
 /**
+ * Inserts the given menu item into the menu at the specified index.
+ * 
+ * @param inState The ScritchUI state.
+ * @param intoMenu The menu to insert into.
+ * @param atIndex The index to insert at.
+ * @param childItem The child menu item to add.
+ * @return Any resultant error, if any.
+ * @since 2024/07/23 
+ */
+typedef sjme_errorCode (*sjme_scritchui_menuInsertFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind intoMenu,
+	sjme_attrInPositive sjme_jint atIndex,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind childItem);
+
+/**
  * Creates a new menu item.
  * 
  * @param inState The input state.
@@ -1251,6 +1311,9 @@ struct sjme_scritchui_apiFunctions
 	
 	/** Creates a new menu bar. */
 	SJME_SCRITCHUI_QUICK_API(menuBarNew);
+	
+	/** Insert the given menu item into a menu. */
+	SJME_SCRITCHUI_QUICK_API(menuInsert);
 	
 	/** Creates a new menu item. */
 	SJME_SCRITCHUI_QUICK_API(menuItemNew);

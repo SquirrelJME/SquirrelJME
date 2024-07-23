@@ -7,19 +7,14 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.mle.scritchui.brackets;
-
-import cc.squirreljme.jvm.mle.annotation.GhostObject;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+package cc.squirreljme.emulator.scritchui.dylib;
 
 /**
- * Base bracket for menu related items.
+ * Flagging interface for menu kinds.
  *
- * @since 2024/07/21
+ * @since 2024/07/23
  */
-@GhostObject
-@SquirrelJMEVendorApi
-public interface ScritchMenuBaseBracket
-	extends ScritchBaseBracket
+public interface DylibMenuKindObject
+	extends DylibHasObjectPointer
 {
 }

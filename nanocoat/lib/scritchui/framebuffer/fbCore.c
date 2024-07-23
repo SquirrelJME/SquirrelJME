@@ -34,6 +34,7 @@ const sjme_scritchui_implFunctions sjme_scritchui_fbFunctions =
 	.loopExecuteLater = sjme_scritchui_fb_loopExecuteLater,
 	.loopExecuteWait = sjme_scritchui_fb_loopExecuteWait,
 	.menuBarNew = sjme_scritchui_fb_menuBarNew,
+	.menuInsert = sjme_scritchui_fb_menuInsert,
 	.menuItemNew = sjme_scritchui_fb_menuItemNew,
 	.menuNew = sjme_scritchui_fb_menuNew,
 	.panelEnableFocus = sjme_scritchui_fb_panelEnableFocus,

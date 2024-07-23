@@ -12,8 +12,7 @@ package cc.squirreljme.runtime.lcdui.scritchui;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchLabelInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchMenuInterface;
-import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchBaseBracket;
-import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBaseBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuKindBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuHasChildrenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuHasLabelBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuHasParentBracket;
@@ -122,7 +121,7 @@ public final class MenuActionTree
 		
 		// Map ourself into a node
 		Leaf into = this.map(__into);
-		ScritchMenuBaseBracket scritch = into._scritch;
+		ScritchMenuKindBracket scritch = into._scritch;
 		
 		// Children need to be added?
 		if (__add != null)
@@ -174,7 +173,7 @@ public final class MenuActionTree
 		
 		/** The ScritchUI bracket used. */
 		@SquirrelJMEVendorApi
-		final ScritchMenuBaseBracket _scritch;
+		final ScritchMenuKindBracket _scritch;
 		
 		/**
 		 * Initializes the leaf from the node.
@@ -194,7 +193,7 @@ public final class MenuActionTree
 			ScritchInterface api = DisplayManager.instance().scritch();
 			
 			// Determine the item that should be created
-			ScritchMenuBaseBracket scritch;
+			ScritchMenuKindBracket scritch;
 			if (owner instanceof Displayable)
 				scritch = api.menu().menuBarNew();
 			else if (owner instanceof Menu)
