@@ -32,13 +32,16 @@ static const sjme_scritchui_implFunctions sjme_scritchui_jawtFunctions =
 	.menuBarNew = NULL,
 	.menuInsert = NULL,
 	.menuItemNew = NULL,
+	.menuRemove = NULL,
 	.menuNew = NULL,
+	.menuRemove = NULL,
 	.panelEnableFocus = NULL,
 	.panelNew = NULL,
 	.screens = NULL,
 	.windowContentMinimumSize = NULL,
 	.windowNew = NULL,
 	.windowSetCloseListener = NULL,
+	.windowSetMenuBar = NULL,
 	.windowSetVisible = NULL,
 };
 

@@ -386,6 +386,17 @@ public final class NativeScritchDylib
 		throws MLECallError;
 	
 	/**
+	 * Removes all items from the menu.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __menuKindP The menu to remove from.
+	 * @throws MLECallError On null arguments.
+	 * @since 2024/07/23
+	 */
+	static native void __menuRemoveAll(long __stateP, long __menuKindP)
+		throws MLECallError;
+	
+	/**
 	 * Deletes the given object.
 	 *
 	 * @param __stateP The state pointer.
@@ -497,6 +508,20 @@ public final class NativeScritchDylib
 	 */
 	static native void __windowSetCloseListener(long __stateP,
 		long __windowP, ScritchCloseListener __listener)
+		throws MLECallError;
+	
+	/**
+	 * Sets the menu bar for the window.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __windowP The window pointer.
+	 * @param __menuBarP The menu bar pointer, may be {@code 0}.
+	 * @throws MLECallError If the state or window are not valid; or if the
+	 * menu bar could not be added.
+	 * @since 2024/07/23
+	 */
+	static native void __windowSetMenuBar(long __stateP, long __windowP,
+		long __menuBarP)
 		throws MLECallError;
 	
 	/**

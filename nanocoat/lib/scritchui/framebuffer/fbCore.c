@@ -37,12 +37,14 @@ const sjme_scritchui_implFunctions sjme_scritchui_fbFunctions =
 	.menuInsert = sjme_scritchui_fb_menuInsert,
 	.menuItemNew = sjme_scritchui_fb_menuItemNew,
 	.menuNew = sjme_scritchui_fb_menuNew,
+	.menuRemove = sjme_scritchui_fb_menuRemove,
 	.panelEnableFocus = sjme_scritchui_fb_panelEnableFocus,
 	.panelNew = sjme_scritchui_fb_panelNew,
 	.screens = sjme_scritchui_fb_screens,
 	.windowContentMinimumSize = sjme_scritchui_fb_windowContentMinimumSize,
 	.windowNew = sjme_scritchui_fb_windowNew,
 	.windowSetCloseListener = sjme_scritchui_fb_windowSetCloseListener,
+	.windowSetMenuBar = sjme_scritchui_fb_windowSetMenuBar,
 	.windowSetVisible = sjme_scritchui_fb_windowSetVisible,
 };
 

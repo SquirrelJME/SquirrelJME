@@ -139,6 +139,44 @@ sjme_errorCode sjme_scritchui_core_windowSetCloseListener(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_scritchui_core_windowSetMenuBar(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNullable sjme_scritchui_uiMenuBar inMenuBar)
+{
+	sjme_errorCode error;
+	
+	if (inState == NULL || inWindow == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Not implemented? */
+	if (inState->impl->windowSetMenuBar == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Clear menu bar first. */
+	if (sjme_error_is(error = inState->impl->windowSetMenuBar(inState,
+		inWindow, NULL)))
+		return sjme_error_default(error);
+	
+	/* Set cleared state. */
+	inWindow->menuBar = NULL;
+	
+	/* Set new menu bar? */
+	if (inMenuBar != NULL)
+	{
+		/* Set new bar. */
+		inWindow->menuBar = inMenuBar;
+		
+		/* Forward call. */
+		if (sjme_error_is(error = inState->impl->windowSetMenuBar(
+			inState, inWindow, inMenuBar)))
+			return sjme_error_default(error);
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_scritchui_core_windowSetVisible(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,

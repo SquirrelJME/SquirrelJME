@@ -99,4 +99,15 @@ public interface ScritchMenuInterface
 	@NotNull
 	ScritchMenuBracket menuNew()
 		throws MLECallError;
+	
+	/**
+	 * Removes all items from the menu.
+	 *
+	 * @param __menuKind The menu to remove from.
+	 * @throws MLECallError If the menu is not valid.
+	 * @since 2024/07/23
+	 */
+	@SquirrelJMEVendorApi
+	void removeAll(@NotNull ScritchMenuHasChildrenBracket __menuKind)
+		throws MLECallError;
 }

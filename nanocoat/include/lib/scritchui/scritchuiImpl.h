@@ -233,6 +233,9 @@ struct sjme_scritchui_implFunctions
 	/** Creates a new menu item. */
 	SJME_SCRITCHUI_QUICK_IMPL(menuItemNew);
 	
+	/** Removes an item from the menu. */
+	SJME_SCRITCHUI_QUICK_SAME(menuRemove);
+	
 	/** Creates a new menu. */
 	SJME_SCRITCHUI_QUICK_IMPL(menuNew);
 	
@@ -253,6 +256,9 @@ struct sjme_scritchui_implFunctions
 	
 	/** Set close listener for a window. */
 	SJME_SCRITCHUI_QUICK_SAME(windowSetCloseListener);
+	
+	/** Sets the menu bar for a window. */
+	SJME_SCRITCHUI_QUICK_SAME(windowSetMenuBar);
 	
 	/** Sets visibility of the window. */
 	SJME_SCRITCHUI_QUICK_SAME(windowSetVisible);

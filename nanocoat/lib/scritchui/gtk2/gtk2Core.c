@@ -35,12 +35,14 @@ static const sjme_scritchui_implFunctions sjme_scritchui_gtkFunctions =
 	.menuInsert = sjme_scritchui_gtk2_menuInsert,
 	.menuItemNew = sjme_scritchui_gtk2_menuItemNew,
 	.menuNew = sjme_scritchui_gtk2_menuNew,
+	.menuRemove = sjme_scritchui_gtk2_menuRemove,
 	.panelEnableFocus = sjme_scritchui_gtk2_panelEnableFocus,
 	.panelNew = sjme_scritchui_gtk2_panelNew,
 	.screens = sjme_scritchui_gtk2_screens,
 	.windowContentMinimumSize = sjme_scritchui_gtk2_windowContentMinimumSize,
 	.windowNew = sjme_scritchui_gtk2_windowNew,
 	.windowSetCloseListener = sjme_scritchui_gtk2_windowSetCloseListenerFunc,
+	.windowSetMenuBar = sjme_scritchui_gtk2_windowSetMenuBar,
 	.windowSetVisible = sjme_scritchui_gtk2_windowSetVisible,
 };
 

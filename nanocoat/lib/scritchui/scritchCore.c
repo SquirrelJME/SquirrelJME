@@ -70,6 +70,8 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 	.menuInsert = sjme_scritchui_coreSerial_menuInsert,
 	.menuItemNew = sjme_scritchui_coreSerial_menuItemNew,
 	.menuNew = sjme_scritchui_coreSerial_menuNew,
+	.menuRemove = sjme_scritchui_coreSerial_menuRemove,
+	.menuRemoveAll = sjme_scritchui_coreSerial_menuRemoveAll,
 	.objectDelete = sjme_scritchui_coreSerial_objectDelete,
 	.panelEnableFocus = sjme_scritchui_coreSerial_panelEnableFocus,
 	.panelNew = sjme_scritchui_coreSerial_panelNew,
@@ -79,6 +81,7 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 	sjme_scritchui_coreSerial_windowContentMinimumSize,
 	.windowNew = sjme_scritchui_coreSerial_windowNew,
 	.windowSetCloseListener = sjme_scritchui_coreSerial_windowSetCloseListener,
+	.windowSetMenuBar = sjme_scritchui_coreSerial_windowSetMenuBar,
 	.windowSetVisible = sjme_scritchui_coreSerial_windowSetVisible,
 };
 
@@ -121,6 +124,8 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 	.menuInsert = sjme_scritchui_core_menuInsert,
 	.menuItemNew = sjme_scritchui_core_menuItemNew,
 	.menuNew = sjme_scritchui_core_menuNew,
+	.menuRemove = sjme_scritchui_core_menuRemove,
+	.menuRemoveAll = sjme_scritchui_core_menuRemoveAll,
 	.objectDelete = sjme_scritchui_core_objectDelete,
 	.panelEnableFocus = sjme_scritchui_core_panelEnableFocus,
 	.panelNew = sjme_scritchui_core_panelNew,
@@ -129,6 +134,7 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 	.windowContentMinimumSize = sjme_scritchui_core_windowContentMinimumSize,
 	.windowNew = sjme_scritchui_core_windowNew,
 	.windowSetCloseListener = sjme_scritchui_core_windowSetCloseListener,
+	.windowSetMenuBar = sjme_scritchui_core_windowSetMenuBar,
 	.windowSetVisible = sjme_scritchui_core_windowSetVisible,
 };
 

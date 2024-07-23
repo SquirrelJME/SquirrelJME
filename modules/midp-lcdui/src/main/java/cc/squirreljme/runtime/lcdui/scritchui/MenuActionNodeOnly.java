@@ -57,4 +57,21 @@ public abstract class MenuActionNodeOnly
 		
 		return ((MenuActionNodeOnly)__action)._menuNode;
 	}
+	
+	/**
+	 * Returns the root menu tree.
+	 *
+	 * @param __action The action to get the tree from.
+	 * @return The resultant root tree.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/07/23
+	 */
+	public static MenuActionTree rootTree(MenuActionNodeOnly __action)
+		throws NullPointerException
+	{
+		if (__action == null)
+			throw new NullPointerException("NARG");
+		
+		return ((MenuActionNodeOnly)__action)._menuRootTree;
+	}
 }

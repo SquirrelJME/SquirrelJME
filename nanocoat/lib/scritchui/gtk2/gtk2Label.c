@@ -18,18 +18,23 @@ sjme_errorCode sjme_scritchui_gtk2_labelSetString(
 	sjme_attrInNullable sjme_lpcstr inString)
 {
 	GtkWidget* gtkWidget;
+	GtkWidget* gtkWidgetB;
 	
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover handle. */
 	gtkWidget = inComponent->common.handle;
+	gtkWidgetB = inComponent->common.handleB;
 	
 	/* Depends on the type. */
 	switch (inComponent->common.type)
 	{
+			/* Menus consist of an item and an actual menu. */
 		case SJME_SCRITCHUI_TYPE_MENU:
 			gtk_menu_set_title(GTK_MENU(gtkWidget), inString);
+			gtk_menu_item_set_label(GTK_MENU_ITEM(gtkWidgetB),
+				inString);
 			break;
 		
 		case SJME_SCRITCHUI_TYPE_MENU_ITEM:

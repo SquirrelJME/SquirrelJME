@@ -28,7 +28,7 @@ sjme_errorCode sjme_scritchui_fb_panelEnableFocus(
 	wrappedPanel = inPanel->component.common.handle;
 	
 	/* Forward call. */
-	return wrappedState->api->panelEnableFocus(wrappedState,
+	return wrappedState->apiInThread->panelEnableFocus(wrappedState,
 		wrappedPanel, enableFocus, defaultFocus);
 }
 
@@ -48,7 +48,7 @@ sjme_errorCode sjme_scritchui_fb_panelNew(
 	
 	/* Create a wrapped panel. */
 	wrappedPanel = NULL;
-	if (sjme_error_is(error = wrappedState->api->panelNew(
+	if (sjme_error_is(error = wrappedState->apiInThread->panelNew(
 		wrappedState, &wrappedPanel)) ||
 		wrappedPanel == NULL)
 		return sjme_error_default(error);

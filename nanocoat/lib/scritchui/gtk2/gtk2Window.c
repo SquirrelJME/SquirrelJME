@@ -70,6 +70,13 @@ static gboolean sjme_scritchui_gtk2_eventVisibilityNotify(
 	return FALSE;
 }
 
+static void sjme_scritchui_gtk2_nukeMenuBox(GtkWidget* widget,
+	gpointer gtkMenuBox)
+{
+	/* Remove from container. */
+	gtk_container_remove(GTK_CONTAINER(gtkMenuBox), widget);
+}
+
 sjme_errorCode sjme_scritchui_gtk2_windowContentMinimumSize(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
@@ -111,6 +118,8 @@ sjme_errorCode sjme_scritchui_gtk2_windowNew(
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow)
 {
 	GtkWindow* gtkWindow;
+	GtkBox* gtkVBox;
+	GtkBox* gtkMenuBox;
 	
 	if (inState == NULL || inWindow == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -120,11 +129,33 @@ sjme_errorCode sjme_scritchui_gtk2_windowNew(
 	if (gtkWindow == NULL)
 		return SJME_ERROR_CANNOT_CREATE;
 	
+	/* We need a vertical box for the menu bar. */
+	gtkVBox = gtk_vbox_new(FALSE, 0);
+	if (gtkVBox == NULL)
+		return SJME_ERROR_CANNOT_CREATE;
+	
+	/* We need somewhere to place the menu bar for the window. */
+	gtkMenuBox = gtk_hbox_new(TRUE, 0);
+	if (gtkMenuBox == NULL)
+		return SJME_ERROR_CANNOT_CREATE;
+	
 	/* Setup window. */
 	inWindow->component.common.handle = gtkWindow;
+	inWindow->component.common.handleB = gtkVBox;
+	inWindow->component.common.handleC = gtkMenuBox;
+	
+	/* Add blank menu bar to the VBox. */
+	gtk_container_add(GTK_CONTAINER(gtkVBox),
+		GTK_WIDGET(gtkMenuBox));
+	
+	/* The VBox needs to be in the window, for menus. */
+	gtk_container_add(GTK_CONTAINER(gtkWindow),
+		GTK_WIDGET(gtkVBox));
 	
 	/* Common widget init. */
 	inState->implIntern->widgetInit(inState, GTK_WIDGET(gtkWindow));
+	inState->implIntern->widgetInit(inState, GTK_WIDGET(gtkVBox));
+	inState->implIntern->widgetInit(inState, GTK_WIDGET(gtkMenuBox));
 	
 	/* Set default title. */
 	gtk_window_set_title(gtkWindow,
@@ -171,12 +202,44 @@ sjme_errorCode sjme_scritchui_gtk2_windowSetCloseListenerFunc(
 		1, "delete-event");
 }
 
+sjme_errorCode sjme_scritchui_gtk2_windowSetMenuBar(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNullable sjme_scritchui_uiMenuBar inMenuBar)
+{
+	GtkWindow* gtkWindow;
+	GtkMenuBar* gtkMenuBar;
+	GtkWidget* gtkMenuBox;
+	
+	if (inState == NULL || inWindow == NULL)
+		return SJME_ERROR_NONE;
+		
+	/* Recover window and possibly the menu bar. */
+	gtkWindow = inWindow->component.common.handle;
+	gtkMenuBox = inWindow->component.common.handleC;
+	if (inMenuBar == NULL)
+		gtkMenuBar = NULL;
+	else
+		gtkMenuBar = inMenuBar->menuKind.common.handle;
+	
+	/* Remove everything from the menu bar box. */
+	gtk_container_foreach(GTK_CONTAINER(gtkMenuBox),
+		sjme_scritchui_gtk2_nukeMenuBox, gtkMenuBox);
+	
+	/* Place into the menu bar box. */
+	if (gtkMenuBar != NULL)
+		gtk_container_add(GTK_CONTAINER(gtkMenuBox),
+			GTK_WIDGET(gtkMenuBar));
+	
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
+}
+
 sjme_errorCode sjme_scritchui_gtk2_windowSetVisible(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
 	sjme_attrInValue sjme_jboolean isVisible)
 {
-	sjme_errorCode error;
 	GtkWindow* gtkWindow;
 	
 	if (inState == NULL || inWindow == NULL)

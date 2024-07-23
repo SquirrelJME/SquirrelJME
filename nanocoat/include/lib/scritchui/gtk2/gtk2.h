@@ -132,6 +132,11 @@ sjme_errorCode sjme_scritchui_gtk2_menuItemNew(
 sjme_errorCode sjme_scritchui_gtk2_menuNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiMenu inMenu);
+	
+sjme_errorCode sjme_scritchui_gtk2_menuRemove(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind fromMenu,
+	sjme_attrInPositive sjme_jint atIndex);
 
 sjme_errorCode sjme_scritchui_gtk2_panelEnableFocus(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -162,6 +167,11 @@ sjme_errorCode sjme_scritchui_gtk2_windowSetCloseListenerFunc(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(close));
+	
+sjme_errorCode sjme_scritchui_gtk2_windowSetMenuBar(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNullable sjme_scritchui_uiMenuBar inMenuBar);
 	
 sjme_errorCode sjme_scritchui_gtk2_windowSetVisible(
 	sjme_attrInNotNull sjme_scritchui inState,

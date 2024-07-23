@@ -17,7 +17,7 @@ sjme_errorCode sjme_scritchui_gtk2_containerAdd(
 	sjme_attrInNotNull sjme_scritchui_uiContainer inContainerData,
 	sjme_attrInNotNull sjme_scritchui_uiComponent addComponent)
 {
-	GtkWindow* window;
+	GtkWindow* windowVBox;
 	GtkFixed* fixed;
 	GtkWidget* addWidget;
 	
@@ -42,8 +42,8 @@ sjme_errorCode sjme_scritchui_gtk2_containerAdd(
 	switch (inContainer->common.type)
 	{
 		case SJME_SCRITCHUI_TYPE_WINDOW:
-			window = (GtkWindow*)inContainer->common.handle;
-			gtk_container_add(GTK_CONTAINER(window),
+			windowVBox = (GtkWindow*)inContainer->common.handleB;
+			gtk_container_add(GTK_CONTAINER(windowVBox),
 				addWidget);
 			break;
 		
@@ -78,7 +78,7 @@ sjme_errorCode sjme_scritchui_gtk2_containerRemove(
 	sjme_attrInNotNull sjme_scritchui_uiContainer inContainerData,
 	sjme_attrInNotNull sjme_scritchui_uiComponent removeComponent)
 {
-	GtkWindow* window;
+	GtkWindow* windowVBox;
 	GtkFixed* fixed;
 	GtkWidget* removeWidget;
 	
@@ -97,8 +97,8 @@ sjme_errorCode sjme_scritchui_gtk2_containerRemove(
 	switch (inContainer->common.type)
 	{
 		case SJME_SCRITCHUI_TYPE_WINDOW:
-			window = (GtkWindow*)inContainer->common.handle;
-			gtk_container_remove(GTK_CONTAINER(window),
+			windowVBox = (GtkWindow*)inContainer->common.handleB;
+			gtk_container_remove(GTK_CONTAINER(windowVBox),
 				removeWidget);
 			break;
 		

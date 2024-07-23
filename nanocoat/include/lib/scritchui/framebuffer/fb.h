@@ -177,6 +177,11 @@ sjme_errorCode sjme_scritchui_fb_menuNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiMenu inMenu);
 
+sjme_errorCode sjme_scritchui_fb_menuRemove(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind fromMenu,
+	sjme_attrInPositive sjme_jint atIndex);
+
 sjme_errorCode sjme_scritchui_fb_panelEnableFocus(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiPanel inPanel,
@@ -206,6 +211,11 @@ sjme_errorCode sjme_scritchui_fb_windowSetCloseListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(close));
+	
+sjme_errorCode sjme_scritchui_fb_windowSetMenuBar(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNullable sjme_scritchui_uiMenuBar inMenuBar);
 
 sjme_errorCode sjme_scritchui_fb_windowSetVisible(
 	sjme_attrInNotNull sjme_scritchui inState,

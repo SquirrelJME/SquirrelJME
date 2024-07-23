@@ -119,4 +119,19 @@ public class DylibMenuInterface
 		
 		return new DylibMenuObject(menuP);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/07/23
+	 */
+	@Override
+	public void removeAll(@NotNull ScritchMenuHasChildrenBracket __menuKind)
+		throws MLECallError
+	{
+		if (__menuKind == null)
+			throw new MLECallError("Null arguments.");
+		
+		NativeScritchDylib.__menuRemoveAll(this.dyLib._stateP,
+			((DylibMenuKindObject)__menuKind).objectPointer());
+	}
 }

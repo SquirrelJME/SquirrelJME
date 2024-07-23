@@ -11,6 +11,7 @@ package cc.squirreljme.emulator.scritchui.dylib;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchWindowInterface;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBarBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchCloseListener;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -161,6 +162,25 @@ public class DylibWindowInterface
 		
 		NativeScritchDylib.__windowSetCloseListener(this.dyLib._stateP,
 			((DylibWindowObject)__window).objectPointer(), __listener);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/07/23
+	 */
+	@Override
+	public void setMenuBar(@NotNull ScritchWindowBracket __window,
+		@Nullable ScritchMenuBarBracket __menuBar)
+		throws MLECallError
+	{
+		if (__window == null)
+			throw new NullPointerException("NARG");
+		
+		// Forward call
+		NativeScritchDylib.__windowSetMenuBar(this.dyLib._stateP,
+			((DylibWindowObject)__window).objectPointer(),
+			(__menuBar == null ? 0 :
+				((DylibMenuBarObject)__menuBar).objectPointer()));
 	}
 	
 	/**

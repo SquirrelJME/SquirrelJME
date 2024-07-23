@@ -142,7 +142,7 @@ sjme_errorCode sjme_scritchui_fb_componentRepaint(
 	wrappedComponent = inComponent->common.handle;
 	
 	/* Forward repaint. */
-	return wrappedState->api->componentRepaint(wrappedState,
+	return wrappedState->apiInThread->componentRepaint(wrappedState,
 		wrappedComponent, x, y, width, height);
 }
 
@@ -161,7 +161,7 @@ sjme_errorCode sjme_scritchui_fb_componentRevalidate(
 	wrappedComponent = inComponent->common.handle;
 	
 	/* Forward call. */
-	return wrappedState->api->componentRevalidate(wrappedState,
+	return wrappedState->apiInThread->componentRevalidate(wrappedState,
 		wrappedComponent);
 }
 
@@ -193,7 +193,8 @@ sjme_errorCode sjme_scritchui_fb_componentSetInputListener(
 		return sjme_error_default(error);
 		
 	/* Have wrapped handler call our wrapped listener. */
-	return wrappedState->api->componentSetInputListener(wrappedState,
+	return wrappedState->apiInThread->componentSetInputListener(
+		wrappedState,
 		wrappedComponent,
 		(inListener == NULL ? NULL :
 			sjme_scritchui_fb_listenerInput), 
@@ -235,7 +236,7 @@ sjme_errorCode sjme_scritchui_fb_componentSetPaintListener(
 		return sjme_error_default(error);
 		
 	/* Have wrapped handler call our wrapped listener. */
-	return wrappedState->api->componentSetPaintListener(
+	return wrappedState->apiInThread->componentSetPaintListener(
 		wrappedState,
 		wrappedComponent,
 		(inListener == NULL ? NULL :
@@ -271,7 +272,8 @@ sjme_errorCode sjme_scritchui_fb_componentSetSizeListener(
 		return sjme_error_default(error);
 		
 	/* Have wrapped handler call our wrapped listener. */
-	return wrappedState->api->componentSetSizeListener(wrappedState,
+	return wrappedState->apiInThread->componentSetSizeListener(
+		wrappedState,
 		wrappedComponent,
 		(inListener == NULL ? NULL :
 			sjme_scritchui_fb_listenerSize), 
@@ -306,7 +308,8 @@ sjme_errorCode sjme_scritchui_fb_componentSetVisibleListener(
 		return sjme_error_default(error);
 		
 	/* Have wrapped handler call our wrapped listener. */
-	return wrappedState->api->componentSetVisibleListener(wrappedState,
+	return wrappedState->apiInThread->componentSetVisibleListener(
+		wrappedState,
 		wrappedComponent,
 		(inListener == NULL ? NULL :
 			sjme_scritchui_fb_listenerVisible), 
@@ -330,6 +333,6 @@ sjme_errorCode sjme_scritchui_fb_componentSize(
 	wrappedComponent = inComponent->common.handle;
 	
 	/* Forward call. */
-	return wrappedState->api->componentSize(wrappedState,
+	return wrappedState->apiInThread->componentSize(wrappedState,
 		wrappedComponent, outWidth, outHeight);
 }

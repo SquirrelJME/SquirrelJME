@@ -27,6 +27,6 @@ sjme_errorCode sjme_scritchui_fb_labelSetString(
 	wrappedComponent = inComponent->common.handle;
 	
 	/* Just forward to the wrapper. */
-	return wrappedState->api->labelSetString(wrappedState,
+	return wrappedState->apiInThread->labelSetString(wrappedState,
 		wrappedComponent, inString);
 }

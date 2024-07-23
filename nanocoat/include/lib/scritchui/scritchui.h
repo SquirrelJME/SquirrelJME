@@ -1094,6 +1094,32 @@ typedef sjme_errorCode (*sjme_scritchui_menuNewFunc)(
 	sjme_attrInOutNotNull sjme_scritchui_uiMenu* outMenu);
 
 /**
+ * Removes the item at the specified index from this menu.
+ * 
+ * @param inState The ScritchUI state.
+ * @param fromMenu The menu to remove from.
+ * @param atIndex The index to remove.
+ * @return Any resultant error, if any.
+ * @since 2024/07/23 
+ */
+typedef sjme_errorCode (*sjme_scritchui_menuRemoveFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind fromMenu,
+	sjme_attrInPositive sjme_jint atIndex);
+
+/**
+ * Removes all items from the given menu.
+ * 
+ * @param inState The ScritchUI state.
+ * @param fromMenu The menu to remove from.
+ * @return Any resultant error, if any.
+ * @since 2024/07/23 
+ */
+typedef sjme_errorCode (*sjme_scritchui_menuRemoveAllFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind fromMenu);
+
+/**
  * Deletes the given object.
  * 
  * @param inState The input state.
@@ -1201,6 +1227,20 @@ typedef sjme_errorCode (*sjme_scritchui_windowSetCloseListenerFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(close));
+
+/**
+ * Sets the menu bar for a window.
+ * 
+ * @param inState The input state.
+ * @param inWindow The window to set the menu bar of.
+ * @param inMenuBar The menu bar to set, if @c NULL then it is removed.
+ * @return Any resultant error, if any.
+ * @since 2024/07/23
+ */
+typedef sjme_errorCode (*sjme_scritchui_windowSetMenuBarFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNullable sjme_scritchui_uiMenuBar inMenuBar);
 
 /**
  * Sets the visibility of a window.
@@ -1321,6 +1361,12 @@ struct sjme_scritchui_apiFunctions
 	/** Creates a new menu. */
 	SJME_SCRITCHUI_QUICK_API(menuNew);
 	
+	/** Removes an item from the menu. */
+	SJME_SCRITCHUI_QUICK_API(menuRemove);
+	
+	/** Removes all items from the menu. */
+	SJME_SCRITCHUI_QUICK_API(menuRemoveAll);
+	
 	/** Deletes an object. */
 	SJME_SCRITCHUI_QUICK_API(objectDelete);
 	
@@ -1344,6 +1390,9 @@ struct sjme_scritchui_apiFunctions
 	
 	/** Sets the close listener for a window. */
 	SJME_SCRITCHUI_QUICK_API(windowSetCloseListener);
+
+	/** Sets the menu bar for a window. */
+	SJME_SCRITCHUI_QUICK_API(windowSetMenuBar);
 	
 	/** Sets visibility of window. */
 	SJME_SCRITCHUI_QUICK_API(windowSetVisible);
@@ -1378,6 +1427,9 @@ struct sjme_scritchui_uiCommonBase
 	
 	/** Secondary opaque native handle for this, as needed. */
 	sjme_scritchui_handle handleB;
+	
+	/** Tertiary opaque native handle, as needed. */
+	sjme_scritchui_handle handleC;
 };
 
 /**

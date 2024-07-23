@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.mle.scritchui;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBarBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchCloseListener;
@@ -145,6 +146,20 @@ public interface ScritchWindowInterface
 	@SquirrelJMEVendorApi
 	void setCloseListener(@NotNull ScritchWindowBracket __window,
 		@Nullable ScritchCloseListener __listener)
+		throws MLECallError;
+	
+	/**
+	 * Sets the menu bar for a window.
+	 *
+	 * @param __window The window to set the menu bar of.
+	 * @param __menuBar The menu bar to set.
+	 * @throws MLECallError If the window is {@code null}; or if the menu
+	 * bar could not be set or cleared.
+	 * @since 2024/07/23
+	 */
+	@SquirrelJMEVendorApi
+	void setMenuBar(@NotNull ScritchWindowBracket __window,
+		@Nullable ScritchMenuBarBracket __menuBar)
 		throws MLECallError;
 	
 	/**

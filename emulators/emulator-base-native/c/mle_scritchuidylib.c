@@ -100,6 +100,8 @@
 	DESC_LONG ")" DESC_LONG
 #define FORWARD_DESC___menuNew "(" \
 	DESC_LONG ")" DESC_LONG
+#define FORWARD_DESC___menuRemoveAll "(" \
+	DESC_LONG DESC_LONG ")" DESC_VOID
 
 #define FORWARD_DESC___objectDelete "(" \
 	DESC_LONG DESC_LONG ")" DESC_VOID
@@ -125,6 +127,8 @@
 	DESC_LONG ")" DESC_LONG
 #define FORWARD_DESC___windowSetCloseListener "(" \
 	DESC_LONG DESC_LONG DESC_SCRITCHUI_CLOSE_LISTENER ")" DESC_VOID
+#define FORWARD_DESC___windowSetMenuBar "(" \
+	DESC_LONG DESC_LONG DESC_LONG ")" DESC_VOID
 #define FORWARD_DESC___windowSetVisible "(" \
 	DESC_LONG DESC_LONG DESC_BOOLEAN ")" DESC_VOID
 
@@ -1164,6 +1168,53 @@ fail:
 	return NULL;
 }
 
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__labelSetString)(JNIEnv* env, jclass classy, jlong stateP,
+	jlong componentP, jstring string)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	sjme_scritchui_uiComponent component;
+	sjme_lpcstr chars;
+	jboolean isCopy;
+	
+	if (stateP == 0 || componentP == 0)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	component = (sjme_scritchui_uiComponent)componentP;
+	
+	/* Not implemented? */
+	if (state->api->labelSetString == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
+		return;
+	}
+	
+	/* Obtain characters. */
+	isCopy = JNI_FALSE;
+	if (string != NULL)
+		chars = (*env)->GetStringUTFChars(env, string, &isCopy);
+	else
+		chars = NULL;
+
+	/* Forward call. */
+	error = state->api->labelSetString(
+		state, component, chars);	
+	
+	/* Cleanup. */
+	if (string != NULL)
+		(*env)->ReleaseStringUTFChars(env, string, chars);
+	
+	/* Fail? */
+	if (sjme_error_is(error))
+		sjme_jni_throwMLECallError(env, error);
+}
+
 JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __linkInit)
 	(JNIEnv* env, jclass classy, jstring libPath, jstring name)
 {
@@ -1315,29 +1366,6 @@ fail_nullArgs:
 	/* Fail. */
 	sjme_jni_throwMLECallError(env, sjme_error_default(error));
 	return 0L;
-}
-
-JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __objectDelete)
-	(JNIEnv* env, jclass classy, jlong stateP, jlong objectP)
-{
-	sjme_errorCode error;
-	sjme_scritchui state;
-	sjme_scritchui_uiCommon object;
-	
-	if (stateP == 0 || objectP == 0)
-	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
-		return;
-	}
-	
-	/* Restore. */
-	state = (sjme_scritchui)stateP;
-	object = (sjme_scritchui_uiCommon)objectP;
-	
-	/* Call delete handler. */
-	if (sjme_error_is(error = state->api->objectDelete(state,
-		&object)) || object != NULL)
-		sjme_jni_throwMLECallError(env, error);
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __loopExecute)
@@ -1636,6 +1664,59 @@ fail_nullArgs:
 	return 0L;
 }
 
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __menuRemoveAll)
+	(JNIEnv* env, jclass classy, jlong stateP, jlong fromMenuP)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	sjme_scritchui_uiMenuKind fromMenu;
+	
+	if (stateP == 0 || fromMenuP == 0)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	fromMenu = (sjme_scritchui_uiMenuKind)fromMenuP;
+	
+	/* Not implemented? */
+	if (state->api->menuRemoveAll == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
+		return;
+	}
+	
+	/* Forward call. */
+	if (sjme_error_is(error = state->api->menuRemoveAll(state,
+		fromMenu)))
+		sjme_jni_throwMLECallError(env, error);
+}
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __objectDelete)
+	(JNIEnv* env, jclass classy, jlong stateP, jlong objectP)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	sjme_scritchui_uiCommon object;
+	
+	if (stateP == 0 || objectP == 0)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+	
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	object = (sjme_scritchui_uiCommon)objectP;
+	
+	/* Call delete handler. */
+	if (sjme_error_is(error = state->api->objectDelete(state,
+		&object)) || object != NULL)
+		sjme_jni_throwMLECallError(env, error);
+}
+
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	__panelEnableFocus)(JNIEnv* env, jclass classy, jlong stateP,
 	jlong panelP, jboolean enableFocus, jboolean defaultFocus)
@@ -1706,24 +1787,6 @@ fail_nullArgs:
 	/* Fail. */
 	sjme_jni_throwMLECallError(env, sjme_error_default(error));
 	return 0L;
-}
-
-JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __weakDelete)
-	(JNIEnv* env, jclass classy, jlong weakP)
-{
-	sjme_errorCode error;
-	sjme_alloc_weak weak;
-	
-	if (weakP == 0)
-	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
-		return;
-	}
-
-	/* Call deletion handler. */
-	weak = (sjme_alloc_weak)weakP;
-	if (sjme_error_is(error = sjme_alloc_weakDelete(&weak)))
-		sjme_jni_throwMLECallError(env, error);
 }
 
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __screenId)
@@ -1814,6 +1877,24 @@ fail_alloca:
 fail_nullArgs:
 	sjme_jni_throwMLECallError(env, error);
 	return -1;
+}
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __weakDelete)
+	(JNIEnv* env, jclass classy, jlong weakP)
+{
+	sjme_errorCode error;
+	sjme_alloc_weak weak;
+	
+	if (weakP == 0)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+
+	/* Call deletion handler. */
+	weak = (sjme_alloc_weak)weakP;
+	if (sjme_error_is(error = sjme_alloc_weakDelete(&weak)))
+		sjme_jni_throwMLECallError(env, error);
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
@@ -1924,16 +2005,15 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
-	__labelSetString)(JNIEnv* env, jclass classy, jlong stateP,
-	jlong componentP, jstring string)
+	__windowSetMenuBar)(JNIEnv* env, jclass classy, jlong stateP,
+	jlong windowP, jlong menuBarP)
 {
 	sjme_errorCode error;
 	sjme_scritchui state;
-	sjme_scritchui_uiComponent component;
-	sjme_lpcstr chars;
-	jboolean isCopy;
+	sjme_scritchui_uiWindow window;
+	sjme_scritchui_uiMenuBar menuBar;
 	
-	if (stateP == 0 || componentP == 0)
+	if (stateP == 0 || windowP == 0)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return;
@@ -1941,32 +2021,19 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
-	component = (sjme_scritchui_uiComponent)componentP;
+	window = (sjme_scritchui_uiWindow)windowP;
+	menuBar = (sjme_scritchui_uiMenuBar)menuBarP;
 	
 	/* Not implemented? */
-	if (state->api->labelSetString == NULL)
+	if (state->api->windowSetMenuBar == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
 		return;
 	}
 	
-	/* Obtain characters. */
-	isCopy = JNI_FALSE;
-	if (string != NULL)
-		chars = (*env)->GetStringUTFChars(env, string, &isCopy);
-	else
-		chars = NULL;
-
 	/* Forward call. */
-	error = state->api->labelSetString(
-		state, component, chars);	
-	
-	/* Cleanup. */
-	if (string != NULL)
-		(*env)->ReleaseStringUTFChars(env, string, chars);
-	
-	/* Fail? */
-	if (sjme_error_is(error))
+	if (sjme_error_is(error = state->api->windowSetMenuBar(
+		state, window, menuBar)))
 		sjme_jni_throwMLECallError(env, error);
 }
 
@@ -2028,6 +2095,7 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 	FORWARD_list(NativeScritchDylib, __menuInsert),
 	FORWARD_list(NativeScritchDylib, __menuItemNew),
 	FORWARD_list(NativeScritchDylib, __menuNew),
+	FORWARD_list(NativeScritchDylib, __menuRemoveAll),
 	FORWARD_list(NativeScritchDylib, __objectDelete),
 	FORWARD_list(NativeScritchDylib, __panelEnableFocus),
 	FORWARD_list(NativeScritchDylib, __panelNew),
@@ -2038,6 +2106,7 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 	FORWARD_list(NativeScritchDylib, __windowManagerType),
 	FORWARD_list(NativeScritchDylib, __windowNew),
 	FORWARD_list(NativeScritchDylib, __windowSetCloseListener),
+	FORWARD_list(NativeScritchDylib, __windowSetMenuBar),
 	FORWARD_list(NativeScritchDylib, __windowSetVisible),
 };
 

@@ -52,7 +52,8 @@ sjme_errorCode sjme_scritchui_fb_windowContentMinimumSize(
 	wrappedWindow = inWindow->component.common.handle;
 	
 	/* Forward call. */
-	return wrappedState->api->windowContentMinimumSize(wrappedState,
+	return wrappedState->apiInThread->windowContentMinimumSize(
+		wrappedState,
 		wrappedWindow, width, height);
 }
 
@@ -72,7 +73,7 @@ sjme_errorCode sjme_scritchui_fb_windowNew(
 	
 	/* Create a wrapped panel. */
 	wrappedWindow = NULL;
-	if (sjme_error_is(error = wrappedState->api->windowNew(
+	if (sjme_error_is(error = wrappedState->apiInThread->windowNew(
 		wrappedState, &wrappedWindow)) ||
 		wrappedWindow == NULL)
 		return sjme_error_default(error);
@@ -114,11 +115,37 @@ sjme_errorCode sjme_scritchui_fb_windowSetCloseListener(
 		return sjme_error_default(error);
 		
 	/* Have wrapped handler call our wrapped listener. */
-	return wrappedState->api->windowSetCloseListener(wrappedState,
+	return wrappedState->apiInThread->windowSetCloseListener(
+		wrappedState,
 		wrappedWindow,
 		(inListener == NULL ? NULL :
 			sjme_scritchui_fb_listenerClose), 
 			&wrappedFrontEnd);
+}
+	
+sjme_errorCode sjme_scritchui_fb_windowSetMenuBar(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNullable sjme_scritchui_uiMenuBar inMenuBar)
+{
+	sjme_scritchui wrappedState;
+	sjme_scritchui_uiWindow wrappedWindow;
+	sjme_scritchui_uiMenuBar wrappedMenuBar;
+	
+	if (inState == NULL || inWindow == NULL)
+		return SJME_ERROR_NONE;
+	
+	/* Recover wrapped state. */
+	wrappedState = inState->wrappedState;
+	wrappedWindow = inWindow->component.common.handle;
+	if (inMenuBar != NULL)
+		wrappedMenuBar = inMenuBar->menuKind.common.handle;
+	else
+		wrappedMenuBar = NULL;
+	
+	/* Forward call. */
+	return wrappedState->apiInThread->windowSetMenuBar(wrappedState,
+		wrappedWindow, wrappedMenuBar);
 }
 
 sjme_errorCode sjme_scritchui_fb_windowSetVisible(
@@ -137,6 +164,6 @@ sjme_errorCode sjme_scritchui_fb_windowSetVisible(
 	wrappedWindow = inWindow->component.common.handle;
 	
 	/* Forward call. */
-	return wrappedState->api->windowSetVisible(wrappedState,
+	return wrappedState->apiInThread->windowSetVisible(wrappedState,
 		wrappedWindow, isVisible);
 }

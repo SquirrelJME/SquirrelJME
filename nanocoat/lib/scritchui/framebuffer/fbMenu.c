@@ -27,7 +27,7 @@ sjme_errorCode sjme_scritchui_fb_menuBarNew(
 	
 	/* Create a wrapped panel. */
 	wrapped = NULL;
-	if (sjme_error_is(error = wrappedState->api->menuBarNew(
+	if (sjme_error_is(error = wrappedState->apiInThread->menuBarNew(
 		wrappedState, &wrapped)) || wrapped == NULL)
 		return sjme_error_default(error);
 	
@@ -59,7 +59,7 @@ sjme_errorCode sjme_scritchui_fb_menuInsert(
 	wrappedChildItem = childItem->common.handle;
 	
 	/* Forward. */
-	return wrappedState->api->menuInsert(wrappedState,
+	return wrappedState->apiInThread->menuInsert(wrappedState,
 		wrappedIntoMenu, atIndex, wrappedChildItem);
 }
 
@@ -79,7 +79,7 @@ sjme_errorCode sjme_scritchui_fb_menuItemNew(
 	
 	/* Create a wrapped panel. */
 	wrapped = NULL;
-	if (sjme_error_is(error = wrappedState->api->menuItemNew(
+	if (sjme_error_is(error = wrappedState->apiInThread->menuItemNew(
 		wrappedState, &wrapped)) || wrapped == NULL)
 		return sjme_error_default(error);
 	
@@ -108,7 +108,7 @@ sjme_errorCode sjme_scritchui_fb_menuNew(
 	
 	/* Create a wrapped panel. */
 	wrapped = NULL;
-	if (sjme_error_is(error = wrappedState->api->menuNew(
+	if (sjme_error_is(error = wrappedState->apiInThread->menuNew(
 		wrappedState, &wrapped)) || wrapped == NULL)
 		return sjme_error_default(error);
 	
@@ -119,4 +119,24 @@ sjme_errorCode sjme_scritchui_fb_menuNew(
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_scritchui_fb_menuRemove(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind fromMenu,
+	sjme_attrInPositive sjme_jint atIndex)
+{
+	sjme_scritchui wrappedState;
+	sjme_scritchui_uiMenuKind wrappedFromMenu;
+	
+	if (inState == NULL || fromMenu == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Recover wrapped state. */
+	wrappedState = inState->wrappedState;
+	wrappedFromMenu = fromMenu->common.handle;
+	
+	/* Forward. */
+	return wrappedState->apiInThread->menuRemove(wrappedState,
+		wrappedFromMenu, atIndex);
 }

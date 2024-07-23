@@ -12,6 +12,7 @@ package cc.squirreljme.runtime.lcdui.scritchui;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchLabelInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchMenuInterface;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBarBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuKindBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuHasChildrenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuHasLabelBracket;
@@ -130,6 +131,9 @@ public final class MenuActionTree
 			Debugging.debugNote("Menu add children %d...",
 				__add.length);
 			
+			// Clear everything from the menu beforehand
+			menuApi.removeAll((ScritchMenuHasChildrenBracket)scritch);
+			
 			// Map all menu nodes to leaves first, so that they have created
 			// ScritchUI objects as required... if applicable
 			int n = __add.length;
@@ -204,6 +208,25 @@ public final class MenuActionTree
 			// Store
 			this._node = __node;
 			this._scritch = scritch;
+		}
+		
+		/**
+		 * Returns the native widget.
+		 *
+		 * @param <K> The widget type.
+		 * @param __cl The widget type.
+		 * @return The resultant widget.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2024/07/23
+		 */
+		public <K extends ScritchMenuKindBracket> K scritchWidget(
+			Class<? extends K> __cl)
+			throws NullPointerException
+		{
+			if (__cl == null)
+				throw new NullPointerException("NARG");
+			
+			return __cl.cast(this._scritch);
 		}
 	}
 }

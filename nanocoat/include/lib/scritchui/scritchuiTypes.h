@@ -321,8 +321,8 @@ typedef struct sjme_scritchui_uiListBase
 	sjme_scritchui_uiChoiceBase choice;
 } sjme_scritchui_uiListBase;
 
-/** Menu items which have a parent. */
-SJME_LIST_DECLARE(sjme_scritchui_uiMenuHasParent, 0);
+/** Menu item list. */
+SJME_LIST_DECLARE(sjme_scritchui_uiMenuKind, 0);
 
 struct sjme_scritchui_uiMenuKindBase
 {
@@ -336,13 +336,13 @@ struct sjme_scritchui_uiMenuHasChildrenBase
 	sjme_jint numChildren;
 	
 	/** The children to this. */
-	sjme_list_sjme_scritchui_uiMenuHasParent* children;
+	sjme_list_sjme_scritchui_uiMenuKind* children;
 };
 
 struct sjme_scritchui_uiMenuHasParentBase
 {
 	/** The parent menu. */
-	sjme_scritchui_uiMenuHasChildren parent;
+	sjme_scritchui_uiMenuKind parent;
 };
 
 /**
@@ -474,6 +474,9 @@ typedef struct sjme_scritchui_uiWindowBase
 	
 	/** Labeled item. */
 	sjme_scritchui_uiLabeledBase labeled;
+	
+	/** The current menu bar. */
+	sjme_scritchui_uiMenuBar menuBar;
 	
 	/** Listeners. */
 	sjme_scritchui_uiWindowListeners listeners[SJME_NUM_SCRITCHUI_LISTENER];

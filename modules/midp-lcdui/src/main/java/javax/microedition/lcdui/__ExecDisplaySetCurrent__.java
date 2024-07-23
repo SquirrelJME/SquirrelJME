@@ -14,12 +14,15 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchContainerInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchPaintableInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchWindowInterface;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBarBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayScale;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
+import cc.squirreljme.runtime.lcdui.scritchui.MenuActionNode;
+import cc.squirreljme.runtime.lcdui.scritchui.MenuActionNodeOnly;
 
 /**
  * Handler for showing/removing a {@link Displayable}.
@@ -129,6 +132,12 @@ class __ExecDisplaySetCurrent__
 			// attached to the display
 			showNow._trackerTitle.connect(display._listenerTitle);
 			
+			// Set the menu bar of the window to that of this displayable
+			windowApi.setMenuBar(window,
+				MenuActionNodeOnly.rootTree(showNow)
+					.map(MenuActionNodeOnly.node(showNow))
+					.scritchWidget(ScritchMenuBarBracket.class));
+			
 			// Show the display window
 			windowApi.setVisible(window, true);
 			
@@ -139,8 +148,11 @@ class __ExecDisplaySetCurrent__
 			paintableApi.repaint(panel);
 		}
 		
-		// Hide the window
+		// Enters the "background" state
 		else
+		{
+			// Hide the window
 			windowApi.setVisible(window, false);
+		}
 	}
 }

@@ -46,7 +46,7 @@ sjme_errorCode sjme_scritchui_fb_screens(
 	/* Get wrapped screens. */
 	memset(wrappedScreens, 0, sizeof(wrappedScreens));
 	numWrappedScreens = SJME_FB_SCREEN_COUNT;
-	if (sjme_error_is(error = wrappedState->api->screens(
+	if (sjme_error_is(error = wrappedState->apiInThread->screens(
 		wrappedState, wrappedScreens,
 		&numWrappedScreens)))
 		return sjme_error_default(error);

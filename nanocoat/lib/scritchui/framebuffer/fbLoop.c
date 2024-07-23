@@ -25,7 +25,7 @@ sjme_errorCode sjme_scritchui_fb_loopExecute(
 	wrappedState = inState->wrappedState;
 	
 	/* Direct forward. */
-	return wrappedState->api->loopExecute(wrappedState,
+	return wrappedState->apiInThread->loopExecute(wrappedState,
 		callback, anything);
 }
 	
@@ -43,7 +43,7 @@ sjme_errorCode sjme_scritchui_fb_loopExecuteLater(
 	wrappedState = inState->wrappedState;
 	
 	/* Direct forward. */
-	return wrappedState->api->loopExecuteLater(wrappedState,
+	return wrappedState->apiInThread->loopExecuteLater(wrappedState,
 		callback, anything);
 }
 	
@@ -61,6 +61,6 @@ sjme_errorCode sjme_scritchui_fb_loopExecuteWait(
 	wrappedState = inState->wrappedState;
 	
 	/* Direct forward. */
-	return wrappedState->api->loopExecuteWait(wrappedState,
+	return wrappedState->apiInThread->loopExecuteWait(wrappedState,
 		callback, anything);
 }

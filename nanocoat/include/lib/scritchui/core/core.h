@@ -171,6 +171,11 @@ sjme_errorCode sjme_scritchpen_core_hardwareGraphics(
 	sjme_attrInPositiveNonZero sjme_jint sw,
 	sjme_attrInPositiveNonZero sjme_jint sh,
 	sjme_attrInNullable const sjme_frontEnd* pencilFrontEndCopy);
+	
+sjme_errorCode sjme_scritchui_core_labelSetString(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNullable sjme_lpcstr inString);
 
 sjme_errorCode sjme_scritchui_core_listNew(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -213,6 +218,15 @@ sjme_errorCode sjme_scritchui_core_menuNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_scritchui_uiMenu* outMenu);
 
+sjme_errorCode sjme_scritchui_core_menuRemove(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind fromMenu,
+	sjme_attrInPositive sjme_jint atIndex);
+
+sjme_errorCode sjme_scritchui_core_menuRemoveAll(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind fromMenu);
+
 sjme_errorCode sjme_scritchui_core_objectDelete(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_scritchui_uiCommon* inOutObject);
@@ -251,10 +265,10 @@ sjme_errorCode sjme_scritchui_core_windowSetCloseListener(
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(close));
 	
-sjme_errorCode sjme_scritchui_core_labelSetString(
+sjme_errorCode sjme_scritchui_core_windowSetMenuBar(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrInNullable sjme_lpcstr inString);
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNullable sjme_scritchui_uiMenuBar inMenuBar);
 
 sjme_errorCode sjme_scritchui_core_windowSetVisible(
 	sjme_attrInNotNull sjme_scritchui inState,

@@ -149,6 +149,8 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 		SJME_SCRITCHUI_DISPATCH_DECL(menuInsert);
 		SJME_SCRITCHUI_DISPATCH_DECL(menuItemNew);
 		SJME_SCRITCHUI_DISPATCH_DECL(menuNew);
+		SJME_SCRITCHUI_DISPATCH_DECL(menuRemove);
+		SJME_SCRITCHUI_DISPATCH_DECL(menuRemoveAll);
 		SJME_SCRITCHUI_DISPATCH_DECL(objectDelete);
 		SJME_SCRITCHUI_DISPATCH_DECL(panelNew);
 		SJME_SCRITCHUI_DISPATCH_DECL(panelEnableFocus);
@@ -157,6 +159,7 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 		SJME_SCRITCHUI_DISPATCH_DECL(windowContentMinimumSize);
 		SJME_SCRITCHUI_DISPATCH_DECL(windowNew);
 		SJME_SCRITCHUI_DISPATCH_DECL(windowSetCloseListener);
+		SJME_SCRITCHUI_DISPATCH_DECL(windowSetMenuBar);
 		SJME_SCRITCHUI_DISPATCH_DECL(windowSetVisible);
 	} as;
 	sjme_scritchui state;
@@ -347,6 +350,17 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 		SJME_SCRITCHUI_SERIAL_TYPE_MENU_NEW,
 		(state,
 		as.menuNew->outMenu));
+			
+	SJME_SCRITCHUI_DISPATCH_CASE(menuRemove,
+		SJME_SCRITCHUI_SERIAL_TYPE_MENU_REMOVE,
+		(state,
+		as.menuRemove->fromMenu,
+		as.menuRemove->atIndex));
+			
+	SJME_SCRITCHUI_DISPATCH_CASE(menuRemoveAll,
+		SJME_SCRITCHUI_SERIAL_TYPE_MENU_REMOVE_ALL,
+		(state,
+		as.menuRemoveAll->fromMenu));
 		
 	SJME_SCRITCHUI_DISPATCH_CASE(objectDelete,
 		SJME_SCRITCHUI_SERIAL_TYPE_OBJECT_DELETE,
@@ -395,6 +409,12 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 		as.windowSetCloseListener->inWindow,
 		as.windowSetCloseListener->inListener,
 		as.windowSetCloseListener->copyFrontEnd));
+
+	SJME_SCRITCHUI_DISPATCH_CASE(windowSetMenuBar,
+		SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_SET_MENU_BAR,
+		(state,
+		as.windowSetMenuBar->inWindow,
+		as.windowSetMenuBar->inMenuBar));
 		
 	SJME_SCRITCHUI_DISPATCH_CASE(windowSetVisible,
 		SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_SET_VISIBLE,
@@ -832,6 +852,36 @@ sjme_errorCode sjme_scritchui_coreSerial_menuNew(
 	SJME_SCRITCHUI_INVOKE_WAIT;
 }
 
+sjme_errorCode sjme_scritchui_coreSerial_menuRemove(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind fromMenu,
+	sjme_attrInPositive sjme_jint atIndex)
+{
+	SJME_SCRITCHUI_SERIAL_CHUNK(menuRemove,
+		SJME_SCRITCHUI_SERIAL_TYPE_MENU_REMOVE,
+		(inState, fromMenu, atIndex));
+		
+	SJME_SCRITCHUI_SERIAL_PASS(fromMenu);
+	SJME_SCRITCHUI_SERIAL_PASS(atIndex);
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
+}
+
+sjme_errorCode sjme_scritchui_coreSerial_menuRemoveAll(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind fromMenu)
+{
+	SJME_SCRITCHUI_SERIAL_CHUNK(menuRemoveAll,
+		SJME_SCRITCHUI_SERIAL_TYPE_MENU_REMOVE_ALL,
+		(inState, fromMenu));
+		
+	SJME_SCRITCHUI_SERIAL_PASS(fromMenu);
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
+}
+
 sjme_errorCode sjme_scritchui_coreSerial_objectDelete(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_scritchui_uiCommon* inOutObject)
@@ -953,6 +1003,22 @@ sjme_errorCode sjme_scritchui_coreSerial_windowSetCloseListener(
 	SJME_SCRITCHUI_SERIAL_PASS(inWindow);
 	SJME_SCRITCHUI_SERIAL_PASS(inListener);
 	SJME_SCRITCHUI_SERIAL_PASS(copyFrontEnd);
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
+}
+
+sjme_errorCode sjme_scritchui_coreSerial_windowSetMenuBar(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNullable sjme_scritchui_uiMenuBar inMenuBar)
+{
+	SJME_SCRITCHUI_SERIAL_CHUNK(windowSetMenuBar,
+		SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_SET_MENU_BAR,
+		(inState, inWindow, inMenuBar));
+		
+	SJME_SCRITCHUI_SERIAL_PASS(inWindow);
+	SJME_SCRITCHUI_SERIAL_PASS(inMenuBar);
 	
 	/* Invoke and wait. */
 	SJME_SCRITCHUI_INVOKE_WAIT;

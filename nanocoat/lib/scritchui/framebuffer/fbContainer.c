@@ -30,7 +30,7 @@ sjme_errorCode sjme_scritchui_fb_containerAdd(
 	wrappedAddComponent = addComponent->common.handle;
 	
 	/* Forward call. */
-	return wrappedState->api->containerAdd(wrappedState,
+	return wrappedState->apiInThread->containerAdd(wrappedState,
 		wrappedInContainer, wrappedAddComponent);
 }
 
@@ -53,7 +53,7 @@ sjme_errorCode sjme_scritchui_fb_containerRemove(
 	wrappedRemoveComponent = removeComponent->common.handle;
 	
 	/* Forward repaint. */
-	return wrappedState->api->containerRemove(wrappedState,
+	return wrappedState->apiInThread->containerRemove(wrappedState,
 		wrappedInContainer,
 		wrappedRemoveComponent);
 }
@@ -80,7 +80,7 @@ sjme_errorCode sjme_scritchui_fb_containerSetBounds(
 	wrappedInComponent = inComponent->common.handle;
 	
 	/* Forward call. */
-	return wrappedState->api->containerSetBounds(wrappedState,
+	return wrappedState->apiInThread->containerSetBounds(wrappedState,
 		wrappedInContainer,
 		wrappedInComponent,
 		x, y, width, height);
