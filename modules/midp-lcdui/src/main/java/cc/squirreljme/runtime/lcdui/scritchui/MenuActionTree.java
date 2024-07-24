@@ -159,8 +159,16 @@ public final class MenuActionTree
 		
 		// Set text label for this item?
 		if (scritch instanceof ScritchMenuHasLabelBracket)
-			labelApi.setString((ScritchMenuHasLabelBracket)scritch,
-				into._node.owner(MenuAction.class)._longLabel.get());
+		{
+			MenuAction action = into._node.owner(MenuAction.class);
+			
+			// Set the preferred label to use
+			String label = action._longLabel.get();
+			if (label == null || label.isEmpty())
+				label = action._shortLabel.get();
+			
+			labelApi.setString((ScritchMenuHasLabelBracket)scritch, label);
+		}
 	}
 	
 	/**
