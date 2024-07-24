@@ -94,7 +94,7 @@ sjme_errorCode sjme_scritchui_gtk2_windowContentMinimumSize(
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* Recover window. */
-	gtkWindow = inWindow->component.common.handle;
+	gtkWindow = inWindow->component.common.handle[SJME_SUI_GTK2_H_WIDGET];
 	
 	/* Setup geometry. */
 	memset(&geometry, 0, sizeof(geometry));
@@ -120,7 +120,6 @@ sjme_errorCode sjme_scritchui_gtk2_windowNew(
 	GtkWindow* gtkWindow;
 	GtkBox* gtkVBox;
 	GtkBox* gtkMenuBox;
-	GtkAccelGroup* gtkAccel;
 	
 	if (inState == NULL || inWindow == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -140,16 +139,10 @@ sjme_errorCode sjme_scritchui_gtk2_windowNew(
 	if (gtkMenuBox == NULL)
 		goto fail_newMenuBox;
 	
-	/* Accelerator group. */
-	gtkAccel = gtk_accel_group_new();
-	if (gtkAccel == NULL)
-		goto fail_newAccel;
-	
 	/* Setup window. */
-	inWindow->component.common.handle = gtkWindow;
-	inWindow->component.common.handleB = gtkVBox;
-	inWindow->component.common.handleC = gtkMenuBox;
-	inWindow->component.common.handleD = gtkAccel;
+	inWindow->component.common.handle[SJME_SUI_GTK2_H_WIDGET] = gtkWindow;
+	inWindow->component.common.handle[SJME_SUI_GTK2_H_WINBOX] = gtkVBox;
+	inWindow->component.common.handle[SJME_SUI_GTK2_H_WINMENU] = gtkMenuBox;
 
 	/* Add blank menu bar, do not claim all the space. */
 	gtk_box_pack_start(GTK_BOX(gtkVBox),
@@ -180,8 +173,9 @@ sjme_errorCode sjme_scritchui_gtk2_windowNew(
 		inState->wmInfo->xwsClass,
 		inState->wmInfo->xwsClass);
 	
-	/* Add accelerators for menus. */
-	gtk_window_add_accel_group(gtkWindow, gtkAccel);
+	/* Use the global accelerator group for menu items. */
+	gtk_window_add_accel_group(gtkWindow, GTK_ACCEL_GROUP(
+		inState->common.handle[SJME_SUI_GTK2_H_ACCELG]));
 	
 	/* Set visibility change listener, which requires some logic. */
 	g_signal_connect(gtkWindow, "visibility-notify-event",
@@ -189,10 +183,7 @@ sjme_errorCode sjme_scritchui_gtk2_windowNew(
 	
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
-
-fail_newAccel:
-	if (gtkAccel != NULL)
-		g_object_unref(gtkAccel);
+	
 fail_newMenuBox:
 	if (gtkMenuBox != NULL)
 		gtk_widget_destroy(GTK_WIDGET(gtkMenuBox));
@@ -217,7 +208,7 @@ sjme_errorCode sjme_scritchui_gtk2_windowSetCloseListenerFunc(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover window. */
-	gtkWindow = inWindow->component.common.handle;
+	gtkWindow = inWindow->component.common.handle[SJME_SUI_GTK2_H_WIDGET];
 	
 	/* Get listener info. */
 	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(inWindow, close);
@@ -246,12 +237,12 @@ sjme_errorCode sjme_scritchui_gtk2_windowSetMenuBar(
 		return SJME_ERROR_NONE;
 		
 	/* Recover window and possibly the menu bar. */
-	gtkWindow = inWindow->component.common.handle;
-	gtkMenuBox = inWindow->component.common.handleC;
+	gtkWindow = inWindow->component.common.handle[SJME_SUI_GTK2_H_WIDGET];
+	gtkMenuBox = inWindow->component.common.handle[SJME_SUI_GTK2_H_WINMENU];
 	if (inMenuBar == NULL)
 		gtkMenuBar = NULL;
 	else
-		gtkMenuBar = inMenuBar->menuKind.common.handle;
+		gtkMenuBar = inMenuBar->menuKind.common.handle[SJME_SUI_GTK2_H_WIDGET];
 	
 	/* Remove everything from the menu bar box. */
 	gtk_container_foreach(GTK_CONTAINER(gtkMenuBox),
@@ -277,7 +268,7 @@ sjme_errorCode sjme_scritchui_gtk2_windowSetVisible(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover window. */
-	gtkWindow = inWindow->component.common.handle;
+	gtkWindow = inWindow->component.common.handle[SJME_SUI_GTK2_H_WIDGET];
 	
 	/* Show or hide it. */
 	if (isVisible)

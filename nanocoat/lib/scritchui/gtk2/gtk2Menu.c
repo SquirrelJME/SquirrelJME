@@ -7,6 +7,8 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <gdk/gdkkeysyms.h>
+
 #include "lib/scritchui/gtk2/gtk2.h"
 #include "lib/scritchui/gtk2/gtk2Intern.h"
 #include "lib/scritchui/scritchuiTypes.h"
@@ -25,7 +27,8 @@ sjme_errorCode sjme_scritchui_gtk2_menuBarNew(
 	widget = gtk_menu_bar_new();
 	
 	/* Store handle for later. */
-	inMenuBar->menuKind.common.handle = widget;
+	inMenuBar->menuKind.common
+		.handle[SJME_SUI_GTK2_H_WIDGET] = widget;
 	
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
@@ -39,19 +42,34 @@ sjme_errorCode sjme_scritchui_gtk2_menuInsert(
 {
 	GtkWidget* intoWidget;
 	GtkWidget* childWidget;
+	GtkAccelGroup* gtkAccel;
 	
 	if (inState == NULL || intoMenu == NULL || childItem == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Get widgets for injection. */
-	intoWidget = intoMenu->common.handle;
+	intoWidget = intoMenu->common.handle[SJME_SUI_GTK2_H_WIDGET];
 	
 	/* If we are adding a menu, we cannot add the menu itself as we need */
 	/* to add the menu item that the menu associates with. */
 	if (childItem->common.type == SJME_SCRITCHUI_TYPE_MENU)
-		childWidget = childItem->common.handleB;
+		childWidget = childItem->common.handle[SJME_SUI_GTK2_H_TOP_WIDGET];
 	else
-		childWidget = childItem->common.handle;
+		childWidget = childItem->common
+			.handle[SJME_SUI_GTK2_H_WIDGET];
+	
+	/* Attach accelerator, but only if a normal item. */
+	if (childItem->common.type == SJME_SCRITCHUI_TYPE_MENU_ITEM)
+	{
+		/* Recover and add accelerator. */
+		gtkAccel = GTK_ACCEL_GROUP(
+			inState->common.handle[SJME_SUI_GTK2_H_ACCELG]);
+		gtk_widget_add_accelerator(childWidget,
+			"activate",
+			gtkAccel,
+			GDK_KEY_F1, 0,
+			GTK_ACCEL_VISIBLE);
+	}
 	
 	/* Anything that can be inserted into, is just a menu shell. */
 	gtk_menu_shell_insert(GTK_MENU_SHELL(intoWidget),
@@ -70,6 +88,7 @@ sjme_errorCode sjme_scritchui_gtk2_menuItemNew(
 	sjme_attrInNotNull sjme_scritchui_uiMenuItem inMenuItem)
 {
 	GtkWidget* widget;
+	GtkAccelGroup* gtkAccel;
 	
 	if (inState == NULL || inMenuItem == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -78,7 +97,8 @@ sjme_errorCode sjme_scritchui_gtk2_menuItemNew(
 	widget = gtk_menu_item_new();
 	
 	/* Store handle for later. */
-	inMenuItem->menuKind.common.handle = widget;
+	inMenuItem->menuKind.common
+		.handle[SJME_SUI_GTK2_H_WIDGET] = widget;
 	
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
@@ -101,13 +121,14 @@ sjme_errorCode sjme_scritchui_gtk2_menuNew(
 	itemLike = gtk_menu_item_new();
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(itemLike),
 		menuWidget);
-	
+
 	/* This needs to be visible. */
 	gtk_widget_show(itemLike);
 	
 	/* Store handle for later. */
-	inMenu->menuKind.common.handle = menuWidget;
-	inMenu->menuKind.common.handleB = itemLike;
+	inMenu->menuKind.common
+		.handle[SJME_SUI_GTK2_H_WIDGET] = menuWidget;
+	inMenu->menuKind.common.handle[SJME_SUI_GTK2_H_TOP_WIDGET] = itemLike;
 	
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
@@ -135,15 +156,16 @@ sjme_errorCode sjme_scritchui_gtk2_menuRemove(
 		return sjme_error_default(error);
 	
 	/* Recover widgets. */
-	menuWidget = fromMenu->common.handle;
+	menuWidget = fromMenu->common.handle[SJME_SUI_GTK2_H_WIDGET];
 	childItem = parentMenu->children->elements[atIndex];
 	
 	/* If we are removing a menu, we need to remove the item and not the */
 	/* menu itself. */
 	if (childItem->common.type == SJME_SCRITCHUI_TYPE_MENU)
-		removeWidget = childItem->common.handleB;
+		removeWidget = childItem->common.handle[SJME_SUI_GTK2_H_TOP_WIDGET];
 	else
-		removeWidget = childItem->common.handle;
+		removeWidget =
+			childItem->common.handle[SJME_SUI_GTK2_H_WIDGET];
 	
 	/* Remove item, note that this does not use any index based removal */
 	/* but instead container based removal, so we just remove the handle. */

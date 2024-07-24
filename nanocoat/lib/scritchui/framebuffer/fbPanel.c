@@ -25,7 +25,8 @@ sjme_errorCode sjme_scritchui_fb_panelEnableFocus(
 		
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
-	wrappedPanel = inPanel->component.common.handle;
+	wrappedPanel =
+		inPanel->component.common.handle[SJME_SUI_FB_H_WRAPPED];
 	
 	/* Forward call. */
 	return wrappedState->apiInThread->panelEnableFocus(wrappedState,

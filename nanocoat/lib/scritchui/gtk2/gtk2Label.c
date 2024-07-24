@@ -24,8 +24,8 @@ sjme_errorCode sjme_scritchui_gtk2_labelSetString(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover handle. */
-	gtkWidget = inComponent->common.handle;
-	gtkWidgetB = inComponent->common.handleB;
+	gtkWidget = inComponent->common.handle[SJME_SUI_GTK2_H_WIDGET];
+	gtkWidgetB = inComponent->common.handle[SJME_SUI_GTK2_H_TOP_WIDGET];
 	
 	/* Depends on the type. */
 	switch (inComponent->common.type)

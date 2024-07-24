@@ -53,6 +53,10 @@ static const sjme_scritchui_implInternFunctions
 	.checkError = sjme_scritchui_gtk2_intern_checkError,
 	.disconnectSignal = sjme_scritchui_gtk2_intern_disconnectSignal,
 	.reconnectSignal = sjme_scritchui_gtk2_intern_reconnectSignal,
+	.mapGtkToScritchKey = sjme_scritchui_gtk2_intern_mapGtkToScritchKey,
+	.mapGtkToScritchMod = sjme_scritchui_gtk2_intern_mapGtkToScritchMod,
+	.mapScritchToGtkKey = sjme_scritchui_gtk2_intern_mapScritchToGtkKey,
+	.mapScritchToGtkMod = sjme_scritchui_gtk2_intern_mapScritchToGtkMod,
 	.widgetInit = sjme_scritchui_gtk2_intern_widgetInit,
 };
 
@@ -80,6 +84,9 @@ static sjme_thread_result sjme_scritchui_gtk2_loopMain(
 	
 	/* Initialize, we do not care for the arguments. */
 	gtk_init(&argc, &argv);
+	
+	/* Accelerator group, needed for menus. */
+	state->common.handle[SJME_SUI_GTK2_H_ACCELG] = gtk_accel_group_new();
 	
 	/* Need to call thread specific initializer? */
 	/* Usually this is for binding a thread to a JavaVM. */

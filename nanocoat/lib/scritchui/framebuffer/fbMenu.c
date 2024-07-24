@@ -55,8 +55,10 @@ sjme_errorCode sjme_scritchui_fb_menuInsert(
 		
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
-	wrappedIntoMenu = intoMenu->common.handle;
-	wrappedChildItem = childItem->common.handle;
+	wrappedIntoMenu =
+		intoMenu->common.handle[SJME_SUI_FB_H_WRAPPED];
+	wrappedChildItem =
+		childItem->common.handle[SJME_SUI_FB_H_WRAPPED];
 	
 	/* Forward. */
 	return wrappedState->apiInThread->menuInsert(wrappedState,
@@ -134,7 +136,8 @@ sjme_errorCode sjme_scritchui_fb_menuRemove(
 		
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
-	wrappedFromMenu = fromMenu->common.handle;
+	wrappedFromMenu =
+		fromMenu->common.handle[SJME_SUI_FB_H_WRAPPED];
 	
 	/* Forward. */
 	return wrappedState->apiInThread->menuRemove(wrappedState,

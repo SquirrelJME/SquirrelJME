@@ -139,7 +139,8 @@ sjme_errorCode sjme_scritchui_fb_componentRepaint(
 	
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
-	wrappedComponent = inComponent->common.handle;
+	wrappedComponent =
+		inComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
 	
 	/* Forward repaint. */
 	return wrappedState->apiInThread->componentRepaint(wrappedState,
@@ -158,7 +159,8 @@ sjme_errorCode sjme_scritchui_fb_componentRevalidate(
 	
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
-	wrappedComponent = inComponent->common.handle;
+	wrappedComponent =
+		inComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
 	
 	/* Forward call. */
 	return wrappedState->apiInThread->componentRevalidate(wrappedState,
@@ -180,7 +182,8 @@ sjme_errorCode sjme_scritchui_fb_componentSetInputListener(
 	
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
-	wrappedComponent = inComponent->common.handle;
+	wrappedComponent =
+		inComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
 	
 	/* Set listener information. */
 	memset(&wrappedFrontEnd, 0, sizeof(wrappedFrontEnd));
@@ -217,7 +220,8 @@ sjme_errorCode sjme_scritchui_fb_componentSetPaintListener(
 		
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
-	wrappedComponent = inComponent->common.handle;
+	wrappedComponent =
+		inComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
 		
 	/* Get the component's paint. */
 	paint = NULL;
@@ -259,7 +263,8 @@ sjme_errorCode sjme_scritchui_fb_componentSetSizeListener(
 	
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
-	wrappedComponent = inComponent->common.handle;
+	wrappedComponent =
+		inComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
 	
 	/* Set listener information. */
 	memset(&wrappedFrontEnd, 0, sizeof(wrappedFrontEnd));
@@ -295,7 +300,8 @@ sjme_errorCode sjme_scritchui_fb_componentSetVisibleListener(
 	
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
-	wrappedComponent = inComponent->common.handle;
+	wrappedComponent =
+		inComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
 	
 	/* Set listener information. */
 	memset(&wrappedFrontEnd, 0, sizeof(wrappedFrontEnd));
@@ -330,7 +336,8 @@ sjme_errorCode sjme_scritchui_fb_componentSize(
 	
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
-	wrappedComponent = inComponent->common.handle;
+	wrappedComponent =
+		inComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
 	
 	/* Forward call. */
 	return wrappedState->apiInThread->componentSize(wrappedState,

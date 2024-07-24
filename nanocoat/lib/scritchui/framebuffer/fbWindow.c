@@ -49,7 +49,8 @@ sjme_errorCode sjme_scritchui_fb_windowContentMinimumSize(
 	
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
-	wrappedWindow = inWindow->component.common.handle;
+	wrappedWindow =
+		inWindow->component.common.handle[SJME_SUI_FB_H_WRAPPED];
 	
 	/* Forward call. */
 	return wrappedState->apiInThread->windowContentMinimumSize(
@@ -102,7 +103,8 @@ sjme_errorCode sjme_scritchui_fb_windowSetCloseListener(
 	
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
-	wrappedWindow = inWindow->component.common.handle;
+	wrappedWindow =
+		inWindow->component.common.handle[SJME_SUI_FB_H_WRAPPED];
 	
 	/* Set listener information. */
 	memset(&wrappedFrontEnd, 0, sizeof(wrappedFrontEnd));
@@ -137,9 +139,11 @@ sjme_errorCode sjme_scritchui_fb_windowSetMenuBar(
 	
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
-	wrappedWindow = inWindow->component.common.handle;
+	wrappedWindow =
+		inWindow->component.common.handle[SJME_SUI_FB_H_WRAPPED];
 	if (inMenuBar != NULL)
-		wrappedMenuBar = inMenuBar->menuKind.common.handle;
+		wrappedMenuBar = inMenuBar->menuKind.common
+			.handle[SJME_SUI_FB_H_WRAPPED];
 	else
 		wrappedMenuBar = NULL;
 	
@@ -161,7 +165,8 @@ sjme_errorCode sjme_scritchui_fb_windowSetVisible(
 	
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
-	wrappedWindow = inWindow->component.common.handle;
+	wrappedWindow =
+		inWindow->component.common.handle[SJME_SUI_FB_H_WRAPPED];
 	
 	/* Forward call. */
 	return wrappedState->apiInThread->windowSetVisible(wrappedState,

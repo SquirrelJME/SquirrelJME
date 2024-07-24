@@ -27,10 +27,12 @@ sjme_errorCode sjme_scritchui_gtk2_containerAdd(
 	
 	/* Widget should always be the same. */
 	/* Use secondary handle for adding, if used. */
-	if (addComponent->common.handleB != NULL)
-		addWidget = (GtkWidget*)addComponent->common.handleB;
+	if (addComponent->common.handle[SJME_SUI_GTK2_H_TOP_WIDGET] != NULL)
+		addWidget = (GtkWidget*)addComponent->common
+			.handle[SJME_SUI_GTK2_H_TOP_WIDGET];
 	else
-		addWidget = (GtkWidget*)addComponent->common.handle;
+		addWidget = (GtkWidget*)addComponent->common
+			.handle[SJME_SUI_GTK2_H_WIDGET];
 
 	/* Debug. */
 	sjme_message("containerAdd(%p (%d), %p (%d))",
@@ -43,7 +45,8 @@ sjme_errorCode sjme_scritchui_gtk2_containerAdd(
 	{
 			/* Add to the window VBox, claim all the possible space. */
 		case SJME_SCRITCHUI_TYPE_WINDOW:
-			windowTarget = inContainer->common.handleB;
+			windowTarget = inContainer->common
+				.handle[SJME_SUI_GTK2_H_WINBOX];
 			gtk_box_pack_start(GTK_BOX(windowTarget),
 				GTK_WIDGET(addWidget),
 				TRUE,
@@ -53,7 +56,8 @@ sjme_errorCode sjme_scritchui_gtk2_containerAdd(
 		
 			/* Place into fixed at basic coordinates. */
 		case SJME_SCRITCHUI_TYPE_PANEL:
-			fixed = (GtkFixed*)inContainer->common.handle;
+			fixed = (GtkFixed*)inContainer->common
+				.handle[SJME_SUI_GTK2_H_WIDGET];
 			gtk_fixed_put(GTK_FIXED(fixed),
 				addWidget, 0, 0);
 			break;
@@ -92,23 +96,27 @@ sjme_errorCode sjme_scritchui_gtk2_containerRemove(
 	
 	/* Widget should always be the same. */
 	/* Since the secondary handle gets added, we need to remove it. */
-	if (removeComponent->common.handleB != NULL)
-		removeWidget = (GtkWidget*)removeComponent->common.handleB;
+	if (removeComponent->common.handle[SJME_SUI_GTK2_H_TOP_WIDGET] != NULL)
+		removeWidget = (GtkWidget*)removeComponent->common
+			.handle[SJME_SUI_GTK2_H_TOP_WIDGET];
 	else
-		removeWidget = (GtkWidget*)removeComponent->common.handle;
+		removeWidget = (GtkWidget*)removeComponent->common
+			.handle[SJME_SUI_GTK2_H_WIDGET];
 	
 	/* Which type is this? */
 	switch (inContainer->common.type)
 	{
 		case SJME_SCRITCHUI_TYPE_WINDOW:
-			windowTarget = inContainer->common.handleB;
+			windowTarget = inContainer->common
+				.handle[SJME_SUI_GTK2_H_TOP_WIDGET];
 			gtk_container_remove(GTK_CONTAINER(windowTarget),
 				removeWidget);
 			break;
 		
 			/* Place into fixed at basic coordinates. */
 		case SJME_SCRITCHUI_TYPE_PANEL:
-			fixed = (GtkFixed*)inContainer->common.handle;
+			fixed = (GtkFixed*)inContainer->common
+				.handle[SJME_SUI_GTK2_H_WIDGET];
 			gtk_container_remove(GTK_CONTAINER(fixed),
 				removeWidget);
 			break;
@@ -140,17 +148,20 @@ sjme_errorCode sjme_scritchui_gtk2_containerSetBounds(
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* Recover widget, we might have an alternate in use. */
-	if (inComponent->common.handleB != NULL)
-		moveWidget = (GtkWidget*)inComponent->common.handleB;
+	if (inComponent->common.handle[SJME_SUI_GTK2_H_TOP_WIDGET] != NULL)
+		moveWidget = (GtkWidget*)inComponent->common
+			.handle[SJME_SUI_GTK2_H_TOP_WIDGET];
 	else
-		moveWidget = (GtkWidget*)inComponent->common.handle;
+		moveWidget = (GtkWidget*)inComponent->common
+			.handle[SJME_SUI_GTK2_H_WIDGET];
 	
 	/* Depends on the container type. */
 	switch (inContainer->common.type)
 	{
 			/* Need to move within the panel but also set widget size. */
 		case SJME_SCRITCHUI_TYPE_PANEL:
-			gtkFixed = (GtkFixed*)inContainer->common.handle;
+			gtkFixed = (GtkFixed*)inContainer->common
+				.handle[SJME_SUI_GTK2_H_WIDGET];
 			gtk_fixed_move(gtkFixed, moveWidget, x, y);
 			gtk_widget_set_size_request(moveWidget, width, height);
 			break;

@@ -70,7 +70,7 @@ sjme_errorCode sjme_scritchui_fb_biMap(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Map to wrapped item. */
-	topLevel->handle = wrapped;
+	topLevel->handle[SJME_SUI_FB_H_WRAPPED] = wrapped;
 	
 	/* Then map back to top level item. */
 	wrapped->frontEnd.wrapper = topLevel;

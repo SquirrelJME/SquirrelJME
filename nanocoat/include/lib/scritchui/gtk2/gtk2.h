@@ -43,6 +43,21 @@ extern "C" {
 /** Maps a @c gboolean to @c sjme_jboolean . */
 #define GBOOLEAN_TO_SJME_JBOOLEAN(b) \
 	((b) == FALSE ? SJME_JNI_FALSE : SJME_JNI_TRUE)
+	
+/** Standard widget handle. */
+#define SJME_SUI_GTK2_H_WIDGET 0
+	
+/** Top most widget, to be added to container. */
+#define SJME_SUI_GTK2_H_TOP_WIDGET 1
+
+/** The window box for a window. */
+#define SJME_SUI_GTK2_H_WINBOX 1
+	
+/** The menu box for a window. */
+#define SJME_SUI_GTK2_H_WINMENU 2
+	
+/** The global state accelerator group. */
+#define SJME_SUI_GTK2_H_ACCELG 3
 
 /** Pencil functions for GTK2. */
 extern const sjme_scritchui_pencilImplFunctions

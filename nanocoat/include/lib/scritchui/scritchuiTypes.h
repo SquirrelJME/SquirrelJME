@@ -397,6 +397,12 @@ typedef struct sjme_scritchui_uiMenuItemBase
 	
 	/** Menu parent. */
 	sjme_scritchui_uiMenuHasParentBase parent;
+	
+	/** The accelerator key @c sjme_scritchinput_key , if any. */
+	sjme_jint accelKey;
+	
+	/** The accelerator modifiers @c sjme_scritchinput_modifier , if any. */
+	sjme_jint accelMod;
 } sjme_scritchui_uiMenuItemBase;
 
 typedef struct sjme_scritchui_uiPaintableListeners

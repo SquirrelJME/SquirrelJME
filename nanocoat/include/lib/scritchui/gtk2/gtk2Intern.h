@@ -40,6 +40,18 @@ typedef sjme_errorCode (*sjme_scritchui_gtk2_intern_disconnectSignalFunc)(
 	sjme_attrInNotNull GtkWidget* inWidget,
 	sjme_attrInNotNull sjme_scritchui_listener_void* infoCore);
 
+typedef sjme_jint (*sjme_scritchui_gtk2_intern_mapGtkToScritchKeyFunc)(
+	guint in);
+
+typedef sjme_jint (*sjme_scritchui_gtk2_intern_mapGtkToScritchModFunc)(
+	guint in);
+
+typedef guint (*sjme_scritchui_gtk2_intern_mapScritchToGtkKeyFunc)(
+	sjme_jint in);
+
+typedef guint (*sjme_scritchui_gtk2_intern_mapScritchToGtkModFunc)(
+	sjme_jint in);
+
 typedef sjme_errorCode (*sjme_scritchui_gtk2_intern_reconnectSignalFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull GtkWidget* inWidget,
@@ -64,6 +76,18 @@ struct sjme_scritchui_implInternFunctions
 	/** Disconnect a signal. */
 	sjme_scritchui_gtk2_intern_disconnectSignalFunc disconnectSignal;
 	
+	/** Map GTK key to ScritchUI key. */
+	sjme_scritchui_gtk2_intern_mapGtkToScritchKeyFunc mapGtkToScritchKey;
+	
+	/** Map GTK modifier to ScritchUI modifier. */
+	sjme_scritchui_gtk2_intern_mapGtkToScritchModFunc mapGtkToScritchMod;
+	
+	/** Map ScritchUI key to GTK key. */
+	sjme_scritchui_gtk2_intern_mapScritchToGtkKeyFunc mapScritchToGtkKey;
+	
+	/** Map ScritchUI modifier to GTK modifier. */
+	sjme_scritchui_gtk2_intern_mapScritchToGtkModFunc mapScritchToGtkMod;
+	
 	/** Reconnect a signal. */
 	sjme_scritchui_gtk2_intern_reconnectSignalFunc reconnectSignal;
 	
@@ -79,6 +103,14 @@ sjme_errorCode sjme_scritchui_gtk2_intern_disconnectSignal(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull GtkWidget* inWidget,
 	sjme_attrInNotNull sjme_scritchui_listener_void* infoCore);
+
+sjme_jint sjme_scritchui_gtk2_intern_mapGtkToScritchKey(guint in);
+
+sjme_jint sjme_scritchui_gtk2_intern_mapGtkToScritchMod(guint in);
+
+guint sjme_scritchui_gtk2_intern_mapScritchToGtkKey(sjme_jint in);
+
+guint sjme_scritchui_gtk2_intern_mapScritchToGtkMod(sjme_jint in);
 
 sjme_errorCode sjme_scritchui_gtk2_intern_reconnectSignal(
 	sjme_attrInNotNull sjme_scritchui inState,

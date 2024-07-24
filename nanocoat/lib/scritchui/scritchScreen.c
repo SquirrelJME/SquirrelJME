@@ -43,7 +43,7 @@ sjme_errorCode sjme_scritchui_core_intern_mapScreen(
 			
 			/* Update handle? */
 			if (updateHandle != NULL)
-				maybe->common.handle = updateHandle;
+				maybe->common.handle[0] = updateHandle;
 			
 			/* Success! */
 			return SJME_ERROR_NONE;
@@ -65,7 +65,7 @@ sjme_errorCode sjme_scritchui_core_intern_mapScreen(
 	/* Fill in information. */
 	maybe->common.state = inState;
 	maybe->common.type = SJME_SCRITCHUI_TYPE_SCREEN;
-	maybe->common.handle = updateHandle;
+	maybe->common.handle[0] = updateHandle;
 	maybe->id = screenId;
 	
 	/* Allocate a new list copy? */

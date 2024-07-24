@@ -24,7 +24,8 @@ sjme_errorCode sjme_scritchui_gtk2_panelEnableFocus(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Set focusable. */
-	widget = inPanel->component.common.handle;
+	widget =
+		inPanel->component.common.handle[SJME_SUI_GTK2_H_WIDGET];
 	gtk_widget_set_can_focus(widget,
 		SJME_JBOOLEAN_TO_GBOOLEAN(enableFocus));
 	
@@ -69,8 +70,8 @@ sjme_errorCode sjme_scritchui_gtk2_panelNew(
 	inState->implIntern->widgetInit(inState, GTK_WIDGET(fixed));
 	
 	/* Store information. */
-	inPanel->component.common.handle = fixed;
-	inPanel->component.common.handleB = eventBox;
+	inPanel->component.common.handle[SJME_SUI_GTK2_H_WIDGET] = fixed;
+	inPanel->component.common.handle[SJME_SUI_GTK2_H_TOP_WIDGET] = eventBox;
 	
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);

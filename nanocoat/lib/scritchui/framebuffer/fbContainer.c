@@ -26,8 +26,10 @@ sjme_errorCode sjme_scritchui_fb_containerAdd(
 	
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
-	wrappedInContainer = inContainer->common.handle;
-	wrappedAddComponent = addComponent->common.handle;
+	wrappedInContainer =
+		inContainer->common.handle[SJME_SUI_FB_H_WRAPPED];
+	wrappedAddComponent =
+		addComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
 	
 	/* Forward call. */
 	return wrappedState->apiInThread->containerAdd(wrappedState,
@@ -49,8 +51,10 @@ sjme_errorCode sjme_scritchui_fb_containerRemove(
 	
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
-	wrappedInContainer = inContainer->common.handle;
-	wrappedRemoveComponent = removeComponent->common.handle;
+	wrappedInContainer =
+		inContainer->common.handle[SJME_SUI_FB_H_WRAPPED];
+	wrappedRemoveComponent =
+		removeComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
 	
 	/* Forward repaint. */
 	return wrappedState->apiInThread->containerRemove(wrappedState,
@@ -76,8 +80,10 @@ sjme_errorCode sjme_scritchui_fb_containerSetBounds(
 	
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
-	wrappedInContainer = inContainer->common.handle;
-	wrappedInComponent = inComponent->common.handle;
+	wrappedInContainer =
+		inContainer->common.handle[SJME_SUI_FB_H_WRAPPED];
+	wrappedInComponent =
+		inComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
 	
 	/* Forward call. */
 	return wrappedState->apiInThread->containerSetBounds(wrappedState,

@@ -24,7 +24,8 @@ sjme_errorCode sjme_scritchui_fb_labelSetString(
 	
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
-	wrappedComponent = inComponent->common.handle;
+	wrappedComponent =
+		inComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
 	
 	/* Just forward to the wrapper. */
 	return wrappedState->apiInThread->labelSetString(wrappedState,

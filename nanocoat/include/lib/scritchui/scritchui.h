@@ -1431,6 +1431,12 @@ struct sjme_scritchui_apiFunctions
 typedef struct sjme_scritchui_implInternFunctions
 	sjme_scritchui_implInternFunctions;
 
+/** The number of common handles. */
+#define SJME_SCRITCHUI_NUM_COMMON_HANDLES 4
+
+/** The number of common values. */
+#define SJME_SCRITCHUI_NUM_COMMON_VALUES SJME_SCRITCHUI_NUM_COMMON_HANDLES
+
 struct sjme_scritchui_uiCommonBase
 {
 	/** The type of what this is. */
@@ -1445,17 +1451,11 @@ struct sjme_scritchui_uiCommonBase
 	 */
 	sjme_frontEnd frontEnd;
 	
-	/** Opaque native handle for this. */
-	sjme_scritchui_handle handle;
+	/** Opaque native handles for this, as needed. */
+	sjme_scritchui_handle handle[SJME_SCRITCHUI_NUM_COMMON_HANDLES];
 	
-	/** Secondary opaque native handle for this, as needed. */
-	sjme_scritchui_handle handleB;
-	
-	/** Tertiary opaque native handle, as needed. */
-	sjme_scritchui_handle handleC;
-	
-	/** Fourth opaque native handle, as needed. */
-	sjme_scritchui_handle handleD;
+	/** Other value storage, as needed. */
+	sjme_jint intVals[SJME_SCRITCHUI_NUM_COMMON_VALUES];
 };
 
 /**
