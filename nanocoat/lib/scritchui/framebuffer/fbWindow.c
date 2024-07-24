@@ -60,7 +60,8 @@ sjme_errorCode sjme_scritchui_fb_windowContentMinimumSize(
 
 sjme_errorCode sjme_scritchui_fb_windowNew(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow)
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNullable sjme_pointer ignored)
 {
 	sjme_errorCode error;
 	sjme_scritchui wrappedState;

@@ -64,7 +64,8 @@ sjme_errorCode sjme_scritchui_core_panelNew(
 	
 	/* Setup native widget. */
 	if (sjme_error_is(error = inState->impl->panelNew(inState,
-		result)) || result->component.common.handle == NULL)
+		result, NULL)) ||
+		result->component.common.handle[0] == NULL)
 		goto fail_newWidget;
 	
 	/* Post-initialize. */

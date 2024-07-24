@@ -36,12 +36,14 @@ extern "C"
  * 
  * @param inState The input state. 
  * @param inCommon The common item to be initialized.
+ * @param inData Any data to use for initialization.
  * @return Any resultant error, if any.
  * @since 2024/07/22
  */
 typedef sjme_errorCode (*sjme_scritchui_coreGeneric_commonNewImplFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiCommon inCommon);
+	sjme_attrInNotNull sjme_scritchui_uiCommon inCommon,
+	sjme_attrInNullable sjme_pointer inData);
 
 /**
  * Basic core common initialization logic.
@@ -51,6 +53,7 @@ typedef sjme_errorCode (*sjme_scritchui_coreGeneric_commonNewImplFunc)(
  * @param outCommonSize The size of the resultant common.
  * @param uiType The UI type to initialize.
  * @param implNew The implementation new for this type.
+ * @param inData Any data to pass to @c implNew .
  * @return Any resultant error, if any.
  * @since 2024/07/22
  */
@@ -60,7 +63,8 @@ sjme_errorCode sjme_scritchui_coreGeneric_commonNew(
 	sjme_attrInPositiveNonZero sjme_jint outCommonSize,
 	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_UI_TYPES)
 		sjme_scritchui_uiType uiType,
-	sjme_attrInNotNull sjme_scritchui_coreGeneric_commonNewImplFunc implNew);
+	sjme_attrInNotNull sjme_scritchui_coreGeneric_commonNewImplFunc implNew,
+	sjme_attrInNullable sjme_pointer inData);
 
 /*--------------------------------------------------------------------------*/
 

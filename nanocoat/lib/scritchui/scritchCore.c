@@ -398,7 +398,8 @@ sjme_errorCode sjme_scritchui_coreGeneric_commonNew(
 	sjme_attrInPositiveNonZero sjme_jint outCommonSize,
 	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_UI_TYPES)
 		sjme_scritchui_uiType uiType,
-	sjme_attrInNotNull sjme_scritchui_coreGeneric_commonNewImplFunc implNew)
+	sjme_attrInNotNull sjme_scritchui_coreGeneric_commonNewImplFunc implNew,
+	sjme_attrInNullable sjme_pointer inData)
 {
 	sjme_errorCode error;
 	sjme_scritchui_uiCommon result;
@@ -425,8 +426,8 @@ sjme_errorCode sjme_scritchui_coreGeneric_commonNew(
 		goto fail_preInit;
 	
 	/* Setup common item. */
-	if (sjme_error_is(error = implNew(inState, result)) ||
-		result->handle == NULL)
+	if (sjme_error_is(error = implNew(inState, result,
+		inData)) || result->handle[0] == NULL)
 		goto fail_new;
 	
 	/* Post-initialize. */

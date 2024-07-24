@@ -249,6 +249,9 @@ SJME_LIST_DECLARE(sjme_scritchui_uiComponent, 0);
  */
 typedef struct sjme_scritchui_uiChoiceBase
 {
+	/** The type of choice this is. */
+	sjme_scritchui_choiceType type;
+	
 	/** The items on this list. */
 	sjme_list_sjme_scritchui_uiChoiceItem* items;
 	

@@ -35,7 +35,8 @@ sjme_errorCode sjme_scritchui_fb_panelEnableFocus(
 
 sjme_errorCode sjme_scritchui_fb_panelNew(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiPanel inPanel)
+	sjme_attrInNotNull sjme_scritchui_uiPanel inPanel,
+	sjme_attrInNullable sjme_pointer ignored)
 {
 	sjme_errorCode error;
 	sjme_scritchui wrappedState;

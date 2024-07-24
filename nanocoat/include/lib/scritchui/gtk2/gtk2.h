@@ -138,7 +138,8 @@ sjme_errorCode sjme_scritchui_gtk2_loopExecuteLater(
 
 sjme_errorCode sjme_scritchui_gtk2_menuBarNew(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiMenuBar inMenuBar);
+	sjme_attrInNotNull sjme_scritchui_uiMenuBar inMenuBar,
+	sjme_attrInNullable sjme_pointer ignored);
 
 sjme_errorCode sjme_scritchui_gtk2_menuInsert(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -148,11 +149,13 @@ sjme_errorCode sjme_scritchui_gtk2_menuInsert(
 
 sjme_errorCode sjme_scritchui_gtk2_menuItemNew(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiMenuItem inMenuItem);
+	sjme_attrInNotNull sjme_scritchui_uiMenuItem inMenuItem,
+	sjme_attrInNullable sjme_pointer ignored);
 
 sjme_errorCode sjme_scritchui_gtk2_menuNew(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiMenu inMenu);
+	sjme_attrInNotNull sjme_scritchui_uiMenu inMenu,
+	sjme_attrInNullable sjme_pointer ignored);
 	
 sjme_errorCode sjme_scritchui_gtk2_menuRemove(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -167,7 +170,8 @@ sjme_errorCode sjme_scritchui_gtk2_panelEnableFocus(
 
 sjme_errorCode sjme_scritchui_gtk2_panelNew(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiPanel inPanel);
+	sjme_attrInNotNull sjme_scritchui_uiPanel inPanel,
+	sjme_attrInNullable sjme_pointer ignored);
 
 sjme_errorCode sjme_scritchui_gtk2_screens(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -182,7 +186,8 @@ sjme_errorCode sjme_scritchui_gtk2_windowContentMinimumSize(
 
 sjme_errorCode sjme_scritchui_gtk2_windowNew(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow);
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNullable sjme_pointer ignored);
 	
 sjme_errorCode sjme_scritchui_gtk2_windowSetCloseListenerFunc(
 	sjme_attrInNotNull sjme_scritchui inState,

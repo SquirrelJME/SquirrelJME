@@ -25,7 +25,8 @@ sjme_errorCode sjme_scritchui_core_menuBarNew(
 		sizeof(**outMenuBar),
 		SJME_SCRITCHUI_TYPE_MENU_BAR,
 		(sjme_scritchui_coreGeneric_commonNewImplFunc)
-			inState->impl->menuBarNew);
+			inState->impl->menuBarNew,
+		NULL);
 }
 
 sjme_errorCode sjme_scritchui_core_menuInsert(
@@ -144,7 +145,8 @@ sjme_errorCode sjme_scritchui_core_menuItemNew(
 		sizeof(**outMenuItem),
 		SJME_SCRITCHUI_TYPE_MENU_ITEM,
 		(sjme_scritchui_coreGeneric_commonNewImplFunc)
-			inState->impl->menuItemNew);
+			inState->impl->menuItemNew,
+		NULL);
 }
 
 sjme_errorCode sjme_scritchui_core_menuNew(
@@ -160,7 +162,8 @@ sjme_errorCode sjme_scritchui_core_menuNew(
 		sizeof(**outMenu),
 		SJME_SCRITCHUI_TYPE_MENU,
 		(sjme_scritchui_coreGeneric_commonNewImplFunc)
-			inState->impl->menuNew);
+			inState->impl->menuNew,
+		NULL);
 }
 
 sjme_errorCode sjme_scritchui_core_menuRemove(

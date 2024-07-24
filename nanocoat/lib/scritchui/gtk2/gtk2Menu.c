@@ -16,7 +16,8 @@
 
 sjme_errorCode sjme_scritchui_gtk2_menuBarNew(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiMenuBar inMenuBar)
+	sjme_attrInNotNull sjme_scritchui_uiMenuBar inMenuBar,
+	sjme_attrInNullable sjme_pointer ignored)
 {
 	GtkWidget* widget;
 	
@@ -76,7 +77,8 @@ sjme_errorCode sjme_scritchui_gtk2_menuInsert(
 
 sjme_errorCode sjme_scritchui_gtk2_menuItemNew(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiMenuItem inMenuItem)
+	sjme_attrInNotNull sjme_scritchui_uiMenuItem inMenuItem,
+	sjme_attrInNullable sjme_pointer ignored)
 {
 	GtkWidget* widget;
 	GtkAccelGroup* gtkAccel;
@@ -97,7 +99,8 @@ sjme_errorCode sjme_scritchui_gtk2_menuItemNew(
 
 sjme_errorCode sjme_scritchui_gtk2_menuNew(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiMenu inMenu)
+	sjme_attrInNotNull sjme_scritchui_uiMenu inMenu,
+	sjme_attrInNullable sjme_pointer ignored)
 {
 	GtkWidget* menuWidget;
 	GtkWidget* itemLike;

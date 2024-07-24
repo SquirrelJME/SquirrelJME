@@ -115,7 +115,8 @@ sjme_errorCode sjme_scritchui_gtk2_windowContentMinimumSize(
 
 sjme_errorCode sjme_scritchui_gtk2_windowNew(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow)
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNullable sjme_pointer ignored)
 {
 	GtkWindow* gtkWindow;
 	GtkBox* gtkVBox;

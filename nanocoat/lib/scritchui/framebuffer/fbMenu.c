@@ -13,7 +13,8 @@
 
 sjme_errorCode sjme_scritchui_fb_menuBarNew(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiMenuBar inMenuBar)
+	sjme_attrInNotNull sjme_scritchui_uiMenuBar inMenuBar,
+	sjme_attrInNullable sjme_pointer ignored)
 {
 	sjme_errorCode error;
 	sjme_scritchui wrappedState;
@@ -67,7 +68,8 @@ sjme_errorCode sjme_scritchui_fb_menuInsert(
 
 sjme_errorCode sjme_scritchui_fb_menuItemNew(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiMenuItem inMenuItem)
+	sjme_attrInNotNull sjme_scritchui_uiMenuItem inMenuItem,
+	sjme_attrInNullable sjme_pointer ignored)
 {
 	sjme_errorCode error;
 	sjme_scritchui wrappedState;

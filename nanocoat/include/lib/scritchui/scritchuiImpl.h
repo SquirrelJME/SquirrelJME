@@ -52,6 +52,17 @@ extern "C" {
 	((item)->listeners[SJME_SCRITCHUI_LISTENER_USER].specific)
 
 /**
+ * List initialization parameters.
+ * 
+ * @since 2024/07/24
+ */
+typedef struct sjme_scritchui_impl_initParamList
+{
+	/** The type of choice used. */
+	sjme_scritchui_choiceType type;
+} sjme_scritchui_impl_initParamList;
+
+/**
  * Implementation specific initialization.
  * 
  * @param inState The state being initialized.
@@ -96,61 +107,70 @@ typedef sjme_errorCode (*sjme_scritchui_impl_containerRemoveFunc)(
  * 
  * @param inState The input ScritchUI state.
  * @param inList The list that was created.
+ * @param init Initializer data for the list.
  * @return Any error code as per implementation.
  * @since 2024/04/06
  */
 typedef sjme_errorCode (*sjme_scritchui_impl_listNewFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiList inList,
-	sjme_attrInValue sjme_scritchui_choiceType inChoiceType);
+	sjme_attrInValue sjme_scritchui_impl_initParamList* init);
 
 /**
  * Creates a new native menu bar.
  * 
  * @param inState The input ScritchUI state.
  * @param inMenuBar The menu bar that was created.
+ * @param ignored Ignored, not used.
  * @return Any resultant error, if any.
  * @since 2024/07/21
  */
 typedef sjme_errorCode (*sjme_scritchui_impl_menuBarNewFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiMenuBar inMenuBar);
+	sjme_attrInNotNull sjme_scritchui_uiMenuBar inMenuBar,
+	sjme_attrInNullable sjme_pointer ignored);
 
 /**
  * Creates a new native menu item.
  * 
  * @param inState The input ScritchUI state.
  * @param inMenuItem The menu item that was created.
+ * @param ignored Ignored, not used.
  * @return Any resultant error, if any.
  * @since 2024/07/21
  */
 typedef sjme_errorCode (*sjme_scritchui_impl_menuItemNewFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiMenuItem inMenuItem);
+	sjme_attrInNotNull sjme_scritchui_uiMenuItem inMenuItem,
+	sjme_attrInNullable sjme_pointer ignored);
 
 /**
  * Creates a new native menu.
  * 
  * @param inState The input ScritchUI state.
  * @param inMenu The menu that was created.
+ * @param ignored Ignored, not used.
  * @return Any resultant error, if any.
  * @since 2024/07/21
  */
 typedef sjme_errorCode (*sjme_scritchui_impl_menuNewFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiMenu inMenu);
+	sjme_attrInNotNull sjme_scritchui_uiMenu inMenu,
+	sjme_attrInNullable sjme_pointer ignored);
 
 /**
  * Creates a new native panel.
  * 
  * @param inState The input ScritchUI state.
  * @param inPanel The panel that was created.
+ * @param ignored Ignored, not used.
  * @return Any error code as per implementation.
  * @since 2024/04/06
  */
 typedef sjme_errorCode (*sjme_scritchui_impl_panelNewFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiPanel inPanel);
+	sjme_attrInNotNull sjme_scritchui_uiPanel inPanel,
+	sjme_attrInNullable sjme_pointer ignored);
 
 /**
  * Creates a new window.

@@ -164,7 +164,8 @@ sjme_errorCode sjme_scritchui_fb_loopExecuteWait(
 
 sjme_errorCode sjme_scritchui_fb_menuBarNew(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiMenuBar inMenuBar);
+	sjme_attrInNotNull sjme_scritchui_uiMenuBar inMenuBar,
+	sjme_attrInNullable sjme_pointer ignored);
 	
 sjme_errorCode sjme_scritchui_fb_menuInsert(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -174,7 +175,8 @@ sjme_errorCode sjme_scritchui_fb_menuInsert(
 
 sjme_errorCode sjme_scritchui_fb_menuItemNew(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiMenuItem inMenuItem);
+	sjme_attrInNotNull sjme_scritchui_uiMenuItem inMenuItem,
+	sjme_attrInNullable sjme_pointer ignored);
 
 sjme_errorCode sjme_scritchui_fb_menuNew(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -193,7 +195,8 @@ sjme_errorCode sjme_scritchui_fb_panelEnableFocus(
 
 sjme_errorCode sjme_scritchui_fb_panelNew(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiPanel inPanel);
+	sjme_attrInNotNull sjme_scritchui_uiPanel inPanel,
+	sjme_attrInNullable sjme_pointer ignored);
 
 sjme_errorCode sjme_scritchui_fb_screens(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -208,7 +211,8 @@ sjme_errorCode sjme_scritchui_fb_windowContentMinimumSize(
 
 sjme_errorCode sjme_scritchui_fb_windowNew(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow);
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNullable sjme_pointer ignored);
 
 sjme_errorCode sjme_scritchui_fb_windowSetCloseListener(
 	sjme_attrInNotNull sjme_scritchui inState,

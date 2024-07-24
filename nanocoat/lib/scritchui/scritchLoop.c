@@ -172,6 +172,9 @@ sjme_errorCode sjme_scritchui_core_loopIterate(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNullable sjme_jboolean* outHasTerminated)
 {
+	if (inState == NULL)
+		return SJME_ERROR_NONE;
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
