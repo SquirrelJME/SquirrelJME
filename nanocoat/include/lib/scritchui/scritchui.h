@@ -1453,6 +1453,9 @@ struct sjme_scritchui_uiCommonBase
 	
 	/** Tertiary opaque native handle, as needed. */
 	sjme_scritchui_handle handleC;
+	
+	/** Fourth opaque native handle, as needed. */
+	sjme_scritchui_handle handleD;
 };
 
 /**

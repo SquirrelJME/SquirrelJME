@@ -120,29 +120,36 @@ sjme_errorCode sjme_scritchui_gtk2_windowNew(
 	GtkWindow* gtkWindow;
 	GtkBox* gtkVBox;
 	GtkBox* gtkMenuBox;
+	GtkAccelGroup* gtkAccel;
 	
 	if (inState == NULL || inWindow == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* We only care for top-level windows. */
-	gtkWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	gtkWindow = (GtkWindow*)gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	if (gtkWindow == NULL)
-		return SJME_ERROR_CANNOT_CREATE;
+		goto fail_newWindow;
 	
 	/* We need a vertical box for the menu bar. */
-	gtkVBox = gtk_vbox_new(FALSE, 0);
+	gtkVBox = (GtkBox*)gtk_vbox_new(FALSE, 0);
 	if (gtkVBox == NULL)
-		return SJME_ERROR_CANNOT_CREATE;
+		goto fail_newVBox;
 	
 	/* We need somewhere to place the menu bar for the window. */
-	gtkMenuBox = gtk_hbox_new(TRUE, 0);
+	gtkMenuBox = (GtkBox*)gtk_hbox_new(TRUE, 0);
 	if (gtkMenuBox == NULL)
-		return SJME_ERROR_CANNOT_CREATE;
+		goto fail_newMenuBox;
+	
+	/* Accelerator group. */
+	gtkAccel = gtk_accel_group_new();
+	if (gtkAccel == NULL)
+		goto fail_newAccel;
 	
 	/* Setup window. */
 	inWindow->component.common.handle = gtkWindow;
 	inWindow->component.common.handleB = gtkVBox;
 	inWindow->component.common.handleC = gtkMenuBox;
+	inWindow->component.common.handleD = gtkAccel;
 
 	/* Add blank menu bar, do not claim all the space. */
 	gtk_box_pack_start(GTK_BOX(gtkVBox),
@@ -173,12 +180,29 @@ sjme_errorCode sjme_scritchui_gtk2_windowNew(
 		inState->wmInfo->xwsClass,
 		inState->wmInfo->xwsClass);
 	
+	/* Add accelerators for menus. */
+	gtk_window_add_accel_group(gtkWindow, gtkAccel);
+	
 	/* Set visibility change listener, which requires some logic. */
 	g_signal_connect(gtkWindow, "visibility-notify-event",
 		G_CALLBACK(sjme_scritchui_gtk2_eventVisibilityNotify), inWindow);
 	
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
+
+fail_newAccel:
+	if (gtkAccel != NULL)
+		g_object_unref(gtkAccel);
+fail_newMenuBox:
+	if (gtkMenuBox != NULL)
+		gtk_widget_destroy(GTK_WIDGET(gtkMenuBox));
+fail_newVBox:
+	if (gtkVBox != NULL)
+		gtk_widget_destroy(GTK_WIDGET(gtkVBox));
+fail_newWindow:
+	if (gtkWindow != NULL)
+		gtk_widget_destroy(GTK_WIDGET(gtkWindow));
+	return SJME_ERROR_CANNOT_CREATE;
 }
 
 sjme_errorCode sjme_scritchui_gtk2_windowSetCloseListenerFunc(
