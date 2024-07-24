@@ -17,7 +17,7 @@ sjme_errorCode sjme_scritchui_gtk2_containerAdd(
 	sjme_attrInNotNull sjme_scritchui_uiContainer inContainerData,
 	sjme_attrInNotNull sjme_scritchui_uiComponent addComponent)
 {
-	GtkWindow* windowVBox;
+	GtkWindow* windowTarget;
 	GtkFixed* fixed;
 	GtkWidget* addWidget;
 	
@@ -41,10 +41,14 @@ sjme_errorCode sjme_scritchui_gtk2_containerAdd(
 	/* Which type is this? */
 	switch (inContainer->common.type)
 	{
+			/* Add to the window VBox, claim all the possible space. */
 		case SJME_SCRITCHUI_TYPE_WINDOW:
-			windowVBox = (GtkWindow*)inContainer->common.handleB;
-			gtk_container_add(GTK_CONTAINER(windowVBox),
-				addWidget);
+			windowTarget = inContainer->common.handleB;
+			gtk_box_pack_start(GTK_BOX(windowTarget),
+				GTK_WIDGET(addWidget),
+				TRUE,
+				TRUE,
+				0);
 			break;
 		
 			/* Place into fixed at basic coordinates. */
@@ -78,7 +82,7 @@ sjme_errorCode sjme_scritchui_gtk2_containerRemove(
 	sjme_attrInNotNull sjme_scritchui_uiContainer inContainerData,
 	sjme_attrInNotNull sjme_scritchui_uiComponent removeComponent)
 {
-	GtkWindow* windowVBox;
+	GtkWindow* windowTarget;
 	GtkFixed* fixed;
 	GtkWidget* removeWidget;
 	
@@ -97,8 +101,8 @@ sjme_errorCode sjme_scritchui_gtk2_containerRemove(
 	switch (inContainer->common.type)
 	{
 		case SJME_SCRITCHUI_TYPE_WINDOW:
-			windowVBox = (GtkWindow*)inContainer->common.handleB;
-			gtk_container_remove(GTK_CONTAINER(windowVBox),
+			windowTarget = inContainer->common.handleB;
+			gtk_container_remove(GTK_CONTAINER(windowTarget),
 				removeWidget);
 			break;
 		

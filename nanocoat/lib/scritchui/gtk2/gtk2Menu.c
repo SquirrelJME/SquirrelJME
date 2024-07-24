@@ -57,6 +57,10 @@ sjme_errorCode sjme_scritchui_gtk2_menuInsert(
 	gtk_menu_shell_insert(GTK_MENU_SHELL(intoWidget),
 		childWidget, atIndex);
 	
+	/* Menu items need to be shown, otherwise they will be invisible. */
+	gtk_widget_show(intoWidget);
+	gtk_widget_show(childWidget);
+	
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
@@ -97,6 +101,9 @@ sjme_errorCode sjme_scritchui_gtk2_menuNew(
 	itemLike = gtk_menu_item_new();
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(itemLike),
 		menuWidget);
+	
+	/* This needs to be visible. */
+	gtk_widget_show(itemLike);
 	
 	/* Store handle for later. */
 	inMenu->menuKind.common.handle = menuWidget;

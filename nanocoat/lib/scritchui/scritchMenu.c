@@ -87,39 +87,45 @@ sjme_errorCode sjme_scritchui_core_menuInsert(
 	if (inState->impl->menuInsert == NULL)
 		return SJME_ERROR_NOT_IMPLEMENTED;
 	
-	/* Setup new list to store the child in. */
-	newList = NULL;
-	if (sjme_error_is(error = sjme_list_alloc(inState->pool, n + 1,
-		&newList, sjme_scritchui_uiMenuKind, 0)) || newList == NULL)
-		return sjme_error_default(error);
-	
-	/* Copy entire set over. */
-	for (i = 0, o = 0; i < n;)
+	/* Do we need to make a new list? */
+	if (childList == NULL || n >= childList->length)
 	{
-		/* Inject here? */
-		if (o == atIndex)
-			newList->elements[o++] = SJME_SUI_CAST_MENU_KIND(childItem);
+		/* Setup new list. */
+		newList = NULL;
+		if (sjme_error_is(error = sjme_list_alloc(inState->pool, n + 1,
+			&newList, sjme_scritchui_uiMenuKind, 0)) || newList == NULL)
+			return sjme_error_default(error);
 		
-		/* Copy normal. */
+		/* Copy all items over? */
 		if (childList != NULL)
-			newList->elements[o++] =
-				SJME_SUI_CAST_MENU_KIND(childList->elements[i++]);
+			for (i = 0; i < n; i++)
+				newList->elements[i] = childList->elements[i];
+		
+		/* Use this list. */
+		parentMenu->children = newList;
+		
+		/* Free old list. */
+		if (childList != NULL)
+		{
+			if (sjme_error_is(error = sjme_alloc_free(childList)))
+				return sjme_error_default(error);
+			childList = NULL;
+		}
+		
+		/* We are using this list now. */
+		childList = newList;
 	}
+	
+	/* Move entries up. */
+	for (i = n - 1, o = n; i > atIndex; i--, o--)
+		childList->elements[o] = childList->elements[i];
+	childList->elements[atIndex] = childItem;
+	
+	/* List is now this big. */
+	parentMenu->numChildren = n + 1;
 	
 	/* Associate parent. */
 	childMenu->parent = SJME_SUI_CAST_MENU_KIND(intoMenu);
-	
-	/* Use new list. */
-	parentMenu->children = newList;
-	parentMenu->numChildren = n + 1;
-	
-	/* Clear up old list. */
-	if (childList != NULL)
-	{
-		if (sjme_error_is(error = sjme_alloc_free(childList)))
-			return sjme_error_default(error);
-		childList = NULL;
-	}
 	
 	/* Forward to native implementation. */
 	return inState->impl->menuInsert(inState, intoMenu, atIndex, childItem);
@@ -209,6 +215,10 @@ sjme_errorCode sjme_scritchui_core_menuRemove(
 		&childMenu)) || childMenu == NULL)
 		return sjme_error_default(error);
 	
+	/* Nothing here? */
+	if (SJME_SUI_CAST_MENU_KIND(childAt) == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
 	/* Call native removal of item. */
 	if (sjme_error_is(error = inState->impl->menuRemove(inState,
 		fromMenu, atIndex)))
@@ -218,10 +228,9 @@ sjme_errorCode sjme_scritchui_core_menuRemove(
 	childMenu->parent = NULL;
 
 	/* Remove from list and move down everything. */
-	for (i = atIndex + 1, o = atIndex; i < n; i++, o++)
-		childList->elements[o] =
-			SJME_SUI_CAST_MENU_KIND(childList->elements[i]);
-	childList->elements[n] = NULL;
+	for (o = atIndex, i = atIndex + 1; i < n;)
+		childList->elements[o++] = childList->elements[i++];
+	childList->elements[n - 1] = NULL;
 	
 	/* Count down. */
 	parentMenu->numChildren = n - 1;
@@ -249,7 +258,7 @@ sjme_errorCode sjme_scritchui_core_menuRemoveAll(
 	/* Keep clearing out until nothing is left. */
 	while (parentMenu->numChildren > 0)
 	{
-		/* Double check. */
+		/* Double check, there should be an item here. */
 		if (SJME_SUI_CAST_MENU_KIND(parentMenu->children->elements[0]) == NULL)
 			return SJME_ERROR_ILLEGAL_STATE;
 		

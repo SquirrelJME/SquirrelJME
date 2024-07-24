@@ -143,14 +143,21 @@ sjme_errorCode sjme_scritchui_gtk2_windowNew(
 	inWindow->component.common.handle = gtkWindow;
 	inWindow->component.common.handleB = gtkVBox;
 	inWindow->component.common.handleC = gtkMenuBox;
-	
-	/* Add blank menu bar to the VBox. */
-	gtk_container_add(GTK_CONTAINER(gtkVBox),
-		GTK_WIDGET(gtkMenuBox));
+
+	/* Add blank menu bar, do not claim all the space. */
+	gtk_box_pack_start(GTK_BOX(gtkVBox),
+		GTK_WIDGET(gtkMenuBox),
+		FALSE,
+		FALSE,
+		0);
 	
 	/* The VBox needs to be in the window, for menus. */
 	gtk_container_add(GTK_CONTAINER(gtkWindow),
 		GTK_WIDGET(gtkVBox));
+		
+	/* The widgets need to be shown, otherwise they stay invisible. */
+	gtk_widget_show(GTK_WIDGET(gtkMenuBox));
+	gtk_widget_show(GTK_WIDGET(gtkVBox));
 	
 	/* Common widget init. */
 	inState->implIntern->widgetInit(inState, GTK_WIDGET(gtkWindow));
