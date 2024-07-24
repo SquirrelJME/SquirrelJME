@@ -86,7 +86,7 @@ typedef enum sjme_scritchui_uiType
 
 /** Check cast to menu kind. */
 #define SJME_SUI_CAST_MENU_KIND(v) \
-	((type)sjme_scritchui_checkCast_menuKind((v)))
+	((sjme_scritchui_uiMenuKind)sjme_scritchui_checkCast_menuKind((v)))
 
 /** Check cast to menu. */
 #define SJME_SUI_CAST_MENU(v) \

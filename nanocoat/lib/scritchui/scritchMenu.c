@@ -50,14 +50,16 @@ sjme_errorCode sjme_scritchui_core_menuInsert(
 	/* Get parent information. */
 	parentMenu = NULL;
 	if (sjme_error_is(error = inState->intern->getMenuHasChildren(
-		inState, intoMenu, &parentMenu)) ||
+		inState, SJME_SUI_CAST_MENU_KIND(intoMenu),
+		&parentMenu)) ||
 		parentMenu == NULL)
 		return sjme_error_default(error);
 	
 	/* Get child information. */
 	childMenu = NULL;
 	if (sjme_error_is(error = inState->intern->getMenuHasParent(
-		inState, childItem, &childMenu)) ||
+		inState, SJME_SUI_CAST_MENU_KIND(childItem),
+		&childMenu)) ||
 		childMenu == NULL)
 		return sjme_error_default(error);
 	
@@ -76,7 +78,8 @@ sjme_errorCode sjme_scritchui_core_menuInsert(
 	/* Make sure child is not already in here. */
 	if (childList != NULL)
 		for (i = 0; i < n; i++)
-			if (childList->elements[i] == childItem)
+			if (SJME_SUI_CAST_MENU_KIND(childList->elements[i]) ==
+				SJME_SUI_CAST_MENU_KIND(childItem))
 				return SJME_ERROR_MEMBER_EXISTS;
 	
 	/* Not implemented? Fail here so we go through all validity checks */
@@ -91,19 +94,20 @@ sjme_errorCode sjme_scritchui_core_menuInsert(
 		return sjme_error_default(error);
 	
 	/* Copy entire set over. */
-	for (i = 0, o = 0; o <= n; i++)
+	for (i = 0, o = 0; i < n;)
 	{
 		/* Inject here? */
-		if (i == atIndex)
-			newList->elements[o++] = childItem;
+		if (o == atIndex)
+			newList->elements[o++] = SJME_SUI_CAST_MENU_KIND(childItem);
 		
 		/* Copy normal. */
 		if (childList != NULL)
-			newList->elements[o++] = childList->elements[i];
+			newList->elements[o++] =
+				SJME_SUI_CAST_MENU_KIND(childList->elements[i++]);
 	}
 	
 	/* Associate parent. */
-	childMenu->parent = intoMenu;
+	childMenu->parent = SJME_SUI_CAST_MENU_KIND(intoMenu);
 	
 	/* Use new list. */
 	parentMenu->children = newList;
@@ -174,7 +178,8 @@ sjme_errorCode sjme_scritchui_core_menuRemove(
 	/* Get parent information. */
 	parentMenu = NULL;
 	if (sjme_error_is(error = inState->intern->getMenuHasChildren(
-		inState, fromMenu, &parentMenu)) ||
+		inState, SJME_SUI_CAST_MENU_KIND(fromMenu),
+		&parentMenu)) ||
 		parentMenu == NULL)
 		return sjme_error_default(error);
 	
@@ -200,8 +205,8 @@ sjme_errorCode sjme_scritchui_core_menuRemove(
 	childAt = childList->elements[atIndex];
 	childMenu = NULL;
 	if (sjme_error_is(error = inState->intern->getMenuHasParent(
-		inState, childAt, &childMenu)) ||
-		childMenu == NULL)
+		inState, SJME_SUI_CAST_MENU_KIND(childAt),
+		&childMenu)) || childMenu == NULL)
 		return sjme_error_default(error);
 	
 	/* Call native removal of item. */
@@ -214,7 +219,8 @@ sjme_errorCode sjme_scritchui_core_menuRemove(
 
 	/* Remove from list and move down everything. */
 	for (i = atIndex + 1, o = atIndex; i < n; i++, o++)
-		childList->elements[o] = childList->elements[i];
+		childList->elements[o] =
+			SJME_SUI_CAST_MENU_KIND(childList->elements[i]);
 	childList->elements[n] = NULL;
 	
 	/* Count down. */
@@ -236,15 +242,22 @@ sjme_errorCode sjme_scritchui_core_menuRemoveAll(
 		
 	/* Get parent information. */
 	if (sjme_error_is(error = inState->intern->getMenuHasChildren(
-		inState, fromMenu, &parentMenu)) ||
-		parentMenu == NULL)
+		inState, SJME_SUI_CAST_MENU_KIND(fromMenu),
+		&parentMenu)) || parentMenu == NULL)
 		return sjme_error_default(error);
 	
 	/* Keep clearing out until nothing is left. */
 	while (parentMenu->numChildren > 0)
+	{
+		/* Double check. */
+		if (SJME_SUI_CAST_MENU_KIND(parentMenu->children->elements[0]) == NULL)
+			return SJME_ERROR_ILLEGAL_STATE;
+		
+		/* Remove it. */
 		if (sjme_error_is(error = inState->api->menuRemove(inState,
 			fromMenu, 0)))
 			return sjme_error_default(error);
+	}
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -259,6 +272,10 @@ sjme_errorCode sjme_scritchui_core_intern_getMenuHasChildren(
 	
 	if (inState == NULL || inMenuKind == NULL || outHasChildren == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Check. */
+	if (SJME_SUI_CAST_MENU_KIND(inMenuKind) == NULL)
+		return SJME_ERROR_INVALID_ARGUMENT;
 
 	/* Depends on the type. */
 	result = NULL;
@@ -291,6 +308,10 @@ sjme_errorCode sjme_scritchui_core_intern_getMenuHasParent(
 	
 	if (inState == NULL || inMenuKind == NULL || outHasParent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Check. */
+	if (SJME_SUI_CAST_MENU_KIND(inMenuKind) == NULL)
+		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* Depends on the type. */
 	result = NULL;

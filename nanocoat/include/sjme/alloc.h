@@ -120,6 +120,9 @@ struct sjme_alloc_weakBase
 
 struct sjme_alloc_link
 {
+	/** The front guard. */
+	sjme_jint guardFront;
+	
 	/** The pool this is in. */
 	volatile sjme_alloc_pool* pool;
 	
@@ -160,6 +163,9 @@ struct sjme_alloc_link
 	/** The function of this allocation. */
 	sjme_lpcstr debugFunction;
 #endif
+	
+	/** The back guard. */
+	sjme_jint guardBack;
 	
 	/** The memory block. */
 	sjme_jubyte block[sjme_flexibleArrayCount];

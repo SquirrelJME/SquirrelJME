@@ -20,6 +20,7 @@
 
 #include "sjme/nvm.h"
 #include "sjme/comparator.h"
+#include "sjme/alloc.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -143,7 +144,8 @@ sjme_errorCode sjme_list_allocR(
 	sjme_attrOutNotNull sjme_pointer* outList,
 	sjme_attrInPositive sjme_jint elementSize,
 	sjme_attrInPositive sjme_jint elementOffset,
-	sjme_attrInValue sjme_jint pointerCheck);
+	sjme_attrInValue sjme_jint pointerCheck
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
 
 /**
  * Allocates the given list without setting any of the values.
@@ -161,7 +163,7 @@ sjme_errorCode sjme_list_allocR(
 		(sjme_pointer*)(outList), \
 		sizeof(SJME_TOKEN_TYPE(type, numPointerStars)), \
 		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
-		sizeof(**(outList)))
+		sizeof(**(outList)) SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC)
 
 /**
  * Allocates a given list generically.
@@ -183,7 +185,8 @@ sjme_errorCode sjme_list_copyR(
 	sjme_attrOutNotNull sjme_pointer* outNewList,
 	sjme_attrInPositive sjme_jint elementSize,
 	sjme_attrInPositive sjme_jint elementOffset,
-	sjme_attrInValue sjme_jint pointerCheck);
+	sjme_attrInValue sjme_jint pointerCheck
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
 
 /**
  * Allocates a new list that is a copy of the old list.
@@ -203,7 +206,7 @@ sjme_errorCode sjme_list_copyR(
 		(sjme_pointer*)(outNewList), \
 		sizeof(SJME_TOKEN_TYPE(type, numPointerStars)), \
 		offsetof(SJME_LIST_NAME(type, numPointerStars), elements), \
-		sizeof(**(outNewList)))
+		sizeof(**(outNewList)) SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC)
 
 /**
  * Directly initializes a list.

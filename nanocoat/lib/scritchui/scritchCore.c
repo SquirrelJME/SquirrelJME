@@ -459,7 +459,10 @@ sjme_pointer sjme_scritchui_checkCast(sjme_scritchui_uiType inType,
 	/* Check type. */
 	common = inPtr;
 	if (common->type != inType)
+	{
 		sjme_debug_abort();
+		return NULL;
+	}
 	
 	/* Return passed value. */
 	return inPtr;
@@ -484,7 +487,10 @@ sjme_pointer sjme_scritchui_checkCast_menuKind(sjme_pointer inPtr)
 	if (common->type != SJME_SCRITCHUI_TYPE_MENU &&
 		common->type != SJME_SCRITCHUI_TYPE_MENU_BAR &&
 		common->type != SJME_SCRITCHUI_TYPE_MENU_ITEM)
+	{
 		sjme_debug_abort();
+		return NULL;
+	}
 	
 	/* Return passed value. */
 	return inPtr;

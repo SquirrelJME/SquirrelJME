@@ -28,6 +28,12 @@
 /** The minimum size for splits. */
 #define SJME_ALLOC_SPLIT_MIN_SIZE 64
 
+/** The front guard value. */
+#define SJME_ALLOC_GUARD_FRONT INT32_C(0x53716B21)
+
+/** The back guard value. */
+#define SJME_ALLOC_GUARD_BACK INT32_C(0x6C65783F)
+
 #if defined(SJME_CONFIG_DEBUG)
 /**
  * Prints information on a given link and returns.
@@ -50,6 +56,7 @@ static sjme_inline sjme_jboolean sjme_alloc_corruptFail(
 		return SJME_JNI_TRUE;
 
 	/* Dump everything about the link. */
+	sjme_message("link->guardFront: %08x", atLink->guardFront);
 	sjme_message("link->pool: %p (should be %p)", atLink->pool, pool);
 	sjme_message("link->prev: %p", atLink->prev);
 	sjme_message("link->next: %p", atLink->next);
@@ -66,6 +73,7 @@ static sjme_inline sjme_jboolean sjme_alloc_corruptFail(
 	sjme_message("link->freeNext: %p", atLink->freeNext);
 	sjme_message("link->allocSize: %d", (int)atLink->allocSize);
 	sjme_message("link->blockSize: %d", (int)atLink->blockSize);
+	sjme_message("link->guardBack: %08x", atLink->guardBack);
 	
 	/* Abort. */
 	if (sjme_debug_handlers != NULL && sjme_debug_handlers->abort != NULL)
@@ -129,6 +137,14 @@ static sjme_jboolean sjme_noOptimize sjme_alloc_checkCorruption(
 	/* If no link is specified, ignore. */
 	if (atLink == NULL)
 		return SJME_JNI_FALSE;
+	
+	/* Check front and back guards. */
+	if (atLink->guardFront != SJME_ALLOC_GUARD_FRONT)
+		return sjme_alloc_corruptFail(pool, atLink,
+			"Wrong front guard");
+	if (atLink->guardBack != SJME_ALLOC_GUARD_BACK)
+		return sjme_alloc_corruptFail(pool, atLink,
+			"Wrong back guard");
 
 	/* Link is in the wrong pool. */
 	if (atLink->pool != pool)
@@ -322,6 +338,14 @@ sjme_errorCode sjme_noOptimize sjme_alloc_poolInitStatic(
 	pool->freeLastLink = backLink;
 	backLink->freePrev = midLink;
 	midLink->freeNext = backLink;
+	
+	/* Guards for all links. */
+	frontLink->guardFront = SJME_ALLOC_GUARD_FRONT;
+	frontLink->guardBack = SJME_ALLOC_GUARD_BACK;
+	midLink->guardFront = SJME_ALLOC_GUARD_FRONT;
+	midLink->guardBack = SJME_ALLOC_GUARD_BACK;
+	backLink->guardFront = SJME_ALLOC_GUARD_FRONT;
+	backLink->guardBack = SJME_ALLOC_GUARD_BACK;
 
 	/* Link in pools. */
 	frontLink->pool = pool;
@@ -523,6 +547,10 @@ sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc)(
 
 		/* Initialize block to remove any old data. */
 		memset(rightLink, 0, sizeof(*rightLink));
+		
+		/* Guards for link. */
+		rightLink->guardFront = SJME_ALLOC_GUARD_FRONT;
+		rightLink->guardBack = SJME_ALLOC_GUARD_BACK;
 
 		/* Set the right link's pool accordingly. */
 		rightLink->pool = pool;

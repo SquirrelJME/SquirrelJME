@@ -88,7 +88,8 @@ sjme_errorCode sjme_list_allocR(
 	sjme_attrOutNotNull sjme_pointer* outList,
 	sjme_attrInPositive sjme_jint elementSize,
 	sjme_attrInPositive sjme_jint elementOffset,
-	sjme_attrInValue sjme_jint pointerCheck)
+	sjme_attrInValue sjme_jint pointerCheck
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
 {
 	sjme_errorCode error;
 	sjme_pointer result;
@@ -108,8 +109,9 @@ sjme_errorCode sjme_list_allocR(
 
 	/* Forward allocation. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_alloc(inPool, size,
-		&result)) || result == NULL)
+	if (sjme_error_is(error = sjme_allocR(inPool, size,
+		&result SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_COPY)) ||
+		result == NULL)
 		return sjme_error_default(error);
 
 	/* Perform direct list initialization. */
@@ -128,7 +130,8 @@ sjme_errorCode sjme_list_copyR(
 	sjme_attrOutNotNull sjme_pointer* outNewList,
 	sjme_attrInPositive sjme_jint elementSize,
 	sjme_attrInPositive sjme_jint elementOffset,
-	sjme_attrInValue sjme_jint pointerCheck)
+	sjme_attrInValue sjme_jint pointerCheck
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
 {
 	sjme_errorCode error;
 	sjme_jint i, limit;
@@ -152,7 +155,8 @@ sjme_errorCode sjme_list_copyR(
 	/* Allocate new list first. */
 	if (sjme_error_is(error = sjme_list_allocR(inPool,
 		inNewLength, (sjme_pointer*)&fakeNew, elementSize,
-		elementOffset, pointerCheck)))
+		elementOffset, pointerCheck
+		SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_COPY)))
 		return sjme_error_default(error);
 	
 	/* Copy over elements with direct memory copy. */
