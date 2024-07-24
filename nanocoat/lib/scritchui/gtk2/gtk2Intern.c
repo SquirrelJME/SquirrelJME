@@ -17,6 +17,181 @@
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/alloc.h"
 
+/**
+ * Internal key mappings.
+ * 
+ * @since 2024/07/24
+ */
+typedef struct sjme_scritchui_gtk2_intern_keyMap
+{
+	/** The GTK key. */
+	guint gtk;
+	
+	/** The ScritchUI key. */
+	sjme_jint scritch;
+} sjme_scritchui_gtk2_intern_keyMap;
+
+/** GTK Mapping table. */
+static const sjme_scritchui_gtk2_intern_keyMap sjme_gtkKeyMap[] =
+{
+	{GDK_KEY_Alt_L, SJME_SCRITCHINPUT_KEY_ALT},
+	{GDK_KEY_Alt_R, SJME_SCRITCHINPUT_KEY_ALT},
+	{GDK_KEY_Caps_Lock, SJME_SCRITCHINPUT_KEY_CAPSLOCK},
+	{GDK_KEY_Menu, SJME_SCRITCHINPUT_KEY_CONTEXT_MENU},
+	{GDK_KEY_MenuKB, SJME_SCRITCHINPUT_KEY_CONTEXT_MENU},
+	{GDK_KEY_MenuPB, SJME_SCRITCHINPUT_KEY_CONTEXT_MENU},
+	{GDK_KEY_TopMenu, SJME_SCRITCHINPUT_KEY_CONTEXT_MENU},
+	{GDK_KEY_Control_L, SJME_SCRITCHINPUT_KEY_CONTROL},
+	{GDK_KEY_Control_R, SJME_SCRITCHINPUT_KEY_CONTROL},
+	{GDK_KEY_Down, SJME_SCRITCHINPUT_KEY_DOWN},
+	{GDK_KEY_KP_Down, SJME_SCRITCHINPUT_KEY_DOWN},
+	{GDK_KEY_End, SJME_SCRITCHINPUT_KEY_END},
+	{GDK_KEY_KP_End, SJME_SCRITCHINPUT_KEY_END},
+	{GDK_KEY_F1, SJME_SCRITCHINPUT_KEY_F1},
+	{GDK_KEY_F2, SJME_SCRITCHINPUT_KEY_F2},
+	{GDK_KEY_F3, SJME_SCRITCHINPUT_KEY_F3},
+	{GDK_KEY_F4, SJME_SCRITCHINPUT_KEY_F4},
+	{GDK_KEY_F5, SJME_SCRITCHINPUT_KEY_F5},
+	{GDK_KEY_F6, SJME_SCRITCHINPUT_KEY_F6},
+	{GDK_KEY_F7, SJME_SCRITCHINPUT_KEY_F7},
+	{GDK_KEY_F8, SJME_SCRITCHINPUT_KEY_F8},
+	{GDK_KEY_F9, SJME_SCRITCHINPUT_KEY_F9},
+	{GDK_KEY_F10, SJME_SCRITCHINPUT_KEY_F10},
+	{GDK_KEY_F11, SJME_SCRITCHINPUT_KEY_F11},
+	{GDK_KEY_F12, SJME_SCRITCHINPUT_KEY_F12},
+	{GDK_KEY_F13, SJME_SCRITCHINPUT_KEY_F13},
+	{GDK_KEY_F14, SJME_SCRITCHINPUT_KEY_F14},
+	{GDK_KEY_F15, SJME_SCRITCHINPUT_KEY_F15},
+	{GDK_KEY_F16, SJME_SCRITCHINPUT_KEY_F16},
+	{GDK_KEY_F17, SJME_SCRITCHINPUT_KEY_F17},
+	{GDK_KEY_F18, SJME_SCRITCHINPUT_KEY_F18},
+	{GDK_KEY_F19, SJME_SCRITCHINPUT_KEY_F19},
+	{GDK_KEY_F20, SJME_SCRITCHINPUT_KEY_F20},
+	{GDK_KEY_F21, SJME_SCRITCHINPUT_KEY_F21},
+	{GDK_KEY_F22, SJME_SCRITCHINPUT_KEY_F22},
+	{GDK_KEY_F23, SJME_SCRITCHINPUT_KEY_F23},
+	{GDK_KEY_F24, SJME_SCRITCHINPUT_KEY_F24},
+	{GDK_KEY_Home, SJME_SCRITCHINPUT_KEY_HOME},
+	{GDK_KEY_KP_Home, SJME_SCRITCHINPUT_KEY_HOME},
+	{GDK_KEY_Insert, SJME_SCRITCHINPUT_KEY_INSERT},
+	{GDK_KEY_KP_Insert, SJME_SCRITCHINPUT_KEY_INSERT},
+	{GDK_KEY_Left, SJME_SCRITCHINPUT_KEY_LEFT},
+	{GDK_KEY_KP_Left, SJME_SCRITCHINPUT_KEY_LEFT},
+	{GDK_KEY_Meta_L, SJME_SCRITCHINPUT_KEY_META},
+	{GDK_KEY_Meta_R, SJME_SCRITCHINPUT_KEY_META},
+	{GDK_KEY_Num_Lock, SJME_SCRITCHINPUT_KEY_NUMLOCK},
+	{GDK_KEY_KP_0, SJME_SCRITCHINPUT_KEY_NUMPAD_0},
+	{GDK_KEY_KP_1, SJME_SCRITCHINPUT_KEY_NUMPAD_1},
+	{GDK_KEY_KP_2, SJME_SCRITCHINPUT_KEY_NUMPAD_2},
+	{GDK_KEY_KP_3, SJME_SCRITCHINPUT_KEY_NUMPAD_3},
+	{GDK_KEY_KP_4, SJME_SCRITCHINPUT_KEY_NUMPAD_4},
+	{GDK_KEY_KP_5, SJME_SCRITCHINPUT_KEY_NUMPAD_5},
+	{GDK_KEY_KP_6, SJME_SCRITCHINPUT_KEY_NUMPAD_6},
+	{GDK_KEY_KP_7, SJME_SCRITCHINPUT_KEY_NUMPAD_7},
+	{GDK_KEY_KP_8, SJME_SCRITCHINPUT_KEY_NUMPAD_8},
+	{GDK_KEY_KP_9, SJME_SCRITCHINPUT_KEY_NUMPAD_9},
+	{GDK_KEY_KP_Decimal, SJME_SCRITCHINPUT_KEY_NUMPAD_DECIMAL},
+	{GDK_KEY_KP_Divide, SJME_SCRITCHINPUT_KEY_NUMPAD_DIVIDE},
+	{GDK_KEY_KP_Enter, SJME_SCRITCHINPUT_KEY_NUMPAD_ENTER},
+	{GDK_KEY_KP_Subtract, SJME_SCRITCHINPUT_KEY_NUMPAD_MINUS},
+	{GDK_KEY_KP_Multiply, SJME_SCRITCHINPUT_KEY_NUMPAD_MULTIPLY},
+	{GDK_KEY_KP_Add, SJME_SCRITCHINPUT_KEY_NUMPAD_PLUS},
+	{GDK_KEY_Page_Down, SJME_SCRITCHINPUT_KEY_PAGE_DOWN},
+	{GDK_KEY_KP_Page_Down, SJME_SCRITCHINPUT_KEY_PAGE_DOWN},
+	{GDK_KEY_Page_Up, SJME_SCRITCHINPUT_KEY_PAGE_UP},
+	{GDK_KEY_KP_Page_Up, SJME_SCRITCHINPUT_KEY_PAGE_UP},
+	{GDK_KEY_Pause, SJME_SCRITCHINPUT_KEY_PAUSE},
+	{GDK_KEY_AudioPause, SJME_SCRITCHINPUT_KEY_PAUSE},
+	{GDK_KEY_Print, SJME_SCRITCHINPUT_KEY_PRINTSCREEN},
+	{GDK_KEY_3270_PrintScreen, SJME_SCRITCHINPUT_KEY_PRINTSCREEN},
+	{GDK_KEY_Right, SJME_SCRITCHINPUT_KEY_RIGHT},
+	{GDK_KEY_KP_Right, SJME_SCRITCHINPUT_KEY_RIGHT},
+	{GDK_KEY_Scroll_Lock, SJME_SCRITCHINPUT_KEY_SCROLLLOCK},
+	{GDK_KEY_Shift_L, SJME_SCRITCHINPUT_KEY_SHIFT},
+	{GDK_KEY_Shift_R, SJME_SCRITCHINPUT_KEY_SHIFT},
+	{GDK_KEY_Up, SJME_SCRITCHINPUT_KEY_UP},
+	{GDK_KEY_KP_Up, SJME_SCRITCHINPUT_KEY_UP},
+	{GDK_KEY_Return, SJME_SCRITCHINPUT_KEY_ENTER},
+	{GDK_KEY_ISO_Enter, SJME_SCRITCHINPUT_KEY_ENTER},
+	{GDK_KEY_3270_Enter, SJME_SCRITCHINPUT_KEY_ENTER},
+	{GDK_KEY_BackSpace, SJME_SCRITCHINPUT_KEY_BACKSPACE},
+	{GDK_KEY_Delete, SJME_SCRITCHINPUT_KEY_DELETE},
+	{GDK_KEY_Tab, SJME_SCRITCHINPUT_KEY_TAB},
+	{GDK_KEY_Escape, SJME_SCRITCHINPUT_KEY_ESCAPE},
+
+	/* End. */
+		{0, 0}
+};
+
+sjme_errorCode sjme_scritchui_gtk2_intern_accelUpdate(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiCommon inCommon,
+	sjme_attrInNotNull GtkWidget* gtkWidget,
+	sjme_attrInValue sjme_jboolean addAccel)
+{
+	GtkAccelGroup* gtkAccel;
+	guint gtkKey, gtkMod;
+	sjme_jint* key;
+	sjme_jint* mod;
+	sjme_scritchui_uiMenuItem menuItem;
+	
+	if (inState == NULL || inCommon == NULL || gtkWidget == NULL)
+		return SJME_ERROR_NONE;
+	
+	/* Only work with menu items. */
+	if (inCommon->type != SJME_SCRITCHUI_TYPE_MENU_ITEM)
+		return SJME_ERROR_NONE;
+	menuItem = (sjme_scritchui_uiMenuItem)inCommon;
+	
+	/* The accelerator group we are using is just the global state one. */
+	gtkAccel = GTK_ACCEL_GROUP(inState->common.handle[SJME_SUI_GTK2_H_ACCELG]);
+		
+	/* Get value mappings. */
+	key = &inCommon->intVals[SJME_SUI_GTK2_V_ACCELKEY];
+	mod = &inCommon->intVals[SJME_SUI_GTK2_V_ACCELMOD];
+	
+	/* Add accelerator. */
+	if (addAccel)
+	{
+		/* Are we not adding anything? */
+		if (menuItem->accelKey == 0)
+			return SJME_ERROR_NONE;
+		
+		/* Determine key set to use. */
+		gtkKey = inState->implIntern->mapScritchToGtkKey(
+			menuItem->accelKey);
+		gtkMod = inState->implIntern->mapScritchToGtkMod(
+			menuItem->accelMod);
+		
+		/* Associate. */
+		gtk_widget_add_accelerator(gtkWidget,
+			"activate",
+			gtkAccel,
+			gtkKey, gtkMod,
+			GTK_ACCEL_VISIBLE);
+		
+		/* Store for later potential removal. */
+		*key = gtkKey;
+		*mod = gtkMod;
+	}
+	
+	/* Remove accelerator. */
+	else if (*key != 0 || *mod != 0)
+	{
+		/* Perform the remove. */
+		gtk_widget_remove_accelerator(gtkWidget,
+			gtkAccel,
+			gtkKey, gtkMod);
+		
+		/* Clear old values. */
+		*key = 0;
+		*mod = 0;
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_scritchui_gtk2_intern_checkError(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInValue sjme_errorCode ifOkay)
@@ -78,166 +253,14 @@ sjme_errorCode sjme_scritchui_gtk2_intern_disconnectSignal(
 
 sjme_jint sjme_scritchui_gtk2_intern_mapGtkToScritchKey(guint in)
 {
+	const sjme_scritchui_gtk2_intern_keyMap* map;
 	guint32 unicode;
 	
 	/* Map to hard keys first for specific keys such as number pad keys */
 	/* as they technically map to unicode, theoretically. */
-	switch (in)
-	{
-		case GDK_KEY_Alt_L:
-		case GDK_KEY_Alt_R:
-			return SJME_SCRITCHINPUT_KEY_ALT;
-		case GDK_KEY_Caps_Lock:
-			return SJME_SCRITCHINPUT_KEY_CAPSLOCK;
-		case GDK_KEY_Menu:
-		case GDK_KEY_MenuKB:
-		case GDK_KEY_MenuPB:
-		case GDK_KEY_TopMenu:
-			return SJME_SCRITCHINPUT_KEY_CONTEXT_MENU;
-		case GDK_KEY_Control_L:
-		case GDK_KEY_Control_R:
-			return SJME_SCRITCHINPUT_KEY_CONTROL;
-		case GDK_KEY_Down:
-		case GDK_KEY_KP_Down:
-			return SJME_SCRITCHINPUT_KEY_DOWN;
-		case GDK_KEY_End:
-		case GDK_KEY_KP_End:
-			return SJME_SCRITCHINPUT_KEY_END;
-		case GDK_KEY_F1:
-			return SJME_SCRITCHINPUT_KEY_F1;
-		case GDK_KEY_F2:
-			return SJME_SCRITCHINPUT_KEY_F2;
-		case GDK_KEY_F3:
-			return SJME_SCRITCHINPUT_KEY_F3;
-		case GDK_KEY_F4:
-			return SJME_SCRITCHINPUT_KEY_F4;
-		case GDK_KEY_F5:
-			return SJME_SCRITCHINPUT_KEY_F5;
-		case GDK_KEY_F6:
-			return SJME_SCRITCHINPUT_KEY_F6;
-		case GDK_KEY_F7:
-			return SJME_SCRITCHINPUT_KEY_F7;
-		case GDK_KEY_F8:
-			return SJME_SCRITCHINPUT_KEY_F8;
-		case GDK_KEY_F9:
-			return SJME_SCRITCHINPUT_KEY_F9;
-		case GDK_KEY_F10:
-			return SJME_SCRITCHINPUT_KEY_F10;
-		case GDK_KEY_F11:
-			return SJME_SCRITCHINPUT_KEY_F11;
-		case GDK_KEY_F12:
-			return SJME_SCRITCHINPUT_KEY_F12;
-		case GDK_KEY_F13:
-			return SJME_SCRITCHINPUT_KEY_F13;
-		case GDK_KEY_F14:
-			return SJME_SCRITCHINPUT_KEY_F14;
-		case GDK_KEY_F15:
-			return SJME_SCRITCHINPUT_KEY_F15;
-		case GDK_KEY_F16:
-			return SJME_SCRITCHINPUT_KEY_F16;
-		case GDK_KEY_F17:
-			return SJME_SCRITCHINPUT_KEY_F17;
-		case GDK_KEY_F18:
-			return SJME_SCRITCHINPUT_KEY_F18;
-		case GDK_KEY_F19:
-			return SJME_SCRITCHINPUT_KEY_F19;
-		case GDK_KEY_F20:
-			return SJME_SCRITCHINPUT_KEY_F20;
-		case GDK_KEY_F21:
-			return SJME_SCRITCHINPUT_KEY_F21;
-		case GDK_KEY_F22:
-			return SJME_SCRITCHINPUT_KEY_F22;
-		case GDK_KEY_F23:
-			return SJME_SCRITCHINPUT_KEY_F23;
-		case GDK_KEY_F24:
-			return SJME_SCRITCHINPUT_KEY_F24;
-		case GDK_KEY_Home:
-		case GDK_KEY_KP_Home:
-			return SJME_SCRITCHINPUT_KEY_HOME;
-		case GDK_KEY_Insert:
-		case GDK_KEY_KP_Insert:
-			return SJME_SCRITCHINPUT_KEY_INSERT;
-		case GDK_KEY_Left:
-		case GDK_KEY_KP_Left:
-			return SJME_SCRITCHINPUT_KEY_LEFT;
-		case GDK_KEY_Meta_L:
-		case GDK_KEY_Meta_R:
-			return SJME_SCRITCHINPUT_KEY_META;
-		case GDK_KEY_Num_Lock:
-			return SJME_SCRITCHINPUT_KEY_NUMLOCK;
-		case GDK_KEY_KP_0:
-			return SJME_SCRITCHINPUT_KEY_NUMPAD_0;
-		case GDK_KEY_KP_1:
-			return SJME_SCRITCHINPUT_KEY_NUMPAD_1;
-		case GDK_KEY_KP_2:
-			return SJME_SCRITCHINPUT_KEY_NUMPAD_2;
-		case GDK_KEY_KP_3:
-			return SJME_SCRITCHINPUT_KEY_NUMPAD_3;
-		case GDK_KEY_KP_4:
-			return SJME_SCRITCHINPUT_KEY_NUMPAD_4;
-		case GDK_KEY_KP_5:
-			return SJME_SCRITCHINPUT_KEY_NUMPAD_5;
-		case GDK_KEY_KP_6:
-			return SJME_SCRITCHINPUT_KEY_NUMPAD_6;
-		case GDK_KEY_KP_7:
-			return SJME_SCRITCHINPUT_KEY_NUMPAD_7;
-		case GDK_KEY_KP_8:
-			return SJME_SCRITCHINPUT_KEY_NUMPAD_8;
-		case GDK_KEY_KP_9:
-			return SJME_SCRITCHINPUT_KEY_NUMPAD_9;
-		case GDK_KEY_KP_Decimal:
-			return SJME_SCRITCHINPUT_KEY_NUMPAD_DECIMAL;
-		case GDK_KEY_KP_Divide:
-			return SJME_SCRITCHINPUT_KEY_NUMPAD_DIVIDE;
-		case GDK_KEY_KP_Enter:
-			return SJME_SCRITCHINPUT_KEY_NUMPAD_ENTER;
-		case GDK_KEY_KP_Subtract:
-			return SJME_SCRITCHINPUT_KEY_NUMPAD_MINUS;
-		case GDK_KEY_KP_Multiply:
-			return SJME_SCRITCHINPUT_KEY_NUMPAD_MULTIPLY;
-		case GDK_KEY_KP_Add:
-			return SJME_SCRITCHINPUT_KEY_NUMPAD_PLUS;
-		case GDK_KEY_Page_Down:
-		case GDK_KEY_KP_Page_Down:
-			return SJME_SCRITCHINPUT_KEY_PAGE_DOWN;
-		case GDK_KEY_Page_Up:
-		case GDK_KEY_KP_Page_Up:
-			return SJME_SCRITCHINPUT_KEY_PAGE_UP;
-		case GDK_KEY_Pause:
-		case GDK_KEY_AudioPause:
-			return SJME_SCRITCHINPUT_KEY_PAUSE;
-		case GDK_KEY_Print:
-		case GDK_KEY_3270_PrintScreen:
-			return SJME_SCRITCHINPUT_KEY_PRINTSCREEN;
-		case GDK_KEY_Right:
-		case GDK_KEY_KP_Right:
-			return SJME_SCRITCHINPUT_KEY_RIGHT;
-		case GDK_KEY_Scroll_Lock:
-			return SJME_SCRITCHINPUT_KEY_SCROLLLOCK;
-		case GDK_KEY_Shift_L:
-		case GDK_KEY_Shift_R:
-			return SJME_SCRITCHINPUT_KEY_SHIFT;
-		case GDK_KEY_Up:
-		case GDK_KEY_KP_Up:
-			return SJME_SCRITCHINPUT_KEY_UP;
-		
-		case GDK_KEY_Return:
-		case GDK_KEY_ISO_Enter:
-		case GDK_KEY_3270_Enter:
-			return SJME_SCRITCHINPUT_KEY_ENTER;
-		
-		case GDK_KEY_BackSpace:
-			return SJME_SCRITCHINPUT_KEY_BACKSPACE;
-		
-		case GDK_KEY_Delete:
-			return SJME_SCRITCHINPUT_KEY_DELETE;
-		
-		case GDK_KEY_Tab:
-			return SJME_SCRITCHINPUT_KEY_TAB;
-		
-		case GDK_KEY_Escape:
-			return SJME_SCRITCHINPUT_KEY_ESCAPE;
-	}
+	for (map = &sjme_gtkKeyMap[0]; map->scritch != 0; map++)
+		if (in == map->gtk)
+			return map->scritch;
 	
 	/* Is this a unicode key? Map to char if so... */
 	unicode = gdk_keyval_to_unicode(in);
@@ -270,10 +293,42 @@ sjme_jint sjme_scritchui_gtk2_intern_mapGtkToScritchMod(guint in)
 
 guint sjme_scritchui_gtk2_intern_mapScritchToGtkKey(sjme_jint in)
 {
+	const sjme_scritchui_gtk2_intern_keyMap* map;
+	guint unicode;
+	
+	/* Map to hard keys first for specific keys such as number pad keys */
+	/* as they technically map to unicode, theoretically. */
+	for (map = &sjme_gtkKeyMap[0]; map->scritch != 0; map++)
+		if (in == map->scritch)
+			return map->gtk;
+	
+	/* Is this a unicode key? Map to char if so... */
+	unicode = gdk_unicode_to_keyval(in);
+	if (unicode != 0x01000000 && unicode != (in | 0x01000000))
+		return unicode;
+	
+	/* Unknown key. */
+	return 0;
 }
 
 guint sjme_scritchui_gtk2_intern_mapScritchToGtkMod(sjme_jint in)
 {
+	guint result;
+	
+	/* Map all modifiers. */
+	result = 0;
+	if (in & SJME_SCRITCHINPUT_MODIFIER_SHIFT)
+		result |= GDK_SHIFT_MASK;
+	if (in & SJME_SCRITCHINPUT_MODIFIER_ALT)
+		result |= GDK_MOD1_MASK;
+	if (in & SJME_SCRITCHINPUT_MODIFIER_CHR)
+		result |= GDK_MOD2_MASK;
+	if (in & SJME_SCRITCHINPUT_MODIFIER_CTRL)
+		result |= GDK_CONTROL_MASK;
+	if (in & SJME_SCRITCHINPUT_MODIFIER_COMMAND)
+		result |= GDK_META_MASK;
+	
+	return result;
 }
 
 sjme_errorCode sjme_scritchui_gtk2_intern_reconnectSignal(

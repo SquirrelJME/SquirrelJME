@@ -42,7 +42,6 @@ sjme_errorCode sjme_scritchui_gtk2_menuInsert(
 {
 	GtkWidget* intoWidget;
 	GtkWidget* childWidget;
-	GtkAccelGroup* gtkAccel;
 	
 	if (inState == NULL || intoMenu == NULL || childItem == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -60,16 +59,8 @@ sjme_errorCode sjme_scritchui_gtk2_menuInsert(
 	
 	/* Attach accelerator, but only if a normal item. */
 	if (childItem->common.type == SJME_SCRITCHUI_TYPE_MENU_ITEM)
-	{
-		/* Recover and add accelerator. */
-		gtkAccel = GTK_ACCEL_GROUP(
-			inState->common.handle[SJME_SUI_GTK2_H_ACCELG]);
-		gtk_widget_add_accelerator(childWidget,
-			"activate",
-			gtkAccel,
-			GDK_KEY_F1, 0,
-			GTK_ACCEL_VISIBLE);
-	}
+		inState->implIntern->accelUpdate(inState, childItem,
+			childWidget, SJME_JNI_TRUE);
 	
 	/* Anything that can be inserted into, is just a menu shell. */
 	gtk_menu_shell_insert(GTK_MENU_SHELL(intoWidget),
@@ -166,6 +157,11 @@ sjme_errorCode sjme_scritchui_gtk2_menuRemove(
 	else
 		removeWidget =
 			childItem->common.handle[SJME_SUI_GTK2_H_WIDGET];
+			
+	/* Remove accelerator from item. */
+	if (childItem->common.type == SJME_SCRITCHUI_TYPE_MENU_ITEM)
+		inState->implIntern->accelUpdate(inState, childItem,
+			removeWidget, SJME_JNI_FALSE);
 	
 	/* Remove item, note that this does not use any index based removal */
 	/* but instead container based removal, so we just remove the handle. */

@@ -58,6 +58,12 @@ extern "C" {
 	
 /** The global state accelerator group. */
 #define SJME_SUI_GTK2_H_ACCELG 3
+	
+/** The accelerator key. */
+#define SJME_SUI_GTK2_V_ACCELKEY 2
+	
+/** The accelerator modifier. */
+#define SJME_SUI_GTK2_V_ACCELMOD 3
 
 /** Pencil functions for GTK2. */
 extern const sjme_scritchui_pencilImplFunctions

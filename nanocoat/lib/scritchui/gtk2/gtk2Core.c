@@ -50,6 +50,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_gtkFunctions =
 static const sjme_scritchui_implInternFunctions
 	sjme_scritchui_gtkInternFunctions =
 {
+	.accelUpdate = sjme_scritchui_gtk2_intern_accelUpdate,
 	.checkError = sjme_scritchui_gtk2_intern_checkError,
 	.disconnectSignal = sjme_scritchui_gtk2_intern_disconnectSignal,
 	.reconnectSignal = sjme_scritchui_gtk2_intern_reconnectSignal,

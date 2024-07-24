@@ -31,6 +31,12 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
+typedef sjme_errorCode (*sjme_scritchui_gtk2_intern_accelUpdateFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiCommon inCommon,
+	sjme_attrInNotNull GtkWidget* gtkWidget,
+	sjme_attrInValue sjme_jboolean addAccel);
+
 typedef sjme_errorCode (*sjme_scritchui_gtk2_intern_checkErrorFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInValue sjme_errorCode ifOkay);
@@ -70,6 +76,9 @@ typedef sjme_errorCode (*sjme_scritchui_gtk2_intern_widgetInitFunc)(
 /** Internal GTK implementation functions. */	
 struct sjme_scritchui_implInternFunctions
 {
+	/** Updates accelerator on a widget. */
+	sjme_scritchui_gtk2_intern_accelUpdateFunc accelUpdate;
+	
 	/** Checks if an error occurred. */
 	sjme_scritchui_gtk2_intern_checkErrorFunc checkError;
 	
@@ -94,6 +103,12 @@ struct sjme_scritchui_implInternFunctions
 	/** Widget init func. */
 	sjme_scritchui_gtk2_intern_widgetInitFunc widgetInit;
 };
+
+sjme_errorCode sjme_scritchui_gtk2_intern_accelUpdate(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiCommon inCommon,
+	sjme_attrInNotNull GtkWidget* gtkWidget,
+	sjme_attrInValue sjme_jboolean addAccel);
 
 sjme_errorCode sjme_scritchui_gtk2_intern_checkError(
 	sjme_attrInNotNull sjme_scritchui inState,
