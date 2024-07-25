@@ -38,10 +38,6 @@ public class List
 	/** Selection command. */
 	volatile Command _selCommand;
 	
-	/** The current locking code. */
-	@Deprecated
-	volatile int _lockingCode;
-	
 	/**
 	 * Initializes the list.
 	 *
@@ -122,7 +118,8 @@ public class List
 		
 		// Append all elements
 		for (int i = 0; i < n; i++)
-			this.append(__strs[i], (__imgs == null ? null : __imgs[i]));
+			choices.insert(Integer.MAX_VALUE, __strs[i],
+				(__imgs == null ? null : __imgs[i]));
 	}
 	
 	/**
@@ -218,7 +215,10 @@ public class List
 	public int getSelectedFlags(boolean[] __result)
 		throws IllegalArgumentException, NullPointerException
 	{
+		throw Debugging.todo();
+		/*
 		return __Utils__.__getSelectedFlags(this, __result);
+		 */
 	}
 	
 	/**
@@ -328,17 +328,10 @@ public class List
 	 * @since 2018/12/09
 	 */
 	@Override
-	public void setEnabled(int __i, boolean __e)
+	public void setEnabled(int __atIndex, boolean __enabled)
 		throws IndexOutOfBoundsException
 	{
-		throw Debugging.todo();
-		/*
-		this._items.get(__i)._disabled = !__e;
-		
-		// Update display
-		this.__refresh();
-		
-		 */
+		this._choices.setEnabled(__atIndex, __enabled);
 	}
 	
 	@Override
@@ -454,34 +447,6 @@ public class List
 		throw Debugging.todo();
 		/*
 		return this._items.size();
-		
-		 */
-	}
-	
-	/**
-	 * Selects the given item.
-	 * 
-	 * @param __keyCode The item being selected.
-	 * @since 2020/11/14
-	 */
-	@SerializedEvent
-	@Async.Execute
-	final void __selectCommand(int __keyCode)
-	{
-		throw Debugging.todo();
-		/*
-		// This command is only executed for implicit lists only
-		if (this._type != Choice.IMPLICIT)
-			return;
-		
-		// These must both be set, otherwise nothing can be activated
-		Command selCommand = this._selCommand;
-		CommandListener listener = this._cmdListener;
-		if (selCommand == null || listener == null)
-			return;
-		
-		// Send in the command action
-		listener.commandAction(selCommand, this);
 		
 		 */
 	}

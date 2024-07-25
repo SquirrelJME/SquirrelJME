@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui;
 
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchChoiceBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
@@ -34,6 +35,10 @@ public final class ChoiceManager
 	@SquirrelJMEVendorApi
 	final ScritchChoiceBracket _widget;
 	
+	/** The API for calling ScritchUI functions. */
+	@SquirrelJMEVendorApi
+	protected final ScritchInterface scritchApi;
+	
 	/**
 	 * Initializes the choice manager.
 	 *
@@ -57,6 +62,7 @@ public final class ChoiceManager
 			throw new IllegalArgumentException("EB2k " + __type);
 		
 		this.type = __type;
+		this.scritchApi = __scritchApi;
 		this._widget = __widget;
 	}
 	
@@ -71,7 +77,14 @@ public final class ChoiceManager
 	public void delete(int __atIndex)
 		throws IndexOutOfBoundsException
 	{
-		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
+		try
+		{
+			this.scritchApi.choice().delete(this._widget, __atIndex);
+		}
+		catch (MLECallError __e)
+		{
+			__e.throwDistinct();
+		}
 	}
 	
 	/**
@@ -82,7 +95,14 @@ public final class ChoiceManager
 	@SquirrelJMEVendorApi
 	public void deleteAll()
 	{
-		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
+		try
+		{
+			this.scritchApi.choice().deleteAll(this._widget);
+		}
+		catch (MLECallError __e)
+		{
+			__e.throwDistinct();
+		}
 	}
 	
 	/**
@@ -107,7 +127,26 @@ public final class ChoiceManager
 		if (__atIndex < 0)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
+		// Perform upsert operation
+		try
+		{
+			// Setup executor
+			__ExecChoiceUpsert__ upsert = new __ExecChoiceUpsert__(
+				this.scritchApi, this._widget, true, __atIndex,
+				__str, __img);
+			
+			// Wait for it to run and finish
+			this.scritchApi.eventLoop().executeWait(upsert);
+			
+			// Return whatever result
+			if (upsert._error != null)
+				throw upsert._error;
+			return upsert._result;
+		}
+		catch (MLECallError __e)
+		{
+			throw __e.throwDistinct();
+		}
 	}
 	
 	/**
@@ -120,6 +159,7 @@ public final class ChoiceManager
 	 * @throws NullPointerException If no string was specified.
 	 * @since 2024/07/24
 	 */
+	@SquirrelJMEVendorApi
 	public void set(int __atIndex, String __str, Image __img)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
@@ -128,7 +168,25 @@ public final class ChoiceManager
 		
 		if (__atIndex < 0)
 			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Perform upsert operation
+		try
+		{
+			// Setup executor and storage
+			__ExecChoiceUpsert__ upsert = new __ExecChoiceUpsert__(
+				this.scritchApi, this._widget, false, __atIndex,
+				__str, __img);
 			
-		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
+			// Wait for it to run and finish
+			this.scritchApi.eventLoop().executeWait(upsert);
+			
+			// Did this fail?
+			if (upsert._error != null)
+				throw upsert._error;
+		}
+		catch (MLECallError __e)
+		{
+			throw __e.throwDistinct();
+		}
 	}
 }

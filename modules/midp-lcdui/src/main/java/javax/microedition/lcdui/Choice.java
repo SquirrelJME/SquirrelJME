@@ -146,7 +146,7 @@ public interface Choice
 		throws IndexOutOfBoundsException, NullPointerException;
 	
 	@Api
-	void setEnabled(int __i, boolean __e);
+	void setEnabled(int __atIndex, boolean __enabled);
 	
 	@Api
 	void setFitPolicy(int __a);

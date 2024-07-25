@@ -9,7 +9,10 @@
 
 package cc.squirreljme.emulator.scritchui.dylib;
 
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchChoiceInterface;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchChoiceBracket;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 
 /**
@@ -33,5 +36,98 @@ public class DylibChoiceInterface
 		NativeScritchDylib __dyLib)
 	{
 		super(__selfApi, __dyLib);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/07/25
+	 */
+	@Override
+	public void delete(ScritchChoiceBracket __choice,
+		int __atIndex)
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/07/25
+	 */
+	@Override
+	public void deleteAll(ScritchChoiceBracket __choice)
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @return
+	 * @since 2024/07/25
+	 */
+	@Override
+	public int insert(ScritchChoiceBracket __choice,
+		int __atIndex)
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/07/25
+	 */
+	@Override
+	public void setEnabled(ScritchChoiceBracket __choice,
+		int __atIndex,
+		boolean __enabled)
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/07/25
+	 */
+	@Override
+	public void setImage(ScritchChoiceBracket __choice,
+		int __atIndex,
+		int[] __data,
+		int __off,
+		int __scanLen,
+		int __width,
+		int __height)
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/07/25
+	 */
+	@Override
+	public void setSelected(ScritchChoiceBracket __choice,
+		int __atIndex,
+		boolean __selected)
+		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/07/25
+	 */
+	@Override
+	public void setString(ScritchChoiceBracket __choice,
+		int __atIndex,
+		String __string)
+		throws MLECallError
+	{
+		throw Debugging.todo();
 	}
 }

@@ -284,6 +284,9 @@ typedef struct sjme_scritchui_uiChoiceItemBase
 	/** The image data, if there is one for this. */
 	sjme_jint* imageRgb;
 	
+	/** The dimensions of the image RGB data. */ 
+	sjme_scritchui_dim imageRgbDim;
+	
 	/** The number of pixels in the image. */
 	sjme_jint imageRgbNumPixels;
 } sjme_scritchui_uiChoiceItemBase;

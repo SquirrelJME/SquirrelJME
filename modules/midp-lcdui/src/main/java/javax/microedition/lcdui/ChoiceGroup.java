@@ -236,7 +236,7 @@ public class ChoiceGroup
 	}
 	
 	@Override
-	public void setEnabled(int __i, boolean __e)
+	public void setEnabled(int __atIndex, boolean __enabled)
 	{
 		throw Debugging.todo();
 	}
