@@ -10,6 +10,7 @@
 #include "lib/scritchui/scritchuiTypes.h"
 #include "lib/scritchui/core/core.h"
 #include "sjme/alloc.h"
+#include "lib/scritchui/core/coreGeneric.h"
 
 sjme_errorCode sjme_scritchui_core_panelEnableFocus(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -40,50 +41,17 @@ sjme_errorCode sjme_scritchui_core_panelNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_scritchui_uiPanel* outPanel)
 {
-	sjme_scritchui_uiPanel result;
 	sjme_errorCode error;
 
 	if (inState == NULL || outPanel == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
-	/* Missing? */
-	if (inState->impl->panelNew == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
-	
-	/* Allocate result. */
-	result = NULL;
-	if (sjme_error_is(error = sjme_alloc_weakNew(inState->pool,
-		sizeof(*result), NULL, NULL, &result, NULL)) || result == NULL)
-		goto fail_alloc;
-	
-	/* Pre-initialize. */
-	if (sjme_error_is(error = inState->intern->initComponent(inState,
-		&result->component, SJME_JNI_FALSE,
-		SJME_SCRITCHUI_TYPE_PANEL)))
-		goto fail_preInit;
-	
-	/* Setup native widget. */
-	if (sjme_error_is(error = inState->impl->panelNew(inState,
-		result, NULL)) ||
-		result->component.common.handle[0] == NULL)
-		goto fail_newWidget;
-	
-	/* Post-initialize. */
-	if (sjme_error_is(error = inState->intern->initComponent(inState,
-		&result->component, SJME_JNI_TRUE,
-		SJME_SCRITCHUI_TYPE_PANEL)))
-		goto fail_postInit;
-	
-	/* Success! */
-	*outPanel = result;
-	return SJME_ERROR_NONE;
-
-fail_postInit:
-fail_newWidget:
-fail_alloc:
-fail_preInit:
-	if (result != NULL)
-		sjme_alloc_free(result);
-	
-	return sjme_error_default(error);
+	/* Use generic function. */
+	return sjme_scritchui_coreGeneric_componentNew(inState,
+		(sjme_scritchui_uiComponent*)outPanel,
+		sizeof(**outPanel),
+		SJME_SCRITCHUI_TYPE_PANEL,
+		(sjme_scritchui_coreGeneric_componentNewImplFunc)
+			inState->impl->panelNew,
+		NULL);
 }

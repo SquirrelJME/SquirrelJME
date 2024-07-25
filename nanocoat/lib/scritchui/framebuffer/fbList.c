@@ -14,7 +14,7 @@
 sjme_errorCode sjme_scritchui_fb_listNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiList inList,
-	sjme_attrInValue sjme_scritchui_choiceType inChoiceType)
+	sjme_attrInValue sjme_scritchui_impl_initParamList* init)
 {
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;

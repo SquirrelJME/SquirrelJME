@@ -12,6 +12,7 @@
 #include "lib/scritchui/core/core.h"
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/alloc.h"
+#include "lib/scritchui/core/coreGeneric.h"
 
 static sjme_errorCode sjme_scritchui_baseCloseListener(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -63,38 +64,24 @@ sjme_errorCode sjme_scritchui_core_windowNew(
 	
 	if (inState == NULL || outWindow == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Not implemented? */
-	if (inState->impl->windowNew == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
 		
-	/* Allocate result. */
+	/* Use generic function. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_alloc_weakNew(inState->pool,
-		sizeof(*result), NULL, NULL, &result, NULL)) || result == NULL)
-		goto fail_alloc;
-	
-	/* Pre-initialize. */
-	if (sjme_error_is(error = inState->intern->initComponent(inState,
-		&result->component, SJME_JNI_FALSE,
-		SJME_SCRITCHUI_TYPE_WINDOW)))
-		goto fail_preInit;
-	
-	/* Forward call. */
-	if (sjme_error_is(error = inState->impl->windowNew(inState,
-		result)))
-		goto fail_newWidget;
-	
-	/* Post-initialize. */
-	if (sjme_error_is(error = inState->intern->initComponent(inState,
-		&result->component, SJME_JNI_TRUE,
-		SJME_SCRITCHUI_TYPE_WINDOW)))
-		goto fail_postInit;
+	if (sjme_error_is(error = sjme_scritchui_coreGeneric_componentNew(
+		inState,
+		(sjme_scritchui_uiComponent*)&result,
+		sizeof(*result),
+		SJME_SCRITCHUI_TYPE_WINDOW,
+		(sjme_scritchui_coreGeneric_componentNewImplFunc)
+			inState->impl->windowNew,
+		NULL)) || result == NULL)
+		goto fail_genericInit;
 	
 	/* Set close listener to use. */
 	if (inState->impl->windowSetCloseListener != NULL)
 		if (sjme_error_is(error = inState->impl->windowSetCloseListener(
-			inState, result, sjme_scritchui_baseCloseListener, NULL)))
+			inState, result,
+			sjme_scritchui_baseCloseListener, NULL)))
 			goto fail_postCloseSet;
 	
 	/* Success! */
@@ -102,10 +89,7 @@ sjme_errorCode sjme_scritchui_core_windowNew(
 	return SJME_ERROR_NONE;
 
 fail_postCloseSet:
-fail_postInit:
-fail_newWidget:
-fail_preInit:
-fail_alloc:
+fail_genericInit:
 	if (result != NULL)
 	{
 		sjme_alloc_free(result);

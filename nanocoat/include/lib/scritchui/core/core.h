@@ -136,16 +136,6 @@ sjme_errorCode sjme_scritchui_core_componentSetVisibleListener(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(visible));
 
-sjme_errorCode sjme_scritchui_core_listNew(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInOutNotNull sjme_scritchui_uiList* outList,
-	sjme_attrInValue sjme_scritchui_choiceType inChoiceType);
-
-sjme_errorCode sjme_scritchui_core_loopExecute(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_thread_mainFunc callback,
-	sjme_attrInNullable sjme_thread_parameter anything);
-
 sjme_errorCode sjme_scritchui_core_fontBuiltin(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_scritchui_pencilFont* outFont);
@@ -171,7 +161,7 @@ sjme_errorCode sjme_scritchpen_core_hardwareGraphics(
 	sjme_attrInPositiveNonZero sjme_jint sw,
 	sjme_attrInPositiveNonZero sjme_jint sh,
 	sjme_attrInNullable const sjme_frontEnd* pencilFrontEndCopy);
-	
+
 sjme_errorCode sjme_scritchui_core_labelSetString(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
@@ -181,6 +171,11 @@ sjme_errorCode sjme_scritchui_core_listNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_scritchui_uiList* outList,
 	sjme_attrInValue sjme_scritchui_choiceType inChoiceType);
+
+sjme_errorCode sjme_scritchui_core_loopExecute(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_thread_mainFunc callback,
+	sjme_attrInNullable sjme_thread_parameter anything);
 
 sjme_errorCode sjme_scritchui_core_loopExecuteLater(
 	sjme_attrInNotNull sjme_scritchui inState,
