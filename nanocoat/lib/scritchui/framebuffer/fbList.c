@@ -14,8 +14,11 @@
 sjme_errorCode sjme_scritchui_fb_listNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiList inList,
-	sjme_attrInValue sjme_scritchui_impl_initParamList* init)
+	sjme_attrInValue const sjme_scritchui_impl_initParamList* init)
 {
+	if (inState == NULL || inList == NULL || init == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }

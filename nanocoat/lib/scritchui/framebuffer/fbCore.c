@@ -10,6 +10,7 @@
 #include <string.h>
 
 #include "lib/scritchui/framebuffer/fb.h"
+#include "lib/scritchui/framebuffer/fbIntern.h"
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/core/core.h"
 
@@ -48,6 +49,10 @@ const sjme_scritchui_implFunctions sjme_scritchui_fbFunctions =
 	.windowSetVisible = sjme_scritchui_fb_windowSetVisible,
 };
 
+static const struct sjme_scritchui_implInternFunctions sjme_scritchui_fbInter =
+{
+};
+
 sjme_errorCode sjme_scritchui_fb_apiInit(
 	sjme_attrInNotNull sjme_scritchui inState)
 {
@@ -56,6 +61,9 @@ sjme_errorCode sjme_scritchui_fb_apiInit(
 	
 	/* Debug. */
 	sjme_message("Framebuffer wrapper initialized!");
+	
+	/* Set internal implementation functions. */
+	inState->implIntern = &sjme_scritchui_fbInter;
 	
 	/* We need not do anything special. */
 	return SJME_ERROR_NONE;

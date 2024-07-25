@@ -73,7 +73,6 @@ typedef sjme_errorCode (*sjme_scritchui_gtk2_intern_widgetInitFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull GtkWidget* inWidget);
 
-/** Internal GTK implementation functions. */	
 struct sjme_scritchui_implInternFunctions
 {
 	/** Updates accelerator on a widget. */

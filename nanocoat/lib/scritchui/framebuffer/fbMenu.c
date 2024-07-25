@@ -98,7 +98,8 @@ sjme_errorCode sjme_scritchui_fb_menuItemNew(
 
 sjme_errorCode sjme_scritchui_fb_menuNew(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiMenu inMenu)
+	sjme_attrInNotNull sjme_scritchui_uiMenu inMenu,
+	sjme_attrInNullable sjme_pointer ignored)
 {
 	sjme_errorCode error;
 	sjme_scritchui wrappedState;

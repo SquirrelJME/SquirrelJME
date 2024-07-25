@@ -145,7 +145,7 @@ sjme_errorCode sjme_scritchui_fb_labelSetString(
 sjme_errorCode sjme_scritchui_fb_listNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiList inList,
-	sjme_attrInValue sjme_scritchui_impl_initParamList* init);
+	sjme_attrInValue const sjme_scritchui_impl_initParamList* init);
 
 sjme_errorCode sjme_scritchui_fb_loopExecute(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -180,7 +180,8 @@ sjme_errorCode sjme_scritchui_fb_menuItemNew(
 
 sjme_errorCode sjme_scritchui_fb_menuNew(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiMenu inMenu);
+	sjme_attrInNotNull sjme_scritchui_uiMenu inMenu,
+	sjme_attrInNullable sjme_pointer ignored);
 
 sjme_errorCode sjme_scritchui_fb_menuRemove(
 	sjme_attrInNotNull sjme_scritchui inState,

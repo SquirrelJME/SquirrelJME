@@ -114,7 +114,7 @@ typedef sjme_errorCode (*sjme_scritchui_impl_containerRemoveFunc)(
 typedef sjme_errorCode (*sjme_scritchui_impl_listNewFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiList inList,
-	sjme_attrInValue sjme_scritchui_impl_initParamList* init);
+	sjme_attrInValue const sjme_scritchui_impl_initParamList* init);
 
 /**
  * Creates a new native menu bar.
@@ -177,12 +177,14 @@ typedef sjme_errorCode (*sjme_scritchui_impl_panelNewFunc)(
  * 
  * @param inState The input state.
  * @param inWindow The window that was created.
+ * @param ignored Ignored, not used at all.
  * @return Any resultant error, if any.
  * @since 2024/04/24
  */
 typedef sjme_errorCode (*sjme_scritchui_impl_windowNewFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow);
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNullable sjme_pointer ignored);
 
 #define SJME_SCRITCHUI_QUICK_IMPL(x) \
 	SJME_TOKEN_PASTE3(sjme_scritchui_impl_, x, Func) x

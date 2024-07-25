@@ -11,7 +11,6 @@
 
 #include "lib/scritchui/framebuffer/fb.h"
 #include "lib/scritchui/scritchui.h"
-#include "lib/scritchui/core/core.h"
 
 static sjme_errorCode sjme_scritchui_fb_listenerInput(
 	sjme_attrInNotNull sjme_scritchui inState,
