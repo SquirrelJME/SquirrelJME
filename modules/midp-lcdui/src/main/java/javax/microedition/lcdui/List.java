@@ -331,7 +331,11 @@ public class List
 	public void setEnabled(int __atIndex, boolean __enabled)
 		throws IndexOutOfBoundsException
 	{
+		throw Debugging.todo();
+		/*
 		this._choices.setEnabled(__atIndex, __enabled);
+		
+		 */
 	}
 	
 	@Override

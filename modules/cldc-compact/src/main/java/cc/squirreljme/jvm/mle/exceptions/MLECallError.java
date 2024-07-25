@@ -246,11 +246,8 @@ public class MLECallError
 		// Tossing something different?
 		if (toss != null)
 		{
-			// Use our original message and cause, if any
+			// Use our original cause, if any
 			toss.initCause(this.getCause());
-			
-			// Use our original stack trace
-			toss.setStackTrace(this.getStackTrace());
 			
 			// Throw directly or wrap
 			if (toss instanceof RuntimeException)
