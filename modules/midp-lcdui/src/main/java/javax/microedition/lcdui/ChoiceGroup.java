@@ -12,8 +12,6 @@ package javax.microedition.lcdui;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.scritchui.ChoiceManager;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A choice group represents a selectable group of elements which may be
@@ -92,7 +90,8 @@ public class ChoiceGroup
 				String.format("EB1c %d", __type));
 		
 		// Setup manager
-		ChoiceManager choices = new ChoiceManager(__type);
+		ChoiceManager choices = new ChoiceManager(__type,
+			null, null);
 		this._choices = choices;
 		
 		// Set

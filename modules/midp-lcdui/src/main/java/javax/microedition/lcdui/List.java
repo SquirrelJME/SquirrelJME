@@ -82,10 +82,6 @@ public class List
 		if (__imgs != null && n != __imgs.length)
 			throw new IllegalArgumentException("EB2j");
 		
-		// Setup manager
-		ChoiceManager choices = new ChoiceManager(__type);
-		this._choices = choices;
-		
 		// Determine the native list type
 		int nativeType;
 		switch (__type)
@@ -107,6 +103,10 @@ public class List
 		
 		// Create new list
 		ScritchListBracket newList = listApi.listNew(nativeType);
+		
+		// Setup manager
+		ChoiceManager choices = new ChoiceManager(__type, scritchApi, newList);
+		this._choices = choices;
 		
 		// Put the list in the panel
 		ScritchPanelBracket inPanel = state.scritchPanel();
@@ -133,11 +133,7 @@ public class List
 	public int append(String __s, Image __i)
 		throws NullPointerException
 	{
-		// Appending is just the same as inserting at the end of the list
-		int dx = this.size();
-		this.insert(dx, __s, __i);
-		
-		return dx;
+		return this._choices.insert(Integer.MAX_VALUE, __s, __i);
 	}
 	
 	/**
@@ -145,34 +141,20 @@ public class List
 	 * @since 2020/11/21
 	 */
 	@Override
-	public void delete(int __dx)
+	public void delete(int __atIndex)
 	{
-		throw Debugging.todo();
-		/*
-		this._items.remove(__dx);
-		
-		// Ensure it is up to date
-		this.__refresh();
-		
-		 */
+		this._choices.delete(__atIndex);
 	}
 	
 	/**
-	 * Deletes all of the items in the list.
+	 * Deletes all the items in the list.
 	 *
 	 * @since 2018/11/17
 	 */
 	@Override
 	public void deleteAll()
 	{
-		throw Debugging.todo();
-		/*
-		this._items.clear();
-		
-		// Update UI
-		this.__refresh();
-		
-		 */
+		this._choices.deleteAll();
 	}
 	
 	@Override
@@ -286,29 +268,15 @@ public class List
 	 * @since 2020/11/15
 	 */
 	@Override
-	public void insert(int __at, String __s, Image __i)
+	public void insert(int __at, String __str, Image __img)
 	{
-		if (__s == null)
+		if (__str == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
-		/*
-		// Append item
-		__ChoiceEntry__ e;
-		__VolatileList__<__ChoiceEntry__> items = this._items;
-		items.insert(__at, (e = new __ChoiceEntry__(__s, __i)));
+		if (__at == Integer.MAX_VALUE)
+			throw new IndexOutOfBoundsException("IOOB");
 		
-		// If this is the first item and our list needs to have an item
-		// selection then force it to be selected
-		int lType = this._type;
-		if (items.size() == 1 && (lType == Choice.EXCLUSIVE ||
-			lType == Choice.IMPLICIT))
-			e._selected = true;
-		
-		// Update display
-		this.__refresh();
-		
-		 */
+		this._choices.insert(__at, __str, __img);
 	}
 	
 	/**
@@ -346,23 +314,13 @@ public class List
 	 * @since 2020/11/14
 	 */
 	@Override
-	public void set(int __i, String __label, Image __icon)
+	public void set(int __at, String __str, Image __img)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
-		throw Debugging.todo();
-		/*
-		if (__label == null)
+		if (__str == null)
 			throw new NullPointerException("NARG");
 		
-		// Set properties
-		__ChoiceEntry__ entry = this._items.get(__i);
-		entry._label = __label;
-		entry._image = __icon;
-		
-		// Update display
-		this.__refresh();
-		
-		 */
+		this._choices.set(__at, __str, __img);
 	}
 	
 	/**
@@ -498,19 +456,6 @@ public class List
 		return this._items.size();
 		
 		 */
-	}
-	
-	/**
-	 * Inserts the given item at the specified index.
-	 *
-	 * @param __at The index to insert at.
-	 * @param __s The string for the item.
-	 * @param __i The image for the item.
-	 * @since 2024/07/17
-	 */
-	void __insert(int __at, String __s, Image __i)
-	{
-		throw Debugging.todo();
 	}
 	
 	/**
