@@ -138,6 +138,8 @@ final class __ExecChoiceUpsert__
 		}
 		catch (MLECallError __e)
 		{
+			__e.printStackTrace(System.err);
+			
 			this._result = -1;
 			this._error = __e;
 		}

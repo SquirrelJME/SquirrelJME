@@ -315,12 +315,16 @@ typedef struct sjme_scritchui_uiChoiceBase* sjme_scritchui_uiChoice;
 /**
  * Represents a single choice item.
  * 
+ * @since 2024/04/25
+ */
+typedef struct sjme_scritchui_uiChoiceItemBase sjme_scritchui_uiChoiceItemBase;
+
+/**
+ * Represents a single choice item.
+ * 
  * @since 2024/04/20
  */
 typedef struct sjme_scritchui_uiChoiceItemBase* sjme_scritchui_uiChoiceItem;
-
-/** A list of choice items. */
-SJME_LIST_DECLARE(sjme_scritchui_uiChoiceItem, 0);
 
 /**
  * Component within ScritchUI.

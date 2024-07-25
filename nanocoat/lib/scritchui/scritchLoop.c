@@ -23,6 +23,9 @@ typedef struct sjme_scritchui_core_waitData
 	
 	/** Value passed to the callback. */
 	sjme_thread_parameter anything;
+	
+	/** The result of the call. */
+	sjme_errorCode result;
 } sjme_scritchui_core_waitData;
 
 static sjme_thread_result sjme_scritchui_core_waitAdapter(
@@ -38,6 +41,7 @@ static sjme_thread_result sjme_scritchui_core_waitAdapter(
 	
 	/* Synchronous call. */
 	result = waitData->callback(waitData->anything);
+	waitData->result = SJME_THREAD_RESULT_AS_ERROR(result);
 	
 	/* Signal that wait is complete. */
 	sjme_thread_barrier();
@@ -141,8 +145,8 @@ sjme_errorCode sjme_scritchui_core_loopExecuteWait(
 			break;
 	}
 	
-	/* Success! */
-	return SJME_ERROR_NONE;
+	/* Return the result of the call. */
+	return waitData.result;
 }
 
 sjme_errorCode sjme_scritchui_core_loopIsInThread(

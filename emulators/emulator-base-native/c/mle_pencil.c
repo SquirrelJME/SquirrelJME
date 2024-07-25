@@ -189,7 +189,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawSubstring)
 	
 	/* Recover. */
 	p = sjme_jni_recoverPencil(env, g);
-	if (g == NULL || p == NULL)
+	if (g == NULL || p == NULL || s == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return;

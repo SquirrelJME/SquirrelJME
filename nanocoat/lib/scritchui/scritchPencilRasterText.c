@@ -72,7 +72,8 @@ sjme_errorCode sjme_scritchpen_core_drawChar(
 	
 	/* Calculate anchor point accordingly. */
 	if (anchor != 0)
-		if (sjme_error_is(error = sjme_scritchpen_coreUtil_applyAnchor(anchor,
+		if (sjme_error_is(error = sjme_scritchpen_coreUtil_applyAnchor(
+			anchor,
 			x, y, cw, ch, 0, &x, &y)))
 			goto fail_any;
 		
@@ -219,7 +220,10 @@ sjme_errorCode sjme_scritchpen_core_drawSubstring(
 	
 	/* Out of bounds? */
 	if ((o + l) > seqLen)
-		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	{
+		error = SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+		goto fail_seqBounds;
+	}
 	
 	/* Determine visual size of this block of text. */
 	tw = -1;
@@ -230,7 +234,8 @@ sjme_errorCode sjme_scritchpen_core_drawSubstring(
 	/* Determine anchor point of this block of text. */
 	dx = x;
 	dy = y;
-	if (anchor != 0 && sjme_error_is(error = sjme_scritchpen_coreUtil_applyAnchor(
+	if (anchor != 0 && sjme_error_is(error =
+		sjme_scritchpen_coreUtil_applyAnchor(
 		anchor & SJME_SCRITCHUI_ANCHOR_TEXT_MASK, x, y,
 		tw, lineHeight, baseline, &dx, &dy)))
 		goto fail_anchor;
@@ -280,6 +285,7 @@ fail_drawChar:
 fail_charAt:
 fail_anchor:
 fail_blockDim:
+fail_seqBounds:
 fail_seqLen:
 fail_fontBaseline:
 fail_fontHeight:

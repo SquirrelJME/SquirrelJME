@@ -243,23 +243,6 @@ SJME_LIST_DECLARE(sjme_scritchui_uiComponent, 0);
 	SJME_TYPEOF_BASIC_sjme_pointer
 
 /**
- * Contains all of the information on choice items.
- * 
- * @since 2024/07/16
- */
-typedef struct sjme_scritchui_uiChoiceBase
-{
-	/** The type of choice this is. */
-	sjme_scritchui_choiceType type;
-	
-	/** The items on this list. */
-	sjme_list_sjme_scritchui_uiChoiceItem* items;
-	
-	/** The number of valid entries on the list. */
-	sjme_jint numItems;
-} sjme_scritchui_uiChoiceBase;
-
-/**
  * Contains the information of a single item within a choice.
  * 
  * @since 2024/07/16
@@ -290,6 +273,26 @@ typedef struct sjme_scritchui_uiChoiceItemBase
 	/** The number of pixels in the image. */
 	sjme_jint imageRgbNumPixels;
 } sjme_scritchui_uiChoiceItemBase;
+
+/** A list of choice items. */
+SJME_LIST_DECLARE(sjme_scritchui_uiChoiceItemBase, 0);
+
+/**
+ * Contains all of the information on choice items.
+ * 
+ * @since 2024/07/16
+ */
+typedef struct sjme_scritchui_uiChoiceBase
+{
+	/** The type of choice this is. */
+	sjme_scritchui_choiceType type;
+	
+	/** The number of valid entries on the list. */
+	sjme_jint numItems;
+	
+	/** The items on this list. */
+	sjme_list_sjme_scritchui_uiChoiceItemBase* items;
+} sjme_scritchui_uiChoiceBase;
 
 /**
  * Base data for containers which may contain components.

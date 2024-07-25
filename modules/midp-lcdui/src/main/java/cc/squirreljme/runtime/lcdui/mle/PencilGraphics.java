@@ -143,17 +143,7 @@ public final class PencilGraphics
 		// Unwrap any potential errors.
 		catch (MLECallError e)
 		{
-			switch (e.distinction)
-			{
-				case PencilShelfError.ILLEGAL_ARGUMENT:
-					throw new IllegalArgumentException(e.getMessage(), e);
-					
-				case PencilShelfError.ILLEGAL_STATE:
-					throw new IllegalStateException(e.getMessage(), e);
-			}
-			
-			// No distinction
-			throw e;
+			throw e.throwDistinct();
 		}
 	}
 	
@@ -199,14 +189,7 @@ public final class PencilGraphics
 		}
 		catch (MLECallError e)
 		{
-			RuntimeException x;
-			switch (e.distinction)
-			{
-				case PencilShelfError.ILLEGAL_ARGUMENT:
-					throw new IllegalArgumentException(e.getMessage(), e);
-			}
-			
-			throw e;
+			throw e.throwDistinct();
 		}
 	}
 	
@@ -234,19 +217,7 @@ public final class PencilGraphics
 		}
 		catch (MLECallError e)
 		{
-			RuntimeException x;
-			switch (e.distinction)
-			{
-				case PencilShelfError.INDEX_OUT_OF_BOUNDS:
-					x = new IndexOutOfBoundsException(e.getMessage());
-					x.initCause(e);
-					throw x;
-					
-				case PencilShelfError.ILLEGAL_ARGUMENT:
-					throw new IllegalArgumentException(e.getMessage(), e);
-			}
-			
-			throw e;
+			throw e.throwDistinct();
 		}
 	}
 	
@@ -405,14 +376,7 @@ public final class PencilGraphics
 		}
 		catch (MLECallError e)
 		{
-			RuntimeException x;
-			switch (e.distinction)
-			{
-				case PencilShelfError.ILLEGAL_ARGUMENT:
-					throw new IllegalArgumentException(e.getMessage(), e);
-			}
-			
-			throw e;
+			throw e.throwDistinct();
 		}
 	}
 	
@@ -438,14 +402,7 @@ public final class PencilGraphics
 		}
 		catch (MLECallError e)
 		{
-			RuntimeException x;
-			switch (e.distinction)
-			{
-				case PencilShelfError.ILLEGAL_ARGUMENT:
-					throw new IllegalArgumentException(e.getMessage(), e);
-			}
-			
-			throw e;
+			throw e.throwDistinct();
 		}
 	}
 	
