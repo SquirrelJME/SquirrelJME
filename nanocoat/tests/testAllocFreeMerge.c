@@ -212,7 +212,7 @@ SJME_TEST_DECLARE(testAllocFreeMerge)
 	const testSequenceType* sequence;
 	
 	/* Allocate data on the stack so it gets cleared. */
-	chunkLen = 32768;
+	chunkLen = 65536;
 	chunk = sjme_alloca(chunkLen);
 	if (chunk == NULL)
 		return sjme_unit_skip(test, "Could not alloca(%d).",

@@ -70,9 +70,7 @@ sjme_errorCode sjme_scritchui_core_menuInsert(
 	
 	/* Out of bounds? */
 	childList = parentMenu->children;
-	n = (childList == NULL ? 0 : childList->length);
-	if (parentMenu->numChildren < n)
-		n = parentMenu->numChildren;
+	n = parentMenu->numChildren;
 	if (atIndex > n)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
@@ -89,7 +87,7 @@ sjme_errorCode sjme_scritchui_core_menuInsert(
 		return SJME_ERROR_NOT_IMPLEMENTED;
 	
 	/* Do we need to make a new list? */
-	if (childList == NULL || n >= childList->length)
+	if (childList == NULL || (n + 1) > childList->length)
 	{
 		/* Setup new list. */
 		newList = NULL;
@@ -202,9 +200,7 @@ sjme_errorCode sjme_scritchui_core_menuRemove(
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	/* Limit to the actual number of children. */
-	n = childList->length;
-	if (parentMenu->numChildren < n)
-		n = parentMenu->numChildren;
+	n = parentMenu->numChildren;
 	
 	/* Out of bounds? */
 	if (atIndex >= n)

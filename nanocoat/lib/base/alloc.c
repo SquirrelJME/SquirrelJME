@@ -150,6 +150,11 @@ static sjme_jboolean sjme_noOptimize sjme_alloc_checkCorruption(
 	if (atLink->pool != pool)
 		return sjme_alloc_corruptFail(pool, atLink,
 			"Wrong pool");
+	
+	/* Allocation size larger than block? */
+	if (atLink->allocSize > atLink->blockSize)
+		return sjme_alloc_corruptFail(pool, atLink,
+			"Allocation size larger than block.");
 
 	/* Next link is in the wrong location? */
 	if (atLink->next != NULL && (uintptr_t)atLink->next !=

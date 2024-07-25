@@ -90,6 +90,9 @@ public class List
 			__type != Choice.MULTIPLE)
 			throw new IllegalArgumentException("EB2k " + __type);
 		
+		// Store type
+		this._type = __type;
+		
 		// Determine the native list type
 		int nativeType;
 		switch (__type)
@@ -106,6 +109,9 @@ public class List
 		ScritchInterface scritchApi = state.scritchApi();
 		ScritchListInterface listApi = scritchApi.list();
 		
+		// Set title
+		this._trackerTitle.set(__title);
+		
 		// Create new list
 		ScritchListBracket newList = listApi.listNew(nativeType);
 		
@@ -114,23 +120,12 @@ public class List
 		scritchApi.container().add(inPanel,
 			newList);
 		
-		throw Debugging.todo();
-		/*
-		// Add all items to the list
-		for (int i = 0, n = __strs.length; i < n; i++)
-			this.__insert(i, __strs[i], (__imgs == null ? null : __imgs[i]));
-		
 		// Implicit lists have a specific select command used
 		if (__type == Choice.IMPLICIT)
 		{
 			this._selCommand = List.SELECT_COMMAND;
 			this.addCommand(List.SELECT_COMMAND);
 		}
-		
-		// Set title
-		this.__setTitle(__title);
-		
-		 */
 	}
 	
 	/**

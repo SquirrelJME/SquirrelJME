@@ -11,14 +11,74 @@
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiTypes.h"
 
+static sjme_errorCode sjme_scritchui_fb_list_draw(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInPositive sjme_jint sw,
+	sjme_attrInPositive sjme_jint sh,
+	sjme_attrInValue sjme_jint special)
+{
+	g->api->drawPixel(g, 4, 4);
+	
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_scritchui_fb_list_input(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNotNull const sjme_scritchinput_event* inEvent)
+{
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_scritchui_fb_listNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiList inList,
 	sjme_attrInValue const sjme_scritchui_impl_initParamList* init)
 {
+	sjme_errorCode error;
+	sjme_scritchui wrappedState;
+	sjme_scritchui_uiPanel wrappedPanel;
+	
 	if (inState == NULL || inList == NULL || init == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Recover wrapped state. */
+	wrappedState = inState->wrappedState;
+	
+	/* Setup wrapped panel to draw all of our list items on. */
+	wrappedPanel = NULL;
+	if (sjme_error_is(error = wrappedState->api->panelNew(
+		wrappedState, &wrappedPanel)) ||
+		wrappedPanel == NULL)
+		return sjme_error_default(error);
+	
+	/* Map front ends. */
+	if (sjme_error_is(error = sjme_scritchui_fb_biMap(
+		inState, inList, wrappedPanel)))
+		return sjme_error_default(error);
+	
+	/* Enable focus on the list. */
+	if (sjme_error_is(error = wrappedState->api->panelEnableFocus(
+		wrappedState, wrappedPanel,
+		SJME_JNI_TRUE, SJME_JNI_FALSE)))
+		return sjme_error_default(error);
+	
+	/* Set renderer for list. */
+	if (sjme_error_is(error =
+		wrappedState->api->componentSetPaintListener(
+		wrappedState, wrappedPanel,
+		sjme_scritchui_fb_list_draw, NULL)))
+		return sjme_error_default(error);
+	
+	/* Set listener for events. */
+	if (sjme_error_is(error =
+		wrappedState->api->componentSetInputListener(
+		wrappedState, wrappedPanel,
+		sjme_scritchui_fb_list_input, NULL)))
+		return sjme_error_default(error);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }

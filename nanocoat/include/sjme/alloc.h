@@ -179,7 +179,7 @@ struct sjme_alloc_link
  * @since 2023/11/16
  */
 #define SJME_SIZEOF_ALLOC_LINK(size) \
-	(sizeof(sjme_alloc_link) + (((size_t)(size)) * \
+	(offsetof(sjme_alloc_link, block) + (((size_t)(size)) * \
 	sizeof(sjme_jubyte)))
 
 /**
