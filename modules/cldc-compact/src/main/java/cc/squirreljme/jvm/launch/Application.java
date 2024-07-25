@@ -28,6 +28,14 @@ import java.util.Objects;
  */
 public abstract class Application
 {
+	/** Property for overriding the encoding. */
+	public static final String OVERRIDE_ENCODING =
+		"cc.squirreljme.override.encoding";
+	
+	/** Property for overriding the locale. */
+	public static final String OVERRIDE_LOCALE =
+		"cc.squirreljme.override.locale";
+	
 	/** The JAR this references. */
 	protected final JarPackageBracket jar;
 	

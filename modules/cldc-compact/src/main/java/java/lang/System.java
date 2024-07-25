@@ -9,6 +9,7 @@
 
 package java.lang;
 
+import cc.squirreljme.jvm.launch.Application;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
@@ -26,6 +27,8 @@ import cc.squirreljme.runtime.cldc.io.CodecFactory;
 import cc.squirreljme.runtime.cldc.io.ConsoleOutputStream;
 import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
@@ -449,11 +452,11 @@ public final class System
 				
 				// The current encoding
 			case "microedition.encoding":
-				return CodecFactory.toString(RuntimeShelf.encoding());
+				return System.__encoding();
 				
 				// The current locale, must be set!
 			case "microedition.locale":
-				return DefaultLocale.toString(RuntimeShelf.locale());
+				return System.__locale();
 				
 				// The current platform
 			case "microedition.platform":
@@ -685,6 +688,55 @@ public final class System
 		
 		// Use the built classpath
 		return sb.toString();
+	}
+	
+	/**
+	 * Returns the encoding.
+	 *
+	 * @return The encoding.
+	 * @since 2024/07/24
+	 */
+	private static final String __encoding()
+	{
+		// Has this been overridden?
+		String override = RuntimeShelf.systemProperty(
+			Application.OVERRIDE_ENCODING);
+		if (override != null)
+			try
+			{
+				return CodecFactory.toString(CodecFactory.toBuiltIn(override));
+			}
+			catch (UnsupportedEncodingException ignored)
+			{
+			}
+		
+		// Could not be parsed, or was unknown
+		return CodecFactory.toString(RuntimeShelf.encoding());
+	}
+	
+	/**
+	 * Returns the locale.
+	 *
+	 * @return The locale.
+	 * @since 2024/07/24
+	 */
+	private static final String __locale()
+	{
+		// Has this been overridden?
+		String override = RuntimeShelf.systemProperty(
+			Application.OVERRIDE_LOCALE);
+		if (override != null)
+			try
+			{
+				return DefaultLocale.toString(
+					DefaultLocale.toBuiltIn(override));
+			}
+			catch (NoSuchElementException ignored)
+			{
+			}
+		
+		// Could not be parsed, or was unknown
+		return DefaultLocale.toString(RuntimeShelf.locale());
 	}
 }
 

@@ -342,6 +342,10 @@ public class IModeApplication
 		rv.put(IModeApplication.NAME_PROPERTY, nameProp);
 		rv.put(IModeApplication.VENDOR_PROPERTY, "SquirrelJME-i-Mode");
 		
+		// Encoding and locale override
+		rv.put(Application.OVERRIDE_ENCODING, "shift-jis");
+		rv.put(Application.OVERRIDE_LOCALE, "ja-JP");
+		
 		// Scratch pad sizes
 		String spSize = adfProps.get(IModeApplication._SP_SIZE);
 		if (spSize != null && !spSize.isEmpty())
