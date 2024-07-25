@@ -36,11 +36,7 @@ public class ChoiceGroup
 		Choice.POPUP;
 	
 	/** Manages and contains choice entries. */
-	final ChoiceManager _choices =
-		new ChoiceManager();
-	
-	/** The valid choice selection type. */
-	private final int _type;
+	final ChoiceManager _choices;
 	
 	/**
 	 * Initializes an empty choice group.
@@ -62,9 +58,9 @@ public class ChoiceGroup
 	 * Initializes an empty choice group.
 	 *
 	 * @param __l The label for this group.
-	 * @param __ct The type of choice selection to use.
-	 * @param __se The , this cannot be {@code null}
-	 * @param __ie The images for each choice, this must either be {@code null}
+	 * @param __type The type of choice selection to use.
+	 * @param __strs The , this cannot be {@code null}
+	 * @param __imgs The images for each choice, this must either be {@code null}
 	 * or be the exact same length as the input {@code __se}.
 	 * @throws IllegalArgumentException If the choice type is not valid; 
 	 * if {@link Choice#IMPLICIT} was specified; If the image array is not
@@ -75,41 +71,36 @@ public class ChoiceGroup
 	 * @since 2017/08/20
 	 */
 	@Api
-	public ChoiceGroup(String __l, int __ct, String[] __se, Image[] __ie)
+	public ChoiceGroup(String __l, int __type, String[] __strs, Image[] __imgs)
 		throws IllegalArgumentException, NullPointerException
 	{
 		// Check
-		if (__se == null)
+		if (__strs == null)
 			throw new NullPointerException("NARG");
 		
 		/* {@squirreljme.error EB1b The image array does not have the same
 		length as the string array.} */
-		int n = __se.length;
-		if (__ie != null && __ie.length != n)
+		int n = __strs.length;
+		if (__imgs != null && __imgs.length != n)
 			throw new IllegalArgumentException("EB1b");
 		
 		/* {@squirreljme.error EB1c Invalid choice type specified for a
 		choice group. (The choice type)} */
-		if (__ct < ChoiceGroup._MIN_TYPE || __ct > ChoiceGroup._MAX_TYPE ||
-			__ct == Choice.IMPLICIT)
-			throw new IllegalArgumentException(String.format("EB1c %d", __ct));
+		if (__type < ChoiceGroup._MIN_TYPE || __type > ChoiceGroup._MAX_TYPE ||
+			__type == Choice.IMPLICIT)
+			throw new IllegalArgumentException(
+				String.format("EB1c %d", __type));
+		
+		// Setup manager
+		ChoiceManager choices = new ChoiceManager(__type);
+		this._choices = choices;
 		
 		// Set
 		this.setLabel(__l);
-		this._type = __ct;
 		
 		// Append all elements
 		for (int i = 0; i < n; i++)
-		{
-			/* {@squirreljme.error EB1d A string element contains a null
-			entry.} */
-			String s = __se[i];
-			if (s == null)
-				throw new NullPointerException("EB1d");
-			
-			// Add it
-			this.append(s, (__ie != null ? __ie[i] : null));
-		}
+			this.append(__strs[i], (__imgs == null ? null : __imgs[i]));
 	}
 	
 	/**
@@ -177,7 +168,11 @@ public class ChoiceGroup
 	@Override
 	public int getSelectedIndex()
 	{
+		throw Debugging.todo();
+		/*
 		return __Utils__.__getSelectedIndex(this, this._type);
+		
+		 */
 	}
 	
 	@Override

@@ -16,6 +16,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2020/10/31
  */
+@Deprecated
 final class __Utils__
 {
 	/**
@@ -23,6 +24,7 @@ final class __Utils__
 	 * 
 	 * @since 2020/10/31
 	 */
+	@Deprecated
 	private __Utils__()
 	{
 	}
@@ -38,6 +40,7 @@ final class __Utils__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/15
 	 */
+	@Deprecated
 	public static boolean[] __calculateSetSelectedIndexFlags(Choice __c,
 		int __type, int __i, boolean __e)
 		throws IndexOutOfBoundsException, NullPointerException
@@ -95,6 +98,7 @@ final class __Utils__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/10/31
 	 */
+	@Deprecated
 	public static int __getSelectedFlags(Choice __c, boolean[] __result)
 		throws IllegalArgumentException, NullPointerException
 	{
@@ -134,6 +138,7 @@ final class __Utils__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/10/31
 	 */
+	@Deprecated
 	static int __getSelectedIndex(Choice __c, int  __type)
 		throws NullPointerException
 	{
@@ -175,6 +180,7 @@ final class __Utils__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/14
 	 */
+	@Deprecated
 	public static void __setSelectedIndex(Choice __c, int __type, int __i,
 		boolean __e)
 		throws IndexOutOfBoundsException, NullPointerException

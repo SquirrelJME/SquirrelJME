@@ -33,11 +33,7 @@ public class List
 		new Command("Select", Command.SCREEN, 0, true);
 	
 	/** Manages and contains choice entries. */
-	final ChoiceManager _choices =
-		new ChoiceManager();
-	
-	/** The type of list this is. */
-	private final int _type;
+	final ChoiceManager _choices;
 	
 	/** Selection command. */
 	volatile Command _selCommand;
@@ -82,16 +78,13 @@ public class List
 		
 		/* {@squirreljme.error EB2j String and image elements differ in
 		size.} */
-		if (__imgs != null && __strs.length != __imgs.length)
+		int n = __strs.length;
+		if (__imgs != null && n != __imgs.length)
 			throw new IllegalArgumentException("EB2j");
 		
-		/* {@squirreljme.error EB2k Invalid list type. (The list type)} */
-		if (__type != Choice.IMPLICIT && __type != Choice.EXCLUSIVE &&
-			__type != Choice.MULTIPLE)
-			throw new IllegalArgumentException("EB2k " + __type);
-		
-		// Store type
-		this._type = __type;
+		// Setup manager
+		ChoiceManager choices = new ChoiceManager(__type);
+		this._choices = choices;
 		
 		// Determine the native list type
 		int nativeType;
@@ -126,6 +119,10 @@ public class List
 			this._selCommand = List.SELECT_COMMAND;
 			this.addCommand(List.SELECT_COMMAND);
 		}
+		
+		// Append all elements
+		for (int i = 0; i < n; i++)
+			this.append(__strs[i], (__imgs == null ? null : __imgs[i]));
 	}
 	
 	/**
@@ -249,7 +246,10 @@ public class List
 	@Override
 	public int getSelectedIndex()
 	{
+		throw Debugging.todo();
+		/*
 		return __Utils__.__getSelectedIndex(this, this._type);
+		 */
 	}
 	
 	/**
@@ -269,18 +269,6 @@ public class List
 		return this._items.get(__i)._label;
 		
 		 */
-	}
-	
-	/**
-	 * Returns the list type.
-	 *
-	 * @return The list type.
-	 * @since 2019/05/18
-	 */
-	@ImplementationNote("This is a SquirrelJME specific method.")
-	public int getType()
-	{
-		return this._type;
 	}
 	
 	/**
@@ -535,6 +523,8 @@ public class List
 	@Async.Execute
 	final void __selectCommand(int __keyCode)
 	{
+		throw Debugging.todo();
+		/*
 		// This command is only executed for implicit lists only
 		if (this._type != Choice.IMPLICIT)
 			return;
@@ -547,6 +537,8 @@ public class List
 		
 		// Send in the command action
 		listener.commandAction(selCommand, this);
+		
+		 */
 	}
 }
 
