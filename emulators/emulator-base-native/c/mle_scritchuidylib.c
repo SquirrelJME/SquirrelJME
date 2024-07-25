@@ -44,6 +44,22 @@
 #define FORWARD_DESC___builtinFonts "(" \
 	DESC_LONG ")" DESC_ARRAY(DESC_PENCILFONT)
 
+#define FORWARD_DESC___choiceRemove "(" \
+	DESC_LONG DESC_LONG DESC_INT ")" DESC_VOID
+#define FORWARD_DESC___choiceRemoveAll "(" \
+	DESC_LONG DESC_LONG ")" DESC_VOID
+#define FORWARD_DESC___choiceInsert "(" \
+	DESC_LONG DESC_LONG DESC_INT ")" DESC_INT
+#define FORWARD_DESC___choiceSetEnabled "(" \
+	DESC_LONG DESC_LONG DESC_INT DESC_BOOLEAN ")" DESC_VOID
+#define FORWARD_DESC___choiceSetImage "(" \
+	DESC_LONG DESC_LONG DESC_INT DESC_ARRAY(DESC_INT) DESC_INT \
+	DESC_INT DESC_INT DESC_INT ")" DESC_VOID
+#define FORWARD_DESC___choiceSetSelected "(" \
+	DESC_LONG DESC_LONG DESC_INT DESC_BOOLEAN ")" DESC_VOID
+#define FORWARD_DESC___choiceSetString "(" \
+	DESC_LONG DESC_LONG DESC_INT DESC_STRING ")" DESC_VOID
+
 #define FORWARD_DESC___componentHeight "(" \
 	DESC_LONG DESC_LONG ")" DESC_INT
 #define FORWARD_DESC___componentRepaint "(" \
@@ -696,6 +712,217 @@ JNIEXPORT jobjectArray JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	
 	/* Wrap array. */
 	return (*env)->NewObjectArray(env, 1, instanceClass, instance);
+}
+
+JNIEXPORT int JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__choiceInsert)(JNIEnv* env, jclass classy, jlong stateP,
+	jlong choiceP, jint atIndex)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	sjme_scritchui_uiComponent choice;
+	sjme_jint result;
+	
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	choice = (sjme_scritchui_uiComponent)choiceP;
+	
+	/* Check. */
+	if (state == NULL || choice == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return -1;
+	}
+	
+	/* Forward. */
+	result = atIndex;
+	if (sjme_error_is(error = state->api->choiceItemInsert(
+		state, choice, &result)))
+		sjme_jni_throwMLECallError(env, error);
+	
+	return result;
+}
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__choiceRemove)(JNIEnv* env, jclass classy, jlong stateP,
+	jlong choiceP, jint atIndex)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	sjme_scritchui_uiComponent choice;
+	
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	choice = (sjme_scritchui_uiComponent)choiceP;
+	
+	/* Check. */
+	if (state == NULL || choice == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+	
+	/* Forward. */
+	if (sjme_error_is(error = state->api->choiceItemRemove(
+		state, choice, atIndex)))
+		sjme_jni_throwMLECallError(env, error);
+}
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__choiceRemoveAll)(JNIEnv* env, jclass classy, jlong stateP,
+	jlong choiceP)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	sjme_scritchui_uiComponent choice;
+	
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	choice = (sjme_scritchui_uiComponent)choiceP;
+	
+	/* Check. */
+	if (state == NULL || choice == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+	
+	/* Forward. */
+	if (sjme_error_is(error = state->api->choiceItemRemoveAll(
+		state, choice)))
+		sjme_jni_throwMLECallError(env, error);
+}
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__choiceSetEnabled)(JNIEnv* env, jclass classy, jlong stateP,
+	jlong choiceP, jint atIndex, jboolean enabled)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	sjme_scritchui_uiComponent choice;
+	
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	choice = (sjme_scritchui_uiComponent)choiceP;
+	
+	/* Check. */
+	if (state == NULL || choice == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+	
+	/* Forward. */
+	if (sjme_error_is(error = state->api->choiceItemSetEnabled(
+		state, choice, atIndex, enabled)))
+		sjme_jni_throwMLECallError(env, error);
+}
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__choiceSetImage)(JNIEnv* env, jclass classy, jlong stateP,
+	jlong choiceP, jint atIndex, jintArray data, jint off, jint scanLen,
+	jint width, jint height)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	sjme_scritchui_uiComponent choice;
+	sjme_pointer dataBuf;
+	jboolean isCopy;
+	sjme_jint dataLen;
+	
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	choice = (sjme_scritchui_uiComponent)choiceP;
+	
+	/* Check. */
+	if (state == NULL || choice == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+	
+	/* Get array data. */
+	dataBuf = NULL;
+	isCopy = JNI_FALSE;
+	dataLen = 0;
+	if (data != NULL)
+	{
+		dataLen = (*env)->GetArrayLength(env, data);
+		sjme_jni_arrayGetElements(env, data, &dataBuf, &isCopy,
+			NULL);
+	}
+	
+	/* Forward. */
+	if (sjme_error_is(error = state->api->choiceItemSetImage(
+		state, choice, atIndex,
+		dataBuf, 0, dataLen,
+		scanLen, width, height)))
+		sjme_jni_throwMLECallError(env, error);
+	
+	if (dataBuf != NULL)
+		sjme_jni_arrayReleaseElements(env, data, dataBuf);
+}
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__choiceSetSelected)(JNIEnv* env, jclass classy, jlong stateP,
+	jlong choiceP, jint atIndex, jboolean selected)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	sjme_scritchui_uiComponent choice;
+	
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	choice = (sjme_scritchui_uiComponent)choiceP;
+	
+	/* Check. */
+	if (state == NULL || choice == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+	
+	/* Forward. */
+	if (sjme_error_is(error = state->api->choiceItemSetSelected(
+		state, choice, atIndex, selected)))
+		sjme_jni_throwMLECallError(env, error);
+}
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__choiceSetString)(JNIEnv* env, jclass classy, jlong stateP,
+	jlong choiceP, jint atIndex, jstring string)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	sjme_scritchui_uiComponent choice;
+	sjme_lpcstr chars;
+	jboolean isCopy;
+	
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	choice = (sjme_scritchui_uiComponent)choiceP;
+	
+	/* Check. */
+	if (state == NULL || choice == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+	
+	/* Obtain characters. */
+	chars = NULL;
+	isCopy = JNI_FALSE;
+	if (string != NULL)
+		chars = (*env)->GetStringUTFChars(env, string, &isCopy);
+	
+	/* Forward. */
+	if (sjme_error_is(error = state->api->choiceItemSetString(
+		state, choice, atIndex, chars)))
+		sjme_jni_throwMLECallError(env, error);
+	
+	/* Cleanup. */
+	if (chars != NULL)
+		(*env)->ReleaseStringUTFChars(env, string, chars);
 }
 
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
@@ -2071,6 +2298,13 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 static const JNINativeMethod mleNativeScritchDylibMethods[] =
 {
 	FORWARD_list(NativeScritchDylib, __builtinFonts),
+	FORWARD_list(NativeScritchDylib, __choiceRemove),
+	FORWARD_list(NativeScritchDylib, __choiceRemoveAll),
+	FORWARD_list(NativeScritchDylib, __choiceInsert),
+	FORWARD_list(NativeScritchDylib, __choiceSetEnabled),
+	FORWARD_list(NativeScritchDylib, __choiceSetImage),
+	FORWARD_list(NativeScritchDylib, __choiceSetSelected),
+	FORWARD_list(NativeScritchDylib, __choiceSetString),
 	FORWARD_list(NativeScritchDylib, __componentHeight),
 	FORWARD_list(NativeScritchDylib, __componentRepaint),
 	FORWARD_list(NativeScritchDylib, __componentRevalidate),

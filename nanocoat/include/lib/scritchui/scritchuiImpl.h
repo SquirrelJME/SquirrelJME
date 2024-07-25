@@ -198,6 +198,24 @@ struct sjme_scritchui_implFunctions
 	/** Initialize implementation API instance. */
 	SJME_SCRITCHUI_QUICK_IMPL(apiInit);
 	
+	/** Inserts an item into the given choice. */
+	SJME_SCRITCHUI_QUICK_SAME(choiceItemInsert);
+	
+	/** Removes an item from the given choice. */
+	SJME_SCRITCHUI_QUICK_SAME(choiceItemRemove);
+	
+	/** Sets whether the given choice item is enabled. */
+	SJME_SCRITCHUI_QUICK_SAME(choiceItemSetEnabled);
+	
+	/** Sets the image of the given choice item. */
+	SJME_SCRITCHUI_QUICK_SAME(choiceItemSetImage);
+	
+	/** Sets whether the given choice item is selected. */
+	SJME_SCRITCHUI_QUICK_SAME(choiceItemSetSelected);
+	
+	/** Sets the string of the given choice item. */
+	SJME_SCRITCHUI_QUICK_SAME(choiceItemSetString);
+	
 	/** Repaint component. */
 	SJME_SCRITCHUI_QUICK_SAME(componentRepaint);
 	

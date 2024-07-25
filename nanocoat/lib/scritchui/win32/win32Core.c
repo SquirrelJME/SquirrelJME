@@ -13,6 +13,12 @@
 static const sjme_scritchui_implFunctions sjme_scritchui_win32Functions =
 {
 	.apiInit = NULL,
+	.choiceItemInsert = NULL,
+	.choiceItemRemove = NULL,
+	.choiceItemSetEnabled = NULL,
+	.choiceItemSetImage = NULL,
+	.choiceItemSetSelected = NULL,
+	.choiceItemSetString = NULL,
 	.componentRepaint = NULL,
 	.componentRevalidate = NULL,
 	.componentSetInputListener = NULL,

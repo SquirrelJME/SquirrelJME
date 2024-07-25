@@ -70,6 +70,110 @@ public final class NativeScritchDylib
 	static native PencilFontBracket[] __builtinFonts(long __stateP);
 	
 	/**
+	 * Inserts the item at the given index.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __choiceP The choice to modify.
+	 * @param __atIndex The index to insert at.
+	 * @throws MLECallError On null arguments; the choice is not valid; or
+	 * the index is not valid.
+	 * @since 2024/07/25
+	 */
+	static native int __choiceInsert(long __stateP, long __choiceP,
+		int __atIndex)
+		throws MLECallError;
+	
+	/**
+	 * Deletes the item at the given index.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __choiceP The choice to modify.
+	 * @param __atIndex The index to delete.
+	 * @throws MLECallError On null arguments; the choice is not valid; or
+	 * the index is not valid.
+	 * @since 2024/07/25
+	 */
+	static native void __choiceRemove(long __stateP, long __choiceP,
+		int __atIndex)
+		throws MLECallError;
+	
+	/**
+	 * Deletes all items from the choice.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __choiceP The choice to modify.
+	 * @throws MLECallError On null arguments; or the choice is not valid.
+	 * @since 2024/07/25
+	 */
+	static native void __choiceRemoveAll(long __stateP, long __choiceP)
+		throws MLECallError;
+	
+	/**
+	 * Sets whether the given index is enabled.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __choiceP The choice to modify.
+	 * @param __atIndex The index to modify.
+	 * @param __enabled If this is to be enabled or not.
+	 * @throws MLECallError On null arguments; the choice is not valid; or
+	 * the index is not valid.
+	 * @since 2024/07/25
+	 */
+	static native void __choiceSetEnabled(long __stateP, long __choiceP,
+		int __atIndex, boolean __enabled)
+		throws MLECallError;
+	
+	/**
+	 * Sets the image for the given index.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __choiceP The choice to modify.
+	 * @param __atIndex The index to modify.
+	 * @param __data The image data.
+	 * @param __off The offset into the data.
+	 * @param __scanLen The scanline length.
+	 * @param __width The image width.
+	 * @param __height The image height.
+	 * @throws MLECallError On null arguments; the choice is not valid; or
+	 * the index is not valid.
+	 * @since 2024/07/25
+	 */
+	static native void __choiceSetImage(long __stateP, long __choiceP,
+		int __atIndex, int[] __data, int __off, int __scanLen,
+		int __width, int __height)
+		throws MLECallError;
+	
+	/**
+	 * Sets whether the given item is selected.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __choiceP The choice to modify.
+	 * @param __atIndex The index to modify.
+	 * @param __selected If this is to be selected or not.
+	 * @throws MLECallError On null arguments; the choice is not valid; or
+	 * the index is not valid.
+	 * @since 2024/07/25
+	 */
+	static native void __choiceSetSelected(long __stateP, long __choiceP,
+		int __atIndex, boolean __selected)
+		throws MLECallError;
+	
+	/**
+	 * Sets the string for the given index.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __choiceP The choice to modify.
+	 * @param __atIndex The index to modify.
+	 * @param __string The string to set for the item.
+	 * @throws MLECallError On null arguments; the choice is not valid; or
+	 * the index is not valid.
+	 * @since 2024/07/25
+	 */
+	static native void __choiceSetString(long __stateP, long __choiceP,
+		int __atIndex, String __string)
+		throws MLECallError;
+	
+	/**
 	 * Returns the component height. 
 	 *
 	 * @param __stateP The state pointer.

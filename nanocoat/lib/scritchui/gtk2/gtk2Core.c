@@ -16,6 +16,12 @@
 static const sjme_scritchui_implFunctions sjme_scritchui_gtkFunctions =
 {
 	.apiInit = sjme_scritchui_gtk2_apiInit,
+	.choiceItemInsert = NULL,
+	.choiceItemRemove = NULL,
+	.choiceItemSetEnabled = NULL,
+	.choiceItemSetImage = NULL,
+	.choiceItemSetSelected = NULL,
+	.choiceItemSetString = NULL,
 	.componentRepaint = sjme_scritchui_gtk2_componentRepaint,
 	.componentRevalidate = sjme_scritchui_gtk2_componentRevalidate,
 	.componentSetInputListener = sjme_scritchui_gtk2_componentSetInputListener,

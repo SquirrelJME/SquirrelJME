@@ -12,7 +12,6 @@ package cc.squirreljme.emulator.scritchui.dylib;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchChoiceInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchChoiceBracket;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 
 /**
@@ -47,7 +46,11 @@ public class DylibChoiceInterface
 		int __atIndex)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__choice == null)
+			throw new MLECallError("Null arguments.");
+		
+		NativeScritchDylib.__choiceRemove(this.dyLib._stateP,
+			((DylibChoiceObject)__choice).objectPointer(), __atIndex);
 	}
 	
 	/**
@@ -58,7 +61,11 @@ public class DylibChoiceInterface
 	public void deleteAll(ScritchChoiceBracket __choice)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__choice == null)
+			throw new MLECallError("Null arguments.");
+		
+		NativeScritchDylib.__choiceRemoveAll(this.dyLib._stateP,
+			((DylibChoiceObject)__choice).objectPointer());
 	}
 	
 	/**
@@ -72,7 +79,11 @@ public class DylibChoiceInterface
 		int __atIndex)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__choice == null)
+			throw new MLECallError("Null arguments.");
+		
+		return NativeScritchDylib.__choiceInsert(this.dyLib._stateP,
+			((DylibChoiceObject)__choice).objectPointer(), __atIndex);
 	}
 	
 	/**
@@ -85,7 +96,12 @@ public class DylibChoiceInterface
 		boolean __enabled)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__choice == null)
+			throw new MLECallError("Null arguments.");
+		
+		NativeScritchDylib.__choiceSetEnabled(this.dyLib._stateP,
+			((DylibChoiceObject)__choice).objectPointer(), __atIndex,
+			__enabled);
 	}
 	
 	/**
@@ -102,7 +118,12 @@ public class DylibChoiceInterface
 		int __height)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__choice == null)
+			throw new MLECallError("Null arguments.");
+		
+		NativeScritchDylib.__choiceSetImage(this.dyLib._stateP,
+			((DylibChoiceObject)__choice).objectPointer(), __atIndex,
+			__data, __off, __scanLen, __width, __height);
 	}
 	
 	/**
@@ -115,7 +136,12 @@ public class DylibChoiceInterface
 		boolean __selected)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__choice == null)
+			throw new MLECallError("Null arguments.");
+		
+		NativeScritchDylib.__choiceSetSelected(this.dyLib._stateP,
+			((DylibChoiceObject)__choice).objectPointer(), __atIndex,
+			__selected);
 	}
 	
 	/**
@@ -128,6 +154,11 @@ public class DylibChoiceInterface
 		String __string)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__choice == null)
+			throw new MLECallError("Null arguments.");
+		
+		NativeScritchDylib.__choiceSetString(this.dyLib._stateP,
+			((DylibChoiceObject)__choice).objectPointer(), __atIndex,
+			__string);
 	}
 }

@@ -46,19 +46,45 @@ sjme_errorCode sjme_scritchui_core_choiceItemGet(
 sjme_errorCode sjme_scritchui_core_choiceItemInsert(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrInPositive sjme_jint atIndex,
-	sjme_attrInNotNull sjme_scritchui_uiChoiceItem inItemTemplate);
+	sjme_attrInOutNotNull sjme_jint* inOutIndex);
 
 sjme_errorCode sjme_scritchui_core_choiceItemRemove(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInPositive sjme_jint atIndex);
 
-sjme_errorCode sjme_scritchui_core_choiceItemSet(
+sjme_errorCode sjme_scritchui_core_choiceItemRemoveAll(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
+
+sjme_errorCode sjme_scritchui_core_choiceItemSetEnabled(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInPositive sjme_jint atIndex,
-	sjme_attrInNotNull sjme_scritchui_uiChoiceItem inItemTemplate);
+	sjme_attrInNotNull sjme_jboolean isEnabled);
+
+sjme_errorCode sjme_scritchui_core_choiceItemSetImage(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInPositive sjme_jint atIndex,
+	sjme_attrInNullable sjme_jint* inRgb,
+	sjme_attrInPositive sjme_jint inRgbOff,
+	sjme_attrInPositiveNonZero sjme_jint inRgbDataLen,
+	sjme_attrInPositiveNonZero sjme_jint inRgbScanLen,
+	sjme_attrInPositiveNonZero sjme_jint width,
+	sjme_attrInPositiveNonZero sjme_jint height);
+
+sjme_errorCode sjme_scritchui_core_choiceItemSetSelected(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInPositive sjme_jint atIndex,
+	sjme_attrInNotNull sjme_jboolean isSelected);
+
+sjme_errorCode sjme_scritchui_core_choiceItemSetString(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInPositive sjme_jint atIndex,
+	sjme_attrInNullable sjme_lpcstr inString);
 
 sjme_errorCode sjme_scritchui_core_choiceLength(
 	sjme_attrInNotNull sjme_scritchui inState,

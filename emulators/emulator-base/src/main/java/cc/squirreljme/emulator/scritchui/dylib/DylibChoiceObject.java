@@ -9,27 +9,15 @@
 
 package cc.squirreljme.emulator.scritchui.dylib;
 
-import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchListBracket;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
- * A {@link ScritchListBracket}.
+ * Dynamic library object for choices.
  *
- * @since 2024/04/06
+ * @since 2024/07/25
  */
-public class DylibListObject
-	extends DylibComponentObject
-	implements DylibChoiceObject, ScritchListBracket
+@SquirrelJMEVendorApi
+public interface DylibChoiceObject
+	extends DylibHasObjectPointer
 {
-	/**
-	 * Initializes the list object.
-	 *
-	 * @param __objectP The object pointer.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2024/07/17
-	 */
-	public DylibListObject(long __objectP)
-		throws NullPointerException
-	{
-		super(__objectP);
-	}
 }

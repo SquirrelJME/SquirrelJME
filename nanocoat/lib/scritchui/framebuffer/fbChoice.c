@@ -9,69 +9,56 @@
 
 #include <string.h>
 
-#include "lib/scritchui/core/core.h"
-#include "lib/scritchui/scritchuiTypes.h"
-#include "sjme/debug.h"
+#include "lib/scritchui/framebuffer/fb.h"
+#include "lib/scritchui/scritchui.h"
 
-sjme_errorCode sjme_scritchui_core_intern_getChoice(
+static sjme_errorCode sjme_scritchui_fb_choiceRefresh(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrInOutNotNull sjme_scritchui_uiChoice* outChoice)
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent)
 {
-	if (inState == NULL || inComponent == NULL || outChoice == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
+	sjme_scritchui wrappedState;
+	sjme_scritchui_uiComponent wrappedComponent;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Recover wrapped state. */
+	wrappedState = inState->wrappedState;
+	wrappedComponent =
+		inComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
+	
+	/* Request repaint for choice update. */
+	return wrappedState->api->componentRepaint(wrappedState,
+		wrappedComponent,
+		0, 0, INT32_MAX, INT32_MAX);
 }
 
-sjme_errorCode sjme_scritchui_core_choiceItemGet(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrInPositive sjme_jint atIndex,
-	sjme_attrOutNotNull sjme_scritchui_uiChoiceItem outItemTemplate)
-{
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
-}
-
-sjme_errorCode sjme_scritchui_core_choiceItemInsert(
+sjme_errorCode sjme_scritchui_fb_choiceItemInsert(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInOutNotNull sjme_jint* inOutIndex)
 {
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_scritchui_fb_choiceRefresh(inState, inComponent);
 }
 
-sjme_errorCode sjme_scritchui_core_choiceItemRemove(
+sjme_errorCode sjme_scritchui_fb_choiceItemRemove(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInPositive sjme_jint atIndex)
 {
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_scritchui_fb_choiceRefresh(inState, inComponent);
 }
 
-sjme_errorCode sjme_scritchui_core_choiceItemRemoveAll(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent)
-{
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
-}
-
-sjme_errorCode sjme_scritchui_core_choiceItemSetEnabled(
+sjme_errorCode sjme_scritchui_fb_choiceItemSetEnabled(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInPositive sjme_jint atIndex,
 	sjme_attrInNotNull sjme_jboolean isEnabled)
 {
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_scritchui_fb_choiceRefresh(inState, inComponent);
 }
 
-sjme_errorCode sjme_scritchui_core_choiceItemSetImage(
+sjme_errorCode sjme_scritchui_fb_choiceItemSetImage(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInPositive sjme_jint atIndex,
@@ -82,35 +69,23 @@ sjme_errorCode sjme_scritchui_core_choiceItemSetImage(
 	sjme_attrInPositiveNonZero sjme_jint width,
 	sjme_attrInPositiveNonZero sjme_jint height)
 {
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_scritchui_fb_choiceRefresh(inState, inComponent);
 }
 
-sjme_errorCode sjme_scritchui_core_choiceItemSetSelected(
+sjme_errorCode sjme_scritchui_fb_choiceItemSetSelected(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInPositive sjme_jint atIndex,
 	sjme_attrInNotNull sjme_jboolean isSelected)
 {
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_scritchui_fb_choiceRefresh(inState, inComponent);
 }
 
-sjme_errorCode sjme_scritchui_core_choiceItemSetString(
+sjme_errorCode sjme_scritchui_fb_choiceItemSetString(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInPositive sjme_jint atIndex,
 	sjme_attrInNullable sjme_lpcstr inString)
 {
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
-}
-
-sjme_errorCode sjme_scritchui_core_choiceLength(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrOutNotNull sjme_jint* outLength)
-{
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_scritchui_fb_choiceRefresh(inState, inComponent);
 }

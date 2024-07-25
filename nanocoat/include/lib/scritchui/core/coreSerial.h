@@ -49,8 +49,20 @@ typedef enum sjme_scritchui_serialType
 	/** @c choiceItemRemove . */
 	SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_ITEM_REMOVE,
 	
-	/** @c choiceItemSet . */
-	SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_ITEM_SET,
+	/** @c choiceItemRemoveAll . */
+	SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_ITEM_REMOVE_ALL,
+	
+	/** @c choiceItemSetEnabled . */
+	SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_ITEM_SET_ENABLED,
+	
+	/** @c choiceItemSetImage . */
+	SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_ITEM_SET_IMAGE,
+	
+	/** @c choiceItemSetSelected . */
+	SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_ITEM_SET_SELECTED,
+	
+	/** @c choiceItemSetString . */
+	SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_ITEM_SET_STRING,
 	
 	/** @c choiceLength . */
 	SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_LENGTH,
@@ -196,17 +208,39 @@ SUD_STRUCT_DEF(choiceItemGet,
 
 SUD_STRUCT_DEF(choiceItemInsert,
 	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
-	SDU_VAR(sjme_jint, atIndex);
-	SDU_VAR(sjme_scritchui_uiChoiceItem, inItemTemplate););
+	SDU_VARP(sjme_jint, inOutIndex););
 	
 SUD_STRUCT_DEF(choiceItemRemove,
 	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
 	SDU_VAR(sjme_jint, atIndex););
 	
-SUD_STRUCT_DEF(choiceItemSet,
+SUD_STRUCT_DEF(choiceItemRemoveAll,
+	SDU_VAR(sjme_scritchui_uiComponent, inComponent););
+	
+SUD_STRUCT_DEF(choiceItemSetEnabled,
 	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
 	SDU_VAR(sjme_jint, atIndex);
-	SDU_VAR(sjme_scritchui_uiChoiceItem, inItemTemplate););
+	SDU_VAR(sjme_jboolean, isEnabled););
+	
+SUD_STRUCT_DEF(choiceItemSetImage,
+	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
+	SDU_VAR(sjme_jint, atIndex);
+	SDU_VARP(sjme_jint*, inRgb);
+	SDU_VAR(sjme_jint, inRgbOff);
+	SDU_VAR(sjme_jint, inRgbDataLen);
+	SDU_VAR(sjme_jint, inRgbScanLen);
+	SDU_VAR(sjme_jint, width);
+	SDU_VAR(sjme_jint, height););
+	
+SUD_STRUCT_DEF(choiceItemSetSelected,
+	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
+	SDU_VAR(sjme_jint, atIndex);
+	SDU_VAR(sjme_jboolean, isSelected););
+	
+SUD_STRUCT_DEF(choiceItemSetString,
+	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
+	SDU_VAR(sjme_jint, atIndex);
+	SDU_VAR(sjme_lpcstr, inString););
 	
 SUD_STRUCT_DEF(choiceLength,
 	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
@@ -382,7 +416,11 @@ typedef union sjme_scritchui_serialDataUnion
 	SJME_SCRITCHUI_SDU_DEF(choiceItemGet);
 	SJME_SCRITCHUI_SDU_DEF(choiceItemInsert);
 	SJME_SCRITCHUI_SDU_DEF(choiceItemRemove);
-	SJME_SCRITCHUI_SDU_DEF(choiceItemSet);
+	SJME_SCRITCHUI_SDU_DEF(choiceItemRemoveAll);
+	SJME_SCRITCHUI_SDU_DEF(choiceItemSetEnabled);
+	SJME_SCRITCHUI_SDU_DEF(choiceItemSetImage);
+	SJME_SCRITCHUI_SDU_DEF(choiceItemSetSelected);
+	SJME_SCRITCHUI_SDU_DEF(choiceItemSetString);
 	SJME_SCRITCHUI_SDU_DEF(choiceLength);
 	SJME_SCRITCHUI_SDU_DEF(componentRepaint);
 	SJME_SCRITCHUI_SDU_DEF(componentRevalidate);
@@ -452,19 +490,45 @@ sjme_errorCode sjme_scritchui_coreSerial_choiceItemGet(
 sjme_errorCode sjme_scritchui_coreSerial_choiceItemInsert(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrInPositive sjme_jint atIndex,
-	sjme_attrInNotNull sjme_scritchui_uiChoiceItem inItemTemplate);
+	sjme_attrInOutNotNull sjme_jint* inOutIndex);
 
 sjme_errorCode sjme_scritchui_coreSerial_choiceItemRemove(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInPositive sjme_jint atIndex);
 
-sjme_errorCode sjme_scritchui_coreSerial_choiceItemSet(
+sjme_errorCode sjme_scritchui_coreSerial_choiceItemRemoveAll(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
+
+sjme_errorCode sjme_scritchui_coreSerial_choiceItemSetEnabled(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInPositive sjme_jint atIndex,
-	sjme_attrInNotNull sjme_scritchui_uiChoiceItem inItemTemplate);
+	sjme_attrInNotNull sjme_jboolean isEnabled);
+
+sjme_errorCode sjme_scritchui_coreSerial_choiceItemSetImage(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInPositive sjme_jint atIndex,
+	sjme_attrInNullable sjme_jint* inRgb,
+	sjme_attrInPositive sjme_jint inRgbOff,
+	sjme_attrInPositiveNonZero sjme_jint inRgbDataLen,
+	sjme_attrInPositiveNonZero sjme_jint inRgbScanLen,
+	sjme_attrInPositiveNonZero sjme_jint width,
+	sjme_attrInPositiveNonZero sjme_jint height);
+
+sjme_errorCode sjme_scritchui_coreSerial_choiceItemSetSelected(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInPositive sjme_jint atIndex,
+	sjme_attrInNotNull sjme_jboolean isSelected);
+
+sjme_errorCode sjme_scritchui_coreSerial_choiceItemSetString(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInPositive sjme_jint atIndex,
+	sjme_attrInNullable sjme_lpcstr inString);
 
 sjme_errorCode sjme_scritchui_coreSerial_choiceLength(
 	sjme_attrInNotNull sjme_scritchui inState,

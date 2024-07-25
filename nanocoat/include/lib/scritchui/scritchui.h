@@ -673,20 +673,19 @@ typedef sjme_errorCode (*sjme_scritchui_choiceItemGetFunc)(
 	sjme_attrOutNotNull sjme_scritchui_uiChoiceItem outItemTemplate);
 
 /**
- * Inserts the specified item template.
+ * Inserts a blank item at the given index.
  * 
  * @param inState The input state.
  * @param inComponent The choice to modify.
- * @param atIndex The index to insert at.
- * @param inItemTemplate The template to use when inserting the item.
+ * @param inOutIndex The input index to insert at, then resultant index
+ * where it was added.
  * @return Any resultant error, if any.
  * @since 2024/07/17
  */
 typedef sjme_errorCode (*sjme_scritchui_choiceItemInsertFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrInPositive sjme_jint atIndex,
-	sjme_attrInNotNull sjme_scritchui_uiChoiceItem inItemTemplate);
+	sjme_attrInOutNotNull sjme_jint* inOutIndex);
 
 /**
  * Removes the specified item at the given index.
@@ -703,20 +702,91 @@ typedef sjme_errorCode (*sjme_scritchui_choiceItemRemoveFunc)(
 	sjme_attrInPositive sjme_jint atIndex);
 	
 /**
- * Sets the specified item template.
+ * Removes all items from the given choice.
  * 
  * @param inState The input state.
  * @param inComponent The choice to modify.
- * @param atIndex The index to modify with the given template.
- * @param inItemTemplate The template to use when replacing the item.
  * @return Any resultant error, if any.
  * @since 2024/07/17
  */
-typedef sjme_errorCode (*sjme_scritchui_choiceItemSetFunc)(
+typedef sjme_errorCode (*sjme_scritchui_choiceItemRemoveAllFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
+	
+
+/**
+ * Sets whether the specified choice item is enabled.
+ * 
+ * @param inState The input state.
+ * @param inComponent The choice to modify.
+ * @param atIndex The index to modify.
+ * @param isEnabled If the item should be enabled.
+ * @return Any resultant error, if any.
+ * @since 2024/07/25
+ */
+typedef sjme_errorCode (*sjme_scritchui_choiceItemSetEnabledFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInPositive sjme_jint atIndex,
-	sjme_attrInNotNull sjme_scritchui_uiChoiceItem inItemTemplate);
+	sjme_attrInNotNull sjme_jboolean isEnabled);
+
+/**
+ * Sets the image of the specified choice item.
+ * 
+ * @param inState The input state.
+ * @param inComponent The choice to modify.
+ * @param atIndex The index to modify.
+ * @param inRgb The RGB data, may be @c NULL to clear the image.
+ * @param inRgbOff The offset in the RGB data.
+ * @param inRgbDataLen The data length of the RGB data.
+ * @param inRgbScanLen The scanline length of the RGB data.
+ * @param width The width of the image.
+ * @param height The height of the image.
+ * @return Any resultant error, if any.
+ * @since 2024/07/25
+ */
+typedef sjme_errorCode (*sjme_scritchui_choiceItemSetImageFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInPositive sjme_jint atIndex,
+	sjme_attrInNullable sjme_jint* inRgb,
+	sjme_attrInPositive sjme_jint inRgbOff,
+	sjme_attrInPositiveNonZero sjme_jint inRgbDataLen,
+	sjme_attrInPositiveNonZero sjme_jint inRgbScanLen,
+	sjme_attrInPositiveNonZero sjme_jint width,
+	sjme_attrInPositiveNonZero sjme_jint height);
+
+/**
+ * Sets whether the specified choice item is selected.
+ * 
+ * @param inState The input state.
+ * @param inComponent The choice to modify.
+ * @param atIndex The index to modify.
+ * @param isSelected If the item should be selected.
+ * @return Any resultant error, if any.
+ * @since 2024/07/25
+ */
+typedef sjme_errorCode (*sjme_scritchui_choiceItemSetSelectedFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInPositive sjme_jint atIndex,
+	sjme_attrInNotNull sjme_jboolean isSelected);
+
+/**
+ * Sets the string of the specified choice item.
+ * 
+ * @param inState The input state.
+ * @param inComponent The choice to modify.
+ * @param atIndex The index to modify.
+ * @param inString The string to set, @c NULL will clear it.
+ * @return Any resultant error, if any.
+ * @since 2024/07/25
+ */
+typedef sjme_errorCode (*sjme_scritchui_choiceItemSetStringFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInPositive sjme_jint atIndex,
+	sjme_attrInNullable sjme_lpcstr inString);
 
 /**
  * Returns the length of the choice list.
@@ -1297,8 +1367,20 @@ struct sjme_scritchui_apiFunctions
 	/** Removes an item from the given choice. */
 	SJME_SCRITCHUI_QUICK_API(choiceItemRemove);
 	
-	/** Sets the item at the given choice. */
-	SJME_SCRITCHUI_QUICK_API(choiceItemSet);
+	/** Removes all items from the given choice. */
+	SJME_SCRITCHUI_QUICK_API(choiceItemRemoveAll);
+	
+	/** Sets whether the given choice item is enabled. */
+	SJME_SCRITCHUI_QUICK_API(choiceItemSetEnabled);
+	
+	/** Sets the image of the given choice item. */
+	SJME_SCRITCHUI_QUICK_API(choiceItemSetImage);
+	
+	/** Sets whether the given choice item is selected. */
+	SJME_SCRITCHUI_QUICK_API(choiceItemSetSelected);
+	
+	/** Sets the string of the given choice item. */
+	SJME_SCRITCHUI_QUICK_API(choiceItemSetString);
 	
 	/** Gets the choice length. */
 	SJME_SCRITCHUI_QUICK_API(choiceLength);

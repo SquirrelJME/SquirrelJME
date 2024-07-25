@@ -17,6 +17,12 @@
 const sjme_scritchui_implFunctions sjme_scritchui_fbFunctions =
 {
 	.apiInit = sjme_scritchui_fb_apiInit,
+	.choiceItemInsert = sjme_scritchui_fb_choiceItemInsert,
+	.choiceItemRemove = sjme_scritchui_fb_choiceItemRemove,
+	.choiceItemSetEnabled = sjme_scritchui_fb_choiceItemSetEnabled,
+	.choiceItemSetImage = sjme_scritchui_fb_choiceItemSetImage,
+	.choiceItemSetSelected = sjme_scritchui_fb_choiceItemSetSelected,
+	.choiceItemSetString = sjme_scritchui_fb_choiceItemSetString,
 	.componentRepaint = sjme_scritchui_fb_componentRepaint,
 	.componentRevalidate = sjme_scritchui_fb_componentRevalidate,
 	.componentSetInputListener = sjme_scritchui_fb_componentSetInputListener,

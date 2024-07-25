@@ -125,7 +125,11 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 		SJME_SCRITCHUI_DISPATCH_DECL(choiceItemGet);
 		SJME_SCRITCHUI_DISPATCH_DECL(choiceItemInsert);
 		SJME_SCRITCHUI_DISPATCH_DECL(choiceItemRemove);
-		SJME_SCRITCHUI_DISPATCH_DECL(choiceItemSet);
+		SJME_SCRITCHUI_DISPATCH_DECL(choiceItemRemoveAll);
+		SJME_SCRITCHUI_DISPATCH_DECL(choiceItemSetEnabled);
+		SJME_SCRITCHUI_DISPATCH_DECL(choiceItemSetImage);
+		SJME_SCRITCHUI_DISPATCH_DECL(choiceItemSetSelected);
+		SJME_SCRITCHUI_DISPATCH_DECL(choiceItemSetString);
 		SJME_SCRITCHUI_DISPATCH_DECL(choiceLength);
 		SJME_SCRITCHUI_DISPATCH_DECL(componentSetActivateListener);
 		SJME_SCRITCHUI_DISPATCH_DECL(componentSetValueUpdateListener);
@@ -191,8 +195,7 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_ITEM_INSERT,
 		(state,
 		as.choiceItemInsert->inComponent,
-		as.choiceItemInsert->atIndex,
-		as.choiceItemInsert->inItemTemplate));
+		as.choiceItemInsert->inOutIndex));
 		
 	SJME_SCRITCHUI_DISPATCH_CASE(choiceItemRemove,
 		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_ITEM_REMOVE,
@@ -200,12 +203,43 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 		as.choiceItemRemove->inComponent,
 		as.choiceItemRemove->atIndex));
 		
-	SJME_SCRITCHUI_DISPATCH_CASE(choiceItemSet,
-		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_ITEM_SET,
+	SJME_SCRITCHUI_DISPATCH_CASE(choiceItemRemoveAll,
+		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_ITEM_REMOVE_ALL,
 		(state,
-		as.choiceItemSet->inComponent,
-		as.choiceItemSet->atIndex,
-		as.choiceItemSet->inItemTemplate));
+		as.choiceItemRemoveAll->inComponent));
+		
+	SJME_SCRITCHUI_DISPATCH_CASE(choiceItemSetEnabled,
+		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_ITEM_SET_ENABLED,
+		(state,
+		as.choiceItemSetEnabled->inComponent,
+		as.choiceItemSetEnabled->atIndex,
+		as.choiceItemSetEnabled->isEnabled));
+		
+	SJME_SCRITCHUI_DISPATCH_CASE(choiceItemSetImage,
+		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_ITEM_SET_IMAGE,
+		(state,
+		as.choiceItemSetImage->inComponent,
+		as.choiceItemSetImage->atIndex,
+		as.choiceItemSetImage->inRgb,
+		as.choiceItemSetImage->inRgbOff,
+		as.choiceItemSetImage->inRgbDataLen,
+		as.choiceItemSetImage->inRgbScanLen,
+		as.choiceItemSetImage->width,
+		as.choiceItemSetImage->height));
+		
+	SJME_SCRITCHUI_DISPATCH_CASE(choiceItemSetSelected,
+		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_ITEM_SET_SELECTED,
+		(state,
+		as.choiceItemSetSelected->inComponent,
+		as.choiceItemSetSelected->atIndex,
+		as.choiceItemSetSelected->isSelected));
+		
+	SJME_SCRITCHUI_DISPATCH_CASE(choiceItemSetString,
+		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_ITEM_SET_STRING,
+		(state,
+		as.choiceItemSetString->inComponent,
+		as.choiceItemSetString->atIndex,
+		as.choiceItemSetString->inString));
 		
 	SJME_SCRITCHUI_DISPATCH_CASE(choiceLength,
 		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_LENGTH,
@@ -475,16 +509,14 @@ sjme_errorCode sjme_scritchui_coreSerial_choiceItemGet(
 sjme_errorCode sjme_scritchui_coreSerial_choiceItemInsert(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrInPositive sjme_jint atIndex,
-	sjme_attrInNotNull sjme_scritchui_uiChoiceItem inItemTemplate)
+	sjme_attrInOutNotNull sjme_jint* inOutIndex)
 {
 	SJME_SCRITCHUI_SERIAL_CHUNK(choiceItemInsert,
 		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_ITEM_INSERT,
-		(inState, inComponent, atIndex, inItemTemplate));
+		(inState, inComponent, inOutIndex));
 		
 	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
-	SJME_SCRITCHUI_SERIAL_PASS(atIndex);
-	SJME_SCRITCHUI_SERIAL_PASS(inItemTemplate);
+	SJME_SCRITCHUI_SERIAL_PASS(inOutIndex);
 	
 	/* Invoke and wait. */
 	SJME_SCRITCHUI_INVOKE_WAIT;
@@ -506,19 +538,98 @@ sjme_errorCode sjme_scritchui_coreSerial_choiceItemRemove(
 	SJME_SCRITCHUI_INVOKE_WAIT;
 }
 
-sjme_errorCode sjme_scritchui_coreSerial_choiceItemSet(
+sjme_errorCode sjme_scritchui_coreSerial_choiceItemRemoveAll(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent)
+{
+	SJME_SCRITCHUI_SERIAL_CHUNK(choiceItemRemoveAll,
+		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_ITEM_REMOVE_ALL,
+		(inState, inComponent));
+		
+	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
+}
+
+sjme_errorCode sjme_scritchui_coreSerial_choiceItemSetEnabled(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInPositive sjme_jint atIndex,
-	sjme_attrInNotNull sjme_scritchui_uiChoiceItem inItemTemplate)
+	sjme_attrInNotNull sjme_jboolean isEnabled)
 {
-	SJME_SCRITCHUI_SERIAL_CHUNK(choiceItemSet,
-		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_ITEM_SET,
-		(inState, inComponent, atIndex, inItemTemplate));
+	SJME_SCRITCHUI_SERIAL_CHUNK(choiceItemSetEnabled,
+		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_ITEM_SET_ENABLED,
+		(inState, inComponent, atIndex, isEnabled));
 		
 	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
 	SJME_SCRITCHUI_SERIAL_PASS(atIndex);
-	SJME_SCRITCHUI_SERIAL_PASS(inItemTemplate);
+	SJME_SCRITCHUI_SERIAL_PASS(isEnabled);
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
+}
+
+sjme_errorCode sjme_scritchui_coreSerial_choiceItemSetImage(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInPositive sjme_jint atIndex,
+	sjme_attrInNullable sjme_jint* inRgb,
+	sjme_attrInPositive sjme_jint inRgbOff,
+	sjme_attrInPositiveNonZero sjme_jint inRgbDataLen,
+	sjme_attrInPositiveNonZero sjme_jint inRgbScanLen,
+	sjme_attrInPositiveNonZero sjme_jint width,
+	sjme_attrInPositiveNonZero sjme_jint height)
+{
+	SJME_SCRITCHUI_SERIAL_CHUNK(choiceItemSetImage,
+		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_ITEM_SET_IMAGE,
+		(inState, inComponent, atIndex, inRgb, inRgbOff, inRgbDataLen,
+			inRgbScanLen, width, height));
+		
+	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
+	SJME_SCRITCHUI_SERIAL_PASS(atIndex);
+	SJME_SCRITCHUI_SERIAL_PASS(inRgb);
+	SJME_SCRITCHUI_SERIAL_PASS(inRgbOff);
+	SJME_SCRITCHUI_SERIAL_PASS(inRgbDataLen);
+	SJME_SCRITCHUI_SERIAL_PASS(inRgbScanLen);
+	SJME_SCRITCHUI_SERIAL_PASS(width);
+	SJME_SCRITCHUI_SERIAL_PASS(height);
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
+}
+
+sjme_errorCode sjme_scritchui_coreSerial_choiceItemSetSelected(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInPositive sjme_jint atIndex,
+	sjme_attrInNotNull sjme_jboolean isSelected)
+{
+	SJME_SCRITCHUI_SERIAL_CHUNK(choiceItemSetSelected,
+		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_ITEM_SET_SELECTED,
+		(inState, inComponent, atIndex, isSelected));
+		
+	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
+	SJME_SCRITCHUI_SERIAL_PASS(atIndex);
+	SJME_SCRITCHUI_SERIAL_PASS(isSelected);
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
+}
+
+sjme_errorCode sjme_scritchui_coreSerial_choiceItemSetString(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInPositive sjme_jint atIndex,
+	sjme_attrInNullable sjme_lpcstr inString)
+{
+	SJME_SCRITCHUI_SERIAL_CHUNK(choiceItemSetString,
+		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_ITEM_SET_STRING,
+		(inState, inComponent, atIndex, inString));
+		
+	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
+	SJME_SCRITCHUI_SERIAL_PASS(atIndex);
+	SJME_SCRITCHUI_SERIAL_PASS(inString);
 	
 	/* Invoke and wait. */
 	SJME_SCRITCHUI_INVOKE_WAIT;
