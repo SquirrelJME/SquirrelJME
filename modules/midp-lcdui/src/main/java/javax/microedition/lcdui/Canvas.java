@@ -813,8 +813,6 @@ public abstract class Canvas
 		
 		// Set new mode
 		this._isFullScreen = __f;
-		
-		throw Debugging.todo();
 	}
 	
 	/**
