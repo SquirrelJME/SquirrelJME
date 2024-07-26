@@ -22,6 +22,8 @@ static sjme_errorCode sjme_scritchui_fb_selLock(
 	
 	/* Just directly set the buffer. */
 	g->lockState.base = g->lockState.source.wrapper;
+	g->lockState.baseLimitBytes = (sjme_jint)(
+		(sjme_intPointer)g->lockState.source.data);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -127,6 +129,8 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 		
 		/* Setup front end to point to the buffer. */
 		memset(&sgFrontEnd, 0, sizeof(sgFrontEnd));
+		sgFrontEnd.data = (sjme_pointer)
+			((sjme_intPointer)cT * sizeof(sjme_jint));
 		sgFrontEnd.wrapper = wState->selBuf;
 		
 		/* Wrap a pencil over the selection buffer. */

@@ -39,6 +39,9 @@ static sjme_errorCode sjme_scritchui_fb_list_draw(
 	inState = wrappedComponent->common.frontEnd.data;
 	inComponent = wrappedComponent->common.frontEnd.wrapper;
 	
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	/* Recover choice. */
 	choice = NULL;
 	if (sjme_error_is(error = inState->intern->getChoice(inState,
@@ -134,10 +137,62 @@ static sjme_errorCode sjme_scritchui_fb_list_draw(
 }
 
 static sjme_errorCode sjme_scritchui_fb_list_input(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNotNull sjme_scritchui wrappedState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent wrappedComponent,
 	sjme_attrInNotNull const sjme_scritchinput_event* inEvent)
 {
+	sjme_scritchui inState;
+	sjme_scritchui_uiComponent inComponent;
+	sjme_scritchui_fb_widgetState* wState;
+	sjme_jint pX, pY, selId;
+	
+	if (wrappedState == NULL || wrappedComponent == NULL || inEvent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Get owning state and component. */
+	inState = wrappedComponent->common.frontEnd.data;
+	inComponent = wrappedComponent->common.frontEnd.wrapper;
+	
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover the widget state for this lightweight component. */
+	/* If there is no state yet, then we never rendered this widget. */
+	wState = inComponent->common.handle[SJME_SUI_FB_H_WSTATE];
+	if (wState == NULL)
+		return SJME_ERROR_NONE;
+	
+	/* Pointer event? */
+	if (inEvent->type == SJME_SCRITCHINPUT_TYPE_MOUSE_BUTTON_PRESSED ||
+		inEvent->type == SJME_SCRITCHINPUT_TYPE_TOUCH_FINGER_PRESSED ||
+		inEvent->type == SJME_SCRITCHINPUT_TYPE_STYLUS_PEN_PRESSED)
+	{
+		/* If there is no selection buffer, we cannot handle press events */
+		/* as we have no idea what we even clicked on. */
+		if (wState->selBuf == NULL)
+			return SJME_ERROR_NONE;
+		
+		/* Recover pointer coordinates. */
+		pX = inEvent->data.mouseButton.x;
+		pY = inEvent->data.mouseButton.y;
+		
+		/* Outside the buffer edge? */
+		if (pX < 0 || pY < 0 ||
+			pX >= wState->selBufWidth || pY >= wState->selBufHeight)
+			return SJME_ERROR_NONE;
+		
+		/* Read the selection id here. */
+		selId = wState->selBuf[(pY * wState->selBufWidth) + pX] & 0xFFFFFF;
+		
+		/* Was there something here? */
+		if (selId != 0)
+			sjme_message("Select %d at (%d, %d)", selId, pX, pY);
+		
+		/* Success! */
+		return SJME_ERROR_NONE;
+	}
+	
+	/* Success! */
 	return SJME_ERROR_NONE;
 }
 
