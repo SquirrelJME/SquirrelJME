@@ -32,6 +32,27 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 /**
+ * Widget state and interactions accordingly.
+ */
+typedef struct sjme_scritchui_fb_widgetState
+{
+	/** The currently focused sub-item. */
+	sjme_jint subFocusIndex;
+	
+	/** Selection buffer, for pointer interaction. */
+	sjme_jint* selBuf;
+	
+	/** The length of the selection buffer. */
+	sjme_jint selBufLen;
+	
+	/** The selection buffer width. */
+	sjme_jint selBufWidth;
+	
+	/** The selection buffer height. */
+	sjme_jint selBufHeight;
+} sjme_scritchui_fb_widgetState;
+
+/**
  * A type of entry within a display list.
  * 
  * @since 2024/07/26
@@ -104,6 +125,9 @@ typedef struct sjme_scritchui_fb_displayList
 	/** The bounds to use for this item. */
 	sjme_scritchui_rect bound;
 	
+	/** The selection item, used for mouse actions. */
+	sjme_jint selection;
+	
 	/** The display list entry data. */
 	union
 	{
@@ -125,6 +149,7 @@ typedef struct sjme_scritchui_fb_displayShaders
  * Renders the given display list.
  * 
  * @param inState The input state.
+ * @param inComponent Optional component being drawn, used for selections.
  * @param g The pencil to draw with.
  * @param dlFull The display list to draw.
  * @param dlCount The size of the display list.
@@ -135,6 +160,7 @@ typedef struct sjme_scritchui_fb_displayShaders
  */
 typedef sjme_errorCode (*sjme_scritchui_fb_intern_renderFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNullable sjme_scritchui_uiComponent inComponent,
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNull const sjme_scritchui_fb_displayList* dlFull,
 	sjme_attrInPositive sjme_jint dlCount,
@@ -174,6 +200,7 @@ struct sjme_scritchui_implInternFunctions
 
 sjme_errorCode sjme_scritchui_fb_intern_render(
 	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNullable sjme_scritchui_uiComponent inComponent,
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNull const sjme_scritchui_fb_displayList* dlFull,
 	sjme_attrInPositive sjme_jint dlCount,

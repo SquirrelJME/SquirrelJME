@@ -100,6 +100,7 @@ static const sjme_scritchui_pencilFunctions sjme_scritchpen_core_functions =
 	.setClip = sjme_scritchpen_core_setClip,
 	.setDefaultFont = sjme_scritchpen_core_setDefaultFont,
 	.setFont = sjme_scritchpen_core_setFont,
+	.setParametersFrom = sjme_scritchpen_core_setParametersFrom,
 	.setStrokeStyle = sjme_scritchpen_core_setStrokeStyle,
 	.translate = sjme_scritchpen_core_translate,
 };

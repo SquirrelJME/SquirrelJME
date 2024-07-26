@@ -338,7 +338,11 @@ sjme_errorCode sjme_scritchpen_core_setStrokeStyle(
 sjme_errorCode sjme_scritchpen_core_setFont(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNull sjme_scritchui_pencilFont font);
-	
+
+sjme_errorCode sjme_scritchpen_core_setParametersFrom(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInNotNull sjme_scritchui_pencil from);
+
 sjme_errorCode sjme_scritchpen_core_translate(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,

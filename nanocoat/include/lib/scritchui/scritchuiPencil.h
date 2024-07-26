@@ -859,6 +859,18 @@ typedef sjme_errorCode (*sjme_scritchui_pencilSetFontFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencilFont font);
 
 /**
+ * Copies the parameters from the other pencil to this one.
+ *
+ * @param g The graphics used.
+ * @param from The pencil to copy the parameters from.
+ * @return An error if the graphics is not valid.
+ * @since 2024/07/26
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilSetParametersFromFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInNotNull sjme_scritchui_pencil from);
+
+/**
  * Sets the stroke style for the hardware graphics.
  * 
  * @param g The hardware graphics to draw with.
@@ -949,6 +961,9 @@ typedef struct sjme_scritchui_pencilFunctions
 	
 	/** @c SetFont . */
 	SJME_SCRITCHUI_QUICK_PENCIL(SetFont, setFont);
+	
+	/** @c SetParametersFrom . */
+	SJME_SCRITCHUI_QUICK_PENCIL(SetParametersFrom, setParametersFrom);
 	
 	/** @c SetStrokeStyle . */
 	SJME_SCRITCHUI_QUICK_PENCIL(SetStrokeStyle, setStrokeStyle);

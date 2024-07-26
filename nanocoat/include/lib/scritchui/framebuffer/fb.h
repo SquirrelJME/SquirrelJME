@@ -41,6 +41,9 @@ extern const sjme_scritchui_implFunctions sjme_scritchui_fbFunctions;
 /** The handle for wrapped items. */
 #define SJME_SUI_FB_H_WRAPPED 0
 
+/** The handle for non-wrapped widget state. */
+#define SJME_SUI_FB_H_WSTATE 1
+
 sjme_errorCode sjme_scritchui_fb_apiInit(
 	sjme_attrInNotNull sjme_scritchui inState);
 

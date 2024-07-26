@@ -601,6 +601,47 @@ sjme_errorCode sjme_scritchpen_core_setDefaultFont(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_scritchpen_core_setParametersFrom(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInNotNull sjme_scritchui_pencil from)
+{
+	sjme_errorCode error;
+	
+	if (g == NULL || from == NULL)
+		return SJME_ERROR_NONE;
+	
+	/* Initially successful. */
+	error = SJME_ERROR_NONE;
+	
+	/* Copy all basic parameters. */
+	error |= g->api->setAlphaColor(g, from->state.color.argb);
+	error |= g->api->setClip(g, from->state.clip.s.x, from->state.clip.s.y,
+		from->state.clip.d.width, from->state.clip.d.height);
+	error |= g->api->setStrokeStyle(g, from->state.stroke);
+	
+	/* We can only copy the blending mode if we have alpha support. */
+	if (!g->hasAlpha)
+		error |= g->api->setBlendingMode(g,
+			SJME_SCRITCHUI_PENCIL_BLEND_SRC_OVER);
+	else
+		error |= g->api->setBlendingMode(g, from->state.blending);
+	
+	/* If the other has no font, then just set the default. */
+	if (from->state.font == NULL)
+		error |= g->api->setDefaultFont(g);
+	else
+		error |= g->api->setFont(g, from->state.font);
+	
+	/* Re-translate to target coordinate system. */
+	error |= g->api->translate(g,
+		-g->state.translate.x, -g->state.translate.y);
+	error |= g->api->translate(g,
+		from->state.translate.x, from->state.translate.y);
+	
+	/* Any resultant error? */
+	return error;
+}
+
 sjme_errorCode sjme_scritchpen_core_setStrokeStyle(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_PENCIL_STROKES)

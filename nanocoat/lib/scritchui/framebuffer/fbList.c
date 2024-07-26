@@ -94,6 +94,9 @@ static sjme_errorCode sjme_scritchui_fb_list_draw(
 		dlAt->bound.d.width = cW;
 		dlAt->bound.d.height = fontHeight;
 		
+		/* Selection box for index. */
+		dlAt->selection = i + 1;
+		
 		/* Is this selected? */
 		if (choiceItem->isSelected)
 			dlAt->mod |= SJME_SCRITCHUI_FB_DL_TYPE_MOD_SELECTED;
@@ -146,12 +149,22 @@ sjme_errorCode sjme_scritchui_fb_listNew(
 	sjme_errorCode error;
 	sjme_scritchui wrappedState;
 	sjme_scritchui_uiPanel wrappedPanel;
+	sjme_scritchui_fb_widgetState* wState;
 	
 	if (inState == NULL || inList == NULL || init == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
+	
+	/* Widget state for interactions. */
+	wState = NULL;
+	if (sjme_error_is(error = sjme_alloc(inState->pool,
+		sizeof(*wState), &wState)) || wState == NULL)
+		return sjme_error_default(error);
+	
+	/* Store in state. */
+	inList->component.common.handle[SJME_SUI_FB_H_WSTATE] = wState;
 	
 	/* Setup wrapped panel to draw all of our list items on. */
 	wrappedPanel = NULL;
