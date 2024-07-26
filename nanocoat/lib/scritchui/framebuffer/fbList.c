@@ -12,16 +12,30 @@
 #include "lib/scritchui/scritchuiTypes.h"
 
 static sjme_errorCode sjme_scritchui_fb_list_draw(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNotNull sjme_scritchui wrappedState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent wrappedComponent,
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint sw,
 	sjme_attrInPositive sjme_jint sh,
 	sjme_attrInValue sjme_jint special)
 {
-	sjme_message("sjme_scritchui_fb_list_draw(%d, %d <> %d, %d)",
-		g->state.clipLine.s.x, g->state.clipLine.s.y,
-		g->state.clipLine.e.x, g->state.clipLine.e.y);
+	sjme_errorCode error;
+	sjme_scritchui inState;
+	sjme_scritchui_uiComponent inComponent;
+	sjme_scritchui_uiChoice choice;
+	
+	if (wrappedState == NULL || wrappedComponent == NULL || g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Get owning state and component. */
+	inState = wrappedComponent->common.frontEnd.data;
+	inComponent = wrappedComponent->common.frontEnd.wrapper;
+	
+	/* Recover choice. */
+	choice = NULL;
+	if (sjme_error_is(error = inState->intern->getChoice(inState,
+		inComponent, &choice)) || choice == NULL)
+		return sjme_error_default(error);
 	
 	g->api->setAlphaColor(g, 0xFF000000);
 	g->api->drawHoriz(g, 2, 3, 4);
