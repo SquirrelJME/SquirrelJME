@@ -19,6 +19,12 @@ static sjme_errorCode sjme_scritchui_fb_list_draw(
 	sjme_attrInPositive sjme_jint sh,
 	sjme_attrInValue sjme_jint special)
 {
+	sjme_message("sjme_scritchui_fb_list_draw(%d, %d <> %d, %d)",
+		g->state.clipLine.s.x, g->state.clipLine.s.y,
+		g->state.clipLine.e.x, g->state.clipLine.e.y);
+	
+	g->api->setAlphaColor(g, 0xFF000000);
+	g->api->drawHoriz(g, 2, 3, 4);
 	g->api->drawPixel(g, 4, 4);
 	
 	return SJME_ERROR_NONE;

@@ -189,4 +189,56 @@ public final class ChoiceManager
 			throw __e.throwDistinct();
 		}
 	}
+	
+	/**
+	 * Sets whether the given item is enabled.
+	 *
+	 * @param __atIndex The index to set.
+	 * @param __enabled If the item should be enabled.
+	 * @throws IndexOutOfBoundsException If the index is not within the
+	 * list bounds.
+	 * @since 2024/07/25
+	 */
+	public void setEnabled(int __atIndex, boolean __enabled)
+		throws IndexOutOfBoundsException
+	{
+		if (__atIndex < 0)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		try
+		{
+			this.scritchApi.choice().setEnabled(this._widget, __atIndex,
+				__enabled);
+		}
+		catch (MLECallError __e)
+		{
+			throw __e.throwDistinct();
+		}
+	}
+	
+	/**
+	 * Sets whether the given item is selected.
+	 *
+	 * @param __atIndex The index to set.
+	 * @param __selected If the item should be selected.
+	 * @throws IndexOutOfBoundsException If the index is not within the
+	 * list bounds.
+	 * @since 2024/07/25
+	 */
+	public void setSelected(int __atIndex, boolean __selected)
+		throws IndexOutOfBoundsException
+	{
+		if (__atIndex < 0)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		try
+		{
+			this.scritchApi.choice().setSelected(this._widget, __atIndex,
+				__selected);
+		}
+		catch (MLECallError __e)
+		{
+			throw __e.throwDistinct();
+		}
+	}
 }

@@ -169,7 +169,7 @@ public interface Choice
 		throws IllegalArgumentException, NullPointerException;
 	
 	@Api
-	void setSelectedIndex(int __a, boolean __b);
+	void setSelectedIndex(int __atIndex, boolean __selected);
 	
 	@Api
 	int size();

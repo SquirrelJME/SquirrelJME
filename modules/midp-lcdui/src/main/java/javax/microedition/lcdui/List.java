@@ -331,11 +331,7 @@ public class List
 	public void setEnabled(int __atIndex, boolean __enabled)
 		throws IndexOutOfBoundsException
 	{
-		throw Debugging.todo();
-		/*
 		this._choices.setEnabled(__atIndex, __enabled);
-		
-		 */
 	}
 	
 	@Override
@@ -356,8 +352,9 @@ public class List
 	public void setFont(int __i, Font __f)
 		throws IndexOutOfBoundsException
 	{
-		throw Debugging.todo();
+		Debugging.todoNote("Impl setFont()?");
 		/*
+		throw Debugging.todo();
 		this._items.get(__i)._font = __f;
 		
 		// Update display
@@ -431,14 +428,10 @@ public class List
 	 * @since 2018/12/09
 	 */
 	@Override
-	public void setSelectedIndex(int __i, boolean __e)
+	public void setSelectedIndex(int __atIndex, boolean __selected)
 		throws IndexOutOfBoundsException
 	{
-		throw Debugging.todo();
-		/*
-		__Utils__.__setSelectedIndex(this, this._type, __i, __e);
-		
-		 */
+		this._choices.setSelected(__atIndex, __selected);
 	}
 	
 	/**

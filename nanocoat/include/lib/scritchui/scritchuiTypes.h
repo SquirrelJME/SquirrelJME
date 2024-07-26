@@ -275,7 +275,7 @@ typedef struct sjme_scritchui_uiChoiceItemBase
 } sjme_scritchui_uiChoiceItemBase;
 
 /** A list of choice items. */
-SJME_LIST_DECLARE(sjme_scritchui_uiChoiceItemBase, 0);
+SJME_LIST_DECLARE(sjme_scritchui_uiChoiceItem, 0);
 
 /**
  * Contains all of the information on choice items.
@@ -291,7 +291,7 @@ typedef struct sjme_scritchui_uiChoiceBase
 	sjme_jint numItems;
 	
 	/** The items on this list. */
-	sjme_list_sjme_scritchui_uiChoiceItemBase* items;
+	sjme_list_sjme_scritchui_uiChoiceItem* items;
 } sjme_scritchui_uiChoiceBase;
 
 /**

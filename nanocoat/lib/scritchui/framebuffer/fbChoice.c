@@ -16,6 +16,7 @@ static sjme_errorCode sjme_scritchui_fb_choiceRefresh(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent)
 {
+	sjme_errorCode error;
 	sjme_scritchui wrappedState;
 	sjme_scritchui_uiComponent wrappedComponent;
 	
@@ -28,6 +29,9 @@ static sjme_errorCode sjme_scritchui_fb_choiceRefresh(
 		inComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
 	
 	/* Request repaint for choice update. */
+	if (sjme_error_is(error = wrappedState->api->componentRevalidate(
+		wrappedState, wrappedComponent)))
+		return sjme_error_default(error);
 	return wrappedState->api->componentRepaint(wrappedState,
 		wrappedComponent,
 		0, 0, INT32_MAX, INT32_MAX);

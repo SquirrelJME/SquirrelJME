@@ -13,6 +13,46 @@
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/debug.h"
 
+static sjme_errorCode sjme_scritchui_core_choiceCalculate(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_list_sjme_scritchui_uiChoiceItem* items)
+{
+	if (inState == NULL || items == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_scritchui_core_choiceItem(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInPositive sjme_jint atIndex,
+	sjme_attrOutNotNull sjme_scritchui_uiChoice* outChoice,
+	sjme_attrOutNotNull sjme_scritchui_uiChoiceItem* outChoiceItem)
+{
+	sjme_errorCode error;
+	sjme_scritchui_uiChoice choice;
+	
+	if (inState == NULL || inComponent == NULL || outChoice == NULL ||
+		outChoiceItem == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover choice. */
+	choice = NULL;
+	if (sjme_error_is(error = inState->intern->getChoice(inState,
+		inComponent, &choice)) || choice == NULL)
+		return sjme_error_default(error);
+	
+	/* Check bounds. */
+	if (atIndex < 0 || atIndex >= choice->numItems)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Success! */
+	*outChoice = choice;
+	*outChoiceItem = choice->items->elements[atIndex];
+	return SJME_ERROR_NONE; 
+}
+
 sjme_errorCode sjme_scritchui_core_intern_getChoice(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
@@ -65,7 +105,7 @@ sjme_errorCode sjme_scritchui_core_choiceItemGet(
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	/* Copy entire template over. */
-	memmove(outItemTemplate, &choice->items->elements[atIndex],
+	memmove(outItemTemplate, choice->items->elements[atIndex],
 		sizeof(*outItemTemplate));
 	
 	/* Success! */
@@ -79,7 +119,10 @@ sjme_errorCode sjme_scritchui_core_choiceItemInsert(
 {
 	sjme_errorCode error;
 	sjme_scritchui_uiChoice choice;
-	sjme_jint atIndex;
+	sjme_scritchui_uiChoiceItem inject;
+	sjme_list_sjme_scritchui_uiChoiceItem* choiceItems;
+	sjme_list_sjme_scritchui_uiChoiceItem* newItems;
+	sjme_jint atIndex, i, o, n;
 	
 	if (inState == NULL || inComponent == NULL || inOutIndex == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -99,8 +142,74 @@ sjme_errorCode sjme_scritchui_core_choiceItemInsert(
 	if (atIndex < 0 || atIndex > choice->numItems)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Allocate item to be injected. */
+	inject = NULL;
+	if (sjme_error_is(error = sjme_alloc(inState->pool,
+		sizeof(*inject), &inject)) || inject == NULL)
+		goto fail_injectAlloc;
+	
+	/* The number of items. */
+	n = choice->numItems;
+	
+	/* Need room in the list, to inject at? */
+	choiceItems = choice->items;
+	newItems = NULL;
+	if (choiceItems == NULL || (n + 1) > choiceItems->length)
+	{
+		/* Allocate new list. */
+		if (sjme_error_is(error = sjme_list_alloc(inState->pool,
+			n + 1, &newItems, sjme_scritchui_uiChoiceItem, 0)) ||
+			newItems == NULL)
+			goto fail_newItemsAlloc;
+		
+		/* Copy everything over and cleanup. */
+		if (choiceItems != NULL)
+		{
+			/* Copy */
+			for (i = 0; i < n; i++)
+				newItems->elements[i] = choiceItems->elements[i];
+		
+			/* Use this list instead. */
+			choice->items = newItems;
+			
+			/* Delete the old list. */
+			if (sjme_error_is(error = sjme_alloc_free(
+				choiceItems)))
+				goto fail_freeOld;
+		}
+		
+		/* Use this list instead. */
+		else
+			choice->items = newItems;
+		
+		/* Re-reference list used. */
+		choiceItems = newItems;
+		newItems = NULL;
+	}
+	
+	/* Move items up at insertion point. */
+	for (i = atIndex, o = atIndex + 1; i < n; i++, o++)
+	{
+		choiceItems->elements[o] = choiceItems->elements[i];
+		choiceItems->elements[i] = NULL;
+	}
+	
+	/* Insert item here. */
+	choiceItems->elements[atIndex] = inject;
+	
+	/* Item count goes up. */
+	choice->numItems = n + 1;
+	
+	/* For exclusive and implicit lists, if the list was empty then select */
+	/* always the first added element. */
+	if ((choice->type == SJME_SCRITCHUI_CHOICE_TYPE_EXCLUSIVE ||
+		choice->type == SJME_SCRITCHUI_CHOICE_TYPE_IMPLICIT) && n == 0)
+		inject->isSelected = SJME_JNI_TRUE;
+	
+	/* Recalculate choice set. */
+	if (sjme_error_is(error = sjme_scritchui_core_choiceCalculate(
+		inState, choiceItems)))
+		goto fail_recalculate;
 	
 	/* Forward. */
 	*inOutIndex = atIndex;
@@ -108,6 +217,16 @@ sjme_errorCode sjme_scritchui_core_choiceItemInsert(
 		return SJME_ERROR_NOT_IMPLEMENTED;
 	return inState->impl->choiceItemInsert(inState, inComponent,
 		inOutIndex);
+
+fail_recalculate:
+fail_freeOld:
+fail_newItemsAlloc:
+	if (newItems != NULL)
+		sjme_alloc_free(newItems);
+fail_injectAlloc:
+	if (inject != NULL)
+		sjme_alloc_free(inject);
+	return sjme_error_default(error);
 }
 
 sjme_errorCode sjme_scritchui_core_choiceItemRemove(
@@ -175,22 +294,26 @@ sjme_errorCode sjme_scritchui_core_choiceItemSetEnabled(
 {
 	sjme_errorCode error;
 	sjme_scritchui_uiChoice choice;
+	sjme_scritchui_uiChoiceItem choiceItem;
 	
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover choice. */
 	choice = NULL;
-	if (sjme_error_is(error = inState->intern->getChoice(inState,
-		inComponent, &choice)) || choice == NULL)
+	choiceItem = NULL;
+	if (sjme_error_default(error = sjme_scritchui_core_choiceItem(
+		inState, inComponent, atIndex, &choice,
+		&choiceItem)) || choice == NULL || choiceItem == NULL)
 		return sjme_error_default(error);
 	
-	/* Check bounds. */
-	if (atIndex < 0 || atIndex >= choice->numItems)
-		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	/* Just set the flag. */
+	choiceItem->isEnabled = isEnabled;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Recalculate choice set. */
+	if (sjme_error_is(error = sjme_scritchui_core_choiceCalculate(
+		inState, choice->items)))
+		return sjme_error_default(error);
 	
 	/* Forward. */
 	if (inState->impl->choiceItemSetEnabled == NULL)
@@ -212,22 +335,26 @@ sjme_errorCode sjme_scritchui_core_choiceItemSetImage(
 {
 	sjme_errorCode error;
 	sjme_scritchui_uiChoice choice;
+	sjme_scritchui_uiChoiceItem choiceItem;
 	
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover choice. */
 	choice = NULL;
-	if (sjme_error_is(error = inState->intern->getChoice(inState,
-		inComponent, &choice)) || choice == NULL)
+	choiceItem = NULL;
+	if (sjme_error_default(error = sjme_scritchui_core_choiceItem(
+		inState, inComponent, atIndex, &choice,
+		&choiceItem)) || choice == NULL || choiceItem == NULL)
 		return sjme_error_default(error);
-	
-	/* Check bounds. */
-	if (atIndex < 0 || atIndex >= choice->numItems)
-		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Recalculate choice set. */
+	if (sjme_error_is(error = sjme_scritchui_core_choiceCalculate(
+		inState, choice->items)))
+		return sjme_error_default(error);
 	
 	/* Forward. */
 	if (inState->impl->choiceItemSetImage == NULL)
@@ -244,22 +371,42 @@ sjme_errorCode sjme_scritchui_core_choiceItemSetSelected(
 {
 	sjme_errorCode error;
 	sjme_scritchui_uiChoice choice;
+	sjme_scritchui_uiChoiceItem choiceItem;
+	sjme_jint i, n;
 	
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover choice. */
 	choice = NULL;
-	if (sjme_error_is(error = inState->intern->getChoice(inState,
-		inComponent, &choice)) || choice == NULL)
+	choiceItem = NULL;
+	if (sjme_error_default(error = sjme_scritchui_core_choiceItem(
+		inState, inComponent, atIndex, &choice,
+		&choiceItem)) || choice == NULL || choiceItem == NULL)
 		return sjme_error_default(error);
 	
-	/* Check bounds. */
-	if (atIndex < 0 || atIndex >= choice->numItems)
-		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	/* Clearing a selection for an explicit/implicit list just does nothing. */
+	if ((choice->type == SJME_SCRITCHUI_CHOICE_TYPE_EXCLUSIVE ||
+		choice->type == SJME_SCRITCHUI_CHOICE_TYPE_IMPLICIT) && !isSelected)
+		return SJME_ERROR_NONE;
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* For exclusive and implicit list types, make sure this is the only */
+	/* one selected item. */
+	if ((choice->type == SJME_SCRITCHUI_CHOICE_TYPE_EXCLUSIVE ||
+		choice->type == SJME_SCRITCHUI_CHOICE_TYPE_IMPLICIT) && isSelected)
+	{
+		/* Clear other selections. */
+		for (i = 0, n = choice->numItems; i < n; i++)
+			choice->items->elements[i]->isSelected = SJME_JNI_FALSE;
+	}
+	
+	/* Just set the selected state. */
+	choiceItem->isSelected = isSelected;
+	
+	/* Recalculate choice set. */
+	if (sjme_error_is(error = sjme_scritchui_core_choiceCalculate(
+		inState, choice->items)))
+		return sjme_error_default(error);
 	
 	/* Forward. */
 	if (inState->impl->choiceItemSetSelected == NULL)
@@ -276,22 +423,51 @@ sjme_errorCode sjme_scritchui_core_choiceItemSetString(
 {
 	sjme_errorCode error;
 	sjme_scritchui_uiChoice choice;
+	sjme_scritchui_uiChoiceItem choiceItem;
+	sjme_lpcstr dup;
 	
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover choice. */
 	choice = NULL;
-	if (sjme_error_is(error = inState->intern->getChoice(inState,
-		inComponent, &choice)) || choice == NULL)
+	choiceItem = NULL;
+	if (sjme_error_default(error = sjme_scritchui_core_choiceItem(
+		inState, inComponent, atIndex, &choice,
+		&choiceItem)) || choice == NULL || choiceItem == NULL)
 		return sjme_error_default(error);
 	
-	/* Check bounds. */
-	if (atIndex < 0 || atIndex >= choice->numItems)
-		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	/* Make defensive copy of the new string. */
+	dup = NULL;
+	if (inString != NULL)
+		if (sjme_error_is(error = sjme_alloc_strdup(inState->pool,
+			&dup, inString)) || dup == NULL)
+			return sjme_error_default(error); 
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Delete old string. */
+	if (choiceItem->string != NULL)
+	{
+		/* Free. */
+		if (sjme_error_is(error = sjme_alloc_free(
+			choiceItem->string)))
+		{
+			if (dup != NULL)
+				sjme_alloc_free(dup);
+			
+			return sjme_error_default(error);
+		}
+		
+		/* Clear. */
+		choiceItem->string = NULL;
+	}
+	
+	/* Set new string. */
+	choiceItem->string = dup;
+	
+	/* Recalculate choice set. */
+	if (sjme_error_is(error = sjme_scritchui_core_choiceCalculate(
+		inState, choice->items)))
+		return sjme_error_default(error);
 	
 	/* Forward. */
 	if (inState->impl->choiceItemSetString == NULL)

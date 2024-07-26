@@ -260,7 +260,7 @@ public class ChoiceGroup
 	}
 	
 	@Override
-	public void setSelectedIndex(int __a, boolean __b)
+	public void setSelectedIndex(int __atIndex, boolean __selected)
 	{
 		throw Debugging.todo();
 	}
