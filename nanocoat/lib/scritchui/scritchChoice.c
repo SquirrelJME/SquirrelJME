@@ -148,6 +148,9 @@ sjme_errorCode sjme_scritchui_core_choiceItemInsert(
 		sizeof(*inject), &inject)) || inject == NULL)
 		goto fail_injectAlloc;
 	
+	/* Default values. */
+	inject->isEnabled = SJME_JNI_TRUE;
+	
 	/* The number of items. */
 	n = choice->numItems;
 	

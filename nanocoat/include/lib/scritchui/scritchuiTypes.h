@@ -249,9 +249,6 @@ SJME_LIST_DECLARE(sjme_scritchui_uiComponent, 0);
  */
 typedef struct sjme_scritchui_uiChoiceItemBase
 {
-	/** The index of this item. */
-	sjme_jint index;
-	
 	/** Is this selected? */
 	sjme_jboolean isSelected;
 	
