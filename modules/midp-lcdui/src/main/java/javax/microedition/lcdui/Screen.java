@@ -9,8 +9,11 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayScale;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 
 /**
@@ -34,6 +37,13 @@ public abstract class Screen
 	{
 	}
 	
+	/**
+	 * Returns the ScritchUI component.
+	 *
+	 * @return The ScritchUI component.
+	 * @since 2024/07/25
+	 */
+	abstract ScritchComponentBracket __scritchComponent();
 	
 	/**
 	 * {@inheritDoc}
@@ -45,6 +55,18 @@ public abstract class Screen
 	{
 		// Setup super first
 		super.__execRevalidate(__parent);
+		
+		// Get the display scale to determine how the list should scale
+		DisplayScale scale = __parent.display()._scale;
+		
+		int w = Math.max(1, scale.textureW());
+		int h = Math.max(1, scale.textureH());
+		
+		// Make sure the list has the correct texture size
+		DisplayableState state = this._state;
+		state.scritchApi().container().setBounds(
+			state.scritchPanel(),
+			this.__scritchComponent(), 0, 0, w, h);
 	}
 }
 

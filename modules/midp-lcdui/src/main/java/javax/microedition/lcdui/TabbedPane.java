@@ -9,6 +9,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
@@ -98,6 +99,12 @@ public class TabbedPane
 	
 	@Api
 	public void setTabIcon(int __i, Image __icon)
+	{
+		throw Debugging.todo();
+	}
+	
+	@Override
+	ScritchComponentBracket __scritchComponent()
 	{
 		throw Debugging.todo();
 	}

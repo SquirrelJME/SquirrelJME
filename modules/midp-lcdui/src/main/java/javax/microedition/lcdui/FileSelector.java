@@ -9,6 +9,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
@@ -125,5 +126,10 @@ public class FileSelector
 		throw Debugging.todo();
 	}
 	
+	@Override
+	ScritchComponentBracket __scritchComponent()
+	{
+		throw Debugging.todo();
+	}
 }
 

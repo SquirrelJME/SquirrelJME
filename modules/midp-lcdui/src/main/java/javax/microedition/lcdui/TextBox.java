@@ -9,6 +9,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.common.EditableText;
@@ -163,6 +164,12 @@ public class TextBox
 	
 	@Api
 	public int size()
+	{
+		throw Debugging.todo();
+	}
+	
+	@Override
+	ScritchComponentBracket __scritchComponent()
 	{
 		throw Debugging.todo();
 	}

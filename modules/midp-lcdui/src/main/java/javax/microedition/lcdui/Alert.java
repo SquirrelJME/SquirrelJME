@@ -9,6 +9,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
@@ -245,6 +246,11 @@ public class Alert
 		*/
 	}
 	
+	@Override
+	ScritchComponentBracket __scritchComponent()
+	{
+		throw Debugging.todo();
+	}
 }
 
 

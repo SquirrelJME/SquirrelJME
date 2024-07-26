@@ -12,6 +12,7 @@ package javax.microedition.lcdui;
 import cc.squirreljme.jvm.mle.constants.UIListType;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchListInterface;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchListBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
 import cc.squirreljme.runtime.cldc.annotation.Api;
@@ -459,22 +460,9 @@ public class List
 	 * @since 2024/07/25
 	 */
 	@Override
-	void __execRevalidate(DisplayState __parent)
+	ScritchComponentBracket __scritchComponent()
 	{
-		// Setup super first
-		super.__execRevalidate(__parent);
-		
-		// Get the display scale to determine how the list should scale
-		DisplayScale scale = __parent.display()._scale;
-		
-		int w = Math.max(1, scale.textureW());
-		int h = Math.max(1, scale.textureH());
-		
-		// Make sure the list has the correct texture size
-		DisplayableState state = this._state;
-		state.scritchApi().container().setBounds(
-			state.scritchPanel(),
-			this._scritchList, 0, 0, w, h);
+		return this._scritchList;
 	}
 }
 
