@@ -613,6 +613,10 @@ sjme_errorCode sjme_scritchpen_core_setParametersFrom(
 	/* Initially successful. */
 	error = SJME_ERROR_NONE;
 	
+	/* Remove any current translation. */
+	error |= g->api->translate(g,
+		-g->state.translate.x, -g->state.translate.y);
+	
 	/* Copy all basic parameters. */
 	error |= g->api->setAlphaColor(g, from->state.color.argb);
 	error |= g->api->setClip(g, from->state.clip.s.x, from->state.clip.s.y,
@@ -633,8 +637,6 @@ sjme_errorCode sjme_scritchpen_core_setParametersFrom(
 		error |= g->api->setFont(g, from->state.font);
 	
 	/* Re-translate to target coordinate system. */
-	error |= g->api->translate(g,
-		-g->state.translate.x, -g->state.translate.y);
 	error |= g->api->translate(g,
 		from->state.translate.x, from->state.translate.y);
 	
