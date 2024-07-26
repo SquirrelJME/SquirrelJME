@@ -52,11 +52,13 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 		bex = bsx + bw;
 		bey = bsy + bh;
 		
+		/* Remove old translation. */
+		g->api->translate(g, -g->state.translate.x, -g->state.translate.y);
+		
 		/* Set clip bound for the item. */
 		g->api->setClip(g, bsx, bsy, bw, bh);
 		
-		/* Translate to base coordinates, remove old translation. */
-		g->api->translate(g, -g->state.translate.x, -g->state.translate.y);
+		/* Translate to base coordinates. */
 		g->api->translate(g, bsx, bsy);
 		
 		/* Which type is being drawn? */
