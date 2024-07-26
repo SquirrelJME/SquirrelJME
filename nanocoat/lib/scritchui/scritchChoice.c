@@ -190,8 +190,8 @@ sjme_errorCode sjme_scritchui_core_choiceItemInsert(
 		newItems = NULL;
 	}
 	
-	/* Move items up at insertion point. */
-	for (i = atIndex, o = atIndex + 1; i < n; i++, o++)
+	/* Move items down until the insertion point is hit. */
+	for (i = n - 1, o = n; i >= atIndex; i--, o--)
 	{
 		choiceItems->elements[o] = choiceItems->elements[i];
 		choiceItems->elements[i] = NULL;
