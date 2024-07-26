@@ -56,6 +56,10 @@ sjme_errorCode sjme_scritchpen_core_drawChar(
 		return SJME_ERROR_NONE;
 	}
 	
+	/* Translate. */
+	if (sjme_error_is(error = g->util->applyTranslate(g, &x, &y)))
+		return sjme_error_default(error);
+	
 	/* Need to lock? */
 	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
 		return sjme_error_default(error);

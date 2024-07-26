@@ -90,7 +90,8 @@ sjme_errorCode sjme_charSeq_deleteStatic(
 	
 	/* If there is a deletion function, then call it. */
 	if (inOutSeq->impl->delete != NULL)
-		if (sjme_error_is(error = inOutSeq->impl->delete(inOutSeq)))
+		if (sjme_error_is(error = inOutSeq->impl->delete(
+			inOutSeq)))
 			return sjme_error_default(error);
 	
 	/* Clear out. */

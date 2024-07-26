@@ -157,7 +157,7 @@ sjme_errorCode sjme_scritchui_core_choiceItemInsert(
 	/* Need room in the list, to inject at? */
 	choiceItems = choice->items;
 	newItems = NULL;
-	if (choiceItems == NULL || (n + 1) > choiceItems->length)
+	if (choiceItems == NULL || (n + 1) >= choiceItems->length)
 	{
 		/* Allocate new list. */
 		if (sjme_error_is(error = sjme_list_alloc(inState->pool,
