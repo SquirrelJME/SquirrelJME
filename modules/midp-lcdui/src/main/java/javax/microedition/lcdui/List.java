@@ -19,6 +19,8 @@ import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.scritchui.ChoiceManager;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayScale;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
 import org.jetbrains.annotations.Async;
 
@@ -34,6 +36,9 @@ public class List
 	
 	/** Manages and contains choice entries. */
 	final ChoiceManager _choices;
+	
+	/** The ScritchUI list to use. */
+	private final ScritchListBracket _scritchList;
 	
 	/** Selection command. */
 	volatile Command _selCommand;
@@ -99,6 +104,7 @@ public class List
 		
 		// Create new list
 		ScritchListBracket newList = listApi.listNew(nativeType);
+		this._scritchList = newList;
 		
 		// Setup manager
 		ChoiceManager choices = new ChoiceManager(__type, scritchApi, newList);
@@ -446,6 +452,29 @@ public class List
 		return this._items.size();
 		
 		 */
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/07/25
+	 */
+	@Override
+	void __execRevalidate(DisplayState __parent)
+	{
+		// Setup super first
+		super.__execRevalidate(__parent);
+		
+		// Get the display scale to determine how the list should scale
+		DisplayScale scale = __parent.display()._scale;
+		
+		int w = Math.max(1, scale.textureW());
+		int h = Math.max(1, scale.textureH());
+		
+		// Make sure the list has the correct texture size
+		DisplayableState state = this._state;
+		state.scritchApi().container().setBounds(
+			state.scritchPanel(),
+			this._scritchList, 0, 0, w, h);
 	}
 }
 

@@ -15,6 +15,7 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayScale;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
 import cc.squirreljme.runtime.lcdui.scritchui.MenuAction;
@@ -483,6 +484,19 @@ public abstract class Displayable
 	{
 		// Reparent the display
 		this._state.setParent(__parent);
+		
+		// Get the display scale to determine how big the widget should be
+		DisplayScale scale = __parent.display()._scale;
+		
+		// Get the current texture size of the window
+		int w = Math.max(1, scale.textureW());
+		int h = Math.max(1, scale.textureH());
+		
+		// Set absolute bounds of this displayable
+		DisplayableState state = this._state;
+		state.scritchApi().container().setBounds(
+			__parent.scritchWindow(),
+			state.scritchPanel(), 0, 0, w, h);
 	}
 	
 	/**

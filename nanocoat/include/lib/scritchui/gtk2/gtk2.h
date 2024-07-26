@@ -50,11 +50,11 @@ extern "C" {
 /** Top most widget, to be added to container. */
 #define SJME_SUI_GTK2_H_TOP_WIDGET 1
 
-/** The window box for a window. */
-#define SJME_SUI_GTK2_H_WINBOX 1
-	
-/** The menu box for a window. */
-#define SJME_SUI_GTK2_H_WINMENU 2
+/** The table box for a window. */
+#define SJME_SUI_GTK2_H_WINTABLE 1
+
+/** Storage for the current menu bar in a window. */
+#define SJME_SUI_GTK2_H_WINBAR 2
 	
 /** The global state accelerator group. */
 #define SJME_SUI_GTK2_H_ACCELG 3

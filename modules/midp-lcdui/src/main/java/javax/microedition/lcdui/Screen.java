@@ -10,6 +10,8 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
+import org.jetbrains.annotations.MustBeInvokedByOverriders;
 
 /**
  * This is the base class for all user interactive displays.
@@ -32,6 +34,18 @@ public abstract class Screen
 	{
 	}
 	
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/07/25
+	 */
+	@Override
+	@MustBeInvokedByOverriders
+	void __execRevalidate(DisplayState __parent)
+	{
+		// Setup super first
+		super.__execRevalidate(__parent);
+	}
 }
 
 

@@ -67,6 +67,9 @@ sjme_errorCode sjme_scritchui_gtk2_panelNew(
 	/* Put fixed in the box. */
 	gtk_container_add(GTK_CONTAINER(eventBox), fixed);
 	
+	/* Because the fixed is in the event box, it needs to be shown. */
+	gtk_widget_show(fixed);
+	
 	/* Common widget init. */
 	inState->implIntern->widgetInit(inState, GTK_WIDGET(fixed));
 	

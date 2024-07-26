@@ -119,8 +119,7 @@ sjme_errorCode sjme_scritchui_gtk2_windowNew(
 	sjme_attrInNullable sjme_pointer ignored)
 {
 	GtkWindow* gtkWindow;
-	GtkBox* gtkVBox;
-	GtkBox* gtkMenuBox;
+	GtkTable* gtkTable;
 	
 	if (inState == NULL || inWindow == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -130,40 +129,25 @@ sjme_errorCode sjme_scritchui_gtk2_windowNew(
 	if (gtkWindow == NULL)
 		goto fail_newWindow;
 	
-	/* We need a vertical box for the menu bar. */
-	gtkVBox = (GtkBox*)gtk_vbox_new(FALSE, 0);
-	if (gtkVBox == NULL)
-		goto fail_newVBox;
-	
-	/* We need somewhere to place the menu bar for the window. */
-	gtkMenuBox = (GtkBox*)gtk_hbox_new(TRUE, 0);
-	if (gtkMenuBox == NULL)
-		goto fail_newMenuBox;
+	/* Table for menu bar and main content. */
+	gtkTable = (GtkTable*)gtk_table_new(2, 1, FALSE);
+	if (gtkTable == NULL)
+		goto fail_newTable;
 	
 	/* Setup window. */
 	inWindow->component.common.handle[SJME_SUI_GTK2_H_WIDGET] = gtkWindow;
-	inWindow->component.common.handle[SJME_SUI_GTK2_H_WINBOX] = gtkVBox;
-	inWindow->component.common.handle[SJME_SUI_GTK2_H_WINMENU] = gtkMenuBox;
-
-	/* Add blank menu bar, do not claim all the space. */
-	gtk_box_pack_start(GTK_BOX(gtkVBox),
-		GTK_WIDGET(gtkMenuBox),
-		FALSE,
-		FALSE,
-		0);
+	inWindow->component.common.handle[SJME_SUI_GTK2_H_WINTABLE] = gtkTable;
 	
-	/* The VBox needs to be in the window, for menus. */
+	/* The table needs to be in the window. */
 	gtk_container_add(GTK_CONTAINER(gtkWindow),
-		GTK_WIDGET(gtkVBox));
+		GTK_WIDGET(gtkTable));
 		
 	/* The widgets need to be shown, otherwise they stay invisible. */
-	gtk_widget_show(GTK_WIDGET(gtkMenuBox));
-	gtk_widget_show(GTK_WIDGET(gtkVBox));
+	gtk_widget_show(GTK_WIDGET(gtkTable));
 	
 	/* Common widget init. */
 	inState->implIntern->widgetInit(inState, GTK_WIDGET(gtkWindow));
-	inState->implIntern->widgetInit(inState, GTK_WIDGET(gtkVBox));
-	inState->implIntern->widgetInit(inState, GTK_WIDGET(gtkMenuBox));
+	inState->implIntern->widgetInit(inState, GTK_WIDGET(gtkTable));
 	
 	/* Set default title. */
 	gtk_window_set_title(gtkWindow,
@@ -185,12 +169,9 @@ sjme_errorCode sjme_scritchui_gtk2_windowNew(
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 	
-fail_newMenuBox:
-	if (gtkMenuBox != NULL)
-		gtk_widget_destroy(GTK_WIDGET(gtkMenuBox));
-fail_newVBox:
-	if (gtkVBox != NULL)
-		gtk_widget_destroy(GTK_WIDGET(gtkVBox));
+fail_newTable:
+	if (gtkTable != NULL)
+		gtk_widget_destroy(GTK_WIDGET(gtkTable));
 fail_newWindow:
 	if (gtkWindow != NULL)
 		gtk_widget_destroy(GTK_WIDGET(gtkWindow));
@@ -232,27 +213,49 @@ sjme_errorCode sjme_scritchui_gtk2_windowSetMenuBar(
 {
 	GtkWindow* gtkWindow;
 	GtkMenuBar* gtkMenuBar;
-	GtkWidget* gtkMenuBox;
+	GtkMenuBar* gtkExistingBar;
+	GtkTable* gtkTable;
 	
 	if (inState == NULL || inWindow == NULL)
 		return SJME_ERROR_NONE;
 		
 	/* Recover window and possibly the menu bar. */
 	gtkWindow = inWindow->component.common.handle[SJME_SUI_GTK2_H_WIDGET];
-	gtkMenuBox = inWindow->component.common.handle[SJME_SUI_GTK2_H_WINMENU];
+	gtkTable = inWindow->component.common.handle[SJME_SUI_GTK2_H_WINTABLE];
+	gtkExistingBar = inWindow->component.common.handle[SJME_SUI_GTK2_H_WINBAR];
 	if (inMenuBar == NULL)
 		gtkMenuBar = NULL;
 	else
 		gtkMenuBar = inMenuBar->menuKind.common.handle[SJME_SUI_GTK2_H_WIDGET];
 	
-	/* Remove everything from the menu bar box. */
-	gtk_container_foreach(GTK_CONTAINER(gtkMenuBox),
-		sjme_scritchui_gtk2_nukeMenuBox, gtkMenuBox);
+	/* If a menu bar is already here, remove it */
+	if (gtkExistingBar != NULL)
+	{
+		/* Remove. */
+		gtk_container_remove(GTK_CONTAINER(gtkTable),
+			GTK_WIDGET(gtkExistingBar));
+			
+		/* Clear state. */
+		inWindow->component.common.handle[SJME_SUI_GTK2_H_WINBAR] = NULL;
+	}
 	
-	/* Place into the menu bar box. */
+	/* Place into the table at the top. */
 	if (gtkMenuBar != NULL)
-		gtk_container_add(GTK_CONTAINER(gtkMenuBox),
-			GTK_WIDGET(gtkMenuBar));
+	{
+		/* Attach to top of table. */
+		gtk_table_attach(GTK_TABLE(gtkTable),
+			GTK_WIDGET(gtkMenuBar),
+			0, 1, 0, 1,
+			GTK_FILL | GTK_EXPAND,
+			GTK_SHRINK,
+			0, 0);
+		
+		/* Show the menu bar. */
+		gtk_widget_show(GTK_WIDGET(gtkMenuBar));
+		
+		/* Remember this bar for future changes. */
+		inWindow->component.common.handle[SJME_SUI_GTK2_H_WINBAR] = gtkMenuBar;
+	}
 	
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);

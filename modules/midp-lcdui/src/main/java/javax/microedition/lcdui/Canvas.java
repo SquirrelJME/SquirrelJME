@@ -930,20 +930,17 @@ public abstract class Canvas
 		// Get the display scale to determine how the canvas should be drawn
 		DisplayScale scale = __parent.display()._scale;
 		
-		// Get the current texture size of the window
-		int w = Math.max(1, scale.textureW());
-		int h = Math.max(1, scale.textureH());
-		
-		// Set absolute bounds of the canvas
-		DisplayableState state = this._state;
-		state.scritchApi().container().setBounds(
-			__parent.scritchWindow(),
-			state.scritchPanel(), 0, 0, w, h);
-		
 		// Setup new image with a raw buffer, if scaling is required
 		if (scale.requiresBuffer())
+		{
+			// Get the current texture size of the window
+			int w = Math.max(1, scale.textureW());
+			int h = Math.max(1, scale.textureH());
+			
+			// Draw onto this buffer
 			this._buffer = new Image(new int[w * h], w * h, w, h,
 				true, false);
+		}
 		else
 			this._buffer = null;
 	}

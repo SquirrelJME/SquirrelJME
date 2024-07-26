@@ -43,15 +43,16 @@ sjme_errorCode sjme_scritchui_gtk2_containerAdd(
 	/* Which type is this? */
 	switch (inContainer->common.type)
 	{
-			/* Add to the window VBox, claim all the possible space. */
+			/* Attach to the window table, takes as much space as possible. */
 		case SJME_SCRITCHUI_TYPE_WINDOW:
 			windowTarget = inContainer->common
-				.handle[SJME_SUI_GTK2_H_WINBOX];
-			gtk_box_pack_start(GTK_BOX(windowTarget),
+				.handle[SJME_SUI_GTK2_H_WINTABLE];
+			gtk_table_attach(GTK_TABLE(windowTarget),
 				GTK_WIDGET(addWidget),
-				TRUE,
-				TRUE,
-				0);
+				0, 1, 1, 2,
+				GTK_FILL | GTK_EXPAND,
+				GTK_FILL | GTK_EXPAND,
+				0, 0);
 			break;
 		
 			/* Place into fixed at basic coordinates. */
@@ -140,6 +141,7 @@ sjme_errorCode sjme_scritchui_gtk2_containerSetBounds(
 {
 	GtkFixed* gtkFixed;
 	GtkWidget* moveWidget;
+	GtkWidget* subWidget;
 	
 	if (inState == NULL || inContainer == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -149,11 +151,18 @@ sjme_errorCode sjme_scritchui_gtk2_containerSetBounds(
 	
 	/* Recover widget, we might have an alternate in use. */
 	if (inComponent->common.handle[SJME_SUI_GTK2_H_TOP_WIDGET] != NULL)
+	{
 		moveWidget = (GtkWidget*)inComponent->common
 			.handle[SJME_SUI_GTK2_H_TOP_WIDGET];
+		subWidget = (GtkWidget*)inComponent->common
+			.handle[SJME_SUI_GTK2_H_WIDGET];
+	}
 	else
+	{
 		moveWidget = (GtkWidget*)inComponent->common
 			.handle[SJME_SUI_GTK2_H_WIDGET];
+		subWidget = NULL;
+	}
 	
 	/* Depends on the container type. */
 	switch (inContainer->common.type)
@@ -163,7 +172,6 @@ sjme_errorCode sjme_scritchui_gtk2_containerSetBounds(
 			gtkFixed = (GtkFixed*)inContainer->common
 				.handle[SJME_SUI_GTK2_H_WIDGET];
 			gtk_fixed_move(gtkFixed, moveWidget, x, y);
-			gtk_widget_set_size_request(moveWidget, width, height);
 			break;
 		
 			/* Nothing needs to be done for windows. */
@@ -173,6 +181,11 @@ sjme_errorCode sjme_scritchui_gtk2_containerSetBounds(
 		default:
 			return SJME_ERROR_NOT_IMPLEMENTED;
 	}
+	
+	/* Regardless of the container this is in, set its size. */
+	gtk_widget_set_size_request(moveWidget, width, height);
+	if (subWidget != NULL)
+		gtk_widget_set_size_request(subWidget, width, height);
 	
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
