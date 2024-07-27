@@ -57,6 +57,7 @@ static sjme_errorCode sjme_scritchui_fb_eventInput(
 	sjme_scritchui_fb_widgetState* wState;
 	sjme_jint pX, pY, selId;
 	sjme_jboolean hasFocus, hover;
+	sjme_scritchinput_key logical;
 	
 	if (wrappedState == NULL || wrappedComponent == NULL || inEvent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -134,9 +135,63 @@ static sjme_errorCode sjme_scritchui_fb_eventInput(
 		return SJME_ERROR_NONE;
 	}
 	
-	/* Key event? */
-	else if (inEvent->type == SJME_SCRITCHINPUT_TYPE_KEY_PRESSED)
+	/* Key event or button? */
+	else if (inEvent->type == SJME_SCRITCHINPUT_TYPE_KEY_PRESSED ||
+		inEvent->type == SJME_SCRITCHINPUT_TYPE_GAMEPAD_BUTTON_PRESSED)
 	{
+		/* Get logical key. */
+		logical = SJME_SCRITCHINPUT_KEY_UNKNOWN;
+		if (sjme_error_is(error = inState->implIntern->logicalButton(
+			inState, inEvent, &logical)))
+			return sjme_error_default(error);
+		
+		/* Still unknown? Do nothing then... */
+		if (logical == SJME_SCRITCHINPUT_KEY_UNKNOWN)
+			return SJME_ERROR_NONE;
+		
+		/* Select item? */
+		if (logical == SJME_SCRITCHINPUT_KEY_SPACE)
+			;
+		
+		/* Activate item? */
+		else if (logical == SJME_SCRITCHINPUT_KEY_ENTER)
+			;
+		
+		/* Movement? */
+		else
+		{
+			/* Ignore if not supported. */
+			if (wState->lightCursorListener == NULL)
+				return SJME_ERROR_NONE;
+			
+			/* Base coordinate. */
+			pX = 0;
+			pY = 0;
+			
+			/* Which direction of movement? */
+			if (logical == SJME_SCRITCHINPUT_KEY_UP)
+				pY = -1;
+			else if (logical == SJME_SCRITCHINPUT_KEY_DOWN)
+				pY = 1;
+			else if (logical == SJME_SCRITCHINPUT_KEY_LEFT)
+				pX = -1;
+			else if (logical == SJME_SCRITCHINPUT_KEY_RIGHT)
+				pX = 1;
+			else if (logical == SJME_SCRITCHINPUT_KEY_HOME)
+			{
+				pX = -99999;
+				pY = -99999;
+			}
+			else if (logical == SJME_SCRITCHINPUT_KEY_END)
+			{
+				pX = 99999;
+				pY = 99999;
+			}
+			
+			/* Forward call. */
+			return wState->lightCursorListener(inState,
+				inComponent, pX, pY);
+		}
 	}
 	
 	/* Success! */
@@ -209,6 +264,91 @@ sjme_errorCode sjme_scritchui_fb_intern_lightweightInit(
 	
 	/* Success! */
 	*outWState = wState;
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_scritchui_fb_intern_logicalButton(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull const sjme_scritchinput_event* inEvent,
+	sjme_attrOutNotNull sjme_scritchinput_key* outKey)
+{
+	sjme_scritchinput_key target;
+	
+	if (inState == NULL || inEvent == NULL || outKey == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Clear target. */
+	target = SJME_SCRITCHINPUT_KEY_UNKNOWN;
+	
+	/* Key event? */
+	if (inEvent->type == SJME_SCRITCHINPUT_TYPE_KEY_PRESSED ||
+		inEvent->type == SJME_SCRITCHINPUT_TYPE_KEY_RELEASED)
+	{
+		switch (inEvent->data.key.code)
+		{
+			case SJME_SCRITCHINPUT_KEY_VGAME_A:
+			case SJME_SCRITCHINPUT_KEY_VGAME_B:
+			case SJME_SCRITCHINPUT_KEY_VGAME_C:
+			case SJME_SCRITCHINPUT_KEY_VGAME_D:
+			case SJME_SCRITCHINPUT_KEY_SPACE:
+				target = SJME_SCRITCHINPUT_KEY_SPACE;
+				break;
+			
+			case SJME_SCRITCHINPUT_KEY_ENTER:
+			case SJME_SCRITCHINPUT_KEY_VGAME_FIRE:
+			case SJME_SCRITCHINPUT_KEY_NUMPAD_ENTER:
+				target = SJME_SCRITCHINPUT_KEY_ENTER;
+				break;
+			
+			case SJME_SCRITCHINPUT_KEY_UP:
+			case SJME_SCRITCHINPUT_KEY_PAGE_UP:
+			case SJME_SCRITCHINPUT_KEY_VGAME_UP:
+			case SJME_SCRITCHINPUT_KEY_NUMPAD_MINUS:
+			case 'w':
+			case 'k':
+				target = SJME_SCRITCHINPUT_KEY_UP;
+				break;
+			
+			case SJME_SCRITCHINPUT_KEY_DOWN:
+			case SJME_SCRITCHINPUT_KEY_PAGE_DOWN:
+			case SJME_SCRITCHINPUT_KEY_VGAME_DOWN:
+			case SJME_SCRITCHINPUT_KEY_NUMPAD_PLUS:
+			case 's':
+			case 'j':
+				target = SJME_SCRITCHINPUT_KEY_DOWN;
+				break;
+			
+			case SJME_SCRITCHINPUT_KEY_LEFT:
+			case SJME_SCRITCHINPUT_KEY_VGAME_LEFT:
+			case SJME_SCRITCHINPUT_KEY_NUMPAD_DIVIDE:
+			case 'a':
+			case 'h':
+				target = SJME_SCRITCHINPUT_KEY_LEFT;
+				break;
+			
+			case SJME_SCRITCHINPUT_KEY_RIGHT:
+			case SJME_SCRITCHINPUT_KEY_VGAME_RIGHT:
+			case SJME_SCRITCHINPUT_KEY_NUMPAD_MULTIPLY:
+			case 'd':
+			case 'l':
+				target = SJME_SCRITCHINPUT_KEY_RIGHT;
+				break;
+			
+			case SJME_SCRITCHINPUT_KEY_HOME:
+				target = SJME_SCRITCHINPUT_KEY_HOME;
+				break;
+			
+			case SJME_SCRITCHINPUT_KEY_END:
+				target = SJME_SCRITCHINPUT_KEY_END;
+				break;
+			
+			default:
+				break;
+		}
+	}
+	
+	/* Success! */
+	*outKey = target;
 	return SJME_ERROR_NONE;
 }
 

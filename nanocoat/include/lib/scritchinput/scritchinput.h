@@ -111,6 +111,9 @@ typedef enum sjme_scritchinput_key
 	/** Star key. */
 	SJME_SCRITCHINPUT_KEY_STAR = 42,
 	
+	/** Space key. */
+	SJME_SCRITCHINPUT_KEY_SPACE = 32,
+	
 	/** Pound key. */
 	SJME_SCRITCHINPUT_KEY_POUND = 35,
 	

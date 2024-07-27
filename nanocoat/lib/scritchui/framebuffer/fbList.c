@@ -202,6 +202,57 @@ static sjme_errorCode sjme_scritchui_fb_list_lightClick(
 		inComponent, atIndex, newState);
 }
 
+static sjme_errorCode sjme_scritchui_fb_list_lightCursor(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInValue sjme_jint moveX,
+	sjme_attrInValue sjme_jint moveY)
+{
+	sjme_errorCode error;
+	sjme_jint atIndex, wantIndex;
+	sjme_scritchui_uiChoice choice;
+	sjme_scritchui_fb_widgetState* wState;
+	
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Recover component state. */
+	wState = inComponent->common.handle[SJME_SUI_FB_H_WSTATE];
+	
+	/* Recover choice. */
+	choice = NULL;
+	if (sjme_error_is(error = inState->intern->getChoice(inState,
+		inComponent, &choice)) || choice == NULL)
+		return sjme_error_default(error);
+	
+	/* If the list is empty, do nothing. */
+	if (choice->numItems == 0)
+		return SJME_ERROR_NONE; 
+	
+	/* Get current position and where we want to go. */
+	atIndex = wState->subFocusIndex;
+	wantIndex = atIndex + moveY;
+	
+	/* Move into bounds. */
+	if (wantIndex < 0)
+		wantIndex = 0;
+	else if (wantIndex > choice->numItems)
+		wantIndex = choice->numItems - 1;
+	
+	/* Did the index actually change? */
+	if (atIndex != wantIndex)
+	{
+		/* Set new index. */
+		wState->subFocusIndex = wantIndex;
+		
+		/* Perform refresh. */
+		return inState->implIntern->refresh(inState, inComponent);
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_scritchui_fb_list_lightHover(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
@@ -261,6 +312,7 @@ sjme_errorCode sjme_scritchui_fb_listNew(
 	
 	/* Set lightweight functions. */
 	wState->lightClickListener = sjme_scritchui_fb_list_lightClick; 
+	wState->lightCursorListener = sjme_scritchui_fb_list_lightCursor;
 	wState->lightHoverListener = sjme_scritchui_fb_list_lightHover;
 	
 	/* Success! */

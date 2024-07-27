@@ -61,6 +61,7 @@ const sjme_scritchui_implFunctions sjme_scritchui_fbFunctions =
 static const struct sjme_scritchui_implInternFunctions sjme_scritchui_fbInter =
 {
 	.lightweightInit = sjme_scritchui_fb_intern_lightweightInit,
+	.logicalButton = sjme_scritchui_fb_intern_logicalButton,
 	.refresh = sjme_scritchui_fb_intern_refresh,
 	.render = sjme_scritchui_fb_intern_render,
 	.renderInScroll = sjme_scritchui_fb_intern_renderInScroll,

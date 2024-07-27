@@ -49,6 +49,22 @@ typedef sjme_errorCode (*sjme_scritchui_fb_lightClickListenerFunc)(
 	sjme_attrInValue sjme_jint atX,
 	sjme_attrInValue sjme_jint atY);
 
+/**
+ * Callback for when there is cursor movement requested.
+ * 
+ * @param inState The input state.
+ * @param inComponent The input component.
+ * @param moveX The X coordinate.
+ * @param moveY The Y coordinate.
+ * @return On any resultant error, if any.
+ * @since 2024/07/27
+ */
+typedef sjme_errorCode (*sjme_scritchui_fb_lightCursorListenerFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInValue sjme_jint moveX,
+	sjme_attrInValue sjme_jint moveY);
+
 /** Hover listener, same parameters as click. */
 typedef sjme_scritchui_fb_lightClickListenerFunc
 	sjme_scritchui_fb_lightHoverListenerFunc;
@@ -80,6 +96,9 @@ typedef struct sjme_scritchui_fb_widgetState
 	
 	/** Lightweight click. */
 	sjme_scritchui_fb_lightClickListenerFunc lightClickListener;
+	
+	/** Lightweight cursor. */
+	sjme_scritchui_fb_lightCursorListenerFunc lightCursorListener;
 	
 	/** Lightweight hover. */
 	sjme_scritchui_fb_lightHoverListenerFunc lightHoverListener;
@@ -199,6 +218,19 @@ typedef sjme_errorCode (*sjme_scritchui_fb_intern_lightweightInitFunc)(
 	sjme_attrInNotNull sjme_scritchui_paintListenerFunc paintListener);
 
 /**
+ * Returns the logical button that was pressed.
+ * 
+ * @param inState The input state.
+ * @param inEvent The input event.
+ * @return Any resultant error, if any.
+ * @since 2024/07/27
+ */
+typedef sjme_errorCode (*sjme_scritchui_fb_intern_logicalButtonFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull const sjme_scritchinput_event* inEvent,
+	sjme_attrOutNotNull sjme_scritchinput_key* outKey);
+
+/**
  * Refreshes the specified component.
  * 
  * @param inState The input state.
@@ -263,6 +295,9 @@ struct sjme_scritchui_implInternFunctions
 	/** Initialize lightweight component. */
 	sjme_scritchui_fb_intern_lightweightInitFunc lightweightInit;
 	
+	/** Get logical button. */
+	sjme_scritchui_fb_intern_logicalButtonFunc logicalButton;
+	
 	/** Refresh widget. */
 	sjme_scritchui_fb_intern_refreshFunc refresh;
 	
@@ -279,6 +314,11 @@ sjme_errorCode sjme_scritchui_fb_intern_lightweightInit(
 	sjme_attrOutNotNull sjme_scritchui_fb_widgetState** outWState,
 	sjme_attrInValue sjme_jboolean isInteractive,
 	sjme_attrInNotNull sjme_scritchui_paintListenerFunc paintListener);
+
+sjme_errorCode sjme_scritchui_fb_intern_logicalButton(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull const sjme_scritchinput_event* inEvent,
+	sjme_attrOutNotNull sjme_scritchinput_key* outKey);
 
 sjme_errorCode sjme_scritchui_fb_intern_refresh(
 	sjme_attrInNotNull sjme_scritchui inState,
