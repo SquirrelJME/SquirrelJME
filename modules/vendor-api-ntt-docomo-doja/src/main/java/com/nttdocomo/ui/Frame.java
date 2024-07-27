@@ -9,8 +9,10 @@
 
 package com.nttdocomo.ui;
 
+import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFElementColor;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayManager;
 import java.lang.ref.WeakReference;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Displayable;
@@ -57,15 +59,10 @@ public abstract class Frame
 		for (int i = 0; i < Frame._NUM_SOFT_KEYS; i++)
 			softKeys[i] = new Command("", Command.ITEM, i);
 		
-		throw Debugging.todo();
-		/*
 		// Use default background color
-		UIBackend backend = UIBackendFactory.getInstance(true);
-		int defaultBgColor = backend.metric(backend.displays()[0],
-			UIMetricType.COLOR_CANVAS_BACKGROUND) | 0xFF_000000;
-		this._bgColor = new __BGColor__(defaultBgColor);
-		
-		 */
+		this._bgColor = new __BGColor__(DisplayManager.instance().scritch()
+			.environment().lookAndFeel().elementColor(null,
+				ScritchLAFElementColor.PANEL_BACKGROUND) | 0xFF_000000);
 	}
 	
 	/**

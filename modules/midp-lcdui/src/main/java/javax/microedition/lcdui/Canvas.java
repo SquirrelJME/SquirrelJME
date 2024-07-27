@@ -10,8 +10,10 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchLAFInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchPanelInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
+import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFElementColor;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -986,17 +988,21 @@ public abstract class Canvas
 		// Draw background?
 		if (!this._isOpaque)
 		{
+			ScritchLAFInterface lafApi =
+				this._state.scritchApi().environment().lookAndFeel();
+			ScritchPanelBracket panel = this._state.scritchPanel();
+			
 			// Determine the color to draw
-			int bgColor = this._state.scritchApi().environment().lookAndFeel()
-				.panelBackgroundColor();
+			int bgColor = lafApi.elementColor(panel,
+				ScritchLAFElementColor.PANEL_BACKGROUND);
 			
 			// Draw entire background
 			subGfx.setAlphaColor(bgColor | 0xFF_000000);
 			subGfx.fillRect(0, 0, __sw, __sh);
 			
 			// Use a default pen color
-			int fgColor = this._state.scritchApi().environment().lookAndFeel()
-				.panelForegroundColor();
+			int fgColor = lafApi.elementColor(panel,
+				ScritchLAFElementColor.PANEL_FOREGROUND);
 			subGfx.setAlphaColor(fgColor | 0xFF_000000);
 		}
 		

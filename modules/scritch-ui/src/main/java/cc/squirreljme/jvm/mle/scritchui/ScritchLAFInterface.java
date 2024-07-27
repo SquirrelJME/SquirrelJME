@@ -97,24 +97,4 @@ public interface ScritchLAFInterface
 	 */
 	@SquirrelJMEVendorApi
 	boolean isDarkMode();
-	
-	/**
-	 * Returns the color that is used for the background of panels.
-	 *
-	 * @return The panel background color.
-	 * @since 2024/03/19
-	 */
-	@SquirrelJMEVendorApi
-	@Range(from = 0, to = 0xFFFFFF)
-	int panelBackgroundColor();
-	
-	/**
-	 * Returns the color that is used for the foreground of panels.
-	 *
-	 * @return The panel foreground color.
-	 * @since 2024/03/19
-	 */
-	@SquirrelJMEVendorApi
-	@Range(from = 0, to = 0xFFFFFF)
-	int panelForegroundColor();
 }

@@ -235,8 +235,14 @@ typedef enum sjme_scritchui_lafElementColorType
 	/** Focus border. */
 	SJME_SCRITCHUI_LAF_ELEMENT_COLOR_FOCUS_BORDER = 6,
 	
+	/** Panel background color. */
+	SJME_SCRITCHUI_LAF_ELEMENT_COLOR_PANEL_BACKGROUND = 7,
+	
+	/** Panel foreground color. */
+	SJME_SCRITCHUI_LAF_ELEMENT_COLOR_PANEL_FOREGROUND = 8,
+	
 	/** The number of element colors. */
-	SJME_SCRITCHUI_NUM_LAF_ELEMENT_COLOR = 7,
+	SJME_SCRITCHUI_NUM_LAF_ELEMENT_COLOR = 9,
 } sjme_scritchui_lafElementColorType;
 
 /**

@@ -54,7 +54,18 @@ public interface ScritchLAFElementColor
 	byte FOCUS_BORDER =
 		6;
 	
+	/** Panel background color. */
+	@SquirrelJMEVendorApi
+	byte PANEL_BACKGROUND =
+		7;
+	
+	/** Panel foreground color. */
+	@SquirrelJMEVendorApi
+	byte PANEL_FOREGROUND =
+		8;
+	
+	/** The number of available colors. */
 	@SquirrelJMEVendorApi
 	byte NUM_LAF_ELEMENT_COLOR =
-		7;
+		9;
 }

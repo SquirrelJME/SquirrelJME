@@ -81,16 +81,4 @@ public class DylibLookAndFeelInterface
 	{
 		return false;
 	}
-	
-	@Override
-	public int panelBackgroundColor()
-	{
-		return 0xFFFFFFFF;
-	}
-	
-	@Override
-	public int panelForegroundColor()
-	{
-		return 0;
-	}
 }

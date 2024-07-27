@@ -30,10 +30,16 @@ sjme_errorCode sjme_scritchui_core_lafElementColor(
 	if (inState->impl->lafElementColor == NULL)
 		return SJME_ERROR_NOT_IMPLEMENTED;
 	
-	/* Obtain theme color. */
+	/* Panels are always black on white. */
 	rgb = 0;
-	if (sjme_error_is(error = inState->impl->lafElementColor(inState,
-		inContext, &rgb, elementColor)))
+	if (elementColor == SJME_SCRITCHUI_LAF_ELEMENT_COLOR_PANEL_BACKGROUND)
+		rgb = 0xFFFFFFFF;
+	else if (elementColor == SJME_SCRITCHUI_LAF_ELEMENT_COLOR_PANEL_FOREGROUND)
+		rgb = 0xFF000000;
+	
+	/* Obtain theme color. */
+	else if (sjme_error_is(error = inState->impl->lafElementColor(
+		inState, inContext, &rgb, elementColor)))
 		return sjme_error_default(error);
 	
 	/* Normalize color. */
