@@ -297,12 +297,15 @@ sjme_errorCode sjme_scritchui_fb_intern_logicalButton(
 			case SJME_SCRITCHINPUT_KEY_VGAME_C:
 			case SJME_SCRITCHINPUT_KEY_VGAME_D:
 			case SJME_SCRITCHINPUT_KEY_SPACE:
+			case '.':
 				target = SJME_SCRITCHINPUT_KEY_SPACE;
 				break;
 			
 			case SJME_SCRITCHINPUT_KEY_ENTER:
 			case SJME_SCRITCHINPUT_KEY_VGAME_FIRE:
 			case SJME_SCRITCHINPUT_KEY_NUMPAD_ENTER:
+			case 'f':
+			case 'F':
 				target = SJME_SCRITCHINPUT_KEY_ENTER;
 				break;
 			
@@ -311,7 +314,9 @@ sjme_errorCode sjme_scritchui_fb_intern_logicalButton(
 			case SJME_SCRITCHINPUT_KEY_VGAME_UP:
 			case SJME_SCRITCHINPUT_KEY_NUMPAD_MINUS:
 			case 'w':
+			case 'W':
 			case 'k':
+			case 'K':
 				target = SJME_SCRITCHINPUT_KEY_UP;
 				break;
 			
@@ -320,7 +325,9 @@ sjme_errorCode sjme_scritchui_fb_intern_logicalButton(
 			case SJME_SCRITCHINPUT_KEY_VGAME_DOWN:
 			case SJME_SCRITCHINPUT_KEY_NUMPAD_PLUS:
 			case 's':
+			case 'S':
 			case 'j':
+			case 'J':
 				target = SJME_SCRITCHINPUT_KEY_DOWN;
 				break;
 			
@@ -328,7 +335,9 @@ sjme_errorCode sjme_scritchui_fb_intern_logicalButton(
 			case SJME_SCRITCHINPUT_KEY_VGAME_LEFT:
 			case SJME_SCRITCHINPUT_KEY_NUMPAD_DIVIDE:
 			case 'a':
+			case 'A':
 			case 'h':
+			case 'H':
 				target = SJME_SCRITCHINPUT_KEY_LEFT;
 				break;
 			
@@ -336,15 +345,25 @@ sjme_errorCode sjme_scritchui_fb_intern_logicalButton(
 			case SJME_SCRITCHINPUT_KEY_VGAME_RIGHT:
 			case SJME_SCRITCHINPUT_KEY_NUMPAD_MULTIPLY:
 			case 'd':
+			case 'D':
 			case 'l':
+			case 'L':
 				target = SJME_SCRITCHINPUT_KEY_RIGHT;
 				break;
 			
 			case SJME_SCRITCHINPUT_KEY_HOME:
+			case 'y':
+			case 'Y':
+			case 'b':
+			case 'B':
 				target = SJME_SCRITCHINPUT_KEY_HOME;
 				break;
 			
 			case SJME_SCRITCHINPUT_KEY_END:
+			case 'u':
+			case 'U':
+			case 'n':
+			case 'N':
 				target = SJME_SCRITCHINPUT_KEY_END;
 				break;
 			
