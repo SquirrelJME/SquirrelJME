@@ -151,11 +151,17 @@ static sjme_errorCode sjme_scritchui_fb_eventInput(
 		
 		/* Select item? */
 		if (logical == SJME_SCRITCHINPUT_KEY_SPACE)
-			;
+		{
+			if (wState->lightSelectListener != NULL)
+				return wState->lightSelectListener(inState, inComponent);
+		}
 		
 		/* Activate item? */
 		else if (logical == SJME_SCRITCHINPUT_KEY_ENTER)
-			;
+		{
+			if (wState->lightActivateListener != NULL)
+				return wState->lightActivateListener(inState, inComponent);
+		}
 		
 		/* Movement? */
 		else

@@ -32,6 +32,18 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 /**
+ * Callback for when an item has been activated.
+ * 
+ * @param inState The input state.
+ * @param inComponent The input component.
+ * @return On any resultant error, if any.
+ * @since 2024/07/27
+ */
+typedef sjme_errorCode (*sjme_scritchui_fb_lightActivateListenerFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
+
+/**
  * Callback for when a lightweight component is clicked.
  * 
  * @param inState The input state.
@@ -69,6 +81,10 @@ typedef sjme_errorCode (*sjme_scritchui_fb_lightCursorListenerFunc)(
 typedef sjme_scritchui_fb_lightClickListenerFunc
 	sjme_scritchui_fb_lightHoverListenerFunc;
 
+/** Selection listener is the same as activate. */
+typedef sjme_scritchui_fb_lightActivateListenerFunc
+	sjme_scritchui_fb_lightSelectListenerFunc;
+
 /**
  * Widget state and interactions accordingly.
  * 
@@ -94,6 +110,9 @@ typedef struct sjme_scritchui_fb_widgetState
 	/** The selection buffer pencil. */
 	sjme_scritchui_pencil selBufPencil;
 	
+	/** Lightweight activation. */
+	sjme_scritchui_fb_lightActivateListenerFunc lightActivateListener;
+	
 	/** Lightweight click. */
 	sjme_scritchui_fb_lightClickListenerFunc lightClickListener;
 	
@@ -102,6 +121,9 @@ typedef struct sjme_scritchui_fb_widgetState
 	
 	/** Lightweight hover. */
 	sjme_scritchui_fb_lightHoverListenerFunc lightHoverListener;
+	
+	/** Lightweight select. */
+	sjme_scritchui_fb_lightSelectListenerFunc lightSelectListener;
 } sjme_scritchui_fb_widgetState;
 
 /**
