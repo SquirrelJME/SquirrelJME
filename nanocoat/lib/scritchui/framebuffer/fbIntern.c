@@ -401,6 +401,10 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 					if (sg != NULL && doSel)
 						sg->api->drawSubstring(sg, &seq, 0, seqLen,
 							0, 0, 0);
+					
+					/* If disabled, cross it out. */
+					if (dlAt->mod & SJME_SCRITCHUI_FB_DL_TYPE_MOD_DISABLED)
+						g->api->drawHoriz(g, 0, bh / 2, bw);
 				}
 				break;
 		}
