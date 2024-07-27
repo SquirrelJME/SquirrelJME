@@ -44,10 +44,9 @@ static sjme_errorCode sjme_scritchui_fb_list_draw(
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
 	/* Widget state for interactions. */
-	wState = NULL;
-	if (sjme_error_is(error = sjme_alloc(inState->pool,
-		sizeof(*wState), &wState)) || wState == NULL)
-		return sjme_error_default(error);
+	wState = inComponent->common.handle[SJME_SUI_FB_H_WSTATE];
+	if (wState == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Recover choice. */
 	choice = NULL;
@@ -162,9 +161,13 @@ static sjme_errorCode sjme_scritchui_fb_list_lightClick(
 	sjme_scritchui_uiChoice choice;
 	sjme_scritchui_uiChoiceItem choiceItem;
 	sjme_jboolean newState;
+	sjme_scritchui_fb_widgetState* wState;
 	
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Recover component state. */
+	wState = inComponent->common.handle[SJME_SUI_FB_H_WSTATE];
 	
 	/* Recover selection index. */
 	atIndex = selectionId - 1;
@@ -191,9 +194,50 @@ static sjme_errorCode sjme_scritchui_fb_list_lightClick(
 	if (choice->type == SJME_SCRITCHUI_CHOICE_TYPE_MULTIPLE)
 		newState = !choiceItem->isSelected;
 	
+	/* We actually clicked on something, so change the focus index. */
+	wState->subFocusIndex = atIndex;
+	
 	/* Set new state. */
 	return inState->api->choiceItemSetSelected(inState,
 		inComponent, atIndex, newState);
+}
+
+static sjme_errorCode sjme_scritchui_fb_list_lightHover(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInValue sjme_jint selectionId,
+	sjme_attrInValue sjme_jint atX,
+	sjme_attrInValue sjme_jint atY)
+{
+	sjme_errorCode error;
+	sjme_jint atIndex;
+	sjme_scritchui_uiChoice choice;
+	sjme_scritchui_fb_widgetState* wState;
+	
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Recover component state. */
+	wState = inComponent->common.handle[SJME_SUI_FB_H_WSTATE];
+	
+	/* Recover selection index. */
+	atIndex = selectionId - 1;
+	
+	/* Recover choice. */
+	choice = NULL;
+	if (sjme_error_is(error = inState->intern->getChoice(inState,
+		inComponent, &choice)) || choice == NULL)
+		return sjme_error_default(error);
+	
+	/* Ignore click if not in bounds. */
+	if (atIndex < 0 || atIndex >= choice->numItems)
+		return SJME_ERROR_NONE;
+	
+	/* We are thinking and are interested in this item, so focus on it. */
+	wState->subFocusIndex = atIndex;
+	
+	/* Perform refresh. */
+	return inState->implIntern->refresh(inState, inComponent);
 }
 
 sjme_errorCode sjme_scritchui_fb_listNew(
@@ -217,6 +261,7 @@ sjme_errorCode sjme_scritchui_fb_listNew(
 	
 	/* Set lightweight functions. */
 	wState->lightClickListener = sjme_scritchui_fb_list_lightClick; 
+	wState->lightHoverListener = sjme_scritchui_fb_list_lightHover;
 	
 	/* Success! */
 	return SJME_ERROR_NONE;

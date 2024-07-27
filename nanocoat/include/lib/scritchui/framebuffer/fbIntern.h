@@ -49,6 +49,10 @@ typedef sjme_errorCode (*sjme_scritchui_fb_lightClickListenerFunc)(
 	sjme_attrInValue sjme_jint atX,
 	sjme_attrInValue sjme_jint atY);
 
+/** Hover listener, same parameters as click. */
+typedef sjme_scritchui_fb_lightClickListenerFunc
+	sjme_scritchui_fb_lightHoverListenerFunc;
+
 /**
  * Widget state and interactions accordingly.
  * 
@@ -71,8 +75,14 @@ typedef struct sjme_scritchui_fb_widgetState
 	/** The selection buffer height. */
 	sjme_jint selBufHeight;
 	
+	/** The selection buffer pencil. */
+	sjme_scritchui_pencil selBufPencil;
+	
 	/** Lightweight click. */
 	sjme_scritchui_fb_lightClickListenerFunc lightClickListener;
+	
+	/** Lightweight hover. */
+	sjme_scritchui_fb_lightHoverListenerFunc lightHoverListener;
 } sjme_scritchui_fb_widgetState;
 
 /**
@@ -189,6 +199,18 @@ typedef sjme_errorCode (*sjme_scritchui_fb_intern_lightweightInitFunc)(
 	sjme_attrInNotNull sjme_scritchui_paintListenerFunc paintListener);
 
 /**
+ * Refreshes the specified component.
+ * 
+ * @param inState The input state.
+ * @param inComponent The component to refresh.
+ * @return Any resultant error, if any.
+ * @since 2024/07/27
+ */
+typedef sjme_errorCode (*sjme_scritchui_fb_intern_refreshFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
+
+/**
  * Renders the given display list.
  * 
  * @param inState The input state.
@@ -239,7 +261,10 @@ typedef sjme_errorCode (*sjme_scritchui_fb_intern_renderInScrollFunc)(
 struct sjme_scritchui_implInternFunctions
 {
 	/** Initialize lightweight component. */
-	sjme_scritchui_fb_intern_lightweightInitFunc lightweightInit;  
+	sjme_scritchui_fb_intern_lightweightInitFunc lightweightInit;
+	
+	/** Refresh widget. */
+	sjme_scritchui_fb_intern_refreshFunc refresh;
 	
 	/** Render directly. */
 	sjme_scritchui_fb_intern_renderFunc render;
@@ -254,6 +279,10 @@ sjme_errorCode sjme_scritchui_fb_intern_lightweightInit(
 	sjme_attrOutNotNull sjme_scritchui_fb_widgetState** outWState,
 	sjme_attrInValue sjme_jboolean isInteractive,
 	sjme_attrInNotNull sjme_scritchui_paintListenerFunc paintListener);
+
+sjme_errorCode sjme_scritchui_fb_intern_refresh(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
 
 sjme_errorCode sjme_scritchui_fb_intern_render(
 	sjme_attrInNotNull sjme_scritchui inState,

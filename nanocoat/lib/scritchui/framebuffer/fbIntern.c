@@ -56,7 +56,7 @@ static sjme_errorCode sjme_scritchui_fb_eventInput(
 	sjme_scritchui_uiComponent inComponent;
 	sjme_scritchui_fb_widgetState* wState;
 	sjme_jint pX, pY, selId;
-	sjme_jboolean hasFocus;
+	sjme_jboolean hasFocus, hover;
 	
 	if (wrappedState == NULL || wrappedComponent == NULL || inEvent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -73,22 +73,33 @@ static sjme_errorCode sjme_scritchui_fb_eventInput(
 	wState = inComponent->common.handle[SJME_SUI_FB_H_WSTATE];
 	if (wState == NULL)
 		return SJME_ERROR_NONE;
+		
+	/* Is the pointer hovering? */
+	hover = SJME_JNI_FALSE;
+	if (inEvent->type == SJME_SCRITCHINPUT_TYPE_MOUSE_MOTION ||
+		inEvent->type == SJME_SCRITCHINPUT_TYPE_STYLUS_HOVER_MOTION)
+		hover = SJME_JNI_TRUE;
 	
-	/* Pointer event? */
+	/* Pointer event, or we are hovering over something? */
 	if (inEvent->type == SJME_SCRITCHINPUT_TYPE_MOUSE_BUTTON_PRESSED ||
 		inEvent->type == SJME_SCRITCHINPUT_TYPE_TOUCH_FINGER_PRESSED ||
-		inEvent->type == SJME_SCRITCHINPUT_TYPE_STYLUS_PEN_PRESSED)
+		inEvent->type == SJME_SCRITCHINPUT_TYPE_STYLUS_PEN_PRESSED ||
+		hover)
 	{
-		/* Check if we have focus. */
-		hasFocus = SJME_JNI_FALSE;
-		if (sjme_error_is(error = inState->api->componentFocusHas(
-			inState, inComponent, &hasFocus)))
-			return sjme_error_default(error);
-		
-		/* If we do not have focus, grab it and do nothing else. */
-		if (!hasFocus)
-			return inState->api->componentFocusGrab(
-				inState, inComponent);
+		/* Only change focus if we are not hovering over this. */
+		if (!hover)
+		{
+			/* Check if we have focus. */
+			hasFocus = SJME_JNI_FALSE;
+			if (sjme_error_is(error = inState->api->componentFocusHas(
+				inState, inComponent, &hasFocus)))
+				return sjme_error_default(error);
+			
+			/* If we do not have focus, grab it and do nothing else. */
+			if (!hasFocus)
+				return inState->api->componentFocusGrab(
+					inState, inComponent);
+		}
 		
 		/* If there is no selection buffer, we cannot handle press events */
 		/* as we have no idea what we even clicked on. */
@@ -108,10 +119,24 @@ static sjme_errorCode sjme_scritchui_fb_eventInput(
 		selId = wState->selBuf[(pY * wState->selBufWidth) + pX] & 0xFFFFFF;
 		
 		/* Was there something here that was clicked? */
+		/* Or are we hovering over an item? */
 		if (selId != 0 && wState->lightClickListener != NULL)
-			return wState->lightClickListener(inState, inComponent,
-				selId, pX, pY);
+		{
+			if (hover)
+				return wState->lightHoverListener(inState, inComponent,
+					selId, pX, pY);
+			else
+				return wState->lightClickListener(inState, inComponent,
+					selId, pX, pY);
+		}
+		
+		/* Success! */
 		return SJME_ERROR_NONE;
+	}
+	
+	/* Key event? */
+	else if (inEvent->type == SJME_SCRITCHINPUT_TYPE_KEY_PRESSED)
+	{
 	}
 	
 	/* Success! */
@@ -187,6 +212,31 @@ sjme_errorCode sjme_scritchui_fb_intern_lightweightInit(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_scritchui_fb_intern_refresh(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent)
+{
+	sjme_errorCode error;
+	sjme_scritchui wrappedState;
+	sjme_scritchui_uiComponent wrappedComponent;
+	
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Recover wrapped state. */
+	wrappedState = inState->wrappedState;
+	wrappedComponent =
+		inComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
+	
+	/* Request repaint for the wrapped component. */
+	if (sjme_error_is(error = wrappedState->api->componentRevalidate(
+		wrappedState, wrappedComponent)))
+		return sjme_error_default(error);
+	return wrappedState->api->componentRepaint(wrappedState,
+		wrappedComponent,
+		0, 0, INT32_MAX, INT32_MAX);
+}
+
 sjme_errorCode sjme_scritchui_fb_intern_render(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNullable sjme_scritchui_uiComponent inComponent,
@@ -256,9 +306,16 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 				if (sjme_error_is(error = sjme_alloc_free(
 					wState->selBuf)))
 					goto fail_freeSelBuf;
+			wState->selBuf = NULL;
+			
+			/* Delete pencil. */
+			if (wState->selBufPencil != NULL)
+				if (sjme_error_is(error = sjme_alloc_free(
+					wState->selBufPencil)))
+					goto fail_freeSelPencil;
+			wState->selBufPencil = NULL;
 			
 			/* Clear everything. */
-			wState->selBuf = NULL;
 			wState->selBufLen = 0;
 			wState->selBufWidth = 0;
 			wState->selBufHeight = 0;
@@ -282,16 +339,24 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 			((sjme_intPointer)cT * sizeof(sjme_jint));
 		sgFrontEnd.wrapper = wState->selBuf;
 		
-		/* Wrap a pencil over the selection buffer. */
-		if (sjme_error_is(inState->api->hardwareGraphics(inState,
-			&sg, NULL,
-			SJME_GFX_PIXEL_FORMAT_INT_RGB888,
-			cW, cH,
-			&sjme_scritchui_fb_selBufFuncs,
-			&sgFrontEnd,
-			0, 0, cW, cH,
-			NULL)) || sg == NULL)
-			goto fail_initSelPen;
+		/* Wrap a pencil over the selection buffer if we have none yet. */
+		sg = wState->selBufPencil;
+		if (sg == NULL)
+		{
+			/* Setup buffer drawing. */
+			if (sjme_error_is(inState->api->hardwareGraphics(inState,
+				&sg, NULL,
+				SJME_GFX_PIXEL_FORMAT_INT_RGB888,
+				cW, cH,
+				&sjme_scritchui_fb_selBufFuncs,
+				&sgFrontEnd,
+				0, 0, cW, cH,
+				NULL)) || sg == NULL)
+				goto fail_initSelPen;
+			
+			/* Cache pencil for future operations. */
+			wState->selBufPencil = sg;
+		}
 	}
 	
 	/* Obtain all the look and feel colors. */
@@ -458,10 +523,6 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 		g->api->setStrokeStyle(g, SJME_SCRITCHUI_PENCIL_STROKE_SOLID);
 	}
 	
-	/* Free pen before leaving. */
-	if (sg != NULL)
-		sjme_alloc_free(sg);
-	
 	/* Success! */
 	return SJME_ERROR_NONE;
 	
@@ -471,11 +532,9 @@ fail_sgSelColor:
 fail_sgCopyParam:
 fail_lafColor:
 fail_initSelPen:
-	/* Free pen before leaving. */
-	if (sg != NULL)
-		sjme_alloc_free(sg);
 fail_allocSelBuf:
 fail_freeSelBuf:
+fail_freeSelPencil:
 fail_componentSize:
 	/* Debug. */
 	sjme_message("FB Render Failed: %d", error);
