@@ -118,10 +118,10 @@ final class __MIDPCanvas__
 			mg, bgColor, null);
 		
 		// Fill with the background color
-		int oldColor = mg.getAlphaColor();
+		/*int oldColor = mg.getAlphaColor();
 		mg.setAlphaColor(bgColor._bgColor | 0xFF_000000);
 		mg.fillRect(0, 0, w, h);
-		mg.setAlphaColor(oldColor);
+		mg.setAlphaColor(oldColor);*/
 		
 		// Forward paint call
 		rv.paint(g);

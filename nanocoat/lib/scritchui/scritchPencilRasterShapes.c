@@ -156,7 +156,8 @@ sjme_errorCode sjme_scritchpen_core_fillRect(
 	error = SJME_ERROR_NONE;
 	drawHoriz = g->prim.drawHoriz;
 	for (yz = y, yze = y + h; yz < yze; yz++)
-		error |= drawHoriz(g, x, yz, w);
+		if (sjme_error_is(error = drawHoriz(g, x, yz, w)))
+			break;
 	
 	/* Failed? */
 	if (sjme_error_is(error))

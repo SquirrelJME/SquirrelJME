@@ -112,6 +112,10 @@ static gboolean sjme_scritchui_gtk2_eventExpose(
 	/* Do not perform standard drawing, unless an error occurs. */
 	if (!sjme_error_is(error))
 		return TRUE;
+	
+	/* Debug. */
+	sjme_message("Native draw failed: %d", error);
+	
 	return FALSE;
 }
 

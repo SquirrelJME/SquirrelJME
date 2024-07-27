@@ -155,11 +155,14 @@ sjme_errorCode sjme_thread_spinLockGrab(sjme_thread_spinLock* inLock)
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_thread_spinLockRelease(sjme_thread_spinLock* inLock)
+sjme_errorCode sjme_thread_spinLockRelease(
+	sjme_attrInNotNull sjme_thread_spinLock* inLock,
+	sjme_attrOutNullable sjme_jint* outCount)
 {
 	sjme_errorCode error;
 	sjme_thread current;
 	sjme_jboolean owned;
+	sjme_jint count;
 	
 	if (inLock == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -185,12 +188,13 @@ sjme_errorCode sjme_thread_spinLockRelease(sjme_thread_spinLock* inLock)
 		current, current)))
 	{
 		/* If we count down to zero, then we no longer own the lock. */
-		if (sjme_atomic_sjme_jint_getAdd(&inLock->count,
-			-1) <= 1)
+		if ((count = sjme_atomic_sjme_jint_getAdd(&inLock->count,
+			-1)) <= 1)
 		{
 			sjme_atomic_sjme_thread_set(&inLock->owner,
 				SJME_THREAD_NULL);
-			sjme_atomic_sjme_jint_getAdd(&inLock->count, 0);
+			sjme_atomic_sjme_jint_set(&inLock->count,
+				(count = 0));
 		}
 	}
 	
@@ -203,9 +207,13 @@ sjme_errorCode sjme_thread_spinLockRelease(sjme_thread_spinLock* inLock)
 	sjme_thread_yield();
 	sjme_thread_barrier();
 	
-	/* Success, unless we do not own the lock. */
+	/* Do we not own the lock? */
 	if (!owned)
 		return SJME_ERROR_NOT_LOCK_OWNER;
+	
+	/* Give the lock count that is left. */
+	if (outCount != NULL)
+		*outCount = count;
 	return SJME_ERROR_NONE;
 }
 

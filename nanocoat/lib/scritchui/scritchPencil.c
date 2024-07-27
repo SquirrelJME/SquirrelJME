@@ -36,7 +36,12 @@ sjme_errorCode sjme_scritchpen_core_lock(
 		/* Restore state. */
 		state = &g->lockState;
 		
-		/* Forward if locking is needed. */
+		/* Grab the spin lock. */
+		if (sjme_error_is(error = sjme_thread_spinLockGrab(
+			&state->spinLock)))
+			return sjme_error_default(error);
+		
+		/* Obtain the buffer if we need to. */
 		if (sjme_atomic_sjme_jint_getAdd(&state->count, 1) == 0)
 			if (sjme_error_is(error = g->lock->lock(g)))
 				return sjme_error_default(error);
@@ -65,14 +70,15 @@ sjme_errorCode sjme_scritchpen_core_lockRelease(
 		/* Restore state. */
 		state = &g->lockState;
 		
-		/* Already released? Do nothing... */
-		if (sjme_atomic_sjme_jint_get(&state->count) == 0)
-			return SJME_ERROR_NONE;
-		
 		/* Forward if release is needed. */
 		if (sjme_atomic_sjme_jint_getAdd(&state->count, -1) == 1)
 			if (sjme_error_is(error = g->lock->lockRelease(g)))
 				return sjme_error_default(error);
+		
+		/* Release the spin lock. */
+		if (sjme_error_is(error = sjme_thread_spinLockRelease(
+			&state->spinLock, NULL)))
+			return sjme_error_default(error);
 	}
 	
 	/* Nothing to do! */

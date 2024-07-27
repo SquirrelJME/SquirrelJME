@@ -240,10 +240,13 @@ sjme_errorCode sjme_thread_spinLockGrab(sjme_thread_spinLock* inLock);
  * Releases a spin lock.
  * 
  * @param inLock The lock to release. 
+ * @param outCount Optional count after lock.
  * @return Any resultant error, if any.
  * @since 2024/07/19
  */
-sjme_errorCode sjme_thread_spinLockRelease(sjme_thread_spinLock* inLock);
+sjme_errorCode sjme_thread_spinLockRelease(
+	sjme_attrInNotNull sjme_thread_spinLock* inLock,
+	sjme_attrOutNullable sjme_jint* outCount);
 
 /**
  * Yields execution.

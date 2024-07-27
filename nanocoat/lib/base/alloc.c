@@ -514,7 +514,7 @@ sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc)(
 		{
 			/* Release ownership of lock. */
 			if (sjme_error_is(error = sjme_thread_spinLockRelease(
-				&pool->spinLock)))
+				&pool->spinLock, NULL)))
 				return sjme_error_default(error);
 			
 #if defined(SJME_CONFIG_DEBUG)
@@ -644,7 +644,7 @@ sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc)(
 	
 	/* Release ownership of lock. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(
-		&pool->spinLock)))
+		&pool->spinLock, NULL)))
 		return sjme_error_default(error);
 	
 	/* Use the given link. */
@@ -655,7 +655,7 @@ fail_corrupt:
 fail_noMemory:
 	/* Release ownership of lock before we leave. */
 	if (sjme_error_is(sjme_thread_spinLockRelease(
-		&pool->spinLock)))
+		&pool->spinLock, NULL)))
 		return sjme_error_default(error);
 	
 	return sjme_error_default(error);
@@ -881,7 +881,7 @@ sjme_errorCode sjme_noOptimize sjme_alloc_free(
 	
 	/* Release ownership of lock. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(
-		&pool->spinLock)))
+		&pool->spinLock, NULL)))
 		return sjme_error_default(error);
 
 	/* Success! */
@@ -892,7 +892,7 @@ fail_corrupt:
 fail_weakEnqueueCall:
 fail_merge:
 	if (sjme_error_is(sjme_thread_spinLockRelease(
-		&pool->spinLock)))
+		&pool->spinLock, NULL)))
 		return sjme_error_default(error);
 	
 	return sjme_error_default(error);
@@ -1256,7 +1256,7 @@ sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc_weakNew)(
 	
 	/* Release ownership of lock. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(
-		&inPool->spinLock)))
+		&inPool->spinLock, NULL)))
 		return sjme_error_default(error);
 	
 	/* Success! */
@@ -1272,7 +1272,7 @@ fail_allocBlock:
 	
 	/* Release ownership of lock. */
 	if (sjme_error_is(sjme_thread_spinLockRelease(
-		&inPool->spinLock)))
+		&inPool->spinLock, NULL)))
 		return sjme_error_default(error);
 	
 	return sjme_error_default(error);
@@ -1317,7 +1317,7 @@ sjme_errorCode sjme_alloc_weakRef(
 		
 	/* Release ownership of lock. */
 	if (sjme_error_is(sjme_thread_spinLockRelease(
-		&pool->spinLock)))
+		&pool->spinLock, NULL)))
 		return sjme_error_default(error);
 	
 	return error;

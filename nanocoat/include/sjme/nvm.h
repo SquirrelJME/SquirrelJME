@@ -1901,8 +1901,11 @@ typedef enum sjme_errorCode
 	/** Scan out of bounds. */
 	SJME_ERROR_SCAN_OUT_OF_BOUNDS = -73,
 	
+	/** Native graphics access not yet valid. */
+	SJME_ERROR_FRAMEBUFFER_NOT_READY = -74,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -74
+	SJME_NUM_ERROR_CODES = -75
 } sjme_errorCode;
 
 /**

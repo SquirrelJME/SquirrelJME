@@ -96,7 +96,10 @@ SJME_SCRITCHUI_LISTENER_DECLARE(visible);
  */
 typedef struct sjme_scritchui_pencilLockState
 {
-	/** The current lock count. */
+	/** Spin lock for access to the buffer. */
+	sjme_thread_spinLock spinLock;
+	
+	/** The times this was opened. */
 	sjme_atomic_sjme_jint count;
 	
 	/** The front end source for drawing. */

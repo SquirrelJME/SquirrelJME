@@ -1031,7 +1031,7 @@ public enum VMType
 		args.add("-Xname:" + __task.getProject().getName());
 		
 		// The current clutter level
-		args.add("-XclutterLevel:" +
+		args.add("-Xclutter:" +
 			__task.getClassifier().getTargetClassifier()
 				.getClutterLevel());
 		
