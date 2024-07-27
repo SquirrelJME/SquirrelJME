@@ -138,6 +138,52 @@ static sjme_errorCode sjme_scritchui_fb_list_draw(
 		inComponent, g, dlFull, dlCount, NULL, NULL);
 }
 
+static sjme_errorCode sjme_scritchui_fb_list_lightClick(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInValue sjme_jint selectionId,
+	sjme_attrInValue sjme_jint atX,
+	sjme_attrInValue sjme_jint atY)
+{
+	sjme_errorCode error;
+	sjme_jint atIndex;
+	sjme_scritchui_uiChoice choice;
+	sjme_scritchui_uiChoiceItem choiceItem;
+	sjme_jboolean newState;
+	
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover selection index. */
+	atIndex = selectionId - 1;
+	
+	/* Recover choice. */
+	choice = NULL;
+	if (sjme_error_is(error = inState->intern->getChoice(inState,
+		inComponent, &choice)) || choice == NULL)
+		return sjme_error_default(error);
+	
+	/* Ignore click if not in bounds. */
+	if (atIndex < 0 || atIndex >= choice->numItems)
+		return SJME_ERROR_NONE;
+	
+	/* Get the item here. */
+	choiceItem = choice->items->elements[atIndex];
+	
+	/* If this item is disabled, then ignore any action on it. */
+	if (!choiceItem->isEnabled)
+		return SJME_ERROR_NONE;
+	
+	/* For multiple choice, toggle selection. */
+	newState = SJME_JNI_TRUE;
+	if (choice->type == SJME_SCRITCHUI_CHOICE_TYPE_MULTIPLE)
+		newState = !choiceItem->isSelected;
+	
+	/* Set new state. */
+	return inState->api->choiceItemSetSelected(inState,
+		inComponent, atIndex, newState);
+}
+
 sjme_errorCode sjme_scritchui_fb_listNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiList inList,
@@ -156,6 +202,9 @@ sjme_errorCode sjme_scritchui_fb_listNew(
 		SJME_JNI_TRUE,
 		sjme_scritchui_fb_list_draw)) || wState == NULL)
 		return sjme_error_default(error);
+	
+	/* Set lightweight functions. */
+	wState->lightClickListener = sjme_scritchui_fb_list_lightClick; 
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
