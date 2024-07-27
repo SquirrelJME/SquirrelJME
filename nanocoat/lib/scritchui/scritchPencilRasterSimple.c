@@ -43,18 +43,23 @@ sjme_errorCode sjme_scritchpen_corePrim_drawHoriz(
 	/* Determine end coordinate. */
 	ex = x + w;
 	
-	/* Clip into bounds. */
+	/* Out of bounds? */
 	clipLine = &g->state.clipLine;
+	if (x >= g->width || x >= clipLine->e.x ||
+		y < clipLine->s.y || y >= clipLine->e.y)
+		return SJME_ERROR_NONE;
+	
+	/* Clip into bounds. */
 	if (x < clipLine->s.x)
 		x = clipLine->s.x;
-	else if (x > clipLine->e.x)
-		x = clipLine->e.x;
+	if (x < 0)
+		x = 0;
 	
 	/* Clip end into bounds. */
-	if (ex < clipLine->s.x)
-		ex = clipLine->s.x;
-	else if (ex > clipLine->e.x)
+	if (ex > clipLine->e.x)
 		ex = clipLine->e.x;
+	if (ex > g->width)
+		ex = g->width;
 	
 	/* Outside the clip? */
 	w = ex - x;

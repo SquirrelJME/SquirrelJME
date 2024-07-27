@@ -33,7 +33,14 @@ static sjme_errorCode sjme_scritchui_basicRawScanGet(
 	if (x < 0 || y < 0 || x >= g->width || y >= g->height ||
 		inDataLen < 0 || inNumPixels < 0 ||
 		(x + inNumPixels) < 0 || (x + inNumPixels) > g->width)
-		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	{
+#if defined(SJME_CONFIG_DEBUG)
+		sjme_message("basicRawScanGet(%p, %d, %d, %p, %d, %d) != [%d, %d]",
+			g, x, y, outData, inDataLen, inNumPixels,
+			g->width, g->height);
+#endif
+		return SJME_ERROR_SCAN_OUT_OF_BOUNDS;
+	}
 	
 	/* Buffer not locked? */
 	if (g->lockState.base == NULL)
@@ -87,7 +94,18 @@ static sjme_errorCode sjme_scritchui_basicRawScanPutPure(
 		targetI < 0 || targetI > g->lockState.baseLimitBytes ||
 		(targetI + srcRawLen) < 0 ||
 		(targetI + srcRawLen) > g->lockState.baseLimitBytes)
-		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	{
+#if defined(SJME_CONFIG_DEBUG)
+		sjme_message(
+			"basicRawScanPutPure(%p, %d, %d, %p, %d, %d) != [%d, %d]"
+				" of blb=%d; ti=%d; slb=%d; bpp=%d",
+			g, x, y, srcRaw, srcRawLen, srcNumPixels,
+			g->width, g->height,
+			g->lockState.baseLimitBytes,
+			targetI, g->scanLenBytes, g->bitsPerPixel);
+#endif
+		return SJME_ERROR_SCAN_OUT_OF_BOUNDS;
+	}
 	
 	/* Copy over the buffer directly. */
 	targetP = SJME_POINTER_OFFSET(g->lockState.base, targetI);

@@ -557,9 +557,9 @@ sjme_errorCode sjme_scritchpen_core_setClip(
 		y = 0;
 	
 	/* If the clip exceeds the buffer bounds, clip it. */
-	if (ex > g->width)
+	if (ex >= g->width)
 		ex = g->width;
-	if (ey > g->height)
+	if (ey >= g->height)
 		ey = g->height;
 	
 	/* Translate back. */

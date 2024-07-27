@@ -1898,8 +1898,11 @@ typedef enum sjme_errorCode
 	/** The native widget system failed for some reason. */
 	SJME_ERROR_NATIVE_WIDGET_FAILURE = -72,
 	
+	/** Scan out of bounds. */
+	SJME_ERROR_SCAN_OUT_OF_BOUNDS = -73,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -73
+	SJME_NUM_ERROR_CODES = -74
 } sjme_errorCode;
 
 /**

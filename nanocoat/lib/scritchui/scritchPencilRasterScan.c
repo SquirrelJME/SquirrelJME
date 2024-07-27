@@ -523,12 +523,26 @@ sjme_errorCode sjme_scritchpen_coreUtil_rgbScanGet(
 	rgbBytes = inNumPixels * sizeof(*destRgb);
 	if (x < 0 || y < 0 || inNumPixels < 0 ||
 		ex < 0 || ex > g->width || rgbBytes < 0)
-		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	{
+#if defined(SJME_CONFIG_DEBUG)
+		sjme_message("rgbScanGet(%p, %d, %d, %p, %d) != [%d, %d]",
+			g, x, y, destRgb, inNumPixels,
+			g->width, g->height);
+#endif
+		return SJME_ERROR_SCAN_OUT_OF_BOUNDS;
+	}
 	
 	/* How much data is to be read? */
 	rawScanBytes = (inNumPixels * g->bitsPerPixel) / 8;
 	if (rawScanBytes < 0)
-		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	{
+#if defined(SJME_CONFIG_DEBUG)
+		sjme_message("rgbScanGet(%p, %d, %d, %p, %d) != [%d, %d]",
+			g, x, y, destRgb, inNumPixels,
+			g->width, g->height);
+#endif
+		return SJME_ERROR_SCAN_OUT_OF_BOUNDS;
+	}
 	
 	/* Allocate. */
 	rawScan = sjme_alloca(rawScanBytes);
@@ -573,12 +587,26 @@ sjme_errorCode sjme_scritchpen_coreUtil_rgbScanPut(
 	if (x < 0 || y < 0 || inNumPixels < 0 ||
 		ex < 0 || ex > g->width || rgbBytes < 0 ||
 		(mulAlpha && (mulAlphaValue < 0 || mulAlphaValue > 255)))
-		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	{
+#if defined(SJME_CONFIG_DEBUG)
+		sjme_message("rgbScanPut(%p, %d, %d, %p, %d, %d, %d, %d) != [%d, %d]",
+			g, x, y, srcRgb, inNumPixels, srcAlpha, mulAlpha, mulAlphaValue,
+			g->width, g->height);
+#endif
+		return SJME_ERROR_SCAN_OUT_OF_BOUNDS;
+	}
 	
 	/* How much data is to be written? */
 	rawScanBytes = (inNumPixels * g->bitsPerPixel) / 8;
 	if (rawScanBytes < 0)
-		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	{
+#if defined(SJME_CONFIG_DEBUG)
+		sjme_message("rgbScanPut(%p, %d, %d, %p, %d, %d, %d, %d) != [%d, %d]",
+			g, x, y, srcRgb, inNumPixels, srcAlpha, mulAlpha, mulAlphaValue,
+			g->width, g->height);
+#endif
+		return SJME_ERROR_SCAN_OUT_OF_BOUNDS;
+	}
 	
 	/* Do we need to alpha blend? */
 	if (srcAlpha || mulAlpha)
