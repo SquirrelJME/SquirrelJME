@@ -136,121 +136,21 @@ static sjme_errorCode sjme_scritchui_fb_list_draw(
 		inComponent, g, dlFull, dlCount, NULL, NULL);
 }
 
-static sjme_errorCode sjme_scritchui_fb_list_input(
-	sjme_attrInNotNull sjme_scritchui wrappedState,
-	sjme_attrInNotNull sjme_scritchui_uiComponent wrappedComponent,
-	sjme_attrInNotNull const sjme_scritchinput_event* inEvent)
-{
-	sjme_scritchui inState;
-	sjme_scritchui_uiComponent inComponent;
-	sjme_scritchui_fb_widgetState* wState;
-	sjme_jint pX, pY, selId;
-	
-	if (wrappedState == NULL || wrappedComponent == NULL || inEvent == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-		
-	/* Get owning state and component. */
-	inState = wrappedComponent->common.frontEnd.data;
-	inComponent = wrappedComponent->common.frontEnd.wrapper;
-	
-	if (inState == NULL || inComponent == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Recover the widget state for this lightweight component. */
-	/* If there is no state yet, then we never rendered this widget. */
-	wState = inComponent->common.handle[SJME_SUI_FB_H_WSTATE];
-	if (wState == NULL)
-		return SJME_ERROR_NONE;
-	
-	/* Pointer event? */
-	if (inEvent->type == SJME_SCRITCHINPUT_TYPE_MOUSE_BUTTON_PRESSED ||
-		inEvent->type == SJME_SCRITCHINPUT_TYPE_TOUCH_FINGER_PRESSED ||
-		inEvent->type == SJME_SCRITCHINPUT_TYPE_STYLUS_PEN_PRESSED)
-	{
-		/* If there is no selection buffer, we cannot handle press events */
-		/* as we have no idea what we even clicked on. */
-		if (wState->selBuf == NULL)
-			return SJME_ERROR_NONE;
-		
-		/* Recover pointer coordinates. */
-		pX = inEvent->data.mouseButton.x;
-		pY = inEvent->data.mouseButton.y;
-		
-		/* Outside the buffer edge? */
-		if (pX < 0 || pY < 0 ||
-			pX >= wState->selBufWidth || pY >= wState->selBufHeight)
-			return SJME_ERROR_NONE;
-		
-		/* Read the selection id here. */
-		selId = wState->selBuf[(pY * wState->selBufWidth) + pX] & 0xFFFFFF;
-		
-		/* Was there something here? */
-		if (selId != 0)
-			sjme_message("Select %d at (%d, %d)", selId, pX, pY);
-		
-		/* Success! */
-		return SJME_ERROR_NONE;
-	}
-	
-	/* Success! */
-	return SJME_ERROR_NONE;
-}
-
 sjme_errorCode sjme_scritchui_fb_listNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiList inList,
 	sjme_attrInValue const sjme_scritchui_impl_initParamList* init)
 {
 	sjme_errorCode error;
-	sjme_scritchui wrappedState;
-	sjme_scritchui_uiPanel wrappedPanel;
-	sjme_scritchui_fb_widgetState* wState;
 	
 	if (inState == NULL || inList == NULL || init == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Recover wrapped state. */
-	wrappedState = inState->wrappedState;
-	
-	/* Widget state for interactions. */
-	wState = NULL;
-	if (sjme_error_is(error = sjme_alloc(inState->pool,
-		sizeof(*wState), &wState)) || wState == NULL)
-		return sjme_error_default(error);
-	
-	/* Store in state. */
-	inList->component.common.handle[SJME_SUI_FB_H_WSTATE] = wState;
-	
-	/* Setup wrapped panel to draw all of our list items on. */
-	wrappedPanel = NULL;
-	if (sjme_error_is(error = wrappedState->api->panelNew(
-		wrappedState, &wrappedPanel)) ||
-		wrappedPanel == NULL)
-		return sjme_error_default(error);
-	
-	/* Map front ends. */
-	if (sjme_error_is(error = sjme_scritchui_fb_biMap(
-		inState, inList, wrappedPanel)))
-		return sjme_error_default(error);
-	
-	/* Enable focus on the list. */
-	if (sjme_error_is(error = wrappedState->api->panelEnableFocus(
-		wrappedState, wrappedPanel,
-		SJME_JNI_TRUE, SJME_JNI_FALSE)))
-		return sjme_error_default(error);
-	
-	/* Set renderer for list. */
-	if (sjme_error_is(error =
-		wrappedState->api->componentSetPaintListener(
-		wrappedState, wrappedPanel,
-		sjme_scritchui_fb_list_draw, NULL)))
-		return sjme_error_default(error);
-	
-	/* Set listener for events. */
-	if (sjme_error_is(error =
-		wrappedState->api->componentSetInputListener(
-		wrappedState, wrappedPanel,
-		sjme_scritchui_fb_list_input, NULL)))
+	/* Lightweight initialization. */
+	if (sjme_error_is(error = inState->implIntern->lightweightInit(
+		inState, inList,
+		SJME_JNI_TRUE,
+		sjme_scritchui_fb_list_draw)))
 		return sjme_error_default(error);
 	
 	/* Success! */

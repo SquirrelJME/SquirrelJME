@@ -146,6 +146,21 @@ typedef struct sjme_scritchui_fb_displayShaders
 } sjme_scritchui_fb_displayShaders; 
 
 /**
+ * Initializes the lightweight component.
+ * 
+ * @param inState The input state.
+ * @param inComponent The input component.
+ * @param isInteractive Is this an interactive component?
+ * @param paintListener The listener for paint operations.
+ * @since 2024/07/26
+ */
+typedef sjme_errorCode (*sjme_scritchui_fb_intern_lightweightInitFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInValue sjme_jboolean isInteractive,
+	sjme_attrInNotNull sjme_scritchui_paintListenerFunc paintListener);
+
+/**
  * Renders the given display list.
  * 
  * @param inState The input state.
@@ -191,12 +206,21 @@ typedef sjme_errorCode (*sjme_scritchui_fb_intern_renderInScrollFunc)(
 
 struct sjme_scritchui_implInternFunctions
 {
+	/** Initialize lightweight component. */
+	sjme_scritchui_fb_intern_lightweightInitFunc lightweightInit;  
+	
 	/** Render directly. */
 	sjme_scritchui_fb_intern_renderFunc render;
 		
 	/** Render in scroll window. */
 	sjme_scritchui_fb_intern_renderInScrollFunc renderInScroll;
 };
+
+sjme_errorCode sjme_scritchui_fb_intern_lightweightInit(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInValue sjme_jboolean isInteractive,
+	sjme_attrInNotNull sjme_scritchui_paintListenerFunc paintListener);
 
 sjme_errorCode sjme_scritchui_fb_intern_render(
 	sjme_attrInNotNull sjme_scritchui inState,
