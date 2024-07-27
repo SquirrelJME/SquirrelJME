@@ -47,6 +47,7 @@ import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.FieldDescriptor;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
+import net.multiphasicapps.classfile.MethodNameAndType;
 
 /**
  * Primary display window.
@@ -606,7 +607,11 @@ public class PrimaryFrame
 				new EventModifier[]{classMatch},
 				(__state, __reply) -> {}, null);
 			
+			// Exception by class ID
 			state.lookupClass(className, (__info) -> {
+				// Note
+				Debugging.debugNote("Catching: %s (%d)", className);
+				
 				// Setup ID catch
 				InfoClass lookAt = __info[0];
 				EventModifierClassOnly onlyClass =
@@ -621,6 +626,40 @@ public class PrimaryFrame
 					JDWPSuspendPolicy.ALL,
 					new EventModifier[]{onlyClass},
 					(__state, __reply) -> {}, null);
+				
+				lookAt.methods();
+				InfoMethod[] methods = lookAt.methods();
+				
+				// Try breaking on any <init> method
+				if (methods != null)
+					for (InfoMethod methodInfo : methods)
+					{
+						// Wrap viewer to find out what this is
+						MethodViewer mv = new  RemoteMethodViewer(state,
+							methodInfo);
+						
+						// Resolve method name and type
+						// We mostly just care for the type
+						mv.methodNameAndType();
+						MethodNameAndType nat = mv.methodNameAndType();
+						
+						// If this is a constructor, then breakpoint when
+						// entered
+						if (nat != null && "<init>".equals(nat.name()
+							.toString()))
+						{
+							// Set breakpoint
+							EventModifierLocationOnly mod =
+								new EventModifierLocationOnly(
+									lookAt.id,
+									methodInfo.id,
+									0);
+							state.eventSet(JDWPEventKind.BREAKPOINT,
+								JDWPSuspendPolicy.ALL,
+								new EventModifier[]{mod},
+								(__state, __reply) -> {}, null);
+						}
+					}
 			}, (__e) -> {
 				Debugging.debugNote("Ignoring unknown: %s", className);
 			});
