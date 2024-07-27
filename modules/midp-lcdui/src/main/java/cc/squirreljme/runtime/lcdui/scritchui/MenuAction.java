@@ -87,22 +87,6 @@ public abstract class MenuAction
 	protected abstract void onParentEnabled(boolean __e);
 	
 	/**
-	 * Returns the label of this item.
-	 * 
-	 * @return The label for this item.
-	 * @since 2020/09/27
-	 */
-	public final String __getLabel()
-	{
-		throw Debugging.todo();
-		/*
-		String label = this._longLabel;
-		return (label != null ? label : this._shortLabel);
-		
-		 */
-	}
-	
-	/**
 	 * Gets the priority of the given action.
 	 * 
 	 * @param __action The action to get the priority of.
@@ -138,5 +122,27 @@ public abstract class MenuAction
 			throw new NullPointerException("NARG");
 		
 		return __action._approxDepth;
+	}
+	
+	/**
+	 * Sets the specified label.
+	 *
+	 * @param __action The action to set for.
+	 * @param __long Should the long or short label be set?
+	 * @param __string The string to set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/07/27
+	 */
+	protected static void setLabel(MenuAction __action, boolean __long,
+		String __string)
+		throws NullPointerException
+	{
+		if (__action == null)
+			throw new NullPointerException("NARG");
+		
+		if (__long)
+			__action._longLabel.set(__string);
+		else
+			__action._shortLabel.set(__string);
 	}
 }

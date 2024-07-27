@@ -95,6 +95,12 @@ public abstract class IApplication
 	}
 	
 	@Api
+	public void launch(int __target, String[] __args)
+	{
+		throw Debugging.todo();
+	}
+	
+	@Api
 	public void resume()
 	{
 		throw Debugging.todo();

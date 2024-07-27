@@ -14,6 +14,7 @@ import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.scritchui.MenuAction;
 import cc.squirreljme.runtime.lcdui.scritchui.MenuActionHasParent;
+import cc.squirreljme.runtime.lcdui.scritchui.MenuActionNodeOnly;
 
 @Api
 public class Command
@@ -388,11 +389,8 @@ public class Command
 		if (this._implspec)
 			return;
 		
-		throw Debugging.todo();
-		/*
-		this.__setLabels(__s, this._longLabel, this._image);
-		
-		 */
+		// Forward set of label
+		MenuAction.setLabel(this, false, __s);
 	}
 	
 	/**
@@ -408,11 +406,8 @@ public class Command
 		if (this._implspec)
 			return;
 		
-		throw Debugging.todo();
-		/*
-		this.__setLabels(this._shortLabel, __s, this._image);
-		
-		 */
+		// Forward set of label
+		MenuAction.setLabel(this, true, __s);
 	}
 }
 

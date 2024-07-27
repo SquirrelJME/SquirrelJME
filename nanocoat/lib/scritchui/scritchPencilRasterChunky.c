@@ -17,6 +17,64 @@
 #include "sjme/debug.h"
 #include "sjme/fixed.h"
 
+
+
+static void sjme_scritchpen_core_clipLeftTop(
+	sjme_jint dim,
+	sjme_jint clipAt,
+	sjme_jint* zSrc,
+	sjme_jint* zDest,
+	sjme_jint* m)
+{
+	sjme_jint cut, min;
+	
+	if ((*zDest) < clipAt || (*zDest) < 0)
+	{
+		/* Get right-most coordinate. */
+		min = (clipAt < 0 ? 0 : clipAt);
+		
+		/* Cut by this many pixels. */
+		cut = min - (*zDest);
+		if (cut < 0)
+			cut = -cut;
+		
+		/* Shift and cut off any excess. */
+		(*zSrc) += cut;
+		(*zDest) += cut;
+		(*m) -= cut;
+	}
+}
+
+
+static void sjme_scritchpen_core_clipRightBottom(
+	sjme_jint dim,
+	sjme_jint clipAt,
+	sjme_jint* zSrc,
+	sjme_jint* zDest,
+	sjme_jint* m)
+{
+	sjme_jint cut, max;
+	sjme_jint shift;
+	
+	/* Where does this coordinate end? */
+	shift = (*zDest) + (*m);
+	
+	/* Past the edge? */
+	if (shift > clipAt || shift > dim)
+	{
+		/* Get the left most coordinate. */
+		max = (clipAt < dim ? clipAt : dim);
+		
+		/* Cut by this many pixels. */
+		cut = shift - max;
+		if (cut < 0)
+			cut = -cut;
+		
+		/* Shift and cut off any excess. */
+		(*m) -= cut;
+	}
+}
+
 sjme_errorCode sjme_scritchpen_core_copyArea(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint sx,
@@ -80,6 +138,7 @@ sjme_errorCode sjme_scritchpen_core_drawXRGB32Region(
 	sjme_jint srcRgbBytes, srcAlphaMask;
 	sjme_jboolean srcAlpha, mulAlpha;
 	sjme_jint mulAlphaVal;
+	sjme_scritchui_line* clipLine;
 	
 	if (g == NULL || data == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -116,6 +175,25 @@ sjme_errorCode sjme_scritchpen_core_drawXRGB32Region(
 		&xDest, &yDest)))
 		return sjme_error_default(error);
 	
+	/* Get clipping information. */
+	clipLine = &g->state.clipLine;
+	
+	/* Clip left X and top Y. */
+	sjme_scritchpen_core_clipLeftTop(g->width, clipLine->s.x,
+		&xSrc, &xDest, &m.tw);
+	sjme_scritchpen_core_clipLeftTop(g->height, clipLine->s.y,
+		&ySrc, &yDest, &m.th);
+	
+	/* Clip right X and bottom Y. */
+	sjme_scritchpen_core_clipRightBottom(g->width, clipLine->e.x,
+		&xSrc, &xDest, &m.tw);
+	sjme_scritchpen_core_clipRightBottom(g->height, clipLine->e.y,
+		&ySrc, &yDest, &m.th);
+	
+	/* Not actually drawing anything? */
+	if (m.tw <= 0 || m.th <= 0)
+		goto skip_noDraw;
+
 	/* RGB buffer is this many bytes. */
 	srcRgbBytes = m.tw * sizeof(*srcRgb);
 	
@@ -187,6 +265,7 @@ sjme_errorCode sjme_scritchpen_core_drawXRGB32Region(
 	if (sjme_error_is(error = sjme_scritchpen_core_lockRelease(g)))
 		return sjme_error_default(error);
 		
+skip_noDraw:
 	/* Success! */
 	return SJME_ERROR_NONE;
 	
