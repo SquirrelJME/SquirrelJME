@@ -56,9 +56,11 @@ public final class NativeScritchInterface
 	 *
 	 * @return If the interface only supports panels.
 	 * @throws MLECallError If there is no support for the native interface.
+	 * @deprecated Use {@link ScritchEnvironmentInterface#isPanelOnly()}.
 	 * @since 2024/03/24
 	 */
 	@SquirrelJMEVendorApi
+	@Deprecated
 	public static native boolean panelOnly()
 		throws MLECallError;
 }

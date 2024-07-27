@@ -9,10 +9,10 @@
 
 package cc.squirreljme.vm.springcoat.callbacks;
 
-import cc.squirreljme.jvm.mle.scritchui.ScritchPanelInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchComponentInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.SpringMachine;
-import cc.squirreljme.vm.springcoat.SpringProxyObject;
 import cc.squirreljme.vm.springcoat.SpringThreadWorker;
 import net.multiphasicapps.classfile.MethodNameAndType;
 
@@ -21,8 +21,8 @@ import net.multiphasicapps.classfile.MethodNameAndType;
  *
  * @since 2024/06/15
  */
-public class ScritchPanelProxy
-	extends ScritchBaseProxy<ScritchPanelInterface>
+public class ScritchInterfaceProxy
+	extends ScritchBaseProxy<ScritchInterface>
 {
 	/**
 	 * Initializes the proxy.
@@ -32,11 +32,11 @@ public class ScritchPanelProxy
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/06/15
 	 */
-	public ScritchPanelProxy(SpringMachine __machine,
-		ScritchPanelInterface __wrapped)
+	public ScritchInterfaceProxy(SpringMachine __machine,
+		ScritchInterface __wrapped)
 		throws NullPointerException
 	{
-		super(ScritchPanelInterface.class, __machine, __wrapped);
+		super(ScritchInterface.class, __machine, __wrapped);
 	}
 	
 	@Override

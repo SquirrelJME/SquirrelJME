@@ -9,8 +9,12 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.NativeScritchInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.vm.springcoat.callbacks.ScritchInterfaceProxy;
+import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 
 /**
  * SpringCoat layer for {@link NativeScritchInterface}.
@@ -30,7 +34,17 @@ public enum MLEScritchUI
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			throw Debugging.todo();
+			try
+			{
+				ScritchInterface scritchApi =
+					NativeScritchInterface.nativeInterface();
+				
+				return new ScritchInterfaceProxy(__thread.machine, scritchApi);
+			}
+			catch (MLECallError __e)
+			{
+				throw new SpringMLECallError(__e);
+			}
 		}
 	},
 	

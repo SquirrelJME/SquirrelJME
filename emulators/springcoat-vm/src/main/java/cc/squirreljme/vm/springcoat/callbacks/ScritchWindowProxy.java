@@ -43,6 +43,6 @@ public class ScritchWindowProxy
 	protected Object invokeProxy(SpringThreadWorker __thread,
 		MethodNameAndType __method, Object[] __args)
 	{
-		throw Debugging.todo();
+		throw Debugging.todo(__thread, __method, __args);
 	}
 }
