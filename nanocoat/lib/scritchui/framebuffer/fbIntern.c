@@ -306,6 +306,7 @@ sjme_errorCode sjme_scritchui_fb_intern_logicalButton(
 			case SJME_SCRITCHINPUT_KEY_NUMPAD_ENTER:
 			case 'f':
 			case 'F':
+			case ',':
 				target = SJME_SCRITCHINPUT_KEY_ENTER;
 				break;
 			
