@@ -33,6 +33,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_toolboxFunctions =
 	.containerSetBounds = NULL,
 	.hardwareGraphics = NULL,
 	.labelSetString = NULL,
+	.lafElementColor = NULL,
 	.listNew = NULL,
 	.loopExecute = NULL,
 	.loopExecuteLater = NULL,

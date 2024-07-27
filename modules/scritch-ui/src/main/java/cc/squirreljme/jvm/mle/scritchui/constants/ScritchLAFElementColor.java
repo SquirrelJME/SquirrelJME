@@ -19,47 +19,37 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 @SquirrelJMEVendorApi
 public interface ScritchLAFElementColor
 {
+	/** Background color. */
 	@SquirrelJMEVendorApi
 	byte BACKGROUND =
 		0;
 	
+	/** Border color. */
 	@SquirrelJMEVendorApi
 	byte BORDER =
 		1;
 	
+	/** Foreground color. */
 	@SquirrelJMEVendorApi
 	byte FOREGROUND =
 		2;
 	
+	/** Highlighted background color. */
 	@SquirrelJMEVendorApi
 	byte HIGHLIGHTED_BACKGROUND =
 		3;
 	
+	/** Highlighted border color. */
 	@SquirrelJMEVendorApi
 	byte HIGHLIGHTED_BORDER =
 		4;
 	
+	/** Highlighted foreground color. */
 	@SquirrelJMEVendorApi
 	byte HIGHLIGHTED_FOREGROUND =
 		5;
 	
 	@SquirrelJMEVendorApi
-	byte IDLE_BACKGROUND =
+	byte NUM_LAF_ELEMENT_COLOR =
 		6;
-	
-	@SquirrelJMEVendorApi
-	byte IDLE_FOREGROUND =
-		7;
-	
-	@SquirrelJMEVendorApi
-	byte IDLE_HIGHLIGHTED_BACKGROUND =
-		8;
-	
-	@SquirrelJMEVendorApi
-	byte IDLE_HIGHLIGHTED_FOREGROUND =
-		9;
-	
-	@SquirrelJMEVendorApi
-	byte NUM_ELEMENT_COLOR =
-		10;
 }

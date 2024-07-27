@@ -11,6 +11,7 @@ package cc.squirreljme.jvm.mle.scritchui;
 
 import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFElementColor;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFFontElementType;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFImageElementType;
@@ -47,13 +48,15 @@ public interface ScritchLAFInterface
 	/**
 	 * Returns the color of the given element.
 	 *
+	 * @param __context The context widget to get the style from, otherwise
+	 * this will use a default style.
 	 * @param __element One of {@link ScritchLAFElementColor}.
 	 * @return A 32-bit ARGB color.
 	 * @throws MLECallError If the constant is not valid.
 	 * @since 2024/03/09
 	 */
 	@SquirrelJMEVendorApi
-	int elementColor(
+	int elementColor(@Nullable ScritchComponentBracket __context,
 		@MagicConstant(valuesFromClass = ScritchLAFElementColor.class)
 		int __element)
 		throws MLECallError;

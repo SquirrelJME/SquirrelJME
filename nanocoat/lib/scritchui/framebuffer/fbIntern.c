@@ -208,6 +208,9 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 	sjme_charSeq seq;
 	sjme_jint seqLen;
 	sjme_jboolean doSel;
+	sjme_jint i;
+	sjme_jint lafColors[SJME_SCRITCHUI_NUM_LAF_ELEMENT_COLOR];
+	sjme_scritchui_lafElementColorType colorType;
 	
 	if (inState == NULL || g == NULL || dlFull == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -286,6 +289,14 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 			goto fail_initSelPen;
 	}
 	
+	/* Obtain all the look and feel colors. */
+	memset(lafColors, 0, sizeof(lafColors));
+	for (i = 0; i < SJME_SCRITCHUI_NUM_LAF_ELEMENT_COLOR; i++)
+		if (sjme_error_is(error = inState->api->lafElementColor(
+			inState, inComponent,
+			&lafColors[i], i)))
+			goto fail_lafColor;
+	
 	/* Perform all drawing operations. */
 	for (dlIndex = 0; dlIndex < dlCount; dlIndex++)
 	{
@@ -313,6 +324,29 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 		if (dlAt->type == SJME_SCRITCHUI_FB_DL_TYPE_TEXT)
 			g->api->setFont(g, dlAt->data.text.font);
 		
+		/* Determine base color. */
+		colorType = 0;
+		if (dlAt->color >= 0 &&
+			dlAt->color < SJME_SCRITCHUI_NUM_LAF_ELEMENT_COLOR)
+			colorType = dlAt->color;
+		
+		/* Adjust to highlight color? */
+		if (dlAt->mod & SJME_SCRITCHUI_FB_DL_TYPE_MOD_SELECTED)
+		{
+			if (colorType == SJME_SCRITCHUI_LAF_ELEMENT_COLOR_BACKGROUND)
+				colorType =
+					SJME_SCRITCHUI_LAF_ELEMENT_COLOR_HIGHLIGHTED_BACKGROUND;
+			else if (colorType == SJME_SCRITCHUI_LAF_ELEMENT_COLOR_FOREGROUND)
+				colorType =
+					SJME_SCRITCHUI_LAF_ELEMENT_COLOR_HIGHLIGHTED_FOREGROUND;
+			else if (colorType == SJME_SCRITCHUI_LAF_ELEMENT_COLOR_BORDER)
+				colorType =
+					SJME_SCRITCHUI_LAF_ELEMENT_COLOR_HIGHLIGHTED_BORDER;
+		}
+		
+		/* Set color. */
+		g->api->setAlphaColor(g, lafColors[colorType]);
+		
 		/* Must handle drawing of the selection buffer */
 		doSel = (dlAt->selection != 0);
 		if (sg != NULL && doSel)
@@ -333,7 +367,10 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 		{
 				/* Normal box. */
 			case SJME_SCRITCHUI_FB_DL_TYPE_BOX:
-				g->api->drawRect(g, 0, 0, bw - 1, bh - 1);
+				if (dlAt->mod & SJME_SCRITCHUI_FB_DL_TYPE_MOD_SELECTED)
+					g->api->fillRect(g, 0, 0, bw - 1, bh - 1);
+				else
+					g->api->drawRect(g, 0, 0, bw - 1, bh - 1);
 				
 				/* Selection buffer, always filled here! */
 				if (sg != NULL && doSel)
@@ -380,6 +417,7 @@ fail_charSeqLen:
 fail_charSeqLoad:
 fail_sgSelColor:
 fail_sgCopyParam:
+fail_lafColor:
 fail_initSelPen:
 	/* Free pen before leaving. */
 	if (sg != NULL)

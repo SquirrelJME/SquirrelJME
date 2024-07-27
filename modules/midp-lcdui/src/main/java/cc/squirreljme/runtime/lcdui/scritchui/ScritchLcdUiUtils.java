@@ -107,7 +107,33 @@ public final class ScritchLcdUiUtils
 	public static int scritchElementColor(
 		@MagicConstant(valuesFromClass = Display.class) int __c)
 	{
-		throw Debugging.todo();
+		switch (__c)
+		{
+			case Display.COLOR_BACKGROUND:
+			case Display.COLOR_IDLE_BACKGROUND:
+				return ScritchLAFElementColor.BACKGROUND;
+				
+			case Display.COLOR_BORDER:
+				return ScritchLAFElementColor.BORDER;
+				
+			case Display.COLOR_FOREGROUND:
+			case Display.COLOR_IDLE_FOREGROUND:
+				return ScritchLAFElementColor.FOREGROUND;
+			
+			case Display.COLOR_HIGHLIGHTED_BACKGROUND:
+			case Display.COLOR_IDLE_HIGHLIGHTED_BACKGROUND:
+				return ScritchLAFElementColor.HIGHLIGHTED_BACKGROUND;
+			
+			case Display.COLOR_HIGHLIGHTED_BORDER:
+				return ScritchLAFElementColor.HIGHLIGHTED_BORDER;
+			
+			case Display.COLOR_HIGHLIGHTED_FOREGROUND:
+			case Display.COLOR_IDLE_HIGHLIGHTED_FOREGROUND:
+				return ScritchLAFElementColor.HIGHLIGHTED_FOREGROUND;
+		}
+		
+		// Unknown
+		return -1;
 	}
 	
 	/**

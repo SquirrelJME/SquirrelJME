@@ -123,6 +123,9 @@ typedef enum sjme_scritchui_serialType
 	
 	/** @c labelSetString . */
 	SJME_SCRITCHUI_SERIAL_TYPE_LABEL_SET_STRING,
+	
+	/** @c lafElementColor. */
+	SJME_SCRITCHUI_SERIAL_TYPE_LAF_ELEMENT_COLOR,
 		
 	/** @c listNew . */
 	SJME_SCRITCHUI_SERIAL_TYPE_LIST_NEW,
@@ -345,6 +348,11 @@ SUD_STRUCT_DEF(labelSetString,
 	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
 	SDU_VAR(sjme_lpcstr, inString););
 
+SUD_STRUCT_DEF(lafElementColor,
+	SDU_VAR(sjme_scritchui_uiComponent, inContext);
+	SDU_VARP(sjme_jint*, outRGB);
+	SDU_VAR(sjme_scritchui_lafElementColorType, elementColor););
+
 SUD_STRUCT_DEF(listNew,
 	SDU_VARP(sjme_scritchui_uiList*, outList);
 	SDU_VAR(sjme_scritchui_choiceType, inChoiceType););
@@ -454,6 +462,7 @@ typedef union sjme_scritchui_serialDataUnion
 	SJME_SCRITCHUI_SDU_DEF(fontDerive);
 	SJME_SCRITCHUI_SDU_DEF(hardwareGraphics);
 	SJME_SCRITCHUI_SDU_DEF(labelSetString);
+	SJME_SCRITCHUI_SDU_DEF(lafElementColor);
 	SJME_SCRITCHUI_SDU_DEF(listNew);
 	SJME_SCRITCHUI_SDU_DEF(menuBarNew);
 	SJME_SCRITCHUI_SDU_DEF(menuInsert);
@@ -661,6 +670,12 @@ sjme_errorCode sjme_scritchui_coreSerial_labelSetString(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInNullable sjme_lpcstr inString);
 	
+sjme_errorCode sjme_scritchui_coreSerial_lafElementColor(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNullable sjme_scritchui_uiComponent inContext,
+	sjme_attrOutNotNull sjme_jint* outRGB,
+	sjme_attrInValue sjme_scritchui_lafElementColorType elementColor);
+
 sjme_errorCode sjme_scritchui_coreSerial_listNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_scritchui_uiList* outList,

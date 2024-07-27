@@ -95,6 +95,9 @@
 #define FORWARD_DESC___linkInit "(" \
 	DESC_STRING DESC_STRING ")" DESC_LONG
 
+#define FORWARD_DESC___lafElementColor "(" \
+	DESC_LONG DESC_LONG DESC_INT ")" DESC_INT
+
 #define FORWARD_DESC___labelSetString "(" \
 	DESC_LONG DESC_LONG DESC_STRING ")" DESC_VOID
 
@@ -1393,6 +1396,35 @@ fail:
 		
 	sjme_jni_throwMLECallError(env, error);
 	return NULL;
+	
+}
+
+JNIEXPORT int JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__lafElementColor)(JNIEnv* env, jclass classy, jlong stateP,
+	jlong contextP, jint type)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	sjme_scritchui_uiComponent context;
+	sjme_jint rgb;
+	
+	/* Recover state. */
+	state = (sjme_scritchui)stateP;
+	if (state == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return 0;
+	}
+	
+	/* Context is optional. */
+	context = (sjme_scritchui_uiComponent)contextP;
+	
+	/* Read in color. */
+	rgb = 0;
+	if (sjme_error_is(error = state->api->lafElementColor(state,
+		context, &rgb, type)))
+		sjme_jni_throwMLECallError(env, error);
+	return rgb;
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
@@ -2319,6 +2351,7 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 	FORWARD_list(NativeScritchDylib, __fontDerive),
 	FORWARD_list(NativeScritchDylib, __hardwareGraphics),
 	FORWARD_list(NativeScritchDylib, __labelSetString),
+	FORWARD_list(NativeScritchDylib, __lafElementColor),
 	FORWARD_list(NativeScritchDylib, __linkInit),
 	FORWARD_list(NativeScritchDylib, __listNew),
 	FORWARD_list(NativeScritchDylib, __loopExecute),

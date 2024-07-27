@@ -208,6 +208,35 @@ typedef enum sjme_scritchui_choiceType
 } sjme_scritchui_choiceType;
 
 /**
+ * The element color type for look and feel.
+ * 
+ * @since 2024/07/27 
+ */
+typedef enum sjme_scritchui_lafElementColorType
+{
+	/** Background color. */
+	SJME_SCRITCHUI_LAF_ELEMENT_COLOR_BACKGROUND = 0,
+	
+	/** Border color. */
+	SJME_SCRITCHUI_LAF_ELEMENT_COLOR_BORDER = 1,
+	
+	/** Foreground color. */
+	SJME_SCRITCHUI_LAF_ELEMENT_COLOR_FOREGROUND = 2,
+	
+	/** Highlighted background color. */
+	SJME_SCRITCHUI_LAF_ELEMENT_COLOR_HIGHLIGHTED_BACKGROUND = 3,
+	
+	/** Highlighted border color. */
+	SJME_SCRITCHUI_LAF_ELEMENT_COLOR_HIGHLIGHTED_BORDER = 4,
+	
+	/** Highlighted foreground color. */
+	SJME_SCRITCHUI_LAF_ELEMENT_COLOR_HIGHLIGHTED_FOREGROUND = 5,
+	
+	/** The number of element colors. */
+	SJME_SCRITCHUI_NUM_LAF_ELEMENT_COLOR = 6,
+} sjme_scritchui_lafElementColorType;
+
+/**
  * Represents a point.
  * 
  * @since 2024/07/12
@@ -1113,6 +1142,23 @@ typedef sjme_errorCode (*sjme_scritchui_labelSetStringFunc)(
 	sjme_attrInNullable sjme_lpcstr inString);
 
 /**
+ * Returns the color for the given element based on the current look and feel.
+ * 
+ * @param inState The current state.
+ * @param inContext Optional context that can be targetted at a widget to get
+ * its color themeing.
+ * @param outRGB The resultant RGB color.
+ * @param elementColor The color to request.
+ * @return On any resultant error, if any.
+ * @since 2024/07/27
+ */
+typedef sjme_errorCode (*sjme_scritchui_lafElementColorFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNullable sjme_scritchui_uiComponent inContext,
+	sjme_attrOutNotNull sjme_jint* outRGB,
+	sjme_attrInValue sjme_scritchui_lafElementColorType elementColor);
+
+/**
  * Creates a new list.
  * 
  * @param inState The input state.
@@ -1471,6 +1517,9 @@ struct sjme_scritchui_apiFunctions
 	
 	/** Sets the close listener for a window. */
 	SJME_SCRITCHUI_QUICK_API(labelSetString);
+	
+	/** Returns the element color for the look and feel. */
+	SJME_SCRITCHUI_QUICK_API(lafElementColor);
 	
 	/** Creates a new list. */
 	SJME_SCRITCHUI_QUICK_API(listNew);

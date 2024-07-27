@@ -258,6 +258,9 @@ struct sjme_scritchui_implFunctions
 	/** Sets the close listener for a window. */
 	SJME_SCRITCHUI_QUICK_SAME(labelSetString);
 	
+	/** Returns the element color for the look and feel. */
+	SJME_SCRITCHUI_QUICK_SAME(lafElementColor);
+	
 	/** Creates a new native list. */
 	SJME_SCRITCHUI_QUICK_IMPL(listNew);
 	

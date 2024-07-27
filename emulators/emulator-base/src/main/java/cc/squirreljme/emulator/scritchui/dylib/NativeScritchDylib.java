@@ -339,6 +339,21 @@ public final class NativeScritchDylib
 		throws MLECallError;
 	
 	/**
+	 * Returns the native look and feel color.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __contextP Optional context pointer.
+	 * @param __element The element to request the color of.
+	 * @return The resultant color.
+	 * @throws MLECallError If the state is not valid; or the color is not
+	 * valid.
+	 * @since 2024/07/27
+	 */
+	static native int __lafElementColor(long __stateP, long __contextP,
+		int __element)
+		throws MLECallError;
+	
+	/**
 	 * Link in the library and load the given structure pointer.
 	 *
 	 * @param __libPath The library path.

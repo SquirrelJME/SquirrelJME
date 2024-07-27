@@ -151,6 +151,9 @@ typedef struct sjme_scritchui_fb_displayList
 	/** The selection item, used for mouse actions. */
 	sjme_jint selection;
 	
+	/** The color to use. */
+	sjme_scritchui_lafElementColorType color;
+	
 	/** The display list entry data. */
 	union
 	{

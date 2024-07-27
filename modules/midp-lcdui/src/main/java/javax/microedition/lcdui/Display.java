@@ -10,6 +10,7 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchLAFInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchWindowInterface;
@@ -525,11 +526,16 @@ public class Display
 	public int getColor(int __c)
 		throws IllegalArgumentException
 	{
-		ScritchLAFInterface laf =
-			this._scritch.environment().lookAndFeel();
-		
-		return laf.elementColor(
-			ScritchLcdUiUtils.scritchElementColor(__c)) & 0xFFFFFF;
+		try
+		{
+			return this._scritch.environment().lookAndFeel().elementColor(
+				this.__state().scritchWindow(),
+				ScritchLcdUiUtils.scritchElementColor(__c)) & 0xFFFFFF;
+		}
+		catch (MLECallError __e)
+		{
+			throw __e.throwDistinct();
+		}
 	}
 	
 	/**

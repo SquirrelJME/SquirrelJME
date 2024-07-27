@@ -14,6 +14,7 @@ squirreljme_multilib_add_static_library(ScritchUIFB
 	fbCore.c
 	fbIntern.c
 	fbLabel.c
+	fbLaf.c
 	fbList.c
 	fbLoop.c
 	fbMenu.c

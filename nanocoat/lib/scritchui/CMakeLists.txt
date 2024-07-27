@@ -22,6 +22,7 @@ set(SJME_ScritchUICore_SOURCES
 	scritchCore.c
 	scritchFallbackFont.c
 	scritchLabel.c
+	scritchLaf.c
 	scritchList.c
 	scritchLoop.c
 	scritchMenu.c

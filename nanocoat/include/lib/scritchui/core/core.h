@@ -201,6 +201,12 @@ sjme_errorCode sjme_scritchui_core_labelSetString(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInNullable sjme_lpcstr inString);
+	
+sjme_errorCode sjme_scritchui_core_lafElementColor(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNullable sjme_scritchui_uiComponent inContext,
+	sjme_attrOutNotNull sjme_jint* outRGB,
+	sjme_attrInValue sjme_scritchui_lafElementColorType elementColor);
 
 sjme_errorCode sjme_scritchui_core_listNew(
 	sjme_attrInNotNull sjme_scritchui inState,

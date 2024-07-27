@@ -96,6 +96,7 @@ static sjme_errorCode sjme_scritchui_fb_list_draw(
 		dlAt->bound.s.y = y;
 		dlAt->bound.d.width = cW;
 		dlAt->bound.d.height = fontHeight;
+		dlAt->color = SJME_SCRITCHUI_LAF_ELEMENT_COLOR_BACKGROUND;
 		
 		/* Selection box for index. */
 		dlAt->selection = i + 1;
@@ -113,6 +114,7 @@ static sjme_errorCode sjme_scritchui_fb_list_draw(
 		dlAt->bound.s.y = y;
 		dlAt->bound.d.width = cW;
 		dlAt->bound.d.height = fontHeight;
+		dlAt->color = SJME_SCRITCHUI_LAF_ELEMENT_COLOR_FOREGROUND;
 		dlAt->data.text.font = useFont;
 		dlAt->data.text.string = choiceItem->string;
 		
