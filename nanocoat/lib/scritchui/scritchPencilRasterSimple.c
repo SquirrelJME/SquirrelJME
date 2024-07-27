@@ -34,6 +34,12 @@ sjme_errorCode sjme_scritchpen_corePrim_drawHoriz(
 	if (w < 0)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
+	/* SRC or SRC_OVER in hardware supported? Use if so... */
+	if (!g->state.applyAlpha && g->impl->drawHorizSrc != NULL)
+		return g->impl->drawHorizSrc(g, x, y, w);
+	else if (g->state.applyAlpha && g->impl->drawHorizSrcOver != NULL)
+		return g->impl->drawHorizSrcOver(g, x, y, w);
+	
 	/* Determine end coordinate. */
 	ex = x + w;
 	
@@ -86,6 +92,12 @@ sjme_errorCode sjme_scritchpen_corePrim_drawLine(
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+	/* SRC or SRC_OVER in hardware supported? Use if so... */
+	if (!g->state.applyAlpha && g->impl->drawLineSrc != NULL)
+		return g->impl->drawLineSrc(g, x1, y1, x2, y2);
+	else if (g->state.applyAlpha && g->impl->drawLineSrcOver != NULL)
+		return g->impl->drawLineSrcOver(g, x1, y1, x2, y2);
+	
 	return SJME_ERROR_NONE;
 	
 	sjme_todo("Impl?");
@@ -99,6 +111,12 @@ sjme_errorCode sjme_scritchpen_corePrim_drawPixel(
 {
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* SRC or SRC_OVER in hardware supported? Use if so... */
+	if (!g->state.applyAlpha && g->impl->drawPixelSrc != NULL)
+		return g->impl->drawPixelSrc(g, x, y);
+	else if (g->state.applyAlpha && g->impl->drawPixelSrcOver != NULL)
+		return g->impl->drawPixelSrcOver(g, x, y);
 	
 	/* Use horizontal line drawing. */
 	return g->prim.drawHoriz(g, x, y, 1);

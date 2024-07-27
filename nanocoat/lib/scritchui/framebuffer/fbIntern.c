@@ -438,14 +438,12 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 		
 		/* Background. */
 		g->api->setAlphaColor(g, lafColors[
-			SJME_SCRITCHUI_LAF_ELEMENT_COLOR_FOREGROUND]);
+			SJME_SCRITCHUI_LAF_ELEMENT_COLOR_HIGHLIGHTED_FOREGROUND]);
 		g->api->setStrokeStyle(g, SJME_SCRITCHUI_PENCIL_STROKE_SOLID);
 		
 		/* Draw boxes for the focus set. */
 		g->api->drawRect(g, useFocusRect.s.x, useFocusRect.s.y,
 			useFocusRect.d.width - 1, useFocusRect.d.height - 1);
-		g->api->drawRect(g, useFocusRect.s.x + 1, useFocusRect.s.y + 1,
-			useFocusRect.d.width - 2, useFocusRect.d.height - 2);
 		
 		/* Make it bright! */
 		g->api->setStrokeStyle(g, SJME_SCRITCHUI_PENCIL_STROKE_DOTTED);
@@ -455,8 +453,6 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 		/* Draw boxes for the focus set. */
 		g->api->drawRect(g, useFocusRect.s.x, useFocusRect.s.y,
 			useFocusRect.d.width - 1, useFocusRect.d.height - 1);
-		g->api->drawRect(g, useFocusRect.s.x + 1, useFocusRect.s.y + 1,
-			useFocusRect.d.width - 2, useFocusRect.d.height - 2);
 		
 		/* Revert back to solid. */	
 		g->api->setStrokeStyle(g, SJME_SCRITCHUI_PENCIL_STROKE_SOLID);

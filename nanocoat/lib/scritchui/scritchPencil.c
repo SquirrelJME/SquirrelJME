@@ -234,7 +234,7 @@ sjme_errorCode sjme_scritchpen_initStatic(
 	/* Raw scan put, must be implemented always. */
 	result.prim.rawScanPutPure = result.impl->rawScanPutPure;
 	
-	/* These are always handled by us. */
+	/* These are always handled by us unless supported by hardware. */
 	result.prim.drawHoriz = sjme_scritchpen_corePrim_drawHoriz;
 	result.prim.drawLine = sjme_scritchpen_corePrim_drawLine;
 	result.prim.drawPixel = sjme_scritchpen_corePrim_drawPixel;

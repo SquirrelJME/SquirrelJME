@@ -1055,6 +1055,24 @@ typedef struct sjme_scritchui_pencilImplFunctions
 	/** @c CopyArea . */
 	SJME_SCRITCHUI_QUICK_PENCIL(CopyArea, copyArea);
 	
+	/** @c DrawHoriz , direct source. */
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawHoriz, drawHorizSrc);
+	
+	/** @c DrawHoriz , Over source. */
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawHoriz, drawHorizSrcOver);
+	
+	/** @c DrawLine , direct source. */
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawLine, drawLineSrc);
+	
+	/** @c DrawLine , Over source. */
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawLine, drawLineSrcOver);
+	
+	/** @c DrawPixel , direct source. */
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawPixel, drawPixelSrc);
+	
+	/** @c DrawPixel , Over source. */
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawPixel, drawPixelSrcOver);
+	
 	/** @c MapColor . */
 	SJME_SCRITCHUI_QUICK_PENCIL(MapColor, mapColor);
 	
