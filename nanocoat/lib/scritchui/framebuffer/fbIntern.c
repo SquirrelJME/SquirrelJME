@@ -193,6 +193,7 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNull const sjme_scritchui_fb_displayList* dlFull,
 	sjme_attrInPositive sjme_jint dlCount,
+	sjme_attrOutNullable sjme_scritchui_rect* focusRect,
 	sjme_attrInNullable const sjme_scritchui_fb_displayShaders* shaders,
 	sjme_attrInNullable sjme_pointer shaderData)
 {
@@ -211,6 +212,7 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 	sjme_jint i;
 	sjme_jint lafColors[SJME_SCRITCHUI_NUM_LAF_ELEMENT_COLOR];
 	sjme_scritchui_lafElementColorType colorType;
+	sjme_scritchui_rect useFocusRect;
 	
 	if (inState == NULL || g == NULL || dlFull == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -235,6 +237,9 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 			inState, inComponent, &cW, &cH)))
 			goto fail_componentSize;
 	}
+	
+	/* Clear focus rectangle. */
+	memset(&useFocusRect, 0, sizeof(useFocusRect));
 	
 	/* Total component area. */
 	cT = cW * cH;
@@ -311,6 +316,15 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 		bex = bsx + bw;
 		bey = bsy + bh;
 		
+		/* If this is focused, use the bounds of this display list. */
+		if (dlAt->mod & SJME_SCRITCHUI_FB_DL_TYPE_MOD_FOCUS)
+		{
+			useFocusRect.s.x = bsx;
+			useFocusRect.s.y = bsy;
+			useFocusRect.d.width = bw;
+			useFocusRect.d.height = bh;
+		}
+		
 		/* Remove old translation. */
 		g->api->translate(g, -g->state.translate.x, -g->state.translate.y);
 		
@@ -319,6 +333,9 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 		
 		/* Translate to base coordinates. */
 		g->api->translate(g, bsx, bsy);
+		
+		/* Revert back to solid. */	
+		g->api->setStrokeStyle(g, SJME_SCRITCHUI_PENCIL_STROKE_SOLID);
 		
 		/* Set font to use? */
 		if (dlAt->type == SJME_SCRITCHUI_FB_DL_TYPE_TEXT)
@@ -410,6 +427,41 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 		}
 	}
 	
+	/* Either we pass our focus rectangle up to the caller or we draw it. */
+	if (focusRect != NULL)
+		memmove(focusRect, &useFocusRect, sizeof(*focusRect));
+	else if (useFocusRect.d.width > 0 && useFocusRect.d.height > 0)
+	{
+		/* Make sure we can actually draw here. */
+		g->api->translate(g, -g->state.translate.x, -g->state.translate.y);
+		g->api->setClip(g, 0, 0, g->width, g->height);
+		
+		/* Background. */
+		g->api->setAlphaColor(g, lafColors[
+			SJME_SCRITCHUI_LAF_ELEMENT_COLOR_FOREGROUND]);
+		g->api->setStrokeStyle(g, SJME_SCRITCHUI_PENCIL_STROKE_SOLID);
+		
+		/* Draw boxes for the focus set. */
+		g->api->drawRect(g, useFocusRect.s.x, useFocusRect.s.y,
+			useFocusRect.d.width - 1, useFocusRect.d.height - 1);
+		g->api->drawRect(g, useFocusRect.s.x + 1, useFocusRect.s.y + 1,
+			useFocusRect.d.width - 2, useFocusRect.d.height - 2);
+		
+		/* Make it bright! */
+		g->api->setStrokeStyle(g, SJME_SCRITCHUI_PENCIL_STROKE_DOTTED);
+		g->api->setAlphaColor(g, lafColors[
+			SJME_SCRITCHUI_LAF_ELEMENT_COLOR_FOCUS_BORDER]);
+		
+		/* Draw boxes for the focus set. */
+		g->api->drawRect(g, useFocusRect.s.x, useFocusRect.s.y,
+			useFocusRect.d.width - 1, useFocusRect.d.height - 1);
+		g->api->drawRect(g, useFocusRect.s.x + 1, useFocusRect.s.y + 1,
+			useFocusRect.d.width - 2, useFocusRect.d.height - 2);
+		
+		/* Revert back to solid. */	
+		g->api->setStrokeStyle(g, SJME_SCRITCHUI_PENCIL_STROKE_SOLID);
+	}
+	
 	/* Free pen before leaving. */
 	if (sg != NULL)
 		sjme_alloc_free(sg);
@@ -441,10 +493,11 @@ sjme_errorCode sjme_scritchui_fb_intern_renderInScroll(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNull const sjme_scritchui_fb_displayList* dlFull,
 	sjme_attrInPositive sjme_jint dlCount,
+	sjme_attrInNullable sjme_scritchui_rect* focusRect,
 	sjme_attrInNullable const sjme_scritchui_fb_displayShaders* shaders,
 	sjme_attrInNullable sjme_pointer shaderData)
 {
 	/* For now just ignore this and draw directly on. */
 	return inState->implIntern->render(inState, inComponent, g,
-		dlFull, dlCount, shaders, shaderData);
+		dlFull, dlCount, focusRect, shaders, shaderData);
 }

@@ -196,6 +196,7 @@ typedef sjme_errorCode (*sjme_scritchui_fb_intern_lightweightInitFunc)(
  * @param g The pencil to draw with.
  * @param dlFull The display list to draw.
  * @param dlCount The size of the display list.
+ * @param focusRect The focus rectangle.
  * @param shaders Shaders that may modify rendering.
  * @param shaderData Any data to pass to shaders.
  * @return Any resultant error, if any.
@@ -207,6 +208,7 @@ typedef sjme_errorCode (*sjme_scritchui_fb_intern_renderFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNull const sjme_scritchui_fb_displayList* dlFull,
 	sjme_attrInPositive sjme_jint dlCount,
+	sjme_attrOutNullable sjme_scritchui_rect* focusRect,
 	sjme_attrInNullable const sjme_scritchui_fb_displayShaders* shaders,
 	sjme_attrInNullable sjme_pointer shaderData);
 
@@ -218,6 +220,7 @@ typedef sjme_errorCode (*sjme_scritchui_fb_intern_renderFunc)(
  * @param g The pencil to draw with.
  * @param dlFull The display list to draw.
  * @param dlCount The size of the display list.
+ * @param focusRect The focus rectangle.
  * @param shaders Shaders that may modify rendering.
  * @param shaderData Any data to pass to shaders.
  * @return Any resultant error, if any.
@@ -229,6 +232,7 @@ typedef sjme_errorCode (*sjme_scritchui_fb_intern_renderInScrollFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNull const sjme_scritchui_fb_displayList* dlFull,
 	sjme_attrInPositive sjme_jint dlCount,
+	sjme_attrOutNullable sjme_scritchui_rect* focusRect,
 	sjme_attrInNullable const sjme_scritchui_fb_displayShaders* shaders,
 	sjme_attrInNullable sjme_pointer shaderData);
 
@@ -257,6 +261,7 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNull const sjme_scritchui_fb_displayList* dlFull,
 	sjme_attrInPositive sjme_jint dlCount,
+	sjme_attrOutNullable sjme_scritchui_rect* focusRect,
 	sjme_attrInNullable const sjme_scritchui_fb_displayShaders* shaders,
 	sjme_attrInNullable sjme_pointer shaderData);
 
@@ -266,6 +271,7 @@ sjme_errorCode sjme_scritchui_fb_intern_renderInScroll(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNull const sjme_scritchui_fb_displayList* dlFull,
 	sjme_attrInPositive sjme_jint dlCount,
+	sjme_attrOutNullable sjme_scritchui_rect* focusRect,
 	sjme_attrInNullable const sjme_scritchui_fb_displayShaders* shaders,
 	sjme_attrInNullable sjme_pointer shaderData);
 

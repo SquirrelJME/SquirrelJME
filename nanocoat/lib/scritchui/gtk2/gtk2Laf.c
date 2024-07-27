@@ -53,6 +53,10 @@ sjme_errorCode sjme_scritchui_gtk2_lafElementColor(
 			styleName = "selected_fg_color";
 			break;
 		
+		case SJME_SCRITCHUI_LAF_ELEMENT_COLOR_FOCUS_BORDER:
+			styleName = "button_active";
+			break;
+		
 		default:
 			return SJME_ERROR_INVALID_ARGUMENT;
 	}

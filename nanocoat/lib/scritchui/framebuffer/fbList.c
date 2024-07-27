@@ -31,6 +31,7 @@ static sjme_errorCode sjme_scritchui_fb_list_draw(
 	sjme_scritchui_fb_displayList* dlAt;
 	sjme_scritchui_pencilFont noFont, useFont;
 	sjme_jint dlCount, i, n, fontHeight, x, y, cW, cH;
+	sjme_scritchui_fb_widgetState* wState;
 	
 	if (wrappedState == NULL || wrappedComponent == NULL || g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -41,6 +42,12 @@ static sjme_errorCode sjme_scritchui_fb_list_draw(
 	
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Widget state for interactions. */
+	wState = NULL;
+	if (sjme_error_is(error = sjme_alloc(inState->pool,
+		sizeof(*wState), &wState)) || wState == NULL)
+		return sjme_error_default(error);
 	
 	/* Recover choice. */
 	choice = NULL;
@@ -98,6 +105,10 @@ static sjme_errorCode sjme_scritchui_fb_list_draw(
 		dlAt->bound.d.height = fontHeight;
 		dlAt->color = SJME_SCRITCHUI_LAF_ELEMENT_COLOR_BACKGROUND;
 		
+		/* Is this the focus item? */
+		if (wState->subFocusIndex == i)
+			dlAt->mod |= SJME_SCRITCHUI_FB_DL_TYPE_MOD_FOCUS;
+		
 		/* Selection box for index. */
 		dlAt->selection = i + 1;
 		
@@ -135,7 +146,8 @@ static sjme_errorCode sjme_scritchui_fb_list_draw(
 	
 	/* Render display list in the component window. */
 	return inState->implIntern->renderInScroll(inState,
-		inComponent, g, dlFull, dlCount, NULL, NULL);
+		inComponent, g, dlFull, dlCount, NULL,
+		NULL, NULL);
 }
 
 static sjme_errorCode sjme_scritchui_fb_list_lightClick(

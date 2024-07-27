@@ -49,7 +49,12 @@ public interface ScritchLAFElementColor
 	byte HIGHLIGHTED_FOREGROUND =
 		5;
 	
+	/** Focus border color. */
+	@SquirrelJMEVendorApi
+	byte FOCUS_BORDER =
+		6;
+	
 	@SquirrelJMEVendorApi
 	byte NUM_LAF_ELEMENT_COLOR =
-		6;
+		7;
 }
