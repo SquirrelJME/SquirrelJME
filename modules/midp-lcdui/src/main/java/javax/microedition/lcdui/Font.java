@@ -543,53 +543,28 @@ public final class Font
 	public int substringWidth(String __s, int __o, int __l)
 		throws NullPointerException, StringIndexOutOfBoundsException
 	{
-		throw Debugging.todo();
-		/*
 		if (__s == null)
 			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 ||
+			(__o + __l) > __s.length())
+			throw new StringIndexOutOfBoundsException("IOOB");
 		
-		try
+		// Access this font always
+		PencilFontBracket font = this._font;
+		
+		// Basic width calculation
+		int totalW = 0;
+		for (int i = 0, at = __o; i < __l; i++, at++)
 		{
-			SQFFont sqf = this._sqf;
+			// Get character here
+			char c = __s.charAt(at);
 			
-			// Need to know the max width due to newlines
-			int maxwidth = 0,
-				curwidth = 0;
-			for (int e = __o + __l; __o < e; __o++)
-			{
-				char c = __s.charAt(__o);
-				if (c == '\r' || c == '\n')
-				{
-					// Only use longer lines
-					if (curwidth > maxwidth)
-						maxwidth = curwidth;
-					
-					// Reset because at start of line now
-					curwidth = 0;
-					continue;
-				}
-				
-				// Add the character's width
-				curwidth += sqf.charWidth(SQFFont.mapChar(c));
-			}
-			
-			// Use the greater width
-			if (curwidth > maxwidth)
-				return curwidth;
-			return maxwidth;
+			// Add to the width
+			totalW += PencilFontShelf.pixelCharWidth(font, c);
 		}
 		
-		// For compatibility just wrap out of bounds, since it is
-		// confusidly used
-		catch (IndexOutOfBoundsException e)
-		{
-			StringIndexOutOfBoundsException t =
-				new StringIndexOutOfBoundsException(e.getMessage());
-			t.initCause(e);
-			throw t;
-		}
-		
-		 */
+		// Give the total
+		return totalW;
 	}
 	
 	/**
