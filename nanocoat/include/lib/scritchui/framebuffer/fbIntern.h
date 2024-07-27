@@ -32,7 +32,27 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 /**
+ * Callback for when a lightweight component is clicked.
+ * 
+ * @param inState The input state.
+ * @param inComponent The input component.
+ * @param selectionId The selection Id.
+ * @param atX The X coordinate.
+ * @param atY The Y coordinate.
+ * @return On any resultant error, if any.
+ * @since 2024/07/27
+ */
+typedef sjme_errorCode (*sjme_scritchui_fb_lightClickListenerFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInValue sjme_jint selectionId,
+	sjme_attrInValue sjme_jint atX,
+	sjme_attrInValue sjme_jint atY);
+
+/**
  * Widget state and interactions accordingly.
+ * 
+ * @since 2024/07/26
  */
 typedef struct sjme_scritchui_fb_widgetState
 {
@@ -50,6 +70,9 @@ typedef struct sjme_scritchui_fb_widgetState
 	
 	/** The selection buffer height. */
 	sjme_jint selBufHeight;
+	
+	/** Lightweight click. */
+	sjme_scritchui_fb_lightClickListenerFunc lightClickListener;
 } sjme_scritchui_fb_widgetState;
 
 /**
@@ -150,6 +173,7 @@ typedef struct sjme_scritchui_fb_displayShaders
  * 
  * @param inState The input state.
  * @param inComponent The input component.
+ * @param outWState The output widget state.
  * @param isInteractive Is this an interactive component?
  * @param paintListener The listener for paint operations.
  * @since 2024/07/26
@@ -157,6 +181,7 @@ typedef struct sjme_scritchui_fb_displayShaders
 typedef sjme_errorCode (*sjme_scritchui_fb_intern_lightweightInitFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNotNull sjme_scritchui_fb_widgetState** outWState,
 	sjme_attrInValue sjme_jboolean isInteractive,
 	sjme_attrInNotNull sjme_scritchui_paintListenerFunc paintListener);
 
@@ -219,6 +244,7 @@ struct sjme_scritchui_implInternFunctions
 sjme_errorCode sjme_scritchui_fb_intern_lightweightInit(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNotNull sjme_scritchui_fb_widgetState** outWState,
 	sjme_attrInValue sjme_jboolean isInteractive,
 	sjme_attrInNotNull sjme_scritchui_paintListenerFunc paintListener);
 

@@ -256,6 +256,37 @@ static sjme_errorCode sjme_scritchui_core_componentSetSimpleUserListener(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_scritchui_core_componentFocusGrab(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent)
+{
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Not implemented? */
+	if (inState->impl->componentFocusGrab == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Direct forward. */
+	return inState->impl->componentFocusGrab(inState, inComponent);
+}
+
+sjme_errorCode sjme_scritchui_core_componentFocusHas(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNotNull sjme_jboolean* outHasFocus)
+{
+	if (inState == NULL || inComponent == NULL || outHasFocus == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Not implemented? */
+	if (inState->impl->componentFocusHas == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Direct forward. */
+	return inState->impl->componentFocusHas(inState, inComponent, outHasFocus);
+}
+
 sjme_errorCode sjme_scritchui_core_componentRepaint(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,

@@ -268,6 +268,48 @@ static gboolean sjme_scritchui_gtk2_eventInput(
 	return TRUE;
 }
 
+sjme_errorCode sjme_scritchui_gtk2_componentFocusGrab(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent)
+{
+	GtkWidget* widget;
+	
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover widget. */
+	widget = (GtkWidget*)inComponent->common.handle[SJME_SUI_GTK2_H_WIDGET];
+	
+	/* Grab focus. */
+	gtk_widget_grab_focus(widget);
+	
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
+}
+
+sjme_errorCode sjme_scritchui_gtk2_componentFocusHas(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNotNull sjme_jboolean* outHasFocus)
+{
+	GtkWidget* widget;
+	
+	if (inState == NULL || inComponent == NULL || outHasFocus == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover widget. */
+	widget = (GtkWidget*)inComponent->common.handle[SJME_SUI_GTK2_H_WIDGET];
+	
+	/* Does this have focus? */
+	if (gtk_widget_has_focus(widget) || gtk_widget_is_focus(widget))
+		*outHasFocus = SJME_JNI_TRUE;
+	else
+		*outHasFocus = SJME_JNI_FALSE;
+	
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
+}
+
 sjme_errorCode sjme_scritchui_gtk2_componentRepaint(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
@@ -282,8 +324,7 @@ sjme_errorCode sjme_scritchui_gtk2_componentRepaint(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover widget. */
-	widget = (GtkWidget*)inComponent->common
-		.handle[SJME_SUI_GTK2_H_WIDGET];
+	widget = (GtkWidget*)inComponent->common.handle[SJME_SUI_GTK2_H_WIDGET];
 	
 	/* Max value just means to draw everywhere. */
 	if (width <= 0 || height <= 0 ||

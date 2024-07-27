@@ -131,10 +131,12 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 		SJME_SCRITCHUI_DISPATCH_DECL(choiceItemSetSelected);
 		SJME_SCRITCHUI_DISPATCH_DECL(choiceItemSetString);
 		SJME_SCRITCHUI_DISPATCH_DECL(choiceLength);
-		SJME_SCRITCHUI_DISPATCH_DECL(componentSetActivateListener);
-		SJME_SCRITCHUI_DISPATCH_DECL(componentSetValueUpdateListener);
+		SJME_SCRITCHUI_DISPATCH_DECL(componentFocusGrab);
+		SJME_SCRITCHUI_DISPATCH_DECL(componentFocusHas);
 		SJME_SCRITCHUI_DISPATCH_DECL(componentRepaint);
 		SJME_SCRITCHUI_DISPATCH_DECL(componentRevalidate);
+		SJME_SCRITCHUI_DISPATCH_DECL(componentSetActivateListener);
+		SJME_SCRITCHUI_DISPATCH_DECL(componentSetValueUpdateListener);
 		SJME_SCRITCHUI_DISPATCH_DECL(componentSetInputListener);
 		SJME_SCRITCHUI_DISPATCH_DECL(componentSetPaintListener);
 		SJME_SCRITCHUI_DISPATCH_DECL(componentSetSizeListener);
@@ -246,8 +248,18 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 		(state,
 		as.choiceLength->inComponent,
 		as.choiceLength->outLength));
-
-	/* Depends on the type... */
+	
+	SJME_SCRITCHUI_DISPATCH_CASE(componentFocusGrab,
+		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_FOCUS_GRAB,
+		(state,
+		as.componentFocusGrab->inComponent));
+	
+	SJME_SCRITCHUI_DISPATCH_CASE(componentFocusHas,
+		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_FOCUS_HAS,
+		(state,
+		as.componentFocusHas->inComponent,
+		as.componentFocusHas->outHasFocus));
+	
 	SJME_SCRITCHUI_DISPATCH_CASE(componentRepaint,
 		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_REPAINT,
 		(state,
@@ -646,6 +658,36 @@ sjme_errorCode sjme_scritchui_coreSerial_choiceLength(
 		
 	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
 	SJME_SCRITCHUI_SERIAL_PASS(outLength);
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
+}
+
+sjme_errorCode sjme_scritchui_coreSerial_componentFocusGrab(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent)
+{
+	SJME_SCRITCHUI_SERIAL_CHUNK(componentFocusGrab,
+		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_FOCUS_GRAB,
+		(inState, inComponent));
+		
+	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
+}
+
+sjme_errorCode sjme_scritchui_coreSerial_componentFocusHas(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNotNull sjme_jboolean* outHasFocus)
+{
+	SJME_SCRITCHUI_SERIAL_CHUNK(componentFocusHas,
+		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_FOCUS_HAS,
+		(inState, inComponent, outHasFocus));
+		
+	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
+	SJME_SCRITCHUI_SERIAL_PASS(outHasFocus);
 	
 	/* Invoke and wait. */
 	SJME_SCRITCHUI_INVOKE_WAIT;

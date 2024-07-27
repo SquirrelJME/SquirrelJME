@@ -216,6 +216,12 @@ struct sjme_scritchui_implFunctions
 	/** Sets the string of the given choice item. */
 	SJME_SCRITCHUI_QUICK_SAME(choiceItemSetString);
 	
+	/** Grabs the focus for this component. */
+	SJME_SCRITCHUI_QUICK_SAME(componentFocusGrab);
+	
+	/** Checks if this component has focus. */
+	SJME_SCRITCHUI_QUICK_SAME(componentFocusHas);
+	
 	/** Repaint component. */
 	SJME_SCRITCHUI_QUICK_SAME(componentRepaint);
 	

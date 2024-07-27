@@ -142,15 +142,17 @@ sjme_errorCode sjme_scritchui_fb_listNew(
 	sjme_attrInValue const sjme_scritchui_impl_initParamList* init)
 {
 	sjme_errorCode error;
+	sjme_scritchui_fb_widgetState* wState;
 	
 	if (inState == NULL || inList == NULL || init == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Lightweight initialization. */
+	wState = NULL;
 	if (sjme_error_is(error = inState->implIntern->lightweightInit(
-		inState, inList,
+		inState, inList, &wState,
 		SJME_JNI_TRUE,
-		sjme_scritchui_fb_list_draw)))
+		sjme_scritchui_fb_list_draw)) || wState == NULL)
 		return sjme_error_default(error);
 	
 	/* Success! */

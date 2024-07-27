@@ -51,10 +51,12 @@ static sjme_errorCode sjme_scritchui_fb_eventInput(
 	sjme_attrInNotNull sjme_scritchui_uiComponent wrappedComponent,
 	sjme_attrInNotNull const sjme_scritchinput_event* inEvent)
 {
+	sjme_errorCode error;
 	sjme_scritchui inState;
 	sjme_scritchui_uiComponent inComponent;
 	sjme_scritchui_fb_widgetState* wState;
 	sjme_jint pX, pY, selId;
+	sjme_jboolean hasFocus;
 	
 	if (wrappedState == NULL || wrappedComponent == NULL || inEvent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -77,6 +79,17 @@ static sjme_errorCode sjme_scritchui_fb_eventInput(
 		inEvent->type == SJME_SCRITCHINPUT_TYPE_TOUCH_FINGER_PRESSED ||
 		inEvent->type == SJME_SCRITCHINPUT_TYPE_STYLUS_PEN_PRESSED)
 	{
+		/* Check if we have focus. */
+		hasFocus = SJME_JNI_FALSE;
+		if (sjme_error_is(error = inState->api->componentFocusHas(
+			inState, inComponent, &hasFocus)))
+			return sjme_error_default(error);
+		
+		/* If we do not have focus, grab it and do nothing else. */
+		if (!hasFocus)
+			return inState->api->componentFocusGrab(
+				inState, inComponent);
+		
 		/* If there is no selection buffer, we cannot handle press events */
 		/* as we have no idea what we even clicked on. */
 		if (wState->selBuf == NULL)
@@ -94,11 +107,10 @@ static sjme_errorCode sjme_scritchui_fb_eventInput(
 		/* Read the selection id here. */
 		selId = wState->selBuf[(pY * wState->selBufWidth) + pX] & 0xFFFFFF;
 		
-		/* Was there something here? */
-		if (selId != 0)
-			sjme_message("Select %d at (%d, %d)", selId, pX, pY);
-		
-		/* Success! */
+		/* Was there something here that was clicked? */
+		if (selId != 0 && wState->lightClickListener != NULL)
+			return wState->lightClickListener(inState, inComponent,
+				selId, pX, pY);
 		return SJME_ERROR_NONE;
 	}
 	
@@ -109,6 +121,7 @@ static sjme_errorCode sjme_scritchui_fb_eventInput(
 sjme_errorCode sjme_scritchui_fb_intern_lightweightInit(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNotNull sjme_scritchui_fb_widgetState** outWState,
 	sjme_attrInValue sjme_jboolean isInteractive,
 	sjme_attrInNotNull sjme_scritchui_paintListenerFunc paintListener)
 {
@@ -117,7 +130,8 @@ sjme_errorCode sjme_scritchui_fb_intern_lightweightInit(
 	sjme_scritchui_uiPanel wrappedPanel;
 	sjme_scritchui_fb_widgetState* wState;
 	
-	if (inState == NULL || inComponent == NULL || paintListener == NULL)
+	if (inState == NULL || inComponent == NULL || paintListener == NULL ||
+		outWState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Widget state for interactions. */
@@ -169,6 +183,7 @@ sjme_errorCode sjme_scritchui_fb_intern_lightweightInit(
 		return sjme_error_default(error);
 	
 	/* Success! */
+	*outWState = wState;
 	return SJME_ERROR_NONE;
 }
 

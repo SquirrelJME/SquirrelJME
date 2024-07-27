@@ -122,6 +122,45 @@ static sjme_errorCode sjme_scritchui_fb_listenerVisible(
 		fromVisible, toVisible);
 }
 
+sjme_errorCode sjme_scritchui_fb_componentFocusGrab(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent)
+{
+	sjme_scritchui wrappedState;
+	sjme_scritchui_uiComponent wrappedComponent;
+	
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover wrapped state. */
+	wrappedState = inState->wrappedState;
+	wrappedComponent = inComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
+	
+	/* Forward. */
+	return wrappedState->api->componentFocusGrab(wrappedState, 
+		wrappedComponent);
+}
+
+sjme_errorCode sjme_scritchui_fb_componentFocusHas(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNotNull sjme_jboolean* outHasFocus)
+{
+	sjme_scritchui wrappedState;
+	sjme_scritchui_uiComponent wrappedComponent;
+	
+	if (inState == NULL || inComponent == NULL || outHasFocus == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover wrapped state. */
+	wrappedState = inState->wrappedState;
+	wrappedComponent = inComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
+	
+	/* Forward. */
+	return wrappedState->api->componentFocusHas(wrappedState, 
+		wrappedComponent, outHasFocus);
+}
+
 sjme_errorCode sjme_scritchui_fb_componentRepaint(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
@@ -158,8 +197,7 @@ sjme_errorCode sjme_scritchui_fb_componentRevalidate(
 	
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
-	wrappedComponent =
-		inComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
+	wrappedComponent = inComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
 	
 	/* Forward call. */
 	return wrappedState->apiInThread->componentRevalidate(wrappedState,

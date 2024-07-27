@@ -67,6 +67,12 @@ typedef enum sjme_scritchui_serialType
 	/** @c choiceLength . */
 	SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_LENGTH,
 	
+	/** @c componentFocusGrab . */
+	SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_FOCUS_GRAB,
+	
+	/** @c componentFocusHas . */
+	SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_FOCUS_HAS,
+	
 	/** @c componentRepaint . */
 	SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_REPAINT,
 	
@@ -246,6 +252,13 @@ SUD_STRUCT_DEF(choiceLength,
 	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
 	SDU_VARP(sjme_jint*, outLength););
 
+SUD_STRUCT_DEF(componentFocusGrab,
+	SDU_VAR(sjme_scritchui_uiComponent, inComponent););
+
+SUD_STRUCT_DEF(componentFocusHas,
+	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
+	SDU_VARP(sjme_jboolean*, outHasFocus););
+
 SUD_STRUCT_DEF(componentRepaint,
 	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
 	SDU_VAR(sjme_jint, x);
@@ -422,6 +435,8 @@ typedef union sjme_scritchui_serialDataUnion
 	SJME_SCRITCHUI_SDU_DEF(choiceItemSetSelected);
 	SJME_SCRITCHUI_SDU_DEF(choiceItemSetString);
 	SJME_SCRITCHUI_SDU_DEF(choiceLength);
+	SJME_SCRITCHUI_SDU_DEF(componentFocusGrab);
+	SJME_SCRITCHUI_SDU_DEF(componentFocusHas);
 	SJME_SCRITCHUI_SDU_DEF(componentRepaint);
 	SJME_SCRITCHUI_SDU_DEF(componentRevalidate);
 	SJME_SCRITCHUI_SDU_DEF(componentSetActivateListener);
@@ -534,6 +549,15 @@ sjme_errorCode sjme_scritchui_coreSerial_choiceLength(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrOutNotNull sjme_jint* outLength);
+
+sjme_errorCode sjme_scritchui_coreSerial_componentFocusGrab(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
+
+sjme_errorCode sjme_scritchui_coreSerial_componentFocusHas(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNotNull sjme_jboolean* outHasFocus);
 
 sjme_errorCode sjme_scritchui_coreSerial_componentRepaint(
 	sjme_attrInNotNull sjme_scritchui inState,

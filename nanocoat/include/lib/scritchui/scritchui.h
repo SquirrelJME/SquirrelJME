@@ -807,6 +807,32 @@ typedef sjme_errorCode (*sjme_scritchui_choiceLengthFunc)(
 	sjme_attrOutNotNull sjme_jint* outLength);
 
 /**
+ * Grabs the focus onto this item.
+ * 
+ * @param inState The input state.
+ * @param inComponent The input component.
+ * @return Any resultant error, if any.
+ * @since 2024/07/26
+ */
+typedef sjme_errorCode (*sjme_scritchui_componentFocusGrabFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent);
+	
+/**
+ * Checks whether the given component has focus.
+ * 
+ * @param inState The input state.
+ * @param inComponent The input component.
+ * @param outHasFocus The result of whether the component has focus.
+ * @return Any resultant error, if any.
+ * @since 2024/07/26
+ */
+typedef sjme_errorCode (*sjme_scritchui_componentFocusHasFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNotNull sjme_jboolean* outHasFocus);
+
+/**
  * Repaints the given component.
  * 
  * @param inState The input state.
@@ -1388,6 +1414,12 @@ struct sjme_scritchui_apiFunctions
 	
 	/** Gets the choice length. */
 	SJME_SCRITCHUI_QUICK_API(choiceLength);
+	
+	/** Grabs the focus for this component. */
+	SJME_SCRITCHUI_QUICK_API(componentFocusGrab);
+	
+	/** Checks if this component has focus. */
+	SJME_SCRITCHUI_QUICK_API(componentFocusHas);
 	
 	/** Repaints the given component. */
 	SJME_SCRITCHUI_QUICK_API(componentRepaint);
