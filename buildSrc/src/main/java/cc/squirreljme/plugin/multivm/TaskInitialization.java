@@ -455,7 +455,7 @@ public final class TaskInitialization
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/10/17
 	 */
-	private static void initializeFullSuiteTask(Project __project,
+	public static void initializeFullSuiteTask(Project __project,
 		SourceTargetClassifier __classifier)
 		throws NullPointerException
 	{
@@ -483,9 +483,38 @@ public final class TaskInitialization
 			return;
 		
 		// Create task
-		__project.getTasks().create(
+		TaskContainer tasks = __project.getTasks();
+		tasks.create(
 			TaskInitialization.task("full", __classifier),
 			VMFullSuite.class, __classifier);
+		
+		// Add generic runner for whatever we want
+		MakeRunTaskProvider provider = (__useName, __useClassifier,
+			__useMainClass, __useMidlet, __useDebugServer) -> {
+			tasks.create(__useName,
+				VMRunWhateverTask.class, __useClassifier,
+				__useMainClass, __useMidlet,
+				__useDebugServer);};
+		
+		// Is there GDB?
+		Path gdbServerPath = GdbUtils.gdbServerExePath();
+		URI gdbServer = (gdbServerPath != null ?
+			gdbServerPath.toUri() : null);
+		
+		// Setup a bunch of fake MIDlets to possibly run
+		int n = 3;
+		JavaMEMidlet[] midlets = new JavaMEMidlet[n];
+		for (int i = 1; i <= n; i++)
+			midlets[i - 1] = new JavaMEMidlet("" + i, null,
+				"" + i);
+		
+		// Make all the tasks
+		TaskInitialization.makeRunTasks(provider,
+			TaskInitialization.task("runJar", __classifier),
+			"main",
+			midlets,
+			__classifier,
+			gdbServer);
 	}
 	
 	/**
@@ -556,7 +585,7 @@ public final class TaskInitialization
 						// Make all the run tasks
 						TaskInitialization.makeRunTasks(classifier, hasMain,
 							tasks, libTask, config,
-							gdbServer, index, hasMidlets);
+							gdbServer, hasMidlets);
 					}
 				}
 			}
@@ -769,7 +798,7 @@ public final class TaskInitialization
 	{
 		// Consider standard Java mains first
 		int index = 0;
-		if (__mainClass != null)
+		if (__mainClass != null && !__mainClass.isEmpty())
 		{
 			// Make tasks
 			TaskInitialization.makeRunTasks(__provider,
@@ -807,13 +836,12 @@ public final class TaskInitialization
 	 * @param __libTask The current library task.
 	 * @param __config The configuration used.
 	 * @param __gdbServer The GDB server.
-	 * @param __index The index.
 	 * @param __hasMidlets Does this have MIDlets?
 	 * @since 2024/07/28
 	 */
 	public static void makeRunTasks(SourceTargetClassifier __classifier,
 		boolean __hasMain, TaskContainer __tasks, VMLibraryTask __libTask,
-		SquirrelJMEPluginConfiguration __config, URI __gdbServer, int __index,
+		SquirrelJMEPluginConfiguration __config, URI __gdbServer,
 		boolean __hasMidlets)
 	{
 		// Base name for task
@@ -891,7 +919,7 @@ public final class TaskInitialization
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/23
 	 */
-	private static void romTasks(Project __project,
+	public static void romTasks(Project __project,
 		SourceTargetClassifier __classifier, List<Task> __sequentialClean)
 		throws NullPointerException
 	{
