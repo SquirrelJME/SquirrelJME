@@ -277,6 +277,23 @@ public abstract class Displayable
 		if (__c == null)
 			return;
 		
+		// There is an implicit action if this is a list where this will
+		// clear the select command if it is removed in this way
+		if (this instanceof List)
+		{
+			List self = ((List)this);
+			synchronized (this)
+			{
+				if (self._selCommand == __c)
+				{
+					// Calling this will clear the select command first
+					// then follow with an actual removal
+					self.__setSelectCommand(null);
+					return;
+				}
+			}
+		}
+		
 		// Have the event loop handle this
 		this._state.scritchApi().eventLoop()
 			.execute(new __ExecDisplayableDefaultCommand__(this,

@@ -242,7 +242,7 @@ public class ChoiceGroup
 	}
 	
 	@Override
-	public void setFitPolicy(int __a)
+	public void setFitPolicy(int __fitPolicy)
 	{
 		throw Debugging.todo();
 	}

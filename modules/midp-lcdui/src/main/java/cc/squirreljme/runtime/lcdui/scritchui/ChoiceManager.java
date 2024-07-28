@@ -261,6 +261,49 @@ public final class ChoiceManager
 	}
 	
 	/**
+	 * Sets all selected flags in the list.
+	 *
+	 * @param __flags The flags to set.
+	 * @throws IllegalArgumentException If the flag set is smaller than the
+	 * number of choice items.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/07/28
+	 */
+	public void setSelectedFlags(boolean[] __flags)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__flags == null)
+			throw new NullPointerException("NARG");
+		
+		// Perform flagging operation
+		try
+		{
+			// Setup executor and storage
+			__ExecChoiceSelectedFlags__ select =
+				new __ExecChoiceSelectedFlags__(this.scritchApi, this._widget,
+					__flags, this.type);
+			
+			// Wait for it to run and finish
+			this.scritchApi.eventLoop().executeWait(select);
+			
+			// Did this fail?
+			Throwable error = select._error;
+			if (select._error != null)
+			{
+				if (error instanceof Error)
+					throw (Error)error;
+				else if (error instanceof RuntimeException)
+					throw (RuntimeException)error;
+				throw new RuntimeException(error);
+			}
+		}
+		catch (MLECallError __e)
+		{
+			throw __e.throwDistinct();
+		}
+	}
+	
+	/**
 	 * Returns the number of choices available.
 	 *
 	 * @return The number of available choices.

@@ -14,6 +14,7 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayScale;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
+import cc.squirreljme.runtime.lcdui.scritchui.ScritchLcdUiUtils;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 
 /**
@@ -44,6 +45,44 @@ public abstract class Screen
 	 * @since 2024/07/25
 	 */
 	abstract ScritchComponentBracket __scritchComponent();
+	
+	/**
+	 * Returns the displayable height.
+	 *
+	 * @return The displayable height.
+	 * @since 2024/07/28
+	 */
+	final int __getHeight()
+	{
+		// Get direct widget size
+		DisplayableState state = this._state;
+		if (state.currentDisplay() != null)
+			state.scritchApi().component()
+				.height(this.__scritchComponent());
+		
+		// Otherwise, fallback to the owning or default display
+		return ScritchLcdUiUtils.lcduiDisplaySize(state,
+			true);
+	}
+	
+	/**
+	 * Returns the displayable width.
+	 *
+	 * @return The displayable width.
+	 * @since 2024/07/28
+	 */
+	final int __getWidth()
+	{
+		// Get direct widget size
+		DisplayableState state = this._state;
+		if (state.currentDisplay() != null)
+			state.scritchApi().component()
+				.width(this.__scritchComponent());
+		
+		// Otherwise, fallback to the owning or default display
+		return ScritchLcdUiUtils.lcduiDisplaySize(state,
+			false);
+	}
 	
 	/**
 	 * {@inheritDoc}

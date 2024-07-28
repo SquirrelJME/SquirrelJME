@@ -10,6 +10,7 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import org.intellij.lang.annotations.MagicConstant;
 
 @Api
 @SuppressWarnings("UnusedReturnValue")
@@ -70,7 +71,17 @@ public interface Choice
 	@Api
 	void deleteAll();
 	
+	/**
+	 * Returns the current list item fitting policy that is in effect, this
+	 * might not return the same value passed to {@link #setFitPolicy(int)}
+	 * if it is not supported.
+	 *
+	 * @return One of {@link #TEXT_WRAP_DEFAULT}, {@link #TEXT_WRAP_OFF},
+	 * or {@link #TEXT_WRAP_ON}.
+	 * @since 2024/07/28
+	 */
 	@Api
+	@MagicConstant(valuesFromClass = Choice.class)
 	int getFitPolicy();
 	
 	@Api
@@ -148,8 +159,17 @@ public interface Choice
 	@Api
 	void setEnabled(int __atIndex, boolean __enabled);
 	
+	/**
+	 * Sets the fit policy for this item.
+	 *
+	 * @param __fitPolicy The fit policy to use.
+	 * @throws IllegalArgumentException If the fit policy is not valid.
+	 * @since 2024/07/28
+	 */
 	@Api
-	void setFitPolicy(int __a);
+	void setFitPolicy(
+		@MagicConstant(valuesFromClass = Choice.class) int __fitPolicy)
+		throws IllegalArgumentException;
 	
 	@Api
 	void setFont(int __a, Font __b);

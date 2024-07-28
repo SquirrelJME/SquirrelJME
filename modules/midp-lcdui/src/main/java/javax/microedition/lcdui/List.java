@@ -16,14 +16,9 @@ import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchListBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
 import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.scritchui.ChoiceManager;
-import cc.squirreljme.runtime.lcdui.scritchui.DisplayScale;
-import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
-import org.jetbrains.annotations.Async;
 
 @Api
 public class List
@@ -121,11 +116,7 @@ public class List
 			newList);
 		
 		// Implicit lists have a specific select command used
-		if (__type == Choice.IMPLICIT)
-		{
-			this._selCommand = List.SELECT_COMMAND;
-			this.addCommand(List.SELECT_COMMAND);
-		}
+		this.__setSelectCommand(List.SELECT_COMMAND);
 		
 		// Append all elements
 		for (int i = 0; i < n; i++)
@@ -165,10 +156,15 @@ public class List
 		this._choices.deleteAll();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/07/28
+	 */
 	@Override
 	public int getFitPolicy()
 	{
-		throw Debugging.todo();
+		// Always returns no text wrapping
+		return Choice.TEXT_WRAP_OFF;
 	}
 	
 	/**
@@ -196,7 +192,7 @@ public class List
 	@Override
 	public int getHeight()
 	{
-		throw Debugging.todo();
+		return this.__getHeight();
 	}
 	
 	/**
@@ -268,7 +264,7 @@ public class List
 	@Override
 	public int getWidth()
 	{
-		throw Debugging.todo();
+		return this.__getWidth();
 	}
 	
 	/**
@@ -342,10 +338,20 @@ public class List
 		this._choices.setEnabled(__atIndex, __enabled);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/07/28
+	 */
 	@Override
-	public void setFitPolicy(int __a)
+	public void setFitPolicy(int __fitPolicy)
+		throws IllegalArgumentException
 	{
-		throw Debugging.todo();
+		/* {@squirreljme.error EB1d Invalid fit policy.} */
+		if (__fitPolicy < Choice.TEXT_WRAP_DEFAULT ||
+			__fitPolicy > Choice.TEXT_WRAP_ON)
+			throw new IllegalArgumentException("EB1d");
+		
+		// Ignored, this is not supported
 	}
 	
 	/**
@@ -371,10 +377,16 @@ public class List
 		 */
 	}
 	
+	/**
+	 * Sets the command to call on list activation/selection.
+	 *
+	 * @param __command The command ot call,
+	 * @since 2024/07/28
+	 */
 	@Api
-	public void setSelectCommand(Command __a)
+	public void setSelectCommand(Command __command)
 	{
-		throw Debugging.todo();
+		this.__setSelectCommand(__command);
 	}
 	
 	/**
@@ -385,50 +397,7 @@ public class List
 	public void setSelectedFlags(boolean[] __flags)
 		throws IllegalArgumentException, NullPointerException
 	{
-		throw Debugging.todo();
-		/*
-		if (__flags == null)
-			throw new NullPointerException();
-			
-		java.util.List<__ChoiceEntry__> items = this._items.valuesAsList();
-		
-		/* {@squirreljme.error EB3n Array is longer than the list size.
-		(The list size; the array size)} * /
-		int n = items.size();
-		if (n > __flags.length)
-			throw new IllegalArgumentException("EB3n " + n + " " +
-				__flags.length);
-		
-		// Limited selection?
-		int type = this._type;
-		boolean limitSelection = (type == Choice.IMPLICIT ||
-			type == Choice.EXCLUSIVE);
-		
-		// Adjust selections
-		int selCount = 0;
-		for (int i = 0; i < n; i++)
-		{
-			// If selection is limited, then make sure no other items get
-			// selected
-			boolean flag = __flags[i];
-			if (flag)
-			{
-				if (limitSelection && selCount >= 1)
-					flag = false;
-				else
-					selCount++;
-			}
-			
-			// Use the flag
-			items.get(i)._selected = flag;
-		}
-		
-		// If nothing was selected, force the first item to be selected
-		if (limitSelection && selCount == 0 && n > 0)
-			items.get(0)._selected = true;
-		
-		// Send updates to the UI
-		this.__refresh();*/
+		this._choices.setSelectedFlags(__flags);
 	}
 	
 	/**
@@ -460,6 +429,40 @@ public class List
 	ScritchComponentBracket __scritchComponent()
 	{
 		return this._scritchList;
+	}
+	
+	/**
+	 * Sets the select command.
+	 *
+	 * @param __command The command to set.
+	 * @since 2024/07/28
+	 */
+	void __setSelectCommand(Command __command)
+	{
+		// Does nothing if not implicit
+		if (this._choices.type != Choice.IMPLICIT)
+			return;
+		
+		// Set new command
+		synchronized (this)
+		{
+			// If unchanged, do nothing
+			Command oldCommand = this._selCommand;
+			if (oldCommand == __command)
+				return;
+			
+			// Remove old command?
+			if (oldCommand != null)
+			{
+				this._selCommand = null;
+				this.removeCommand(oldCommand);
+			}
+			
+			// Set new command and add to the display implicitly
+			this._selCommand = __command;
+			if (__command != null)
+				this.addCommand(__command);
+		}
 	}
 }
 
