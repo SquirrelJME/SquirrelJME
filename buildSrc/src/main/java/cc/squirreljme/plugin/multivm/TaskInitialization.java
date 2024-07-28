@@ -553,77 +553,10 @@ public final class TaskInitialization
 						// Index for base IDs
 						int index = 0;
 						
-						// Base name for task
-						String name = TaskInitialization.task("run",
-							classifier);
-						
-						// Consider standard Java mains first
-						if (hasMain)
-						{
-							// Create task
-							tasks.create(name,
-								VMRunTask.class, classifier, libTask,
-								config.mainClass, JavaMEMidlet.NONE,
-								VMRunTask.NO_DEBUG_SERVER);
-							
-							// Debugging with JDWP?
-							tasks.create(name + "Jdwp",
-								VMRunTask.class, classifier, libTask,
-								config.mainClass, JavaMEMidlet.NONE,
-								VMRunTask.JDWP_HOST);
-							
-							// Debugging with internal debugger?
-							tasks.create(name + "JdwpInternal",
-								VMRunTask.class, classifier, libTask,
-								config.mainClass, JavaMEMidlet.NONE,
-								VMRunTask.INTERNAL);
-							
-							// Debugging with GDB?
-							if (gdbServer != null)
-								tasks.create(name + "Gdb",
-									VMRunTask.class, classifier, libTask,
-									config.mainClass, JavaMEMidlet.NONE,
-									gdbServer);
-							
-							// Count up
-							index++;
-						}
-						
-						// Then any MIDlets
-						if (hasMidlets)
-							for (JavaMEMidlet midlet : config.midlets)
-							{
-								// Add digit following for different midlets
-								String realName = (index > 0 ?
-									name + index : name);
-								
-								// Create task
-								tasks.create(realName, VMRunTask.class,
-									classifier, libTask,
-									"", midlet, VMRunTask.NO_DEBUG_SERVER);
-								
-								// Debugging with JDWP?
-								tasks.create(realName + "Jdwp",
-									VMRunTask.class,
-									classifier, libTask,
-									"", midlet, VMRunTask.JDWP_HOST);
-								
-								// Debugging with Internal Debugger?
-								tasks.create(realName + "JdwpInternal",
-									VMRunTask.class,
-									classifier, libTask,
-									"", midlet, VMRunTask.INTERNAL);
-								
-								// Debugging?
-								if (gdbServer != null)
-									tasks.create(realName + "Gdb",
-										VMRunTask.class,
-										classifier, libTask,
-										"", midlet, gdbServer);
-								
-								// Count up
-								index++;
-							}
+						// Make all the run tasks
+						TaskInitialization.makeRunTasks(classifier, hasMain,
+							tasks, libTask, config,
+							gdbServer, index, hasMidlets);
 					}
 				}
 			}
@@ -774,6 +707,133 @@ public final class TaskInitialization
 		// Add markdown task
 		TaskInitialization.initializeFossilMarkdownTask(
 			__project.getRootProject(), mdJavaDoc);
+	}
+	
+	/**
+	 * Makes run tasks.
+	 *
+	 * @param __provider The task creation provider.
+	 * @param __name The name of the task.
+	 * @param __mainClass The main class.
+	 * @param __midlet The midlet to create for.
+	 * @param __classifier The classifier used.
+	 * @param __gdbServer The GBD server.
+	 * @since 2024/07/28
+	 */
+	public static void makeRunTasks(MakeRunTaskProvider __provider,
+		String __name, String __mainClass, JavaMEMidlet __midlet,
+		SourceTargetClassifier __classifier, URI __gdbServer)
+	{
+		if (__provider == null || __name == null || __classifier == null ||
+			__mainClass == null || __midlet == null)
+			throw new NullPointerException("NARG");
+		
+		if (!__mainClass.isEmpty() && __midlet != JavaMEMidlet.NONE)
+			throw new IllegalArgumentException(
+				"Main class and MIDlet are exclusive to each other");
+		
+		// Main debug-free task
+		__provider.makeTask(__name,
+			__classifier, __mainClass, __midlet,
+			VMRunTask.NO_DEBUG_SERVER);
+		
+		// JDWP and Internal JDWP Tasks
+		__provider.makeTask(__name + "Jdwp",
+			__classifier, __mainClass, __midlet,
+			VMRunTask.JDWP_HOST);
+		__provider.makeTask(__name + "JdwpInternal",
+			__classifier, __mainClass, __midlet,
+			VMRunTask.INTERNAL);
+		
+		// GDB if it exists
+		if (__gdbServer != null)
+			__provider.makeTask(__name + "Gdb",
+				__classifier, __mainClass, __midlet,
+				__gdbServer);
+	}
+	
+	/**
+	 * Makes tasks for the main class and all the MIDlets.
+	 *
+	 * @param __provider The provider for creating tasks.
+	 * @param __name The task base name.
+	 * @param __mainClass The main class.
+	 * @param __midlets The MIDlets to create for.
+	 * @param __classifier The classifier used.
+	 * @param __gdbServer The GDB server.
+	 * @since 2024/07/28
+	 */
+	public static void makeRunTasks(MakeRunTaskProvider __provider,
+		String __name, String __mainClass, JavaMEMidlet[] __midlets,
+		SourceTargetClassifier __classifier, URI __gdbServer)
+	{
+		// Consider standard Java mains first
+		int index = 0;
+		if (__mainClass != null)
+		{
+			// Make tasks
+			TaskInitialization.makeRunTasks(__provider,
+				__name, __mainClass, JavaMEMidlet.NONE, __classifier,
+				__gdbServer);
+			
+			// Count up
+			index++;
+		}
+		
+		// Then any MIDlets
+		if (__midlets != null && __midlets.length > 0)
+			for (JavaMEMidlet midlet : __midlets)
+			{
+				// Add digit following for different midlets
+				String realName = (index > 0 ?
+					__name + index : __name);
+				
+				// Make tasks
+				TaskInitialization.makeRunTasks(__provider,
+					realName, "", midlet, __classifier,
+					__gdbServer);
+				
+				// Count up
+				index++;
+			}
+	}
+	
+	/**
+	 * Creates run tasks.
+	 *
+	 * @param __classifier The classifier used.
+	 * @param __hasMain Is there a main class specified?
+	 * @param __tasks The tasks.
+	 * @param __libTask The current library task.
+	 * @param __config The configuration used.
+	 * @param __gdbServer The GDB server.
+	 * @param __index The index.
+	 * @param __hasMidlets Does this have MIDlets?
+	 * @since 2024/07/28
+	 */
+	public static void makeRunTasks(SourceTargetClassifier __classifier,
+		boolean __hasMain, TaskContainer __tasks, VMLibraryTask __libTask,
+		SquirrelJMEPluginConfiguration __config, URI __gdbServer, int __index,
+		boolean __hasMidlets)
+	{
+		// Base name for task
+		String name = TaskInitialization.task("run", __classifier);
+		
+		MakeRunTaskProvider provider = (__useName,
+				__useClassifier,
+				__useMainClass, __useMidlet, __useDebugServer) -> {
+				__tasks.create(__useName,
+					VMRunTask.class, __useClassifier, __libTask,
+					__useMainClass, __useMidlet,
+					__useDebugServer);};
+		
+		TaskInitialization.makeRunTasks(provider,
+			name,
+			(String)(__hasMain ? __config.mainClass : null),
+			(JavaMEMidlet[])(__hasMidlets ? __config.midlets.toArray(
+				new JavaMEMidlet[0]) : null),
+			__classifier,
+			__gdbServer);
 	}
 	
 	/**
