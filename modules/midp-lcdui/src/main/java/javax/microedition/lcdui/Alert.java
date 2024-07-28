@@ -9,9 +9,13 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayManager;
+import cc.squirreljme.runtime.lcdui.scritchui.ImageTracker;
+import cc.squirreljme.runtime.lcdui.scritchui.StringTracker;
 
 @Api
 public class Alert
@@ -31,10 +35,10 @@ public class Alert
 		-2;
 	
 	/** The message to display. */
-	volatile String _message;
+	final StringTracker _message;
 	
 	/** The image to use. */
-	volatile Image _image;
+	final ImageTracker _image;
 	
 	/** The type of alert this is. */
 	volatile AlertType _type;
@@ -67,18 +71,15 @@ public class Alert
 	public Alert(String __title, String __message, Image __icon,
 		AlertType __type)
 	{
-		this._message = __message;
-		this._image = __icon;
-		this._type = __type;
+		ScritchInterface scritch = DisplayManager.instance().scritch();
 		
-		// Set titles
-		throw Debugging.todo();
-		/*
-		this._userTitle = __title;
-		if (__title != null)
-			this._displayTitle = __title;
-			
-		 */
+		// Title for this alert
+		this._trackerTitle.set(__title);
+		
+		// Alert details
+		this._message = new StringTracker(scritch.eventLoop(), __message);
+		this._image = new ImageTracker(scritch.eventLoop(), __icon);
+		this._type = __type;
 	}
 	
 	@Override
