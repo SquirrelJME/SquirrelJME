@@ -72,6 +72,27 @@ public final class EmulatedJarPackageShelf
 	}
 	
 	/**
+	 * Checks equality on the two Jar packages. 
+	 *
+	 * @param __a The first.
+	 * @param __b The second.
+	 * @return If they refer to the same Jar or not.
+	 * @since 2024/07/28
+	 */
+	public static boolean equals(JarPackageBracket __a, JarPackageBracket __b)
+	{
+		if (__a == __b)
+			return true;
+		
+		else if (!(__a instanceof EmulatedJarPackageBracket) ||
+			(!(__b instanceof EmulatedJarPackageBracket)))
+			return false;
+		
+		return Objects.equals(((EmulatedJarPackageBracket)__a).vmLib.name(),
+			((EmulatedJarPackageBracket)__b).vmLib.name());
+	}
+	
+	/**
 	 * Returns the libraries which are available to the virtual machine.
 	 * 
 	 * @return The libraries that are currently available.

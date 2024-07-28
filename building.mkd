@@ -265,6 +265,19 @@ The following _System_ properties are available:
      parameter is specified then only that one will be matched. Otherwise
      this will include all tests of that given parameter.
 
+## Custom Jar Runners
+
+There are tasks that start with `runJar` in the root project which can run
+a Jar specified by a property or environment variable, this is to ease
+debugging in running a specific target accordingly.
+
+ * `-Djar=(path)` -- The path to the Jar to run.
+ * `$SQUIRRELJME_JAR`  -- The path to the Jar to run.
+
+As an example you can run the following:
+
+ * `./gradlew runJarHostedDebug1 -Djar="application.jar"`
+
 # Building ROMs
 
 Full ROMs can be built with the following tasks, note that test ROMs contain

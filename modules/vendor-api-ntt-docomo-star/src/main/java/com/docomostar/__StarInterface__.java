@@ -9,9 +9,8 @@
 
 package com.docomostar;
 
-import cc.squirreljme.jvm.launch.IModeApplication;
+import cc.squirreljme.jvm.launch.IModeProperty;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import cc.squirreljme.runtime.midlet.ApplicationInterface;
 import cc.squirreljme.runtime.midlet.ApplicationType;
@@ -89,8 +88,8 @@ final class __StarInterface__
 		
 		// Load the suite and vendor which is needed for RMS to properly
 		// identify our own records
-		String appName = System.getProperty(IModeApplication.NAME_PROPERTY);
-		String appVend = System.getProperty(IModeApplication.VENDOR_PROPERTY);
+		String appName = System.getProperty(IModeProperty.NAME_PROPERTY);
+		String appVend = System.getProperty(IModeProperty.VENDOR_PROPERTY);
 		ApplicationHandler.setNameAndVendor(
 			Objects.toString(appName, mainClass),
 			Objects.toString(appVend, "SquirrelJME-Star"));

@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -557,23 +558,20 @@ public final class VMHelpers
 	 * Attempts to find the emulator library so that can be loaded directly
 	 * instead of being extracted by each test process, if possible.
 	 * 
-	 * @param __task The task running under.
+	 * @param __anyProject Any project.
 	 * @return The path to the emulator library.
 	 * @since 2020/12/01
 	 */
 	@SuppressWarnings("ConstantConditions")
-	public static Path findEmulatorLib(Task __task)
+	public static Path findEmulatorLib(Project __anyProject)
 		throws NullPointerException
 	{
-		if (__task == null)
+		if (__anyProject == null)
 			throw new NullPointerException("NARG");
-		
-		// Figure out what the library is called
-		String libName = System.mapLibraryName("emulator-base");
 		
 		// We need to look through the emulator base tasks to determine
 		// the library to select
-		Project emuBase = __task.getProject().getRootProject()
+		Project emuBase = __anyProject.getRootProject()
 			.findProject(":emulators:emulator-base");
 		
 		// Get the CMake Task for this
@@ -707,7 +705,7 @@ public final class VMHelpers
 	 * Returns the main class to execute.
 	 *
 	 * @param __cfg The configuration.
-	 * @param __midlet The MIDlet to be ran.
+	 * @param __midlet The MIDlet to be run.
 	 * @return The main class.
 	 * @throws NullPointerException If {@code __cfg} is {@code null}.
 	 * @since 2020/03/06
@@ -720,10 +718,28 @@ public final class VMHelpers
 			throw new NullPointerException("NARG");
 		
 		// We either run the MIDlet or we do not
-		return (__midlet != null ?
-			UnassistedLaunchEntry.MIDLET_MAIN_CLASS :
-			Objects.requireNonNull(__cfg.mainClass,
-			"No main class in project."));
+		return VMHelpers.mainClass(__midlet, __cfg.mainClass);
+	}
+	
+	/**
+	 * Determines the main class to use.
+	 *
+	 * @param __midlet The MIDlet to execute.
+	 * @param __mainClass The main class to run.
+	 * @return The class for execution.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/07/28
+	 */
+	public static String mainClass(JavaMEMidlet __midlet, String __mainClass)
+		throws NullPointerException
+	{
+		if (__midlet == null && __mainClass == null)
+			throw new NullPointerException("No main class specified.");
+		
+		// We either run the MIDlet or we do not
+		if (__midlet != null)
+			return UnassistedLaunchEntry.MIDLET_MAIN_CLASS;
+		return __mainClass;
 	}
 	
 	/**

@@ -113,7 +113,8 @@ public class VMFullSuiteTaskAction
 			{
 				// Use filled JVM arguments
 				this.classifier.getVmType().spawnJvmArguments(
-					(VMBaseTask)__task,
+					__task.getProject(),
+					this.classifier,
 					true,
 					new GradleJavaExecSpecFiller(__spec),
 					UnassistedLaunchEntry.MIDLET_MAIN_CLASS,

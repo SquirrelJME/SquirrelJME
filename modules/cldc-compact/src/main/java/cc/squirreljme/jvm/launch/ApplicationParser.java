@@ -10,7 +10,6 @@
 package cc.squirreljme.jvm.launch;
 
 import cc.squirreljme.jvm.manifest.JavaManifest;
-import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.suite.EntryPoint;
@@ -142,7 +141,7 @@ public enum ApplicationParser
 			Map<String, String> extraSysProps = new LinkedHashMap<>();
 			if (binarySto != null)
 				extraSysProps.put(
-					IModeApplication.SEED_SCRATCHPAD_PREFIX + ".0",
+					IModeProperty.SEED_SCRATCHPAD_PREFIX + ".0",
 					__state.libraryPath(binarySto));
 			
 			// Load the ADF/JAM descriptor that describes this application
@@ -231,7 +230,7 @@ public enum ApplicationParser
 			}
 			
 			// If no class is specified then we cannot launch this
-			if (!adfProps.containsKey(IModeApplication._APP_CLASS))
+			if (!adfProps.containsKey(IModeProperty._APP_CLASS))
 				return;
 			
 			// Additional i-mode specific properties?
@@ -244,7 +243,7 @@ public enum ApplicationParser
 			// Store where the scratchpad seed should be found
 			if (binarySto != null)
 				extraSysProps.put(
-					IModeApplication.SEED_SCRATCHPAD_PREFIX + ".0",
+					IModeProperty.SEED_SCRATCHPAD_PREFIX + ".0",
 					__state.libraryPath(binarySto));
 			
 			// Load application

@@ -11,6 +11,7 @@ package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import java.util.concurrent.Callable;
+import org.gradle.api.Project;
 
 /**
  * This is the set of dependencies for {@link VMRunTask} which takes all
@@ -24,8 +25,8 @@ import java.util.concurrent.Callable;
 public final class VMRunDependencies
 	implements Callable<Iterable<VMLibraryTask>>
 {
-	/** The task executing under. */
-	protected final VMExecutableTask task;
+	/** The project executing under. */
+	protected final Project project;
 	
 	/** The classifier used. */
 	protected final SourceTargetClassifier classifier;
@@ -33,19 +34,19 @@ public final class VMRunDependencies
 	/**
 	 * Initializes the provider.
 	 * 
-	 * @param __task The task working under.
+	 * @param __project The project working under.
 	 * @param __classifier The classifier used.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/15
 	 */
-	public VMRunDependencies(VMExecutableTask __task,
+	public VMRunDependencies(Project __project,
 		SourceTargetClassifier __classifier)
 		throws NullPointerException
 	{
-		if (__task == null || __classifier == null)
+		if (__project == null || __classifier == null)
 			throw new NullPointerException("NARG");
 		
-		this.task = __task;
+		this.project = __project;
 		this.classifier = __classifier;
 	}
 	
@@ -56,7 +57,7 @@ public final class VMRunDependencies
 	@Override
 	public final Iterable<VMLibraryTask> call()
 	{
-		VMExecutableTask task = this.task;
+		Project project = this.project;
 		
 		// If this is emulator that is JIT capable, instead for running
 		// load it with SpringCoat's library instead
@@ -64,13 +65,13 @@ public final class VMRunDependencies
 			.hasEmulatorJit();
 		if (emuJit)
 			return VMHelpers.<VMLibraryTask>resolveProjectTasks(
-				VMLibraryTask.class, task.getProject(),
-				VMHelpers.runClassTasks(this.task.getProject(),
+				VMLibraryTask.class, project,
+				VMHelpers.runClassTasks(project,
 					this.classifier.withVmByEmulatedJit(), true));
 		
 		return VMHelpers.<VMLibraryTask>resolveProjectTasks(
-			VMLibraryTask.class, task.getProject(),
-			VMHelpers.runClassTasks(this.task.getProject(),
+			VMLibraryTask.class, project,
+			VMHelpers.runClassTasks(project,
 				this.classifier, true));
 	}
 }

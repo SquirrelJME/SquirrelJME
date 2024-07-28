@@ -9,6 +9,7 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import cc.squirreljme.plugin.util.JavaExecSpecFiller;
 import java.io.IOException;
 import java.io.InputStream;
@@ -202,8 +203,8 @@ public interface VMSpecifier
 	 * Fills the execution spec with the arguments used to create the
 	 * virtual machine.
 	 *
-	 * @param __task The task used as a latch to obtain the needed virtual
-	 * machine and other details.
+	 * @param __anyProject Any project.
+	 * @param __classifier The classifier to use.
 	 * @param __debugEligible Is this eligible for debug?
 	 * @param __execSpec The execution spec to fill.
 	 * @param __mainClass The main class to execute.
@@ -215,7 +216,8 @@ public interface VMSpecifier
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/15
 	 */
-	void spawnJvmArguments(VMBaseTask __task, boolean __debugEligible,
+	void spawnJvmArguments(Project __anyProject, 
+		SourceTargetClassifier __classifier, boolean __debugEligible,
 		JavaExecSpecFiller __execSpec, String __mainClass,
 		String __commonName, Map<String, String> __sysProps, Path[] __libPath,
 		Path[] __classPath, String... __args)

@@ -12,7 +12,12 @@
 // The class to forward to
 #define JARSHELF_CLASSNAME "cc/squirreljme/emulator/EmulatedJarPackageShelf"
 
+#define FORWARD_CLASS "cc/squirreljme/jvm/mle/JarPackageShelf"
+#define FORWARD_NATIVE_CLASS JARSHELF_CLASSNAME
+
 #define JARSHELF_CLASSPATH_DESC "()[Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;"
+#define FORWARD_DESC_equals "(" \
+	DESC_JARPACKAGE DESC_JARPACKAGE ")" DESC_BOOLEAN
 #define JARSHELF_LIBRARIES_DESC "()[Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;"
 #define JARSHELF_LIBRARYID_DESC "(Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;)I"
 #define JARSHELF_LIBRARYPATH_DESC "(Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;)Ljava/lang/String;"
@@ -27,6 +32,10 @@ JNIEXPORT jobject JNICALL Impl_mle_JarShelf_classPath(JNIEnv* env,
 	return forwardCallStaticObject(env, JARSHELF_CLASSNAME,
 		"classPath", JARSHELF_CLASSPATH_DESC);
 }
+
+FORWARD_IMPL(JarPackageShelf, equals, jboolean, Boolean, \
+	FORWARD_IMPL_args(jobject a, jobject b), \
+	FORWARD_IMPL_pass(a, b))
 
 JNIEXPORT jobject JNICALL Impl_mle_JarShelf_libraries(JNIEnv* env,
 	jclass classy)
@@ -87,6 +96,7 @@ JNIEXPORT jint JNICALL Impl_mle_JarShelf_rawSize(JNIEnv* env,
 static const JNINativeMethod mleJarMethods[] =
 {
 	{"classPath", JARSHELF_CLASSPATH_DESC, (void*)Impl_mle_JarShelf_classPath},
+	FORWARD_list(JarPackageShelf, equals),
 	{"libraries", JARSHELF_LIBRARIES_DESC, (void*)Impl_mle_JarShelf_libraries},
 	{"libraryId", JARSHELF_LIBRARYID_DESC, (void*)Impl_mle_JarShelf_libraryId},
 	{"libraryPath", JARSHELF_LIBRARYPATH_DESC, (void*)Impl_mle_JarShelf_libraryPath},

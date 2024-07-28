@@ -131,6 +131,8 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 #define DESC_STRING DESC_CLASS("java/lang/String")
 #define DESC_BYTE_BUFFER DESC_CLASS("java/nio/ByteBuffer")
 
+#define DESC_JARPACKAGE \
+	DESC_CLASS("cc/squirreljme/jvm/mle/brackets/JarPackageBracket")
 #define DESC_PENCIL \
 	DESC_CLASS("cc/squirreljme/jvm/mle/brackets/PencilBracket")
 #define DESC_PENCILFONT \
