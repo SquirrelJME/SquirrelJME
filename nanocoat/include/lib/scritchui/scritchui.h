@@ -699,6 +699,20 @@ typedef sjme_errorCode (*sjme_scritchui_apiInitFunc)(
 	sjme_attrInNullable sjme_frontEnd* initFrontEnd);
 
 /**
+ * Gets the first selected index of a choice or otherwise @c -1 .
+ * 
+ * @param inState The input state.
+ * @param inComponent The choice to read from.
+ * @param outIndex The resultant index.
+ * @return Any resultant error, if any.
+ * @since 2024/07/28
+ */
+typedef sjme_errorCode (*sjme_scritchui_choiceGetSelectedIndexFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNotNull sjme_jint* outIndex);
+
+/**
  * Gets the specified item template.
  * 
  * @param inState The input state.
@@ -1442,6 +1456,9 @@ struct sjme_scritchui_apiFunctions
 {
 	/** API flags. */
 	SJME_SCRITCHUI_QUICK_API(apiFlags);
+	
+	/** Get the first selected index of a choice. */
+	SJME_SCRITCHUI_QUICK_API(choiceGetSelectedIndex);
 	
 	/** Gets the item information. */
 	SJME_SCRITCHUI_QUICK_API(choiceItemGet);

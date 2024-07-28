@@ -24,6 +24,8 @@
 	"NativeScritchDylib"
 #define FORWARD_CLASS IMPL_CLASS
 
+#define DESC_ScritchActivateListener_activate "(" \
+	DESC_SCRITCHUI_COMPONENT ")" DESC_VOID
 #define DESC_ScritchCloseListener_closed "(" \
 	DESC_SCRITCHUI_WINDOW ")" DESC_BOOLEAN
 #define DESC_ScritchInputListener_inputEvent "(" \
@@ -44,12 +46,16 @@
 #define FORWARD_DESC___builtinFonts "(" \
 	DESC_LONG ")" DESC_ARRAY(DESC_PENCILFONT)
 
+#define FORWARD_DESC___choiceGetSelectedIndex "(" \
+	DESC_LONG DESC_LONG ")" DESC_INT
+#define FORWARD_DESC___choiceInsert "(" \
+	DESC_LONG DESC_LONG DESC_INT ")" DESC_INT
+#define FORWARD_DESC___choiceLength "(" \
+	DESC_LONG DESC_LONG ")" DESC_INT
 #define FORWARD_DESC___choiceRemove "(" \
 	DESC_LONG DESC_LONG DESC_INT ")" DESC_VOID
 #define FORWARD_DESC___choiceRemoveAll "(" \
 	DESC_LONG DESC_LONG ")" DESC_VOID
-#define FORWARD_DESC___choiceInsert "(" \
-	DESC_LONG DESC_LONG DESC_INT ")" DESC_INT
 #define FORWARD_DESC___choiceSetEnabled "(" \
 	DESC_LONG DESC_LONG DESC_INT DESC_BOOLEAN ")" DESC_VOID
 #define FORWARD_DESC___choiceSetImage "(" \
@@ -66,6 +72,8 @@
 	DESC_LONG DESC_LONG DESC_INT DESC_INT DESC_INT DESC_INT ")" DESC_VOID
 #define FORWARD_DESC___componentRevalidate "(" \
 	DESC_LONG DESC_LONG ")" DESC_VOID
+#define FORWARD_DESC___componentSetActivateListener "(" \
+	DESC_LONG DESC_LONG DESC_SCRITCHUI_ACTIVATE_LISTENER ")" DESC_VOID
 #define FORWARD_DESC___componentSetInputListener "(" \
 	DESC_LONG DESC_LONG DESC_SCRITCHUI_INPUT_LISTENER ")" DESC_VOID
 #define FORWARD_DESC___componentSetPaintListener "(" \
@@ -268,6 +276,44 @@ static sjme_errorCode mle_scritchUiListenerClose(
 	/* Success! */
 	if (skippy)
 		return SJME_ERROR_CANCEL_WINDOW_CLOSE;
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode mle_scritchUiListenerActivate(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent)
+{
+	JNIEnv* env;
+	sjme_scritchui_listener_activate* infoUser;
+	mle_callbackData callbackData;
+	
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Relocate env. */
+	mle_scritchUiRecoverEnv(inState, &env);
+	
+	/* Get listener from window. */
+	infoUser = &SJME_SCRITCHUI_LISTENER_USER(inComponent, activate);
+	
+	/* Recover callback information. */
+	mle_scritchUiRecoverCallback(env, inComponent,
+		&infoUser->frontEnd,
+		"activate",
+		DESC_ScritchActivateListener_activate,
+		&callbackData);
+	
+	/* Forward call. */
+	(*env)->CallVoidMethod(env,
+		callbackData.javaCallback, callbackData.javaCallbackId,
+		
+		callbackData.onWhat);
+		
+	/* Failed? */
+	if (sjme_jni_checkVMException(env))
+		return SJME_ERROR_UNKNOWN;
+	
+	/* Success! */
 	return SJME_ERROR_NONE;
 }
 
@@ -718,6 +764,35 @@ JNIEXPORT jobjectArray JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 }
 
 JNIEXPORT int JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__choiceGetSelectedIndex)(JNIEnv* env, jclass classy, jlong stateP,
+	jlong choiceP)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	sjme_scritchui_uiComponent choice;
+	sjme_jint result;
+	
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	choice = (sjme_scritchui_uiComponent)choiceP;
+	
+	/* Check. */
+	if (state == NULL || choice == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return -1;
+	}
+	
+	/* Forward. */
+	result = -1;
+	if (sjme_error_is(error = state->api->choiceGetSelectedIndex(
+		state, choice, &result)))
+		sjme_jni_throwMLECallError(env, error);
+	
+	return result;
+}
+
+JNIEXPORT int JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	__choiceInsert)(JNIEnv* env, jclass classy, jlong stateP,
 	jlong choiceP, jint atIndex)
 {
@@ -743,6 +818,34 @@ JNIEXPORT int JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 		state, choice, &result)))
 		sjme_jni_throwMLECallError(env, error);
 	
+	return result;
+}
+
+JNIEXPORT int JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__choiceLength)(JNIEnv* env, jclass classy, jlong stateP, jlong choiceP)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	sjme_scritchui_uiComponent choice;
+	sjme_jint result;
+	
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	choice = (sjme_scritchui_uiComponent)choiceP;
+	
+	/* Check. */
+	if (state == NULL || choice == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return -1;
+	}
+	
+	/* Forward. */
+	result = -1;
+	if (sjme_error_is(error = state->api->choiceLength(
+		state, choice, &result)) ||
+		result < 0)
+		sjme_jni_throwMLECallError(env, error);
 	return result;
 }
 
@@ -1015,6 +1118,45 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 		sjme_error_is(error = state->api->componentRevalidate(
 			state, component)))
 		sjme_jni_throwMLECallError(env, error);
+}
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__componentSetActivateListener)(JNIEnv* env, jclass classy, jlong stateP,
+	jlong componentP, jobject javaListener)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	sjme_scritchui_uiComponent component;
+	sjme_frontEnd newFrontEnd;
+
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	component = (sjme_scritchui_uiComponent)componentP;
+	
+	if (state == NULL || component == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+	
+	if (state->api->componentSetActivateListener == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
+		return;
+	}
+	
+	/* Setup new front-end to refer to this component. */
+	mle_scritchUiStoreCallback(env, &newFrontEnd, javaListener);
+
+	/* Forward. */
+	if (sjme_error_is(error = state->api->componentSetActivateListener(
+		state, component,
+		mle_scritchUiListenerActivate,
+		&newFrontEnd)))
+	{
+		sjme_jni_throwMLECallError(env, error);
+		return;
+	}
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
@@ -2330,9 +2472,11 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 static const JNINativeMethod mleNativeScritchDylibMethods[] =
 {
 	FORWARD_list(NativeScritchDylib, __builtinFonts),
+	FORWARD_list(NativeScritchDylib, __choiceGetSelectedIndex),
+	FORWARD_list(NativeScritchDylib, __choiceInsert),
+	FORWARD_list(NativeScritchDylib, __choiceLength),
 	FORWARD_list(NativeScritchDylib, __choiceRemove),
 	FORWARD_list(NativeScritchDylib, __choiceRemoveAll),
-	FORWARD_list(NativeScritchDylib, __choiceInsert),
 	FORWARD_list(NativeScritchDylib, __choiceSetEnabled),
 	FORWARD_list(NativeScritchDylib, __choiceSetImage),
 	FORWARD_list(NativeScritchDylib, __choiceSetSelected),
@@ -2340,6 +2484,7 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 	FORWARD_list(NativeScritchDylib, __componentHeight),
 	FORWARD_list(NativeScritchDylib, __componentRepaint),
 	FORWARD_list(NativeScritchDylib, __componentRevalidate),
+	FORWARD_list(NativeScritchDylib, __componentSetActivateListener),
 	FORWARD_list(NativeScritchDylib, __componentSetInputListener),
 	FORWARD_list(NativeScritchDylib, __componentSetPaintListener),
 	FORWARD_list(NativeScritchDylib, __componentSetVisibleListener),

@@ -127,6 +127,30 @@ fail_noListener:
 	return error;
 }
 
+static sjme_errorCode sjme_scritchui_core_baseActivateListener(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent)
+{
+	sjme_errorCode error;
+	sjme_scritchui_listener_activate* info;
+	sjme_scritchui_activateListenerFunc callback;
+	
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Base info. */		
+	info = &SJME_SCRITCHUI_LISTENER_USER(inComponent, activate);
+	
+	/* Call user handler, if there is one */
+	callback = info->callback;
+	if (callback != NULL)
+		if (sjme_error_is(error = callback(inState, inComponent)))
+			return sjme_error_default(error);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_scritchui_core_baseSizeListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
@@ -368,8 +392,16 @@ sjme_errorCode sjme_scritchui_core_componentSetActivateListener(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(activate))
 {
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	return sjme_scritchui_core_componentSetSimpleUserListener(
+		inState,
+		inComponent,
+		(sjme_scritchui_listener_void*)&SJME_SCRITCHUI_LISTENER_USER(
+			inComponent, activate),
+		(sjme_scritchui_voidListenerFunc)inListener,
+		copyFrontEnd);
 }
 
 sjme_errorCode sjme_scritchui_core_componentSetInputListener(
@@ -625,6 +657,24 @@ sjme_errorCode sjme_scritchui_core_intern_initComponent(
 	/* Post-initialize? */
 	if (postCreate)
 	{
+		/* Install activate listener for activation events. */
+		if (inState->impl->componentSetActivateListener != NULL)
+		{
+			if (sjme_error_is(error =
+				inState->impl->componentSetActivateListener(inState,
+				inComponent,
+				sjme_scritchui_core_baseActivateListener,
+				NULL)))
+				return sjme_error_default(error);
+		}
+		else
+		{
+			/* Still set the activation listener because there might be */
+			/* implicit soft activates. */
+			SJME_SCRITCHUI_LISTENER_CORE(inComponent, activate)
+				.callback = sjme_scritchui_core_baseActivateListener;
+		}
+		
 		/* Install size listener to emit repaints on resize. */
 		if (inState->impl->componentSetSizeListener != NULL)
 			if (sjme_error_is(error =
@@ -644,12 +694,13 @@ sjme_errorCode sjme_scritchui_core_intern_initComponent(
 				NULL)))
 				return sjme_error_default(error);
 		}
-		
-		/* If there is no native support for listeners, still set it */
-		/* as we will handle visibility ourselves manually. */
 		else
+		{
+			/* If there is no native support for listeners, still set it */
+			/* as we will handle visibility ourselves manually. */
 			SJME_SCRITCHUI_LISTENER_CORE(inComponent, visible)
 				.callback = sjme_scritchui_core_baseVisibleListener;
+		}
 		
 		/* Common paintable base initialization. */
 		paint = NULL;

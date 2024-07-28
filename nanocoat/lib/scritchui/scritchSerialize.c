@@ -137,6 +137,12 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 	/* Begin cases. */
 	SJME_SCRITCHUI_DISPATCH_SWITCH_BEGIN
 	
+	SJME_SCRITCHUI_DISPATCH_CASE(choiceGetSelectedIndex,
+		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_GET_SELECTED_INDEX,
+		(state,
+		as->choiceGetSelectedIndex.inComponent,
+		as->choiceGetSelectedIndex.outIndex));
+	
 	SJME_SCRITCHUI_DISPATCH_CASE(choiceItemGet,
 		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_ITEM_GET,
 		(state,
@@ -458,6 +464,22 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 
 /* ------------------------------------------------------------------------ */
 
+sjme_errorCode sjme_scritchui_coreSerial_choiceGetSelectedIndex(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNotNull sjme_jint* outIndex)
+{
+	SJME_SCRITCHUI_SERIAL_CHUNK(choiceGetSelectedIndex,
+		SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_GET_SELECTED_INDEX,
+		(inState, inComponent, outIndex));
+		
+	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
+	SJME_SCRITCHUI_SERIAL_PASS(outIndex);
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
+}
+	
 sjme_errorCode sjme_scritchui_coreSerial_choiceItemGet(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,

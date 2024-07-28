@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.mle.scritchui.callbacks;
 
+import cc.squirreljme.jvm.mle.scritchui.annotation.ScritchEventLoop;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPencilBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
@@ -37,7 +38,7 @@ public interface ScritchPaintListener
 	 * @since 2024/03/19
 	 */
 	@SquirrelJMEVendorApi
-	@Async.Execute
+	@ScritchEventLoop
 	void paint(@NotNull ScritchComponentBracket __component,
 		@NotNull ScritchPencilBracket __g,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __sw,

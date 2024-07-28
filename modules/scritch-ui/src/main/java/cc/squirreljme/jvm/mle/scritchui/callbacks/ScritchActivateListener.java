@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm.mle.scritchui.callbacks;
 
+import cc.squirreljme.jvm.mle.scritchui.annotation.ScritchEventLoop;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
@@ -20,4 +22,13 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 public interface ScritchActivateListener
 	extends ScritchListener
 {
+	/**
+	 * This is called when the component has been activated.
+	 *
+	 * @param __component The component that was activated.
+	 * @since 2024/07/28
+	 */
+	@SquirrelJMEVendorApi
+	@ScritchEventLoop
+	void activate(ScritchComponentBracket __component);
 }

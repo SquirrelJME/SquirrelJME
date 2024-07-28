@@ -26,6 +26,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_gtkFunctions =
 	.componentFocusHas = sjme_scritchui_gtk2_componentFocusHas,
 	.componentRepaint = sjme_scritchui_gtk2_componentRepaint,
 	.componentRevalidate = sjme_scritchui_gtk2_componentRevalidate,
+	.componentSetActivateListener = NULL,
 	.componentSetInputListener = sjme_scritchui_gtk2_componentSetInputListener,
 	.componentSetPaintListener = sjme_scritchui_gtk2_componentSetPaintListener,
 	.componentSetSizeListener = sjme_scritchui_gtk2_componentSetSizeListener,

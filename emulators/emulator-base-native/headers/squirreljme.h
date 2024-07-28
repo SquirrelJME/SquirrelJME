@@ -151,6 +151,8 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 #define DESC_DYLIB_PENCILFONT \
 	DESC_CLASS("cc/squirreljme/emulator/scritchui/dylib/DylibPencilFontObject")
 
+#define DESC_SCRITCHUI_ACTIVATE_LISTENER DESC_CLASS( \
+	"cc/squirreljme/jvm/mle/scritchui/callbacks/ScritchActivateListener")
 #define DESC_SCRITCHUI_CLOSE_LISTENER DESC_CLASS( \
 	"cc/squirreljme/jvm/mle/scritchui/callbacks/ScritchCloseListener")
 #define DESC_SCRITCHUI_INPUT_LISTENER DESC_CLASS( \

@@ -27,6 +27,7 @@ const sjme_scritchui_implFunctions sjme_scritchui_fbFunctions =
 	.componentFocusHas = sjme_scritchui_fb_componentFocusHas,
 	.componentRepaint = sjme_scritchui_fb_componentRepaint,
 	.componentRevalidate = sjme_scritchui_fb_componentRevalidate,
+	.componentSetActivateListener = NULL,
 	.componentSetInputListener = sjme_scritchui_fb_componentSetInputListener,
 	.componentSetPaintListener = sjme_scritchui_fb_componentSetPaintListener,
 	.componentSetSizeListener = sjme_scritchui_fb_componentSetSizeListener,

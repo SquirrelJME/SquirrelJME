@@ -82,6 +82,46 @@ sjme_errorCode sjme_scritchui_core_intern_getChoice(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_scritchui_core_choiceGetSelectedIndex(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNotNull sjme_jint* outIndex)
+{
+	sjme_errorCode error;
+	sjme_scritchui_uiChoice choice;
+	sjme_scritchui_uiChoiceItem choiceItem;
+	sjme_jint result;
+	sjme_jint i, n;
+	
+	if (inState == NULL || inComponent == NULL || outIndex == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Recover choice. */
+	choice = NULL;
+	if (sjme_error_is(error = inState->intern->getChoice(inState,
+		inComponent, &choice)) || choice == NULL)
+		return sjme_error_default(error);
+	
+	/* Find the first selected item. */
+	result = -1;
+	for (i = 0, n = choice->numItems; i < n; i++)
+	{
+		/* Get the item here. */
+		choiceItem = choice->items->elements[i];
+		
+		/* Is this selected? */
+		if (choiceItem->isSelected)
+		{
+			result = i;
+			break;
+		}
+	}
+		
+	/* Success! */
+	*outIndex = result;
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_scritchui_core_choiceItemGet(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,

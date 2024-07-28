@@ -28,6 +28,7 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 {
 	/* As normal. */
 	.apiFlags = NULL,
+	.choiceGetSelectedIndex = sjme_scritchui_coreSerial_choiceGetSelectedIndex,
 	.choiceItemGet = sjme_scritchui_coreSerial_choiceItemGet,
 	.choiceItemInsert = sjme_scritchui_coreSerial_choiceItemInsert,
 	.choiceItemRemove = sjme_scritchui_coreSerial_choiceItemRemove,
@@ -96,6 +97,7 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 {
 	.apiFlags = NULL,
+	.choiceGetSelectedIndex = sjme_scritchui_core_choiceGetSelectedIndex,
 	.choiceItemGet = sjme_scritchui_core_choiceItemGet,
 	.choiceItemInsert = sjme_scritchui_core_choiceItemInsert,
 	.choiceItemRemove = sjme_scritchui_core_choiceItemRemove,

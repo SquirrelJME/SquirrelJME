@@ -23,6 +23,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_x11Functions =
 	.componentFocusHas = NULL,
 	.componentRepaint = NULL,
 	.componentRevalidate = NULL,
+	.componentSetActivateListener = NULL,
 	.componentSetInputListener = NULL,
 	.componentSetPaintListener = NULL,
 	.componentSetSizeListener = NULL,

@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.mle.scritchui.callbacks;
 
+import cc.squirreljme.jvm.mle.scritchui.annotation.ScritchEventLoop;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
@@ -30,6 +31,7 @@ public interface ScritchSizeListener
 	 * @since 2024/04/28
 	 */
 	@SquirrelJMEVendorApi
+	@ScritchEventLoop
 	void sizeChanged(ScritchComponentBracket __component,
 		int __newWidth, int __newHeight);
 }

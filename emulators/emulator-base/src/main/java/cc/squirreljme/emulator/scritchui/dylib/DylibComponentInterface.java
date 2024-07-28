@@ -84,7 +84,13 @@ public class DylibComponentInterface
 		ScritchActivateListener __listener)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__component == null)
+			throw new NullPointerException("NARG");
+		
+		NativeScritchDylib.__componentSetActivateListener(
+			this.dyLib._stateP,
+			((DylibComponentObject)__component).objectPointer(),
+			__listener);
 	}
 	
 	/**
@@ -128,7 +134,7 @@ public class DylibComponentInterface
 		
 		// Forward
 		NativeScritchDylib.__componentSetVisibleListener(this.dyLib._stateP,
-			((DylibBaseObject)(DylibComponentObject)__component).objectPointer(),
+			((DylibBaseObject)__component).objectPointer(),
 			__listener);
 	}
 	

@@ -153,18 +153,16 @@ static sjme_errorCode sjme_scritchui_fb_list_lightActivate(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent)
 {
-	sjme_errorCode error;
-	sjme_scritchui_fb_widgetState* wState;
 	sjme_scritchui_listener_activate* infoCore;
 	
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-		
-	/* Recover component state. */
-	wState = inComponent->common.handle[SJME_SUI_FB_H_WSTATE];
 	
 	/* Get target listener. */
 	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(inComponent, activate);
+
+	/* Debug. */
+	sjme_message("Light activate into %p", infoCore->callback);
 
 	/* Forward call, if there is one, otherwise do nothing. */
 	if (infoCore->callback != NULL)

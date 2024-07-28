@@ -12,7 +12,11 @@ package cc.squirreljme.emulator.scritchui.dylib;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchChoiceInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchChoiceBracket;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 /**
  * Dynamic library interface over choices.
@@ -70,6 +74,21 @@ public class DylibChoiceInterface
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2024/07/28
+	 */
+	@Override
+	public int getSelectedIndex(ScritchChoiceBracket __choice)
+		throws MLECallError
+	{
+		if (__choice == null)
+			throw new MLECallError("Null arguments.");
+		
+		return NativeScritchDylib.__choiceGetSelectedIndex(this.dyLib._stateP,
+			((DylibChoiceObject)__choice).objectPointer());
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 *
 	 * @return
 	 * @since 2024/07/25
@@ -84,6 +103,21 @@ public class DylibChoiceInterface
 		
 		return NativeScritchDylib.__choiceInsert(this.dyLib._stateP,
 			((DylibChoiceObject)__choice).objectPointer(), __atIndex);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/07/28
+	 */
+	@Override
+	public int length(ScritchChoiceBracket __choice)
+		throws MLECallError
+	{
+		if (__choice == null)
+			throw new MLECallError("Null arguments.");
+		
+		return NativeScritchDylib.__choiceLength(this.dyLib._stateP,
+			((DylibChoiceObject)__choice).objectPointer());
 	}
 	
 	/**

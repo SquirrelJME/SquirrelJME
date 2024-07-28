@@ -83,7 +83,7 @@ public final class ChoiceManager
 		}
 		catch (MLECallError __e)
 		{
-			__e.throwDistinct();
+			throw __e.throwDistinct();
 		}
 	}
 	
@@ -101,7 +101,25 @@ public final class ChoiceManager
 		}
 		catch (MLECallError __e)
 		{
-			__e.throwDistinct();
+			throw __e.throwDistinct();
+		}
+	}
+	
+	/**
+	 * Returns the first selected index in this choice.
+	 *
+	 * @return The first selected index, returns {@code -1} if there is none.
+	 * @since 2024/07/28
+	 */
+	public int getSelectedIndex()
+	{
+		try
+		{
+			return this.scritchApi.choice().getSelectedIndex(this._widget);
+		}
+		catch (MLECallError __e)
+		{
+			throw __e.throwDistinct();
 		}
 	}
 	
@@ -235,6 +253,24 @@ public final class ChoiceManager
 		{
 			this.scritchApi.choice().setSelected(this._widget, __atIndex,
 				__selected);
+		}
+		catch (MLECallError __e)
+		{
+			throw __e.throwDistinct();
+		}
+	}
+	
+	/**
+	 * Returns the number of choices available.
+	 *
+	 * @return The number of available choices.
+	 * @since 2024/07/28
+	 */
+	public int size()
+	{
+		try
+		{
+			return this.scritchApi.choice().length(this._widget);
 		}
 		catch (MLECallError __e)
 		{

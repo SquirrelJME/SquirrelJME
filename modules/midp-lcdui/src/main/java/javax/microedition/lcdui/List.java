@@ -107,6 +107,10 @@ public class List
 		ScritchListBracket newList = listApi.listNew(nativeType);
 		this._scritchList = newList;
 		
+		// Setup list activation
+		scritchApi.component().setActivateListener(newList,
+			new __ExecListActivate__(this));
+		
 		// Setup manager
 		ChoiceManager choices = new ChoiceManager(__type, scritchApi, newList);
 		this._choices = choices;
@@ -235,10 +239,7 @@ public class List
 	@Override
 	public int getSelectedIndex()
 	{
-		throw Debugging.todo();
-		/*
-		return __Utils__.__getSelectedIndex(this, this._type);
-		 */
+		return this._choices.getSelectedIndex();
 	}
 	
 	/**
@@ -448,11 +449,7 @@ public class List
 	@Override
 	public int size()
 	{
-		throw Debugging.todo();
-		/*
-		return this._items.size();
-		
-		 */
+		return this._choices.size();
 	}
 	
 	/**

@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.mle.scritchui.callbacks;
 
+import cc.squirreljme.jvm.mle.scritchui.annotation.ScritchEventLoop;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchInputMethodType;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
@@ -45,6 +46,7 @@ public interface ScritchInputListener
 	 * @since 2024/06/29
 	 */
 	@SquirrelJMEVendorApi
+	@ScritchEventLoop
 	void inputEvent(
 		@NotNull ScritchComponentBracket __component,
 		@MagicConstant(valuesFromClass = ScritchInputMethodType.class)

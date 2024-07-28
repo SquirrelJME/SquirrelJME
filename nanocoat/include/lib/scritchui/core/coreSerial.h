@@ -40,6 +40,9 @@ typedef enum sjme_scritchui_serialType
 	/** Unknown. */
 	SJME_SCRITCHUI_SERIAL_TYPE_UNKNOWN,
 	
+	/** @c choiceGetSelectedIndex . */
+	SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_GET_SELECTED_INDEX,
+	
 	/** @c choiceItemGet . */
 	SJME_SCRITCHUI_SERIAL_TYPE_CHOICE_ITEM_GET,
 	
@@ -210,6 +213,10 @@ typedef enum sjme_scritchui_serialType
 /* clang-format off */
 /* ------------------------------------------------------------------------ */
 
+SUD_STRUCT_DEF(choiceGetSelectedIndex,
+	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
+	SDU_VARP(sjme_jint*, outIndex););
+	
 SUD_STRUCT_DEF(choiceItemGet,
 	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
 	SDU_VAR(sjme_jint, atIndex);
@@ -434,6 +441,7 @@ SUD_STRUCT_DEF(windowSetVisible,
  */
 typedef union sjme_scritchui_serialDataUnion
 {
+	SJME_SCRITCHUI_SDU_DEF(choiceGetSelectedIndex);
 	SJME_SCRITCHUI_SDU_DEF(choiceItemGet);
 	SJME_SCRITCHUI_SDU_DEF(choiceItemInsert);
 	SJME_SCRITCHUI_SDU_DEF(choiceItemRemove);
@@ -504,6 +512,11 @@ typedef struct sjme_scritchui_serialData
 	/** The serial data. */
 	volatile sjme_scritchui_serialDataUnion data;
 } sjme_scritchui_serialData;
+
+sjme_errorCode sjme_scritchui_coreSerial_choiceGetSelectedIndex(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNotNull sjme_jint* outIndex);
 
 sjme_errorCode sjme_scritchui_coreSerial_choiceItemGet(
 	sjme_attrInNotNull sjme_scritchui inState,

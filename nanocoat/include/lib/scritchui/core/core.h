@@ -37,6 +37,11 @@ sjme_errorCode sjme_scritchui_core_apiInit(
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
 	sjme_attrInNullable sjme_frontEnd* initFrontEnd);
 
+sjme_errorCode sjme_scritchui_core_choiceGetSelectedIndex(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNotNull sjme_jint* outIndex);
+
 sjme_errorCode sjme_scritchui_core_choiceItemGet(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,

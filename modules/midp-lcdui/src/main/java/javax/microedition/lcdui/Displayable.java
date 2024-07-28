@@ -47,7 +47,6 @@ public abstract class Displayable
 	final DisplayableState _state;
 	
 	/** The command listener to call into when commands are generated. */
-	@Deprecated
 	volatile CommandListener _cmdListener;
 	
 	/** The ticker of the displayable. */
@@ -168,7 +167,7 @@ public abstract class Displayable
 	@Api
 	protected CommandListener getCommandListener()
 	{
-		return this._cmdListener;
+		return this.__getCommandListener();
 	}
 	
 	/**
@@ -345,7 +344,10 @@ public abstract class Displayable
 	@Api
 	public void setCommandListener(CommandListener __l)
 	{
-		this._cmdListener = __l;
+		synchronized (this)
+		{
+			this._cmdListener = __l;
+		}
 	}
 	
 	/**
@@ -497,6 +499,21 @@ public abstract class Displayable
 		state.scritchApi().container().setBounds(
 			__parent.scritchWindow(),
 			state.scritchPanel(), 0, 0, w, h);
+	}
+	
+	/**
+	 * Returns the command listener.
+	 * 
+	 * @return The command listener.
+	 * @since 2024/07/28
+	 */
+	@SquirrelJMEVendorApi
+	CommandListener __getCommandListener()
+	{
+		synchronized (this)
+		{
+			return this._cmdListener;
+		}
 	}
 	
 	/**

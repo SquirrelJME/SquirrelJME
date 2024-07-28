@@ -228,6 +228,9 @@ struct sjme_scritchui_implFunctions
 	/** Revalidate component. */
 	SJME_SCRITCHUI_QUICK_SAME(componentRevalidate);
 	
+	/** Sets the activate listener for a component. */
+	SJME_SCRITCHUI_QUICK_SAME(componentSetActivateListener);
+	
 	/** Sets the input listener for a component. */
 	SJME_SCRITCHUI_QUICK_SAME(componentSetInputListener);
 	

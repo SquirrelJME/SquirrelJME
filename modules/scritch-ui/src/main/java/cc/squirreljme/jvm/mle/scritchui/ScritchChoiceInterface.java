@@ -52,6 +52,19 @@ public interface ScritchChoiceInterface
 		throws MLECallError;
 	
 	/**
+	 * Returns the first selected index in the choice.
+	 *
+	 * @param __choice The choice widget to get from.
+	 * @return The resultant index or {@code -1} if nothing is set.
+	 * @throws MLECallError If the choice is not valid.
+	 * @since 2024/07/28
+	 */
+	@SquirrelJMEVendorApi
+	@Range(from = -1, to = Integer.MAX_VALUE)
+	int getSelectedIndex(@NotNull ScritchChoiceBracket __choice)
+		throws MLECallError;
+	
+	/**
 	 * Inserts an empty choice at the given index.
 	 *
 	 * @param __choice The choice to modify.
@@ -65,6 +78,19 @@ public interface ScritchChoiceInterface
 	@Range(from = 0, to = Integer.MAX_VALUE)
 	int insert(@NotNull ScritchChoiceBracket __choice,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __atIndex)
+		throws MLECallError;
+	
+	/**
+	 * Returns the length of the choice.
+	 *
+	 * @param __choice The choice to get the length of.
+	 * @return The length of the given choice.
+	 * @throws MLECallError If the choice is not valid.
+	 * @since 2024/07/28
+	 */
+	@SquirrelJMEVendorApi
+	@Range(from = 0, to = Integer.MAX_VALUE)
+	int length(@Nullable ScritchChoiceBracket __choice)
 		throws MLECallError;
 	
 	/**

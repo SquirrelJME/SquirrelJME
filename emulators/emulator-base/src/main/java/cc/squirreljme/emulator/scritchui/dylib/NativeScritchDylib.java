@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.brackets.PencilBracket;
 import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchActivateListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchCloseListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchInputListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchPaintListener;
@@ -70,6 +71,18 @@ public final class NativeScritchDylib
 	static native PencilFontBracket[] __builtinFonts(long __stateP);
 	
 	/**
+	 * Returns the first selected index of the given choice.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __choiceP The choice pointer.
+	 * @return The resultant index or {@code -1} if there is none.
+	 * @throws MLECallError If the state and/or choice are not valid.
+	 * @since 2024/07/28
+	 */
+	static native int __choiceGetSelectedIndex(long __stateP, long __choiceP)
+		throws MLECallError;
+	
+	/**
 	 * Inserts the item at the given index.
 	 *
 	 * @param __stateP The state pointer.
@@ -81,6 +94,18 @@ public final class NativeScritchDylib
 	 */
 	static native int __choiceInsert(long __stateP, long __choiceP,
 		int __atIndex)
+		throws MLECallError;
+	
+	/**
+	 * Returns the length of this choice.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __componentP The component pointer.
+	 * @return The length of this choice.
+	 * @throws MLECallError The state and/or component pointer are not valid.
+	 * @since 2024/07/28
+	 */
+	static native int __choiceLength(long __stateP, long __componentP)
 		throws MLECallError;
 	
 	/**
@@ -212,6 +237,20 @@ public final class NativeScritchDylib
 	 */
 	static native void __componentRevalidate(long __stateP,
 		long __componentP)
+		throws MLECallError;
+	
+	/**
+	 * Sets the activation listener for the given component.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __componentP The component pointer.
+	 * @param __listener The listener to set.
+	 * @throws MLECallError On null arguments; or the state and/or component
+	 * are not valid.
+	 * @since 2024/07/28
+	 */
+	static native void __componentSetActivateListener(long __stateP,
+		long __componentP, ScritchActivateListener __listener)
 		throws MLECallError;
 	
 	/**
