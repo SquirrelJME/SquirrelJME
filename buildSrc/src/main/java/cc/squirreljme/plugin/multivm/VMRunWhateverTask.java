@@ -14,6 +14,7 @@ import cc.squirreljme.plugin.swm.JavaMEMidlet;
 import java.net.URI;
 import javax.inject.Inject;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.Project;
 
 /**
  * Run whatever Jar we want through the build system.
@@ -58,6 +59,19 @@ public class VMRunWhateverTask
 		// Describe this one
 		this.setGroup("squirreljmeGeneral");
 		this.setDescription("Run a Jar using the build system.");
+		
+		// Depend on the general emulator and otherwise
+		Project project = this.getProject();
+		Project rootProject = project.getRootProject();
+		this.dependsOn(
+			project.provider(new VMRunDependencies(rootProject.findProject(
+					":modules:profile-meep"),
+				__classifier)),
+			project.provider(new VMRunDependencies(rootProject.findProject(
+					":modules:vendor-api-ntt-docomo-doja"),
+				__classifier)),
+			project.provider(new VMEmulatorDependencies(project,
+				__classifier.getTargetClassifier())));
 		
 		// Running this
 		this.doLast(new VMRunWhateverTaskAction());

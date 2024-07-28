@@ -29,8 +29,8 @@ import org.gradle.api.tasks.TaskContainer;
 public final class VMEmulatorDependencies
 	implements Callable<Iterable<Task>>
 {
-	/** The task referencing this. */
-	protected final VMBaseTask task;
+	/** The root project. */
+	protected final Project project;
 	
 	/** The target classifier used. */
 	protected final TargetClassifier targetClassifier;
@@ -38,19 +38,19 @@ public final class VMEmulatorDependencies
 	/**
 	 * Initializes the dependencies.
 	 * 
-	 * @param __task The task to reference.
+	 * @param __project The project to reference.
 	 * @param __classifier The classifier used.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/16
 	 */
-	public VMEmulatorDependencies(VMBaseTask __task,
+	public VMEmulatorDependencies(Project __project,
 		TargetClassifier __classifier)
 		throws NullPointerException
 	{
-		if (__task == null || __classifier == null)
+		if (__project == null || __classifier == null)
 			throw new NullPointerException("NARG");
 		
-		this.task = __task;
+		this.project = __project.getRootProject();
 		this.targetClassifier = __classifier;
 	}
 	
@@ -62,7 +62,7 @@ public final class VMEmulatorDependencies
 	@Override
 	public Iterable<Task> call()
 	{
-		Project root = this.task.getProject().getRootProject();
+		Project root = this.project;
 		
 		// Need tasks for all the source emulators
 		Set<Task> rv = new LinkedHashSet<>();

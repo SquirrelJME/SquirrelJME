@@ -117,8 +117,8 @@ public class VMRunTask
 		// depending on the dependencies along with the emulator being
 		// available as well
 		this.dependsOn(this.getProject().provider(
-			new VMRunDependencies(this, __classifier)),
-			new VMEmulatorDependencies(this,
+			new VMRunDependencies(this.getProject(), __classifier)),
+			new VMEmulatorDependencies(this.getProject(),
 				__classifier.getTargetClassifier()));
 		
 		// If using the internal debugger, it needs to be built first

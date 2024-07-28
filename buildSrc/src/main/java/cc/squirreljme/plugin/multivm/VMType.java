@@ -776,7 +776,7 @@ public enum VMType
 		
 		// Make sure the hosted environment is working since it needs to
 		// be kept up to date as well
-		for (Task task : new VMEmulatorDependencies(__task,
+		for (Task task : new VMEmulatorDependencies(__task.getProject(),
 			new TargetClassifier(VMType.HOSTED, BangletVariant.NONE,
 				ClutterLevel.DEBUG)).call())
 			rv.add(task);
