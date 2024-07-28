@@ -22,76 +22,102 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Random;
 import org.gradle.api.Action;
+import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.logging.LogLevel;
+import org.gradle.api.logging.Logger;
 
 /**
  * Runs the program within the virtual machine.
  *
- * @since 2020/08/07
+ * @since 2024/07/28
  */
-public class VMRunTaskAction
-	implements Action<Task>
+public class VMRunTaskDetached
 {
 	/** The classifier used. */
 	protected final SourceTargetClassifier classifier;
 	
+	/** The logger for logging messages. */
+	private final Logger _logger;
+	
+	/** The classpath to use. */
+	private final Path[] _classPath;
+	
+	/** The MIDlet to execute, optionally. */
+	private final JavaMEMidlet _midlet;
+	
+	/** Optional main class, required if no MIDlet was specified. */
+	private final String _mainClass;
+	
+	/** The working directory to run under. */
+	private final Path _workDir;
+	
+	/** Context project. */
+	private final Project _anyProject;
+	
+	/** Debug server to use. */
+	private final URI _debugServer;
+	
 	/**
-	 * Initializes the task action.
-	 * 
+	 * Initializes the detached run task.
+	 *
 	 * @param __classifier The classifier used.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2020/08/16
+	 * @param __logger The logger to use.
+	 * @param __classPath The classpath to use.
+	 * @param __midlet The MIDlet to run.
+	 * @param __mainClass The main class to run, if there is no MIDlet.
+	 * @param __workDir The working directly to run under.
+	 * @param __anyProject Any project.
+	 * @param __debugServer The debug server to use.
+	 * @since 2024/07/28
 	 */
-	public VMRunTaskAction(SourceTargetClassifier __classifier)
-		throws NullPointerException
+	public VMRunTaskDetached(SourceTargetClassifier __classifier,
+		Logger __logger, Path[] __classPath, JavaMEMidlet __midlet,
+		String __mainClass, Path __workDir, Project __anyProject,
+		URI __debugServer)
 	{
-		if (__classifier == null)
-			throw new NullPointerException("NARG");
-		
 		this.classifier = __classifier;
+		this._logger = __logger;
+		this._classPath = __classPath;
+		this._midlet = __midlet;
+		this._mainClass = __mainClass;
+		this._workDir = __workDir;
+		this._anyProject = __anyProject;
+		this._debugServer = __debugServer;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2020/08/07
+	 * @since 2024/07/28
 	 */
-	@Override
-	public void execute(Task __task)
+	public void run()
 	{
-		// The task owning this
-		VMRunTask runTask = (VMRunTask)__task;
-		
-		// Need this to get the program details
-		SquirrelJMEPluginConfiguration config =
-			SquirrelJMEPluginConfiguration.configuration(__task.getProject());
-			
 		// Gather the class path to use for target execution, this is all the
 		// SquirrelJME modules this depends on
 		VMSpecifier vmType = this.classifier.getVmType();
-		Path[] classPath = VMHelpers.runClassPath(__task,
-			this.classifier, true);
+		Path[] classPath = this._classPath;
 		
 		// Debug
-		__task.getLogger().debug("Classpath: {}", Arrays.asList(classPath));
+		if (this._logger != null)
+			this._logger.debug("Classpath: {}", Arrays.asList(classPath));
 		
 		// Determine the main entry class or MIDlet to use
-		JavaMEMidlet midlet = runTask.midlet;
-		String mainClass = VMHelpers.mainClass(config, midlet);
+		JavaMEMidlet midlet = this._midlet;
+		String mainClass = VMHelpers.mainClass(midlet, this._mainClass);
 		
 		// Debug
-		__task.getLogger().debug("MIDlet: {}", midlet);
-		__task.getLogger().debug("MainClass: {}", mainClass);
+		if (this._logger != null)
+			this._logger.debug("MIDlet: {}", midlet);
+		if (this._logger != null)
+			this._logger.debug("MainClass: {}", mainClass);
 		
 		// Debugger being used?
-		URI debugServer = runTask.debugServer;
+		URI debugServer = this._debugServer;
 		
 		// Standard SquirrelJME command line arguments to use
 		List<String> args = new ArrayList<>();
@@ -137,7 +163,7 @@ public class VMRunTaskAction
 				
 				// Use this task as the base and find its output Jar
 				Task debuggerTask = new __FindInternalDebugger__(
-					runTask.getProject()).call();
+					this._anyProject).call();
 				Path debuggerJar = debuggerTask.getOutputs().getFiles()
 					.getSingleFile().toPath();
 				
@@ -162,7 +188,7 @@ public class VMRunTaskAction
 				builder.inheritIO();
 				
 				// Working directory in the build directory
-				builder.directory(runTask.getProject().getBuildDir());
+				builder.directory(this._workDir.toFile());
 				
 				// Start the debugger
 				try
@@ -186,14 +212,15 @@ public class VMRunTaskAction
 			args.add(midlet.mainClass);
 		
 		// Debug
-		__task.getLogger().debug("Target Working Dir: {}",
-			System.getProperty("user.dir"));
+		if (this._logger != null)
+			this._logger.debug("Target Working Dir: {}",
+				System.getProperty("user.dir"));
 		
 		// Execute the virtual machine, if the exit status is non-zero then
 		// the task execution will be considered as a failure
 		JavaExecSpecFiller execSpec = new SimpleJavaExecSpecFiller();
-		vmType.spawnJvmArguments(__task.getProject(),
-			this.classifier, true,
+		vmType.spawnJvmArguments(this._anyProject, this.classifier,
+			true,
 			execSpec, mainClass,
 			(midlet != null ? midlet.mainClass : mainClass),
 			sysProps,
@@ -224,7 +251,7 @@ public class VMRunTaskAction
 		
 		// Working directory in the build directory, for any logs or
 		// otherwise
-		procBuilder.directory(runTask.getProject().getBuildDir());
+		procBuilder.directory(this._anyProject.getBuildDir());
 		
 		// Pipe output
 		procBuilder.redirectOutput(ProcessBuilder.Redirect.PIPE);
@@ -240,14 +267,24 @@ public class VMRunTaskAction
 			proc = procBuilder.start();
 			
 			// Forward streams
-			stdOut = new ForwardInputToOutput(
-				proc.getInputStream(), new GradleLoggerOutputStream(
-					__task.getLogger(), LogLevel.LIFECYCLE,
+			if (this._logger != null)
+			{
+				stdOut = new ForwardInputToOutput(
+					proc.getInputStream(), new GradleLoggerOutputStream(
+					this._logger, LogLevel.LIFECYCLE,
 					-1, -1));
-			stdErr = new ForwardInputToOutput(
-				proc.getErrorStream(), new GradleLoggerOutputStream(
-					__task.getLogger(), LogLevel.ERROR,
+				stdErr = new ForwardInputToOutput(
+					proc.getErrorStream(), new GradleLoggerOutputStream(
+					this._logger, LogLevel.ERROR,
 					-1, -1));
+			}
+			else
+			{
+				stdOut = new ForwardInputToOutput(proc.getInputStream(),
+					System.out);
+				stdErr = new ForwardInputToOutput(proc.getErrorStream(),
+					System.err);
+			}
 			
 			// Run them
 			stdOut.runThread("stdOutPipe");

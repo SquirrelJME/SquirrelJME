@@ -128,14 +128,16 @@ public enum VMType
 		 */
 		@SuppressWarnings("CallToSystemGetenv")
 		@Override
-		public void spawnJvmArguments(VMBaseTask __task,
+		public void spawnJvmArguments(Project __anyProject,
+			SourceTargetClassifier __classifier,
 			boolean __debugEligible,
 			JavaExecSpecFiller __execSpec, String __mainClass,
 			String __commonName, Map<String, String> __sysProps,
 			Path[] __libPath, Path[] __classPath, String... __args)
 			throws NullPointerException
 		{
-			if (__task == null || __execSpec == null || __mainClass == null ||
+			if (__anyProject == null || __execSpec == null ||
+				__mainClass == null ||
 				__sysProps == null || __classPath == null || __args == null)
 				throw new NullPointerException("NARG");
 				
@@ -164,7 +166,7 @@ public enum VMType
 			// every sub-process quick access to the library
 			if (!sysProps.containsKey("squirreljme.emulator.libpath"))
 			{
-				Path emuLib = VMHelpers.findEmulatorLib(__task);
+				Path emuLib = VMHelpers.findEmulatorLib(__anyProject);
 				if (emuLib != null && Files.exists(emuLib))
 					sysProps.put("squirreljme.emulator.libpath",
 						emuLib.toString());
@@ -177,13 +179,12 @@ public enum VMType
 			List<Object> classPath = new ArrayList<>();
 			Set<Path> vmSupportPath = new LinkedHashSet<>();
 			for (File file : VMHelpers.projectRuntimeClasspath(
-				__task.getProject()
-					.findProject(":emulators:emulator-base")))
+				__anyProject.findProject(":emulators:emulator-base")))
 				vmSupportPath.add(file.toPath());
 			
 			// Add all the emulator outputs
 			for (String emulatorProject : this.emulatorProjects)
-				for (File file : __task.getProject().project(emulatorProject)
+				for (File file : __anyProject.project(emulatorProject)
 					.getTasks().getByName("jar").getOutputs().getFiles())
 					vmSupportPath.add(file.toPath());
 			
@@ -233,8 +234,10 @@ public enum VMType
 				sysProps.put("squirreljme.orig." + e.getKey(), e.getValue());
 			
 			// Debug
-			__task.getLogger().debug("Hosted SupportPath: {}", vmSupportPath);
-			__task.getLogger().debug("Hosted ClassPath: {}", classPath);
+			__anyProject.getLogger().debug("Hosted SupportPath: {}",
+				vmSupportPath);
+			__anyProject.getLogger().debug("Hosted ClassPath: {}",
+				classPath);
 			
 			// Arguments for the JVM
 			List<String> jvmArgs = new ArrayList<>();
@@ -379,7 +382,8 @@ public enum VMType
 		 * @since 2020/08/15
 		 */
 		@Override
-		public void spawnJvmArguments(VMBaseTask __task,
+		public void spawnJvmArguments(Project __anyProject,
+			SourceTargetClassifier __classifier,
 			boolean __debugEligible,
 			JavaExecSpecFiller __execSpec, String __mainClass,
 			String __commonName, Map<String, String> __sysProps,
@@ -388,7 +392,8 @@ public enum VMType
 		{
 			// Use a common handler to execute the VM as the VMs all have
 			// the same entry point handlers and otherwise
-			this.spawnVmViaFactory(__task, __debugEligible, __execSpec,
+			this.spawnVmViaFactory(__anyProject, __classifier,
+				__debugEligible, __execSpec,
 				__mainClass, __commonName, __sysProps, __libPath,
 				__classPath, __args);
 		}
@@ -517,7 +522,8 @@ public enum VMType
 		 * @since 2023/05/28
 		 */
 		@Override
-		public void spawnJvmArguments(VMBaseTask __task,
+		public void spawnJvmArguments(Project __anyProject,
+			SourceTargetClassifier __classifier,
 			boolean __debugEligible,
 			JavaExecSpecFiller __execSpec, String __mainClass,
 			String __commonName, Map<String, String> __sysProps,
@@ -526,7 +532,8 @@ public enum VMType
 		{
 			// Use a common handler to execute the VM as the VMs all have
 			// the same entry point handlers and otherwise
-			this.spawnVmViaFactory(__task, __debugEligible, __execSpec,
+			this.spawnVmViaFactory(__anyProject, __classifier,
+				__debugEligible, __execSpec,
 				__mainClass, __commonName, __sysProps, __libPath,
 				__classPath, __args);
 		}
@@ -848,7 +855,8 @@ public enum VMType
 	/**
 	 * Spawns a virtual machine using the standard {@code VmFactory} class.
 	 * 
-	 * @param __task The task being executed, may be used as context.
+	 * @param __anyProject Any project.
+	 * @param __classifier The classifier to use.
 	 * @param __debugEligible Is this eligible to be ran under the debugger?
 	 * @param __execSpec The execution specification.
 	 * @param __mainClass The main class to execute.
@@ -861,13 +869,16 @@ public enum VMType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/15
 	 */
-	public void spawnVmViaFactory(VMBaseTask __task, boolean __debugEligible,
+	public void spawnVmViaFactory(Project __anyProject,
+		SourceTargetClassifier __classifier,
+		boolean __debugEligible,
 		JavaExecSpecFiller __execSpec, String __mainClass,
 		String __commonName, Map<String, String> __sysProps, Path[] __libPath,
 		Path[] __classPath, String[] __args)
 		throws NullPointerException
 	{ 
-		if (__task == null || __execSpec == null || __mainClass == null ||
+		if (__anyProject == null || __execSpec == null ||
+			__mainClass == null ||
 			__sysProps == null || __libPath == null || __classPath == null ||
 			__args == null)
 			throw new NullPointerException("NARG");
@@ -882,22 +893,22 @@ public enum VMType
 		Set<Path> vmClassPath = new LinkedHashSet<>();
 		for (String emulatorProject : this.emulatorProjects)
 			for (File file : VMHelpers.projectRuntimeClasspath(
-				__task.getProject().project(emulatorProject)))
+				__anyProject.project(emulatorProject)))
 				vmClassPath.add(file.toPath());
 		
 		// Make sure the base emulator is available as well
 		for (File file : VMHelpers.projectRuntimeClasspath(
-			__task.getProject().findProject(":emulators:emulator-base")))
+			__anyProject.findProject(":emulators:emulator-base")))
 			vmClassPath.add(file.toPath());
 		
 		// Add all the emulator outputs
 		for (String emulatorProject : this.emulatorProjects)
-			for (File file : __task.getProject().project(emulatorProject)
+			for (File file : __anyProject.project(emulatorProject)
 				.getTasks().getByName("jar").getOutputs().getFiles())
 				vmClassPath.add(file.toPath());
 		
 		// Debug
-		__task.getLogger().debug("VM ClassPath: {}", vmClassPath);
+		__anyProject.getLogger().debug("VM ClassPath: {}", vmClassPath);
 		
 		// Build arguments to the VM
 		Collection<String> vmArgs = new LinkedList<>();
@@ -923,9 +934,9 @@ public enum VMType
 		
 		// Determine where profiler snapshots are to go, try to use the
 		// profiler directory for that
-		Path profilerDir = ((__task instanceof VMExecutableTask) ?
-			VMHelpers.profilerDir(__task.getProject(), __task.getClassifier())
-			.get() : __task.getProject().getBuildDir().toPath());
+		Path profilerDir = (__classifier != null ?
+			VMHelpers.profilerDir(__anyProject, __classifier)
+			.get() : __anyProject.getProject().getBuildDir().toPath());
 		
 		// Use the main class name unless this is a test, so that they are
 		// named better
@@ -933,7 +944,7 @@ public enum VMType
 			VMHelpers.SINGLE_TEST_RUNNER) && __args.length > 0 ?
 			__args[0] : (__commonName != null ? __commonName : __mainClass));
 		vmArgs.add("-Xsnapshot:" + profilerDir.resolve(
-			__task.getProject().getName() + "_" +
+			__anyProject.getName() + "_" +
 			profilerClass.replace('.', '-') + ".nps"));
 		
 		// Class path for the target program to launch
@@ -957,7 +968,9 @@ public enum VMType
 		// Launching is effectively the same as the hosted run but with the
 		// VM here instead. System properties are passed through so that the
 		// holding VM and the sub-VM share the same properties.
-		VMType.HOSTED.spawnJvmArguments(__task, __debugEligible, __execSpec,
+		VMType.HOSTED.spawnJvmArguments(__anyProject, __classifier,
+			__debugEligible,
+			__execSpec,
 			"cc.squirreljme.emulator.vm.VMFactory",
 			__commonName, __sysProps, __libPath, classPath,
 			vmArgs.<String>toArray(new String[vmArgs.size()]));
@@ -1050,7 +1063,8 @@ public enum VMType
 			{
 				// Figure out the arguments to the JVM, it does not matter
 				// what the classpath is
-				VMType.HOSTED.spawnJvmArguments(__task, false,
+				VMType.HOSTED.spawnJvmArguments(__task.getProject(),
+					__task.getClassifier(), false,
 					new GradleJavaExecSpecFiller(__spec),
 					"cc.squirreljme.jvm.aot.Main",
 					null, Collections.emptyMap(),
