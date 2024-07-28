@@ -103,18 +103,51 @@ class __ExecDisplaySetCurrent__
 		// Debug
 		Debugging.debugNote("setCurrent(%p)", this.showNow);
 		
-		// Add in the panel, if there is one
+		// The displayable we are showing
 		Displayable showNow = this.showNow;
-		if (showNow != null)
+		DisplayableState showNowState = (showNow != null ? showNow._state :
+			null);
+		
+		// Do we need to remove the displayable from its old display?
+		if (showNowState != null)
 		{
+			// Perform the same logic here, just run that first
+			DisplayState showParent = showNowState.currentDisplay();
+			if (showParent != null)
+			{
+				new __ExecDisplaySetCurrent__(scritchApi, showParent.display(),
+					null, null).run();
+			}
+		}
+		
+		// Are we removing a displayable?
+		DisplayableState current = displayState.current();
+		if (showNow == null)
+		{
+			// If there is no current display, we can just do nothing
+			if (current == null)
+				return;
+			
 			// Remove everything from the window, since every display always
 			// has just a single displayable, and we do not care what else
 			// was even here...
 			containerApi.removeAll(window);
 			
+			// Disassociate both ends
+			current.setParent(null);
+		}
+		
+		// One is being added
+		else
+		{
+			// Remove old displayable first
+			if (current != showNowState && current != null)
+				new __ExecDisplaySetCurrent__(scritchApi,
+					current.currentDisplay().display(),
+					null, null).run();
+			
 			// Get the needed panel and add it in
-			DisplayableState ourState = this.showNow._state;
-			panel = ourState.scritchPanel();
+			panel = showNowState.scritchPanel();
 			containerApi.add(window, panel);
 			
 			// Set the frame's preferred and minimum sizes for the content area
@@ -123,7 +156,7 @@ class __ExecDisplaySetCurrent__
 				scale.textureMaxW(), scale.textureMaxH());
 			
 			// Make sure the parent is set
-			ourState.setParent(displayState);
+			showNowState.setParent(displayState);
 			
 			// Revalidate so it gets updated
 			componentApi.revalidate(panel);
@@ -146,13 +179,6 @@ class __ExecDisplaySetCurrent__
 			
 			// Force it to be painted
 			paintableApi.repaint(panel);
-		}
-		
-		// Enters the "background" state
-		else
-		{
-			// Hide the window
-			windowApi.setVisible(window, false);
 		}
 	}
 }

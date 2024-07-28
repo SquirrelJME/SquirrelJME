@@ -110,8 +110,13 @@ static sjme_errorCode sjme_scritchui_basePaintListener(
 	
 	/* Forward to callback. */
 	sjme_atomic_sjme_jint_set(&paint->inPaint, 1);
-	error = callback(inState, inComponent,
-		g, sw, sh, special);
+	error = callback(inState, inComponent, g, sw, sh, special);
+
+#if defined(SJME_CONFIG_DEBUG)
+	/* Error? */
+	if (sjme_error_is(error))
+		sjme_message("Paint failed: %d", error);
+#endif
 	
 	/* No longer painting. */
 	sjme_atomic_sjme_jint_set(&paint->inPaint, 0);

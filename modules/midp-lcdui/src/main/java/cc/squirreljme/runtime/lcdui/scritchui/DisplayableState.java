@@ -139,23 +139,20 @@ public final class DisplayableState
 		
 		synchronized (this)
 		{
-			// Overwrite existing display?
 			DisplayState current = this.currentDisplay();
-			if (current != null)
-			{
-				// Do nothing if unchanged
-				if (__parent == current)
-					return;
-				
-				throw Debugging.todo();
-			}
 			
-			// Set fresh displayable, if any
+			// Nothing needs to be done?
+			if (__parent == current)
+				return;
+			
+			// Detach old parent?
+			if (current != null)
+				current.__setCurrent(null);
+			
+			// Attach to new parent
+			this._current = __parent;
 			if (__parent != null)
-			{
-				this._current = __parent;
-				__parent._current = this;
-			}
+				__parent.__setCurrent(this);
 		}
 	}
 }

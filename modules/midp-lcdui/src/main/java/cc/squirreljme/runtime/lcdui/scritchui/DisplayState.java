@@ -63,6 +63,21 @@ public final class DisplayState
 	}
 	
 	/**
+	 * Returns the current displayable.
+	 *
+	 * @return The current displayable.
+	 * @since 2024/07/27
+	 */
+	@SquirrelJMEVendorApi
+	public final DisplayableState current()
+	{
+		synchronized (this)
+		{
+			return this._current;
+		}
+	}
+	
+	/**
 	 * Returns the associated display.
 	 *
 	 * @return The associated display.
@@ -84,5 +99,19 @@ public final class DisplayState
 	public final ScritchWindowBracket scritchWindow()
 	{
 		return this.scritchWindow;
+	}
+	
+	/**
+	 * Sets the current displayable.
+	 *
+	 * @param __displayable The current displayable to set.
+	 * @since 2024/07/27
+	 */
+	void __setCurrent(DisplayableState __displayable)
+	{
+		synchronized (this)
+		{
+			this._current = __displayable;
+		}
 	}
 }

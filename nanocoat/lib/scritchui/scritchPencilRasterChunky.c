@@ -17,8 +17,6 @@
 #include "sjme/debug.h"
 #include "sjme/fixed.h"
 
-
-
 static void sjme_scritchpen_core_clipLeftTop(
 	sjme_jint dim,
 	sjme_jint clipAt,

@@ -539,6 +539,10 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 		/* Get the item to draw. */
 		dlAt = &dlFull[dlIndex];
 		
+		/* Skip nothing. */
+		if (dlAt->type == SJME_SCRITCHUI_FB_DL_TYPE_NOTHING)
+			continue;
+		
 		/* Normalize clip coordinates. */
 		bsx = dlAt->bound.s.x;
 		bsy = dlAt->bound.s.y;

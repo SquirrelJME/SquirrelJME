@@ -351,17 +351,23 @@ sjme_errorCode sjme_scritchui_core_choiceItemSetImage(
 		&choiceItem)) || choice == NULL || choiceItem == NULL)
 		return sjme_error_default(error);
 	
+#if 0
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
+#else
+	sjme_message("TODO: list images.");
+#endif
 	
 	/* Recalculate choice set. */
 	if (sjme_error_is(error = sjme_scritchui_core_choiceCalculate(
 		inState, choice->items)))
 		return sjme_error_default(error);
 	
-	/* Forward. */
+	/* If not natively supported, ignore. */
 	if (inState->impl->choiceItemSetImage == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
+		return SJME_ERROR_NONE;
+	
+	/* Forward. */
 	return inState->impl->choiceItemSetImage(inState, inComponent,
 		atIndex, inRgb, inRgbOff, inRgbDataLen, inRgbScanLen, width, height);
 }

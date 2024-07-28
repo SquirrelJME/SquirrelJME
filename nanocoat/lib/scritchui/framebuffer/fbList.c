@@ -42,7 +42,7 @@ static sjme_errorCode sjme_scritchui_fb_list_draw(
 	
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-		
+	
 	/* Widget state for interactions. */
 	wState = inComponent->common.handle[SJME_SUI_FB_H_WSTATE];
 	if (wState == NULL)
@@ -62,7 +62,7 @@ static sjme_errorCode sjme_scritchui_fb_list_draw(
 	
 	/* Determine display list size. */
 	n = choice->numItems;
-	dlCount = 1 + (n * 2);
+	dlCount = (n * 2);
 	
 	/* Allocate display list. */
 	dlFull = sjme_alloca(sizeof(*dlFull) * dlCount);
