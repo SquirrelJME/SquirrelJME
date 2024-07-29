@@ -48,6 +48,15 @@ sjme_errorCode sjme_scritchui_core_viewSetView(
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
+sjme_errorCode sjme_scritchui_core_viewSetSizeSuggestListener(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(sizeSuggest))
+{
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
 sjme_errorCode sjme_scritchui_core_viewSetViewListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,

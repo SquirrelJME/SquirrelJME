@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.brackets.PencilBracket;
 import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchActivateListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchCloseListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchInputListener;
@@ -196,6 +197,19 @@ public final class NativeScritchDylib
 	 */
 	static native void __choiceSetString(long __stateP, long __choiceP,
 		int __atIndex, String __string)
+		throws MLECallError;
+	
+	/**
+	 * Gets the parent of the given component.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __componentP The component pointer.
+	 * @return The parent of this component or {@code null} if it has none.
+	 * @throws MLECallError If the state and/or component are not valid.
+	 * @since 2024/07/29
+	 */
+	static native ScritchComponentBracket __componentGetParent(long __stateP,
+		long __componentP)
 		throws MLECallError;
 	
 	/**

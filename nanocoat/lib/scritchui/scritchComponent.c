@@ -316,6 +316,15 @@ sjme_errorCode sjme_scritchui_core_componentFocusHas(
 	return inState->impl->componentFocusHas(inState, inComponent, outHasFocus);
 }
 
+sjme_errorCode sjme_scritchui_core_componentGetParent(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNotNull sjme_scritchui_uiComponent* outParent)
+{
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
 sjme_errorCode sjme_scritchui_core_componentRepaint(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,

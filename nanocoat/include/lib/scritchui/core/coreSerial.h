@@ -76,6 +76,9 @@ typedef enum sjme_scritchui_serialType
 	/** @c componentFocusHas . */
 	SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_FOCUS_HAS,
 	
+	/** @c componentGetParent . */
+	SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_GET_PARENT,
+	
 	/** @c componentRepaint . */
 	SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_REPAINT,
 	
@@ -165,6 +168,24 @@ typedef enum sjme_scritchui_serialType
 		
 	/** @c screens . */
 	SJME_SCRITCHUI_SERIAL_TYPE_SCREENS,
+	
+	/** @c scrollPanelNew . */
+	SJME_SCRITCHUI_SERIAL_TYPE_SCROLL_PANEL_NEW,
+	
+	/** @c viewGetView . */
+	SJME_SCRITCHUI_SERIAL_TYPE_VIEW_GET_VIEW,
+	
+	/** @c viewSetArea . */
+	SJME_SCRITCHUI_SERIAL_TYPE_VIEW_SET_AREA,
+	
+	/** @c viewSetView . */
+	SJME_SCRITCHUI_SERIAL_TYPE_VIEW_SET_VIEW,
+	
+	/** @c viewSetSizeSuggestListener . */
+	SJME_SCRITCHUI_SERIAL_TYPE_VIEW_SET_SIZE_SUGGEST_LISTENER,
+	
+	/** @c viewSetViewListener . */
+	SJME_SCRITCHUI_SERIAL_TYPE_VIEW_SET_VIEW_LISTENER,
 	
 	/** @c windowContentMinimumSize . */
 	SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_CONTENT_MINIMUM_SIZE,
@@ -268,6 +289,10 @@ SUD_STRUCT_DEF(componentFocusGrab,
 SUD_STRUCT_DEF(componentFocusHas,
 	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
 	SDU_VARP(sjme_jboolean*, outHasFocus););
+
+SUD_STRUCT_DEF(componentGetParent,
+	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
+	SDU_VARP(sjme_scritchui_uiComponent*, outParent););
 
 SUD_STRUCT_DEF(componentRepaint,
 	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
@@ -403,6 +428,29 @@ SUD_STRUCT_DEF(screens,
 	SDU_VARP(sjme_scritchui_uiScreen*, outScreens);
 	SDU_VARP(sjme_jint*, inOutNumScreens););
 
+SUD_STRUCT_DEF(scrollPanelNew,
+	SDU_VARP(sjme_scritchui_uiScrollPanel*, outScrollPanel););
+
+SUD_STRUCT_DEF(viewGetView,
+	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
+	SDU_VARP(sjme_scritchui_rect*, outViewRect););
+
+SUD_STRUCT_DEF(viewSetArea,
+	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
+	SDU_VARP(const sjme_scritchui_dim*, inViewArea););
+
+SUD_STRUCT_DEF(viewSetView,
+	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
+	SDU_VARP(const sjme_scritchui_rect*, inViewRect););
+
+SUD_STRUCT_DEF(viewSetSizeSuggestListener,
+	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
+	SJME_SCRITCHUI_SERIAL_SET_LISTENER(sizeSuggest));
+
+SUD_STRUCT_DEF(viewSetViewListener,
+	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
+	SJME_SCRITCHUI_SERIAL_SET_LISTENER(view));
+
 SUD_STRUCT_DEF(windowContentMinimumSize,
 	SDU_VAR(sjme_scritchui_uiWindow, inWindow);
 	SDU_VAR(sjme_jint, width);
@@ -453,6 +501,7 @@ typedef union sjme_scritchui_serialDataUnion
 	SJME_SCRITCHUI_SDU_DEF(choiceLength);
 	SJME_SCRITCHUI_SDU_DEF(componentFocusGrab);
 	SJME_SCRITCHUI_SDU_DEF(componentFocusHas);
+	SJME_SCRITCHUI_SDU_DEF(componentGetParent);
 	SJME_SCRITCHUI_SDU_DEF(componentRepaint);
 	SJME_SCRITCHUI_SDU_DEF(componentRevalidate);
 	SJME_SCRITCHUI_SDU_DEF(componentSetActivateListener);
@@ -483,6 +532,12 @@ typedef union sjme_scritchui_serialDataUnion
 	SJME_SCRITCHUI_SDU_DEF(panelNew);
 	SJME_SCRITCHUI_SDU_DEF(screenSetListener);
 	SJME_SCRITCHUI_SDU_DEF(screens);
+	SJME_SCRITCHUI_SDU_DEF(scrollPanelNew);
+	SJME_SCRITCHUI_SDU_DEF(viewGetView);
+	SJME_SCRITCHUI_SDU_DEF(viewSetArea);
+	SJME_SCRITCHUI_SDU_DEF(viewSetView);
+	SJME_SCRITCHUI_SDU_DEF(viewSetSizeSuggestListener);
+	SJME_SCRITCHUI_SDU_DEF(viewSetViewListener);
 	SJME_SCRITCHUI_SDU_DEF(windowContentMinimumSize);
 	SJME_SCRITCHUI_SDU_DEF(windowNew);
 	SJME_SCRITCHUI_SDU_DEF(windowSetCloseListener);
@@ -580,6 +635,11 @@ sjme_errorCode sjme_scritchui_coreSerial_componentFocusHas(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrOutNotNull sjme_jboolean* outHasFocus);
+
+sjme_errorCode sjme_scritchui_coreSerial_componentGetParent(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNotNull sjme_scritchui_uiComponent* outParent);
 
 sjme_errorCode sjme_scritchui_coreSerial_componentRepaint(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -762,7 +822,12 @@ sjme_errorCode sjme_scritchui_coreSerial_viewSetView(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInNotNull const sjme_scritchui_rect* inViewRect);
-
+	
+sjme_errorCode sjme_scritchui_coreSerial_viewSetSizeSuggestListener(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(sizeSuggest));
+	
 sjme_errorCode sjme_scritchui_coreSerial_viewSetViewListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,

@@ -7,19 +7,17 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.mle.scritchui.brackets;
+package cc.squirreljme.jvm.mle.scritchui.callbacks;
 
-import cc.squirreljme.jvm.mle.annotation.GhostObject;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
- * A viewport.
+ * Listener for changes to the viewport.
  *
- * @since 2024/03/01
+ * @since 2024/07/29
  */
-@GhostObject
 @SquirrelJMEVendorApi
-public interface ScritchViewportBracket
-	extends ScritchComponentBracket, ScritchContainerBracket
+public interface ScritchViewListener
+	extends ScritchListener
 {
 }

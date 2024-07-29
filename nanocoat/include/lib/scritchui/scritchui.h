@@ -661,6 +661,24 @@ typedef sjme_errorCode (*sjme_scritchui_sizeListenerFunc)(
 	sjme_attrInPositiveNonZero sjme_jint newHeight);
 
 /**
+ * Listener for views so that a sub-component can suggest a size that it
+ * could be.
+ * 
+ * @param inState The ScritchUI state.
+ * @param inView The view this is in.
+ * @param subComponent The component that is suggesting a size.
+ * @param subRect The rectangle for the sub-component, which will have its
+ * dimensions and coordinates.
+ * @return Any resultant error, if any.
+ * @since 2024/07/29
+ */
+typedef sjme_errorCode (*sjme_scritchui_sizeSuggestListenerFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inView,
+	sjme_attrInNotNull sjme_scritchui_uiComponent subComponent,
+	sjme_attrInNotNull const sjme_scritchui_rect* subRect);
+
+/**
  * Listener that is called before and after the state within a component
  * has changed, when @c isAfterUpdate is @c SJME_JNI_FALSE then the component
  * is about to be updated.
@@ -925,6 +943,21 @@ typedef sjme_errorCode (*sjme_scritchui_componentFocusHasFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrOutNotNull sjme_jboolean* outHasFocus);
+
+/**
+ * Gets the parent of this component.
+ * 
+ * @param inState The ScritchUI state.
+ * @param inComponent The component to get the parent of.
+ * @param outParent The resultant parent that contains this, or @c NULL if
+ * there is no parent.
+ * @return Any resultant error, if any.
+ * @since 2024/07/29
+ */
+typedef sjme_errorCode (*sjme_scritchui_componentGetParentFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNotNull sjme_scritchui_uiComponent* outParent);
 
 /**
  * Repaints the given component.
@@ -1475,6 +1508,22 @@ typedef sjme_errorCode (*sjme_scritchui_viewSetViewFunc)(
 	sjme_attrInNotNull const sjme_scritchui_rect* inViewRect);
 
 /**
+ * Sets the listener which is called for a viewport when a contained component
+ * has a suggestion as to how large it should be to contain it.
+ * 
+ * @param inState The ScritchUI state.
+ * @param inComponent The viewport.
+ * @param inListener The listener to set.
+ * @param copyFrontEnd Any front-end data needed for the listener.
+ * @return Any resultant error, if any.
+ * @since 2024/07/29
+ */
+typedef sjme_errorCode (*sjme_scritchui_viewSetSizeSuggestListenerFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(sizeSuggest));
+
+/**
  * Sets the listener which is called whenever the viewport changes such as it
  * being scrolled.
  * 
@@ -1607,6 +1656,9 @@ struct sjme_scritchui_apiFunctions
 	/** Checks if this component has focus. */
 	SJME_SCRITCHUI_QUICK_API(componentFocusHas);
 	
+	/** Gets the parent component of this one. */
+	SJME_SCRITCHUI_QUICK_API(componentGetParent);
+	
 	/** Repaints the given component. */
 	SJME_SCRITCHUI_QUICK_API(componentRepaint);
 	
@@ -1723,6 +1775,9 @@ struct sjme_scritchui_apiFunctions
 	
 	/** Sets the view rect of a viewport. */
 	SJME_SCRITCHUI_QUICK_API(viewSetView);
+	
+	/** Sets the size suggestion for this view. */
+	SJME_SCRITCHUI_QUICK_API(viewSetSizeSuggestListener);
 	
 	/** Sets the listener for tracking scrolling and viewport changes. */
 	SJME_SCRITCHUI_QUICK_API(viewSetViewListener);

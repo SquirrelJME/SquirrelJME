@@ -18,6 +18,8 @@ import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchValueUpdateListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchVisibleListener;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Dynamic library interfaced for components.
@@ -41,6 +43,23 @@ public class DylibComponentInterface
 		throws NullPointerException
 	{
 		super(__selfApi, __dyLib);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/07/29
+	 */
+	@Override
+	public @Nullable ScritchComponentBracket getParent(
+		@NotNull ScritchComponentBracket __component)
+		throws MLECallError
+	{
+		if (__component == null)
+			throw new MLECallError("Null arguments.");
+	
+		// Forward
+		return NativeScritchDylib.__componentGetParent(this.dyLib._stateP,
+			((DylibComponentObject)__component).objectPointer());
 	}
 	
 	/**

@@ -17,6 +17,7 @@ import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchValueUpdateListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchVisibleListener;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 /**
@@ -28,6 +29,20 @@ import org.jetbrains.annotations.Range;
 public interface ScritchComponentInterface
 	extends ScritchApiInterface
 {
+	/**
+	 * Returns the parent of the given component.
+	 *
+	 * @param __component The component to get the parent of.
+	 * @return The parent of this component or {@code null}.
+	 * @throws MLECallError On null arguments.
+	 * @since 2024/07/29
+	 */
+	@SquirrelJMEVendorApi
+	@Nullable
+	ScritchComponentBracket getParent(
+		@NotNull ScritchComponentBracket __component)
+		throws MLECallError;
+	
 	/**
 	 * Returns the height of the component.
 	 *

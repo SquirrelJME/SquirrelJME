@@ -66,6 +66,8 @@
 #define FORWARD_DESC___choiceSetString "(" \
 	DESC_LONG DESC_LONG DESC_INT DESC_STRING ")" DESC_VOID
 
+#define FORWARD_DESC___componentGetParent "(" \
+	DESC_LONG DESC_LONG ")" DESC_SCRITCHUI_COMPONENT
 #define FORWARD_DESC___componentHeight "(" \
 	DESC_LONG DESC_LONG ")" DESC_INT
 #define FORWARD_DESC___componentRepaint "(" \
@@ -1029,6 +1031,15 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	/* Cleanup. */
 	if (chars != NULL)
 		(*env)->ReleaseStringUTFChars(env, string, chars);
+}
+
+JNIEXPORT jobject JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__componentGetParent)(JNIEnv* env, jclass classy, jlong stateP,
+	jlong componentP)
+{
+	sjme_todo("Impl?");
+	sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
+	return NULL;
 }
 
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
@@ -2481,6 +2492,7 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 	FORWARD_list(NativeScritchDylib, __choiceSetImage),
 	FORWARD_list(NativeScritchDylib, __choiceSetSelected),
 	FORWARD_list(NativeScritchDylib, __choiceSetString),
+	FORWARD_list(NativeScritchDylib, __componentGetParent),
 	FORWARD_list(NativeScritchDylib, __componentHeight),
 	FORWARD_list(NativeScritchDylib, __componentRepaint),
 	FORWARD_list(NativeScritchDylib, __componentRevalidate),

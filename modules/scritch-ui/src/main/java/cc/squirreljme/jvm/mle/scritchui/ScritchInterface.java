@@ -181,6 +181,26 @@ public interface ScritchInterface
 	ScritchScreenInterface screen();
 	
 	/**
+	 * Returns the scroll panel interface.
+	 *
+	 * @return The scroll panel interface.
+	 * @since 2024/07/29
+	 */
+	@SquirrelJMEVendorApi
+	@NotNull
+	ScritchScrollPanelInterface scrollPanel();
+	
+	/**
+	 * Returns the viewport interface.
+	 *
+	 * @return The viewport interface.
+	 * @since 2024/07/29
+	 */
+	@SquirrelJMEVendorApi
+	@NotNull
+	ScritchViewInterface view();
+	
+	/**
 	 * Returns the window interface.
 	 *
 	 * @return The window interface.

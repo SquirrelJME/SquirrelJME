@@ -217,6 +217,12 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 		as->componentFocusHas.inComponent,
 		as->componentFocusHas.outHasFocus));
 	
+	SJME_SCRITCHUI_DISPATCH_CASE(componentGetParent,
+		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_GET_PARENT,
+		(state,
+		as->componentGetParent.inComponent,
+		as->componentGetParent.outParent));
+	
 	SJME_SCRITCHUI_DISPATCH_CASE(componentRepaint,
 		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_REPAINT,
 		(state,
@@ -400,7 +406,44 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 		(state,
 		as->screens.outScreens,
 		as->screens.inOutNumScreens));
+
+	SJME_SCRITCHUI_DISPATCH_CASE(scrollPanelNew,
+		SJME_SCRITCHUI_SERIAL_TYPE_SCROLL_PANEL_NEW,
+		(state,
+		as->scrollPanelNew.outScrollPanel));
 	
+	SJME_SCRITCHUI_DISPATCH_CASE(viewGetView,
+		SJME_SCRITCHUI_SERIAL_TYPE_VIEW_GET_VIEW,
+		(state,
+		as->viewGetView.inComponent,
+		as->viewGetView.outViewRect));
+	
+	SJME_SCRITCHUI_DISPATCH_CASE(viewSetArea,
+		SJME_SCRITCHUI_SERIAL_TYPE_VIEW_SET_AREA,
+		(state,
+		as->viewSetArea.inComponent,
+		as->viewSetArea.inViewArea));
+	
+	SJME_SCRITCHUI_DISPATCH_CASE(viewSetView,
+		SJME_SCRITCHUI_SERIAL_TYPE_VIEW_SET_VIEW,
+		(state,
+		as->viewSetView.inComponent,
+		as->viewSetView.inViewRect));
+	
+	SJME_SCRITCHUI_DISPATCH_CASE(viewSetSizeSuggestListener,
+		SJME_SCRITCHUI_SERIAL_TYPE_VIEW_SET_SIZE_SUGGEST_LISTENER,
+		(state,
+		as->viewSetSizeSuggestListener.inComponent,
+		as->viewSetSizeSuggestListener.inListener,
+		as->viewSetSizeSuggestListener.copyFrontEnd));
+	
+	SJME_SCRITCHUI_DISPATCH_CASE(viewSetViewListener,
+		SJME_SCRITCHUI_SERIAL_TYPE_VIEW_SET_VIEW_LISTENER,
+		(state,
+		as->viewSetViewListener.inComponent,
+		as->viewSetViewListener.inListener,
+		as->viewSetViewListener.copyFrontEnd));
+
 	SJME_SCRITCHUI_DISPATCH_CASE(windowContentMinimumSize,
 		SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_CONTENT_MINIMUM_SIZE,
 		(state,
@@ -668,6 +711,22 @@ sjme_errorCode sjme_scritchui_coreSerial_componentFocusHas(
 		
 	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
 	SJME_SCRITCHUI_SERIAL_PASS(outHasFocus);
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
+}
+
+sjme_errorCode sjme_scritchui_coreSerial_componentGetParent(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNotNull sjme_scritchui_uiComponent* outParent)
+{
+	SJME_SCRITCHUI_SERIAL_CHUNK(componentGetParent,
+		SJME_SCRITCHUI_SERIAL_TYPE_COMPONENT_GET_PARENT,
+		(inState, inComponent, outParent));
+		
+	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
+	SJME_SCRITCHUI_SERIAL_PASS(outParent);
 	
 	/* Invoke and wait. */
 	SJME_SCRITCHUI_INVOKE_WAIT;
@@ -1114,8 +1173,14 @@ sjme_errorCode sjme_scritchui_coreSerial_scrollPanelNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_scritchui_uiScrollPanel* outScrollPanel)
 {
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	SJME_SCRITCHUI_SERIAL_CHUNK(scrollPanelNew,
+		SJME_SCRITCHUI_SERIAL_TYPE_SCROLL_PANEL_NEW,
+		(inState, outScrollPanel));
+	
+	SJME_SCRITCHUI_SERIAL_PASS(outScrollPanel);
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
 }
 
 sjme_errorCode sjme_scritchui_coreSerial_viewGetView(
@@ -1123,8 +1188,15 @@ sjme_errorCode sjme_scritchui_coreSerial_viewGetView(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrOutNotNull sjme_scritchui_rect* outViewRect)
 {
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	SJME_SCRITCHUI_SERIAL_CHUNK(viewGetView,
+		SJME_SCRITCHUI_SERIAL_TYPE_VIEW_GET_VIEW,
+		(inState, inComponent, outViewRect));
+	
+	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
+	SJME_SCRITCHUI_SERIAL_PASS(outViewRect);
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
 }
 
 sjme_errorCode sjme_scritchui_coreSerial_viewSetArea(
@@ -1132,8 +1204,15 @@ sjme_errorCode sjme_scritchui_coreSerial_viewSetArea(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInNotNull const sjme_scritchui_dim* inViewArea)
 {
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	SJME_SCRITCHUI_SERIAL_CHUNK(viewSetArea,
+		SJME_SCRITCHUI_SERIAL_TYPE_VIEW_SET_AREA,
+		(inState, inComponent, inViewArea));
+	
+	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
+	SJME_SCRITCHUI_SERIAL_PASS(inViewArea);
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
 }
 
 sjme_errorCode sjme_scritchui_coreSerial_viewSetView(
@@ -1141,8 +1220,32 @@ sjme_errorCode sjme_scritchui_coreSerial_viewSetView(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInNotNull const sjme_scritchui_rect* inViewRect)
 {
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	SJME_SCRITCHUI_SERIAL_CHUNK(viewSetView,
+		SJME_SCRITCHUI_SERIAL_TYPE_VIEW_SET_VIEW,
+		(inState, inComponent, inViewRect));
+	
+	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
+	SJME_SCRITCHUI_SERIAL_PASS(inViewRect);
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
+}
+	
+sjme_errorCode sjme_scritchui_coreSerial_viewSetSizeSuggestListener(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(sizeSuggest))
+{
+	SJME_SCRITCHUI_SERIAL_CHUNK(viewSetSizeSuggestListener,
+		SJME_SCRITCHUI_SERIAL_TYPE_VIEW_SET_SIZE_SUGGEST_LISTENER,
+		(inState, inComponent, inListener, copyFrontEnd));
+		
+	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
+	SJME_SCRITCHUI_SERIAL_PASS(inListener);
+	SJME_SCRITCHUI_SERIAL_PASS(copyFrontEnd);
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
 }
 
 sjme_errorCode sjme_scritchui_coreSerial_viewSetViewListener(
@@ -1150,8 +1253,16 @@ sjme_errorCode sjme_scritchui_coreSerial_viewSetViewListener(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(view))
 {
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	SJME_SCRITCHUI_SERIAL_CHUNK(viewSetViewListener,
+		SJME_SCRITCHUI_SERIAL_TYPE_VIEW_SET_VIEW_LISTENER,
+		(inState, inComponent, inListener, copyFrontEnd));
+		
+	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
+	SJME_SCRITCHUI_SERIAL_PASS(inListener);
+	SJME_SCRITCHUI_SERIAL_PASS(copyFrontEnd);
+	
+	/* Invoke and wait. */
+	SJME_SCRITCHUI_INVOKE_WAIT;
 }
 
 sjme_errorCode sjme_scritchui_coreSerial_windowContentMinimumSize(

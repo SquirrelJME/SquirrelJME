@@ -24,6 +24,8 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchMenuInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchPaintableInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchPanelInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchScreenInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchScrollPanelInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchViewInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchWindowInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchBaseBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -281,6 +283,26 @@ public class DylibScritchInterface
 	public ScritchScreenInterface screen()
 	{
 		return this.screen;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/07/29
+	 */
+	@Override
+	public @NotNull ScritchScrollPanelInterface scrollPanel()
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/07/29
+	 */
+	@Override
+	public @NotNull ScritchViewInterface view()
+	{
+		throw Debugging.todo();
 	}
 	
 	/**

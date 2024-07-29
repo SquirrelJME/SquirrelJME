@@ -105,6 +105,11 @@ sjme_errorCode sjme_scritchui_core_componentFocusHas(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrOutNotNull sjme_jboolean* outHasFocus);
 
+sjme_errorCode sjme_scritchui_core_componentGetParent(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNotNull sjme_scritchui_uiComponent* outParent);
+	
 sjme_errorCode sjme_scritchui_core_componentRepaint(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
@@ -310,6 +315,11 @@ sjme_errorCode sjme_scritchui_core_viewSetView(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInNotNull const sjme_scritchui_rect* inViewRect);
 
+sjme_errorCode sjme_scritchui_core_viewSetSizeSuggestListener(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(sizeSuggest));
+	
 sjme_errorCode sjme_scritchui_core_viewSetViewListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
