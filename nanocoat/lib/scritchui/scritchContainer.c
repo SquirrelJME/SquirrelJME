@@ -265,6 +265,11 @@ sjme_errorCode sjme_scritchui_core_intern_getContainer(
 		case SJME_SCRITCHUI_TYPE_PANEL:
 			container = &((sjme_scritchui_uiPanel)inComponent)->container;
 			break;
+			
+		case SJME_SCRITCHUI_TYPE_SCROLL_PANEL:
+			container = &((sjme_scritchui_uiScrollPanel)
+				inComponent)->container;
+			break;
 		
 		case SJME_SCRITCHUI_TYPE_WINDOW:
 			container = &((sjme_scritchui_uiWindow)inComponent)->container;

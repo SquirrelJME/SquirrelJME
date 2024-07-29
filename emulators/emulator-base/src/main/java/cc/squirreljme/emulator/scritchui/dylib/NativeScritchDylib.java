@@ -626,6 +626,18 @@ public final class NativeScritchDylib
 	static native int __screens(long __stateP, long[] __screenPs);
 	
 	/**
+	 * Creates a new scroll panel.
+	 *
+	 * @param __stateP The state pointer.
+	 * @return The resultant panel.
+	 * @throws MLECallError If the state is invalid; or the panel could not
+	 * be created.
+	 * @since 2024/07/29
+	 */
+	static native long __scrollPanelNew(long __stateP)
+		throws MLECallError;
+	
+	/**
 	 * Deletes the given weak pointer.
 	 *
 	 * @param __weakP The weak pointer to delete.

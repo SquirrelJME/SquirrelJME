@@ -41,8 +41,6 @@ sjme_errorCode sjme_scritchui_core_panelNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_scritchui_uiPanel* outPanel)
 {
-	sjme_errorCode error;
-
 	if (inState == NULL || outPanel == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 		

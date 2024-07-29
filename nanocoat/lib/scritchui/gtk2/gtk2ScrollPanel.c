@@ -18,6 +18,33 @@ sjme_errorCode sjme_scritchui_gtk2_scrollPanelNew(
 	sjme_attrInNotNull sjme_scritchui_uiScrollPanel inScrollPanel,
 	sjme_attrInNullable sjme_pointer ignored)
 {
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	sjme_errorCode error;
+	GtkScrolledWindow* gtkScroll;
+	GtkWidget* gtkFixed;
+	
+	if (inState == NULL || inScrollPanel == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Fixed inside the scroll area for exact placement. */
+	gtkFixed = NULL;
+	if ((gtkFixed = gtk_fixed_new()) == NULL)
+		return SJME_ERROR_NATIVE_WIDGET_CREATE_FAILED;
+	
+	/* Setup new scroll. */
+	gtkScroll = GTK_SCROLLED_WINDOW(gtk_scrolled_window_new(
+		NULL, NULL));
+	if (gtkScroll == NULL)
+		return SJME_ERROR_NATIVE_WIDGET_CREATE_FAILED;
+	
+	/* Common widget init. */
+	inState->implIntern->widgetInit(inState, GTK_WIDGET(gtkFixed));
+	inState->implIntern->widgetInit(inState, GTK_WIDGET(gtkScroll));
+	
+	/* Store information. */
+	inScrollPanel->component.common.handle[SJME_SUI_GTK2_H_WIDGET] = gtkFixed;
+	inScrollPanel->component.common.handle[SJME_SUI_GTK2_H_TOP_WIDGET] =
+		gtkScroll;
+	
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }

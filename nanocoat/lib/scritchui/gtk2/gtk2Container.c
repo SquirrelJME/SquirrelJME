@@ -57,6 +57,7 @@ sjme_errorCode sjme_scritchui_gtk2_containerAdd(
 		
 			/* Place into fixed at basic coordinates. */
 		case SJME_SCRITCHUI_TYPE_PANEL:
+		case SJME_SCRITCHUI_TYPE_SCROLL_PANEL:
 			fixed = (GtkFixed*)inContainer->common
 				.handle[SJME_SUI_GTK2_H_WIDGET];
 			gtk_fixed_put(GTK_FIXED(fixed),
@@ -116,6 +117,7 @@ sjme_errorCode sjme_scritchui_gtk2_containerRemove(
 		
 			/* Place into fixed at basic coordinates. */
 		case SJME_SCRITCHUI_TYPE_PANEL:
+		case SJME_SCRITCHUI_TYPE_SCROLL_PANEL:
 			fixed = (GtkFixed*)inContainer->common
 				.handle[SJME_SUI_GTK2_H_WIDGET];
 			gtk_container_remove(GTK_CONTAINER(fixed),
@@ -169,6 +171,7 @@ sjme_errorCode sjme_scritchui_gtk2_containerSetBounds(
 	{
 			/* Need to move within the panel but also set widget size. */
 		case SJME_SCRITCHUI_TYPE_PANEL:
+		case SJME_SCRITCHUI_TYPE_SCROLL_PANEL:
 			gtkFixed = (GtkFixed*)inContainer->common
 				.handle[SJME_SUI_GTK2_H_WIDGET];
 			gtk_fixed_move(gtkFixed, moveWidget, x, y);

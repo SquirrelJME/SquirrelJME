@@ -105,6 +105,12 @@ public class DylibScritchInterface
 	/** Window interface. */
 	protected final DylibWindowInterface window;
 	
+	/** The scroll panel interface. */
+	protected final ScritchScrollPanelInterface scrollPanel;
+	
+	/** The view interface. */
+	protected final ScritchViewInterface view;
+	
 	/**
 	 * Initializes the native dynamic library interface.
 	 *
@@ -135,6 +141,8 @@ public class DylibScritchInterface
 		this.paintable = new DylibPaintableInterface(self, __dyLib);
 		this.panel = new DylibPanelInterface(self, __dyLib);
 		this.screen = new DylibScreenInterface(self, __dyLib);
+		this.scrollPanel = new DylibScrollPanelInterface(self, __dyLib);
+		this.view = new DylibViewInterface(self, __dyLib);
 		this.window = new DylibWindowInterface(self, __dyLib);
 	}
 	
@@ -290,9 +298,9 @@ public class DylibScritchInterface
 	 * @since 2024/07/29
 	 */
 	@Override
-	public @NotNull ScritchScrollPanelInterface scrollPanel()
+	public ScritchScrollPanelInterface scrollPanel()
 	{
-		throw Debugging.todo();
+		return this.scrollPanel;
 	}
 	
 	/**
@@ -300,9 +308,9 @@ public class DylibScritchInterface
 	 * @since 2024/07/29
 	 */
 	@Override
-	public @NotNull ScritchViewInterface view()
+	public ScritchViewInterface view()
 	{
-		throw Debugging.todo();
+		return this.view;
 	}
 	
 	/**

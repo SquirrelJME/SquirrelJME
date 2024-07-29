@@ -16,12 +16,13 @@
 #ifndef SQUIRRELJME_SCRITCHUITYPES_H
 #define SQUIRRELJME_SCRITCHUITYPES_H
 
+#include "sjme/atomic.h"
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiImpl.h"
 #include "lib/scritchui/scritchuiPencil.h"
 #include "lib/scritchui/scritchuiPencilFont.h"
 #include "lib/scritchui/scritchuiText.h"
-#include "sjme/atomic.h"
+#include "lib/scritchui/scritchuiTypesListener.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -33,61 +34,6 @@ extern "C" {
 #endif     /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
-
-/**
- * Represents a class for a listener for common operation.
- * 
- * @since 2024/04/28
- */
-typedef enum sjme_scritchui_listenerClass
-{
-	/** User based listener. */
-	SJME_SCRITCHUI_LISTENER_USER = 0,
-	
-	/** Core based listener. */
-	SJME_SCRITCHUI_LISTENER_CORE = 1,
-	
-	/** The number of listener classes. */
-	SJME_NUM_SCRITCHUI_LISTENER = 2,
-} sjme_scritchui_listenerClass;
-
-/** Declares a ScritchUI listener set. */
-#define SJME_SCRITCHUI_LISTENER_DECLARE(what) \
-	typedef struct SJME_TOKEN_PASTE(sjme_scritchui_listener_, what) \
-	{ \
-		/** Front end data. */ \
-		sjme_frontEnd frontEnd; \
-		 \
-		/** Extra data as required. */ \
-		sjme_intPointer extra; \
-		 \
-		/** Listener callback. */ \
-		SJME_TOKEN_PASTE3(sjme_scritchui_, what, ListenerFunc) callback; \
-	} SJME_TOKEN_PASTE(sjme_scritchui_listener_, what)
-
-/** Void listener. */
-SJME_SCRITCHUI_LISTENER_DECLARE(void);
-
-/** Activate choice item. */
-SJME_SCRITCHUI_LISTENER_DECLARE(activate);
-
-/** Choice items updated, before or after. */
-SJME_SCRITCHUI_LISTENER_DECLARE(valueUpdate);
-
-/** Close listener. */
-SJME_SCRITCHUI_LISTENER_DECLARE(close);
-
-/** Input listener. */
-SJME_SCRITCHUI_LISTENER_DECLARE(input);
-
-/** Paint listener. */
-SJME_SCRITCHUI_LISTENER_DECLARE(paint);
-
-/** Size listener. */
-SJME_SCRITCHUI_LISTENER_DECLARE(size);
-
-/** Size listener. */
-SJME_SCRITCHUI_LISTENER_DECLARE(visible);
 
 /**
  * The state of the pencil lock.
@@ -183,29 +129,6 @@ typedef struct sjme_scritchui_pencilBase
 		sjme_jint numColors;
 	} palette;
 } sjme_scritchui_pencilBase;
-
-/**
- * Listeners for components.
- * 
- * @since 2024/04/28
- */
-typedef struct sjme_scritchui_uiComponentListeners
-{
-	/** Component activated. */
-	sjme_scritchui_listener_activate activate;
-	
-	/** Input events. */
-	sjme_scritchui_listener_input input;
-	
-	/** Listener for when size changes. */
-	sjme_scritchui_listener_size size;
-	
-	/** The value of the component has changed. */
-	sjme_scritchui_listener_valueUpdate valueUpdate;
-	
-	/** Visibility changes. */
-	sjme_scritchui_listener_visible visible; 
-} sjme_scritchui_uiComponentListeners;
 
 typedef struct sjme_scritchui_uiComponentBase
 {
@@ -414,12 +337,6 @@ typedef struct sjme_scritchui_uiMenuItemBase
 	sjme_jint accelMod;
 } sjme_scritchui_uiMenuItemBase;
 
-typedef struct sjme_scritchui_uiPaintableListeners
-{
-	/** Paint listener. */
-	sjme_scritchui_listener_paint paint;
-} sjme_scritchui_uiPaintableListeners;
-
 /**
  * Base data for paintable components.
  * 
@@ -473,11 +390,29 @@ typedef struct sjme_scritchui_uiScreenBase
 	sjme_scritchui_handle displayHandle;
 } sjme_scritchui_uiScreenBase;
 
-typedef struct sjme_scritchui_uiWindowListeners
+struct sjme_scritchui_uiViewBase
 {
-	/** Listener for when a window is closed. */
-	sjme_scritchui_listener_close close;
-} sjme_scritchui_uiWindowListeners;
+	/** User and core listeners for the view. */
+	sjme_scritchui_uiViewListeners listeners[SJME_NUM_SCRITCHUI_LISTENER];
+	
+	/** The current view area. */
+	sjme_scritchui_dim area;
+	
+	/** The current view rectangle. */
+	sjme_scritchui_rect view;
+};
+
+struct sjme_scritchui_uiScrollPanelBase
+{
+	/** Common data. */
+	sjme_scritchui_uiComponentBase component;
+	
+	/** Container related. */
+	sjme_scritchui_uiContainerBase container;
+	
+	/** Viewport data. */
+	sjme_scritchui_uiViewBase view;
+};
 
 typedef struct sjme_scritchui_uiWindowBase
 {

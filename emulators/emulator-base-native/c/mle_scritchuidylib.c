@@ -145,6 +145,9 @@
 #define FORWARD_DESC___screens "(" \
 	DESC_LONG DESC_ARRAY(DESC_LONG) ")" DESC_INTEGER
 
+#define FORWARD_DESC___scrollPanelNew "(" \
+	DESC_LONG ")" DESC_LONG
+
 #define FORWARD_DESC___weakDelete "(" \
 	DESC_LONG ")" DESC_VOID
 
@@ -2170,15 +2173,15 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __panelNew)
 	sjme_scritchui state;
 	sjme_scritchui_uiPanel panel;
 	
+	/* Restore state. */
+	state = (sjme_scritchui)stateP;
 	if (stateP == 0)
 	{
 		error = SJME_ERROR_NULL_ARGUMENTS;
 		goto fail_nullArgs;
 	}
-
-	/* Restore. */
-	state = (sjme_scritchui)stateP;
 	
+	/* Not implemented? */
 	if (state->api->panelNew == NULL)
 	{
 		error = SJME_ERROR_NOT_IMPLEMENTED;
@@ -2289,6 +2292,44 @@ fail_alloca:
 fail_nullArgs:
 	sjme_jni_throwMLECallError(env, error);
 	return -1;
+}
+
+JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __scrollPanelNew)
+	(JNIEnv* env, jclass classy, jlong stateP)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	sjme_scritchui_uiScrollPanel panel;
+	
+	/* Restore state. */
+	state = (sjme_scritchui)stateP;
+	if (stateP == 0)
+	{
+		error = SJME_ERROR_NULL_ARGUMENTS;
+		goto fail_nullArgs;
+	}
+	
+	/* Not implemented? */
+	if (state->api->scrollPanelNew == NULL)
+	{
+		error = SJME_ERROR_NOT_IMPLEMENTED;
+		goto fail_newPanel;
+	}
+
+	/* Create new panel. */
+	panel = NULL;
+	if (sjme_error_is(error = state->api->scrollPanelNew(state,
+			&panel)) || panel == NULL)
+		goto fail_newPanel;
+	
+	/* Return the state pointer. */
+	return (jlong)panel;
+
+fail_newPanel:
+fail_nullArgs:
+	/* Fail. */
+	sjme_jni_throwMLECallError(env, sjme_error_default(error));
+	return 0L;
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __weakDelete)
@@ -2525,6 +2566,7 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 	FORWARD_list(NativeScritchDylib, __panelNew),
 	FORWARD_list(NativeScritchDylib, __screenId),
 	FORWARD_list(NativeScritchDylib, __screens),
+	FORWARD_list(NativeScritchDylib, __scrollPanelNew),
 	FORWARD_list(NativeScritchDylib, __weakDelete),
 	FORWARD_list(NativeScritchDylib, __windowContentMinimumSize),
 	FORWARD_list(NativeScritchDylib, __windowManagerType),

@@ -73,6 +73,9 @@ typedef enum sjme_scritchui_uiType
 	/** Screen. */
 	SJME_SCRITCHUI_TYPE_SCREEN,
 	
+	/** Scroll Panel. */
+	SJME_SCRITCHUI_TYPE_SCROLL_PANEL,
+	
 	/** Window. */
 	SJME_SCRITCHUI_TYPE_WINDOW,
 	
@@ -500,7 +503,7 @@ SJME_LIST_DECLARE(sjme_scritchui_uiScreen, 0);
  * 
  * @since 2024/07/28
  */
-typedef struct sjme_scritchui_uiScrolPanelBase* sjme_scritchui_uiScrollPanel;
+typedef struct sjme_scritchui_uiScrollPanelBase* sjme_scritchui_uiScrollPanel;
 
 /**
  * Viewport manager information for any widget that is a viewport.

@@ -9,7 +9,9 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchViewBracket;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayScale;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
@@ -45,6 +47,17 @@ public abstract class Screen
 	 * @since 2024/07/25
 	 */
 	abstract ScritchComponentBracket __scritchComponent();
+	
+	/**
+	 * Returns the viewport, if there is one.
+	 *
+	 * @return The viewport, if available.
+	 * @since 2024/07/29
+	 */
+	ScritchViewBracket __scritchView()
+	{
+		return null;
+	}
 	
 	/**
 	 * Returns the displayable height.
@@ -101,11 +114,51 @@ public abstract class Screen
 		int w = Math.max(1, scale.textureW());
 		int h = Math.max(1, scale.textureH());
 		
-		// Make sure the list has the correct texture size
+		// There might be a view associated with this
+		ScritchViewBracket view = this.__scritchView();
+		
+		// Make sure the displayable has the correct texture size and that
+		// either the view or the actual component if there is no view also
+		// has the given size
 		DisplayableState state = this._state;
-		state.scritchApi().container().setBounds(
+		ScritchInterface scritchApi = state.scritchApi();
+		scritchApi.container().setBounds(
 			state.scritchPanel(),
-			this.__scritchComponent(), 0, 0, w, h);
+			(view != null ? view : this.__scritchComponent()),
+			0, 0, w, h);
+	}
+	
+	/**
+	 * Common setup for any screen items which need a viewport.
+	 *
+	 * @param __scritchApi The ScritchUI API.
+	 * @param __newItem The item to wrap.
+	 * @return The resultant view.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/07/29
+	 */
+	static ScritchViewBracket __setupView(ScritchInterface __scritchApi,
+		ScritchComponentBracket __newItem)
+		throws NullPointerException
+	{
+		if (__scritchApi == null)
+			throw new NullPointerException("NARG");
+		
+		// Setup viewport where the item will be in
+		ScritchViewBracket newView = __scritchApi.scrollPanel()
+			.scrollPanelNew();
+		
+		// Put the item into the view
+		__scritchApi.container().add(newView,
+			__newItem);
+		
+		// Setup size suggestion interface so whenever the item gives its
+		// suggested size, it will automatically update accordingly
+		__scritchApi.view().setSizeSuggestListener(newView,
+			new __ExecViewSizeSuggest__(__scritchApi));
+		
+		// Return the used view
+		return newView;
 	}
 }
 

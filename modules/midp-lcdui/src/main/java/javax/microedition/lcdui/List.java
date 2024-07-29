@@ -12,9 +12,11 @@ package javax.microedition.lcdui;
 import cc.squirreljme.jvm.mle.constants.UIListType;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchListInterface;
+import cc.squirreljme.jvm.mle.scritchui.ScritchViewInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchListBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchViewBracket;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.scritchui.ChoiceManager;
@@ -35,6 +37,9 @@ public class List
 	
 	/** The ScritchUI list to use. */
 	private final ScritchListBracket _scritchList;
+	
+	/** The viewport for this component. */
+	private final ScritchViewBracket _scritchView;
 	
 	/** Selection command. */
 	volatile Command _selCommand;
@@ -94,6 +99,7 @@ public class List
 		DisplayableState state = this._state;
 		ScritchInterface scritchApi = state.scritchApi();
 		ScritchListInterface listApi = scritchApi.list();
+		ScritchViewInterface viewApi = scritchApi.view();
 		
 		// Set title
 		this._trackerTitle.set(__title);
@@ -102,6 +108,14 @@ public class List
 		ScritchListBracket newList = listApi.listNew(nativeType);
 		this._scritchList = newList;
 		
+		// Setup viewport where the list will be in
+		ScritchViewBracket newView = Screen.__setupView(scritchApi, newList);
+		this._scritchView = newView;
+		
+		// Put the view in the panel
+		ScritchPanelBracket inPanel = state.scritchPanel();
+		scritchApi.container().add(inPanel, newView);
+		
 		// Setup list activation
 		scritchApi.component().setActivateListener(newList,
 			new __ExecListActivate__(this));
@@ -109,11 +123,6 @@ public class List
 		// Setup manager
 		ChoiceManager choices = new ChoiceManager(__type, scritchApi, newList);
 		this._choices = choices;
-		
-		// Put the list in the panel
-		ScritchPanelBracket inPanel = state.scritchPanel();
-		scritchApi.container().add(inPanel,
-			newList);
 		
 		// Implicit lists have a specific select command used
 		this.__setSelectCommand(List.SELECT_COMMAND);

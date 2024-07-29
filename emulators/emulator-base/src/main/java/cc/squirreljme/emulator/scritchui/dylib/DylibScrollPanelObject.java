@@ -7,19 +7,29 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.mle.scritchui.brackets;
+package cc.squirreljme.emulator.scritchui.dylib;
 
-import cc.squirreljme.jvm.mle.annotation.GhostObject;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScrollPanelBracket;
 
 /**
- * Bracket for scroll panels.
+ * Represents a scroll panel.
  *
  * @since 2024/07/29
  */
-@GhostObject
-@SquirrelJMEVendorApi
-public interface ScritchScrollPanelBracket
-	extends ScritchBaseBracket, ScritchViewBracket
+public class DylibScrollPanelObject
+	extends DylibComponentObject
+	implements ScritchScrollPanelBracket, DylibContainerObject
 {
+	/**
+	 * Initializes the scroll panel object.
+	 *
+	 * @param __objectP The object pointer.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/07/29
+	 */
+	public DylibScrollPanelObject(long __objectP)
+		throws NullPointerException
+	{
+		super(__objectP);
+	}
 }
