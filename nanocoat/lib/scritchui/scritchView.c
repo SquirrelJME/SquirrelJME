@@ -43,6 +43,18 @@ sjme_errorCode sjme_scritchui_core_viewGetView(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrOutNotNull sjme_scritchui_rect* outViewRect)
 {
+	sjme_errorCode error;
+	sjme_scritchui_uiView view;
+	
+	if (inState == NULL || inComponent == NULL || outViewRect == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Obtain view. */
+	view = NULL;
+	if (sjme_error_is(error = inState->intern->getView(inState,
+		inComponent, &view)) || view == NULL)
+		return sjme_error_default(error);
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
@@ -52,6 +64,18 @@ sjme_errorCode sjme_scritchui_core_viewSetArea(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInNotNull const sjme_scritchui_dim* inViewArea)
 {
+	sjme_errorCode error;
+	sjme_scritchui_uiView view;
+	
+	if (inState == NULL || inComponent == NULL || inViewArea == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Obtain view. */
+	view = NULL;
+	if (sjme_error_is(error = inState->intern->getView(inState,
+		inComponent, &view)) || view == NULL)
+		return sjme_error_default(error);
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
@@ -61,6 +85,18 @@ sjme_errorCode sjme_scritchui_core_viewSetView(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInNotNull const sjme_scritchui_rect* inViewRect)
 {
+	sjme_errorCode error;
+	sjme_scritchui_uiView view;
+	
+	if (inState == NULL || inComponent == NULL || inViewRect == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Obtain view. */
+	view = NULL;
+	if (sjme_error_is(error = inState->intern->getView(inState,
+		inComponent, &view)) || view == NULL)
+		return sjme_error_default(error);
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
@@ -70,6 +106,18 @@ sjme_errorCode sjme_scritchui_core_viewSetSizeSuggestListener(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(sizeSuggest))
 {
+	sjme_errorCode error;
+	sjme_scritchui_uiView view;
+	
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Obtain view. */
+	view = NULL;
+	if (sjme_error_is(error = inState->intern->getView(inState,
+		inComponent, &view)) || view == NULL)
+		return sjme_error_default(error);
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
@@ -79,6 +127,18 @@ sjme_errorCode sjme_scritchui_core_viewSetViewListener(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(view))
 {
+	sjme_errorCode error;
+	sjme_scritchui_uiView view;
+	
+	if (inState == NULL || inComponent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Obtain view. */
+	view = NULL;
+	if (sjme_error_is(error = inState->intern->getView(inState,
+		inComponent, &view)) || view == NULL)
+		return sjme_error_default(error);
+	
 	sjme_todo("Impl?");
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
