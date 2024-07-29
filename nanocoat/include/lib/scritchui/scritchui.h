@@ -1543,6 +1543,21 @@ typedef sjme_errorCode (*sjme_scritchui_viewSetViewListenerFunc)(
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(view));
 
 /**
+ * Void listener set.
+ * 
+ * @param inState The ScritchUI state.
+ * @param inComponent The component.
+ * @param inListener The listener to set.
+ * @param copyFrontEnd Any front-end data needed for the listener.
+ * @return Any resultant error, if any.
+ * @since 2024/07/29
+ */
+typedef sjme_errorCode (*sjme_scritchui_voidSetVoidListenerFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(void));
+
+/**
  * Sets the minimum content size for windows.
  * 
  * @param inState The input state.

@@ -148,6 +148,11 @@
 #define FORWARD_DESC___scrollPanelNew "(" \
 	DESC_LONG ")" DESC_LONG
 
+#define FORWARD_DESC___viewSetSizeSuggestListener "(" \
+	DESC_LONG DESC_LONG DESC_SCRITCHUI_SIZE_SUGGEST_LISTENER ")" DESC_VOID
+#define FORWARD_DESC___viewSetViewListener "(" \
+	DESC_LONG DESC_LONG DESC_SCRITCHUI_VIEW_LISTENER ")" DESC_VOID
+
 #define FORWARD_DESC___weakDelete "(" \
 	DESC_LONG ")" DESC_VOID
 
@@ -243,6 +248,42 @@ static void mle_scritchUiRecoverEnv(
 	
 	/* Success! */
 	*outEnv = env;
+}
+
+static void mle_simpleListenerSet(JNIEnv* env, 
+	sjme_scritchui state,
+	sjme_scritchui_uiComponent component,
+	jobject javaListener,
+	sjme_scritchui_voidSetVoidListenerFunc setListenerFunc,
+	sjme_scritchui_voidListenerFunc wrapListener)
+{
+	sjme_errorCode error;
+	sjme_frontEnd newFrontEnd;
+	
+	if (state == NULL || component == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+	
+	if (setListenerFunc == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
+		return;
+	}
+	
+	/* Setup new front-end to refer to this component. */
+	mle_scritchUiStoreCallback(env, &newFrontEnd, javaListener);
+
+	/* Forward. */
+	if (sjme_error_is(error = setListenerFunc(
+		state, component,
+		wrapListener,
+		&newFrontEnd)))
+	{
+		sjme_jni_throwMLECallError(env, error);
+		return;
+	}
 }
 
 static sjme_errorCode mle_scritchUiListenerClose(
@@ -457,6 +498,25 @@ static sjme_errorCode mle_scritchUiListenerPaint(
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode mle_scritchUiListenerSizeSuggest(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inView,
+	sjme_attrInNotNull sjme_scritchui_uiComponent subComponent,
+	sjme_attrInNotNull const sjme_scritchui_rect* subRect)
+{
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+static sjme_errorCode mle_scritchUiListenerView(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNotNull const sjme_scritchui_rect* inViewRect)
+{
+	sjme_todo("Impl?");
+	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
 static sjme_errorCode mle_scritchUiListenerVisible(
@@ -1138,151 +1198,92 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	__componentSetActivateListener)(JNIEnv* env, jclass classy, jlong stateP,
 	jlong componentP, jobject javaListener)
 {
-	sjme_errorCode error;
 	sjme_scritchui state;
 	sjme_scritchui_uiComponent component;
-	sjme_frontEnd newFrontEnd;
 
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
 	component = (sjme_scritchui_uiComponent)componentP;
-	
 	if (state == NULL || component == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return;
 	}
 	
-	if (state->api->componentSetActivateListener == NULL)
-	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
-		return;
-	}
-	
-	/* Setup new front-end to refer to this component. */
-	mle_scritchUiStoreCallback(env, &newFrontEnd, javaListener);
-
-	/* Forward. */
-	if (sjme_error_is(error = state->api->componentSetActivateListener(
-		state, component,
-		mle_scritchUiListenerActivate,
-		&newFrontEnd)))
-	{
-		sjme_jni_throwMLECallError(env, error);
-		return;
-	}
+	mle_simpleListenerSet(env, state, component, javaListener,
+		(sjme_scritchui_voidSetVoidListenerFunc)
+			state->api->componentSetActivateListener,
+		(sjme_scritchui_voidListenerFunc)
+			mle_scritchUiListenerActivate);
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	__componentSetInputListener)(JNIEnv* env, jclass classy, jlong stateP,
 	jlong componentP, jobject javaListener)
 {
-	sjme_errorCode error;
 	sjme_scritchui state;
 	sjme_scritchui_uiComponent component;
-	sjme_frontEnd newFrontEnd;
-	
-	if (stateP == 0 || componentP == 0)
-	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
-		return;
-	}
 
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
 	component = (sjme_scritchui_uiComponent)componentP;
-	
-	if (state->api->componentSetInputListener == NULL)
+	if (state == NULL || component == NULL)
 	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return;
 	}
 	
-	/* Setup new front-end to refer to this component. */
-	mle_scritchUiStoreCallback(env, &newFrontEnd, javaListener);
-
-	/* Forward. */
-	if (sjme_error_is(error = state->api->componentSetInputListener(
-		state, component,
-		mle_scritchUiListenerInput,
-		&newFrontEnd)))
-	{
-		sjme_jni_throwMLECallError(env, error);
-		return;
-	}
+	mle_simpleListenerSet(env, state, component, javaListener,
+		(sjme_scritchui_voidSetVoidListenerFunc)
+			state->api->componentSetInputListener,
+		(sjme_scritchui_voidListenerFunc)
+			mle_scritchUiListenerInput);
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	__componentSetPaintListener)(JNIEnv* env, jclass classy, jlong stateP,
 	jlong componentP, jobject javaListener)
 {
-	sjme_errorCode error;
 	sjme_scritchui state;
 	sjme_scritchui_uiComponent component;
-	sjme_frontEnd newFrontEnd;
-	
-	if (stateP == 0 || componentP == 0)
-	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
-		return;
-	}
 
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
 	component = (sjme_scritchui_uiComponent)componentP;
-	
-	/* Setup new front-end to refer to this component. */
-	mle_scritchUiStoreCallback(env, &newFrontEnd, javaListener);
-	
-	/* Forward. */
-	error = SJME_ERROR_NOT_IMPLEMENTED;
-	if (state->api->componentSetPaintListener == NULL ||
-		sjme_error_is(error = state->api->componentSetPaintListener(
-			state, component,
-			mle_scritchUiListenerPaint, &newFrontEnd)))
+	if (state == NULL || component == NULL)
 	{
-		sjme_jni_throwMLECallError(env, error);
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return;
 	}
+	
+	mle_simpleListenerSet(env, state, component, javaListener,
+		(sjme_scritchui_voidSetVoidListenerFunc)
+			state->api->componentSetPaintListener,
+		(sjme_scritchui_voidListenerFunc)
+			mle_scritchUiListenerPaint);
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	__componentSetVisibleListener)(JNIEnv* env, jclass classy, jlong stateP,
 	jlong componentP, jobject javaListener)
 {
-	sjme_errorCode error;
 	sjme_scritchui state;
 	sjme_scritchui_uiComponent component;
-	sjme_frontEnd newFrontEnd;
-	
-	if (stateP == 0 || componentP == 0)
-	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
-		return;
-	}
 
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
 	component = (sjme_scritchui_uiComponent)componentP;
-	
-	if (state->api->componentSetVisibleListener == NULL)
+	if (state == NULL || component == NULL)
 	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return;
 	}
 	
-	/* Setup new front-end to refer to this component. */
-	mle_scritchUiStoreCallback(env, &newFrontEnd, javaListener);
-
-	/* Forward. */
-	if (sjme_error_is(error = state->api->componentSetVisibleListener(
-		state, component,
-		mle_scritchUiListenerVisible,
-		&newFrontEnd)))
-	{
-		sjme_jni_throwMLECallError(env, error);
-		return;
-	}
+	mle_simpleListenerSet(env, state, component, javaListener,
+		(sjme_scritchui_voidSetVoidListenerFunc)
+			state->api->componentSetVisibleListener,
+		(sjme_scritchui_voidListenerFunc)
+			mle_scritchUiListenerVisible);
 }
 
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
@@ -2332,6 +2333,50 @@ fail_nullArgs:
 	return 0L;
 }
 
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__viewSetSizeSuggestListener)(JNIEnv* env, jclass classy, jlong stateP,
+	jlong componentP, jobject javaListener)
+{
+	sjme_scritchui state;
+	sjme_scritchui_uiComponent component;
+	
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	component = (sjme_scritchui_uiComponent)componentP;
+	if (state == 0 || component == 0)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+	
+	mle_simpleListenerSet(env, state, component, javaListener,
+		(sjme_scritchui_voidSetVoidListenerFunc)
+			state->api->viewSetSizeSuggestListener,
+		(sjme_scritchui_voidListenerFunc)
+			mle_scritchUiListenerSizeSuggest);
+}
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__viewSetViewListener)(JNIEnv* env, jclass classy, jlong stateP,
+	jlong componentP, jobject javaListener)
+{
+	sjme_scritchui state;
+	sjme_scritchui_uiComponent component;
+	
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	component = (sjme_scritchui_uiComponent)componentP;
+	if (state == 0 || component == 0)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+	
+	mle_simpleListenerSet(env, state, component, javaListener,
+		state->api->viewSetViewListener,
+		mle_scritchUiListenerView);
+}
+
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __weakDelete)
 	(JNIEnv* env, jclass classy, jlong weakP)
 {
@@ -2425,36 +2470,23 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	__windowSetCloseListener)(JNIEnv* env, jclass classy, jlong stateP,
 	jlong windowP, jobject javaListener)
 {
-	sjme_errorCode error;
 	sjme_scritchui state;
-	sjme_scritchui_uiWindow window;
-	sjme_frontEnd newFrontEnd;
-	
-	if (stateP == 0 || windowP == 0)
+	sjme_scritchui_uiComponent component;
+
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	component = (sjme_scritchui_uiComponent)windowP;
+	if (state == NULL || component == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return;
 	}
 	
-	/* Restore. */
-	state = (sjme_scritchui)stateP;
-	window = (sjme_scritchui_uiWindow)windowP;
-	
-	/* Not implemented? */
-	if (state->api->windowSetCloseListener == NULL)
-	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
-		return;
-	}
-	
-	/* Setup new front-end to refer to this component. */
-	mle_scritchUiStoreCallback(env, &newFrontEnd, javaListener);
-	
-	/* Forward. */
-	if (sjme_error_is(error = state->api->windowSetCloseListener(
-		state, window, mle_scritchUiListenerClose,
-		&newFrontEnd)))
-		sjme_jni_throwMLECallError(env, error);
+	mle_simpleListenerSet(env, state, component, javaListener,
+		(sjme_scritchui_voidSetVoidListenerFunc)
+			state->api->windowSetCloseListener,
+		(sjme_scritchui_voidListenerFunc)
+			mle_scritchUiListenerClose);
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
@@ -2567,6 +2599,8 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 	FORWARD_list(NativeScritchDylib, __screenId),
 	FORWARD_list(NativeScritchDylib, __screens),
 	FORWARD_list(NativeScritchDylib, __scrollPanelNew),
+	FORWARD_list(NativeScritchDylib, __viewSetSizeSuggestListener),
+	FORWARD_list(NativeScritchDylib, __viewSetViewListener),
 	FORWARD_list(NativeScritchDylib, __weakDelete),
 	FORWARD_list(NativeScritchDylib, __windowContentMinimumSize),
 	FORWARD_list(NativeScritchDylib, __windowManagerType),

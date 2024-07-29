@@ -18,6 +18,8 @@ import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchActivateListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchCloseListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchInputListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchPaintListener;
+import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchSizeSuggestListener;
+import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchViewListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchVisibleListener;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchWindowManagerType;
 import java.nio.file.Path;
@@ -635,6 +637,34 @@ public final class NativeScritchDylib
 	 * @since 2024/07/29
 	 */
 	static native long __scrollPanelNew(long __stateP)
+		throws MLECallError;
+	
+	/**
+	 * Sets the size suggestion listener for the given view.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __viewP The view pointer.
+	 * @param __listener The listener to set.
+	 * @throws MLECallError If the state and/or view are not valid; or the
+	 * listener could not be set.
+	 * @since 2024/07/29
+	 */
+	static native void __viewSetSizeSuggestListener(long __stateP,
+		long __viewP, ScritchSizeSuggestListener __listener)
+		throws MLECallError;
+	
+	/**
+	 * Sets the view listener for the given view.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __viewP The view pointer.
+	 * @param __listener The listener to set.
+	 * @throws MLECallError If the state and/or view are not valid; or the
+	 * listener could not be set.
+	 * @since 2024/07/29
+	 */
+	static native void __viewSetViewListener(long __stateP, long __viewP,
+		ScritchViewListener __listener)
 		throws MLECallError;
 	
 	/**

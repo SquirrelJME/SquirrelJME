@@ -161,6 +161,10 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 	"cc/squirreljme/jvm/mle/scritchui/callbacks/ScritchInputListener")
 #define DESC_SCRITCHUI_PAINT_LISTENER DESC_CLASS( \
 	"cc/squirreljme/jvm/mle/scritchui/callbacks/ScritchPaintListener")
+#define DESC_SCRITCHUI_SIZE_SUGGEST_LISTENER DESC_CLASS( \
+	"cc/squirreljme/jvm/mle/scritchui/callbacks/ScritchSizeSuggestListener")
+#define DESC_SCRITCHUI_VIEW_LISTENER DESC_CLASS( \
+	"cc/squirreljme/jvm/mle/scritchui/callbacks/ScritchViewListener")
 #define DESC_SCRITCHUI_VISIBLE_LISTENER DESC_CLASS( \
 	"cc/squirreljme/jvm/mle/scritchui/callbacks/ScritchVisibleListener")
 

@@ -45,54 +45,67 @@ public class DylibViewInterface
 	}
 	
 	@Override
-	public void getView(@NotNull ScritchViewBracket __view,
-		@NotNull int[] __outRect)
+	public void getView(ScritchViewBracket __view,
+		int[] __outRect)
 		throws MLECallError
 	{
 		throw Debugging.todo();
 	}
 	
 	@Override
-	public void setArea(@NotNull ScritchViewBracket __view,
-		@Range(from = 1, to = Integer.MAX_VALUE) int __width,
-		@Range(from = 1, to = Integer.MAX_VALUE) int __height)
+	public void setArea(ScritchViewBracket __view,
+		int __width, int __height)
 		throws MLECallError
 	{
 		throw Debugging.todo();
 	}
 	
 	@Override
-	public void setView(@NotNull ScritchViewBracket __view,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __x,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __y,
-		@Range(from = 1, to = Integer.MAX_VALUE) int __width,
-		@Range(from = 1, to = Integer.MAX_VALUE) int __height)
+	public void setView(ScritchViewBracket __view,
+		int __x, int __y, int __width, int __height)
 		throws MLECallError
 	{
 		throw Debugging.todo();
 	}
 	
 	@Override
-	public void setView(@NotNull ScritchViewBracket __view,
-		@NotNull int[] __inRect)
+	public void setView(ScritchViewBracket __view,
+		int[] __inRect)
 		throws MLECallError
 	{
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/07/29
+	 */
 	@Override
-	public void setSizeSuggestListener(@NotNull ScritchViewBracket __view,
-		@Nullable ScritchSizeSuggestListener __listener)
+	public void setSizeSuggestListener(ScritchViewBracket __view,
+		ScritchSizeSuggestListener __listener)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__view == null || __listener == null)
+			throw new MLECallError("NARG");
+		
+		NativeScritchDylib.__viewSetSizeSuggestListener(
+			this.dyLib._stateP,
+			((DylibComponentObject)__view).objectPointer(),
+			__listener);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/07/29
+	 */
 	@Override
-	public void setViewListener(@NotNull ScritchViewBracket __view,
-		@Nullable ScritchViewListener __listener)
+	public void setViewListener(ScritchViewBracket __view,
+		ScritchViewListener __listener)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		NativeScritchDylib.__viewSetViewListener(
+			this.dyLib._stateP,
+			((DylibComponentObject)__view).objectPointer(),
+			__listener);
 	}
 }
