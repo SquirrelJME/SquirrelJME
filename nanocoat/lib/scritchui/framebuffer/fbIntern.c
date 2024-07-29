@@ -584,6 +584,12 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 		bex = bsx + bw;
 		bey = bsy + bh;
 		
+		/* Move suggestion box up. */
+		if (bex > suggestDim.width)
+			suggestDim.width = bex;
+		if (bey > suggestDim.height)
+			suggestDim.height = bey;
+		
 		/* If this is focused, use the bounds of this display list. */
 		if (dlAt->mod & SJME_SCRITCHUI_FB_DL_TYPE_MOD_FOCUS)
 		{
