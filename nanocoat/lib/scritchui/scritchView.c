@@ -17,8 +17,25 @@ sjme_errorCode sjme_scritchui_core_intern_getView(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInOutNotNull sjme_scritchui_uiView* outView)
 {
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	sjme_scritchui_uiView view;
+	
+	if (inState == NULL || inComponent == NULL || outView == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Only certain types can be a view. */
+	switch (inComponent->common.type)
+	{
+		case SJME_SCRITCHUI_TYPE_SCROLL_PANEL:
+			view = &((sjme_scritchui_uiScrollPanel)inComponent)->view;
+			break;
+		
+		default:
+			return SJME_ERROR_INVALID_ARGUMENT;
+	}
+	
+	/* Success! */
+	*outView = view;
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchui_core_viewGetView(
