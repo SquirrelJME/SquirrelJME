@@ -118,8 +118,13 @@ sjme_errorCode sjme_scritchui_core_viewSetSizeSuggestListener(
 		inComponent, &view)) || view == NULL)
 		return sjme_error_default(error);
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Use simple listener set. */
+	return inState->intern->setSimpleUserListener(
+		inState,
+		(sjme_scritchui_listener_void*)&SJME_SCRITCHUI_LISTENER_USER(
+			view, sizeSuggest),
+		(sjme_scritchui_voidListenerFunc)inListener,
+		copyFrontEnd);
 }
 
 sjme_errorCode sjme_scritchui_core_viewSetViewListener(

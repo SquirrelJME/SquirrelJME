@@ -17,6 +17,7 @@
 #define SQUIRRELJME_SCRITCHUIIMPL_H
 
 #include "lib/scritchui/scritchui.h"
+#include "lib/scritchui/scritchuiTypesListener.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -496,6 +497,11 @@ typedef sjme_errorCode (*sjme_scritchui_intern_mapScreenFunc)(
 	sjme_attrInValue sjme_jint screenId,
 	sjme_attrInOutNotNull sjme_scritchui_uiScreen* outScreen,
 	sjme_attrInNullable sjme_scritchui_handle updateHandle);
+	
+typedef sjme_errorCode (*sjme_scritchui_intern_setSimpleUserListenerFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_listener_void* infoUser,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(void));
 
 /**
  * Updates the visibility state of a container.
@@ -567,6 +573,9 @@ struct sjme_scritchui_internFunctions
 	
 	/** Common component initialization. */
 	sjme_scritchui_intern_initComponentFunc initComponent;
+	
+	/** Set of simple user listener. */
+	sjme_scritchui_intern_setSimpleUserListenerFunc setSimpleUserListener;
 	
 	/** Maps the given screen. */
 	sjme_scritchui_intern_mapScreenFunc mapScreen;

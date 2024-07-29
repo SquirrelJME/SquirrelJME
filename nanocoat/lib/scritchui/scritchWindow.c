@@ -104,23 +104,15 @@ sjme_errorCode sjme_scritchui_core_windowSetCloseListener(
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(close))
 {
-	sjme_scritchui_listener_close* infoUser;
-	
 	if (inState == NULL || inWindow == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Get listener information. */
-	infoUser = &SJME_SCRITCHUI_LISTENER_USER(inWindow, close);
-	
-	/* The core listener is always set, so we can just set this here */
-	/* and any future size calls will use this callback. */
-	infoUser->callback = inListener;
-	if (copyFrontEnd != NULL)
-		memmove(&infoUser->frontEnd, copyFrontEnd,
-			sizeof(*copyFrontEnd));
-	
-	/* Success! */
-	return SJME_ERROR_NONE;
+	return inState->intern->setSimpleUserListener(
+		inState,
+		(sjme_scritchui_listener_void*)&SJME_SCRITCHUI_LISTENER_USER(
+			inWindow, close),
+		(sjme_scritchui_voidListenerFunc)inListener,
+		copyFrontEnd);
 }
 
 sjme_errorCode sjme_scritchui_core_windowSetMenuBar(

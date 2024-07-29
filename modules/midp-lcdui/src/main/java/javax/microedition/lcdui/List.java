@@ -441,6 +441,16 @@ public class List
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2024/07/29
+	 */
+	@Override
+	ScritchViewBracket __scritchView()
+	{
+		return this._scritchView;
+	}
+	
+	/**
 	 * Sets the select command.
 	 *
 	 * @param __command The command to set.

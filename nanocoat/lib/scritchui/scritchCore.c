@@ -89,6 +89,8 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 	.scrollPanelNew = sjme_scritchui_coreSerial_scrollPanelNew,
 	.viewGetView = sjme_scritchui_coreSerial_viewGetView,
 	.viewSetArea = sjme_scritchui_coreSerial_viewSetArea,
+	.viewSetSizeSuggestListener =
+		sjme_scritchui_coreSerial_viewSetSizeSuggestListener,
 	.viewSetView = sjme_scritchui_coreSerial_viewSetView,
 	.viewSetViewListener = sjme_scritchui_coreSerial_viewSetViewListener,
 	.windowContentMinimumSize =
@@ -158,6 +160,8 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 	.viewGetView = sjme_scritchui_core_viewGetView,
 	.viewSetArea = sjme_scritchui_core_viewSetArea,
 	.viewSetView = sjme_scritchui_core_viewSetView,
+	.viewSetSizeSuggestListener =
+		sjme_scritchui_core_viewSetSizeSuggestListener,
 	.viewSetViewListener = sjme_scritchui_core_viewSetViewListener,
 	.windowContentMinimumSize = sjme_scritchui_core_windowContentMinimumSize,
 	.windowNew = sjme_scritchui_core_windowNew,
@@ -180,6 +184,7 @@ static const sjme_scritchui_internFunctions sjme_scritchUI_coreIntern =
 	.initCommon = sjme_scritchui_core_intern_initCommon,
 	.initComponent = sjme_scritchui_core_intern_initComponent,
 	.mapScreen = sjme_scritchui_core_intern_mapScreen,
+	.setSimpleUserListener = sjme_scritchui_core_intern_setSimpleUserListener,
 	.updateVisibleContainer =
 		sjme_scritchui_core_intern_updateVisibleContainer,
 	.updateVisibleComponent =

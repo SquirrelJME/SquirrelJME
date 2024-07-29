@@ -409,6 +409,11 @@ sjme_errorCode sjme_scritchui_core_intern_mapScreen(
 	sjme_attrInOutNotNull sjme_scritchui_uiScreen* outScreen,
 	sjme_attrInNullable sjme_scritchui_handle updateHandle);
 
+sjme_errorCode sjme_scritchui_core_intern_setSimpleUserListener(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_listener_void* infoUser,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(void));
+
 sjme_errorCode sjme_scritchui_core_intern_updateVisibleComponent(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
