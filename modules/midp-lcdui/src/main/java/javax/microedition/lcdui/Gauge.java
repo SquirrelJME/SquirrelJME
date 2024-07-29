@@ -131,13 +131,17 @@ public class Gauge
 	public void setLabel(String __l)
 		throws IllegalArgumentException
 	{
+		throw Debugging.todo();
+		/*
 		/* {@squirreljme.error EB27 Cannot set the label of a gauge associated
-		with an alert.} */
+		with an alert.} * /
 		if (this._displayable instanceof Alert)
 			throw new IllegalArgumentException("EB27");
 		
 		// Use super logic
 		super.setLabel(__l);
+		
+		 */
 	}
 	
 	@Api

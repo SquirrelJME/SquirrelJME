@@ -567,6 +567,7 @@ sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc)(
 		rightLink->blockSize =
 			(sjme_jint)((intptr_t)&scanLink->block[scanLink->blockSize] -
 				(intptr_t)&rightLink->block[0]);
+		rightLink->allocSize = rightLink->blockSize;
 
 		/* Link in physical links. */
 		rightLink->next = scanLink->next;
@@ -583,6 +584,7 @@ sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc)(
 		/* Set size of the left block. */
 		scanLink->blockSize =
 			(sjme_jint)((intptr_t)rightLink - (intptr_t)&scanLink->block[0]);
+		scanLink->allocSize = scanLink->blockSize;
 
 		/* Adjust reserved and usable space. */
 		pool->space[SJME_ALLOC_POOL_SPACE_FREE].reserved +=
