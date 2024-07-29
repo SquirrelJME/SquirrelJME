@@ -16,7 +16,7 @@
 #ifndef SQUIRRELJME_LIBRETRO_H
 #define SQUIRRELJME_LIBRETRO_H
 
-#if 1
+#if 0
 	#include "3rdparty/libretro/__experimental__.h"
 #else
 	#include "3rdparty/libretro/__orterbil_.h"
