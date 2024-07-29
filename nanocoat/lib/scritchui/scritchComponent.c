@@ -297,8 +297,12 @@ sjme_errorCode sjme_scritchui_core_componentGetParent(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrOutNotNull sjme_scritchui_uiComponent* outParent)
 {
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	if (inState == NULL || inComponent == NULL || outParent == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* This is a simple read. */
+	*outParent = inComponent->parent;
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchui_core_componentRepaint(
@@ -380,7 +384,7 @@ sjme_errorCode sjme_scritchui_core_componentSetActivateListener(
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	return inState->intern->setSimpleUserListener(
+	return inState->intern->setSimpleListener(
 		inState,
 		(sjme_scritchui_listener_void*)&SJME_SCRITCHUI_LISTENER_USER(
 			inComponent, activate),
@@ -411,7 +415,7 @@ sjme_errorCode sjme_scritchui_core_componentSetInputListener(
 			return sjme_error_default(error);
 
 	/* Set user listener. */
-	return inState->intern->setSimpleUserListener(
+	return inState->intern->setSimpleListener(
 		inState,
 		(sjme_scritchui_listener_void*)&SJME_SCRITCHUI_LISTENER_USER(
 			inComponent, input),
@@ -491,7 +495,7 @@ sjme_errorCode sjme_scritchui_core_componentSetSizeListener(
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	return inState->intern->setSimpleUserListener(
+	return inState->intern->setSimpleListener(
 		inState,
 		(sjme_scritchui_listener_void*)&SJME_SCRITCHUI_LISTENER_USER(
 			inComponent, size),
@@ -516,7 +520,7 @@ sjme_errorCode sjme_scritchui_core_componentSetVisibleListener(
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	return inState->intern->setSimpleUserListener(
+	return inState->intern->setSimpleListener(
 		inState,
 		(sjme_scritchui_listener_void*)&SJME_SCRITCHUI_LISTENER_USER(
 			inComponent, visible),
@@ -710,24 +714,23 @@ sjme_errorCode sjme_scritchui_core_intern_initComponent(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_scritchui_core_intern_setSimpleUserListener(
+sjme_errorCode sjme_scritchui_core_intern_setSimpleListener(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_listener_void* infoUser,
+	sjme_attrInNotNull sjme_scritchui_listener_void* infoAny,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(void))
 {
-	if (inState == NULL || infoUser == NULL)
+	if (inState == NULL || infoAny == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* The core listener is always set, so we can just set this here */
-	/* and any future size calls will use this callback. */
-	infoUser->callback = inListener;
+	/* Set new callback and copy any front-end data as needed. */
+	infoAny->callback = inListener;
 	if (inListener != NULL && copyFrontEnd != NULL)
-		memmove(&infoUser->frontEnd, copyFrontEnd,
+		memmove(&infoAny->frontEnd, copyFrontEnd,
 			sizeof(*copyFrontEnd));
 	
-	/* Clear old front end data for the user if the listener was cleared. */
+	/* Clear old front end data for the listener if it was cleared. */
 	if (inListener == NULL)
-		memset(&infoUser->frontEnd, 0, sizeof(infoUser->frontEnd));
+		memset(&infoAny->frontEnd, 0, sizeof(infoAny->frontEnd));
 	
 	/* Success! */
 	return SJME_ERROR_NONE;

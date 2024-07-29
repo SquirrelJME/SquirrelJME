@@ -107,7 +107,7 @@ sjme_errorCode sjme_scritchui_core_windowSetCloseListener(
 	if (inState == NULL || inWindow == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	return inState->intern->setSimpleUserListener(
+	return inState->intern->setSimpleListener(
 		inState,
 		(sjme_scritchui_listener_void*)&SJME_SCRITCHUI_LISTENER_USER(
 			inWindow, close),

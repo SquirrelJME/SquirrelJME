@@ -204,6 +204,98 @@ static sjme_errorCode sjme_scritchui_fb_eventInput(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_scritchui_fb_intern_makeSelBuf(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNotNull sjme_scritchui_fb_widgetState* wState,
+	sjme_attrOutNotNull sjme_scritchui_pencil* outSg,
+	sjme_attrInPositiveNonZero sjme_jint cW,
+	sjme_attrInPositiveNonZero sjme_jint cH)
+{
+	sjme_errorCode error;
+	sjme_frontEnd sgFrontEnd;
+	sjme_jint* tempSelBuf;
+	sjme_scritchui_pencil sg;
+	sjme_jint cT;
+	
+	if (inState == NULL || inComponent == NULL || wState == NULL ||
+		outSg == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Total component area. */
+	cT = cW * cH;
+	
+	/* Need to allocate new buffer? */
+	if (wState->selBuf == NULL || wState->selBufLen < cT)
+	{
+		/* Delete old buffer. */
+		if (wState->selBuf != NULL)
+			if (sjme_error_is(error = sjme_alloc_free(
+				wState->selBuf)))
+				goto fail_freeSelBuf;
+		wState->selBuf = NULL;
+		
+		/* Delete pencil. */
+		if (wState->selBufPencil != NULL)
+			if (sjme_error_is(error = sjme_alloc_free(
+				wState->selBufPencil)))
+				goto fail_freeSelPencil;
+		wState->selBufPencil = NULL;
+		
+		/* Clear everything. */
+		wState->selBufLen = 0;
+		wState->selBufWidth = 0;
+		wState->selBufHeight = 0;
+		
+		/* Attempt allocation of new buffer. */
+		tempSelBuf = NULL;
+		if (sjme_error_is(error = sjme_alloc(inState->pool,
+			cT * sizeof(sjme_jint), &tempSelBuf)) || tempSelBuf == NULL)
+			goto fail_allocSelBuf;
+		
+		/* Store for usage. */
+		wState->selBuf = tempSelBuf;
+		wState->selBufLen = cT;
+		wState->selBufWidth = cW;
+		wState->selBufHeight = cH;
+	}
+	
+	/* Setup front end to point to the buffer. */
+	memset(&sgFrontEnd, 0, sizeof(sgFrontEnd));
+	sgFrontEnd.data = (sjme_pointer)
+		((sjme_intPointer)cT * sizeof(sjme_jint));
+	sgFrontEnd.wrapper = wState->selBuf;
+	
+	/* Wrap a pencil over the selection buffer if we have none yet. */
+	sg = wState->selBufPencil;
+	if (sg == NULL)
+	{
+		/* Setup buffer drawing. */
+		if (sjme_error_is(inState->api->hardwareGraphics(inState,
+			&sg, NULL,
+			SJME_GFX_PIXEL_FORMAT_INT_RGB888,
+			cW, cH,
+			&sjme_scritchui_fb_selBufFuncs,
+			&sgFrontEnd,
+			0, 0, cW, cH,
+			NULL)) || sg == NULL)
+			goto fail_initSelPen;
+		
+		/* Cache pencil for future operations. */
+		wState->selBufPencil = sg;
+	}
+	
+	/* Success! */
+	*outSg = sg;
+	return SJME_ERROR_NONE;
+	
+fail_initSelPen:
+fail_allocSelBuf:
+fail_freeSelBuf:
+fail_freeSelPencil:
+	return sjme_error_default(error);
+}
+
 sjme_errorCode sjme_scritchui_fb_intern_lightweightInit(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
@@ -418,10 +510,8 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 	sjme_scritchui_fb_widgetState* wState;
 	const sjme_scritchui_fb_displayList* dlAt;
 	sjme_scritchui_pencil sg;
-	sjme_frontEnd sgFrontEnd;
 	sjme_jint bsx, bsy, bex, bey, bw, bh;
-	sjme_jint cW, cH, cT;
-	sjme_jint* tempSelBuf;
+	sjme_jint cW, cH;
 	sjme_charSeq seq;
 	sjme_jint seqLen;
 	sjme_jboolean doSel;
@@ -429,6 +519,7 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 	sjme_jint lafColors[SJME_SCRITCHUI_NUM_LAF_ELEMENT_COLOR];
 	sjme_scritchui_lafElementColorType colorType;
 	sjme_scritchui_rect useFocusRect;
+	sjme_scritchui_dim suggestDim;
 	
 	if (inState == NULL || g == NULL || dlFull == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -457,73 +548,15 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 	/* Clear focus rectangle. */
 	memset(&useFocusRect, 0, sizeof(useFocusRect));
 	
-	/* Total component area. */
-	cT = cW * cH;
-	
 	/* Does the selection buffer need initializing? */
 	sg = NULL;
 	if (wState != NULL)
-	{
-		/* Need to allocate new buffer? */
-		if (wState->selBuf == NULL || wState->selBufLen < cT)
-		{
-			/* Delete old buffer. */
-			if (wState->selBuf != NULL)
-				if (sjme_error_is(error = sjme_alloc_free(
-					wState->selBuf)))
-					goto fail_freeSelBuf;
-			wState->selBuf = NULL;
-			
-			/* Delete pencil. */
-			if (wState->selBufPencil != NULL)
-				if (sjme_error_is(error = sjme_alloc_free(
-					wState->selBufPencil)))
-					goto fail_freeSelPencil;
-			wState->selBufPencil = NULL;
-			
-			/* Clear everything. */
-			wState->selBufLen = 0;
-			wState->selBufWidth = 0;
-			wState->selBufHeight = 0;
-			
-			/* Attempt allocation of new buffer. */
-			tempSelBuf = NULL;
-			if (sjme_error_is(error = sjme_alloc(inState->pool,
-				cT * sizeof(sjme_jint), &tempSelBuf)) || tempSelBuf == NULL)
-				goto fail_allocSelBuf;
-			
-			/* Store for usage. */
-			wState->selBuf = tempSelBuf;
-			wState->selBufLen = cT;
-			wState->selBufWidth = cW;
-			wState->selBufHeight = cH;
-		}
-		
-		/* Setup front end to point to the buffer. */
-		memset(&sgFrontEnd, 0, sizeof(sgFrontEnd));
-		sgFrontEnd.data = (sjme_pointer)
-			((sjme_intPointer)cT * sizeof(sjme_jint));
-		sgFrontEnd.wrapper = wState->selBuf;
-		
-		/* Wrap a pencil over the selection buffer if we have none yet. */
-		sg = wState->selBufPencil;
-		if (sg == NULL)
-		{
-			/* Setup buffer drawing. */
-			if (sjme_error_is(inState->api->hardwareGraphics(inState,
-				&sg, NULL,
-				SJME_GFX_PIXEL_FORMAT_INT_RGB888,
-				cW, cH,
-				&sjme_scritchui_fb_selBufFuncs,
-				&sgFrontEnd,
-				0, 0, cW, cH,
-				NULL)) || sg == NULL)
-				goto fail_initSelPen;
-			
-			/* Cache pencil for future operations. */
-			wState->selBufPencil = sg;
-		}
-	}
+		if (sjme_error_is(error = sjme_scritchui_fb_intern_makeSelBuf(
+			inState, inComponent, wState, &sg, cW, cH)))
+			goto fail_selBufInit;
+	
+	/* Initially blank, but becomes the suggested dimension. */
+	memset(&suggestDim, 0, sizeof(suggestDim));
 	
 	/* Obtain all the look and feel colors. */
 	memset(lafColors, 0, sizeof(lafColors));
@@ -693,6 +726,12 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 		g->api->setStrokeStyle(g, SJME_SCRITCHUI_PENCIL_STROKE_SOLID);
 	}
 	
+	/* If we are within a viewport, make a size suggestion from our render! */
+	if (inComponent != NULL)
+		if (sjme_error_is(error = inState->intern->viewSuggest(inState,
+			inComponent, &suggestDim)))
+			return sjme_error_default(error);
+	
 	/* Success! */
 	return SJME_ERROR_NONE;
 	
@@ -701,10 +740,7 @@ fail_charSeqLoad:
 fail_sgSelColor:
 fail_sgCopyParam:
 fail_lafColor:
-fail_initSelPen:
-fail_allocSelBuf:
-fail_freeSelBuf:
-fail_freeSelPencil:
+fail_selBufInit:
 fail_componentSize:
 	/* Debug. */
 	sjme_message("FB Render Failed: %d", error);

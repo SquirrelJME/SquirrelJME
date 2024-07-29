@@ -409,9 +409,9 @@ sjme_errorCode sjme_scritchui_core_intern_mapScreen(
 	sjme_attrInOutNotNull sjme_scritchui_uiScreen* outScreen,
 	sjme_attrInNullable sjme_scritchui_handle updateHandle);
 
-sjme_errorCode sjme_scritchui_core_intern_setSimpleUserListener(
+sjme_errorCode sjme_scritchui_core_intern_setSimpleListener(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_listener_void* infoUser,
+	sjme_attrInNotNull sjme_scritchui_listener_void* infoAny,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(void));
 
 sjme_errorCode sjme_scritchui_core_intern_updateVisibleComponent(
@@ -428,6 +428,11 @@ sjme_errorCode sjme_scritchui_core_intern_updateVisibleWindow(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
 	sjme_attrInValue sjme_jboolean isVisible);
+	
+sjme_errorCode sjme_scritchui_core_intern_viewSuggest(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNotNull sjme_scritchui_dim* suggestDim);
 
 /*--------------------------------------------------------------------------*/
 

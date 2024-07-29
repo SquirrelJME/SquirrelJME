@@ -184,12 +184,13 @@ static const sjme_scritchui_internFunctions sjme_scritchUI_coreIntern =
 	.initCommon = sjme_scritchui_core_intern_initCommon,
 	.initComponent = sjme_scritchui_core_intern_initComponent,
 	.mapScreen = sjme_scritchui_core_intern_mapScreen,
-	.setSimpleUserListener = sjme_scritchui_core_intern_setSimpleUserListener,
+	.setSimpleListener = sjme_scritchui_core_intern_setSimpleListener,
 	.updateVisibleContainer =
 		sjme_scritchui_core_intern_updateVisibleContainer,
 	.updateVisibleComponent =
 		sjme_scritchui_core_intern_updateVisibleComponent,
 	.updateVisibleWindow = sjme_scritchui_core_intern_updateVisibleWindow,
+	.viewSuggest = sjme_scritchui_core_intern_viewSuggest,
 };
 
 static sjme_thread_result SJME_THREAD_CONVENTION sjme_scritchui_core_fbBelay(

@@ -670,8 +670,7 @@ typedef sjme_errorCode (*sjme_scritchui_sizeListenerFunc)(
  * @param inState The ScritchUI state.
  * @param inView The view this is in.
  * @param subComponent The component that is suggesting a size.
- * @param subRect The rectangle for the sub-component, which will have its
- * dimensions and coordinates.
+ * @param subDim The size of the sub-component.
  * @return Any resultant error, if any.
  * @since 2024/07/29
  */
@@ -679,7 +678,7 @@ typedef sjme_errorCode (*sjme_scritchui_sizeSuggestListenerFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inView,
 	sjme_attrInNotNull sjme_scritchui_uiComponent subComponent,
-	sjme_attrInNotNull const sjme_scritchui_rect* subRect);
+	sjme_attrInNotNull const sjme_scritchui_dim* subDim);
 
 /**
  * Listener that is called before and after the state within a component

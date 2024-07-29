@@ -38,6 +38,10 @@
 	DESC_INTEGER /* __sw */ \
 	DESC_INTEGER /* __sh */ \
 	DESC_INTEGER /* __special */ ")" DESC_VOID
+#define DESC_ScritchSizeSuggestListener_sizeSuggest "(" \
+	DESC_SCRITCHUI_VIEW /* __view */ \
+	DESC_SCRITCHUI_COMPONENT /* __sub */ \
+	DESC_INT DESC_INT /* __w, __h */ ")" DESC_VOID
 #define DESC_ScritchVisibleListener_visibilityChanged "(" \
 	DESC_SCRITCHUI_COMPONENT /* __component */ \
 	DESC_BOOLEAN /* __from */ \
@@ -503,11 +507,59 @@ static sjme_errorCode mle_scritchUiListenerPaint(
 static sjme_errorCode mle_scritchUiListenerSizeSuggest(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inView,
-	sjme_attrInNotNull sjme_scritchui_uiComponent subComponent,
-	sjme_attrInNotNull const sjme_scritchui_rect* subRect)
+	sjme_attrInNullable sjme_scritchui_uiComponent subComponent,
+	sjme_attrInNotNull const sjme_scritchui_dim* subDim)
 {
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	JNIEnv* env;
+	sjme_errorCode error;
+	sjme_scritchui_listener_sizeSuggest* infoUser;
+	mle_callbackData callbackData;
+	sjme_scritchui_uiView view;
+	jobject subObject;
+	
+	if (inState == NULL || inView == NULL || subComponent == NULL ||
+		subDim == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Obtain view. */
+	view = NULL;
+	if (sjme_error_is(error = inState->intern->getView(inState,
+		inView, &view)) || view == NULL)
+		return sjme_error_default(error);
+	
+	/* Relocate env. */
+	mle_scritchUiRecoverEnv(inState, &env);
+	
+	/* Get listener from window. */
+	infoUser = &SJME_SCRITCHUI_LISTENER_USER(view, sizeSuggest);
+	
+	/* Recover callback information. */
+	mle_scritchUiRecoverCallback(env, inView,
+		&infoUser->frontEnd,
+		"sizeSuggest",
+		DESC_ScritchSizeSuggestListener_sizeSuggest,
+		&callbackData);
+	
+	/* Do we have a subcomponent? */
+	subObject = NULL;
+	if (subComponent != NULL)
+		subObject = (jobject)subComponent->common.frontEnd.wrapper;
+	
+	/* Forward call. */
+	(*env)->CallVoidMethod(env,
+		callbackData.javaCallback, callbackData.javaCallbackId,
+		
+		callbackData.onWhat,
+		subObject,
+		subDim->width,
+		subDim->height);
+		
+	/* Failed? */
+	if (sjme_jni_checkVMException(env))
+		return SJME_ERROR_UNKNOWN;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode mle_scritchUiListenerView(
@@ -2373,8 +2425,10 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	}
 	
 	mle_simpleListenerSet(env, state, component, javaListener,
-		state->api->viewSetViewListener,
-		mle_scritchUiListenerView);
+		(sjme_scritchui_voidSetVoidListenerFunc)
+			state->api->viewSetViewListener,
+		(sjme_scritchui_voidListenerFunc)
+			mle_scritchUiListenerView);
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __weakDelete)

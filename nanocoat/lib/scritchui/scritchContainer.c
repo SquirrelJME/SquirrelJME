@@ -230,6 +230,9 @@ sjme_errorCode sjme_scritchui_core_containerSetBounds(
 	sjme_attrInPositiveNonZero sjme_jint width,
 	sjme_attrInPositiveNonZero sjme_jint height)
 {
+	sjme_scritchui_dim suggestDim;
+	sjme_errorCode error;
+	
 	if (inState == NULL || inContainer == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
@@ -245,8 +248,21 @@ sjme_errorCode sjme_scritchui_core_containerSetBounds(
 		return SJME_ERROR_NOT_IMPLEMENTED;
 	
 	/* Forward call. */
-	return inState->impl->containerSetBounds(inState,
-		inContainer, inComponent, x, y, width, height);
+	if (sjme_error_is(error = inState->impl->containerSetBounds(inState,
+		inContainer, inComponent, x, y, width, height)))
+		return sjme_error_default(error);
+	
+	/* If we are in a viewport, we can just tell it the dimensions we */
+	/* were set to... nothing magical is involved here. */
+	memset(&suggestDim, 0, sizeof(suggestDim));
+	suggestDim.width = x + width;
+	suggestDim.height = y + height;
+	if (sjme_error_is(error = inState->intern->viewSuggest(inState,
+		inComponent, &suggestDim)))
+		return sjme_error_default(error);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchui_core_intern_getContainer(

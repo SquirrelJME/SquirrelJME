@@ -48,16 +48,15 @@ class __ExecViewSizeSuggest__
 	 */
 	@Override
 	public void sizeSuggest(ScritchViewBracket __view,
-		ScritchComponentBracket __subComponent, int __x, int __y, int __w,
-		int __h)
+		ScritchComponentBracket __subComponent, int __w, int __h)
 		throws NullPointerException
 	{
-		if (__view == null || __subComponent == null)
+		if (__view == null)
 			throw new NullPointerException("NARG");
 		
 		// Just pass this through directly as we only care for this
 		// single component being wrapped
 		this.scritchApi.view().setArea(__view,
-			__x + __w, __y + __h);
+			__w, __h);
 	}
 }

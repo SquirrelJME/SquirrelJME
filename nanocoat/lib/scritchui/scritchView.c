@@ -38,6 +38,52 @@ sjme_errorCode sjme_scritchui_core_intern_getView(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_scritchui_core_intern_viewSuggest(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNotNull sjme_scritchui_dim* suggestDim)
+{
+	sjme_errorCode error;
+	sjme_scritchui_uiComponent parent;
+	sjme_scritchui_uiView view;
+	sjme_scritchui_listener_sizeSuggest* infoUser;
+	
+	if (inState == NULL || inComponent == NULL || suggestDim == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Get the parent of the component. */
+	parent = NULL;
+	if (sjme_error_is(error = inState->api->componentGetParent(inState,
+		inComponent, &parent)))
+		return sjme_error_default(error);
+	
+	/* If there is no parent, then just ignore. */
+	if (parent == NULL)
+		return SJME_ERROR_NONE;
+		
+	/* Obtain view. */
+	view = NULL;
+	if (sjme_error_is(error = inState->intern->getView(inState,
+		inComponent, &view)) || view == NULL)
+	{
+		/* It is not really an error here, just means it is not one. */
+		if (error == SJME_ERROR_INVALID_ARGUMENT)
+			return SJME_ERROR_NONE;
+			
+		/* Some other error? Not good! */
+		return sjme_error_default(error);
+	}
+
+	/* Call suggestion function. */
+	infoUser = &SJME_SCRITCHUI_LISTENER_USER(view, sizeSuggest);
+	if (infoUser->callback != NULL)
+		return infoUser->callback(inState, parent,
+			inComponent, suggestDim);
+	
+	/* There was nothing to suggest to. */
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_scritchui_core_viewGetView(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
@@ -119,7 +165,7 @@ sjme_errorCode sjme_scritchui_core_viewSetSizeSuggestListener(
 		return sjme_error_default(error);
 	
 	/* Use simple listener set. */
-	return inState->intern->setSimpleUserListener(
+	return inState->intern->setSimpleListener(
 		inState,
 		(sjme_scritchui_listener_void*)&SJME_SCRITCHUI_LISTENER_USER(
 			view, sizeSuggest),

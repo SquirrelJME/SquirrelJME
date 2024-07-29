@@ -497,11 +497,36 @@ typedef sjme_errorCode (*sjme_scritchui_intern_mapScreenFunc)(
 	sjme_attrInValue sjme_jint screenId,
 	sjme_attrInOutNotNull sjme_scritchui_uiScreen* outScreen,
 	sjme_attrInNullable sjme_scritchui_handle updateHandle);
-	
-typedef sjme_errorCode (*sjme_scritchui_intern_setSimpleUserListenerFunc)(
+
+/**
+ * Sets a simpler listener.
+ * 
+ * @param inState The ScritchUI state.
+ * @param infoAny The callback information to set.
+ * @param inListener The listener to set or remove.
+ * @param copyFrontEnd The front end to copy.
+ * @return Any resultant error, if any.
+ * @since 2024/07/19
+ */
+typedef sjme_errorCode (*sjme_scritchui_intern_setSimpleListenerFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_listener_void* infoUser,
+	sjme_attrInNotNull sjme_scritchui_listener_void* infoAny,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(void));
+
+/**
+ * Suggests that the parent of a component, if there is one and that it is
+ * a view, that it should have this suggested size.
+ * 
+ * @param inState The ScritchUI state.
+ * @param inComponent The component making the suggestion.
+ * @param suggestDim The suggested dimension.
+ * @return Any resultant error, if any.
+ * @since 2024/07/19
+ */
+typedef sjme_errorCode (*sjme_scritchui_intern_viewSuggestFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNotNull sjme_scritchui_dim* suggestDim);
 
 /**
  * Updates the visibility state of a container.
@@ -575,7 +600,7 @@ struct sjme_scritchui_internFunctions
 	sjme_scritchui_intern_initComponentFunc initComponent;
 	
 	/** Set of simple user listener. */
-	sjme_scritchui_intern_setSimpleUserListenerFunc setSimpleUserListener;
+	sjme_scritchui_intern_setSimpleListenerFunc setSimpleListener;
 	
 	/** Maps the given screen. */
 	sjme_scritchui_intern_mapScreenFunc mapScreen;
@@ -588,6 +613,9 @@ struct sjme_scritchui_internFunctions
 	
 	/** Update visibility recursively on window. */
 	sjme_scritchui_intern_updateVisibleWindowFunc updateVisibleWindow;
+	
+	/** Suggest the size and position of a coordinate to a view. */
+	sjme_scritchui_intern_viewSuggestFunc viewSuggest;
 };
 
 /*--------------------------------------------------------------------------*/

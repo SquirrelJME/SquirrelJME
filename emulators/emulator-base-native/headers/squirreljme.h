@@ -174,6 +174,8 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 	"cc/squirreljme/jvm/mle/scritchui/brackets/ScritchListBracket")
 #define DESC_SCRITCHUI_PENCIL DESC_CLASS( \
 	"cc/squirreljme/jvm/mle/scritchui/brackets/ScritchPencilBracket")
+#define DESC_SCRITCHUI_VIEW DESC_CLASS( \
+	"cc/squirreljme/jvm/mle/scritchui/brackets/ScritchViewBracket")
 #define DESC_SCRITCHUI_WINDOW DESC_CLASS( \
 	"cc/squirreljme/jvm/mle/scritchui/brackets/ScritchWindowBracket")
 

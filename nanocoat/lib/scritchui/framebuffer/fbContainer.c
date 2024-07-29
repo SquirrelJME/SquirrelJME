@@ -7,6 +7,8 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <string.h>
+
 #include "lib/scritchui/framebuffer/fb.h"
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiTypes.h"
@@ -86,7 +88,8 @@ sjme_errorCode sjme_scritchui_fb_containerSetBounds(
 		inComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
 	
 	/* Forward call. */
-	return wrappedState->apiInThread->containerSetBounds(wrappedState,
+	return wrappedState->apiInThread->containerSetBounds(
+		wrappedState,
 		wrappedInContainer,
 		wrappedInComponent,
 		x, y, width, height);
