@@ -40,8 +40,10 @@ set(SJME_ScritchUICore_SOURCES
 	scritchPencilRasterSimple.c
 	scritchPencilRasterText.c
 	scritchScreen.c
+	scritchScrollPanel.c
 	scritchSerialize.c
 	scritchText.c
+	scritchView.c
 	scritchWindow.c)
 
 # Core ScritchUI Library

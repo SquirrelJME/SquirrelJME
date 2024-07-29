@@ -291,6 +291,30 @@ sjme_errorCode sjme_scritchui_core_screens(
 	sjme_attrOutNotNull sjme_scritchui_uiScreen* outScreens,
 	sjme_attrInOutNotNull sjme_jint* inOutNumScreens);
 
+sjme_errorCode sjme_scritchui_core_scrollPanelNew(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_scritchui_uiScrollPanel* outScrollPanel);
+
+sjme_errorCode sjme_scritchui_core_viewGetView(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNotNull sjme_scritchui_rect* outViewRect);
+
+sjme_errorCode sjme_scritchui_core_viewSetArea(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNotNull const sjme_scritchui_dim* inViewArea);
+
+sjme_errorCode sjme_scritchui_core_viewSetView(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNotNull const sjme_scritchui_rect* inViewRect);
+
+sjme_errorCode sjme_scritchui_core_viewSetViewListener(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(view));
+
 sjme_errorCode sjme_scritchui_core_windowContentMinimumSize(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
@@ -349,6 +373,11 @@ sjme_errorCode sjme_scritchui_core_intern_getPaintable(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInOutNotNull sjme_scritchui_uiPaintable* outPaintable);
+
+sjme_errorCode sjme_scritchui_core_intern_getView(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInOutNotNull sjme_scritchui_uiView* outView);
 
 sjme_errorCode sjme_scritchui_core_intern_initCommon(
 	sjme_attrInNotNull sjme_scritchui inState,

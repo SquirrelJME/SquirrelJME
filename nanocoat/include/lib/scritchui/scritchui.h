@@ -402,9 +402,16 @@ typedef struct sjme_scritchui_uiPaintableBase* sjme_scritchui_uiPaintable;
 /**
  * A panel within ScritchUI.
  * 
+ * @since 2024/07/28
+ */
+typedef struct sjme_scritchui_uiPanelBase sjme_scritchui_uiPanelBase;
+
+/**
+ * A panel within ScritchUI.
+ * 
  * @since 2024/03/27
  */
-typedef struct sjme_scritchui_uiPanelBase* sjme_scritchui_uiPanel;
+typedef sjme_scritchui_uiPanelBase* sjme_scritchui_uiPanel;
 
 /**
  * A list within ScritchUI.
@@ -487,6 +494,27 @@ typedef struct sjme_scritchui_uiScreenBase* sjme_scritchui_uiScreen;
 
 /** A list of screens. */
 SJME_LIST_DECLARE(sjme_scritchui_uiScreen, 0);
+
+/**
+ * A panel which can also be scrolled.
+ * 
+ * @since 2024/07/28
+ */
+typedef struct sjme_scritchui_uiScrolPanelBase* sjme_scritchui_uiScrollPanel;
+
+/**
+ * Viewport manager information for any widget that is a viewport.
+ * 
+ * @since 2024/07/29
+ */
+typedef struct sjme_scritchui_uiViewBase sjme_scritchui_uiViewBase;
+
+/**
+ * Viewport manager information for any widget that is a viewport.
+ * 
+ * @since 2024/07/29
+ */
+typedef sjme_scritchui_uiViewBase* sjme_scritchui_uiView;
 
 /**
  * A window within ScritchUI.
@@ -647,6 +675,20 @@ typedef sjme_errorCode (*sjme_scritchui_valueUpdateListenerFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInValue sjme_jboolean isAfterUpdate);
+
+/**
+ * Listener for view rectangle changes.
+ * 
+ * @param inState The input state.
+ * @param inComponent The component that triggered this.
+ * @param inViewRect The new view rectangle.
+ * @return Any resultant error, if any.
+ * @since 2024/07/28
+ */
+typedef sjme_errorCode (*sjme_scritchui_viewListenerFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNotNull const sjme_scritchui_rect* inViewRect);
 
 /**
  * Listener for changes in if a component becomes visible or not.
@@ -1377,6 +1419,78 @@ typedef sjme_errorCode (*sjme_scritchui_screensFunc)(
 	sjme_attrInOutNotNull sjme_jint* inOutNumScreens);
 
 /**
+ * Creates a new scroll panel which contains other components within a viewport
+ * with scrollbars.
+ * 
+ * @param inState The ScritchUI state.
+ * @param outScrollPanel The newly created scroll panel.
+ * @return Any resultant error, if any.
+ * @since 2024/07/29
+ */
+typedef sjme_errorCode (*sjme_scritchui_scrollPanelNewFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_scritchui_uiScrollPanel* outScrollPanel);
+
+/**
+ * Gets the current view rectangle of a viewport.
+ * 
+ * @param inState The ScritchUI state.
+ * @param inComponent The viewport.
+ * @param outViewRect The current view rectangle.
+ * @return Any resultant error, if any.
+ * @since 2024/07/29
+ */
+typedef sjme_errorCode (*sjme_scritchui_viewGetViewFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNotNull sjme_scritchui_rect* outViewRect);
+
+/**
+ * Sets the area that the scroll panel provides a viewport area, this area
+ * may be larger than the viewport and widgets may be placed inside.
+ * 
+ * @param inState The ScritchUI state.
+ * @param inComponent The viewport.
+ * @param inViewArea The view area to set.
+ * @return Any resultant error, if any.
+ * @since 2024/07/29
+ */
+typedef sjme_errorCode (*sjme_scritchui_viewSetAreaFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNotNull const sjme_scritchui_dim* inViewArea);
+
+/**
+ * Sets the view rectangle of a viewport.
+ * 
+ * @param inState The ScritchUI state.
+ * @param inComponent The viewport.
+ * @param inViewRect The view rectangle to set.
+ * @return Any resultant error, if any.
+ * @since 2024/07/29
+ */
+typedef sjme_errorCode (*sjme_scritchui_viewSetViewFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNotNull const sjme_scritchui_rect* inViewRect);
+
+/**
+ * Sets the listener which is called whenever the viewport changes such as it
+ * being scrolled.
+ * 
+ * @param inState The ScritchUI state.
+ * @param inComponent The viewport.
+ * @param inListener The listener to set.
+ * @param copyFrontEnd Any front-end data needed for the listener.
+ * @return Any resultant error, if any.
+ * @since 2024/07/29
+ */
+typedef sjme_errorCode (*sjme_scritchui_viewSetViewListenerFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(view));
+
+/**
  * Sets the minimum content size for windows.
  * 
  * @param inState The input state.
@@ -1597,6 +1711,21 @@ struct sjme_scritchui_apiFunctions
 	
 	/** Screens available. */
 	SJME_SCRITCHUI_QUICK_API(screens);
+	
+	/** Create a new scroll panel. */
+	SJME_SCRITCHUI_QUICK_API(scrollPanelNew);
+	
+	/** Get the current view rect of a viewport. */
+	SJME_SCRITCHUI_QUICK_API(viewGetView);
+	
+	/** Set the area of the viewport's bounds, the entire scrollable area. */
+	SJME_SCRITCHUI_QUICK_API(viewSetArea);
+	
+	/** Sets the view rect of a viewport. */
+	SJME_SCRITCHUI_QUICK_API(viewSetView);
+	
+	/** Sets the listener for tracking scrolling and viewport changes. */
+	SJME_SCRITCHUI_QUICK_API(viewSetViewListener);
 	
 	/** Sets minimum size of the window contents. */
 	SJME_SCRITCHUI_QUICK_API(windowContentMinimumSize);

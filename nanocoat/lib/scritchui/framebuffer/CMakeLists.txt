@@ -20,6 +20,8 @@ squirreljme_multilib_add_static_library(ScritchUIFB
 	fbMenu.c
 	fbPanel.c
 	fbScreen.c
+	fbScrollPanel.c
+	fbView.c
 	fbWindow.c)
 
 # Include main headers

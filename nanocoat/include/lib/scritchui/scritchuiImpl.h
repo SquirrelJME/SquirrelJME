@@ -173,6 +173,20 @@ typedef sjme_errorCode (*sjme_scritchui_impl_panelNewFunc)(
 	sjme_attrInNullable sjme_pointer ignored);
 
 /**
+ * Creates a new native scroll panel.
+ * 
+ * @param inState The input ScritchUI state.
+ * @param inScrollPanel The scroll panel that was created.
+ * @param ignored Ignored, not used.
+ * @return Any error code as per implementation.
+ * @since 2024/07/29
+ */
+typedef sjme_errorCode (*sjme_scritchui_impl_scrollPanelNewFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiScrollPanel inScrollPanel,
+	sjme_attrInNullable sjme_pointer ignored);
+
+/**
  * Creates a new window.
  * 
  * @param inState The input state.
@@ -300,6 +314,21 @@ struct sjme_scritchui_implFunctions
 	/** The available screens. */
 	SJME_SCRITCHUI_QUICK_SAME(screens);
 	
+	/** Create a new scroll panel. */
+	SJME_SCRITCHUI_QUICK_IMPL(scrollPanelNew);
+	
+	/** Get the current view rect of a viewport. */
+	SJME_SCRITCHUI_QUICK_SAME(viewGetView);
+	
+	/** Set the area of the viewport's bounds, the entire scrollable area. */
+	SJME_SCRITCHUI_QUICK_SAME(viewSetArea);
+	
+	/** Sets the view rect of a viewport. */
+	SJME_SCRITCHUI_QUICK_SAME(viewSetView);
+	
+	/** Sets the listener for tracking scrolling and viewport changes. */
+	SJME_SCRITCHUI_QUICK_SAME(viewSetViewListener);
+	
 	/** Set minimum size of content window. */
 	SJME_SCRITCHUI_QUICK_SAME(windowContentMinimumSize);
 	
@@ -394,7 +423,7 @@ typedef sjme_errorCode (*sjme_scritchui_intern_getMenuHasParentFunc)(
  * 
  * @param inState The input state.
  * @param inComponent The input component.
- * @param outContainer The resultant container.
+ * @param outPaintable The resultant paintable.
  * @return Any error code if applicable, such as the component is not valid.
  * @since 2024/04/20 
  */
@@ -402,6 +431,20 @@ typedef sjme_errorCode (*sjme_scritchui_intern_getPaintableFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInOutNotNull sjme_scritchui_uiPaintable* outPaintable);
+
+/**
+ * Returns the viewport manager for the given component.
+ * 
+ * @param inState The input state.
+ * @param inComponent The input component.
+ * @param outView The resultant viewport manager.
+ * @return Any error code if applicable, such as the component is not valid.
+ * @since 2024/07/29 
+ */
+typedef sjme_errorCode (*sjme_scritchui_intern_getViewFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInOutNotNull sjme_scritchui_uiView* outView);
 
 /**
  * Common base common initialization for before and after create.
@@ -515,6 +558,9 @@ struct sjme_scritchui_internFunctions
 	
 	/** Returns the paintable for the given component. */
 	sjme_scritchui_intern_getPaintableFunc getPaintable;
+	
+	/** Returns the viewport manager for the given component. */
+	sjme_scritchui_intern_getViewFunc getView;
 	
 	/** Common "common" initialization. */
 	sjme_scritchui_intern_initCommonFunc initCommon;

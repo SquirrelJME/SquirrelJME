@@ -26,6 +26,8 @@ add_library(ScritchUIGTK2 SHARED
 	gtk2Panel.c
 	gtk2Pencil.c
 	gtk2Screen.c
+	gtk2ScrollPanel.c
+	gtk2View.c
 	gtk2Window.c)
 
 # Always make it PIC
