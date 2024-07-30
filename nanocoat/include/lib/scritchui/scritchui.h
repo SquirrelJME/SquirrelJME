@@ -612,6 +612,20 @@ typedef sjme_errorCode (*sjme_scritchui_inputListenerFunc)(
 	sjme_attrInNotNull const sjme_scritchinput_event* inEvent);
 
 /**
+ * This is called when a menu item has been activated.
+ * 
+ * @param inState The input state.
+ * @param inWindow The window this is activating under.
+ * @param activatedItem The menu item that was activated.
+ * @return Any resultant error, if any.
+ * @since 2024/07/30
+ */
+typedef sjme_errorCode (*sjme_scritchui_menuItemActivateListenerFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind activatedItem);
+
+/**
  * Callback that is used to draw the given component.
  *
  * @param inState The ScritchUI state.
@@ -1615,6 +1629,21 @@ typedef sjme_errorCode (*sjme_scritchui_windowSetMenuBarFunc)(
 	sjme_attrInNullable sjme_scritchui_uiMenuBar inMenuBar);
 
 /**
+ * Sets the menu item activation listener for a window.
+ * 
+ * @param inState The input state.
+ * @param inWindow The window to set for.
+ * @param inListener The listener to use.
+ * @param copyFrontEnd The front end data to use.
+ * @return Any resultant error, if any.
+ * @since 2024/07/30
+ */
+typedef sjme_errorCode (*sjme_scritchui_windowSetMenuItemActivateListenerFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(menuItemActivate));
+
+/**
  * Sets the visibility of a window.
  * 
  * @param inState The input state.
@@ -1810,6 +1839,9 @@ struct sjme_scritchui_apiFunctions
 
 	/** Sets the menu bar for a window. */
 	SJME_SCRITCHUI_QUICK_API(windowSetMenuBar);
+	
+	/** Sets the activation listener for menu items in a window. */
+	SJME_SCRITCHUI_QUICK_API(windowSetMenuItemActivateListener);
 	
 	/** Sets visibility of window. */
 	SJME_SCRITCHUI_QUICK_API(windowSetVisible);

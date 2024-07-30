@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchWindowInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBarBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchCloseListener;
+import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchMenuItemActivateListener;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import org.jetbrains.annotations.NotNull;
@@ -181,6 +182,24 @@ public class DylibWindowInterface
 			((DylibWindowObject)__window).objectPointer(),
 			(__menuBar == null ? 0 :
 				((DylibMenuBarObject)__menuBar).objectPointer()));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/07/30
+	 */
+	@Override
+	public void setMenuItemActivateListener(
+		ScritchWindowBracket __window,
+		ScritchMenuItemActivateListener __listener)
+		throws MLECallError
+	{
+		if (__window == null)
+			throw new MLECallError("Null arguments.");
+		
+		NativeScritchDylib.__windowSetMenuItemActivateListener(
+			this.dyLib._stateP,
+			((DylibWindowObject)__window).objectPointer(), __listener);
 	}
 	
 	/**

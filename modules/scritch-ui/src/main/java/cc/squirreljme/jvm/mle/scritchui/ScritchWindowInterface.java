@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBarBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchCloseListener;
+import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchMenuItemActivateListener;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchInputMethodType;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.intellij.lang.annotations.MagicConstant;
@@ -160,6 +161,20 @@ public interface ScritchWindowInterface
 	@SquirrelJMEVendorApi
 	void setMenuBar(@NotNull ScritchWindowBracket __window,
 		@Nullable ScritchMenuBarBracket __menuBar)
+		throws MLECallError;
+	
+	/**
+	 * Sets the listener for when menu items are activated.
+	 *
+	 * @param __window The window to set for.
+	 * @param __listener The listener to call.
+	 * @throws MLECallError If the window is not valid; or the listener
+	 * could not be set.
+	 * @since 2024/07/30
+	 */
+	@SquirrelJMEVendorApi
+	void setMenuItemActivateListener(@NotNull ScritchWindowBracket __window,
+		@Nullable ScritchMenuItemActivateListener __listener)
 		throws MLECallError;
 	
 	/**

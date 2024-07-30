@@ -199,6 +199,9 @@ typedef enum sjme_scritchui_serialType
 	/** @c windowSetMenuBar . */
 	SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_SET_MENU_BAR,
 	
+	/** @c windowSetMenuItemActivateListener . */
+	SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_SET_MENU_ITEM_ACTIVATE_LISTENER,
+	
 	/** @c windowSetVisible . */
 	SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_SET_VISIBLE,
 	
@@ -466,6 +469,10 @@ SUD_STRUCT_DEF(windowSetCloseListener,
 SUD_STRUCT_DEF(windowSetMenuBar,
 	SDU_VAR(sjme_scritchui_uiWindow, inWindow);
 	SDU_VAR(sjme_scritchui_uiMenuBar, inMenuBar););
+
+SUD_STRUCT_DEF(windowSetMenuItemActivateListener,
+	SDU_VAR(sjme_scritchui_uiWindow, inWindow);
+	SJME_SCRITCHUI_SERIAL_SET_LISTENER(menuItemActivate););
 	
 SUD_STRUCT_DEF(windowSetVisible,
 	SDU_VAR(sjme_scritchui_uiWindow, inWindow);
@@ -542,6 +549,7 @@ typedef union sjme_scritchui_serialDataUnion
 	SJME_SCRITCHUI_SDU_DEF(windowNew);
 	SJME_SCRITCHUI_SDU_DEF(windowSetCloseListener);
 	SJME_SCRITCHUI_SDU_DEF(windowSetMenuBar);
+	SJME_SCRITCHUI_SDU_DEF(windowSetMenuItemActivateListener);
 	SJME_SCRITCHUI_SDU_DEF(windowSetVisible);
 } sjme_scritchui_serialDataUnion;
 
@@ -852,6 +860,11 @@ sjme_errorCode sjme_scritchui_coreSerial_windowSetMenuBar(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
 	sjme_attrInNullable sjme_scritchui_uiMenuBar inMenuBar);
+	
+sjme_errorCode sjme_scritchui_coreSerial_windowSetMenuItemActivateListener(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(menuItemActivate));
 
 sjme_errorCode sjme_scritchui_coreSerial_windowSetVisible(
 	sjme_attrInNotNull sjme_scritchui inState,

@@ -470,6 +470,13 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 		as->windowSetMenuBar.inWindow,
 		as->windowSetMenuBar.inMenuBar));
 		
+	SJME_SCRITCHUI_DISPATCH_CASE(windowSetMenuItemActivateListener,
+		SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_SET_MENU_ITEM_ACTIVATE_LISTENER,
+		(state,
+		as->windowSetMenuItemActivateListener.inWindow,
+		as->windowSetMenuItemActivateListener.inListener,
+		as->windowSetMenuItemActivateListener.copyFrontEnd));
+		
 	SJME_SCRITCHUI_DISPATCH_CASE(windowSetVisible,
 		SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_SET_VISIBLE,
 		(state,
@@ -1249,22 +1256,9 @@ sjme_errorCode sjme_scritchui_coreSerial_viewSetSizeSuggestListener(
 	SJME_SCRITCHUI_INVOKE_WAIT;
 }
 
-sjme_errorCode sjme_scritchui_coreSerial_viewSetViewListener(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	SJME_SCRITCHUI_SET_LISTENER_ARGS(view))
-{
-	SJME_SCRITCHUI_SERIAL_CHUNK(viewSetViewListener,
-		SJME_SCRITCHUI_SERIAL_TYPE_VIEW_SET_VIEW_LISTENER,
-		(inState, inComponent, inListener, copyFrontEnd));
-		
-	SJME_SCRITCHUI_SERIAL_PASS(inComponent);
-	SJME_SCRITCHUI_SERIAL_PASS(inListener);
-	SJME_SCRITCHUI_SERIAL_PASS(copyFrontEnd);
-	
-	/* Invoke and wait. */
-	SJME_SCRITCHUI_INVOKE_WAIT;
-}
+SJME_SCRITCHUI_DISPATCH_GENERIC_LISTENER(viewSetViewListener,
+	SJME_SCRITCHUI_SERIAL_TYPE_VIEW_SET_VIEW_LISTENER,
+	sjme_scritchui_uiComponent, inComponent, view)
 
 sjme_errorCode sjme_scritchui_coreSerial_windowContentMinimumSize(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -1298,22 +1292,9 @@ sjme_errorCode sjme_scritchui_coreSerial_windowNew(
 	SJME_SCRITCHUI_INVOKE_WAIT;
 }
 
-sjme_errorCode sjme_scritchui_coreSerial_windowSetCloseListener(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
-	SJME_SCRITCHUI_SET_LISTENER_ARGS(close))
-{
-	SJME_SCRITCHUI_SERIAL_CHUNK(windowSetCloseListener,
-		SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_SET_CLOSE_LISTENER,
-		(inState, inWindow, inListener, copyFrontEnd));
-		
-	SJME_SCRITCHUI_SERIAL_PASS(inWindow);
-	SJME_SCRITCHUI_SERIAL_PASS(inListener);
-	SJME_SCRITCHUI_SERIAL_PASS(copyFrontEnd);
-	
-	/* Invoke and wait. */
-	SJME_SCRITCHUI_INVOKE_WAIT;
-}
+SJME_SCRITCHUI_DISPATCH_GENERIC_LISTENER(windowSetCloseListener,
+	SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_SET_CLOSE_LISTENER,
+	sjme_scritchui_uiWindow, inWindow, close)
 
 sjme_errorCode sjme_scritchui_coreSerial_windowSetMenuBar(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -1330,6 +1311,10 @@ sjme_errorCode sjme_scritchui_coreSerial_windowSetMenuBar(
 	/* Invoke and wait. */
 	SJME_SCRITCHUI_INVOKE_WAIT;
 }
+
+SJME_SCRITCHUI_DISPATCH_GENERIC_LISTENER(windowSetMenuItemActivateListener,
+	SJME_SCRITCHUI_SERIAL_TYPE_WINDOW_SET_MENU_ITEM_ACTIVATE_LISTENER,
+	sjme_scritchui_uiWindow, inWindow, menuItemActivate)
 
 sjme_errorCode sjme_scritchui_coreSerial_windowSetVisible(
 	sjme_attrInNotNull sjme_scritchui inState,

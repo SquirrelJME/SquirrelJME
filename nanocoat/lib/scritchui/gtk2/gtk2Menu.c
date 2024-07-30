@@ -14,6 +14,28 @@
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/alloc.h"
 
+static gboolean sjme_scritchui_gtk2_eventActivate(GtkMenuItem* gtkMenuItem,
+	gpointer data)
+{
+	sjme_scritchui inState;
+	sjme_scritchui_uiMenuKind inMenuItem;
+	
+	if (gtkMenuItem == NULL || data == NULL)
+		return FALSE;
+	
+	/* Restore component. */
+	inMenuItem = (sjme_scritchui_uiMenuKind)data;
+	inState = inMenuItem->common.state;
+	
+	/* Use internal propagation up the menu. */
+	if (!sjme_error_is(inState->intern->menuItemActivate(inState,
+		inMenuItem, inMenuItem)))
+		return TRUE;
+	
+	/* Fallback and let GTK handle it. */
+	return FALSE;
+}
+
 sjme_errorCode sjme_scritchui_gtk2_menuBarNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiMenuBar inMenuBar,
@@ -92,6 +114,10 @@ sjme_errorCode sjme_scritchui_gtk2_menuItemNew(
 	/* Store handle for later. */
 	inMenuItem->menuKind.common
 		.handle[SJME_SUI_GTK2_H_WIDGET] = widget;
+	
+	/* Menu items can be activated, activation propagates up. */
+	g_signal_connect(widget, "activate",
+		G_CALLBACK(sjme_scritchui_gtk2_eventActivate), inMenuItem);
 	
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);

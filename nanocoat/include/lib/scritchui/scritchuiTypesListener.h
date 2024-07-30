@@ -76,6 +76,9 @@ SJME_SCRITCHUI_LISTENER_DECLARE(close);
 /** Input listener. */
 SJME_SCRITCHUI_LISTENER_DECLARE(input);
 
+/** Menu item is activated. */
+SJME_SCRITCHUI_LISTENER_DECLARE(menuItemActivate);
+
 /** Paint listener. */
 SJME_SCRITCHUI_LISTENER_DECLARE(paint);
 
@@ -136,6 +139,9 @@ typedef struct sjme_scritchui_uiWindowListeners
 {
 	/** Listener for when a window is closed. */
 	sjme_scritchui_listener_close close;
+	
+	/** Listener for when a menu item is activated. */
+	sjme_scritchui_listener_menuItemActivate menuItemActivate;
 } sjme_scritchui_uiWindowListeners;
 
 /*--------------------------------------------------------------------------*/

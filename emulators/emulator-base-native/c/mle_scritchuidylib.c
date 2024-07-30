@@ -38,6 +38,8 @@
 	DESC_INTEGER /* __sw */ \
 	DESC_INTEGER /* __sh */ \
 	DESC_INTEGER /* __special */ ")" DESC_VOID
+#define DESC_ScritchMenuItemActivateListener_menuItemActivate "(" \
+	DESC_SCRITCHUI_WINDOW DESC_SCRITCHUI_MENUKIND ")" DESC_VOID
 #define DESC_ScritchSizeSuggestListener_sizeSuggest "(" \
 	DESC_SCRITCHUI_VIEW /* __view */ \
 	DESC_SCRITCHUI_COMPONENT /* __sub */ \
@@ -172,6 +174,9 @@
 	DESC_LONG DESC_LONG DESC_SCRITCHUI_CLOSE_LISTENER ")" DESC_VOID
 #define FORWARD_DESC___windowSetMenuBar "(" \
 	DESC_LONG DESC_LONG DESC_LONG ")" DESC_VOID
+#define FORWARD_DESC___windowSetMenuItemActivateListener "(" \
+	DESC_LONG DESC_LONG \
+	DESC_SCRITCHUI_MENU_ITEM_ACTIVATE_LISTENER ")" DESC_VOID
 #define FORWARD_DESC___windowSetVisible "(" \
 	DESC_LONG DESC_LONG DESC_BOOLEAN ")" DESC_VOID
 
@@ -423,6 +428,46 @@ static sjme_errorCode mle_scritchUiListenerInput(
 		return SJME_ERROR_UNKNOWN;
 	
 	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode mle_scritchUiListenerMenuItemActivate(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind activatedItem)
+{
+	JNIEnv* env;
+	sjme_scritchui_listener_menuItemActivate* infoUser;
+	mle_callbackData callbackData;
+	jboolean skippy;
+	
+	/* Relocate env. */
+	mle_scritchUiRecoverEnv(inState, &env);
+	
+	/* Get listener from window. */
+	infoUser = &SJME_SCRITCHUI_LISTENER_USER(inWindow, menuItemActivate);
+	
+	/* Recover callback information. */
+	mle_scritchUiRecoverCallback(env, &inWindow->component,
+		&infoUser->frontEnd,
+		"menuItemActivate",
+		DESC_ScritchMenuItemActivateListener_menuItemActivate,
+		&callbackData);
+	
+	/* Forward call. */
+	skippy = (*env)->CallBooleanMethod(env,
+		callbackData.javaCallback, callbackData.javaCallbackId,
+		
+		(jobject)inWindow->component.common.frontEnd.wrapper,
+		(jobject)activatedItem->common.frontEnd.wrapper);
+		
+	/* Failed? */
+	if (sjme_jni_checkVMException(env))
+		return SJME_ERROR_UNKNOWN;
+	
+	/* Success! */
+	if (skippy)
+		return SJME_ERROR_CANCEL_WINDOW_CLOSE;
 	return SJME_ERROR_NONE;
 }
 
@@ -2613,6 +2658,30 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__windowSetMenuItemActivateListener)(JNIEnv* env, jclass classy,
+	jlong stateP, jlong windowP, jobject javaListener)
+{
+	sjme_scritchui state;
+	sjme_scritchui_uiWindow window;
+
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	window = (sjme_scritchui_uiWindow)windowP;
+	if (state == NULL || window == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+	
+	mle_simpleListenerSet(env, state, window, javaListener,
+		(sjme_scritchui_voidSetVoidListenerFunc)
+			state->api->windowSetMenuItemActivateListener,
+		(sjme_scritchui_voidListenerFunc)
+			mle_scritchUiListenerMenuItemActivate);
+}
+
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	__windowSetVisible)(JNIEnv* env, jclass classy, jlong stateP,
 	jlong windowP, jboolean visible)
 {
@@ -2698,6 +2767,7 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 	FORWARD_list(NativeScritchDylib, __windowNew),
 	FORWARD_list(NativeScritchDylib, __windowSetCloseListener),
 	FORWARD_list(NativeScritchDylib, __windowSetMenuBar),
+	FORWARD_list(NativeScritchDylib, __windowSetMenuItemActivateListener),
 	FORWARD_list(NativeScritchDylib, __windowSetVisible),
 };
 

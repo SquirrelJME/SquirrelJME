@@ -345,6 +345,11 @@ sjme_errorCode sjme_scritchui_core_windowSetMenuBar(
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
 	sjme_attrInNullable sjme_scritchui_uiMenuBar inMenuBar);
 
+sjme_errorCode sjme_scritchui_core_windowSetMenuItemActivateListener(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(menuItemActivate));
+
 sjme_errorCode sjme_scritchui_core_windowSetVisible(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
@@ -408,6 +413,11 @@ sjme_errorCode sjme_scritchui_core_intern_mapScreen(
 	sjme_attrInValue sjme_jint screenId,
 	sjme_attrInOutNotNull sjme_scritchui_uiScreen* outScreen,
 	sjme_attrInNullable sjme_scritchui_handle updateHandle);
+
+sjme_errorCode sjme_scritchui_intern_menuItemActivate(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind atRover,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind itemActivated);
 
 sjme_errorCode sjme_scritchui_core_intern_setSimpleListener(
 	sjme_attrInNotNull sjme_scritchui inState,

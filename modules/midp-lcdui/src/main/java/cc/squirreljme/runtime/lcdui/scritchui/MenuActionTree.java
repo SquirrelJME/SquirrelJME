@@ -40,6 +40,35 @@ public final class MenuActionTree
 		new ArrayList<>();
 	
 	/**
+	 * Finds the given item.
+	 *
+	 * @param __kind The menu kind.
+	 * @return The leaf for the given item, or {@code null} if not found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/07/30
+	 */
+	public Leaf find(ScritchMenuKindBracket __kind)
+		throws NullPointerException
+	{
+		if (__kind == null)
+			throw new NullPointerException("NARG");
+		
+		List<Leaf> mappings = this._mappings;
+		synchronized (this)
+		{
+			for (int i = 0, n = mappings.size(); i < n; i++)
+			{
+				Leaf leaf = mappings.get(i);
+				if (leaf._scritch == __kind)
+					return leaf;
+			}
+		}
+		
+		// Not found
+		return null;
+	}
+	
+	/**
 	 * Returns the mapping for a given node.
 	 *
 	 * @param __node The node to get for.
@@ -216,6 +245,17 @@ public final class MenuActionTree
 			// Store
 			this._node = __node;
 			this._scritch = scritch;
+		}
+		
+		/**
+		 * Returns the leaf's owner.
+		 *
+		 * @return The leaf's owner.
+		 * @since 2024/07/30
+		 */
+		public final MenuActionApplicable owner()
+		{
+			return this._node.owner();
 		}
 		
 		/**

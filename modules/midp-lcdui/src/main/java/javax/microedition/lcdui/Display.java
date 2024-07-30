@@ -24,6 +24,7 @@ import cc.squirreljme.runtime.lcdui.mle.Vibration;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayManager;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayScale;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
 import cc.squirreljme.runtime.lcdui.scritchui.ScritchLcdUiUtils;
 import cc.squirreljme.runtime.lcdui.scritchui.StringTrackerListener;
 import java.lang.ref.Reference;
@@ -284,10 +285,6 @@ public class Display
 	@Deprecated
 	private static volatile int _NON_UNIQUE_SERIAL_RUNS;
 	
-	/** The displayable to show. */
-	@Deprecated
-	private volatile Displayable _current;
-	
 	/** The displayable to show on exit. */
 	@Deprecated
 	private volatile Displayable _exit;
@@ -328,6 +325,10 @@ public class Display
 		// Handle window closing for the display
 		__scritch.window().setCloseListener(__window,
 			new __ExecDisplayClose__(state));
+		
+		// Handle menu items being activated
+		__scritch.window().setMenuItemActivateListener(__window,
+			new __ExecDisplayMenuItemActivate__(state));
 	}
 	
 	/**
@@ -580,7 +581,10 @@ public class Display
 	@Api
 	public Displayable getCurrent()
 	{
-		return this._current;
+		DisplayableState current = this.__state().current();
+		if (current == null)
+			return null;
+		return current.displayable();
 	}
 	
 	/**

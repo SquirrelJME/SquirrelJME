@@ -35,6 +35,34 @@ static sjme_errorCode sjme_scritchui_fb_listenerClose(
 	return infoCore->callback(topState, topWindow);
 }
 
+static sjme_errorCode sjme_scritchui_fb_listenerMenuItemActivate(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind activatedItem)
+{
+	sjme_scritchui topState;
+	sjme_scritchui_uiWindow topWindow;
+	sjme_scritchui_uiMenuKind topMenu;
+	sjme_scritchui_listener_menuItemActivate* infoUser;
+	
+	if (inState == NULL || inWindow == NULL || activatedItem == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Get owning state and component. */
+	topState = inWindow->component.common.frontEnd.data;
+	topWindow = inWindow->component.common.frontEnd.wrapper;
+	topMenu = activatedItem->common.frontEnd.wrapper;
+	
+	/* Get target listener. */
+	infoUser = &SJME_SCRITCHUI_LISTENER_USER(topWindow, menuItemActivate);
+
+	/* Forward call, if it exists, otherwise ignore. */
+	if (infoUser->callback != NULL)
+		return infoUser->callback(topState, topWindow,
+			topMenu);
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_scritchui_fb_windowContentMinimumSize(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
@@ -83,6 +111,14 @@ sjme_errorCode sjme_scritchui_fb_windowNew(
 	/* Map front ends. */
 	if (sjme_error_is(error = sjme_scritchui_fb_biMap(
 		inState, inWindow, wrappedWindow)))
+		return sjme_error_default(error);
+	
+	/* We need to wrap menu activation for this window. */
+	if (sjme_error_is(error =
+		wrappedState->apiInThread->windowSetMenuItemActivateListener(
+			wrappedState, wrappedWindow,
+			sjme_scritchui_fb_listenerMenuItemActivate,
+			NULL)))
 		return sjme_error_default(error);
 	
 	/* Success! */

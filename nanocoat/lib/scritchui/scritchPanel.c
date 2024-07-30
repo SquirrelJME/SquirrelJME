@@ -22,11 +22,12 @@ sjme_errorCode sjme_scritchui_core_panelEnableFocus(
 	
 	if (inState == NULL || inPanel == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	if (inState->impl->panelEnableFocus == NULL)
+		return sjme_error_notImplemented();
 	
 	/* Forward to native handler. */
-	error = sjme_error_notImplemented();
-	if (inState->impl->panelEnableFocus == NULL ||
-		sjme_error_is(error = inState->impl->panelEnableFocus(inState,
+	if (sjme_error_is(error = inState->impl->panelEnableFocus(inState,
 		inPanel, enableFocus, enableFocus && defaultFocus)))
 		return sjme_error_default(error);
 	

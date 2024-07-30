@@ -161,6 +161,9 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 	"cc/squirreljme/jvm/mle/scritchui/callbacks/ScritchInputListener")
 #define DESC_SCRITCHUI_PAINT_LISTENER DESC_CLASS( \
 	"cc/squirreljme/jvm/mle/scritchui/callbacks/ScritchPaintListener")
+#define DESC_SCRITCHUI_MENU_ITEM_ACTIVATE_LISTENER DESC_CLASS( \
+	"cc/squirreljme/jvm/mle/scritchui/callbacks/" \
+	"ScritchMenuItemActivateListener")
 #define DESC_SCRITCHUI_SIZE_SUGGEST_LISTENER DESC_CLASS( \
 	"cc/squirreljme/jvm/mle/scritchui/callbacks/ScritchSizeSuggestListener")
 #define DESC_SCRITCHUI_VIEW_LISTENER DESC_CLASS( \
@@ -172,6 +175,8 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 	"cc/squirreljme/jvm/mle/scritchui/brackets/ScritchComponentBracket")
 #define DESC_SCRITCHUI_LIST DESC_CLASS( \
 	"cc/squirreljme/jvm/mle/scritchui/brackets/ScritchListBracket")
+#define DESC_SCRITCHUI_MENUKIND DESC_CLASS( \
+	"cc/squirreljme/jvm/mle/scritchui/brackets/ScritchMenuKindBracket")
 #define DESC_SCRITCHUI_PENCIL DESC_CLASS( \
 	"cc/squirreljme/jvm/mle/scritchui/brackets/ScritchPencilBracket")
 #define DESC_SCRITCHUI_VIEW DESC_CLASS( \

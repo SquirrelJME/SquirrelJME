@@ -98,6 +98,8 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 	.windowNew = sjme_scritchui_coreSerial_windowNew,
 	.windowSetCloseListener = sjme_scritchui_coreSerial_windowSetCloseListener,
 	.windowSetMenuBar = sjme_scritchui_coreSerial_windowSetMenuBar,
+	.windowSetMenuItemActivateListener =
+		sjme_scritchui_coreSerial_windowSetMenuItemActivateListener,
 	.windowSetVisible = sjme_scritchui_coreSerial_windowSetVisible,
 };
 
@@ -167,6 +169,8 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 	.windowNew = sjme_scritchui_core_windowNew,
 	.windowSetCloseListener = sjme_scritchui_core_windowSetCloseListener,
 	.windowSetMenuBar = sjme_scritchui_core_windowSetMenuBar,
+	.windowSetMenuItemActivateListener =
+		sjme_scritchui_core_windowSetMenuItemActivateListener,
 	.windowSetVisible = sjme_scritchui_core_windowSetVisible,
 };
 
@@ -184,6 +188,7 @@ static const sjme_scritchui_internFunctions sjme_scritchUI_coreIntern =
 	.initCommon = sjme_scritchui_core_intern_initCommon,
 	.initComponent = sjme_scritchui_core_intern_initComponent,
 	.mapScreen = sjme_scritchui_core_intern_mapScreen,
+	.menuItemActivate = sjme_scritchui_intern_menuItemActivate,
 	.setSimpleListener = sjme_scritchui_core_intern_setSimpleListener,
 	.updateVisibleContainer =
 		sjme_scritchui_core_intern_updateVisibleContainer,

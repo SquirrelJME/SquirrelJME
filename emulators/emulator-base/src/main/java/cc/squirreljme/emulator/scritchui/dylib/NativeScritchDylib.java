@@ -17,6 +17,7 @@ import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchActivateListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchCloseListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchInputListener;
+import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchMenuItemActivateListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchPaintListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchSizeSuggestListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchViewListener;
@@ -751,6 +752,20 @@ public final class NativeScritchDylib
 	 */
 	static native void __windowSetMenuBar(long __stateP, long __windowP,
 		long __menuBarP)
+		throws MLECallError;
+	
+	/**
+	 * Sets the activation listener for the given window.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __windowP The window pointer.
+	 * @param __listener The listener to set.
+	 * @throws MLECallError If the state and/or window are not valid; or the
+	 * listener could not be set.
+	 * @since 2024/07/30
+	 */
+	static native void __windowSetMenuItemActivateListener(long __stateP,
+		long __windowP, ScritchMenuItemActivateListener __listener)
 		throws MLECallError;
 	
 	/**

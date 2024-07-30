@@ -312,6 +312,9 @@ typedef struct sjme_scritchui_uiMenuBarBase
 	
 	/** Menu children. */
 	sjme_scritchui_uiMenuHasChildrenBase children;
+	
+	/** The window this is within. */
+	sjme_scritchui_uiWindow window;
 } sjme_scritchui_uiMenuBarBase;
 
 /**

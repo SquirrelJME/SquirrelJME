@@ -129,12 +129,26 @@ sjme_errorCode sjme_scritchui_core_windowSetMenuBar(
 	if (inState->impl->windowSetMenuBar == NULL)
 		return sjme_error_notImplemented();
 	
+	/* Setting a menu bar? */
+	if (inMenuBar != NULL)
+	{
+		/* In the same exact window? */
+		if (inMenuBar->window == inWindow && inWindow->menuBar == inMenuBar)
+			return SJME_ERROR_NONE;
+		
+		/* Cannot add a menu bar that is attached to another window. */
+		if (inMenuBar->window != NULL)
+			return SJME_ERROR_ALREADY_IN_CONTAINER;
+	}
+	
 	/* Clear menu bar first. */
 	if (sjme_error_is(error = inState->impl->windowSetMenuBar(inState,
 		inWindow, NULL)))
 		return sjme_error_default(error);
 	
 	/* Set cleared state. */
+	if (inWindow->menuBar != NULL)
+		inWindow->menuBar->window = NULL;
 	inWindow->menuBar = NULL;
 	
 	/* Set new menu bar? */
@@ -142,6 +156,7 @@ sjme_errorCode sjme_scritchui_core_windowSetMenuBar(
 	{
 		/* Set new bar. */
 		inWindow->menuBar = inMenuBar;
+		inMenuBar->window = inWindow;
 		
 		/* Forward call. */
 		if (sjme_error_is(error = inState->impl->windowSetMenuBar(
@@ -151,6 +166,22 @@ sjme_errorCode sjme_scritchui_core_windowSetMenuBar(
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_scritchui_core_windowSetMenuItemActivateListener(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	SJME_SCRITCHUI_SET_LISTENER_ARGS(menuItemActivate))
+{
+	if (inState == NULL || inWindow == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	return inState->intern->setSimpleListener(
+		inState,
+		(sjme_scritchui_listener_void*)&SJME_SCRITCHUI_LISTENER_USER(
+			inWindow, menuItemActivate),
+		(sjme_scritchui_voidListenerFunc)inListener,
+		copyFrontEnd);
 }
 
 sjme_errorCode sjme_scritchui_core_windowSetVisible(

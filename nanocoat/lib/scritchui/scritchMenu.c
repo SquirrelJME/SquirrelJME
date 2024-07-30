@@ -342,3 +342,59 @@ sjme_errorCode sjme_scritchui_core_intern_getMenuHasParent(
 	*outHasParent = result;
 	return SJME_ERROR_NONE;
 }
+
+sjme_errorCode sjme_scritchui_intern_menuItemActivate(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind atRover,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind itemActivated)
+{
+	sjme_errorCode error;
+	sjme_scritchui_uiMenuHasParent parent;
+	sjme_scritchui_uiMenuBar menuBar;
+	sjme_scritchui_uiWindow window;
+	sjme_scritchui_listener_menuItemActivate* infoUser;
+	
+	if (inState == NULL || atRover == NULL || itemActivated == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Check to see if this has a parent. */
+	parent = NULL;
+	if (sjme_error_is(error = inState->intern->getMenuHasParent(inState,
+		atRover, &parent)) || parent == NULL)
+	{
+		/* There is no parent possible, so we might be at the top level. */ 
+		if (error == SJME_ERROR_INVALID_ARGUMENT &&
+			atRover->common.type == SJME_SCRITCHUI_TYPE_MENU_BAR)
+		{
+			menuBar = (sjme_scritchui_uiMenuBar)atRover;
+			
+			/* Activate menu item in the window. */
+			window = menuBar->window;
+			if (window != NULL)
+			{
+				/* Get callback. */
+				infoUser = &SJME_SCRITCHUI_LISTENER_USER(window,
+					menuItemActivate);
+					
+				/* Execute if available. */
+				if (infoUser->callback != NULL)
+					return infoUser->callback(inState, window,
+						itemActivated);
+			}
+			
+			/* Ignore otherwise. */
+			return SJME_ERROR_NONE;
+		}
+		
+		/* Failed! */
+		return sjme_error_default(error);
+	}
+	
+	/* It does, so if it has a parent, recurse up the chain! */
+	if (parent->parent != NULL)
+		return inState->intern->menuItemActivate(inState,
+			parent->parent, itemActivated);
+	
+	/* It does not, so stop. */
+	return SJME_ERROR_NONE;
+}
