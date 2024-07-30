@@ -16,7 +16,7 @@ import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchSizeSuggestListener;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
- * Not Described.
+ * Size suggestions for scrolling views.
  *
  * @since 2024/07/29
  */

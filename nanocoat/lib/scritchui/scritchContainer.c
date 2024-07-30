@@ -111,7 +111,21 @@ sjme_errorCode sjme_scritchui_core_containerAdd(
 		if (inContainer->state.isVisible || inContainer->state.isUserVisible)
 			inState->intern->updateVisibleComponent(inState,
 				addComponent, SJME_JNI_TRUE);
-		
+	
+	/* Set default bounds for anything that gets added to the container. */
+	if (sjme_error_is(error = inState->apiInThread->containerSetBounds(
+		inState, inContainer, addComponent,
+		0, 0, 8, 8)))
+		return sjme_error_default(error);	
+	
+	/* Revalidate self and the component. */
+	if (sjme_error_is(error = inState->apiInThread->componentRevalidate(
+		inState, inContainer)))
+		return sjme_error_default(error);
+	if (sjme_error_is(error = inState->apiInThread->componentRevalidate(
+		inState, addComponent)))
+		return sjme_error_default(error);
+	
 	/* Success! */
 	return SJME_ERROR_NONE;
 }

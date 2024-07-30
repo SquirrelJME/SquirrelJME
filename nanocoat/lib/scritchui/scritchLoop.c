@@ -76,7 +76,7 @@ sjme_errorCode sjme_scritchui_core_loopExecute(
 	
 	/* Are we in the execution loop? Then call directly */
 	if (inThread)
-		return (sjme_errorCode)callback(anything);
+		return SJME_THREAD_RESULT_AS_ERROR(callback(anything));
 	
 	/* Not implemented? */
 	if (inState->impl->loopExecuteLater == NULL)
@@ -112,6 +112,7 @@ sjme_errorCode sjme_scritchui_core_loopExecuteWait(
 {
 	sjme_errorCode error;
 	sjme_scritchui_core_waitData waitData;
+	sjme_jboolean inThread;
 	
 	if (inState == NULL || callback == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -120,6 +121,16 @@ sjme_errorCode sjme_scritchui_core_loopExecuteWait(
 	/* the implementation probably knows more than we do. */
 	if (inState->impl->loopExecuteWait != NULL)
 		return inState->impl->loopExecuteWait(inState, callback, anything);
+	
+	/* Check if we are in the loop thread. */
+	inThread = SJME_JNI_FALSE;
+	if (sjme_error_is(error = inState->api->loopIsInThread(inState,
+		&inThread)))
+		return sjme_error_default(error);
+	
+	/* Are we in the execution loop? Then call directly */
+	if (inThread)
+		return SJME_THREAD_RESULT_AS_ERROR(callback(anything));
 	
 	/* Initialize wait. */
 	memset(&waitData, 0, sizeof(waitData));

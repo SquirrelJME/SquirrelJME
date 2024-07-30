@@ -530,9 +530,11 @@ sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc)(
 		goto fail_noMemory;
 	}
 
+#if 0
 	/* Debug. */
 	sjme_message("Found link at %p: %d bytes, we need %d with split %d.",
 		scanLink, (int)scanLink->blockSize, (int)roundSize, (int)splitBlock);
+#endif
 
 	/* Does this block need to be split? */
 	if (splitBlock)

@@ -517,8 +517,7 @@ static sjme_errorCode mle_scritchUiListenerSizeSuggest(
 	sjme_scritchui_uiView view;
 	jobject subObject;
 	
-	if (inState == NULL || inView == NULL || subComponent == NULL ||
-		subDim == NULL)
+	if (inState == NULL || inView == NULL || subDim == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
 	/* Obtain view. */
@@ -549,8 +548,9 @@ static sjme_errorCode mle_scritchUiListenerSizeSuggest(
 	(*env)->CallVoidMethod(env,
 		callbackData.javaCallback, callbackData.javaCallbackId,
 		
-		callbackData.onWhat,
-		subObject,
+		(jobject)inView->common.frontEnd.wrapper,
+		(subComponent == NULL ? NULL :
+			(jobject)subComponent->common.frontEnd.wrapper),
 		subDim->width,
 		subDim->height);
 		

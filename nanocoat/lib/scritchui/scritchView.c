@@ -64,7 +64,7 @@ sjme_errorCode sjme_scritchui_core_intern_viewSuggest(
 	/* Obtain view. */
 	view = NULL;
 	if (sjme_error_is(error = inState->intern->getView(inState,
-		inComponent, &view)) || view == NULL)
+		parent, &view)) || view == NULL)
 	{
 		/* It is not really an error here, just means it is not one. */
 		if (error == SJME_ERROR_INVALID_ARGUMENT)

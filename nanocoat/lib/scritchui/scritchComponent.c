@@ -366,6 +366,9 @@ sjme_errorCode sjme_scritchui_core_componentRevalidate(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent)
 {
+	sjme_errorCode error;
+	sjme_scritchui_uiPaintable paint;
+	
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
@@ -373,7 +376,24 @@ sjme_errorCode sjme_scritchui_core_componentRevalidate(
 		return SJME_ERROR_NOT_IMPLEMENTED;
 	
 	/* Forward call. */
-	return inState->impl->componentRevalidate(inState, inComponent);
+	if (sjme_error_is(error = inState->impl->componentRevalidate(inState,
+		inComponent)))
+		return sjme_error_default(error);
+	
+	/* If the component is paintable, then repaint it. */
+	paint = NULL;
+	if (sjme_error_is(error = inState->intern->getPaintable(inState,
+		inComponent, &paint)) || paint == NULL)
+	{
+		/* Not an error here. */
+		if (error == SJME_ERROR_INVALID_ARGUMENT)
+			return SJME_ERROR_NONE;
+		
+		return sjme_error_default(error);
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchui_core_componentSetActivateListener(

@@ -91,9 +91,6 @@ public class DylibContainerInterface
 		if (__container == null || __component == null)
 			throw new MLECallError("Null arguments");
 		
-		if ((DylibContainerObject)__container == null || (DylibComponentObject)__component == null)
-			throw new MLECallError("Null arguments.");
-		
 		NativeScritchDylib.__containerSetBounds(this.dyLib._stateP,
 			((DylibContainerObject)__container).objectPointer(),
 			((DylibComponentObject)__component).objectPointer(),
