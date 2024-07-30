@@ -8,11 +8,12 @@
 // -------------------------------------------------------------------------*/
 
 #include "lib/scritchui/core/core.h"
-#include "lib/scritchui/scritchui.h"
+#include "lib/scritchui/win32/win32.h"
+#include "lib/scritchui/win32/win32Intern.h"
 
 static const sjme_scritchui_implFunctions sjme_scritchui_win32Functions =
 {
-	.apiInit = NULL,
+	.apiInit = sjme_scritchui_win32_apiInit,
 	.choiceItemInsert = NULL,
 	.choiceItemRemove = NULL,
 	.choiceItemSetEnabled = NULL,
@@ -59,6 +60,51 @@ static const sjme_scritchui_implFunctions sjme_scritchui_win32Functions =
 	.windowSetVisible = NULL,
 };
 
+static const sjme_scritchui_implInternFunctions
+	sjme_scritchui_win32InternFunctions =
+{
+	.todo = 0,
+};
+
+static sjme_thread_result sjme_scritchui_win32_loopMain(
+	sjme_attrInNullable sjme_thread_parameter anything)
+{
+	sjme_scritchui state;
+	MSG message;
+	BOOL messageResult;
+	
+	/* Restore state. */
+	state = (sjme_scritchui)anything;
+	if (state == NULL)
+		return SJME_THREAD_RESULT(SJME_ERROR_NULL_ARGUMENTS);
+	
+	/* Before we go into the main loop, signal it is ready. */
+	sjme_atomic_sjme_jint_set(&state->loopThreadReady, 1);
+	
+	/* Message loop. */
+	for (;;)
+	{
+		/* Read next message for the event thread. */
+		memset(&message, 0, sizeof(message));
+		messageResult = GetMessage(&message, NULL,
+			0, 0);
+		
+		/* Quitting? */
+		if (messageResult == 0)
+			break;
+		
+		/* Error? */
+		if (messageResult < 0)
+			sjme_todo("Handle failure?");
+		
+		/* Handle message. */
+		sjme_todo("Handle message?");
+	}
+	
+	/* Success?? */
+	return SJME_THREAD_RESULT(SJME_ERROR_NONE);
+}
+
 /**
  * Returns the Win32 ScritchUI interface.
  * 
@@ -86,10 +132,35 @@ sjme_errorCode SJME_DYLIB_EXPORT SJME_SCRITCHUI_DYLIB_SYMBOL(win32)(
 	if (sjme_error_is(error = sjme_scritchui_core_apiInit(inPool,
 		&state,
 		&sjme_scritchui_win32Functions, loopExecute,
-		initFrontEnd, NULL)) || state == NULL)
+		initFrontEnd)) || state == NULL)
 		return sjme_error_default(error);
 	
 	/* Success! */
 	*outState = state;
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_scritchui_win32_apiInit(
+	sjme_attrInNotNull sjme_scritchui inState)
+{
+	sjme_errorCode error;
+	
+	if (inState == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Internal functions to use specifically for Win32. */
+	inState->implIntern = &sjme_scritchui_win32InternFunctions;
+	
+	/* This is a standard desktop. */
+	inState->wmType = SJME_SCRITCHUI_WM_TYPE_STANDARD_DESKTOP;
+	
+	/* Start main Win32 thread. */
+	if (sjme_error_is(error = sjme_thread_new(
+		&inState->loopThread,
+		sjme_scritchui_win32_loopMain, inState)) ||
+		inState->loopThread == SJME_THREAD_NULL)
+		return sjme_error_default(error);
+	
+	/* Success! */
 	return SJME_ERROR_NONE;
 }

@@ -63,7 +63,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_gtkFunctions =
 
 /** Internal implementation functions. */
 static const sjme_scritchui_implInternFunctions
-	sjme_scritchui_gtkInternFunctions =
+	sjme_scritchui_gtk2InternFunctions =
 {
 	.accelUpdate = sjme_scritchui_gtk2_intern_accelUpdate,
 	.checkError = sjme_scritchui_gtk2_intern_checkError,
@@ -165,7 +165,7 @@ sjme_errorCode sjme_scritchui_gtk2_apiInit(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Internal functions to use specifically for GTK. */
-	inState->implIntern = &sjme_scritchui_gtkInternFunctions;
+	inState->implIntern = &sjme_scritchui_gtk2InternFunctions;
 	
 	/* This is a standard desktop. */
 	inState->wmType = SJME_SCRITCHUI_WM_TYPE_STANDARD_DESKTOP;

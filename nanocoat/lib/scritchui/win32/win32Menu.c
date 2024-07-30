@@ -7,4 +7,5 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "lib/scritchui/scritchui.h"
+#include "lib/scritchui/win32/win32.h"
+#include "lib/scritchui/win32/win32Intern.h"

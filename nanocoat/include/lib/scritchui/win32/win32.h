@@ -16,6 +16,8 @@
 #ifndef SQUIRRELJME_WIN32_H
 #define SQUIRRELJME_WIN32_H
 
+#include "lib/scritchui/scritchui.h"
+
 /* Anti-C++. */
 #ifdef __cplusplus
 	#ifndef SJME_CXX_IS_EXTERNED
@@ -27,6 +29,9 @@ extern "C"
 #endif /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
+
+sjme_errorCode sjme_scritchui_win32_apiInit(
+	sjme_attrInNotNull sjme_scritchui inState);
 
 /*--------------------------------------------------------------------------*/
 
