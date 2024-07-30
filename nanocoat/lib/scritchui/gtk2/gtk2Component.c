@@ -53,6 +53,7 @@ static gboolean sjme_scritchui_gtk2_eventExpose(
 	sjme_jint w, h;
 	sjme_frontEnd frontEnd;
 	sjme_scritchui_pencilFont defaultFont;
+	GdkRectangle clipRect;
 	
 	/* Check nulls before proceeding. */
 	if (widget == NULL || event == NULL || data == NULL)
@@ -77,8 +78,10 @@ static gboolean sjme_scritchui_gtk2_eventExpose(
 		return FALSE;
 	
 	/* Determine area to draw. */
-	w = event->area.width;
-	h = event->area.height;
+	memset(&clipRect, 0, sizeof(clipRect));
+	gdk_region_get_clipbox(event->region, &clipRect);
+	w = clipRect.x + clipRect.width;
+	h = clipRect.y + clipRect.height;
 	
 	/* Setup frontend info. */
 	memset(&frontEnd, 0, sizeof(frontEnd));
@@ -410,6 +413,7 @@ sjme_errorCode sjme_scritchui_gtk2_componentSetInputListener(
 		inListener,
 		copyFrontEnd,
 		G_CALLBACK(sjme_scritchui_gtk2_eventInput),
+		SJME_JNI_FALSE,
 		5,
 		"button-press-event", "button-release-event",
 		"motion-notify-event", "key-press-event", "key-release-event");
@@ -457,6 +461,7 @@ sjme_errorCode sjme_scritchui_gtk2_componentSetPaintListener(
 		inListener,
 		copyFrontEnd,
 		G_CALLBACK(sjme_scritchui_gtk2_eventExpose),
+		SJME_JNI_FALSE,
 		1, "expose-event")))
 		return sjme_error_default(error);
 	
@@ -493,6 +498,7 @@ sjme_errorCode sjme_scritchui_gtk2_componentSetSizeListener(
 		inListener,
 		copyFrontEnd,
 		G_CALLBACK(sjme_scritchui_gtk2_eventConfigure),
+		SJME_JNI_FALSE,
 		1, "configure-event");
 }
 

@@ -77,6 +77,10 @@ sjme_errorCode sjme_scritchui_gtk2_scrollPanelNew(
 	/* Store information. */
 	inScrollPanel->component.common.handle[SJME_SUI_GTK2_H_WIDGET] =
 		gtkScroll;
+		
+	/* Remove the shadow, it is not needed and also remove glitchies. */
+	gtk_scrolled_window_set_shadow_type(gtkScroll,
+		GTK_SHADOW_NONE);
 	
 	/* Repaint when keys scroll the window. */
 	g_signal_connect(gtkScroll, "scroll-child",

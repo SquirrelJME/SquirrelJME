@@ -66,6 +66,7 @@ typedef sjme_errorCode (*sjme_scritchui_gtk2_intern_reconnectSignalFunc)(
 	sjme_attrInNotNull void* inListener,
 	sjme_attrInNullable sjme_frontEnd* copyFrontEnd,
 	sjme_attrInNotNull GCallback inGtkCallback,
+	sjme_attrInValue sjme_jboolean isAfter,
 	sjme_attrInPositiveNonZero sjme_jint numSignals,
 	...);
 
@@ -134,6 +135,7 @@ sjme_errorCode sjme_scritchui_gtk2_intern_reconnectSignal(
 	sjme_attrInNotNull void* inListener,
 	sjme_attrInNullable sjme_frontEnd* copyFrontEnd,
 	sjme_attrInNotNull GCallback inGtkCallback,
+	sjme_attrInValue sjme_jboolean isAfter,
 	sjme_attrInPositiveNonZero sjme_jint numSignals,
 	...);
 

@@ -339,6 +339,7 @@ sjme_errorCode sjme_scritchui_gtk2_intern_reconnectSignal(
 	sjme_attrInNotNull sjme_pointer inListener,
 	sjme_attrInNullable sjme_frontEnd* copyFrontEnd,
 	sjme_attrInNotNull GCallback inGtkCallback,
+	sjme_attrInValue sjme_jboolean isAfter,
 	sjme_attrInPositiveNonZero sjme_jint numSignals,
 	...)
 {
@@ -383,8 +384,14 @@ sjme_errorCode sjme_scritchui_gtk2_intern_reconnectSignal(
 			
 			/* Connect accordingly. */
 			if (inSignal != NULL)
-				infoCore->extra = g_signal_connect(inWidget, inSignal,
-					inGtkCallback, inOnWhat);
+			{
+				if (isAfter)
+					infoCore->extra = g_signal_connect_after(inWidget,
+						inSignal, inGtkCallback, inOnWhat);
+				else
+					infoCore->extra = g_signal_connect(inWidget, inSignal,
+						inGtkCallback, inOnWhat);
+			}
 		}
 			
 		/* End argument handling. */
