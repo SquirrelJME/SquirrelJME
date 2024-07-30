@@ -78,6 +78,10 @@ public class Lists
 		list.append("Sciurus variegatoides", null);
 		list.append("Sciurus vulgaris", null);
 		list.append("Sciurus yucatanensis", null);
+		list.append("Squirrels are cute!", null);
+		list.append("Chipmunks too!", null);
+		list.append("Rats are soft!", null);
+		list.append("And mice are nice!", null);
 		
 		// Use a certain font for some items
 		list.setFont(2,
