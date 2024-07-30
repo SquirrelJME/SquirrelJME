@@ -30,3 +30,22 @@ target_link_libraries(ScritchUIJAWT PUBLIC
 # ScritchUI requires a normalized library name
 squirreljme_target_binary_name(ScritchUIJAWT
 	"squirreljme-scritchui-jawt")
+
+# Do not include any of these for RetroArch
+if(NOT DEFINED ENV{SQUIRRELJME_SPECIAL_BUILD_LIBRETRO} OR
+	NOT ENV{SQUIRRELJME_SPECIAL_BUILD_LIBRETRO})
+	# Allegro 4
+	add_subdirectory(allegro4)
+
+	# Allegro 5
+	add_subdirectory(allegro5)
+
+	# GLU1
+	add_subdirectory(glu1)
+
+	# SDL1
+	add_subdirectory(sdl1)
+
+	# SDL2
+	add_subdirectory(sdl2)
+endif()
