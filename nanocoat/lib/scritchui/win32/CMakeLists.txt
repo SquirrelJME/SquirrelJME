@@ -11,7 +11,20 @@ add_library(ScritchUIWin32 SHARED
 	$<TARGET_OBJECTS:BasePIC>
 	$<TARGET_OBJECTS:ScritchUICorePIC>
 	$<TARGET_OBJECTS:ScritchUIFBPIC>
-	win32Core.c)
+	win32Component.c
+	win32Container.c
+	win32Core.c
+	win32Intern.c
+	win32Label.c
+	win32Laf.c
+	win32Loop.c
+	win32Menu.c
+	win32Panel.c
+	win32Pencil.c
+	win32Screen.c
+	win32ScrollPanel.c
+	win32View.c
+	win32Window.c)
 
 # Always make it PIC
 if(SQUIRRELJME_ENABLE_FPIC)

@@ -14,7 +14,20 @@ add_library(ScritchUIMotif SHARED
 	$<TARGET_OBJECTS:BasePIC>
 	$<TARGET_OBJECTS:ScritchUICorePIC>
 	$<TARGET_OBJECTS:ScritchUIFBPIC>
-	motifCore.c)
+	motifComponent.c
+	motifContainer.c
+	motifCore.c
+	motifIntern.c
+	motifLabel.c
+	motifLaf.c
+	motifLoop.c
+	motifMenu.c
+	motifPanel.c
+	motifPencil.c
+	motifScreen.c
+	motifScrollPanel.c
+	motifView.c
+	motifWindow.c)
 
 # Always make it PIC
 if(SQUIRRELJME_ENABLE_FPIC)

@@ -8,7 +8,20 @@
 
 # Declare base library
 squirreljme_multilib_add_static_library(ScritchUIPure
-	pureCore.c)
+	pureComponent.c
+	pureContainer.c
+	pureCore.c
+	pureIntern.c
+	pureLabel.c
+	pureLaf.c
+	pureLoop.c
+	pureMenu.c
+	purePanel.c
+	purePencil.c
+	pureScreen.c
+	pureScrollPanel.c
+	pureView.c
+	pureWindow.c)
 
 # Include main headers
 squirreljme_multilib_static_target_include_directories(ScritchUIPure PUBLIC

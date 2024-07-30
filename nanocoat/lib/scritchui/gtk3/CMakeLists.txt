@@ -15,7 +15,20 @@ add_library(ScritchUIGTK3 SHARED
 	$<TARGET_OBJECTS:BasePIC>
 	$<TARGET_OBJECTS:ScritchUICorePIC>
 	$<TARGET_OBJECTS:ScritchUIFBPIC>
-	gtk3Core.c)
+	gtk3Component.c
+	gtk3Container.c
+	gtk3Core.c
+	gtk3Intern.c
+	gtk3Label.c
+	gtk3Laf.c
+	gtk3Loop.c
+	gtk3Menu.c
+	gtk3Panel.c
+	gtk3Pencil.c
+	gtk3Screen.c
+	gtk3ScrollPanel.c
+	gtk3View.c
+	gtk3Window.c)
 
 # Always make it PIC
 if(SQUIRRELJME_ENABLE_FPIC)

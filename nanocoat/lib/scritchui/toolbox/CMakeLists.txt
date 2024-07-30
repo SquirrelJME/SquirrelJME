@@ -6,14 +6,4 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 
-# Declare library
-squirreljme_multilib_add_static_library(ScritchUIPure
-	pureCore.c)
-
-# Include main headers
-squirreljme_multilib_static_target_include_directories(ScritchUIPure PUBLIC
-	"${CMAKE_SOURCE_DIR}/include")
-
-# ScritchUI requires a normalized library name
-squirreljme_target_binary_name(ScritchUIPure
-	"squirreljme-scritchui-pure")
+# Macintosh Toolbox (m68k and PowerPC)
