@@ -21,6 +21,7 @@ sjme_errorCode sjme_scritchui_gtk2_containerAdd(
 	GtkFixed* fixed;
 	GtkWidget* addWidget;
 	GtkScrolledWindow* gtkScroll;
+	GtkViewport* gtkViewport;
 	
 	if (inState == NULL || inContainer == NULL || inContainerData == NULL ||
 		addComponent == NULL)
@@ -70,6 +71,12 @@ sjme_errorCode sjme_scritchui_gtk2_containerAdd(
 				.handle[SJME_SUI_GTK2_H_WIDGET];
 			gtk_scrolled_window_add_with_viewport(gtkScroll,
 				addWidget);
+			
+			/* Since we should have a viewport now, make sure it has no */
+			/* shadow... which should prevent glitchies. */
+			gtkViewport = GTK_VIEWPORT(gtk_bin_get_child(GTK_BIN(gtkScroll)));
+			gtk_viewport_set_shadow_type(gtkViewport,
+				GTK_SHADOW_NONE);
 			break;
 			
 		
