@@ -20,6 +20,7 @@ sjme_errorCode sjme_scritchui_gtk2_containerAdd(
 	GtkWindow* windowTarget;
 	GtkFixed* fixed;
 	GtkWidget* addWidget;
+	GtkScrolledWindow* gtkScroll;
 	
 	if (inState == NULL || inContainer == NULL || inContainerData == NULL ||
 		addComponent == NULL)
@@ -57,12 +58,20 @@ sjme_errorCode sjme_scritchui_gtk2_containerAdd(
 		
 			/* Place into fixed at basic coordinates. */
 		case SJME_SCRITCHUI_TYPE_PANEL:
-		case SJME_SCRITCHUI_TYPE_SCROLL_PANEL:
 			fixed = (GtkFixed*)inContainer->common
 				.handle[SJME_SUI_GTK2_H_WIDGET];
 			gtk_fixed_put(GTK_FIXED(fixed),
 				addWidget, 0, 0);
 			break;
+			
+			/* Add in. */
+		case SJME_SCRITCHUI_TYPE_SCROLL_PANEL:
+			gtkScroll = (GtkScrolledWindow*)inContainer->common
+				.handle[SJME_SUI_GTK2_H_WIDGET];
+			gtk_scrolled_window_add_with_viewport(gtkScroll,
+				addWidget);
+			break;
+			
 		
 		default:
 			return SJME_ERROR_NOT_IMPLEMENTED;
@@ -89,7 +98,7 @@ sjme_errorCode sjme_scritchui_gtk2_containerRemove(
 	sjme_attrInNotNull sjme_scritchui_uiComponent removeComponent)
 {
 	GtkWindow* windowTarget;
-	GtkFixed* fixed;
+	GtkWidget* baseContainer;
 	GtkWidget* removeWidget;
 	
 	if (inState == NULL || inContainer == NULL || inContainerData == NULL ||
@@ -115,12 +124,12 @@ sjme_errorCode sjme_scritchui_gtk2_containerRemove(
 				removeWidget);
 			break;
 		
-			/* Place into fixed at basic coordinates. */
+			/* Remove from contained component. */
 		case SJME_SCRITCHUI_TYPE_PANEL:
 		case SJME_SCRITCHUI_TYPE_SCROLL_PANEL:
-			fixed = (GtkFixed*)inContainer->common
+			baseContainer = (GtkWidget*)inContainer->common
 				.handle[SJME_SUI_GTK2_H_WIDGET];
-			gtk_container_remove(GTK_CONTAINER(fixed),
+			gtk_container_remove(GTK_CONTAINER(baseContainer),
 				removeWidget);
 			break;
 		
@@ -171,10 +180,13 @@ sjme_errorCode sjme_scritchui_gtk2_containerSetBounds(
 	{
 			/* Need to move within the panel but also set widget size. */
 		case SJME_SCRITCHUI_TYPE_PANEL:
-		case SJME_SCRITCHUI_TYPE_SCROLL_PANEL:
 			gtkFixed = (GtkFixed*)inContainer->common
 				.handle[SJME_SUI_GTK2_H_WIDGET];
 			gtk_fixed_move(gtkFixed, moveWidget, x, y);
+			break;
+			
+			/* Ignore for scroll panel. */
+		case SJME_SCRITCHUI_TYPE_SCROLL_PANEL:
 			break;
 			
 			/* Nothing needs to be done for windows. */

@@ -7,6 +7,8 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <string.h>
+
 #include "lib/scritchui/core/core.h"
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/alloc.h"
@@ -91,9 +93,14 @@ sjme_errorCode sjme_scritchui_core_viewGetView(
 {
 	sjme_errorCode error;
 	sjme_scritchui_uiView view;
+	sjme_scritchui_rect viewRect;
 	
 	if (inState == NULL || inComponent == NULL || outViewRect == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Not implemented? */
+	if (inState->impl->viewGetView == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
 	
 	/* Obtain view. */
 	view = NULL;
@@ -101,8 +108,15 @@ sjme_errorCode sjme_scritchui_core_viewGetView(
 		inComponent, &view)) || view == NULL)
 		return sjme_error_default(error);
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Forward call. */
+	memset(&viewRect, 0, sizeof(&viewRect));
+	if (sjme_error_is(error = inState->impl->viewGetView(inState,
+		inComponent, &viewRect)))
+		return sjme_error_default(error);
+	
+	/* Success! */
+	memmove(outViewRect, &viewRect, sizeof(*outViewRect));
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchui_core_viewSetArea(
@@ -112,6 +126,8 @@ sjme_errorCode sjme_scritchui_core_viewSetArea(
 {
 	sjme_errorCode error;
 	sjme_scritchui_uiView view;
+	sjme_scritchui_dim fullArea;
+	sjme_scritchui_rect viewRect;
 	
 	if (inState == NULL || inComponent == NULL || inViewArea == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -126,9 +142,22 @@ sjme_errorCode sjme_scritchui_core_viewSetArea(
 		inComponent, &view)) || view == NULL)
 		return sjme_error_default(error);
 	
+	/* Get the current view rectangle. */
+	memset(&viewRect, 0, sizeof(viewRect));
+	if (sjme_error_is(error = inState->apiInThread->viewGetView(
+		inState, inComponent, &viewRect)))
+		return sjme_error_default(error);
+	
+	/* If the viewing area is larger than the suggested area, grow. */
+	memmove(&fullArea, inViewArea, sizeof(fullArea));
+	if (viewRect.d.width > fullArea.width)
+		fullArea.width = viewRect.d.width;
+	if (viewRect.d.height > fullArea.height)
+		fullArea.height = viewRect.d.height;
+	
 	/* Forward call. */
 	if (sjme_error_is(error = inState->impl->viewSetArea(inState,
-		inComponent, inViewArea)))
+		inComponent, &fullArea)))
 		return sjme_error_default(error);
 	
 	/* Revalidate after setting the area. */

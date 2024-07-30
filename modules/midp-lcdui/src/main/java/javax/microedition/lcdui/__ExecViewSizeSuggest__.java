@@ -54,10 +54,6 @@ class __ExecViewSizeSuggest__
 		if (__view == null)
 			throw new NullPointerException("NARG");
 		
-		// Debug
-		Debugging.debugNote("sizeSuggest(%s, %s, %d, %d)",
-			__view, __subComponent, __w, __h);
-		
 		// Just pass this through directly as we only care for this
 		// single component being wrapped
 		this.scritchApi.view().setArea(__view,
