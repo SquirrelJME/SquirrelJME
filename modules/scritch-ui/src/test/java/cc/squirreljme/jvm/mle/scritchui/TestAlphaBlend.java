@@ -21,6 +21,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import net.multiphasicapps.tac.TestConsumer;
+import net.multiphasicapps.tac.UntestableException;
 import net.multiphasicapps.zip.streamreader.ZipStreamEntry;
 import net.multiphasicapps.zip.streamreader.ZipStreamReader;
 
@@ -38,6 +39,26 @@ public class TestAlphaBlend
 	 */
 	@Override
 	public void test(String __fsTs)
+		throws Throwable
+	{
+		if (true)
+			throw new UntestableException();
+		
+		try
+		{
+			this.testX(__fsTs);
+		}
+		catch (Throwable __t)
+		{
+			throw new UntestableException(__t);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/07/11
+	 */
+	public void testX(String __fsTs)
 		throws Throwable
 	{
 		// Split
