@@ -11,7 +11,7 @@ add_library(ScritchUIJAWT SHARED
 	$<TARGET_OBJECTS:BasePIC>
 	$<TARGET_OBJECTS:ScritchUICorePIC>
 	$<TARGET_OBJECTS:ScritchUIFBPIC>
-	jawtCore.c)
+	pureCore.c)
 
 # Always make it PIC
 if(SQUIRRELJME_ENABLE_FPIC)

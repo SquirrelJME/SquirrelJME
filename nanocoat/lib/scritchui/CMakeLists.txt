@@ -14,6 +14,10 @@ squirreljme_include("scritchui.cmake")
 # a static library and is included as needed...
 add_subdirectory(framebuffer)
 
+# Pure Framebuffer implementation, this is the underlayer which provides
+# panels and other basic Widgets
+add_subdirectory(pure)
+
 # Source files for ScritchUI
 set(SJME_ScritchUICore_SOURCES
 	scritchChoice.c
@@ -59,12 +63,6 @@ if(NOT SQUIRRELJME_SCRITCHUI_NO_DYLIB)
 	# Collection dependencies
 	set(SQUIRRELJME_SCRITCHUI_COLLECT_TARGETS)
 	set(SQUIRRELJME_SCRITCHUI_COLLECT_LIBS)
-
-	# JAWT?
-	option(SQUIRRELJME_ENABLE_GUI_JAWT "Enable JAWT GUI" ON)
-	if(SQUIRRELJME_ENABLE_GUI_JAWT)
-		squirreljme_scritchui_build(JNI_AWT_FOUND jawt JAWT)
-	endif()
 
 	# Windows?
 	option(SQUIRRELJME_ENABLE_GUI_WIN32 "Enable Win32 GUI"

@@ -10,7 +10,7 @@
 #include "lib/scritchui/core/core.h"
 #include "lib/scritchui/scritchui.h"
 
-static const sjme_scritchui_implFunctions sjme_scritchui_jawtFunctions =
+static const sjme_scritchui_implFunctions sjme_scritchui_pureFunctions =
 {
 	.apiInit = NULL,
 	.choiceItemInsert = NULL,
@@ -44,7 +44,6 @@ static const sjme_scritchui_implFunctions sjme_scritchui_jawtFunctions =
 	.menuItemNew = NULL,
 	.menuRemove = NULL,
 	.menuNew = NULL,
-	.menuRemove = NULL,
 	.panelEnableFocus = NULL,
 	.panelNew = NULL,
 	.screens = NULL,
@@ -61,7 +60,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_jawtFunctions =
 };
 
 /**
- * Returns the JAWT ScritchUI interface.
+ * Returns the Pure ScritchUI interface.
  * 
  * @param inPool The allocation pool used.
  * @param loopExecute The loop execution to run after init.
@@ -70,7 +69,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_jawtFunctions =
  * @return The library interface.
  * @since 2024/07/16 
  */
-sjme_errorCode SJME_DYLIB_EXPORT SJME_SCRITCHUI_DYLIB_SYMBOL(jawt)(
+sjme_errorCode SJME_DYLIB_EXPORT SJME_SCRITCHUI_DYLIB_SYMBOL(pure)(
 	sjme_attrInNotNull sjme_alloc_pool* inPool,
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
 	sjme_attrInNullable sjme_frontEnd* initFrontEnd,
@@ -86,7 +85,7 @@ sjme_errorCode SJME_DYLIB_EXPORT SJME_SCRITCHUI_DYLIB_SYMBOL(jawt)(
 	state = NULL;
 	if (sjme_error_is(error = sjme_scritchui_core_apiInit(inPool,
 		&state,
-		&sjme_scritchui_jawtFunctions, loopExecute,
+		&sjme_scritchui_pureFunctions, loopExecute,
 		initFrontEnd)) || state == NULL)
 		return sjme_error_default(error);
 	

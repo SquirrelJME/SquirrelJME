@@ -16,7 +16,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 public class StringItem
 	extends Item
 {
-	/** Apperance mode. */
+	/** Appearance mode. */
 	final int _amode;
 	
 	/** The item text. */
