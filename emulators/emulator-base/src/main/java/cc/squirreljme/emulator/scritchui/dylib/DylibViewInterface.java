@@ -52,12 +52,21 @@ public class DylibViewInterface
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/07/30
+	 */
 	@Override
 	public void setArea(ScritchViewBracket __view,
 		int __width, int __height)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__view == null)
+			throw new MLECallError("Null arguments.");
+		
+		NativeScritchDylib.__viewSetArea(this.dyLib._stateP,
+			((DylibComponentObject)__view).objectPointer(),
+			__width, __height);
 	}
 	
 	@Override

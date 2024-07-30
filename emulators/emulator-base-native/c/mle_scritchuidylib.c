@@ -152,6 +152,8 @@
 #define FORWARD_DESC___scrollPanelNew "(" \
 	DESC_LONG ")" DESC_LONG
 
+#define FORWARD_DESC___viewSetArea "(" \
+	DESC_LONG DESC_LONG DESC_INT DESC_INT ")" DESC_VOID
 #define FORWARD_DESC___viewSetSizeSuggestListener "(" \
 	DESC_LONG DESC_LONG DESC_SCRITCHUI_SIZE_SUGGEST_LISTENER ")" DESC_VOID
 #define FORWARD_DESC___viewSetViewListener "(" \
@@ -2386,6 +2388,40 @@ fail_nullArgs:
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__viewSetArea)(JNIEnv* env, jclass classy, jlong stateP,
+	jlong componentP, jint width, jint height)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	sjme_scritchui_uiComponent component;
+	sjme_scritchui_dim dim;
+	
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	component = (sjme_scritchui_uiComponent)componentP;
+	if (stateP == 0 || componentP == 0)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+	
+	/* Not implemented? */
+	if (state->api->viewSetArea == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NOT_IMPLEMENTED);
+		return;
+	}
+	
+	/* Forward. */
+	memset(&dim, 0, sizeof(dim));
+	dim.width = width;
+	dim.height = height;
+	if (sjme_error_is(error = state->api->viewSetArea(state,
+		component, &dim)))
+		sjme_jni_throwMLECallError(env, error);
+}
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	__viewSetSizeSuggestListener)(JNIEnv* env, jclass classy, jlong stateP,
 	jlong componentP, jobject javaListener)
 {
@@ -2653,6 +2689,7 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 	FORWARD_list(NativeScritchDylib, __screenId),
 	FORWARD_list(NativeScritchDylib, __screens),
 	FORWARD_list(NativeScritchDylib, __scrollPanelNew),
+	FORWARD_list(NativeScritchDylib, __viewSetArea),
 	FORWARD_list(NativeScritchDylib, __viewSetSizeSuggestListener),
 	FORWARD_list(NativeScritchDylib, __viewSetViewListener),
 	FORWARD_list(NativeScritchDylib, __weakDelete),

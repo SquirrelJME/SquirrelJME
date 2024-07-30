@@ -176,7 +176,7 @@ sjme_errorCode sjme_scritchui_gtk2_containerSetBounds(
 				.handle[SJME_SUI_GTK2_H_WIDGET];
 			gtk_fixed_move(gtkFixed, moveWidget, x, y);
 			break;
-		
+			
 			/* Nothing needs to be done for windows. */
 		case SJME_SCRITCHUI_TYPE_WINDOW:
 			break;

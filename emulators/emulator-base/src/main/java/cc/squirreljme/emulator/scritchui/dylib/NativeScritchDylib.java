@@ -640,6 +640,21 @@ public final class NativeScritchDylib
 		throws MLECallError;
 	
 	/**
+	 * Sets the view area of a view.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __viewP The view pointer.
+	 * @param __width The width.
+	 * @param __height The height.
+	 * @throws MLECallError If the state and/or view are invalid; or the
+	 * specified width and/or height are not valid
+	 * @since 2024/07/30
+	 */
+	static native void __viewSetArea(long __stateP, long __viewP, int __width,
+		int __height)
+		throws MLECallError;
+	
+	/**
 	 * Sets the size suggestion listener for the given view.
 	 *
 	 * @param __stateP The state pointer.

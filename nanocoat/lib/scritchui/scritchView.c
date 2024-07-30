@@ -116,14 +116,23 @@ sjme_errorCode sjme_scritchui_core_viewSetArea(
 	if (inState == NULL || inComponent == NULL || inViewArea == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+	/* Not implemented? */
+	if (inState->impl->viewSetArea == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
+	
 	/* Obtain view. */
 	view = NULL;
 	if (sjme_error_is(error = inState->intern->getView(inState,
 		inComponent, &view)) || view == NULL)
 		return sjme_error_default(error);
 	
-	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	/* Forward call. */
+	if (sjme_error_is(error = inState->impl->viewSetArea(inState,
+		inComponent, inViewArea)))
+		return sjme_error_default(error);
+	
+	/* Revalidate after setting the area. */
+	return inState->apiInThread->componentRevalidate(inState, inComponent);
 }
 
 sjme_errorCode sjme_scritchui_core_viewSetView(

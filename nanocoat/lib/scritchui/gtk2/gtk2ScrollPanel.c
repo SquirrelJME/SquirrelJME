@@ -45,6 +45,13 @@ sjme_errorCode sjme_scritchui_gtk2_scrollPanelNew(
 	inScrollPanel->component.common.handle[SJME_SUI_GTK2_H_TOP_WIDGET] =
 		gtkScroll;
 	
+	/* Add in. */
+	gtk_scrolled_window_add_with_viewport(gtkScroll,
+		gtkFixed);
+	
+	/* It would be nice to see these. */
+	gtk_widget_show(gtkFixed);
+	
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
