@@ -9,7 +9,7 @@
 
 package cc.squirreljme.plugin.multivm;
 
-import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
+import cc.squirreljme.plugin.multivm.gdb.GdbUtils;
 import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import cc.squirreljme.plugin.swm.JavaMEMidlet;
 import cc.squirreljme.plugin.util.ForwardInputToOutput;
@@ -26,7 +26,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.logging.LogLevel;
@@ -133,11 +132,24 @@ public class VMRunTaskDetached
 		Map<String, String> sysProps = new LinkedHashMap<>();
 		if (debugServer != null)
 		{
-			// Debug server?
-			if ("file".equals(debugServer.getScheme()))
+			// LLDB Server?
+			if ("lldb".equals(debugServer.getScheme()))
 			{
-				procArgs.add(Paths.get(debugServer).toAbsolutePath()
-					.toString());
+				procArgs.add(Paths.get(GdbUtils.setScheme(debugServer, 
+					"file")).toAbsolutePath().toString());
+				procArgs.add("gdbserver");
+				procArgs.add("localhost:2345");
+				procArgs.add("--");
+				
+				// Force interpreter to be used
+				forceInterpreter = true;
+			}
+			
+			// GDB Server?
+			else if ("gdb".equals(debugServer.getScheme()))
+			{
+				procArgs.add(Paths.get(GdbUtils.setScheme(debugServer, 
+					"file")).toAbsolutePath().toString());
 				procArgs.add("localhost:2345");
 				
 				// Force interpreter to be used

@@ -497,9 +497,7 @@ public final class TaskInitialization
 				__useDebugServer);};
 		
 		// Is there GDB?
-		Path gdbServerPath = GdbUtils.gdbServerExePath();
-		URI gdbServer = (gdbServerPath != null ?
-			gdbServerPath.toUri() : null);
+		URI gdbServer = GdbUtils.debuggerUri();
 		
 		// Setup a bunch of fake MIDlets to possibly run
 		int n = 3;
@@ -544,9 +542,7 @@ public final class TaskInitialization
 		TaskContainer tasks = __project.getTasks();
 		
 		// Is there GDB?
-		Path gdbServerPath = GdbUtils.gdbServerExePath();
-		URI gdbServer = (gdbServerPath != null ?
-			gdbServerPath.toUri() : null);
+		URI gdbServer = GdbUtils.debuggerUri();
 		
 		// Handle all source sets
 		if (hasMain || hasMidlets)
