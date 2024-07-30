@@ -82,6 +82,11 @@ sjme_errorCode sjme_scritchui_gtk2_scrollPanelNew(
 	gtk_scrolled_window_set_shadow_type(gtkScroll,
 		GTK_SHADOW_NONE);
 	
+	/* Do not show the scrollbar if it is not needed. */
+	gtk_scrolled_window_set_policy(gtkScroll,
+		GTK_POLICY_ALWAYS,
+		GTK_POLICY_ALWAYS);
+	
 	/* Repaint when keys scroll the window. */
 	g_signal_connect(gtkScroll, "scroll-child",
 		G_CALLBACK(sjme_scritchui_gtk2_eventScrollChildByKey), inScrollPanel);
