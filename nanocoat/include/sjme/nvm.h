@@ -1904,8 +1904,11 @@ typedef enum sjme_errorCode
 	/** Native graphics access not yet valid. */
 	SJME_ERROR_FRAMEBUFFER_NOT_READY = -74,
 	
+	/** Could not unload native library. */
+	SJME_ERROR_COULD_NOT_UNLOAD_LIBRARY = -75,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -75
+	SJME_NUM_ERROR_CODES = -76
 } sjme_errorCode;
 
 /**
