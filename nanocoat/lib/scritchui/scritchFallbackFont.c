@@ -15,6 +15,7 @@
 
 const sjme_jbyte sqf_font_sanserif_12_0_huffBits[] = 
 {
+		0
 };
 const sjme_jbyte sqf_font_sanserif_12_0_charWidths[] = 
 {
@@ -248,6 +249,7 @@ const struct sjme_scritchui_sqf sqf_font_sanserif_12_0 =
 };
 const sjme_jbyte sqf_font_sanserif_12_1_huffBits[] = 
 {
+		0
 };
 const sjme_jbyte sqf_font_sanserif_12_1_charWidths[] = 
 {
@@ -373,6 +375,7 @@ const struct sjme_scritchui_sqf sqf_font_sanserif_12_1 =
 };
 const sjme_jbyte sqf_font_sanserif_12_20_huffBits[] = 
 {
+		0
 };
 const sjme_jbyte sqf_font_sanserif_12_20_charWidths[] = 
 {

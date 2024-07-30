@@ -220,6 +220,7 @@ typedef struct sjme_scritchui_fb_displayList
  */
 typedef struct sjme_scritchui_fb_displayShaders
 {
+	sjme_jint todo;
 } sjme_scritchui_fb_displayShaders; 
 
 /**

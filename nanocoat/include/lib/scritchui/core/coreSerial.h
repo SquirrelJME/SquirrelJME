@@ -213,7 +213,7 @@ typedef enum sjme_scritchui_serialType
 	inListener; \
 	 \
 	/** Any front-end data to set as needed. */ \
-	sjme_frontEnd* volatile copyFrontEnd;
+	sjme_frontEnd* volatile copyFrontEnd
 
 /** The name for serial data. */
 #define SJME_SCRITCHUI_SERIAL_DATA_NAME(what) \
@@ -445,11 +445,11 @@ SUD_STRUCT_DEF(viewSetView,
 
 SUD_STRUCT_DEF(viewSetSizeSuggestListener,
 	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
-	SJME_SCRITCHUI_SERIAL_SET_LISTENER(sizeSuggest));
+	SJME_SCRITCHUI_SERIAL_SET_LISTENER(sizeSuggest););
 
 SUD_STRUCT_DEF(viewSetViewListener,
 	SDU_VAR(sjme_scritchui_uiComponent, inComponent);
-	SJME_SCRITCHUI_SERIAL_SET_LISTENER(view));
+	SJME_SCRITCHUI_SERIAL_SET_LISTENER(view););
 
 SUD_STRUCT_DEF(windowContentMinimumSize,
 	SDU_VAR(sjme_scritchui_uiWindow, inWindow);

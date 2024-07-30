@@ -449,30 +449,37 @@ typedef struct sjme_scritchinput_eventDataMouseMotion
 
 typedef struct sjme_scritchinput_eventDataGamePadButton
 {
+	sjme_jint todo;
 } sjme_scritchinput_eventDataGamePadButton;
 
 typedef struct sjme_scritchinput_eventDataGamePadAxisMotion
 {
+	sjme_jint todo;
 } sjme_scritchinput_eventDataGamePadAxisMotion;
 
 typedef struct sjme_scritchinput_eventDataTouchFinger
 {
+	sjme_jint todo;
 } sjme_scritchinput_eventDataTouchFinger;
 
 typedef struct sjme_scritchinput_eventDataTouchDrag
 {
+	sjme_jint todo;
 } sjme_scritchinput_eventDataTouchDrag;
 
 typedef struct sjme_scritchinput_eventDataStylusPen
 {
+	sjme_jint todo;
 } sjme_scritchinput_eventDataStylusPen;
 
 typedef struct sjme_scritchinput_eventDataStylusMotion
 {
+	sjme_jint todo;
 } sjme_scritchinput_eventDataStylusMotion;
 
 typedef struct sjme_scritchinput_eventDataDeviceAction
 {
+	sjme_jint todo;
 } sjme_scritchinput_eventDataDeviceAction;
 
 /**
