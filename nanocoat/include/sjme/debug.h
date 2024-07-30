@@ -214,6 +214,23 @@ void sjme_debug_abort(void);
 sjme_lpcstr sjme_debug_shortenFile(sjme_lpcstr file);
 
 /**
+ * Allows for optional debug abort when unimplemented code is hit.
+ *
+ * @return Always @c SJME_ERROR_NOT_IMPLEMENTED .
+ * @since 2024/07/30
+ */
+sjme_errorCode sjme_error_notImplementedR(SJME_DEBUG_DECL_FILE_LINE_FUNC);
+
+/**
+ * Allows for optional debug abort when unimplemented code is hit.
+ *
+ * @return Always @c SJME_ERROR_NOT_IMPLEMENTED .
+ * @since 2024/07/30
+ */
+#define sjme_error_notImplemented() \
+	sjme_error_notImplementedR(SJME_DEBUG_FILE_LINE_FUNC_ALWAYS)
+
+/**
  * Handles specific debug abort scenarios.
  *
  * @return Return @c SJME_JNI_TRUE if it was handled and abort should be

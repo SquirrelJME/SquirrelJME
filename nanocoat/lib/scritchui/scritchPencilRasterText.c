@@ -155,13 +155,13 @@ sjme_errorCode sjme_scritchpen_core_drawChars(
 		return sjme_error_default(error);
 	
 	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented();
 	
 	/* Release lock. */
 	if (sjme_error_is(error = sjme_scritchpen_core_lockRelease(g)))
 		return sjme_error_default(error);
 	
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented();
 	
 fail_any:
 	/* Need to release the lock? */

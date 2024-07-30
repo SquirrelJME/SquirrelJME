@@ -75,7 +75,7 @@ static sjme_errorCode sjme_scritchui_fontMetricCharDirection(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented();
 }
 
 static sjme_errorCode sjme_scritchui_fontMetricCharValid(
@@ -88,7 +88,7 @@ static sjme_errorCode sjme_scritchui_fontMetricCharValid(
 		
 	/* Not implemented? */
 	if (inFont->impl->metricCharValid == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
+		return sjme_error_notImplemented();
 	
 	/* Negative codepoints are always invalid. */
 	if (inCodepoint < 0)
@@ -120,7 +120,7 @@ static sjme_errorCode sjme_scritchui_fontMetricFontFace(
 	
 	/* Not implemented? */
 	if (inFont->impl->metricFontFace == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
+		return sjme_error_notImplemented();
 	
 	/* Load into cache. */
 	result = 0;
@@ -148,7 +148,7 @@ static sjme_errorCode sjme_scritchui_fontMetricFontName(
 	{
 		/* Not implemented? */
 		if (inFont->impl->metricFontName == NULL)
-			return SJME_ERROR_NOT_IMPLEMENTED;
+			return sjme_error_notImplemented();
 		
 		/* Use internal lookup. */
 		if (sjme_error_is(error = inFont->impl->metricFontName(
@@ -218,7 +218,7 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelAscent(
 	
 	/* Not implemented? */
 	if (inFont->impl->metricPixelAscent == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
+		return sjme_error_notImplemented();
 	
 	/* Load into cache. */
 	result = 0;
@@ -251,7 +251,7 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelBaseline(
 	
 	/* Not implemented? */
 	if (inFont->impl->metricPixelBaseline == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
+		return sjme_error_notImplemented();
 	
 	/* Load into cache. */
 	result = 0;
@@ -285,7 +285,7 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelDescent(
 	
 	/* Not implemented? */
 	if (inFont->impl->metricPixelDescent == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
+		return sjme_error_notImplemented();
 	
 	/* Load into cache. */
 	result = 0;
@@ -359,7 +359,7 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelLeading(
 	
 	/* Not implemented? */
 	if (inFont->impl->metricPixelLeading == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
+		return sjme_error_notImplemented();
 	
 	/* Load into cache. */
 	result = 0;
@@ -392,7 +392,7 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelSize(
 	
 	/* Not implemented? */
 	if (inFont->impl->metricPixelSize == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
+		return sjme_error_notImplemented();
 	
 	/* Load into cache. */
 	result = -1;
@@ -419,7 +419,7 @@ static sjme_errorCode sjme_scritchui_fontPixelCharWidth(
 	
 	/* Not implemented? */
 	if (inFont->impl->pixelCharWidth == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
+		return sjme_error_notImplemented();
 	
 	/* Codepoints with no actual length. */
 	if (inCodepoint == '\r' || inCodepoint == '\n' ||
@@ -476,7 +476,7 @@ static sjme_errorCode sjme_scritchui_fontRenderBitmap(
 	
 	/* Not implemented? */
 	if (inFont->impl->renderBitmap == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
+		return sjme_error_notImplemented();
 	
 	/* Validate glyph. */
 	if (sjme_error_is(error = sjme_scritchui_validateChar(inFont,
@@ -505,7 +505,7 @@ static sjme_errorCode sjme_scritchui_fontRenderChar(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented();
 }
 
 static sjme_errorCode sjme_scritchui_fontStringWidth(

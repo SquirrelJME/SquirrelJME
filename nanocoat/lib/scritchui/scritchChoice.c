@@ -257,7 +257,7 @@ sjme_errorCode sjme_scritchui_core_choiceItemInsert(
 	/* Forward. */
 	*inOutIndex = atIndex;
 	if (inState->impl->choiceItemInsert == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
+		return sjme_error_notImplemented();
 	return inState->impl->choiceItemInsert(inState, inComponent,
 		inOutIndex);
 
@@ -294,11 +294,11 @@ sjme_errorCode sjme_scritchui_core_choiceItemRemove(
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented();
 	
 	/* Forward. */
 	if (inState->impl->choiceItemRemove == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
+		return sjme_error_notImplemented();
 	return inState->impl->choiceItemRemove(inState, inComponent,
 		atIndex);
 }
@@ -360,7 +360,7 @@ sjme_errorCode sjme_scritchui_core_choiceItemSetEnabled(
 	
 	/* Forward. */
 	if (inState->impl->choiceItemSetEnabled == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
+		return sjme_error_notImplemented();
 	return inState->impl->choiceItemSetEnabled(inState, inComponent,
 		atIndex, isEnabled);
 }
@@ -393,7 +393,7 @@ sjme_errorCode sjme_scritchui_core_choiceItemSetImage(
 	
 #if 0
 	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented();
 #else
 	sjme_message("TODO: list images.");
 #endif
@@ -459,7 +459,7 @@ sjme_errorCode sjme_scritchui_core_choiceItemSetSelected(
 	
 	/* Forward. */
 	if (inState->impl->choiceItemSetSelected == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
+		return sjme_error_notImplemented();
 	return inState->impl->choiceItemSetSelected(inState, inComponent,
 		atIndex, isSelected);
 }
@@ -520,7 +520,7 @@ sjme_errorCode sjme_scritchui_core_choiceItemSetString(
 	
 	/* Forward. */
 	if (inState->impl->choiceItemSetString == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
+		return sjme_error_notImplemented();
 	return inState->impl->choiceItemSetString(inState, inComponent,
 		atIndex, inString);
 }

@@ -106,7 +106,7 @@ sjme_errorCode sjme_scritchpen_corePrim_drawLine(
 	return SJME_ERROR_NONE;
 	
 	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented();
 }
 
 sjme_errorCode sjme_scritchpen_corePrim_drawPixel(

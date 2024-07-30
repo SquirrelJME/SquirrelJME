@@ -28,7 +28,7 @@ sjme_errorCode sjme_scritchui_core_lafElementColor(
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	if (inState->impl->lafElementColor == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
+		return sjme_error_notImplemented();
 	
 	/* Panels are always black on white. */
 	rgb = 0;

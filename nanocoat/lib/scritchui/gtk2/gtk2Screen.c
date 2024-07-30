@@ -34,7 +34,7 @@ sjme_errorCode sjme_scritchui_gtk2_screens(
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	if (inState->intern->mapScreen == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
+		return sjme_error_notImplemented();
 	
 	/* Get the default display, which has all the screens. */
 	gdkDisplay = gdk_display_get_default();

@@ -40,8 +40,9 @@
 		 \
 		if (inState->api->loopIsInThread == NULL || \
             inState->api->what == NULL || \
-            inState->apiInThread->what == NULL || \
-			sjme_error_is(error = inState->api->loopIsInThread(inState, \
+            inState->apiInThread->what == NULL) \
+        	return sjme_error_notImplemented(); \
+		if (sjme_error_is(error = inState->api->loopIsInThread(inState, \
 				&direct))) \
 			return sjme_error_default(error); \
 	} while (0)
@@ -90,7 +91,7 @@
 #define SJME_SCRITCHUI_DISPATCH_CALL(what, args) \
 	do { /*as.what = &data->data.what;*/ \
 	if (state->apiInThread->what == NULL) \
-		return SJME_THREAD_RESULT(SJME_ERROR_NOT_IMPLEMENTED); \
+		return SJME_THREAD_RESULT(sjme_error_notImplemented()); \
 	data->error = state->apiInThread->what args; } while (0)
 
 /** Simplified case call. */
@@ -117,7 +118,7 @@ static sjme_thread_result sjme_scritchui_serialDispatch(
 #define SJME_SCRITCHUI_DISPATCH_SWITCH_BEGIN switch (data->type) {
 #define SJME_SCRITCHUI_DISPATCH_SWITCH_END \
 	default: \
-		return SJME_THREAD_RESULT(SJME_ERROR_NOT_IMPLEMENTED); }
+		return SJME_THREAD_RESULT(sjme_error_notImplemented()); }
 	
 	volatile sjme_scritchui_serialData* data;
 	sjme_scritchui_serialDataUnion* as;

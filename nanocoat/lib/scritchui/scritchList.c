@@ -43,7 +43,7 @@ sjme_errorCode sjme_scritchui_core_listNew(
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	if (inState->impl->listNew == NULL)
-		return SJME_ERROR_NOT_IMPLEMENTED;
+		return sjme_error_notImplemented();
 	
 	/* Setup initialization data. */
 	memset(&init, 0, sizeof(init));

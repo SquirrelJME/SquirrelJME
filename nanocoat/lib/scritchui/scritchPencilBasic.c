@@ -151,7 +151,7 @@ static sjme_errorCode sjme_scritchui_basicRawScanPutPure_sjme_jbyte4(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented();
 }
 
 static sjme_errorCode sjme_scritchui_basicRawScanGet_sjme_jbyte2(
@@ -178,7 +178,7 @@ static sjme_errorCode sjme_scritchui_basicRawScanPutPure_sjme_jbyte2(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented();
 }
 
 static sjme_errorCode sjme_scritchui_basicRawScanGet_sjme_jbyte1(
@@ -205,7 +205,7 @@ static sjme_errorCode sjme_scritchui_basicRawScanPutPure_sjme_jbyte1(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented();
 }
 
 /* Integer. */

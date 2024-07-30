@@ -77,5 +77,5 @@ sjme_errorCode sjme_scritchui_fb_viewSetViewListener(
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(view))
 {
 	sjme_todo("Impl?");
-	return SJME_ERROR_NOT_IMPLEMENTED;
+	return sjme_error_notImplemented();
 }
