@@ -153,7 +153,9 @@ sjme_errorCode sjme_scritchui_core_viewSetSizeSuggestListener(
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(sizeSuggest))
 {
 	sjme_errorCode error;
+	sjme_scritchui_uiContainer container;
 	sjme_scritchui_uiView view;
+	sjme_scritchui_uiComponent firstSub;
 	
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -165,12 +167,37 @@ sjme_errorCode sjme_scritchui_core_viewSetSizeSuggestListener(
 		return sjme_error_default(error);
 	
 	/* Use simple listener set. */
-	return inState->intern->setSimpleListener(
+	if (sjme_error_is(error = inState->intern->setSimpleListener(
 		inState,
 		(sjme_scritchui_listener_void*)&SJME_SCRITCHUI_LISTENER_USER(
 			view, sizeSuggest),
 		(sjme_scritchui_voidListenerFunc)inListener,
-		copyFrontEnd);
+		copyFrontEnd)))
+		return sjme_error_default(error);
+	
+	/* If this is a container, we should have a size be suggested. */
+	container = NULL;
+	if (sjme_error_is(error = inState->intern->getContainer(inState,
+		inComponent, &container) || container == NULL))
+	{
+		if (error == SJME_ERROR_INVALID_ARGUMENT)
+			return SJME_ERROR_NONE;
+		
+		return sjme_error_default(error);
+	}
+	
+	/* If there is a component here, just suggest on the first one. */
+	if (container->components != NULL && container->components->length >= 1)
+	{
+		firstSub = container->components->elements[0];
+		if (firstSub->bounds.d.width > 0 && firstSub->bounds.d.height)
+			if (sjme_error_is(error = inState->intern->viewSuggest(inState,
+				firstSub, &firstSub->bounds.d)))
+				return sjme_error_default(error);
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchui_core_viewSetViewListener(

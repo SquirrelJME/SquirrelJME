@@ -176,6 +176,10 @@ sjme_errorCode sjme_scritchui_core_containerRemove(
 		/* Remove parent from the component. */
 		removeComponent->parent = NULL;
 		
+		/* Clear set bound. */
+		memset(&removeComponent->bounds, 0, 
+			sizeof(removeComponent->bounds));
+		
 		/* Since we removed the component, it is no longer visible. */
 		if (inState->impl->componentSetVisibleListener == NULL)
 			inState->intern->updateVisibleComponent(inState,
@@ -246,6 +250,7 @@ sjme_errorCode sjme_scritchui_core_containerSetBounds(
 {
 	sjme_scritchui_dim suggestDim;
 	sjme_errorCode error;
+	sjme_scritchui_rect* bound;
 	
 	if (inState == NULL || inContainer == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -260,6 +265,18 @@ sjme_errorCode sjme_scritchui_core_containerSetBounds(
 	/* Not implemented? */
 	if (inState->impl->containerSetBounds == NULL)
 		return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* If the bounds are the same, do nothing. */
+	bound = &inComponent->bounds;
+	if (x == bound->s.x && y == bound->s.y &&
+		width == bound->d.width && height == bound->d.height)
+		return SJME_ERROR_NONE; 
+	
+	/* Store new bounds. */
+	bound->s.x = x;
+	bound->s.y = y;
+	bound->d.width = width;
+	bound->d.height = height;
 	
 	/* Forward call. */
 	if (sjme_error_is(error = inState->impl->containerSetBounds(inState,

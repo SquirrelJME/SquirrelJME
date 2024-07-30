@@ -141,6 +141,9 @@ typedef struct sjme_scritchui_uiComponentBase
 	/** User and core listeners for the component. */
 	sjme_scritchui_uiComponentListeners listeners[SJME_NUM_SCRITCHUI_LISTENER];
 	
+	/** The bounds which were set for this component. */
+	sjme_scritchui_rect bounds;
+	
 	/** General component state. */
 	struct
 	{
