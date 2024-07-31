@@ -547,6 +547,11 @@ extern "C" {
 	#define SJME_CONFIG_HAS_GCC
 #endif
 
+#if defined(_MSC_VER)
+	/** Microsoft Visual C++ Compiler. */
+	#define SJME_CONFIG_HAS_MSVC
+#endif
+
 #if defined(SJME_CONFIG_HAS_WINDOWS)
 	/** Supports Windows Atomic Access. */
 	#define SJME_CONFIG_HAS_ATOMIC_WIN32
@@ -610,6 +615,17 @@ extern "C" {
 #else
 	/** SquirrelJME calling convention. */
 	#define SJME_CALL
+#endif
+
+#if defined(SJME_CONFIG_HAS_MSVC)
+	/** Align to 64-bit. */
+	#define sjme_align64 __declspec(align(8))
+#elif defined(SJME_CONFIG_HAS_GCC)
+	/** Align to 64-bit. */
+	#define sjme_align64 __attribute__((aligned(8)))
+#else
+	/** Align to 64-bit. */
+	#define sjme_align64 
 #endif
 
 /*--------------------------------------------------------------------------*/

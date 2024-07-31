@@ -101,7 +101,8 @@
 				(SJME_ATOMIC_WIN32_TYPE(type, numPointerStars))set, \
 				(SJME_ATOMIC_WIN32_TYPE(type, numPointerStars))expected); \
 			\
-			if ((SJME_TOKEN_TYPE(type, numPointerStars))was == expected) \
+			if ((SJME_TOKEN_TYPE(type, numPointerStars))was == \
+				(SJME_TOKEN_TYPE(type, numPointerStars))expected) \
 				return SJME_JNI_TRUE; \
 			return SJME_JNI_FALSE; \
 		}
