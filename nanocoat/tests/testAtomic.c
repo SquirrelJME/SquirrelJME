@@ -40,12 +40,22 @@ SJME_TEST_DECLARE(testAtomic)
 	sjme_unit_equalI(test,
 		456, sjme_atomic_sjme_jint_getAdd(&atomInt, 2),
 		"Int old value was not set second?");
+	
+	/* Should have two added to it. */
+	sjme_unit_equalI(test,
+		458, sjme_atomic_sjme_jint_get(&atomInt),
+		"Atomic add did not add?");
 
 	/* Try changing it but failing. */
 	sjme_unit_equalZ(test, SJME_JNI_FALSE,
 		sjme_atomic_sjme_jint_compareSet(&atomInt,
 			666, 123),
 		"Int compare mismatch failed?");
+	
+	/* Should still be old value. */
+	sjme_unit_equalI(test,
+		458, sjme_atomic_sjme_jint_get(&atomInt),
+		"Atomic was a different value?");
 
 	/* Then change it but pass. */
 	sjme_unit_equalZ(test, SJME_JNI_TRUE,

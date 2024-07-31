@@ -69,7 +69,7 @@
 	#if SJME_CONFIG_HAS_POINTER == 64
 		#define SJME_ATOMIC_WIN32_IA(type, numPointerStars) \
 			SJME_TYPEOF_IF_NOT_POINTER_OR(type, numPointerStars, \
-				InterlockedAdd, InterlockedAdd64)
+				InterlockedExchangeAdd, InterlockedExchangeAdd64)
 
 		#define SJME_ATOMIC_WIN32_S(type, numPointerStars) \
 			SJME_TYPEOF_IF_NOT_POINTER_OR(type, numPointerStars, \
@@ -114,7 +114,7 @@
 				SJME_ATOMIC_WIN32_IA(type, numPointerStars) \
 				((volatile \
 				SJME_ATOMIC_WIN32_TYPEGA(type, \
-					numPointerStars)*)&atomic->value, 0); \
+					numPointerStars)*)&atomic->value, add); \
 		}
 
 	#define SJME_ATOMIC_FUNCTION_SET(type, numPointerStars) \

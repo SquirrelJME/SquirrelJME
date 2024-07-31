@@ -213,7 +213,13 @@ sjme_errorCode sjme_thread_spinLockRelease(
 	
 	/* Give the lock count that is left. */
 	if (outCount != NULL)
-		*outCount = count;
+	{
+		if (count > 0)
+			*outCount = count - 1;
+		else
+			*outCount = 0;
+	}
+	
 	return SJME_ERROR_NONE;
 }
 
