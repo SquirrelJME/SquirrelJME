@@ -351,7 +351,7 @@ public abstract class VMFactory
 			}
 			
 			// Alias for SpringCoat
-			else if (item.equals("-zero"))
+			else if (item.equals("-zero") || item.equals("-Xint"))
 				vmName = "springcoat";
 			
 			// Ignored

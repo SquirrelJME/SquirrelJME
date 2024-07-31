@@ -108,6 +108,7 @@ The available options are:
    * Specifies the class path to use for the current application, the entries
      must be visible from the library path.
  * `-zero` -- Alias for `-Xemulator:springcoat`.
+ * `-Xint` -- Alias for `-Xemulator:springcoat`.
  * `-client` -- Ignored.
  * `-server` -- Ignored.
 

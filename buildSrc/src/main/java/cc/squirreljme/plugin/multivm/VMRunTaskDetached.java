@@ -264,10 +264,10 @@ public class VMRunTaskDetached
 			procArgs.add(arg);
 			
 			// If this is the executable, we want to possibly inject
-			// -zero to prevent compilation from being performed if doing
+			// -Xint to prevent compilation from being performed if doing
 			// GDB
 			if (i == 0 && forceInterpreter)
-				procArgs.add("-zero");
+				procArgs.add("-Xint");
 		}
 		
 		// Setup process
