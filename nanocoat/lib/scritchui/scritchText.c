@@ -17,7 +17,7 @@ sjme_errorCode sjme_scritchui_textDeleteStatic(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	sjme_todo("Impl?");
-	return sjme_error_notImplemented();
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_scritchui_textNewStatic(
@@ -27,5 +27,5 @@ sjme_errorCode sjme_scritchui_textNewStatic(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	sjme_todo("Impl?");
-	return sjme_error_notImplemented();
+	return sjme_error_notImplemented(0);
 }

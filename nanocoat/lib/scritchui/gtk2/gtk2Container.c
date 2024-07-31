@@ -81,7 +81,7 @@ sjme_errorCode sjme_scritchui_gtk2_containerAdd(
 			
 		
 		default:
-			return sjme_error_notImplemented();
+			return sjme_error_notImplemented(0);
 	}
 	
 	/* The widget needs to be shown for it to appear. */
@@ -141,7 +141,7 @@ sjme_errorCode sjme_scritchui_gtk2_containerRemove(
 			break;
 		
 		default:
-			return sjme_error_notImplemented();
+			return sjme_error_notImplemented(0);
 	}
 	
 	/* Success? */
@@ -201,7 +201,7 @@ sjme_errorCode sjme_scritchui_gtk2_containerSetBounds(
 			break;
 		
 		default:
-			return sjme_error_notImplemented();
+			return sjme_error_notImplemented(0);
 	}
 	
 	/* Regardless of the container this is in, set its size. */

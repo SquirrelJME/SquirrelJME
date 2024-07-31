@@ -48,7 +48,7 @@ sjme_errorCode sjme_scritchui_core_windowContentMinimumSize(
 	
 	/* Not implemented? */
 	if (inState->impl->windowContentMinimumSize == NULL)
-		return sjme_error_notImplemented();
+		return sjme_error_notImplemented(0);
 	
 	/* Forward call. */
 	return inState->impl->windowContentMinimumSize(inState, inWindow, width,
@@ -127,7 +127,7 @@ sjme_errorCode sjme_scritchui_core_windowSetMenuBar(
 	
 	/* Not implemented? */
 	if (inState->impl->windowSetMenuBar == NULL)
-		return sjme_error_notImplemented();
+		return sjme_error_notImplemented(0);
 	
 	/* Setting a menu bar? */
 	if (inMenuBar != NULL)
@@ -194,7 +194,7 @@ sjme_errorCode sjme_scritchui_core_windowSetVisible(
 	
 	/* Not implemented? */
 	if (inState->impl->windowSetVisible == NULL)
-		return sjme_error_notImplemented();
+		return sjme_error_notImplemented(0);
 	
 	/* Forward call. */
 	return inState->impl->windowSetVisible(inState, inWindow, isVisible);

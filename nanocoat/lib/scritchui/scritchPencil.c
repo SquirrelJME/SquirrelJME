@@ -31,7 +31,7 @@ sjme_errorCode sjme_scritchpen_core_lock(
 	{
 		/* Not implemented? */
 		if (g->lock->lock == NULL || g->lock->lockRelease == NULL)
-			return sjme_error_notImplemented();
+			return sjme_error_notImplemented(0);
 		
 		/* Restore state. */
 		state = &g->lockState;
@@ -65,7 +65,7 @@ sjme_errorCode sjme_scritchpen_core_lockRelease(
 	{
 		/* Not implemented? */
 		if (g->lock->lock == NULL || g->lock->lockRelease == NULL)
-			return sjme_error_notImplemented();
+			return sjme_error_notImplemented(0);
 		
 		/* Restore state. */
 		state = &g->lockState;
@@ -153,12 +153,12 @@ sjme_errorCode sjme_scritchpen_initStatic(
 		
 	/* Raw scan putting is required at a minimum. */
 	if (inFunctions->rawScanPutPure == NULL)
-		return sjme_error_notImplemented();
+		return sjme_error_notImplemented(0);
 	
 	/* Locking functions which are required. */
 	if (inLockFuncs != NULL)
 		if (inLockFuncs->lock == NULL || inLockFuncs->lockRelease == NULL)
-			return sjme_error_notImplemented();
+			return sjme_error_notImplemented(0);
 		
 	/* Setup base result. */
 	memset(&result, 0, sizeof(result));
@@ -330,7 +330,7 @@ sjme_errorCode sjme_scritchpen_core_hardwareGraphics(
 	
 	/* At this point locking functions are required. */
 	if (inLockFuncs == NULL)
-		return sjme_error_notImplemented();
+		return sjme_error_notImplemented(0);
 	
 	/* Get default font. */
 	defaultFont = NULL;

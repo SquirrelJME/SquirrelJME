@@ -84,7 +84,7 @@ sjme_errorCode sjme_scritchui_core_menuInsert(
 	/* Not implemented? Fail here so we go through all validity checks */
 	/* first. */
 	if (inState->impl->menuInsert == NULL)
-		return sjme_error_notImplemented();
+		return sjme_error_notImplemented(0);
 	
 	/* Do we need to make a new list? */
 	if (childList == NULL || (n + 1) > childList->length)
@@ -192,7 +192,7 @@ sjme_errorCode sjme_scritchui_core_menuRemove(
 	
 	/* Not implemented? */
 	if (inState->impl->menuRemove == NULL)
-		return sjme_error_notImplemented();
+		return sjme_error_notImplemented(0);
 	
 	/* Empty? */
 	childList = parentMenu->children;

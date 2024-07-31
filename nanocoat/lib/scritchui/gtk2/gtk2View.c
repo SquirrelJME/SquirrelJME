@@ -66,7 +66,7 @@ sjme_errorCode sjme_scritchui_gtk2_viewGetView(
 			break;
 		
 		default:
-			return sjme_error_notImplemented();
+			return sjme_error_notImplemented(0);
 	}
 	
 	/* Success? */
@@ -105,7 +105,7 @@ sjme_errorCode sjme_scritchui_gtk2_viewSetArea(
 			break;
 		
 		default:
-			return sjme_error_notImplemented();
+			return sjme_error_notImplemented(0);
 	}
 	
 	/* Success? */
@@ -118,7 +118,7 @@ sjme_errorCode sjme_scritchui_gtk2_viewSetView(
 	sjme_attrInNotNull const sjme_scritchui_rect* inViewRect)
 {
 	sjme_todo("Impl?");
-	return sjme_error_notImplemented();
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_scritchui_gtk2_viewSetViewListener(
@@ -127,5 +127,5 @@ sjme_errorCode sjme_scritchui_gtk2_viewSetViewListener(
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(view))
 {
 	sjme_todo("Impl?");
-	return sjme_error_notImplemented();
+	return sjme_error_notImplemented(0);
 }

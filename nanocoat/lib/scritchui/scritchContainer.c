@@ -34,7 +34,7 @@ sjme_errorCode sjme_scritchui_core_containerAdd(
 	
 	/* Not implemented? */
 	if (inState->impl->containerAdd == NULL)
-		return sjme_error_notImplemented();
+		return sjme_error_notImplemented(0);
 	
 	/* Only certain types are containers. */
 	if (sjme_error_is(error = inState->intern->getContainer(inState,
@@ -145,7 +145,7 @@ sjme_errorCode sjme_scritchui_core_containerRemove(
 	
 	/* Not implemented? */
 	if (inState->impl->containerRemove == NULL)
-		return sjme_error_notImplemented();
+		return sjme_error_notImplemented(0);
 		
 	/* Only certain types are containers. */
 	if (sjme_error_is(error = inState->intern->getContainer(inState,
@@ -208,7 +208,7 @@ sjme_errorCode sjme_scritchui_core_containerRemoveAll(
 	
 	/* Not implemented? */
 	if (inState->impl->containerRemove == NULL)
-		return sjme_error_notImplemented();
+		return sjme_error_notImplemented(0);
 	
 	/* Only certain types are containers. */
 	if (sjme_error_is(error = inState->intern->getContainer(inState,
@@ -264,7 +264,7 @@ sjme_errorCode sjme_scritchui_core_containerSetBounds(
 	
 	/* Not implemented? */
 	if (inState->impl->containerSetBounds == NULL)
-		return sjme_error_notImplemented();
+		return sjme_error_notImplemented(0);
 	
 	/* If the bounds are the same, do nothing. */
 	bound = &inComponent->bounds;

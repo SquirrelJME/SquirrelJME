@@ -270,7 +270,7 @@ sjme_errorCode sjme_scritchui_core_componentFocusGrab(
 	
 	/* Not implemented? */
 	if (inState->impl->componentFocusGrab == NULL)
-		return sjme_error_notImplemented();
+		return sjme_error_notImplemented(0);
 	
 	/* Direct forward. */
 	return inState->impl->componentFocusGrab(inState, inComponent);
@@ -286,7 +286,7 @@ sjme_errorCode sjme_scritchui_core_componentFocusHas(
 	
 	/* Not implemented? */
 	if (inState->impl->componentFocusHas == NULL)
-		return sjme_error_notImplemented();
+		return sjme_error_notImplemented(0);
 	
 	/* Direct forward. */
 	return inState->impl->componentFocusHas(inState, inComponent, outHasFocus);
@@ -321,7 +321,7 @@ sjme_errorCode sjme_scritchui_core_componentRepaint(
 		
 	/* Not implemented? */
 	if (inState->impl->componentRepaint == NULL)
-		return sjme_error_notImplemented();
+		return sjme_error_notImplemented(0);
 		
 	/* Only certain types are paintable. */
 	paint = NULL;
@@ -372,7 +372,7 @@ sjme_errorCode sjme_scritchui_core_componentRevalidate(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (inState->impl->componentRevalidate == NULL)
-		return sjme_error_notImplemented();
+		return sjme_error_notImplemented(0);
 	
 	/* Forward call. */
 	if (sjme_error_is(error = inState->impl->componentRevalidate(inState,
@@ -447,7 +447,7 @@ sjme_errorCode sjme_scritchui_core_componentSetPaintListener(
 	
 	/* Not supported? */
 	if (inState->impl->componentSetPaintListener == NULL)
-		return sjme_error_notImplemented();
+		return sjme_error_notImplemented(0);
 	
 	/* Only certain types can be painted on. */
 	paint = NULL;
@@ -516,7 +516,7 @@ sjme_errorCode sjme_scritchui_core_componentSetValueUpdateListener(
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(valueUpdate))
 {
 	sjme_todo("Impl?");
-	return sjme_error_notImplemented();
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_scritchui_core_componentSetVisibleListener(

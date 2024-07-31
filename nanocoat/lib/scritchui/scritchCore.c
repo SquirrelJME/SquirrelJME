@@ -259,7 +259,7 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (inImplFunc->apiInit == NULL)
-		return sjme_error_notImplemented();
+		return sjme_error_notImplemented(0);
 	
 	/* Allocate state. */
 	state = NULL;
@@ -369,7 +369,7 @@ sjme_errorCode sjme_scritchui_core_apiInit(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (inImplFunc->apiInit == NULL)
-		return sjme_error_notImplemented();
+		return sjme_error_notImplemented(0);
 	
 	/* Do we need the framebuffer wrapper? */
 	isFbWrapper = (inImplFunc == &sjme_scritchui_fbFunctions);
@@ -429,7 +429,7 @@ sjme_errorCode sjme_scritchui_core_objectDelete(
 		return SJME_ERROR_NONE;
 		
 	sjme_todo("Impl?");
-	return sjme_error_notImplemented();
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_scritchui_coreGeneric_commonNew(
@@ -452,7 +452,7 @@ sjme_errorCode sjme_scritchui_coreGeneric_commonNew(
 		
 	/* Missing? */
 	if (implNew == NULL)
-		return sjme_error_notImplemented();
+		return sjme_error_notImplemented(0);
 	
 	/* Allocate result. */
 	result = NULL;
@@ -509,7 +509,7 @@ sjme_errorCode sjme_scritchui_coreGeneric_componentNew(
 		
 	/* Missing? */
 	if (implNew == NULL)
-		return sjme_error_notImplemented();
+		return sjme_error_notImplemented(uiType);
 	
 	/* Allocate result. */
 	result = NULL;

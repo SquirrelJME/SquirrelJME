@@ -236,19 +236,23 @@ sjme_errorCode sjme_error_fatalR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 /**
  * Allows for optional debug abort when unimplemented code is hit.
  *
+ * @param context Any value.
  * @return Always @c SJME_ERROR_NOT_IMPLEMENTED .
  * @since 2024/07/30
  */
-sjme_errorCode sjme_error_notImplementedR(SJME_DEBUG_DECL_FILE_LINE_FUNC);
+sjme_errorCode sjme_error_notImplementedR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_attrInValue sjme_intPointer context);
 
 /**
  * Allows for optional debug abort when unimplemented code is hit.
  *
+ * @param context Any value.
  * @return Always @c SJME_ERROR_NOT_IMPLEMENTED .
  * @since 2024/07/30
  */
-#define sjme_error_notImplemented() \
-	sjme_error_notImplementedR(SJME_DEBUG_FILE_LINE_FUNC_ALWAYS)
+#define sjme_error_notImplemented(context) \
+	sjme_error_notImplementedR(SJME_DEBUG_FILE_LINE_FUNC_ALWAYS, \
+	(sjme_intPointer)(context))
 
 /**
  * Handles specific debug abort scenarios.

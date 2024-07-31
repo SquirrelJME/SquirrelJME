@@ -131,7 +131,7 @@ sjme_errorCode sjme_scritchui_core_screenSetListener(
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(screen))
 {
 	sjme_todo("Impl?");
-	return sjme_error_notImplemented();
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_scritchui_core_screens(
@@ -151,7 +151,7 @@ sjme_errorCode sjme_scritchui_core_screens(
 	
 	/* Missing API? */
 	if (inState->impl->screens == NULL)
-		return sjme_error_notImplemented();
+		return sjme_error_notImplemented(0);
 	
 	/* Forward call. */
 	return inState->impl->screens(inState, outScreens, inOutNumScreens);

@@ -100,7 +100,7 @@ sjme_errorCode sjme_scritchui_core_viewGetView(
 	
 	/* Not implemented? */
 	if (inState->impl->viewGetView == NULL)
-		return sjme_error_notImplemented();
+		return sjme_error_notImplemented(0);
 	
 	/* Obtain view. */
 	view = NULL;
@@ -134,7 +134,7 @@ sjme_errorCode sjme_scritchui_core_viewSetArea(
 	
 	/* Not implemented? */
 	if (inState->impl->viewSetArea == NULL)
-		return sjme_error_notImplemented();
+		return sjme_error_notImplemented(0);
 	
 	/* Obtain view. */
 	view = NULL;
@@ -182,7 +182,7 @@ sjme_errorCode sjme_scritchui_core_viewSetView(
 		return sjme_error_default(error);
 	
 	sjme_todo("Impl?");
-	return sjme_error_notImplemented();
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_scritchui_core_viewSetSizeSuggestListener(
@@ -256,5 +256,5 @@ sjme_errorCode sjme_scritchui_core_viewSetViewListener(
 		return sjme_error_default(error);
 	
 	sjme_todo("Impl?");
-	return sjme_error_notImplemented();
+	return sjme_error_notImplemented(0);
 }

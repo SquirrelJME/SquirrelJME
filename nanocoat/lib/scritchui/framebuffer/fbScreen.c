@@ -41,7 +41,7 @@ sjme_errorCode sjme_scritchui_fb_screens(
 	
 	/* Not implemented? */
 	if (inState->intern->mapScreen == NULL)
-		return sjme_error_notImplemented();
+		return sjme_error_notImplemented(0);
 	
 	/* Get wrapped screens. */
 	memset(wrappedScreens, 0, sizeof(wrappedScreens));

@@ -80,7 +80,7 @@ sjme_errorCode sjme_scritchui_core_loopExecute(
 	
 	/* Not implemented? */
 	if (inState->impl->loopExecuteLater == NULL)
-		return sjme_error_notImplemented();
+		return sjme_error_notImplemented(0);
 
 	/* We are not, so it must be scheduled. */
 	return inState->impl->loopExecuteLater(inState, callback, anything);
@@ -99,7 +99,7 @@ sjme_errorCode sjme_scritchui_core_loopExecuteLater(
 	
 	/* Not implemented? */
 	if (inState->impl->loopExecuteLater == NULL)
-		return sjme_error_notImplemented();
+		return sjme_error_notImplemented(0);
 	
 	/* Call execution directly. */
 	return inState->impl->loopExecuteLater(inState, callback, anything);
@@ -196,5 +196,5 @@ sjme_errorCode sjme_scritchui_core_loopIterate(
 		return SJME_ERROR_ILLEGAL_STATE;
 	
 	sjme_todo("Impl?");
-	return sjme_error_notImplemented();
+	return sjme_error_notImplemented(0);
 }

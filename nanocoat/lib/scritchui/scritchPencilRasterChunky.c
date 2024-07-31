@@ -93,12 +93,12 @@ sjme_errorCode sjme_scritchpen_core_copyArea(
 		return sjme_error_default(error);
 	
 	sjme_todo("Impl?");
-	return sjme_error_notImplemented();
+	return sjme_error_notImplemented(0);
 	
 	/* Release lock. */
 	if (sjme_error_is(error = sjme_scritchpen_core_lockRelease(g)))
 		return sjme_error_default(error);
-	return sjme_error_notImplemented();
+	return sjme_error_notImplemented(0);
 	
 fail_any:
 	/* Need to release the lock? */
