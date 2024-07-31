@@ -51,11 +51,11 @@ set(SJME_ScritchUICore_SOURCES
 	scritchWindow.c)
 
 # Core ScritchUI Library
-squirreljme_multilib_add_library(ScritchUICore
+squirreljme_multilib_add_static_library(ScritchUICore
 	${SJME_ScritchUICore_SOURCES})
 
 # Include main headers
-squirreljme_multilib_target_include_directories(ScritchUICore PUBLIC
+squirreljme_multilib_static_target_include_directories(ScritchUICore PUBLIC
 	"${CMAKE_SOURCE_DIR}/include")
 
 # We can only build dynamic libraries if requested to
