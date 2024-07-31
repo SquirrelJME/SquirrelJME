@@ -39,6 +39,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_x11Functions =
 	.loopExecute = NULL,
 	.loopExecuteLater = NULL,
 	.loopExecuteWait = NULL,
+	.loopIterate = NULL,
 	.menuBarNew = NULL,
 	.menuInsert = NULL,
 	.menuItemNew = NULL,

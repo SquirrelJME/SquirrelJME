@@ -32,6 +32,16 @@ extern "C"
 
 sjme_errorCode sjme_scritchui_win32_apiInit(
 	sjme_attrInNotNull sjme_scritchui inState);
+	
+sjme_errorCode sjme_scritchui_win32_loopExecuteLater(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_thread_mainFunc callback,
+	sjme_attrInNullable sjme_thread_parameter anything);
+
+sjme_errorCode sjme_scritchui_win32_loopIterate(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInValue sjme_jboolean blocking,
+	sjme_attrOutNullable sjme_jboolean* outHasTerminated);
 
 /*--------------------------------------------------------------------------*/
 

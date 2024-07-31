@@ -41,6 +41,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_gtkFunctions =
 	.loopExecute = NULL,
 	.loopExecuteLater = sjme_scritchui_gtk2_loopExecuteLater,
 	.loopExecuteWait = NULL,
+	.loopIterate = NULL,
 	.menuBarNew = sjme_scritchui_gtk2_menuBarNew,
 	.menuInsert = sjme_scritchui_gtk2_menuInsert,
 	.menuItemNew = sjme_scritchui_gtk2_menuItemNew,

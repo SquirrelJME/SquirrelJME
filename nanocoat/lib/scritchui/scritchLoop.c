@@ -185,10 +185,15 @@ sjme_errorCode sjme_scritchui_core_loopIsInThread(
 
 sjme_errorCode sjme_scritchui_core_loopIterate(
 	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInValue sjme_jboolean blocking,
 	sjme_attrOutNullable sjme_jboolean* outHasTerminated)
 {
 	if (inState == NULL)
 		return SJME_ERROR_NONE;
+	
+	/* Iteration is not possible if there is a thread running. */
+	if (inState->loopThread != SJME_THREAD_NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
 	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented();

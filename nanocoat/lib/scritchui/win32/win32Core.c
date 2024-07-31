@@ -38,8 +38,9 @@ static const sjme_scritchui_implFunctions sjme_scritchui_win32Functions =
 	.lafElementColor = NULL,
 	.listNew = NULL,
 	.loopExecute = NULL,
-	.loopExecuteLater = NULL,
+	.loopExecuteLater = sjme_scritchui_win32_loopExecuteLater,
 	.loopExecuteWait = NULL,
+	.loopIterate = sjme_scritchui_win32_loopIterate,
 	.menuBarNew = NULL,
 	.menuInsert = NULL,
 	.menuItemNew = NULL,
@@ -63,43 +64,42 @@ static const sjme_scritchui_implFunctions sjme_scritchui_win32Functions =
 static const sjme_scritchui_implInternFunctions
 	sjme_scritchui_win32InternFunctions =
 {
-	.todo = 0,
+	.getLastError = sjme_scritchui_win32_intern_getLastError,
 };
 
 static sjme_thread_result sjme_scritchui_win32_loopMain(
 	sjme_attrInNullable sjme_thread_parameter anything)
 {
+	sjme_errorCode error;
 	sjme_scritchui state;
 	MSG message;
-	BOOL messageResult;
+	sjme_jboolean terminated;
 	
 	/* Restore state. */
 	state = (sjme_scritchui)anything;
 	if (state == NULL)
 		return SJME_THREAD_RESULT(SJME_ERROR_NULL_ARGUMENTS);
 	
+	/* By calling this, we are forcing the event queue to be created. */
+	memset(&message, 0, sizeof(message));
+	PeekMessage(&message, NULL,
+		WM_USER, WM_USER, PM_NOREMOVE);
+	
 	/* Before we go into the main loop, signal it is ready. */
 	sjme_atomic_sjme_jint_set(&state->loopThreadReady, 1);
 	
 	/* Message loop. */
-	for (;;)
+	terminated = SJME_JNI_FALSE;
+	do
 	{
-		/* Read next message for the event thread. */
-		memset(&message, 0, sizeof(message));
-		messageResult = GetMessage(&message, NULL,
-			0, 0);
+		/* Keep running single executions. */
+		error = state->impl->loopIterate(state, SJME_JNI_TRUE,
+			&terminated);
 		
-		/* Quitting? */
-		if (messageResult == 0)
-			break;
-		
-		/* Error? */
-		if (messageResult < 0)
-			sjme_todo("Handle failure?");
-		
-		/* Handle message. */
-		sjme_todo("Handle message?");
-	}
+		/* Did this error? */
+		if (sjme_error_is(error))
+			sjme_message("Loop iterate failure: %d", error);
+	} while (!terminated);
 	
 	/* Success?? */
 	return SJME_THREAD_RESULT(SJME_ERROR_NONE);

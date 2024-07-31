@@ -1316,12 +1316,14 @@ typedef sjme_errorCode (*sjme_scritchui_loopIsInThreadFunc)(
  * Iterates a single run of the event loop.
  * 
  * @param inState The input ScritchUI state.
+ * @param blocking If the iteration should block for something to happen.
  * @param outHasTerminated Has the GUI interface terminated?
  * @return Any error code if applicable.
  * @since 2024/04/02
  */
 typedef sjme_errorCode (*sjme_scritchui_loopIterateFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInValue sjme_jboolean blocking,
 	sjme_attrOutNullable sjme_jboolean* outHasTerminated);
 
 /**

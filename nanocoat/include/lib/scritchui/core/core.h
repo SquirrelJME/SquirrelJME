@@ -244,6 +244,7 @@ sjme_errorCode sjme_scritchui_core_loopIsInThread(
 
 sjme_errorCode sjme_scritchui_core_loopIterate(
 	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInValue sjme_jboolean blocking,
 	sjme_attrOutNullable sjme_jboolean* outHasTerminated);
 	
 sjme_errorCode sjme_scritchui_core_menuBarNew(

@@ -291,6 +291,9 @@ struct sjme_scritchui_implFunctions
 	/** Execute callback within the event loop and wait until termination. */
 	sjme_scritchui_loopExecuteFunc loopExecuteWait;
 	
+	/** Iterates a single run of the event loop. */
+	SJME_SCRITCHUI_QUICK_SAME(loopIterate);
+	
 	/** Creates a new menu bar. */
 	SJME_SCRITCHUI_QUICK_IMPL(menuBarNew);
 	
