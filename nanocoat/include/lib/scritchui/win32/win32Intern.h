@@ -32,11 +32,13 @@ extern "C"
  * Calls @c GetLastError() and translates the error code.
  * 
  * @param inState The input state.
+ * @param ifOkay The value to return if there is no error.
  * @return The last error code.
  * @since 2024/07/31
  */
 typedef sjme_errorCode (*sjme_scritchui_win32_intern_getLastErrorFunc)(
-	sjme_attrInNotNull sjme_scritchui inState);
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInValue sjme_errorCode ifOkay);
 
 struct sjme_scritchui_implInternFunctions
 {
@@ -45,7 +47,8 @@ struct sjme_scritchui_implInternFunctions
 };
 
 sjme_errorCode sjme_scritchui_win32_intern_getLastError(
-	sjme_attrInNotNull sjme_scritchui inState);
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInValue sjme_errorCode ifOkay);
 
 /*--------------------------------------------------------------------------*/
 

@@ -30,6 +30,15 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
+/** Window handle. */
+#define SJME_SUI_WIN32_H_HWND 0
+
+/** Void window handle. */
+#define SJME_SUI_WIN32_H_VOID 3
+	
+/** Are we on Windows 9x? */
+#define SJME_SUI_WIN32_V_WIN9X 3
+
 sjme_errorCode sjme_scritchui_win32_apiInit(
 	sjme_attrInNotNull sjme_scritchui inState);
 	
@@ -42,6 +51,11 @@ sjme_errorCode sjme_scritchui_win32_loopIterate(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInValue sjme_jboolean blocking,
 	sjme_attrOutNullable sjme_jboolean* outHasTerminated);
+
+sjme_errorCode sjme_scritchui_win32_panelNew(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiPanel inPanel,
+	sjme_attrInNullable sjme_pointer ignored);
 
 /*--------------------------------------------------------------------------*/
 

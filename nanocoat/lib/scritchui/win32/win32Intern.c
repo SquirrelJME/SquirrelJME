@@ -11,7 +11,8 @@
 #include "lib/scritchui/win32/win32Intern.h"
 
 sjme_errorCode sjme_scritchui_win32_intern_getLastError(
-	sjme_attrInNotNull sjme_scritchui inState)
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInValue sjme_errorCode ifOkay)
 {
 	DWORD winErr;
 	
@@ -20,7 +21,15 @@ sjme_errorCode sjme_scritchui_win32_intern_getLastError(
 	
 	/* Get Windows error. */
 	winErr = GetLastError();
+	if (winErr == ERROR_SUCCESS)
+		return ifOkay;
+
+#if defined(SJME_CONFIG_DEBUG)
+	/* Debug. */
+	sjme_message("GetLastError() == %d 0x%08x",
+		winErr, winErr);
+#endif
 	
 	/* Did not actually map to anything? */
-	return SJME_ERROR_UNKNOWN;
+	return sjme_error_default(ifOkay);
 }

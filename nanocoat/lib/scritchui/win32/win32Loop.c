@@ -24,11 +24,17 @@ sjme_errorCode sjme_scritchui_win32_loopExecuteLater(
 		GetThreadId(inState->loopThread),
 		WM_USER,
 		(WPARAM)callback, (LPARAM)anything)) == 0)
-		return inState->implIntern->getLastError(inState);
+		return inState->implIntern->getLastError(inState,
+			SJME_ERROR_LOOP_ENQUEUE_FAILED);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
+
+#if !defined(WM_DWMNCRENDERINGCHANGED)
+	/** Window manager rendering changed. */
+	#define WM_DWMNCRENDERINGCHANGED 799
+#endif
 
 sjme_errorCode sjme_scritchui_win32_loopIterate(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -80,11 +86,16 @@ sjme_errorCode sjme_scritchui_win32_loopIterate(
 	
 	/* Error? */
 	if (messageResult < 0)
-		return inState->implIntern->getLastError(inState);
+		return inState->implIntern->getLastError(inState,
+			SJME_ERROR_INVALID_ARGUMENT);
 	
 	/* Handle message. */
 	switch (message.message)
 	{
+			/* Do not care. */
+		case WM_DWMNCRENDERINGCHANGED:
+			break;
+		
 			/* Callback function. */
 		case WM_USER:
 			threadMain = (sjme_thread_mainFunc)message.wParam;

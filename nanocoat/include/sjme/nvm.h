@@ -1907,8 +1907,11 @@ typedef enum sjme_errorCode
 	/** Could not unload native library. */
 	SJME_ERROR_COULD_NOT_UNLOAD_LIBRARY = -75,
 	
+	/** Could not enqueue onto the message loop. */
+	SJME_ERROR_LOOP_ENQUEUE_FAILED = -76,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -76
+	SJME_NUM_ERROR_CODES = -77
 } sjme_errorCode;
 
 /**

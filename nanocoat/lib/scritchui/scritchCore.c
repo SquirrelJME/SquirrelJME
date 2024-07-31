@@ -452,7 +452,7 @@ sjme_errorCode sjme_scritchui_coreGeneric_commonNew(
 		
 	/* Missing? */
 	if (implNew == NULL)
-		return sjme_error_notImplemented(0);
+		return sjme_error_notImplemented(uiType);
 	
 	/* Allocate result. */
 	result = NULL;

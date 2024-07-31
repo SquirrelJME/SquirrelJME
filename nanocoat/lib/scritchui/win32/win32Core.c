@@ -47,7 +47,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_win32Functions =
 	.menuNew = NULL,
 	.menuRemove = NULL,
 	.panelEnableFocus = NULL,
-	.panelNew = NULL,
+	.panelNew = sjme_scritchui_win32_panelNew,
 	.screens = NULL,
 	.scrollPanelNew = NULL,
 	.viewGetView = NULL,
@@ -74,6 +74,7 @@ static sjme_thread_result sjme_scritchui_win32_loopMain(
 	sjme_scritchui state;
 	MSG message;
 	sjme_jboolean terminated;
+	HWND voidWindow;
 	
 	/* Restore state. */
 	state = (sjme_scritchui)anything;
@@ -84,6 +85,35 @@ static sjme_thread_result sjme_scritchui_win32_loopMain(
 	memset(&message, 0, sizeof(message));
 	PeekMessage(&message, NULL,
 		WM_USER, WM_USER, PM_NOREMOVE);
+	
+	/* Past Windows 98, we can use a specific message window. */
+	if (!state->common.intVals[SJME_SUI_WIN32_V_WIN9X])
+		voidWindow = HWND_MESSAGE;
+	
+	/* Because all child windows need a parent, we need somewhere to store */
+	/* them before reparenting. */
+	else
+	{
+		voidWindow = CreateWindowEx(
+			WS_EX_NOACTIVATE | WS_EX_NOPARENTNOTIFY,
+			"Static",
+			"SquirrelJME Void",
+			WS_DISABLED | WS_OVERLAPPED,
+			0, 0, 1, 1,
+			NULL,
+			NULL,
+			GetModuleHandle(NULL),
+			NULL);
+		if (voidWindow == NULL)
+			return SJME_THREAD_RESULT(state->implIntern->getLastError(
+				state, SJME_ERROR_NATIVE_WIDGET_CREATE_FAILED));
+	}
+	
+	/* Store the handle for later. */
+	state->common.handle[SJME_SUI_WIN32_H_VOID] = voidWindow;
+	
+	/* Debug. */
+	sjme_message("Void Window: %p", voidWindow);
 	
 	/* Before we go into the main loop, signal it is ready. */
 	sjme_atomic_sjme_jint_set(&state->loopThreadReady, 1);
@@ -144,6 +174,7 @@ sjme_errorCode sjme_scritchui_win32_apiInit(
 	sjme_attrInNotNull sjme_scritchui inState)
 {
 	sjme_errorCode error;
+	OSVERSIONINFOEX winVer;
 	
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -153,6 +184,16 @@ sjme_errorCode sjme_scritchui_win32_apiInit(
 	
 	/* This is a standard desktop. */
 	inState->wmType = SJME_SCRITCHUI_WM_TYPE_STANDARD_DESKTOP;
+	
+	/* Are we on Windows 9x? */
+	memset(&winVer, 0, sizeof(winVer));
+	GetVersionEx((LPOSVERSIONINFOA)&winVer);
+	if ((winVer.dwMajorVersion == 4 && (winVer.dwMinorVersion == 0 ||
+		winVer.dwMinorVersion == 10 || winVer.dwMinorVersion == 90)) ||
+		winVer.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS)
+		inState->common.intVals[SJME_SUI_WIN32_V_WIN9X] = SJME_JNI_TRUE;
+	else
+		inState->common.intVals[SJME_SUI_WIN32_V_WIN9X] = SJME_JNI_FALSE;
 	
 	/* Start main Win32 thread. */
 	if (sjme_error_is(error = sjme_thread_new(
