@@ -29,6 +29,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import org.gradle.api.logging.LogLevel;
 import org.gradle.api.logging.Logger;
@@ -59,8 +60,88 @@ public final class CMakeUtils
 	 */
 	public static Path cmakeExePath()
 	{
+		// CLion installed in local application data?
+		if (OperatingSystem.current().isWindows())
+		{
+			String appData = System.getenv("LOCALAPPDATA");
+			if (appData != null)
+			{
+				Path maybeExe = CMakeUtils.cmakeExePathViaCLion(
+					Paths.get(appData).resolve("Programs")
+						.resolve("CLion").resolve("bin"));
+				if (maybeExe != null)
+					return maybeExe;
+			}
+		}
+		
+		// If this environment variable is set, then CLion was installed by
+		// the JetBrains installer on Windows
+		String clionEnv = Objects.toString(System.getenv("CLion"),
+			System.getenv("CLION"));
+		if (clionEnv != null)
+		{
+			Path maybeExe = CMakeUtils.cmakeExePathViaCLion(
+				Paths.get(clionEnv));
+			if (maybeExe != null)
+				return maybeExe;
+		}
+		
+		// Otherwise try to find it in path or a program file directory
 		return PathUtils.findPathInstalled("cmake",
 			"CMake");
+	}
+	
+	/**
+	 * Determines the CMake executable path via a CLion installation.
+	 *
+	 * @param __clionRoot The CLion root.
+	 * @return The resultant executable path, or {@code null} if not found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2024/07/30
+	 */
+	public static Path cmakeExePathViaCLion(Path __clionRoot)
+		throws NullPointerException
+	{
+		if (__clionRoot == null)
+			throw new NullPointerException("NARG");
+		
+		// Does not actually exist?
+		if (!Files.isDirectory(__clionRoot))
+			return null;
+		
+		// Go into CMake directory
+		Path workBin = __clionRoot;
+		workBin = workBin.resolve("cmake");
+		
+		// Look where?
+		if (OperatingSystem.current().isWindows())
+			workBin = workBin.resolve("win");
+		else if (OperatingSystem.current().isMacOsX())
+			workBin = workBin.resolve("mac");
+		else
+			workBin = workBin.resolve("linux");
+		
+		// x86 or ARM?
+		if (CMakeUtils.isX86Host())
+			workBin = workBin.resolve("x64");
+		else
+			workBin = workBin.resolve("arm");
+		
+		// CMake's bin directory
+		workBin = workBin.resolve("bin");
+		
+		// The actual binary itself
+		if (OperatingSystem.current().isWindows())
+			workBin = workBin.resolve("cmake.exe");
+		else
+			workBin = workBin.resolve("cmake");
+		
+		// Is it here and executable?
+		if (Files.exists(workBin) && Files.isExecutable(workBin))
+			return workBin;
+		
+		// Not found
+		return null;
 	}
 	
 	/**

@@ -70,6 +70,10 @@ public class CMakeBuildTask
 		this.cmakeSource = __source;
 		this.cmakeRules = Collections.<String>unmodifiableList(__rules);
 		
+		// Debug
+		this.getLogger().lifecycle(
+			"CMake Path: " + CMakeUtils.cmakeExePath());
+		
 		// The build root is based on the task
 		Path cmakeBuild = this.getProject().getBuildDir().toPath()
 			.resolve("cmake-" + this.getName()).toAbsolutePath();
