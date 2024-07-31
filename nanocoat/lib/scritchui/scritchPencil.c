@@ -162,6 +162,7 @@ sjme_errorCode sjme_scritchpen_initStatic(
 		
 	/* Setup base result. */
 	memset(&result, 0, sizeof(result));
+	result.common.type = SJME_SCRITCHUI_TYPE_PENCIL;
 	result.api = &sjme_scritchpen_core_functions;
 	result.util = &sjme_scritchpen_coreUtil_functions;
 	result.impl = inFunctions;

@@ -68,6 +68,9 @@ typedef struct sjme_scritchui_pencilLockState
  */
 typedef struct sjme_scritchui_pencilBase
 {
+	/** Common data. */
+	sjme_scritchui_uiCommonBase common;
+	
 	/** The current state of the pencil. */
 	sjme_scritchui_pencilState state;
 	
