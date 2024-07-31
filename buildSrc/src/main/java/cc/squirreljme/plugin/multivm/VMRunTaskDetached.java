@@ -156,6 +156,18 @@ public class VMRunTaskDetached
 				forceInterpreter = true;
 			}
 			
+			// WinDbg Server?
+			else if ("windbg".equals(debugServer.getScheme()))
+			{
+				procArgs.add(Paths.get(GdbUtils.setScheme(debugServer, 
+					"file")).toAbsolutePath().toString());
+				procArgs.add("-server");
+				procArgs.add("tcp:port=2345");
+				
+				// Force interpreter to be used
+				forceInterpreter = true;
+			}
+			
 			// JDWP?
 			else if ("jdwp".equals(debugServer.getScheme()))
 				sysProps.put("squirreljme.jdwp",

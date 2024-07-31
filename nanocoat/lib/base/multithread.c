@@ -209,7 +209,7 @@ sjme_errorCode sjme_thread_spinLockRelease(
 	
 	/* Do we not own the lock? */
 	if (!owned)
-		return SJME_ERROR_NOT_LOCK_OWNER;
+		return sjme_error_fatal(SJME_ERROR_NOT_LOCK_OWNER);
 	
 	/* Give the lock count that is left. */
 	if (outCount != NULL)

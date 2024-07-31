@@ -497,7 +497,7 @@ public final class TaskInitialization
 				__useDebugServer);};
 		
 		// Is there GDB?
-		URI gdbServer = GdbUtils.debuggerUri();
+		URI[] gdbServer = GdbUtils.debuggerUri();
 		
 		// Setup a bunch of fake MIDlets to possibly run
 		int n = 3;
@@ -542,7 +542,7 @@ public final class TaskInitialization
 		TaskContainer tasks = __project.getTasks();
 		
 		// Is there GDB?
-		URI gdbServer = GdbUtils.debuggerUri();
+		URI[] gdbServer = GdbUtils.debuggerUri();
 		
 		// Handle all source sets
 		if (hasMain || hasMidlets)
@@ -747,7 +747,7 @@ public final class TaskInitialization
 	 */
 	public static void makeRunTasks(MakeRunTaskProvider __provider,
 		String __name, String __mainClass, JavaMEMidlet __midlet,
-		SourceTargetClassifier __classifier, URI __gdbServer)
+		SourceTargetClassifier __classifier, URI[] __gdbServer)
 	{
 		if (__provider == null || __name == null || __classifier == null ||
 			__mainClass == null || __midlet == null)
@@ -771,10 +771,12 @@ public final class TaskInitialization
 			VMRunTask.INTERNAL);
 		
 		// GDB if it exists
-		if (__gdbServer != null)
-			__provider.makeTask(__name + "Gdb",
-				__classifier, __mainClass, __midlet,
-				__gdbServer);
+		if (__gdbServer != null && __gdbServer.length > 0)
+			for (URI server : __gdbServer)
+				__provider.makeTask(__name +
+					TaskInitialization.uppercaseFirst(server.getScheme()),
+					__classifier, __mainClass, __midlet,
+					server);
 	}
 	
 	/**
@@ -790,7 +792,7 @@ public final class TaskInitialization
 	 */
 	public static void makeRunTasks(MakeRunTaskProvider __provider,
 		String __name, String __mainClass, JavaMEMidlet[] __midlets,
-		SourceTargetClassifier __classifier, URI __gdbServer)
+		SourceTargetClassifier __classifier, URI[] __gdbServer)
 	{
 		// Consider standard Java mains first
 		int index = 0;
@@ -837,7 +839,7 @@ public final class TaskInitialization
 	 */
 	public static void makeRunTasks(SourceTargetClassifier __classifier,
 		boolean __hasMain, TaskContainer __tasks, VMLibraryTask __libTask,
-		SquirrelJMEPluginConfiguration __config, URI __gdbServer,
+		SquirrelJMEPluginConfiguration __config, URI[] __gdbServer,
 		boolean __hasMidlets)
 	{
 		// Base name for task

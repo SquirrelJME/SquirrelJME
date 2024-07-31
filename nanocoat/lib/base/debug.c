@@ -86,6 +86,16 @@ sjme_lpcstr sjme_debug_shortenFile(sjme_lpcstr file)
 	return file;
 }
 
+sjme_errorCode sjme_error_fatalR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_attrInValue sjme_errorCode error)
+{
+#if defined(SJME_CONFIG_DEBUG)
+	sjme_dieR(file, line, func, "FATAL ERROR: %d!", error);
+#endif
+	
+	return sjme_error_default(error);
+}
+
 sjme_errorCode sjme_error_notImplementedR(SJME_DEBUG_DECL_FILE_LINE_FUNC)
 {
 #if defined(SJME_CONFIG_DEBUG)

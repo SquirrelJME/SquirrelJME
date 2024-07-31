@@ -12,7 +12,13 @@ package cc.squirreljme.plugin.multivm.gdb;
 import cc.squirreljme.plugin.util.PathUtils;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import org.gradle.internal.os.OperatingSystem;
 
 /**
  * Utilities for GDB.
@@ -31,25 +37,38 @@ public final class GdbUtils
 	}
 	
 	/**
-	 * Returns the URI where the debugger is available.
+	 * Returns the URIs where debuggers are available.
 	 *
-	 * @return The URI for the debugger or {@code null} if there is none.
+	 * @return The URI for any debugger or {@code null} if there is none.
 	 * @since 2024/07/30
 	 */
-	public static URI debuggerUri()
+	public static URI[] debuggerUri()
 	{
+		List<URI> result = new ArrayList<>();
+		
+		// WinDbg?
+		if (OperatingSystem.current().isWindows())
+		{
+			Path winDbgServerPath = GdbUtils.winDbgServerExePath();
+			if (winDbgServerPath != null)
+				result.add(GdbUtils.setScheme(winDbgServerPath.toUri(),
+					"windbg"));
+		}
+		
 		// GDB?
 		Path gdbServerPath = GdbUtils.gdbServerExePath();
 		if (gdbServerPath != null)
-			return GdbUtils.setScheme(gdbServerPath.toUri(), "gdb");
+			result.add(GdbUtils.setScheme(gdbServerPath.toUri(), "gdb"));
 		
 		// LLDB?
 		Path lldbServerPath = GdbUtils.lldbServerExePath();
 		if (lldbServerPath != null)
-			return GdbUtils.setScheme(lldbServerPath.toUri(), "lldb");
+			result.add(GdbUtils.setScheme(lldbServerPath.toUri(), "lldb"));
 		
-		// Not found
-		return null;
+		// Not found?
+		if (result.isEmpty())
+			return null;
+		return result.toArray(new URI[result.size()]);
 	}
 	
 	/**
@@ -112,5 +131,27 @@ public final class GdbUtils
 		{
 			throw new RuntimeException("Bad URI.", __e);
 		}
+	}
+	
+	/**
+	 * Returns the location of WinDbg.
+	 *
+	 * @return The location of WinDbg.
+	 * @since 2024/07/31
+	 */
+	public static Path winDbgServerExePath()
+	{
+		for (String kit : Arrays.asList("10", "8", "7"))
+			for (String arch : Arrays.asList("x64", "x86"))
+			{
+				Path maybe = PathUtils.findPathInstalled("windbg",
+					Paths.get("Windows Kits", kit,
+						"Debuggers", arch));
+				if (Files.exists(maybe) && Files.isExecutable(maybe))
+					return maybe;
+			}
+		
+		// Not found
+		return null;
 	}
 }

@@ -120,6 +120,22 @@ public class PathUtils
 		String __programFiles)
 		throws NullPointerException
 	{
+		return PathUtils.findPathInstalled(__exe, Paths.get(__programFiles));
+	}
+	
+	/**
+	 * Finds installed path of the given executable.
+	 *
+	 * @param __exe The executable to find.
+	 * @param __programFiles The program files directory to look within.
+	 * @return The found path or {@code null} if it was not found.
+	 * @throws NullPointerException If {@code __exe} was not specified.
+	 * @since 2024/06/15
+	 */
+	public static Path findPathInstalled(String __exe,
+		Path __programFiles)
+		throws NullPointerException
+	{
 		if (__exe == null)
 			throw new NullPointerException("NARG");
 		
@@ -144,10 +160,15 @@ public class PathUtils
 				if (programFiles != null)
 				{
 					Path maybe = Paths.get(programFiles)
+						.resolve(__programFiles).resolve(exeName);
+					if (Files.exists(maybe) && Files.isExecutable(maybe))
+						return maybe;
+					
+					maybe = Paths.get(programFiles)
 						.resolve(__programFiles).resolve("bin")
 						.resolve(exeName);
-					if (Files.exists(maybe))
-						cmakePath = maybe;
+					if (Files.exists(maybe) && Files.isExecutable(maybe))
+						return maybe;
 				}
 			}
 		}
@@ -159,8 +180,8 @@ public class PathUtils
 			Path maybe = Paths.get("/").resolve("opt")
 				.resolve("homebrew").resolve("bin")
 				.resolve(__exe);
-			if (Files.exists(maybe))
-				cmakePath = maybe;
+			if (Files.exists(maybe) && Files.isExecutable(maybe))
+				return maybe;
 		}
 		
 		return cmakePath;

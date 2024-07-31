@@ -214,6 +214,26 @@ void sjme_debug_abort(void);
 sjme_lpcstr sjme_debug_shortenFile(sjme_lpcstr file);
 
 /**
+ * Allows for optional debug abort when a fatal error is hit.
+ *
+ * @param error The error to return.
+ * @return The @c error value.
+ * @since 2024/07/31
+ */
+sjme_errorCode sjme_error_fatalR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
+	sjme_attrInValue sjme_errorCode error);
+
+/**
+ * Allows for optional debug abort when a fatal error is hit.
+ *
+ * @param error The error to return.
+ * @return The @c error value.
+ * @since 2024/07/31
+ */
+#define sjme_error_fatal(error) \
+	sjme_error_fatalR(SJME_DEBUG_FILE_LINE_FUNC_ALWAYS, error)
+
+/**
  * Allows for optional debug abort when unimplemented code is hit.
  *
  * @return Always @c SJME_ERROR_NOT_IMPLEMENTED .
