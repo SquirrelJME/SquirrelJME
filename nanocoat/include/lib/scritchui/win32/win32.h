@@ -109,6 +109,11 @@ sjme_errorCode sjme_scritchui_win32_panelNew(
 	sjme_attrInNotNull sjme_scritchui_uiPanel inPanel,
 	sjme_attrInNullable sjme_pointer ignored);
 
+sjme_errorCode sjme_scritchui_win32_screens(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_scritchui_uiScreen* outScreens,
+	sjme_attrInOutNotNull sjme_jint* inOutNumScreens);
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
