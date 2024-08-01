@@ -34,12 +34,83 @@ sjme_errorCode sjme_scritchui_win32_menuBarNew(
 	return inState->implIntern->getLastError(inState, SJME_ERROR_NONE);
 }
 
+sjme_errorCode sjme_scritchui_win32_menuInsert(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind intoMenu,
+	sjme_attrInPositive sjme_jint atIndex,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind childItem)
+{
+	MENUITEMINFO itemInfo;
+	sjme_lpcstr string;
+	sjme_jint opaqueId;
+	
+	if (inState == NULL || intoMenu == NULL || childItem == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Is there an opaque ID? */
+	opaqueId = 0;
+	if (childItem->common.type == SJME_SCRITCHUI_TYPE_MENU_ITEM)
+		opaqueId = ((sjme_scritchui_uiMenuItem)childItem)->opaqueId;
+	
+	/* Because menu items do not exist, we need to create one at runtime. */
+	memset(&itemInfo, 0, sizeof(itemInfo));
+	itemInfo.cbSize = sizeof(itemInfo);
+	itemInfo.fMask = MIIM_DATA;
+	itemInfo.dwItemData = (LONG_PTR)childItem;
+	
+	/* Is an opaque ID set? */
+	if (opaqueId != 0)
+	{
+		itemInfo.fMask |= MIIM_ID;
+		itemInfo.wID = opaqueId;
+	}
+	
+	/* If adding a submenu we need to specify that. */
+	if (childItem->common.type == SJME_SCRITCHUI_TYPE_MENU)
+	{
+		itemInfo.fMask |= MIIM_SUBMENU;
+		itemInfo.hSubMenu = childItem->common.handle[SJME_SUI_WIN32_H_HMENU];
+	}
+	
+	/* Try to get the string to add, if there is one */
+	string = NULL;
+	if (childItem->common.type == SJME_SCRITCHUI_TYPE_MENU)
+		string = ((sjme_scritchui_uiMenu)childItem)->labeled.label;
+	else if (childItem->common.type == SJME_SCRITCHUI_TYPE_MENU_ITEM)
+		string = ((sjme_scritchui_uiMenuItem)childItem)->labeled.label;
+	
+	/* Is a string being added? */
+	if (string != NULL)
+	{
+		itemInfo.fMask |= MIIM_STRING;
+		itemInfo.dwTypeData = string;
+	}
+	
+	/* Create the item. */
+	if (0 == InsertMenuItem(
+		intoMenu->common.handle[SJME_SUI_WIN32_H_HMENU],
+		atIndex, TRUE, &itemInfo))
+		return inState->implIntern->getLastError(inState,
+			SJME_ERROR_NATIVE_WIDGET_CREATE_FAILED);
+		
+	/* Success? */
+	return inState->implIntern->getLastError(inState, SJME_ERROR_NONE);
+}
+
 sjme_errorCode sjme_scritchui_win32_menuItemNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiMenuItem inMenuItem,
-	sjme_attrInNullable sjme_pointer ignored)
+	sjme_attrInNotNull const sjme_scritchui_impl_initParamMenuItem* init)
 {
-	return sjme_error_notImplemented(0);
+	if (inState == NULL || inMenuItem == NULL || init == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Just copy the ID over. */
+	inMenuItem->opaqueId = init->opaqueId;
+	
+	/* Menu items in Win32 only exist when they are actually within a menu, */
+	/* so essentially this does nothing on purpose. */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchui_win32_menuNew(
@@ -49,4 +120,22 @@ sjme_errorCode sjme_scritchui_win32_menuNew(
 {
 	/* Exactly the same as menu bars. */
 	return sjme_scritchui_win32_menuBarNew(inState, inMenu, ignored);
+}
+
+sjme_errorCode sjme_scritchui_win32_menuRemove(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind fromMenu,
+	sjme_attrInPositive sjme_jint atIndex)
+{
+	if (inState == NULL || fromMenu == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* The item just gets removed. */
+	if (0 == RemoveMenu(fromMenu->common.handle[SJME_SUI_WIN32_H_HMENU],
+		atIndex, MF_BYPOSITION))
+		return inState->implIntern->getLastError(inState,
+			SJME_ERROR_NATIVE_WIDGET_FAILURE);
+	
+	/* Success? */
+	return inState->implIntern->getLastError(inState, SJME_ERROR_NONE);
 }

@@ -344,6 +344,9 @@ typedef struct sjme_scritchui_uiMenuItemBase
 	
 	/** The accelerator modifiers @c sjme_scritchinput_modifier , if any. */
 	sjme_jint accelMod;
+	
+	/** Some windowing systems need some ID to be specified. */
+	sjme_jint opaqueId;
 } sjme_scritchui_uiMenuItemBase;
 
 /**

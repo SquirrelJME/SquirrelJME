@@ -64,6 +64,17 @@ typedef struct sjme_scritchui_impl_initParamList
 } sjme_scritchui_impl_initParamList;
 
 /**
+ * Initialization parameters for menu items.
+ * 
+ * @since 2024/08/01
+ */
+typedef struct sjme_scritchui_impl_initParamMenuItem
+{
+	/** The opaque ID to use for the item. */
+	sjme_jint opaqueId;
+} sjme_scritchui_impl_initParamMenuItem;
+
+/**
  * Implementation specific initialization.
  * 
  * @param inState The state being initialized.
@@ -115,7 +126,7 @@ typedef sjme_errorCode (*sjme_scritchui_impl_containerRemoveFunc)(
 typedef sjme_errorCode (*sjme_scritchui_impl_listNewFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiList inList,
-	sjme_attrInValue const sjme_scritchui_impl_initParamList* init);
+	sjme_attrInNotNull const sjme_scritchui_impl_initParamList* init);
 
 /**
  * Creates a new native menu bar.
@@ -143,7 +154,7 @@ typedef sjme_errorCode (*sjme_scritchui_impl_menuBarNewFunc)(
 typedef sjme_errorCode (*sjme_scritchui_impl_menuItemNewFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiMenuItem inMenuItem,
-	sjme_attrInNullable sjme_pointer ignored);
+	sjme_attrInValue const sjme_scritchui_impl_initParamMenuItem* init);
 
 /**
  * Creates a new native menu.

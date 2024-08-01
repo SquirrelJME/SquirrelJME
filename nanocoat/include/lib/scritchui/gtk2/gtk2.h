@@ -165,7 +165,7 @@ sjme_errorCode sjme_scritchui_gtk2_menuInsert(
 sjme_errorCode sjme_scritchui_gtk2_menuItemNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiMenuItem inMenuItem,
-	sjme_attrInNullable sjme_pointer ignored);
+	sjme_attrInNotNull const sjme_scritchui_impl_initParamMenuItem* init);
 
 sjme_errorCode sjme_scritchui_gtk2_menuNew(
 	sjme_attrInNotNull sjme_scritchui inState,

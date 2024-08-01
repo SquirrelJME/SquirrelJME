@@ -134,8 +134,14 @@ sjme_errorCode sjme_scritchui_core_menuItemNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_scritchui_uiMenuItem* outMenuItem)
 {
+	sjme_scritchui_impl_initParamMenuItem init;
+	
 	if (inState == NULL || outMenuItem == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Set whatever next menu ID there is. */
+	memset(&init, 0, sizeof(init));
+	init.opaqueId = ++inState->nextMenuItemId;
 		
 	/* Use generic function. */
 	return sjme_scritchui_coreGeneric_commonNew(inState,
@@ -144,7 +150,7 @@ sjme_errorCode sjme_scritchui_core_menuItemNew(
 		SJME_SCRITCHUI_TYPE_MENU_ITEM,
 		(sjme_scritchui_coreGeneric_commonNewImplFunc)
 			inState->impl->menuItemNew,
-		NULL);
+		&init);
 }
 
 sjme_errorCode sjme_scritchui_core_menuNew(

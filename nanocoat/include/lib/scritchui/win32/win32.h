@@ -17,6 +17,7 @@
 #define SQUIRRELJME_WIN32_H
 
 #include "lib/scritchui/scritchui.h"
+#include "lib/scritchui/scritchuiImpl.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -35,6 +36,9 @@ extern "C"
 
 /** Menu handle. */
 #define SJME_SUI_WIN32_H_HMENU 0
+
+/** Menu sub handle. */
+#define SJME_SUI_WIN32_H_HSUBMENU 1
 
 /** Void window handle. */
 #define SJME_SUI_WIN32_H_VOID 3
@@ -60,15 +64,26 @@ sjme_errorCode sjme_scritchui_win32_menuBarNew(
 	sjme_attrInNotNull sjme_scritchui_uiMenuBar inMenuBar,
 	sjme_attrInNullable sjme_pointer ignored);
 	
+sjme_errorCode sjme_scritchui_win32_menuInsert(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind intoMenu,
+	sjme_attrInPositive sjme_jint atIndex,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind childItem);
+	
 sjme_errorCode sjme_scritchui_win32_menuItemNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiMenuItem inMenuItem,
-	sjme_attrInNullable sjme_pointer ignored);
+	sjme_attrInNotNull const sjme_scritchui_impl_initParamMenuItem* init);
 	
 sjme_errorCode sjme_scritchui_win32_menuNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiMenu inMenu,
 	sjme_attrInNullable sjme_pointer ignored);
+
+sjme_errorCode sjme_scritchui_win32_menuRemove(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind fromMenu,
+	sjme_attrInPositive sjme_jint atIndex);
 
 sjme_errorCode sjme_scritchui_win32_panelNew(
 	sjme_attrInNotNull sjme_scritchui inState,

@@ -202,7 +202,7 @@ sjme_errorCode sjme_scritchui_fb_lafElementColor(
 sjme_errorCode sjme_scritchui_fb_listNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiList inList,
-	sjme_attrInValue const sjme_scritchui_impl_initParamList* init);
+	sjme_attrInNotNull const sjme_scritchui_impl_initParamList* init);
 
 sjme_errorCode sjme_scritchui_fb_loopExecute(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -233,7 +233,7 @@ sjme_errorCode sjme_scritchui_fb_menuInsert(
 sjme_errorCode sjme_scritchui_fb_menuItemNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiMenuItem inMenuItem,
-	sjme_attrInNullable sjme_pointer ignored);
+	sjme_attrInNotNull const sjme_scritchui_impl_initParamMenuItem* init);
 
 sjme_errorCode sjme_scritchui_fb_menuNew(
 	sjme_attrInNotNull sjme_scritchui inState,

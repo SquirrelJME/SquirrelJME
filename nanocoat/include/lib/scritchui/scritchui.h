@@ -1958,6 +1958,9 @@ struct sjme_scritchui_stateBase
 	
 	/** Reference to owning state. */
 	sjme_atomic_sjme_pointer topState;
+	
+	/** The next ID for opaque menu items. */
+	sjme_jint nextMenuItemId;
 };
 
 /* If dynamic libraries are not supported, we cannot do this. */

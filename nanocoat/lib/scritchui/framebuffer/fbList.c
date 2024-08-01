@@ -366,7 +366,7 @@ static sjme_errorCode sjme_scritchui_fb_list_lightSelect(
 sjme_errorCode sjme_scritchui_fb_listNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiList inList,
-	sjme_attrInValue const sjme_scritchui_impl_initParamList* init)
+	sjme_attrInNotNull const sjme_scritchui_impl_initParamList* init)
 {
 	sjme_errorCode error;
 	sjme_scritchui_fb_widgetState* wState;

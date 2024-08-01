@@ -17,7 +17,7 @@
 static sjme_errorCode sjme_scritchui_core_listNewWrap(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiList inList,
-	sjme_attrInValue const sjme_scritchui_impl_initParamList* init)
+	sjme_attrInNotNull const sjme_scritchui_impl_initParamList* init)
 {
 	if (inState == NULL || inList == NULL || init == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
