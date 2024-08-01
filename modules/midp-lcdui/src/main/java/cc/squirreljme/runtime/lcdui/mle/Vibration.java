@@ -54,17 +54,7 @@ public final class Vibration
 		if (__d < 0)
 			throw new IllegalArgumentException("EB1n");
 		
-		throw Debugging.todo();
-		/*
-		// Only perform the action if we can vibrate the device
-		UIBackend backend = UIBackendFactory.getInstance(true);
-		if (backend.metric(backend.displays()[0],
-			UIMetricType.SUPPORTS_VIBRATION) != 0)
-			throw Debugging.todo();
-		
-		// There is none, so we cannot say we control it
+		Debugging.todoNote("Vibration?");
 		return false;
-		
-		 */
 	}
 }

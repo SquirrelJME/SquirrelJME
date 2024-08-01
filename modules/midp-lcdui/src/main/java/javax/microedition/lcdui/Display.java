@@ -826,12 +826,8 @@ public class Display
 	@Api
 	public boolean isColor()
 	{
-		throw Debugging.todo();
-		/*
-		return UIBackendFactory.getInstance(true).metric(_uiDisplay,
-			UIMetricType.DISPLAY_MONOCHROMATIC) == 0;
-			
-		 */
+		Debugging.todoNote("Actual color check.");
+		return true;
 	}
 	
 	/**

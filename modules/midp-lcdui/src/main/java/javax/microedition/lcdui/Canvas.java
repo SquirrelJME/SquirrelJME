@@ -709,38 +709,8 @@ public abstract class Canvas
 		if (__w <= 0 || __h <= 0)
 			return;
 		
-		throw Debugging.todo();
-		/*
-		
-		// Request repainting
-		UIBackend instance = this.__backend();
-		
-		// Send repaint properties
-		instance.widgetProperty(this.__state(__CanvasState__.class)._uiCanvas,
-			UIWidgetProperty.INT_SIGNAL_REPAINT, 0,
-				UISpecialCode.REPAINT_KEY_X | __x);
-		instance.widgetProperty(this.__state(__CanvasState__.class)._uiCanvas,
-			UIWidgetProperty.INT_SIGNAL_REPAINT, 0,
-				UISpecialCode.REPAINT_KEY_Y | __y);
-		instance.widgetProperty(this.__state(__CanvasState__.class)._uiCanvas,
-			UIWidgetProperty.INT_SIGNAL_REPAINT, 0,
-				UISpecialCode.REPAINT_KEY_WIDTH | __w);
-		instance.widgetProperty(this.__state(__CanvasState__.class)._uiCanvas,
-			UIWidgetProperty.INT_SIGNAL_REPAINT, 0,
-				UISpecialCode.REPAINT_KEY_HEIGHT | __h);
-		
-		// Count pending paints up before we signal the final repaint
-		synchronized (this._repaintLock)
-		{
-			this._pendingPaints++;
-		}
-		
-		// Execute the paint
-		instance.widgetProperty(this.__state(__CanvasState__.class)._uiCanvas,
-			UIWidgetProperty.INT_SIGNAL_REPAINT, 0,
-			UISpecialCode.REPAINT_EXECUTE);
-			
-		 */
+		// Same as repaint, but just draw the entire region
+		this._state.scritchApi().eventLoop().executeLater(this._repainter);
 	}
 	
 	/**
@@ -758,11 +728,9 @@ public abstract class Canvas
 	@SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
 	public final void serviceRepaints()
 	{
-		throw Debugging.todo();
-		/*
 		// If there is no current display then nothing can ever be repainted
-		Display display = this._display;
-		if (display == null)
+		DisplayState current = this._state.currentDisplay();
+		if (current == null)
 			return;
 		
 		// Lock on display since that is where the main serialized event loop
@@ -789,8 +757,6 @@ public abstract class Canvas
 				{
 				}
 			}
-			
-		 */
 	}
 	
 	/**
