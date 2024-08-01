@@ -77,7 +77,7 @@ public abstract class GameCanvas
 	@Api
 	protected GameCanvas(boolean __suppressGameKeys)
 	{
-		this(__suppressGameKeys, false);
+		this(__suppressGameKeys, true);
 	}
 	
 	/**
