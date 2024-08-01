@@ -190,7 +190,7 @@ public final class Font
 	}
 	
 	/**
-	 * Returns the width of the specified charaters, as if it were drawn
+	 * Returns the width of the specified characters, as if it were drawn
 	 * on the screen.
 	 *
 	 * @param __c The characters to check.
