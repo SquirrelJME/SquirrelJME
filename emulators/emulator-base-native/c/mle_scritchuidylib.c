@@ -2108,14 +2108,13 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __menuItemNew)
 	sjme_scritchui state;
 	sjme_scritchui_uiMenuItem menuItem;
 	
-	if (stateP == 0)
-	{
-		error = SJME_ERROR_NULL_ARGUMENTS;
-		goto fail_nullArgs;
-	}
-
 	/* Restore. */
 	state = (sjme_scritchui)stateP;
+	if (stateP == 0)
+	{
+		state = SJME_ERROR_NULL_ARGUMENTS;
+		goto fail_nullArgs;
+	}
 	
 	/* Not implemented? */
 	if (state->api->menuItemNew == NULL)

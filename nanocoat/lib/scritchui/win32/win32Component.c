@@ -33,6 +33,7 @@ sjme_errorCode sjme_scritchui_win32_componentRepaint(
 	rect.bottom = y + height;
 	
 	/* Invalidate the window rectangle. */
+	SetLastError(0);
 	if (0 == InvalidateRect(
 		inComponent->common.handle[SJME_SUI_WIN32_H_HWND],
 		(noRect ? NULL : &rect), FALSE))

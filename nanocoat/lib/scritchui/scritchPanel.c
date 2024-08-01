@@ -33,6 +33,7 @@ sjme_errorCode sjme_scritchui_core_panelEnableFocus(
 	
 	/* Set new state. */
 	inPanel->enableFocus = enableFocus;
+	inPanel->defaultFocus = defaultFocus;
 	
 	/* Success! */
 	return SJME_ERROR_NONE;

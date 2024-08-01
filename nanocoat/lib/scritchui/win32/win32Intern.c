@@ -19,8 +19,9 @@ sjme_errorCode sjme_scritchui_win32_intern_getLastError(
 	if (inState == NULL)
 		return SJME_ERROR_NONE;
 	
-	/* Get Windows error. */
+	/* Get Windows error, but then also clear it. */
 	winErr = GetLastError();
+	SetLastError(0);
 	if (winErr == ERROR_SUCCESS)
 		return ifOkay;
 

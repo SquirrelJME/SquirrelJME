@@ -467,7 +467,7 @@ sjme_errorCode sjme_scritchui_coreGeneric_commonNew(
 	
 	/* Setup common item. */
 	if (sjme_error_is(error = implNew(inState, result,
-		inData)) || result->handle[0] == NULL)
+		inData)))
 		goto fail_new;
 	
 	/* Post-initialize. */

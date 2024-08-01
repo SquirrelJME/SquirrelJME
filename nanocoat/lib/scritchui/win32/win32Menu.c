@@ -22,6 +22,7 @@ sjme_errorCode sjme_scritchui_win32_menuBarNew(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Create new menu. */
+	SetLastError(0);
 	menu = CreateMenu();
 	if (menu == NULL)
 		return inState->implIntern->getLastError(inState,
@@ -87,6 +88,7 @@ sjme_errorCode sjme_scritchui_win32_menuInsert(
 	}
 	
 	/* Create the item. */
+	SetLastError(0);
 	if (0 == InsertMenuItem(
 		intoMenu->common.handle[SJME_SUI_WIN32_H_HMENU],
 		atIndex, TRUE, &itemInfo))
@@ -131,6 +133,7 @@ sjme_errorCode sjme_scritchui_win32_menuRemove(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* The item just gets removed. */
+	SetLastError(0);
 	if (0 == RemoveMenu(fromMenu->common.handle[SJME_SUI_WIN32_H_HMENU],
 		atIndex, MF_BYPOSITION))
 		return inState->implIntern->getLastError(inState,

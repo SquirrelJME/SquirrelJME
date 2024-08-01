@@ -388,6 +388,9 @@ typedef struct sjme_scritchui_uiPanelBase
 	
 	/** Is focus enabled? */
 	sjme_jboolean enableFocus;
+	
+	/** Is default focus enabled? */
+	sjme_jboolean defaultFocus;
 } sjme_scritchui_uiPanelBase;
 
 typedef struct sjme_scritchui_uiScreenBase

@@ -20,6 +20,7 @@ sjme_errorCode sjme_scritchui_win32_loopExecuteLater(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Send to the event thread. */
+	SetLastError(0);
 	if ((result = PostThreadMessage(
 		GetThreadId(inState->loopThread),
 		WM_USER,
@@ -92,10 +93,6 @@ sjme_errorCode sjme_scritchui_win32_loopIterate(
 	/* Handle message. */
 	switch (message.message)
 	{
-			/* Do not care. */
-		case WM_DWMNCRENDERINGCHANGED:
-			break;
-		
 			/* Callback function. */
 		case WM_USER:
 			threadMain = (sjme_thread_mainFunc)message.wParam;
@@ -106,9 +103,16 @@ sjme_errorCode sjme_scritchui_win32_loopIterate(
 				
 			return SJME_THREAD_RESULT_AS_ERROR(threadMain(threadAnything));
 		
+			/* Unknown, let Windows handle it. */
 		default:
-			sjme_todo("Handle message: %d (%p, %p)",
+#if defined(SJME_CONFIG_DEBUG)
+			/* Debug. */
+			sjme_message("Skipping message: %d (%p, %p)",
 				message.message, message.wParam, message.lParam);
+#endif
+				
+			DefWindowProc(message.hwnd, message.message,
+				message.wParam, message.lParam);
 			break;
 	}
 	
