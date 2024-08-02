@@ -11,10 +11,6 @@ package cc.squirreljme.vm.springcoat.callbacks;
 
 import cc.squirreljme.jvm.mle.scritchui.ScritchUnifiedInterface;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.vm.springcoat.SpringArrayObject;
-import cc.squirreljme.vm.springcoat.SpringArrayObjectGeneric;
-import cc.squirreljme.vm.springcoat.SpringArrayObjectProxy;
-import cc.squirreljme.vm.springcoat.SpringClass;
 import cc.squirreljme.vm.springcoat.SpringMachine;
 import cc.squirreljme.vm.springcoat.SpringNullObject;
 import cc.squirreljme.vm.springcoat.SpringProxyObject;
