@@ -357,6 +357,10 @@ public final class CMakeUtils
 		if (__err != null)
 			procBuilder.redirectError(ProcessBuilder.Redirect.PIPE);
 		
+		// Debug
+		System.err.printf("CMake Run: %s",
+			String.join(" ", args));
+		
 		// Start the process
 		Process proc = procBuilder.start();
 		

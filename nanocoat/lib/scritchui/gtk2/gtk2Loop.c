@@ -7,6 +7,8 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <glib.h>
+
 #include "lib/scritchui/gtk2/gtk2.h"
 #include "lib/scritchui/gtk2/gtk2Intern.h"
 #include "lib/scritchui/scritchuiTypes.h"
@@ -49,7 +51,11 @@ static gboolean sjme_scritchui_gtk2_onceExecute(gpointer inData)
 	anything = data->anything;
 	
 	/* Clear data before we call in the event of signals or otherwise. */
+#if defined(GLIB_AVAILABLE_IN_2_76)
 	g_free_sized(data, sizeof(*data));
+#else
+	g_free(data);
+#endif
 	data = NULL;
 	
 	/* Perform the call. */

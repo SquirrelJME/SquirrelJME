@@ -53,6 +53,7 @@ public class CMakeBuildTaskAction
 					__task.getProject().getBuildDir().toPath(),
 					"--build",
 					cmakeBuild.toAbsolutePath().toString(),
+					"--verbose",
 					"--config", "RelWithDebInfo",
 					"--target", cmakeRule);
 			}

@@ -73,6 +73,8 @@ public class CMakeBuildTask
 		// Debug
 		this.getLogger().lifecycle(
 			"CMake Path: " + CMakeUtils.cmakeExePath());
+		this.getLogger().lifecycle(
+			"CMake Version: " + CMakeUtils.cmakeExeVersion());
 		
 		// The build root is based on the task
 		Path cmakeBuild = this.getProject().getBuildDir().toPath()
