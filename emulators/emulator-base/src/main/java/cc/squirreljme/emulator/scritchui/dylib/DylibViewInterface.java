@@ -77,14 +77,6 @@ public class DylibViewInterface
 		throw Debugging.todo();
 	}
 	
-	@Override
-	public void setView(ScritchViewBracket __view,
-		int[] __inRect)
-		throws MLECallError
-	{
-		throw Debugging.todo();
-	}
-	
 	/**
 	 * {@inheritDoc}
 	 * @since 2024/07/29

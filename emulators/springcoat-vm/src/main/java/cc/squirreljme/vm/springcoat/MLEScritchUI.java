@@ -12,8 +12,8 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.NativeScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.vm.springcoat.callbacks.ScritchInterfaceProxy;
+import cc.squirreljme.jvm.mle.scritchui.extra.ScritchUnifiedWrapper;
+import cc.squirreljme.vm.springcoat.callbacks.ScritchUnifiedProxy;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 
 /**
@@ -39,7 +39,8 @@ public enum MLEScritchUI
 				ScritchInterface scritchApi =
 					NativeScritchInterface.nativeInterface();
 				
-				return new ScritchInterfaceProxy(__thread.machine, scritchApi);
+				return new ScritchUnifiedProxy(__thread.machine,
+					new ScritchUnifiedWrapper(scritchApi));
 			}
 			catch (MLECallError __e)
 			{

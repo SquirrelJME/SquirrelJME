@@ -78,20 +78,6 @@ public interface ScritchViewInterface
 		throws MLECallError;
 	
 	/**
-	 * Sets the viewport of the given view.
-	 *
-	 * @param __view The view to set.
-	 * @param __inRect The view rectangle.
-	 * @throws MLECallError If the view is invalid; or if the bounds are
-	 * invalid.
-	 * @since 2024/07/29
-	 */
-	@SquirrelJMEVendorApi
-	void setView(@NotNull ScritchViewBracket __view,
-		@NotNull int[] __inRect)
-		throws MLECallError;
-	
-	/**
 	 * Sets the size suggestion listener for contained components.
 	 *
 	 * @param __view The view to set for.

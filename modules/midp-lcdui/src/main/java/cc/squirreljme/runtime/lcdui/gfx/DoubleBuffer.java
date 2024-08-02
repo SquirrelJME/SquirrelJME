@@ -49,7 +49,7 @@ public final class DoubleBuffer
 	public DoubleBuffer(int __resizeFillColor)
 	{
 		this._offScreen = new SingleBuffer(__resizeFillColor);
-		this._onScreen = new SingleBuffer(0);
+		this._onScreen = new SingleBuffer(__resizeFillColor);
 	}
 	
 	/**
