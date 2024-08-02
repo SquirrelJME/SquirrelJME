@@ -14,6 +14,39 @@
 #include "lib/scritchui/scritchuiTypes.h"
 #include "lib/scritchui/framebuffer/fbIntern.h"
 
+static void sjme_scritchui_fb_intern_lafColor(
+	sjme_scritchui_lafElementColorType type,
+	sjme_jint* outColor)
+{
+	if (outColor == NULL)
+		return;
+
+	switch (type)
+	{
+			/* White. */
+		case SJME_SCRITCHUI_LAF_ELEMENT_COLOR_BACKGROUND:
+		case SJME_SCRITCHUI_LAF_ELEMENT_COLOR_PANEL_BACKGROUND:
+			*outColor = 0xFFFFFFFF;
+			break;
+
+			/* Gray. */
+		case SJME_SCRITCHUI_LAF_ELEMENT_COLOR_HIGHLIGHTED_BORDER:
+		case SJME_SCRITCHUI_LAF_ELEMENT_COLOR_FOCUS_BORDER:
+		case SJME_SCRITCHUI_LAF_ELEMENT_COLOR_HIGHLIGHTED_BACKGROUND:
+			*outColor = 0xFF7F7F7F;
+			break;
+
+			/* Black. */
+		case SJME_SCRITCHUI_LAF_ELEMENT_COLOR_BORDER:
+		case SJME_SCRITCHUI_LAF_ELEMENT_COLOR_FOREGROUND:
+		case SJME_SCRITCHUI_LAF_ELEMENT_COLOR_HIGHLIGHTED_FOREGROUND:
+		case SJME_SCRITCHUI_LAF_ELEMENT_COLOR_PANEL_FOREGROUND:
+		default:
+			*outColor = 0xFF000000;
+			break;
+	}
+}
+
 static sjme_errorCode sjme_scritchui_fb_selLock(
 	sjme_attrInNotNull sjme_scritchui_pencil g)
 {
@@ -544,6 +577,10 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 			inState, inComponent, &cW, &cH)))
 			goto fail_componentSize;
 	}
+
+	/* If the surface area is too small, stop as nothing can be drawn. */
+	if (cW <= 0 || cH <= 0)
+		return SJME_ERROR_NONE;
 	
 	/* Clear focus rectangle. */
 	memset(&useFocusRect, 0, sizeof(useFocusRect));
@@ -558,13 +595,13 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 	/* Initially blank, but becomes the suggested dimension. */
 	memset(&suggestDim, 0, sizeof(suggestDim));
 	
-	/* Obtain all the look and feel colors. */
+	/* Obtain all the look and feel colors, if any fail fallback to default. */
 	memset(lafColors, 0, sizeof(lafColors));
 	for (i = 0; i < SJME_SCRITCHUI_NUM_LAF_ELEMENT_COLOR; i++)
 		if (sjme_error_is(error = inState->api->lafElementColor(
 			inState, inComponent,
 			&lafColors[i], i)))
-			goto fail_lafColor;
+			sjme_scritchui_fb_intern_lafColor(i, &lafColors[i]);
 	
 	/* Perform all drawing operations. */
 	for (dlIndex = 0; dlIndex < dlCount; dlIndex++)
